@@ -1,0 +1,161 @@
+using Klei;
+using Klei.AI;
+using STRINGS;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class Shower : Workable, IEffectDescriptor, IGameObjectEffectDescriptor
+{
+	public class ShowerSM : GameStateMachine<ShowerSM, ShowerSM.Instance, Shower>
+	{
+		public new class Instance : GameInstance
+		{
+			private Operational operational;
+
+			private ConduitConsumer consumer;
+
+			private ConduitDispenser dispenser;
+
+			public bool IsOperational => operational.IsOperational && consumer.IsConnected && dispenser.IsConnected;
+
+			public Instance(Shower master)
+				: base(master)
+			{
+				operational = master.GetComponent<Operational>();
+				consumer = master.GetComponent<ConduitConsumer>();
+				dispenser = master.GetComponent<ConduitDispenser>();
+			}
+
+			public void SetActive(bool active)
+			{
+				operational.SetActive(active, false);
+			}
+		}
+
+		public State unoperational;
+
+		public State operational;
+
+		public override void InitializeStates(out BaseState default_state)
+		{
+			default_state = unoperational;
+			unoperational.EventTransition(GameHashes.OperationalChanged, operational, (Instance smi) => smi.IsOperational).PlayAnim("off");
+			operational.EventTransition(GameHashes.OperationalChanged, unoperational, (Instance smi) => !smi.IsOperational).ToggleRecurringChore(delegate(Instance smi)
+			{
+				ChoreType shower = Db.Get().ChoreTypes.Shower;
+				Shower master = smi.master;
+				ScheduleBlockType hygiene = Db.Get().ScheduleBlockTypes.Hygiene;
+				return new WorkChore<Shower>(shower, master, null, null, true, null, null, null, false, hygiene, false, true, null, false, true, false, PriorityScreen.PriorityClass.emergency, 0, false);
+			}, null);
+		}
+	}
+
+	private ShowerSM.Instance smi;
+
+	public string showerEffect = "Showered";
+
+	public SimHashes outputTargetElement;
+
+	public float fractionalDiseaseRemoval;
+
+	public int absoluteDiseaseRemoval;
+
+	private SimUtil.DiseaseInfo accumulatedDisease;
+
+	private static readonly string[] EffectsRemoved = new string[2]
+	{
+		"SoakingWet",
+		"WetFeet"
+	};
+
+	protected override void OnSpawn()
+	{
+		base.OnSpawn();
+		resetProgressOnStop = true;
+		smi = new ShowerSM.Instance(this);
+		smi.StartSM();
+	}
+
+	protected override void OnStartWork(Worker worker)
+	{
+		HygieneMonitor.Instance sMI = worker.GetSMI<HygieneMonitor.Instance>();
+		base.WorkTimeRemaining = workTime * sMI.GetDirtiness();
+		accumulatedDisease = SimUtil.DiseaseInfo.Invalid;
+		smi.SetActive(true);
+		base.OnStartWork(worker);
+	}
+
+	protected override void OnStopWork(Worker worker)
+	{
+		smi.SetActive(false);
+	}
+
+	protected override void OnCompleteWork(Worker worker)
+	{
+		base.OnCompleteWork(worker);
+		Effects component = worker.GetComponent<Effects>();
+		for (int i = 0; i < EffectsRemoved.Length; i++)
+		{
+			string effect_id = EffectsRemoved[i];
+			component.Remove(effect_id);
+		}
+		component.Add(showerEffect, true);
+		worker.GetSMI<HygieneMonitor.Instance>()?.SetDirtiness(0f);
+	}
+
+	protected override bool OnWorkTick(Worker worker, float dt)
+	{
+		PrimaryElement component = worker.GetComponent<PrimaryElement>();
+		if (component.DiseaseCount > 0)
+		{
+			SimUtil.DiseaseInfo diseaseInfo = default(SimUtil.DiseaseInfo);
+			diseaseInfo.idx = component.DiseaseIdx;
+			diseaseInfo.count = Mathf.CeilToInt((float)component.DiseaseCount * (1f - Mathf.Pow(fractionalDiseaseRemoval, dt)) - (float)absoluteDiseaseRemoval);
+			SimUtil.DiseaseInfo b = diseaseInfo;
+			component.ModifyDiseaseCount(-b.count, "Shower.RemoveDisease");
+			accumulatedDisease = SimUtil.CalculateFinalDiseaseInfo(accumulatedDisease, b);
+			Storage component2 = GetComponent<Storage>();
+			PrimaryElement primaryElement = component2.FindPrimaryElement(outputTargetElement);
+			if ((Object)primaryElement != (Object)null)
+			{
+				PrimaryElement component3 = primaryElement.GetComponent<PrimaryElement>();
+				component3.AddDisease(accumulatedDisease.idx, accumulatedDisease.count, "Shower.RemoveDisease");
+				accumulatedDisease = SimUtil.DiseaseInfo.Invalid;
+			}
+		}
+		return false;
+	}
+
+	protected override void OnAbortWork(Worker worker)
+	{
+		base.OnAbortWork(worker);
+		worker.GetSMI<HygieneMonitor.Instance>()?.SetDirtiness(1f - GetPercentComplete());
+	}
+
+	public override void AwardExperience(float work_dt, MinionResume resume)
+	{
+	}
+
+	public List<Descriptor> GetDescriptors(BuildingDef def)
+	{
+		List<Descriptor> list = new List<Descriptor>();
+		if (EffectsRemoved.Length > 0)
+		{
+			Descriptor item = default(Descriptor);
+			item.SetupDescriptor(UI.BUILDINGEFFECTS.REMOVESEFFECTSUBTITLE, UI.BUILDINGEFFECTS.TOOLTIPS.REMOVESEFFECTSUBTITLE, Descriptor.DescriptorType.Effect);
+			list.Add(item);
+			for (int i = 0; i < EffectsRemoved.Length; i++)
+			{
+				string text = EffectsRemoved[i];
+				string arg = Strings.Get("STRINGS.DUPLICANTS.MODIFIERS." + text.ToUpper() + ".NAME");
+				string arg2 = Strings.Get("STRINGS.DUPLICANTS.MODIFIERS." + text.ToUpper() + ".CAUSE");
+				Descriptor item2 = default(Descriptor);
+				item2.IncreaseIndent();
+				item2.SetupDescriptor("• " + string.Format(UI.BUILDINGEFFECTS.REMOVEDEFFECT, arg), string.Format(UI.BUILDINGEFFECTS.TOOLTIPS.REMOVEDEFFECT, arg2), Descriptor.DescriptorType.Effect);
+				list.Add(item2);
+			}
+		}
+		Effect.AddModifierDescriptions(base.gameObject, list, showerEffect, true);
+		return list;
+	}
+}

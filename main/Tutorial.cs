@@ -1,0 +1,492 @@
+using Klei.AI;
+using KSerialization;
+using STRINGS;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class Tutorial : KMonoBehaviour, IRender1000ms
+{
+	public enum TutorialMessages
+	{
+		TM_Basics,
+		TM_Welcome,
+		TM_StressManagement,
+		TM_Scheduling,
+		TM_Mopping,
+		TM_Locomotion,
+		TM_Priorities,
+		TM_FetchingWater,
+		TM_ThermalComfort,
+		TM_OverheatingBuildings,
+		TM_LotsOfGerms,
+		TM_BeingInfected,
+		TM_DiseaseCooking,
+		TM_Suits,
+		TM_Morale,
+		TM_Schedule,
+		TM_COUNT
+	}
+
+	private delegate bool RequirementSatisfiedDelegate();
+
+	private class Item
+	{
+		public Notification notification;
+
+		public RequirementSatisfiedDelegate requirementSatisfied;
+
+		public float minTimeToNotify;
+
+		public float lastNotifyTime;
+	}
+
+	[MyCmpAdd]
+	private Notifier notifier;
+
+	[Serialize]
+	private SerializedList<TutorialMessages> tutorialMessagesRemaining = new SerializedList<TutorialMessages>();
+
+	private const string HIDDEN_TUTORIAL_PREF_KEY_PREFIX = "HideTutorial_";
+
+	public const string HIDDEN_TUTORIAL_PREF_BUTTON_KEY = "HideTutorial_CheckState";
+
+	private Dictionary<TutorialMessages, bool> hiddenTutorialMessages = new Dictionary<TutorialMessages, bool>();
+
+	private int debugMessageCount;
+
+	private bool queuedPrioritiesMessage;
+
+	private const float LOW_RATION_AMOUNT = 1f;
+
+	private List<List<Item>> itemTree = new List<List<Item>>();
+
+	private List<Item> warningItems = new List<Item>();
+
+	private Vector3 notifierPosition;
+
+	public static Tutorial Instance
+	{
+		get;
+		private set;
+	}
+
+	public static void ResetHiddenTutorialMessages()
+	{
+		IEnumerator enumerator = Enum.GetValues(typeof(TutorialMessages)).GetEnumerator();
+		try
+		{
+			while (enumerator.MoveNext())
+			{
+				TutorialMessages key = (TutorialMessages)enumerator.Current;
+				string key2 = "HideTutorial_" + key.ToString();
+				KPlayerPrefs.SetInt(key2, 0);
+				if ((UnityEngine.Object)Instance != (UnityEngine.Object)null)
+				{
+					Instance.hiddenTutorialMessages[key] = false;
+				}
+			}
+		}
+		finally
+		{
+			IDisposable disposable;
+			if ((disposable = (enumerator as IDisposable)) != null)
+			{
+				disposable.Dispose();
+			}
+		}
+		KPlayerPrefs.SetInt("HideTutorial_CheckState", 0);
+	}
+
+	private void LoadHiddenTutorialMessages()
+	{
+		IEnumerator enumerator = Enum.GetValues(typeof(TutorialMessages)).GetEnumerator();
+		try
+		{
+			while (enumerator.MoveNext())
+			{
+				TutorialMessages key = (TutorialMessages)enumerator.Current;
+				string key2 = "HideTutorial_" + key.ToString();
+				bool value = KPlayerPrefs.GetInt(key2, 0) != 0;
+				hiddenTutorialMessages[key] = value;
+			}
+		}
+		finally
+		{
+			IDisposable disposable;
+			if ((disposable = (enumerator as IDisposable)) != null)
+			{
+				disposable.Dispose();
+			}
+		}
+	}
+
+	public void HideTutorialMessage(TutorialMessages message)
+	{
+		hiddenTutorialMessages[message] = true;
+		string key = "HideTutorial_" + message.ToString();
+		KPlayerPrefs.SetInt(key, 1);
+	}
+
+	public static void DestroyInstance()
+	{
+		Instance = null;
+	}
+
+	private void UpdateNotifierPosition()
+	{
+		if (notifierPosition == Vector3.zero)
+		{
+			GameObject telepad = GameUtil.GetTelepad();
+			if ((UnityEngine.Object)telepad != (UnityEngine.Object)null)
+			{
+				notifierPosition = telepad.transform.GetPosition();
+			}
+		}
+		notifier.transform.SetPosition(notifierPosition);
+	}
+
+	protected override void OnPrefabInit()
+	{
+		Instance = this;
+		LoadHiddenTutorialMessages();
+	}
+
+	protected override void OnSpawn()
+	{
+		if (tutorialMessagesRemaining.Count == 0)
+		{
+			for (int i = 0; i <= 16; i++)
+			{
+				tutorialMessagesRemaining.Add((TutorialMessages)i);
+			}
+		}
+		List<Item> list = new List<Item>();
+		list.Add(new Item
+		{
+			notification = new Notification(MISC.NOTIFICATIONS.NEEDTOILET.NAME, NotificationType.Tutorial, HashedString.Invalid, (List<Notification> n, object d) => MISC.NOTIFICATIONS.NEEDTOILET.TOOLTIP.text, null, true, 5f, null, null),
+			requirementSatisfied = new RequirementSatisfiedDelegate(ToiletExists)
+		});
+		itemTree.Add(list);
+		List<Item> list2 = new List<Item>();
+		list2.Add(new Item
+		{
+			notification = new Notification(MISC.NOTIFICATIONS.NEEDFOOD.NAME, NotificationType.Tutorial, HashedString.Invalid, (List<Notification> n, object d) => MISC.NOTIFICATIONS.NEEDFOOD.TOOLTIP.text, null, true, 20f, null, null),
+			requirementSatisfied = new RequirementSatisfiedDelegate(FoodSourceExists)
+		});
+		list2.Add(new Item
+		{
+			notification = new Notification(MISC.NOTIFICATIONS.THERMALCOMFORT.NAME, NotificationType.Tutorial, HashedString.Invalid, (List<Notification> n, object d) => MISC.NOTIFICATIONS.THERMALCOMFORT.TOOLTIP.text, null, true, 0f, null, null)
+		});
+		itemTree.Add(list2);
+		List<Item> list3 = new List<Item>();
+		list3.Add(new Item
+		{
+			notification = new Notification(MISC.NOTIFICATIONS.HYGENE_NEEDED.NAME, NotificationType.Tutorial, HashedString.Invalid, (List<Notification> n, object d) => MISC.NOTIFICATIONS.HYGENE_NEEDED.TOOLTIP, null, true, 20f, null, null),
+			requirementSatisfied = new RequirementSatisfiedDelegate(HygeneExists)
+		});
+		itemTree.Add(list3);
+		List<Item> list4 = warningItems;
+		Item item = new Item();
+		Item item2 = item;
+		string title = MISC.NOTIFICATIONS.NEEDOXYGENSOURCE.NAME;
+		HashedString invalid = HashedString.Invalid;
+		item2.notification = new Notification(title, NotificationType.Tutorial, invalid, OnOxygenTooltip, null, false, 0f, null, null);
+		item.requirementSatisfied = SufficientOxygen;
+		item.minTimeToNotify = 80f;
+		item.lastNotifyTime = 0f;
+		list4.Add(item);
+		warningItems.Add(new Item
+		{
+			notification = new Notification(MISC.NOTIFICATIONS.UNREFRIGERATEDFOOD.NAME, NotificationType.Tutorial, HashedString.Invalid, UnrefrigeratedFoodTooltip, null, false, 0f, null, null),
+			requirementSatisfied = new RequirementSatisfiedDelegate(FoodIsRefrigerated),
+			minTimeToNotify = 6f,
+			lastNotifyTime = 0f
+		});
+		warningItems.Add(new Item
+		{
+			notification = new Notification(MISC.NOTIFICATIONS.FOODLOW.NAME, NotificationType.Bad, HashedString.Invalid, OnLowFoodTooltip, null, false, 0f, null, null),
+			requirementSatisfied = new RequirementSatisfiedDelegate(EnoughFood),
+			minTimeToNotify = 10f,
+			lastNotifyTime = 0f
+		});
+		warningItems.Add(new Item
+		{
+			notification = new Notification(MISC.NOTIFICATIONS.NO_MEDICAL_COTS.NAME, NotificationType.Bad, HashedString.Invalid, (List<Notification> n, object o) => MISC.NOTIFICATIONS.NO_MEDICAL_COTS.TOOLTIP, null, false, 0f, null, null),
+			requirementSatisfied = new RequirementSatisfiedDelegate(EnoughMedicalCots),
+			minTimeToNotify = 10f,
+			lastNotifyTime = 0f
+		});
+	}
+
+	public void TutorialMessage(TutorialMessages tm)
+	{
+		if (tutorialMessagesRemaining.Contains(tm) && (!hiddenTutorialMessages.ContainsKey(tm) || !hiddenTutorialMessages[tm]))
+		{
+			Message message = null;
+			switch (tm)
+			{
+			case TutorialMessages.TM_Basics:
+				message = new TutorialMessage(TutorialMessages.TM_Basics, MISC.NOTIFICATIONS.BASICCONTROLS.NAME, MISC.NOTIFICATIONS.BASICCONTROLS.MESSAGEBODY, MISC.NOTIFICATIONS.BASICCONTROLS.TOOLTIP);
+				break;
+			case TutorialMessages.TM_Welcome:
+				message = new TutorialMessage(TutorialMessages.TM_Welcome, MISC.NOTIFICATIONS.WELCOMEMESSAGE.NAME, MISC.NOTIFICATIONS.WELCOMEMESSAGE.MESSAGEBODY, MISC.NOTIFICATIONS.WELCOMEMESSAGE.TOOLTIP);
+				break;
+			case TutorialMessages.TM_StressManagement:
+				message = new TutorialMessage(TutorialMessages.TM_StressManagement, MISC.NOTIFICATIONS.STRESSMANAGEMENTMESSAGE.NAME, MISC.NOTIFICATIONS.STRESSMANAGEMENTMESSAGE.MESSAGEBODY, MISC.NOTIFICATIONS.STRESSMANAGEMENTMESSAGE.TOOLTIP);
+				break;
+			case TutorialMessages.TM_Scheduling:
+				message = new TutorialMessage(TutorialMessages.TM_Scheduling, MISC.NOTIFICATIONS.SCHEDULEMESSAGE.NAME, MISC.NOTIFICATIONS.SCHEDULEMESSAGE.MESSAGEBODY, MISC.NOTIFICATIONS.SCHEDULEMESSAGE.TOOLTIP);
+				break;
+			case TutorialMessages.TM_Mopping:
+				message = new TutorialMessage(TutorialMessages.TM_Mopping, MISC.NOTIFICATIONS.MOPPINGMESSAGE.NAME, MISC.NOTIFICATIONS.MOPPINGMESSAGE.MESSAGEBODY, MISC.NOTIFICATIONS.MOPPINGMESSAGE.TOOLTIP);
+				break;
+			case TutorialMessages.TM_Locomotion:
+				message = new TutorialMessage(TutorialMessages.TM_Locomotion, MISC.NOTIFICATIONS.LOCOMOTIONMESSAGE.NAME, MISC.NOTIFICATIONS.LOCOMOTIONMESSAGE.MESSAGEBODY, MISC.NOTIFICATIONS.LOCOMOTIONMESSAGE.TOOLTIP);
+				break;
+			case TutorialMessages.TM_Priorities:
+				message = new TutorialMessage(TutorialMessages.TM_Priorities, MISC.NOTIFICATIONS.PRIORITIESMESSAGE.NAME, MISC.NOTIFICATIONS.PRIORITIESMESSAGE.MESSAGEBODY, MISC.NOTIFICATIONS.PRIORITIESMESSAGE.TOOLTIP);
+				break;
+			case TutorialMessages.TM_FetchingWater:
+				message = new TutorialMessage(TutorialMessages.TM_FetchingWater, MISC.NOTIFICATIONS.FETCHINGWATERMESSAGE.NAME, MISC.NOTIFICATIONS.FETCHINGWATERMESSAGE.MESSAGEBODY, MISC.NOTIFICATIONS.FETCHINGWATERMESSAGE.TOOLTIP);
+				break;
+			case TutorialMessages.TM_ThermalComfort:
+				message = new TutorialMessage(TutorialMessages.TM_ThermalComfort, MISC.NOTIFICATIONS.THERMALCOMFORT.NAME, MISC.NOTIFICATIONS.THERMALCOMFORT.MESSAGEBODY, MISC.NOTIFICATIONS.THERMALCOMFORT.TOOLTIP);
+				break;
+			case TutorialMessages.TM_OverheatingBuildings:
+				message = new TutorialMessage(TutorialMessages.TM_OverheatingBuildings, MISC.NOTIFICATIONS.TUTORIAL_OVERHEATING.NAME, MISC.NOTIFICATIONS.TUTORIAL_OVERHEATING.MESSAGEBODY, MISC.NOTIFICATIONS.TUTORIAL_OVERHEATING.TOOLTIP);
+				break;
+			case TutorialMessages.TM_LotsOfGerms:
+				message = new TutorialMessage(TutorialMessages.TM_LotsOfGerms, MISC.NOTIFICATIONS.LOTS_OF_GERMS.NAME, MISC.NOTIFICATIONS.LOTS_OF_GERMS.MESSAGEBODY, MISC.NOTIFICATIONS.LOTS_OF_GERMS.TOOLTIP);
+				break;
+			case TutorialMessages.TM_BeingInfected:
+				message = new TutorialMessage(TutorialMessages.TM_BeingInfected, MISC.NOTIFICATIONS.BEING_INFECTED.NAME, MISC.NOTIFICATIONS.BEING_INFECTED.MESSAGEBODY, MISC.NOTIFICATIONS.BEING_INFECTED.TOOLTIP);
+				break;
+			case TutorialMessages.TM_DiseaseCooking:
+				message = new TutorialMessage(TutorialMessages.TM_DiseaseCooking, MISC.NOTIFICATIONS.DISEASE_COOKING.NAME, MISC.NOTIFICATIONS.DISEASE_COOKING.MESSAGEBODY, MISC.NOTIFICATIONS.DISEASE_COOKING.TOOLTIP);
+				break;
+			case TutorialMessages.TM_Suits:
+				message = new TutorialMessage(TutorialMessages.TM_Suits, MISC.NOTIFICATIONS.SUITS.NAME, MISC.NOTIFICATIONS.SUITS.MESSAGEBODY, MISC.NOTIFICATIONS.SUITS.TOOLTIP);
+				break;
+			case TutorialMessages.TM_Morale:
+				message = new TutorialMessage(TutorialMessages.TM_Morale, MISC.NOTIFICATIONS.MORALE.NAME, MISC.NOTIFICATIONS.MORALE.MESSAGEBODY, MISC.NOTIFICATIONS.MORALE.TOOLTIP);
+				break;
+			case TutorialMessages.TM_Schedule:
+				message = new TutorialMessage(TutorialMessages.TM_Schedule, MISC.NOTIFICATIONS.SCHEDULEMESSAGE.NAME, MISC.NOTIFICATIONS.SCHEDULEMESSAGE.MESSAGEBODY, MISC.NOTIFICATIONS.SCHEDULEMESSAGE.TOOLTIP);
+				break;
+			}
+			tutorialMessagesRemaining.Remove(tm);
+			Messenger.Instance.QueueMessage(message);
+		}
+	}
+
+	private string OnOxygenTooltip(List<Notification> notifications, object data)
+	{
+		ReportManager.ReportEntry entry = ReportManager.Instance.TodaysReport.GetEntry(ReportManager.ReportType.OxygenCreated);
+		string text = MISC.NOTIFICATIONS.NEEDOXYGENSOURCE.TOOLTIP;
+		text = text.Replace("{EmittingRate}", GameUtil.GetFormattedMass(entry.Positive, GameUtil.TimeSlice.None, GameUtil.MetricMassFormat.UseThreshold, true, "{0:0.#}"));
+		return text.Replace("{ConsumptionRate}", GameUtil.GetFormattedMass(Mathf.Abs(entry.Negative), GameUtil.TimeSlice.None, GameUtil.MetricMassFormat.UseThreshold, true, "{0:0.#}"));
+	}
+
+	private string UnrefrigeratedFoodTooltip(List<Notification> notifications, object data)
+	{
+		string text = MISC.NOTIFICATIONS.UNREFRIGERATEDFOOD.TOOLTIP;
+		List<string> list = new List<string>();
+		GetUnrefrigeratedFood(list);
+		for (int i = 0; i < list.Count; i++)
+		{
+			text = text + "\n" + list[i];
+		}
+		return text;
+	}
+
+	private string OnLowFoodTooltip(List<Notification> notifications, object data)
+	{
+		float calories = RationTracker.Get().CountRations(null, true);
+		float f = (float)Components.LiveMinionIdentities.Count * -1000000f;
+		return string.Format(MISC.NOTIFICATIONS.FOODLOW.TOOLTIP, GameUtil.GetFormattedCalories(calories, GameUtil.TimeSlice.None, true), GameUtil.GetFormattedCalories(Mathf.Abs(f), GameUtil.TimeSlice.None, true));
+	}
+
+	public void DebugNotification()
+	{
+		string empty = string.Empty;
+		NotificationType type;
+		if (debugMessageCount % 3 == 0)
+		{
+			type = NotificationType.Tutorial;
+			empty = "Warning message e.g. \"not enough oxygen\" uses Warning Color";
+		}
+		else if (debugMessageCount % 3 == 1)
+		{
+			type = NotificationType.BadMinor;
+			empty = "Normal message e.g. Idle. Uses Normal Color BG";
+		}
+		else
+		{
+			type = NotificationType.Bad;
+			empty = "Urgent important message. Uses Bad Color BG";
+		}
+		string arg = empty;
+		int num = debugMessageCount++;
+		num = num;
+		Notification notification = new Notification($"{arg} ({num.ToString()})", type, HashedString.Invalid, (List<Notification> n, object d) => MISC.NOTIFICATIONS.NEEDTOILET.TOOLTIP.text, null, true, 0f, null, null);
+		notifier.Add(notification, string.Empty);
+	}
+
+	public void DebugNotificationMessage()
+	{
+		int num = debugMessageCount++;
+		num = num;
+		Message message = new GenericMessage("This is a message notification. " + num.ToString(), MISC.NOTIFICATIONS.LOCOMOTIONMESSAGE.MESSAGEBODY, MISC.NOTIFICATIONS.LOCOMOTIONMESSAGE.TOOLTIP);
+		Messenger.Instance.QueueMessage(message);
+	}
+
+	public void Render1000ms(float dt)
+	{
+		if (!App.isLoading && Components.LiveMinionIdentities.Count != 0)
+		{
+			if (itemTree.Count > 0)
+			{
+				List<Item> list = itemTree[0];
+				for (int num = list.Count - 1; num >= 0; num--)
+				{
+					Item item = list[num];
+					if (item != null)
+					{
+						if (item.requirementSatisfied == null || item.requirementSatisfied())
+						{
+							item.notification.Clear();
+							list.RemoveAt(num);
+						}
+						else
+						{
+							UpdateNotifierPosition();
+							notifier.Add(item.notification, string.Empty);
+						}
+					}
+				}
+				if (list.Count == 0)
+				{
+					itemTree.RemoveAt(0);
+				}
+			}
+			foreach (Item warningItem in warningItems)
+			{
+				if (warningItem.requirementSatisfied())
+				{
+					warningItem.notification.Clear();
+					warningItem.lastNotifyTime = Time.time;
+				}
+				else if (warningItem.lastNotifyTime == 0f || Time.time - warningItem.lastNotifyTime > warningItem.minTimeToNotify)
+				{
+					notifier.Add(warningItem.notification, string.Empty);
+					warningItem.lastNotifyTime = Time.time;
+				}
+			}
+			if (GameClock.Instance.GetCycle() > 0 && !tutorialMessagesRemaining.Contains(TutorialMessages.TM_Priorities) && !queuedPrioritiesMessage)
+			{
+				queuedPrioritiesMessage = true;
+				GameScheduler.Instance.Schedule("PrioritiesTutorial", 2f, delegate
+				{
+					Instance.TutorialMessage(TutorialMessages.TM_Priorities);
+				}, null, null);
+			}
+		}
+	}
+
+	private bool SufficientOxygen()
+	{
+		ReportManager.ReportEntry entry = ReportManager.Instance.TodaysReport.GetEntry(ReportManager.ReportType.OxygenCreated);
+		return entry.Net > 0.0001f || (GameClock.Instance.GetCycle() < 1 && !GameClock.Instance.IsNighttime());
+	}
+
+	private bool FoodIsRefrigerated()
+	{
+		if (GetUnrefrigeratedFood(null) > 0)
+		{
+			return false;
+		}
+		return true;
+	}
+
+	private int GetUnrefrigeratedFood(List<string> foods)
+	{
+		int num = 0;
+		if ((UnityEngine.Object)WorldInventory.Instance != (UnityEngine.Object)null)
+		{
+			List<Pickupable> pickupables = WorldInventory.Instance.GetPickupables(GameTags.Edible);
+			if (pickupables == null)
+			{
+				return 0;
+			}
+			for (int i = 0; i < pickupables.Count; i++)
+			{
+				if ((UnityEngine.Object)pickupables[i].storage != (UnityEngine.Object)null && ((UnityEngine.Object)pickupables[i].storage.GetComponent<RationBox>() != (UnityEngine.Object)null || (UnityEngine.Object)pickupables[i].storage.GetComponent<Refrigerator>() != (UnityEngine.Object)null) && !Rottable.IsRefrigerated(pickupables[i].gameObject) && Rottable.AtmosphereQuality(pickupables[i].gameObject) != Rottable.RotAtmosphereQuality.Sterilizing)
+				{
+					Rottable.Instance sMI = pickupables[i].GetSMI<Rottable.Instance>();
+					if (sMI != null && sMI.RotConstitutionPercentage < 0.8f)
+					{
+						num++;
+						foods?.Add(pickupables[i].GetProperName());
+					}
+				}
+			}
+		}
+		return num;
+	}
+
+	private bool EnergySourceExists()
+	{
+		return Game.Instance.circuitManager.HasGenerators();
+	}
+
+	private bool BedExists()
+	{
+		return Components.Sleepables.Count > 0;
+	}
+
+	private bool EnoughFood()
+	{
+		float num = RationTracker.Get().CountRations(null, true);
+		float num2 = (float)Components.LiveMinionIdentities.Count * 1000000f;
+		return num / num2 > 1f;
+	}
+
+	private bool EnoughMedicalCots()
+	{
+		int count = Components.Clinics.Count;
+		int num = 0;
+		for (int i = 0; i < Components.LiveMinionIdentities.Count; i++)
+		{
+			Diseases diseases = Components.LiveMinionIdentities[i].GetDiseases();
+			if (diseases.Count > 0)
+			{
+				num++;
+			}
+		}
+		return count >= num;
+	}
+
+	private bool FoodSourceExists()
+	{
+		foreach (Fabricator item in Components.Fabricators.Items)
+		{
+			if (item.GetType() == typeof(MicrobeMusher))
+			{
+				return true;
+			}
+		}
+		return Components.PlantablePlots.Count > 0;
+	}
+
+	private bool HygeneExists()
+	{
+		return Components.HandSanitizers.Count > 0;
+	}
+
+	private bool ToiletExists()
+	{
+		return Components.Toilets.Count > 0;
+	}
+}

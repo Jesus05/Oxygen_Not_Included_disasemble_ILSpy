@@ -44,7 +44,7 @@ public class KTabMenuHeader : KMonoBehaviour
 		RectTransform component = gameObject.GetComponent<RectTransform>();
 		component.transform.SetParent(base.transform, false);
 		component.name = name;
-		if (tooltip == string.Empty)
+		if (tooltip == "")
 		{
 			component.GetComponent<ToolTip>().toolTip = name;
 		}

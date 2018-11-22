@@ -6,11 +6,11 @@ namespace STRINGS
 		{
 			public class ANGERDAMAGE
 			{
-				public static LocString NAME = "Damage: Tantrum";
+				public static LocString NAME = "Damage: Duplicant Tantrum";
 
 				public static LocString TOOLTIP = "A stressed Duplicant is damaging this building";
 
-				public static LocString NOTIFICATION = "Building Damage: Tantrum";
+				public static LocString NOTIFICATION = "Building Damage: Duplicant Tantrum";
 
 				public static LocString NOTIFICATION_TOOLTIP = "Stressed Duplicants are damaging these buildings:\n\n{0}";
 			}
@@ -220,7 +220,14 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Pipe Blocked";
 
-				public static LocString TOOLTIP = "This pipe system is not serviceable";
+				public static LocString TOOLTIP = "Output pipe is blocked";
+			}
+
+			public class OUTPUTPIPEFULL
+			{
+				public static LocString NAME = "Output Pipe Full";
+
+				public static LocString TOOLTIP = "Unable to flush contents, output pipe is blocked";
 			}
 
 			public class CONSTRUCTIONUNREACHABLE
@@ -271,7 +278,7 @@ namespace STRINGS
 
 			public class GENESHUFFLECOMPLETED
 			{
-				public static LocString NAME = "Neural vacillation complete";
+				public static LocString NAME = "Vacillation Complete";
 
 				public static LocString TOOLTIP = "The Duplicant has completed the neural vacillation process and is ready to be released";
 			}
@@ -413,14 +420,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Missing Foundation";
 
-				public static LocString TOOLTIP = "Build Tiles beneath this building" + UI.HORIZONTAL_BR_RULE + "Tiles can be found in the <color=#833A5FFF>Base Tab</color> <color=#F44A47>[1]</color> of the Build Menu";
-			}
-
-			public class NEEDBORINGMACHINE
-			{
-				public static LocString NAME = "Multitool Required";
-
-				public static LocString TOOLTIP = "A multitool is required to mine this material" + UI.HORIZONTAL_BR_RULE + "Multitools can be made at Crafting Stations in the <color=#833A5FFF>Stations Tab</color> <color=#F44A47>[0]</color> of the Build Menu";
+				public static LocString TOOLTIP = "Build " + UI.FormatAsLink("Tile", "TILE") + " beneath this building" + UI.HORIZONTAL_BR_RULE + "Tile can be found in the <color=#833A5FFF>Base Tab</color> <color=#F44A47>[1]</color> of the Build Menu";
 			}
 
 			public class NEUTRONIUMUNMINABLE
@@ -679,7 +679,7 @@ namespace STRINGS
 
 			public class PENDINGSWITCHTOGGLE
 			{
-				public static LocString NAME = "Setting Change Errand";
+				public static LocString NAME = "Settings Errand";
 
 				public static LocString TOOLTIP = "Settings will be changed once a Duplicant is available";
 			}
@@ -1465,6 +1465,13 @@ namespace STRINGS
 				public static LocString NAME = "Overpressure";
 
 				public static LocString TOOLTIP = "This well can no longer function due to excessive backpressure";
+			}
+
+			public class NOTINANYROOM
+			{
+				public static LocString NAME = "Outside of room";
+
+				public static LocString TOOLTIP = "This building must be built inside a room for full functionality\n\nOpen the Room Overlay <color=#F44A47>[F11]</color> to view full room status";
 			}
 
 			public class NOTINREQUIREDROOM

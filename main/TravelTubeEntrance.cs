@@ -18,13 +18,13 @@ public class TravelTubeEntrance : StateMachineComponent<TravelTubeEntrance.SMIns
 
 		public override bool InternalCanBegin(GameObject new_reactor, Navigator.ActiveTransition transition)
 		{
-			if (base.InternalCanBegin(new_reactor, transition))
+			if (!base.InternalCanBegin(new_reactor, transition))
 			{
-				Navigator component = new_reactor.GetComponent<Navigator>();
-				if (!(bool)component)
-				{
-					return false;
-				}
+				return false;
+			}
+			Navigator component = new_reactor.GetComponent<Navigator>();
+			if ((bool)component)
+			{
 				return entrance.HasChargeSlotReserved(component);
 			}
 			return false;
@@ -44,16 +44,16 @@ public class TravelTubeEntrance : StateMachineComponent<TravelTubeEntrance.SMIns
 
 		public override bool InternalCanBegin(GameObject new_reactor, Navigator.ActiveTransition transition)
 		{
-			if ((UnityEngine.Object)reactor != (UnityEngine.Object)null)
+			if (!((UnityEngine.Object)reactor != (UnityEngine.Object)null))
 			{
-				return false;
-			}
-			if ((UnityEngine.Object)entrance == (UnityEngine.Object)null)
-			{
+				if (!((UnityEngine.Object)entrance == (UnityEngine.Object)null))
+				{
+					return entrance.ShouldWait(new_reactor);
+				}
 				Cleanup();
 				return false;
 			}
-			return entrance.ShouldWait(new_reactor);
+			return false;
 		}
 
 		protected override void InternalBegin()
@@ -315,12 +315,12 @@ public class TravelTubeEntrance : StateMachineComponent<TravelTubeEntrance.SMIns
 
 	public bool IsTraversable(Navigator agent)
 	{
-		if (!operational.IsOperational)
+		if (operational.IsOperational)
 		{
-			return false;
+			TubeTraveller.Instance sMI = agent.GetSMI<TubeTraveller.Instance>();
+			return IsChargedSlotAvailable(sMI);
 		}
-		TubeTraveller.Instance sMI = agent.GetSMI<TubeTraveller.Instance>();
-		return IsChargedSlotAvailable(sMI);
+		return false;
 	}
 
 	public bool HasChargeSlotReserved(Navigator agent)
@@ -338,33 +338,33 @@ public class TravelTubeEntrance : StateMachineComponent<TravelTubeEntrance.SMIns
 	{
 		int num = Mathf.FloorToInt(availableJoules / joulesPerLaunch);
 		int count = chargeReservations.Count;
-		if (count < num)
+		if (count >= num)
 		{
-			return true;
+			if (count == num && chargeReservations.Contains(tube_traveller))
+			{
+				return true;
+			}
+			return false;
 		}
-		if (count == num && chargeReservations.Contains(tube_traveller))
-		{
-			return true;
-		}
-		return false;
+		return true;
 	}
 
 	public bool ShouldWait(GameObject reactor)
 	{
-		if (!operational.IsOperational)
+		if (operational.IsOperational)
 		{
+			if (HasLaunchPower)
+			{
+				if (!((UnityEngine.Object)launch_workable.worker == (UnityEngine.Object)null))
+				{
+					TubeTraveller.Instance sMI = reactor.GetSMI<TubeTraveller.Instance>();
+					return HasChargeSlotReserved(sMI);
+				}
+				return false;
+			}
 			return false;
 		}
-		if (!HasLaunchPower)
-		{
-			return false;
-		}
-		if ((UnityEngine.Object)launch_workable.worker == (UnityEngine.Object)null)
-		{
-			return false;
-		}
-		TubeTraveller.Instance sMI = reactor.GetSMI<TubeTraveller.Instance>();
-		return HasChargeSlotReserved(sMI);
+		return false;
 	}
 
 	public void ConsumeCharge(GameObject reactor)

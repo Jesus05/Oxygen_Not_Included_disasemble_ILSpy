@@ -114,7 +114,7 @@ public class Notification
 
 	private string ReplaceTags(string text)
 	{
-		DebugUtil.Assert(text != null, "Assert!", string.Empty, string.Empty);
+		DebugUtil.Assert(text != null);
 		int num = text.IndexOf('{');
 		int num2 = text.IndexOf('}');
 		if (0 <= num && num < num2)

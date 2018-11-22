@@ -153,12 +153,13 @@ public class UnstableGroundManager : KMonoBehaviour
 			Debug.LogError("Tried to spawn unstable ground with NaN temperature", null);
 			temperature = 293f;
 		}
-		PrimaryElement component = instance.GetComponent<PrimaryElement>();
-		component.ElementID = element.id;
-		component.Mass = mass;
-		component.Temperature = temperature;
+		UnstableGround component = instance.GetComponent<UnstableGround>();
+		component.element = element.id;
+		component.mass = mass;
+		component.temperature = temperature;
+		component.diseaseIdx = disease_idx;
+		component.diseaseCount = disease_count;
 		instance.SetActive(true);
-		component.AddDisease(disease_idx, disease_count, "UnstableGroundManager.Spawn");
 		KBatchedAnimController component2 = instance.GetComponent<KBatchedAnimController>();
 		component2.onDestroySelf = value.releaseFunc;
 		component2.Stop();
@@ -213,13 +214,13 @@ public class UnstableGroundManager : KMonoBehaviour
 					int num2 = Grid.CellBelow(cell);
 					if (!Grid.IsValidCell(num2) || Grid.Element[num2].IsSolid || (Grid.Properties[num2] & 4) != 0)
 					{
-						PrimaryElement component = gameObject.GetComponent<PrimaryElement>();
+						UnstableGround component = gameObject.GetComponent<UnstableGround>();
 						pendingCells.Add(cell);
 						HandleVector<Game.CallbackInfo>.Handle handle = Game.Instance.callbackManager.Add(new Game.CallbackInfo(delegate
 						{
 							RemoveFromPending(cell);
 						}, false));
-						SimMessages.AddRemoveSubstance(cell, component.ElementID, CellEventLogger.Instance.UnstableGround, component.Mass, component.Temperature, component.DiseaseIdx, component.DiseaseCount, true, handle.index);
+						SimMessages.AddRemoveSubstance(cell, component.element, CellEventLogger.Instance.UnstableGround, component.mass, component.temperature, component.diseaseIdx, component.diseaseCount, true, handle.index);
 						ListPool<ScenePartitionerEntry, UnstableGroundManager>.PooledList pooledList = ListPool<ScenePartitionerEntry, UnstableGroundManager>.Allocate();
 						Vector2I vector2I = Grid.CellToXY(cell);
 						vector2I.x = Mathf.Max(0, vector2I.x - 1);
@@ -234,9 +235,10 @@ public class UnstableGroundManager : KMonoBehaviour
 							}
 						}
 						pooledList.Recycle();
-						if (component.Element.substance != null && component.Element.substance.fallingStopSound != null && CameraController.Instance.IsAudibleSound(position, component.Element.substance.fallingStopSound))
+						Element element = ElementLoader.FindElementByHash(component.element);
+						if (element != null && element.substance != null && element.substance.fallingStopSound != null && CameraController.Instance.IsAudibleSound(position, element.substance.fallingStopSound))
 						{
-							SoundEvent.PlayOneShot(component.Element.substance.fallingStopSound, position);
+							SoundEvent.PlayOneShot(element.substance.fallingStopSound, position);
 						}
 						GameObject gameObject3 = GameUtil.KInstantiate(Assets.GetPrefab(EffectConfigs.OreAbsorbId), position + landEffectOffset, Grid.SceneLayer.Front, null, 0);
 						gameObject3.SetActive(true);
@@ -262,17 +264,17 @@ public class UnstableGroundManager : KMonoBehaviour
 		}
 		foreach (GameObject fallingObject in fallingObjects)
 		{
-			PrimaryElement component = fallingObject.GetComponent<PrimaryElement>();
-			byte diseaseIdx = component.DiseaseIdx;
+			UnstableGround component = fallingObject.GetComponent<UnstableGround>();
+			byte diseaseIdx = component.diseaseIdx;
 			int diseaseID = (diseaseIdx != 255) ? Db.Get().Diseases[diseaseIdx].id.HashValue : 0;
 			serializedInfo.Add(new SerializedInfo
 			{
 				position = fallingObject.transform.GetPosition(),
-				element = component.ElementID,
-				mass = component.Mass,
-				temperature = component.Temperature,
+				element = component.element,
+				mass = component.mass,
+				temperature = component.temperature,
 				diseaseID = diseaseID,
-				diseaseCount = component.DiseaseCount
+				diseaseCount = component.diseaseCount
 			});
 		}
 	}

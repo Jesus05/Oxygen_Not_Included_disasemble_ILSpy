@@ -62,7 +62,7 @@ public class EdiblesManager : KMonoBehaviour
 
 	public FoodInfo GetFoodInfo(string FoodID)
 	{
-		string b = FoodID.Replace("Compost", string.Empty);
+		string b = FoodID.Replace("Compost", "");
 		foreach (FoodInfo item in FOOD.FOOD_TYPES_LIST)
 		{
 			if (item.Id == b)

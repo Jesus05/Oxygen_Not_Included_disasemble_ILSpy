@@ -25,6 +25,26 @@ public class Assignables : KMonoBehaviour
 		return slots.GetEnumerator();
 	}
 
+	protected IAssignableIdentity GetAssignableIdentity()
+	{
+		MinionIdentity component = GetComponent<MinionIdentity>();
+		if (!((Object)component != (Object)null))
+		{
+			return GetComponent<MinionAssignablesProxy>();
+		}
+		return component.assignableProxy.Get();
+	}
+
+	protected GameObject GetTargetGameObject()
+	{
+		IAssignableIdentity assignableIdentity = GetAssignableIdentity();
+		if (!(assignableIdentity is MinionAssignablesProxy))
+		{
+			return null;
+		}
+		return ((assignableIdentity as MinionAssignablesProxy).target as KMonoBehaviour).gameObject;
+	}
+
 	protected override void OnSpawn()
 	{
 		base.OnSpawn();
@@ -51,20 +71,20 @@ public class Assignables : KMonoBehaviour
 
 	public AssignableSlotInstance GetSlot(AssignableSlot slot)
 	{
-		if (slot == null)
+		if (slot != null)
 		{
-			return null;
-		}
-		using (IEnumerator<AssignableSlotInstance> enumerator = GetEnumerator())
-		{
-			while (enumerator.MoveNext())
+			using (IEnumerator<AssignableSlotInstance> enumerator = GetEnumerator())
 			{
-				AssignableSlotInstance current = enumerator.Current;
-				if (current.slot == slot)
+				while (enumerator.MoveNext())
 				{
-					return current;
+					AssignableSlotInstance current = enumerator.Current;
+					if (current.slot == slot)
+					{
+						return current;
+					}
 				}
 			}
+			return null;
 		}
 		return null;
 	}
@@ -72,28 +92,33 @@ public class Assignables : KMonoBehaviour
 	public Assignable AutoAssignSlot(AssignableSlot slot)
 	{
 		Assignable assignable = GetAssignable(slot);
-		if ((Object)assignable != (Object)null)
+		if (!((Object)assignable != (Object)null))
 		{
-			return assignable;
-		}
-		Navigator component = GetComponent<Navigator>();
-		MinionIdentity component2 = GetComponent<MinionIdentity>();
-		int num = 2147483647;
-		foreach (Assignable item in Game.Instance.assignmentManager)
-		{
-			if (!((Object)item == (Object)null) && !item.IsAssigned() && item.slot == slot && item.CanAutoAssignTo(component2))
+			MinionAssignablesProxy component = GetComponent<MinionAssignablesProxy>();
+			if (component.target == null)
 			{
-				int navigationCost = item.GetNavigationCost(component);
-				if (navigationCost != -1 && navigationCost < num)
+				component.RestoreTargetFromInstanceID();
+			}
+			Navigator component2 = component.GetTargetGameObject().GetComponent<Navigator>();
+			IAssignableIdentity assignableIdentity = GetAssignableIdentity();
+			int num = 2147483647;
+			foreach (Assignable item in Game.Instance.assignmentManager)
+			{
+				if (!((Object)item == (Object)null) && !item.IsAssigned() && item.slot == slot && item.CanAutoAssignTo(assignableIdentity))
 				{
-					num = navigationCost;
-					assignable = item;
+					int navigationCost = item.GetNavigationCost(component2);
+					if (navigationCost != -1 && navigationCost < num)
+					{
+						num = navigationCost;
+						assignable = item;
+					}
 				}
 			}
-		}
-		if ((Object)assignable != (Object)null)
-		{
-			assignable.Assign(GetComponent<IAssignableIdentity>());
+			if ((Object)assignable != (Object)null)
+			{
+				assignable.Assign(GetComponent<IAssignableIdentity>());
+			}
+			return assignable;
 		}
 		return assignable;
 	}

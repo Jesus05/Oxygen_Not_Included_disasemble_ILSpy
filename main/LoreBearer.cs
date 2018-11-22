@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class LoreBearer : KMonoBehaviour
 {
-	private bool BeenClicked;
+	private bool BeenClicked = false;
 
 	public string BeenSearched = UI.USERMENUACTIONS.READLORE.ALREADY_SEARCHED;
 
@@ -64,7 +64,7 @@ public class LoreBearer : KMonoBehaviour
 			{
 				Game.Instance.unlocks.Unlock("neuralvacillator");
 			}
-			if (base.gameObject.name == "PropDesk" || base.gameObject.name == "PropFacilityDesk" || base.gameObject.name == "PropReceptionDesk")
+			if (base.gameObject.name == "PropDesk" || base.gameObject.name == "PropReceptionDesk")
 			{
 				string text = Game.Instance.unlocks.UnlockNext("emails");
 				if (text != null)
@@ -117,6 +117,18 @@ public class LoreBearer : KMonoBehaviour
 				Game.Instance.unlocks.Unlock("display_prop3");
 				infoDialogScreen.AddPlainText(UI.USERMENUACTIONS.READLORE.SEARCH_DISPLAY);
 				infoDialogScreen.AddOption(UI.USERMENUACTIONS.READLORE.GOTODATABASE, OpenCodex("display_prop3"));
+			}
+			else if (base.gameObject.name == "PropFacilityDesk")
+			{
+				Game.Instance.unlocks.Unlock("journal_handwrittennote");
+				infoDialogScreen.AddPlainText(Strings.Get("STRINGS.UI.USERMENUACTIONS.READLORE.SEARCH_STERNSDESK"));
+				infoDialogScreen.AddOption(UI.USERMENUACTIONS.READLORE.GOTODATABASE, OpenCodex("journal_handwrittennote"));
+			}
+			else if (base.gameObject.name == "PropFacilityGlobeDroors")
+			{
+				Game.Instance.unlocks.Unlock("journal_newspaper");
+				infoDialogScreen.AddPlainText(Strings.Get("STRINGS.UI.USERMENUACTIONS.READLORE.SEARCH_CABINET"));
+				infoDialogScreen.AddOption(UI.USERMENUACTIONS.READLORE.GOTODATABASE, OpenCodex("journal_newspaper"));
 			}
 			else
 			{

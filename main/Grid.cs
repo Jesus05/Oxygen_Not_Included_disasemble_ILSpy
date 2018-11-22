@@ -662,6 +662,17 @@ public class Grid
 		return cell + x + y * WidthInCells;
 	}
 
+	public static bool IsCellOffsetValid(int cell, int x, int y)
+	{
+		CellToXY(cell, out int x2, out int y2);
+		return x2 + x >= 0 && x2 + x < WidthInCells && y2 + y >= 0 && y2 + y < HeightInCells;
+	}
+
+	public static bool IsCellOffsetValid(int cell, CellOffset offset)
+	{
+		return IsCellOffsetValid(cell, offset.x, offset.y);
+	}
+
 	public static int PosToCell(StateMachine.Instance smi)
 	{
 		return PosToCell(smi.transform.GetPosition());
@@ -929,21 +940,21 @@ public class Grid
 	public static bool IsLiquid(int cell)
 	{
 		Element element = ElementLoader.elements[ElementIdx[cell]];
-		if (element.IsLiquid)
+		if (!element.IsLiquid)
 		{
-			return true;
+			return false;
 		}
-		return false;
+		return true;
 	}
 
 	public static bool IsGas(int cell)
 	{
 		Element element = ElementLoader.elements[ElementIdx[cell]];
-		if (element.IsGas)
+		if (!element.IsGas)
 		{
-			return true;
+			return false;
 		}
-		return false;
+		return true;
 	}
 
 	public static void GetVisibleExtents(out int min_x, out int min_y, out int max_x, out int max_y)

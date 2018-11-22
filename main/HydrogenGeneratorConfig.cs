@@ -29,7 +29,7 @@ public class HydrogenGeneratorConfig : IBuildingConfig
 		buildingDef.GeneratorBaseCapacity = 1000f;
 		buildingDef.ExhaustKilowattsWhenActive = 2f;
 		buildingDef.SelfHeatKilowattsWhenActive = 2f;
-		buildingDef.ViewMode = SimViewMode.PowerMap;
+		buildingDef.ViewMode = OverlayModes.Power.ID;
 		buildingDef.AudioCategory = "Metal";
 		buildingDef.UtilityInputOffset = new CellOffset(-1, 0);
 		buildingDef.PowerOutputOffset = new CellOffset(1, 0);

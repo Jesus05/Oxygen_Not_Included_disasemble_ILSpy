@@ -7,7 +7,7 @@ public class LogicTemperatureSensor : Switch, ISaveLoadable, IThresholdSwitch, I
 {
 	private HandleVector<int>.Handle structureTemperature;
 
-	private int simUpdateCounter;
+	private int simUpdateCounter = 0;
 
 	[Serialize]
 	public float thresholdTemperature = 280f;
@@ -15,7 +15,7 @@ public class LogicTemperatureSensor : Switch, ISaveLoadable, IThresholdSwitch, I
 	[Serialize]
 	public bool activateOnWarmerThan;
 
-	public float minTemp;
+	public float minTemp = 0f;
 
 	public float maxTemp = 373.15f;
 
@@ -25,9 +25,17 @@ public class LogicTemperatureSensor : Switch, ISaveLoadable, IThresholdSwitch, I
 
 	private float averageTemp;
 
-	private bool wasOn;
+	private bool wasOn = false;
 
-	public float StructureTemperature => GameComps.StructureTemperatures.GetData(structureTemperature).Temperature;
+	[MyCmpAdd]
+	private CopyBuildingSettings copyBuildingSettings;
+
+	private static readonly EventSystem.IntraObjectHandler<LogicTemperatureSensor> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<LogicTemperatureSensor>(delegate(LogicTemperatureSensor component, object data)
+	{
+		component.OnCopySettings(data);
+	});
+
+	public float StructureTemperature => GameComps.StructureTemperatures.GetPayload(structureTemperature).Temperature;
 
 	public float Threshold
 	{
@@ -66,6 +74,23 @@ public class LogicTemperatureSensor : Switch, ISaveLoadable, IThresholdSwitch, I
 	public string AboveToolTip => UI.UISIDESCREENS.THRESHOLD_SWITCH_SIDESCREEN.TEMPERATURE_TOOLTIP_ABOVE;
 
 	public string BelowToolTip => UI.UISIDESCREENS.THRESHOLD_SWITCH_SIDESCREEN.TEMPERATURE_TOOLTIP_BELOW;
+
+	protected override void OnPrefabInit()
+	{
+		base.OnPrefabInit();
+		Subscribe(-905833192, OnCopySettingsDelegate);
+	}
+
+	private void OnCopySettings(object data)
+	{
+		GameObject gameObject = (GameObject)data;
+		LogicTemperatureSensor component = gameObject.GetComponent<LogicTemperatureSensor>();
+		if ((Object)component != (Object)null)
+		{
+			Threshold = component.Threshold;
+			ActivateAboveThreshold = component.ActivateAboveThreshold;
+		}
+	}
 
 	protected override void OnSpawn()
 	{

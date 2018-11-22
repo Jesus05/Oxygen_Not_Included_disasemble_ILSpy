@@ -31,11 +31,11 @@ public class BaseUtilityBuildTool : DragTool
 
 	private Coroutine visUpdater;
 
-	private int buildingCount;
+	private int buildingCount = 0;
 
 	private int lastCell = -1;
 
-	private BuildingCellVisualizer previousCellConnection;
+	private BuildingCellVisualizer previousCellConnection = null;
 
 	private int previousCell;
 
@@ -123,10 +123,7 @@ public class BaseUtilityBuildTool : DragTool
 					previousCellConnection = null;
 				}
 				previousCell = cell;
-				if (!CheckForConnection(cell, "Wire", string.Empty, ref previousCellConnection, false))
-				{
-					CheckForConnection(cell, "Pipe", string.Empty, ref previousCellConnection, false);
-				}
+				CheckForConnection(cell, def.PrefabID, "", ref previousCellConnection, false);
 				PathNode pathNode3 = path[path.Count - 1];
 				Object.Destroy(pathNode3.visualizer);
 				PathNode pathNode4 = path[path.Count - 1];
@@ -135,7 +132,7 @@ public class BaseUtilityBuildTool : DragTool
 				buildingCount = ((buildingCount != 1) ? (buildingCount - 1) : (buildingCount = 14));
 				instance.setParameterValue("tileCount", (float)buildingCount);
 				SoundEvent.EndOneShot(instance);
-				goto IL_02e5;
+				goto IL_02a7;
 			}
 		}
 		if (!path.Exists((PathNode n) => n.cell == cell))
@@ -147,29 +144,34 @@ public class BaseUtilityBuildTool : DragTool
 				visualizer = null,
 				valid = valid
 			});
-			if (!CheckForConnection(cell, "Wire", "OutletConnected", ref previousCellConnection, true))
-			{
-				CheckForConnection(cell, "Pipe", "OutletConnected", ref previousCellConnection, true);
-			}
-			else
-			{
-				previousCell = cell;
-			}
+			CheckForConnection(cell, def.PrefabID, "OutletConnected", ref previousCellConnection, true);
 			buildingCount = buildingCount % 14 + 1;
 			instance.setParameterValue("tileCount", (float)buildingCount);
 			SoundEvent.EndOneShot(instance);
 		}
-		goto IL_02e5;
-		IL_02e5:
+		goto IL_02a7;
+		IL_02a7:
 		visualizer.SetActive(path.Count < 2);
 		ResourceRemainingDisplayScreen.instance.SetNumberOfPendingConstructions(path.Count);
 	}
 
+	protected override int GetDragLength()
+	{
+		return path.Count;
+	}
+
 	private bool CheckValidPathPiece(int cell)
 	{
-		if (def.BuildLocationRule == BuildLocationRule.NotInTiles && (Object)Grid.Objects[cell, 9] != (Object)null)
+		if (def.BuildLocationRule == BuildLocationRule.NotInTiles)
 		{
-			return false;
+			if ((Object)Grid.Objects[cell, 9] != (Object)null)
+			{
+				return false;
+			}
+			if (Grid.HasDoor[cell])
+			{
+				return false;
+			}
 		}
 		GameObject gameObject = Grid.Objects[cell, (int)def.ObjectLayer];
 		if ((Object)gameObject != (Object)null && (Object)gameObject.GetComponent<KAnimGraphTileVisualizer>() == (Object)null)
@@ -186,38 +188,90 @@ public class BaseUtilityBuildTool : DragTool
 
 	private bool CheckForConnection(int cell, string defName, string soundName, ref BuildingCellVisualizer outBcv, bool fireEvents = true)
 	{
-		if (def.Name.Contains(defName))
+		Building building = GetBuilding(cell);
+		if ((Object)building != (Object)null)
 		{
-			Building building = GetBuilding(cell);
-			if ((Object)building != (Object)null)
+			int num = -1;
+			int num2 = -1;
+			int num3 = -1;
+			if (defName.Contains("LogicWire"))
 			{
-				bool flag = defName.Contains("Wire");
-				int num = (!flag) ? building.GetUtilityInputCell() : building.GetPowerInputCell();
-				int num2 = (!flag) ? building.GetUtilityOutputCell() : num;
-				if (cell == num || cell == num2)
+				LogicPorts component = building.gameObject.GetComponent<LogicPorts>();
+				if ((Object)component != (Object)null)
 				{
-					BuildingCellVisualizer buildingCellVisualizer = outBcv = building.gameObject.GetComponent<BuildingCellVisualizer>();
-					if ((Object)buildingCellVisualizer != (Object)null)
+					foreach (ILogicUIElement inputPort in component.inputPorts)
 					{
-						bool flag2 = false;
-						if (flag && buildingCellVisualizer.RequiresPower)
+						if (inputPort.GetLogicUICell() == cell)
 						{
-							flag2 = true;
-						}
-						if (flag2)
-						{
-							if (fireEvents)
-							{
-								buildingCellVisualizer.ConnectedEvent(cell);
-								string sound = GlobalAssets.GetSound(soundName, false);
-								if (sound != null)
-								{
-									KMonoBehaviour.PlaySound(sound);
-								}
-							}
-							return true;
+							num = inputPort.GetLogicUICell();
+							break;
 						}
 					}
+					if (num == -1)
+					{
+						foreach (ILogicUIElement outputPort in component.outputPorts)
+						{
+							if (outputPort.GetLogicUICell() == cell)
+							{
+								num2 = outputPort.GetLogicUICell();
+								break;
+							}
+						}
+					}
+				}
+			}
+			else if (defName.Contains("Wire"))
+			{
+				num = building.GetPowerInputCell();
+				num2 = building.GetPowerOutputCell();
+			}
+			else if (defName.Contains("Liquid"))
+			{
+				if (building.Def.InputConduitType == ConduitType.Liquid)
+				{
+					num = building.GetUtilityInputCell();
+				}
+				if (building.Def.OutputConduitType == ConduitType.Liquid)
+				{
+					num2 = building.GetUtilityOutputCell();
+				}
+				ElementFilter component2 = building.GetComponent<ElementFilter>();
+				if ((Object)component2 != (Object)null && component2.portInfo.conduitType == ConduitType.Liquid)
+				{
+					num3 = component2.GetFilteredCell();
+				}
+			}
+			else if (defName.Contains("Gas"))
+			{
+				if (building.Def.InputConduitType == ConduitType.Gas)
+				{
+					num = building.GetUtilityInputCell();
+				}
+				if (building.Def.OutputConduitType == ConduitType.Gas)
+				{
+					num2 = building.GetUtilityOutputCell();
+				}
+				ElementFilter component3 = building.GetComponent<ElementFilter>();
+				if ((Object)component3 != (Object)null && component3.portInfo.conduitType == ConduitType.Gas)
+				{
+					num3 = component3.GetFilteredCell();
+				}
+			}
+			if (cell == num || cell == num2 || cell == num3)
+			{
+				BuildingCellVisualizer buildingCellVisualizer = outBcv = building.gameObject.GetComponent<BuildingCellVisualizer>();
+				if (((Object)buildingCellVisualizer != (Object)null) ? true : false)
+				{
+					if (fireEvents)
+					{
+						buildingCellVisualizer.ConnectedEvent(cell);
+						string sound = GlobalAssets.GetSound(soundName, false);
+						if (sound != null)
+						{
+							KMonoBehaviour.PlaySound(sound);
+						}
+					}
+					return true;
 				}
 			}
 		}
@@ -228,11 +282,11 @@ public class BaseUtilityBuildTool : DragTool
 	private Building GetBuilding(int cell)
 	{
 		GameObject gameObject = Grid.Objects[cell, 1];
-		if ((Object)gameObject != (Object)null)
+		if (!((Object)gameObject != (Object)null))
 		{
-			return gameObject.GetComponent<Building>();
+			return null;
 		}
-		return null;
+		return gameObject.GetComponent<Building>();
 	}
 
 	protected override Mode GetMode()
@@ -255,10 +309,7 @@ public class BaseUtilityBuildTool : DragTool
 					visualizer = null,
 					valid = valid
 				});
-				if (!CheckForConnection(cell, "Wire", "OutletConnected", ref previousCellConnection, true))
-				{
-					CheckForConnection(cell, "Pipe", "OutletConnected", ref previousCellConnection, true);
-				}
+				CheckForConnection(cell, def.PrefabID, "OutletConnected", ref previousCellConnection, true);
 			}
 			visUpdater = StartCoroutine(VisUpdater());
 			visualizer.GetComponent<KBatchedAnimController>().StopAndClear();

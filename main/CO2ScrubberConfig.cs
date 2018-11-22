@@ -34,7 +34,7 @@ public class CO2ScrubberConfig : IBuildingConfig
 		buildingDef.SelfHeatKilowattsWhenActive = 1f;
 		buildingDef.InputConduitType = ConduitType.Liquid;
 		buildingDef.OutputConduitType = ConduitType.Liquid;
-		buildingDef.ViewMode = SimViewMode.OxygenMap;
+		buildingDef.ViewMode = OverlayModes.Oxygen.ID;
 		buildingDef.AudioCategory = "Metal";
 		buildingDef.AudioSize = "large";
 		buildingDef.UtilityInputOffset = new CellOffset(0, 0);

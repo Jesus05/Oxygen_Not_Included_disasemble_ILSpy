@@ -22,7 +22,7 @@ public class SuitDiseaseHandler : KMonoBehaviour
 	private void OnEquipped(object data)
 	{
 		Equipment equipment = (Equipment)data;
-		PrimaryElement component = equipment.GetComponent<PrimaryElement>();
+		PrimaryElement component = equipment.GetComponent<MinionAssignablesProxy>().GetTargetGameObject().GetComponent<PrimaryElement>();
 		if ((Object)component != (Object)null)
 		{
 			component.ModifyDiseaseCountHandler = OnModifyDiseaseCount;
@@ -35,7 +35,7 @@ public class SuitDiseaseHandler : KMonoBehaviour
 	private void OnUnequipped(object data)
 	{
 		Equipment equipment = (Equipment)data;
-		PrimaryElement component = equipment.GetComponent<PrimaryElement>();
+		PrimaryElement component = equipment.GetComponent<MinionAssignablesProxy>().GetTargetGameObject().GetComponent<PrimaryElement>();
 		if ((Object)component != (Object)null)
 		{
 			component.ModifyDiseaseCountHandler = null;

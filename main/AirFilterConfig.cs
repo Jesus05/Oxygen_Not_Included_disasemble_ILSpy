@@ -30,7 +30,7 @@ public class AirFilterConfig : IBuildingConfig
 		EffectorValues tIER2 = NOISE_POLLUTION.NOISY.TIER0;
 		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, tIER, rAW_MINERALS, melting_point, build_location_rule, BUILDINGS.DECOR.NONE, tIER2, 0.2f);
 		buildingDef.Overheatable = false;
-		buildingDef.ViewMode = SimViewMode.OxygenMap;
+		buildingDef.ViewMode = OverlayModes.Oxygen.ID;
 		buildingDef.AudioCategory = "Metal";
 		buildingDef.UtilityInputOffset = new CellOffset(0, 0);
 		buildingDef.UtilityOutputOffset = new CellOffset(0, 0);

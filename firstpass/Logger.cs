@@ -54,11 +54,11 @@ public class Logger<EntryType> : Logger
 	{
 		get
 		{
-			if (entries == null)
+			if (entries != null)
 			{
-				return 0;
+				return entries.Count;
 			}
-			return entries.Count;
+			return 0;
 		}
 	}
 

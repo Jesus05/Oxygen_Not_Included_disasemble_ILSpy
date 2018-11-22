@@ -45,12 +45,12 @@ namespace TMPro
 		public T Remove()
 		{
 			index--;
-			if (index <= 0)
+			if (index > 0)
 			{
-				index = 1;
-				return itemStack[0];
+				return itemStack[index - 1];
 			}
-			return itemStack[index - 1];
+			index = 1;
+			return itemStack[0];
 		}
 
 		public void Push(T item)
@@ -70,32 +70,32 @@ namespace TMPro
 
 		public T Pop()
 		{
-			if (index == 0)
+			if (index != 0)
 			{
-				return default(T);
+				index--;
+				T result = itemStack[index];
+				itemStack[index] = m_defaultItem;
+				return result;
 			}
-			index--;
-			T result = itemStack[index];
-			itemStack[index] = m_defaultItem;
-			return result;
+			return default(T);
 		}
 
 		public T CurrentItem()
 		{
-			if (index > 0)
+			if (index <= 0)
 			{
-				return itemStack[index - 1];
+				return itemStack[0];
 			}
-			return itemStack[0];
+			return itemStack[index - 1];
 		}
 
 		public T PreviousItem()
 		{
-			if (index > 1)
+			if (index <= 1)
 			{
-				return itemStack[index - 2];
+				return itemStack[0];
 			}
-			return itemStack[0];
+			return itemStack[index - 2];
 		}
 	}
 }

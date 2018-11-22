@@ -409,16 +409,16 @@ namespace VoronoiTree
 
 		private bool ContainsVert(Site face, DualSite2d target)
 		{
-			if (face == null || face.Vertices == null)
+			if (face != null && face.Vertices != null)
 			{
-				return false;
-			}
-			for (int i = 0; i < face.Vertices.Length; i++)
-			{
-				if (face.Vertices[i] == target)
+				for (int i = 0; i < face.Vertices.Length; i++)
 				{
-					return true;
+					if (face.Vertices[i] == target)
+					{
+						return true;
+					}
 				}
+				return false;
 			}
 			return false;
 		}

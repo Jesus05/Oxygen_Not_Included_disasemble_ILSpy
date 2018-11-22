@@ -33,7 +33,7 @@ public class GeneratorConfig : IBuildingConfig
 		buildingDef.GeneratorBaseCapacity = 20000f;
 		buildingDef.ExhaustKilowattsWhenActive = 8f;
 		buildingDef.SelfHeatKilowattsWhenActive = 1f;
-		buildingDef.ViewMode = SimViewMode.PowerMap;
+		buildingDef.ViewMode = OverlayModes.Power.ID;
 		buildingDef.AudioCategory = "HollowMetal";
 		buildingDef.AudioSize = "large";
 		return buildingDef;

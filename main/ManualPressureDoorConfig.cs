@@ -12,7 +12,6 @@ public class ManualPressureDoorConfig : IBuildingConfig
 		buildingDef.Floodable = false;
 		buildingDef.Entombable = false;
 		buildingDef.IsFoundation = true;
-		buildingDef.ViewMode = SimViewMode.None;
 		buildingDef.TileLayer = ObjectLayer.FoundationTile;
 		buildingDef.AudioCategory = "Metal";
 		buildingDef.PermittedRotations = PermittedRotations.R90;
@@ -32,6 +31,8 @@ public class ManualPressureDoorConfig : IBuildingConfig
 		go.AddOrGet<AccessControl>();
 		go.AddOrGet<KBoxCollider2D>();
 		Prioritizable.AddRef(go);
+		CopyBuildingSettings copyBuildingSettings = go.AddOrGet<CopyBuildingSettings>();
+		copyBuildingSettings.copyGroupTag = GameTags.Door;
 		Workable workable = go.AddOrGet<Workable>();
 		workable.workTime = 5f;
 		Object.DestroyImmediate(go.GetComponent<BuildingEnabledButton>());

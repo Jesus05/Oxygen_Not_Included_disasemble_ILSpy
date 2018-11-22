@@ -26,7 +26,7 @@ public class AstronautTrainingCenter : Workable
 
 	private Chore CreateChore()
 	{
-		WorkChore<AstronautTrainingCenter> workChore = new WorkChore<AstronautTrainingCenter>(Db.Get().ChoreTypes.Train, this, null, null, true, null, null, null, false, null, false, true, null, false, true, true, PriorityScreen.PriorityClass.basic, 0, false);
+		WorkChore<AstronautTrainingCenter> workChore = new WorkChore<AstronautTrainingCenter>(Db.Get().ChoreTypes.Train, this, null, null, true, null, null, null, false, null, false, true, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, false);
 		workChore.AddPrecondition(ChorePreconditions.instance.IsRole, AstronautTrainee.ID);
 		workChore.AddPrecondition(ChorePreconditions.instance.HasNotMasteredRole, AstronautTrainee.ID);
 		return workChore;
@@ -48,12 +48,12 @@ public class AstronautTrainingCenter : Workable
 
 	protected override bool OnWorkTick(Worker worker, float dt)
 	{
-		if ((Object)worker == (Object)null)
+		if (!((Object)worker == (Object)null))
 		{
-			return true;
+			MinionResume component = worker.GetComponent<MinionResume>();
+			return component.HasMasteredRole(AstronautTrainee.ID);
 		}
-		MinionResume component = worker.GetComponent<MinionResume>();
-		return component.HasMasteredRole(AstronautTrainee.ID);
+		return true;
 	}
 
 	protected override void OnCompleteWork(Worker worker)
@@ -74,13 +74,13 @@ public class AstronautTrainingCenter : Workable
 
 	public override float GetPercentComplete()
 	{
-		if ((Object)base.worker == (Object)null)
+		if (!((Object)base.worker == (Object)null))
 		{
-			return 0f;
+			MinionResume component = base.worker.GetComponent<MinionResume>();
+			float num = component.ExperienceByRoleID[AstronautTrainee.ID];
+			RoleConfig role = Game.Instance.roleManager.GetRole(AstronautTrainee.ID);
+			return Mathf.Clamp01(num / role.experienceRequired);
 		}
-		MinionResume component = base.worker.GetComponent<MinionResume>();
-		float num = component.ExperienceByRoleID[AstronautTrainee.ID];
-		RoleConfig role = Game.Instance.roleManager.GetRole(AstronautTrainee.ID);
-		return Mathf.Clamp01(num / role.experienceRequired);
+		return 0f;
 	}
 }

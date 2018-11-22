@@ -32,11 +32,11 @@ public class RelaxationPoint : Workable, IEffectDescriptor
 	private RoomTracker roomTracker;
 
 	[Serialize]
-	protected float stopStressingValue;
+	protected float stopStressingValue = 0f;
 
-	public float stressModificationValue;
+	public float stressModificationValue = 0f;
 
-	public float roomStressModificationValue;
+	public float roomStressModificationValue = 0f;
 
 	private RelaxationPointSM.Instance smi;
 
@@ -101,12 +101,12 @@ public class RelaxationPoint : Workable, IEffectDescriptor
 	protected override bool OnWorkTick(Worker worker, float dt)
 	{
 		AmountInstance amountInstance = Db.Get().Amounts.Stress.Lookup(worker.gameObject);
-		if (amountInstance.value <= stopStressingValue)
+		if (!(amountInstance.value <= stopStressingValue))
 		{
-			return true;
+			base.OnWorkTick(worker, dt);
+			return false;
 		}
-		base.OnWorkTick(worker, dt);
-		return false;
+		return true;
 	}
 
 	protected override void OnStopWork(Worker worker)
@@ -124,7 +124,7 @@ public class RelaxationPoint : Workable, IEffectDescriptor
 
 	protected virtual WorkChore<RelaxationPoint> CreateWorkChore()
 	{
-		return new WorkChore<RelaxationPoint>(Db.Get().ChoreTypes.Relax, this, null, null, false, null, null, null, false, null, false, true, null, false, true, true, PriorityScreen.PriorityClass.basic, 0, false);
+		return new WorkChore<RelaxationPoint>(Db.Get().ChoreTypes.Relax, this, null, null, false, null, null, null, false, null, false, true, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, false);
 	}
 
 	public List<Descriptor> GetDescriptors(BuildingDef def)

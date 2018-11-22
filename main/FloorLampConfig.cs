@@ -22,7 +22,7 @@ public class FloorLampConfig : IBuildingConfig
 		buildingDef.RequiresPowerInput = true;
 		buildingDef.EnergyConsumptionWhenActive = 8f;
 		buildingDef.SelfHeatKilowattsWhenActive = 0.5f;
-		buildingDef.ViewMode = SimViewMode.Light;
+		buildingDef.ViewMode = OverlayModes.Light.ID;
 		buildingDef.AudioCategory = "Metal";
 		return buildingDef;
 	}

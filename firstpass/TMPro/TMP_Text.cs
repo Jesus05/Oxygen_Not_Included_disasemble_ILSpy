@@ -23,7 +23,7 @@ namespace TMPro
 		protected string m_text;
 
 		[SerializeField]
-		protected bool m_isRightToLeft;
+		protected bool m_isRightToLeft = false;
 
 		[SerializeField]
 		protected TMP_FontAsset m_fontAsset;
@@ -90,7 +90,7 @@ namespace TMPro
 		protected Color32 m_spriteColor;
 
 		[SerializeField]
-		protected bool m_overrideHtmlColors;
+		protected bool m_overrideHtmlColors = false;
 
 		[SerializeField]
 		protected Color32 m_faceColor = Color.white;
@@ -98,7 +98,7 @@ namespace TMPro
 		[SerializeField]
 		protected Color32 m_outlineColor = Color.black;
 
-		protected float m_outlineWidth;
+		protected float m_outlineWidth = 0f;
 
 		[SerializeField]
 		protected float m_fontSize = 36f;
@@ -125,19 +125,19 @@ namespace TMPro
 		protected float m_minFontSize;
 
 		[SerializeField]
-		protected float m_fontSizeMin;
+		protected float m_fontSizeMin = 0f;
 
 		[SerializeField]
-		protected float m_fontSizeMax;
+		protected float m_fontSizeMax = 0f;
 
 		[SerializeField]
-		protected FontStyles m_fontStyle;
+		protected FontStyles m_fontStyle = FontStyles.Normal;
 
-		protected FontStyles m_style;
+		protected FontStyles m_style = FontStyles.Normal;
 
 		protected TMP_BasicXmlTagStack m_fontStyleStack;
 
-		protected bool m_isUsingBold;
+		protected bool m_isUsingBold = false;
 
 		[SerializeField]
 		[FormerlySerializedAs("m_lineJustification")]
@@ -153,39 +153,39 @@ namespace TMPro
 		protected bool m_isAlignmentEnumConverted;
 
 		[SerializeField]
-		protected float m_characterSpacing;
+		protected float m_characterSpacing = 0f;
 
-		protected float m_cSpacing;
+		protected float m_cSpacing = 0f;
 
-		protected float m_monoSpacing;
-
-		[SerializeField]
-		protected float m_wordSpacing;
+		protected float m_monoSpacing = 0f;
 
 		[SerializeField]
-		protected float m_lineSpacing;
+		protected float m_wordSpacing = 0f;
 
-		protected float m_lineSpacingDelta;
+		[SerializeField]
+		protected float m_lineSpacing = 0f;
+
+		protected float m_lineSpacingDelta = 0f;
 
 		protected float m_lineHeight = -32767f;
 
 		[SerializeField]
-		protected float m_lineSpacingMax;
+		protected float m_lineSpacingMax = 0f;
 
 		[SerializeField]
-		protected float m_paragraphSpacing;
+		protected float m_paragraphSpacing = 0f;
 
 		[SerializeField]
-		protected float m_charWidthMaxAdj;
+		protected float m_charWidthMaxAdj = 0f;
 
-		protected float m_charWidthAdjDelta;
+		protected float m_charWidthAdjDelta = 0f;
 
 		[SerializeField]
-		protected bool m_enableWordWrapping;
+		protected bool m_enableWordWrapping = false;
 
-		protected bool m_isCharacterWrappingEnabled;
+		protected bool m_isCharacterWrappingEnabled = false;
 
-		protected bool m_isNonBreakingSpace;
+		protected bool m_isNonBreakingSpace = false;
 
 		protected bool m_isIgnoringAlignment;
 
@@ -193,7 +193,7 @@ namespace TMPro
 		protected float m_wordWrappingRatios = 0.4f;
 
 		[SerializeField]
-		protected TextOverflowModes m_overflowMode;
+		protected TextOverflowModes m_overflowMode = TextOverflowModes.Overflow;
 
 		[SerializeField]
 		protected int m_firstOverflowCharacterIndex = -1;
@@ -210,7 +210,7 @@ namespace TMPro
 		protected bool m_enableKerning;
 
 		[SerializeField]
-		protected bool m_enableExtraPadding;
+		protected bool m_enableExtraPadding = false;
 
 		[SerializeField]
 		protected bool checkPaddingRequired;
@@ -221,13 +221,13 @@ namespace TMPro
 		[SerializeField]
 		protected bool m_parseCtrlCharacters = true;
 
-		protected bool m_isOverlay;
+		protected bool m_isOverlay = false;
 
 		[SerializeField]
-		protected bool m_isOrthographic;
+		protected bool m_isOrthographic = false;
 
 		[SerializeField]
-		protected bool m_isCullingEnabled;
+		protected bool m_isCullingEnabled = false;
 
 		[SerializeField]
 		protected bool m_ignoreRectMaskCulling;
@@ -236,13 +236,13 @@ namespace TMPro
 		protected bool m_ignoreCulling = true;
 
 		[SerializeField]
-		protected TextureMappingOptions m_horizontalMapping;
+		protected TextureMappingOptions m_horizontalMapping = TextureMappingOptions.Character;
 
 		[SerializeField]
-		protected TextureMappingOptions m_verticalMapping;
+		protected TextureMappingOptions m_verticalMapping = TextureMappingOptions.Character;
 
 		[SerializeField]
-		protected float m_uvLineOffset;
+		protected float m_uvLineOffset = 0f;
 
 		protected TextRenderFlags m_renderMode = TextRenderFlags.Render;
 
@@ -264,7 +264,7 @@ namespace TMPro
 		[SerializeField]
 		protected int m_pageToDisplay = 1;
 
-		protected bool m_isNewPage;
+		protected bool m_isNewPage = false;
 
 		[SerializeField]
 		protected Vector4 m_margin = new Vector4(0f, 0f, 0f, 0f);
@@ -332,9 +332,9 @@ namespace TMPro
 
 		private int m_recursiveCount;
 
-		protected int m_layoutPriority;
+		protected int m_layoutPriority = 0;
 
-		protected bool m_isCalculateSizeRequired;
+		protected bool m_isCalculateSizeRequired = false;
 
 		protected bool m_isLayoutDirty;
 
@@ -345,7 +345,7 @@ namespace TMPro
 		protected bool m_isAwake;
 
 		[SerializeField]
-		protected bool m_isInputParsingRequired;
+		protected bool m_isInputParsingRequired = false;
 
 		[SerializeField]
 		protected TextInputSources m_inputSource;
@@ -362,9 +362,9 @@ namespace TMPro
 
 		protected float[] m_attributeParameterValues = new float[16];
 
-		protected float tag_LineIndent;
+		protected float tag_LineIndent = 0f;
 
-		protected float tag_Indent;
+		protected float tag_Indent = 0f;
 
 		protected TMP_XmlTagStack<float> m_indentStack = new TMP_XmlTagStack<float>(new float[16]);
 
@@ -382,7 +382,7 @@ namespace TMPro
 
 		protected char[] m_input_CharArray = new char[256];
 
-		private int m_charArray_Length;
+		private int m_charArray_Length = 0;
 
 		protected int m_totalCharacterCount;
 
@@ -436,15 +436,15 @@ namespace TMPro
 
 		protected TMP_XmlTagStack<TMP_ColorGradient> m_colorGradientStack = new TMP_XmlTagStack<TMP_ColorGradient>(new TMP_ColorGradient[16]);
 
-		protected float m_tabSpacing;
+		protected float m_tabSpacing = 0f;
 
-		protected float m_spacing;
+		protected float m_spacing = 0f;
 
 		protected TMP_XmlTagStack<int> m_styleStack = new TMP_XmlTagStack<int>(new int[16]);
 
 		protected TMP_XmlTagStack<int> m_actionStack = new TMP_XmlTagStack<int>(new int[16]);
 
-		protected float m_padding;
+		protected float m_padding = 0f;
 
 		protected float m_baselineOffset;
 
@@ -464,7 +464,7 @@ namespace TMPro
 
 		protected TMP_SpriteAsset m_currentSpriteAsset;
 
-		protected int m_spriteCount;
+		protected int m_spriteCount = 0;
 
 		protected int m_spriteIndex;
 
@@ -765,11 +765,11 @@ namespace TMPro
 		{
 			get
 			{
-				if ((UnityEngine.Object)m_sharedMaterial == (UnityEngine.Object)null)
+				if (!((UnityEngine.Object)m_sharedMaterial == (UnityEngine.Object)null))
 				{
+					m_faceColor = m_sharedMaterial.GetColor(ShaderUtilities.ID_FaceColor);
 					return m_faceColor;
 				}
-				m_faceColor = m_sharedMaterial.GetColor(ShaderUtilities.ID_FaceColor);
 				return m_faceColor;
 			}
 			set
@@ -789,11 +789,11 @@ namespace TMPro
 		{
 			get
 			{
-				if ((UnityEngine.Object)m_sharedMaterial == (UnityEngine.Object)null)
+				if (!((UnityEngine.Object)m_sharedMaterial == (UnityEngine.Object)null))
 				{
+					m_outlineColor = m_sharedMaterial.GetColor(ShaderUtilities.ID_OutlineColor);
 					return m_outlineColor;
 				}
-				m_outlineColor = m_sharedMaterial.GetColor(ShaderUtilities.ID_OutlineColor);
 				return m_outlineColor;
 			}
 			set
@@ -812,11 +812,11 @@ namespace TMPro
 		{
 			get
 			{
-				if ((UnityEngine.Object)m_sharedMaterial == (UnityEngine.Object)null)
+				if (!((UnityEngine.Object)m_sharedMaterial == (UnityEngine.Object)null))
 				{
+					m_outlineWidth = m_sharedMaterial.GetFloat(ShaderUtilities.ID_OutlineWidth);
 					return m_outlineWidth;
 				}
-				m_outlineWidth = m_sharedMaterial.GetFloat(ShaderUtilities.ID_OutlineWidth);
 				return m_outlineWidth;
 			}
 			set
@@ -881,19 +881,19 @@ namespace TMPro
 			get
 			{
 				Canvas canvas = base.canvas;
-				if (!(bool)canvas)
+				if ((bool)canvas)
 				{
-					return 1f;
-				}
-				if (!(bool)font)
-				{
+					if ((bool)font)
+					{
+						if (!((UnityEngine.Object)m_currentFontAsset == (UnityEngine.Object)null) && !(m_currentFontAsset.fontInfo.PointSize <= 0f) && !(m_fontSize <= 0f))
+						{
+							return m_fontSize / m_currentFontAsset.fontInfo.PointSize;
+						}
+						return 1f;
+					}
 					return canvas.scaleFactor;
 				}
-				if ((UnityEngine.Object)m_currentFontAsset == (UnityEngine.Object)null || m_currentFontAsset.fontInfo.PointSize <= 0f || m_fontSize <= 0f)
-				{
-					return 1f;
-				}
-				return m_fontSize / m_currentFontAsset.fontInfo.PointSize;
+				return 1f;
 			}
 		}
 
@@ -1163,11 +1163,11 @@ namespace TMPro
 		{
 			get
 			{
-				if (m_firstOverflowCharacterIndex != -1)
+				if (m_firstOverflowCharacterIndex == -1)
 				{
-					return true;
+					return false;
 				}
-				return false;
+				return true;
 			}
 		}
 
@@ -1673,11 +1673,11 @@ namespace TMPro
 		{
 			get
 			{
-				if ((UnityEngine.Object)m_mesh == (UnityEngine.Object)null)
+				if (!((UnityEngine.Object)m_mesh == (UnityEngine.Object)null))
 				{
-					return default(Bounds);
+					return GetCompoundBounds();
 				}
-				return GetCompoundBounds();
+				return default(Bounds);
 			}
 		}
 
@@ -1685,11 +1685,11 @@ namespace TMPro
 		{
 			get
 			{
-				if (m_textInfo == null)
+				if (m_textInfo != null)
 				{
-					return default(Bounds);
+					return GetTextBounds();
 				}
-				return GetTextBounds();
+				return default(Bounds);
 			}
 		}
 
@@ -1737,11 +1737,11 @@ namespace TMPro
 		{
 			get
 			{
-				if (!m_isPreferredWidthDirty)
+				if (m_isPreferredWidthDirty)
 				{
+					m_preferredWidth = GetPreferredWidth();
 					return m_preferredWidth;
 				}
-				m_preferredWidth = GetPreferredWidth();
 				return m_preferredWidth;
 			}
 		}
@@ -1750,11 +1750,11 @@ namespace TMPro
 		{
 			get
 			{
-				if (!m_isPreferredHeightDirty)
+				if (m_isPreferredHeightDirty)
 				{
+					m_preferredHeight = GetPreferredHeight();
 					return m_preferredHeight;
 				}
-				m_preferredHeight = GetPreferredHeight();
 				return m_preferredHeight;
 			}
 		}
@@ -2032,11 +2032,11 @@ namespace TMPro
 						case 'n':
 							break;
 						case 'r':
-							goto IL_00a3;
+							goto IL_00aa;
 						case 't':
-							goto IL_00d4;
+							goto IL_00db;
 						default:
-							goto IL_0105;
+							goto IL_010d;
 						}
 						if (writeIndex == m_char_buffer.Length)
 						{
@@ -2047,8 +2047,8 @@ namespace TMPro
 						writeIndex++;
 						continue;
 					}
-					goto IL_0105;
-					IL_0105:
+					goto IL_010d;
+					IL_010d:
 					if (sourceText[i] == '<')
 					{
 						if (IsTagName(ref sourceText, "<BR>", i))
@@ -2085,7 +2085,7 @@ namespace TMPro
 					m_char_buffer[writeIndex] = sourceText[i];
 					writeIndex++;
 					continue;
-					IL_00a3:
+					IL_00aa:
 					if (writeIndex == m_char_buffer.Length)
 					{
 						ResizeInternalArray(ref m_char_buffer);
@@ -2094,7 +2094,7 @@ namespace TMPro
 					i++;
 					writeIndex++;
 					continue;
-					IL_00d4:
+					IL_00db:
 					if (writeIndex == m_char_buffer.Length)
 					{
 						ResizeInternalArray(ref m_char_buffer);
@@ -2137,11 +2137,11 @@ namespace TMPro
 						case 'n':
 							break;
 						case 'r':
-							goto IL_00ab;
+							goto IL_00b2;
 						case 't':
-							goto IL_00dc;
+							goto IL_00e3;
 						default:
-							goto IL_010d;
+							goto IL_0115;
 						}
 						if (writeIndex == m_char_buffer.Length)
 						{
@@ -2152,8 +2152,8 @@ namespace TMPro
 						writeIndex++;
 						continue;
 					}
-					goto IL_010d;
-					IL_010d:
+					goto IL_0115;
+					IL_0115:
 					if (sourceText[i] == '<')
 					{
 						if (IsTagName(ref sourceText, "<BR>", i))
@@ -2190,7 +2190,7 @@ namespace TMPro
 					m_char_buffer[writeIndex] = sourceText[i];
 					writeIndex++;
 					continue;
-					IL_00ab:
+					IL_00b2:
 					if (writeIndex == m_char_buffer.Length)
 					{
 						ResizeInternalArray(ref m_char_buffer);
@@ -2199,7 +2199,7 @@ namespace TMPro
 					i++;
 					writeIndex++;
 					continue;
-					IL_00dc:
+					IL_00e3:
 					if (writeIndex == m_char_buffer.Length)
 					{
 						ResizeInternalArray(ref m_char_buffer);
@@ -2242,11 +2242,11 @@ namespace TMPro
 						case 110:
 							break;
 						case 114:
-							goto IL_00ab;
+							goto IL_00b2;
 						case 116:
-							goto IL_00dc;
+							goto IL_00e3;
 						default:
-							goto IL_010d;
+							goto IL_0115;
 						}
 						if (writeIndex == m_char_buffer.Length)
 						{
@@ -2257,8 +2257,8 @@ namespace TMPro
 						writeIndex++;
 						continue;
 					}
-					goto IL_010d;
-					IL_010d:
+					goto IL_0115;
+					IL_0115:
 					if (sourceText[i] == 60)
 					{
 						if (IsTagName(ref sourceText, "<BR>", i))
@@ -2295,7 +2295,7 @@ namespace TMPro
 					m_char_buffer[writeIndex] = sourceText[i];
 					writeIndex++;
 					continue;
-					IL_00ab:
+					IL_00b2:
 					if (writeIndex == m_char_buffer.Length)
 					{
 						ResizeInternalArray(ref m_char_buffer);
@@ -2304,7 +2304,7 @@ namespace TMPro
 					i++;
 					writeIndex++;
 					continue;
-					IL_00dc:
+					IL_00e3:
 					if (writeIndex == m_char_buffer.Length)
 					{
 						ResizeInternalArray(ref m_char_buffer);
@@ -2419,17 +2419,17 @@ namespace TMPro
 						case 'U':
 							break;
 						case '\\':
-							goto IL_00d7;
+							goto IL_00e0;
 						case 'n':
-							goto IL_0136;
+							goto IL_013f;
 						case 'r':
-							goto IL_016a;
+							goto IL_0173;
 						case 't':
-							goto IL_019e;
+							goto IL_01a7;
 						case 'u':
-							goto IL_01d2;
+							goto IL_01db;
 						default:
-							goto IL_0211;
+							goto IL_021c;
 						}
 						if (sourceText.Length > i + 9)
 						{
@@ -2443,8 +2443,8 @@ namespace TMPro
 							continue;
 						}
 					}
-					goto IL_0211;
-					IL_0136:
+					goto IL_021c;
+					IL_013f:
 					if (m_parseCtrlCharacters)
 					{
 						if (writeIndex == charBuffer.Length)
@@ -2456,8 +2456,8 @@ namespace TMPro
 						writeIndex++;
 						continue;
 					}
-					goto IL_0211;
-					IL_019e:
+					goto IL_021c;
+					IL_01a7:
 					if (m_parseCtrlCharacters)
 					{
 						if (writeIndex == charBuffer.Length)
@@ -2469,8 +2469,8 @@ namespace TMPro
 						writeIndex++;
 						continue;
 					}
-					goto IL_0211;
-					IL_016a:
+					goto IL_021c;
+					IL_0173:
 					if (m_parseCtrlCharacters)
 					{
 						if (writeIndex == charBuffer.Length)
@@ -2482,8 +2482,8 @@ namespace TMPro
 						writeIndex++;
 						continue;
 					}
-					goto IL_0211;
-					IL_00d7:
+					goto IL_021c;
+					IL_00e0:
 					if (m_parseCtrlCharacters && sourceText.Length > i + 2)
 					{
 						if (writeIndex + 2 > charBuffer.Length)
@@ -2496,8 +2496,8 @@ namespace TMPro
 						writeIndex += 2;
 						continue;
 					}
-					goto IL_0211;
-					IL_01d2:
+					goto IL_021c;
+					IL_01db:
 					if (sourceText.Length > i + 5)
 					{
 						if (writeIndex == charBuffer.Length)
@@ -2509,8 +2509,8 @@ namespace TMPro
 						writeIndex++;
 						continue;
 					}
-					goto IL_0211;
-					IL_0211:
+					goto IL_021c;
+					IL_021c:
 					if (char.IsHighSurrogate(sourceText[i]) && char.IsLowSurrogate(sourceText[i + 1]))
 					{
 						if (writeIndex == charBuffer.Length)
@@ -2591,17 +2591,17 @@ namespace TMPro
 						case 'U':
 							break;
 						case '\\':
-							goto IL_00d6;
+							goto IL_00df;
 						case 'n':
-							goto IL_0125;
+							goto IL_012e;
 						case 'r':
-							goto IL_0149;
+							goto IL_0152;
 						case 't':
-							goto IL_016d;
+							goto IL_0176;
 						case 'u':
-							goto IL_0191;
+							goto IL_019a;
 						default:
-							goto IL_01d0;
+							goto IL_01db;
 						}
 						if (sourceText.Length > i + 9)
 						{
@@ -2615,8 +2615,8 @@ namespace TMPro
 							continue;
 						}
 					}
-					goto IL_01d0;
-					IL_0149:
+					goto IL_01db;
+					IL_0152:
 					if (writeIndex == charBuffer.Length)
 					{
 						ResizeInternalArray(ref charBuffer);
@@ -2625,7 +2625,7 @@ namespace TMPro
 					i++;
 					writeIndex++;
 					continue;
-					IL_016d:
+					IL_0176:
 					if (writeIndex == charBuffer.Length)
 					{
 						ResizeInternalArray(ref charBuffer);
@@ -2634,7 +2634,7 @@ namespace TMPro
 					i++;
 					writeIndex++;
 					continue;
-					IL_01d0:
+					IL_01db:
 					if (char.IsHighSurrogate(sourceText[i]) && char.IsLowSurrogate(sourceText[i + 1]))
 					{
 						if (writeIndex == charBuffer.Length)
@@ -2684,7 +2684,7 @@ namespace TMPro
 						writeIndex++;
 					}
 					continue;
-					IL_0191:
+					IL_019a:
 					if (sourceText.Length > i + 5)
 					{
 						if (writeIndex == charBuffer.Length)
@@ -2696,8 +2696,8 @@ namespace TMPro
 						writeIndex++;
 						continue;
 					}
-					goto IL_01d0;
-					IL_0125:
+					goto IL_01db;
+					IL_012e:
 					if (writeIndex == charBuffer.Length)
 					{
 						ResizeInternalArray(ref charBuffer);
@@ -2706,7 +2706,7 @@ namespace TMPro
 					i++;
 					writeIndex++;
 					continue;
-					IL_00d6:
+					IL_00df:
 					if (sourceText.Length > i + 2)
 					{
 						if (writeIndex + 2 > charBuffer.Length)
@@ -2719,7 +2719,7 @@ namespace TMPro
 						writeIndex += 2;
 						continue;
 					}
-					goto IL_01d0;
+					goto IL_01db;
 				}
 				if (writeIndex == charBuffer.Length)
 				{
@@ -2733,212 +2733,212 @@ namespace TMPro
 		{
 			int tagHashCode = GetTagHashCode(ref sourceText, srcIndex + 7, out srcOffset);
 			TMP_Style style = TMP_StyleSheet.GetStyle(tagHashCode);
-			if (style == null || srcOffset == 0)
+			if (style != null && srcOffset != 0)
 			{
-				return false;
-			}
-			m_styleStack.Add(style.hashCode);
-			int num = style.styleOpeningTagArray.Length;
-			int[] text = style.styleOpeningTagArray;
-			for (int i = 0; i < num; i++)
-			{
-				int num2 = text[i];
-				if (num2 == 60)
+				m_styleStack.Add(style.hashCode);
+				int num = style.styleOpeningTagArray.Length;
+				int[] text = style.styleOpeningTagArray;
+				for (int i = 0; i < num; i++)
 				{
-					if (IsTagName(ref text, "<BR>", i))
+					int num2 = text[i];
+					if (num2 == 60)
 					{
-						if (writeIndex == charBuffer.Length)
+						if (IsTagName(ref text, "<BR>", i))
 						{
-							ResizeInternalArray(ref charBuffer);
+							if (writeIndex == charBuffer.Length)
+							{
+								ResizeInternalArray(ref charBuffer);
+							}
+							charBuffer[writeIndex] = 10;
+							writeIndex++;
+							i += 3;
+							continue;
 						}
-						charBuffer[writeIndex] = 10;
-						writeIndex++;
-						i += 3;
-						continue;
-					}
-					if (IsTagName(ref text, "<STYLE=", i))
-					{
-						int srcOffset2 = 0;
-						if (ReplaceOpeningStyleTag(ref text, i, out srcOffset2, ref charBuffer, ref writeIndex))
+						if (IsTagName(ref text, "<STYLE=", i))
 						{
-							i = srcOffset2;
+							int srcOffset2 = 0;
+							if (ReplaceOpeningStyleTag(ref text, i, out srcOffset2, ref charBuffer, ref writeIndex))
+							{
+								i = srcOffset2;
+								continue;
+							}
+						}
+						else if (IsTagName(ref text, "</STYLE>", i))
+						{
+							ReplaceClosingStyleTag(ref text, i, ref charBuffer, ref writeIndex);
+							i += 7;
 							continue;
 						}
 					}
-					else if (IsTagName(ref text, "</STYLE>", i))
+					if (writeIndex == charBuffer.Length)
 					{
-						ReplaceClosingStyleTag(ref text, i, ref charBuffer, ref writeIndex);
-						i += 7;
-						continue;
+						ResizeInternalArray(ref charBuffer);
 					}
+					charBuffer[writeIndex] = num2;
+					writeIndex++;
 				}
-				if (writeIndex == charBuffer.Length)
-				{
-					ResizeInternalArray(ref charBuffer);
-				}
-				charBuffer[writeIndex] = num2;
-				writeIndex++;
+				return true;
 			}
-			return true;
+			return false;
 		}
 
 		private bool ReplaceOpeningStyleTag(ref int[] sourceText, int srcIndex, out int srcOffset, ref int[] charBuffer, ref int writeIndex)
 		{
 			int tagHashCode = GetTagHashCode(ref sourceText, srcIndex + 7, out srcOffset);
 			TMP_Style style = TMP_StyleSheet.GetStyle(tagHashCode);
-			if (style == null || srcOffset == 0)
+			if (style != null && srcOffset != 0)
 			{
-				return false;
-			}
-			m_styleStack.Add(style.hashCode);
-			int num = style.styleOpeningTagArray.Length;
-			int[] text = style.styleOpeningTagArray;
-			for (int i = 0; i < num; i++)
-			{
-				int num2 = text[i];
-				if (num2 == 60)
+				m_styleStack.Add(style.hashCode);
+				int num = style.styleOpeningTagArray.Length;
+				int[] text = style.styleOpeningTagArray;
+				for (int i = 0; i < num; i++)
 				{
-					if (IsTagName(ref text, "<BR>", i))
+					int num2 = text[i];
+					if (num2 == 60)
 					{
-						if (writeIndex == charBuffer.Length)
+						if (IsTagName(ref text, "<BR>", i))
 						{
-							ResizeInternalArray(ref charBuffer);
+							if (writeIndex == charBuffer.Length)
+							{
+								ResizeInternalArray(ref charBuffer);
+							}
+							charBuffer[writeIndex] = 10;
+							writeIndex++;
+							i += 3;
+							continue;
 						}
-						charBuffer[writeIndex] = 10;
-						writeIndex++;
-						i += 3;
-						continue;
-					}
-					if (IsTagName(ref text, "<STYLE=", i))
-					{
-						int srcOffset2 = 0;
-						if (ReplaceOpeningStyleTag(ref text, i, out srcOffset2, ref charBuffer, ref writeIndex))
+						if (IsTagName(ref text, "<STYLE=", i))
 						{
-							i = srcOffset2;
+							int srcOffset2 = 0;
+							if (ReplaceOpeningStyleTag(ref text, i, out srcOffset2, ref charBuffer, ref writeIndex))
+							{
+								i = srcOffset2;
+								continue;
+							}
+						}
+						else if (IsTagName(ref text, "</STYLE>", i))
+						{
+							ReplaceClosingStyleTag(ref text, i, ref charBuffer, ref writeIndex);
+							i += 7;
 							continue;
 						}
 					}
-					else if (IsTagName(ref text, "</STYLE>", i))
+					if (writeIndex == charBuffer.Length)
 					{
-						ReplaceClosingStyleTag(ref text, i, ref charBuffer, ref writeIndex);
-						i += 7;
-						continue;
+						ResizeInternalArray(ref charBuffer);
 					}
+					charBuffer[writeIndex] = num2;
+					writeIndex++;
 				}
-				if (writeIndex == charBuffer.Length)
-				{
-					ResizeInternalArray(ref charBuffer);
-				}
-				charBuffer[writeIndex] = num2;
-				writeIndex++;
+				return true;
 			}
-			return true;
+			return false;
 		}
 
 		private bool ReplaceOpeningStyleTag(ref char[] sourceText, int srcIndex, out int srcOffset, ref int[] charBuffer, ref int writeIndex)
 		{
 			int tagHashCode = GetTagHashCode(ref sourceText, srcIndex + 7, out srcOffset);
 			TMP_Style style = TMP_StyleSheet.GetStyle(tagHashCode);
-			if (style == null || srcOffset == 0)
+			if (style != null && srcOffset != 0)
 			{
-				return false;
-			}
-			m_styleStack.Add(style.hashCode);
-			int num = style.styleOpeningTagArray.Length;
-			int[] text = style.styleOpeningTagArray;
-			for (int i = 0; i < num; i++)
-			{
-				int num2 = text[i];
-				if (num2 == 60)
+				m_styleStack.Add(style.hashCode);
+				int num = style.styleOpeningTagArray.Length;
+				int[] text = style.styleOpeningTagArray;
+				for (int i = 0; i < num; i++)
 				{
-					if (IsTagName(ref text, "<BR>", i))
+					int num2 = text[i];
+					if (num2 == 60)
 					{
-						if (writeIndex == charBuffer.Length)
+						if (IsTagName(ref text, "<BR>", i))
 						{
-							ResizeInternalArray(ref charBuffer);
+							if (writeIndex == charBuffer.Length)
+							{
+								ResizeInternalArray(ref charBuffer);
+							}
+							charBuffer[writeIndex] = 10;
+							writeIndex++;
+							i += 3;
+							continue;
 						}
-						charBuffer[writeIndex] = 10;
-						writeIndex++;
-						i += 3;
-						continue;
-					}
-					if (IsTagName(ref text, "<STYLE=", i))
-					{
-						int srcOffset2 = 0;
-						if (ReplaceOpeningStyleTag(ref text, i, out srcOffset2, ref charBuffer, ref writeIndex))
+						if (IsTagName(ref text, "<STYLE=", i))
 						{
-							i = srcOffset2;
+							int srcOffset2 = 0;
+							if (ReplaceOpeningStyleTag(ref text, i, out srcOffset2, ref charBuffer, ref writeIndex))
+							{
+								i = srcOffset2;
+								continue;
+							}
+						}
+						else if (IsTagName(ref text, "</STYLE>", i))
+						{
+							ReplaceClosingStyleTag(ref text, i, ref charBuffer, ref writeIndex);
+							i += 7;
 							continue;
 						}
 					}
-					else if (IsTagName(ref text, "</STYLE>", i))
+					if (writeIndex == charBuffer.Length)
 					{
-						ReplaceClosingStyleTag(ref text, i, ref charBuffer, ref writeIndex);
-						i += 7;
-						continue;
+						ResizeInternalArray(ref charBuffer);
 					}
+					charBuffer[writeIndex] = num2;
+					writeIndex++;
 				}
-				if (writeIndex == charBuffer.Length)
-				{
-					ResizeInternalArray(ref charBuffer);
-				}
-				charBuffer[writeIndex] = num2;
-				writeIndex++;
+				return true;
 			}
-			return true;
+			return false;
 		}
 
 		private bool ReplaceOpeningStyleTag(ref StringBuilder sourceText, int srcIndex, out int srcOffset, ref int[] charBuffer, ref int writeIndex)
 		{
 			int tagHashCode = GetTagHashCode(ref sourceText, srcIndex + 7, out srcOffset);
 			TMP_Style style = TMP_StyleSheet.GetStyle(tagHashCode);
-			if (style == null || srcOffset == 0)
+			if (style != null && srcOffset != 0)
 			{
-				return false;
-			}
-			m_styleStack.Add(style.hashCode);
-			int num = style.styleOpeningTagArray.Length;
-			int[] text = style.styleOpeningTagArray;
-			for (int i = 0; i < num; i++)
-			{
-				int num2 = text[i];
-				if (num2 == 60)
+				m_styleStack.Add(style.hashCode);
+				int num = style.styleOpeningTagArray.Length;
+				int[] text = style.styleOpeningTagArray;
+				for (int i = 0; i < num; i++)
 				{
-					if (IsTagName(ref text, "<BR>", i))
+					int num2 = text[i];
+					if (num2 == 60)
 					{
-						if (writeIndex == charBuffer.Length)
+						if (IsTagName(ref text, "<BR>", i))
 						{
-							ResizeInternalArray(ref charBuffer);
+							if (writeIndex == charBuffer.Length)
+							{
+								ResizeInternalArray(ref charBuffer);
+							}
+							charBuffer[writeIndex] = 10;
+							writeIndex++;
+							i += 3;
+							continue;
 						}
-						charBuffer[writeIndex] = 10;
-						writeIndex++;
-						i += 3;
-						continue;
-					}
-					if (IsTagName(ref text, "<STYLE=", i))
-					{
-						int srcOffset2 = 0;
-						if (ReplaceOpeningStyleTag(ref text, i, out srcOffset2, ref charBuffer, ref writeIndex))
+						if (IsTagName(ref text, "<STYLE=", i))
 						{
-							i = srcOffset2;
+							int srcOffset2 = 0;
+							if (ReplaceOpeningStyleTag(ref text, i, out srcOffset2, ref charBuffer, ref writeIndex))
+							{
+								i = srcOffset2;
+								continue;
+							}
+						}
+						else if (IsTagName(ref text, "</STYLE>", i))
+						{
+							ReplaceClosingStyleTag(ref text, i, ref charBuffer, ref writeIndex);
+							i += 7;
 							continue;
 						}
 					}
-					else if (IsTagName(ref text, "</STYLE>", i))
+					if (writeIndex == charBuffer.Length)
 					{
-						ReplaceClosingStyleTag(ref text, i, ref charBuffer, ref writeIndex);
-						i += 7;
-						continue;
+						ResizeInternalArray(ref charBuffer);
 					}
+					charBuffer[writeIndex] = num2;
+					writeIndex++;
 				}
-				if (writeIndex == charBuffer.Length)
-				{
-					ResizeInternalArray(ref charBuffer);
-				}
-				charBuffer[writeIndex] = num2;
-				writeIndex++;
+				return true;
 			}
-			return true;
+			return false;
 		}
 
 		private bool ReplaceClosingStyleTag(ref string sourceText, int srcIndex, ref int[] charBuffer, ref int writeIndex)
@@ -2946,52 +2946,52 @@ namespace TMPro
 			int hashCode = m_styleStack.CurrentItem();
 			TMP_Style style = TMP_StyleSheet.GetStyle(hashCode);
 			m_styleStack.Remove();
-			if (style == null)
+			if (style != null)
 			{
-				return false;
-			}
-			int num = style.styleClosingTagArray.Length;
-			int[] text = style.styleClosingTagArray;
-			for (int i = 0; i < num; i++)
-			{
-				int num2 = text[i];
-				if (num2 == 60)
+				int num = style.styleClosingTagArray.Length;
+				int[] text = style.styleClosingTagArray;
+				for (int i = 0; i < num; i++)
 				{
-					if (IsTagName(ref text, "<BR>", i))
+					int num2 = text[i];
+					if (num2 == 60)
 					{
-						if (writeIndex == charBuffer.Length)
+						if (IsTagName(ref text, "<BR>", i))
 						{
-							ResizeInternalArray(ref charBuffer);
+							if (writeIndex == charBuffer.Length)
+							{
+								ResizeInternalArray(ref charBuffer);
+							}
+							charBuffer[writeIndex] = 10;
+							writeIndex++;
+							i += 3;
+							continue;
 						}
-						charBuffer[writeIndex] = 10;
-						writeIndex++;
-						i += 3;
-						continue;
-					}
-					if (IsTagName(ref text, "<STYLE=", i))
-					{
-						int srcOffset = 0;
-						if (ReplaceOpeningStyleTag(ref text, i, out srcOffset, ref charBuffer, ref writeIndex))
+						if (IsTagName(ref text, "<STYLE=", i))
 						{
-							i = srcOffset;
+							int srcOffset = 0;
+							if (ReplaceOpeningStyleTag(ref text, i, out srcOffset, ref charBuffer, ref writeIndex))
+							{
+								i = srcOffset;
+								continue;
+							}
+						}
+						else if (IsTagName(ref text, "</STYLE>", i))
+						{
+							ReplaceClosingStyleTag(ref text, i, ref charBuffer, ref writeIndex);
+							i += 7;
 							continue;
 						}
 					}
-					else if (IsTagName(ref text, "</STYLE>", i))
+					if (writeIndex == charBuffer.Length)
 					{
-						ReplaceClosingStyleTag(ref text, i, ref charBuffer, ref writeIndex);
-						i += 7;
-						continue;
+						ResizeInternalArray(ref charBuffer);
 					}
+					charBuffer[writeIndex] = num2;
+					writeIndex++;
 				}
-				if (writeIndex == charBuffer.Length)
-				{
-					ResizeInternalArray(ref charBuffer);
-				}
-				charBuffer[writeIndex] = num2;
-				writeIndex++;
+				return true;
 			}
-			return true;
+			return false;
 		}
 
 		private bool ReplaceClosingStyleTag(ref int[] sourceText, int srcIndex, ref int[] charBuffer, ref int writeIndex)
@@ -2999,52 +2999,52 @@ namespace TMPro
 			int hashCode = m_styleStack.CurrentItem();
 			TMP_Style style = TMP_StyleSheet.GetStyle(hashCode);
 			m_styleStack.Remove();
-			if (style == null)
+			if (style != null)
 			{
-				return false;
-			}
-			int num = style.styleClosingTagArray.Length;
-			int[] text = style.styleClosingTagArray;
-			for (int i = 0; i < num; i++)
-			{
-				int num2 = text[i];
-				if (num2 == 60)
+				int num = style.styleClosingTagArray.Length;
+				int[] text = style.styleClosingTagArray;
+				for (int i = 0; i < num; i++)
 				{
-					if (IsTagName(ref text, "<BR>", i))
+					int num2 = text[i];
+					if (num2 == 60)
 					{
-						if (writeIndex == charBuffer.Length)
+						if (IsTagName(ref text, "<BR>", i))
 						{
-							ResizeInternalArray(ref charBuffer);
+							if (writeIndex == charBuffer.Length)
+							{
+								ResizeInternalArray(ref charBuffer);
+							}
+							charBuffer[writeIndex] = 10;
+							writeIndex++;
+							i += 3;
+							continue;
 						}
-						charBuffer[writeIndex] = 10;
-						writeIndex++;
-						i += 3;
-						continue;
-					}
-					if (IsTagName(ref text, "<STYLE=", i))
-					{
-						int srcOffset = 0;
-						if (ReplaceOpeningStyleTag(ref text, i, out srcOffset, ref charBuffer, ref writeIndex))
+						if (IsTagName(ref text, "<STYLE=", i))
 						{
-							i = srcOffset;
+							int srcOffset = 0;
+							if (ReplaceOpeningStyleTag(ref text, i, out srcOffset, ref charBuffer, ref writeIndex))
+							{
+								i = srcOffset;
+								continue;
+							}
+						}
+						else if (IsTagName(ref text, "</STYLE>", i))
+						{
+							ReplaceClosingStyleTag(ref text, i, ref charBuffer, ref writeIndex);
+							i += 7;
 							continue;
 						}
 					}
-					else if (IsTagName(ref text, "</STYLE>", i))
+					if (writeIndex == charBuffer.Length)
 					{
-						ReplaceClosingStyleTag(ref text, i, ref charBuffer, ref writeIndex);
-						i += 7;
-						continue;
+						ResizeInternalArray(ref charBuffer);
 					}
+					charBuffer[writeIndex] = num2;
+					writeIndex++;
 				}
-				if (writeIndex == charBuffer.Length)
-				{
-					ResizeInternalArray(ref charBuffer);
-				}
-				charBuffer[writeIndex] = num2;
-				writeIndex++;
+				return true;
 			}
-			return true;
+			return false;
 		}
 
 		private bool ReplaceClosingStyleTag(ref char[] sourceText, int srcIndex, ref int[] charBuffer, ref int writeIndex)
@@ -3052,52 +3052,52 @@ namespace TMPro
 			int hashCode = m_styleStack.CurrentItem();
 			TMP_Style style = TMP_StyleSheet.GetStyle(hashCode);
 			m_styleStack.Remove();
-			if (style == null)
+			if (style != null)
 			{
-				return false;
-			}
-			int num = style.styleClosingTagArray.Length;
-			int[] text = style.styleClosingTagArray;
-			for (int i = 0; i < num; i++)
-			{
-				int num2 = text[i];
-				if (num2 == 60)
+				int num = style.styleClosingTagArray.Length;
+				int[] text = style.styleClosingTagArray;
+				for (int i = 0; i < num; i++)
 				{
-					if (IsTagName(ref text, "<BR>", i))
+					int num2 = text[i];
+					if (num2 == 60)
 					{
-						if (writeIndex == charBuffer.Length)
+						if (IsTagName(ref text, "<BR>", i))
 						{
-							ResizeInternalArray(ref charBuffer);
+							if (writeIndex == charBuffer.Length)
+							{
+								ResizeInternalArray(ref charBuffer);
+							}
+							charBuffer[writeIndex] = 10;
+							writeIndex++;
+							i += 3;
+							continue;
 						}
-						charBuffer[writeIndex] = 10;
-						writeIndex++;
-						i += 3;
-						continue;
-					}
-					if (IsTagName(ref text, "<STYLE=", i))
-					{
-						int srcOffset = 0;
-						if (ReplaceOpeningStyleTag(ref text, i, out srcOffset, ref charBuffer, ref writeIndex))
+						if (IsTagName(ref text, "<STYLE=", i))
 						{
-							i = srcOffset;
+							int srcOffset = 0;
+							if (ReplaceOpeningStyleTag(ref text, i, out srcOffset, ref charBuffer, ref writeIndex))
+							{
+								i = srcOffset;
+								continue;
+							}
+						}
+						else if (IsTagName(ref text, "</STYLE>", i))
+						{
+							ReplaceClosingStyleTag(ref text, i, ref charBuffer, ref writeIndex);
+							i += 7;
 							continue;
 						}
 					}
-					else if (IsTagName(ref text, "</STYLE>", i))
+					if (writeIndex == charBuffer.Length)
 					{
-						ReplaceClosingStyleTag(ref text, i, ref charBuffer, ref writeIndex);
-						i += 7;
-						continue;
+						ResizeInternalArray(ref charBuffer);
 					}
+					charBuffer[writeIndex] = num2;
+					writeIndex++;
 				}
-				if (writeIndex == charBuffer.Length)
-				{
-					ResizeInternalArray(ref charBuffer);
-				}
-				charBuffer[writeIndex] = num2;
-				writeIndex++;
+				return true;
 			}
-			return true;
+			return false;
 		}
 
 		private bool ReplaceClosingStyleTag(ref StringBuilder sourceText, int srcIndex, ref int[] charBuffer, ref int writeIndex)
@@ -3105,116 +3105,116 @@ namespace TMPro
 			int hashCode = m_styleStack.CurrentItem();
 			TMP_Style style = TMP_StyleSheet.GetStyle(hashCode);
 			m_styleStack.Remove();
-			if (style == null)
+			if (style != null)
 			{
-				return false;
-			}
-			int num = style.styleClosingTagArray.Length;
-			int[] text = style.styleClosingTagArray;
-			for (int i = 0; i < num; i++)
-			{
-				int num2 = text[i];
-				if (num2 == 60)
+				int num = style.styleClosingTagArray.Length;
+				int[] text = style.styleClosingTagArray;
+				for (int i = 0; i < num; i++)
 				{
-					if (IsTagName(ref text, "<BR>", i))
+					int num2 = text[i];
+					if (num2 == 60)
 					{
-						if (writeIndex == charBuffer.Length)
+						if (IsTagName(ref text, "<BR>", i))
 						{
-							ResizeInternalArray(ref charBuffer);
+							if (writeIndex == charBuffer.Length)
+							{
+								ResizeInternalArray(ref charBuffer);
+							}
+							charBuffer[writeIndex] = 10;
+							writeIndex++;
+							i += 3;
+							continue;
 						}
-						charBuffer[writeIndex] = 10;
-						writeIndex++;
-						i += 3;
-						continue;
-					}
-					if (IsTagName(ref text, "<STYLE=", i))
-					{
-						int srcOffset = 0;
-						if (ReplaceOpeningStyleTag(ref text, i, out srcOffset, ref charBuffer, ref writeIndex))
+						if (IsTagName(ref text, "<STYLE=", i))
 						{
-							i = srcOffset;
+							int srcOffset = 0;
+							if (ReplaceOpeningStyleTag(ref text, i, out srcOffset, ref charBuffer, ref writeIndex))
+							{
+								i = srcOffset;
+								continue;
+							}
+						}
+						else if (IsTagName(ref text, "</STYLE>", i))
+						{
+							ReplaceClosingStyleTag(ref text, i, ref charBuffer, ref writeIndex);
+							i += 7;
 							continue;
 						}
 					}
-					else if (IsTagName(ref text, "</STYLE>", i))
+					if (writeIndex == charBuffer.Length)
 					{
-						ReplaceClosingStyleTag(ref text, i, ref charBuffer, ref writeIndex);
-						i += 7;
-						continue;
+						ResizeInternalArray(ref charBuffer);
 					}
+					charBuffer[writeIndex] = num2;
+					writeIndex++;
 				}
-				if (writeIndex == charBuffer.Length)
-				{
-					ResizeInternalArray(ref charBuffer);
-				}
-				charBuffer[writeIndex] = num2;
-				writeIndex++;
+				return true;
 			}
-			return true;
+			return false;
 		}
 
 		private bool IsTagName(ref string text, string tag, int index)
 		{
-			if (text.Length < index + tag.Length)
+			if (text.Length >= index + tag.Length)
 			{
-				return false;
-			}
-			for (int i = 0; i < tag.Length; i++)
-			{
-				if (TMP_TextUtilities.ToUpperFast(text[index + i]) != tag[i])
+				for (int i = 0; i < tag.Length; i++)
 				{
-					return false;
+					if (TMP_TextUtilities.ToUpperFast(text[index + i]) != tag[i])
+					{
+						return false;
+					}
 				}
+				return true;
 			}
-			return true;
+			return false;
 		}
 
 		private bool IsTagName(ref char[] text, string tag, int index)
 		{
-			if (text.Length < index + tag.Length)
+			if (text.Length >= index + tag.Length)
 			{
-				return false;
-			}
-			for (int i = 0; i < tag.Length; i++)
-			{
-				if (TMP_TextUtilities.ToUpperFast(text[index + i]) != tag[i])
+				for (int i = 0; i < tag.Length; i++)
 				{
-					return false;
+					if (TMP_TextUtilities.ToUpperFast(text[index + i]) != tag[i])
+					{
+						return false;
+					}
 				}
+				return true;
 			}
-			return true;
+			return false;
 		}
 
 		private bool IsTagName(ref int[] text, string tag, int index)
 		{
-			if (text.Length < index + tag.Length)
+			if (text.Length >= index + tag.Length)
 			{
-				return false;
-			}
-			for (int i = 0; i < tag.Length; i++)
-			{
-				if (TMP_TextUtilities.ToUpperFast((char)text[index + i]) != tag[i])
+				for (int i = 0; i < tag.Length; i++)
 				{
-					return false;
+					if (TMP_TextUtilities.ToUpperFast((char)text[index + i]) != tag[i])
+					{
+						return false;
+					}
 				}
+				return true;
 			}
-			return true;
+			return false;
 		}
 
 		private bool IsTagName(ref StringBuilder text, string tag, int index)
 		{
-			if (text.Length < index + tag.Length)
+			if (text.Length >= index + tag.Length)
 			{
-				return false;
-			}
-			for (int i = 0; i < tag.Length; i++)
-			{
-				if (TMP_TextUtilities.ToUpperFast(text[index + i]) != tag[i])
+				for (int i = 0; i < tag.Length; i++)
 				{
-					return false;
+					if (TMP_TextUtilities.ToUpperFast(text[index + i]) != tag[i])
+					{
+						return false;
+					}
 				}
+				return true;
 			}
-			return true;
+			return false;
 		}
 
 		private int GetTagHashCode(ref string text, int index, out int closeIndex)
@@ -3501,428 +3501,428 @@ namespace TMPro
 
 		protected virtual Vector2 CalculatePreferredValues(float defaultFontSize, Vector2 marginSize, bool ignoreTextAutoSizing)
 		{
-			if ((UnityEngine.Object)m_fontAsset == (UnityEngine.Object)null || m_fontAsset.characterDictionary == null)
+			if (!((UnityEngine.Object)m_fontAsset == (UnityEngine.Object)null) && m_fontAsset.characterDictionary != null)
 			{
-				Debug.LogWarning("Can't Generate Mesh! No Font Asset has been assigned to Object ID: " + GetInstanceID(), null);
-				return Vector2.zero;
-			}
-			if (m_char_buffer == null || m_char_buffer.Length == 0 || m_char_buffer[0] == 0)
-			{
-				return Vector2.zero;
-			}
-			m_currentFontAsset = m_fontAsset;
-			m_currentMaterial = m_sharedMaterial;
-			m_currentMaterialIndex = 0;
-			m_materialReferenceStack.SetDefault(new MaterialReference(0, m_currentFontAsset, null, m_currentMaterial, m_padding));
-			int totalCharacterCount = m_totalCharacterCount;
-			if (m_internalCharacterInfo == null || totalCharacterCount > m_internalCharacterInfo.Length)
-			{
-				m_internalCharacterInfo = new TMP_CharacterInfo[(totalCharacterCount <= 1024) ? Mathf.NextPowerOfTwo(totalCharacterCount) : (totalCharacterCount + 256)];
-			}
-			float num = m_fontScale = defaultFontSize / m_fontAsset.fontInfo.PointSize * m_fontAsset.fontInfo.Scale * ((!m_isOrthographic) ? 0.1f : 1f);
-			float num2 = num;
-			m_fontScaleMultiplier = 1f;
-			m_currentFontSize = defaultFontSize;
-			m_sizeStack.SetDefault(m_currentFontSize);
-			float num3 = 0f;
-			int num4 = 0;
-			m_style = m_fontStyle;
-			m_lineJustification = m_textAlignment;
-			m_lineJustificationStack.SetDefault(m_lineJustification);
-			float num5 = 1f;
-			m_baselineOffset = 0f;
-			m_baselineOffsetStack.Clear();
-			m_lineOffset = 0f;
-			m_lineHeight = -32767f;
-			float num6 = m_currentFontAsset.fontInfo.LineHeight - (m_currentFontAsset.fontInfo.Ascender - m_currentFontAsset.fontInfo.Descender);
-			m_cSpacing = 0f;
-			m_monoSpacing = 0f;
-			float num7 = 0f;
-			m_xAdvance = 0f;
-			float a = 0f;
-			tag_LineIndent = 0f;
-			tag_Indent = 0f;
-			m_indentStack.SetDefault(0f);
-			tag_NoParsing = false;
-			m_characterCount = 0;
-			m_firstCharacterOfLine = 0;
-			m_maxLineAscender = k_LargeNegativeFloat;
-			m_maxLineDescender = k_LargePositiveFloat;
-			m_lineNumber = 0;
-			float x = marginSize.x;
-			m_marginLeft = 0f;
-			m_marginRight = 0f;
-			m_width = -1f;
-			float num8 = 0f;
-			float num9 = 0f;
-			float num10 = 0f;
-			m_isCalculatingPreferredValues = true;
-			m_maxAscender = 0f;
-			m_maxDescender = 0f;
-			bool flag = true;
-			bool flag2 = false;
-			WordWrapState state = default(WordWrapState);
-			SaveWordWrappingState(ref state, 0, 0);
-			WordWrapState state2 = default(WordWrapState);
-			int num11 = 0;
-			m_recursiveCount++;
-			int endIndex = 0;
-			for (int i = 0; m_char_buffer[i] != 0; i++)
-			{
-				num4 = m_char_buffer[i];
-				m_textElementType = m_textInfo.characterInfo[m_characterCount].elementType;
-				m_currentMaterialIndex = m_textInfo.characterInfo[m_characterCount].materialReferenceIndex;
-				m_currentFontAsset = m_materialReferences[m_currentMaterialIndex].fontAsset;
-				int currentMaterialIndex = m_currentMaterialIndex;
-				if (m_isRichText && num4 == 60)
+				if (m_char_buffer != null && m_char_buffer.Length != 0 && m_char_buffer[0] != 0)
 				{
-					m_isParsingText = true;
-					m_textElementType = TMP_TextElementType.Character;
-					if (ValidateHtmlTag(m_char_buffer, i + 1, out endIndex))
+					m_currentFontAsset = m_fontAsset;
+					m_currentMaterial = m_sharedMaterial;
+					m_currentMaterialIndex = 0;
+					m_materialReferenceStack.SetDefault(new MaterialReference(0, m_currentFontAsset, null, m_currentMaterial, m_padding));
+					int totalCharacterCount = m_totalCharacterCount;
+					if (m_internalCharacterInfo == null || totalCharacterCount > m_internalCharacterInfo.Length)
 					{
-						i = endIndex;
+						m_internalCharacterInfo = new TMP_CharacterInfo[(totalCharacterCount <= 1024) ? Mathf.NextPowerOfTwo(totalCharacterCount) : (totalCharacterCount + 256)];
+					}
+					float num = m_fontScale = defaultFontSize / m_fontAsset.fontInfo.PointSize * m_fontAsset.fontInfo.Scale * ((!m_isOrthographic) ? 0.1f : 1f);
+					float num2 = num;
+					m_fontScaleMultiplier = 1f;
+					m_currentFontSize = defaultFontSize;
+					m_sizeStack.SetDefault(m_currentFontSize);
+					float num3 = 0f;
+					int num4 = 0;
+					m_style = m_fontStyle;
+					m_lineJustification = m_textAlignment;
+					m_lineJustificationStack.SetDefault(m_lineJustification);
+					float num5 = 1f;
+					m_baselineOffset = 0f;
+					m_baselineOffsetStack.Clear();
+					m_lineOffset = 0f;
+					m_lineHeight = -32767f;
+					float num6 = m_currentFontAsset.fontInfo.LineHeight - (m_currentFontAsset.fontInfo.Ascender - m_currentFontAsset.fontInfo.Descender);
+					m_cSpacing = 0f;
+					m_monoSpacing = 0f;
+					float num7 = 0f;
+					m_xAdvance = 0f;
+					float a = 0f;
+					tag_LineIndent = 0f;
+					tag_Indent = 0f;
+					m_indentStack.SetDefault(0f);
+					tag_NoParsing = false;
+					m_characterCount = 0;
+					m_firstCharacterOfLine = 0;
+					m_maxLineAscender = k_LargeNegativeFloat;
+					m_maxLineDescender = k_LargePositiveFloat;
+					m_lineNumber = 0;
+					float x = marginSize.x;
+					m_marginLeft = 0f;
+					m_marginRight = 0f;
+					m_width = -1f;
+					float num8 = 0f;
+					float num9 = 0f;
+					float num10 = 0f;
+					m_isCalculatingPreferredValues = true;
+					m_maxAscender = 0f;
+					m_maxDescender = 0f;
+					bool flag = true;
+					bool flag2 = false;
+					WordWrapState state = default(WordWrapState);
+					SaveWordWrappingState(ref state, 0, 0);
+					WordWrapState state2 = default(WordWrapState);
+					int num11 = 0;
+					m_recursiveCount++;
+					int endIndex = 0;
+					for (int i = 0; m_char_buffer[i] != 0; i++)
+					{
+						num4 = m_char_buffer[i];
+						m_textElementType = m_textInfo.characterInfo[m_characterCount].elementType;
+						m_currentMaterialIndex = m_textInfo.characterInfo[m_characterCount].materialReferenceIndex;
+						m_currentFontAsset = m_materialReferences[m_currentMaterialIndex].fontAsset;
+						int currentMaterialIndex = m_currentMaterialIndex;
+						if (m_isRichText && num4 == 60)
+						{
+							m_isParsingText = true;
+							m_textElementType = TMP_TextElementType.Character;
+							if (ValidateHtmlTag(m_char_buffer, i + 1, out endIndex))
+							{
+								i = endIndex;
+								if (m_textElementType == TMP_TextElementType.Character)
+								{
+									continue;
+								}
+							}
+						}
+						m_isParsingText = false;
+						bool isUsingAlternateTypeface = m_textInfo.characterInfo[m_characterCount].isUsingAlternateTypeface;
+						float num12 = 1f;
 						if (m_textElementType == TMP_TextElementType.Character)
 						{
-							continue;
-						}
-					}
-				}
-				m_isParsingText = false;
-				bool isUsingAlternateTypeface = m_textInfo.characterInfo[m_characterCount].isUsingAlternateTypeface;
-				float num12 = 1f;
-				if (m_textElementType == TMP_TextElementType.Character)
-				{
-					if ((m_style & FontStyles.UpperCase) == FontStyles.UpperCase)
-					{
-						if (char.IsLower((char)num4))
-						{
-							num4 = char.ToUpper((char)num4);
-						}
-					}
-					else if ((m_style & FontStyles.LowerCase) == FontStyles.LowerCase)
-					{
-						if (char.IsUpper((char)num4))
-						{
-							num4 = char.ToLower((char)num4);
-						}
-					}
-					else if (((m_fontStyle & FontStyles.SmallCaps) == FontStyles.SmallCaps || (m_style & FontStyles.SmallCaps) == FontStyles.SmallCaps) && char.IsLower((char)num4))
-					{
-						num12 = 0.8f;
-						num4 = char.ToUpper((char)num4);
-					}
-				}
-				if (m_textElementType == TMP_TextElementType.Sprite)
-				{
-					m_currentSpriteAsset = m_textInfo.characterInfo[m_characterCount].spriteAsset;
-					m_spriteIndex = m_textInfo.characterInfo[m_characterCount].spriteIndex;
-					TMP_Sprite tMP_Sprite = m_currentSpriteAsset.spriteInfoList[m_spriteIndex];
-					if (tMP_Sprite == null)
-					{
-						continue;
-					}
-					if (num4 == 60)
-					{
-						num4 = 57344 + m_spriteIndex;
-					}
-					m_currentFontAsset = m_fontAsset;
-					float num13 = m_currentFontSize / m_fontAsset.fontInfo.PointSize * m_fontAsset.fontInfo.Scale * ((!m_isOrthographic) ? 0.1f : 1f);
-					num2 = m_fontAsset.fontInfo.Ascender / tMP_Sprite.height * tMP_Sprite.scale * num13;
-					m_cached_TextElement = tMP_Sprite;
-					m_internalCharacterInfo[m_characterCount].elementType = TMP_TextElementType.Sprite;
-					m_internalCharacterInfo[m_characterCount].scale = num13;
-					m_currentMaterialIndex = currentMaterialIndex;
-				}
-				else if (m_textElementType == TMP_TextElementType.Character)
-				{
-					m_cached_TextElement = m_textInfo.characterInfo[m_characterCount].textElement;
-					if (m_cached_TextElement == null)
-					{
-						continue;
-					}
-					m_currentMaterialIndex = m_textInfo.characterInfo[m_characterCount].materialReferenceIndex;
-					m_fontScale = m_currentFontSize * num12 / m_currentFontAsset.fontInfo.PointSize * m_currentFontAsset.fontInfo.Scale * ((!m_isOrthographic) ? 0.1f : 1f);
-					num2 = m_fontScale * m_fontScaleMultiplier * m_cached_TextElement.scale;
-					m_internalCharacterInfo[m_characterCount].elementType = TMP_TextElementType.Character;
-				}
-				float num14 = num2;
-				if (num4 == 173)
-				{
-					num2 = 0f;
-				}
-				m_internalCharacterInfo[m_characterCount].character = (char)num4;
-				GlyphValueRecord a2 = default(GlyphValueRecord);
-				if (m_enableKerning)
-				{
-					KerningPair value = null;
-					if (m_characterCount < totalCharacterCount - 1)
-					{
-						uint character = m_textInfo.characterInfo[m_characterCount + 1].character;
-						KerningPairKey kerningPairKey = new KerningPairKey((uint)num4, character);
-						m_currentFontAsset.kerningDictionary.TryGetValue((int)kerningPairKey.key, out value);
-						if (value != null)
-						{
-							a2 = value.firstGlyphAdjustments;
-						}
-					}
-					if (m_characterCount >= 1)
-					{
-						uint character2 = m_textInfo.characterInfo[m_characterCount - 1].character;
-						KerningPairKey kerningPairKey2 = new KerningPairKey(character2, (uint)num4);
-						m_currentFontAsset.kerningDictionary.TryGetValue((int)kerningPairKey2.key, out value);
-						if (value != null)
-						{
-							a2 += value.secondGlyphAdjustments;
-						}
-					}
-				}
-				float num15 = 0f;
-				if (m_monoSpacing != 0f)
-				{
-					num15 = m_monoSpacing / 2f - (m_cached_TextElement.width / 2f + m_cached_TextElement.xOffset) * num2;
-					m_xAdvance += num15;
-				}
-				num5 = ((m_textElementType != 0 || isUsingAlternateTypeface || ((m_style & FontStyles.Bold) != FontStyles.Bold && (m_fontStyle & FontStyles.Bold) != FontStyles.Bold)) ? 1f : (1f + m_currentFontAsset.boldSpacing * 0.01f));
-				m_internalCharacterInfo[m_characterCount].baseLine = 0f - m_lineOffset + m_baselineOffset;
-				float num16 = m_currentFontAsset.fontInfo.Ascender * ((m_textElementType != 0) ? m_internalCharacterInfo[m_characterCount].scale : (num2 / num12)) + m_baselineOffset;
-				m_internalCharacterInfo[m_characterCount].ascender = num16 - m_lineOffset;
-				m_maxLineAscender = ((!(num16 > m_maxLineAscender)) ? m_maxLineAscender : num16);
-				float num17 = m_currentFontAsset.fontInfo.Descender * ((m_textElementType != 0) ? m_internalCharacterInfo[m_characterCount].scale : (num2 / num12)) + m_baselineOffset;
-				float num18 = m_internalCharacterInfo[m_characterCount].descender = num17 - m_lineOffset;
-				m_maxLineDescender = ((!(num17 < m_maxLineDescender)) ? m_maxLineDescender : num17);
-				if ((m_style & FontStyles.Subscript) == FontStyles.Subscript || (m_style & FontStyles.Superscript) == FontStyles.Superscript)
-				{
-					float num19 = (num16 - m_baselineOffset) / m_currentFontAsset.fontInfo.SubSize;
-					num16 = m_maxLineAscender;
-					m_maxLineAscender = ((!(num19 > m_maxLineAscender)) ? m_maxLineAscender : num19);
-					float num20 = (num17 - m_baselineOffset) / m_currentFontAsset.fontInfo.SubSize;
-					num17 = m_maxLineDescender;
-					m_maxLineDescender = ((!(num20 < m_maxLineDescender)) ? m_maxLineDescender : num20);
-				}
-				if (m_lineNumber == 0)
-				{
-					m_maxAscender = ((!(m_maxAscender > num16)) ? num16 : m_maxAscender);
-				}
-				if (num4 == 9 || (!char.IsWhiteSpace((char)num4) && num4 != 8203) || m_textElementType == TMP_TextElementType.Sprite)
-				{
-					float num21 = (m_width == -1f) ? (x + 0.0001f - m_marginLeft - m_marginRight) : Mathf.Min(x + 0.0001f - m_marginLeft - m_marginRight, m_width);
-					bool flag3 = (m_lineJustification & (TextAlignmentOptions)16) == (TextAlignmentOptions)16 || (m_lineJustification & (TextAlignmentOptions)8) == (TextAlignmentOptions)8;
-					num10 = m_xAdvance + m_cached_TextElement.xAdvance * (1f - m_charWidthAdjDelta) * ((num4 == 173) ? num14 : num2);
-					if (num10 > num21 * ((!flag3) ? 1f : 1.05f))
-					{
-						if (enableWordWrapping && m_characterCount != m_firstCharacterOfLine)
-						{
-							if (num11 == state2.previous_WordBreak || flag)
+							if ((m_style & FontStyles.UpperCase) == FontStyles.UpperCase)
 							{
-								if (!ignoreTextAutoSizing && m_currentFontSize > m_fontSizeMin)
+								if (char.IsLower((char)num4))
 								{
-									if (m_charWidthAdjDelta < m_charWidthMaxAdj / 100f)
+									num4 = char.ToUpper((char)num4);
+								}
+							}
+							else if ((m_style & FontStyles.LowerCase) == FontStyles.LowerCase)
+							{
+								if (char.IsUpper((char)num4))
+								{
+									num4 = char.ToLower((char)num4);
+								}
+							}
+							else if (((m_fontStyle & FontStyles.SmallCaps) == FontStyles.SmallCaps || (m_style & FontStyles.SmallCaps) == FontStyles.SmallCaps) && char.IsLower((char)num4))
+							{
+								num12 = 0.8f;
+								num4 = char.ToUpper((char)num4);
+							}
+						}
+						if (m_textElementType == TMP_TextElementType.Sprite)
+						{
+							m_currentSpriteAsset = m_textInfo.characterInfo[m_characterCount].spriteAsset;
+							m_spriteIndex = m_textInfo.characterInfo[m_characterCount].spriteIndex;
+							TMP_Sprite tMP_Sprite = m_currentSpriteAsset.spriteInfoList[m_spriteIndex];
+							if (tMP_Sprite == null)
+							{
+								continue;
+							}
+							if (num4 == 60)
+							{
+								num4 = 57344 + m_spriteIndex;
+							}
+							m_currentFontAsset = m_fontAsset;
+							float num13 = m_currentFontSize / m_fontAsset.fontInfo.PointSize * m_fontAsset.fontInfo.Scale * ((!m_isOrthographic) ? 0.1f : 1f);
+							num2 = m_fontAsset.fontInfo.Ascender / tMP_Sprite.height * tMP_Sprite.scale * num13;
+							m_cached_TextElement = tMP_Sprite;
+							m_internalCharacterInfo[m_characterCount].elementType = TMP_TextElementType.Sprite;
+							m_internalCharacterInfo[m_characterCount].scale = num13;
+							m_currentMaterialIndex = currentMaterialIndex;
+						}
+						else if (m_textElementType == TMP_TextElementType.Character)
+						{
+							m_cached_TextElement = m_textInfo.characterInfo[m_characterCount].textElement;
+							if (m_cached_TextElement == null)
+							{
+								continue;
+							}
+							m_currentMaterialIndex = m_textInfo.characterInfo[m_characterCount].materialReferenceIndex;
+							m_fontScale = m_currentFontSize * num12 / m_currentFontAsset.fontInfo.PointSize * m_currentFontAsset.fontInfo.Scale * ((!m_isOrthographic) ? 0.1f : 1f);
+							num2 = m_fontScale * m_fontScaleMultiplier * m_cached_TextElement.scale;
+							m_internalCharacterInfo[m_characterCount].elementType = TMP_TextElementType.Character;
+						}
+						float num14 = num2;
+						if (num4 == 173)
+						{
+							num2 = 0f;
+						}
+						m_internalCharacterInfo[m_characterCount].character = (char)num4;
+						GlyphValueRecord a2 = default(GlyphValueRecord);
+						if (m_enableKerning)
+						{
+							KerningPair value = null;
+							if (m_characterCount < totalCharacterCount - 1)
+							{
+								uint character = m_textInfo.characterInfo[m_characterCount + 1].character;
+								KerningPairKey kerningPairKey = new KerningPairKey((uint)num4, character);
+								m_currentFontAsset.kerningDictionary.TryGetValue((int)kerningPairKey.key, out value);
+								if (value != null)
+								{
+									a2 = value.firstGlyphAdjustments;
+								}
+							}
+							if (m_characterCount >= 1)
+							{
+								uint character2 = m_textInfo.characterInfo[m_characterCount - 1].character;
+								KerningPairKey kerningPairKey2 = new KerningPairKey(character2, (uint)num4);
+								m_currentFontAsset.kerningDictionary.TryGetValue((int)kerningPairKey2.key, out value);
+								if (value != null)
+								{
+									a2 += value.secondGlyphAdjustments;
+								}
+							}
+						}
+						float num15 = 0f;
+						if (m_monoSpacing != 0f)
+						{
+							num15 = m_monoSpacing / 2f - (m_cached_TextElement.width / 2f + m_cached_TextElement.xOffset) * num2;
+							m_xAdvance += num15;
+						}
+						num5 = ((m_textElementType != 0 || isUsingAlternateTypeface || ((m_style & FontStyles.Bold) != FontStyles.Bold && (m_fontStyle & FontStyles.Bold) != FontStyles.Bold)) ? 1f : (1f + m_currentFontAsset.boldSpacing * 0.01f));
+						m_internalCharacterInfo[m_characterCount].baseLine = 0f - m_lineOffset + m_baselineOffset;
+						float num16 = m_currentFontAsset.fontInfo.Ascender * ((m_textElementType != 0) ? m_internalCharacterInfo[m_characterCount].scale : (num2 / num12)) + m_baselineOffset;
+						m_internalCharacterInfo[m_characterCount].ascender = num16 - m_lineOffset;
+						m_maxLineAscender = ((!(num16 > m_maxLineAscender)) ? m_maxLineAscender : num16);
+						float num17 = m_currentFontAsset.fontInfo.Descender * ((m_textElementType != 0) ? m_internalCharacterInfo[m_characterCount].scale : (num2 / num12)) + m_baselineOffset;
+						float num18 = m_internalCharacterInfo[m_characterCount].descender = num17 - m_lineOffset;
+						m_maxLineDescender = ((!(num17 < m_maxLineDescender)) ? m_maxLineDescender : num17);
+						if ((m_style & FontStyles.Subscript) == FontStyles.Subscript || (m_style & FontStyles.Superscript) == FontStyles.Superscript)
+						{
+							float num19 = (num16 - m_baselineOffset) / m_currentFontAsset.fontInfo.SubSize;
+							num16 = m_maxLineAscender;
+							m_maxLineAscender = ((!(num19 > m_maxLineAscender)) ? m_maxLineAscender : num19);
+							float num20 = (num17 - m_baselineOffset) / m_currentFontAsset.fontInfo.SubSize;
+							num17 = m_maxLineDescender;
+							m_maxLineDescender = ((!(num20 < m_maxLineDescender)) ? m_maxLineDescender : num20);
+						}
+						if (m_lineNumber == 0)
+						{
+							m_maxAscender = ((!(m_maxAscender > num16)) ? num16 : m_maxAscender);
+						}
+						if (num4 == 9 || (!char.IsWhiteSpace((char)num4) && num4 != 8203) || m_textElementType == TMP_TextElementType.Sprite)
+						{
+							float num21 = (m_width == -1f) ? (x + 0.0001f - m_marginLeft - m_marginRight) : Mathf.Min(x + 0.0001f - m_marginLeft - m_marginRight, m_width);
+							bool flag3 = (m_lineJustification & (TextAlignmentOptions)16) == (TextAlignmentOptions)16 || (m_lineJustification & (TextAlignmentOptions)8) == (TextAlignmentOptions)8;
+							num10 = m_xAdvance + m_cached_TextElement.xAdvance * (1f - m_charWidthAdjDelta) * ((num4 == 173) ? num14 : num2);
+							if (num10 > num21 * ((!flag3) ? 1f : 1.05f))
+							{
+								if (enableWordWrapping && m_characterCount != m_firstCharacterOfLine)
+								{
+									if (num11 == state2.previous_WordBreak || flag)
 									{
-										m_recursiveCount = 0;
-										m_charWidthAdjDelta += 0.01f;
-										return CalculatePreferredValues(defaultFontSize, marginSize, false);
+										if (!ignoreTextAutoSizing && m_currentFontSize > m_fontSizeMin)
+										{
+											if (!(m_charWidthAdjDelta < m_charWidthMaxAdj / 100f))
+											{
+												m_maxFontSize = defaultFontSize;
+												defaultFontSize -= Mathf.Max((defaultFontSize - m_minFontSize) / 2f, 0.05f);
+												defaultFontSize = (float)(int)(Mathf.Max(defaultFontSize, m_fontSizeMin) * 20f + 0.5f) / 20f;
+												if (m_recursiveCount <= 20)
+												{
+													return CalculatePreferredValues(defaultFontSize, marginSize, false);
+												}
+												return new Vector2(num8, num9);
+											}
+											m_recursiveCount = 0;
+											m_charWidthAdjDelta += 0.01f;
+											return CalculatePreferredValues(defaultFontSize, marginSize, false);
+										}
+										if (!m_isCharacterWrappingEnabled)
+										{
+											m_isCharacterWrappingEnabled = true;
+										}
+										else
+										{
+											flag2 = true;
+										}
 									}
-									m_maxFontSize = defaultFontSize;
-									defaultFontSize -= Mathf.Max((defaultFontSize - m_minFontSize) / 2f, 0.05f);
-									defaultFontSize = (float)(int)(Mathf.Max(defaultFontSize, m_fontSizeMin) * 20f + 0.5f) / 20f;
-									if (m_recursiveCount > 20)
+									i = RestoreWordWrappingState(ref state2);
+									num11 = i;
+									if (m_char_buffer[i] == 173)
 									{
+										m_isTextTruncated = true;
+										m_char_buffer[i] = 45;
+										return CalculatePreferredValues(defaultFontSize, marginSize, true);
+									}
+									if (m_lineNumber > 0 && !TMP_Math.Approximately(m_maxLineAscender, m_startOfLineAscender) && m_lineHeight == -32767f)
+									{
+										float num22 = m_maxLineAscender - m_startOfLineAscender;
+										m_lineOffset += num22;
+										state2.lineOffset = m_lineOffset;
+										state2.previousLineAscender = m_maxLineAscender;
+									}
+									float num23 = m_maxLineAscender - m_lineOffset;
+									float num24 = m_maxLineDescender - m_lineOffset;
+									m_maxDescender = ((!(m_maxDescender < num24)) ? num24 : m_maxDescender);
+									m_firstCharacterOfLine = m_characterCount;
+									num8 += m_xAdvance;
+									num9 = ((!m_enableWordWrapping) ? Mathf.Max(num9, num23 - num24) : (m_maxAscender - m_maxDescender));
+									SaveWordWrappingState(ref state, i, m_characterCount - 1);
+									m_lineNumber++;
+									if (m_lineHeight == -32767f)
+									{
+										float num25 = m_internalCharacterInfo[m_characterCount].ascender - m_internalCharacterInfo[m_characterCount].baseLine;
+										num7 = 0f - m_maxLineDescender + num25 + (num6 + m_lineSpacing + m_lineSpacingDelta) * num;
+										m_lineOffset += num7;
+										m_startOfLineAscender = num25;
+									}
+									else
+									{
+										m_lineOffset += m_lineHeight + m_lineSpacing * num;
+									}
+									m_maxLineAscender = k_LargeNegativeFloat;
+									m_maxLineDescender = k_LargePositiveFloat;
+									m_xAdvance = tag_Indent;
+									continue;
+								}
+								if (!ignoreTextAutoSizing && defaultFontSize > m_fontSizeMin)
+								{
+									if (!(m_charWidthAdjDelta < m_charWidthMaxAdj / 100f))
+									{
+										m_maxFontSize = defaultFontSize;
+										defaultFontSize -= Mathf.Max((defaultFontSize - m_minFontSize) / 2f, 0.05f);
+										defaultFontSize = (float)(int)(Mathf.Max(defaultFontSize, m_fontSizeMin) * 20f + 0.5f) / 20f;
+										if (m_recursiveCount <= 20)
+										{
+											return CalculatePreferredValues(defaultFontSize, marginSize, false);
+										}
 										return new Vector2(num8, num9);
 									}
+									m_recursiveCount = 0;
+									m_charWidthAdjDelta += 0.01f;
 									return CalculatePreferredValues(defaultFontSize, marginSize, false);
 								}
-								if (!m_isCharacterWrappingEnabled)
-								{
-									m_isCharacterWrappingEnabled = true;
-								}
-								else
-								{
-									flag2 = true;
-								}
 							}
-							i = RestoreWordWrappingState(ref state2);
-							num11 = i;
-							if (m_char_buffer[i] == 173)
-							{
-								m_isTextTruncated = true;
-								m_char_buffer[i] = 45;
-								return CalculatePreferredValues(defaultFontSize, marginSize, true);
-							}
-							if (m_lineNumber > 0 && !TMP_Math.Approximately(m_maxLineAscender, m_startOfLineAscender) && m_lineHeight == -32767f)
-							{
-								float num22 = m_maxLineAscender - m_startOfLineAscender;
-								m_lineOffset += num22;
-								state2.lineOffset = m_lineOffset;
-								state2.previousLineAscender = m_maxLineAscender;
-							}
-							float num23 = m_maxLineAscender - m_lineOffset;
-							float num24 = m_maxLineDescender - m_lineOffset;
-							m_maxDescender = ((!(m_maxDescender < num24)) ? num24 : m_maxDescender);
-							m_firstCharacterOfLine = m_characterCount;
-							num8 += m_xAdvance;
-							num9 = ((!m_enableWordWrapping) ? Mathf.Max(num9, num23 - num24) : (m_maxAscender - m_maxDescender));
-							SaveWordWrappingState(ref state, i, m_characterCount - 1);
-							m_lineNumber++;
-							if (m_lineHeight == -32767f)
-							{
-								float num25 = m_internalCharacterInfo[m_characterCount].ascender - m_internalCharacterInfo[m_characterCount].baseLine;
-								num7 = 0f - m_maxLineDescender + num25 + (num6 + m_lineSpacing + m_lineSpacingDelta) * num;
-								m_lineOffset += num7;
-								m_startOfLineAscender = num25;
-							}
-							else
-							{
-								m_lineOffset += m_lineHeight + m_lineSpacing * num;
-							}
-							m_maxLineAscender = k_LargeNegativeFloat;
-							m_maxLineDescender = k_LargePositiveFloat;
-							m_xAdvance = tag_Indent;
-							continue;
 						}
-						if (!ignoreTextAutoSizing && defaultFontSize > m_fontSizeMin)
+						if (m_lineNumber > 0 && !TMP_Math.Approximately(m_maxLineAscender, m_startOfLineAscender) && m_lineHeight == -32767f && !m_isNewPage)
 						{
-							if (m_charWidthAdjDelta < m_charWidthMaxAdj / 100f)
-							{
-								m_recursiveCount = 0;
-								m_charWidthAdjDelta += 0.01f;
-								return CalculatePreferredValues(defaultFontSize, marginSize, false);
-							}
-							m_maxFontSize = defaultFontSize;
-							defaultFontSize -= Mathf.Max((defaultFontSize - m_minFontSize) / 2f, 0.05f);
-							defaultFontSize = (float)(int)(Mathf.Max(defaultFontSize, m_fontSizeMin) * 20f + 0.5f) / 20f;
-							if (m_recursiveCount > 20)
-							{
-								return new Vector2(num8, num9);
-							}
-							return CalculatePreferredValues(defaultFontSize, marginSize, false);
+							float num26 = m_maxLineAscender - m_startOfLineAscender;
+							num18 -= num26;
+							m_lineOffset += num26;
+							m_startOfLineAscender += num26;
+							state2.lineOffset = m_lineOffset;
+							state2.previousLineAscender = m_startOfLineAscender;
 						}
-					}
-				}
-				if (m_lineNumber > 0 && !TMP_Math.Approximately(m_maxLineAscender, m_startOfLineAscender) && m_lineHeight == -32767f && !m_isNewPage)
-				{
-					float num26 = m_maxLineAscender - m_startOfLineAscender;
-					num18 -= num26;
-					m_lineOffset += num26;
-					m_startOfLineAscender += num26;
-					state2.lineOffset = m_lineOffset;
-					state2.previousLineAscender = m_startOfLineAscender;
-				}
-				if (num4 == 9)
-				{
-					float num27 = m_currentFontAsset.fontInfo.TabWidth * num2;
-					float num28 = Mathf.Ceil(m_xAdvance / num27) * num27;
-					m_xAdvance = ((!(num28 > m_xAdvance)) ? (m_xAdvance + num27) : num28);
-				}
-				else if (m_monoSpacing != 0f)
-				{
-					m_xAdvance += (m_monoSpacing - num15 + (m_characterSpacing + m_currentFontAsset.normalSpacingOffset) * num2 + m_cSpacing) * (1f - m_charWidthAdjDelta);
-					if (char.IsWhiteSpace((char)num4) || num4 == 8203)
-					{
-						m_xAdvance += m_wordSpacing * num2;
-					}
-				}
-				else
-				{
-					m_xAdvance += ((m_cached_TextElement.xAdvance * num5 + m_characterSpacing + m_currentFontAsset.normalSpacingOffset + a2.xAdvance) * num2 + m_cSpacing) * (1f - m_charWidthAdjDelta);
-					if (char.IsWhiteSpace((char)num4) || num4 == 8203)
-					{
-						m_xAdvance += m_wordSpacing * num2;
-					}
-				}
-				if (num4 == 13)
-				{
-					a = Mathf.Max(a, num8 + m_xAdvance);
-					num8 = 0f;
-					m_xAdvance = tag_Indent;
-				}
-				if (num4 == 10 || m_characterCount == totalCharacterCount - 1)
-				{
-					if (m_lineNumber > 0 && !TMP_Math.Approximately(m_maxLineAscender, m_startOfLineAscender) && m_lineHeight == -32767f)
-					{
-						float num29 = m_maxLineAscender - m_startOfLineAscender;
-						num18 -= num29;
-						m_lineOffset += num29;
-					}
-					float num30 = m_maxLineDescender - m_lineOffset;
-					m_maxDescender = ((!(m_maxDescender < num30)) ? num30 : m_maxDescender);
-					m_firstCharacterOfLine = m_characterCount + 1;
-					if (num4 == 10 && m_characterCount != totalCharacterCount - 1)
-					{
-						a = Mathf.Max(a, num8 + num10);
-						num8 = 0f;
-					}
-					else
-					{
-						num8 = Mathf.Max(a, num8 + num10);
-					}
-					num9 = m_maxAscender - m_maxDescender;
-					if (num4 == 10)
-					{
-						SaveWordWrappingState(ref state, i, m_characterCount);
-						SaveWordWrappingState(ref state2, i, m_characterCount);
-						m_lineNumber++;
-						if (m_lineHeight == -32767f)
+						if (num4 == 9)
 						{
-							num7 = 0f - m_maxLineDescender + num16 + (num6 + m_lineSpacing + m_paragraphSpacing + m_lineSpacingDelta) * num;
-							m_lineOffset += num7;
+							float num27 = m_currentFontAsset.fontInfo.TabWidth * num2;
+							float num28 = Mathf.Ceil(m_xAdvance / num27) * num27;
+							m_xAdvance = ((!(num28 > m_xAdvance)) ? (m_xAdvance + num27) : num28);
+						}
+						else if (m_monoSpacing != 0f)
+						{
+							m_xAdvance += (m_monoSpacing - num15 + (m_characterSpacing + m_currentFontAsset.normalSpacingOffset) * num2 + m_cSpacing) * (1f - m_charWidthAdjDelta);
+							if (char.IsWhiteSpace((char)num4) || num4 == 8203)
+							{
+								m_xAdvance += m_wordSpacing * num2;
+							}
 						}
 						else
 						{
-							m_lineOffset += m_lineHeight + (m_lineSpacing + m_paragraphSpacing) * num;
+							m_xAdvance += ((m_cached_TextElement.xAdvance * num5 + m_characterSpacing + m_currentFontAsset.normalSpacingOffset + a2.xAdvance) * num2 + m_cSpacing) * (1f - m_charWidthAdjDelta);
+							if (char.IsWhiteSpace((char)num4) || num4 == 8203)
+							{
+								m_xAdvance += m_wordSpacing * num2;
+							}
 						}
-						m_maxLineAscender = k_LargeNegativeFloat;
-						m_maxLineDescender = k_LargePositiveFloat;
-						m_startOfLineAscender = num16;
-						m_xAdvance = tag_LineIndent + tag_Indent;
-						m_characterCount++;
-						continue;
-					}
-				}
-				if (m_enableWordWrapping || m_overflowMode == TextOverflowModes.Truncate || m_overflowMode == TextOverflowModes.Ellipsis)
-				{
-					if ((char.IsWhiteSpace((char)num4) || num4 == 8203 || num4 == 45 || num4 == 173) && !m_isNonBreakingSpace && num4 != 160 && num4 != 8209 && num4 != 8239 && num4 != 8288)
-					{
-						SaveWordWrappingState(ref state2, i, m_characterCount);
-						m_isCharacterWrappingEnabled = false;
-						flag = false;
-					}
-					else if (((num4 > 4352 && num4 < 4607) || (num4 > 11904 && num4 < 40959) || (num4 > 43360 && num4 < 43391) || (num4 > 44032 && num4 < 55295) || (num4 > 63744 && num4 < 64255) || (num4 > 65072 && num4 < 65103) || (num4 > 65280 && num4 < 65519)) && !m_isNonBreakingSpace)
-					{
-						if (flag || flag2 || (!TMP_Settings.linebreakingRules.leadingCharacters.ContainsKey(num4) && m_characterCount < totalCharacterCount - 1 && !TMP_Settings.linebreakingRules.followingCharacters.ContainsKey(m_internalCharacterInfo[m_characterCount + 1].character)))
+						if (num4 == 13)
 						{
-							SaveWordWrappingState(ref state2, i, m_characterCount);
-							m_isCharacterWrappingEnabled = false;
-							flag = false;
+							a = Mathf.Max(a, num8 + m_xAdvance);
+							num8 = 0f;
+							m_xAdvance = tag_Indent;
 						}
+						if (num4 == 10 || m_characterCount == totalCharacterCount - 1)
+						{
+							if (m_lineNumber > 0 && !TMP_Math.Approximately(m_maxLineAscender, m_startOfLineAscender) && m_lineHeight == -32767f)
+							{
+								float num29 = m_maxLineAscender - m_startOfLineAscender;
+								num18 -= num29;
+								m_lineOffset += num29;
+							}
+							float num30 = m_maxLineDescender - m_lineOffset;
+							m_maxDescender = ((!(m_maxDescender < num30)) ? num30 : m_maxDescender);
+							m_firstCharacterOfLine = m_characterCount + 1;
+							if (num4 == 10 && m_characterCount != totalCharacterCount - 1)
+							{
+								a = Mathf.Max(a, num8 + num10);
+								num8 = 0f;
+							}
+							else
+							{
+								num8 = Mathf.Max(a, num8 + num10);
+							}
+							num9 = m_maxAscender - m_maxDescender;
+							if (num4 == 10)
+							{
+								SaveWordWrappingState(ref state, i, m_characterCount);
+								SaveWordWrappingState(ref state2, i, m_characterCount);
+								m_lineNumber++;
+								if (m_lineHeight == -32767f)
+								{
+									num7 = 0f - m_maxLineDescender + num16 + (num6 + m_lineSpacing + m_paragraphSpacing + m_lineSpacingDelta) * num;
+									m_lineOffset += num7;
+								}
+								else
+								{
+									m_lineOffset += m_lineHeight + (m_lineSpacing + m_paragraphSpacing) * num;
+								}
+								m_maxLineAscender = k_LargeNegativeFloat;
+								m_maxLineDescender = k_LargePositiveFloat;
+								m_startOfLineAscender = num16;
+								m_xAdvance = tag_LineIndent + tag_Indent;
+								m_characterCount++;
+								continue;
+							}
+						}
+						if (m_enableWordWrapping || m_overflowMode == TextOverflowModes.Truncate || m_overflowMode == TextOverflowModes.Ellipsis)
+						{
+							if ((char.IsWhiteSpace((char)num4) || num4 == 8203 || num4 == 45 || num4 == 173) && !m_isNonBreakingSpace && num4 != 160 && num4 != 8209 && num4 != 8239 && num4 != 8288)
+							{
+								SaveWordWrappingState(ref state2, i, m_characterCount);
+								m_isCharacterWrappingEnabled = false;
+								flag = false;
+							}
+							else if (((num4 > 4352 && num4 < 4607) || (num4 > 11904 && num4 < 40959) || (num4 > 43360 && num4 < 43391) || (num4 > 44032 && num4 < 55295) || (num4 > 63744 && num4 < 64255) || (num4 > 65072 && num4 < 65103) || (num4 > 65280 && num4 < 65519)) && !m_isNonBreakingSpace)
+							{
+								if (flag || flag2 || (!TMP_Settings.linebreakingRules.leadingCharacters.ContainsKey(num4) && m_characterCount < totalCharacterCount - 1 && !TMP_Settings.linebreakingRules.followingCharacters.ContainsKey(m_internalCharacterInfo[m_characterCount + 1].character)))
+								{
+									SaveWordWrappingState(ref state2, i, m_characterCount);
+									m_isCharacterWrappingEnabled = false;
+									flag = false;
+								}
+							}
+							else if (flag || m_isCharacterWrappingEnabled || flag2)
+							{
+								SaveWordWrappingState(ref state2, i, m_characterCount);
+							}
+						}
+						m_characterCount++;
 					}
-					else if (flag || m_isCharacterWrappingEnabled || flag2)
+					num3 = m_maxFontSize - m_minFontSize;
+					if (!m_isCharacterWrappingEnabled && !ignoreTextAutoSizing && num3 > 0.051f && defaultFontSize < m_fontSizeMax)
 					{
-						SaveWordWrappingState(ref state2, i, m_characterCount);
+						m_minFontSize = defaultFontSize;
+						defaultFontSize += Mathf.Max((m_maxFontSize - defaultFontSize) / 2f, 0.05f);
+						defaultFontSize = (float)(int)(Mathf.Min(defaultFontSize, m_fontSizeMax) * 20f + 0.5f) / 20f;
+						if (m_recursiveCount <= 20)
+						{
+							return CalculatePreferredValues(defaultFontSize, marginSize, false);
+						}
+						return new Vector2(num8, num9);
 					}
-				}
-				m_characterCount++;
-			}
-			num3 = m_maxFontSize - m_minFontSize;
-			if (!m_isCharacterWrappingEnabled && !ignoreTextAutoSizing && num3 > 0.051f && defaultFontSize < m_fontSizeMax)
-			{
-				m_minFontSize = defaultFontSize;
-				defaultFontSize += Mathf.Max((m_maxFontSize - defaultFontSize) / 2f, 0.05f);
-				defaultFontSize = (float)(int)(Mathf.Min(defaultFontSize, m_fontSizeMax) * 20f + 0.5f) / 20f;
-				if (m_recursiveCount > 20)
-				{
+					m_isCharacterWrappingEnabled = false;
+					m_isCalculatingPreferredValues = false;
+					num8 += ((!(m_margin.x > 0f)) ? 0f : m_margin.x);
+					num8 += ((!(m_margin.z > 0f)) ? 0f : m_margin.z);
+					num9 += ((!(m_margin.y > 0f)) ? 0f : m_margin.y);
+					num9 += ((!(m_margin.w > 0f)) ? 0f : m_margin.w);
+					num8 = (float)(int)(num8 * 100f + 1f) / 100f;
+					num9 = (float)(int)(num9 * 100f + 1f) / 100f;
 					return new Vector2(num8, num9);
 				}
-				return CalculatePreferredValues(defaultFontSize, marginSize, false);
+				return Vector2.zero;
 			}
-			m_isCharacterWrappingEnabled = false;
-			m_isCalculatingPreferredValues = false;
-			num8 += ((!(m_margin.x > 0f)) ? 0f : m_margin.x);
-			num8 += ((!(m_margin.z > 0f)) ? 0f : m_margin.z);
-			num9 += ((!(m_margin.y > 0f)) ? 0f : m_margin.y);
-			num9 += ((!(m_margin.w > 0f)) ? 0f : m_margin.w);
-			num8 = (float)(int)(num8 * 100f + 1f) / 100f;
-			num9 = (float)(int)(num9 * 100f + 1f) / 100f;
-			return new Vector2(num8, num9);
+			Debug.LogWarning("Can't Generate Mesh! No Font Asset has been assigned to Object ID: " + GetInstanceID(), null);
+			return Vector2.zero;
 		}
 
 		protected virtual Bounds GetCompoundBounds()
@@ -3932,50 +3932,50 @@ namespace TMPro
 
 		protected Bounds GetTextBounds()
 		{
-			if (m_textInfo == null || m_textInfo.characterCount > m_textInfo.characterInfo.Length)
+			if (m_textInfo != null && m_textInfo.characterCount <= m_textInfo.characterInfo.Length)
 			{
-				return default(Bounds);
-			}
-			Extents extents = new Extents(k_LargePositiveVector2, k_LargeNegativeVector2);
-			for (int i = 0; i < m_textInfo.characterCount && i < m_textInfo.characterInfo.Length; i++)
-			{
-				if (m_textInfo.characterInfo[i].isVisible)
+				Extents extents = new Extents(k_LargePositiveVector2, k_LargeNegativeVector2);
+				for (int i = 0; i < m_textInfo.characterCount && i < m_textInfo.characterInfo.Length; i++)
 				{
-					extents.min.x = Mathf.Min(extents.min.x, m_textInfo.characterInfo[i].bottomLeft.x);
-					extents.min.y = Mathf.Min(extents.min.y, m_textInfo.characterInfo[i].descender);
-					extents.max.x = Mathf.Max(extents.max.x, m_textInfo.characterInfo[i].xAdvance);
-					extents.max.y = Mathf.Max(extents.max.y, m_textInfo.characterInfo[i].ascender);
+					if (m_textInfo.characterInfo[i].isVisible)
+					{
+						extents.min.x = Mathf.Min(extents.min.x, m_textInfo.characterInfo[i].bottomLeft.x);
+						extents.min.y = Mathf.Min(extents.min.y, m_textInfo.characterInfo[i].descender);
+						extents.max.x = Mathf.Max(extents.max.x, m_textInfo.characterInfo[i].xAdvance);
+						extents.max.y = Mathf.Max(extents.max.y, m_textInfo.characterInfo[i].ascender);
+					}
 				}
+				Vector2 v = default(Vector2);
+				v.x = extents.max.x - extents.min.x;
+				v.y = extents.max.y - extents.min.y;
+				Vector3 center = (extents.min + extents.max) / 2f;
+				return new Bounds(center, v);
 			}
-			Vector2 v = default(Vector2);
-			v.x = extents.max.x - extents.min.x;
-			v.y = extents.max.y - extents.min.y;
-			Vector3 center = (extents.min + extents.max) / 2f;
-			return new Bounds(center, v);
+			return default(Bounds);
 		}
 
 		protected Bounds GetTextBounds(bool onlyVisibleCharacters)
 		{
-			if (m_textInfo == null)
+			if (m_textInfo != null)
 			{
-				return default(Bounds);
-			}
-			Extents extents = new Extents(k_LargePositiveVector2, k_LargeNegativeVector2);
-			for (int i = 0; i < m_textInfo.characterCount && ((i <= maxVisibleCharacters && m_textInfo.characterInfo[i].lineNumber <= m_maxVisibleLines) || !onlyVisibleCharacters); i++)
-			{
-				if (!onlyVisibleCharacters || m_textInfo.characterInfo[i].isVisible)
+				Extents extents = new Extents(k_LargePositiveVector2, k_LargeNegativeVector2);
+				for (int i = 0; i < m_textInfo.characterCount && ((i <= maxVisibleCharacters && m_textInfo.characterInfo[i].lineNumber <= m_maxVisibleLines) || !onlyVisibleCharacters); i++)
 				{
-					extents.min.x = Mathf.Min(extents.min.x, m_textInfo.characterInfo[i].origin);
-					extents.min.y = Mathf.Min(extents.min.y, m_textInfo.characterInfo[i].descender);
-					extents.max.x = Mathf.Max(extents.max.x, m_textInfo.characterInfo[i].xAdvance);
-					extents.max.y = Mathf.Max(extents.max.y, m_textInfo.characterInfo[i].ascender);
+					if (!onlyVisibleCharacters || m_textInfo.characterInfo[i].isVisible)
+					{
+						extents.min.x = Mathf.Min(extents.min.x, m_textInfo.characterInfo[i].origin);
+						extents.min.y = Mathf.Min(extents.min.y, m_textInfo.characterInfo[i].descender);
+						extents.max.x = Mathf.Max(extents.max.x, m_textInfo.characterInfo[i].xAdvance);
+						extents.max.y = Mathf.Max(extents.max.y, m_textInfo.characterInfo[i].ascender);
+					}
 				}
+				Vector2 v = default(Vector2);
+				v.x = extents.max.x - extents.min.x;
+				v.y = extents.max.y - extents.min.y;
+				Vector2 v2 = (extents.min + extents.max) / 2f;
+				return new Bounds(v2, v);
 			}
-			Vector2 v = default(Vector2);
-			v.x = extents.max.x - extents.min.x;
-			v.y = extents.max.y - extents.min.y;
-			Vector2 v2 = (extents.min + extents.max) / 2f;
-			return new Bounds(v2, v);
+			return default(Bounds);
 		}
 
 		protected virtual void AdjustLineOffset(int startIndex, int endIndex, float offset)
@@ -4532,10 +4532,10 @@ namespace TMPro
 		{
 			if (fontAsset.characterDictionary.TryGetValue(95, out m_cached_Underline_GlyphInfo))
 			{
-				goto IL_0018;
+				goto IL_001b;
 			}
-			goto IL_0018;
-			IL_0018:
+			goto IL_001b;
+			IL_001b:
 			if (fontAsset.characterDictionary.TryGetValue(8230, out m_cached_Ellipsis_GlyphInfo))
 			{
 				return;
@@ -4581,17 +4581,17 @@ namespace TMPro
 
 		public virtual string GetParsedText()
 		{
-			if (m_textInfo == null)
+			if (m_textInfo != null)
 			{
-				return string.Empty;
+				int characterCount = m_textInfo.characterCount;
+				char[] array = new char[characterCount];
+				for (int i = 0; i < characterCount && i < m_textInfo.characterInfo.Length; i++)
+				{
+					array[i] = m_textInfo.characterInfo[i].character;
+				}
+				return new string(array);
 			}
-			int characterCount = m_textInfo.characterCount;
-			char[] array = new char[characterCount];
-			for (int i = 0; i < characterCount && i < m_textInfo.characterInfo.Length; i++)
-			{
-				array[i] = m_textInfo.characterInfo[i].character;
-			}
-			return new string(array);
+			return string.Empty;
 		}
 
 		protected Vector2 PackUV(float x, float y, float scale)
@@ -4800,66 +4800,66 @@ namespace TMPro
 
 		protected float ConvertToFloat(char[] chars, int startIndex, int length, out int lastIndex)
 		{
-			if (startIndex == 0)
+			if (startIndex != 0)
 			{
-				lastIndex = 0;
-				return -9999f;
-			}
-			int num = startIndex + length;
-			bool flag = true;
-			float num2 = 0f;
-			int num3 = 1;
-			if (chars[startIndex] == '+')
-			{
-				num3 = 1;
-				startIndex++;
-			}
-			else if (chars[startIndex] == '-')
-			{
-				num3 = -1;
-				startIndex++;
-			}
-			float num4 = 0f;
-			for (int i = startIndex; i < num; i++)
-			{
-				uint num5 = chars[i];
-				if (num5 < 48 || num5 > 57)
+				int num = startIndex + length;
+				bool flag = true;
+				float num2 = 0f;
+				int num3 = 1;
+				if (chars[startIndex] == '+')
 				{
-					switch (num5)
+					num3 = 1;
+					startIndex++;
+				}
+				else if (chars[startIndex] == '-')
+				{
+					num3 = -1;
+					startIndex++;
+				}
+				float num4 = 0f;
+				for (int i = startIndex; i < num; i++)
+				{
+					uint num5 = chars[i];
+					if (num5 < 48 || num5 > 57)
 					{
-					case 46u:
-						break;
-					case 44u:
-						if (i + 1 < num && chars[i + 1] == ' ')
+						switch (num5)
 						{
-							lastIndex = i + 1;
+						case 46u:
+							break;
+						case 44u:
+							if (i + 1 < num && chars[i + 1] == ' ')
+							{
+								lastIndex = i + 1;
+							}
+							else
+							{
+								lastIndex = i;
+							}
+							return num4;
+						default:
+							continue;
 						}
-						else
-						{
-							lastIndex = i;
-						}
-						return num4;
-					default:
-						continue;
+					}
+					if (num5 == 46)
+					{
+						flag = false;
+						num2 = 0.1f;
+					}
+					else if (flag)
+					{
+						num4 = num4 * 10f + (float)((num5 - 48) * num3);
+					}
+					else
+					{
+						num4 += (float)(double)(num5 - 48) * num2 * (float)num3;
+						num2 *= 0.1f;
 					}
 				}
-				if (num5 == 46)
-				{
-					flag = false;
-					num2 = 0.1f;
-				}
-				else if (flag)
-				{
-					num4 = num4 * 10f + (float)((num5 - 48) * num3);
-				}
-				else
-				{
-					num4 += (float)(double)(num5 - 48) * num2 * (float)num3;
-					num2 *= 0.1f;
-				}
+				lastIndex = num;
+				return num4;
 			}
-			lastIndex = num;
-			return num4;
+			lastIndex = 0;
+			return -9999f;
 		}
 
 		protected bool ValidateHtmlTag(int[] chars, int startIndex, out int endIndex)
@@ -5029,635 +5029,1171 @@ namespace TMPro
 					b = 0;
 				}
 			}
-			if (!flag2)
+			if (flag2)
 			{
-				return false;
-			}
-			if (tag_NoParsing && m_xmlAttribute[0].nameHashCode != 53822163 && m_xmlAttribute[0].nameHashCode != 49429939)
-			{
-				return false;
-			}
-			if (m_xmlAttribute[0].nameHashCode == 53822163 || m_xmlAttribute[0].nameHashCode == 49429939)
-			{
-				tag_NoParsing = false;
-				return true;
-			}
-			if (m_htmlTag[0] == '#' && num == 4)
-			{
-				m_htmlColor = HexCharsToColor(m_htmlTag, num);
-				m_colorStack.Add(m_htmlColor);
-				return true;
-			}
-			if (m_htmlTag[0] == '#' && num == 5)
-			{
-				m_htmlColor = HexCharsToColor(m_htmlTag, num);
-				m_colorStack.Add(m_htmlColor);
-				return true;
-			}
-			if (m_htmlTag[0] == '#' && num == 7)
-			{
-				m_htmlColor = HexCharsToColor(m_htmlTag, num);
-				m_colorStack.Add(m_htmlColor);
-				return true;
-			}
-			if (m_htmlTag[0] != '#' || num != 9)
-			{
-				float num3 = 0f;
-				Material material;
-				switch (m_xmlAttribute[0].nameHashCode)
+				if (tag_NoParsing && m_xmlAttribute[0].nameHashCode != 53822163 && m_xmlAttribute[0].nameHashCode != 49429939)
 				{
-				case 66:
-				case 98:
-					m_style |= FontStyles.Bold;
-					m_fontStyleStack.Add(FontStyles.Bold);
-					m_fontWeightInternal = 700;
-					m_fontWeightStack.Add(700);
-					return true;
-				case 395:
-				case 427:
-					if ((m_fontStyle & FontStyles.Bold) != FontStyles.Bold)
+					return false;
+				}
+				if (m_xmlAttribute[0].nameHashCode != 53822163 && m_xmlAttribute[0].nameHashCode != 49429939)
+				{
+					if (m_htmlTag[0] == '#' && num == 4)
 					{
-						m_fontWeightInternal = m_fontWeightStack.Remove();
-						if (m_fontStyleStack.Remove(FontStyles.Bold) == 0)
-						{
-							m_style &= (FontStyles)(-2);
-						}
-					}
-					return true;
-				case 73:
-				case 105:
-					m_style |= FontStyles.Italic;
-					m_fontStyleStack.Add(FontStyles.Italic);
-					return true;
-				case 402:
-				case 434:
-					if (m_fontStyleStack.Remove(FontStyles.Italic) == 0)
-					{
-						m_style &= (FontStyles)(-3);
-					}
-					return true;
-				case 83:
-				case 115:
-					m_style |= FontStyles.Strikethrough;
-					m_fontStyleStack.Add(FontStyles.Strikethrough);
-					if (m_xmlAttribute[1].nameHashCode == 281955 || m_xmlAttribute[1].nameHashCode == 192323)
-					{
-						m_strikethroughColor = HexCharsToColor(m_htmlTag, m_xmlAttribute[1].valueStartIndex, m_xmlAttribute[1].valueLength);
-					}
-					else
-					{
-						m_strikethroughColor = m_htmlColor;
-					}
-					m_strikethroughColorStack.Add(m_strikethroughColor);
-					return true;
-				case 412:
-				case 444:
-					if ((m_fontStyle & FontStyles.Strikethrough) != FontStyles.Strikethrough && m_fontStyleStack.Remove(FontStyles.Strikethrough) == 0)
-					{
-						m_style &= (FontStyles)(-65);
-					}
-					return true;
-				case 85:
-				case 117:
-					m_style |= FontStyles.Underline;
-					m_fontStyleStack.Add(FontStyles.Underline);
-					if (m_xmlAttribute[1].nameHashCode == 281955 || m_xmlAttribute[1].nameHashCode == 192323)
-					{
-						m_underlineColor = HexCharsToColor(m_htmlTag, m_xmlAttribute[1].valueStartIndex, m_xmlAttribute[1].valueLength);
-					}
-					else
-					{
-						m_underlineColor = m_htmlColor;
-					}
-					m_underlineColorStack.Add(m_underlineColor);
-					return true;
-				case 414:
-				case 446:
-					if ((m_fontStyle & FontStyles.Underline) != FontStyles.Underline)
-					{
-						m_underlineColor = m_underlineColorStack.Remove();
-						if (m_fontStyleStack.Remove(FontStyles.Underline) == 0)
-						{
-							m_style &= (FontStyles)(-5);
-						}
-					}
-					return true;
-				case 30245:
-				case 43045:
-					m_style |= FontStyles.Highlight;
-					m_fontStyleStack.Add(FontStyles.Highlight);
-					m_highlightColor = HexCharsToColor(m_htmlTag, m_xmlAttribute[0].valueStartIndex, m_xmlAttribute[0].valueLength);
-					m_highlightColorStack.Add(m_highlightColor);
-					return true;
-				case 143092:
-				case 155892:
-					if ((m_fontStyle & FontStyles.Highlight) != FontStyles.Highlight)
-					{
-						m_highlightColor = m_highlightColorStack.Remove();
-						if (m_fontStyleStack.Remove(FontStyles.Highlight) == 0)
-						{
-							m_style &= (FontStyles)(-513);
-						}
-					}
-					return true;
-				case 4728:
-				case 6552:
-					m_fontScaleMultiplier *= ((!(m_currentFontAsset.fontInfo.SubSize > 0f)) ? 1f : m_currentFontAsset.fontInfo.SubSize);
-					m_baselineOffsetStack.Push(m_baselineOffset);
-					m_baselineOffset += m_currentFontAsset.fontInfo.SubscriptOffset * m_fontScale * m_fontScaleMultiplier;
-					m_fontStyleStack.Add(FontStyles.Subscript);
-					m_style |= FontStyles.Subscript;
-					return true;
-				case 20849:
-				case 22673:
-					if ((m_style & FontStyles.Subscript) == FontStyles.Subscript)
-					{
-						if (m_fontScaleMultiplier < 1f)
-						{
-							m_baselineOffset = m_baselineOffsetStack.Pop();
-							m_fontScaleMultiplier /= ((!(m_currentFontAsset.fontInfo.SubSize > 0f)) ? 1f : m_currentFontAsset.fontInfo.SubSize);
-						}
-						if (m_fontStyleStack.Remove(FontStyles.Subscript) == 0)
-						{
-							m_style &= (FontStyles)(-257);
-						}
-					}
-					return true;
-				case 4742:
-				case 6566:
-					m_fontScaleMultiplier *= ((!(m_currentFontAsset.fontInfo.SubSize > 0f)) ? 1f : m_currentFontAsset.fontInfo.SubSize);
-					m_baselineOffsetStack.Push(m_baselineOffset);
-					m_baselineOffset += m_currentFontAsset.fontInfo.SuperscriptOffset * m_fontScale * m_fontScaleMultiplier;
-					m_fontStyleStack.Add(FontStyles.Superscript);
-					m_style |= FontStyles.Superscript;
-					return true;
-				case 20863:
-				case 22687:
-					if ((m_style & FontStyles.Superscript) == FontStyles.Superscript)
-					{
-						if (m_fontScaleMultiplier < 1f)
-						{
-							m_baselineOffset = m_baselineOffsetStack.Pop();
-							m_fontScaleMultiplier /= ((!(m_currentFontAsset.fontInfo.SubSize > 0f)) ? 1f : m_currentFontAsset.fontInfo.SubSize);
-						}
-						if (m_fontStyleStack.Remove(FontStyles.Superscript) == 0)
-						{
-							m_style &= (FontStyles)(-129);
-						}
-					}
-					return true;
-				case -330774850:
-				case 2012149182:
-					num3 = ConvertToFloat(m_htmlTag, m_xmlAttribute[0].valueStartIndex, m_xmlAttribute[0].valueLength);
-					if (num3 == -9999f)
-					{
-						return false;
-					}
-					if ((m_fontStyle & FontStyles.Bold) == FontStyles.Bold)
-					{
+						m_htmlColor = HexCharsToColor(m_htmlTag, num);
+						m_colorStack.Add(m_htmlColor);
 						return true;
 					}
-					m_style &= (FontStyles)(-2);
-					switch ((int)num3)
+					if (m_htmlTag[0] == '#' && num == 5)
 					{
-					case 100:
-						m_fontWeightInternal = 100;
-						break;
-					case 200:
-						m_fontWeightInternal = 200;
-						break;
-					case 300:
-						m_fontWeightInternal = 300;
-						break;
-					case 400:
-						m_fontWeightInternal = 400;
-						break;
-					case 500:
-						m_fontWeightInternal = 500;
-						break;
-					case 600:
-						m_fontWeightInternal = 600;
-						break;
-					case 700:
-						m_fontWeightInternal = 700;
-						m_style |= FontStyles.Bold;
-						break;
-					case 800:
-						m_fontWeightInternal = 800;
-						break;
-					case 900:
-						m_fontWeightInternal = 900;
-						break;
+						m_htmlColor = HexCharsToColor(m_htmlTag, num);
+						m_colorStack.Add(m_htmlColor);
+						return true;
 					}
-					m_fontWeightStack.Add(m_fontWeightInternal);
-					return true;
-				case -1885698441:
-				case 457225591:
-					m_fontWeightInternal = m_fontWeightStack.Remove();
-					if (m_fontWeightInternal == 400)
+					if (m_htmlTag[0] == '#' && num == 7)
 					{
-						m_style &= (FontStyles)(-2);
+						m_htmlColor = HexCharsToColor(m_htmlTag, num);
+						m_colorStack.Add(m_htmlColor);
+						return true;
 					}
-					return true;
-				case 4556:
-				case 6380:
-					num3 = ConvertToFloat(m_htmlTag, m_xmlAttribute[0].valueStartIndex, m_xmlAttribute[0].valueLength);
-					if (num3 != -9999f)
+					if (m_htmlTag[0] != '#' || num != 9)
 					{
-						switch (tagUnits)
+						float num3 = 0f;
+						Material material;
+						switch (m_xmlAttribute[0].nameHashCode)
 						{
-						case TagUnits.Pixels:
-							m_xAdvance = num3;
+						case 66:
+						case 98:
+							m_style |= FontStyles.Bold;
+							m_fontStyleStack.Add(FontStyles.Bold);
+							m_fontWeightInternal = 700;
+							m_fontWeightStack.Add(700);
 							return true;
-						case TagUnits.FontUnits:
-							m_xAdvance = num3 * m_fontScale * m_fontAsset.fontInfo.TabWidth / (float)(int)m_fontAsset.tabSize;
-							return true;
-						case TagUnits.Percentage:
-							m_xAdvance = m_marginWidth * num3 / 100f;
-							return true;
-						default:
-							return false;
-						}
-					}
-					return false;
-				case 20677:
-				case 22501:
-					m_isIgnoringAlignment = false;
-					return true;
-				case 11642281:
-				case 16034505:
-					num3 = ConvertToFloat(m_htmlTag, m_xmlAttribute[0].valueStartIndex, m_xmlAttribute[0].valueLength);
-					if (num3 != -9999f)
-					{
-						switch (tagUnits)
-						{
-						case TagUnits.Pixels:
-							m_baselineOffset = num3;
-							return true;
-						case TagUnits.FontUnits:
-							m_baselineOffset = num3 * m_fontScale * m_fontAsset.fontInfo.Ascender;
-							return true;
-						case TagUnits.Percentage:
-							return false;
-						default:
-							return false;
-						}
-					}
-					return false;
-				case 50348802:
-				case 54741026:
-					m_baselineOffset = 0f;
-					return true;
-				case 31191:
-				case 43991:
-					if (m_overflowMode == TextOverflowModes.Page)
-					{
-						m_xAdvance = tag_LineIndent + tag_Indent;
-						m_lineOffset = 0f;
-						m_pageNumber++;
-						m_isNewPage = true;
-					}
-					return true;
-				case 31169:
-				case 43969:
-					m_isNonBreakingSpace = true;
-					return true;
-				case 144016:
-				case 156816:
-					m_isNonBreakingSpace = false;
-					return true;
-				case 32745:
-				case 45545:
-					num3 = ConvertToFloat(m_htmlTag, m_xmlAttribute[0].valueStartIndex, m_xmlAttribute[0].valueLength);
-					if (num3 != -9999f)
-					{
-						switch (tagUnits)
-						{
-						case TagUnits.Pixels:
-							if (m_htmlTag[5] == '+')
+						case 395:
+						case 427:
+							if ((m_fontStyle & FontStyles.Bold) != FontStyles.Bold)
 							{
-								m_currentFontSize = m_fontSize + num3;
-								m_sizeStack.Add(m_currentFontSize);
+								m_fontWeightInternal = m_fontWeightStack.Remove();
+								if (m_fontStyleStack.Remove(FontStyles.Bold) == 0)
+								{
+									m_style &= (FontStyles)(-2);
+								}
+							}
+							return true;
+						case 73:
+						case 105:
+							m_style |= FontStyles.Italic;
+							m_fontStyleStack.Add(FontStyles.Italic);
+							return true;
+						case 402:
+						case 434:
+							if (m_fontStyleStack.Remove(FontStyles.Italic) == 0)
+							{
+								m_style &= (FontStyles)(-3);
+							}
+							return true;
+						case 83:
+						case 115:
+							m_style |= FontStyles.Strikethrough;
+							m_fontStyleStack.Add(FontStyles.Strikethrough);
+							if (m_xmlAttribute[1].nameHashCode == 281955 || m_xmlAttribute[1].nameHashCode == 192323)
+							{
+								m_strikethroughColor = HexCharsToColor(m_htmlTag, m_xmlAttribute[1].valueStartIndex, m_xmlAttribute[1].valueLength);
+							}
+							else
+							{
+								m_strikethroughColor = m_htmlColor;
+							}
+							m_strikethroughColorStack.Add(m_strikethroughColor);
+							return true;
+						case 412:
+						case 444:
+							if ((m_fontStyle & FontStyles.Strikethrough) != FontStyles.Strikethrough && m_fontStyleStack.Remove(FontStyles.Strikethrough) == 0)
+							{
+								m_style &= (FontStyles)(-65);
+							}
+							return true;
+						case 85:
+						case 117:
+							m_style |= FontStyles.Underline;
+							m_fontStyleStack.Add(FontStyles.Underline);
+							if (m_xmlAttribute[1].nameHashCode == 281955 || m_xmlAttribute[1].nameHashCode == 192323)
+							{
+								m_underlineColor = HexCharsToColor(m_htmlTag, m_xmlAttribute[1].valueStartIndex, m_xmlAttribute[1].valueLength);
+							}
+							else
+							{
+								m_underlineColor = m_htmlColor;
+							}
+							m_underlineColorStack.Add(m_underlineColor);
+							return true;
+						case 414:
+						case 446:
+							if ((m_fontStyle & FontStyles.Underline) != FontStyles.Underline)
+							{
+								m_underlineColor = m_underlineColorStack.Remove();
+								if (m_fontStyleStack.Remove(FontStyles.Underline) == 0)
+								{
+									m_style &= (FontStyles)(-5);
+								}
+							}
+							return true;
+						case 30245:
+						case 43045:
+							m_style |= FontStyles.Highlight;
+							m_fontStyleStack.Add(FontStyles.Highlight);
+							m_highlightColor = HexCharsToColor(m_htmlTag, m_xmlAttribute[0].valueStartIndex, m_xmlAttribute[0].valueLength);
+							m_highlightColorStack.Add(m_highlightColor);
+							return true;
+						case 143092:
+						case 155892:
+							if ((m_fontStyle & FontStyles.Highlight) != FontStyles.Highlight)
+							{
+								m_highlightColor = m_highlightColorStack.Remove();
+								if (m_fontStyleStack.Remove(FontStyles.Highlight) == 0)
+								{
+									m_style &= (FontStyles)(-513);
+								}
+							}
+							return true;
+						case 4728:
+						case 6552:
+							m_fontScaleMultiplier *= ((!(m_currentFontAsset.fontInfo.SubSize > 0f)) ? 1f : m_currentFontAsset.fontInfo.SubSize);
+							m_baselineOffsetStack.Push(m_baselineOffset);
+							m_baselineOffset += m_currentFontAsset.fontInfo.SubscriptOffset * m_fontScale * m_fontScaleMultiplier;
+							m_fontStyleStack.Add(FontStyles.Subscript);
+							m_style |= FontStyles.Subscript;
+							return true;
+						case 20849:
+						case 22673:
+							if ((m_style & FontStyles.Subscript) == FontStyles.Subscript)
+							{
+								if (m_fontScaleMultiplier < 1f)
+								{
+									m_baselineOffset = m_baselineOffsetStack.Pop();
+									m_fontScaleMultiplier /= ((!(m_currentFontAsset.fontInfo.SubSize > 0f)) ? 1f : m_currentFontAsset.fontInfo.SubSize);
+								}
+								if (m_fontStyleStack.Remove(FontStyles.Subscript) == 0)
+								{
+									m_style &= (FontStyles)(-257);
+								}
+							}
+							return true;
+						case 4742:
+						case 6566:
+							m_fontScaleMultiplier *= ((!(m_currentFontAsset.fontInfo.SubSize > 0f)) ? 1f : m_currentFontAsset.fontInfo.SubSize);
+							m_baselineOffsetStack.Push(m_baselineOffset);
+							m_baselineOffset += m_currentFontAsset.fontInfo.SuperscriptOffset * m_fontScale * m_fontScaleMultiplier;
+							m_fontStyleStack.Add(FontStyles.Superscript);
+							m_style |= FontStyles.Superscript;
+							return true;
+						case 20863:
+						case 22687:
+							if ((m_style & FontStyles.Superscript) == FontStyles.Superscript)
+							{
+								if (m_fontScaleMultiplier < 1f)
+								{
+									m_baselineOffset = m_baselineOffsetStack.Pop();
+									m_fontScaleMultiplier /= ((!(m_currentFontAsset.fontInfo.SubSize > 0f)) ? 1f : m_currentFontAsset.fontInfo.SubSize);
+								}
+								if (m_fontStyleStack.Remove(FontStyles.Superscript) == 0)
+								{
+									m_style &= (FontStyles)(-129);
+								}
+							}
+							return true;
+						case -330774850:
+						case 2012149182:
+							num3 = ConvertToFloat(m_htmlTag, m_xmlAttribute[0].valueStartIndex, m_xmlAttribute[0].valueLength);
+							if (num3 != -9999f)
+							{
+								if ((m_fontStyle & FontStyles.Bold) != FontStyles.Bold)
+								{
+									m_style &= (FontStyles)(-2);
+									switch ((int)num3)
+									{
+									case 100:
+										m_fontWeightInternal = 100;
+										break;
+									case 200:
+										m_fontWeightInternal = 200;
+										break;
+									case 300:
+										m_fontWeightInternal = 300;
+										break;
+									case 400:
+										m_fontWeightInternal = 400;
+										break;
+									case 500:
+										m_fontWeightInternal = 500;
+										break;
+									case 600:
+										m_fontWeightInternal = 600;
+										break;
+									case 700:
+										m_fontWeightInternal = 700;
+										m_style |= FontStyles.Bold;
+										break;
+									case 800:
+										m_fontWeightInternal = 800;
+										break;
+									case 900:
+										m_fontWeightInternal = 900;
+										break;
+									}
+									m_fontWeightStack.Add(m_fontWeightInternal);
+									return true;
+								}
+								return true;
+							}
+							return false;
+						case -1885698441:
+						case 457225591:
+							m_fontWeightInternal = m_fontWeightStack.Remove();
+							if (m_fontWeightInternal == 400)
+							{
+								m_style &= (FontStyles)(-2);
+							}
+							return true;
+						case 4556:
+						case 6380:
+							num3 = ConvertToFloat(m_htmlTag, m_xmlAttribute[0].valueStartIndex, m_xmlAttribute[0].valueLength);
+							if (num3 != -9999f)
+							{
+								switch (tagUnits)
+								{
+								case TagUnits.Pixels:
+									m_xAdvance = num3;
+									return true;
+								case TagUnits.FontUnits:
+									m_xAdvance = num3 * m_fontScale * m_fontAsset.fontInfo.TabWidth / (float)(int)m_fontAsset.tabSize;
+									return true;
+								case TagUnits.Percentage:
+									m_xAdvance = m_marginWidth * num3 / 100f;
+									return true;
+								default:
+									return false;
+								}
+							}
+							return false;
+						case 20677:
+						case 22501:
+							m_isIgnoringAlignment = false;
+							return true;
+						case 11642281:
+						case 16034505:
+							num3 = ConvertToFloat(m_htmlTag, m_xmlAttribute[0].valueStartIndex, m_xmlAttribute[0].valueLength);
+							if (num3 != -9999f)
+							{
+								switch (tagUnits)
+								{
+								case TagUnits.Pixels:
+									m_baselineOffset = num3;
+									return true;
+								case TagUnits.FontUnits:
+									m_baselineOffset = num3 * m_fontScale * m_fontAsset.fontInfo.Ascender;
+									return true;
+								case TagUnits.Percentage:
+									return false;
+								default:
+									return false;
+								}
+							}
+							return false;
+						case 50348802:
+						case 54741026:
+							m_baselineOffset = 0f;
+							return true;
+						case 31191:
+						case 43991:
+							if (m_overflowMode == TextOverflowModes.Page)
+							{
+								m_xAdvance = tag_LineIndent + tag_Indent;
+								m_lineOffset = 0f;
+								m_pageNumber++;
+								m_isNewPage = true;
+							}
+							return true;
+						case 31169:
+						case 43969:
+							m_isNonBreakingSpace = true;
+							return true;
+						case 144016:
+						case 156816:
+							m_isNonBreakingSpace = false;
+							return true;
+						case 32745:
+						case 45545:
+							num3 = ConvertToFloat(m_htmlTag, m_xmlAttribute[0].valueStartIndex, m_xmlAttribute[0].valueLength);
+							if (num3 != -9999f)
+							{
+								switch (tagUnits)
+								{
+								case TagUnits.Pixels:
+									if (m_htmlTag[5] != '+')
+									{
+										if (m_htmlTag[5] != '-')
+										{
+											m_currentFontSize = num3;
+											m_sizeStack.Add(m_currentFontSize);
+											m_fontScale = m_currentFontSize / m_currentFontAsset.fontInfo.PointSize * m_currentFontAsset.fontInfo.Scale * ((!m_isOrthographic) ? 0.1f : 1f);
+											return true;
+										}
+										m_currentFontSize = m_fontSize + num3;
+										m_sizeStack.Add(m_currentFontSize);
+										m_fontScale = m_currentFontSize / m_currentFontAsset.fontInfo.PointSize * m_currentFontAsset.fontInfo.Scale * ((!m_isOrthographic) ? 0.1f : 1f);
+										return true;
+									}
+									m_currentFontSize = m_fontSize + num3;
+									m_sizeStack.Add(m_currentFontSize);
+									m_fontScale = m_currentFontSize / m_currentFontAsset.fontInfo.PointSize * m_currentFontAsset.fontInfo.Scale * ((!m_isOrthographic) ? 0.1f : 1f);
+									return true;
+								case TagUnits.FontUnits:
+									m_currentFontSize = m_fontSize * num3;
+									m_sizeStack.Add(m_currentFontSize);
+									m_fontScale = m_currentFontSize / m_currentFontAsset.fontInfo.PointSize * m_currentFontAsset.fontInfo.Scale * ((!m_isOrthographic) ? 0.1f : 1f);
+									return true;
+								case TagUnits.Percentage:
+									m_currentFontSize = m_fontSize * num3 / 100f;
+									m_sizeStack.Add(m_currentFontSize);
+									m_fontScale = m_currentFontSize / m_currentFontAsset.fontInfo.PointSize * m_currentFontAsset.fontInfo.Scale * ((!m_isOrthographic) ? 0.1f : 1f);
+									return true;
+								default:
+									return false;
+								}
+							}
+							return false;
+						case 145592:
+						case 158392:
+							m_currentFontSize = m_sizeStack.Remove();
+							m_fontScale = m_currentFontSize / m_currentFontAsset.fontInfo.PointSize * m_currentFontAsset.fontInfo.Scale * ((!m_isOrthographic) ? 0.1f : 1f);
+							return true;
+						case 28511:
+						case 41311:
+						{
+							int valueHashCode2 = m_xmlAttribute[0].valueHashCode;
+							int nameHashCode2 = m_xmlAttribute[1].nameHashCode;
+							int valueHashCode3 = m_xmlAttribute[1].valueHashCode;
+							if (valueHashCode2 != 764638571 && valueHashCode2 != 523367755)
+							{
+								if (!MaterialReferenceManager.TryGetFontAsset(valueHashCode2, out TMP_FontAsset fontAsset))
+								{
+									fontAsset = Resources.Load<TMP_FontAsset>(TMP_Settings.defaultFontAssetPath + new string(m_htmlTag, m_xmlAttribute[0].valueStartIndex, m_xmlAttribute[0].valueLength));
+									if ((UnityEngine.Object)fontAsset == (UnityEngine.Object)null)
+									{
+										return false;
+									}
+									MaterialReferenceManager.AddFontAsset(fontAsset);
+								}
+								if (nameHashCode2 == 0 && valueHashCode3 == 0)
+								{
+									m_currentMaterial = fontAsset.material;
+									m_currentMaterialIndex = MaterialReference.AddMaterialReference(m_currentMaterial, fontAsset, m_materialReferences, m_materialReferenceIndexLookup);
+									m_materialReferenceStack.Add(m_materialReferences[m_currentMaterialIndex]);
+								}
+								else
+								{
+									if (nameHashCode2 != 103415287 && nameHashCode2 != 72669687)
+									{
+										return false;
+									}
+									if (MaterialReferenceManager.TryGetMaterial(valueHashCode3, out material))
+									{
+										m_currentMaterial = material;
+										m_currentMaterialIndex = MaterialReference.AddMaterialReference(m_currentMaterial, fontAsset, m_materialReferences, m_materialReferenceIndexLookup);
+										m_materialReferenceStack.Add(m_materialReferences[m_currentMaterialIndex]);
+									}
+									else
+									{
+										material = Resources.Load<Material>(TMP_Settings.defaultFontAssetPath + new string(m_htmlTag, m_xmlAttribute[1].valueStartIndex, m_xmlAttribute[1].valueLength));
+										if ((UnityEngine.Object)material == (UnityEngine.Object)null)
+										{
+											return false;
+										}
+										MaterialReferenceManager.AddFontMaterial(valueHashCode3, material);
+										m_currentMaterial = material;
+										m_currentMaterialIndex = MaterialReference.AddMaterialReference(m_currentMaterial, fontAsset, m_materialReferences, m_materialReferenceIndexLookup);
+										m_materialReferenceStack.Add(m_materialReferences[m_currentMaterialIndex]);
+									}
+								}
+								m_currentFontAsset = fontAsset;
 								m_fontScale = m_currentFontSize / m_currentFontAsset.fontInfo.PointSize * m_currentFontAsset.fontInfo.Scale * ((!m_isOrthographic) ? 0.1f : 1f);
 								return true;
 							}
-							if (m_htmlTag[5] == '-')
+							m_currentFontAsset = m_materialReferences[0].fontAsset;
+							m_currentMaterial = m_materialReferences[0].material;
+							m_currentMaterialIndex = 0;
+							m_fontScale = m_currentFontSize / m_currentFontAsset.fontInfo.PointSize * m_currentFontAsset.fontInfo.Scale * ((!m_isOrthographic) ? 0.1f : 1f);
+							m_materialReferenceStack.Add(m_materialReferences[0]);
+							return true;
+						}
+						case 141358:
+						case 154158:
+						{
+							MaterialReference materialReference2 = m_materialReferenceStack.Remove();
+							m_currentFontAsset = materialReference2.fontAsset;
+							m_currentMaterial = materialReference2.material;
+							m_currentMaterialIndex = materialReference2.index;
+							m_fontScale = m_currentFontSize / m_currentFontAsset.fontInfo.PointSize * m_currentFontAsset.fontInfo.Scale * ((!m_isOrthographic) ? 0.1f : 1f);
+							return true;
+						}
+						case 72669687:
+						case 103415287:
+						{
+							int valueHashCode3 = m_xmlAttribute[0].valueHashCode;
+							if (valueHashCode3 != 764638571 && valueHashCode3 != 523367755)
 							{
-								m_currentFontSize = m_fontSize + num3;
-								m_sizeStack.Add(m_currentFontSize);
-								m_fontScale = m_currentFontSize / m_currentFontAsset.fontInfo.PointSize * m_currentFontAsset.fontInfo.Scale * ((!m_isOrthographic) ? 0.1f : 1f);
+								if (MaterialReferenceManager.TryGetMaterial(valueHashCode3, out material))
+								{
+									m_currentMaterial = material;
+									m_currentMaterialIndex = MaterialReference.AddMaterialReference(m_currentMaterial, m_currentFontAsset, m_materialReferences, m_materialReferenceIndexLookup);
+									m_materialReferenceStack.Add(m_materialReferences[m_currentMaterialIndex]);
+								}
+								else
+								{
+									material = Resources.Load<Material>(TMP_Settings.defaultFontAssetPath + new string(m_htmlTag, m_xmlAttribute[0].valueStartIndex, m_xmlAttribute[0].valueLength));
+									if ((UnityEngine.Object)material == (UnityEngine.Object)null)
+									{
+										return false;
+									}
+									MaterialReferenceManager.AddFontMaterial(valueHashCode3, material);
+									m_currentMaterial = material;
+									m_currentMaterialIndex = MaterialReference.AddMaterialReference(m_currentMaterial, m_currentFontAsset, m_materialReferences, m_materialReferenceIndexLookup);
+									m_materialReferenceStack.Add(m_materialReferences[m_currentMaterialIndex]);
+								}
 								return true;
 							}
-							m_currentFontSize = num3;
-							m_sizeStack.Add(m_currentFontSize);
-							m_fontScale = m_currentFontSize / m_currentFontAsset.fontInfo.PointSize * m_currentFontAsset.fontInfo.Scale * ((!m_isOrthographic) ? 0.1f : 1f);
+							m_currentMaterial = m_materialReferences[0].material;
+							m_currentMaterialIndex = 0;
+							m_materialReferenceStack.Add(m_materialReferences[0]);
 							return true;
-						case TagUnits.FontUnits:
-							m_currentFontSize = m_fontSize * num3;
-							m_sizeStack.Add(m_currentFontSize);
-							m_fontScale = m_currentFontSize / m_currentFontAsset.fontInfo.PointSize * m_currentFontAsset.fontInfo.Scale * ((!m_isOrthographic) ? 0.1f : 1f);
+						}
+						case 343615334:
+						case 374360934:
+						{
+							MaterialReference materialReference = m_materialReferenceStack.Remove();
+							m_currentMaterial = materialReference.material;
+							m_currentMaterialIndex = materialReference.index;
 							return true;
-						case TagUnits.Percentage:
-							m_currentFontSize = m_fontSize * num3 / 100f;
-							m_sizeStack.Add(m_currentFontSize);
-							m_fontScale = m_currentFontSize / m_currentFontAsset.fontInfo.PointSize * m_currentFontAsset.fontInfo.Scale * ((!m_isOrthographic) ? 0.1f : 1f);
-							return true;
-						default:
-							return false;
 						}
-					}
-					return false;
-				case 145592:
-				case 158392:
-					m_currentFontSize = m_sizeStack.Remove();
-					m_fontScale = m_currentFontSize / m_currentFontAsset.fontInfo.PointSize * m_currentFontAsset.fontInfo.Scale * ((!m_isOrthographic) ? 0.1f : 1f);
-					return true;
-				case 28511:
-				case 41311:
-				{
-					int valueHashCode2 = m_xmlAttribute[0].valueHashCode;
-					int nameHashCode2 = m_xmlAttribute[1].nameHashCode;
-					int valueHashCode3 = m_xmlAttribute[1].valueHashCode;
-					if (valueHashCode2 == 764638571 || valueHashCode2 == 523367755)
-					{
-						m_currentFontAsset = m_materialReferences[0].fontAsset;
-						m_currentMaterial = m_materialReferences[0].material;
-						m_currentMaterialIndex = 0;
-						m_fontScale = m_currentFontSize / m_currentFontAsset.fontInfo.PointSize * m_currentFontAsset.fontInfo.Scale * ((!m_isOrthographic) ? 0.1f : 1f);
-						m_materialReferenceStack.Add(m_materialReferences[0]);
-						return true;
-					}
-					if (!MaterialReferenceManager.TryGetFontAsset(valueHashCode2, out TMP_FontAsset fontAsset))
-					{
-						fontAsset = Resources.Load<TMP_FontAsset>(TMP_Settings.defaultFontAssetPath + new string(m_htmlTag, m_xmlAttribute[0].valueStartIndex, m_xmlAttribute[0].valueLength));
-						if ((UnityEngine.Object)fontAsset == (UnityEngine.Object)null)
-						{
-							return false;
-						}
-						MaterialReferenceManager.AddFontAsset(fontAsset);
-					}
-					if (nameHashCode2 == 0 && valueHashCode3 == 0)
-					{
-						m_currentMaterial = fontAsset.material;
-						m_currentMaterialIndex = MaterialReference.AddMaterialReference(m_currentMaterial, fontAsset, m_materialReferences, m_materialReferenceIndexLookup);
-						m_materialReferenceStack.Add(m_materialReferences[m_currentMaterialIndex]);
-					}
-					else
-					{
-						if (nameHashCode2 != 103415287 && nameHashCode2 != 72669687)
-						{
-							return false;
-						}
-						if (MaterialReferenceManager.TryGetMaterial(valueHashCode3, out material))
-						{
-							m_currentMaterial = material;
-							m_currentMaterialIndex = MaterialReference.AddMaterialReference(m_currentMaterial, fontAsset, m_materialReferences, m_materialReferenceIndexLookup);
-							m_materialReferenceStack.Add(m_materialReferences[m_currentMaterialIndex]);
-						}
-						else
-						{
-							material = Resources.Load<Material>(TMP_Settings.defaultFontAssetPath + new string(m_htmlTag, m_xmlAttribute[1].valueStartIndex, m_xmlAttribute[1].valueLength));
-							if ((UnityEngine.Object)material == (UnityEngine.Object)null)
+						case 230446:
+						case 320078:
+							num3 = ConvertToFloat(m_htmlTag, m_xmlAttribute[0].valueStartIndex, m_xmlAttribute[0].valueLength);
+							if (num3 != -9999f)
 							{
+								switch (tagUnits)
+								{
+								case TagUnits.Pixels:
+									m_xAdvance += num3;
+									return true;
+								case TagUnits.FontUnits:
+									m_xAdvance += num3 * m_fontScale * m_fontAsset.fontInfo.TabWidth / (float)(int)m_fontAsset.tabSize;
+									return true;
+								case TagUnits.Percentage:
+									return false;
+								default:
+									return false;
+								}
+							}
+							return false;
+						case 186622:
+						case 276254:
+							if (m_xmlAttribute[0].valueLength == 3)
+							{
+								m_htmlColor.a = (byte)(HexToInt(m_htmlTag[7]) * 16 + HexToInt(m_htmlTag[8]));
+								return true;
+							}
+							return false;
+						case 1750458:
+							return false;
+						case 426:
+							return true;
+						case 30266:
+						case 43066:
+							if (m_isParsingText && !m_isCalculatingPreferredValues)
+							{
+								int linkCount = m_textInfo.linkCount;
+								if (linkCount + 1 > m_textInfo.linkInfo.Length)
+								{
+									TMP_TextInfo.Resize(ref m_textInfo.linkInfo, linkCount + 1);
+								}
+								m_textInfo.linkInfo[linkCount].textComponent = this;
+								m_textInfo.linkInfo[linkCount].hashCode = m_xmlAttribute[0].valueHashCode;
+								m_textInfo.linkInfo[linkCount].linkTextfirstCharacterIndex = m_characterCount;
+								m_textInfo.linkInfo[linkCount].linkIdFirstCharacterIndex = startIndex + m_xmlAttribute[0].valueStartIndex;
+								m_textInfo.linkInfo[linkCount].linkIdLength = m_xmlAttribute[0].valueLength;
+								m_textInfo.linkInfo[linkCount].SetLinkID(m_htmlTag, m_xmlAttribute[0].valueStartIndex, m_xmlAttribute[0].valueLength);
+							}
+							return true;
+						case 143113:
+						case 155913:
+							if (m_isParsingText && !m_isCalculatingPreferredValues)
+							{
+								try
+								{
+									m_textInfo.linkInfo[m_textInfo.linkCount].linkTextLength = m_characterCount - m_textInfo.linkInfo[m_textInfo.linkCount].linkTextfirstCharacterIndex;
+									m_textInfo.linkCount++;
+								}
+								catch
+								{
+									if (!linkWarning)
+									{
+										Debug.LogWarning("Possible Link within link error: " + text, null);
+										linkWarning = true;
+									}
+									return false;
+								}
+							}
+							return true;
+						case 186285:
+						case 275917:
+							switch (m_xmlAttribute[0].valueHashCode)
+							{
+							case 3774683:
+								m_lineJustification = TextAlignmentOptions.Left;
+								m_lineJustificationStack.Add(m_lineJustification);
+								return true;
+							case 136703040:
+								m_lineJustification = TextAlignmentOptions.Right;
+								m_lineJustificationStack.Add(m_lineJustification);
+								return true;
+							case -458210101:
+								m_lineJustification = TextAlignmentOptions.Center;
+								m_lineJustificationStack.Add(m_lineJustification);
+								return true;
+							case -523808257:
+								m_lineJustification = TextAlignmentOptions.Justified;
+								m_lineJustificationStack.Add(m_lineJustification);
+								return true;
+							case 122383428:
+								m_lineJustification = TextAlignmentOptions.Flush;
+								m_lineJustificationStack.Add(m_lineJustification);
+								return true;
+							default:
 								return false;
 							}
-							MaterialReferenceManager.AddFontMaterial(valueHashCode3, material);
-							m_currentMaterial = material;
-							m_currentMaterialIndex = MaterialReference.AddMaterialReference(m_currentMaterial, fontAsset, m_materialReferences, m_materialReferenceIndexLookup);
-							m_materialReferenceStack.Add(m_materialReferences[m_currentMaterialIndex]);
-						}
-					}
-					m_currentFontAsset = fontAsset;
-					m_fontScale = m_currentFontSize / m_currentFontAsset.fontInfo.PointSize * m_currentFontAsset.fontInfo.Scale * ((!m_isOrthographic) ? 0.1f : 1f);
-					return true;
-				}
-				case 141358:
-				case 154158:
-				{
-					MaterialReference materialReference2 = m_materialReferenceStack.Remove();
-					m_currentFontAsset = materialReference2.fontAsset;
-					m_currentMaterial = materialReference2.material;
-					m_currentMaterialIndex = materialReference2.index;
-					m_fontScale = m_currentFontSize / m_currentFontAsset.fontInfo.PointSize * m_currentFontAsset.fontInfo.Scale * ((!m_isOrthographic) ? 0.1f : 1f);
-					return true;
-				}
-				case 72669687:
-				case 103415287:
-				{
-					int valueHashCode3 = m_xmlAttribute[0].valueHashCode;
-					if (valueHashCode3 == 764638571 || valueHashCode3 == 523367755)
-					{
-						m_currentMaterial = m_materialReferences[0].material;
-						m_currentMaterialIndex = 0;
-						m_materialReferenceStack.Add(m_materialReferences[0]);
-						return true;
-					}
-					if (MaterialReferenceManager.TryGetMaterial(valueHashCode3, out material))
-					{
-						m_currentMaterial = material;
-						m_currentMaterialIndex = MaterialReference.AddMaterialReference(m_currentMaterial, m_currentFontAsset, m_materialReferences, m_materialReferenceIndexLookup);
-						m_materialReferenceStack.Add(m_materialReferences[m_currentMaterialIndex]);
-					}
-					else
-					{
-						material = Resources.Load<Material>(TMP_Settings.defaultFontAssetPath + new string(m_htmlTag, m_xmlAttribute[0].valueStartIndex, m_xmlAttribute[0].valueLength));
-						if ((UnityEngine.Object)material == (UnityEngine.Object)null)
-						{
-							return false;
-						}
-						MaterialReferenceManager.AddFontMaterial(valueHashCode3, material);
-						m_currentMaterial = material;
-						m_currentMaterialIndex = MaterialReference.AddMaterialReference(m_currentMaterial, m_currentFontAsset, m_materialReferences, m_materialReferenceIndexLookup);
-						m_materialReferenceStack.Add(m_materialReferences[m_currentMaterialIndex]);
-					}
-					return true;
-				}
-				case 343615334:
-				case 374360934:
-				{
-					MaterialReference materialReference = m_materialReferenceStack.Remove();
-					m_currentMaterial = materialReference.material;
-					m_currentMaterialIndex = materialReference.index;
-					return true;
-				}
-				case 230446:
-				case 320078:
-					num3 = ConvertToFloat(m_htmlTag, m_xmlAttribute[0].valueStartIndex, m_xmlAttribute[0].valueLength);
-					if (num3 != -9999f)
-					{
-						switch (tagUnits)
-						{
-						case TagUnits.Pixels:
-							m_xAdvance += num3;
+						case 976214:
+						case 1065846:
+							m_lineJustification = m_lineJustificationStack.Remove();
 							return true;
-						case TagUnits.FontUnits:
-							m_xAdvance += num3 * m_fontScale * m_fontAsset.fontInfo.TabWidth / (float)(int)m_fontAsset.tabSize;
-							return true;
-						case TagUnits.Percentage:
-							return false;
-						default:
-							return false;
-						}
-					}
-					return false;
-				case 186622:
-				case 276254:
-					if (m_xmlAttribute[0].valueLength != 3)
-					{
-						return false;
-					}
-					m_htmlColor.a = (byte)(HexToInt(m_htmlTag[7]) * 16 + HexToInt(m_htmlTag[8]));
-					return true;
-				case 1750458:
-					return false;
-				case 426:
-					return true;
-				case 30266:
-				case 43066:
-					if (m_isParsingText && !m_isCalculatingPreferredValues)
-					{
-						int linkCount = m_textInfo.linkCount;
-						if (linkCount + 1 > m_textInfo.linkInfo.Length)
-						{
-							TMP_TextInfo.Resize(ref m_textInfo.linkInfo, linkCount + 1);
-						}
-						m_textInfo.linkInfo[linkCount].textComponent = this;
-						m_textInfo.linkInfo[linkCount].hashCode = m_xmlAttribute[0].valueHashCode;
-						m_textInfo.linkInfo[linkCount].linkTextfirstCharacterIndex = m_characterCount;
-						m_textInfo.linkInfo[linkCount].linkIdFirstCharacterIndex = startIndex + m_xmlAttribute[0].valueStartIndex;
-						m_textInfo.linkInfo[linkCount].linkIdLength = m_xmlAttribute[0].valueLength;
-						m_textInfo.linkInfo[linkCount].SetLinkID(m_htmlTag, m_xmlAttribute[0].valueStartIndex, m_xmlAttribute[0].valueLength);
-					}
-					return true;
-				case 143113:
-				case 155913:
-					if (m_isParsingText && !m_isCalculatingPreferredValues)
-					{
-						try
-						{
-							m_textInfo.linkInfo[m_textInfo.linkCount].linkTextLength = m_characterCount - m_textInfo.linkInfo[m_textInfo.linkCount].linkTextfirstCharacterIndex;
-							m_textInfo.linkCount++;
-						}
-						catch
-						{
-							if (!linkWarning)
+						case 237918:
+						case 327550:
+							num3 = ConvertToFloat(m_htmlTag, m_xmlAttribute[0].valueStartIndex, m_xmlAttribute[0].valueLength);
+							if (num3 != -9999f)
 							{
-								Debug.LogWarning("Possible Link within link error: " + text, null);
-								linkWarning = true;
+								switch (tagUnits)
+								{
+								case TagUnits.Pixels:
+									m_width = num3;
+									break;
+								case TagUnits.FontUnits:
+									return false;
+								case TagUnits.Percentage:
+									m_width = m_marginWidth * num3 / 100f;
+									break;
+								}
+								return true;
+							}
+							return false;
+						case 1027847:
+						case 1117479:
+							m_width = -1f;
+							return true;
+						case 192323:
+						case 281955:
+							if (m_htmlTag[6] == '#' && num == 10)
+							{
+								m_htmlColor = HexCharsToColor(m_htmlTag, num);
+								m_colorStack.Add(m_htmlColor);
+								return true;
+							}
+							if (m_htmlTag[6] == '#' && num == 11)
+							{
+								m_htmlColor = HexCharsToColor(m_htmlTag, num);
+								m_colorStack.Add(m_htmlColor);
+								return true;
+							}
+							if (m_htmlTag[6] == '#' && num == 13)
+							{
+								m_htmlColor = HexCharsToColor(m_htmlTag, num);
+								m_colorStack.Add(m_htmlColor);
+								return true;
+							}
+							if (m_htmlTag[6] != '#' || num != 15)
+							{
+								switch (m_xmlAttribute[0].valueHashCode)
+								{
+								case 125395:
+									m_htmlColor = Color.red;
+									m_colorStack.Add(m_htmlColor);
+									return true;
+								case 3573310:
+									m_htmlColor = Color.blue;
+									m_colorStack.Add(m_htmlColor);
+									return true;
+								case 117905991:
+									m_htmlColor = Color.black;
+									m_colorStack.Add(m_htmlColor);
+									return true;
+								case 121463835:
+									m_htmlColor = Color.green;
+									m_colorStack.Add(m_htmlColor);
+									return true;
+								case 140357351:
+									m_htmlColor = Color.white;
+									m_colorStack.Add(m_htmlColor);
+									return true;
+								case 26556144:
+									m_htmlColor = new Color32(byte.MaxValue, 128, 0, byte.MaxValue);
+									m_colorStack.Add(m_htmlColor);
+									return true;
+								case -36881330:
+									m_htmlColor = new Color32(160, 32, 240, byte.MaxValue);
+									m_colorStack.Add(m_htmlColor);
+									return true;
+								case 554054276:
+									m_htmlColor = Color.yellow;
+									m_colorStack.Add(m_htmlColor);
+									return true;
+								default:
+									return false;
+								}
+							}
+							m_htmlColor = HexCharsToColor(m_htmlTag, num);
+							m_colorStack.Add(m_htmlColor);
+							return true;
+						case 69403544:
+						case 100149144:
+						{
+							int valueHashCode5 = m_xmlAttribute[0].valueHashCode;
+							if (MaterialReferenceManager.TryGetColorGradientPreset(valueHashCode5, out TMP_ColorGradient gradientPreset))
+							{
+								m_colorGradientPreset = gradientPreset;
+							}
+							else
+							{
+								if ((UnityEngine.Object)gradientPreset == (UnityEngine.Object)null)
+								{
+									gradientPreset = Resources.Load<TMP_ColorGradient>(TMP_Settings.defaultColorGradientPresetsPath + new string(m_htmlTag, m_xmlAttribute[0].valueStartIndex, m_xmlAttribute[0].valueLength));
+								}
+								if ((UnityEngine.Object)gradientPreset == (UnityEngine.Object)null)
+								{
+									return false;
+								}
+								MaterialReferenceManager.AddColorGradientPreset(valueHashCode5, gradientPreset);
+								m_colorGradientPreset = gradientPreset;
+							}
+							m_colorGradientStack.Add(m_colorGradientPreset);
+							return true;
+						}
+						case 340349191:
+						case 371094791:
+							m_colorGradientPreset = m_colorGradientStack.Remove();
+							return true;
+						case 1356515:
+						case 1983971:
+							num3 = ConvertToFloat(m_htmlTag, m_xmlAttribute[0].valueStartIndex, m_xmlAttribute[0].valueLength);
+							if (num3 != -9999f)
+							{
+								switch (tagUnits)
+								{
+								case TagUnits.Pixels:
+									m_cSpacing = num3;
+									break;
+								case TagUnits.FontUnits:
+									m_cSpacing = num3;
+									m_cSpacing *= m_fontScale * m_fontAsset.fontInfo.TabWidth / (float)(int)m_fontAsset.tabSize;
+									break;
+								case TagUnits.Percentage:
+									return false;
+								}
+								return true;
+							}
+							return false;
+						case 6886018:
+						case 7513474:
+							if (m_isParsingText)
+							{
+								if (m_characterCount > 0)
+								{
+									m_xAdvance -= m_cSpacing;
+									m_textInfo.characterInfo[m_characterCount - 1].xAdvance = m_xAdvance;
+								}
+								m_cSpacing = 0f;
+								return true;
+							}
+							return true;
+						case 1524585:
+						case 2152041:
+							num3 = ConvertToFloat(m_htmlTag, m_xmlAttribute[0].valueStartIndex, m_xmlAttribute[0].valueLength);
+							if (num3 != -9999f)
+							{
+								switch (tagUnits)
+								{
+								case TagUnits.Pixels:
+									m_monoSpacing = num3;
+									break;
+								case TagUnits.FontUnits:
+									m_monoSpacing = num3;
+									m_monoSpacing *= m_fontScale * m_fontAsset.fontInfo.TabWidth / (float)(int)m_fontAsset.tabSize;
+									break;
+								case TagUnits.Percentage:
+									return false;
+								}
+								return true;
+							}
+							return false;
+						case 7054088:
+						case 7681544:
+							m_monoSpacing = 0f;
+							return true;
+						case 280416:
+							return false;
+						case 982252:
+						case 1071884:
+							m_htmlColor = m_colorStack.Remove();
+							return true;
+						case 1441524:
+						case 2068980:
+							num3 = ConvertToFloat(m_htmlTag, m_xmlAttribute[0].valueStartIndex, m_xmlAttribute[0].valueLength);
+							if (num3 != -9999f)
+							{
+								switch (tagUnits)
+								{
+								case TagUnits.Pixels:
+									tag_Indent = num3;
+									break;
+								case TagUnits.FontUnits:
+									tag_Indent = num3;
+									tag_Indent *= m_fontScale * m_fontAsset.fontInfo.TabWidth / (float)(int)m_fontAsset.tabSize;
+									break;
+								case TagUnits.Percentage:
+									tag_Indent = m_marginWidth * num3 / 100f;
+									break;
+								}
+								m_indentStack.Add(tag_Indent);
+								m_xAdvance = tag_Indent;
+								return true;
+							}
+							return false;
+						case 6971027:
+						case 7598483:
+							tag_Indent = m_indentStack.Remove();
+							return true;
+						case -842656867:
+						case 1109386397:
+							num3 = ConvertToFloat(m_htmlTag, m_xmlAttribute[0].valueStartIndex, m_xmlAttribute[0].valueLength);
+							if (num3 != -9999f)
+							{
+								switch (tagUnits)
+								{
+								case TagUnits.Pixels:
+									tag_LineIndent = num3;
+									break;
+								case TagUnits.FontUnits:
+									tag_LineIndent = num3;
+									tag_LineIndent *= m_fontScale * m_fontAsset.fontInfo.TabWidth / (float)(int)m_fontAsset.tabSize;
+									break;
+								case TagUnits.Percentage:
+									tag_LineIndent = m_marginWidth * num3 / 100f;
+									break;
+								}
+								m_xAdvance += tag_LineIndent;
+								return true;
+							}
+							return false;
+						case -445537194:
+						case 1897386838:
+							tag_LineIndent = 0f;
+							return true;
+						case 1619421:
+						case 2246877:
+						{
+							int valueHashCode4 = m_xmlAttribute[0].valueHashCode;
+							m_spriteIndex = -1;
+							TMP_SpriteAsset spriteAsset;
+							if (m_xmlAttribute[0].valueType == TagType.None || m_xmlAttribute[0].valueType == TagType.NumericalValue)
+							{
+								if ((UnityEngine.Object)m_spriteAsset != (UnityEngine.Object)null)
+								{
+									m_currentSpriteAsset = m_spriteAsset;
+								}
+								else if ((UnityEngine.Object)m_defaultSpriteAsset != (UnityEngine.Object)null)
+								{
+									m_currentSpriteAsset = m_defaultSpriteAsset;
+								}
+								else if ((UnityEngine.Object)m_defaultSpriteAsset == (UnityEngine.Object)null)
+								{
+									if ((UnityEngine.Object)TMP_Settings.defaultSpriteAsset != (UnityEngine.Object)null)
+									{
+										m_defaultSpriteAsset = TMP_Settings.defaultSpriteAsset;
+									}
+									else
+									{
+										m_defaultSpriteAsset = Resources.Load<TMP_SpriteAsset>("Sprite Assets/Default Sprite Asset");
+									}
+									m_currentSpriteAsset = m_defaultSpriteAsset;
+								}
+								if ((UnityEngine.Object)m_currentSpriteAsset == (UnityEngine.Object)null)
+								{
+									return false;
+								}
+							}
+							else if (MaterialReferenceManager.TryGetSpriteAsset(valueHashCode4, out spriteAsset))
+							{
+								m_currentSpriteAsset = spriteAsset;
+							}
+							else
+							{
+								if ((UnityEngine.Object)spriteAsset == (UnityEngine.Object)null)
+								{
+									spriteAsset = Resources.Load<TMP_SpriteAsset>(TMP_Settings.defaultSpriteAssetPath + new string(m_htmlTag, m_xmlAttribute[0].valueStartIndex, m_xmlAttribute[0].valueLength));
+								}
+								if ((UnityEngine.Object)spriteAsset == (UnityEngine.Object)null)
+								{
+									return false;
+								}
+								MaterialReferenceManager.AddSpriteAsset(valueHashCode4, spriteAsset);
+								m_currentSpriteAsset = spriteAsset;
+							}
+							if (m_xmlAttribute[0].valueType == TagType.NumericalValue)
+							{
+								int num6 = (int)ConvertToFloat(m_htmlTag, m_xmlAttribute[0].valueStartIndex, m_xmlAttribute[0].valueLength);
+								if (num6 == -9999)
+								{
+									return false;
+								}
+								if (num6 > m_currentSpriteAsset.spriteInfoList.Count - 1)
+								{
+									return false;
+								}
+								m_spriteIndex = num6;
+							}
+							m_spriteColor = s_colorWhite;
+							m_tintSprite = false;
+							for (int k = 0; k < m_xmlAttribute.Length && m_xmlAttribute[k].nameHashCode != 0; k++)
+							{
+								int nameHashCode3 = m_xmlAttribute[k].nameHashCode;
+								int num7 = 0;
+								switch (nameHashCode3)
+								{
+								case 30547:
+								case 43347:
+									num7 = m_currentSpriteAsset.GetSpriteIndexFromHashcode(m_xmlAttribute[k].valueHashCode);
+									if (num7 == -1)
+									{
+										return false;
+									}
+									m_spriteIndex = num7;
+									break;
+								case 205930:
+								case 295562:
+									num7 = (int)ConvertToFloat(m_htmlTag, m_xmlAttribute[1].valueStartIndex, m_xmlAttribute[1].valueLength);
+									if (num7 == -9999)
+									{
+										return false;
+									}
+									if (num7 > m_currentSpriteAsset.spriteInfoList.Count - 1)
+									{
+										return false;
+									}
+									m_spriteIndex = num7;
+									break;
+								case 33019:
+								case 45819:
+									m_tintSprite = (ConvertToFloat(m_htmlTag, m_xmlAttribute[k].valueStartIndex, m_xmlAttribute[k].valueLength) != 0f);
+									break;
+								case 192323:
+								case 281955:
+									m_spriteColor = HexCharsToColor(m_htmlTag, m_xmlAttribute[k].valueStartIndex, m_xmlAttribute[k].valueLength);
+									break;
+								case 26705:
+								case 39505:
+								{
+									int attributeParameters = GetAttributeParameters(m_htmlTag, m_xmlAttribute[k].valueStartIndex, m_xmlAttribute[k].valueLength, ref m_attributeParameterValues);
+									if (attributeParameters != 3)
+									{
+										return false;
+									}
+									m_spriteIndex = (int)m_attributeParameterValues[0];
+									if (m_isParsingText)
+									{
+										spriteAnimator.DoSpriteAnimation(m_characterCount, m_currentSpriteAsset, m_spriteIndex, (int)m_attributeParameterValues[1], (int)m_attributeParameterValues[2]);
+									}
+									break;
+								}
+								default:
+									return false;
+								case 1619421:
+								case 2246877:
+									break;
+								}
+							}
+							if (m_spriteIndex != -1)
+							{
+								m_currentMaterialIndex = MaterialReference.AddMaterialReference(m_currentSpriteAsset.material, m_currentSpriteAsset, m_materialReferences, m_materialReferenceIndexLookup);
+								m_textElementType = TMP_TextElementType.Sprite;
+								return true;
 							}
 							return false;
 						}
-					}
-					return true;
-				case 186285:
-				case 275917:
-					switch (m_xmlAttribute[0].valueHashCode)
-					{
-					case 3774683:
-						m_lineJustification = TextAlignmentOptions.Left;
-						m_lineJustificationStack.Add(m_lineJustification);
-						return true;
-					case 136703040:
-						m_lineJustification = TextAlignmentOptions.Right;
-						m_lineJustificationStack.Add(m_lineJustification);
-						return true;
-					case -458210101:
-						m_lineJustification = TextAlignmentOptions.Center;
-						m_lineJustificationStack.Add(m_lineJustification);
-						return true;
-					case -523808257:
-						m_lineJustification = TextAlignmentOptions.Justified;
-						m_lineJustificationStack.Add(m_lineJustification);
-						return true;
-					case 122383428:
-						m_lineJustification = TextAlignmentOptions.Flush;
-						m_lineJustificationStack.Add(m_lineJustification);
-						return true;
-					default:
-						return false;
-					}
-				case 976214:
-				case 1065846:
-					m_lineJustification = m_lineJustificationStack.Remove();
-					return true;
-				case 237918:
-				case 327550:
-					num3 = ConvertToFloat(m_htmlTag, m_xmlAttribute[0].valueStartIndex, m_xmlAttribute[0].valueLength);
-					if (num3 == -9999f)
-					{
-						return false;
-					}
-					switch (tagUnits)
-					{
-					case TagUnits.Pixels:
-						m_width = num3;
-						break;
-					case TagUnits.FontUnits:
-						return false;
-					case TagUnits.Percentage:
-						m_width = m_marginWidth * num3 / 100f;
-						break;
-					}
-					return true;
-				case 1027847:
-				case 1117479:
-					m_width = -1f;
-					return true;
-				case 192323:
-				case 281955:
-					if (m_htmlTag[6] == '#' && num == 10)
-					{
-						m_htmlColor = HexCharsToColor(m_htmlTag, num);
-						m_colorStack.Add(m_htmlColor);
-						return true;
-					}
-					if (m_htmlTag[6] == '#' && num == 11)
-					{
-						m_htmlColor = HexCharsToColor(m_htmlTag, num);
-						m_colorStack.Add(m_htmlColor);
-						return true;
-					}
-					if (m_htmlTag[6] == '#' && num == 13)
-					{
-						m_htmlColor = HexCharsToColor(m_htmlTag, num);
-						m_colorStack.Add(m_htmlColor);
-						return true;
-					}
-					if (m_htmlTag[6] != '#' || num != 15)
-					{
-						switch (m_xmlAttribute[0].valueHashCode)
+						case 514803617:
+						case 730022849:
+							m_style |= FontStyles.LowerCase;
+							m_fontStyleStack.Add(FontStyles.LowerCase);
+							return true;
+						case -1883544150:
+						case -1668324918:
+							if (m_fontStyleStack.Remove(FontStyles.LowerCase) == 0)
+							{
+								m_style &= (FontStyles)(-9);
+							}
+							return true;
+						case 9133802:
+						case 13526026:
+						case 566686826:
+						case 781906058:
+							m_style |= FontStyles.UpperCase;
+							m_fontStyleStack.Add(FontStyles.UpperCase);
+							return true;
+						case -1831660941:
+						case -1616441709:
+						case 47840323:
+						case 52232547:
+							if (m_fontStyleStack.Remove(FontStyles.UpperCase) == 0)
+							{
+								m_style &= (FontStyles)(-17);
+							}
+							return true;
+						case 551025096:
+						case 766244328:
+							m_style |= FontStyles.SmallCaps;
+							m_fontStyleStack.Add(FontStyles.SmallCaps);
+							return true;
+						case -1847322671:
+						case -1632103439:
+							if (m_fontStyleStack.Remove(FontStyles.SmallCaps) == 0)
+							{
+								m_style &= (FontStyles)(-33);
+							}
+							return true;
+						case 1482398:
+						case 2109854:
+							num3 = ConvertToFloat(m_htmlTag, m_xmlAttribute[0].valueStartIndex, m_xmlAttribute[0].valueLength);
+							if (num3 != -9999f)
+							{
+								m_marginLeft = num3;
+								switch (tagUnits)
+								{
+								case TagUnits.FontUnits:
+									m_marginLeft *= m_fontScale * m_fontAsset.fontInfo.TabWidth / (float)(int)m_fontAsset.tabSize;
+									break;
+								case TagUnits.Percentage:
+									m_marginLeft = (m_marginWidth - ((m_width == -1f) ? 0f : m_width)) * m_marginLeft / 100f;
+									break;
+								}
+								m_marginLeft = ((!(m_marginLeft >= 0f)) ? 0f : m_marginLeft);
+								m_marginRight = m_marginLeft;
+								return true;
+							}
+							return false;
+						case 7011901:
+						case 7639357:
+							m_marginLeft = 0f;
+							m_marginRight = 0f;
+							return true;
+						case -855002522:
+						case 1100728678:
+							num3 = ConvertToFloat(m_htmlTag, m_xmlAttribute[0].valueStartIndex, m_xmlAttribute[0].valueLength);
+							if (num3 != -9999f)
+							{
+								m_marginLeft = num3;
+								switch (tagUnits)
+								{
+								case TagUnits.FontUnits:
+									m_marginLeft *= m_fontScale * m_fontAsset.fontInfo.TabWidth / (float)(int)m_fontAsset.tabSize;
+									break;
+								case TagUnits.Percentage:
+									m_marginLeft = (m_marginWidth - ((m_width == -1f) ? 0f : m_width)) * m_marginLeft / 100f;
+									break;
+								}
+								m_marginLeft = ((!(m_marginLeft >= 0f)) ? 0f : m_marginLeft);
+								return true;
+							}
+							return false;
+						case -1690034531:
+						case -884817987:
+							num3 = ConvertToFloat(m_htmlTag, m_xmlAttribute[0].valueStartIndex, m_xmlAttribute[0].valueLength);
+							if (num3 != -9999f)
+							{
+								m_marginRight = num3;
+								switch (tagUnits)
+								{
+								case TagUnits.FontUnits:
+									m_marginRight *= m_fontScale * m_fontAsset.fontInfo.TabWidth / (float)(int)m_fontAsset.tabSize;
+									break;
+								case TagUnits.Percentage:
+									m_marginRight = (m_marginWidth - ((m_width == -1f) ? 0f : m_width)) * m_marginRight / 100f;
+									break;
+								}
+								m_marginRight = ((!(m_marginRight >= 0f)) ? 0f : m_marginRight);
+								return true;
+							}
+							return false;
+						case -842693512:
+						case 1109349752:
+							num3 = ConvertToFloat(m_htmlTag, m_xmlAttribute[0].valueStartIndex, m_xmlAttribute[0].valueLength);
+							if (num3 != -9999f && num3 != 0f)
+							{
+								m_lineHeight = num3;
+								switch (tagUnits)
+								{
+								case TagUnits.FontUnits:
+									m_lineHeight *= m_fontAsset.fontInfo.LineHeight * m_fontScale;
+									break;
+								case TagUnits.Percentage:
+									m_lineHeight = m_fontAsset.fontInfo.LineHeight * m_lineHeight / 100f * m_fontScale;
+									break;
+								}
+								return true;
+							}
+							return false;
+						case -445573839:
+						case 1897350193:
+							m_lineHeight = -32767f;
+							return true;
+						case 10723418:
+						case 15115642:
+							tag_NoParsing = true;
+							return true;
+						case 1286342:
+						case 1913798:
 						{
-						case 125395:
-							m_htmlColor = Color.red;
-							m_colorStack.Add(m_htmlColor);
+							int valueHashCode = m_xmlAttribute[0].valueHashCode;
+							if (m_isParsingText)
+							{
+								m_actionStack.Add(valueHashCode);
+								Debug.Log("Action ID: [" + valueHashCode + "] First character index: " + m_characterCount, null);
+							}
 							return true;
-						case 3573310:
-							m_htmlColor = Color.blue;
-							m_colorStack.Add(m_htmlColor);
+						}
+						case 6815845:
+						case 7443301:
+							if (m_isParsingText)
+							{
+								Debug.Log("Action ID: [" + m_actionStack.CurrentItem() + "] Last character index: " + (m_characterCount - 1), null);
+							}
+							m_actionStack.Remove();
 							return true;
-						case 117905991:
-							m_htmlColor = Color.black;
-							m_colorStack.Add(m_htmlColor);
+						case 226050:
+						case 315682:
+							num3 = ConvertToFloat(m_htmlTag, m_xmlAttribute[0].valueStartIndex, m_xmlAttribute[0].valueLength);
+							if (num3 != -9999f)
+							{
+								m_FXMatrix = Matrix4x4.TRS(Vector3.zero, Quaternion.identity, new Vector3(num3, 1f, 1f));
+								m_isFXMatrixSet = true;
+								return true;
+							}
+							return false;
+						case 1015979:
+						case 1105611:
+							m_isFXMatrixSet = false;
 							return true;
-						case 121463835:
-							m_htmlColor = Color.green;
-							m_colorStack.Add(m_htmlColor);
+						case 1600507:
+						case 2227963:
+							num3 = ConvertToFloat(m_htmlTag, m_xmlAttribute[0].valueStartIndex, m_xmlAttribute[0].valueLength);
+							if (num3 != -9999f)
+							{
+								m_FXMatrix = Matrix4x4.TRS(Vector3.zero, Quaternion.Euler(0f, 0f, num3), Vector3.one);
+								m_isFXMatrixSet = true;
+								return true;
+							}
+							return false;
+						case 7130010:
+						case 7757466:
+							m_isFXMatrixSet = false;
 							return true;
-						case 140357351:
-							m_htmlColor = Color.white;
-							m_colorStack.Add(m_htmlColor);
+						case 227814:
+						case 317446:
+						{
+							int nameHashCode = m_xmlAttribute[1].nameHashCode;
+							if (nameHashCode == 327550)
+							{
+								float num5 = ConvertToFloat(m_htmlTag, m_xmlAttribute[1].valueStartIndex, m_xmlAttribute[1].valueLength);
+								switch (tagUnits)
+								{
+								case TagUnits.Pixels:
+									Debug.Log("Table width = " + num5 + "px.", null);
+									break;
+								case TagUnits.FontUnits:
+									Debug.Log("Table width = " + num5 + "em.", null);
+									break;
+								case TagUnits.Percentage:
+									Debug.Log("Table width = " + num5 + "%.", null);
+									break;
+								}
+							}
 							return true;
-						case 26556144:
-							m_htmlColor = new Color32(byte.MaxValue, 128, 0, byte.MaxValue);
-							m_colorStack.Add(m_htmlColor);
+						}
+						case 1017743:
+						case 1107375:
 							return true;
-						case -36881330:
-							m_htmlColor = new Color32(160, 32, 240, byte.MaxValue);
-							m_colorStack.Add(m_htmlColor);
+						case 670:
+						case 926:
 							return true;
-						case 554054276:
-							m_htmlColor = Color.yellow;
-							m_colorStack.Add(m_htmlColor);
+						case 2973:
+						case 3229:
+							return true;
+						case 660:
+						case 916:
+							return true;
+						case 2963:
+						case 3219:
+							return true;
+						case 656:
+						case 912:
+							for (int j = 1; j < m_xmlAttribute.Length && m_xmlAttribute[j].nameHashCode != 0; j++)
+							{
+								switch (m_xmlAttribute[j].nameHashCode)
+								{
+								case 327550:
+								{
+									float num4 = ConvertToFloat(m_htmlTag, m_xmlAttribute[j].valueStartIndex, m_xmlAttribute[j].valueLength);
+									switch (tagUnits)
+									{
+									case TagUnits.Pixels:
+										Debug.Log("Table width = " + num4 + "px.", null);
+										break;
+									case TagUnits.FontUnits:
+										Debug.Log("Table width = " + num4 + "em.", null);
+										break;
+									case TagUnits.Percentage:
+										Debug.Log("Table width = " + num4 + "%.", null);
+										break;
+									}
+									break;
+								}
+								case 275917:
+									switch (m_xmlAttribute[j].valueHashCode)
+									{
+									case 3774683:
+										Debug.Log("TD align=\"left\".", null);
+										break;
+									case 136703040:
+										Debug.Log("TD align=\"right\".", null);
+										break;
+									case -458210101:
+										Debug.Log("TD align=\"center\".", null);
+										break;
+									case -523808257:
+										Debug.Log("TD align=\"justified\".", null);
+										break;
+									}
+									break;
+								}
+							}
+							return true;
+						case 2959:
+						case 3215:
 							return true;
 						default:
 							return false;
@@ -5666,547 +6202,11 @@ namespace TMPro
 					m_htmlColor = HexCharsToColor(m_htmlTag, num);
 					m_colorStack.Add(m_htmlColor);
 					return true;
-				case 69403544:
-				case 100149144:
-				{
-					int valueHashCode5 = m_xmlAttribute[0].valueHashCode;
-					if (MaterialReferenceManager.TryGetColorGradientPreset(valueHashCode5, out TMP_ColorGradient gradientPreset))
-					{
-						m_colorGradientPreset = gradientPreset;
-					}
-					else
-					{
-						if ((UnityEngine.Object)gradientPreset == (UnityEngine.Object)null)
-						{
-							gradientPreset = Resources.Load<TMP_ColorGradient>(TMP_Settings.defaultColorGradientPresetsPath + new string(m_htmlTag, m_xmlAttribute[0].valueStartIndex, m_xmlAttribute[0].valueLength));
-						}
-						if ((UnityEngine.Object)gradientPreset == (UnityEngine.Object)null)
-						{
-							return false;
-						}
-						MaterialReferenceManager.AddColorGradientPreset(valueHashCode5, gradientPreset);
-						m_colorGradientPreset = gradientPreset;
-					}
-					m_colorGradientStack.Add(m_colorGradientPreset);
-					return true;
 				}
-				case 340349191:
-				case 371094791:
-					m_colorGradientPreset = m_colorGradientStack.Remove();
-					return true;
-				case 1356515:
-				case 1983971:
-					num3 = ConvertToFloat(m_htmlTag, m_xmlAttribute[0].valueStartIndex, m_xmlAttribute[0].valueLength);
-					if (num3 == -9999f)
-					{
-						return false;
-					}
-					switch (tagUnits)
-					{
-					case TagUnits.Pixels:
-						m_cSpacing = num3;
-						break;
-					case TagUnits.FontUnits:
-						m_cSpacing = num3;
-						m_cSpacing *= m_fontScale * m_fontAsset.fontInfo.TabWidth / (float)(int)m_fontAsset.tabSize;
-						break;
-					case TagUnits.Percentage:
-						return false;
-					}
-					return true;
-				case 6886018:
-				case 7513474:
-					if (!m_isParsingText)
-					{
-						return true;
-					}
-					if (m_characterCount > 0)
-					{
-						m_xAdvance -= m_cSpacing;
-						m_textInfo.characterInfo[m_characterCount - 1].xAdvance = m_xAdvance;
-					}
-					m_cSpacing = 0f;
-					return true;
-				case 1524585:
-				case 2152041:
-					num3 = ConvertToFloat(m_htmlTag, m_xmlAttribute[0].valueStartIndex, m_xmlAttribute[0].valueLength);
-					if (num3 == -9999f)
-					{
-						return false;
-					}
-					switch (tagUnits)
-					{
-					case TagUnits.Pixels:
-						m_monoSpacing = num3;
-						break;
-					case TagUnits.FontUnits:
-						m_monoSpacing = num3;
-						m_monoSpacing *= m_fontScale * m_fontAsset.fontInfo.TabWidth / (float)(int)m_fontAsset.tabSize;
-						break;
-					case TagUnits.Percentage:
-						return false;
-					}
-					return true;
-				case 7054088:
-				case 7681544:
-					m_monoSpacing = 0f;
-					return true;
-				case 280416:
-					return false;
-				case 982252:
-				case 1071884:
-					m_htmlColor = m_colorStack.Remove();
-					return true;
-				case 1441524:
-				case 2068980:
-					num3 = ConvertToFloat(m_htmlTag, m_xmlAttribute[0].valueStartIndex, m_xmlAttribute[0].valueLength);
-					if (num3 == -9999f)
-					{
-						return false;
-					}
-					switch (tagUnits)
-					{
-					case TagUnits.Pixels:
-						tag_Indent = num3;
-						break;
-					case TagUnits.FontUnits:
-						tag_Indent = num3;
-						tag_Indent *= m_fontScale * m_fontAsset.fontInfo.TabWidth / (float)(int)m_fontAsset.tabSize;
-						break;
-					case TagUnits.Percentage:
-						tag_Indent = m_marginWidth * num3 / 100f;
-						break;
-					}
-					m_indentStack.Add(tag_Indent);
-					m_xAdvance = tag_Indent;
-					return true;
-				case 6971027:
-				case 7598483:
-					tag_Indent = m_indentStack.Remove();
-					return true;
-				case -842656867:
-				case 1109386397:
-					num3 = ConvertToFloat(m_htmlTag, m_xmlAttribute[0].valueStartIndex, m_xmlAttribute[0].valueLength);
-					if (num3 == -9999f)
-					{
-						return false;
-					}
-					switch (tagUnits)
-					{
-					case TagUnits.Pixels:
-						tag_LineIndent = num3;
-						break;
-					case TagUnits.FontUnits:
-						tag_LineIndent = num3;
-						tag_LineIndent *= m_fontScale * m_fontAsset.fontInfo.TabWidth / (float)(int)m_fontAsset.tabSize;
-						break;
-					case TagUnits.Percentage:
-						tag_LineIndent = m_marginWidth * num3 / 100f;
-						break;
-					}
-					m_xAdvance += tag_LineIndent;
-					return true;
-				case -445537194:
-				case 1897386838:
-					tag_LineIndent = 0f;
-					return true;
-				case 1619421:
-				case 2246877:
-				{
-					int valueHashCode4 = m_xmlAttribute[0].valueHashCode;
-					m_spriteIndex = -1;
-					TMP_SpriteAsset spriteAsset;
-					if (m_xmlAttribute[0].valueType == TagType.None || m_xmlAttribute[0].valueType == TagType.NumericalValue)
-					{
-						if ((UnityEngine.Object)m_spriteAsset != (UnityEngine.Object)null)
-						{
-							m_currentSpriteAsset = m_spriteAsset;
-						}
-						else if ((UnityEngine.Object)m_defaultSpriteAsset != (UnityEngine.Object)null)
-						{
-							m_currentSpriteAsset = m_defaultSpriteAsset;
-						}
-						else if ((UnityEngine.Object)m_defaultSpriteAsset == (UnityEngine.Object)null)
-						{
-							if ((UnityEngine.Object)TMP_Settings.defaultSpriteAsset != (UnityEngine.Object)null)
-							{
-								m_defaultSpriteAsset = TMP_Settings.defaultSpriteAsset;
-							}
-							else
-							{
-								m_defaultSpriteAsset = Resources.Load<TMP_SpriteAsset>("Sprite Assets/Default Sprite Asset");
-							}
-							m_currentSpriteAsset = m_defaultSpriteAsset;
-						}
-						if ((UnityEngine.Object)m_currentSpriteAsset == (UnityEngine.Object)null)
-						{
-							return false;
-						}
-					}
-					else if (MaterialReferenceManager.TryGetSpriteAsset(valueHashCode4, out spriteAsset))
-					{
-						m_currentSpriteAsset = spriteAsset;
-					}
-					else
-					{
-						if ((UnityEngine.Object)spriteAsset == (UnityEngine.Object)null)
-						{
-							spriteAsset = Resources.Load<TMP_SpriteAsset>(TMP_Settings.defaultSpriteAssetPath + new string(m_htmlTag, m_xmlAttribute[0].valueStartIndex, m_xmlAttribute[0].valueLength));
-						}
-						if ((UnityEngine.Object)spriteAsset == (UnityEngine.Object)null)
-						{
-							return false;
-						}
-						MaterialReferenceManager.AddSpriteAsset(valueHashCode4, spriteAsset);
-						m_currentSpriteAsset = spriteAsset;
-					}
-					if (m_xmlAttribute[0].valueType == TagType.NumericalValue)
-					{
-						int num6 = (int)ConvertToFloat(m_htmlTag, m_xmlAttribute[0].valueStartIndex, m_xmlAttribute[0].valueLength);
-						if (num6 == -9999)
-						{
-							return false;
-						}
-						if (num6 > m_currentSpriteAsset.spriteInfoList.Count - 1)
-						{
-							return false;
-						}
-						m_spriteIndex = num6;
-					}
-					m_spriteColor = s_colorWhite;
-					m_tintSprite = false;
-					for (int k = 0; k < m_xmlAttribute.Length && m_xmlAttribute[k].nameHashCode != 0; k++)
-					{
-						int nameHashCode3 = m_xmlAttribute[k].nameHashCode;
-						int num7 = 0;
-						switch (nameHashCode3)
-						{
-						case 30547:
-						case 43347:
-							num7 = m_currentSpriteAsset.GetSpriteIndexFromHashcode(m_xmlAttribute[k].valueHashCode);
-							if (num7 == -1)
-							{
-								return false;
-							}
-							m_spriteIndex = num7;
-							break;
-						case 205930:
-						case 295562:
-							num7 = (int)ConvertToFloat(m_htmlTag, m_xmlAttribute[1].valueStartIndex, m_xmlAttribute[1].valueLength);
-							if (num7 == -9999)
-							{
-								return false;
-							}
-							if (num7 > m_currentSpriteAsset.spriteInfoList.Count - 1)
-							{
-								return false;
-							}
-							m_spriteIndex = num7;
-							break;
-						case 33019:
-						case 45819:
-							m_tintSprite = (ConvertToFloat(m_htmlTag, m_xmlAttribute[k].valueStartIndex, m_xmlAttribute[k].valueLength) != 0f);
-							break;
-						case 192323:
-						case 281955:
-							m_spriteColor = HexCharsToColor(m_htmlTag, m_xmlAttribute[k].valueStartIndex, m_xmlAttribute[k].valueLength);
-							break;
-						case 26705:
-						case 39505:
-						{
-							int attributeParameters = GetAttributeParameters(m_htmlTag, m_xmlAttribute[k].valueStartIndex, m_xmlAttribute[k].valueLength, ref m_attributeParameterValues);
-							if (attributeParameters != 3)
-							{
-								return false;
-							}
-							m_spriteIndex = (int)m_attributeParameterValues[0];
-							if (m_isParsingText)
-							{
-								spriteAnimator.DoSpriteAnimation(m_characterCount, m_currentSpriteAsset, m_spriteIndex, (int)m_attributeParameterValues[1], (int)m_attributeParameterValues[2]);
-							}
-							break;
-						}
-						default:
-							return false;
-						case 1619421:
-						case 2246877:
-							break;
-						}
-					}
-					if (m_spriteIndex == -1)
-					{
-						return false;
-					}
-					m_currentMaterialIndex = MaterialReference.AddMaterialReference(m_currentSpriteAsset.material, m_currentSpriteAsset, m_materialReferences, m_materialReferenceIndexLookup);
-					m_textElementType = TMP_TextElementType.Sprite;
-					return true;
-				}
-				case 514803617:
-				case 730022849:
-					m_style |= FontStyles.LowerCase;
-					m_fontStyleStack.Add(FontStyles.LowerCase);
-					return true;
-				case -1883544150:
-				case -1668324918:
-					if (m_fontStyleStack.Remove(FontStyles.LowerCase) == 0)
-					{
-						m_style &= (FontStyles)(-9);
-					}
-					return true;
-				case 9133802:
-				case 13526026:
-				case 566686826:
-				case 781906058:
-					m_style |= FontStyles.UpperCase;
-					m_fontStyleStack.Add(FontStyles.UpperCase);
-					return true;
-				case -1831660941:
-				case -1616441709:
-				case 47840323:
-				case 52232547:
-					if (m_fontStyleStack.Remove(FontStyles.UpperCase) == 0)
-					{
-						m_style &= (FontStyles)(-17);
-					}
-					return true;
-				case 551025096:
-				case 766244328:
-					m_style |= FontStyles.SmallCaps;
-					m_fontStyleStack.Add(FontStyles.SmallCaps);
-					return true;
-				case -1847322671:
-				case -1632103439:
-					if (m_fontStyleStack.Remove(FontStyles.SmallCaps) == 0)
-					{
-						m_style &= (FontStyles)(-33);
-					}
-					return true;
-				case 1482398:
-				case 2109854:
-					num3 = ConvertToFloat(m_htmlTag, m_xmlAttribute[0].valueStartIndex, m_xmlAttribute[0].valueLength);
-					if (num3 == -9999f)
-					{
-						return false;
-					}
-					m_marginLeft = num3;
-					switch (tagUnits)
-					{
-					case TagUnits.FontUnits:
-						m_marginLeft *= m_fontScale * m_fontAsset.fontInfo.TabWidth / (float)(int)m_fontAsset.tabSize;
-						break;
-					case TagUnits.Percentage:
-						m_marginLeft = (m_marginWidth - ((m_width == -1f) ? 0f : m_width)) * m_marginLeft / 100f;
-						break;
-					}
-					m_marginLeft = ((!(m_marginLeft >= 0f)) ? 0f : m_marginLeft);
-					m_marginRight = m_marginLeft;
-					return true;
-				case 7011901:
-				case 7639357:
-					m_marginLeft = 0f;
-					m_marginRight = 0f;
-					return true;
-				case -855002522:
-				case 1100728678:
-					num3 = ConvertToFloat(m_htmlTag, m_xmlAttribute[0].valueStartIndex, m_xmlAttribute[0].valueLength);
-					if (num3 == -9999f)
-					{
-						return false;
-					}
-					m_marginLeft = num3;
-					switch (tagUnits)
-					{
-					case TagUnits.FontUnits:
-						m_marginLeft *= m_fontScale * m_fontAsset.fontInfo.TabWidth / (float)(int)m_fontAsset.tabSize;
-						break;
-					case TagUnits.Percentage:
-						m_marginLeft = (m_marginWidth - ((m_width == -1f) ? 0f : m_width)) * m_marginLeft / 100f;
-						break;
-					}
-					m_marginLeft = ((!(m_marginLeft >= 0f)) ? 0f : m_marginLeft);
-					return true;
-				case -1690034531:
-				case -884817987:
-					num3 = ConvertToFloat(m_htmlTag, m_xmlAttribute[0].valueStartIndex, m_xmlAttribute[0].valueLength);
-					if (num3 == -9999f)
-					{
-						return false;
-					}
-					m_marginRight = num3;
-					switch (tagUnits)
-					{
-					case TagUnits.FontUnits:
-						m_marginRight *= m_fontScale * m_fontAsset.fontInfo.TabWidth / (float)(int)m_fontAsset.tabSize;
-						break;
-					case TagUnits.Percentage:
-						m_marginRight = (m_marginWidth - ((m_width == -1f) ? 0f : m_width)) * m_marginRight / 100f;
-						break;
-					}
-					m_marginRight = ((!(m_marginRight >= 0f)) ? 0f : m_marginRight);
-					return true;
-				case -842693512:
-				case 1109349752:
-					num3 = ConvertToFloat(m_htmlTag, m_xmlAttribute[0].valueStartIndex, m_xmlAttribute[0].valueLength);
-					if (num3 == -9999f || num3 == 0f)
-					{
-						return false;
-					}
-					m_lineHeight = num3;
-					switch (tagUnits)
-					{
-					case TagUnits.FontUnits:
-						m_lineHeight *= m_fontAsset.fontInfo.LineHeight * m_fontScale;
-						break;
-					case TagUnits.Percentage:
-						m_lineHeight = m_fontAsset.fontInfo.LineHeight * m_lineHeight / 100f * m_fontScale;
-						break;
-					}
-					return true;
-				case -445573839:
-				case 1897350193:
-					m_lineHeight = -32767f;
-					return true;
-				case 10723418:
-				case 15115642:
-					tag_NoParsing = true;
-					return true;
-				case 1286342:
-				case 1913798:
-				{
-					int valueHashCode = m_xmlAttribute[0].valueHashCode;
-					if (m_isParsingText)
-					{
-						m_actionStack.Add(valueHashCode);
-						Debug.Log("Action ID: [" + valueHashCode + "] First character index: " + m_characterCount, null);
-					}
-					return true;
-				}
-				case 6815845:
-				case 7443301:
-					if (m_isParsingText)
-					{
-						Debug.Log("Action ID: [" + m_actionStack.CurrentItem() + "] Last character index: " + (m_characterCount - 1), null);
-					}
-					m_actionStack.Remove();
-					return true;
-				case 226050:
-				case 315682:
-					num3 = ConvertToFloat(m_htmlTag, m_xmlAttribute[0].valueStartIndex, m_xmlAttribute[0].valueLength);
-					if (num3 == -9999f)
-					{
-						return false;
-					}
-					m_FXMatrix = Matrix4x4.TRS(Vector3.zero, Quaternion.identity, new Vector3(num3, 1f, 1f));
-					m_isFXMatrixSet = true;
-					return true;
-				case 1015979:
-				case 1105611:
-					m_isFXMatrixSet = false;
-					return true;
-				case 1600507:
-				case 2227963:
-					num3 = ConvertToFloat(m_htmlTag, m_xmlAttribute[0].valueStartIndex, m_xmlAttribute[0].valueLength);
-					if (num3 == -9999f)
-					{
-						return false;
-					}
-					m_FXMatrix = Matrix4x4.TRS(Vector3.zero, Quaternion.Euler(0f, 0f, num3), Vector3.one);
-					m_isFXMatrixSet = true;
-					return true;
-				case 7130010:
-				case 7757466:
-					m_isFXMatrixSet = false;
-					return true;
-				case 227814:
-				case 317446:
-				{
-					int nameHashCode = m_xmlAttribute[1].nameHashCode;
-					if (nameHashCode == 327550)
-					{
-						float num5 = ConvertToFloat(m_htmlTag, m_xmlAttribute[1].valueStartIndex, m_xmlAttribute[1].valueLength);
-						switch (tagUnits)
-						{
-						case TagUnits.Pixels:
-							Debug.Log("Table width = " + num5 + "px.", null);
-							break;
-						case TagUnits.FontUnits:
-							Debug.Log("Table width = " + num5 + "em.", null);
-							break;
-						case TagUnits.Percentage:
-							Debug.Log("Table width = " + num5 + "%.", null);
-							break;
-						}
-					}
-					return true;
-				}
-				case 1017743:
-				case 1107375:
-					return true;
-				case 670:
-				case 926:
-					return true;
-				case 2973:
-				case 3229:
-					return true;
-				case 660:
-				case 916:
-					return true;
-				case 2963:
-				case 3219:
-					return true;
-				case 656:
-				case 912:
-					for (int j = 1; j < m_xmlAttribute.Length && m_xmlAttribute[j].nameHashCode != 0; j++)
-					{
-						switch (m_xmlAttribute[j].nameHashCode)
-						{
-						case 327550:
-						{
-							float num4 = ConvertToFloat(m_htmlTag, m_xmlAttribute[j].valueStartIndex, m_xmlAttribute[j].valueLength);
-							switch (tagUnits)
-							{
-							case TagUnits.Pixels:
-								Debug.Log("Table width = " + num4 + "px.", null);
-								break;
-							case TagUnits.FontUnits:
-								Debug.Log("Table width = " + num4 + "em.", null);
-								break;
-							case TagUnits.Percentage:
-								Debug.Log("Table width = " + num4 + "%.", null);
-								break;
-							}
-							break;
-						}
-						case 275917:
-							switch (m_xmlAttribute[j].valueHashCode)
-							{
-							case 3774683:
-								Debug.Log("TD align=\"left\".", null);
-								break;
-							case 136703040:
-								Debug.Log("TD align=\"right\".", null);
-								break;
-							case -458210101:
-								Debug.Log("TD align=\"center\".", null);
-								break;
-							case -523808257:
-								Debug.Log("TD align=\"justified\".", null);
-								break;
-							}
-							break;
-						}
-					}
-					return true;
-				case 2959:
-				case 3215:
-					return true;
-				default:
-					return false;
-				}
+				tag_NoParsing = false;
+				return true;
 			}
-			m_htmlColor = HexCharsToColor(m_htmlTag, num);
-			m_colorStack.Add(m_htmlColor);
-			return true;
+			return false;
 		}
 	}
 }

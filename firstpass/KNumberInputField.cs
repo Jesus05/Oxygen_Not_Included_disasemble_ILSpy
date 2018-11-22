@@ -72,7 +72,7 @@ public class KNumberInputField : KScreen
 
 	private void ProcessInput(string input)
 	{
-		input = ((!(input == string.Empty)) ? input : minValue.ToString());
+		input = ((!(input == "")) ? input : minValue.ToString());
 		float value = minValue;
 		try
 		{
@@ -109,10 +109,10 @@ public class KNumberInputField : KScreen
 
 	public override float GetSortKey()
 	{
-		if (isEditing)
+		if (!isEditing)
 		{
-			return 10f;
+			return base.GetSortKey();
 		}
-		return base.GetSortKey();
+		return 10f;
 	}
 }

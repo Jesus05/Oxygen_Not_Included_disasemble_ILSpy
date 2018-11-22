@@ -33,7 +33,7 @@ public struct Tag : ISerializationCallbackReceiver, IEquatable<Tag>, IComparable
 	public Tag(int hash)
 	{
 		this.hash = hash;
-		name = string.Empty;
+		name = "";
 	}
 
 	public Tag(Tag orig)
@@ -97,7 +97,7 @@ public struct Tag : ISerializationCallbackReceiver, IEquatable<Tag>, IComparable
 		}
 		else
 		{
-			name = string.Empty;
+			name = "";
 		}
 	}
 

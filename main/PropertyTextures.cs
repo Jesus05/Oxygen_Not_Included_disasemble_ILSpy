@@ -78,7 +78,7 @@ public class PropertyTextures : KMonoBehaviour, ISim200ms
 	}
 
 	[NonSerialized]
-	public bool ForceLightEverywhere;
+	public bool ForceLightEverywhere = false;
 
 	[SerializeField]
 	private Vector2 PressureRange = new Vector2(15f, 200f);
@@ -106,7 +106,7 @@ public class PropertyTextures : KMonoBehaviour, ISim200ms
 	[SerializeField]
 	private Vector2 hotRange;
 
-	public static float FogOfWarScale;
+	public static float FogOfWarScale = 0f;
 
 	private int WorldSizeID;
 

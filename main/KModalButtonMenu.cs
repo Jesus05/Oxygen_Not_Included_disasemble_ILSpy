@@ -3,7 +3,7 @@ using UnityEngine.UI;
 
 public class KModalButtonMenu : KButtonMenu
 {
-	private bool shown;
+	private bool shown = false;
 
 	[SerializeField]
 	private GameObject panelRoot;

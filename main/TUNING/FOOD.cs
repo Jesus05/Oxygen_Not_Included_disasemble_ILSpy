@@ -105,10 +105,6 @@ namespace TUNING
 
 		public const float ROT_TO_ELEMENT_TIME = 600f;
 
-		public const float MAX_RATIONS_STACK = 8000000f;
-
-		public const float MAX_UNITS_STACK = 10f;
-
 		public static List<EdiblesManager.FoodInfo> FOOD_TYPES_LIST = new List<EdiblesManager.FoodInfo>();
 
 		public const int FOOD_QUALITY_AWFUL = -1;

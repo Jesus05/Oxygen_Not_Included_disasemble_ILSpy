@@ -19,29 +19,29 @@ public class MarkovNameGenerator
 	{
 		get
 		{
-			string empty = string.Empty;
+			string text = "";
 			do
 			{
 				int index = _rnd.Next(_samples.Count);
 				int length = _samples[index].Length;
-				empty = _samples[index].Substring(_rnd.Next(0, _samples[index].Length - _order), _order);
-				while (empty.Length < length)
+				text = _samples[index].Substring(_rnd.Next(0, _samples[index].Length - _order), _order);
+				while (text.Length < length)
 				{
-					string token = empty.Substring(empty.Length - _order, _order);
+					string token = text.Substring(text.Length - _order, _order);
 					char letter = GetLetter(token);
 					if (letter == '?')
 					{
 						break;
 					}
-					empty += GetLetter(token);
+					text += GetLetter(token);
 				}
-				if (empty.Contains(" "))
+				if (text.Contains(" "))
 				{
-					string[] array = empty.Split(' ');
-					empty = string.Empty;
+					string[] array = text.Split(' ');
+					text = "";
 					for (int i = 0; i < array.Length; i++)
 					{
-						if (!(array[i] == string.Empty))
+						if (!(array[i] == ""))
 						{
 							if (array[i].Length == 1)
 							{
@@ -51,22 +51,22 @@ public class MarkovNameGenerator
 							{
 								array[i] = array[i].Substring(0, 1) + array[i].Substring(1).ToLower();
 							}
-							if (empty != string.Empty)
+							if (text != "")
 							{
-								empty += " ";
+								text += " ";
 							}
-							empty += array[i];
+							text += array[i];
 						}
 					}
 				}
 				else
 				{
-					empty = empty.Substring(0, 1) + empty.Substring(1).ToLower();
+					text = text.Substring(0, 1) + text.Substring(1).ToLower();
 				}
 			}
-			while (_used.Contains(empty) || empty.Length < _minLength);
-			_used.Add(empty);
-			return empty;
+			while (_used.Contains(text) || text.Length < _minLength);
+			_used.Add(text);
+			return text;
 		}
 	}
 
@@ -122,12 +122,12 @@ public class MarkovNameGenerator
 
 	private char GetLetter(string token)
 	{
-		if (!_chains.ContainsKey(token))
+		if (_chains.ContainsKey(token))
 		{
-			return '?';
+			List<char> list = _chains[token];
+			int index = _rnd.Next(list.Count);
+			return list[index];
 		}
-		List<char> list = _chains[token];
-		int index = _rnd.Next(list.Count);
-		return list[index];
+		return '?';
 	}
 }

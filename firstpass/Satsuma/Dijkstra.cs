@@ -77,38 +77,38 @@ namespace Satsuma
 
 		public Node Step()
 		{
-			if (priorityQueue.Count == 0)
+			if (priorityQueue.Count != 0)
 			{
-				return Node.Invalid;
-			}
-			double priority;
-			Node node = priorityQueue.Peek(out priority);
-			priorityQueue.Pop();
-			if (double.IsPositiveInfinity(priority))
-			{
-				return Node.Invalid;
-			}
-			distance[node] = priority;
-			foreach (Arc item in Graph.Arcs(node, ArcFilter.Forward))
-			{
-				Node node2 = Graph.Other(item, node);
-				if (!Fixed(node2))
+				double priority;
+				Node node = priorityQueue.Peek(out priority);
+				priorityQueue.Pop();
+				if (!double.IsPositiveInfinity(priority))
 				{
-					double num = Cost(item);
-					ValidateCost(num);
-					double num2 = (Mode != 0) ? Math.Max(priority, num) : (priority + num);
-					if (!priorityQueue.TryGetPriority(node2, out double priority2))
+					distance[node] = priority;
+					foreach (Arc item in Graph.Arcs(node, ArcFilter.Forward))
 					{
-						priority2 = double.PositiveInfinity;
+						Node node2 = Graph.Other(item, node);
+						if (!Fixed(node2))
+						{
+							double num = Cost(item);
+							ValidateCost(num);
+							double num2 = (Mode != 0) ? Math.Max(priority, num) : (priority + num);
+							if (!priorityQueue.TryGetPriority(node2, out double priority2))
+							{
+								priority2 = double.PositiveInfinity;
+							}
+							if (num2 < priority2)
+							{
+								priorityQueue[node2] = num2;
+								parentArc[node2] = item;
+							}
+						}
 					}
-					if (num2 < priority2)
-					{
-						priorityQueue[node2] = num2;
-						parentArc[node2] = item;
-					}
+					return node;
 				}
+				return Node.Invalid;
 			}
-			return node;
+			return Node.Invalid;
 		}
 
 		public void Run()
@@ -120,31 +120,31 @@ namespace Satsuma
 
 		public Node RunUntilFixed(Node target)
 		{
-			if (Fixed(target))
+			if (!Fixed(target))
 			{
-				return target;
+				Node node;
+				do
+				{
+					node = Step();
+				}
+				while (!(node == Node.Invalid) && !(node == target));
+				return node;
 			}
-			Node node;
-			do
-			{
-				node = Step();
-			}
-			while (!(node == Node.Invalid) && !(node == target));
-			return node;
+			return target;
 		}
 
 		public Node RunUntilFixed(Func<Node, bool> isTarget)
 		{
 			Node node = FixedNodes.FirstOrDefault(isTarget);
-			if (node != Node.Invalid)
+			if (!(node != Node.Invalid))
 			{
+				do
+				{
+					node = Step();
+				}
+				while (!(node == Node.Invalid) && !isTarget(node));
 				return node;
 			}
-			do
-			{
-				node = Step();
-			}
-			while (!(node == Node.Invalid) && !isTarget(node));
 			return node;
 		}
 
@@ -172,23 +172,23 @@ namespace Satsuma
 
 		public IPath GetPath(Node node)
 		{
-			if (!Reached(node))
+			if (Reached(node))
 			{
-				return null;
-			}
-			Path path = new Path(Graph);
-			path.Begin(node);
-			while (true)
-			{
-				Arc arc = GetParentArc(node);
-				if (arc == Arc.Invalid)
+				Path path = new Path(Graph);
+				path.Begin(node);
+				while (true)
 				{
-					break;
+					Arc arc = GetParentArc(node);
+					if (arc == Arc.Invalid)
+					{
+						break;
+					}
+					path.AddFirst(arc);
+					node = Graph.Other(arc, node);
 				}
-				path.AddFirst(arc);
-				node = Graph.Other(arc, node);
+				return path;
 			}
-			return path;
+			return null;
 		}
 	}
 }

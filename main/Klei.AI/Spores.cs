@@ -67,7 +67,7 @@ namespace Klei.AI
 			AddDiseaseComponent(new AnimatedDisease(new HashedString[1]
 			{
 				"anim_idle_spores_kanim"
-			}, "SickSpores"));
+			}, Db.Get().Expressions.SickSpores));
 			AddDiseaseComponent(new SporesComponent());
 		}
 	}

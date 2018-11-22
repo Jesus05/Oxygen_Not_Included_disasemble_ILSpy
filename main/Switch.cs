@@ -18,7 +18,7 @@ public class Switch : KMonoBehaviour, ISaveLoadable, IToggleHandler
 	[MyCmpAdd]
 	private Toggleable openSwitch;
 
-	private int openToggleIndex;
+	private int openToggleIndex = 0;
 
 	private static readonly EventSystem.IntraObjectHandler<Switch> OnRefreshUserMenuDelegate = new EventSystem.IntraObjectHandler<Switch>(delegate(Switch component, object data)
 	{
@@ -96,7 +96,7 @@ public class Switch : KMonoBehaviour, ISaveLoadable, IToggleHandler
 	protected virtual void OnRefreshUserMenu(object data)
 	{
 		LocString loc_string = (!switchedOn) ? BUILDINGS.PREFABS.SWITCH.TURN_ON : BUILDINGS.PREFABS.SWITCH.TURN_OFF;
-		Game.Instance.userMenu.AddButton(base.gameObject, new KIconButtonMenu.ButtonInfo("action_power", loc_string, OnMinionToggle, Action.ToggleEnabled, null, null, null, string.Empty, true), 1f);
+		Game.Instance.userMenu.AddButton(base.gameObject, new KIconButtonMenu.ButtonInfo("action_power", loc_string, OnMinionToggle, Action.ToggleEnabled, null, null, null, "", true), 1f);
 	}
 
 	protected virtual void UpdateSwitchStatus()

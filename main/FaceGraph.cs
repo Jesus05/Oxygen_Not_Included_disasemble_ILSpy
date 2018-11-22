@@ -82,24 +82,24 @@ public class FaceGraph : KMonoBehaviour
 	private bool ShouldUseSidewaysSymbol(KBatchedAnimController controller)
 	{
 		KAnim.Anim currentAnim = controller.GetCurrentAnim();
-		if (currentAnim == null)
+		if (currentAnim != null)
 		{
-			return false;
-		}
-		int currentFrameIndex = controller.GetCurrentFrameIndex();
-		if (currentFrameIndex <= 0)
-		{
-			return false;
-		}
-		KBatchGroupData batchGroupData = KAnimBatchManager.Instance().GetBatchGroupData(currentAnim.animFile.animBatchTag);
-		KAnim.Anim.Frame frame = batchGroupData.GetFrame(currentFrameIndex);
-		for (int i = 0; i < frame.numElements; i++)
-		{
-			KAnim.Anim.FrameElement frameElement = batchGroupData.GetFrameElement(frame.firstElementIdx + i);
-			if (frameElement.symbol == HASH_SNAPTO_EYES && frameElement.frame >= FIRST_SIDEWAYS_FRAME)
+			int currentFrameIndex = controller.GetCurrentFrameIndex();
+			if (currentFrameIndex > 0)
 			{
-				return true;
+				KBatchGroupData batchGroupData = KAnimBatchManager.Instance().GetBatchGroupData(currentAnim.animFile.animBatchTag);
+				KAnim.Anim.Frame frame = batchGroupData.GetFrame(currentFrameIndex);
+				for (int i = 0; i < frame.numElements; i++)
+				{
+					KAnim.Anim.FrameElement frameElement = batchGroupData.GetFrameElement(frame.firstElementIdx + i);
+					if (frameElement.symbol == HASH_SNAPTO_EYES && frameElement.frame >= FIRST_SIDEWAYS_FRAME)
+					{
+						return true;
+					}
+				}
+				return false;
 			}
+			return false;
 		}
 		return false;
 	}
@@ -144,11 +144,11 @@ public class FaceGraph : KMonoBehaviour
 		}
 		if (anim == null)
 		{
-			DebugUtil.Assert(false, "Could not find shape for expression: " + HashCache.Get().Get(hashedString), string.Empty, string.Empty);
+			DebugUtil.Assert(false, "Could not find shape for expression: " + HashCache.Get().Get(hashedString));
 		}
 		if (!flag2)
 		{
-			DebugUtil.Assert(false, "Could not find shape element for shape:" + HashCache.Get().Get(variation_symbol.hash), string.Empty, string.Empty);
+			DebugUtil.Assert(false, "Could not find shape element for shape:" + HashCache.Get().Get(variation_symbol.hash));
 		}
 		KAnim.Build.Symbol symbol = KAnimBatchManager.Instance().GetBatchGroupData(controller.batchGroupID).GetSymbol(symbol_name_in_shape_file);
 		KBatchGroupData batchGroupData2 = KAnimBatchManager.Instance().GetBatchGroupData(variation_symbol.build.batchTag);

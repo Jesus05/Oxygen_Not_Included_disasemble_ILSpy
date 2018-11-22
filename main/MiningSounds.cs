@@ -6,7 +6,7 @@ public class MiningSounds : KMonoBehaviour
 	[MyCmpGet]
 	private LoopingSounds loopingSounds;
 
-	private FMODAsset miningSound;
+	private FMODAsset miningSound = null;
 
 	[EventRef]
 	private string miningSoundMigrated;
@@ -35,7 +35,7 @@ public class MiningSounds : KMonoBehaviour
 			if (element != null)
 			{
 				string text = element.substance.GetMiningSound();
-				if (text != null && !(text == string.Empty))
+				if (text != null && !(text == ""))
 				{
 					text = "Mine_" + text;
 					miningSoundMigrated = GlobalAssets.GetSound(text, false);

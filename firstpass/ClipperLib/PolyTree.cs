@@ -36,11 +36,11 @@ namespace ClipperLib
 
 		public PolyNode GetFirst()
 		{
-			if (m_Childs.Count > 0)
+			if (m_Childs.Count <= 0)
 			{
-				return m_Childs[0];
+				return null;
 			}
-			return null;
+			return m_Childs[0];
 		}
 	}
 }

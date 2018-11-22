@@ -20,7 +20,7 @@ public class MoveableLogicGateVisualizer : LogicGateBase
 		base.OnSpawn();
 		cell = -1;
 		OverlayScreen instance = OverlayScreen.Instance;
-		instance.OnOverlayChanged = (Action<SimViewMode>)Delegate.Combine(instance.OnOverlayChanged, new Action<SimViewMode>(OnOverlayChanged));
+		instance.OnOverlayChanged = (Action<HashedString>)Delegate.Combine(instance.OnOverlayChanged, new Action<HashedString>(OnOverlayChanged));
 		OnOverlayChanged(OverlayScreen.Instance.mode);
 		Subscribe(-1643076535, OnRotatedDelegate);
 	}
@@ -28,14 +28,14 @@ public class MoveableLogicGateVisualizer : LogicGateBase
 	protected override void OnCleanUp()
 	{
 		OverlayScreen instance = OverlayScreen.Instance;
-		instance.OnOverlayChanged = (Action<SimViewMode>)Delegate.Remove(instance.OnOverlayChanged, new Action<SimViewMode>(OnOverlayChanged));
+		instance.OnOverlayChanged = (Action<HashedString>)Delegate.Remove(instance.OnOverlayChanged, new Action<HashedString>(OnOverlayChanged));
 		Unregister();
 		base.OnCleanUp();
 	}
 
-	private void OnOverlayChanged(SimViewMode mode)
+	private void OnOverlayChanged(HashedString mode)
 	{
-		if (mode == SimViewMode.Logic)
+		if (mode == OverlayModes.Logic.ID)
 		{
 			Register();
 		}

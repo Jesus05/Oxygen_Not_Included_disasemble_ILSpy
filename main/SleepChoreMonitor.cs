@@ -7,7 +7,7 @@ public class SleepChoreMonitor : GameStateMachine<SleepChoreMonitor, SleepChoreM
 	{
 		private int locatorCell;
 
-		public GameObject locator;
+		public GameObject locator = null;
 
 		public Instance(IStateMachineTarget master)
 			: base(master)
@@ -16,19 +16,19 @@ public class SleepChoreMonitor : GameStateMachine<SleepChoreMonitor, SleepChoreM
 
 		public void UpdateBed()
 		{
-			Ownables component = base.sm.masterTarget.Get(base.smi).GetComponent<Ownables>();
+			Ownables soleOwner = base.sm.masterTarget.Get(base.smi).GetComponent<MinionIdentity>().GetSoleOwner();
 			Assignable assignable = null;
-			Assignable assignable2 = component.GetAssignable(Db.Get().AssignableSlots.MedicalBed);
-			if ((Object)assignable2 != (Object)null && assignable2.CanAutoAssignTo(base.gameObject.GetComponent<MinionIdentity>()))
+			Assignable assignable2 = soleOwner.GetAssignable(Db.Get().AssignableSlots.MedicalBed);
+			if ((Object)assignable2 != (Object)null && assignable2.CanAutoAssignTo(base.sm.masterTarget.Get(base.smi).GetComponent<MinionIdentity>().assignableProxy.Get()))
 			{
 				assignable = assignable2;
 			}
 			else
 			{
-				assignable = component.GetAssignable(Db.Get().AssignableSlots.Bed);
+				assignable = soleOwner.GetAssignable(Db.Get().AssignableSlots.Bed);
 				if ((Object)assignable == (Object)null)
 				{
-					assignable = component.AutoAssignSlot(Db.Get().AssignableSlots.Bed);
+					assignable = soleOwner.AutoAssignSlot(Db.Get().AssignableSlots.Bed);
 					if ((Object)assignable != (Object)null)
 					{
 						AssignableReachabilitySensor sensor = GetComponent<Sensors>().GetSensor<AssignableReachabilitySensor>();
@@ -115,7 +115,11 @@ public class SleepChoreMonitor : GameStateMachine<SleepChoreMonitor, SleepChoreM
 		});
 		passingout.ToggleChore(CreatePassingOutChore, satisfied, satisfied);
 		sleeponfloor.ToggleChore(CreateSleepOnFloorChore, satisfied, satisfied);
-		bedassigned.ParamTransition(bed, checkforbed, (Instance smi, GameObject p) => (Object)p == (Object)null).EventTransition(GameHashes.AssignablesChanged, checkforbed, null).EventTransition(GameHashes.AssignableReachabilityChanged, checkforbed, (Instance smi) => !smi.IsBedReachable())
+		bedassigned.ParamTransition(bed, checkforbed, (Instance smi, GameObject p) => (Object)p == (Object)null).EventHandler(GameHashes.AssignablesChanged, (StateMachine<SleepChoreMonitor, Instance, IStateMachineTarget, object>.State.Callback)delegate
+		{
+			Debug.Log("BED ASSIGNMENT CHANGED", null);
+		}).EventTransition(GameHashes.AssignablesChanged, checkforbed, null)
+			.EventTransition(GameHashes.AssignableReachabilityChanged, checkforbed, (Instance smi) => !smi.IsBedReachable())
 			.ToggleChore(CreateSleepChore, satisfied, satisfied);
 	}
 

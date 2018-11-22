@@ -17,32 +17,32 @@ namespace TMPro
 
 		public static bool SetEquatableStruct<T>(ref T currentValue, T newValue) where T : IEquatable<T>
 		{
-			if (((IEquatable<T>)currentValue).Equals(newValue))
+			if (!((IEquatable<T>)currentValue).Equals(newValue))
 			{
-				return false;
+				currentValue = newValue;
+				return true;
 			}
-			currentValue = newValue;
-			return true;
+			return false;
 		}
 
 		public static bool SetStruct<T>(ref T currentValue, T newValue) where T : struct
 		{
-			if (currentValue.Equals(newValue))
+			if (!currentValue.Equals(newValue))
 			{
-				return false;
+				currentValue = newValue;
+				return true;
 			}
-			currentValue = newValue;
-			return true;
+			return false;
 		}
 
 		public static bool SetClass<T>(ref T currentValue, T newValue) where T : class
 		{
-			if ((currentValue == null && newValue == null) || (currentValue != null && currentValue.Equals(newValue)))
+			if ((currentValue != null || newValue != null) && (currentValue == null || !currentValue.Equals(newValue)))
 			{
-				return false;
+				currentValue = newValue;
+				return true;
 			}
-			currentValue = newValue;
-			return true;
+			return false;
 		}
 	}
 }

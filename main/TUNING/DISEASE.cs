@@ -11,6 +11,8 @@ namespace TUNING
 			public const float NORMAL = 900f;
 
 			public const float SHORT = 540f;
+
+			public const float TEMPORARY = 120f;
 		}
 
 		public class IMMUNE_ATTACK_STRENGTH_PERCENT

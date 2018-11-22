@@ -37,7 +37,8 @@ public class StoredMinionIdentity : KMonoBehaviour, ISaveLoadable, IAssignableId
 	[Serialize]
 	public List<Tag> forbiddenTags;
 
-	private List<Ownables> ownablesList;
+	[Serialize]
+	public Ref<MinionAssignablesProxy> assignableProxy;
 
 	[Serialize]
 	public Dictionary<string, float> ExperienceByRoleID = new Dictionary<string, float>();
@@ -74,31 +75,29 @@ public class StoredMinionIdentity : KMonoBehaviour, ISaveLoadable, IAssignableId
 		set;
 	}
 
-	protected override void OnPrefabInit()
+	public bool HasPerk(RolePerk perk)
 	{
-		Ownables component = GetComponent<Ownables>();
-		Equipment component2 = GetComponent<Equipment>();
-		foreach (AssignableSlot resource in Db.Get().AssignableSlots.resources)
+		foreach (RoleConfig rolesConfig in Game.Instance.roleManager.RolesConfigs)
 		{
-			if (resource is OwnableSlot)
+			if (rolesConfig.HasPerk(perk) && MasteryByRoleID.ContainsKey(rolesConfig.id) && MasteryByRoleID[rolesConfig.id])
 			{
-				OwnableSlotInstance slot_instance = new OwnableSlotInstance(component, (OwnableSlot)resource);
-				component.Add(slot_instance);
-			}
-			else if (resource is EquipmentSlot)
-			{
-				EquipmentSlotInstance slot_instance2 = new EquipmentSlotInstance(component2, (EquipmentSlot)resource);
-				component2.Add(slot_instance2);
+				return true;
 			}
 		}
-		ownablesList = new List<Ownables>
-		{
-			component
-		};
+		return Game.Instance.roleManager.GetRole(currentRole) != null && Game.Instance.roleManager.GetRole(currentRole).HasPerk(perk);
+	}
+
+	protected override void OnPrefabInit()
+	{
+		assignableProxy = new Ref<MinionAssignablesProxy>();
 	}
 
 	protected override void OnSpawn()
 	{
+		if ((Object)assignableProxy.Get() == (Object)null)
+		{
+			assignableProxy = MinionAssignablesProxy.InitAssignableProxy(assignableProxy, this);
+		}
 	}
 
 	public string GetProperName()
@@ -108,12 +107,12 @@ public class StoredMinionIdentity : KMonoBehaviour, ISaveLoadable, IAssignableId
 
 	public List<Ownables> GetOwners()
 	{
-		return ownablesList;
+		return assignableProxy.Get().ownables;
 	}
 
 	public Ownables GetSoleOwner()
 	{
-		return GetComponent<Ownables>();
+		return assignableProxy.Get().GetComponent<Ownables>();
 	}
 
 	public bool IsNull()

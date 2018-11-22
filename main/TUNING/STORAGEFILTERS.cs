@@ -41,6 +41,7 @@ namespace TUNING
 			GameTags.Clothes,
 			GameTags.ManufacturedMaterial,
 			GameTags.Egg,
+			GameTags.RareMaterials,
 			GameTags.Other
 		};
 

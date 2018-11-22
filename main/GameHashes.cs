@@ -300,6 +300,7 @@ public enum GameHashes
 	RequestRegisterLaunchCondition = 1711162550,
 	IgniteEngine = -1358394196,
 	StoragePriorityChanged = -1626373771,
+	StorageCapacityChanged = -945020481,
 	AttachmentNetworkChanged = 486707561,
 	LaunchConditionChanged = 1655598572,
 	ChoreInterrupt = 1485595942,
@@ -310,5 +311,6 @@ public enum GameHashes
 	DuplicantDied = 282337316,
 	DiscoveredSpace = -818188514,
 	StarmapAnalysisTargetChanged = 532901469,
-	BeginMeteorBombardment = -84771526
+	BeginMeteorBombardment = -84771526,
+	PrefabInstanceIDRedirected = 17633999
 }

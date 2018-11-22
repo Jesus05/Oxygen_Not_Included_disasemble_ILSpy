@@ -241,10 +241,18 @@ public class RancherChore : Chore<RancherChore.RancherChoreStates.Instance>
 	};
 
 	public RancherChore(KPrefabID rancher_station)
-		: base(Db.Get().ChoreTypes.Ranch, (IStateMachineTarget)rancher_station, (ChoreProvider)null, false, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.basic, 0, false, true, 0, (Tag[])null)
+		: base(Db.Get().ChoreTypes.Ranch, (IStateMachineTarget)rancher_station, (ChoreProvider)null, false, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.basic, 5, false, true, 0, (Tag[])null)
 	{
 		AddPrecondition(IsCreatureAvailableForRanching, rancher_station.GetSMI<RanchStation.Instance>());
 		AddPrecondition(ChorePreconditions.instance.HasRolePerk, RoleManager.rolePerks.CanUseRanchStation.id);
+		AddPrecondition(ChorePreconditions.instance.IsScheduledTime, Db.Get().ScheduleBlockTypes.Work);
+		AddPrecondition(ChorePreconditions.instance.CanMoveTo, rancher_station.GetComponent<Building>());
+		Operational component = rancher_station.GetComponent<Operational>();
+		AddPrecondition(ChorePreconditions.instance.IsOperational, component);
+		Deconstructable component2 = rancher_station.GetComponent<Deconstructable>();
+		AddPrecondition(ChorePreconditions.instance.IsNotMarkedForDeconstruction, component2);
+		BuildingEnabledButton component3 = rancher_station.GetComponent<BuildingEnabledButton>();
+		AddPrecondition(ChorePreconditions.instance.IsNotMarkedForDisable, component3);
 		smi = new RancherChoreStates.Instance(rancher_station);
 		SetPrioritizable(rancher_station.GetComponent<Prioritizable>());
 	}

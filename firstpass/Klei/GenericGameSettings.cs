@@ -6,7 +6,7 @@ namespace Klei
 {
 	public class GenericGameSettings : YamlIO<GenericGameSettings>
 	{
-		private static GenericGameSettings _instance;
+		private static GenericGameSettings _instance = null;
 
 		public static GenericGameSettings instance
 		{
@@ -16,7 +16,7 @@ namespace Klei
 				{
 					try
 					{
-						YamlIO<GenericGameSettings>.LoadFile(Path);
+						YamlIO<GenericGameSettings>.LoadFile(Path, null);
 					}
 					catch
 					{
@@ -146,7 +146,7 @@ namespace Klei
 		{
 			try
 			{
-				Save(Path);
+				Save(Path, null);
 			}
 			catch (Exception ex)
 			{

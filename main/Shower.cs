@@ -8,6 +8,13 @@ public class Shower : Workable, IEffectDescriptor, IGameObjectEffectDescriptor
 {
 	public class ShowerSM : GameStateMachine<ShowerSM, ShowerSM.Instance, Shower>
 	{
+		public class OperationalState : State
+		{
+			public State not_ready;
+
+			public State ready;
+		}
+
 		public new class Instance : GameInstance
 		{
 			private Operational operational;
@@ -30,23 +37,74 @@ public class Shower : Workable, IEffectDescriptor, IGameObjectEffectDescriptor
 			{
 				operational.SetActive(active, false);
 			}
+
+			private bool HasSufficientMass()
+			{
+				bool result = false;
+				PrimaryElement primaryElement = GetComponent<Storage>().FindPrimaryElement(SimHashes.Water);
+				if ((Object)primaryElement != (Object)null)
+				{
+					result = (primaryElement.Mass >= 5f);
+				}
+				return result;
+			}
+
+			public bool OutputFull()
+			{
+				PrimaryElement primaryElement = GetComponent<Storage>().FindPrimaryElement(SimHashes.DirtyWater);
+				if (!((Object)primaryElement != (Object)null))
+				{
+					return false;
+				}
+				return primaryElement.Mass >= 5f;
+			}
+
+			public bool IsReady()
+			{
+				if (HasSufficientMass())
+				{
+					if (!OutputFull())
+					{
+						return true;
+					}
+					return false;
+				}
+				return false;
+			}
 		}
 
 		public State unoperational;
 
-		public State operational;
+		public OperationalState operational;
 
 		public override void InitializeStates(out BaseState default_state)
 		{
 			default_state = unoperational;
+			root.Update(UpdateStatusItems, UpdateRate.SIM_200ms, false);
 			unoperational.EventTransition(GameHashes.OperationalChanged, operational, (Instance smi) => smi.IsOperational).PlayAnim("off");
-			operational.EventTransition(GameHashes.OperationalChanged, unoperational, (Instance smi) => !smi.IsOperational).ToggleRecurringChore(delegate(Instance smi)
+			operational.DefaultState(operational.not_ready).EventTransition(GameHashes.OperationalChanged, unoperational, (Instance smi) => !smi.IsOperational);
+			operational.not_ready.EventTransition(GameHashes.OnStorageChange, operational.ready, (Instance smi) => smi.IsReady()).PlayAnim("off");
+			operational.ready.ToggleChore(CreateShowerChore, operational.not_ready);
+		}
+
+		private Chore CreateShowerChore(Instance smi)
+		{
+			ChoreType shower = Db.Get().ChoreTypes.Shower;
+			Shower master = smi.master;
+			ScheduleBlockType hygiene = Db.Get().ScheduleBlockTypes.Hygiene;
+			return new WorkChore<Shower>(shower, master, null, null, true, null, null, null, false, hygiene, false, true, null, false, true, false, PriorityScreen.PriorityClass.emergency, 5, false);
+		}
+
+		private void UpdateStatusItems(Instance smi, float dt)
+		{
+			if (smi.OutputFull())
 			{
-				ChoreType shower = Db.Get().ChoreTypes.Shower;
-				Shower master = smi.master;
-				ScheduleBlockType hygiene = Db.Get().ScheduleBlockTypes.Hygiene;
-				return new WorkChore<Shower>(shower, master, null, null, true, null, null, null, false, hygiene, false, true, null, false, true, false, PriorityScreen.PriorityClass.emergency, 0, false);
-			}, null);
+				smi.master.GetComponent<KSelectable>().AddStatusItem(Db.Get().BuildingStatusItems.OutputPipeFull, this);
+			}
+			else
+			{
+				smi.master.GetComponent<KSelectable>().RemoveStatusItem(Db.Get().BuildingStatusItems.OutputPipeFull, false);
+			}
 		}
 	}
 
@@ -61,6 +119,8 @@ public class Shower : Workable, IEffectDescriptor, IGameObjectEffectDescriptor
 	public int absoluteDiseaseRemoval;
 
 	private SimUtil.DiseaseInfo accumulatedDisease;
+
+	public const float WATER_PER_USE = 5f;
 
 	private static readonly string[] EffectsRemoved = new string[2]
 	{

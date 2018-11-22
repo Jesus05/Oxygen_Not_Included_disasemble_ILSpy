@@ -1,97 +1,25 @@
 using Newtonsoft.Json;
-using ProcGen;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Threading;
-using UnityEngine;
 
-public class Unlocks : KMonoBehaviour, ISim4000ms
+public class Unlocks : KMonoBehaviour
 {
 	private const int FILE_IO_RETRY_ATTEMPTS = 5;
 
-	public Dictionary<string, bool> locked = new Dictionary<string, bool>();
-
-	public Dictionary<string, bool> defaultLocked = new Dictionary<string, bool>
-	{
-		{
-			"poi_surface_facillity_1",
-			true
-		},
-		{
-			"poi_surface_facillity_2",
-			true
-		},
-		{
-			"poi_surface_facillity_3",
-			true
-		},
-		{
-			"poi_surface_facillity_4",
-			true
-		},
-		{
-			"firstrocketlaunch",
-			true
-		},
-		{
-			"duplicantdeath",
-			true
-		},
-		{
-			"onedupeleft",
-			true
-		},
-		{
-			"twentydupecolony",
-			true
-		},
-		{
-			"fulldupecolony",
-			true
-		},
-		{
-			"firstresearch",
-			true
-		},
-		{
-			"rocketryresearch",
-			true
-		},
-		{
-			"surfacebreach",
-			true
-		},
-		{
-			"nearingsurface",
-			true
-		},
-		{
-			"nearingmagma",
-			true
-		},
-		{
-			"neuralvacillator",
-			true
-		}
-	};
+	private List<string> unlocked = new List<string>();
 
 	public Dictionary<string, string[]> lockCollections = new Dictionary<string, string[]>
 	{
 		{
-			"critters",
-			new string[1]
-			{
-				"critter_Hatch_studied"
-			}
-		},
-		{
 			"emails",
-			new string[17]
+			new string[20]
 			{
 				"email_preliminarycalculations",
 				"email_researchgiant",
+				"email_thermodynamiclaws",
 				"email_frankiesblog",
 				"email_atomiconrecruitment",
 				"email_thejanitor",
@@ -99,6 +27,8 @@ public class Unlocks : KMonoBehaviour, ISim4000ms
 				"email_newemployee",
 				"email_security3",
 				"email_hollandsdog",
+				"email_temporalbowupdate",
+				"email_retemporalbowupdate",
 				"email_pens",
 				"email_pens2",
 				"email_memorychip",
@@ -111,41 +41,59 @@ public class Unlocks : KMonoBehaviour, ISim4000ms
 		},
 		{
 			"journals",
-			new string[23]
+			new string[30]
 			{
-				"journal_cleanup",
-				"journal_employeeprocessing",
 				"journal_sunflowerseeds",
+				"journal_debrief",
+				"journal_employeeprocessing",
 				"journal_B835_1",
 				"journal_B835_2",
 				"journal_B835_3",
 				"journal_B835_4",
 				"journal_B835_5",
 				"journal_B835_6",
+				"journal_cleanup",
 				"journal_pipedream",
-				"journal_spittingimage",
 				"journal_A046_1",
 				"journal_A046_2",
 				"journal_A046_3",
 				"journal_A046_4",
-				"journal_ants",
-				"journal_debrief",
+				"journal_movedrats",
+				"journal_spittingimage",
 				"journal_B327_1",
 				"journal_B327_2",
 				"journal_B327_3",
 				"journal_B327_4",
-				"journal_movedrats",
-				"journal_revisitednumbers"
+				"journal_revisitednumbers",
+				"journal_ants",
+				"journal_B556_1",
+				"journal_B556_2",
+				"journal_B556_3",
+				"journal_B556_4",
+				"journal_timemusings",
+				"journal_timesarrowthoughts",
+				"journal_magazine"
 			}
 		},
 		{
 			"researchnotes",
-			new string[4]
+			new string[15]
 			{
 				"notes_clonedrats",
+				"notes_agriculture1",
+				"notes_husbandry1",
 				"notes_hibiscus3",
+				"notes_husbandry2",
+				"notes_agriculture2",
 				"notes_geneticooze",
-				"notes_memoryimplantation"
+				"notes_agriculture3",
+				"notes_husbandry3",
+				"notes_memoryimplantation",
+				"notes_husbandry4",
+				"notes_agriculture4",
+				"notes_neutronium",
+				"notes_firstsuccess",
+				"notes_neutroniumapplications"
 			}
 		},
 		{
@@ -160,130 +108,50 @@ public class Unlocks : KMonoBehaviour, ISim4000ms
 				"misc_bringyourkidtowork",
 				"misc_dishbot"
 			}
-		},
-		{
-			"special_set_items",
-			new string[5]
-			{
-				"display_prop1",
-				"display_prop2",
-				"display_prop3",
-				"pod_evacuation",
-				"printingpod"
-			}
 		}
 	};
 
-	public Dictionary<int, string> cycleLocked = new Dictionary<int, string>
-	{
-		{
-			3,
-			"log2"
-		},
-		{
-			10,
-			"log3"
-		},
-		{
-			15,
-			"log4"
-		},
-		{
-			20,
-			"log5"
-		},
-		{
-			30,
-			"log6"
-		},
-		{
-			35,
-			"log7"
-		}
-	};
-
-	private static string UnlocksFilename => System.IO.Path.Combine(Util.RootFolder(), "unlocks.json");
+	private static string UnlocksFilename => Path.Combine(Util.RootFolder(), "unlocks.json");
 
 	protected override void OnPrefabInit()
 	{
-		foreach (KeyValuePair<string, string[]> lockCollection in lockCollections)
+		LoadUnlocks();
+	}
+
+	public bool IsUnlocked(string unlockID)
+	{
+		if (!string.IsNullOrEmpty(unlockID))
 		{
-			string[] value = lockCollection.Value;
-			foreach (string key in value)
+			if (!DebugHandler.InstantBuildMode)
 			{
-				defaultLocked.Add(key, true);
+				return unlocked.Contains(unlockID);
 			}
-		}
-		foreach (KeyValuePair<int, string> item in cycleLocked)
-		{
-			defaultLocked.Add(item.Value, true);
-		}
-		LoadLocks();
-	}
-
-	protected override void OnSpawn()
-	{
-		base.OnSpawn();
-		GameClock.Instance.Subscribe(631075836, OnNewDay);
-		Game.Instance.Subscribe(-1056989049, OnLaunchRocket);
-		Game.Instance.Subscribe(282337316, OnDuplicantDied);
-		Game.Instance.Subscribe(-107300940, OnResearchComplete);
-		Game.Instance.Subscribe(-818188514, OnDiscoveredSpace);
-		UnlockCycleCodexes();
-		Components.LiveMinionIdentities.OnAdd += OnNewDupe;
-	}
-
-	public bool IsLocked(string lockID)
-	{
-		if (string.IsNullOrEmpty(lockID))
-		{
-			return false;
-		}
-		if (locked.ContainsKey(lockID))
-		{
-			return locked[lockID];
+			return true;
 		}
 		return false;
 	}
 
-	public void Unlock(string lockID)
+	public void Unlock(string unlockID)
 	{
-		if (locked.ContainsKey(lockID) && locked[lockID])
+		if (string.IsNullOrEmpty(unlockID))
 		{
-			locked[lockID] = false;
-			SaveUnlocks(locked);
-			Game.Instance.Trigger(1594320620, lockID);
+			DebugUtil.DevAssert(false, "Unlock called with null or empty string");
+		}
+		else if (!unlocked.Contains(unlockID))
+		{
+			unlocked.Add(unlockID);
+			SaveUnlocks();
+			Game.Instance.Trigger(1594320620, unlockID);
 		}
 	}
 
-	public void UnlockOne(string[] lockIDs)
-	{
-		List<string> list = new List<string>();
-		foreach (string text in lockIDs)
-		{
-			if (IsLocked(text))
-			{
-				list.Add(text);
-			}
-		}
-		Unlock(list.GetRandom());
-	}
-
-	public static void SaveUnlocks(Dictionary<string, bool> locks)
+	private void SaveUnlocks()
 	{
 		if (!Directory.Exists(Util.RootFolder()))
 		{
 			Directory.CreateDirectory(Util.RootFolder());
 		}
-		List<string> list = new List<string>();
-		foreach (KeyValuePair<string, bool> @lock in locks)
-		{
-			if (!@lock.Value)
-			{
-				list.Add(@lock.Key);
-			}
-		}
-		string s = JsonConvert.SerializeObject(list);
+		string s = JsonConvert.SerializeObject(unlocked);
 		bool flag = false;
 		int num = 0;
 		while (!flag && num < 5)
@@ -307,21 +175,12 @@ public class Unlocks : KMonoBehaviour, ISim4000ms
 		}
 	}
 
-	private void SetToDefaultLocks()
+	public void LoadUnlocks()
 	{
-		locked.Clear();
-		foreach (KeyValuePair<string, bool> item in defaultLocked)
-		{
-			locked.Add(item.Key, item.Value);
-		}
-	}
-
-	public void LoadLocks()
-	{
-		SetToDefaultLocks();
+		unlocked.Clear();
 		if (File.Exists(UnlocksFilename))
 		{
-			string text = string.Empty;
+			string text = "";
 			bool flag = false;
 			int num = 0;
 			while (!flag && num < 5)
@@ -352,25 +211,17 @@ public class Unlocks : KMonoBehaviour, ISim4000ms
 				{
 					string[] array2 = JsonConvert.DeserializeObject<string[]>(text);
 					string[] array3 = array2;
-					foreach (string key in array3)
+					foreach (string text2 in array3)
 					{
-						if (locked.ContainsKey(key))
+						if (!string.IsNullOrEmpty(text2) && !unlocked.Contains(text2))
 						{
-							locked[key] = false;
-						}
-						else
-						{
-							locked.Add(key, false);
+							unlocked.Add(text2);
 						}
 					}
 				}
-				catch
+				catch (Exception ex2)
 				{
-					Output.LogError("Error parsing", UnlocksFilename);
-				}
-				if (locked != null && locked.Count == 0)
-				{
-					return;
+					Debug.LogErrorFormat("Error parsing unlocks file [{0}]: {1}", UnlocksFilename, ex2.ToString());
 				}
 			}
 		}
@@ -381,142 +232,16 @@ public class Unlocks : KMonoBehaviour, ISim4000ms
 		string[] array = lockCollections[collectionID];
 		foreach (string text in array)
 		{
-			if (locked[text])
+			if (string.IsNullOrEmpty(text))
+			{
+				DebugUtil.DevAssert(false, "Found null/empty string in Unlocks collection: ", collectionID);
+			}
+			else if (!IsUnlocked(text))
 			{
 				Unlock(text);
 				return text;
 			}
 		}
 		return null;
-	}
-
-	private void UnlockCycleCodexes()
-	{
-		foreach (KeyValuePair<int, string> item in cycleLocked)
-		{
-			if (GameClock.Instance.GetCycle() + 1 >= item.Key)
-			{
-				Unlock(item.Value);
-			}
-		}
-	}
-
-	private void OnNewDay(object data)
-	{
-		UnlockCycleCodexes();
-	}
-
-	private void OnLaunchRocket(object data)
-	{
-		Unlock("firstrocketlaunch");
-	}
-
-	private void OnDuplicantDied(object data)
-	{
-		Unlock("duplicantdeath");
-		if (Components.LiveMinionIdentities.Count == 1)
-		{
-			Unlock("onedupeleft");
-		}
-	}
-
-	private void OnNewDupe(MinionIdentity minion_identity)
-	{
-		if (Components.LiveMinionIdentities.Count >= 20)
-		{
-			Unlock("twentydupecolony");
-		}
-		else if (Components.LiveMinionIdentities.Count >= 35)
-		{
-			Unlock("fulldupecolony");
-		}
-	}
-
-	private void OnResearchComplete(object data)
-	{
-		Tech tech = (Tech)data;
-		Unlock("firstresearch");
-		if (tech.Id == "BasicRocketry")
-		{
-			Unlock("rocketryresearch");
-		}
-	}
-
-	private void OnDiscoveredSpace(object data)
-	{
-		Unlock("surfacebreach");
-	}
-
-	public void Sim4000ms(float dt)
-	{
-		int x = -2147483648;
-		int num = -2147483648;
-		int x2 = 2147483647;
-		int num2 = 2147483647;
-		foreach (MinionIdentity item in Components.MinionIdentities.Items)
-		{
-			if (!((UnityEngine.Object)item == (UnityEngine.Object)null))
-			{
-				int cell = Grid.PosToCell(item);
-				if (Grid.IsValidCell(cell))
-				{
-					Grid.CellToXY(cell, out int x3, out int y);
-					if (y > num)
-					{
-						num = y;
-						x = x3;
-					}
-					if (y < num2)
-					{
-						x2 = x3;
-						num2 = y;
-					}
-				}
-			}
-		}
-		if (num != -2147483648)
-		{
-			int num3 = num;
-			for (int i = 0; i < 30; i++)
-			{
-				num3++;
-				int cell2 = Grid.XYToCell(x, num3);
-				if (!Grid.IsValidCell(cell2))
-				{
-					break;
-				}
-				SubWorld.ZoneType subWorldZoneType = World.Instance.zoneRenderData.GetSubWorldZoneType(cell2);
-				if (subWorldZoneType == SubWorld.ZoneType.Space)
-				{
-					Unlock("nearingsurface");
-					break;
-				}
-			}
-		}
-		if (num2 != 2147483647)
-		{
-			int num4 = num2;
-			int num5 = 0;
-			while (true)
-			{
-				if (num5 >= 30)
-				{
-					return;
-				}
-				num4--;
-				int num6 = Grid.XYToCell(x2, num4);
-				if (!Grid.IsValidCell(num6))
-				{
-					return;
-				}
-				SubWorld.ZoneType subWorldZoneType2 = World.Instance.zoneRenderData.GetSubWorldZoneType(num6);
-				if (subWorldZoneType2 == SubWorld.ZoneType.ToxicJungle && Grid.Element[num6].id == SimHashes.Magma)
-				{
-					break;
-				}
-				num5++;
-			}
-			Unlock("nearingmagma");
-		}
 	}
 }

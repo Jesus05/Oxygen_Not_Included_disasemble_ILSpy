@@ -28,7 +28,7 @@ public class ItemPedestal : KMonoBehaviour
 	protected override void OnSpawn()
 	{
 		base.OnSpawn();
-		Subscribe(-731304873, OnOccupantChanged);
+		Subscribe(-731304873, OnOccupantChangedDelegate);
 	}
 
 	private void OnOccupantChanged(object data)

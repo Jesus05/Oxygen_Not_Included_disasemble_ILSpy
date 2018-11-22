@@ -10,7 +10,7 @@ public class KPrefabID : KMonoBehaviour, ISaveLoadable
 
 	public const int InvalidInstanceID = -1;
 
-	public static int NextUniqueID = 0;
+	private static int nextUniqueID = 0;
 
 	[ReadOnly]
 	public Tag SaveLoadTag;
@@ -36,6 +36,18 @@ public class KPrefabID : KMonoBehaviour, ISaveLoadable
 	{
 		component.OnObjectDestroyed(data);
 	});
+
+	public static int NextUniqueID
+	{
+		get
+		{
+			return nextUniqueID;
+		}
+		set
+		{
+			nextUniqueID = value;
+		}
+	}
 
 	public bool pendingDestruction
 	{
@@ -84,7 +96,7 @@ public class KPrefabID : KMonoBehaviour, ISaveLoadable
 
 	public void InitializeTags()
 	{
-		DebugUtil.Assert(PrefabTag.IsValid, "Assert!", string.Empty, string.Empty);
+		DebugUtil.Assert(PrefabTag.IsValid);
 		tags.Add(PrefabTag);
 		dirtyTagBits = true;
 	}
@@ -139,7 +151,7 @@ public class KPrefabID : KMonoBehaviour, ISaveLoadable
 
 	public void AddTag(Tag tag)
 	{
-		DebugUtil.Assert(tag.IsValid, "Assert!", string.Empty, string.Empty);
+		DebugUtil.Assert(tag.IsValid);
 		if (Tags.Add(tag))
 		{
 			dirtyTagBits = true;
@@ -233,7 +245,7 @@ public class KPrefabID : KMonoBehaviour, ISaveLoadable
 	[OnDeserialized]
 	internal void OnDeserializedMethod()
 	{
-		KPrefabIDTracker.Get().Update(this);
+		KPrefabIDTracker.Get().Register(this);
 	}
 
 	private void OnObjectDestroyed(object data)

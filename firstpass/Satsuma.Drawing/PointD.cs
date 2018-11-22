@@ -31,11 +31,11 @@ namespace Satsuma.Drawing
 
 		public override bool Equals(object obj)
 		{
-			if (!(obj is PointD))
+			if (obj is PointD)
 			{
-				return false;
+				return Equals((PointD)obj);
 			}
-			return Equals((PointD)obj);
+			return false;
 		}
 
 		public static bool operator ==(PointD a, PointD b)

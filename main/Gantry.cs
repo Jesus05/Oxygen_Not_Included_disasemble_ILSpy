@@ -16,12 +16,6 @@ public class Gantry : Switch
 
 		public BoolParameter should_extend;
 
-		[CompilerGenerated]
-		private static Parameter<bool>.Callback _003C_003Ef__mg_0024cache0;
-
-		[CompilerGenerated]
-		private static Parameter<bool>.Callback _003C_003Ef__mg_0024cache1;
-
 		public override void InitializeStates(out BaseState default_state)
 		{
 			default_state = extended;
@@ -158,7 +152,7 @@ public class Gantry : Switch
 		base.OnSpawn();
 		if (infoStatusItem == null)
 		{
-			infoStatusItem = new StatusItem("GantryAutomationInfo", "BUILDING", string.Empty, StatusItem.IconType.Info, NotificationType.Neutral, false, SimViewMode.None, true, 63486);
+			infoStatusItem = new StatusItem("GantryAutomationInfo", "BUILDING", "", StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, true, 63486);
 			infoStatusItem.resolveStringCallback = ResolveInfoStatusItemString;
 		}
 		GetComponent<KAnimControllerBase>().PlaySpeedMultiplier = 0.5f;

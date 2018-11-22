@@ -29,7 +29,7 @@ public class SpaceHeaterConfig : IBuildingConfig
 		buildingDef.EnergyConsumptionWhenActive = 120f;
 		buildingDef.ExhaustKilowattsWhenActive = 2f;
 		buildingDef.SelfHeatKilowattsWhenActive = 16f;
-		buildingDef.ViewMode = SimViewMode.PowerMap;
+		buildingDef.ViewMode = OverlayModes.Power.ID;
 		buildingDef.AudioCategory = "HollowMetal";
 		buildingDef.OverheatTemperature = 398.15f;
 		return buildingDef;

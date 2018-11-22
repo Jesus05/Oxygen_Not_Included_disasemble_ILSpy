@@ -53,6 +53,8 @@ public class DoorConfig : IBuildingConfig
 		door.doorClosingSoundEventName = "Close_DoorInternal";
 		AccessControl accessControl = go.AddOrGet<AccessControl>();
 		accessControl.controlEnabled = true;
+		CopyBuildingSettings copyBuildingSettings = go.AddOrGet<CopyBuildingSettings>();
+		copyBuildingSettings.copyGroupTag = GameTags.Door;
 		Workable workable = go.AddOrGet<Workable>();
 		workable.workTime = 3f;
 		KBatchedAnimController component = go.GetComponent<KBatchedAnimController>();

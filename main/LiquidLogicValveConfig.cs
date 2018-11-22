@@ -33,7 +33,7 @@ public class LiquidLogicValveConfig : IBuildingConfig
 		buildingDef.RequiresPowerInput = true;
 		buildingDef.EnergyConsumptionWhenActive = 10f;
 		buildingDef.PowerInputOffset = new CellOffset(0, 1);
-		buildingDef.ViewMode = SimViewMode.LiquidVentMap;
+		buildingDef.ViewMode = OverlayModes.LiquidConduits.ID;
 		buildingDef.AudioCategory = "Metal";
 		buildingDef.PermittedRotations = PermittedRotations.R360;
 		buildingDef.UtilityInputOffset = new CellOffset(0, 0);

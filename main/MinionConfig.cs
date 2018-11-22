@@ -100,7 +100,7 @@ public class MinionConfig : IEntityConfig
 		KBatchedAnimController kBatchedAnimController = gameObject.AddOrGet<KBatchedAnimController>();
 		kBatchedAnimController.isMovable = true;
 		kBatchedAnimController.sceneLayer = Grid.SceneLayer.Move;
-		kBatchedAnimController.AnimFiles = new KAnimFile[8]
+		kBatchedAnimController.AnimFiles = new KAnimFile[9]
 		{
 			Assets.GetAnim("body_comp_default_kanim"),
 			Assets.GetAnim("anim_construction_default_kanim"),
@@ -109,7 +109,8 @@ public class MinionConfig : IEntityConfig
 			Assets.GetAnim("anim_loco_new_kanim"),
 			Assets.GetAnim("anim_loco_tube_kanim"),
 			Assets.GetAnim("anim_loco_hover_kanim"),
-			Assets.GetAnim("anim_construction_firepole_kanim")
+			Assets.GetAnim("anim_construction_firepole_kanim"),
+			Assets.GetAnim("anim_construction_jetsuit_kanim")
 		};
 		KBoxCollider2D kBoxCollider2D = gameObject.AddOrGet<KBoxCollider2D>();
 		kBoxCollider2D.offset = new Vector2(0f, 0.8f);
@@ -209,7 +210,7 @@ public class MinionConfig : IEntityConfig
 			{
 				pointName = "carry",
 				automatic = false,
-				context = (HashedString)string.Empty,
+				context = (HashedString)"",
 				buildFile = null,
 				overrideSymbol = (HashedString)"snapTo_chest"
 			},
@@ -217,7 +218,7 @@ public class MinionConfig : IEntityConfig
 			{
 				pointName = "build",
 				automatic = false,
-				context = (HashedString)string.Empty,
+				context = (HashedString)"",
 				buildFile = null,
 				overrideSymbol = (HashedString)"snapTo_rgtHand"
 			},
@@ -225,7 +226,7 @@ public class MinionConfig : IEntityConfig
 			{
 				pointName = "remote",
 				automatic = false,
-				context = (HashedString)string.Empty,
+				context = (HashedString)"",
 				buildFile = null,
 				overrideSymbol = (HashedString)"snapTo_rgtHand"
 			},
@@ -233,7 +234,7 @@ public class MinionConfig : IEntityConfig
 			{
 				pointName = "snapTo_neck",
 				automatic = false,
-				context = (HashedString)string.Empty,
+				context = (HashedString)"",
 				buildFile = Assets.GetAnim("helm_oxygen_kanim"),
 				overrideSymbol = (HashedString)"snapTo_neck"
 			},
@@ -258,8 +259,6 @@ public class MinionConfig : IEntityConfig
 		gameObject.AddOrGet<Traits>();
 		gameObject.AddOrGet<AttributeLevels>();
 		gameObject.AddOrGet<AttributeConverters>();
-		gameObject.AddOrGet<Equipment>();
-		gameObject.AddOrGet<Ownables>();
 		PrimaryElement primaryElement = gameObject.AddOrGet<PrimaryElement>();
 		primaryElement.InternalTemperature = 310.15f;
 		primaryElement.MassPerUnit = 30f;

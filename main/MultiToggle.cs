@@ -21,7 +21,7 @@ public class MultiToggle : KMonoBehaviour, IPointerClickHandler, IPointerEnterHa
 
 	public System.Action onExit;
 
-	private bool pointerOver;
+	private bool pointerOver = false;
 
 	public int CurrentState => state;
 
@@ -74,7 +74,7 @@ public class MultiToggle : KMonoBehaviour, IPointerClickHandler, IPointerEnterHa
 		}
 		if (play_sound_on_click)
 		{
-			if (states[state].on_click_override_sound_path == string.Empty)
+			if (states[state].on_click_override_sound_path == "")
 			{
 				KFMOD.PlayOneShot(GlobalAssets.GetSound("HUD_Click", false));
 			}

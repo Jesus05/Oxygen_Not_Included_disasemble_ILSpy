@@ -110,13 +110,13 @@ public class ResourceSet<T> : ResourceSet where T : Resource
 
 	public T Add(T resource)
 	{
-		if (resource == null)
+		if (resource != null)
 		{
-			Output.LogError("Tried to add a null to the resource set");
-			return (T)null;
+			resources.Add(resource);
+			return resource;
 		}
-		resources.Add(resource);
-		return resource;
+		Output.LogError("Tried to add a null to the resource set");
+		return (T)null;
 	}
 
 	public void ResolveReferences()

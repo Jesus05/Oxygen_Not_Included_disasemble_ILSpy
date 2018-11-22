@@ -10,7 +10,7 @@ public class FilteredDragTool : DragTool
 
 	private Dictionary<string, ToolParameterMenu.ToggleState> currentFilterTargets;
 
-	private bool active;
+	private bool active = false;
 
 	public bool IsActiveLayer(string layer)
 	{
@@ -31,7 +31,8 @@ public class FilteredDragTool : DragTool
 				ObjectLayer objectLayerFromFilterLayer = GetObjectLayerFromFilterLayer(currentFilterTarget.Key);
 				if (objectLayerFromFilterLayer == layer)
 				{
-					return true;
+					result = true;
+					break;
 				}
 			}
 		}
@@ -60,13 +61,13 @@ public class FilteredDragTool : DragTool
 	{
 		base.OnSpawn();
 		OverlayScreen instance = OverlayScreen.Instance;
-		instance.OnOverlayChanged = (Action<SimViewMode>)Delegate.Combine(instance.OnOverlayChanged, new Action<SimViewMode>(OnOverlayChanged));
+		instance.OnOverlayChanged = (Action<HashedString>)Delegate.Combine(instance.OnOverlayChanged, new Action<HashedString>(OnOverlayChanged));
 	}
 
 	protected override void OnCleanUp()
 	{
 		OverlayScreen instance = OverlayScreen.Instance;
-		instance.OnOverlayChanged = (Action<SimViewMode>)Delegate.Remove(instance.OnOverlayChanged, new Action<SimViewMode>(OnOverlayChanged));
+		instance.OnOverlayChanged = (Action<HashedString>)Delegate.Remove(instance.OnOverlayChanged, new Action<HashedString>(OnOverlayChanged));
 		base.OnCleanUp();
 	}
 
@@ -100,23 +101,23 @@ public class FilteredDragTool : DragTool
 	{
 		BuildingComplete component = input.GetComponent<BuildingComplete>();
 		BuildingUnderConstruction component2 = input.GetComponent<BuildingUnderConstruction>();
-		if ((bool)component)
+		if (!(bool)component)
 		{
-			return GetFilterLayerFromObjectLayer(component.Def.ObjectLayer);
-		}
-		if ((bool)component2)
-		{
+			if (!(bool)component2)
+			{
+				if (!((UnityEngine.Object)input.GetComponent<Clearable>() != (UnityEngine.Object)null) && !((UnityEngine.Object)input.GetComponent<Moppable>() != (UnityEngine.Object)null))
+				{
+					if (!((UnityEngine.Object)input.GetComponent<Diggable>() != (UnityEngine.Object)null))
+					{
+						return "Default";
+					}
+					return "DigPlacer";
+				}
+				return "CleanAndClear";
+			}
 			return GetFilterLayerFromObjectLayer(component2.Def.ObjectLayer);
 		}
-		if ((UnityEngine.Object)input.GetComponent<Clearable>() != (UnityEngine.Object)null || (UnityEngine.Object)input.GetComponent<Moppable>() != (UnityEngine.Object)null)
-		{
-			return "CleanAndClear";
-		}
-		if ((UnityEngine.Object)input.GetComponent<Diggable>() != (UnityEngine.Object)null)
-		{
-			return "DigPlacer";
-		}
-		return "Default";
+		return GetFilterLayerFromObjectLayer(component.Def.ObjectLayer);
 	}
 
 	protected string GetFilterLayerFromObjectLayer(ObjectLayer gamer_layer)
@@ -174,28 +175,30 @@ public class FilteredDragTool : DragTool
 		}
 	}
 
-	private void OnOverlayChanged(SimViewMode overlay)
+	private void OnOverlayChanged(HashedString overlay)
 	{
 		if (active)
 		{
 			string text = null;
-			switch (overlay)
+			if (overlay == OverlayModes.Power.ID)
 			{
-			case SimViewMode.PowerMap:
 				text = ToolParameterMenu.FILTERLAYERS.WIRES;
-				break;
-			case SimViewMode.LiquidVentMap:
+			}
+			else if (overlay == OverlayModes.LiquidConduits.ID)
+			{
 				text = ToolParameterMenu.FILTERLAYERS.LIQUIDCONDUIT;
-				break;
-			case SimViewMode.GasVentMap:
+			}
+			else if (overlay == OverlayModes.GasConduits.ID)
+			{
 				text = ToolParameterMenu.FILTERLAYERS.GASCONDUIT;
-				break;
-			case SimViewMode.SolidConveyorMap:
+			}
+			else if (overlay == OverlayModes.SolidConveyor.ID)
+			{
 				text = ToolParameterMenu.FILTERLAYERS.SOLIDCONDUIT;
-				break;
-			case SimViewMode.Logic:
+			}
+			else if (overlay == OverlayModes.Logic.ID)
+			{
 				text = ToolParameterMenu.FILTERLAYERS.LOGIC;
-				break;
 			}
 			currentFilterTargets = filterTargets;
 			if (text != null)

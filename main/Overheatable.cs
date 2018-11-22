@@ -129,7 +129,7 @@ public class Overheatable : StateMachineComponent<Overheatable.StatesInstance>, 
 
 	private static string ToolTipResolver(List<Notification> notificationList, object data)
 	{
-		string text = string.Empty;
+		string text = "";
 		for (int i = 0; i < notificationList.Count; i++)
 		{
 			Notification notification = notificationList[i];

@@ -35,11 +35,13 @@ public class Constructable : Workable, ISaveLoadable
 
 	private Chore buildChore;
 
-	private bool materialNeedsCleared;
+	private bool materialNeedsCleared = false;
 
 	private bool hasUnreachableDigs;
 
-	private bool finished;
+	private bool finished = false;
+
+	private bool unmarked = false;
 
 	public bool isDiggingRequired = true;
 
@@ -50,7 +52,7 @@ public class Constructable : Workable, ISaveLoadable
 	private Extents ladderDetectionExtents;
 
 	[Serialize]
-	public bool IsReplacementTile;
+	public bool IsReplacementTile = false;
 
 	[Serialize]
 	public Tag[] choreTags;
@@ -215,6 +217,7 @@ public class Constructable : Workable, ISaveLoadable
 		Rotatable component = GetComponent<Rotatable>();
 		Orientation orientation = ((UnityEngine.Object)component != (UnityEngine.Object)null) ? component.GetOrientation() : Orientation.Neutral;
 		int cell = Grid.PosToCell(base.transform.GetLocalPosition());
+		UnmarkArea();
 		GameObject gameObject = building.Def.Build(cell, orientation, storage, selectedElements, initialTemperature, true);
 		gameObject.transform.rotation = base.transform.rotation;
 		Rotatable component2 = gameObject.GetComponent<Rotatable>();
@@ -265,6 +268,7 @@ public class Constructable : Workable, ISaveLoadable
 		workingStatusItem = null;
 		attributeConverter = Db.Get().AttributeConverters.ConstructionSpeed;
 		attributeExperienceMultiplier = DUPLICANTSTATS.ATTRIBUTE_LEVELING.PART_DAY_EXPERIENCE;
+		minimumAttributeMultiplier = 0.75f;
 		Prioritizable.AddRef(base.gameObject);
 		synchronizeAnims = false;
 		multitoolContext = "build";
@@ -403,13 +407,17 @@ public class Constructable : Workable, ISaveLoadable
 
 	private void UnmarkArea()
 	{
-		int num = Grid.PosToCell(base.transform.GetPosition());
-		ObjectLayer layer = (!IsReplacementTile) ? building.Def.ObjectLayer : building.Def.ReplacementLayer;
-		BuildingDef def = building.Def;
-		def.UnmarkArea(num, building.Orientation, layer, base.gameObject);
-		if (def.IsTilePiece)
+		if (!unmarked)
 		{
-			Grid.IsTileUnderConstruction[num] = false;
+			unmarked = true;
+			int num = Grid.PosToCell(base.transform.GetPosition());
+			BuildingDef def = building.Def;
+			ObjectLayer layer = (!IsReplacementTile) ? building.Def.ObjectLayer : building.Def.ReplacementLayer;
+			def.UnmarkArea(num, building.Orientation, layer, base.gameObject);
+			if (def.IsTilePiece)
+			{
+				Grid.IsTileUnderConstruction[num] = false;
+			}
 		}
 	}
 
@@ -622,7 +630,7 @@ public class Constructable : Workable, ISaveLoadable
 			}
 			else
 			{
-				notifier.Add(invalidLocation, string.Empty);
+				notifier.Add(invalidLocation, "");
 			}
 			GetComponent<KSelectable>().ToggleStatusItem(Db.Get().BuildingStatusItems.InvalidBuildingLocation, !flag, this);
 			bool flag2 = digs_complete && flag && fetchList == null;
@@ -630,7 +638,7 @@ public class Constructable : Workable, ISaveLoadable
 			{
 				ChoreType build = Db.Get().ChoreTypes.Build;
 				Tag[] chore_tags = choreTags;
-				buildChore = new WorkChore<Constructable>(build, this, null, chore_tags, true, UpdateBuildState, UpdateBuildState, UpdateBuildState, true, null, false, true, null, true, true, true, PriorityScreen.PriorityClass.basic, 0, false);
+				buildChore = new WorkChore<Constructable>(build, this, null, chore_tags, true, UpdateBuildState, UpdateBuildState, UpdateBuildState, true, null, false, true, null, true, true, true, PriorityScreen.PriorityClass.basic, 5, false);
 				UpdateBuildState(buildChore);
 			}
 			else if (!flag2 && buildChore != null)

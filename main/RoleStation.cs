@@ -65,7 +65,7 @@ public class RoleStation : Workable, IEffectDescriptor
 	{
 		ChoreType switchRole = Db.Get().ChoreTypes.SwitchRole;
 		KAnimFile anim = Assets.GetAnim("anim_hat_kanim");
-		return new WorkChore<RoleStation>(switchRole, this, null, null, true, null, null, null, false, null, false, true, anim, false, true, false, PriorityScreen.PriorityClass.emergency, 0, false);
+		return new WorkChore<RoleStation>(switchRole, this, null, null, true, null, null, null, false, null, false, true, anim, false, true, false, PriorityScreen.PriorityClass.emergency, 5, false);
 	}
 
 	protected override void OnCompleteWork(Worker worker)

@@ -32,23 +32,23 @@ namespace TMPro
 		public int AddKerningPair(uint first, uint second, float offset)
 		{
 			int num = kerningPairs.FindIndex((KerningPair item) => item.firstGlyph == first && item.secondGlyph == second);
-			if (num == -1)
+			if (num != -1)
 			{
-				kerningPairs.Add(new KerningPair(first, second, offset));
-				return 0;
+				return -1;
 			}
-			return -1;
+			kerningPairs.Add(new KerningPair(first, second, offset));
+			return 0;
 		}
 
 		public int AddGlyphPairAdjustmentRecord(uint first, GlyphValueRecord firstAdjustments, uint second, GlyphValueRecord secondAdjustments)
 		{
 			int num = kerningPairs.FindIndex((KerningPair item) => item.firstGlyph == first && item.secondGlyph == second);
-			if (num == -1)
+			if (num != -1)
 			{
-				kerningPairs.Add(new KerningPair(first, firstAdjustments, second, secondAdjustments));
-				return 0;
+				return -1;
 			}
-			return -1;
+			kerningPairs.Add(new KerningPair(first, firstAdjustments, second, secondAdjustments));
+			return 0;
 		}
 
 		public void RemoveKerningPair(int left, int right)

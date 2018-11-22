@@ -1,80 +1,40 @@
 using Klei;
-using KSerialization.Converters;
 using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
 
-public class CodexWidget : YamlIO<CodexWidget>
+public abstract class CodexWidget<SubClass> : YamlIO<SubClass>, ICodexWidget
 {
-	public enum ContentType
-	{
-		Text,
-		Image,
-		DividerLine,
-		Spacer,
-		LabelWithIcon,
-		ContentLockedIndicator,
-		LargeSpacer,
-		LENGTH
-	}
-
-	[StringEnumConverter]
-	public ContentType type
+	public int preferredWidth
 	{
 		get;
 		set;
 	}
 
-	public Dictionary<string, string> properties
+	public int preferredHeight
 	{
 		get;
 		set;
 	}
 
-	public Dictionary<string, object> objectProperties
+	protected CodexWidget()
 	{
-		get;
-		set;
+		preferredWidth = -1;
+		preferredHeight = -1;
 	}
 
-	public CodexWidget()
+	protected CodexWidget(int preferredWidth, int preferredHeight)
 	{
-		properties = new Dictionary<string, string>();
-		objectProperties = new Dictionary<string, object>();
-		properties["preferredWidth"] = "-1";
-		properties["preferredHeight"] = "-1";
+		this.preferredWidth = preferredWidth;
+		this.preferredHeight = preferredHeight;
 	}
 
-	public CodexWidget(ContentType type)
-		: this(type, new Dictionary<string, string>())
-	{
-	}
+	public abstract void Configure(GameObject contentGameObject, Transform displayPane, Dictionary<CodexTextStyle, TextStyleSetting> textStyles);
 
-	public CodexWidget(ContentType type, Dictionary<string, string> properties, Dictionary<string, object> objectProperties)
+	protected void ConfigurePreferredLayout(GameObject contentGameObject)
 	{
-		this.type = type;
-		this.properties = properties;
-		this.objectProperties = objectProperties;
-		if (!properties.ContainsKey("preferredWidth"))
-		{
-			properties["preferredWidth"] = "-1";
-		}
-		if (!properties.ContainsKey("preferredHeight"))
-		{
-			properties["preferredHeight"] = "-1";
-		}
-	}
-
-	public CodexWidget(ContentType type, Dictionary<string, string> properties)
-	{
-		this.type = type;
-		this.properties = properties;
-		objectProperties = new Dictionary<string, object>();
-		if (!properties.ContainsKey("preferredWidth"))
-		{
-			properties["preferredWidth"] = "-1";
-		}
-		if (!properties.ContainsKey("preferredHeight"))
-		{
-			properties["preferredHeight"] = "-1";
-		}
+		LayoutElement componentInChildren = contentGameObject.GetComponentInChildren<LayoutElement>();
+		componentInChildren.preferredHeight = (float)preferredHeight;
+		componentInChildren.preferredWidth = (float)preferredWidth;
 	}
 }

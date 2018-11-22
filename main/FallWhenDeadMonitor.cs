@@ -19,11 +19,11 @@ public class FallWhenDeadMonitor : GameStateMachine<FallWhenDeadMonitor, FallWhe
 		{
 			int cell = Grid.PosToCell(base.master.transform.GetPosition());
 			int num = Grid.CellBelow(cell);
-			if (!Grid.IsValidCell(num))
+			if (Grid.IsValidCell(num))
 			{
-				return false;
+				return !Grid.Solid[num];
 			}
-			return !Grid.Solid[num];
+			return false;
 		}
 	}
 

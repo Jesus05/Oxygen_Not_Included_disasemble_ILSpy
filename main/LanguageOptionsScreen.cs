@@ -37,14 +37,14 @@ public class LanguageOptionsScreen : KModalScreen, SteamUGCService.IUGCEventHand
 			InstalledLanguageData installedLanguageData = new InstalledLanguageData();
 			installedLanguageData.PublishedFileId = item.m_PublishedFileId;
 			installedLanguageData.LastModified = lastModified.ToFileTimeUtc();
-			installedLanguageData.Save(FilePath());
+			installedLanguageData.Save(FilePath(), null);
 		}
 
 		public static void Get(out PublishedFileId_t item, out System.DateTime lastModified)
 		{
 			if (Exists())
 			{
-				InstalledLanguageData installedLanguageData = YamlIO<InstalledLanguageData>.LoadFile(FilePath());
+				InstalledLanguageData installedLanguageData = YamlIO<InstalledLanguageData>.LoadFile(FilePath(), null);
 				if (installedLanguageData != null)
 				{
 					lastModified = System.DateTime.FromFileTimeUtc(installedLanguageData.LastModified);
@@ -358,7 +358,7 @@ public class LanguageOptionsScreen : KModalScreen, SteamUGCService.IUGCEventHand
 
 	public static string GetInstalledLanguageCode(out PublishedFileId_t installed)
 	{
-		string result = string.Empty;
+		string result = "";
 		System.DateTime lastModified;
 		string languageFile = GetLanguageFile(out installed, out lastModified);
 		if (languageFile != null && File.Exists(languageFile))
@@ -447,26 +447,26 @@ public class LanguageOptionsScreen : KModalScreen, SteamUGCService.IUGCEventHand
 	private static string GetLanguageFileFromSteam(PublishedFileId_t item, out System.DateTime lastModified)
 	{
 		lastModified = System.DateTime.MinValue;
-		if (item == PublishedFileId_t.Invalid)
+		if (!(item == PublishedFileId_t.Invalid))
 		{
-			Debug.LogWarning("Cant get INVALID file id from Steam", null);
+			EItemState itemState = (EItemState)SteamUGC.GetItemState(item);
+			if ((itemState & EItemState.k_EItemStateInstalled) == EItemState.k_EItemStateInstalled)
+			{
+				byte[] bytesFromZip = SteamUGCService.GetBytesFromZip(item, poFile, out lastModified, false);
+				if (bytesFromZip != null && bytesFromZip.Length > 0)
+				{
+					return Encoding.UTF8.GetString(bytesFromZip);
+				}
+				Debug.LogWarning("Empty bytes from Zip file, trying redownload", null);
+				SteamUGCService.DoDownloadItem(item);
+			}
+			else
+			{
+				Debug.LogWarning("Steam says item not installed [" + itemState + "]", null);
+			}
 			return null;
 		}
-		EItemState itemState = (EItemState)SteamUGC.GetItemState(item);
-		if ((itemState & EItemState.k_EItemStateInstalled) == EItemState.k_EItemStateInstalled)
-		{
-			byte[] bytesFromZip = SteamUGCService.GetBytesFromZip(item, poFile, out lastModified, false);
-			if (bytesFromZip != null && bytesFromZip.Length > 0)
-			{
-				return Encoding.UTF8.GetString(bytesFromZip);
-			}
-			Debug.LogWarning("Empty bytes from Zip file, trying redownload", null);
-			SteamUGCService.DoDownloadItem(item);
-		}
-		else
-		{
-			Debug.LogWarning("Steam says item not installed [" + itemState + "]", null);
-		}
+		Debug.LogWarning("Cant get INVALID file id from Steam", null);
 		return null;
 	}
 

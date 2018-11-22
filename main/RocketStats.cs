@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using TUNING;
 using UnityEngine;
 
@@ -5,9 +6,25 @@ public class RocketStats
 {
 	private CommandModule commandModule;
 
+	private static Dictionary<Tag, float> oxidizerEfficiencies;
+
 	public RocketStats(CommandModule commandModule)
 	{
 		this.commandModule = commandModule;
+		if (oxidizerEfficiencies == null)
+		{
+			oxidizerEfficiencies = new Dictionary<Tag, float>
+			{
+				{
+					SimHashes.OxyRock.CreateTag(),
+					ROCKETRY.OXIDIZER_EFFICIENCY.LOW
+				},
+				{
+					SimHashes.LiquidOxygen.CreateTag(),
+					ROCKETRY.OXIDIZER_EFFICIENCY.HIGH
+				}
+			};
+		}
 	}
 
 	public float GetRocketMaxDistance()
@@ -68,11 +85,11 @@ public class RocketStats
 	public Tag GetEngineFuelTag()
 	{
 		RocketEngine mainEngine = GetMainEngine();
-		if ((Object)mainEngine != (Object)null)
+		if (!((Object)mainEngine != (Object)null))
 		{
-			return mainEngine.fuelTag;
+			return null;
 		}
-		return null;
+		return mainEngine.fuelTag;
 	}
 
 	public float GetTotalFuel(bool includeBoosters = false)
@@ -106,8 +123,7 @@ public class RocketStats
 			OxidizerTank component = item.GetComponent<OxidizerTank>();
 			if ((Object)component != (Object)null)
 			{
-				num += component.GetAmountAvailable(ElementLoader.FindElementByHash(SimHashes.LiquidOxygen).tag);
-				num += component.GetAmountAvailable(GameTags.OxyRock);
+				num += component.GetTotalOxidizerAvailable();
 			}
 			if (includeBoosters)
 			{
@@ -123,23 +139,39 @@ public class RocketStats
 
 	public float GetAverageOxidizerEfficiency()
 	{
-		float num = 0f;
-		float num2 = 0f;
+		Dictionary<Tag, float> dictionary = new Dictionary<Tag, float>();
+		dictionary[SimHashes.LiquidOxygen.CreateTag()] = 0f;
+		dictionary[SimHashes.OxyRock.CreateTag()] = 0f;
 		foreach (GameObject item in AttachableBuilding.GetAttachedNetwork(commandModule.GetComponent<AttachableBuilding>()))
 		{
 			OxidizerTank component = item.GetComponent<OxidizerTank>();
 			if ((Object)component != (Object)null)
 			{
-				num += component.GetAmountAvailable(ElementLoader.FindElementByHash(SimHashes.LiquidOxygen).tag);
-				num2 += component.GetAmountAvailable(GameTags.OxyRock);
+				Dictionary<Tag, float> oxidizersAvailable = component.GetOxidizersAvailable();
+				foreach (KeyValuePair<Tag, float> item2 in oxidizersAvailable)
+				{
+					if (dictionary.ContainsKey(item2.Key))
+					{
+						Dictionary<Tag, float> dictionary2;
+						Tag key;
+						(dictionary2 = dictionary)[key = item2.Key] = dictionary2[key] + item2.Value;
+					}
+				}
 			}
 		}
-		if (num + num2 == 0f)
+		float num = 0f;
+		float num2 = 0f;
+		foreach (KeyValuePair<Tag, float> item3 in dictionary)
 		{
-			return 0f;
+			num += item3.Value * oxidizerEfficiencies[item3.Key];
+			num2 += item3.Value;
 		}
-		float num3 = (num2 * ROCKETRY.OXIDIZER_EFFICIENCY.LOW + num * ROCKETRY.OXIDIZER_EFFICIENCY.HIGH) / (num2 + num);
-		return num3 * 100f;
+		if (num2 != 0f)
+		{
+			float num3 = num / num2;
+			return num3 * 100f;
+		}
+		return 0f;
 	}
 
 	public float GetTotalThrust()
@@ -149,12 +181,12 @@ public class RocketStats
 		float totalOxidizer = GetTotalOxidizer(false);
 		float averageOxidizerEfficiency = GetAverageOxidizerEfficiency();
 		RocketEngine mainEngine = GetMainEngine();
-		if ((Object)mainEngine == (Object)null)
+		if (!((Object)mainEngine == (Object)null))
 		{
-			return 0f;
+			num = ((!mainEngine.requireOxidizer) ? (totalFuel * mainEngine.efficiency) : (Mathf.Min(totalFuel, totalOxidizer) * (mainEngine.efficiency * (averageOxidizerEfficiency / 100f))));
+			return num + GetBoosterThrust();
 		}
-		num = ((!mainEngine.requireOxidizer) ? (totalFuel * mainEngine.efficiency) : (Mathf.Min(totalFuel, totalOxidizer) * (mainEngine.efficiency * (averageOxidizerEfficiency / 100f))));
-		return num + GetBoosterThrust();
+		return 0f;
 	}
 
 	public float GetBoosterThrust()
@@ -176,11 +208,11 @@ public class RocketStats
 	public float GetEngineEfficiency()
 	{
 		RocketEngine mainEngine = GetMainEngine();
-		if ((Object)mainEngine != (Object)null)
+		if (!((Object)mainEngine != (Object)null))
 		{
-			return mainEngine.efficiency;
+			return 0f;
 		}
-		return 0f;
+		return mainEngine.efficiency;
 	}
 
 	public RocketEngine GetMainEngine()
@@ -191,7 +223,7 @@ public class RocketStats
 			rocketEngine = item.GetComponent<RocketEngine>();
 			if ((Object)rocketEngine != (Object)null && rocketEngine.mainEngine)
 			{
-				return rocketEngine;
+				break;
 			}
 		}
 		return rocketEngine;

@@ -52,6 +52,8 @@ public class FarmTileConfig : IBuildingConfig
 		plantablePlot.AddDepositTag(GameTags.CropSeed);
 		plantablePlot.AddDepositTag(GameTags.WaterSeed);
 		plantablePlot.SetFertilizationFlags(true, false);
+		CopyBuildingSettings copyBuildingSettings = go.AddOrGet<CopyBuildingSettings>();
+		copyBuildingSettings.copyGroupTag = GameTags.Farm;
 		go.AddOrGet<AnimTileable>();
 		Prioritizable.AddRef(go);
 	}

@@ -55,6 +55,8 @@ public class HydroponicFarmConfig : IBuildingConfig
 		plantablePlot.AddDepositTag(GameTags.WaterSeed);
 		plantablePlot.occupyingObjectRelativePosition.y = 1f;
 		plantablePlot.SetFertilizationFlags(true, true);
+		CopyBuildingSettings copyBuildingSettings = go.AddOrGet<CopyBuildingSettings>();
+		copyBuildingSettings.copyGroupTag = GameTags.Farm;
 		Storage storage = BuildingTemplates.CreateDefaultStorage(go, false);
 		storage.SetDefaultStoredItemModifiers(Storage.StandardSealedStorage);
 		go.AddOrGet<PlanterBox>();

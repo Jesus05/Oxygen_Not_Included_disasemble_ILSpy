@@ -2,13 +2,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-public class KCompactedVector<T> : ICollection, IEnumerable
+public class KCompactedVector<T> : KCompactedVectorBase, ICollection, IEnumerable
 {
 	protected List<T> data;
-
-	protected List<int> dataHandleIndices = new List<int>();
-
-	protected HandleVector<int> handles;
 
 	public int Count => data.Count;
 
@@ -29,72 +25,46 @@ public class KCompactedVector<T> : ICollection, IEnumerable
 	}
 
 	public KCompactedVector(int initial_count = 0)
+		: base(initial_count)
 	{
-		handles = new HandleVector<int>(initial_count);
 		data = new List<T>(initial_count);
 	}
 
 	public HandleVector<int>.Handle Allocate(T initial_data)
 	{
-		HandleVector<int>.Handle handle = handles.Add(data.Count);
-		handles.UnpackHandle(handle, out byte _, out int index);
-		dataHandleIndices.Add(index);
 		data.Add(initial_data);
-		return handle;
+		return Allocate(data.Count - 1);
 	}
 
 	public HandleVector<int>.Handle Free(HandleVector<int>.Handle handle)
 	{
-		if (!handle.IsValid())
+		int num = data.Count - 1;
+		int free_component_idx;
+		bool flag = Free(handle, num, out free_component_idx);
+		if (flag)
 		{
-			return handle;
-		}
-		int num = handles.Release(handle);
-		int num2 = data.Count - 1;
-		if (num < num2)
-		{
-			data[num] = data[num2];
-			int num3 = dataHandleIndices[num2];
-			if (handles.Items[num3] != num2)
+			if (free_component_idx < num)
 			{
-				Output.LogError("KCompactedVector: Bad state after attempting to free handle", handle.index);
+				data[free_component_idx] = data[num];
 			}
-			handles.Items[num3] = num;
-			dataHandleIndices[num] = num3;
+			data.RemoveAt(num);
 		}
-		data.RemoveAt(num2);
-		dataHandleIndices.RemoveAt(num2);
-		return HandleVector<int>.InvalidHandle;
-	}
-
-	public bool IsValid(HandleVector<int>.Handle handle)
-	{
-		return handles.IsValid(handle);
-	}
-
-	public bool IsVersionValid(HandleVector<int>.Handle handle)
-	{
-		return handles.IsVersionValid(handle);
+		return (!flag) ? handle : HandleVector<int>.InvalidHandle;
 	}
 
 	public T GetData(HandleVector<int>.Handle handle)
 	{
-		handles.UnpackHandle(handle, out byte _, out int index);
-		int index2 = handles.Items[index];
-		return data[index2];
+		return data[ComputeIndex(handle)];
 	}
 
 	public void SetData(HandleVector<int>.Handle handle, T new_data)
 	{
-		handles.UnpackHandle(handle, out byte _, out int index);
-		int index2 = handles.Items[index];
-		data[index2] = new_data;
+		data[ComputeIndex(handle)] = new_data;
 	}
 
-	public virtual void Clear()
+	public new virtual void Clear()
 	{
-		dataHandleIndices.Clear();
-		handles.Clear();
+		base.Clear();
 		data.Clear();
 	}
 

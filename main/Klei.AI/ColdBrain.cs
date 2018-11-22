@@ -8,10 +8,10 @@ namespace Klei.AI
 		public const string ID = "ColdBrain";
 
 		public ColdBrain()
-			: base("ColdBrain", DiseaseType.Ailment, Severity.Major, 0.005f, new List<InfectionVector>
+			: base("ColdBrain", DiseaseType.Ailment, Severity.Minor, 0.005f, new List<InfectionVector>
 			{
 				InfectionVector.Inhalation
-			}, 900f, 0, new RangeInfo(0f, 0f, 1000f, 1000f), new RangeInfo(1f, 1f, 1f, 1f), new RangeInfo(0f, 0f, 1000f, 1000f), new RangeInfo(1f, 1f, 1f, 1f))
+			}, 120f, 0, new RangeInfo(0f, 0f, 1000f, 1000f), new RangeInfo(1f, 1f, 1f, 1f), new RangeInfo(0f, 0f, 1000f, 1000f), new RangeInfo(1f, 1f, 1f, 1f))
 		{
 			AddDiseaseComponent(new CommonSickEffectDisease());
 			AddDiseaseComponent(new AttributeModifierDisease(new AttributeModifier[5]
@@ -27,7 +27,13 @@ namespace Klei.AI
 				"anim_idle_cold_kanim",
 				"anim_loco_run_cold_kanim",
 				"anim_loco_walk_cold_kanim"
-			}, "Cold"));
+			}, Db.Get().Expressions.SickCold));
+			AddDiseaseComponent(new PeriodicEmoteDisease("anim_idle_cold_kanim", new HashedString[3]
+			{
+				"idle_pre",
+				"idle_default",
+				"idle_pst"
+			}, 5f));
 		}
 	}
 }

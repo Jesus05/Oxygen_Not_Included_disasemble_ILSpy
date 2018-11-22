@@ -24,23 +24,23 @@ public class KCrashReporter : MonoBehaviour
 
 		public string user = "unknown";
 
-		public ulong steam64_verified;
+		public ulong steam64_verified = 0uL;
 
-		public string callstack = string.Empty;
+		public string callstack = "";
 
-		public string fullstack = string.Empty;
+		public string fullstack = "";
 
-		public string log = string.Empty;
+		public string log = "";
 
-		public string summaryline = string.Empty;
+		public string summaryline = "";
 
-		public string user_message = string.Empty;
+		public string user_message = "";
 
-		public bool is_server;
+		public bool is_server = false;
 
-		public bool is_dedicated;
+		public bool is_dedicated = false;
 
-		public string save_hash = string.Empty;
+		public string save_hash = "";
 	}
 
 	public static string MOST_RECENT_SAVEFILE = null;
@@ -68,7 +68,7 @@ public class KCrashReporter : MonoBehaviour
 	[SerializeField]
 	private ConfirmDialogScreen confirmDialogPrefab;
 
-	private ReportErrorDialog errorDialog;
+	private ReportErrorDialog errorDialog = null;
 
 	public static bool terminateOnError = true;
 
@@ -117,11 +117,11 @@ public class KCrashReporter : MonoBehaviour
 						if (a != value2)
 						{
 							flag = false;
-							goto IL_0142;
+							goto IL_014e;
 						}
 					}
 				}
-				goto IL_0142;
+				goto IL_014e;
 			}
 			ignoreAll = false;
 		}
@@ -129,14 +129,14 @@ public class KCrashReporter : MonoBehaviour
 		{
 			ignoreAll = false;
 		}
-		goto IL_0165;
-		IL_0142:
+		goto IL_0179;
+		IL_014e:
 		if (flag)
 		{
 			ignoreAll = false;
 		}
-		goto IL_0165;
-		IL_0165:
+		goto IL_0179;
+		IL_0179:
 		if (ignoreAll)
 		{
 			Debug.Log("Ignoring crash due to mismatched hashes.json entries.", null);
@@ -223,88 +223,88 @@ public class KCrashReporter : MonoBehaviour
 	private static string UploadSaveFile(string save_file, string stack_trace, Dictionary<string, string> metadata = null)
 	{
 		Debug.Log($"Save_file: {save_file}", null);
-		if (KPrivacyPrefs.instance.disableDataCollection)
+		if (!KPrivacyPrefs.instance.disableDataCollection)
 		{
-			return string.Empty;
-		}
-		if (save_file != null && File.Exists(save_file))
-		{
-			using (WebClient webClient = new WebClient())
+			if (save_file != null && File.Exists(save_file))
 			{
-				byte[] array = File.ReadAllBytes(save_file);
-				string text = "----" + System.DateTime.Now.Ticks.ToString("x");
-				webClient.Headers.Add("Content-Type", "multipart/form-data; boundary=" + text);
-				string @string = webClient.Encoding.GetString(array);
-				string empty = string.Empty;
-				string text2 = default(string);
-				using (SHA1CryptoServiceProvider sHA1CryptoServiceProvider = new SHA1CryptoServiceProvider())
+				using (WebClient webClient = new WebClient())
 				{
-					text2 = BitConverter.ToString(sHA1CryptoServiceProvider.ComputeHash(array)).Replace("-", string.Empty);
-				}
-				empty += string.Format("--{0}\r\nContent-Disposition: form-data; name=\"{1}\"\r\n\r\n{2}\r\n", text, "hash", text2);
-				if (metadata != null)
-				{
-					string arg = JsonConvert.SerializeObject(metadata);
-					empty += string.Format("--{0}\r\nContent-Disposition: form-data; name=\"{1}\"\r\n\r\n{2}\r\n", text, "metadata", arg);
-				}
-				empty += string.Format("--{0}\r\nContent-Disposition: form-data; name=\"save\"; filename=\"{1}\"\r\nContent-Type: {2}\r\n\r\n{3}", text, save_file, "application/x-spss-sav", @string);
-				empty += $"\r\n--{text}--\r\n";
-				byte[] bytes = webClient.Encoding.GetBytes(empty);
-				Uri address = new Uri("http://crashes.klei.ca/submitSave");
-				try
-				{
-					webClient.UploadData(address, "POST", bytes);
-					return text2;
-				}
-				catch (Exception obj)
-				{
-					Debug.Log(obj, null);
-					return string.Empty;
+					byte[] array = File.ReadAllBytes(save_file);
+					string text = "----" + System.DateTime.Now.Ticks.ToString("x");
+					webClient.Headers.Add("Content-Type", "multipart/form-data; boundary=" + text);
+					string @string = webClient.Encoding.GetString(array);
+					string str = "";
+					string text2 = default(string);
+					using (SHA1CryptoServiceProvider sHA1CryptoServiceProvider = new SHA1CryptoServiceProvider())
+					{
+						text2 = BitConverter.ToString(sHA1CryptoServiceProvider.ComputeHash(array)).Replace("-", "");
+					}
+					str += string.Format("--{0}\r\nContent-Disposition: form-data; name=\"{1}\"\r\n\r\n{2}\r\n", text, "hash", text2);
+					if (metadata != null)
+					{
+						string arg = JsonConvert.SerializeObject(metadata);
+						str += string.Format("--{0}\r\nContent-Disposition: form-data; name=\"{1}\"\r\n\r\n{2}\r\n", text, "metadata", arg);
+					}
+					str += string.Format("--{0}\r\nContent-Disposition: form-data; name=\"save\"; filename=\"{1}\"\r\nContent-Type: {2}\r\n\r\n{3}", text, save_file, "application/x-spss-sav", @string);
+					str += $"\r\n--{text}--\r\n";
+					byte[] bytes = webClient.Encoding.GetBytes(str);
+					Uri address = new Uri("http://crashes.klei.ca/submitSave");
+					try
+					{
+						webClient.UploadData(address, "POST", bytes);
+						return text2;
+					}
+					catch (Exception obj)
+					{
+						Debug.Log(obj, null);
+						return "";
+					}
 				}
 			}
+			return "";
 		}
-		return string.Empty;
+		return "";
 	}
 
 	private static string GetUserID()
 	{
-		if (DistributionPlatform.Initialized)
+		if (!DistributionPlatform.Initialized)
 		{
-			return DistributionPlatform.Inst.Name + "ID_" + DistributionPlatform.Inst.LocalUser.Name + "_" + DistributionPlatform.Inst.LocalUser.Id;
+			return Environment.UserName;
 		}
-		return Environment.UserName;
+		return DistributionPlatform.Inst.Name + "ID_" + DistributionPlatform.Inst.LocalUser.Name + "_" + DistributionPlatform.Inst.LocalUser.Id;
 	}
 
 	private static string GetLogContents()
 	{
-		string empty = string.Empty;
+		string text = "";
 		if (Application.platform == RuntimePlatform.WindowsEditor)
 		{
-			empty = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Unity/Editor/Editor.log");
+			text = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Unity/Editor/Editor.log");
 		}
 		else if (Application.platform == RuntimePlatform.WindowsPlayer)
 		{
-			empty = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "../LocalLow/Klei/Oxygen Not Included/output_log.txt");
+			text = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "../LocalLow/Klei/Oxygen Not Included/output_log.txt");
 		}
 		else if (Application.platform == RuntimePlatform.OSXEditor)
 		{
-			empty = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Library/Logs/Unity/Editor.log");
+			text = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Library/Logs/Unity/Editor.log");
 		}
 		else if (Application.platform == RuntimePlatform.OSXPlayer)
 		{
-			empty = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Library/Logs/Unity/Player.log");
+			text = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Library/Logs/Unity/Player.log");
 		}
 		else
 		{
 			if (Application.platform != RuntimePlatform.LinuxPlayer)
 			{
-				return string.Empty;
+				return "";
 			}
-			empty = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "unity3d/Klei/Oxygen Not Included/Player.log");
+			text = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "unity3d/Klei/Oxygen Not Included/Player.log");
 		}
-		if (File.Exists(empty))
+		if (File.Exists(text))
 		{
-			using (FileStream stream = File.Open(empty, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+			using (FileStream stream = File.Open(text, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
 			{
 				using (StreamReader streamReader = new StreamReader(stream))
 				{
@@ -312,7 +312,7 @@ public class KCrashReporter : MonoBehaviour
 				}
 			}
 		}
-		return string.Empty;
+		return "";
 	}
 
 	public static void ReportError(string msg, string stack_trace, string save_file_hash, ConfirmDialogScreen confirm_prefab, string userMessage = "")
@@ -351,7 +351,7 @@ public class KCrashReporter : MonoBehaviour
 					{
 						stack_trace = $"No stack trace.\n\n{msg}";
 					}
-					string str = string.Empty;
+					string str = "";
 					string[] array = new string[9]
 					{
 						"Debug:LogError",
@@ -387,7 +387,7 @@ public class KCrashReporter : MonoBehaviour
 					}
 					if (userMessage == UI.CRASHSCREEN.BODY.text)
 					{
-						userMessage = string.Empty;
+						userMessage = "";
 					}
 					Error error = new Error();
 					error.user = GetUserID();
@@ -401,7 +401,7 @@ public class KCrashReporter : MonoBehaviour
 						msg = "Debug tools were used in this game.\n\n" + msg;
 					}
 					error.fullstack = msg;
-					error.build = 291640;
+					error.build = 295825;
 					error.log = GetLogContents();
 					error.summaryline = msg;
 					error.user_message = userMessage;
@@ -414,7 +414,7 @@ public class KCrashReporter : MonoBehaviour
 						error.steam64_verified = DistributionPlatform.Inst.LocalUser.Id.ToInt64();
 					}
 					string data = JsonConvert.SerializeObject(error);
-					string empty = string.Empty;
+					string text3 = "";
 					Uri address = new Uri("http://crashes.klei.ca/submitCrash");
 					Debug.Log("Submitting crash:", null);
 					try
@@ -430,7 +430,7 @@ public class KCrashReporter : MonoBehaviour
 						ConfirmDialogScreen confirmDialogScreen = (ConfirmDialogScreen)KScreenManager.Instance.StartScreen(confirm_prefab.gameObject, null);
 						confirmDialogScreen.PopupConfirmDialog("Reported Error", null, null, null, null, null, null, null, null);
 					}
-					obj2 = empty;
+					obj2 = text3;
 				}
 				if (KCrashReporter.onCrashReported != null)
 				{
@@ -450,7 +450,7 @@ public class KCrashReporter : MonoBehaviour
 				GetUserID()
 			}
 		});
-		ReportError(msg, stack_trace, save_file_hash, ScreenPrefabs.Instance.ConfirmDialogScreen, string.Empty);
+		ReportError(msg, stack_trace, save_file_hash, ScreenPrefabs.Instance.ConfirmDialogScreen, "");
 	}
 
 	public static void Assert(bool condition, string message)
@@ -458,7 +458,7 @@ public class KCrashReporter : MonoBehaviour
 		if (!condition && !hasReportedError)
 		{
 			StackTrace stackTrace = new StackTrace(1, true);
-			ReportError("ASSERT: " + message, stackTrace.ToString(), null, null, string.Empty);
+			ReportError("ASSERT: " + message, stackTrace.ToString(), null, null, "");
 		}
 	}
 
@@ -483,7 +483,7 @@ public class KCrashReporter : MonoBehaviour
 					}
 				});
 			}
-			ReportError(msg, stack_trace, save_file_hash, null, string.Empty);
+			ReportError(msg, stack_trace, save_file_hash, null, "");
 			if (dmp_filename != null)
 			{
 				File.Move(text2, text);
@@ -496,7 +496,7 @@ public class KCrashReporter : MonoBehaviour
 		if (!condition && !hasReportedError)
 		{
 			StackTrace stackTrace = new StackTrace(0, true);
-			ReportError("Assertion failed", stackTrace.ToString(), null, null, string.Empty);
+			ReportError("Assertion failed", stackTrace.ToString(), null, null, "");
 		}
 	}
 }

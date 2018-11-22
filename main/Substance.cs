@@ -7,70 +7,47 @@ using UnityEngine.Serialization;
 [Serializable]
 public class Substance
 {
-	[Serializable]
-	public struct Loot
-	{
-		public GameObject item;
-
-		public bool spawnOnFloor;
-
-		public bool isEntombedItem;
-
-		public void FreeResources()
-		{
-			item = null;
-			spawnOnFloor = false;
-		}
-	}
-
 	public string name;
 
 	public SimHashes elementID;
 
+	internal Tag nameTag;
+
 	public Color32 colour;
 
-	public Color32 debugColour;
+	[FormerlySerializedAs("debugColour")]
+	public Color32 uiColour;
 
-	public Color32 overlayColour = Color.white;
-
-	public Texture2D colourMap;
-
-	public Texture2D shineMask;
-
-	public Texture2D normalMap;
-
-	public GameObject hitEffect;
-
-	[EventRef]
-	[FormerlySerializedAs("fallingStartSoundMigrated")]
-	public string fallingStartSound;
-
-	[EventRef]
-	[FormerlySerializedAs("fallingStopSoundMigrated")]
-	public string fallingStopSound;
+	[FormerlySerializedAs("overlayColour")]
+	public Color32 conduitColour = Color.white;
 
 	[NonSerialized]
-	public bool renderedByWorld;
+	internal bool renderedByWorld;
 
 	[NonSerialized]
-	public int idx;
+	internal int idx;
 
 	public Material material;
 
 	public KAnimFile anim;
 
+	[SerializeField]
+	internal bool showInEditor = true;
+
 	[NonSerialized]
-	public KAnimFile[] anims;
+	internal KAnimFile[] anims;
 
-	public float hue;
+	[NonSerialized]
+	internal ElementsAudio.ElementAudioConfig audioConfig;
 
-	public float saturation = 1f;
+	[NonSerialized]
+	internal MaterialPropertyBlock propertyBlock;
 
-	public MaterialPropertyBlock propertyBlock;
+	[EventRef]
+	public string fallingStartSound;
 
-	public ElementsAudio.ElementAudioConfig audioConfig;
-
-	public bool showInEditor = true;
+	[EventRef]
+	public string fallingStopSound;
 
 	public GameObject SpawnResource(Vector3 position, float mass, float temperature, byte disease_idx, int disease_count, bool prevent_merge = false, bool forceTemperature = false)
 	{
@@ -103,7 +80,8 @@ public class Substance
 		}
 		if ((UnityEngine.Object)gameObject == (UnityEngine.Object)null)
 		{
-			gameObject = GameUtil.KInstantiate(Assets.GetPrefab(GameTagExtensions.Create(elementID)), Grid.SceneLayer.Ore, null, 0);
+			GameObject prefab = Assets.GetPrefab(nameTag);
+			gameObject = GameUtil.KInstantiate(prefab, Grid.SceneLayer.Ore, null, 0);
 			primaryElement = gameObject.GetComponent<PrimaryElement>();
 			primaryElement.Mass = mass;
 		}
@@ -134,7 +112,6 @@ public class Substance
 		{
 			propertyBlock = new MaterialPropertyBlock();
 		}
-		propertyBlock.SetVector("_HueSaturation", new Vector4(hue, saturation, 0f, 0f));
 		if ((UnityEngine.Object)material != (UnityEngine.Object)null)
 		{
 			SetTexture(propertyBlock, "_MainTex");
@@ -152,66 +129,38 @@ public class Substance
 		}
 	}
 
-	public AmbienceType GetAmbience()
+	internal AmbienceType GetAmbience()
 	{
-		if (audioConfig == null)
-		{
-			return AmbienceType.None;
-		}
-		return audioConfig.ambienceType;
+		return (audioConfig == null) ? AmbienceType.None : audioConfig.ambienceType;
 	}
 
-	public SolidAmbienceType GetSolidAmbience()
+	internal SolidAmbienceType GetSolidAmbience()
 	{
-		if (audioConfig == null)
-		{
-			return SolidAmbienceType.None;
-		}
-		return audioConfig.solidAmbienceType;
+		return (audioConfig == null) ? SolidAmbienceType.None : audioConfig.solidAmbienceType;
 	}
 
-	public string GetMiningSound()
+	internal string GetMiningSound()
 	{
-		if (audioConfig == null)
-		{
-			return string.Empty;
-		}
-		return audioConfig.miningSound;
+		return (audioConfig == null) ? "" : audioConfig.miningSound;
 	}
 
-	public string GetMiningBreakSound()
+	internal string GetMiningBreakSound()
 	{
-		if (audioConfig == null)
-		{
-			return string.Empty;
-		}
-		return audioConfig.miningBreakSound;
+		return (audioConfig == null) ? "" : audioConfig.miningBreakSound;
 	}
 
-	public string GetOreBumpSound()
+	internal string GetOreBumpSound()
 	{
-		if (audioConfig == null)
-		{
-			return string.Empty;
-		}
-		return audioConfig.oreBumpSound;
+		return (audioConfig == null) ? "" : audioConfig.oreBumpSound;
 	}
 
-	public string GetFloorEventAudioCategory()
+	internal string GetFloorEventAudioCategory()
 	{
-		if (audioConfig == null)
-		{
-			return string.Empty;
-		}
-		return audioConfig.floorEventAudioCategory;
+		return (audioConfig == null) ? "" : audioConfig.floorEventAudioCategory;
 	}
 
-	public string GetCreatureChewSound()
+	internal string GetCreatureChewSound()
 	{
-		if (audioConfig == null)
-		{
-			return string.Empty;
-		}
-		return audioConfig.creatureChewSound;
+		return (audioConfig == null) ? "" : audioConfig.creatureChewSound;
 	}
 }

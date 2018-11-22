@@ -41,8 +41,8 @@ public class EmptyConduitWorkable : Workable
 		Subscribe(2127324410, OnEmptyConduitCancelledDelegate);
 		if (emptyLiquidConduitStatusItem == null)
 		{
-			emptyLiquidConduitStatusItem = new StatusItem("EmptyLiquidConduit", BUILDINGS.PREFABS.CONDUIT.STATUS_ITEM.NAME, BUILDINGS.PREFABS.CONDUIT.STATUS_ITEM.TOOLTIP, "status_item_empty_pipe", StatusItem.IconType.Custom, NotificationType.BadMinor, false, SimViewMode.LiquidVentMap, 66);
-			emptyGasConduitStatusItem = new StatusItem("EmptyGasConduit", BUILDINGS.PREFABS.CONDUIT.STATUS_ITEM.NAME, BUILDINGS.PREFABS.CONDUIT.STATUS_ITEM.TOOLTIP, "status_item_empty_pipe", StatusItem.IconType.Custom, NotificationType.BadMinor, false, SimViewMode.GasVentMap, 130);
+			emptyLiquidConduitStatusItem = new StatusItem("EmptyLiquidConduit", BUILDINGS.PREFABS.CONDUIT.STATUS_ITEM.NAME, BUILDINGS.PREFABS.CONDUIT.STATUS_ITEM.TOOLTIP, "status_item_empty_pipe", StatusItem.IconType.Custom, NotificationType.BadMinor, false, OverlayModes.LiquidConduits.ID, 66);
+			emptyGasConduitStatusItem = new StatusItem("EmptyGasConduit", BUILDINGS.PREFABS.CONDUIT.STATUS_ITEM.NAME, BUILDINGS.PREFABS.CONDUIT.STATUS_ITEM.TOOLTIP, "status_item_empty_pipe", StatusItem.IconType.Custom, NotificationType.BadMinor, false, OverlayModes.GasConduits.ID, 130);
 		}
 		requiredRolePerk = RoleManager.rolePerks.CanDoPlumbing.id;
 		shouldShowRolePerkStatusItem = false;
@@ -127,7 +127,7 @@ public class EmptyConduitWorkable : Workable
 	private void CreateWorkChore()
 	{
 		GetComponent<Prioritizable>().AddRef();
-		chore = new WorkChore<EmptyConduitWorkable>(Db.Get().ChoreTypes.EmptyStorage, this, null, null, true, null, null, null, true, null, false, false, null, false, true, true, PriorityScreen.PriorityClass.basic, 0, false);
+		chore = new WorkChore<EmptyConduitWorkable>(Db.Get().ChoreTypes.EmptyStorage, this, null, null, true, null, null, null, true, null, false, false, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, false);
 		chore.AddPrecondition(ChorePreconditions.instance.HasRolePerk, RoleManager.rolePerks.CanDoPlumbing.id);
 		elapsedTime = 0f;
 		emptiedPipe = false;
@@ -137,43 +137,43 @@ public class EmptyConduitWorkable : Workable
 
 	protected override bool OnWorkTick(Worker worker, float dt)
 	{
-		if (elapsedTime == -1f)
+		if (elapsedTime != -1f)
 		{
-			return true;
-		}
-		bool result = false;
-		elapsedTime += dt;
-		if (!emptiedPipe)
-		{
-			if (elapsedTime > 4f)
+			bool result = false;
+			elapsedTime += dt;
+			if (!emptiedPipe)
 			{
-				EmptyPipeContents();
-				emptiedPipe = true;
-				elapsedTime = 0f;
+				if (elapsedTime > 4f)
+				{
+					EmptyPipeContents();
+					emptiedPipe = true;
+					elapsedTime = 0f;
+				}
 			}
-		}
-		else if (elapsedTime > 2f)
-		{
-			int cell = Grid.PosToCell(base.transform.GetPosition());
-			ConduitFlow.ConduitContents contents = GetFlowManager().GetContents(cell);
-			if (contents.mass > 0f)
+			else if (elapsedTime > 2f)
 			{
-				elapsedTime = 0f;
-				emptiedPipe = false;
+				int cell = Grid.PosToCell(base.transform.GetPosition());
+				ConduitFlow.ConduitContents contents = GetFlowManager().GetContents(cell);
+				if (contents.mass > 0f)
+				{
+					elapsedTime = 0f;
+					emptiedPipe = false;
+				}
+				else
+				{
+					CleanUpVisualization();
+					chore = null;
+					result = true;
+					shouldShowRolePerkStatusItem = false;
+					UpdateStatusItem(null);
+				}
 			}
-			else
-			{
-				CleanUpVisualization();
-				chore = null;
-				result = true;
-				shouldShowRolePerkStatusItem = false;
-				UpdateStatusItem(null);
-			}
+			return result;
 		}
-		return result;
+		return true;
 	}
 
-	private void EmptyPipeContents()
+	public void EmptyPipeContents()
 	{
 		int cell = Grid.PosToCell(base.transform.GetPosition());
 		ConduitFlow.ConduitContents conduitContents = GetFlowManager().RemoveElement(cell, float.PositiveInfinity);

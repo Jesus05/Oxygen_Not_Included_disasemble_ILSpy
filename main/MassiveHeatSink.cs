@@ -24,7 +24,7 @@ public class MassiveHeatSink : StateMachineComponent<MassiveHeatSink.StatesInsta
 		{
 			default_state = disabled;
 			disabled.EventTransition(GameHashes.OperationalChanged, idle, (StatesInstance smi) => smi.master.operational.IsOperational);
-			idle.EventTransition(GameHashes.OperationalChanged, disabled, (StatesInstance smi) => !smi.master.operational.IsOperational).ToggleStatusItem(BUILDING.STATUSITEMS.AWAITINGFUEL.NAME, BUILDING.STATUSITEMS.AWAITINGFUEL.TOOLTIP, string.Empty, StatusItem.IconType.Exclamation, NotificationType.BadMinor, false, SimViewMode.None, 63486, AwaitingFuelResolveString, null, null).EventTransition(GameHashes.OnStorageChange, active, (StatesInstance smi) => smi.master.elementConverter.HasEnoughMassToStartConverting());
+			idle.EventTransition(GameHashes.OperationalChanged, disabled, (StatesInstance smi) => !smi.master.operational.IsOperational).ToggleStatusItem(BUILDING.STATUSITEMS.AWAITINGFUEL.NAME, BUILDING.STATUSITEMS.AWAITINGFUEL.TOOLTIP, "", StatusItem.IconType.Exclamation, NotificationType.BadMinor, false, default(HashedString), 63486, AwaitingFuelResolveString, null, null).EventTransition(GameHashes.OnStorageChange, active, (StatesInstance smi) => smi.master.elementConverter.HasEnoughMassToStartConverting());
 			active.EventTransition(GameHashes.OperationalChanged, disabled, (StatesInstance smi) => !smi.master.operational.IsOperational).EventTransition(GameHashes.OnStorageChange, idle, (StatesInstance smi) => !smi.master.elementConverter.HasEnoughMassToStartConverting()).Enter(delegate(StatesInstance smi)
 			{
 				smi.master.operational.SetActive(true, false);

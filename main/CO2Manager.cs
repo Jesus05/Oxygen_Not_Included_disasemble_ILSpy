@@ -81,14 +81,15 @@ public class CO2Manager : KMonoBehaviour, ISim33ms
 				if (flag)
 				{
 					bool flag2 = false;
+					int num6;
 					if (num3 != num5)
 					{
-						int num6 = num3;
+						num6 = num3;
 						flag2 = true;
 					}
 					else
 					{
-						int num6 = num5;
+						num6 = num5;
 						while (Grid.IsValidCell(num6))
 						{
 							Element element2 = Grid.Element[num6];
@@ -103,7 +104,7 @@ public class CO2Manager : KMonoBehaviour, ISim33ms
 					cO.TriggerDestroy();
 					if (flag2)
 					{
-						SimMessages.ModifyMass(num3, cO.mass, byte.MaxValue, 0, CellEventLogger.Instance.CO2ManagerFixedUpdate, cO.temperature, SimHashes.CarbonDioxide);
+						SimMessages.ModifyMass(num6, cO.mass, byte.MaxValue, 0, CellEventLogger.Instance.CO2ManagerFixedUpdate, cO.temperature, SimHashes.CarbonDioxide);
 						num--;
 						co2Items[i] = co2Items[num];
 						co2Items.RemoveAt(num);

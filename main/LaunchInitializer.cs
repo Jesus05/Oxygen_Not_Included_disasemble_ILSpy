@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class LaunchInitializer : MonoBehaviour
 {
-	public const string BUILD_PREFIX = "SU";
+	public const string BUILD_PREFIX = "Q1";
 
 	public GameObject[] SpawnPrefabs;
 
@@ -22,7 +22,7 @@ public class LaunchInitializer : MonoBehaviour
 			}
 			GraphicsOptionsScreen.SetResolutionFromPrefs();
 			Util.ApplyInvariantCultureToThread(Thread.CurrentThread);
-			Debug.Log("Development Build: SU-" + 291640.ToString(), null);
+			Debug.Log("Development Build: Q1-" + 295825.ToString(), null);
 			UnityEngine.Object.DontDestroyOnLoad(base.gameObject);
 			KPlayerPrefs.instance.Load();
 			KFMOD.Initialize();

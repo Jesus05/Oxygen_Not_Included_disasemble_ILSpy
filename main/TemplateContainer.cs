@@ -163,6 +163,6 @@ public class TemplateContainer : YamlIO<TemplateContainer>
 		{
 			Directory.CreateDirectory(templatePath);
 		}
-		Save(templatePath + "/" + save_name + ".yaml");
+		Save(templatePath + "/" + save_name + ".yaml", null);
 	}
 }

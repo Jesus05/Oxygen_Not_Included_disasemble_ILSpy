@@ -8,8 +8,8 @@ public abstract class Usable : KMonoBehaviour, IStateMachineTarget
 
 	protected void StartUsing(StateMachine.Instance smi, User user)
 	{
-		DebugUtil.Assert(this.smi == null, "Assert!", string.Empty, string.Empty);
-		DebugUtil.Assert(smi != null, "Assert!", string.Empty, string.Empty);
+		DebugUtil.Assert(this.smi == null);
+		DebugUtil.Assert(smi != null);
 		this.smi = smi;
 		smi.OnStop = (Action<string, StateMachine.Status>)Delegate.Combine(smi.OnStop, new Action<string, StateMachine.Status>(user.OnStateMachineStop));
 		smi.StartSM();

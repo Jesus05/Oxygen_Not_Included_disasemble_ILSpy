@@ -28,7 +28,7 @@ public class GasConduitBridgeConfig : IBuildingConfig
 		buildingDef.Floodable = false;
 		buildingDef.Entombable = false;
 		buildingDef.Overheatable = false;
-		buildingDef.ViewMode = SimViewMode.GasVentMap;
+		buildingDef.ViewMode = OverlayModes.GasConduits.ID;
 		buildingDef.AudioCategory = "Metal";
 		buildingDef.AudioSize = "small";
 		buildingDef.BaseTimeUntilRepair = -1f;

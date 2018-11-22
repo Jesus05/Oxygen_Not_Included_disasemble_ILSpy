@@ -98,18 +98,18 @@ namespace YamlDotNet.Serialization.NodeDeserializers
 
 		bool INodeDeserializer.Deserialize(IParser parser, Type expectedType, Func<IParser, Type, object> nestedObjectDeserializer, out object value)
 		{
-			if (!expectedType.IsArray)
+			if (expectedType.IsArray)
 			{
-				value = false;
-				return false;
+				Type elementType = expectedType.GetElementType();
+				ArrayList arrayList = new ArrayList();
+				CollectionNodeDeserializer.DeserializeHelper(elementType, parser, nestedObjectDeserializer, arrayList, true);
+				Array array = Array.CreateInstance(elementType, arrayList.Count);
+				arrayList.CopyTo(array, 0);
+				value = array;
+				return true;
 			}
-			Type elementType = expectedType.GetElementType();
-			ArrayList arrayList = new ArrayList();
-			CollectionNodeDeserializer.DeserializeHelper(elementType, parser, nestedObjectDeserializer, arrayList, true);
-			Array array = Array.CreateInstance(elementType, arrayList.Count);
-			arrayList.CopyTo(array, 0);
-			value = array;
-			return true;
+			value = false;
+			return false;
 		}
 	}
 }

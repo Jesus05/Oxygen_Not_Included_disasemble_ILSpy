@@ -32,7 +32,11 @@ public class OilEater : StateMachineComponent<OilEater.StatesInstance>
 		public override void InitializeStates(out BaseState default_state)
 		{
 			default_state = grow;
-			dead.ToggleStatusItem(CREATURES.STATUSITEMS.DEAD.NAME, CREATURES.STATUSITEMS.DEAD.TOOLTIP, category: Db.Get().StatusItemCategories.Main, icon: string.Empty, icon_type: StatusItem.IconType.Info, notification_type: (NotificationType)0, allow_multiples: false, render_overlay: SimViewMode.None, status_overlays: 0, resolve_string_callback: null, resolve_tooltip_callback: null).Enter(delegate(StatesInstance smi)
+			State state = dead;
+			string name = CREATURES.STATUSITEMS.DEAD.NAME;
+			string tooltip = CREATURES.STATUSITEMS.DEAD.TOOLTIP;
+			StatusItemCategory main = Db.Get().StatusItemCategories.Main;
+			state.ToggleStatusItem(name, tooltip, "", StatusItem.IconType.Info, (NotificationType)0, false, default(HashedString), 0, null, null, main).Enter(delegate(StatesInstance smi)
 			{
 				GameUtil.KInstantiate(Assets.GetPrefab(EffectConfigs.PlantDeathId), smi.master.transform.GetPosition(), Grid.SceneLayer.FXFront, null, 0).SetActive(true);
 				smi.master.Trigger(1623392196, null);
@@ -70,7 +74,7 @@ public class OilEater : StateMachineComponent<OilEater.StatesInstance>
 
 	public float emitRate = 1f;
 
-	public float minEmitMass;
+	public float minEmitMass = 0f;
 
 	public Vector3 emitOffset = Vector3.zero;
 

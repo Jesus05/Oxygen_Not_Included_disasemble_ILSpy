@@ -15,7 +15,7 @@ public class KScrollRect : ScrollRect
 
 	private Dictionary<SoundType, string> currentSounds = new Dictionary<SoundType, string>();
 
-	private float scrollVelocity;
+	private float scrollVelocity = 0f;
 
 	private bool default_intertia = true;
 
@@ -30,10 +30,10 @@ public class KScrollRect : ScrollRect
 	private float scrollDeceleration = 0.25f;
 
 	[SerializeField]
-	public bool forceContentMatchWidth;
+	public bool forceContentMatchWidth = false;
 
 	[SerializeField]
-	public bool forceContentMatchHeight;
+	public bool forceContentMatchHeight = false;
 
 	[SerializeField]
 	public bool allowHorizontalScrollWheel = true;

@@ -27,7 +27,7 @@ public class ManualGeneratorConfig : IBuildingConfig
 		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, tIER, aLL_METALS, melting_point, build_location_rule, TUNING.BUILDINGS.DECOR.NONE, tIER2, 0.2f);
 		buildingDef.GeneratorWattageRating = 400f;
 		buildingDef.GeneratorBaseCapacity = 10000f;
-		buildingDef.ViewMode = SimViewMode.PowerMap;
+		buildingDef.ViewMode = OverlayModes.Power.ID;
 		buildingDef.AudioCategory = "Metal";
 		buildingDef.Breakable = true;
 		buildingDef.ForegroundLayer = Grid.SceneLayer.BuildingFront;

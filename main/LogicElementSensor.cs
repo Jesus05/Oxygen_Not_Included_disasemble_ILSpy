@@ -3,7 +3,7 @@ using KSerialization;
 [SerializationConfig(MemberSerialization.OptIn)]
 public class LogicElementSensor : Switch, ISaveLoadable, ISim200ms
 {
-	private bool wasOn;
+	private bool wasOn = false;
 
 	public Element.State desiredState = Element.State.Gas;
 
@@ -11,7 +11,7 @@ public class LogicElementSensor : Switch, ISaveLoadable, ISim200ms
 
 	private bool[] samples = new bool[8];
 
-	private int sampleIdx;
+	private int sampleIdx = 0;
 
 	private byte desiredElementIdx = byte.MaxValue;
 

@@ -90,7 +90,8 @@ public class FetchOrder2
 			{
 				if (chore.InProgress())
 				{
-					return true;
+					result = true;
+					break;
 				}
 			}
 			return result;
@@ -247,17 +248,17 @@ public class FetchOrder2
 
 	public float AmountWaitingToFetch()
 	{
-		if (!checkStorageContents)
+		if (checkStorageContents)
 		{
-			float num = UnfetchedAmount;
-			for (int i = 0; i < Chores.Count; i++)
-			{
-				num += Chores[i].AmountWaitingToFetch();
-			}
-			return num;
+			Pickupable out_item;
+			return GetRemaining(out out_item);
 		}
-		Pickupable out_item;
-		return GetRemaining(out out_item);
+		float num = UnfetchedAmount;
+		for (int i = 0; i < Chores.Count; i++)
+		{
+			num += Chores[i].AmountWaitingToFetch();
+		}
+		return num;
 	}
 
 	public float GetRemaining(out Pickupable out_item)

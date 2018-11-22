@@ -24,7 +24,7 @@ public class AssignableSideScreen : SideScreenContent
 
 	private Comparison<IAssignableIdentity> activeSortFunction;
 
-	private bool sortReversed;
+	private bool sortReversed = false;
 
 	private int targetAssignableSubscriptionHandle = -1;
 
@@ -32,7 +32,7 @@ public class AssignableSideScreen : SideScreenContent
 
 	private Dictionary<IAssignableIdentity, AssignableSideScreenRow> identityRowMap = new Dictionary<IAssignableIdentity, AssignableSideScreenRow>();
 
-	private List<MinionIdentity> identityList = new List<MinionIdentity>();
+	private List<MinionAssignablesProxy> identityList = new List<MinionAssignablesProxy>();
 
 	public Assignable targetAssignable
 	{
@@ -42,11 +42,11 @@ public class AssignableSideScreen : SideScreenContent
 
 	public override string GetTitle()
 	{
-		if ((UnityEngine.Object)targetAssignable != (UnityEngine.Object)null)
+		if (!((UnityEngine.Object)targetAssignable != (UnityEngine.Object)null))
 		{
-			return string.Format(base.GetTitle(), targetAssignable.GetProperName());
+			return base.GetTitle();
 		}
-		return base.GetTitle();
+		return string.Format(base.GetTitle(), targetAssignable.GetProperName());
 	}
 
 	protected override void OnSpawn()
@@ -102,7 +102,7 @@ public class AssignableSideScreen : SideScreenContent
 				rowPool = new UIPool<AssignableSideScreenRow>(rowPrefab);
 			}
 			base.gameObject.SetActive(true);
-			identityList = new List<MinionIdentity>(Components.LiveMinionIdentities.Items);
+			identityList = new List<MinionAssignablesProxy>(Components.MinionAssignablesProxy.Items);
 			dupeSortingToggle.ChangeState(0);
 			generalSortingToggle.ChangeState(0);
 			activeSortToggle = null;
@@ -123,7 +123,7 @@ public class AssignableSideScreen : SideScreenContent
 
 	private void OnMinionIdentitiesChanged(MinionIdentity change)
 	{
-		identityList = new List<MinionIdentity>(Components.LiveMinionIdentities.Items);
+		identityList = new List<MinionAssignablesProxy>(Components.MinionAssignablesProxy.Items);
 		Refresh(identityList);
 	}
 
@@ -135,7 +135,7 @@ public class AssignableSideScreen : SideScreenContent
 		}
 	}
 
-	private void Refresh(List<MinionIdentity> identities)
+	private void Refresh(List<MinionAssignablesProxy> identities)
 	{
 		ClearContent();
 		currentOwnerText.text = string.Format(UI.UISIDESCREENS.ASSIGNABLESIDESCREEN.UNASSIGNED);
@@ -164,7 +164,7 @@ public class AssignableSideScreen : SideScreenContent
 			identityRowMap.Add(Game.Instance.assignmentManager.assignment_groups["public"], freeElement2);
 			freeElement2.SetContent(Game.Instance.assignmentManager.assignment_groups["public"], OnRowClicked, this);
 		}
-		foreach (MinionIdentity identity in identities)
+		foreach (MinionAssignablesProxy identity in identities)
 		{
 			if (targetAssignable.eligibleFilter == null || targetAssignable.eligibleFilter(identity))
 			{
@@ -190,16 +190,16 @@ public class AssignableSideScreen : SideScreenContent
 		{
 			int num = 0;
 			num = targetAssignable.CanAssignTo(i1).CompareTo(targetAssignable.CanAssignTo(i2));
-			if (num != 0)
+			if (num == 0)
 			{
-				return num * -1;
-			}
-			num = identityRowMap[i1].currentState.CompareTo(identityRowMap[i2].currentState);
-			if (num != 0)
-			{
+				num = identityRowMap[i1].currentState.CompareTo(identityRowMap[i2].currentState);
+				if (num == 0)
+				{
+					return i1.GetProperName().CompareTo(i2.GetProperName());
+				}
 				return num * ((!sortReversed) ? 1 : (-1));
 			}
-			return i1.GetProperName().CompareTo(i2.GetProperName());
+			return num * -1;
 		};
 		ExecuteSort(sortFunction);
 	}
@@ -272,7 +272,7 @@ public class AssignableSideScreen : SideScreenContent
 
 	private bool CanDeselect(IAssignableIdentity identity)
 	{
-		return identity is MinionIdentity;
+		return identity is MinionAssignablesProxy;
 	}
 
 	private void ChangeAssignment(IAssignableIdentity new_identity)

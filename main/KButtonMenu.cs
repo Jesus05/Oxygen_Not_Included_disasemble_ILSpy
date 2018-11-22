@@ -83,11 +83,11 @@ public class KButtonMenu : KScreen
 	protected bool keepMenuOpen;
 
 	[SerializeField]
-	private Transform buttonParent;
+	protected Transform buttonParent;
 
 	public GameObject buttonPrefab;
 
-	public bool ShouldConsumeMouseScroll;
+	public bool ShouldConsumeMouseScroll = false;
 
 	[NonSerialized]
 	public GameObject[] buttonObjects;
@@ -149,7 +149,7 @@ public class KButtonMenu : KScreen
 					}
 				}
 				ToolTip componentInChildren = gameObject.GetComponentInChildren<ToolTip>();
-				if (binfo.toolTip != null && binfo.toolTip != string.Empty && (UnityEngine.Object)componentInChildren != (UnityEngine.Object)null)
+				if (binfo.toolTip != null && binfo.toolTip != "" && (UnityEngine.Object)componentInChildren != (UnityEngine.Object)null)
 				{
 					componentInChildren.toolTip = binfo.toolTip;
 				}
@@ -185,7 +185,7 @@ public class KButtonMenu : KScreen
 		}
 	}
 
-	private Button.ButtonClickedEvent SetupPopupMenu(ButtonInfo binfo, KButton button)
+	protected Button.ButtonClickedEvent SetupPopupMenu(ButtonInfo binfo, KButton button)
 	{
 		Button.ButtonClickedEvent buttonClickedEvent = new Button.ButtonClickedEvent();
 		UnityAction unityAction = delegate

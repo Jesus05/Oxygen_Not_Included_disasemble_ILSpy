@@ -70,7 +70,7 @@ public class TakeMedicineChore : Chore<TakeMedicineChore.StatesInstance>
 	};
 
 	public TakeMedicineChore(MedicinalPill master)
-		: base(Db.Get().ChoreTypes.TakeMedicine, (IStateMachineTarget)master, (ChoreProvider)null, false, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.emergency, 0, false, true, 0, (Tag[])null)
+		: base(Db.Get().ChoreTypes.TakeMedicine, (IStateMachineTarget)master, (ChoreProvider)null, false, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.emergency, 5, false, true, 0, (Tag[])null)
 	{
 		medicine = master;
 		pickupable = medicine.GetComponent<Pickupable>();

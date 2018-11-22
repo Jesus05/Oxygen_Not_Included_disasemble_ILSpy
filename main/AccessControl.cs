@@ -20,22 +20,30 @@ public class AccessControl : KMonoBehaviour, ISaveLoadable
 	[MyCmpReq]
 	private KSelectable selectable;
 
+	[MyCmpAdd]
+	private CopyBuildingSettings copyBuildingSettings;
+
 	[Serialize]
 	private List<KeyValuePair<Ref<KPrefabID>, Permission>> savedPermissions = new List<KeyValuePair<Ref<KPrefabID>, Permission>>();
 
 	[Serialize]
-	private Permission _defaultPermission;
+	private Permission _defaultPermission = Permission.Both;
 
 	[Serialize]
 	public bool controlEnabled;
 
-	public Door.ControlState overrideAccess;
+	public Door.ControlState overrideAccess = Door.ControlState.Auto;
 
 	private static StatusItem accessControlActive;
 
 	private static readonly EventSystem.IntraObjectHandler<AccessControl> OnControlStateChangedDelegate = new EventSystem.IntraObjectHandler<AccessControl>(delegate(AccessControl component, object data)
 	{
 		component.OnControlStateChanged(data);
+	});
+
+	private static readonly EventSystem.IntraObjectHandler<AccessControl> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<AccessControl>(delegate(AccessControl component, object data)
+	{
+		component.OnCopySettings(data);
 	});
 
 	public Permission DefaultPermission
@@ -58,9 +66,10 @@ public class AccessControl : KMonoBehaviour, ISaveLoadable
 		base.OnPrefabInit();
 		if (accessControlActive == null)
 		{
-			accessControlActive = new StatusItem("accessControlActive", BUILDING.STATUSITEMS.ACCESS_CONTROL.ACTIVE.NAME, BUILDING.STATUSITEMS.ACCESS_CONTROL.ACTIVE.TOOLTIP, string.Empty, StatusItem.IconType.Info, NotificationType.Neutral, false, SimViewMode.None, 63486);
+			accessControlActive = new StatusItem("accessControlActive", BUILDING.STATUSITEMS.ACCESS_CONTROL.ACTIVE.NAME, BUILDING.STATUSITEMS.ACCESS_CONTROL.ACTIVE.TOOLTIP, "", StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, 63486);
 		}
 		Subscribe(279163026, OnControlStateChangedDelegate);
+		Subscribe(-905833192, OnCopySettingsDelegate);
 	}
 
 	protected override void OnSpawn()
@@ -72,6 +81,21 @@ public class AccessControl : KMonoBehaviour, ISaveLoadable
 	private void OnControlStateChanged(object data)
 	{
 		overrideAccess = (Door.ControlState)data;
+	}
+
+	private void OnCopySettings(object data)
+	{
+		GameObject gameObject = (GameObject)data;
+		AccessControl component = gameObject.GetComponent<AccessControl>();
+		if ((Object)component != (Object)null)
+		{
+			savedPermissions.Clear();
+			foreach (KeyValuePair<Ref<KPrefabID>, Permission> savedPermission in component.savedPermissions)
+			{
+				SetPermission(savedPermission.Key.Get().gameObject, savedPermission.Value);
+			}
+			_defaultPermission = component._defaultPermission;
+		}
 	}
 
 	public void SetPermission(GameObject key, Permission permission)

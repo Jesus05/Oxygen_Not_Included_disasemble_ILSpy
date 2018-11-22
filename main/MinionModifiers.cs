@@ -46,28 +46,10 @@ public class MinionModifiers : Modifiers, ISaveLoadable
 			attributes.Add(resource2.cureSpeedBase);
 			amountInstance.SetValue(0f);
 		}
-		Equipment component2 = GetComponent<Equipment>();
+		ChoreConsumer component2 = GetComponent<ChoreConsumer>();
 		if ((UnityEngine.Object)component2 != (UnityEngine.Object)null)
 		{
-			Ownables component3 = GetComponent<Ownables>();
-			foreach (AssignableSlot resource3 in Db.Get().AssignableSlots.resources)
-			{
-				if (resource3 is OwnableSlot)
-				{
-					OwnableSlotInstance slot_instance = new OwnableSlotInstance(component3, (OwnableSlot)resource3);
-					component3.Add(slot_instance);
-				}
-				else if (resource3 is EquipmentSlot)
-				{
-					EquipmentSlotInstance slot_instance2 = new EquipmentSlotInstance(component2, (EquipmentSlot)resource3);
-					component2.Add(slot_instance2);
-				}
-			}
-		}
-		ChoreConsumer component4 = GetComponent<ChoreConsumer>();
-		if ((UnityEngine.Object)component4 != (UnityEngine.Object)null)
-		{
-			component4.AddProvider(GlobalChoreProvider.Instance);
+			component2.AddProvider(GlobalChoreProvider.Instance);
 			base.gameObject.AddComponent<QualityOfLifeNeed>();
 		}
 	}
@@ -75,8 +57,13 @@ public class MinionModifiers : Modifiers, ISaveLoadable
 	protected override void OnSpawn()
 	{
 		base.OnSpawn();
-		ChoreConsumer component = GetComponent<ChoreConsumer>();
-		if ((UnityEngine.Object)component != (UnityEngine.Object)null)
+		MinionIdentity component = GetComponent<MinionIdentity>();
+		if (component.assignableProxy == null)
+		{
+			component.assignableProxy = MinionAssignablesProxy.InitAssignableProxy(component.assignableProxy, component);
+		}
+		ChoreConsumer component2 = GetComponent<ChoreConsumer>();
+		if ((UnityEngine.Object)component2 != (UnityEngine.Object)null)
 		{
 			Subscribe(1623392196, OnDeathDelegate);
 			Subscribe(-1506069671, OnAttachFollowCamDelegate);

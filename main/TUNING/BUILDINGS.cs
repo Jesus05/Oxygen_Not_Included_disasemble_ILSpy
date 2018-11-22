@@ -514,7 +514,7 @@ namespace TUNING
 
 		public static List<PlanScreen.PlanInfo> PLANORDER = new List<PlanScreen.PlanInfo>
 		{
-			new PlanScreen.PlanInfo(PlanScreen.PlanCategory.Base, new List<string>
+			new PlanScreen.PlanInfo(new HashedString("Base"), false, new List<string>
 			{
 				"Ladder",
 				"FirePole",
@@ -527,6 +527,8 @@ namespace TUNING
 				"MetalTile",
 				"GlassTile",
 				"BunkerTile",
+				"CarpetTile",
+				"MouldingTile",
 				"Door",
 				"ManualPressureDoor",
 				"PressureDoor",
@@ -539,7 +541,7 @@ namespace TUNING
 				"TravelTubeEntrance",
 				"TravelTubeWallBridge"
 			}),
-			new PlanScreen.PlanInfo(PlanScreen.PlanCategory.Oxygen, new List<string>
+			new PlanScreen.PlanInfo(new HashedString("Oxygen"), false, new List<string>
 			{
 				"MineralDeoxidizer",
 				"AlgaeHabitat",
@@ -547,7 +549,7 @@ namespace TUNING
 				"CO2Scrubber",
 				"Electrolyzer"
 			}),
-			new PlanScreen.PlanInfo(PlanScreen.PlanCategory.Power, new List<string>
+			new PlanScreen.PlanInfo(new HashedString("Power"), false, new List<string>
 			{
 				"ManualGenerator",
 				"Generator",
@@ -575,7 +577,7 @@ namespace TUNING
 				PressureSwitchLiquidConfig.ID,
 				PressureSwitchGasConfig.ID
 			}),
-			new PlanScreen.PlanInfo(PlanScreen.PlanCategory.Food, new List<string>
+			new PlanScreen.PlanInfo(new HashedString("Food"), false, new List<string>
 			{
 				"MicrobeMusher",
 				"CookingStation",
@@ -594,7 +596,7 @@ namespace TUNING
 				"FishTrap",
 				"AirborneCreatureLure"
 			}),
-			new PlanScreen.PlanInfo(PlanScreen.PlanCategory.Plumbing, new List<string>
+			new PlanScreen.PlanInfo(new HashedString("Plumbing"), false, new List<string>
 			{
 				"Outhouse",
 				"FlushToilet",
@@ -617,7 +619,7 @@ namespace TUNING
 				LiquidConduitDiseaseSensorConfig.ID,
 				LiquidConduitTemperatureSensorConfig.ID
 			}),
-			new PlanScreen.PlanInfo(PlanScreen.PlanCategory.HVAC, new List<string>
+			new PlanScreen.PlanInfo(new HashedString("HVAC"), false, new List<string>
 			{
 				"GasConduit",
 				"InsulatedGasConduit",
@@ -638,7 +640,7 @@ namespace TUNING
 				GasConduitDiseaseSensorConfig.ID,
 				GasConduitTemperatureSensorConfig.ID
 			}),
-			new PlanScreen.PlanInfo(PlanScreen.PlanCategory.Refining, new List<string>
+			new PlanScreen.PlanInfo(new HashedString("Refining"), false, new List<string>
 			{
 				"Compost",
 				"WaterPurifier",
@@ -653,7 +655,7 @@ namespace TUNING
 				"OxyliteRefinery",
 				"SupermaterialRefinery"
 			}),
-			new PlanScreen.PlanInfo(PlanScreen.PlanCategory.Medical, new List<string>
+			new PlanScreen.PlanInfo(new HashedString("Medical"), false, new List<string>
 			{
 				"WashBasin",
 				"WashSink",
@@ -664,7 +666,7 @@ namespace TUNING
 				"MassageTable",
 				"Grave"
 			}),
-			new PlanScreen.PlanInfo(PlanScreen.PlanCategory.Furniture, new List<string>
+			new PlanScreen.PlanInfo(new HashedString("Furniture"), false, new List<string>
 			{
 				BedConfig.ID,
 				LuxuryBedConfig.ID,
@@ -681,7 +683,7 @@ namespace TUNING
 				"FloorLamp",
 				"CeilingLight"
 			}),
-			new PlanScreen.PlanInfo(PlanScreen.PlanCategory.Equipment, new List<string>
+			new PlanScreen.PlanInfo(new HashedString("Equipment"), false, new List<string>
 			{
 				"ResearchCenter",
 				"AdvancedResearchCenter",
@@ -700,7 +702,7 @@ namespace TUNING
 				"JetSuitLocker",
 				"AstronautTrainingCenter"
 			}),
-			new PlanScreen.PlanInfo(PlanScreen.PlanCategory.Utilities, new List<string>
+			new PlanScreen.PlanInfo(new HashedString("Utilities"), true, new List<string>
 			{
 				"SpaceHeater",
 				"LiquidHeater",
@@ -712,7 +714,7 @@ namespace TUNING
 				"ThermalBlock",
 				"ExteriorWall"
 			}),
-			new PlanScreen.PlanInfo(PlanScreen.PlanCategory.Automation, new List<string>
+			new PlanScreen.PlanInfo(new HashedString("Automation"), true, new List<string>
 			{
 				"LogicWire",
 				"LogicWireBridge",
@@ -730,11 +732,12 @@ namespace TUNING
 				LogicTimeOfDaySensorConfig.ID,
 				LogicDiseaseSensorConfig.ID,
 				LogicElementSensorGasConfig.ID,
+				LogicCritterCountSensorConfig.ID,
 				"FloorSwitch",
 				"Checkpoint",
 				CometDetectorConfig.ID
 			}),
-			new PlanScreen.PlanInfo(PlanScreen.PlanCategory.Conveyance, new List<string>
+			new PlanScreen.PlanInfo(new HashedString("Conveyance"), true, new List<string>
 			{
 				"SolidTransferArm",
 				"SolidConduit",
@@ -743,7 +746,7 @@ namespace TUNING
 				"SolidConduitBridge",
 				"AutoMiner"
 			}),
-			new PlanScreen.PlanInfo(PlanScreen.PlanCategory.Rocketry, new List<string>
+			new PlanScreen.PlanInfo(new HashedString("Rocketry"), true, new List<string>
 			{
 				"Gantry",
 				"SteamEngine",
@@ -751,6 +754,7 @@ namespace TUNING
 				"SolidBooster",
 				"LiquidFuelTank",
 				"OxidizerTank",
+				"OxidizerTankLiquid",
 				"CargoBay",
 				"GasCargoBay",
 				"LiquidCargoBay",
@@ -801,7 +805,6 @@ namespace TUNING
 			typeof(Growing),
 			typeof(Equippable),
 			typeof(ColdBreather),
-			typeof(SeedSplicer),
 			typeof(ResearchPointObject),
 			typeof(SuitTank),
 			typeof(IlluminationVulnerable),

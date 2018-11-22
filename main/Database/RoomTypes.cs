@@ -278,34 +278,34 @@ namespace Database
 
 		public Assignables[] GetAssignees(Room room)
 		{
-			if (room == null)
+			if (room != null)
 			{
-				return new Assignables[0];
-			}
-			RoomType roomType = room.roomType;
-			if (roomType.primary_constraint == null)
-			{
-				return new Assignables[0];
-			}
-			List<Assignables> list = new List<Assignables>();
-			foreach (KPrefabID building in room.buildings)
-			{
-				if (!((UnityEngine.Object)building == (UnityEngine.Object)null) && roomType.primary_constraint.building_criteria(building))
+				RoomType roomType = room.roomType;
+				if (roomType.primary_constraint != null)
 				{
-					Assignable component = building.GetComponent<Assignable>();
-					if (component.assignee != null)
+					List<Assignables> list = new List<Assignables>();
+					foreach (KPrefabID building in room.buildings)
 					{
-						foreach (Ownables owner in component.assignee.GetOwners())
+						if (!((UnityEngine.Object)building == (UnityEngine.Object)null) && roomType.primary_constraint.building_criteria(building))
 						{
-							if (!list.Contains(owner))
+							Assignable component = building.GetComponent<Assignable>();
+							if (component.assignee != null)
 							{
-								list.Add(owner);
+								foreach (Ownables owner in component.assignee.GetOwners())
+								{
+									if (!list.Contains(owner))
+									{
+										list.Add(owner);
+									}
+								}
 							}
 						}
 					}
+					return list.ToArray();
 				}
+				return new Assignables[0];
 			}
-			return list.ToArray();
+			return new Assignables[0];
 		}
 
 		public RoomType GetRoomTypeForID(string id)
@@ -388,11 +388,11 @@ namespace Database
 							}
 						}
 					}
-					if (flag)
+					if (!flag)
 					{
-						return false;
+						return true;
 					}
-					return true;
+					return false;
 				}
 				suspected_type = Neutral;
 			}

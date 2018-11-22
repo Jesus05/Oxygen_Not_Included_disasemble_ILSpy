@@ -54,12 +54,13 @@ namespace Database
 			},
 			{
 				"AnimalControl",
-				new string[4]
+				new string[5]
 				{
 					"CreatureTrap",
 					"FishTrap",
 					"AirborneCreatureLure",
-					"EggIncubator"
+					"EggIncubator",
+					LogicCritterCountSensorConfig.ID
 				}
 			},
 			{
@@ -268,11 +269,13 @@ namespace Database
 			},
 			{
 				"InteriorDecor",
-				new string[3]
+				new string[5]
 				{
 					"FlowerVase",
 					"FloorLamp",
-					"CeilingLight"
+					"CeilingLight",
+					"CarpetTile",
+					"MouldingTile"
 				}
 			},
 			{
@@ -532,8 +535,9 @@ namespace Database
 			},
 			{
 				"EnginesIII",
-				new string[1]
+				new string[2]
 				{
+					"OxidizerTankLiquid",
 					"HydrogenEngine"
 				}
 			},
@@ -650,16 +654,16 @@ namespace Database
 
 		private int GetTier(Tech tech)
 		{
-			if (tech.requiredTech.Count == 0)
+			if (tech.requiredTech.Count != 0)
 			{
-				return 0;
+				int num = 0;
+				foreach (Tech item in tech.requiredTech)
+				{
+					num = Math.Max(num, GetTier(item));
+				}
+				return num + 1;
 			}
-			int num = 0;
-			foreach (Tech item in tech.requiredTech)
-			{
-				num = Math.Max(num, GetTier(item));
-			}
-			return num + 1;
+			return 0;
 		}
 
 		private void AddPrerequisite(Tech tech, string prerequisite_name)

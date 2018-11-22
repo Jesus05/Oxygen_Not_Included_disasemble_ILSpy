@@ -1,13 +1,13 @@
-using STRINGS;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class BuildQueue : KButtonMenu
 {
 	private IHasBuildQueue fabricator;
 
-	private int prevLength;
+	private int prevLength = 0;
 
 	private Dictionary<Tag, float> allocatedMaterials = new Dictionary<Tag, float>();
 
@@ -17,8 +17,8 @@ public class BuildQueue : KButtonMenu
 	{
 		base.OnPrefabInit();
 		keepMenuOpen = true;
-		buttons = new ButtonInfo[6];
-		for (int i = 0; i < 6; i++)
+		buttons = new ButtonInfo[fabricator.MaxOrders];
+		for (int i = 0; i < fabricator.MaxOrders; i++)
 		{
 			string text = (i + 1).ToString();
 			int order_idx = i;
@@ -33,78 +33,80 @@ public class BuildQueue : KButtonMenu
 	{
 		if (fabricator != null && fabricator.NumOrders != 0 && order_idx < fabricator.NumOrders)
 		{
-			fabricator.CancelOrder(order_idx);
+			fabricator.CancelUserOrder(order_idx);
 		}
 	}
 
 	private void Update()
 	{
-		allocatedMaterials.Clear();
-		int i = 0;
-		if (fabricator != null)
-		{
-			List<IBuildQueueOrder> orders = fabricator.Orders;
-			foreach (IBuildQueueOrder item in orders)
-			{
-				BuildQueueButton componentInChildren = buttonObjects[i].GetComponentInChildren<BuildQueueButton>();
-				componentInChildren.SetOrder(item);
-				bool currentAvailability = true;
-				string text = string.Empty;
-				foreach (KeyValuePair<Tag, float> materialRequirement in item.GetMaterialRequirements())
-				{
-					float num = materialRequirement.Value - WorldInventory.Instance.GetAmount(materialRequirement.Key);
-					for (int j = 0; j < availableMaterialStorages.Count; j++)
-					{
-						num -= availableMaterialStorages[j].GetAmountAvailable(materialRequirement.Key);
-					}
-					if (allocatedMaterials.ContainsKey(materialRequirement.Key))
-					{
-						num += allocatedMaterials[materialRequirement.Key];
-					}
-					if (num > 0f)
-					{
-						currentAvailability = false;
-						text += string.Format(UI.UISIDESCREENS.FABRICATORSIDESCREEN.QUEUED_MISSING_INGREDIENTS_TOOLTIP, GameUtil.GetFormattedMass(num, GameUtil.TimeSlice.None, GameUtil.MetricMassFormat.UseThreshold, true, "{0:0.#}"), materialRequirement.Key.ProperName());
-					}
-					if (allocatedMaterials.ContainsKey(materialRequirement.Key))
-					{
-						Dictionary<Tag, float> dictionary;
-						Tag key;
-						(dictionary = allocatedMaterials)[key = materialRequirement.Key] = dictionary[key] + materialRequirement.Value;
-					}
-					else
-					{
-						allocatedMaterials.Add(materialRequirement.Key, materialRequirement.Value);
-					}
-				}
-				componentInChildren.SetAvailability(item.Result.ProperName(), currentAvailability, text);
-				i++;
-				if (i >= 6)
-				{
-					break;
-				}
-			}
-			if (orders.Count > prevLength)
-			{
-				BuildQueueButton componentInChildren2 = buttonObjects[prevLength].GetComponentInChildren<BuildQueueButton>();
-				SizePulse pulse = componentInChildren2.gameObject.AddComponent<SizePulse>();
-				pulse.speed = 10f;
-				pulse.updateWhenPaused = true;
-				SizePulse sizePulse = pulse;
-				sizePulse.onComplete = (System.Action)Delegate.Combine(sizePulse.onComplete, (System.Action)delegate
-				{
-					UnityEngine.Object.Destroy(pulse);
-				});
-			}
-			prevLength = orders.Count;
-		}
+	}
+
+	public override void RefreshButtons()
+	{
 		if (buttonObjects != null)
 		{
-			for (; i < 6; i++)
+			for (int i = 0; i < buttonObjects.Length; i++)
 			{
-				BuildQueueButton componentInChildren3 = buttonObjects[i].GetComponentInChildren<BuildQueueButton>();
-				componentInChildren3.SetOrder(null);
+				UnityEngine.Object.Destroy(buttonObjects[i]);
 			}
+			buttonObjects = null;
+		}
+		if (buttons != null)
+		{
+			buttonObjects = new GameObject[buttons.Count];
+			for (int j = 0; j < buttons.Count; j++)
+			{
+				ButtonInfo binfo = buttons[j];
+				GameObject gameObject = UnityEngine.Object.Instantiate(buttonPrefab, Vector3.zero, Quaternion.identity);
+				buttonObjects[j] = gameObject;
+				Transform parent = (!((UnityEngine.Object)buttonParent != (UnityEngine.Object)null)) ? base.transform : buttonParent;
+				gameObject.transform.SetParent(parent, false);
+				gameObject.SetActive(true);
+				gameObject.name = binfo.text + "Button";
+				LocText[] componentsInChildren = gameObject.GetComponentsInChildren<LocText>(true);
+				if (componentsInChildren != null)
+				{
+					LocText[] array = componentsInChildren;
+					foreach (LocText locText in array)
+					{
+						locText.text = ((!(locText.name == "Hotkey")) ? binfo.text : GameUtil.GetActionString(binfo.shortcutKey));
+						locText.color = ((!binfo.isEnabled) ? new Color(0.5f, 0.5f, 0.5f) : new Color(1f, 1f, 1f));
+					}
+				}
+				ToolTip componentInChildren = gameObject.GetComponentInChildren<ToolTip>();
+				if (binfo.toolTip != null && binfo.toolTip != "" && (UnityEngine.Object)componentInChildren != (UnityEngine.Object)null)
+				{
+					componentInChildren.toolTip = binfo.toolTip;
+				}
+				KButton button = gameObject.GetComponentInChildren<KButton>();
+				button.isInteractable = binfo.isEnabled;
+				if (binfo.popupOptions == null && binfo.onPopulatePopup == null)
+				{
+					UnityAction onClick = binfo.onClick;
+					System.Action value = delegate
+					{
+						onClick();
+						if (!keepMenuOpen && (UnityEngine.Object)this != (UnityEngine.Object)null)
+						{
+							Deactivate();
+						}
+					};
+					button.onClick += value;
+				}
+				else
+				{
+					button.onClick += delegate
+					{
+						SetupPopupMenu(binfo, button);
+					};
+				}
+				binfo.uibutton = button;
+				if (binfo.onHover == null)
+				{
+					continue;
+				}
+			}
+			Update();
 		}
 	}
 
@@ -117,6 +119,22 @@ public class BuildQueue : KButtonMenu
 			base.gameObject.SetActive(true);
 		}
 		RefreshButtons();
+		ConfigureJumpToOrderButtons();
+	}
+
+	public void ConfigureJumpToOrderButtons()
+	{
+		if (buttonObjects != null)
+		{
+			for (int i = 0; i < buttonObjects.Length; i++)
+			{
+				int index = i;
+				buttonObjects[i].gameObject.GetComponent<BuildQueueButton>().jumpToOrderButton.GetComponent<MultiToggle>().onClick = delegate
+				{
+					fabricator.SetCurrentUserOrderByIndex(index);
+				};
+			}
+		}
 	}
 
 	public void AddAvailableMaterialStorage(Storage storage)
@@ -129,7 +147,7 @@ public class BuildQueue : KButtonMenu
 
 	protected override void OnDeactivate()
 	{
-		for (int i = 0; i < 6; i++)
+		for (int i = 0; i < fabricator.MaxOrders; i++)
 		{
 			BuildQueueButton componentInChildren = buttonObjects[i].GetComponentInChildren<BuildQueueButton>();
 			if ((UnityEngine.Object)componentInChildren != (UnityEngine.Object)null)

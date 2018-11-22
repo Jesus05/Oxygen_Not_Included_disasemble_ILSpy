@@ -61,12 +61,6 @@ public class MoveToLocationTool : InterfaceTool
 		}
 	}
 
-	public override void OnRightClickUp(Vector3 cursor_pos)
-	{
-		base.OnRightClickUp(cursor_pos);
-		SelectTool.Instance.Activate();
-	}
-
 	private void RefreshColor()
 	{
 		Color c = new Color(0.91f, 0.21f, 0.2f);

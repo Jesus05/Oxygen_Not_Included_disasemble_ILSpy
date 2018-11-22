@@ -13,7 +13,6 @@ public class POIFacilityDoorConfig : IBuildingConfig
 		buildingDef.Floodable = false;
 		buildingDef.Invincible = true;
 		buildingDef.IsFoundation = true;
-		buildingDef.ViewMode = SimViewMode.None;
 		buildingDef.TileLayer = ObjectLayer.FoundationTile;
 		buildingDef.AudioCategory = "Metal";
 		buildingDef.PermittedRotations = PermittedRotations.R90;

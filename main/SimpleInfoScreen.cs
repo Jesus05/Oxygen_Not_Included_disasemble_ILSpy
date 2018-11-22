@@ -38,25 +38,29 @@ public class SimpleInfoScreen : TargetScreen
 
 		public Color color;
 
+		public TextStyleSetting style;
+
 		private FadeStage fadeStage;
 
-		private float fade;
+		private float fade = 0f;
 
-		private float fadeInTime;
+		private float fadeInTime = 0f;
 
 		private float fadeOutTime = 1.8f;
 
 		public Image GetImage => image;
 
-		public StatusItemEntry(StatusItemGroup.Entry item, StatusItemCategory category, GameObject status_item_prefab, Transform parent, TextStyleSetting tooltip_style, Color color, bool skip_fade, Action<StatusItemEntry> onDestroy)
+		public StatusItemEntry(StatusItemGroup.Entry item, StatusItemCategory category, GameObject status_item_prefab, Transform parent, TextStyleSetting tooltip_style, Color color, TextStyleSetting style, bool skip_fade, Action<StatusItemEntry> onDestroy)
 		{
 			this.item = item;
 			this.category = category;
 			tooltipStyle = tooltip_style;
 			this.onDestroy = onDestroy;
 			this.color = color;
+			this.style = style;
 			widget = Util.KInstantiateUI(status_item_prefab, parent.gameObject, false);
 			text = widget.GetComponentInChildren<LocText>(true);
+			SetTextStyleSetting.ApplyStyle(text, style);
 			toolTip = widget.GetComponentInChildren<ToolTip>(true);
 			image = widget.GetComponentInChildren<Image>(true);
 			item.SetIcon(image);
@@ -118,7 +122,7 @@ public class SimpleInfoScreen : TargetScreen
 		private string OnToolTip()
 		{
 			item.ShowToolTip(toolTip, tooltipStyle);
-			return string.Empty;
+			return "";
 		}
 
 		public void Refresh()
@@ -203,6 +207,10 @@ public class SimpleInfoScreen : TargetScreen
 	private Dictionary<string, GameObject> storageLabels = new Dictionary<string, GameObject>();
 
 	public TextStyleSetting ToolTipStyle_Property;
+
+	public TextStyleSetting StatusItemStyle_Main;
+
+	public TextStyleSetting StatusItemStyle_Other;
 
 	public Color statusItemTextColor_regular = Color.black;
 
@@ -348,7 +356,9 @@ public class SimpleInfoScreen : TargetScreen
 	private void DoAddStatusItem(StatusItemGroup.Entry status_item, StatusItemCategory category, bool show_immediate = false)
 	{
 		GameObject gameObject = statusItemsFolder;
-		StatusItemEntry statusItemEntry = new StatusItemEntry(color: (status_item.item.notificationType != NotificationType.BadMinor && status_item.item.notificationType != NotificationType.Bad && status_item.item.notificationType != NotificationType.DuplicantThreatening) ? statusItemTextColor_regular : statusItemTextColor_bad, item: status_item, category: category, status_item_prefab: StatusItemPrefab, parent: gameObject.transform, tooltip_style: ToolTipStyle_Property, skip_fade: show_immediate, onDestroy: OnStatusItemDestroy);
+		Color color = (status_item.item.notificationType != NotificationType.BadMinor && status_item.item.notificationType != NotificationType.Bad && status_item.item.notificationType != NotificationType.DuplicantThreatening) ? statusItemTextColor_regular : statusItemTextColor_bad;
+		TextStyleSetting style = (category != Db.Get().StatusItemCategories.Main) ? StatusItemStyle_Other : StatusItemStyle_Main;
+		StatusItemEntry statusItemEntry = new StatusItemEntry(status_item, category, StatusItemPrefab, gameObject.transform, ToolTipStyle_Property, color, style, show_immediate, OnStatusItemDestroy);
 		statusItemEntry.SetSprite(status_item.item.sprite);
 		if (category != null)
 		{
@@ -359,6 +369,10 @@ public class SimpleInfoScreen : TargetScreen
 				num = item.GetIndex();
 				item.Destroy(true);
 				oldStatusItems.Remove(item);
+			}
+			if (category == Db.Get().StatusItemCategories.Main)
+			{
+				num = 0;
 			}
 			if (num != -1)
 			{
@@ -449,8 +463,8 @@ public class SimpleInfoScreen : TargetScreen
 		});
 		attributeLabels.Clear();
 		vitalsPanel.gameObject.SetActive(amounts != null);
-		string text = string.Empty;
-		string text2 = string.Empty;
+		string text = "";
+		string text2 = "";
 		if (amounts != null)
 		{
 			vitalsContainer.selectedEntity = selectedTarget;
@@ -467,7 +481,7 @@ public class SimpleInfoScreen : TargetScreen
 		}
 		if ((bool)component)
 		{
-			text = string.Empty;
+			text = "";
 		}
 		else if ((bool)component6)
 		{
@@ -495,7 +509,7 @@ public class SimpleInfoScreen : TargetScreen
 		else if ((UnityEngine.Object)component2 != (UnityEngine.Object)null)
 		{
 			Element element = ElementLoader.FindElementByHash(component2.ElementID);
-			text = ((element == null) ? string.Empty : element.FullDescription(false));
+			text = ((element == null) ? "" : element.FullDescription(false));
 		}
 		List<Descriptor> gameObjectEffects = GameUtil.GetGameObjectEffects(target, true);
 		bool flag = gameObjectEffects.Count > 0;
@@ -509,7 +523,7 @@ public class SimpleInfoScreen : TargetScreen
 		descriptionContainer.flavour.text = text2;
 		infoPanel.gameObject.SetActive((UnityEngine.Object)component == (UnityEngine.Object)null);
 		descriptionContainer.gameObject.SetActive(infoPanel.activeSelf);
-		descriptionContainer.flavour.gameObject.SetActive(text2 != string.Empty && text2 != "\n");
+		descriptionContainer.flavour.gameObject.SetActive(text2 != "" && text2 != "\n");
 		if (vitalsPanel.gameObject.activeSelf && amounts.Count == 0)
 		{
 			vitalsPanel.gameObject.SetActive(false);
@@ -537,7 +551,7 @@ public class SimpleInfoScreen : TargetScreen
 					List<FertilityModifier> forTag = Db.Get().FertilityModifiers.GetForTag(breedingChance.egg);
 					if (forTag.Count > 0)
 					{
-						string text = string.Empty;
+						string text = "";
 						foreach (FertilityModifier item in forTag)
 						{
 							text += string.Format(UI.DETAILTABS.EGG_CHANCES.CHANCE_MOD_FORMAT, item.GetTooltip());

@@ -68,8 +68,9 @@ public class MaterialSelectionPanel : KScreen
 		ConsumeMouseScroll = true;
 		for (int i = 0; i < 3; i++)
 		{
-			MaterialSelector item = Util.KInstantiateUI<MaterialSelector>(MaterialSelectorTemplate, base.gameObject, false);
-			MaterialSelectors.Add(item);
+			MaterialSelector materialSelector = Util.KInstantiateUI<MaterialSelector>(MaterialSelectorTemplate, base.gameObject, false);
+			materialSelector.selectorIndex = i;
+			MaterialSelectors.Add(materialSelector);
 		}
 		MaterialSelectors[0].gameObject.SetActive(true);
 		MaterialSelectorTemplate.SetActive(false);
@@ -204,31 +205,31 @@ public class MaterialSelectionPanel : KScreen
 		SelectedElemInfo result = default(SelectedElemInfo);
 		result.element = null;
 		result.kgAvailable = 0f;
-		if ((UnityEngine.Object)WorldInventory.Instance == (UnityEngine.Object)null || ElementLoader.elements == null || ElementLoader.elements.Count == 0)
+		if (!((UnityEngine.Object)WorldInventory.Instance == (UnityEngine.Object)null) && ElementLoader.elements != null && ElementLoader.elements.Count != 0)
 		{
-			return result;
-		}
-		List<Element> value = null;
-		if (!elementsWithTag.TryGetValue(materialCategoryTag, out value))
-		{
-			value = new List<Element>();
-			foreach (Element element in ElementLoader.elements)
+			List<Element> value = null;
+			if (!elementsWithTag.TryGetValue(materialCategoryTag, out value))
 			{
-				if (element.tag == materialCategoryTag || element.HasTag(materialCategoryTag))
+				value = new List<Element>();
+				foreach (Element element in ElementLoader.elements)
 				{
-					value.Add(element);
+					if (element.tag == materialCategoryTag || element.HasTag(materialCategoryTag))
+					{
+						value.Add(element);
+					}
+				}
+				elementsWithTag[materialCategoryTag] = value;
+			}
+			foreach (Element item in value)
+			{
+				float amount = WorldInventory.Instance.GetAmount(item.tag);
+				if (amount > result.kgAvailable)
+				{
+					result.kgAvailable = amount;
+					result.element = item;
 				}
 			}
-			elementsWithTag[materialCategoryTag] = value;
-		}
-		foreach (Element item in value)
-		{
-			float amount = WorldInventory.Instance.GetAmount(item.tag);
-			if (amount > result.kgAvailable)
-			{
-				result.kgAvailable = amount;
-				result.element = item;
-			}
+			return result;
 		}
 		return result;
 	}

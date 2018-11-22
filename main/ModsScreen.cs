@@ -69,7 +69,7 @@ public class ModsScreen : KModalScreen, SteamUGCService.IUGCEventHandler
 
 	private List<RectTransform> displayedMods = new List<RectTransform>();
 
-	private bool triggerGameRestart;
+	private bool triggerGameRestart = false;
 
 	private static void OpenDetailsPage(string key)
 	{
@@ -205,7 +205,7 @@ public class ModsScreen : KModalScreen, SteamUGCService.IUGCEventHandler
 	public void OnUGCItemUnsubscribed(RemoteStoragePublishedFileUnsubscribed_t pCallback)
 	{
 		string asset_id = pCallback.m_nPublishedFileId.m_PublishedFileId.ToString();
-		ModInfo info = new ModInfo(ModInfo.Source.Steam, ModInfo.ModType.Mod, asset_id, "UNSUBSCRIBED", string.Empty, 0uL);
+		ModInfo info = new ModInfo(ModInfo.Source.Steam, ModInfo.ModType.Mod, asset_id, "UNSUBSCRIBED", "", 0uL);
 		Global.Instance.modManager.UninstallMod(info);
 	}
 

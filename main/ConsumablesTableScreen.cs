@@ -58,19 +58,19 @@ public class ConsumablesTableScreen : TableScreen
 					ConsumableInfoTableColumn[] quality_group_columns = list4.ToArray();
 					DividerColumn dividerColumn = new DividerColumn(delegate
 					{
-						if (quality_group_columns == null || quality_group_columns.Length == 0)
+						if (quality_group_columns != null && quality_group_columns.Length != 0)
 						{
-							return true;
-						}
-						ConsumableInfoTableColumn[] array = quality_group_columns;
-						foreach (ConsumableInfoTableColumn consumableInfoTableColumn in array)
-						{
-							if (consumableInfoTableColumn.isRevealed)
+							ConsumableInfoTableColumn[] array = quality_group_columns;
+							foreach (ConsumableInfoTableColumn consumableInfoTableColumn in array)
 							{
-								return true;
+								if (consumableInfoTableColumn.isRevealed)
+								{
+									return true;
+								}
 							}
+							return false;
 						}
-						return false;
+						return true;
 					}, "consumableScroller");
 					list3.Add(dividerColumn);
 					RegisterColumn(id, dividerColumn);
@@ -122,7 +122,7 @@ public class ConsumablesTableScreen : TableScreen
 		}
 		else
 		{
-			componentInChildren.text = ((!widgetRow.isDefault) ? UI.VITALSSCREEN.QUALITYOFLIFE_EXPECTATIONS.ToString() : string.Empty);
+			componentInChildren.text = ((!widgetRow.isDefault) ? UI.VITALSSCREEN.QUALITYOFLIFE_EXPECTATIONS.ToString() : "");
 		}
 	}
 
@@ -205,17 +205,17 @@ public class ConsumablesTableScreen : TableScreen
 				break;
 			}
 		}
-		if (flag3)
+		if (!flag3)
 		{
-			return ResultValues.Partial;
-		}
-		if (flag2)
-		{
+			if (!flag2)
+			{
+				if (!flag)
+				{
+					return ResultValues.Partial;
+				}
+				return ResultValues.False;
+			}
 			return ResultValues.True;
-		}
-		if (flag)
-		{
-			return ResultValues.False;
 		}
 		return ResultValues.Partial;
 	}
@@ -598,13 +598,13 @@ public class ConsumablesTableScreen : TableScreen
 
 	protected ConsumableInfoTableColumn AddConsumableInfoColumn(string id, IConsumableUIItem consumable_info, Action<MinionIdentity, GameObject> load_value_action, Func<MinionIdentity, GameObject, ResultValues> get_value_action, Action<GameObject> on_press_action, Action<GameObject, ResultValues> set_value_action, Comparison<MinionIdentity> sort_comparison, Action<MinionIdentity, GameObject, ToolTip> on_tooltip, Action<MinionIdentity, GameObject, ToolTip> on_sort_tooltip)
 	{
-		ConsumableInfoTableColumn consumableInfoTableColumn = new ConsumableInfoTableColumn(consumable_info, load_value_action, get_value_action, on_press_action, set_value_action, sort_comparison, on_tooltip, on_sort_tooltip, (GameObject widget_go) => string.Empty);
+		ConsumableInfoTableColumn consumableInfoTableColumn = new ConsumableInfoTableColumn(consumable_info, load_value_action, get_value_action, on_press_action, set_value_action, sort_comparison, on_tooltip, on_sort_tooltip, (GameObject widget_go) => "");
 		consumableInfoTableColumn.scrollerID = "consumableScroller";
-		if (RegisterColumn(id, consumableInfoTableColumn))
+		if (!RegisterColumn(id, consumableInfoTableColumn))
 		{
-			return consumableInfoTableColumn;
+			return null;
 		}
-		return null;
+		return consumableInfoTableColumn;
 	}
 
 	private void OnConsumableDiscovered(Tag tag)

@@ -220,12 +220,12 @@ public class ResearchEntry : KMonoBehaviour
 			}
 			targetTech = newTech;
 			researchName.text = targetTech.Name;
-			string text = string.Empty;
+			string text = "";
 			foreach (TechItem unlockedItem in targetTech.unlockedItems)
 			{
 				KPointerImage componentInChildrenOnly = GetFreeIcon().GetComponentInChildrenOnly<KPointerImage>();
 				componentInChildrenOnly.transform.parent.gameObject.SetActive(true);
-				if (text != string.Empty)
+				if (text != "")
 				{
 					text += ", ";
 				}

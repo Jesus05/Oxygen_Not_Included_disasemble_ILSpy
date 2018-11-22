@@ -24,7 +24,7 @@ public class PressureDoorConfig : IBuildingConfig
 		buildingDef.EnergyConsumptionWhenActive = 120f;
 		buildingDef.Entombable = false;
 		buildingDef.IsFoundation = true;
-		buildingDef.ViewMode = SimViewMode.PowerMap;
+		buildingDef.ViewMode = OverlayModes.Power.ID;
 		buildingDef.TileLayer = ObjectLayer.FoundationTile;
 		buildingDef.AudioCategory = "Metal";
 		buildingDef.PermittedRotations = PermittedRotations.R90;
@@ -55,6 +55,8 @@ public class PressureDoorConfig : IBuildingConfig
 		go.AddOrGet<AccessControl>();
 		go.AddOrGet<KBoxCollider2D>();
 		Prioritizable.AddRef(go);
+		CopyBuildingSettings copyBuildingSettings = go.AddOrGet<CopyBuildingSettings>();
+		copyBuildingSettings.copyGroupTag = GameTags.Door;
 		Workable workable = go.AddOrGet<Workable>();
 		workable.workTime = 5f;
 		GeneratedBuildings.RegisterLogicPorts(go, DoorConfig.INPUT_PORTS);

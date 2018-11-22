@@ -50,11 +50,11 @@ public class Operational : KMonoBehaviour
 
 	public bool IsOperationalType(Flag.Type type)
 	{
-		if (type == Flag.Type.Functional)
+		if (type != Flag.Type.Functional)
 		{
-			return IsFunctional;
+			return IsOperational;
 		}
-		return IsOperational;
+		return IsFunctional;
 	}
 
 	public void SetFlag(Flag flag, bool value)

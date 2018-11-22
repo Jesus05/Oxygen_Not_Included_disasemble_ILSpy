@@ -7,13 +7,13 @@ public class SleepChore : Chore<SleepChore.StatesInstance>
 {
 	public class StatesInstance : GameStateMachine<States, StatesInstance, SleepChore, object>.GameInstance
 	{
-		public bool hadPeacefulSleep;
+		public bool hadPeacefulSleep = false;
 
-		public bool hadNormalSleep;
+		public bool hadNormalSleep = false;
 
-		public bool hadBadSleep;
+		public bool hadBadSleep = false;
 
-		public bool hadTerribleSleep;
+		public bool hadTerribleSleep = false;
 
 		public int lastEvaluatedDay = -1;
 
@@ -21,7 +21,7 @@ public class SleepChore : Chore<SleepChore.StatesInstance>
 
 		public string stateChangeNoiseSource;
 
-		private GameObject locator;
+		private GameObject locator = null;
 
 		public StatesInstance(SleepChore master, GameObject sleeper, GameObject bed, bool bedIsLocator, bool isInterruptable)
 			: base(master)
@@ -131,7 +131,7 @@ public class SleepChore : Chore<SleepChore.StatesInstance>
 				.DoSleep(sleeper, bed, success, null)
 				.TriggerOnExit(GameHashes.SleepFinished);
 			sleep.uninterruptable.DoNothing();
-			sleep.normal.ParamTransition(isInterruptable, sleep.uninterruptable, (StatesInstance smi, bool p) => !p).ToggleCategoryStatusItem(Db.Get().StatusItemCategories.Sleep, Db.Get().DuplicantStatusItems.Sleeping, null).QueueAnim("working_loop", true, null)
+			sleep.normal.ParamTransition(isInterruptable, sleep.uninterruptable, GameStateMachine<States, StatesInstance, SleepChore, object>.IsFalse).ToggleCategoryStatusItem(Db.Get().StatusItemCategories.Sleep, Db.Get().DuplicantStatusItems.Sleeping, null).QueueAnim("working_loop", true, null)
 				.EventTransition(GameHashes.SleepDisturbed, sleep.interrupt, null);
 			sleep.interrupt.ToggleCategoryStatusItem(Db.Get().StatusItemCategories.Sleep, Db.Get().DuplicantStatusItems.SleepingInterrupted, null).QueueAnim("interrupt", false, null).OnAnimQueueComplete(sleep.interrupt_transition);
 			sleep.interrupt_transition.Enter(delegate(StatesInstance smi)
@@ -162,7 +162,7 @@ public class SleepChore : Chore<SleepChore.StatesInstance>
 	};
 
 	public SleepChore(ChoreType choreType, IStateMachineTarget target, GameObject bed, bool bedIsLocator, bool isInterruptable)
-		: base(choreType, target, target.GetComponent<ChoreProvider>(), false, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.emergency, 0, false, true, 0, (Tag[])null)
+		: base(choreType, target, target.GetComponent<ChoreProvider>(), false, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.emergency, 5, false, true, 0, (Tag[])null)
 	{
 		smi = new StatesInstance(this, target.gameObject, bed, bedIsLocator, isInterruptable);
 		if (isInterruptable)

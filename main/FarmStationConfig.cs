@@ -33,7 +33,7 @@ public class FarmStationConfig : IBuildingConfig
 		BuildLocationRule build_location_rule = BuildLocationRule.OnFloor;
 		EffectorValues tIER2 = NOISE_POLLUTION.NOISY.TIER1;
 		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, tIER, aLL_METALS, melting_point, build_location_rule, TUNING.BUILDINGS.DECOR.NONE, tIER2, 0.2f);
-		buildingDef.ViewMode = SimViewMode.Rooms;
+		buildingDef.ViewMode = OverlayModes.Rooms.ID;
 		buildingDef.Overheatable = false;
 		buildingDef.AudioCategory = "Metal";
 		buildingDef.AudioSize = "large";
@@ -86,6 +86,5 @@ public class FarmStationConfig : IBuildingConfig
 		RoomTracker roomTracker = go.AddOrGet<RoomTracker>();
 		roomTracker.requiredRoomType = Db.Get().RoomTypes.Farm.Id;
 		roomTracker.requirement = RoomTracker.Requirement.Required;
-		go.AddOrGetDef<PoweredActiveController.Def>();
 	}
 }

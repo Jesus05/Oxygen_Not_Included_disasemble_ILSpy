@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class HealthBar : ProgressBar
 {
-	private float showTimer;
+	private float showTimer = 0f;
 
 	private float maxShowTime = 10f;
 
@@ -50,7 +50,7 @@ public class HealthBar : ProgressBar
 	{
 		if (autoHide)
 		{
-			if ((SimViewMode)data == SimViewMode.None)
+			if ((HashedString)data == OverlayModes.None.ID)
 			{
 				if (!base.gameObject.activeSelf && ShouldShow)
 				{

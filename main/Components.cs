@@ -112,7 +112,7 @@ public class Components
 
 	public static Cmps<MinionIdentity> MinionIdentities = new Cmps<MinionIdentity>();
 
-	public static Cmps<MinionIdentity> StoredMinionIdentities = new Cmps<MinionIdentity>();
+	public static Cmps<StoredMinionIdentity> StoredMinionIdentities = new Cmps<StoredMinionIdentity>();
 
 	public static Cmps<Sleepable> Sleepables = new Cmps<Sleepable>();
 
@@ -193,4 +193,8 @@ public class Components
 	public static Cmps<AttachableBuilding> AttachableBuildings = new Cmps<AttachableBuilding>();
 
 	public static Cmps<BuildingAttachPoint> BuildingAttachPoints = new Cmps<BuildingAttachPoint>();
+
+	public static Cmps<MinionAssignablesProxy> MinionAssignablesProxy = new Cmps<MinionAssignablesProxy>();
+
+	public static Cmps<ComplexFabricator> ComplexFabricators = new Cmps<ComplexFabricator>();
 }

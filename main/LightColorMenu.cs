@@ -45,7 +45,7 @@ public class LightColorMenu : KMonoBehaviour
 					Game.Instance.userMenu.AddButton(base.gameObject, new KIconButtonMenu.ButtonInfo(lightColors[i].name, lightColors[i].name, delegate
 					{
 						SetColor(new_color);
-					}, Action.NumActions, null, null, null, string.Empty, true), 1f);
+					}, Action.NumActions, null, null, null, "", true), 1f);
 				}
 			}
 		}

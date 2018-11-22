@@ -4,11 +4,11 @@ public class AlgaeHabitatEmpty : Workable
 {
 	private static readonly HashedString[] CLEAN_ANIMS = new HashedString[2]
 	{
-		"unclog_pre",
-		"unclog_loop"
+		"sponge_pre",
+		"sponge_loop"
 	};
 
-	private static readonly HashedString PST_ANIM = new HashedString("unclog_pst");
+	private static readonly HashedString PST_ANIM = new HashedString("sponge_pst");
 
 	protected override void OnPrefabInit()
 	{

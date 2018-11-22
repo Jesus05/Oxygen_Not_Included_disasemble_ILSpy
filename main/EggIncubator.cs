@@ -34,6 +34,7 @@ public class EggIncubator : SingleEntityReceptacle, ISaveLoadable, ISim1000ms
 	protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
+		autoReplaceEntity = true;
 		statusItemNeed = Db.Get().BuildingStatusItems.NeedEgg;
 		statusItemNoneAvailable = Db.Get().BuildingStatusItems.NoAvailableEgg;
 		statusItemAwaitingDelivery = Db.Get().BuildingStatusItems.AwaitingEggDelivery;
@@ -111,8 +112,21 @@ public class EggIncubator : SingleEntityReceptacle, ISaveLoadable, ISim1000ms
 		if ((bool)base.occupyingObject && !storage.items.Contains(base.occupyingObject))
 		{
 			UnsubscribeFromOccupant();
-			base.occupyingObject = null;
 			ClearOccupant();
+		}
+	}
+
+	protected override void ClearOccupant()
+	{
+		bool flag = false;
+		if ((Object)base.occupyingObject != (Object)null)
+		{
+			flag = !base.occupyingObject.HasTag(GameTags.Egg);
+		}
+		base.ClearOccupant();
+		if (autoReplaceEntity && flag && requestedEntityTag.IsValid)
+		{
+			CreateOrder(requestedEntityTag);
 		}
 	}
 
@@ -124,7 +138,7 @@ public class EggIncubator : SingleEntityReceptacle, ISaveLoadable, ISim1000ms
 		KSelectable component2 = base.occupyingObject.GetComponent<KSelectable>();
 		if ((Object)component2 != (Object)null)
 		{
-			component2.enabled = true;
+			component2.IsSelectable = true;
 		}
 	}
 
@@ -177,7 +191,7 @@ public class EggIncubator : SingleEntityReceptacle, ISaveLoadable, ISim1000ms
 		{
 			if (chore == null)
 			{
-				chore = new WorkChore<EggIncubatorWorkable>(Db.Get().ChoreTypes.EggSing, workable, null, null, true, null, null, null, true, null, false, true, null, false, true, true, PriorityScreen.PriorityClass.basic, 0, false);
+				chore = new WorkChore<EggIncubatorWorkable>(Db.Get().ChoreTypes.EggSing, workable, null, null, true, null, null, null, true, null, false, true, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, false);
 			}
 		}
 		else if (chore != null)
@@ -189,15 +203,15 @@ public class EggIncubator : SingleEntityReceptacle, ISaveLoadable, ISim1000ms
 
 	private bool EggNeedsAttention()
 	{
-		if (!(bool)base.Occupant)
+		if ((bool)base.Occupant)
 		{
+			IncubationMonitor.Instance sMI = base.Occupant.GetSMI<IncubationMonitor.Instance>();
+			if (sMI != null)
+			{
+				return !sMI.HasSongBuff();
+			}
 			return false;
 		}
-		IncubationMonitor.Instance sMI = base.Occupant.GetSMI<IncubationMonitor.Instance>();
-		if (sMI == null)
-		{
-			return false;
-		}
-		return !sMI.HasSongBuff();
+		return false;
 	}
 }

@@ -6,17 +6,13 @@ public class MushBarConfig : IEntityConfig
 {
 	public const string ID = "MushBar";
 
+	public static ComplexRecipe recipe;
+
 	public GameObject CreatePrefab()
 	{
 		GameObject template = EntityTemplates.CreateLooseEntity("MushBar", ITEMS.FOOD.MUSHBAR.NAME, ITEMS.FOOD.MUSHBAR.DESC, 1f, false, Assets.GetAnim("mushbar_kanim"), "object", Grid.SceneLayer.Front, EntityTemplates.CollisionShape.RECTANGLE, 0.8f, 0.4f, true, SimHashes.Creature, null);
 		template = EntityTemplates.ExtendEntityToFood(template, FOOD.FOOD_TYPES.MUSHBAR);
-		string prefabId = "MushBar";
-		string recipeDescription = ITEMS.FOOD.MUSHBAR.RECIPEDESC;
-		Recipe recipe = new Recipe(prefabId, 1f, (SimHashes)0, null, recipeDescription, 1);
-		recipe.AddIngredient(new Recipe.Ingredient("Dirt", 75f));
-		recipe.AddIngredient(new Recipe.Ingredient("Water", 75f));
-		recipe.FabricationVisualizer = CreateFabricationVisualizer(template);
-		recipe.SetFabricator("MicrobeMusher", FOOD.RECIPES.STANDARD_COOK_TIME);
+		ComplexRecipeManager.Get().GetRecipe(recipe.id).FabricationVisualizer = CreateFabricationVisualizer(template);
 		return template;
 	}
 
@@ -43,6 +39,7 @@ public class MushBarConfig : IEntityConfig
 		kBatchedAnimTracker.symbol = new HashedString("meter_ration");
 		kBatchedAnimTracker.offset = Vector3.zero;
 		kBatchedAnimTracker.skipInitialDisable = true;
+		Object.DontDestroyOnLoad(gameObject);
 		return gameObject;
 	}
 }

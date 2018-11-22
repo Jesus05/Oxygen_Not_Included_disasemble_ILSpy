@@ -82,15 +82,15 @@ namespace Klei.AI.DiseaseGrowthRules
 		{
 			int num = (int)(minCountPerKG * kg);
 			int num2 = (int)(maxCountPerKG * kg);
-			if (count < num)
+			if (count >= num)
 			{
+				if (count >= num2)
+				{
+					return overPopulationHalfLife;
+				}
 				return populationHalfLife;
 			}
-			if (count < num2)
-			{
-				return populationHalfLife;
-			}
-			return overPopulationHalfLife;
+			return populationHalfLife;
 		}
 	}
 }

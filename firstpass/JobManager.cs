@@ -1,8 +1,10 @@
+#define ENABLE_PROFILER
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using UnityEngine;
+using UnityEngine.Profiling;
 
 public class JobManager
 {
@@ -19,13 +21,13 @@ public class JobManager
 		[CompilerGenerated]
 		private static ParameterizedThreadStart _003C_003Ef__mg_0024cache0;
 
-		public WorkerThread(Semaphore semaphore, JobManager job_manager)
+		public WorkerThread(Semaphore semaphore, JobManager job_manager, string name)
 		{
 			this.semaphore = semaphore;
 			thread = new Thread(ThreadMain, 131072);
 			Util.ApplyInvariantCultureToThread(thread);
 			thread.Priority = System.Threading.ThreadPriority.AboveNormal;
-			thread.Name = "JobManagerWorkerThread";
+			thread.Name = name;
 			jobManager = job_manager;
 			exceptions = new List<Exception>();
 			thread.Start(this);
@@ -33,6 +35,7 @@ public class JobManager
 
 		public void Run()
 		{
+			Profiler.BeginThreadProfiling("KJobManager", thread.Name);
 			while (true)
 			{
 				semaphore.WaitOne();
@@ -42,8 +45,10 @@ public class JobManager
 				}
 				try
 				{
-					while (jobManager.DoNextWorkItem())
+					bool flag = true;
+					while (flag)
 					{
+						flag = jobManager.DoNextWorkItem();
 					}
 				}
 				catch (Exception item)
@@ -53,6 +58,7 @@ public class JobManager
 				}
 				jobManager.DecrementActiveWorkerThreadCount();
 			}
+			Profiler.EndThreadProfiling();
 		}
 
 		public void PrintExceptions()
@@ -88,7 +94,7 @@ public class JobManager
 
 	private ManualResetEvent manualResetEvent = new ManualResetEvent(false);
 
-	private static bool runSingleThreaded;
+	private static bool runSingleThreaded = false;
 
 	public bool isShuttingDown
 	{
@@ -102,19 +108,19 @@ public class JobManager
 		semaphore = new Semaphore(0, num);
 		for (int i = 0; i < num; i++)
 		{
-			threads.Add(new WorkerThread(semaphore, this));
+			threads.Add(new WorkerThread(semaphore, this, $"KWorker{i}"));
 		}
 	}
 
 	public bool DoNextWorkItem()
 	{
 		int num = Interlocked.Increment(ref nextWorkIndex);
-		if (num < workItems.Count)
+		if (num >= workItems.Count)
 		{
-			workItems.InternalDoWorkItem(num);
-			return true;
+			return false;
 		}
-		return false;
+		workItems.InternalDoWorkItem(num);
+		return true;
 	}
 
 	public void Cleanup()

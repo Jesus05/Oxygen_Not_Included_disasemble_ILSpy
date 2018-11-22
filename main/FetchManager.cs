@@ -38,23 +38,23 @@ public class FetchManager : KMonoBehaviour, ISim1000ms
 		public int Compare(Pickup a, Pickup b)
 		{
 			int num = a.tagBitsHash - b.tagBitsHash;
-			if (num == 0)
+			if (num != 0)
 			{
-				if (a.masterPriority != b.masterPriority)
+				return num;
+			}
+			if (a.masterPriority == b.masterPriority)
+			{
+				if (a.PathCost == b.PathCost)
 				{
-					return b.masterPriority - a.masterPriority;
-				}
-				if (a.PathCost != b.PathCost)
-				{
-					return a.PathCost - b.PathCost;
-				}
-				if (a.foodQuality != b.foodQuality)
-				{
+					if (a.foodQuality == b.foodQuality)
+					{
+						return b.freshness - a.freshness;
+					}
 					return b.foodQuality - a.foodQuality;
 				}
-				return b.freshness - a.freshness;
+				return a.PathCost - b.PathCost;
 			}
-			return num;
+			return b.masterPriority - a.masterPriority;
 		}
 	}
 
@@ -62,15 +62,15 @@ public class FetchManager : KMonoBehaviour, ISim1000ms
 	{
 		public int Compare(Pickup a, Pickup b)
 		{
-			if (a.PathCost != b.PathCost)
+			if (a.PathCost == b.PathCost)
 			{
-				return a.PathCost - b.PathCost;
-			}
-			if (a.foodQuality != b.foodQuality)
-			{
+				if (a.foodQuality == b.foodQuality)
+				{
+					return b.freshness - a.freshness;
+				}
 				return b.foodQuality - a.foodQuality;
 			}
-			return b.freshness - a.freshness;
+			return a.PathCost - b.PathCost;
 		}
 	}
 
@@ -102,13 +102,13 @@ public class FetchManager : KMonoBehaviour, ISim1000ms
 
 		public HandleVector<int>.Handle AddPickupable(Pickupable pickupable)
 		{
-			DebugUtil.DevAssert(true, "Assert!", string.Empty, string.Empty);
+			DebugUtil.DevAssert(true);
 			byte b = 5;
 			Edible component = pickupable.GetComponent<Edible>();
 			if ((Object)component != (Object)null)
 			{
 				b = (byte)component.GetQuality();
-				DebugUtil.DevAssert(b == b, "Assert!", string.Empty, string.Empty);
+				DebugUtil.DevAssert(b == b);
 			}
 			byte masterPriority = 0;
 			Prioritizable prioritizable = null;
@@ -423,54 +423,54 @@ public class FetchManager : KMonoBehaviour, ISim1000ms
 
 	public static bool IsFetchablePickup(KPrefabID pickup_id, Storage source, float pickup_unreserved_amount, TagBits tag_bits, TagBits required_tags, TagBits forbid_tags, Storage destination)
 	{
-		if ((Object)pickup_id == (Object)null)
+		if (!((Object)pickup_id == (Object)null))
 		{
-			return false;
-		}
-		TagBits tagBits = pickup_id.GetTagBits();
-		if (!tagBits.HasAny(tag_bits))
-		{
-			return false;
-		}
-		if (pickup_unreserved_amount <= 0f)
-		{
-			return false;
-		}
-		if (!tagBits.HasAll(required_tags))
-		{
-			return false;
-		}
-		if (tagBits.HasAny(forbid_tags))
-		{
-			return false;
-		}
-		if ((Object)source != (Object)null)
-		{
-			if (destination.ShouldOnlyTransferFromLowerPriority)
+			TagBits tagBits = pickup_id.GetTagBits();
+			if (tagBits.HasAny(tag_bits))
 			{
-				int num = 10;
-				if ((Object)destination.prioritizable != (Object)null)
+				if (!(pickup_unreserved_amount <= 0f))
 				{
-					PrioritySetting masterPriority = destination.prioritizable.GetMasterPriority();
-					num = masterPriority.priority_value;
-				}
-				int num2 = 10;
-				if ((Object)source.prioritizable != (Object)null)
-				{
-					PrioritySetting masterPriority2 = source.prioritizable.GetMasterPriority();
-					num2 = masterPriority2.priority_value;
-				}
-				if (num <= num2)
-				{
+					if (tagBits.HasAll(required_tags))
+					{
+						if (!tagBits.HasAny(forbid_tags))
+						{
+							if ((Object)source != (Object)null)
+							{
+								if (destination.ShouldOnlyTransferFromLowerPriority)
+								{
+									int num = 10;
+									if ((Object)destination.prioritizable != (Object)null)
+									{
+										PrioritySetting masterPriority = destination.prioritizable.GetMasterPriority();
+										num = masterPriority.priority_value;
+									}
+									int num2 = 10;
+									if ((Object)source.prioritizable != (Object)null)
+									{
+										PrioritySetting masterPriority2 = source.prioritizable.GetMasterPriority();
+										num2 = masterPriority2.priority_value;
+									}
+									if (num <= num2)
+									{
+										return false;
+									}
+								}
+								if (destination.storageNetworkID != -1 && destination.storageNetworkID == source.storageNetworkID)
+								{
+									return false;
+								}
+							}
+							return true;
+						}
+						return false;
+					}
 					return false;
 				}
-			}
-			if (destination.storageNetworkID != -1 && destination.storageNetworkID == source.storageNetworkID)
-			{
 				return false;
 			}
+			return false;
 		}
-		return true;
+		return false;
 	}
 
 	public Pickupable FindFetchTarget(Worker worker, Storage destination, TagBits tag_bits, TagBits required_tags, TagBits forbid_tags, float required_amount)

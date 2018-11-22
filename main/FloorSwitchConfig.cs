@@ -1,4 +1,3 @@
-using OverlayModes;
 using TUNING;
 using UnityEngine;
 
@@ -24,7 +23,7 @@ public class FloorSwitchConfig : IBuildingConfig
 		buildingDef.Overheatable = false;
 		buildingDef.Floodable = false;
 		buildingDef.Entombable = false;
-		buildingDef.ViewMode = SimViewMode.Logic;
+		buildingDef.ViewMode = OverlayModes.Logic.ID;
 		buildingDef.TileLayer = ObjectLayer.FoundationTile;
 		buildingDef.ReplacementLayer = ObjectLayer.ReplacementTile;
 		buildingDef.SceneLayer = Grid.SceneLayer.TileMain;
@@ -32,7 +31,7 @@ public class FloorSwitchConfig : IBuildingConfig
 		buildingDef.AudioCategory = "Metal";
 		buildingDef.AudioSize = "small";
 		buildingDef.BaseTimeUntilRepair = -1f;
-		GeneratedBuildings.RegisterWithOverlay(Logic.HighlightItemIDs, "FloorSwitch");
+		GeneratedBuildings.RegisterWithOverlay(OverlayModes.Logic.HighlightItemIDs, "FloorSwitch");
 		return buildingDef;
 	}
 

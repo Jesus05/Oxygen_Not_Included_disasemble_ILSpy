@@ -46,7 +46,7 @@ public class ReactEmoteChore : Chore<ReactEmoteChore.StatesInstance>
 	private Func<StatusItem> getStatusItem;
 
 	public ReactEmoteChore(IStateMachineTarget target, ChoreType chore_type, EmoteReactable reactable, HashedString emote_kanim, HashedString[] emote_anims, KAnim.PlayMode play_mode, Func<StatusItem> get_status_item)
-		: base(chore_type, target, target.GetComponent<ChoreProvider>(), false, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.basic, 0, false, true, 0, (Tag[])null)
+		: base(chore_type, target, target.GetComponent<ChoreProvider>(), false, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.basic, 5, false, true, 0, (Tag[])null)
 	{
 		AddPrecondition(ChorePreconditions.instance.IsMoving, null);
 		AddPrecondition(ChorePreconditions.instance.IsOffLadder, null);
@@ -63,10 +63,10 @@ public class ReactEmoteChore : Chore<ReactEmoteChore.StatesInstance>
 
 	public override string ToString()
 	{
-		if (smi.emoteKAnim.IsValid)
+		if (!smi.emoteKAnim.IsValid)
 		{
-			return "ReactEmoteChore<" + smi.emoteKAnim + ">";
+			return "ReactEmoteChore<" + smi.emoteAnims[0] + ">";
 		}
-		return "ReactEmoteChore<" + smi.emoteAnims[0] + ">";
+		return "ReactEmoteChore<" + smi.emoteKAnim + ">";
 	}
 }

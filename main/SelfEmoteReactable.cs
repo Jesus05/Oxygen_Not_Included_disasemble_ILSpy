@@ -11,20 +11,20 @@ public class SelfEmoteReactable : EmoteReactable
 
 	public override bool InternalCanBegin(GameObject reactor, Navigator.ActiveTransition transition)
 	{
-		if ((Object)reactor == (Object)null)
+		if (!((Object)reactor == (Object)null))
 		{
+			Navigator component = reactor.GetComponent<Navigator>();
+			if (!((Object)component == (Object)null))
+			{
+				if (component.IsMoving())
+				{
+					return (Object)gameObject == (Object)reactor;
+				}
+				return false;
+			}
 			return false;
 		}
-		Navigator component = reactor.GetComponent<Navigator>();
-		if ((Object)component == (Object)null)
-		{
-			return false;
-		}
-		if (!component.IsMoving())
-		{
-			return false;
-		}
-		return (Object)gameObject == (Object)reactor;
+		return false;
 	}
 
 	public void PairEmote(EmoteChore emote)

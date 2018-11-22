@@ -46,7 +46,7 @@ public class Tech : Resource
 
 	public string CostString(ResearchTypes types)
 	{
-		string text = string.Empty;
+		string text = "";
 		foreach (KeyValuePair<string, float> item in costsByResearchTypeID)
 		{
 			text += $"{types.GetResearchType(item.Key).name.ToString()}:{item.Value.ToString()}";
@@ -57,11 +57,11 @@ public class Tech : Resource
 
 	public bool IsComplete()
 	{
-		if ((Object)Research.Instance != (Object)null)
+		if (!((Object)Research.Instance != (Object)null))
 		{
-			return Research.Instance.Get(this)?.IsComplete() ?? false;
+			return false;
 		}
-		return false;
+		return Research.Instance.Get(this)?.IsComplete() ?? false;
 	}
 
 	public bool ArePrerequisitesComplete()

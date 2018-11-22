@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -58,9 +59,9 @@ public class StatusItem : Resource
 
 	public bool allowMultiples;
 
-	public Func<SimViewMode, object, bool> conditionalOverlayCallback;
+	public Func<HashedString, object, bool> conditionalOverlayCallback;
 
-	public SimViewMode render_overlay;
+	public HashedString render_overlay;
 
 	public int status_overlays;
 
@@ -70,6 +71,74 @@ public class StatusItem : Resource
 
 	public const int ALL_OVERLAYS = 63486;
 
+	private static Dictionary<HashedString, StatusItemOverlays> overlayBitfieldMap = new Dictionary<HashedString, StatusItemOverlays>
+	{
+		{
+			OverlayModes.None.ID,
+			StatusItemOverlays.None
+		},
+		{
+			OverlayModes.Power.ID,
+			StatusItemOverlays.PowerMap
+		},
+		{
+			OverlayModes.Temperature.ID,
+			StatusItemOverlays.Temperature
+		},
+		{
+			OverlayModes.HeatFlow.ID,
+			StatusItemOverlays.ThermalComfort
+		},
+		{
+			OverlayModes.ThermalConductivity.ID,
+			StatusItemOverlays.ThermalComfort
+		},
+		{
+			OverlayModes.Light.ID,
+			StatusItemOverlays.Light
+		},
+		{
+			OverlayModes.LiquidConduits.ID,
+			StatusItemOverlays.LiquidPlumbing
+		},
+		{
+			OverlayModes.GasConduits.ID,
+			StatusItemOverlays.GasPlumbing
+		},
+		{
+			OverlayModes.SolidConveyor.ID,
+			StatusItemOverlays.Conveyor
+		},
+		{
+			OverlayModes.Decor.ID,
+			StatusItemOverlays.Decor
+		},
+		{
+			OverlayModes.Disease.ID,
+			StatusItemOverlays.Pathogens
+		},
+		{
+			OverlayModes.Crop.ID,
+			StatusItemOverlays.Farming
+		},
+		{
+			OverlayModes.Rooms.ID,
+			StatusItemOverlays.Rooms
+		},
+		{
+			OverlayModes.Suit.ID,
+			StatusItemOverlays.Suits
+		},
+		{
+			OverlayModes.Logic.ID,
+			StatusItemOverlays.Logic
+		},
+		{
+			OverlayModes.Oxygen.ID,
+			StatusItemOverlays.None
+		}
+	};
+
 	private StatusItem(string id, string composed_prefix)
 		: base(id, Strings.Get(composed_prefix + ".NAME"))
 	{
@@ -77,7 +146,7 @@ public class StatusItem : Resource
 		tooltipText = Strings.Get(composed_prefix + ".TOOLTIP");
 	}
 
-	public StatusItem(string id, string prefix, string icon, IconType icon_type, NotificationType notification_type, bool allow_multiples, SimViewMode render_overlay, bool showWorldIcon = true, int status_overlays = 63486)
+	public StatusItem(string id, string prefix, string icon, IconType icon_type, NotificationType notification_type, bool allow_multiples, HashedString render_overlay, bool showWorldIcon = true, int status_overlays = 63486)
 		: this(id, "STRINGS." + prefix + ".STATUSITEMS." + id.ToUpper())
 	{
 		switch (icon_type)
@@ -103,7 +172,7 @@ public class StatusItem : Resource
 		}
 	}
 
-	public StatusItem(string id, string name, string tooltip, string icon, IconType icon_type, NotificationType notification_type, bool allow_multiples, SimViewMode render_overlay, int status_overlays = 63486)
+	public StatusItem(string id, string name, string tooltip, string icon, IconType icon_type, NotificationType notification_type, bool allow_multiples, HashedString render_overlay, int status_overlays = 63486)
 		: base(id, name)
 	{
 		switch (icon_type)
@@ -155,7 +224,7 @@ public class StatusItem : Resource
 		}
 		else
 		{
-			DebugUtil.Assert(composedPrefix != null, "When adding a notification, either set the status prefix or specify strings!", string.Empty, string.Empty);
+			DebugUtil.Assert(composedPrefix != null, "When adding a notification, either set the status prefix or specify strings!");
 			notificationText = Strings.Get(composedPrefix + ".NOTIFICATION_NAME");
 		}
 		if (notification_tooltip != null)
@@ -164,7 +233,7 @@ public class StatusItem : Resource
 		}
 		else
 		{
-			DebugUtil.Assert(composedPrefix != null, "When adding a notification, either set the status prefix or specify strings!", string.Empty, string.Empty);
+			DebugUtil.Assert(composedPrefix != null, "When adding a notification, either set the status prefix or specify strings!");
 			notificationTooltipText = Strings.Get(composedPrefix + ".NOTIFICATION_TOOLTIP");
 		}
 	}
@@ -225,9 +294,9 @@ public class StatusItem : Resource
 		}
 	}
 
-	public bool UseConditionalCallback(SimViewMode overlay, Transform transform)
+	public bool UseConditionalCallback(HashedString overlay, Transform transform)
 	{
-		return overlay != 0 && conditionalOverlayCallback != null && conditionalOverlayCallback(overlay, transform);
+		return overlay != OverlayModes.None.ID && conditionalOverlayCallback != null && conditionalOverlayCallback(overlay, transform);
 	}
 
 	public StatusItem SetResolveStringCallback(Func<string, object, string> cb)
@@ -236,61 +305,14 @@ public class StatusItem : Resource
 		return this;
 	}
 
-	public static StatusItemOverlays GetStatusItemOverlayBySimViewMode(SimViewMode mode)
+	public static StatusItemOverlays GetStatusItemOverlayBySimViewMode(HashedString mode)
 	{
-		StatusItemOverlays result = StatusItemOverlays.None;
-		switch (mode)
+		if (overlayBitfieldMap.TryGetValue(mode, out StatusItemOverlays value))
 		{
-		case SimViewMode.None:
-			result = StatusItemOverlays.None;
-			break;
-		case SimViewMode.PowerMap:
-			result = StatusItemOverlays.PowerMap;
-			break;
-		case SimViewMode.TemperatureMap:
-			result = StatusItemOverlays.Temperature;
-			break;
-		case SimViewMode.HeatFlow:
-		case SimViewMode.ThermalConductivity:
-			result = StatusItemOverlays.ThermalComfort;
-			break;
-		case SimViewMode.Light:
-			result = StatusItemOverlays.Light;
-			break;
-		case SimViewMode.LiquidVentMap:
-			result = StatusItemOverlays.LiquidPlumbing;
-			break;
-		case SimViewMode.GasVentMap:
-			result = StatusItemOverlays.GasPlumbing;
-			break;
-		case SimViewMode.Decor:
-			result = StatusItemOverlays.Decor;
-			break;
-		case SimViewMode.Disease:
-			result = StatusItemOverlays.Pathogens;
-			break;
-		case SimViewMode.Crop:
-			result = StatusItemOverlays.Farming;
-			break;
-		case SimViewMode.Rooms:
-			result = StatusItemOverlays.Rooms;
-			break;
-		case SimViewMode.SuitRequiredMap:
-			result = StatusItemOverlays.Suits;
-			break;
-		case SimViewMode.Logic:
-			result = StatusItemOverlays.Logic;
-			break;
-		case SimViewMode.OxygenMap:
-			result = StatusItemOverlays.None;
-			break;
-		case SimViewMode.SolidConveyorMap:
-			result = StatusItemOverlays.Conveyor;
-			break;
-		default:
-			Debug.LogWarning("ViewMode " + mode + " has no StatusItemOverlay value", null);
-			break;
+			return value;
 		}
-		return result;
+		Debug.LogWarning("ViewMode " + mode + " has no StatusItemOverlay value", null);
+		value = StatusItemOverlays.None;
+		return value;
 	}
 }

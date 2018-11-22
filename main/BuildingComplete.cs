@@ -19,14 +19,9 @@ public class BuildingComplete : Building
 
 	private bool hasSpawnedKComponents;
 
-	private bool wasReplaced;
+	private bool wasReplaced = false;
 
 	public List<AttributeModifier> regionModifiers = new List<AttributeModifier>();
-
-	private static readonly EventSystem.IntraObjectHandler<BuildingComplete> OnSelectObjectDelegate = new EventSystem.IntraObjectHandler<BuildingComplete>(delegate(BuildingComplete component, object data)
-	{
-		component.OnSelectObject(data);
-	});
 
 	private static readonly EventSystem.IntraObjectHandler<BuildingComplete> OnObjectReplacedDelegate = new EventSystem.IntraObjectHandler<BuildingComplete>(delegate(BuildingComplete component, object data)
 	{
@@ -63,17 +58,7 @@ public class BuildingComplete : Building
 		{
 			GameComps.StructureTemperatures.Add(base.gameObject);
 		}
-		Subscribe(-1503271301, OnSelectObjectDelegate);
 		Subscribe(1606648047, OnObjectReplacedDelegate);
-	}
-
-	private void OnSelectObject(object data)
-	{
-		if (Def.SelectMode != 0)
-		{
-			GameHashes hash = (!(bool)data) ? GameHashes.DisableOverlay : GameHashes.EnableOverlay;
-			Game.Instance.gameObject.Trigger((int)hash, Def.SelectMode);
-		}
 	}
 
 	private void OnObjectReplaced(object data)

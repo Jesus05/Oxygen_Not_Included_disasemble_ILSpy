@@ -120,8 +120,9 @@ namespace TMPro
 				return ch;
 			}
 			}
-			IL_001b:
-			return '\0';
+			IL_001c:
+			char c = '\0';
+			return c;
 		}
 	}
 }

@@ -67,19 +67,19 @@ public class KGlobalAnimParser
 	{
 		string fullName = Directory.GetParent(path).FullName;
 		HashedString key = new HashedString(fullName);
-		if (Get().commandFiles.ContainsKey(key))
+		if (!Get().commandFiles.ContainsKey(key))
 		{
-			return instance.commandFiles[key];
-		}
-		string text = Path.Combine(fullName, ANIM_COMMAND_FILE);
-		if (File.Exists(text))
-		{
-			AnimCommandFile animCommandFile = YamlIO<AnimCommandFile>.LoadFile(text);
+			string text = Path.Combine(fullName, ANIM_COMMAND_FILE);
+			if (!File.Exists(text))
+			{
+				return null;
+			}
+			AnimCommandFile animCommandFile = YamlIO<AnimCommandFile>.LoadFile(text, null);
 			animCommandFile.directory = "Assets/anim/" + Directory.GetParent(path).Name;
 			instance.commandFiles[key] = animCommandFile;
 			return animCommandFile;
 		}
-		return null;
+		return instance.commandFiles[key];
 	}
 
 	public static void ParseAnimData(KBatchGroupData data, HashedString fileNameHash, FastReader reader, KAnimFileData animFile)

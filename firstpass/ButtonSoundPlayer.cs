@@ -21,9 +21,9 @@ public class ButtonSoundPlayer : WidgetSoundPlayer
 
 	public WidgetSoundEvent[] button_widget_sound_events = new WidgetSoundEvent[3]
 	{
-		new WidgetSoundEvent(0, "On Use", string.Empty, true),
-		new WidgetSoundEvent(1, "On Pointer Enter", string.Empty, true),
-		new WidgetSoundEvent(2, "On Use Rejected", string.Empty, true)
+		new WidgetSoundEvent(0, "On Use", "", true),
+		new WidgetSoundEvent(1, "On Pointer Enter", "", true),
+		new WidgetSoundEvent(2, "On Use Rejected", "", true)
 	};
 
 	public override string GetDefaultPath(int idx)

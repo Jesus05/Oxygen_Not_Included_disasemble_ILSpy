@@ -24,7 +24,6 @@ public class SpecialCargoBayConfig : IBuildingConfig
 		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, cARGO_MASS, construction_materials, melting_point, build_location_rule, BUILDINGS.DECOR.NONE, tIER, 0.2f);
 		BuildingTemplates.CreateRocketBuildingDef(buildingDef);
 		buildingDef.SceneLayer = Grid.SceneLayer.BuildingFront;
-		buildingDef.ViewMode = SimViewMode.None;
 		buildingDef.OverheatTemperature = 2273.15f;
 		buildingDef.Floodable = false;
 		buildingDef.AttachmentSlotTag = GameTags.Rocket;

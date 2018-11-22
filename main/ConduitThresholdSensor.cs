@@ -6,11 +6,19 @@ public abstract class ConduitThresholdSensor : ConduitSensor
 {
 	[SerializeField]
 	[Serialize]
-	protected float threshold;
+	protected float threshold = 0f;
 
 	[SerializeField]
 	[Serialize]
 	protected bool activateAboveThreshold = true;
+
+	[MyCmpAdd]
+	private CopyBuildingSettings copyBuildingSettings;
+
+	private static readonly EventSystem.IntraObjectHandler<ConduitThresholdSensor> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<ConduitThresholdSensor>(delegate(ConduitThresholdSensor component, object data)
+	{
+		component.OnCopySettings(data);
+	});
 
 	public abstract float CurrentValue
 	{
@@ -38,6 +46,23 @@ public abstract class ConduitThresholdSensor : ConduitSensor
 		set
 		{
 			activateAboveThreshold = value;
+		}
+	}
+
+	protected override void OnPrefabInit()
+	{
+		base.OnPrefabInit();
+		Subscribe(-905833192, OnCopySettingsDelegate);
+	}
+
+	private void OnCopySettings(object data)
+	{
+		GameObject gameObject = (GameObject)data;
+		ConduitThresholdSensor component = gameObject.GetComponent<ConduitThresholdSensor>();
+		if ((Object)component != (Object)null)
+		{
+			Threshold = component.Threshold;
+			ActivateAboveThreshold = component.ActivateAboveThreshold;
 		}
 	}
 

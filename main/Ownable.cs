@@ -14,7 +14,15 @@ public class Ownable : Assignable, ISaveLoadable, IEffectDescriptor
 	{
 		if (new_assignee != assignee)
 		{
-			if (base.slot != null && (new_assignee is MinionIdentity || new_assignee is StoredMinionIdentity))
+			if (base.slot != null && new_assignee is MinionIdentity)
+			{
+				new_assignee = (new_assignee as MinionIdentity).assignableProxy.Get();
+			}
+			if (base.slot != null && new_assignee is StoredMinionIdentity)
+			{
+				new_assignee = (new_assignee as StoredMinionIdentity).assignableProxy.Get();
+			}
+			if (new_assignee is MinionAssignablesProxy)
 			{
 				Ownables soleOwner = new_assignee.GetSoleOwner();
 				Ownables component = soleOwner.GetComponent<Ownables>();
@@ -38,6 +46,17 @@ public class Ownable : Assignable, ISaveLoadable, IEffectDescriptor
 		UpdateTint();
 		UpdateStatusString();
 		base.OnAssign += OnNewAssignment;
+		if (assignee == null)
+		{
+			MinionStorage component = GetComponent<MinionStorage>();
+			if ((Object)component != (Object)null && component.GetStoredMinionInfo().Count > 0)
+			{
+				MinionStorage.Info info = component.GetStoredMinionInfo()[0];
+				StoredMinionIdentity component2 = info.serializedMinion.Get().GetComponent<StoredMinionIdentity>();
+				component2.assignableProxy = MinionAssignablesProxy.InitAssignableProxy(component2.assignableProxy, component2);
+				Assign(component2);
+			}
+		}
 	}
 
 	private void OnNewAssignment(IAssignableIdentity assignables)

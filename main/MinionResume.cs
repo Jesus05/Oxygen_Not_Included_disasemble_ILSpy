@@ -188,12 +188,12 @@ public class MinionResume : KMonoBehaviour, ISaveLoadable, ISim200ms
 
 	public bool IsChoreGroupInCurrentRoleGroup(ChoreGroup choregroup)
 	{
-		if (CurrentRole == "NoRole")
+		if (!(CurrentRole == "NoRole"))
 		{
-			return false;
+			RoleConfig role = Game.Instance.roleManager.GetRole(currentRole);
+			return Game.Instance.roleManager.RoleGroups[role.roleGroup].choreGroupID == choregroup.Id;
 		}
-		RoleConfig role = Game.Instance.roleManager.GetRole(currentRole);
-		return Game.Instance.roleManager.RoleGroups[role.roleGroup].choreGroupID == choregroup.Id;
+		return false;
 	}
 
 	public void SetTargetRole(string newRole)
@@ -277,7 +277,7 @@ public class MinionResume : KMonoBehaviour, ISaveLoadable, ISim200ms
 
 	private string GetExperienceString()
 	{
-		return string.Empty;
+		return "";
 	}
 
 	public string GetCurrentRoleString()
@@ -437,7 +437,7 @@ public class MinionResume : KMonoBehaviour, ISaveLoadable, ISim200ms
 	{
 		foreach (RoleConfig rolesConfig in Game.Instance.roleManager.RolesConfigs)
 		{
-			if (rolesConfig.HasPerk(perk) && MasteryByRoleID[rolesConfig.id])
+			if (rolesConfig.HasPerk(perk) && MasteryByRoleID.ContainsKey(rolesConfig.id) && MasteryByRoleID[rolesConfig.id])
 			{
 				return true;
 			}

@@ -23,7 +23,6 @@ public class EquipmentConfigManager : KMonoBehaviour
 		Equippable equippable = gameObject.AddComponent<Equippable>();
 		equippable.def = equipmentDef;
 		equippable.slotID = equipmentDef.Slot;
-		LoadRecipe(equipmentDef, equippable);
 		config.DoPostConfigure(gameObject);
 		Assets.AddPrefab(gameObject.GetComponent<KPrefabID>());
 	}

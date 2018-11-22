@@ -42,7 +42,7 @@ public class LiquidConditionerConfig : IBuildingConfig
 		buildingDef.PowerInputOffset = new CellOffset(1, 0);
 		buildingDef.UtilityInputOffset = new CellOffset(0, 0);
 		buildingDef.PermittedRotations = PermittedRotations.FlipH;
-		buildingDef.ViewMode = SimViewMode.LiquidVentMap;
+		buildingDef.ViewMode = OverlayModes.LiquidConduits.ID;
 		buildingDef.OverheatTemperature = 398.15f;
 		return buildingDef;
 	}

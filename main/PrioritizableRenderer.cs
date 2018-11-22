@@ -47,7 +47,7 @@ public class PrioritizableRenderer
 	{
 		using (new KProfiler.Region("PrioritizableRenderer", null))
 		{
-			if (!((Object)GameScreenManager.Instance == (Object)null) && !((Object)SimDebugView.Instance == (Object)null) && SimDebugView.Instance.GetMode() == SimViewMode.Priorities)
+			if (!((Object)GameScreenManager.Instance == (Object)null) && !((Object)SimDebugView.Instance == (Object)null) && !(SimDebugView.Instance.GetMode() != OverlayModes.Priorities.ID))
 			{
 				prioritizables.Clear();
 				for (int i = 0; i < Components.Prioritizables.Count; i++)

@@ -24,7 +24,7 @@ public class FallMonitor : GameStateMachine<FallMonitor, FallMonitor.Instance>
 
 		private Navigator navigator;
 
-		private bool flipRecoverEmote;
+		private bool flipRecoverEmote = false;
 
 		public Instance(IStateMachineTarget master)
 			: base(master)
@@ -136,22 +136,22 @@ public class FallMonitor : GameStateMachine<FallMonitor, FallMonitor.Instance>
 
 		public bool IsFalling()
 		{
-			if (navigator.IsMoving())
+			if (!navigator.IsMoving())
 			{
+				int cell = Grid.PosToCell(base.master.transform.GetPosition());
+				if (Grid.IsValidCell(cell))
+				{
+					int cell2 = Grid.CellBelow(cell);
+					if (Grid.IsValidCell(cell2))
+					{
+						bool flag = navigator.NavGrid.NavTable.IsValid(cell, navigator.CurrentNavType);
+						return !flag;
+					}
+					return false;
+				}
 				return false;
 			}
-			int cell = Grid.PosToCell(base.master.transform.GetPosition());
-			if (!Grid.IsValidCell(cell))
-			{
-				return false;
-			}
-			int cell2 = Grid.CellBelow(cell);
-			if (!Grid.IsValidCell(cell2))
-			{
-				return false;
-			}
-			bool flag = navigator.NavGrid.NavTable.IsValid(cell, navigator.CurrentNavType);
-			return !flag;
+			return false;
 		}
 
 		public void UpdateFalling()
@@ -240,7 +240,7 @@ public class FallMonitor : GameStateMachine<FallMonitor, FallMonitor.Instance>
 		{
 			smi.UpdateFalling();
 		}, UpdateRate.SIM_33ms, true);
-		standing.ParamTransition(isEntombed, entombed, (Instance smi, bool p) => p).ParamTransition(isFalling, falling_pre, (Instance smi, bool p) => p);
+		standing.ParamTransition(isEntombed, entombed, GameStateMachine<FallMonitor, Instance, IStateMachineTarget, object>.IsTrue).ParamTransition(isFalling, falling_pre, GameStateMachine<FallMonitor, Instance, IStateMachineTarget, object>.IsTrue);
 		falling_pre.Enter("StopNavigator", delegate(Instance smi)
 		{
 			smi.GetComponent<Navigator>().Stop(false);
@@ -250,7 +250,7 @@ public class FallMonitor : GameStateMachine<FallMonitor, FallMonitor.Instance>
 		}).GoTo(falling)
 			.ToggleBrain("falling_pre");
 		falling.ToggleBrain("falling").PlayAnim("fall_pre").QueueAnim("fall_loop", true, null)
-			.ParamTransition(isEntombed, entombed, (Instance smi, bool p) => p)
+			.ParamTransition(isEntombed, entombed, GameStateMachine<FallMonitor, Instance, IStateMachineTarget, object>.IsTrue)
 			.Transition(recoverladder, (Instance smi) => smi.CanRecoverToLadder(), UpdateRate.SIM_33ms)
 			.Transition(recoverpole, (Instance smi) => smi.CanRecoverToPole(), UpdateRate.SIM_33ms)
 			.ToggleGravity(landfloor);
@@ -286,6 +286,6 @@ public class FallMonitor : GameStateMachine<FallMonitor, FallMonitor.Instance>
 		entombed.stuck.Enter("StopNavigator", delegate(Instance smi)
 		{
 			smi.GetComponent<Navigator>().Stop(false);
-		}).ToggleChore((Instance smi) => new EntombedChore(smi.master), standing).ParamTransition(isEntombed, standing, (Instance smi, bool p) => !p);
+		}).ToggleChore((Instance smi) => new EntombedChore(smi.master), standing).ParamTransition(isEntombed, standing, GameStateMachine<FallMonitor, Instance, IStateMachineTarget, object>.IsFalse);
 	}
 }

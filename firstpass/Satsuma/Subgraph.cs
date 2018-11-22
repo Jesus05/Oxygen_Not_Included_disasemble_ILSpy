@@ -94,21 +94,21 @@ namespace Satsuma
 				}
 			}
 			yield break;
-			IL_00d4:
-			/*Error near IL_00d5: Unexpected return in MoveNext()*/;
+			IL_00d6:
+			/*Error near IL_00d7: Unexpected return in MoveNext()*/;
 		}
 
 		public IEnumerable<Node> Nodes()
 		{
-			if (nodeExceptions.Count == 0)
+			if (nodeExceptions.Count != 0)
 			{
-				if (defaultNodeEnabled)
-				{
-					return graph.Nodes();
-				}
+				return NodesInternal();
+			}
+			if (!defaultNodeEnabled)
+			{
 				return Enumerable.Empty<Node>();
 			}
-			return NodesInternal();
+			return graph.Nodes();
 		}
 
 		public IEnumerable<Arc> Arcs(ArcFilter filter = ArcFilter.All)
@@ -122,8 +122,8 @@ namespace Satsuma
 				}
 			}
 			yield break;
-			IL_0126:
-			/*Error near IL_0127: Unexpected return in MoveNext()*/;
+			IL_0128:
+			/*Error near IL_0129: Unexpected return in MoveNext()*/;
 		}
 
 		public IEnumerable<Arc> Arcs(Node u, ArcFilter filter = ArcFilter.All)
@@ -140,8 +140,8 @@ namespace Satsuma
 				}
 			}
 			yield break;
-			IL_0127:
-			/*Error near IL_0128: Unexpected return in MoveNext()*/;
+			IL_0129:
+			/*Error near IL_012a: Unexpected return in MoveNext()*/;
 		}
 
 		public IEnumerable<Arc> Arcs(Node u, Node v, ArcFilter filter = ArcFilter.All)
@@ -158,8 +158,8 @@ namespace Satsuma
 				}
 			}
 			yield break;
-			IL_0117:
-			/*Error near IL_0118: Unexpected return in MoveNext()*/;
+			IL_0119:
+			/*Error near IL_011a: Unexpected return in MoveNext()*/;
 		}
 
 		public int NodeCount()

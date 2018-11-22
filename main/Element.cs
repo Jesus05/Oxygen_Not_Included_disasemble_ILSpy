@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 
 [Serializable]
-[DebuggerDisplay("{id}")]
+[DebuggerDisplay("{name}")]
 public class Element : IComparable<Element>
 {
 	[Serializable]
@@ -37,11 +37,11 @@ public class Element : IComparable<Element>
 
 	public float strength;
 
-	public float flow;
+	public float flow = 0f;
 
-	public float maxCompression;
+	public float maxCompression = 0f;
 
-	public float viscosity;
+	public float viscosity = 0f;
 
 	public float minHorizontalFlow = float.PositiveInfinity;
 
@@ -58,7 +58,7 @@ public class Element : IComparable<Element>
 	[JsonConverter(typeof(StringEnumConverter))]
 	public State state;
 
-	public byte hardness;
+	public byte hardness = 0;
 
 	public float lowTemp;
 
@@ -77,12 +77,12 @@ public class Element : IComparable<Element>
 	[JsonConverter(typeof(StringEnumConverter))]
 	public SimHashes highTempTransitionOreID = SimHashes.Vacuum;
 
-	public float highTempTransitionOreMassConversion;
+	public float highTempTransitionOreMassConversion = 0f;
 
 	[JsonConverter(typeof(StringEnumConverter))]
 	public SimHashes lowTempTransitionOreID = SimHashes.Vacuum;
 
-	public float lowTempTransitionOreMassConversion;
+	public float lowTempTransitionOreMassConversion = 0f;
 
 	[JsonConverter(typeof(StringEnumConverter))]
 	public SimHashes sublimateId;
@@ -156,19 +156,19 @@ public class Element : IComparable<Element>
 
 	public static string GetStateString(State state)
 	{
-		if ((state & State.Solid) == State.Solid)
+		if ((state & State.Solid) != State.Solid)
 		{
-			return ELEMENTS.STATE.SOLID;
-		}
-		if ((state & State.Solid) == State.Liquid)
-		{
+			if ((state & State.Solid) != State.Liquid)
+			{
+				if ((state & State.Solid) != State.Gas)
+				{
+					return ELEMENTS.STATE.VACUUM;
+				}
+				return ELEMENTS.STATE.GAS;
+			}
 			return ELEMENTS.STATE.LIQUID;
 		}
-		if ((state & State.Solid) == State.Gas)
-		{
-			return ELEMENTS.STATE.GAS;
-		}
-		return ELEMENTS.STATE.VACUUM;
+		return ELEMENTS.STATE.SOLID;
 	}
 
 	public string FullDescription(bool addHardnessColor = true)
@@ -196,7 +196,7 @@ public class Element : IComparable<Element>
 		if (oreTags.Length > 0 && !IsVacuum)
 		{
 			str += "\n\n";
-			string text2 = string.Empty;
+			string text2 = "";
 			for (int i = 0; i < oreTags.Length; i++)
 			{
 				Tag tag = new Tag(oreTags[i]);
@@ -216,7 +216,6 @@ public class Element : IComparable<Element>
 				string text3 = str;
 				str = text3 + "\n" + attribute.Name + ": +" + attributeModifier.Value * 100f + "%";
 			}
-			return str;
 		}
 		return str;
 	}
@@ -228,11 +227,11 @@ public class Element : IComparable<Element>
 
 	public bool HasTag(Tag search_tag)
 	{
-		if (tag == search_tag)
+		if (!(tag == search_tag))
 		{
-			return true;
+			return Array.IndexOf(oreTags, search_tag) != -1;
 		}
-		return Array.IndexOf(oreTags, search_tag) != -1;
+		return true;
 	}
 
 	public Tag GetMaterialCategoryTag()

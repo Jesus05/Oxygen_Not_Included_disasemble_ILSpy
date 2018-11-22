@@ -65,13 +65,13 @@ public class Turbine : KMonoBehaviour
 
 	public class Instance : GameStateMachine<States, Instance, Turbine, object>.GameInstance
 	{
-		public bool isInputBlocked;
+		public bool isInputBlocked = false;
 
-		public bool isOutputBlocked;
+		public bool isOutputBlocked = false;
 
-		public bool insufficientMass;
+		public bool insufficientMass = false;
 
-		public bool insufficientTemperature;
+		public bool insufficientTemperature = false;
 
 		private Guid inputBlockedHandle = Guid.Empty;
 
@@ -219,16 +219,16 @@ public class Turbine : KMonoBehaviour
 	private static readonly HashedString TINT_SYMBOL = new HashedString("meter_fill");
 
 	[Serialize]
-	private float storedMass;
+	private float storedMass = 0f;
 
 	[Serialize]
-	private float storedTemperature;
+	private float storedTemperature = 0f;
 
 	[Serialize]
 	private byte diseaseIdx = byte.MaxValue;
 
 	[Serialize]
-	private int diseaseCount;
+	private int diseaseCount = 0;
 
 	[MyCmpGet]
 	private Generator generator;
@@ -401,17 +401,17 @@ public class Turbine : KMonoBehaviour
 
 	public static void InitializeStatusItems()
 	{
-		inputBlockedStatusItem = new StatusItem("TURBINE_BLOCKED_INPUT", "BUILDING", "status_item_vent_disabled", StatusItem.IconType.Custom, NotificationType.BadMinor, false, SimViewMode.None, true, 63486);
-		outputBlockedStatusItem = new StatusItem("TURBINE_BLOCKED_OUTPUT", "BUILDING", "status_item_vent_disabled", StatusItem.IconType.Custom, NotificationType.BadMinor, false, SimViewMode.None, true, 63486);
-		spinningUpStatusItem = new StatusItem("TURBINE_SPINNING_UP", "BUILDING", string.Empty, StatusItem.IconType.Info, NotificationType.Good, false, SimViewMode.None, true, 63486);
-		activeStatusItem = new StatusItem("TURBINE_ACTIVE", "BUILDING", string.Empty, StatusItem.IconType.Info, NotificationType.Good, false, SimViewMode.None, true, 63486);
+		inputBlockedStatusItem = new StatusItem("TURBINE_BLOCKED_INPUT", "BUILDING", "status_item_vent_disabled", StatusItem.IconType.Custom, NotificationType.BadMinor, false, OverlayModes.None.ID, true, 63486);
+		outputBlockedStatusItem = new StatusItem("TURBINE_BLOCKED_OUTPUT", "BUILDING", "status_item_vent_disabled", StatusItem.IconType.Custom, NotificationType.BadMinor, false, OverlayModes.None.ID, true, 63486);
+		spinningUpStatusItem = new StatusItem("TURBINE_SPINNING_UP", "BUILDING", "", StatusItem.IconType.Info, NotificationType.Good, false, OverlayModes.None.ID, true, 63486);
+		activeStatusItem = new StatusItem("TURBINE_ACTIVE", "BUILDING", "", StatusItem.IconType.Info, NotificationType.Good, false, OverlayModes.None.ID, true, 63486);
 		activeStatusItem.resolveStringCallback = delegate(string str, object data)
 		{
 			Turbine turbine2 = (Turbine)data;
 			str = string.Format(str, (int)turbine2.currentRPM);
 			return str;
 		};
-		insufficientMassStatusItem = new StatusItem("TURBINE_INSUFFICIENT_MASS", "BUILDING", "status_item_resource_unavailable", StatusItem.IconType.Custom, NotificationType.BadMinor, false, SimViewMode.PowerMap, true, 63486);
+		insufficientMassStatusItem = new StatusItem("TURBINE_INSUFFICIENT_MASS", "BUILDING", "status_item_resource_unavailable", StatusItem.IconType.Custom, NotificationType.BadMinor, false, OverlayModes.Power.ID, true, 63486);
 		insufficientMassStatusItem.resolveTooltipCallback = delegate(string str, object data)
 		{
 			Turbine turbine = (Turbine)data;
@@ -419,7 +419,7 @@ public class Turbine : KMonoBehaviour
 			str = str.Replace("{ELEMENT}", ElementLoader.FindElementByHash(turbine.srcElem).name);
 			return str;
 		};
-		insufficientTemperatureStatusItem = new StatusItem("TURBINE_INSUFFICIENT_TEMPERATURE", "BUILDING", "status_item_plant_temperature", StatusItem.IconType.Custom, NotificationType.BadMinor, false, SimViewMode.PowerMap, true, 63486);
+		insufficientTemperatureStatusItem = new StatusItem("TURBINE_INSUFFICIENT_TEMPERATURE", "BUILDING", "status_item_plant_temperature", StatusItem.IconType.Custom, NotificationType.BadMinor, false, OverlayModes.Power.ID, true, 63486);
 		insufficientTemperatureStatusItem.resolveStringCallback = ResolveStrings;
 		insufficientTemperatureStatusItem.resolveTooltipCallback = ResolveStrings;
 	}

@@ -19,7 +19,7 @@ public class PrioritizeTool : DragTool
 		interceptNumberKeysForPriority = true;
 		Instance = this;
 		visualizer = Util.KInstantiate(visualizer, null, null);
-		viewMode = SimViewMode.Priorities;
+		viewMode = OverlayModes.Priorities.ID;
 	}
 
 	protected override void OnDragTool(int cell, int distFromOrigin)

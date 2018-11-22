@@ -7,13 +7,13 @@ public class PressureSwitch : CircuitSwitch, ISaveLoadable, IThresholdSwitch, IS
 {
 	[SerializeField]
 	[Serialize]
-	private float threshold;
+	private float threshold = 0f;
 
 	[SerializeField]
 	[Serialize]
 	private bool activateAboveThreshold = true;
 
-	public float rangeMin;
+	public float rangeMin = 0f;
 
 	public float rangeMax = 1f;
 
@@ -23,7 +23,7 @@ public class PressureSwitch : CircuitSwitch, ISaveLoadable, IThresholdSwitch, IS
 
 	private float[] samples = new float[8];
 
-	private int sampleIdx;
+	private int sampleIdx = 0;
 
 	public float Threshold
 	{
@@ -135,16 +135,6 @@ public class PressureSwitch : CircuitSwitch, ISaveLoadable, IThresholdSwitch, IS
 
 	public LocString ThresholdValueUnits()
 	{
-		LocString result = null;
-		switch (GameUtil.massUnit)
-		{
-		case GameUtil.MassUnit.Kilograms:
-			result = ((desiredState != Element.State.Gas) ? UI.UNITSUFFIXES.MASS.KILOGRAM : UI.UNITSUFFIXES.MASS.GRAM);
-			break;
-		case GameUtil.MassUnit.Pounds:
-			result = UI.UNITSUFFIXES.MASS.POUND;
-			break;
-		}
-		return result;
+		return GameUtil.GetCurrentMassUnit(desiredState == Element.State.Gas);
 	}
 }

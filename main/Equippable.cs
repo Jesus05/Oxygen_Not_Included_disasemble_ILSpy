@@ -6,7 +6,7 @@ using UnityEngine;
 [SerializationConfig(MemberSerialization.OptIn)]
 public class Equippable : Assignable, ISaveLoadable, IGameObjectEffectDescriptor, IQuality, IHasSortOrder
 {
-	private QualityLevel quality;
+	private QualityLevel quality = QualityLevel.Poor;
 
 	[MyCmpAdd]
 	private EquippableWorkable equippableWorkable;
@@ -19,7 +19,7 @@ public class Equippable : Assignable, ISaveLoadable, IGameObjectEffectDescriptor
 	[Serialize]
 	public bool isEquipped;
 
-	private bool destroyed;
+	private bool destroyed = false;
 
 	private static readonly EventSystem.IntraObjectHandler<Equippable> SetDestroyedTrueDelegate = new EventSystem.IntraObjectHandler<Equippable>(delegate(Equippable component, object data)
 	{
@@ -71,6 +71,15 @@ public class Equippable : Assignable, ISaveLoadable, IGameObjectEffectDescriptor
 	{
 		if (isEquipped)
 		{
+			if (assignee != null && assignee is MinionIdentity)
+			{
+				assignee = (assignee as MinionIdentity).assignableProxy.Get();
+				assignee_identityRef.Set(assignee as KMonoBehaviour);
+			}
+			if (assignee == null && (Object)assignee_identityRef.Get() != (Object)null)
+			{
+				assignee = assignee_identityRef.Get().GetComponent<IAssignableIdentity>();
+			}
 			if (assignee != null)
 			{
 				assignee.GetSoleOwner().GetComponent<Equipment>().Equip(this);
@@ -105,7 +114,8 @@ public class Equippable : Assignable, ISaveLoadable, IGameObjectEffectDescriptor
 	{
 		if (isEquipped)
 		{
-			(assignee as KMonoBehaviour).GetComponent<Equipment>().Unequip(this);
+			Equipment equipment = (!(assignee is MinionIdentity)) ? (assignee as KMonoBehaviour).GetComponent<Equipment>() : (assignee as MinionIdentity).assignableProxy.Get().GetComponent<Equipment>();
+			equipment.Unequip(this);
 			OnUnequip();
 		}
 		base.Unassign();
@@ -122,7 +132,7 @@ public class Equippable : Assignable, ISaveLoadable, IGameObjectEffectDescriptor
 		GetComponent<KSelectable>().IsSelectable = false;
 		base.transform.parent = slot.gameObject.transform;
 		base.transform.SetLocalPosition(Vector3.zero);
-		Effects component = slot.gameObject.GetComponent<Effects>();
+		Effects component = slot.gameObject.GetComponent<MinionAssignablesProxy>().GetTargetGameObject().GetComponent<Effects>();
 		if ((Object)component != (Object)null)
 		{
 			foreach (Effect effectImmunite in def.EffectImmunites)
@@ -147,7 +157,8 @@ public class Equippable : Assignable, ISaveLoadable, IGameObjectEffectDescriptor
 			GetComponent<KSelectable>().IsSelectable = true;
 			if (assignee != null)
 			{
-				Effects component = assignee.GetSoleOwner().GetComponent<Effects>();
+				Effects component = assignee.GetSoleOwner().GetComponent<MinionAssignablesProxy>().GetTargetGameObject()
+					.GetComponent<Effects>();
 				if ((Object)component != (Object)null)
 				{
 					foreach (Effect effectImmunite in def.EffectImmunites)
@@ -155,20 +166,23 @@ public class Equippable : Assignable, ISaveLoadable, IGameObjectEffectDescriptor
 						component.RemoveImmunity(effectImmunite);
 					}
 				}
-				base.gameObject.transform.SetPosition(assignee.GetSoleOwner().gameObject.transform.GetPosition() + Vector3.up / 2f);
-			}
-			base.transform.parent = null;
-			if (def.OnUnequipCallBack != null)
-			{
-				def.OnUnequipCallBack(this);
+				base.gameObject.transform.SetPosition(assignee.GetSoleOwner().GetComponent<MinionAssignablesProxy>().GetTargetGameObject()
+					.transform.GetPosition() + Vector3.up / 2f);
+				}
+				base.transform.parent = null;
+				if (def.OnUnequipCallBack != null)
+				{
+					def.OnUnequipCallBack(this);
+				}
 			}
 		}
-	}
 
-	public List<Descriptor> GetDescriptors(GameObject go)
-	{
-		if ((Object)def != (Object)null)
+		public List<Descriptor> GetDescriptors(GameObject go)
 		{
+			if (!((Object)def != (Object)null))
+			{
+				return new List<Descriptor>();
+			}
 			List<Descriptor> equipmentEffects = GameUtil.GetEquipmentEffects(def);
 			if (def.additionalDescriptors != null)
 			{
@@ -176,10 +190,7 @@ public class Equippable : Assignable, ISaveLoadable, IGameObjectEffectDescriptor
 				{
 					equipmentEffects.Add(additionalDescriptor);
 				}
-				return equipmentEffects;
 			}
 			return equipmentEffects;
 		}
-		return new List<Descriptor>();
 	}
-}

@@ -12,7 +12,7 @@ public class FishDeliveryPointConfig : IBuildingConfig
 		buildingDef.Entombable = true;
 		buildingDef.Floodable = true;
 		buildingDef.ForegroundLayer = Grid.SceneLayer.TileFront;
-		buildingDef.ViewMode = SimViewMode.Rooms;
+		buildingDef.ViewMode = OverlayModes.Rooms.ID;
 		return buildingDef;
 	}
 

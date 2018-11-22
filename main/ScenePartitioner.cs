@@ -25,7 +25,7 @@ public class ScenePartitioner : ISim1000ms
 
 	private List<DirtyNode> dirtyNodes = new List<DirtyNode>();
 
-	private ScenePartitionerNode[,,] nodes;
+	private ScenePartitionerNode[,,] nodes = null;
 
 	private int queryId;
 
@@ -75,7 +75,7 @@ public class ScenePartitioner : ISim1000ms
 		}
 		ScenePartitionerLayer scenePartitionerLayer = new ScenePartitionerLayer(name, layers.Count);
 		layers.Add(scenePartitionerLayer);
-		DebugUtil.Assert(layers.Count <= nodes.GetLength(0), "Assert!", string.Empty, string.Empty);
+		DebugUtil.Assert(layers.Count <= nodes.GetLength(0));
 		return scenePartitionerLayer;
 	}
 

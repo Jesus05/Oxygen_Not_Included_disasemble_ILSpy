@@ -7,7 +7,7 @@ namespace ProcGen
 	public class Arc
 	{
 		[Serialize]
-		public string type = string.Empty;
+		public string type = "";
 
 		[Serialize]
 		public TagSet tags;

@@ -151,14 +151,14 @@ public class QualityOfLifeNeed : Need, ISim4000ms
 	public static string GetBreakBonus(int numBlocks)
 	{
 		int num = numBlocks - 1;
-		if (num >= breakLengthEffects.Count)
+		if (num < breakLengthEffects.Count)
 		{
-			return breakLengthEffects[breakLengthEffects.Count - 1];
-		}
-		if (num >= 0)
-		{
+			if (num < 0)
+			{
+				return null;
+			}
 			return breakLengthEffects[num];
 		}
-		return null;
+		return breakLengthEffects[breakLengthEffects.Count - 1];
 	}
 }

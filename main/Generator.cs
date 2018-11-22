@@ -20,7 +20,7 @@ public class Generator : KMonoBehaviour, ISaveLoadable, IEnergyProducer
 	protected KSelectable selectable;
 
 	[Serialize]
-	private float joulesAvailable;
+	private float joulesAvailable = 0f;
 
 	[SerializeField]
 	public int powerDistributionOrder;
@@ -60,11 +60,11 @@ public class Generator : KMonoBehaviour, ISaveLoadable, IEnergyProducer
 	{
 		get
 		{
-			if (Capacity == 0f)
+			if (Capacity != 0f)
 			{
-				return 1f;
+				return joulesAvailable / Capacity;
 			}
-			return joulesAvailable / Capacity;
+			return 1f;
 		}
 	}
 
@@ -161,11 +161,11 @@ public class Generator : KMonoBehaviour, ISaveLoadable, IEnergyProducer
 
 	public static float CalculateCapacity(BuildingDef def, Element element)
 	{
-		if (element == null)
+		if (element != null)
 		{
-			return def.GeneratorBaseCapacity;
+			return def.GeneratorBaseCapacity * (1f + ((!element.HasTag(GameTags.RefinedMetal)) ? 0f : 1f));
 		}
-		return def.GeneratorBaseCapacity * (1f + ((!element.HasTag(GameTags.RefinedMetal)) ? 0f : 1f));
+		return def.GeneratorBaseCapacity;
 	}
 
 	public void ResetJoules()

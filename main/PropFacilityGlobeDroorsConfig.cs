@@ -10,6 +10,7 @@ public class PropFacilityGlobeDroorsConfig : IEntityConfig
 		PrimaryElement component = gameObject.GetComponent<PrimaryElement>();
 		component.SetElement(SimHashes.Granite);
 		component.Temperature = 294.15f;
+		gameObject.AddOrGet<LoreBearer>();
 		return gameObject;
 	}
 

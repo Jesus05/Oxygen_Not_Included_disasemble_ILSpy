@@ -7,31 +7,31 @@ namespace Klei
 {
 	public class Data
 	{
-		public int globalWorldSeed;
+		public int globalWorldSeed = 0;
 
-		public int globalWorldLayoutSeed;
+		public int globalWorldLayoutSeed = 0;
 
-		public int globalTerrainSeed;
+		public int globalTerrainSeed = 0;
 
-		public int globalNoiseSeed;
+		public int globalNoiseSeed = 0;
 
 		public int chunkEdgeSize = 32;
 
 		public Vector2I subWorldSize = new Vector2I(512, 256);
 
-		public WorldLayout worldLayout;
+		public WorldLayout worldLayout = null;
 
-		public List<TerrainCell> terrainCells;
+		public List<TerrainCell> terrainCells = null;
 
-		public List<TerrainCell> overworldCells;
+		public List<TerrainCell> overworldCells = null;
 
-		public List<ProcGen.River> rivers;
+		public List<ProcGen.River> rivers = null;
 
-		public GameSpawnData gameSpawnData;
+		public GameSpawnData gameSpawnData = null;
 
-		public Chunk world;
+		public Chunk world = null;
 
-		public Tree voronoiTree;
+		public Tree voronoiTree = null;
 
 		public Data()
 		{

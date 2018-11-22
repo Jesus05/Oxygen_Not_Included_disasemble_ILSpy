@@ -41,9 +41,9 @@ public class SpaceHeater : StateMachineComponent<SpaceHeater.StatesInstance>
 		{
 			default_state = offline;
 			base.serializable = false;
-			statusItemUnderMassLiquid = new StatusItem("statusItemUnderMassLiquid", BUILDING.STATUSITEMS.HEATINGSTALLEDLOWMASS_LIQUID.NAME, BUILDING.STATUSITEMS.HEATINGSTALLEDLOWMASS_LIQUID.TOOLTIP, string.Empty, StatusItem.IconType.Info, NotificationType.BadMinor, false, SimViewMode.None, 63486);
-			statusItemUnderMassGas = new StatusItem("statusItemUnderMassGas", BUILDING.STATUSITEMS.HEATINGSTALLEDLOWMASS_GAS.NAME, BUILDING.STATUSITEMS.HEATINGSTALLEDLOWMASS_GAS.TOOLTIP, string.Empty, StatusItem.IconType.Info, NotificationType.BadMinor, false, SimViewMode.None, 63486);
-			statusItemOverTemp = new StatusItem("statusItemOverTemp", BUILDING.STATUSITEMS.HEATINGSTALLEDHOTENV.NAME, BUILDING.STATUSITEMS.HEATINGSTALLEDHOTENV.TOOLTIP, string.Empty, StatusItem.IconType.Info, NotificationType.BadMinor, false, SimViewMode.None, 63486);
+			statusItemUnderMassLiquid = new StatusItem("statusItemUnderMassLiquid", BUILDING.STATUSITEMS.HEATINGSTALLEDLOWMASS_LIQUID.NAME, BUILDING.STATUSITEMS.HEATINGSTALLEDLOWMASS_LIQUID.TOOLTIP, "", StatusItem.IconType.Info, NotificationType.BadMinor, false, OverlayModes.None.ID, 63486);
+			statusItemUnderMassGas = new StatusItem("statusItemUnderMassGas", BUILDING.STATUSITEMS.HEATINGSTALLEDLOWMASS_GAS.NAME, BUILDING.STATUSITEMS.HEATINGSTALLEDLOWMASS_GAS.TOOLTIP, "", StatusItem.IconType.Info, NotificationType.BadMinor, false, OverlayModes.None.ID, 63486);
+			statusItemOverTemp = new StatusItem("statusItemOverTemp", BUILDING.STATUSITEMS.HEATINGSTALLEDHOTENV.NAME, BUILDING.STATUSITEMS.HEATINGSTALLEDHOTENV.TOOLTIP, "", StatusItem.IconType.Info, NotificationType.BadMinor, false, OverlayModes.None.ID, 63486);
 			statusItemOverTemp.resolveStringCallback = delegate(string str, object obj)
 			{
 				StatesInstance statesInstance = (StatesInstance)obj;
@@ -91,12 +91,12 @@ public class SpaceHeater : StateMachineComponent<SpaceHeater.StatesInstance>
 
 	public float targetTemperature = 308.15f;
 
-	public float minimumCellMass;
+	public float minimumCellMass = 0f;
 
 	public int radius = 2;
 
 	[SerializeField]
-	private bool heatLiquid;
+	private bool heatLiquid = false;
 
 	[MyCmpReq]
 	private Operational operational;
@@ -131,14 +131,14 @@ public class SpaceHeater : StateMachineComponent<SpaceHeater.StatesInstance>
 				num2 += Grid.Temperature[monitorCells[i]];
 			}
 		}
-		if (num == 0)
+		if (num != 0)
 		{
-			return (!heatLiquid) ? MonitorState.NotEnoughGas : MonitorState.NotEnoughLiquid;
-		}
-		if (num2 / (float)num >= targetTemperature)
-		{
+			if (!(num2 / (float)num >= targetTemperature))
+			{
+				return MonitorState.ReadyToHeat;
+			}
 			return MonitorState.TooHot;
 		}
-		return MonitorState.ReadyToHeat;
+		return (!heatLiquid) ? MonitorState.NotEnoughGas : MonitorState.NotEnoughLiquid;
 	}
 }

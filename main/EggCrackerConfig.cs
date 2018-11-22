@@ -31,17 +31,17 @@ public class EggCrackerConfig : IBuildingConfig
 		go.AddOrGet<DropAllWorkable>();
 		go.AddOrGet<BuildingComplete>().isManuallyOperated = true;
 		go.AddOrGet<KBatchedAnimController>().SetSymbolVisiblity("snapto_egg", false);
-		Refinery refinery = go.AddOrGet<Refinery>();
-		refinery.labelByResult = false;
-		refinery.sideScreenStyle = RefinerySideScreen.StyleSetting.ListInputOutput;
-		refinery.duplicantOperated = true;
-		RefineryWorkable refineryWorkable = go.AddOrGet<RefineryWorkable>();
-		BuildingTemplates.CreateRefineryStorage(go, refinery);
-		refineryWorkable.overrideAnims = new KAnimFile[1]
+		ComplexFabricator complexFabricator = go.AddOrGet<ComplexFabricator>();
+		complexFabricator.labelByResult = false;
+		complexFabricator.sideScreenStyle = ComplexFabricatorSideScreen.StyleSetting.ListQueueHybrid;
+		complexFabricator.duplicantOperated = true;
+		ComplexFabricatorWorkable complexFabricatorWorkable = go.AddOrGet<ComplexFabricatorWorkable>();
+		BuildingTemplates.CreateComplexFabricatorStorage(go, complexFabricator);
+		complexFabricatorWorkable.overrideAnims = new KAnimFile[1]
 		{
 			Assets.GetAnim("anim_interacts_egg_cracker_kanim")
 		};
-		refinery.outputOffset = new Vector3(1f, 1f, 0f);
+		complexFabricator.outputOffset = new Vector3(1f, 1f, 0f);
 		Prioritizable.AddRef(go);
 		go.AddOrGet<EggCracker>();
 	}

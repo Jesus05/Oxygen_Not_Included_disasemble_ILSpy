@@ -1,3 +1,6 @@
+#define DEBUG
+using System.Diagnostics;
+
 public class StorageLockerSmart : StorageLocker
 {
 	[MyCmpGet]
@@ -20,7 +23,7 @@ public class StorageLockerSmart : StorageLocker
 		set
 		{
 			base.UserMaxCapacity = value;
-			UpdateLogicCircuit();
+			UpdateLogicAndActiveState();
 		}
 	}
 
@@ -35,20 +38,22 @@ public class StorageLockerSmart : StorageLocker
 		ports = base.gameObject.GetComponent<LogicPorts>();
 		Subscribe(-1697596308, UpdateLogicCircuitCBDelegate);
 		Subscribe(-592767678, UpdateLogicCircuitCBDelegate);
-		UpdateLogicCircuit();
+		UpdateLogicAndActiveState();
 	}
 
 	private void UpdateLogicCircuitCB(object data)
 	{
-		UpdateLogicCircuit();
+		UpdateLogicAndActiveState();
 	}
 
-	private void UpdateLogicCircuit()
+	private void UpdateLogicAndActiveState()
 	{
+		System.Diagnostics.Debug.WriteLine("UpdateLogicAndActiveState");
 		bool flag = filteredStorage.IsFull();
 		bool isOperational = operational.IsOperational;
 		bool flag2 = flag && isOperational;
 		ports.SendSignal(FilteredStorage.FULL_PORT_ID, flag2 ? 1 : 0);
 		filteredStorage.SetLogicMeter(flag2);
+		operational.SetActive(isOperational, false);
 	}
 }

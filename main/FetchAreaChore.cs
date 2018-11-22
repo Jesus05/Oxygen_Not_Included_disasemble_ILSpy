@@ -625,7 +625,7 @@ public class FetchAreaChore : Chore<FetchAreaChore.StatesInstance>
 	public bool IsDelivering => smi.delivering;
 
 	public FetchAreaChore(Precondition.Context context)
-		: base(context.chore.choreType, (IStateMachineTarget)context.consumerState.consumer, context.consumerState.choreProvider, false, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.basic, 0, false, true, 0, (Tag[])null)
+		: base(context.chore.choreType, (IStateMachineTarget)context.consumerState.consumer, context.consumerState.choreProvider, false, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, context.masterPriority.priority_class, context.masterPriority.priority_value, false, true, 0, (Tag[])null)
 	{
 		showAvailabilityInHoverText = false;
 		smi = new StatesInstance(this, context);

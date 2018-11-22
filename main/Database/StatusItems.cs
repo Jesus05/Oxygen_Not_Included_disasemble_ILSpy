@@ -21,7 +21,7 @@ namespace Database
 
 			public bool ShouldNotify;
 
-			public float NotificationDelay;
+			public float NotificationDelay = 0f;
 
 			public NotificationType NotificationType;
 
@@ -29,9 +29,9 @@ namespace Database
 
 			public string Effect;
 
-			public SimViewMode Overlay;
+			public HashedString Overlay;
 
-			public SimViewMode SecondOverlay;
+			public HashedString SecondOverlay;
 		}
 
 		public StatusItems(string id, ResourceSet parent)

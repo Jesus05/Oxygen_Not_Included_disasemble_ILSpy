@@ -126,7 +126,7 @@ public class DecompositionMonitor : GameStateMachine<DecompositionMonitor, Decom
 		satisfied.Update("UpdateDecomposition", delegate(Instance smi, float dt)
 		{
 			smi.UpdateDecomposition(dt);
-		}, UpdateRate.SIM_200ms, false).ParamTransition(decomposition, rotten, (Instance smi, float p) => p >= 1f).ToggleAttributeModifier("Dead", (Instance smi) => smi.satisfiedDecorModifier, null)
+		}, UpdateRate.SIM_200ms, false).ParamTransition(decomposition, rotten, GameStateMachine<DecompositionMonitor, Instance, IStateMachineTarget, object>.IsGTEOne).ToggleAttributeModifier("Dead", (Instance smi) => smi.satisfiedDecorModifier, null)
 			.ToggleAttributeModifier("Dead", (Instance smi) => smi.satisfiedDecorRadiusModifier, null);
 		rotten.DefaultState(rotten.exposed).ToggleStatusItem(Db.Get().DuplicantStatusItems.Rotten, (object)null).ToggleAttributeModifier("Rotten", (Instance smi) => smi.rottenDecorModifier, null)
 			.ToggleAttributeModifier("Rotten", (Instance smi) => smi.rottenDecorRadiusModifier, null);
@@ -159,10 +159,10 @@ public class DecompositionMonitor : GameStateMachine<DecompositionMonitor, Decom
 
 	private FliesFX.Instance CreateFX(Instance smi)
 	{
-		if (!smi.isMasterNull)
+		if (smi.isMasterNull)
 		{
-			return new FliesFX.Instance(smi.master, new Vector3(0f, 0f, -0.1f));
+			return null;
 		}
-		return null;
+		return new FliesFX.Instance(smi.master, new Vector3(0f, 0f, -0.1f));
 	}
 }

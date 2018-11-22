@@ -2,6 +2,7 @@ using Klei.AI;
 using STRINGS;
 using System;
 using System.Runtime.CompilerServices;
+using UnityEngine;
 
 public class LightMonitor : GameStateMachine<LightMonitor, LightMonitor.Instance>
 {
@@ -51,13 +52,13 @@ public class LightMonitor : GameStateMachine<LightMonitor, LightMonitor.Instance
 	{
 		default_state = unburnt;
 		root.EventTransition(GameHashes.DiseaseAdded, burnt, (Instance smi) => smi.gameObject.GetDiseases().Has(Db.Get().Diseases.Sunburn)).Update(CheckLightLevel, UpdateRate.SIM_1000ms, false);
-		unburnt.DefaultState(unburnt.safe).ParamTransition(burnResistance, get_burnt, (Instance smi, float p) => p <= 0f);
+		unburnt.DefaultState(unburnt.safe).ParamTransition(burnResistance, get_burnt, GameStateMachine<LightMonitor, Instance, IStateMachineTarget, object>.IsLTEZero);
 		unburnt.safe.DefaultState(unburnt.safe.unlit).Update(delegate(Instance smi, float dt)
 		{
 			smi.sm.burnResistance.DeltaClamp(dt * 0.25f, 0f, 120f, smi);
 		}, UpdateRate.SIM_200ms, false);
-		unburnt.safe.unlit.ParamTransition(lightLevel, unburnt.safe.normal_light, (Instance smi, float p) => p > 0f);
-		unburnt.safe.normal_light.ParamTransition(lightLevel, unburnt.safe.unlit, (Instance smi, float p) => p <= 0f).ParamTransition(lightLevel, unburnt.safe.sunlight, (Instance smi, float p) => p >= 40000f);
+		unburnt.safe.unlit.ParamTransition(lightLevel, unburnt.safe.normal_light, GameStateMachine<LightMonitor, Instance, IStateMachineTarget, object>.IsGTZero);
+		unburnt.safe.normal_light.ParamTransition(lightLevel, unburnt.safe.unlit, GameStateMachine<LightMonitor, Instance, IStateMachineTarget, object>.IsLTEZero).ParamTransition(lightLevel, unburnt.safe.sunlight, (Instance smi, float p) => p >= 40000f);
 		unburnt.safe.sunlight.ParamTransition(lightLevel, unburnt.safe.normal_light, (Instance smi, float p) => p < 40000f).ParamTransition(lightLevel, unburnt.burning, (Instance smi, float p) => p >= 71999f).ToggleEffect("Sunlight_Pleasant");
 		unburnt.burning.ParamTransition(lightLevel, unburnt.safe.sunlight, (Instance smi, float p) => p < 71999f).Update(delegate(Instance smi, float dt)
 		{
@@ -75,10 +76,18 @@ public class LightMonitor : GameStateMachine<LightMonitor, LightMonitor.Instance
 
 	private static void CheckLightLevel(Instance smi, float dt)
 	{
-		int num = Grid.PosToCell(smi.gameObject);
-		if (Grid.IsValidCell(num))
+		KPrefabID component = smi.GetComponent<KPrefabID>();
+		if ((UnityEngine.Object)component != (UnityEngine.Object)null && component.HasTag(GameTags.Shaded))
 		{
-			smi.sm.lightLevel.Set((float)Grid.LightIntensity[num], smi);
+			smi.sm.lightLevel.Set(0f, smi);
+		}
+		else
+		{
+			int num = Grid.PosToCell(smi.gameObject);
+			if (Grid.IsValidCell(num))
+			{
+				smi.sm.lightLevel.Set((float)Grid.LightIntensity[num], smi);
+			}
 		}
 	}
 }

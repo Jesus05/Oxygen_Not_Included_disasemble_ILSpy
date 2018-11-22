@@ -44,30 +44,30 @@ public class MinionPathFinderAbilities : PathFinderAbilities
 
 	public override bool TraversePath(ref PathFinder.PotentialPath path, int from_cell, NavType from_nav_type, int cost, int transition_id, int underwater_cost)
 	{
-		if (!accessControlNavMask.IsTraversable(base.navigator, path, from_cell, cost, transition_id))
+		if (accessControlNavMask.IsTraversable(base.navigator, path, from_cell, cost, transition_id))
 		{
+			if (travelTubeNavMask.IsTraversable(base.navigator, path, from_cell, from_nav_type, cost, transition_id))
+			{
+				if (jetPackNavMask.IsTraversable(base.navigator, path, from_cell, from_nav_type, cost, transition_id))
+				{
+					if (navigationFeatureMask.IsTraversable(base.navigator, path, from_cell, cost, transition_id, this))
+					{
+						if (idleNavMask.IsTraversable(base.navigator, path, from_cell, cost, transition_id))
+						{
+							if (!path.HasFlag(PathFinder.PotentialPath.Flags.HasAtmoSuit) && !path.HasFlag(PathFinder.PotentialPath.Flags.HasJetPack) && path.navType != NavType.Tube && underwater_cost > maxUnderwaterCost)
+							{
+								return false;
+							}
+							navigationFeatureMask.ApplyTraversalToPath(base.navigator, ref path, from_cell);
+							return true;
+						}
+						return false;
+					}
+					return false;
+				}
+				return false;
+			}
 			return false;
-		}
-		if (!travelTubeNavMask.IsTraversable(base.navigator, path, from_cell, from_nav_type, cost, transition_id))
-		{
-			return false;
-		}
-		if (!jetPackNavMask.IsTraversable(base.navigator, path, from_cell, from_nav_type, cost, transition_id))
-		{
-			return false;
-		}
-		if (!navigationFeatureMask.IsTraversable(base.navigator, path, from_cell, cost, transition_id, this))
-		{
-			return false;
-		}
-		if (!idleNavMask.IsTraversable(base.navigator, path, from_cell, cost, transition_id))
-		{
-			return false;
-		}
-		if (path.HasFlag(PathFinder.PotentialPath.Flags.HasAtmoSuit) || path.HasFlag(PathFinder.PotentialPath.Flags.HasJetPack) || path.navType == NavType.Tube || underwater_cost <= maxUnderwaterCost)
-		{
-			navigationFeatureMask.ApplyTraversalToPath(base.navigator, ref path, from_cell);
-			return true;
 		}
 		return false;
 	}

@@ -53,10 +53,16 @@ public class KilnConfig : IBuildingConfig
 		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.IndustrialMachinery);
 		go.AddOrGet<DropAllWorkable>();
 		go.AddOrGet<BuildingComplete>().isManuallyOperated = false;
-		Refinery refinery = go.AddOrGet<Refinery>();
-		refinery.duplicantOperated = false;
-		refinery.sideScreenStyle = RefinerySideScreen.StyleSetting.ListInputOutput;
-		BuildingTemplates.CreateRefineryStorage(go, refinery);
+		ComplexFabricator complexFabricator = go.AddOrGet<ComplexFabricator>();
+		complexFabricator.duplicantOperated = false;
+		complexFabricator.sideScreenStyle = ComplexFabricatorSideScreen.StyleSetting.ListQueueHybrid;
+		BuildingTemplates.CreateComplexFabricatorStorage(go, complexFabricator);
+		ConfgiureRecipes();
+		Prioritizable.AddRef(go);
+	}
+
+	private void ConfgiureRecipes()
+	{
 		Tag tag = SimHashes.Ceramic.CreateTag();
 		Tag material = SimHashes.Clay.CreateTag();
 		Tag material2 = SimHashes.Carbon.CreateTag();
@@ -100,7 +106,6 @@ public class KilnConfig : IBuildingConfig
 			TagManager.Create("Kiln")
 		};
 		ComplexRecipeManager.Get().AddObsoleteIDMapping(obsolete_id2, text2);
-		Prioritizable.AddRef(go);
 	}
 
 	public override void DoPostConfigurePreview(BuildingDef def, GameObject go)

@@ -7,7 +7,7 @@ using TUNING;
 using UnityEngine;
 
 [SerializationConfig(MemberSerialization.OptIn)]
-public class SpacecraftManager : KMonoBehaviour
+public class SpacecraftManager : KMonoBehaviour, ISim1000ms
 {
 	public enum DestinationAnalysisState
 	{
@@ -28,10 +28,10 @@ public class SpacecraftManager : KMonoBehaviour
 	public Dictionary<int, int> savedSpacecraftDestinations;
 
 	[Serialize]
-	private int nextSpacecraftID;
+	private int nextSpacecraftID = 0;
 
 	[Serialize]
-	public bool destinationsGenerated;
+	public bool destinationsGenerated = false;
 
 	public const int INVALID_DESTINATION_ID = -1;
 
@@ -189,13 +189,38 @@ public class SpacecraftManager : KMonoBehaviour
 		}
 	}
 
-	public SpaceDestination GetActiveMission(int spacecraftID)
+	public SpaceDestination GetSpacecraftDestination(LaunchConditionManager lcm)
 	{
-		if (savedSpacecraftDestinations.ContainsKey(spacecraftID))
+		Spacecraft spacecraftFromLaunchConditionManager = GetSpacecraftFromLaunchConditionManager(lcm);
+		return GetSpacecraftDestination(spacecraftFromLaunchConditionManager.id);
+	}
+
+	public SpaceDestination GetSpacecraftDestination(int spacecraftID)
+	{
+		if (!savedSpacecraftDestinations.ContainsKey(spacecraftID))
 		{
-			return GetDestination(savedSpacecraftDestinations[spacecraftID]);
+			return null;
 		}
-		return null;
+		return GetDestination(savedSpacecraftDestinations[spacecraftID]);
+	}
+
+	public List<int> GetSpacecraftsForDestination(SpaceDestination destination)
+	{
+		List<int> list = new List<int>();
+		foreach (KeyValuePair<int, int> savedSpacecraftDestination in savedSpacecraftDestinations)
+		{
+			if (savedSpacecraftDestination.Value == destination.id)
+			{
+				list.Add(savedSpacecraftDestination.Key);
+			}
+		}
+		return list;
+	}
+
+	public void SetSpacecraftDestination(LaunchConditionManager lcm, SpaceDestination destination)
+	{
+		Spacecraft spacecraftFromLaunchConditionManager = GetSpacecraftFromLaunchConditionManager(lcm);
+		savedSpacecraftDestinations[spacecraftFromLaunchConditionManager.id] = destination.id;
 	}
 
 	public int GetSpacecraftID(LaunchableRocket rocket)
@@ -260,18 +285,18 @@ public class SpacecraftManager : KMonoBehaviour
 		return null;
 	}
 
-	public void Update()
+	public void Sim1000ms(float dt)
 	{
 		foreach (Spacecraft item in spacecraft)
 		{
-			item.ProgressMission(Time.deltaTime);
+			item.ProgressMission(dt);
 		}
 	}
 
 	public void PushReadyToLandNotification(Spacecraft spacecraft)
 	{
 		Notification notification = new Notification(BUILDING.STATUSITEMS.SPACECRAFTREADYTOLAND.NOTIFICATION, NotificationType.Good, HashedString.Invalid, (List<Notification> notificationList, object data) => BUILDING.STATUSITEMS.SPACECRAFTREADYTOLAND.NOTIFICATION_TOOLTIP + notificationList.ReduceMessages(false), spacecraft.launchConditions.GetProperName(), false, 0f, null, null);
-		base.gameObject.AddOrGet<Notifier>().Add(notification, string.Empty);
+		base.gameObject.AddOrGet<Notifier>().Add(notification, "");
 	}
 
 	private void SpawnMissionResults(Dictionary<SimHashes, float> results)
@@ -289,11 +314,11 @@ public class SpacecraftManager : KMonoBehaviour
 
 	public float GetDestinationAnalysisScore(int destinationID)
 	{
-		if (destinationAnalysisScores.ContainsKey(destinationID))
+		if (!destinationAnalysisScores.ContainsKey(destinationID))
 		{
-			return destinationAnalysisScores[destinationID];
+			return 0f;
 		}
-		return 0f;
+		return destinationAnalysisScores[destinationID];
 	}
 
 	public void EarnDestinationAnalysisPoints(int destinationID, float points)
@@ -324,20 +349,20 @@ public class SpacecraftManager : KMonoBehaviour
 
 	public DestinationAnalysisState GetDestinationAnalysisState(SpaceDestination destination)
 	{
-		if (destination.startAnalyzed)
+		if (!destination.startAnalyzed)
 		{
+			float destinationAnalysisScore = GetDestinationAnalysisScore(destination);
+			if (!(destinationAnalysisScore >= (float)ROCKETRY.DESTINATION_ANALYSIS.COMPLETE))
+			{
+				if (!(destinationAnalysisScore >= (float)ROCKETRY.DESTINATION_ANALYSIS.DISCOVERED))
+				{
+					return DestinationAnalysisState.Hidden;
+				}
+				return DestinationAnalysisState.Discovered;
+			}
 			return DestinationAnalysisState.Complete;
 		}
-		float destinationAnalysisScore = GetDestinationAnalysisScore(destination);
-		if (destinationAnalysisScore >= (float)ROCKETRY.DESTINATION_ANALYSIS.COMPLETE)
-		{
-			return DestinationAnalysisState.Complete;
-		}
-		if (destinationAnalysisScore >= (float)ROCKETRY.DESTINATION_ANALYSIS.DISCOVERED)
-		{
-			return DestinationAnalysisState.Discovered;
-		}
-		return DestinationAnalysisState.Hidden;
+		return DestinationAnalysisState.Complete;
 	}
 
 	public void SetStarmapAnalysisDestinationID(int id)

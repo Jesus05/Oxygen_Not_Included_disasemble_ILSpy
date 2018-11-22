@@ -26,10 +26,10 @@ namespace VoronoiTree
 			public Vector2 position;
 
 			[Serialize]
-			public Polygon poly;
+			public Polygon poly = null;
 
 			[Serialize]
-			public HashSet<KeyValuePair<uint, int>> neighbours;
+			public HashSet<KeyValuePair<uint, int>> neighbours = null;
 
 			public Site()
 			{
@@ -66,7 +66,7 @@ namespace VoronoiTree
 
 		private List<uint> ids = new List<uint>();
 
-		public int siteIndex;
+		public int siteIndex = 0;
 
 		public Voronoi diagram
 		{
@@ -253,34 +253,34 @@ namespace VoronoiTree
 
 		public bool IsTopEdgeCell(int cell)
 		{
-			if (cell < 0 || cell >= points.Count)
+			if (cell >= 0 && cell < points.Count)
 			{
-				return false;
-			}
-			List<Vector2> list = diagram.Region(points[cell]);
-			if (list.Count == 0)
-			{
-				return false;
-			}
-			Vector2 vector = list[0];
-			for (int i = 1; i < list.Count; i++)
-			{
-				Vector2 vector2 = list[i];
-				if (vector.y == vector2.y && vector2.y == bounds.height)
+				List<Vector2> list = diagram.Region(points[cell]);
+				if (list.Count != 0)
 				{
-					return true;
+					Vector2 vector = list[0];
+					for (int i = 1; i < list.Count; i++)
+					{
+						Vector2 vector2 = list[i];
+						if (vector.y == vector2.y && vector2.y == bounds.height)
+						{
+							return true;
+						}
+						vector = vector2;
+					}
+					float y = vector.y;
+					Vector2 vector3 = list[0];
+					if (y == vector3.y)
+					{
+						Vector2 vector4 = list[0];
+						if (vector4.y == bounds.height)
+						{
+							return true;
+						}
+					}
+					return false;
 				}
-				vector = vector2;
-			}
-			float y = vector.y;
-			Vector2 vector3 = list[0];
-			if (y == vector3.y)
-			{
-				Vector2 vector4 = list[0];
-				if (vector4.y == bounds.height)
-				{
-					return true;
-				}
+				return false;
 			}
 			return false;
 		}

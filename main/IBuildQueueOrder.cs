@@ -18,11 +18,6 @@ public interface IBuildQueueOrder
 		get;
 	}
 
-	bool Infinite
-	{
-		get;
-	}
-
 	Dictionary<Tag, float> CheckMaterialRequirements();
 
 	Dictionary<Tag, float> GetMaterialRequirements();

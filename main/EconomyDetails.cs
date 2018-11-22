@@ -79,11 +79,11 @@ public class EconomyDetails
 
 		public float Transform(Element element, float amount)
 		{
-			if (resource.tag == element.tag)
+			if (!(resource.tag == element.tag))
 			{
-				return ratio * amount;
+				return 0f;
 			}
-			return 0f;
+			return ratio * amount;
 		}
 	}
 
@@ -683,7 +683,8 @@ public class EconomyDetails
 					for (int j = 0; j < outputElements.Length; j++)
 					{
 						ElementConverter.OutputElement outputElement = outputElements[j];
-						Resource resource2 = CreateResource(outputElement.element.tag, massResourceType);
+						Element element = ElementLoader.FindElementByHash(outputElement.elementHash);
+						Resource resource2 = CreateResource(element.tag, massResourceType);
 						transformation.AddDelta(new Transformation.Delta(resource2, outputElement.massGenerationRate));
 					}
 				}

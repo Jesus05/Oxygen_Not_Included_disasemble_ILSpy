@@ -11,7 +11,7 @@ public class WireBuildTool : BaseUtilityBuildTool
 	{
 		Instance = this;
 		base.OnPrefabInit();
-		viewMode = SimViewMode.PowerMap;
+		viewMode = OverlayModes.Power.ID;
 	}
 
 	protected override void ApplyPathToConduitSystem()

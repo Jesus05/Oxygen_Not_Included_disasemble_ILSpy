@@ -8,20 +8,20 @@ public class ElementsAudio
 
 		public SolidAmbienceType solidAmbienceType = SolidAmbienceType.None;
 
-		public string miningSound = string.Empty;
+		public string miningSound = "";
 
-		public string miningBreakSound = string.Empty;
+		public string miningBreakSound = "";
 
-		public string oreBumpSound = string.Empty;
+		public string oreBumpSound = "";
 
-		public string floorEventAudioCategory = string.Empty;
+		public string floorEventAudioCategory = "";
 
-		public string creatureChewSound = string.Empty;
+		public string creatureChewSound = "";
 	}
 
-	private static ElementsAudio _instance;
+	private static ElementsAudio _instance = null;
 
-	private ElementAudioConfig[] elementAudioConfigs;
+	private ElementAudioConfig[] elementAudioConfigs = null;
 
 	public static ElementsAudio Instance
 	{

@@ -33,6 +33,8 @@ public class PlanterBoxConfig : IBuildingConfig
 		PlantablePlot plantablePlot = go.AddOrGet<PlantablePlot>();
 		plantablePlot.AddDepositTag(GameTags.CropSeed);
 		plantablePlot.SetFertilizationFlags(true, false);
+		CopyBuildingSettings copyBuildingSettings = go.AddOrGet<CopyBuildingSettings>();
+		copyBuildingSettings.copyGroupTag = GameTags.Farm;
 		BuildingTemplates.CreateDefaultStorage(go, false);
 		storage.SetDefaultStoredItemModifiers(Storage.StandardSealedStorage);
 		go.AddOrGet<DropAllWorkable>();

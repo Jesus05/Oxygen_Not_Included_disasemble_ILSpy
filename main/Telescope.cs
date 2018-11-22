@@ -9,11 +9,11 @@ public class Telescope : Workable, OxygenBreather.IGasProvider, IEffectDescripto
 {
 	public int clearScanCellRadius = 15;
 
-	private OxygenBreather.IGasProvider workerGasProvider;
+	private OxygenBreather.IGasProvider workerGasProvider = null;
 
 	private Operational operational;
 
-	private float percentClear;
+	private float percentClear = 0f;
 
 	private static readonly Operational.Flag visibleSkyFlag = new Operational.Flag("VisibleSky", Operational.Flag.Type.Requirement);
 
@@ -53,9 +53,9 @@ public class Telescope : Workable, OxygenBreather.IGasProvider, IEffectDescripto
 		Components.Telescopes.Add(this);
 		if (reducedVisibilityStatusItem == null)
 		{
-			reducedVisibilityStatusItem = new StatusItem("SPACE_VISIBILITY_REDUCED", "BUILDING", "status_item_no_sky", StatusItem.IconType.Info, NotificationType.BadMinor, false, SimViewMode.None, true, 63486);
+			reducedVisibilityStatusItem = new StatusItem("SPACE_VISIBILITY_REDUCED", "BUILDING", "status_item_no_sky", StatusItem.IconType.Info, NotificationType.BadMinor, false, OverlayModes.None.ID, true, 63486);
 			reducedVisibilityStatusItem.resolveStringCallback = GetStatusItemString;
-			noVisibilityStatusItem = new StatusItem("SPACE_VISIBILITY_NONE", "BUILDING", "status_item_no_sky", StatusItem.IconType.Custom, NotificationType.BadMinor, false, SimViewMode.None, true, 63486);
+			noVisibilityStatusItem = new StatusItem("SPACE_VISIBILITY_NONE", "BUILDING", "status_item_no_sky", StatusItem.IconType.Custom, NotificationType.BadMinor, false, OverlayModes.None.ID, true, 63486);
 			noVisibilityStatusItem.resolveStringCallback = GetStatusItemString;
 		}
 		OnWorkableEventCB = (Action<WorkableEvent>)Delegate.Combine(OnWorkableEventCB, new Action<WorkableEvent>(OnWorkableEvent));
@@ -123,26 +123,29 @@ public class Telescope : Workable, OxygenBreather.IGasProvider, IEffectDescripto
 		if (!((UnityEngine.Object)worker == (UnityEngine.Object)null))
 		{
 			OxygenBreather component = worker.GetComponent<OxygenBreather>();
+			KPrefabID component2 = worker.GetComponent<KPrefabID>();
 			switch (ev)
 			{
 			case WorkableEvent.WorkStarted:
 				ShowProgressBar(true);
 				progressBar.SetUpdateFunc(delegate
 				{
-					if (SpacecraftManager.instance.HasAnalysisTarget())
+					if (!SpacecraftManager.instance.HasAnalysisTarget())
 					{
-						return SpacecraftManager.instance.GetDestinationAnalysisScore(SpacecraftManager.instance.GetStarmapAnalysisDestinationID()) / (float)ROCKETRY.DESTINATION_ANALYSIS.COMPLETE;
+						return 0f;
 					}
-					return 0f;
+					return SpacecraftManager.instance.GetDestinationAnalysisScore(SpacecraftManager.instance.GetStarmapAnalysisDestinationID()) / (float)ROCKETRY.DESTINATION_ANALYSIS.COMPLETE;
 				});
 				workerGasProvider = component.GetGasProvider();
 				component.SetGasProvider(this);
 				component.GetComponent<CreatureSimTemperatureTransfer>().enabled = false;
+				component2.AddTag(GameTags.Shaded);
 				break;
 			case WorkableEvent.WorkStopped:
 				component.SetGasProvider(workerGasProvider);
 				component.GetComponent<CreatureSimTemperatureTransfer>().enabled = true;
 				ShowProgressBar(false);
+				component2.RemoveTag(GameTags.Shaded);
 				break;
 			}
 		}
@@ -180,7 +183,7 @@ public class Telescope : Workable, OxygenBreather.IGasProvider, IEffectDescripto
 	{
 		ChoreType research = Db.Get().ChoreTypes.Research;
 		Tag[] researchChores = GameTags.ChoreTypes.ResearchChores;
-		WorkChore<Telescope> workChore = new WorkChore<Telescope>(research, this, null, researchChores, true, null, null, null, true, null, false, true, null, false, true, true, PriorityScreen.PriorityClass.basic, 0, false);
+		WorkChore<Telescope> workChore = new WorkChore<Telescope>(research, this, null, researchChores, true, null, null, null, true, null, false, true, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, false);
 		workChore.AddPrecondition(ContainsOxygen, null);
 		return workChore;
 	}
@@ -216,18 +219,18 @@ public class Telescope : Workable, OxygenBreather.IGasProvider, IEffectDescripto
 
 	public bool ConsumeGas(OxygenBreather oxygen_breather, float amount)
 	{
-		if (storage.items.Count <= 0)
+		if (storage.items.Count > 0)
 		{
+			GameObject gameObject = storage.items[0];
+			if (!((UnityEngine.Object)gameObject == (UnityEngine.Object)null))
+			{
+				PrimaryElement component = gameObject.GetComponent<PrimaryElement>();
+				bool result = component.Mass >= amount;
+				component.Mass = Mathf.Max(0f, component.Mass - amount);
+				return result;
+			}
 			return false;
 		}
-		GameObject gameObject = storage.items[0];
-		if ((UnityEngine.Object)gameObject == (UnityEngine.Object)null)
-		{
-			return false;
-		}
-		PrimaryElement component = gameObject.GetComponent<PrimaryElement>();
-		bool result = component.Mass >= amount;
-		component.Mass = Mathf.Max(0f, component.Mass - amount);
-		return result;
+		return false;
 	}
 }

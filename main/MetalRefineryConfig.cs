@@ -43,7 +43,7 @@ public class MetalRefineryConfig : IBuildingConfig
 		buildingDef.UtilityInputOffset = new CellOffset(-1, 1);
 		buildingDef.OutputConduitType = ConduitType.Liquid;
 		buildingDef.UtilityOutputOffset = new CellOffset(1, 0);
-		buildingDef.ViewMode = SimViewMode.PowerMap;
+		buildingDef.ViewMode = OverlayModes.Power.ID;
 		buildingDef.AudioCategory = "HollowMetal";
 		buildingDef.AudioSize = "large";
 		return buildingDef;
@@ -55,9 +55,9 @@ public class MetalRefineryConfig : IBuildingConfig
 		go.AddOrGet<BuildingComplete>().isManuallyOperated = true;
 		LiquidCooledRefinery liquidCooledRefinery = go.AddOrGet<LiquidCooledRefinery>();
 		liquidCooledRefinery.duplicantOperated = true;
-		liquidCooledRefinery.sideScreenStyle = RefinerySideScreen.StyleSetting.ListInputOutput;
-		RefineryWorkable refineryWorkable = go.AddOrGet<RefineryWorkable>();
-		BuildingTemplates.CreateRefineryStorage(go, liquidCooledRefinery);
+		liquidCooledRefinery.sideScreenStyle = ComplexFabricatorSideScreen.StyleSetting.ListQueueHybrid;
+		ComplexFabricatorWorkable complexFabricatorWorkable = go.AddOrGet<ComplexFabricatorWorkable>();
+		BuildingTemplates.CreateComplexFabricatorStorage(go, liquidCooledRefinery);
 		liquidCooledRefinery.coolantTag = COOLANT_TAG;
 		liquidCooledRefinery.minCoolantMass = 400f;
 		liquidCooledRefinery.outStorage.capacityKg = 2000f;
@@ -66,10 +66,12 @@ public class MetalRefineryConfig : IBuildingConfig
 		liquidCooledRefinery.buildStorage.SetDefaultStoredItemModifiers(RefineryStoredItemModifiers);
 		liquidCooledRefinery.outStorage.SetDefaultStoredItemModifiers(RefineryStoredItemModifiers);
 		liquidCooledRefinery.outputOffset = new Vector3(1f, 0.5f);
-		refineryWorkable.overrideAnims = new KAnimFile[1]
+		complexFabricatorWorkable.overrideAnims = new KAnimFile[1]
 		{
 			Assets.GetAnim("anim_interacts_metalrefinery_kanim")
 		};
+		RequireOutputs requireOutputs = go.AddOrGet<RequireOutputs>();
+		requireOutputs.ignoreFullPipe = true;
 		ConduitConsumer conduitConsumer = go.AddOrGet<ConduitConsumer>();
 		conduitConsumer.capacityTag = GameTags.Liquid;
 		conduitConsumer.capacityKG = 800f;

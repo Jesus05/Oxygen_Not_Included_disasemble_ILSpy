@@ -32,7 +32,7 @@ public class LiquidMiniPumpConfig : IBuildingConfig
 		buildingDef.SelfHeatKilowattsWhenActive = 0.5f;
 		buildingDef.OutputConduitType = ConduitType.Liquid;
 		buildingDef.Floodable = false;
-		buildingDef.ViewMode = SimViewMode.LiquidVentMap;
+		buildingDef.ViewMode = OverlayModes.LiquidConduits.ID;
 		buildingDef.AudioCategory = "Metal";
 		buildingDef.PowerInputOffset = new CellOffset(0, 0);
 		buildingDef.UtilityOutputOffset = new CellOffset(0, 1);

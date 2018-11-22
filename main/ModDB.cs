@@ -73,7 +73,12 @@ internal class ModDB
 		{
 			mods = new List<ModInfo>();
 			ConfirmDialogScreen confirmDialogScreen = (ConfirmDialogScreen)KScreenManager.Instance.StartScreen(ScreenPrefabs.Instance.ConfirmDialogScreen.gameObject, Global.Instance.globalCanvas);
-			confirmDialogScreen.PopupConfirmDialog(string.Format(UI.FRONTEND.MODS.DB_CORRUPT, moddb_filename), null, null, null, null, null, null, null, null);
+			ConfirmDialogScreen confirmDialogScreen2 = confirmDialogScreen;
+			string text = string.Format(UI.FRONTEND.MODS.DB_CORRUPT, moddb_filename);
+			System.Action on_confirm = null;
+			System.Action on_cancel = null;
+			string title_text = UI.FRONTEND.MOD_ERRORS.TITLE;
+			confirmDialogScreen2.PopupConfirmDialog(text, on_confirm, on_cancel, null, null, title_text, null, null, null);
 			UnityEngine.Object.DontDestroyOnLoad(confirmDialogScreen.gameObject);
 		}
 	}
@@ -82,23 +87,23 @@ internal class ModDB
 	{
 		moddb_filename = Path.GetFullPath(moddb_filename);
 		string directoryName = Path.GetDirectoryName(moddb_filename);
-		if (!FileUtil.CreateDirectory(directoryName))
+		if (FileUtil.CreateDirectory(directoryName))
 		{
-			return false;
-		}
-		using (FileStream fileStream = FileUtil.Create(moddb_filename))
-		{
-			if (fileStream == null)
+			using (FileStream fileStream = FileUtil.Create(moddb_filename))
 			{
-				return false;
+				if (fileStream == null)
+				{
+					return false;
+				}
+				using (StreamWriter streamWriter = new StreamWriter(fileStream))
+				{
+					string value = JsonConvert.SerializeObject(mods, Formatting.Indented);
+					streamWriter.Write(value);
+				}
 			}
-			using (StreamWriter streamWriter = new StreamWriter(fileStream))
-			{
-				string value = JsonConvert.SerializeObject(mods, Formatting.Indented);
-				streamWriter.Write(value);
-			}
+			return true;
 		}
-		return true;
+		return false;
 	}
 
 	public void Start(string mods_root)
@@ -149,15 +154,39 @@ internal class ModDB
 					string modDir = GetModDir(mods_root, modInfo);
 					if (Directory.Exists(modDir))
 					{
+						string path = Path.Combine(modDir, "elements.json");
+						if (File.Exists(path))
+						{
+							string fullPath = Path.GetFullPath(path);
+							ElementLoader.additionalJSONFiles.Add(fullPath);
+						}
+						string[] array = new string[2]
+						{
+							"strings.pot",
+							"strings.po"
+						};
+						string[] array2 = array;
+						foreach (string path2 in array2)
+						{
+							string path3 = Path.Combine(modDir, path2);
+							if (File.Exists(path3))
+							{
+								Dictionary<string, string> dictionary = Localization.LoadStringsFile(path3, Path.GetExtension(path3) == ".pot");
+								foreach (KeyValuePair<string, string> item in dictionary)
+								{
+									Strings.Add(item.Key, item.Value);
+								}
+							}
+						}
 						string[] files = Directory.GetFiles(modDir, "*.dll");
-						string[] array = files;
-						foreach (string path in array)
+						string[] array3 = files;
+						foreach (string path4 in array3)
 						{
 							try
 							{
-								string fullPath = Path.GetFullPath(path);
-								Output.Log(string.Format("Loading MOD: {0}, {1}, {2}", modInfo.assetID, (modInfo.description != null) ? modInfo.description : "no desc", fullPath));
-								Assembly assembly = Assembly.LoadFrom(fullPath);
+								string fullPath2 = Path.GetFullPath(path4);
+								Debug.Log(string.Format("Loading MOD: {0}, {1}, {2}", modInfo.assetID, (modInfo.description != null) ? modInfo.description : "no desc", fullPath2), null);
+								Assembly assembly = Assembly.LoadFrom(fullPath2);
 								if (assembly != null)
 								{
 									harmonyInstance?.PatchAll(assembly);
@@ -167,17 +196,24 @@ internal class ModDB
 										infoIdx = i,
 										modDir = modDir
 									});
-									goto IL_01fc;
+									goto IL_0329;
 								}
 							}
 							catch (Exception ex)
 							{
 								modInfo.enabled = false;
 								mods[i] = modInfo;
+								string text = string.Format(UI.FRONTEND.MODS.FAILED_TO_LOAD, modInfo.assetID, modInfo.description, ex.ToString());
+								Debug.Log(text, null);
 								ConfirmDialogScreen confirmDialogScreen = (ConfirmDialogScreen)KScreenManager.Instance.StartScreen(ScreenPrefabs.Instance.ConfirmDialogScreen.gameObject, Global.Instance.globalCanvas);
-								confirmDialogScreen.PopupConfirmDialog(string.Format(UI.FRONTEND.MODS.FAILED_TO_LOAD, modInfo.assetID, modInfo.description, ex.ToString()), null, null, null, null, null, null, null, null);
+								ConfirmDialogScreen confirmDialogScreen2 = confirmDialogScreen;
+								string text2 = text;
+								System.Action on_confirm = null;
+								System.Action on_cancel = null;
+								string title_text = UI.FRONTEND.MOD_ERRORS.TITLE;
+								confirmDialogScreen2.PopupConfirmDialog(text2, on_confirm, on_cancel, null, null, title_text, null, null, null);
 								UnityEngine.Object.DontDestroyOnLoad(confirmDialogScreen.gameObject);
-								goto IL_01fc;
+								goto IL_0329;
 							}
 						}
 					}
@@ -188,9 +224,9 @@ internal class ModDB
 						mods[i] = modInfo;
 					}
 				}
-				IL_01fc:;
+				IL_0329:;
 			}
-			MethodInfoQueryData[] array2 = new MethodInfoQueryData[2]
+			MethodInfoQueryData[] array4 = new MethodInfoQueryData[2]
 			{
 				new MethodInfoQueryData("OnLoad", new Type[0]),
 				new MethodInfoQueryData("OnLoad", new Type[1]
@@ -198,26 +234,26 @@ internal class ModDB
 					typeof(string)
 				})
 			};
-			foreach (ModAssemblyInfo item in list)
+			foreach (ModAssemblyInfo item2 in list)
 			{
-				ModAssemblyInfo current = item;
-				Type[] types = current.assembly.GetTypes();
+				ModAssemblyInfo current2 = item2;
+				Type[] types = current2.assembly.GetTypes();
 				foreach (Type type in types)
 				{
 					if (type != null)
 					{
 						try
 						{
-							MethodInfoQueryData[] array3 = array2;
-							for (int l = 0; l < array3.Length; l++)
+							MethodInfoQueryData[] array5 = array4;
+							for (int m = 0; m < array5.Length; m++)
 							{
-								MethodInfoQueryData methodInfoQueryData = array3[l];
+								MethodInfoQueryData methodInfoQueryData = array5[m];
 								MethodInfo method = type.GetMethod(methodInfoQueryData.methodName, methodInfoQueryData.parameterTypes);
 								if (method != null)
 								{
 									method.Invoke(null, new object[1]
 									{
-										current.modDir
+										current2.modDir
 									});
 									break;
 								}
@@ -225,12 +261,19 @@ internal class ModDB
 						}
 						catch (Exception ex2)
 						{
-							ModInfo value = mods[current.infoIdx];
+							ModInfo value = mods[current2.infoIdx];
 							value.enabled = false;
-							mods[current.infoIdx] = value;
-							ConfirmDialogScreen confirmDialogScreen2 = (ConfirmDialogScreen)KScreenManager.Instance.StartScreen(ScreenPrefabs.Instance.ConfirmDialogScreen.gameObject, Global.Instance.globalCanvas);
-							confirmDialogScreen2.PopupConfirmDialog(string.Format(UI.FRONTEND.MODS.FAILED_TO_LOAD, value.assetID, value.description, ex2.ToString()), null, null, null, null, null, null, null, null);
-							UnityEngine.Object.DontDestroyOnLoad(confirmDialogScreen2.gameObject);
+							mods[current2.infoIdx] = value;
+							string text3 = string.Format(UI.FRONTEND.MODS.FAILED_TO_LOAD, value.assetID, value.description, ex2.ToString());
+							Debug.Log(text3, null);
+							ConfirmDialogScreen confirmDialogScreen3 = (ConfirmDialogScreen)KScreenManager.Instance.StartScreen(ScreenPrefabs.Instance.ConfirmDialogScreen.gameObject, Global.Instance.globalCanvas);
+							ConfirmDialogScreen confirmDialogScreen4 = confirmDialogScreen3;
+							string title_text = text3;
+							System.Action on_cancel = null;
+							System.Action on_confirm = null;
+							string text2 = UI.FRONTEND.MOD_ERRORS.TITLE;
+							confirmDialogScreen4.PopupConfirmDialog(title_text, on_cancel, on_confirm, null, null, text2, null, null, null);
+							UnityEngine.Object.DontDestroyOnLoad(confirmDialogScreen3.gameObject);
 						}
 					}
 				}
@@ -247,29 +290,24 @@ internal class ModDB
 			try
 			{
 				Assembly assembly = Assembly.LoadFile(path);
-				if (assembly == null)
+				if (assembly != null)
 				{
-					return result;
+					Type type = assembly.GetType("ModLoader.ModLoader");
+					if (type != null)
+					{
+						MethodInfo method = type.GetMethod("Start");
+						if (method != null)
+						{
+							method.Invoke(null, null);
+							Console.Out.WriteLine("Started ModLoader.dll");
+							result = true;
+						}
+					}
 				}
-				Type type = assembly.GetType("ModLoader.ModLoader");
-				if (type == null)
-				{
-					return result;
-				}
-				MethodInfo method = type.GetMethod("Start");
-				if (method == null)
-				{
-					return result;
-				}
-				method.Invoke(null, null);
-				Console.Out.WriteLine("Started ModLoader.dll");
-				result = true;
-				return result;
 			}
 			catch (Exception ex)
 			{
 				Console.Out.WriteLine(ex.ToString());
-				return result;
 			}
 		}
 		return result;
@@ -320,52 +358,52 @@ internal class ModDB
 	public bool Uninstall(string mods_root, ModInfo mod_info)
 	{
 		int num = mods.IndexOf(mod_info);
-		if (num < 0)
+		if (num >= 0)
 		{
-			return false;
+			ModInfo value = mods[num];
+			value.enabled = false;
+			value.markedForDelete = true;
+			mods[num] = value;
+			return true;
 		}
-		ModInfo value = mods[num];
-		value.enabled = false;
-		value.markedForDelete = true;
-		mods[num] = value;
-		return true;
+		return false;
 	}
 
 	public bool IsEnabled(ModInfo mod_info)
 	{
 		int num = mods.IndexOf(mod_info);
-		if (num < 0)
+		if (num >= 0)
 		{
-			return false;
+			ModInfo modInfo = mods[num];
+			return modInfo.enabled;
 		}
-		ModInfo modInfo = mods[num];
-		return modInfo.enabled;
+		return false;
 	}
 
 	public bool Enable(ModInfo mod_info)
 	{
 		int num = mods.IndexOf(mod_info);
-		if (num < 0)
+		if (num >= 0)
 		{
-			return false;
+			ModInfo value = mods[num];
+			value.enabled = true;
+			mods[num] = value;
+			return true;
 		}
-		ModInfo value = mods[num];
-		value.enabled = true;
-		mods[num] = value;
-		return true;
+		return false;
 	}
 
 	public bool Disable(ModInfo mod_info)
 	{
 		int num = mods.IndexOf(mod_info);
-		if (num < 0)
+		if (num >= 0)
 		{
-			return false;
+			ModInfo value = mods[num];
+			value.enabled = false;
+			mods[num] = value;
+			return true;
 		}
-		ModInfo value = mods[num];
-		value.enabled = false;
-		mods[num] = value;
-		return true;
+		return false;
 	}
 
 	public string GetModDir(string root, ModInfo info)
@@ -403,7 +441,7 @@ internal class ModDB
 					using (ZipFile zipFile = ZipFile.Read(assetPath))
 					{
 						zipFile.ExtractAll(dest_path, ExtractExistingFileAction.OverwriteSilently);
-						return true;
+						result = true;
 					}
 				}
 			}

@@ -74,7 +74,6 @@ public class RationTracker : KMonoBehaviour, ISaveLoadable
 					}
 				}
 			}
-			return num;
 		}
 		return num;
 	}

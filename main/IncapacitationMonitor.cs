@@ -32,15 +32,15 @@ public class IncapacitationMonitor : GameStateMachine<IncapacitationMonitor, Inc
 		public Death GetCauseOfIncapacitation()
 		{
 			KPrefabID component = GetComponent<KPrefabID>();
-			if (component.HasTag(GameTags.CaloriesDepleted))
+			if (!component.HasTag(GameTags.CaloriesDepleted))
 			{
-				return Db.Get().Deaths.Starvation;
-			}
-			if (component.HasTag(GameTags.HitPointsDepleted))
-			{
+				if (!component.HasTag(GameTags.HitPointsDepleted))
+				{
+					return Db.Get().Deaths.Generic;
+				}
 				return Db.Get().Deaths.Slain;
 			}
-			return Db.Get().Deaths.Generic;
+			return Db.Get().Deaths.Starvation;
 		}
 	}
 
@@ -74,7 +74,7 @@ public class IncapacitationMonitor : GameStateMachine<IncapacitationMonitor, Inc
 			GameTags.HitPointsDepleted
 		}, healthy, true);
 		Incapacitated.EventTransition(GameHashes.IncapacitationRecovery, start_recovery, null).ToggleTag(GameTags.Incapacitated).ToggleRecurringChore((Instance smi) => new BeIncapacitatedChore(smi.master), null)
-			.ParamTransition(bleedOutStamina, die, (Instance smi, float parameter) => parameter <= 0f)
+			.ParamTransition(bleedOutStamina, die, GameStateMachine<IncapacitationMonitor, Instance, IStateMachineTarget, object>.IsLTEZero)
 			.ToggleUrge(Db.Get().Urges.BeIncapacitated)
 			.Enter(delegate(Instance smi)
 			{

@@ -18,10 +18,7 @@ public class AquaSuitConfig : IEquipmentConfig
 		list.Add(new AttributeModifier(TUNING.EQUIPMENT.ATTRIBUTE_MOD_IDS.MAX_UNDERWATER_TRAVELCOST, (float)TUNING.EQUIPMENT.SUITS.AQUASUIT_UNDERWATER_TRAVELCOST, STRINGS.EQUIPMENT.PREFABS.AQUA_SUIT.NAME, false, false, true));
 		string id = "Aqua_Suit";
 		string sLOT = TUNING.EQUIPMENT.SUITS.SLOT;
-		string fABRICATOR = TUNING.EQUIPMENT.SUITS.FABRICATOR;
-		float fabricationTime = (float)TUNING.EQUIPMENT.SUITS.AQUASUIT_FABTIME;
 		SimHashes outputElement = SimHashes.Water;
-		Dictionary<string, float> inputElementMassMap = dictionary;
 		float mass = (float)TUNING.EQUIPMENT.SUITS.AQUASUIT_MASS;
 		string anim = "suit_water_slow_kanim";
 		string sNAPON = TUNING.EQUIPMENT.SUITS.SNAPON;
@@ -32,7 +29,7 @@ public class AquaSuitConfig : IEquipmentConfig
 		{
 			GameTags.Suit
 		};
-		EquipmentDef equipmentDef = EquipmentTemplates.CreateEquipmentDef(id, sLOT, fABRICATOR, fabricationTime, outputElement, inputElementMassMap, mass, anim, sNAPON, buildOverride, buildOverridePriority, attributeModifiers, null, false, EntityTemplates.CollisionShape.CIRCLE, 0.325f, 0.325f, additional_tags, null);
+		EquipmentDef equipmentDef = EquipmentTemplates.CreateEquipmentDef(id, sLOT, outputElement, mass, anim, sNAPON, buildOverride, buildOverridePriority, attributeModifiers, null, false, EntityTemplates.CollisionShape.CIRCLE, 0.325f, 0.325f, additional_tags, null);
 		equipmentDef.RecipeDescription = STRINGS.EQUIPMENT.PREFABS.AQUA_SUIT.RECIPE_DESC;
 		return equipmentDef;
 	}

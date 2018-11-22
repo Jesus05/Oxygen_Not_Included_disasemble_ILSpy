@@ -17,7 +17,7 @@ public class FrontEndBackground : UIDupeRandomizer
 
 	private KBatchedAnimController dreckoController;
 
-	private float nextDreckoTime;
+	private float nextDreckoTime = 0f;
 
 	private Tuning tuning;
 

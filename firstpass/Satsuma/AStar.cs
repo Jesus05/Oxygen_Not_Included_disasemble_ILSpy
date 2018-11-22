@@ -65,11 +65,11 @@ namespace Satsuma
 		public IPath GetPath(Node node)
 		{
 			CheckTarget(node);
-			if (!dijkstra.Fixed(node))
+			if (dijkstra.Fixed(node))
 			{
-				return null;
+				return dijkstra.GetPath(node);
 			}
-			return dijkstra.GetPath(node);
+			return null;
 		}
 	}
 }

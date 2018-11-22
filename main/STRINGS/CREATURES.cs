@@ -194,14 +194,14 @@ namespace STRINGS
 
 					public static LocString NAME = UI.FormatAsLink("Glossy Drecko", "DRECKOPLASTIC");
 
-					public static LocString DESC = "Glossy Dreckos are slinking creatures that can clamber up walls with unexpected speed.\n\nTheir backsides are covered in bioplastic scales that only grow in " + UI.FormatAsLink("Hydrogen", "HYDROGEN") + " climates.";
+					public static LocString DESC = "Glossy Dreckos are nonhostile critters that graze only on live " + UI.FormatAsLink("Mealwood Plants", "BASICSINGLEHARVESTPLANT") + ".\n\nTheir backsides are covered in bioplastic scales that only grow in " + UI.FormatAsLink("Hydrogen", "HYDROGEN") + " climates.";
 
 					public static LocString EGG_NAME = UI.FormatAsLink("Glossy Drecklet Egg", "DRECKOPLASTIC");
 				}
 
 				public static LocString NAME = UI.FormatAsLink("Drecko", "DRECKO");
 
-				public static LocString DESC = "Dreckos are slinking creatures that can clamber up walls with unexpected speed.\n\nTheir backsides are covered in thick woolly fibers that only grow in " + UI.FormatAsLink("Hydrogen", "HYDROGEN") + " climates.";
+				public static LocString DESC = "Dreckos are nonhostile critters that graze only on live " + UI.FormatAsLink("Mealwood Plants", "BASICSINGLEHARVESTPLANT") + ".\n\nTheir backsides are covered in thick woolly fibers that only grow in " + UI.FormatAsLink("Hydrogen", "HYDROGEN") + " climates.";
 
 				public static LocString EGG_NAME = UI.FormatAsLink("Drecklet Egg", "DRECKO");
 			}
@@ -329,9 +329,9 @@ namespace STRINGS
 			{
 				public class BABY
 				{
-					public static LocString NAME = UI.FormatAsLink("Shove Vole Baby", "MOLE");
+					public static LocString NAME = UI.FormatAsLink("Vole Pup", "MOLE");
 
-					public static LocString DESC = string.Empty;
+					public static LocString DESC = "A snuggly little pup.\n\nOne day it will grow into an adult " + UI.FormatAsLink("Shove Vole", "MOLE") + ".";
 				}
 
 				public static LocString NAME = UI.FormatAsLink("Shove Vole", "MOLE");

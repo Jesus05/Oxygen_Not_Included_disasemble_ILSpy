@@ -247,7 +247,7 @@ public class ReportManager : KMonoBehaviour
 
 			public string GetStringByHash(int hash)
 			{
-				string value = string.Empty;
+				string value = "";
 				strings.TryGetValue(hash, out value);
 				return value;
 			}
@@ -295,19 +295,19 @@ public class ReportManager : KMonoBehaviour
 
 				public bool Matches(int report_entry_id, int note_hash, float value)
 				{
-					if (report_entry_id != reportEntryId)
+					if (report_entry_id == reportEntryId)
 					{
+						if (note_hash == noteHash)
+						{
+							if (value > 0f == this.value > 0f)
+							{
+								return true;
+							}
+							return false;
+						}
 						return false;
 					}
-					if (note_hash != noteHash)
-					{
-						return false;
-					}
-					if (value > 0f != this.value > 0f)
-					{
-						return false;
-					}
-					return true;
+					return false;
 				}
 			}
 
@@ -525,19 +525,19 @@ public class ReportManager : KMonoBehaviour
 		},
 		{
 			ReportType.DiseaseStatus,
-			new ReportGroup((float v) => GameUtil.GetFormattedDiseaseAmount((int)v), true, 1, UI.ENDOFDAYREPORT.DISEASE_STATUS.NAME, UI.ENDOFDAYREPORT.DISEASE_STATUS.TOOLTIP, string.Empty, ReportEntry.Order.Descending, ReportEntry.Order.Descending)
+			new ReportGroup((float v) => GameUtil.GetFormattedDiseaseAmount((int)v), true, 1, UI.ENDOFDAYREPORT.DISEASE_STATUS.NAME, UI.ENDOFDAYREPORT.DISEASE_STATUS.TOOLTIP, "", ReportEntry.Order.Descending, ReportEntry.Order.Descending)
 		},
 		{
 			ReportType.TimeSpent,
-			new ReportGroup(GameUtil.GetFormattedTime, true, 1, UI.ENDOFDAYREPORT.TIME_SPENT.NAME, UI.ENDOFDAYREPORT.TIME_SPENT.POSITIVE_TOOLTIP, string.Empty, ReportEntry.Order.Descending, ReportEntry.Order.Descending)
+			new ReportGroup((float v) => GameUtil.GetFormattedTime(v), true, 1, UI.ENDOFDAYREPORT.TIME_SPENT.NAME, UI.ENDOFDAYREPORT.TIME_SPENT.POSITIVE_TOOLTIP, "", ReportEntry.Order.Descending, ReportEntry.Order.Descending)
 		},
 		{
 			ReportType.TravelTime,
-			new ReportGroup(GameUtil.GetFormattedTime, true, 1, UI.ENDOFDAYREPORT.TRAVEL_TIME.NAME, UI.ENDOFDAYREPORT.TRAVEL_TIME.POSITIVE_TOOLTIP, string.Empty, ReportEntry.Order.Descending, ReportEntry.Order.Descending)
+			new ReportGroup((float v) => GameUtil.GetFormattedTime(v), true, 1, UI.ENDOFDAYREPORT.TRAVEL_TIME.NAME, UI.ENDOFDAYREPORT.TRAVEL_TIME.POSITIVE_TOOLTIP, "", ReportEntry.Order.Descending, ReportEntry.Order.Descending)
 		},
 		{
 			ReportType.IdleTime,
-			new ReportGroup(GameUtil.GetFormattedTime, true, 2, UI.ENDOFDAYREPORT.IDLE_TIME.NAME, UI.ENDOFDAYREPORT.IDLE_TIME.POSITIVE_TOOLTIP, string.Empty, ReportEntry.Order.Descending, ReportEntry.Order.Descending)
+			new ReportGroup((float v) => GameUtil.GetFormattedTime(v), true, 2, UI.ENDOFDAYREPORT.IDLE_TIME.NAME, UI.ENDOFDAYREPORT.IDLE_TIME.POSITIVE_TOOLTIP, "", ReportEntry.Order.Descending, ReportEntry.Order.Descending)
 		},
 		{
 			ReportType.OxygenCreated,
@@ -553,11 +553,11 @@ public class ReportManager : KMonoBehaviour
 		},
 		{
 			ReportType.LevelUp,
-			new ReportGroup(null, false, 2, UI.ENDOFDAYREPORT.LEVEL_UP.NAME, UI.ENDOFDAYREPORT.LEVEL_UP.TOOLTIP, string.Empty, ReportEntry.Order.Descending, ReportEntry.Order.Descending)
+			new ReportGroup(null, false, 2, UI.ENDOFDAYREPORT.LEVEL_UP.NAME, UI.ENDOFDAYREPORT.LEVEL_UP.TOOLTIP, "", ReportEntry.Order.Descending, ReportEntry.Order.Descending)
 		},
 		{
 			ReportType.ToiletIncident,
-			new ReportGroup(null, false, 2, UI.ENDOFDAYREPORT.TOILET_INCIDENT.NAME, UI.ENDOFDAYREPORT.TOILET_INCIDENT.TOOLTIP, string.Empty, ReportEntry.Order.Descending, ReportEntry.Order.Descending)
+			new ReportGroup(null, false, 2, UI.ENDOFDAYREPORT.TOILET_INCIDENT.NAME, UI.ENDOFDAYREPORT.TOILET_INCIDENT.TOOLTIP, "", ReportEntry.Order.Descending, ReportEntry.Order.Descending)
 		},
 		{
 			ReportType.ContaminatedOxygenToilet,
@@ -584,15 +584,6 @@ public class ReportManager : KMonoBehaviour
 	[CompilerGenerated]
 	private static FormattingFn _003C_003Ef__mg_0024cache1;
 
-	[CompilerGenerated]
-	private static FormattingFn _003C_003Ef__mg_0024cache2;
-
-	[CompilerGenerated]
-	private static FormattingFn _003C_003Ef__mg_0024cache3;
-
-	[CompilerGenerated]
-	private static FormattingFn _003C_003Ef__mg_0024cache4;
-
 	public List<DailyReport> reports => dailyReports;
 
 	public static ReportManager Instance
@@ -602,6 +593,18 @@ public class ReportManager : KMonoBehaviour
 	}
 
 	public DailyReport TodaysReport => todaysReport;
+
+	public DailyReport YesterdaysReport
+	{
+		get
+		{
+			if (dailyReports.Count > 1)
+			{
+				return dailyReports[dailyReports.Count - 1];
+			}
+			return null;
+		}
+	}
 
 	public static void DestroyInstance()
 	{
@@ -674,7 +677,7 @@ public class ReportManager : KMonoBehaviour
 		}
 		else
 		{
-			notifier.Add(notification, string.Empty);
+			notifier.Add(notification, "");
 		}
 		todaysReport = new DailyReport(this);
 		todaysReport.day = GameUtil.GetCurrentCycle() + 1;
@@ -689,10 +692,10 @@ public class ReportManager : KMonoBehaviour
 				return dailyReport;
 			}
 		}
-		if (todaysReport.day == day)
+		if (todaysReport.day != day)
 		{
-			return todaysReport;
+			return null;
 		}
-		return null;
+		return todaysReport;
 	}
 }

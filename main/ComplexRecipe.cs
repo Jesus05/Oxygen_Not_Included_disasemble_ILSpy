@@ -7,7 +7,11 @@ public class ComplexRecipe
 	{
 		public Tag material;
 
-		public float amount;
+		public float amount
+		{
+			get;
+			private set;
+		}
 
 		public RecipeElement(Tag material, float amount)
 		{
@@ -26,13 +30,17 @@ public class ComplexRecipe
 
 	public GameObject FabricationVisualizer;
 
-	public bool useResultAsDescription;
+	public bool useResultAsDescription = false;
+
+	public bool displayInputAndOutput = false;
 
 	public string description;
 
 	public List<Tag> fabricators;
 
-	public int sortOrder;
+	public int sortOrder = 0;
+
+	public string requiredTech;
 
 	public ComplexRecipe(string id, RecipeElement[] ingredients, RecipeElement[] results)
 	{
@@ -51,6 +59,16 @@ public class ComplexRecipe
 			num += recipeElement.amount;
 		}
 		return num;
+	}
+
+	public bool IsRequiredTechUnlocked()
+	{
+		if (!string.IsNullOrEmpty(requiredTech))
+		{
+			Tech tech = Db.Get().Techs.Get(requiredTech);
+			return tech.IsComplete();
+		}
+		return true;
 	}
 
 	public Sprite GetUIIcon()

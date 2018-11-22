@@ -33,7 +33,7 @@ public class AirConditionerConfig : IBuildingConfig
 		buildingDef.OutputConduitType = ConduitType.Gas;
 		buildingDef.PowerInputOffset = new CellOffset(1, 0);
 		buildingDef.PermittedRotations = PermittedRotations.FlipH;
-		buildingDef.ViewMode = SimViewMode.GasVentMap;
+		buildingDef.ViewMode = OverlayModes.GasConduits.ID;
 		return buildingDef;
 	}
 

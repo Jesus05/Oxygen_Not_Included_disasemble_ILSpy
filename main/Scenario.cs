@@ -471,8 +471,7 @@ public class Scenario : KMonoBehaviour
 
 	private void SetupPlacerTest(Builder b, Element element)
 	{
-		BuildingDef[] buildingDefs = Assets.BuildingDefs;
-		foreach (BuildingDef buildingDef in buildingDefs)
+		foreach (BuildingDef buildingDef in Assets.BuildingDefs)
 		{
 			if (buildingDef.Name != "Excavator")
 			{
@@ -489,8 +488,7 @@ public class Scenario : KMonoBehaviour
 			b.Minion(null);
 			b.Minion(null);
 		}
-		BuildingDef[] buildingDefs = Assets.BuildingDefs;
-		foreach (BuildingDef buildingDef in buildingDefs)
+		foreach (BuildingDef buildingDef in Assets.BuildingDefs)
 		{
 			if (buildingDef.Name != "Excavator")
 			{
@@ -929,11 +927,11 @@ public class Scenario : KMonoBehaviour
 		int cell = Grid.OffsetCell(RootCell, x, y);
 		Tag tag = TagManager.Create(name);
 		GameObject prefab = Assets.GetPrefab(tag);
-		if ((UnityEngine.Object)prefab == (UnityEngine.Object)null)
+		if (!((UnityEngine.Object)prefab == (UnityEngine.Object)null))
 		{
-			return null;
+			return GameUtil.KInstantiate(prefab, Grid.CellToPosCBC(cell, scene_layer), scene_layer, null, 0);
 		}
-		return GameUtil.KInstantiate(prefab, Grid.CellToPosCBC(cell, scene_layer), scene_layer, null, 0);
+		return null;
 	}
 
 	public void SetupElementTest()

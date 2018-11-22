@@ -26,7 +26,7 @@ public class AudioMixer
 
 	public List<HashedString> SnapshotDebugLog = new List<HashedString>();
 
-	public bool activeNIS;
+	public bool activeNIS = false;
 
 	public static float LOW_PRIORITY_CUTOFF_DISTANCE = 10f;
 
@@ -133,11 +133,11 @@ public class AudioMixer
 
 	public bool SnapshotIsActive(HashedString snapshot_name)
 	{
-		if (activeSnapshots.ContainsKey(snapshot_name))
+		if (!activeSnapshots.ContainsKey(snapshot_name))
 		{
-			return true;
+			return false;
 		}
-		return false;
+		return true;
 	}
 
 	public void SetSnapshotParameter(string snapshot_name, string parameter_name, float parameter_value, bool shouldLog = true)

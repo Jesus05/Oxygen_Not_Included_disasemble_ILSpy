@@ -15,6 +15,14 @@ public class LogicGateBuffer : LogicGate, ISingleSliderControl, ISliderControl
 
 	private MeterController meter;
 
+	[MyCmpAdd]
+	private CopyBuildingSettings copyBuildingSettings;
+
+	private static readonly EventSystem.IntraObjectHandler<LogicGateBuffer> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<LogicGateBuffer>(delegate(LogicGateBuffer component, object data)
+	{
+		component.OnCopySettings(data);
+	});
+
 	public float DelayAmount
 	{
 		get
@@ -59,6 +67,22 @@ public class LogicGateBuffer : LogicGate, ISingleSliderControl, ISliderControl
 	public string GetSliderTooltipKey(int index)
 	{
 		return "STRINGS.UI.UISIDESCREENS.LOGIC_DELAY_SIDE_SCREEN.TOOLTIP";
+	}
+
+	protected override void OnPrefabInit()
+	{
+		base.OnPrefabInit();
+		Subscribe(-905833192, OnCopySettingsDelegate);
+	}
+
+	private void OnCopySettings(object data)
+	{
+		GameObject gameObject = (GameObject)data;
+		LogicGateBuffer component = gameObject.GetComponent<LogicGateBuffer>();
+		if ((Object)component != (Object)null)
+		{
+			DelayAmount = component.DelayAmount;
+		}
 	}
 
 	protected override void OnSpawn()

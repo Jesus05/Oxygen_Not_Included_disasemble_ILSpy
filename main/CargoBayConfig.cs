@@ -26,7 +26,6 @@ public class CargoBayConfig : IBuildingConfig
 		}, construction_materials, 9999f, BuildLocationRule.BuildingAttachPoint, BUILDINGS.DECOR.NONE, tIER, 0.2f);
 		BuildingTemplates.CreateRocketBuildingDef(buildingDef);
 		buildingDef.SceneLayer = Grid.SceneLayer.BuildingFront;
-		buildingDef.ViewMode = SimViewMode.None;
 		buildingDef.Invincible = true;
 		buildingDef.OverheatTemperature = 2273.15f;
 		buildingDef.Floodable = false;

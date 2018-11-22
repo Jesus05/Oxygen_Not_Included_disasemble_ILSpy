@@ -114,7 +114,7 @@ public static class Localization
 		new Locale(Language.Thai, Direction.LeftToRight, "th", "NotoSansThai-Regular"),
 		new Locale(Language.Arabic, Direction.RightToLeft, "ar", "NotoNaskhArabic-Regular"),
 		new Locale(Language.Hebrew, Direction.RightToLeft, "he", "NotoSansHebrew-Regular"),
-		new Locale(Language.Unspecified, Direction.LeftToRight, string.Empty, "RobotoCondensed-Regular")
+		new Locale(Language.Unspecified, Direction.LeftToRight, "", "RobotoCondensed-Regular")
 	};
 
 	private static Locale sLocale = null;
@@ -151,7 +151,7 @@ public static class Localization
 		case SelectedLanguageType.Preinstalled:
 		{
 			Debug.Log("Initialize... Preinstalled localization", null);
-			string @string = KPlayerPrefs.GetString(SELECTED_LANGUAGE_CODE_KEY, string.Empty);
+			string @string = KPlayerPrefs.GetString(SELECTED_LANGUAGE_CODE_KEY, "");
 			LoadPreinstalledTranslation(@string);
 			return;
 		}
@@ -196,21 +196,21 @@ public static class Localization
 
 	public static bool LoadLocalTranslationFile(SelectedLanguageType source, string path)
 	{
-		if (File.Exists(path))
+		if (!File.Exists(path))
 		{
-			string[] lines = File.ReadAllLines(path, Encoding.UTF8);
-			bool flag = LoadTranslationFromLines(lines);
-			if (flag)
-			{
-				KPlayerPrefs.SetString(SELECTED_LANGUAGE_TYPE_KEY, source.ToString());
-			}
-			else
-			{
-				ClearLanguage();
-			}
-			return flag;
+			return false;
 		}
-		return false;
+		string[] lines = File.ReadAllLines(path, Encoding.UTF8);
+		bool flag = LoadTranslationFromLines(lines);
+		if (flag)
+		{
+			KPlayerPrefs.SetString(SELECTED_LANGUAGE_TYPE_KEY, source.ToString());
+		}
+		else
+		{
+			ClearLanguage();
+		}
+		return flag;
 	}
 
 	private static bool LoadTranslationFromLines(string[] lines)
@@ -242,6 +242,12 @@ public static class Localization
 			Debug.LogWarning(obj, null);
 			return false;
 		}
+	}
+
+	public static Dictionary<string, string> LoadStringsFile(string path, bool isTemplate)
+	{
+		string[] lines = File.ReadAllLines(path, Encoding.UTF8);
+		return ExtractTranslatedStrings(lines, isTemplate);
 	}
 
 	private static Dictionary<string, string> ExtractTranslatedStrings(string[] lines, bool isTemplate = false)
@@ -290,36 +296,36 @@ public static class Localization
 
 	private static string GetParameter(string key, int idx, string[] all_lines)
 	{
-		if (!all_lines[idx].StartsWith(key))
+		if (all_lines[idx].StartsWith(key))
 		{
-			return null;
-		}
-		List<string> list = new List<string>();
-		string text = all_lines[idx];
-		text = text.Substring(key.Length + 1, text.Length - key.Length - 1);
-		list.Add(text);
-		for (int i = idx + 1; i < all_lines.Length; i++)
-		{
-			string text2 = all_lines[i];
-			if (!text2.StartsWith("\""))
+			List<string> list = new List<string>();
+			string text = all_lines[idx];
+			text = text.Substring(key.Length + 1, text.Length - key.Length - 1);
+			list.Add(text);
+			for (int i = idx + 1; i < all_lines.Length; i++)
 			{
-				break;
+				string text2 = all_lines[i];
+				if (!text2.StartsWith("\""))
+				{
+					break;
+				}
+				list.Add(text2);
 			}
-			list.Add(text2);
-		}
-		string text3 = string.Empty;
-		foreach (string item in list)
-		{
-			string text4 = item;
-			if (text4.EndsWith("\r"))
+			string text3 = "";
+			foreach (string item in list)
 			{
-				text4 = text4.Substring(0, text4.Length - 1);
+				string text4 = item;
+				if (text4.EndsWith("\r"))
+				{
+					text4 = text4.Substring(0, text4.Length - 1);
+				}
+				text4 = text4.Substring(1, text4.Length - 2);
+				text4 = FixupString(text4);
+				text3 += text4;
 			}
-			text4 = text4.Substring(1, text4.Length - 2);
-			text4 = FixupString(text4);
-			text3 += text4;
+			return text3;
 		}
-		return text3;
+		return null;
 	}
 
 	private static void OverloadStrings(Dictionary<string, string> translated_strings)
@@ -328,9 +334,9 @@ public static class Localization
 		IEnumerable<Type> source = from t in assembly.GetTypes()
 		where t.IsClass && t.Namespace == "STRINGS" && !t.IsNested
 		select t;
-		string parameter_errors = string.Empty;
-		string link_errors = string.Empty;
-		string link_count_errors = string.Empty;
+		string parameter_errors = "";
+		string link_errors = "";
+		string link_count_errors = "";
 		List<Type> list = source.ToList();
 		foreach (Type item in list)
 		{
@@ -423,14 +429,14 @@ public static class Localization
 	public static Texture2D GetPreinstalledLocalizationImage(string code)
 	{
 		string path = Path.Combine(Application.streamingAssetsPath, "Mods/preinstalled_icon_" + code + ".png");
-		if (File.Exists(path))
+		if (!File.Exists(path))
 		{
-			byte[] data = File.ReadAllBytes(path);
-			Texture2D texture2D = new Texture2D(2, 2);
-			texture2D.LoadImage(data);
-			return texture2D;
+			return null;
 		}
-		return null;
+		byte[] data = File.ReadAllBytes(path);
+		Texture2D texture2D = new Texture2D(2, 2);
+		texture2D.LoadImage(data);
+		return texture2D;
 	}
 
 	public static void SetLocale(Locale locale)
@@ -444,8 +450,8 @@ public static class Localization
 		if (line.StartsWith("\"Font:"))
 		{
 			result = line.Substring("\"Font:".Length).Trim();
-			result = result.Replace("\\n", string.Empty);
-			result = result.Replace("\"", string.Empty);
+			result = result.Replace("\\n", "");
+			result = result.Replace("\"", "");
 		}
 		return result;
 	}
@@ -456,8 +462,8 @@ public static class Localization
 		if (line.StartsWith("\"Language:"))
 		{
 			result = line.Substring("\"Language:".Length).Trim();
-			result = result.Replace("\\n", string.Empty);
-			result = result.Replace("\"", string.Empty);
+			result = result.Replace("\\n", "");
+			result = result.Replace("\"", "");
 		}
 		return result;
 	}
@@ -469,7 +475,8 @@ public static class Localization
 		{
 			if (locale.MatchesCode(code))
 			{
-				return locale;
+				result = locale;
+				break;
 			}
 		}
 		return result;
@@ -501,7 +508,7 @@ public static class Localization
 		{
 			locale = GetDefaultLocale();
 		}
-		if (text != null && locale.Code == string.Empty)
+		if (text != null && locale.Code == "")
 		{
 			locale.SetCode(text);
 		}
@@ -531,7 +538,8 @@ public static class Localization
 		{
 			if (locale.Lang == Language.Unspecified)
 			{
-				return new Locale(locale);
+				result = new Locale(locale);
+				break;
 			}
 		}
 		return result;
@@ -544,7 +552,8 @@ public static class Localization
 		{
 			if (locale.Lang == Language.Unspecified)
 			{
-				return locale.FontName;
+				result = locale.FontName;
+				break;
 			}
 		}
 		return result;
@@ -659,16 +668,16 @@ public static class Localization
 		{
 			return false;
 		}
-		if (num2 < num)
+		if (num2 >= num)
 		{
-			return false;
+			int num3 = str.IndexOf("<link", num + 1);
+			if (num >= 0 && num3 != -1 && num3 < num2)
+			{
+				return false;
+			}
+			return HasMatchingLinkTags(str, num2 + 1);
 		}
-		int num3 = str.IndexOf("<link", num + 1);
-		if (num >= 0 && num3 != -1 && num3 < num2)
-		{
-			return false;
-		}
-		return HasMatchingLinkTags(str, num2 + 1);
+		return false;
 	}
 
 	private static bool AreParametersPreserved(string old_string, string new_string)
@@ -715,10 +724,10 @@ public static class Localization
 					}
 					if (!flag)
 					{
-						return false;
+						result = false;
+						break;
 					}
 				}
-				return result;
 			}
 			finally
 			{
@@ -752,7 +761,7 @@ public static class Localization
 		sFontAsset = null;
 		sLocale = null;
 		KPlayerPrefs.SetString(SELECTED_LANGUAGE_TYPE_KEY, 0.ToString());
-		KPlayerPrefs.SetString(SELECTED_LANGUAGE_CODE_KEY, string.Empty);
+		KPlayerPrefs.SetString(SELECTED_LANGUAGE_CODE_KEY, "");
 		SwapToLocalizedFont(GetDefaultLocale().FontName);
 		string defaultLocalizationFilePath = GetDefaultLocalizationFilePath();
 		if (File.Exists(defaultLocalizationFilePath))
@@ -770,7 +779,7 @@ public static class Localization
 			'\n'
 		};
 		string[] array = source.Split(separator);
-		string text = string.Empty;
+		string text = "";
 		int num = 0;
 		string[] array2 = array;
 		foreach (string text2 in array2)
@@ -792,7 +801,7 @@ public static class Localization
 
 	public static string Fixup(string text)
 	{
-		if (sLocale != null && text != null && text != string.Empty && sLocale.Lang == Language.Arabic)
+		if (sLocale != null && text != null && text != "" && sLocale.Lang == Language.Arabic)
 		{
 			return ReverseText(ArabicFixer.Fix(text));
 		}

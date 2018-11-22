@@ -12,7 +12,7 @@ public class MaterialSelector : KScreen
 
 	public Dictionary<Element, KToggle> ElementToggles = new Dictionary<Element, KToggle>();
 
-	public Dictionary<Recipe, Element> previouslySelectedElements = new Dictionary<Recipe, Element>();
+	public int selectorIndex = 0;
 
 	public SelectMaterialActions selectMaterialActions;
 
@@ -23,6 +23,8 @@ public class MaterialSelector : KScreen
 	public GameObject TogglePrefab;
 
 	public GameObject LayoutContainer;
+
+	public KScrollRect ScrollRect;
 
 	public GameObject Scrollbar;
 
@@ -129,7 +131,7 @@ public class MaterialSelector : KScreen
 		}
 	}
 
-	public void OnSelectMaterial(Element elem, Recipe recipe)
+	public void OnSelectMaterial(Element elem, Recipe recipe, bool focusScrollRect = false)
 	{
 		KToggle x = ElementToggles[elem];
 		if ((Object)x != (Object)selectedToggle)
@@ -137,7 +139,7 @@ public class MaterialSelector : KScreen
 			selectedToggle = x;
 			if (recipe != null)
 			{
-				previouslySelectedElements[recipe] = elem;
+				SaveGame.Instance.materialSelectorSerializer.SetSelectedElement(selectorIndex, recipe.Result, elem.tag);
 			}
 			CurrentSelectedElement = elem;
 			if (selectMaterialActions != null)
@@ -155,6 +157,18 @@ public class MaterialSelector : KScreen
 			{
 				DescriptorsPanel.SetActive(true);
 			}
+		}
+		if (focusScrollRect && ElementToggles.Count > 1)
+		{
+			List<Element> list = new List<Element>();
+			foreach (KeyValuePair<Element, KToggle> elementToggle in ElementToggles)
+			{
+				list.Add(elementToggle.Key);
+			}
+			list.Sort(ElementSorter);
+			int num = list.IndexOf(elem);
+			float x2 = (float)num / (float)(list.Count - 1);
+			ScrollRect.normalizedPosition = new Vector2(x2, 0f);
 		}
 		RefreshToggleContents();
 	}
@@ -181,7 +195,7 @@ public class MaterialSelector : KScreen
 			{
 				value.onClick += delegate
 				{
-					OnSelectMaterial(elem, activeRecipe);
+					OnSelectMaterial(elem, activeRecipe, false);
 				};
 			}
 		}
@@ -197,45 +211,46 @@ public class MaterialSelector : KScreen
 
 	public bool AutoSelectAvailableMaterial()
 	{
-		if (activeRecipe == null || ElementToggles.Count == 0)
+		if (activeRecipe != null && ElementToggles.Count != 0)
 		{
-			return false;
-		}
-		previouslySelectedElements.TryGetValue(activeRecipe, out Element value);
-		if (value != null)
-		{
-			ElementToggles.TryGetValue(value, out KToggle value2);
-			if ((Object)value2 != (Object)null && (DebugHandler.InstantBuildMode || Game.Instance.SandboxModeActive || WorldInventory.Instance.GetAmount(value.tag) >= activeMass))
+			Tag previousElement = SaveGame.Instance.materialSelectorSerializer.GetPreviousElement(selectorIndex, activeRecipe.Result);
+			Element element = ElementLoader.GetElement(previousElement);
+			if (element != null)
 			{
-				OnSelectMaterial(value, activeRecipe);
+				ElementToggles.TryGetValue(element, out KToggle value);
+				if ((Object)value != (Object)null && (DebugHandler.InstantBuildMode || Game.Instance.SandboxModeActive || WorldInventory.Instance.GetAmount(element.tag) >= activeMass))
+				{
+					OnSelectMaterial(element, activeRecipe, true);
+					return true;
+				}
+			}
+			float num = -1f;
+			List<Element> list = new List<Element>();
+			foreach (KeyValuePair<Element, KToggle> elementToggle in ElementToggles)
+			{
+				list.Add(elementToggle.Key);
+			}
+			list.Sort(ElementSorter);
+			if (!DebugHandler.InstantBuildMode && !Game.Instance.SandboxModeActive)
+			{
+				Element element2 = null;
+				foreach (Element item in list)
+				{
+					float amount = WorldInventory.Instance.GetAmount(item.tag);
+					if (amount >= activeMass && amount > num)
+					{
+						num = amount;
+						element2 = item;
+					}
+				}
+				if (element2 == null)
+				{
+					return false;
+				}
+				OnSelectMaterial(element2, activeRecipe, true);
 				return true;
 			}
-		}
-		float num = -1f;
-		List<Element> list = new List<Element>();
-		foreach (KeyValuePair<Element, KToggle> elementToggle in ElementToggles)
-		{
-			list.Add(elementToggle.Key);
-		}
-		list.Sort(ElementSorter);
-		if (DebugHandler.InstantBuildMode || Game.Instance.SandboxModeActive)
-		{
-			OnSelectMaterial(list[0], activeRecipe);
-			return true;
-		}
-		Element element = null;
-		foreach (Element item in list)
-		{
-			float amount = WorldInventory.Instance.GetAmount(item.tag);
-			if (amount >= activeMass && amount > num)
-			{
-				num = amount;
-				element = item;
-			}
-		}
-		if (element != null)
-		{
-			OnSelectMaterial(element, activeRecipe);
+			OnSelectMaterial(list[0], activeRecipe, true);
 			return true;
 		}
 		return false;
@@ -357,10 +372,10 @@ public class MaterialSelector : KScreen
 
 	private int ElementSorter(Element a, Element b)
 	{
-		if (a.buildMenuSort != b.buildMenuSort)
+		if (a.buildMenuSort == b.buildMenuSort)
 		{
-			return a.buildMenuSort.CompareTo(b.buildMenuSort);
+			return a.idx.CompareTo(b.idx);
 		}
-		return a.idx.CompareTo(b.idx);
+		return a.buildMenuSort.CompareTo(b.buildMenuSort);
 	}
 }

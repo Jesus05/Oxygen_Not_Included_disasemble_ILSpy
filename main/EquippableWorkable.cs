@@ -8,7 +8,7 @@ public class EquippableWorkable : Workable, ISaveLoadable
 
 	private Chore chore;
 
-	private QualityLevel quality;
+	private QualityLevel quality = QualityLevel.Poor;
 
 	protected override void OnPrefabInit()
 	{
@@ -38,7 +38,7 @@ public class EquippableWorkable : Workable, ISaveLoadable
 
 	private void CreateChore()
 	{
-		chore = new WorkChore<EquippableWorkable>(Db.Get().ChoreTypes.Equip, this, equippable.assignee.GetSoleOwner().GetComponent<ChoreProvider>(), null, true, null, null, null, true, null, false, true, null, false, true, true, PriorityScreen.PriorityClass.basic, 0, false);
+		chore = new WorkChore<EquippableWorkable>(Db.Get().ChoreTypes.Equip, this, equippable.assignee.GetSoleOwner().GetComponent<ChoreProvider>(), null, true, null, null, null, true, null, false, true, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, false);
 	}
 
 	public void CancelChore()

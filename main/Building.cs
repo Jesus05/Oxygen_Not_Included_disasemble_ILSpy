@@ -15,7 +15,7 @@ public class Building : KMonoBehaviour, IEffectDescriptor, IUniformGridObject, I
 	[MyCmpAdd]
 	private StateMachineController stateMachineController;
 
-	private int[] placementCells;
+	private int[] placementCells = null;
 
 	private Extents extents;
 

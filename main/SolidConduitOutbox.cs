@@ -29,8 +29,8 @@ public class SolidConduitOutbox : StateMachineComponent<SolidConduitOutbox.SMIns
 			{
 				smi.master.UpdateConsuming();
 			}, UpdateRate.SIM_1000ms, false);
-			idle.PlayAnim("on").ParamTransition(consuming, working, (SMInstance smi, bool consuming) => consuming);
-			working.PlayAnim("working_pre").QueueAnim("working_loop", true, null).ParamTransition(consuming, post, (SMInstance smi, bool consuming) => !consuming);
+			idle.PlayAnim("on").ParamTransition(consuming, working, GameStateMachine<States, SMInstance, SolidConduitOutbox, object>.IsTrue);
+			working.PlayAnim("working_pre").QueueAnim("working_loop", true, null).ParamTransition(consuming, post, GameStateMachine<States, SMInstance, SolidConduitOutbox, object>.IsFalse);
 			post.PlayAnim("working_pst").OnAnimQueueComplete(idle);
 		}
 	}

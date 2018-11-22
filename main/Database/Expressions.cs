@@ -34,6 +34,8 @@ namespace Database
 
 		public Expression SickFierySkin;
 
+		public Expression SickCold;
+
 		public Expression Relief;
 
 		public Expressions(ResourceSet parent)
@@ -47,6 +49,7 @@ namespace Database
 			Hungry = new Expression("Hungry", this, faces.Hungry);
 			SickSpores = new Expression("SickSpores", this, faces.SickSpores);
 			SickFierySkin = new Expression("SickFierySkin", this, faces.SickFierySkin);
+			SickCold = new Expression("SickCold", this, faces.SickCold);
 			Sick = new Expression("Sick", this, faces.Sick);
 			Cold = new Expression("Cold", this, faces.Cold);
 			Hot = new Expression("Hot", this, faces.Hot);

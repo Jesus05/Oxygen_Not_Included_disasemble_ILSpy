@@ -13,13 +13,13 @@ public static class TemplateCache
 
 		public void Run(object shared_data)
 		{
-			template = YamlIO<TemplateContainer>.LoadFile(path);
+			template = YamlIO<TemplateContainer>.LoadFile(path, null);
 		}
 	}
 
-	private static string baseTemplatePath;
+	private static string baseTemplatePath = null;
 
-	private static Dictionary<string, TemplateContainer> templates;
+	private static Dictionary<string, TemplateContainer> templates = null;
 
 	public static void Init()
 	{
@@ -45,7 +45,7 @@ public static class TemplateCache
 			Init();
 		}
 		string filename = Path.Combine(baseTemplatePath, "bases/startingBase.yaml");
-		return YamlIO<TemplateContainer>.LoadFile(filename);
+		return YamlIO<TemplateContainer>.LoadFile(filename, null);
 	}
 
 	public static TemplateContainer GetTemplate(string templatePath)
@@ -57,7 +57,7 @@ public static class TemplateCache
 		if (templates[templatePath] == null)
 		{
 			string text = Path.Combine(baseTemplatePath, templatePath);
-			TemplateContainer templateContainer = YamlIO<TemplateContainer>.LoadFile(text + ".yaml");
+			TemplateContainer templateContainer = YamlIO<TemplateContainer>.LoadFile(text + ".yaml", null);
 			if (templateContainer == null)
 			{
 				Debug.LogWarning("Missing template [" + text + ".yaml]", null);
@@ -114,11 +114,11 @@ public static class TemplateCache
 		}
 		list.Sort(delegate(TemplateContainer x, TemplateContainer y)
 		{
-			if (y.priority - x.priority == 0)
+			if (y.priority - x.priority != 0)
 			{
-				return x.name.CompareTo(y.name);
+				return y.priority - x.priority;
 			}
-			return y.priority - x.priority;
+			return x.name.CompareTo(y.name);
 		});
 		return list;
 	}

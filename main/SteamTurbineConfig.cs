@@ -43,7 +43,7 @@ public class SteamTurbineConfig : IBuildingConfig
 		buildingDef.Entombable = true;
 		buildingDef.IsFoundation = false;
 		buildingDef.PermittedRotations = PermittedRotations.FlipH;
-		buildingDef.ViewMode = SimViewMode.PowerMap;
+		buildingDef.ViewMode = OverlayModes.Power.ID;
 		buildingDef.AudioCategory = "Metal";
 		buildingDef.PowerOutputOffset = new CellOffset(1, 0);
 		buildingDef.OverheatTemperature = 1273.15f;
@@ -85,11 +85,11 @@ public class SteamTurbineConfig : IBuildingConfig
 		go.GetComponent<KPrefabID>().prefabSpawnFn += delegate(GameObject game_object)
 		{
 			HandleVector<int>.Handle handle = GameComps.StructureTemperatures.GetHandle(game_object);
-			StructureTemperatureData data = GameComps.StructureTemperatures.GetData(handle);
+			StructureTemperaturePayload new_data = GameComps.StructureTemperatures.GetPayload(handle);
 			Extents extents = game_object.GetComponent<Building>().GetExtents();
 			Extents newExtents = new Extents(extents.x, extents.y - 1, extents.width, extents.height + 1);
-			data.OverrideExtents(newExtents);
-			GameComps.StructureTemperatures.SetData(handle, data);
+			new_data.OverrideExtents(newExtents);
+			GameComps.StructureTemperatures.SetPayload(handle, ref new_data);
 		};
 	}
 }

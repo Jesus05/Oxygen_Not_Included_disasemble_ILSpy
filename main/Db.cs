@@ -78,7 +78,6 @@ public class Db : EntityModifierSet
 	public override void Initialize()
 	{
 		base.Initialize();
-		Diseases = new Database.Diseases(Root);
 		Urges = new Urges();
 		AssignableSlots = new AssignableSlots();
 		StateMachineCategories = new StateMachineCategories();
@@ -99,6 +98,7 @@ public class Db : EntityModifierSet
 		RoomTypeCategories = new RoomTypeCategories(Root);
 		RoomTypes = new RoomTypes(Root);
 		SpaceDestinationTypes = new SpaceDestinationTypes(Root);
+		Diseases = new Database.Diseases(Root);
 		MiscStatusItems = new MiscStatusItems(Root);
 		CreatureStatusItems = new CreatureStatusItems(Root);
 		BuildingStatusItems = new BuildingStatusItems(Root);
@@ -128,17 +128,17 @@ public class Db : EntityModifierSet
 	public ResourceType GetResource<ResourceType>(ResourceGuid guid) where ResourceType : Resource
 	{
 		Resource resource = ResourceTable.FirstOrDefault((Resource s) => s.Guid == guid);
-		if (resource == null)
+		if (resource != null)
 		{
-			Debug.LogWarning("Could not find resource: " + guid, null);
-			return (ResourceType)null;
-		}
-		ResourceType val = (ResourceType)resource;
-		if (val == null)
-		{
+			ResourceType val = (ResourceType)resource;
+			if (val != null)
+			{
+				return val;
+			}
 			Debug.LogError("Resource type mismatch for resource: " + resource.Id + "\nExpecting Type: " + typeof(ResourceType).Name + "\nGot Type: " + resource.GetType().Name, null);
 			return (ResourceType)null;
 		}
-		return val;
+		Debug.LogWarning("Could not find resource: " + guid, null);
+		return (ResourceType)null;
 	}
 }

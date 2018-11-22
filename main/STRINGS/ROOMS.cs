@@ -372,7 +372,7 @@ namespace STRINGS
 
 			public static LocString HEADER = "Room Criteria";
 
-			public static LocString NEUTRAL_TYPE = "Enclosed by wall tiles";
+			public static LocString NEUTRAL_TYPE = "Enclosed by wall tile";
 
 			public static LocString POSSIBLE_TYPES_HEADER = "Possible Room Types";
 

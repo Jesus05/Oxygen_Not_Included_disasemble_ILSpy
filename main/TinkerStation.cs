@@ -19,7 +19,7 @@ public class TinkerStation : Workable, IEffectDescriptor, ISim1000ms
 	[MyCmpAdd]
 	private Storage storage;
 
-	public bool useFilteredStorage;
+	public bool useFilteredStorage = false;
 
 	protected FilteredStorage filteredStorage;
 
@@ -124,7 +124,7 @@ public class TinkerStation : Workable, IEffectDescriptor, ISim1000ms
 		{
 			if (chore == null)
 			{
-				chore = new WorkChore<TinkerStation>(Db.Get().ChoreTypes.GetByHash(choreType), this, null, null, true, null, null, null, true, null, false, true, null, false, true, true, PriorityScreen.PriorityClass.basic, 0, false);
+				chore = new WorkChore<TinkerStation>(Db.Get().ChoreTypes.GetByHash(choreType), this, null, null, true, null, null, null, true, null, false, true, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, false);
 				chore.AddPrecondition(ChorePreconditions.instance.HasRolePerk, requiredRolePerk);
 				SetWorkTime(workTime);
 			}
@@ -166,14 +166,11 @@ public class TinkerStation : Workable, IEffectDescriptor, ISim1000ms
 			Effect effect = Db.Get().effects.Get(list2[0].addedEffect);
 			list.Add(new Descriptor(string.Format(UI.BUILDINGEFFECTS.ADDED_EFFECT, effect.Name), string.Format(UI.BUILDINGEFFECTS.TOOLTIPS.ADDED_EFFECT, effect.Name, Effect.CreateTooltip(effect, true, "\n")), Descriptor.DescriptorType.Effect, false));
 			list.Add(new Descriptor(UI.BUILDINGEFFECTS.IMPROVED_BUILDINGS, UI.BUILDINGEFFECTS.TOOLTIPS.IMPROVED_BUILDINGS, Descriptor.DescriptorType.Effect, false));
+			foreach (Tinkerable item3 in list2)
 			{
-				foreach (Tinkerable item3 in list2)
-				{
-					Descriptor item = new Descriptor(string.Format(UI.BUILDINGEFFECTS.IMPROVED_BUILDINGS_ITEM, item3.GetProperName()), string.Format(UI.BUILDINGEFFECTS.TOOLTIPS.IMPROVED_BUILDINGS_ITEM, item3.GetProperName()), Descriptor.DescriptorType.Effect, false);
-					item.IncreaseIndent();
-					list.Add(item);
-				}
-				return list;
+				Descriptor item = new Descriptor(string.Format(UI.BUILDINGEFFECTS.IMPROVED_BUILDINGS_ITEM, item3.GetProperName()), string.Format(UI.BUILDINGEFFECTS.TOOLTIPS.IMPROVED_BUILDINGS_ITEM, item3.GetProperName()), Descriptor.DescriptorType.Effect, false);
+				item.IncreaseIndent();
+				list.Add(item);
 			}
 		}
 		return list;

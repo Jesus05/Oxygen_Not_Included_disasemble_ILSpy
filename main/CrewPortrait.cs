@@ -8,7 +8,7 @@ public class CrewPortrait : KMonoBehaviour
 {
 	public Image targetImage;
 
-	public bool startTransparent;
+	public bool startTransparent = false;
 
 	public bool useLabels = true;
 
@@ -25,7 +25,7 @@ public class CrewPortrait : KMonoBehaviour
 
 	public bool useDefaultExpression = true;
 
-	private bool requiresRefresh;
+	private bool requiresRefresh = false;
 
 	private bool areEventsRegistered;
 
@@ -133,7 +133,7 @@ public class CrewPortrait : KMonoBehaviour
 		{
 			targetImage.enabled = false;
 		}
-		if (useLabels && identity is MinionIdentity)
+		if ((useLabels && identity is MinionIdentity) || identity is MinionAssignablesProxy)
 		{
 			SetDuplicantJobTitleActive(jobEnabled);
 		}
@@ -213,7 +213,7 @@ public class CrewPortrait : KMonoBehaviour
 			duplicantName.SetText(identityObject.GetProperName());
 			if (identityObject is MinionIdentity && (UnityEngine.Object)duplicantJob != (UnityEngine.Object)null)
 			{
-				duplicantJob.SetText((identityObject == null) ? string.Empty : (identityObject as MinionIdentity).GetComponent<MinionResume>().GetCurrentRoleString());
+				duplicantJob.SetText((identityObject == null) ? "" : (identityObject as MinionIdentity).GetComponent<MinionResume>().GetCurrentRoleString());
 				duplicantJob.GetComponent<ToolTip>().toolTip = (identityObject as MinionIdentity).GetComponent<MinionResume>().GetCurrentRoleDescription();
 			}
 		}
@@ -242,7 +242,11 @@ public class CrewPortrait : KMonoBehaviour
 		controller.gameObject.SetActive(true);
 		if (identityObject != null)
 		{
-			MinionIdentity minionIdentity = identityObject as MinionIdentity;
+			MinionIdentity minionIdentity = null;
+			if (identityObject is MinionAssignablesProxy && (identityObject as MinionAssignablesProxy).target is MinionIdentity)
+			{
+				minionIdentity = ((identityObject as MinionAssignablesProxy).target as MinionIdentity);
+			}
 			if (!((UnityEngine.Object)minionIdentity == (UnityEngine.Object)null))
 			{
 				SymbolOverrideController component = controller.GetComponent<SymbolOverrideController>();

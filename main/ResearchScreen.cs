@@ -66,8 +66,8 @@ public class ResearchScreen : KModalScreen
 		filterField.onValueChanged.AddListener(OnFilterChanged);
 		filterClearButton.onClick += delegate
 		{
-			filterField.text = string.Empty;
-			OnFilterChanged(string.Empty);
+			filterField.text = "";
+			OnFilterChanged("");
 		};
 		pointDisplayMap = new Dictionary<string, LocText>();
 		foreach (ResearchType type in Research.Instance.researchTypes.Types)
@@ -177,26 +177,26 @@ public class ResearchScreen : KModalScreen
 
 	public Vector3 GetEntryPosition(Tech tech)
 	{
-		if (!entryMap.ContainsKey(tech))
+		if (entryMap.ContainsKey(tech))
 		{
-			Debug.LogError("The Tech provided was not present in the dictionary", null);
-			return Vector3.zero;
+			return entryMap[tech].transform.GetPosition();
 		}
-		return entryMap[tech].transform.GetPosition();
+		Debug.LogError("The Tech provided was not present in the dictionary", null);
+		return Vector3.zero;
 	}
 
 	public ResearchEntry GetEntry(Tech tech)
 	{
-		if (entryMap == null)
+		if (entryMap != null)
 		{
-			return null;
-		}
-		if (!entryMap.ContainsKey(tech))
-		{
+			if (entryMap.ContainsKey(tech))
+			{
+				return entryMap[tech];
+			}
 			Debug.LogError("The Tech provided was not present in the dictionary", null);
 			return null;
 		}
-		return entryMap[tech];
+		return null;
 	}
 
 	public void SetEntryPercentage(Tech tech, float percent)
@@ -314,8 +314,8 @@ public class ResearchScreen : KModalScreen
 	protected override void OnShow(bool show)
 	{
 		base.OnShow(show);
-		filterField.text = string.Empty;
-		OnFilterChanged(string.Empty);
+		filterField.text = "";
+		OnFilterChanged("");
 		UpdateProgressBars();
 		UpdatePointDisplay();
 	}

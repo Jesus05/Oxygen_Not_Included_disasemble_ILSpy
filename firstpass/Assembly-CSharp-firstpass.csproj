@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <ProjectGuid>{B78B4D96-D779-49F8-A60E-F80C3F3E99F7}</ProjectGuid>
+    <ProjectGuid>{D9EA058D-8DFA-41D6-9D41-5A3EE7C3A266}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <OutputType>Library</OutputType>
@@ -488,6 +488,7 @@
     <Compile Include="KButtonEvent.cs" />
     <Compile Include="KChildFitter.cs" />
     <Compile Include="KCompactedVector.cs" />
+    <Compile Include="KCompactedVectorBase.cs" />
     <Compile Include="KCompBuilder.cs" />
     <Compile Include="KComponentCleanUp.cs" />
     <Compile Include="KComponentManager.cs" />
@@ -498,6 +499,7 @@
     <Compile Include="KFMODDebugger.cs" />
     <Compile Include="KGameObjectComponentManager.cs" />
     <Compile Include="KGameObjectComponentManagerUtil.cs" />
+    <Compile Include="KGameObjectSplitComponentManager.cs" />
     <Compile Include="KGlobalAnimParser.cs" />
     <Compile Include="KImage.cs" />
     <Compile Include="KImageButton.cs" />
@@ -557,6 +559,8 @@
     <Compile Include="KSerialization\TypeInfo.cs" />
     <Compile Include="KSlider.cs" />
     <Compile Include="KSnap.cs" />
+    <Compile Include="KSplitCompactedVector.cs" />
+    <Compile Include="KSplitComponentManager.cs" />
     <Compile Include="KTabMenu.cs" />
     <Compile Include="KTabMenuHeader.cs" />
     <Compile Include="KToggle.cs" />

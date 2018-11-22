@@ -71,33 +71,33 @@ namespace TMPro
 
 		public static Material GetStencilMaterial(Material baseMaterial, int stencilID)
 		{
-			if (!baseMaterial.HasProperty(ShaderUtilities.ID_StencilID))
+			if (baseMaterial.HasProperty(ShaderUtilities.ID_StencilID))
 			{
-				Debug.LogWarning("Selected Shader does not support Stencil Masking. Please select the Distance Field or Mobile Distance Field Shader.", null);
-				return baseMaterial;
-			}
-			int instanceID = baseMaterial.GetInstanceID();
-			for (int i = 0; i < m_materialList.Count; i++)
-			{
-				if (m_materialList[i].baseMaterial.GetInstanceID() == instanceID && m_materialList[i].stencilID == stencilID)
+				int instanceID = baseMaterial.GetInstanceID();
+				for (int i = 0; i < m_materialList.Count; i++)
 				{
-					m_materialList[i].count++;
-					return m_materialList[i].stencilMaterial;
+					if (m_materialList[i].baseMaterial.GetInstanceID() == instanceID && m_materialList[i].stencilID == stencilID)
+					{
+						m_materialList[i].count++;
+						return m_materialList[i].stencilMaterial;
+					}
 				}
+				Material material = new Material(baseMaterial);
+				material.hideFlags = HideFlags.HideAndDontSave;
+				material.shaderKeywords = baseMaterial.shaderKeywords;
+				ShaderUtilities.GetShaderPropertyIDs();
+				material.SetFloat(ShaderUtilities.ID_StencilID, (float)stencilID);
+				material.SetFloat(ShaderUtilities.ID_StencilComp, 4f);
+				MaskingMaterial maskingMaterial = new MaskingMaterial();
+				maskingMaterial.baseMaterial = baseMaterial;
+				maskingMaterial.stencilMaterial = material;
+				maskingMaterial.stencilID = stencilID;
+				maskingMaterial.count = 1;
+				m_materialList.Add(maskingMaterial);
+				return material;
 			}
-			Material material = new Material(baseMaterial);
-			material.hideFlags = HideFlags.HideAndDontSave;
-			material.shaderKeywords = baseMaterial.shaderKeywords;
-			ShaderUtilities.GetShaderPropertyIDs();
-			material.SetFloat(ShaderUtilities.ID_StencilID, (float)stencilID);
-			material.SetFloat(ShaderUtilities.ID_StencilComp, 4f);
-			MaskingMaterial maskingMaterial = new MaskingMaterial();
-			maskingMaterial.baseMaterial = baseMaterial;
-			maskingMaterial.stencilMaterial = material;
-			maskingMaterial.stencilID = stencilID;
-			maskingMaterial.count = 1;
-			m_materialList.Add(maskingMaterial);
-			return material;
+			Debug.LogWarning("Selected Shader does not support Stencil Masking. Please select the Distance Field or Mobile Distance Field Shader.", null);
+			return baseMaterial;
 		}
 
 		public static void ReleaseStencilMaterial(Material stencilMaterial)
@@ -131,11 +131,11 @@ namespace TMPro
 		public static Material GetBaseMaterial(Material stencilMaterial)
 		{
 			int num = m_materialList.FindIndex((MaskingMaterial item) => (UnityEngine.Object)item.stencilMaterial == (UnityEngine.Object)stencilMaterial);
-			if (num == -1)
+			if (num != -1)
 			{
-				return null;
+				return m_materialList[num].baseMaterial;
 			}
-			return m_materialList[num].baseMaterial;
+			return null;
 		}
 
 		public static Material SetStencil(Material material, int stencilID)
@@ -222,49 +222,49 @@ namespace TMPro
 			int num = 0;
 			Transform transform = obj.transform;
 			Transform y = FindRootSortOverrideCanvas(transform);
-			if ((UnityEngine.Object)transform == (UnityEngine.Object)y)
+			if (!((UnityEngine.Object)transform == (UnityEngine.Object)y))
 			{
-				return num;
-			}
-			Transform parent = transform.parent;
-			List<Mask> list = TMP_ListPool<Mask>.Get();
-			while ((UnityEngine.Object)parent != (UnityEngine.Object)null)
-			{
-				parent.GetComponents(list);
-				for (int i = 0; i < list.Count; i++)
+				Transform parent = transform.parent;
+				List<Mask> list = TMP_ListPool<Mask>.Get();
+				while ((UnityEngine.Object)parent != (UnityEngine.Object)null)
 				{
-					Mask mask = list[i];
-					if ((UnityEngine.Object)mask != (UnityEngine.Object)null && mask.MaskEnabled() && mask.graphic.IsActive())
+					parent.GetComponents(list);
+					for (int i = 0; i < list.Count; i++)
 					{
-						num++;
+						Mask mask = list[i];
+						if ((UnityEngine.Object)mask != (UnityEngine.Object)null && mask.MaskEnabled() && mask.graphic.IsActive())
+						{
+							num++;
+							break;
+						}
+					}
+					if ((UnityEngine.Object)parent == (UnityEngine.Object)y)
+					{
 						break;
 					}
+					parent = parent.parent;
 				}
-				if ((UnityEngine.Object)parent == (UnityEngine.Object)y)
-				{
-					break;
-				}
-				parent = parent.parent;
+				TMP_ListPool<Mask>.Release(list);
+				return Mathf.Min((1 << num) - 1, 255);
 			}
-			TMP_ListPool<Mask>.Release(list);
-			return Mathf.Min((1 << num) - 1, 255);
+			return num;
 		}
 
 		public static Material GetMaterialForRendering(MaskableGraphic graphic, Material baseMaterial)
 		{
-			if ((UnityEngine.Object)baseMaterial == (UnityEngine.Object)null)
+			if (!((UnityEngine.Object)baseMaterial == (UnityEngine.Object)null))
 			{
-				return null;
+				List<IMaterialModifier> list = TMP_ListPool<IMaterialModifier>.Get();
+				graphic.GetComponents(list);
+				Material material = baseMaterial;
+				for (int i = 0; i < list.Count; i++)
+				{
+					material = list[i].GetModifiedMaterial(material);
+				}
+				TMP_ListPool<IMaterialModifier>.Release(list);
+				return material;
 			}
-			List<IMaterialModifier> list = TMP_ListPool<IMaterialModifier>.Get();
-			graphic.GetComponents(list);
-			Material material = baseMaterial;
-			for (int i = 0; i < list.Count; i++)
-			{
-				material = list[i].GetModifiedMaterial(material);
-			}
-			TMP_ListPool<IMaterialModifier>.Release(list);
-			return material;
+			return null;
 		}
 
 		private static Transform FindRootSortOverrideCanvas(Transform start)
@@ -290,35 +290,35 @@ namespace TMPro
 			Texture texture = targetMaterial.GetTexture(ShaderUtilities.ID_MainTex);
 			int instanceID2 = texture.GetInstanceID();
 			long num = ((long)instanceID << 32) | (uint)instanceID2;
-			if (m_fallbackMaterials.TryGetValue(num, out FallbackMaterial value))
+			if (!m_fallbackMaterials.TryGetValue(num, out FallbackMaterial value))
 			{
-				return value.fallbackMaterial;
+				Material material = null;
+				if (sourceMaterial.HasProperty(ShaderUtilities.ID_GradientScale) && targetMaterial.HasProperty(ShaderUtilities.ID_GradientScale))
+				{
+					material = new Material(sourceMaterial);
+					material.hideFlags = HideFlags.HideAndDontSave;
+					material.SetTexture(ShaderUtilities.ID_MainTex, texture);
+					material.SetFloat(ShaderUtilities.ID_GradientScale, targetMaterial.GetFloat(ShaderUtilities.ID_GradientScale));
+					material.SetFloat(ShaderUtilities.ID_TextureWidth, targetMaterial.GetFloat(ShaderUtilities.ID_TextureWidth));
+					material.SetFloat(ShaderUtilities.ID_TextureHeight, targetMaterial.GetFloat(ShaderUtilities.ID_TextureHeight));
+					material.SetFloat(ShaderUtilities.ID_WeightNormal, targetMaterial.GetFloat(ShaderUtilities.ID_WeightNormal));
+					material.SetFloat(ShaderUtilities.ID_WeightBold, targetMaterial.GetFloat(ShaderUtilities.ID_WeightBold));
+				}
+				else
+				{
+					material = new Material(targetMaterial);
+				}
+				value = new FallbackMaterial();
+				value.baseID = instanceID;
+				value.baseMaterial = sourceMaterial;
+				value.fallbackID = num;
+				value.fallbackMaterial = material;
+				value.count = 0;
+				m_fallbackMaterials.Add(num, value);
+				m_fallbackMaterialLookup.Add(material.GetInstanceID(), num);
+				return material;
 			}
-			Material material = null;
-			if (sourceMaterial.HasProperty(ShaderUtilities.ID_GradientScale) && targetMaterial.HasProperty(ShaderUtilities.ID_GradientScale))
-			{
-				material = new Material(sourceMaterial);
-				material.hideFlags = HideFlags.HideAndDontSave;
-				material.SetTexture(ShaderUtilities.ID_MainTex, texture);
-				material.SetFloat(ShaderUtilities.ID_GradientScale, targetMaterial.GetFloat(ShaderUtilities.ID_GradientScale));
-				material.SetFloat(ShaderUtilities.ID_TextureWidth, targetMaterial.GetFloat(ShaderUtilities.ID_TextureWidth));
-				material.SetFloat(ShaderUtilities.ID_TextureHeight, targetMaterial.GetFloat(ShaderUtilities.ID_TextureHeight));
-				material.SetFloat(ShaderUtilities.ID_WeightNormal, targetMaterial.GetFloat(ShaderUtilities.ID_WeightNormal));
-				material.SetFloat(ShaderUtilities.ID_WeightBold, targetMaterial.GetFloat(ShaderUtilities.ID_WeightBold));
-			}
-			else
-			{
-				material = new Material(targetMaterial);
-			}
-			value = new FallbackMaterial();
-			value.baseID = instanceID;
-			value.baseMaterial = sourceMaterial;
-			value.fallbackID = num;
-			value.fallbackMaterial = material;
-			value.count = 0;
-			m_fallbackMaterials.Add(num, value);
-			m_fallbackMaterialLookup.Add(material.GetInstanceID(), num);
-			return material;
+			return value.fallbackMaterial;
 		}
 
 		public static void AddFallbackMaterialReference(Material targetMaterial)

@@ -52,7 +52,7 @@ public class PetroleumGeneratorConfig : IBuildingConfig
 		buildingDef.GeneratorBaseCapacity = 2000f;
 		buildingDef.ExhaustKilowattsWhenActive = 4f;
 		buildingDef.SelfHeatKilowattsWhenActive = 16f;
-		buildingDef.ViewMode = SimViewMode.PowerMap;
+		buildingDef.ViewMode = OverlayModes.Power.ID;
 		buildingDef.AudioCategory = "Metal";
 		buildingDef.UtilityInputOffset = new CellOffset(-1, 0);
 		buildingDef.PowerOutputOffset = new CellOffset(1, 0);

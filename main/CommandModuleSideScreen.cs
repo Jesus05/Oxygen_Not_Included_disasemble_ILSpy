@@ -82,13 +82,11 @@ public class CommandModuleSideScreen : SideScreenContent
 		List<RocketLaunchCondition> launchConditionList = target.GetLaunchConditionList();
 		foreach (RocketLaunchCondition item in launchConditionList)
 		{
-			bool flag2 = false;
 			if (!conditionTable.ContainsKey(item))
 			{
 				flag = true;
 				break;
 			}
-			flag2 = true;
 			GameObject gameObject = conditionTable[item];
 			HierarchyReferences component = gameObject.GetComponent<HierarchyReferences>();
 			if (item.GetParentCondition() != null && !item.GetParentCondition().EvaluateLaunchCondition())
@@ -99,12 +97,12 @@ public class CommandModuleSideScreen : SideScreenContent
 			{
 				gameObject.SetActive(true);
 			}
-			bool flag3 = item.EvaluateLaunchCondition();
+			bool flag2 = item.EvaluateLaunchCondition();
 			component.GetReference<LocText>("Label").text = item.GetLaunchStatusMessage(true);
-			component.GetReference<LocText>("Label").color = ((!flag3) ? Color.red : Color.black);
-			component.GetReference<Image>("Box").color = ((!flag3) ? Color.red : Color.black);
-			component.GetReference<Image>("Check").gameObject.SetActive(flag3);
-			gameObject.GetComponent<ToolTip>().SetSimpleTooltip(item.GetLaunchStatusTooltip(flag3));
+			component.GetReference<LocText>("Label").color = ((!flag2) ? Color.red : Color.black);
+			component.GetReference<Image>("Box").color = ((!flag2) ? Color.red : Color.black);
+			component.GetReference<Image>("Check").gameObject.SetActive(flag2);
+			gameObject.GetComponent<ToolTip>().SetSimpleTooltip(item.GetLaunchStatusTooltip(flag2));
 		}
 		foreach (KeyValuePair<RocketLaunchCondition, GameObject> item2 in conditionTable)
 		{

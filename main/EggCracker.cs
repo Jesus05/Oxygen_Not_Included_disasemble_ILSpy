@@ -4,10 +4,10 @@ using UnityEngine;
 public class EggCracker : KMonoBehaviour
 {
 	[MyCmpReq]
-	private Refinery refinery;
+	private ComplexFabricator refinery;
 
 	[MyCmpReq]
-	private RefineryWorkable workable;
+	private ComplexFabricatorWorkable workable;
 
 	private KBatchedAnimTracker tracker;
 
@@ -21,8 +21,8 @@ public class EggCracker : KMonoBehaviour
 	protected override void OnSpawn()
 	{
 		base.OnSpawn();
-		RefineryWorkable refineryWorkable = workable;
-		refineryWorkable.OnWorkableEventCB = (Action<Workable.WorkableEvent>)Delegate.Combine(refineryWorkable.OnWorkableEventCB, new Action<Workable.WorkableEvent>(OnWorkableEvent));
+		ComplexFabricatorWorkable complexFabricatorWorkable = workable;
+		complexFabricatorWorkable.OnWorkableEventCB = (Action<Workable.WorkableEvent>)Delegate.Combine(complexFabricatorWorkable.OnWorkableEventCB, new Action<Workable.WorkableEvent>(OnWorkableEvent));
 	}
 
 	protected override void OnCleanUp()
@@ -38,7 +38,7 @@ public class EggCracker : KMonoBehaviour
 		{
 		case Workable.WorkableEvent.WorkStarted:
 		{
-			Refinery.MachineOrder currentMachineOrder = refinery.CurrentMachineOrder;
+			ComplexFabricator.MachineOrder currentMachineOrder = refinery.CurrentMachineOrder;
 			if (currentMachineOrder != null)
 			{
 				ComplexRecipe.RecipeElement[] ingredients = currentMachineOrder.parentOrder.recipe.ingredients;

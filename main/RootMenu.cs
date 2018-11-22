@@ -23,9 +23,9 @@ public class RootMenu : KScreen
 
 	private List<KScreen> subMenus = new List<KScreen>();
 
-	private TileScreen tileScreenInst;
+	private TileScreen tileScreenInst = null;
 
-	public GameObject selectedGO;
+	public GameObject selectedGO = null;
 
 	public static RootMenu Instance
 	{
@@ -117,7 +117,7 @@ public class RootMenu : KScreen
 		{
 			selectedGO = gameObject;
 			CloseSubMenus();
-			if ((Object)selectedGO != (Object)null && (Object)selectedGO.GetComponent<KPrefabID>() != (Object)null)
+			if ((Object)selectedGO != (Object)null && ((Object)selectedGO.GetComponent<KPrefabID>() != (Object)null || (bool)selectedGO.GetComponent<CellSelectionObject>()))
 			{
 				AddSubMenu(detailsScreen);
 				detailsScreen.Refresh(selectedGO);

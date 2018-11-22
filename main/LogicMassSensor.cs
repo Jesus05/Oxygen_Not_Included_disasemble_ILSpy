@@ -7,7 +7,7 @@ public class LogicMassSensor : Switch, ISaveLoadable, IThresholdSwitch
 {
 	[SerializeField]
 	[Serialize]
-	private float threshold;
+	private float threshold = 0f;
 
 	[SerializeField]
 	[Serialize]
@@ -16,22 +16,22 @@ public class LogicMassSensor : Switch, ISaveLoadable, IThresholdSwitch
 	[MyCmpGet]
 	private LogicPorts logicPorts;
 
-	private bool was_pressed;
+	private bool was_pressed = false;
 
-	private bool was_on;
+	private bool was_on = false;
 
-	public float rangeMin;
+	public float rangeMin = 0f;
 
 	public float rangeMax = 1f;
 
 	[Serialize]
-	private float massSolid;
+	private float massSolid = 0f;
 
 	[Serialize]
-	private float massPickupables;
+	private float massPickupables = 0f;
 
 	[Serialize]
-	private float massActivators;
+	private float massActivators = 0f;
 
 	private const float MIN_TOGGLE_TIME = 0.15f;
 
@@ -42,6 +42,14 @@ public class LogicMassSensor : Switch, ISaveLoadable, IThresholdSwitch
 	private HandleVector<int>.Handle pickupablesChangedEntry;
 
 	private HandleVector<int>.Handle floorSwitchActivatorChangedEntry;
+
+	[MyCmpAdd]
+	private CopyBuildingSettings copyBuildingSettings;
+
+	private static readonly EventSystem.IntraObjectHandler<LogicMassSensor> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<LogicMassSensor>(delegate(LogicMassSensor component, object data)
+	{
+		component.OnCopySettings(data);
+	});
 
 	public LocString Title => UI.UISIDESCREENS.THRESHOLD_SWITCH_SIDESCREEN.TITLE;
 
@@ -80,6 +88,23 @@ public class LogicMassSensor : Switch, ISaveLoadable, IThresholdSwitch
 	public string AboveToolTip => UI.UISIDESCREENS.THRESHOLD_SWITCH_SIDESCREEN.PRESSURE_TOOLTIP_ABOVE;
 
 	public string BelowToolTip => UI.UISIDESCREENS.THRESHOLD_SWITCH_SIDESCREEN.PRESSURE_TOOLTIP_BELOW;
+
+	protected override void OnPrefabInit()
+	{
+		base.OnPrefabInit();
+		Subscribe(-905833192, OnCopySettingsDelegate);
+	}
+
+	private void OnCopySettings(object data)
+	{
+		GameObject gameObject = (GameObject)data;
+		LogicMassSensor component = gameObject.GetComponent<LogicMassSensor>();
+		if ((Object)component != (Object)null)
+		{
+			Threshold = component.Threshold;
+			ActivateAboveThreshold = component.ActivateAboveThreshold;
+		}
+	}
 
 	protected override void OnSpawn()
 	{
@@ -207,17 +232,7 @@ public class LogicMassSensor : Switch, ISaveLoadable, IThresholdSwitch
 
 	public LocString ThresholdValueUnits()
 	{
-		LocString result = null;
-		switch (GameUtil.massUnit)
-		{
-		case GameUtil.MassUnit.Kilograms:
-			result = UI.UNITSUFFIXES.MASS.KILOGRAM;
-			break;
-		case GameUtil.MassUnit.Pounds:
-			result = UI.UNITSUFFIXES.MASS.POUND;
-			break;
-		}
-		return result;
+		return GameUtil.GetCurrentMassUnit(false);
 	}
 
 	private void SwitchToggled(bool toggled_on)

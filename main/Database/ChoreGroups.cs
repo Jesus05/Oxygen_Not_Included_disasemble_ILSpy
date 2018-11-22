@@ -68,7 +68,8 @@ namespace Database
 			{
 				if (resource.IdHash == id)
 				{
-					return resource;
+					result = resource;
+					break;
 				}
 			}
 			return result;

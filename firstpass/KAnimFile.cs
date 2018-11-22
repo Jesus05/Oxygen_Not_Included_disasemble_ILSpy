@@ -15,21 +15,21 @@ public class KAnimFile : ScriptableObject
 
 	private HashedString _batchTag;
 
-	public string homedirectory = string.Empty;
+	public string homedirectory = "";
 
 	public HashedString batchTag
 	{
 		get
 		{
-			if (_batchTag.IsValid)
+			if (!_batchTag.IsValid)
 			{
-				return _batchTag;
-			}
-			if (homedirectory == null || homedirectory == string.Empty)
-			{
+				if (homedirectory != null && !(homedirectory == ""))
+				{
+					_batchTag = KAnimGroupFile.GetGroupFile().GetGroupForHomeDirectory(new HashedString(homedirectory));
+					return _batchTag;
+				}
 				return KAnimBatchManager.NO_BATCH;
 			}
-			_batchTag = KAnimGroupFile.GetGroupFile().GetGroupForHomeDirectory(new HashedString(homedirectory));
 			return _batchTag;
 		}
 	}

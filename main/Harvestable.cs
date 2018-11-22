@@ -11,17 +11,17 @@ public class Harvestable : Workable
 	protected bool isMarkedForHarvest;
 
 	[Serialize]
-	protected bool canBeHarvested;
+	protected bool canBeHarvested = false;
 
 	[Serialize]
-	protected bool harvestWhenReady;
+	protected bool harvestWhenReady = false;
 
 	public bool defaultHarvestStateWhenPlanted = true;
 
 	public RectTransform HarvestWhenReadyOverlayIcon;
 
 	[Serialize]
-	private bool isInPlanterBox;
+	private bool isInPlanterBox = false;
 
 	protected Chore chore;
 
@@ -74,7 +74,7 @@ public class Harvestable : Workable
 
 	private void OnEnableOverlay(object data)
 	{
-		if ((SimViewMode)data == SimViewMode.HarvestWhenReady)
+		if ((HashedString)data == OverlayModes.Harvest.ID)
 		{
 			CreateOverlayIcon();
 		}
@@ -246,7 +246,7 @@ public class Harvestable : Workable
 			KSelectable component = GetComponent<KSelectable>();
 			if (chore == null)
 			{
-				chore = new WorkChore<Harvestable>(Db.Get().ChoreTypes.Harvest, this, null, null, true, null, null, null, true, null, false, true, null, true, true, true, PriorityScreen.PriorityClass.basic, 0, false);
+				chore = new WorkChore<Harvestable>(Db.Get().ChoreTypes.Harvest, this, null, null, true, null, null, null, true, null, false, true, null, true, true, true, PriorityScreen.PriorityClass.basic, 5, false);
 				component.AddStatusItem(Db.Get().MiscStatusItems.PendingHarvest, this);
 			}
 			isMarkedForHarvest = true;
@@ -275,11 +275,11 @@ public class Harvestable : Workable
 
 	public bool HasChore()
 	{
-		if (chore == null)
+		if (chore != null)
 		{
-			return false;
+			return true;
 		}
-		return true;
+		return false;
 	}
 
 	protected virtual void OnClickHarvestWhenReady()

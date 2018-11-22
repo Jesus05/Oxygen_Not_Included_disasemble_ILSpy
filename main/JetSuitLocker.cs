@@ -36,7 +36,7 @@ public class JetSuitLocker : StateMachineComponent<JetSuitLocker.StatesInstance>
 			{
 				smi.master.FuelSuit(dt);
 			}, UpdateRate.SIM_1000ms, false);
-			charging.nofuel.TagTransition(GameTags.Operational, charging.notoperational, true).Transition(charging.operational, (StatesInstance smi) => smi.master.HasFuel(), UpdateRate.SIM_200ms).ToggleStatusItem(BUILDING.STATUSITEMS.SUIT_LOCKER.NO_FUEL.NAME, BUILDING.STATUSITEMS.SUIT_LOCKER.NO_FUEL.TOOLTIP, "status_item_no_liquid_to_pump", StatusItem.IconType.Custom, NotificationType.BadMinor, false, SimViewMode.None, 0, null, null, null);
+			charging.nofuel.TagTransition(GameTags.Operational, charging.notoperational, true).Transition(charging.operational, (StatesInstance smi) => smi.master.HasFuel(), UpdateRate.SIM_200ms).ToggleStatusItem(BUILDING.STATUSITEMS.SUIT_LOCKER.NO_FUEL.NAME, BUILDING.STATUSITEMS.SUIT_LOCKER.NO_FUEL.TOOLTIP, "status_item_no_liquid_to_pump", StatusItem.IconType.Custom, NotificationType.BadMinor, false, default(HashedString), 0, null, null, null);
 			charged.EventTransition(GameHashes.OnStorageChange, empty, (StatesInstance smi) => (UnityEngine.Object)smi.master.GetStoredOutfit() == (UnityEngine.Object)null);
 		}
 	}
@@ -176,11 +176,11 @@ public class JetSuitLocker : StateMachineComponent<JetSuitLocker.StatesInstance>
 	public bool HasFuel()
 	{
 		GameObject fuel = GetFuel();
-		if ((UnityEngine.Object)fuel != (UnityEngine.Object)null)
+		if (!((UnityEngine.Object)fuel != (UnityEngine.Object)null))
 		{
-			return fuel.GetComponent<PrimaryElement>().Mass > 0f;
+			return false;
 		}
-		return false;
+		return fuel.GetComponent<PrimaryElement>().Mass > 0f;
 	}
 
 	private void RefreshMeter()
@@ -194,15 +194,15 @@ public class JetSuitLocker : StateMachineComponent<JetSuitLocker.StatesInstance>
 	public bool IsFuelTankFull()
 	{
 		KPrefabID storedOutfit = GetStoredOutfit();
-		if ((UnityEngine.Object)storedOutfit != (UnityEngine.Object)null)
+		if (!((UnityEngine.Object)storedOutfit != (UnityEngine.Object)null))
 		{
-			JetSuitTank component = storedOutfit.GetComponent<JetSuitTank>();
-			if ((UnityEngine.Object)component == (UnityEngine.Object)null)
-			{
-				return true;
-			}
+			return false;
+		}
+		JetSuitTank component = storedOutfit.GetComponent<JetSuitTank>();
+		if (!((UnityEngine.Object)component == (UnityEngine.Object)null))
+		{
 			return component.PercentFull() >= 1f;
 		}
-		return false;
+		return true;
 	}
 }

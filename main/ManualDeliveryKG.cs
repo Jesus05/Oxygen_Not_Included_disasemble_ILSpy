@@ -23,13 +23,13 @@ public class ManualDeliveryKG : KMonoBehaviour, ISim200ms
 	public float minimumMass = 10f;
 
 	[SerializeField]
-	public FetchOrder2.OperationalRequirement operationalRequirement;
+	public FetchOrder2.OperationalRequirement operationalRequirement = FetchOrder2.OperationalRequirement.Operational;
 
 	[SerializeField]
-	public bool allowPause;
+	public bool allowPause = false;
 
 	[SerializeField]
-	private bool paused;
+	private bool paused = false;
 
 	[SerializeField]
 	public HashedString choreTypeIDHash;
@@ -145,25 +145,33 @@ public class ManualDeliveryKG : KMonoBehaviour, ISim200ms
 	private void RequestDelivery()
 	{
 		float fetchAmount = GetFetchAmount();
-		if (fetchAmount > 0f && (this.fetchList == null || this.fetchList.IsComplete))
+		if (fetchAmount > 0f)
 		{
-			if (this.fetchList != null)
+			if (this.fetchList == null || this.fetchList.IsComplete)
 			{
-				this.fetchList.Cancel("Request Delivery");
+				if (this.fetchList != null)
+				{
+					this.fetchList.Cancel("Request Delivery");
+				}
+				ChoreType byHash = Db.Get().ChoreTypes.GetByHash(choreTypeIDHash);
+				this.fetchList = new FetchList2(storage, byHash, choreTags);
+				this.fetchList.ShowStatusItem = ShowStatusItem;
+				this.fetchList.MinimumAmount[requestedItemTag] = minimumMass;
+				FetchList2 fetchList = this.fetchList;
+				Tag[] tags = new Tag[1]
+				{
+					requestedItemTag
+				};
+				float amount = fetchAmount;
+				FetchOrder2.OperationalRequirement operationalRequirement = this.operationalRequirement;
+				fetchList.Add(tags, null, null, amount, operationalRequirement);
+				this.fetchList.Submit(null, false);
 			}
-			ChoreType byHash = Db.Get().ChoreTypes.GetByHash(choreTypeIDHash);
-			this.fetchList = new FetchList2(storage, byHash, choreTags);
-			this.fetchList.ShowStatusItem = ShowStatusItem;
-			this.fetchList.MinimumAmount[requestedItemTag] = minimumMass;
-			FetchList2 fetchList = this.fetchList;
-			Tag[] tags = new Tag[1]
-			{
-				requestedItemTag
-			};
-			float amount = fetchAmount;
-			FetchOrder2.OperationalRequirement operationalRequirement = this.operationalRequirement;
-			fetchList.Add(tags, null, null, amount, operationalRequirement);
-			this.fetchList.Submit(null, false);
+		}
+		else if (this.fetchList != null)
+		{
+			this.fetchList.Cancel("Storage is full");
+			this.fetchList = null;
 		}
 	}
 
@@ -197,6 +205,7 @@ public class ManualDeliveryKG : KMonoBehaviour, ISim200ms
 		if ((UnityEngine.Object)storage == (UnityEngine.Object)this.storage)
 		{
 			UpdateFilteredItems();
+			UpdateDeliveryState();
 		}
 	}
 

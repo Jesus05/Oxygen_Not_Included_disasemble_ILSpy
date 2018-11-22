@@ -2,15 +2,15 @@ namespace LibNoiseDotNet.Graphics.Tools.Noise.Modifier
 {
 	public class Cache : ModifierModule, IModule3D, IModule
 	{
-		protected float _cachedValue;
+		protected float _cachedValue = 0f;
 
-		protected bool _isCached;
+		protected bool _isCached = false;
 
-		protected float _xCache;
+		protected float _xCache = 0f;
 
-		protected float _yCache;
+		protected float _yCache = 0f;
 
-		protected float _zCache;
+		protected float _zCache = 0f;
 
 		public new IModule SourceModule
 		{

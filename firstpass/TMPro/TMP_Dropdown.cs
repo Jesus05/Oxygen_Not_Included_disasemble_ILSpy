@@ -208,7 +208,7 @@ namespace TMPro
 
 		private TweenRunner<FloatTween> m_AlphaTweenRunner;
 
-		private bool validTemplate;
+		private bool validTemplate = false;
 
 		private static OptionData s_NoOptionData = new OptionData();
 
@@ -354,7 +354,7 @@ namespace TMPro
 				}
 				else
 				{
-					m_CaptionText.text = string.Empty;
+					m_CaptionText.text = "";
 				}
 			}
 			if ((bool)m_CaptionImage)
@@ -658,7 +658,7 @@ namespace TMPro
 			DropdownItem dropdownItem = CreateItem(itemTemplate);
 			dropdownItem.rectTransform.SetParent(itemTemplate.rectTransform.parent, false);
 			dropdownItem.gameObject.SetActive(true);
-			dropdownItem.gameObject.name = "Item " + items.Count + ((data.text == null) ? string.Empty : (": " + data.text));
+			dropdownItem.gameObject.name = "Item " + items.Count + ((data.text == null) ? "" : (": " + data.text));
 			if ((UnityEngine.Object)dropdownItem.toggle != (UnityEngine.Object)null)
 			{
 				dropdownItem.toggle.isOn = false;

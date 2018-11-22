@@ -193,22 +193,22 @@ namespace NodeEditorFramework
 
 		internal static bool shouldIgnoreInput(NodeEditorState state)
 		{
-			if (OverlayGUI.HasPopupControl())
+			if (!OverlayGUI.HasPopupControl())
 			{
-				return true;
-			}
-			if (!state.canvasRect.Contains(Event.current.mousePosition))
-			{
-				return true;
-			}
-			for (int i = 0; i < state.ignoreInput.Count; i++)
-			{
-				if (state.ignoreInput[i].Contains(Event.current.mousePosition))
+				if (state.canvasRect.Contains(Event.current.mousePosition))
 				{
-					return true;
+					for (int i = 0; i < state.ignoreInput.Count; i++)
+					{
+						if (state.ignoreInput[i].Contains(Event.current.mousePosition))
+						{
+							return true;
+						}
+					}
+					return false;
 				}
+				return true;
 			}
-			return false;
+			return true;
 		}
 
 		[EventHandler(-4)]

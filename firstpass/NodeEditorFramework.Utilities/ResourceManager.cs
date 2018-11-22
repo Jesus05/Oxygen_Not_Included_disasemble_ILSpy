@@ -53,22 +53,22 @@ namespace NodeEditorFramework.Utilities
 
 		public static Texture2D LoadTexture(string texPath)
 		{
-			if (string.IsNullOrEmpty(texPath))
+			if (!string.IsNullOrEmpty(texPath))
 			{
-				return null;
-			}
-			int num = loadedTextures.FindIndex((MemoryTexture memTex) => memTex.path == texPath);
-			if (num != -1)
-			{
-				if (!((UnityEngine.Object)loadedTextures[num].texture == (UnityEngine.Object)null))
+				int num = loadedTextures.FindIndex((MemoryTexture memTex) => memTex.path == texPath);
+				if (num != -1)
 				{
-					return loadedTextures[num].texture;
+					if (!((UnityEngine.Object)loadedTextures[num].texture == (UnityEngine.Object)null))
+					{
+						return loadedTextures[num].texture;
+					}
+					loadedTextures.RemoveAt(num);
 				}
-				loadedTextures.RemoveAt(num);
+				Texture2D texture2D = LoadResource<Texture2D>(texPath);
+				AddTextureToMemory(texPath, texture2D);
+				return texture2D;
 			}
-			Texture2D texture2D = LoadResource<Texture2D>(texPath);
-			AddTextureToMemory(texPath, texture2D);
-			return texture2D;
+			return null;
 		}
 
 		public static Texture2D GetTintedTexture(string texPath, Color col)
@@ -108,16 +108,16 @@ namespace NodeEditorFramework.Utilities
 		public static MemoryTexture GetMemoryTexture(string texturePath, params string[] modifications)
 		{
 			List<MemoryTexture> list = loadedTextures.FindAll((MemoryTexture memTex) => memTex.path == texturePath);
-			if (list == null || list.Count == 0)
+			if (list != null && list.Count != 0)
 			{
-				return null;
-			}
-			foreach (MemoryTexture item in list)
-			{
-				if (EqualModifications(item.modifications, modifications))
+				foreach (MemoryTexture item in list)
 				{
-					return item;
+					if (EqualModifications(item.modifications, modifications))
+					{
+						return item;
+					}
 				}
+				return null;
 			}
 			return null;
 		}

@@ -52,20 +52,20 @@ public class Lure : GameStateMachine<Lure, Lure.Instance, IStateMachineTarget, L
 
 		public bool HasAnyLure(Tag[] creature_lures)
 		{
-			if (lures == null || creature_lures == null)
+			if (lures != null && creature_lures != null)
 			{
-				return false;
-			}
-			foreach (Tag a in creature_lures)
-			{
-				Tag[] array = lures;
-				foreach (Tag b in array)
+				foreach (Tag a in creature_lures)
 				{
-					if (a == b)
+					Tag[] array = lures;
+					foreach (Tag b in array)
 					{
-						return true;
+						if (a == b)
+						{
+							return true;
+						}
 					}
 				}
+				return false;
 			}
 			return false;
 		}

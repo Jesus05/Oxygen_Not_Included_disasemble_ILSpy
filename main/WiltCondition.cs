@@ -26,10 +26,10 @@ public class WiltCondition : KMonoBehaviour
 	private Growing growing;
 
 	[Serialize]
-	private bool goingToWilt;
+	private bool goingToWilt = false;
 
 	[Serialize]
-	private bool wilting;
+	private bool wilting = false;
 
 	private Dictionary<int, bool> WiltConditions = new Dictionary<int, bool>();
 
@@ -299,6 +299,7 @@ public class WiltCondition : KMonoBehaviour
 	{
 		wiltSchedulerHandler.ClearScheduler();
 		KSelectable component = GetComponent<KSelectable>();
+		component.GetComponent<KPrefabID>().AddTag(GameTags.Wilting);
 		if (!wilting)
 		{
 			wilting = true;
@@ -327,12 +328,11 @@ public class WiltCondition : KMonoBehaviour
 				component.AddStatusItem(Db.Get().CreatureStatusItems.WiltingNonGrowing, this);
 			}
 		}
-		component.GetComponent<KPrefabID>().AddTag(GameTags.Wilting);
 	}
 
 	public string WiltCausesString()
 	{
-		string text = string.Empty;
+		string text = "";
 		List<IWiltCause> allSMI = this.GetAllSMI<IWiltCause>();
 		allSMI.AddRange(GetComponents<IWiltCause>());
 		foreach (IWiltCause item in allSMI)
@@ -361,11 +361,11 @@ public class WiltCondition : KMonoBehaviour
 		recoverSchedulerHandler.ClearScheduler();
 		KSelectable component = GetComponent<KSelectable>();
 		wilting = false;
-		Trigger(712767498, null);
 		component.RemoveStatusItem(Db.Get().CreatureStatusItems.WiltingDomestic, false);
 		component.RemoveStatusItem(Db.Get().CreatureStatusItems.Wilting, false);
 		component.RemoveStatusItem(Db.Get().CreatureStatusItems.WiltingNonGrowing, false);
 		component.RemoveStatusItem(Db.Get().CreatureStatusItems.WiltingNonGrowingDomestic, false);
 		component.GetComponent<KPrefabID>().RemoveTag(GameTags.Wilting);
+		Trigger(712767498, null);
 	}
 }

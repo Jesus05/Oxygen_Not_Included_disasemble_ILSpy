@@ -56,32 +56,27 @@ public class PathGrid
 		groupProber = group_prober;
 	}
 
-	public PathFinder.Cell GetCell(PathFinder.PotentialPath potential_path, int query_id)
+	public PathFinder.Cell GetCell(PathFinder.PotentialPath potential_path, int query_id, out bool is_cell_in_range)
 	{
-		return GetCell(potential_path.cell, potential_path.navType, query_id);
+		return GetCell(potential_path.cell, potential_path.navType, query_id, out is_cell_in_range);
 	}
 
-	public bool IsCellInRange(int cell)
-	{
-		int offset_cell = OffsetCell(cell);
-		return IsValidOffsetCell(offset_cell);
-	}
-
-	public PathFinder.Cell GetCell(int cell, NavType nav_type, int query_id)
+	public PathFinder.Cell GetCell(int cell, NavType nav_type, int query_id, out bool is_cell_in_range)
 	{
 		int num = OffsetCell(cell);
-		if (!IsValidOffsetCell(num))
+		is_cell_in_range = IsValidOffsetCell(num);
+		if (is_cell_in_range)
 		{
-			PathFinder.Cell result = default(PathFinder.Cell);
-			result.cost = -1;
+			int num2 = NavTypeTable[(uint)nav_type];
+			int num3 = num * ValidNavTypes.Length + num2;
+			PathFinder.Cell result = Cells[num3];
+			if (result.queryId != query_id)
+			{
+				PathFinder.Cell result2 = default(PathFinder.Cell);
+				result2.cost = -1;
+				return result2;
+			}
 			return result;
-		}
-		int num2 = NavTypeTable[(uint)nav_type];
-		int num3 = num * ValidNavTypes.Length + num2;
-		PathFinder.Cell result2 = Cells[num3];
-		if (result2.queryId == query_id)
-		{
-			return result2;
 		}
 		PathFinder.Cell result3 = default(PathFinder.Cell);
 		result3.cost = -1;
@@ -134,17 +129,17 @@ public class PathGrid
 	public int GetCost(int cell, int query_id)
 	{
 		int num = OffsetCell(cell);
-		if (!IsValidOffsetCell(num))
+		if (IsValidOffsetCell(num))
 		{
-			return -1;
+			int result = -1;
+			ProberCell proberCell = ProberCells[num];
+			if (proberCell.queryId == query_id)
+			{
+				result = proberCell.cost;
+			}
+			return result;
 		}
-		int result = -1;
-		ProberCell proberCell = ProberCells[num];
-		if (proberCell.queryId == query_id)
-		{
-			result = proberCell.cost;
-		}
-		return result;
+		return -1;
 	}
 
 	private bool IsValidOffsetCell(int offset_cell)
@@ -154,18 +149,18 @@ public class PathGrid
 
 	private int OffsetCell(int cell)
 	{
-		if (applyOffset)
+		if (!applyOffset)
 		{
-			Grid.CellToXY(cell, out int x, out int y);
-			if (x < rootX || x >= rootX + widthInCells || y < rootY || y >= rootY + heightInCells)
-			{
-				return -1;
-			}
+			return cell;
+		}
+		Grid.CellToXY(cell, out int x, out int y);
+		if (x >= rootX && x < rootX + widthInCells && y >= rootY && y < rootY + heightInCells)
+		{
 			int num = x - rootX;
 			int num2 = y - rootY;
 			return num2 * widthInCells + num;
 		}
-		return cell;
+		return -1;
 	}
 
 	public void SetRootCell(int root_cell)

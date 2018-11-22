@@ -1,3 +1,6 @@
+#define DEBUG
+using System.Diagnostics;
+
 namespace LibNoiseDotNet.Graphics.Tools.Noise.Modifier
 {
 	public class Select : SelectorModule, IModule3D, IModule
@@ -88,6 +91,7 @@ namespace LibNoiseDotNet.Graphics.Tools.Noise.Modifier
 
 		public void SetBounds(float lower, float upper)
 		{
+			System.Diagnostics.Debug.Assert(_lowerBound < _upperBound, "Lower bound must lower than upper bound");
 			_lowerBound = lower;
 			_upperBound = upper;
 			EdgeFalloff = _edgeFalloff;
@@ -96,35 +100,36 @@ namespace LibNoiseDotNet.Graphics.Tools.Noise.Modifier
 		public float GetValue(float x, float y, float z)
 		{
 			float value = ((IModule3D)_controlModule).GetValue(x, y, z);
-			if ((double)_edgeFalloff > 0.0)
+			if (!((double)_edgeFalloff > 0.0))
 			{
-				if (value < _lowerBound - _edgeFalloff)
+				if (!(value < _lowerBound) && !(value > _upperBound))
 				{
 					return ((IModule3D)_leftModule).GetValue(x, y, z);
-				}
-				if (value < _lowerBound + _edgeFalloff)
-				{
-					float num = _lowerBound - _edgeFalloff;
-					float num2 = _lowerBound + _edgeFalloff;
-					float a = Libnoise.SCurve3((value - num) / (num2 - num));
-					return Libnoise.Lerp(((IModule3D)_leftModule).GetValue(x, y, z), ((IModule3D)_leftModule).GetValue(x, y, z), a);
-				}
-				if (value < _upperBound - _edgeFalloff)
-				{
-					return ((IModule3D)_leftModule).GetValue(x, y, z);
-				}
-				if (value < _upperBound + _edgeFalloff)
-				{
-					float num3 = _upperBound - _edgeFalloff;
-					float num4 = _upperBound + _edgeFalloff;
-					float a = Libnoise.SCurve3((value - num3) / (num4 - num3));
-					return Libnoise.Lerp(((IModule3D)_leftModule).GetValue(x, y, z), ((IModule3D)_leftModule).GetValue(x, y, z), a);
 				}
 				return ((IModule3D)_leftModule).GetValue(x, y, z);
 			}
-			if (value < _lowerBound || value > _upperBound)
+			if (!(value < _lowerBound - _edgeFalloff))
 			{
-				return ((IModule3D)_leftModule).GetValue(x, y, z);
+				float a;
+				if (!(value < _lowerBound + _edgeFalloff))
+				{
+					if (!(value < _upperBound - _edgeFalloff))
+					{
+						if (!(value < _upperBound + _edgeFalloff))
+						{
+							return ((IModule3D)_leftModule).GetValue(x, y, z);
+						}
+						float num = _upperBound - _edgeFalloff;
+						float num2 = _upperBound + _edgeFalloff;
+						a = Libnoise.SCurve3((value - num) / (num2 - num));
+						return Libnoise.Lerp(((IModule3D)_leftModule).GetValue(x, y, z), ((IModule3D)_leftModule).GetValue(x, y, z), a);
+					}
+					return ((IModule3D)_leftModule).GetValue(x, y, z);
+				}
+				float num3 = _lowerBound - _edgeFalloff;
+				float num4 = _lowerBound + _edgeFalloff;
+				a = Libnoise.SCurve3((value - num3) / (num4 - num3));
+				return Libnoise.Lerp(((IModule3D)_leftModule).GetValue(x, y, z), ((IModule3D)_leftModule).GetValue(x, y, z), a);
 			}
 			return ((IModule3D)_leftModule).GetValue(x, y, z);
 		}

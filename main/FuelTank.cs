@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class FuelTank : Storage, ISingleSliderControl, ISliderControl
 {
-	private bool isSuspended;
+	private bool isSuspended = false;
 
 	private MeterController meter;
 

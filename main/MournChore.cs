@@ -19,7 +19,8 @@ public class MournChore : Chore<MournChore.StatesInstance>
 		{
 			Grave grave = FindGraveToMournAt();
 			int cell = Grid.PosToCell(grave.transform.GetPosition());
-			int standableCell = GetStandableCell(cell);
+			Navigator component = base.master.GetComponent<Navigator>();
+			int standableCell = GetStandableCell(cell, component);
 			if (standableCell < 0)
 			{
 				base.smi.GoTo((StateMachine.BaseState)null);
@@ -95,19 +96,21 @@ public class MournChore : Chore<MournChore.StatesInstance>
 		new CellOffset(1, 0)
 	};
 
-	private static readonly Precondition HasPlaceToStand = new Precondition
+	private static readonly Precondition HasValidMournLocation = new Precondition
 	{
 		id = "HasPlaceToStand",
 		description = (string)DUPLICANTS.CHORES.PRECONDITIONS.HAS_PLACE_TO_STAND,
-		fn = (PreconditionFn)delegate
+		fn = (PreconditionFn)delegate(ref Precondition.Context context, object data)
 		{
+			IStateMachineTarget stateMachineTarget = (IStateMachineTarget)data;
+			Navigator component = stateMachineTarget.GetComponent<Navigator>();
 			bool result = false;
 			Grave grave = FindGraveToMournAt();
 			if ((UnityEngine.Object)grave != (UnityEngine.Object)null)
 			{
 				int cell = Grid.PosToCell(grave);
-				int standableCell = GetStandableCell(cell);
-				if (standableCell >= 0)
+				int standableCell = GetStandableCell(cell, component);
+				if (Grid.IsValidCell(standableCell))
 				{
 					result = true;
 				}
@@ -117,29 +120,29 @@ public class MournChore : Chore<MournChore.StatesInstance>
 	};
 
 	public MournChore(IStateMachineTarget master)
-		: base(Db.Get().ChoreTypes.Mourn, master, master.GetComponent<ChoreProvider>(), false, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.high, 0, false, true, 0, (Tag[])null)
+		: base(Db.Get().ChoreTypes.Mourn, master, master.GetComponent<ChoreProvider>(), false, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.high, 5, false, true, 0, (Tag[])null)
 	{
 		smi = new StatesInstance(this);
 		AddPrecondition(ChorePreconditions.instance.IsNotRedAlert, null);
 		AddPrecondition(ChorePreconditions.instance.NoDeadBodies, null);
-		AddPrecondition(ChorePreconditions.instance.ValidMourningSite, null);
-		AddPrecondition(HasPlaceToStand, null);
+		AddPrecondition(HasValidMournLocation, master);
 	}
 
-	private static int GetStandableCell(int cell)
+	private static int GetStandableCell(int cell, Navigator navigator)
 	{
-		int result = -1;
 		CellOffset[] validStandingOffsets = ValidStandingOffsets;
 		foreach (CellOffset offset in validStandingOffsets)
 		{
-			int num = Grid.OffsetCell(cell, offset);
-			if (!Grid.Reserved[num])
+			if (Grid.IsCellOffsetValid(cell, offset))
 			{
-				result = num;
-				break;
+				int num = Grid.OffsetCell(cell, offset);
+				if (!Grid.Reserved[num] && navigator.NavGrid.NavTable.IsValid(num, NavType.Floor) && navigator.GetNavigationCost(num) != -1)
+				{
+					return num;
+				}
 			}
 		}
-		return result;
+		return -1;
 	}
 
 	public static Grave FindGraveToMournAt()
@@ -158,7 +161,6 @@ public class MournChore : Chore<MournChore.StatesInstance>
 					result = grave;
 				}
 			}
-			return result;
 		}
 		finally
 		{
@@ -168,6 +170,7 @@ public class MournChore : Chore<MournChore.StatesInstance>
 				disposable.Dispose();
 			}
 		}
+		return result;
 	}
 
 	public override void Begin(Precondition.Context context)

@@ -41,7 +41,7 @@ public struct InfraredVisualizerData
 		}
 		else if (structureTemperature.IsValid())
 		{
-			num = GameComps.StructureTemperatures.GetData(structureTemperature).Temperature;
+			num = GameComps.StructureTemperatures.GetPayload(structureTemperature).Temperature;
 		}
 		else if ((Object)primaryElement != (Object)null)
 		{

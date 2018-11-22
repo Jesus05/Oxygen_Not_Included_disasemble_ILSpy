@@ -35,6 +35,7 @@ public class WashBasinConfig : IBuildingConfig
 		handSanitizer.outputElement = SimHashes.DirtyWater;
 		handSanitizer.diseaseRemovalCount = 120000;
 		handSanitizer.maxUses = 40;
+		handSanitizer.dumpWhenFull = true;
 		go.AddOrGet<DirectionControl>();
 		HandSanitizer.Work work = go.AddOrGet<HandSanitizer.Work>();
 		work.overrideAnims = new KAnimFile[1]

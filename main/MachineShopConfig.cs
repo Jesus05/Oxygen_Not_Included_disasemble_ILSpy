@@ -26,7 +26,7 @@ public class MachineShopConfig : IBuildingConfig
 		EffectorValues tIER2 = NOISE_POLLUTION.NOISY.TIER1;
 		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, tIER, rEFINED_METALS, melting_point, build_location_rule, BUILDINGS.DECOR.NONE, tIER2, 0.2f);
 		buildingDef.Deprecated = true;
-		buildingDef.ViewMode = SimViewMode.Rooms;
+		buildingDef.ViewMode = OverlayModes.Rooms.ID;
 		buildingDef.Overheatable = false;
 		buildingDef.AudioCategory = "Metal";
 		buildingDef.AudioSize = "large";

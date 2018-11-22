@@ -102,7 +102,7 @@ public class SocialGatheringPoint : StateMachineComponent<SocialGatheringPoint.S
 		ChoreType relax = Db.Get().ChoreTypes.Relax;
 		Workable target = workable;
 		ScheduleBlockType recreation = Db.Get().ScheduleBlockTypes.Recreation;
-		Chore chore = new WorkChore<SocialGatheringPointWorkable>(relax, target, null, null, true, null, null, OnSocialChoreEnd, false, recreation, false, true, null, false, true, false, PriorityScreen.PriorityClass.high, 0, false);
+		Chore chore = new WorkChore<SocialGatheringPointWorkable>(relax, target, null, null, true, null, null, OnSocialChoreEnd, false, recreation, false, true, null, false, true, false, PriorityScreen.PriorityClass.high, 5, false);
 		chore.AddPrecondition(ChorePreconditions.instance.IsNotRedAlert, null);
 		chore.AddPrecondition(ChorePreconditions.instance.CanDoWorkerPrioritizable, workable);
 		return chore;

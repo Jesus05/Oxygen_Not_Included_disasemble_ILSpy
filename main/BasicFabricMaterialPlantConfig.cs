@@ -52,7 +52,7 @@ public class BasicFabricMaterialPlantConfig : IEntityConfig
 		list.Add(GameTags.WaterSeed);
 		list = list;
 		iD = STRINGS.CREATURES.SPECIES.BASICFABRICMATERIALPLANT.DOMESTICATEDDESC;
-		GameObject seed = EntityTemplates.CreateAndRegisterSeedForPlant(template, productionType, initialAnim, desc, name, anim, "object", numberOfSeeds, list, SingleEntityReceptacle.ReceptacleDirection.Top, default(Tag), 1, iD, EntityTemplates.CollisionShape.CIRCLE, 0.25f, 0.25f, null, string.Empty);
+		GameObject seed = EntityTemplates.CreateAndRegisterSeedForPlant(template, productionType, initialAnim, desc, name, anim, "object", numberOfSeeds, list, SingleEntityReceptacle.ReceptacleDirection.Top, default(Tag), 1, iD, EntityTemplates.CollisionShape.CIRCLE, 0.25f, 0.25f, null, "", false);
 		EntityTemplates.CreateAndRegisterPreviewForPlant(seed, ID + "_preview", Assets.GetAnim("swampreed_kanim"), "place", 1, 3);
 		SoundEventVolumeCache.instance.AddVolume("swampreed_kanim", "FabricPlant_grow", NOISE_POLLUTION.CREATURES.TIER3);
 		SoundEventVolumeCache.instance.AddVolume("swampreed_kanim", "FabricPlant_harvest", NOISE_POLLUTION.CREATURES.TIER3);

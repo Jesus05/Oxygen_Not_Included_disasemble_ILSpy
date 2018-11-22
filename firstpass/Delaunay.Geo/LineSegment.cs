@@ -26,15 +26,15 @@ namespace Delaunay.Geo
 			Vector2 value2 = nullable3.Value;
 			Vector2? nullable4 = segment1.p1;
 			float num2 = Vector2.Distance(value2, nullable4.Value);
-			if (num < num2)
+			if (!(num < num2))
 			{
-				return 1;
-			}
-			if (num > num2)
-			{
+				if (!(num > num2))
+				{
+					return 0;
+				}
 				return -1;
 			}
-			return 0;
+			return 1;
 		}
 
 		public static int CompareLengths(LineSegment edge0, LineSegment edge1)
@@ -45,16 +45,16 @@ namespace Delaunay.Geo
 		public Vector2? Center()
 		{
 			Vector2? nullable = p0;
-			if (!nullable.HasValue)
+			if (nullable.HasValue)
 			{
-				return p1;
-			}
-			Vector2? nullable2 = p1;
-			if (!nullable2.HasValue)
-			{
+				Vector2? nullable2 = p1;
+				if (nullable2.HasValue)
+				{
+					return p0.Value + 0.5f * Direction();
+				}
 				return p0;
 			}
-			return p0.Value + 0.5f * Direction();
+			return p1;
 		}
 
 		public Vector2 Direction()
@@ -77,22 +77,22 @@ namespace Delaunay.Geo
 			float val2 = Math.Max(ub1, ub2);
 			float num = Math.Max(0f, val);
 			float num2 = Math.Min(1f, val2);
-			if (num > num2)
+			if (!(num > num2))
 			{
-				return new float[0];
-			}
-			if (num == num2)
-			{
+				if (num != num2)
+				{
+					return new float[2]
+					{
+						num,
+						num2
+					};
+				}
 				return new float[1]
 				{
 					num
 				};
 			}
-			return new float[2]
-			{
-				num,
-				num2
-			};
+			return new float[0];
 		}
 
 		private static Vector2[] OneD_Intersection(Vector2 a1, Vector2 a2, Vector2 b1, Vector2 b2)
@@ -154,87 +154,87 @@ namespace Delaunay.Geo
 		public static bool DoesIntersect(LineSegment a, LineSegment b)
 		{
 			Vector2[] array = Intersection(a.p0.Value, a.p1.Value, b.p0.Value, b.p1.Value);
-			if (array.Length > 0)
+			if (array.Length <= 0)
 			{
-				return true;
+				return false;
 			}
-			return false;
+			return true;
 		}
 
 		public static LineSegment Intersection(LineSegment a, LineSegment b)
 		{
 			Vector2[] array = Intersection(a.p0.Value, a.p1.Value, b.p0.Value, b.p1.Value);
-			if (array.Length == 1)
+			if (array.Length != 1)
 			{
-				return new LineSegment(array[0], null);
-			}
-			if (array.Length == 2)
-			{
+				if (array.Length != 2)
+				{
+					return new LineSegment(null, null);
+				}
 				return new LineSegment(array[0], array[1]);
 			}
-			return new LineSegment(null, null);
+			return new LineSegment(array[0], null);
 		}
 
 		public static Vector2[] Intersection(Vector2 a1, Vector2 a2, Vector2 b1, Vector2 b2)
 		{
 			if (a1.Equals(a2) && b1.Equals(b2))
 			{
-				if (a1.Equals(b1))
+				if (!a1.Equals(b1))
 				{
-					return new Vector2[1]
-					{
-						a1
-					};
+					return new Vector2[0];
 				}
+				return new Vector2[1]
+				{
+					a1
+				};
+			}
+			if (!b1.Equals(b2))
+			{
+				if (!a1.Equals(a2))
+				{
+					float num = (b2.x - b1.x) * (a1.y - b1.y) - (b2.y - b1.y) * (a1.x - b1.x);
+					float num2 = (a2.x - a1.x) * (a1.y - b1.y) - (a2.y - a1.y) * (a1.x - b1.x);
+					float num3 = (b2.y - b1.y) * (a2.x - a1.x) - (b2.x - b1.x) * (a2.y - a1.y);
+					if (0f - Mathf.Epsilon < num3 && num3 < Mathf.Epsilon)
+					{
+						if ((!(0f - Mathf.Epsilon < num) || !(num < Mathf.Epsilon)) && (!(0f - Mathf.Epsilon < num2) || !(num2 < Mathf.Epsilon)))
+						{
+							return new Vector2[0];
+						}
+						if (!a1.Equals(a2))
+						{
+							return OneD_Intersection(a1, a2, b1, b2);
+						}
+						return OneD_Intersection(b1, b2, a1, a2);
+					}
+					float num4 = num / num3;
+					float num5 = num2 / num3;
+					if (0f <= num4 && num4 <= 1f && 0f <= num5 && num5 <= 1f)
+					{
+						return new Vector2[1]
+						{
+							new Vector2(a1.x + num4 * (a2.x - a1.x), a1.y + num4 * (a2.y - a1.y))
+						};
+					}
+					return new Vector2[0];
+				}
+				if (!PointOnLine(a1, b1, b2))
+				{
+					return new Vector2[0];
+				}
+				return new Vector2[1]
+				{
+					a1
+				};
+			}
+			if (!PointOnLine(b1, a1, a2))
+			{
 				return new Vector2[0];
 			}
-			if (b1.Equals(b2))
+			return new Vector2[1]
 			{
-				if (PointOnLine(b1, a1, a2))
-				{
-					return new Vector2[1]
-					{
-						b1
-					};
-				}
-				return new Vector2[0];
-			}
-			if (a1.Equals(a2))
-			{
-				if (PointOnLine(a1, b1, b2))
-				{
-					return new Vector2[1]
-					{
-						a1
-					};
-				}
-				return new Vector2[0];
-			}
-			float num = (b2.x - b1.x) * (a1.y - b1.y) - (b2.y - b1.y) * (a1.x - b1.x);
-			float num2 = (a2.x - a1.x) * (a1.y - b1.y) - (a2.y - a1.y) * (a1.x - b1.x);
-			float num3 = (b2.y - b1.y) * (a2.x - a1.x) - (b2.x - b1.x) * (a2.y - a1.y);
-			if (!(0f - Mathf.Epsilon < num3) || !(num3 < Mathf.Epsilon))
-			{
-				float num4 = num / num3;
-				float num5 = num2 / num3;
-				if (0f <= num4 && num4 <= 1f && 0f <= num5 && num5 <= 1f)
-				{
-					return new Vector2[1]
-					{
-						new Vector2(a1.x + num4 * (a2.x - a1.x), a1.y + num4 * (a2.y - a1.y))
-					};
-				}
-				return new Vector2[0];
-			}
-			if ((0f - Mathf.Epsilon < num && num < Mathf.Epsilon) || (0f - Mathf.Epsilon < num2 && num2 < Mathf.Epsilon))
-			{
-				if (a1.Equals(a2))
-				{
-					return OneD_Intersection(b1, b2, a1, a2);
-				}
-				return OneD_Intersection(a1, a2, b1, b2);
-			}
-			return new Vector2[0];
+				b1
+			};
 		}
 	}
 }

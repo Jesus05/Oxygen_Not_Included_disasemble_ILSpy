@@ -30,7 +30,7 @@ public class GasFilterConfig : IBuildingConfig
 		buildingDef.InputConduitType = ConduitType.Gas;
 		buildingDef.OutputConduitType = ConduitType.Gas;
 		buildingDef.Floodable = false;
-		buildingDef.ViewMode = SimViewMode.GasVentMap;
+		buildingDef.ViewMode = OverlayModes.GasConduits.ID;
 		buildingDef.AudioCategory = "Metal";
 		buildingDef.UtilityInputOffset = new CellOffset(-1, 0);
 		buildingDef.UtilityOutputOffset = new CellOffset(1, 0);

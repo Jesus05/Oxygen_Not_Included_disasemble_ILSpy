@@ -44,7 +44,7 @@ public class AlgaeDistilleryConfig : IBuildingConfig
 		buildingDef.ExhaustKilowattsWhenActive = 0.5f;
 		buildingDef.SelfHeatKilowattsWhenActive = 1f;
 		buildingDef.AudioCategory = "HollowMetal";
-		buildingDef.ViewMode = SimViewMode.LiquidVentMap;
+		buildingDef.ViewMode = OverlayModes.LiquidConduits.ID;
 		buildingDef.OutputConduitType = ConduitType.Liquid;
 		buildingDef.UtilityInputOffset = new CellOffset(0, 0);
 		return buildingDef;

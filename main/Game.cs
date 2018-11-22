@@ -280,13 +280,13 @@ public class Game : KMonoBehaviour
 	public Action<GameSaveData> OnLoad;
 
 	[NonSerialized]
-	public bool baseAlreadyCreated;
+	public bool baseAlreadyCreated = false;
 
 	[NonSerialized]
-	public bool autoPrioritizeRoles;
+	public bool autoPrioritizeRoles = false;
 
 	[NonSerialized]
-	public bool advancedPersonalPriorities;
+	public bool advancedPersonalPriorities = false;
 
 	public SavedInfo savedInfo;
 
@@ -308,7 +308,7 @@ public class Game : KMonoBehaviour
 
 	public Element VisualTunerElement;
 
-	public float currentSunlightIntensity;
+	public float currentSunlightIntensity = 0f;
 
 	public RoomProber roomProber;
 
@@ -324,7 +324,7 @@ public class Game : KMonoBehaviour
 
 	public Unlocks unlocks;
 
-	private bool sandboxModeActive;
+	private bool sandboxModeActive = false;
 
 	public HandleVector<CallbackInfo> callbackManager = new HandleVector<CallbackInfo>(256);
 
@@ -435,7 +435,7 @@ public class Game : KMonoBehaviour
 
 	private List<SolidInfo> gameSolidInfo = new List<SolidInfo>();
 
-	private bool IsPaused;
+	private bool IsPaused = false;
 
 	private HashSet<int> solidChangedFilter = new HashSet<int>();
 
@@ -446,7 +446,7 @@ public class Game : KMonoBehaviour
 	[MyCmpGet]
 	private GameScenePartitioner gameScenePartitioner;
 
-	private bool gameStarted;
+	private bool gameStarted = false;
 
 	private static readonly EventSystem.IntraObjectHandler<Game> MarkStatusItemRendererDirtyDelegate = new EventSystem.IntraObjectHandler<Game>(delegate(Game component, object data)
 	{
@@ -459,10 +459,10 @@ public class Game : KMonoBehaviour
 
 	private Vector2I simActiveRegionMax;
 
-	public bool debugWasUsed;
+	public bool debugWasUsed = false;
 
 	[SerializeField]
-	private bool forceActiveArea;
+	private bool forceActiveArea = false;
 
 	[SerializeField]
 	private Vector2 minForcedActiveArea = new Vector2(0f, 0f);
@@ -470,9 +470,9 @@ public class Game : KMonoBehaviour
 	[SerializeField]
 	private Vector2 maxForcedActiveArea = new Vector2(128f, 128f);
 
-	private bool isLoading;
+	private bool isLoading = false;
 
-	private SimViewMode previousOverlayMode;
+	private HashedString previousOverlayMode = OverlayModes.None.ID;
 
 	private float previousGasConduitFlowDiscreteLerpPercent = -1f;
 
@@ -487,11 +487,11 @@ public class Game : KMonoBehaviour
 
 	private Dictionary<int, ObjectPool> fxPools = new Dictionary<int, ObjectPool>();
 
-	private SavingPreCB activatePreCB;
+	private SavingPreCB activatePreCB = null;
 
-	private SavingActiveCB activateActiveCB;
+	private SavingActiveCB activateActiveCB = null;
 
-	private SavingPostCB activatePostCB;
+	private SavingPostCB activatePostCB = null;
 
 	[SerializeField]
 	public UIColours uiColours = new UIColours();
@@ -691,10 +691,6 @@ public class Game : KMonoBehaviour
 			baseAlreadyCreated = true;
 			Trigger(-1992507039, null);
 			Trigger(-838649377, null);
-		}
-		else
-		{
-			ResetTime();
 		}
 		KScreen kScreen = LocalPlayer.ScreenManager.StartScreen(ScreenPrefabs.Instance.ResourceCategoryScreen.gameObject, null, GameScreenManager.UIRenderTarget.ScreenSpaceOverlay);
 		kScreen.transform.SetSiblingIndex(1);
@@ -1157,7 +1153,7 @@ public class Game : KMonoBehaviour
 	{
 		if ((UnityEngine.Object)OverlayScreen.Instance != (UnityEngine.Object)null)
 		{
-			SimViewMode mode = OverlayScreen.Instance.GetMode();
+			HashedString mode = OverlayScreen.Instance.GetMode();
 			foreach (BuildingCellVisualizer item in Components.BuildingCellVisualizers.Items)
 			{
 				item.Tick(mode);
@@ -1167,7 +1163,7 @@ public class Game : KMonoBehaviour
 
 	public void ForceOverlayUpdate()
 	{
-		previousOverlayMode = SimViewMode.None;
+		previousOverlayMode = OverlayModes.None.ID;
 	}
 
 	private void LateUpdate()
@@ -1194,40 +1190,41 @@ public class Game : KMonoBehaviour
 		gasConduitSystem.Update();
 		liquidConduitSystem.Update();
 		solidConduitSystem.Update();
-		SimViewMode mode = SimDebugView.Instance.GetMode();
+		HashedString mode = SimDebugView.Instance.GetMode();
 		if (mode != previousOverlayMode)
 		{
 			previousOverlayMode = mode;
-			switch (mode)
+			if (mode == OverlayModes.LiquidConduits.ID)
 			{
-			case SimViewMode.LiquidVentMap:
 				liquidFlowVisualizer.ColourizePipeContents(true, true);
 				gasFlowVisualizer.ColourizePipeContents(false, true);
 				solidFlowVisualizer.ColourizePipeContents(false, true);
-				break;
-			case SimViewMode.GasVentMap:
+			}
+			else if (mode == OverlayModes.GasConduits.ID)
+			{
 				liquidFlowVisualizer.ColourizePipeContents(false, true);
 				gasFlowVisualizer.ColourizePipeContents(true, true);
 				solidFlowVisualizer.ColourizePipeContents(false, true);
-				break;
-			case SimViewMode.SolidConveyorMap:
+			}
+			else if (mode == OverlayModes.SolidConveyor.ID)
+			{
 				liquidFlowVisualizer.ColourizePipeContents(false, true);
 				gasFlowVisualizer.ColourizePipeContents(false, true);
 				solidFlowVisualizer.ColourizePipeContents(true, true);
-				break;
-			default:
+			}
+			else
+			{
 				liquidFlowVisualizer.ColourizePipeContents(false, false);
 				gasFlowVisualizer.ColourizePipeContents(false, false);
 				solidFlowVisualizer.ColourizePipeContents(false, false);
-				break;
 			}
 		}
-		gasFlowVisualizer.Render(gasFlowPos.z, 0, gasConduitFlow.ContinuousLerpPercent, mode == SimViewMode.GasVentMap && gasConduitFlow.DiscreteLerpPercent != previousGasConduitFlowDiscreteLerpPercent);
-		liquidFlowVisualizer.Render(liquidFlowPos.z, 0, liquidConduitFlow.ContinuousLerpPercent, mode == SimViewMode.LiquidVentMap && liquidConduitFlow.DiscreteLerpPercent != previousLiquidConduitFlowDiscreteLerpPercent);
-		solidFlowVisualizer.Render(solidFlowPos.z, 0, solidConduitFlow.ContinuousLerpPercent, mode == SimViewMode.SolidConveyorMap && solidConduitFlow.DiscreteLerpPercent != previousSolidConduitFlowDiscreteLerpPercent);
-		previousGasConduitFlowDiscreteLerpPercent = ((mode != SimViewMode.GasVentMap) ? (-1f) : gasConduitFlow.DiscreteLerpPercent);
-		previousLiquidConduitFlowDiscreteLerpPercent = ((mode != SimViewMode.LiquidVentMap) ? (-1f) : liquidConduitFlow.DiscreteLerpPercent);
-		previousSolidConduitFlowDiscreteLerpPercent = ((mode != SimViewMode.SolidConveyorMap) ? (-1f) : solidConduitFlow.DiscreteLerpPercent);
+		gasFlowVisualizer.Render(gasFlowPos.z, 0, gasConduitFlow.ContinuousLerpPercent, mode == OverlayModes.GasConduits.ID && gasConduitFlow.DiscreteLerpPercent != previousGasConduitFlowDiscreteLerpPercent);
+		liquidFlowVisualizer.Render(liquidFlowPos.z, 0, liquidConduitFlow.ContinuousLerpPercent, mode == OverlayModes.LiquidConduits.ID && liquidConduitFlow.DiscreteLerpPercent != previousLiquidConduitFlowDiscreteLerpPercent);
+		solidFlowVisualizer.Render(solidFlowPos.z, 0, solidConduitFlow.ContinuousLerpPercent, mode == OverlayModes.SolidConveyor.ID && solidConduitFlow.DiscreteLerpPercent != previousSolidConduitFlowDiscreteLerpPercent);
+		previousGasConduitFlowDiscreteLerpPercent = ((!(mode == OverlayModes.GasConduits.ID)) ? (-1f) : gasConduitFlow.DiscreteLerpPercent);
+		previousLiquidConduitFlowDiscreteLerpPercent = ((!(mode == OverlayModes.LiquidConduits.ID)) ? (-1f) : liquidConduitFlow.DiscreteLerpPercent);
+		previousSolidConduitFlowDiscreteLerpPercent = ((!(mode == OverlayModes.SolidConveyor.ID)) ? (-1f) : solidConduitFlow.DiscreteLerpPercent);
 		Camera main = Camera.main;
 		Vector3 position = Camera.main.transform.GetPosition();
 		Vector3 vector = main.ViewportToWorldPoint(new Vector3(1f, 1f, position.z));
@@ -1274,7 +1271,7 @@ public class Game : KMonoBehaviour
 				GC.Collect();
 				float num = Time.realtimeSinceStartup - realtimeSinceStartup;
 				Debug.Log("\tGC.Collect() took " + num.ToString() + " seconds", null);
-				uint num2 = 291640u;
+				uint num2 = 295825u;
 				string text = System.DateTime.Now.ToShortDateString();
 				string text2 = System.DateTime.Now.ToShortTimeString();
 				string fileName = Path.GetFileName(SaveLoader.GetLatestSaveFile());
@@ -1490,12 +1487,6 @@ public class Game : KMonoBehaviour
 		{
 			OnLoad(gameSaveData);
 		}
-	}
-
-	public void ResetTime()
-	{
-		KPlayerPrefs.DeleteKey(NextUniqueIDKey);
-		KPrefabID.NextUniqueID = 0;
 	}
 
 	public void SetAutoSaveCallbacks(SavingPreCB activatePreCB, SavingActiveCB activateActiveCB, SavingPostCB activatePostCB)
@@ -1755,8 +1746,6 @@ public class Game : KMonoBehaviour
 		DetailsScreen.DestroyInstance();
 		DietManager.DestroyInstance();
 		DebugText.DestroyInstance();
-		FabricationNeeds.DestroyInstance();
-		RefineryNeeds.DestroyInstance();
 		FactionManager.DestroyInstance();
 		EmptyPipeTool.DestroyInstance();
 		FetchListStatusItemUpdater.DestroyInstance();

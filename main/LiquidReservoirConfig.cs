@@ -17,7 +17,7 @@ public class LiquidReservoirConfig : IBuildingConfig
 		buildingDef.InputConduitType = ConduitType.Liquid;
 		buildingDef.OutputConduitType = ConduitType.Liquid;
 		buildingDef.Floodable = false;
-		buildingDef.ViewMode = SimViewMode.LiquidVentMap;
+		buildingDef.ViewMode = OverlayModes.LiquidConduits.ID;
 		buildingDef.AudioCategory = "HollowMetal";
 		buildingDef.UtilityInputOffset = new CellOffset(1, 2);
 		buildingDef.UtilityOutputOffset = new CellOffset(0, 0);

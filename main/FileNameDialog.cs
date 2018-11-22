@@ -70,7 +70,7 @@ public class FileNameDialog : KScreen
 	{
 		if (Localization.HasDirtyWords(str))
 		{
-			inputField.text = string.Empty;
+			inputField.text = "";
 		}
 	}
 

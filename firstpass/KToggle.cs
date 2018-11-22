@@ -16,7 +16,7 @@ public class KToggle : Toggle
 
 	public KToggleArtExtensions artExtension;
 
-	protected bool mouseOver;
+	protected bool mouseOver = false;
 
 	public bool GetMouseOver => mouseOver;
 
@@ -203,21 +203,21 @@ public class KToggle : Toggle
 	private ToggleGroup GetParentToggleGroup(BaseEventData eventData)
 	{
 		PointerEventData pointerEventData = eventData as PointerEventData;
-		if (pointerEventData == null)
+		if (pointerEventData != null)
 		{
+			GameObject gameObject = pointerEventData.pointerPressRaycast.gameObject;
+			if (!((UnityEngine.Object)gameObject == (UnityEngine.Object)null))
+			{
+				Toggle componentInParent = gameObject.GetComponentInParent<Toggle>();
+				if (!((UnityEngine.Object)componentInParent == (UnityEngine.Object)null) && !((UnityEngine.Object)componentInParent.group == (UnityEngine.Object)null))
+				{
+					return componentInParent.group;
+				}
+				return null;
+			}
 			return null;
 		}
-		GameObject gameObject = pointerEventData.pointerPressRaycast.gameObject;
-		if ((UnityEngine.Object)gameObject == (UnityEngine.Object)null)
-		{
-			return null;
-		}
-		Toggle componentInParent = gameObject.GetComponentInParent<Toggle>();
-		if ((UnityEngine.Object)componentInParent == (UnityEngine.Object)null || (UnityEngine.Object)componentInParent.group == (UnityEngine.Object)null)
-		{
-			return null;
-		}
-		return componentInParent.group;
+		return null;
 	}
 
 	public void OnPointerEnter()

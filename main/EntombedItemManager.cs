@@ -50,35 +50,35 @@ public class EntombedItemManager : KMonoBehaviour, ISim33ms
 
 	public static bool CanEntomb(Pickupable pickupable)
 	{
-		if ((Object)pickupable == (Object)null)
+		if (!((Object)pickupable == (Object)null))
 		{
-			return false;
-		}
-		if ((Object)pickupable.storage != (Object)null)
-		{
-			return false;
-		}
-		int num = Grid.PosToCell(pickupable);
-		if (!Grid.IsValidCell(num))
-		{
-			return false;
-		}
-		if (!Grid.Solid[num])
-		{
-			return false;
-		}
-		if ((Object)Grid.Objects[num, 9] != (Object)null)
-		{
-			return false;
-		}
-		PrimaryElement component = pickupable.GetComponent<PrimaryElement>();
-		if (component.Element.IsSolid)
-		{
-			ElementChunk component2 = pickupable.GetComponent<ElementChunk>();
-			if ((Object)component2 != (Object)null)
+			if (!((Object)pickupable.storage != (Object)null))
 			{
-				return true;
+				int num = Grid.PosToCell(pickupable);
+				if (Grid.IsValidCell(num))
+				{
+					if (Grid.Solid[num])
+					{
+						if (!((Object)Grid.Objects[num, 9] != (Object)null))
+						{
+							PrimaryElement component = pickupable.GetComponent<PrimaryElement>();
+							if (component.Element.IsSolid)
+							{
+								ElementChunk component2 = pickupable.GetComponent<ElementChunk>();
+								if ((Object)component2 != (Object)null)
+								{
+									return true;
+								}
+							}
+							return false;
+						}
+						return false;
+					}
+					return false;
+				}
+				return false;
 			}
+			return false;
 		}
 		return false;
 	}

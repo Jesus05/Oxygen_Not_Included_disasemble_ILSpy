@@ -321,7 +321,7 @@ public class Navigator : StateMachineComponent<Navigator.StatesInstance>, ISaveL
 						if (currentNavType == node2.navType)
 						{
 							flag = !ValidatePath(ref path);
-							goto IL_018c;
+							goto IL_01a4;
 						}
 					}
 					int num4 = num;
@@ -334,7 +334,7 @@ public class Navigator : StateMachineComponent<Navigator.StatesInstance>, ISaveL
 						{
 							path.nodes.RemoveAt(0);
 							flag = !ValidatePath(ref path);
-							goto IL_018c;
+							goto IL_01a4;
 						}
 					}
 					flag = true;
@@ -343,12 +343,12 @@ public class Navigator : StateMachineComponent<Navigator.StatesInstance>, ISaveL
 				{
 					flag = true;
 				}
-				goto IL_018c;
+				goto IL_01a4;
 			}
 			Stop(true);
 		}
-		goto IL_027b;
-		IL_018c:
+		goto IL_02a2;
+		IL_01a4:
 		if (flag)
 		{
 			int cellPreferences = tactic.GetCellPreferences(num2, targetOffsets, this);
@@ -377,8 +377,8 @@ public class Navigator : StateMachineComponent<Navigator.StatesInstance>, ISaveL
 			ClearReservedCell();
 			Stop(false);
 		}
-		goto IL_027b;
-		IL_027b:
+		goto IL_02a2;
+		IL_02a2:
 		if (trigger_advance)
 		{
 			Trigger(1347184327, null);
@@ -399,6 +399,9 @@ public class Navigator : StateMachineComponent<Navigator.StatesInstance>, ISaveL
 		path.Clear();
 		base.smi.sm.moveTarget.Set(null, base.smi);
 		transitionDriver.EndTransition();
+		HashedString idleAnim = NavGrid.GetIdleAnim(CurrentNavType);
+		KAnimControllerBase component = GetComponent<KAnimControllerBase>();
+		component.Play(idleAnim, KAnim.PlayMode.Loop, 1f, 0f);
 		if (arrived_at_destination)
 		{
 			base.smi.GoTo(base.smi.sm.arrived);
@@ -605,11 +608,11 @@ public class Navigator : StateMachineComponent<Navigator.StatesInstance>, ISaveL
 
 	public int GetNavigationCost(int cell)
 	{
-		if (Grid.IsValidCell(cell))
+		if (!Grid.IsValidCell(cell))
 		{
-			return PathProber.GetCost(cell);
+			return -1;
 		}
-		return -1;
+		return PathProber.GetCost(cell);
 	}
 
 	public int GetNavigationCostIgnoreProberOffset(int cell, CellOffset[] offsets)

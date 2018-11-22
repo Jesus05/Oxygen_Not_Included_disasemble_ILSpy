@@ -32,7 +32,7 @@ public class TransitionDriver
 
 	private Vector3 targetPos;
 
-	private bool isComplete;
+	private bool isComplete = false;
 
 	private Brain brain;
 
@@ -76,18 +76,30 @@ public class TransitionDriver
 		if (transition.isLooping)
 		{
 			KAnimControllerBase component3 = navigator.GetComponent<KAnimControllerBase>();
-			if (component3.CurrentAnim == null || ((HashedString)component3.CurrentAnim.name != transition.anim && (HashedString)component3.CurrentAnim.name != transition.preAnim))
+			component3.PlaySpeedMultiplier = transition.animSpeed;
+			bool flag = transition.preAnim != (HashedString)"";
+			bool flag2 = component3.CurrentAnim != null && (HashedString)component3.CurrentAnim.name == transition.anim;
+			if (flag && component3.CurrentAnim != null && (HashedString)component3.CurrentAnim.name == transition.preAnim)
 			{
-				component3.PlaySpeedMultiplier = transition.animSpeed;
-				if (transition.preAnim != (HashedString)string.Empty)
+				component3.ClearQueue();
+				component3.Queue(transition.anim, KAnim.PlayMode.Loop, 1f, 0f);
+			}
+			else if (flag2)
+			{
+				if (component3.PlayMode != 0)
 				{
-					component3.Play(transition.preAnim, KAnim.PlayMode.Once, 1f, 0f);
+					component3.ClearQueue();
 					component3.Queue(transition.anim, KAnim.PlayMode.Loop, 1f, 0f);
 				}
-				else
-				{
-					component3.Play(transition.anim, KAnim.PlayMode.Loop, 1f, 0f);
-				}
+			}
+			else if (flag)
+			{
+				component3.Play(transition.preAnim, KAnim.PlayMode.Once, 1f, 0f);
+				component3.Queue(transition.anim, KAnim.PlayMode.Loop, 1f, 0f);
+			}
+			else
+			{
+				component3.Play(transition.anim, KAnim.PlayMode.Loop, 1f, 0f);
 			}
 		}
 		else if (transition.anim != (HashedString)null)
@@ -138,10 +150,10 @@ public class TransitionDriver
 		}
 		if ((Object)brain != (Object)null && !isComplete)
 		{
-			goto IL_00ae;
+			goto IL_00be;
 		}
-		goto IL_00ae;
-		IL_00ae:
+		goto IL_00be;
+		IL_00be:
 		if (transition.isLooping)
 		{
 			float speed = transition.speed;

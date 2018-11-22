@@ -268,7 +268,7 @@ public class ChoreConsumer : KMonoBehaviour, IPersonalPriorityManager
 
 	public void AddProvider(ChoreProvider provider)
 	{
-		DebugUtil.Assert((UnityEngine.Object)provider != (UnityEngine.Object)null, "Assert!", string.Empty, string.Empty);
+		DebugUtil.Assert((UnityEngine.Object)provider != (UnityEngine.Object)null);
 		providers.Add(provider);
 	}
 
@@ -279,7 +279,7 @@ public class ChoreConsumer : KMonoBehaviour, IPersonalPriorityManager
 
 	public void AddUrge(Urge urge)
 	{
-		DebugUtil.Assert(urge != null, "Assert!", string.Empty, string.Empty);
+		DebugUtil.Assert(urge != null);
 		urges.Add(urge);
 		Trigger(-736698276, urge);
 	}
@@ -307,19 +307,19 @@ public class ChoreConsumer : KMonoBehaviour, IPersonalPriorityManager
 
 	public bool IsPermittedOrEnabled(ChoreType chore_type, Chore chore)
 	{
-		if (chore_type.groups.Length == 0)
+		if (chore_type.groups.Length != 0)
 		{
-			return true;
-		}
-		for (int i = 0; i < chore_type.groups.Length; i++)
-		{
-			ChoreGroup chore_group = chore_type.groups[i];
-			if (IsPermittedByTraits(chore_group) && IsPermittedByUser(chore_group))
+			for (int i = 0; i < chore_type.groups.Length; i++)
 			{
-				return true;
+				ChoreGroup chore_group = chore_type.groups[i];
+				if (IsPermittedByTraits(chore_group) && IsPermittedByUser(chore_group))
+				{
+					return true;
+				}
 			}
+			return false;
 		}
-		return false;
+		return true;
 	}
 
 	public void SetReach(int reach)
@@ -352,31 +352,31 @@ public class ChoreConsumer : KMonoBehaviour, IPersonalPriorityManager
 
 	public bool CanReach(IApproachable approachable)
 	{
-		if ((bool)navigator)
+		if (!(bool)navigator)
 		{
-			return navigator.CanReach(approachable);
-		}
-		if (consumerState.hasSolidTransferArm)
-		{
+			if (!consumerState.hasSolidTransferArm)
+			{
+				return false;
+			}
 			int cell = approachable.GetCell();
 			return consumerState.solidTransferArm.IsCellReachable(cell);
 		}
-		return false;
+		return navigator.CanReach(approachable);
 	}
 
 	public bool IsWithinReach(IApproachable approachable)
 	{
-		if ((bool)navigator)
+		if (!(bool)navigator)
 		{
-			if ((UnityEngine.Object)this == (UnityEngine.Object)null || (UnityEngine.Object)base.gameObject == (UnityEngine.Object)null)
+			if (!consumerState.hasSolidTransferArm)
 			{
 				return false;
 			}
-			return Grid.IsCellOffsetOf(Grid.PosToCell(this), approachable.GetCell(), approachable.GetOffsets());
-		}
-		if (consumerState.hasSolidTransferArm)
-		{
 			return consumerState.solidTransferArm.IsCellReachable(approachable.GetCell());
+		}
+		if (!((UnityEngine.Object)this == (UnityEngine.Object)null) && !((UnityEngine.Object)base.gameObject == (UnityEngine.Object)null))
+		{
+			return Grid.IsCellOffsetOf(Grid.PosToCell(this), approachable.GetCell(), approachable.GetOffsets());
 		}
 		return false;
 	}
@@ -546,16 +546,16 @@ public class ChoreConsumer : KMonoBehaviour, IPersonalPriorityManager
 	public bool RunBehaviourPrecondition(Tag tag)
 	{
 		BehaviourPrecondition value = default(BehaviourPrecondition);
-		if (!behaviourPreconditions.TryGetValue(tag, out value))
+		if (behaviourPreconditions.TryGetValue(tag, out value))
 		{
-			return false;
+			return value.cb(value.arg);
 		}
-		return value.cb(value.arg);
+		return false;
 	}
 
 	public void AddBehaviourPrecondition(Tag tag, Func<object, bool> precondition, object arg)
 	{
-		DebugUtil.Assert(!behaviourPreconditions.ContainsKey(tag), "Assert!", string.Empty, string.Empty);
+		DebugUtil.Assert(!behaviourPreconditions.ContainsKey(tag));
 		behaviourPreconditions[tag] = new BehaviourPrecondition
 		{
 			cb = precondition,
@@ -571,11 +571,11 @@ public class ChoreConsumer : KMonoBehaviour, IPersonalPriorityManager
 	public bool IsChoreEqualOrAboveCurrentChorePriority<StateMachineType>()
 	{
 		Chore currentChore = choreDriver.GetCurrentChore();
-		if (currentChore == null)
+		if (currentChore != null)
 		{
-			return true;
+			return currentChore.choreType.priority <= choreTable.GetChorePriority<StateMachineType>(this);
 		}
-		return currentChore.choreType.priority <= choreTable.GetChorePriority<StateMachineType>(this);
+		return true;
 	}
 
 	public bool IsChoreGroupDisabled(ChoreGroup chore_group)

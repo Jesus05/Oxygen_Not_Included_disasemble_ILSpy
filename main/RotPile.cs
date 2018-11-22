@@ -23,7 +23,7 @@ public class RotPile : StateMachineComponent<RotPile.StatesInstance>
 				{
 					tooltipData = master.gameObject.GetProperName()
 				};
-				base.gameObject.AddOrGet<Notifier>().Add(notification, string.Empty);
+				base.gameObject.AddOrGet<Notifier>().Add(notification, "");
 			}
 		}
 

@@ -178,10 +178,10 @@ public class ScheduleScreen : KScreen
 				{
 					if ((Object)currentSelectedGameObject == (Object)entry.GetNameInputField())
 					{
-						return true;
+						result = true;
+						break;
 					}
 				}
-				return result;
 			}
 		}
 		return result;

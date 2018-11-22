@@ -55,7 +55,8 @@ public class ColdWheatConfig : IEntityConfig
 		List<Tag> list = new List<Tag>();
 		list.Add(GameTags.CropSeed);
 		list = list;
-		GameObject gameObject2 = EntityTemplates.CreateAndRegisterSeedForPlant(plant, productionType, initialAnim, desc, name, anim, "object", 1, list, SingleEntityReceptacle.ReceptacleDirection.Top, default(Tag), 2, STRINGS.CREATURES.SPECIES.COLDWHEAT.DOMESTICATEDDESC, EntityTemplates.CollisionShape.CIRCLE, 0.2f, 0.2f, null, string.Empty);
+		id = STRINGS.CREATURES.SPECIES.COLDWHEAT.DOMESTICATEDDESC;
+		GameObject gameObject2 = EntityTemplates.CreateAndRegisterSeedForPlant(plant, productionType, initialAnim, desc, name, anim, "object", 1, list, SingleEntityReceptacle.ReceptacleDirection.Top, default(Tag), 2, id, EntityTemplates.CollisionShape.CIRCLE, 0.2f, 0.2f, null, "", true);
 		EntityTemplates.ExtendEntityToFood(gameObject2, FOOD.FOOD_TYPES.COLD_WHEAT_SEED);
 		EntityTemplates.CreateAndRegisterPreviewForPlant(gameObject2, "ColdWheat_preview", Assets.GetAnim("coldwheat_kanim"), "place", 1, 1);
 		SoundEventVolumeCache.instance.AddVolume("coldwheat_kanim", "ColdWheat_grow", NOISE_POLLUTION.CREATURES.TIER3);

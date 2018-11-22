@@ -43,7 +43,7 @@ public class BasicSingleHarvestPlantConfig : IEntityConfig
 		list.Add(GameTags.CropSeed);
 		list = list;
 		id = STRINGS.CREATURES.SPECIES.BASICSINGLEHARVESTPLANT.DOMESTICATEDDESC;
-		GameObject seed = EntityTemplates.CreateAndRegisterSeedForPlant(template, productionType, initialAnim, desc, name, anim, "object", numberOfSeeds, list, SingleEntityReceptacle.ReceptacleDirection.Top, default(Tag), 1, id, EntityTemplates.CollisionShape.CIRCLE, 0.3f, 0.3f, null, string.Empty);
+		GameObject seed = EntityTemplates.CreateAndRegisterSeedForPlant(template, productionType, initialAnim, desc, name, anim, "object", numberOfSeeds, list, SingleEntityReceptacle.ReceptacleDirection.Top, default(Tag), 1, id, EntityTemplates.CollisionShape.CIRCLE, 0.3f, 0.3f, null, "", false);
 		EntityTemplates.ExtendPlantToFertilizable(gameObject, new PlantElementAbsorber.ConsumeInfo[1]
 		{
 			new PlantElementAbsorber.ConsumeInfo

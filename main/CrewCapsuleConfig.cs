@@ -23,7 +23,6 @@ public class CrewCapsuleConfig : IBuildingConfig
 		EffectorValues tIER2 = NOISE_POLLUTION.NOISY.TIER2;
 		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, tIER, construction_materials, melting_point, build_location_rule, BUILDINGS.DECOR.NONE, tIER2, 0.2f);
 		buildingDef.SceneLayer = Grid.SceneLayer.BuildingFront;
-		buildingDef.ViewMode = SimViewMode.None;
 		buildingDef.OverheatTemperature = 2273.15f;
 		buildingDef.Floodable = false;
 		buildingDef.AttachmentSlotTag = GameTags.Rocket;

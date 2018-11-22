@@ -26,7 +26,7 @@ public class SeedProducer : KMonoBehaviour, IGameObjectEffectDescriptor
 
 	public SeedInfo seedInfo;
 
-	private bool droppedSeedAlready;
+	private bool droppedSeedAlready = false;
 
 	private static readonly EventSystem.IntraObjectHandler<SeedProducer> DropSeedDelegate = new EventSystem.IntraObjectHandler<SeedProducer>(delegate(SeedProducer component, object data)
 	{
@@ -107,10 +107,10 @@ public class SeedProducer : KMonoBehaviour, IGameObjectEffectDescriptor
 		GameObject prefab = Assets.GetPrefab(new Tag(seedInfo.seedId));
 		if (!((UnityEngine.Object)prefab != (UnityEngine.Object)null))
 		{
-			goto IL_0028;
+			goto IL_002b;
 		}
-		goto IL_0028;
-		IL_0028:
+		goto IL_002b;
+		IL_002b:
 		switch (seedInfo.productionType)
 		{
 		default:

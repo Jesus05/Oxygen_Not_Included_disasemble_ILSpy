@@ -73,11 +73,11 @@ namespace TMPro
 		{
 			get
 			{
-				if ((UnityEngine.Object)sharedMaterial != (UnityEngine.Object)null)
+				if (!((UnityEngine.Object)sharedMaterial != (UnityEngine.Object)null))
 				{
-					return sharedMaterial.GetTexture(ShaderUtilities.ID_MainTex);
+					return null;
 				}
-				return null;
+				return sharedMaterial.GetTexture(ShaderUtilities.ID_MainTex);
 			}
 		}
 

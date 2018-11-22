@@ -151,14 +151,14 @@ namespace YamlDotNet.Core
 			{
 				FetchMoreTokens();
 			}
-			if (tokens.Count > 0)
+			if (tokens.Count <= 0)
 			{
-				Current = tokens.Dequeue();
-				tokenAvailable = false;
-				return true;
+				Current = null;
+				return false;
 			}
-			Current = null;
-			return false;
+			Current = tokens.Dequeue();
+			tokenAvailable = false;
+			return true;
 		}
 
 		public void ConsumeCurrent()
@@ -178,14 +178,14 @@ namespace YamlDotNet.Core
 
 		private char ReadLine()
 		{
-			if (analyzer.Check("\r\n\u0085", 0))
+			if (!analyzer.Check("\r\n\u0085", 0))
 			{
+				char result = analyzer.Peek(0);
 				SkipLine();
-				return '\n';
+				return result;
 			}
-			char result = analyzer.Peek(0);
 			SkipLine();
-			return result;
+			return '\n';
 		}
 
 		private void FetchMoreTokens()
@@ -663,11 +663,11 @@ namespace YamlDotNet.Core
 			{
 				throw new SyntaxErrorException(start, cursor.Mark(), "While scanning an anchor or alias, did not find expected alphabetic or numeric character.");
 			}
-			if (isAlias)
+			if (!isAlias)
 			{
-				return new AnchorAlias(stringBuilder.ToString(), start, cursor.Mark());
+				return new Anchor(stringBuilder.ToString(), start, cursor.Mark());
 			}
-			return new Anchor(stringBuilder.ToString(), start, cursor.Mark());
+			return new AnchorAlias(stringBuilder.ToString(), start, cursor.Mark());
 		}
 
 		private void FetchTag()

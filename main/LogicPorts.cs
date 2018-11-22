@@ -58,7 +58,7 @@ public class LogicPorts : KMonoBehaviour, IEffectDescriptor, IRenderEveryTick
 	[Serialize]
 	private int[] serializedOutputValues;
 
-	private bool isPhysical;
+	private bool isPhysical = false;
 
 	protected override void OnPrefabInit()
 	{
@@ -73,7 +73,7 @@ public class LogicPorts : KMonoBehaviour, IEffectDescriptor, IRenderEveryTick
 		if (!isPhysical && (UnityEngine.Object)GetComponent<BuildingUnderConstruction>() == (UnityEngine.Object)null)
 		{
 			OverlayScreen instance = OverlayScreen.Instance;
-			instance.OnOverlayChanged = (Action<SimViewMode>)Delegate.Combine(instance.OnOverlayChanged, new Action<SimViewMode>(OnOverlayChanged));
+			instance.OnOverlayChanged = (Action<HashedString>)Delegate.Combine(instance.OnOverlayChanged, new Action<HashedString>(OnOverlayChanged));
 			OnOverlayChanged(OverlayScreen.Instance.mode);
 			CreateVisualizers();
 			SimAndRenderScheduler.instance.Add(this, false);
@@ -92,7 +92,7 @@ public class LogicPorts : KMonoBehaviour, IEffectDescriptor, IRenderEveryTick
 	protected override void OnCleanUp()
 	{
 		OverlayScreen instance = OverlayScreen.Instance;
-		instance.OnOverlayChanged = (Action<SimViewMode>)Delegate.Remove(instance.OnOverlayChanged, new Action<SimViewMode>(OnOverlayChanged));
+		instance.OnOverlayChanged = (Action<HashedString>)Delegate.Remove(instance.OnOverlayChanged, new Action<HashedString>(OnOverlayChanged));
 		DestroyVisualizers();
 		if (isPhysical)
 		{
@@ -102,6 +102,11 @@ public class LogicPorts : KMonoBehaviour, IEffectDescriptor, IRenderEveryTick
 	}
 
 	public void RenderEveryTick(float dt)
+	{
+		CreateVisualizers();
+	}
+
+	public void HackRefreshVisualizers()
 	{
 		CreateVisualizers();
 	}
@@ -385,9 +390,9 @@ public class LogicPorts : KMonoBehaviour, IEffectDescriptor, IRenderEveryTick
 		return networkForCell != null;
 	}
 
-	private void OnOverlayChanged(SimViewMode mode)
+	private void OnOverlayChanged(HashedString mode)
 	{
-		if (mode == SimViewMode.Logic)
+		if (mode == OverlayModes.Logic.ID)
 		{
 			base.enabled = true;
 			CreateVisualizers();
@@ -407,18 +412,18 @@ public class LogicPorts : KMonoBehaviour, IEffectDescriptor, IRenderEveryTick
 		{
 			if (component.inputPortInfo != null && component.inputPortInfo.Length > 0)
 			{
-				string text = string.Empty;
-				string str = (component.inputPortInfo.Length != 1) ? "\n\t\t" : string.Empty;
+				string text = "";
+				string str = (component.inputPortInfo.Length != 1) ? "\n\t\t" : "";
 				Port[] array = component.inputPortInfo;
 				for (int i = 0; i < array.Length; i++)
 				{
 					Port port = array[i];
 					text = text + str + port.description;
 				}
-				string empty = string.Empty;
+				string tooltip = "";
 				string txt = string.Format(UI.LOGIC_PORTS.INPUT_PORTS, text);
 				Descriptor item = default(Descriptor);
-				item.SetupDescriptor(txt, empty, Descriptor.DescriptorType.Effect);
+				item.SetupDescriptor(txt, tooltip, Descriptor.DescriptorType.Effect);
 				if (list == null)
 				{
 					list = new List<Descriptor>();
@@ -427,18 +432,18 @@ public class LogicPorts : KMonoBehaviour, IEffectDescriptor, IRenderEveryTick
 			}
 			if (component.outputPortInfo != null && component.outputPortInfo.Length > 0)
 			{
-				string text2 = string.Empty;
-				string str2 = (component.outputPortInfo.Length != 1) ? "\n\t\t" : string.Empty;
+				string text2 = "";
+				string str2 = (component.outputPortInfo.Length != 1) ? "\n\t\t" : "";
 				Port[] array2 = component.outputPortInfo;
 				for (int j = 0; j < array2.Length; j++)
 				{
 					Port port2 = array2[j];
 					text2 = text2 + str2 + port2.description;
 				}
-				string empty2 = string.Empty;
+				string tooltip2 = "";
 				string txt2 = string.Format(UI.LOGIC_PORTS.OUTPUT_PORTS, text2);
 				Descriptor item2 = default(Descriptor);
-				item2.SetupDescriptor(txt2, empty2, Descriptor.DescriptorType.Effect);
+				item2.SetupDescriptor(txt2, tooltip2, Descriptor.DescriptorType.Effect);
 				if (list == null)
 				{
 					list = new List<Descriptor>();

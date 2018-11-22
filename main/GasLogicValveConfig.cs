@@ -33,7 +33,7 @@ public class GasLogicValveConfig : IBuildingConfig
 		buildingDef.RequiresPowerInput = true;
 		buildingDef.EnergyConsumptionWhenActive = 10f;
 		buildingDef.PowerInputOffset = new CellOffset(0, 1);
-		buildingDef.ViewMode = SimViewMode.GasVentMap;
+		buildingDef.ViewMode = OverlayModes.GasConduits.ID;
 		buildingDef.AudioCategory = "Metal";
 		buildingDef.PermittedRotations = PermittedRotations.R360;
 		buildingDef.UtilityInputOffset = new CellOffset(0, 0);

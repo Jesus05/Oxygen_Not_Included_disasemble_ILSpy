@@ -24,6 +24,7 @@ public class ElementSplitterComponents : KGameObjectComponentManager<ElementSpli
 		};
 		Pickupable pickupable2 = component;
 		pickupable2.CanAbsorb = (Func<Pickupable, bool>)Delegate.Combine(pickupable2.CanAbsorb, func2);
+		component.absorbable = true;
 		data.onTakeCB = func;
 		data.canAbsorbCB = func2;
 		SetData(handle, data);
@@ -51,13 +52,13 @@ public class ElementSplitterComponents : KGameObjectComponentManager<ElementSpli
 
 	private static bool CanFirstAbsorbSecond(HandleVector<int>.Handle first, HandleVector<int>.Handle second)
 	{
-		if (first == HandleVector<int>.InvalidHandle || second == HandleVector<int>.InvalidHandle)
+		if (!(first == HandleVector<int>.InvalidHandle) && !(second == HandleVector<int>.InvalidHandle))
 		{
-			return false;
+			ElementSplitter data = GameComps.ElementSplitters.GetData(first);
+			ElementSplitter data2 = GameComps.ElementSplitters.GetData(second);
+			return data.primaryElement.ElementID == data2.primaryElement.ElementID && data.primaryElement.Units + data2.primaryElement.Units < 25000f;
 		}
-		ElementSplitter data = GameComps.ElementSplitters.GetData(first);
-		ElementSplitter data2 = GameComps.ElementSplitters.GetData(second);
-		return data.primaryElement.ElementID == data2.primaryElement.ElementID && data.primaryElement.Units + data2.primaryElement.Units < 25000f;
+		return false;
 	}
 
 	private static Pickupable OnTake(HandleVector<int>.Handle handle, float amount)

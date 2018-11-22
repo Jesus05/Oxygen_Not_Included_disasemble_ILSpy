@@ -25,7 +25,7 @@ public class ChoreTable
 
 		public Builder PopInterruptGroup()
 		{
-			DebugUtil.Assert(interruptGroupId > 0, "Assert!", string.Empty, string.Empty);
+			DebugUtil.Assert(interruptGroupId > 0);
 			interruptGroupId--;
 			return this;
 		}
@@ -45,7 +45,7 @@ public class ChoreTable
 
 		public ChoreTable CreateTable()
 		{
-			DebugUtil.Assert(interruptGroupId == 0, "Assert!", string.Empty, string.Empty);
+			DebugUtil.Assert(interruptGroupId == 0);
 			Entry[] array = new Entry[infos.Count];
 			Stack<int> stack = new Stack<int>();
 			for (int i = 0; i < infos.Count; i++)
@@ -80,7 +80,7 @@ public class ChoreTable
 	public class ChoreTableChore<StateMachineType, StateMachineInstanceType> : Chore<StateMachineInstanceType> where StateMachineInstanceType : StateMachine.Instance
 	{
 		public ChoreTableChore(StateMachine.BaseDef state_machine_def, ChoreType chore_type, KPrefabID prefab_id)
-			: base(chore_type, (IStateMachineTarget)prefab_id, ((Component)prefab_id).GetComponent<ChoreProvider>(), true, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.basic, 0, false, true, 0, (Tag[])null)
+			: base(chore_type, (IStateMachineTarget)prefab_id, ((Component)prefab_id).GetComponent<ChoreProvider>(), true, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.basic, 5, false, true, 0, (Tag[])null)
 		{
 			showAvailabilityInHoverText = false;
 			smi = (state_machine_def.CreateSMI(this) as StateMachineInstanceType);
@@ -105,7 +105,7 @@ public class ChoreTable
 				stateMachineInstanceType
 			};
 			choreClassType = typeof(ChoreTableChore<, >).MakeGenericType(typeArguments);
-			choreType = new ChoreType(state_machine_def.ToString(), null, new string[0], string.Empty, string.Empty, string.Empty, string.Empty, new Tag[0], priority, priority);
+			choreType = new ChoreType(state_machine_def.ToString(), null, new string[0], "", "", "", "", new Tag[0], priority, priority);
 			choreType.interruptPriority = interrupt_priority;
 			stateMachineDef = state_machine_def;
 		}

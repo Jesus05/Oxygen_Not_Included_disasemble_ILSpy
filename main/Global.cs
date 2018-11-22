@@ -3,6 +3,7 @@ using KSerialization;
 using Steamworks;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Threading;
 using UnityEngine;
 using UnityEngine.U2D;
@@ -27,7 +28,7 @@ public class Global : MonoBehaviour
 
 	public ZipFileSystem worldGenZipFS;
 
-	private bool gotKleiUserID;
+	private bool gotKleiUserID = false;
 
 	private Thread mainThread;
 
@@ -50,13 +51,13 @@ public class Global : MonoBehaviour
 		list.Add(new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.A, Modifier.None, Action.PanLeft, true, false));
 		list.Add(new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.D, Modifier.None, Action.PanRight, true, false));
 		list.Add(new BindingEntry("Tool", GamepadButton.NumButtons, KKeyCode.O, Modifier.None, Action.RotateBuilding, true, false));
-		list.Add(new BindingEntry("Management", GamepadButton.NumButtons, KKeyCode.J, Modifier.None, Action.ManagePeople, true, false));
+		list.Add(new BindingEntry("Management", GamepadButton.NumButtons, KKeyCode.L, Modifier.None, Action.ManagePeople, true, false));
 		list.Add(new BindingEntry("Management", GamepadButton.NumButtons, KKeyCode.F, Modifier.None, Action.ManageConsumables, true, false));
 		list.Add(new BindingEntry("Management", GamepadButton.NumButtons, KKeyCode.V, Modifier.None, Action.ManageVitals, true, false));
 		list.Add(new BindingEntry("Management", GamepadButton.NumButtons, KKeyCode.R, Modifier.None, Action.ManageResearch, true, false));
 		list.Add(new BindingEntry("Management", GamepadButton.NumButtons, KKeyCode.E, Modifier.None, Action.ManageReport, true, false));
 		list.Add(new BindingEntry("Management", GamepadButton.NumButtons, KKeyCode.U, Modifier.None, Action.ManageCodex, true, false));
-		list.Add(new BindingEntry("Management", GamepadButton.NumButtons, KKeyCode.L, Modifier.None, Action.ManageRoles, true, false));
+		list.Add(new BindingEntry("Management", GamepadButton.NumButtons, KKeyCode.J, Modifier.None, Action.ManageRoles, true, false));
 		list.Add(new BindingEntry("Management", GamepadButton.NumButtons, KKeyCode.Period, Modifier.None, Action.ManageSchedule, true, false));
 		list.Add(new BindingEntry("Management", GamepadButton.NumButtons, KKeyCode.Z, Modifier.None, Action.ManageStarmap, true, false));
 		list.Add(new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.G, Modifier.None, Action.Dig, true, false));
@@ -224,12 +225,12 @@ public class Global : MonoBehaviour
 		IList<BuildMenu.DisplayInfo> list3 = (IList<BuildMenu.DisplayInfo>)BuildMenu.OrderedBuildings.data;
 		foreach (BuildMenu.DisplayInfo item in list3)
 		{
-			AddBindings(BuildMenu.Category.INVALID, item, list2);
+			AddBindings(HashedString.Invalid, item, list2);
 		}
 		return list2.ToArray();
 	}
 
-	private static void AddBindings(BuildMenu.Category parent_category, BuildMenu.DisplayInfo display_info, List<BindingEntry> bindings)
+	private static void AddBindings(HashedString parent_category, BuildMenu.DisplayInfo display_info, List<BindingEntry> bindings)
 	{
 		if (display_info.data != null)
 		{
@@ -244,7 +245,9 @@ public class Global : MonoBehaviour
 			}
 			else if (typeof(IList<BuildMenu.BuildingInfo>).IsAssignableFrom(type))
 			{
-				string group = parent_category.ToString() + "Menu";
+				string str = HashCache.Get().Get(parent_category);
+				TextInfo textInfo = new CultureInfo("en-US", false).TextInfo;
+				string group = textInfo.ToTitleCase(str) + " Menu";
 				BindingEntry item = new BindingEntry(group, GamepadButton.NumButtons, display_info.keyCode, Modifier.None, display_info.hotkey, true, true);
 				bindings.Add(item);
 			}
@@ -330,11 +333,11 @@ public class Global : MonoBehaviour
 
 	public AnimEventManager GetAnimEventManager()
 	{
-		if (App.IsExiting)
+		if (!App.IsExiting)
 		{
-			return null;
+			return mAnimEventManager;
 		}
-		return mAnimEventManager;
+		return null;
 	}
 
 	private void OnApplicationFocus(bool focus)
@@ -373,8 +376,8 @@ public class Global : MonoBehaviour
 
 	private void SetONIStaticSessionVariables()
 	{
-		ThreadedHttps<KleiMetrics>.Instance.SetStaticSessionVariable("Branch", "release");
-		ThreadedHttps<KleiMetrics>.Instance.SetStaticSessionVariable("Build", 291640u);
+		ThreadedHttps<KleiMetrics>.Instance.SetStaticSessionVariable("Branch", "preview");
+		ThreadedHttps<KleiMetrics>.Instance.SetStaticSessionVariable("Build", 295825u);
 		if (KPlayerPrefs.HasKey(UnitConfigurationScreen.MassUnitKey))
 		{
 			ThreadedHttps<KleiMetrics>.Instance.SetStaticSessionVariable(UnitConfigurationScreen.MassUnitKey, KPlayerPrefs.GetInt(UnitConfigurationScreen.MassUnitKey).ToString());

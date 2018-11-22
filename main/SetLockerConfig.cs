@@ -10,7 +10,9 @@ public class SetLockerConfig : IEntityConfig
 		PrimaryElement component = gameObject.GetComponent<PrimaryElement>();
 		component.SetElement(SimHashes.Unobtanium);
 		component.Temperature = 294.15f;
-		gameObject.AddOrGet<Workable>();
+		Workable workable = gameObject.AddOrGet<Workable>();
+		workable.synchronizeAnims = false;
+		workable.resetProgressOnStop = true;
 		SetLocker setLocker = gameObject.AddOrGet<SetLocker>();
 		setLocker.overrideAnim = "anim_interacts_clothingfactory_kanim";
 		setLocker.dropOffset = new Vector2I(0, 1);

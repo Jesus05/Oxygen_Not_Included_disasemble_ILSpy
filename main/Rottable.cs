@@ -71,7 +71,7 @@ public class Rottable : GameStateMachine<Rottable, Rottable.Instance, IStateMach
 
 		public string StateString()
 		{
-			string result = string.Empty;
+			string result = "";
 			if (base.smi.GetCurrentState() == base.sm.Fresh)
 			{
 				result = Db.Get().CreatureStatusItems.Fresh.resolveStringCallback(CREATURES.STATUSITEMS.FRESH.NAME, this);
@@ -165,6 +165,12 @@ public class Rottable : GameStateMachine<Rottable, Rottable.Instance, IStateMach
 					base.sm.rotParameter.Set(value, base.smi);
 				}
 			}
+		}
+
+		public bool IsRotLevelStackable(Instance other)
+		{
+			float num = Mathf.Abs(RotConstitutionPercentage - other.RotConstitutionPercentage);
+			return num < 0.1f;
 		}
 
 		public string GetToolTip()
@@ -301,7 +307,7 @@ public class Rottable : GameStateMachine<Rottable, Rottable.Instance, IStateMach
 		{
 			smi.GoTo(Stale);
 		});
-		Stale.ToggleStatusItem(Db.Get().CreatureStatusItems.Stale, (Instance smi) => smi).ParamTransition(rotParameter, Fresh, (Instance smi, float p) => p > smi.def.spoilTime - (smi.def.spoilTime - smi.def.staleTime)).ParamTransition(rotParameter, Spoiled, (Instance smi, float p) => p <= 0f)
+		Stale.ToggleStatusItem(Db.Get().CreatureStatusItems.Stale, (Instance smi) => smi).ParamTransition(rotParameter, Fresh, (Instance smi, float p) => p > smi.def.spoilTime - (smi.def.spoilTime - smi.def.staleTime)).ParamTransition(rotParameter, Spoiled, GameStateMachine<Rottable, Instance, IStateMachineTarget, Def>.IsLTEZero)
 			.FastUpdate("Rot", rotCB, UpdateRate.SIM_1000ms, false);
 		Spoiled.Enter(delegate(Instance smi)
 		{
@@ -403,18 +409,18 @@ public class Rottable : GameStateMachine<Rottable, Rottable.Instance, IStateMach
 		{
 			value2 = value;
 		}
-		if (value == value2)
+		if (value != value2)
 		{
-			return value;
-		}
-		if (value == RotAtmosphereQuality.Contaminating || value2 == RotAtmosphereQuality.Contaminating)
-		{
+			if (value != RotAtmosphereQuality.Contaminating && value2 != RotAtmosphereQuality.Contaminating)
+			{
+				if (value != 0 && value2 != 0)
+				{
+					return RotAtmosphereQuality.Sterilizing;
+				}
+				return RotAtmosphereQuality.Normal;
+			}
 			return RotAtmosphereQuality.Contaminating;
 		}
-		if (value == RotAtmosphereQuality.Normal || value2 == RotAtmosphereQuality.Normal)
-		{
-			return RotAtmosphereQuality.Normal;
-		}
-		return RotAtmosphereQuality.Sterilizing;
+		return value;
 	}
 }

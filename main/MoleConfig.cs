@@ -41,6 +41,7 @@ public class MoleConfig : IEntityConfig
 		def2.diet = diet;
 		OvercrowdingMonitor.Def def3 = gameObject.AddOrGetDef<OvercrowdingMonitor.Def>();
 		def3.spaceRequiredPerCreature = 0;
+		gameObject.AddOrGet<LoopingSounds>();
 		return gameObject;
 	}
 

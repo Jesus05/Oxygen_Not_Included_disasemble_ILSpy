@@ -1,21 +1,9 @@
-using System;
-using System.Runtime.CompilerServices;
 using UnityEngine;
 
 internal class DiggerStates : GameStateMachine<DiggerStates, DiggerStates.Instance, IStateMachineTarget, DiggerStates.Def>
 {
 	public class Def : BaseDef
 	{
-		public int depthToDig
-		{
-			get;
-			private set;
-		}
-
-		public Def(int depth)
-		{
-			depthToDig = depth;
-		}
 	}
 
 	public new class Instance : GameInstance
@@ -25,9 +13,12 @@ internal class DiggerStates : GameStateMachine<DiggerStates, DiggerStates.Instan
 		{
 			chore.AddPrecondition(ChorePreconditions.instance.CheckBehaviourPrecondition, GameTags.Creatures.Tunnel);
 		}
-	}
 
-	public State surface;
+		public int GetTunnelCell()
+		{
+			return base.smi.GetSMI<DiggerMonitor.Instance>()?.lastDigCell ?? (-1);
+		}
+	}
 
 	public State move;
 
@@ -35,22 +26,9 @@ internal class DiggerStates : GameStateMachine<DiggerStates, DiggerStates.Instan
 
 	public State behaviourcomplete;
 
-	[CompilerGenerated]
-	private static Func<Instance, int> _003C_003Ef__mg_0024cache0;
-
-	private static int MoveToNewCell(Instance smi)
-	{
-		int num = Grid.OffsetCell(Grid.PosToCell(smi.master.gameObject), 0, smi.def.depthToDig);
-		if (Grid.IsValidCell(num))
-		{
-			return num;
-		}
-		return Grid.PosToCell(smi.master.gameObject);
-	}
-
 	private static float GetHideDuration()
 	{
-		if ((UnityEngine.Object)SaveGame.Instance != (UnityEngine.Object)null && (UnityEngine.Object)SaveGame.Instance.GetComponent<SeasonManager>() != (UnityEngine.Object)null)
+		if ((Object)SaveGame.Instance != (Object)null && (Object)SaveGame.Instance.GetComponent<SeasonManager>() != (Object)null)
 		{
 			return SaveGame.Instance.GetComponent<SeasonManager>().GetBombardmentDuration();
 		}
@@ -60,7 +38,7 @@ internal class DiggerStates : GameStateMachine<DiggerStates, DiggerStates.Instan
 	public override void InitializeStates(out BaseState default_state)
 	{
 		default_state = move;
-		move.MoveTo(MoveToNewCell, hide, behaviourcomplete, false);
+		move.MoveTo((Instance smi) => smi.GetTunnelCell(), hide, behaviourcomplete, false);
 		hide.ScheduleGoTo(GetHideDuration(), behaviourcomplete);
 		behaviourcomplete.BehaviourComplete(GameTags.Creatures.Tunnel, false);
 	}

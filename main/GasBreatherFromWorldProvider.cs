@@ -36,13 +36,13 @@ public class GasBreatherFromWorldProvider : OxygenBreather.IGasProvider
 	public bool ConsumeGas(OxygenBreather oxygen_breather, float gas_consumed)
 	{
 		SimHashes getBreathableElement = oxygen_breather.GetBreathableElement;
-		if (getBreathableElement == SimHashes.Vacuum)
+		if (getBreathableElement != SimHashes.Vacuum)
 		{
-			return false;
+			HandleVector<Game.ComplexCallbackInfo<Sim.MassConsumedCallback>>.Handle handle = Game.Instance.massConsumedCallbackManager.Add(OnSimConsumeCallback, this, "GasBreatherFromWorldProvider");
+			SimMessages.ConsumeMass(oxygen_breather.mouthCell, getBreathableElement, gas_consumed, 3, handle.index);
+			return true;
 		}
-		HandleVector<Game.ComplexCallbackInfo<Sim.MassConsumedCallback>>.Handle handle = Game.Instance.massConsumedCallbackManager.Add(OnSimConsumeCallback, this, "GasBreatherFromWorldProvider");
-		SimMessages.ConsumeMass(oxygen_breather.mouthCell, getBreathableElement, gas_consumed, 3, handle.index);
-		return true;
+		return false;
 	}
 
 	private static void OnSimConsumeCallback(Sim.MassConsumedCallback mass_cb_info, object data)

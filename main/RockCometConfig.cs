@@ -1,3 +1,4 @@
+using STRINGS;
 using UnityEngine;
 
 public class RockCometConfig : IEntityConfig
@@ -10,11 +11,10 @@ public class RockCometConfig : IEntityConfig
 
 	public GameObject CreatePrefab()
 	{
-		GameObject gameObject = EntityTemplates.CreateEntity(ID, ID, true);
+		GameObject gameObject = EntityTemplates.CreateEntity(ID, UI.SPACEDESTINATIONS.COMETS.ROCKCOMET.NAME, true);
 		gameObject.AddOrGet<SaveLoadRoot>();
 		gameObject.AddOrGet<LoopingSounds>();
 		Comet comet = gameObject.AddOrGet<Comet>();
-		float mass = ElementLoader.FindElementByHash(SimHashes.Regolith).defaultValues.mass;
 		comet.massRange = new Vector2(600f, 1000f);
 		comet.temperatureRange = new Vector2(323.15f, 423.15f);
 		comet.addTiles = 6;

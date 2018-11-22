@@ -99,11 +99,11 @@ public class Door : Workable, ISaveLoadable, ISim200ms
 			root.Update("RefreshIsBlocked", delegate(Instance smi, float dt)
 			{
 				smi.RefreshIsBlocked();
-			}, UpdateRate.SIM_200ms, false).ParamTransition(isSealed, Sealed.closed, (Instance smi, bool p) => p);
-			closeblocked.PlayAnim("open").ParamTransition(isOpen, open, (Instance smi, bool p) => p).ParamTransition(isBlocked, closedelay, (Instance smi, bool p) => !p);
-			closedelay.PlayAnim("open").ScheduleGoTo(0.5f, closing).ParamTransition(isOpen, open, (Instance smi, bool p) => p)
-				.ParamTransition(isBlocked, closeblocked, (Instance smi, bool p) => p);
-			closing.ParamTransition(isBlocked, closeblocked, (Instance smi, bool p) => p).ToggleTag(GameTags.Transition).ToggleLoopingSound("Closing loop", (Instance smi) => smi.master.doorClosingSound, (Instance smi) => !string.IsNullOrEmpty(smi.master.doorClosingSound))
+			}, UpdateRate.SIM_200ms, false).ParamTransition(isSealed, Sealed.closed, GameStateMachine<Controller, Instance, Door, object>.IsTrue);
+			closeblocked.PlayAnim("open").ParamTransition(isOpen, open, GameStateMachine<Controller, Instance, Door, object>.IsTrue).ParamTransition(isBlocked, closedelay, GameStateMachine<Controller, Instance, Door, object>.IsFalse);
+			closedelay.PlayAnim("open").ScheduleGoTo(0.5f, closing).ParamTransition(isOpen, open, GameStateMachine<Controller, Instance, Door, object>.IsTrue)
+				.ParamTransition(isBlocked, closeblocked, GameStateMachine<Controller, Instance, Door, object>.IsTrue);
+			closing.ParamTransition(isBlocked, closeblocked, GameStateMachine<Controller, Instance, Door, object>.IsTrue).ToggleTag(GameTags.Transition).ToggleLoopingSound("Closing loop", (Instance smi) => smi.master.doorClosingSound, (Instance smi) => !string.IsNullOrEmpty(smi.master.doorClosingSound))
 				.Enter("SetParams", delegate(Instance smi)
 				{
 					smi.master.UpdateAnimAndSoundParams(smi.master.on);
@@ -125,11 +125,11 @@ public class Door : Workable, ISaveLoadable, ISim200ms
 				})
 				.PlayAnim("closing")
 				.OnAnimQueueComplete(closed);
-			open.PlayAnim("open").ParamTransition(isOpen, closeblocked, (Instance smi, bool p) => !p).Enter("SetWorldStateOpen", delegate(Instance smi)
+			open.PlayAnim("open").ParamTransition(isOpen, closeblocked, GameStateMachine<Controller, Instance, Door, object>.IsFalse).Enter("SetWorldStateOpen", delegate(Instance smi)
 			{
 				smi.master.SetWorldState();
 			});
-			closed.PlayAnim("closed").ParamTransition(isOpen, opening, (Instance smi, bool p) => p).ParamTransition(isLocked, locking, (Instance smi, bool p) => p)
+			closed.PlayAnim("closed").ParamTransition(isOpen, opening, GameStateMachine<Controller, Instance, Door, object>.IsTrue).ParamTransition(isLocked, locking, GameStateMachine<Controller, Instance, Door, object>.IsTrue)
 				.Enter("SetWorldStateClosed", delegate(Instance smi)
 				{
 					smi.master.SetWorldState();
@@ -138,7 +138,7 @@ public class Door : Workable, ISaveLoadable, ISim200ms
 			{
 				smi.master.SetWorldState();
 			});
-			locked.PlayAnim("locked").ParamTransition(isLocked, unlocking, (Instance smi, bool p) => !p);
+			locked.PlayAnim("locked").ParamTransition(isLocked, unlocking, GameStateMachine<Controller, Instance, Door, object>.IsFalse);
 			unlocking.PlayAnim("locked_pst").OnAnimQueueComplete(closed);
 			opening.ToggleTag(GameTags.Transition).ToggleLoopingSound("Opening loop", (Instance smi) => smi.master.doorOpeningSound, (Instance smi) => !string.IsNullOrEmpty(smi.master.doorOpeningSound)).Enter("SetParams", delegate(Instance smi)
 			{
@@ -209,7 +209,7 @@ public class Door : Workable, ISaveLoadable, ISim200ms
 
 		private Chore CreateUnsealChore(Instance smi, bool approach_right)
 		{
-			return new WorkChore<Unsealable>(Db.Get().ChoreTypes.Toggle, smi.master, null, null, true, null, null, null, true, null, false, true, null, false, true, true, PriorityScreen.PriorityClass.basic, 0, false);
+			return new WorkChore<Unsealable>(Db.Get().ChoreTypes.Toggle, smi.master, null, null, true, null, null, null, true, null, false, true, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, false);
 		}
 	}
 
@@ -231,10 +231,10 @@ public class Door : Workable, ISaveLoadable, ISim200ms
 	[MyCmpAdd]
 	private LoopingSounds loopingSounds;
 
-	public Orientation verticalOrientation;
+	public Orientation verticalOrientation = Orientation.Neutral;
 
 	[SerializeField]
-	public bool hasComplexUserControls;
+	public bool hasComplexUserControls = false;
 
 	[SerializeField]
 	public float unpoweredAnimSpeed = 0.25f;
@@ -263,16 +263,16 @@ public class Door : Workable, ISaveLoadable, ISim200ms
 	private static readonly HashedString SOUND_PROGRESS_PARAMETER = "doorProgress";
 
 	[Serialize]
-	private bool hasBeenUnsealed;
+	private bool hasBeenUnsealed = false;
 
 	[Serialize]
-	private ControlState controlState;
+	private ControlState controlState = ControlState.Auto;
 
-	private bool on;
+	private bool on = false;
 
-	private bool do_melt_check;
+	private bool do_melt_check = false;
 
-	private int openCount;
+	private int openCount = 0;
 
 	private ControlState requestedState;
 
@@ -299,7 +299,7 @@ public class Door : Workable, ISaveLoadable, ISim200ms
 		component.OnLogicValueChanged(data);
 	});
 
-	private bool applyLogicChange;
+	private bool applyLogicChange = false;
 
 	public ControlState CurrentState => controlState;
 
@@ -320,8 +320,14 @@ public class Door : Workable, ISaveLoadable, ISim200ms
 		overrideAnims = OVERRIDE_ANIMS;
 		synchronizeAnims = false;
 		SetWorkTime(3f);
-		doorClosingSound = GlobalAssets.GetSound(doorClosingSoundEventName, false);
-		doorOpeningSound = GlobalAssets.GetSound(doorOpeningSoundEventName, false);
+		if (!string.IsNullOrEmpty(doorClosingSoundEventName))
+		{
+			doorClosingSound = GlobalAssets.GetSound(doorClosingSoundEventName, false);
+		}
+		if (!string.IsNullOrEmpty(doorOpeningSoundEventName))
+		{
+			doorOpeningSound = GlobalAssets.GetSound(doorOpeningSoundEventName, false);
+		}
 	}
 
 	private ControlState GetNextState(ControlState wantedState)
@@ -648,7 +654,7 @@ public class Door : Workable, ISaveLoadable, ISim200ms
 				changeStateChore.Cancel("Change state");
 			}
 			GetComponent<KSelectable>().AddStatusItem(Db.Get().BuildingStatusItems.ChangeDoorControlState, this);
-			changeStateChore = new WorkChore<Door>(Db.Get().ChoreTypes.Toggle, this, null, null, true, null, null, null, true, null, false, false, null, false, true, true, PriorityScreen.PriorityClass.basic, 0, false);
+			changeStateChore = new WorkChore<Door>(Db.Get().ChoreTypes.Toggle, this, null, null, true, null, null, null, true, null, false, false, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, false);
 		}
 	}
 
@@ -658,7 +664,7 @@ public class Door : Workable, ISaveLoadable, ISim200ms
 		{
 			StructureTemperatureComponents structureTemperatures = GameComps.StructureTemperatures;
 			HandleVector<int>.Handle handle = structureTemperatures.GetHandle(base.gameObject);
-			structureTemperatures.Enable(handle);
+			structureTemperatures.UnBypass(handle);
 			do_melt_check = false;
 		}
 	}
@@ -669,7 +675,7 @@ public class Door : Workable, ISaveLoadable, ISim200ms
 		{
 			StructureTemperatureComponents structureTemperatures = GameComps.StructureTemperatures;
 			HandleVector<int>.Handle handle = structureTemperatures.GetHandle(base.gameObject);
-			structureTemperatures.Disable(handle);
+			structureTemperatures.Bypass(handle);
 			do_melt_check = true;
 		}
 	}
@@ -687,7 +693,7 @@ public class Door : Workable, ISaveLoadable, ISim200ms
 		{
 			StructureTemperatureComponents structureTemperatures = GameComps.StructureTemperatures;
 			HandleVector<int>.Handle handle = structureTemperatures.GetHandle(base.gameObject);
-			if (handle.IsValid() && !structureTemperatures.IsEnabled(handle))
+			if (handle.IsValid() && structureTemperatures.IsBypassed(handle))
 			{
 				int[] placementCells = building.PlacementCells;
 				float num = 0f;
@@ -733,9 +739,9 @@ public class Door : Workable, ISaveLoadable, ISim200ms
 			StructureTemperatureComponents structureTemperatures = GameComps.StructureTemperatures;
 			HandleVector<int>.Handle handle = structureTemperatures.GetHandle(base.gameObject);
 			PrimaryElement component = GetComponent<PrimaryElement>();
-			if (handle.IsValid() && structureTemperatures.IsEnabled(handle))
+			if (handle.IsValid() && !structureTemperatures.IsBypassed(handle))
 			{
-				float num = component.Temperature = structureTemperatures.GetData(handle).Temperature;
+				float num = component.Temperature = structureTemperatures.GetPayload(handle).Temperature;
 			}
 		}
 		switch (controlState)
@@ -806,8 +812,8 @@ public class Door : Workable, ISaveLoadable, ISim200ms
 				HandleVector<int>.Handle handle = structureTemperatures.GetHandle(base.gameObject);
 				if (handle.IsValid())
 				{
-					StructureTemperatureData data = structureTemperatures.GetData(handle);
-					if (!data.enabled)
+					StructureTemperaturePayload payload = structureTemperatures.GetPayload(handle);
+					if (!payload.enabled)
 					{
 						int[] placementCells = building.PlacementCells;
 						int num = 0;

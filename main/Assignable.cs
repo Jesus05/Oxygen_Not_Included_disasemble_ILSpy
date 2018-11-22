@@ -13,14 +13,14 @@ public abstract class Assignable : KMonoBehaviour, ISaveLoadable
 	public IAssignableIdentity assignee;
 
 	[Serialize]
-	private Ref<KMonoBehaviour> assignee_identityRef = new Ref<KMonoBehaviour>();
+	protected Ref<KMonoBehaviour> assignee_identityRef = new Ref<KMonoBehaviour>();
 
 	[Serialize]
-	private string assignee_groupID = string.Empty;
+	private string assignee_groupID = "";
 
 	public AssignableSlot[] subSlots;
 
-	public bool canBePublic;
+	public bool canBePublic = false;
 
 	[Serialize]
 	private bool canBeAssigned = true;
@@ -29,7 +29,7 @@ public abstract class Assignable : KMonoBehaviour, ISaveLoadable
 
 	private List<Func<MinionIdentity, bool>> assignmentPreconditions = new List<Func<MinionIdentity, bool>>();
 
-	public Func<MinionIdentity, bool> eligibleFilter;
+	public Func<MinionAssignablesProxy, bool> eligibleFilter = null;
 
 	public AssignableSlot slot
 	{
@@ -50,6 +50,10 @@ public abstract class Assignable : KMonoBehaviour, ISaveLoadable
 	[OnDeserialized]
 	internal void OnDeserialized()
 	{
+	}
+
+	private void RestoreAssignee()
+	{
 		IAssignableIdentity savedAssignee = GetSavedAssignee();
 		if (savedAssignee != null)
 		{
@@ -59,20 +63,21 @@ public abstract class Assignable : KMonoBehaviour, ISaveLoadable
 
 	private IAssignableIdentity GetSavedAssignee()
 	{
-		if ((UnityEngine.Object)assignee_identityRef.Get() != (UnityEngine.Object)null)
+		if (!((UnityEngine.Object)assignee_identityRef.Get() != (UnityEngine.Object)null))
 		{
-			return assignee_identityRef.Get().GetComponent<IAssignableIdentity>();
-		}
-		if (assignee_groupID != string.Empty)
-		{
+			if (!(assignee_groupID != ""))
+			{
+				return null;
+			}
 			return Game.Instance.assignmentManager.assignment_groups[assignee_groupID];
 		}
-		return null;
+		return assignee_identityRef.Get().GetComponent<IAssignableIdentity>();
 	}
 
 	protected override void OnSpawn()
 	{
 		base.OnSpawn();
+		RestoreAssignee();
 		Game.Instance.assignmentManager.Add(this);
 		if (assignee == null && canBePublic)
 		{
@@ -90,20 +95,20 @@ public abstract class Assignable : KMonoBehaviour, ISaveLoadable
 	public bool CanAutoAssignTo(IAssignableIdentity identity)
 	{
 		MinionIdentity minionIdentity = identity as MinionIdentity;
-		if ((UnityEngine.Object)minionIdentity == (UnityEngine.Object)null)
+		if (!((UnityEngine.Object)minionIdentity == (UnityEngine.Object)null))
 		{
-			return true;
-		}
-		if (!CanAssignTo(minionIdentity))
-		{
-			return false;
-		}
-		foreach (Func<MinionIdentity, bool> autoassignmentPrecondition in autoassignmentPreconditions)
-		{
-			if (!autoassignmentPrecondition(minionIdentity))
+			if (CanAssignTo(minionIdentity))
 			{
-				return false;
+				foreach (Func<MinionIdentity, bool> autoassignmentPrecondition in autoassignmentPreconditions)
+				{
+					if (!autoassignmentPrecondition(minionIdentity))
+					{
+						return false;
+					}
+				}
+				return true;
 			}
+			return false;
 		}
 		return true;
 	}
@@ -111,16 +116,16 @@ public abstract class Assignable : KMonoBehaviour, ISaveLoadable
 	public bool CanAssignTo(IAssignableIdentity identity)
 	{
 		MinionIdentity minionIdentity = identity as MinionIdentity;
-		if ((UnityEngine.Object)minionIdentity == (UnityEngine.Object)null)
+		if (!((UnityEngine.Object)minionIdentity == (UnityEngine.Object)null))
 		{
-			return true;
-		}
-		foreach (Func<MinionIdentity, bool> assignmentPrecondition in assignmentPreconditions)
-		{
-			if (!assignmentPrecondition(minionIdentity))
+			foreach (Func<MinionIdentity, bool> assignmentPrecondition in assignmentPreconditions)
 			{
-				return false;
+				if (!assignmentPrecondition(minionIdentity))
+				{
+					return false;
+				}
 			}
+			return true;
 		}
 		return true;
 	}
@@ -142,7 +147,7 @@ public abstract class Assignable : KMonoBehaviour, ISaveLoadable
 					return;
 				}
 				assignee_identityRef.Set(obj);
-				assignee_groupID = string.Empty;
+				assignee_groupID = "";
 			}
 			else if (new_assignee is AssignmentGroup)
 			{
@@ -151,7 +156,7 @@ public abstract class Assignable : KMonoBehaviour, ISaveLoadable
 			}
 			GetComponent<KPrefabID>().AddTag(GameTags.Assigned);
 			assignee = new_assignee;
-			if (slot != null && (new_assignee is MinionIdentity || new_assignee is StoredMinionIdentity))
+			if (slot != null && (new_assignee is MinionIdentity || new_assignee is StoredMinionIdentity || new_assignee is MinionAssignablesProxy))
 			{
 				KMonoBehaviour kMonoBehaviour = new_assignee as KMonoBehaviour;
 				Ownables component = kMonoBehaviour.GetComponent<Ownables>();
@@ -178,10 +183,21 @@ public abstract class Assignable : KMonoBehaviour, ISaveLoadable
 		if (assignee != null)
 		{
 			GetComponent<KPrefabID>().RemoveTag(GameTags.Assigned);
-			if (slot != null && (assignee is MinionIdentity || assignee is StoredMinionIdentity))
+			if (slot != null)
 			{
-				Assignables component = (assignee as KMonoBehaviour).GetComponent<Ownables>();
-				component.GetSlot(slot)?.Unassign(true);
+				Assignables assignables = null;
+				if (assignee is KMonoBehaviour)
+				{
+					if (assignee is MinionAssignablesProxy)
+					{
+						assignables = (assignee as KMonoBehaviour).GetComponent<Ownables>();
+					}
+					else if (assignee is MinionIdentity || assignee is StoredMinionIdentity)
+					{
+						assignables = (assignee as KMonoBehaviour).GetComponent<IAssignableIdentity>().GetSoleOwner();
+					}
+					assignables.GetSlot(slot)?.Unassign(true);
+				}
 			}
 			assignee = null;
 			if (canBePublic)
@@ -189,7 +205,7 @@ public abstract class Assignable : KMonoBehaviour, ISaveLoadable
 				Assign(Game.Instance.assignmentManager.assignment_groups["public"]);
 			}
 			assignee_identityRef.Set(null);
-			assignee_groupID = string.Empty;
+			assignee_groupID = "";
 			if (this.OnAssign != null)
 			{
 				this.OnAssign(null);

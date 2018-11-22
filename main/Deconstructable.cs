@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class Deconstructable : Workable
 {
-	private Chore chore;
+	private Chore chore = null;
 
 	public bool allowDeconstruction = true;
 
@@ -33,7 +33,7 @@ public class Deconstructable : Workable
 
 	private static readonly Vector2 INITIAL_VELOCITY_RANGE = new Vector2(0.5f, 4f);
 
-	private bool destroyed;
+	private bool destroyed = false;
 
 	protected override void OnPrefabInit()
 	{
@@ -43,6 +43,7 @@ public class Deconstructable : Workable
 		workerStatusItem = Db.Get().DuplicantStatusItems.Deconstructing;
 		attributeConverter = Db.Get().AttributeConverters.ConstructionSpeed;
 		attributeExperienceMultiplier = DUPLICANTSTATS.ATTRIBUTE_LEVELING.PART_DAY_EXPERIENCE;
+		minimumAttributeMultiplier = 0.75f;
 		multitoolContext = "build";
 		multitoolHitEffectTag = EffectConfigs.BuildSplashId;
 		Building component = GetComponent<Building>();
@@ -177,7 +178,7 @@ public class Deconstructable : Workable
 			else
 			{
 				Prioritizable.AddRef(base.gameObject);
-				chore = new WorkChore<Deconstructable>(Db.Get().ChoreTypes.Deconstruct, this, null, null, true, null, null, null, true, null, false, false, null, true, true, true, PriorityScreen.PriorityClass.basic, 0, true);
+				chore = new WorkChore<Deconstructable>(Db.Get().ChoreTypes.Deconstruct, this, null, null, true, null, null, null, true, null, false, false, null, true, true, true, PriorityScreen.PriorityClass.basic, 5, true);
 				GetComponent<KSelectable>().AddStatusItem(Db.Get().BuildingStatusItems.PendingDeconstruction, this);
 				isMarkedForDeconstruction = true;
 				Trigger(2108245096, "Deconstruct");

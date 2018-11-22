@@ -23,7 +23,7 @@ namespace TMPro
 
 		private bool m_isDefaultHeight;
 
-		private bool m_isAutoFitting;
+		private bool m_isAutoFitting = false;
 
 		private Vector3[] m_corners = new Vector3[4];
 
@@ -312,43 +312,43 @@ namespace TMPro
 
 		private TextContainerAnchors GetAnchorPosition(Vector2 pivot)
 		{
-			if (pivot == new Vector2(0f, 1f))
+			if (!(pivot == new Vector2(0f, 1f)))
 			{
-				return TextContainerAnchors.TopLeft;
-			}
-			if (pivot == new Vector2(0.5f, 1f))
-			{
+				if (!(pivot == new Vector2(0.5f, 1f)))
+				{
+					if (!(pivot == new Vector2(1f, 1f)))
+					{
+						if (!(pivot == new Vector2(0f, 0.5f)))
+						{
+							if (!(pivot == new Vector2(0.5f, 0.5f)))
+							{
+								if (!(pivot == new Vector2(1f, 0.5f)))
+								{
+									if (!(pivot == new Vector2(0f, 0f)))
+									{
+										if (!(pivot == new Vector2(0.5f, 0f)))
+										{
+											if (!(pivot == new Vector2(1f, 0f)))
+											{
+												return TextContainerAnchors.Custom;
+											}
+											return TextContainerAnchors.BottomRight;
+										}
+										return TextContainerAnchors.Bottom;
+									}
+									return TextContainerAnchors.BottomLeft;
+								}
+								return TextContainerAnchors.Right;
+							}
+							return TextContainerAnchors.Middle;
+						}
+						return TextContainerAnchors.Left;
+					}
+					return TextContainerAnchors.TopRight;
+				}
 				return TextContainerAnchors.Top;
 			}
-			if (pivot == new Vector2(1f, 1f))
-			{
-				return TextContainerAnchors.TopRight;
-			}
-			if (pivot == new Vector2(0f, 0.5f))
-			{
-				return TextContainerAnchors.Left;
-			}
-			if (pivot == new Vector2(0.5f, 0.5f))
-			{
-				return TextContainerAnchors.Middle;
-			}
-			if (pivot == new Vector2(1f, 0.5f))
-			{
-				return TextContainerAnchors.Right;
-			}
-			if (pivot == new Vector2(0f, 0f))
-			{
-				return TextContainerAnchors.BottomLeft;
-			}
-			if (pivot == new Vector2(0.5f, 0f))
-			{
-				return TextContainerAnchors.Bottom;
-			}
-			if (pivot == new Vector2(1f, 0f))
-			{
-				return TextContainerAnchors.BottomRight;
-			}
-			return TextContainerAnchors.Custom;
+			return TextContainerAnchors.TopLeft;
 		}
 	}
 }

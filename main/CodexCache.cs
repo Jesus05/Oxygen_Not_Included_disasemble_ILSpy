@@ -7,40 +7,18 @@ using UnityEngine;
 
 public static class CodexCache
 {
-	private struct CollectEntryWorkItem : IWorkItem<object>
-	{
-		public string path;
+	private static string baseEntryPath = null;
 
-		public CodexEntry asset;
-
-		public void Run(object shared_data)
-		{
-			asset = YamlIO<CodexEntry>.LoadFile(path);
-		}
-	}
-
-	private struct CollectSubEntryWorkItem : IWorkItem<object>
-	{
-		public string path;
-
-		public SubEntry asset;
-
-		public void Run(object shared_data)
-		{
-			asset = YamlIO<SubEntry>.LoadFile(path);
-		}
-	}
-
-	private static string baseEntryPath;
-
-	public static Dictionary<string, CodexEntry> entries;
+	public static Dictionary<string, CodexEntry> entries = null;
 
 	private static Dictionary<string, List<string>> unlockedEntryLookup;
+
+	private static List<Tuple<string, Type>> widgetTagMappings;
 
 	public static string FormatLinkID(string linkID)
 	{
 		linkID = linkID.ToUpper();
-		linkID = linkID.Replace("_", string.Empty);
+		linkID = linkID.Replace("_", "");
 		return linkID;
 	}
 
@@ -49,6 +27,18 @@ public static class CodexCache
 		entries = new Dictionary<string, CodexEntry>();
 		unlockedEntryLookup = new Dictionary<string, List<string>>();
 		Dictionary<string, CodexEntry> dictionary = new Dictionary<string, CodexEntry>();
+		if (widgetTagMappings == null)
+		{
+			List<Tuple<string, Type>> list = new List<Tuple<string, Type>>();
+			list.Add(new Tuple<string, Type>("!CodexText", typeof(CodexText)));
+			list.Add(new Tuple<string, Type>("!CodexImage", typeof(CodexImage)));
+			list.Add(new Tuple<string, Type>("!CodexDividerLine", typeof(CodexDividerLine)));
+			list.Add(new Tuple<string, Type>("!CodexSpacer", typeof(CodexSpacer)));
+			list.Add(new Tuple<string, Type>("!CodexLabelWithIcon", typeof(CodexLabelWithIcon)));
+			list.Add(new Tuple<string, Type>("!CodexContentLockedIndicator", typeof(CodexContentLockedIndicator)));
+			list.Add(new Tuple<string, Type>("!CodexLargeSpacer", typeof(CodexLargeSpacer)));
+			widgetTagMappings = list;
+		}
 		string text = FormatLinkID("creatures");
 		dictionary.Add(text, CodexEntryGenerator.GenerateCategoryEntry(text, UI.CODEX.CATEGORYNAMES.CREATURES, CodexEntryGenerator.GenerateCreatureEntries(), Def.GetUISpriteFromMultiObjectAnim(Assets.GetPrefab("Hatch").GetComponent<KBatchedAnimController>().AnimFiles[0], "ui", false)));
 		text = FormatLinkID("plants");
@@ -67,17 +57,19 @@ public static class CodexCache
 		dictionary.Add(text, CodexEntryGenerator.GenerateCategoryEntry(text, UI.CODEX.CATEGORYNAMES.ELEMENTS, CodexEntryGenerator.GenerateElementEntries(), null));
 		text = FormatLinkID("geysers");
 		dictionary.Add(text, CodexEntryGenerator.GenerateCategoryEntry(text, UI.CODEX.CATEGORYNAMES.GEYSERS, CodexEntryGenerator.GenerateGeyserEntries(), null));
+		text = FormatLinkID("equipment");
+		dictionary.Add(text, CodexEntryGenerator.GenerateCategoryEntry(text, UI.CODEX.CATEGORYNAMES.EQUIPMENT, CodexEntryGenerator.GenerateEquipmentEntries(), null));
 		CategoryEntry item = CodexEntryGenerator.GenerateCategoryEntry(FormatLinkID("HOME"), UI.CODEX.CATEGORYNAMES.ROOT, dictionary, null);
 		CodexEntryGenerator.GeneratePageNotFound();
-		List<CategoryEntry> list = new List<CategoryEntry>();
+		List<CategoryEntry> list2 = new List<CategoryEntry>();
 		foreach (KeyValuePair<string, CodexEntry> item2 in dictionary)
 		{
-			list.Add(item2.Value as CategoryEntry);
+			list2.Add(item2.Value as CategoryEntry);
 		}
-		CollectYAMLEntries(list);
-		CollectYAMLSubEntries(list);
+		CollectYAMLEntries(list2);
+		CollectYAMLSubEntries(list2);
 		CheckUnlockableContent();
-		list.Add(item);
+		list2.Add(item);
 		foreach (KeyValuePair<string, CodexEntry> entry in entries)
 		{
 			if (entry.Value.subEntries.Count > 0)
@@ -91,56 +83,34 @@ public static class CodexCache
 				int num = 0;
 				foreach (SubEntry subEntry in entry.Value.subEntries)
 				{
-					if (subEntry.lockID != null && Game.Instance.unlocks.IsLocked(subEntry.lockID))
+					if (subEntry.lockID != null && !Game.Instance.unlocks.IsUnlocked(subEntry.lockID))
 					{
 						num++;
 					}
 				}
-				List<CodexWidget> list2 = new List<CodexWidget>();
-				list2.Add(new CodexWidget(CodexWidget.ContentType.Spacer));
-				list2.Add(new CodexWidget(CodexWidget.ContentType.Text, new Dictionary<string, string>
-				{
-					{
-						"string",
-						(string)CODEX.HEADERS.SUBENTRIES + " (" + (entry.Value.subEntries.Count - num) + "/" + entry.Value.subEntries.Count + ")"
-					},
-					{
-						"style",
-						"subtitle"
-					}
-				}));
+				List<ICodexWidget> list3 = new List<ICodexWidget>();
+				list3.Add(new CodexSpacer());
+				list3.Add(new CodexText((string)CODEX.HEADERS.SUBENTRIES + " (" + (entry.Value.subEntries.Count - num) + "/" + entry.Value.subEntries.Count + ")", CodexTextStyle.Subtitle));
 				foreach (SubEntry subEntry2 in entry.Value.subEntries)
 				{
-					if (subEntry2.lockID != null && Game.Instance.unlocks.IsLocked(subEntry2.lockID))
+					if (subEntry2.lockID != null && !Game.Instance.unlocks.IsUnlocked(subEntry2.lockID))
 					{
-						list2.Add(new CodexWidget(CodexWidget.ContentType.Text, new Dictionary<string, string>
-						{
-							{
-								"string",
-								UI.FormatAsLink(CODEX.HEADERS.CONTENTLOCKED, UI.ExtractLinkID(subEntry2.name))
-							}
-						}));
+						list3.Add(new CodexText(UI.FormatAsLink(CODEX.HEADERS.CONTENTLOCKED, UI.ExtractLinkID(subEntry2.name)), CodexTextStyle.Body));
 					}
 					else
 					{
-						list2.Add(new CodexWidget(CodexWidget.ContentType.Text, new Dictionary<string, string>
-						{
-							{
-								"string",
-								subEntry2.name
-							}
-						}));
+						list3.Add(new CodexText(subEntry2.name, CodexTextStyle.Body));
 					}
 				}
-				list2.Add(new CodexWidget(CodexWidget.ContentType.Spacer));
-				entry.Value.contentContainers.Insert(entry.Value.customContentLength, new ContentContainer(list2, ContentContainer.ContentLayout.Vertical));
+				list3.Add(new CodexSpacer());
+				entry.Value.contentContainers.Insert(entry.Value.customContentLength, new ContentContainer(list3, ContentContainer.ContentLayout.Vertical));
 			}
 			for (int i = 0; i < entry.Value.subEntries.Count; i++)
 			{
 				entry.Value.contentContainers.AddRange(entry.Value.subEntries[i].contentContainers);
 			}
 		}
-		CodexEntryGenerator.PopulateCategoryEntries(list);
+		CodexEntryGenerator.PopulateCategoryEntries(list2);
 	}
 
 	public static SubEntry FindSubEntry(string id)
@@ -176,7 +146,7 @@ public static class CodexCache
 	private static void CollectYAMLEntries(List<CategoryEntry> categories)
 	{
 		baseEntryPath = Application.streamingAssetsPath + "/codex";
-		List<CodexEntry> list = CollectEntries(string.Empty);
+		List<CodexEntry> list = CollectEntries("");
 		foreach (CodexEntry item in list)
 		{
 			if (item != null && item.id != null && item.contentContainers != null)
@@ -215,7 +185,7 @@ public static class CodexCache
 	private static void CollectYAMLSubEntries(List<CategoryEntry> categories)
 	{
 		baseEntryPath = Application.streamingAssetsPath + "/codex";
-		List<SubEntry> list = CollectSubEntries(string.Empty);
+		List<SubEntry> list = CollectSubEntries("");
 		foreach (SubEntry item in list)
 		{
 			if (item.parentEntryID != null && item.id != null)
@@ -256,9 +226,9 @@ public static class CodexCache
 								subEntry.contentContainers.Add(item.contentContainers[i]);
 							}
 						}
-						subEntry.contentContainers.Add(new ContentContainer(new List<CodexWidget>
+						subEntry.contentContainers.Add(new ContentContainer(new List<ICodexWidget>
 						{
-							new CodexWidget(CodexWidget.ContentType.LargeSpacer)
+							new CodexLargeSpacer()
 						}, ContentContainer.ContentLayout.Vertical));
 						subEntry.layoutPriority = item.layoutPriority;
 					}
@@ -296,6 +266,10 @@ public static class CodexCache
 	public static void AddEntry(string id, CodexEntry entry, List<CategoryEntry> categoryEntries = null)
 	{
 		id = FormatLinkID(id);
+		if (entries.ContainsKey(id))
+		{
+			Debug.LogError("Tried to add " + id + " to the Codex screen multiple times", null);
+		}
 		entries.Add(id, entry);
 		entry.id = id;
 		if (entry.name == null)
@@ -381,7 +355,7 @@ public static class CodexCache
 		if (entries[templatePath] == null)
 		{
 			string text = Path.Combine(baseEntryPath, templatePath);
-			CodexEntry codexEntry = YamlIO<CodexEntry>.LoadFile(text + ".yaml");
+			CodexEntry codexEntry = YamlIO<CodexEntry>.LoadFile(text + ".yaml", widgetTagMappings);
 			if (codexEntry == null)
 			{
 				Debug.LogWarning("Missing template [" + text + ".yaml]", null);
@@ -394,7 +368,7 @@ public static class CodexCache
 	public static List<CodexEntry> CollectEntries(string folder)
 	{
 		List<CodexEntry> list = new List<CodexEntry>();
-		string path = (!(folder == string.Empty)) ? Path.Combine(baseEntryPath, folder) : baseEntryPath;
+		string path = (!(folder == "")) ? Path.Combine(baseEntryPath, folder) : baseEntryPath;
 		string[] array = new string[0];
 		try
 		{
@@ -404,25 +378,15 @@ public static class CodexCache
 		{
 			Debug.LogWarning(obj, null);
 		}
-		WorkItemCollection<CollectEntryWorkItem, object> workItemCollection = new WorkItemCollection<CollectEntryWorkItem, object>();
-		string[] array2 = array;
-		foreach (string path2 in array2)
-		{
-			workItemCollection.Add(new CollectEntryWorkItem
-			{
-				path = path2
-			});
-		}
-		GlobalJobManager.Run(workItemCollection);
 		string category = folder.ToUpper();
-		for (int j = 0; j < workItemCollection.Count; j++)
+		string[] array2 = array;
+		foreach (string filename in array2)
 		{
-			CollectEntryWorkItem workItem = workItemCollection.GetWorkItem(j);
-			CodexEntry asset = workItem.asset;
-			if (asset != null)
+			CodexEntry codexEntry = YamlIO<CodexEntry>.LoadFile(filename, widgetTagMappings);
+			if (codexEntry != null)
 			{
-				asset.category = category;
-				list.Add(asset);
+				codexEntry.category = category;
+				list.Add(codexEntry);
 			}
 		}
 		list.Sort((CodexEntry x, CodexEntry y) => x.title.CompareTo(y.title));
@@ -432,7 +396,7 @@ public static class CodexCache
 	public static List<SubEntry> CollectSubEntries(string folder)
 	{
 		List<SubEntry> list = new List<SubEntry>();
-		string path = (!(folder == string.Empty)) ? Path.Combine(baseEntryPath, folder) : baseEntryPath;
+		string path = (!(folder == "")) ? Path.Combine(baseEntryPath, folder) : baseEntryPath;
 		string[] array = new string[0];
 		try
 		{
@@ -442,23 +406,13 @@ public static class CodexCache
 		{
 			Debug.LogWarning(obj, null);
 		}
-		WorkItemCollection<CollectSubEntryWorkItem, object> workItemCollection = new WorkItemCollection<CollectSubEntryWorkItem, object>();
 		string[] array2 = array;
-		foreach (string path2 in array2)
+		foreach (string filename in array2)
 		{
-			workItemCollection.Add(new CollectSubEntryWorkItem
+			SubEntry subEntry = YamlIO<SubEntry>.LoadFile(filename, widgetTagMappings);
+			if (subEntry != null)
 			{
-				path = path2
-			});
-		}
-		GlobalJobManager.Run(workItemCollection);
-		for (int j = 0; j < workItemCollection.Count; j++)
-		{
-			CollectSubEntryWorkItem workItem = workItemCollection.GetWorkItem(j);
-			SubEntry asset = workItem.asset;
-			if (asset != null)
-			{
-				list.Add(asset);
+				list.Add(subEntry);
 			}
 		}
 		list.Sort((SubEntry x, SubEntry y) => x.title.CompareTo(y.title));

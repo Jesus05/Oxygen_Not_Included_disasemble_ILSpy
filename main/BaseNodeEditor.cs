@@ -20,11 +20,11 @@ public class BaseNodeEditor : Node
 		get
 		{
 			NoiseNodeCanvas noiseNodeCanvas = NodeEditor.curNodeCanvas as NoiseNodeCanvas;
-			if ((UnityEngine.Object)noiseNodeCanvas != (UnityEngine.Object)null)
+			if (!((UnityEngine.Object)noiseNodeCanvas != (UnityEngine.Object)null))
 			{
-				return noiseNodeCanvas.settings;
+				return null;
 			}
-			return null;
+			return noiseNodeCanvas.settings;
 		}
 	}
 

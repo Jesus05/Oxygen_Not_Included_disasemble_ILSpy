@@ -9,9 +9,9 @@ public class Butcherable : Workable, ISaveLoadable
 	[MyCmpGet]
 	private Harvestable harvestable;
 
-	private bool readyToButcher;
+	private bool readyToButcher = false;
 
-	private bool butchered;
+	private bool butchered = false;
 
 	public string[] Drops;
 
@@ -56,7 +56,7 @@ public class Butcherable : Workable, ISaveLoadable
 	{
 		if (chore == null)
 		{
-			chore = new WorkChore<Butcherable>(Db.Get().ChoreTypes.Harvest, this, null, null, true, null, null, null, true, null, false, true, null, false, true, true, PriorityScreen.PriorityClass.basic, 0, false);
+			chore = new WorkChore<Butcherable>(Db.Get().ChoreTypes.Harvest, this, null, null, true, null, null, null, true, null, false, true, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, false);
 			OnRefreshUserMenu(null);
 		}
 	}
@@ -91,7 +91,7 @@ public class Butcherable : Workable, ISaveLoadable
 	{
 		if (readyToButcher)
 		{
-			KIconButtonMenu.ButtonInfo button = (chore == null) ? new KIconButtonMenu.ButtonInfo("action_harvest", "Meatify", OnClickButcher, Action.NumActions, null, null, null, string.Empty, true) : new KIconButtonMenu.ButtonInfo("action_harvest", "Cancel Meatify", OnClickCancel, Action.NumActions, null, null, null, string.Empty, true);
+			KIconButtonMenu.ButtonInfo button = (chore == null) ? new KIconButtonMenu.ButtonInfo("action_harvest", "Meatify", OnClickButcher, Action.NumActions, null, null, null, "", true) : new KIconButtonMenu.ButtonInfo("action_harvest", "Cancel Meatify", OnClickCancel, Action.NumActions, null, null, null, "", true);
 			Game.Instance.userMenu.AddButton(base.gameObject, button, 1f);
 		}
 	}

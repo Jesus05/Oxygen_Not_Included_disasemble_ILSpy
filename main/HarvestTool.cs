@@ -22,7 +22,7 @@ public class HarvestTool : DragTool
 		Instance = this;
 		options.Add("HARVEST_WHEN_READY", ToolParameterMenu.ToggleState.On);
 		options.Add("DO_NOT_HARVEST", ToolParameterMenu.ToggleState.Off);
-		viewMode = SimViewMode.HarvestWhenReady;
+		viewMode = OverlayModes.Harvest.ID;
 	}
 
 	protected override void OnDragTool(int cell, int distFromOrigin)

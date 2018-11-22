@@ -10,7 +10,7 @@ public class CellSelectionObject : KMonoBehaviour
 
 	private float zDepth = -0.5f;
 
-	private float zDepthSelected;
+	private float zDepthSelected = 0f;
 
 	private KBoxCollider2D mCollider;
 
@@ -44,9 +44,9 @@ public class CellSelectionObject : KMonoBehaviour
 
 	public int diseaseCount;
 
-	private float updateTimer;
+	private float updateTimer = 0f;
 
-	private Dictionary<SimViewMode, Func<bool>> overlayFilterMap = new Dictionary<SimViewMode, Func<bool>>();
+	private Dictionary<HashedString, Func<bool>> overlayFilterMap = new Dictionary<HashedString, Func<bool>>();
 
 	private bool isAppFocused = true;
 
@@ -63,9 +63,9 @@ public class CellSelectionObject : KMonoBehaviour
 		SelectedDisplaySprite.transform.localScale = Vector3.one * 0.390625f;
 		SelectedDisplaySprite.GetComponent<SpriteRenderer>().sprite = Sprite_Hover;
 		Subscribe(Game.Instance.gameObject, 493375141, ForceRefreshUserMenu);
-		overlayFilterMap.Add(SimViewMode.OxygenMap, () => Grid.Element[mouseCell].IsGas);
-		overlayFilterMap.Add(SimViewMode.GasVentMap, () => Grid.Element[mouseCell].IsGas);
-		overlayFilterMap.Add(SimViewMode.LiquidVentMap, () => Grid.Element[mouseCell].IsLiquid);
+		overlayFilterMap.Add(OverlayModes.Oxygen.ID, () => Grid.Element[mouseCell].IsGas);
+		overlayFilterMap.Add(OverlayModes.GasConduits.ID, () => Grid.Element[mouseCell].IsGas);
+		overlayFilterMap.Add(OverlayModes.LiquidConduits.ID, () => Grid.Element[mouseCell].IsLiquid);
 	}
 
 	protected override void OnCleanUp()
@@ -89,7 +89,7 @@ public class CellSelectionObject : KMonoBehaviour
 				if (Grid.IsValidCell(mouseCell) && Grid.IsVisible(mouseCell))
 				{
 					bool flag = true;
-					foreach (KeyValuePair<SimViewMode, Func<bool>> item in overlayFilterMap)
+					foreach (KeyValuePair<HashedString, Func<bool>> item in overlayFilterMap)
 					{
 						if (item.Value == null)
 						{

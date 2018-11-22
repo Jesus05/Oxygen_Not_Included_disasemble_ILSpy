@@ -68,7 +68,7 @@ namespace STRINGS
 		{
 			public static LocString NAME = UI.FormatAsLink("Aerogel", "AEROGEL");
 
-			public static LocString DESC = string.Empty;
+			public static LocString DESC = "";
 		}
 
 		public class ALGAE
@@ -695,7 +695,7 @@ namespace STRINGS
 		{
 			public static LocString NAME = UI.FormatAsLink("Sand Cement", "SANDCEMENT");
 
-			public static LocString DESC = string.Empty;
+			public static LocString DESC = "";
 		}
 
 		public class SANDSTONE
@@ -744,7 +744,7 @@ namespace STRINGS
 		{
 			public static LocString NAME = UI.FormatAsLink("Crude Oil", "SOLIDCRUDEOIL");
 
-			public static LocString DESC = string.Empty;
+			public static LocString DESC = "";
 		}
 
 		public class SOLIDHYDROGEN
@@ -863,7 +863,7 @@ namespace STRINGS
 		{
 			public static LocString NAME = UI.FormatAsLink("Insulation", "SUPERINSULATOR");
 
-			public static LocString DESC = "Insulation reduces " + UI.FormatAsLink("Heat Transfer", "HEAT") + " and is composed of recrystalized " + UI.FormatAsLink("Abyssalite", "KATAIRITE") + ".";
+			public static LocString DESC = "Insulation reduces " + UI.FormatAsLink("Heat Transfer", "HEAT") + " and is composed of recrystallized " + UI.FormatAsLink("Abyssalite", "KATAIRITE") + ".";
 		}
 
 		public class TEMPCONDUCTORSOLID
@@ -940,21 +940,21 @@ namespace STRINGS
 		{
 			public static LocString NAME = UI.FormatAsLink("Water", "WATER");
 
-			public static LocString DESC = "(H<sub>2</sub>O) Clean " + NAME + ", suitable for consumption.";
+			public static LocString DESC = "(H<sub>2</sub>O) Clean " + UI.FormatAsLink("Water", "WATER") + ", suitable for consumption.";
 		}
 
 		public class WOLFRAMITE
 		{
 			public static LocString NAME = UI.FormatAsLink("Wolframite", "WOLFRAMITE");
 
-			public static LocString DESC = "((Fe,Mn)WO<sub>4</sub>) Wolframite is a dense Metallic element in a " + UI.FormatAsLink("Solid", "ELEMENTS_SOLID") + " state.\n\nIt is a source of " + TUNGSTEN.NAME + " and is suitable for building " + UI.FormatAsLink("Power", "POWER") + " systems.";
+			public static LocString DESC = "((Fe,Mn)WO<sub>4</sub>) Wolframite is a dense Metallic element in a " + UI.FormatAsLink("Solid", "ELEMENTS_SOLID") + " state.\n\nIt is a source of " + UI.FormatAsLink("Tungsten", "TUNGSTEN") + " and is suitable for building " + UI.FormatAsLink("Power", "POWER") + " systems.";
 		}
 
 		public class POLYPROPYLENE
 		{
 			public static LocString NAME = UI.FormatAsLink("Plastic", "POLYPROPYLENE");
 
-			public static LocString DESC = "(C<sub>3</sub>H<sub>6</sub>)<sub>n</sub> " + NAME + " is a thermoplastic polymer.\n\nIt is useful as a raw Plastic feedstock.";
+			public static LocString DESC = "(C<sub>3</sub>H<sub>6</sub>)<sub>n</sub> " + NAME + " is a thermoplastic polymer.\n\nIt is useful for constructing a variety of advanced buildings and equipment.";
 
 			public static LocString BUILD_DESC = "Buildings made of this material have antiseptic properties";
 		}
@@ -963,7 +963,7 @@ namespace STRINGS
 		{
 			public static LocString NAME = UI.FormatAsLink("Naphtha", "NAPHTHA");
 
-			public static LocString DESC = "Naphtha a distilled hydrocarbon mixture produced from the burning of " + POLYPROPYLENE.NAME + ".";
+			public static LocString DESC = "Naphtha a distilled hydrocarbon mixture produced from the burning of " + UI.FormatAsLink("Plastic", "POLYPROPYLENE") + ".";
 		}
 
 		public class SLABS

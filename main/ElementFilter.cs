@@ -24,7 +24,7 @@ public class ElementFilter : KMonoBehaviour, ISaveLoadable, ISecondaryOutput
 	[MyCmpReq]
 	private KSelectable selectable;
 
-	public Filterable filterable;
+	public Filterable filterable = null;
 
 	private Guid needsConduitStatusItemGuid;
 
@@ -40,7 +40,7 @@ public class ElementFilter : KMonoBehaviour, ISaveLoadable, ISecondaryOutput
 
 	private HandleVector<int>.Handle partitionerEntry;
 
-	private static StatusItem filterStatusItem;
+	private static StatusItem filterStatusItem = null;
 
 	public SimHashes FilteredElement => filteredElem;
 
@@ -197,7 +197,7 @@ public class ElementFilter : KMonoBehaviour, ISaveLoadable, ISecondaryOutput
 	{
 		if (filterStatusItem == null)
 		{
-			filterStatusItem = new StatusItem("Filter", "BUILDING", string.Empty, StatusItem.IconType.Info, NotificationType.Neutral, false, SimViewMode.LiquidVentMap, true, 63486);
+			filterStatusItem = new StatusItem("Filter", "BUILDING", "", StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.LiquidConduits.ID, true, 63486);
 			filterStatusItem.resolveStringCallback = delegate(string str, object data)
 			{
 				ElementFilter elementFilter = (ElementFilter)data;
@@ -216,17 +216,17 @@ public class ElementFilter : KMonoBehaviour, ISaveLoadable, ISecondaryOutput
 		}
 	}
 
-	private bool ShowInUtilityOverlay(SimViewMode mode, object data)
+	private bool ShowInUtilityOverlay(HashedString mode, object data)
 	{
 		bool result = false;
 		ElementFilter elementFilter = (ElementFilter)data;
 		switch (elementFilter.portInfo.conduitType)
 		{
 		case ConduitType.Gas:
-			result = (mode == SimViewMode.GasVentMap);
+			result = (mode == OverlayModes.GasConduits.ID);
 			break;
 		case ConduitType.Liquid:
-			result = (mode == SimViewMode.LiquidVentMap);
+			result = (mode == OverlayModes.LiquidConduits.ID);
 			break;
 		}
 		return result;
@@ -240,5 +240,10 @@ public class ElementFilter : KMonoBehaviour, ISaveLoadable, ISecondaryOutput
 	public CellOffset GetSecondaryConduitOffset()
 	{
 		return portInfo.offset;
+	}
+
+	public int GetFilteredCell()
+	{
+		return filteredCell;
 	}
 }

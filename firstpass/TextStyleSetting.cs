@@ -9,6 +9,8 @@ public class TextStyleSetting : ScriptableObject
 
 	public Color textColor;
 
+	public FontStyles style;
+
 	public bool enableWordWrapping = true;
 
 	public void Init(TMP_FontAsset _sdfFont, int _fontSize, Color _color, bool _enableWordWrapping)

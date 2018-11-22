@@ -11,13 +11,13 @@ namespace ProcGen
 	{
 		private delegate bool ParserFn<T>(string input, out T res);
 
-		private World world;
+		private World world = null;
 
 		private Dictionary<string, FeatureSettings> featuresettings = new Dictionary<string, FeatureSettings>();
 
 		private static Dictionary<string, BiomeSettings> biomeSettingsCache = new Dictionary<string, BiomeSettings>();
 
-		private string base_path;
+		private string base_path = null;
 
 		private static string LAYERS_FILE = "layers";
 
@@ -111,12 +111,12 @@ namespace ProcGen
 
 		public string GetDefaultBiome(string name)
 		{
-			if (features.TerrainFeatures.ContainsKey(name))
+			if (!features.TerrainFeatures.ContainsKey(name))
 			{
-				return features.TerrainFeatures[name].defaultBiome.type;
+				Debug.LogError("Couldn't get default biome [" + name + "]", null);
+				return null;
 			}
-			Debug.LogError("Couldn't get default biome [" + name + "]", null);
-			return null;
+			return features.TerrainFeatures[name].defaultBiome.type;
 		}
 
 		public FeatureSettings GetFeature(string name)
@@ -126,15 +126,15 @@ namespace ProcGen
 				int num = 0;
 				num++;
 			}
-			if (!name.StartsWith("features/"))
+			if (name.StartsWith("features/"))
 			{
-				return null;
-			}
-			if (featuresettings.ContainsKey(name))
-			{
+				if (!featuresettings.ContainsKey(name))
+				{
+					throw new Exception("Couldnt get feature [" + name + "]");
+				}
 				return featuresettings[name];
 			}
-			throw new Exception("Couldnt get feature [" + name + "]");
+			return null;
 		}
 
 		public string[] GetFeatureSettingsNames()
@@ -180,23 +180,23 @@ namespace ProcGen
 
 		private bool GetSetting<T>(DefaultSettings set, string target, ParserFn<T> parser, out T res)
 		{
-			if (set == null || set.data == null || !set.data.ContainsKey(target))
+			if (set != null && set.data != null && set.data.ContainsKey(target))
 			{
-				res = default(T);
-				return false;
-			}
-			object obj = set.data[target];
-			if (obj.GetType() == typeof(T))
-			{
+				object obj = set.data[target];
+				if (obj.GetType() != typeof(T))
+				{
+					bool flag = parser(obj as string, out res);
+					if (flag)
+					{
+						set.data[target] = res;
+					}
+					return flag;
+				}
 				res = (T)obj;
 				return true;
 			}
-			bool flag = parser(obj as string, out res);
-			if (flag)
-			{
-				set.data[target] = res;
-			}
-			return flag;
+			res = default(T);
+			return false;
 		}
 
 		private T GetSetting<T>(string target, ParserFn<T> parser)
@@ -282,31 +282,31 @@ namespace ProcGen
 
 		private bool GetPathAndName(string srcPath, string srcName, out string name)
 		{
-			if (File.Exists(srcPath + srcName + ".yaml"))
+			if (!File.Exists(srcPath + srcName + ".yaml"))
 			{
-				name = srcName;
-				return true;
-			}
-			string[] array = srcName.Split('/');
-			name = array[0];
-			for (int i = 1; i < array.Length - 1; i++)
-			{
-				name = name + "/" + array[i];
-			}
-			if (File.Exists(srcPath + name + ".yaml"))
-			{
+				string[] array = srcName.Split('/');
+				name = array[0];
+				for (int i = 1; i < array.Length - 1; i++)
+				{
+					name = name + "/" + array[i];
+				}
+				if (!File.Exists(srcPath + name + ".yaml"))
+				{
+					name = srcName;
+					return false;
+				}
 				return true;
 			}
 			name = srcName;
-			return false;
+			return true;
 		}
 
 		private void LoadBiome(string longName)
 		{
-			string name = string.Empty;
+			string name = "";
 			if (GetPathAndName(base_path, longName, out name) && !biomeSettingsCache.ContainsKey(name))
 			{
-				BiomeSettings biomeSettings = YamlIO<BiomeSettings>.LoadFile(base_path + name + ".yaml");
+				BiomeSettings biomeSettings = YamlIO<BiomeSettings>.LoadFile(base_path + name + ".yaml", null);
 				if (biomeSettings != null)
 				{
 					biomeSettingsCache.Add(name, biomeSettings);
@@ -334,25 +334,25 @@ namespace ProcGen
 
 		private string LoadFeature(string longName)
 		{
-			string name = string.Empty;
-			if (!GetPathAndName(base_path, longName, out name))
+			string name = "";
+			if (GetPathAndName(base_path, longName, out name))
 			{
-				Debug.LogWarning("LoadFeature GetPathAndName: Attempting to load feature: " + name + " failed", null);
-				return longName;
-			}
-			if (!featuresettings.ContainsKey(name))
-			{
-				FeatureSettings featureSettings = YamlIO<FeatureSettings>.LoadFile(base_path + name + ".yaml");
-				if (featureSettings != null)
+				if (!featuresettings.ContainsKey(name))
 				{
-					featuresettings.Add(name, featureSettings);
+					FeatureSettings featureSettings = YamlIO<FeatureSettings>.LoadFile(base_path + name + ".yaml", null);
+					if (featureSettings != null)
+					{
+						featuresettings.Add(name, featureSettings);
+					}
+					else
+					{
+						Debug.LogWarning("WorldGen: Attempting to load feature: " + name + " failed", null);
+					}
 				}
-				else
-				{
-					Debug.LogWarning("WorldGen: Attempting to load feature: " + name + " failed", null);
-				}
+				return name;
 			}
-			return name;
+			Debug.LogWarning("LoadFeature GetPathAndName: Attempting to load feature: " + name + " failed", null);
+			return longName;
 		}
 
 		public void SetDefaultWorld(string path)
@@ -419,35 +419,35 @@ namespace ProcGen
 
 		public void Save(string path)
 		{
-			layers.Save(path + LAYERS_FILE + ".yaml");
-			features.Save(path + FEATURES_FILE + ".yaml");
-			rivers.Save(path + RIVERS_FILE + ".yaml");
-			rooms.Save(path + ROOMS_FILE + ".yaml");
-			temperatures.Save(path + TEMPERATURES_FILE + ".yaml");
-			defaults.Save(path + DEFAULTS_FILE + ".yaml");
-			mobs.Save(path + MOBS_FILE + ".yaml");
+			layers.Save(path + LAYERS_FILE + ".yaml", null);
+			features.Save(path + FEATURES_FILE + ".yaml", null);
+			rivers.Save(path + RIVERS_FILE + ".yaml", null);
+			rooms.Save(path + ROOMS_FILE + ".yaml", null);
+			temperatures.Save(path + TEMPERATURES_FILE + ".yaml", null);
+			defaults.Save(path + DEFAULTS_FILE + ".yaml", null);
+			mobs.Save(path + MOBS_FILE + ".yaml", null);
 		}
 
 		public static WorldGenSettings LoadFile(string path, IFileSystem filesystem)
 		{
 			WorldGenSettings worldGenSettings = new WorldGenSettings();
 			worldGenSettings.worlds.LoadFiles(path, filesystem);
-			worldGenSettings.layers = YamlIO<LevelLayerSettings>.LoadFile(path + LAYERS_FILE + ".yaml");
+			worldGenSettings.layers = YamlIO<LevelLayerSettings>.LoadFile(path + LAYERS_FILE + ".yaml", null);
 			worldGenSettings.layers.LevelLayers.ConvertBandSizeToMaxSize();
-			worldGenSettings.features = YamlIO<TerrainFeatureSettings>.LoadFile(path + FEATURES_FILE + ".yaml");
+			worldGenSettings.features = YamlIO<TerrainFeatureSettings>.LoadFile(path + FEATURES_FILE + ".yaml", null);
 			foreach (KeyValuePair<string, TerrainFeature> terrainFeature in worldGenSettings.features.TerrainFeatures)
 			{
 				terrainFeature.Value.name = terrainFeature.Key;
 			}
-			worldGenSettings.rivers = YamlIO<Rivers>.LoadFile(path + RIVERS_FILE + ".yaml");
-			worldGenSettings.rooms = YamlIO<RoomDescriptions>.LoadFile(path + ROOMS_FILE + ".yaml");
+			worldGenSettings.rivers = YamlIO<Rivers>.LoadFile(path + RIVERS_FILE + ".yaml", null);
+			worldGenSettings.rooms = YamlIO<RoomDescriptions>.LoadFile(path + ROOMS_FILE + ".yaml", null);
 			foreach (KeyValuePair<string, Room> room in worldGenSettings.rooms.rooms)
 			{
 				room.Value.name = room.Key;
 			}
-			worldGenSettings.temperatures = YamlIO<Temperatures>.LoadFile(path + TEMPERATURES_FILE + ".yaml");
-			worldGenSettings.defaults = YamlIO<DefaultSettings>.LoadFile(path + DEFAULTS_FILE + ".yaml");
-			worldGenSettings.mobs = YamlIO<MobSettings>.LoadFile(path + MOBS_FILE + ".yaml");
+			worldGenSettings.temperatures = YamlIO<Temperatures>.LoadFile(path + TEMPERATURES_FILE + ".yaml", null);
+			worldGenSettings.defaults = YamlIO<DefaultSettings>.LoadFile(path + DEFAULTS_FILE + ".yaml", null);
+			worldGenSettings.mobs = YamlIO<MobSettings>.LoadFile(path + MOBS_FILE + ".yaml", null);
 			foreach (KeyValuePair<string, Mob> item in worldGenSettings.mobs.MobLookupTable)
 			{
 				item.Value.name = item.Key;

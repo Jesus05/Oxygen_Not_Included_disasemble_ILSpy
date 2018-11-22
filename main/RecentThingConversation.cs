@@ -86,25 +86,25 @@ public class RecentThingConversation : ConversationType
 
 	public override Conversation.Topic GetNextTopic(MinionIdentity speaker, Conversation.Topic lastTopic)
 	{
-		if (string.IsNullOrEmpty(target))
+		if (!string.IsNullOrEmpty(target))
 		{
-			return null;
+			List<Conversation.ModeType> list2;
+			if (lastTopic == null)
+			{
+				List<Conversation.ModeType> list = new List<Conversation.ModeType>();
+				list.Add(Conversation.ModeType.Query);
+				list.Add(Conversation.ModeType.Statement);
+				list.Add(Conversation.ModeType.Musing);
+				list2 = list;
+			}
+			else
+			{
+				list2 = transitions[lastTopic.mode];
+			}
+			Conversation.ModeType mode = list2[Random.Range(0, list2.Count)];
+			return new Conversation.Topic(target, mode);
 		}
-		List<Conversation.ModeType> list2;
-		if (lastTopic == null)
-		{
-			List<Conversation.ModeType> list = new List<Conversation.ModeType>();
-			list.Add(Conversation.ModeType.Query);
-			list.Add(Conversation.ModeType.Statement);
-			list.Add(Conversation.ModeType.Musing);
-			list2 = list;
-		}
-		else
-		{
-			list2 = transitions[lastTopic.mode];
-		}
-		Conversation.ModeType mode = list2[Random.Range(0, list2.Count)];
-		return new Conversation.Topic(target, mode);
+		return null;
 	}
 
 	public override Sprite GetSprite(string topic)

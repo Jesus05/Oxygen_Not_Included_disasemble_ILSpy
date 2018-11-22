@@ -6,7 +6,7 @@ namespace STRINGS
 		{
 			public class ATMO_SUIT
 			{
-				public static LocString NAME = "Atmo Suit";
+				public static LocString NAME = UI.FormatAsLink("Atmo Suit", "ATMO_SUIT");
 
 				public static LocString DESC = "Make sure your Duplicants can breathe easy, anytime, anywhere.";
 
@@ -19,18 +19,18 @@ namespace STRINGS
 
 			public class AQUA_SUIT
 			{
-				public static LocString NAME = "Aqua Suit";
+				public static LocString NAME = UI.FormatAsLink("Aqua Suit", "AQUA_SUIT");
 
 				public static LocString DESC = "Because breathing underwater is better than... not.";
 
-				public static LocString EFFECT = "Supplies Duplicants with <style=\"oxygen\">Oxygen</style> in underwater environments.\n\nMust be refilled with oxygen at an Exosuit Dock when depleted.";
+				public static LocString EFFECT = "Supplies Duplicants with <style=\"oxygen\">Oxygen</style> in underwater environments.\n\nMust be refilled with " + UI.FormatAsLink("Oxygen", "OXYGEN") + " at an Exosuit Dock when depleted.";
 
 				public static LocString RECIPE_DESC = "Supplies Duplicants with <style=\"oxygen\">Oxygen</style> in underwater environments.";
 			}
 
 			public class TEMPERATURE_SUIT
 			{
-				public static LocString NAME = "Thermo Suit";
+				public static LocString NAME = UI.FormatAsLink("Thermo Suit", "TEMPERATURE_SUIT");
 
 				public static LocString DESC = "Keep your Duplicants cool in case things heat up.";
 
@@ -41,44 +41,22 @@ namespace STRINGS
 
 			public class JET_SUIT
 			{
-				public static LocString NAME = "Jet Suit";
+				public static LocString NAME = UI.FormatAsLink("Jet Suit", "JET_SUIT");
 
-				public static LocString DESC = "Make sure your Duplicants can breathe easy, anytime, anywhere.";
+				public static LocString DESC = "Allow your Duplicants to take to the skies, for a time.";
 
-				public static LocString EFFECT = "Supplies Duplicants with <style=\"oxygen\">Oxygen</style> in toxic and low breathability environments.\n\nMust be refilled with oxygen and petroleum at a Jet Suit Dock when depleted.";
+				public static LocString EFFECT = "Supplies Duplicants with " + UI.FormatAsLink("Oxygen", "OXYGEN") + " in toxic and low breathability environments.\n\nMust be refilled with " + UI.FormatAsLink("Oxygen", "OXYGEN") + " and " + UI.FormatAsLink("Petroleum", "PETROLEUM") + " at a Jet Suit Dock when depleted.";
 
-				public static LocString RECIPE_DESC = "Allows flight. Supplies Duplicants with <style=\"oxygen\">Oxygen</style> in toxic and low breathability environments.";
+				public static LocString RECIPE_DESC = "Supplies Duplicants with " + UI.FormatAsLink("Oxygen", "OXYGEN") + " in toxic and low breathability environments.\n\nAllows Duplicant flight.";
 
 				public static LocString GENERICNAME = "Jet Suit";
 
 				public static LocString TANK_EFFECT_NAME = "Fuel Tank";
 			}
 
-			public class BORING_MACHINE
-			{
-				public static LocString NAME = "Prospectolator";
-
-				public static LocString DESC = string.Empty;
-
-				public static LocString EFFECT = string.Empty;
-
-				public static LocString RECIPE_DESC = string.Empty;
-			}
-
-			public class QUARRYING_GUN
-			{
-				public static LocString NAME = "Quarrying Gun";
-
-				public static LocString DESC = string.Empty;
-
-				public static LocString EFFECT = string.Empty;
-
-				public static LocString RECIPE_DESC = string.Empty;
-			}
-
 			public class COOL_VEST
 			{
-				public static LocString NAME = "Cool Vest";
+				public static LocString NAME = UI.FormatAsLink("Cool Vest", "COOL_VEST");
 
 				public static LocString GENERICNAME = "Clothing";
 
@@ -91,7 +69,7 @@ namespace STRINGS
 
 			public class WARM_VEST
 			{
-				public static LocString NAME = "Warm Sweater";
+				public static LocString NAME = UI.FormatAsLink("Warm Sweater", "WARM_VEST");
 
 				public static LocString GENERICNAME = "Clothing";
 
@@ -104,7 +82,7 @@ namespace STRINGS
 
 			public class FUNKY_VEST
 			{
-				public static LocString NAME = "Snazzy Suit";
+				public static LocString NAME = UI.FormatAsLink("Snazzy Suit", "FUNKY_VEST");
 
 				public static LocString GENERICNAME = "Clothing";
 
@@ -117,11 +95,11 @@ namespace STRINGS
 
 			public class OXYGEN_TANK
 			{
-				public static LocString NAME = "Oxygen Tank";
+				public static LocString NAME = UI.FormatAsLink("Oxygen Tank", "OXYGEN_TANK");
 
 				public static LocString GENERICNAME = "Equipment";
 
-				public static LocString DESC = string.Empty;
+				public static LocString DESC = "";
 
 				public static LocString EFFECT = "Allows Duplicants to breathe in hazardous environments.\n\nDoes not work when submerged in <style=\"liquid\">Liquid</style>.";
 
@@ -134,7 +112,7 @@ namespace STRINGS
 
 				public static LocString GENERICNAME = "Equipment";
 
-				public static LocString DESC = string.Empty;
+				public static LocString DESC = "";
 
 				public static LocString EFFECT = "Allows Duplicants to breathe while submerged in <style=\"liquid\">Liquid</style>.\n\nDoes not work outside of liquid.";
 

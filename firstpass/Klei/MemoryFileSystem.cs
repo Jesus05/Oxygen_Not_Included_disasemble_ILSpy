@@ -60,7 +60,6 @@ namespace Klei
 
 		public void GetFiles(Regex re, string path, ICollection<string> result)
 		{
-			string[] files = Directory.GetFiles(path);
 			foreach (string key in dataMap.Keys)
 			{
 				if (re.IsMatch(key))

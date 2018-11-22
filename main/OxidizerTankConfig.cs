@@ -26,14 +26,12 @@ public class OxidizerTankConfig : IBuildingConfig
 		EffectorValues tIER = NOISE_POLLUTION.NOISY.TIER2;
 		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, fUEL_TANK_DRY_MASS, construction_materials, melting_point, build_location_rule, BUILDINGS.DECOR.NONE, tIER, 0.2f);
 		BuildingTemplates.CreateRocketBuildingDef(buildingDef);
+		buildingDef.DefaultAnimState = "grounded";
 		buildingDef.SceneLayer = Grid.SceneLayer.BuildingFront;
-		buildingDef.ViewMode = SimViewMode.None;
 		buildingDef.OverheatTemperature = 2273.15f;
 		buildingDef.Floodable = false;
 		buildingDef.AttachmentSlotTag = GameTags.Rocket;
 		buildingDef.ObjectLayer = ObjectLayer.Building;
-		buildingDef.UtilityInputOffset = new CellOffset(2, 3);
-		buildingDef.InputConduitType = ConduitType.Liquid;
 		buildingDef.RequiresPowerInput = false;
 		buildingDef.attachablePosition = new CellOffset(0, 0);
 		buildingDef.CanMove = true;
@@ -62,27 +60,23 @@ public class OxidizerTankConfig : IBuildingConfig
 
 	public override void DoPostConfigureComplete(GameObject go)
 	{
-		OxidizerTank oxidizerTank = go.AddOrGet<OxidizerTank>();
-		oxidizerTank.capacityKg = 2700f;
-		oxidizerTank.allowSublimation = false;
-		oxidizerTank.SetDefaultStoredItemModifiers(new List<Storage.StoredItemModifier>
+		Storage storage = go.AddOrGet<Storage>();
+		storage.capacityKg = 2700f;
+		storage.allowSublimation = false;
+		storage.SetDefaultStoredItemModifiers(new List<Storage.StoredItemModifier>
 		{
 			Storage.StoredItemModifier.Hide,
 			Storage.StoredItemModifier.Seal,
 			Storage.StoredItemModifier.Insulate
 		});
-		ConduitConsumer conduitConsumer = go.AddOrGet<ConduitConsumer>();
-		conduitConsumer.conduitType = ConduitType.Liquid;
-		conduitConsumer.consumptionRate = 10f;
-		conduitConsumer.capacityTag = ElementLoader.FindElementByHash(SimHashes.LiquidOxygen).tag;
-		conduitConsumer.capacityKG = oxidizerTank.capacityKg;
-		conduitConsumer.forceAlwaysSatisfied = true;
-		conduitConsumer.wrongElementResult = ConduitConsumer.WrongElementResult.Dump;
+		OxidizerTank oxidizerTank = go.AddOrGet<OxidizerTank>();
+		oxidizerTank.storage = storage;
+		go.AddOrGet<DropToUserCapacity>();
 		ManualDeliveryKG manualDeliveryKG = go.AddOrGet<ManualDeliveryKG>();
-		manualDeliveryKG.SetStorage(oxidizerTank);
+		manualDeliveryKG.SetStorage(storage);
 		manualDeliveryKG.requestedItemTag = ElementLoader.FindElementByHash(SimHashes.OxyRock).tag;
-		manualDeliveryKG.refillMass = oxidizerTank.capacityKg;
-		manualDeliveryKG.capacity = oxidizerTank.capacityKg;
+		manualDeliveryKG.refillMass = storage.capacityKg;
+		manualDeliveryKG.capacity = storage.capacityKg;
 		manualDeliveryKG.operationalRequirement = FetchOrder2.OperationalRequirement.None;
 		manualDeliveryKG.choreTypeIDHash = Db.Get().ChoreTypes.Fetch.IdHash;
 		go.AddOrGet<RocketModule>();

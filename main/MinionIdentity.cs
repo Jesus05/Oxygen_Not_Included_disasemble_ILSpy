@@ -22,7 +22,7 @@ public class MinionIdentity : KMonoBehaviour, ISaveLoadable, IAssignableIdentity
 			for (int i = 0; i < array.Length; i++)
 			{
 				string[] array2 = array[i].Split(' ');
-				if (array2[array2.Length - 1] != string.Empty && array2[array2.Length - 1] != null)
+				if (array2[array2.Length - 1] != "" && array2[array2.Length - 1] != null)
 				{
 					names.Add(array2[array2.Length - 1]);
 				}
@@ -59,7 +59,8 @@ public class MinionIdentity : KMonoBehaviour, ISaveLoadable, IAssignableIdentity
 	[Serialize]
 	public KCompBuilder.BodyData bodyData;
 
-	private List<Ownables> ownables;
+	[Serialize]
+	public Ref<MinionAssignablesProxy> assignableProxy;
 
 	public float timeLastSpoke;
 
@@ -102,10 +103,6 @@ public class MinionIdentity : KMonoBehaviour, ISaveLoadable, IAssignableIdentity
 
 	protected override void OnPrefabInit()
 	{
-		ownables = new List<Ownables>
-		{
-			GetComponent<Ownables>()
-		};
 		if (name == null)
 		{
 			name = ChooseRandomName();
@@ -218,16 +215,19 @@ public class MinionIdentity : KMonoBehaviour, ISaveLoadable, IAssignableIdentity
 			maleNameList = new NameList(Game.Instance.maleNamesFile);
 			femaleNameList = new NameList(Game.Instance.femaleNamesFile);
 		}
-		if (UnityEngine.Random.value > 0.5f)
+		if (!(UnityEngine.Random.value > 0.5f))
 		{
-			return maleNameList.Next();
+			return femaleNameList.Next();
 		}
-		return femaleNameList.Next();
+		return maleNameList.Next();
 	}
 
 	protected override void OnCleanUp()
 	{
-		Game.Instance.assignmentManager.RemoveFromAllGroups(this);
+		if ((UnityEngine.Object)assignableProxy.Get() != (UnityEngine.Object)null && assignableProxy.Get().target == this)
+		{
+			Util.KDestroyGameObject(assignableProxy.Get().gameObject);
+		}
 		Components.MinionIdentities.Remove(this);
 		Components.LiveMinionIdentities.Remove(this);
 	}
@@ -241,21 +241,24 @@ public class MinionIdentity : KMonoBehaviour, ISaveLoadable, IAssignableIdentity
 
 	private void OnDied(object data)
 	{
-		Ownables component = GetComponent<Ownables>();
-		component.UnassignAll();
-		Equipment component2 = GetComponent<Equipment>();
-		component2.UnequipAll();
+		GetSoleOwner().UnassignAll();
+		GetEquipment().UnequipAll();
 		Components.LiveMinionIdentities.Remove(this);
 	}
 
 	public List<Ownables> GetOwners()
 	{
-		return ownables;
+		return assignableProxy.Get().ownables;
 	}
 
 	public Ownables GetSoleOwner()
 	{
-		return GetComponent<Ownables>();
+		return assignableProxy.Get().GetComponent<Ownables>();
+	}
+
+	public Equipment GetEquipment()
+	{
+		return assignableProxy.Get().GetComponent<Equipment>();
 	}
 
 	public void Sim1000ms(float dt)

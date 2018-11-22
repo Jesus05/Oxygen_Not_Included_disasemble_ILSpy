@@ -23,7 +23,7 @@ public class ItemPedestalConfig : IBuildingConfig
 		buildingDef.DefaultAnimState = "pedestal";
 		buildingDef.Floodable = false;
 		buildingDef.Overheatable = false;
-		buildingDef.ViewMode = SimViewMode.Decor;
+		buildingDef.ViewMode = OverlayModes.Decor.ID;
 		buildingDef.AudioCategory = "Glass";
 		buildingDef.AudioSize = "small";
 		buildingDef.Deprecated = true;

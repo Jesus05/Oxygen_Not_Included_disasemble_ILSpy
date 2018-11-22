@@ -25,7 +25,7 @@ public class StorageLockerSmartConfig : IBuildingConfig
 		buildingDef.Floodable = false;
 		buildingDef.AudioCategory = "Metal";
 		buildingDef.Overheatable = false;
-		buildingDef.ViewMode = SimViewMode.Logic;
+		buildingDef.ViewMode = OverlayModes.Logic.ID;
 		buildingDef.RequiresPowerInput = true;
 		buildingDef.EnergyConsumptionWhenActive = 60f;
 		buildingDef.ExhaustKilowattsWhenActive = 0.125f;
@@ -53,6 +53,9 @@ public class StorageLockerSmartConfig : IBuildingConfig
 		storage.showDescriptor = true;
 		storage.storageFilters = STORAGEFILTERS.NOT_EDIBLE_SOLIDS;
 		storage.storageFullMargin = STORAGE.STORAGE_LOCKER_FILLED_MARGIN;
+		storage.fetchCategory = Storage.FetchCategory.GeneralStorage;
+		CopyBuildingSettings copyBuildingSettings = go.AddOrGet<CopyBuildingSettings>();
+		copyBuildingSettings.copyGroupTag = GameTags.StorageLocker;
 		go.AddOrGet<StorageLockerSmart>();
 		go.AddOrGetDef<StorageController.Def>();
 	}

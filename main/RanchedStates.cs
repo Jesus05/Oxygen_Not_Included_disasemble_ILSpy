@@ -94,14 +94,22 @@ internal class RanchedStates : GameStateMachine<RanchedStates, RanchedStates.Ins
 			smi.AbandonedRanchStation();
 		});
 		ranch.EventTransition(GameHashes.RanchStationNoLongerAvailable, (State)null, (Transition.ConditionCallback)null).DefaultState(ranch.cheer).Exit(ClearLayerOverride);
-		ranch.cheer.DefaultState(ranch.cheer.pre).ToggleStatusItem(CREATURES.STATUSITEMS.EXCITED_TO_BE_RANCHED.NAME, CREATURES.STATUSITEMS.EXCITED_TO_BE_RANCHED.TOOLTIP, category: Db.Get().StatusItemCategories.Main, icon: string.Empty, icon_type: StatusItem.IconType.Info, notification_type: (NotificationType)0, allow_multiples: false, render_overlay: SimViewMode.None, status_overlays: 0, resolve_string_callback: null, resolve_tooltip_callback: null);
+		State state = ranch.cheer.DefaultState(ranch.cheer.pre);
+		string name = CREATURES.STATUSITEMS.EXCITED_TO_BE_RANCHED.NAME;
+		string tooltip = CREATURES.STATUSITEMS.EXCITED_TO_BE_RANCHED.TOOLTIP;
+		StatusItemCategory main = Db.Get().StatusItemCategories.Main;
+		state.ToggleStatusItem(name, tooltip, "", StatusItem.IconType.Info, (NotificationType)0, false, default(HashedString), 0, null, null, main);
 		ranch.cheer.pre.ScheduleGoTo(0.9f, ranch.cheer.cheer);
 		ranch.cheer.cheer.Enter("FaceRancher", delegate(Instance smi)
 		{
 			smi.GetComponent<Facing>().Face(smi.GetRanchStation().transform.GetPosition());
 		}).PlayAnim("excited_loop").OnAnimQueueComplete(ranch.cheer.pst);
 		ranch.cheer.pst.ScheduleGoTo(0.2f, ranch.move);
-		ranch.move.DefaultState(ranch.move.movetoranch).ToggleStatusItem(CREATURES.STATUSITEMS.GETTING_RANCHED.NAME, CREATURES.STATUSITEMS.GETTING_RANCHED.TOOLTIP, category: Db.Get().StatusItemCategories.Main, icon: string.Empty, icon_type: StatusItem.IconType.Info, notification_type: (NotificationType)0, allow_multiples: false, render_overlay: SimViewMode.None, status_overlays: 0, resolve_string_callback: null, resolve_tooltip_callback: null);
+		State state2 = ranch.move.DefaultState(ranch.move.movetoranch);
+		tooltip = CREATURES.STATUSITEMS.GETTING_RANCHED.NAME;
+		name = CREATURES.STATUSITEMS.GETTING_RANCHED.TOOLTIP;
+		main = Db.Get().StatusItemCategories.Main;
+		state2.ToggleStatusItem(tooltip, name, "", StatusItem.IconType.Info, (NotificationType)0, false, default(HashedString), 0, null, null, main);
 		ranch.move.movetoranch.Enter("Speedup", delegate(Instance smi)
 		{
 			smi.GetComponent<Navigator>().defaultSpeed = smi.originalSpeed * 1.25f;
@@ -114,9 +122,21 @@ internal class RanchedStates : GameStateMachine<RanchedStates, RanchedStates.Ins
 		{
 			smi.GetRanchStation().Trigger(-1357116271, null);
 		}).EventTransition(GameHashes.RancherReadyAtRanchStation, ranch.ranching, null);
-		ranch.ranching.Enter(PlayGroomingLoopAnim).EventTransition(GameHashes.RanchingComplete, wavegoodbye, null).ToggleStatusItem(CREATURES.STATUSITEMS.GETTING_RANCHED.NAME, CREATURES.STATUSITEMS.GETTING_RANCHED.TOOLTIP, category: Db.Get().StatusItemCategories.Main, icon: string.Empty, icon_type: StatusItem.IconType.Info, notification_type: (NotificationType)0, allow_multiples: false, render_overlay: SimViewMode.None, status_overlays: 0, resolve_string_callback: null, resolve_tooltip_callback: null);
-		wavegoodbye.Enter(PlayGroomingPstAnim).OnAnimQueueComplete(runaway).ToggleStatusItem(CREATURES.STATUSITEMS.EXCITED_TO_BE_RANCHED.NAME, CREATURES.STATUSITEMS.EXCITED_TO_BE_RANCHED.TOOLTIP, category: Db.Get().StatusItemCategories.Main, icon: string.Empty, icon_type: StatusItem.IconType.Info, notification_type: (NotificationType)0, allow_multiples: false, render_overlay: SimViewMode.None, status_overlays: 0, resolve_string_callback: null, resolve_tooltip_callback: null);
-		runaway.MoveTo(GetRunawayCell, behaviourcomplete, behaviourcomplete, false).ToggleStatusItem(CREATURES.STATUSITEMS.IDLE.NAME, CREATURES.STATUSITEMS.IDLE.TOOLTIP, category: Db.Get().StatusItemCategories.Main, icon: string.Empty, icon_type: StatusItem.IconType.Info, notification_type: (NotificationType)0, allow_multiples: false, render_overlay: SimViewMode.None, status_overlays: 0, resolve_string_callback: null, resolve_tooltip_callback: null);
+		State state3 = ranch.ranching.Enter(PlayGroomingLoopAnim).EventTransition(GameHashes.RanchingComplete, wavegoodbye, null);
+		name = CREATURES.STATUSITEMS.GETTING_RANCHED.NAME;
+		tooltip = CREATURES.STATUSITEMS.GETTING_RANCHED.TOOLTIP;
+		main = Db.Get().StatusItemCategories.Main;
+		state3.ToggleStatusItem(name, tooltip, "", StatusItem.IconType.Info, (NotificationType)0, false, default(HashedString), 0, null, null, main);
+		State state4 = wavegoodbye.Enter(PlayGroomingPstAnim).OnAnimQueueComplete(runaway);
+		tooltip = CREATURES.STATUSITEMS.EXCITED_TO_BE_RANCHED.NAME;
+		name = CREATURES.STATUSITEMS.EXCITED_TO_BE_RANCHED.TOOLTIP;
+		main = Db.Get().StatusItemCategories.Main;
+		state4.ToggleStatusItem(tooltip, name, "", StatusItem.IconType.Info, (NotificationType)0, false, default(HashedString), 0, null, null, main);
+		State state5 = runaway.MoveTo(GetRunawayCell, behaviourcomplete, behaviourcomplete, false);
+		name = CREATURES.STATUSITEMS.IDLE.NAME;
+		tooltip = CREATURES.STATUSITEMS.IDLE.TOOLTIP;
+		main = Db.Get().StatusItemCategories.Main;
+		state5.ToggleStatusItem(name, tooltip, "", StatusItem.IconType.Info, (NotificationType)0, false, default(HashedString), 0, null, null, main);
 		behaviourcomplete.BehaviourComplete(GameTags.Creatures.WantsToGetRanched, false);
 	}
 

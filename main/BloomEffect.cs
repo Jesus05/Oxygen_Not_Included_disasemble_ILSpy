@@ -11,9 +11,9 @@ public class BloomEffect : MonoBehaviour
 
 	public float blurSpread = 0.6f;
 
-	public Shader blurShader;
+	public Shader blurShader = null;
 
-	private Material m_Material;
+	private Material m_Material = null;
 
 	protected Material material
 	{

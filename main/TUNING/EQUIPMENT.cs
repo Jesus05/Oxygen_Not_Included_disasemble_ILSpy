@@ -24,18 +24,6 @@ namespace TUNING
 			public static string TOOLFABRICATOR = "MultitoolWorkbench";
 
 			public static string TOOL_ANIM = "constructor_gun_kanim";
-
-			public static int BORINGMACHINE_DIG = 5;
-
-			public static int BORINGMACHINE_FABTIME = 40;
-
-			public static int BORINGMACHINE_MASS = 25;
-
-			public static int QUARRYINGGUN_DIG = 2;
-
-			public static int QUARRYINGGUN_FABTIME = BORINGMACHINE_FABTIME;
-
-			public static int QUARRYINGGUN_MASS = 100;
 		}
 
 		public class CLOTHING

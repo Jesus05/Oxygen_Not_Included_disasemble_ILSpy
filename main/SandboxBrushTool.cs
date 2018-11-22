@@ -88,11 +88,11 @@ public class SandboxBrushTool : BrushTool
 		recentlyAffectedCells.Add(cell);
 		if (!recentAffectedCellColor.ContainsKey(cell))
 		{
-			recentAffectedCellColor.Add(cell, settings.Element.substance.debugColour);
+			recentAffectedCellColor.Add(cell, settings.Element.substance.uiColour);
 		}
 		else
 		{
-			recentAffectedCellColor[cell] = settings.Element.substance.debugColour;
+			recentAffectedCellColor[cell] = settings.Element.substance.uiColour;
 		}
 		Game.CallbackInfo item = new Game.CallbackInfo(delegate
 		{

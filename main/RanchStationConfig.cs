@@ -28,7 +28,7 @@ public class RanchStationConfig : IBuildingConfig
 		BuildLocationRule build_location_rule = BuildLocationRule.OnFloor;
 		EffectorValues tIER2 = NOISE_POLLUTION.NOISY.TIER1;
 		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, tIER, aLL_METALS, melting_point, build_location_rule, TUNING.BUILDINGS.DECOR.NONE, tIER2, 0.2f);
-		buildingDef.ViewMode = SimViewMode.Rooms;
+		buildingDef.ViewMode = OverlayModes.Rooms.ID;
 		buildingDef.Overheatable = false;
 		buildingDef.AudioCategory = "Metal";
 		buildingDef.AudioSize = "large";

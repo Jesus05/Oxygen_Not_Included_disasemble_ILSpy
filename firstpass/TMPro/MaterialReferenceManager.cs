@@ -98,20 +98,20 @@ namespace TMPro
 
 		public bool Contains(TMP_FontAsset font)
 		{
-			if (m_FontAssetReferenceLookup.ContainsKey(font.hashCode))
+			if (!m_FontAssetReferenceLookup.ContainsKey(font.hashCode))
 			{
-				return true;
+				return false;
 			}
-			return false;
+			return true;
 		}
 
 		public bool Contains(TMP_SpriteAsset sprite)
 		{
-			if (m_FontAssetReferenceLookup.ContainsKey(sprite.hashCode))
+			if (!m_FontAssetReferenceLookup.ContainsKey(sprite.hashCode))
 			{
-				return true;
+				return false;
 			}
-			return false;
+			return true;
 		}
 
 		public static bool TryGetFontAsset(int hashCode, out TMP_FontAsset fontAsset)
@@ -122,11 +122,11 @@ namespace TMPro
 		private bool TryGetFontAssetInternal(int hashCode, out TMP_FontAsset fontAsset)
 		{
 			fontAsset = null;
-			if (m_FontAssetReferenceLookup.TryGetValue(hashCode, out fontAsset))
+			if (!m_FontAssetReferenceLookup.TryGetValue(hashCode, out fontAsset))
 			{
-				return true;
+				return false;
 			}
-			return false;
+			return true;
 		}
 
 		public static bool TryGetSpriteAsset(int hashCode, out TMP_SpriteAsset spriteAsset)
@@ -137,11 +137,11 @@ namespace TMPro
 		private bool TryGetSpriteAssetInternal(int hashCode, out TMP_SpriteAsset spriteAsset)
 		{
 			spriteAsset = null;
-			if (m_SpriteAssetReferenceLookup.TryGetValue(hashCode, out spriteAsset))
+			if (!m_SpriteAssetReferenceLookup.TryGetValue(hashCode, out spriteAsset))
 			{
-				return true;
+				return false;
 			}
-			return false;
+			return true;
 		}
 
 		public static bool TryGetColorGradientPreset(int hashCode, out TMP_ColorGradient gradientPreset)
@@ -152,11 +152,11 @@ namespace TMPro
 		private bool TryGetColorGradientPresetInternal(int hashCode, out TMP_ColorGradient gradientPreset)
 		{
 			gradientPreset = null;
-			if (m_ColorGradientReferenceLookup.TryGetValue(hashCode, out gradientPreset))
+			if (!m_ColorGradientReferenceLookup.TryGetValue(hashCode, out gradientPreset))
 			{
-				return true;
+				return false;
 			}
-			return false;
+			return true;
 		}
 
 		public static bool TryGetMaterial(int hashCode, out Material material)
@@ -167,11 +167,11 @@ namespace TMPro
 		private bool TryGetMaterialInternal(int hashCode, out Material material)
 		{
 			material = null;
-			if (m_FontMaterialReferenceLookup.TryGetValue(hashCode, out material))
+			if (!m_FontMaterialReferenceLookup.TryGetValue(hashCode, out material))
 			{
-				return true;
+				return false;
 			}
-			return false;
+			return true;
 		}
 	}
 }

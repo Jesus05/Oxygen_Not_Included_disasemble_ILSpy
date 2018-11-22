@@ -34,11 +34,11 @@ public class AirConditioner : KMonoBehaviour, ISaveLoadable, IEffectDescriptor, 
 
 	private float lowTempLag;
 
-	private bool showingLowTemp;
+	private bool showingLowTemp = false;
 
 	public bool isLiquidConditioner;
 
-	private bool showingHotEnv;
+	private bool showingHotEnv = false;
 
 	private Guid statusHandle;
 

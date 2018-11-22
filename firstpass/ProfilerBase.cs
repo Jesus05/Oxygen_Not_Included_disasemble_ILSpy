@@ -5,13 +5,13 @@ using System.Text;
 
 public class ProfilerBase
 {
-	private bool initialised;
+	private bool initialised = false;
 
-	private int idx;
+	private int idx = 0;
 
-	protected StreamWriter proFile;
+	protected StreamWriter proFile = null;
 
-	private Stopwatch sw;
+	private Stopwatch sw = null;
 
 	private Stack<string> regionStack = new Stack<string>();
 
@@ -19,7 +19,7 @@ public class ProfilerBase
 
 	private string category = "GAME";
 
-	private string filePrefix;
+	private string filePrefix = null;
 
 	public ProfilerBase(string file_prefix)
 	{

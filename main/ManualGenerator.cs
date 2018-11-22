@@ -59,21 +59,11 @@ public class ManualGenerator : Workable, ISingleSliderControl, ISliderControl
 	[MyCmpGet]
 	private BuildingEnabledButton buildingEnabledButton;
 
-	private Chore chore;
+	private Chore chore = null;
 
 	private int powerCell;
 
 	private GeneratePowerSM.Instance smi;
-
-	private static readonly EventSystem.IntraObjectHandler<ManualGenerator> OnOperationalChangedDelegate = new EventSystem.IntraObjectHandler<ManualGenerator>(delegate(ManualGenerator component, object data)
-	{
-		component.OnOperationalChanged(data);
-	});
-
-	private static readonly EventSystem.IntraObjectHandler<ManualGenerator> OnActiveChangedDelegate = new EventSystem.IntraObjectHandler<ManualGenerator>(delegate(ManualGenerator component, object data)
-	{
-		component.OnActiveChanged(data);
-	});
 
 	private static readonly KAnimHashedString[] symbol_names = new KAnimHashedString[6]
 	{
@@ -84,6 +74,16 @@ public class ManualGenerator : Workable, ISingleSliderControl, ISliderControl
 		"meter_light",
 		"meter_tubing"
 	};
+
+	private static readonly EventSystem.IntraObjectHandler<ManualGenerator> OnOperationalChangedDelegate = new EventSystem.IntraObjectHandler<ManualGenerator>(delegate(ManualGenerator component, object data)
+	{
+		component.OnOperationalChanged(data);
+	});
+
+	private static readonly EventSystem.IntraObjectHandler<ManualGenerator> OnActiveChangedDelegate = new EventSystem.IntraObjectHandler<ManualGenerator>(delegate(ManualGenerator component, object data)
+	{
+		component.OnActiveChanged(data);
+	});
 
 	public string SliderTitleKey => "STRINGS.UI.UISIDESCREENS.MANUALGENERATORSIDESCREEN.TITLE";
 
@@ -132,15 +132,6 @@ public class ManualGenerator : Workable, ISingleSliderControl, ISliderControl
 		EnergyGenerator.EnsureStatusItemAvailable();
 	}
 
-	protected void OnActiveChanged(object is_active)
-	{
-		if (operational.IsActive)
-		{
-			KSelectable component = GetComponent<KSelectable>();
-			component.SetStatusItem(Db.Get().StatusItemCategories.Power, Db.Get().BuildingStatusItems.ManualGeneratorChargingUp, null);
-		}
-	}
-
 	protected override void OnSpawn()
 	{
 		base.OnSpawn();
@@ -168,6 +159,15 @@ public class ManualGenerator : Workable, ISingleSliderControl, ISliderControl
 		Game.Instance.energySim.RemoveManualGenerator(this);
 		smi.StopSM("cleanup");
 		base.OnCleanUp();
+	}
+
+	protected void OnActiveChanged(object is_active)
+	{
+		if (operational.IsActive)
+		{
+			KSelectable component = GetComponent<KSelectable>();
+			component.SetStatusItem(Db.Get().StatusItemCategories.Power, Db.Get().BuildingStatusItems.ManualGeneratorChargingUp, null);
+		}
 	}
 
 	public override void AwardExperience(float work_dt, MinionResume resume)
@@ -214,7 +214,7 @@ public class ManualGenerator : Workable, ISingleSliderControl, ISliderControl
 					{
 						if (chore == null && smi.GetCurrentState() == smi.sm.on)
 						{
-							chore = new WorkChore<ManualGenerator>(Db.Get().ChoreTypes.GeneratePower, this, null, null, true, null, null, null, true, null, false, true, null, false, true, true, PriorityScreen.PriorityClass.basic, 0, false);
+							chore = new WorkChore<ManualGenerator>(Db.Get().ChoreTypes.GeneratePower, this, null, null, true, null, null, null, true, null, false, true, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, false);
 						}
 					}
 					else if (chore != null)
@@ -256,17 +256,16 @@ public class ManualGenerator : Workable, ISingleSliderControl, ISliderControl
 	{
 		base.OnStopWork(worker);
 		operational.SetActive(false, false);
-		if (chore != null && generator.PercentFull >= batteryRefillPercent)
-		{
-			chore.Cancel("Full enough");
-			chore = null;
-		}
 	}
 
 	protected override void OnCompleteWork(Worker worker)
 	{
 		operational.SetActive(false, false);
-		chore = null;
+		if (chore != null)
+		{
+			chore.Cancel("complete");
+			chore = null;
+		}
 	}
 
 	private void OnOperationalChanged(object data)

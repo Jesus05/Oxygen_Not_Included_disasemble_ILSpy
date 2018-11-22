@@ -86,6 +86,13 @@ public class Electrolyzer : StateMachineComponent<Electrolyzer.StatesInstance>
 		}
 		base.smi.StartSM();
 		UpdateMeter();
+		Tutorial.Instance.oxygenGenerators.Add(base.gameObject);
+	}
+
+	protected override void OnCleanUp()
+	{
+		Tutorial.Instance.oxygenGenerators.Remove(base.gameObject);
+		base.OnCleanUp();
 	}
 
 	public void UpdateMeter()

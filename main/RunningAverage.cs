@@ -6,9 +6,9 @@ public class RunningAverage
 
 	private float max;
 
-	private bool ignoreZero;
+	private bool ignoreZero = false;
 
-	private int validValues;
+	private int validValues = 0;
 
 	public float AverageValue => GetAverage();
 

@@ -7,6 +7,11 @@ public interface IHasBuildQueue
 		get;
 	}
 
+	int CurrentOrderIdx
+	{
+		get;
+	}
+
 	List<IBuildQueueOrder> Orders
 	{
 		get;
@@ -22,5 +27,12 @@ public interface IHasBuildQueue
 		get;
 	}
 
-	void CancelOrder(int idx);
+	int MaxOrders
+	{
+		get;
+	}
+
+	void CancelUserOrder(int idx);
+
+	void SetCurrentUserOrderByIndex(int userOrderIndex);
 }

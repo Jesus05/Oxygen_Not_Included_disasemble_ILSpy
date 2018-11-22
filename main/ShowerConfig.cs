@@ -23,7 +23,7 @@ public class ShowerConfig : IBuildingConfig
 		buildingDef.ExhaustKilowattsWhenActive = 0.25f;
 		buildingDef.InputConduitType = ConduitType.Liquid;
 		buildingDef.OutputConduitType = ConduitType.Liquid;
-		buildingDef.ViewMode = SimViewMode.LiquidVentMap;
+		buildingDef.ViewMode = OverlayModes.LiquidConduits.ID;
 		buildingDef.AudioCategory = "Metal";
 		buildingDef.UtilityInputOffset = new CellOffset(0, 0);
 		buildingDef.UtilityOutputOffset = new CellOffset(1, 1);
@@ -50,6 +50,7 @@ public class ShowerConfig : IBuildingConfig
 		conduitConsumer.conduitType = ConduitType.Liquid;
 		conduitConsumer.capacityTag = ElementLoader.FindElementByHash(SimHashes.Water).tag;
 		conduitConsumer.wrongElementResult = ConduitConsumer.WrongElementResult.Store;
+		conduitConsumer.capacityKG = 5f;
 		ConduitDispenser conduitDispenser = go.AddOrGet<ConduitDispenser>();
 		conduitDispenser.conduitType = ConduitType.Liquid;
 		conduitDispenser.invertElementFilter = true;
@@ -67,8 +68,10 @@ public class ShowerConfig : IBuildingConfig
 			new ElementConverter.OutputElement(1f, SimHashes.DirtyWater, 0f, true, 0f, 0.5f, true, 1f, byte.MaxValue, 0)
 		};
 		Storage storage = go.AddOrGet<Storage>();
-		storage.capacityKg = 5f;
+		storage.capacityKg = 10f;
 		storage.SetDefaultStoredItemModifiers(Storage.StandardSealedStorage);
+		RequireOutputs requireOutputs = go.AddOrGet<RequireOutputs>();
+		requireOutputs.ignoreFullPipe = true;
 	}
 
 	public override void DoPostConfigureComplete(GameObject go)

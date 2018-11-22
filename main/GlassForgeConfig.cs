@@ -36,7 +36,7 @@ public class GlassForgeConfig : IBuildingConfig
 		buildingDef.SelfHeatKilowattsWhenActive = 16f;
 		buildingDef.OutputConduitType = ConduitType.Liquid;
 		buildingDef.UtilityOutputOffset = outPipeOffset;
-		buildingDef.ViewMode = SimViewMode.PowerMap;
+		buildingDef.ViewMode = OverlayModes.Power.ID;
 		buildingDef.AudioCategory = "HollowMetal";
 		buildingDef.AudioSize = "large";
 		return buildingDef;
@@ -47,21 +47,21 @@ public class GlassForgeConfig : IBuildingConfig
 		go.AddOrGet<DropAllWorkable>();
 		go.AddOrGet<BuildingComplete>().isManuallyOperated = true;
 		GlassForge glassForge = go.AddOrGet<GlassForge>();
-		glassForge.sideScreenStyle = RefinerySideScreen.StyleSetting.ListInputOutput;
-		RefineryWorkable refineryWorkable = go.AddOrGet<RefineryWorkable>();
+		glassForge.sideScreenStyle = ComplexFabricatorSideScreen.StyleSetting.ListQueueHybrid;
+		ComplexFabricatorWorkable complexFabricatorWorkable = go.AddOrGet<ComplexFabricatorWorkable>();
 		glassForge.duplicantOperated = true;
-		BuildingTemplates.CreateRefineryStorage(go, glassForge);
+		BuildingTemplates.CreateComplexFabricatorStorage(go, glassForge);
 		glassForge.outStorage.capacityKg = 2000f;
 		glassForge.storeProduced = true;
 		glassForge.inStorage.SetDefaultStoredItemModifiers(RefineryStoredItemModifiers);
 		glassForge.buildStorage.SetDefaultStoredItemModifiers(RefineryStoredItemModifiers);
 		glassForge.outStorage.SetDefaultStoredItemModifiers(RefineryStoredItemModifiers);
 		glassForge.outputOffset = new Vector3(1f, 0.5f);
-		refineryWorkable.overrideAnims = new KAnimFile[1]
+		complexFabricatorWorkable.overrideAnims = new KAnimFile[1]
 		{
 			Assets.GetAnim("anim_interacts_metalrefinery_kanim")
 		};
-		glassForge.resultState = Refinery.ResultState.Melted;
+		glassForge.resultState = ComplexFabricator.ResultState.Melted;
 		ConduitDispenser conduitDispenser = go.AddOrGet<ConduitDispenser>();
 		conduitDispenser.storage = glassForge.outStorage;
 		conduitDispenser.conduitType = ConduitType.Liquid;

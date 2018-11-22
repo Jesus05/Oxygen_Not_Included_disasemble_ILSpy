@@ -380,6 +380,12 @@ public class GameTags
 
 	public static readonly Tag Glass = TagManager.Create("Glass");
 
+	public static readonly Tag Door = TagManager.Create("Door");
+
+	public static readonly Tag Farm = TagManager.Create("Farm");
+
+	public static readonly Tag StorageLocker = TagManager.Create("StorageLocker");
+
 	public static readonly Tag MISSING_TAG = TagManager.Create("MISSING_TAG");
 
 	public static readonly Tag PlantRenderer = TagManager.Create("PlantRenderer");
@@ -467,6 +473,8 @@ public class GameTags
 	public static readonly Tag AlwaysConverse = TagManager.Create("AlwaysConverse");
 
 	public static readonly Tag HasDebugDestination = TagManager.Create("HasDebugDestination");
+
+	public static readonly Tag Shaded = TagManager.Create("Shaded");
 
 	public static readonly Tag DupeBrain = TagManager.Create("DupeBrain");
 

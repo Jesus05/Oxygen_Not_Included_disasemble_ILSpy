@@ -12,7 +12,7 @@ namespace STRINGS
 
 			public static LocString NO_RESEARCHER_ROLE = "No Researchers assigned";
 
-			public static LocString NO_RESEARCHER_ROLE_TOOLTIP = "The selected research focus requires an advanced type of research to complete\n\nAssign a Duplicant to the Research Assistant job using the Jobs Panel <color=#F44A47>[L]</color> to enable this errand";
+			public static LocString NO_RESEARCHER_ROLE_TOOLTIP = "The selected research focus requires an advanced type of research to complete\n\nAssign a Duplicant to the Research Assistant job using the Jobs Panel <color=#F44A47>[J]</color> to enable this errand";
 
 			public static LocString MISSING_RESEARCH_STATION = "Missing Research Station";
 
@@ -76,14 +76,14 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Advanced Research Capability";
 
-				public static LocString DESC = "Allows Advanced Research Points to be acculumated, unlocking higher technology tiers.";
+				public static LocString DESC = "Allows Advanced Research Points to be accumulated, unlocking higher technology tiers.";
 			}
 
 			public class GAMMA_RESEARCH_POINT
 			{
 				public static LocString NAME = "Interstellar Research Capability";
 
-				public static LocString DESC = "Allows Interstellar Research Points to be acculumated, unlocking higher technology tiers.";
+				public static LocString DESC = "Allows Interstellar Research Points to be accumulated, unlocking higher technology tiers.";
 			}
 
 			public class CONVEYOR_OVERLAY
@@ -261,7 +261,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = UI.FormatAsLink("Power Regulation", "POWERREGULATION");
 
-				public static LocString DESC = "Prevent wasted " + UI.FormatAsLink("Power", "POWER") + " with improved eletrical tools.";
+				public static LocString DESC = "Prevent wasted " + UI.FormatAsLink("Power", "POWER") + " with improved electrical tools.";
 			}
 
 			public class COMBUSTION
@@ -303,7 +303,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = UI.FormatAsLink("Plastic Manufacturing", "PLASTICS");
 
-				public static LocString DESC = "Stable, light weight, durable. Plastics are useful in a wide array of applications.";
+				public static LocString DESC = "Stable, lightweight, durable. Plastics are useful in a wide array of applications.";
 			}
 
 			public class CLOTHING
@@ -357,7 +357,7 @@ namespace STRINGS
 
 			public class VALVEMINIATURIZATION
 			{
-				public static LocString NAME = UI.FormatAsLink("Valve Minaturization", "VALVEMINIATURIZATION");
+				public static LocString NAME = UI.FormatAsLink("Valve Miniaturization", "VALVEMINIATURIZATION");
 
 				public static LocString DESC = "Smaller, more efficient pumps for those low-throughput situations.";
 			}

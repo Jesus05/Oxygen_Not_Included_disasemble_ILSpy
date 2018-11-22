@@ -5,16 +5,11 @@ using UnityEngine;
 
 public class DiseaseMonitor : GameStateMachine<DiseaseMonitor, DiseaseMonitor.Instance>
 {
-	public class NotifyStates : State
-	{
-		public State notify;
-
-		public State cooldown;
-	}
-
 	public class SickStates : State
 	{
-		public NotifyStates notify;
+		public State minor;
+
+		public State major;
 	}
 
 	public new class Instance : GameInstance
@@ -37,27 +32,49 @@ public class DiseaseMonitor : GameStateMachine<DiseaseMonitor, DiseaseMonitor.In
 			return activeDiseases.Count > 0;
 		}
 
+		public bool HasMajorDisease()
+		{
+			foreach (DiseaseInstance activeDisease in activeDiseases)
+			{
+				if (activeDisease.modifier.severity >= Disease.Severity.Major)
+				{
+					return true;
+				}
+			}
+			return false;
+		}
+
 		public void AutoAssignClinic()
 		{
-			Ownables component = base.sm.masterTarget.Get(base.smi).GetComponent<Ownables>();
+			Ownables soleOwner = base.sm.masterTarget.Get(base.smi).GetComponent<MinionIdentity>().GetSoleOwner();
 			AssignableSlot clinic = Db.Get().AssignableSlots.Clinic;
-			AssignableSlotInstance slot = component.GetSlot(clinic);
+			AssignableSlotInstance slot = soleOwner.GetSlot(clinic);
 			if (slot != null && !((Object)slot.assignable != (Object)null))
 			{
-				component.AutoAssignSlot(clinic);
+				soleOwner.AutoAssignSlot(clinic);
 			}
 		}
 
 		public void UnassignClinic()
 		{
-			Ownables component = base.sm.masterTarget.Get(base.smi).GetComponent<Ownables>();
+			Ownables soleOwner = base.sm.masterTarget.Get(base.smi).GetComponent<MinionIdentity>().GetSoleOwner();
 			AssignableSlot clinic = Db.Get().AssignableSlots.Clinic;
-			component.GetSlot(clinic)?.Unassign(true);
+			soleOwner.GetSlot(clinic)?.Unassign(true);
 		}
 
-		public bool IsNightTime()
+		public bool IsSleepingOrSleepSchedule()
 		{
-			return TimeOfDay.Instance.GetCurrentTimeRegion() == TimeOfDay.TimeRegion.Night;
+			Schedulable component = GetComponent<Schedulable>();
+			if ((Object)component != (Object)null && component.IsAllowed(Db.Get().ScheduleBlockTypes.Sleep))
+			{
+				return true;
+			}
+			KPrefabID component2 = GetComponent<KPrefabID>();
+			if ((Object)component2 != (Object)null && component2.HasTag(GameTags.Asleep))
+			{
+				return true;
+			}
+			return false;
 		}
 	}
 
@@ -68,12 +85,6 @@ public class DiseaseMonitor : GameStateMachine<DiseaseMonitor, DiseaseMonitor.In
 	public State post;
 
 	public State post_nocheer;
-
-	private static readonly HashedString[] SickAnims = new HashedString[2]
-	{
-		"idle_pre",
-		"idle_default"
-	};
 
 	private static readonly HashedString SickPostKAnim = "anim_cheer_kanim";
 
@@ -89,23 +100,19 @@ public class DiseaseMonitor : GameStateMachine<DiseaseMonitor, DiseaseMonitor.In
 		base.serializable = true;
 		default_state = healthy;
 		healthy.EventTransition(GameHashes.DiseaseAdded, sick, (Instance smi) => smi.IsSick());
-		sick.DefaultState(sick.notify).EventTransition(GameHashes.DiseaseCured, post_nocheer, (Instance smi) => !smi.IsSick()).ToggleAnims("anim_idle_sick_kanim", 0f)
-			.ToggleExpression(Db.Get().Expressions.Sick, null)
-			.ToggleUrge(Db.Get().Urges.RestDueToDisease)
-			.Update("AutoAssignClinic", delegate(Instance smi, float dt)
-			{
-				smi.AutoAssignClinic();
-			}, UpdateRate.SIM_4000ms, false)
+		sick.DefaultState(sick.minor).EventTransition(GameHashes.DiseaseCured, post_nocheer, (Instance smi) => !smi.IsSick()).ToggleThought(Db.Get().Thoughts.GotInfected, null);
+		sick.minor.EventTransition(GameHashes.DiseaseAdded, sick.major, (Instance smi) => smi.HasMajorDisease());
+		sick.major.EventTransition(GameHashes.DiseaseCured, sick.minor, (Instance smi) => !smi.HasMajorDisease()).ToggleUrge(Db.Get().Urges.RestDueToDisease).Update("AutoAssignClinic", delegate(Instance smi, float dt)
+		{
+			smi.AutoAssignClinic();
+		}, UpdateRate.SIM_4000ms, false)
 			.Exit(delegate(Instance smi)
 			{
 				smi.UnassignClinic();
 			});
-		sick.notify.DefaultState(sick.notify.notify);
-		sick.notify.notify.ToggleThought(Db.Get().Thoughts.GotInfected, null).ToggleChore((Instance smi) => new EmoteChore(smi.master, Db.Get().ChoreTypes.Emote, SickAnims, null), sick.notify.cooldown);
-		sick.notify.cooldown.ScheduleGoTo(5f, sick.notify);
 		post_nocheer.Enter(delegate(Instance smi)
 		{
-			if (smi.IsNightTime())
+			if (smi.IsSleepingOrSleepSchedule())
 			{
 				smi.GoTo(healthy);
 			}

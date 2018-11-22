@@ -1,13 +1,16 @@
 using FMOD.Studio;
 using FMODUnity;
-using OverlayModes;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class OverlayScreen : KMonoBehaviour
 {
+	private struct ModeInfo
+	{
+		public OverlayModes.Mode mode;
+	}
+
 	public static HashSet<Tag> WireIDs = new HashSet<Tag>();
 
 	public static HashSet<Tag> GasVentIDs = new HashSet<Tag>();
@@ -96,13 +99,13 @@ public class OverlayScreen : KMonoBehaviour
 	[SerializeField]
 	private LogicModeUI logicModeUIPrefab;
 
-	public Action<SimViewMode> OnOverlayChanged;
+	public Action<HashedString> OnOverlayChanged;
 
-	private Mode currentMode = new None();
+	private ModeInfo currentModeInfo;
 
-	private Dictionary<SimViewMode, Mode> modes = new Dictionary<SimViewMode, Mode>();
+	private Dictionary<HashedString, ModeInfo> modeInfos = new Dictionary<HashedString, ModeInfo>();
 
-	public SimViewMode mode => currentMode.ViewMode();
+	public HashedString mode => currentModeInfo.mode.ViewMode();
 
 	protected override void OnPrefabInit()
 	{
@@ -112,12 +115,12 @@ public class OverlayScreen : KMonoBehaviour
 
 	protected override void OnLoadLevel()
 	{
-		currentMode = null;
 		harvestableNotificationPrefab = null;
 		powerLabelParent = null;
 		Instance = null;
-		Mode.Clear();
-		modes = null;
+		OverlayModes.Mode.Clear();
+		modeInfos = null;
+		currentModeInfo = default(ModeInfo);
 		base.OnLoadLevel();
 	}
 
@@ -128,83 +131,70 @@ public class OverlayScreen : KMonoBehaviour
 		techViewSoundPlaying = false;
 		Shader.SetGlobalVector("_OverlayParams", Vector4.zero);
 		RegisterModes();
+		currentModeInfo = modeInfos[OverlayModes.None.ID];
 	}
 
 	private void RegisterModes()
 	{
-		modes.Clear();
-		None none = new None();
-		RegisterMode(none);
-		RegisterMode(new Oxygen());
-		RegisterMode(new Power(powerLabelParent, powerLabelPrefab, batUIPrefab, powerLabelOffset, batteryUIOffset, batteryUITransformerOffset, batteryUISmallTransformerOffset, consumerColour, generatorColour, buildingDisabledColour, circuitUnpoweredColour, circuitSafeColour, circuitStrainingColour));
-		RegisterMode(new Temperature());
-		RegisterMode(new ThermalConductivity());
+		modeInfos.Clear();
+		OverlayModes.None mode = new OverlayModes.None();
+		RegisterMode(mode);
+		RegisterMode(new OverlayModes.Oxygen());
+		RegisterMode(new OverlayModes.Power(powerLabelParent, powerLabelPrefab, batUIPrefab, powerLabelOffset, batteryUIOffset, batteryUITransformerOffset, batteryUISmallTransformerOffset, consumerColour, generatorColour, buildingDisabledColour, circuitUnpoweredColour, circuitSafeColour, circuitStrainingColour));
+		RegisterMode(new OverlayModes.Temperature());
+		RegisterMode(new OverlayModes.ThermalConductivity());
 		RegisterMode(new OverlayModes.Light());
-		RegisterMode(new LiquidConduitMode());
-		RegisterMode(new GasConduitMode());
-		RegisterMode(new Decor());
-		RegisterMode(new Disease(powerLabelParent, diseaseOverlayPrefab));
+		RegisterMode(new OverlayModes.LiquidConduits());
+		RegisterMode(new OverlayModes.GasConduits());
+		RegisterMode(new OverlayModes.Decor());
+		RegisterMode(new OverlayModes.Disease(powerLabelParent, diseaseOverlayPrefab));
 		RegisterMode(new OverlayModes.Crop(powerLabelParent, harvestableNotificationPrefab));
-		RegisterMode(new Harvest());
-		RegisterMode(new Priorities());
-		RegisterMode(new HeatFlow());
-		RegisterMode(new Rooms());
-		RegisterMode(new Suit(powerLabelParent, suitOverlayPrefab));
-		RegisterMode(new Logic(logicModeUIPrefab));
-		RegisterMode(new SolidConveyorMode());
-		IEnumerator enumerator = Enum.GetValues(typeof(SimViewMode)).GetEnumerator();
-		try
-		{
-			while (enumerator.MoveNext())
-			{
-				SimViewMode key = (SimViewMode)enumerator.Current;
-				if (!modes.ContainsKey(key))
-				{
-					modes[key] = none;
-				}
-			}
-		}
-		finally
-		{
-			IDisposable disposable;
-			if ((disposable = (enumerator as IDisposable)) != null)
-			{
-				disposable.Dispose();
-			}
-		}
+		RegisterMode(new OverlayModes.Harvest());
+		RegisterMode(new OverlayModes.Priorities());
+		RegisterMode(new OverlayModes.HeatFlow());
+		RegisterMode(new OverlayModes.Rooms());
+		RegisterMode(new OverlayModes.Suit(powerLabelParent, suitOverlayPrefab));
+		RegisterMode(new OverlayModes.Logic(logicModeUIPrefab));
+		RegisterMode(new OverlayModes.SolidConveyor());
 	}
 
-	private void RegisterMode(Mode mode)
+	private void RegisterMode(OverlayModes.Mode mode)
 	{
-		modes[mode.ViewMode()] = mode;
+		modeInfos[mode.ViewMode()] = new ModeInfo
+		{
+			mode = mode
+		};
 	}
 
 	private void LateUpdate()
 	{
-		currentMode.Update();
+		currentModeInfo.mode.Update();
 	}
 
-	public void ToggleOverlay(SimViewMode newMode)
+	public void ToggleOverlay(HashedString newMode)
 	{
-		bool flag = (currentMode.ViewMode() != newMode) ? true : false;
-		if (newMode != 0)
+		bool flag = (!(currentModeInfo.mode.ViewMode() == newMode)) ? true : false;
+		if (newMode != OverlayModes.None.ID)
 		{
 			ManagementMenu.Instance.CloseAll();
 		}
-		currentMode.Disable();
-		if (newMode != currentMode.ViewMode() && newMode == SimViewMode.None)
+		currentModeInfo.mode.Disable();
+		if (newMode != currentModeInfo.mode.ViewMode() && newMode == OverlayModes.None.ID)
 		{
 			ManagementMenu.Instance.CloseAll();
 		}
-		ResourceCategoryScreen.Instance.Show(newMode == SimViewMode.None);
+		ResourceCategoryScreen.Instance.Show(newMode == OverlayModes.None.ID);
 		SimDebugView.Instance.SetMode(newMode);
-		currentMode = modes[newMode];
-		currentMode.Enable();
+		if (!modeInfos.TryGetValue(newMode, out currentModeInfo))
+		{
+			currentModeInfo = modeInfos[OverlayModes.None.ID];
+		}
+		currentModeInfo.mode.Enable();
 		if (flag)
 		{
 			UpdateOverlaySounds();
 		}
-		if (currentMode.ViewMode() == SimViewMode.None)
+		if (OverlayModes.None.ID == currentModeInfo.mode.ViewMode())
 		{
 			AudioMixer.instance.Stop(AudioMixerSnapshots.Get().TechFilterOnMigrated, STOP_MODE.ALLOWFADEOUT);
 			MusicManager.instance.SetDynamicMusicOverlayInactive();
@@ -216,12 +206,11 @@ public class OverlayScreen : KMonoBehaviour
 			AudioMixer.instance.Start(AudioMixerSnapshots.Get().TechFilterOnMigrated);
 			MusicManager.instance.SetDynamicMusicOverlayActive();
 			techViewSound.start();
-			techViewSound.setParameterValue("View", (float)currentMode.ViewMode());
 			techViewSoundPlaying = true;
 		}
 		if (OnOverlayChanged != null)
 		{
-			OnOverlayChanged(currentMode.ViewMode());
+			OnOverlayChanged(currentModeInfo.mode.ViewMode());
 		}
 		ActivateLegend();
 	}
@@ -230,7 +219,7 @@ public class OverlayScreen : KMonoBehaviour
 	{
 		if (!((UnityEngine.Object)OverlayLegend.Instance == (UnityEngine.Object)null))
 		{
-			OverlayLegend.Instance.SetLegend(currentMode.ViewMode(), false);
+			OverlayLegend.Instance.SetLegend(currentModeInfo.mode.ViewMode(), false);
 		}
 	}
 
@@ -239,15 +228,15 @@ public class OverlayScreen : KMonoBehaviour
 		LateUpdate();
 	}
 
-	public SimViewMode GetMode()
+	public HashedString GetMode()
 	{
-		return currentMode.ViewMode();
+		return (currentModeInfo.mode == null) ? OverlayModes.None.ID : currentModeInfo.mode.ViewMode();
 	}
 
 	private void UpdateOverlaySounds()
 	{
-		string soundName = currentMode.GetSoundName();
-		if (soundName != string.Empty)
+		string soundName = currentModeInfo.mode.GetSoundName();
+		if (soundName != "")
 		{
 			soundName = GlobalAssets.GetSound(soundName, false);
 			KMonoBehaviour.PlaySound(soundName);

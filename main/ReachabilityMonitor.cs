@@ -53,10 +53,10 @@ public class ReachabilityMonitor : GameStateMachine<ReachabilityMonitor, Reachab
 		reachable.ToggleTag(GameTags.Reachable).Enter("TriggerEvent", delegate(Instance smi)
 		{
 			smi.TriggerEvent();
-		}).ParamTransition(isReachable, unreachable, (Instance smi, bool p) => !p);
+		}).ParamTransition(isReachable, unreachable, GameStateMachine<ReachabilityMonitor, Instance, Workable, object>.IsFalse);
 		unreachable.Enter("TriggerEvent", delegate(Instance smi)
 		{
 			smi.TriggerEvent();
-		}).ParamTransition(isReachable, reachable, (Instance smi, bool p) => p);
+		}).ParamTransition(isReachable, reachable, GameStateMachine<ReachabilityMonitor, Instance, Workable, object>.IsTrue);
 	}
 }

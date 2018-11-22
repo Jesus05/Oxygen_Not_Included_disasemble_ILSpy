@@ -13,30 +13,36 @@ public class GlobalChoreProvider : ChoreProvider
 
 		public PrioritySetting priority;
 
+		public Storage.FetchCategory category;
+
 		public bool IsBetterThan(Fetch fetch)
 		{
-			if (tagBitsHash != fetch.tagBitsHash)
+			if (category == fetch.category)
 			{
-				return false;
-			}
-			if (!chore.tagBits.AreEqual(fetch.chore.tagBits))
-			{
-				return false;
-			}
-			if (priority.priority_class > fetch.priority.priority_class)
-			{
-				return true;
-			}
-			if (priority.priority_class == fetch.priority.priority_class)
-			{
-				if (priority.priority_value > fetch.priority.priority_value)
+				if (tagBitsHash == fetch.tagBitsHash)
 				{
-					return true;
+					if (chore.tagBits.AreEqual(fetch.chore.tagBits))
+					{
+						if (priority.priority_class <= fetch.priority.priority_class)
+						{
+							if (priority.priority_class == fetch.priority.priority_class)
+							{
+								if (priority.priority_value > fetch.priority.priority_value)
+								{
+									return true;
+								}
+								if (priority.priority_value == fetch.priority.priority_value)
+								{
+									return cost <= fetch.cost;
+								}
+							}
+							return false;
+						}
+						return true;
+					}
+					return false;
 				}
-				if (priority.priority_value == fetch.priority.priority_value)
-				{
-					return cost <= fetch.cost;
-				}
+				return false;
 			}
 			return false;
 		}
@@ -47,16 +53,16 @@ public class GlobalChoreProvider : ChoreProvider
 		public int Compare(Fetch a, Fetch b)
 		{
 			int num = b.priority.priority_class - a.priority.priority_class;
-			if (num != 0)
+			if (num == 0)
 			{
-				return num;
-			}
-			int num2 = b.priority.priority_value - a.priority.priority_value;
-			if (num2 != 0)
-			{
+				int num2 = b.priority.priority_value - a.priority.priority_value;
+				if (num2 == 0)
+				{
+					return a.cost - b.cost;
+				}
 				return num2;
 			}
-			return a.cost - b.cost;
+			return num;
 		}
 	}
 
@@ -119,7 +125,8 @@ public class GlobalChoreProvider : ChoreProvider
 					chore = fetchChore,
 					tagBitsHash = fetchChore.tagBitsHash,
 					cost = num,
-					priority = fetchChore.masterPriority
+					priority = fetchChore.masterPriority,
+					category = fetchChore.destination.fetchCategory
 				});
 			}
 		}

@@ -10,7 +10,7 @@ public class SolidConduitConsumer : KMonoBehaviour
 	public float capacityKG = float.PositiveInfinity;
 
 	[SerializeField]
-	public bool alwaysConsume;
+	public bool alwaysConsume = false;
 
 	[MyCmpReq]
 	private Operational operational;
@@ -76,15 +76,19 @@ public class SolidConduitConsumer : KMonoBehaviour
 			if (contents.pickupableHandle.IsValid() && (alwaysConsume || operational.IsOperational))
 			{
 				float num = (!(capacityTag != GameTags.Any)) ? storage.MassStored() : storage.GetMassAvailable(capacityTag);
-				float num2 = Mathf.Min(storage.RemainingCapacity(), capacityKG - num);
-				Pickupable pickupable = conduitFlow.GetPickupable(contents.pickupableHandle);
-				if (pickupable.PrimaryElement.Mass <= num2)
+				float num2 = Mathf.Min(storage.capacityKg, capacityKG);
+				float num3 = Mathf.Max(0f, num2 - num);
+				if (num3 > 0f)
 				{
-					Pickupable pickupable2 = conduitFlow.RemovePickupable(utilityCell);
-					if ((bool)pickupable2)
+					Pickupable pickupable = conduitFlow.GetPickupable(contents.pickupableHandle);
+					if (pickupable.PrimaryElement.Mass <= num3 || pickupable.PrimaryElement.Mass > num2)
 					{
-						storage.Store(pickupable2.gameObject, true, false, true, false);
-						flag = true;
+						Pickupable pickupable2 = conduitFlow.RemovePickupable(utilityCell);
+						if ((bool)pickupable2)
+						{
+							storage.Store(pickupable2.gameObject, true, false, true, false);
+							flag = true;
+						}
 					}
 				}
 			}

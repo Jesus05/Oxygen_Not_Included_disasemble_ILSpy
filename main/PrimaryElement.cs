@@ -22,7 +22,7 @@ public class PrimaryElement : KMonoBehaviour, ISaveLoadable
 
 	public Action<byte, int, string> AddDiseaseHandler;
 
-	private bool useSimDiseaseInfo;
+	private bool useSimDiseaseInfo = false;
 
 	public const float DefaultChunkMass = 400f;
 
@@ -34,7 +34,7 @@ public class PrimaryElement : KMonoBehaviour, ISaveLoadable
 
 	[Serialize]
 	[HashedEnum]
-	public SimHashes ElementID;
+	public SimHashes ElementID = (SimHashes)0;
 
 	private float _units = 1f;
 
@@ -44,7 +44,7 @@ public class PrimaryElement : KMonoBehaviour, ISaveLoadable
 
 	[NonSerialized]
 	[Serialize]
-	public bool KeepZeroMassObject;
+	public bool KeepZeroMassObject = false;
 
 	[Serialize]
 	private HashedString diseaseID;
@@ -57,13 +57,13 @@ public class PrimaryElement : KMonoBehaviour, ISaveLoadable
 	public float MassPerUnit = 1f;
 
 	[NonSerialized]
-	private Element _Element;
+	private Element _Element = null;
 
 	[NonSerialized]
 	public Action<PrimaryElement> onDataChanged;
 
 	[NonSerialized]
-	private bool forcePermanentDiseaseContainer;
+	private bool forcePermanentDiseaseContainer = false;
 
 	private static readonly EventSystem.IntraObjectHandler<PrimaryElement> OnSplitFromChunkDelegate = new EventSystem.IntraObjectHandler<PrimaryElement>(delegate(PrimaryElement component, object data)
 	{
@@ -346,9 +346,16 @@ public class PrimaryElement : KMonoBehaviour, ISaveLoadable
 		if (attributes != null)
 		{
 			Element element = Element;
-			foreach (AttributeModifier attributeModifier in element.attributeModifiers)
+			try
 			{
-				attributes.Add(attributeModifier);
+				foreach (AttributeModifier attributeModifier in element.attributeModifiers)
+				{
+					attributes.Add(attributeModifier);
+				}
+			}
+			catch
+			{
+				Debug.Log("!", null);
 			}
 		}
 	}

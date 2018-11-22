@@ -8,7 +8,7 @@ public class LogicDiseaseSensor : Switch, ISaveLoadable, IThresholdSwitch, ISim2
 {
 	[SerializeField]
 	[Serialize]
-	private float threshold;
+	private float threshold = 0f;
 
 	[SerializeField]
 	[Serialize]
@@ -16,7 +16,7 @@ public class LogicDiseaseSensor : Switch, ISaveLoadable, IThresholdSwitch, ISim2
 
 	private KBatchedAnimController animController;
 
-	private bool wasOn;
+	private bool wasOn = false;
 
 	private const float rangeMin = 0f;
 
@@ -26,7 +26,15 @@ public class LogicDiseaseSensor : Switch, ISaveLoadable, IThresholdSwitch, ISim2
 
 	private int[] samples = new int[8];
 
-	private int sampleIdx;
+	private int sampleIdx = 0;
+
+	[MyCmpAdd]
+	private CopyBuildingSettings copyBuildingSettings;
+
+	private static readonly EventSystem.IntraObjectHandler<LogicDiseaseSensor> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<LogicDiseaseSensor>(delegate(LogicDiseaseSensor component, object data)
+	{
+		component.OnCopySettings(data);
+	});
 
 	private static readonly HashedString[] ON_ANIMS = new HashedString[2]
 	{
@@ -90,6 +98,23 @@ public class LogicDiseaseSensor : Switch, ISaveLoadable, IThresholdSwitch, ISim2
 	public string BelowToolTip => UI.UISIDESCREENS.THRESHOLD_SWITCH_SIDESCREEN.DISEASE_TOOLTIP_BELOW;
 
 	public LocString Title => UI.UISIDESCREENS.THRESHOLD_SWITCH_SIDESCREEN.DISEASE_TITLE;
+
+	protected override void OnPrefabInit()
+	{
+		base.OnPrefabInit();
+		Subscribe(-905833192, OnCopySettingsDelegate);
+	}
+
+	private void OnCopySettings(object data)
+	{
+		GameObject gameObject = (GameObject)data;
+		LogicDiseaseSensor component = gameObject.GetComponent<LogicDiseaseSensor>();
+		if ((Object)component != (Object)null)
+		{
+			Threshold = component.Threshold;
+			ActivateAboveThreshold = component.ActivateAboveThreshold;
+		}
+	}
 
 	protected override void OnSpawn()
 	{

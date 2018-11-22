@@ -68,18 +68,18 @@ namespace ProcGen.Noise
 
 		public IModule3D CreateModule(IModule3D sourceModule, IModule3D xModule, IModule3D yModule, IModule3D zModule)
 		{
-			if (transformerType == TransformerType.Turbulence)
+			if (transformerType != TransformerType.Turbulence)
 			{
-				return new Turbulence(sourceModule, xModule, yModule, zModule, power);
-			}
-			if (transformerType == TransformerType.RotatePoint)
-			{
+				if (transformerType != TransformerType.RotatePoint)
+				{
+					return new Displace(sourceModule, xModule, yModule, zModule);
+				}
 				Vector2f rotation = this.rotation;
 				float x = rotation.x;
 				Vector2f rotation2 = this.rotation;
 				return new RotatePoint(sourceModule, x, rotation2.y, 0f);
 			}
-			return new Displace(sourceModule, xModule, yModule, zModule);
+			return new Turbulence(sourceModule, xModule, yModule, zModule, power);
 		}
 
 		public void SetSouces(IModule3D target, IModule3D sourceModule, IModule3D xModule, IModule3D yModule, IModule3D zModule)

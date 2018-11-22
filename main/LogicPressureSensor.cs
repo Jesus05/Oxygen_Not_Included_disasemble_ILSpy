@@ -7,15 +7,15 @@ public class LogicPressureSensor : Switch, ISaveLoadable, IThresholdSwitch, ISim
 {
 	[SerializeField]
 	[Serialize]
-	private float threshold;
+	private float threshold = 0f;
 
 	[SerializeField]
 	[Serialize]
 	private bool activateAboveThreshold = true;
 
-	private bool wasOn;
+	private bool wasOn = false;
 
-	public float rangeMin;
+	public float rangeMin = 0f;
 
 	public float rangeMax = 1f;
 
@@ -25,7 +25,15 @@ public class LogicPressureSensor : Switch, ISaveLoadable, IThresholdSwitch, ISim
 
 	private float[] samples = new float[8];
 
-	private int sampleIdx;
+	private int sampleIdx = 0;
+
+	[MyCmpAdd]
+	private CopyBuildingSettings copyBuildingSettings;
+
+	private static readonly EventSystem.IntraObjectHandler<LogicPressureSensor> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<LogicPressureSensor>(delegate(LogicPressureSensor component, object data)
+	{
+		component.OnCopySettings(data);
+	});
 
 	public float Threshold
 	{
@@ -75,6 +83,23 @@ public class LogicPressureSensor : Switch, ISaveLoadable, IThresholdSwitch, ISim
 	public string BelowToolTip => UI.UISIDESCREENS.THRESHOLD_SWITCH_SIDESCREEN.PRESSURE_TOOLTIP_BELOW;
 
 	public LocString Title => UI.UISIDESCREENS.THRESHOLD_SWITCH_SIDESCREEN.TITLE;
+
+	protected override void OnPrefabInit()
+	{
+		base.OnPrefabInit();
+		Subscribe(-905833192, OnCopySettingsDelegate);
+	}
+
+	private void OnCopySettings(object data)
+	{
+		GameObject gameObject = (GameObject)data;
+		LogicPressureSensor component = gameObject.GetComponent<LogicPressureSensor>();
+		if ((Object)component != (Object)null)
+		{
+			Threshold = component.Threshold;
+			ActivateAboveThreshold = component.ActivateAboveThreshold;
+		}
+	}
 
 	protected override void OnSpawn()
 	{
@@ -152,17 +177,7 @@ public class LogicPressureSensor : Switch, ISaveLoadable, IThresholdSwitch, ISim
 
 	public LocString ThresholdValueUnits()
 	{
-		LocString result = null;
-		switch (GameUtil.massUnit)
-		{
-		case GameUtil.MassUnit.Kilograms:
-			result = ((desiredState != Element.State.Gas) ? UI.UNITSUFFIXES.MASS.KILOGRAM : UI.UNITSUFFIXES.MASS.GRAM);
-			break;
-		case GameUtil.MassUnit.Pounds:
-			result = UI.UNITSUFFIXES.MASS.POUND;
-			break;
-		}
-		return result;
+		return GameUtil.GetCurrentMassUnit(desiredState == Element.State.Gas);
 	}
 
 	private void UpdateLogicCircuit()

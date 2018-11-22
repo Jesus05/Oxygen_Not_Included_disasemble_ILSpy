@@ -25,11 +25,11 @@ namespace Satsuma
 
 		public override bool Equals(object obj)
 		{
-			if (obj is Arc)
+			if (!(obj is Arc))
 			{
-				return Equals((Arc)obj);
+				return false;
 			}
-			return false;
+			return Equals((Arc)obj);
 		}
 
 		public override int GetHashCode()

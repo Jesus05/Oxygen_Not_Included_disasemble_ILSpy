@@ -23,7 +23,7 @@ public class Comet : KMonoBehaviour, ISim33ms
 
 	public int splashRadius = 1;
 
-	public int addTiles;
+	public int addTiles = 0;
 
 	public int addTilesMinHeight;
 
@@ -47,7 +47,7 @@ public class Comet : KMonoBehaviour, ISim33ms
 
 	public float windowDamageMultiplier = 5f;
 
-	public float bunkerDamageMultiplier;
+	public float bunkerDamageMultiplier = 0f;
 
 	public string impactSound;
 
@@ -65,7 +65,7 @@ public class Comet : KMonoBehaviour, ISim33ms
 
 	private Vector3 previousPosition;
 
-	private bool hasExploded;
+	private bool hasExploded = false;
 
 	private LoopingSounds loopingSounds;
 
@@ -131,7 +131,7 @@ public class Comet : KMonoBehaviour, ISim33ms
 		foreach (ScenePartitionerEntry item in pooledList)
 		{
 			GameObject gameObject = (item.obj as Pickupable).gameObject;
-			if (!((Object)gameObject.GetComponent<MinionIdentity>() != (Object)null))
+			if (!((Object)gameObject.GetComponent<MinionIdentity>() != (Object)null) && gameObject.GetDef<CreatureFallMonitor.Def>() == null)
 			{
 				Vector2 vector = gameObject.transform.GetPosition() - pos;
 				vector = vector.normalized;
@@ -210,10 +210,6 @@ public class Comet : KMonoBehaviour, ISim33ms
 				depth = 0
 			});
 			GameUtil.FloodFillConditional(pooledQueue, SpawnTilesCellTest, pooledHashSet2, pooledHashSet, 10);
-			if (addTiles > 0)
-			{
-				Output.Log($"Comet at height: addtiles {addTiles}, height {depthOfElement}, height ratio {num5}, total added {num6}");
-			}
 			float mass2 = (num6 <= 0) ? 1f : (addTileMass / (float)num6);
 			UnstableGroundManager component = World.Instance.GetComponent<UnstableGroundManager>();
 			foreach (int item2 in pooledHashSet)
@@ -271,40 +267,40 @@ public class Comet : KMonoBehaviour, ISim33ms
 			}
 		}
 		Element element = (!flag) ? Grid.Element[cell] : gameObject.GetComponent<PrimaryElement>().Element;
-		if (element.strength == 0f)
+		if (element.strength != 0f)
 		{
-			return 0f;
-		}
-		float num2 = input_damage * num / element.strength;
-		PlayTileDamageSound(element, Grid.CellToPos(cell));
-		if (num2 == 0f)
-		{
-			return 0f;
-		}
-		float num3;
-		if (flag)
-		{
-			BuildingHP component2 = gameObject.GetComponent<BuildingHP>();
-			float a = (float)component2.HitPoints / (float)component2.MaxHitPoints;
-			float f = num2 * (float)component2.MaxHitPoints;
-			component2.gameObject.Trigger(-794517298, new BuildingHP.DamageSourceInfo
+			float num2 = input_damage * num / element.strength;
+			PlayTileDamageSound(element, Grid.CellToPos(cell));
+			if (num2 != 0f)
 			{
-				damage = Mathf.RoundToInt(f),
-				source = (string)BUILDINGS.DAMAGESOURCES.COMET,
-				popString = (string)UI.GAMEOBJECTEFFECTS.DAMAGE_POPS.COMET
-			});
-			num3 = Mathf.Min(a, num2);
+				float num3;
+				if (flag)
+				{
+					BuildingHP component2 = gameObject.GetComponent<BuildingHP>();
+					float a = (float)component2.HitPoints / (float)component2.MaxHitPoints;
+					float f = num2 * (float)component2.MaxHitPoints;
+					component2.gameObject.Trigger(-794517298, new BuildingHP.DamageSourceInfo
+					{
+						damage = Mathf.RoundToInt(f),
+						source = (string)BUILDINGS.DAMAGESOURCES.COMET,
+						popString = (string)UI.GAMEOBJECTEFFECTS.DAMAGE_POPS.COMET
+					});
+					num3 = Mathf.Min(a, num2);
+				}
+				else
+				{
+					WorldDamage instance = WorldDamage.Instance;
+					float amount = num2;
+					string source_name = BUILDINGS.DAMAGESOURCES.COMET;
+					num3 = instance.ApplyDamage(cell, amount, prev_cell, -1, source_name, UI.GAMEOBJECTEFFECTS.DAMAGE_POPS.COMET);
+				}
+				destroyedCells.Add(cell);
+				float num4 = num3 / num2;
+				return input_damage * (1f - num4);
+			}
+			return 0f;
 		}
-		else
-		{
-			WorldDamage instance = WorldDamage.Instance;
-			float amount = num2;
-			string source_name = BUILDINGS.DAMAGESOURCES.COMET;
-			num3 = instance.ApplyDamage(cell, amount, prev_cell, -1, source_name, UI.GAMEOBJECTEFFECTS.DAMAGE_POPS.COMET);
-		}
-		destroyedCells.Add(cell);
-		float num4 = num3 / num2;
-		return input_damage * (1f - num4);
+		return 0f;
 	}
 
 	private void DamageThings(Vector3 pos, int cell, int damage)

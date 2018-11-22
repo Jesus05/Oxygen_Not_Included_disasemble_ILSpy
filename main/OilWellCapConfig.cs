@@ -41,7 +41,7 @@ public class OilWellCapConfig : IBuildingConfig
 		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, tIER, rEFINED_METALS, melting_point, build_location_rule, TUNING.BUILDINGS.DECOR.NONE, tIER2, 0.2f);
 		BuildingTemplates.CreateElectricalBuildingDef(buildingDef);
 		buildingDef.SceneLayer = Grid.SceneLayer.BuildingFront;
-		buildingDef.ViewMode = SimViewMode.LiquidVentMap;
+		buildingDef.ViewMode = OverlayModes.LiquidConduits.ID;
 		buildingDef.EnergyConsumptionWhenActive = 240f;
 		buildingDef.SelfHeatKilowattsWhenActive = 2f;
 		buildingDef.InputConduitType = ConduitType.Liquid;

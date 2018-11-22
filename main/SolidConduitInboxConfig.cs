@@ -31,7 +31,7 @@ public class SolidConduitInboxConfig : IBuildingConfig
 		buildingDef.ExhaustKilowattsWhenActive = 0f;
 		buildingDef.SelfHeatKilowattsWhenActive = 2f;
 		buildingDef.Floodable = false;
-		buildingDef.ViewMode = SimViewMode.SolidConveyorMap;
+		buildingDef.ViewMode = OverlayModes.SolidConveyor.ID;
 		buildingDef.AudioCategory = "Metal";
 		buildingDef.OutputConduitType = ConduitType.Solid;
 		buildingDef.PowerInputOffset = new CellOffset(0, 1);

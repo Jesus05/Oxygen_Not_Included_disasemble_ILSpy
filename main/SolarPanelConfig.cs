@@ -29,7 +29,7 @@ public class SolarPanelConfig : IBuildingConfig
 		buildingDef.SelfHeatKilowattsWhenActive = 0f;
 		buildingDef.BuildLocationRule = BuildLocationRule.Anywhere;
 		buildingDef.HitPoints = 10;
-		buildingDef.ViewMode = SimViewMode.PowerMap;
+		buildingDef.ViewMode = OverlayModes.Power.ID;
 		buildingDef.AudioCategory = "HollowMetal";
 		buildingDef.AudioSize = "large";
 		return buildingDef;

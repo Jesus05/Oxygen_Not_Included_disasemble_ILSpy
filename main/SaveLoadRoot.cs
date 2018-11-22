@@ -172,7 +172,7 @@ public class SaveLoadRoot : KMonoBehaviour
 		SaveLoadRoot saveLoadRoot = null;
 		if ((UnityEngine.Object)prefab != (UnityEngine.Object)null)
 		{
-			GameObject gameObject = Util.KInstantiate(prefab, position, rotation, null, null, true, 0);
+			GameObject gameObject = Util.KInstantiate(prefab, position, rotation, null, null, false, 0);
 			gameObject.transform.localScale = scale;
 			gameObject.SetActive(true);
 			saveLoadRoot = gameObject.GetComponent<SaveLoadRoot>();
@@ -181,15 +181,16 @@ public class SaveLoadRoot : KMonoBehaviour
 				try
 				{
 					LoadInternal(gameObject, reader);
-					return saveLoadRoot;
 				}
 				catch (ArgumentException ex)
 				{
 					Output.LogErrorWithObj(gameObject, "Failed to load SaveLoadRoot ", ex.Message, "\n", ex.StackTrace);
-					return saveLoadRoot;
 				}
 			}
-			Output.LogWithObj(gameObject, "missing SaveLoadRoot");
+			else
+			{
+				Output.LogWithObj(gameObject, "missing SaveLoadRoot");
+			}
 		}
 		else
 		{

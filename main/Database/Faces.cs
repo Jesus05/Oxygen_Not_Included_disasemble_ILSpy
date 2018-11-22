@@ -30,6 +30,8 @@ namespace Database
 
 		public Face SickFierySkin;
 
+		public Face SickCold;
+
 		public Faces()
 		{
 			Neutral = Add(new Face("Neutral"));
@@ -45,6 +47,7 @@ namespace Database
 			Sick = Add(new Face("Sick"));
 			SickSpores = Add(new Face("Spores"));
 			SickFierySkin = Add(new Face("Fiery"));
+			SickCold = Add(new Face("Cold"));
 			Dead = Add(new Face("Death"));
 		}
 	}

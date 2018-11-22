@@ -37,13 +37,13 @@ public class SeasonManager : KMonoBehaviour, ISim200ms
 	private int currentSeasonsCyclesElapsed = 2147483647;
 
 	[Serialize]
-	private float bombardmentPeriodRemaining;
+	private float bombardmentPeriodRemaining = 0f;
 
 	[Serialize]
-	private bool bombardmentOn;
+	private bool bombardmentOn = false;
 
 	[Serialize]
-	private float secondsUntilNextBombardment;
+	private float secondsUntilNextBombardment = 0f;
 
 	private GameObject activeMeteorBackground;
 
@@ -236,12 +236,12 @@ public class SeasonManager : KMonoBehaviour, ISim200ms
 
 	public float GetBombardmentDuration()
 	{
-		if (CurrentSeasonHasBombardment())
+		if (!CurrentSeasonHasBombardment())
 		{
-			Season season = seasons[SeasonLoop[currentSeasonIndex]];
-			return (!bombardmentOn) ? season.secondsBombardmentOn.Get() : 0f;
+			return 0f;
 		}
-		return 0f;
+		Season season = seasons[SeasonLoop[currentSeasonIndex]];
+		return (!bombardmentOn) ? season.secondsBombardmentOn.Get() : 0f;
 	}
 
 	public void ForceBeginMeteorSeasonWithShower()

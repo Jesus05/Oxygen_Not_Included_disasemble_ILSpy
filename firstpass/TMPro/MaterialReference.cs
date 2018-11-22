@@ -53,17 +53,17 @@ namespace TMPro
 		{
 			int instanceID = material.GetInstanceID();
 			int value = 0;
-			if (materialReferenceIndexLookup.TryGetValue(instanceID, out value))
+			if (!materialReferenceIndexLookup.TryGetValue(instanceID, out value))
 			{
+				value = (materialReferenceIndexLookup[instanceID] = materialReferenceIndexLookup.Count);
+				materialReferences[value].index = value;
+				materialReferences[value].fontAsset = fontAsset;
+				materialReferences[value].spriteAsset = null;
+				materialReferences[value].material = material;
+				materialReferences[value].isDefaultMaterial = ((instanceID == fontAsset.material.GetInstanceID()) ? true : false);
+				materialReferences[value].referenceCount = 0;
 				return value;
 			}
-			value = (materialReferenceIndexLookup[instanceID] = materialReferenceIndexLookup.Count);
-			materialReferences[value].index = value;
-			materialReferences[value].fontAsset = fontAsset;
-			materialReferences[value].spriteAsset = null;
-			materialReferences[value].material = material;
-			materialReferences[value].isDefaultMaterial = ((instanceID == fontAsset.material.GetInstanceID()) ? true : false);
-			materialReferences[value].referenceCount = 0;
 			return value;
 		}
 
@@ -71,17 +71,17 @@ namespace TMPro
 		{
 			int instanceID = material.GetInstanceID();
 			int value = 0;
-			if (materialReferenceIndexLookup.TryGetValue(instanceID, out value))
+			if (!materialReferenceIndexLookup.TryGetValue(instanceID, out value))
 			{
+				value = (materialReferenceIndexLookup[instanceID] = materialReferenceIndexLookup.Count);
+				materialReferences[value].index = value;
+				materialReferences[value].fontAsset = materialReferences[0].fontAsset;
+				materialReferences[value].spriteAsset = spriteAsset;
+				materialReferences[value].material = material;
+				materialReferences[value].isDefaultMaterial = true;
+				materialReferences[value].referenceCount = 0;
 				return value;
 			}
-			value = (materialReferenceIndexLookup[instanceID] = materialReferenceIndexLookup.Count);
-			materialReferences[value].index = value;
-			materialReferences[value].fontAsset = materialReferences[0].fontAsset;
-			materialReferences[value].spriteAsset = spriteAsset;
-			materialReferences[value].material = material;
-			materialReferences[value].isDefaultMaterial = true;
-			materialReferences[value].referenceCount = 0;
 			return value;
 		}
 	}

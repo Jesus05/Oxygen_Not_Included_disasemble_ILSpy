@@ -92,13 +92,14 @@ public class BuildMenuBuildingsScreen : KIconToggleMenu
 		Game.Instance.Subscribe(-1190690038, OnBuildToolDeactivated);
 	}
 
-	public void Configure(BuildMenu.Category category, IList<BuildMenu.BuildingInfo> building_infos)
+	public void Configure(HashedString category, IList<BuildMenu.BuildingInfo> building_infos)
 	{
 		ClearButtons();
 		SetHasFocus(true);
 		List<ToggleInfo> list = new List<ToggleInfo>();
-		string str = category.ToString().ToUpper();
-		titleLabel.text = Strings.Get("STRINGS.UI.NEWBUILDCATEGORIES." + str + ".BUILDMENUTITLE");
+		string text = HashCache.Get().Get(category).ToUpper();
+		text = text.Replace(" ", "");
+		titleLabel.text = Strings.Get("STRINGS.UI.NEWBUILDCATEGORIES." + text + ".BUILDMENUTITLE");
 		foreach (BuildMenu.BuildingInfo building_info in building_infos)
 		{
 			BuildMenu.BuildingInfo current = building_info;
@@ -274,7 +275,7 @@ public class BuildMenuBuildingsScreen : KIconToggleMenu
 						string newString3 = string.Format("{0}{1}: {2}", "• ", ingredient.tag.ProperName(), GameUtil.GetFormattedMass(ingredient.amount, GameUtil.TimeSlice.None, GameUtil.MetricMassFormat.UseThreshold, true, "{0:0.#}"));
 						component.AddMultiStringTooltip(newString3, buildingToolTipSettings.ResearchRequirement);
 					}
-					component.AddMultiStringTooltip(string.Empty, buildingToolTipSettings.ResearchRequirement);
+					component.AddMultiStringTooltip("", buildingToolTipSettings.ResearchRequirement);
 				}
 			}
 		}
@@ -391,10 +392,10 @@ public class BuildMenuBuildingsScreen : KIconToggleMenu
 	{
 		if (mouseOver && ConsumeMouseScroll && !e.TryConsume(Action.ZoomIn) && !e.TryConsume(Action.ZoomOut))
 		{
-			goto IL_002e;
+			goto IL_0033;
 		}
-		goto IL_002e;
-		IL_002e:
+		goto IL_0033;
+		IL_0033:
 		if (HasFocus)
 		{
 			if (e.TryConsume(Action.Escape))

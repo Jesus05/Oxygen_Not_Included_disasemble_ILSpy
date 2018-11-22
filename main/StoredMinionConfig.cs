@@ -10,8 +10,6 @@ public class StoredMinionConfig : IEntityConfig
 		GameObject gameObject = EntityTemplates.CreateEntity(ID, ID, true);
 		gameObject.AddOrGet<SaveLoadRoot>();
 		gameObject.AddOrGet<KPrefabID>().AddTag(ID);
-		gameObject.AddOrGet<Equipment>();
-		gameObject.AddOrGet<Ownables>();
 		gameObject.AddOrGet<Traits>();
 		gameObject.AddOrGet<Schedulable>();
 		gameObject.AddOrGet<StoredMinionIdentity>();

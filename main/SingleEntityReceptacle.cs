@@ -34,7 +34,7 @@ public class SingleEntityReceptacle : Workable, IRender1000ms
 	private List<Tag> possibleDepositTagsList = new List<Tag>();
 
 	[SerializeField]
-	protected bool destroyEntityOnDeposit;
+	protected bool destroyEntityOnDeposit = false;
 
 	[SerializeField]
 	protected ReceptacleDirection direction;
@@ -54,15 +54,17 @@ public class SingleEntityReceptacle : Workable, IRender1000ms
 
 	public FetchChore GetActiveRequest => fetchChore;
 
+	public bool AutoReplaceEntity => autoReplaceEntity;
+
 	protected GameObject occupyingObject
 	{
 		get
 		{
-			if ((Object)occupyObjectRef.Get() != (Object)null)
+			if (!((Object)occupyObjectRef.Get() != (Object)null))
 			{
-				return occupyObjectRef.Get().gameObject;
+				return null;
 			}
-			return null;
+			return occupyObjectRef.Get().gameObject;
 		}
 		set
 		{
@@ -82,6 +84,11 @@ public class SingleEntityReceptacle : Workable, IRender1000ms
 	public Tag[] possibleDepositObjectTags => possibleDepositTagsList.ToArray();
 
 	public ReceptacleDirection Direction => direction;
+
+	public void ToggleAutoReplace()
+	{
+		autoReplaceEntity = !autoReplaceEntity;
+	}
 
 	protected override void OnPrefabInit()
 	{

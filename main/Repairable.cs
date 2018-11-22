@@ -160,7 +160,7 @@ public class Repairable : Workable
 
 		private Chore CreateRepairChore(SMInstance smi)
 		{
-			WorkChore<Repairable> workChore = new WorkChore<Repairable>(Db.Get().ChoreTypes.Repair, smi.master, null, null, true, null, null, null, true, null, false, false, null, false, true, true, PriorityScreen.PriorityClass.basic, 0, true);
+			WorkChore<Repairable> workChore = new WorkChore<Repairable>(Db.Get().ChoreTypes.Repair, smi.master, null, null, true, null, null, null, true, null, false, false, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, true);
 			Deconstructable component = smi.master.GetComponent<Deconstructable>();
 			if ((UnityEngine.Object)component != (UnityEngine.Object)null)
 			{
@@ -188,7 +188,7 @@ public class Repairable : Workable
 	[Serialize]
 	private byte[] storedData;
 
-	private float timeSpentRepairing;
+	private float timeSpentRepairing = 0f;
 
 	private static readonly Operational.Flag repairedFlag = new Operational.Flag("repaired", Operational.Flag.Type.Functional);
 

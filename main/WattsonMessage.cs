@@ -32,7 +32,7 @@ public class WattsonMessage : KScreen
 
 	private List<KScreen> hideScreensWhileActive = new List<KScreen>();
 
-	private bool startFade;
+	private bool startFade = false;
 
 	private List<SchedulerHandle> scheduleHandles = new List<SchedulerHandle>();
 

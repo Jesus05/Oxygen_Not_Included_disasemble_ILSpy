@@ -2,7 +2,6 @@ using Klei.AI;
 using STRINGS;
 using System;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using UnityEngine;
 
 public class FlushToilet : StateMachineComponent<FlushToilet.SMInstance>, IUsable, IEffectDescriptor
@@ -17,12 +16,6 @@ public class FlushToilet : StateMachineComponent<FlushToilet.SMInstance>, IUsabl
 			activeUseChores = new List<Chore>();
 			UpdateFullnessState();
 			UpdateDirtyState();
-		}
-
-		public bool OutputConduitBlocked()
-		{
-			ConduitFlow.ConduitContents contents = Game.Instance.liquidConduitFlow.GetContents(base.master.outputCell);
-			return contents.mass > 0f;
 		}
 
 		public bool HasValidConnections()
@@ -115,9 +108,6 @@ public class FlushToilet : StateMachineComponent<FlushToilet.SMInstance>, IUsabl
 
 		public BoolParameter outputBlocked;
 
-		[CompilerGenerated]
-		private static Parameter<bool>.Callback _003C_003Ef__mg_0024cache0;
-
 		public override void InitializeStates(out BaseState default_state)
 		{
 			default_state = disconnected;
@@ -125,8 +115,8 @@ public class FlushToilet : StateMachineComponent<FlushToilet.SMInstance>, IUsabl
 			{
 				smi.GetComponent<Operational>().SetActive(false, false);
 			});
-			backedup.PlayAnim("off").ToggleStatusItem(Db.Get().BuildingStatusItems.ConduitBlocked, (object)null).EventTransition(GameHashes.ConduitConnectionChanged, disconnected, (SMInstance smi) => !smi.HasValidConnections())
-				.ParamTransition(outputBlocked, fillingInactive, (SMInstance smi, bool p) => !p)
+			backedup.PlayAnim("off").ToggleStatusItem(Db.Get().BuildingStatusItems.OutputPipeFull, (object)null).EventTransition(GameHashes.ConduitConnectionChanged, disconnected, (SMInstance smi) => !smi.HasValidConnections())
+				.ParamTransition(outputBlocked, fillingInactive, GameStateMachine<States, SMInstance, FlushToilet, object>.IsFalse)
 				.Enter(delegate(SMInstance smi)
 				{
 					smi.GetComponent<Operational>().SetActive(false, false);
@@ -135,21 +125,21 @@ public class FlushToilet : StateMachineComponent<FlushToilet.SMInstance>, IUsabl
 			{
 				smi.GetComponent<Operational>().SetActive(true, false);
 			}).EventTransition(GameHashes.ConduitConnectionChanged, disconnected, (SMInstance smi) => !smi.HasValidConnections())
-				.ParamTransition(outputBlocked, backedup, (SMInstance smi, bool p) => p)
+				.ParamTransition(outputBlocked, backedup, GameStateMachine<States, SMInstance, FlushToilet, object>.IsTrue)
 				.EventTransition(GameHashes.OnStorageChange, ready, (SMInstance smi) => smi.UpdateFullnessState())
 				.EventTransition(GameHashes.OperationalChanged, fillingInactive, (SMInstance smi) => !smi.GetComponent<Operational>().IsOperational);
 			fillingInactive.PlayAnim("off").Enter(delegate(SMInstance smi)
 			{
 				smi.GetComponent<Operational>().SetActive(false, false);
 			}).EventTransition(GameHashes.OperationalChanged, filling, (SMInstance smi) => smi.GetComponent<Operational>().IsOperational)
-				.ParamTransition(outputBlocked, backedup, (SMInstance smi, bool p) => p);
+				.ParamTransition(outputBlocked, backedup, GameStateMachine<States, SMInstance, FlushToilet, object>.IsTrue);
 			ready.DefaultState(ready.idle).Enter(delegate(SMInstance smi)
 			{
 				smi.master.fillMeter.SetPositionPercent(1f);
 				smi.master.contaminationMeter.SetPositionPercent(0f);
 			}).PlayAnim("off")
 				.EventTransition(GameHashes.ConduitConnectionChanged, disconnected, (SMInstance smi) => !smi.HasValidConnections())
-				.ParamTransition(outputBlocked, backedup, (SMInstance smi, bool p) => p)
+				.ParamTransition(outputBlocked, backedup, GameStateMachine<States, SMInstance, FlushToilet, object>.IsTrue)
 				.ToggleChore(CreateUrgentUseChore, flushing)
 				.ToggleChore(CreateBreakUseChore, flushing);
 			ready.idle.Enter(delegate(SMInstance smi)
@@ -189,7 +179,7 @@ public class FlushToilet : StateMachineComponent<FlushToilet.SMInstance>, IUsabl
 
 		private Chore CreateUseChore(SMInstance smi, ChoreType choreType)
 		{
-			WorkChore<ToiletWorkableUse> workChore = new WorkChore<ToiletWorkableUse>(choreType, smi.master, null, null, true, null, null, null, false, null, true, true, null, false, true, false, PriorityScreen.PriorityClass.emergency, 0, false);
+			WorkChore<ToiletWorkableUse> workChore = new WorkChore<ToiletWorkableUse>(choreType, smi.master, null, null, true, null, null, null, false, null, true, true, null, false, true, false, PriorityScreen.PriorityClass.emergency, 5, false);
 			smi.activeUseChores.Add(workChore);
 			WorkChore<ToiletWorkableUse> workChore2 = workChore;
 			workChore2.onExit = (Action<Chore>)Delegate.Combine(workChore2.onExit, (Action<Chore>)delegate(Chore exiting_chore)

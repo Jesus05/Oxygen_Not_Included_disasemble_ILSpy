@@ -133,7 +133,7 @@ public class BeIncapacitatedChore : Chore<BeIncapacitatedChore.StatesInstance>
 	private static string IncapacitatedDuplicantAnim_place = "place";
 
 	public BeIncapacitatedChore(IStateMachineTarget master)
-		: base(Db.Get().ChoreTypes.BeIncapacitated, master, master.GetComponent<ChoreProvider>(), true, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.emergency, 0, false, true, 0, (Tag[])null)
+		: base(Db.Get().ChoreTypes.BeIncapacitated, master, master.GetComponent<ChoreProvider>(), true, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.emergency, 5, false, true, 0, (Tag[])null)
 	{
 		smi = new StatesInstance(this);
 	}
@@ -142,11 +142,11 @@ public class BeIncapacitatedChore : Chore<BeIncapacitatedChore.StatesInstance>
 	{
 		Clinic clinic = null;
 		AssignableSlot clinic2 = Db.Get().AssignableSlots.Clinic;
-		Ownables component = gameObject.GetComponent<Ownables>();
-		AssignableSlotInstance slot = component.GetSlot(clinic2);
+		Ownables soleOwner = gameObject.GetComponent<MinionIdentity>().GetSoleOwner();
+		AssignableSlotInstance slot = soleOwner.GetSlot(clinic2);
 		if ((UnityEngine.Object)slot.assignable == (UnityEngine.Object)null)
 		{
-			Assignable assignable = component.AutoAssignSlot(clinic2);
+			Assignable assignable = soleOwner.AutoAssignSlot(clinic2);
 			if ((UnityEngine.Object)assignable != (UnityEngine.Object)null)
 			{
 				clinic = assignable.GetComponent<Clinic>();

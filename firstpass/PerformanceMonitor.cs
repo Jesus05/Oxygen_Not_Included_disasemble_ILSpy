@@ -9,7 +9,7 @@ public class PerformanceMonitor : MonoBehaviour
 
 	private LinkedList<float> frameTimes = new LinkedList<float>();
 
-	private float frameTimeTotal;
+	private float frameTimeTotal = 0f;
 
 	private static readonly int frameRateWindowSize = 150;
 

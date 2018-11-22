@@ -8,13 +8,13 @@ using UnityEngine.UI;
 public class KBatchedAnimController : KAnimControllerBase, KAnimConverter.IAnimConverter
 {
 	[NonSerialized]
-	protected bool _forceRebuild;
+	protected bool _forceRebuild = false;
 
 	private Vector3 lastPos = Vector3.zero;
 
 	private Vector2I lastChunkXY = KBatchedAnimUpdater.INVALID_CHUNK_ID;
 
-	private KAnimBatch batch;
+	private KAnimBatch batch = null;
 
 	public float animScale = 0.005f;
 
@@ -33,21 +33,21 @@ public class KBatchedAnimController : KAnimControllerBase, KAnimConverter.IAnimC
 
 	public Grid.SceneLayer sceneLayer;
 
-	private RectTransform rt;
+	private RectTransform rt = null;
 
 	private Vector3 screenOffset = new Vector3(0f, 0f, 0f);
 
 	public Matrix2x3 navMatrix = Matrix2x3.identity;
 
-	private CanvasScaler scaler;
+	private CanvasScaler scaler = null;
 
 	public bool setScaleFromAnim = true;
 
 	public Vector2 animOverrideSize = Vector2.one;
 
-	private Canvas rootCanvas;
+	private Canvas rootCanvas = null;
 
-	public bool isMovable;
+	public bool isMovable = false;
 
 	[CompilerGenerated]
 	private static Action<Transform, bool> _003C_003Ef__mg_0024cache0;
@@ -123,11 +123,11 @@ public class KBatchedAnimController : KAnimControllerBase, KAnimConverter.IAnimC
 	public Vector2I GetCellXY()
 	{
 		Vector3 positionIncludingOffset = base.PositionIncludingOffset;
-		if (Grid.CellSizeInMeters == 0f)
+		if (Grid.CellSizeInMeters != 0f)
 		{
-			return new Vector2I((int)positionIncludingOffset.x, (int)positionIncludingOffset.y);
+			return Grid.PosToXY(positionIncludingOffset);
 		}
-		return Grid.PosToXY(positionIncludingOffset);
+		return new Vector2I((int)positionIncludingOffset.x, (int)positionIncludingOffset.y);
 	}
 
 	public float GetZ()
@@ -178,8 +178,8 @@ public class KBatchedAnimController : KAnimControllerBase, KAnimConverter.IAnimC
 
 	private void SetBatchGroup(KAnimFileData kafd)
 	{
-		DebugUtil.Assert(!this.batchGroupID.IsValid, "Should only be setting the batch group once.", string.Empty, string.Empty);
-		DebugUtil.Assert(kafd != null, "Null anim data!! For", base.name, string.Empty);
+		DebugUtil.Assert(!this.batchGroupID.IsValid, "Should only be setting the batch group once.");
+		DebugUtil.Assert(kafd != null, "Null anim data!! For", base.name);
 		base.curBuild = kafd.build;
 		DebugUtil.Assert(base.curBuild != null, "Null build for anim!! ", base.name, kafd.name);
 		KAnimGroupFile.Group group = KAnimGroupFile.GetGroup(base.curBuild.batchTag);
@@ -205,7 +205,7 @@ public class KBatchedAnimController : KAnimControllerBase, KAnimConverter.IAnimC
 		}
 		if (animFiles.Length <= 0)
 		{
-			DebugUtil.Assert(false, "KBatchedAnimController has no anim files:" + base.name, string.Empty, string.Empty);
+			DebugUtil.Assert(false, "KBatchedAnimController has no anim files:" + base.name);
 		}
 		if ((UnityEngine.Object)animFiles[0].buildFile == (UnityEngine.Object)null)
 		{
@@ -225,7 +225,7 @@ public class KBatchedAnimController : KAnimControllerBase, KAnimConverter.IAnimC
 		}
 		if (usingNewSymbolOverrideSystem)
 		{
-			DebugUtil.Assert((UnityEngine.Object)GetComponent<SymbolOverrideController>() != (UnityEngine.Object)null, "Assert!", string.Empty, string.Empty);
+			DebugUtil.Assert((UnityEngine.Object)GetComponent<SymbolOverrideController>() != (UnityEngine.Object)null);
 		}
 	}
 
@@ -388,19 +388,19 @@ public class KBatchedAnimController : KAnimControllerBase, KAnimConverter.IAnimC
 	private Canvas GetRootCanvas()
 	{
 		Canvas canvas = null;
-		if ((UnityEngine.Object)rt == (UnityEngine.Object)null)
+		if (!((UnityEngine.Object)rt == (UnityEngine.Object)null))
 		{
-			return null;
-		}
-		RectTransform component = rt.parent.GetComponent<RectTransform>();
-		while ((UnityEngine.Object)component != (UnityEngine.Object)null)
-		{
-			canvas = component.GetComponent<Canvas>();
-			if ((UnityEngine.Object)canvas != (UnityEngine.Object)null && canvas.isRootCanvas)
+			RectTransform component = rt.parent.GetComponent<RectTransform>();
+			while ((UnityEngine.Object)component != (UnityEngine.Object)null)
 			{
-				return canvas;
+				canvas = component.GetComponent<Canvas>();
+				if ((UnityEngine.Object)canvas != (UnityEngine.Object)null && canvas.isRootCanvas)
+				{
+					return canvas;
+				}
+				component = component.parent.GetComponent<RectTransform>();
 			}
-			component = component.parent.GetComponent<RectTransform>();
+			return null;
 		}
 		return null;
 	}
@@ -653,22 +653,22 @@ public class KBatchedAnimController : KAnimControllerBase, KAnimConverter.IAnimC
 
 	public bool ApplySymbolOverrides()
 	{
-		if ((UnityEngine.Object)symbolOverrideController != (UnityEngine.Object)null)
+		if (!((UnityEngine.Object)symbolOverrideController != (UnityEngine.Object)null))
 		{
-			if (symbolOverrideControllerVersion != symbolOverrideController.version || symbolOverrideController.applySymbolOverridesEveryFrame)
-			{
-				symbolOverrideControllerVersion = symbolOverrideController.version;
-				symbolOverrideController.ApplyOverrides();
-			}
-			symbolOverrideController.ApplyAtlases();
-			return true;
+			return false;
 		}
-		return false;
+		if (symbolOverrideControllerVersion != symbolOverrideController.version || symbolOverrideController.applySymbolOverridesEveryFrame)
+		{
+			symbolOverrideControllerVersion = symbolOverrideController.version;
+			symbolOverrideController.ApplyOverrides();
+		}
+		symbolOverrideController.ApplyAtlases();
+		return true;
 	}
 
 	public void SetSymbolOverride(int symbol_idx, KAnim.Build.SymbolFrameInstance symbol_frame_instance)
 	{
-		DebugUtil.Assert(usingNewSymbolOverrideSystem, "KBatchedAnimController requires usingNewSymbolOverrideSystem to bet to true to enable symbol overrides.", string.Empty, string.Empty);
+		DebugUtil.Assert(usingNewSymbolOverrideSystem, "KBatchedAnimController requires usingNewSymbolOverrideSystem to bet to true to enable symbol overrides.");
 		base.symbolOverrideInfoGpuData.SetSymbolOverrideInfo(symbol_idx, symbol_frame_instance);
 	}
 
@@ -754,14 +754,14 @@ public class KBatchedAnimController : KAnimControllerBase, KAnimConverter.IAnimC
 
 	private void RegisterVisibilityListener()
 	{
-		DebugUtil.Assert(!visibilityListenerRegistered, "Assert!", string.Empty, string.Empty);
+		DebugUtil.Assert(!visibilityListenerRegistered);
 		Singleton<KBatchedAnimUpdater>.Instance.VisibilityRegister(this);
 		visibilityListenerRegistered = true;
 	}
 
 	private void UnregisterVisibilityListener()
 	{
-		DebugUtil.Assert(visibilityListenerRegistered, "Assert!", string.Empty, string.Empty);
+		DebugUtil.Assert(visibilityListenerRegistered);
 		Singleton<KBatchedAnimUpdater>.Instance.VisibilityUnregister(this);
 		visibilityListenerRegistered = false;
 	}

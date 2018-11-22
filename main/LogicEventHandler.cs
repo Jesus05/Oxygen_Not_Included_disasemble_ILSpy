@@ -60,7 +60,7 @@ internal class LogicEventHandler : ILogicEventReceiver, ILogicUIElement, ILogicN
 	{
 		LogicCircuitNetwork networkForCell = Game.Instance.logicCircuitManager.GetNetworkForCell(cell);
 		SpeedControlScreen instance = SpeedControlScreen.Instance;
-		if (networkForCell != null && new_value != value && (UnityEngine.Object)instance != (UnityEngine.Object)null && !instance.IsPaused && (!KPlayerPrefs.HasKey(AudioOptionsScreen.AlwaysPlayAutomation) || KPlayerPrefs.GetInt(AudioOptionsScreen.AlwaysPlayAutomation) == 1 || OverlayScreen.Instance.GetMode() == SimViewMode.Logic))
+		if (networkForCell != null && new_value != value && (UnityEngine.Object)instance != (UnityEngine.Object)null && !instance.IsPaused && (!KPlayerPrefs.HasKey(AudioOptionsScreen.AlwaysPlayAutomation) || KPlayerPrefs.GetInt(AudioOptionsScreen.AlwaysPlayAutomation) == 1 || !(OverlayScreen.Instance.GetMode() != OverlayModes.Logic.ID)))
 		{
 			string name = "Logic_Building_Toggle";
 			if (CameraController.Instance.IsAudibleSound(Grid.CellToPosCCC(cell, Grid.SceneLayer.BuildingFront)))

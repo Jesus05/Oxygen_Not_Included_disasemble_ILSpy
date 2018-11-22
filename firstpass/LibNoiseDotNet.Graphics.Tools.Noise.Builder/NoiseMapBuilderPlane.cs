@@ -5,7 +5,7 @@ namespace LibNoiseDotNet.Graphics.Tools.Noise.Builder
 {
 	public class NoiseMapBuilderPlane : NoiseMapBuilder
 	{
-		private bool _seamless;
+		private bool _seamless = false;
 
 		private float _lowerXBound;
 

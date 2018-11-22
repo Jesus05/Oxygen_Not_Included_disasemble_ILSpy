@@ -25,13 +25,13 @@ public class InputBindingsScreen : KModalScreen
 
 	public KButton nextScreenButton;
 
-	private bool waitingForKeyPress;
+	private bool waitingForKeyPress = false;
 
 	private Action actionToRebind = Action.NumActions;
 
-	private bool ignoreRootConflicts;
+	private bool ignoreRootConflicts = false;
 
-	private KButton activeButton;
+	private KButton activeButton = null;
 
 	[SerializeField]
 	private LocText screenTitle;
@@ -177,7 +177,7 @@ public class InputBindingsScreen : KModalScreen
 
 	private string GetModifierString(Modifier modifiers)
 	{
-		string text = string.Empty;
+		string text = "";
 		IEnumerator enumerator = Enum.GetValues(typeof(Modifier)).GetEnumerator();
 		try
 		{
@@ -189,7 +189,6 @@ public class InputBindingsScreen : KModalScreen
 					text = text + " + " + modifier.ToString();
 				}
 			}
-			return text;
 		}
 		finally
 		{
@@ -199,6 +198,7 @@ public class InputBindingsScreen : KModalScreen
 				disposable.Dispose();
 			}
 		}
+		return text;
 	}
 
 	protected override void OnSpawn()

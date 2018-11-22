@@ -16,7 +16,13 @@ public class AssignableReachabilitySensor : Sensor
 	public AssignableReachabilitySensor(Sensors sensors)
 		: base(sensors)
 	{
-		Assignables[] components = base.gameObject.GetComponents<Assignables>();
+		MinionAssignablesProxy minionAssignablesProxy = base.gameObject.GetComponent<MinionIdentity>().assignableProxy.Get();
+		minionAssignablesProxy.ConfigureAssignableSlots();
+		Assignables[] components = minionAssignablesProxy.GetComponents<Assignables>();
+		if (components.Length == 0)
+		{
+			Debug.LogError(base.gameObject.GetProperName() + ": No 'Assignables' components found for AssignableReachabilitySensor", null);
+		}
 		int num = 0;
 		for (int i = 0; i < components.Length; i++)
 		{

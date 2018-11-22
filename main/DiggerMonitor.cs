@@ -1,3 +1,4 @@
+using KSerialization;
 using ProcGen;
 using System;
 using UnityEngine;
@@ -6,10 +7,18 @@ public class DiggerMonitor : GameStateMachine<DiggerMonitor, DiggerMonitor.Insta
 {
 	public class Def : BaseDef
 	{
+		public int depthToDig
+		{
+			get;
+			set;
+		}
 	}
 
 	public new class Instance : GameInstance
 	{
+		[Serialize]
+		public int lastDigCell = -1;
+
 		public Instance(IStateMachineTarget master, Def def)
 			: base(master, def)
 		{
@@ -26,13 +35,17 @@ public class DiggerMonitor : GameStateMachine<DiggerMonitor, DiggerMonitor.Insta
 
 		private void CheckInSolid(int cell)
 		{
-			int num = Grid.PosToCell(base.gameObject);
-			if (cell == num && Grid.IsSolidCell(num))
+			Navigator component = base.gameObject.GetComponent<Navigator>();
+			if (!((UnityEngine.Object)component == (UnityEngine.Object)null))
 			{
-				Navigator component = base.gameObject.GetComponent<Navigator>();
-				if ((UnityEngine.Object)component != (UnityEngine.Object)null && component.CurrentNavType != NavType.Solid)
+				int cell2 = Grid.PosToCell(base.gameObject);
+				if (component.CurrentNavType != NavType.Solid && Grid.IsSolidCell(cell2))
 				{
 					component.SetCurrentNavType(NavType.Solid);
+				}
+				else if (component.CurrentNavType == NavType.Solid && !Grid.IsSolidCell(cell2))
+				{
+					base.gameObject.AddTag(GameTags.Creatures.Falling);
 				}
 			}
 		}
@@ -42,18 +55,59 @@ public class DiggerMonitor : GameStateMachine<DiggerMonitor, DiggerMonitor.Insta
 			CheckInSolid(cell);
 		}
 
-		public bool IsOnSurface()
+		public bool CanTunnel()
 		{
-			int cell = Grid.PosToCell(this);
-			SubWorld.ZoneType subWorldZoneType = World.Instance.zoneRenderData.GetSubWorldZoneType(cell);
+			int num = Grid.PosToCell(this);
+			SubWorld.ZoneType subWorldZoneType = World.Instance.zoneRenderData.GetSubWorldZoneType(num);
 			if (subWorldZoneType == SubWorld.ZoneType.Space)
 			{
-				int num = Grid.CellAbove(cell);
-				while (Grid.IsValidCell(num) && !Grid.Solid[num])
+				int num2 = num;
+				while (Grid.IsValidCell(num2) && !Grid.Solid[num2])
 				{
-					num = Grid.CellAbove(num);
+					num2 = Grid.CellAbove(num2);
 				}
-				return !Grid.IsValidCell(num);
+				if (!Grid.IsValidCell(num2))
+				{
+					return FoundValidDigCell();
+				}
+			}
+			return false;
+		}
+
+		private bool FoundValidDigCell()
+		{
+			int num = base.smi.def.depthToDig;
+			int num2 = lastDigCell = Grid.PosToCell(base.smi.master.gameObject);
+			int cell = Grid.CellBelow(num2);
+			while (IsValidDigCell(cell, null) && num > 0)
+			{
+				cell = Grid.CellBelow(cell);
+				num--;
+			}
+			if (num > 0)
+			{
+				cell = GameUtil.FloodFillFind<object>(IsValidDigCell, null, num2, base.smi.def.depthToDig, false, true);
+			}
+			lastDigCell = cell;
+			return lastDigCell != -1;
+		}
+
+		private bool IsValidDigCell(int cell, object arg = null)
+		{
+			if (Grid.IsValidCell(cell) && Grid.Solid[cell])
+			{
+				if (!Grid.HasDoor[cell] && !Grid.Foundation[cell])
+				{
+					byte index = Grid.ElementIdx[cell];
+					Element element = ElementLoader.elements[index];
+					return Grid.Element[cell].hardness < 150 && !element.HasTag(GameTags.RefinedMetal);
+				}
+				GameObject gameObject = Grid.Objects[cell, 1];
+				if ((UnityEngine.Object)gameObject != (UnityEngine.Object)null)
+				{
+					PrimaryElement component = gameObject.GetComponent<PrimaryElement>();
+					return Grid.Element[cell].hardness < 150 && !component.Element.HasTag(GameTags.RefinedMetal);
+				}
 			}
 			return false;
 		}
@@ -66,7 +120,7 @@ public class DiggerMonitor : GameStateMachine<DiggerMonitor, DiggerMonitor.Insta
 	public override void InitializeStates(out BaseState default_state)
 	{
 		default_state = loop;
-		loop.EventTransition(GameHashes.BeginMeteorBombardment, (Instance smi) => Game.Instance, dig, (Instance smi) => smi.IsOnSurface());
+		loop.EventTransition(GameHashes.BeginMeteorBombardment, (Instance smi) => Game.Instance, dig, (Instance smi) => smi.CanTunnel());
 		dig.ToggleBehaviour(GameTags.Creatures.Tunnel, (Instance smi) => true, null).GoTo(loop);
 	}
 }

@@ -76,15 +76,15 @@ namespace LibNoiseDotNet.Graphics.Tools.Noise.Renderer
 			_gradientPoints.Add(point);
 			_gradientPoints.Sort(delegate(GradientPoint p1, GradientPoint p2)
 			{
-				if (p1.Position > p2.Position)
+				if (!(p1.Position > p2.Position))
 				{
-					return 1;
-				}
-				if (p1.Position < p2.Position)
-				{
+					if (!(p1.Position < p2.Position))
+					{
+						return 0;
+					}
 					return -1;
 				}
-				return 0;
+				return 1;
 			});
 		}
 
@@ -106,20 +106,20 @@ namespace LibNoiseDotNet.Graphics.Tools.Noise.Renderer
 			}
 			int num = Libnoise.Clamp(i - 1, 0, _gradientPoints.Count - 1);
 			int num2 = Libnoise.Clamp(i, 0, _gradientPoints.Count - 1);
-			if (num == num2)
+			if (num != num2)
 			{
-				GradientPoint gradientPoint2 = _gradientPoints[num2];
-				return gradientPoint2.Color;
+				GradientPoint gradientPoint2 = _gradientPoints[num];
+				float position2 = gradientPoint2.Position;
+				GradientPoint gradientPoint3 = _gradientPoints[num2];
+				float position3 = gradientPoint3.Position;
+				float num3 = (position - position2) / (position3 - position2);
+				GradientPoint gradientPoint4 = _gradientPoints[num];
+				IColor color = gradientPoint4.Color;
+				GradientPoint gradientPoint5 = _gradientPoints[num2];
+				return Color.Lerp(color, gradientPoint5.Color, num3);
 			}
-			GradientPoint gradientPoint3 = _gradientPoints[num];
-			float position2 = gradientPoint3.Position;
-			GradientPoint gradientPoint4 = _gradientPoints[num2];
-			float position3 = gradientPoint4.Position;
-			float num3 = (position - position2) / (position3 - position2);
-			GradientPoint gradientPoint5 = _gradientPoints[num];
-			IColor color = gradientPoint5.Color;
 			GradientPoint gradientPoint6 = _gradientPoints[num2];
-			return Color.Lerp(color, gradientPoint6.Color, num3);
+			return gradientPoint6.Color;
 		}
 
 		public int CountGradientPoints()

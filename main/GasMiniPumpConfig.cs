@@ -32,7 +32,7 @@ public class GasMiniPumpConfig : IBuildingConfig
 		buildingDef.SelfHeatKilowattsWhenActive = 0f;
 		buildingDef.OutputConduitType = ConduitType.Gas;
 		buildingDef.Floodable = true;
-		buildingDef.ViewMode = SimViewMode.GasVentMap;
+		buildingDef.ViewMode = OverlayModes.GasConduits.ID;
 		buildingDef.AudioCategory = "Metal";
 		buildingDef.PowerInputOffset = new CellOffset(0, 0);
 		buildingDef.UtilityOutputOffset = new CellOffset(0, 1);

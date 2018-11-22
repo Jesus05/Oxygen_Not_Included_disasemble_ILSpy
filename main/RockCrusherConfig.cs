@@ -28,7 +28,7 @@ public class RockCrusherConfig : IBuildingConfig
 		buildingDef.RequiresPowerInput = true;
 		buildingDef.EnergyConsumptionWhenActive = 240f;
 		buildingDef.SelfHeatKilowattsWhenActive = 16f;
-		buildingDef.ViewMode = SimViewMode.PowerMap;
+		buildingDef.ViewMode = OverlayModes.Power.ID;
 		buildingDef.AudioCategory = "HollowMetal";
 		buildingDef.AudioSize = "large";
 		return buildingDef;
@@ -38,16 +38,16 @@ public class RockCrusherConfig : IBuildingConfig
 	{
 		go.AddOrGet<DropAllWorkable>();
 		go.AddOrGet<BuildingComplete>().isManuallyOperated = true;
-		Refinery refinery = go.AddOrGet<Refinery>();
-		refinery.sideScreenStyle = RefinerySideScreen.StyleSetting.ListInputOutput;
-		refinery.duplicantOperated = true;
-		RefineryWorkable refineryWorkable = go.AddOrGet<RefineryWorkable>();
-		BuildingTemplates.CreateRefineryStorage(go, refinery);
-		refineryWorkable.overrideAnims = new KAnimFile[1]
+		ComplexFabricator complexFabricator = go.AddOrGet<ComplexFabricator>();
+		complexFabricator.sideScreenStyle = ComplexFabricatorSideScreen.StyleSetting.ListQueueHybrid;
+		complexFabricator.duplicantOperated = true;
+		ComplexFabricatorWorkable complexFabricatorWorkable = go.AddOrGet<ComplexFabricatorWorkable>();
+		BuildingTemplates.CreateComplexFabricatorStorage(go, complexFabricator);
+		complexFabricatorWorkable.overrideAnims = new KAnimFile[1]
 		{
 			Assets.GetAnim("anim_interacts_rockrefinery_kanim")
 		};
-		refineryWorkable.workingPstComplete = "working_pst_complete";
+		complexFabricatorWorkable.workingPstComplete = "working_pst_complete";
 		Tag tag = SimHashes.Sand.CreateTag();
 		List<Element> list = ElementLoader.elements.FindAll((Element e) => e.HasTag(GameTags.Crushable));
 		ComplexRecipe complexRecipe;
@@ -67,6 +67,7 @@ public class RockCrusherConfig : IBuildingConfig
 			complexRecipe.time = 40f;
 			complexRecipe.description = string.Format(STRINGS.BUILDINGS.PREFABS.ROCKCRUSHER.RECIPE_DESCRIPTION, item.name, tag.ProperName());
 			complexRecipe.useResultAsDescription = true;
+			complexRecipe.displayInputAndOutput = true;
 			complexRecipe.fabricators = new List<Tag>
 			{
 				TagManager.Create("RockCrusher")
@@ -95,6 +96,7 @@ public class RockCrusherConfig : IBuildingConfig
 				complexRecipe.time = 40f;
 				complexRecipe.description = string.Format(STRINGS.BUILDINGS.PREFABS.ROCKCRUSHER.METAL_RECIPE_DESCRIPTION, lowTempTransition.name, item2.name);
 				complexRecipe.useResultAsDescription = true;
+				complexRecipe.displayInputAndOutput = true;
 				complexRecipe.fabricators = new List<Tag>
 				{
 					TagManager.Create("RockCrusher")
@@ -117,6 +119,7 @@ public class RockCrusherConfig : IBuildingConfig
 		complexRecipe.time = 40f;
 		complexRecipe.description = string.Format(STRINGS.BUILDINGS.PREFABS.ROCKCRUSHER.LIME_RECIPE_DESCRIPTION, SimHashes.Lime.CreateTag().ProperName(), MISC.TAGS.EGGSHELL);
 		complexRecipe.useResultAsDescription = true;
+		complexRecipe.displayInputAndOutput = true;
 		complexRecipe.fabricators = new List<Tag>
 		{
 			TagManager.Create("RockCrusher")
@@ -136,6 +139,7 @@ public class RockCrusherConfig : IBuildingConfig
 		complexRecipe.time = 40f;
 		complexRecipe.description = string.Format(STRINGS.BUILDINGS.PREFABS.ROCKCRUSHER.LIME_FROM_LIMESTONE_RECIPE_DESCRIPTION, SimHashes.Fossil.CreateTag().ProperName(), SimHashes.SedimentaryRock.CreateTag().ProperName(), SimHashes.Lime.CreateTag().ProperName());
 		complexRecipe.useResultAsDescription = true;
+		complexRecipe.displayInputAndOutput = true;
 		complexRecipe.fabricators = new List<Tag>
 		{
 			TagManager.Create("RockCrusher")

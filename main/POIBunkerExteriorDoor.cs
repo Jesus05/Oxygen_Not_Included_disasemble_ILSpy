@@ -14,7 +14,6 @@ public class POIBunkerExteriorDoor : IBuildingConfig
 		buildingDef.Invincible = true;
 		buildingDef.Entombable = false;
 		buildingDef.IsFoundation = true;
-		buildingDef.ViewMode = SimViewMode.None;
 		buildingDef.TileLayer = ObjectLayer.FoundationTile;
 		buildingDef.AudioCategory = "Metal";
 		buildingDef.PermittedRotations = PermittedRotations.R90;

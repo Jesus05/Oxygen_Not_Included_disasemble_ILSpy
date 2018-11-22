@@ -402,77 +402,77 @@ public class SolidConduitFlow : IConduitFlow
 		public FlowDirection GetNextFlowSource(SolidConduitFlow manager)
 		{
 			int permittedFlowDirections = manager.soaInfo.GetPermittedFlowDirections(idx);
-			if (permittedFlowDirections == -1)
+			if (permittedFlowDirections != -1)
 			{
-				return FlowDirection.Blocked;
-			}
-			FlowDirection flowDirection = manager.soaInfo.GetSrcFlowDirection(idx);
-			if (flowDirection == FlowDirection.None)
-			{
-				flowDirection = FlowDirection.Down;
-			}
-			for (int i = 0; i < 5; i++)
-			{
-				int num = (int)(flowDirection + i - 1);
-				int num2 = (num + 1) % 5;
-				FlowDirection flowDirection2 = (FlowDirection)(num2 + 1);
-				Conduit conduitFromDirection = manager.soaInfo.GetConduitFromDirection(idx, flowDirection2);
-				if (conduitFromDirection.idx != -1)
+				FlowDirection flowDirection = manager.soaInfo.GetSrcFlowDirection(idx);
+				if (flowDirection == FlowDirection.None)
 				{
-					ConduitContents contents = manager.grid[conduitFromDirection.GetCell(manager)].contents;
-					if (contents.pickupableHandle.IsValid())
+					flowDirection = FlowDirection.Down;
+				}
+				for (int i = 0; i < 5; i++)
+				{
+					int num = (int)(flowDirection + i - 1);
+					int num2 = (num + 1) % 5;
+					FlowDirection flowDirection2 = (FlowDirection)(num2 + 1);
+					Conduit conduitFromDirection = manager.soaInfo.GetConduitFromDirection(idx, flowDirection2);
+					if (conduitFromDirection.idx != -1)
 					{
-						int permittedFlowDirections2 = manager.soaInfo.GetPermittedFlowDirections(conduitFromDirection.idx);
-						if (permittedFlowDirections2 != -1)
+						ConduitContents contents = manager.grid[conduitFromDirection.GetCell(manager)].contents;
+						if (contents.pickupableHandle.IsValid())
 						{
-							FlowDirection direction = InverseFlow(flowDirection2);
-							Conduit conduitFromDirection2 = manager.soaInfo.GetConduitFromDirection(conduitFromDirection.idx, direction);
-							if (conduitFromDirection2.idx != -1 && (permittedFlowDirections2 & FlowBit(direction)) != 0)
+							int permittedFlowDirections2 = manager.soaInfo.GetPermittedFlowDirections(conduitFromDirection.idx);
+							if (permittedFlowDirections2 != -1)
 							{
-								return flowDirection2;
+								FlowDirection direction = InverseFlow(flowDirection2);
+								Conduit conduitFromDirection2 = manager.soaInfo.GetConduitFromDirection(conduitFromDirection.idx, direction);
+								if (conduitFromDirection2.idx != -1 && (permittedFlowDirections2 & FlowBit(direction)) != 0)
+								{
+									return flowDirection2;
+								}
 							}
 						}
 					}
 				}
-			}
-			for (int j = 0; j < 5; j++)
-			{
-				FlowDirection targetFlowDirection = manager.soaInfo.GetTargetFlowDirection(idx);
-				int num3 = (int)(targetFlowDirection + j - 1);
-				int num4 = (num3 + 1) % 5;
-				FlowDirection flowDirection3 = (FlowDirection)(num4 + 1);
-				FlowDirection direction2 = InverseFlow(flowDirection3);
-				Conduit conduitFromDirection3 = manager.soaInfo.GetConduitFromDirection(idx, flowDirection3);
-				if (conduitFromDirection3.idx != -1)
+				for (int j = 0; j < 5; j++)
 				{
-					int permittedFlowDirections3 = manager.soaInfo.GetPermittedFlowDirections(conduitFromDirection3.idx);
-					if (permittedFlowDirections3 != -1 && (permittedFlowDirections3 & FlowBit(direction2)) != 0)
+					FlowDirection targetFlowDirection = manager.soaInfo.GetTargetFlowDirection(idx);
+					int num3 = (int)(targetFlowDirection + j - 1);
+					int num4 = (num3 + 1) % 5;
+					FlowDirection flowDirection3 = (FlowDirection)(num4 + 1);
+					FlowDirection direction2 = InverseFlow(flowDirection3);
+					Conduit conduitFromDirection3 = manager.soaInfo.GetConduitFromDirection(idx, flowDirection3);
+					if (conduitFromDirection3.idx != -1)
 					{
-						return flowDirection3;
+						int permittedFlowDirections3 = manager.soaInfo.GetPermittedFlowDirections(conduitFromDirection3.idx);
+						if (permittedFlowDirections3 != -1 && (permittedFlowDirections3 & FlowBit(direction2)) != 0)
+						{
+							return flowDirection3;
+						}
 					}
 				}
+				return FlowDirection.None;
 			}
-			return FlowDirection.None;
+			return FlowDirection.Blocked;
 		}
 
 		public FlowDirection GetNextFlowTarget(SolidConduitFlow manager)
 		{
 			int permittedFlowDirections = manager.soaInfo.GetPermittedFlowDirections(idx);
-			if (permittedFlowDirections == -1)
+			if (permittedFlowDirections != -1)
 			{
-				return FlowDirection.Blocked;
-			}
-			for (int i = 0; i < 5; i++)
-			{
-				FlowDirection targetFlowDirection = manager.soaInfo.GetTargetFlowDirection(idx);
-				int num = (int)(targetFlowDirection + i - 1);
-				int num2 = (num + 1) % 5;
-				int num3 = num2 + 1;
-				Conduit conduitFromDirection = manager.soaInfo.GetConduitFromDirection(idx, (FlowDirection)num3);
-				if (conduitFromDirection.idx != -1 && (permittedFlowDirections & FlowBit((FlowDirection)num3)) != 0)
+				for (int i = 0; i < 5; i++)
 				{
-					return (FlowDirection)num3;
+					FlowDirection targetFlowDirection = manager.soaInfo.GetTargetFlowDirection(idx);
+					int num = (int)(targetFlowDirection + i - 1);
+					int num2 = (num + 1) % 5;
+					int num3 = num2 + 1;
+					Conduit conduitFromDirection = manager.soaInfo.GetConduitFromDirection(idx, (FlowDirection)num3);
+					if (conduitFromDirection.idx != -1 && (permittedFlowDirections & FlowBit((FlowDirection)num3)) != 0)
+					{
+						return (FlowDirection)num3;
+					}
 				}
+				return FlowDirection.Blocked;
 			}
 			return FlowDirection.Blocked;
 		}
@@ -520,7 +520,7 @@ public class SolidConduitFlow : IConduitFlow
 
 	public const float WaitTime = 1f;
 
-	private float elapsedTime;
+	private float elapsedTime = 0f;
 
 	private float lastUpdateTime = float.NegativeInfinity;
 
@@ -530,7 +530,7 @@ public class SolidConduitFlow : IConduitFlow
 
 	private SOAInfo soaInfo = new SOAInfo();
 
-	private bool dirtyConduitUpdaters;
+	private bool dirtyConduitUpdaters = false;
 
 	private List<ConduitUpdater> conduitUpdaters = new List<ConduitUpdater>();
 
@@ -551,9 +551,9 @@ public class SolidConduitFlow : IConduitFlow
 		pickupableHandle = HandleVector<int>.InvalidHandle
 	};
 
-	private int maskedOverlayLayer;
+	private int maskedOverlayLayer = 0;
 
-	private bool viewingConduits;
+	private bool viewingConduits = false;
 
 	private static readonly Color32 NormalColour = Color.white;
 
@@ -772,23 +772,23 @@ public class SolidConduitFlow : IConduitFlow
 	private FlowDirection GetDirection(Conduit conduit, Conduit target_conduit)
 	{
 		ConduitConnections conduitConnections = soaInfo.GetConduitConnections(conduit.idx);
-		if (conduitConnections.up == target_conduit.idx)
+		if (conduitConnections.up != target_conduit.idx)
 		{
-			return FlowDirection.Up;
-		}
-		if (conduitConnections.down == target_conduit.idx)
-		{
+			if (conduitConnections.down != target_conduit.idx)
+			{
+				if (conduitConnections.left != target_conduit.idx)
+				{
+					if (conduitConnections.right != target_conduit.idx)
+					{
+						return FlowDirection.None;
+					}
+					return FlowDirection.Right;
+				}
+				return FlowDirection.Left;
+			}
 			return FlowDirection.Down;
 		}
-		if (conduitConnections.left == target_conduit.idx)
-		{
-			return FlowDirection.Left;
-		}
-		if (conduitConnections.right == target_conduit.idx)
-		{
-			return FlowDirection.Right;
-		}
-		return FlowDirection.None;
+		return FlowDirection.Up;
 	}
 
 	private void FoundSink(int source_idx)
@@ -1244,11 +1244,11 @@ public class SolidConduitFlow : IConduitFlow
 	public int GetPermittedFlow(int cell)
 	{
 		Conduit conduit = GetConduit(cell);
-		if (conduit.idx == -1)
+		if (conduit.idx != -1)
 		{
-			return 0;
+			return soaInfo.GetPermittedFlowDirections(conduit.idx);
 		}
-		return soaInfo.GetPermittedFlowDirections(conduit.idx);
+		return 0;
 	}
 
 	public bool HasConduit(int cell)
@@ -1327,15 +1327,15 @@ public class SolidConduitFlow : IConduitFlow
 		if ((UnityEngine.Object)OverlayScreen.Instance != (UnityEngine.Object)null)
 		{
 			OverlayScreen instance = OverlayScreen.Instance;
-			instance.OnOverlayChanged = (Action<SimViewMode>)Delegate.Remove(instance.OnOverlayChanged, new Action<SimViewMode>(OnOverlayChanged));
+			instance.OnOverlayChanged = (Action<HashedString>)Delegate.Remove(instance.OnOverlayChanged, new Action<HashedString>(OnOverlayChanged));
 			OverlayScreen instance2 = OverlayScreen.Instance;
-			instance2.OnOverlayChanged = (Action<SimViewMode>)Delegate.Combine(instance2.OnOverlayChanged, new Action<SimViewMode>(OnOverlayChanged));
+			instance2.OnOverlayChanged = (Action<HashedString>)Delegate.Combine(instance2.OnOverlayChanged, new Action<HashedString>(OnOverlayChanged));
 		}
 	}
 
-	private void OnOverlayChanged(SimViewMode mode)
+	private void OnOverlayChanged(HashedString mode)
 	{
-		bool flag = mode == SimViewMode.SolidConveyorMap;
+		bool flag = mode == OverlayModes.SolidConveyor.ID;
 		if (flag != viewingConduits)
 		{
 			viewingConduits = flag;

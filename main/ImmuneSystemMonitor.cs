@@ -304,11 +304,11 @@ public class ImmuneSystemMonitor : GameStateMachine<ImmuneSystemMonitor, ImmuneS
 		{
 			smi.OnEatComplete(obj);
 		}).EventTransition(GameHashes.DiseaseAdded, infected, (Instance smi) => smi.IsSick()).Transition(recovering, (Instance smi) => smi.effects.HasEffect("PostDiseaseRecovery"), UpdateRate.SIM_200ms);
-		healthy.ParamTransition(isLosingImmunity, infecting, (Instance smi, bool p) => p).Update(delegate(Instance smi, float dt)
+		healthy.ParamTransition(isLosingImmunity, infecting, GameStateMachine<ImmuneSystemMonitor, Instance, IStateMachineTarget, object>.IsTrue).Update(delegate(Instance smi, float dt)
 		{
 			smi.UpdateImmuneSystem();
 		}, UpdateRate.SIM_200ms, false);
-		infecting.DefaultState(infecting.high).ParamTransition(isLosingImmunity, healthy, (Instance smi, bool p) => !p).Update(delegate(Instance smi, float dt)
+		infecting.DefaultState(infecting.high).ParamTransition(isLosingImmunity, healthy, GameStateMachine<ImmuneSystemMonitor, Instance, IStateMachineTarget, object>.IsFalse).Update(delegate(Instance smi, float dt)
 		{
 			smi.UpdateImmuneSystem();
 		}, UpdateRate.SIM_200ms, false);

@@ -71,8 +71,16 @@ internal class InhaleStates : GameStateMachine<InhaleStates, InhaleStates.Instan
 		{
 			targetCell.Set(smi.GetSMI<GasAndLiquidConsumerMonitor.Instance>().targetCell, smi);
 		});
-		goingtoeat.MoveTo((Instance smi) => targetCell.Get(smi), inhaling, null, false).ToggleStatusItem(CREATURES.STATUSITEMS.LOOKINGFORFOOD.NAME, CREATURES.STATUSITEMS.LOOKINGFORFOOD.TOOLTIP, category: Db.Get().StatusItemCategories.Main, icon: string.Empty, icon_type: StatusItem.IconType.Info, notification_type: (NotificationType)0, allow_multiples: false, render_overlay: SimViewMode.None, status_overlays: 0, resolve_string_callback: null, resolve_tooltip_callback: null);
-		inhaling.DefaultState(inhaling.pre).ToggleStatusItem(CREATURES.STATUSITEMS.INHALING.NAME, CREATURES.STATUSITEMS.INHALING.TOOLTIP, category: Db.Get().StatusItemCategories.Main, icon: string.Empty, icon_type: StatusItem.IconType.Info, notification_type: (NotificationType)0, allow_multiples: false, render_overlay: SimViewMode.None, status_overlays: 0, resolve_string_callback: null, resolve_tooltip_callback: null);
+		State state = goingtoeat.MoveTo((Instance smi) => targetCell.Get(smi), inhaling, null, false);
+		string name = CREATURES.STATUSITEMS.LOOKINGFORFOOD.NAME;
+		string tooltip = CREATURES.STATUSITEMS.LOOKINGFORFOOD.TOOLTIP;
+		StatusItemCategory main = Db.Get().StatusItemCategories.Main;
+		state.ToggleStatusItem(name, tooltip, "", StatusItem.IconType.Info, (NotificationType)0, false, default(HashedString), 0, null, null, main);
+		State state2 = inhaling.DefaultState(inhaling.pre);
+		tooltip = CREATURES.STATUSITEMS.INHALING.NAME;
+		name = CREATURES.STATUSITEMS.INHALING.TOOLTIP;
+		main = Db.Get().StatusItemCategories.Main;
+		state2.ToggleStatusItem(tooltip, name, "", StatusItem.IconType.Info, (NotificationType)0, false, default(HashedString), 0, null, null, main);
 		inhaling.pre.PlayAnim("inhale_pre").QueueAnim("inhale_loop", true, null).Update("Consume", delegate(Instance smi, float dt)
 		{
 			smi.GetSMI<GasAndLiquidConsumerMonitor.Instance>().Consume(dt);
@@ -95,10 +103,10 @@ internal class InhaleStates : GameStateMachine<InhaleStates, InhaleStates.Instan
 	private static bool IsFull(Instance smi)
 	{
 		CreatureCalorieMonitor.Instance sMI = smi.GetSMI<CreatureCalorieMonitor.Instance>();
-		if (sMI != null)
+		if (sMI == null)
 		{
-			return sMI.stomach.GetFullness() >= 1f;
+			return false;
 		}
-		return false;
+		return sMI.stomach.GetFullness() >= 1f;
 	}
 }

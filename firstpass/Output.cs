@@ -3,9 +3,9 @@ using UnityEngine;
 
 public class Output
 {
-	private static string BuildString(object[] objs)
+	public static string BuildString(object[] objs)
 	{
-		string text = string.Empty;
+		string text = "";
 		if (objs.Length > 0)
 		{
 			text = ((objs[0] == null) ? "null" : objs[0].ToString());
@@ -61,11 +61,12 @@ public class Output
 
 	public static void Print(string str)
 	{
+		Console.Out.WriteLine(str);
 	}
 
 	private static void PrintWithObj(UnityEngine.Object obj, string str)
 	{
-		Console.Out.WriteLine(str);
+		Console.Out.WriteLine(str + " : " + ((!(obj != (UnityEngine.Object)null)) ? "<null>" : obj.name));
 	}
 
 	private static void Warn(string str)
@@ -75,10 +76,10 @@ public class Output
 
 	private static void LogWarningWithObj(UnityEngine.Object obj, string str)
 	{
-		Console.Out.WriteLine("WARNING: " + str);
+		Console.Out.WriteLine("WARNING: " + str + " : " + ((!(obj != (UnityEngine.Object)null)) ? "<null>" : obj.name));
 	}
 
-	private static void LogError(string str)
+	public static void LogError(string str)
 	{
 		Debug.LogError(str, null);
 	}

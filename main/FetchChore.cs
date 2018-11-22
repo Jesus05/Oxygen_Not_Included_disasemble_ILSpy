@@ -121,7 +121,7 @@ public class FetchChore : Chore<FetchChore.StatesInstance>
 	public Storage destination => smi.sm.destination.Get<Storage>(smi);
 
 	public FetchChore(ChoreType choreType, Storage destination, float amount, Tag[] tags, Tag[] required_tags = null, Tag[] forbidden_tags = null, ChoreProvider chore_provider = null, bool run_until_complete = true, Action<Chore> on_complete = null, Action<Chore> on_begin = null, Action<Chore> on_end = null, FetchOrder2.OperationalRequirement operational_requirement = FetchOrder2.OperationalRequirement.Operational, int priority_mod = 0, Tag[] chore_tags = null)
-		: base(choreType, (IStateMachineTarget)destination, chore_provider, run_until_complete, on_complete, on_begin, on_end, PriorityScreen.PriorityClass.basic, 0, false, true, priority_mod, chore_tags)
+		: base(choreType, (IStateMachineTarget)destination, chore_provider, run_until_complete, on_complete, on_begin, on_end, PriorityScreen.PriorityClass.basic, 5, false, true, priority_mod, chore_tags)
 	{
 		if (choreType == null)
 		{
@@ -140,7 +140,7 @@ public class FetchChore : Chore<FetchChore.StatesInstance>
 		requiredTagBits = new TagBits(required_tags);
 		forbiddenTagBits = new TagBits(forbidden_tags);
 		tagBitsHash = tagBits.GetHashCode();
-		DebugUtil.DevAssert(!tagBits.HasAny(~FetchManager.disallowedTagMask), "Fetch chore fetching invalid tags.", string.Empty, string.Empty);
+		DebugUtil.DevAssert(!tagBits.HasAny(~FetchManager.disallowedTagMask), "Fetch chore fetching invalid tags.");
 		if (destination.GetOnlyFetchMarkedItems())
 		{
 			requiredTagBits.SetTag(GameTags.Garbage);
@@ -264,11 +264,11 @@ public class FetchChore : Chore<FetchChore.StatesInstance>
 
 	public float AmountWaitingToFetch()
 	{
-		if ((UnityEngine.Object)fetcher == (UnityEngine.Object)null)
+		if (!((UnityEngine.Object)fetcher == (UnityEngine.Object)null))
 		{
-			return originalAmount;
+			return amount;
 		}
-		return amount;
+		return originalAmount;
 	}
 
 	private void OnOnlyFetchMarkedItemsSettingChanged(object data)

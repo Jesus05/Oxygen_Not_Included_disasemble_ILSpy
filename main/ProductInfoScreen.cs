@@ -39,7 +39,7 @@ public class ProductInfoScreen : KScreen
 
 	private bool expandedInfo = true;
 
-	private bool configuring;
+	private bool configuring = false;
 
 	private void RefreshScreen()
 	{
@@ -221,7 +221,7 @@ public class ProductInfoScreen : KScreen
 					float value3 = 0f;
 					dictionary.TryGetValue(item.Key, out value3);
 					float value4 = 0f;
-					string text2 = string.Empty;
+					string text2 = "";
 					if (dictionary2.TryGetValue(item.Key, out value4))
 					{
 						value4 = Mathf.Abs(value3 * value4);
@@ -302,17 +302,17 @@ public class ProductInfoScreen : KScreen
 
 	private bool BuildRequirementsMet(BuildingDef def)
 	{
-		if (DebugHandler.InstantBuildMode || Game.Instance.SandboxModeActive)
+		if (!DebugHandler.InstantBuildMode && !Game.Instance.SandboxModeActive)
 		{
-			return true;
-		}
-		Recipe craftRecipe = def.CraftRecipe;
-		if (!materialSelectionPanel.CanBuild(craftRecipe))
-		{
-			return false;
-		}
-		if (!Db.Get().TechItems.IsTechItemComplete(def.PrefabID))
-		{
+			Recipe craftRecipe = def.CraftRecipe;
+			if (materialSelectionPanel.CanBuild(craftRecipe))
+			{
+				if (Db.Get().TechItems.IsTechItemComplete(def.PrefabID))
+				{
+					return true;
+				}
+				return false;
+			}
 			return false;
 		}
 		return true;
@@ -352,25 +352,25 @@ public class ProductInfoScreen : KScreen
 
 	public static bool MaterialsMet(Recipe recipe)
 	{
-		if (recipe == null)
+		if (recipe != null)
 		{
-			Debug.LogError("Trying to verify the materials on a null recipe!", null);
-			return false;
-		}
-		if (recipe.Ingredients == null || recipe.Ingredients.Count == 0)
-		{
+			if (recipe.Ingredients != null && recipe.Ingredients.Count != 0)
+			{
+				for (int i = 0; i < recipe.Ingredients.Count; i++)
+				{
+					MaterialSelectionPanel.SelectedElemInfo selectedElemInfo = MaterialSelectionPanel.Filter(recipe.Ingredients[i].tag);
+					if (selectedElemInfo.kgAvailable < recipe.Ingredients[i].amount)
+					{
+						return false;
+					}
+				}
+				return true;
+			}
 			Debug.LogError("Trying to verify the materials on a recipe with no MaterialCategoryTags!", null);
 			return false;
 		}
-		for (int i = 0; i < recipe.Ingredients.Count; i++)
-		{
-			MaterialSelectionPanel.SelectedElemInfo selectedElemInfo = MaterialSelectionPanel.Filter(recipe.Ingredients[i].tag);
-			if (selectedElemInfo.kgAvailable < recipe.Ingredients[i].amount)
-			{
-				return false;
-			}
-		}
-		return true;
+		Debug.LogError("Trying to verify the materials on a null recipe!", null);
+		return false;
 	}
 
 	public void Close()

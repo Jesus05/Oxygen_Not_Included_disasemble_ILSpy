@@ -130,6 +130,16 @@ namespace Klei.AI
 				new AttributeModifier("BreathDelta", -1.13636363f, DUPLICANTS.DISEASES.SLIMELUNG.NAME, false, false, true),
 				new AttributeModifier("Athletics", -3f, DUPLICANTS.DISEASES.SLIMELUNG.NAME, false, false, true)
 			}));
+			AddDiseaseComponent(new AnimatedDisease(new HashedString[1]
+			{
+				"anim_idle_sick_kanim"
+			}, Db.Get().Expressions.Sick));
+			AddDiseaseComponent(new PeriodicEmoteDisease("anim_idle_sick_kanim", new HashedString[3]
+			{
+				"idle_pre",
+				"idle_default",
+				"idle_pst"
+			}, 5f));
 			AddDiseaseComponent(new SlimeLungComponent());
 		}
 

@@ -20,7 +20,7 @@ public abstract class BaseWireConfig : IBuildingConfig
 		buildingDef.Floodable = false;
 		buildingDef.Overheatable = false;
 		buildingDef.Entombable = false;
-		buildingDef.ViewMode = SimViewMode.PowerMap;
+		buildingDef.ViewMode = OverlayModes.Power.ID;
 		buildingDef.ObjectLayer = ObjectLayer.Wire;
 		buildingDef.TileLayer = ObjectLayer.WireTile;
 		buildingDef.ReplacementLayer = ObjectLayer.ReplacementWire;

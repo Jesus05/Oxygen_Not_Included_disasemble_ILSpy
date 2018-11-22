@@ -29,7 +29,7 @@ public class CanvasConfig : IBuildingConfig
 		buildingDef.Overheatable = false;
 		buildingDef.AudioCategory = "Metal";
 		buildingDef.BaseTimeUntilRepair = -1f;
-		buildingDef.ViewMode = SimViewMode.Decor;
+		buildingDef.ViewMode = OverlayModes.Decor.ID;
 		buildingDef.DefaultAnimState = "off";
 		return buildingDef;
 	}

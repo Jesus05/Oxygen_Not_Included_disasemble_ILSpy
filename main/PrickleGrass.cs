@@ -43,7 +43,11 @@ public class PrickleGrass : StateMachineComponent<PrickleGrass.StatesInstance>
 		{
 			default_state = grow;
 			base.serializable = true;
-			dead.ToggleStatusItem(STRINGS.CREATURES.STATUSITEMS.DEAD.NAME, STRINGS.CREATURES.STATUSITEMS.DEAD.TOOLTIP, category: Db.Get().StatusItemCategories.Main, icon: string.Empty, icon_type: StatusItem.IconType.Info, notification_type: (NotificationType)0, allow_multiples: false, render_overlay: SimViewMode.None, status_overlays: 0, resolve_string_callback: null, resolve_tooltip_callback: null).Enter(delegate(StatesInstance smi)
+			State state = dead;
+			string name = STRINGS.CREATURES.STATUSITEMS.DEAD.NAME;
+			string tooltip = STRINGS.CREATURES.STATUSITEMS.DEAD.TOOLTIP;
+			StatusItemCategory main = Db.Get().StatusItemCategories.Main;
+			state.ToggleStatusItem(name, tooltip, "", StatusItem.IconType.Info, (NotificationType)0, false, default(HashedString), 0, null, null, main).Enter(delegate(StatesInstance smi)
 			{
 				GameUtil.KInstantiate(Assets.GetPrefab(EffectConfigs.PlantDeathId), smi.master.transform.GetPosition(), Grid.SceneLayer.FXFront, null, 0).SetActive(true);
 				smi.master.Trigger(1623392196, null);
@@ -61,7 +65,11 @@ public class PrickleGrass : StateMachineComponent<PrickleGrass.StatesInstance>
 					smi.GoTo(blocked_from_growing);
 				}
 			}).PlayAnim("grow_seed", KAnim.PlayMode.Once).EventTransition(GameHashes.AnimQueueComplete, alive, null);
-			alive.InitializeStates(masterTarget, dead).DefaultState(alive.idle).ToggleStatusItem(STRINGS.CREATURES.STATUSITEMS.IDLE.NAME, STRINGS.CREATURES.STATUSITEMS.IDLE.TOOLTIP, category: Db.Get().StatusItemCategories.Main, icon: string.Empty, icon_type: StatusItem.IconType.Info, notification_type: (NotificationType)0, allow_multiples: false, render_overlay: SimViewMode.None, status_overlays: 0, resolve_string_callback: null, resolve_tooltip_callback: null);
+			State state2 = alive.InitializeStates(masterTarget, dead).DefaultState(alive.idle);
+			tooltip = STRINGS.CREATURES.STATUSITEMS.IDLE.NAME;
+			name = STRINGS.CREATURES.STATUSITEMS.IDLE.TOOLTIP;
+			main = Db.Get().StatusItemCategories.Main;
+			state2.ToggleStatusItem(tooltip, name, "", StatusItem.IconType.Info, (NotificationType)0, false, default(HashedString), 0, null, null, main);
 			alive.idle.EventTransition(GameHashes.Wilt, alive.wilting, (StatesInstance smi) => smi.master.wiltCondition.IsWilting()).PlayAnim("idle", KAnim.PlayMode.Loop).Enter(delegate(StatesInstance smi)
 			{
 				smi.master.growth_bonus.Description = STRINGS.CREATURES.SPECIES.PRICKLEGRASS.GROWTH_BONUS;
@@ -86,7 +94,7 @@ public class PrickleGrass : StateMachineComponent<PrickleGrass.StatesInstance>
 	[MyCmpReq]
 	private EntombVulnerable entombVulnerable;
 
-	public bool replanted;
+	public bool replanted = false;
 
 	private AttributeModifier growth_bonus;
 

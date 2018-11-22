@@ -113,26 +113,26 @@ namespace NodeEditorFramework
 
 		public bool TryApplyConnection(NodeOutput output)
 		{
-			if (CanApplyConnection(output))
+			if (!CanApplyConnection(output))
 			{
-				ApplyConnection(output);
-				return true;
+				return false;
 			}
-			return false;
+			ApplyConnection(output);
+			return true;
 		}
 
 		public bool CanApplyConnection(NodeOutput output)
 		{
-			if ((UnityEngine.Object)output == (UnityEngine.Object)null || (UnityEngine.Object)body == (UnityEngine.Object)output.body || (UnityEngine.Object)connection == (UnityEngine.Object)output || !typeData.Type.IsAssignableFrom(output.typeData.Type))
+			if (!((UnityEngine.Object)output == (UnityEngine.Object)null) && !((UnityEngine.Object)body == (UnityEngine.Object)output.body) && !((UnityEngine.Object)connection == (UnityEngine.Object)output) && typeData.Type.IsAssignableFrom(output.typeData.Type))
 			{
-				return false;
+				if (output.body.isChildOf(body) && !output.body.allowsLoopRecursion(body))
+				{
+					Debug.LogWarning("Cannot apply connection: Recursion detected!", null);
+					return false;
+				}
+				return true;
 			}
-			if (output.body.isChildOf(body) && !output.body.allowsLoopRecursion(body))
-			{
-				Debug.LogWarning("Cannot apply connection: Recursion detected!", null);
-				return false;
-			}
-			return true;
+			return false;
 		}
 
 		public void ApplyConnection(NodeOutput output)

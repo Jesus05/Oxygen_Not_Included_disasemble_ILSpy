@@ -17,10 +17,10 @@ public class AssignableSlot : Resource
 	public AssignableSlotInstance Lookup(GameObject go)
 	{
 		Assignables component = go.GetComponent<Assignables>();
-		if ((UnityEngine.Object)component != (UnityEngine.Object)null)
+		if (!((UnityEngine.Object)component != (UnityEngine.Object)null))
 		{
-			return component.GetSlot(this);
+			return null;
 		}
-		return null;
+		return component.GetSlot(this);
 	}
 }

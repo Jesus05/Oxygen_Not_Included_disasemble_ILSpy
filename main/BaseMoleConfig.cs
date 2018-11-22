@@ -27,11 +27,12 @@ public static class BaseMoleConfig
 		EntityTemplates.ExtendEntityToBasicCreature(gameObject, FactionManager.FactionID.Pest, traitId, "DiggerNavGrid", NavType.Floor, 32, 2f, "Meat", 10, true, false, 123.149994f, 673.15f, 73.1499939f, 773.15f);
 		gameObject.AddOrGetDef<CreatureFallMonitor.Def>();
 		gameObject.AddOrGet<Trappable>();
-		gameObject.AddOrGetDef<DiggerMonitor.Def>();
+		DiggerMonitor.Def def = gameObject.AddOrGetDef<DiggerMonitor.Def>();
+		def.depthToDig = MoleTuning.DEPTH_TO_HIDE;
 		EntityTemplates.CreateAndRegisterBaggedCreature(gameObject, true, true);
 		ChoreTable.Builder chore_table = new ChoreTable.Builder().Add(new DeathStates.Def(), true).Add(new AnimInterruptStates.Def(), true).Add(new FallStates.Def(), true)
 			.Add(new StunnedStates.Def(), true)
-			.Add(new DiggerStates.Def(MoleTuning.DEPTH_TO_HIDE), true)
+			.Add(new DiggerStates.Def(), true)
 			.Add(new GrowUpStates.Def(), true)
 			.Add(new TrappedStates.Def(), true)
 			.Add(new IncubatingStates.Def(), true)
@@ -71,12 +72,12 @@ public static class BaseMoleConfig
 
 	private static HashedString CustomIdleAnim(IdleStates.Instance smi, ref HashedString pre_anim)
 	{
-		int cell = Grid.PosToCell(smi.master.gameObject);
-		if (Grid.IsSolidCell(cell))
+		Navigator component = smi.gameObject.GetComponent<Navigator>();
+		if (component.CurrentNavType != NavType.Solid)
 		{
-			int num = Random.Range(0, SolidIdleAnims.Length);
-			return SolidIdleAnims[num];
+			return "idle_loop";
 		}
-		return "idle_loop";
+		int num = Random.Range(0, SolidIdleAnims.Length);
+		return SolidIdleAnims[num];
 	}
 }

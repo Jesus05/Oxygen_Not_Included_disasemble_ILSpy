@@ -14,7 +14,7 @@ public class DisinfectTool : DragTool
 		base.OnPrefabInit();
 		Instance = this;
 		interceptNumberKeysForPriority = true;
-		viewMode = SimViewMode.Disease;
+		viewMode = OverlayModes.Disease.ID;
 	}
 
 	public void Activate()

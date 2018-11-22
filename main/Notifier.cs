@@ -42,7 +42,7 @@ public class Notifier : KMonoBehaviour
 				}
 				notification.Notifier = this;
 				notification.Position = base.transform.GetPosition();
-				if (notification.Group.IsValid && notification.Group != (HashedString)string.Empty)
+				if (notification.Group.IsValid && notification.Group != (HashedString)"")
 				{
 					if (NotificationGroups == null)
 					{
@@ -63,7 +63,7 @@ public class Notifier : KMonoBehaviour
 			}
 			else
 			{
-				DebugUtil.Assert((UnityEngine.Object)notification.Notifier == (UnityEngine.Object)this, "Assert!", string.Empty, string.Empty);
+				DebugUtil.Assert((UnityEngine.Object)notification.Notifier == (UnityEngine.Object)this);
 			}
 			notification.Time = KTime.Instance.UnscaledGameTime;
 		}
@@ -74,7 +74,7 @@ public class Notifier : KMonoBehaviour
 		if ((UnityEngine.Object)notification.Notifier != (UnityEngine.Object)null)
 		{
 			notification.Notifier = null;
-			if (NotificationGroups != null && notification.Group.IsValid && notification.Group != (HashedString)string.Empty)
+			if (NotificationGroups != null && notification.Group.IsValid && notification.Group != (HashedString)"")
 			{
 				NotificationGroups.Remove(notification.Group);
 			}

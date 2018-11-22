@@ -7,7 +7,7 @@ namespace LibNoiseDotNet.Graphics.Tools.Noise.Modifier
 	{
 		protected List<float> _controlPoints = new List<float>(2);
 
-		protected bool _invert;
+		protected bool _invert = false;
 
 		public bool Invert
 		{
@@ -86,35 +86,35 @@ namespace LibNoiseDotNet.Graphics.Tools.Noise.Modifier
 			}
 			int num = Libnoise.Clamp(i - 1, 0, _controlPoints.Count - 1);
 			int num2 = Libnoise.Clamp(i, 0, _controlPoints.Count - 1);
-			if (num == num2)
+			if (num != num2)
 			{
-				return _controlPoints[num2];
+				float a = _controlPoints[num];
+				float b = _controlPoints[num2];
+				float num3 = (value - a) / (b - a);
+				if (_invert)
+				{
+					num3 = 1f - num3;
+					Libnoise.SwapValues(ref a, ref b);
+				}
+				num3 *= num3;
+				return Libnoise.Lerp(a, b, num3);
 			}
-			float a = _controlPoints[num];
-			float b = _controlPoints[num2];
-			float num3 = (value - a) / (b - a);
-			if (_invert)
-			{
-				num3 = 1f - num3;
-				Libnoise.SwapValues(ref a, ref b);
-			}
-			num3 *= num3;
-			return Libnoise.Lerp(a, b, num3);
+			return _controlPoints[num2];
 		}
 
 		protected void SortControlPoints()
 		{
 			_controlPoints.Sort(delegate(float p1, float p2)
 			{
-				if (p1 > p2)
+				if (!(p1 > p2))
 				{
-					return 1;
-				}
-				if (p1 < p2)
-				{
+					if (!(p1 < p2))
+					{
+						return 0;
+					}
 					return -1;
 				}
-				return 0;
+				return 1;
 			});
 		}
 	}

@@ -10,7 +10,7 @@ public class TouristModuleConfig : IBuildingConfig
 		string id = "TouristModule";
 		int width = 5;
 		int height = 5;
-		string anim = "rocket_storage_live_kanim";
+		string anim = "rocket_tourist_kanim";
 		int hitpoints = 1000;
 		float construction_time = 60f;
 		float[] cOMMAND_MODULE_MASS = BUILDINGS.ROCKETRY_MASS_KG.COMMAND_MODULE_MASS;
@@ -25,7 +25,6 @@ public class TouristModuleConfig : IBuildingConfig
 		BuildingTemplates.CreateRocketBuildingDef(buildingDef);
 		buildingDef.Deprecated = true;
 		buildingDef.SceneLayer = Grid.SceneLayer.BuildingFront;
-		buildingDef.ViewMode = SimViewMode.None;
 		buildingDef.OverheatTemperature = 2273.15f;
 		buildingDef.Floodable = false;
 		buildingDef.AttachmentSlotTag = GameTags.Rocket;

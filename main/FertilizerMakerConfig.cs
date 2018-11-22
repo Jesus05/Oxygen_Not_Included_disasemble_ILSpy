@@ -44,7 +44,7 @@ public class FertilizerMakerConfig : IBuildingConfig
 		buildingDef.ExhaustKilowattsWhenActive = 1f;
 		buildingDef.SelfHeatKilowattsWhenActive = 2f;
 		buildingDef.InputConduitType = ConduitType.Liquid;
-		buildingDef.ViewMode = SimViewMode.LiquidVentMap;
+		buildingDef.ViewMode = OverlayModes.LiquidConduits.ID;
 		buildingDef.AudioCategory = "HollowMetal";
 		buildingDef.PowerInputOffset = new CellOffset(1, 0);
 		buildingDef.UtilityInputOffset = new CellOffset(0, 0);

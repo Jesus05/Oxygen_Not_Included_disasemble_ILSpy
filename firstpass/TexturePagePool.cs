@@ -15,15 +15,15 @@ public class TexturePagePool
 
 	private int Clamp(int value)
 	{
-		if (value == 0)
+		if (value != 0)
 		{
-			return 32;
-		}
-		if (value % 32 == 0)
-		{
+			if (value % 32 != 0)
+			{
+				return 32 + value / 32 * 32;
+			}
 			return value;
 		}
-		return 32 + value / 32 * 32;
+		return 32;
 	}
 
 	public TexturePage Alloc(string name, int width, int height, TextureFormat format)

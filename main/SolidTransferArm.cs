@@ -105,7 +105,7 @@ public class SolidTransferArm : StateMachineComponent<SolidTransferArm.SMInstanc
 
 	private bool rotation_complete;
 
-	private ArmAnim arm_anim;
+	private ArmAnim arm_anim = ArmAnim.Idle;
 
 	private List<int> reachableCells = new List<int>(100);
 
@@ -223,6 +223,8 @@ public class SolidTransferArm : StateMachineComponent<SolidTransferArm.SMInstanc
 				if (fetchAreaChore != null)
 				{
 					choreDriver.SetChore(out_context);
+					arm_anim_ctrl.enabled = false;
+					arm_anim_ctrl.enabled = true;
 				}
 			}
 			operational.SetActive(choreDriver.HasChore(), false);
@@ -316,24 +318,24 @@ public class SolidTransferArm : StateMachineComponent<SolidTransferArm.SMInstanc
 	private bool IsPickupableRelevantToMyInterests(Pickupable pickupable)
 	{
 		TagBits tagBits = pickupable.KPrefabID.GetTagBits();
-		if (!tagBits.HasAny(this.tagBits))
+		if (tagBits.HasAny(this.tagBits))
 		{
+			if (tagBits.HasAll(requiredTagBits))
+			{
+				if (!tagBits.HasAny(forbiddenTagBits))
+				{
+					int pickupableCell = GetPickupableCell(pickupable);
+					if (IsCellReachable(pickupableCell))
+					{
+						return true;
+					}
+					return false;
+				}
+				return false;
+			}
 			return false;
 		}
-		if (!tagBits.HasAll(requiredTagBits))
-		{
-			return false;
-		}
-		if (tagBits.HasAny(forbiddenTagBits))
-		{
-			return false;
-		}
-		int pickupableCell = GetPickupableCell(pickupable);
-		if (!IsCellReachable(pickupableCell))
-		{
-			return false;
-		}
-		return true;
+		return false;
 	}
 
 	public void FindFetchTarget(Storage destination, TagBits tag_bits, TagBits required_tags, TagBits forbid_tags, float required_amount, ref Pickupable target)
@@ -375,11 +377,11 @@ public class SolidTransferArm : StateMachineComponent<SolidTransferArm.SMInstanc
 
 	private int GetPickupableCell(Pickupable pickupable)
 	{
-		if ((bool)pickupable.storage)
+		if (!(bool)pickupable.storage)
 		{
-			return Grid.PosToCell(pickupable.storage);
+			return pickupable.cachedCell;
 		}
-		return pickupable.cachedCell;
+		return Grid.PosToCell(pickupable.storage);
 	}
 
 	private void SetArmAnim(ArmAnim new_anim)
@@ -431,8 +433,6 @@ public class SolidTransferArm : StateMachineComponent<SolidTransferArm.SMInstanc
 	{
 		arm_rot = rot;
 		arm_go.transform.rotation = Quaternion.Euler(0f, 0f, arm_rot);
-		arm_anim_ctrl.enabled = false;
-		arm_anim_ctrl.enabled = true;
 	}
 
 	private void RotateArm(Vector3 target_dir, bool warp, float dt)

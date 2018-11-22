@@ -75,19 +75,19 @@ public class ElementDropperMonitor : GameStateMachine<ElementDropperMonitor, Ele
 		public bool IsValidDropCell()
 		{
 			int num = Grid.PosToCell(base.transform.GetPosition());
-			if (!Grid.IsValidCell(num))
+			if (Grid.IsValidCell(num))
 			{
+				if (Grid.IsGas(num))
+				{
+					if (!(Grid.Mass[num] > 1f))
+					{
+						return true;
+					}
+					return false;
+				}
 				return false;
 			}
-			if (!Grid.IsGas(num))
-			{
-				return false;
-			}
-			if (Grid.Mass[num] > 1f)
-			{
-				return false;
-			}
-			return true;
+			return false;
 		}
 	}
 

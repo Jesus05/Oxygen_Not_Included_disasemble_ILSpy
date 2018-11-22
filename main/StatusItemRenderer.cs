@@ -130,7 +130,7 @@ public class StatusItemRenderer
 			material = new Material(shader);
 		}
 
-		public void Render(StatusItemRenderer renderer, Vector3 camera_bl, Vector3 camera_tr, SimViewMode overlay)
+		public void Render(StatusItemRenderer renderer, Vector3 camera_bl, Vector3 camera_tr, HashedString overlay)
 		{
 			if (!DebugHandler.HideUI)
 			{
@@ -160,7 +160,7 @@ public class StatusItemRenderer
 									int num = 0;
 									foreach (StatusItem statusItem2 in statusItems)
 									{
-										if (statusItem2.UseConditionalCallback(overlay, transform) || overlay == SimViewMode.None || statusItem2.render_overlay == overlay)
+										if (statusItem2.UseConditionalCallback(overlay, transform) || !(overlay != OverlayModes.None.ID) || !(statusItem2.render_overlay != overlay))
 										{
 											num++;
 										}
@@ -186,7 +186,7 @@ public class StatusItemRenderer
 									for (int i = 0; i < statusItems.Count; i++)
 									{
 										StatusItem statusItem = statusItems[i];
-										if (statusItem.UseConditionalCallback(overlay, transform) || overlay == SimViewMode.None || statusItem.render_overlay == overlay)
+										if (statusItem.UseConditionalCallback(overlay, transform) || !(overlay != OverlayModes.None.ID) || !(statusItem.render_overlay != overlay))
 										{
 											float x = (float)num4 * num2 * 2f - num2 * (float)(num - 1);
 											Sprite sprite = statusItems[i].sprite.sprite;
@@ -241,25 +241,25 @@ public class StatusItemRenderer
 			statusItems.AddRange(entry.statusItems);
 		}
 
-		private bool Intersects(Vector2 pos, float scale, SimViewMode overlay)
+		private bool Intersects(Vector2 pos, float scale)
 		{
-			if ((Object)transform == (Object)null)
+			if (!((Object)transform == (Object)null))
 			{
-				return false;
+				Bounds bounds = mesh.bounds;
+				Vector3 vector = transform.GetPosition() + offset + bounds.center;
+				Vector2 a = new Vector2(vector.x, vector.y);
+				Vector3 size = bounds.size;
+				Vector2 b = new Vector2(size.x * scale * 0.5f, size.y * scale * 0.5f);
+				Vector2 vector2 = a - b;
+				Vector2 vector3 = a + b;
+				return pos.x >= vector2.x && pos.x <= vector3.x && pos.y >= vector2.y && pos.y <= vector3.y;
 			}
-			Bounds bounds = mesh.bounds;
-			Vector3 vector = transform.GetPosition() + offset + bounds.center;
-			Vector2 a = new Vector2(vector.x, vector.y);
-			Vector3 size = bounds.size;
-			Vector2 b = new Vector2(size.x * scale * 0.5f, size.y * scale * 0.5f);
-			Vector2 vector2 = a - b;
-			Vector2 vector3 = a + b;
-			return pos.x >= vector2.x && pos.x <= vector3.x && pos.y >= vector2.y && pos.y <= vector3.y;
+			return false;
 		}
 
-		public void GetIntersection(Vector2 pos, List<SelectTool.Intersection> intersections, float scale, SimViewMode overlay)
+		public void GetIntersection(Vector2 pos, List<SelectTool.Intersection> intersections, float scale)
 		{
-			if (Intersects(pos, scale, overlay))
+			if (Intersects(pos, scale))
 			{
 				KSelectable component = transform.GetComponent<KSelectable>();
 				if (component.IsSelectable)
@@ -273,9 +273,9 @@ public class StatusItemRenderer
 			}
 		}
 
-		public void GetIntersection(Vector2 pos, List<KSelectable> selectables, float scale, SimViewMode overlay)
+		public void GetIntersection(Vector2 pos, List<KSelectable> selectables, float scale)
 		{
-			if (Intersects(pos, scale, overlay))
+			if (Intersects(pos, scale))
 			{
 				KSelectable component = transform.GetComponent<KSelectable>();
 				if (component.IsSelectable && !selectables.Contains(component))
@@ -461,13 +461,13 @@ public class StatusItemRenderer
 		entryCount--;
 	}
 
-	private SimViewMode GetMode()
+	private HashedString GetMode()
 	{
-		if ((Object)OverlayScreen.Instance != (Object)null)
+		if (!((Object)OverlayScreen.Instance != (Object)null))
 		{
-			return OverlayScreen.Instance.mode;
+			return OverlayModes.None.ID;
 		}
-		return SimViewMode.None;
+		return OverlayScreen.Instance.mode;
 	}
 
 	public void MarkAllDirty()
@@ -499,7 +499,7 @@ public class StatusItemRenderer
 	{
 		foreach (Entry visibleEntry in visibleEntries)
 		{
-			visibleEntry.GetIntersection(pos, intersections, scale, GetMode());
+			visibleEntry.GetIntersection(pos, intersections, scale);
 		}
 	}
 
@@ -507,7 +507,7 @@ public class StatusItemRenderer
 	{
 		foreach (Entry visibleEntry in visibleEntries)
 		{
-			visibleEntry.GetIntersection(pos, selectables, scale, GetMode());
+			visibleEntry.GetIntersection(pos, selectables, scale);
 		}
 	}
 

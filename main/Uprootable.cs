@@ -9,7 +9,7 @@ public class Uprootable : Workable
 	[Serialize]
 	protected bool isMarkedForUproot;
 
-	protected bool uprootComplete;
+	protected bool uprootComplete = false;
 
 	[MyCmpReq]
 	private Prioritizable prioritizable;
@@ -154,7 +154,7 @@ public class Uprootable : Workable
 			}
 			else if (chore == null)
 			{
-				chore = new WorkChore<Uprootable>(Db.Get().ChoreTypes.Uproot, this, null, null, true, null, null, null, true, null, false, true, null, false, true, true, PriorityScreen.PriorityClass.basic, 0, false);
+				chore = new WorkChore<Uprootable>(Db.Get().ChoreTypes.Uproot, this, null, null, true, null, null, null, true, null, false, true, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, false);
 				GetComponent<KSelectable>().AddStatusItem(pendingStatusItem, this);
 			}
 			isMarkedForUproot = true;
@@ -180,11 +180,11 @@ public class Uprootable : Workable
 
 	public bool HasChore()
 	{
-		if (chore == null)
+		if (chore != null)
 		{
-			return false;
+			return true;
 		}
-		return true;
+		return false;
 	}
 
 	private void OnClickUproot()

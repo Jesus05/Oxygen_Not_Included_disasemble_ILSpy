@@ -22,7 +22,7 @@ public class TemperatureControlledSwitchConfig : IBuildingConfig
 		buildingDef.Deprecated = true;
 		buildingDef.Overheatable = false;
 		buildingDef.Floodable = false;
-		buildingDef.ViewMode = SimViewMode.PowerMap;
+		buildingDef.ViewMode = OverlayModes.Power.ID;
 		buildingDef.AudioCategory = "Metal";
 		buildingDef.SceneLayer = Grid.SceneLayer.Building;
 		SoundEventVolumeCache.instance.AddVolume("switchthermal_kanim", "PowerSwitch_on", NOISE_POLLUTION.NOISY.TIER3);

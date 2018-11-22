@@ -35,7 +35,7 @@ public class HandSanitizer : StateMachineComponent<HandSanitizer.SMInstance>, IE
 		{
 		}
 
-		public bool HasSufficientMass()
+		private bool HasSufficientMass()
 		{
 			bool result = false;
 			PrimaryElement primaryElement = GetComponent<Storage>().FindPrimaryElement(base.master.consumedElement);
@@ -49,9 +49,22 @@ public class HandSanitizer : StateMachineComponent<HandSanitizer.SMInstance>, IE
 		public bool OutputFull()
 		{
 			PrimaryElement primaryElement = GetComponent<Storage>().FindPrimaryElement(base.master.outputElement);
-			if ((UnityEngine.Object)primaryElement != (UnityEngine.Object)null)
+			if (!((UnityEngine.Object)primaryElement != (UnityEngine.Object)null))
 			{
-				return primaryElement.Mass >= (float)base.master.maxUses * base.master.massConsumedPerUse;
+				return false;
+			}
+			return primaryElement.Mass >= (float)base.master.maxUses * base.master.massConsumedPerUse;
+		}
+
+		public bool IsReady()
+		{
+			if (HasSufficientMass())
+			{
+				if (!OutputFull())
+				{
+					return true;
+				}
+				return false;
 			}
 			return false;
 		}
@@ -92,18 +105,30 @@ public class HandSanitizer : StateMachineComponent<HandSanitizer.SMInstance>, IE
 		public override void InitializeStates(out BaseState default_state)
 		{
 			default_state = notready;
+			root.Update(UpdateStatusItems, UpdateRate.SIM_200ms, false);
 			notoperational.PlayAnim("off").TagTransition(GameTags.Operational, notready, false);
-			notready.PlayAnim("off").EventTransition(GameHashes.OnStorageChange, ready, (SMInstance smi) => smi.HasSufficientMass()).TagTransition(GameTags.Operational, notoperational, true);
-			ready.DefaultState(ready.free).ToggleReactable((SMInstance smi) => smi.master.reactable = new WashHandsReactable(smi.master.GetComponent<Work>(), Db.Get().ChoreTypes.WashHands, smi.master.GetComponent<DirectionControl>().allowedDirection)).EventTransition(GameHashes.OnStorageChange, notready, (SMInstance smi) => !smi.HasSufficientMass())
-				.TagTransition(GameTags.Operational, notoperational, true);
+			notready.PlayAnim("off").EventTransition(GameHashes.OnStorageChange, ready, (SMInstance smi) => smi.IsReady()).TagTransition(GameTags.Operational, notoperational, true);
+			ready.DefaultState(ready.free).ToggleReactable((SMInstance smi) => smi.master.reactable = new WashHandsReactable(smi.master.GetComponent<Work>(), Db.Get().ChoreTypes.WashHands, smi.master.GetComponent<DirectionControl>().allowedDirection)).TagTransition(GameTags.Operational, notoperational, true);
 			ready.free.PlayAnim("on").WorkableStartTransition((SMInstance smi) => smi.GetComponent<Work>(), ready.occupied);
-			ready.occupied.PlayAnim("working_pre").QueueAnim("working_loop", true, null).WorkableStopTransition((SMInstance smi) => smi.GetComponent<Work>(), ready);
+			ready.occupied.PlayAnim("working_pre").QueueAnim("working_loop", true, null).WorkableStopTransition((SMInstance smi) => smi.GetComponent<Work>(), notready);
+		}
+
+		private void UpdateStatusItems(SMInstance smi, float dt)
+		{
+			if (smi.OutputFull())
+			{
+				smi.master.GetComponent<KSelectable>().AddStatusItem(Db.Get().BuildingStatusItems.OutputPipeFull, this);
+			}
+			else
+			{
+				smi.master.GetComponent<KSelectable>().RemoveStatusItem(Db.Get().BuildingStatusItems.OutputPipeFull, false);
+			}
 		}
 	}
 
 	public class Work : Workable, IGameObjectEffectDescriptor
 	{
-		private int diseaseRemoved;
+		private int diseaseRemoved = 0;
 
 		protected override void OnPrefabInit()
 		{
@@ -166,18 +191,20 @@ public class HandSanitizer : StateMachineComponent<HandSanitizer.SMInstance>, IE
 
 	public SimHashes outputElement = SimHashes.Vacuum;
 
+	public bool dumpWhenFull = false;
+
 	private WorkableReactable reactable;
 
 	private MeterController cleanMeter;
 
 	private MeterController dirtyMeter;
 
-	public Meter.Offset cleanMeterOffset;
+	public Meter.Offset cleanMeterOffset = Meter.Offset.Infront;
 
-	public Meter.Offset dirtyMeterOffset;
+	public Meter.Offset dirtyMeterOffset = Meter.Offset.Infront;
 
 	[Serialize]
-	public int maxPossiblyRemoved;
+	public int maxPossiblyRemoved = 0;
 
 	private static readonly EventSystem.IntraObjectHandler<HandSanitizer> OnStorageChangeDelegate = new EventSystem.IntraObjectHandler<HandSanitizer>(delegate(HandSanitizer component, object data)
 	{
@@ -266,7 +293,7 @@ public class HandSanitizer : StateMachineComponent<HandSanitizer.SMInstance>, IE
 
 	private void OnStorageChange(object data)
 	{
-		if (base.smi.OutputFull())
+		if (dumpWhenFull && base.smi.OutputFull())
 		{
 			base.smi.DumpOutput();
 		}

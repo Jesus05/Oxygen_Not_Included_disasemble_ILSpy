@@ -10,7 +10,7 @@ public class FactionAlignment : KMonoBehaviour
 	public FactionManager.FactionID Alignment;
 
 	[Serialize]
-	public bool targeted;
+	public bool targeted = false;
 
 	[Serialize]
 	public bool targetable = true;
@@ -56,6 +56,7 @@ public class FactionAlignment : KMonoBehaviour
 			FactionManager.Instance.GetFaction(Alignment).Members.Add(this);
 		}
 		Subscribe(1623392196, OnDeathDelegate);
+		UpdateStatusItem();
 	}
 
 	private void OnDeath(object data)
@@ -94,9 +95,14 @@ public class FactionAlignment : KMonoBehaviour
 	public void SetPlayerTargeted(bool state)
 	{
 		targeted = (state && targetable);
+		UpdateStatusItem();
+	}
+
+	private void UpdateStatusItem()
+	{
 		if (targeted)
 		{
-			GetComponent<KSelectable>().AddStatusItem(Db.Get().MiscStatusItems.OrderAttack, this);
+			GetComponent<KSelectable>().AddStatusItem(Db.Get().MiscStatusItems.OrderAttack, null);
 		}
 		else
 		{

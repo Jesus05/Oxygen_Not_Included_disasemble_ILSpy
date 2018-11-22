@@ -30,23 +30,23 @@ public class ExternalTemperatureMonitor : GameStateMachine<ExternalTemperatureMo
 
 		private const float MIN_SCALD_INTERVAL = 5f;
 
-		private float lastScaldTime;
+		private float lastScaldTime = 0f;
 
 		public float GetCurrentExternalTemperature
 		{
 			get
 			{
 				int num = Grid.PosToCell(base.gameObject);
-				if ((Object)occupyArea != (Object)null)
+				if (!((Object)occupyArea != (Object)null))
 				{
-					float num2 = 0f;
-					for (int i = 0; i < occupyArea.OccupiedCellsOffsets.Length; i++)
-					{
-						num2 += Grid.Temperature[Grid.OffsetCell(num, occupyArea.OccupiedCellsOffsets[i])];
-					}
-					return num2 / (float)occupyArea.OccupiedCellsOffsets.Length;
+					return Grid.Temperature[num];
 				}
-				return Grid.Temperature[num];
+				float num2 = 0f;
+				for (int i = 0; i < occupyArea.OccupiedCellsOffsets.Length; i++)
+				{
+					num2 += Grid.Temperature[Grid.OffsetCell(num, occupyArea.OccupiedCellsOffsets[i])];
+				}
+				return num2 / (float)occupyArea.OccupiedCellsOffsets.Length;
 			}
 		}
 
@@ -54,11 +54,11 @@ public class ExternalTemperatureMonitor : GameStateMachine<ExternalTemperatureMo
 		{
 			get
 			{
-				if (internalTemperatureMonitor.IdealTemperatureDelta() > 0.5f)
+				if (!(internalTemperatureMonitor.IdealTemperatureDelta() > 0.5f))
 				{
-					return 0f;
+					return CreatureSimTemperatureTransfer.PotentialEnergyFlowToCreature(Grid.PosToCell(base.gameObject), primaryElement, temperatureTransferer, 1f);
 				}
-				return CreatureSimTemperatureTransfer.PotentialEnergyFlowToCreature(Grid.PosToCell(base.gameObject), primaryElement, temperatureTransferer, 1f);
+				return 0f;
 			}
 		}
 
@@ -89,12 +89,12 @@ public class ExternalTemperatureMonitor : GameStateMachine<ExternalTemperatureMo
 
 		public bool IsTooHot()
 		{
-			if (internalTemperatureMonitor.IdealTemperatureDelta() < -0.5f)
+			if (!(internalTemperatureMonitor.IdealTemperatureDelta() < -0.5f))
 			{
-				return false;
-			}
-			if (base.smi.temperatureTransferer.average_kilowatts_exchanged.GetWeightedAverage > GetExternalWarmThreshold(base.smi.attributes))
-			{
+				if (!(base.smi.temperatureTransferer.average_kilowatts_exchanged.GetWeightedAverage > GetExternalWarmThreshold(base.smi.attributes)))
+				{
+					return false;
+				}
 				return true;
 			}
 			return false;
@@ -102,12 +102,12 @@ public class ExternalTemperatureMonitor : GameStateMachine<ExternalTemperatureMo
 
 		public bool IsTooCold()
 		{
-			if (internalTemperatureMonitor.IdealTemperatureDelta() > 0.5f)
+			if (!(internalTemperatureMonitor.IdealTemperatureDelta() > 0.5f))
 			{
-				return false;
-			}
-			if (base.smi.temperatureTransferer.average_kilowatts_exchanged.GetWeightedAverage < GetExternalColdThreshold(base.smi.attributes))
-			{
+				if (!(base.smi.temperatureTransferer.average_kilowatts_exchanged.GetWeightedAverage < GetExternalColdThreshold(base.smi.attributes)))
+				{
+					return false;
+				}
 				return true;
 			}
 			return false;
@@ -165,20 +165,20 @@ public class ExternalTemperatureMonitor : GameStateMachine<ExternalTemperatureMo
 
 	public static float GetExternalColdThreshold(Attributes affected_attributes)
 	{
-		if (affected_attributes == null)
+		if (affected_attributes != null)
 		{
-			return -0.36261335f;
+			return 0f - (0.36261335f - affected_attributes.GetValue(Db.Get().Attributes.RoomTemperaturePreference.Id));
 		}
-		return 0f - (0.36261335f - affected_attributes.GetValue(Db.Get().Attributes.RoomTemperaturePreference.Id));
+		return -0.36261335f;
 	}
 
 	public static float GetExternalWarmThreshold(Attributes affected_attributes)
 	{
-		if (affected_attributes == null)
+		if (affected_attributes != null)
 		{
-			return 0.195253342f;
+			return 0f - (-0.195253342f - affected_attributes.GetValue(Db.Get().Attributes.RoomTemperaturePreference.Id));
 		}
-		return 0f - (-0.195253342f - affected_attributes.GetValue(Db.Get().Attributes.RoomTemperaturePreference.Id));
+		return 0.195253342f;
 	}
 
 	public override void InitializeStates(out BaseState default_state)

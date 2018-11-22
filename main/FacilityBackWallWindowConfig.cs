@@ -23,7 +23,6 @@ public class FacilityBackWallWindowConfig : IBuildingConfig
 		buildingDef.Overheatable = false;
 		buildingDef.AudioCategory = "Metal";
 		buildingDef.BaseTimeUntilRepair = -1f;
-		buildingDef.ViewMode = SimViewMode.None;
 		buildingDef.DefaultAnimState = "off";
 		buildingDef.ObjectLayer = ObjectLayer.Backwall;
 		buildingDef.SceneLayer = Grid.SceneLayer.TempShiftPlate;

@@ -41,7 +41,7 @@ public class ColonyRationMonitor : GameStateMachine<ColonyRationMonitor, ColonyR
 		{
 			smi.UpdateIsOutOfRations();
 		}, UpdateRate.SIM_200ms, false);
-		satisfied.ParamTransition(isOutOfRations, outofrations, (Instance smi, bool p) => p).TriggerOnEnter(GameHashes.ColonyHasRationsChanged, null);
-		outofrations.ParamTransition(isOutOfRations, satisfied, (Instance smi, bool p) => !p).TriggerOnEnter(GameHashes.ColonyHasRationsChanged, null);
+		satisfied.ParamTransition(isOutOfRations, outofrations, GameStateMachine<ColonyRationMonitor, Instance, IStateMachineTarget, object>.IsTrue).TriggerOnEnter(GameHashes.ColonyHasRationsChanged, null);
+		outofrations.ParamTransition(isOutOfRations, satisfied, GameStateMachine<ColonyRationMonitor, Instance, IStateMachineTarget, object>.IsFalse).TriggerOnEnter(GameHashes.ColonyHasRationsChanged, null);
 	}
 }

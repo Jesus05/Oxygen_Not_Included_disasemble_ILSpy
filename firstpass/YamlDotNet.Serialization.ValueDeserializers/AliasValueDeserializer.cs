@@ -87,40 +87,40 @@ namespace YamlDotNet.Serialization.ValueDeserializers
 		public object DeserializeValue(IParser parser, Type expectedType, SerializerState state, IValueDeserializer nestedObjectDeserializer)
 		{
 			AnchorAlias anchorAlias = parser.Allow<AnchorAlias>();
-			if (anchorAlias != null)
+			if (anchorAlias == null)
 			{
-				AliasState aliasState = state.Get<AliasState>();
-				if (!aliasState.TryGetValue(anchorAlias.Value, out ValuePromise value))
+				string text = null;
+				NodeEvent nodeEvent = parser.Peek<NodeEvent>();
+				if (nodeEvent != null && !string.IsNullOrEmpty(nodeEvent.Anchor))
 				{
-					value = new ValuePromise(anchorAlias);
-					aliasState.Add(anchorAlias.Value, value);
+					text = nodeEvent.Anchor;
 				}
-				return (!value.HasValue) ? value : value.Value;
+				object obj = innerDeserializer.DeserializeValue(parser, expectedType, state, nestedObjectDeserializer);
+				if (text != null)
+				{
+					AliasState aliasState = state.Get<AliasState>();
+					if (!aliasState.TryGetValue(text, out ValuePromise value))
+					{
+						aliasState.Add(text, new ValuePromise(obj));
+					}
+					else if (!value.HasValue)
+					{
+						value.Value = obj;
+					}
+					else
+					{
+						aliasState[text] = new ValuePromise(obj);
+					}
+				}
+				return obj;
 			}
-			string text = null;
-			NodeEvent nodeEvent = parser.Peek<NodeEvent>();
-			if (nodeEvent != null && !string.IsNullOrEmpty(nodeEvent.Anchor))
+			AliasState aliasState2 = state.Get<AliasState>();
+			if (!aliasState2.TryGetValue(anchorAlias.Value, out ValuePromise value2))
 			{
-				text = nodeEvent.Anchor;
+				value2 = new ValuePromise(anchorAlias);
+				aliasState2.Add(anchorAlias.Value, value2);
 			}
-			object obj = innerDeserializer.DeserializeValue(parser, expectedType, state, nestedObjectDeserializer);
-			if (text != null)
-			{
-				AliasState aliasState2 = state.Get<AliasState>();
-				if (!aliasState2.TryGetValue(text, out ValuePromise value2))
-				{
-					aliasState2.Add(text, new ValuePromise(obj));
-				}
-				else if (!value2.HasValue)
-				{
-					value2.Value = obj;
-				}
-				else
-				{
-					aliasState2[text] = new ValuePromise(obj);
-				}
-			}
-			return obj;
+			return (!value2.HasValue) ? value2 : value2.Value;
 		}
 	}
 }

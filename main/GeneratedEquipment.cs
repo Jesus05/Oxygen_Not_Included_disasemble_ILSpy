@@ -7,7 +7,5 @@ public class GeneratedEquipment
 		EquipmentConfigManager.Instance.RegisterEquipment(new WarmVestConfig());
 		EquipmentConfigManager.Instance.RegisterEquipment(new CoolVestConfig());
 		EquipmentConfigManager.Instance.RegisterEquipment(new FunkyVestConfig());
-		EquipmentConfigManager.Instance.RegisterEquipment(new BoringMachineConfig());
-		EquipmentConfigManager.Instance.RegisterEquipment(new QuarryingGunConfig());
 	}
 }

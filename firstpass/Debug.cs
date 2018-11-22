@@ -1,3 +1,4 @@
+#define UNITY_ASSERTIONS
 using System;
 using System.Diagnostics;
 using UnityEngine;
@@ -20,7 +21,7 @@ public static class Debug
 
 	private static string TimeStamp()
 	{
-		return string.Empty;
+		return "";
 	}
 
 	public static void Break()
@@ -73,16 +74,19 @@ public static class Debug
 	[Conditional("UNITY_EDITOR")]
 	public static void Assert(bool condition)
 	{
+		UnityEngine.Debug.Assert(condition);
 	}
 
 	[Conditional("UNITY_EDITOR")]
 	public static void Assert(bool condition, object message)
 	{
+		UnityEngine.Debug.Assert(condition, message);
 	}
 
 	[Conditional("UNITY_EDITOR")]
 	public static void Assert(bool condition, object message, UnityEngine.Object context)
 	{
+		UnityEngine.Debug.Assert(condition, message, context);
 	}
 
 	[Conditional("UNITY_EDITOR")]

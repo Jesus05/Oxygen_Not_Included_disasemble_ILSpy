@@ -170,6 +170,16 @@ public class Edible : Workable, IGameObjectEffectDescriptor, IHasSortOrder
 		return normalWorkAnims;
 	}
 
+	public override HashedString GetWorkPstAnim(Worker worker, bool successfully_completed)
+	{
+		MinionResume component = worker.GetComponent<MinionResume>();
+		if ((Object)GetComponent<Building>() != (Object)null && (Object)component != (Object)null && component.CurrentRole != "NoRole")
+		{
+			return hatWorkPstAnim;
+		}
+		return normalWorkPstAnim;
+	}
+
 	private void OnCraft(object data)
 	{
 		RationTracker.Get().RegisterCaloriesProduced(Calories);

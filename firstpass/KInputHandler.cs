@@ -215,28 +215,28 @@ public class KInputHandler
 
 	public bool IsActive(Action action)
 	{
-		if (mController != null)
+		if (mController == null)
 		{
-			return mController.IsActive(action);
+			return false;
 		}
-		return false;
+		return mController.IsActive(action);
 	}
 
 	public float GetAxis(Axis axis)
 	{
-		if (mController != null)
+		if (mController == null)
 		{
-			return mController.GetAxis(axis);
+			return 0f;
 		}
-		return 0f;
+		return mController.GetAxis(axis);
 	}
 
 	public bool IsGamepad()
 	{
-		if (mController != null)
+		if (mController == null)
 		{
-			return mController.IsGamepad;
+			return false;
 		}
-		return false;
+		return mController.IsGamepad;
 	}
 }

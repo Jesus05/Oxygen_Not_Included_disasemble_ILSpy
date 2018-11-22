@@ -119,12 +119,12 @@ public class TubeTraveller : GameStateMachine<TubeTraveller, TubeTraveller.Insta
 
 		private bool HasSuitTank()
 		{
-			Equipment component = GetComponent<Equipment>();
-			AssignableSlotInstance slot = component.GetSlot(Db.Get().AssignableSlots.Suit);
+			Equipment equipment = GetComponent<MinionIdentity>().GetEquipment();
+			AssignableSlotInstance slot = equipment.GetSlot(Db.Get().AssignableSlots.Suit);
 			if (slot != null && (Object)slot.assignable != (Object)null)
 			{
-				SuitTank component2 = slot.assignable.GetComponent<SuitTank>();
-				return (Object)component2 != (Object)null;
+				SuitTank component = slot.assignable.GetComponent<SuitTank>();
+				return (Object)component != (Object)null;
 			}
 			return false;
 		}

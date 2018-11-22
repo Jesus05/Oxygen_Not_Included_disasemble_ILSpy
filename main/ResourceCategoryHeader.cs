@@ -23,7 +23,7 @@ public class ResourceCategoryHeader : KMonoBehaviour, IPointerEnterHandler, IPoi
 
 	public GameUtil.MeasureUnit Measure;
 
-	public bool IsOpen;
+	public bool IsOpen = false;
 
 	public ImageToggleState expandArrow;
 
@@ -37,11 +37,11 @@ public class ResourceCategoryHeader : KMonoBehaviour, IPointerEnterHandler, IPoi
 
 	public Color TextColor_NonInteractable;
 
-	private string quantityString;
+	private string quantityString = null;
 
-	private float currentQuantity;
+	private float currentQuantity = 0f;
 
-	private bool anyDiscovered;
+	private bool anyDiscovered = false;
 
 	[MyCmpGet]
 	private ToolTip tooltip;

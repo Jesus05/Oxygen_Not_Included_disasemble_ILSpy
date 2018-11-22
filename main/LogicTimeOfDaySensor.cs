@@ -6,13 +6,38 @@ public class LogicTimeOfDaySensor : Switch, ISaveLoadable, ISim200ms
 {
 	[SerializeField]
 	[Serialize]
-	public float startTime;
+	public float startTime = 0f;
 
 	[SerializeField]
 	[Serialize]
 	public float duration = 1f;
 
-	private bool wasOn;
+	private bool wasOn = false;
+
+	[MyCmpAdd]
+	private CopyBuildingSettings copyBuildingSettings;
+
+	private static readonly EventSystem.IntraObjectHandler<LogicTimeOfDaySensor> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<LogicTimeOfDaySensor>(delegate(LogicTimeOfDaySensor component, object data)
+	{
+		component.OnCopySettings(data);
+	});
+
+	protected override void OnPrefabInit()
+	{
+		base.OnPrefabInit();
+		Subscribe(-905833192, OnCopySettingsDelegate);
+	}
+
+	private void OnCopySettings(object data)
+	{
+		GameObject gameObject = (GameObject)data;
+		LogicTimeOfDaySensor component = gameObject.GetComponent<LogicTimeOfDaySensor>();
+		if ((Object)component != (Object)null)
+		{
+			startTime = component.startTime;
+			duration = component.duration;
+		}
+	}
 
 	protected override void OnSpawn()
 	{

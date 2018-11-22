@@ -61,8 +61,16 @@ internal class EatStates : GameStateMachine<EatStates, EatStates.Instance, IStat
 	{
 		default_state = goingtoeat;
 		root.Enter(SetTarget).Enter(ReserveEdible).Exit(UnreserveEdible);
-		goingtoeat.MoveTo(GetEdibleCell, eating, null, false).ToggleStatusItem(CREATURES.STATUSITEMS.LOOKINGFORFOOD.NAME, CREATURES.STATUSITEMS.LOOKINGFORFOOD.TOOLTIP, category: Db.Get().StatusItemCategories.Main, icon: string.Empty, icon_type: StatusItem.IconType.Info, notification_type: (NotificationType)0, allow_multiples: false, render_overlay: SimViewMode.None, status_overlays: 0, resolve_string_callback: null, resolve_tooltip_callback: null);
-		eating.DefaultState(eating.pre).ToggleStatusItem(CREATURES.STATUSITEMS.EATING.NAME, CREATURES.STATUSITEMS.EATING.TOOLTIP, category: Db.Get().StatusItemCategories.Main, icon: string.Empty, icon_type: StatusItem.IconType.Info, notification_type: (NotificationType)0, allow_multiples: false, render_overlay: SimViewMode.None, status_overlays: 0, resolve_string_callback: null, resolve_tooltip_callback: null);
+		State state = goingtoeat.MoveTo(GetEdibleCell, eating, null, false);
+		string name = CREATURES.STATUSITEMS.LOOKINGFORFOOD.NAME;
+		string tooltip = CREATURES.STATUSITEMS.LOOKINGFORFOOD.TOOLTIP;
+		StatusItemCategory main = Db.Get().StatusItemCategories.Main;
+		state.ToggleStatusItem(name, tooltip, "", StatusItem.IconType.Info, (NotificationType)0, false, default(HashedString), 0, null, null, main);
+		State state2 = eating.DefaultState(eating.pre);
+		tooltip = CREATURES.STATUSITEMS.EATING.NAME;
+		name = CREATURES.STATUSITEMS.EATING.TOOLTIP;
+		main = Db.Get().StatusItemCategories.Main;
+		state2.ToggleStatusItem(tooltip, name, "", StatusItem.IconType.Info, (NotificationType)0, false, default(HashedString), 0, null, null, main);
 		eating.pre.QueueAnim("eat_pre", false, null).OnAnimQueueComplete(eating.loop);
 		eating.loop.Enter(EatComplete).QueueAnim("eat_loop", true, null).ScheduleGoTo(3f, eating.pst);
 		eating.pst.QueueAnim("eat_pst", false, null).OnAnimQueueComplete(behaviourcomplete);
@@ -79,7 +87,7 @@ internal class EatStates : GameStateMachine<EatStates, EatStates.Instance, IStat
 		GameObject gameObject = smi.sm.target.Get(smi);
 		if ((UnityEngine.Object)gameObject != (UnityEngine.Object)null)
 		{
-			DebugUtil.Assert(!gameObject.HasTag(GameTags.Creatures.ReservedByCreature), "Assert!", string.Empty, string.Empty);
+			DebugUtil.Assert(!gameObject.HasTag(GameTags.Creatures.ReservedByCreature));
 			gameObject.AddTag(GameTags.Creatures.ReservedByCreature);
 		}
 	}
@@ -89,7 +97,7 @@ internal class EatStates : GameStateMachine<EatStates, EatStates.Instance, IStat
 		GameObject gameObject = smi.sm.target.Get(smi);
 		if ((UnityEngine.Object)gameObject != (UnityEngine.Object)null)
 		{
-			DebugUtil.Assert(gameObject.HasTag(GameTags.Creatures.ReservedByCreature), "Assert!", string.Empty, string.Empty);
+			DebugUtil.Assert(gameObject.HasTag(GameTags.Creatures.ReservedByCreature));
 			gameObject.RemoveTag(GameTags.Creatures.ReservedByCreature);
 		}
 	}

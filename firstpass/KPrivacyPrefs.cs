@@ -44,7 +44,7 @@ public class KPrivacyPrefs : YamlIO<KPrivacyPrefs>
 			{
 				Directory.CreateDirectory(GetDirectory());
 			}
-			instance.Save(GetPath());
+			instance.Save(GetPath(), null);
 		}
 		catch (Exception ex)
 		{
@@ -64,7 +64,7 @@ public class KPrivacyPrefs : YamlIO<KPrivacyPrefs>
 			if (File.Exists(path))
 			{
 				string readText = File.ReadAllText(path);
-				_instance = YamlIO<KPrivacyPrefs>.Parse(readText, path);
+				_instance = YamlIO<KPrivacyPrefs>.Parse(readText, null);
 				if (_instance == null)
 				{
 					LogError("Exception while loading privacy prefs:" + path);

@@ -3,7 +3,7 @@ public class SaveActive : KScreen
 	[MyCmpGet]
 	private KBatchedAnimController controller;
 
-	private Game.CansaveCB readyForSaveCallback;
+	private Game.CansaveCB readyForSaveCallback = null;
 
 	protected override void OnSpawn()
 	{

@@ -33,7 +33,7 @@ public class TelescopeConfig : IBuildingConfig
 		buildingDef.SelfHeatKilowattsWhenActive = 0f;
 		buildingDef.InputConduitType = ConduitType.Gas;
 		buildingDef.UtilityInputOffset = new CellOffset(0, 0);
-		buildingDef.ViewMode = SimViewMode.PowerMap;
+		buildingDef.ViewMode = OverlayModes.Power.ID;
 		buildingDef.AudioCategory = "Metal";
 		buildingDef.AudioSize = "large";
 		return buildingDef;

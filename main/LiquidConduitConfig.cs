@@ -27,7 +27,7 @@ public class LiquidConduitConfig : IBuildingConfig
 		buildingDef.Floodable = false;
 		buildingDef.Overheatable = false;
 		buildingDef.Entombable = false;
-		buildingDef.ViewMode = SimViewMode.LiquidVentMap;
+		buildingDef.ViewMode = OverlayModes.LiquidConduits.ID;
 		buildingDef.ObjectLayer = ObjectLayer.LiquidConduit;
 		buildingDef.TileLayer = ObjectLayer.LiquidConduitTile;
 		buildingDef.ReplacementLayer = ObjectLayer.ReplacementLiquidConduit;

@@ -1,4 +1,3 @@
-using OverlayModes;
 using TUNING;
 using UnityEngine;
 
@@ -14,7 +13,7 @@ public abstract class LogicGateBaseConfig : IBuildingConfig
 		BuildLocationRule build_location_rule = BuildLocationRule.Anywhere;
 		EffectorValues nONE = NOISE_POLLUTION.NONE;
 		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(ID, width, height, anim, hitpoints, construction_time, tIER, rEFINED_METALS, melting_point, build_location_rule, BUILDINGS.DECOR.PENALTY.TIER0, nONE, 0.2f);
-		buildingDef.ViewMode = SimViewMode.Logic;
+		buildingDef.ViewMode = OverlayModes.Logic.ID;
 		buildingDef.ObjectLayer = ObjectLayer.LogicGates;
 		buildingDef.SceneLayer = Grid.SceneLayer.LogicWireBridges;
 		buildingDef.ThermalConductivity = 0.05f;
@@ -27,7 +26,7 @@ public abstract class LogicGateBaseConfig : IBuildingConfig
 		buildingDef.PermittedRotations = PermittedRotations.R360;
 		buildingDef.DragBuild = true;
 		LogicGateBase.uiSrcData = Assets.instance.logicModeUIData;
-		GeneratedBuildings.RegisterWithOverlay(Logic.HighlightItemIDs, ID);
+		GeneratedBuildings.RegisterWithOverlay(OverlayModes.Logic.HighlightItemIDs, ID);
 		return buildingDef;
 	}
 

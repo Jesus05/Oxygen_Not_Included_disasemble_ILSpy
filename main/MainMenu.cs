@@ -51,6 +51,8 @@ public class MainMenu : KMonoBehaviour
 	[SerializeField]
 	private GameObject buttonParent;
 
+	private static bool HasAutoresumedOnce = false;
+
 	private static int LANGUAGE_CONFIRMATION_VERSION = 2;
 
 	private Dictionary<string, SaveFileEntry> saveFileEntries = new Dictionary<string, SaveFileEntry>();
@@ -137,8 +139,9 @@ public class MainMenu : KMonoBehaviour
 			ConfirmDialogScreen confirmDialogScreen = Util.KInstantiateUI<ConfirmDialogScreen>(ScreenPrefabs.Instance.ConfirmDialogScreen.gameObject, base.gameObject, true);
 			confirmDialogScreen.PopupConfirmDialog(text, null, null, null, null, null, null, null, null);
 		}
-		if (GenericGameSettings.instance.autoResumeGame)
+		if (GenericGameSettings.instance.autoResumeGame && !HasAutoresumedOnce)
 		{
+			HasAutoresumedOnce = true;
 			ResumeGame();
 		}
 	}
@@ -228,7 +231,7 @@ public class MainMenu : KMonoBehaviour
 					header = value.header;
 					gameInfo = value.headerData;
 				}
-				if (header.buildVersion > 291640 || gameInfo.saveMajorVersion < 7)
+				if (header.buildVersion > 295825 || gameInfo.saveMajorVersion < 7)
 				{
 					flag = false;
 				}
@@ -314,7 +317,7 @@ public class MainMenu : KMonoBehaviour
 
 	private void CheckDoubleBoundKeys()
 	{
-		string text = string.Empty;
+		string text = "";
 		HashSet<BindingEntry> hashSet = new HashSet<BindingEntry>();
 		for (int i = 0; i < GameInputMapping.KeyBindings.Length; i++)
 		{
@@ -352,7 +355,7 @@ public class MainMenu : KMonoBehaviour
 				hashSet.Add(GameInputMapping.KeyBindings[i]);
 			}
 		}
-		if (text != string.Empty)
+		if (text != "")
 		{
 			ConfirmDialogScreen confirmDialogScreen = Util.KInstantiateUI<ConfirmDialogScreen>(ScreenPrefabs.Instance.ConfirmDialogScreen.gameObject, base.gameObject, true);
 			ConfirmDialogScreen confirmDialogScreen2 = confirmDialogScreen;

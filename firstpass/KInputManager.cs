@@ -43,7 +43,7 @@ public class KInputManager
 
 	public KInputController GetController(int controller_index)
 	{
-		DebugUtil.Assert(controller_index < mControllers.Count, "Assert!", string.Empty, string.Empty);
+		DebugUtil.Assert(controller_index < mControllers.Count);
 		return mControllers[controller_index];
 	}
 
@@ -95,10 +95,10 @@ public class KInputManager
 
 	public static Vector3 GetMousePos()
 	{
-		if (isMousePosLocked)
+		if (!isMousePosLocked)
 		{
-			return lockedMousePos;
+			return Input.mousePosition;
 		}
-		return Input.mousePosition;
+		return lockedMousePos;
 	}
 }

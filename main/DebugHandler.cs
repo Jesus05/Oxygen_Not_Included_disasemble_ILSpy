@@ -28,11 +28,11 @@ public class DebugHandler : IInputHandler
 
 	public static bool DebugNextCall;
 
-	private bool superTestMode;
+	private bool superTestMode = false;
 
-	private bool ultraTestMode;
+	private bool ultraTestMode = false;
 
-	private bool slowTestMode;
+	private bool slowTestMode = false;
 
 	public static bool enabled
 	{
@@ -175,6 +175,7 @@ public class DebugHandler : IInputHandler
 				ManagementMenu.Instance.CheckRoles(null);
 				ManagementMenu.Instance.CheckStarmap(null);
 			}
+			Game.Instance.Trigger(1594320620, "all_the_things");
 		}
 		else if (e.TryConsume(Action.DebugExplosion))
 		{
@@ -402,7 +403,7 @@ public class DebugHandler : IInputHandler
 					if (GenericGameSettings.instance.developerDebugEnable)
 					{
 						string stack_trace = Guid.NewGuid().ToString();
-						KCrashReporter.ReportError("Debug crash with random stack", stack_trace, null, ScreenPrefabs.Instance.ConfirmDialogScreen, string.Empty);
+						KCrashReporter.ReportError("Debug crash with random stack", stack_trace, null, ScreenPrefabs.Instance.ConfirmDialogScreen, "");
 					}
 				}
 				else if (e.TryConsume(Action.DebugTriggerError))
@@ -431,7 +432,7 @@ public class DebugHandler : IInputHandler
 				{
 					if (!GenericGameSettings.instance.developerDebugEnable)
 					{
-						goto IL_0b13;
+						goto IL_0bde;
 					}
 				}
 				else if (e.TryConsume(Action.DebugCrashSim))
@@ -451,8 +452,8 @@ public class DebugHandler : IInputHandler
 				}
 			}
 		}
-		goto IL_0b13;
-		IL_0b13:
+		goto IL_0bde;
+		IL_0bde:
 		if (e.Consumed && (UnityEngine.Object)Game.Instance != (UnityEngine.Object)null)
 		{
 			Game.Instance.debugWasUsed = true;

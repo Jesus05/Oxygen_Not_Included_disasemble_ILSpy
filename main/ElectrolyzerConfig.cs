@@ -34,7 +34,7 @@ public class ElectrolyzerConfig : IBuildingConfig
 		buildingDef.EnergyConsumptionWhenActive = 120f;
 		buildingDef.ExhaustKilowattsWhenActive = 0.25f;
 		buildingDef.SelfHeatKilowattsWhenActive = 1f;
-		buildingDef.ViewMode = SimViewMode.OxygenMap;
+		buildingDef.ViewMode = OverlayModes.Oxygen.ID;
 		buildingDef.AudioCategory = "HollowMetal";
 		buildingDef.InputConduitType = ConduitType.Liquid;
 		buildingDef.UtilityInputOffset = new CellOffset(0, 0);

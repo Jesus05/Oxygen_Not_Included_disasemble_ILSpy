@@ -21,19 +21,19 @@ public class ConditionSufficientFood : RocketLaunchCondition
 
 	public override string GetLaunchStatusMessage(bool ready)
 	{
-		if (ready)
+		if (!ready)
 		{
-			return UI.STARMAP.HASFOOD.NAME;
+			return UI.STARMAP.NOFOOD.NAME;
 		}
-		return UI.STARMAP.NOFOOD.NAME;
+		return UI.STARMAP.HASFOOD.NAME;
 	}
 
 	public override string GetLaunchStatusTooltip(bool ready)
 	{
-		if (ready)
+		if (!ready)
 		{
-			return UI.STARMAP.HASFOOD.TOOLTIP;
+			return UI.STARMAP.NOFOOD.TOOLTIP;
 		}
-		return UI.STARMAP.NOFOOD.TOOLTIP;
+		return UI.STARMAP.HASFOOD.TOOLTIP;
 	}
 }

@@ -32,13 +32,20 @@ public class BuildQueueButton : KMonoBehaviour
 	[SerializeField]
 	private Color defaultBGColor = new Color32(135, 69, 102, byte.MaxValue);
 
+	[SerializeField]
+	private GameObject underwayIndicator;
+
+	[SerializeField]
+	private Image ButtonBG;
+
+	[SerializeField]
+	public GameObject jumpToOrderButton;
+
 	public ToolTip toolTip;
 
 	private IBuildQueueOrder order;
 
 	private GameObject visualizer;
-
-	private Image BG;
 
 	protected override void OnSpawn()
 	{
@@ -50,12 +57,20 @@ public class BuildQueueButton : KMonoBehaviour
 			num = (int)component.minWidth;
 			num2 = (int)component.minHeight;
 		}
-		texture.enabled = false;
-		BG = GetComponent<Image>();
-		KButton component2 = GetComponent<KButton>();
-		component2.onClick += ButtonClicked;
-		component2.onPointerEnter += PointerEntered;
-		component2.onPointerExit += PointerLeft;
+		KButton componentInChildren = GetComponentInChildren<KButton>();
+		componentInChildren.onClick += ButtonClicked;
+		componentInChildren.onPointerEnter += PointerEntered;
+		componentInChildren.onPointerExit += PointerLeft;
+	}
+
+	public void SetUnderwayIndicator(bool active)
+	{
+		underwayIndicator.SetActive(active);
+	}
+
+	public void SetJumpToOrderButtonActive(bool active)
+	{
+		jumpToOrderButton.SetActive(active);
 	}
 
 	public void SetAvailability(string recipeName, bool currentAvailability, string str)
@@ -63,14 +78,14 @@ public class BuildQueueButton : KMonoBehaviour
 		str = ((!string.IsNullOrEmpty(str)) ? (recipeName + "\n" + str) : (recipeName + "\n"));
 		texture.color = ((!currentAvailability) ? unavailableSpriteColor : order.IconColor);
 		texture.GetComponent<Image>().material = ((!currentAvailability) ? GlobalResources.Instance().AnimMaterialUIDesaturated : null);
-		BG.color = ((!currentAvailability) ? unavailableBGColor : Color.white);
+		ButtonBG.color = ((!currentAvailability) ? unavailableBGColor : Color.white);
 		str = str + "\n" + UI.UISIDESCREENS.FABRICATORSIDESCREEN.CANCEL;
 		toolTip.toolTip = str;
 	}
 
 	private void ButtonClicked()
 	{
-		if ((Object)BG.sprite == (Object)filledBG)
+		if ((Object)ButtonBG.sprite == (Object)filledBG)
 		{
 			ResetGraphics();
 		}
@@ -78,16 +93,18 @@ public class BuildQueueButton : KMonoBehaviour
 
 	private void ResetGraphics()
 	{
-		BG.sprite = emptyBG;
-		BG.color = defaultBGColor;
+		ButtonBG.sprite = emptyBG;
+		ButtonBG.color = defaultBGColor;
 		texture.color = Color.white;
 		closeImg.SetActive(false);
 		infiniteImg.SetActive(false);
+		SetUnderwayIndicator(false);
+		SetJumpToOrderButtonActive(false);
 	}
 
 	private void PointerEntered()
 	{
-		if ((Object)BG.sprite == (Object)filledBG)
+		if ((Object)ButtonBG.sprite == (Object)filledBG)
 		{
 			closeImg.SetActive(true);
 		}
@@ -95,7 +112,7 @@ public class BuildQueueButton : KMonoBehaviour
 
 	private void PointerLeft()
 	{
-		if ((Object)BG.sprite == (Object)filledBG && closeImg.activeInHierarchy)
+		if ((Object)ButtonBG.sprite == (Object)filledBG && closeImg.activeInHierarchy)
 		{
 			closeImg.SetActive(false);
 		}
@@ -103,7 +120,7 @@ public class BuildQueueButton : KMonoBehaviour
 
 	private bool CheckMaterialAvailability(IBuildQueueOrder order, out string newTooltip)
 	{
-		newTooltip = string.Empty;
+		newTooltip = "";
 		Dictionary<Tag, float> dictionary = order.CheckMaterialRequirements();
 		bool flag = true;
 		foreach (KeyValuePair<Tag, float> item in dictionary)
@@ -129,6 +146,10 @@ public class BuildQueueButton : KMonoBehaviour
 
 	public void SetOrder(IBuildQueueOrder order)
 	{
+		if (order == null)
+		{
+			toolTip.ClearMultiStringTooltip();
+		}
 		if (this.order != order)
 		{
 			ResetGraphics();
@@ -143,13 +164,12 @@ public class BuildQueueButton : KMonoBehaviour
 				texture.enabled = true;
 				texture.sprite = order.Icon;
 				texture.color = order.IconColor;
-				BG.sprite = filledBG;
+				ButtonBG.sprite = filledBG;
 				this.order = order;
-				infiniteImg.SetActive(order.Infinite);
 			}
 			else
 			{
-				BG.sprite = emptyBG;
+				ButtonBG.sprite = emptyBG;
 			}
 		}
 	}

@@ -99,11 +99,11 @@ public class AccessControlSideScreen : SideScreenContent
 
 	public override string GetTitle()
 	{
-		if ((UnityEngine.Object)target != (UnityEngine.Object)null)
+		if (!((UnityEngine.Object)target != (UnityEngine.Object)null))
 		{
-			return string.Format(base.GetTitle(), target.GetProperName());
+			return base.GetTitle();
 		}
-		return base.GetTitle();
+		return string.Format(base.GetTitle(), target.GetProperName());
 	}
 
 	protected override void OnSpawn()

@@ -33,7 +33,7 @@ public class CrewJobsScreen : CrewListScreen<CrewJobsEntry>
 
 	private bool dirty;
 
-	private float screenWidth;
+	private float screenWidth = 0f;
 
 	protected override void OnActivate()
 	{
@@ -179,7 +179,7 @@ public class CrewJobsScreen : CrewListScreen<CrewJobsEntry>
 			component.AddMultiStringTooltip(UI.TOOLTIPS.JOBSSCREEN_ATTRIBUTES, TextStyle_JobTooltip_Description);
 			component.AddMultiStringTooltip("•  " + choreGroup.attribute.Name, TextStyle_JobTooltip_RelevantAttributes);
 		}
-		return string.Empty;
+		return "";
 	}
 
 	private void ToggleAllTasksEveryone()

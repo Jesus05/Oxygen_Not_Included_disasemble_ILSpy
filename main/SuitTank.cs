@@ -16,7 +16,7 @@ public class SuitTank : KMonoBehaviour, IGameObjectEffectDescriptor, OxygenBreat
 
 	public const float REFILL_PERCENT = 0.25f;
 
-	public bool underwaterSupport;
+	public bool underwaterSupport = false;
 
 	private SuitSuffocationMonitor.Instance suitSuffocationMonitor;
 
@@ -72,8 +72,8 @@ public class SuitTank : KMonoBehaviour, IGameObjectEffectDescriptor, OxygenBreat
 	private void OnEquipped(object data)
 	{
 		Equipment equipment = (Equipment)data;
-		NameDisplayScreen.Instance.SetSuitTankDisplay(equipment.gameObject, PercentFull, true);
-		OxygenBreather component = equipment.GetComponent<OxygenBreather>();
+		NameDisplayScreen.Instance.SetSuitTankDisplay(equipment.GetComponent<MinionAssignablesProxy>().GetTargetGameObject(), PercentFull, true);
+		OxygenBreather component = equipment.GetComponent<MinionAssignablesProxy>().GetTargetGameObject().GetComponent<OxygenBreather>();
 		if ((Object)component != (Object)null)
 		{
 			component.SetGasProvider(this);
@@ -85,8 +85,8 @@ public class SuitTank : KMonoBehaviour, IGameObjectEffectDescriptor, OxygenBreat
 		Equipment equipment = (Equipment)data;
 		if (!equipment.destroyed)
 		{
-			NameDisplayScreen.Instance.SetSuitTankDisplay(equipment.gameObject, PercentFull, false);
-			OxygenBreather component = equipment.GetComponent<OxygenBreather>();
+			NameDisplayScreen.Instance.SetSuitTankDisplay(equipment.GetComponent<MinionAssignablesProxy>().GetTargetGameObject(), PercentFull, false);
+			OxygenBreather component = equipment.GetComponent<MinionAssignablesProxy>().GetTargetGameObject().GetComponent<OxygenBreather>();
 			if ((Object)component != (Object)null)
 			{
 				component.SetGasProvider(new GasBreatherFromWorldProvider());
@@ -108,15 +108,15 @@ public class SuitTank : KMonoBehaviour, IGameObjectEffectDescriptor, OxygenBreat
 
 	public bool ConsumeGas(OxygenBreather oxygen_breather, float gas_consumed)
 	{
-		if (IsEmpty())
+		if (!IsEmpty())
 		{
-			return false;
+			gas_consumed = Mathf.Min(gas_consumed, amount);
+			amount -= gas_consumed;
+			Game.Instance.accumulators.Accumulate(oxygen_breather.O2Accumulator, gas_consumed);
+			ReportManager.Instance.ReportValue(ReportManager.ReportType.OxygenCreated, 0f - gas_consumed, oxygen_breather.GetProperName(), null);
+			return true;
 		}
-		gas_consumed = Mathf.Min(gas_consumed, amount);
-		amount -= gas_consumed;
-		Game.Instance.accumulators.Accumulate(oxygen_breather.O2Accumulator, gas_consumed);
-		ReportManager.Instance.ReportValue(ReportManager.ReportType.OxygenCreated, 0f - gas_consumed, oxygen_breather.GetProperName(), null);
-		return true;
+		return false;
 	}
 
 	public bool ShouldEmitCO2()

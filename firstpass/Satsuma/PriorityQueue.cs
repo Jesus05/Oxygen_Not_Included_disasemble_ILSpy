@@ -74,13 +74,13 @@ namespace Satsuma
 
 		public bool TryGetPriority(TElement element, out TPriority priority)
 		{
-			if (!positions.TryGetValue(element, out int value))
+			if (positions.TryGetValue(element, out int value))
 			{
-				priority = default(TPriority);
-				return false;
+				priority = priorities[value];
+				return true;
 			}
-			priority = priorities[value];
-			return true;
+			priority = default(TPriority);
+			return false;
 		}
 
 		private void RemoveAt(int pos)
@@ -136,12 +136,12 @@ namespace Satsuma
 
 		public bool Pop()
 		{
-			if (Count == 0)
+			if (Count != 0)
 			{
-				return false;
+				RemoveAt(0);
+				return true;
 			}
-			RemoveAt(0);
-			return true;
+			return false;
 		}
 
 		private void MoveUp(int index)

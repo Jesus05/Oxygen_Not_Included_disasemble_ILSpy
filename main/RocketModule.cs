@@ -96,6 +96,11 @@ public class RocketModule : KMonoBehaviour
 		{
 			component3.SetAllowDeconstruction(false);
 		}
+		HandleVector<int>.Handle handle = GameComps.StructureTemperatures.GetHandle(base.gameObject);
+		if (handle.IsValid())
+		{
+			GameComps.StructureTemperatures.Disable(handle);
+		}
 	}
 
 	private void OnLand(object data)
@@ -118,6 +123,11 @@ public class RocketModule : KMonoBehaviour
 		if ((Object)component2 != (Object)null)
 		{
 			component2.SetAllowDeconstruction(true);
+		}
+		HandleVector<int>.Handle handle = GameComps.StructureTemperatures.GetHandle(base.gameObject);
+		if (handle.IsValid())
+		{
+			GameComps.StructureTemperatures.Enable(handle);
 		}
 	}
 

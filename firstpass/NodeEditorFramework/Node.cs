@@ -338,71 +338,71 @@ namespace NodeEditorFramework
 
 		public bool isChildOf(Node otherNode)
 		{
-			if ((UnityEngine.Object)otherNode == (UnityEngine.Object)null || (UnityEngine.Object)otherNode == (UnityEngine.Object)this)
+			if (!((UnityEngine.Object)otherNode == (UnityEngine.Object)null) && !((UnityEngine.Object)otherNode == (UnityEngine.Object)this))
 			{
-				return false;
-			}
-			if (BeginRecursiveSearchLoop())
-			{
-				return false;
-			}
-			for (int i = 0; i < Inputs.Count; i++)
-			{
-				NodeOutput connection = Inputs[i].connection;
-				if ((UnityEngine.Object)connection != (UnityEngine.Object)null && (UnityEngine.Object)connection.body != (UnityEngine.Object)startRecursiveSearchNode && ((UnityEngine.Object)connection.body == (UnityEngine.Object)otherNode || connection.body.isChildOf(otherNode)))
+				if (!BeginRecursiveSearchLoop())
 				{
-					StopRecursiveSearchLoop();
-					return true;
+					for (int i = 0; i < Inputs.Count; i++)
+					{
+						NodeOutput connection = Inputs[i].connection;
+						if ((UnityEngine.Object)connection != (UnityEngine.Object)null && (UnityEngine.Object)connection.body != (UnityEngine.Object)startRecursiveSearchNode && ((UnityEngine.Object)connection.body == (UnityEngine.Object)otherNode || connection.body.isChildOf(otherNode)))
+						{
+							StopRecursiveSearchLoop();
+							return true;
+						}
+					}
+					EndRecursiveSearchLoop();
+					return false;
 				}
+				return false;
 			}
-			EndRecursiveSearchLoop();
 			return false;
 		}
 
 		internal bool isInLoop()
 		{
-			if (BeginRecursiveSearchLoop())
+			if (!BeginRecursiveSearchLoop())
 			{
-				return (UnityEngine.Object)this == (UnityEngine.Object)startRecursiveSearchNode;
-			}
-			for (int i = 0; i < Inputs.Count; i++)
-			{
-				NodeOutput connection = Inputs[i].connection;
-				if ((UnityEngine.Object)connection != (UnityEngine.Object)null && connection.body.isInLoop())
+				for (int i = 0; i < Inputs.Count; i++)
 				{
-					StopRecursiveSearchLoop();
-					return true;
+					NodeOutput connection = Inputs[i].connection;
+					if ((UnityEngine.Object)connection != (UnityEngine.Object)null && connection.body.isInLoop())
+					{
+						StopRecursiveSearchLoop();
+						return true;
+					}
 				}
+				EndRecursiveSearchLoop();
+				return false;
 			}
-			EndRecursiveSearchLoop();
-			return false;
+			return (UnityEngine.Object)this == (UnityEngine.Object)startRecursiveSearchNode;
 		}
 
 		internal bool allowsLoopRecursion(Node otherNode)
 		{
-			if (AllowRecursion)
+			if (!AllowRecursion)
 			{
-				return true;
-			}
-			if ((UnityEngine.Object)otherNode == (UnityEngine.Object)null)
-			{
-				return false;
-			}
-			if (BeginRecursiveSearchLoop())
-			{
-				return false;
-			}
-			for (int i = 0; i < Inputs.Count; i++)
-			{
-				NodeOutput connection = Inputs[i].connection;
-				if ((UnityEngine.Object)connection != (UnityEngine.Object)null && connection.body.allowsLoopRecursion(otherNode))
+				if (!((UnityEngine.Object)otherNode == (UnityEngine.Object)null))
 				{
-					StopRecursiveSearchLoop();
-					return true;
+					if (!BeginRecursiveSearchLoop())
+					{
+						for (int i = 0; i < Inputs.Count; i++)
+						{
+							NodeOutput connection = Inputs[i].connection;
+							if ((UnityEngine.Object)connection != (UnityEngine.Object)null && connection.body.allowsLoopRecursion(otherNode))
+							{
+								StopRecursiveSearchLoop();
+								return true;
+							}
+						}
+						EndRecursiveSearchLoop();
+						return false;
+					}
+					return false;
 				}
+				return false;
 			}
-			EndRecursiveSearchLoop();
-			return false;
+			return true;
 		}
 
 		public void ClearCalculation()
@@ -429,12 +429,12 @@ namespace NodeEditorFramework
 				recursiveSearchSurpassed = new List<Node>();
 				startRecursiveSearchNode = this;
 			}
-			if (recursiveSearchSurpassed.Contains(this))
+			if (!recursiveSearchSurpassed.Contains(this))
 			{
-				return true;
+				recursiveSearchSurpassed.Add(this);
+				return false;
 			}
-			recursiveSearchSurpassed.Add(this);
-			return false;
+			return true;
 		}
 
 		internal void EndRecursiveSearchLoop()

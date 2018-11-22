@@ -1,6 +1,5 @@
 using KSerialization;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -14,13 +13,21 @@ public class Filterable : KMonoBehaviour
 		Gas
 	}
 
+	[MyCmpAdd]
+	private CopyBuildingSettings copyBuildingSettings;
+
 	[Serialize]
-	public ElementState filterElementState;
+	public ElementState filterElementState = ElementState.None;
 
 	[Serialize]
 	private Tag selectedTag;
 
 	private static readonly Operational.Flag filterSelected = new Operational.Flag("filterSelected", Operational.Flag.Type.Requirement);
+
+	private static readonly EventSystem.IntraObjectHandler<Filterable> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<Filterable>(delegate(Filterable component, object data)
+	{
+		component.OnCopySettings(data);
+	});
 
 	public Tag SelectedTag
 	{
@@ -40,44 +47,46 @@ public class Filterable : KMonoBehaviour
 	public virtual IList<Tag> GetTagOptions()
 	{
 		List<Tag> list = new List<Tag>();
-		IEnumerator enumerator = Enum.GetValues(typeof(SimHashes)).GetEnumerator();
-		try
+		foreach (Element element in ElementLoader.elements)
 		{
-			while (enumerator.MoveNext())
+			bool flag = true;
+			if (filterElementState != 0)
 			{
-				SimHashes simHashes = (SimHashes)enumerator.Current;
-				bool flag = true;
-				if (filterElementState != 0)
+				switch (filterElementState)
 				{
-					Element element = ElementLoader.FindElementByHash(simHashes);
-					switch (filterElementState)
-					{
-					case ElementState.Gas:
-						flag = element.IsGas;
-						break;
-					case ElementState.Liquid:
-						flag = element.IsLiquid;
-						break;
-					case ElementState.Solid:
-						flag = element.IsSolid;
-						break;
-					}
-				}
-				if (flag)
-				{
-					Tag item = GameTagExtensions.Create(simHashes);
-					list.Add(item);
+				case ElementState.Gas:
+					flag = element.IsGas;
+					break;
+				case ElementState.Liquid:
+					flag = element.IsLiquid;
+					break;
+				case ElementState.Solid:
+					flag = element.IsSolid;
+					break;
 				}
 			}
-			return list;
+			if (flag)
+			{
+				Tag item = GameTagExtensions.Create(element.id);
+				list.Add(item);
+			}
 		}
-		finally
+		return list;
+	}
+
+	protected override void OnPrefabInit()
+	{
+		base.OnPrefabInit();
+		Subscribe(-905833192, OnCopySettingsDelegate);
+	}
+
+	private void OnCopySettings(object data)
+	{
+		GameObject gameObject = (GameObject)data;
+		Filterable component = gameObject.GetComponent<Filterable>();
+		if ((UnityEngine.Object)component != (UnityEngine.Object)null)
 		{
-			IDisposable disposable;
-			if ((disposable = (enumerator as IDisposable)) != null)
-			{
-				disposable.Dispose();
-			}
+			SelectedTag = component.SelectedTag;
 		}
 	}
 

@@ -19,7 +19,7 @@ public class WorldInventory : KMonoBehaviour, ISaveLoadable
 
 	private Dictionary<Tag, float> accessibleAmounts = new Dictionary<Tag, float>();
 
-	private int accessibleUpdateIndex;
+	private int accessibleUpdateIndex = 0;
 
 	private bool firstUpdate = true;
 
@@ -91,7 +91,6 @@ public class WorldInventory : KMonoBehaviour, ISaveLoadable
 			{
 				list.AddRange(item.KPrefabID.Tags);
 			}
-			return list;
 		}
 		return list;
 	}
@@ -166,11 +165,11 @@ public class WorldInventory : KMonoBehaviour, ISaveLoadable
 
 	public HashSet<Tag> GetDiscoveredResourcesFromTag(Tag tag)
 	{
-		if (DiscoveredCategories.TryGetValue(tag, out HashSet<Tag> value))
+		if (!DiscoveredCategories.TryGetValue(tag, out HashSet<Tag> value))
 		{
-			return value;
+			return new HashSet<Tag>();
 		}
-		return new HashSet<Tag>();
+		return value;
 	}
 
 	private void Update()
@@ -210,15 +209,27 @@ public class WorldInventory : KMonoBehaviour, ISaveLoadable
 
 	public static Tag GetCategoryForTags(HashSet<Tag> tags)
 	{
-		Tag invalid = Tag.Invalid;
+		Tag result = Tag.Invalid;
 		foreach (Tag tag in tags)
 		{
 			if (GameTags.AllCategories.Contains(tag))
 			{
-				return tag;
+				result = tag;
+				break;
 			}
 		}
-		return invalid;
+		return result;
+	}
+
+	public static Tag GetCategoryForEntity(KPrefabID entity)
+	{
+		ElementChunk component = entity.GetComponent<ElementChunk>();
+		if (!((UnityEngine.Object)component != (UnityEngine.Object)null))
+		{
+			return GetCategoryForTags(entity.Tags);
+		}
+		PrimaryElement component2 = component.GetComponent<PrimaryElement>();
+		return component2.Element.materialCategory;
 	}
 
 	private void OnAddedFetchable(object data)
@@ -231,12 +242,9 @@ public class WorldInventory : KMonoBehaviour, ISaveLoadable
 			Tag tag = component2.PrefabID();
 			if (!Inventory.ContainsKey(tag))
 			{
-				Tag categoryForTags = GetCategoryForTags(component2.Tags);
-				if (!categoryForTags.IsValid)
-				{
-					DebugUtil.SoftAssert(false, component.name + " was found by worldinventory but doesn't have a category! Add it to the element definition.");
-				}
-				Discover(tag, categoryForTags);
+				Tag categoryForEntity = GetCategoryForEntity(component2);
+				DebugUtil.SoftAssert(categoryForEntity.IsValid, component.name, "was found by worldinventory but doesn't have a category! Add it to the element definition.");
+				Discover(tag, categoryForEntity);
 			}
 			foreach (Tag tag2 in component2.Tags)
 			{

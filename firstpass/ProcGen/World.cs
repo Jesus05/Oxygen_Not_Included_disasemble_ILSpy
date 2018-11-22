@@ -164,11 +164,11 @@ namespace ProcGen
 
 		public SubWorld GetSubWorld(string name)
 		{
-			if (Zones.ContainsKey(name))
+			if (!Zones.ContainsKey(name))
 			{
-				return Zones[name];
+				return null;
 			}
-			return null;
+			return Zones[name];
 		}
 
 		public void LoadZones(NoiseTreeFiles noise, string path)
@@ -183,7 +183,7 @@ namespace ProcGen
 				}
 				if (!ZoneLookupTable.ContainsKey(text))
 				{
-					SubWorldFile subWorldFile = YamlIO<SubWorldFile>.LoadFile(path + zoneFile.name + ".yaml");
+					SubWorldFile subWorldFile = YamlIO<SubWorldFile>.LoadFile(path + zoneFile.name + ".yaml", null);
 					if (subWorldFile != null)
 					{
 						subWorld = subWorldFile.zone;

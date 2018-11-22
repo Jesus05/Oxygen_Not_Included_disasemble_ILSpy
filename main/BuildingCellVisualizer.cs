@@ -59,7 +59,7 @@ public class BuildingCellVisualizer : KMonoBehaviour
 
 	private Dictionary<GameObject, Image> icons;
 
-	private SimViewMode previousMode;
+	private HashedString previousMode;
 
 	private static readonly EventSystem.IntraObjectHandler<BuildingCellVisualizer> OnBuildingUpgradedDelegate = new EventSystem.IntraObjectHandler<BuildingCellVisualizer>(delegate(BuildingCellVisualizer component, object data)
 	{
@@ -300,26 +300,25 @@ public class BuildingCellVisualizer : KMonoBehaviour
 		Components.BuildingCellVisualizers.Remove(this);
 	}
 
-	public void Tick(SimViewMode mode)
+	public void Tick(HashedString mode)
 	{
 		if (mode != previousMode)
 		{
 			DisableIcons();
 		}
-		switch (mode)
+		if (mode == OverlayModes.Power.ID)
 		{
-		case SimViewMode.PowerMap:
 			if (requiresPowerInput || requiresPowerOutput)
 			{
-				bool flag5 = (UnityEngine.Object)(building as BuildingPreview) != (UnityEngine.Object)null;
+				bool flag = (UnityEngine.Object)(building as BuildingPreview) != (UnityEngine.Object)null;
 				BuildingEnabledButton component = building.GetComponent<BuildingEnabledButton>();
 				int powerInputCell = building.GetPowerInputCell();
 				if (requiresPowerInput)
 				{
 					int circuitID = Game.Instance.circuitManager.GetCircuitID(powerInputCell);
-					Color tint5 = (!((UnityEngine.Object)component != (UnityEngine.Object)null) || component.IsEnabled) ? Color.white : Color.gray;
-					Sprite icon_img = (flag5 || circuitID == 65535) ? resources.electricityInputIcon : resources.electricityConnectedIcon;
-					DrawUtilityIcon(powerInputCell, icon_img, ref inputVisualizer, tint5, GetWireColor(powerInputCell), 1f, false);
+					Color tint = (!((UnityEngine.Object)component != (UnityEngine.Object)null) || component.IsEnabled) ? Color.white : Color.gray;
+					Sprite icon_img = (flag || circuitID == 65535) ? resources.electricityInputIcon : resources.electricityConnectedIcon;
+					DrawUtilityIcon(powerInputCell, icon_img, ref inputVisualizer, tint, GetWireColor(powerInputCell), 1f, false);
 				}
 				if (requiresPowerOutput)
 				{
@@ -327,20 +326,20 @@ public class BuildingCellVisualizer : KMonoBehaviour
 					int circuitID2 = Game.Instance.circuitManager.GetCircuitID(powerOutputCell);
 					Color color = (!building.Def.UseWhitePowerOutputConnectorColour) ? resources.electricityOutputColor : Color.white;
 					Color32 c = (!((UnityEngine.Object)component != (UnityEngine.Object)null) || component.IsEnabled) ? color : Color.gray;
-					Sprite icon_img2 = (flag5 || circuitID2 == 65535) ? resources.electricityInputIcon : resources.electricityConnectedIcon;
+					Sprite icon_img2 = (flag || circuitID2 == 65535) ? resources.electricityInputIcon : resources.electricityConnectedIcon;
 					DrawUtilityIcon(powerOutputCell, icon_img2, ref outputVisualizer, c, GetWireColor(powerOutputCell), 1f, false);
 				}
 			}
 			else
 			{
-				bool flag6 = true;
+				bool flag2 = true;
 				Switch component2 = GetComponent<Switch>();
 				if ((UnityEngine.Object)component2 != (UnityEngine.Object)null)
 				{
 					int cell = Grid.PosToCell(base.transform.GetPosition());
 					Color32 c2 = (!component2.IsHandlerOn()) ? resources.switchOffColor : resources.switchColor;
 					DrawUtilityIcon(cell, resources.switchIcon, ref outputVisualizer, c2, Color.white, 1f, false);
-					flag6 = false;
+					flag2 = false;
 				}
 				else
 				{
@@ -350,118 +349,122 @@ public class BuildingCellVisualizer : KMonoBehaviour
 						component3.GetCells(out int linked_cell, out int linked_cell2);
 						DrawUtilityIcon(linked_cell, (Game.Instance.circuitManager.GetCircuitID(linked_cell) != 65535) ? resources.electricityConnectedIcon : resources.electricityBridgeIcon, ref inputVisualizer, resources.electricityInputColor, Color.white, 1f, false);
 						DrawUtilityIcon(linked_cell2, (Game.Instance.circuitManager.GetCircuitID(linked_cell2) != 65535) ? resources.electricityConnectedIcon : resources.electricityBridgeIcon, ref outputVisualizer, resources.electricityInputColor, Color.white, 1f, false);
-						flag6 = false;
+						flag2 = false;
 					}
 				}
-				if (flag6)
+				if (flag2)
 				{
 					DisableIcons();
 				}
 			}
-			break;
-		case SimViewMode.GasVentMap:
+		}
+		else if (mode == OverlayModes.GasConduits.ID)
+		{
 			if (requiresGasInput || requiresGasOutput || requiresSecondGasOutput || requiresSecondGasInput)
 			{
 				if (requiresGasInput)
 				{
-					bool flag7 = (UnityEngine.Object)null != (UnityEngine.Object)Grid.Objects[building.GetUtilityInputCell(), 12];
-					BuildingCellVisualizerResources.ConnectedDisconnectedColours input3 = resources.gasIOColours.input;
-					Color tint6 = (!flag7) ? input3.disconnected : input3.connected;
-					DrawUtilityIcon(building.GetUtilityInputCell(), resources.gasInputIcon, ref inputVisualizer, tint6);
+					bool flag3 = (UnityEngine.Object)null != (UnityEngine.Object)Grid.Objects[building.GetUtilityInputCell(), 12];
+					BuildingCellVisualizerResources.ConnectedDisconnectedColours input = resources.gasIOColours.input;
+					Color tint2 = (!flag3) ? input.disconnected : input.connected;
+					DrawUtilityIcon(building.GetUtilityInputCell(), resources.gasInputIcon, ref inputVisualizer, tint2);
 				}
 				if (requiresGasOutput)
 				{
-					bool flag8 = (UnityEngine.Object)null != (UnityEngine.Object)Grid.Objects[building.GetUtilityOutputCell(), 12];
-					BuildingCellVisualizerResources.ConnectedDisconnectedColours output3 = resources.gasIOColours.output;
-					Color tint7 = (!flag8) ? output3.disconnected : output3.connected;
-					DrawUtilityIcon(building.GetUtilityOutputCell(), resources.gasOutputIcon, ref outputVisualizer, tint7);
+					bool flag4 = (UnityEngine.Object)null != (UnityEngine.Object)Grid.Objects[building.GetUtilityOutputCell(), 12];
+					BuildingCellVisualizerResources.ConnectedDisconnectedColours output = resources.gasIOColours.output;
+					Color tint3 = (!flag4) ? output.disconnected : output.connected;
+					DrawUtilityIcon(building.GetUtilityOutputCell(), resources.gasOutputIcon, ref outputVisualizer, tint3);
 				}
 				if (requiresSecondGasInput)
 				{
-					CellOffset secondaryConduitOffset3 = building.GetComponent<ISecondaryInput>().GetSecondaryConduitOffset();
-					int visualizerCell3 = GetVisualizerCell(building, secondaryConduitOffset3);
-					DrawUtilityIcon(visualizerCell3, resources.gasInputIcon, ref secondaryInputVisualizer, secondInputColour, Color.white, 1.5f, false);
+					CellOffset secondaryConduitOffset = building.GetComponent<ISecondaryInput>().GetSecondaryConduitOffset();
+					int visualizerCell = GetVisualizerCell(building, secondaryConduitOffset);
+					DrawUtilityIcon(visualizerCell, resources.gasInputIcon, ref secondaryInputVisualizer, secondInputColour, Color.white, 1.5f, false);
 				}
 				if (requiresSecondGasOutput)
 				{
-					CellOffset secondaryConduitOffset4 = building.GetComponent<ISecondaryOutput>().GetSecondaryConduitOffset();
-					int visualizerCell4 = GetVisualizerCell(building, secondaryConduitOffset4);
-					DrawUtilityIcon(visualizerCell4, resources.gasOutputIcon, ref secondaryOutputVisualizer, secondOutputColour, Color.white, 1.5f, false);
+					CellOffset secondaryConduitOffset2 = building.GetComponent<ISecondaryOutput>().GetSecondaryConduitOffset();
+					int visualizerCell2 = GetVisualizerCell(building, secondaryConduitOffset2);
+					DrawUtilityIcon(visualizerCell2, resources.gasOutputIcon, ref secondaryOutputVisualizer, secondOutputColour, Color.white, 1.5f, false);
 				}
 			}
 			else
 			{
 				DisableIcons();
 			}
-			break;
-		case SimViewMode.LiquidVentMap:
+		}
+		else if (mode == OverlayModes.LiquidConduits.ID)
+		{
 			if (requiresLiquidInput || requiresLiquidOutput || requiresSecondLiquidOutput || requiresSecondLiquidInput)
 			{
 				if (requiresLiquidInput)
 				{
-					bool flag = (UnityEngine.Object)null != (UnityEngine.Object)Grid.Objects[building.GetUtilityInputCell(), 16];
-					BuildingCellVisualizerResources.ConnectedDisconnectedColours input = resources.liquidIOColours.input;
-					Color tint = (!flag) ? input.disconnected : input.connected;
-					DrawUtilityIcon(building.GetUtilityInputCell(), resources.liquidInputIcon, ref inputVisualizer, tint);
+					bool flag5 = (UnityEngine.Object)null != (UnityEngine.Object)Grid.Objects[building.GetUtilityInputCell(), 16];
+					BuildingCellVisualizerResources.ConnectedDisconnectedColours input2 = resources.liquidIOColours.input;
+					Color tint4 = (!flag5) ? input2.disconnected : input2.connected;
+					DrawUtilityIcon(building.GetUtilityInputCell(), resources.liquidInputIcon, ref inputVisualizer, tint4);
 				}
 				if (requiresLiquidOutput)
 				{
-					bool flag2 = (UnityEngine.Object)null != (UnityEngine.Object)Grid.Objects[building.GetUtilityOutputCell(), 16];
-					BuildingCellVisualizerResources.ConnectedDisconnectedColours output = resources.liquidIOColours.output;
-					Color tint2 = (!flag2) ? output.disconnected : output.connected;
-					DrawUtilityIcon(building.GetUtilityOutputCell(), resources.liquidOutputIcon, ref outputVisualizer, tint2);
+					bool flag6 = (UnityEngine.Object)null != (UnityEngine.Object)Grid.Objects[building.GetUtilityOutputCell(), 16];
+					BuildingCellVisualizerResources.ConnectedDisconnectedColours output2 = resources.liquidIOColours.output;
+					Color tint5 = (!flag6) ? output2.disconnected : output2.connected;
+					DrawUtilityIcon(building.GetUtilityOutputCell(), resources.liquidOutputIcon, ref outputVisualizer, tint5);
 				}
 				if (requiresSecondLiquidInput)
 				{
-					CellOffset secondaryConduitOffset = building.GetComponent<ISecondaryInput>().GetSecondaryConduitOffset();
-					int visualizerCell = GetVisualizerCell(building, secondaryConduitOffset);
-					DrawUtilityIcon(visualizerCell, resources.liquidInputIcon, ref secondaryInputVisualizer, secondInputColour, Color.white, 1.5f, false);
+					CellOffset secondaryConduitOffset3 = building.GetComponent<ISecondaryInput>().GetSecondaryConduitOffset();
+					int visualizerCell3 = GetVisualizerCell(building, secondaryConduitOffset3);
+					DrawUtilityIcon(visualizerCell3, resources.liquidInputIcon, ref secondaryInputVisualizer, secondInputColour, Color.white, 1.5f, false);
 				}
 				if (requiresSecondLiquidOutput)
 				{
-					CellOffset secondaryConduitOffset2 = building.GetComponent<ISecondaryOutput>().GetSecondaryConduitOffset();
-					int visualizerCell2 = GetVisualizerCell(building, secondaryConduitOffset2);
-					DrawUtilityIcon(visualizerCell2, resources.liquidOutputIcon, ref secondaryOutputVisualizer, secondOutputColour, Color.white, 1.5f, false);
+					CellOffset secondaryConduitOffset4 = building.GetComponent<ISecondaryOutput>().GetSecondaryConduitOffset();
+					int visualizerCell4 = GetVisualizerCell(building, secondaryConduitOffset4);
+					DrawUtilityIcon(visualizerCell4, resources.liquidOutputIcon, ref secondaryOutputVisualizer, secondOutputColour, Color.white, 1.5f, false);
 				}
 			}
 			else
 			{
 				DisableIcons();
 			}
-			break;
-		case SimViewMode.SolidConveyorMap:
+		}
+		else if (mode == OverlayModes.SolidConveyor.ID)
+		{
 			if (requiresSolidInput || requiresSolidOutput)
 			{
 				if (requiresSolidInput)
 				{
-					bool flag3 = (UnityEngine.Object)null != (UnityEngine.Object)Grid.Objects[building.GetUtilityInputCell(), 20];
-					BuildingCellVisualizerResources.ConnectedDisconnectedColours input2 = resources.liquidIOColours.input;
-					Color tint3 = (!flag3) ? input2.disconnected : input2.connected;
-					DrawUtilityIcon(building.GetUtilityInputCell(), resources.liquidInputIcon, ref inputVisualizer, tint3);
+					bool flag7 = (UnityEngine.Object)null != (UnityEngine.Object)Grid.Objects[building.GetUtilityInputCell(), 20];
+					BuildingCellVisualizerResources.ConnectedDisconnectedColours input3 = resources.liquidIOColours.input;
+					Color tint6 = (!flag7) ? input3.disconnected : input3.connected;
+					DrawUtilityIcon(building.GetUtilityInputCell(), resources.liquidInputIcon, ref inputVisualizer, tint6);
 				}
 				if (requiresSolidOutput)
 				{
-					bool flag4 = (UnityEngine.Object)null != (UnityEngine.Object)Grid.Objects[building.GetUtilityOutputCell(), 20];
-					BuildingCellVisualizerResources.ConnectedDisconnectedColours output2 = resources.liquidIOColours.output;
-					Color tint4 = (!flag4) ? output2.disconnected : output2.connected;
-					DrawUtilityIcon(building.GetUtilityOutputCell(), resources.liquidOutputIcon, ref outputVisualizer, tint4);
+					bool flag8 = (UnityEngine.Object)null != (UnityEngine.Object)Grid.Objects[building.GetUtilityOutputCell(), 20];
+					BuildingCellVisualizerResources.ConnectedDisconnectedColours output3 = resources.liquidIOColours.output;
+					Color tint7 = (!flag8) ? output3.disconnected : output3.connected;
+					DrawUtilityIcon(building.GetUtilityOutputCell(), resources.liquidOutputIcon, ref outputVisualizer, tint7);
 				}
 			}
 			else
 			{
 				DisableIcons();
 			}
-			break;
-		case SimViewMode.Disease:
+		}
+		else if (mode == OverlayModes.Disease.ID)
+		{
 			if ((UnityEngine.Object)diseaseSourceSprite != (UnityEngine.Object)null)
 			{
 				int utilityOutputCell = building.GetUtilityOutputCell();
 				DrawUtilityIcon(utilityOutputCell, diseaseSourceSprite, ref inputVisualizer, diseaseSourceColour);
 			}
-			break;
-		default:
+		}
+		else
+		{
 			DisableIcons();
-			break;
 		}
 		previousMode = mode;
 	}

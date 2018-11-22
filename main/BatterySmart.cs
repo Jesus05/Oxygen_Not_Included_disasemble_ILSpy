@@ -10,18 +10,26 @@ public class BatterySmart : Battery, IActivationRangeTarget
 	public static readonly HashedString PORT_ID = "BatterySmartLogicPort";
 
 	[Serialize]
-	private int activateValue;
+	private int activateValue = 0;
 
 	[Serialize]
 	private int deactivateValue = 100;
 
 	[Serialize]
-	private bool activated;
+	private bool activated = false;
 
 	[MyCmpGet]
 	private LogicPorts logicPorts;
 
 	private MeterController logicMeter;
+
+	[MyCmpAdd]
+	private CopyBuildingSettings copyBuildingSettings;
+
+	private static readonly EventSystem.IntraObjectHandler<BatterySmart> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<BatterySmart>(delegate(BatterySmart component, object data)
+	{
+		component.OnCopySettings(data);
+	});
 
 	private static readonly EventSystem.IntraObjectHandler<BatterySmart> OnLogicValueChangedDelegate = new EventSystem.IntraObjectHandler<BatterySmart>(delegate(BatterySmart component, object data)
 	{
@@ -78,6 +86,18 @@ public class BatterySmart : Battery, IActivationRangeTarget
 	protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
+		Subscribe(-905833192, OnCopySettingsDelegate);
+	}
+
+	private void OnCopySettings(object data)
+	{
+		GameObject gameObject = (GameObject)data;
+		BatterySmart component = gameObject.GetComponent<BatterySmart>();
+		if ((Object)component != (Object)null)
+		{
+			ActivateValue = component.ActivateValue;
+			DeactivateValue = component.DeactivateValue;
+		}
 	}
 
 	protected override void OnSpawn()

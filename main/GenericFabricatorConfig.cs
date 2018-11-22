@@ -23,7 +23,7 @@ public class GenericFabricatorConfig : IBuildingConfig
 		buildingDef.EnergyConsumptionWhenActive = 240f;
 		buildingDef.ExhaustKilowattsWhenActive = 0.5f;
 		buildingDef.SelfHeatKilowattsWhenActive = 2f;
-		buildingDef.ViewMode = SimViewMode.PowerMap;
+		buildingDef.ViewMode = OverlayModes.Power.ID;
 		buildingDef.AudioCategory = "Glass";
 		buildingDef.AudioSize = "large";
 		buildingDef.Deprecated = true;
@@ -35,14 +35,15 @@ public class GenericFabricatorConfig : IBuildingConfig
 		go.AddOrGet<DropAllWorkable>();
 		Prioritizable.AddRef(go);
 		go.AddOrGet<BuildingComplete>().isManuallyOperated = true;
-		Fabricator fabricator = go.AddOrGet<Fabricator>();
-		fabricator.overrideAnims = new KAnimFile[1]
+		ComplexFabricator complexFabricator = go.AddOrGet<ComplexFabricator>();
+		complexFabricator.sideScreenStyle = ComplexFabricatorSideScreen.StyleSetting.ListQueueHybrid;
+		go.AddOrGet<ComplexFabricatorWorkable>().overrideAnims = new KAnimFile[1]
 		{
 			Assets.GetAnim("anim_interacts_fabricator_generic_kanim")
 		};
-		fabricator.choreTags = GameTags.ChoreTypes.FabricateChores;
-		fabricator.fetchChoreTypeIdHash = Db.Get().ChoreTypes.FabricateFetch.IdHash;
-		BuildingTemplates.CreateFabricatorStorage(go, fabricator);
+		go.AddOrGet<ComplexFabricatorWorkable>().AnimOffset = new Vector3(-1f, 0f, 0f);
+		complexFabricator.fetchChoreTypeIdHash = Db.Get().ChoreTypes.FabricateFetch.IdHash;
+		BuildingTemplates.CreateComplexFabricatorStorage(go, complexFabricator);
 		go.AddOrGet<LoopingSounds>();
 	}
 

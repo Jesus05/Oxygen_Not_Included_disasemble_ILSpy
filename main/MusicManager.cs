@@ -25,10 +25,10 @@ public class MusicManager : KMonoBehaviour, ISerializationCallbackReceiver
 		public bool dynamic;
 
 		[NonSerialized]
-		public bool useTimeOfDay;
+		public bool useTimeOfDay = false;
 
 		[NonSerialized]
-		public int numberOfVariations;
+		public int numberOfVariations = 0;
 
 		[NonSerialized]
 		public FMOD.Studio.EventInstance ev;
@@ -55,11 +55,11 @@ public class MusicManager : KMonoBehaviour, ISerializationCallbackReceiver
 
 		[Tooltip("Some songs are set up to have Morning, Daytime, Hook, and Intro sections. Toggle this ON if this song has those sections.")]
 		[SerializeField]
-		public bool useTimeOfDay;
+		public bool useTimeOfDay = false;
 
 		[Tooltip("Some songs have different possible start locations. Enter how many start locations this song is set up to support.")]
 		[SerializeField]
-		public int numberOfVariations;
+		public int numberOfVariations = 0;
 	}
 
 	[Serializable]
@@ -84,7 +84,7 @@ public class MusicManager : KMonoBehaviour, ISerializationCallbackReceiver
 
 		public List<string> unplayedSongs = new List<string>();
 
-		private string lastSongPlayed = string.Empty;
+		private string lastSongPlayed = "";
 
 		public string GetNextSong()
 		{
@@ -174,14 +174,14 @@ public class MusicManager : KMonoBehaviour, ISerializationCallbackReceiver
 	private DynamicSongPlaylist miniSongPlaylist = new DynamicSongPlaylist();
 
 	[NonSerialized]
-	public SongInfo activeDynamicSong;
+	public SongInfo activeDynamicSong = null;
 
 	[NonSerialized]
-	public DynamicSongPlaylist activePlaylist;
+	public DynamicSongPlaylist activePlaylist = null;
 
-	private TypeOfMusic nextMusicType;
+	private TypeOfMusic nextMusicType = TypeOfMusic.DynamicSong;
 
-	private int musicTypeIterator;
+	private int musicTypeIterator = 0;
 
 	[Space]
 	[Header("Tuning Values")]
@@ -199,19 +199,19 @@ public class MusicManager : KMonoBehaviour, ISerializationCallbackReceiver
 
 	[Tooltip("When mini songs are active, we play a snapshot which attenuates the ambience and SFX. What intensity should that snapshot be applied?")]
 	[SerializeField]
-	private float miniSongSFXAttenuationPercentage;
+	private float miniSongSFXAttenuationPercentage = 0f;
 
 	[SerializeField]
 	private TypeOfMusic[] musicStyleOrder;
 
 	[NonSerialized]
-	public bool alwaysPlayMusic;
+	public bool alwaysPlayMusic = false;
 
 	private float time;
 
 	private float timeOfDayUpdateRate = 2f;
 
-	private static MusicManager _instance;
+	private static MusicManager _instance = null;
 
 	public Dictionary<string, SongInfo> SongMap => songMap;
 
@@ -541,7 +541,7 @@ public class MusicManager : KMonoBehaviour, ISerializationCallbackReceiver
 					{
 						SetDynamicMusicPaused();
 					}
-					if ((UnityEngine.Object)OverlayScreen.Instance != (UnityEngine.Object)null && OverlayScreen.Instance.mode != 0)
+					if ((UnityEngine.Object)OverlayScreen.Instance != (UnityEngine.Object)null && OverlayScreen.Instance.mode != OverlayModes.None.ID)
 					{
 						SetDynamicMusicOverlayActive();
 					}
@@ -557,7 +557,7 @@ public class MusicManager : KMonoBehaviour, ISerializationCallbackReceiver
 				else
 				{
 					Log("DynamicMusic song " + nextDynamicSong + " did not start.");
-					string text = string.Empty;
+					string text = "";
 					foreach (KeyValuePair<string, SongInfo> activeSong in activeSongs)
 					{
 						text = text + activeSong.Key + ", ";
@@ -583,7 +583,7 @@ public class MusicManager : KMonoBehaviour, ISerializationCallbackReceiver
 
 	public string GetNextDynamicSong()
 	{
-		string result = string.Empty;
+		string result = "";
 		if (alwaysPlayMusic && nextMusicType == TypeOfMusic.None)
 		{
 			while (nextMusicType == TypeOfMusic.None)
@@ -689,11 +689,11 @@ public class MusicManager : KMonoBehaviour, ISerializationCallbackReceiver
 
 	public bool ShouldPlayDynamicMusicLoadedGame()
 	{
-		if (GameClock.Instance.GetCurrentCycleAsPercentage() <= loadGameCutoffPercentage / 100f)
+		if (!(GameClock.Instance.GetCurrentCycleAsPercentage() <= loadGameCutoffPercentage / 100f))
 		{
-			return true;
+			return false;
 		}
-		return false;
+		return true;
 	}
 
 	protected override void OnPrefabInit()

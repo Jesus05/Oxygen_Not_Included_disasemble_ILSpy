@@ -272,10 +272,10 @@ public class CharacterContainer : KScreen
 		});
 		traitLabels.Clear();
 		characterNameTitle.SetTitle(stats.Name);
-		string empty = string.Empty;
-		characterJob.text = empty;
-		string empty2 = string.Empty;
-		characterJob.GetComponent<ToolTip>().toolTip = empty2;
+		string text = "";
+		characterJob.text = text;
+		string toolTip = "";
+		characterJob.GetComponent<ToolTip>().toolTip = toolTip;
 		for (int i = 1; i < stats.Traits.Count; i++)
 		{
 			Trait trait = stats.Traits[i];

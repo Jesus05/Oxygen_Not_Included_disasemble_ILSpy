@@ -128,7 +128,7 @@ public class ComplexFabricator : KMonoBehaviour, IEffectDescriptor, IHasBuildQue
 	[SerializeField]
 	public bool storeProduced = false;
 
-	public ComplexFabricatorSideScreen.StyleSetting sideScreenStyle = ComplexFabricatorSideScreen.StyleSetting.GridResult;
+	public ComplexFabricatorSideScreen.StyleSetting sideScreenStyle = ComplexFabricatorSideScreen.StyleSetting.ListQueueHybrid;
 
 	public bool labelByResult = true;
 
@@ -141,13 +141,10 @@ public class ComplexFabricator : KMonoBehaviour, IEffectDescriptor, IHasBuildQue
 	protected Tag[] choreTags;
 
 	[Serialize]
-	public Dictionary<ComplexRecipe, int> recipeQueueCounts = new Dictionary<ComplexRecipe, int>();
+	private Dictionary<string, int> recipeQueueCounts = new Dictionary<string, int>();
 
 	[Serialize]
 	public bool clearUserOrderOnComplete;
-
-	[Serialize]
-	private List<OrderSaveData> savedOrders;
 
 	protected List<UserOrder> userOrders = new List<UserOrder>();
 
@@ -245,18 +242,11 @@ public class ComplexFabricator : KMonoBehaviour, IEffectDescriptor, IHasBuildQue
 	[OnSerializing]
 	internal void OnSerializingMethod()
 	{
-		savedOrders = new List<OrderSaveData>();
-		for (int i = 0; i < userOrders.Count; i++)
-		{
-			UserOrder userOrder = userOrders[i];
-			savedOrders.Add(new OrderSaveData(userOrder.recipe.id, true));
-		}
 	}
 
 	[OnDeserializing]
 	internal void OnDeserializingMethod()
 	{
-		savedOrders = new List<OrderSaveData>();
 	}
 
 	public string GetConversationTopic()
@@ -292,19 +282,35 @@ public class ComplexFabricator : KMonoBehaviour, IEffectDescriptor, IHasBuildQue
 	{
 		recipeQueueCounts.Clear();
 		ComplexRecipe[] recipes = GetRecipes();
-		foreach (ComplexRecipe key in recipes)
+		foreach (ComplexRecipe complexRecipe in recipes)
 		{
-			recipeQueueCounts.Add(key, 0);
+			recipeQueueCounts.Add(complexRecipe.id, 0);
 		}
 	}
 
 	private void ConfigUserOrdersForQueueCount()
 	{
-		ClearQueueCount();
-		userOrders.Clear();
-		foreach (KeyValuePair<ComplexRecipe, int> recipeQueueCount in recipeQueueCounts)
+		ComplexRecipe[] recipes = GetRecipes();
+		foreach (ComplexRecipe complexRecipe in recipes)
 		{
-			UserOrder userOrder = new UserOrder(recipeQueueCount.Key, true);
+			bool flag = false;
+			foreach (string key in recipeQueueCounts.Keys)
+			{
+				if (key == complexRecipe.id)
+				{
+					flag = true;
+					break;
+				}
+			}
+			if (!flag)
+			{
+				recipeQueueCounts.Add(complexRecipe.id, 0);
+			}
+		}
+		userOrders.Clear();
+		foreach (KeyValuePair<string, int> recipeQueueCount in recipeQueueCounts)
+		{
+			UserOrder userOrder = new UserOrder(ComplexRecipeManager.Get().GetRecipe(recipeQueueCount.Key), true);
 			if (OnCreateOrder != null)
 			{
 				OnCreateOrder(userOrder);
@@ -313,68 +319,33 @@ public class ComplexFabricator : KMonoBehaviour, IEffectDescriptor, IHasBuildQue
 		}
 	}
 
-	private void ReloadSavedQueue()
-	{
-		userOrders.Clear();
-		buildStorage.Transfer(inStorage, true, true);
-		if (savedOrders != null)
-		{
-			bool flag = true;
-			foreach (OrderSaveData savedOrder in savedOrders)
-			{
-				OrderSaveData current = savedOrder;
-				ComplexRecipeManager complexRecipeManager = ComplexRecipeManager.Get();
-				ComplexRecipe complexRecipe = complexRecipeManager.GetRecipe(current.id);
-				if (complexRecipe == null)
-				{
-					complexRecipe = complexRecipeManager.GetObsoleteRecipe(current.id);
-				}
-				if (complexRecipe != null)
-				{
-					UserOrder userOrder = new UserOrder(complexRecipe, current.infinite);
-					if (OnCreateOrder != null)
-					{
-						OnCreateOrder(userOrder);
-					}
-					userOrders.Add(userOrder);
-					if (flag && duplicantOperated)
-					{
-						workable.SetWorkTime(complexRecipe.time);
-						flag = false;
-					}
-				}
-			}
-			savedOrders = null;
-		}
-	}
-
 	public int GetRecipeQueueCount(ComplexRecipe recipe)
 	{
-		return recipeQueueCounts[recipe];
+		return recipeQueueCounts[recipe.id];
 	}
 
 	public void IncrementRecipeQueueCount(ComplexRecipe recipe)
 	{
-		Dictionary<ComplexRecipe, int> dictionary;
-		ComplexRecipe key;
-		(dictionary = recipeQueueCounts)[key = recipe] = dictionary[key] + 1;
-		if (recipeQueueCounts[recipe] > QUEUE_INFINITE_COUNT)
+		Dictionary<string, int> dictionary;
+		string id;
+		(dictionary = recipeQueueCounts)[id = recipe.id] = dictionary[id] + 1;
+		if (recipeQueueCounts[recipe.id] > QUEUE_INFINITE_COUNT)
 		{
-			recipeQueueCounts[recipe] = QUEUE_INFINITE_COUNT;
+			recipeQueueCounts[recipe.id] = 0;
 		}
 		UpdateOrderQueue(false);
 	}
 
 	public void DecrementRecipeQueueCount(ComplexRecipe recipe, bool respectInfinite = true)
 	{
-		if (!respectInfinite || recipeQueueCounts[recipe] != QUEUE_INFINITE_COUNT)
+		if (!respectInfinite || recipeQueueCounts[recipe.id] != QUEUE_INFINITE_COUNT)
 		{
-			Dictionary<ComplexRecipe, int> dictionary;
-			ComplexRecipe key;
-			(dictionary = recipeQueueCounts)[key = recipe] = dictionary[key] - 1;
-			if (recipeQueueCounts[recipe] < 0)
+			Dictionary<string, int> dictionary;
+			string id;
+			(dictionary = recipeQueueCounts)[id = recipe.id] = dictionary[id] - 1;
+			if (recipeQueueCounts[recipe.id] < 0)
 			{
-				recipeQueueCounts[recipe] = 0;
+				recipeQueueCounts[recipe.id] = QUEUE_INFINITE_COUNT;
 			}
 		}
 		UpdateOrderQueue(false);
@@ -417,7 +388,6 @@ public class ComplexFabricator : KMonoBehaviour, IEffectDescriptor, IHasBuildQue
 		{
 			workable = GetComponent<ComplexFabricatorWorkable>();
 		}
-		ReloadSavedQueue();
 		ConfigUserOrdersForQueueCount();
 		buildStorage.Transfer(inStorage, true, true);
 		UpdateOrderQueue(true);
@@ -440,7 +410,7 @@ public class ComplexFabricator : KMonoBehaviour, IEffectDescriptor, IHasBuildQue
 						num2 = i;
 						break;
 					}
-					if (recipeQueueCounts[userOrders[(i + currentOrderIdx) % userOrders.Count].recipe] == 0)
+					if (recipeQueueCounts[userOrders[(i + currentOrderIdx) % userOrders.Count].recipe.id] == 0)
 					{
 						num2 = i;
 						break;
@@ -465,7 +435,7 @@ public class ComplexFabricator : KMonoBehaviour, IEffectDescriptor, IHasBuildQue
 					int num4 = 0;
 					int num5 = 0;
 					int num6 = 0;
-					foreach (KeyValuePair<ComplexRecipe, int> recipeQueueCount in recipeQueueCounts)
+					foreach (KeyValuePair<string, int> recipeQueueCount in recipeQueueCounts)
 					{
 						num6 += recipeQueueCount.Value;
 					}
@@ -474,7 +444,7 @@ public class ComplexFabricator : KMonoBehaviour, IEffectDescriptor, IHasBuildQue
 						int index = (currentOrderIdx + count + num4) % userOrders.Count;
 						UserOrder userOrder = userOrders[index];
 						bool flag2 = false;
-						if (recipeQueueCounts[userOrder.recipe] == 0)
+						if (recipeQueueCounts[userOrder.recipe.id] == 0)
 						{
 							flag2 = true;
 						}
@@ -690,6 +660,7 @@ public class ComplexFabricator : KMonoBehaviour, IEffectDescriptor, IHasBuildQue
 
 	public void Sim200ms(float dt)
 	{
+		UpdateMissingIngredientStatusItems();
 		if (!duplicantOperated)
 		{
 			if (!operational.IsActive && machineOrders.Count > 0 && machineOrders[0].underway)
@@ -930,7 +901,7 @@ public class ComplexFabricator : KMonoBehaviour, IEffectDescriptor, IHasBuildQue
 		list.Clear();
 		foreach (UserOrder userOrder in userOrders)
 		{
-			if (!list.Contains(userOrder.recipe) && recipeQueueCounts[userOrder.recipe] != 0)
+			if (!list.Contains(userOrder.recipe) && recipeQueueCounts[userOrder.recipe.id] != 0)
 			{
 				ComplexRecipe.RecipeElement[] ingredients = userOrder.recipe.ingredients;
 				foreach (ComplexRecipe.RecipeElement recipeElement in ingredients)

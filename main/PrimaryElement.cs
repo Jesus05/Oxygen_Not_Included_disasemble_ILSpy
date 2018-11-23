@@ -158,8 +158,8 @@ public class PrimaryElement : KMonoBehaviour, ISaveLoadable
 			}
 			else if (diseaseHandle.IsValid())
 			{
-				DiseaseContainer data = GameComps.DiseaseContainers.GetData(diseaseHandle);
-				result = data.diseaseIdx;
+				DiseaseHeader header = GameComps.DiseaseContainers.GetHeader(diseaseHandle);
+				result = header.diseaseIdx;
 			}
 			return result;
 		}
@@ -177,8 +177,8 @@ public class PrimaryElement : KMonoBehaviour, ISaveLoadable
 			}
 			else if (diseaseHandle.IsValid())
 			{
-				DiseaseContainer data = GameComps.DiseaseContainers.GetData(diseaseHandle);
-				result = data.diseaseCount;
+				DiseaseHeader header = GameComps.DiseaseContainers.GetHeader(diseaseHandle);
+				result = header.diseaseCount;
 			}
 			return result;
 		}
@@ -207,11 +207,11 @@ public class PrimaryElement : KMonoBehaviour, ISaveLoadable
 		}
 		else if (diseaseHandle.IsValid())
 		{
-			DiseaseContainer data = GameComps.DiseaseContainers.GetData(diseaseHandle);
-			if (data.diseaseIdx != 255)
+			DiseaseHeader header = GameComps.DiseaseContainers.GetHeader(diseaseHandle);
+			if (header.diseaseIdx != 255)
 			{
-				diseaseID = Db.Get().Diseases[data.diseaseIdx].id;
-				diseaseCount = data.diseaseCount;
+				diseaseID = Db.Get().Diseases[header.diseaseIdx].id;
+				diseaseCount = header.diseaseCount;
 			}
 		}
 	}
@@ -262,10 +262,10 @@ public class PrimaryElement : KMonoBehaviour, ISaveLoadable
 			}
 			else if (diseaseHandle.IsValid())
 			{
-				DiseaseContainer data = GameComps.DiseaseContainers.GetData(diseaseHandle);
-				data.diseaseIdx = index;
-				data.diseaseCount = diseaseCount;
-				GameComps.DiseaseContainers.SetData(diseaseHandle, data);
+				DiseaseHeader header = GameComps.DiseaseContainers.GetHeader(diseaseHandle);
+				header.diseaseIdx = index;
+				header.diseaseCount = diseaseCount;
+				GameComps.DiseaseContainers.SetHeader(diseaseHandle, header);
 			}
 			else
 			{
@@ -519,9 +519,9 @@ public class PrimaryElement : KMonoBehaviour, ISaveLoadable
 		HandleVector<int>.Handle handle = GameComps.DiseaseContainers.GetHandle(base.gameObject);
 		if (handle != HandleVector<int>.InvalidHandle)
 		{
-			DiseaseContainer data = GameComps.DiseaseContainers.GetData(handle);
-			data.visualDiseaseProvider = visualizer;
-			GameComps.DiseaseContainers.SetData(handle, data);
+			DiseaseContainer new_data = GameComps.DiseaseContainers.GetPayload(handle);
+			new_data.visualDiseaseProvider = visualizer;
+			GameComps.DiseaseContainers.SetPayload(handle, ref new_data);
 		}
 	}
 }

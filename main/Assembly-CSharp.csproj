@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <ProjectGuid>{24B664F5-131E-4FF4-A72B-8C45ADEA2110}</ProjectGuid>
+    <ProjectGuid>{EC9C7EB4-C16C-4CA0-A4A6-C77B78C7200B}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <OutputType>Library</OutputType>
@@ -576,6 +576,7 @@
     <Compile Include="DiseaseContainers.cs" />
     <Compile Include="DiseaseEmitter.cs" />
     <Compile Include="DiseaseExposureInfo.cs" />
+    <Compile Include="DiseaseHeader.cs" />
     <Compile Include="DiseaseInfoScreen.cs" />
     <Compile Include="DiseaseMonitor.cs" />
     <Compile Include="DiseaseOverlayWidget.cs" />

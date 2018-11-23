@@ -398,7 +398,7 @@ namespace TMPro
 		{
 			Transform transform = text.transform;
 			ScreenPointToWorldPointInRectangle(transform, position, camera, out position);
-			for (int i = 0; i < text.textInfo.linkCount; i++)
+			for (int i = 0; i < text.textInfo.linkCount && text.textInfo.linkInfo.Length - 1 >= i; i++)
 			{
 				TMP_LinkInfo tMP_LinkInfo = text.textInfo.linkInfo[i];
 				bool flag = false;

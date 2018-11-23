@@ -26,7 +26,6 @@ public class ItemPedestalConfig : IBuildingConfig
 		buildingDef.ViewMode = OverlayModes.Decor.ID;
 		buildingDef.AudioCategory = "Glass";
 		buildingDef.AudioSize = "small";
-		buildingDef.Deprecated = true;
 		return buildingDef;
 	}
 

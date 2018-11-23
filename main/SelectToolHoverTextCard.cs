@@ -61,6 +61,10 @@ public class SelectToolHoverTextCard : HoverTextConfiguration
 			ShouldShowPowerOverlay
 		},
 		{
+			OverlayModes.Logic.ID,
+			ShouldShowLogicOverlay
+		},
+		{
 			OverlayModes.Disease.ID,
 			SelectToolHoverTextCard.ShowOverlayIfHasComponent<PrimaryElement>
 		},
@@ -108,6 +112,9 @@ public class SelectToolHoverTextCard : HoverTextConfiguration
 	[CompilerGenerated]
 	private static Func<KSelectable, bool> _003C_003Ef__mg_0024cache9;
 
+	[CompilerGenerated]
+	private static Func<KSelectable, bool> _003C_003Ef__mg_0024cacheA;
+
 	protected override void OnSpawn()
 	{
 		base.OnSpawn();
@@ -128,6 +135,7 @@ public class SelectToolHoverTextCard : HoverTextConfiguration
 		});
 		overlayFilterMap.Add(OverlayModes.Decor.ID, () => false);
 		overlayFilterMap.Add(OverlayModes.Rooms.ID, () => false);
+		overlayFilterMap.Add(OverlayModes.Logic.ID, () => false);
 	}
 
 	public override void ConfigureHoverScreen()
@@ -735,6 +743,12 @@ public class SelectToolHoverTextCard : HoverTextConfiguration
 	{
 		Tag prefabTag = selectable.GetComponent<KPrefabID>().PrefabTag;
 		return OverlayScreen.WireIDs.Contains(prefabTag) || (UnityEngine.Object)selectable.GetComponent<Battery>() != (UnityEngine.Object)null || (UnityEngine.Object)selectable.GetComponent<PowerTransformer>() != (UnityEngine.Object)null || (UnityEngine.Object)selectable.GetComponent<EnergyConsumer>() != (UnityEngine.Object)null || (UnityEngine.Object)selectable.GetComponent<EnergyGenerator>() != (UnityEngine.Object)null;
+	}
+
+	private static bool ShouldShowLogicOverlay(KSelectable selectable)
+	{
+		Tag prefabTag = selectable.GetComponent<KPrefabID>().PrefabTag;
+		return OverlayModes.Logic.HighlightItemIDs.Contains(prefabTag) || (UnityEngine.Object)selectable.GetComponent<LogicPorts>() != (UnityEngine.Object)null;
 	}
 
 	private static bool ShouldShowSolidConveyorOverlay(KSelectable selectable)

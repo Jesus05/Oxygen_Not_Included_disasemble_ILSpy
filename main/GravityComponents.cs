@@ -74,7 +74,7 @@ public class GravityComponents : KGameObjectComponentManager<GravityComponent>
 							}
 						}
 					}
-					if (Grid.Solid[num6] || Grid.LiquidPumpFloor[num6])
+					if (Grid.Solid[num6] || (Grid.LiquidPumpFloor[num6] && (UnityEngine.Object)value.transform.GetComponent<MinionIdentity>() != (UnityEngine.Object)null))
 					{
 						Vector3 vector4 = Grid.CellToPosCBC(Grid.CellAbove(num6), Grid.SceneLayer.Move);
 						vector3.y = vector4.y + value.radius;

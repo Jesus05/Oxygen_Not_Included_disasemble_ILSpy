@@ -1,3 +1,4 @@
+using STRINGS;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -91,6 +92,14 @@ public class ComplexRecipe
 
 	public string GetUIName()
 	{
-		return (!useResultAsDescription) ? ingredients[0].material.ProperName() : results[0].material.ProperName();
+		if (!displayInputAndOutput)
+		{
+			if (!useResultAsDescription)
+			{
+				return ingredients[0].material.ProperName();
+			}
+			return results[0].material.ProperName();
+		}
+		return string.Format(UI.UISIDESCREENS.REFINERYSIDESCREEN.RECIPE_FROM_TO, ingredients[0].material.ProperName(), results[0].material.ProperName());
 	}
 }

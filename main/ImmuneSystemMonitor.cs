@@ -102,14 +102,14 @@ public class ImmuneSystemMonitor : GameStateMachine<ImmuneSystemMonitor, ImmuneS
 			HandleVector<int>.Handle handle = GameComps.DiseaseContainers.GetHandle(edible.gameObject);
 			if (handle != HandleVector<int>.InvalidHandle)
 			{
-				DiseaseContainer data = GameComps.DiseaseContainers.GetData(handle);
-				if (data.diseaseIdx != 255)
+				DiseaseHeader header = GameComps.DiseaseContainers.GetHeader(handle);
+				if (header.diseaseIdx != 255)
 				{
-					Disease disease = Db.Get().Diseases[data.diseaseIdx];
+					Disease disease = Db.Get().Diseases[header.diseaseIdx];
 					if (disease.infectionVectors.Contains(Disease.InfectionVector.Digestion))
 					{
 						float num = edible.unitsConsumed / (edible.unitsConsumed + edible.Units);
-						int num2 = Mathf.CeilToInt((float)data.diseaseCount * num);
+						int num2 = Mathf.CeilToInt((float)header.diseaseCount * num);
 						GameComps.DiseaseContainers.ModifyDiseaseCount(handle, -num2);
 						KPrefabID component = edible.GetComponent<KPrefabID>();
 						InjectDisease(disease, num2, component.PrefabID(), Disease.InfectionVector.Digestion);

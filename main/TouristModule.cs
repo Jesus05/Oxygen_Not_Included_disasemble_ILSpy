@@ -1,3 +1,4 @@
+using Klei.AI;
 using KSerialization;
 using System.Collections.Generic;
 using UnityEngine;
@@ -13,7 +14,8 @@ public class TouristModule : StateMachineComponent<TouristModule.StatesInstance>
 			smi.gameObject.Subscribe(238242047, delegate
 			{
 				smi.SetSuspended(false);
-				smi.ReleaseAstronaut(null);
+				smi.ReleaseAstronaut(null, true);
+				smi.assignable.Unassign();
 			});
 		}
 	}
@@ -70,7 +72,7 @@ public class TouristModule : StateMachineComponent<TouristModule.StatesInstance>
 		isSuspended = state;
 	}
 
-	public void ReleaseAstronaut(object data)
+	public void ReleaseAstronaut(object data, bool applyBuff = false)
 	{
 		if (!releasingAstronaut)
 		{
@@ -84,6 +86,10 @@ public class TouristModule : StateMachineComponent<TouristModule.StatesInstance>
 				if (Grid.FakeFloor[Grid.OffsetCell(Grid.PosToCell(base.smi.master.gameObject), 0, -1)])
 				{
 					gameObject.GetComponent<Navigator>().SetCurrentNavType(NavType.Floor);
+					if (applyBuff)
+					{
+						gameObject.GetComponent<Effects>().Add(Db.Get().effects.Get("SpaceTourist"), true);
+					}
 				}
 			}
 			releasingAstronaut = false;
@@ -150,7 +156,7 @@ public class TouristModule : StateMachineComponent<TouristModule.StatesInstance>
 	{
 		if (GetComponent<MinionStorage>().GetStoredMinionInfo().Count > 0)
 		{
-			ReleaseAstronaut(null);
+			ReleaseAstronaut(null, false);
 			Game.Instance.userMenu.Refresh(base.gameObject);
 		}
 	}
@@ -159,7 +165,7 @@ public class TouristModule : StateMachineComponent<TouristModule.StatesInstance>
 	{
 		GameScenePartitioner.Instance.Free(ref partitionerEntry);
 		partitionerEntry.Clear();
-		ReleaseAstronaut(null);
+		ReleaseAstronaut(null, false);
 		GameScenePartitioner.Instance.Free(ref partitionerEntry);
 		base.smi.StopSM("cleanup");
 	}

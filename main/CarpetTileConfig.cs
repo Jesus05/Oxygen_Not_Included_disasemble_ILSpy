@@ -38,6 +38,7 @@ public class CarpetTileConfig : IBuildingConfig
 		buildingDef.SceneLayer = Grid.SceneLayer.TileMain;
 		buildingDef.ConstructionOffsetFilter = BuildingDef.ConstructionOffsetFilter_OneDown;
 		buildingDef.isKAnimTile = true;
+		buildingDef.isSolidTile = true;
 		buildingDef.BlockTileAtlas = Assets.GetTextureAtlas("tiles_carpet");
 		buildingDef.BlockTilePlaceAtlas = Assets.GetTextureAtlas("tiles_carpet_place");
 		buildingDef.BlockTileMaterial = Assets.GetMaterial("tiles_solid");
@@ -51,7 +52,7 @@ public class CarpetTileConfig : IBuildingConfig
 		GeneratedBuildings.MakeBuildingAlwaysOperational(go);
 		BuildingConfigManager.Instance.IgnoreDefaultKComponent(typeof(RequiresFoundation), prefab_tag);
 		SimCellOccupier simCellOccupier = go.AddOrGet<SimCellOccupier>();
-		simCellOccupier.doReplaceElement = false;
+		simCellOccupier.doReplaceElement = true;
 		go.AddOrGet<TileTemperature>();
 		KAnimGridTileVisualizer kAnimGridTileVisualizer = go.AddOrGet<KAnimGridTileVisualizer>();
 		kAnimGridTileVisualizer.blockTileConnectorID = BlockTileConnectorID;

@@ -57,13 +57,10 @@ public class ComplexFabricatorSideScreen : SideScreenContent
 	private GameObject elementContainer;
 
 	[SerializeField]
-	private LocText descriptionLabel;
+	private LocText currentOrderLabel;
 
 	[SerializeField]
-	private LocText subtitleLabel;
-
-	[SerializeField]
-	private LocText noRecipeSelectedLabel;
+	private LocText nextOrderLabel;
 
 	private Dictionary<ComplexFabricator, int> selectedRecipeFabricatorMap = new Dictionary<ComplexFabricator, int>();
 
@@ -116,10 +113,11 @@ public class ComplexFabricatorSideScreen : SideScreenContent
 			}
 			Initialize(component);
 			targetOrdersUpdatedSubHandle = targetFab.Subscribe(1721324763, UpdateQueueCountLabels);
+			UpdateQueueCountLabels(null);
 		}
 	}
 
-	private void UpdateQueueCountLabels(object data)
+	private void UpdateQueueCountLabels(object data = null)
 	{
 		ComplexRecipe[] recipes = targetFab.GetRecipes();
 		foreach (ComplexRecipe r in recipes)
@@ -129,6 +127,22 @@ public class ComplexFabricatorSideScreen : SideScreenContent
 			{
 				RefreshQueueCountDisplay(gameObject, targetFab);
 			}
+		}
+		if (targetFab.CurrentMachineOrder != null)
+		{
+			currentOrderLabel.text = string.Format(UI.UISIDESCREENS.FABRICATORSIDESCREEN.CURRENT_ORDER, targetFab.CurrentMachineOrder.parentOrder.recipe.GetUIName());
+		}
+		else
+		{
+			currentOrderLabel.text = string.Format(UI.UISIDESCREENS.FABRICATORSIDESCREEN.CURRENT_ORDER, UI.UISIDESCREENS.FABRICATORSIDESCREEN.NO_WORKABLE_ORDER);
+		}
+		if (targetFab.GetMachineOrders().Count > 1)
+		{
+			nextOrderLabel.text = string.Format(UI.UISIDESCREENS.FABRICATORSIDESCREEN.NEXT_ORDER, targetFab.GetMachineOrders()[1].parentOrder.recipe.GetUIName());
+		}
+		else
+		{
+			nextOrderLabel.text = string.Format(UI.UISIDESCREENS.FABRICATORSIDESCREEN.NEXT_ORDER, UI.UISIDESCREENS.FABRICATORSIDESCREEN.NO_WORKABLE_ORDER);
 		}
 	}
 
@@ -184,6 +198,7 @@ public class ComplexFabricatorSideScreen : SideScreenContent
 			case StyleSetting.ListQueueHybrid:
 				component.constraintCount = 1;
 				component.cellSize = new Vector2(264f, 64f);
+				buttonScrollContainer.minHeight = 66f;
 				break;
 			default:
 			{
@@ -252,18 +267,13 @@ public class ComplexFabricatorSideScreen : SideScreenContent
 							{
 								image2.sprite = uISprite.first;
 								image2.color = uISprite.second;
-								entryGO.GetComponentInChildren<LocText>().text = recipe.ingredients[0].material.ProperName();
 							}
 							else
 							{
 								image2.sprite = uISprite2.first;
 								image2.color = uISprite2.second;
-								entryGO.GetComponentInChildren<LocText>().text = recipe.results[0].material.ProperName();
 							}
-							if (recipe.displayInputAndOutput)
-							{
-								entryGO.GetComponentInChildren<LocText>().text = string.Format(UI.UISIDESCREENS.REFINERYSIDESCREEN.RECIPE_FROM_TO, recipe.ingredients[0].material.ProperName(), recipe.results[0].material.ProperName());
-							}
+							entryGO.GetComponentInChildren<LocText>().text = recipe.GetUIName();
 							bool flag2 = CheckRecipeRequirements(recipe);
 							image2.material = ((!flag2) ? Assets.UIPrefabs.TableScreenWidgets.DesaturatedUIMaterial : Assets.UIPrefabs.TableScreenWidgets.DefaultUIMaterial);
 							RefreshQueueCountDisplay(entryGO, targetFab);
@@ -304,7 +314,7 @@ public class ComplexFabricatorSideScreen : SideScreenContent
 						}
 						else if (targetFab.sideScreenStyle != StyleSetting.ListQueueHybrid)
 						{
-							newToggle.GetComponentInChildren<LocText>().text = string.Format(UI.UISIDESCREENS.REFINERYSIDESCREEN.RECIPE_FROM_TO, recipe.ingredients[0].material.ProperName(), recipe.results[0].material.ProperName());
+							newToggle.GetComponentInChildren<LocText>().text = string.Format(UI.UISIDESCREENS.REFINERYSIDESCREEN.RECIPE_FROM_TO_WITH_NEWLINES, recipe.ingredients[0].material.ProperName(), recipe.results[0].material.ProperName());
 						}
 						ToolTip component3 = entryGO.GetComponent<ToolTip>();
 						component3.toolTipPosition = ToolTip.TooltipPosition.Custom;
@@ -344,7 +354,7 @@ public class ComplexFabricatorSideScreen : SideScreenContent
 			LayoutElement component4 = buttonScrollContainer.GetComponent<LayoutElement>();
 			float num2 = (float)num;
 			Vector2 sizeDelta = recipeButtonQueueHybrid.rectTransform().sizeDelta;
-			component4.minHeight = Mathf.Min(512f, 16f + num2 * sizeDelta.y);
+			component4.minHeight = Mathf.Min(512f, 2f + num2 * sizeDelta.y);
 			if (recipeToggles.Count > 0)
 			{
 				bool flag3 = false;
@@ -370,27 +380,6 @@ public class ComplexFabricatorSideScreen : SideScreenContent
 							}
 						}
 					});
-					subtitleLabel.SetText(UI.UISIDESCREENS.FABRICATORSIDESCREEN.NORECIPESELECTED);
-					descriptionLabel.gameObject.SetActive(false);
-					if ((UnityEngine.Object)noRecipeSelectedLabel != (UnityEngine.Object)null)
-					{
-						noRecipeSelectedLabel.SetText(UI.UISIDESCREENS.FABRICATORSIDESCREEN.SELECTRECIPE);
-						noRecipeSelectedLabel.gameObject.SetActive(true);
-						IngredientsDescriptorPanel.gameObject.SetActive(false);
-						EffectsDescriptorPanel.gameObject.SetActive(false);
-					}
-				}
-			}
-			else
-			{
-				subtitleLabel.SetText(UI.UISIDESCREENS.FABRICATORSIDESCREEN.NORECIPEDISCOVERED);
-				descriptionLabel.gameObject.SetActive(false);
-				if ((UnityEngine.Object)noRecipeSelectedLabel != (UnityEngine.Object)null)
-				{
-					noRecipeSelectedLabel.SetText(UI.UISIDESCREENS.FABRICATORSIDESCREEN.NORECIPEDISCOVERED_BODY);
-					noRecipeSelectedLabel.gameObject.SetActive(true);
-					IngredientsDescriptorPanel.gameObject.SetActive(false);
-					EffectsDescriptorPanel.gameObject.SetActive(false);
 				}
 			}
 		}
@@ -402,6 +391,7 @@ public class ComplexFabricatorSideScreen : SideScreenContent
 		bool flag = fabricator.GetRecipeQueueCount(recipeMap[entryGO]) == ComplexFabricator.QUEUE_INFINITE_COUNT;
 		component.GetReference<LocText>("CountLabel").text = ((!flag) ? fabricator.GetRecipeQueueCount(recipeMap[entryGO]).ToString() : "");
 		component.GetReference<RectTransform>("InfiniteIcon").gameObject.SetActive(flag);
+		component.GetReference<RectTransform>("CountLabelX").gameObject.SetActive(!flag);
 	}
 
 	private void ToggleClicked(KToggle toggle)
@@ -424,13 +414,6 @@ public class ComplexFabricatorSideScreen : SideScreenContent
 			});
 			selectedRecipe = recipeMap[toggle.gameObject];
 			selectedRecipeFabricatorMap[targetFab] = recipeToggles.IndexOf(toggle.gameObject);
-			subtitleLabel.SetText(selectedRecipe.results[0].material.ProperName());
-			if ((UnityEngine.Object)noRecipeSelectedLabel != (UnityEngine.Object)null)
-			{
-				noRecipeSelectedLabel.gameObject.SetActive(false);
-			}
-			descriptionLabel.gameObject.SetActive(true);
-			descriptionLabel.SetText(selectedRecipe.description);
 			RefreshIngredientDescriptors();
 			RefreshResultDescriptors();
 		}

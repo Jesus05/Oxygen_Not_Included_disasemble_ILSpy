@@ -3688,6 +3688,12 @@ namespace STRINGS
 				public static LocString CALS = "{0}";
 
 				public static LocString QUEUED_MISSING_INGREDIENTS_TOOLTIP = "Missing {0} of {1}\n";
+
+				public static LocString CURRENT_ORDER = "Current order: {0}";
+
+				public static LocString NEXT_ORDER = "Next order: {0}";
+
+				public static LocString NO_WORKABLE_ORDER = "No workable order";
 			}
 
 			public class GENESHUFFLERSIDESREEN
@@ -3877,6 +3883,8 @@ namespace STRINGS
 			public class REFINERYSIDESCREEN
 			{
 				public static LocString RECIPE_FROM_TO = "{0} to {1}";
+
+				public static LocString RECIPE_FROM_TO_WITH_NEWLINES = "{0}\nto\n{1}";
 			}
 
 			public class SEALEDDOORSIDESCREEN

@@ -10,6 +10,7 @@ public class LogicCritterCountSensor : Switch, ISaveLoadable, ISim200ms, IIntSli
 
 	private bool countEggs = true;
 
+	[Serialize]
 	public int countThreshold = 0;
 
 	private KSelectable selectable;

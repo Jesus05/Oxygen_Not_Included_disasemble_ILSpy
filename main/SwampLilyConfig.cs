@@ -39,6 +39,7 @@ public class SwampLilyConfig : IEntityConfig
 		anim = Assets.GetAnim("seed_swampLily_kanim");
 		List<Tag> list = new List<Tag>();
 		list.Add(GameTags.CropSeed);
+		list.Add(GameTags.BuildingFiber);
 		list = list;
 		GameObject seed = EntityTemplates.CreateAndRegisterSeedForPlant(template, productionType, initialAnim, desc, name, anim, "object", 1, list, SingleEntityReceptacle.ReceptacleDirection.Top, default(Tag), 4, STRINGS.CREATURES.SPECIES.SWAMPLILY.DOMESTICATEDDESC, EntityTemplates.CollisionShape.CIRCLE, 0.3f, 0.3f, null, "", false);
 		EntityTemplates.CreateAndRegisterPreviewForPlant(seed, ID + "_preview", Assets.GetAnim("swamplily_kanim"), "place", 1, 2);

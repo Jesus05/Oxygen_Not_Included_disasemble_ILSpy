@@ -231,6 +231,8 @@ public class BuildMenu : KScreen
 			{
 				new BuildingInfo("FlowerVase", Action.BuildMenuKeyF),
 				new BuildingInfo("Canvas", Action.BuildMenuKeyC),
+				new BuildingInfo("CanvasWide", Action.BuildMenuKeyW),
+				new BuildingInfo("CanvasTall", Action.BuildMenuKeyT),
 				new BuildingInfo("Sculpture", Action.BuildMenuKeyS),
 				new BuildingInfo("IceSculpture", Action.BuildMenuKeyE),
 				new BuildingInfo("ItemPedestal", Action.BuildMenuKeyD)
@@ -834,7 +836,7 @@ public class BuildMenu : KScreen
 		}
 		if (selectedBuilding.isKAnimTile && selectedBuilding.isUtility)
 		{
-			IList<Element> getSelectedElementAsList = productInfoScreen.materialSelectionPanel.GetSelectedElementAsList;
+			IList<Tag> getSelectedElementAsList = productInfoScreen.materialSelectionPanel.GetSelectedElementAsList;
 			BaseUtilityBuildTool baseUtilityBuildTool = (!((UnityEngine.Object)selectedBuilding.BuildingComplete.GetComponent<Wire>() != (UnityEngine.Object)null)) ? ((BaseUtilityBuildTool)UtilityBuildTool.Instance) : ((BaseUtilityBuildTool)WireBuildTool.Instance);
 			baseUtilityBuildTool.Activate(selectedBuilding, getSelectedElementAsList);
 		}

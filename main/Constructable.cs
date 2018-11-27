@@ -65,6 +65,9 @@ public class Constructable : Workable, ISaveLoadable
 
 	private LoggerFSS log = new LoggerFSS("Constructable", 35);
 
+	[Serialize]
+	private Tag[] selectedElementsTags;
+
 	private Element[] selectedElements;
 
 	[Serialize]
@@ -87,19 +90,19 @@ public class Constructable : Workable, ISaveLoadable
 
 	public Recipe Recipe => building.Def.CraftRecipe;
 
-	public IList<Element> SelectedElements
+	public IList<Tag> SelectedElementsTags
 	{
 		get
 		{
-			return selectedElements;
+			return selectedElementsTags;
 		}
 		set
 		{
-			if (selectedElements == null || selectedElements.Length != value.Count)
+			if (selectedElementsTags == null || selectedElementsTags.Length != value.Count)
 			{
-				selectedElements = new Element[value.Count];
+				selectedElementsTags = new Tag[value.Count];
 			}
-			value.CopyTo(selectedElements, 0);
+			value.CopyTo(selectedElementsTags, 0);
 		}
 	}
 
@@ -189,10 +192,9 @@ public class Constructable : Workable, ISaveLoadable
 					PrimaryElement component7 = gameObject.GetComponent<PrimaryElement>();
 					float mass = component7.Mass;
 					float temperature = component7.Temperature;
-					SimHashes elementID = component7.ElementID;
 					byte diseaseIdx = component7.DiseaseIdx;
 					int diseaseCount = component7.DiseaseCount;
-					Deconstructable.SpawnItem(component7.transform.GetPosition(), component7.GetComponent<Building>().Def, elementID, mass, temperature, diseaseIdx, diseaseCount);
+					Deconstructable.SpawnItem(component7.transform.GetPosition(), component7.GetComponent<Building>().Def, component7.Element.tag, mass, temperature, diseaseIdx, diseaseCount);
 					gameObject.Trigger(1606648047, null);
 					gameObject.DeleteObject();
 				}
@@ -218,7 +220,7 @@ public class Constructable : Workable, ISaveLoadable
 		Orientation orientation = ((UnityEngine.Object)component != (UnityEngine.Object)null) ? component.GetOrientation() : Orientation.Neutral;
 		int cell = Grid.PosToCell(base.transform.GetLocalPosition());
 		UnmarkArea();
-		GameObject gameObject = building.Def.Build(cell, orientation, storage, selectedElements, initialTemperature, true);
+		GameObject gameObject = building.Def.Build(cell, orientation, storage, selectedElementsTags, initialTemperature, true);
 		gameObject.transform.rotation = base.transform.rotation;
 		Rotatable component2 = gameObject.GetComponent<Rotatable>();
 		if ((UnityEngine.Object)component2 != (UnityEngine.Object)null)
@@ -296,9 +298,10 @@ public class Constructable : Workable, ISaveLoadable
 		}
 		this.fetchList = new FetchList2(storage, Db.Get().ChoreTypes.BuildFetch, choreTags);
 		PrimaryElement component = GetComponent<PrimaryElement>();
-		component.ElementID = selectedElements[0].id;
+		Element element = ElementLoader.GetElement(SelectedElementsTags[0]);
+		component.ElementID = element.id;
 		float num3 = component.Temperature = (component.Temperature = 293.15f);
-		Recipe.Ingredient[] allIngredients = Recipe.GetAllIngredients(selectedElements);
+		Recipe.Ingredient[] allIngredients = Recipe.GetAllIngredients(selectedElementsTags);
 		foreach (Recipe.Ingredient ingredient in allIngredients)
 		{
 			FetchList2 fetchList = this.fetchList;
@@ -660,7 +663,7 @@ public class Constructable : Workable, ISaveLoadable
 	{
 		if (!materialNeedsCleared)
 		{
-			Recipe.Ingredient[] allIngredients = Recipe.GetAllIngredients(SelectedElements);
+			Recipe.Ingredient[] allIngredients = Recipe.GetAllIngredients(SelectedElementsTags);
 			foreach (Recipe.Ingredient ingredient in allIngredients)
 			{
 				MaterialNeeds.Instance.UpdateNeed(ingredient.tag, 0f - ingredient.amount);
@@ -690,19 +693,6 @@ public class Constructable : Workable, ISaveLoadable
 		}
 	}
 
-	[OnSerializing]
-	internal void OnSerializing()
-	{
-		if (selectedElements != null)
-		{
-			ids = new int[selectedElements.Length];
-			for (int i = 0; i < selectedElements.Length; i++)
-			{
-				ids[i] = (int)selectedElements[i].id;
-			}
-		}
-	}
-
 	[OnDeserialized]
 	internal void OnDeserialized()
 	{
@@ -712,6 +702,17 @@ public class Constructable : Workable, ISaveLoadable
 			for (int i = 0; i < ids.Length; i++)
 			{
 				selectedElements[i] = ElementLoader.FindElementByHash((SimHashes)ids[i]);
+			}
+			if (selectedElementsTags == null)
+			{
+				selectedElementsTags = new Tag[ids.Length];
+				for (int j = 0; j < ids.Length; j++)
+				{
+					selectedElementsTags[j] = ElementLoader.FindElementByHash((SimHashes)ids[j]).tag;
+				}
+			}
+			for (int k = 0; k < selectedElements.Length; k++)
+			{
 			}
 		}
 	}

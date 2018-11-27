@@ -98,10 +98,10 @@ public class Scenario : KMonoBehaviour
 			Left += buildingDef.WidthInCells;
 			Scenario.RunAfterNextUpdate(delegate
 			{
-				Assets.GetBuildingDef(prefab_id).TryPlace(null, pos, Orientation.Neutral, new Element[2]
+				Assets.GetBuildingDef(prefab_id).TryPlace(null, pos, Orientation.Neutral, new Tag[2]
 				{
-					element,
-					ElementLoader.FindElementByHash(SimHashes.SedimentaryRock)
+					element.tag,
+					ElementLoader.FindElementByHash(SimHashes.SedimentaryRock).tag
 				}, 0);
 			});
 		}
@@ -887,10 +887,11 @@ public class Scenario : KMonoBehaviour
 		{
 			Output.LogError("Missing def for", prefab_id);
 		}
-		GameObject gameObject = buildingDef.Build(buildingDef.GetBuildingCell(cell), Orientation.Neutral, null, new Element[2]
+		Element element2 = ElementLoader.FindElementByHash(element);
+		GameObject gameObject = buildingDef.Build(buildingDef.GetBuildingCell(cell), Orientation.Neutral, null, new Tag[2]
 		{
-			ElementLoader.FindElementByHash(element),
-			ElementLoader.FindElementByHash(SimHashes.SedimentaryRock)
+			element2.tag,
+			ElementLoader.FindElementByHash(SimHashes.SedimentaryRock).tag
 		}, 293.15f, false);
 		PrimaryElement component = gameObject.GetComponent<PrimaryElement>();
 		component.InternalTemperature = 300f;

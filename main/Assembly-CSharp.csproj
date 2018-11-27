@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <ProjectGuid>{EC9C7EB4-C16C-4CA0-A4A6-C77B78C7200B}</ProjectGuid>
+    <ProjectGuid>{64C4BB67-5045-41F6-BCEB-6C20AF8B29B0}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <OutputType>Library</OutputType>
@@ -208,6 +208,7 @@
     <Compile Include="BaseWireConfig.cs" />
     <Compile Include="BasicFabricConfig.cs" />
     <Compile Include="BasicFabricMaterialPlantConfig.cs" />
+    <Compile Include="BasicFabricTuning.cs" />
     <Compile Include="BasicForagePlantConfig.cs" />
     <Compile Include="BasicForagePlantPlanted.cs" />
     <Compile Include="BasicForagePlantPlantedConfig.cs" />
@@ -276,11 +277,13 @@
     <Compile Include="BuildTool.cs" />
     <Compile Include="BuildToolHoverTextCard.cs" />
     <Compile Include="BuildWatermark.cs" />
+    <Compile Include="BulbPlantConfig.cs" />
     <Compile Include="BunkerDoorConfig.cs" />
     <Compile Include="BunkerTileConfig.cs" />
     <Compile Include="BurrowMonitor.cs" />
     <Compile Include="Butcherable.cs" />
     <Compile Include="ButtonLabelColumn.cs" />
+    <Compile Include="CactusPlantConfig.cs" />
     <Compile Include="CallAdultMonitor.cs" />
     <Compile Include="CallAdultStates.cs" />
     <Compile Include="CalorieMonitor.cs" />
@@ -294,6 +297,8 @@
     <Compile Include="CancellableDig.cs" />
     <Compile Include="CancelTool.cs" />
     <Compile Include="CanvasConfig.cs" />
+    <Compile Include="CanvasTallConfig.cs" />
+    <Compile Include="CanvasWideConfig.cs" />
     <Compile Include="CapacityControlSideScreen.cs" />
     <Compile Include="Capturable.cs" />
     <Compile Include="CaptureTool.cs" />
@@ -983,7 +988,6 @@
     <Compile Include="IModule3DNodeType.cs" />
     <Compile Include="IMultiEntityConfig.cs" />
     <Compile Include="IncapacitationMonitor.cs" />
-    <Compile Include="IncubatableEgg.cs" />
     <Compile Include="IncubatingStates.cs" />
     <Compile Include="IncubationMonitor.cs" />
     <Compile Include="IncubatorMonitor.cs" />
@@ -1167,6 +1171,7 @@
     <Compile Include="LaunchInitializer.cs" />
     <Compile Include="LayEggStates.cs" />
     <Compile Include="LayoutCategoryMenu.cs" />
+    <Compile Include="LeafyPlantConfig.cs" />
     <Compile Include="LegacyModMain.cs" />
     <Compile Include="Light2D.cs" />
     <Compile Include="LightBuffer.cs" />
@@ -2163,6 +2168,7 @@
     <Compile Include="TUNING\RELAXATION.cs" />
     <Compile Include="TUNING\ROCKETRY.cs" />
     <Compile Include="TUNING\ROLES.cs" />
+    <Compile Include="TUNING\SORTORDER.cs" />
     <Compile Include="TUNING\STORAGE.cs" />
     <Compile Include="TUNING\STORAGEFILTERS.cs" />
     <Compile Include="TUNING\STRESS.cs" />

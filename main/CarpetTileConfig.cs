@@ -15,12 +15,20 @@ public class CarpetTileConfig : IBuildingConfig
 		string anim = "floor_carpet_kanim";
 		int hitpoints = 100;
 		float construction_time = 30f;
-		float[] tIER = BUILDINGS.CONSTRUCTION_MASS_KG.TIER3;
-		string[] rAW_MINERALS = MATERIALS.RAW_MINERALS;
+		float[] construction_mass = new float[2]
+		{
+			200f,
+			2f
+		};
+		string[] construction_materials = new string[2]
+		{
+			"BuildableRaw",
+			"BuildingFiber"
+		};
 		float melting_point = 1600f;
 		BuildLocationRule build_location_rule = BuildLocationRule.Tile;
 		EffectorValues nONE = NOISE_POLLUTION.NONE;
-		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, tIER, rAW_MINERALS, melting_point, build_location_rule, new EffectorValues
+		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, construction_mass, construction_materials, melting_point, build_location_rule, new EffectorValues
 		{
 			amount = 10,
 			radius = 1

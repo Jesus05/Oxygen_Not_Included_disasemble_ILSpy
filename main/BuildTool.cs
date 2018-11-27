@@ -13,7 +13,7 @@ public class BuildTool : DragTool
 
 	private int lastDragCell = -1;
 
-	private IList<Element> selectedElements;
+	private IList<Tag> selectedElements;
 
 	private BuildingDef def;
 
@@ -109,7 +109,7 @@ public class BuildTool : DragTool
 		}
 	}
 
-	public void Activate(BuildingDef def, IList<Element> selected_elements, GameObject source = null)
+	public void Activate(BuildingDef def, IList<Tag> selected_elements, GameObject source = null)
 	{
 		selectedElements = selected_elements;
 		this.def = def;
@@ -285,7 +285,7 @@ public class BuildTool : DragTool
 						if ((Object)gameObject2 != (Object)null && (Object)Grid.Objects[cell, (int)def.ReplacementLayer] == (Object)null)
 						{
 							BuildingComplete component = gameObject2.GetComponent<BuildingComplete>();
-							if ((Object)component != (Object)null && component.Def.Replaceable && component.Def.IsFoundation && component.Def.isKAnimTile && ((Object)component.Def != (Object)def || selectedElements[0] != gameObject2.GetComponent<PrimaryElement>().Element))
+							if ((Object)component != (Object)null && component.Def.Replaceable && component.Def.IsFoundation && component.Def.isKAnimTile && ((Object)component.Def != (Object)def || selectedElements[0] != gameObject2.GetComponent<PrimaryElement>().Element.tag))
 							{
 								gameObject = def.TryReplaceTile(visualizer, vector, buildingOrientation, selectedElements, 0);
 								Grid.Objects[cell, (int)def.ReplacementLayer] = gameObject;

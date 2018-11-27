@@ -223,7 +223,7 @@ public class BuildingDef : Def
 
 	public bool IsTilePiece => TileLayer != ObjectLayer.NumLayers;
 
-	public GameObject Create(Vector3 pos, Storage resource_storage, IList<Element> selected_elements, Recipe recipe, float temperature, GameObject obj)
+	public GameObject Create(Vector3 pos, Storage resource_storage, IList<Tag> selected_elements, Recipe recipe, float temperature, GameObject obj)
 	{
 		SimUtil.DiseaseInfo a = SimUtil.DiseaseInfo.Invalid;
 		if ((UnityEngine.Object)resource_storage != (UnityEngine.Object)null)
@@ -240,8 +240,9 @@ public class BuildingDef : Def
 			}
 		}
 		GameObject gameObject = GameUtil.KInstantiate(obj, pos, SceneLayer, null, 0);
+		Element element = ElementLoader.GetElement(selected_elements[0]);
 		PrimaryElement component = gameObject.GetComponent<PrimaryElement>();
-		component.ElementID = selected_elements[0].id;
+		component.ElementID = element.id;
 		component.Temperature = temperature;
 		component.AddDisease(a.idx, a.count, "BuildingDef.Create");
 		gameObject.name = obj.name;
@@ -249,7 +250,7 @@ public class BuildingDef : Def
 		return gameObject;
 	}
 
-	public GameObject Build(int cell, Orientation orientation, Storage resource_storage, IList<Element> selected_elements, float temperature, bool playsound = true)
+	public GameObject Build(int cell, Orientation orientation, Storage resource_storage, IList<Tag> selected_elements, float temperature, bool playsound = true)
 	{
 		Vector3 pos = Grid.CellToPosCBC(cell, SceneLayer);
 		GameObject gameObject = Create(pos, resource_storage, selected_elements, CraftRecipe, temperature, BuildingComplete);
@@ -275,17 +276,17 @@ public class BuildingDef : Def
 		Deconstructable component2 = gameObject.GetComponent<Deconstructable>();
 		if ((UnityEngine.Object)component2 != (UnityEngine.Object)null)
 		{
-			component2.constructionElements = new SimHashes[selected_elements.Count];
+			component2.constructionElements = new Tag[selected_elements.Count];
 			for (int i = 0; i < selected_elements.Count; i++)
 			{
-				component2.constructionElements[i] = selected_elements[i].id;
+				component2.constructionElements[i] = selected_elements[i];
 			}
 		}
 		Game.Instance.Trigger(-1661515756, gameObject);
 		return gameObject;
 	}
 
-	public GameObject TryPlace(GameObject src_go, Vector3 pos, Orientation orientation, IList<Element> selected_elements, int layer = 0)
+	public GameObject TryPlace(GameObject src_go, Vector3 pos, Orientation orientation, IList<Tag> selected_elements, int layer = 0)
 	{
 		GameObject result = null;
 		if (IsValidPlaceLocation(src_go, pos, orientation, false, out string _))
@@ -295,7 +296,7 @@ public class BuildingDef : Def
 		return result;
 	}
 
-	public GameObject TryReplaceTile(GameObject src_go, Vector3 pos, Orientation orientation, IList<Element> selected_elements, int layer = 0)
+	public GameObject TryReplaceTile(GameObject src_go, Vector3 pos, Orientation orientation, IList<Tag> selected_elements, int layer = 0)
 	{
 		GameObject result = null;
 		if (IsValidPlaceLocation(src_go, pos, orientation, true, out string _))
@@ -308,7 +309,7 @@ public class BuildingDef : Def
 		return result;
 	}
 
-	public GameObject Instantiate(Vector3 pos, Orientation orientation, IList<Element> selected_elements, int layer = 0)
+	public GameObject Instantiate(Vector3 pos, Orientation orientation, IList<Tag> selected_elements, int layer = 0)
 	{
 		float num = -0.15f;
 		pos.z += num;
@@ -316,8 +317,9 @@ public class BuildingDef : Def
 		Vector3 position = pos;
 		Grid.SceneLayer sceneLayer = Grid.SceneLayer.Front;
 		GameObject gameObject = GameUtil.KInstantiate(buildingUnderConstruction, position, sceneLayer, null, layer);
-		gameObject.GetComponent<PrimaryElement>().ElementID = selected_elements[0].id;
-		gameObject.GetComponent<Constructable>().SelectedElements = selected_elements;
+		Element element = ElementLoader.GetElement(selected_elements[0]);
+		gameObject.GetComponent<PrimaryElement>().ElementID = element.id;
+		gameObject.GetComponent<Constructable>().SelectedElementsTags = selected_elements;
 		gameObject.SetActive(true);
 		return gameObject;
 	}
@@ -1202,7 +1204,7 @@ public class BuildingDef : Def
 		}
 	}
 
-	public bool MaterialsAvailable(IList<Element> selected_elements)
+	public bool MaterialsAvailable(IList<Tag> selected_elements)
 	{
 		bool result = true;
 		Recipe.Ingredient[] allIngredients = CraftRecipe.GetAllIngredients(selected_elements);

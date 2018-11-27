@@ -99,6 +99,7 @@ public class MinionAssignablesProxy : KMonoBehaviour, IAssignableIdentity
 				(target as KMonoBehaviour).Trigger(-1585839766, data);
 			}
 		});
+		Game.Instance.assignmentManager.AddToAssignmentGroup("public", this);
 	}
 
 	protected override void OnCleanUp()

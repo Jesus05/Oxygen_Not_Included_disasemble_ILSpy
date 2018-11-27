@@ -144,7 +144,6 @@ public class MinionIdentity : KMonoBehaviour, ISaveLoadable, IAssignableIdentity
 			{
 				Components.LiveMinionIdentities.Add(this);
 			}
-			Game.Instance.assignmentManager.AddToAssignmentGroup("public", this);
 		}
 		SymbolOverrideController component2 = GetComponent<SymbolOverrideController>();
 		if ((UnityEngine.Object)component2 != (UnityEngine.Object)null)

@@ -404,7 +404,7 @@ public class EntityTemplates
 		return creature;
 	}
 
-	public static GameObject CreateLooseEntity(string id, string name, string desc, float mass, bool unitMass, KAnimFile anim, string initialAnim, Grid.SceneLayer sceneLayer, CollisionShape collisionShape, float width = 1f, float height = 1f, bool isPickupable = false, SimHashes element = SimHashes.Creature, List<Tag> additionalTags = null)
+	public static GameObject CreateLooseEntity(string id, string name, string desc, float mass, bool unitMass, KAnimFile anim, string initialAnim, Grid.SceneLayer sceneLayer, CollisionShape collisionShape, float width = 1f, float height = 1f, bool isPickupable = false, int sortOrder = 0, SimHashes element = SimHashes.Creature, List<Tag> additionalTags = null)
 	{
 		GameObject template = CreateBasicEntity(id, name, desc, mass, unitMass, anim, initialAnim, sceneLayer, element, additionalTags, 293f);
 		template = AddCollision(template, collisionShape, width, height);
@@ -415,6 +415,7 @@ public class EntityTemplates
 		{
 			Pickupable pickupable = template.AddOrGet<Pickupable>();
 			pickupable.SetWorkTime(5f);
+			pickupable.sortOrder = sortOrder;
 		}
 		return template;
 	}
@@ -477,6 +478,7 @@ public class EntityTemplates
 		primaryElement.Temperature = default_temperature;
 		Pickupable pickupable = gameObject.AddOrGet<Pickupable>();
 		pickupable.SetWorkTime(5f);
+		pickupable.sortOrder = element.buildMenuSort;
 		KSelectable kSelectable = gameObject.AddOrGet<KSelectable>();
 		kSelectable.SetName(element.name);
 		KBatchedAnimController kBatchedAnimController = gameObject.AddOrGet<KBatchedAnimController>();
@@ -646,13 +648,12 @@ public class EntityTemplates
 
 	public static GameObject CreateAndRegisterSeedForPlant(GameObject plant, SeedProducer.ProductionType productionType, string id, string name, string desc, KAnimFile anim, string initialAnim = "object", int numberOfSeeds = 1, List<Tag> additionalTags = null, SingleEntityReceptacle.ReceptacleDirection planterDirection = SingleEntityReceptacle.ReceptacleDirection.Top, Tag replantGroundTag = default(Tag), int sortOrder = 0, string domesticatedDescription = "", CollisionShape collisionShape = CollisionShape.CIRCLE, float width = 0.25f, float height = 0.25f, Recipe.Ingredient[] recipe_ingredients = null, string recipe_description = "", bool ignoreDefaultSeedTag = false)
 	{
-		GameObject gameObject = CreateLooseEntity(id, name, desc, 1f, true, anim, initialAnim, Grid.SceneLayer.Front, collisionShape, width, height, true, SimHashes.Creature, null);
+		GameObject gameObject = CreateLooseEntity(id, name, desc, 1f, true, anim, initialAnim, Grid.SceneLayer.Front, collisionShape, width, height, true, SORTORDER.SEEDS + sortOrder, SimHashes.Creature, null);
 		gameObject.AddOrGet<EntitySplitter>();
 		CreateAndRegisterCompostableFromPrefab(gameObject);
 		PlantableSeed plantableSeed = gameObject.AddOrGet<PlantableSeed>();
 		plantableSeed.PlantID = new Tag(plant.name);
 		plantableSeed.replantGroundTag = replantGroundTag;
-		plantableSeed.sortOrder = sortOrder;
 		plantableSeed.domesticatedDescription = domesticatedDescription;
 		plantableSeed.direction = planterDirection;
 		KPrefabID component = gameObject.GetComponent<KPrefabID>();

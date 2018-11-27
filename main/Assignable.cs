@@ -135,6 +135,22 @@ public abstract class Assignable : KMonoBehaviour, ISaveLoadable
 		return assignee != null;
 	}
 
+	public bool IsAssignedTo(IAssignableIdentity identity)
+	{
+		Ownables soleOwner = identity.GetSoleOwner();
+		if (assignee != null)
+		{
+			foreach (Ownables owner in assignee.GetOwners())
+			{
+				if ((UnityEngine.Object)owner.gameObject == (UnityEngine.Object)soleOwner.gameObject)
+				{
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
 	public virtual void Assign(IAssignableIdentity new_assignee)
 	{
 		if (new_assignee != assignee)

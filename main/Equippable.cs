@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [SerializationConfig(MemberSerialization.OptIn)]
-public class Equippable : Assignable, ISaveLoadable, IGameObjectEffectDescriptor, IQuality, IHasSortOrder
+public class Equippable : Assignable, ISaveLoadable, IGameObjectEffectDescriptor, IQuality
 {
 	private QualityLevel quality = QualityLevel.Poor;
 
@@ -36,12 +36,6 @@ public class Equippable : Assignable, ISaveLoadable, IGameObjectEffectDescriptor
 		{
 			defHandle.Set(value);
 		}
-	}
-
-	public int sortOrder
-	{
-		get;
-		set;
 	}
 
 	public QualityLevel GetQuality()

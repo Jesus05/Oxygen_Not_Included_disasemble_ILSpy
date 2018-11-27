@@ -21,7 +21,7 @@ public class BaseUtilityBuildTool : DragTool
 		}
 	}
 
-	private IList<Element> selectedElements;
+	private IList<Tag> selectedElements;
 
 	private BuildingDef def;
 
@@ -87,7 +87,7 @@ public class BaseUtilityBuildTool : DragTool
 		base.OnDeactivateTool(new_tool);
 	}
 
-	public void Activate(BuildingDef def, IList<Element> selected_elements)
+	public void Activate(BuildingDef def, IList<Tag> selected_elements)
 	{
 		selectedElements = selected_elements;
 		this.def = def;

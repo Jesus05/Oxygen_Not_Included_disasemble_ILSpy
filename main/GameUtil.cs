@@ -2103,4 +2103,44 @@ public static class GameUtil
 	{
 		return Grid.PosToCell(cmp.transform.GetPosition());
 	}
+
+	public static List<Descriptor> GetMaterialDescriptors(Tag tag)
+	{
+		List<Descriptor> list = new List<Descriptor>();
+		Element element = ElementLoader.GetElement(tag);
+		if (element != null)
+		{
+			if (element.attributeModifiers.Count > 0)
+			{
+				foreach (AttributeModifier attributeModifier in element.attributeModifiers)
+				{
+					string txt = string.Format(Strings.Get(new StringKey("STRINGS.ELEMENTS.MATERIAL_MODIFIERS." + attributeModifier.AttributeId.ToUpper())), attributeModifier.GetFormattedString(null, false));
+					string tooltip = string.Format(Strings.Get(new StringKey("STRINGS.ELEMENTS.MATERIAL_MODIFIERS.TOOLTIP." + attributeModifier.AttributeId.ToUpper())), attributeModifier.GetFormattedString(null, false));
+					Descriptor item = default(Descriptor);
+					item.SetupDescriptor(txt, tooltip, Descriptor.DescriptorType.Effect);
+					item.IncreaseIndent();
+					list.Add(item);
+				}
+			}
+			list.AddRange(GetSignificantMaterialPropertyDescriptors(element));
+		}
+		return list;
+	}
+
+	public static string GetMaterialTooltips(Tag tag)
+	{
+		string text = tag.ProperName();
+		Element element = ElementLoader.GetElement(tag);
+		if (element != null)
+		{
+			foreach (AttributeModifier attributeModifier in element.attributeModifiers)
+			{
+				string name = Db.Get().BuildingAttributes.Get(attributeModifier.AttributeId).Name;
+				string formattedString = attributeModifier.GetFormattedString(null, attributeModifier.IsMultiplier);
+				text = text + "\n    • " + string.Format(DUPLICANTS.MODIFIERS.MODIFIER_FORMAT, name, formattedString);
+			}
+			text += GetSignificantMaterialPropertyTooltips(element);
+		}
+		return text;
+	}
 }

@@ -155,7 +155,7 @@ public class ProductInfoScreen : KScreen
 		{
 			ProductFlavourPane.SetActive(expandedInfo);
 		}
-		if ((UnityEngine.Object)materialSelectionPanel != (UnityEngine.Object)null && materialSelectionPanel.CurrentSelectedElement != null)
+		if ((UnityEngine.Object)materialSelectionPanel != (UnityEngine.Object)null && materialSelectionPanel.CurrentSelectedElement != (Tag)null)
 		{
 			materialSelectionPanel.ToggleShowDescriptorPanels(expandedInfo);
 		}
@@ -169,7 +169,7 @@ public class ProductInfoScreen : KScreen
 
 	private void Update()
 	{
-		if (!DebugHandler.InstantBuildMode && !Game.Instance.SandboxModeActive && (UnityEngine.Object)currentDef != (UnityEngine.Object)null && materialSelectionPanel.CurrentSelectedElement != null && !MaterialSelector.AllowInsufficientMaterialBuild() && currentDef.Mass[0] > WorldInventory.Instance.GetAmount(materialSelectionPanel.CurrentSelectedElement.tag))
+		if (!DebugHandler.InstantBuildMode && !Game.Instance.SandboxModeActive && (UnityEngine.Object)currentDef != (UnityEngine.Object)null && materialSelectionPanel.CurrentSelectedElement != (Tag)null && !MaterialSelector.AllowInsufficientMaterialBuild() && currentDef.Mass[0] > WorldInventory.Instance.GetAmount(materialSelectionPanel.CurrentSelectedElement))
 		{
 			materialSelectionPanel.AutoSelectAvailableMaterial();
 		}
@@ -203,14 +203,18 @@ public class ProductInfoScreen : KScreen
 				dictionary.TryGetValue(key, out value);
 				value = (dictionary[key] = value + attributeModifier.Value);
 			}
-			if (materialSelectionPanel.CurrentSelectedElement != null)
+			if (materialSelectionPanel.CurrentSelectedElement != (Tag)null)
 			{
-				foreach (AttributeModifier attributeModifier2 in materialSelectionPanel.CurrentSelectedElement.attributeModifiers)
+				Element element = ElementLoader.GetElement(materialSelectionPanel.CurrentSelectedElement);
+				if (element != null)
 				{
-					float value2 = 0f;
-					Klei.AI.Attribute key2 = Db.Get().BuildingAttributes.Get(attributeModifier2.AttributeId);
-					dictionary2.TryGetValue(key2, out value2);
-					value2 = (dictionary2[key2] = value2 + attributeModifier2.Value);
+					foreach (AttributeModifier attributeModifier2 in element.attributeModifiers)
+					{
+						float value2 = 0f;
+						Klei.AI.Attribute key2 = Db.Get().BuildingAttributes.Get(attributeModifier2.AttributeId);
+						dictionary2.TryGetValue(key2, out value2);
+						value2 = (dictionary2[key2] = value2 + attributeModifier2.Value);
+					}
 				}
 			}
 			if (dictionary.Count > 0)

@@ -1,19 +1,21 @@
 using Klei.AI;
 using STRINGS;
 using System.Collections.Generic;
+using TUNING;
 using UnityEngine;
 
 public class EggConfig
 {
 	public static GameObject CreateEgg(string id, string name, string desc, Tag creature_id, string anim, float mass, int egg_sort_order, float base_incubation_rate)
 	{
-		GameObject gameObject = EntityTemplates.CreateLooseEntity(id, name, desc, mass, true, Assets.GetAnim(anim), "idle", Grid.SceneLayer.Ore, EntityTemplates.CollisionShape.RECTANGLE, 0.8f, 0.8f, true, SimHashes.Creature, null);
+		GameObject gameObject = EntityTemplates.CreateLooseEntity(id, name, desc, mass, true, Assets.GetAnim(anim), "idle", Grid.SceneLayer.Ore, EntityTemplates.CollisionShape.RECTANGLE, 0.8f, 0.8f, true, 0, SimHashes.Creature, null);
 		gameObject.AddOrGet<KBoxCollider2D>().offset = new Vector2f(0f, 0.36f);
-		IncubatableEgg incubatableEgg = gameObject.AddOrGet<IncubatableEgg>();
-		incubatableEgg.sortOrder = egg_sort_order;
+		Pickupable pickupable = gameObject.AddOrGet<Pickupable>();
+		pickupable.sortOrder = SORTORDER.EGGS + egg_sort_order;
 		gameObject.AddOrGet<Effects>();
 		KPrefabID kPrefabID = gameObject.AddOrGet<KPrefabID>();
 		kPrefabID.AddTag(GameTags.Egg);
+		kPrefabID.AddTag(GameTags.IncubatableEgg);
 		IncubationMonitor.Def def = gameObject.AddOrGetDef<IncubationMonitor.Def>();
 		def.spawnedCreature = creature_id;
 		def.baseIncubationRate = base_incubation_rate;
@@ -21,7 +23,7 @@ public class EggConfig
 		def2.spaceRequiredPerCreature = 0;
 		Object.Destroy(gameObject.GetComponent<EntitySplitter>());
 		Assets.AddPrefab(gameObject.GetComponent<KPrefabID>());
-		string arg = string.Format(BUILDINGS.PREFABS.EGGCRACKER.RESULT_DESCRIPTION, name);
+		string arg = string.Format(STRINGS.BUILDINGS.PREFABS.EGGCRACKER.RESULT_DESCRIPTION, name);
 		ComplexRecipe.RecipeElement[] array = new ComplexRecipe.RecipeElement[1]
 		{
 			new ComplexRecipe.RecipeElement(id, 1f)
@@ -34,7 +36,7 @@ public class EggConfig
 		string obsolete_id = ComplexRecipeManager.MakeObsoleteRecipeID(id, "RawEgg");
 		string text = ComplexRecipeManager.MakeRecipeID(id, array, array2);
 		ComplexRecipe complexRecipe = new ComplexRecipe(text, array, array2);
-		complexRecipe.description = string.Format(BUILDINGS.PREFABS.EGGCRACKER.RECIPE_DESCRIPTION, name, arg);
+		complexRecipe.description = string.Format(STRINGS.BUILDINGS.PREFABS.EGGCRACKER.RECIPE_DESCRIPTION, name, arg);
 		complexRecipe.fabricators = new List<Tag>
 		{
 			"EggCracker"

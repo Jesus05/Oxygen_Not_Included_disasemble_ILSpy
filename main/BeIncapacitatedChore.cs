@@ -69,11 +69,7 @@ public class BeIncapacitatedChore : Chore<BeIncapacitatedChore.StatesInstance>
 				{
 					flag2 = true;
 				}
-				else if (clinic.Get(smi).GetComponent<Assignable>().assignee == null)
-				{
-					flag2 = true;
-				}
-				else if ((UnityEngine.Object)clinic.Get(smi).GetComponent<Assignable>().assignee.GetSoleOwner().gameObject != (UnityEngine.Object)smi.master.gameObject)
+				else if (!clinic.Get(smi).GetComponent<Assignable>().IsAssignedTo(smi.master.GetComponent<IAssignableIdentity>()))
 				{
 					flag2 = true;
 				}
@@ -89,11 +85,7 @@ public class BeIncapacitatedChore : Chore<BeIncapacitatedChore.StatesInstance>
 				{
 					flag = true;
 				}
-				else if (clinic.Get(smi).GetComponent<Assignable>().assignee == null)
-				{
-					flag = true;
-				}
-				else if ((UnityEngine.Object)clinic.Get(smi).GetComponent<Assignable>().assignee.GetSoleOwner().gameObject != (UnityEngine.Object)smi.master.gameObject)
+				else if (!clinic.Get(smi).GetComponent<Assignable>().IsAssignedTo(smi.master.GetComponent<IAssignableIdentity>()))
 				{
 					flag = true;
 				}

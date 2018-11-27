@@ -258,6 +258,8 @@ public class GameTags
 
 	public static readonly Tag RareMaterials = TagManager.Create("RareMaterials");
 
+	public static readonly Tag BuildingFiber = TagManager.Create("BuildingFiber");
+
 	public static readonly Tag Incapacitated = TagManager.Create("Incapacitated");
 
 	public static readonly Tag CaloriesDepleted = TagManager.Create("CaloriesDepleted");
@@ -273,6 +275,8 @@ public class GameTags
 	public static readonly Tag HeatBulb = TagManager.Create("HeatBulb");
 
 	public static readonly Tag Egg = TagManager.Create("Egg");
+
+	public static readonly Tag IncubatableEgg = TagManager.Create("IncubatableEgg");
 
 	public static readonly Tag Trapped = TagManager.Create("Trapped");
 
@@ -567,6 +571,11 @@ public class GameTags
 		ManufacturedMaterial,
 		CookingIngredient,
 		RareMaterials
+	};
+
+	public static TagSet MaterialBuildingElements = new TagSet
+	{
+		BuildingFiber
 	};
 
 	public static TagSet OtherEntityTags = new TagSet

@@ -78,7 +78,7 @@ public class SelectToolHoverTextCard : HoverTextConfiguration
 		},
 		{
 			OverlayModes.Temperature.ID,
-			HideInOverlay
+			ShouldShowTemperatureOverlay
 		}
 	};
 
@@ -490,37 +490,43 @@ public class SelectToolHoverTextCard : HoverTextConfiguration
 						foreach (StatusItemGroup.Entry item5 in overlayValidHoverObjects[k].GetStatusItemGroup())
 						{
 							StatusItemGroup.Entry current6 = item5;
-							if (!ShowStatusItemInCurrentOverlay(current6.item) || num4 >= maxNumberOfDisplayedSelectableWarnings)
+							if (ShowStatusItemInCurrentOverlay(current6.item))
 							{
-								break;
-							}
-							if (current6.category != null && current6.category.Id == "Main" && num4 < maxNumberOfDisplayedSelectableWarnings)
-							{
-								TextStyleSetting style = (!IsStatusItemWarning(current6)) ? Styles_BodyText.Standard : HoverTextStyleSettings[1];
-								Sprite icon = (current6.item.sprite == null) ? iconWarning : current6.item.sprite.sprite;
-								Color color = (!IsStatusItemWarning(current6)) ? Styles_BodyText.Standard.textColor : HoverTextStyleSettings[1].textColor;
-								hoverTextDrawer.NewLine(26);
-								hoverTextDrawer.DrawIcon(icon, color, 18, 2);
-								hoverTextDrawer.DrawText(current6.GetName(), style);
-								num4++;
+								if (num4 >= maxNumberOfDisplayedSelectableWarnings)
+								{
+									break;
+								}
+								if (current6.category != null && current6.category.Id == "Main" && num4 < maxNumberOfDisplayedSelectableWarnings)
+								{
+									TextStyleSetting style = (!IsStatusItemWarning(current6)) ? Styles_BodyText.Standard : HoverTextStyleSettings[1];
+									Sprite icon = (current6.item.sprite == null) ? iconWarning : current6.item.sprite.sprite;
+									Color color = (!IsStatusItemWarning(current6)) ? Styles_BodyText.Standard.textColor : HoverTextStyleSettings[1].textColor;
+									hoverTextDrawer.NewLine(26);
+									hoverTextDrawer.DrawIcon(icon, color, 18, 2);
+									hoverTextDrawer.DrawText(current6.GetName(), style);
+									num4++;
+								}
 							}
 						}
 						foreach (StatusItemGroup.Entry item6 in overlayValidHoverObjects[k].GetStatusItemGroup())
 						{
 							StatusItemGroup.Entry current7 = item6;
-							if (!ShowStatusItemInCurrentOverlay(current7.item) || num4 >= maxNumberOfDisplayedSelectableWarnings)
+							if (ShowStatusItemInCurrentOverlay(current7.item))
 							{
-								break;
-							}
-							if ((current7.category == null || current7.category.Id != "Main") && num4 < maxNumberOfDisplayedSelectableWarnings)
-							{
-								TextStyleSetting style2 = (!IsStatusItemWarning(current7)) ? Styles_BodyText.Standard : HoverTextStyleSettings[1];
-								Sprite icon2 = (current7.item.sprite == null) ? iconWarning : current7.item.sprite.sprite;
-								Color color2 = (!IsStatusItemWarning(current7)) ? Styles_BodyText.Standard.textColor : HoverTextStyleSettings[1].textColor;
-								hoverTextDrawer.NewLine(26);
-								hoverTextDrawer.DrawIcon(icon2, color2, 18, 2);
-								hoverTextDrawer.DrawText(current7.GetName(), style2);
-								num4++;
+								if (num4 >= maxNumberOfDisplayedSelectableWarnings)
+								{
+									break;
+								}
+								if ((current7.category == null || current7.category.Id != "Main") && num4 < maxNumberOfDisplayedSelectableWarnings)
+								{
+									TextStyleSetting style2 = (!IsStatusItemWarning(current7)) ? Styles_BodyText.Standard : HoverTextStyleSettings[1];
+									Sprite icon2 = (current7.item.sprite == null) ? iconWarning : current7.item.sprite.sprite;
+									Color color2 = (!IsStatusItemWarning(current7)) ? Styles_BodyText.Standard.textColor : HoverTextStyleSettings[1].textColor;
+									hoverTextDrawer.NewLine(26);
+									hoverTextDrawer.DrawIcon(icon2, color2, 18, 2);
+									hoverTextDrawer.DrawText(current7.GetName(), style2);
+									num4++;
+								}
 							}
 						}
 						float temp = 0f;
@@ -561,7 +567,7 @@ public class SelectToolHoverTextCard : HoverTextConfiguration
 						{
 							flag2 = false;
 						}
-						if ((UnityEngine.Object)choreConsumer != (UnityEngine.Object)null)
+						if (mode == OverlayModes.Light.ID && (UnityEngine.Object)choreConsumer != (UnityEngine.Object)null)
 						{
 							bool flag10 = false;
 							foreach (Type hiddenChoreConsumerType in hiddenChoreConsumerTypes)
@@ -743,6 +749,11 @@ public class SelectToolHoverTextCard : HoverTextConfiguration
 	{
 		Tag prefabTag = selectable.GetComponent<KPrefabID>().PrefabTag;
 		return OverlayScreen.WireIDs.Contains(prefabTag) || (UnityEngine.Object)selectable.GetComponent<Battery>() != (UnityEngine.Object)null || (UnityEngine.Object)selectable.GetComponent<PowerTransformer>() != (UnityEngine.Object)null || (UnityEngine.Object)selectable.GetComponent<EnergyConsumer>() != (UnityEngine.Object)null || (UnityEngine.Object)selectable.GetComponent<EnergyGenerator>() != (UnityEngine.Object)null;
+	}
+
+	private static bool ShouldShowTemperatureOverlay(KSelectable selectable)
+	{
+		return (UnityEngine.Object)selectable.GetComponent<PrimaryElement>() != (UnityEngine.Object)null;
 	}
 
 	private static bool ShouldShowLogicOverlay(KSelectable selectable)

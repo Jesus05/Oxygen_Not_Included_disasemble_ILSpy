@@ -3,7 +3,7 @@ using STRINGS;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlantableSeed : KMonoBehaviour, IHasSortOrder, IReceptacleDirection, IGameObjectEffectDescriptor, ISim200ms
+public class PlantableSeed : KMonoBehaviour, IReceptacleDirection, IGameObjectEffectDescriptor, ISim200ms
 {
 	public Tag PlantID;
 
@@ -27,12 +27,6 @@ public class PlantableSeed : KMonoBehaviour, IHasSortOrder, IReceptacleDirection
 	{
 		component.OnSplit(data);
 	});
-
-	public int sortOrder
-	{
-		get;
-		set;
-	}
 
 	public SingleEntityReceptacle.ReceptacleDirection Direction => direction;
 

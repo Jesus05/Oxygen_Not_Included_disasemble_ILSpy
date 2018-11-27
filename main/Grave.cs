@@ -132,19 +132,7 @@ public class Grave : StateMachineComponent<Grave.StatesInstance>
 	{
 		if (evt == Workable.WorkableEvent.WorkStarted)
 		{
-			Storage component = GetComponent<Storage>();
-			if ((UnityEngine.Object)component.worker != (UnityEngine.Object)null)
-			{
-				Storage component2 = component.worker.GetComponent<Storage>();
-				GameObject gameObject = component2.items[0];
-				KBatchedAnimController component3 = gameObject.GetComponent<KBatchedAnimController>();
-				component3.AddAnimOverrides(Assets.GetAnim("anim_dead_dupe_kanim"), 0f);
-				component3.Play(new HashedString[2]
-				{
-					"react_pre",
-					"react_pst"
-				}, KAnim.PlayMode.Once);
-			}
+			return;
 		}
 	}
 }

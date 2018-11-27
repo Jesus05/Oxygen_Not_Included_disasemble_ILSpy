@@ -122,6 +122,198 @@ namespace STRINGS
 			}
 		}
 
+		public class SPACEARTIFACTS
+		{
+			public class ROBOTARM
+			{
+				public static string NAME = "Robot Arm";
+
+				public static string DESCRIPTION = "";
+			}
+
+			public class HATCHFOSSIL
+			{
+				public static string NAME = "Pristine Fossil";
+
+				public static string DESCRIPTION = "The preserved bones of an early species of Hatch.";
+			}
+
+			public class MODERNART
+			{
+				public static string NAME = "";
+
+				public static string DESCRIPTION = "";
+			}
+
+			public class EGGROCK
+			{
+				public static string NAME = "Egg-Shaped Rock";
+
+				public static string DESCRIPTION = "It's unclear whether this is its naturally occurring shape, or if its appearance as been sculpted.";
+			}
+
+			public class RAINBOWEGGROCK
+			{
+				public static string NAME = "Egg-Shaped Rock";
+
+				public static string DESCRIPTION = "It's unclear whether this is its naturally occurring shape, or if its appearance as been sculpted.\n\nThis one is rainbow coloured.";
+			}
+
+			public class OKAYXRAY
+			{
+				public static string NAME = "Old X-Ray";
+
+				public static string DESCRIPTION = "";
+			}
+
+			public class SHIELDGENERATOR
+			{
+				public static string NAME = "Shield Generator";
+
+				public static string DESCRIPTION = "A mechanical prototype capable of producing a small section of shielding.";
+			}
+
+			public class TEAPOT
+			{
+				public static string NAME = "Encrusted Teapot";
+
+				public static string DESCRIPTION = "A teapot from the depths of space, coated in a thick layer of Neutronium.";
+			}
+
+			public class DNAMODEL
+			{
+				public static string NAME = "Double Helix Model";
+
+				public static string DESCRIPTION = "";
+			}
+
+			public class SANDSTONE
+			{
+				public static string NAME = "Sandstone";
+
+				public static string DESCRIPTION = "A beautiful rock composed of multiple layers of sediment.";
+			}
+
+			public class MAGMALAMP
+			{
+				public static string NAME = "Magma Lamp";
+
+				public static string DESCRIPTION = "Sequel to \"Lava Lamp\".";
+			}
+
+			public class OBELISK
+			{
+				public static string NAME = "Small Obelisk";
+
+				public static string DESCRIPTION = "A rectangular stone piece.\n\nIts function is unclear.";
+			}
+
+			public class RUBIKSCUBE
+			{
+				public static string NAME = "";
+
+				public static string DESCRIPTION = "";
+			}
+
+			public class OFFICEMUG
+			{
+				public static string NAME = "Office Mug";
+
+				public static string DESCRIPTION = "";
+			}
+
+			public class AMELIASWATCH
+			{
+				public static string NAME = "Wrist Watch";
+
+				public static string DESCRIPTION = "";
+			}
+
+			public class MOONMOONMOON
+			{
+				public static string NAME = "Moonmoonmoon";
+
+				public static string DESCRIPTION = "A very, very small moon.";
+			}
+
+			public class BIOLUMROCK
+			{
+				public static string NAME = "Bioluminescent Rock";
+
+				public static string DESCRIPTION = "";
+			}
+
+			public class PLASMALAMP
+			{
+				public static string NAME = "Plasma Lamp";
+
+				public static string DESCRIPTION = "";
+			}
+
+			public class MOLDAVITE
+			{
+				public static string NAME = "Moldavite";
+
+				public static string DESCRIPTION = "";
+			}
+
+			public class BRICKPHONE
+			{
+				public static string NAME = "Strange Brick";
+
+				public static string DESCRIPTION = "";
+			}
+
+			public class SOLARSYSTEM
+			{
+				public static string NAME = "Self-Contained System";
+
+				public static string DESCRIPTION = "";
+			}
+
+			public class SINK
+			{
+				public static string NAME = "Sink";
+
+				public static string DESCRIPTION = "";
+			}
+
+			public class ROCKTORNADO
+			{
+				public static string NAME = "Tornado Rock";
+
+				public static string DESCRIPTION = "";
+			}
+
+			public class BLENDER
+			{
+				public static string NAME = "Blender";
+
+				public static string DESCRIPTION = "";
+			}
+
+			public class SAXOPHONE
+			{
+				public static string NAME = "Mangled Saxophone";
+
+				public static string DESCRIPTION = "";
+			}
+
+			public class STETHOSCOPE
+			{
+				public static string NAME = "Stethoscope";
+
+				public static string DESCRIPTION = "";
+			}
+
+			public class VHS
+			{
+				public static string NAME = "Archaic Tech";
+
+				public static string DESCRIPTION = "";
+			}
+		}
+
 		public class SANDBOXTOOLS
 		{
 			public class SETTINGS
@@ -5243,7 +5435,7 @@ namespace STRINGS
 
 				public static LocString TOOLNAME = "Attack tool";
 
-				public static LocString TOOLACTION = "DRAG TO ATTACK";
+				public static LocString TOOLACTION = "DRAG";
 			}
 
 			public class CAPTURE
@@ -5252,7 +5444,7 @@ namespace STRINGS
 
 				public static LocString TOOLNAME = "Wrangle tool";
 
-				public static LocString TOOLACTION = "DRAG TO TOGGLE WRANGLE";
+				public static LocString TOOLACTION = "DRAG";
 
 				public static LocString NOT_CAPTURABLE = "Cannot Wrangle";
 			}
@@ -5265,7 +5457,7 @@ namespace STRINGS
 
 				public static LocString TOOLACTION = "CLICK TO BUILD";
 
-				public static LocString TOOLACTION_DRAG = "DRAG TO BUILD";
+				public static LocString TOOLACTION_DRAG = "DRAG";
 			}
 
 			public class MOVETOLOCATION
@@ -5274,7 +5466,7 @@ namespace STRINGS
 
 				public static LocString TOOLNAME = "Move Here";
 
-				public static LocString TOOLACTION = "CLICK TO MOVE";
+				public static LocString TOOLACTION = "CLICK";
 
 				public static LocString UNREACHABLE = "UNREACHABLE";
 			}
@@ -5285,7 +5477,7 @@ namespace STRINGS
 
 				public static LocString TOOLNAME = "Paste Settings Tool";
 
-				public static LocString TOOLACTION = "DRAG TO PASTE SETTINGS";
+				public static LocString TOOLACTION = "DRAG";
 			}
 
 			public class DIG
@@ -5294,7 +5486,7 @@ namespace STRINGS
 
 				public static LocString TOOLNAME = "Dig tool";
 
-				public static LocString TOOLACTION = "DRAG TO DIG";
+				public static LocString TOOLACTION = "DRAG";
 			}
 
 			public class DISINFECT
@@ -5303,7 +5495,7 @@ namespace STRINGS
 
 				public static LocString TOOLNAME = "Disinfect tool";
 
-				public static LocString TOOLACTION = "DRAG TO DISINFECT";
+				public static LocString TOOLACTION = "DRAG";
 			}
 
 			public class CANCEL
@@ -5312,7 +5504,7 @@ namespace STRINGS
 
 				public static LocString TOOLNAME = "Cancel tool";
 
-				public static LocString TOOLACTION = "DRAG TO CANCEL ACTION";
+				public static LocString TOOLACTION = "DRAG";
 			}
 
 			public class DECONSTRUCT
@@ -5321,7 +5513,7 @@ namespace STRINGS
 
 				public static LocString TOOLNAME = "Deconstruct tool";
 
-				public static LocString TOOLACTION = "DRAG TO DECONSTRUCT";
+				public static LocString TOOLACTION = "DRAG";
 			}
 
 			public class CLEANUPCATEGORY
@@ -5342,7 +5534,7 @@ namespace STRINGS
 
 				public static LocString TOOLNAME = "Sweep tool";
 
-				public static LocString TOOLACTION = "DRAG TO SWEEP";
+				public static LocString TOOLACTION = "DRAG";
 			}
 
 			public class MOP
@@ -5351,7 +5543,7 @@ namespace STRINGS
 
 				public static LocString TOOLNAME = "Mop tool";
 
-				public static LocString TOOLACTION = "DRAG TO MOP";
+				public static LocString TOOLACTION = "DRAG";
 
 				public static LocString TOO_MUCH_LIQUID = "Too Much Liquid";
 
@@ -5364,7 +5556,7 @@ namespace STRINGS
 
 				public static LocString TOOLNAME = "Harvest tool";
 
-				public static LocString TOOLACTION = "DRAG TO TOGGLE HARVEST";
+				public static LocString TOOLACTION = "DRAG";
 			}
 
 			public class PRIORITIZE
@@ -5373,7 +5565,7 @@ namespace STRINGS
 
 				public static LocString TOOLNAME = "Priority tool";
 
-				public static LocString TOOLACTION = "DRAG TO ADJUST PRIORITY";
+				public static LocString TOOLACTION = "DRAG";
 
 				public static LocString SPECIFIC_PRIORITY = "Set Priority: {0}";
 			}
@@ -5386,7 +5578,7 @@ namespace STRINGS
 
 				public static LocString TOOLNAME = "Empty Pipe tool";
 
-				public static LocString TOOLACTION = "DRAG TO REMOVE PIPE CONTENTS";
+				public static LocString TOOLACTION = "DRAG";
 			}
 
 			public class FILTERSCREEN

@@ -9,16 +9,16 @@ public class MaterialSelectionPanel : KScreen
 
 	public struct SelectedElemInfo
 	{
-		public Element element;
+		public Tag element;
 
 		public float kgAvailable;
 	}
 
-	public Dictionary<KToggle, Element> ElementToggles = new Dictionary<KToggle, Element>();
+	public Dictionary<KToggle, Tag> ElementToggles = new Dictionary<KToggle, Tag>();
 
 	private List<MaterialSelector> MaterialSelectors = new List<MaterialSelector>();
 
-	private List<Element> currentSelectedElements = new List<Element>();
+	private List<Tag> currentSelectedElements = new List<Tag>();
 
 	[SerializeField]
 	protected PriorityScreen priorityScreenPrefab;
@@ -34,11 +34,11 @@ public class MaterialSelectionPanel : KScreen
 
 	private Recipe activeRecipe;
 
-	private static Dictionary<Tag, List<Element>> elementsWithTag = new Dictionary<Tag, List<Element>>();
+	private static Dictionary<Tag, List<Tag>> elementsWithTag = new Dictionary<Tag, List<Tag>>();
 
-	public Element CurrentSelectedElement => MaterialSelectors[0].CurrentSelectedElement;
+	public Tag CurrentSelectedElement => MaterialSelectors[0].CurrentSelectedElement;
 
-	public IList<Element> GetSelectedElementAsList
+	public IList<Tag> GetSelectedElementAsList
 	{
 		get
 		{
@@ -123,7 +123,7 @@ public class MaterialSelectionPanel : KScreen
 	{
 		foreach (MaterialSelector materialSelector in MaterialSelectors)
 		{
-			if (materialSelector.gameObject.activeInHierarchy && materialSelector.CurrentSelectedElement == null)
+			if (materialSelector.gameObject.activeInHierarchy && materialSelector.CurrentSelectedElement == (Tag)null)
 			{
 				return false;
 			}
@@ -192,7 +192,7 @@ public class MaterialSelectionPanel : KScreen
 	{
 		foreach (MaterialSelector materialSelector in MaterialSelectors)
 		{
-			if (materialSelector.gameObject.activeSelf && materialSelector.CurrentSelectedElement == null)
+			if (materialSelector.gameObject.activeSelf && materialSelector.CurrentSelectedElement == (Tag)null)
 			{
 				return false;
 			}
@@ -207,26 +207,40 @@ public class MaterialSelectionPanel : KScreen
 		result.kgAvailable = 0f;
 		if (!((UnityEngine.Object)WorldInventory.Instance == (UnityEngine.Object)null) && ElementLoader.elements != null && ElementLoader.elements.Count != 0)
 		{
-			List<Element> value = null;
+			List<Tag> value = null;
 			if (!elementsWithTag.TryGetValue(materialCategoryTag, out value))
 			{
-				value = new List<Element>();
+				value = new List<Tag>();
 				foreach (Element element in ElementLoader.elements)
 				{
 					if (element.tag == materialCategoryTag || element.HasTag(materialCategoryTag))
 					{
-						value.Add(element);
+						value.Add(element.tag);
+					}
+				}
+				foreach (Tag materialBuildingElement in GameTags.MaterialBuildingElements)
+				{
+					if (materialBuildingElement == materialCategoryTag)
+					{
+						foreach (GameObject item in Assets.GetPrefabsWithTag(materialBuildingElement))
+						{
+							KPrefabID component = item.GetComponent<KPrefabID>();
+							if ((UnityEngine.Object)component != (UnityEngine.Object)null && !value.Contains(component.PrefabTag))
+							{
+								value.Add(component.PrefabTag);
+							}
+						}
 					}
 				}
 				elementsWithTag[materialCategoryTag] = value;
 			}
-			foreach (Element item in value)
+			foreach (Tag item2 in value)
 			{
-				float amount = WorldInventory.Instance.GetAmount(item.tag);
+				float amount = WorldInventory.Instance.GetAmount(item2);
 				if (amount > result.kgAvailable)
 				{
 					result.kgAvailable = amount;
-					result.element = item;
+					result.element = item2;
 				}
 			}
 			return result;

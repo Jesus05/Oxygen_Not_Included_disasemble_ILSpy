@@ -6,7 +6,7 @@ using System.Diagnostics;
 using TUNING;
 using UnityEngine;
 
-public class Pickupable : Workable
+public class Pickupable : Workable, IHasSortOrder
 {
 	private struct Reservation
 	{
@@ -156,6 +156,12 @@ public class Pickupable : Workable
 	private int entombedCell = -1;
 
 	public PrimaryElement PrimaryElement => primaryElement;
+
+	public int sortOrder
+	{
+		get;
+		set;
+	}
 
 	public Storage storage
 	{

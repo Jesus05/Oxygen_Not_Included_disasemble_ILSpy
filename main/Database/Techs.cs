@@ -280,9 +280,11 @@ namespace Database
 			},
 			{
 				"Artistry",
-				new string[3]
+				new string[5]
 				{
 					"Canvas",
+					"CanvasWide",
+					"CanvasTall",
 					"Sculpture",
 					"IceSculpture"
 				}

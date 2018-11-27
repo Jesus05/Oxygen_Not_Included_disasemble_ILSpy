@@ -28,6 +28,8 @@ namespace STRINGS
 
 			public static LocString ALLOY = "Alloy";
 
+			public static LocString BUILDINGFIBER = "Fiber";
+
 			public static LocString CRUSHABLE = "Crushable";
 
 			public static LocString BAGABLECREATURE = "Critter";

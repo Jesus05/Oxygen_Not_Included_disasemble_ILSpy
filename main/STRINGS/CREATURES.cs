@@ -730,6 +730,45 @@ namespace STRINGS
 				public static LocString WILT_PENALTY = "Wilt Penalty";
 			}
 
+			public class LEAFYPLANT
+			{
+				public static LocString NAME = UI.FormatAsLink("Mirth Leaf", "POTTED_LEAFY");
+
+				public static LocString DESC = "Mirth Leaves sport a calm green hue known for alleviating " + UI.FormatAsLink("Stress", "STRESS") + " and improving " + UI.FormatAsLink("Morale", "MORALE") + ".";
+
+				public static LocString DOMESTICATEDDESC = "This plant improves " + UI.FormatAsLink("Decor", "DECOR") + ".";
+
+				public static LocString GROWTH_BONUS = "Growth Bonus";
+
+				public static LocString WILT_PENALTY = "Wilt Penalty";
+			}
+
+			public class CACTUSPLANT
+			{
+				public static LocString NAME = UI.FormatAsLink("Jumping Joya", "POTTED_CACTUS");
+
+				public static LocString DESC = "Joyas are " + UI.FormatAsLink("Decorative", "DECOR") + " " + UI.FormatAsLink("Plants", "PLANTS") + " that are colloquially said to make gardeners \"jump for joy\".";
+
+				public static LocString DOMESTICATEDDESC = "This plant improves " + UI.FormatAsLink("Decor", "DECOR") + ".";
+
+				public static LocString GROWTH_BONUS = "Growth Bonus";
+
+				public static LocString WILT_PENALTY = "Wilt Penalty";
+			}
+
+			public class BULBPLANT
+			{
+				public static LocString NAME = UI.FormatAsLink("Buddy Bud", "POTTED_BULB");
+
+				public static LocString DESC = "Buddy Buds are leafy plants that have a positive effect on " + UI.FormatAsLink("Morale", "MORALE") + ", much like a friend.";
+
+				public static LocString DOMESTICATEDDESC = "This plant improves " + UI.FormatAsLink("Decor", "DECOR") + ".";
+
+				public static LocString GROWTH_BONUS = "Growth Bonus";
+
+				public static LocString WILT_PENALTY = "Wilt Penalty";
+			}
+
 			public class BASICSINGLEHARVESTPLANT
 			{
 				public static LocString NAME = UI.FormatAsLink("Mealwood", "BASICSINGLEHARVESTPLANT");
@@ -775,6 +814,27 @@ namespace STRINGS
 
 			public class SEEDS
 			{
+				public class LEAFYPLANT
+				{
+					public static LocString NAME = UI.FormatAsLink("Mirth Leaf Seed", "LEAFYPLANT");
+
+					public static LocString DESC = "The " + UI.FormatAsLink("Seed", "PLANTS") + " of a " + UI.FormatAsLink("Mirth Leaf", "LEAFYPLANT") + ".\n\nDigging up Buried Objects may uncover a Mirth Leaf Seed.";
+				}
+
+				public class CACTUSPLANT
+				{
+					public static LocString NAME = UI.FormatAsLink("Joya Seed", "CACTUSPLANT");
+
+					public static LocString DESC = "The " + UI.FormatAsLink("Seed", "PLANTS") + " of a " + UI.FormatAsLink("Jumping Joya", "CACTUSPLANT") + ".\n\nDigging up Buried Objects may uncover a Joy Seed.";
+				}
+
+				public class BULBPLANT
+				{
+					public static LocString NAME = UI.FormatAsLink("Buddy Bud Seed", "BULBPLANT");
+
+					public static LocString DESC = "The " + UI.FormatAsLink("Seed", "PLANTS") + " of a " + UI.FormatAsLink("Buddy Bud", "BULBPLANT") + ".\n\nDigging up Buried Objects may uncover a Buddy Bud Seed.";
+				}
+
 				public class JUNGLEGASPLANT
 				{
 				}

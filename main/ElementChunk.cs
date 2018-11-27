@@ -4,23 +4,12 @@ using System;
 using UnityEngine;
 
 [SkipSaveFileSerialization]
-public class ElementChunk : KMonoBehaviour, IHasSortOrder
+public class ElementChunk : KMonoBehaviour
 {
 	private static readonly EventSystem.IntraObjectHandler<ElementChunk> OnAbsorbDelegate = new EventSystem.IntraObjectHandler<ElementChunk>(delegate(ElementChunk component, object data)
 	{
 		component.OnAbsorb(data);
 	});
-
-	public int sortOrder
-	{
-		get
-		{
-			return GetComponent<PrimaryElement>().Element.buildMenuSort;
-		}
-		set
-		{
-		}
-	}
 
 	protected override void OnPrefabInit()
 	{

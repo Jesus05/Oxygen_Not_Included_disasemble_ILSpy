@@ -14,7 +14,7 @@ public class Deconstructable : Workable
 	private bool isMarkedForDeconstruction;
 
 	[Serialize]
-	public SimHashes[] constructionElements;
+	public Tag[] constructionElements;
 
 	private static readonly EventSystem.IntraObjectHandler<Deconstructable> OnRefreshUserMenuDelegate = new EventSystem.IntraObjectHandler<Deconstructable>(delegate(Deconstructable component, object data)
 	{
@@ -65,8 +65,8 @@ public class Deconstructable : Workable
 		Subscribe(-790448070, OnDeconstructDelegate);
 		if (constructionElements == null || constructionElements.Length == 0)
 		{
-			constructionElements = new SimHashes[1];
-			constructionElements[0] = GetComponent<PrimaryElement>().ElementID;
+			constructionElements = new Tag[1];
+			constructionElements[0] = GetComponent<PrimaryElement>().Element.tag;
 		}
 		if (isMarkedForDeconstruction)
 		{
@@ -212,13 +212,12 @@ public class Deconstructable : Workable
 		}
 	}
 
-	public static GameObject SpawnItem(Vector3 position, BuildingDef def, SimHashes src_element, float src_mass, float src_temperature, byte disease_idx, int disease_count)
+	public static GameObject SpawnItem(Vector3 position, BuildingDef def, Tag src_element, float src_mass, float src_temperature, byte disease_idx, int disease_count)
 	{
-		GameObject result = null;
+		GameObject gameObject = null;
 		int cell = Grid.PosToCell(position);
 		CellOffset[] placementOffsets = def.PlacementOffsets;
 		float num = src_mass;
-		Element element = ElementLoader.FindElementByHash(src_element);
 		for (int i = 0; (float)i < src_mass / 400f; i++)
 		{
 			int num2 = i % def.PlacementOffsets.Length;
@@ -229,9 +228,18 @@ public class Deconstructable : Workable
 				mass = 400f;
 				num -= 400f;
 			}
-			result = element.substance.SpawnResource(Grid.CellToPosCBC(cell2, Grid.SceneLayer.Ore), mass, src_temperature, disease_idx, disease_count, false, false);
+			Element element = ElementLoader.GetElement(src_element);
+			if (element != null)
+			{
+				gameObject = element.substance.SpawnResource(Grid.CellToPosCBC(cell2, Grid.SceneLayer.Ore), mass, src_temperature, disease_idx, disease_count, false, false);
+			}
+			else
+			{
+				gameObject = GameUtil.KInstantiate(Assets.GetPrefab(src_element), Grid.CellToPosCBC(cell2, Grid.SceneLayer.Ore), Grid.SceneLayer.Ore, null, 0);
+				gameObject.SetActive(true);
+			}
 		}
-		return result;
+		return gameObject;
 	}
 
 	private void OnRefreshUserMenu(object data)

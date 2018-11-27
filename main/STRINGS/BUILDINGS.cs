@@ -372,6 +372,36 @@ namespace STRINGS
 				public static LocString EXCELLENTQUALITYNAME = "Masterpiece";
 			}
 
+			public class CANVASWIDE
+			{
+				public static LocString NAME = UI.FormatAsLink("Wide Blank Canvas", "CANVASWIDE");
+
+				public static LocString DESC = "Once built, a Duplicant can paint a blank canvas to produce a decorative painting.";
+
+				public static LocString EFFECT = "Increases " + UI.FormatAsLink("Decor", "DECOR") + ", contributing to " + UI.FormatAsLink("Morale", "MORALE") + ".\n\nMust be painted by a Duplicant.";
+
+				public static LocString POORQUALITYNAME = "Crude Painting";
+
+				public static LocString AVERAGEQUALITYNAME = "Mediocre Painting";
+
+				public static LocString EXCELLENTQUALITYNAME = "Masterpiece";
+			}
+
+			public class CANVASTALL
+			{
+				public static LocString NAME = UI.FormatAsLink("Tall Blank Canvas", "CANVASTALL");
+
+				public static LocString DESC = "Once built, a Duplicant can paint a blank canvas to produce a decorative painting.";
+
+				public static LocString EFFECT = "Increases " + UI.FormatAsLink("Decor", "DECOR") + ", contributing to " + UI.FormatAsLink("Morale", "MORALE") + ".\n\nMust be painted by a Duplicant.";
+
+				public static LocString POORQUALITYNAME = "Crude Painting";
+
+				public static LocString AVERAGEQUALITYNAME = "Mediocre Painting";
+
+				public static LocString EXCELLENTQUALITYNAME = "Masterpiece";
+			}
+
 			public class CO2SCRUBBER
 			{
 				public static LocString NAME = UI.FormatAsLink("Carbon Skimmer", "CO2SCRUBBER");
@@ -1069,9 +1099,9 @@ namespace STRINGS
 			{
 				public static LocString NAME = UI.FormatAsLink("Crown Moulding Tile", "MOUDLINGTILE");
 
-				public static LocString DESC = "Crown Moulding Desc";
+				public static LocString DESC = "Crown moulding is used as purely decorative trim for walls and structures.";
 
-				public static LocString EFFECT = "Crown Moulding Effect";
+				public static LocString EFFECT = "Used to build the walls and floors of rooms.\n\nIncreases " + UI.FormatAsLink("Decor", "DECOR") + ", contributing to " + UI.FormatAsLink("Morale", "MORALE") + ".";
 			}
 
 			public class MICROBEMUSHER

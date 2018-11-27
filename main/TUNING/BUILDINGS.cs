@@ -677,6 +677,8 @@ namespace TUNING
 				"EspressoMachine",
 				"FlowerVase",
 				"Canvas",
+				"CanvasWide",
+				"CanvasTall",
 				"Sculpture",
 				"IceSculpture",
 				"ItemPedestal",

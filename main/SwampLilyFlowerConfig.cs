@@ -24,8 +24,9 @@ public class SwampLilyFlowerConfig : IEntityConfig
 		bool isPickupable = true;
 		List<Tag> list = new List<Tag>();
 		list.Add(GameTags.IndustrialIngredient);
+		list.Add(GameTags.BuildingFiber);
 		list = list;
-		GameObject gameObject = EntityTemplates.CreateLooseEntity(iD, name, desc, mass, unitMass, anim, initialAnim, sceneLayer, collisionShape, width, height, isPickupable, SimHashes.Creature, list);
+		GameObject gameObject = EntityTemplates.CreateLooseEntity(iD, name, desc, mass, unitMass, anim, initialAnim, sceneLayer, collisionShape, width, height, isPickupable, 0, SimHashes.Creature, list);
 		gameObject.AddOrGet<EntitySplitter>();
 		return gameObject;
 	}

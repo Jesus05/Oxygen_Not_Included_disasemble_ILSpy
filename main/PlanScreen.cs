@@ -1032,7 +1032,7 @@ public class PlanScreen : KIconToggleMenu
 		}
 		if (buildingDef.isKAnimTile && buildingDef.isUtility)
 		{
-			IList<Element> getSelectedElementAsList = productInfoScreen.materialSelectionPanel.GetSelectedElementAsList;
+			IList<Tag> getSelectedElementAsList = productInfoScreen.materialSelectionPanel.GetSelectedElementAsList;
 			BaseUtilityBuildTool baseUtilityBuildTool = (!((UnityEngine.Object)buildingDef.BuildingComplete.GetComponent<Wire>() != (UnityEngine.Object)null)) ? ((BaseUtilityBuildTool)UtilityBuildTool.Instance) : ((BaseUtilityBuildTool)WireBuildTool.Instance);
 			baseUtilityBuildTool.Activate(buildingDef, getSelectedElementAsList);
 		}

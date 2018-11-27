@@ -93,6 +93,8 @@ public class ImmuneSystemMonitor : GameStateMachine<ImmuneSystemMonitor, ImmuneS
 		public override void StopSM(string reason)
 		{
 			GameClock.Instance.Unsubscribe(-722330267, OnNightTime);
+			AmountInstance amountInstance = immuneLevel;
+			amountInstance.OnDelta = (Action<float>)Delegate.Remove(amountInstance.OnDelta, new Action<float>(OnImmuneDelta));
 			base.StopSM(reason);
 		}
 

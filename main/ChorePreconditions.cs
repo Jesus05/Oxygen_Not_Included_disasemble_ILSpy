@@ -66,17 +66,8 @@ public class ChorePreconditions
 		fn = (Chore.PreconditionFn)delegate(ref Chore.Precondition.Context context, object data)
 		{
 			Assignable assignable3 = (Assignable)data;
-			if (assignable3.assignee != null)
-			{
-				foreach (Ownables owner in assignable3.assignee.GetOwners())
-				{
-					if ((Object)owner.gameObject == (Object)context.consumerState.gameObject.GetComponent<IAssignableIdentity>().GetSoleOwner().gameObject)
-					{
-						return true;
-					}
-				}
-			}
-			return false;
+			IAssignableIdentity component = context.consumerState.gameObject.GetComponent<IAssignableIdentity>();
+			return assignable3.IsAssignedTo(component);
 		}
 	};
 
@@ -121,9 +112,9 @@ public class ChorePreconditions
 					}
 					return room2 == room;
 				}
-				foreach (Ownables owner2 in room.GetOwners())
+				foreach (Ownables owner in room.GetOwners())
 				{
-					if ((Object)owner2.gameObject == (Object)context.consumerState.gameObject)
+					if ((Object)owner.gameObject == (Object)context.consumerState.gameObject)
 					{
 						return true;
 					}

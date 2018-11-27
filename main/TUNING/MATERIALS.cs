@@ -79,6 +79,11 @@ namespace TUNING
 			"Transparent"
 		};
 
+		public static readonly string[] BUILDING_FIBER = new string[1]
+		{
+			"BuildingFiber"
+		};
+
 		public static readonly string[] ANY_BUILDABLE = new string[1]
 		{
 			"BuildableAny"

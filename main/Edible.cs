@@ -3,7 +3,7 @@ using STRINGS;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Edible : Workable, IGameObjectEffectDescriptor, IHasSortOrder
+public class Edible : Workable, IGameObjectEffectDescriptor
 {
 	public class EdibleStartWorkInfo : Worker.StartWorkInfo
 	{
@@ -23,6 +23,8 @@ public class Edible : Workable, IGameObjectEffectDescriptor, IHasSortOrder
 	public string FoodID;
 
 	private EdiblesManager.FoodInfo foodInfo;
+
+	private bool started;
 
 	private float consumptionStartTime = float.NaN;
 
@@ -122,12 +124,6 @@ public class Edible : Workable, IGameObjectEffectDescriptor, IHasSortOrder
 		}
 	}
 
-	public int sortOrder
-	{
-		get;
-		set;
-	}
-
 	private Edible()
 	{
 		showProgressBar = false;
@@ -222,15 +218,18 @@ public class Edible : Workable, IGameObjectEffectDescriptor, IHasSortOrder
 
 	private void StartConsuming()
 	{
+		started = true;
 		consumptionStartTime = Time.time;
 		base.worker.Trigger(1406130139, this);
 	}
 
 	private void StopConsuming(Worker worker)
 	{
+		DebugUtil.DevAssert(started, "StopConsuming() called without StartConsuming()");
+		started = false;
 		if (float.IsNaN(consumptionStartTime))
 		{
-			KCrashReporter.Assert(false, "How did stop consuming get called twice?");
+			DebugUtil.DevAssert(false, "consumptionStartTime NaN in StopConsuming()");
 		}
 		else
 		{

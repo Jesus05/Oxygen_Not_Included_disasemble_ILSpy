@@ -19,7 +19,20 @@ public class EquipmentConfigManager : KMonoBehaviour
 	public void RegisterEquipment(IEquipmentConfig config)
 	{
 		EquipmentDef equipmentDef = config.CreateEquipmentDef();
-		GameObject gameObject = EntityTemplates.CreateLooseEntity(equipmentDef.Id, equipmentDef.Name, equipmentDef.RecipeDescription, equipmentDef.Mass, true, equipmentDef.Anim, "object", Grid.SceneLayer.Ore, equipmentDef.CollisionShape, equipmentDef.width, equipmentDef.height, true, equipmentDef.OutputElement, null);
+		string id = equipmentDef.Id;
+		string name = equipmentDef.Name;
+		string recipeDescription = equipmentDef.RecipeDescription;
+		float mass = equipmentDef.Mass;
+		bool unitMass = true;
+		KAnimFile anim = equipmentDef.Anim;
+		string initialAnim = "object";
+		Grid.SceneLayer sceneLayer = Grid.SceneLayer.Ore;
+		EntityTemplates.CollisionShape collisionShape = equipmentDef.CollisionShape;
+		float width = equipmentDef.width;
+		float height = equipmentDef.height;
+		bool isPickupable = true;
+		SimHashes outputElement = equipmentDef.OutputElement;
+		GameObject gameObject = EntityTemplates.CreateLooseEntity(id, name, recipeDescription, mass, unitMass, anim, initialAnim, sceneLayer, collisionShape, width, height, isPickupable, 0, outputElement, null);
 		Equippable equippable = gameObject.AddComponent<Equippable>();
 		equippable.def = equipmentDef;
 		equippable.slotID = equipmentDef.Slot;

@@ -10,7 +10,7 @@ public class ItemPedestalConfig : IBuildingConfig
 	{
 		string id = "ItemPedestal";
 		int width = 1;
-		int height = 1;
+		int height = 2;
 		string anim = "pedestal_kanim";
 		int hitpoints = 10;
 		float construction_time = 30f;

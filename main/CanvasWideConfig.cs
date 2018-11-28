@@ -9,7 +9,7 @@ public class CanvasWideConfig : IBuildingConfig
 	public override BuildingDef CreateBuildingDef()
 	{
 		string id = "CanvasWide";
-		int width = 2;
+		int width = 3;
 		int height = 2;
 		string anim = "painting_wide_kanim";
 		int hitpoints = 30;

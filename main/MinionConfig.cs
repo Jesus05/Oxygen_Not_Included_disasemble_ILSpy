@@ -295,6 +295,7 @@ public class MinionConfig : IEntityConfig
 		creatureSimTemperatureTransfer.Thickness = 0.01f;
 		gameObject.AddOrGet<DiseaseTrigger>();
 		gameObject.AddOrGet<ClothingWearer>();
+		gameObject.AddOrGet<SuitEquipper>();
 		DecorProvider decorProvider = gameObject.AddOrGet<DecorProvider>();
 		decorProvider.baseRadius = 3f;
 		decorProvider.isMovable = true;

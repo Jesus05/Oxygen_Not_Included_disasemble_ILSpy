@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using System.Threading;
 using UnityEngine;
 
 public static class KProfiler
@@ -18,6 +19,8 @@ public static class KProfiler
 	}
 
 	public static int counter = 0;
+
+	public static Thread main_thread;
 
 	public static int BeginSampleI(string region_name)
 	{

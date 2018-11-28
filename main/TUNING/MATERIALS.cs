@@ -14,6 +14,8 @@ namespace TUNING
 
 		public const string BUILDABLERAW = "BuildableRaw";
 
+		public const string PRECIOUSROCK = "PreciousRock";
+
 		public static readonly string[] ALL_METALS = new string[1]
 		{
 			"Metal"
@@ -47,6 +49,11 @@ namespace TUNING
 		public static readonly string[] REFINED_MINERALS = new string[1]
 		{
 			"BuildableProcessed"
+		};
+
+		public static readonly string[] PRECIOUS_ROCKS = new string[1]
+		{
+			"PreciousRock"
 		};
 
 		public static readonly string[] FARMABLE = new string[1]

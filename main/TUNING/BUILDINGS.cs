@@ -682,6 +682,9 @@ namespace TUNING
 				"Sculpture",
 				"IceSculpture",
 				"ItemPedestal",
+				"MarbleSculpture",
+				"MetalSculpture",
+				"SmallSculpture",
 				"FloorLamp",
 				"CeilingLight"
 			}),

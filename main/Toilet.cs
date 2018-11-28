@@ -96,6 +96,7 @@ public class Toilet : StateMachineComponent<Toilet.StatesInstance>, ISaveLoadabl
 				base.master.storage.Drop(item);
 			}
 			pooledList.Recycle();
+			base.master.meter.SetPositionPercent((float)base.master.FlushesUsed / (float)base.master.maxFlushes);
 		}
 
 		public void Flush()

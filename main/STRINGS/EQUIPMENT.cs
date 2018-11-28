@@ -8,7 +8,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = UI.FormatAsLink("Atmo Suit", "ATMO_SUIT");
 
-				public static LocString DESC = "Make sure your Duplicants can breathe easy, anytime, anywhere.";
+				public static LocString DESC = "Ensures my Duplicants can breathe easy, anytime, anywhere.";
 
 				public static LocString EFFECT = "Supplies Duplicants with <style=\"oxygen\">Oxygen</style> in toxic and low breathability environments.\n\nMust be refilled with oxygen at an Exosuit Dock when depleted.";
 
@@ -32,7 +32,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = UI.FormatAsLink("Thermo Suit", "TEMPERATURE_SUIT");
 
-				public static LocString DESC = "Keep your Duplicants cool in case things heat up.";
+				public static LocString DESC = "Keeps my Duplicants cool in case things heat up.";
 
 				public static LocString EFFECT = "Provides insulation in regions with extreme <style=\"heat\">Temperatures</style>.\n\nMust be powered at an Exosuit Dock when depleted.";
 
@@ -43,7 +43,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = UI.FormatAsLink("Jet Suit", "JET_SUIT");
 
-				public static LocString DESC = "Allow your Duplicants to take to the skies, for a time.";
+				public static LocString DESC = "Allows my Duplicants to take to the skies, for a time.";
 
 				public static LocString EFFECT = "Supplies Duplicants with " + UI.FormatAsLink("Oxygen", "OXYGEN") + " in toxic and low breathability environments.\n\nMust be refilled with " + UI.FormatAsLink("Oxygen", "OXYGEN") + " and " + UI.FormatAsLink("Petroleum", "PETROLEUM") + " at a Jet Suit Dock when depleted.";
 
@@ -86,7 +86,7 @@ namespace STRINGS
 
 				public static LocString GENERICNAME = "Clothing";
 
-				public static LocString DESC = "Turn your Duplicant into a walking beacon of charm and style.";
+				public static LocString DESC = "This transforms my Duplicant into a walking beacon of charm and style.";
 
 				public static LocString EFFECT = "Increases Decor in a small area effect around the wearer.";
 

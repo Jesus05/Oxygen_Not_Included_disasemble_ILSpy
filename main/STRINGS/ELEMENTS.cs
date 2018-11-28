@@ -75,7 +75,7 @@ namespace STRINGS
 		{
 			public static LocString NAME = UI.FormatAsLink("Algae", "ALGAE");
 
-			public static LocString DESC = "Algae is a cluster of non-motile, single-celled lifeforms.\n\nIt can be used to produce " + OXYGEN.NAME + " when grown in Algae Terrariums.";
+			public static LocString DESC = "Algae is a cluster of non-motile, single-celled lifeforms.\n\nIt can be used to produce " + OXYGEN.NAME + " when used in " + UI.FormatAsLink("Oxygen Diffusers", "MINERALOXIDIZER") + ".";
 		}
 
 		public class BLEACHSTONE

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <ProjectGuid>{64C4BB67-5045-41F6-BCEB-6C20AF8B29B0}</ProjectGuid>
+    <ProjectGuid>{39DB2E9B-093F-4679-B8A8-026B5CA0921E}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <OutputType>Library</OutputType>
@@ -1300,6 +1300,7 @@
     <Compile Include="ManualGenerator.cs" />
     <Compile Include="ManualGeneratorConfig.cs" />
     <Compile Include="ManualPressureDoorConfig.cs" />
+    <Compile Include="MarbleSculptureConfig.cs" />
     <Compile Include="MassageTable.cs" />
     <Compile Include="MassageTableConfig.cs" />
     <Compile Include="MassiveHeatSink.cs" />
@@ -1330,6 +1331,7 @@
     <Compile Include="Messenger.cs" />
     <Compile Include="MessStation.cs" />
     <Compile Include="MetalRefineryConfig.cs" />
+    <Compile Include="MetalSculptureConfig.cs" />
     <Compile Include="MetalTileConfig.cs" />
     <Compile Include="Meter.cs" />
     <Compile Include="MeterConfig.cs" />
@@ -1901,6 +1903,7 @@
     <Compile Include="SliderSet.cs" />
     <Compile Include="SlimeMoldConfig.cs" />
     <Compile Include="SlotSet.cs" />
+    <Compile Include="SmallSculptureConfig.cs" />
     <Compile Include="SnapOn.cs" />
     <Compile Include="SneezeMonitor.cs" />
     <Compile Include="Snorer.cs" />
@@ -2036,6 +2039,7 @@
     <Compile Include="SubworldZoneRenderData.cs" />
     <Compile Include="SuffocationMonitor.cs" />
     <Compile Include="SuitDiseaseHandler.cs" />
+    <Compile Include="SuitEquipper.cs" />
     <Compile Include="SuitExpert.cs" />
     <Compile Include="SuitFabricatorConfig.cs" />
     <Compile Include="SuitLocker.cs" />

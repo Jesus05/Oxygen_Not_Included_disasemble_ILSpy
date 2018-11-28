@@ -91,7 +91,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Decor";
 
-				public static LocString TOOLTIP = "Duplicants become stressed in areas with decor lower than their expectations\nOpen the Decor Overlay <color=#F44A47>[F8]</color> to view current decor values";
+				public static LocString TOOLTIP = "Duplicants become stressed in areas with decor lower than their expectations\nOpen the Decor Overlay <color=#F44A47><b>[F8]</b></color> to view current decor values";
 
 				public static LocString TOOLTIP_CURRENT = "\n\nCurrent Environmental Decor: {0}";
 
@@ -1641,7 +1641,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "No Job";
 
-				public static LocString TOOLTIP = "This Duplicant does not have a Job Assignment" + UI.HORIZONTAL_BR_RULE + "Enter the Jobs Panel <color=#F44A47>[J]</color> to view all available Jobs";
+				public static LocString TOOLTIP = "This Duplicant does not have a Job Assignment" + UI.HORIZONTAL_BR_RULE + "Enter the Jobs Panel <color=#F44A47><b>[J]</b></color> to view all available Jobs";
 			}
 
 			public class DROPPINGUNUSEDINVENTORY

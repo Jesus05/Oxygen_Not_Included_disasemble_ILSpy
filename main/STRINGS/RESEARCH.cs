@@ -12,11 +12,11 @@ namespace STRINGS
 
 			public static LocString NO_RESEARCHER_ROLE = "No Researchers assigned";
 
-			public static LocString NO_RESEARCHER_ROLE_TOOLTIP = "The selected research focus requires an advanced type of research to complete\n\nAssign a Duplicant to the Research Assistant job using the Jobs Panel <color=#F44A47>[J]</color> to enable this errand";
+			public static LocString NO_RESEARCHER_ROLE_TOOLTIP = "The selected research focus requires an advanced type of research to complete\n\nAssign a Duplicant to the Research Assistant job using the Jobs Panel <color=#F44A47><b>[J]</b></color> to enable this errand";
 
 			public static LocString MISSING_RESEARCH_STATION = "Missing Research Station";
 
-			public static LocString MISSING_RESEARCH_STATION_TOOLTIP = "The selected research focus requires a {0} to perform\n\nOpen the Stations Tab <color=#F44A47>[=]</color> of the Build Menu to construct one";
+			public static LocString MISSING_RESEARCH_STATION_TOOLTIP = "The selected research focus requires a {0} to perform\n\nOpen the Stations Tab <color=#F44A47><b>[=]</b></color> of the Build Menu to construct one";
 		}
 
 		public class TYPES

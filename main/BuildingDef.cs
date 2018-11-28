@@ -594,8 +594,6 @@ public class BuildingDef : Def
 		}
 		if (BuildLocationRule == BuildLocationRule.LogicBridge)
 		{
-			LogicCircuitManager logicCircuitManager = Game.Instance.logicCircuitManager;
-			ReadOnlyCollection<ILogicUIElement> visElements = logicCircuitManager.GetVisElements();
 			LogicPorts component2 = go.GetComponent<LogicPorts>();
 			if ((UnityEngine.Object)component2 != (UnityEngine.Object)null && component2.inputPortInfo != null)
 			{

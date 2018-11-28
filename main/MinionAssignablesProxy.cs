@@ -17,6 +17,8 @@ public class MinionAssignablesProxy : KMonoBehaviour, IAssignableIdentity
 		private set;
 	}
 
+	public bool IsConfigured => slotsConfigured;
+
 	public GameObject GetTargetGameObject()
 	{
 		if (target == null)
@@ -49,6 +51,7 @@ public class MinionAssignablesProxy : KMonoBehaviour, IAssignableIdentity
 			base.gameObject.AddOrGet<Ownables>()
 		};
 		Components.MinionAssignablesProxy.Add(this);
+		ConfigureAssignableSlots();
 	}
 
 	public void ConfigureAssignableSlots()
@@ -90,7 +93,6 @@ public class MinionAssignablesProxy : KMonoBehaviour, IAssignableIdentity
 	protected override void OnSpawn()
 	{
 		base.OnSpawn();
-		ConfigureAssignableSlots();
 		RestoreTargetFromInstanceID();
 		Subscribe(-1585839766, delegate(object data)
 		{

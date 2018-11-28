@@ -24,17 +24,17 @@ public class AssignableReachabilitySensor : Sensor
 			Debug.LogError(base.gameObject.GetProperName() + ": No 'Assignables' components found for AssignableReachabilitySensor", null);
 		}
 		int num = 0;
-		for (int i = 0; i < components.Length; i++)
+		foreach (Assignables assignables in components)
 		{
-			num += components[i].Count;
+			num += assignables.Slots.Count;
 		}
 		slots = new SlotEntry[num];
 		int num2 = 0;
-		foreach (Assignables assignables in components)
+		foreach (Assignables assignables2 in components)
 		{
-			for (int k = 0; k < assignables.Count; k++)
+			for (int k = 0; k < assignables2.Slots.Count; k++)
 			{
-				slots[num2++].slot = assignables[k];
+				slots[num2++].slot = assignables2.Slots[k];
 			}
 		}
 		navigator = GetComponent<Navigator>();

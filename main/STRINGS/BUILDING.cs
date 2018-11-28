@@ -420,7 +420,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Missing Foundation";
 
-				public static LocString TOOLTIP = "Build " + UI.FormatAsLink("Tile", "TILE") + " beneath this building" + UI.HORIZONTAL_BR_RULE + "Tile can be found in the <color=#833A5FFF>Base Tab</color> <color=#F44A47>[1]</color> of the Build Menu";
+				public static LocString TOOLTIP = "Build " + UI.FormatAsLink("Tile", "TILE") + " beneath this building" + UI.HORIZONTAL_BR_RULE + "Tile can be found in the <color=#833A5FFF>Base Tab</color> <color=#F44A47><b>[1]</b></color> of the Build Menu";
 			}
 
 			public class NEUTRONIUMUNMINABLE
@@ -494,14 +494,14 @@ namespace STRINGS
 			{
 				public static LocString NAME = "No Conveyor Loader";
 
-				public static LocString TOOLTIP = "Material cannot be fed onto this Conveyor Rail system for transport" + UI.HORIZONTAL_BR_RULE + "Enter the Shipping Tab <color=#F44A47>[7]</color> of the Build Menu to build and connect a Conveyor Loader";
+				public static LocString TOOLTIP = "Material cannot be fed onto this Conveyor Rail system for transport" + UI.HORIZONTAL_BR_RULE + "Enter the Shipping Tab <color=#F44A47><b>[7]</b></color> of the Build Menu to build and connect a Conveyor Loader";
 			}
 
 			public class NEEDSOLIDOUT
 			{
 				public static LocString NAME = "No Conveyor Receptacle";
 
-				public static LocString TOOLTIP = "Material cannot be offloaded from this Conveyor system and will backup the rails" + UI.HORIZONTAL_BR_RULE + "Enter the Shipping Tab <color=#F44A47>[7]</color> of the Build Menu to build and connect a Conveyor Receptacle";
+				public static LocString TOOLTIP = "Material cannot be offloaded from this Conveyor system and will backup the rails" + UI.HORIZONTAL_BR_RULE + "Enter the Shipping Tab <color=#F44A47><b>[7]</b></color> of the Build Menu to build and connect a Conveyor Receptacle";
 			}
 
 			public class SOLIDPIPEOBSTRUCTED
@@ -554,7 +554,7 @@ namespace STRINGS
 
 				public static LocString NOTIFICATION_NAME = "New Duplicants are available";
 
-				public static LocString NOTIFICATION_TOOLTIP = "The Printing Pod <color=#F44A47>[H]</color> is ready to print a new Duplicant.\nI'll need to select a DNA blueprint:";
+				public static LocString NOTIFICATION_TOOLTIP = "The Printing Pod <color=#F44A47><b>[H]</b></color> is ready to print a new Duplicant.\nI'll need to select a DNA blueprint:";
 			}
 
 			public class NOAPPLICABLERESEARCHSELECTED
@@ -1207,7 +1207,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Building Disabled";
 
-				public static LocString TOOLTIP = "Press <color=#F44A47>[ENTER]</color> to resume use";
+				public static LocString TOOLTIP = "Press <color=#F44A47><b>[ENTER]</b></color> to resume use";
 			}
 
 			public class WORKING
@@ -1380,7 +1380,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Colony Lacks {Roles}s";
 
-				public static LocString TOOLTIP = "Open the Jobs Panel <color=#F44A47><b>(L)</b></color> and assign a Duplicant to the {Roles} position to use this building";
+				public static LocString TOOLTIP = "Open the Jobs Panel <color=#F44A47><b>[L]</b></color> and assign a Duplicant to the {Roles} position to use this building";
 			}
 
 			public class SWITCHSTATUSACTIVE
@@ -1471,21 +1471,21 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Outside of room";
 
-				public static LocString TOOLTIP = "This building must be built inside a room for full functionality\n\nOpen the Room Overlay <color=#F44A47>[F11]</color> to view full room status";
+				public static LocString TOOLTIP = "This building must be built inside a room for full functionality\n\nOpen the Room Overlay <color=#F44A47><b>[F11]</b></color> to view full room status";
 			}
 
 			public class NOTINREQUIREDROOM
 			{
 				public static LocString NAME = "Outside of {0}";
 
-				public static LocString TOOLTIP = "This building must be built inside a {0} for full functionality\n\nOpen the Room Overlay <color=#F44A47>[F11]</color> to view full room status";
+				public static LocString TOOLTIP = "This building must be built inside a {0} for full functionality\n\nOpen the Room Overlay <color=#F44A47><b>[F11]</b></color> to view full room status";
 			}
 
 			public class NOTINRECOMMENDEDROOM
 			{
 				public static LocString NAME = "Outside of {0}";
 
-				public static LocString TOOLTIP = "It is recommended to build this building inside a {0}\n\nOpen the Room Overlay <color=#F44A47>[F11]</color> to view full room status";
+				public static LocString TOOLTIP = "It is recommended to build this building inside a {0}\n\nOpen the Room Overlay <color=#F44A47><b>[F11]</b></color> to view full room status";
 			}
 
 			public class RELEASING_PRESSURE

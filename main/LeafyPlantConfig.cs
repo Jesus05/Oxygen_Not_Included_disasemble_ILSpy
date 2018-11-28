@@ -22,14 +22,16 @@ public class LeafyPlantConfig : IEntityConfig
 		EffectorValues decor = effectorValues;
 		GameObject gameObject = EntityTemplates.CreatePlacedEntity(id, name, desc, mass, anim, initialAnim, Grid.SceneLayer.BuildingFront, 1, 1, decor, default(EffectorValues), SimHashes.Creature, null, 293f);
 		GameObject template = gameObject;
-		SimHashes[] safe_elements = new SimHashes[3]
+		SimHashes[] safe_elements = new SimHashes[5]
 		{
 			SimHashes.Oxygen,
 			SimHashes.ContaminatedOxygen,
-			SimHashes.CarbonDioxide
+			SimHashes.CarbonDioxide,
+			SimHashes.ChlorineGas,
+			SimHashes.Hydrogen
 		};
 		EntityTemplates.ExtendEntityToBasicPlant(template, 218.15f, 283.15f, 303.15f, 398.15f, safe_elements, true, 0f, 0.15f, null, true, false);
-		PrickleGrass prickleGrass = gameObject.AddOrGet<PrickleGrass>();
+		gameObject.AddOrGet<PrickleGrass>();
 		template = gameObject;
 		SeedProducer.ProductionType productionType = SeedProducer.ProductionType.Hidden;
 		initialAnim = "LeafyPlantSeed";

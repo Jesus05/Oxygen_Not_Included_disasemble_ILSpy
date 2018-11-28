@@ -29,7 +29,7 @@ public class BulbPlantConfig : IEntityConfig
 			SimHashes.CarbonDioxide
 		};
 		EntityTemplates.ExtendEntityToBasicPlant(template, 218.15f, 283.15f, 303.15f, 398.15f, safe_elements, true, 0f, 0.15f, null, true, false);
-		PrickleGrass prickleGrass = gameObject.AddOrGet<PrickleGrass>();
+		gameObject.AddOrGet<PrickleGrass>();
 		template = gameObject;
 		SeedProducer.ProductionType productionType = SeedProducer.ProductionType.Hidden;
 		initialAnim = "BulbPlantSeed";

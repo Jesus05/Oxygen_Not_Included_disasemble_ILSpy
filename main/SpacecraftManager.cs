@@ -197,6 +197,7 @@ public class SpacecraftManager : KMonoBehaviour, ISim1000ms
 
 	public SpaceDestination GetSpacecraftDestination(int spacecraftID)
 	{
+		CleanSavedSpacecraftDestinations();
 		if (!savedSpacecraftDestinations.ContainsKey(spacecraftID))
 		{
 			return null;
@@ -206,6 +207,7 @@ public class SpacecraftManager : KMonoBehaviour, ISim1000ms
 
 	public List<int> GetSpacecraftsForDestination(SpaceDestination destination)
 	{
+		CleanSavedSpacecraftDestinations();
 		List<int> list = new List<int>();
 		foreach (KeyValuePair<int, int> savedSpacecraftDestination in savedSpacecraftDestinations)
 		{
@@ -215,6 +217,40 @@ public class SpacecraftManager : KMonoBehaviour, ISim1000ms
 			}
 		}
 		return list;
+	}
+
+	private void CleanSavedSpacecraftDestinations()
+	{
+		List<int> list = new List<int>();
+		foreach (KeyValuePair<int, int> savedSpacecraftDestination in savedSpacecraftDestinations)
+		{
+			bool flag = false;
+			foreach (Spacecraft item in spacecraft)
+			{
+				if (item.id == savedSpacecraftDestination.Key)
+				{
+					flag = true;
+					break;
+				}
+			}
+			bool flag2 = false;
+			foreach (SpaceDestination destination in destinations)
+			{
+				if (destination.id == savedSpacecraftDestination.Value)
+				{
+					flag2 = true;
+					break;
+				}
+			}
+			if (!flag || !flag2)
+			{
+				list.Add(savedSpacecraftDestination.Key);
+			}
+		}
+		foreach (int item2 in list)
+		{
+			savedSpacecraftDestinations.Remove(item2);
+		}
 	}
 
 	public void SetSpacecraftDestination(LaunchConditionManager lcm, SpaceDestination destination)

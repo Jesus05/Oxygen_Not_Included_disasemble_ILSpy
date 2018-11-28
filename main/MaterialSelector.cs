@@ -399,6 +399,12 @@ public class MaterialSelector : KScreen
 		IHasSortOrder hasSortOrder2 = (!((Object)gameObject2 != (Object)null)) ? null : gameObject2.GetComponent<IHasSortOrder>();
 		if (hasSortOrder != null && hasSortOrder2 != null)
 		{
+			Element element = ElementLoader.GetElement(at);
+			Element element2 = ElementLoader.GetElement(bt);
+			if (element != null && element2 != null && element.buildMenuSort == element2.buildMenuSort)
+			{
+				return element.idx.CompareTo(element2.idx);
+			}
 			return hasSortOrder.sortOrder.CompareTo(hasSortOrder2.sortOrder);
 		}
 		return 0;

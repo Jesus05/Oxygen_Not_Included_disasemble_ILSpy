@@ -247,11 +247,6 @@ public class StarmapScreen : KModalScreen
 		destinationDetailsResources.SetTitle(UI.STARMAP.LISTTITLES.RESOURCES);
 		destinationDetailsResources.SetIcon(destinationDetailsResourcesIcon);
 		destinationDetailsResources.gameObject.name = "destinationDetailsResources";
-	}
-
-	protected override void OnSpawn()
-	{
-		base.OnSpawn();
 		LoadPlanets();
 		selectionUpdateHandle = Game.Instance.Subscribe(-1503271301, OnSelectableChanged);
 		titleBarLabel.text = UI.STARMAP.TITLE;
@@ -300,7 +295,6 @@ public class StarmapScreen : KModalScreen
 	protected override void OnShow(bool show)
 	{
 		base.OnShow(show);
-		OnSelectableChanged((!((UnityEngine.Object)SelectTool.Instance.selected == (UnityEngine.Object)null)) ? SelectTool.Instance.selected.gameObject : null);
 		if (show)
 		{
 			AudioMixer.instance.Start(AudioMixerSnapshots.Get().MENUStarmapSnapshot);
@@ -313,6 +307,7 @@ public class StarmapScreen : KModalScreen
 			AudioMixer.instance.Stop(AudioMixerSnapshots.Get().MENUStarmapSnapshot, STOP_MODE.ALLOWFADEOUT);
 			MusicManager.instance.StopSong("Music_Starmap", true, STOP_MODE.ALLOWFADEOUT);
 		}
+		OnSelectableChanged((!((UnityEngine.Object)SelectTool.Instance.selected == (UnityEngine.Object)null)) ? SelectTool.Instance.selected.gameObject : null);
 		forceScrollDown = true;
 	}
 

@@ -1,18 +1,11 @@
 using Klei.AI;
 using KSerialization;
-using STRINGS;
-using System.Collections.Generic;
 using UnityEngine;
 
 [SerializationConfig(MemberSerialization.OptIn)]
 public class Equipment : Assignables
 {
 	private SchedulerHandle refreshHandle;
-
-	private static readonly EventSystem.IntraObjectHandler<Equipment> OnRefreshUserMenuDelegate = new EventSystem.IntraObjectHandler<Equipment>(delegate(Equipment component, object data)
-	{
-		component.OnRefreshUserMenu(data);
-	});
 
 	private static readonly EventSystem.IntraObjectHandler<Equipment> SetDestroyedTrueDelegate = new EventSystem.IntraObjectHandler<Equipment>(delegate(Equipment component, object data)
 	{
@@ -34,7 +27,6 @@ public class Equipment : Assignables
 	protected override void OnSpawn()
 	{
 		base.OnSpawn();
-		Subscribe(493375141, OnRefreshUserMenuDelegate);
 		Subscribe(1502190696, SetDestroyedTrueDelegate);
 		Subscribe(1969584890, SetDestroyedTrueDelegate);
 	}
@@ -153,26 +145,6 @@ public class Equipment : Assignables
 	{
 		EquipmentSlotInstance equipmentSlotInstance = GetSlot(slot) as EquipmentSlotInstance;
 		return equipmentSlotInstance.IsAssigned() && (equipmentSlotInstance.assignable as Equippable).isEquipped;
-	}
-
-	private void OnRefreshUserMenu(object data)
-	{
-		using (IEnumerator<AssignableSlotInstance> enumerator = GetEnumerator())
-		{
-			while (enumerator.MoveNext())
-			{
-				EquipmentSlotInstance equipmentSlotInstance = (EquipmentSlotInstance)enumerator.Current;
-				if ((Object)equipmentSlotInstance.assignable != (Object)null)
-				{
-					EquipmentSlotInstance slot_iter = equipmentSlotInstance;
-					string text = string.Format(UI.USERMENUACTIONS.UNEQUIP.NAME, equipmentSlotInstance.assignable.GetComponent<Equippable>().def.GenericName);
-					Game.Instance.userMenu.AddButton(base.gameObject, new KIconButtonMenu.ButtonInfo("iconDown", text, delegate
-					{
-						((Equippable)slot_iter.assignable).Unassign();
-					}, Action.NumActions, null, null, null, "", true), 2f);
-				}
-			}
-		}
 	}
 
 	public void UnequipAll()

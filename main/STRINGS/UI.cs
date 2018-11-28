@@ -2043,11 +2043,11 @@ namespace STRINGS
 
 			public static LocString MANAGEMENTMENU_DAILYREPORT = "View each cycle's Colony Report";
 
-			public static LocString MANAGEMENTMENU_REQUIRES_RESEARCH = "Build a Research Station to unlock" + HORIZONTAL_BR_RULE + "Research buildings can be found in the Stations Tab <color=#F44A47>[0]</color> of the Build Menu";
+			public static LocString MANAGEMENTMENU_REQUIRES_RESEARCH = "Build a Research Station to unlock" + HORIZONTAL_BR_RULE + "Research buildings can be found in the Stations Tab <color=#F44A47><b>[0]</b></color> of the Build Menu";
 
-			public static LocString MANAGEMENTMENU_REQUIRES_ROLES_STATION = "Build a Jobs Board to unlock" + HORIZONTAL_BR_RULE + "The Jobs Board can be found in the Stations Tab <color=#F44A47>[0]</color> of the Build Menu";
+			public static LocString MANAGEMENTMENU_REQUIRES_ROLES_STATION = "Build a Jobs Board to unlock" + HORIZONTAL_BR_RULE + "The Jobs Board can be found in the Stations Tab <color=#F44A47><b>[0]</b></color> of the Build Menu";
 
-			public static LocString MANAGEMENTMENU_REQUIRES_TELESCOPE = "Build a " + BUILDINGS.PREFABS.TELESCOPE.NAME + " to unlock" + HORIZONTAL_BR_RULE + "The " + BUILDINGS.PREFABS.TELESCOPE.NAME + " can be found in the Stations Tab <color=#F44A47>[0]</color> of the Build Menu";
+			public static LocString MANAGEMENTMENU_REQUIRES_TELESCOPE = "Build a " + BUILDINGS.PREFABS.TELESCOPE.NAME + " to unlock" + HORIZONTAL_BR_RULE + "The " + BUILDINGS.PREFABS.TELESCOPE.NAME + " can be found in the Stations Tab <color=#F44A47><b>[0]</b></color> of the Build Menu";
 
 			public static LocString MANAGEMENTMENU_CODEX = "Browse entries in my Database";
 
@@ -2113,7 +2113,7 @@ namespace STRINGS
 
 			public static LocString CANCELDECONSTRUCTIONBUTTON = "Cancel queued orders or deconstruct existing buildings";
 
-			public static LocString HELP_ROTATE_KEY = "Press <color=#F44A47>[{Key}]</color> to Rotate";
+			public static LocString HELP_ROTATE_KEY = "Press <color=#F44A47><b>[{Key}]</b></color> to Rotate";
 
 			public static LocString HELP_BUILDLOCATION_INVALID_CELL = "Invalid Cell";
 
@@ -3639,7 +3639,7 @@ namespace STRINGS
 
 			public static LocString COLONYLOSTDESCRIPTION = "All Duplicants are dead or incapacitated.";
 
-			public static LocString RESTARTPROMPT = "Press <color=#F44A47>[ESC]</color> to return to a previous colony, or begin a new one.";
+			public static LocString RESTARTPROMPT = "Press <color=#F44A47><b>[ESC]</b></color> to return to a previous colony, or begin a new one.";
 
 			public static LocString DISMISSBUTTON = "DISMISS";
 
@@ -3778,7 +3778,7 @@ namespace STRINGS
 
 				public static LocString ONLYALLOWTRANSPORTITEMSBUTTON = "Sweep Only";
 
-				public static LocString ONLYALLOWTRANSPORTITEMSBUTTONTOOLTIP = "Only store objects marked Sweep <color=#F44A47>[K]</color> in this container";
+				public static LocString ONLYALLOWTRANSPORTITEMSBUTTONTOOLTIP = "Only store objects marked Sweep <color=#F44A47><b>[K]</b></color> in this container";
 			}
 
 			public class TELESCOPESIDESCREEN
@@ -4655,7 +4655,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Select Research";
 
-				public static LocString TOOLTIP = "Choose a technology from the Research Tree <color=#F44A47>[R]</color>";
+				public static LocString TOOLTIP = "Choose a technology from the Research Tree <color=#F44A47><b>[R]</b></color>";
 			}
 
 			public class RELOCATE
@@ -6169,7 +6169,7 @@ namespace STRINGS
 
 				public static LocString GEYSER_YEAR_NEXT_DORMANT = "This geyser will become dormant in {0}.";
 
-				public static LocString CAPTURE_METHOD_WRANGLE = "This critter can be captured by a Rancher" + HORIZONTAL_BR_RULE + "Mark critters for capture using the Wrangle Tool <color=#F44A47>(N)</color>";
+				public static LocString CAPTURE_METHOD_WRANGLE = "This critter can be captured by a Rancher" + HORIZONTAL_BR_RULE + "Mark critters for capture using the Wrangle Tool <color=#F44A47><b>[N]</b></color>";
 
 				public static LocString CAPTURE_METHOD_LURE = "This critter can be moved using a Critter Lure";
 
@@ -6433,9 +6433,9 @@ namespace STRINGS
 
 				public static LocString SEED_PRODUCTION_FRUIT = "Consuming this plant's fruit will yield new seeds";
 
-				public static LocString SEED_REQUIREMENT_CEILING = "This seed must be planted in a downward facing plot\n\nPress <color=#F44A47>[O]</color> while building farm plots to rotate them";
+				public static LocString SEED_REQUIREMENT_CEILING = "This seed must be planted in a downward facing plot\n\nPress <color=#F44A47><b>[O]</b></color> while building farm plots to rotate them";
 
-				public static LocString SEED_REQUIREMENT_WALL = "This seed must be planted in a side facing plot\n\nPress <color=#F44A47>[O]</color> while building plots to rotate them";
+				public static LocString SEED_REQUIREMENT_WALL = "This seed must be planted in a side facing plot\n\nPress <color=#F44A47><b>[O]</b></color> while building plots to rotate them";
 			}
 
 			public class DAMAGE_POPS

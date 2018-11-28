@@ -260,6 +260,8 @@ public class GameTags
 
 	public static readonly Tag BuildingFiber = TagManager.Create("BuildingFiber");
 
+	public static readonly Tag PreciousRock = TagManager.Create("PreciousRock");
+
 	public static readonly Tag Incapacitated = TagManager.Create("Incapacitated");
 
 	public static readonly Tag CaloriesDepleted = TagManager.Create("CaloriesDepleted");

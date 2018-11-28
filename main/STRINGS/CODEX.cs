@@ -1208,6 +1208,18 @@ namespace STRINGS
 			public static LocString SUBTITLE = "Edible Plant";
 		}
 
+		public class BUDDYBUD
+		{
+			public class BODY
+			{
+				public static LocString CONTAINER1 = "";
+			}
+
+			public static LocString TITLE = "Buddy Bud";
+
+			public static LocString SUBTITLE = "Decorative Plant";
+		}
+
 		public class DUSKCAP
 		{
 			public class BODY
@@ -1234,6 +1246,18 @@ namespace STRINGS
 			public static LocString SUBTITLE = "Plant";
 		}
 
+		public class JUMPINGJOYA
+		{
+			public class BODY
+			{
+				public static LocString CONTAINER1 = "";
+			}
+
+			public static LocString TITLE = "Jumping Joya";
+
+			public static LocString SUBTITLE = "Decorative Plant";
+		}
+
 		public class MEALWOOD
 		{
 			public class BODY
@@ -1246,6 +1270,18 @@ namespace STRINGS
 			public static LocString TITLE = "Mealwood";
 
 			public static LocString SUBTITLE = "Edible Plant";
+		}
+
+		public class MIRTHLEAF
+		{
+			public class BODY
+			{
+				public static LocString CONTAINER1 = "";
+			}
+
+			public static LocString TITLE = "Mirth Leaf";
+
+			public static LocString SUBTITLE = "Decorative Plant";
 		}
 
 		public class MUCKROOT

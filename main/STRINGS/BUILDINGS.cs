@@ -721,7 +721,7 @@ namespace STRINGS
 
 				public static LocString DESC = "Coal generators produce more energy than manual generators, but emit heat and exhaust.";
 
-				public static LocString EFFECT = "Converts " + UI.FormatAsLink("Carbon", "CARBON") + " into electrical " + UI.FormatAsLink("Power", "POWER") + ".\n\nProduces " + UI.FormatAsLink("Carbon Dioxide", "CARBON DIOXIDE") + ".";
+				public static LocString EFFECT = "Converts " + UI.FormatAsLink("Carbon", "CARBON") + " into electrical " + UI.FormatAsLink("Power", "POWER") + ".\n\nProduces " + UI.FormatAsLink("Carbon Dioxide", "CARBONDIOXIDE") + ".";
 
 				public static LocString OVERPRODUCTION = "{Generator} overproduction";
 			}
@@ -1269,6 +1269,45 @@ namespace STRINGS
 				public static LocString AVERAGEQUALITYNAME = "Genius Ice Sculpture";
 			}
 
+			public class MARBLESCULPTURE
+			{
+				public static LocString NAME = UI.FormatAsLink("Marble Block", "MARBLESCULPTURE");
+
+				public static LocString DESC = "Duplicants with high art skill will produce better, more decorative sculptures.";
+
+				public static LocString EFFECT = "Increases " + UI.FormatAsLink("Decor", "DECOR") + ", contributing to " + UI.FormatAsLink("Morale", "MORALE") + ".\n\nMust be sculpted by a Duplicant.";
+
+				public static LocString POORQUALITYNAME = "\"Abstract\" Marble Sculpture";
+
+				public static LocString AVERAGEQUALITYNAME = "Genius Marble Sculpture";
+			}
+
+			public class METALSCULPTURE
+			{
+				public static LocString NAME = UI.FormatAsLink("Metal Block", "METALSCULPTURE");
+
+				public static LocString DESC = "Duplicants with high art skill will produce better, more decorative sculptures.";
+
+				public static LocString EFFECT = "Increases " + UI.FormatAsLink("Decor", "DECOR") + ", contributing to " + UI.FormatAsLink("Morale", "MORALE") + ".\n\nMust be sculpted by a Duplicant.";
+
+				public static LocString POORQUALITYNAME = "\"Abstract\" Metal Sculpture";
+
+				public static LocString AVERAGEQUALITYNAME = "Genius Metal Sculpture";
+			}
+
+			public class SMALLSCULPTURE
+			{
+				public static LocString NAME = UI.FormatAsLink("Small Sculpting Block", "SMALLSCULPTURE");
+
+				public static LocString DESC = "Duplicants with high art skill will produce better, more decorative sculptures.";
+
+				public static LocString EFFECT = "Increases " + UI.FormatAsLink("Decor", "DECOR") + ", contributing to " + UI.FormatAsLink("Morale", "MORALE") + ".\n\nMust be sculpted by a Duplicant.";
+
+				public static LocString POORQUALITYNAME = "\"Abstract\" Sculpture";
+
+				public static LocString EXCELLENTQUALITYNAME = "Genius Sculpture";
+			}
+
 			public class SHEARINGSTATION
 			{
 				public static LocString NAME = UI.FormatAsLink("Shearing Station", "SHEARINGSTATION");
@@ -1443,7 +1482,7 @@ namespace STRINGS
 
 				public static LocString DESC = "An atmo switch shuts off power when the air pressure surrounding it surpasses the set threshold.";
 
-				public static LocString EFFECT = "Automatically turns " + UI.FormatAsLink("Power", "POWER") + " on or off using ambient " + UI.FormatAsLink("Gas Pressure", "PRESSURE") + ".\n\nDoes not affect circuitry preceding the switch.";
+				public static LocString EFFECT = "Automatically turns " + UI.FormatAsLink("Power", "POWER") + " on or off using ambient " + UI.FormatAsLink("Gas", "PRESSURE") + " pressure.\n\nDoes not affect circuitry preceding the switch.";
 			}
 
 			public class TILE
@@ -1896,7 +1935,7 @@ namespace STRINGS
 
 				public static LocString DESC = "Atmo Sensors can be used to prevent excess oxygen production and overpressurization.";
 
-				public static LocString EFFECT = "Becomes " + UI.FormatAsLink("Active", "LOGIC") + " or on " + UI.FormatAsLink("Standby", "LOGIC") + " when Gas Pressure enters the chosen range.";
+				public static LocString EFFECT = "Becomes " + UI.FormatAsLink("Active", "LOGIC") + " or on " + UI.FormatAsLink("Standby", "LOGIC") + " when " + UI.FormatAsLink("Gas", "ELEMENTS_GAS") + " pressure enters the chosen range.";
 
 				public static LocString LOGIC_PORT_DESC = "Active/Standby based on ambient " + UI.FormatAsLink("Gas", "ELEMENTS_GAS") + " pressure";
 			}
@@ -2002,7 +2041,7 @@ namespace STRINGS
 
 				public static LocString DESC = "Element sensors can be used to detect the presence of a specific gas in a pipe.";
 
-				public static LocString EFFECT = "Becomes " + UI.FormatAsLink("Active", "LOGIC") + " when the chosen " + UI.FormatAsLink("Gas", "ELEMENTS_LIQUID") + " is detected.";
+				public static LocString EFFECT = "Becomes " + UI.FormatAsLink("Active", "LOGIC") + " when the chosen " + UI.FormatAsLink("Gas", "ELEMENTS_GAS") + " is detected.";
 
 				public static LocString LOGIC_PORT_DESC = "Active/Standby based on the internal " + UI.FormatAsLink("Gas", "ELEMENTS_GAS");
 			}

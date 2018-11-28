@@ -10,20 +10,7 @@ public class Assignables : KMonoBehaviour
 		component.OnDeath(data);
 	});
 
-	public AssignableSlotInstance this[int idx]
-	{
-		get
-		{
-			return slots[idx];
-		}
-	}
-
-	public int Count => slots.Count;
-
-	public IEnumerator<AssignableSlotInstance> GetEnumerator()
-	{
-		return slots.GetEnumerator();
-	}
+	public List<AssignableSlotInstance> Slots => slots;
 
 	protected IAssignableIdentity GetAssignableIdentity()
 	{
@@ -73,15 +60,11 @@ public class Assignables : KMonoBehaviour
 	{
 		if (slot != null)
 		{
-			using (IEnumerator<AssignableSlotInstance> enumerator = GetEnumerator())
+			foreach (AssignableSlotInstance slot2 in slots)
 			{
-				while (enumerator.MoveNext())
+				if (slot2.slot == slot)
 				{
-					AssignableSlotInstance current = enumerator.Current;
-					if (current.slot == slot)
-					{
-						return current;
-					}
+					return slot2;
 				}
 			}
 			return null;
@@ -126,13 +109,9 @@ public class Assignables : KMonoBehaviour
 	protected override void OnCleanUp()
 	{
 		base.OnCleanUp();
-		using (IEnumerator<AssignableSlotInstance> enumerator = GetEnumerator())
+		foreach (AssignableSlotInstance slot in slots)
 		{
-			while (enumerator.MoveNext())
-			{
-				AssignableSlotInstance current = enumerator.Current;
-				current.Unassign(true);
-			}
+			slot.Unassign(true);
 		}
 	}
 }

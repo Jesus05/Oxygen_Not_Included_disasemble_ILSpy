@@ -56,6 +56,7 @@ public class KilnConfig : IBuildingConfig
 		ComplexFabricator complexFabricator = go.AddOrGet<ComplexFabricator>();
 		complexFabricator.duplicantOperated = false;
 		complexFabricator.sideScreenStyle = ComplexFabricatorSideScreen.StyleSetting.ListQueueHybrid;
+		go.AddOrGet<FabricatorIngredientStatusManager>();
 		BuildingTemplates.CreateComplexFabricatorStorage(go, complexFabricator);
 		ConfgiureRecipes();
 		Prioritizable.AddRef(go);

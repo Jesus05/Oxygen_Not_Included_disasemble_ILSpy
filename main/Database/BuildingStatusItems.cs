@@ -312,6 +312,8 @@ namespace Database
 
 		public StatusItem MissingGantry;
 
+		public StatusItem DisembarkingDuplicant;
+
 		public StatusItem RocketName;
 
 		public StatusItem PathNotClear;
@@ -973,6 +975,7 @@ namespace Database
 			IncomingMeteors = CreateStatusItem("IncomingMeteors", "BUILDING", "", StatusItem.IconType.Exclamation, NotificationType.BadMinor, false, OverlayModes.None.ID, true, 63486);
 			HasGantry = CreateStatusItem("HasGantry", "BUILDING", "", StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, true, 63486);
 			MissingGantry = CreateStatusItem("MissingGantry", "BUILDING", "status_item_exclamation", StatusItem.IconType.Custom, NotificationType.BadMinor, false, OverlayModes.None.ID, true, 63486);
+			DisembarkingDuplicant = CreateStatusItem("DisembarkingDuplicant", "BUILDING", "status_item_new_duplicants_available", StatusItem.IconType.Custom, NotificationType.BadMinor, false, OverlayModes.None.ID, true, 63486);
 			RocketName = CreateStatusItem("RocketName", "BUILDING", "", StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, true, 63486);
 			RocketName.resolveStringCallback = delegate(string str, object data)
 			{

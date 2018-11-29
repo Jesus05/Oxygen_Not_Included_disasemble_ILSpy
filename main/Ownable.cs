@@ -52,9 +52,17 @@ public class Ownable : Assignable, ISaveLoadable, IEffectDescriptor
 			if ((Object)component != (Object)null && component.GetStoredMinionInfo().Count > 0)
 			{
 				MinionStorage.Info info = component.GetStoredMinionInfo()[0];
-				StoredMinionIdentity component2 = info.serializedMinion.Get().GetComponent<StoredMinionIdentity>();
-				component2.assignableProxy = MinionAssignablesProxy.InitAssignableProxy(component2.assignableProxy, component2);
-				Assign(component2);
+				if (info.serializedMinion != null)
+				{
+					MinionStorage.Info info2 = component.GetStoredMinionInfo()[0];
+					if (info2.serializedMinion.GetId() != -1)
+					{
+						MinionStorage.Info info3 = component.GetStoredMinionInfo()[0];
+						StoredMinionIdentity component2 = info3.serializedMinion.Get().GetComponent<StoredMinionIdentity>();
+						component2.assignableProxy = MinionAssignablesProxy.InitAssignableProxy(component2.assignableProxy, component2);
+						Assign(component2);
+					}
+				}
 			}
 		}
 	}

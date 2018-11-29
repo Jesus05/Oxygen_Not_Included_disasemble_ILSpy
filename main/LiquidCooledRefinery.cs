@@ -39,7 +39,7 @@ public class LiquidCooledRefinery : ComplexFabricator
 			waiting_for_coolant.ToggleStatusItem(waitingForCoolantStatus, (StatesInstance smi) => smi.master).EventTransition(GameHashes.OnStorageChange, ready, (StatesInstance smi) => smi.master.HasEnoughCoolant()).ParamTransition(outputBlocked, output_blocked, GameStateMachine<States, StatesInstance, LiquidCooledRefinery, object>.IsTrue);
 			ready.EventTransition(GameHashes.OnStorageChange, waiting_for_coolant, (StatesInstance smi) => !smi.master.HasEnoughCoolant()).ParamTransition(outputBlocked, output_blocked, GameStateMachine<States, StatesInstance, LiquidCooledRefinery, object>.IsTrue).Enter(delegate(StatesInstance smi)
 			{
-				smi.master.UpdateOrderQueue(false);
+				smi.master.UpdateMachineOrders(false);
 			});
 			output_blocked.ToggleStatusItem(Db.Get().BuildingStatusItems.OutputPipeFull, (object)null).ParamTransition(outputBlocked, waiting_for_coolant, GameStateMachine<States, StatesInstance, LiquidCooledRefinery, object>.IsFalse);
 		}

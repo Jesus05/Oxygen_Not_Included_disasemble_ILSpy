@@ -35,6 +35,18 @@ public class MinionStorage : KMonoBehaviour
 	[Serialize]
 	private List<Info> serializedMinions = new List<Info>();
 
+	protected override void OnPrefabInit()
+	{
+		base.OnPrefabInit();
+		Components.MinionStorages.Add(this);
+	}
+
+	protected override void OnCleanUp()
+	{
+		Components.MinionStorages.Remove(this);
+		base.OnCleanUp();
+	}
+
 	private KPrefabID CreateSerializedMinion(GameObject src_minion)
 	{
 		GameObject prefab = SaveLoader.Instance.saveManager.GetPrefab(StoredMinionConfig.ID);
@@ -90,7 +102,7 @@ public class MinionStorage : KMonoBehaviour
 		}
 	}
 
-	private void CopyMinion(StoredMinionIdentity src_id, MinionIdentity dest_id)
+	private static void CopyMinion(StoredMinionIdentity src_id, MinionIdentity dest_id)
 	{
 		dest_id.SetName(src_id.storedName);
 		dest_id.nameStringKey = src_id.nameStringKey;
@@ -148,7 +160,7 @@ public class MinionStorage : KMonoBehaviour
 		}
 	}
 
-	private void RedirectInstanceTracker(GameObject src_minion, GameObject dest_minion)
+	public static void RedirectInstanceTracker(GameObject src_minion, GameObject dest_minion)
 	{
 		KPrefabID component = src_minion.GetComponent<KPrefabID>();
 		KPrefabID component2 = dest_minion.GetComponent<KPrefabID>();
@@ -158,9 +170,27 @@ public class MinionStorage : KMonoBehaviour
 
 	public void SerializeMinion(GameObject minion)
 	{
+		CleanupBadReferences();
 		KPrefabID kPrefabID = CreateSerializedMinion(minion);
 		Info item = new Info(kPrefabID.GetComponent<StoredMinionIdentity>().storedName, new Ref<KPrefabID>(kPrefabID));
 		serializedMinions.Add(item);
+	}
+
+	private void CleanupBadReferences()
+	{
+		for (int num = serializedMinions.Count - 1; num >= 0; num--)
+		{
+			Info info = serializedMinions[num];
+			if (info.serializedMinion != null)
+			{
+				Info info2 = serializedMinions[num];
+				if (!((UnityEngine.Object)info2.serializedMinion.Get() == (UnityEngine.Object)null))
+				{
+					continue;
+				}
+			}
+			serializedMinions.RemoveAt(num);
+		}
 	}
 
 	private int GetMinionIndex(Guid id)
@@ -185,24 +215,29 @@ public class MinionStorage : KMonoBehaviour
 		{
 			Info info = serializedMinions[minionIndex];
 			KPrefabID kPrefabID = info.serializedMinion.Get();
+			serializedMinions.RemoveAt(minionIndex);
 			if (!((UnityEngine.Object)kPrefabID == (UnityEngine.Object)null))
 			{
 				GameObject gameObject = kPrefabID.gameObject;
-				GameObject prefab = SaveLoader.Instance.saveManager.GetPrefab(MinionConfig.ID);
-				GameObject gameObject2 = Util.KInstantiate(prefab, pos);
-				StoredMinionIdentity component = gameObject.GetComponent<StoredMinionIdentity>();
-				MinionIdentity component2 = gameObject2.GetComponent<MinionIdentity>();
-				RedirectInstanceTracker(gameObject, gameObject2);
-				gameObject2.SetActive(true);
-				CopyMinion(component, component2);
-				component.assignableProxy.Get().SetTarget(component2, gameObject2);
-				Util.KDestroyGameObject(gameObject);
-				serializedMinions.RemoveAt(minionIndex);
-				return gameObject2;
+				return DeserializeMinion(gameObject, pos);
 			}
 			return null;
 		}
 		return null;
+	}
+
+	public static GameObject DeserializeMinion(GameObject sourceMinion, Vector3 pos)
+	{
+		GameObject prefab = SaveLoader.Instance.saveManager.GetPrefab(MinionConfig.ID);
+		GameObject gameObject = Util.KInstantiate(prefab, pos);
+		StoredMinionIdentity component = sourceMinion.GetComponent<StoredMinionIdentity>();
+		MinionIdentity component2 = gameObject.GetComponent<MinionIdentity>();
+		RedirectInstanceTracker(sourceMinion, gameObject);
+		gameObject.SetActive(true);
+		CopyMinion(component, component2);
+		component.assignableProxy.Get().SetTarget(component2, gameObject);
+		Util.KDestroyGameObject(sourceMinion);
+		return gameObject;
 	}
 
 	public void DeleteStoredMinion(Guid id)

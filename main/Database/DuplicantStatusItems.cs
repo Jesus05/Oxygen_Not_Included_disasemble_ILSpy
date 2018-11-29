@@ -1,7 +1,6 @@
 using Klei.AI;
 using STRINGS;
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Database
@@ -223,18 +222,6 @@ namespace Database
 				if ((UnityEngine.Object)workable2 != (UnityEngine.Object)null)
 				{
 					str = str.Replace("{Target}", workable2.GetComponent<KSelectable>().GetName());
-					IHasBuildQueue hasBuildQueue = workable2 as IHasBuildQueue;
-					if (hasBuildQueue != null)
-					{
-						using (List<IBuildQueueOrder>.Enumerator enumerator = hasBuildQueue.Orders.GetEnumerator())
-						{
-							if (enumerator.MoveNext())
-							{
-								IBuildQueueOrder current = enumerator.Current;
-								str = str.Replace("{Item}", current.Result.ProperName());
-							}
-						}
-					}
 				}
 				return str;
 			};

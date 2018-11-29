@@ -19,29 +19,31 @@ public class SuitDiseaseHandler : KMonoBehaviour
 		Subscribe(-170173755, OnUnequippedDelegate);
 	}
 
-	private void OnEquipped(object data)
+	private PrimaryElement GetPrimaryElement(object data)
 	{
 		Equipment equipment = (Equipment)data;
-		PrimaryElement component = equipment.GetComponent<MinionAssignablesProxy>().GetTargetGameObject().GetComponent<PrimaryElement>();
-		if ((Object)component != (Object)null)
+		MinionAssignablesProxy component = equipment.GetComponent<MinionAssignablesProxy>();
+		GameObject targetGameObject = component.GetTargetGameObject();
+		return targetGameObject.GetComponent<PrimaryElement>();
+	}
+
+	private void OnEquipped(object data)
+	{
+		PrimaryElement primaryElement = GetPrimaryElement(data);
+		if ((Object)primaryElement != (Object)null)
 		{
-			component.ModifyDiseaseCountHandler = OnModifyDiseaseCount;
-			component.AddDiseaseHandler = OnAddDisease;
-			component.ForcePermanentDiseaseContainer(true);
-			component.SetDiseaseVisualProvider(base.gameObject);
+			primaryElement.ForcePermanentDiseaseContainer(true);
+			primaryElement.RedirectDisease(base.gameObject);
 		}
 	}
 
 	private void OnUnequipped(object data)
 	{
-		Equipment equipment = (Equipment)data;
-		PrimaryElement component = equipment.GetComponent<MinionAssignablesProxy>().GetTargetGameObject().GetComponent<PrimaryElement>();
-		if ((Object)component != (Object)null)
+		PrimaryElement primaryElement = GetPrimaryElement(data);
+		if ((Object)primaryElement != (Object)null)
 		{
-			component.ModifyDiseaseCountHandler = null;
-			component.AddDiseaseHandler = null;
-			component.ForcePermanentDiseaseContainer(false);
-			component.SetDiseaseVisualProvider(null);
+			primaryElement.ForcePermanentDiseaseContainer(false);
+			primaryElement.RedirectDisease(null);
 		}
 	}
 

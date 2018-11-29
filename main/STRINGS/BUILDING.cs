@@ -774,6 +774,13 @@ namespace STRINGS
 				public static LocString TOOLTIP = "A " + BUILDINGS.PREFABS.GANTRY.NAME + " must be built below a " + BUILDINGS.PREFABS.COMMANDMODULE.NAME + " for an astronaut to access it";
 			}
 
+			public class DISEMBARKINGDUPLICANT
+			{
+				public static LocString NAME = "Duplicant Waiting To Disembark";
+
+				public static LocString TOOLTIP = "The Duplicant won't leave until the " + BUILDINGS.PREFABS.GANTRY.NAME + " is extended.";
+			}
+
 			public class ROCKETNAME
 			{
 				public static LocString NAME = "Parent Rocket: {0}";

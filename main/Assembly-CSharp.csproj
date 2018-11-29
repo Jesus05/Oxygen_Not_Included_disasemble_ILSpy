@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <ProjectGuid>{39DB2E9B-093F-4679-B8A8-026B5CA0921E}</ProjectGuid>
+    <ProjectGuid>{C8E9FD1A-25D3-4A1A-B692-8017D1CAD0F4}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <OutputType>Library</OutputType>
@@ -272,8 +272,6 @@
     <Compile Include="BuildMenu.cs" />
     <Compile Include="BuildMenuBuildingsScreen.cs" />
     <Compile Include="BuildMenuCategoriesScreen.cs" />
-    <Compile Include="BuildQueue.cs" />
-    <Compile Include="BuildQueueButton.cs" />
     <Compile Include="BuildTool.cs" />
     <Compile Include="BuildToolHoverTextCard.cs" />
     <Compile Include="BuildWatermark.cs" />
@@ -721,6 +719,7 @@
     <Compile Include="EyeAnimation.cs" />
     <Compile Include="FabricationNeeds.cs" />
     <Compile Include="Fabricator.cs" />
+    <Compile Include="FabricatorIngredientStatusManager.cs" />
     <Compile Include="FabricatorListScreen.cs" />
     <Compile Include="FabricatorSideScreen.cs" />
     <Compile Include="FabricatorSM.cs" />
@@ -946,7 +945,6 @@
     <Compile Include="IAttributeFormatter.cs" />
     <Compile Include="IBridgedNetworkItem.cs" />
     <Compile Include="IBuildingConfig.cs" />
-    <Compile Include="IBuildQueueOrder.cs" />
     <Compile Include="IceSculptureConfig.cs" />
     <Compile Include="ICheckboxControl.cs" />
     <Compile Include="IChunkManager.cs" />
@@ -971,7 +969,6 @@
     <Compile Include="IFirstFrameCallback.cs" />
     <Compile Include="IGameObjectEffectDescriptor.cs" />
     <Compile Include="IGroupProber.cs" />
-    <Compile Include="IHasBuildQueue.cs" />
     <Compile Include="IHasSortOrder.cs" />
     <Compile Include="IHaveUtilityNetworkMgr.cs" />
     <Compile Include="IIntSliderControl.cs" />

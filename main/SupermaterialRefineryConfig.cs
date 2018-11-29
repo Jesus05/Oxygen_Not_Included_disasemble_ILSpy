@@ -41,6 +41,7 @@ public class SupermaterialRefineryConfig : IBuildingConfig
 		ComplexFabricator complexFabricator = go.AddOrGet<ComplexFabricator>();
 		complexFabricator.sideScreenStyle = ComplexFabricatorSideScreen.StyleSetting.ListQueueHybrid;
 		complexFabricator.duplicantOperated = true;
+		go.AddOrGet<FabricatorIngredientStatusManager>();
 		ComplexFabricatorWorkable complexFabricatorWorkable = go.AddOrGet<ComplexFabricatorWorkable>();
 		BuildingTemplates.CreateComplexFabricatorStorage(go, complexFabricator);
 		complexFabricatorWorkable.overrideAnims = new KAnimFile[1]

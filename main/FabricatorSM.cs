@@ -5,7 +5,7 @@ public class FabricatorSM : StateMachineComponent<FabricatorSM.StatesInstance>
 		public StatesInstance(FabricatorSM master)
 			: base(master)
 		{
-			master.fabricator = master.GetComponent<IHasBuildQueue>();
+			master.fabricator = master.GetComponent<ComplexFabricator>();
 		}
 	}
 
@@ -30,7 +30,7 @@ public class FabricatorSM : StateMachineComponent<FabricatorSM.StatesInstance>
 		}
 	}
 
-	private IHasBuildQueue fabricator;
+	private ComplexFabricator fabricator;
 
 	protected override void OnSpawn()
 	{

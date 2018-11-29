@@ -37,6 +37,7 @@ public class GenericFabricatorConfig : IBuildingConfig
 		go.AddOrGet<BuildingComplete>().isManuallyOperated = true;
 		ComplexFabricator complexFabricator = go.AddOrGet<ComplexFabricator>();
 		complexFabricator.sideScreenStyle = ComplexFabricatorSideScreen.StyleSetting.ListQueueHybrid;
+		go.AddOrGet<FabricatorIngredientStatusManager>();
 		go.AddOrGet<ComplexFabricatorWorkable>().overrideAnims = new KAnimFile[1]
 		{
 			Assets.GetAnim("anim_interacts_fabricator_generic_kanim")

@@ -401,7 +401,7 @@ public class KCrashReporter : MonoBehaviour
 						msg = "Debug tools were used in this game.\n\n" + msg;
 					}
 					error.fullstack = msg;
-					error.build = 296642;
+					error.build = 296878;
 					error.log = GetLogContents();
 					error.summaryline = msg;
 					error.user_message = userMessage;
@@ -488,15 +488,6 @@ public class KCrashReporter : MonoBehaviour
 			{
 				File.Move(text2, text);
 			}
-		}
-	}
-
-	public static void Assert(bool condition)
-	{
-		if (!condition && !hasReportedError)
-		{
-			StackTrace stackTrace = new StackTrace(0, true);
-			ReportError("Assertion failed", stackTrace.ToString(), null, null, "");
 		}
 	}
 }

@@ -10,7 +10,7 @@ public class CanvasTallConfig : IBuildingConfig
 	{
 		string id = "CanvasTall";
 		int width = 2;
-		int height = 2;
+		int height = 3;
 		string anim = "painting_tall_kanim";
 		int hitpoints = 30;
 		float construction_time = 120f;

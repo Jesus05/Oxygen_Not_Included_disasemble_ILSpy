@@ -4,12 +4,11 @@ using STRINGS;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Serialization;
 using TUNING;
 using UnityEngine;
 
 [SerializationConfig(MemberSerialization.OptIn)]
-public class ComplexFabricator : KMonoBehaviour, IEffectDescriptor, IHasBuildQueue, ISim200ms
+public class ComplexFabricator : KMonoBehaviour, ISim200ms
 {
 	protected enum SubAnim
 	{
@@ -27,7 +26,7 @@ public class ComplexFabricator : KMonoBehaviour, IEffectDescriptor, IHasBuildQue
 	}
 
 	[Serializable]
-	public class UserOrder : IBuildQueueOrder
+	public class UserOrder
 	{
 		public ComplexRecipe recipe;
 
@@ -44,7 +43,7 @@ public class ComplexFabricator : KMonoBehaviour, IEffectDescriptor, IHasBuildQue
 			this.recipe = recipe;
 		}
 
-		public Dictionary<Tag, float> CheckMaterialRequirements()
+		public Dictionary<Tag, float> CheckMaterialRequirementsBalance()
 		{
 			Dictionary<Tag, float> dictionary = new Dictionary<Tag, float>();
 			ComplexRecipe.RecipeElement[] ingredients = recipe.ingredients;
@@ -54,6 +53,20 @@ public class ComplexFabricator : KMonoBehaviour, IEffectDescriptor, IHasBuildQue
 				dictionary[recipeElement.material] = recipeElement.amount - amount;
 			}
 			return dictionary;
+		}
+
+		public bool CheckMaterialRequirements(WorldInventory worldInventory, Storage storage)
+		{
+			Dictionary<Tag, float> dictionary = new Dictionary<Tag, float>();
+			ComplexRecipe.RecipeElement[] ingredients = recipe.ingredients;
+			foreach (ComplexRecipe.RecipeElement recipeElement in ingredients)
+			{
+				if (worldInventory.GetAmount(recipeElement.material) + storage.GetAmountAvailable(recipeElement.material) < recipeElement.amount)
+				{
+					return false;
+				}
+			}
+			return true;
 		}
 
 		public Dictionary<Tag, float> GetMaterialRequirements()
@@ -111,8 +124,6 @@ public class ComplexFabricator : KMonoBehaviour, IEffectDescriptor, IHasBuildQue
 
 	protected ComplexFabricatorWorkable workable;
 
-	public Action<UserOrder> OnCreateOrder;
-
 	public Action<UserOrder> OnUserOrderCancelledOrComplete;
 
 	public Action<MachineOrder> OnCreateMachineOrder;
@@ -140,6 +151,8 @@ public class ComplexFabricator : KMonoBehaviour, IEffectDescriptor, IHasBuildQue
 
 	protected Tag[] choreTags;
 
+	public static int QUEUE_INFINITE_COUNT = 6;
+
 	[Serialize]
 	private Dictionary<string, int> recipeQueueCounts = new Dictionary<string, int>();
 
@@ -156,8 +169,6 @@ public class ComplexFabricator : KMonoBehaviour, IEffectDescriptor, IHasBuildQue
 	private bool isCancellingOrder = false;
 
 	private float orderProgress = 0f;
-
-	private List<Guid> missingIngredientStatusItems = new List<Guid>();
 
 	private SchedulerHandle ingredientSearchHandle;
 
@@ -185,8 +196,6 @@ public class ComplexFabricator : KMonoBehaviour, IEffectDescriptor, IHasBuildQue
 	private MeterController outputVisualizer;
 
 	private ProgressBar progressBar;
-
-	public static int QUEUE_INFINITE_COUNT = 6;
 
 	private static readonly EventSystem.IntraObjectHandler<ComplexFabricator> OnDroppedAllDelegate = new EventSystem.IntraObjectHandler<ComplexFabricator>(delegate(ComplexFabricator component, object data)
 	{
@@ -221,13 +230,9 @@ public class ComplexFabricator : KMonoBehaviour, IEffectDescriptor, IHasBuildQue
 
 	public int NumOrders => userOrders.Count;
 
-	public List<IBuildQueueOrder> Orders => userOrders.ConvertAll((Converter<UserOrder, IBuildQueueOrder>)((UserOrder o) => o));
-
 	public bool WaitingForWorker => machineOrders.Count > 0 && machineOrders[0].fetchList != null && machineOrders[0].fetchList.IsComplete;
 
 	public bool HasWorker => !duplicantOperated || (UnityEngine.Object)workable.worker != (UnityEngine.Object)null;
-
-	public int MaxOrders => MAX_NUM_ORDERS;
 
 	public List<UserOrder> GetUserOrders()
 	{
@@ -237,129 +242,6 @@ public class ComplexFabricator : KMonoBehaviour, IEffectDescriptor, IHasBuildQue
 	public List<MachineOrder> GetMachineOrders()
 	{
 		return machineOrders;
-	}
-
-	[OnSerializing]
-	internal void OnSerializingMethod()
-	{
-	}
-
-	[OnDeserializing]
-	internal void OnDeserializingMethod()
-	{
-	}
-
-	public string GetConversationTopic()
-	{
-		if (machineOrders.Count <= 0)
-		{
-			return null;
-		}
-		UserOrder parentOrder = machineOrders[0].parentOrder;
-		ComplexRecipe recipe = parentOrder.recipe;
-		return recipe.results[0].material.Name;
-	}
-
-	public ComplexRecipe[] GetRecipes()
-	{
-		Tag b = GetComponent<KPrefabID>().PrefabID();
-		List<ComplexRecipe> recipes = ComplexRecipeManager.Get().recipes;
-		List<ComplexRecipe> list = new List<ComplexRecipe>();
-		foreach (ComplexRecipe item in recipes)
-		{
-			foreach (Tag fabricator in item.fabricators)
-			{
-				if (fabricator == b)
-				{
-					list.Add(item);
-				}
-			}
-		}
-		return list.ToArray();
-	}
-
-	private void ClearQueueCount()
-	{
-		recipeQueueCounts.Clear();
-		ComplexRecipe[] recipes = GetRecipes();
-		foreach (ComplexRecipe complexRecipe in recipes)
-		{
-			recipeQueueCounts.Add(complexRecipe.id, 0);
-		}
-	}
-
-	private void ConfigUserOrdersForQueueCount()
-	{
-		ComplexRecipe[] recipes = GetRecipes();
-		foreach (ComplexRecipe complexRecipe in recipes)
-		{
-			bool flag = false;
-			foreach (string key in recipeQueueCounts.Keys)
-			{
-				if (key == complexRecipe.id)
-				{
-					flag = true;
-					break;
-				}
-			}
-			if (!flag)
-			{
-				recipeQueueCounts.Add(complexRecipe.id, 0);
-			}
-		}
-		userOrders.Clear();
-		foreach (KeyValuePair<string, int> recipeQueueCount in recipeQueueCounts)
-		{
-			UserOrder userOrder = new UserOrder(ComplexRecipeManager.Get().GetRecipe(recipeQueueCount.Key), true);
-			if (OnCreateOrder != null)
-			{
-				OnCreateOrder(userOrder);
-			}
-			userOrders.Add(userOrder);
-		}
-	}
-
-	public int GetRecipeQueueCount(ComplexRecipe recipe)
-	{
-		return recipeQueueCounts[recipe.id];
-	}
-
-	public void IncrementRecipeQueueCount(ComplexRecipe recipe)
-	{
-		Dictionary<string, int> dictionary;
-		string id;
-		(dictionary = recipeQueueCounts)[id = recipe.id] = dictionary[id] + 1;
-		if (recipeQueueCounts[recipe.id] > QUEUE_INFINITE_COUNT)
-		{
-			recipeQueueCounts[recipe.id] = 0;
-		}
-		UpdateOrderQueue(false);
-	}
-
-	public void DecrementRecipeQueueCount(ComplexRecipe recipe, bool respectInfinite = true)
-	{
-		if (!respectInfinite || recipeQueueCounts[recipe.id] != QUEUE_INFINITE_COUNT)
-		{
-			Dictionary<string, int> dictionary;
-			string id;
-			(dictionary = recipeQueueCounts)[id = recipe.id] = dictionary[id] - 1;
-			if (recipeQueueCounts[recipe.id] < 0)
-			{
-				recipeQueueCounts[recipe.id] = QUEUE_INFINITE_COUNT;
-			}
-		}
-		UpdateOrderQueue(false);
-	}
-
-	protected override void OnCleanUp()
-	{
-		ingredientSearchHandle.ClearScheduler();
-		foreach (UserOrder userOrder in userOrders)
-		{
-			CancelMachineOrdersByUserOrder(userOrder);
-		}
-		Components.ComplexFabricators.Remove(this);
-		base.OnCleanUp();
 	}
 
 	protected override void OnPrefabInit()
@@ -388,138 +270,262 @@ public class ComplexFabricator : KMonoBehaviour, IEffectDescriptor, IHasBuildQue
 		{
 			workable = GetComponent<ComplexFabricatorWorkable>();
 		}
-		ConfigUserOrdersForQueueCount();
+		InitRecipeQueueCount();
+		RefreshUserOrdersFromQueueCounts();
 		buildStorage.Transfer(inStorage, true, true);
-		UpdateOrderQueue(true);
+		UpdateMachineOrders(true);
 	}
 
-	protected void UpdateOrderQueue(bool force_update = false)
+	protected override void OnCleanUp()
 	{
-		UpdateMissingIngredientStatusItems();
-		if (force_update || operational.IsOperational)
+		ingredientSearchHandle.ClearScheduler();
+		foreach (UserOrder userOrder in userOrders)
+		{
+			CancelMachineOrdersByUserOrder(userOrder);
+		}
+		Components.ComplexFabricators.Remove(this);
+		base.OnCleanUp();
+	}
+
+	public ComplexRecipe[] GetRecipes()
+	{
+		Tag b = GetComponent<KPrefabID>().PrefabID();
+		List<ComplexRecipe> recipes = ComplexRecipeManager.Get().recipes;
+		List<ComplexRecipe> list = new List<ComplexRecipe>();
+		foreach (ComplexRecipe item in recipes)
+		{
+			foreach (Tag fabricator in item.fabricators)
+			{
+				if (fabricator == b)
+				{
+					list.Add(item);
+				}
+			}
+		}
+		return list.ToArray();
+	}
+
+	private void InitRecipeQueueCount()
+	{
+		ComplexRecipe[] recipes = GetRecipes();
+		foreach (ComplexRecipe complexRecipe in recipes)
 		{
 			bool flag = false;
-			int num = 0;
-			while (!flag && num < userOrders.Count)
+			foreach (string key in recipeQueueCounts.Keys)
 			{
-				int num2 = -1;
-				for (int i = 0; i < machineOrders.Count; i++)
+				if (key == complexRecipe.id)
 				{
-					if (machineOrders[i].parentOrder != userOrders[(i + currentOrderIdx) % userOrders.Count])
-					{
-						num2 = i;
-						break;
-					}
-					if (recipeQueueCounts[userOrders[(i + currentOrderIdx) % userOrders.Count].recipe.id] == 0)
-					{
-						num2 = i;
-						break;
-					}
-				}
-				if (num2 != -1)
-				{
-					for (int num3 = machineOrders.Count - 1; num3 >= num2; num3--)
-					{
-						if (num3 == 0 && machineOrders[0].chore != null)
-						{
-							buildStorage.Transfer(inStorage, true, true);
-						}
-						OnMachineOrderCancelledOrComplete(machineOrders[num3]);
-						machineOrders[num3].Cancel();
-						machineOrders.RemoveAt(num3);
-					}
-				}
-				if (userOrders != null && userOrders.Count > 0)
-				{
-					int count = machineOrders.Count;
-					int num4 = 0;
-					int num5 = 0;
-					int num6 = 0;
-					foreach (KeyValuePair<string, int> recipeQueueCount in recipeQueueCounts)
-					{
-						num6 += recipeQueueCount.Value;
-					}
-					while (machineOrders.Count < Mathf.Min(3, num6) && num5 < userOrders.Count)
-					{
-						int index = (currentOrderIdx + count + num4) % userOrders.Count;
-						UserOrder userOrder = userOrders[index];
-						bool flag2 = false;
-						if (recipeQueueCounts[userOrder.recipe.id] == 0)
-						{
-							flag2 = true;
-						}
-						else
-						{
-							foreach (KeyValuePair<Tag, float> item in userOrder.CheckMaterialRequirements())
-							{
-								if (WorldInventory.Instance.GetAmount(item.Key) < item.Value && inStorage.GetAmountAvailable(item.Key) < item.Value)
-								{
-									flag2 = true;
-									break;
-								}
-							}
-						}
-						if (!flag2)
-						{
-							MachineOrder machineOrder = new MachineOrder();
-							machineOrder.parentOrder = userOrder;
-							machineOrders.Add(machineOrder);
-							OnCreateMachineOrder(machineOrder);
-							num5 = 0;
-						}
-						else
-						{
-							num5++;
-						}
-						num4++;
-					}
-				}
-				if (machineOrders.Count > 0)
-				{
-					if ((duplicantOperated && machineOrders[0].chore == null) || (!duplicantOperated && !machineOrders[0].underway))
-					{
-						ComplexRecipe.RecipeElement[] ingredients = machineOrders[0].parentOrder.recipe.ingredients;
-						bool flag3 = true;
-						ComplexRecipe.RecipeElement[] array = ingredients;
-						foreach (ComplexRecipe.RecipeElement recipeElement in array)
-						{
-							if (inStorage.GetMassAvailable(recipeElement.material) < recipeElement.amount && buildStorage.GetMassAvailable(recipeElement.material) < recipeElement.amount)
-							{
-								flag3 = false;
-								break;
-							}
-						}
-						if (flag3)
-						{
-							flag = true;
-						}
-						else
-						{
-							currentOrderIdx += 1 % userOrders.Count;
-							num++;
-						}
-					}
-					else
-					{
-						flag = true;
-					}
-				}
-				else
-				{
-					num++;
+					flag = true;
+					break;
 				}
 			}
 			if (!flag)
 			{
-				if (!ingredientSearchHandle.IsValid)
-				{
-					ingredientSearchHandle = GameScheduler.Instance.Schedule("Idle ComplexFabricator look for ingredients", 4f, CheckWorldInventoryForIngredients, null, null);
-				}
+				recipeQueueCounts.Add(complexRecipe.id, 0);
+			}
+		}
+	}
+
+	private void RefreshUserOrdersFromQueueCounts()
+	{
+		UserOrder prevCurrentOrder = null;
+		if (userOrders != null && currentOrderIdx != -1 && currentOrderIdx < userOrders.Count)
+		{
+			prevCurrentOrder = userOrders[currentOrderIdx];
+		}
+		userOrders.Clear();
+		int num = 0;
+		foreach (KeyValuePair<string, int> recipeQueueCount in recipeQueueCounts)
+		{
+			if (recipeQueueCount.Value > 0)
+			{
+				num++;
+				UserOrder item = new UserOrder(ComplexRecipeManager.Get().GetRecipe(recipeQueueCount.Key), true);
+				userOrders.Add(item);
+			}
+		}
+		if (prevCurrentOrder != null)
+		{
+			int num2 = userOrders.FindIndex((UserOrder match) => match.recipe == prevCurrentOrder.recipe);
+			if (num2 != -1)
+			{
+				userOrders = ShiftListLeft(userOrders, num2);
+			}
+		}
+	}
+
+	public List<T> ShiftListLeft<T>(List<T> list, int shiftBy)
+	{
+		try
+		{
+			if (list.Count > shiftBy)
+			{
+				List<T> range = list.GetRange(shiftBy, list.Count - shiftBy);
+				range.AddRange((IEnumerable<T>)list.GetRange(0, shiftBy));
+				return range;
+			}
+			return list;
+		}
+		catch
+		{
+			Debug.Log("!", null);
+			return null;
+		}
+	}
+
+	public int GetRecipeQueueCount(ComplexRecipe recipe)
+	{
+		return recipeQueueCounts[recipe.id];
+	}
+
+	public void IncrementRecipeQueueCount(ComplexRecipe recipe)
+	{
+		bool flag = true;
+		if (machineOrders.Count == 0)
+		{
+			flag = true;
+		}
+		UserOrder userOrder = userOrders.Find((UserOrder match) => match.recipe == recipe);
+		if (userOrder != null && GetUserOrderIndex(userOrder) == currentOrderIdx && GetRecipeQueueCount(recipe) == QUEUE_INFINITE_COUNT)
+		{
+			CancelMachineOrdersByUserOrder(userOrder);
+		}
+		Dictionary<string, int> dictionary;
+		string id;
+		(dictionary = recipeQueueCounts)[id = recipe.id] = dictionary[id] + 1;
+		if (recipeQueueCounts[recipe.id] > QUEUE_INFINITE_COUNT)
+		{
+			recipeQueueCounts[recipe.id] = 0;
+			flag = true;
+		}
+		RefreshUserOrdersFromQueueCounts();
+		if (flag)
+		{
+			UpdateMachineOrders(false);
+		}
+	}
+
+	public void DecrementRecipeQueueCount(ComplexRecipe recipe, bool respectInfinite = true)
+	{
+		bool flag = false;
+		UserOrder userOrder = userOrders.Find((UserOrder match) => match.recipe == recipe);
+		if (userOrder != null && GetUserOrderIndex(userOrder) == currentOrderIdx && GetRecipeQueueCount(recipe) == 1)
+		{
+			CancelMachineOrdersByUserOrder(userOrder);
+			flag = true;
+		}
+		if (!respectInfinite || recipeQueueCounts[recipe.id] != QUEUE_INFINITE_COUNT)
+		{
+			Dictionary<string, int> dictionary;
+			string id;
+			(dictionary = recipeQueueCounts)[id = recipe.id] = dictionary[id] - 1;
+			if (recipeQueueCounts[recipe.id] < 0)
+			{
+				recipeQueueCounts[recipe.id] = QUEUE_INFINITE_COUNT;
+				flag = true;
+			}
+		}
+		RefreshUserOrdersFromQueueCounts();
+		if (flag)
+		{
+			UpdateMachineOrders(false);
+		}
+	}
+
+	private int GetTotalQueuedCount()
+	{
+		int num = 0;
+		foreach (KeyValuePair<string, int> recipeQueueCount in recipeQueueCounts)
+		{
+			num += recipeQueueCount.Value;
+		}
+		return num;
+	}
+
+	private List<UserOrder> GetNextMachineOrders()
+	{
+		List<UserOrder> list = new List<UserOrder>();
+		bool flag = false;
+		int num = 0;
+		while (list.Count < Mathf.Min(3, GetTotalQueuedCount()))
+		{
+			int index = (currentOrderIdx + num) % userOrders.Count;
+			UserOrder userOrder = userOrders[index];
+			if (userOrder.CheckMaterialRequirements(WorldInventory.Instance, inStorage) || userOrder.CheckMaterialRequirements(WorldInventory.Instance, buildStorage))
+			{
+				list.Add(userOrder);
 			}
 			else
 			{
-				ingredientSearchHandle.ClearScheduler();
+				flag = true;
 			}
+			num++;
+			if (num > userOrders.Count * 3)
+			{
+				break;
+			}
+		}
+		if (flag)
+		{
+			ScheduleCheckWorldInventory();
+		}
+		return list;
+	}
+
+	private void ClearInvalidMachineOrders(List<UserOrder> nextMachineOrderSources)
+	{
+		int num = -1;
+		for (int i = 0; i < machineOrders.Count; i++)
+		{
+			if (nextMachineOrderSources.Count <= i)
+			{
+				num = i;
+				break;
+			}
+			if (machineOrders[i].parentOrder.recipe != nextMachineOrderSources[i].recipe)
+			{
+				num = i;
+				break;
+			}
+		}
+		if (num != -1)
+		{
+			for (int num2 = machineOrders.Count - 1; num2 >= num; num2--)
+			{
+				if (num2 == 0 && machineOrders[0].chore != null)
+				{
+					buildStorage.Transfer(inStorage, true, true);
+				}
+				OnMachineOrderCancelledOrComplete(machineOrders[num2]);
+				machineOrders[num2].Cancel();
+				machineOrders.RemoveAt(num2);
+			}
+		}
+	}
+
+	private void AddValidMachineOrders(List<UserOrder> nextMachineOrderSources)
+	{
+		for (int i = machineOrders.Count; i < nextMachineOrderSources.Count; i++)
+		{
+			MachineOrder machineOrder = new MachineOrder();
+			machineOrder.parentOrder = nextMachineOrderSources[i];
+			machineOrders.Add(machineOrder);
+			OnCreateMachineOrder(machineOrder);
+		}
+	}
+
+	private void RefreshMachineOrderList()
+	{
+		List<UserOrder> nextMachineOrders = GetNextMachineOrders();
+		ClearInvalidMachineOrders(nextMachineOrders);
+		AddValidMachineOrders(nextMachineOrders);
+	}
+
+	protected void UpdateMachineOrders(bool force_update = false)
+	{
+		if (force_update || operational.IsOperational)
+		{
+			RefreshMachineOrderList();
 			if (machineOrders.Count > 0)
 			{
 				if (((duplicantOperated && machineOrders[0].chore == null) || (!duplicantOperated && !machineOrders[0].underway)) && HasIngredients(machineOrders[0], inStorage))
@@ -528,6 +534,7 @@ public class ComplexFabricator : KMonoBehaviour, IEffectDescriptor, IHasBuildQue
 					if (duplicantOperated)
 					{
 						workable.CreateOrder(machineOrders[0], choreType, choreTags);
+						machineOrders[0].underway = true;
 					}
 					else if (!operational.IsActive && !machineOrders[0].underway)
 					{
@@ -535,91 +542,91 @@ public class ComplexFabricator : KMonoBehaviour, IEffectDescriptor, IHasBuildQue
 					}
 				}
 				Dictionary<Tag, float> dictionary = new Dictionary<Tag, float>();
-				for (int k = 0; k < machineOrders.Count; k++)
+				for (int i = 0; i < machineOrders.Count; i++)
 				{
-					MachineOrder machineOrder2 = machineOrders[k];
-					if (machineOrder2.chore == null)
+					MachineOrder machineOrder = machineOrders[i];
+					if (machineOrder.chore == null)
 					{
-						UserOrder parentOrder = machineOrder2.parentOrder;
-						ComplexRecipe.RecipeElement[] ingredients2 = parentOrder.recipe.ingredients;
-						ComplexRecipe.RecipeElement[] array2 = ingredients2;
-						foreach (ComplexRecipe.RecipeElement recipeElement2 in array2)
+						UserOrder parentOrder = machineOrder.parentOrder;
+						ComplexRecipe.RecipeElement[] ingredients = parentOrder.recipe.ingredients;
+						ComplexRecipe.RecipeElement[] array = ingredients;
+						foreach (ComplexRecipe.RecipeElement recipeElement in array)
 						{
-							dictionary[recipeElement2.material] = inStorage.GetMassAvailable(recipeElement2.material);
+							dictionary[recipeElement.material] = inStorage.GetMassAvailable(recipeElement.material);
 						}
 					}
 				}
 				ChoreType byHash = Db.Get().ChoreTypes.GetByHash(fetchChoreTypeIdHash);
 				Dictionary<Tag, float> dictionary2 = new Dictionary<Tag, float>();
-				for (int m = 0; m < machineOrders.Count; m++)
+				for (int k = 0; k < machineOrders.Count; k++)
 				{
-					MachineOrder machineOrder3 = machineOrders[m];
-					if (machineOrder3.chore == null && !machineOrder3.underway)
+					MachineOrder machineOrder2 = machineOrders[k];
+					if (machineOrder2.chore == null && !machineOrder2.underway)
 					{
-						UserOrder parentOrder2 = machineOrder3.parentOrder;
-						ComplexRecipe.RecipeElement[] ingredients3 = parentOrder2.recipe.ingredients;
-						bool flag4 = true;
-						ComplexRecipe.RecipeElement[] array3 = ingredients3;
-						foreach (ComplexRecipe.RecipeElement recipeElement3 in array3)
+						UserOrder parentOrder2 = machineOrder2.parentOrder;
+						ComplexRecipe.RecipeElement[] ingredients2 = parentOrder2.recipe.ingredients;
+						bool flag = true;
+						ComplexRecipe.RecipeElement[] array2 = ingredients2;
+						foreach (ComplexRecipe.RecipeElement recipeElement2 in array2)
 						{
-							if (dictionary[recipeElement3.material] < recipeElement3.amount)
+							if (dictionary[recipeElement2.material] < recipeElement2.amount)
 							{
-								if (dictionary2.ContainsKey(recipeElement3.material))
+								if (dictionary2.ContainsKey(recipeElement2.material))
 								{
 									Dictionary<Tag, float> dictionary3;
 									Tag material;
-									(dictionary3 = dictionary2)[material = recipeElement3.material] = dictionary3[material] + (recipeElement3.amount - dictionary[recipeElement3.material]);
+									(dictionary3 = dictionary2)[material = recipeElement2.material] = dictionary3[material] + (recipeElement2.amount - dictionary[recipeElement2.material]);
 								}
 								else
 								{
-									dictionary2.Add(recipeElement3.material, recipeElement3.amount - dictionary[recipeElement3.material]);
+									dictionary2.Add(recipeElement2.material, recipeElement2.amount - dictionary[recipeElement2.material]);
 								}
-								dictionary[recipeElement3.material] = 0f;
-								flag4 = false;
+								dictionary[recipeElement2.material] = 0f;
+								flag = false;
 							}
 							else
 							{
 								Dictionary<Tag, float> dictionary3;
 								Tag material2;
-								(dictionary3 = dictionary)[material2 = recipeElement3.material] = dictionary3[material2] - recipeElement3.amount;
+								(dictionary3 = dictionary)[material2 = recipeElement2.material] = dictionary3[material2] - recipeElement2.amount;
 							}
 						}
-						int priorityMod = -m;
-						if (machineOrder3.fetchList == null && !flag4)
+						int priorityMod = -k;
+						if (machineOrder2.fetchList == null && !flag)
 						{
-							machineOrder3.fetchList = new FetchList2(inStorage, byHash, choreTags);
-							machineOrder3.fetchList.ShowStatusItem = false;
-							machineOrder3.fetchList.SetPriorityMod(priorityMod);
-							ComplexRecipe.RecipeElement[] array4 = new ComplexRecipe.RecipeElement[dictionary2.Count];
-							int num7 = 0;
-							foreach (Tag item2 in dictionary2.Keys.ToList())
+							machineOrder2.fetchList = new FetchList2(inStorage, byHash, choreTags);
+							machineOrder2.fetchList.ShowStatusItem = false;
+							machineOrder2.fetchList.SetPriorityMod(priorityMod);
+							ComplexRecipe.RecipeElement[] array3 = new ComplexRecipe.RecipeElement[dictionary2.Count];
+							int num = 0;
+							foreach (Tag item in dictionary2.Keys.ToList())
 							{
 								float a = 0f;
-								ComplexRecipe.RecipeElement[] ingredients4 = machineOrder3.parentOrder.recipe.ingredients;
-								foreach (ComplexRecipe.RecipeElement recipeElement4 in ingredients4)
+								ComplexRecipe.RecipeElement[] ingredients3 = machineOrder2.parentOrder.recipe.ingredients;
+								foreach (ComplexRecipe.RecipeElement recipeElement3 in ingredients3)
 								{
-									if (recipeElement4.material == item2)
+									if (recipeElement3.material == item)
 									{
-										a = recipeElement4.amount;
+										a = recipeElement3.amount;
 										break;
 									}
 								}
-								float num9 = Mathf.Min(a, dictionary2[item2]);
-								if (num9 != 0f)
+								float num2 = Mathf.Min(a, dictionary2[item]);
+								if (num2 != 0f)
 								{
-									array4[num7] = new ComplexRecipe.RecipeElement(item2, num9);
+									array3[num] = new ComplexRecipe.RecipeElement(item, num2);
 									Dictionary<Tag, float> dictionary3;
 									Tag key;
-									(dictionary3 = dictionary2)[key = item2] = dictionary3[key] - num9;
+									(dictionary3 = dictionary2)[key = item] = dictionary3[key] - num2;
 								}
-								num7++;
+								num++;
 							}
-							AddIngredientsToFetchList(array4, machineOrder3.fetchList);
-							machineOrder3.fetchList.Submit(OnFetchComplete, false);
+							AddIngredientsToFetchList(array3, machineOrder2.fetchList);
+							machineOrder2.fetchList.Submit(OnFetchComplete, false);
 						}
-						else if (machineOrder3.fetchList != null)
+						else if (machineOrder2.fetchList != null)
 						{
-							machineOrder3.fetchList.SetPriorityMod(priorityMod);
+							machineOrder2.fetchList.SetPriorityMod(priorityMod);
 						}
 					}
 				}
@@ -660,71 +667,23 @@ public class ComplexFabricator : KMonoBehaviour, IEffectDescriptor, IHasBuildQue
 
 	public void Sim200ms(float dt)
 	{
-		UpdateMissingIngredientStatusItems();
 		if (!duplicantOperated)
 		{
 			if (!operational.IsActive && machineOrders.Count > 0 && machineOrders[0].underway)
 			{
 				StartWork();
 			}
-			if (operational.IsActive)
+			if (operational.IsActive ? true : false)
 			{
-				bool flag = true;
-				if (!HasIngredients(machineOrders[0], buildStorage))
+				orderProgress += dt / machineOrders[0].parentOrder.recipe.time;
+				if (orderProgress >= 1f)
 				{
-					flag = false;
-					orderProgress = 0f;
-					for (int num = machineOrders.Count - 1; num >= 0; num--)
-					{
-						CancelMachineOrder(machineOrders[num]);
-					}
+					machineOrders[0].underway = false;
 					SetOperationalInactive();
-					UpdateOrderQueue(false);
-				}
-				if (flag)
-				{
-					orderProgress += dt / machineOrders[0].parentOrder.recipe.time;
-					if (orderProgress >= 1f)
-					{
-						machineOrders[0].underway = false;
-						SetOperationalInactive();
-						OnCompleteMachineOrder();
-						orderProgress = 0f;
-					}
+					OnCompleteMachineOrder();
+					orderProgress = 0f;
 				}
 			}
-		}
-	}
-
-	public void CreateUserOrder(ComplexRecipe recipe, bool isInfinite, string soundPath)
-	{
-		if (DebugHandler.InstantBuildMode)
-		{
-			UserOrder userOrder = new UserOrder(recipe, false);
-			if (OnCreateOrder != null)
-			{
-				OnCreateOrder(userOrder);
-			}
-			SpawnOrderProduct(userOrder);
-		}
-		else
-		{
-			if (userOrders.Count < MAX_NUM_ORDERS)
-			{
-				KFMOD.PlayOneShot(soundPath);
-				UserOrder userOrder2 = new UserOrder(recipe, isInfinite);
-				if (OnCreateOrder != null)
-				{
-					OnCreateOrder(userOrder2);
-				}
-				userOrders.Add(userOrder2);
-				UpdateOrderQueue(false);
-			}
-			else
-			{
-				UISounds.PlaySound(UISounds.Sound.Negative);
-			}
-			UpdateOrderQueue(false);
 		}
 	}
 
@@ -736,6 +695,14 @@ public class ComplexFabricator : KMonoBehaviour, IEffectDescriptor, IHasBuildQue
 		if (order.chore != null || order.underway)
 		{
 			buildStorage.Transfer(inStorage, true, true);
+			if (!duplicantOperated)
+			{
+				orderProgress = 0f;
+			}
+			else
+			{
+				workable.ResetWorkTime();
+			}
 		}
 	}
 
@@ -745,7 +712,7 @@ public class ComplexFabricator : KMonoBehaviour, IEffectDescriptor, IHasBuildQue
 		for (int num = machineOrders.Count - 1; num >= 0; num--)
 		{
 			MachineOrder machineOrder = machineOrders[num];
-			if (machineOrder.parentOrder == order)
+			if (machineOrder.parentOrder.recipe == order.recipe)
 			{
 				CancelMachineOrder(machineOrders[num]);
 			}
@@ -862,70 +829,52 @@ public class ComplexFabricator : KMonoBehaviour, IEffectDescriptor, IHasBuildQue
 		return list;
 	}
 
-	private void CheckWorldInventoryForIngredients(object data)
+	private void PollInventory(object data = null)
 	{
-		ingredientSearchHandle.ClearScheduler();
-		if (userOrders.Count != 0)
+		bool flag = false;
+		for (int i = 0; i < Mathf.Min(3, GetTotalQueuedCount()); i++)
 		{
-			for (int i = 0; i < userOrders.Count; i++)
+			int index = (currentOrderIdx + i) % userOrders.Count;
+			UserOrder userOrder = userOrders[index];
+			bool flag2 = false;
+			foreach (MachineOrder machineOrder in machineOrders)
 			{
-				UserOrder userOrder = userOrders[(i + currentOrderIdx) % userOrders.Count];
-				bool flag = true;
-				ComplexRecipe.RecipeElement[] ingredients = userOrder.recipe.ingredients;
-				foreach (ComplexRecipe.RecipeElement recipeElement in ingredients)
+				if (machineOrder.parentOrder.recipe == userOrder.recipe)
 				{
-					if (WorldInventory.Instance.GetAmount(recipeElement.material) < recipeElement.amount)
-					{
-						flag = false;
-						break;
-					}
-				}
-				if (flag)
-				{
-					SetCurrentUserOrderByIndex((i + currentOrderIdx) % userOrders.Count);
-					return;
+					flag2 = true;
+					break;
 				}
 			}
-			ingredientSearchHandle = GameScheduler.Instance.Schedule("Idle ComplexFabricator look for ingredients", 4f, CheckWorldInventoryForIngredients, null, null);
+			if (!flag2 && userOrder.CheckMaterialRequirements(WorldInventory.Instance, inStorage))
+			{
+				flag = true;
+				break;
+			}
+		}
+		StopCheckWorldInventory();
+		if (flag)
+		{
+			UpdateMachineOrders(false);
+		}
+		else
+		{
+			ScheduleCheckWorldInventory();
 		}
 	}
 
-	private void UpdateMissingIngredientStatusItems()
+	private void ScheduleCheckWorldInventory()
 	{
-		KSelectable component = base.gameObject.GetComponent<KSelectable>();
-		for (int num = missingIngredientStatusItems.Count - 1; num >= 0; num--)
+		if (!ingredientSearchHandle.IsValid)
 		{
-			component.RemoveStatusItem(missingIngredientStatusItems[num], true);
+			ingredientSearchHandle = GameScheduler.Instance.Schedule("Idle ComplexFabricator look for ingredients", 4f, PollInventory, null, null);
 		}
-		List<ComplexRecipe> list = new List<ComplexRecipe>();
-		list.Clear();
-		foreach (UserOrder userOrder in userOrders)
+	}
+
+	private void StopCheckWorldInventory()
+	{
+		if (ingredientSearchHandle.IsValid)
 		{
-			if (!list.Contains(userOrder.recipe) && recipeQueueCounts[userOrder.recipe.id] != 0)
-			{
-				ComplexRecipe.RecipeElement[] ingredients = userOrder.recipe.ingredients;
-				foreach (ComplexRecipe.RecipeElement recipeElement in ingredients)
-				{
-					if (WorldInventory.Instance.GetAmount(recipeElement.material) < recipeElement.amount && buildStorage.GetAmountAvailable(recipeElement.material) < recipeElement.amount && inStorage.GetAmountAvailable(recipeElement.material) < recipeElement.amount)
-					{
-						list.Add(userOrder.recipe);
-						break;
-					}
-				}
-			}
-		}
-		foreach (ComplexRecipe item in list)
-		{
-			Dictionary<Tag, float> dictionary = new Dictionary<Tag, float>();
-			ComplexRecipe.RecipeElement[] ingredients2 = item.ingredients;
-			foreach (ComplexRecipe.RecipeElement recipeElement2 in ingredients2)
-			{
-				if (WorldInventory.Instance.GetAmount(recipeElement2.material) < recipeElement2.amount && buildStorage.GetAmountAvailable(recipeElement2.material) < recipeElement2.amount && inStorage.GetAmountAvailable(recipeElement2.material) < recipeElement2.amount)
-				{
-					dictionary.Add(recipeElement2.material, recipeElement2.amount);
-				}
-			}
-			missingIngredientStatusItems.Add(component.AddStatusItem(Db.Get().BuildingStatusItems.MaterialsUnavailable, dictionary));
+			ingredientSearchHandle.ClearScheduler();
 		}
 	}
 
@@ -937,26 +886,7 @@ public class ComplexFabricator : KMonoBehaviour, IEffectDescriptor, IHasBuildQue
 		}
 		else
 		{
-			currentOrderIdx = userOrders.IndexOf(nextMachineOrder.parentOrder);
-		}
-	}
-
-	public void SetCurrentUserOrderByIndex(int userOrderIndex)
-	{
-		if (userOrderIndex >= userOrders.Count)
-		{
-			Debug.LogError("User order index is out of range: " + userOrderIndex + " / " + userOrders.Count, null);
-		}
-		if (currentOrderIdx != userOrderIndex)
-		{
-			buildStorage.Transfer(inStorage, true, true);
-			SetOperationalInactive();
-			currentOrderIdx = userOrderIndex;
-			UpdateOrderQueue(false);
-			if (duplicantOperated)
-			{
-				workable.ResetWorkTime();
-			}
+			currentOrderIdx = GetUserOrderIndex(nextMachineOrder.parentOrder);
 		}
 	}
 
@@ -984,8 +914,6 @@ public class ComplexFabricator : KMonoBehaviour, IEffectDescriptor, IHasBuildQue
 	{
 		GetComponent<Operational>().SetActive(true, false);
 		ShowProgressBar(true);
-		SetCurrentUserOrderByMachineOrder(machineOrders[0]);
-		UpdateOrderQueue(false);
 	}
 
 	public void ShowProgressBar(bool show)
@@ -1009,36 +937,7 @@ public class ComplexFabricator : KMonoBehaviour, IEffectDescriptor, IHasBuildQue
 
 	private void OnFetchComplete()
 	{
-		UpdateOrderQueue(false);
-	}
-
-	public virtual void CancelUserOrder(int idx)
-	{
-		if (currentOrderIdx == idx)
-		{
-			buildStorage.Transfer(inStorage, true, true);
-			if (duplicantOperated)
-			{
-				workable.ResetWorkTime();
-			}
-			else
-			{
-				orderProgress = 0f;
-				SetOperationalInactive();
-			}
-		}
-		else if (idx < currentOrderIdx)
-		{
-			currentOrderIdx--;
-		}
-		UserOrder order = userOrders[idx];
-		CancelMachineOrdersByUserOrder(order);
-		userOrders.RemoveAt(idx);
-		if (userOrders.Count == 0)
-		{
-			CancelAllMachineOrders();
-		}
-		UpdateOrderQueue(false);
+		UpdateMachineOrders(false);
 	}
 
 	private bool CanFabricate(UserOrder order, Storage storage)
@@ -1096,32 +995,36 @@ public class ComplexFabricator : KMonoBehaviour, IEffectDescriptor, IHasBuildQue
 				SpawnOrderProduct(machineOrders[0].parentOrder);
 				buildStorage.Transfer(outStorage, true, true);
 				OnMachineOrderCancelledOrComplete(machineOrders[0]);
-				int num = userOrders.IndexOf(machineOrders[0].parentOrder);
+				int userOrderIndex = GetUserOrderIndex(machineOrders[0].parentOrder);
 				machineOrders.RemoveAt(0);
-				DecrementRecipeQueueCount(userOrders[num].recipe, true);
-				if (clearUserOrderOnComplete)
-				{
-					CancelUserOrder(num);
-				}
+				DecrementRecipeQueueCount(userOrders[userOrderIndex].recipe, true);
 				SetCurrentUserOrderByMachineOrder((machineOrders.Count <= 0) ? null : machineOrders[0]);
-				UpdateOrderQueue(false);
+				UpdateMachineOrders(false);
 				ShowProgressBar(false);
 			}
 		}
 	}
 
+	private int GetUserOrderIndex(UserOrder order)
+	{
+		for (int i = 0; i < userOrders.Count; i++)
+		{
+			if (userOrders[i].recipe == order.recipe)
+			{
+				return i;
+			}
+		}
+		Debug.LogError("Could not find user order index", null);
+		return -1;
+	}
+
 	private void OnDroppedAll(object data)
 	{
-		UpdateOrderQueue(false);
 	}
 
 	private void OnOperationalChanged(object data)
 	{
-		if ((bool)data)
-		{
-			UpdateOrderQueue(false);
-		}
-		else if (userOrders.Count > 0)
+		if (!(bool)data && userOrders.Count > 0)
 		{
 			CancelAllMachineOrders();
 		}
@@ -1130,5 +1033,16 @@ public class ComplexFabricator : KMonoBehaviour, IEffectDescriptor, IHasBuildQue
 	public virtual List<Descriptor> AdditionalEffectsForRecipe(ComplexRecipe recipe)
 	{
 		return new List<Descriptor>();
+	}
+
+	public string GetConversationTopic()
+	{
+		if (machineOrders.Count <= 0)
+		{
+			return null;
+		}
+		UserOrder parentOrder = machineOrders[0].parentOrder;
+		ComplexRecipe recipe = parentOrder.recipe;
+		return recipe.results[0].material.Name;
 	}
 }

@@ -114,6 +114,8 @@ public class Components
 
 	public static Cmps<StoredMinionIdentity> StoredMinionIdentities = new Cmps<StoredMinionIdentity>();
 
+	public static Cmps<MinionStorage> MinionStorages = new Cmps<MinionStorage>();
+
 	public static Cmps<Sleepable> Sleepables = new Cmps<Sleepable>();
 
 	public static Cmps<IUsable> Toilets = new Cmps<IUsable>();

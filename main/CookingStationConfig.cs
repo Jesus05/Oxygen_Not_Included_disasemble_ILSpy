@@ -34,6 +34,7 @@ public class CookingStationConfig : IBuildingConfig
 	{
 		go.AddOrGet<BuildingComplete>().isManuallyOperated = true;
 		CookingStation cookingStation = go.AddOrGet<CookingStation>();
+		go.AddOrGet<FabricatorIngredientStatusManager>();
 		go.AddOrGet<ComplexFabricatorWorkable>().overrideAnims = new KAnimFile[1]
 		{
 			Assets.GetAnim("anim_interacts_cookstation_kanim")

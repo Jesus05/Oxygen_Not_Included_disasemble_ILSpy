@@ -100,6 +100,7 @@ public class MinionModifiers : Modifiers, ISaveLoadable
 
 	private void OnDeath(object data)
 	{
+		Debug.LogFormat("OnDeath {0}", data);
 		foreach (MinionIdentity item in Components.LiveMinionIdentities.Items)
 		{
 			item.GetComponent<Effects>().Add("Mourning", true);

@@ -28,7 +28,7 @@ public class CactusPlantConfig : IEntityConfig
 			SimHashes.ContaminatedOxygen,
 			SimHashes.CarbonDioxide
 		};
-		EntityTemplates.ExtendEntityToBasicPlant(template, 200f, 250f, 350f, 400f, safe_elements, false, 0f, 0.15f, null, true, false);
+		EntityTemplates.ExtendEntityToBasicPlant(template, 200f, 273.15f, 373.15f, 400f, safe_elements, false, 0f, 0.15f, null, true, false);
 		gameObject.AddOrGet<PrickleGrass>();
 		template = gameObject;
 		SeedProducer.ProductionType productionType = SeedProducer.ProductionType.Hidden;

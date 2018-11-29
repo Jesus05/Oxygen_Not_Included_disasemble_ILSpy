@@ -439,7 +439,7 @@ public class ComplexFabricatorSideScreen : SideScreenContent
 		ComplexRecipe.RecipeElement[] ingredients = recipe.ingredients;
 		foreach (ComplexRecipe.RecipeElement recipeElement in ingredients)
 		{
-			if (WorldInventory.Instance.GetAmount(recipeElement.material) < recipeElement.amount)
+			if (WorldInventory.Instance.GetAmount(recipeElement.material) + targetFab.inStorage.GetAmountAvailable(recipeElement.material) + targetFab.buildStorage.GetAmountAvailable(recipeElement.material) < recipeElement.amount)
 			{
 				result = false;
 			}
@@ -496,18 +496,6 @@ public class ComplexFabricatorSideScreen : SideScreenContent
 			}
 		}
 		return list;
-	}
-
-	private void CreateOrder(bool isInfinite)
-	{
-		if (selectedRecipe == null)
-		{
-			Debug.LogError("Cannot create an order for a null recipe", null);
-		}
-		else
-		{
-			targetFab.CreateUserOrder(selectedRecipe, isInfinite, createOrderSound);
-		}
 	}
 
 	private Element[] GetRecipeElements(Recipe recipe)

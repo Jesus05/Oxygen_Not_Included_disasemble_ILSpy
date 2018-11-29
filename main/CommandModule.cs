@@ -1,3 +1,4 @@
+using Klei.AI;
 using KSerialization;
 using System.Collections.Generic;
 using UnityEngine;
@@ -25,17 +26,39 @@ public class CommandModule : StateMachineComponent<CommandModule.StatesInstance>
 				component2.Pause(suspended, "Rocket is suspended");
 			}
 		}
+
+		public bool CheckStoredMinionIsAssignee()
+		{
+			foreach (MinionStorage.Info item in GetComponent<MinionStorage>().GetStoredMinionInfo())
+			{
+				MinionStorage.Info current = item;
+				if (current.serializedMinion != null)
+				{
+					KPrefabID kPrefabID = current.serializedMinion.Get();
+					if (!((Object)kPrefabID == (Object)null))
+					{
+						IAssignableIdentity component = kPrefabID.GetComponent<IAssignableIdentity>();
+						Assignable component2 = GetComponent<Assignable>();
+						if (component2.assignee == component)
+						{
+							return true;
+						}
+					}
+				}
+			}
+			return false;
+		}
 	}
 
 	public class States : GameStateMachine<States, StatesInstance, CommandModule>
 	{
 		public class GroundedStates : State
 		{
-			public State idle;
-
 			public State awaitingAstronaut;
 
 			public State hasAstronaut;
+
+			public State waitingToRelease;
 		}
 
 		public class SpaceborneStates : State
@@ -47,21 +70,44 @@ public class CommandModule : StateMachineComponent<CommandModule.StatesInstance>
 			public State land;
 		}
 
+		public Signal gantryChanged;
+
+		public BoolParameter accumulatedPee;
+
 		public GroundedStates grounded;
 
 		public SpaceborneStates spaceborne;
 
 		public override void InitializeStates(out BaseState default_state)
 		{
-			default_state = grounded.idle;
-			grounded.DefaultState(grounded.idle).TagTransition(GameTags.RocketNotOnGround, spaceborne, false);
-			grounded.idle.PlayAnim("grounded", KAnim.PlayMode.Loop).GoTo(grounded.awaitingAstronaut);
-			grounded.awaitingAstronaut.PlayAnim("grounded", KAnim.PlayMode.Loop).EnterTransition(grounded.hasAstronaut, (StatesInstance smi) => smi.GetComponent<MinionStorage>().GetStoredMinionInfo().Count > 0).ToggleChore((StatesInstance smi) => smi.master.CreateWorkChore(), grounded.hasAstronaut);
-			grounded.hasAstronaut.PlayAnim("grounded", KAnim.PlayMode.Loop).EventHandler(GameHashes.AssigneeChanged, delegate(StatesInstance smi)
+			default_state = grounded;
+			grounded.PlayAnim("grounded", KAnim.PlayMode.Loop).DefaultState(grounded.awaitingAstronaut).TagTransition(GameTags.RocketNotOnGround, spaceborne, false);
+			grounded.awaitingAstronaut.EventHandler(GameHashes.AssigneeChanged, delegate(StatesInstance smi)
 			{
-				smi.master.ReleaseAstronaut();
+				if (smi.CheckStoredMinionIsAssignee())
+				{
+					smi.GoTo(grounded.hasAstronaut);
+				}
 				Game.Instance.userMenu.Refresh(smi.gameObject);
-			}).EventTransition(GameHashes.AssigneeChanged, grounded.idle, null);
+			}).ToggleChore((StatesInstance smi) => smi.master.CreateWorkChore(), grounded.hasAstronaut);
+			grounded.hasAstronaut.EventHandler(GameHashes.AssigneeChanged, delegate(StatesInstance smi)
+			{
+				if (!smi.CheckStoredMinionIsAssignee())
+				{
+					smi.GoTo(grounded.waitingToRelease);
+				}
+			});
+			grounded.waitingToRelease.ToggleStatusItem(Db.Get().BuildingStatusItems.DisembarkingDuplicant, (object)null).OnSignal(gantryChanged, grounded.awaitingAstronaut, delegate(StatesInstance smi)
+			{
+				if (!HasValidGantry(smi.gameObject))
+				{
+					return false;
+				}
+				smi.master.ReleaseAstronaut(accumulatedPee.Get(smi));
+				accumulatedPee.Set(false, smi);
+				Game.Instance.userMenu.Refresh(smi.gameObject);
+				return true;
+			});
 			spaceborne.DefaultState(spaceborne.launch);
 			spaceborne.launch.Enter(delegate(StatesInstance smi)
 			{
@@ -71,9 +117,9 @@ public class CommandModule : StateMachineComponent<CommandModule.StatesInstance>
 			spaceborne.land.Enter(delegate(StatesInstance smi)
 			{
 				smi.SetSuspended(false);
-				smi.master.ReleaseAstronaut();
 				Game.Instance.userMenu.Refresh(smi.gameObject);
-			}).GoTo(grounded);
+				accumulatedPee.Set(true, smi);
+			}).GoTo(grounded.waitingToRelease);
 		}
 	}
 
@@ -109,7 +155,7 @@ public class CommandModule : StateMachineComponent<CommandModule.StatesInstance>
 		rocketStats = new RocketStats(this);
 	}
 
-	public void ReleaseAstronaut()
+	public void ReleaseAstronaut(bool fill_bladder)
 	{
 		if (!releasingAstronaut)
 		{
@@ -120,9 +166,20 @@ public class CommandModule : StateMachineComponent<CommandModule.StatesInstance>
 			{
 				MinionStorage.Info info = storedMinionInfo[num];
 				GameObject gameObject = component.DeserializeMinion(info.id, Grid.CellToPos(Grid.PosToCell(base.smi.master.transform.GetPosition())));
-				if (Grid.FakeFloor[Grid.OffsetCell(Grid.PosToCell(base.smi.master.gameObject), 0, -1)])
+				if (!((Object)gameObject == (Object)null))
 				{
-					gameObject.GetComponent<Navigator>().SetCurrentNavType(NavType.Floor);
+					if (Grid.FakeFloor[Grid.OffsetCell(Grid.PosToCell(base.smi.master.gameObject), 0, -1)])
+					{
+						gameObject.GetComponent<Navigator>().SetCurrentNavType(NavType.Floor);
+					}
+					if (fill_bladder)
+					{
+						AmountInstance amountInstance = Db.Get().Amounts.Bladder.Lookup(gameObject);
+						if (amountInstance != null)
+						{
+							amountInstance.value = amountInstance.GetMax();
+						}
+					}
 				}
 			}
 			releasingAstronaut = false;
@@ -158,6 +215,11 @@ public class CommandModule : StateMachineComponent<CommandModule.StatesInstance>
 		flightPathIsClear = (ConditionFlightPathIsClear)component.AddFlightCondition(new ConditionFlightPathIsClear(base.gameObject, 1));
 	}
 
+	private static bool HasValidGantry(GameObject go)
+	{
+		return Grid.FakeFloor[Grid.OffsetCell(Grid.PosToCell(go), 0, -1)];
+	}
+
 	private void OnGantryChanged(object data)
 	{
 		if ((Object)base.gameObject != (Object)null)
@@ -165,7 +227,7 @@ public class CommandModule : StateMachineComponent<CommandModule.StatesInstance>
 			KSelectable component = GetComponent<KSelectable>();
 			component.RemoveStatusItem(Db.Get().BuildingStatusItems.HasGantry, false);
 			component.RemoveStatusItem(Db.Get().BuildingStatusItems.MissingGantry, false);
-			if (Grid.FakeFloor[Grid.OffsetCell(Grid.PosToCell(base.smi.master.gameObject), 0, -1)])
+			if (HasValidGantry(base.smi.master.gameObject))
 			{
 				component.AddStatusItem(Db.Get().BuildingStatusItems.HasGantry, null);
 			}
@@ -173,6 +235,7 @@ public class CommandModule : StateMachineComponent<CommandModule.StatesInstance>
 			{
 				component.AddStatusItem(Db.Get().BuildingStatusItems.MissingGantry, null);
 			}
+			base.smi.sm.gantryChanged.Trigger(base.smi);
 		}
 	}
 
@@ -190,7 +253,7 @@ public class CommandModule : StateMachineComponent<CommandModule.StatesInstance>
 	{
 		GameScenePartitioner.Instance.Free(ref partitionerEntry);
 		partitionerEntry.Clear();
-		ReleaseAstronaut();
+		ReleaseAstronaut(false);
 		base.smi.StopSM("cleanup");
 	}
 

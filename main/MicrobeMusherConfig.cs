@@ -40,6 +40,7 @@ public class MicrobeMusherConfig : IBuildingConfig
 		conduitConsumer.conduitType = ConduitType.Liquid;
 		MicrobeMusher microbeMusher = go.AddOrGet<MicrobeMusher>();
 		microbeMusher.mushbarSpawnOffset = new Vector3(1f, 0f, 0f);
+		go.AddOrGet<FabricatorIngredientStatusManager>();
 		go.AddOrGet<ComplexFabricatorWorkable>().overrideAnims = new KAnimFile[1]
 		{
 			Assets.GetAnim("anim_interacts_musher_kanim")

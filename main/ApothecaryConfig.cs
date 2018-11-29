@@ -37,6 +37,7 @@ public class ApothecaryConfig : IBuildingConfig
 		Prioritizable.AddRef(go);
 		go.AddOrGet<BuildingComplete>().isManuallyOperated = true;
 		ComplexFabricator complexFabricator = go.AddOrGet<ComplexFabricator>();
+		go.AddOrGet<FabricatorIngredientStatusManager>();
 		go.AddOrGet<ComplexFabricatorWorkable>().overrideAnims = new KAnimFile[1]
 		{
 			Assets.GetAnim("anim_interacts_apothecary_kanim")

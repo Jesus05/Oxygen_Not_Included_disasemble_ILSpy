@@ -207,6 +207,11 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms
 		component.OnOperationalChanged(data);
 	});
 
+	private static readonly EventSystem.IntraObjectHandler<ComplexFabricator> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<ComplexFabricator>(delegate(ComplexFabricator component, object data)
+	{
+		component.OnCopySettings(data);
+	});
+
 	public int MAX_NUM_ORDERS => GetRecipes().Length;
 
 	public ComplexFabricatorWorkable GetWorkable
@@ -274,6 +279,33 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms
 		RefreshUserOrdersFromQueueCounts();
 		buildStorage.Transfer(inStorage, true, true);
 		UpdateMachineOrders(true);
+		Subscribe(-905833192, OnCopySettingsDelegate);
+	}
+
+	private void OnCopySettings(object data)
+	{
+		GameObject gameObject = (GameObject)data;
+		if (!((UnityEngine.Object)gameObject == (UnityEngine.Object)null))
+		{
+			ComplexFabricator component = gameObject.GetComponent<ComplexFabricator>();
+			if (!((UnityEngine.Object)component == (UnityEngine.Object)null))
+			{
+				string[] array = recipeQueueCounts.Keys.ToArray();
+				foreach (string key in array)
+				{
+					if (component.recipeQueueCounts.ContainsKey(key))
+					{
+						recipeQueueCounts[key] = component.recipeQueueCounts[key];
+					}
+					else
+					{
+						recipeQueueCounts[key] = 0;
+					}
+				}
+				RefreshUserOrdersFromQueueCounts();
+				UpdateMachineOrders(true);
+			}
+		}
 	}
 
 	protected override void OnCleanUp()
@@ -356,21 +388,13 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms
 
 	public List<T> ShiftListLeft<T>(List<T> list, int shiftBy)
 	{
-		try
+		if (list.Count > shiftBy)
 		{
-			if (list.Count > shiftBy)
-			{
-				List<T> range = list.GetRange(shiftBy, list.Count - shiftBy);
-				range.AddRange((IEnumerable<T>)list.GetRange(0, shiftBy));
-				return range;
-			}
-			return list;
+			List<T> range = list.GetRange(shiftBy, list.Count - shiftBy);
+			range.AddRange((IEnumerable<T>)list.GetRange(0, shiftBy));
+			return range;
 		}
-		catch
-		{
-			Debug.Log("!", null);
-			return null;
-		}
+		return list;
 	}
 
 	public int GetRecipeQueueCount(ComplexRecipe recipe)
@@ -409,10 +433,13 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms
 	{
 		bool flag = false;
 		UserOrder userOrder = userOrders.Find((UserOrder match) => match.recipe == recipe);
-		if (userOrder != null && GetUserOrderIndex(userOrder) == currentOrderIdx && GetRecipeQueueCount(recipe) == 1)
+		if (userOrder != null && GetRecipeQueueCount(recipe) == 1)
 		{
+			if (GetUserOrderIndex(userOrder) == currentOrderIdx)
+			{
+				flag = true;
+			}
 			CancelMachineOrdersByUserOrder(userOrder);
-			flag = true;
 		}
 		if (!respectInfinite || recipeQueueCounts[recipe.id] != QUEUE_INFINITE_COUNT)
 		{
@@ -472,6 +499,19 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms
 		return list;
 	}
 
+	private bool CheckIngredientsInStorage(ComplexRecipe recipe)
+	{
+		ComplexRecipe.RecipeElement[] ingredients = recipe.ingredients;
+		foreach (ComplexRecipe.RecipeElement recipeElement in ingredients)
+		{
+			if (inStorage.GetAmountAvailable(recipeElement.material) < recipeElement.amount)
+			{
+				return false;
+			}
+		}
+		return true;
+	}
+
 	private void ClearInvalidMachineOrders(List<UserOrder> nextMachineOrderSources)
 	{
 		int num = -1;
@@ -528,18 +568,23 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms
 			RefreshMachineOrderList();
 			if (machineOrders.Count > 0)
 			{
-				if (((duplicantOperated && machineOrders[0].chore == null) || (!duplicantOperated && !machineOrders[0].underway)) && HasIngredients(machineOrders[0], inStorage))
+				if (!machineOrders[0].underway && machineOrders[0].parentOrder.CheckMaterialRequirements(WorldInventory.Instance, inStorage))
 				{
-					TransferCurrentRecipeIngredientsForBuild();
 					if (duplicantOperated)
 					{
-						workable.CreateOrder(machineOrders[0], choreType, choreTags);
 						machineOrders[0].underway = true;
 					}
-					else if (!operational.IsActive && !machineOrders[0].underway)
+					else if (!operational.IsActive && !machineOrders[0].underway && CheckIngredientsInStorage(machineOrders[0].parentOrder.recipe))
 					{
+						TransferCurrentRecipeIngredientsForBuild();
 						machineOrders[0].underway = true;
 					}
+				}
+				if (duplicantOperated && machineOrders[0].underway && machineOrders[0].chore == null && CheckIngredientsInStorage(machineOrders[0].parentOrder.recipe))
+				{
+					TransferCurrentRecipeIngredientsForBuild();
+					workable.CreateOrder(machineOrders[0], choreType, choreTags);
+					workable.ResetWorkTime();
 				}
 				Dictionary<Tag, float> dictionary = new Dictionary<Tag, float>();
 				for (int i = 0; i < machineOrders.Count; i++)
@@ -561,7 +606,7 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms
 				for (int k = 0; k < machineOrders.Count; k++)
 				{
 					MachineOrder machineOrder2 = machineOrders[k];
-					if (machineOrder2.chore == null && !machineOrder2.underway)
+					if (machineOrder2.chore == null && (!machineOrder2.underway || duplicantOperated))
 					{
 						UserOrder parentOrder2 = machineOrder2.parentOrder;
 						ComplexRecipe.RecipeElement[] ingredients2 = parentOrder2.recipe.ingredients;
@@ -656,7 +701,8 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms
 		ComplexRecipe.RecipeElement[] array = ingredients;
 		foreach (ComplexRecipe.RecipeElement recipeElement in array)
 		{
-			if (storage.GetMassAvailable(recipeElement.material) < recipeElement.amount)
+			float massAvailable = storage.GetMassAvailable(recipeElement.material);
+			if (massAvailable < recipeElement.amount)
 			{
 				result = false;
 				break;
@@ -692,17 +738,11 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms
 		OnMachineOrderCancelledOrComplete(order);
 		order.Cancel();
 		machineOrders.Remove(order);
-		if (order.chore != null || order.underway)
+		if (!duplicantOperated && order.underway)
 		{
 			buildStorage.Transfer(inStorage, true, true);
-			if (!duplicantOperated)
-			{
-				orderProgress = 0f;
-			}
-			else
-			{
-				workable.ResetWorkTime();
-			}
+			SetOperationalInactive();
+			orderProgress = 0f;
 		}
 	}
 
@@ -742,10 +782,31 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms
 	protected virtual List<GameObject> SpawnOrderProduct(UserOrder completed_order)
 	{
 		List<GameObject> list = new List<GameObject>();
-		ComplexRecipe.RecipeElement[] results = completed_order.recipe.results;
-		foreach (ComplexRecipe.RecipeElement recipeElement in results)
+		SimUtil.DiseaseInfo diseaseInfo = default(SimUtil.DiseaseInfo);
+		diseaseInfo.count = 0;
+		diseaseInfo.idx = 0;
+		float num = 0f;
+		float num2 = 0f;
+		ComplexRecipe.RecipeElement[] ingredients = completed_order.recipe.ingredients;
+		foreach (ComplexRecipe.RecipeElement recipeElement in ingredients)
 		{
-			GameObject gameObject = buildStorage.FindFirst(recipeElement.material);
+			num2 += recipeElement.amount;
+		}
+		ComplexRecipe.RecipeElement[] ingredients2 = completed_order.recipe.ingredients;
+		foreach (ComplexRecipe.RecipeElement recipeElement2 in ingredients2)
+		{
+			float num3 = recipeElement2.amount / num2;
+			buildStorage.ConsumeAndGetDisease(recipeElement2.material, recipeElement2.amount, out SimUtil.DiseaseInfo disease_info, out float aggregate_temperature);
+			if (disease_info.count > diseaseInfo.count)
+			{
+				diseaseInfo = disease_info;
+			}
+			num += aggregate_temperature * num3;
+		}
+		ComplexRecipe.RecipeElement[] results = completed_order.recipe.results;
+		foreach (ComplexRecipe.RecipeElement recipeElement3 in results)
+		{
+			GameObject gameObject = buildStorage.FindFirst(recipeElement3.material);
 			if ((UnityEngine.Object)gameObject != (UnityEngine.Object)null)
 			{
 				Edible component = gameObject.GetComponent<Edible>();
@@ -754,41 +815,20 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms
 					ReportManager.Instance.ReportValue(ReportManager.ReportType.CaloriesCreated, 0f - component.Calories, StringFormatter.Replace(UI.ENDOFDAYREPORT.NOTES.CRAFTED_USED, "{0}", component.GetProperName()), UI.ENDOFDAYREPORT.NOTES.CRAFTED_CONTEXT);
 				}
 			}
-			SimUtil.DiseaseInfo diseaseInfo = default(SimUtil.DiseaseInfo);
-			diseaseInfo.count = 0;
-			diseaseInfo.idx = 0;
-			float num = 0f;
-			float num2 = 0f;
-			ComplexRecipe.RecipeElement[] ingredients = completed_order.recipe.ingredients;
-			foreach (ComplexRecipe.RecipeElement recipeElement2 in ingredients)
-			{
-				num2 += recipeElement2.amount;
-			}
-			ComplexRecipe.RecipeElement[] ingredients2 = completed_order.recipe.ingredients;
-			foreach (ComplexRecipe.RecipeElement recipeElement3 in ingredients2)
-			{
-				float num3 = recipeElement3.amount / num2;
-				buildStorage.ConsumeAndGetDisease(recipeElement3.material, recipeElement3.amount, out SimUtil.DiseaseInfo disease_info, out float aggregate_temperature);
-				if (disease_info.count > diseaseInfo.count)
-				{
-					diseaseInfo = disease_info;
-				}
-				num += aggregate_temperature * num3;
-			}
 			switch (resultState)
 			{
 			case ResultState.Normal:
 			case ResultState.Hot:
 			{
-				GameObject prefab = Assets.GetPrefab(recipeElement.material);
+				GameObject prefab = Assets.GetPrefab(recipeElement3.material);
 				GameObject gameObject2 = GameUtil.KInstantiate(prefab, Grid.SceneLayer.Ore, null, 0);
 				int cell = Grid.PosToCell(this);
 				gameObject2.transform.SetPosition(Grid.CellToPosCCC(cell, Grid.SceneLayer.Ore) + outputOffset);
 				PrimaryElement component2 = gameObject2.GetComponent<PrimaryElement>();
-				component2.Units = recipeElement.amount;
+				component2.Units = recipeElement3.amount;
 				component2.Temperature = num;
 				gameObject2.SetActive(true);
-				float num4 = recipeElement.amount / completed_order.recipe.TotalResultUnits();
+				float num4 = recipeElement3.amount / completed_order.recipe.TotalResultUnits();
 				component2.AddDisease(diseaseInfo.idx, Mathf.RoundToInt((float)diseaseInfo.count * num4), "ComplexFabricator.CompleteOrder");
 				gameObject2.GetComponent<KMonoBehaviour>().Trigger(748399584, null);
 				list.Add(gameObject2);
@@ -801,8 +841,8 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms
 			case ResultState.Melted:
 				if (storeProduced)
 				{
-					float temperature = ElementLoader.GetElement(recipeElement.material).lowTemp + (ElementLoader.GetElement(recipeElement.material).highTemp - ElementLoader.GetElement(recipeElement.material).lowTemp) / 2f;
-					outStorage.AddLiquid(ElementLoader.GetElementID(recipeElement.material), recipeElement.amount, temperature, 0, 0, false, true);
+					float temperature = ElementLoader.GetElement(recipeElement3.material).lowTemp + (ElementLoader.GetElement(recipeElement3.material).highTemp - ElementLoader.GetElement(recipeElement3.material).lowTemp) / 2f;
+					outStorage.AddLiquid(ElementLoader.GetElementID(recipeElement3.material), recipeElement3.amount, temperature, 0, 0, false, true);
 				}
 				break;
 			}

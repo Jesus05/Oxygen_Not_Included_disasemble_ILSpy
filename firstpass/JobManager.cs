@@ -1,6 +1,7 @@
 #define ENABLE_PROFILER
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using UnityEngine;
@@ -55,6 +56,7 @@ public class JobManager
 				{
 					exceptions.Add(item);
 					errorOccured = true;
+					Debugger.Break();
 				}
 				jobManager.DecrementActiveWorkerThreadCount();
 			}

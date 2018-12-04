@@ -628,9 +628,9 @@ public class Storage : Workable, ISaveLoadableDetails, IEffectDescriptor
 
 	public void ConsumeAllIgnoringDisease()
 	{
-		while (items.Count > 0)
+		for (int num = items.Count - 1; num >= 0; num--)
 		{
-			ConsumeIgnoringDisease(items[0]);
+			ConsumeIgnoringDisease(items[num]);
 		}
 	}
 

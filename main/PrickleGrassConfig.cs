@@ -8,6 +8,12 @@ public class PrickleGrassConfig : IEntityConfig
 
 	public const string SEED_ID = "PrickleGrassSeed";
 
+	public readonly EffectorValues DECOR_EFFECT = new EffectorValues
+	{
+		amount = 1,
+		radius = 5
+	};
+
 	public GameObject CreatePrefab()
 	{
 		string id = "PrickleGrass";
@@ -16,11 +22,8 @@ public class PrickleGrassConfig : IEntityConfig
 		float mass = 1f;
 		KAnimFile anim = Assets.GetAnim("bristlebriar_kanim");
 		string initialAnim = "grow_seed";
-		EffectorValues effectorValues = default(EffectorValues);
-		effectorValues.amount = 1;
-		effectorValues.radius = 5;
-		EffectorValues decor = effectorValues;
-		GameObject gameObject = EntityTemplates.CreatePlacedEntity(id, name, desc, mass, anim, initialAnim, Grid.SceneLayer.BuildingFront, 1, 1, decor, default(EffectorValues), SimHashes.Creature, null, 293f);
+		EffectorValues dECOR_EFFECT = DECOR_EFFECT;
+		GameObject gameObject = EntityTemplates.CreatePlacedEntity(id, name, desc, mass, anim, initialAnim, Grid.SceneLayer.BuildingFront, 1, 1, dECOR_EFFECT, default(EffectorValues), SimHashes.Creature, null, 293f);
 		GameObject template = gameObject;
 		SimHashes[] safe_elements = new SimHashes[3]
 		{
@@ -29,7 +32,8 @@ public class PrickleGrassConfig : IEntityConfig
 			SimHashes.CarbonDioxide
 		};
 		EntityTemplates.ExtendEntityToBasicPlant(template, 218.15f, 283.15f, 303.15f, 398.15f, safe_elements, true, 0f, 0.15f, null, true, false);
-		gameObject.AddOrGet<PrickleGrass>();
+		PrickleGrass prickleGrass = gameObject.AddOrGet<PrickleGrass>();
+		prickleGrass.positive_decor_effect = DECOR_EFFECT;
 		template = gameObject;
 		SeedProducer.ProductionType productionType = SeedProducer.ProductionType.Hidden;
 		initialAnim = "PrickleGrassSeed";

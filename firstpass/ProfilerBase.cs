@@ -145,9 +145,9 @@ public class ProfilerBase
 	{
 		if (!threads.TryGetValue(System.Threading.Thread.CurrentThread.ManagedThreadId, out Thread value))
 		{
+			value = new Thread(System.Threading.Thread.CurrentThread.ManagedThreadId);
 			lock (this)
 			{
-				value = new Thread(System.Threading.Thread.CurrentThread.ManagedThreadId);
 				threads.Add(System.Threading.Thread.CurrentThread.ManagedThreadId, value);
 			}
 		}

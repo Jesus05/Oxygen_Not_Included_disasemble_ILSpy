@@ -4786,6 +4786,13 @@ namespace STRINGS
 				public static LocString DESCRIPTION = "Becoming an artist will vastly improve a Duplicant's creative abilities.";
 			}
 
+			public class MASTER_ARTIST
+			{
+				public static LocString NAME = UI.FormatAsLink("Master Artist", "MASTER_ARTIST");
+
+				public static LocString DESCRIPTION = "Becoming a master artist will vastly improve a Duplicant's creative abilities.";
+			}
+
 			public class JUNIOR_BUILDER
 			{
 				public static LocString NAME = UI.FormatAsLink("Apprentice Architect", "JUNIOR_BUILDER");

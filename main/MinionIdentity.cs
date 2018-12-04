@@ -122,6 +122,7 @@ public class MinionIdentity : KMonoBehaviour, ISaveLoadable, IAssignableIdentity
 
 	protected override void OnSpawn()
 	{
+		CleanupLimboMinions();
 		PathProber component = GetComponent<PathProber>();
 		if ((UnityEngine.Object)component != (UnityEngine.Object)null)
 		{
@@ -173,6 +174,23 @@ public class MinionIdentity : KMonoBehaviour, ISaveLoadable, IAssignableIdentity
 			component5.carryAnimOverride = Assets.GetAnim("anim_incapacitated_carrier_kanim");
 		}
 		ApplyCustomGameSettings();
+	}
+
+	private void CleanupLimboMinions()
+	{
+		KPrefabID component = GetComponent<KPrefabID>();
+		if (component.InstanceID == -1)
+		{
+			Output.LogWarning("Minion with an invalid kpid! Attempting to recover...", name);
+			if ((UnityEngine.Object)KPrefabIDTracker.Get().GetInstance(-1) != (UnityEngine.Object)null)
+			{
+				KPrefabIDTracker.Get().Unregister(component);
+			}
+			component.InstanceID = KPrefabID.GetUniqueID();
+			KPrefabIDTracker.Get().Register(component);
+			assignableProxy.Get().SetTarget(this, base.gameObject);
+			Output.LogWarning("Restored as:", component.InstanceID);
+		}
 	}
 
 	public string GetProperName()

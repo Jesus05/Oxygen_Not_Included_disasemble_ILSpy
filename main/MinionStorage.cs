@@ -150,6 +150,15 @@ public class MinionStorage : KMonoBehaviour
 		dest_id.assignableProxy = new Ref<MinionAssignablesProxy>();
 		dest_id.assignableProxy.Set(src_id.assignableProxy.Get());
 		dest_id.assignableProxy.Get().SetTarget(dest_id, dest_id.gameObject);
+		Equipment equipment = dest_id.GetEquipment();
+		foreach (AssignableSlotInstance slot in equipment.Slots)
+		{
+			Equippable equippable = slot.assignable as Equippable;
+			if ((UnityEngine.Object)equippable != (UnityEngine.Object)null)
+			{
+				equipment.Equip(equippable);
+			}
+		}
 		Schedulable component7 = src_id.GetComponent<Schedulable>();
 		Schedule schedule = component7.GetSchedule();
 		if (schedule != null)

@@ -37,6 +37,7 @@ public class SuitFabricatorConfig : IBuildingConfig
 		ComplexFabricator complexFabricator = go.AddOrGet<ComplexFabricator>();
 		complexFabricator.sideScreenStyle = ComplexFabricatorSideScreen.StyleSetting.ListQueueHybrid;
 		go.AddOrGet<FabricatorIngredientStatusManager>();
+		go.AddOrGet<CopyBuildingSettings>();
 		go.AddOrGet<ComplexFabricatorWorkable>().overrideAnims = new KAnimFile[1]
 		{
 			Assets.GetAnim("anim_interacts_suit_fabricator_kanim")

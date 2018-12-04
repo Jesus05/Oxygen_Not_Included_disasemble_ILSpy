@@ -1,15 +1,15 @@
 using Klei.AI;
 using STRINGS;
 
-public class Artist : RoleConfig
+public class MasterArtist : RoleConfig
 {
-	public static string ID = "Artist";
+	public static string ID = "MasterArtist";
 
-	public Artist()
+	public MasterArtist()
 	{
 		base.id = ID;
-		base.name = DUPLICANTS.ROLES.ARTIST.NAME;
-		base.description = DUPLICANTS.ROLES.ARTIST.DESCRIPTION;
+		base.name = DUPLICANTS.ROLES.MASTER_ARTIST.NAME;
+		base.description = DUPLICANTS.ROLES.MASTER_ARTIST.DESCRIPTION;
 		base.roleGroup = "Art";
 		base.hat = Game.Instance.roleManager.GetHat(ID);
 		relevantAttributes = new Attribute[1]
@@ -19,8 +19,8 @@ public class Artist : RoleConfig
 		base.perks = new RolePerk[3]
 		{
 			RoleManager.rolePerks.CanArt,
-			RoleManager.rolePerks.CanArtOkay,
-			RoleManager.rolePerks.IncreaseArtMedium
+			RoleManager.rolePerks.CanArtGreat,
+			RoleManager.rolePerks.IncreaseArtLarge
 		};
 	}
 
@@ -29,7 +29,7 @@ public class Artist : RoleConfig
 		base.requirements = new RoleAssignmentRequirement[2]
 		{
 			Game.Instance.roleManager.roleAssignmentRequirements.Can_Art,
-			Game.Instance.roleManager.roleAssignmentRequirements.HasExperience_JuniorArtist
+			Game.Instance.roleManager.roleAssignmentRequirements.HasExperience_Artist
 		};
 	}
 }

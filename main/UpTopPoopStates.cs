@@ -1,4 +1,5 @@
 using STRINGS;
+using UnityEngine;
 
 internal class UpTopPoopStates : GameStateMachine<UpTopPoopStates, UpTopPoopStates.Instance, IStateMachineTarget, UpTopPoopStates.Def>
 {
@@ -18,12 +19,22 @@ internal class UpTopPoopStates : GameStateMachine<UpTopPoopStates, UpTopPoopStat
 		{
 			int num = Grid.PosToCell(base.gameObject);
 			int num2 = Grid.OffsetCell(num, 0, 1);
-			while (Grid.IsValidCell(num2) && !Grid.Solid[num2])
+			while (Grid.IsValidCell(num2) && !Grid.Solid[num2] && !IsClosedDoor(num2))
 			{
 				num = num2;
 				num2 = Grid.OffsetCell(num, 0, 1);
 			}
 			return num;
+		}
+
+		public bool IsClosedDoor(int cellAbove)
+		{
+			if (!Grid.HasDoor[cellAbove])
+			{
+				return false;
+			}
+			Door component = Grid.Objects[cellAbove, 1].GetComponent<Door>();
+			return (Object)component != (Object)null && component.CurrentState != Door.ControlState.Opened;
 		}
 	}
 

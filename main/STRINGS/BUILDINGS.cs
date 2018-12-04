@@ -374,11 +374,11 @@ namespace STRINGS
 
 			public class CANVASWIDE
 			{
-				public static LocString NAME = UI.FormatAsLink("Wide Blank Canvas", "CANVASWIDE");
+				public static LocString NAME = UI.FormatAsLink("Landscape Canvas", "CANVASWIDE");
 
 				public static LocString DESC = "Once built, a Duplicant can paint a blank canvas to produce a decorative painting.";
 
-				public static LocString EFFECT = "Increases " + UI.FormatAsLink("Decor", "DECOR") + ", contributing to " + UI.FormatAsLink("Morale", "MORALE") + ".\n\nMust be painted by a Duplicant.";
+				public static LocString EFFECT = "Moderately increases " + UI.FormatAsLink("Decor", "DECOR") + ", contributing to " + UI.FormatAsLink("Morale", "MORALE") + ".\n\nMust be painted by a Duplicant.";
 
 				public static LocString POORQUALITYNAME = "Crude Painting";
 
@@ -389,11 +389,11 @@ namespace STRINGS
 
 			public class CANVASTALL
 			{
-				public static LocString NAME = UI.FormatAsLink("Tall Blank Canvas", "CANVASTALL");
+				public static LocString NAME = UI.FormatAsLink("Portrait Canvas", "CANVASTALL");
 
 				public static LocString DESC = "Once built, a Duplicant can paint a blank canvas to produce a decorative painting.";
 
-				public static LocString EFFECT = "Increases " + UI.FormatAsLink("Decor", "DECOR") + ", contributing to " + UI.FormatAsLink("Morale", "MORALE") + ".\n\nMust be painted by a Duplicant.";
+				public static LocString EFFECT = "Moderately increases " + UI.FormatAsLink("Decor", "DECOR") + ", contributing to " + UI.FormatAsLink("Morale", "MORALE") + ".\n\nMust be painted by a Duplicant.";
 
 				public static LocString POORQUALITYNAME = "Crude Painting";
 
@@ -524,6 +524,33 @@ namespace STRINGS
 			public class FLOWERVASE
 			{
 				public static LocString NAME = UI.FormatAsLink("Flower Pot", "FLOWERVASE");
+
+				public static LocString DESC = "Flower pots allow decorative plants to be moved to new locations.";
+
+				public static LocString EFFECT = "Increases " + UI.FormatAsLink("Decor", "DECOR") + ", contributing to " + UI.FormatAsLink("Morale", "MORALE") + ".\n\nHouses a single " + UI.FormatAsLink("Plant", "PLANTS") + " when sown with a " + UI.FormatAsLink("Seed", "PLANTS") + ".";
+			}
+
+			public class FLOWERVASEWALL
+			{
+				public static LocString NAME = UI.FormatAsLink("Wall Pot", "FLOWERVASEWALL");
+
+				public static LocString DESC = "Flower pots allow decorative plants to be moved to new locations.";
+
+				public static LocString EFFECT = "Increases " + UI.FormatAsLink("Decor", "DECOR") + ", contributing to " + UI.FormatAsLink("Morale", "MORALE") + ".\n\nHouses a single " + UI.FormatAsLink("Plant", "PLANTS") + " when sown with a " + UI.FormatAsLink("Seed", "PLANTS") + ".";
+			}
+
+			public class FLOWERVASEHANGING
+			{
+				public static LocString NAME = UI.FormatAsLink("Hanging Pot", "FLOWERVASEHANGING");
+
+				public static LocString DESC = "Flower pots allow decorative plants to be moved to new locations.";
+
+				public static LocString EFFECT = "Increases " + UI.FormatAsLink("Decor", "DECOR") + ", contributing to " + UI.FormatAsLink("Morale", "MORALE") + ".\n\nHouses a single " + UI.FormatAsLink("Plant", "PLANTS") + " when sown with a " + UI.FormatAsLink("Seed", "PLANTS") + ".";
+			}
+
+			public class FLOWERVASEHANGINGFANCY
+			{
+				public static LocString NAME = UI.FormatAsLink("Aero Pot", "FLOWERVASEHANGINGFANCY");
 
 				public static LocString DESC = "Flower pots allow decorative plants to be moved to new locations.";
 
@@ -1097,9 +1124,9 @@ namespace STRINGS
 
 			public class MOULDINGTILE
 			{
-				public static LocString NAME = UI.FormatAsLink("Crown Moulding Tile", "MOUDLINGTILE");
+				public static LocString NAME = UI.FormatAsLink("Trimming Tile", "MOUDLINGTILE");
 
-				public static LocString DESC = "Crown moulding is used as purely decorative trim for walls and structures.";
+				public static LocString DESC = "Trimming is used as purely decorative lining for walls and structures.";
 
 				public static LocString EFFECT = "Used to build the walls and floors of rooms.\n\nIncreases " + UI.FormatAsLink("Decor", "DECOR") + ", contributing to " + UI.FormatAsLink("Morale", "MORALE") + ".";
 			}
@@ -1245,11 +1272,11 @@ namespace STRINGS
 
 			public class SCULPTURE
 			{
-				public static LocString NAME = UI.FormatAsLink("Sculpting Block", "SCULPTURE");
+				public static LocString NAME = UI.FormatAsLink("Large Sculpting Block", "SCULPTURE");
 
 				public static LocString DESC = "Duplicants with high art skill will produce better, more decorative sculptures.";
 
-				public static LocString EFFECT = "Increases " + UI.FormatAsLink("Decor", "DECOR") + ", contributing to " + UI.FormatAsLink("Morale", "MORALE") + ".\n\nMust be sculpted by a Duplicant.";
+				public static LocString EFFECT = "Moderately increases " + UI.FormatAsLink("Decor", "DECOR") + ", contributing to " + UI.FormatAsLink("Morale", "MORALE") + ".\n\nMust be sculpted by a Duplicant.";
 
 				public static LocString POORQUALITYNAME = "\"Abstract\" Sculpture";
 
@@ -1260,9 +1287,9 @@ namespace STRINGS
 			{
 				public static LocString NAME = UI.FormatAsLink("Ice Block", "ICESCULPTURE");
 
-				public static LocString DESC = "Ice sculptures will melt over time if not kept sufficiently chilled.";
+				public static LocString DESC = "Prone to melting.";
 
-				public static LocString EFFECT = "Increases " + UI.FormatAsLink("Decor", "DECOR") + ", contributing to " + UI.FormatAsLink("Morale", "MORALE") + ".\n\nMust be sculpted by a Duplicant.";
+				public static LocString EFFECT = "Majorly increases " + UI.FormatAsLink("Decor", "DECOR") + ", contributing to " + UI.FormatAsLink("Morale", "MORALE") + ".\n\nMust be sculpted by a Duplicant.";
 
 				public static LocString POORQUALITYNAME = "\"Abstract\" Ice Sculpture";
 
@@ -1275,7 +1302,7 @@ namespace STRINGS
 
 				public static LocString DESC = "Duplicants with high art skill will produce better, more decorative sculptures.";
 
-				public static LocString EFFECT = "Increases " + UI.FormatAsLink("Decor", "DECOR") + ", contributing to " + UI.FormatAsLink("Morale", "MORALE") + ".\n\nMust be sculpted by a Duplicant.";
+				public static LocString EFFECT = "Majorly increases " + UI.FormatAsLink("Decor", "DECOR") + ", contributing to " + UI.FormatAsLink("Morale", "MORALE") + ".\n\nMust be sculpted by a Duplicant.";
 
 				public static LocString POORQUALITYNAME = "\"Abstract\" Marble Sculpture";
 
@@ -1288,7 +1315,7 @@ namespace STRINGS
 
 				public static LocString DESC = "Duplicants with high art skill will produce better, more decorative sculptures.";
 
-				public static LocString EFFECT = "Increases " + UI.FormatAsLink("Decor", "DECOR") + ", contributing to " + UI.FormatAsLink("Morale", "MORALE") + ".\n\nMust be sculpted by a Duplicant.";
+				public static LocString EFFECT = "Majorly increases " + UI.FormatAsLink("Decor", "DECOR") + ", contributing to " + UI.FormatAsLink("Morale", "MORALE") + ".\n\nMust be sculpted by a Duplicant.";
 
 				public static LocString POORQUALITYNAME = "\"Abstract\" Metal Sculpture";
 
@@ -1297,11 +1324,11 @@ namespace STRINGS
 
 			public class SMALLSCULPTURE
 			{
-				public static LocString NAME = UI.FormatAsLink("Small Sculpting Block", "SMALLSCULPTURE");
+				public static LocString NAME = UI.FormatAsLink("Sculpting Block", "SMALLSCULPTURE");
 
 				public static LocString DESC = "Duplicants with high art skill will produce better, more decorative sculptures.";
 
-				public static LocString EFFECT = "Increases " + UI.FormatAsLink("Decor", "DECOR") + ", contributing to " + UI.FormatAsLink("Morale", "MORALE") + ".\n\nMust be sculpted by a Duplicant.";
+				public static LocString EFFECT = "Minorly increases " + UI.FormatAsLink("Decor", "DECOR") + ", contributing to " + UI.FormatAsLink("Morale", "MORALE") + ".\n\nMust be sculpted by a Duplicant.";
 
 				public static LocString POORQUALITYNAME = "\"Abstract\" Sculpture";
 
@@ -2178,6 +2205,15 @@ namespace STRINGS
 				public static LocString EFFECT = "Displays any single object, doubling its " + UI.FormatAsLink("Decor", "DECOR") + " value.\n\nObjects with negative decor will gain some positive decor when displayed.";
 
 				public static LocString DISPLAYED_ITEM_FMT = "Displayed {0}";
+			}
+
+			public class CROWNMOULDING
+			{
+				public static LocString NAME = UI.FormatAsLink("Crown Moulding", "CROWNMOULDING");
+
+				public static LocString DESC = "Crown moulding is used as purely decorative trim for ceilings.";
+
+				public static LocString EFFECT = "Used to decorate the ceilings of rooms.\n\nIncreases " + UI.FormatAsLink("Decor", "DECOR") + ", contributing to " + UI.FormatAsLink("Morale", "MORALE") + ".";
 			}
 
 			public class EGGINCUBATOR

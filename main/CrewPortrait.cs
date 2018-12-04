@@ -242,10 +242,14 @@ public class CrewPortrait : KMonoBehaviour
 		controller.gameObject.SetActive(true);
 		if (identityObject != null)
 		{
-			MinionIdentity minionIdentity = null;
-			if (identityObject is MinionAssignablesProxy && (identityObject as MinionAssignablesProxy).target is MinionIdentity)
+			MinionIdentity minionIdentity = identityObject as MinionIdentity;
+			if ((UnityEngine.Object)minionIdentity == (UnityEngine.Object)null)
 			{
-				minionIdentity = ((identityObject as MinionAssignablesProxy).target as MinionIdentity);
+				MinionAssignablesProxy minionAssignablesProxy = identityObject as MinionAssignablesProxy;
+				if ((UnityEngine.Object)minionAssignablesProxy != (UnityEngine.Object)null && minionAssignablesProxy.target != null)
+				{
+					minionIdentity = (minionAssignablesProxy.target as MinionIdentity);
+				}
 			}
 			if (!((UnityEngine.Object)minionIdentity == (UnityEngine.Object)null))
 			{
@@ -270,7 +274,7 @@ public class CrewPortrait : KMonoBehaviour
 				}
 				controller.animScale = animScale;
 				string s = "ui";
-				controller.Play(s, KAnim.PlayMode.Once, 1f, 0f);
+				controller.Play(s, KAnim.PlayMode.Loop, 1f, 0f);
 				controller.SetSymbolVisiblity(snapTo_neck, false);
 				controller.SetSymbolVisiblity(snapTo_pivot, false);
 				controller.SetSymbolVisiblity(snapTo_rgthand, false);

@@ -93,14 +93,6 @@ namespace Database
 				}
 			},
 			{
-				"Clothing",
-				new string[2]
-				{
-					"ClothingFabricator",
-					"Phonobox"
-				}
-			},
-			{
 				"PressureManagement",
 				new string[4]
 				{
@@ -128,23 +120,6 @@ namespace Database
 					"LiquidPump",
 					"LiquidVent",
 					"LiquidConduitBridge"
-				}
-			},
-			{
-				"Luxury",
-				new string[4]
-				{
-					LuxuryBedConfig.ID,
-					"LadderFast",
-					"PlasticTile",
-					"ExteriorWall"
-				}
-			},
-			{
-				"RefractiveDecor",
-				new string[1]
-				{
-					"GlassTile"
 				}
 			},
 			{
@@ -269,27 +244,68 @@ namespace Database
 			},
 			{
 				"InteriorDecor",
-				new string[5]
+				new string[3]
 				{
 					"FlowerVase",
 					"FloorLamp",
-					"CeilingLight",
-					"CarpetTile",
-					"MouldingTile"
+					"CeilingLight"
 				}
 			},
 			{
 				"Artistry",
-				new string[8]
+				new string[6]
+				{
+					"CrownMoulding",
+					"SmallSculpture",
+					"IceSculpture",
+					"ItemPedestal",
+					"FlowerVaseWall",
+					"FlowerVaseHanging"
+				}
+			},
+			{
+				"Clothing",
+				new string[3]
 				{
 					"Canvas",
+					"ClothingFabricator",
+					"CarpetTile"
+				}
+			},
+			{
+				"Acoustics",
+				new string[1]
+				{
+					"Phonobox"
+				}
+			},
+			{
+				"FineArt",
+				new string[3]
+				{
 					"CanvasWide",
 					"CanvasTall",
-					"Sculpture",
-					"IceSculpture",
+					"Sculpture"
+				}
+			},
+			{
+				"Luxury",
+				new string[4]
+				{
+					LuxuryBedConfig.ID,
+					"LadderFast",
+					"PlasticTile",
+					"ExteriorWall"
+				}
+			},
+			{
+				"RefractiveDecor",
+				new string[4]
+				{
+					"GlassTile",
+					"FlowerVaseHangingFancy",
 					"MarbleSculpture",
-					"MetalSculpture",
-					"SmallSculpture"
+					"MetalSculpture"
 				}
 			},
 			{

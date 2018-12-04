@@ -1,5 +1,6 @@
 using KSerialization;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 using UnityEngine;
 
 public class MinionAssignablesProxy : KMonoBehaviour, IAssignableIdentity
@@ -11,6 +12,11 @@ public class MinionAssignablesProxy : KMonoBehaviour, IAssignableIdentity
 
 	private bool slotsConfigured = false;
 
+	private static readonly EventSystem.IntraObjectHandler<MinionAssignablesProxy> OnAssignablesChangedDelegate = new EventSystem.IntraObjectHandler<MinionAssignablesProxy>(delegate(MinionAssignablesProxy component, object data)
+	{
+		component.OnAssignablesChanged(data);
+	});
+
 	public IAssignableIdentity target
 	{
 		get;
@@ -18,6 +24,8 @@ public class MinionAssignablesProxy : KMonoBehaviour, IAssignableIdentity
 	}
 
 	public bool IsConfigured => slotsConfigured;
+
+	public int TargetInstanceID => target_instance_id;
 
 	public GameObject GetTargetGameObject()
 	{
@@ -52,6 +60,11 @@ public class MinionAssignablesProxy : KMonoBehaviour, IAssignableIdentity
 		};
 		Components.MinionAssignablesProxy.Add(this);
 		ConfigureAssignableSlots();
+	}
+
+	[OnDeserialized]
+	private void OnDeserialized()
+	{
 	}
 
 	public void ConfigureAssignableSlots()
@@ -94,13 +107,7 @@ public class MinionAssignablesProxy : KMonoBehaviour, IAssignableIdentity
 	{
 		base.OnSpawn();
 		RestoreTargetFromInstanceID();
-		Subscribe(-1585839766, delegate(object data)
-		{
-			if (!target.IsNull())
-			{
-				(target as KMonoBehaviour).Trigger(-1585839766, data);
-			}
-		});
+		Subscribe(-1585839766, OnAssignablesChangedDelegate);
 		Game.Instance.assignmentManager.AddToAssignmentGroup("public", this);
 	}
 
@@ -111,6 +118,14 @@ public class MinionAssignablesProxy : KMonoBehaviour, IAssignableIdentity
 		GetComponent<Ownables>().UnassignAll();
 		GetComponent<Equipment>().UnequipAll();
 		Components.MinionAssignablesProxy.Remove(this);
+	}
+
+	private void OnAssignablesChanged(object data)
+	{
+		if (!target.IsNull())
+		{
+			(target as KMonoBehaviour).Trigger(-1585839766, data);
+		}
 	}
 
 	private void CheckTarget()
@@ -162,19 +177,26 @@ public class MinionAssignablesProxy : KMonoBehaviour, IAssignableIdentity
 
 	public static Ref<MinionAssignablesProxy> InitAssignableProxy(Ref<MinionAssignablesProxy> assignableProxyRef, IAssignableIdentity source)
 	{
+		bool flag = false;
 		if (assignableProxyRef == null)
 		{
 			assignableProxyRef = new Ref<MinionAssignablesProxy>();
 		}
-		if ((Object)assignableProxyRef.Get() == (Object)null)
+		GameObject gameObject = ((KMonoBehaviour)source).gameObject;
+		MinionAssignablesProxy minionAssignablesProxy = assignableProxyRef.Get();
+		if ((Object)minionAssignablesProxy == (Object)null)
 		{
-			Tag tag = MinionAssignablesProxyConfig.ID;
-			MinionAssignablesProxy component = GameUtil.KInstantiate(Assets.GetPrefab(tag), Grid.SceneLayer.NoLayer, null, 0).GetComponent<MinionAssignablesProxy>();
-			component.SetTarget(source, (source as KMonoBehaviour).gameObject);
-			component.gameObject.SetActive(true);
-			assignableProxyRef.Set(component);
+			flag = true;
+			GameObject gameObject2 = GameUtil.KInstantiate(Assets.GetPrefab(MinionAssignablesProxyConfig.ID), Grid.SceneLayer.NoLayer, null, 0);
+			minionAssignablesProxy = gameObject2.GetComponent<MinionAssignablesProxy>();
+			minionAssignablesProxy.SetTarget(source, gameObject);
+			gameObject2.SetActive(true);
+			assignableProxyRef.Set(minionAssignablesProxy);
 		}
-		assignableProxyRef.Get().SetTarget(source, (source as KMonoBehaviour).gameObject);
+		else
+		{
+			minionAssignablesProxy.SetTarget(source, gameObject);
+		}
 		return assignableProxyRef;
 	}
 }

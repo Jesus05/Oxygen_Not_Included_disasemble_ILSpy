@@ -75,6 +75,7 @@ public class PrickleGrass : StateMachineComponent<PrickleGrass.StatesInstance>
 				smi.master.growth_bonus.Description = STRINGS.CREATURES.SPECIES.PRICKLEGRASS.GROWTH_BONUS;
 				smi.master.GetAttributes().Get(Db.Get().Attributes.Decor).Remove(smi.master.wilt_penalty);
 				smi.master.GetAttributes().Get(Db.Get().Attributes.Decor).Add(smi.master.growth_bonus);
+				smi.master.GetComponent<DecorProvider>().SetValues(smi.master.positive_decor_effect);
 				smi.master.GetComponent<DecorProvider>().Refresh();
 			});
 			alive.wilting.PlayAnim("wilt1", KAnim.PlayMode.Loop).EventTransition(GameHashes.WiltRecover, alive.idle, null).Enter(delegate(StatesInstance smi)
@@ -100,6 +101,8 @@ public class PrickleGrass : StateMachineComponent<PrickleGrass.StatesInstance>
 
 	private AttributeModifier wilt_penalty;
 
+	public EffectorValues positive_decor_effect;
+
 	private static readonly EventSystem.IntraObjectHandler<PrickleGrass> SetReplantedTrueDelegate = new EventSystem.IntraObjectHandler<PrickleGrass>(delegate(PrickleGrass component, object data)
 	{
 		component.replanted = true;
@@ -111,6 +114,11 @@ public class PrickleGrass : StateMachineComponent<PrickleGrass.StatesInstance>
 		growth_bonus = new AttributeModifier("Effect", (float)tIER.amount, null, false, false, true);
 		EffectorValues tIER2 = DECOR.PENALTY.TIER1;
 		wilt_penalty = new AttributeModifier("Effect", (float)tIER2.amount, null, false, false, true);
+		positive_decor_effect = new EffectorValues
+		{
+			amount = 1,
+			radius = 5
+		};
 		base._002Ector();
 	}
 

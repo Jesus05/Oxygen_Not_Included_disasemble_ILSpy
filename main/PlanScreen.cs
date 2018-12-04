@@ -127,6 +127,9 @@ public class PlanScreen : KIconToggleMenu
 	[SerializeField]
 	private GameObject productInfoScreenPrefab;
 
+	[SerializeField]
+	private GameObject copyBuildingButton;
+
 	private static Dictionary<HashedString, string> iconNameMap = new Dictionary<HashedString, string>
 	{
 		{
@@ -198,7 +201,7 @@ public class PlanScreen : KIconToggleMenu
 
 	private ToggleInfo activeCategoryInfo;
 
-	private Dictionary<BuildingDef, KToggle> ActiveToggles = new Dictionary<BuildingDef, KToggle>();
+	public Dictionary<BuildingDef, KToggle> ActiveToggles = new Dictionary<BuildingDef, KToggle>();
 
 	private float timeSinceNotificationPing = 0f;
 
@@ -329,6 +332,43 @@ public class PlanScreen : KIconToggleMenu
 			GetBuildableStates(true);
 			Game.Instance.Subscribe(288942073, OnUIClear);
 		}
+		copyBuildingButton.GetComponent<MultiToggle>().onClick = delegate
+		{
+			KSelectable selected = SelectTool.Instance.selected;
+			if (!((UnityEngine.Object)selected == (UnityEngine.Object)null))
+			{
+				Building component = SelectTool.Instance.selected.GetComponent<Building>();
+				if ((UnityEngine.Object)component != (UnityEngine.Object)null && component.Def.ShowInBuildMenu)
+				{
+					Instance.CopyBuildingOrder(component);
+				}
+			}
+		};
+		RefreshCopyBuildingButton(null);
+		Game.Instance.Subscribe(-1503271301, RefreshCopyBuildingButton);
+		copyBuildingButton.GetComponent<ToolTip>().SetSimpleTooltip(UI.COPY_BUILDING_TOOLTIP);
+	}
+
+	public void RefreshCopyBuildingButton(object data = null)
+	{
+		MultiToggle component = copyBuildingButton.GetComponent<MultiToggle>();
+		KSelectable selected = SelectTool.Instance.selected;
+		if ((UnityEngine.Object)selected == (UnityEngine.Object)null)
+		{
+			component.ChangeState(0);
+		}
+		else
+		{
+			Building component2 = SelectTool.Instance.selected.GetComponent<Building>();
+			if ((UnityEngine.Object)component2 != (UnityEngine.Object)null && component2.Def.ShowInBuildMenu)
+			{
+				component.ChangeState(1);
+			}
+			else
+			{
+				component.ChangeState(0);
+			}
+		}
 	}
 
 	public void Refresh()
@@ -387,6 +427,24 @@ public class PlanScreen : KIconToggleMenu
 		}
 	}
 
+	public void CopyBuildingOrder(Building building)
+	{
+		foreach (PlanInfo item in TUNING.BUILDINGS.PLANORDER)
+		{
+			PlanInfo current = item;
+			foreach (string item2 in (List<string>)current.data)
+			{
+				if (building.Def.PrefabID == item2)
+				{
+					OpenCategoryByName(HashCache.Get().Get(current.category));
+					OnSelectBuilding(ActiveToggles[building.Def].gameObject, building.Def);
+					productInfoScreen.materialSelectionPanel.SelectSourcesMaterials(building);
+					break;
+				}
+			}
+		}
+	}
+
 	private static void PopulateOrderInfo(HashedString category, object data, Dictionary<Tag, HashedString> category_map, Dictionary<Tag, int> order_map, ref int building_index)
 	{
 		if (data.GetType() == typeof(PlanInfo))
@@ -429,7 +487,7 @@ public class PlanScreen : KIconToggleMenu
 		ActiveToggles.Clear();
 	}
 
-	private void OnSelectBuilding(GameObject button_go, BuildingDef def)
+	public void OnSelectBuilding(GameObject button_go, BuildingDef def)
 	{
 		if ((UnityEngine.Object)button_go == (UnityEngine.Object)null)
 		{

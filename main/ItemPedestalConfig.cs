@@ -40,6 +40,7 @@ public class ItemPedestalConfig : IBuildingConfig
 		Prioritizable.AddRef(go);
 		SingleEntityReceptacle singleEntityReceptacle = go.AddOrGet<SingleEntityReceptacle>();
 		singleEntityReceptacle.AddDepositTag(GameTags.PedestalDisplayable);
+		singleEntityReceptacle.occupyingObjectRelativePosition = new Vector3(0f, 1.2f, -1f);
 		go.AddOrGet<DecorProvider>();
 		go.AddOrGet<ItemPedestal>();
 		go.GetComponent<KPrefabID>().AddTag(GameTags.Decoration);

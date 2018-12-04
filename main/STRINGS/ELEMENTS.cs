@@ -194,14 +194,14 @@ namespace STRINGS
 		{
 			public static LocString NAME = UI.FormatAsLink("Copper", "COPPER");
 
-			public static LocString DESC = "(Cu) Copper is a conductive " + UI.FormatAsLink("Metal", "RAWMETAL") + ".\n\nIt is suitable for building " + UI.FormatAsLink("Power", "POWER") + " systems.";
+			public static LocString DESC = "(Cu) Copper is a conductive " + UI.FormatAsLink("Metal", "METAL") + ".\n\nIt is suitable for building " + UI.FormatAsLink("Power", "POWER") + " systems.";
 		}
 
 		public class COPPERGAS
 		{
 			public static LocString NAME = UI.FormatAsLink("Copper", "COPPERGAS");
 
-			public static LocString DESC = "(Cu) Copper is a conductive " + UI.FormatAsLink("Metal", "RAWMETAL") + " heated into a " + UI.FormatAsLink("Gas", "ELEMENTS_GAS") + ".";
+			public static LocString DESC = "(Cu) Copper is a conductive " + UI.FormatAsLink("Metal", "METAL") + " heated into a " + UI.FormatAsLink("Gas", "ELEMENTS_GAS") + ".";
 		}
 
 		public class CREATURE

@@ -67,7 +67,15 @@ public class RolePerks
 
 	public RoleAttributePerk IncreaseArtMedium;
 
+	public RoleAttributePerk IncreaseArtLarge;
+
 	public SimpleRolePerk CanArt;
+
+	public SimpleRolePerk CanArtUgly;
+
+	public SimpleRolePerk CanArtOkay;
+
+	public SimpleRolePerk CanArtGreat;
 
 	public RoleAttributePerk IncreaseMachinerySmall;
 
@@ -133,7 +141,11 @@ public class RolePerks
 		IncreaseCarryAmountMedium = new RoleAttributePerk("IncreaseCarryAmountMedium", UI.ROLES_SCREEN.PERKS.INCREASED_CARRY_AMOUNT.DESCRIPTION, Db.Get().Attributes.CarryAmount.Id, 800f, DUPLICANTS.ROLES.MATERIALS_MANAGER.NAME);
 		IncreaseArtSmall = new RoleAttributePerk("IncreaseArtSmall", UI.ROLES_SCREEN.PERKS.INCREASED_ART.DESCRIPTION, Db.Get().Attributes.Art.Id, (float)ROLES.ATTRIBUTE_BONUS_FIRST, DUPLICANTS.ROLES.JUNIOR_ARTIST.NAME);
 		IncreaseArtMedium = new RoleAttributePerk("IncreaseArt", UI.ROLES_SCREEN.PERKS.INCREASED_ART.DESCRIPTION, Db.Get().Attributes.Art.Id, (float)ROLES.ATTRIBUTE_BONUS_SECOND, DUPLICANTS.ROLES.ARTIST.NAME);
+		IncreaseArtLarge = new RoleAttributePerk("IncreaseArtLarge", UI.ROLES_SCREEN.PERKS.INCREASED_ART.DESCRIPTION, Db.Get().Attributes.Art.Id, (float)ROLES.ATTRIBUTE_BONUS_THIRD, DUPLICANTS.ROLES.MASTER_ARTIST.NAME);
 		CanArt = new SimpleRolePerk("CanArt", UI.ROLES_SCREEN.PERKS.CAN_ART.DESCRIPTION);
+		CanArtUgly = new SimpleRolePerk("CanArtUgly", UI.ROLES_SCREEN.PERKS.CAN_ART_UGLY.DESCRIPTION);
+		CanArtOkay = new SimpleRolePerk("CanArtOkay", UI.ROLES_SCREEN.PERKS.CAN_ART_OKAY.DESCRIPTION);
+		CanArtGreat = new SimpleRolePerk("CanArtGreat", UI.ROLES_SCREEN.PERKS.CAN_ART_GREAT.DESCRIPTION);
 		IncreaseMachinerySmall = new RoleAttributePerk("IncreaseMachinerySmall", UI.ROLES_SCREEN.PERKS.INCREASED_MACHINERY.DESCRIPTION, Db.Get().Attributes.Machinery.Id, (float)ROLES.ATTRIBUTE_BONUS_FIRST, DUPLICANTS.ROLES.MACHINE_TECHNICIAN.NAME);
 		IncreaseMachineryMedium = new RoleAttributePerk("IncreaseMachineryMedium", UI.ROLES_SCREEN.PERKS.INCREASED_MACHINERY.DESCRIPTION, Db.Get().Attributes.Machinery.Id, (float)ROLES.ATTRIBUTE_BONUS_SECOND, DUPLICANTS.ROLES.POWER_TECHNICIAN.NAME);
 		IncreaseMachineryLarge = new RoleAttributePerk("IncreaseMachineryLarge", UI.ROLES_SCREEN.PERKS.INCREASED_MACHINERY.DESCRIPTION, Db.Get().Attributes.Machinery.Id, (float)ROLES.ATTRIBUTE_BONUS_THIRD, DUPLICANTS.ROLES.MECHATRONIC_ENGINEER.NAME);

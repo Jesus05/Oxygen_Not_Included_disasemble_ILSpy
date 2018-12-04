@@ -21,6 +21,11 @@ public class Building : KMonoBehaviour, IEffectDescriptor, IUniformGridObject, I
 
 	private HandleVector<int>.Handle scenePartitionerEntry;
 
+	private static readonly EventSystem.IntraObjectHandler<BuildingComplete> OnRefreshUserMenuDelegate = new EventSystem.IntraObjectHandler<BuildingComplete>(delegate(BuildingComplete component, object data)
+	{
+		component.OnRefreshUserMenu(data);
+	});
+
 	public Orientation Orientation => ((UnityEngine.Object)rotatable != (UnityEngine.Object)null) ? rotatable.GetOrientation() : Orientation.Neutral;
 
 	public int[] PlacementCells
@@ -127,6 +132,18 @@ public class Building : KMonoBehaviour, IEffectDescriptor, IUniformGridObject, I
 		if (component3.HasTag(RoomConstraints.ConstraintTags.IndustrialMachinery))
 		{
 			scenePartitionerEntry = GameScenePartitioner.Instance.Add(base.name, base.gameObject, GetExtents(), GameScenePartitioner.Instance.industrialBuildings, null);
+		}
+		Subscribe(493375141, OnRefreshUserMenuDelegate);
+	}
+
+	private void OnRefreshUserMenu(object data)
+	{
+		if (Def.ShowInBuildMenu)
+		{
+			KIconButtonMenu.ButtonInfo buttonInfo = new KIconButtonMenu.ButtonInfo("", "Duplicate", delegate
+			{
+				PlanScreen.Instance.CopyBuildingOrder(this);
+			}, Action.NumActions, null, null, null, "", true);
 		}
 	}
 

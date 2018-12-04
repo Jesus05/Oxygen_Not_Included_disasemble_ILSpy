@@ -24,8 +24,8 @@ public class IceSculptureConfig : IBuildingConfig
 		EffectorValues nONE = NOISE_POLLUTION.NONE;
 		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, tIER, construction_materials, melting_point, build_location_rule, new EffectorValues
 		{
-			amount = 10,
-			radius = 10
+			amount = 20,
+			radius = 8
 		}, nONE, 0.2f);
 		buildingDef.Floodable = false;
 		buildingDef.Overheatable = false;
@@ -45,9 +45,8 @@ public class IceSculptureConfig : IBuildingConfig
 	public override void DoPostConfigureComplete(GameObject go)
 	{
 		Artable artable = go.AddComponent<Sculpture>();
-		artable.requiredRolePerk = RoleManager.rolePerks.CanArt.id;
-		artable.stages.Add(new Artable.Stage("Default", STRINGS.BUILDINGS.PREFABS.ICESCULPTURE.NAME, "slab", 0, 0, false, Artable.Status.Ready));
-		artable.stages.Add(new Artable.Stage("Bad", STRINGS.BUILDINGS.PREFABS.ICESCULPTURE.POORQUALITYNAME, "crap", 0, 5, false, Artable.Status.Ugly));
-		artable.stages.Add(new Artable.Stage("Average", STRINGS.BUILDINGS.PREFABS.ICESCULPTURE.AVERAGEQUALITYNAME, "idle", 2, 15, true, Artable.Status.Okay));
+		artable.stages.Add(new Artable.Stage("Default", STRINGS.BUILDINGS.PREFABS.ICESCULPTURE.NAME, "slab", 0, false, Artable.Status.Ready));
+		artable.stages.Add(new Artable.Stage("Bad", STRINGS.BUILDINGS.PREFABS.ICESCULPTURE.POORQUALITYNAME, "crap", 5, false, Artable.Status.Ugly));
+		artable.stages.Add(new Artable.Stage("Average", STRINGS.BUILDINGS.PREFABS.ICESCULPTURE.AVERAGEQUALITYNAME, "idle", 10, true, Artable.Status.Okay));
 	}
 }

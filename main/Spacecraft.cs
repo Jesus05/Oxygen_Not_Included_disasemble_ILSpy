@@ -144,4 +144,9 @@ public class Spacecraft
 			}
 		}
 	}
+
+	public void GenerateName()
+	{
+		SetRocketName(GameUtil.GenerateRandomRocketName());
+	}
 }

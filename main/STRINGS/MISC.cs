@@ -20,11 +20,11 @@ namespace STRINGS
 
 			public static LocString REFINEDMETAL = "Refined Metal";
 
-			public static LocString METAL = "Raw Metal";
+			public static LocString METAL = "Metal Ore";
 
 			public static LocString PRECIOUSMETAL = "Precious Metal";
 
-			public static LocString RAWPRECIOUSMETAL = "Raw Precious Metal";
+			public static LocString RAWPRECIOUSMETAL = "Precious Metal Ore";
 
 			public static LocString ALLOY = "Alloy";
 
@@ -152,7 +152,7 @@ namespace STRINGS
 
 			public static LocString TRANSPARENT = "Transparent";
 
-			public static LocString RAREMATERIALS = "Rare Material";
+			public static LocString RAREMATERIALS = "Rare Resource";
 
 			public static LocString FARMINGMATERIAL = "Fertilizer";
 

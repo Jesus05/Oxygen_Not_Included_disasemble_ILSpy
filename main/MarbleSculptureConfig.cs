@@ -22,7 +22,7 @@ public class MarbleSculptureConfig : IBuildingConfig
 		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, tIER, pRECIOUS_ROCKS, melting_point, build_location_rule, new EffectorValues
 		{
 			amount = 20,
-			radius = 10
+			radius = 8
 		}, nONE, 0.2f);
 		buildingDef.Floodable = false;
 		buildingDef.Overheatable = false;
@@ -42,9 +42,8 @@ public class MarbleSculptureConfig : IBuildingConfig
 	public override void DoPostConfigureComplete(GameObject go)
 	{
 		Artable artable = go.AddComponent<Sculpture>();
-		artable.requiredRolePerk = RoleManager.rolePerks.CanArt.id;
-		artable.stages.Add(new Artable.Stage("Default", STRINGS.BUILDINGS.PREFABS.MARBLESCULPTURE.NAME, "slab", 0, 0, false, Artable.Status.Ready));
-		artable.stages.Add(new Artable.Stage("Bad", STRINGS.BUILDINGS.PREFABS.MARBLESCULPTURE.POORQUALITYNAME, "crap_1", 0, 5, false, Artable.Status.Ugly));
-		artable.stages.Add(new Artable.Stage("Average", STRINGS.BUILDINGS.PREFABS.MARBLESCULPTURE.AVERAGEQUALITYNAME, "amazing_1", 2, 15, true, Artable.Status.Great));
+		artable.stages.Add(new Artable.Stage("Default", STRINGS.BUILDINGS.PREFABS.MARBLESCULPTURE.NAME, "slab", 0, false, Artable.Status.Ready));
+		artable.stages.Add(new Artable.Stage("Bad", STRINGS.BUILDINGS.PREFABS.MARBLESCULPTURE.POORQUALITYNAME, "crap_1", 5, false, Artable.Status.Ugly));
+		artable.stages.Add(new Artable.Stage("Average", STRINGS.BUILDINGS.PREFABS.MARBLESCULPTURE.AVERAGEQUALITYNAME, "amazing_1", 15, true, Artable.Status.Great));
 	}
 }

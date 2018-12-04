@@ -37,9 +37,9 @@ public class CommandModule : StateMachineComponent<CommandModule.StatesInstance>
 					KPrefabID kPrefabID = current.serializedMinion.Get();
 					if (!((Object)kPrefabID == (Object)null))
 					{
-						IAssignableIdentity component = kPrefabID.GetComponent<IAssignableIdentity>();
+						StoredMinionIdentity component = kPrefabID.GetComponent<StoredMinionIdentity>();
 						Assignable component2 = GetComponent<Assignable>();
-						if (component2.assignee == component)
+						if (component2.assignee == component.assignableProxy.Get())
 						{
 							return true;
 						}
@@ -82,7 +82,14 @@ public class CommandModule : StateMachineComponent<CommandModule.StatesInstance>
 		{
 			default_state = grounded;
 			grounded.PlayAnim("grounded", KAnim.PlayMode.Loop).DefaultState(grounded.awaitingAstronaut).TagTransition(GameTags.RocketNotOnGround, spaceborne, false);
-			grounded.awaitingAstronaut.EventHandler(GameHashes.AssigneeChanged, delegate(StatesInstance smi)
+			grounded.awaitingAstronaut.Enter(delegate(StatesInstance smi)
+			{
+				if (smi.CheckStoredMinionIsAssignee())
+				{
+					smi.GoTo(grounded.hasAstronaut);
+				}
+				Game.Instance.userMenu.Refresh(smi.gameObject);
+			}).EventHandler(GameHashes.AssigneeChanged, delegate(StatesInstance smi)
 			{
 				if (smi.CheckStoredMinionIsAssignee())
 				{

@@ -42,6 +42,7 @@ public class RockCrusherConfig : IBuildingConfig
 		complexFabricator.sideScreenStyle = ComplexFabricatorSideScreen.StyleSetting.ListQueueHybrid;
 		complexFabricator.duplicantOperated = true;
 		go.AddOrGet<FabricatorIngredientStatusManager>();
+		go.AddOrGet<CopyBuildingSettings>();
 		ComplexFabricatorWorkable complexFabricatorWorkable = go.AddOrGet<ComplexFabricatorWorkable>();
 		BuildingTemplates.CreateComplexFabricatorStorage(go, complexFabricator);
 		complexFabricatorWorkable.overrideAnims = new KAnimFile[1]

@@ -42,11 +42,10 @@ public class SmallSculptureConfig : IBuildingConfig
 	public override void DoPostConfigureComplete(GameObject go)
 	{
 		Artable artable = go.AddComponent<Sculpture>();
-		artable.requiredRolePerk = RoleManager.rolePerks.CanArt.id;
-		artable.stages.Add(new Artable.Stage("Default", STRINGS.BUILDINGS.PREFABS.SMALLSCULPTURE.NAME, "slab", 0, 0, false, Artable.Status.Ready));
-		artable.stages.Add(new Artable.Stage("Bad", STRINGS.BUILDINGS.PREFABS.SMALLSCULPTURE.POORQUALITYNAME, "crap_1", 0, 5, false, Artable.Status.Ugly));
-		artable.stages.Add(new Artable.Stage("Good", STRINGS.BUILDINGS.PREFABS.SMALLSCULPTURE.EXCELLENTQUALITYNAME, "good_1", 4, 15, true, Artable.Status.Great));
-		artable.stages.Add(new Artable.Stage("Good2", STRINGS.BUILDINGS.PREFABS.SMALLSCULPTURE.EXCELLENTQUALITYNAME, "good_2", 4, 15, true, Artable.Status.Great));
-		artable.stages.Add(new Artable.Stage("Good3", STRINGS.BUILDINGS.PREFABS.SMALLSCULPTURE.EXCELLENTQUALITYNAME, "good_3", 4, 15, true, Artable.Status.Great));
+		artable.stages.Add(new Artable.Stage("Default", STRINGS.BUILDINGS.PREFABS.SMALLSCULPTURE.NAME, "slab", 0, false, Artable.Status.Ready));
+		artable.stages.Add(new Artable.Stage("Bad", STRINGS.BUILDINGS.PREFABS.SMALLSCULPTURE.POORQUALITYNAME, "crap_1", 5, false, Artable.Status.Ugly));
+		artable.stages.Add(new Artable.Stage("Good", STRINGS.BUILDINGS.PREFABS.SMALLSCULPTURE.EXCELLENTQUALITYNAME, "good_1", 15, true, Artable.Status.Great));
+		artable.stages.Add(new Artable.Stage("Good2", STRINGS.BUILDINGS.PREFABS.SMALLSCULPTURE.EXCELLENTQUALITYNAME, "good_2", 15, true, Artable.Status.Great));
+		artable.stages.Add(new Artable.Stage("Good3", STRINGS.BUILDINGS.PREFABS.SMALLSCULPTURE.EXCELLENTQUALITYNAME, "good_3", 15, true, Artable.Status.Great));
 	}
 }

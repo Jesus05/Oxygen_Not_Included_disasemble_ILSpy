@@ -77,24 +77,37 @@ public class NameDisplayScreen : KScreen
 		Instance = null;
 	}
 
-	protected override void OnSpawn()
-	{
-		base.OnSpawn();
-		UIRegistry.nameDisplayScreen = this;
-		Components.Health.Register(delegate(Health health)
-		{
-			RegisterComponent(health.gameObject, health, false);
-		}, null);
-		Components.Equipment.Register(delegate(Equipment equipment)
-		{
-			RegisterComponent(equipment.GetComponent<MinionAssignablesProxy>().GetTargetGameObject(), equipment, false);
-		}, null);
-	}
-
 	protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		Instance = this;
+	}
+
+	protected override void OnSpawn()
+	{
+		base.OnSpawn();
+		UIRegistry.nameDisplayScreen = this;
+		Components.Health.Register(OnHealthAdded, null);
+		Components.Equipment.Register(OnEquipmentAdded, null);
+	}
+
+	private void OnHealthAdded(Health health)
+	{
+		RegisterComponent(health.gameObject, health, false);
+	}
+
+	private void OnEquipmentAdded(Equipment equipment)
+	{
+		MinionAssignablesProxy component = equipment.GetComponent<MinionAssignablesProxy>();
+		GameObject targetGameObject = component.GetTargetGameObject();
+		if ((bool)targetGameObject)
+		{
+			RegisterComponent(targetGameObject, equipment, false);
+		}
+		else
+		{
+			Debug.LogError("OnEquipmentAdded proxy game object was null.", null);
+		}
 	}
 
 	private bool ShouldShowName(GameObject representedObject)

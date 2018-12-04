@@ -761,6 +761,10 @@ namespace STRINGS
 				public static LocString SS = "S.S.";
 
 				public static LocString SPIRITOF = "Spirit of";
+
+				public static LocString OL = "Ol'";
+
+				public static LocString THE = "The";
 			}
 
 			public class ADJECTIVE
@@ -812,6 +816,14 @@ namespace STRINGS
 				public static LocString EXPERIMENTAL = "Experimental";
 
 				public static LocString SURVERY = "Survey";
+
+				public static LocString INTERGALACTIC = "Intergalactic";
+
+				public static LocString INTERSTELLAR = "Interstellar";
+
+				public static LocString WANDERING = "Wandering";
+
+				public static LocString EXPLORATORY = "Exploratory";
 			}
 
 			public class NOUN
@@ -827,6 +839,8 @@ namespace STRINGS
 				public static LocString ROCKET = "Rocket";
 
 				public static LocString VESSEL = "Vessel";
+
+				public static LocString WANDERER = "Wanderer";
 
 				public static LocString HOPE = "Hope";
 
@@ -871,6 +885,8 @@ namespace STRINGS
 				public static LocString PROGRESS = "Progress";
 
 				public static LocString PEACE = "Peace";
+
+				public static LocString PROTOTYPE = "Prototype";
 			}
 
 			public class SUFFIX
@@ -913,6 +929,22 @@ namespace STRINGS
 
 				public static LocString XC = "XC";
 			}
+
+			public static LocString FMT_NOUN = "{Noun}";
+
+			public static LocString FMT_PREFIX_NOUN = "{Prefix} {Noun}";
+
+			public static LocString FMT_ADJECTIVE_NOUN = "{Adjective} {Noun}";
+
+			public static LocString FMT_PREFIX_ADJECTIVE_NOUN = "{Prefix} {Adjective} {Noun}";
+
+			public static LocString FMT_NOUN_SUFFIX = "{Noun} {Suffix}";
+
+			public static LocString FMT_PREFIX_NOUN_SUFFIX = "{Prefix} {Noun} {Suffix}";
+
+			public static LocString FMT_ADJECTIVE_NOUN_SUFFIX = "{Adjective} {Noun} {Suffix}";
+
+			public static LocString FMT_PREFIX_ADJECTIVE_NOUN_SUFFIX = "{Prefix} {Adjective} {Noun} {Suffix}";
 		}
 	}
 }

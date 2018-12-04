@@ -1337,7 +1337,22 @@ namespace STRINGS
 
 				public class CAN_ART
 				{
-					public static LocString DESCRIPTION = "Trait: Can work " + BUILDINGS.PREFABS.CANVAS.NAME + " and " + BUILDINGS.PREFABS.SCULPTURE.NAME;
+					public static LocString DESCRIPTION = "Trait: Can produce artwork using " + BUILDINGS.PREFABS.CANVAS.NAME + " and " + BUILDINGS.PREFABS.SCULPTURE.NAME;
+				}
+
+				public class CAN_ART_UGLY
+				{
+					public static LocString DESCRIPTION = "Trait: Crude artwork quality";
+				}
+
+				public class CAN_ART_OKAY
+				{
+					public static LocString DESCRIPTION = "Trait: Medicocre artwork quality";
+				}
+
+				public class CAN_ART_GREAT
+				{
+					public static LocString DESCRIPTION = "Trait: Master artwork quality";
 				}
 
 				public class CAN_FARM_TINKER
@@ -2118,6 +2133,8 @@ namespace STRINGS
 			public static LocString HELP_BUILDLOCATION_INVALID_CELL = "Invalid Cell";
 
 			public static LocString HELP_BUILDLOCATION_FLOOR = "Must be built on solid ground";
+
+			public static LocString HELP_BUILDLOCATION_WALL = "Must be built against a wall";
 
 			public static LocString HELP_BUILDLOCATION_FLOOR_OR_ATTACHPOINT = "Must be built on solid ground or overlapping an {0}";
 
@@ -4242,7 +4259,7 @@ namespace STRINGS
 			{
 				public static LocString TITLE = "Time-of-Day Sensor";
 
-				public static LocString TOOLTIP = "This sensor will send a 1 after the Turn On time, and a 0 after the Turn Off time.";
+				public static LocString TOOLTIP = "This sensor will send an " + FormatAsLink("Active", "LOGIC") + " signal after the selected Turn On time, and a " + FormatAsLink("Standby", "LOGIC") + " signal after the selected Turn Off time";
 
 				public static LocString START = "Turn On";
 
@@ -4253,7 +4270,7 @@ namespace STRINGS
 			{
 				public static LocString TITLE = "Critter Sensor";
 
-				public static LocString TOOLTIP = "This sensor will send a 1 if in a room with more than the specified number of critters or eggs";
+				public static LocString TOOLTIP = "This sensor will send an " + FormatAsLink("Active", "LOGIC") + " signal if the number of critters and eggs in the room reaches the specified amount";
 
 				public static LocString START = "Turn On";
 
@@ -6376,7 +6393,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Insulated";
 
-				public static LocString TOOLTIP = "Insulation drastically reduces thermal conductivity";
+				public static LocString TOOLTIP = "Proper insulation drastically reduces thermal conductivity";
 			}
 
 			public class TOOLTIPS
@@ -6969,6 +6986,10 @@ namespace STRINGS
 
 		public static string NEG_INFINITY = "-Infinity";
 
+		public static LocString COPY_BUILDING = "Copy";
+
+		public static LocString COPY_BUILDING_TOOLTIP = "Create new build orders for the selected building.";
+
 		public static LocString NAME_WITH_UNITS = "{0} x {1}";
 
 		public static LocString POSITIVE_FORMAT = "+{0}";
@@ -7123,7 +7144,7 @@ namespace STRINGS
 
 		public static LocString CRAFT_CONTINUOUS = "CONTINUOUS";
 
-		public static LocString INCUBATE_CONTINUOUS_TOOLTIP = "If checked the building will continue to incubate eggs of the selected type";
+		public static LocString INCUBATE_CONTINUOUS_TOOLTIP = "When checked, this building will continously incubate eggs of the selected type";
 
 		public static LocString PLACEINRECEPTACLE = "Plant";
 

@@ -29,6 +29,14 @@ public class ItemPedestal : KMonoBehaviour
 	{
 		base.OnSpawn();
 		Subscribe(-731304873, OnOccupantChangedDelegate);
+		if ((bool)receptacle.Occupant)
+		{
+			KBatchedAnimController component = receptacle.Occupant.GetComponent<KBatchedAnimController>();
+			if ((bool)component)
+			{
+				component.enabled = true;
+			}
+		}
 	}
 
 	private void OnOccupantChanged(object data)

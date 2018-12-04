@@ -147,10 +147,11 @@ public class MaterialSelector : KScreen
 
 	public void OnSelectMaterial(Tag elem, Recipe recipe, bool focusScrollRect = false)
 	{
-		KToggle x = ElementToggles[elem];
-		if ((Object)x != (Object)selectedToggle)
+		KToggle kToggle = null;
+		kToggle = ElementToggles[elem];
+		if ((Object)kToggle != (Object)selectedToggle)
 		{
-			selectedToggle = x;
+			selectedToggle = kToggle;
 			if (recipe != null)
 			{
 				SaveGame.Instance.materialSelectorSerializer.SetSelectedElement(selectorIndex, recipe.Result, elem);
@@ -181,8 +182,8 @@ public class MaterialSelector : KScreen
 			}
 			list.Sort(ElementSorter);
 			int num = list.IndexOf(elem);
-			float x2 = (float)num / (float)(list.Count - 1);
-			ScrollRect.normalizedPosition = new Vector2(x2, 0f);
+			float x = (float)num / (float)(list.Count - 1);
+			ScrollRect.normalizedPosition = new Vector2(x, 0f);
 		}
 		RefreshToggleContents();
 	}

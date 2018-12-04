@@ -556,14 +556,13 @@ public abstract class OverlayModes
 			RegisterSaveLoadListeners();
 			List<Tag> prefabTagsWithComponent = Assets.GetPrefabTagsWithComponent<DecorProvider>();
 			targetIDs.UnionWith(prefabTagsWithComponent);
-			Tag[] array = new Tag[6]
+			Tag[] array = new Tag[5]
 			{
 				new Tag("Tile"),
 				new Tag("MeshTile"),
 				new Tag("InsulationTile"),
 				new Tag("GasPermeableMembrane"),
-				new Tag("CarpetTile"),
-				new Tag("MouldingTile")
+				new Tag("CarpetTile")
 			};
 			Tag[] array2 = array;
 			foreach (Tag item in array2)

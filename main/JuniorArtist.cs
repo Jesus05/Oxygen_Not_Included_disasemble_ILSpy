@@ -16,9 +16,10 @@ public class JuniorArtist : RoleConfig
 		{
 			Db.Get().Attributes.Art
 		};
-		base.perks = new RolePerk[2]
+		base.perks = new RolePerk[3]
 		{
 			RoleManager.rolePerks.CanArt,
+			RoleManager.rolePerks.CanArtUgly,
 			RoleManager.rolePerks.IncreaseArtSmall
 		};
 	}

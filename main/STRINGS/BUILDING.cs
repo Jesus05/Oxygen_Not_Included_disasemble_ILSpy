@@ -776,9 +776,9 @@ namespace STRINGS
 
 			public class DISEMBARKINGDUPLICANT
 			{
-				public static LocString NAME = "Duplicant Waiting To Disembark";
+				public static LocString NAME = "Waiting To Disembark";
 
-				public static LocString TOOLTIP = "The Duplicant won't leave until the " + BUILDINGS.PREFABS.GANTRY.NAME + " is extended.";
+				public static LocString TOOLTIP = "The Duplicant inside this rocket can't come out until the " + BUILDINGS.PREFABS.GANTRY.NAME + " is extended";
 			}
 
 			public class ROCKETNAME

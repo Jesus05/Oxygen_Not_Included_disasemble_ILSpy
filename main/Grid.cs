@@ -1005,7 +1005,7 @@ public class Grid
 
 	public static bool VisibleBlockingCB(int cell)
 	{
-		return !Transparent[cell] && Element[cell].IsSolid;
+		return !Transparent[cell] && IsSolidCell(cell);
 	}
 
 	public static bool VisibilityTest(int x, int y, int x2, int y2, bool blocking_tile_visible = false)

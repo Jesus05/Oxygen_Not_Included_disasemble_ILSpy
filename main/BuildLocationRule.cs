@@ -4,6 +4,7 @@ public enum BuildLocationRule
 	OnFloor,
 	OnFloorOverSpace,
 	OnCeiling,
+	OnWall,
 	Tile,
 	NotInTiles,
 	Conduit,

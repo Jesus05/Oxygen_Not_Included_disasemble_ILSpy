@@ -43,6 +43,7 @@ public class ClothingFabricatorConfig : IBuildingConfig
 		go.AddOrGet<ComplexFabricatorWorkable>().AnimOffset = new Vector3(-1f, 0f, 0f);
 		complexFabricator.sideScreenStyle = ComplexFabricatorSideScreen.StyleSetting.ListQueueHybrid;
 		go.AddOrGet<FabricatorIngredientStatusManager>();
+		go.AddOrGet<CopyBuildingSettings>();
 		ConfigureRecipes();
 		BuildingTemplates.CreateComplexFabricatorStorage(go, complexFabricator);
 	}

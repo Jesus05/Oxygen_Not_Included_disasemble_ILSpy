@@ -137,8 +137,7 @@ public class BuildMenu : KScreen
 				new BuildingInfo("MetalTile", Action.BuildMenuKeyX),
 				new BuildingInfo("GlassTile", Action.BuildMenuKeyW),
 				new BuildingInfo("BunkerTile", Action.BuildMenuKeyB),
-				new BuildingInfo("CarpetTile", Action.BuildMenuKeyL),
-				new BuildingInfo("MouldingTile", Action.BuildMenuKeyM)
+				new BuildingInfo("CarpetTile", Action.BuildMenuKeyL)
 			}),
 			new DisplayInfo(CacheHashString("Ladders"), "icon_category_base", Action.BuildCategoryLadders, KKeyCode.A, new List<BuildingInfo>
 			{
@@ -235,7 +234,8 @@ public class BuildMenu : KScreen
 				new BuildingInfo("CanvasTall", Action.BuildMenuKeyT),
 				new BuildingInfo("Sculpture", Action.BuildMenuKeyS),
 				new BuildingInfo("IceSculpture", Action.BuildMenuKeyE),
-				new BuildingInfo("ItemPedestal", Action.BuildMenuKeyD)
+				new BuildingInfo("ItemPedestal", Action.BuildMenuKeyD),
+				new BuildingInfo("CrownMoulding", Action.BuildMenuKeyD)
 			}),
 			new DisplayInfo(CacheHashString("Recreation"), "icon_category_medical", Action.BuildCategoryRecreation, KKeyCode.R, new List<BuildingInfo>
 			{

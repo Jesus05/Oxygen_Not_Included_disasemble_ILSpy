@@ -39,6 +39,8 @@ internal class SameSpotPoopStates : GameStateMachine<SameSpotPoopStates, SameSpo
 
 	public State behaviourcomplete;
 
+	public State updatepoopcell;
+
 	public IntParameter targetCell;
 
 	public override void InitializeStates(out BaseState default_state)
@@ -48,12 +50,16 @@ internal class SameSpotPoopStates : GameStateMachine<SameSpotPoopStates, SameSpo
 		{
 			targetCell.Set(smi.GetSMI<GasAndLiquidConsumerMonitor.Instance>().targetCell, smi);
 		});
-		goingtopoop.MoveTo((Instance smi) => smi.GetLastPoopCell(), pooping, pooping, false);
+		goingtopoop.MoveTo((Instance smi) => smi.GetLastPoopCell(), pooping, updatepoopcell, false);
 		State state = pooping.PlayAnim("poop");
 		string name = CREATURES.STATUSITEMS.EXPELLING_SOLID.NAME;
 		string tooltip = CREATURES.STATUSITEMS.EXPELLING_SOLID.TOOLTIP;
 		StatusItemCategory main = Db.Get().StatusItemCategories.Main;
 		state.ToggleStatusItem(name, tooltip, "", StatusItem.IconType.Info, NotificationType.Neutral, false, default(HashedString), 63486, null, null, main).OnAnimQueueComplete(behaviourcomplete);
+		updatepoopcell.Enter(delegate(Instance smi)
+		{
+			smi.SetLastPoopCell();
+		}).GoTo(pooping);
 		behaviourcomplete.BehaviourComplete(GameTags.Creatures.Poop, false);
 	}
 }

@@ -1,29 +1,30 @@
 using TUNING;
 using UnityEngine;
 
-public class FlowerVaseConfig : IBuildingConfig
+public class FlowerVaseHangingConfig : IBuildingConfig
 {
-	public const string ID = "FlowerVase";
+	public const string ID = "FlowerVaseHanging";
 
 	public override BuildingDef CreateBuildingDef()
 	{
-		string id = "FlowerVase";
+		string id = "FlowerVaseHanging";
 		int width = 1;
-		int height = 1;
-		string anim = "flowervase_kanim";
+		int height = 2;
+		string anim = "flowervase_hanging_basic_kanim";
 		int hitpoints = 10;
 		float construction_time = 10f;
 		float[] tIER = BUILDINGS.CONSTRUCTION_MASS_KG.TIER1;
-		string[] rAW_MINERALS = MATERIALS.RAW_MINERALS;
+		string[] rAW_METALS = MATERIALS.RAW_METALS;
 		float melting_point = 800f;
-		BuildLocationRule build_location_rule = BuildLocationRule.OnFloor;
+		BuildLocationRule build_location_rule = BuildLocationRule.OnCeiling;
 		EffectorValues nONE = NOISE_POLLUTION.NONE;
-		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, tIER, rAW_MINERALS, melting_point, build_location_rule, BUILDINGS.DECOR.NONE, nONE, 0.2f);
+		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, tIER, rAW_METALS, melting_point, build_location_rule, BUILDINGS.DECOR.NONE, nONE, 0.2f);
 		buildingDef.Floodable = false;
 		buildingDef.Overheatable = false;
 		buildingDef.ViewMode = OverlayModes.Decor.ID;
 		buildingDef.AudioCategory = "Glass";
 		buildingDef.AudioSize = "large";
+		buildingDef.GenerateOffsets(1, 1);
 		return buildingDef;
 	}
 

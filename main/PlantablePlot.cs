@@ -13,6 +13,8 @@ public class PlantablePlot : SingleEntityReceptacle, ISaveLoadable, IEffectDescr
 	[Serialize]
 	private Ref<KPrefabID> plantRef;
 
+	public Grid.SceneLayer plantLayer = Grid.SceneLayer.BuildingBack;
+
 	private EntityPreview plantPreview;
 
 	[SerializeField]
@@ -171,8 +173,8 @@ public class PlantablePlot : SingleEntityReceptacle, ISaveLoadable, IEffectDescr
 		PlantableSeed component = depositedEntity.GetComponent<PlantableSeed>();
 		if (!((UnityEngine.Object)component == (UnityEngine.Object)null))
 		{
-			Vector3 position = Grid.CellToPosCBC(Grid.PosToCell(this), Grid.SceneLayer.BuildingBack);
-			GameObject gameObject = GameUtil.KInstantiate(Assets.GetPrefab(component.PlantID), position, Grid.SceneLayer.BuildingBack, null, 0);
+			Vector3 position = Grid.CellToPosCBC(Grid.PosToCell(this), plantLayer);
+			GameObject gameObject = GameUtil.KInstantiate(Assets.GetPrefab(component.PlantID), position, plantLayer, null, 0);
 			gameObject.SetActive(true);
 			KPrefabID component2 = gameObject.GetComponent<KPrefabID>();
 			plantRef.Set(component2);
@@ -198,6 +200,13 @@ public class PlantablePlot : SingleEntityReceptacle, ISaveLoadable, IEffectDescr
 		}
 		Debug.LogError("Planted seed " + depositedEntity.gameObject.name + " is missing PlantableSeed component", null);
 		return null;
+	}
+
+	protected override void PositionOccupyingObject()
+	{
+		base.PositionOccupyingObject();
+		KBatchedAnimController component = base.occupyingObject.GetComponent<KBatchedAnimController>();
+		component.SetSceneLayer(plantLayer);
 	}
 
 	private void RegisterWithPlant(GameObject plant)

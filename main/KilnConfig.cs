@@ -57,6 +57,7 @@ public class KilnConfig : IBuildingConfig
 		complexFabricator.duplicantOperated = false;
 		complexFabricator.sideScreenStyle = ComplexFabricatorSideScreen.StyleSetting.ListQueueHybrid;
 		go.AddOrGet<FabricatorIngredientStatusManager>();
+		go.AddOrGet<CopyBuildingSettings>();
 		BuildingTemplates.CreateComplexFabricatorStorage(go, complexFabricator);
 		ConfgiureRecipes();
 		Prioritizable.AddRef(go);
@@ -87,6 +88,7 @@ public class KilnConfig : IBuildingConfig
 		{
 			TagManager.Create("Kiln")
 		};
+		complexRecipe.useResultAsDescription = true;
 		ComplexRecipeManager.Get().AddObsoleteIDMapping(obsolete_id, text);
 		Tag tag2 = SimHashes.RefinedCarbon.CreateTag();
 		ComplexRecipe.RecipeElement[] array3 = new ComplexRecipe.RecipeElement[1]
@@ -106,6 +108,7 @@ public class KilnConfig : IBuildingConfig
 		{
 			TagManager.Create("Kiln")
 		};
+		complexRecipe.useResultAsDescription = true;
 		ComplexRecipeManager.Get().AddObsoleteIDMapping(obsolete_id2, text2);
 	}
 

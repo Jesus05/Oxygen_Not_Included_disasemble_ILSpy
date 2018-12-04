@@ -115,18 +115,20 @@ public class StoredMinionIdentity : KMonoBehaviour, ISaveLoadable, IAssignableId
 			}
 			component.InstanceID = KPrefabID.GetUniqueID();
 			KPrefabIDTracker.Get().Register(component);
+			assignableProxy.Get().SetTarget(this, base.gameObject);
+			Output.LogWarning("Restored as:", component.InstanceID);
 		}
 		bool flag2 = false;
 		foreach (MinionStorage item in Components.MinionStorages.Items)
 		{
-			for (int i = 0; i < item.GetStoredMinionInfo().Count; i++)
+			List<MinionStorage.Info> storedMinionInfo = item.GetStoredMinionInfo();
+			for (int i = 0; i < storedMinionInfo.Count; i++)
 			{
-				MinionStorage.Info info = item.GetStoredMinionInfo()[i];
+				MinionStorage.Info info = storedMinionInfo[i];
 				if (flag && info.serializedMinion != null && info.serializedMinion.GetId() == -1 && info.name == storedName)
 				{
-					Output.LogWarning("Found a minion storage with an invalid ref, rebinding.", storedName, item.gameObject.name);
-					info = new MinionStorage.Info(storedName, new Ref<KPrefabID>(component));
-					item.GetStoredMinionInfo()[i] = info;
+					Output.LogWarning("Found a minion storage with an invalid ref, rebinding.", component.InstanceID, storedName, item.gameObject.name);
+					info = (storedMinionInfo[i] = new MinionStorage.Info(storedName, new Ref<KPrefabID>(component)));
 					Assignable component2 = item.GetComponent<Assignable>();
 					component2.Assign(this);
 					flag2 = true;
@@ -145,7 +147,7 @@ public class StoredMinionIdentity : KMonoBehaviour, ISaveLoadable, IAssignableId
 		}
 		if (!flag2)
 		{
-			Output.LogWarning("Found a stored minion that wasn't in any minion storage. Respawning them at the portal.", storedName);
+			Output.LogWarning("Found a stored minion that wasn't in any minion storage. Respawning them at the portal.", component.InstanceID, storedName);
 			GameObject telepad = GameUtil.GetTelepad();
 			if ((Object)telepad != (Object)null)
 			{

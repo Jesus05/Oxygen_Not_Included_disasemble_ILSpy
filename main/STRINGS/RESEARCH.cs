@@ -208,13 +208,6 @@ namespace STRINGS
 				public static LocString DESC = "Rudimentary technologies for installing " + UI.FormatAsLink("Liquid", "ELEMENTS_LIQUID") + " infrastructure.";
 			}
 
-			public class LUXURY
-			{
-				public static LocString NAME = UI.FormatAsLink("Home Luxuries", "LUXURY");
-
-				public static LocString DESC = "Luxury amenities for advanced " + UI.FormatAsLink("Stress", "STRESS") + " reduction.";
-			}
-
 			public class IMPROVEDLIQUIDPIPING
 			{
 				public static LocString NAME = UI.FormatAsLink("Improved Plumbing", "IMPROVEDLIQUIDPIPING");
@@ -292,6 +285,41 @@ namespace STRINGS
 				public static LocString DESC = "Majorly improve " + UI.FormatAsLink("Decor", "DECOR") + " by allowing Duplicants artistic and emotional expression.";
 			}
 
+			public class CLOTHING
+			{
+				public static LocString NAME = UI.FormatAsLink("Textile Production", "CLOTHING");
+
+				public static LocString DESC = "Allow Duplicants to explore their softer side.";
+			}
+
+			public class ACOUSTICS
+			{
+				public static LocString NAME = UI.FormatAsLink("Acoustics", "ACOUSTICS");
+
+				public static LocString DESC = "Precise control of the audio spectrum allows Duplicants to get funky.";
+			}
+
+			public class LUXURY
+			{
+				public static LocString NAME = UI.FormatAsLink("Home Luxuries", "LUXURY");
+
+				public static LocString DESC = "Luxury amenities for advanced " + UI.FormatAsLink("Stress", "STRESS") + " reduction.";
+			}
+
+			public class FINEART
+			{
+				public static LocString NAME = UI.FormatAsLink("Fine Art", "FINEART");
+
+				public static LocString DESC = "Broader options for artistic " + UI.FormatAsLink("Decor", "DECOR") + " improvements.";
+			}
+
+			public class REFRACTIVEDECOR
+			{
+				public static LocString NAME = UI.FormatAsLink("Advanced Chiselwork", "REFRACTIVEDECOR");
+
+				public static LocString DESC = "Methods for working with high quality art materials.";
+			}
+
 			public class ADVANCEDPOWERREGULATION
 			{
 				public static LocString NAME = UI.FormatAsLink("Advanced Power Regulation", "ADVANCEDPOWERREGULATION");
@@ -304,13 +332,6 @@ namespace STRINGS
 				public static LocString NAME = UI.FormatAsLink("Plastic Manufacturing", "PLASTICS");
 
 				public static LocString DESC = "Stable, lightweight, durable. Plastics are useful in a wide array of applications.";
-			}
-
-			public class CLOTHING
-			{
-				public static LocString NAME = UI.FormatAsLink("Self Expression", "CLOTHING");
-
-				public static LocString DESC = "Produce leisurely luxury items for Duplicants.";
 			}
 
 			public class SUITS
@@ -451,13 +472,6 @@ namespace STRINGS
 				public static LocString NAME = UI.FormatAsLink("Celestial Detection", "SKYDETECTORS");
 
 				public static LocString DESC = "Space: It's not quite as empty as you might think.";
-			}
-
-			public class REFRACTIVEDECOR
-			{
-				public static LocString NAME = UI.FormatAsLink("Refractive Decor", "REFRACTIVEDECOR");
-
-				public static LocString DESC = "The ultimate solution to ugly things? Make them transparent.";
 			}
 
 			public class JETPACKS

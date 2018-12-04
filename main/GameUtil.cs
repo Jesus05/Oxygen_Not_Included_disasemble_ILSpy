@@ -1939,6 +1939,42 @@ public static class GameUtil
 		return text + text3 + text2;
 	}
 
+	public static string GenerateRandomRocketName()
+	{
+		string text = "";
+		string newValue = "";
+		string newValue2 = "";
+		string newValue3 = "";
+		int num = 1;
+		int num2 = 2;
+		int num3 = 4;
+		List<string> tList = new List<string>(LocString.GetStrings(typeof(NAMEGEN.ROCKET.NOUN)));
+		text = tList.GetRandom();
+		int num4 = 0;
+		if (UnityEngine.Random.value > 0.7f)
+		{
+			List<string> tList2 = new List<string>(LocString.GetStrings(typeof(NAMEGEN.ROCKET.PREFIX)));
+			newValue = tList2.GetRandom();
+			num4 |= num;
+		}
+		if (UnityEngine.Random.value > 0.5f)
+		{
+			List<string> tList3 = new List<string>(LocString.GetStrings(typeof(NAMEGEN.ROCKET.ADJECTIVE)));
+			newValue2 = tList3.GetRandom();
+			num4 |= num2;
+		}
+		if (UnityEngine.Random.value > 0.1f)
+		{
+			List<string> tList4 = new List<string>(LocString.GetStrings(typeof(NAMEGEN.ROCKET.SUFFIX)));
+			newValue3 = tList4.GetRandom();
+			num4 |= num3;
+		}
+		string text2 = (num4 == (num | num2 | num3)) ? ((string)NAMEGEN.ROCKET.FMT_PREFIX_ADJECTIVE_NOUN_SUFFIX) : ((num4 == (num2 | num3)) ? ((string)NAMEGEN.ROCKET.FMT_ADJECTIVE_NOUN_SUFFIX) : ((num4 == (num | num3)) ? ((string)NAMEGEN.ROCKET.FMT_PREFIX_NOUN_SUFFIX) : ((num4 == num3) ? ((string)NAMEGEN.ROCKET.FMT_NOUN_SUFFIX) : ((num4 == (num | num2)) ? ((string)NAMEGEN.ROCKET.FMT_PREFIX_ADJECTIVE_NOUN) : ((num4 == num) ? ((string)NAMEGEN.ROCKET.FMT_PREFIX_NOUN) : ((num4 != num2) ? ((string)NAMEGEN.ROCKET.FMT_NOUN) : ((string)NAMEGEN.ROCKET.FMT_ADJECTIVE_NOUN)))))));
+		Output.Log("Rocket name bits:", Convert.ToString(num4, 2));
+		return text2.Replace("{Prefix}", newValue).Replace("{Adjective}", newValue2).Replace("{Noun}", text)
+			.Replace("{Suffix}", newValue3);
+	}
+
 	public static float GetThermalComfort(int cell, float tolerance = -0.0836800039f)
 	{
 		float num = 0f;

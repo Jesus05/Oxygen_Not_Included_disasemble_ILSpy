@@ -10,7 +10,7 @@ public class LogicCritterCountSensorConfig : IBuildingConfig
 		string iD = ID;
 		int width = 1;
 		int height = 1;
-		string anim = "switchtimeofday_kanim";
+		string anim = "critter_sensor_kanim";
 		int hitpoints = 30;
 		float construction_time = 30f;
 		float[] tIER = BUILDINGS.CONSTRUCTION_MASS_KG.TIER0;

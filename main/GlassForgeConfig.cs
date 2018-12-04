@@ -49,6 +49,7 @@ public class GlassForgeConfig : IBuildingConfig
 		GlassForge glassForge = go.AddOrGet<GlassForge>();
 		glassForge.sideScreenStyle = ComplexFabricatorSideScreen.StyleSetting.ListQueueHybrid;
 		go.AddOrGet<FabricatorIngredientStatusManager>();
+		go.AddOrGet<CopyBuildingSettings>();
 		ComplexFabricatorWorkable complexFabricatorWorkable = go.AddOrGet<ComplexFabricatorWorkable>();
 		glassForge.duplicantOperated = true;
 		BuildingTemplates.CreateComplexFabricatorStorage(go, glassForge);

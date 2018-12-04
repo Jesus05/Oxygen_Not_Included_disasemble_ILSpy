@@ -473,8 +473,9 @@ public class LaunchableRocket : StateMachineComponent<LaunchableRocket.StatesIns
 		int spacecraftID = SpacecraftManager.instance.GetSpacecraftID(this);
 		if (spacecraftID == -1)
 		{
-			Spacecraft craft = new Spacecraft(GetComponent<LaunchConditionManager>());
-			SpacecraftManager.instance.RegisterSpacecraft(craft);
+			Spacecraft spacecraft = new Spacecraft(GetComponent<LaunchConditionManager>());
+			spacecraft.GenerateName();
+			SpacecraftManager.instance.RegisterSpacecraft(spacecraft);
 		}
 		base.smi.StartSM();
 	}

@@ -57,6 +57,7 @@ public class MetalRefineryConfig : IBuildingConfig
 		liquidCooledRefinery.duplicantOperated = true;
 		liquidCooledRefinery.sideScreenStyle = ComplexFabricatorSideScreen.StyleSetting.ListQueueHybrid;
 		go.AddOrGet<FabricatorIngredientStatusManager>();
+		go.AddOrGet<CopyBuildingSettings>();
 		ComplexFabricatorWorkable complexFabricatorWorkable = go.AddOrGet<ComplexFabricatorWorkable>();
 		BuildingTemplates.CreateComplexFabricatorStorage(go, liquidCooledRefinery);
 		liquidCooledRefinery.coolantTag = COOLANT_TAG;

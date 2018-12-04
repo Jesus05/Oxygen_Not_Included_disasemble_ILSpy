@@ -114,12 +114,8 @@ public class SleepChoreMonitor : GameStateMachine<SleepChoreMonitor, SleepChoreM
 			}
 		});
 		passingout.ToggleChore(CreatePassingOutChore, satisfied, satisfied);
-		sleeponfloor.ToggleChore(CreateSleepOnFloorChore, satisfied, satisfied);
-		bedassigned.ParamTransition(bed, checkforbed, (Instance smi, GameObject p) => (Object)p == (Object)null).EventHandler(GameHashes.AssignablesChanged, (StateMachine<SleepChoreMonitor, Instance, IStateMachineTarget, object>.State.Callback)delegate
-		{
-			Debug.Log("BED ASSIGNMENT CHANGED", null);
-		}).EventTransition(GameHashes.AssignablesChanged, checkforbed, null)
-			.EventTransition(GameHashes.AssignableReachabilityChanged, checkforbed, (Instance smi) => !smi.IsBedReachable())
+		sleeponfloor.EventTransition(GameHashes.AssignablesChanged, checkforbed, null).EventTransition(GameHashes.AssignableReachabilityChanged, checkforbed, (Instance smi) => smi.IsBedReachable()).ToggleChore(CreateSleepOnFloorChore, satisfied, satisfied);
+		bedassigned.ParamTransition(bed, checkforbed, (Instance smi, GameObject p) => (Object)p == (Object)null).EventTransition(GameHashes.AssignablesChanged, checkforbed, null).EventTransition(GameHashes.AssignableReachabilityChanged, checkforbed, (Instance smi) => !smi.IsBedReachable())
 			.ToggleChore(CreateSleepChore, satisfied, satisfied);
 	}
 

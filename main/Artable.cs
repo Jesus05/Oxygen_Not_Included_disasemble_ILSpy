@@ -16,21 +16,18 @@ public class Artable : Workable
 
 		public string anim;
 
-		public int minimumSkill;
-
 		public int decor;
 
 		public bool cheerOnComplete;
 
 		public Status statusItem;
 
-		public Stage(string id, string name, string anim, int minimum_skill, int decor_value, bool cheer_on_complete, Status status_item)
+		public Stage(string id, string name, string anim, int decor_value, bool cheer_on_complete, Status status_item)
 		{
 			this.id = id;
 			this.name = name;
 			this.anim = anim;
 			decor = decor_value;
-			minimumSkill = minimum_skill;
 			cheerOnComplete = cheer_on_complete;
 			statusItem = status_item;
 		}
@@ -54,7 +51,7 @@ public class Artable : Workable
 
 	private WorkChore<Artable> chore;
 
-	protected string CurrentStage => currentStage;
+	public string CurrentStage => currentStage;
 
 	protected Artable()
 	{
@@ -72,6 +69,7 @@ public class Artable : Workable
 		workerStatusItem = Db.Get().DuplicantStatusItems.Arting;
 		attributeConverter = Db.Get().AttributeConverters.ArtSpeed;
 		attributeExperienceMultiplier = DUPLICANTSTATS.ATTRIBUTE_LEVELING.MOST_DAY_EXPERIENCE;
+		requiredRolePerk = RoleManager.rolePerks.CanArt.id;
 		SetWorkTime(80f);
 	}
 
@@ -90,24 +88,35 @@ public class Artable : Workable
 			ChoreType art = Db.Get().ChoreTypes.Art;
 			Tag[] artChores = GameTags.ChoreTypes.ArtChores;
 			chore = new WorkChore<Artable>(art, this, null, artChores, true, null, null, null, true, null, false, true, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, false);
-			chore.AddPrecondition(ChorePreconditions.instance.HasRolePerk, RoleManager.rolePerks.CanArt.id);
+			chore.AddPrecondition(ChorePreconditions.instance.HasRolePerk, requiredRolePerk);
 		}
 		base.OnSpawn();
 	}
 
 	protected override void OnCompleteWork(Worker worker)
 	{
-		AttributeInstance attributeInstance = Db.Get().Attributes.Art.Lookup(worker);
-		int art_skill = (int)attributeInstance.GetTotalValue();
+		Status artist_skill = Status.Ugly;
+		MinionResume component = worker.GetComponent<MinionResume>();
+		if ((UnityEngine.Object)component != (UnityEngine.Object)null)
+		{
+			if (component.HasPerk(RoleManager.rolePerks.CanArtGreat.id))
+			{
+				artist_skill = Status.Great;
+			}
+			else if (component.HasPerk(RoleManager.rolePerks.CanArtOkay.id))
+			{
+				artist_skill = Status.Okay;
+			}
+		}
 		List<Stage> potential_stages = new List<Stage>();
 		stages.ForEach(delegate(Stage item)
 		{
 			potential_stages.Add(item);
 		});
-		potential_stages.RemoveAll((Stage x) => x.minimumSkill > art_skill || x.id == "Default");
-		potential_stages.Sort((Stage x, Stage y) => y.minimumSkill.CompareTo(x.minimumSkill));
-		int highest_skill = potential_stages[0].minimumSkill;
-		potential_stages.RemoveAll((Stage x) => x.minimumSkill < highest_skill);
+		potential_stages.RemoveAll((Stage x) => x.statusItem > artist_skill || x.id == "Default");
+		potential_stages.Sort((Stage x, Stage y) => y.statusItem.CompareTo(x.statusItem));
+		Status highest_status = potential_stages[0].statusItem;
+		potential_stages.RemoveAll((Stage x) => x.statusItem < highest_status);
 		potential_stages.Shuffle();
 		SetStage(potential_stages[0].id, false);
 		if (potential_stages[0].cheerOnComplete)

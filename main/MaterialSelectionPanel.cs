@@ -1,6 +1,7 @@
 using STRINGS;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class MaterialSelectionPanel : KScreen
@@ -186,6 +187,31 @@ public class MaterialSelectionPanel : KScreen
 			}
 		}
 		return result;
+	}
+
+	public void SelectSourcesMaterials(Building building)
+	{
+		Tag[] array = null;
+		Deconstructable component = building.gameObject.GetComponent<Deconstructable>();
+		if ((UnityEngine.Object)component != (UnityEngine.Object)null)
+		{
+			array = component.constructionElements;
+		}
+		Constructable component2 = building.GetComponent<Constructable>();
+		if ((UnityEngine.Object)component2 != (UnityEngine.Object)null)
+		{
+			array = component2.SelectedElementsTags.ToArray();
+		}
+		if (array != null)
+		{
+			for (int i = 0; i < Mathf.Min(array.Length, MaterialSelectors.Count); i++)
+			{
+				if (MaterialSelectors[i].ElementToggles.ContainsKey(array[i]))
+				{
+					MaterialSelectors[i].OnSelectMaterial(array[i], activeRecipe, false);
+				}
+			}
+		}
 	}
 
 	public bool CanBuild(Recipe recipe)

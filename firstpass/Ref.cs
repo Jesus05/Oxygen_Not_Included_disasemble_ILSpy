@@ -1,5 +1,6 @@
 using KSerialization;
 using System.Diagnostics;
+using System.Runtime.Serialization;
 using UnityEngine;
 
 [SerializationConfig(MemberSerialization.OptIn)]
@@ -20,8 +21,28 @@ public class Ref<ReferenceType> : ISaveLoadable where ReferenceType : KMonoBehav
 	{
 	}
 
+	private void UpdateID()
+	{
+		ReferenceType exists = Get();
+		if ((bool)(Object)exists)
+		{
+			id = ((Component)obj).GetComponent<KPrefabID>().InstanceID;
+		}
+		else
+		{
+			id = -1;
+		}
+	}
+
+	[OnSerializing]
+	public void OnSerializing()
+	{
+		UpdateID();
+	}
+
 	public int GetId()
 	{
+		UpdateID();
 		return id;
 	}
 

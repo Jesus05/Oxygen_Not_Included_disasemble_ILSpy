@@ -48,6 +48,7 @@ public enum Action
 	Plan10,
 	Plan11,
 	Plan12,
+	CopyBuilding,
 	BuildCategoryLadders,
 	BuildCategoryTiles,
 	BuildCategoryDoors,

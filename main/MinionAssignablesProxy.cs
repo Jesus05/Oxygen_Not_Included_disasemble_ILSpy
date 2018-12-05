@@ -29,15 +29,16 @@ public class MinionAssignablesProxy : KMonoBehaviour, IAssignableIdentity
 
 	public GameObject GetTargetGameObject()
 	{
-		if (target == null)
+		if (target == null && target_instance_id != -1)
 		{
-			if (target_instance_id == -1)
-			{
-				return null;
-			}
 			RestoreTargetFromInstanceID();
 		}
-		return (target as KMonoBehaviour).gameObject;
+		if (target == null)
+		{
+			return null;
+		}
+		KMonoBehaviour kMonoBehaviour = (KMonoBehaviour)target;
+		return kMonoBehaviour.gameObject;
 	}
 
 	public void SetTarget(IAssignableIdentity target, GameObject targetGO)
@@ -124,7 +125,8 @@ public class MinionAssignablesProxy : KMonoBehaviour, IAssignableIdentity
 	{
 		if (!target.IsNull())
 		{
-			(target as KMonoBehaviour).Trigger(-1585839766, data);
+			KMonoBehaviour kMonoBehaviour = (KMonoBehaviour)target;
+			kMonoBehaviour.Trigger(-1585839766, data);
 		}
 	}
 
@@ -138,13 +140,18 @@ public class MinionAssignablesProxy : KMonoBehaviour, IAssignableIdentity
 				target = instance.GetComponent<IAssignableIdentity>();
 				if (target != null)
 				{
-					if (target is MinionIdentity)
+					MinionIdentity minionIdentity = target as MinionIdentity;
+					if ((bool)minionIdentity)
 					{
-						(target as MinionIdentity).assignableProxy = InitAssignableProxy((target as MinionIdentity).assignableProxy, target as MinionIdentity);
+						minionIdentity.ValidateProxy();
 					}
-					else if (target is StoredMinionIdentity)
+					else
 					{
-						(target as StoredMinionIdentity).assignableProxy = InitAssignableProxy((target as StoredMinionIdentity).assignableProxy, target as StoredMinionIdentity);
+						StoredMinionIdentity storedMinionIdentity = target as StoredMinionIdentity;
+						if ((bool)storedMinionIdentity)
+						{
+							storedMinionIdentity.ValidateProxy();
+						}
 					}
 				}
 			}

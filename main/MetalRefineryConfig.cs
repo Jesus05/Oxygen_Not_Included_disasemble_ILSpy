@@ -107,6 +107,7 @@ public class MetalRefineryConfig : IBuildingConfig
 				complexRecipe.time = 40f;
 				complexRecipe.description = string.Format(STRINGS.BUILDINGS.PREFABS.METALREFINERY.RECIPE_DESCRIPTION, lowTempTransition.name, item.name);
 				complexRecipe.useResultAsDescription = true;
+				complexRecipe.displayInputAndOutput = true;
 				complexRecipe.fabricators = new List<Tag>
 				{
 					TagManager.Create("MetalRefinery")
@@ -130,6 +131,7 @@ public class MetalRefineryConfig : IBuildingConfig
 		complexRecipe = new ComplexRecipe(text2, array3, array4);
 		complexRecipe.time = 40f;
 		complexRecipe.useResultAsDescription = true;
+		complexRecipe.displayInputAndOutput = true;
 		complexRecipe.description = string.Format(STRINGS.BUILDINGS.PREFABS.METALREFINERY.RECIPE_DESCRIPTION, ElementLoader.FindElementByHash(SimHashes.Steel).name, ElementLoader.FindElementByHash(SimHashes.Iron).name);
 		complexRecipe.fabricators = new List<Tag>
 		{

@@ -94,11 +94,13 @@ public class StoredMinionIdentity : KMonoBehaviour, ISaveLoadable, IAssignableId
 
 	protected override void OnSpawn()
 	{
-		if ((Object)assignableProxy.Get() == (Object)null)
-		{
-			assignableProxy = MinionAssignablesProxy.InitAssignableProxy(assignableProxy, this);
-		}
+		ValidateProxy();
 		CleanupLimboMinions();
+	}
+
+	public void ValidateProxy()
+	{
+		assignableProxy = MinionAssignablesProxy.InitAssignableProxy(assignableProxy, this);
 	}
 
 	private void CleanupLimboMinions()
@@ -109,15 +111,26 @@ public class StoredMinionIdentity : KMonoBehaviour, ISaveLoadable, IAssignableId
 		{
 			Output.LogWarning("Stored minion with an invalid kpid! Attempting to recover...", storedName);
 			flag = true;
-			if ((Object)KPrefabIDTracker.Get().GetInstance(-1) != (Object)null)
+			if ((Object)KPrefabIDTracker.Get().GetInstance(component.InstanceID) != (Object)null)
 			{
 				KPrefabIDTracker.Get().Unregister(component);
 			}
 			component.InstanceID = KPrefabID.GetUniqueID();
 			KPrefabIDTracker.Get().Register(component);
-			assignableProxy.Get().SetTarget(this, base.gameObject);
 			Output.LogWarning("Restored as:", component.InstanceID);
 		}
+		if (component.conflicted)
+		{
+			Output.LogWarning("Minion with an conflicted kpid! Attempting to recover...", base.name);
+			if ((Object)KPrefabIDTracker.Get().GetInstance(component.InstanceID) != (Object)null)
+			{
+				KPrefabIDTracker.Get().Unregister(component);
+			}
+			component.InstanceID = KPrefabID.GetUniqueID();
+			KPrefabIDTracker.Get().Register(component);
+			Output.LogWarning("Restored as:", component.InstanceID);
+		}
+		assignableProxy.Get().SetTarget(this, base.gameObject);
 		bool flag2 = false;
 		foreach (MinionStorage item in Components.MinionStorages.Items)
 		{

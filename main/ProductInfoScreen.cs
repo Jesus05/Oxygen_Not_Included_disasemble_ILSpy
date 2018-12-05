@@ -216,23 +216,38 @@ public class ProductInfoScreen : KScreen
 						value2 = (dictionary2[key2] = value2 + attributeModifier2.Value);
 					}
 				}
+				else
+				{
+					GameObject gameObject = Assets.TryGetPrefab(materialSelectionPanel.CurrentSelectedElement);
+					PrefabAttributeModifiers component = gameObject.GetComponent<PrefabAttributeModifiers>();
+					if ((UnityEngine.Object)component != (UnityEngine.Object)null)
+					{
+						foreach (AttributeModifier descriptor in component.descriptors)
+						{
+							float value3 = 0f;
+							Klei.AI.Attribute key3 = Db.Get().BuildingAttributes.Get(descriptor.AttributeId);
+							dictionary2.TryGetValue(key3, out value3);
+							value3 = (dictionary2[key3] = value3 + descriptor.Value);
+						}
+					}
+				}
 			}
 			if (dictionary.Count > 0)
 			{
 				text += "\n\n";
 				foreach (KeyValuePair<Klei.AI.Attribute, float> item in dictionary)
 				{
-					float value3 = 0f;
-					dictionary.TryGetValue(item.Key, out value3);
 					float value4 = 0f;
+					dictionary.TryGetValue(item.Key, out value4);
+					float value5 = 0f;
 					string text2 = "";
-					if (dictionary2.TryGetValue(item.Key, out value4))
+					if (dictionary2.TryGetValue(item.Key, out value5))
 					{
-						value4 = Mathf.Abs(value3 * value4);
-						text2 = "(+" + value4 + ")";
+						value5 = Mathf.Abs(value4 * value5);
+						text2 = "(+" + value5 + ")";
 					}
 					string text3 = text;
-					text = text3 + "\n" + item.Key.Name + ": " + (value3 + value4) + text2;
+					text = text3 + "\n" + item.Key.Name + ": " + (value4 + value5) + text2;
 				}
 			}
 			productFlavourText.text = text;

@@ -789,20 +789,6 @@ namespace STRINGS
 
 				public static LocString LOGISTICAL = "Logistical";
 
-				public static LocString MARS = "Mars";
-
-				public static LocString SATURN = "Saturn";
-
-				public static LocString JUPITER = "Jupiter";
-
-				public static LocString VENUS = "Venus";
-
-				public static LocString URANUS = "Uranus";
-
-				public static LocString NEPTUNE = "Neptune";
-
-				public static LocString PLUTO = "Pluto";
-
 				public static LocString EJECTED = "Ejected";
 
 				public static LocString NEON = "Neon";
@@ -824,6 +810,12 @@ namespace STRINGS
 				public static LocString WANDERING = "Wandering";
 
 				public static LocString EXPLORATORY = "Exploratory";
+
+				public static LocString ARDENT = "Ardent";
+
+				public static LocString PROGRESS = "Progress";
+
+				public static LocString PEACE = "Peace";
 			}
 
 			public class NOUN
@@ -880,13 +872,23 @@ namespace STRINGS
 
 				public static LocString SAT = "SAT";
 
-				public static LocString ARDENT = "Ardent";
-
-				public static LocString PROGRESS = "Progress";
-
-				public static LocString PEACE = "Peace";
-
 				public static LocString PROTOTYPE = "Prototype";
+
+				public static LocString MARS = "Mars";
+
+				public static LocString SATURN = "Saturn";
+
+				public static LocString JUPITER = "Jupiter";
+
+				public static LocString VENUS = "Venus";
+
+				public static LocString URANUS = "Uranus";
+
+				public static LocString NEPTUNE = "Neptune";
+
+				public static LocString PLUTO = "Pluto";
+
+				public static LocString VGER = "V'ger";
 			}
 
 			public class SUFFIX

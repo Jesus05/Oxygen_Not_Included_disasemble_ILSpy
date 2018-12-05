@@ -52,7 +52,8 @@ namespace TUNING
 
 		public static List<Tag> GASES = new List<Tag>
 		{
-			GameTags.Gas
+			GameTags.Breathable,
+			GameTags.Unbreathable
 		};
 	}
 }

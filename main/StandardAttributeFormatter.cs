@@ -67,7 +67,7 @@ public class StandardAttributeFormatter : IAttributeFormatter
 		for (int i = 0; i != instance.Modifiers.Count; i++)
 		{
 			AttributeModifier attributeModifier = instance.Modifiers[i];
-			string formattedString = attributeModifier.GetFormattedString(instance.gameObject, false);
+			string formattedString = attributeModifier.GetFormattedString(instance.gameObject, attributeModifier.IsMultiplier);
 			if (formattedString != null)
 			{
 				tooltipDescription += string.Format(DUPLICANTS.ATTRIBUTES.MODIFIER_ENTRY, attributeModifier.GetDescription(), formattedString);

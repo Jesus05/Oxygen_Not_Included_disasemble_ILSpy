@@ -212,9 +212,9 @@ public class Element : IComparable<Element>
 		{
 			foreach (AttributeModifier attributeModifier in attributeModifiers)
 			{
-				Klei.AI.Attribute attribute = Db.Get().BuildingAttributes.Get(attributeModifier.AttributeId);
-				string text3 = str;
-				str = text3 + "\n" + attribute.Name + ": +" + attributeModifier.Value * 100f + "%";
+				string name = Db.Get().BuildingAttributes.Get(attributeModifier.AttributeId).Name;
+				string formattedString = attributeModifier.GetFormattedString(null, attributeModifier.IsMultiplier);
+				str = str + "\n" + string.Format(DUPLICANTS.MODIFIERS.MODIFIER_FORMAT, name, formattedString);
 			}
 		}
 		return str;

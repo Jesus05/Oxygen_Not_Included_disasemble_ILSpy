@@ -9,7 +9,7 @@ public class Room : IAssignableIdentity
 
 	private List<KPrefabID> primary_buildings = new List<KPrefabID>();
 
-	public List<Ownables> current_owners = new List<Ownables>();
+	private List<Ownables> current_owners = new List<Ownables>();
 
 	public List<KPrefabID> buildings => cavity.buildings;
 
@@ -43,7 +43,8 @@ public class Room : IAssignableIdentity
 
 	public Ownables GetSoleOwner()
 	{
-		return GetOwners()[0];
+		List<Ownables> owners = GetOwners();
+		return (owners.Count <= 0) ? null : owners[0];
 	}
 
 	public List<KPrefabID> GetPrimaryEntities()

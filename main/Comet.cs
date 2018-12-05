@@ -210,7 +210,7 @@ public class Comet : KMonoBehaviour, ISim33ms
 				depth = 0
 			});
 			GameUtil.FloodFillConditional(pooledQueue, SpawnTilesCellTest, pooledHashSet2, pooledHashSet, 10);
-			float mass2 = (num6 <= 0) ? 1f : (addTileMass / (float)num6);
+			float mass2 = (num6 <= 0) ? 1f : (addTileMass / (float)addTiles);
 			UnstableGroundManager component = World.Instance.GetComponent<UnstableGroundManager>();
 			foreach (int item2 in pooledHashSet)
 			{

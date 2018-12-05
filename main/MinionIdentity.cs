@@ -122,6 +122,7 @@ public class MinionIdentity : KMonoBehaviour, ISaveLoadable, IAssignableIdentity
 
 	protected override void OnSpawn()
 	{
+		ValidateProxy();
 		CleanupLimboMinions();
 		PathProber component = GetComponent<PathProber>();
 		if ((UnityEngine.Object)component != (UnityEngine.Object)null)
@@ -176,21 +177,37 @@ public class MinionIdentity : KMonoBehaviour, ISaveLoadable, IAssignableIdentity
 		ApplyCustomGameSettings();
 	}
 
+	public void ValidateProxy()
+	{
+		assignableProxy = MinionAssignablesProxy.InitAssignableProxy(assignableProxy, this);
+	}
+
 	private void CleanupLimboMinions()
 	{
 		KPrefabID component = GetComponent<KPrefabID>();
 		if (component.InstanceID == -1)
 		{
 			Output.LogWarning("Minion with an invalid kpid! Attempting to recover...", name);
-			if ((UnityEngine.Object)KPrefabIDTracker.Get().GetInstance(-1) != (UnityEngine.Object)null)
+			if ((UnityEngine.Object)KPrefabIDTracker.Get().GetInstance(component.InstanceID) != (UnityEngine.Object)null)
 			{
 				KPrefabIDTracker.Get().Unregister(component);
 			}
 			component.InstanceID = KPrefabID.GetUniqueID();
 			KPrefabIDTracker.Get().Register(component);
-			assignableProxy.Get().SetTarget(this, base.gameObject);
 			Output.LogWarning("Restored as:", component.InstanceID);
 		}
+		if (component.conflicted)
+		{
+			Output.LogWarning("Minion with an conflicted kpid! Attempting to recover...", name);
+			if ((UnityEngine.Object)KPrefabIDTracker.Get().GetInstance(component.InstanceID) != (UnityEngine.Object)null)
+			{
+				KPrefabIDTracker.Get().Unregister(component);
+			}
+			component.InstanceID = KPrefabID.GetUniqueID();
+			KPrefabIDTracker.Get().Register(component);
+			Output.LogWarning("Restored as:", component.InstanceID);
+		}
+		assignableProxy.Get().SetTarget(this, base.gameObject);
 	}
 
 	public string GetProperName()
@@ -241,9 +258,10 @@ public class MinionIdentity : KMonoBehaviour, ISaveLoadable, IAssignableIdentity
 
 	protected override void OnCleanUp()
 	{
-		if ((UnityEngine.Object)assignableProxy.Get() != (UnityEngine.Object)null && assignableProxy.Get().target == this)
+		MinionAssignablesProxy minionAssignablesProxy = assignableProxy.Get();
+		if ((bool)minionAssignablesProxy && minionAssignablesProxy.target == this)
 		{
-			Util.KDestroyGameObject(assignableProxy.Get().gameObject);
+			Util.KDestroyGameObject(minionAssignablesProxy.gameObject);
 		}
 		Components.MinionIdentities.Remove(this);
 		Components.LiveMinionIdentities.Remove(this);

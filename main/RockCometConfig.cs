@@ -15,7 +15,8 @@ public class RockCometConfig : IEntityConfig
 		gameObject.AddOrGet<SaveLoadRoot>();
 		gameObject.AddOrGet<LoopingSounds>();
 		Comet comet = gameObject.AddOrGet<Comet>();
-		comet.massRange = new Vector2(600f, 1000f);
+		float mass = ElementLoader.FindElementByHash(SimHashes.Regolith).defaultValues.mass;
+		comet.massRange = new Vector2(mass * 0.8f * 6f, mass * 1.2f * 6f);
 		comet.temperatureRange = new Vector2(323.15f, 423.15f);
 		comet.addTiles = 6;
 		comet.addTilesMinHeight = 2;

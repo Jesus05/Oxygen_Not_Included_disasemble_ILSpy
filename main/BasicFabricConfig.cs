@@ -1,3 +1,4 @@
+using Klei.AI;
 using STRINGS;
 using System.Collections.Generic;
 using TUNING;
@@ -6,6 +7,8 @@ using UnityEngine;
 public class BasicFabricConfig : IEntityConfig
 {
 	public static string ID = "BasicFabric";
+
+	private AttributeModifier decorModifier = new AttributeModifier("Decor", 0.1f, ITEMS.INDUSTRIAL_PRODUCTS.BASIC_FABRIC.NAME, true, false, true);
 
 	public GameObject CreatePrefab()
 	{
@@ -28,6 +31,8 @@ public class BasicFabricConfig : IEntityConfig
 		list = list;
 		GameObject gameObject = EntityTemplates.CreateLooseEntity(iD, name, desc, mass, unitMass, anim, initialAnim, sceneLayer, collisionShape, width, height, isPickupable, sortOrder, SimHashes.Creature, list);
 		gameObject.AddOrGet<EntitySplitter>();
+		PrefabAttributeModifiers prefabAttributeModifiers = gameObject.AddOrGet<PrefabAttributeModifiers>();
+		prefabAttributeModifiers.AddAttributeDescriptor(decorModifier);
 		return gameObject;
 	}
 

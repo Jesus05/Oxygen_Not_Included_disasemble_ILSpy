@@ -157,24 +157,23 @@ public abstract class Assignable : KMonoBehaviour, ISaveLoadable
 		{
 			if (new_assignee is KMonoBehaviour)
 			{
-				KMonoBehaviour obj = new_assignee as KMonoBehaviour;
 				if (!CanAssignTo(new_assignee))
 				{
 					return;
 				}
-				assignee_identityRef.Set(obj);
+				assignee_identityRef.Set((KMonoBehaviour)new_assignee);
 				assignee_groupID = "";
 			}
 			else if (new_assignee is AssignmentGroup)
 			{
 				assignee_identityRef.Set(null);
-				assignee_groupID = (new_assignee as AssignmentGroup).id;
+				assignee_groupID = ((AssignmentGroup)new_assignee).id;
 			}
 			GetComponent<KPrefabID>().AddTag(GameTags.Assigned);
 			assignee = new_assignee;
 			if (slot != null && (new_assignee is MinionIdentity || new_assignee is StoredMinionIdentity || new_assignee is MinionAssignablesProxy))
 			{
-				KMonoBehaviour kMonoBehaviour = new_assignee as KMonoBehaviour;
+				KMonoBehaviour kMonoBehaviour = (KMonoBehaviour)new_assignee;
 				Ownables component = kMonoBehaviour.GetComponent<Ownables>();
 				if ((UnityEngine.Object)component != (UnityEngine.Object)null)
 				{
@@ -201,18 +200,10 @@ public abstract class Assignable : KMonoBehaviour, ISaveLoadable
 			GetComponent<KPrefabID>().RemoveTag(GameTags.Assigned);
 			if (slot != null)
 			{
-				Assignables assignables = null;
-				if (assignee is KMonoBehaviour)
+				Assignables soleOwner = assignee.GetSoleOwner();
+				if ((bool)soleOwner)
 				{
-					if (assignee is MinionAssignablesProxy)
-					{
-						assignables = (assignee as KMonoBehaviour).GetComponent<Ownables>();
-					}
-					else if (assignee is MinionIdentity || assignee is StoredMinionIdentity)
-					{
-						assignables = (assignee as KMonoBehaviour).GetComponent<IAssignableIdentity>().GetSoleOwner();
-					}
-					assignables.GetSlot(slot)?.Unassign(true);
+					soleOwner.GetSlot(slot)?.Unassign(true);
 				}
 			}
 			assignee = null;

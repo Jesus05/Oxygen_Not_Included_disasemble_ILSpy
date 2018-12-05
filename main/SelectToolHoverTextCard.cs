@@ -241,7 +241,7 @@ public class SelectToolHoverTextCard : HoverTextConfiguration
 				hoverTextDrawer.BeginShadowBar(false);
 				hoverTextDrawer.DrawText(UI.OVERLAYS.DECOR.HOVERTITLE, Styles_Title.Standard);
 				hoverTextDrawer.NewLine(26);
-				hoverTextDrawer.DrawText(UI.OVERLAYS.DECOR.TOTAL + GameUtil.GetFormattedDecor(decorAtCell), Styles_BodyText.Standard);
+				hoverTextDrawer.DrawText(UI.OVERLAYS.DECOR.TOTAL + GameUtil.GetFormattedDecor(decorAtCell, true), Styles_BodyText.Standard);
 				if (!Grid.Solid[num] && flag3)
 				{
 					List<EffectorEntry> list2 = new List<EffectorEntry>();

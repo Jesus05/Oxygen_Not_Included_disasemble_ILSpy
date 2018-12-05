@@ -55,6 +55,12 @@ public class KPrefabID : KMonoBehaviour, ISaveLoadable
 		private set;
 	}
 
+	public bool conflicted
+	{
+		get;
+		private set;
+	}
+
 	public HashSet<Tag> Tags
 	{
 		get
@@ -245,7 +251,13 @@ public class KPrefabID : KMonoBehaviour, ISaveLoadable
 	[OnDeserialized]
 	internal void OnDeserializedMethod()
 	{
-		KPrefabIDTracker.Get().Register(this);
+		KPrefabIDTracker kPrefabIDTracker = KPrefabIDTracker.Get();
+		KPrefabID instance = kPrefabIDTracker.GetInstance(InstanceID);
+		if ((bool)instance)
+		{
+			conflicted = true;
+		}
+		kPrefabIDTracker.Register(this);
 	}
 
 	private void OnObjectDestroyed(object data)

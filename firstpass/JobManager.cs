@@ -1,11 +1,9 @@
-#define ENABLE_PROFILER
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using UnityEngine;
-using UnityEngine.Profiling;
 
 public class JobManager
 {
@@ -36,7 +34,7 @@ public class JobManager
 
 		public void Run()
 		{
-			Profiler.BeginThreadProfiling("KJobManager", thread.Name);
+			KProfiler.BeginThreadProfiling("KJobManager", thread.Name);
 			while (true)
 			{
 				semaphore.WaitOne();
@@ -60,7 +58,7 @@ public class JobManager
 				}
 				jobManager.DecrementActiveWorkerThreadCount();
 			}
-			Profiler.EndThreadProfiling();
+			KProfiler.EndThreadProfiling();
 		}
 
 		public void PrintExceptions()
@@ -104,7 +102,7 @@ public class JobManager
 		private set;
 	}
 
-	public JobManager()
+	private void Initialize()
 	{
 		int num = Math.Max(SystemInfo.processorCount, 1);
 		semaphore = new Semaphore(0, num);
@@ -138,6 +136,10 @@ public class JobManager
 
 	public void Run(IWorkItemCollection work_items)
 	{
+		if (semaphore == null)
+		{
+			Initialize();
+		}
 		if (runSingleThreaded || threads.Count == 0)
 		{
 			for (int i = 0; i < work_items.Count; i++)

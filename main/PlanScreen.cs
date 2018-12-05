@@ -334,19 +334,25 @@ public class PlanScreen : KIconToggleMenu
 		}
 		copyBuildingButton.GetComponent<MultiToggle>().onClick = delegate
 		{
-			KSelectable selected = SelectTool.Instance.selected;
-			if (!((UnityEngine.Object)selected == (UnityEngine.Object)null))
-			{
-				Building component = SelectTool.Instance.selected.GetComponent<Building>();
-				if ((UnityEngine.Object)component != (UnityEngine.Object)null && component.Def.ShowInBuildMenu)
-				{
-					Instance.CopyBuildingOrder(component);
-				}
-			}
+			OnClickCopyBuilding();
 		};
 		RefreshCopyBuildingButton(null);
 		Game.Instance.Subscribe(-1503271301, RefreshCopyBuildingButton);
 		copyBuildingButton.GetComponent<ToolTip>().SetSimpleTooltip(UI.COPY_BUILDING_TOOLTIP);
+	}
+
+	private void OnClickCopyBuilding()
+	{
+		KSelectable selected = SelectTool.Instance.selected;
+		if (!((UnityEngine.Object)selected == (UnityEngine.Object)null))
+		{
+			Building component = SelectTool.Instance.selected.GetComponent<Building>();
+			if ((UnityEngine.Object)component != (UnityEngine.Object)null && component.Def.ShowInBuildMenu)
+			{
+				Instance.CopyBuildingOrder(component);
+				copyBuildingButton.SetActive(false);
+			}
+		}
 	}
 
 	public void RefreshCopyBuildingButton(object data = null)
@@ -355,6 +361,7 @@ public class PlanScreen : KIconToggleMenu
 		KSelectable selected = SelectTool.Instance.selected;
 		if ((UnityEngine.Object)selected == (UnityEngine.Object)null)
 		{
+			component.gameObject.SetActive(false);
 			component.ChangeState(0);
 		}
 		else
@@ -362,10 +369,15 @@ public class PlanScreen : KIconToggleMenu
 			Building component2 = SelectTool.Instance.selected.GetComponent<Building>();
 			if ((UnityEngine.Object)component2 != (UnityEngine.Object)null && component2.Def.ShowInBuildMenu)
 			{
+				Tuple<Sprite, Color> uISprite = Def.GetUISprite(component2.gameObject, "ui", false);
+				component.gameObject.SetActive(true);
+				component.transform.Find("FG").GetComponent<Image>().sprite = uISprite.first;
+				component.transform.Find("FG").GetComponent<Image>().color = Color.white;
 				component.ChangeState(1);
 			}
 			else
 			{
+				component.gameObject.SetActive(false);
 				component.ChangeState(0);
 			}
 		}
@@ -387,7 +399,7 @@ public class PlanScreen : KIconToggleMenu
 			for (int i = 0; i < TUNING.BUILDINGS.PLANORDER.Count; i++)
 			{
 				PlanInfo planInfo = TUNING.BUILDINGS.PLANORDER[i];
-				Action hotkey = (Action)((i >= 12) ? 232 : (36 + i));
+				Action hotkey = (Action)((i >= 12) ? 233 : (36 + i));
 				string icon = iconNameMap[planInfo.category];
 				string str = HashCache.Get().Get(planInfo.category).ToUpper();
 				ToggleInfo toggleInfo = new ToggleInfo(UI.StripLinkFormatting(Strings.Get("STRINGS.UI.BUILDCATEGORIES." + str + ".NAME")), icon, planInfo.category, hotkey, Strings.Get("STRINGS.UI.BUILDCATEGORIES." + str + ".TOOLTIP"), "");
@@ -1041,6 +1053,10 @@ public class PlanScreen : KIconToggleMenu
 		}
 		goto IL_0043;
 		IL_0043:
+		if (e.IsAction(Action.CopyBuilding) && e.TryConsume(Action.CopyBuilding))
+		{
+			OnClickCopyBuilding();
+		}
 		if (toggles != null)
 		{
 			if (!e.Consumed && activeCategoryInfo != null && e.TryConsume(Action.Escape))

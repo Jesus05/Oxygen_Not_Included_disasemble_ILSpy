@@ -123,6 +123,41 @@ public class BuildingComplete : Building
 		Components.BuildingCompletes.Add(this);
 		BuildingConfigManager.Instance.AddBuildingCompleteKComponents(base.gameObject, Def.Tag);
 		hasSpawnedKComponents = true;
+		Attributes attributes = this.GetAttributes();
+		if (attributes != null)
+		{
+			Deconstructable component6 = GetComponent<Deconstructable>();
+			if ((Object)component6 != (Object)null)
+			{
+				for (int k = 1; k < component6.constructionElements.Length; k++)
+				{
+					Tag tag = component6.constructionElements[k];
+					Element element = ElementLoader.GetElement(tag);
+					if (element != null)
+					{
+						foreach (AttributeModifier attributeModifier in element.attributeModifiers)
+						{
+							attributes.Add(attributeModifier);
+						}
+					}
+					else
+					{
+						GameObject gameObject = Assets.TryGetPrefab(tag);
+						if ((Object)gameObject != (Object)null)
+						{
+							PrefabAttributeModifiers component7 = gameObject.GetComponent<PrefabAttributeModifiers>();
+							if ((Object)component7 != (Object)null)
+							{
+								foreach (AttributeModifier descriptor in component7.descriptors)
+								{
+									attributes.Add(descriptor);
+								}
+							}
+						}
+					}
+				}
+			}
+		}
 	}
 
 	private string GetInspectSound()

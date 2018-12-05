@@ -2027,10 +2027,14 @@ public static class GameUtil
 		return $"{colour.r:X2}{colour.g:X2}{colour.b:X2}{colour.a:X2}";
 	}
 
-	public static string GetFormattedDecor(float value)
+	public static string GetFormattedDecor(float value, bool enforce_max = false)
 	{
 		string arg = "";
-		LocString loc_string = UI.OVERLAYS.DECOR.VALUE;
+		LocString loc_string = (!(value > DecorMonitor.MAXIMUM_DECOR_VALUE) || !enforce_max) ? UI.OVERLAYS.DECOR.VALUE : UI.OVERLAYS.DECOR.MAXIMUM_DECOR;
+		if (enforce_max)
+		{
+			value = Math.Min(value, DecorMonitor.MAXIMUM_DECOR_VALUE);
+		}
 		if (value > 0f)
 		{
 			arg = "+";
@@ -2150,8 +2154,8 @@ public static class GameUtil
 			{
 				foreach (AttributeModifier attributeModifier in element.attributeModifiers)
 				{
-					string txt = string.Format(Strings.Get(new StringKey("STRINGS.ELEMENTS.MATERIAL_MODIFIERS." + attributeModifier.AttributeId.ToUpper())), attributeModifier.GetFormattedString(null, false));
-					string tooltip = string.Format(Strings.Get(new StringKey("STRINGS.ELEMENTS.MATERIAL_MODIFIERS.TOOLTIP." + attributeModifier.AttributeId.ToUpper())), attributeModifier.GetFormattedString(null, false));
+					string txt = string.Format(Strings.Get(new StringKey("STRINGS.ELEMENTS.MATERIAL_MODIFIERS." + attributeModifier.AttributeId.ToUpper())), attributeModifier.GetFormattedString(null, attributeModifier.IsMultiplier));
+					string tooltip = string.Format(Strings.Get(new StringKey("STRINGS.ELEMENTS.MATERIAL_MODIFIERS.TOOLTIP." + attributeModifier.AttributeId.ToUpper())), attributeModifier.GetFormattedString(null, attributeModifier.IsMultiplier));
 					Descriptor item = default(Descriptor);
 					item.SetupDescriptor(txt, tooltip, Descriptor.DescriptorType.Effect);
 					item.IncreaseIndent();
@@ -2159,6 +2163,26 @@ public static class GameUtil
 				}
 			}
 			list.AddRange(GetSignificantMaterialPropertyDescriptors(element));
+		}
+		else
+		{
+			GameObject gameObject = Assets.TryGetPrefab(tag);
+			if ((UnityEngine.Object)gameObject != (UnityEngine.Object)null)
+			{
+				PrefabAttributeModifiers component = gameObject.GetComponent<PrefabAttributeModifiers>();
+				if ((UnityEngine.Object)component != (UnityEngine.Object)null)
+				{
+					foreach (AttributeModifier descriptor in component.descriptors)
+					{
+						string txt2 = string.Format(Strings.Get(new StringKey("STRINGS.ELEMENTS.MATERIAL_MODIFIERS." + descriptor.AttributeId.ToUpper())), descriptor.GetFormattedString(null, descriptor.IsMultiplier));
+						string tooltip2 = string.Format(Strings.Get(new StringKey("STRINGS.ELEMENTS.MATERIAL_MODIFIERS.TOOLTIP." + descriptor.AttributeId.ToUpper())), descriptor.GetFormattedString(null, descriptor.IsMultiplier));
+						Descriptor item2 = default(Descriptor);
+						item2.SetupDescriptor(txt2, tooltip2, Descriptor.DescriptorType.Effect);
+						item2.IncreaseIndent();
+						list.Add(item2);
+					}
+				}
+			}
 		}
 		return list;
 	}
@@ -2176,6 +2200,23 @@ public static class GameUtil
 				text = text + "\n    • " + string.Format(DUPLICANTS.MODIFIERS.MODIFIER_FORMAT, name, formattedString);
 			}
 			text += GetSignificantMaterialPropertyTooltips(element);
+		}
+		else
+		{
+			GameObject gameObject = Assets.TryGetPrefab(tag);
+			if ((UnityEngine.Object)gameObject != (UnityEngine.Object)null)
+			{
+				PrefabAttributeModifiers component = gameObject.GetComponent<PrefabAttributeModifiers>();
+				if ((UnityEngine.Object)component != (UnityEngine.Object)null)
+				{
+					foreach (AttributeModifier descriptor in component.descriptors)
+					{
+						string name2 = Db.Get().BuildingAttributes.Get(descriptor.AttributeId).Name;
+						string formattedString2 = descriptor.GetFormattedString(null, descriptor.IsMultiplier);
+						text = text + "\n    • " + string.Format(DUPLICANTS.MODIFIERS.MODIFIER_FORMAT, name2, formattedString2);
+					}
+				}
+			}
 		}
 		return text;
 	}

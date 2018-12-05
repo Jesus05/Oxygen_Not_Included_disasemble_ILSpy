@@ -6,7 +6,7 @@ using System.Threading;
 
 public class ProfilerBase
 {
-	protected struct Thread
+	protected struct ThreadInfo
 	{
 		public Stack<string> regionStack;
 
@@ -14,11 +14,14 @@ public class ProfilerBase
 
 		public int id;
 
-		public Thread(int id)
+		public string name;
+
+		public ThreadInfo(int id)
 		{
 			regionStack = new Stack<string>();
 			sb = new StringBuilder();
 			this.id = id;
+			name = string.Empty;
 		}
 
 		public void Reset()
@@ -43,14 +46,14 @@ public class ProfilerBase
 
 	private string filePrefix = null;
 
-	private Dictionary<int, Thread> threads;
+	protected Dictionary<int, ThreadInfo> threadInfos;
 
 	public Stopwatch sw;
 
 	public ProfilerBase(string file_prefix)
 	{
 		filePrefix = file_prefix;
-		threads = new Dictionary<int, Thread>();
+		threadInfos = new Dictionary<int, ThreadInfo>();
 		sw = new Stopwatch();
 	}
 
@@ -65,7 +68,7 @@ public class ProfilerBase
 		long value = elapsedTicks * 1000000 / frequency;
 		sb.Append(",\"ts\":").Append(value);
 		sb.Append(",\"ph\":\"").Append(ph).Append("\"");
-		sb.Append(suffix);
+		sb.Append(suffix).Append("\n");
 	}
 
 	protected bool IsRecording()
@@ -104,11 +107,11 @@ public class ProfilerBase
 		}
 	}
 
-	public void StartRecording()
+	public virtual void StartRecording()
 	{
-		foreach (KeyValuePair<int, Thread> thread in threads)
+		foreach (KeyValuePair<int, ThreadInfo> threadInfo in threadInfos)
 		{
-			thread.Value.Reset();
+			threadInfo.Value.Reset();
 		}
 		proFile = new StreamWriter(filePrefix + idx.ToString() + ".json");
 		idx++;
@@ -119,36 +122,69 @@ public class ProfilerBase
 		sw.Start();
 	}
 
-	public void StopRecording()
+	public virtual void StopRecording()
 	{
 		sw.Stop();
 		if (proFile != null)
 		{
-			foreach (KeyValuePair<int, Thread> thread2 in threads)
+			foreach (KeyValuePair<int, ThreadInfo> threadInfo2 in threadInfos)
 			{
 				StreamWriter streamWriter = proFile;
-				Thread value = thread2.Value;
+				ThreadInfo value = threadInfo2.Value;
 				streamWriter.Write(value.sb.ToString());
-				thread2.Value.Reset();
+				threadInfo2.Value.Reset();
 			}
-			Thread thread = ManifestThread();
-			thread.WriteLine(category, "end", sw, "B", "},");
-			thread.WriteLine(category, "end", sw, "E", "}]}");
-			proFile.Write(thread.sb.ToString());
-			thread.Reset();
+			ThreadInfo threadInfo = ManifestThreadInfo("Main");
+			threadInfo.WriteLine(category, "end", sw, "B", "},");
+			threadInfo.WriteLine(category, "end", sw, "E", "}]}");
+			proFile.Write(threadInfo.sb.ToString());
+			threadInfo.Reset();
 			proFile.Close();
 			proFile = null;
 		}
 	}
 
-	protected Thread ManifestThread()
+	public virtual void BeginThreadProfiling(string threadGroupName, string threadName)
 	{
-		if (!threads.TryGetValue(System.Threading.Thread.CurrentThread.ManagedThreadId, out Thread value))
+		ManifestThreadInfo(threadName);
+	}
+
+	public virtual void EndThreadProfiling()
+	{
+		if (proFile != null)
 		{
-			value = new Thread(System.Threading.Thread.CurrentThread.ManagedThreadId);
-			lock (this)
+			StreamWriter streamWriter = proFile;
+			ThreadInfo threadInfo = ManifestThreadInfo(null);
+			streamWriter.Write(threadInfo.sb.ToString());
+		}
+		lock (threadInfos)
+		{
+			threadInfos.Remove(Thread.CurrentThread.ManagedThreadId);
+		}
+	}
+
+	protected ThreadInfo ManifestThreadInfo(string name = null)
+	{
+		if (!threadInfos.TryGetValue(Thread.CurrentThread.ManagedThreadId, out ThreadInfo value))
+		{
+			value = new ThreadInfo(Thread.CurrentThread.ManagedThreadId);
+			if (name != null)
 			{
-				threads.Add(System.Threading.Thread.CurrentThread.ManagedThreadId, value);
+				value.name = name;
+			}
+			Debug.LogFormat("ManifestThreadInfo: {0}, {1}", name, Thread.CurrentThread.ManagedThreadId);
+			lock (threadInfos)
+			{
+				threadInfos.Add(Thread.CurrentThread.ManagedThreadId, value);
+			}
+		}
+		if (name != null && value.name != name)
+		{
+			Debug.LogFormat("ManifestThreadInfo: change name {0} to {1}, {2}", name, value.name, Thread.CurrentThread.ManagedThreadId);
+			value.name = name;
+			lock (threadInfos)
+			{
+				threadInfos[value.id] = value;
 			}
 		}
 		return value;
@@ -165,18 +201,21 @@ public class ProfilerBase
 	{
 		if (IsRecording())
 		{
-			Thread thread = ManifestThread();
-			thread.regionStack.Push(region_name);
-			thread.WriteLine(category, region_name, sw, "B", "},");
+			ThreadInfo threadInfo = ManifestThreadInfo(null);
+			threadInfo.regionStack.Push(region_name);
+			threadInfo.WriteLine(category, region_name, sw, "B", "},");
 		}
 	}
 
 	protected void Pop()
 	{
-		Thread thread = ManifestThread();
-		if (IsRecording() && thread.regionStack.Count != 0)
+		if (IsRecording())
 		{
-			thread.WriteLine(category, thread.regionStack.Pop(), sw, "E", "},");
+			ThreadInfo threadInfo = ManifestThreadInfo(null);
+			if (threadInfo.regionStack.Count != 0)
+			{
+				threadInfo.WriteLine(category, threadInfo.regionStack.Pop(), sw, "E", "},");
+			}
 		}
 	}
 }

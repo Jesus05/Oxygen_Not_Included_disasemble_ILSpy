@@ -67,7 +67,7 @@ public class Global : MonoBehaviour
 		list.Add(new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.T, Modifier.None, Action.Attack, true, false));
 		list.Add(new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.N, Modifier.None, Action.Capture, true, false));
 		list.Add(new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.Y, Modifier.None, Action.Harvest, true, false));
-		list.Add(new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.B, Modifier.None, Action.EmptyPipe, true, false));
+		list.Add(new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.Insert, Modifier.None, Action.EmptyPipe, true, false));
 		list.Add(new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.P, Modifier.None, Action.Prioritize, true, false));
 		list.Add(new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.S, Modifier.Alt, Action.ToggleScreenshotMode, true, false));
 		list.Add(new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.C, Modifier.None, Action.BuildingCancel, true, false));
@@ -90,6 +90,7 @@ public class Global : MonoBehaviour
 		list.Add(new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.Alpha0, Modifier.None, Action.Plan10, true, false));
 		list.Add(new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.Minus, Modifier.None, Action.Plan11, true, false));
 		list.Add(new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.Equals, Modifier.None, Action.Plan12, true, false));
+		list.Add(new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.B, Modifier.None, Action.CopyBuilding, true, false));
 		list.Add(new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.MouseScrollUp, Modifier.None, Action.ZoomIn, true, false));
 		list.Add(new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.MouseScrollDown, Modifier.None, Action.ZoomOut, true, false));
 		list.Add(new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.F1, Modifier.None, Action.Overlay1, true, false));
@@ -378,7 +379,7 @@ public class Global : MonoBehaviour
 	private void SetONIStaticSessionVariables()
 	{
 		ThreadedHttps<KleiMetrics>.Instance.SetStaticSessionVariable("Branch", "preview");
-		ThreadedHttps<KleiMetrics>.Instance.SetStaticSessionVariable("Build", 297718u);
+		ThreadedHttps<KleiMetrics>.Instance.SetStaticSessionVariable("Build", 297993u);
 		if (KPlayerPrefs.HasKey(UnitConfigurationScreen.MassUnitKey))
 		{
 			ThreadedHttps<KleiMetrics>.Instance.SetStaticSessionVariable(UnitConfigurationScreen.MassUnitKey, KPlayerPrefs.GetInt(UnitConfigurationScreen.MassUnitKey).ToString());

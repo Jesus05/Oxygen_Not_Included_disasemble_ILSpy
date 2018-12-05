@@ -57,13 +57,8 @@ public class MinionModifiers : Modifiers, ISaveLoadable
 	protected override void OnSpawn()
 	{
 		base.OnSpawn();
-		MinionIdentity component = GetComponent<MinionIdentity>();
-		if (component.assignableProxy == null)
-		{
-			component.assignableProxy = MinionAssignablesProxy.InitAssignableProxy(component.assignableProxy, component);
-		}
-		ChoreConsumer component2 = GetComponent<ChoreConsumer>();
-		if ((UnityEngine.Object)component2 != (UnityEngine.Object)null)
+		ChoreConsumer component = GetComponent<ChoreConsumer>();
+		if ((UnityEngine.Object)component != (UnityEngine.Object)null)
 		{
 			Subscribe(1623392196, OnDeathDelegate);
 			Subscribe(-1506069671, OnAttachFollowCamDelegate);

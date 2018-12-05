@@ -30,8 +30,6 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms
 	{
 		public ComplexRecipe recipe;
 
-		private Dictionary<Tag, float> materialRequirements = new Dictionary<Tag, float>();
-
 		public Tag Result => recipe.results[0].material;
 
 		public Sprite Icon => recipe.GetUIIcon();
@@ -41,18 +39,6 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms
 		public UserOrder(ComplexRecipe recipe, bool infinite = false)
 		{
 			this.recipe = recipe;
-		}
-
-		public Dictionary<Tag, float> CheckMaterialRequirementsBalance()
-		{
-			Dictionary<Tag, float> dictionary = new Dictionary<Tag, float>();
-			ComplexRecipe.RecipeElement[] ingredients = recipe.ingredients;
-			foreach (ComplexRecipe.RecipeElement recipeElement in ingredients)
-			{
-				float amount = WorldInventory.Instance.GetAmount(recipeElement.material);
-				dictionary[recipeElement.material] = recipeElement.amount - amount;
-			}
-			return dictionary;
 		}
 
 		public bool CheckMaterialRequirements(WorldInventory worldInventory, Storage storage)
@@ -67,17 +53,6 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms
 				}
 			}
 			return true;
-		}
-
-		public Dictionary<Tag, float> GetMaterialRequirements()
-		{
-			materialRequirements.Clear();
-			ComplexRecipe.RecipeElement[] ingredients = recipe.ingredients;
-			foreach (ComplexRecipe.RecipeElement recipeElement in ingredients)
-			{
-				materialRequirements.Add(recipeElement.material, recipeElement.amount);
-			}
-			return materialRequirements;
 		}
 	}
 
@@ -212,8 +187,6 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms
 		component.OnCopySettings(data);
 	});
 
-	public int MAX_NUM_ORDERS => GetRecipes().Length;
-
 	public ComplexFabricatorWorkable GetWorkable
 	{
 		get
@@ -280,6 +253,31 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms
 		buildStorage.Transfer(inStorage, true, true);
 		UpdateMachineOrders(true);
 		Subscribe(-905833192, OnCopySettingsDelegate);
+		Subscribe(-1697596308, OnStorageChanged);
+	}
+
+	private void OnStorageChanged(object data = null)
+	{
+		if (machineOrders.Count > 0 && (machineOrders[0].chore != null || (!duplicantOperated && machineOrders[0].underway)) && (!((UnityEngine.Object)workable != (UnityEngine.Object)null) || !(workable.WorkTimeRemaining < 0f)) && !(orderProgress >= machineOrders[0].parentOrder.recipe.time))
+		{
+			ComplexRecipe.RecipeElement[] ingredients = machineOrders[0].parentOrder.recipe.ingredients;
+			int num = 0;
+			while (true)
+			{
+				if (num >= ingredients.Length)
+				{
+					return;
+				}
+				ComplexRecipe.RecipeElement recipeElement = ingredients[num];
+				if (buildStorage.GetAmountAvailable(recipeElement.material) < recipeElement.amount)
+				{
+					break;
+				}
+				num++;
+			}
+			CancelAllMachineOrders();
+			UpdateMachineOrders(false);
+		}
 	}
 
 	private void OnCopySettings(object data)
@@ -303,7 +301,7 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms
 					}
 				}
 				RefreshUserOrdersFromQueueCounts();
-				UpdateMachineOrders(true);
+				UpdateMachineOrders(false);
 			}
 		}
 	}
@@ -1064,10 +1062,7 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms
 
 	private void OnOperationalChanged(object data)
 	{
-		if (!(bool)data && userOrders.Count > 0)
-		{
-			CancelAllMachineOrders();
-		}
+		bool flag = (bool)data;
 	}
 
 	public virtual List<Descriptor> AdditionalEffectsForRecipe(ComplexRecipe recipe)

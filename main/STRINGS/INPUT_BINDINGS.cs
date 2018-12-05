@@ -66,6 +66,8 @@ namespace STRINGS
 
 			public static LocString PLAN12 = "Plan12";
 
+			public static LocString COPYBUILDING = "CopyBuilding";
+
 			public static LocString ZOOMIN = "ZoomIn";
 
 			public static LocString ZOOMOUT = "ZoomOut";

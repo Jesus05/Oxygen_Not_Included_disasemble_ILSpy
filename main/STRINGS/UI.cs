@@ -3261,6 +3261,8 @@ namespace STRINGS
 				public static LocString CLOTHING = "{0}'s Outfit";
 
 				public static LocString HOVERTITLE = "DECOR";
+
+				public static LocString MAXIMUM_DECOR = "{0}{1} (Maximum Decor)";
 			}
 
 			public class NOISE_POLLUTION

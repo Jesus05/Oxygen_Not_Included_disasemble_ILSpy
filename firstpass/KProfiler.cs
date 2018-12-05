@@ -22,6 +22,14 @@ public static class KProfiler
 
 	public static Thread main_thread;
 
+	public static void BeginThreadProfiling(string threadGroupName, string threadName)
+	{
+	}
+
+	public static void EndThreadProfiling()
+	{
+	}
+
 	public static int BeginSampleI(string region_name)
 	{
 		int result = counter;
@@ -64,5 +72,9 @@ public static class KProfiler
 	{
 		counter--;
 		return counter;
+	}
+
+	public static void AddEvent(string event_name)
+	{
 	}
 }

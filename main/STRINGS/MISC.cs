@@ -26,6 +26,8 @@ namespace STRINGS
 
 			public static LocString RAWPRECIOUSMETAL = "Precious Metal Ore";
 
+			public static LocString PRECIOUSROCK = "Precious Rock";
+
 			public static LocString ALLOY = "Alloy";
 
 			public static LocString BUILDINGFIBER = "Fiber";

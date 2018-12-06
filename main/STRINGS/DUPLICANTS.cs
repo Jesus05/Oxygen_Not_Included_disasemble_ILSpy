@@ -1632,7 +1632,7 @@ namespace STRINGS
 
 			public class MOVETOSUITNOTREQUIRED
 			{
-				public static LocString NAME = "Exiting " + UI.FormatAsLink("Atmo Suit", "ATMO_SUIT") + " area";
+				public static LocString NAME = "Exiting " + UI.FormatAsLink("Exosuit", "EXOSUIT") + " area";
 
 				public static LocString TOOLTIP = "This Duplicant is leaving an area where a suit was required";
 			}

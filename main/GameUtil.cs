@@ -1735,7 +1735,7 @@ public static class GameUtil
 			{
 				Klei.AI.Attribute attribute = Db.Get().Attributes.Get(item.AttributeId);
 				string name = attribute.Name;
-				string formattedString = item.GetFormattedString(null, false);
+				string formattedString = item.GetFormattedString(null);
 				string newValue = (!(item.Value >= 0f)) ? "consumed" : "produced";
 				string text = UI.GAMEOBJECTEFFECTS.EQUIPMENT_MODS.text.Replace("{Attribute}", name).Replace("{Style}", newValue).Replace("{Value}", formattedString);
 				list.Add(new Descriptor(text, text, Descriptor.DescriptorType.Effect, false));
@@ -2064,8 +2064,8 @@ public static class GameUtil
 		{
 			foreach (AttributeModifier attributeModifier in element.attributeModifiers)
 			{
-				string txt = string.Format(Strings.Get(new StringKey("STRINGS.ELEMENTS.MATERIAL_MODIFIERS." + attributeModifier.AttributeId.ToUpper())), attributeModifier.GetFormattedString(null, false));
-				string tooltip = string.Format(Strings.Get(new StringKey("STRINGS.ELEMENTS.MATERIAL_MODIFIERS.TOOLTIP." + attributeModifier.AttributeId.ToUpper())), attributeModifier.GetFormattedString(null, false));
+				string txt = string.Format(Strings.Get(new StringKey("STRINGS.ELEMENTS.MATERIAL_MODIFIERS." + attributeModifier.AttributeId.ToUpper())), attributeModifier.GetFormattedString(null));
+				string tooltip = string.Format(Strings.Get(new StringKey("STRINGS.ELEMENTS.MATERIAL_MODIFIERS.TOOLTIP." + attributeModifier.AttributeId.ToUpper())), attributeModifier.GetFormattedString(null));
 				Descriptor item = default(Descriptor);
 				item.SetupDescriptor(txt, tooltip, Descriptor.DescriptorType.Effect);
 				item.IncreaseIndent();
@@ -2082,7 +2082,7 @@ public static class GameUtil
 		foreach (AttributeModifier attributeModifier in element.attributeModifiers)
 		{
 			string name = Db.Get().BuildingAttributes.Get(attributeModifier.AttributeId).Name;
-			string formattedString = attributeModifier.GetFormattedString(null, attributeModifier.IsMultiplier);
+			string formattedString = attributeModifier.GetFormattedString(null);
 			str = str + "\n    • " + string.Format(DUPLICANTS.MODIFIERS.MODIFIER_FORMAT, name, formattedString);
 		}
 		return str + GetSignificantMaterialPropertyTooltips(element);
@@ -2154,8 +2154,8 @@ public static class GameUtil
 			{
 				foreach (AttributeModifier attributeModifier in element.attributeModifiers)
 				{
-					string txt = string.Format(Strings.Get(new StringKey("STRINGS.ELEMENTS.MATERIAL_MODIFIERS." + attributeModifier.AttributeId.ToUpper())), attributeModifier.GetFormattedString(null, attributeModifier.IsMultiplier));
-					string tooltip = string.Format(Strings.Get(new StringKey("STRINGS.ELEMENTS.MATERIAL_MODIFIERS.TOOLTIP." + attributeModifier.AttributeId.ToUpper())), attributeModifier.GetFormattedString(null, attributeModifier.IsMultiplier));
+					string txt = string.Format(Strings.Get(new StringKey("STRINGS.ELEMENTS.MATERIAL_MODIFIERS." + attributeModifier.AttributeId.ToUpper())), attributeModifier.GetFormattedString(null));
+					string tooltip = string.Format(Strings.Get(new StringKey("STRINGS.ELEMENTS.MATERIAL_MODIFIERS.TOOLTIP." + attributeModifier.AttributeId.ToUpper())), attributeModifier.GetFormattedString(null));
 					Descriptor item = default(Descriptor);
 					item.SetupDescriptor(txt, tooltip, Descriptor.DescriptorType.Effect);
 					item.IncreaseIndent();
@@ -2174,8 +2174,8 @@ public static class GameUtil
 				{
 					foreach (AttributeModifier descriptor in component.descriptors)
 					{
-						string txt2 = string.Format(Strings.Get(new StringKey("STRINGS.ELEMENTS.MATERIAL_MODIFIERS." + descriptor.AttributeId.ToUpper())), descriptor.GetFormattedString(null, descriptor.IsMultiplier));
-						string tooltip2 = string.Format(Strings.Get(new StringKey("STRINGS.ELEMENTS.MATERIAL_MODIFIERS.TOOLTIP." + descriptor.AttributeId.ToUpper())), descriptor.GetFormattedString(null, descriptor.IsMultiplier));
+						string txt2 = string.Format(Strings.Get(new StringKey("STRINGS.ELEMENTS.MATERIAL_MODIFIERS." + descriptor.AttributeId.ToUpper())), descriptor.GetFormattedString(null));
+						string tooltip2 = string.Format(Strings.Get(new StringKey("STRINGS.ELEMENTS.MATERIAL_MODIFIERS.TOOLTIP." + descriptor.AttributeId.ToUpper())), descriptor.GetFormattedString(null));
 						Descriptor item2 = default(Descriptor);
 						item2.SetupDescriptor(txt2, tooltip2, Descriptor.DescriptorType.Effect);
 						item2.IncreaseIndent();
@@ -2196,7 +2196,7 @@ public static class GameUtil
 			foreach (AttributeModifier attributeModifier in element.attributeModifiers)
 			{
 				string name = Db.Get().BuildingAttributes.Get(attributeModifier.AttributeId).Name;
-				string formattedString = attributeModifier.GetFormattedString(null, attributeModifier.IsMultiplier);
+				string formattedString = attributeModifier.GetFormattedString(null);
 				text = text + "\n    • " + string.Format(DUPLICANTS.MODIFIERS.MODIFIER_FORMAT, name, formattedString);
 			}
 			text += GetSignificantMaterialPropertyTooltips(element);
@@ -2212,7 +2212,7 @@ public static class GameUtil
 					foreach (AttributeModifier descriptor in component.descriptors)
 					{
 						string name2 = Db.Get().BuildingAttributes.Get(descriptor.AttributeId).Name;
-						string formattedString2 = descriptor.GetFormattedString(null, descriptor.IsMultiplier);
+						string formattedString2 = descriptor.GetFormattedString(null);
 						text = text + "\n    • " + string.Format(DUPLICANTS.MODIFIERS.MODIFIER_FORMAT, name2, formattedString2);
 					}
 				}

@@ -163,6 +163,24 @@ public class Storage : Workable, ISaveLoadableDetails, IEffectDescriptor
 
 	public int Count => items.Count;
 
+	public int masterPriority
+	{
+		get
+		{
+			int result;
+			if ((UnityEngine.Object)prioritizable != (UnityEngine.Object)null)
+			{
+				PrioritySetting masterPriority = prioritizable.GetMasterPriority();
+				result = masterPriority.priority_value;
+			}
+			else
+			{
+				result = 10;
+			}
+			return result;
+		}
+	}
+
 	public event System.Action OnStorageIncreased;
 
 	protected Storage()
@@ -274,13 +292,16 @@ public class Storage : Workable, ISaveLoadableDetails, IEffectDescriptor
 				{
 					if ((UnityEngine.Object)item != (UnityEngine.Object)null && (UnityEngine.Object)component != (UnityEngine.Object)null && item.GetComponent<Pickupable>().TryAbsorb(component, hide_popups, true))
 					{
-						Trigger(-1697596308, go);
-						Trigger(-778359855, null);
-						ApplyStoredItemModifiers(go, true, false);
-						if (this.OnStorageIncreased != null)
+						if (!block_events)
 						{
-							this.OnStorageIncreased();
+							Trigger(-1697596308, go);
+							Trigger(-778359855, null);
+							if (this.OnStorageIncreased != null)
+							{
+								this.OnStorageIncreased();
+							}
 						}
+						ApplyStoredItemModifiers(go, true, false);
 						result = item;
 						go = null;
 						break;

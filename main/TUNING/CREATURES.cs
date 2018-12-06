@@ -145,13 +145,19 @@ namespace TUNING
 						inst.gameObject.Subscribe(-2038961714, delegate(object data)
 						{
 							CreatureCalorieMonitor.CaloriesConsumedEvent caloriesConsumedEvent = (CreatureCalorieMonitor.CaloriesConsumedEvent)data;
-							if (foodTags.HasAny(caloriesConsumedEvent.tag))
+							TagBits tag_bits = new TagBits(caloriesConsumedEvent.tag);
+							if (foodTags.HasAny(ref tag_bits))
 							{
 								inst.AddBreedingChance(eggType, caloriesConsumedEvent.calories * modifierPerCal);
 							}
 						});
 					});
 				};
+			}
+
+			private static System.Action CreateDietaryModifier(string id, Tag eggTag, Tag foodTag, float modifierPerCal)
+			{
+				return CreateDietaryModifier(id, eggTag, new TagBits(foodTag), modifierPerCal);
 			}
 
 			private static System.Action CreateNearbyCreatureModifier(string id, Tag eggTag, Tag nearbyCreature, float modifierPerSecond, bool alsoInvert)

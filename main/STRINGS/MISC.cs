@@ -706,11 +706,11 @@ namespace STRINGS
 
 			public class SUITS
 			{
-				public static LocString NAME = "Tutorial: Exosuits";
+				public static LocString NAME = "Tutorial: Atmo Suits";
 
-				public static LocString TOOLTIP = "Notes on using exosuits";
+				public static LocString TOOLTIP = "Notes on using atmo suits";
 
-				public static LocString MESSAGEBODY = UI.FormatAsLink("Exosuits", "EXOSUIT") + " can be equipped to protect my Duplicants from environmental hazards like extreme " + UI.FormatAsLink("Heat", "Heat") + ", airborne " + UI.FormatAsLink("Germs", "DISEASE") + ", or unbreathable " + UI.FormatAsLink("Gas", "ELEMENTS_GAS") + ". In order to utilize these suits, I'll need to hook up an Exosuit Dock to a Suit Checkpoint, then store one of the suits inside.\n\nDuplicants will equip an exosuit when they walk past the Checkpoint in the chosen direction, and will unequip their suit when walking back the opposite way.";
+				public static LocString MESSAGEBODY = UI.FormatAsLink("Atmo Suits", "ATMO_SUIT") + " can be equipped to protect my Duplicants from environmental hazards like extreme " + UI.FormatAsLink("Heat", "Heat") + ", airborne " + UI.FormatAsLink("Germs", "DISEASE") + ", or unbreathable " + UI.FormatAsLink("Gas", "ELEMENTS_GAS") + ". In order to utilize these suits, I'll need to hook up an Atmo Suit Dock to an Atmo Suit Checkpoint, then store one of the suits inside.\n\nDuplicants will equip a suit when they walk past the checkpoint in the chosen direction, and will unequip their suit when walking back the opposite way.";
 			}
 
 			public class MORALE
@@ -1085,7 +1085,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "No Docks available";
 
-				public static LocString TOOLTIP = "An exosuit was dropped because there were no empty Exosuit Docks available";
+				public static LocString TOOLTIP = "An exosuit was dropped because there were no empty docks available";
 			}
 
 			public class DEATH_SUFFOCATION

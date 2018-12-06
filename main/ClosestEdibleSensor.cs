@@ -2,10 +2,7 @@ using UnityEngine;
 
 public class ClosestEdibleSensor : Sensor
 {
-	private static Tag[] edibleTag = new Tag[1]
-	{
-		GameTags.Edible
-	};
+	private static TagBits edibleTagBits = new TagBits(GameTags.Edible);
 
 	private Edible edible;
 
@@ -23,7 +20,8 @@ public class ClosestEdibleSensor : Sensor
 
 	public override void Update()
 	{
-		Pickupable pickupable = Game.Instance.fetchManager.FindEdibleFetchTarget(worker, GetComponent<Storage>(), new TagBits(edibleTag), default(TagBits), new TagBits(GetComponent<ConsumableConsumer>().forbiddenTags), 0f);
+		TagBits forbid_tags = new TagBits(GetComponent<ConsumableConsumer>().forbiddenTags);
+		Pickupable pickupable = Game.Instance.fetchManager.FindEdibleFetchTarget(GetComponent<Storage>(), ref edibleTagBits, ref TagBits.None, ref forbid_tags, 0f);
 		bool flag = edibleInReachButNotPermitted;
 		Edible x = null;
 		bool flag2 = false;
@@ -35,7 +33,7 @@ public class ClosestEdibleSensor : Sensor
 		}
 		else
 		{
-			Pickupable x2 = Game.Instance.fetchManager.FindFetchTarget(worker, GetComponent<Storage>(), new TagBits(edibleTag), default(TagBits), default(TagBits), 0f);
+			Pickupable x2 = Game.Instance.fetchManager.FindFetchTarget(GetComponent<Storage>(), ref edibleTagBits, ref TagBits.None, ref TagBits.None, 0f);
 			flag = ((Object)x2 != (Object)null);
 		}
 		if ((Object)x != (Object)edible || hasEdible != flag2)

@@ -4939,14 +4939,14 @@ namespace STRINGS
 				{
 					public static LocString NAME = "Clearance: Vacancy";
 
-					public static LocString TOOLTIP = "Suited Duplicants may pass only if there is room in an Exosuit Dock to store their suit";
+					public static LocString TOOLTIP = "Suited Duplicants may only pass if there is an available dock to store their suit";
 				}
 
 				public static class ALWAYS
 				{
 					public static LocString NAME = "Clearance: Always";
 
-					public static LocString TOOLTIP = "Suited Duplicants may pass even if there is no room to store their suits" + HORIZONTAL_BR_RULE + "When Exosuit Docks are all full, Duplicants will unequip their suits and drop them on the floor";
+					public static LocString TOOLTIP = "Suited Duplicants may pass even if there is no room to store their suits" + HORIZONTAL_BR_RULE + "When all available docks are full, Duplicants will unequip their suits and drop them on the floor";
 				}
 			}
 		}
@@ -6655,29 +6655,29 @@ namespace STRINGS
 
 			public class CONTAMINATED_OXYGEN_FLATULENCE
 			{
-				public static LocString NAME = FormatAsLink("Flatulence", "POLLUTEDOXYGEN") + " Generation:";
+				public static LocString NAME = FormatAsLink("Flatulence", "CONTAMINATEDOXYGEN") + " Generation:";
 
-				public static LocString POSITIVE_TOOLTIP = "My colony generated {0} of " + StripLinkFormatting(ELEMENTS.CONTAMINATEDOXYGEN.NAME) + " over the course of the day";
+				public static LocString POSITIVE_TOOLTIP = "My colony generated {0} of " + FormatAsLink("Polluted Oxygen", "CONTAMINATEDOXYGEN") + " over the course of the day";
 
-				public static LocString NEGATIVE_TOOLTIP = "My colony consumed {0} of " + StripLinkFormatting(ELEMENTS.CONTAMINATEDOXYGEN.NAME) + " over the course of the day";
+				public static LocString NEGATIVE_TOOLTIP = "My colony consumed {0} of " + FormatAsLink("Polluted Oxygen", "CONTAMINATEDOXYGEN") + " over the course of the day";
 			}
 
 			public class CONTAMINATED_OXYGEN_TOILET
 			{
 				public static LocString NAME = FormatAsLink("Toilet Emissions: ", StripLinkFormatting(ELEMENTS.CONTAMINATEDOXYGEN.NAME));
 
-				public static LocString POSITIVE_TOOLTIP = "My colony generated {0} of " + ELEMENTS.CONTAMINATEDOXYGEN.NAME + " over the course of the day";
+				public static LocString POSITIVE_TOOLTIP = "My colony generated {0} of " + FormatAsLink("Polluted Oxygen", "CONTAMINATEDOXYGEN") + " over the course of the day";
 
-				public static LocString NEGATIVE_TOOLTIP = "My colony consumed {0} of " + ELEMENTS.CONTAMINATEDOXYGEN.NAME + " over the course of the day";
+				public static LocString NEGATIVE_TOOLTIP = "My colony consumed {0} of " + FormatAsLink("Polluted Oxygen", "CONTAMINATEDOXYGEN") + " over the course of the day";
 			}
 
 			public class CONTAMINATED_OXYGEN_SUBLIMATION
 			{
 				public static LocString NAME = FormatAsLink("Sublimation", StripLinkFormatting(ELEMENTS.CONTAMINATEDOXYGEN.NAME)) + ":";
 
-				public static LocString POSITIVE_TOOLTIP = "My colony generated {0} of " + ELEMENTS.CONTAMINATEDOXYGEN.NAME + " over the course of the day";
+				public static LocString POSITIVE_TOOLTIP = "My colony generated {0} of " + FormatAsLink("Polluted Oxygen", "CONTAMINATEDOXYGEN") + " over the course of the day";
 
-				public static LocString NEGATIVE_TOOLTIP = "My colony consumed {0} of " + ELEMENTS.CONTAMINATEDOXYGEN.NAME + " over the course of the day";
+				public static LocString NEGATIVE_TOOLTIP = "My colony consumed {0} of " + FormatAsLink("Polluted Oxygen", "CONTAMINATEDOXYGEN") + " over the course of the day";
 			}
 
 			public class DISEASE_STATUS

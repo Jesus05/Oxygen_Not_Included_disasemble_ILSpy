@@ -13,6 +13,8 @@ public class PlantablePlot : SingleEntityReceptacle, ISaveLoadable, IEffectDescr
 	[Serialize]
 	private Ref<KPrefabID> plantRef;
 
+	public Vector3 occupyingObjectVisualOffset = Vector3.zero;
+
 	public Grid.SceneLayer plantLayer = Grid.SceneLayer.BuildingBack;
 
 	private EntityPreview plantPreview;
@@ -207,6 +209,7 @@ public class PlantablePlot : SingleEntityReceptacle, ISaveLoadable, IEffectDescr
 		base.PositionOccupyingObject();
 		KBatchedAnimController component = base.occupyingObject.GetComponent<KBatchedAnimController>();
 		component.SetSceneLayer(plantLayer);
+		OffsetAnim(component, occupyingObjectVisualOffset);
 	}
 
 	private void RegisterWithPlant(GameObject plant)
@@ -302,6 +305,8 @@ public class PlantablePlot : SingleEntityReceptacle, ISaveLoadable, IEffectDescr
 			{
 				gameObject.transform.SetLocalPosition(occupyingObjectRelativePosition);
 			}
+			KBatchedAnimController component2 = gameObject.GetComponent<KBatchedAnimController>();
+			OffsetAnim(component2, occupyingObjectVisualOffset);
 			gameObject.SetActive(true);
 			gameObject.Subscribe(-1820564715, OnValidChanged);
 			if (solid)
@@ -310,6 +315,15 @@ public class PlantablePlot : SingleEntityReceptacle, ISaveLoadable, IEffectDescr
 			}
 			plantPreview.UpdateValidity();
 		}
+	}
+
+	private void OffsetAnim(KBatchedAnimController kanim, Vector3 offset)
+	{
+		if ((UnityEngine.Object)rotatable != (UnityEngine.Object)null)
+		{
+			offset = rotatable.GetRotatedOffset(offset);
+		}
+		kanim.Offset = offset;
 	}
 
 	private void OnValidChanged(object obj)

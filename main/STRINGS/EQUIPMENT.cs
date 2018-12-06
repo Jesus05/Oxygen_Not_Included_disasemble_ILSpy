@@ -10,7 +10,7 @@ namespace STRINGS
 
 				public static LocString DESC = "Ensures my Duplicants can breathe easy, anytime, anywhere.";
 
-				public static LocString EFFECT = "Supplies Duplicants with <style=\"oxygen\">Oxygen</style> in toxic and low breathability environments.\n\nMust be refilled with oxygen at an Exosuit Dock when depleted.";
+				public static LocString EFFECT = "Supplies Duplicants with <style=\"oxygen\">Oxygen</style> in toxic and low breathability environments.\n\nMust be refilled with oxygen at an Atmo Suit Dock when depleted.";
 
 				public static LocString RECIPE_DESC = "Supplies Duplicants with <style=\"oxygen\">Oxygen</style> in toxic and low breathability environments.";
 
@@ -23,7 +23,7 @@ namespace STRINGS
 
 				public static LocString DESC = "Because breathing underwater is better than... not.";
 
-				public static LocString EFFECT = "Supplies Duplicants with <style=\"oxygen\">Oxygen</style> in underwater environments.\n\nMust be refilled with " + UI.FormatAsLink("Oxygen", "OXYGEN") + " at an Exosuit Dock when depleted.";
+				public static LocString EFFECT = "Supplies Duplicants with <style=\"oxygen\">Oxygen</style> in underwater environments.\n\nMust be refilled with " + UI.FormatAsLink("Oxygen", "OXYGEN") + " at an Atmo Suit Dock when depleted.";
 
 				public static LocString RECIPE_DESC = "Supplies Duplicants with <style=\"oxygen\">Oxygen</style> in underwater environments.";
 			}
@@ -34,7 +34,7 @@ namespace STRINGS
 
 				public static LocString DESC = "Keeps my Duplicants cool in case things heat up.";
 
-				public static LocString EFFECT = "Provides insulation in regions with extreme <style=\"heat\">Temperatures</style>.\n\nMust be powered at an Exosuit Dock when depleted.";
+				public static LocString EFFECT = "Provides insulation in regions with extreme <style=\"heat\">Temperatures</style>.\n\nMust be powered at a Thermo Suit Dock when depleted.";
 
 				public static LocString RECIPE_DESC = "Provides insulation in regions with extreme <style=\"heat\">Temperatures</style>.";
 			}

@@ -73,11 +73,11 @@ namespace Klei.AI
 			return (DescriptionCB == null) ? Description : DescriptionCB();
 		}
 
-		public string GetFormattedString(GameObject parent_instance, bool ignore_default_formatter = false)
+		public string GetFormattedString(GameObject parent_instance)
 		{
 			IAttributeFormatter attributeFormatter = null;
 			Attribute attribute = Db.Get().Attributes.TryGet(AttributeId);
-			if (!ignore_default_formatter)
+			if (!IsMultiplier)
 			{
 				if (attribute != null)
 				{

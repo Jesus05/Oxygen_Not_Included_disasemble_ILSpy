@@ -110,7 +110,7 @@ public class DiseaseInfoScreen : TargetScreen
 				AttributeModifier currentImmuneModifier = sMI.GetCurrentImmuneModifier(disease);
 				if (currentImmuneModifier != null)
 				{
-					immuneSystemPanel.SetLabel("disease_rate2_" + disease.Id, string.Format(UI.DETAILTABS.DISEASE.IMMUNE_FACTORS.IMMUNE_ATTACK_RATE2, currentImmuneModifier.GetFormattedString(selectedTarget, false), GameUtil.GetFormattedDiseaseAmount(Mathf.RoundToInt(amountInstance.value))), string.Format(UI.DETAILTABS.DISEASE.IMMUNE_FACTORS.IMMUNE_ATTACK_RATE2_TOOLTIP, currentImmuneModifier.GetFormattedString(selectedTarget, false), GameUtil.GetFormattedDiseaseAmount(Mathf.RoundToInt(amountInstance.value))));
+					immuneSystemPanel.SetLabel("disease_rate2_" + disease.Id, string.Format(UI.DETAILTABS.DISEASE.IMMUNE_FACTORS.IMMUNE_ATTACK_RATE2, currentImmuneModifier.GetFormattedString(selectedTarget), GameUtil.GetFormattedDiseaseAmount(Mathf.RoundToInt(amountInstance.value))), string.Format(UI.DETAILTABS.DISEASE.IMMUNE_FACTORS.IMMUNE_ATTACK_RATE2_TOOLTIP, currentImmuneModifier.GetFormattedString(selectedTarget), GameUtil.GetFormattedDiseaseAmount(Mathf.RoundToInt(amountInstance.value))));
 				}
 			}
 		}

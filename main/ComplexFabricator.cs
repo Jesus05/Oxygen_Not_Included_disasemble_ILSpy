@@ -145,6 +145,8 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms
 
 	private float orderProgress = 0f;
 
+	private ComplexRecipe[] possible_recipes_cache;
+
 	private SchedulerHandle ingredientSearchHandle;
 
 	[SerializeField]
@@ -319,20 +321,25 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms
 
 	public ComplexRecipe[] GetRecipes()
 	{
-		Tag b = GetComponent<KPrefabID>().PrefabID();
-		List<ComplexRecipe> recipes = ComplexRecipeManager.Get().recipes;
-		List<ComplexRecipe> list = new List<ComplexRecipe>();
-		foreach (ComplexRecipe item in recipes)
+		if (possible_recipes_cache == null)
 		{
-			foreach (Tag fabricator in item.fabricators)
+			KPrefabID component = GetComponent<KPrefabID>();
+			Tag prefabTag = component.PrefabTag;
+			List<ComplexRecipe> recipes = ComplexRecipeManager.Get().recipes;
+			List<ComplexRecipe> list = new List<ComplexRecipe>();
+			foreach (ComplexRecipe item in recipes)
 			{
-				if (fabricator == b)
+				foreach (Tag fabricator in item.fabricators)
 				{
-					list.Add(item);
+					if (fabricator == prefabTag)
+					{
+						list.Add(item);
+					}
 				}
 			}
+			possible_recipes_cache = list.ToArray();
 		}
-		return list.ToArray();
+		return possible_recipes_cache;
 	}
 
 	private void InitRecipeQueueCount()
@@ -688,7 +695,14 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms
 		ComplexRecipe.RecipeElement[] array = ingredients;
 		foreach (ComplexRecipe.RecipeElement recipeElement in array)
 		{
-			inStorage.Transfer(buildStorage, recipeElement.material, recipeElement.amount, false, true);
+			while (buildStorage.GetAmountAvailable(recipeElement.material) < recipeElement.amount)
+			{
+				inStorage.Transfer(buildStorage, recipeElement.material, recipeElement.amount, false, true);
+				if (inStorage.GetAmountAvailable(recipeElement.material) <= 0f)
+				{
+					break;
+				}
+			}
 		}
 	}
 
@@ -1001,8 +1015,8 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms
 			item.SetupDescriptor(UI.BUILDINGEFFECTS.PROCESSES, UI.BUILDINGEFFECTS.TOOLTIPS.PROCESSES, Descriptor.DescriptorType.Effect);
 			list.Add(item);
 		}
-		ComplexRecipe[] recipes2 = GetRecipes();
-		foreach (ComplexRecipe complexRecipe in recipes2)
+		ComplexRecipe[] array = recipes;
+		foreach (ComplexRecipe complexRecipe in array)
 		{
 			string text = "";
 			string text2 = "";

@@ -214,8 +214,8 @@ public class FetchAreaChore : Chore<FetchAreaChore.StatesInstance>
 				KPrefabID component = pickupable2.GetComponent<KPrefabID>();
 				if (!(component.PrefabTag != prefabTag) && !(pickupable2.UnreservedAmount <= 0f))
 				{
-					TagBits tagBits = component.GetTagBits();
-					if (tagBits.HasAll(rootChore.requiredTagBits) && !tagBits.HasAny(rootChore.forbiddenTagBits) && !list.Contains(pickupable2) && rootContext.consumerState.consumer.CanReach(pickupable2))
+					component.UpdateTagBits();
+					if (component.HasAllTags_AssumeLaundered(ref rootChore.requiredTagBits) && !component.HasAnyTags_AssumeLaundered(ref rootChore.forbiddenTagBits) && !list.Contains(pickupable2) && rootContext.consumerState.consumer.CanReach(pickupable2))
 					{
 						float unreservedAmount = pickupable2.UnreservedAmount;
 						list.Add(pickupable2);
@@ -249,7 +249,7 @@ public class FetchAreaChore : Chore<FetchAreaChore.StatesInstance>
 				}
 				Precondition.Context context2 = pooledList[j];
 				FetchChore fetchChore = context2.chore as FetchChore;
-				if (fetchChore != rootChore && context2.IsSuccess() && (UnityEngine.Object)fetchChore.overrideTarget == (UnityEngine.Object)null && (UnityEngine.Object)fetchChore.driver == (UnityEngine.Object)null && fetchChore.tagBits.AreEqual(rootChore.tagBits))
+				if (fetchChore != rootChore && context2.IsSuccess() && (UnityEngine.Object)fetchChore.overrideTarget == (UnityEngine.Object)null && (UnityEngine.Object)fetchChore.driver == (UnityEngine.Object)null && fetchChore.tagBits.AreEqual(ref rootChore.tagBits))
 				{
 					num4 = Mathf.Min(fetchChore.originalAmount, num2 - num5);
 					if (minTakeAmount > 0f)

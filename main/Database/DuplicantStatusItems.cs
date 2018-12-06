@@ -409,7 +409,7 @@ namespace Database
 				for (int j = 0; j != attributeInstance2.Modifiers.Count; j++)
 				{
 					AttributeModifier attributeModifier2 = attributeInstance2.Modifiers[j];
-					formattedValue2 = formattedValue2 + attributeModifier2.GetDescription() + " " + attributeModifier2.GetFormattedString(attributeInstance2.gameObject, false);
+					formattedValue2 = formattedValue2 + attributeModifier2.GetDescription() + " " + attributeModifier2.GetFormattedString(attributeInstance2.gameObject);
 					formattedValue2 += "\n";
 				}
 				str = str.Replace("{conductivityBarrier}", formattedValue2);
@@ -427,7 +427,7 @@ namespace Database
 				for (int i = 0; i != attributeInstance.Modifiers.Count; i++)
 				{
 					AttributeModifier attributeModifier = attributeInstance.Modifiers[i];
-					formattedValue = formattedValue + attributeModifier.GetDescription() + " " + attributeModifier.GetFormattedString(attributeInstance.gameObject, false);
+					formattedValue = formattedValue + attributeModifier.GetDescription() + " " + attributeModifier.GetFormattedString(attributeInstance.gameObject);
 					formattedValue += "\n";
 				}
 				str = str.Replace("{conductivityBarrier}", formattedValue);

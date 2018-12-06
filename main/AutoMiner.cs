@@ -75,6 +75,8 @@ public class AutoMiner : StateMachineComponent<AutoMiner.Instance>, ISim1000ms
 		}
 	}
 
+	private static HashedString HASH_ROTATION = "rotation";
+
 	[MyCmpReq]
 	private Operational operational;
 
@@ -86,6 +88,9 @@ public class AutoMiner : StateMachineComponent<AutoMiner.Instance>, ISim1000ms
 
 	[MyCmpGet]
 	private Rotatable rotatable;
+
+	[MyCmpReq]
+	private MiningSounds mining_sounds;
 
 	public int x;
 
@@ -126,8 +131,6 @@ public class AutoMiner : StateMachineComponent<AutoMiner.Instance>, ISim1000ms
 	{
 		component.OnOperationalChanged(data);
 	});
-
-	private static HashedString HASH_ROTATION = "rotation";
 
 	[CompilerGenerated]
 	private static Func<int, bool> _003C_003Ef__mg_0024cache0;
@@ -242,6 +245,8 @@ public class AutoMiner : StateMachineComponent<AutoMiner.Instance>, ISim1000ms
 		if (HasDigCell && rotation_complete)
 		{
 			Diggable.DoDigTick(dig_cell, dt);
+			float percentComplete = Grid.Damage[dig_cell];
+			mining_sounds.SetPercentComplete(percentComplete);
 			Vector3 a = Grid.CellToPosCCC(dig_cell, Grid.SceneLayer.FXFront2);
 			a.z = 0f;
 			Vector3 position = arm_go.transform.GetPosition();

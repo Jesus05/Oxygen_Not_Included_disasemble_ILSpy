@@ -21,7 +21,7 @@ public class GlobalChoreProvider : ChoreProvider
 			{
 				if (tagBitsHash == fetch.tagBitsHash)
 				{
-					if (chore.tagBits.AreEqual(fetch.chore.tagBits))
+					if (chore.tagBits.AreEqual(ref fetch.chore.tagBits))
 					{
 						if (priority.priority_class <= fetch.priority.priority_class)
 						{

@@ -65,7 +65,7 @@ public class FetchChore : Chore<FetchChore.StatesInstance>
 			}
 			else
 			{
-				flag = FetchManager.IsFetchablePickup(pickupable.KPrefabID, pickupable.storage, pickupable.UnreservedAmount, fetchChore.tagBits, fetchChore.requiredTagBits, fetchChore.forbiddenTagBits, context.consumerState.storage);
+				flag = FetchManager.IsFetchablePickup(pickupable.KPrefabID, pickupable.storage, pickupable.UnreservedAmount, ref fetchChore.tagBits, ref fetchChore.requiredTagBits, ref fetchChore.forbiddenTagBits, context.consumerState.storage);
 			}
 			if (flag)
 			{
@@ -140,7 +140,7 @@ public class FetchChore : Chore<FetchChore.StatesInstance>
 		requiredTagBits = new TagBits(required_tags);
 		forbiddenTagBits = new TagBits(forbidden_tags);
 		tagBitsHash = tagBits.GetHashCode();
-		DebugUtil.DevAssert(!tagBits.HasAny(~FetchManager.disallowedTagMask), "Fetch chore fetching invalid tags.");
+		DebugUtil.DevAssert(!tagBits.HasAny(ref FetchManager.disallowedTagBits), "Fetch chore fetching invalid tags.");
 		if (destination.GetOnlyFetchMarkedItems())
 		{
 			requiredTagBits.SetTag(GameTags.Garbage);
@@ -221,7 +221,7 @@ public class FetchChore : Chore<FetchChore.StatesInstance>
 			}
 			else
 			{
-				target = Game.Instance.fetchManager.FindFetchTarget(consumer_state.worker, destination, tagBits, requiredTagBits, forbiddenTagBits, originalAmount);
+				target = Game.Instance.fetchManager.FindFetchTarget(destination, ref tagBits, ref requiredTagBits, ref forbiddenTagBits, originalAmount);
 			}
 		}
 		return target;

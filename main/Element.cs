@@ -213,7 +213,7 @@ public class Element : IComparable<Element>
 			foreach (AttributeModifier attributeModifier in attributeModifiers)
 			{
 				string name = Db.Get().BuildingAttributes.Get(attributeModifier.AttributeId).Name;
-				string formattedString = attributeModifier.GetFormattedString(null, attributeModifier.IsMultiplier);
+				string formattedString = attributeModifier.GetFormattedString(null);
 				str = str + "\n" + string.Format(DUPLICANTS.MODIFIERS.MODIFIER_FORMAT, name, formattedString);
 			}
 		}

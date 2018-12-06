@@ -135,7 +135,7 @@ public class AdditionalDetailsPanel : TargetScreen
 				AttributeModifier attributeModifier = component.Element.attributeModifiers.Find((AttributeModifier m) => m.AttributeId == Db.Get().BuildingAttributes.OverheatTemperature.Id);
 				if (attributeModifier != null)
 				{
-					drawer.NewLabel(drawer.Format(UI.ELEMENTAL.OVERHEATPOINT.NAME, attributeModifier.GetFormattedString(selectedTarget.gameObject, false))).Tooltip(drawer.Format(UI.ELEMENTAL.OVERHEATPOINT.TOOLTIP, attributeModifier.GetFormattedString(selectedTarget.gameObject, false)));
+					drawer.NewLabel(drawer.Format(UI.ELEMENTAL.OVERHEATPOINT.NAME, attributeModifier.GetFormattedString(selectedTarget.gameObject))).Tooltip(drawer.Format(UI.ELEMENTAL.OVERHEATPOINT.TOOLTIP, attributeModifier.GetFormattedString(selectedTarget.gameObject)));
 				}
 			}
 		}

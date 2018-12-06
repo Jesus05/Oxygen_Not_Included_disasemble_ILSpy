@@ -49,7 +49,7 @@ namespace Klei.AI
 			foreach (AttributeModifier selfModifier in SelfModifiers)
 			{
 				Attribute attribute = Db.Get().Attributes.Get(selfModifier.AttributeId);
-				text += string.Format(DUPLICANTS.TRAITS.ATTRIBUTE_MODIFIERS, attribute.Name, selfModifier.GetFormattedString(null, false));
+				text += string.Format(DUPLICANTS.TRAITS.ATTRIBUTE_MODIFIERS, attribute.Name, selfModifier.GetFormattedString(null));
 			}
 			if (disabledChoreGroups != null)
 			{

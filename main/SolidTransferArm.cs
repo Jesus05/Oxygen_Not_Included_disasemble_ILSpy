@@ -3,6 +3,7 @@ using FMODUnity;
 using Klei.AI;
 using KSerialization;
 using System.Collections.Generic;
+using System.Linq;
 using TUNING;
 using UnityEngine;
 
@@ -82,6 +83,8 @@ public class SolidTransferArm : StateMachineComponent<SolidTransferArm.SMInstanc
 
 	private HandleVector<int>.Handle pickupablesChangedEntry;
 
+	public static TagBits tagBits = new TagBits(STORAGEFILTERS.NOT_EDIBLE_SOLIDS.Concat(STORAGEFILTERS.FOOD).ToArray());
+
 	private bool pickupablesDirty;
 
 	private Extents pickupableExtents;
@@ -121,31 +124,9 @@ public class SolidTransferArm : StateMachineComponent<SolidTransferArm.SMInstanc
 
 	private static HashedString HASH_ROTATION = "rotation";
 
-	public TagBits tagBits
-	{
-		get;
-		private set;
-	}
-
-	public TagBits requiredTagBits
-	{
-		get;
-		private set;
-	}
-
-	public TagBits forbiddenTagBits
-	{
-		get;
-		private set;
-	}
-
 	protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
-		List<Tag> list = new List<Tag>();
-		list.AddRange(STORAGEFILTERS.NOT_EDIBLE_SOLIDS);
-		list.AddRange(STORAGEFILTERS.FOOD);
-		tagBits = new TagBits(list.ToArray());
 		choreConsumer.AddProvider(GlobalChoreProvider.Instance);
 		choreConsumer.SetReach(pickupRange);
 		Klei.AI.Attributes attributes = this.GetAttributes();
@@ -288,7 +269,7 @@ public class SolidTransferArm : StateMachineComponent<SolidTransferArm.SMInstanc
 		{
 			pickupables.Clear();
 			int cell_a = Grid.PosToCell(this);
-			foreach (KeyValuePair<Tag, FetchManager.FecthablesByPrefabId> prefabIdToFetchable in Game.Instance.fetchManager.prefabIdToFetchables)
+			foreach (KeyValuePair<Tag, FetchManager.FetchablesByPrefabId> prefabIdToFetchable in Game.Instance.fetchManager.prefabIdToFetchables)
 			{
 				foreach (FetchManager.Fetchable data in prefabIdToFetchable.Value.fetchables.GetDataList())
 				{
@@ -317,21 +298,13 @@ public class SolidTransferArm : StateMachineComponent<SolidTransferArm.SMInstanc
 
 	private bool IsPickupableRelevantToMyInterests(Pickupable pickupable)
 	{
-		TagBits tagBits = pickupable.KPrefabID.GetTagBits();
-		if (tagBits.HasAny(this.tagBits))
+		KPrefabID kPrefabID = pickupable.KPrefabID;
+		if (kPrefabID.HasAnyTags(ref tagBits))
 		{
-			if (tagBits.HasAll(requiredTagBits))
+			int pickupableCell = GetPickupableCell(pickupable);
+			if (IsCellReachable(pickupableCell))
 			{
-				if (!tagBits.HasAny(forbiddenTagBits))
-				{
-					int pickupableCell = GetPickupableCell(pickupable);
-					if (IsCellReachable(pickupableCell))
-					{
-						return true;
-					}
-					return false;
-				}
-				return false;
+				return true;
 			}
 			return false;
 		}
@@ -343,14 +316,7 @@ public class SolidTransferArm : StateMachineComponent<SolidTransferArm.SMInstanc
 		target = null;
 		pickupablesDirty = true;
 		RefreshPickupables();
-		foreach (Pickupable pickupable in pickupables)
-		{
-			if (FetchManager.IsFetchablePickup(pickupable.KPrefabID, pickupable.storage, pickupable.UnreservedAmount, tag_bits, required_tags, forbid_tags, destination))
-			{
-				target = pickupable;
-				break;
-			}
-		}
+		target = FetchManager.FindFetchTarget(pickupables, destination, ref tag_bits, ref required_tags, ref forbid_tags, required_amount);
 	}
 
 	public void Sim33ms(float dt)

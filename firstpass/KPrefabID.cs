@@ -103,8 +103,10 @@ public class KPrefabID : KMonoBehaviour, ISaveLoadable
 	public void InitializeTags()
 	{
 		DebugUtil.Assert(PrefabTag.IsValid);
-		tags.Add(PrefabTag);
-		dirtyTagBits = true;
+		if (tags.Add(PrefabTag))
+		{
+			dirtyTagBits = true;
+		}
 	}
 
 	public void UpdateSaveLoadTag()
@@ -117,19 +119,29 @@ public class KPrefabID : KMonoBehaviour, ISaveLoadable
 		return SaveLoadTag;
 	}
 
-	public TagBits GetTagBits()
+	private void LaunderTagBits()
 	{
-		InitializeTags();
 		if (dirtyTagBits)
 		{
-			tagBits = default(TagBits);
+			tagBits.ClearAll();
 			foreach (Tag tag in tags)
 			{
 				tagBits.SetTag(tag);
 			}
 			dirtyTagBits = false;
 		}
-		return tagBits;
+	}
+
+	public void UpdateTagBits()
+	{
+		InitializeTags();
+		LaunderTagBits();
+	}
+
+	public void AndTagBits(ref TagBits rhs)
+	{
+		UpdateTagBits();
+		rhs.And(ref tagBits);
 	}
 
 	protected override void OnPrefabInit()
@@ -215,6 +227,28 @@ public class KPrefabID : KMonoBehaviour, ISaveLoadable
 			}
 		}
 		return false;
+	}
+
+	public bool HasAnyTags(ref TagBits search_tags)
+	{
+		UpdateTagBits();
+		return tagBits.HasAny(ref search_tags);
+	}
+
+	public bool HasAllTags(ref TagBits search_tags)
+	{
+		UpdateTagBits();
+		return tagBits.HasAll(ref search_tags);
+	}
+
+	public bool HasAnyTags_AssumeLaundered(ref TagBits search_tags)
+	{
+		return tagBits.HasAny(ref search_tags);
+	}
+
+	public bool HasAllTags_AssumeLaundered(ref TagBits search_tags)
+	{
+		return tagBits.HasAll(ref search_tags);
 	}
 
 	public override bool Equals(object o)

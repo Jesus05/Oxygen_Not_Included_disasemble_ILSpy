@@ -10,7 +10,7 @@ namespace STRINGS
 
 				public static LocString DESC = UI.FormatAsLink("Medicine", "MEDICINE") + " for " + UI.FormatAsLink("disease", "DIARRHEA") + ".";
 
-				public static LocString RECIPEDESC = "Cures " + UI.FormatAsLink("Diarrhea", "DISEASES") + ".";
+				public static LocString RECIPEDESC = "Cures " + UI.FormatAsLink("Diarrhea", "DISEASE") + ".";
 			}
 
 			public class PLACEBO
@@ -49,9 +49,9 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Vitamin Chews";
 
-				public static LocString DESC = "A health Supplement for improving " + UI.FormatAsLink("Immune System", "IMMUNE SYSTEM") + " strength.";
+				public static LocString DESC = "A health Supplement for improving " + UI.FormatAsLink("Immune System", "DISEASE") + " strength.";
 
-				public static LocString RECIPEDESC = "Improves " + UI.FormatAsLink("Immune System", "IMMUNE SYSTEM") + " strength.";
+				public static LocString RECIPEDESC = "Improves " + UI.FormatAsLink("Immune System", "DISEASE") + " strength.";
 			}
 		}
 
@@ -77,54 +77,54 @@ namespace STRINGS
 			{
 				public static LocString NAME = UI.FormatAsLink("Berry Sludge", "FRUITCAKE");
 
-				public static LocString DESC = "A mashed up " + PRICKLEFRUIT.NAME + " sludge with an exceptionally long shelf life.\n\nIts aggressive, overbearing sweetness can leave the tongue feeling temporarily numb.";
+				public static LocString DESC = "A mashed up " + UI.FormatAsLink("Bristle Berry", "PRICKLEFRUIT") + " sludge with an exceptionally long shelf life.\n\nIts aggressive, overbearing sweetness can leave the tongue feeling temporarily numb.";
 
-				public static LocString RECIPEDESC = "A mashed up " + PRICKLEFRUIT.NAME + " sludge with an exceptionally long shelf life.";
+				public static LocString RECIPEDESC = "A mashed up " + UI.FormatAsLink("Bristle Berry", "PRICKLEFRUIT") + " sludge with an exceptionally long shelf life.";
 			}
 
 			public class HATCHEGG
 			{
 				public static LocString NAME = CREATURES.SPECIES.HATCH.EGG_NAME;
 
-				public static LocString DESC = "An egg laid by a " + CREATURES.SPECIES.HATCH.NAME + "\n\nIf incubated, it will hatch into a " + CREATURES.SPECIES.HATCH.BABY.NAME;
+				public static LocString DESC = "An egg laid by a " + UI.FormatAsLink("Hatch", "HATCH") + ".\n\nIf incubated, it will hatch into a " + UI.FormatAsLink("Hatchling", "HATCH") + ".";
 
-				public static LocString RECIPEDESC = "An egg laid by a " + CREATURES.SPECIES.HATCH.NAME;
+				public static LocString RECIPEDESC = "An egg laid by a " + UI.FormatAsLink("Hatch", "HATCH") + ".";
 			}
 
 			public class DRECKOEGG
 			{
 				public static LocString NAME = CREATURES.SPECIES.DRECKO.EGG_NAME;
 
-				public static LocString DESC = "An egg laid by a " + CREATURES.SPECIES.DRECKO.NAME + "\n\nIf incubated, it will hatch into a new " + CREATURES.SPECIES.DRECKO.NAME;
+				public static LocString DESC = "An egg laid by a " + UI.FormatAsLink("Drecko", "DRECKO") + ".\n\nIf incubated, it will hatch into a new " + UI.FormatAsLink("Drecklet", "DRECKO") + ".";
 
-				public static LocString RECIPEDESC = "An egg laid by a " + CREATURES.SPECIES.DRECKO.NAME;
+				public static LocString RECIPEDESC = "An egg laid by a " + UI.FormatAsLink("Drecko", "DRECKO") + ".";
 			}
 
 			public class LIGHTBUGEGG
 			{
 				public static LocString NAME = CREATURES.SPECIES.LIGHTBUG.EGG_NAME;
 
-				public static LocString DESC = "An egg laid by a " + CREATURES.SPECIES.LIGHTBUG.NAME + "\n\nIf incubated, it will hatch into a " + CREATURES.SPECIES.LIGHTBUG.BABY.NAME;
+				public static LocString DESC = "An egg laid by a " + UI.FormatAsLink("Shine Bug", "LIGHTBUG") + ".\n\nIf incubated, it will hatch into a " + UI.FormatAsLink("Shine Nymph", "LIGHTBUG") + ".";
 
-				public static LocString RECIPEDESC = "An egg laid by a " + CREATURES.SPECIES.LIGHTBUG.NAME;
+				public static LocString RECIPEDESC = "An egg laid by a " + UI.FormatAsLink("Shine Bug", "LIGHTBUG") + ".";
 			}
 
 			public class OILFLOATEREGG
 			{
 				public static LocString NAME = CREATURES.SPECIES.OILFLOATER.EGG_NAME;
 
-				public static LocString DESC = "An egg laid by a " + CREATURES.SPECIES.OILFLOATER.NAME + "\n\nIf incubated, it will hatch into a " + CREATURES.SPECIES.OILFLOATER.BABY.NAME;
+				public static LocString DESC = "An egg laid by a " + UI.FormatAsLink("Slickster", "OILFLOATER") + ".\n\nIf incubated, it will hatch into a " + UI.FormatAsLink("Slickster Larva", "OILFLOATER") + ".";
 
-				public static LocString RECIPEDESC = "An egg laid by a " + CREATURES.SPECIES.OILFLOATER.NAME;
+				public static LocString RECIPEDESC = "An egg laid by a " + UI.FormatAsLink("Slickster", "OILFLOATER") + ".";
 			}
 
 			public class PUFTEGG
 			{
 				public static LocString NAME = CREATURES.SPECIES.PUFT.EGG_NAME;
 
-				public static LocString DESC = "An egg laid by a " + CREATURES.SPECIES.PUFT.NAME + "\n\nIf incubated, it will hatch into a " + CREATURES.SPECIES.PUFT.BABY.NAME;
+				public static LocString DESC = "An egg laid by a " + UI.FormatAsLink("Puft", "PUFT") + ".\n\nIf incubated, it will hatch into a " + UI.FormatAsLink("Puftlet", "PUFT") + ".";
 
-				public static LocString RECIPEDESC = "An egg laid by a " + CREATURES.SPECIES.PUFT.NAME;
+				public static LocString RECIPEDESC = "An egg laid by a " + UI.FormatAsLink("Puft", "PUFT") + ".";
 			}
 
 			public class MEAT
@@ -190,9 +190,9 @@ namespace STRINGS
 			{
 				public static LocString NAME = UI.FormatAsLink("Fried Mushroom", "FRIEDMUSHROOM");
 
-				public static LocString DESC = "A fried dish made with a fruiting " + MUSHROOM.NAME + ".\n\nIt has a thick, savory flavor with subtle earthy undertones.";
+				public static LocString DESC = "A fried dish made with a fruiting " + UI.FormatAsLink("Dusk Cap", "MUSHROOM") + ".\n\nIt has a thick, savory flavor with subtle earthy undertones.";
 
-				public static LocString RECIPEDESC = "A fried dish made with a fruiting " + MUSHROOM.NAME + ".";
+				public static LocString RECIPEDESC = "A fried dish made with a fruiting " + UI.FormatAsLink("Dusk Cap", "MUSHROOM") + ".";
 			}
 
 			public class PRICKLEFRUIT
@@ -206,18 +206,18 @@ namespace STRINGS
 			{
 				public static LocString NAME = UI.FormatAsLink("Gristle Berry", "GRILLEDPRICKLEFRUIT");
 
-				public static LocString DESC = "The grilled bud of a " + PRICKLEFRUIT.NAME + ".\n\nHeat unlocked an exquisite taste in the fruit, though the burnt spines leave something to be desired.";
+				public static LocString DESC = "The grilled bud of a " + UI.FormatAsLink("Bristle Berry", "PRICKLEFRUIT") + ".\n\nHeat unlocked an exquisite taste in the fruit, though the burnt spines leave something to be desired.";
 
-				public static LocString RECIPEDESC = "The grilled bud of a " + PRICKLEFRUIT.NAME + ".";
+				public static LocString RECIPEDESC = "The grilled bud of a " + UI.FormatAsLink("Bristle Berry", "PRICKLEFRUIT") + ".";
 			}
 
 			public class COLDWHEATBREAD
 			{
 				public static LocString NAME = UI.FormatAsLink("Frost Bun", "COLDWHEATBREAD");
 
-				public static LocString DESC = "A simple bun baked from " + COLDWHEATSEED.NAME + " grain.\n\nEach bite leaves a mild cooling sensation in one's mouth, even when the bun itself is warm.";
+				public static LocString DESC = "A simple bun baked from " + UI.FormatAsLink("Sleet Wheat Grain", "COLDWHEATSEED") + " grain.\n\nEach bite leaves a mild cooling sensation in one's mouth, even when the bun itself is warm.";
 
-				public static LocString RECIPEDESC = "A simple bun baked from " + COLDWHEATSEED.NAME + " grain.";
+				public static LocString RECIPEDESC = "A simple bun baked from " + UI.FormatAsLink("Sleet Wheat Grain", "COLDWHEATSEED") + " grain.";
 			}
 
 			public class SPICENUT
@@ -231,18 +231,18 @@ namespace STRINGS
 			{
 				public static LocString NAME = UI.FormatAsLink("Pepper Bread", "SPICEBREAD");
 
-				public static LocString DESC = "A loaf of bread, lightly spiced with " + SPICENUT.NAME + " for a mild bite.\n\nThere's a simple joy to be had in pulling it apart in one's fingers.";
+				public static LocString DESC = "A loaf of bread, lightly spiced with " + UI.FormatAsLink("Pincha Peppernut", "SPICENUT") + " for a mild bite.\n\nThere's a simple joy to be had in pulling it apart in one's fingers.";
 
-				public static LocString RECIPEDESC = "A loaf of bread, lightly spiced with " + SPICENUT.NAME + " for a mild bite.";
+				public static LocString RECIPEDESC = "A loaf of bread, lightly spiced with " + UI.FormatAsLink("Pincha Peppernut", "SPICENUT") + " for a mild bite.";
 			}
 
 			public class SALSA
 			{
 				public static LocString NAME = UI.FormatAsLink("Stuffed Berry", "SALSA");
 
-				public static LocString DESC = "A baked " + PRICKLEFRUIT.NAME + " stuffed with delectable spices and vibrantly flavored.";
+				public static LocString DESC = "A baked " + UI.FormatAsLink("Bristle Berry", "PRICKLEFRUIT") + " stuffed with delectable spices and vibrantly flavored.";
 
-				public static LocString RECIPEDESC = "A baked " + PRICKLEFRUIT.NAME + " stuffed with delectable spices and vibrantly flavored.";
+				public static LocString RECIPEDESC = "A baked " + UI.FormatAsLink("Bristle Berry", "PRICKLEFRUIT") + " stuffed with delectable spices and vibrantly flavored.";
 			}
 
 			public class BASICPLANTFOOD
@@ -256,9 +256,9 @@ namespace STRINGS
 			{
 				public static LocString NAME = UI.FormatAsLink("Liceloaf", "BASICPLANTBAR");
 
-				public static LocString DESC = BASICPLANTFOOD.NAME + " compacted into a dense, immobile loaf.";
+				public static LocString DESC = UI.FormatAsLink("Meal Lice", "BASICPLANTFOOD") + " compacted into a dense, immobile loaf.";
 
-				public static LocString RECIPEDESC = BASICPLANTFOOD.NAME + " compacted into a dense, immobile loaf.";
+				public static LocString RECIPEDESC = UI.FormatAsLink("Meal Lice", "BASICPLANTFOOD") + " compacted into a dense, immobile loaf.";
 			}
 
 			public class BASICFORAGEPLANT
@@ -272,7 +272,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = UI.FormatAsLink("Rot Pile", "COMPOST");
 
-				public static LocString DESC = "An inedible glop of former foodstuff.\n\nRot piles break down into " + ELEMENTS.TOXICSAND.NAME + " over time.";
+				public static LocString DESC = "An inedible glop of former foodstuff.\n\nRot piles break down into " + UI.FormatAsLink("Polluted Dirt", "TOXICSAND") + " over time.";
 			}
 
 			public class COLDWHEATSEED
@@ -337,7 +337,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Micronutrient Fertilizer";
 
-				public static LocString DESC = "Specialized " + UI.FormatAsLink("Fertilizer", "Fertilizer") + " mixed by a professional farmer.\n\nIncreases the growth rate of one " + UI.FormatAsLink("Plant", "PLANTS") + ".";
+				public static LocString DESC = "Specialized " + UI.FormatAsLink("Fertilizer", "FERTILIZER") + " mixed by a professional farmer.\n\nIncreases the growth rate of one " + UI.FormatAsLink("Plant", "PLANTS") + ".";
 			}
 
 			public class MACHINE_PARTS

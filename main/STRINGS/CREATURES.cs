@@ -105,7 +105,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = UI.FormatAsLink("Morb", "GLOM");
 
-				public static LocString DESC = "Morbs are attracted to unhygienic conditions and frequently excrete bursts of " + ELEMENTS.CONTAMINATEDOXYGEN.NAME + ".";
+				public static LocString DESC = "Morbs are attracted to unhygienic conditions and frequently excrete bursts of " + UI.FormatAsLink("Polluted Oxygen", "CONTAMINATEDOXYGEN") + ".";
 
 				public static LocString EGG_NAME = UI.FormatAsLink("Morb Pod", "MORB");
 			}
@@ -543,14 +543,14 @@ namespace STRINGS
 				{
 					public static LocString NAME = UI.FormatAsLink("Hot Polluted Oxygen Vent", "GeyserGeneric_HOT_PO2");
 
-					public static LocString DESC = "A highly pressurized vent that periodically erupts with hot " + ELEMENTS.CONTAMINATEDOXYGEN.NAME + ".";
+					public static LocString DESC = "A highly pressurized vent that periodically erupts with hot " + UI.FormatAsLink("Polluted Oxygen", "CONTAMINATEDOXYGEN") + ".";
 				}
 
 				public class SLIMY_PO2
 				{
 					public static LocString NAME = UI.FormatAsLink("Infectious Polluted Oxygen Vent", "GeyserGeneric_SLIMY_PO2");
 
-					public static LocString DESC = "A highly pressurized vent that periodically erupts with warm " + ELEMENTS.CONTAMINATEDOXYGEN.NAME + ".";
+					public static LocString DESC = "A highly pressurized vent that periodically erupts with warm " + UI.FormatAsLink("Polluted Oxygen", "CONTAMINATEDOXYGEN") + ".";
 				}
 
 				public class CHLORINE_GAS
@@ -714,7 +714,7 @@ namespace STRINGS
 
 				public static LocString DESC = "Gas grass.";
 
-				public static LocString DOMESTICATEDDESC = "An alien grass variety that is eaten by Space Cows";
+				public static LocString DOMESTICATEDDESC = "An alien grass variety that is eaten by " + UI.FormatAsLink("Gassy Moos", "MOO") + ".";
 			}
 
 			public class PRICKLEGRASS

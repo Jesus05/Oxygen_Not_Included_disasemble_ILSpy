@@ -43,7 +43,7 @@ public class StructureTemperatureComponents : KGameObjectSplitComponentManager<S
 		payload.primaryElement.getTemperatureCallback = OnGetTemperature;
 		payload.primaryElement.setTemperatureCallback = OnSetTemperature;
 		header.isActiveBuilding = (payload.building.Def.SelfHeatKilowattsWhenActive != 0f || payload.ExhaustKilowatts != 0f);
-		SetData(handle, header, ref payload);
+		SetHeader(handle, header);
 	}
 
 	private void InitializeStatusItem()
@@ -104,10 +104,8 @@ public class StructureTemperatureComponents : KGameObjectSplitComponentManager<S
 
 	private static void OnActiveChanged(HandleVector<int>.Handle handle)
 	{
-		StructureTemperaturePayload new_data = GameComps.StructureTemperatures.GetPayload(handle);
-		new_data.primaryElement.InternalTemperature = new_data.Temperature;
-		GameComps.StructureTemperatures.SetPayload(handle, ref new_data);
-		StructureTemperatureHeader header = GameComps.StructureTemperatures.GetHeader(handle);
+		GameComps.StructureTemperatures.GetData(handle, out StructureTemperatureHeader header, out StructureTemperaturePayload payload);
+		payload.primaryElement.InternalTemperature = payload.Temperature;
 		header.dirty = true;
 		GameComps.StructureTemperatures.SetHeader(handle, header);
 	}
@@ -254,7 +252,7 @@ public class StructureTemperatureComponents : KGameObjectSplitComponentManager<S
 		GameComps.StructureTemperatures.GetData(handle, out StructureTemperatureHeader header, out StructureTemperaturePayload payload);
 		payload.primaryElement.InternalTemperature = temperature;
 		header.dirty = true;
-		GameComps.StructureTemperatures.SetData(handle, header, ref payload);
+		GameComps.StructureTemperatures.SetHeader(handle, header);
 		if (!header.isActiveBuilding && Sim.IsValidHandle(payload.simHandleCopy))
 		{
 			UpdateSimState(ref payload);
@@ -346,13 +344,6 @@ public class StructureTemperatureComponents : KGameObjectSplitComponentManager<S
 		}
 	}
 
-	private void MarkDirty(HandleVector<int>.Handle handle)
-	{
-		StructureTemperatureHeader header = GetHeader(handle);
-		header.dirty = true;
-		SetHeader(handle, header);
-	}
-
 	public bool IsEnabled(HandleVector<int>.Handle handle)
 	{
 		StructureTemperaturePayload payload = GetPayload(handle);
@@ -361,10 +352,10 @@ public class StructureTemperatureComponents : KGameObjectSplitComponentManager<S
 
 	private void Enable(HandleVector<int>.Handle handle, bool isEnabled)
 	{
-		StructureTemperaturePayload new_data = GetPayload(handle);
-		new_data.enabled = isEnabled;
-		SetPayload(handle, ref new_data);
-		MarkDirty(handle);
+		GetData(handle, out StructureTemperatureHeader header, out StructureTemperaturePayload payload);
+		header.dirty = true;
+		payload.enabled = isEnabled;
+		SetData(handle, header, ref payload);
 	}
 
 	public void Enable(HandleVector<int>.Handle handle)
@@ -385,10 +376,10 @@ public class StructureTemperatureComponents : KGameObjectSplitComponentManager<S
 
 	private void Bypass(HandleVector<int>.Handle handle, bool bypass)
 	{
-		StructureTemperaturePayload new_data = GetPayload(handle);
-		new_data.bypass = bypass;
-		SetPayload(handle, ref new_data);
-		MarkDirty(handle);
+		GetData(handle, out StructureTemperatureHeader header, out StructureTemperaturePayload payload);
+		header.dirty = true;
+		payload.bypass = bypass;
+		SetData(handle, header, ref payload);
 	}
 
 	public void Bypass(HandleVector<int>.Handle handle)

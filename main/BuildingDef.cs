@@ -718,6 +718,19 @@ public class BuildingDef : Def
 	{
 		if (Grid.IsValidBuildingCell(cell))
 		{
+			if (BuildLocationRule == BuildLocationRule.OnWall)
+			{
+				if (!CheckFoundation(cell, orientation, BuildLocationRule, WidthInCells, HeightInCells))
+				{
+					fail_reason = UI.TOOLTIPS.HELP_BUILDLOCATION_WALL;
+					return false;
+				}
+			}
+			else if (BuildLocationRule == BuildLocationRule.InCorner && !CheckFoundation(cell, orientation, BuildLocationRule, WidthInCells, HeightInCells))
+			{
+				fail_reason = UI.TOOLTIPS.HELP_BUILDLOCATION_CORNER;
+				return false;
+			}
 			return IsAreaClear(go, cell, orientation, ObjectLayer, TileLayer, false, out fail_reason);
 		}
 		fail_reason = UI.TOOLTIPS.HELP_BUILDLOCATION_INVALID_CELL;
@@ -728,6 +741,19 @@ public class BuildingDef : Def
 	{
 		if (Grid.IsValidBuildingCell(cell))
 		{
+			if (BuildLocationRule == BuildLocationRule.OnWall)
+			{
+				if (!CheckFoundation(cell, orientation, BuildLocationRule, WidthInCells, HeightInCells))
+				{
+					fail_reason = UI.TOOLTIPS.HELP_BUILDLOCATION_WALL;
+					return false;
+				}
+			}
+			else if (BuildLocationRule == BuildLocationRule.InCorner && !CheckFoundation(cell, orientation, BuildLocationRule, WidthInCells, HeightInCells))
+			{
+				fail_reason = UI.TOOLTIPS.HELP_BUILDLOCATION_CORNER;
+				return false;
+			}
 			return IsAreaClear(go, cell, orientation, ObjectLayer, TileLayer, replace_tile, out fail_reason);
 		}
 		fail_reason = UI.TOOLTIPS.HELP_BUILDLOCATION_INVALID_CELL;
@@ -799,6 +825,13 @@ public class BuildingDef : Def
 				{
 					flag = false;
 					fail_reason = UI.TOOLTIPS.HELP_BUILDLOCATION_WALL;
+				}
+				break;
+			case BuildLocationRule.InCorner:
+				if (!CheckFoundation(cell, orientation, BuildLocationRule, WidthInCells, HeightInCells))
+				{
+					flag = false;
+					fail_reason = UI.TOOLTIPS.HELP_BUILDLOCATION_CORNER;
 				}
 				break;
 			case BuildLocationRule.OnFloorOverSpace:
@@ -934,7 +967,7 @@ public class BuildingDef : Def
 				GameObject x = Grid.Objects[cell2, 27];
 				if ((UnityEngine.Object)x != (UnityEngine.Object)null && (UnityEngine.Object)x != (UnityEngine.Object)source_go)
 				{
-					fail_reason = UI.TOOLTIPS.HELP_BUILDLOCATION_POWER_INPUT_OBSTRUCTED;
+					fail_reason = UI.TOOLTIPS.HELP_BUILDLOCATION_WIRECONNECTORS_OVERLAP;
 					return false;
 				}
 			}
@@ -945,7 +978,7 @@ public class BuildingDef : Def
 				GameObject x2 = Grid.Objects[cell3, 27];
 				if ((UnityEngine.Object)x2 != (UnityEngine.Object)null && (UnityEngine.Object)x2 != (UnityEngine.Object)source_go)
 				{
-					fail_reason = UI.TOOLTIPS.HELP_BUILDLOCATION_POWER_OUTPUT_OBSTRUCTED;
+					fail_reason = UI.TOOLTIPS.HELP_BUILDLOCATION_WIRECONNECTORS_OVERLAP;
 					return false;
 				}
 			}
@@ -1008,7 +1041,7 @@ public class BuildingDef : Def
 			component.GetCells(out int linked_cell, out int linked_cell2);
 			if ((UnityEngine.Object)Grid.Objects[linked_cell, 27] != (UnityEngine.Object)null || (UnityEngine.Object)Grid.Objects[linked_cell2, 27] != (UnityEngine.Object)null)
 			{
-				fail_reason = UI.TOOLTIPS.HELP_BUILDLOCATION_WIRECONNECTORS_OBSTRUCTED;
+				fail_reason = UI.TOOLTIPS.HELP_BUILDLOCATION_WIRECONNECTORS_OVERLAP;
 				return false;
 			}
 		}
@@ -1029,17 +1062,17 @@ public class BuildingDef : Def
 			component.GetCells(out int linked_cell, out int linked_cell2);
 			if ((UnityEngine.Object)Grid.Objects[linked_cell, 27] != (UnityEngine.Object)null || (UnityEngine.Object)Grid.Objects[linked_cell2, 27] != (UnityEngine.Object)null)
 			{
-				fail_reason = UI.TOOLTIPS.HELP_BUILDLOCATION_WIRECONNECTORS_OBSTRUCTED;
+				fail_reason = UI.TOOLTIPS.HELP_BUILDLOCATION_WIRECONNECTORS_OVERLAP;
 				return false;
 			}
 			if ((UnityEngine.Object)Grid.Objects[linked_cell, 9] != (UnityEngine.Object)null || (UnityEngine.Object)Grid.Objects[linked_cell2, 9] != (UnityEngine.Object)null)
 			{
-				fail_reason = UI.TOOLTIPS.HELP_BUILDLOCATION_WIRECONNECTORS_OBSTRUCTED;
+				fail_reason = UI.TOOLTIPS.HELP_BUILDLOCATION_HIGHWATT_NOT_IN_TILE;
 				return false;
 			}
 			if (Grid.HasDoor[linked_cell] || Grid.HasDoor[linked_cell2])
 			{
-				fail_reason = UI.TOOLTIPS.HELP_BUILDLOCATION_WIRECONNECTORS_OBSTRUCTED;
+				fail_reason = UI.TOOLTIPS.HELP_BUILDLOCATION_HIGHWATT_NOT_IN_TILE;
 				return false;
 			}
 			GameObject gameObject = Grid.Objects[linked_cell, 1];
@@ -1050,7 +1083,7 @@ public class BuildingDef : Def
 				BuildingUnderConstruction buildingUnderConstruction2 = (!(bool)gameObject2) ? null : gameObject2.GetComponent<BuildingUnderConstruction>();
 				if (((bool)buildingUnderConstruction && (bool)buildingUnderConstruction.Def.BuildingComplete.GetComponent<Door>()) || ((bool)buildingUnderConstruction2 && (bool)buildingUnderConstruction2.Def.BuildingComplete.GetComponent<Door>()))
 				{
-					fail_reason = UI.TOOLTIPS.HELP_BUILDLOCATION_WIRECONNECTORS_OBSTRUCTED;
+					fail_reason = UI.TOOLTIPS.HELP_BUILDLOCATION_HIGHWATT_NOT_IN_TILE;
 					return false;
 				}
 			}
@@ -1134,7 +1167,7 @@ public class BuildingDef : Def
 			if ((UnityEngine.Object)x3 != (UnityEngine.Object)null && (UnityEngine.Object)x3 != (UnityEngine.Object)source_go)
 			{
 				result = false;
-				fail_reason = UI.TOOLTIPS.HELP_BUILDLOCATION_GASPORTS_OBSTRUCTED;
+				fail_reason = UI.TOOLTIPS.HELP_BUILDLOCATION_GASPORTS_OVERLAP;
 			}
 			break;
 		}
@@ -1144,7 +1177,7 @@ public class BuildingDef : Def
 			if ((UnityEngine.Object)x2 != (UnityEngine.Object)null && (UnityEngine.Object)x2 != (UnityEngine.Object)source_go)
 			{
 				result = false;
-				fail_reason = UI.TOOLTIPS.HELP_BUILDLOCATION_LIQUIDPORTS_OBSTRUCTED;
+				fail_reason = UI.TOOLTIPS.HELP_BUILDLOCATION_LIQUIDPORTS_OVERLAP;
 			}
 			break;
 		}
@@ -1154,7 +1187,7 @@ public class BuildingDef : Def
 			if ((UnityEngine.Object)x != (UnityEngine.Object)null && (UnityEngine.Object)x != (UnityEngine.Object)source_go)
 			{
 				result = false;
-				fail_reason = UI.TOOLTIPS.HELP_BUILDLOCATION_SOLIDPORTS_OBSTRUCTED;
+				fail_reason = UI.TOOLTIPS.HELP_BUILDLOCATION_SOLIDPORTS_OVERLAP;
 			}
 			break;
 		}
@@ -1169,11 +1202,15 @@ public class BuildingDef : Def
 
 	public static bool CheckFoundation(int cell, Orientation orientation, BuildLocationRule location_rule, int width, int height)
 	{
-		if (location_rule != BuildLocationRule.OnWall)
+		switch (location_rule)
 		{
+		case BuildLocationRule.OnWall:
+			return CheckWallFoundation(cell, width, height, true) || CheckWallFoundation(cell, width, height, false);
+		case BuildLocationRule.InCorner:
+			return CheckBaseFoundation(cell, orientation, BuildLocationRule.OnCeiling, width, height) && (CheckWallFoundation(cell, width, height, true) || CheckWallFoundation(cell, width, height, false));
+		default:
 			return CheckBaseFoundation(cell, orientation, location_rule, width, height);
 		}
-		return CheckWallFoundation(cell, width, height, true) || CheckWallFoundation(cell, width, height, false);
 	}
 
 	public static bool CheckBaseFoundation(int cell, Orientation orientation, BuildLocationRule location_rule, int width, int height)

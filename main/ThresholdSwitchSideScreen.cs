@@ -30,6 +30,19 @@ public class ThresholdSwitchSideScreen : SideScreenContent, IRender200ms
 	[SerializeField]
 	private LocText unitsLabel;
 
+	[Header("Increment Buttons")]
+	[SerializeField]
+	private GameObject incrementMinor;
+
+	[SerializeField]
+	private GameObject incrementMajor;
+
+	[SerializeField]
+	private GameObject decrementMinor;
+
+	[SerializeField]
+	private GameObject decrementMajor;
+
 	protected override void OnSpawn()
 	{
 		base.OnSpawn();
@@ -100,10 +113,70 @@ public class ThresholdSwitchSideScreen : SideScreenContent, IRender200ms
 			else
 			{
 				UpdateLabels();
-				thresholdSlider.minValue = thresholdSwitch.RangeMin;
-				thresholdSlider.maxValue = thresholdSwitch.RangeMax;
-				thresholdSlider.value = thresholdSwitch.Threshold;
-				thresholdSlider.GetComponentInChildren<ToolTip>();
+				if (target.GetComponent<IThresholdSwitch>().LayoutType == ThresholdScreenLayoutType.SliderBar)
+				{
+					thresholdSlider.gameObject.SetActive(true);
+					thresholdSlider.minValue = thresholdSwitch.RangeMin;
+					thresholdSlider.maxValue = thresholdSwitch.RangeMax;
+					thresholdSlider.value = thresholdSwitch.Threshold;
+					thresholdSlider.GetComponentInChildren<ToolTip>();
+				}
+				else
+				{
+					thresholdSlider.gameObject.SetActive(false);
+				}
+				MultiToggle incrementMinorToggle = incrementMinor.GetComponent<MultiToggle>();
+				incrementMinorToggle.onClick = delegate
+				{
+					UpdateThresholdValue(thresholdSwitch.Threshold + (float)thresholdSwitch.IncrementScale);
+					incrementMinorToggle.ChangeState(1);
+				};
+				incrementMinorToggle.onHold = delegate
+				{
+				};
+				incrementMinorToggle.onStopHold = delegate
+				{
+					incrementMinorToggle.ChangeState(0);
+				};
+				MultiToggle incrementMajorToggle = incrementMajor.GetComponent<MultiToggle>();
+				incrementMajorToggle.onClick = delegate
+				{
+					UpdateThresholdValue(thresholdSwitch.Threshold + 10f * (float)thresholdSwitch.IncrementScale);
+					incrementMajorToggle.ChangeState(1);
+				};
+				incrementMajorToggle.onHold = delegate
+				{
+				};
+				incrementMajorToggle.onStopHold = delegate
+				{
+					incrementMajorToggle.ChangeState(0);
+				};
+				MultiToggle decrementMinorToggle = decrementMinor.GetComponent<MultiToggle>();
+				decrementMinorToggle.onClick = delegate
+				{
+					UpdateThresholdValue(thresholdSwitch.Threshold - (float)thresholdSwitch.IncrementScale);
+					decrementMinorToggle.ChangeState(1);
+				};
+				decrementMinorToggle.onHold = delegate
+				{
+				};
+				decrementMinorToggle.onStopHold = delegate
+				{
+					decrementMinorToggle.ChangeState(0);
+				};
+				MultiToggle decrementMajorToggle = decrementMajor.GetComponent<MultiToggle>();
+				decrementMajorToggle.onClick = delegate
+				{
+					UpdateThresholdValue(thresholdSwitch.Threshold - 10f * (float)thresholdSwitch.IncrementScale);
+					decrementMajorToggle.ChangeState(1);
+				};
+				decrementMajorToggle.onHold = delegate
+				{
+				};
+				decrementMajorToggle.onStopHold = delegate
+				{
+					decrementMajorToggle.ChangeState(0);
+				};
 				unitsLabel.text = thresholdSwitch.ThresholdValueUnits();
 				numberInput.minValue = thresholdSwitch.GetRangeMinInputField();
 				numberInput.maxValue = thresholdSwitch.GetRangeMaxInputField();
@@ -167,6 +240,14 @@ public class ThresholdSwitchSideScreen : SideScreenContent, IRender200ms
 
 	private void UpdateThresholdValue(float newValue)
 	{
+		if (newValue < thresholdSwitch.RangeMin)
+		{
+			newValue = thresholdSwitch.RangeMin;
+		}
+		if (newValue > thresholdSwitch.RangeMax)
+		{
+			newValue = thresholdSwitch.RangeMax;
+		}
 		thresholdSwitch.Threshold = newValue;
 		thresholdSlider.value = newValue;
 		UpdateTargetThresholdLabel();

@@ -29,7 +29,7 @@ public static class BaseMoleConfig
 		gameObject.AddOrGet<Trappable>();
 		DiggerMonitor.Def def = gameObject.AddOrGetDef<DiggerMonitor.Def>();
 		def.depthToDig = MoleTuning.DEPTH_TO_HIDE;
-		EntityTemplates.CreateAndRegisterBaggedCreature(gameObject, true, true);
+		EntityTemplates.CreateAndRegisterBaggedCreature(gameObject, true, true, false);
 		ChoreTable.Builder chore_table = new ChoreTable.Builder().Add(new DeathStates.Def(), true).Add(new AnimInterruptStates.Def(), true).Add(new FallStates.Def(), true)
 			.Add(new StunnedStates.Def(), true)
 			.Add(new DiggerStates.Def(), true)

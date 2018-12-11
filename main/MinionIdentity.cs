@@ -198,7 +198,7 @@ public class MinionIdentity : KMonoBehaviour, ISaveLoadable, IAssignableIdentity
 		}
 		if (component.conflicted)
 		{
-			Output.LogWarning("Minion with an conflicted kpid! Attempting to recover...", name);
+			Output.LogWarning("Minion with a conflicted kpid! Attempting to recover... ", component.InstanceID, name);
 			if ((UnityEngine.Object)KPrefabIDTracker.Get().GetInstance(component.InstanceID) != (UnityEngine.Object)null)
 			{
 				KPrefabIDTracker.Get().Unregister(component);

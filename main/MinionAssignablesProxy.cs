@@ -99,8 +99,16 @@ public class MinionAssignablesProxy : KMonoBehaviour, IAssignableIdentity
 		if (target_instance_id != -1 && target == null)
 		{
 			KPrefabID instance = KPrefabIDTracker.Get().GetInstance(target_instance_id);
-			IAssignableIdentity component = instance.GetComponent<IAssignableIdentity>();
-			SetTarget(component, instance.gameObject);
+			if ((bool)instance)
+			{
+				IAssignableIdentity component = instance.GetComponent<IAssignableIdentity>();
+				SetTarget(component, instance.gameObject);
+			}
+			else
+			{
+				Debug.LogWarningFormat("RestoreTargetFromInstanceID target ID {0} was not found, destroying proxy object.", target_instance_id);
+				Util.KDestroyGameObject(base.gameObject);
+			}
 		}
 	}
 
@@ -108,8 +116,11 @@ public class MinionAssignablesProxy : KMonoBehaviour, IAssignableIdentity
 	{
 		base.OnSpawn();
 		RestoreTargetFromInstanceID();
-		Subscribe(-1585839766, OnAssignablesChangedDelegate);
-		Game.Instance.assignmentManager.AddToAssignmentGroup("public", this);
+		if (target != null)
+		{
+			Subscribe(-1585839766, OnAssignablesChangedDelegate);
+			Game.Instance.assignmentManager.AddToAssignmentGroup("public", this);
+		}
 	}
 
 	protected override void OnCleanUp()

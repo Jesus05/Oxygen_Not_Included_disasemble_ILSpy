@@ -165,6 +165,10 @@ public class GameAudioSheets : AudioSheets
 		{
 			soundEvent = new CountedSoundEvent(file_name, sound_name, frame, true, false, min_interval, false);
 		}
+		else if (type == "SculptingSoundEvent")
+		{
+			soundEvent = new SculptingSoundEvent(file_name, sound_name, frame, true, false, min_interval, false);
+		}
 		else if (type == "PhonoboxSoundEvent")
 		{
 			soundEvent = new PhonoboxSoundEvent(file_name, sound_name, frame, min_interval);

@@ -97,6 +97,10 @@ public class LogicDiseaseSensor : Switch, ISaveLoadable, IThresholdSwitch, ISim2
 
 	public string BelowToolTip => UI.UISIDESCREENS.THRESHOLD_SWITCH_SIDESCREEN.DISEASE_TOOLTIP_BELOW;
 
+	public ThresholdScreenLayoutType LayoutType => ThresholdScreenLayoutType.SliderBar;
+
+	public int IncrementScale => 100;
+
 	public LocString Title => UI.UISIDESCREENS.THRESHOLD_SWITCH_SIDESCREEN.DISEASE_TITLE;
 
 	protected override void OnPrefabInit()

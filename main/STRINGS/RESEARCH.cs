@@ -16,7 +16,7 @@ namespace STRINGS
 
 			public static LocString MISSING_RESEARCH_STATION = "Missing Research Station";
 
-			public static LocString MISSING_RESEARCH_STATION_TOOLTIP = "The selected research focus requires a {0} to perform\n\nOpen the Stations Tab <color=#F44A47><b>[=]</b></color> of the Build Menu to construct one";
+			public static LocString MISSING_RESEARCH_STATION_TOOLTIP = "The selected research focus requires a {0} to perform\n\nOpen the Stations Tab <color=#F44A47><b>[0]</b></color> of the Build Menu to construct one";
 		}
 
 		public class TYPES

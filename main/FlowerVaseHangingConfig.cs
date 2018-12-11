@@ -34,6 +34,7 @@ public class FlowerVaseHangingConfig : IBuildingConfig
 		Prioritizable.AddRef(go);
 		PlantablePlot plantablePlot = go.AddOrGet<PlantablePlot>();
 		plantablePlot.AddDepositTag(GameTags.DecorSeed);
+		plantablePlot.occupyingObjectVisualOffset = new Vector3(0f, -0.25f, 0f);
 		go.AddOrGet<FlowerVase>();
 		go.GetComponent<KPrefabID>().AddTag(GameTags.Decoration);
 	}

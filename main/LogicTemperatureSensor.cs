@@ -75,6 +75,10 @@ public class LogicTemperatureSensor : Switch, ISaveLoadable, IThresholdSwitch, I
 
 	public string BelowToolTip => UI.UISIDESCREENS.THRESHOLD_SWITCH_SIDESCREEN.TEMPERATURE_TOOLTIP_BELOW;
 
+	public ThresholdScreenLayoutType LayoutType => ThresholdScreenLayoutType.InputField;
+
+	public int IncrementScale => 1;
+
 	protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();

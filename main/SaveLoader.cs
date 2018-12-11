@@ -669,11 +669,30 @@ public class SaveLoader : KMonoBehaviour
 			IReader reader = new FastReader(array);
 			GameInfo = SaveGame.GetHeader(reader, out SaveGame.Header header);
 			LoadedHeader = header;
+			Output.Log(string.Format("Loading save file: {4}\n headerVersion:{0}, buildVersion:{1}, headerSize:{2}, IsCompressed:{3}", header.headerVersion, header.buildVersion, header.headerSize, header.IsCompressed, filename));
+			object[] obj = new object[1];
+			object[] obj2 = new object[7];
 			SaveGame.GameInfo gameInfo = GameInfo;
-			if (gameInfo.saveMajorVersion == 7)
+			obj2[0] = gameInfo.numberOfCycles;
+			SaveGame.GameInfo gameInfo2 = GameInfo;
+			obj2[1] = gameInfo2.numberOfDuplicants;
+			SaveGame.GameInfo gameInfo3 = GameInfo;
+			obj2[2] = gameInfo3.baseName;
+			SaveGame.GameInfo gameInfo4 = GameInfo;
+			obj2[3] = gameInfo4.isAutoSave;
+			SaveGame.GameInfo gameInfo5 = GameInfo;
+			obj2[4] = gameInfo5.originalSaveName;
+			SaveGame.GameInfo gameInfo6 = GameInfo;
+			obj2[5] = gameInfo6.saveMajorVersion;
+			SaveGame.GameInfo gameInfo7 = GameInfo;
+			obj2[6] = gameInfo7.saveMinorVersion;
+			obj[0] = string.Format("GameInfo: numberOfCycles:{0}, numberOfDuplicants:{1}, baseName:{2}, isAutoSave:{3}, originalSaveName:{4}, saveVersion:{5}.{6}", obj2);
+			Output.Log(obj);
+			SaveGame.GameInfo gameInfo8 = GameInfo;
+			if (gameInfo8.saveMajorVersion == 7)
 			{
-				SaveGame.GameInfo gameInfo2 = GameInfo;
-				if (gameInfo2.saveMinorVersion < 4)
+				SaveGame.GameInfo gameInfo9 = GameInfo;
+				if (gameInfo9.saveMinorVersion < 4)
 				{
 					Helper.SetTypeInfoMask((SerializationTypeInfo)191);
 				}
@@ -692,14 +711,14 @@ public class SaveLoader : KMonoBehaviour
 			{
 				Load(reader);
 			}
-			SaveGame.GameInfo gameInfo3 = GameInfo;
-			if (gameInfo3.isAutoSave)
+			SaveGame.GameInfo gameInfo10 = GameInfo;
+			if (gameInfo10.isAutoSave)
 			{
-				SaveGame.GameInfo gameInfo4 = GameInfo;
-				if (!string.IsNullOrEmpty(gameInfo4.originalSaveName))
+				SaveGame.GameInfo gameInfo11 = GameInfo;
+				if (!string.IsNullOrEmpty(gameInfo11.originalSaveName))
 				{
-					SaveGame.GameInfo gameInfo5 = GameInfo;
-					SetActiveSaveFilePath(gameInfo5.originalSaveName);
+					SaveGame.GameInfo gameInfo12 = GameInfo;
+					SetActiveSaveFilePath(gameInfo12.originalSaveName);
 				}
 			}
 		}

@@ -101,7 +101,7 @@ public class Workable : KMonoBehaviour, ISaveLoadable, IApproachable
 
 	public KAnim.PlayMode workAnimPlayMode = KAnim.PlayMode.Loop;
 
-	protected bool faceTargetWhenWorking = false;
+	public bool faceTargetWhenWorking = false;
 
 	protected ProgressBar progressBar = null;
 

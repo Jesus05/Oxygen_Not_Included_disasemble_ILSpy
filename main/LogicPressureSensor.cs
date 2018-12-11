@@ -84,6 +84,10 @@ public class LogicPressureSensor : Switch, ISaveLoadable, IThresholdSwitch, ISim
 
 	public LocString Title => UI.UISIDESCREENS.THRESHOLD_SWITCH_SIDESCREEN.TITLE;
 
+	public ThresholdScreenLayoutType LayoutType => ThresholdScreenLayoutType.SliderBar;
+
+	public int IncrementScale => 1;
+
 	protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();

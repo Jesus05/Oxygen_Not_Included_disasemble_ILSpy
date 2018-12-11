@@ -78,7 +78,7 @@ public class FabricatorIngredientStatusManager : KMonoBehaviour, ISim1000ms
 					selectable.RemoveStatusItem(statusItems[userOrder2.recipe], false);
 					statusItems.Remove(userOrder2.recipe);
 				}
-				if (fabricator.GetRecipeQueueCount(userOrder2.recipe) > 0)
+				if (fabricator.GetRecipeQueueCount(userOrder2.recipe) > 0 || fabricator.GetRecipeQueueCount(userOrder2.recipe) == ComplexFabricator.QUEUE_INFINITE)
 				{
 					foreach (float value2 in recipeRequiredResourceBalances[userOrder2.recipe].Values)
 					{

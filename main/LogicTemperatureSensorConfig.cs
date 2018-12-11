@@ -48,6 +48,6 @@ public class LogicTemperatureSensorConfig : IBuildingConfig
 		LogicTemperatureSensor logicTemperatureSensor = go.AddOrGet<LogicTemperatureSensor>();
 		logicTemperatureSensor.manuallyControlled = false;
 		logicTemperatureSensor.minTemp = 0f;
-		logicTemperatureSensor.maxTemp = 1273.15f;
+		logicTemperatureSensor.maxTemp = 9999f;
 	}
 }

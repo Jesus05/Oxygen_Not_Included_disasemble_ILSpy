@@ -911,7 +911,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Colony requires a " + UI.FormatAsLink("Power", "POWER") + " source";
 
-				public static LocString TOOLTIP = UI.FormatAsLink("Power", "POWER") + " is required to operate electrical buildings" + UI.HORIZONTAL_BR_RULE + UI.FormatAsLink("Manual Generators", "MANUALGENERATOR") + " and " + UI.FormatAsLink("Wire", "WIRE") + " can be built from the " + UI.FormatAsLink("POWER TAB", "MISC") + " <color=#F44A47><b>[2]</b></color>";
+				public static LocString TOOLTIP = UI.FormatAsLink("Power", "POWER") + " is required to operate electrical buildings" + UI.HORIZONTAL_BR_RULE + UI.FormatAsLink("Manual Generators", "MANUALGENERATOR") + " and " + UI.FormatAsLink("Wire", "WIRE") + " can be built from the " + UI.FormatAsLink("POWER TAB", "MISC") + " <color=#F44A47><b>[3]</b></color>";
 			}
 
 			public class RESOURCEMELTED

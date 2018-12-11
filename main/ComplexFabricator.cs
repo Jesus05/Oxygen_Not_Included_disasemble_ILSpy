@@ -616,13 +616,13 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms
 					{
 						machineOrders[0].underway = true;
 					}
-					else if (!operational.IsActive && !machineOrders[0].underway && CheckIngredientsInStorage(machineOrders[0].parentOrder.recipe))
+					else if (!operational.IsActive && !machineOrders[0].underway && HasIngredients(machineOrders[0], inStorage))
 					{
 						TransferCurrentRecipeIngredientsForBuild();
 						machineOrders[0].underway = true;
 					}
 				}
-				if (duplicantOperated && machineOrders[0].underway && machineOrders[0].chore == null && CheckIngredientsInStorage(machineOrders[0].parentOrder.recipe))
+				if (duplicantOperated && machineOrders[0].underway && machineOrders[0].chore == null && HasIngredients(machineOrders[0], inStorage))
 				{
 					TransferCurrentRecipeIngredientsForBuild();
 					workable.CreateOrder(machineOrders[0], choreType, choreTags);
@@ -764,7 +764,7 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms
 	{
 		if (!duplicantOperated)
 		{
-			if (!operational.IsActive && machineOrders.Count > 0 && machineOrders[0].underway)
+			if (operational.IsOperational && !operational.IsActive && machineOrders.Count > 0 && machineOrders[0].underway)
 			{
 				StartWork();
 			}
@@ -788,6 +788,12 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms
 		order.Cancel();
 		machineOrders.Remove(order);
 		if (!duplicantOperated && order.underway)
+		{
+			buildStorage.Transfer(inStorage, true, true);
+			SetOperationalInactive();
+			orderProgress = 0f;
+		}
+		else if (duplicantOperated && (order.chore != null || order.underway))
 		{
 			buildStorage.Transfer(inStorage, true, true);
 			SetOperationalInactive();
@@ -1113,7 +1119,10 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms
 
 	private void OnOperationalChanged(object data)
 	{
-		bool flag = (bool)data;
+		if ((bool)data)
+		{
+			UpdateMachineOrders(false);
+		}
 	}
 
 	public virtual List<Descriptor> AdditionalEffectsForRecipe(ComplexRecipe recipe)

@@ -776,9 +776,21 @@ namespace STRINGS
 		{
 			public class BODY
 			{
-				public static LocString CONTAINER1 = "<size=10><smallcaps><b>Subject: A Refresher</b>\nFrom: <b>[REDACTED]</b>\nTo: <b>[REDACTED]</b></smallcaps></size>";
+				public static LocString EMAILHEADER1 = "<smallcaps>To: <b>Mr. Kraus</b><alpha=#AA><size=12> <okraus@gravitas.nova></size></color>\nFrom: <b>Dr. Jones</b><alpha=#AA><size=12> <ejones@gravitas.nova></size></color></smallcaps>\n------------------\n";
 
-				public static LocString CONTAINER2 = "<i>Hello</i> Mr. Kraus! I was just e-mailing you after our little chat today to pass along something you might like to read - I think you'll find it super useful in your research!\n\n<b>FIRST LAW</b></indent>\n<indent=10%>Energy can neither be created or destroyed, only change forms.</indent>\n\n<indent=5%><b>SECOND LAW</b></indent>\n<indent=10%>Entropy in an isolated system that is not in equilibrium tends to increase over time, approaching the maximum value at equilibrium.</indent>\n\n<indent=5%><b>THIRD LAW</b></indent>\n<indent=10%>Entropy in a system approaches a constant minimum as temperature approaches absolute zero.</indent>\n\n<indent=5%><b>ZEROTH LAW</b></indent>\n<indent=10%>If two thermodynamic systems are in thermal equilibrium with a third, then they are in thermal equilibrium with each other.</indent>\n\nIf this is too complicated for you, you can come by to chat. I be <i>thrilled</i> to answer your questions.\n\n;)\n[REDACTED]]\nInformation and Statistics Department\nThe Gravitas Facility";
+				public static LocString CONTAINER1 = "<indent=5%><i>Hello</i> Mr. Kraus!\n\nI was just e-mailing you after our little chat today to pass along something you might like to read - I think you'll find it super useful in your research!\n\n</indent>";
+
+				public static LocString CONTAINER2 = "<indent=10%><b>FIRST LAW</b></indent>\n<indent=15%>Energy can neither be created or destroyed, only change forms.</indent>";
+
+				public static LocString CONTAINER3 = "<indent=10%><b>SECOND LAW</b></indent>\n<indent=15%>Entropy in an isolated system that is not in equilibrium tends to increase over time, approaching the maximum value at equilibrium.</indent>";
+
+				public static LocString CONTAINER4 = "<indent=10%><b>THIRD LAW</b></indent>\n<indent=15%>Entropy in a system approaches a constant minimum as temperature approaches absolute zero.</indent>";
+
+				public static LocString CONTAINER5 = "<indent=10%><b>ZEROTH LAW</b></indent>\n<indent=15%>If two thermodynamic systems are in thermal equilibrium with a third, then they are in thermal equilibrium with each other.</indent>";
+
+				public static LocString CONTAINER6 = "<indent=5%>\nIf this is too complicated for you, you can come by to chat. I'd be <i>thrilled</i> to answer your questions. ;)</indent>";
+
+				public static LocString SIGNATURE1 = "\nXOXO,\nDr. Jones\n<size=11>Information and Statistics Department\nThe Gravitas Facility</size>\n------------------\n";
 			}
 
 			public static LocString TITLE = "The Laws of Thermodynamics";
@@ -1008,6 +1020,18 @@ namespace STRINGS
 			public static LocString SUBTITLE = "ENCRYPTION LEVEL: THREE";
 		}
 
+		public class EVACUATION
+		{
+			public class BODY
+			{
+				public static LocString CONTAINER1 = "ATTENTION ALL GRAVITAS PERSONNEL\n\nEVACUATION PROTOCOL IN EFFECT\n\nREACTOR MELTDOWN IN BIOENGINEERING IMMINENT\n\nREMAIN CALM AND PROCEED TO EMERGENCY EXITS\n\nDO NOT ATTEMPT TO USE ELEVATORS";
+			}
+
+			public static LocString TITLE = "! EVACUATION NOTICE !";
+
+			public static LocString SUBTITLE = "ENCRYPTION LEVEL: NONE";
+		}
+
 		public class HANDWRITTENNOTE
 		{
 			public class BODY
@@ -1102,18 +1126,6 @@ namespace STRINGS
 			public static LocString TITLE = "Dishbot";
 
 			public static LocString SUBTITLE = "ENCRYPTION LEVEL: TWO";
-		}
-
-		public class EVACUATION
-		{
-			public class BODY
-			{
-				public static LocString CONTAINER1 = "ATTENTION ALL GRAVITAS PERSONNEL\n\nEVACUATION PROTOCOL IN EFFECT\n\nREACTOR MELTDOWN IN BIOENGINEERING IMMINENT\n\nREMAIN CALM AND PROCEED TO EMERGENCY EXITS\n\nDO NOT ATTEMPT TO USE ELEVATORS";
-			}
-
-			public static LocString TITLE = "! EVACUATION NOTICE !";
-
-			public static LocString SUBTITLE = "ENCRYPTION LEVEL: NONE";
 		}
 
 		public class MAILROOMETIQUETTE

@@ -78,30 +78,32 @@ public class Assignables : KMonoBehaviour
 		if (!((Object)assignable != (Object)null))
 		{
 			MinionAssignablesProxy component = GetComponent<MinionAssignablesProxy>();
-			if (component.target == null)
+			GameObject targetGameObject = component.GetTargetGameObject();
+			if (!((Object)targetGameObject == (Object)null))
 			{
-				component.RestoreTargetFromInstanceID();
-			}
-			Navigator component2 = component.GetTargetGameObject().GetComponent<Navigator>();
-			IAssignableIdentity assignableIdentity = GetAssignableIdentity();
-			int num = 2147483647;
-			foreach (Assignable item in Game.Instance.assignmentManager)
-			{
-				if (!((Object)item == (Object)null) && !item.IsAssigned() && item.slot == slot && item.CanAutoAssignTo(assignableIdentity))
+				Navigator component2 = targetGameObject.GetComponent<Navigator>();
+				IAssignableIdentity assignableIdentity = GetAssignableIdentity();
+				int num = 2147483647;
+				foreach (Assignable item in Game.Instance.assignmentManager)
 				{
-					int navigationCost = item.GetNavigationCost(component2);
-					if (navigationCost != -1 && navigationCost < num)
+					if (!((Object)item == (Object)null) && !item.IsAssigned() && item.slot == slot && item.CanAutoAssignTo(assignableIdentity))
 					{
-						num = navigationCost;
-						assignable = item;
+						int navigationCost = item.GetNavigationCost(component2);
+						if (navigationCost != -1 && navigationCost < num)
+						{
+							num = navigationCost;
+							assignable = item;
+						}
 					}
 				}
+				if ((Object)assignable != (Object)null)
+				{
+					assignable.Assign(assignableIdentity);
+				}
+				return assignable;
 			}
-			if ((Object)assignable != (Object)null)
-			{
-				assignable.Assign(GetComponent<IAssignableIdentity>());
-			}
-			return assignable;
+			Debug.LogWarning("AutoAssignSlot failed, proxy game object was null.", null);
+			return null;
 		}
 		return assignable;
 	}

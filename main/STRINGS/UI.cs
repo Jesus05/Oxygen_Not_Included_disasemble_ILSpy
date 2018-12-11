@@ -832,11 +832,11 @@ namespace STRINGS
 
 			public class PATCHNOTESSCREEN
 			{
-				public static LocString TITLE = "SPACE INDUSTRY UPGRADE";
+				public static LocString TITLE = "QUALITY OF LIFE UPGRADE MK I";
 
-				public static LocString BODY = "<b>Welcome to the Space Industry Upgrade!!</b>\n\n{0}";
+				public static LocString BODY = "<b>Welcome to the Quality of Life Upgrade Mk I!!</b>\n\n{0}";
 
-				public static LocString PATCHNOTES = "<b>Update Features:</b>\n\n• Expanded Starmap locations with new rare resources to recover\n• New surface creature, the Shove Vole\n• New Molecular Forge for crafting industrial materials from rare space resources\n• Increased automation, new buildings, research and more\n\nPlease view the full patch notes for further details!";
+				public static LocString PATCHNOTES = "<b>Update Features:</b>\n\n• New Decor items and updated Artist job roles for more decor possibilities\n• Redesigned recipe queue controls for improved item fabrication automation\n• Many, many bug fixes, optimizations, polish passes, updated animations and more!\n\nPlease view the full patch notes for further details!";
 
 				public static LocString OK_BUTTON = "OK";
 			}
@@ -1347,7 +1347,7 @@ namespace STRINGS
 
 				public class CAN_ART_OKAY
 				{
-					public static LocString DESCRIPTION = "Trait: Medicocre artwork quality";
+					public static LocString DESCRIPTION = "Trait: Mediocre artwork quality";
 				}
 
 				public class CAN_ART_GREAT
@@ -2148,25 +2148,25 @@ namespace STRINGS
 
 			public static LocString HELP_BUILDLOCATION_SPACE = "Must be built on the surface in space";
 
+			public static LocString HELP_BUILDLOCATION_CORNER = "Must be built in a corner";
+
 			public static LocString HELP_BUILDLOCATION_NOT_IN_TILES = "Cannot be built inside tile";
 
-			public static LocString HELP_BUILDLOCATION_GASPORTS_OBSTRUCTED = "Gas ports are obstructed";
+			public static LocString HELP_BUILDLOCATION_GASPORTS_OVERLAP = "Gas ports cannot overlap";
 
-			public static LocString HELP_BUILDLOCATION_LIQUIDPORTS_OBSTRUCTED = "Liquid ports are obstructed";
+			public static LocString HELP_BUILDLOCATION_LIQUIDPORTS_OVERLAP = "Liquid ports cannot overlap";
 
-			public static LocString HELP_BUILDLOCATION_SOLIDPORTS_OBSTRUCTED = "Solid ports are obstructed";
+			public static LocString HELP_BUILDLOCATION_SOLIDPORTS_OVERLAP = "Solid ports cannot overlap";
 
-			public static LocString HELP_BUILDLOCATION_WIRECONNECTORS_OBSTRUCTED = "Wire connectors are obstructed";
+			public static LocString HELP_BUILDLOCATION_LOGIC_PORTS_OBSTRUCTED = "Automation ports cannot overlap";
 
-			public static LocString HELP_BUILDLOCATION_POWER_INPUT_OBSTRUCTED = "Power input obstructed";
+			public static LocString HELP_BUILDLOCATION_WIRECONNECTORS_OVERLAP = "Power connectors cannot overlap";
 
-			public static LocString HELP_BUILDLOCATION_POWER_OUTPUT_OBSTRUCTED = "Power output obstructed";
+			public static LocString HELP_BUILDLOCATION_HIGHWATT_NOT_IN_TILE = "Heavi-Watt power connectors cannot be built inside tile";
 
-			public static LocString HELP_BUILDLOCATION_WIRE_OBSTRUCTION = "Obstructed by wire";
+			public static LocString HELP_BUILDLOCATION_WIRE_OBSTRUCTION = "Obstructed by Heavi-Watt Wire";
 
 			public static LocString HELP_BUILDLOCATION_PLATE_OBSTRUCTION = "Obstructed by Tempshift Plate";
-
-			public static LocString HELP_BUILDLOCATION_LOGIC_PORTS_OBSTRUCTED = "Automation ports are obstructed";
 
 			public static LocString HELP_TUBELOCATION_NO_UTURNS = "Can't U-Turn";
 
@@ -3442,11 +3442,11 @@ namespace STRINGS
 
 			public static LocString COLUMN_SORT_BY_HITPOINTS = "Sort by hit points";
 
-			public static LocString COLUMN_SORT_BY_IMMUNEPOINTS = "Sort by immune points";
+			public static LocString COLUMN_SORT_BY_IMMUNEPOINTS = "Sort by immunity strength";
 
 			public static LocString COLUMN_SORT_BY_FULLNESS = "Sort by fullness";
 
-			public static LocString COLUMN_SORT_BY_EATEN_TODAY = "Sort by eaten today";
+			public static LocString COLUMN_SORT_BY_EATEN_TODAY = "Sort by number of calories consumed today";
 
 			public static LocString COLUMN_SORT_BY_EXPECTATIONS = "Sort by quality expectations";
 		}

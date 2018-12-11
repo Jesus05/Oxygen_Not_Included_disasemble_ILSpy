@@ -108,15 +108,22 @@ public class SolidConsumerMonitor : GameStateMachine<SolidConsumerMonitor, Solid
 	private static void FindFood(Instance smi, float dt)
 	{
 		ListPool<KMonoBehaviour, SolidConsumerMonitor>.PooledList pooledList = ListPool<KMonoBehaviour, SolidConsumerMonitor>.Allocate();
-		ListPool<KMonoBehaviour, SolidConsumerMonitor>.PooledList pooledList2 = ListPool<KMonoBehaviour, SolidConsumerMonitor>.Allocate();
+		ListPool<Storage, SolidConsumerMonitor>.PooledList pooledList2 = ListPool<Storage, SolidConsumerMonitor>.Allocate();
 		foreach (CreatureFeeder item in Components.CreatureFeeders.Items)
 		{
-			KMonoBehaviour kMonoBehaviour = item;
-			if ((UnityEngine.Object)kMonoBehaviour != (UnityEngine.Object)null)
+			item.GetComponents(pooledList2);
+			foreach (Storage item2 in pooledList2)
 			{
-				pooledList2.Add(kMonoBehaviour);
+				if (!((UnityEngine.Object)item2 == (UnityEngine.Object)null))
+				{
+					foreach (GameObject item3 in item2.items)
+					{
+						pooledList.Add((!((UnityEngine.Object)item3 != (UnityEngine.Object)null)) ? null : item3.GetComponent<KMonoBehaviour>());
+					}
+				}
 			}
 		}
+		pooledList2.Recycle();
 		int x = 0;
 		int y = 0;
 		Grid.PosToXY(smi.gameObject.transform.GetPosition(), out x, out y);
@@ -125,95 +132,50 @@ public class SolidConsumerMonitor : GameStateMachine<SolidConsumerMonitor, Solid
 		ListPool<ScenePartitionerEntry, GameScenePartitioner>.PooledList pooledList3 = ListPool<ScenePartitionerEntry, GameScenePartitioner>.Allocate();
 		GameScenePartitioner.Instance.GatherEntries(x, y, 16, 16, GameScenePartitioner.Instance.pickupablesLayer, pooledList3);
 		GameScenePartitioner.Instance.GatherEntries(x, y, 16, 16, GameScenePartitioner.Instance.plants, pooledList3);
-		foreach (ScenePartitionerEntry item2 in pooledList3)
+		foreach (ScenePartitionerEntry item4 in pooledList3)
 		{
-			KMonoBehaviour kMonoBehaviour2 = item2.obj as KMonoBehaviour;
-			if ((UnityEngine.Object)kMonoBehaviour2 != (UnityEngine.Object)null)
-			{
-				pooledList2.Add(kMonoBehaviour2);
-			}
+			pooledList.Add(item4.obj as KMonoBehaviour);
 		}
 		pooledList3.Recycle();
-		ListPool<Storage, SolidConsumerMonitor>.PooledList pooledList4 = ListPool<Storage, SolidConsumerMonitor>.Allocate();
-		ListPool<KMonoBehaviour, SolidConsumerMonitor>.PooledList pooledList5 = ListPool<KMonoBehaviour, SolidConsumerMonitor>.Allocate();
-		ListPool<KMonoBehaviour, SolidConsumerMonitor>.PooledList pooledList6 = ListPool<KMonoBehaviour, SolidConsumerMonitor>.Allocate();
-		while (pooledList2.Count != 0)
+		Diet diet = smi.def.diet;
+		for (int i = 0; i != pooledList.Count; i++)
 		{
-			foreach (KMonoBehaviour item3 in pooledList2)
+			KMonoBehaviour kMonoBehaviour = pooledList[i];
+			if (!((UnityEngine.Object)kMonoBehaviour == (UnityEngine.Object)null))
 			{
-				KPrefabID component = item3.GetComponent<KPrefabID>();
+				KPrefabID component = kMonoBehaviour.GetComponent<KPrefabID>();
 				component.UpdateTagBits();
-				if (!component.HasAnyTags_AssumeLaundered(ref creatureMask) && smi.def.diet.GetDietInfo(component.PrefabTag) != null)
+				if (component.HasAnyTags_AssumeLaundered(ref creatureMask) || diet.GetDietInfo(component.PrefabTag) == null)
 				{
-					pooledList6.Add((!component.HasAnyTags_AssumeLaundered(ref plantMask)) ? null : component);
-					pooledList5.Add(item3);
+					pooledList[i] = null;
 				}
-			}
-			pooledList2.Clear();
-			for (int i = 0; i != pooledList6.Count; i++)
-			{
-				if (!((UnityEngine.Object)pooledList6[i] == (UnityEngine.Object)null))
+				else if (component.HasAnyTags_AssumeLaundered(ref plantMask))
 				{
-					AmountInstance amountInstance = Db.Get().Amounts.Maturity.Lookup(pooledList6[i]);
+					AmountInstance amountInstance = Db.Get().Amounts.Maturity.Lookup(component);
 					if (amountInstance != null)
 					{
 						float num = 0.25f;
 						if (amountInstance.value / amountInstance.GetMax() < num)
 						{
-							pooledList5[i] = null;
-						}
-					}
-				}
-			}
-			foreach (KMonoBehaviour item4 in pooledList5)
-			{
-				if ((UnityEngine.Object)item4 != (UnityEngine.Object)null)
-				{
-					pooledList.Add(item4);
-				}
-			}
-			pooledList5.Clear();
-			foreach (KMonoBehaviour item5 in pooledList5)
-			{
-				if (item5.HasTag(RoomConstraints.ConstraintTags.CreatureFeeder))
-				{
-					pooledList4.Clear();
-					item5.GetComponents(pooledList4);
-					foreach (Storage item6 in pooledList4)
-					{
-						if (!((UnityEngine.Object)item6 == (UnityEngine.Object)null))
-						{
-							foreach (GameObject item7 in item6.items)
-							{
-								if (!((UnityEngine.Object)item7 == (UnityEngine.Object)null))
-								{
-									KMonoBehaviour component2 = item7.GetComponent<KMonoBehaviour>();
-									if ((UnityEngine.Object)component2 != (UnityEngine.Object)null)
-									{
-										pooledList2.Add(component2);
-									}
-								}
-							}
+							pooledList[i] = null;
 						}
 					}
 				}
 			}
 		}
-		pooledList6.Recycle();
-		pooledList5.Recycle();
-		pooledList4.Recycle();
-		pooledList2.Recycle();
-		Navigator component3 = smi.GetComponent<Navigator>();
+		Navigator component2 = smi.GetComponent<Navigator>();
 		smi.targetEdible = null;
 		int num2 = -1;
-		foreach (KMonoBehaviour item8 in pooledList)
+		foreach (KMonoBehaviour item5 in pooledList)
 		{
-			GameObject gameObject = item8.gameObject;
-			int navigationCost = component3.GetNavigationCost(Grid.PosToCell(gameObject.transform.GetPosition()));
-			if (navigationCost != -1 && (navigationCost < num2 || num2 == -1))
+			if (!((UnityEngine.Object)item5 == (UnityEngine.Object)null))
 			{
-				num2 = navigationCost;
-				smi.targetEdible = gameObject;
+				int navigationCost = component2.GetNavigationCost(Grid.PosToCell(item5.gameObject.transform.GetPosition()));
+				if (navigationCost != -1 && (navigationCost < num2 || num2 == -1))
+				{
+					num2 = navigationCost;
+					smi.targetEdible = item5.gameObject;
+				}
 			}
 		}
 		pooledList.Recycle();

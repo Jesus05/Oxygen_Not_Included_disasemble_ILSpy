@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <ProjectGuid>{95408AD9-7825-471E-829B-AA4A4AC15F23}</ProjectGuid>
+    <ProjectGuid>{C5A5ABCD-A3CF-45E4-A05C-1747954E2108}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <OutputType>Library</OutputType>
@@ -485,7 +485,6 @@
     <Compile Include="CringeMonitor.cs" />
     <Compile Include="Crop.cs" />
     <Compile Include="CropSleepingMonitor.cs" />
-    <Compile Include="CrownMoulding.cs" />
     <Compile Include="CrownMouldingConfig.cs" />
     <Compile Include="CurrentJobConversation.cs" />
     <Compile Include="CustomGameSettings.cs" />
@@ -990,6 +989,7 @@
     <Compile Include="IModule3DNodeType.cs" />
     <Compile Include="IMultiEntityConfig.cs" />
     <Compile Include="IncapacitationMonitor.cs" />
+    <Compile Include="IncrementorToggle.cs" />
     <Compile Include="IncubatingStates.cs" />
     <Compile Include="IncubationMonitor.cs" />
     <Compile Include="IncubatorMonitor.cs" />
@@ -1837,6 +1837,7 @@
     <Compile Include="ScheduleScreenToggle.cs" />
     <Compile Include="ScreenPrefabs.cs" />
     <Compile Include="ScreenResize.cs" />
+    <Compile Include="SculptingSoundEvent.cs" />
     <Compile Include="Sculpture.cs" />
     <Compile Include="SculptureConfig.cs" />
     <Compile Include="SealedDoorSideScreen.cs" />
@@ -2109,6 +2110,7 @@
     <Compile Include="Thought.cs" />
     <Compile Include="ThoughtGraph.cs" />
     <Compile Include="ThreatMonitor.cs" />
+    <Compile Include="ThresholdScreenLayoutType.cs" />
     <Compile Include="ThresholdSwitchSideScreen.cs" />
     <Compile Include="TileConfig.cs" />
     <Compile Include="TilePOIConfig.cs" />

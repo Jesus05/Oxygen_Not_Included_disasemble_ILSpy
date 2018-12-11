@@ -356,7 +356,7 @@ public class Door : Workable, ISaveLoadable, ISim200ms
 		HandleVector<int>.Handle handle = structureTemperatures.GetHandle(base.gameObject);
 		if (DisplacesGas(doorType))
 		{
-			structureTemperatures.Disable(handle);
+			structureTemperatures.Bypass(handle);
 		}
 		controller = new Controller.Instance(this);
 		controller.StartSM();

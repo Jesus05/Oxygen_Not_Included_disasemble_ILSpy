@@ -25,7 +25,7 @@ public static class BaseOilFloaterConfig
 		CreatureFallMonitor.Def def = gameObject.AddOrGetDef<CreatureFallMonitor.Def>();
 		def.canSwim = true;
 		gameObject.AddWeapon(1f, 1f, AttackProperties.DamageType.Standard, AttackProperties.TargetType.Single, 1, 0f);
-		EntityTemplates.CreateAndRegisterBaggedCreature(gameObject, true, false);
+		EntityTemplates.CreateAndRegisterBaggedCreature(gameObject, true, false, false);
 		string inhaleSound = "OilFloater_intake_air";
 		if (is_baby)
 		{

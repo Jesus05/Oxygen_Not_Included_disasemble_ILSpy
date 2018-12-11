@@ -34,9 +34,16 @@ public class LaunchConditionManager : KMonoBehaviour, ISim4000ms, ISim1000ms
 	[ContextMenu("Dump Module Destructions")]
 	private void DEBUG_DumpModuleDestructions()
 	{
-		foreach (Tuple<string, string, string> dEBUG_ModuleDestruction in DEBUG_ModuleDestructions)
+		if (DEBUG_ModuleDestructions == null || DEBUG_ModuleDestructions.Count == 0)
 		{
-			Output.Log("\n\nBEGIN MODULE DUMP\n", dEBUG_ModuleDestruction.first, ">", dEBUG_ModuleDestruction.second, "\n", dEBUG_ModuleDestruction.third, "\nEND MODULE DUMP\n\n");
+			Output.Log("Sorry, no logged module destructions. :(");
+		}
+		else
+		{
+			foreach (Tuple<string, string, string> dEBUG_ModuleDestruction in DEBUG_ModuleDestructions)
+			{
+				Output.Log("\n\nBEGIN MODULE DUMP\n", dEBUG_ModuleDestruction.first, ">", dEBUG_ModuleDestruction.second, "\n", dEBUG_ModuleDestruction.third, "\nEND MODULE DUMP\n\n");
+			}
 		}
 	}
 

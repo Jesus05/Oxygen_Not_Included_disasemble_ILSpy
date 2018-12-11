@@ -74,6 +74,10 @@ public class PressureSwitch : CircuitSwitch, ISaveLoadable, IThresholdSwitch, IS
 
 	public string BelowToolTip => UI.UISIDESCREENS.THRESHOLD_SWITCH_SIDESCREEN.PRESSURE_TOOLTIP_BELOW;
 
+	public ThresholdScreenLayoutType LayoutType => ThresholdScreenLayoutType.SliderBar;
+
+	public int IncrementScale => 1;
+
 	public void Sim200ms(float dt)
 	{
 		int num = Grid.PosToCell(this);

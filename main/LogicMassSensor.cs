@@ -89,6 +89,10 @@ public class LogicMassSensor : Switch, ISaveLoadable, IThresholdSwitch
 
 	public string BelowToolTip => UI.UISIDESCREENS.THRESHOLD_SWITCH_SIDESCREEN.PRESSURE_TOOLTIP_BELOW;
 
+	public ThresholdScreenLayoutType LayoutType => ThresholdScreenLayoutType.SliderBar;
+
+	public int IncrementScale => 1;
+
 	protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();

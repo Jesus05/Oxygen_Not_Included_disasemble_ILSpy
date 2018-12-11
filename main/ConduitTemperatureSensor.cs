@@ -32,6 +32,10 @@ public class ConduitTemperatureSensor : ConduitThresholdSensor, IThresholdSwitch
 
 	public string BelowToolTip => UI.UISIDESCREENS.THRESHOLD_SWITCH_SIDESCREEN.TEMPERATURE_TOOLTIP_BELOW;
 
+	public ThresholdScreenLayoutType LayoutType => ThresholdScreenLayoutType.SliderBar;
+
+	public int IncrementScale => 1;
+
 	public float GetRangeMinInputField()
 	{
 		return GameUtil.GetConvertedTemperature(RangeMin);

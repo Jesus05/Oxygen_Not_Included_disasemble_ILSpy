@@ -30,7 +30,7 @@ public static class BaseMooConfig
 		};
 		gameObject.AddOrGetDef<ThreatMonitor.Def>();
 		gameObject.AddOrGetDef<SubmergedMonitor.Def>();
-		EntityTemplates.CreateAndRegisterBaggedCreature(gameObject, true, false);
+		EntityTemplates.CreateAndRegisterBaggedCreature(gameObject, true, false, false);
 		gameObject.AddOrGetDef<RanchableMonitor.Def>();
 		gameObject.AddOrGetDef<FixedCapturableMonitor.Def>();
 		ChoreTable.Builder chore_table = new ChoreTable.Builder().Add(new DeathStates.Def(), true).Add(new AnimInterruptStates.Def(), true).Add(new BaggedStates.Def(), true)

@@ -34,7 +34,6 @@ public class CrownMouldingConfig : IBuildingConfig
 
 	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
-		go.AddOrGet<CrownMoulding>();
 		go.GetComponent<KPrefabID>().AddTag(GameTags.Decoration);
 		go.AddOrGet<AnimTileable>();
 	}

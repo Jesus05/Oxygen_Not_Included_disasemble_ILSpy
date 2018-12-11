@@ -44,7 +44,7 @@ public static class BaseHatchConfig
 		SoundEventVolumeCache.instance.AddVolume("hatch_kanim", "Hatch_voice_die", NOISE_POLLUTION.CREATURES.TIER5);
 		SoundEventVolumeCache.instance.AddVolume("hatch_kanim", "Hatch_drill_emerge", NOISE_POLLUTION.CREATURES.TIER6);
 		SoundEventVolumeCache.instance.AddVolume("hatch_kanim", "Hatch_drill_hide", NOISE_POLLUTION.CREATURES.TIER6);
-		EntityTemplates.CreateAndRegisterBaggedCreature(gameObject, true, true);
+		EntityTemplates.CreateAndRegisterBaggedCreature(gameObject, true, true, false);
 		KPrefabID component = gameObject.GetComponent<KPrefabID>();
 		component.AddTag(GameTags.Creatures.GroundBased);
 		component.prefabInitFn += delegate(GameObject inst)

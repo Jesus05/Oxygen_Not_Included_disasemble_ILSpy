@@ -24,7 +24,7 @@ public class SocialGatheringPointWorkable : Workable, IWorkerPrioritizable
 		faceTargetWhenWorking = true;
 		workerStatusItem = Db.Get().DuplicantStatusItems.Socializing;
 		synchronizeAnims = false;
-		showProgressBar = true;
+		showProgressBar = false;
 		resetProgressOnStop = true;
 	}
 

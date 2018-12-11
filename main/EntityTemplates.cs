@@ -389,12 +389,13 @@ public class EntityTemplates
 		return "Bagged" + name;
 	}
 
-	public static GameObject CreateAndRegisterBaggedCreature(GameObject creature, bool must_stand_on_top_for_pickup, bool allow_mark_for_capture)
+	public static GameObject CreateAndRegisterBaggedCreature(GameObject creature, bool must_stand_on_top_for_pickup, bool allow_mark_for_capture, bool use_gun_for_pickup = false)
 	{
 		KPrefabID creature_prefab_id = creature.GetComponent<KPrefabID>();
 		creature_prefab_id.AddTag(GameTags.BagableCreature);
 		Baggable baggable = creature.AddOrGet<Baggable>();
 		baggable.mustStandOntopOfTrapForPickup = must_stand_on_top_for_pickup;
+		baggable.useGunForPickup = use_gun_for_pickup;
 		Capturable capturable = creature.AddOrGet<Capturable>();
 		capturable.allowCapture = allow_mark_for_capture;
 		creature_prefab_id.prefabSpawnFn += delegate

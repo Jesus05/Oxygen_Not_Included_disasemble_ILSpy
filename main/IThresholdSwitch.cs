@@ -47,6 +47,16 @@ public interface IThresholdSwitch
 		get;
 	}
 
+	ThresholdScreenLayoutType LayoutType
+	{
+		get;
+	}
+
+	int IncrementScale
+	{
+		get;
+	}
+
 	float GetRangeMinInputField();
 
 	float GetRangeMaxInputField();

@@ -65,6 +65,10 @@ public class TemperatureControlledSwitch : CircuitSwitch, ISaveLoadable, IThresh
 
 	public string BelowToolTip => UI.UISIDESCREENS.THRESHOLD_SWITCH_SIDESCREEN.TEMPERATURE_TOOLTIP_BELOW;
 
+	public ThresholdScreenLayoutType LayoutType => ThresholdScreenLayoutType.InputField;
+
+	public int IncrementScale => 1;
+
 	protected override void OnSpawn()
 	{
 		base.OnSpawn();

@@ -106,7 +106,7 @@ public class NameDisplayScreen : KScreen
 		}
 		else
 		{
-			Debug.LogError("OnEquipmentAdded proxy game object was null.", null);
+			Debug.LogWarningFormat("OnEquipmentAdded proxy target {0} was null.", component.TargetInstanceID);
 		}
 	}
 

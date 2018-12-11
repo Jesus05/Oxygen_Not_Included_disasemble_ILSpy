@@ -121,7 +121,7 @@ public class StoredMinionIdentity : KMonoBehaviour, ISaveLoadable, IAssignableId
 		}
 		if (component.conflicted)
 		{
-			Output.LogWarning("Minion with an conflicted kpid! Attempting to recover...", base.name);
+			Output.LogWarning("Minion with a conflicted kpid! Attempting to recover... ", component.InstanceID, storedName);
 			if ((Object)KPrefabIDTracker.Get().GetInstance(component.InstanceID) != (Object)null)
 			{
 				KPrefabIDTracker.Get().Unregister(component);

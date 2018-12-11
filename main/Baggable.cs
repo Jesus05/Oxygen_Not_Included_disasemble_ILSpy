@@ -11,6 +11,8 @@ public class Baggable : KMonoBehaviour
 	[Serialize]
 	public bool wrangled;
 
+	public bool useGunForPickup;
+
 	private static readonly EventSystem.IntraObjectHandler<Baggable> OnStoreDelegate = new EventSystem.IntraObjectHandler<Baggable>(delegate(Baggable component, object data)
 	{
 		component.OnStore(data);
@@ -34,7 +36,7 @@ public class Baggable : KMonoBehaviour
 			minionAnimOverride
 		};
 		pickupable.trackOnPickup = false;
-		pickupable.useGunforPickup = false;
+		pickupable.useGunforPickup = useGunForPickup;
 		pickupable.synchronizeAnims = false;
 		pickupable.SetWorkTime(3f);
 		if (mustStandOntopOfTrapForPickup)

@@ -1483,11 +1483,11 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Food Type Not Permitted";
 
-				public static LocString TOOLTIP = "This Duplicant is not allowed to eat any of the " + UI.FormatAsLink("Food", "FOOD") + " in their reach" + UI.HORIZONTAL_BR_RULE + "Enter the <color=#833A5FFF>CONSUMABLES</color> [F] to adjust their food permissions";
+				public static LocString TOOLTIP = "This Duplicant is not allowed to eat any of the " + UI.FormatAsLink("Food", "FOOD") + " in their reach" + UI.HORIZONTAL_BR_RULE + "Enter the <color=#833A5FFF>CONSUMABLES</color> <color=#F44A47><b>[F]</b></color> to adjust their food permissions";
 
 				public static LocString NOTIFICATION_NAME = "Unpermitted food";
 
-				public static LocString NOTIFICATION_TOOLTIP = "These Duplicants' <color=#833A5FFF>CONSUMABLES</color> [F] permissions prevent them from eating any of the " + UI.FormatAsLink("Food", "FOOD") + " within their reach:";
+				public static LocString NOTIFICATION_TOOLTIP = "These Duplicants' <color=#833A5FFF>CONSUMABLES</color> <color=#F44A47><b>[F]</b></color> permissions prevent them from eating any of the " + UI.FormatAsLink("Food", "FOOD") + " within their reach:";
 			}
 
 			public class ROTTEN

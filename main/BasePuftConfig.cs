@@ -35,7 +35,7 @@ public static class BasePuftConfig
 		SoundEventVolumeCache.instance.AddVolume("puft_kanim", "Puft_air_inflated", NOISE_POLLUTION.CREATURES.TIER5);
 		SoundEventVolumeCache.instance.AddVolume("puft_kanim", "Puft_voice_die", NOISE_POLLUTION.CREATURES.TIER5);
 		SoundEventVolumeCache.instance.AddVolume("puft_kanim", "Puft_voice_hurt", NOISE_POLLUTION.CREATURES.TIER5);
-		EntityTemplates.CreateAndRegisterBaggedCreature(gameObject, true, false);
+		EntityTemplates.CreateAndRegisterBaggedCreature(gameObject, true, false, false);
 		string inhaleSound = "Puft_air_intake";
 		if (is_baby)
 		{

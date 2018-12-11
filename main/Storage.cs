@@ -187,6 +187,7 @@ public class Storage : Workable, ISaveLoadableDetails, IEffectDescriptor
 	{
 		SetOffsetTable(OffsetGroups.InvertedStandardTable);
 		showProgressBar = false;
+		faceTargetWhenWorking = true;
 	}
 
 	public void SetDefaultStoredItemModifiers(List<StoredItemModifier> modifiers)
@@ -212,7 +213,6 @@ public class Storage : Workable, ISaveLoadableDetails, IEffectDescriptor
 		Subscribe(1502190696, OnQueueDestroyObjectDelegate);
 		Subscribe(-905833192, OnCopySettingsDelegate);
 		workerStatusItem = Db.Get().DuplicantStatusItems.Storing;
-		faceTargetWhenWorking = true;
 		resetProgressOnStop = true;
 		synchronizeAnims = false;
 		workingPstComplete = HashedString.Invalid;

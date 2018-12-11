@@ -45,7 +45,7 @@ public static class BaseDreckoConfig
 		ThreatMonitor.Def def = gameObject.AddOrGetDef<ThreatMonitor.Def>();
 		def.fleethresholdState = Health.HealthState.Dead;
 		gameObject.AddWeapon(1f, 1f, AttackProperties.DamageType.Standard, AttackProperties.TargetType.Single, 1, 0f);
-		EntityTemplates.CreateAndRegisterBaggedCreature(gameObject, true, true);
+		EntityTemplates.CreateAndRegisterBaggedCreature(gameObject, true, true, false);
 		ChoreTable.Builder chore_table = new ChoreTable.Builder().Add(new DeathStates.Def(), true).Add(new AnimInterruptStates.Def(), true).Add(new GrowUpStates.Def(), true)
 			.Add(new TrappedStates.Def(), true)
 			.Add(new IncubatingStates.Def(), true)

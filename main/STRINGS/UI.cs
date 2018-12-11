@@ -3866,7 +3866,7 @@ namespace STRINGS
 					public static LocString RESEARCHPOINT = "{0}: +1";
 				}
 
-				public static LocString TITLE = "{0} Recipes";
+				public static LocString TITLE = "{0} Production Orders";
 
 				public static LocString SUBTITLE = "Recipes";
 
@@ -3905,6 +3905,10 @@ namespace STRINGS
 				public static LocString NEXT_ORDER = "Next order: {0}";
 
 				public static LocString NO_WORKABLE_ORDER = "No workable order";
+
+				public static LocString RECIPE_DETAILS = "Recipe Details";
+
+				public static LocString RECIPE_QUEUE = "Production Order:";
 			}
 
 			public class GENESHUFFLERSIDESREEN

@@ -1,5 +1,6 @@
 using STRINGS;
 using System.Collections.Generic;
+using System.Diagnostics;
 using UnityEngine;
 
 public class RocketModule : KMonoBehaviour
@@ -22,6 +23,11 @@ public class RocketModule : KMonoBehaviour
 	private static readonly EventSystem.IntraObjectHandler<RocketModule> OnLandDelegate = new EventSystem.IntraObjectHandler<RocketModule>(delegate(RocketModule component, object data)
 	{
 		component.OnLand(data);
+	});
+
+	private static readonly EventSystem.IntraObjectHandler<RocketModule> DEBUG_OnDestroyDelegate = new EventSystem.IntraObjectHandler<RocketModule>(delegate(RocketModule component, object data)
+	{
+		component.DEBUG_OnDestroy(data);
 	});
 
 	public RocketLaunchCondition AddLaunchCondition(RocketLaunchCondition condition)
@@ -63,6 +69,16 @@ public class RocketModule : KMonoBehaviour
 		}
 		Subscribe(-1056989049, OnLaunchDelegate);
 		Subscribe(238242047, OnLandDelegate);
+		Subscribe(1502190696, DEBUG_OnDestroyDelegate);
+	}
+
+	private void DEBUG_OnDestroy(object data)
+	{
+		if ((Object)conditionManager != (Object)null && !App.IsExiting && !KMonoBehaviour.isLoadingScene)
+		{
+			Spacecraft spacecraftFromLaunchConditionManager = SpacecraftManager.instance.GetSpacecraftFromLaunchConditionManager(conditionManager);
+			conditionManager.DEBUG_TraceModuleDestruction(base.name, spacecraftFromLaunchConditionManager.state.ToString(), new StackTrace(true).ToString());
+		}
 	}
 
 	public void OnConditionManagerTagsChanged(object data)

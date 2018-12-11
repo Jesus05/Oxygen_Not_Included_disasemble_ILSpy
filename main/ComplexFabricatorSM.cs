@@ -48,7 +48,7 @@ public class ComplexFabricatorSM : StateMachineComponent<ComplexFabricatorSM.Sta
 			operating.DefaultState(operating.working_pre);
 			operating.working_pre.PlayAnim("working_pre").OnAnimQueueComplete(operating.working_loop);
 			operating.working_loop.PlayAnim("working_loop", KAnim.PlayMode.Loop).EventTransition(GameHashes.OperationalChanged, operating.working_pst, (StatesInstance smi) => !smi.GetComponent<Operational>().IsOperational).EventTransition(GameHashes.ActiveChanged, operating.working_pst, (StatesInstance smi) => !smi.GetComponent<Operational>().IsActive);
-			operating.working_pst.PlayAnim("working_pst").WorkableCompleteTransition((StatesInstance smi) => smi.master.fabricator.GetWorkable, operating.working_pst_complete).OnAnimQueueComplete(idle);
+			operating.working_pst.PlayAnim("working_pst").WorkableCompleteTransition((StatesInstance smi) => smi.master.fabricator.Workable, operating.working_pst_complete).OnAnimQueueComplete(idle);
 			operating.working_pst_complete.PlayAnim("working_pst_complete").OnAnimQueueComplete(idle);
 		}
 	}

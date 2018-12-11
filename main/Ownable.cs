@@ -49,17 +49,18 @@ public class Ownable : Assignable, ISaveLoadable, IEffectDescriptor
 		if (assignee == null)
 		{
 			MinionStorage component = GetComponent<MinionStorage>();
-			if ((Object)component != (Object)null && component.GetStoredMinionInfo().Count > 0)
+			if ((bool)component)
 			{
-				MinionStorage.Info info = component.GetStoredMinionInfo()[0];
-				if (info.serializedMinion != null)
+				List<MinionStorage.Info> storedMinionInfo = component.GetStoredMinionInfo();
+				if (storedMinionInfo.Count > 0)
 				{
-					MinionStorage.Info info2 = component.GetStoredMinionInfo()[0];
-					if (info2.serializedMinion.GetId() != -1)
+					MinionStorage.Info info = storedMinionInfo[0];
+					Ref<KPrefabID> serializedMinion = info.serializedMinion;
+					if (serializedMinion != null && serializedMinion.GetId() != -1)
 					{
-						MinionStorage.Info info3 = component.GetStoredMinionInfo()[0];
-						StoredMinionIdentity component2 = info3.serializedMinion.Get().GetComponent<StoredMinionIdentity>();
-						component2.assignableProxy = MinionAssignablesProxy.InitAssignableProxy(component2.assignableProxy, component2);
+						KPrefabID kPrefabID = serializedMinion.Get();
+						StoredMinionIdentity component2 = kPrefabID.GetComponent<StoredMinionIdentity>();
+						component2.ValidateProxy();
 						Assign(component2);
 					}
 				}

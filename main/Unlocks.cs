@@ -41,7 +41,7 @@ public class Unlocks : KMonoBehaviour
 		},
 		{
 			"journals",
-			new string[30]
+			new string[31]
 			{
 				"journal_sunflowerseeds",
 				"journal_debrief",
@@ -72,7 +72,8 @@ public class Unlocks : KMonoBehaviour
 				"journal_B556_4",
 				"journal_timemusings",
 				"journal_timesarrowthoughts",
-				"journal_magazine"
+				"journal_magazine",
+				"journal_notetojodi"
 			}
 		},
 		{

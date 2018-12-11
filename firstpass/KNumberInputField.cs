@@ -20,6 +20,8 @@ public class KNumberInputField : KScreen
 
 	public TMP_InputField field => inputField;
 
+	public event System.Action onStartEdit;
+
 	public event System.Action onEndEdit;
 
 	protected override void OnSpawn()
@@ -36,7 +38,13 @@ public class KNumberInputField : KScreen
 	private void OnEditStart()
 	{
 		isEditing = true;
+		inputField.Select();
+		inputField.ActivateInputField();
 		KScreenManager.Instance.RefreshStack();
+		if (this.onStartEdit != null)
+		{
+			this.onStartEdit();
+		}
 	}
 
 	private void OnEditEnd(string input)
@@ -64,30 +72,37 @@ public class KNumberInputField : KScreen
 	private void StopEditing()
 	{
 		isEditing = false;
+		inputField.DeactivateInputField();
 		if (this.onEndEdit != null)
 		{
 			this.onEndEdit();
 		}
 	}
 
+	public void SetAmount(float newValue)
+	{
+		newValue = Mathf.Clamp(newValue, minValue, maxValue);
+		if (decimalPlaces != -1)
+		{
+			float num = Mathf.Pow(10f, (float)decimalPlaces);
+			newValue = Mathf.Round(newValue * num) / num;
+		}
+		currentValue = newValue;
+		SetDisplayValue(currentValue.ToString());
+	}
+
 	private void ProcessInput(string input)
 	{
 		input = ((!(input == "")) ? input : minValue.ToString());
-		float value = minValue;
+		float num = minValue;
 		try
 		{
-			value = float.Parse(input);
+			num = float.Parse(input);
+			SetAmount(num);
 		}
 		catch
 		{
 		}
-		value = Mathf.Clamp(value, minValue, maxValue);
-		if (decimalPlaces != -1)
-		{
-			float num = Mathf.Pow(10f, (float)decimalPlaces);
-			value = Mathf.Round(value * num) / num;
-		}
-		currentValue = value;
 	}
 
 	public void SetDisplayValue(string input)

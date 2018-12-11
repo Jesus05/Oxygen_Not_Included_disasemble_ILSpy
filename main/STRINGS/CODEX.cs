@@ -1030,6 +1030,18 @@ namespace STRINGS
 			public static LocString SUBTITLE = "Boot Message";
 		}
 
+		public class NOTETOJODI
+		{
+			public class BODY
+			{
+				public static LocString CONTAINER1 = "Jodi,\n\nIf you read this... I'm sorry.\nIt was cruel, but it was the only way to save you.\n\nJackie";
+			}
+
+			public static LocString TITLE = "Strange Note";
+
+			public static LocString SUBTITLE = "ENCRYPTION LEVEL: NONE";
+		}
+
 		public class SCHOOLNEWSPAPER
 		{
 			public class BODY

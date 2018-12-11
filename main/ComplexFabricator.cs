@@ -126,7 +126,9 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms
 
 	protected Tag[] choreTags;
 
-	public static int QUEUE_INFINITE_COUNT = 6;
+	public static int MAX_QUEUE_SIZE = 99;
+
+	public static int QUEUE_INFINITE = -1;
 
 	[Serialize]
 	private Dictionary<string, int> recipeQueueCounts = new Dictionary<string, int>();
@@ -189,18 +191,7 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms
 		component.OnCopySettings(data);
 	});
 
-	public ComplexFabricatorWorkable GetWorkable
-	{
-		get
-		{
-			if (!((UnityEngine.Object)workable != (UnityEngine.Object)null))
-			{
-				workable = GetComponent<ComplexFabricatorWorkable>();
-				return workable;
-			}
-			return workable;
-		}
-	}
+	public ComplexFabricatorWorkable Workable => workable;
 
 	public int CurrentOrderIdx => currentOrderIdx;
 
@@ -234,11 +225,12 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms
 		};
 		Subscribe(-1957399615, OnDroppedAllDelegate);
 		Subscribe(-592767678, OnOperationalChangedDelegate);
+		workable = GetComponent<ComplexFabricatorWorkable>();
 		if (duplicantOperated)
 		{
-			GetWorkable.WorkerStatusItem = Db.Get().DuplicantStatusItems.Processing;
-			GetWorkable.AttributeConvertor = Db.Get().AttributeConverters.MachinerySpeed;
-			GetWorkable.AttributeExperienceMultiplier = DUPLICANTSTATS.ATTRIBUTE_LEVELING.PART_DAY_EXPERIENCE;
+			workable.WorkerStatusItem = Db.Get().DuplicantStatusItems.Processing;
+			workable.AttributeConvertor = Db.Get().AttributeConverters.MachinerySpeed;
+			workable.AttributeExperienceMultiplier = DUPLICANTSTATS.ATTRIBUTE_LEVELING.PART_DAY_EXPERIENCE;
 		}
 		Components.ComplexFabricators.Add(this);
 	}
@@ -251,6 +243,13 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms
 			workable = GetComponent<ComplexFabricatorWorkable>();
 		}
 		InitRecipeQueueCount();
+		foreach (string key in recipeQueueCounts.Keys)
+		{
+			if (recipeQueueCounts[key] == MAX_QUEUE_SIZE + 1)
+			{
+				recipeQueueCounts[key] = QUEUE_INFINITE;
+			}
+		}
 		RefreshUserOrdersFromQueueCounts();
 		buildStorage.Transfer(inStorage, true, true);
 		UpdateMachineOrders(true);
@@ -374,7 +373,7 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms
 		int num = 0;
 		foreach (KeyValuePair<string, int> recipeQueueCount in recipeQueueCounts)
 		{
-			if (recipeQueueCount.Value > 0)
+			if (recipeQueueCount.Value > 0 || recipeQueueCount.Value == QUEUE_INFINITE)
 			{
 				num++;
 				UserOrder item = new UserOrder(ComplexRecipeManager.Get().GetRecipe(recipeQueueCount.Key), true);
@@ -407,6 +406,26 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms
 		return recipeQueueCounts[recipe.id];
 	}
 
+	public void SetRecipeQueueCount(ComplexRecipe recipe, int count)
+	{
+		bool flag = true;
+		if (machineOrders.Count == 0)
+		{
+			flag = true;
+		}
+		UserOrder userOrder = userOrders.Find((UserOrder match) => match.recipe == recipe);
+		if (userOrder != null && GetUserOrderIndex(userOrder) == currentOrderIdx && GetRecipeQueueCount(recipe) == QUEUE_INFINITE)
+		{
+			CancelMachineOrdersByUserOrder(userOrder);
+		}
+		recipeQueueCounts[recipe.id] = count;
+		RefreshUserOrdersFromQueueCounts();
+		if (flag)
+		{
+			UpdateMachineOrders(false);
+		}
+	}
+
 	public void IncrementRecipeQueueCount(ComplexRecipe recipe)
 	{
 		bool flag = true;
@@ -415,16 +434,25 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms
 			flag = true;
 		}
 		UserOrder userOrder = userOrders.Find((UserOrder match) => match.recipe == recipe);
-		if (userOrder != null && GetUserOrderIndex(userOrder) == currentOrderIdx && GetRecipeQueueCount(recipe) == QUEUE_INFINITE_COUNT)
+		if (userOrder != null && GetUserOrderIndex(userOrder) == currentOrderIdx && GetRecipeQueueCount(recipe) == QUEUE_INFINITE)
 		{
 			CancelMachineOrdersByUserOrder(userOrder);
 		}
-		Dictionary<string, int> dictionary;
-		string id;
-		(dictionary = recipeQueueCounts)[id = recipe.id] = dictionary[id] + 1;
-		if (recipeQueueCounts[recipe.id] > QUEUE_INFINITE_COUNT)
+		if (recipeQueueCounts[recipe.id] == QUEUE_INFINITE)
 		{
 			recipeQueueCounts[recipe.id] = 0;
+			flag = true;
+		}
+		else if (recipeQueueCounts[recipe.id] >= MAX_QUEUE_SIZE)
+		{
+			recipeQueueCounts[recipe.id] = QUEUE_INFINITE;
+			flag = true;
+		}
+		else
+		{
+			Dictionary<string, int> dictionary;
+			string id;
+			(dictionary = recipeQueueCounts)[id = recipe.id] = dictionary[id] + 1;
 			flag = true;
 		}
 		RefreshUserOrdersFromQueueCounts();
@@ -446,14 +474,23 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms
 			}
 			CancelMachineOrdersByUserOrder(userOrder);
 		}
-		if (!respectInfinite || recipeQueueCounts[recipe.id] != QUEUE_INFINITE_COUNT)
+		if (!respectInfinite || recipeQueueCounts[recipe.id] != QUEUE_INFINITE)
 		{
-			Dictionary<string, int> dictionary;
-			string id;
-			(dictionary = recipeQueueCounts)[id = recipe.id] = dictionary[id] - 1;
-			if (recipeQueueCounts[recipe.id] < 0)
+			if (recipeQueueCounts[recipe.id] == QUEUE_INFINITE)
 			{
-				recipeQueueCounts[recipe.id] = QUEUE_INFINITE_COUNT;
+				recipeQueueCounts[recipe.id] = MAX_QUEUE_SIZE;
+				flag = true;
+			}
+			else if (recipeQueueCounts[recipe.id] == 0)
+			{
+				recipeQueueCounts[recipe.id] = QUEUE_INFINITE;
+				flag = true;
+			}
+			else
+			{
+				Dictionary<string, int> dictionary;
+				string id;
+				(dictionary = recipeQueueCounts)[id = recipe.id] = dictionary[id] - 1;
 				flag = true;
 			}
 		}
@@ -469,7 +506,7 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms
 		int num = 0;
 		foreach (KeyValuePair<string, int> recipeQueueCount in recipeQueueCounts)
 		{
-			num += recipeQueueCount.Value;
+			num = ((recipeQueueCount.Value != QUEUE_INFINITE) ? (num + recipeQueueCount.Value) : (num + (MAX_QUEUE_SIZE + 1)));
 		}
 		return num;
 	}
@@ -964,7 +1001,7 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms
 
 	private void StartWork()
 	{
-		GetComponent<Operational>().SetActive(true, false);
+		operational.SetActive(true, false);
 		ShowProgressBar(true);
 	}
 
@@ -983,7 +1020,7 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms
 
 	private void SetOperationalInactive()
 	{
-		GetComponent<Operational>().SetActive(false, false);
+		operational.SetActive(false, false);
 		ShowProgressBar(false);
 	}
 

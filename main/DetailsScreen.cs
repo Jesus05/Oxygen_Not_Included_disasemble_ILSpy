@@ -83,6 +83,18 @@ public class DetailsScreen : KTabMenu
 	[SerializeField]
 	private List<SideScreenRef> sideScreens;
 
+	[Header("Secondary Side Screens")]
+	[SerializeField]
+	private GameObject sideScreen2ContentBody;
+
+	[SerializeField]
+	private GameObject sideScreen2;
+
+	[SerializeField]
+	private LocText sideScreen2Title;
+
+	private KScreen activeSideScreen2 = null;
+
 	private bool HasActivated;
 
 	private bool isEditing = false;
@@ -132,6 +144,7 @@ public class DetailsScreen : KTabMenu
 		CloseButton.onClick += DeselectAndClose;
 		TabTitle.OnNameChanged += OnNameChanged;
 		TabTitle.OnStartedEditing += OnStartedEditing;
+		sideScreen2.SetActive(false);
 		Subscribe(-1514841199, OnRefreshDataDelegate);
 	}
 
@@ -368,6 +381,26 @@ public class DetailsScreen : KTabMenu
 		{
 			screens[newTab].screen.SetTarget(target);
 		}
+	}
+
+	public KScreen SetSecondarySideScreen(KScreen secondaryPrefab, string title)
+	{
+		ClearSecondarySideScreen();
+		activeSideScreen2 = KScreenManager.Instance.InstantiateScreen(secondaryPrefab.gameObject, sideScreen2ContentBody);
+		activeSideScreen2.Activate();
+		sideScreen2Title.text = title;
+		sideScreen2.SetActive(true);
+		return activeSideScreen2;
+	}
+
+	public void ClearSecondarySideScreen()
+	{
+		if ((UnityEngine.Object)activeSideScreen2 != (UnityEngine.Object)null)
+		{
+			activeSideScreen2.Deactivate();
+			activeSideScreen2 = null;
+		}
+		sideScreen2.SetActive(false);
 	}
 
 	public void DeactivateSideContent()

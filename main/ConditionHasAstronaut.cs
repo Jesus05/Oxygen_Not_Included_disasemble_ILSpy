@@ -1,4 +1,5 @@
 using STRINGS;
+using System.Collections.Generic;
 
 public class ConditionHasAstronaut : RocketLaunchCondition
 {
@@ -16,10 +17,12 @@ public class ConditionHasAstronaut : RocketLaunchCondition
 
 	public override bool EvaluateLaunchCondition()
 	{
+		MinionStorage component = module.GetComponent<MinionStorage>();
+		List<MinionStorage.Info> storedMinionInfo = component.GetStoredMinionInfo();
 		int result;
-		if (module.GetComponent<MinionStorage>().GetStoredMinionInfo().Count > 0)
+		if (storedMinionInfo.Count > 0)
 		{
-			MinionStorage.Info info = module.GetComponent<MinionStorage>().GetStoredMinionInfo()[0];
+			MinionStorage.Info info = storedMinionInfo[0];
 			result = ((info.serializedMinion != null) ? 1 : 0);
 		}
 		else

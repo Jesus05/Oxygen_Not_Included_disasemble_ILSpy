@@ -16,9 +16,9 @@ public class MicrobeMusher : ComplexFabricator
 		base.OnPrefabInit();
 		choreType = Db.Get().ChoreTypes.Cook;
 		choreTags = GameTags.ChoreTypes.CookingChores;
-		base.GetWorkable.WorkerStatusItem = Db.Get().DuplicantStatusItems.Mushing;
-		base.GetWorkable.AttributeConvertor = Db.Get().AttributeConverters.CookingSpeed;
-		base.GetWorkable.AttributeExperienceMultiplier = DUPLICANTSTATS.ATTRIBUTE_LEVELING.MOST_DAY_EXPERIENCE;
+		workable.WorkerStatusItem = Db.Get().DuplicantStatusItems.Mushing;
+		workable.AttributeConvertor = Db.Get().AttributeConverters.CookingSpeed;
+		workable.AttributeExperienceMultiplier = DUPLICANTSTATS.ATTRIBUTE_LEVELING.MOST_DAY_EXPERIENCE;
 		fetchChoreTypeIdHash = Db.Get().ChoreTypes.CookFetch.IdHash;
 		workable.meter = new MeterController(GetComponent<KBatchedAnimController>(), "meter_target", "meter", Meter.Offset.Behind, Grid.SceneLayer.NoLayer, "meter_target", "meter_ration");
 		workable.meter.meterController.SetSymbolVisiblity(canHash, false);

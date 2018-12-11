@@ -217,25 +217,31 @@ public class Deconstructable : Workable
 		GameObject gameObject = null;
 		int cell = Grid.PosToCell(position);
 		CellOffset[] placementOffsets = def.PlacementOffsets;
-		float num = src_mass;
-		for (int i = 0; (float)i < src_mass / 400f; i++)
+		Element element = ElementLoader.GetElement(src_element);
+		if (element != null)
 		{
-			int num2 = i % def.PlacementOffsets.Length;
-			int cell2 = Grid.OffsetCell(cell, placementOffsets[num2]);
-			float mass = num;
-			if (num > 400f)
+			float num = src_mass;
+			for (int i = 0; (float)i < src_mass / 400f; i++)
 			{
-				mass = 400f;
-				num -= 400f;
-			}
-			Element element = ElementLoader.GetElement(src_element);
-			if (element != null)
-			{
+				int num2 = i % def.PlacementOffsets.Length;
+				int cell2 = Grid.OffsetCell(cell, placementOffsets[num2]);
+				float mass = num;
+				if (num > 400f)
+				{
+					mass = 400f;
+					num -= 400f;
+				}
 				gameObject = element.substance.SpawnResource(Grid.CellToPosCBC(cell2, Grid.SceneLayer.Ore), mass, src_temperature, disease_idx, disease_count, false, false);
 			}
-			else
+		}
+		else
+		{
+			for (int j = 0; (float)j < src_mass; j++)
 			{
-				gameObject = GameUtil.KInstantiate(Assets.GetPrefab(src_element), Grid.CellToPosCBC(cell2, Grid.SceneLayer.Ore), Grid.SceneLayer.Ore, null, 0);
+				int num3 = j % def.PlacementOffsets.Length;
+				int cell3 = Grid.OffsetCell(cell, placementOffsets[num3]);
+				GameObject prefab = Assets.GetPrefab(src_element);
+				gameObject = GameUtil.KInstantiate(prefab, Grid.CellToPosCBC(cell3, Grid.SceneLayer.Ore), Grid.SceneLayer.Ore, null, 0);
 				gameObject.SetActive(true);
 			}
 		}

@@ -6,8 +6,9 @@ using UnityEngine;
 public class ComplexFabricatorWorkable : Workable
 {
 	[MyCmpReq]
-	protected Operational operational;
+	private Operational operational;
 
+	[MyCmpReq]
 	private ComplexFabricator fabricator;
 
 	public Action<Worker, float> OnWorkTickActions;
@@ -17,18 +18,6 @@ public class ComplexFabricatorWorkable : Workable
 	protected GameObject visualizer;
 
 	protected KAnimLink visualizerLink;
-
-	private ComplexFabricator GetFabricator
-	{
-		get
-		{
-			if ((UnityEngine.Object)fabricator == (UnityEngine.Object)null)
-			{
-				fabricator = GetComponent<ComplexFabricator>();
-			}
-			return fabricator;
-		}
-	}
 
 	public StatusItem WorkerStatusItem
 	{
@@ -66,12 +55,6 @@ public class ComplexFabricatorWorkable : Workable
 		}
 	}
 
-	protected override void OnSpawn()
-	{
-		fabricator = GetComponent<ComplexFabricator>();
-		base.OnSpawn();
-	}
-
 	public override void AwardExperience(float work_dt, MinionResume resume)
 	{
 		resume.AddExperienceIfRole(MachineTechnician.ID, work_dt * ROLES.ACTIVE_EXPERIENCE_QUICK);
@@ -91,7 +74,14 @@ public class ComplexFabricatorWorkable : Workable
 		if (operational.IsOperational)
 		{
 			operational.SetActive(true, false);
-			InstantiateVisualizer(fabricator.GetMachineOrders()[0]);
+			if (fabricator.CurrentMachineOrder != null)
+			{
+				InstantiateVisualizer(fabricator.CurrentMachineOrder);
+			}
+			else
+			{
+				DebugUtil.DevAssert(false, "ComplexFabricatorWorkable.OnStartWork called but CurrentMachineOrder is null", base.gameObject);
+			}
 		}
 	}
 
@@ -121,12 +111,12 @@ public class ComplexFabricatorWorkable : Workable
 
 	public override float GetWorkTime()
 	{
-		if (GetFabricator.GetMachineOrders().Count <= 0)
+		ComplexFabricator.MachineOrder currentMachineOrder = fabricator.CurrentMachineOrder;
+		if (currentMachineOrder == null)
 		{
 			return -1f;
 		}
-		ComplexFabricator.MachineOrder machineOrder = fabricator.GetMachineOrders()[0];
-		workTime = machineOrder.parentOrder.recipe.time;
+		workTime = currentMachineOrder.parentOrder.recipe.time;
 		return workTime;
 	}
 

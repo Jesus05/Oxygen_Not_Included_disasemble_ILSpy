@@ -1271,7 +1271,7 @@ public class Game : KMonoBehaviour
 				GC.Collect();
 				float num = Time.realtimeSinceStartup - realtimeSinceStartup;
 				Debug.Log("\tGC.Collect() took " + num.ToString() + " seconds", null);
-				uint num2 = 298192u;
+				uint num2 = 298560u;
 				string text = System.DateTime.Now.ToShortDateString();
 				string text2 = System.DateTime.Now.ToShortTimeString();
 				string fileName = Path.GetFileName(SaveLoader.GetLatestSaveFile());

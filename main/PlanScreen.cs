@@ -338,7 +338,7 @@ public class PlanScreen : KIconToggleMenu
 		};
 		RefreshCopyBuildingButton(null);
 		Game.Instance.Subscribe(-1503271301, RefreshCopyBuildingButton);
-		copyBuildingButton.GetComponent<ToolTip>().SetSimpleTooltip(UI.COPY_BUILDING_TOOLTIP);
+		copyBuildingButton.GetComponent<ToolTip>().SetSimpleTooltip(UI.COPY_BUILDING_TOOLTIP + " " + GameUtil.GetHotkeyString(Action.CopyBuilding));
 	}
 
 	private void OnClickCopyBuilding()

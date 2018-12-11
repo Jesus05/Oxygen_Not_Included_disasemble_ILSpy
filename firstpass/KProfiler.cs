@@ -77,4 +77,8 @@ public static class KProfiler
 	public static void AddEvent(string event_name)
 	{
 	}
+
+	public static void AddCounter(string event_name, int count)
+	{
+	}
 }

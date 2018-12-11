@@ -1,3 +1,4 @@
+using KSerialization;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,12 +11,33 @@ public class LaunchConditionManager : KMonoBehaviour, ISim4000ms, ISim1000ms
 
 	private LaunchableRocket launchable;
 
+	[Serialize]
+	private List<Tuple<string, string, string>> DEBUG_ModuleDestructions;
+
 	private Dictionary<RocketFlightCondition, Guid> conditionStatuses = new Dictionary<RocketFlightCondition, Guid>();
 
 	public List<RocketModule> rocketModules
 	{
 		get;
 		private set;
+	}
+
+	public void DEBUG_TraceModuleDestruction(string moduleName, string state, string stackTrace)
+	{
+		if (DEBUG_ModuleDestructions == null)
+		{
+			DEBUG_ModuleDestructions = new List<Tuple<string, string, string>>();
+		}
+		DEBUG_ModuleDestructions.Add(new Tuple<string, string, string>(moduleName, state, stackTrace));
+	}
+
+	[ContextMenu("Dump Module Destructions")]
+	private void DEBUG_DumpModuleDestructions()
+	{
+		foreach (Tuple<string, string, string> dEBUG_ModuleDestruction in DEBUG_ModuleDestructions)
+		{
+			Output.Log("\n\nBEGIN MODULE DUMP\n", dEBUG_ModuleDestruction.first, ">", dEBUG_ModuleDestruction.second, "\n", dEBUG_ModuleDestruction.third, "\nEND MODULE DUMP\n\n");
+		}
 	}
 
 	protected override void OnPrefabInit()

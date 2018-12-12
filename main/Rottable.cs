@@ -98,11 +98,12 @@ public class Rottable : GameStateMachine<Rottable, Rottable.Instance, IStateMach
 			IStateMachineTarget master = GetMaster();
 			if (!master.isNull)
 			{
-				int num = Grid.PosToCell(base.gameObject);
-				if (Grid.IsValidCell(num))
+				int cell = Grid.PosToCell(base.gameObject);
+				if (Grid.IsValidCell(cell))
 				{
 					KSelectable component = GetComponent<KSelectable>();
-					if (Grid.Solid[num])
+					KPrefabID component2 = GetComponent<KPrefabID>();
+					if (component2.HasAnyTags(PRESERVED_TAGS))
 					{
 						UnrefrigeratedModifier.SetValue(0f);
 						ContaminatedAtmosphere.SetValue(0f);
@@ -223,6 +224,12 @@ public class Rottable : GameStateMachine<Rottable, Rottable.Instance, IStateMach
 
 	public State Spoiled;
 
+	private static readonly Tag[] PRESERVED_TAGS = new Tag[2]
+	{
+		GameTags.Preserved,
+		GameTags.Entombed
+	};
+
 	private static readonly RotCB rotCB = new RotCB();
 
 	public static Dictionary<int, RotAtmosphereQuality> AtmosphereModifier = new Dictionary<int, RotAtmosphereQuality>
@@ -295,11 +302,7 @@ public class Rottable : GameStateMachine<Rottable, Rottable.Instance, IStateMach
 		base.serializable = true;
 		root.TagTransition(GameTags.Preserved, Preserved, false).TagTransition(GameTags.Entombed, Preserved, false);
 		Fresh.ToggleStatusItem(Db.Get().CreatureStatusItems.Fresh, (Instance smi) => smi).ParamTransition(rotParameter, Stale_Pre, (Instance smi, float p) => p <= smi.def.spoilTime - (smi.def.spoilTime - smi.def.staleTime)).FastUpdate("Rot", rotCB, UpdateRate.SIM_1000ms, true);
-		Preserved.TagTransition(new Tag[2]
-		{
-			GameTags.Preserved,
-			GameTags.Entombed
-		}, Fresh, true).Enter("RefreshModifiers", delegate(Instance smi)
+		Preserved.TagTransition(PRESERVED_TAGS, Fresh, true).Enter("RefreshModifiers", delegate(Instance smi)
 		{
 			smi.RefreshModifiers(0f);
 		});

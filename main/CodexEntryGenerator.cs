@@ -325,7 +325,7 @@ public static class CodexEntryGenerator
 				containers.Add(new ContentContainer(new List<ICodexWidget>
 				{
 					new CodexImage(32, 32, Def.GetUISprite(element.highTempTransition, "ui", false)),
-					new CodexText((element.highTempTransition == null) ? "" : (element.highTempTransition.name + " (" + element.highTempTransition.GetStateString() + ")  (" + GameUtil.GetFormattedTemperature(element.highTemp, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true) + ")"), CodexTextStyle.Body)
+					new CodexText((element.highTempTransition == null) ? "" : (element.highTempTransition.name + " (" + element.highTempTransition.GetStateString() + ")  (" + GameUtil.GetFormattedTemperature(element.highTemp, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false) + ")"), CodexTextStyle.Body)
 				}, ContentContainer.ContentLayout.Horizontal));
 			}
 			if (element.lowTempTransition != null)
@@ -333,7 +333,7 @@ public static class CodexEntryGenerator
 				containers.Add(new ContentContainer(new List<ICodexWidget>
 				{
 					new CodexImage(32, 32, Def.GetUISprite(element.lowTempTransition, "ui", false)),
-					new CodexText((element.lowTempTransition == null) ? "" : (element.lowTempTransition.name + " (" + element.lowTempTransition.GetStateString() + ")  (" + GameUtil.GetFormattedTemperature(element.lowTemp, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true) + ")"), CodexTextStyle.Body)
+					new CodexText((element.lowTempTransition == null) ? "" : (element.lowTempTransition.name + " (" + element.lowTempTransition.GetStateString() + ")  (" + GameUtil.GetFormattedTemperature(element.lowTemp, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false) + ")"), CodexTextStyle.Body)
 				}, ContentContainer.ContentLayout.Horizontal));
 			}
 			containers.Add(new ContentContainer(new List<ICodexWidget>
@@ -777,8 +777,8 @@ public static class CodexEntryGenerator
 				new CodexSpacer(),
 				new CodexText(CODEX.HEADERS.COMFORTRANGE, CodexTextStyle.Subtitle),
 				new CodexDividerLine(),
-				new CodexText("    • " + string.Format(CODEX.CREATURE_DESCRIPTORS.TEMPERATURE.COMFORT_RANGE, GameUtil.GetFormattedTemperature(component.internalTemperatureWarning_Low, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true) + " - " + GameUtil.GetFormattedTemperature(component.internalTemperatureWarning_High, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true)), CodexTextStyle.Body),
-				new CodexText("    • " + string.Format(CODEX.CREATURE_DESCRIPTORS.TEMPERATURE.NON_LETHAL_RANGE, GameUtil.GetFormattedTemperature(component.internalTemperatureLethal_Low, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true) + " - " + GameUtil.GetFormattedTemperature(component.internalTemperatureLethal_High, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true)), CodexTextStyle.Body),
+				new CodexText("    • " + string.Format(CODEX.CREATURE_DESCRIPTORS.TEMPERATURE.COMFORT_RANGE, GameUtil.GetFormattedTemperature(component.internalTemperatureWarning_Low, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false) + " - " + GameUtil.GetFormattedTemperature(component.internalTemperatureWarning_High, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false)), CodexTextStyle.Body),
+				new CodexText("    • " + string.Format(CODEX.CREATURE_DESCRIPTORS.TEMPERATURE.NON_LETHAL_RANGE, GameUtil.GetFormattedTemperature(component.internalTemperatureLethal_Low, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false) + " - " + GameUtil.GetFormattedTemperature(component.internalTemperatureLethal_High, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false)), CodexTextStyle.Body),
 				new CodexSpacer()
 			}, ContentContainer.ContentLayout.Vertical));
 			List<Tag> list = new List<Tag>();
@@ -894,7 +894,7 @@ public static class CodexEntryGenerator
 			new CodexText(string.Format(UI.CODEX.FOOD.QUALITY, GameUtil.GetFormattedFoodQuality(food.Quality)), CodexTextStyle.Body),
 			new CodexText(string.Format(UI.CODEX.FOOD.CALORIES, GameUtil.GetFormattedCalories(food.CaloriesPerUnit, GameUtil.TimeSlice.None, true)), CodexTextStyle.Body),
 			new CodexSpacer(),
-			new CodexText((!food.CanRot) ? UI.CODEX.FOOD.NON_PERISHABLE.ToString() : string.Format(UI.CODEX.FOOD.SPOILPROPERTIES, GameUtil.GetFormattedTemperature(food.PreserveTemperature, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true), GameUtil.GetFormattedCycles(food.SpoilTime, "F1")), CodexTextStyle.Body),
+			new CodexText((!food.CanRot) ? UI.CODEX.FOOD.NON_PERISHABLE.ToString() : string.Format(UI.CODEX.FOOD.SPOILPROPERTIES, GameUtil.GetFormattedTemperature(food.PreserveTemperature, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false), GameUtil.GetFormattedCycles(food.SpoilTime, "F1")), CodexTextStyle.Body),
 			new CodexSpacer()
 		}, ContentContainer.ContentLayout.Vertical));
 	}

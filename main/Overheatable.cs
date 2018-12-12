@@ -161,8 +161,8 @@ public class Overheatable : StateMachineComponent<Overheatable.StatesInstance>, 
 		}
 		else if (baseOverheatTemp != 0f)
 		{
-			string formattedTemperature = GameUtil.GetFormattedTemperature(baseOverheatTemp, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true);
-			string formattedTemperature2 = GameUtil.GetFormattedTemperature(baseFatalTemp, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true);
+			string formattedTemperature = GameUtil.GetFormattedTemperature(baseOverheatTemp, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false);
+			string formattedTemperature2 = GameUtil.GetFormattedTemperature(baseFatalTemp, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false);
 			string format = UI.BUILDINGEFFECTS.TOOLTIPS.OVERHEAT_TEMP;
 			Descriptor item2 = new Descriptor(string.Format(UI.BUILDINGEFFECTS.OVERHEAT_TEMP, formattedTemperature, formattedTemperature2), string.Format(format, formattedTemperature, formattedTemperature2), Descriptor.DescriptorType.Effect, false);
 			list.Add(item2);

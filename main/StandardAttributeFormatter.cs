@@ -37,7 +37,7 @@ public class StandardAttributeFormatter : IAttributeFormatter
 		case GameUtil.UnitClass.Mass:
 			return GameUtil.GetFormattedMass(value, timeSlice, GameUtil.MetricMassFormat.UseThreshold, true, "{0:0.#}");
 		case GameUtil.UnitClass.Temperature:
-			return GameUtil.GetFormattedTemperature(value, timeSlice, (timeSlice != 0) ? GameUtil.TemperatureInterpretation.Relative : GameUtil.TemperatureInterpretation.Absolute, true);
+			return GameUtil.GetFormattedTemperature(value, timeSlice, (timeSlice != 0) ? GameUtil.TemperatureInterpretation.Relative : GameUtil.TemperatureInterpretation.Absolute, true, false);
 		case GameUtil.UnitClass.Percent:
 			return GameUtil.GetFormattedPercent(value, timeSlice);
 		case GameUtil.UnitClass.Calories:

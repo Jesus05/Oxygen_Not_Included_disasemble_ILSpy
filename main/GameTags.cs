@@ -549,9 +549,7 @@ public class GameTags
 
 	public static TagSet IgnoredMaterialCategories = new TagSet
 	{
-		Special,
-		Breathable,
-		Unbreathable
+		Special
 	};
 
 	public static TagSet MaterialCategories = new TagSet
@@ -564,7 +562,8 @@ public class GameTags
 		Filter,
 		Liquifiable,
 		Liquid,
-		Gas,
+		Breathable,
+		Unbreathable,
 		ConsumableOre,
 		Organics,
 		Farmable,

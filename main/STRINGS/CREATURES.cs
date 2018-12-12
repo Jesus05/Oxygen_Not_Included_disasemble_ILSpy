@@ -1700,14 +1700,14 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Freshness Percent";
 
-				public static LocString TOOLTIP = "Freshness" + UI.HORIZONTAL_BR_RULE + "Food items become stale at fifty percent freshness, and rot at zero percent";
+				public static LocString TOOLTIP = "Food items become stale at fifty percent freshness, and rot at zero percent";
 			}
 
 			public class SCALEGROWTH
 			{
 				public static LocString NAME = "Scale Growth";
 
-				public static LocString TOOLTIP = "Scale Growth" + UI.HORIZONTAL_BR_RULE + "The amount of time required for this critter to regrow its scales";
+				public static LocString TOOLTIP = "The amount of time required for this critter to regrow its scales";
 			}
 
 			public class AIRPRESSURE

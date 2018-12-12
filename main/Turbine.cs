@@ -428,7 +428,7 @@ public class Turbine : KMonoBehaviour
 	{
 		Turbine turbine = (Turbine)data;
 		str = str.Replace("{ELEMENT}", ElementLoader.FindElementByHash(turbine.srcElem).name);
-		str = str.Replace("{TEMPERATURE}", GameUtil.GetFormattedTemperature(turbine.minActiveTemperature, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true));
+		str = str.Replace("{TEMPERATURE}", GameUtil.GetFormattedTemperature(turbine.minActiveTemperature, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false));
 		return str;
 	}
 }

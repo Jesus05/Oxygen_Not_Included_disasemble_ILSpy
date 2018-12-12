@@ -75,6 +75,10 @@ public static class BaseMoleConfig
 		Navigator component = smi.gameObject.GetComponent<Navigator>();
 		if (component.CurrentNavType != NavType.Solid)
 		{
+			if (smi.gameObject.GetDef<BabyMonitor.Def>() != null && Random.Range(0, 100) >= 90)
+			{
+				return "drill_fail";
+			}
 			return "idle_loop";
 		}
 		int num = Random.Range(0, SolidIdleAnims.Length);

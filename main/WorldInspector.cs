@@ -113,8 +113,8 @@ public class WorldInspector : MonoBehaviour
 		PropertyIcon_Left.sprite = propertySprites.Mass;
 		PropertyRightText.text = cellObject.tags.ProperName();
 		PropertyIcon_Right.sprite = propertySprites.Resource;
-		TemperatureTextDisplay.text = GameUtil.GetFormattedTemperature((float)Mathf.RoundToInt(cellObject.temperature), GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true);
-		Tooltip_CurrentTemperature.toolTip = "Current Temperature: " + GameUtil.GetFormattedTemperature((float)Mathf.RoundToInt(cellObject.temperature), GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true);
+		TemperatureTextDisplay.text = GameUtil.GetFormattedTemperature((float)Mathf.RoundToInt(cellObject.temperature), GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false);
+		Tooltip_CurrentTemperature.toolTip = "Current Temperature: " + GameUtil.GetFormattedTemperature((float)Mathf.RoundToInt(cellObject.temperature), GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false);
 		int state = GetState(cellObject);
 		SetStateColorScheme(state);
 		Tooltip_CurrentTemperature.toolTip = SetCurrentTemperatureTooltip(cellObject.element, state);
@@ -140,11 +140,11 @@ public class WorldInspector : MonoBehaviour
 		PropertyIcon_Left.sprite = propertySprites.Mass;
 		PropertyRightText.text = ElementLoader.FindElementByHash(component.ElementID).GetMaterialCategoryTag().ProperName();
 		PropertyIcon_Right.sprite = propertySprites.Resource;
-		TemperatureTextDisplay.text = GameUtil.GetFormattedTemperature((float)Mathf.RoundToInt(component.Temperature), GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true);
-		text = "Current Temperature: " + GameUtil.GetFormattedTemperature((float)Mathf.RoundToInt(component.Temperature), GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true);
+		TemperatureTextDisplay.text = GameUtil.GetFormattedTemperature((float)Mathf.RoundToInt(component.Temperature), GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false);
+		text = "Current Temperature: " + GameUtil.GetFormattedTemperature((float)Mathf.RoundToInt(component.Temperature), GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false);
 		SetStateColorScheme(0);
 		text += SetCurrentTemperatureTooltip(ElementLoader.FindElementByHash(component.ElementID), 0);
-		text = text + "\nMelts at: <color=yellow>" + GameUtil.GetFormattedTemperature((float)Mathf.RoundToInt(ElementLoader.FindElementByHash(component.ElementID).highTemp), GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true) + "</color>";
+		text = text + "\nMelts at: <color=yellow>" + GameUtil.GetFormattedTemperature((float)Mathf.RoundToInt(ElementLoader.FindElementByHash(component.ElementID).highTemp), GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false) + "</color>";
 		Tooltip_CurrentTemperature.toolTip = text;
 		TemperatureNotch.SetActive(true);
 		RectTransform rectTransform = TemperatureNotch.rectTransform();
@@ -161,10 +161,10 @@ public class WorldInspector : MonoBehaviour
 		PropertyRightText.text = edibleObject.GetQuality().ToString();
 		PropertyIcon_Right.sprite = propertySprites.Quality;
 		float f = Grid.Temperature[Grid.PosToCell(edibleObject)];
-		TemperatureTextDisplay.text = GameUtil.GetFormattedTemperature((float)Mathf.RoundToInt(f), GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true);
-		text = "Current Temperature: " + GameUtil.GetFormattedTemperature((float)Mathf.RoundToInt(f), GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true);
+		TemperatureTextDisplay.text = GameUtil.GetFormattedTemperature((float)Mathf.RoundToInt(f), GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false);
+		text = "Current Temperature: " + GameUtil.GetFormattedTemperature((float)Mathf.RoundToInt(f), GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false);
 		SetStateColorScheme(0);
-		text = text + "\nRots at temperatures above: <color=yellow>" + GameUtil.GetFormattedTemperature((float)Mathf.RoundToInt(edibleObject.FoodInfo.RotTemperature), GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true) + "</color>";
+		text = text + "\nRots at temperatures above: <color=yellow>" + GameUtil.GetFormattedTemperature((float)Mathf.RoundToInt(edibleObject.FoodInfo.RotTemperature), GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false) + "</color>";
 		Tooltip_CurrentTemperature.toolTip = text;
 		TemperatureNotch.SetActive(true);
 		RectTransform rectTransform = TemperatureNotch.rectTransform();
@@ -234,14 +234,14 @@ public class WorldInspector : MonoBehaviour
 		switch (state)
 		{
 		case 0:
-			text = text + "\nMelts at: <color=yellow>" + GameUtil.GetFormattedTemperature((float)Mathf.RoundToInt(element.highTemp), GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true) + "</color>";
+			text = text + "\nMelts at: <color=yellow>" + GameUtil.GetFormattedTemperature((float)Mathf.RoundToInt(element.highTemp), GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false) + "</color>";
 			break;
 		case 1:
-			text = text + "\nFreezes at: <color=cyan>" + GameUtil.GetFormattedTemperature((float)Mathf.RoundToInt(element.lowTemp), GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true) + "</color>";
-			text = text + "\nEvaporates at: <color=red>" + GameUtil.GetFormattedTemperature((float)Mathf.RoundToInt(element.highTemp), GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true) + "</color>";
+			text = text + "\nFreezes at: <color=cyan>" + GameUtil.GetFormattedTemperature((float)Mathf.RoundToInt(element.lowTemp), GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false) + "</color>";
+			text = text + "\nEvaporates at: <color=red>" + GameUtil.GetFormattedTemperature((float)Mathf.RoundToInt(element.highTemp), GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false) + "</color>";
 			break;
 		case 2:
-			text = text + "\nCondenses at: <color=yellow>" + GameUtil.GetFormattedTemperature((float)Mathf.RoundToInt(element.lowTemp), GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true) + "</color>";
+			text = text + "\nCondenses at: <color=yellow>" + GameUtil.GetFormattedTemperature((float)Mathf.RoundToInt(element.lowTemp), GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false) + "</color>";
 			break;
 		}
 		return text;

@@ -238,7 +238,7 @@ public class OverlayLegend : KScreen
 				{
 					overlayInfo.infoUnits[i].color = SimDebugView.Instance.temperatureThresholds[num - i].color;
 					overlayInfo.infoUnits[i].tooltip = UI.OVERLAYS.TEMPERATURE.TOOLTIPS.TEMPERATURE;
-					overlayInfo.infoUnits[i].tooltipFormatData = GameUtil.GetFormattedTemperature(SimDebugView.Instance.temperatureThresholds[num - i].value, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true);
+					overlayInfo.infoUnits[i].tooltipFormatData = GameUtil.GetFormattedTemperature(SimDebugView.Instance.temperatureThresholds[num - i].value, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false);
 				}
 			}
 			else if (mode == OverlayModes.HeatFlow.ID)

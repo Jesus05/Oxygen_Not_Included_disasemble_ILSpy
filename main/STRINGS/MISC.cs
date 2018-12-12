@@ -62,7 +62,7 @@ namespace STRINGS
 
 			public static LocString BREATHABLE = "Breathable Gas";
 
-			public static LocString UNBREATHABLE = "Unbreathable";
+			public static LocString UNBREATHABLE = "Unbreathable Gas";
 
 			public static LocString GAS = "Gas";
 

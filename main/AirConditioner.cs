@@ -212,7 +212,7 @@ public class AirConditioner : KMonoBehaviour, ISaveLoadable, IEffectDescriptor, 
 	public List<Descriptor> GetDescriptors(BuildingDef def)
 	{
 		List<Descriptor> list = new List<Descriptor>();
-		string formattedTemperature = GameUtil.GetFormattedTemperature(temperatureDelta, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Relative, true);
+		string formattedTemperature = GameUtil.GetFormattedTemperature(temperatureDelta, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Relative, true, false);
 		Element element = (!isLiquidConditioner) ? ElementLoader.GetElement("Oxygen") : ElementLoader.GetElement("Water");
 		float num = Mathf.Abs(temperatureDelta * element.specificHeatCapacity);
 		float dtu_s = num * 1f;

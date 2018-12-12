@@ -795,164 +795,194 @@ public class BuildingDef : Def
 	public bool IsValidBuildLocation(GameObject source_go, Vector3 pos, Orientation orientation, out string reason)
 	{
 		int cell = Grid.PosToCell(pos);
-		if (Grid.IsValidBuildingCell(cell))
-		{
-			return IsValidBuildLocation(source_go, cell, orientation, out reason);
-		}
-		reason = "Invalid cell";
-		return false;
+		return IsValidBuildLocation(source_go, cell, orientation, out reason);
 	}
 
 	public bool IsValidBuildLocation(GameObject source_go, int cell, Orientation orientation, out string fail_reason)
 	{
 		if (Grid.IsValidBuildingCell(cell))
 		{
-			bool flag = true;
-			fail_reason = null;
-			switch (BuildLocationRule)
+			if (IsAreaValid(cell, orientation, out fail_reason))
 			{
-			case BuildLocationRule.OnFloor:
-			case BuildLocationRule.OnCeiling:
-			case BuildLocationRule.OnFoundationRotatable:
-				if (!CheckFoundation(cell, orientation, BuildLocationRule, WidthInCells, HeightInCells))
+				bool flag = true;
+				fail_reason = null;
+				switch (BuildLocationRule)
 				{
-					flag = false;
-					fail_reason = UI.TOOLTIPS.HELP_BUILDLOCATION_FLOOR;
-				}
-				break;
-			case BuildLocationRule.OnWall:
-				if (!CheckFoundation(cell, orientation, BuildLocationRule, WidthInCells, HeightInCells))
-				{
-					flag = false;
-					fail_reason = UI.TOOLTIPS.HELP_BUILDLOCATION_WALL;
-				}
-				break;
-			case BuildLocationRule.InCorner:
-				if (!CheckFoundation(cell, orientation, BuildLocationRule, WidthInCells, HeightInCells))
-				{
-					flag = false;
-					fail_reason = UI.TOOLTIPS.HELP_BUILDLOCATION_CORNER;
-				}
-				break;
-			case BuildLocationRule.OnFloorOverSpace:
-				if (!CheckFoundation(cell, orientation, BuildLocationRule, WidthInCells, HeightInCells))
-				{
-					flag = false;
-					fail_reason = UI.TOOLTIPS.HELP_BUILDLOCATION_FLOOR;
-				}
-				else if (!AreAllCellsValid(cell, orientation, WidthInCells, HeightInCells, (int check_cell) => World.Instance.zoneRenderData.GetSubWorldZoneType(check_cell) == SubWorld.ZoneType.Space))
-				{
-					flag = false;
-					fail_reason = UI.TOOLTIPS.HELP_BUILDLOCATION_SPACE;
-				}
-				break;
-			case BuildLocationRule.NotInTiles:
-			{
-				GameObject x = Grid.Objects[cell, 9];
-				flag = (((UnityEngine.Object)x == (UnityEngine.Object)null || (UnityEngine.Object)x == (UnityEngine.Object)source_go) && !Grid.HasDoor[cell]);
-				if (flag)
-				{
-					GameObject gameObject = Grid.Objects[cell, (int)ObjectLayer];
-					if ((UnityEngine.Object)gameObject != (UnityEngine.Object)null)
-					{
-						if (ReplacementLayer == ObjectLayer.NumLayers)
-						{
-							flag = (flag && ((UnityEngine.Object)gameObject == (UnityEngine.Object)null || (UnityEngine.Object)gameObject == (UnityEngine.Object)source_go));
-						}
-						else
-						{
-							Building component = gameObject.GetComponent<Building>();
-							flag = ((UnityEngine.Object)component == (UnityEngine.Object)null || component.Def.ReplacementLayer == ReplacementLayer);
-						}
-					}
-				}
-				fail_reason = UI.TOOLTIPS.HELP_BUILDLOCATION_NOT_IN_TILES;
-				break;
-			}
-			case BuildLocationRule.Tile:
-			{
-				flag = true;
-				GameObject gameObject2 = Grid.Objects[cell, 25];
-				if ((UnityEngine.Object)gameObject2 != (UnityEngine.Object)null)
-				{
-					Building component2 = gameObject2.GetComponent<Building>();
-					if ((UnityEngine.Object)component2 != (UnityEngine.Object)null && component2.Def.BuildLocationRule == BuildLocationRule.NotInTiles)
+				case BuildLocationRule.OnFloor:
+				case BuildLocationRule.OnCeiling:
+				case BuildLocationRule.OnFoundationRotatable:
+					if (!CheckFoundation(cell, orientation, BuildLocationRule, WidthInCells, HeightInCells))
 					{
 						flag = false;
+						fail_reason = UI.TOOLTIPS.HELP_BUILDLOCATION_FLOOR;
 					}
-				}
-				gameObject2 = Grid.Objects[cell, 2];
-				if ((UnityEngine.Object)gameObject2 != (UnityEngine.Object)null)
-				{
-					Building component3 = gameObject2.GetComponent<Building>();
-					if ((UnityEngine.Object)component3 != (UnityEngine.Object)null && component3.Def.BuildLocationRule == BuildLocationRule.NotInTiles)
+					break;
+				case BuildLocationRule.OnWall:
+					if (!CheckFoundation(cell, orientation, BuildLocationRule, WidthInCells, HeightInCells))
 					{
 						flag = false;
+						fail_reason = UI.TOOLTIPS.HELP_BUILDLOCATION_WALL;
 					}
-				}
-				break;
-			}
-			case BuildLocationRule.BuildingAttachPoint:
-				flag = false;
-				for (int k = 0; k < Components.BuildingAttachPoints.Count; k++)
+					break;
+				case BuildLocationRule.InCorner:
+					if (!CheckFoundation(cell, orientation, BuildLocationRule, WidthInCells, HeightInCells))
+					{
+						flag = false;
+						fail_reason = UI.TOOLTIPS.HELP_BUILDLOCATION_CORNER;
+					}
+					break;
+				case BuildLocationRule.OnFloorOverSpace:
+					if (!CheckFoundation(cell, orientation, BuildLocationRule, WidthInCells, HeightInCells))
+					{
+						flag = false;
+						fail_reason = UI.TOOLTIPS.HELP_BUILDLOCATION_FLOOR;
+					}
+					else if (!AreAllCellsValid(cell, orientation, WidthInCells, HeightInCells, (int check_cell) => World.Instance.zoneRenderData.GetSubWorldZoneType(check_cell) == SubWorld.ZoneType.Space))
+					{
+						flag = false;
+						fail_reason = UI.TOOLTIPS.HELP_BUILDLOCATION_SPACE;
+					}
+					break;
+				case BuildLocationRule.NotInTiles:
 				{
+					GameObject x = Grid.Objects[cell, 9];
+					flag = (((UnityEngine.Object)x == (UnityEngine.Object)null || (UnityEngine.Object)x == (UnityEngine.Object)source_go) && !Grid.HasDoor[cell]);
 					if (flag)
 					{
-						break;
-					}
-					for (int l = 0; l < Components.BuildingAttachPoints[k].points.Length; l++)
-					{
-						BuildingAttachPoint buildingAttachPoint2 = Components.BuildingAttachPoints[k];
-						if (buildingAttachPoint2.AcceptsAttachment(AttachmentSlotTag, Grid.OffsetCell(cell, attachablePosition)))
+						GameObject gameObject = Grid.Objects[cell, (int)ObjectLayer];
+						if ((UnityEngine.Object)gameObject != (UnityEngine.Object)null)
 						{
-							flag = true;
-							break;
-						}
-					}
-				}
-				fail_reason = string.Format(UI.TOOLTIPS.HELP_BUILDLOCATION_ATTACHPOINT, AttachmentSlotTag);
-				break;
-			case BuildLocationRule.OnFloorOrBuildingAttachPoint:
-				flag = false;
-				if (!CheckFoundation(cell, orientation, BuildLocationRule.OnFloor, WidthInCells, HeightInCells))
-				{
-					flag = false;
-					fail_reason = UI.TOOLTIPS.HELP_BUILDLOCATION_FLOOR_OR_ATTACHPOINT;
-					if (!flag)
-					{
-						for (int i = 0; i < Components.BuildingAttachPoints.Count; i++)
-						{
-							if (flag)
+							if (ReplacementLayer == ObjectLayer.NumLayers)
 							{
-								break;
+								flag = (flag && ((UnityEngine.Object)gameObject == (UnityEngine.Object)null || (UnityEngine.Object)gameObject == (UnityEngine.Object)source_go));
 							}
-							for (int j = 0; j < Components.BuildingAttachPoints[i].points.Length; j++)
+							else
 							{
-								BuildingAttachPoint buildingAttachPoint = Components.BuildingAttachPoints[i];
-								if (buildingAttachPoint.AcceptsAttachment(AttachmentSlotTag, Grid.OffsetCell(cell, attachablePosition)))
-								{
-									flag = true;
-									break;
-								}
+								Building component = gameObject.GetComponent<Building>();
+								flag = ((UnityEngine.Object)component == (UnityEngine.Object)null || component.Def.ReplacementLayer == ReplacementLayer);
 							}
 						}
-						fail_reason = string.Format(UI.TOOLTIPS.HELP_BUILDLOCATION_FLOOR_OR_ATTACHPOINT, AttachmentSlotTag);
 					}
+					fail_reason = UI.TOOLTIPS.HELP_BUILDLOCATION_NOT_IN_TILES;
+					break;
 				}
-				else
+				case BuildLocationRule.Tile:
 				{
 					flag = true;
+					GameObject gameObject2 = Grid.Objects[cell, 25];
+					if ((UnityEngine.Object)gameObject2 != (UnityEngine.Object)null)
+					{
+						Building component2 = gameObject2.GetComponent<Building>();
+						if ((UnityEngine.Object)component2 != (UnityEngine.Object)null && component2.Def.BuildLocationRule == BuildLocationRule.NotInTiles)
+						{
+							flag = false;
+						}
+					}
+					gameObject2 = Grid.Objects[cell, 2];
+					if ((UnityEngine.Object)gameObject2 != (UnityEngine.Object)null)
+					{
+						Building component3 = gameObject2.GetComponent<Building>();
+						if ((UnityEngine.Object)component3 != (UnityEngine.Object)null && component3.Def.BuildLocationRule == BuildLocationRule.NotInTiles)
+						{
+							flag = false;
+						}
+					}
+					break;
 				}
-				break;
-			case BuildLocationRule.Anywhere:
-			case BuildLocationRule.Conduit:
-				flag = true;
+				case BuildLocationRule.BuildingAttachPoint:
+					flag = false;
+					for (int k = 0; k < Components.BuildingAttachPoints.Count; k++)
+					{
+						if (flag)
+						{
+							break;
+						}
+						for (int l = 0; l < Components.BuildingAttachPoints[k].points.Length; l++)
+						{
+							BuildingAttachPoint buildingAttachPoint2 = Components.BuildingAttachPoints[k];
+							if (buildingAttachPoint2.AcceptsAttachment(AttachmentSlotTag, Grid.OffsetCell(cell, attachablePosition)))
+							{
+								flag = true;
+								break;
+							}
+						}
+					}
+					fail_reason = string.Format(UI.TOOLTIPS.HELP_BUILDLOCATION_ATTACHPOINT, AttachmentSlotTag);
+					break;
+				case BuildLocationRule.OnFloorOrBuildingAttachPoint:
+					flag = false;
+					if (!CheckFoundation(cell, orientation, BuildLocationRule.OnFloor, WidthInCells, HeightInCells))
+					{
+						flag = false;
+						fail_reason = UI.TOOLTIPS.HELP_BUILDLOCATION_FLOOR_OR_ATTACHPOINT;
+						if (!flag)
+						{
+							for (int i = 0; i < Components.BuildingAttachPoints.Count; i++)
+							{
+								if (flag)
+								{
+									break;
+								}
+								for (int j = 0; j < Components.BuildingAttachPoints[i].points.Length; j++)
+								{
+									BuildingAttachPoint buildingAttachPoint = Components.BuildingAttachPoints[i];
+									if (buildingAttachPoint.AcceptsAttachment(AttachmentSlotTag, Grid.OffsetCell(cell, attachablePosition)))
+									{
+										flag = true;
+										break;
+									}
+								}
+							}
+							fail_reason = string.Format(UI.TOOLTIPS.HELP_BUILDLOCATION_FLOOR_OR_ATTACHPOINT, AttachmentSlotTag);
+						}
+					}
+					else
+					{
+						flag = true;
+					}
+					break;
+				case BuildLocationRule.Anywhere:
+				case BuildLocationRule.Conduit:
+					flag = true;
+					break;
+				}
+				return flag && ArePowerPortsInValidPositions(source_go, cell, orientation, out fail_reason) && AreConduitPortsInValidPositions(source_go, cell, orientation, out fail_reason);
+			}
+			return false;
+		}
+		fail_reason = UI.TOOLTIPS.HELP_BUILDLOCATION_INVALID_CELL;
+		return false;
+	}
+
+	private bool IsAreaValid(int cell, Orientation orientation, out string fail_reason)
+	{
+		bool result = true;
+		fail_reason = null;
+		for (int i = 0; i < PlacementOffsets.Length; i++)
+		{
+			CellOffset offset = PlacementOffsets[i];
+			CellOffset rotatedCellOffset = Rotatable.GetRotatedCellOffset(offset, orientation);
+			if (!Grid.IsCellOffsetValid(cell, rotatedCellOffset))
+			{
+				fail_reason = UI.TOOLTIPS.HELP_BUILDLOCATION_INVALID_CELL;
+				result = false;
 				break;
 			}
-			return flag && ArePowerPortsInValidPositions(source_go, cell, orientation, out fail_reason) && AreConduitPortsInValidPositions(source_go, cell, orientation, out fail_reason);
+			int num = Grid.OffsetCell(cell, rotatedCellOffset);
+			if (!Grid.IsValidBuildingCell(num))
+			{
+				fail_reason = UI.TOOLTIPS.HELP_BUILDLOCATION_INVALID_CELL;
+				result = false;
+				break;
+			}
+			if (Grid.Element[num].id == SimHashes.Unobtanium)
+			{
+				fail_reason = null;
+				result = false;
+				break;
+			}
 		}
-		fail_reason = "Invalid cell";
-		return false;
+		return result;
 	}
 
 	private bool ArePowerPortsInValidPositions(GameObject source_go, int cell, Orientation orientation, out string fail_reason)
@@ -1207,7 +1237,7 @@ public class BuildingDef : Def
 		case BuildLocationRule.OnWall:
 			return CheckWallFoundation(cell, width, height, true) || CheckWallFoundation(cell, width, height, false);
 		case BuildLocationRule.InCorner:
-			return CheckBaseFoundation(cell, orientation, BuildLocationRule.OnCeiling, width, height) && (CheckWallFoundation(cell, width, height, true) || CheckWallFoundation(cell, width, height, false));
+			return CheckBaseFoundation(cell, orientation, BuildLocationRule.OnCeiling, width, height) && CheckWallFoundation(cell, width, height, orientation != Orientation.FlipH);
 		default:
 			return CheckBaseFoundation(cell, orientation, location_rule, width, height);
 		}

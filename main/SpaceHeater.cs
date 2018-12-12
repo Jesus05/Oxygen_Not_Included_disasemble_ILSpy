@@ -47,7 +47,7 @@ public class SpaceHeater : StateMachineComponent<SpaceHeater.StatesInstance>
 			statusItemOverTemp.resolveStringCallback = delegate(string str, object obj)
 			{
 				StatesInstance statesInstance = (StatesInstance)obj;
-				return string.Format(str, GameUtil.GetFormattedTemperature(statesInstance.master.TargetTemperature, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true));
+				return string.Format(str, GameUtil.GetFormattedTemperature(statesInstance.master.TargetTemperature, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false));
 			};
 			offline.EventTransition(GameHashes.OperationalChanged, online, (StatesInstance smi) => smi.master.operational.IsOperational);
 			online.EventTransition(GameHashes.OperationalChanged, offline, (StatesInstance smi) => !smi.master.operational.IsOperational).DefaultState(online.heating).Update("spaceheater_online", delegate(StatesInstance smi, float dt)

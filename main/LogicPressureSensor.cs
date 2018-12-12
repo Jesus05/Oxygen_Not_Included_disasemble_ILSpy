@@ -88,6 +88,8 @@ public class LogicPressureSensor : Switch, ISaveLoadable, IThresholdSwitch, ISim
 
 	public int IncrementScale => 1;
 
+	public NonLinearSlider.Range[] GetRanges => NonLinearSlider.GetDefaultRange(RangeMax);
+
 	protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();

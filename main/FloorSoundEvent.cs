@@ -113,7 +113,7 @@ public class FloorSoundEvent : SoundEvent
 			if ((Object)buildingDef != (Object)null)
 			{
 				string prefabID = buildingDef.PrefabID;
-				result = ((prefabID == "PlasticTile") ? "TilePlastic" : ((prefabID == "GlassTile") ? "TileGlass" : ((prefabID == "BunkerTile") ? "TileBunker" : ((!(prefabID == "MetalTile")) ? "Tile" : "TileMetal"))));
+				result = ((prefabID == "PlasticTile") ? "TilePlastic" : ((prefabID == "GlassTile") ? "TileGlass" : ((prefabID == "BunkerTile") ? "TileBunker" : ((prefabID == "MetalTile") ? "TileMetal" : ((!(prefabID == "CarpetTile")) ? "Tile" : "Carpet")))));
 			}
 			return result;
 		}

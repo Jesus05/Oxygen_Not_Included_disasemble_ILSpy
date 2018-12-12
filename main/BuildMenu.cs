@@ -235,7 +235,8 @@ public class BuildMenu : KScreen
 				new BuildingInfo("Sculpture", Action.BuildMenuKeyS),
 				new BuildingInfo("IceSculpture", Action.BuildMenuKeyE),
 				new BuildingInfo("ItemPedestal", Action.BuildMenuKeyD),
-				new BuildingInfo("CrownMoulding", Action.BuildMenuKeyD)
+				new BuildingInfo("CrownMoulding", Action.BuildMenuKeyM),
+				new BuildingInfo("CornerMoulding", Action.BuildMenuKeyN)
 			}),
 			new DisplayInfo(CacheHashString("Recreation"), "icon_category_medical", Action.BuildCategoryRecreation, KKeyCode.R, new List<BuildingInfo>
 			{

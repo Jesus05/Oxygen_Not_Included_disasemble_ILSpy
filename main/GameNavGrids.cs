@@ -1541,7 +1541,7 @@ public class GameNavGrids
 			new NavGrid.NavTypeData
 			{
 				navType = NavType.Solid,
-				idleAnim = (HashedString)"idle_loop"
+				idleAnim = (HashedString)"idle1"
 			}
 		};
 		DiggerGrid = new NavGrid("DiggerNavGrid", array, nav_type_data, bounding_offsets, new NavTableValidator[4]

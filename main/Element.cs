@@ -177,17 +177,17 @@ public class Element : IComparable<Element>
 		if (IsSolid)
 		{
 			str += "\n\n";
-			str += string.Format(ELEMENTS.ELEMENTDESCSOLID, GetMaterialCategoryTag().ProperName(), GameUtil.GetFormattedTemperature(highTemp, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true), GameUtil.GetHardnessString(this, addHardnessColor));
+			str += string.Format(ELEMENTS.ELEMENTDESCSOLID, GetMaterialCategoryTag().ProperName(), GameUtil.GetFormattedTemperature(highTemp, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false), GameUtil.GetHardnessString(this, addHardnessColor));
 		}
 		else if (IsLiquid)
 		{
 			str += "\n\n";
-			str += string.Format(ELEMENTS.ELEMENTDESCLIQUID, GetMaterialCategoryTag().ProperName(), GameUtil.GetFormattedTemperature(lowTemp, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true), GameUtil.GetFormattedTemperature(highTemp, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true));
+			str += string.Format(ELEMENTS.ELEMENTDESCLIQUID, GetMaterialCategoryTag().ProperName(), GameUtil.GetFormattedTemperature(lowTemp, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false), GameUtil.GetFormattedTemperature(highTemp, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false));
 		}
 		else if (!IsVacuum)
 		{
 			str += "\n\n";
-			str += string.Format(ELEMENTS.ELEMENTDESCGAS, GetMaterialCategoryTag().ProperName(), GameUtil.GetFormattedTemperature(lowTemp, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true));
+			str += string.Format(ELEMENTS.ELEMENTDESCGAS, GetMaterialCategoryTag().ProperName(), GameUtil.GetFormattedTemperature(lowTemp, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false));
 		}
 		string text = ELEMENTS.THERMALPROPERTIES;
 		text = text.Replace("{SPECIFIC_HEAT_CAPACITY}", GameUtil.GetFormattedSHC(specificHeatCapacity));

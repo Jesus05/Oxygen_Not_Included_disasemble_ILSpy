@@ -62,6 +62,11 @@ public class ComplexRecipe
 		return num;
 	}
 
+	public bool RequiresTechUnlock()
+	{
+		return !string.IsNullOrEmpty(requiredTech);
+	}
+
 	public bool IsRequiredTechUnlocked()
 	{
 		if (!string.IsNullOrEmpty(requiredTech))

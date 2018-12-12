@@ -36,20 +36,22 @@ public class ConduitTemperatureSensor : ConduitThresholdSensor, IThresholdSwitch
 
 	public int IncrementScale => 1;
 
+	public NonLinearSlider.Range[] GetRanges => NonLinearSlider.GetDefaultRange(RangeMax);
+
 	public float GetRangeMinInputField()
 	{
-		return GameUtil.GetConvertedTemperature(RangeMin);
+		return GameUtil.GetConvertedTemperature(RangeMin, false);
 	}
 
 	public float GetRangeMaxInputField()
 	{
-		return GameUtil.GetConvertedTemperature(RangeMax);
+		return GameUtil.GetConvertedTemperature(RangeMax, false);
 	}
 
 	public string Format(float value, bool units)
 	{
 		bool displayUnits = units;
-		return GameUtil.GetFormattedTemperature(value, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, displayUnits);
+		return GameUtil.GetFormattedTemperature(value, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, displayUnits, false);
 	}
 
 	public float ProcessedSliderValue(float input)

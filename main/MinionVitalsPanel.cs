@@ -405,7 +405,7 @@ public class MinionVitalsPanel : KMonoBehaviour
 		TemperatureVulnerable component = go.GetComponent<TemperatureVulnerable>();
 		if (!((UnityEngine.Object)component == (UnityEngine.Object)null))
 		{
-			return UI.TOOLTIPS.VITALS_CHECKBOX_TEMPERATURE.text.Replace("{temperature}", GameUtil.GetFormattedTemperature(component.InternalTemperature, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true));
+			return UI.TOOLTIPS.VITALS_CHECKBOX_TEMPERATURE.text.Replace("{temperature}", GameUtil.GetFormattedTemperature(component.InternalTemperature, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false));
 		}
 		return "";
 	}
@@ -477,7 +477,7 @@ public class MinionVitalsPanel : KMonoBehaviour
 	private string GetInternalTemperatureLabel(GameObject go)
 	{
 		TemperatureVulnerable component = go.GetComponent<TemperatureVulnerable>();
-		return Db.Get().Amounts.Temperature.Name + "\n    • " + GameUtil.GetFormattedTemperature(component.internalTemperatureWarning_Low, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, false) + " - " + GameUtil.GetFormattedTemperature(component.internalTemperatureWarning_High, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true);
+		return Db.Get().Amounts.Temperature.Name + "\n    • " + GameUtil.GetFormattedTemperature(component.internalTemperatureWarning_Low, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, false, false) + " - " + GameUtil.GetFormattedTemperature(component.internalTemperatureWarning_High, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false);
 	}
 
 	private string GetFertilizationLabel(GameObject go)

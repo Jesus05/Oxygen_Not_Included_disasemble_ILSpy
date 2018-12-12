@@ -253,9 +253,10 @@ namespace Database
 			},
 			{
 				"Artistry",
-				new string[6]
+				new string[7]
 				{
 					"CrownMoulding",
+					"CornerMoulding",
 					"SmallSculpture",
 					"IceSculpture",
 					"ItemPedestal",

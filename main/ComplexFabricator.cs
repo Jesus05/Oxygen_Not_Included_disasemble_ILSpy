@@ -147,6 +147,8 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms
 
 	private float orderProgress = 0f;
 
+	private bool willBeSadIfMachineOrdersChanges = false;
+
 	private ComplexRecipe[] possible_recipes_cache;
 
 	private SchedulerHandle ingredientSearchHandle;
@@ -574,6 +576,7 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms
 		{
 			for (int num2 = machineOrders.Count - 1; num2 >= num; num2--)
 			{
+				DebugUtil.DevAssert(!willBeSadIfMachineOrdersChanges, "machineOrders changed when it wasn't expected. sad.");
 				if (num2 == 0 && machineOrders[0].chore != null)
 				{
 					buildStorage.Transfer(inStorage, true, true);
@@ -589,6 +592,7 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms
 	{
 		for (int i = machineOrders.Count; i < nextMachineOrderSources.Count; i++)
 		{
+			DebugUtil.DevAssert(!willBeSadIfMachineOrdersChanges, "machineOrders changed when it wasn't expected. sad.");
 			MachineOrder machineOrder = new MachineOrder();
 			machineOrder.parentOrder = nextMachineOrderSources[i];
 			machineOrders.Add(machineOrder);
@@ -784,6 +788,7 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms
 
 	private void CancelMachineOrder(MachineOrder order)
 	{
+		DebugUtil.DevAssert(!willBeSadIfMachineOrdersChanges, "machineOrders changed when it wasn't expected. sad.");
 		OnMachineOrderCancelledOrComplete(order);
 		order.Cancel();
 		machineOrders.Remove(order);
@@ -822,6 +827,7 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms
 	private void CancelAllMachineOrders()
 	{
 		buildStorage.Transfer(inStorage, true, true);
+		DebugUtil.DevAssert(machineOrders.Count == 0 || !willBeSadIfMachineOrdersChanges, "machineOrders changed when it wasn't expected. sad.");
 		while (machineOrders.Count > 0)
 		{
 			MachineOrder machineOrder = machineOrders[0];
@@ -1087,11 +1093,13 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms
 			}
 			else
 			{
+				willBeSadIfMachineOrdersChanges = true;
 				SpawnOrderProduct(machineOrders[0].parentOrder);
 				buildStorage.Transfer(outStorage, true, true);
 				OnMachineOrderCancelledOrComplete(machineOrders[0]);
 				int userOrderIndex = GetUserOrderIndex(machineOrders[0].parentOrder);
 				machineOrders.RemoveAt(0);
+				willBeSadIfMachineOrdersChanges = false;
 				DecrementRecipeQueueCount(userOrders[userOrderIndex].recipe, true);
 				SetCurrentUserOrderByMachineOrder((machineOrders.Count <= 0) ? null : machineOrders[0]);
 				UpdateMachineOrders(false);

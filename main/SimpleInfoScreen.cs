@@ -631,10 +631,14 @@ public class SimpleInfoScreen : TargetScreen
 								gameObject.GetComponentInChildren<ToolTip>().ClearMultiStringTooltip();
 								string unitFormattedName = GameUtil.GetUnitFormattedName(item, false);
 								unitFormattedName = string.Format(UI.DETAILTABS.DETAILS.CONTENTS_MASS, unitFormattedName, GameUtil.GetFormattedMass(component2.Mass, GameUtil.TimeSlice.None, GameUtil.MetricMassFormat.UseThreshold, true, "{0:0.#}"));
-								unitFormattedName = string.Format(UI.DETAILTABS.DETAILS.CONTENTS_TEMPERATURE, unitFormattedName, GameUtil.GetFormattedTemperature(component2.Temperature, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true));
+								unitFormattedName = string.Format(UI.DETAILTABS.DETAILS.CONTENTS_TEMPERATURE, unitFormattedName, GameUtil.GetFormattedTemperature(component2.Temperature, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false));
 								if (sMI != null)
 								{
-									unitFormattedName += string.Format(UI.DETAILTABS.DETAILS.CONTENTS_ROTTABLE, sMI.StateString());
+									string text2 = sMI.StateString();
+									if (!string.IsNullOrEmpty(text2))
+									{
+										unitFormattedName += string.Format(UI.DETAILTABS.DETAILS.CONTENTS_ROTTABLE, text2);
+									}
 									gameObject.GetComponentInChildren<ToolTip>().AddMultiStringTooltip(sMI.GetToolTip(), PluginAssets.Instance.defaultTextStyleSetting);
 								}
 								if (component2.DiseaseIdx != 255)

@@ -32,6 +32,10 @@ public class ActiveRangeSideScreen : SideScreenContent
 	protected override void OnSpawn()
 	{
 		base.OnSpawn();
+		activateValueLabel.maxValue = target.MaxValue;
+		activateValueLabel.minValue = target.MinValue;
+		deactivateValueLabel.maxValue = target.MaxValue;
+		deactivateValueLabel.minValue = target.MinValue;
 		activateValueSlider.onValueChanged.AddListener(OnActivateValueChanged);
 		deactivateValueSlider.onValueChanged.AddListener(OnDeactivateValueChanged);
 	}

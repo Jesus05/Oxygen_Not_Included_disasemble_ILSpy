@@ -216,125 +216,138 @@ public class ComplexFabricatorSideScreen : SideScreenContent
 			ComplexRecipe[] array = recipes;
 			foreach (ComplexRecipe recipe in array)
 			{
-				if (recipe.IsRequiredTechUnlocked() || DebugHandler.InstantBuildMode)
+				bool flag = false;
+				if (DebugHandler.InstantBuildMode)
 				{
-					bool flag = true;
+					flag = true;
+				}
+				else if (recipe.RequiresTechUnlock() && recipe.IsRequiredTechUnlocked())
+				{
+					flag = true;
+				}
+				else
+				{
+					bool flag2 = true;
 					ComplexRecipe.RecipeElement[] ingredients = recipe.ingredients;
 					foreach (ComplexRecipe.RecipeElement recipeElement in ingredients)
 					{
 						if (!WorldInventory.Instance.IsDiscovered(recipeElement.material) && !DebugHandler.InstantBuildMode)
 						{
-							flag = false;
+							flag2 = false;
 							break;
 						}
 					}
-					if (flag)
+					if (flag2)
 					{
-						num++;
-						Tuple<Sprite, Color> uISprite = Def.GetUISprite(recipe.ingredients[0].material, "ui", false);
-						Tuple<Sprite, Color> uISprite2 = Def.GetUISprite(recipe.results[0].material, "ui", false);
-						KToggle newToggle = null;
-						GameObject entryGO;
-						switch (target.sideScreenStyle)
-						{
-						case StyleSetting.ListInputOutput:
-						case StyleSetting.GridInputOutput:
-						{
-							newToggle = Util.KInstantiateUI<KToggle>(recipeButtonMultiple, recipeGrid, false);
-							entryGO = newToggle.gameObject;
-							HierarchyReferences component2 = newToggle.GetComponent<HierarchyReferences>();
-							ComplexRecipe.RecipeElement[] ingredients2 = recipe.ingredients;
-							foreach (ComplexRecipe.RecipeElement recipeElement2 in ingredients2)
-							{
-								GameObject gameObject = Util.KInstantiateUI(component2.GetReference("FromIconPrefab").gameObject, component2.GetReference("FromIcons").gameObject, true);
-								gameObject.GetComponent<Image>().sprite = Def.GetUISprite(recipeElement2.material, "ui", false).first;
-								gameObject.GetComponent<Image>().color = Def.GetUISprite(recipeElement2.material, "ui", false).second;
-								gameObject.gameObject.name = recipeElement2.material.Name;
-							}
-							ComplexRecipe.RecipeElement[] results = recipe.results;
-							foreach (ComplexRecipe.RecipeElement recipeElement3 in results)
-							{
-								GameObject gameObject2 = Util.KInstantiateUI(component2.GetReference("ToIconPrefab").gameObject, component2.GetReference("ToIcons").gameObject, true);
-								gameObject2.GetComponent<Image>().sprite = Def.GetUISprite(recipeElement3.material, "ui", false).first;
-								gameObject2.GetComponent<Image>().color = Def.GetUISprite(recipeElement3.material, "ui", false).second;
-								gameObject2.gameObject.name = recipeElement3.material.Name;
-							}
-							break;
-						}
-						case StyleSetting.ListQueueHybrid:
-						{
-							newToggle = Util.KInstantiateUI<KToggle>(recipeButtonQueueHybrid, recipeGrid, false);
-							entryGO = newToggle.gameObject;
-							recipeMap.Add(entryGO, recipe);
-							Image image = entryGO.GetComponentsInChildrenOnly<Image>()[2];
-							if (!recipe.useResultAsDescription)
-							{
-								image.sprite = uISprite.first;
-								image.color = uISprite.second;
-							}
-							else
-							{
-								image.sprite = uISprite2.first;
-								image.color = uISprite2.second;
-							}
-							entryGO.GetComponentInChildren<LocText>().text = recipe.GetUIName();
-							bool flag2 = CheckRecipeRequirements(recipe);
-							image.material = ((!flag2) ? Assets.UIPrefabs.TableScreenWidgets.DesaturatedUIMaterial : Assets.UIPrefabs.TableScreenWidgets.DefaultUIMaterial);
-							RefreshQueueCountDisplay(entryGO, targetFab);
-							entryGO.GetComponent<HierarchyReferences>().GetReference<MultiToggle>("DecrementButton").onClick = delegate
-							{
-								target.DecrementRecipeQueueCount(recipe, false);
-								RefreshQueueCountDisplay(entryGO, target);
-							};
-							entryGO.GetComponent<HierarchyReferences>().GetReference<MultiToggle>("IncrementButton").onClick = delegate
-							{
-								target.IncrementRecipeQueueCount(recipe);
-								RefreshQueueCountDisplay(entryGO, target);
-							};
-							entryGO.gameObject.SetActive(true);
-							break;
-						}
-						default:
-						{
-							newToggle = Util.KInstantiateUI<KToggle>(recipeButton, recipeGrid, false);
-							entryGO = newToggle.gameObject;
-							Image componentInChildrenOnly = newToggle.gameObject.GetComponentInChildrenOnly<Image>();
-							if (target.sideScreenStyle == StyleSetting.GridInput || target.sideScreenStyle == StyleSetting.ListInput)
-							{
-								componentInChildrenOnly.sprite = uISprite.first;
-								componentInChildrenOnly.color = uISprite.second;
-							}
-							else
-							{
-								componentInChildrenOnly.sprite = uISprite2.first;
-								componentInChildrenOnly.color = uISprite2.second;
-							}
-							break;
-						}
-						}
-						if (targetFab.sideScreenStyle == StyleSetting.ClassicFabricator)
-						{
-							newToggle.GetComponentInChildren<LocText>().text = recipe.results[0].material.ProperName();
-						}
-						else if (targetFab.sideScreenStyle != StyleSetting.ListQueueHybrid)
-						{
-							newToggle.GetComponentInChildren<LocText>().text = string.Format(UI.UISIDESCREENS.REFINERYSIDESCREEN.RECIPE_FROM_TO_WITH_NEWLINES, recipe.ingredients[0].material.ProperName(), recipe.results[0].material.ProperName());
-						}
-						ToolTip component3 = entryGO.GetComponent<ToolTip>();
-						component3.toolTipPosition = ToolTip.TooltipPosition.Custom;
-						component3.parentPositionAnchor = new Vector2(0f, 0.5f);
-						component3.tooltipPivot = new Vector2(1f, 1f);
-						component3.tooltipPositionOffset = new Vector2(-24f, 20f);
-						component3.ClearMultiStringTooltip();
-						component3.AddMultiStringTooltip(recipe.GetUIName(), styleTooltipHeader);
-						component3.AddMultiStringTooltip(recipe.description, styleTooltipBody);
-						newToggle.onClick += delegate
-						{
-							ToggleClicked(newToggle);
-						};
-						entryGO.SetActive(true);
-						recipeToggles.Add(entryGO);
+						flag = true;
 					}
+				}
+				if (flag)
+				{
+					num++;
+					Tuple<Sprite, Color> uISprite = Def.GetUISprite(recipe.ingredients[0].material, "ui", false);
+					Tuple<Sprite, Color> uISprite2 = Def.GetUISprite(recipe.results[0].material, "ui", false);
+					KToggle newToggle = null;
+					GameObject entryGO;
+					switch (target.sideScreenStyle)
+					{
+					case StyleSetting.ListInputOutput:
+					case StyleSetting.GridInputOutput:
+					{
+						newToggle = Util.KInstantiateUI<KToggle>(recipeButtonMultiple, recipeGrid, false);
+						entryGO = newToggle.gameObject;
+						HierarchyReferences component2 = newToggle.GetComponent<HierarchyReferences>();
+						ComplexRecipe.RecipeElement[] ingredients2 = recipe.ingredients;
+						foreach (ComplexRecipe.RecipeElement recipeElement2 in ingredients2)
+						{
+							GameObject gameObject = Util.KInstantiateUI(component2.GetReference("FromIconPrefab").gameObject, component2.GetReference("FromIcons").gameObject, true);
+							gameObject.GetComponent<Image>().sprite = Def.GetUISprite(recipeElement2.material, "ui", false).first;
+							gameObject.GetComponent<Image>().color = Def.GetUISprite(recipeElement2.material, "ui", false).second;
+							gameObject.gameObject.name = recipeElement2.material.Name;
+						}
+						ComplexRecipe.RecipeElement[] results = recipe.results;
+						foreach (ComplexRecipe.RecipeElement recipeElement3 in results)
+						{
+							GameObject gameObject2 = Util.KInstantiateUI(component2.GetReference("ToIconPrefab").gameObject, component2.GetReference("ToIcons").gameObject, true);
+							gameObject2.GetComponent<Image>().sprite = Def.GetUISprite(recipeElement3.material, "ui", false).first;
+							gameObject2.GetComponent<Image>().color = Def.GetUISprite(recipeElement3.material, "ui", false).second;
+							gameObject2.gameObject.name = recipeElement3.material.Name;
+						}
+						break;
+					}
+					case StyleSetting.ListQueueHybrid:
+					{
+						newToggle = Util.KInstantiateUI<KToggle>(recipeButtonQueueHybrid, recipeGrid, false);
+						entryGO = newToggle.gameObject;
+						recipeMap.Add(entryGO, recipe);
+						Image image = entryGO.GetComponentsInChildrenOnly<Image>()[2];
+						if (!recipe.useResultAsDescription)
+						{
+							image.sprite = uISprite.first;
+							image.color = uISprite.second;
+						}
+						else
+						{
+							image.sprite = uISprite2.first;
+							image.color = uISprite2.second;
+						}
+						entryGO.GetComponentInChildren<LocText>().text = recipe.GetUIName();
+						bool flag3 = CheckRecipeRequirements(recipe);
+						image.material = ((!flag3) ? Assets.UIPrefabs.TableScreenWidgets.DesaturatedUIMaterial : Assets.UIPrefabs.TableScreenWidgets.DefaultUIMaterial);
+						RefreshQueueCountDisplay(entryGO, targetFab);
+						entryGO.GetComponent<HierarchyReferences>().GetReference<MultiToggle>("DecrementButton").onClick = delegate
+						{
+							target.DecrementRecipeQueueCount(recipe, false);
+							RefreshQueueCountDisplay(entryGO, target);
+						};
+						entryGO.GetComponent<HierarchyReferences>().GetReference<MultiToggle>("IncrementButton").onClick = delegate
+						{
+							target.IncrementRecipeQueueCount(recipe);
+							RefreshQueueCountDisplay(entryGO, target);
+						};
+						entryGO.gameObject.SetActive(true);
+						break;
+					}
+					default:
+					{
+						newToggle = Util.KInstantiateUI<KToggle>(recipeButton, recipeGrid, false);
+						entryGO = newToggle.gameObject;
+						Image componentInChildrenOnly = newToggle.gameObject.GetComponentInChildrenOnly<Image>();
+						if (target.sideScreenStyle == StyleSetting.GridInput || target.sideScreenStyle == StyleSetting.ListInput)
+						{
+							componentInChildrenOnly.sprite = uISprite.first;
+							componentInChildrenOnly.color = uISprite.second;
+						}
+						else
+						{
+							componentInChildrenOnly.sprite = uISprite2.first;
+							componentInChildrenOnly.color = uISprite2.second;
+						}
+						break;
+					}
+					}
+					if (targetFab.sideScreenStyle == StyleSetting.ClassicFabricator)
+					{
+						newToggle.GetComponentInChildren<LocText>().text = recipe.results[0].material.ProperName();
+					}
+					else if (targetFab.sideScreenStyle != StyleSetting.ListQueueHybrid)
+					{
+						newToggle.GetComponentInChildren<LocText>().text = string.Format(UI.UISIDESCREENS.REFINERYSIDESCREEN.RECIPE_FROM_TO_WITH_NEWLINES, recipe.ingredients[0].material.ProperName(), recipe.results[0].material.ProperName());
+					}
+					ToolTip component3 = entryGO.GetComponent<ToolTip>();
+					component3.toolTipPosition = ToolTip.TooltipPosition.Custom;
+					component3.parentPositionAnchor = new Vector2(0f, 0.5f);
+					component3.tooltipPivot = new Vector2(1f, 1f);
+					component3.tooltipPositionOffset = new Vector2(-24f, 20f);
+					component3.ClearMultiStringTooltip();
+					component3.AddMultiStringTooltip(recipe.GetUIName(), styleTooltipHeader);
+					component3.AddMultiStringTooltip(recipe.description, styleTooltipBody);
+					newToggle.onClick += delegate
+					{
+						ToggleClicked(newToggle);
+					};
+					entryGO.SetActive(true);
+					recipeToggles.Add(entryGO);
 				}
 			}
 			LayoutElement component4 = buttonScrollContainer.GetComponent<LayoutElement>();
@@ -343,7 +356,7 @@ public class ComplexFabricatorSideScreen : SideScreenContent
 			component4.minHeight = Mathf.Min(451f, 2f + num2 * sizeDelta.y);
 			if (recipeToggles.Count > 0)
 			{
-				bool flag3 = false;
+				bool flag4 = false;
 			}
 			RefreshIngredientAvailabilityVis();
 		}

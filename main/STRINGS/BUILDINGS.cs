@@ -1280,7 +1280,9 @@ namespace STRINGS
 
 				public static LocString POORQUALITYNAME = "\"Abstract\" Sculpture";
 
-				public static LocString AVERAGEQUALITYNAME = "Genius Sculpture";
+				public static LocString AVERAGEQUALITYNAME = "Average Sculpture";
+
+				public static LocString EXCELLENTQUALITYNAME = "Genius Sculpture";
 			}
 
 			public class ICESCULPTURE
@@ -1293,7 +1295,9 @@ namespace STRINGS
 
 				public static LocString POORQUALITYNAME = "\"Abstract\" Ice Sculpture";
 
-				public static LocString AVERAGEQUALITYNAME = "Genius Ice Sculpture";
+				public static LocString AVERAGEQUALITYNAME = "Average Ice Sculpture";
+
+				public static LocString EXCELLENTQUALITYNAME = "Genius Ice Sculpture";
 			}
 
 			public class MARBLESCULPTURE
@@ -1306,7 +1310,9 @@ namespace STRINGS
 
 				public static LocString POORQUALITYNAME = "\"Abstract\" Marble Sculpture";
 
-				public static LocString AVERAGEQUALITYNAME = "Genius Marble Sculpture";
+				public static LocString AVERAGEQUALITYNAME = "Average Marble Sculpture";
+
+				public static LocString EXCELLENTQUALITYNAME = "Genius Marble Sculpture";
 			}
 
 			public class METALSCULPTURE
@@ -1319,7 +1325,9 @@ namespace STRINGS
 
 				public static LocString POORQUALITYNAME = "\"Abstract\" Metal Sculpture";
 
-				public static LocString AVERAGEQUALITYNAME = "Genius Metal Sculpture";
+				public static LocString AVERAGEQUALITYNAME = "Averabe Metal Sculpture";
+
+				public static LocString EXCELLENTQUALITYNAME = "Genius Metal Sculpture";
 			}
 
 			public class SMALLSCULPTURE
@@ -1331,6 +1339,8 @@ namespace STRINGS
 				public static LocString EFFECT = "Minorly increases " + UI.FormatAsLink("Decor", "DECOR") + ", contributing to " + UI.FormatAsLink("Morale", "MORALE") + ".\n\nMust be sculpted by a Duplicant.";
 
 				public static LocString POORQUALITYNAME = "\"Abstract\" Sculpture";
+
+				public static LocString AVERAGEQUALITYNAME = "Average Sculpture";
 
 				public static LocString EXCELLENTQUALITYNAME = "Genius Sculpture";
 			}
@@ -2214,6 +2224,15 @@ namespace STRINGS
 				public static LocString DESC = "Crown moulding is used as purely decorative trim for ceilings.";
 
 				public static LocString EFFECT = "Used to decorate the ceilings of rooms.\n\nIncreases " + UI.FormatAsLink("Decor", "DECOR") + ", contributing to " + UI.FormatAsLink("Morale", "MORALE") + ".";
+			}
+
+			public class CORNERMOULDING
+			{
+				public static LocString NAME = UI.FormatAsLink("Corner Moulding", "CORNERMOULDING");
+
+				public static LocString DESC = "Corner moulding is used as purely decorative trim for ceiling corners.";
+
+				public static LocString EFFECT = "Used to decorate the ceiling corners of rooms.\n\nIncreases " + UI.FormatAsLink("Decor", "DECOR") + ", contributing to " + UI.FormatAsLink("Morale", "MORALE") + ".";
 			}
 
 			public class EGGINCUBATOR

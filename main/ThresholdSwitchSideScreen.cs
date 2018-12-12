@@ -21,7 +21,7 @@ public class ThresholdSwitchSideScreen : SideScreenContent, IRender200ms
 
 	[Header("Slider")]
 	[SerializeField]
-	private KSlider thresholdSlider;
+	private NonLinearSlider thresholdSlider;
 
 	[Header("Number Input")]
 	[SerializeField]
@@ -60,15 +60,15 @@ public class ThresholdSwitchSideScreen : SideScreenContent, IRender200ms
 		component2.SetText(UI.UISIDESCREENS.THRESHOLD_SWITCH_SIDESCREEN.BELOW_BUTTON);
 		thresholdSlider.onDrag += delegate
 		{
-			ReceiveValueFromSlider(thresholdSlider.value);
+			ReceiveValueFromSlider(thresholdSlider.GetValueForPercentage(GameUtil.GetRoundedTemperatureInKelvin(thresholdSlider.value)));
 		};
 		thresholdSlider.onPointerDown += delegate
 		{
-			ReceiveValueFromSlider(thresholdSlider.value);
+			ReceiveValueFromSlider(thresholdSlider.GetValueForPercentage(GameUtil.GetRoundedTemperatureInKelvin(thresholdSlider.value)));
 		};
 		thresholdSlider.onMove += delegate
 		{
-			ReceiveValueFromSlider(thresholdSlider.value);
+			ReceiveValueFromSlider(thresholdSlider.GetValueForPercentage(GameUtil.GetRoundedTemperatureInKelvin(thresholdSlider.value)));
 		};
 		numberInput.onEndEdit += delegate
 		{
@@ -116,9 +116,10 @@ public class ThresholdSwitchSideScreen : SideScreenContent, IRender200ms
 				if (target.GetComponent<IThresholdSwitch>().LayoutType == ThresholdScreenLayoutType.SliderBar)
 				{
 					thresholdSlider.gameObject.SetActive(true);
-					thresholdSlider.minValue = thresholdSwitch.RangeMin;
-					thresholdSlider.maxValue = thresholdSwitch.RangeMax;
-					thresholdSlider.value = thresholdSwitch.Threshold;
+					thresholdSlider.minValue = 0f;
+					thresholdSlider.maxValue = 100f;
+					thresholdSlider.SetRanges(thresholdSwitch.GetRanges);
+					thresholdSlider.value = thresholdSlider.GetPercentageFromValue(thresholdSwitch.Threshold);
 					thresholdSlider.GetComponentInChildren<ToolTip>();
 				}
 				else
@@ -131,9 +132,6 @@ public class ThresholdSwitchSideScreen : SideScreenContent, IRender200ms
 					UpdateThresholdValue(thresholdSwitch.Threshold + (float)thresholdSwitch.IncrementScale);
 					incrementMinorToggle.ChangeState(1);
 				};
-				incrementMinorToggle.onHold = delegate
-				{
-				};
 				incrementMinorToggle.onStopHold = delegate
 				{
 					incrementMinorToggle.ChangeState(0);
@@ -143,9 +141,6 @@ public class ThresholdSwitchSideScreen : SideScreenContent, IRender200ms
 				{
 					UpdateThresholdValue(thresholdSwitch.Threshold + 10f * (float)thresholdSwitch.IncrementScale);
 					incrementMajorToggle.ChangeState(1);
-				};
-				incrementMajorToggle.onHold = delegate
-				{
 				};
 				incrementMajorToggle.onStopHold = delegate
 				{
@@ -157,9 +152,6 @@ public class ThresholdSwitchSideScreen : SideScreenContent, IRender200ms
 					UpdateThresholdValue(thresholdSwitch.Threshold - (float)thresholdSwitch.IncrementScale);
 					decrementMinorToggle.ChangeState(1);
 				};
-				decrementMinorToggle.onHold = delegate
-				{
-				};
 				decrementMinorToggle.onStopHold = delegate
 				{
 					decrementMinorToggle.ChangeState(0);
@@ -169,9 +161,6 @@ public class ThresholdSwitchSideScreen : SideScreenContent, IRender200ms
 				{
 					UpdateThresholdValue(thresholdSwitch.Threshold - 10f * (float)thresholdSwitch.IncrementScale);
 					decrementMajorToggle.ChangeState(1);
-				};
-				decrementMajorToggle.onHold = delegate
-				{
 				};
 				decrementMajorToggle.onStopHold = delegate
 				{
@@ -249,7 +238,15 @@ public class ThresholdSwitchSideScreen : SideScreenContent, IRender200ms
 			newValue = thresholdSwitch.RangeMax;
 		}
 		thresholdSwitch.Threshold = newValue;
-		thresholdSlider.value = newValue;
+		NonLinearSlider nonLinearSlider = thresholdSlider;
+		if ((Object)nonLinearSlider != (Object)null)
+		{
+			thresholdSlider.value = nonLinearSlider.GetPercentageFromValue(newValue);
+		}
+		else
+		{
+			thresholdSlider.value = newValue;
+		}
 		UpdateTargetThresholdLabel();
 	}
 

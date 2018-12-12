@@ -129,7 +129,7 @@ namespace Database
 			OreTemp.resolveStringCallback = delegate(string str, object data)
 			{
 				GameObject gameObject = (GameObject)data;
-				str = str.Replace("{Temp}", GameUtil.GetFormattedTemperature(gameObject.GetComponent<PrimaryElement>().Temperature, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true));
+				str = str.Replace("{Temp}", GameUtil.GetFormattedTemperature(gameObject.GetComponent<PrimaryElement>().Temperature, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false));
 				return str;
 			};
 			ElementalState = CreateStatusItem("ElementalState", "MISC", "", StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, true, 63486);
@@ -150,7 +150,7 @@ namespace Database
 			ElementalTemperature.resolveStringCallback = delegate(string str, object data)
 			{
 				CellSelectionObject cellSelectionObject6 = (CellSelectionObject)data;
-				str = str.Replace("{Temp}", GameUtil.GetFormattedTemperature(cellSelectionObject6.temperature, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true));
+				str = str.Replace("{Temp}", GameUtil.GetFormattedTemperature(cellSelectionObject6.temperature, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false));
 				return str;
 			};
 			ElementalMass = CreateStatusItem("ElementalMass", "MISC", "", StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, true, 63486);

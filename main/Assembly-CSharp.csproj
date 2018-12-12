@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <ProjectGuid>{C5A5ABCD-A3CF-45E4-A05C-1747954E2108}</ProjectGuid>
+    <ProjectGuid>{C5493736-5AE6-4EFA-B38E-BB765CFF4B1A}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <OutputType>Library</OutputType>
@@ -453,6 +453,7 @@
     <Compile Include="CoolVestConfig.cs" />
     <Compile Include="CopyBuildingSettings.cs" />
     <Compile Include="CopySettingsTool.cs" />
+    <Compile Include="CornerMouldingConfig.cs" />
     <Compile Include="CosmicResearchCenterConfig.cs" />
     <Compile Include="CountedSoundEvent.cs" />
     <Compile Include="CreatureBrain.cs" />
@@ -1444,6 +1445,7 @@
     <Compile Include="NoiseNodeCanvas.cs" />
     <Compile Include="NoisePolluter.cs" />
     <Compile Include="NoiseSplat.cs" />
+    <Compile Include="NonLinearSlider.cs" />
     <Compile Include="NoRole.cs" />
     <Compile Include="NotCapturable.cs" />
     <Compile Include="Notification.cs" />

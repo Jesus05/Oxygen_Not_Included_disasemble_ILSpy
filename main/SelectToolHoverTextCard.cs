@@ -560,7 +560,7 @@ public class SelectToolHoverTextCard : HoverTextConfiguration
 						{
 							hoverTextDrawer.NewLine(26);
 							hoverTextDrawer.DrawIcon(iconDash, 18);
-							hoverTextDrawer.DrawText(GameUtil.GetFormattedTemperature(temp, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true), Styles_BodyText.Standard);
+							hoverTextDrawer.DrawText(GameUtil.GetFormattedTemperature(temp, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false), Styles_BodyText.Standard);
 						}
 						BuildingComplete component6 = kSelectable.GetComponent<BuildingComplete>();
 						if ((UnityEngine.Object)component6 != (UnityEngine.Object)null && component6.Def.IsFoundation)
@@ -634,7 +634,7 @@ public class SelectToolHoverTextCard : HoverTextConfiguration
 					if (num5 != cachedTemperature)
 					{
 						cachedTemperature = num5;
-						text11 = (cachedTemperatureString = GameUtil.GetFormattedTemperature(Grid.Temperature[num], GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true));
+						text11 = (cachedTemperatureString = GameUtil.GetFormattedTemperature(Grid.Temperature[num], GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false));
 					}
 					string text12 = (element2.specificHeatCapacity != 0f) ? text11 : "N/A";
 					hoverTextDrawer.DrawText(text12, Styles_BodyText.Standard);

@@ -57,6 +57,11 @@ public interface IThresholdSwitch
 		get;
 	}
 
+	NonLinearSlider.Range[] GetRanges
+	{
+		get;
+	}
+
 	float GetRangeMinInputField();
 
 	float GetRangeMaxInputField();

@@ -437,7 +437,7 @@ namespace Database
 			BodyRegulatingHeating.resolveStringCallback = delegate(string str, object data)
 			{
 				WarmBlooded.StatesInstance statesInstance = (WarmBlooded.StatesInstance)data;
-				return str.Replace("{TempDelta}", GameUtil.GetFormattedTemperature(statesInstance.TemperatureDelta, GameUtil.TimeSlice.PerSecond, GameUtil.TemperatureInterpretation.Relative, true));
+				return str.Replace("{TempDelta}", GameUtil.GetFormattedTemperature(statesInstance.TemperatureDelta, GameUtil.TimeSlice.PerSecond, GameUtil.TemperatureInterpretation.Relative, true, false));
 			};
 			BodyRegulatingCooling = CreateStatusItem("BodyRegulatingCooling", "DUPLICANTS", "", StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, true, 2);
 			BodyRegulatingCooling.resolveStringCallback = BodyRegulatingHeating.resolveStringCallback;

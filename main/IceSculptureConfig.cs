@@ -33,6 +33,7 @@ public class IceSculptureConfig : IBuildingConfig
 		buildingDef.BaseTimeUntilRepair = -1f;
 		buildingDef.ViewMode = OverlayModes.Decor.ID;
 		buildingDef.DefaultAnimState = "slab";
+		buildingDef.PermittedRotations = PermittedRotations.FlipH;
 		return buildingDef;
 	}
 

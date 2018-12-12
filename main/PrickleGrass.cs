@@ -77,6 +77,7 @@ public class PrickleGrass : StateMachineComponent<PrickleGrass.StatesInstance>
 				smi.master.GetAttributes().Get(Db.Get().Attributes.Decor).Add(smi.master.growth_bonus);
 				smi.master.GetComponent<DecorProvider>().SetValues(smi.master.positive_decor_effect);
 				smi.master.GetComponent<DecorProvider>().Refresh();
+				smi.master.AddTag(GameTags.Decoration);
 			});
 			alive.wilting.PlayAnim("wilt1", KAnim.PlayMode.Loop).EventTransition(GameHashes.WiltRecover, alive.idle, null).Enter(delegate(StatesInstance smi)
 			{
@@ -85,6 +86,7 @@ public class PrickleGrass : StateMachineComponent<PrickleGrass.StatesInstance>
 				smi.master.GetAttributes().Get(Db.Get().Attributes.Decor).Add(smi.master.wilt_penalty);
 				smi.master.GetComponent<DecorProvider>().SetValues(DECOR.PENALTY.TIER1);
 				smi.master.GetComponent<DecorProvider>().Refresh();
+				smi.master.RemoveTag(GameTags.Decoration);
 			});
 		}
 	}

@@ -129,14 +129,43 @@ public static class GameUtil
 		return text + GetTemperatureUnitSuffix();
 	}
 
-	public static float GetConvertedTemperature(float temperature)
+	public static float GetTemperatureConvertedFromKelvin(float temperature, TemperatureUnit targetUnit)
 	{
-		switch (temperatureUnit)
+		switch (targetUnit)
 		{
 		case TemperatureUnit.Celsius:
 			return temperature - 273.15f;
 		case TemperatureUnit.Fahrenheit:
 			return temperature * 1.8f - 459.67f;
+		default:
+			return temperature;
+		}
+	}
+
+	public static float GetConvertedTemperature(float temperature, bool roundOutput = false)
+	{
+		float num = 0f;
+		switch (temperatureUnit)
+		{
+		case TemperatureUnit.Celsius:
+			num = temperature - 273.15f;
+			return (!roundOutput) ? num : Mathf.Round(num);
+		case TemperatureUnit.Fahrenheit:
+			num = temperature * 1.8f - 459.67f;
+			return (!roundOutput) ? num : Mathf.Round(num);
+		default:
+			return (!roundOutput) ? temperature : Mathf.Round(temperature);
+		}
+	}
+
+	public static float GetTemperatureConvertedToKelvin(float temperature, TemperatureUnit fromUnit)
+	{
+		switch (fromUnit)
+		{
+		case TemperatureUnit.Celsius:
+			return temperature + 273.15f;
+		case TemperatureUnit.Fahrenheit:
+			return (temperature + 459.67f) * 5f / 9f;
 		default:
 			return temperature;
 		}
@@ -344,12 +373,33 @@ public static class GameUtil
 		return AddTimeSliceText(text, timeSlice);
 	}
 
-	public static string GetFormattedTemperature(float temp, TimeSlice timeSlice = TimeSlice.None, TemperatureInterpretation interpretation = TemperatureInterpretation.Absolute, bool displayUnits = true)
+	public static float GetRoundedTemperatureInKelvin(float kelvin)
+	{
+		float result = 0f;
+		switch (temperatureUnit)
+		{
+		case TemperatureUnit.Celsius:
+			result = GetTemperatureConvertedToKelvin(Mathf.Round(GetConvertedTemperature(Mathf.Round(kelvin), true)));
+			break;
+		case TemperatureUnit.Fahrenheit:
+		{
+			float temperature = (float)Mathf.RoundToInt(GetTemperatureConvertedFromKelvin(kelvin, TemperatureUnit.Fahrenheit));
+			result = GetTemperatureConvertedToKelvin(temperature, TemperatureUnit.Fahrenheit);
+			break;
+		}
+		case TemperatureUnit.Kelvin:
+			result = (float)Mathf.RoundToInt(kelvin);
+			break;
+		}
+		return result;
+	}
+
+	public static string GetFormattedTemperature(float temp, TimeSlice timeSlice = TimeSlice.None, TemperatureInterpretation interpretation = TemperatureInterpretation.Absolute, bool displayUnits = true, bool roundInDestinationFormat = false)
 	{
 		switch (interpretation)
 		{
 		case TemperatureInterpretation.Absolute:
-			temp = GetConvertedTemperature(temp);
+			temp = GetConvertedTemperature(temp, roundInDestinationFormat);
 			break;
 		default:
 			temp = GetConvertedTemperatureDelta(temp);

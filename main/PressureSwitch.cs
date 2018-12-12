@@ -78,6 +78,8 @@ public class PressureSwitch : CircuitSwitch, ISaveLoadable, IThresholdSwitch, IS
 
 	public int IncrementScale => 1;
 
+	public NonLinearSlider.Range[] GetRanges => NonLinearSlider.GetDefaultRange(RangeMax);
+
 	public void Sim200ms(float dt)
 	{
 		int num = Grid.PosToCell(this);

@@ -379,7 +379,7 @@ public class Global : MonoBehaviour
 	private void SetONIStaticSessionVariables()
 	{
 		ThreadedHttps<KleiMetrics>.Instance.SetStaticSessionVariable("Branch", "preview");
-		ThreadedHttps<KleiMetrics>.Instance.SetStaticSessionVariable("Build", 298981u);
+		ThreadedHttps<KleiMetrics>.Instance.SetStaticSessionVariable("Build", 299241u);
 		if (KPlayerPrefs.HasKey(UnitConfigurationScreen.MassUnitKey))
 		{
 			ThreadedHttps<KleiMetrics>.Instance.SetStaticSessionVariable(UnitConfigurationScreen.MassUnitKey, KPlayerPrefs.GetInt(UnitConfigurationScreen.MassUnitKey).ToString());

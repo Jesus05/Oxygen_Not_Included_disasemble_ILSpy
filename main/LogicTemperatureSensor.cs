@@ -75,9 +75,17 @@ public class LogicTemperatureSensor : Switch, ISaveLoadable, IThresholdSwitch, I
 
 	public string BelowToolTip => UI.UISIDESCREENS.THRESHOLD_SWITCH_SIDESCREEN.TEMPERATURE_TOOLTIP_BELOW;
 
-	public ThresholdScreenLayoutType LayoutType => ThresholdScreenLayoutType.InputField;
+	public ThresholdScreenLayoutType LayoutType => ThresholdScreenLayoutType.SliderBar;
 
 	public int IncrementScale => 1;
+
+	public NonLinearSlider.Range[] GetRanges => new NonLinearSlider.Range[4]
+	{
+		new NonLinearSlider.Range(25f, 260f),
+		new NonLinearSlider.Range(50f, 400f),
+		new NonLinearSlider.Range(12f, 1500f),
+		new NonLinearSlider.Range(13f, 10000f)
+	};
 
 	protected override void OnPrefabInit()
 	{
@@ -163,18 +171,18 @@ public class LogicTemperatureSensor : Switch, ISaveLoadable, IThresholdSwitch, I
 
 	public float GetRangeMinInputField()
 	{
-		return GameUtil.GetConvertedTemperature(RangeMin);
+		return GameUtil.GetConvertedTemperature(RangeMin, false);
 	}
 
 	public float GetRangeMaxInputField()
 	{
-		return GameUtil.GetConvertedTemperature(RangeMax);
+		return GameUtil.GetConvertedTemperature(RangeMax, false);
 	}
 
 	public string Format(float value, bool units)
 	{
 		bool displayUnits = units;
-		return GameUtil.GetFormattedTemperature(value, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, displayUnits);
+		return GameUtil.GetFormattedTemperature(value, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, displayUnits, true);
 	}
 
 	public float ProcessedSliderValue(float input)

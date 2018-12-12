@@ -249,10 +249,13 @@ public class PlantablePlot : SingleEntityReceptacle, ISaveLoadable, IEffectDescr
 
 	public override void OrderRemoveOccupant()
 	{
-		Uprootable component = base.Occupant.GetComponent<Uprootable>();
-		if (!((UnityEngine.Object)component == (UnityEngine.Object)null))
+		if (!((UnityEngine.Object)base.Occupant == (UnityEngine.Object)null))
 		{
-			component.MarkForUproot();
+			Uprootable component = base.Occupant.GetComponent<Uprootable>();
+			if (!((UnityEngine.Object)component == (UnityEngine.Object)null))
+			{
+				component.MarkForUproot();
+			}
 		}
 	}
 

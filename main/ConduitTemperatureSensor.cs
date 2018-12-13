@@ -36,7 +36,13 @@ public class ConduitTemperatureSensor : ConduitThresholdSensor, IThresholdSwitch
 
 	public int IncrementScale => 1;
 
-	public NonLinearSlider.Range[] GetRanges => NonLinearSlider.GetDefaultRange(RangeMax);
+	public NonLinearSlider.Range[] GetRanges => new NonLinearSlider.Range[4]
+	{
+		new NonLinearSlider.Range(25f, 260f),
+		new NonLinearSlider.Range(50f, 400f),
+		new NonLinearSlider.Range(12f, 1500f),
+		new NonLinearSlider.Range(13f, 10000f)
+	};
 
 	public float GetRangeMinInputField()
 	{

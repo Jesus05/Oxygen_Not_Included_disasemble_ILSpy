@@ -153,10 +153,18 @@ public class UtilityNetworkManager<NetworkType, ItemType> : IUtilityNetworkMgr w
 		{
 			if (is_endpoint)
 			{
+				if (endpoints.ContainsKey(cell))
+				{
+					Output.LogWarning("Cell", cell, "already has a utility network endpoint assigned. Adding", item.ToString(), "will stomp previous endpoint");
+				}
 				endpoints[cell] = item;
 			}
 			else
 			{
+				if (items.ContainsKey(cell))
+				{
+					Output.LogWarning("Cell", cell, "already has a utility network connector assigned. Adding", item.ToString(), "will stomp previous item");
+				}
 				items[cell] = item;
 			}
 		}

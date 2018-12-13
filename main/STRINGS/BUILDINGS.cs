@@ -1325,7 +1325,7 @@ namespace STRINGS
 
 				public static LocString POORQUALITYNAME = "\"Abstract\" Metal Sculpture";
 
-				public static LocString AVERAGEQUALITYNAME = "Averabe Metal Sculpture";
+				public static LocString AVERAGEQUALITYNAME = "Average Metal Sculpture";
 
 				public static LocString EXCELLENTQUALITYNAME = "Genius Metal Sculpture";
 			}

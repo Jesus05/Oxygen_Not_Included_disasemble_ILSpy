@@ -276,6 +276,17 @@ namespace STRINGS
 				public static LocString NOTIFICATION_TOOLTIP = "These buildings are entombed and need to be dug out:";
 			}
 
+			public class INVALIDPORTOVERLAP
+			{
+				public static LocString NAME = "Invalid Port Overlap";
+
+				public static LocString TOOLTIP = "Ports on this building overlap those on another building. This building must be rebuilt in a valid location.";
+
+				public static LocString NOTIFICATION_NAME = "Building has overlapping ports";
+
+				public static LocString NOTIFICATION_TOOLTIP = "These buildings must be rebuilt with non-overlapping ports:";
+			}
+
 			public class GENESHUFFLECOMPLETED
 			{
 				public static LocString NAME = "Vacillation Complete";

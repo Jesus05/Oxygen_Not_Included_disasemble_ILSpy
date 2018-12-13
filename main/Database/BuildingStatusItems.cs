@@ -318,6 +318,8 @@ namespace Database
 
 		public StatusItem PathNotClear;
 
+		public StatusItem InvalidPortOverlap;
+
 		[CompilerGenerated]
 		private static Func<HashedString, object, bool> _003C_003Ef__mg_0024cache0;
 
@@ -1005,6 +1007,8 @@ namespace Database
 				}
 				return str;
 			};
+			InvalidPortOverlap = CreateStatusItem("InvalidPortOverlap", "BUILDING", "status_item_exclamation", StatusItem.IconType.Custom, NotificationType.BadMinor, false, OverlayModes.None.ID, true, 63486);
+			InvalidPortOverlap.AddNotification(null, null, null, 0f);
 		}
 
 		private static bool ShowInUtilityOverlay(HashedString mode, object data)

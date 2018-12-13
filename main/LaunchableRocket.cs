@@ -115,10 +115,6 @@ public class LaunchableRocket : StateMachineComponent<LaunchableRocket.StatesIns
 						{
 							part3.GetComponent<RocketModule>().OnSuspend(null);
 							part3.GetComponent<KBatchedAnimController>().enabled = false;
-							if ((Object)part3.gameObject != (Object)smi.master.gameObject)
-							{
-								part3.gameObject.SetActive(false);
-							}
 						}
 						else
 						{
@@ -141,10 +137,6 @@ public class LaunchableRocket : StateMachineComponent<LaunchableRocket.StatesIns
 					{
 						part4.GetComponent<KBatchedAnimController>().Offset = Vector3.up * smi.master.flightAnimOffset;
 						part4.GetComponent<KBatchedAnimController>().enabled = false;
-						if ((Object)part4.gameObject != (Object)smi.master.gameObject)
-						{
-							part4.gameObject.SetActive(false);
-						}
 					}
 				}
 				smi.SetMissionState(Spacecraft.MissionState.Underway);
@@ -153,13 +145,6 @@ public class LaunchableRocket : StateMachineComponent<LaunchableRocket.StatesIns
 			{
 				smi.master.isLanding = true;
 				smi.master.rocketSpeed = 0f;
-				foreach (GameObject part5 in smi.master.parts)
-				{
-					if (!((Object)part5 == (Object)null))
-					{
-						part5.gameObject.SetActive(true);
-					}
-				}
 				smi.SetMissionState(Spacecraft.MissionState.Landing);
 			}).Update(delegate(StatesInstance smi, float dt)
 			{
@@ -184,22 +169,22 @@ public class LaunchableRocket : StateMachineComponent<LaunchableRocket.StatesIns
 					smi.master.soundSpeakerObject.transform.SetParent(smi.master.gameObject.transform);
 				}
 				smi.master.soundSpeakerObject.transform.SetLocalPosition(smi.master.flightAnimOffset * Vector3.up);
-				foreach (GameObject part6 in smi.master.parts)
+				foreach (GameObject part5 in smi.master.parts)
 				{
-					if (!((Object)part6 == (Object)null))
+					if (!((Object)part5 == (Object)null))
 					{
-						KBatchedAnimController component4 = part6.GetComponent<KBatchedAnimController>();
+						KBatchedAnimController component4 = part5.GetComponent<KBatchedAnimController>();
 						component4.Offset = Vector3.up * smi.master.flightAnimOffset;
 						Vector3 positionIncludingOffset2 = component4.PositionIncludingOffset;
-						if (Grid.IsValidCell(Grid.PosToCell(part6)))
+						if (Grid.IsValidCell(Grid.PosToCell(part5)))
 						{
-							part6.GetComponent<KBatchedAnimController>().enabled = true;
+							part5.GetComponent<KBatchedAnimController>().enabled = true;
 						}
 						else
 						{
 							flag = false;
 						}
-						DoWorldDamage(part6, positionIncludingOffset2);
+						DoWorldDamage(part5, positionIncludingOffset2);
 					}
 				}
 				if (flag)
@@ -243,25 +228,25 @@ public class LaunchableRocket : StateMachineComponent<LaunchableRocket.StatesIns
 				{
 					smi.master.GetComponent<KSelectable>().IsSelectable = true;
 					num = 0f;
-					foreach (GameObject part7 in smi.master.parts)
+					foreach (GameObject part6 in smi.master.parts)
 					{
-						if (!((Object)part7 == (Object)null))
+						if (!((Object)part6 == (Object)null))
 						{
-							part7.Trigger(238242047, null);
+							part6.Trigger(238242047, null);
 						}
 					}
 					smi.GoTo(grounded);
 				}
 				else
 				{
-					foreach (GameObject part8 in smi.master.parts)
+					foreach (GameObject part7 in smi.master.parts)
 					{
-						if (!((Object)part8 == (Object)null))
+						if (!((Object)part7 == (Object)null))
 						{
-							KBatchedAnimController component2 = part8.GetComponent<KBatchedAnimController>();
+							KBatchedAnimController component2 = part7.GetComponent<KBatchedAnimController>();
 							component2.Offset = Vector3.up * smi.master.flightAnimOffset;
 							Vector3 positionIncludingOffset = component2.PositionIncludingOffset;
-							DoWorldDamage(part8, positionIncludingOffset);
+							DoWorldDamage(part7, positionIncludingOffset);
 						}
 					}
 				}

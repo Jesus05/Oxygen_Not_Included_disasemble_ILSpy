@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <ProjectGuid>{C5493736-5AE6-4EFA-B38E-BB765CFF4B1A}</ProjectGuid>
+    <ProjectGuid>{D640E4AF-EE6C-45BC-B99E-BDCD0FF1CC49}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <OutputType>Library</OutputType>
@@ -1016,6 +1016,7 @@
     <Compile Include="Insulator.cs" />
     <Compile Include="InterfaceTool.cs" />
     <Compile Include="IntSliderSideScreen.cs" />
+    <Compile Include="InvalidPortReporter.cs" />
     <Compile Include="IOreConfig.cs" />
     <Compile Include="IPersonalPriorityManager.cs" />
     <Compile Include="IPolluter.cs" />

@@ -45,6 +45,7 @@ public class BuildingConfigManager : KMonoBehaviour
 		baseTemplate.AddComponent<Prioritizable>();
 		baseTemplate.AddComponent<BuildingHP>();
 		baseTemplate.AddComponent<LoopingSounds>();
+		baseTemplate.AddComponent<InvalidPortReporter>();
 		defaultBuildingCompleteKComponents.Add(typeof(RequiresFoundation));
 	}
 

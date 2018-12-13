@@ -494,6 +494,8 @@ public class GameTags
 
 	public static readonly Tag JetSuitBlocker = TagManager.Create("JetSuitBlocker");
 
+	public static readonly Tag HasInvalidPorts = TagManager.Create("HasInvalidPorts");
+
 	public static readonly Tag Rocket = TagManager.Create("Rocket");
 
 	public static readonly Tag RocketNotOnGround = TagManager.Create("RocketNotOnGround");

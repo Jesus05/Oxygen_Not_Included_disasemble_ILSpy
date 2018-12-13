@@ -22,7 +22,7 @@ public class LaunchInitializer : MonoBehaviour
 			}
 			GraphicsOptionsScreen.SetResolutionFromPrefs();
 			Util.ApplyInvariantCultureToThread(Thread.CurrentThread);
-			Debug.Log("Development Build: Q1-" + 299241.ToString(), null);
+			Debug.Log("Development Build: Q1-" + 299550.ToString(), null);
 			UnityEngine.Object.DontDestroyOnLoad(base.gameObject);
 			KPlayerPrefs.instance.Load();
 			KFMOD.Initialize();

@@ -564,6 +564,7 @@ public class BuildingDef : Def
 			CellOffset rotatedCellOffset2 = Rotatable.GetRotatedCellOffset(UtilityInputOffset, orientation);
 			int cell3 = Grid.OffsetCell(cell, rotatedCellOffset2);
 			ObjectLayer objectLayerForConduitType = Grid.GetObjectLayerForConduitType(InputConduitType);
+			MarkOverlappingPorts(Grid.Objects[cell3, (int)objectLayerForConduitType], go);
 			Grid.Objects[cell3, (int)objectLayerForConduitType] = go;
 		}
 		if (OutputConduitType != 0)
@@ -571,24 +572,29 @@ public class BuildingDef : Def
 			CellOffset rotatedCellOffset3 = Rotatable.GetRotatedCellOffset(UtilityOutputOffset, orientation);
 			int cell4 = Grid.OffsetCell(cell, rotatedCellOffset3);
 			ObjectLayer objectLayerForConduitType2 = Grid.GetObjectLayerForConduitType(OutputConduitType);
+			MarkOverlappingPorts(Grid.Objects[cell4, (int)objectLayerForConduitType2], go);
 			Grid.Objects[cell4, (int)objectLayerForConduitType2] = go;
 		}
 		if (RequiresPowerInput)
 		{
 			CellOffset rotatedCellOffset4 = Rotatable.GetRotatedCellOffset(PowerInputOffset, orientation);
 			int cell5 = Grid.OffsetCell(cell, rotatedCellOffset4);
+			MarkOverlappingPorts(Grid.Objects[cell5, 27], go);
 			Grid.Objects[cell5, 27] = go;
 		}
 		if (RequiresPowerOutput || GeneratorWattageRating > 0f)
 		{
 			CellOffset rotatedCellOffset5 = Rotatable.GetRotatedCellOffset(PowerOutputOffset, orientation);
 			int cell6 = Grid.OffsetCell(cell, rotatedCellOffset5);
+			MarkOverlappingPorts(Grid.Objects[cell6, 27], go);
 			Grid.Objects[cell6, 27] = go;
 		}
 		if (BuildLocationRule == BuildLocationRule.WireBridge || BuildLocationRule == BuildLocationRule.HighWattBridgeTile)
 		{
 			UtilityNetworkLink component = go.GetComponent<UtilityNetworkLink>();
 			component.GetCells(cell, orientation, out int linked_cell, out int linked_cell2);
+			MarkOverlappingPorts(Grid.Objects[linked_cell, 27], go);
+			MarkOverlappingPorts(Grid.Objects[linked_cell2, 27], go);
 			Grid.Objects[linked_cell, 27] = go;
 			Grid.Objects[linked_cell2, 27] = go;
 		}
@@ -603,6 +609,7 @@ public class BuildingDef : Def
 					LogicPorts.Port port = inputPortInfo[j];
 					CellOffset rotatedCellOffset6 = Rotatable.GetRotatedCellOffset(port.cellOffset, orientation);
 					int cell7 = Grid.OffsetCell(cell, rotatedCellOffset6);
+					MarkOverlappingPorts(Grid.Objects[cell7, (int)layer], go);
 					Grid.Objects[cell7, (int)layer] = go;
 				}
 			}
@@ -614,6 +621,7 @@ public class BuildingDef : Def
 			ObjectLayer objectLayerForConduitType3 = Grid.GetObjectLayerForConduitType(secondaryConduitType);
 			CellOffset rotatedCellOffset7 = Rotatable.GetRotatedCellOffset(component3.GetSecondaryConduitOffset(), orientation);
 			int cell8 = Grid.OffsetCell(cell, rotatedCellOffset7);
+			MarkOverlappingPorts(Grid.Objects[cell8, (int)objectLayerForConduitType3], go);
 			Grid.Objects[cell8, (int)objectLayerForConduitType3] = go;
 		}
 		ISecondaryOutput component4 = BuildingComplete.GetComponent<ISecondaryOutput>();
@@ -623,7 +631,16 @@ public class BuildingDef : Def
 			ObjectLayer objectLayerForConduitType4 = Grid.GetObjectLayerForConduitType(secondaryConduitType2);
 			CellOffset rotatedCellOffset8 = Rotatable.GetRotatedCellOffset(component4.GetSecondaryConduitOffset(), orientation);
 			int cell9 = Grid.OffsetCell(cell, rotatedCellOffset8);
+			MarkOverlappingPorts(Grid.Objects[cell9, (int)objectLayerForConduitType4], go);
 			Grid.Objects[cell9, (int)objectLayerForConduitType4] = go;
+		}
+	}
+
+	public void MarkOverlappingPorts(GameObject existing, GameObject replaced)
+	{
+		if (!((UnityEngine.Object)existing == (UnityEngine.Object)null) && (UnityEngine.Object)existing != (UnityEngine.Object)replaced)
+		{
+			existing.AddTag(GameTags.HasInvalidPorts);
 		}
 	}
 
@@ -644,33 +661,51 @@ public class BuildingDef : Def
 			CellOffset rotatedCellOffset2 = Rotatable.GetRotatedCellOffset(UtilityInputOffset, orientation);
 			int cell3 = Grid.OffsetCell(cell, rotatedCellOffset2);
 			ObjectLayer objectLayerForConduitType = Grid.GetObjectLayerForConduitType(InputConduitType);
-			Grid.Objects[cell3, (int)objectLayerForConduitType] = null;
+			if ((UnityEngine.Object)Grid.Objects[cell3, (int)objectLayerForConduitType] == (UnityEngine.Object)go)
+			{
+				Grid.Objects[cell3, (int)objectLayerForConduitType] = null;
+			}
 		}
 		if (OutputConduitType != 0)
 		{
 			CellOffset rotatedCellOffset3 = Rotatable.GetRotatedCellOffset(UtilityOutputOffset, orientation);
 			int cell4 = Grid.OffsetCell(cell, rotatedCellOffset3);
 			ObjectLayer objectLayerForConduitType2 = Grid.GetObjectLayerForConduitType(OutputConduitType);
-			Grid.Objects[cell4, (int)objectLayerForConduitType2] = null;
+			if ((UnityEngine.Object)Grid.Objects[cell4, (int)objectLayerForConduitType2] == (UnityEngine.Object)go)
+			{
+				Grid.Objects[cell4, (int)objectLayerForConduitType2] = null;
+			}
 		}
 		if (RequiresPowerInput)
 		{
 			CellOffset rotatedCellOffset4 = Rotatable.GetRotatedCellOffset(PowerInputOffset, orientation);
 			int cell5 = Grid.OffsetCell(cell, rotatedCellOffset4);
-			Grid.Objects[cell5, 27] = null;
+			if ((UnityEngine.Object)Grid.Objects[cell5, 27] == (UnityEngine.Object)go)
+			{
+				Grid.Objects[cell5, 27] = null;
+			}
 		}
 		if (RequiresPowerOutput || GeneratorWattageRating > 0f)
 		{
 			CellOffset rotatedCellOffset5 = Rotatable.GetRotatedCellOffset(PowerOutputOffset, orientation);
 			int cell6 = Grid.OffsetCell(cell, rotatedCellOffset5);
-			Grid.Objects[cell6, 27] = null;
+			if ((UnityEngine.Object)Grid.Objects[cell6, 27] == (UnityEngine.Object)go)
+			{
+				Grid.Objects[cell6, 27] = null;
+			}
 		}
 		if (BuildLocationRule == BuildLocationRule.HighWattBridgeTile)
 		{
 			UtilityNetworkLink component = go.GetComponent<UtilityNetworkLink>();
 			component.GetCells(cell, orientation, out int linked_cell, out int linked_cell2);
-			Grid.Objects[linked_cell, 27] = null;
-			Grid.Objects[linked_cell2, 27] = null;
+			if ((UnityEngine.Object)Grid.Objects[linked_cell, 27] == (UnityEngine.Object)go)
+			{
+				Grid.Objects[linked_cell, 27] = null;
+			}
+			if ((UnityEngine.Object)Grid.Objects[linked_cell2, 27] == (UnityEngine.Object)go)
+			{
+				Grid.Objects[linked_cell2, 27] = null;
+			}
 		}
 		ISecondaryInput component2 = BuildingComplete.GetComponent<ISecondaryInput>();
 		if (component2 != null)
@@ -679,7 +714,10 @@ public class BuildingDef : Def
 			ObjectLayer objectLayerForConduitType3 = Grid.GetObjectLayerForConduitType(secondaryConduitType);
 			CellOffset rotatedCellOffset6 = Rotatable.GetRotatedCellOffset(component2.GetSecondaryConduitOffset(), orientation);
 			int cell7 = Grid.OffsetCell(cell, rotatedCellOffset6);
-			Grid.Objects[cell7, (int)objectLayerForConduitType3] = null;
+			if ((UnityEngine.Object)Grid.Objects[cell7, (int)objectLayerForConduitType3] == (UnityEngine.Object)go)
+			{
+				Grid.Objects[cell7, (int)objectLayerForConduitType3] = null;
+			}
 		}
 		ISecondaryOutput component3 = BuildingComplete.GetComponent<ISecondaryOutput>();
 		if (component3 != null)
@@ -688,7 +726,10 @@ public class BuildingDef : Def
 			ObjectLayer objectLayerForConduitType4 = Grid.GetObjectLayerForConduitType(secondaryConduitType2);
 			CellOffset rotatedCellOffset7 = Rotatable.GetRotatedCellOffset(component3.GetSecondaryConduitOffset(), orientation);
 			int cell8 = Grid.OffsetCell(cell, rotatedCellOffset7);
-			Grid.Objects[cell8, (int)objectLayerForConduitType4] = null;
+			if ((UnityEngine.Object)Grid.Objects[cell8, (int)objectLayerForConduitType4] == (UnityEngine.Object)go)
+			{
+				Grid.Objects[cell8, (int)objectLayerForConduitType4] = null;
+			}
 		}
 	}
 

@@ -1,4 +1,5 @@
 using STRINGS;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using UnityEngine;
@@ -59,11 +60,11 @@ public class RocketModule : KMonoBehaviour
 		}
 		RegisterWithConditionManager();
 		KSelectable component = GetComponent<KSelectable>();
-		if ((Object)component != (Object)null)
+		if ((UnityEngine.Object)component != (UnityEngine.Object)null)
 		{
 			component.AddStatusItem(Db.Get().BuildingStatusItems.RocketName, this);
 		}
-		if ((Object)conditionManager != (Object)null && conditionManager.GetComponent<KPrefabID>().HasTag(GameTags.RocketNotOnGround))
+		if ((UnityEngine.Object)conditionManager != (UnityEngine.Object)null && conditionManager.GetComponent<KPrefabID>().HasTag(GameTags.RocketNotOnGround))
 		{
 			OnLaunch(null);
 		}
@@ -74,7 +75,7 @@ public class RocketModule : KMonoBehaviour
 
 	private void DEBUG_OnDestroy(object data)
 	{
-		if ((Object)conditionManager != (Object)null && !App.IsExiting && !KMonoBehaviour.isLoadingScene)
+		if ((UnityEngine.Object)conditionManager != (UnityEngine.Object)null && !App.IsExiting && !KMonoBehaviour.isLoadingScene)
 		{
 			Spacecraft spacecraftFromLaunchConditionManager = SpacecraftManager.instance.GetSpacecraftFromLaunchConditionManager(conditionManager);
 			conditionManager.DEBUG_TraceModuleDestruction(base.name, spacecraftFromLaunchConditionManager.state.ToString(), new StackTrace(true).ToString());
@@ -94,7 +95,7 @@ public class RocketModule : KMonoBehaviour
 	{
 		KSelectable component = GetComponent<KSelectable>();
 		component.IsSelectable = false;
-		if ((Object)SelectTool.Instance.selected == (Object)component)
+		if ((UnityEngine.Object)SelectTool.Instance.selected == (UnityEngine.Object)component)
 		{
 			SelectTool.Instance.Select(null, false);
 		}
@@ -108,7 +109,7 @@ public class RocketModule : KMonoBehaviour
 			}
 		}
 		Deconstructable component3 = GetComponent<Deconstructable>();
-		if ((Object)component3 != (Object)null)
+		if ((UnityEngine.Object)component3 != (UnityEngine.Object)null)
 		{
 			component3.SetAllowDeconstruction(false);
 		}
@@ -117,6 +118,12 @@ public class RocketModule : KMonoBehaviour
 		{
 			GameComps.StructureTemperatures.Disable(handle);
 		}
+		ToggleComponent(typeof(ManualDeliveryKG), false);
+		ToggleComponent(typeof(ElementConsumer), false);
+		ToggleComponent(typeof(ElementConverter), false);
+		ToggleComponent(typeof(ConduitDispenser), false);
+		ToggleComponent(typeof(SolidConduitDispenser), false);
+		ToggleComponent(typeof(EnergyConsumer), false);
 	}
 
 	private void OnLand(object data)
@@ -136,7 +143,7 @@ public class RocketModule : KMonoBehaviour
 			}
 		}
 		Deconstructable component2 = GetComponent<Deconstructable>();
-		if ((Object)component2 != (Object)null)
+		if ((UnityEngine.Object)component2 != (UnityEngine.Object)null)
 		{
 			component2.SetAllowDeconstruction(true);
 		}
@@ -145,11 +152,26 @@ public class RocketModule : KMonoBehaviour
 		{
 			GameComps.StructureTemperatures.Enable(handle);
 		}
+		ToggleComponent(typeof(ManualDeliveryKG), true);
+		ToggleComponent(typeof(ElementConsumer), true);
+		ToggleComponent(typeof(ElementConverter), true);
+		ToggleComponent(typeof(ConduitDispenser), true);
+		ToggleComponent(typeof(SolidConduitDispenser), true);
+		ToggleComponent(typeof(EnergyConsumer), true);
+	}
+
+	private void ToggleComponent(Type cmpType, bool enabled)
+	{
+		MonoBehaviour monoBehaviour = (MonoBehaviour)GetComponent(cmpType);
+		if ((UnityEngine.Object)monoBehaviour != (UnityEngine.Object)null)
+		{
+			monoBehaviour.enabled = enabled;
+		}
 	}
 
 	public void RegisterWithConditionManager()
 	{
-		if ((Object)conditionManager != (Object)null)
+		if ((UnityEngine.Object)conditionManager != (UnityEngine.Object)null)
 		{
 			conditionManager.RegisterRocketModule(this);
 		}
@@ -161,7 +183,7 @@ public class RocketModule : KMonoBehaviour
 
 	protected override void OnCleanUp()
 	{
-		if ((Object)conditionManager != (Object)null)
+		if ((UnityEngine.Object)conditionManager != (UnityEngine.Object)null)
 		{
 			conditionManager.UnregisterRocketModule(this);
 		}
@@ -184,7 +206,7 @@ public class RocketModule : KMonoBehaviour
 		foreach (GameObject item in attachedNetwork)
 		{
 			LaunchConditionManager component = item.GetComponent<LaunchConditionManager>();
-			if ((Object)component != (Object)null)
+			if ((UnityEngine.Object)component != (UnityEngine.Object)null)
 			{
 				return component;
 			}

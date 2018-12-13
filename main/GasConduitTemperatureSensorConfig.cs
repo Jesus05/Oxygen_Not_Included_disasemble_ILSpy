@@ -21,7 +21,7 @@ public class GasConduitTemperatureSensorConfig : ConduitSensorConfig
 		conduitTemperatureSensor.ActivateAboveThreshold = true;
 		conduitTemperatureSensor.manuallyControlled = false;
 		conduitTemperatureSensor.rangeMin = 0f;
-		conduitTemperatureSensor.rangeMax = 573.15f;
+		conduitTemperatureSensor.rangeMax = 9999f;
 		conduitTemperatureSensor.defaultState = false;
 	}
 }

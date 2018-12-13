@@ -24,7 +24,7 @@ public class DropDown : KMonoBehaviour
 
 	public bool addEmptyRow = true;
 
-	public object targetData = null;
+	public object targetData;
 
 	private List<IListableOption> entries = new List<IListableOption>();
 
@@ -38,7 +38,7 @@ public class DropDown : KMonoBehaviour
 
 	private GameObject emptyRow;
 
-	private bool built = false;
+	private bool built;
 
 	private bool displaySelectedValueWhenClosed = true;
 

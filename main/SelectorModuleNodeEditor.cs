@@ -38,32 +38,32 @@ public class SelectorModuleNodeEditor : BaseNodeEditor
 
 	public override bool Calculate()
 	{
-		if (allInputsReady())
+		if (!allInputsReady())
 		{
-			IModule3D value = Inputs[0].GetValue<IModule3D>();
-			if (value != null)
-			{
-				IModule3D value2 = Inputs[1].GetValue<IModule3D>();
-				if (value2 != null)
-				{
-					IModule3D value3 = Inputs[2].GetValue<IModule3D>();
-					if (value3 != null)
-					{
-						IModule3D module3D = target.CreateModule(value, value3, value2);
-						if (module3D != null)
-						{
-							Outputs[0].SetValue(module3D);
-							return true;
-						}
-						return false;
-					}
-					return false;
-				}
-				return false;
-			}
 			return false;
 		}
-		return false;
+		IModule3D value = Inputs[0].GetValue<IModule3D>();
+		if (value == null)
+		{
+			return false;
+		}
+		IModule3D value2 = Inputs[1].GetValue<IModule3D>();
+		if (value2 == null)
+		{
+			return false;
+		}
+		IModule3D value3 = Inputs[2].GetValue<IModule3D>();
+		if (value3 == null)
+		{
+			return false;
+		}
+		IModule3D module3D = target.CreateModule(value, value3, value2);
+		if (module3D == null)
+		{
+			return false;
+		}
+		Outputs[0].SetValue(module3D);
+		return true;
 	}
 
 	protected override void NodeGUI()

@@ -9,9 +9,9 @@ namespace VoronoiTree
 	{
 		public delegate bool LeafNodeTest(Node node);
 
-		protected List<Node> children = null;
+		protected List<Node> children;
 
-		public bool dontRelaxChildren = false;
+		public bool dontRelaxChildren;
 
 		public SeededRandom myRandom
 		{
@@ -63,11 +63,11 @@ namespace VoronoiTree
 
 		public int ChildCount()
 		{
-			if (children != null)
+			if (children == null)
 			{
-				return children.Count;
+				return 0;
 			}
-			return 0;
+			return children.Count;
 		}
 
 		public Tree GetChildContainingLeaf(Leaf leaf)
@@ -86,11 +86,11 @@ namespace VoronoiTree
 
 		public Node GetChild(int childIndex)
 		{
-			if (childIndex >= children.Count)
+			if (childIndex < children.Count)
 			{
-				return null;
+				return children[childIndex];
 			}
-			return children[childIndex];
+			return null;
 		}
 
 		public void AddChild(Node child)
@@ -113,103 +113,103 @@ namespace VoronoiTree
 
 		public bool ComputeChildrenRecursive(int depth, bool pd = false)
 		{
-			if (depth <= Node.maxDepth && site.poly != null && children != null)
+			if (depth > Node.maxDepth || site.poly == null || children == null)
 			{
-				List<Diagram.Site> list = new List<Diagram.Site>();
-				for (int i = 0; i < children.Count; i++)
+				return false;
+			}
+			List<Diagram.Site> list = new List<Diagram.Site>();
+			for (int i = 0; i < children.Count; i++)
+			{
+				list.Add(children[i].site);
+			}
+			PlaceSites(list, depth);
+			if (pd)
+			{
+				for (int j = 0; j < list.Count; j++)
 				{
-					list.Add(children[i].site);
-				}
-				PlaceSites(list, depth);
-				if (pd)
-				{
-					for (int j = 0; j < list.Count; j++)
+					if (!site.poly.Contains(list[j].position))
 					{
-						if (!site.poly.Contains(list[j].position))
-						{
-							Debug.LogErrorFormat("Cant feed points [{0}] to powerdiagram that are outside its area [{1}] ", list[j].id, list[j].position);
-						}
-					}
-					if (ComputeNodePD(list, 500, 0.2f))
-					{
-						for (int k = 0; k < children.Count; k++)
-						{
-							if (children[k].type == NodeType.Internal)
-							{
-								Tree tree = children[k] as Tree;
-								if (!tree.ComputeChildrenRecursive(depth + 1, pd))
-								{
-									return false;
-								}
-							}
-						}
+						Debug.LogErrorFormat("Cant feed points [{0}] to powerdiagram that are outside its area [{1}] ", list[j].id, list[j].position);
 					}
 				}
-				else if (ComputeNode(list))
+				if (ComputeNodePD(list, 500, 0.2f))
 				{
-					for (int l = 0; l < children.Count; l++)
+					for (int k = 0; k < children.Count; k++)
 					{
-						if (children[l].type == NodeType.Internal)
+						if (children[k].type == NodeType.Internal)
 						{
-							Tree tree2 = children[l] as Tree;
-							if (!tree2.ComputeChildrenRecursive(depth + 1, false))
+							Tree tree = children[k] as Tree;
+							if (!tree.ComputeChildrenRecursive(depth + 1, pd))
 							{
 								return false;
 							}
 						}
 					}
 				}
-				return true;
 			}
-			return false;
+			else if (ComputeNode(list))
+			{
+				for (int l = 0; l < children.Count; l++)
+				{
+					if (children[l].type == NodeType.Internal)
+					{
+						Tree tree2 = children[l] as Tree;
+						if (!tree2.ComputeChildrenRecursive(depth + 1, false))
+						{
+							return false;
+						}
+					}
+				}
+			}
+			return true;
 		}
 
 		public bool ComputeChildren(int seed, bool place = false, bool pd = false)
 		{
-			if (site.poly != null && children != null)
+			if (site.poly == null || children == null)
 			{
-				List<Diagram.Site> list = new List<Diagram.Site>();
-				for (int i = 0; i < children.Count; i++)
-				{
-					if (place || !site.poly.Contains(children[i].site.position))
-					{
-						Debug.LogErrorFormat("Cant feed points [{0}] to powerdiagram that are outside its area [{1}] ", children[i].site.id, children[i].site.position);
-					}
-					list.Add(children[i].site);
-				}
-				if (place)
-				{
-					PlaceSites(list, seed);
-				}
-				if (pd)
-				{
-					ComputeNodePD(list, 500, 0.2f);
-				}
-				else
-				{
-					ComputeNode(list);
-				}
-				return true;
+				return false;
 			}
-			return false;
+			List<Diagram.Site> list = new List<Diagram.Site>();
+			for (int i = 0; i < children.Count; i++)
+			{
+				if (place || !site.poly.Contains(children[i].site.position))
+				{
+					Debug.LogErrorFormat("Cant feed points [{0}] to powerdiagram that are outside its area [{1}] ", children[i].site.id, children[i].site.position);
+				}
+				list.Add(children[i].site);
+			}
+			if (place)
+			{
+				PlaceSites(list, seed);
+			}
+			if (pd)
+			{
+				ComputeNodePD(list, 500, 0.2f);
+			}
+			else
+			{
+				ComputeNode(list);
+			}
+			return true;
 		}
 
 		public int Count()
 		{
-			if (children != null && children.Count != 0)
+			if (children == null || children.Count == 0)
 			{
-				int num = children.Count;
-				for (int i = 0; i < children.Count; i++)
-				{
-					if (children[i].type == NodeType.Internal)
-					{
-						Tree tree = children[i] as Tree;
-						num += tree.Count();
-					}
-				}
-				return num;
+				return 0;
 			}
-			return 0;
+			int num = children.Count;
+			for (int i = 0; i < children.Count; i++)
+			{
+				if (children[i].type == NodeType.Internal)
+				{
+					Tree tree = children[i] as Tree;
+					num += tree.Count();
+				}
+			}
+			return num;
 		}
 
 		public void Reset()
@@ -230,26 +230,26 @@ namespace VoronoiTree
 
 		public int MaxDepth(int depth = 0)
 		{
-			if (children != null && children.Count != 0)
+			if (children == null || children.Count == 0)
 			{
-				int num = depth + 1;
-				int num2 = num;
-				for (int i = 0; i < children.Count; i++)
-				{
-					int num3 = num2 + 1;
-					if (children[i].type == NodeType.Internal)
-					{
-						Tree tree = children[i] as Tree;
-						num3 = tree.MaxDepth(num2);
-					}
-					if (num3 > num)
-					{
-						num = num3;
-					}
-				}
-				return num;
+				return depth;
 			}
-			return depth;
+			int num = depth + 1;
+			int num2 = num;
+			for (int i = 0; i < children.Count; i++)
+			{
+				int num3 = num2 + 1;
+				if (children[i].type == NodeType.Internal)
+				{
+					Tree tree = children[i] as Tree;
+					num3 = tree.MaxDepth(num2);
+				}
+				if (num3 > num)
+				{
+					num = num3;
+				}
+			}
+			return num;
 		}
 
 		public void RelaxRecursive(int depth, int iterations = -1, float minEnergy = 1f, bool pd = false)
@@ -311,90 +311,90 @@ namespace VoronoiTree
 
 		public float Relax(int depth, int relaxDepth, bool pd = false)
 		{
-			if (!dontRelaxChildren && depth <= Node.maxDepth && depth <= relaxDepth && site.poly != null && children != null && children.Count != 0)
+			if (dontRelaxChildren || depth > Node.maxDepth || depth > relaxDepth || site.poly == null || children == null || children.Count == 0)
 			{
-				float num = 0f;
-				if (depth >= relaxDepth)
+				return 0f;
+			}
+			float num = 0f;
+			if (depth < relaxDepth)
+			{
+				for (int i = 0; i < children.Count; i++)
 				{
-					if (depth == relaxDepth)
+					if (children[i].type == NodeType.Internal)
 					{
-						List<Diagram.Site> list = new List<Diagram.Site>();
-						for (int i = 0; i < children.Count; i++)
-						{
-							list.Add(children[i].site);
-						}
-						if (pd)
-						{
-							if (!ComputeNodePD(list, 500, 0.2f))
-							{
-								return 0f;
-							}
-						}
-						else
-						{
-							PlaceSites(list, depth);
-							if (!ComputeNode(list))
-							{
-								return 0f;
-							}
-						}
-						for (int j = 0; j < children.Count; j++)
-						{
-							num += Vector2.Distance(children[j].site.position, list[j].poly.Centroid());
-							children[j].site.position = list[j].poly.Centroid();
-							if (children[j].type == NodeType.Internal)
-							{
-								Tree tree = children[j] as Tree;
-								if (!tree.ComputeChildren(depth, false, false))
-								{
-									return 0f;
-								}
-							}
-						}
-					}
-					return num;
-				}
-				for (int k = 0; k < children.Count; k++)
-				{
-					if (children[k].type == NodeType.Internal)
-					{
-						Tree tree2 = children[k] as Tree;
-						num += tree2.Relax(depth + 1, relaxDepth, false);
+						Tree tree = children[i] as Tree;
+						num += tree.Relax(depth + 1, relaxDepth, false);
 					}
 				}
 				return num;
 			}
-			return 0f;
+			if (depth == relaxDepth)
+			{
+				List<Diagram.Site> list = new List<Diagram.Site>();
+				for (int j = 0; j < children.Count; j++)
+				{
+					list.Add(children[j].site);
+				}
+				if (pd)
+				{
+					if (!ComputeNodePD(list, 500, 0.2f))
+					{
+						return 0f;
+					}
+				}
+				else
+				{
+					PlaceSites(list, depth);
+					if (!ComputeNode(list))
+					{
+						return 0f;
+					}
+				}
+				for (int k = 0; k < children.Count; k++)
+				{
+					num += Vector2.Distance(children[k].site.position, list[k].poly.Centroid());
+					children[k].site.position = list[k].poly.Centroid();
+					if (children[k].type == NodeType.Internal)
+					{
+						Tree tree2 = children[k] as Tree;
+						if (!tree2.ComputeChildren(depth, false, false))
+						{
+							return 0f;
+						}
+					}
+				}
+			}
+			return num;
 		}
 
 		public Node GetNodeForPoint(Vector2 point, bool stopAtFirstChild = false)
 		{
-			if (site.poly != null)
+			if (site.poly == null)
 			{
-				if (children != null && children.Count != 0)
+				return null;
+			}
+			if (children == null || children.Count == 0)
+			{
+				return this;
+			}
+			for (int i = 0; i < children.Count; i++)
+			{
+				if (children[i].site.poly.Contains(point))
 				{
-					for (int i = 0; i < children.Count; i++)
+					if (children[i].type == NodeType.Internal)
 					{
-						if (children[i].site.poly.Contains(point))
+						Tree tree = children[i] as Tree;
+						if (stopAtFirstChild)
 						{
-							if (children[i].type != NodeType.Internal)
-							{
-								return children[i];
-							}
-							Tree tree = children[i] as Tree;
-							if (!stopAtFirstChild)
-							{
-								return tree.GetNodeForPoint(point, false);
-							}
 							return children[i];
 						}
+						return tree.GetNodeForPoint(point, false);
 					}
-					if (!site.poly.Contains(point))
-					{
-						return null;
-					}
-					return this;
+					return children[i];
 				}
+			}
+			if (site.poly.Contains(point))
+			{
 				return this;
 			}
 			return null;
@@ -402,31 +402,31 @@ namespace VoronoiTree
 
 		public Node GetNodeForSite(Diagram.Site target)
 		{
-			if (site != target)
+			if (site == target)
 			{
-				if (site.poly != null && children != null && children.Count != 0)
-				{
-					for (int i = 0; i < children.Count; i++)
-					{
-						if (children[i].site == target)
-						{
-							return children[i];
-						}
-						if (children[i].site.poly.Contains(target.position))
-						{
-							if (children[i].type != NodeType.Internal)
-							{
-								return children[i];
-							}
-							Tree tree = children[i] as Tree;
-							return tree.GetNodeForSite(target);
-						}
-					}
-					return null;
-				}
+				return this;
+			}
+			if (site.poly == null || children == null || children.Count == 0)
+			{
 				return null;
 			}
-			return this;
+			for (int i = 0; i < children.Count; i++)
+			{
+				if (children[i].site == target)
+				{
+					return children[i];
+				}
+				if (children[i].site.poly.Contains(target.position))
+				{
+					if (children[i].type == NodeType.Internal)
+					{
+						Tree tree = children[i] as Tree;
+						return tree.GetNodeForSite(target);
+					}
+					return children[i];
+				}
+			}
+			return null;
 		}
 
 		public void GetIntersectingLeafSites(LineSegment edge, List<Diagram.Site> intersectingSites)

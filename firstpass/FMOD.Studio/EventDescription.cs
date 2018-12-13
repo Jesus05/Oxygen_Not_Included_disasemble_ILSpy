@@ -130,31 +130,31 @@ namespace FMOD.Studio
 		{
 			array = null;
 			RESULT rESULT = FMOD_Studio_EventDescription_GetInstanceCount(handle, out int count);
-			if (rESULT == RESULT.OK)
+			if (rESULT != 0)
 			{
-				if (count != 0)
-				{
-					IntPtr[] array2 = new IntPtr[count];
-					rESULT = FMOD_Studio_EventDescription_GetInstanceList(handle, array2, count, out int count2);
-					if (rESULT == RESULT.OK)
-					{
-						if (count2 > count)
-						{
-							count2 = count;
-						}
-						array = new EventInstance[count2];
-						for (int i = 0; i < count2; i++)
-						{
-							array[i].handle = array2[i];
-						}
-						return RESULT.OK;
-					}
-					return rESULT;
-				}
+				return rESULT;
+			}
+			if (count == 0)
+			{
 				array = new EventInstance[0];
 				return rESULT;
 			}
-			return rESULT;
+			IntPtr[] array2 = new IntPtr[count];
+			rESULT = FMOD_Studio_EventDescription_GetInstanceList(handle, array2, count, out int count2);
+			if (rESULT != 0)
+			{
+				return rESULT;
+			}
+			if (count2 > count)
+			{
+				count2 = count;
+			}
+			array = new EventInstance[count2];
+			for (int i = 0; i < count2; i++)
+			{
+				array[i].handle = array2[i];
+			}
+			return RESULT.OK;
 		}
 
 		public RESULT loadSampleData()

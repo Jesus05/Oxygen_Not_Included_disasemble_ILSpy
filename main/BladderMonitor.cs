@@ -33,22 +33,22 @@ public class BladderMonitor : GameStateMachine<BladderMonitor, BladderMonitor.In
 
 		public bool NeedsToPee()
 		{
-			if (base.smi != null)
+			if (base.smi == null)
 			{
-				if (!((Object)base.smi.master.gameObject == (Object)null))
-				{
-					KPrefabID component = base.master.GetComponent<KPrefabID>();
-					if (!component.HasTag(GameTags.Asleep))
-					{
-						return bladder.value >= 100f;
-					}
-					return false;
-				}
+				Debug.LogWarning("How can my state machine instance be null?", null);
+				return false;
+			}
+			if ((Object)base.smi.master.gameObject == (Object)null)
+			{
 				Debug.LogWarning("How is my gameObject null?", null);
 				return false;
 			}
-			Debug.LogWarning("How can my state machine instance be null?", null);
-			return false;
+			KPrefabID component = base.master.GetComponent<KPrefabID>();
+			if (component.HasTag(GameTags.Asleep))
+			{
+				return false;
+			}
+			return bladder.value >= 100f;
 		}
 
 		public bool WantsToPee()

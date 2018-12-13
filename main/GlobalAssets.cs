@@ -87,14 +87,14 @@ public class GlobalAssets : MonoBehaviour
 
 	public static string GetSound(string name, bool force_no_warning = false)
 	{
-		if (name != null)
+		if (name == null)
 		{
-			name = name.ToLowerInvariant();
-			string value = null;
-			SoundTable.TryGetValue(name, out value);
-			return value;
+			return null;
 		}
-		return null;
+		name = name.ToLowerInvariant();
+		string value = null;
+		SoundTable.TryGetValue(name, out value);
+		return value;
 	}
 
 	public static bool IsLowPriority(string path)

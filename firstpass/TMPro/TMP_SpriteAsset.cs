@@ -76,11 +76,11 @@ namespace TMPro
 				UpdateLookupTables();
 			}
 			int value = 0;
-			if (!m_NameLookup.TryGetValue(hashCode, out value))
+			if (m_NameLookup.TryGetValue(hashCode, out value))
 			{
-				return -1;
+				return value;
 			}
-			return value;
+			return -1;
 		}
 
 		public int GetSpriteIndexFromUnicode(int unicode)
@@ -90,11 +90,11 @@ namespace TMPro
 				UpdateLookupTables();
 			}
 			int value = 0;
-			if (!m_UnicodeLookup.TryGetValue(unicode, out value))
+			if (m_UnicodeLookup.TryGetValue(unicode, out value))
 			{
-				return -1;
+				return value;
 			}
-			return value;
+			return -1;
 		}
 
 		public int GetSpriteIndexFromName(string name)
@@ -110,29 +110,29 @@ namespace TMPro
 		public static TMP_SpriteAsset SearchFallbackForSprite(TMP_SpriteAsset spriteAsset, int unicode, out int spriteIndex)
 		{
 			spriteIndex = -1;
-			if (!((Object)spriteAsset == (Object)null))
+			if ((Object)spriteAsset == (Object)null)
 			{
-				spriteIndex = spriteAsset.GetSpriteIndexFromUnicode(unicode);
-				if (spriteIndex == -1)
-				{
-					if (spriteAsset.fallbackSpriteAssets != null && spriteAsset.fallbackSpriteAssets.Count > 0)
-					{
-						for (int i = 0; i < spriteAsset.fallbackSpriteAssets.Count; i++)
-						{
-							if (spriteIndex != -1)
-							{
-								break;
-							}
-							TMP_SpriteAsset tMP_SpriteAsset = SearchFallbackForSprite(spriteAsset.fallbackSpriteAssets[i], unicode, out spriteIndex);
-							if ((Object)tMP_SpriteAsset != (Object)null)
-							{
-								return tMP_SpriteAsset;
-							}
-						}
-					}
-					return null;
-				}
+				return null;
+			}
+			spriteIndex = spriteAsset.GetSpriteIndexFromUnicode(unicode);
+			if (spriteIndex != -1)
+			{
 				return spriteAsset;
+			}
+			if (spriteAsset.fallbackSpriteAssets != null && spriteAsset.fallbackSpriteAssets.Count > 0)
+			{
+				for (int i = 0; i < spriteAsset.fallbackSpriteAssets.Count; i++)
+				{
+					if (spriteIndex != -1)
+					{
+						break;
+					}
+					TMP_SpriteAsset tMP_SpriteAsset = SearchFallbackForSprite(spriteAsset.fallbackSpriteAssets[i], unicode, out spriteIndex);
+					if ((Object)tMP_SpriteAsset != (Object)null)
+					{
+						return tMP_SpriteAsset;
+					}
+				}
 			}
 			return null;
 		}

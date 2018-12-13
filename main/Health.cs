@@ -19,12 +19,12 @@ public class Health : KMonoBehaviour, ISaveLoadable
 	}
 
 	[Serialize]
-	public bool CanBeIncapacitated = false;
+	public bool CanBeIncapacitated;
 
 	[Serialize]
-	public HealthState State = HealthState.Perfect;
+	public HealthState State;
 
-	public HealthBar healthBar = null;
+	public HealthBar healthBar;
 
 	private Effects effects;
 

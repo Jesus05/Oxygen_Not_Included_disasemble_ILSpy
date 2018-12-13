@@ -12,21 +12,21 @@ namespace Satsuma
 		public static Node NextNode(this IPath path, Node node)
 		{
 			Arc arc = path.NextArc(node);
-			if (!(arc == Arc.Invalid))
+			if (arc == Arc.Invalid)
 			{
-				return path.Other(arc, node);
+				return Node.Invalid;
 			}
-			return Node.Invalid;
+			return path.Other(arc, node);
 		}
 
 		public static Node PrevNode(this IPath path, Node node)
 		{
 			Arc arc = path.PrevArc(node);
-			if (!(arc == Arc.Invalid))
+			if (arc == Arc.Invalid)
 			{
-				return path.Other(arc, node);
+				return Node.Invalid;
 			}
-			return Node.Invalid;
+			return path.Other(arc, node);
 		}
 
 		internal static IEnumerable<Arc> ArcsHelper(this IPath path, Node u, ArcFilter filter)

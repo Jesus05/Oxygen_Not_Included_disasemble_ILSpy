@@ -106,14 +106,14 @@ public class CommandModule : StateMachineComponent<CommandModule.StatesInstance>
 			});
 			grounded.waitingToRelease.ToggleStatusItem(Db.Get().BuildingStatusItems.DisembarkingDuplicant, (object)null).OnSignal(gantryChanged, grounded.awaitingAstronaut, delegate(StatesInstance smi)
 			{
-				if (!HasValidGantry(smi.gameObject))
+				if (HasValidGantry(smi.gameObject))
 				{
-					return false;
+					smi.master.ReleaseAstronaut(accumulatedPee.Get(smi));
+					accumulatedPee.Set(false, smi);
+					Game.Instance.userMenu.Refresh(smi.gameObject);
+					return true;
 				}
-				smi.master.ReleaseAstronaut(accumulatedPee.Get(smi));
-				accumulatedPee.Set(false, smi);
-				Game.Instance.userMenu.Refresh(smi.gameObject);
-				return true;
+				return false;
 			});
 			spaceborne.DefaultState(spaceborne.launch);
 			spaceborne.launch.Enter(delegate(StatesInstance smi)
@@ -134,7 +134,7 @@ public class CommandModule : StateMachineComponent<CommandModule.StatesInstance>
 
 	public RocketStats rocketStats;
 
-	private bool releasingAstronaut = false;
+	private bool releasingAstronaut;
 
 	private const Sim.Cell.Properties floorCellProperties = (Sim.Cell.Properties)39;
 
@@ -200,15 +200,15 @@ public class CommandModule : StateMachineComponent<CommandModule.StatesInstance>
 		assignable = GetComponent<Assignable>();
 		assignable.eligibleFilter = delegate(MinionAssignablesProxy identity)
 		{
-			if (!(identity.target is MinionIdentity))
+			if (identity.target is MinionIdentity)
 			{
-				if (!(identity.target is StoredMinionIdentity))
-				{
-					return false;
-				}
+				return (identity.target as KMonoBehaviour).GetComponent<MinionResume>().HasPerk(RoleManager.rolePerks.CanUseRockets);
+			}
+			if (identity.target is StoredMinionIdentity)
+			{
 				return (identity.target as StoredMinionIdentity).HasPerk(RoleManager.rolePerks.CanUseRockets);
 			}
-			return (identity.target as KMonoBehaviour).GetComponent<MinionResume>().HasPerk(RoleManager.rolePerks.CanUseRockets);
+			return false;
 		};
 		base.smi.StartSM();
 		int cell = Grid.OffsetCell(Grid.PosToCell(base.gameObject), 0, -1);

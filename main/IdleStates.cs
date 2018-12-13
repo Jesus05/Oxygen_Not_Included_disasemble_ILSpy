@@ -34,12 +34,12 @@ internal class IdleStates : GameStateMachine<IdleStates, IdleStates.Instance, IS
 
 		public override bool IsMatch(int cell, int parent_cell, int cost)
 		{
-			if (Grid.IsValidCell(cell))
+			if (!Grid.IsValidCell(cell))
 			{
-				if (Grid.IsSubstantialLiquid(cell, 0.35f) != (navType == NavType.Swim))
-				{
-					return false;
-				}
+				return false;
+			}
+			if (Grid.IsSubstantialLiquid(cell, 0.35f) == (navType == NavType.Swim))
+			{
 				targetCell = cell;
 				return --maxIterations <= 0;
 			}
@@ -59,14 +59,10 @@ internal class IdleStates : GameStateMachine<IdleStates, IdleStates.Instance, IS
 	public override void InitializeStates(out BaseState default_state)
 	{
 		default_state = loop;
-		State state = root.Exit("StopNavigator", delegate(Instance smi)
+		root.Exit("StopNavigator", delegate(Instance smi)
 		{
 			smi.GetComponent<Navigator>().Stop(false);
-		});
-		string name = CREATURES.STATUSITEMS.IDLE.NAME;
-		string tooltip = CREATURES.STATUSITEMS.IDLE.TOOLTIP;
-		StatusItemCategory main = Db.Get().StatusItemCategories.Main;
-		state.ToggleStatusItem(name, tooltip, "", StatusItem.IconType.Info, NotificationType.Neutral, false, default(HashedString), 63486, null, null, main).ToggleTag(GameTags.Idle);
+		}).ToggleStatusItem(CREATURES.STATUSITEMS.IDLE.NAME, CREATURES.STATUSITEMS.IDLE.TOOLTIP, category: Db.Get().StatusItemCategories.Main, icon: string.Empty, icon_type: StatusItem.IconType.Info, notification_type: NotificationType.Neutral, allow_multiples: false, render_overlay: default(HashedString), status_overlays: 63486, resolve_string_callback: null, resolve_tooltip_callback: null).ToggleTag(GameTags.Idle);
 		loop.Enter(PlayIdle).ToggleScheduleCallback("IdleMove", (Instance smi) => (float)Random.Range(3, 10), delegate(Instance smi)
 		{
 			smi.GoTo(move);

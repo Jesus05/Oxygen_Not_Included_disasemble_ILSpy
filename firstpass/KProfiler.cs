@@ -18,7 +18,7 @@ public static class KProfiler
 		}
 	}
 
-	public static int counter = 0;
+	public static int counter;
 
 	public static Thread main_thread;
 

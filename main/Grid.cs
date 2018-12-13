@@ -940,21 +940,21 @@ public class Grid
 	public static bool IsLiquid(int cell)
 	{
 		Element element = ElementLoader.elements[ElementIdx[cell]];
-		if (!element.IsLiquid)
+		if (element.IsLiquid)
 		{
-			return false;
+			return true;
 		}
-		return true;
+		return false;
 	}
 
 	public static bool IsGas(int cell)
 	{
 		Element element = ElementLoader.elements[ElementIdx[cell]];
-		if (!element.IsGas)
+		if (element.IsGas)
 		{
-			return false;
+			return true;
 		}
-		return true;
+		return false;
 	}
 
 	public static void GetVisibleExtents(out int min_x, out int min_y, out int max_x, out int max_y)

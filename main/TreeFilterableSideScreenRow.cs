@@ -12,7 +12,7 @@ public class TreeFilterableSideScreenRow : KMonoBehaviour
 		On
 	}
 
-	public bool visualDirty = false;
+	public bool visualDirty;
 
 	[SerializeField]
 	private LocText elementName;

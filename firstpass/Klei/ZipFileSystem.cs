@@ -34,13 +34,13 @@ namespace Klei
 				filename = filename.Substring(mountPoint.Length);
 			}
 			ZipEntry zipEntry = zipfile[filename];
-			if (zipEntry != null)
+			if (zipEntry == null)
 			{
-				MemoryStream memoryStream = new MemoryStream();
-				zipEntry.Extract(memoryStream);
-				return memoryStream.ToArray();
+				return null;
 			}
-			return null;
+			MemoryStream memoryStream = new MemoryStream();
+			zipEntry.Extract(memoryStream);
+			return memoryStream.ToArray();
 		}
 
 		public void GetFiles(Regex re, string path, ICollection<string> result)

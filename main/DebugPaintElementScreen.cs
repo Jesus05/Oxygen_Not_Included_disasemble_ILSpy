@@ -25,13 +25,13 @@ public class DebugPaintElementScreen : KScreen
 	public float temperature = -1f;
 
 	[NonSerialized]
-	public bool set_prevent_fow_reveal = false;
+	public bool set_prevent_fow_reveal;
 
 	[NonSerialized]
-	public bool set_allow_fow_reveal = false;
+	public bool set_allow_fow_reveal;
 
 	[NonSerialized]
-	public int diseaseCount = 0;
+	public int diseaseCount;
 
 	public byte diseaseIdx;
 
@@ -98,7 +98,7 @@ public class DebugPaintElementScreen : KScreen
 
 	private List<string> options_list = new List<string>();
 
-	private string filter = null;
+	private string filter;
 
 	public static DebugPaintElementScreen Instance
 	{
@@ -430,10 +430,10 @@ public class DebugPaintElementScreen : KScreen
 				{
 					if ((UnityEngine.Object)currentSelectedGameObject == (UnityEngine.Object)inputField.gameObject)
 					{
-						result = true;
-						break;
+						return true;
 					}
 				}
+				return result;
 			}
 		}
 		return result;

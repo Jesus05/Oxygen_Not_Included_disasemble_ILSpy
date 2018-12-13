@@ -43,7 +43,7 @@ public class ChoreType : Resource
 	public ChoreType(string id, ResourceSet parent, string[] chore_groups, string urge, string name, string status_message, string tooltip, Tag[] interrupt_exclusion, int implicit_priority, int explicit_priority)
 		: base(id, parent, name)
 	{
-		statusItem = new StatusItem(id, status_message, tooltip, "", StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, 63486);
+		statusItem = new StatusItem(id, status_message, tooltip, string.Empty, StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, 63486);
 		statusItem.resolveStringCallback = ResolveStringCallback;
 		tags.Add(TagManager.Create(id));
 		interruptExclusion = new List<Tag>(interrupt_exclusion);

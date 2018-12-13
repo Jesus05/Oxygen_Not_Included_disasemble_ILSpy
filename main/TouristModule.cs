@@ -40,9 +40,9 @@ public class TouristModule : StateMachineComponent<TouristModule.StatesInstance>
 	public Storage storage;
 
 	[Serialize]
-	private bool isSuspended = false;
+	private bool isSuspended;
 
-	private bool releasingAstronaut = false;
+	private bool releasingAstronaut;
 
 	private const Sim.Cell.Properties floorCellProperties = (Sim.Cell.Properties)39;
 

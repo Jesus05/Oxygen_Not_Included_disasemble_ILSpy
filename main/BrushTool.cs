@@ -25,15 +25,15 @@ public class BrushTool : InterfaceTool
 
 	protected Vector3 placementPivot;
 
-	protected bool interceptNumberKeysForPriority = false;
+	protected bool interceptNumberKeysForPriority;
 
 	protected List<Vector2> brushOffsets = new List<Vector2>();
 
-	protected bool affectFoundation = false;
+	protected bool affectFoundation;
 
 	private static int defaultLayerMask;
 
-	private bool dragging = false;
+	private bool dragging;
 
 	protected int brushRadius = -1;
 

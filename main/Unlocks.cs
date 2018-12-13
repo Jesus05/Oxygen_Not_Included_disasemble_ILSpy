@@ -121,15 +121,15 @@ public class Unlocks : KMonoBehaviour
 
 	public bool IsUnlocked(string unlockID)
 	{
-		if (!string.IsNullOrEmpty(unlockID))
+		if (string.IsNullOrEmpty(unlockID))
 		{
-			if (!DebugHandler.InstantBuildMode)
-			{
-				return unlocked.Contains(unlockID);
-			}
+			return false;
+		}
+		if (DebugHandler.InstantBuildMode)
+		{
 			return true;
 		}
-		return false;
+		return unlocked.Contains(unlockID);
 	}
 
 	public void Unlock(string unlockID)
@@ -181,7 +181,7 @@ public class Unlocks : KMonoBehaviour
 		unlocked.Clear();
 		if (File.Exists(UnlocksFilename))
 		{
-			string text = "";
+			string text = string.Empty;
 			bool flag = false;
 			int num = 0;
 			while (!flag && num < 5)

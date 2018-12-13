@@ -32,14 +32,10 @@ internal class FleeStates : GameStateMachine<FleeStates, FleeStates.Instance, IS
 	public override void InitializeStates(out BaseState default_state)
 	{
 		default_state = plan;
-		State state = root.Enter("SetFleeTarget", delegate(Instance smi)
+		root.Enter("SetFleeTarget", delegate(Instance smi)
 		{
 			fleeToTarget.Set(CreatureHelpers.GetFleeTargetLocatorObject(smi.master.gameObject, smi.GetSMI<ThreatMonitor.Instance>().MainThreat), smi);
-		});
-		string name = CREATURES.STATUSITEMS.FLEEING.NAME;
-		string tooltip = CREATURES.STATUSITEMS.FLEEING.TOOLTIP;
-		StatusItemCategory main = Db.Get().StatusItemCategories.Main;
-		state.ToggleStatusItem(name, tooltip, "", StatusItem.IconType.Info, NotificationType.Neutral, false, default(HashedString), 63486, null, null, main);
+		}).ToggleStatusItem(CREATURES.STATUSITEMS.FLEEING.NAME, CREATURES.STATUSITEMS.FLEEING.TOOLTIP, category: Db.Get().StatusItemCategories.Main, icon: string.Empty, icon_type: StatusItem.IconType.Info, notification_type: NotificationType.Neutral, allow_multiples: false, render_overlay: default(HashedString), status_overlays: 63486, resolve_string_callback: null, resolve_tooltip_callback: null);
 		plan.Enter(delegate(Instance smi)
 		{
 			ThreatMonitor.Instance sMI = smi.master.gameObject.GetSMI<ThreatMonitor.Instance>();

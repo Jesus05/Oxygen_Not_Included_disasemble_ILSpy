@@ -2,17 +2,17 @@ using UnityEngine;
 
 public class NativeAnimBatchLoader : MonoBehaviour
 {
-	public bool performTimeUpdate = false;
+	public bool performTimeUpdate;
 
-	public bool performUpdate = false;
+	public bool performUpdate;
 
-	public bool performRender = false;
+	public bool performRender;
 
-	public bool setTimeScale = false;
+	public bool setTimeScale;
 
-	public bool destroySelf = false;
+	public bool destroySelf;
 
-	public bool generateObjects = false;
+	public bool generateObjects;
 
 	public GameObject[] enableObjects;
 

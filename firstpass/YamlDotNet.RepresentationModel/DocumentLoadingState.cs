@@ -29,15 +29,15 @@ namespace YamlDotNet.RepresentationModel
 
 		public YamlNode GetNode(string anchor, bool throwException, Mark start, Mark end)
 		{
-			if (!anchors.TryGetValue(anchor, out YamlNode value))
+			if (anchors.TryGetValue(anchor, out YamlNode value))
 			{
-				if (throwException)
-				{
-					throw new AnchorNotFoundException(start, end, string.Format(CultureInfo.InvariantCulture, "The anchor '{0}' does not exists", anchor));
-				}
-				return null;
+				return value;
 			}
-			return value;
+			if (throwException)
+			{
+				throw new AnchorNotFoundException(start, end, string.Format(CultureInfo.InvariantCulture, "The anchor '{0}' does not exists", anchor));
+			}
+			return null;
 		}
 
 		public void AddNodeWithUnresolvedAliases(YamlNode node)

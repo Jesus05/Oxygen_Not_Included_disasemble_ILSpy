@@ -86,11 +86,11 @@ public class ComplexFabricatorSideScreen : SideScreenContent
 
 	public override string GetTitle()
 	{
-		if (!((UnityEngine.Object)targetFab == (UnityEngine.Object)null))
+		if ((UnityEngine.Object)targetFab == (UnityEngine.Object)null)
 		{
-			return string.Format(Strings.Get(titleKey), targetFab.GetProperName());
+			return Strings.Get(titleKey).ToString().Replace("{0}", string.Empty);
 		}
-		return Strings.Get(titleKey).ToString().Replace("{0}", "");
+		return string.Format(Strings.Get(titleKey), targetFab.GetProperName());
 	}
 
 	public override bool IsValidForTarget(GameObject target)
@@ -375,7 +375,7 @@ public class ComplexFabricatorSideScreen : SideScreenContent
 	{
 		HierarchyReferences component = entryGO.GetComponent<HierarchyReferences>();
 		bool flag = fabricator.GetRecipeQueueCount(recipeMap[entryGO]) == ComplexFabricator.QUEUE_INFINITE;
-		component.GetReference<LocText>("CountLabel").text = ((!flag) ? fabricator.GetRecipeQueueCount(recipeMap[entryGO]).ToString() : "");
+		component.GetReference<LocText>("CountLabel").text = ((!flag) ? fabricator.GetRecipeQueueCount(recipeMap[entryGO]).ToString() : string.Empty);
 		component.GetReference<RectTransform>("InfiniteIcon").gameObject.SetActive(flag);
 	}
 

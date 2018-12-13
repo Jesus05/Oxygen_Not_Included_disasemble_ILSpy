@@ -23,7 +23,7 @@ public class Spacecraft
 	public string rocketName = UI.STARMAP.DEFAULT_NAME;
 
 	[Serialize]
-	public int moduleCount = 0;
+	public int moduleCount;
 
 	[Serialize]
 	public Ref<LaunchConditionManager> refLaunchConditions = new Ref<LaunchConditionManager>();
@@ -32,10 +32,10 @@ public class Spacecraft
 	public MissionState state;
 
 	[Serialize]
-	private float missionElapsed = 0f;
+	private float missionElapsed;
 
 	[Serialize]
-	private float missionDuration = 0f;
+	private float missionDuration;
 
 	public LaunchConditionManager launchConditions
 	{

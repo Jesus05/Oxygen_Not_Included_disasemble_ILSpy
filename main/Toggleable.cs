@@ -33,11 +33,11 @@ public class Toggleable : Workable
 	public IToggleHandler GetToggleHandlerForWorker(Worker worker)
 	{
 		int targetForWorker = GetTargetForWorker(worker);
-		if (targetForWorker == -1)
+		if (targetForWorker != -1)
 		{
-			return null;
+			return targets[targetForWorker].Key;
 		}
-		return targets[targetForWorker].Key;
+		return null;
 	}
 
 	private int GetTargetForWorker(Worker worker)

@@ -2,7 +2,7 @@ using System;
 
 public class SeededRandom
 {
-	private Random rnd = null;
+	private Random rnd;
 
 	public int seed
 	{

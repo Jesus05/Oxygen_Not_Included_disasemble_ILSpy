@@ -120,21 +120,21 @@ namespace Steamworks
 
 		public static string PtrToStringUTF8(IntPtr nativeUtf8)
 		{
-			if (!(nativeUtf8 == IntPtr.Zero))
+			if (nativeUtf8 == IntPtr.Zero)
 			{
-				int i;
-				for (i = 0; Marshal.ReadByte(nativeUtf8, i) != 0; i++)
-				{
-				}
-				if (i != 0)
-				{
-					byte[] array = new byte[i];
-					Marshal.Copy(nativeUtf8, array, 0, array.Length);
-					return Encoding.UTF8.GetString(array);
-				}
+				return null;
+			}
+			int i;
+			for (i = 0; Marshal.ReadByte(nativeUtf8, i) != 0; i++)
+			{
+			}
+			if (i == 0)
+			{
 				return string.Empty;
 			}
-			return null;
+			byte[] array = new byte[i];
+			Marshal.Copy(nativeUtf8, array, 0, array.Length);
+			return Encoding.UTF8.GetString(array);
 		}
 	}
 }

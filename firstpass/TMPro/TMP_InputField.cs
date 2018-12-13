@@ -117,25 +117,25 @@ namespace TMPro
 		protected float m_ScrollSensitivity = 1f;
 
 		[SerializeField]
-		private ContentType m_ContentType = ContentType.Standard;
+		private ContentType m_ContentType;
 
 		[SerializeField]
-		private InputType m_InputType = InputType.Standard;
+		private InputType m_InputType;
 
 		[SerializeField]
 		private char m_AsteriskChar = '*';
 
 		[SerializeField]
-		private TouchScreenKeyboardType m_KeyboardType = TouchScreenKeyboardType.Default;
+		private TouchScreenKeyboardType m_KeyboardType;
 
 		[SerializeField]
-		private LineType m_LineType = LineType.SingleLine;
+		private LineType m_LineType;
 
 		[SerializeField]
-		private bool m_HideMobileInput = false;
+		private bool m_HideMobileInput;
 
 		[SerializeField]
-		private CharacterValidation m_CharacterValidation = CharacterValidation.None;
+		private CharacterValidation m_CharacterValidation;
 
 		[SerializeField]
 		private string m_RegexValue = string.Empty;
@@ -144,7 +144,7 @@ namespace TMPro
 		private float m_GlobalPointSize = 14f;
 
 		[SerializeField]
-		private int m_CharacterLimit = 0;
+		private int m_CharacterLimit;
 
 		[SerializeField]
 		private SubmitEvent m_OnEndEdit = new SubmitEvent();
@@ -174,7 +174,7 @@ namespace TMPro
 		private Color m_CaretColor = new Color(0.196078435f, 0.196078435f, 0.196078435f, 1f);
 
 		[SerializeField]
-		private bool m_CustomCaretColor = false;
+		private bool m_CustomCaretColor;
 
 		[SerializeField]
 		private Color m_SelectionColor = new Color(0.65882355f, 0.807843149f, 1f, 0.7529412f);
@@ -191,22 +191,22 @@ namespace TMPro
 		private int m_CaretWidth = 1;
 
 		[SerializeField]
-		private bool m_ReadOnly = false;
+		private bool m_ReadOnly;
 
 		[SerializeField]
 		private bool m_RichText = true;
 
-		protected int m_StringPosition = 0;
+		protected int m_StringPosition;
 
-		protected int m_StringSelectPosition = 0;
+		protected int m_StringSelectPosition;
 
-		protected int m_CaretPosition = 0;
+		protected int m_CaretPosition;
 
-		protected int m_CaretSelectPosition = 0;
+		protected int m_CaretSelectPosition;
 
-		private RectTransform caretRectTrans = null;
+		private RectTransform caretRectTrans;
 
-		protected UIVertex[] m_CursorVerts = null;
+		protected UIVertex[] m_CursorVerts;
 
 		private CanvasRenderer m_CachedInputRenderer;
 
@@ -217,13 +217,13 @@ namespace TMPro
 		[NonSerialized]
 		protected Mesh m_Mesh;
 
-		private bool m_AllowInput = false;
+		private bool m_AllowInput;
 
-		private bool m_ShouldActivateNextUpdate = false;
+		private bool m_ShouldActivateNextUpdate;
 
-		private bool m_UpdateDrag = false;
+		private bool m_UpdateDrag;
 
-		private bool m_DragPositionOutOfBounds = false;
+		private bool m_DragPositionOutOfBounds;
 
 		private const float kHScrollSpeed = 0.05f;
 
@@ -231,23 +231,23 @@ namespace TMPro
 
 		protected bool m_CaretVisible;
 
-		private Coroutine m_BlinkCoroutine = null;
+		private Coroutine m_BlinkCoroutine;
 
-		private float m_BlinkStartTime = 0f;
+		private float m_BlinkStartTime;
 
-		private Coroutine m_DragCoroutine = null;
+		private Coroutine m_DragCoroutine;
 
-		private string m_OriginalText = "";
+		private string m_OriginalText = string.Empty;
 
-		private bool m_WasCanceled = false;
+		private bool m_WasCanceled;
 
-		private bool m_HasDoneFocusTransition = false;
+		private bool m_HasDoneFocusTransition;
 
-		private bool m_IsScrollbarUpdateRequired = false;
+		private bool m_IsScrollbarUpdateRequired;
 
-		private bool m_IsUpdatingScrollbarValues = false;
+		private bool m_IsUpdatingScrollbarValues;
 
-		private bool m_isLastKeyBackspace = false;
+		private bool m_isLastKeyBackspace;
 
 		private float m_ClickStartTime;
 
@@ -273,7 +273,7 @@ namespace TMPro
 		protected bool m_isRichTextEditingAllowed = true;
 
 		[SerializeField]
-		protected TMP_InputValidator m_InputValidator = null;
+		protected TMP_InputValidator m_InputValidator;
 
 		private bool m_isSelected;
 
@@ -300,11 +300,11 @@ namespace TMPro
 			get
 			{
 				RuntimePlatform platform = Application.platform;
-				if (platform != RuntimePlatform.Android && platform != RuntimePlatform.IPhonePlayer && platform != RuntimePlatform.tvOS)
+				if (platform == RuntimePlatform.Android || platform == RuntimePlatform.IPhonePlayer || platform == RuntimePlatform.tvOS)
 				{
-					return true;
+					return m_HideMobileInput;
 				}
-				return m_HideMobileInput;
+				return true;
 			}
 			set
 			{
@@ -1285,7 +1285,7 @@ namespace TMPro
 						}
 						else
 						{
-							m_Text = "";
+							m_Text = string.Empty;
 							for (int i = 0; i < text.Length; i++)
 							{
 								char c = text[i];
@@ -1537,7 +1537,7 @@ namespace TMPro
 					}
 					else
 					{
-						clipboard = "";
+						clipboard = string.Empty;
 					}
 					return EditState.Continue;
 				}
@@ -1558,7 +1558,7 @@ namespace TMPro
 					}
 					else
 					{
-						clipboard = "";
+						clipboard = string.Empty;
 					}
 					Delete();
 					SendOnValueChangedAndUpdateLabel();
@@ -1689,84 +1689,92 @@ namespace TMPro
 
 		private string GetSelectedString()
 		{
-			if (hasSelection)
+			if (!hasSelection)
 			{
-				int num = stringPositionInternal;
-				int num2 = stringSelectPositionInternal;
-				if (num > num2)
-				{
-					int num3 = num;
-					num = num2;
-					num2 = num3;
-				}
-				return text.Substring(num, num2 - num);
+				return string.Empty;
 			}
-			return "";
+			int num = stringPositionInternal;
+			int num2 = stringSelectPositionInternal;
+			if (num > num2)
+			{
+				int num3 = num;
+				num = num2;
+				num2 = num3;
+			}
+			return text.Substring(num, num2 - num);
 		}
 
 		private int FindtNextWordBegin()
 		{
-			if (stringSelectPositionInternal + 1 < text.Length)
+			if (stringSelectPositionInternal + 1 >= text.Length)
 			{
-				int num = text.IndexOfAny(kSeparators, stringSelectPositionInternal + 1);
-				return (num != -1) ? (num + 1) : text.Length;
+				return text.Length;
+			}
+			int num = text.IndexOfAny(kSeparators, stringSelectPositionInternal + 1);
+			if (num != -1)
+			{
+				return num + 1;
 			}
 			return text.Length;
 		}
 
 		private void MoveRight(bool shift, bool ctrl)
 		{
-			if (!hasSelection || shift)
+			if (hasSelection && !shift)
 			{
-				int num = ctrl ? FindtNextWordBegin() : ((!m_isRichTextEditingAllowed) ? GetStringIndexFromCaretPosition(caretSelectPositionInternal + 1) : (stringSelectPositionInternal + 1));
+				int num3 = stringPositionInternal = (stringSelectPositionInternal = Mathf.Max(stringPositionInternal, stringSelectPositionInternal));
+				num3 = (caretPositionInternal = (caretSelectPositionInternal = GetCaretPositionFromStringIndex(stringSelectPositionInternal)));
+			}
+			else
+			{
+				int num5 = ctrl ? FindtNextWordBegin() : ((!m_isRichTextEditingAllowed) ? GetStringIndexFromCaretPosition(caretSelectPositionInternal + 1) : (stringSelectPositionInternal + 1));
 				if (shift)
 				{
-					stringSelectPositionInternal = num;
+					stringSelectPositionInternal = num5;
 					caretSelectPositionInternal = GetCaretPositionFromStringIndex(stringSelectPositionInternal);
 				}
 				else
 				{
-					int num4 = stringSelectPositionInternal = (stringPositionInternal = num);
-					num4 = (caretSelectPositionInternal = (caretPositionInternal = GetCaretPositionFromStringIndex(stringSelectPositionInternal)));
+					int num3 = stringSelectPositionInternal = (stringPositionInternal = num5);
+					num3 = (caretSelectPositionInternal = (caretPositionInternal = GetCaretPositionFromStringIndex(stringSelectPositionInternal)));
 				}
-			}
-			else
-			{
-				int num4 = stringPositionInternal = (stringSelectPositionInternal = Mathf.Max(stringPositionInternal, stringSelectPositionInternal));
-				num4 = (caretPositionInternal = (caretSelectPositionInternal = GetCaretPositionFromStringIndex(stringSelectPositionInternal)));
 			}
 		}
 
 		private int FindtPrevWordBegin()
 		{
-			if (stringSelectPositionInternal - 2 >= 0)
+			if (stringSelectPositionInternal - 2 < 0)
 			{
-				int num = text.LastIndexOfAny(kSeparators, stringSelectPositionInternal - 2);
-				return (num != -1) ? (num + 1) : 0;
+				return 0;
+			}
+			int num = text.LastIndexOfAny(kSeparators, stringSelectPositionInternal - 2);
+			if (num != -1)
+			{
+				return num + 1;
 			}
 			return 0;
 		}
 
 		private void MoveLeft(bool shift, bool ctrl)
 		{
-			if (!hasSelection || shift)
+			if (hasSelection && !shift)
 			{
-				int num = ctrl ? FindtPrevWordBegin() : ((!m_isRichTextEditingAllowed) ? GetStringIndexFromCaretPosition(caretSelectPositionInternal - 1) : (stringSelectPositionInternal - 1));
+				int num3 = stringPositionInternal = (stringSelectPositionInternal = Mathf.Min(stringPositionInternal, stringSelectPositionInternal));
+				num3 = (caretPositionInternal = (caretSelectPositionInternal = GetCaretPositionFromStringIndex(stringSelectPositionInternal)));
+			}
+			else
+			{
+				int num5 = ctrl ? FindtPrevWordBegin() : ((!m_isRichTextEditingAllowed) ? GetStringIndexFromCaretPosition(caretSelectPositionInternal - 1) : (stringSelectPositionInternal - 1));
 				if (shift)
 				{
-					stringSelectPositionInternal = num;
+					stringSelectPositionInternal = num5;
 					caretSelectPositionInternal = GetCaretPositionFromStringIndex(stringSelectPositionInternal);
 				}
 				else
 				{
-					int num4 = stringSelectPositionInternal = (stringPositionInternal = num);
-					num4 = (caretSelectPositionInternal = (caretPositionInternal = GetCaretPositionFromStringIndex(stringSelectPositionInternal)));
+					int num3 = stringSelectPositionInternal = (stringPositionInternal = num5);
+					num3 = (caretSelectPositionInternal = (caretPositionInternal = GetCaretPositionFromStringIndex(stringSelectPositionInternal)));
 				}
-			}
-			else
-			{
-				int num4 = stringPositionInternal = (stringSelectPositionInternal = Mathf.Min(stringPositionInternal, stringSelectPositionInternal));
-				num4 = (caretPositionInternal = (caretSelectPositionInternal = GetCaretPositionFromStringIndex(stringSelectPositionInternal)));
 			}
 		}
 
@@ -1778,92 +1786,92 @@ namespace TMPro
 			}
 			TMP_CharacterInfo tMP_CharacterInfo = m_TextComponent.textInfo.characterInfo[originalPos];
 			int lineNumber = tMP_CharacterInfo.lineNumber;
-			if (lineNumber - 1 >= 0)
+			if (lineNumber - 1 < 0)
 			{
-				int num = m_TextComponent.textInfo.lineInfo[lineNumber].firstCharacterIndex - 1;
-				int num2 = -1;
-				float num3 = 32767f;
-				float num4 = 0f;
-				for (int i = m_TextComponent.textInfo.lineInfo[lineNumber - 1].firstCharacterIndex; i < num; i++)
+				return (!goToFirstChar) ? originalPos : 0;
+			}
+			int num = m_TextComponent.textInfo.lineInfo[lineNumber].firstCharacterIndex - 1;
+			int num2 = -1;
+			float num3 = 32767f;
+			float num4 = 0f;
+			for (int i = m_TextComponent.textInfo.lineInfo[lineNumber - 1].firstCharacterIndex; i < num; i++)
+			{
+				TMP_CharacterInfo tMP_CharacterInfo2 = m_TextComponent.textInfo.characterInfo[i];
+				float num5 = tMP_CharacterInfo.origin - tMP_CharacterInfo2.origin;
+				float num6 = num5 / (tMP_CharacterInfo2.xAdvance - tMP_CharacterInfo2.origin);
+				if (num6 >= 0f && num6 <= 1f)
 				{
-					TMP_CharacterInfo tMP_CharacterInfo2 = m_TextComponent.textInfo.characterInfo[i];
-					float num5 = tMP_CharacterInfo.origin - tMP_CharacterInfo2.origin;
-					float num6 = num5 / (tMP_CharacterInfo2.xAdvance - tMP_CharacterInfo2.origin);
-					if (num6 >= 0f && num6 <= 1f)
+					if (num6 < 0.5f)
 					{
-						if (!(num6 < 0.5f))
-						{
-							return i + 1;
-						}
 						return i;
 					}
-					num5 = Mathf.Abs(num5);
-					if (num5 < num3)
-					{
-						num2 = i;
-						num3 = num5;
-						num4 = num6;
-					}
+					return i + 1;
 				}
-				if (num2 != -1)
+				num5 = Mathf.Abs(num5);
+				if (num5 < num3)
 				{
-					if (!(num4 < 0.5f))
-					{
-						return num2 + 1;
-					}
-					return num2;
+					num2 = i;
+					num3 = num5;
+					num4 = num6;
 				}
+			}
+			if (num2 == -1)
+			{
 				return num;
 			}
-			return (!goToFirstChar) ? originalPos : 0;
+			if (num4 < 0.5f)
+			{
+				return num2;
+			}
+			return num2 + 1;
 		}
 
 		private int LineDownCharacterPosition(int originalPos, bool goToLastChar)
 		{
-			if (originalPos < m_TextComponent.textInfo.characterCount)
+			if (originalPos >= m_TextComponent.textInfo.characterCount)
 			{
-				TMP_CharacterInfo tMP_CharacterInfo = m_TextComponent.textInfo.characterInfo[originalPos];
-				int lineNumber = tMP_CharacterInfo.lineNumber;
-				if (lineNumber + 1 < m_TextComponent.textInfo.lineCount)
-				{
-					int lastCharacterIndex = m_TextComponent.textInfo.lineInfo[lineNumber + 1].lastCharacterIndex;
-					int num = -1;
-					float num2 = 32767f;
-					float num3 = 0f;
-					for (int i = m_TextComponent.textInfo.lineInfo[lineNumber + 1].firstCharacterIndex; i < lastCharacterIndex; i++)
-					{
-						TMP_CharacterInfo tMP_CharacterInfo2 = m_TextComponent.textInfo.characterInfo[i];
-						float num4 = tMP_CharacterInfo.origin - tMP_CharacterInfo2.origin;
-						float num5 = num4 / (tMP_CharacterInfo2.xAdvance - tMP_CharacterInfo2.origin);
-						if (num5 >= 0f && num5 <= 1f)
-						{
-							if (!(num5 < 0.5f))
-							{
-								return i + 1;
-							}
-							return i;
-						}
-						num4 = Mathf.Abs(num4);
-						if (num4 < num2)
-						{
-							num = i;
-							num2 = num4;
-							num3 = num5;
-						}
-					}
-					if (num != -1)
-					{
-						if (!(num3 < 0.5f))
-						{
-							return num + 1;
-						}
-						return num;
-					}
-					return lastCharacterIndex;
-				}
+				return m_TextComponent.textInfo.characterCount - 1;
+			}
+			TMP_CharacterInfo tMP_CharacterInfo = m_TextComponent.textInfo.characterInfo[originalPos];
+			int lineNumber = tMP_CharacterInfo.lineNumber;
+			if (lineNumber + 1 >= m_TextComponent.textInfo.lineCount)
+			{
 				return (!goToLastChar) ? originalPos : (m_TextComponent.textInfo.characterCount - 1);
 			}
-			return m_TextComponent.textInfo.characterCount - 1;
+			int lastCharacterIndex = m_TextComponent.textInfo.lineInfo[lineNumber + 1].lastCharacterIndex;
+			int num = -1;
+			float num2 = 32767f;
+			float num3 = 0f;
+			for (int i = m_TextComponent.textInfo.lineInfo[lineNumber + 1].firstCharacterIndex; i < lastCharacterIndex; i++)
+			{
+				TMP_CharacterInfo tMP_CharacterInfo2 = m_TextComponent.textInfo.characterInfo[i];
+				float num4 = tMP_CharacterInfo.origin - tMP_CharacterInfo2.origin;
+				float num5 = num4 / (tMP_CharacterInfo2.xAdvance - tMP_CharacterInfo2.origin);
+				if (num5 >= 0f && num5 <= 1f)
+				{
+					if (num5 < 0.5f)
+					{
+						return i;
+					}
+					return i + 1;
+				}
+				num4 = Mathf.Abs(num4);
+				if (num4 < num2)
+				{
+					num = i;
+					num2 = num4;
+					num3 = num5;
+				}
+			}
+			if (num == -1)
+			{
+				return lastCharacterIndex;
+			}
+			if (num3 < 0.5f)
+			{
+				return num;
+			}
+			return num + 1;
 		}
 
 		private int PageUpCharacterPosition(int originalPos, bool goToFirstChar)
@@ -1874,103 +1882,103 @@ namespace TMPro
 			}
 			TMP_CharacterInfo tMP_CharacterInfo = m_TextComponent.textInfo.characterInfo[originalPos];
 			int lineNumber = tMP_CharacterInfo.lineNumber;
-			if (lineNumber - 1 >= 0)
+			if (lineNumber - 1 < 0)
 			{
-				float height = m_TextViewport.rect.height;
-				int num = lineNumber - 1;
-				while (num > 0 && !(m_TextComponent.textInfo.lineInfo[num].baseline > m_TextComponent.textInfo.lineInfo[lineNumber].baseline + height))
+				return (!goToFirstChar) ? originalPos : 0;
+			}
+			float height = m_TextViewport.rect.height;
+			int num = lineNumber - 1;
+			while (num > 0 && !(m_TextComponent.textInfo.lineInfo[num].baseline > m_TextComponent.textInfo.lineInfo[lineNumber].baseline + height))
+			{
+				num--;
+			}
+			int lastCharacterIndex = m_TextComponent.textInfo.lineInfo[num].lastCharacterIndex;
+			int num2 = -1;
+			float num3 = 32767f;
+			float num4 = 0f;
+			for (int i = m_TextComponent.textInfo.lineInfo[num].firstCharacterIndex; i < lastCharacterIndex; i++)
+			{
+				TMP_CharacterInfo tMP_CharacterInfo2 = m_TextComponent.textInfo.characterInfo[i];
+				float num5 = tMP_CharacterInfo.origin - tMP_CharacterInfo2.origin;
+				float num6 = num5 / (tMP_CharacterInfo2.xAdvance - tMP_CharacterInfo2.origin);
+				if (num6 >= 0f && num6 <= 1f)
 				{
-					num--;
-				}
-				int lastCharacterIndex = m_TextComponent.textInfo.lineInfo[num].lastCharacterIndex;
-				int num2 = -1;
-				float num3 = 32767f;
-				float num4 = 0f;
-				for (int i = m_TextComponent.textInfo.lineInfo[num].firstCharacterIndex; i < lastCharacterIndex; i++)
-				{
-					TMP_CharacterInfo tMP_CharacterInfo2 = m_TextComponent.textInfo.characterInfo[i];
-					float num5 = tMP_CharacterInfo.origin - tMP_CharacterInfo2.origin;
-					float num6 = num5 / (tMP_CharacterInfo2.xAdvance - tMP_CharacterInfo2.origin);
-					if (num6 >= 0f && num6 <= 1f)
+					if (num6 < 0.5f)
 					{
-						if (!(num6 < 0.5f))
-						{
-							return i + 1;
-						}
 						return i;
 					}
-					num5 = Mathf.Abs(num5);
-					if (num5 < num3)
-					{
-						num2 = i;
-						num3 = num5;
-						num4 = num6;
-					}
+					return i + 1;
 				}
-				if (num2 != -1)
+				num5 = Mathf.Abs(num5);
+				if (num5 < num3)
 				{
-					if (!(num4 < 0.5f))
-					{
-						return num2 + 1;
-					}
-					return num2;
+					num2 = i;
+					num3 = num5;
+					num4 = num6;
 				}
+			}
+			if (num2 == -1)
+			{
 				return lastCharacterIndex;
 			}
-			return (!goToFirstChar) ? originalPos : 0;
+			if (num4 < 0.5f)
+			{
+				return num2;
+			}
+			return num2 + 1;
 		}
 
 		private int PageDownCharacterPosition(int originalPos, bool goToLastChar)
 		{
-			if (originalPos < m_TextComponent.textInfo.characterCount)
+			if (originalPos >= m_TextComponent.textInfo.characterCount)
 			{
-				TMP_CharacterInfo tMP_CharacterInfo = m_TextComponent.textInfo.characterInfo[originalPos];
-				int lineNumber = tMP_CharacterInfo.lineNumber;
-				if (lineNumber + 1 < m_TextComponent.textInfo.lineCount)
-				{
-					float height = m_TextViewport.rect.height;
-					int i;
-					for (i = lineNumber + 1; i < m_TextComponent.textInfo.lineCount - 1 && !(m_TextComponent.textInfo.lineInfo[i].baseline < m_TextComponent.textInfo.lineInfo[lineNumber].baseline - height); i++)
-					{
-					}
-					int lastCharacterIndex = m_TextComponent.textInfo.lineInfo[i].lastCharacterIndex;
-					int num = -1;
-					float num2 = 32767f;
-					float num3 = 0f;
-					for (int j = m_TextComponent.textInfo.lineInfo[i].firstCharacterIndex; j < lastCharacterIndex; j++)
-					{
-						TMP_CharacterInfo tMP_CharacterInfo2 = m_TextComponent.textInfo.characterInfo[j];
-						float num4 = tMP_CharacterInfo.origin - tMP_CharacterInfo2.origin;
-						float num5 = num4 / (tMP_CharacterInfo2.xAdvance - tMP_CharacterInfo2.origin);
-						if (num5 >= 0f && num5 <= 1f)
-						{
-							if (!(num5 < 0.5f))
-							{
-								return j + 1;
-							}
-							return j;
-						}
-						num4 = Mathf.Abs(num4);
-						if (num4 < num2)
-						{
-							num = j;
-							num2 = num4;
-							num3 = num5;
-						}
-					}
-					if (num != -1)
-					{
-						if (!(num3 < 0.5f))
-						{
-							return num + 1;
-						}
-						return num;
-					}
-					return lastCharacterIndex;
-				}
+				return m_TextComponent.textInfo.characterCount - 1;
+			}
+			TMP_CharacterInfo tMP_CharacterInfo = m_TextComponent.textInfo.characterInfo[originalPos];
+			int lineNumber = tMP_CharacterInfo.lineNumber;
+			if (lineNumber + 1 >= m_TextComponent.textInfo.lineCount)
+			{
 				return (!goToLastChar) ? originalPos : (m_TextComponent.textInfo.characterCount - 1);
 			}
-			return m_TextComponent.textInfo.characterCount - 1;
+			float height = m_TextViewport.rect.height;
+			int i;
+			for (i = lineNumber + 1; i < m_TextComponent.textInfo.lineCount - 1 && !(m_TextComponent.textInfo.lineInfo[i].baseline < m_TextComponent.textInfo.lineInfo[lineNumber].baseline - height); i++)
+			{
+			}
+			int lastCharacterIndex = m_TextComponent.textInfo.lineInfo[i].lastCharacterIndex;
+			int num = -1;
+			float num2 = 32767f;
+			float num3 = 0f;
+			for (int j = m_TextComponent.textInfo.lineInfo[i].firstCharacterIndex; j < lastCharacterIndex; j++)
+			{
+				TMP_CharacterInfo tMP_CharacterInfo2 = m_TextComponent.textInfo.characterInfo[j];
+				float num4 = tMP_CharacterInfo.origin - tMP_CharacterInfo2.origin;
+				float num5 = num4 / (tMP_CharacterInfo2.xAdvance - tMP_CharacterInfo2.origin);
+				if (num5 >= 0f && num5 <= 1f)
+				{
+					if (num5 < 0.5f)
+					{
+						return j;
+					}
+					return j + 1;
+				}
+				num4 = Mathf.Abs(num4);
+				if (num4 < num2)
+				{
+					num = j;
+					num2 = num4;
+					num3 = num5;
+				}
+			}
+			if (num == -1)
+			{
+				return lastCharacterIndex;
+			}
+			if (num3 < 0.5f)
+			{
+				return num;
+			}
+			return num + 1;
 		}
 
 		private void MoveDown(bool shift)
@@ -2123,7 +2131,7 @@ namespace TMPro
 						Debug.LogWarning(obj, null);
 						Debug.LogWarning("m_text=" + text, null);
 						Debug.LogWarning("stringSelectPositionInternal=" + stringSelectPositionInternal.ToString(), null);
-						m_Text = "";
+						m_Text = string.Empty;
 						stringPositionInternal = this.stringSelectPositionInternal;
 					}
 					m_isSelectAll = false;
@@ -2613,7 +2621,7 @@ namespace TMPro
 				catch (Exception obj)
 				{
 					Debug.LogWarning(obj, null);
-					string text = "";
+					string text = string.Empty;
 					Transform transform = base.transform;
 					while ((UnityEngine.Object)transform != (UnityEngine.Object)null)
 					{
@@ -2749,131 +2757,131 @@ namespace TMPro
 
 		protected char Validate(string text, int pos, char ch)
 		{
-			if (characterValidation != 0 && base.enabled)
+			if (characterValidation == CharacterValidation.None || !base.enabled)
 			{
-				if (characterValidation == CharacterValidation.Integer || characterValidation == CharacterValidation.Decimal)
-				{
-					bool flag = pos == 0 && text.Length > 0 && text[0] == '-';
-					bool flag2 = stringPositionInternal == 0 || stringSelectPositionInternal == 0;
-					if (!flag)
-					{
-						if (ch >= '0' && ch <= '9')
-						{
-							return ch;
-						}
-						if (ch == '-' && (pos == 0 || flag2))
-						{
-							return ch;
-						}
-						if (ch == '.' && characterValidation == CharacterValidation.Decimal && !text.Contains("."))
-						{
-							return ch;
-						}
-					}
-				}
-				else if (characterValidation == CharacterValidation.Digit)
-				{
-					if (ch >= '0' && ch <= '9')
-					{
-						return ch;
-					}
-				}
-				else if (characterValidation == CharacterValidation.Alphanumeric)
-				{
-					if (ch >= 'A' && ch <= 'Z')
-					{
-						return ch;
-					}
-					if (ch >= 'a' && ch <= 'z')
-					{
-						return ch;
-					}
-					if (ch >= '0' && ch <= '9')
-					{
-						return ch;
-					}
-				}
-				else if (characterValidation == CharacterValidation.Name)
-				{
-					char c = (text.Length <= 0) ? ' ' : text[Mathf.Clamp(pos, 0, text.Length - 1)];
-					char c2 = (text.Length <= 0) ? '\n' : text[Mathf.Clamp(pos + 1, 0, text.Length - 1)];
-					if (char.IsLetter(ch))
-					{
-						if (char.IsLower(ch) && c == ' ')
-						{
-							return char.ToUpper(ch);
-						}
-						if (char.IsUpper(ch) && c != ' ' && c != '\'')
-						{
-							return char.ToLower(ch);
-						}
-						return ch;
-					}
-					switch (ch)
-					{
-					case '\'':
-						if (c != ' ' && c != '\'' && c2 != '\'' && !text.Contains("'"))
-						{
-							return ch;
-						}
-						break;
-					case ' ':
-						if (c != ' ' && c != '\'' && c2 != ' ' && c2 != '\'')
-						{
-							return ch;
-						}
-						break;
-					}
-				}
-				else if (characterValidation == CharacterValidation.EmailAddress)
-				{
-					if (ch >= 'A' && ch <= 'Z')
-					{
-						return ch;
-					}
-					if (ch >= 'a' && ch <= 'z')
-					{
-						return ch;
-					}
-					if (ch >= '0' && ch <= '9')
-					{
-						return ch;
-					}
-					if (ch == '@' && text.IndexOf('@') == -1)
-					{
-						return ch;
-					}
-					if ("!#$%&'*+-/=?^_`{|}~".IndexOf(ch) != -1)
-					{
-						return ch;
-					}
-					if (ch == '.')
-					{
-						char c3 = (text.Length <= 0) ? ' ' : text[Mathf.Clamp(pos, 0, text.Length - 1)];
-						char c4 = (text.Length <= 0) ? '\n' : text[Mathf.Clamp(pos + 1, 0, text.Length - 1)];
-						if (c3 != '.' && c4 != '.')
-						{
-							return ch;
-						}
-					}
-				}
-				else if (characterValidation == CharacterValidation.Regex)
-				{
-					if (Regex.IsMatch(ch.ToString(), m_RegexValue))
-					{
-						return ch;
-					}
-				}
-				else if (characterValidation == CharacterValidation.CustomValidator && (UnityEngine.Object)m_InputValidator != (UnityEngine.Object)null)
-				{
-					char result = m_InputValidator.Validate(ref text, ref pos, ch);
-					m_Text = text;
-					int num3 = stringSelectPositionInternal = (stringPositionInternal = pos);
-					return result;
-				}
-				return '\0';
+				return ch;
 			}
-			return ch;
+			if (characterValidation == CharacterValidation.Integer || characterValidation == CharacterValidation.Decimal)
+			{
+				bool flag = pos == 0 && text.Length > 0 && text[0] == '-';
+				bool flag2 = stringPositionInternal == 0 || stringSelectPositionInternal == 0;
+				if (!flag)
+				{
+					if (ch >= '0' && ch <= '9')
+					{
+						return ch;
+					}
+					if (ch == '-' && (pos == 0 || flag2))
+					{
+						return ch;
+					}
+					if (ch == '.' && characterValidation == CharacterValidation.Decimal && !text.Contains("."))
+					{
+						return ch;
+					}
+				}
+			}
+			else if (characterValidation == CharacterValidation.Digit)
+			{
+				if (ch >= '0' && ch <= '9')
+				{
+					return ch;
+				}
+			}
+			else if (characterValidation == CharacterValidation.Alphanumeric)
+			{
+				if (ch >= 'A' && ch <= 'Z')
+				{
+					return ch;
+				}
+				if (ch >= 'a' && ch <= 'z')
+				{
+					return ch;
+				}
+				if (ch >= '0' && ch <= '9')
+				{
+					return ch;
+				}
+			}
+			else if (characterValidation == CharacterValidation.Name)
+			{
+				char c = (text.Length <= 0) ? ' ' : text[Mathf.Clamp(pos, 0, text.Length - 1)];
+				char c2 = (text.Length <= 0) ? '\n' : text[Mathf.Clamp(pos + 1, 0, text.Length - 1)];
+				if (char.IsLetter(ch))
+				{
+					if (char.IsLower(ch) && c == ' ')
+					{
+						return char.ToUpper(ch);
+					}
+					if (char.IsUpper(ch) && c != ' ' && c != '\'')
+					{
+						return char.ToLower(ch);
+					}
+					return ch;
+				}
+				switch (ch)
+				{
+				case '\'':
+					if (c != ' ' && c != '\'' && c2 != '\'' && !text.Contains("'"))
+					{
+						return ch;
+					}
+					break;
+				case ' ':
+					if (c != ' ' && c != '\'' && c2 != ' ' && c2 != '\'')
+					{
+						return ch;
+					}
+					break;
+				}
+			}
+			else if (characterValidation == CharacterValidation.EmailAddress)
+			{
+				if (ch >= 'A' && ch <= 'Z')
+				{
+					return ch;
+				}
+				if (ch >= 'a' && ch <= 'z')
+				{
+					return ch;
+				}
+				if (ch >= '0' && ch <= '9')
+				{
+					return ch;
+				}
+				if (ch == '@' && text.IndexOf('@') == -1)
+				{
+					return ch;
+				}
+				if ("!#$%&'*+-/=?^_`{|}~".IndexOf(ch) != -1)
+				{
+					return ch;
+				}
+				if (ch == '.')
+				{
+					char c3 = (text.Length <= 0) ? ' ' : text[Mathf.Clamp(pos, 0, text.Length - 1)];
+					char c4 = (text.Length <= 0) ? '\n' : text[Mathf.Clamp(pos + 1, 0, text.Length - 1)];
+					if (c3 != '.' && c4 != '.')
+					{
+						return ch;
+					}
+				}
+			}
+			else if (characterValidation == CharacterValidation.Regex)
+			{
+				if (Regex.IsMatch(ch.ToString(), m_RegexValue))
+				{
+					return ch;
+				}
+			}
+			else if (characterValidation == CharacterValidation.CustomValidator && (UnityEngine.Object)m_InputValidator != (UnityEngine.Object)null)
+			{
+				char result = m_InputValidator.Validate(ref text, ref pos, ch);
+				m_Text = text;
+				int num3 = stringSelectPositionInternal = (stringPositionInternal = pos);
+				return result;
+			}
+			return '\0';
 		}
 
 		public void ActivateInputField()

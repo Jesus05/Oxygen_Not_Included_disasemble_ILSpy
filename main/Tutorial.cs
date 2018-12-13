@@ -58,9 +58,9 @@ public class Tutorial : KMonoBehaviour, IRender1000ms
 
 	private Dictionary<TutorialMessages, bool> hiddenTutorialMessages = new Dictionary<TutorialMessages, bool>();
 
-	private int debugMessageCount = 0;
+	private int debugMessageCount;
 
-	private bool queuedPrioritiesMessage = false;
+	private bool queuedPrioritiesMessage;
 
 	private const float LOW_RATION_AMOUNT = 1f;
 
@@ -72,7 +72,7 @@ public class Tutorial : KMonoBehaviour, IRender1000ms
 
 	public List<GameObject> oxygenGenerators = new List<GameObject>();
 
-	private int focusedOxygenGenerator = 0;
+	private int focusedOxygenGenerator;
 
 	public static Tutorial Instance
 	{
@@ -350,28 +350,28 @@ public class Tutorial : KMonoBehaviour, IRender1000ms
 
 	public void DebugNotification()
 	{
-		string text = "";
+		string empty = string.Empty;
 		NotificationType type;
 		if (debugMessageCount % 3 == 0)
 		{
 			type = NotificationType.Tutorial;
-			text = "Warning message e.g. \"not enough oxygen\" uses Warning Color";
+			empty = "Warning message e.g. \"not enough oxygen\" uses Warning Color";
 		}
 		else if (debugMessageCount % 3 == 1)
 		{
 			type = NotificationType.BadMinor;
-			text = "Normal message e.g. Idle. Uses Normal Color BG";
+			empty = "Normal message e.g. Idle. Uses Normal Color BG";
 		}
 		else
 		{
 			type = NotificationType.Bad;
-			text = "Urgent important message. Uses Bad Color BG";
+			empty = "Urgent important message. Uses Bad Color BG";
 		}
-		string arg = text;
+		string arg = empty;
 		int num = debugMessageCount++;
 		num = num;
 		Notification notification = new Notification($"{arg} ({num.ToString()})", type, HashedString.Invalid, (List<Notification> n, object d) => MISC.NOTIFICATIONS.NEEDTOILET.TOOLTIP.text, null, true, 0f, null, null);
-		notifier.Add(notification, "");
+		notifier.Add(notification, string.Empty);
 	}
 
 	public void DebugNotificationMessage()
@@ -407,7 +407,7 @@ public class Tutorial : KMonoBehaviour, IRender1000ms
 						else
 						{
 							UpdateNotifierPosition();
-							notifier.Add(item.notification, "");
+							notifier.Add(item.notification, string.Empty);
 						}
 					}
 				}
@@ -430,7 +430,7 @@ public class Tutorial : KMonoBehaviour, IRender1000ms
 				}
 				else if (warningItem.lastNotifyTime == 0f || Time.time - warningItem.lastNotifyTime > warningItem.minTimeToNotify)
 				{
-					notifier.Add(warningItem.notification, "");
+					notifier.Add(warningItem.notification, string.Empty);
 					warningItem.lastNotifyTime = Time.time;
 				}
 			}
@@ -457,22 +457,22 @@ public class Tutorial : KMonoBehaviour, IRender1000ms
 
 	private bool SufficientOxygenLastCycleAndThisCycle()
 	{
-		if (ReportManager.Instance.YesterdaysReport != null)
+		if (ReportManager.Instance.YesterdaysReport == null)
 		{
-			ReportManager.ReportEntry entry = ReportManager.Instance.YesterdaysReport.GetEntry(ReportManager.ReportType.OxygenCreated);
-			ReportManager.ReportEntry entry2 = ReportManager.Instance.TodaysReport.GetEntry(ReportManager.ReportType.OxygenCreated);
-			return entry2.Net > 0.0001f || entry.Net > 0.0001f || (GameClock.Instance.GetCycle() < 1 && !GameClock.Instance.IsNighttime());
+			return true;
 		}
-		return true;
+		ReportManager.ReportEntry entry = ReportManager.Instance.YesterdaysReport.GetEntry(ReportManager.ReportType.OxygenCreated);
+		ReportManager.ReportEntry entry2 = ReportManager.Instance.TodaysReport.GetEntry(ReportManager.ReportType.OxygenCreated);
+		return entry2.Net > 0.0001f || entry.Net > 0.0001f || (GameClock.Instance.GetCycle() < 1 && !GameClock.Instance.IsNighttime());
 	}
 
 	private bool FoodIsRefrigerated()
 	{
-		if (GetUnrefrigeratedFood(null) <= 0)
+		if (GetUnrefrigeratedFood(null) > 0)
 		{
-			return true;
+			return false;
 		}
-		return false;
+		return true;
 	}
 
 	private int GetUnrefrigeratedFood(List<string> foods)
@@ -535,7 +535,7 @@ public class Tutorial : KMonoBehaviour, IRender1000ms
 
 	private bool FoodSourceExists()
 	{
-		foreach (Fabricator item in Components.Fabricators.Items)
+		foreach (ComplexFabricator item in Components.ComplexFabricators.Items)
 		{
 			if (item.GetType() == typeof(MicrobeMusher))
 			{

@@ -17,11 +17,11 @@ namespace TMPro
 		{
 			get
 			{
-				if (!((Object)texture == (Object)null))
+				if ((Object)texture == (Object)null)
 				{
-					return texture;
+					return Graphic.s_WhiteTexture;
 				}
-				return Graphic.s_WhiteTexture;
+				return texture;
 			}
 		}
 

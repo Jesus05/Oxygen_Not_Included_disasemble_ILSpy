@@ -50,7 +50,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = UI.FormatAsLink("Chlorine Geyser", "GeyserGeneric_CHLORINE_GAS");
 
-				public static LocString DESC = "A highly pressurized geyser that periodically erupts with " + ELEMENTS.CHLORINEGAS.NAME + ".";
+				public static LocString DESC = "A highly pressurized geyser that periodically erupts with " + UI.FormatAsLink("Chlorine", "CHLORINEGAS") + ".";
 			}
 
 			public class PACU
@@ -96,7 +96,7 @@ namespace STRINGS
 
 				public static LocString NAME = UI.FormatAsLink("Pacu", "PACU");
 
-				public static LocString DESC = "Pacus are aquatic creatures that cannot live outside of " + ELEMENTS.WATER.NAME + " or " + ELEMENTS.DIRTYWATER.NAME + ".\n\nEvery organism in the known universe finds the Pacu extremely delicious.";
+				public static LocString DESC = "Pacus are aquatic creatures that cannot live outside of " + UI.FormatAsLink("Water", "WATER") + " or " + UI.FormatAsLink("Contaminated Water", "DIRTYWATER") + ".\n\nEvery organism in the known universe finds the Pacu extremely delicious.";
 
 				public static LocString EGG_NAME = UI.FormatAsLink("Fry Egg", "PACU");
 			}
@@ -130,7 +130,7 @@ namespace STRINGS
 
 					public static LocString NAME = UI.FormatAsLink("Stone Hatch", "HATCHHARD");
 
-					public static LocString DESC = "Stone Hatches excrete solid " + ELEMENTS.CARBON.NAME + " as waste and enjoy burrowing into the ground.";
+					public static LocString DESC = "Stone Hatches excrete solid " + UI.FormatAsLink("Coal", "CARBON") + " as waste and enjoy burrowing into the ground.";
 
 					public static LocString EGG_NAME = UI.FormatAsLink("Stone Hatchling Egg", "HATCHHARD");
 				}
@@ -146,7 +146,7 @@ namespace STRINGS
 
 					public static LocString NAME = UI.FormatAsLink("Sage Hatch", "HATCHVEGGIE");
 
-					public static LocString DESC = "Sage Hatches excrete solid " + ELEMENTS.CARBON.NAME + " as waste and enjoy burrowing into the ground.";
+					public static LocString DESC = "Sage Hatches excrete solid " + UI.FormatAsLink("Coal", "CARBON") + " as waste and enjoy burrowing into the ground.";
 
 					public static LocString EGG_NAME = UI.FormatAsLink("Sage Hatchling Egg", "HATCHVEGGIE");
 				}
@@ -169,7 +169,7 @@ namespace STRINGS
 
 				public static LocString NAME = UI.FormatAsLink("Hatch", "HATCH");
 
-				public static LocString DESC = "Hatches excrete solid " + ELEMENTS.CARBON.NAME + " as waste and may be uncovered by digging up Buried Objects.";
+				public static LocString DESC = "Hatches excrete solid " + UI.FormatAsLink("Coal", "CARBON") + " as waste and may be uncovered by digging up Buried Objects.";
 
 				public static LocString EGG_NAME = UI.FormatAsLink("Hatchling Egg", "HATCH");
 			}
@@ -226,7 +226,7 @@ namespace STRINGS
 
 					public static LocString NAME = UI.FormatAsLink("Molten Slickster", "OILFLOATERHIGHTEMP");
 
-					public static LocString DESC = "Molten Slicksters are slimy critters that consume " + ELEMENTS.CARBONDIOXIDE.NAME + " and exude " + ELEMENTS.PETROLEUM.NAME + ".";
+					public static LocString DESC = "Molten Slicksters are slimy critters that consume " + UI.FormatAsLink("Carbon Dioxide", "CARBONDIOXIDE") + " and exude " + UI.FormatAsLink("Petroleum", "PETROLEUM") + ".";
 
 					public static LocString EGG_NAME = UI.FormatAsLink("Molten Larva Egg", "OILFLOATERHIGHTEMP");
 				}
@@ -242,14 +242,14 @@ namespace STRINGS
 
 					public static LocString NAME = UI.FormatAsLink("Longhair Slickster", "OILFLOATERDECOR");
 
-					public static LocString DESC = "Longhair Slicksters are friendly critters that consume " + ELEMENTS.OXYGEN.NAME + " and thrive in close contact with Duplicant companions.\n\nLonghairs have extremely beautiful and luxurious coats.";
+					public static LocString DESC = "Longhair Slicksters are friendly critters that consume " + UI.FormatAsLink("Oxygen", "OXYGEN") + " and thrive in close contact with Duplicant companions.\n\nLonghairs have extremely beautiful and luxurious coats.";
 
 					public static LocString EGG_NAME = UI.FormatAsLink("Longhair Larva Egg", "OILFLOATERDECOR");
 				}
 
 				public static LocString NAME = UI.FormatAsLink("Slickster", "OILFLOATER");
 
-				public static LocString DESC = "Slicksters are slimy critters that consume " + ELEMENTS.CARBONDIOXIDE.NAME + " and exude " + ELEMENTS.CRUDEOIL.NAME + ".";
+				public static LocString DESC = "Slicksters are slimy critters that consume " + UI.FormatAsLink("Carbon Dioxide", "CARBONDIOXIDE") + " and exude " + UI.FormatAsLink("Crude Oil", "CRUDEOIL") + ".";
 
 				public static LocString EGG_NAME = UI.FormatAsLink("Larva Egg", "OILFLOATER");
 			}
@@ -274,7 +274,7 @@ namespace STRINGS
 
 					public static LocString NAME = UI.FormatAsLink("Puft Prince", "PUFTALPHA");
 
-					public static LocString DESC = "The Puft Prince is a lazy critter that excretes little lumps of " + ELEMENTS.SLIMEMOLD.NAME + " with each breath.";
+					public static LocString DESC = "The Puft Prince is a lazy critter that excretes little lumps of " + UI.FormatAsLink("Slime", "SLIMEMOLD") + " with each breath.";
 
 					public static LocString EGG_NAME = UI.FormatAsLink("Puftlet Prince Egg", "PUFTALPHA");
 				}
@@ -290,7 +290,7 @@ namespace STRINGS
 
 					public static LocString NAME = UI.FormatAsLink("Dense Puft", "PUFTOXYLITE");
 
-					public static LocString DESC = "Dense Pufts are non-aggressive critters that excrete condensed " + ELEMENTS.OXYROCK.NAME + " with each breath.";
+					public static LocString DESC = "Dense Pufts are non-aggressive critters that excrete condensed " + UI.FormatAsLink("Oxylite", "OXYROCK") + " with each breath.";
 
 					public static LocString EGG_NAME = UI.FormatAsLink("Dense Puftlet Egg", "PUFTOXYLITE");
 				}
@@ -306,14 +306,14 @@ namespace STRINGS
 
 					public static LocString NAME = UI.FormatAsLink("Squeaky Puft", "PUFTBLEACHSTONE");
 
-					public static LocString DESC = "Squeaky Pufts are non-aggressive critters that excrete lumps of " + ELEMENTS.BLEACHSTONE.NAME + " with each breath.";
+					public static LocString DESC = "Squeaky Pufts are non-aggressive critters that excrete lumps of " + UI.FormatAsLink("Bleachstone", "BLEACHSTONE") + " with each breath.";
 
 					public static LocString EGG_NAME = UI.FormatAsLink("Squeaky Puftlet Egg", "PUFTBLEACHSTONE");
 				}
 
 				public static LocString NAME = UI.FormatAsLink("Puft", "PUFT");
 
-				public static LocString DESC = "Pufts are non-aggressive critters that excrete lumps of " + ELEMENTS.SLIMEMOLD.NAME + " with each breath.";
+				public static LocString DESC = "Pufts are non-aggressive critters that excrete lumps of " + UI.FormatAsLink("Slime", "SLIMEMOLD") + " with each breath.";
 
 				public static LocString EGG_NAME = UI.FormatAsLink("Puftlet Egg", "PUFT");
 			}
@@ -473,21 +473,21 @@ namespace STRINGS
 				{
 					public static LocString NAME = UI.FormatAsLink("Cool Steam Vent", "GeyserGeneric_STEAM");
 
-					public static LocString DESC = "A highly pressurized vent that periodically erupts with " + ELEMENTS.STEAM.NAME + ".";
+					public static LocString DESC = "A highly pressurized vent that periodically erupts with " + UI.FormatAsLink("Steam", "STEAM") + ".";
 				}
 
 				public class HOT_STEAM
 				{
 					public static LocString NAME = UI.FormatAsLink("Steam Vent", "GeyserGeneric_HOT_STEAM");
 
-					public static LocString DESC = "A highly pressurized vent that periodically erupts with scalding " + ELEMENTS.STEAM.NAME + ".";
+					public static LocString DESC = "A highly pressurized vent that periodically erupts with scalding " + UI.FormatAsLink("Steam", "STEAM") + ".";
 				}
 
 				public class HOT_WATER
 				{
 					public static LocString NAME = UI.FormatAsLink("Water Geyser", "GeyserGeneric_HOT_WATER");
 
-					public static LocString DESC = "A highly pressurized geyser that periodically erupts with hot " + ELEMENTS.WATER.NAME + ".";
+					public static LocString DESC = "A highly pressurized geyser that periodically erupts with hot " + UI.FormatAsLink("Steam", "STEAM") + ".";
 				}
 
 				public class SLUSH_WATER
@@ -501,42 +501,42 @@ namespace STRINGS
 				{
 					public static LocString NAME = UI.FormatAsLink("Polluted Water Vent", "GeyserGeneric_FILTHYWATER");
 
-					public static LocString DESC = "A highly pressurized vent that periodically erupts with boiling " + ELEMENTS.DIRTYWATER.NAME + ".";
+					public static LocString DESC = "A highly pressurized vent that periodically erupts with boiling " + UI.FormatAsLink("Contaminated Water", "DIRTYWATER") + ".";
 				}
 
 				public class SMALL_VOLCANO
 				{
 					public static LocString NAME = UI.FormatAsLink("Minor Volcano", "GeyserGeneric_SMALL_VOLCANO");
 
-					public static LocString DESC = "A miniature volcano that periodically erupts with molten " + ELEMENTS.MAGMA.NAME + ".";
+					public static LocString DESC = "A miniature volcano that periodically erupts with molten " + UI.FormatAsLink("Magma", "MAGMA") + ".";
 				}
 
 				public class BIG_VOLCANO
 				{
 					public static LocString NAME = UI.FormatAsLink("Volcano", "GeyserGeneric_BIG_VOLCANO");
 
-					public static LocString DESC = "A massive volcano that periodically erupts with molten " + ELEMENTS.MAGMA.NAME + ".";
+					public static LocString DESC = "A massive volcano that periodically erupts with molten " + UI.FormatAsLink("Magma", "MAGMA") + ".";
 				}
 
 				public class LIQUID_CO2
 				{
 					public static LocString NAME = UI.FormatAsLink("Carbon Dioxide Geyser", "GeyserGeneric_LIQUID_CO2");
 
-					public static LocString DESC = "A highly pressurized geyser that periodically erupts with boiling liquid " + ELEMENTS.LIQUIDCARBONDIOXIDE.NAME + ".";
+					public static LocString DESC = "A highly pressurized geyser that periodically erupts with boiling liquid " + UI.FormatAsLink("Carbon Dioxide", "LIQUIDCARBONDIOXIDE") + ".";
 				}
 
 				public class HOT_CO2
 				{
 					public static LocString NAME = UI.FormatAsLink("Carbon Dioxide Vent", "GeyserGeneric_HOT_CO2");
 
-					public static LocString DESC = "A highly pressurized vent that periodically erupts with hot gaseous " + ELEMENTS.CARBONDIOXIDE.NAME + ".";
+					public static LocString DESC = "A highly pressurized vent that periodically erupts with hot gaseous " + UI.FormatAsLink("Carbon Dioxide", "CARBONDIOXIDE") + ".";
 				}
 
 				public class HOT_HYDROGEN
 				{
 					public static LocString NAME = UI.FormatAsLink("Hydrogen Vent", "GeyserGeneric_HOT_HYDROGEN");
 
-					public static LocString DESC = "A highly pressurized vent that periodically erupts with hot gaseous " + ELEMENTS.HYDROGEN.NAME + ".";
+					public static LocString DESC = "A highly pressurized vent that periodically erupts with hot gaseous " + UI.FormatAsLink("Hydrogen", "HYDROGEN") + ".";
 				}
 
 				public class HOT_PO2
@@ -557,77 +557,77 @@ namespace STRINGS
 				{
 					public static LocString NAME = UI.FormatAsLink("Chlorine Gas Vent", "GeyserGeneric_CHLORINE_GAS");
 
-					public static LocString DESC = "A highly pressurized vent that periodically erupts with warm " + ELEMENTS.CHLORINEGAS.NAME + ".";
+					public static LocString DESC = "A highly pressurized vent that periodically erupts with warm " + UI.FormatAsLink("Chlorine", "CHLORINEGAS") + ".";
 				}
 
 				public class METHANE
 				{
 					public static LocString NAME = UI.FormatAsLink("Natural Gas Geyser", "GeyserGeneric_METHANE");
 
-					public static LocString DESC = "A highly pressurized geyser that periodically erupts with hot " + ELEMENTS.METHANE.NAME + ".";
+					public static LocString DESC = "A highly pressurized geyser that periodically erupts with hot " + UI.FormatAsLink("Natural Gas", "METHANE") + ".";
 				}
 
 				public class MOLTEN_COPPER
 				{
 					public static LocString NAME = UI.FormatAsLink("Copper Volcano", "GeyserGeneric_MOLTEN_COPPER");
 
-					public static LocString DESC = "A large volcano that periodically erupts with molten " + ELEMENTS.MOLTENCOPPER.NAME + ".";
+					public static LocString DESC = "A large volcano that periodically erupts with molten " + UI.FormatAsLink("Copper", "MOLTENCOPPER") + ".";
 				}
 
 				public class MOLTEN_IRON
 				{
 					public static LocString NAME = UI.FormatAsLink("Iron Volcano", "GeyserGeneric_MOLTEN_IRON");
 
-					public static LocString DESC = "A large volcano that periodically erupts with molten " + ELEMENTS.MOLTENIRON.NAME + ".";
+					public static LocString DESC = "A large volcano that periodically erupts with molten " + UI.FormatAsLink("Iron", "MOLTENIRON") + ".";
 				}
 
 				public class MOLTEN_GOLD
 				{
 					public static LocString NAME = UI.FormatAsLink("Gold Volcano", "GeyserGeneric_MOLTEN_GOLD");
 
-					public static LocString DESC = "A large volcano that periodically erupts with molten " + ELEMENTS.MOLTENGOLD.NAME + ".";
+					public static LocString DESC = "A large volcano that periodically erupts with molten " + UI.FormatAsLink("Gold", "MOLTENGOLD") + ".";
 				}
 
 				public class OIL_DRIP
 				{
 					public static LocString NAME = UI.FormatAsLink("Leaky Oil Fissure", "GeyserGeneric_OIL_DRIP");
 
-					public static LocString DESC = "A fissure that periodically erupts with boiling " + ELEMENTS.CRUDEOIL.NAME + ".";
+					public static LocString DESC = "A fissure that periodically erupts with boiling " + UI.FormatAsLink("Crude Oil", "CRUDEOIL") + ".";
 				}
 
 				public static LocString NAME = UI.FormatAsLink("Steam Geyser", "GEYSER");
 
-				public static LocString DESC = "A highly pressurized geyser that periodically erupts, spraying " + ELEMENTS.STEAM.NAME + " and boiling hot " + ELEMENTS.WATER.NAME + ".";
+				public static LocString DESC = "A highly pressurized geyser that periodically erupts, spraying " + UI.FormatAsLink("Steam", "STEAM") + " and boiling hot " + UI.FormatAsLink("Water", "WATER") + ".";
 			}
 
 			public class METHANEGEYSER
 			{
 				public static LocString NAME = UI.FormatAsLink("Natural Gas Geyser", "GeyserGeneric_METHANEGEYSER");
 
-				public static LocString DESC = "A highly pressurized geyser that periodically erupts with " + ELEMENTS.METHANE.NAME + ".";
+				public static LocString DESC = "A highly pressurized geyser that periodically erupts with " + UI.FormatAsLink("Natural Gas", "METHANE") + ".";
 			}
 
 			public class OIL_WELL
 			{
 				public static LocString NAME = UI.FormatAsLink("Oil Reservoir", "OIL_WELL");
 
-				public static LocString DESC = "Oil Reservoirs are rock formations with " + ELEMENTS.CRUDEOIL.NAME + " deposits beneath their surface.\n\nOil can be extracted from a reservoir with sufficient pressure.";
+				public static LocString DESC = "Oil Reservoirs are rock formations with " + UI.FormatAsLink("Crude Oil", "CRUDEOIL") + " deposits beneath their surface.\n\nOil can be extracted from a reservoir with sufficient pressure.";
 			}
 
 			public class MUSHROOMPLANT
 			{
 				public static LocString NAME = UI.FormatAsLink("Dusk Cap", "MUSHROOMPLANT");
 
-				public static LocString DESC = "Dusk Caps produce " + ITEMS.FOOD.MUSHROOM.NAME + ", fungal growths that can be harvested for " + UI.FormatAsLink("Food", "FOOD") + ".";
+				public static LocString DESC = "Dusk Caps produce " + UI.FormatAsLink("Mushrooms", "MUSHROOM") + ", fungal growths that can be harvested for " + UI.FormatAsLink("Food", "FOOD") + ".";
 
-				public static LocString DOMESTICATEDDESC = "This plant produces edible " + UI.FormatAsLink("Mushrooms", UI.StripLinkFormatting(ITEMS.FOOD.MUSHROOM.NAME)) + ".";
+				public static LocString DOMESTICATEDDESC = "This plant produces edible " + UI.FormatAsLink("Mushrooms", "MUSHROOM") + ".";
 			}
 
 			public class STEAMSPOUT
 			{
 				public static LocString NAME = UI.FormatAsLink("Steam Spout", "GEYSERS");
 
-				public static LocString DESC = "A rocky vent that spouts " + ELEMENTS.STEAM.NAME + ".";
+				public static LocString DESC = "A rocky vent that spouts " + UI.FormatAsLink("Steam", "STEAM") + ".";
 			}
 
 			public class PROPANESPOUT

@@ -39,26 +39,26 @@ public class ConversationMonitor : GameStateMachine<ConversationMonitor, Convers
 		{
 			int max = recentTopics.Count + favouriteTopics.Count * 2 + personalTopics.Count;
 			int num = Random.Range(0, max);
-			if (num >= recentTopics.Count)
+			if (num < recentTopics.Count)
 			{
-				num -= recentTopics.Count;
-				if (num >= favouriteTopics.Count)
-				{
-					num -= favouriteTopics.Count;
-					if (num >= favouriteTopics.Count)
-					{
-						num -= favouriteTopics.Count;
-						if (num >= personalTopics.Count)
-						{
-							return "";
-						}
-						return personalTopics[num];
-					}
-					return favouriteTopics[num];
-				}
+				return recentTopics.Dequeue();
+			}
+			num -= recentTopics.Count;
+			if (num < favouriteTopics.Count)
+			{
 				return favouriteTopics[num];
 			}
-			return recentTopics.Dequeue();
+			num -= favouriteTopics.Count;
+			if (num < favouriteTopics.Count)
+			{
+				return favouriteTopics[num];
+			}
+			num -= favouriteTopics.Count;
+			if (num < personalTopics.Count)
+			{
+				return personalTopics[num];
+			}
+			return string.Empty;
 		}
 
 		public void OnTopicDiscovered(object data)

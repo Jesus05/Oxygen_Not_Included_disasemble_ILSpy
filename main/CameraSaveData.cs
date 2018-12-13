@@ -2,7 +2,7 @@ using UnityEngine;
 
 public static class CameraSaveData
 {
-	public static bool valid = false;
+	public static bool valid;
 
 	public static Vector3 position;
 

@@ -25,65 +25,65 @@ public class VoiceSoundEvent : SoundEvent
 	{
 		EventInstance eventInstance = default(EventInstance);
 		MinionIdentity component = controller.GetComponent<MinionIdentity>();
-		if (!((Object)component == (Object)null) && (!name.Contains("state") || !(Time.time - component.timeLastSpoke < interval_between_speaking)))
+		if ((Object)component == (Object)null || (name.Contains("state") && Time.time - component.timeLastSpoke < interval_between_speaking))
 		{
-			if (name.Contains(":"))
-			{
-				string[] array = name.Split(':');
-				float num = float.Parse(array[1]);
-				float num2 = (float)Random.Range(0, 100);
-				if (num2 > num)
-				{
-					return eventInstance;
-				}
-			}
-			Worker component2 = controller.GetComponent<Worker>();
-			string assetName = GetAssetName(name, component2);
-			StaminaMonitor.Instance sMI = component2.GetSMI<StaminaMonitor.Instance>();
-			if (!name.Contains("sleep_") && sMI != null && sMI.IsSleeping())
-			{
-				return eventInstance;
-			}
-			Vector3 position = component2.transform.GetPosition();
-			string sound = GlobalAssets.GetSound(assetName, true);
-			if (SoundEvent.ShouldPlaySound(controller, sound, looping, false))
-			{
-				if (sound != null)
-				{
-					if (looping)
-					{
-						LoopingSounds component3 = controller.GetComponent<LoopingSounds>();
-						if ((Object)component3 == (Object)null)
-						{
-							Debug.Log(controller.name + " is missing LoopingSounds component. ", null);
-						}
-						else if (!component3.StartSound(sound))
-						{
-							Output.LogWarning($"SoundEvent has invalid sound [{sound}] on behaviour [{controller.name}]");
-						}
-					}
-					else
-					{
-						eventInstance = SoundEvent.BeginOneShot(sound, position);
-						if (sound.Contains("sleep_"))
-						{
-							Traits component4 = controller.GetComponent<Traits>();
-							if (component4.HasTrait("Snorer"))
-							{
-								eventInstance.setParameterValue("snoring", 1f);
-							}
-						}
-						SoundEvent.EndOneShot(eventInstance);
-						component.timeLastSpoke = Time.time;
-					}
-				}
-				else if (AudioDebug.Get().debugVoiceSounds)
-				{
-					Debug.LogWarning("Missing voice sound: " + assetName, null);
-				}
-				return eventInstance;
-			}
 			return eventInstance;
+		}
+		if (name.Contains(":"))
+		{
+			string[] array = name.Split(':');
+			float num = float.Parse(array[1]);
+			float num2 = (float)Random.Range(0, 100);
+			if (num2 > num)
+			{
+				return eventInstance;
+			}
+		}
+		Worker component2 = controller.GetComponent<Worker>();
+		string assetName = GetAssetName(name, component2);
+		StaminaMonitor.Instance sMI = component2.GetSMI<StaminaMonitor.Instance>();
+		if (!name.Contains("sleep_") && sMI != null && sMI.IsSleeping())
+		{
+			return eventInstance;
+		}
+		Vector3 position = component2.transform.GetPosition();
+		string sound = GlobalAssets.GetSound(assetName, true);
+		if (!SoundEvent.ShouldPlaySound(controller, sound, looping, false))
+		{
+			return eventInstance;
+		}
+		if (sound != null)
+		{
+			if (looping)
+			{
+				LoopingSounds component3 = controller.GetComponent<LoopingSounds>();
+				if ((Object)component3 == (Object)null)
+				{
+					Debug.Log(controller.name + " is missing LoopingSounds component. ", null);
+				}
+				else if (!component3.StartSound(sound))
+				{
+					Output.LogWarning($"SoundEvent has invalid sound [{sound}] on behaviour [{controller.name}]");
+				}
+			}
+			else
+			{
+				eventInstance = SoundEvent.BeginOneShot(sound, position);
+				if (sound.Contains("sleep_"))
+				{
+					Traits component4 = controller.GetComponent<Traits>();
+					if (component4.HasTrait("Snorer"))
+					{
+						eventInstance.setParameterValue("snoring", 1f);
+					}
+				}
+				SoundEvent.EndOneShot(eventInstance);
+				component.timeLastSpoke = Time.time;
+			}
+		}
+		else if (AudioDebug.Get().debugVoiceSounds)
+		{
+			Debug.LogWarning("Missing voice sound: " + assetName, null);
 		}
 		return eventInstance;
 	}

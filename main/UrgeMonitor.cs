@@ -32,11 +32,11 @@ public class UrgeMonitor : GameStateMachine<UrgeMonitor, UrgeMonitor.Instance>
 
 		private float GetThreshold()
 		{
-			if (!schedulable.IsAllowed(scheduleBlock))
+			if (schedulable.IsAllowed(scheduleBlock))
 			{
-				return outOfScheduleThreshold;
+				return inScheduleThreshold;
 			}
-			return inScheduleThreshold;
+			return outOfScheduleThreshold;
 		}
 
 		public Urge GetUrge()
@@ -46,11 +46,11 @@ public class UrgeMonitor : GameStateMachine<UrgeMonitor, UrgeMonitor.Instance>
 
 		public bool HasUrge()
 		{
-			if (!isThresholdMinimum)
+			if (isThresholdMinimum)
 			{
-				return amountInstance.value <= GetThreshold();
+				return amountInstance.value >= GetThreshold();
 			}
-			return amountInstance.value >= GetThreshold();
+			return amountInstance.value <= GetThreshold();
 		}
 	}
 

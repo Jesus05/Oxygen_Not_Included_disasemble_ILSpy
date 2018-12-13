@@ -29,11 +29,11 @@ public class OrbitalMechanics : KMonoBehaviour, IRenderEveryTick
 	private OrbitData[] orbitData;
 
 	[SerializeField]
-	private bool applyOverrides = false;
+	private bool applyOverrides;
 
 	[SerializeField]
 	[Range(0f, 100f)]
-	private float overridePercent = 0f;
+	private float overridePercent;
 
 	[SerializeField]
 	private GameObject[] orbitingObjects;

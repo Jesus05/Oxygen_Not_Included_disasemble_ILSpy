@@ -129,22 +129,22 @@ namespace ProcGen
 
 		public Node AddCenteralFeature(Tree node, Graph graph, TagSet newTags)
 		{
-			if (centralFeature != null)
+			if (centralFeature == null)
 			{
-				Node node2 = graph.AddNode(centralFeature.type);
-				node2.SetPosition(node.site.poly.Centroid());
-				VoronoiTree.Node node3 = node.AddSite(new Diagram.Site((uint)node2.node.Id, node2.position, 1f), VoronoiTree.Node.NodeType.Internal);
-				node3.tags = new TagSet(newTags);
-				node3.AddTag(new Tag(centralFeature.type));
-				node3.AddTag(WorldGenTags.Feature);
-				node3.AddTag(WorldGenTags.CenteralFeature);
-				for (int i = 0; i < centralFeature.tags.Count; i++)
-				{
-					node3.AddTag(new Tag(centralFeature.tags[i]));
-				}
-				return node2;
+				return null;
 			}
-			return null;
+			Node node2 = graph.AddNode(centralFeature.type);
+			node2.SetPosition(node.site.poly.Centroid());
+			VoronoiTree.Node node3 = node.AddSite(new Diagram.Site((uint)node2.node.Id, node2.position, 1f), VoronoiTree.Node.NodeType.Internal);
+			node3.tags = new TagSet(newTags);
+			node3.AddTag(new Tag(centralFeature.type));
+			node3.AddTag(WorldGenTags.Feature);
+			node3.AddTag(WorldGenTags.CenteralFeature);
+			for (int i = 0; i < centralFeature.tags.Count; i++)
+			{
+				node3.AddTag(new Tag(centralFeature.tags[i]));
+			}
+			return node2;
 		}
 
 		public void GenerateStartArea(Tree node, Graph graph)

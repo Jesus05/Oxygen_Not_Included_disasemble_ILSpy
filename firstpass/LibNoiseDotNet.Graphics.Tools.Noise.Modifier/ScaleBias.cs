@@ -8,7 +8,7 @@ namespace LibNoiseDotNet.Graphics.Tools.Noise.Modifier
 
 		protected float _scale = 1f;
 
-		protected float _bias = 0f;
+		protected float _bias;
 
 		public float Scale
 		{

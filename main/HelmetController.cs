@@ -4,7 +4,7 @@ public class HelmetController : KMonoBehaviour
 {
 	public string anim_file = "helm_oxygen_kanim";
 
-	public bool has_jets = false;
+	public bool has_jets;
 
 	private bool is_shown;
 
@@ -145,34 +145,34 @@ public class HelmetController : KMonoBehaviour
 	private GameObject AddTrackedAnim(string name, KAnimFile anim_file, string anim_clip, Grid.SceneLayer layer, string symbol_name)
 	{
 		KBatchedAnimController assigneeController = GetAssigneeController();
-		if (!((Object)assigneeController == (Object)null))
+		if ((Object)assigneeController == (Object)null)
 		{
-			string name2 = assigneeController.name + "." + name;
-			GameObject gameObject = new GameObject(name2);
-			gameObject.SetActive(false);
-			gameObject.transform.parent = assigneeController.transform;
-			KPrefabID kPrefabID = gameObject.AddComponent<KPrefabID>();
-			kPrefabID.PrefabTag = new Tag(name2);
-			KBatchedAnimController kBatchedAnimController = gameObject.AddComponent<KBatchedAnimController>();
-			kBatchedAnimController.AnimFiles = new KAnimFile[1]
-			{
-				anim_file
-			};
-			kBatchedAnimController.initialAnim = anim_clip;
-			kBatchedAnimController.isMovable = true;
-			kBatchedAnimController.sceneLayer = layer;
-			KBatchedAnimTracker kBatchedAnimTracker = gameObject.AddComponent<KBatchedAnimTracker>();
-			kBatchedAnimTracker.symbol = symbol_name;
-			bool symbolVisible;
-			Vector4 column = assigneeController.GetSymbolTransform(symbol_name, out symbolVisible).GetColumn(3);
-			Vector3 position = column;
-			position.z = Grid.GetLayerZ(layer);
-			gameObject.transform.SetPosition(position);
-			gameObject.SetActive(true);
-			kBatchedAnimController.Play(anim_clip, KAnim.PlayMode.Loop, 1f, 0f);
-			return gameObject;
+			return null;
 		}
-		return null;
+		string name2 = assigneeController.name + "." + name;
+		GameObject gameObject = new GameObject(name2);
+		gameObject.SetActive(false);
+		gameObject.transform.parent = assigneeController.transform;
+		KPrefabID kPrefabID = gameObject.AddComponent<KPrefabID>();
+		kPrefabID.PrefabTag = new Tag(name2);
+		KBatchedAnimController kBatchedAnimController = gameObject.AddComponent<KBatchedAnimController>();
+		kBatchedAnimController.AnimFiles = new KAnimFile[1]
+		{
+			anim_file
+		};
+		kBatchedAnimController.initialAnim = anim_clip;
+		kBatchedAnimController.isMovable = true;
+		kBatchedAnimController.sceneLayer = layer;
+		KBatchedAnimTracker kBatchedAnimTracker = gameObject.AddComponent<KBatchedAnimTracker>();
+		kBatchedAnimTracker.symbol = symbol_name;
+		bool symbolVisible;
+		Vector4 column = assigneeController.GetSymbolTransform(symbol_name, out symbolVisible).GetColumn(3);
+		Vector3 position = column;
+		position.z = Grid.GetLayerZ(layer);
+		gameObject.transform.SetPosition(position);
+		gameObject.SetActive(true);
+		kBatchedAnimController.Play(anim_clip, KAnim.PlayMode.Loop, 1f, 0f);
+		return gameObject;
 	}
 
 	private void OnBeginRecoverBreath(object data)

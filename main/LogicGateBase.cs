@@ -44,10 +44,10 @@ public class LogicGateBase : KMonoBehaviour
 
 	public static bool OpRequiresTwoInputs(Op op)
 	{
-		if (op != Op.Not && op != Op.CustomSingle)
+		if (op == Op.Not || op == Op.CustomSingle)
 		{
-			return true;
+			return false;
 		}
-		return false;
+		return true;
 	}
 }

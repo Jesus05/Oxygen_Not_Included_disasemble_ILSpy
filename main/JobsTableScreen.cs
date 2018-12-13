@@ -246,7 +246,7 @@ public class JobsTableScreen : TableScreen
 			}
 			componentInChildren.AddMultiStringTooltip(UI.HORIZONTAL_RULE + "\n" + GetUsageString(), null);
 		}
-		return "";
+		return string.Empty;
 	}
 
 	private string HoverChangeColumnPriorityButton(object widget_go_obj)
@@ -411,10 +411,10 @@ public class JobsTableScreen : TableScreen
 		TableRow widgetRow = GetWidgetRow(widget_go);
 		if (widgetRow.rowType == TableRow.RowType.Header)
 		{
-			goto IL_0032;
+			goto IL_002d;
 		}
-		goto IL_0032;
-		IL_0032:
+		goto IL_002d;
+		IL_002d:
 		PrioritizationGroupTableColumn prioritizationGroupTableColumn = GetWidgetColumn(widget_go) as PrioritizationGroupTableColumn;
 		ChoreGroup chore_group = prioritizationGroupTableColumn.userData as ChoreGroup;
 		IPersonalPriorityManager priorityManager = GetPriorityManager(widgetRow);
@@ -432,10 +432,10 @@ public class JobsTableScreen : TableScreen
 		TableRow widgetRow = GetWidgetRow(widget_go);
 		if (widgetRow.rowType == TableRow.RowType.Header)
 		{
-			goto IL_0038;
+			goto IL_0032;
 		}
-		goto IL_0038;
-		IL_0038:
+		goto IL_0032;
+		IL_0032:
 		PrioritizationGroupTableColumn prioritizationGroupTableColumn = GetWidgetColumn(widget_go) as PrioritizationGroupTableColumn;
 		ChoreGroup choreGroup = prioritizationGroupTableColumn.userData as ChoreGroup;
 		foreach (TableRow row in rows)

@@ -4,7 +4,7 @@ using TUNING;
 public class ToiletWorkableClean : Workable
 {
 	[Serialize]
-	public int timesCleaned = 0;
+	public int timesCleaned;
 
 	private static readonly HashedString[] CLEAN_ANIMS = new HashedString[2]
 	{

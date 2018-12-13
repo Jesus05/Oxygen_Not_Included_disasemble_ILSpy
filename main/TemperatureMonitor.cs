@@ -75,15 +75,15 @@ public class TemperatureMonitor : GameStateMachine<TemperatureMonitor, Temperatu
 
 		public float ExtremeTemperatureDelta()
 		{
-			if (!(temperature.value > HyperthermiaThreshold))
+			if (temperature.value > HyperthermiaThreshold)
 			{
-				if (!(temperature.value < HypothermiaThreshold))
-				{
-					return 0f;
-				}
+				return temperature.value - HyperthermiaThreshold;
+			}
+			if (temperature.value < HypothermiaThreshold)
+			{
 				return temperature.value - HypothermiaThreshold;
 			}
-			return temperature.value - HyperthermiaThreshold;
+			return 0f;
 		}
 
 		public float IdealTemperatureDelta()

@@ -8,18 +8,18 @@ namespace UnityStandardAssets.ImageEffects
 
 		private static bool HasMeshes()
 		{
-			if (meshes != null)
+			if (meshes == null)
 			{
-				for (int i = 0; i < meshes.Length; i++)
-				{
-					if ((Object)null == (Object)meshes[i])
-					{
-						return false;
-					}
-				}
-				return true;
+				return false;
 			}
-			return false;
+			for (int i = 0; i < meshes.Length; i++)
+			{
+				if ((Object)null == (Object)meshes[i])
+				{
+					return false;
+				}
+			}
+			return true;
 		}
 
 		private static void Cleanup()

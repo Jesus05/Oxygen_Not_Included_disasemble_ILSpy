@@ -15,9 +15,9 @@ namespace NodeEditorFramework
 
 		public NodeSide side;
 
-		public float sidePosition = 0f;
+		public float sidePosition;
 
-		public float sideOffset = 0f;
+		public float sideOffset;
 
 		protected virtual GUIStyle defaultLabelStyle => GUI.skin.label;
 
@@ -168,19 +168,19 @@ namespace NodeEditorFramework
 
 		private Vector2 GetKnobCenter(Vector2 knobSize)
 		{
-			if (side != NodeSide.Left)
+			if (side == NodeSide.Left)
 			{
-				if (side != NodeSide.Right)
-				{
-					if (side != NodeSide.Bottom)
-					{
-						return body.rect.position + new Vector2(sidePosition, 0f - sideOffset - knobSize.y / 2f);
-					}
-					return body.rect.position + new Vector2(sidePosition, sideOffset + knobSize.y / 2f + body.rect.height);
-				}
+				return body.rect.position + new Vector2(0f - sideOffset - knobSize.x / 2f, sidePosition);
+			}
+			if (side == NodeSide.Right)
+			{
 				return body.rect.position + new Vector2(sideOffset + knobSize.x / 2f + body.rect.width, sidePosition);
 			}
-			return body.rect.position + new Vector2(0f - sideOffset - knobSize.x / 2f, sidePosition);
+			if (side == NodeSide.Bottom)
+			{
+				return body.rect.position + new Vector2(sidePosition, sideOffset + knobSize.y / 2f + body.rect.height);
+			}
+			return body.rect.position + new Vector2(sidePosition, 0f - sideOffset - knobSize.y / 2f);
 		}
 
 		public Vector2 GetDirection()

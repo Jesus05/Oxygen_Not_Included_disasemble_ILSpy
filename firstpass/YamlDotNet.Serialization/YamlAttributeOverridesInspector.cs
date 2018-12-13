@@ -94,12 +94,12 @@ namespace YamlDotNet.Serialization
 
 		public override IEnumerable<IPropertyDescriptor> GetProperties(Type type, object container)
 		{
-			if (overrides != null)
+			if (overrides == null)
 			{
-				return from p in innerTypeDescriptor.GetProperties(type, container)
-				select new OverridePropertyDescriptor(p, overrides, type);
+				return innerTypeDescriptor.GetProperties(type, container);
 			}
-			return innerTypeDescriptor.GetProperties(type, container);
+			return from p in innerTypeDescriptor.GetProperties(type, container)
+			select new OverridePropertyDescriptor(p, overrides, type);
 		}
 	}
 }

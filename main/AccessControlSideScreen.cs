@@ -14,7 +14,7 @@ public class AccessControlSideScreen : SideScreenContent
 		{
 			public LocString name;
 
-			public Comparison<MinionIdentity> compare;
+			public Comparison<MinionAssignablesProxy> compare;
 
 			public string GetProperName()
 			{
@@ -27,27 +27,27 @@ public class AccessControlSideScreen : SideScreenContent
 			new SortInfo
 			{
 				name = UI.MINION_IDENTITY_SORT.NAME,
-				compare = new Comparison<MinionIdentity>(CompareByName)
+				compare = new Comparison<MinionAssignablesProxy>(CompareByName)
 			},
 			new SortInfo
 			{
 				name = UI.MINION_IDENTITY_SORT.ROLE,
-				compare = new Comparison<MinionIdentity>(CompareByRole)
+				compare = new Comparison<MinionAssignablesProxy>(CompareByRole)
 			}
 		};
 
 		[CompilerGenerated]
-		private static Comparison<MinionIdentity> _003C_003Ef__mg_0024cache0;
+		private static Comparison<MinionAssignablesProxy> _003C_003Ef__mg_0024cache0;
 
 		[CompilerGenerated]
-		private static Comparison<MinionIdentity> _003C_003Ef__mg_0024cache1;
+		private static Comparison<MinionAssignablesProxy> _003C_003Ef__mg_0024cache1;
 
-		public static int CompareByName(MinionIdentity a, MinionIdentity b)
+		public static int CompareByName(MinionAssignablesProxy a, MinionAssignablesProxy b)
 		{
 			return a.GetProperName().CompareTo(b.GetProperName());
 		}
 
-		public static int CompareByRole(MinionIdentity a, MinionIdentity b)
+		public static int CompareByRole(MinionAssignablesProxy a, MinionAssignablesProxy b)
 		{
 			ChoreConsumer component = a.GetComponent<ChoreConsumer>();
 			ChoreConsumer component2 = b.GetComponent<ChoreConsumer>();
@@ -87,23 +87,23 @@ public class AccessControlSideScreen : SideScreenContent
 
 	private MinionIdentitySort.SortInfo sortInfo = MinionIdentitySort.SortInfos[0];
 
-	private Dictionary<MinionIdentity, AccessControlSideScreenRow> identityRowMap = new Dictionary<MinionIdentity, AccessControlSideScreenRow>();
+	private Dictionary<MinionAssignablesProxy, AccessControlSideScreenRow> identityRowMap = new Dictionary<MinionAssignablesProxy, AccessControlSideScreenRow>();
 
-	private List<MinionIdentity> identityList = new List<MinionIdentity>();
-
-	[CompilerGenerated]
-	private static Comparison<MinionIdentity> _003C_003Ef__mg_0024cache0;
+	private List<MinionAssignablesProxy> identityList = new List<MinionAssignablesProxy>();
 
 	[CompilerGenerated]
-	private static Comparison<MinionIdentity> _003C_003Ef__mg_0024cache1;
+	private static Comparison<MinionAssignablesProxy> _003C_003Ef__mg_0024cache0;
+
+	[CompilerGenerated]
+	private static Comparison<MinionAssignablesProxy> _003C_003Ef__mg_0024cache1;
 
 	public override string GetTitle()
 	{
-		if (!((UnityEngine.Object)target != (UnityEngine.Object)null))
+		if ((UnityEngine.Object)target != (UnityEngine.Object)null)
 		{
-			return base.GetTitle();
+			return string.Format(base.GetTitle(), target.GetProperName());
 		}
-		return string.Format(base.GetTitle(), target.GetProperName());
+		return base.GetTitle();
 	}
 
 	protected override void OnSpawn()
@@ -142,7 +142,7 @@ public class AccessControlSideScreen : SideScreenContent
 				rowPool = new UIPool<AccessControlSideScreenRow>(rowPrefab);
 			}
 			base.gameObject.SetActive(true);
-			identityList = new List<MinionIdentity>(Components.LiveMinionIdentities.Items);
+			identityList = new List<MinionAssignablesProxy>(Components.MinionAssignablesProxy.Items);
 			Refresh(identityList, true);
 		}
 	}
@@ -157,7 +157,7 @@ public class AccessControlSideScreen : SideScreenContent
 		}
 	}
 
-	private void Refresh(List<MinionIdentity> identities, bool rebuild)
+	private void Refresh(List<MinionAssignablesProxy> identities, bool rebuild)
 	{
 		Rotatable component = target.GetComponent<Rotatable>();
 		bool rotated = (UnityEngine.Object)component != (UnityEngine.Object)null && component.IsRotated;
@@ -167,7 +167,7 @@ public class AccessControlSideScreen : SideScreenContent
 		{
 			ClearContent();
 		}
-		foreach (MinionIdentity identity in identities)
+		foreach (MinionAssignablesProxy identity in identities)
 		{
 			AccessControlSideScreenRow accessControlSideScreenRow;
 			if (rebuild)
@@ -197,10 +197,10 @@ public class AccessControlSideScreen : SideScreenContent
 
 	private void SortByPermission(bool state)
 	{
-		ExecuteSort(sortByPermissionToggle, state, (MinionIdentity identity) => (int)((!target.IsDefaultPermission(identity.gameObject)) ? target.GetSetPermission(identity.gameObject) : ((AccessControl.Permission)(-1))), false);
+		ExecuteSort(sortByPermissionToggle, state, (MinionAssignablesProxy identity) => (int)((!target.IsDefaultPermission(identity.gameObject)) ? target.GetSetPermission(identity.gameObject) : ((AccessControl.Permission)(-1))), false);
 	}
 
-	private void ExecuteSort<T>(Toggle toggle, bool state, Func<MinionIdentity, T> sortFunction, bool refresh = false)
+	private void ExecuteSort<T>(Toggle toggle, bool state, Func<MinionAssignablesProxy, T> sortFunction, bool refresh = false)
 	{
 		toggle.GetComponent<ImageToggleState>().SetActiveState(state);
 		if (state)
@@ -223,7 +223,7 @@ public class AccessControlSideScreen : SideScreenContent
 		}
 	}
 
-	private void SortEntries(bool reverse_sort, Comparison<MinionIdentity> compare)
+	private void SortEntries(bool reverse_sort, Comparison<MinionAssignablesProxy> compare)
 	{
 		identityList.Sort(compare);
 		if (reverse_sort)
@@ -248,18 +248,18 @@ public class AccessControlSideScreen : SideScreenContent
 		identityRowMap.Clear();
 	}
 
-	private void OnDefaultPermissionChanged(MinionIdentity identity, AccessControl.Permission permission)
+	private void OnDefaultPermissionChanged(MinionAssignablesProxy identity, AccessControl.Permission permission)
 	{
 		target.DefaultPermission = permission;
 		Refresh(identityList, false);
 	}
 
-	private void OnPermissionChanged(MinionIdentity identity, AccessControl.Permission permission)
+	private void OnPermissionChanged(MinionAssignablesProxy identity, AccessControl.Permission permission)
 	{
 		target.SetPermission(identity.gameObject, permission);
 	}
 
-	private void OnPermissionDefault(MinionIdentity identity, bool isDefault)
+	private void OnPermissionDefault(MinionAssignablesProxy identity, bool isDefault)
 	{
 		if (isDefault)
 		{

@@ -14,11 +14,11 @@ namespace YamlDotNet.Serialization.Utilities
 		{
 			get
 			{
-				if (!objectsByAnchor.TryGetValue(anchor, out object value))
+				if (objectsByAnchor.TryGetValue(anchor, out object value))
 				{
-					throw new AnchorNotFoundException(string.Format(CultureInfo.InvariantCulture, "The anchor '{0}' does not exists", anchor));
+					return value;
 				}
-				return value;
+				throw new AnchorNotFoundException(string.Format(CultureInfo.InvariantCulture, "The anchor '{0}' does not exists", anchor));
 			}
 		}
 

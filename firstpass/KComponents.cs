@@ -4,7 +4,7 @@ public class KComponents
 {
 	private List<IComponentManager> managers = new List<IComponentManager>();
 
-	private bool spawned = false;
+	private bool spawned;
 
 	public virtual void Shutdown()
 	{

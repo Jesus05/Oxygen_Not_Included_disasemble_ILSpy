@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class PlantElementAbsorbers : KCompactedVector<PlantElementAbsorber>
 {
-	private bool updating = false;
+	private bool updating;
 
 	private List<HandleVector<int>.Handle> queuedRemoves = new List<HandleVector<int>.Handle>();
 
@@ -14,15 +14,19 @@ public class PlantElementAbsorbers : KCompactedVector<PlantElementAbsorber>
 
 	public HandleVector<int>.Handle Add(Storage storage, PlantElementAbsorber.ConsumeInfo[] consumed_elements)
 	{
-		if (consumed_elements != null && consumed_elements.Length > 0)
+		if (consumed_elements == null || consumed_elements.Length <= 0)
 		{
-			HandleVector<int>.Handle[] array = new HandleVector<int>.Handle[consumed_elements.Length];
-			for (int i = 0; i < consumed_elements.Length; i++)
-			{
-				array[i] = Game.Instance.accumulators.Add("ElementsConsumed", storage);
-			}
-			HandleVector<int>.Handle invalidHandle = HandleVector<int>.InvalidHandle;
-			return (consumed_elements.Length != 1) ? Allocate(new PlantElementAbsorber
+			return HandleVector<int>.InvalidHandle;
+		}
+		HandleVector<int>.Handle[] array = new HandleVector<int>.Handle[consumed_elements.Length];
+		for (int i = 0; i < consumed_elements.Length; i++)
+		{
+			array[i] = Game.Instance.accumulators.Add("ElementsConsumed", storage);
+		}
+		HandleVector<int>.Handle invalidHandle = HandleVector<int>.InvalidHandle;
+		if (consumed_elements.Length != 1)
+		{
+			return Allocate(new PlantElementAbsorber
 			{
 				storage = storage,
 				consumedElements = consumed_elements,
@@ -32,19 +36,19 @@ public class PlantElementAbsorbers : KCompactedVector<PlantElementAbsorber>
 					tag = Tag.Invalid,
 					massConsumptionRate = 0f
 				}
-			}) : Allocate(new PlantElementAbsorber
-			{
-				storage = storage,
-				consumedElements = null,
-				accumulators = array,
-				localInfo = new PlantElementAbsorber.LocalInfo
-				{
-					tag = consumed_elements[0].tag,
-					massConsumptionRate = consumed_elements[0].massConsumptionRate
-				}
 			});
 		}
-		return HandleVector<int>.InvalidHandle;
+		return Allocate(new PlantElementAbsorber
+		{
+			storage = storage,
+			consumedElements = null,
+			accumulators = array,
+			localInfo = new PlantElementAbsorber.LocalInfo
+			{
+				tag = consumed_elements[0].tag,
+				massConsumptionRate = consumed_elements[0].massConsumptionRate
+			}
+		});
 	}
 
 	public HandleVector<int>.Handle Remove(HandleVector<int>.Handle h)

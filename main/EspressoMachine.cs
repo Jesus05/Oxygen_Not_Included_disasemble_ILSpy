@@ -49,20 +49,20 @@ public class EspressoMachine : StateMachineComponent<EspressoMachine.StatesInsta
 		private bool IsReady(StatesInstance smi)
 		{
 			PrimaryElement primaryElement = smi.GetComponent<Storage>().FindPrimaryElement(SimHashes.Water);
-			if (!((Object)primaryElement == (Object)null))
+			if ((Object)primaryElement == (Object)null)
 			{
-				if (!(primaryElement.Mass < WATER_MASS_PER_USE))
-				{
-					float amountAvailable = smi.GetComponent<Storage>().GetAmountAvailable(INGREDIENT_TAG);
-					if (!(amountAvailable < INGREDIENT_MASS_PER_USE))
-					{
-						return true;
-					}
-					return false;
-				}
 				return false;
 			}
-			return false;
+			if (primaryElement.Mass < WATER_MASS_PER_USE)
+			{
+				return false;
+			}
+			float amountAvailable = smi.GetComponent<Storage>().GetAmountAvailable(INGREDIENT_TAG);
+			if (amountAvailable < INGREDIENT_MASS_PER_USE)
+			{
+				return false;
+			}
+			return true;
 		}
 	}
 

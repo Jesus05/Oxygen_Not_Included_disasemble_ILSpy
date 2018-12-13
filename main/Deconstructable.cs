@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class Deconstructable : Workable
 {
-	private Chore chore = null;
+	private Chore chore;
 
 	public bool allowDeconstruction = true;
 
@@ -33,7 +33,7 @@ public class Deconstructable : Workable
 
 	private static readonly Vector2 INITIAL_VELOCITY_RANGE = new Vector2(0.5f, 4f);
 
-	private bool destroyed = false;
+	private bool destroyed;
 
 	protected override void OnPrefabInit()
 	{

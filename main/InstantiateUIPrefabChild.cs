@@ -6,9 +6,9 @@ public class InstantiateUIPrefabChild : KMonoBehaviour
 
 	public bool InstantiateOnAwake = true;
 
-	private bool alreadyInstantiated = false;
+	private bool alreadyInstantiated;
 
-	public bool setAsFirstSibling = false;
+	public bool setAsFirstSibling;
 
 	protected override void OnPrefabInit()
 	{

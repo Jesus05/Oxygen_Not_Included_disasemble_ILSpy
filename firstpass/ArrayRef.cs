@@ -58,23 +58,23 @@ public struct ArrayRef<T>
 	public bool RemoveFirst(Predicate<T> match)
 	{
 		int num = FindIndex(match);
-		if (num == -1)
+		if (num != -1)
 		{
-			return false;
+			RemoveAt(num);
+			return true;
 		}
-		RemoveAt(num);
-		return true;
+		return false;
 	}
 
 	public bool RemoveFirstSwap(Predicate<T> match)
 	{
 		int num = FindIndex(match);
-		if (num == -1)
+		if (num != -1)
 		{
-			return false;
+			RemoveAtSwap(num);
+			return true;
 		}
-		RemoveAtSwap(num);
-		return true;
+		return false;
 	}
 
 	public void RemoveAt(int index)

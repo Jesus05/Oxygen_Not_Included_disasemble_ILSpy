@@ -133,6 +133,6 @@ public class AssignableSideScreenRow : KMonoBehaviour
 				break;
 			}
 		}
-		return "";
+		return string.Empty;
 	}
 }

@@ -75,11 +75,11 @@ public class DigTool : DragTool
 			gameObject.GetComponentInChildren<EasingAnimations>().PlayAnimation("ScaleUp", Mathf.Max(0f, (float)animationDelay * 0.02f));
 			return gameObject;
 		}
-		if (!((Object)Grid.Objects[cell, 7] != (Object)null))
+		if ((Object)Grid.Objects[cell, 7] != (Object)null)
 		{
-			return null;
+			return Grid.Objects[cell, 7];
 		}
-		return Grid.Objects[cell, 7];
+		return null;
 	}
 
 	protected override void OnActivateTool()

@@ -231,10 +231,10 @@ public class Door : Workable, ISaveLoadable, ISim200ms
 	[MyCmpAdd]
 	private LoopingSounds loopingSounds;
 
-	public Orientation verticalOrientation = Orientation.Neutral;
+	public Orientation verticalOrientation;
 
 	[SerializeField]
-	public bool hasComplexUserControls = false;
+	public bool hasComplexUserControls;
 
 	[SerializeField]
 	public float unpoweredAnimSpeed = 0.25f;
@@ -263,16 +263,16 @@ public class Door : Workable, ISaveLoadable, ISim200ms
 	private static readonly HashedString SOUND_PROGRESS_PARAMETER = "doorProgress";
 
 	[Serialize]
-	private bool hasBeenUnsealed = false;
+	private bool hasBeenUnsealed;
 
 	[Serialize]
-	private ControlState controlState = ControlState.Auto;
+	private ControlState controlState;
 
-	private bool on = false;
+	private bool on;
 
-	private bool do_melt_check = false;
+	private bool do_melt_check;
 
-	private int openCount = 0;
+	private int openCount;
 
 	private ControlState requestedState;
 
@@ -299,7 +299,7 @@ public class Door : Workable, ISaveLoadable, ISim200ms
 		component.OnLogicValueChanged(data);
 	});
 
-	private bool applyLogicChange = false;
+	private bool applyLogicChange;
 
 	public ControlState CurrentState => controlState;
 

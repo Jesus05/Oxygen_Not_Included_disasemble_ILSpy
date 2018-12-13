@@ -9,7 +9,7 @@ public class KBasicToggle : KMonoBehaviour, IPointerClickHandler, IPointerEnterH
 
 	private bool _isOn;
 
-	private bool didDoubleClick = false;
+	private bool didDoubleClick;
 
 	private IEnumerator doubleClickCoroutine;
 

@@ -29,7 +29,7 @@ public class FlowOffsetRenderer : KMonoBehaviour
 	private Material FlowMaterial;
 
 	[SerializeField]
-	private bool forceUpdate = false;
+	private bool forceUpdate;
 
 	private TextureLerper FlowLerper;
 

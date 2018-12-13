@@ -15,7 +15,7 @@ namespace TMPro
 		private bool m_currentAutoSizeMode;
 
 		[SerializeField]
-		private bool m_hasFontAssetChanged = false;
+		private bool m_hasFontAssetChanged;
 
 		private float m_previousLossyScaleY = -1f;
 
@@ -847,14 +847,14 @@ namespace TMPro
 		protected override float GetPaddingForMaterial()
 		{
 			ShaderUtilities.GetShaderPropertyIDs();
-			if (!((UnityEngine.Object)m_sharedMaterial == (UnityEngine.Object)null))
+			if ((UnityEngine.Object)m_sharedMaterial == (UnityEngine.Object)null)
 			{
-				m_padding = ShaderUtilities.GetPadding(m_sharedMaterial, m_enableExtraPadding, m_isUsingBold);
-				m_isMaskingEnabled = ShaderUtilities.IsMaskingEnabled(m_sharedMaterial);
-				m_isSDFShader = m_sharedMaterial.HasProperty(ShaderUtilities.ID_WeightNormal);
-				return m_padding;
+				return 0f;
 			}
-			return 0f;
+			m_padding = ShaderUtilities.GetPadding(m_sharedMaterial, m_enableExtraPadding, m_isUsingBold);
+			m_isMaskingEnabled = ShaderUtilities.IsMaskingEnabled(m_sharedMaterial);
+			m_isSDFShader = m_sharedMaterial.HasProperty(ShaderUtilities.ID_WeightNormal);
+			return m_padding;
 		}
 
 		protected override int SetArraySizes(int[] chars)
@@ -1082,83 +1082,83 @@ namespace TMPro
 				}
 				m_totalCharacterCount++;
 			}
-			if (!m_isCalculatingPreferredValues)
+			if (m_isCalculatingPreferredValues)
 			{
-				m_textInfo.spriteCount = num;
-				int num4 = m_textInfo.materialCount = m_materialReferenceIndexLookup.Count;
-				if (num4 > m_textInfo.meshInfo.Length)
+				m_isCalculatingPreferredValues = false;
+				m_isInputParsingRequired = true;
+				return m_totalCharacterCount;
+			}
+			m_textInfo.spriteCount = num;
+			int num4 = m_textInfo.materialCount = m_materialReferenceIndexLookup.Count;
+			if (num4 > m_textInfo.meshInfo.Length)
+			{
+				TMP_TextInfo.Resize(ref m_textInfo.meshInfo, num4, false);
+			}
+			if (num4 > m_subTextObjects.Length)
+			{
+				TMP_TextInfo.Resize(ref m_subTextObjects, Mathf.NextPowerOfTwo(num4 + 1));
+			}
+			if (m_textInfo.characterInfo.Length - m_totalCharacterCount > 256)
+			{
+				TMP_TextInfo.Resize(ref m_textInfo.characterInfo, Mathf.Max(m_totalCharacterCount + 1, 256), true);
+			}
+			for (int j = 0; j < num4; j++)
+			{
+				if (j > 0)
 				{
-					TMP_TextInfo.Resize(ref m_textInfo.meshInfo, num4, false);
-				}
-				if (num4 > m_subTextObjects.Length)
-				{
-					TMP_TextInfo.Resize(ref m_subTextObjects, Mathf.NextPowerOfTwo(num4 + 1));
-				}
-				if (m_textInfo.characterInfo.Length - m_totalCharacterCount > 256)
-				{
-					TMP_TextInfo.Resize(ref m_textInfo.characterInfo, Mathf.Max(m_totalCharacterCount + 1, 256), true);
-				}
-				for (int j = 0; j < num4; j++)
-				{
-					if (j > 0)
+					if ((UnityEngine.Object)m_subTextObjects[j] == (UnityEngine.Object)null)
 					{
-						if ((UnityEngine.Object)m_subTextObjects[j] == (UnityEngine.Object)null)
+						m_subTextObjects[j] = TMP_SubMesh.AddSubTextObject(this, m_materialReferences[j]);
+						m_textInfo.meshInfo[j].vertices = null;
+					}
+					if ((UnityEngine.Object)m_subTextObjects[j].sharedMaterial == (UnityEngine.Object)null || m_subTextObjects[j].sharedMaterial.GetInstanceID() != m_materialReferences[j].material.GetInstanceID())
+					{
+						bool isDefaultMaterial = m_materialReferences[j].isDefaultMaterial;
+						m_subTextObjects[j].isDefaultMaterial = isDefaultMaterial;
+						if (!isDefaultMaterial || (UnityEngine.Object)m_subTextObjects[j].sharedMaterial == (UnityEngine.Object)null || m_subTextObjects[j].sharedMaterial.GetTexture(ShaderUtilities.ID_MainTex).GetInstanceID() != m_materialReferences[j].material.GetTexture(ShaderUtilities.ID_MainTex).GetInstanceID())
 						{
-							m_subTextObjects[j] = TMP_SubMesh.AddSubTextObject(this, m_materialReferences[j]);
-							m_textInfo.meshInfo[j].vertices = null;
-						}
-						if ((UnityEngine.Object)m_subTextObjects[j].sharedMaterial == (UnityEngine.Object)null || m_subTextObjects[j].sharedMaterial.GetInstanceID() != m_materialReferences[j].material.GetInstanceID())
-						{
-							bool isDefaultMaterial = m_materialReferences[j].isDefaultMaterial;
-							m_subTextObjects[j].isDefaultMaterial = isDefaultMaterial;
-							if (!isDefaultMaterial || (UnityEngine.Object)m_subTextObjects[j].sharedMaterial == (UnityEngine.Object)null || m_subTextObjects[j].sharedMaterial.GetTexture(ShaderUtilities.ID_MainTex).GetInstanceID() != m_materialReferences[j].material.GetTexture(ShaderUtilities.ID_MainTex).GetInstanceID())
-							{
-								m_subTextObjects[j].sharedMaterial = m_materialReferences[j].material;
-								m_subTextObjects[j].fontAsset = m_materialReferences[j].fontAsset;
-								m_subTextObjects[j].spriteAsset = m_materialReferences[j].spriteAsset;
-							}
-						}
-						if (m_materialReferences[j].isFallbackMaterial)
-						{
-							m_subTextObjects[j].fallbackMaterial = m_materialReferences[j].material;
-							m_subTextObjects[j].fallbackSourceMaterial = m_materialReferences[j].fallbackMaterial;
+							m_subTextObjects[j].sharedMaterial = m_materialReferences[j].material;
+							m_subTextObjects[j].fontAsset = m_materialReferences[j].fontAsset;
+							m_subTextObjects[j].spriteAsset = m_materialReferences[j].spriteAsset;
 						}
 					}
-					int referenceCount = m_materialReferences[j].referenceCount;
-					if (m_textInfo.meshInfo[j].vertices == null || m_textInfo.meshInfo[j].vertices.Length < referenceCount * (m_isVolumetricText ? 8 : 4))
+					if (m_materialReferences[j].isFallbackMaterial)
 					{
-						if (m_textInfo.meshInfo[j].vertices == null)
+						m_subTextObjects[j].fallbackMaterial = m_materialReferences[j].material;
+						m_subTextObjects[j].fallbackSourceMaterial = m_materialReferences[j].fallbackMaterial;
+					}
+				}
+				int referenceCount = m_materialReferences[j].referenceCount;
+				if (m_textInfo.meshInfo[j].vertices == null || m_textInfo.meshInfo[j].vertices.Length < referenceCount * (m_isVolumetricText ? 8 : 4))
+				{
+					if (m_textInfo.meshInfo[j].vertices == null)
+					{
+						if (j == 0)
 						{
-							if (j == 0)
-							{
-								m_textInfo.meshInfo[j] = new TMP_MeshInfo(m_mesh, referenceCount + 1, m_isVolumetricText);
-							}
-							else
-							{
-								m_textInfo.meshInfo[j] = new TMP_MeshInfo(m_subTextObjects[j].mesh, referenceCount + 1, m_isVolumetricText);
-							}
+							m_textInfo.meshInfo[j] = new TMP_MeshInfo(m_mesh, referenceCount + 1, m_isVolumetricText);
 						}
 						else
 						{
-							m_textInfo.meshInfo[j].ResizeMeshInfo((referenceCount <= 1024) ? Mathf.NextPowerOfTwo(referenceCount) : (referenceCount + 256), m_isVolumetricText);
+							m_textInfo.meshInfo[j] = new TMP_MeshInfo(m_subTextObjects[j].mesh, referenceCount + 1, m_isVolumetricText);
 						}
 					}
-					else if (m_textInfo.meshInfo[j].vertices.Length - referenceCount * (m_isVolumetricText ? 8 : 4) > 1024)
+					else
 					{
-						m_textInfo.meshInfo[j].ResizeMeshInfo((referenceCount <= 1024) ? Mathf.Max(Mathf.NextPowerOfTwo(referenceCount), 256) : (referenceCount + 256), m_isVolumetricText);
+						m_textInfo.meshInfo[j].ResizeMeshInfo((referenceCount <= 1024) ? Mathf.NextPowerOfTwo(referenceCount) : (referenceCount + 256), m_isVolumetricText);
 					}
 				}
-				for (int k = num4; k < m_subTextObjects.Length && (UnityEngine.Object)m_subTextObjects[k] != (UnityEngine.Object)null; k++)
+				else if (m_textInfo.meshInfo[j].vertices.Length - referenceCount * (m_isVolumetricText ? 8 : 4) > 1024)
 				{
-					if (k < m_textInfo.meshInfo.Length)
-					{
-						m_textInfo.meshInfo[k].ClearUnusedVertices(0, true);
-					}
+					m_textInfo.meshInfo[j].ResizeMeshInfo((referenceCount <= 1024) ? Mathf.Max(Mathf.NextPowerOfTwo(referenceCount), 256) : (referenceCount + 256), m_isVolumetricText);
 				}
-				return m_totalCharacterCount;
 			}
-			m_isCalculatingPreferredValues = false;
-			m_isInputParsingRequired = true;
+			for (int k = num4; k < m_subTextObjects.Length && (UnityEngine.Object)m_subTextObjects[k] != (UnityEngine.Object)null; k++)
+			{
+				if (k < m_textInfo.meshInfo.Length)
+				{
+					m_textInfo.meshInfo[k].ClearUnusedVertices(0, true);
+				}
+			}
 			return m_totalCharacterCount;
 		}
 
@@ -1586,19 +1586,19 @@ namespace TMPro
 						{
 							if (m_FXMatrix.m00 == 1f)
 							{
-								goto IL_1095;
+								goto IL_105d;
 							}
-							goto IL_1095;
+							goto IL_105d;
 						}
-						goto IL_111f;
-						IL_1095:
+						goto IL_10e6;
+						IL_105d:
 						Vector3 b3 = (vector4 + vector3) / 2f;
 						vector2 = m_FXMatrix.MultiplyPoint3x4(vector2 - b3) + b3;
 						vector3 = m_FXMatrix.MultiplyPoint3x4(vector3 - b3) + b3;
 						vector4 = m_FXMatrix.MultiplyPoint3x4(vector4 - b3) + b3;
 						vector5 = m_FXMatrix.MultiplyPoint3x4(vector5 - b3) + b3;
-						goto IL_111f;
-						IL_256c:
+						goto IL_10e6;
+						IL_24c9:
 						if (m_isMaskingEnabled)
 						{
 							DisableMasking();
@@ -1615,7 +1615,7 @@ namespace TMPro
 							ClearMesh(false);
 						}
 						return;
-						IL_2711:
+						IL_2650:
 						if (num4 == 9)
 						{
 							float num23 = m_currentFontAsset.fontInfo.TabWidth * num2;
@@ -1786,7 +1786,7 @@ namespace TMPro
 						}
 						m_characterCount++;
 						continue;
-						IL_25d4:
+						IL_2527:
 						if (m_isMaskingEnabled)
 						{
 							DisableMasking();
@@ -1814,8 +1814,8 @@ namespace TMPro
 							m_pageNumber++;
 							continue;
 						}
-						goto IL_2711;
-						IL_268e:
+						goto IL_2650;
+						IL_25da:
 						if ((UnityEngine.Object)m_linkedTextComponent != (UnityEngine.Object)null)
 						{
 							m_linkedTextComponent.text = text;
@@ -1834,7 +1834,7 @@ namespace TMPro
 							ClearMesh(true);
 						}
 						return;
-						IL_111f:
+						IL_10e6:
 						m_textInfo.characterInfo[m_characterCount].bottomLeft = vector3;
 						m_textInfo.characterInfo[m_characterCount].topLeft = vector2;
 						m_textInfo.characterInfo[m_characterCount].topRight = vector4;
@@ -2145,7 +2145,7 @@ namespace TMPro
 									{
 										DisableMasking();
 									}
-									goto IL_2711;
+									goto IL_2650;
 								case TextOverflowModes.Ellipsis:
 									break;
 								case TextOverflowModes.Masking:
@@ -2153,21 +2153,21 @@ namespace TMPro
 									{
 										EnableMasking();
 									}
-									goto IL_2711;
+									goto IL_2650;
 								case TextOverflowModes.ScrollRect:
 									if (!m_isMaskingEnabled)
 									{
 										EnableMasking();
 									}
-									goto IL_2711;
+									goto IL_2650;
 								case TextOverflowModes.Truncate:
-									goto IL_256c;
+									goto IL_24c9;
 								case TextOverflowModes.Page:
-									goto IL_25d4;
+									goto IL_2527;
 								case TextOverflowModes.Linked:
-									goto IL_268e;
+									goto IL_25da;
 								default:
-									goto IL_2711;
+									goto IL_2650;
 								}
 								if (m_isMaskingEnabled)
 								{
@@ -2200,7 +2200,7 @@ namespace TMPro
 							}
 							return;
 						}
-						goto IL_2711;
+						goto IL_2650;
 					}
 					num3 = m_maxFontSize - m_minFontSize;
 					if (!m_isCharacterWrappingEnabled && m_enableAutoSizing && num3 > 0.051f && m_fontSize < m_fontSizeMax)
@@ -2565,10 +2565,10 @@ namespace TMPro
 								m_textInfo.characterInfo[num52].baseLine += zero3.y;
 								if (!isVisible)
 								{
-									goto IL_54e1;
+									goto IL_53d3;
 								}
-								goto IL_54e1;
-								IL_54e1:
+								goto IL_53d3;
+								IL_53d3:
 								if (lineNumber != num40 || num52 == m_characterCount - 1)
 								{
 									if (lineNumber != num40)

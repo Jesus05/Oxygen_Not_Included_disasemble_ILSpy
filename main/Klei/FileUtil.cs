@@ -13,6 +13,7 @@ namespace Klei
 			try
 			{
 				result = File.Create(filename);
+				return result;
 			}
 			catch (Exception ex)
 			{
@@ -34,8 +35,8 @@ namespace Klei
 				ConfirmDialogScreen component = Util.KInstantiateUI(ScreenPrefabs.Instance.ConfirmDialogScreen.gameObject, parent, true).GetComponent<ConfirmDialogScreen>();
 				component.PopupConfirmDialog(text, null, null, null, null, null, null, null, null);
 				UnityEngine.Object.DontDestroyOnLoad(component.gameObject);
+				return result;
 			}
-			return result;
 		}
 
 		public static bool CreateDirectory(string path)
@@ -48,6 +49,7 @@ namespace Klei
 					Directory.CreateDirectory(path);
 				}
 				result = true;
+				return result;
 			}
 			catch (Exception ex)
 			{
@@ -69,8 +71,8 @@ namespace Klei
 				ConfirmDialogScreen component = Util.KInstantiateUI(ScreenPrefabs.Instance.ConfirmDialogScreen.gameObject, parent, true).GetComponent<ConfirmDialogScreen>();
 				component.PopupConfirmDialog(text, null, null, null, null, null, null, null, null);
 				UnityEngine.Object.DontDestroyOnLoad(component.gameObject);
+				return result;
 			}
-			return result;
 		}
 
 		public static bool DeleteDirectory(string path)

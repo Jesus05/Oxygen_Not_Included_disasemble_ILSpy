@@ -7,7 +7,7 @@ public class ClothingWearer : KMonoBehaviour
 	public class ClothingInfo
 	{
 		[Serialize]
-		public string name = "";
+		public string name = string.Empty;
 
 		[Serialize]
 		public int decorMod;

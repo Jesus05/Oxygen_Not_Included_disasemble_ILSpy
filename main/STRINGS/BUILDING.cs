@@ -429,7 +429,7 @@ namespace STRINGS
 
 			public class MISSINGFOUNDATION
 			{
-				public static LocString NAME = "Missing Foundation";
+				public static LocString NAME = "Missing Tile";
 
 				public static LocString TOOLTIP = "Build " + UI.FormatAsLink("Tile", "TILE") + " beneath this building" + UI.HORIZONTAL_BR_RULE + "Tile can be found in the <color=#833A5FFF>Base Tab</color> <color=#F44A47><b>[1]</b></color> of the Build Menu";
 			}
@@ -505,21 +505,21 @@ namespace STRINGS
 			{
 				public static LocString NAME = "No Conveyor Loader";
 
-				public static LocString TOOLTIP = "Material cannot be fed onto this Conveyor Rail system for transport" + UI.HORIZONTAL_BR_RULE + "Enter the Shipping Tab <color=#F44A47><b>[7]</b></color> of the Build Menu to build and connect a Conveyor Loader";
+				public static LocString TOOLTIP = "Material cannot be fed onto this Conveyor system for transport" + UI.HORIZONTAL_BR_RULE + "Enter the Shipping Tab <color=#F44A47><b>[7]</b></color> of the Build Menu to build and connect a Conveyor Loader";
 			}
 
 			public class NEEDSOLIDOUT
 			{
 				public static LocString NAME = "No Conveyor Receptacle";
 
-				public static LocString TOOLTIP = "Material cannot be offloaded from this Conveyor system and will backup the rails" + UI.HORIZONTAL_BR_RULE + "Enter the Shipping Tab <color=#F44A47><b>[7]</b></color> of the Build Menu to build and connect a Conveyor Receptacle";
+				public static LocString TOOLTIP = "Material cannot be offloaded from this Conveyor system and will backup the rails" + UI.HORIZONTAL_BR_RULE + "Enter the Shipping Tab <color=#F44A47><b>[7]</b></color> of the Build Menu to build and connect a " + UI.FormatAsLink("Conveyor Receptacle", "SOLIDCONDUITOUTBOX");
 			}
 
 			public class SOLIDPIPEOBSTRUCTED
 			{
 				public static LocString NAME = "Conveyor Rail Backup";
 
-				public static LocString TOOLTIP = "This Conveyor Rail cannot carry anymore material" + UI.HORIZONTAL_BR_RULE + "Remove material from the Conveyor Receptacle to free space for more objects";
+				public static LocString TOOLTIP = "This Conveyor Rail cannot carry anymore material" + UI.HORIZONTAL_BR_RULE + "Remove material from the " + UI.FormatAsLink("Conveyor Receptacle", "SOLIDCONDUITOUTBOX") + " to free space for more objects";
 			}
 
 			public class NEEDPLANT
@@ -574,7 +574,7 @@ namespace STRINGS
 
 				public static LocString TOOLTIP = "This building cannot produce the correct research type for the current research focus";
 
-				public static LocString NOTIFICATION_NAME = UI.FormatAsLink("Research Center", UI.StripLinkFormatting(BUILDINGS.PREFABS.ADVANCEDRESEARCHCENTER.NAME)) + " idle";
+				public static LocString NOTIFICATION_NAME = UI.FormatAsLink("Research Center", "ADVANCEDRESEARCHCENTER") + " idle";
 
 				public static LocString NOTIFICATION_TOOLTIP = "These buildings cannot produce the correct <b>Research Type</b> for the selected " + UI.FormatAsLink("Research Focus", "TECH") + ":";
 			}
@@ -585,7 +585,7 @@ namespace STRINGS
 
 				public static LocString TOOLTIP = "Select an unknown destination in the starmap to study";
 
-				public static LocString NOTIFICATION_NAME = UI.FormatAsLink("Telescope", UI.StripLinkFormatting(BUILDINGS.PREFABS.TELESCOPE.NAME)) + " idle";
+				public static LocString NOTIFICATION_NAME = UI.FormatAsLink("Telescope", "TELESCOPE") + " idle";
 
 				public static LocString NOTIFICATION_TOOLTIP = "These buildings need a space destination to study";
 			}
@@ -782,14 +782,14 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Missing Gantry";
 
-				public static LocString TOOLTIP = "A " + BUILDINGS.PREFABS.GANTRY.NAME + " must be built below a " + BUILDINGS.PREFABS.COMMANDMODULE.NAME + " for an astronaut to access it";
+				public static LocString TOOLTIP = "A " + UI.FormatAsLink("Gantry", "GANTRY") + " must be built below " + UI.FormatAsLink("Command Capsules", "COMMANDMODULE") + " and " + UI.FormatAsLink("Sight-Seeing Modules", "TOURISTMODULE") + " for Duplicants access";
 			}
 
 			public class DISEMBARKINGDUPLICANT
 			{
 				public static LocString NAME = "Waiting To Disembark";
 
-				public static LocString TOOLTIP = "The Duplicant inside this rocket can't come out until the " + BUILDINGS.PREFABS.GANTRY.NAME + " is extended";
+				public static LocString TOOLTIP = "The Duplicant inside this rocket can't come out until the " + UI.FormatAsLink("Gantry", "GANTRY") + " is extended";
 			}
 
 			public class ROCKETNAME
@@ -803,7 +803,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Has Gantry";
 
-				public static LocString TOOLTIP = "A " + BUILDINGS.PREFABS.GANTRY.NAME + " must be built below a " + BUILDINGS.PREFABS.COMMANDMODULE.NAME + " for an astronaut to access it";
+				public static LocString TOOLTIP = "Duplicants may now enter this section of the rocket";
 			}
 
 			public class NORMAL
@@ -873,7 +873,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Requires Emptying";
 
-				public static LocString TOOLTIP = "This " + BUILDINGS.PREFABS.ALGAEHABITAT.NAME + " needs to be emptied of " + ELEMENTS.DIRTYWATER.NAME + UI.HORIZONTAL_BR_RULE + BUILDINGS.PREFABS.BOTTLEEMPTIER.NAME + "s can be used to transport and dispose of " + ELEMENTS.DIRTYWATER.NAME + " in designated areas";
+				public static LocString TOOLTIP = "This " + UI.FormatAsLink("Algae Terrarium", "ALGAEHABITAT") + " needs to be emptied of " + UI.FormatAsLink("Contaminated Water", "DIRTYWATER") + UI.HORIZONTAL_BR_RULE + UI.FormatAsLink("Bottle Emptiers", "BOTTLEEMPTIER") + " can be used to transport and dispose of " + UI.FormatAsLink("Contaminated Water", "DIRTYWATER") + " in designated areas";
 			}
 
 			public class UNUSABLE
@@ -963,7 +963,7 @@ namespace STRINGS
 
 			public class EMITTINGOXYGENAVG
 			{
-				public static LocString NAME = "Emitting " + ELEMENTS.OXYGEN.NAME + ": {FlowRate}";
+				public static LocString NAME = "Emitting " + UI.FormatAsLink("Oxygen", "OXYGEN") + ": {FlowRate}";
 
 				public static LocString TOOLTIP = "Producing oxygen at a rate of {FlowRate}";
 			}
@@ -1067,7 +1067,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Requires Flipping";
 
-				public static LocString TOOLTIP = "Compost must be flipped periodically to produce fertilizer";
+				public static LocString TOOLTIP = "Compost must be flipped periodically to produce " + UI.FormatAsLink("Dirt", "DIRT");
 			}
 
 			public class AWAITINGWASTE

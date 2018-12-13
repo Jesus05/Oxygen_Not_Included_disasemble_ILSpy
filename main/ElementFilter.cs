@@ -24,7 +24,7 @@ public class ElementFilter : KMonoBehaviour, ISaveLoadable, ISecondaryOutput
 	[MyCmpReq]
 	private KSelectable selectable;
 
-	public Filterable filterable = null;
+	public Filterable filterable;
 
 	private Guid needsConduitStatusItemGuid;
 
@@ -40,7 +40,7 @@ public class ElementFilter : KMonoBehaviour, ISaveLoadable, ISecondaryOutput
 
 	private HandleVector<int>.Handle partitionerEntry;
 
-	private static StatusItem filterStatusItem = null;
+	private static StatusItem filterStatusItem;
 
 	public SimHashes FilteredElement => filteredElem;
 
@@ -197,7 +197,7 @@ public class ElementFilter : KMonoBehaviour, ISaveLoadable, ISecondaryOutput
 	{
 		if (filterStatusItem == null)
 		{
-			filterStatusItem = new StatusItem("Filter", "BUILDING", "", StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.LiquidConduits.ID, true, 63486);
+			filterStatusItem = new StatusItem("Filter", "BUILDING", string.Empty, StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.LiquidConduits.ID, true, 63486);
 			filterStatusItem.resolveStringCallback = delegate(string str, object data)
 			{
 				ElementFilter elementFilter = (ElementFilter)data;

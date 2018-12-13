@@ -2,7 +2,7 @@ public class PoweredActiveController : GameStateMachine<PoweredActiveController,
 {
 	public class Def : BaseDef
 	{
-		public bool showWorkingStatus = false;
+		public bool showWorkingStatus;
 	}
 
 	public class WorkingStates : State

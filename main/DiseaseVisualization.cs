@@ -18,7 +18,7 @@ public class DiseaseVisualization : ScriptableObject
 		}
 	}
 
-	public Sprite overlaySprite = null;
+	public Sprite overlaySprite;
 
 	public List<Info> info = new List<Info>();
 

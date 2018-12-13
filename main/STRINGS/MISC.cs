@@ -229,7 +229,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Inert";
 
-				public static LocString TOOLTIP = "Environmental air pressure is too high for this " + ELEMENTS.OXYROCK.NAME + " deposit to emit " + ELEMENTS.OXYGEN.NAME;
+				public static LocString TOOLTIP = "Environmental air pressure is too high for this " + UI.FormatAsLink("Oxylite", "OXYROCK") + " deposit to emit " + ELEMENTS.OXYGEN.NAME;
 			}
 
 			public class BLEACHSTONE
@@ -238,14 +238,14 @@ namespace STRINGS
 				{
 					public static LocString NAME = "Bleachstone blocked";
 
-					public static LocString TOOLTIP = "This " + ELEMENTS.BLEACHSTONE.NAME + " deposit is not exposed to air and cannot emit " + ELEMENTS.CHLORINE.NAME;
+					public static LocString TOOLTIP = "This " + UI.FormatAsLink("Bleachstone", "BLEACHSTONE") + " deposit is not exposed to air and cannot emit " + UI.FormatAsLink("Chlorine", "CHLORINE");
 				}
 
 				public class OVERPRESSURE
 				{
 					public static LocString NAME = "Inert";
 
-					public static LocString TOOLTIP = "Environmental air pressure is too high for this " + ELEMENTS.BLEACHSTONE.NAME + " deposit to emit " + ELEMENTS.CHLORINE.NAME;
+					public static LocString TOOLTIP = "Environmental air pressure is too high for this " + UI.FormatAsLink("Bleachstone", "BLEACHSTONE") + " deposit to emit " + UI.FormatAsLink("Chlorine", "CHLORINE");
 				}
 			}
 
@@ -253,7 +253,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "{BlockedString}";
 
-				public static LocString TOOLTIP = "This " + ELEMENTS.BLEACHSTONE.NAME + " deposit has no room to emit " + ELEMENTS.CHLORINE.NAME;
+				public static LocString TOOLTIP = "This " + UI.FormatAsLink("Bleachstone", "BLEACHSTONE") + " deposit has no room to emit " + UI.FormatAsLink("Chlorine", "CHLORINE");
 			}
 
 			public class BLEACHSTONEEMITTING
@@ -267,7 +267,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Inert";
 
-				public static LocString TOOLTIP = "Environmental air pressure is too high for this " + ELEMENTS.BLEACHSTONE.NAME + " deposit to emit " + ELEMENTS.CHLORINE.NAME;
+				public static LocString TOOLTIP = "Environmental air pressure is too high for this " + UI.FormatAsLink("Bleachstone", "BLEACHSTONE") + " deposit to emit " + UI.FormatAsLink("Chlorine", "CHLORINE");
 			}
 
 			public class EDIBLE
@@ -701,7 +701,7 @@ namespace STRINGS
 
 				public static LocString TOOLTIP = "Notes on managing food contamination";
 
-				public static LocString MESSAGEBODY = "The " + UI.FormatAsLink("Food", "FOOD") + " my Duplicants cook will only ever be as clean as the ingredients used to make it. Storing food in sterile or " + UI.FormatAsLink("Refrigerated", UI.StripLinkFormatting(BUILDINGS.PREFABS.REFRIGERATOR.NAME)) + " environments will keep food free of " + UI.FormatAsLink("Germs", "DISEASE") + ", while carefully placed hygiene stations like " + BUILDINGS.PREFABS.WASHBASIN.NAME + " or " + BUILDINGS.PREFABS.SHOWER.NAME + " will prevent the cooks from infecting the food by handling it.\n\nDangerously contaminated food can be sent to compost by clicking the " + UI.FormatAsLink("Compost", "misc") + " button on the selected item.";
+				public static LocString MESSAGEBODY = "The " + UI.FormatAsLink("Food", "FOOD") + " my Duplicants cook will only ever be as clean as the ingredients used to make it. Storing food in sterile or " + UI.FormatAsLink("Refrigerated", "REFRIGERATOR") + " environments will keep food free of " + UI.FormatAsLink("Germs", "DISEASE") + ", while carefully placed hygiene stations like " + BUILDINGS.PREFABS.WASHBASIN.NAME + " or " + BUILDINGS.PREFABS.SHOWER.NAME + " will prevent the cooks from infecting the food by handling it.\n\nDangerously contaminated food can be sent to compost by clicking the " + UI.FormatAsLink("Compost", "misc") + " button on the selected item.";
 			}
 
 			public class SUITS
@@ -733,16 +733,16 @@ namespace STRINGS
 
 			public class NOMESSAGES
 			{
-				public static LocString NAME = "";
+				public static LocString NAME = string.Empty;
 
-				public static LocString TOOLTIP = "";
+				public static LocString TOOLTIP = string.Empty;
 			}
 
 			public class NOALERTS
 			{
-				public static LocString NAME = "";
+				public static LocString NAME = string.Empty;
 
-				public static LocString TOOLTIP = "";
+				public static LocString TOOLTIP = string.Empty;
 			}
 
 			public class NEWTRAIT
@@ -974,28 +974,28 @@ namespace STRINGS
 			{
 				public static LocString NAME = "The colony is entering a cloud of gas";
 
-				public static LocString TOOLTIP = "";
+				public static LocString TOOLTIP = string.Empty;
 			}
 
 			public class GASCLOUDPEAK
 			{
 				public static LocString NAME = "The gas cloud is at its densest point";
 
-				public static LocString TOOLTIP = "";
+				public static LocString TOOLTIP = string.Empty;
 			}
 
 			public class GASCLOUDDEPARTING
 			{
 				public static LocString NAME = "The gas cloud is receding";
 
-				public static LocString TOOLTIP = "";
+				public static LocString TOOLTIP = string.Empty;
 			}
 
 			public class GASCLOUDGONE
 			{
 				public static LocString NAME = "The colony is once again in open space";
 
-				public static LocString TOOLTIP = "";
+				public static LocString TOOLTIP = string.Empty;
 			}
 
 			public class AVAILABLE

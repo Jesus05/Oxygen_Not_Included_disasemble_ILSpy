@@ -10,7 +10,7 @@ public class PrioritizeRowTableColumn : TableColumn
 	private Func<object, int, string> onHoverWidget;
 
 	public PrioritizeRowTableColumn(object user_data, Action<object, int> on_change_priority, Func<object, int, string> on_hover_widget)
-		: base(null, null, null, null, null, false, "")
+		: base(null, null, null, null, null, false, string.Empty)
 	{
 		userData = user_data;
 		onChangePriority = on_change_priority;

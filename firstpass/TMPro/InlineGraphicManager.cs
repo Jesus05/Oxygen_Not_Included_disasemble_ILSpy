@@ -23,7 +23,7 @@ namespace TMPro
 
 		private TMP_Text m_textComponent;
 
-		private bool m_isInitialized = false;
+		private bool m_isInitialized;
 
 		public TMP_SpriteAsset spriteAsset
 		{
@@ -164,37 +164,37 @@ namespace TMPro
 
 		public TMP_Sprite GetSprite(int index)
 		{
-			if (!((UnityEngine.Object)m_spriteAsset == (UnityEngine.Object)null))
+			if ((UnityEngine.Object)m_spriteAsset == (UnityEngine.Object)null)
 			{
-				if (m_spriteAsset.spriteInfoList != null && index <= m_spriteAsset.spriteInfoList.Count - 1)
-				{
-					return m_spriteAsset.spriteInfoList[index];
-				}
+				Debug.LogWarning("No Sprite Asset is assigned.", this);
+				return null;
+			}
+			if (m_spriteAsset.spriteInfoList == null || index > m_spriteAsset.spriteInfoList.Count - 1)
+			{
 				Debug.LogWarning("Sprite index exceeds the number of sprites in this Sprite Asset.", this);
 				return null;
 			}
-			Debug.LogWarning("No Sprite Asset is assigned.", this);
-			return null;
+			return m_spriteAsset.spriteInfoList[index];
 		}
 
 		public int GetSpriteIndexByHashCode(int hashCode)
 		{
-			if (!((UnityEngine.Object)m_spriteAsset == (UnityEngine.Object)null) && m_spriteAsset.spriteInfoList != null)
+			if ((UnityEngine.Object)m_spriteAsset == (UnityEngine.Object)null || m_spriteAsset.spriteInfoList == null)
 			{
-				return m_spriteAsset.spriteInfoList.FindIndex((TMP_Sprite item) => item.hashCode == hashCode);
+				Debug.LogWarning("No Sprite Asset is assigned.", this);
+				return -1;
 			}
-			Debug.LogWarning("No Sprite Asset is assigned.", this);
-			return -1;
+			return m_spriteAsset.spriteInfoList.FindIndex((TMP_Sprite item) => item.hashCode == hashCode);
 		}
 
 		public int GetSpriteIndexByIndex(int index)
 		{
-			if (!((UnityEngine.Object)m_spriteAsset == (UnityEngine.Object)null) && m_spriteAsset.spriteInfoList != null)
+			if ((UnityEngine.Object)m_spriteAsset == (UnityEngine.Object)null || m_spriteAsset.spriteInfoList == null)
 			{
-				return m_spriteAsset.spriteInfoList.FindIndex((TMP_Sprite item) => item.id == index);
+				Debug.LogWarning("No Sprite Asset is assigned.", this);
+				return -1;
 			}
-			Debug.LogWarning("No Sprite Asset is assigned.", this);
-			return -1;
+			return m_spriteAsset.spriteInfoList.FindIndex((TMP_Sprite item) => item.id == index);
 		}
 
 		public void SetUIVertex(UIVertex[] uiVertex)

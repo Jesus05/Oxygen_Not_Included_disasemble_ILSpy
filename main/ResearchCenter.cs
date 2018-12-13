@@ -127,17 +127,17 @@ public class ResearchCenter : Workable, IEffectDescriptor, ISim200ms
 
 	public override float GetPercentComplete()
 	{
-		if (Research.Instance.GetActiveResearch() != null)
+		if (Research.Instance.GetActiveResearch() == null)
 		{
-			float num = Research.Instance.GetActiveResearch().progressInventory.PointsByTypeID[research_point_type_id];
-			float value = 0f;
-			if (Research.Instance.GetActiveResearch().tech.costsByResearchTypeID.TryGetValue(research_point_type_id, out value))
-			{
-				return num / value;
-			}
+			return 0f;
+		}
+		float num = Research.Instance.GetActiveResearch().progressInventory.PointsByTypeID[research_point_type_id];
+		float value = 0f;
+		if (!Research.Instance.GetActiveResearch().tech.costsByResearchTypeID.TryGetValue(research_point_type_id, out value))
+		{
 			return 1f;
 		}
-		return 0f;
+		return num / value;
 	}
 
 	protected override void OnStartWork(Worker worker)
@@ -274,10 +274,10 @@ public class ResearchCenter : Workable, IEffectDescriptor, ISim200ms
 
 	public string GetStatusString()
 	{
-		string text = RESEARCH.MESSAGING.NORESEARCHSELECTED;
+		string result = RESEARCH.MESSAGING.NORESEARCHSELECTED;
 		if (Research.Instance.GetActiveResearch() != null)
 		{
-			text = "<b>" + Research.Instance.GetActiveResearch().tech.Name + "</b>";
+			result = "<b>" + Research.Instance.GetActiveResearch().tech.Name + "</b>";
 			int num = 0;
 			foreach (KeyValuePair<string, float> item in Research.Instance.GetActiveResearch().progressInventory.PointsByTypeID)
 			{
@@ -290,20 +290,23 @@ public class ResearchCenter : Workable, IEffectDescriptor, ISim200ms
 			{
 				if (Research.Instance.GetActiveResearch().tech.costsByResearchTypeID[item2.Key] != 0f && item2.Key == research_point_type_id)
 				{
-					text = text + "\n   - " + Research.Instance.researchTypes.GetResearchType(item2.Key).name;
-					string text2 = text;
-					text = text2 + ": " + item2.Value + "/" + Research.Instance.GetActiveResearch().tech.costsByResearchTypeID[item2.Key];
+					result = result + "\n   - " + Research.Instance.researchTypes.GetResearchType(item2.Key).name;
+					string text = result;
+					result = text + ": " + item2.Value + "/" + Research.Instance.GetActiveResearch().tech.costsByResearchTypeID[item2.Key];
 				}
 			}
-			foreach (KeyValuePair<string, float> item3 in Research.Instance.GetActiveResearch().progressInventory.PointsByTypeID)
 			{
-				if (Research.Instance.GetActiveResearch().tech.costsByResearchTypeID[item3.Key] != 0f && !(item3.Key == research_point_type_id))
+				foreach (KeyValuePair<string, float> item3 in Research.Instance.GetActiveResearch().progressInventory.PointsByTypeID)
 				{
-					text = ((num <= 1) ? (text + "\n   - " + string.Format(RESEARCH.MESSAGING.RESEARCHTYPEREQUIRED, Research.Instance.researchTypes.GetResearchType(item3.Key).name)) : (text + "\n   - " + string.Format(RESEARCH.MESSAGING.RESEARCHTYPEALSOREQUIRED, Research.Instance.researchTypes.GetResearchType(item3.Key).name)));
+					if (Research.Instance.GetActiveResearch().tech.costsByResearchTypeID[item3.Key] != 0f && !(item3.Key == research_point_type_id))
+					{
+						result = ((num <= 1) ? (result + "\n   - " + string.Format(RESEARCH.MESSAGING.RESEARCHTYPEREQUIRED, Research.Instance.researchTypes.GetResearchType(item3.Key).name)) : (result + "\n   - " + string.Format(RESEARCH.MESSAGING.RESEARCHTYPEALSOREQUIRED, Research.Instance.researchTypes.GetResearchType(item3.Key).name)));
+					}
 				}
+				return result;
 			}
 		}
-		return text;
+		return result;
 	}
 
 	public List<Descriptor> GetDescriptors(BuildingDef def)

@@ -50,12 +50,12 @@ public class HygieneMonitor : GameStateMachine<HygieneMonitor, HygieneMonitor.In
 
 		private bool IsDirty(int cell)
 		{
-			if (Grid.IsValidCell(cell))
+			if (!Grid.IsValidCell(cell))
 			{
-				Element element = Grid.Element[cell];
-				return element.IsLiquid && element.id != SimHashes.Water;
+				return false;
 			}
-			return false;
+			Element element = Grid.Element[cell];
+			return element.IsLiquid && element.id != SimHashes.Water;
 		}
 
 		public void UpdateDirtiness()

@@ -10,7 +10,7 @@ public class CellSelectionObject : KMonoBehaviour
 
 	private float zDepth = -0.5f;
 
-	private float zDepthSelected = 0f;
+	private float zDepthSelected;
 
 	private KBoxCollider2D mCollider;
 
@@ -44,7 +44,7 @@ public class CellSelectionObject : KMonoBehaviour
 
 	public int diseaseCount;
 
-	private float updateTimer = 0f;
+	private float updateTimer;
 
 	private Dictionary<HashedString, Func<bool>> overlayFilterMap = new Dictionary<HashedString, Func<bool>>();
 

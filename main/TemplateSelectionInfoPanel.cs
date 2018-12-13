@@ -61,7 +61,7 @@ public class TemplateSelectionInfoPanel : KMonoBehaviour, IRender1000ms
 
 	public void SaveCurrentDetails()
 	{
-		string str = "";
+		string str = string.Empty;
 		for (int i = 0; i < details.Length; i++)
 		{
 			str = str + details[i](DebugBaseTemplateButton.Instance.SelectedCells) + "\n";
@@ -161,17 +161,17 @@ public class TemplateSelectionInfoPanel : KMonoBehaviour, IRender1000ms
 		}
 		mass_per_element.Sort(delegate(Tuple<Element, float> a, Tuple<Element, float> b)
 		{
-			if (!(a.second > b.second))
+			if (a.second > b.second)
 			{
-				if (!(b.second > a.second))
-				{
-					return 0;
-				}
+				return -1;
+			}
+			if (b.second > a.second)
+			{
 				return 1;
 			}
-			return -1;
+			return 0;
 		});
-		string text = "";
+		string text = string.Empty;
 		foreach (Tuple<Element, float> item in mass_per_element)
 		{
 			string text2 = text;

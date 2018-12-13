@@ -13,23 +13,23 @@ public class KBatchedAnimTracker : MonoBehaviour
 
 	public Vector3 targetPoint = Vector3.zero;
 
-	public bool useTargetPoint = false;
+	public bool useTargetPoint;
 
 	public bool fadeOut = true;
 
-	public bool skipInitialDisable = false;
+	public bool skipInitialDisable;
 
-	public bool forceAlwaysVisible = false;
+	public bool forceAlwaysVisible;
 
 	private bool alive = true;
 
-	private bool forceUpdate = false;
+	private bool forceUpdate;
 
 	private Matrix2x3 previousMatrix;
 
 	private Vector3 previousPosition;
 
-	private KBatchedAnimController myAnim = null;
+	private KBatchedAnimController myAnim;
 
 	private void Start()
 	{

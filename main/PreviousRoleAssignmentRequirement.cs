@@ -7,11 +7,11 @@ public class PreviousRoleAssignmentRequirement : RoleAssignmentRequirement
 	public PreviousRoleAssignmentRequirement(string previousRoleID)
 		: base("HasExperience_" + previousRoleID, UI.ROLES_SCREEN.ASSIGNMENT_REQUIREMENTS.HAS_EXPERIENCE.DESCRIPTION, delegate(MinionResume resume)
 		{
-			if (!(previousRoleID == "NoRole"))
+			if (previousRoleID == "NoRole")
 			{
-				return resume.HasMasteredRole(previousRoleID);
+				return true;
 			}
-			return true;
+			return resume.HasMasteredRole(previousRoleID);
 		})
 	{
 		this.previousRoleID = previousRoleID;

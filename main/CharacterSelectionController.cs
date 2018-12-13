@@ -20,7 +20,7 @@ public class CharacterSelectionController : KModalScreen
 	protected int selectableCharCount;
 
 	[SerializeField]
-	private bool allowsReplacing = false;
+	private bool allowsReplacing;
 
 	protected List<MinionStartingStats> startingStats;
 

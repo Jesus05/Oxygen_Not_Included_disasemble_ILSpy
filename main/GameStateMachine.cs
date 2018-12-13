@@ -1,6 +1,7 @@
 using Klei.AI;
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 public abstract class GameStateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType> : StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType> where StateMachineType : GameStateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType> where StateMachineInstanceType : GameStateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.GameInstance where MasterType : IStateMachineTarget
@@ -270,21 +271,21 @@ public abstract class GameStateMachine<StateMachineType, StateMachineInstanceTyp
 
 		private TargetParameter GetStateTarget()
 		{
-			if (stateTarget != null)
+			if (stateTarget == null)
 			{
-				return stateTarget;
-			}
-			if (parent == null)
-			{
-				TargetParameter targetParameter = sm.stateTarget;
-				if (targetParameter != null)
+				if (parent != null)
 				{
-					return targetParameter;
+					State state = (State)parent;
+					return state.GetStateTarget();
 				}
-				return sm.masterTarget;
+				TargetParameter targetParameter = sm.stateTarget;
+				if (targetParameter == null)
+				{
+					return sm.masterTarget;
+				}
+				return targetParameter;
 			}
-			State state = (State)parent;
-			return state.GetStateTarget();
+			return stateTarget;
 		}
 
 		public int CreateDataTableEntry()
@@ -1495,7 +1496,7 @@ public abstract class GameStateMachine<StateMachineType, StateMachineInstanceTyp
 				Notification notification2 = callback(smi);
 				smi.dataTable[data_idx] = notification2;
 				Notifier notifier2 = EntityTemplateExtensions.AddOrGet<Notifier>(smi.master.gameObject);
-				notifier2.Add(notification2, "");
+				notifier2.Add(notification2, string.Empty);
 			});
 			Exit("DisableNotification()", delegate(StateMachineInstanceType smi)
 			{
@@ -1533,7 +1534,7 @@ public abstract class GameStateMachine<StateMachineType, StateMachineInstanceTyp
 			Enter("DoNotification()", delegate(StateMachineInstanceType smi)
 			{
 				Notification notification = callback(smi);
-				state_target.Get<Notifier>(smi).Add(notification, "");
+				state_target.Get<Notifier>(smi).Add(notification, string.Empty);
 			});
 			return this;
 		}
@@ -1917,7 +1918,7 @@ public abstract class GameStateMachine<StateMachineType, StateMachineInstanceTyp
 			TargetParameter state_target = GetStateTarget();
 			Enter("PlayAnim(" + anim + ", " + mode.ToString() + ")", delegate(StateMachineInstanceType smi)
 			{
-				string str = "";
+				string str = string.Empty;
 				if (suffix_callback != null)
 				{
 					str = suffix_callback(smi);
@@ -1941,7 +1942,7 @@ public abstract class GameStateMachine<StateMachineType, StateMachineInstanceTyp
 			}
 			Enter("QueueAnim(" + anim + ", " + mode.ToString() + ")", delegate(StateMachineInstanceType smi)
 			{
-				string str = "";
+				string str = string.Empty;
 				if (suffix_callback != null)
 				{
 					str = suffix_callback(smi);
@@ -2145,11 +2146,14 @@ public abstract class GameStateMachine<StateMachineType, StateMachineInstanceTyp
 
 		public State hungry;
 
+		[CompilerGenerated]
+		private static Transition.ConditionCallback _003C_003Ef__mg_0024cache0;
+
 		public State InitializeStates(TargetParameter target, StatusItem status_item)
 		{
 			Target(target);
 			base.root.DefaultState(satisfied);
-			satisfied.EventTransition(GameHashes.AddUrge, hungry, (StateMachineInstanceType smi) => IsHungry(smi));
+			satisfied.EventTransition(GameHashes.AddUrge, hungry, IsHungry);
 			hungry.EventTransition(GameHashes.RemoveUrge, satisfied, (StateMachineInstanceType smi) => !IsHungry(smi)).ToggleStatusItem(status_item, (object)null);
 			return this;
 		}
@@ -2182,16 +2186,16 @@ public abstract class GameStateMachine<StateMachineType, StateMachineInstanceTyp
 		private static bool isLethalTemperature(GameObject plant)
 		{
 			TemperatureVulnerable component = plant.GetComponent<TemperatureVulnerable>();
-			if (!((UnityEngine.Object)component == (UnityEngine.Object)null))
+			if ((UnityEngine.Object)component == (UnityEngine.Object)null)
 			{
-				if (component.GetInternalTemperatureState != 0)
-				{
-					if (component.GetInternalTemperatureState != TemperatureVulnerable.TemperatureState.LethalHot)
-					{
-						return false;
-					}
-					return true;
-				}
+				return false;
+			}
+			if (component.GetInternalTemperatureState == TemperatureVulnerable.TemperatureState.LethalCold)
+			{
+				return true;
+			}
+			if (component.GetInternalTemperatureState == TemperatureVulnerable.TemperatureState.LethalHot)
+			{
 				return true;
 			}
 			return false;

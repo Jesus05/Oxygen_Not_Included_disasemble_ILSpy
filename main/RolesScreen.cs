@@ -52,11 +52,11 @@ public class RolesScreen : KModalScreen
 
 	private int HEADER_HEIGHT = 192;
 
-	private bool dirty = false;
+	private bool dirty;
 
 	private bool layoutRoles = true;
 
-	private bool linesPending = false;
+	private bool linesPending;
 
 	[HideInInspector]
 	public MinionResume activeResume;

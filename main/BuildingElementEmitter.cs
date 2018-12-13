@@ -28,13 +28,13 @@ public class BuildingElementEmitter : KMonoBehaviour, IEffectDescriptor, IElemen
 	public byte emitDiseaseIdx = byte.MaxValue;
 
 	[SerializeField]
-	public int emitDiseaseCount = 0;
+	public int emitDiseaseCount;
 
 	private HandleVector<int>.Handle accumulator = HandleVector<int>.InvalidHandle;
 
 	private int simHandle = -1;
 
-	private bool simActive = false;
+	private bool simActive;
 
 	private bool dirty = true;
 

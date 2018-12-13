@@ -134,8 +134,7 @@ public class NameDisplayScreen : KScreen
 		{
 			if (textEntry.guid == guid)
 			{
-				result = textEntry.display_go;
-				break;
+				return textEntry.display_go;
 			}
 		}
 		return result;

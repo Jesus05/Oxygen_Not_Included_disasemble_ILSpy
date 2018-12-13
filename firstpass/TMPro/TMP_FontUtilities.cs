@@ -25,37 +25,37 @@ namespace TMPro
 		private static TMP_FontAsset SearchForGlyphInternal(TMP_FontAsset font, int character, out TMP_Glyph glyph)
 		{
 			glyph = null;
-			if (!((Object)font == (Object)null))
+			if ((Object)font == (Object)null)
 			{
-				if (!font.characterDictionary.TryGetValue(character, out glyph))
+				return null;
+			}
+			if (font.characterDictionary.TryGetValue(character, out glyph))
+			{
+				return font;
+			}
+			if (font.fallbackFontAssets != null && font.fallbackFontAssets.Count > 0)
+			{
+				for (int i = 0; i < font.fallbackFontAssets.Count; i++)
 				{
-					if (font.fallbackFontAssets != null && font.fallbackFontAssets.Count > 0)
+					if (glyph != null)
 					{
-						for (int i = 0; i < font.fallbackFontAssets.Count; i++)
+						break;
+					}
+					TMP_FontAsset tMP_FontAsset = font.fallbackFontAssets[i];
+					if (!((Object)tMP_FontAsset == (Object)null))
+					{
+						int instanceID = tMP_FontAsset.GetInstanceID();
+						if (!k_searchedFontAssets.Contains(instanceID))
 						{
-							if (glyph != null)
+							k_searchedFontAssets.Add(instanceID);
+							tMP_FontAsset = SearchForGlyphInternal(tMP_FontAsset, character, out glyph);
+							if ((Object)tMP_FontAsset != (Object)null)
 							{
-								break;
-							}
-							TMP_FontAsset tMP_FontAsset = font.fallbackFontAssets[i];
-							if (!((Object)tMP_FontAsset == (Object)null))
-							{
-								int instanceID = tMP_FontAsset.GetInstanceID();
-								if (!k_searchedFontAssets.Contains(instanceID))
-								{
-									k_searchedFontAssets.Add(instanceID);
-									tMP_FontAsset = SearchForGlyphInternal(tMP_FontAsset, character, out glyph);
-									if ((Object)tMP_FontAsset != (Object)null)
-									{
-										return tMP_FontAsset;
-									}
-								}
+								return tMP_FontAsset;
 							}
 						}
 					}
-					return null;
 				}
-				return font;
 			}
 			return null;
 		}

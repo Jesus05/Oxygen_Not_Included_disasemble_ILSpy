@@ -6,7 +6,7 @@ public class PoweredController : GameStateMachine<PoweredController, PoweredCont
 
 	public new class Instance : GameInstance
 	{
-		public bool ShowWorkingStatus = false;
+		public bool ShowWorkingStatus;
 
 		public Instance(IStateMachineTarget master, Def def)
 			: base(master, (object)def)

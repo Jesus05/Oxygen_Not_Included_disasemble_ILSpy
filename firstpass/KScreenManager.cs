@@ -5,9 +5,9 @@ using UnityEngine.EventSystems;
 
 public class KScreenManager : KMonoBehaviour, IInputHandler
 {
-	private static bool quitting = false;
+	private static bool quitting;
 
-	private static bool inputDisabled = false;
+	private static bool inputDisabled;
 
 	private List<KScreen> screenStack = new List<KScreen>();
 
@@ -125,7 +125,7 @@ public class KScreenManager : KMonoBehaviour, IInputHandler
 
 	public string DebugScreenStack()
 	{
-		string text = "";
+		string text = string.Empty;
 		foreach (KScreen item in screenStack)
 		{
 			text = text + item.name + "\n";

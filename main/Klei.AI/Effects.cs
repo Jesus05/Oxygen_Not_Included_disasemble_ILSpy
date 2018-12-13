@@ -88,25 +88,25 @@ namespace Klei.AI
 
 		public EffectInstance Add(Effect effect, bool should_save)
 		{
-			if (!effectImmunites.Contains(effect))
+			if (effectImmunites.Contains(effect))
 			{
-				bool flag = true;
-				Traits component = GetComponent<Traits>();
-				if ((UnityEngine.Object)component != (UnityEngine.Object)null)
+				return null;
+			}
+			bool flag = true;
+			Traits component = GetComponent<Traits>();
+			if ((UnityEngine.Object)component != (UnityEngine.Object)null)
+			{
+				foreach (Trait trait in component.TraitList)
 				{
-					foreach (Trait trait in component.TraitList)
+					if (trait.ignoredEffects != null && Array.IndexOf(trait.ignoredEffects, effect.Id) != -1)
 					{
-						if (trait.ignoredEffects != null && Array.IndexOf(trait.ignoredEffects, effect.Id) != -1)
-						{
-							flag = false;
-							break;
-						}
+						flag = false;
+						break;
 					}
 				}
-				if (!flag)
-				{
-					return null;
-				}
+			}
+			if (flag)
+			{
 				Attributes attributes = this.GetAttributes();
 				EffectInstance effectInstance = Get(effect);
 				if (!string.IsNullOrEmpty(effect.stompGroup))

@@ -33,7 +33,7 @@ public class RoleMasteredMessage : Message
 
 	public override string GetTooltip()
 	{
-		return string.Format(MISC.NOTIFICATIONS.ROLEMASTERED.TOOLTIP, "");
+		return string.Format(MISC.NOTIFICATIONS.ROLEMASTERED.TOOLTIP, string.Empty);
 	}
 
 	public override bool IsValid()

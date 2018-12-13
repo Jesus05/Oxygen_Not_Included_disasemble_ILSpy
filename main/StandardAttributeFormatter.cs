@@ -73,7 +73,7 @@ public class StandardAttributeFormatter : IAttributeFormatter
 				tooltipDescription += string.Format(DUPLICANTS.ATTRIBUTES.MODIFIER_ENTRY, attributeModifier.GetDescription(), formattedString);
 			}
 		}
-		string text = "";
+		string text = string.Empty;
 		AttributeConverters component = instance.gameObject.GetComponent<AttributeConverters>();
 		if ((Object)component != (Object)null && master.converters.Count > 0)
 		{

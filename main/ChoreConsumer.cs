@@ -307,19 +307,19 @@ public class ChoreConsumer : KMonoBehaviour, IPersonalPriorityManager
 
 	public bool IsPermittedOrEnabled(ChoreType chore_type, Chore chore)
 	{
-		if (chore_type.groups.Length != 0)
+		if (chore_type.groups.Length == 0)
 		{
-			for (int i = 0; i < chore_type.groups.Length; i++)
-			{
-				ChoreGroup chore_group = chore_type.groups[i];
-				if (IsPermittedByTraits(chore_group) && IsPermittedByUser(chore_group))
-				{
-					return true;
-				}
-			}
-			return false;
+			return true;
 		}
-		return true;
+		for (int i = 0; i < chore_type.groups.Length; i++)
+		{
+			ChoreGroup chore_group = chore_type.groups[i];
+			if (IsPermittedByTraits(chore_group) && IsPermittedByUser(chore_group))
+			{
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public void SetReach(int reach)
@@ -352,31 +352,31 @@ public class ChoreConsumer : KMonoBehaviour, IPersonalPriorityManager
 
 	public bool CanReach(IApproachable approachable)
 	{
-		if (!(bool)navigator)
+		if ((bool)navigator)
 		{
-			if (!consumerState.hasSolidTransferArm)
-			{
-				return false;
-			}
+			return navigator.CanReach(approachable);
+		}
+		if (consumerState.hasSolidTransferArm)
+		{
 			int cell = approachable.GetCell();
 			return consumerState.solidTransferArm.IsCellReachable(cell);
 		}
-		return navigator.CanReach(approachable);
+		return false;
 	}
 
 	public bool IsWithinReach(IApproachable approachable)
 	{
-		if (!(bool)navigator)
+		if ((bool)navigator)
 		{
-			if (!consumerState.hasSolidTransferArm)
+			if ((UnityEngine.Object)this == (UnityEngine.Object)null || (UnityEngine.Object)base.gameObject == (UnityEngine.Object)null)
 			{
 				return false;
 			}
-			return consumerState.solidTransferArm.IsCellReachable(approachable.GetCell());
-		}
-		if (!((UnityEngine.Object)this == (UnityEngine.Object)null) && !((UnityEngine.Object)base.gameObject == (UnityEngine.Object)null))
-		{
 			return Grid.IsCellOffsetOf(Grid.PosToCell(this), approachable.GetCell(), approachable.GetOffsets());
+		}
+		if (consumerState.hasSolidTransferArm)
+		{
+			return consumerState.solidTransferArm.IsCellReachable(approachable.GetCell());
 		}
 		return false;
 	}
@@ -546,11 +546,11 @@ public class ChoreConsumer : KMonoBehaviour, IPersonalPriorityManager
 	public bool RunBehaviourPrecondition(Tag tag)
 	{
 		BehaviourPrecondition value = default(BehaviourPrecondition);
-		if (behaviourPreconditions.TryGetValue(tag, out value))
+		if (!behaviourPreconditions.TryGetValue(tag, out value))
 		{
-			return value.cb(value.arg);
+			return false;
 		}
-		return false;
+		return value.cb(value.arg);
 	}
 
 	public void AddBehaviourPrecondition(Tag tag, Func<object, bool> precondition, object arg)
@@ -571,11 +571,11 @@ public class ChoreConsumer : KMonoBehaviour, IPersonalPriorityManager
 	public bool IsChoreEqualOrAboveCurrentChorePriority<StateMachineType>()
 	{
 		Chore currentChore = choreDriver.GetCurrentChore();
-		if (currentChore != null)
+		if (currentChore == null)
 		{
-			return currentChore.choreType.priority <= choreTable.GetChorePriority<StateMachineType>(this);
+			return true;
 		}
-		return true;
+		return currentChore.choreType.priority <= choreTable.GetChorePriority<StateMachineType>(this);
 	}
 
 	public bool IsChoreGroupDisabled(ChoreGroup chore_group)

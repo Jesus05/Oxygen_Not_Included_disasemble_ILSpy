@@ -16,19 +16,19 @@ public class SimCellOccupier : KMonoBehaviour, IEffectDescriptor
 	public bool doReplaceElement = true;
 
 	[SerializeField]
-	public bool setGasImpermeable = false;
+	public bool setGasImpermeable;
 
 	[SerializeField]
-	public bool setLiquidImpermeable = false;
+	public bool setLiquidImpermeable;
 
 	[SerializeField]
-	public bool setTransparent = false;
+	public bool setTransparent;
 
 	[SerializeField]
-	public bool setOpaque = false;
+	public bool setOpaque;
 
 	[SerializeField]
-	public bool notifyOnMelt = false;
+	public bool notifyOnMelt;
 
 	[SerializeField]
 	public float strengthMultiplier = 1f;

@@ -36,7 +36,7 @@ public class SelectTool : InterfaceTool
 
 	private List<KSelectable> hits = new List<KSelectable>();
 
-	private int hitCycleCount = 0;
+	private int hitCycleCount;
 
 	private List<Intersection> intersections = new List<Intersection>();
 
@@ -48,9 +48,9 @@ public class SelectTool : InterfaceTool
 
 	private bool delayedSkipSound;
 
-	private KSelectable previousSelection = null;
+	private KSelectable previousSelection;
 
-	private bool playedSoundThisFrame = false;
+	private bool playedSoundThisFrame;
 
 	[CompilerGenerated]
 	private static Predicate<Intersection> _003C_003Ef__mg_0024cache0;
@@ -263,40 +263,40 @@ public class SelectTool : InterfaceTool
 		intersections.Clear();
 		GetObjectUnderCursor2D(intersections, condition, layerMask);
 		intersections.RemoveAll((Predicate<Intersection>)is_component_null);
-		if (intersections.Count > 0)
+		if (intersections.Count <= 0)
 		{
-			curIntersectionGroup.Clear();
-			foreach (Intersection intersection3 in intersections)
-			{
-				Intersection current = intersection3;
-				curIntersectionGroup.Add((Component)current.component);
-			}
-			if (!prevIntersectionGroup.Equals(curIntersectionGroup))
-			{
-				hitCycleCount = 0;
-				prevIntersectionGroup = curIntersectionGroup;
-			}
-			intersections.Sort((Comparison<Intersection>)((Intersection a, Intersection b) => (a.distance == b.distance) ? a.component.GetInstanceID().CompareTo(b.component.GetInstanceID()) : a.distance.CompareTo(b.distance)));
-			int index = 0;
-			if (cycleSelection)
-			{
-				index = hitCycleCount % intersections.Count;
-				Intersection intersection = intersections[index];
-				if ((UnityEngine.Object)intersection.component != (UnityEngine.Object)previous_selection || (UnityEngine.Object)previous_selection == (UnityEngine.Object)null)
-				{
-					index = 0;
-					hitCycleCount = 0;
-				}
-				else
-				{
-					index = ++hitCycleCount % intersections.Count;
-				}
-			}
-			Intersection intersection2 = intersections[index];
-			return intersection2.component as T;
+			prevIntersectionGroup.Clear();
+			return (T)null;
 		}
-		prevIntersectionGroup.Clear();
-		return (T)null;
+		curIntersectionGroup.Clear();
+		foreach (Intersection intersection3 in intersections)
+		{
+			Intersection current = intersection3;
+			curIntersectionGroup.Add((Component)current.component);
+		}
+		if (!prevIntersectionGroup.Equals(curIntersectionGroup))
+		{
+			hitCycleCount = 0;
+			prevIntersectionGroup = curIntersectionGroup;
+		}
+		intersections.Sort((Comparison<Intersection>)((Intersection a, Intersection b) => (a.distance == b.distance) ? a.component.GetInstanceID().CompareTo(b.component.GetInstanceID()) : a.distance.CompareTo(b.distance)));
+		int index = 0;
+		if (cycleSelection)
+		{
+			index = hitCycleCount % intersections.Count;
+			Intersection intersection = intersections[index];
+			if ((UnityEngine.Object)intersection.component != (UnityEngine.Object)previous_selection || (UnityEngine.Object)previous_selection == (UnityEngine.Object)null)
+			{
+				index = 0;
+				hitCycleCount = 0;
+			}
+			else
+			{
+				index = ++hitCycleCount % intersections.Count;
+			}
+		}
+		Intersection intersection2 = intersections[index];
+		return intersection2.component as T;
 	}
 
 	private void ClearHover()

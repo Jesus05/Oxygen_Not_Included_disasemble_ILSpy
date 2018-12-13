@@ -131,7 +131,7 @@ namespace TMPro
 			component.offsetMin = new Vector2(10f, 6f);
 			component.offsetMax = new Vector2(-10f, -7f);
 			TextMeshProUGUI textMeshProUGUI = gameObject4.AddComponent<TextMeshProUGUI>();
-			textMeshProUGUI.text = "";
+			textMeshProUGUI.text = string.Empty;
 			textMeshProUGUI.enableWordWrapping = false;
 			textMeshProUGUI.extraPadding = true;
 			textMeshProUGUI.richText = true;

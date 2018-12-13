@@ -24,51 +24,51 @@ public class WorkableReactable : Reactable
 
 	public override bool InternalCanBegin(GameObject new_reactor, Navigator.ActiveTransition transition)
 	{
-		if (!((Object)workable == (Object)null))
+		if ((Object)workable == (Object)null)
 		{
-			if (!((Object)reactor != (Object)null))
-			{
-				Brain component = new_reactor.GetComponent<Brain>();
-				if (!((Object)component == (Object)null))
-				{
-					if (component.IsRunning())
-					{
-						Navigator component2 = new_reactor.GetComponent<Navigator>();
-						if (!((Object)component2 == (Object)null))
-						{
-							if (component2.IsMoving())
-							{
-								if (allowedDirection != 0)
-								{
-									Facing component3 = new_reactor.GetComponent<Facing>();
-									if (!((Object)component3 == (Object)null))
-									{
-										bool facing = component3.GetFacing();
-										if (facing && allowedDirection == AllowedDirection.Right)
-										{
-											return false;
-										}
-										if (!facing && allowedDirection == AllowedDirection.Left)
-										{
-											return false;
-										}
-										return true;
-									}
-									return false;
-								}
-								return true;
-							}
-							return false;
-						}
-						return false;
-					}
-					return false;
-				}
-				return false;
-			}
 			return false;
 		}
-		return false;
+		if ((Object)reactor != (Object)null)
+		{
+			return false;
+		}
+		Brain component = new_reactor.GetComponent<Brain>();
+		if ((Object)component == (Object)null)
+		{
+			return false;
+		}
+		if (!component.IsRunning())
+		{
+			return false;
+		}
+		Navigator component2 = new_reactor.GetComponent<Navigator>();
+		if ((Object)component2 == (Object)null)
+		{
+			return false;
+		}
+		if (!component2.IsMoving())
+		{
+			return false;
+		}
+		if (allowedDirection == AllowedDirection.Any)
+		{
+			return true;
+		}
+		Facing component3 = new_reactor.GetComponent<Facing>();
+		if ((Object)component3 == (Object)null)
+		{
+			return false;
+		}
+		bool facing = component3.GetFacing();
+		if (facing && allowedDirection == AllowedDirection.Right)
+		{
+			return false;
+		}
+		if (!facing && allowedDirection == AllowedDirection.Left)
+		{
+			return false;
+		}
+		return true;
 	}
 
 	protected override void InternalBegin()

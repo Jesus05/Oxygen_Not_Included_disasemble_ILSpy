@@ -3,7 +3,7 @@ using UnityEngine.UI;
 
 public class KModalScreen : KScreen
 {
-	private bool shown = false;
+	private bool shown;
 
 	public bool pause = true;
 

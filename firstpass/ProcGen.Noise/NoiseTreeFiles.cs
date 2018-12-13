@@ -65,20 +65,20 @@ namespace ProcGen.Noise
 
 		public float GetZoomForTree(string name)
 		{
-			if (trees.ContainsKey(name))
+			if (!trees.ContainsKey(name))
 			{
-				return trees[name].settings.zoom;
+				return 1f;
 			}
-			return 1f;
+			return trees[name].settings.zoom;
 		}
 
 		public bool ShouldNormaliseTree(string name)
 		{
-			if (trees.ContainsKey(name))
+			if (!trees.ContainsKey(name))
 			{
-				return trees[name].settings.normalise;
+				return false;
 			}
-			return false;
+			return trees[name].settings.normalise;
 		}
 
 		public string[] GetTreeNames()
@@ -108,20 +108,20 @@ namespace ProcGen.Noise
 
 		public Tree GetTree(string name)
 		{
-			if (trees.ContainsKey(name))
+			if (!trees.ContainsKey(name))
 			{
-				return trees[name];
+				return null;
 			}
-			return null;
+			return trees[name];
 		}
 
 		public IModule3D BuildTree(string name, int globalSeed)
 		{
-			if (trees.ContainsKey(name))
+			if (!trees.ContainsKey(name))
 			{
-				return trees[name].BuildFinalModule(globalSeed);
+				return null;
 			}
-			return null;
+			return trees[name].BuildFinalModule(globalSeed);
 		}
 	}
 }

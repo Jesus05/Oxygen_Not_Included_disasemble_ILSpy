@@ -143,7 +143,7 @@ public class MinionStatsPanel : TargetScreen
 					DetailsPanelDrawer detailsPanelDrawer = stressDrawer;
 					string[] obj = new string[6];
 					ReportManager.ReportEntry.Note note2 = stressNotes[i];
-					obj[0] = ((!(note2.value > 0f)) ? "" : UIConstants.ColorPrefixRed);
+					obj[0] = ((!(note2.value > 0f)) ? string.Empty : UIConstants.ColorPrefixRed);
 					ReportManager.ReportEntry.Note note3 = stressNotes[i];
 					obj[1] = note3.note;
 					obj[2] = ": ";
@@ -151,14 +151,14 @@ public class MinionStatsPanel : TargetScreen
 					obj[3] = Util.FormatTwoDecimalPlace(note4.value);
 					obj[4] = "%";
 					ReportManager.ReportEntry.Note note5 = stressNotes[i];
-					obj[5] = ((!(note5.value > 0f)) ? "" : UIConstants.ColorSuffix);
+					obj[5] = ((!(note5.value > 0f)) ? string.Empty : UIConstants.ColorSuffix);
 					detailsPanelDrawer.NewLabel(string.Concat(obj));
 					float num3 = num;
 					ReportManager.ReportEntry.Note note6 = stressNotes[i];
 					num = num3 + note6.value;
 				}
 			}
-			stressDrawer.NewLabel(((!(num > 0f)) ? "" : UIConstants.ColorPrefixRed) + string.Format(UI.DETAILTABS.DETAILS.NET_STRESS, Util.FormatTwoDecimalPlace(num)) + ((!(num > 0f)) ? "" : UIConstants.ColorSuffix));
+			stressDrawer.NewLabel(((!(num > 0f)) ? string.Empty : UIConstants.ColorPrefixRed) + string.Format(UI.DETAILTABS.DETAILS.NET_STRESS, Util.FormatTwoDecimalPlace(num)) + ((!(num > 0f)) ? string.Empty : UIConstants.ColorSuffix));
 			stressDrawer.EndDrawing();
 		}
 	}

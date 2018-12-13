@@ -12,11 +12,11 @@ public class ElectricalUtilityNetwork : UtilityNetwork
 
 	private const float MIN_OVERLOAD_NOTIFICATION_DISPLAY_TIME = 5f;
 
-	private GameObject targetOverloadedWire = null;
+	private GameObject targetOverloadedWire;
 
-	private float timeOverloaded = 0f;
+	private float timeOverloaded;
 
-	private float timeOverloadNotificationDisplayed = 0f;
+	private float timeOverloadNotificationDisplayed;
 
 	public override void AddItem(int cell, object item)
 	{
@@ -111,7 +111,7 @@ public class ElectricalUtilityNetwork : UtilityNetwork
 					timeOverloadNotificationDisplayed = 0f;
 					overloadedNotification = new Notification(MISC.NOTIFICATIONS.CIRCUIT_OVERLOADED.NAME, NotificationType.BadMinor, HashedString.Invalid, null, null, true, 0f, null, null);
 					Notifier notifier = Game.Instance.FindOrAdd<Notifier>();
-					notifier.Add(overloadedNotification, "");
+					notifier.Add(overloadedNotification, string.Empty);
 					overloadedNotification.Position = targetOverloadedWire.transform.GetPosition();
 					overloadedNotification.Notifier = null;
 				}

@@ -134,58 +134,58 @@ namespace ProcGen.Noise
 
 		private IModule3D GetModuleFromLink(Link link)
 		{
-			if (link != null)
+			if (link == null)
 			{
-				switch (link.type)
-				{
-				case Link.Type.Primitive:
-					if (primitiveLookup.ContainsKey(link.name))
-					{
-						return primitiveLookup[link.name];
-					}
-					Debug.LogError("Couldnt find [" + link.name + "] in primitives", null);
-					break;
-				case Link.Type.Filter:
-					if (filterLookup.ContainsKey(link.name))
-					{
-						return filterLookup[link.name];
-					}
-					Debug.LogError("Couldnt find [" + link.name + "] in filters", null);
-					break;
-				case Link.Type.Modifier:
-					if (modifierLookup.ContainsKey(link.name))
-					{
-						return modifierLookup[link.name];
-					}
-					Debug.LogError("Couldnt find [" + link.name + "] in modifiers", null);
-					break;
-				case Link.Type.Selector:
-					if (selectorLookup.ContainsKey(link.name))
-					{
-						return selectorLookup[link.name];
-					}
-					Debug.LogError("Couldnt find [" + link.name + "] in selectors", null);
-					break;
-				case Link.Type.Transformer:
-					if (transformerLookup.ContainsKey(link.name))
-					{
-						return transformerLookup[link.name];
-					}
-					Debug.LogError("Couldnt find [" + link.name + "] in transformers", null);
-					break;
-				case Link.Type.Combiner:
-					if (combinerLookup.ContainsKey(link.name))
-					{
-						return combinerLookup[link.name];
-					}
-					Debug.LogError("Couldnt find [" + link.name + "] in combiners", null);
-					break;
-				case Link.Type.Terminator:
-					return null;
-				}
-				Debug.LogError("Couldnt find link [" + link.name + "] [" + link.type.ToString() + "]", null);
 				return null;
 			}
+			switch (link.type)
+			{
+			case Link.Type.Primitive:
+				if (primitiveLookup.ContainsKey(link.name))
+				{
+					return primitiveLookup[link.name];
+				}
+				Debug.LogError("Couldnt find [" + link.name + "] in primitives", null);
+				break;
+			case Link.Type.Filter:
+				if (filterLookup.ContainsKey(link.name))
+				{
+					return filterLookup[link.name];
+				}
+				Debug.LogError("Couldnt find [" + link.name + "] in filters", null);
+				break;
+			case Link.Type.Modifier:
+				if (modifierLookup.ContainsKey(link.name))
+				{
+					return modifierLookup[link.name];
+				}
+				Debug.LogError("Couldnt find [" + link.name + "] in modifiers", null);
+				break;
+			case Link.Type.Selector:
+				if (selectorLookup.ContainsKey(link.name))
+				{
+					return selectorLookup[link.name];
+				}
+				Debug.LogError("Couldnt find [" + link.name + "] in selectors", null);
+				break;
+			case Link.Type.Transformer:
+				if (transformerLookup.ContainsKey(link.name))
+				{
+					return transformerLookup[link.name];
+				}
+				Debug.LogError("Couldnt find [" + link.name + "] in transformers", null);
+				break;
+			case Link.Type.Combiner:
+				if (combinerLookup.ContainsKey(link.name))
+				{
+					return combinerLookup[link.name];
+				}
+				Debug.LogError("Couldnt find [" + link.name + "] in combiners", null);
+				break;
+			case Link.Type.Terminator:
+				return null;
+			}
+			Debug.LogError("Couldnt find link [" + link.name + "] [" + link.type.ToString() + "]", null);
 			return null;
 		}
 

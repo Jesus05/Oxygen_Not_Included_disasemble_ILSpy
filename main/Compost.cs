@@ -138,7 +138,7 @@ public class Compost : StateMachineComponent<Compost.StatesInstance>, IEffectDes
 	private void OnStorageChanged(object data)
 	{
 		GameObject x = (GameObject)data;
-		if (!((Object)x == (Object)null))
+		if ((Object)x == (Object)null)
 		{
 			return;
 		}

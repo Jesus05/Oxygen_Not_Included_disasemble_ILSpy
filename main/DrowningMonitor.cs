@@ -15,7 +15,7 @@ public class DrowningMonitor : KMonoBehaviour, IWiltCause, ISim1000ms
 	[Serialize]
 	private bool drowned;
 
-	private bool drowning = false;
+	private bool drowning;
 
 	protected const float MaxDrownTime = 75f;
 
@@ -124,26 +124,26 @@ public class DrowningMonitor : KMonoBehaviour, IWiltCause, ISim1000ms
 	private static bool CellSafeTest(int testCell, object data)
 	{
 		int num = Grid.CellAbove(testCell);
-		if (Grid.IsValidCell(testCell) && Grid.IsValidCell(num))
+		if (!Grid.IsValidCell(testCell) || !Grid.IsValidCell(num))
 		{
-			if (!Grid.IsSubstantialLiquid(testCell, 0.95f))
-			{
-				if (Grid.IsLiquid(testCell))
-				{
-					if (Grid.Element[num].IsLiquid)
-					{
-						return false;
-					}
-					if (Grid.Element[num].IsSolid)
-					{
-						return false;
-					}
-				}
-				return true;
-			}
 			return false;
 		}
-		return false;
+		if (Grid.IsSubstantialLiquid(testCell, 0.95f))
+		{
+			return false;
+		}
+		if (Grid.IsLiquid(testCell))
+		{
+			if (Grid.Element[num].IsLiquid)
+			{
+				return false;
+			}
+			if (Grid.Element[num].IsSolid)
+			{
+				return false;
+			}
+		}
+		return true;
 	}
 
 	public bool IsCellSafe(int cell)

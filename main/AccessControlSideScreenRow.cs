@@ -15,7 +15,7 @@ public class AccessControlSideScreenRow : AccessControlSideScreenDoor
 
 	public GameObject customControls;
 
-	private Action<MinionIdentity, bool> defaultClickedCallback;
+	private Action<MinionAssignablesProxy, bool> defaultClickedCallback;
 
 	protected override void OnPrefabInit()
 	{
@@ -41,7 +41,7 @@ public class AccessControlSideScreenRow : AccessControlSideScreenDoor
 		customControls.SetActive(!isDefault);
 	}
 
-	public void SetMinionContent(MinionIdentity identity, AccessControl.Permission permission, bool isDefault, Action<MinionIdentity, AccessControl.Permission> onPermissionChange, Action<MinionIdentity, bool> onDefaultClick)
+	public void SetMinionContent(MinionAssignablesProxy identity, AccessControl.Permission permission, bool isDefault, Action<MinionAssignablesProxy, AccessControl.Permission> onPermissionChange, Action<MinionAssignablesProxy, bool> onDefaultClick)
 	{
 		SetContent(permission, onPermissionChange);
 		if ((UnityEngine.Object)identity == (UnityEngine.Object)null)

@@ -11,7 +11,7 @@ public class ReportScreenEntry : KMonoBehaviour
 
 	private List<ReportScreenEntryRow> contextRows = new List<ReportScreenEntryRow>();
 
-	private int currentContextCount = 0;
+	private int currentContextCount;
 
 	public void SetMainEntry(ReportManager.ReportEntry entry, ReportManager.ReportGroup reportGroup)
 	{

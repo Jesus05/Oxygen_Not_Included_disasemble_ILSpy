@@ -40,13 +40,13 @@ public class BuildingDef : Def
 
 	public bool RequiresPowerOutput;
 
-	public bool UseWhitePowerOutputConnectorColour = false;
+	public bool UseWhitePowerOutputConnectorColour;
 
 	public CellOffset ElectricalArrowOffset;
 
-	public ConduitType InputConduitType = ConduitType.None;
+	public ConduitType InputConduitType;
 
-	public ConduitType OutputConduitType = ConduitType.None;
+	public ConduitType OutputConduitType;
 
 	public bool ModifiesTemperature;
 
@@ -58,7 +58,7 @@ public class BuildingDef : Def
 
 	public bool Replaceable = true;
 
-	public bool Invincible = false;
+	public bool Invincible;
 
 	public bool Overheatable = true;
 
@@ -74,7 +74,7 @@ public class BuildingDef : Def
 
 	public bool IsFoundation;
 
-	public bool DragBuild = false;
+	public bool DragBuild;
 
 	public bool UseStructureTemperature = true;
 
@@ -82,7 +82,7 @@ public class BuildingDef : Def
 
 	public CellOffset attachablePosition = new CellOffset(0, 0);
 
-	public bool CanMove = false;
+	public bool CanMove;
 
 	[NonSerialized]
 	[HashedEnum]
@@ -130,7 +130,7 @@ public class BuildingDef : Def
 
 	public Grid.SceneLayer ForegroundLayer = Grid.SceneLayer.BuildingFront;
 
-	public string RequiredAttribute = "";
+	public string RequiredAttribute = string.Empty;
 
 	public int RequiredAttributeLevel;
 
@@ -164,7 +164,7 @@ public class BuildingDef : Def
 
 	public string DefaultAnimState = "off";
 
-	public bool BlockTileIsTransparent = false;
+	public bool BlockTileIsTransparent;
 
 	public TextureAtlas BlockTileAtlas;
 
@@ -209,7 +209,7 @@ public class BuildingDef : Def
 
 	public int BaseNoisePollutionRadius;
 
-	public BuildingDef[] Enables = null;
+	public BuildingDef[] Enables;
 
 	private static Dictionary<CellOffset, CellOffset[]> placementOffsetsCache = new Dictionary<CellOffset, CellOffset[]>();
 
@@ -424,81 +424,81 @@ public class BuildingDef : Def
 				break;
 			}
 		}
-		if (flag)
+		if (!flag)
 		{
-			switch (BuildLocationRule)
+			return false;
+		}
+		switch (BuildLocationRule)
+		{
+		case BuildLocationRule.WireBridge:
+			return IsValidWireBridgeLocation(source_go, cell, orientation, out fail_reason);
+		case BuildLocationRule.HighWattBridgeTile:
+			flag = ((replace_tile || IsValidTileLocation(source_go, cell, orientation, layer, ref fail_reason)) && IsValidHighWattBridgeLocation(source_go, cell, orientation, out fail_reason));
+			break;
+		case BuildLocationRule.BuildingAttachPoint:
+			flag = false;
+			for (int k = 0; k < Components.BuildingAttachPoints.Count; k++)
 			{
-			case BuildLocationRule.WireBridge:
-				return IsValidWireBridgeLocation(source_go, cell, orientation, out fail_reason);
-			case BuildLocationRule.HighWattBridgeTile:
-				flag = ((replace_tile || IsValidTileLocation(source_go, cell, orientation, layer, ref fail_reason)) && IsValidHighWattBridgeLocation(source_go, cell, orientation, out fail_reason));
-				break;
-			case BuildLocationRule.BuildingAttachPoint:
-				flag = false;
-				for (int k = 0; k < Components.BuildingAttachPoints.Count; k++)
+				if (flag)
 				{
-					if (flag)
+					break;
+				}
+				for (int l = 0; l < Components.BuildingAttachPoints[k].points.Length; l++)
+				{
+					BuildingAttachPoint buildingAttachPoint = Components.BuildingAttachPoints[k];
+					if (buildingAttachPoint.AcceptsAttachment(AttachmentSlotTag, Grid.OffsetCell(cell, attachablePosition)))
 					{
+						flag = true;
 						break;
 					}
-					for (int l = 0; l < Components.BuildingAttachPoints[k].points.Length; l++)
-					{
-						BuildingAttachPoint buildingAttachPoint = Components.BuildingAttachPoints[k];
-						if (buildingAttachPoint.AcceptsAttachment(AttachmentSlotTag, Grid.OffsetCell(cell, attachablePosition)))
-						{
-							flag = true;
-							break;
-						}
-					}
 				}
-				if (!flag)
-				{
-					fail_reason = string.Format(UI.TOOLTIPS.HELP_BUILDLOCATION_ATTACHPOINT, AttachmentSlotTag);
-				}
-				break;
-			case BuildLocationRule.NotInTiles:
+			}
+			if (!flag)
 			{
-				GameObject x2 = Grid.Objects[cell, 9];
-				if ((UnityEngine.Object)x2 != (UnityEngine.Object)null && (UnityEngine.Object)x2 != (UnityEngine.Object)source_go)
+				fail_reason = string.Format(UI.TOOLTIPS.HELP_BUILDLOCATION_ATTACHPOINT, AttachmentSlotTag);
+			}
+			break;
+		case BuildLocationRule.NotInTiles:
+		{
+			GameObject x2 = Grid.Objects[cell, 9];
+			if ((UnityEngine.Object)x2 != (UnityEngine.Object)null && (UnityEngine.Object)x2 != (UnityEngine.Object)source_go)
+			{
+				flag = false;
+			}
+			else if (Grid.HasDoor[cell])
+			{
+				flag = false;
+			}
+			else
+			{
+				GameObject gameObject3 = Grid.Objects[cell, (int)ObjectLayer];
+				if ((UnityEngine.Object)gameObject3 != (UnityEngine.Object)null)
 				{
-					flag = false;
-				}
-				else if (Grid.HasDoor[cell])
-				{
-					flag = false;
-				}
-				else
-				{
-					GameObject gameObject3 = Grid.Objects[cell, (int)ObjectLayer];
-					if ((UnityEngine.Object)gameObject3 != (UnityEngine.Object)null)
+					if (ReplacementLayer == ObjectLayer.NumLayers)
 					{
-						if (ReplacementLayer == ObjectLayer.NumLayers)
+						if ((UnityEngine.Object)gameObject3 != (UnityEngine.Object)source_go)
 						{
-							if ((UnityEngine.Object)gameObject3 != (UnityEngine.Object)source_go)
-							{
-								flag = false;
-							}
+							flag = false;
 						}
-						else
+					}
+					else
+					{
+						Building component2 = gameObject3.GetComponent<Building>();
+						if ((UnityEngine.Object)component2 != (UnityEngine.Object)null && component2.Def.ReplacementLayer != ReplacementLayer)
 						{
-							Building component2 = gameObject3.GetComponent<Building>();
-							if ((UnityEngine.Object)component2 != (UnityEngine.Object)null && component2.Def.ReplacementLayer != ReplacementLayer)
-							{
-								flag = false;
-							}
+							flag = false;
 						}
 					}
 				}
-				if (!flag)
-				{
-					fail_reason = UI.TOOLTIPS.HELP_BUILDLOCATION_NOT_IN_TILES;
-				}
-				break;
 			}
+			if (!flag)
+			{
+				fail_reason = UI.TOOLTIPS.HELP_BUILDLOCATION_NOT_IN_TILES;
 			}
-			return flag && ArePowerPortsInValidPositions(source_go, cell, orientation, out fail_reason) && AreConduitPortsInValidPositions(source_go, cell, orientation, out fail_reason) && AreLogicPortsInValidPositions(source_go, cell, out fail_reason);
+			break;
 		}
-		return false;
+		}
+		return flag && ArePowerPortsInValidPositions(source_go, cell, orientation, out fail_reason) && AreConduitPortsInValidPositions(source_go, cell, orientation, out fail_reason) && AreLogicPortsInValidPositions(source_go, cell, out fail_reason);
 	}
 
 	private bool IsValidTileLocation(GameObject source_go, int cell, Orientation orientation, ObjectLayer layer, ref string fail_reason)
@@ -757,79 +757,79 @@ public class BuildingDef : Def
 
 	public bool IsValidPlaceLocation(GameObject go, int cell, Orientation orientation, out string fail_reason)
 	{
-		if (Grid.IsValidBuildingCell(cell))
+		if (!Grid.IsValidBuildingCell(cell))
 		{
-			if (BuildLocationRule == BuildLocationRule.OnWall)
+			fail_reason = UI.TOOLTIPS.HELP_BUILDLOCATION_INVALID_CELL;
+			return false;
+		}
+		if (BuildLocationRule == BuildLocationRule.OnWall)
+		{
+			if (!CheckFoundation(cell, orientation, BuildLocationRule, WidthInCells, HeightInCells))
 			{
-				if (!CheckFoundation(cell, orientation, BuildLocationRule, WidthInCells, HeightInCells))
-				{
-					fail_reason = UI.TOOLTIPS.HELP_BUILDLOCATION_WALL;
-					return false;
-				}
-			}
-			else if (BuildLocationRule == BuildLocationRule.InCorner && !CheckFoundation(cell, orientation, BuildLocationRule, WidthInCells, HeightInCells))
-			{
-				fail_reason = UI.TOOLTIPS.HELP_BUILDLOCATION_CORNER;
+				fail_reason = UI.TOOLTIPS.HELP_BUILDLOCATION_WALL;
 				return false;
 			}
-			return IsAreaClear(go, cell, orientation, ObjectLayer, TileLayer, false, out fail_reason);
 		}
-		fail_reason = UI.TOOLTIPS.HELP_BUILDLOCATION_INVALID_CELL;
-		return false;
+		else if (BuildLocationRule == BuildLocationRule.InCorner && !CheckFoundation(cell, orientation, BuildLocationRule, WidthInCells, HeightInCells))
+		{
+			fail_reason = UI.TOOLTIPS.HELP_BUILDLOCATION_CORNER;
+			return false;
+		}
+		return IsAreaClear(go, cell, orientation, ObjectLayer, TileLayer, false, out fail_reason);
 	}
 
 	public bool IsValidPlaceLocation(GameObject go, int cell, Orientation orientation, bool replace_tile, out string fail_reason)
 	{
-		if (Grid.IsValidBuildingCell(cell))
+		if (!Grid.IsValidBuildingCell(cell))
 		{
-			if (BuildLocationRule == BuildLocationRule.OnWall)
+			fail_reason = UI.TOOLTIPS.HELP_BUILDLOCATION_INVALID_CELL;
+			return false;
+		}
+		if (BuildLocationRule == BuildLocationRule.OnWall)
+		{
+			if (!CheckFoundation(cell, orientation, BuildLocationRule, WidthInCells, HeightInCells))
 			{
-				if (!CheckFoundation(cell, orientation, BuildLocationRule, WidthInCells, HeightInCells))
-				{
-					fail_reason = UI.TOOLTIPS.HELP_BUILDLOCATION_WALL;
-					return false;
-				}
-			}
-			else if (BuildLocationRule == BuildLocationRule.InCorner && !CheckFoundation(cell, orientation, BuildLocationRule, WidthInCells, HeightInCells))
-			{
-				fail_reason = UI.TOOLTIPS.HELP_BUILDLOCATION_CORNER;
+				fail_reason = UI.TOOLTIPS.HELP_BUILDLOCATION_WALL;
 				return false;
 			}
-			return IsAreaClear(go, cell, orientation, ObjectLayer, TileLayer, replace_tile, out fail_reason);
 		}
-		fail_reason = UI.TOOLTIPS.HELP_BUILDLOCATION_INVALID_CELL;
-		return false;
+		else if (BuildLocationRule == BuildLocationRule.InCorner && !CheckFoundation(cell, orientation, BuildLocationRule, WidthInCells, HeightInCells))
+		{
+			fail_reason = UI.TOOLTIPS.HELP_BUILDLOCATION_CORNER;
+			return false;
+		}
+		return IsAreaClear(go, cell, orientation, ObjectLayer, TileLayer, replace_tile, out fail_reason);
 	}
 
 	public bool IsValidReplaceLocation(Vector3 pos, Orientation orientation, ObjectLayer replace_layer, ObjectLayer obj_layer)
 	{
-		if (replace_layer != ObjectLayer.NumLayers)
+		if (replace_layer == ObjectLayer.NumLayers)
 		{
-			bool result = true;
-			int cell = Grid.PosToCell(pos);
-			for (int i = 0; i < PlacementOffsets.Length; i++)
-			{
-				CellOffset offset = PlacementOffsets[i];
-				CellOffset rotatedCellOffset = Rotatable.GetRotatedCellOffset(offset, orientation);
-				int cell2 = Grid.OffsetCell(cell, rotatedCellOffset);
-				if (!Grid.IsValidBuildingCell(cell2))
-				{
-					return false;
-				}
-				if ((UnityEngine.Object)Grid.Objects[cell2, (int)obj_layer] == (UnityEngine.Object)null || (UnityEngine.Object)Grid.Objects[cell2, (int)replace_layer] != (UnityEngine.Object)null)
-				{
-					result = false;
-					break;
-				}
-			}
-			return result;
+			return false;
 		}
-		return false;
+		bool result = true;
+		int cell = Grid.PosToCell(pos);
+		for (int i = 0; i < PlacementOffsets.Length; i++)
+		{
+			CellOffset offset = PlacementOffsets[i];
+			CellOffset rotatedCellOffset = Rotatable.GetRotatedCellOffset(offset, orientation);
+			int cell2 = Grid.OffsetCell(cell, rotatedCellOffset);
+			if (!Grid.IsValidBuildingCell(cell2))
+			{
+				return false;
+			}
+			if ((UnityEngine.Object)Grid.Objects[cell2, (int)obj_layer] == (UnityEngine.Object)null || (UnityEngine.Object)Grid.Objects[cell2, (int)replace_layer] != (UnityEngine.Object)null)
+			{
+				result = false;
+				break;
+			}
+		}
+		return result;
 	}
 
 	public bool IsValidBuildLocation(GameObject source_go, Vector3 pos, Orientation orientation)
 	{
-		string reason = "";
+		string reason = string.Empty;
 		return IsValidBuildLocation(source_go, pos, orientation, out reason);
 	}
 
@@ -841,158 +841,158 @@ public class BuildingDef : Def
 
 	public bool IsValidBuildLocation(GameObject source_go, int cell, Orientation orientation, out string fail_reason)
 	{
-		if (Grid.IsValidBuildingCell(cell))
+		if (!Grid.IsValidBuildingCell(cell))
 		{
-			if (IsAreaValid(cell, orientation, out fail_reason))
+			fail_reason = UI.TOOLTIPS.HELP_BUILDLOCATION_INVALID_CELL;
+			return false;
+		}
+		if (!IsAreaValid(cell, orientation, out fail_reason))
+		{
+			return false;
+		}
+		bool flag = true;
+		fail_reason = null;
+		switch (BuildLocationRule)
+		{
+		case BuildLocationRule.OnFloor:
+		case BuildLocationRule.OnCeiling:
+		case BuildLocationRule.OnFoundationRotatable:
+			if (!CheckFoundation(cell, orientation, BuildLocationRule, WidthInCells, HeightInCells))
 			{
-				bool flag = true;
-				fail_reason = null;
-				switch (BuildLocationRule)
+				flag = false;
+				fail_reason = UI.TOOLTIPS.HELP_BUILDLOCATION_FLOOR;
+			}
+			break;
+		case BuildLocationRule.OnWall:
+			if (!CheckFoundation(cell, orientation, BuildLocationRule, WidthInCells, HeightInCells))
+			{
+				flag = false;
+				fail_reason = UI.TOOLTIPS.HELP_BUILDLOCATION_WALL;
+			}
+			break;
+		case BuildLocationRule.InCorner:
+			if (!CheckFoundation(cell, orientation, BuildLocationRule, WidthInCells, HeightInCells))
+			{
+				flag = false;
+				fail_reason = UI.TOOLTIPS.HELP_BUILDLOCATION_CORNER;
+			}
+			break;
+		case BuildLocationRule.OnFloorOverSpace:
+			if (!CheckFoundation(cell, orientation, BuildLocationRule, WidthInCells, HeightInCells))
+			{
+				flag = false;
+				fail_reason = UI.TOOLTIPS.HELP_BUILDLOCATION_FLOOR;
+			}
+			else if (!AreAllCellsValid(cell, orientation, WidthInCells, HeightInCells, (int check_cell) => World.Instance.zoneRenderData.GetSubWorldZoneType(check_cell) == SubWorld.ZoneType.Space))
+			{
+				flag = false;
+				fail_reason = UI.TOOLTIPS.HELP_BUILDLOCATION_SPACE;
+			}
+			break;
+		case BuildLocationRule.NotInTiles:
+		{
+			GameObject x = Grid.Objects[cell, 9];
+			flag = (((UnityEngine.Object)x == (UnityEngine.Object)null || (UnityEngine.Object)x == (UnityEngine.Object)source_go) && !Grid.HasDoor[cell]);
+			if (flag)
+			{
+				GameObject gameObject = Grid.Objects[cell, (int)ObjectLayer];
+				if ((UnityEngine.Object)gameObject != (UnityEngine.Object)null)
 				{
-				case BuildLocationRule.OnFloor:
-				case BuildLocationRule.OnCeiling:
-				case BuildLocationRule.OnFoundationRotatable:
-					if (!CheckFoundation(cell, orientation, BuildLocationRule, WidthInCells, HeightInCells))
+					if (ReplacementLayer == ObjectLayer.NumLayers)
 					{
-						flag = false;
-						fail_reason = UI.TOOLTIPS.HELP_BUILDLOCATION_FLOOR;
+						flag = (flag && ((UnityEngine.Object)gameObject == (UnityEngine.Object)null || (UnityEngine.Object)gameObject == (UnityEngine.Object)source_go));
 					}
-					break;
-				case BuildLocationRule.OnWall:
-					if (!CheckFoundation(cell, orientation, BuildLocationRule, WidthInCells, HeightInCells))
+					else
 					{
-						flag = false;
-						fail_reason = UI.TOOLTIPS.HELP_BUILDLOCATION_WALL;
+						Building component = gameObject.GetComponent<Building>();
+						flag = ((UnityEngine.Object)component == (UnityEngine.Object)null || component.Def.ReplacementLayer == ReplacementLayer);
 					}
-					break;
-				case BuildLocationRule.InCorner:
-					if (!CheckFoundation(cell, orientation, BuildLocationRule, WidthInCells, HeightInCells))
-					{
-						flag = false;
-						fail_reason = UI.TOOLTIPS.HELP_BUILDLOCATION_CORNER;
-					}
-					break;
-				case BuildLocationRule.OnFloorOverSpace:
-					if (!CheckFoundation(cell, orientation, BuildLocationRule, WidthInCells, HeightInCells))
-					{
-						flag = false;
-						fail_reason = UI.TOOLTIPS.HELP_BUILDLOCATION_FLOOR;
-					}
-					else if (!AreAllCellsValid(cell, orientation, WidthInCells, HeightInCells, (int check_cell) => World.Instance.zoneRenderData.GetSubWorldZoneType(check_cell) == SubWorld.ZoneType.Space))
-					{
-						flag = false;
-						fail_reason = UI.TOOLTIPS.HELP_BUILDLOCATION_SPACE;
-					}
-					break;
-				case BuildLocationRule.NotInTiles:
-				{
-					GameObject x = Grid.Objects[cell, 9];
-					flag = (((UnityEngine.Object)x == (UnityEngine.Object)null || (UnityEngine.Object)x == (UnityEngine.Object)source_go) && !Grid.HasDoor[cell]);
-					if (flag)
-					{
-						GameObject gameObject = Grid.Objects[cell, (int)ObjectLayer];
-						if ((UnityEngine.Object)gameObject != (UnityEngine.Object)null)
-						{
-							if (ReplacementLayer == ObjectLayer.NumLayers)
-							{
-								flag = (flag && ((UnityEngine.Object)gameObject == (UnityEngine.Object)null || (UnityEngine.Object)gameObject == (UnityEngine.Object)source_go));
-							}
-							else
-							{
-								Building component = gameObject.GetComponent<Building>();
-								flag = ((UnityEngine.Object)component == (UnityEngine.Object)null || component.Def.ReplacementLayer == ReplacementLayer);
-							}
-						}
-					}
-					fail_reason = UI.TOOLTIPS.HELP_BUILDLOCATION_NOT_IN_TILES;
-					break;
 				}
-				case BuildLocationRule.Tile:
+			}
+			fail_reason = UI.TOOLTIPS.HELP_BUILDLOCATION_NOT_IN_TILES;
+			break;
+		}
+		case BuildLocationRule.Tile:
+		{
+			flag = true;
+			GameObject gameObject2 = Grid.Objects[cell, 25];
+			if ((UnityEngine.Object)gameObject2 != (UnityEngine.Object)null)
+			{
+				Building component2 = gameObject2.GetComponent<Building>();
+				if ((UnityEngine.Object)component2 != (UnityEngine.Object)null && component2.Def.BuildLocationRule == BuildLocationRule.NotInTiles)
 				{
-					flag = true;
-					GameObject gameObject2 = Grid.Objects[cell, 25];
-					if ((UnityEngine.Object)gameObject2 != (UnityEngine.Object)null)
-					{
-						Building component2 = gameObject2.GetComponent<Building>();
-						if ((UnityEngine.Object)component2 != (UnityEngine.Object)null && component2.Def.BuildLocationRule == BuildLocationRule.NotInTiles)
-						{
-							flag = false;
-						}
-					}
-					gameObject2 = Grid.Objects[cell, 2];
-					if ((UnityEngine.Object)gameObject2 != (UnityEngine.Object)null)
-					{
-						Building component3 = gameObject2.GetComponent<Building>();
-						if ((UnityEngine.Object)component3 != (UnityEngine.Object)null && component3.Def.BuildLocationRule == BuildLocationRule.NotInTiles)
-						{
-							flag = false;
-						}
-					}
-					break;
-				}
-				case BuildLocationRule.BuildingAttachPoint:
 					flag = false;
-					for (int k = 0; k < Components.BuildingAttachPoints.Count; k++)
+				}
+			}
+			gameObject2 = Grid.Objects[cell, 2];
+			if ((UnityEngine.Object)gameObject2 != (UnityEngine.Object)null)
+			{
+				Building component3 = gameObject2.GetComponent<Building>();
+				if ((UnityEngine.Object)component3 != (UnityEngine.Object)null && component3.Def.BuildLocationRule == BuildLocationRule.NotInTiles)
+				{
+					flag = false;
+				}
+			}
+			break;
+		}
+		case BuildLocationRule.BuildingAttachPoint:
+			flag = false;
+			for (int k = 0; k < Components.BuildingAttachPoints.Count; k++)
+			{
+				if (flag)
+				{
+					break;
+				}
+				for (int l = 0; l < Components.BuildingAttachPoints[k].points.Length; l++)
+				{
+					BuildingAttachPoint buildingAttachPoint2 = Components.BuildingAttachPoints[k];
+					if (buildingAttachPoint2.AcceptsAttachment(AttachmentSlotTag, Grid.OffsetCell(cell, attachablePosition)))
+					{
+						flag = true;
+						break;
+					}
+				}
+			}
+			fail_reason = string.Format(UI.TOOLTIPS.HELP_BUILDLOCATION_ATTACHPOINT, AttachmentSlotTag);
+			break;
+		case BuildLocationRule.OnFloorOrBuildingAttachPoint:
+			flag = false;
+			if (!CheckFoundation(cell, orientation, BuildLocationRule.OnFloor, WidthInCells, HeightInCells))
+			{
+				flag = false;
+				fail_reason = UI.TOOLTIPS.HELP_BUILDLOCATION_FLOOR_OR_ATTACHPOINT;
+				if (!flag)
+				{
+					for (int i = 0; i < Components.BuildingAttachPoints.Count; i++)
 					{
 						if (flag)
 						{
 							break;
 						}
-						for (int l = 0; l < Components.BuildingAttachPoints[k].points.Length; l++)
+						for (int j = 0; j < Components.BuildingAttachPoints[i].points.Length; j++)
 						{
-							BuildingAttachPoint buildingAttachPoint2 = Components.BuildingAttachPoints[k];
-							if (buildingAttachPoint2.AcceptsAttachment(AttachmentSlotTag, Grid.OffsetCell(cell, attachablePosition)))
+							BuildingAttachPoint buildingAttachPoint = Components.BuildingAttachPoints[i];
+							if (buildingAttachPoint.AcceptsAttachment(AttachmentSlotTag, Grid.OffsetCell(cell, attachablePosition)))
 							{
 								flag = true;
 								break;
 							}
 						}
 					}
-					fail_reason = string.Format(UI.TOOLTIPS.HELP_BUILDLOCATION_ATTACHPOINT, AttachmentSlotTag);
-					break;
-				case BuildLocationRule.OnFloorOrBuildingAttachPoint:
-					flag = false;
-					if (!CheckFoundation(cell, orientation, BuildLocationRule.OnFloor, WidthInCells, HeightInCells))
-					{
-						flag = false;
-						fail_reason = UI.TOOLTIPS.HELP_BUILDLOCATION_FLOOR_OR_ATTACHPOINT;
-						if (!flag)
-						{
-							for (int i = 0; i < Components.BuildingAttachPoints.Count; i++)
-							{
-								if (flag)
-								{
-									break;
-								}
-								for (int j = 0; j < Components.BuildingAttachPoints[i].points.Length; j++)
-								{
-									BuildingAttachPoint buildingAttachPoint = Components.BuildingAttachPoints[i];
-									if (buildingAttachPoint.AcceptsAttachment(AttachmentSlotTag, Grid.OffsetCell(cell, attachablePosition)))
-									{
-										flag = true;
-										break;
-									}
-								}
-							}
-							fail_reason = string.Format(UI.TOOLTIPS.HELP_BUILDLOCATION_FLOOR_OR_ATTACHPOINT, AttachmentSlotTag);
-						}
-					}
-					else
-					{
-						flag = true;
-					}
-					break;
-				case BuildLocationRule.Anywhere:
-				case BuildLocationRule.Conduit:
-					flag = true;
-					break;
+					fail_reason = string.Format(UI.TOOLTIPS.HELP_BUILDLOCATION_FLOOR_OR_ATTACHPOINT, AttachmentSlotTag);
 				}
-				return flag && ArePowerPortsInValidPositions(source_go, cell, orientation, out fail_reason) && AreConduitPortsInValidPositions(source_go, cell, orientation, out fail_reason);
 			}
-			return false;
+			else
+			{
+				flag = true;
+			}
+			break;
+		case BuildLocationRule.Anywhere:
+		case BuildLocationRule.Conduit:
+			flag = true;
+			break;
 		}
-		fail_reason = UI.TOOLTIPS.HELP_BUILDLOCATION_INVALID_CELL;
-		return false;
+		return flag && ArePowerPortsInValidPositions(source_go, cell, orientation, out fail_reason) && AreConduitPortsInValidPositions(source_go, cell, orientation, out fail_reason);
 	}
 
 	private bool IsAreaValid(int cell, Orientation orientation, out string fail_reason)
@@ -1029,31 +1029,31 @@ public class BuildingDef : Def
 	private bool ArePowerPortsInValidPositions(GameObject source_go, int cell, Orientation orientation, out string fail_reason)
 	{
 		fail_reason = null;
-		if (!((UnityEngine.Object)source_go == (UnityEngine.Object)null))
+		if ((UnityEngine.Object)source_go == (UnityEngine.Object)null)
 		{
-			if (RequiresPowerInput)
-			{
-				CellOffset rotatedCellOffset = Rotatable.GetRotatedCellOffset(PowerInputOffset, orientation);
-				int cell2 = Grid.OffsetCell(cell, rotatedCellOffset);
-				GameObject x = Grid.Objects[cell2, 27];
-				if ((UnityEngine.Object)x != (UnityEngine.Object)null && (UnityEngine.Object)x != (UnityEngine.Object)source_go)
-				{
-					fail_reason = UI.TOOLTIPS.HELP_BUILDLOCATION_WIRECONNECTORS_OVERLAP;
-					return false;
-				}
-			}
-			if (RequiresPowerOutput || GeneratorWattageRating > 0f)
-			{
-				CellOffset rotatedCellOffset2 = Rotatable.GetRotatedCellOffset(PowerOutputOffset, orientation);
-				int cell3 = Grid.OffsetCell(cell, rotatedCellOffset2);
-				GameObject x2 = Grid.Objects[cell3, 27];
-				if ((UnityEngine.Object)x2 != (UnityEngine.Object)null && (UnityEngine.Object)x2 != (UnityEngine.Object)source_go)
-				{
-					fail_reason = UI.TOOLTIPS.HELP_BUILDLOCATION_WIRECONNECTORS_OVERLAP;
-					return false;
-				}
-			}
 			return true;
+		}
+		if (RequiresPowerInput)
+		{
+			CellOffset rotatedCellOffset = Rotatable.GetRotatedCellOffset(PowerInputOffset, orientation);
+			int cell2 = Grid.OffsetCell(cell, rotatedCellOffset);
+			GameObject x = Grid.Objects[cell2, 27];
+			if ((UnityEngine.Object)x != (UnityEngine.Object)null && (UnityEngine.Object)x != (UnityEngine.Object)source_go)
+			{
+				fail_reason = UI.TOOLTIPS.HELP_BUILDLOCATION_WIRECONNECTORS_OVERLAP;
+				return false;
+			}
+		}
+		if (RequiresPowerOutput || GeneratorWattageRating > 0f)
+		{
+			CellOffset rotatedCellOffset2 = Rotatable.GetRotatedCellOffset(PowerOutputOffset, orientation);
+			int cell3 = Grid.OffsetCell(cell, rotatedCellOffset2);
+			GameObject x2 = Grid.Objects[cell3, 27];
+			if ((UnityEngine.Object)x2 != (UnityEngine.Object)null && (UnityEngine.Object)x2 != (UnityEngine.Object)source_go)
+			{
+				fail_reason = UI.TOOLTIPS.HELP_BUILDLOCATION_WIRECONNECTORS_OVERLAP;
+				return false;
+			}
 		}
 		return true;
 	}
@@ -1061,47 +1061,47 @@ public class BuildingDef : Def
 	private bool AreConduitPortsInValidPositions(GameObject source_go, int cell, Orientation orientation, out string fail_reason)
 	{
 		fail_reason = null;
-		if (!((UnityEngine.Object)source_go == (UnityEngine.Object)null))
+		if ((UnityEngine.Object)source_go == (UnityEngine.Object)null)
 		{
-			bool flag = true;
-			if (InputConduitType != 0)
-			{
-				CellOffset rotatedCellOffset = Rotatable.GetRotatedCellOffset(UtilityInputOffset, orientation);
-				int utility_cell = Grid.OffsetCell(cell, rotatedCellOffset);
-				flag = IsValidConduitConnection(source_go, InputConduitType, utility_cell, ref fail_reason);
-			}
-			if (flag && OutputConduitType != 0)
-			{
-				CellOffset rotatedCellOffset2 = Rotatable.GetRotatedCellOffset(UtilityOutputOffset, orientation);
-				int utility_cell2 = Grid.OffsetCell(cell, rotatedCellOffset2);
-				flag = IsValidConduitConnection(source_go, OutputConduitType, utility_cell2, ref fail_reason);
-			}
-			Building component = source_go.GetComponent<Building>();
-			if (flag && (bool)component)
-			{
-				ISecondaryInput component2 = component.Def.BuildingComplete.GetComponent<ISecondaryInput>();
-				if (component2 != null)
-				{
-					ConduitType secondaryConduitType = component2.GetSecondaryConduitType();
-					CellOffset rotatedCellOffset3 = Rotatable.GetRotatedCellOffset(component2.GetSecondaryConduitOffset(), orientation);
-					int utility_cell3 = Grid.OffsetCell(cell, rotatedCellOffset3);
-					flag = IsValidConduitConnection(source_go, secondaryConduitType, utility_cell3, ref fail_reason);
-				}
-			}
-			if (flag)
-			{
-				ISecondaryOutput component3 = component.Def.BuildingComplete.GetComponent<ISecondaryOutput>();
-				if (component3 != null)
-				{
-					ConduitType secondaryConduitType2 = component3.GetSecondaryConduitType();
-					CellOffset rotatedCellOffset4 = Rotatable.GetRotatedCellOffset(component3.GetSecondaryConduitOffset(), orientation);
-					int utility_cell4 = Grid.OffsetCell(cell, rotatedCellOffset4);
-					flag = IsValidConduitConnection(source_go, secondaryConduitType2, utility_cell4, ref fail_reason);
-				}
-			}
-			return flag;
+			return true;
 		}
-		return true;
+		bool flag = true;
+		if (InputConduitType != 0)
+		{
+			CellOffset rotatedCellOffset = Rotatable.GetRotatedCellOffset(UtilityInputOffset, orientation);
+			int utility_cell = Grid.OffsetCell(cell, rotatedCellOffset);
+			flag = IsValidConduitConnection(source_go, InputConduitType, utility_cell, ref fail_reason);
+		}
+		if (flag && OutputConduitType != 0)
+		{
+			CellOffset rotatedCellOffset2 = Rotatable.GetRotatedCellOffset(UtilityOutputOffset, orientation);
+			int utility_cell2 = Grid.OffsetCell(cell, rotatedCellOffset2);
+			flag = IsValidConduitConnection(source_go, OutputConduitType, utility_cell2, ref fail_reason);
+		}
+		Building component = source_go.GetComponent<Building>();
+		if (flag && (bool)component)
+		{
+			ISecondaryInput component2 = component.Def.BuildingComplete.GetComponent<ISecondaryInput>();
+			if (component2 != null)
+			{
+				ConduitType secondaryConduitType = component2.GetSecondaryConduitType();
+				CellOffset rotatedCellOffset3 = Rotatable.GetRotatedCellOffset(component2.GetSecondaryConduitOffset(), orientation);
+				int utility_cell3 = Grid.OffsetCell(cell, rotatedCellOffset3);
+				flag = IsValidConduitConnection(source_go, secondaryConduitType, utility_cell3, ref fail_reason);
+			}
+		}
+		if (flag)
+		{
+			ISecondaryOutput component3 = component.Def.BuildingComplete.GetComponent<ISecondaryOutput>();
+			if (component3 != null)
+			{
+				ConduitType secondaryConduitType2 = component3.GetSecondaryConduitType();
+				CellOffset rotatedCellOffset4 = Rotatable.GetRotatedCellOffset(component3.GetSecondaryConduitOffset(), orientation);
+				int utility_cell4 = Grid.OffsetCell(cell, rotatedCellOffset4);
+				flag = IsValidConduitConnection(source_go, secondaryConduitType2, utility_cell4, ref fail_reason);
+			}
+		}
+		return flag;
 	}
 
 	private bool IsValidWireBridgeLocation(GameObject source_go, int cell, Orientation orientation, out string fail_reason)
@@ -1166,50 +1166,50 @@ public class BuildingDef : Def
 	private bool AreLogicPortsInValidPositions(GameObject source_go, int cell, out string fail_reason)
 	{
 		fail_reason = null;
-		if (!((UnityEngine.Object)source_go == (UnityEngine.Object)null))
+		if ((UnityEngine.Object)source_go == (UnityEngine.Object)null)
 		{
-			LogicCircuitManager logicCircuitManager = Game.Instance.logicCircuitManager;
-			ReadOnlyCollection<ILogicUIElement> visElements = logicCircuitManager.GetVisElements();
-			LogicPorts component = source_go.GetComponent<LogicPorts>();
-			if ((UnityEngine.Object)component != (UnityEngine.Object)null)
-			{
-				component.HackRefreshVisualizers();
-				if (DoLogicPortsConflict(component.inputPorts, visElements) || DoLogicPortsConflict(component.outputPorts, visElements))
-				{
-					fail_reason = UI.TOOLTIPS.HELP_BUILDLOCATION_LOGIC_PORTS_OBSTRUCTED;
-					return false;
-				}
-			}
-			else
-			{
-				LogicGateBase component2 = source_go.GetComponent<LogicGateBase>();
-				if ((UnityEngine.Object)component2 != (UnityEngine.Object)null && (IsLogicPortObstructed(component2.InputCellOne, visElements) || IsLogicPortObstructed(component2.OutputCell, visElements) || (component2.RequiresTwoInputs && IsLogicPortObstructed(component2.InputCellTwo, visElements))))
-				{
-					fail_reason = UI.TOOLTIPS.HELP_BUILDLOCATION_LOGIC_PORTS_OBSTRUCTED;
-					return false;
-				}
-			}
 			return true;
+		}
+		LogicCircuitManager logicCircuitManager = Game.Instance.logicCircuitManager;
+		ReadOnlyCollection<ILogicUIElement> visElements = logicCircuitManager.GetVisElements();
+		LogicPorts component = source_go.GetComponent<LogicPorts>();
+		if ((UnityEngine.Object)component != (UnityEngine.Object)null)
+		{
+			component.HackRefreshVisualizers();
+			if (DoLogicPortsConflict(component.inputPorts, visElements) || DoLogicPortsConflict(component.outputPorts, visElements))
+			{
+				fail_reason = UI.TOOLTIPS.HELP_BUILDLOCATION_LOGIC_PORTS_OBSTRUCTED;
+				return false;
+			}
+		}
+		else
+		{
+			LogicGateBase component2 = source_go.GetComponent<LogicGateBase>();
+			if ((UnityEngine.Object)component2 != (UnityEngine.Object)null && (IsLogicPortObstructed(component2.InputCellOne, visElements) || IsLogicPortObstructed(component2.OutputCell, visElements) || (component2.RequiresTwoInputs && IsLogicPortObstructed(component2.InputCellTwo, visElements))))
+			{
+				fail_reason = UI.TOOLTIPS.HELP_BUILDLOCATION_LOGIC_PORTS_OBSTRUCTED;
+				return false;
+			}
 		}
 		return true;
 	}
 
 	private bool DoLogicPortsConflict(IList<ILogicUIElement> ports_a, IList<ILogicUIElement> ports_b)
 	{
-		if (ports_a != null && ports_b != null)
+		if (ports_a == null || ports_b == null)
 		{
-			foreach (ILogicUIElement item in ports_a)
+			return false;
+		}
+		foreach (ILogicUIElement item in ports_a)
+		{
+			int logicUICell = item.GetLogicUICell();
+			foreach (ILogicUIElement item2 in ports_b)
 			{
-				int logicUICell = item.GetLogicUICell();
-				foreach (ILogicUIElement item2 in ports_b)
+				if (item != item2 && logicUICell == item2.GetLogicUICell())
 				{
-					if (item != item2 && logicUICell == item2.GetLogicUICell())
-					{
-						return true;
-					}
+					return true;
 				}
 			}
-			return false;
 		}
 		return false;
 	}

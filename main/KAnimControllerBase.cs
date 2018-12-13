@@ -39,7 +39,7 @@ public abstract class KAnimControllerBase : MonoBehaviour
 	public GameObject showWhenMissing;
 
 	[SerializeField]
-	public KAnimBatchGroup.MaterialType materialType = KAnimBatchGroup.MaterialType.Default;
+	public KAnimBatchGroup.MaterialType materialType;
 
 	[SerializeField]
 	public string initialAnim;
@@ -63,13 +63,13 @@ public abstract class KAnimControllerBase : MonoBehaviour
 	public bool destroyOnAnimComplete;
 
 	[SerializeField]
-	public bool inactiveDisable = false;
+	public bool inactiveDisable;
 
 	[SerializeField]
-	protected bool flipX = false;
+	protected bool flipX;
 
 	[SerializeField]
-	protected bool flipY = false;
+	protected bool flipY;
 
 	protected KAnim.Anim curAnim;
 
@@ -422,25 +422,17 @@ public abstract class KAnimControllerBase : MonoBehaviour
 		eventManagerHandle = HandleVector<int>.InvalidHandle;
 		overrideAnimFiles = new List<OverrideAnimFileData>();
 		DeepProfiler = new DeepProfiler(false);
-		randomiseLoopedOffset = false;
-		elapsedTime = 0f;
 		playSpeed = 1f;
 		mode = KAnim.PlayMode.Once;
 		stopped = true;
 		animHeight = 1f;
 		animWidth = 1f;
 		_enabled = true;
-		hasEnableRun = false;
-		hasAwakeRun = false;
-		batchInstanceData = null;
-		visibilityType = VisibilityType.Default;
 		hiddenSymbols = new List<KAnimHashedString>();
 		anims = new Dictionary<HashedString, AnimLookupData>();
 		overrideAnims = new Dictionary<HashedString, AnimLookupData>();
 		animQueue = new Queue<AnimData>();
-		maxSymbols = 0;
 		fgLayer = Grid.SceneLayer.NoLayer;
-		aem = null;
 		base._002Ector();
 		previousFrame = -1;
 		currentFrame = -1;
@@ -492,20 +484,20 @@ public abstract class KAnimControllerBase : MonoBehaviour
 
 	public KAnimHashedString GetBuildHash()
 	{
-		if (curBuild != null)
+		if (curBuild == null)
 		{
-			return curBuild.fileHash;
+			return KAnimBatchManager.NO_BATCH;
 		}
-		return KAnimBatchManager.NO_BATCH;
+		return curBuild.fileHash;
 	}
 
 	protected float GetDuration()
 	{
-		if (curAnim == null)
+		if (curAnim != null)
 		{
-			return 0f;
+			return (float)curAnim.numFrames / curAnim.frameRate;
 		}
-		return (float)curAnim.numFrames / curAnim.frameRate;
+		return 0f;
 	}
 
 	protected int GetFrameIdxFromOffset(int offset)

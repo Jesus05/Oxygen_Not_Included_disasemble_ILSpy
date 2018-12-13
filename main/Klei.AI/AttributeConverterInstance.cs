@@ -24,12 +24,12 @@ namespace Klei.AI
 		{
 			float num = Evaluate();
 			string text = (converter.formatter != null) ? converter.formatter.GetFormattedValue(num, converter.formatter.DeltaTimeSlice, base.gameObject) : ((attributeInstance.Attribute.formatter == null) ? GameUtil.GetFormattedSimple(num, GameUtil.TimeSlice.None, null) : attributeInstance.Attribute.formatter.GetFormattedValue(num, attributeInstance.Attribute.formatter.DeltaTimeSlice, base.gameObject));
-			if (text == null)
+			if (text != null)
 			{
-				return null;
+				text = GameUtil.AddPositiveSign(text, num > 0f);
+				return string.Format(converter.description, text);
 			}
-			text = GameUtil.AddPositiveSign(text, num > 0f);
-			return string.Format(converter.description, text);
+			return null;
 		}
 	}
 }

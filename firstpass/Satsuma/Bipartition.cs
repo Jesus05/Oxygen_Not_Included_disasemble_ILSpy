@@ -42,20 +42,20 @@ namespace Satsuma
 			protected override bool BackArc(Node node, Arc arc)
 			{
 				Node item = base.Graph.Other(arc, node);
-				if (redNodes.Contains(node) != redNodes.Contains(item))
+				if (redNodes.Contains(node) == redNodes.Contains(item))
 				{
-					return true;
+					Parent.Bipartite = false;
+					if (Parent.RedNodes != null)
+					{
+						Parent.RedNodes.Clear();
+					}
+					if (Parent.BlueNodes != null)
+					{
+						Parent.BlueNodes.Clear();
+					}
+					return false;
 				}
-				Parent.Bipartite = false;
-				if (Parent.RedNodes != null)
-				{
-					Parent.RedNodes.Clear();
-				}
-				if (Parent.BlueNodes != null)
-				{
-					Parent.BlueNodes.Clear();
-				}
-				return false;
+				return true;
 			}
 		}
 

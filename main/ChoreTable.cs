@@ -105,7 +105,7 @@ public class ChoreTable
 				stateMachineInstanceType
 			};
 			choreClassType = typeof(ChoreTableChore<, >).MakeGenericType(typeArguments);
-			choreType = new ChoreType(state_machine_def.ToString(), null, new string[0], "", "", "", "", new Tag[0], priority, priority);
+			choreType = new ChoreType(state_machine_def.ToString(), null, new string[0], string.Empty, string.Empty, string.Empty, string.Empty, new Tag[0], priority, priority);
 			choreType.interruptPriority = interrupt_priority;
 			stateMachineDef = state_machine_def;
 		}

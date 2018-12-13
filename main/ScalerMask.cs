@@ -13,17 +13,17 @@ public class ScalerMask : KMonoBehaviour, IPointerEnterHandler, IPointerExitHand
 
 	public GameObject hoverIndicator;
 
-	public bool hoverLock = false;
+	public bool hoverLock;
 
-	private bool grandparentIsHovered = false;
+	private bool grandparentIsHovered;
 
-	private bool isHovered = false;
+	private bool isHovered;
 
 	private bool queuedSizeUpdate = true;
 
-	public float topPadding = 0f;
+	public float topPadding;
 
-	public float bottomPadding = 0f;
+	public float bottomPadding;
 
 	private RectTransform ThisTransform
 	{

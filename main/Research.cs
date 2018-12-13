@@ -35,7 +35,7 @@ public class Research : KMonoBehaviour, ISaveLoadable
 
 	public ResearchTypes researchTypes;
 
-	public bool UseGlobalPointInventory = false;
+	public bool UseGlobalPointInventory;
 
 	[Serialize]
 	public ResearchPointInventory globalPointInventory;
@@ -55,11 +55,11 @@ public class Research : KMonoBehaviour, ISaveLoadable
 
 	public bool IsBeingResearched(Tech tech)
 	{
-		if (activeResearch != null && tech != null)
+		if (activeResearch == null || tech == null)
 		{
-			return activeResearch.tech == tech;
+			return false;
 		}
-		return false;
+		return activeResearch.tech == tech;
 	}
 
 	protected override void OnPrefabInit()
@@ -122,13 +122,13 @@ public class Research : KMonoBehaviour, ISaveLoadable
 	public TechInstance GetOrAdd(Tech tech)
 	{
 		TechInstance techInstance = techs.Find((TechInstance tc) => tc.tech == tech);
-		if (techInstance == null)
+		if (techInstance != null)
 		{
-			TechInstance techInstance2 = new TechInstance(tech);
-			techs.Add(techInstance2);
-			return techInstance2;
+			return techInstance;
 		}
-		return techInstance;
+		TechInstance techInstance2 = new TechInstance(tech);
+		techs.Add(techInstance2);
+		return techInstance2;
 	}
 
 	public void GetNextTech()
@@ -218,7 +218,7 @@ public class Research : KMonoBehaviour, ISaveLoadable
 				if (Game.Instance.roleManager.GetRoleAssigneesWithPerk(RoleManager.rolePerks.AllowAdvancedResearch.id).Count == 0)
 				{
 					notifier.Remove(NoResearcherRole);
-					notifier.Add(NoResearcherRole, "");
+					notifier.Add(NoResearcherRole, string.Empty);
 				}
 			}
 			else
@@ -231,7 +231,7 @@ public class Research : KMonoBehaviour, ISaveLoadable
 				if (Game.Instance.roleManager.GetRoleAssigneesWithPerk(RoleManager.rolePerks.AllowInterstellarResearch.id).Count == 0)
 				{
 					notifier.Remove(NoResearcherRole);
-					notifier.Add(NoResearcherRole, "");
+					notifier.Add(NoResearcherRole, string.Empty);
 				}
 			}
 			else
@@ -313,7 +313,7 @@ public class Research : KMonoBehaviour, ISaveLoadable
 		}
 		else
 		{
-			saveData.activeResearchId = "";
+			saveData.activeResearchId = string.Empty;
 		}
 		if (queuedTech != null && queuedTech.Count > 0)
 		{
@@ -321,7 +321,7 @@ public class Research : KMonoBehaviour, ISaveLoadable
 		}
 		else
 		{
-			saveData.targetResearchId = "";
+			saveData.targetResearchId = string.Empty;
 		}
 		saveData.techs = new TechInstance.SaveData[techs.Count];
 		for (int i = 0; i < techs.Count; i++)
@@ -363,7 +363,7 @@ public class Research : KMonoBehaviour, ISaveLoadable
 		{
 			if (Game.Instance.roleManager.GetRoleAssigneesWithPerk(RoleManager.rolePerks.AllowAdvancedResearch.id).Count == 0)
 			{
-				notifier.Add(NoResearcherRole, "");
+				notifier.Add(NoResearcherRole, string.Empty);
 			}
 			else
 			{
@@ -423,7 +423,7 @@ public class Research : KMonoBehaviour, ISaveLoadable
 			}
 			else
 			{
-				notifier.Add(MissingResearchStation, "");
+				notifier.Add(MissingResearchStation, string.Empty);
 			}
 		}
 	}

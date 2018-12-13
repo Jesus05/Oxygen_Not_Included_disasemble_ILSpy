@@ -93,7 +93,7 @@ namespace STRINGS
 
 				public static LocString EFFECT = "Stores most runoff " + UI.FormatAsLink("Power", "POWER") + " from generators, but loses charge over time.\n\nLogic input becomes " + UI.FormatAsLink("Active", "LOGIC") + " when charged above the set threshold.";
 
-				public static LocString LOGIC_PORT_DESC = "" + UI.FormatAsLink("Active", "LOGIC") + " if charge exceeds threshold";
+				public static LocString LOGIC_PORT_DESC = string.Empty + UI.FormatAsLink("Active", "LOGIC") + " if charge exceeds threshold";
 
 				public static LocString ACTIVATE_TOOLTIP = "Logic input will become " + UI.FormatAsLink("Active", "LOGIC") + " when battery is less than {0}% charged";
 
@@ -566,15 +566,6 @@ namespace STRINGS
 				public static LocString EFFECT = "Gives Duplicants a place to " + UI.FormatAsLink("Hygienically", "HYGIENE") + " relieve themselves.";
 			}
 
-			public class FACILITYBACKWALLWINDOW
-			{
-				public static LocString NAME = UI.FormatAsLink("Window", "");
-
-				public static LocString DESC = "";
-
-				public static LocString EFFECT = "A tall, thin window.";
-			}
-
 			public class SHOWER
 			{
 				public static LocString NAME = UI.FormatAsLink("Shower", "SHOWER");
@@ -748,7 +739,7 @@ namespace STRINGS
 
 				public static LocString DESC = "Coal generators produce more energy than manual generators, but emit heat and exhaust.";
 
-				public static LocString EFFECT = "Converts " + UI.FormatAsLink("Carbon", "CARBON") + " into electrical " + UI.FormatAsLink("Power", "POWER") + ".\n\nProduces " + UI.FormatAsLink("Carbon Dioxide", "CARBONDIOXIDE") + ".";
+				public static LocString EFFECT = "Converts " + UI.FormatAsLink("Coal", "CARBON") + " into electrical " + UI.FormatAsLink("Power", "POWER") + ".\n\nProduces " + UI.FormatAsLink("Carbon Dioxide", "CARBONDIOXIDE") + ".";
 
 				public static LocString OVERPRODUCTION = "{Generator} overproduction";
 			}
@@ -768,7 +759,7 @@ namespace STRINGS
 
 				public static LocString DESC = "Hydrogen engines can propel rockets further than steam or petroleum engines.";
 
-				public static LocString EFFECT = "Burns " + UI.FormatAsLink("Hydrogen", "HYDROGEN") + " to propel rockets for space exploration.\n\nThe engine of a rocket must be built first before more rocket modules may be added.";
+				public static LocString EFFECT = "Burns " + UI.FormatAsLink("Liquid Hydrogen", "LIQUIDHYDROGEN") + " to propel rockets for space exploration.\n\nThe engine of a rocket must be built first before more rocket modules may be added.";
 			}
 
 			public class GENERICFABRICATOR
@@ -1164,7 +1155,7 @@ namespace STRINGS
 
 				public static LocString DESC = "The colony that eats together, excretes together.";
 
-				public static LocString EFFECT = "Gives Duplicants a place to relieve themselves.\n\nRequires no " + UI.FormatAsLink("Piping", "GASPIPING") + ".\n\nMust be periodically emptied of " + UI.FormatAsLink("Polluted Dirt", "TOXICSAND") + ".";
+				public static LocString EFFECT = "Gives Duplicants a place to relieve themselves.\n\nRequires no " + UI.FormatAsLink("Piping", "LIQUIDPIPING") + ".\n\nMust be periodically emptied of " + UI.FormatAsLink("Polluted Dirt", "TOXICSAND") + ".";
 			}
 
 			public class APOTHECARY
@@ -1200,7 +1191,7 @@ namespace STRINGS
 
 				public static LocString DESC = "A massive, slow-moving door which is nearly indestructible.";
 
-				public static LocString EFFECT = "Blocks " + UI.FormatAsLink("Liquid", "ELEMENTS_LIQUID") + " and " + UI.FormatAsLink("Gas", "ELEMENTS_GAS") + " flow, maintaining pressure between areas.\n\nSets Duplicant Access Permissions for area restriction.\n\nCan withstand extremely high pressures and impacts.";
+				public static LocString EFFECT = "Blocks " + UI.FormatAsLink("Liquid", "ELEMENTS_LIQUID") + " and " + UI.FormatAsLink("Gas", "ELEMENTS_GAS") + " flow, maintaining pressure between areas.\n\nCan withstand extremely high pressures and impacts.";
 			}
 
 			public class RATIONBOX
@@ -1247,7 +1238,7 @@ namespace STRINGS
 
 				public static LocString DESC = "Super computers unlock higher technology tiers than research stations alone.";
 
-				public static LocString EFFECT = "Conducts " + UI.FormatAsLink("Advanced Research", "RESEARCH") + " to unlock new technologies.\n\nAssigned Duplicants must possess the " + UI.FormatAsLink("Super Computer Researching", UI.StripLinkFormatting(Researcher.ID)) + " trait.";
+				public static LocString EFFECT = "Conducts " + UI.FormatAsLink("Advanced Research", "RESEARCH") + " to unlock new technologies.\n\nAssigned Duplicants must possess the " + UI.FormatAsLink("Super Computer Researching", UI.StripLinkFormatting(JuniorResearcher.ID)) + " trait.";
 			}
 
 			public class COSMICRESEARCHCENTER
@@ -1265,7 +1256,7 @@ namespace STRINGS
 
 				public static LocString DESC = "Telescopes are necessary for learning starmaps and conducting rocket missions.";
 
-				public static LocString EFFECT = "Maps Starmap destinations and produces " + UI.FormatAsLink("Interstellar Research", "RESEARCH") + ".\n\nAssigned Duplicants must possess the " + UI.FormatAsLink("Geographical Analysis", UI.StripLinkFormatting(Researcher.ID)) + " trait.\n\nBuilding must be exposed to space to function.";
+				public static LocString EFFECT = "Maps Starmap destinations and produces " + UI.FormatAsLink("Databanks", "RESEARCH_DATABANK") + ".\n\nAssigned Duplicants must possess the " + UI.FormatAsLink("Geographical Analysis", UI.StripLinkFormatting(Researcher.ID)) + " trait.\n\nBuilding must be exposed to space to function.";
 
 				public static LocString REQUIREMENT_TOOLTIP = "A steady {0} supply is required to sustain working Duplicants.";
 			}
@@ -1280,7 +1271,7 @@ namespace STRINGS
 
 				public static LocString POORQUALITYNAME = "\"Abstract\" Sculpture";
 
-				public static LocString AVERAGEQUALITYNAME = "Average Sculpture";
+				public static LocString AVERAGEQUALITYNAME = "Mediocre Sculpture";
 
 				public static LocString EXCELLENTQUALITYNAME = "Genius Sculpture";
 			}
@@ -1295,7 +1286,7 @@ namespace STRINGS
 
 				public static LocString POORQUALITYNAME = "\"Abstract\" Ice Sculpture";
 
-				public static LocString AVERAGEQUALITYNAME = "Average Ice Sculpture";
+				public static LocString AVERAGEQUALITYNAME = "Mediocre Ice Sculpture";
 
 				public static LocString EXCELLENTQUALITYNAME = "Genius Ice Sculpture";
 			}
@@ -1310,7 +1301,7 @@ namespace STRINGS
 
 				public static LocString POORQUALITYNAME = "\"Abstract\" Marble Sculpture";
 
-				public static LocString AVERAGEQUALITYNAME = "Average Marble Sculpture";
+				public static LocString AVERAGEQUALITYNAME = "Mediocre Marble Sculpture";
 
 				public static LocString EXCELLENTQUALITYNAME = "Genius Marble Sculpture";
 			}
@@ -1325,7 +1316,7 @@ namespace STRINGS
 
 				public static LocString POORQUALITYNAME = "\"Abstract\" Metal Sculpture";
 
-				public static LocString AVERAGEQUALITYNAME = "Average Metal Sculpture";
+				public static LocString AVERAGEQUALITYNAME = "Mediocre Metal Sculpture";
 
 				public static LocString EXCELLENTQUALITYNAME = "Genius Metal Sculpture";
 			}
@@ -1340,7 +1331,7 @@ namespace STRINGS
 
 				public static LocString POORQUALITYNAME = "\"Abstract\" Sculpture";
 
-				public static LocString AVERAGEQUALITYNAME = "Average Sculpture";
+				public static LocString AVERAGEQUALITYNAME = "Mediocre Sculpture";
 
 				public static LocString EXCELLENTQUALITYNAME = "Genius Sculpture";
 			}
@@ -1519,7 +1510,7 @@ namespace STRINGS
 
 				public static LocString DESC = "An atmo switch shuts off power when the air pressure surrounding it surpasses the set threshold.";
 
-				public static LocString EFFECT = "Automatically turns " + UI.FormatAsLink("Power", "POWER") + " on or off using ambient " + UI.FormatAsLink("Gas", "PRESSURE") + " pressure.\n\nDoes not affect circuitry preceding the switch.";
+				public static LocString EFFECT = "Automatically turns " + UI.FormatAsLink("Power", "POWER") + " on or off using ambient " + UI.FormatAsLink("Gas Pressure", "PRESSURE") + " .\n\nDoes not affect circuitry preceding the switch.";
 			}
 
 			public class TILE
@@ -1546,7 +1537,7 @@ namespace STRINGS
 
 				public static LocString DESC = "Gets hot and steamy.";
 
-				public static LocString EFFECT = string.Format("Separates any {0} piped through it into " + UI.FormatAsLink("Steam", "STEAM") + " and {1}", ELEMENTS.DIRTYWATER.NAME.text, ELEMENTS.TOXICSAND.NAME.text);
+				public static LocString EFFECT = "Separates any " + UI.FormatAsLink("Contaminated Water", "DIRTYWATER") + " piped through it into " + UI.FormatAsLink("Steam", "STEAM") + " and " + UI.FormatAsLink("Polluted Dirt", "TOXICSAND") + ".";
 			}
 
 			public class WIRE
@@ -1573,7 +1564,7 @@ namespace STRINGS
 
 				public static LocString DESC = "Higher wattage wire is used to avoid power overloads, particularly for strong generators.";
 
-				public static LocString EFFECT = "Carries more " + UI.FormatAsLink("Wattage", "POWER") + " than regular " + UI.FormatAsLink("Wire", "WIRE") + " without overloading.\n\nCan be run through wall and floor tile.";
+				public static LocString EFFECT = "Carries more " + UI.FormatAsLink("Wattage", "POWER") + " than regular " + UI.FormatAsLink("Wire", "WIRE") + " without overloading.\n\nCannot be run through wall and floor tile.";
 			}
 
 			public class WIREBRIDGEHIGHWATTAGE
@@ -1609,7 +1600,7 @@ namespace STRINGS
 
 				public static LocString DESC = "Higher wattage wire is used to avoid power overloads, particularly for strong generators.";
 
-				public static LocString EFFECT = "Carries more " + UI.FormatAsLink("Wattage", "POWER") + " than regular " + UI.FormatAsLink("WIRE", "WIRE") + " without overloading.\n\nCan be run through wall and floor tile.";
+				public static LocString EFFECT = "Carries more " + UI.FormatAsLink("Wattage", "POWER") + " than regular " + UI.FormatAsLink("WIRE", "WIRE") + " without overloading.\n\nCannot be run through wall and floor tile.";
 			}
 
 			public class WIREREFINEDBRIDGEHIGHWATTAGE
@@ -1652,7 +1643,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = UI.FormatAsLink("Tile", "TILEPOI");
 
-				public static LocString DESC = "";
+				public static LocString DESC = string.Empty;
 
 				public static LocString EFFECT = "Used to build the walls and floor of rooms.";
 			}
@@ -1857,15 +1848,6 @@ namespace STRINGS
 				public static LocString EFFECT = "Allows the assigned " + UI.FormatAsLink("Engineer", "MACHINE_TECHNICIAN") + " to improve building production efficiency.\n\nThis building is a necessary component of the Machine Shop room.";
 			}
 
-			public class MASSIVEHEATSINK
-			{
-				public static LocString NAME = UI.FormatAsLink("Anti Entropy Thermo-Nullifier", "MASSIVEHEATSINK");
-
-				public static LocString DESC = "";
-
-				public static LocString EFFECT = "A self-sustaining machine powered by what appears to be refined " + UI.FormatAsLink("Neutronium", "UNOBTANIUM") + ".\n\nAbsorbs and neutralizes " + UI.FormatAsLink("Heat", "HEAT") + " energy when submersed in " + UI.FormatAsLink("Hydrogen", "HYDROGEN") + ".";
-			}
-
 			public class LOGICWIRE
 			{
 				public static LocString NAME = UI.FormatAsLink("Automation Wire", "LOGICWIRE");
@@ -1944,7 +1926,7 @@ namespace STRINGS
 
 				public static LocString DESC = "Once active, a memory toggle keeps buildings on until the reset port receives an active signal.";
 
-				public static LocString EFFECT = "Becomes " + UI.FormatAsLink("Active", "LOGIC") + " when the " + UI.FormatAsLink("Logic", "Set") + " port (S) is " + UI.FormatAsLink("Active", "LOGIC") + ".\n\nGoes to " + UI.FormatAsLink("Standby", "LOGIC") + " if the reset port (R) becomes " + UI.FormatAsLink("Active", "LOGIC") + ".";
+				public static LocString EFFECT = "Becomes " + UI.FormatAsLink("Active", "LOGIC") + " when the " + UI.FormatAsLink("Set", "LOGIC") + " port (S) is " + UI.FormatAsLink("Active", "LOGIC") + ".\n\nGoes to " + UI.FormatAsLink("Standby", "LOGIC") + " if the reset port (R) becomes " + UI.FormatAsLink("Active", "LOGIC") + ".";
 
 				public static LocString STATUS_ITEM_VALUE = "Current Value: {0}";
 
@@ -1996,7 +1978,7 @@ namespace STRINGS
 
 				public static LocString EFFECT = "Becomes " + UI.FormatAsLink("Active", "LOGIC") + " or on " + UI.FormatAsLink("Standby", "LOGIC") + " when ambient " + UI.FormatAsLink("Temperature", "HEAT") + " enters the chosen range.";
 
-				public static LocString LOGIC_PORT_DESC = "Active/Standby based on Ambient " + UI.FormatAsLink("Temperature", "HEAT") + "";
+				public static LocString LOGIC_PORT_DESC = "Active/Standby based on Ambient " + UI.FormatAsLink("Temperature", "HEAT") + string.Empty;
 			}
 
 			public class LOGICTIMEOFDAYSENSOR
@@ -2266,13 +2248,31 @@ namespace STRINGS
 				public static LocString EFFECT = "Trains Duplicants to become " + UI.FormatAsLink("Astronauts", UI.StripLinkFormatting(Astronaut.ID)) + ".\n\nDuplicants must possess the " + UI.FormatAsLink("Astronaut-in-Training", UI.StripLinkFormatting(AstronautTrainee.ID)) + " trait to receive training.";
 			}
 
+			public class MASSIVEHEATSINK
+			{
+				public static LocString NAME = UI.FormatAsLink("Anti Entropy Thermo-Nullifier", "MASSIVEHEATSINK");
+
+				public static LocString DESC = string.Empty;
+
+				public static LocString EFFECT = "A self-sustaining machine powered by what appears to be refined " + UI.FormatAsLink("Neutronium", "UNOBTANIUM") + ".\n\nAbsorbs and neutralizes " + UI.FormatAsLink("Heat", "HEAT") + " energy when submersed in " + UI.FormatAsLink("Hydrogen", "HYDROGEN") + ".";
+			}
+
+			public class FACILITYBACKWALLWINDOW
+			{
+				public static LocString NAME = UI.FormatAsLink("Window", "FACILITYBACKWALLWINDOW");
+
+				public static LocString DESC = string.Empty;
+
+				public static LocString EFFECT = "A tall, thin window.";
+			}
+
 			public class POIBUNKEREXTERIORDOOR
 			{
 				public static LocString NAME = UI.FormatAsLink("Security Door", "POIBUNKEREXTERIORDOOR");
 
 				public static LocString EFFECT = "A strong door with a sophisticated genetic lock.";
 
-				public static LocString DESC = "";
+				public static LocString DESC = string.Empty;
 			}
 
 			public class POIDOORINTERNAL
@@ -2281,7 +2281,7 @@ namespace STRINGS
 
 				public static LocString EFFECT = "A strong door with a sophisticated genetic lock.";
 
-				public static LocString DESC = "";
+				public static LocString DESC = string.Empty;
 			}
 
 			public class POIFACILITYDOOR
@@ -2290,7 +2290,7 @@ namespace STRINGS
 
 				public static LocString EFFECT = "Large double doors that were once the main entrance to a large facility.";
 
-				public static LocString DESC = "";
+				public static LocString DESC = string.Empty;
 			}
 
 			public class VENDINGMACHINE

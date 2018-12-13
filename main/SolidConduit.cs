@@ -8,7 +8,7 @@ public class SolidConduit : KMonoBehaviour, IHaveUtilityNetworkMgr
 	[MyCmpReq]
 	private KAnimGraphTileVisualizer graphTileDependency;
 
-	private System.Action firstFrameCallback = null;
+	private System.Action firstFrameCallback;
 
 	public Vector3 Position => base.transform.GetPosition();
 

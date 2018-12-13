@@ -36,27 +36,27 @@ public class FetchableMonitor : GameStateMachine<FetchableMonitor, FetchableMoni
 
 		public bool IsFetchable()
 		{
-			if (!base.sm.forceUnfetchable.Get(this))
+			if (base.sm.forceUnfetchable.Get(this))
 			{
-				if (!pickupable.IsEntombed)
-				{
-					if (pickupable.IsReachable())
-					{
-						if ((Object)equippable != (Object)null && equippable.isEquipped)
-						{
-							return false;
-						}
-						if (!pickupable.HasTag(GameTags.StoredPrivate))
-						{
-							return true;
-						}
-						return false;
-					}
-					return false;
-				}
 				return false;
 			}
-			return false;
+			if (pickupable.IsEntombed)
+			{
+				return false;
+			}
+			if (!pickupable.IsReachable())
+			{
+				return false;
+			}
+			if ((Object)equippable != (Object)null && equippable.isEquipped)
+			{
+				return false;
+			}
+			if (pickupable.HasTag(GameTags.StoredPrivate))
+			{
+				return false;
+			}
+			return true;
 		}
 	}
 

@@ -42,6 +42,7 @@ public class StateMachineManager : Singleton<StateMachineManager>, IScheduler
 				{
 					item(value);
 				}
+				return value;
 			}
 		}
 		return value;

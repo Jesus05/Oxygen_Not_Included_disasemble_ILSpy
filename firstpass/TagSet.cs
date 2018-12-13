@@ -170,34 +170,34 @@ public class TagSet : ICollection<Tag>, ICollection, IEnumerable<Tag>, IEnumerab
 
 	public override string ToString()
 	{
-		if (tags.Count <= 0)
+		if (tags.Count > 0)
 		{
-			return "";
+			StringBuilder stringBuilder = new StringBuilder();
+			stringBuilder.Append(tags[0].Name);
+			for (int i = 1; i < tags.Count; i++)
+			{
+				stringBuilder.Append(", ");
+				stringBuilder.Append(tags[i].Name);
+			}
+			return stringBuilder.ToString();
 		}
-		StringBuilder stringBuilder = new StringBuilder();
-		stringBuilder.Append(tags[0].Name);
-		for (int i = 1; i < tags.Count; i++)
-		{
-			stringBuilder.Append(", ");
-			stringBuilder.Append(tags[i].Name);
-		}
-		return stringBuilder.ToString();
+		return string.Empty;
 	}
 
 	public string GetTagDescription()
 	{
-		if (tags.Count <= 0)
+		if (tags.Count > 0)
 		{
-			return "";
+			StringBuilder stringBuilder = new StringBuilder();
+			stringBuilder.Append(TagDescriptions.GetDescription(tags[0].ToString()));
+			for (int i = 1; i < tags.Count; i++)
+			{
+				stringBuilder.Append(", ");
+				stringBuilder.Append(TagDescriptions.GetDescription(tags[i].ToString()));
+			}
+			return stringBuilder.ToString();
 		}
-		StringBuilder stringBuilder = new StringBuilder();
-		stringBuilder.Append(TagDescriptions.GetDescription(tags[0].ToString()));
-		for (int i = 1; i < tags.Count; i++)
-		{
-			stringBuilder.Append(", ");
-			stringBuilder.Append(TagDescriptions.GetDescription(tags[i].ToString()));
-		}
-		return stringBuilder.ToString();
+		return string.Empty;
 	}
 
 	public void CopyTo(Array array, int index)

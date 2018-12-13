@@ -9,12 +9,12 @@ internal struct JetPackNavMask
 
 	public bool IsTraversable(Navigator agent, PathFinder.PotentialPath path, int from_cell, NavType from_nav_type, int cost, int transition_id)
 	{
-		if (path.navType == NavType.Hover)
+		if (path.navType != NavType.Hover)
 		{
-			bool flag = path.HasFlag(PathFinder.PotentialPath.Flags.HasJetPack);
-			bool flag2 = agent.HasTag(GameTags.JetSuitOutOfFuel);
-			return flag && !flag2;
+			return true;
 		}
-		return true;
+		bool flag = path.HasFlag(PathFinder.PotentialPath.Flags.HasJetPack);
+		bool flag2 = agent.HasTag(GameTags.JetSuitOutOfFuel);
+		return flag && !flag2;
 	}
 }

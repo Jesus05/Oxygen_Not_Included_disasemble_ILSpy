@@ -66,11 +66,11 @@ public class ComplexRecipeManager
 
 	public ComplexRecipe GetRecipe(string id)
 	{
-		if (!string.IsNullOrEmpty(id))
+		if (string.IsNullOrEmpty(id))
 		{
-			return recipes.Find((ComplexRecipe r) => r.id == id);
+			return null;
 		}
-		return null;
+		return recipes.Find((ComplexRecipe r) => r.id == id);
 	}
 
 	public void AddObsoleteIDMapping(string obsolete_id, string new_id)
@@ -80,16 +80,16 @@ public class ComplexRecipeManager
 
 	public ComplexRecipe GetObsoleteRecipe(string id)
 	{
-		if (!string.IsNullOrEmpty(id))
+		if (string.IsNullOrEmpty(id))
 		{
-			ComplexRecipe result = null;
-			string value = null;
-			if (obsoleteIDMapping.TryGetValue(id, out value))
-			{
-				result = GetRecipe(value);
-			}
-			return result;
+			return null;
 		}
-		return null;
+		ComplexRecipe result = null;
+		string value = null;
+		if (obsoleteIDMapping.TryGetValue(id, out value))
+		{
+			result = GetRecipe(value);
+		}
+		return result;
 	}
 }

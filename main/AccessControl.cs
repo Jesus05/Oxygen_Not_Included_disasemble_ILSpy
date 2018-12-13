@@ -27,12 +27,12 @@ public class AccessControl : KMonoBehaviour, ISaveLoadable
 	private List<KeyValuePair<Ref<KPrefabID>, Permission>> savedPermissions = new List<KeyValuePair<Ref<KPrefabID>, Permission>>();
 
 	[Serialize]
-	private Permission _defaultPermission = Permission.Both;
+	private Permission _defaultPermission;
 
 	[Serialize]
 	public bool controlEnabled;
 
-	public Door.ControlState overrideAccess = Door.ControlState.Auto;
+	public Door.ControlState overrideAccess;
 
 	private static StatusItem accessControlActive;
 
@@ -66,7 +66,7 @@ public class AccessControl : KMonoBehaviour, ISaveLoadable
 		base.OnPrefabInit();
 		if (accessControlActive == null)
 		{
-			accessControlActive = new StatusItem("accessControlActive", BUILDING.STATUSITEMS.ACCESS_CONTROL.ACTIVE.NAME, BUILDING.STATUSITEMS.ACCESS_CONTROL.ACTIVE.TOOLTIP, "", StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, 63486);
+			accessControlActive = new StatusItem("accessControlActive", BUILDING.STATUSITEMS.ACCESS_CONTROL.ACTIVE.NAME, BUILDING.STATUSITEMS.ACCESS_CONTROL.ACTIVE.TOOLTIP, string.Empty, StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, 63486);
 		}
 		Subscribe(279163026, OnControlStateChangedDelegate);
 		Subscribe(-905833192, OnCopySettingsDelegate);
@@ -75,6 +75,24 @@ public class AccessControl : KMonoBehaviour, ISaveLoadable
 	protected override void OnSpawn()
 	{
 		base.OnSpawn();
+		List<Tuple<MinionAssignablesProxy, Permission>> list = new List<Tuple<MinionAssignablesProxy, Permission>>();
+		for (int num = savedPermissions.Count - 1; num >= 0; num--)
+		{
+			KPrefabID kPrefabID = savedPermissions[num].Key.Get();
+			if ((Object)kPrefabID != (Object)null)
+			{
+				MinionIdentity component = kPrefabID.GetComponent<MinionIdentity>();
+				if ((Object)component != (Object)null)
+				{
+					list.Add(new Tuple<MinionAssignablesProxy, Permission>(component.assignableProxy.Get(), savedPermissions[num].Value));
+					savedPermissions.RemoveAt(num);
+				}
+			}
+		}
+		foreach (Tuple<MinionAssignablesProxy, Permission> item in list)
+		{
+			SetPermission(item.first.gameObject, item.second);
+		}
 		SetStatusItem();
 	}
 
@@ -92,7 +110,10 @@ public class AccessControl : KMonoBehaviour, ISaveLoadable
 			savedPermissions.Clear();
 			foreach (KeyValuePair<Ref<KPrefabID>, Permission> savedPermission in component.savedPermissions)
 			{
-				SetPermission(savedPermission.Key.Get().gameObject, savedPermission.Value);
+				if ((Object)savedPermission.Key.Get() != (Object)null)
+				{
+					SetPermission(savedPermission.Key.Get().gameObject, savedPermission.Value);
+				}
 			}
 			_defaultPermission = component._defaultPermission;
 		}

@@ -8,7 +8,7 @@ public class LogicDiseaseSensor : Switch, ISaveLoadable, IThresholdSwitch, ISim2
 {
 	[SerializeField]
 	[Serialize]
-	private float threshold = 0f;
+	private float threshold;
 
 	[SerializeField]
 	[Serialize]
@@ -16,7 +16,7 @@ public class LogicDiseaseSensor : Switch, ISaveLoadable, IThresholdSwitch, ISim2
 
 	private KBatchedAnimController animController;
 
-	private bool wasOn = false;
+	private bool wasOn;
 
 	private const float rangeMin = 0f;
 
@@ -26,7 +26,7 @@ public class LogicDiseaseSensor : Switch, ISaveLoadable, IThresholdSwitch, ISim2
 
 	private int[] samples = new int[8];
 
-	private int sampleIdx = 0;
+	private int sampleIdx;
 
 	[MyCmpAdd]
 	private CopyBuildingSettings copyBuildingSettings;

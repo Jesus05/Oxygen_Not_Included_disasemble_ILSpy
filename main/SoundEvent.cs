@@ -8,7 +8,7 @@ public class SoundEvent : AnimEvent
 {
 	public static int IGNORE_INTERVAL = -1;
 
-	protected bool isDynamic = false;
+	protected bool isDynamic;
 
 	public string sound
 	{
@@ -64,13 +64,13 @@ public class SoundEvent : AnimEvent
 		{
 			sound = GlobalAssets.GetSound(sound_name, false);
 			soundHash = new HashedString(sound);
-			if (sound != null && !(sound == ""))
+			if (sound != null && !(sound == string.Empty))
 			{
-				goto IL_0061;
+				goto IL_0055;
 			}
 		}
-		goto IL_0061;
-		IL_0061:
+		goto IL_0055;
+		IL_0055:
 		minInterval = min_interval;
 		looping = is_looping;
 		isDynamic = is_dynamic;
@@ -80,40 +80,40 @@ public class SoundEvent : AnimEvent
 	public static bool ShouldPlaySound(KBatchedAnimController controller, string sound, bool is_looping, bool is_dynamic)
 	{
 		CameraController instance = CameraController.Instance;
-		if (!((UnityEngine.Object)instance == (UnityEngine.Object)null))
+		if ((UnityEngine.Object)instance == (UnityEngine.Object)null)
 		{
-			Vector3 position = controller.transform.GetPosition();
-			Vector3 offset = controller.Offset;
-			position.x += offset.x;
-			position.y += offset.y;
-			SpeedControlScreen instance2 = SpeedControlScreen.Instance;
-			if (!is_dynamic)
-			{
-				if (sound != null && !IsLowPrioritySound(sound))
-				{
-					if (!instance.IsAudibleSound(position, sound))
-					{
-						if (!is_looping && !GlobalAssets.IsHighPriority(sound))
-						{
-							return false;
-						}
-					}
-					else if ((UnityEngine.Object)instance2 != (UnityEngine.Object)null && instance2.IsPaused)
-					{
-						return false;
-					}
-					return true;
-				}
-				return false;
-			}
+			return true;
+		}
+		Vector3 position = controller.transform.GetPosition();
+		Vector3 offset = controller.Offset;
+		position.x += offset.x;
+		position.y += offset.y;
+		SpeedControlScreen instance2 = SpeedControlScreen.Instance;
+		if (is_dynamic)
+		{
 			if ((UnityEngine.Object)instance2 != (UnityEngine.Object)null && instance2.IsPaused)
 			{
 				return false;
 			}
-			if (instance.IsAudibleSound(position))
+			if (!instance.IsAudibleSound(position))
 			{
-				return true;
+				return false;
 			}
+			return true;
+		}
+		if (sound == null || IsLowPrioritySound(sound))
+		{
+			return false;
+		}
+		if (!instance.IsAudibleSound(position, sound))
+		{
+			if (!is_looping && !GlobalAssets.IsHighPriority(sound))
+			{
+				return false;
+			}
+		}
+		else if ((UnityEngine.Object)instance2 != (UnityEngine.Object)null && instance2.IsPaused)
+		{
 			return false;
 		}
 		return true;

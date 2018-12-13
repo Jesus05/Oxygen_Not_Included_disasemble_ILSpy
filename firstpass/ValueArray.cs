@@ -53,18 +53,18 @@ public class ValueArray<T>
 
 	public bool IsEqual(ValueArray<T> array)
 	{
-		if (Count == array.Count)
+		if (Count != array.Count)
 		{
-			for (int i = 0; i < Count; i++)
-			{
-				if (!Values[i].Equals(array.Values[i]))
-				{
-					return false;
-				}
-			}
-			return true;
+			return false;
 		}
-		return false;
+		for (int i = 0; i < Count; i++)
+		{
+			if (!Values[i].Equals(array.Values[i]))
+			{
+				return false;
+			}
+		}
+		return true;
 	}
 
 	public void CopyFrom(ValueArray<T> array)

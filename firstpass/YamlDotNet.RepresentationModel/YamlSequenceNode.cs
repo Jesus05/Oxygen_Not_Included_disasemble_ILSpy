@@ -105,18 +105,18 @@ namespace YamlDotNet.RepresentationModel
 		public override bool Equals(object obj)
 		{
 			YamlSequenceNode yamlSequenceNode = obj as YamlSequenceNode;
-			if (yamlSequenceNode != null && Equals(yamlSequenceNode) && children.Count == yamlSequenceNode.children.Count)
+			if (yamlSequenceNode == null || !Equals(yamlSequenceNode) || children.Count != yamlSequenceNode.children.Count)
 			{
-				for (int i = 0; i < children.Count; i++)
-				{
-					if (!YamlNode.SafeEquals(children[i], yamlSequenceNode.children[i]))
-					{
-						return false;
-					}
-				}
-				return true;
+				return false;
 			}
-			return false;
+			for (int i = 0; i < children.Count; i++)
+			{
+				if (!YamlNode.SafeEquals(children[i], yamlSequenceNode.children[i]))
+				{
+					return false;
+				}
+			}
+			return true;
 		}
 
 		public override int GetHashCode()
@@ -138,22 +138,22 @@ namespace YamlDotNet.RepresentationModel
 
 		internal override string ToString(RecursionLevel level)
 		{
-			if (level.TryIncrement())
+			if (!level.TryIncrement())
 			{
-				StringBuilder stringBuilder = new StringBuilder("[ ");
-				foreach (YamlNode child in children)
-				{
-					if (stringBuilder.Length > 2)
-					{
-						stringBuilder.Append(", ");
-					}
-					stringBuilder.Append(child.ToString(level));
-				}
-				stringBuilder.Append(" ]");
-				level.Decrement();
-				return stringBuilder.ToString();
+				return "WARNING! INFINITE RECURSION!";
 			}
-			return "WARNING! INFINITE RECURSION!";
+			StringBuilder stringBuilder = new StringBuilder("[ ");
+			foreach (YamlNode child in children)
+			{
+				if (stringBuilder.Length > 2)
+				{
+					stringBuilder.Append(", ");
+				}
+				stringBuilder.Append(child.ToString(level));
+			}
+			stringBuilder.Append(" ]");
+			level.Decrement();
+			return stringBuilder.ToString();
 		}
 
 		public IEnumerator<YamlNode> GetEnumerator()

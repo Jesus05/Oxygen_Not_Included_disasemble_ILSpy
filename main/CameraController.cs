@@ -20,7 +20,7 @@ public class CameraController : KMonoBehaviour, IInputHandler
 
 	private const float FIXED_Z = -100f;
 
-	public bool FreeCameraEnabled = false;
+	public bool FreeCameraEnabled;
 
 	public float zoomSpeed;
 
@@ -54,7 +54,7 @@ public class CameraController : KMonoBehaviour, IInputHandler
 
 	private float overrideZoomSpeed;
 
-	private bool panning = false;
+	private bool panning;
 
 	private Vector3 keyPanDelta;
 
@@ -62,15 +62,15 @@ public class CameraController : KMonoBehaviour, IInputHandler
 
 	private Vector3 targetPos;
 
-	private bool userCameraControlDisabled = false;
+	private bool userCameraControlDisabled;
 
-	private bool panLeft = false;
+	private bool panLeft;
 
-	private bool panRight = false;
+	private bool panRight;
 
-	private bool panUp = false;
+	private bool panUp;
 
-	private bool panDown = false;
+	private bool panDown;
 
 	[NonSerialized]
 	public Camera baseCamera;
@@ -190,8 +190,8 @@ public class CameraController : KMonoBehaviour, IInputHandler
 		CameraReferenceTexture cameraReferenceTexture = overlayCamera.gameObject.AddComponent<CameraReferenceTexture>();
 		cameraReferenceTexture.referenceCamera = baseCamera;
 		ColorCorrectionLookup component = overlayCamera.GetComponent<ColorCorrectionLookup>();
-		component.Convert(dayColourCube, "");
-		component.Convert2(nightColourCube, "");
+		component.Convert(dayColourCube, string.Empty);
+		component.Convert2(nightColourCube, string.Empty);
 		cameras.Add(overlayCamera);
 		lightBufferCamera = CopyCamera(overlayCamera, "Light Buffer");
 		lightBufferCamera.clearFlags = CameraClearFlags.Color;
@@ -249,16 +249,16 @@ public class CameraController : KMonoBehaviour, IInputHandler
 	private static bool WithinInputField()
 	{
 		UnityEngine.EventSystems.EventSystem current = UnityEngine.EventSystems.EventSystem.current;
-		if (!((UnityEngine.Object)current == (UnityEngine.Object)null))
+		if ((UnityEngine.Object)current == (UnityEngine.Object)null)
 		{
-			bool result = false;
-			if ((UnityEngine.Object)current.currentSelectedGameObject != (UnityEngine.Object)null && ((UnityEngine.Object)current.currentSelectedGameObject.GetComponent<TMP_InputField>() != (UnityEngine.Object)null || (UnityEngine.Object)current.currentSelectedGameObject.GetComponent<InputField>() != (UnityEngine.Object)null))
-			{
-				result = true;
-			}
-			return result;
+			return false;
 		}
-		return false;
+		bool result = false;
+		if ((UnityEngine.Object)current.currentSelectedGameObject != (UnityEngine.Object)null && ((UnityEngine.Object)current.currentSelectedGameObject.GetComponent<TMP_InputField>() != (UnityEngine.Object)null || (UnityEngine.Object)current.currentSelectedGameObject.GetComponent<InputField>() != (UnityEngine.Object)null))
+		{
+			result = true;
+		}
+		return result;
 	}
 
 	public void OnKeyDown(KButtonEvent e)
@@ -513,17 +513,17 @@ public class CameraController : KMonoBehaviour, IInputHandler
 
 	private Vector3 GetFollowPos()
 	{
-		if (!((UnityEngine.Object)followTarget != (UnityEngine.Object)null))
+		if ((UnityEngine.Object)followTarget != (UnityEngine.Object)null)
 		{
-			return Vector3.zero;
+			Vector3 result = followTarget.transform.GetPosition();
+			KAnimControllerBase component = followTarget.GetComponent<KAnimControllerBase>();
+			if ((UnityEngine.Object)component != (UnityEngine.Object)null)
+			{
+				result = component.GetWorldPivot();
+			}
+			return result;
 		}
-		Vector3 result = followTarget.transform.GetPosition();
-		KAnimControllerBase component = followTarget.GetComponent<KAnimControllerBase>();
-		if ((UnityEngine.Object)component != (UnityEngine.Object)null)
-		{
-			result = component.GetWorldPivot();
-		}
-		return result;
+		return Vector3.zero;
 	}
 
 	private void ConstrainToWorld()

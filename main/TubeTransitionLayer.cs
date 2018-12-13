@@ -40,18 +40,18 @@ public class TubeTransitionLayer : TransitionDriver.OverrideLayer
 
 	private TravelTubeEntrance GetEntrance(int cell)
 	{
-		if (Grid.HasTubeEntrance[cell])
+		if (!Grid.HasTubeEntrance[cell])
 		{
-			GameObject gameObject = Grid.Objects[cell, 1];
-			if ((Object)gameObject != (Object)null)
-			{
-				TravelTubeEntrance component = gameObject.GetComponent<TravelTubeEntrance>();
-				if ((Object)component != (Object)null && component.isSpawned)
-				{
-					return component;
-				}
-			}
 			return null;
+		}
+		GameObject gameObject = Grid.Objects[cell, 1];
+		if ((Object)gameObject != (Object)null)
+		{
+			TravelTubeEntrance component = gameObject.GetComponent<TravelTubeEntrance>();
+			if ((Object)component != (Object)null && component.isSpawned)
+			{
+				return component;
+			}
 		}
 		return null;
 	}

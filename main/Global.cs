@@ -28,7 +28,7 @@ public class Global : MonoBehaviour
 
 	public ZipFileSystem worldGenZipFS;
 
-	private bool gotKleiUserID = false;
+	private bool gotKleiUserID;
 
 	private Thread mainThread;
 
@@ -335,11 +335,11 @@ public class Global : MonoBehaviour
 
 	public AnimEventManager GetAnimEventManager()
 	{
-		if (!App.IsExiting)
+		if (App.IsExiting)
 		{
-			return mAnimEventManager;
+			return null;
 		}
-		return null;
+		return mAnimEventManager;
 	}
 
 	private void OnApplicationFocus(bool focus)
@@ -378,8 +378,8 @@ public class Global : MonoBehaviour
 
 	private void SetONIStaticSessionVariables()
 	{
-		ThreadedHttps<KleiMetrics>.Instance.SetStaticSessionVariable("Branch", "preview");
-		ThreadedHttps<KleiMetrics>.Instance.SetStaticSessionVariable("Build", 299550u);
+		ThreadedHttps<KleiMetrics>.Instance.SetStaticSessionVariable("Branch", "release");
+		ThreadedHttps<KleiMetrics>.Instance.SetStaticSessionVariable("Build", 299745u);
 		if (KPlayerPrefs.HasKey(UnitConfigurationScreen.MassUnitKey))
 		{
 			ThreadedHttps<KleiMetrics>.Instance.SetStaticSessionVariable(UnitConfigurationScreen.MassUnitKey, KPlayerPrefs.GetInt(UnitConfigurationScreen.MassUnitKey).ToString());

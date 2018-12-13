@@ -9,11 +9,11 @@ public class Telescope : Workable, OxygenBreather.IGasProvider, IEffectDescripto
 {
 	public int clearScanCellRadius = 15;
 
-	private OxygenBreather.IGasProvider workerGasProvider = null;
+	private OxygenBreather.IGasProvider workerGasProvider;
 
 	private Operational operational;
 
-	private float percentClear = 0f;
+	private float percentClear;
 
 	private static readonly Operational.Flag visibleSkyFlag = new Operational.Flag("VisibleSky", Operational.Flag.Type.Requirement);
 
@@ -130,11 +130,11 @@ public class Telescope : Workable, OxygenBreather.IGasProvider, IEffectDescripto
 				ShowProgressBar(true);
 				progressBar.SetUpdateFunc(delegate
 				{
-					if (!SpacecraftManager.instance.HasAnalysisTarget())
+					if (SpacecraftManager.instance.HasAnalysisTarget())
 					{
-						return 0f;
+						return SpacecraftManager.instance.GetDestinationAnalysisScore(SpacecraftManager.instance.GetStarmapAnalysisDestinationID()) / (float)ROCKETRY.DESTINATION_ANALYSIS.COMPLETE;
 					}
-					return SpacecraftManager.instance.GetDestinationAnalysisScore(SpacecraftManager.instance.GetStarmapAnalysisDestinationID()) / (float)ROCKETRY.DESTINATION_ANALYSIS.COMPLETE;
+					return 0f;
 				});
 				workerGasProvider = component.GetGasProvider();
 				component.SetGasProvider(this);
@@ -219,18 +219,18 @@ public class Telescope : Workable, OxygenBreather.IGasProvider, IEffectDescripto
 
 	public bool ConsumeGas(OxygenBreather oxygen_breather, float amount)
 	{
-		if (storage.items.Count > 0)
+		if (storage.items.Count <= 0)
 		{
-			GameObject gameObject = storage.items[0];
-			if (!((UnityEngine.Object)gameObject == (UnityEngine.Object)null))
-			{
-				PrimaryElement component = gameObject.GetComponent<PrimaryElement>();
-				bool result = component.Mass >= amount;
-				component.Mass = Mathf.Max(0f, component.Mass - amount);
-				return result;
-			}
 			return false;
 		}
-		return false;
+		GameObject gameObject = storage.items[0];
+		if ((UnityEngine.Object)gameObject == (UnityEngine.Object)null)
+		{
+			return false;
+		}
+		PrimaryElement component = gameObject.GetComponent<PrimaryElement>();
+		bool result = component.Mass >= amount;
+		component.Mass = Mathf.Max(0f, component.Mass - amount);
+		return result;
 	}
 }

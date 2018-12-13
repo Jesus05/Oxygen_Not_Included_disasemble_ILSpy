@@ -49,24 +49,24 @@ public class HandSanitizer : StateMachineComponent<HandSanitizer.SMInstance>, IE
 		public bool OutputFull()
 		{
 			PrimaryElement primaryElement = GetComponent<Storage>().FindPrimaryElement(base.master.outputElement);
-			if (!((UnityEngine.Object)primaryElement != (UnityEngine.Object)null))
+			if ((UnityEngine.Object)primaryElement != (UnityEngine.Object)null)
 			{
-				return false;
+				return primaryElement.Mass >= (float)base.master.maxUses * base.master.massConsumedPerUse;
 			}
-			return primaryElement.Mass >= (float)base.master.maxUses * base.master.massConsumedPerUse;
+			return false;
 		}
 
 		public bool IsReady()
 		{
-			if (HasSufficientMass())
+			if (!HasSufficientMass())
 			{
-				if (!OutputFull())
-				{
-					return true;
-				}
 				return false;
 			}
-			return false;
+			if (OutputFull())
+			{
+				return false;
+			}
+			return true;
 		}
 
 		public void OnCompleteWork(Worker worker)
@@ -128,7 +128,7 @@ public class HandSanitizer : StateMachineComponent<HandSanitizer.SMInstance>, IE
 
 	public class Work : Workable, IGameObjectEffectDescriptor
 	{
-		private int diseaseRemoved = 0;
+		private int diseaseRemoved;
 
 		protected override void OnPrefabInit()
 		{
@@ -191,7 +191,7 @@ public class HandSanitizer : StateMachineComponent<HandSanitizer.SMInstance>, IE
 
 	public SimHashes outputElement = SimHashes.Vacuum;
 
-	public bool dumpWhenFull = false;
+	public bool dumpWhenFull;
 
 	private WorkableReactable reactable;
 
@@ -199,12 +199,12 @@ public class HandSanitizer : StateMachineComponent<HandSanitizer.SMInstance>, IE
 
 	private MeterController dirtyMeter;
 
-	public Meter.Offset cleanMeterOffset = Meter.Offset.Infront;
+	public Meter.Offset cleanMeterOffset;
 
-	public Meter.Offset dirtyMeterOffset = Meter.Offset.Infront;
+	public Meter.Offset dirtyMeterOffset;
 
 	[Serialize]
-	public int maxPossiblyRemoved = 0;
+	public int maxPossiblyRemoved;
 
 	private static readonly EventSystem.IntraObjectHandler<HandSanitizer> OnStorageChangeDelegate = new EventSystem.IntraObjectHandler<HandSanitizer>(delegate(HandSanitizer component, object data)
 	{

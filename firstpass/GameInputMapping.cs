@@ -133,7 +133,7 @@ public class GameInputMapping
 		if (File.Exists(BindingsFilename))
 		{
 			string text = File.ReadAllText(BindingsFilename);
-			if (text != null && !(text == ""))
+			if (text != null && !(text == string.Empty))
 			{
 				BindingEntry[] array = null;
 				try

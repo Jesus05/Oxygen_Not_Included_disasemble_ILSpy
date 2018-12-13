@@ -5,7 +5,7 @@ public class Output
 {
 	public static string BuildString(object[] objs)
 	{
-		string text = "";
+		string text = string.Empty;
 		if (objs.Length > 0)
 		{
 			text = ((objs[0] == null) ? "null" : objs[0].ToString());

@@ -4,7 +4,7 @@ public class CavityInfo
 {
 	public HandleVector<int>.Handle handle;
 
-	public bool dirty = false;
+	public bool dirty;
 
 	public int numCells;
 

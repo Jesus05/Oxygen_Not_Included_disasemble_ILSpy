@@ -19,7 +19,7 @@ public class BuildingComplete : Building
 
 	private bool hasSpawnedKComponents;
 
-	private bool wasReplaced = false;
+	private bool wasReplaced;
 
 	public List<AttributeModifier> regionModifiers = new List<AttributeModifier>();
 

@@ -37,11 +37,11 @@ public class DragTool : InterfaceTool
 
 	protected Vector3 placementPivot;
 
-	protected bool interceptNumberKeysForPriority = false;
+	protected bool interceptNumberKeysForPriority;
 
 	private static int defaultLayerMask;
 
-	private bool dragging = false;
+	private bool dragging;
 
 	private Vector3 previousCursorPos;
 
@@ -137,7 +137,7 @@ public class DragTool : InterfaceTool
 		KScreenManager.Instance.SetEventSystemEnabled(false);
 		if ((UnityEngine.Object)areaVisualizerTextPrefab != (UnityEngine.Object)null)
 		{
-			areaVisualizerText = NameDisplayScreen.Instance.AddWorldText("", areaVisualizerTextPrefab);
+			areaVisualizerText = NameDisplayScreen.Instance.AddWorldText(string.Empty, areaVisualizerTextPrefab);
 			GameObject worldText = NameDisplayScreen.Instance.GetWorldText(areaVisualizerText);
 			LocText component = worldText.GetComponent<LocText>();
 			component.color = areaColour;

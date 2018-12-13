@@ -39,11 +39,11 @@ public class ConditionDestinationReachable : RocketLaunchCondition
 		{
 			return UI.STARMAP.DESTINATIONSELECTION.REACHABLE;
 		}
-		if (GetDestination() == null)
+		if (GetDestination() != null)
 		{
-			return UI.STARMAP.DESTINATIONSELECTION.NOTSELECTED;
+			return UI.STARMAP.DESTINATIONSELECTION.UNREACHABLE;
 		}
-		return UI.STARMAP.DESTINATIONSELECTION.UNREACHABLE;
+		return UI.STARMAP.DESTINATIONSELECTION.NOTSELECTED;
 	}
 
 	public override string GetLaunchStatusTooltip(bool ready)
@@ -52,10 +52,10 @@ public class ConditionDestinationReachable : RocketLaunchCondition
 		{
 			return UI.STARMAP.DESTINATIONSELECTION_TOOLTIP.REACHABLE;
 		}
-		if (GetDestination() == null)
+		if (GetDestination() != null)
 		{
-			return UI.STARMAP.DESTINATIONSELECTION_TOOLTIP.NOTSELECTED;
+			return UI.STARMAP.DESTINATIONSELECTION_TOOLTIP.UNREACHABLE;
 		}
-		return UI.STARMAP.DESTINATIONSELECTION_TOOLTIP.UNREACHABLE;
+		return UI.STARMAP.DESTINATIONSELECTION_TOOLTIP.NOTSELECTED;
 	}
 }

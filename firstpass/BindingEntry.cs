@@ -76,12 +76,12 @@ public struct BindingEntry : IEquatable<BindingEntry>
 
 	public override bool Equals(object o)
 	{
-		if (o is BindingEntry)
+		if (!(o is BindingEntry))
 		{
-			BindingEntry b = (BindingEntry)o;
-			return this == b;
+			return false;
 		}
-		return false;
+		BindingEntry b = (BindingEntry)o;
+		return this == b;
 	}
 
 	public override int GetHashCode()

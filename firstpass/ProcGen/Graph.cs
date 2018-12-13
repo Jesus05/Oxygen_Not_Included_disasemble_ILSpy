@@ -18,7 +18,7 @@ namespace ProcGen
 		[Serialize]
 		public List<Arc> arcList;
 
-		private SeededRandom myRandom = null;
+		private SeededRandom myRandom;
 
 		public List<Node> nodes => nodeList;
 
@@ -87,54 +87,54 @@ namespace ProcGen
 		public int GetDistanceToTagSetFromNode(Node node, TagSet tagset)
 		{
 			List<Node> nodesWithAtLeastOneTag = GetNodesWithAtLeastOneTag(tagset);
-			if (nodesWithAtLeastOneTag.Count <= 0)
+			if (nodesWithAtLeastOneTag.Count > 0)
 			{
-				return -1;
+				Dijkstra dijkstra = new Dijkstra(baseGraph, (Satsuma.Arc arc) => 1.0, DijkstraMode.Sum);
+				for (int i = 0; i < nodesWithAtLeastOneTag.Count; i++)
+				{
+					dijkstra.AddSource(nodesWithAtLeastOneTag[i].node);
+				}
+				dijkstra.RunUntilFixed(node.node);
+				return (int)dijkstra.GetDistance(node.node);
 			}
-			Dijkstra dijkstra = new Dijkstra(baseGraph, (Satsuma.Arc arc) => 1.0, DijkstraMode.Sum);
-			for (int i = 0; i < nodesWithAtLeastOneTag.Count; i++)
-			{
-				dijkstra.AddSource(nodesWithAtLeastOneTag[i].node);
-			}
-			dijkstra.RunUntilFixed(node.node);
-			return (int)dijkstra.GetDistance(node.node);
+			return -1;
 		}
 
 		public int GetDistanceToTagFromNode(Node node, Tag tag)
 		{
 			List<Node> nodesWithTag = GetNodesWithTag(tag);
-			if (nodesWithTag.Count <= 0)
+			if (nodesWithTag.Count > 0)
 			{
-				return -1;
+				Dijkstra dijkstra = new Dijkstra(baseGraph, (Satsuma.Arc arc) => 1.0, DijkstraMode.Sum);
+				for (int i = 0; i < nodesWithTag.Count; i++)
+				{
+					dijkstra.AddSource(nodesWithTag[i].node);
+				}
+				dijkstra.RunUntilFixed(node.node);
+				return (int)dijkstra.GetDistance(node.node);
 			}
-			Dijkstra dijkstra = new Dijkstra(baseGraph, (Satsuma.Arc arc) => 1.0, DijkstraMode.Sum);
-			for (int i = 0; i < nodesWithTag.Count; i++)
-			{
-				dijkstra.AddSource(nodesWithTag[i].node);
-			}
-			dijkstra.RunUntilFixed(node.node);
-			return (int)dijkstra.GetDistance(node.node);
+			return -1;
 		}
 
 		public Dictionary<uint, int> GetDistanceToTag(Tag tag)
 		{
 			List<Node> nodesWithTag = GetNodesWithTag(tag);
-			if (nodesWithTag.Count <= 0)
+			if (nodesWithTag.Count > 0)
 			{
-				return null;
+				Dijkstra dijkstra = new Dijkstra(baseGraph, (Satsuma.Arc arc) => 1.0, DijkstraMode.Sum);
+				for (int i = 0; i < nodesWithTag.Count; i++)
+				{
+					dijkstra.AddSource(nodesWithTag[i].node);
+				}
+				Dictionary<uint, int> dictionary = new Dictionary<uint, int>();
+				for (int j = 0; j < nodes.Count; j++)
+				{
+					dijkstra.RunUntilFixed(nodes[j].node);
+					dictionary[(uint)nodes[j].node.Id] = (int)dijkstra.GetDistance(nodes[j].node);
+				}
+				return dictionary;
 			}
-			Dijkstra dijkstra = new Dijkstra(baseGraph, (Satsuma.Arc arc) => 1.0, DijkstraMode.Sum);
-			for (int i = 0; i < nodesWithTag.Count; i++)
-			{
-				dijkstra.AddSource(nodesWithTag[i].node);
-			}
-			Dictionary<uint, int> dictionary = new Dictionary<uint, int>();
-			for (int j = 0; j < nodes.Count; j++)
-			{
-				dijkstra.RunUntilFixed(nodes[j].node);
-				dictionary[(uint)nodes[j].node.Id] = (int)dijkstra.GetDistance(nodes[j].node);
-			}
-			return dictionary;
+			return null;
 		}
 
 		public List<Node> GetNodesWithAtLeastOneTag(TagSet tagset)
@@ -190,11 +190,11 @@ namespace ProcGen
 				num += (particle.X - pointD.X) / num3 * num4;
 				num2 += (particle.Y - pointD.Y) / num3 * num4;
 			}
-			if (!bounds.Contains(point))
+			if (bounds.Contains(point))
 			{
-				return new PointD(0.0 - num, 0.0 - num2);
+				return new PointD(num, num2);
 			}
-			return new PointD(num, num2);
+			return new PointD(0.0 - num, 0.0 - num2);
 		}
 
 		public PointD GetPositionForNode(Satsuma.Node node)

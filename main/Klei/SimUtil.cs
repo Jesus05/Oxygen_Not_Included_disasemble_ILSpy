@@ -1,10 +1,8 @@
-#define UNITY_ASSERTIONS
 #define STRICT_CHECKING
 using Klei.AI;
 using System;
 using System.Diagnostics;
 using UnityEngine;
-using UnityEngine.Assertions;
 
 namespace Klei
 {
@@ -38,19 +36,19 @@ namespace Klei
 		public static float CalculateEnergyFlow(int cell, float dest_temp, float dest_specific_heat_capacity, float dest_thermal_conductivity, float surface_area = 1f, float thickness = 1f)
 		{
 			float num = Grid.Mass[cell];
-			if (!(num <= 0f))
+			if (num <= 0f)
 			{
-				Element element = Grid.Element[cell];
-				if (!element.IsVacuum)
-				{
-					float source_temp = Grid.Temperature[cell];
-					float thermalConductivity = element.thermalConductivity;
-					float num2 = CalculateEnergyFlow(source_temp, thermalConductivity, dest_temp, dest_thermal_conductivity, surface_area, thickness);
-					return num2 * 0.001f;
-				}
 				return 0f;
 			}
-			return 0f;
+			Element element = Grid.Element[cell];
+			if (element.IsVacuum)
+			{
+				return 0f;
+			}
+			float source_temp = Grid.Temperature[cell];
+			float thermalConductivity = element.thermalConductivity;
+			float num2 = CalculateEnergyFlow(source_temp, thermalConductivity, dest_temp, dest_thermal_conductivity, surface_area, thickness);
+			return num2 * 0.001f;
 		}
 
 		public static float ClampEnergyTransfer(float dt, float source_temp, float source_mass, float source_specific_heat_capacity, float dest_temp, float dest_mass, float dest_specific_heat_capacity, float max_watts_transferred)
@@ -92,11 +90,11 @@ namespace Klei
 
 		public static float EnergyFlowToTemperatureDelta(float kilojoules, float specific_heat_capacity, float mass)
 		{
-			if (kilojoules * specific_heat_capacity * mass != 0f)
+			if (kilojoules * specific_heat_capacity * mass == 0f)
 			{
-				return kilojoules / (specific_heat_capacity * mass);
+				return 0f;
 			}
-			return 0f;
+			return kilojoules / (specific_heat_capacity * mass);
 		}
 
 		public static float CalculateFinalTemperature(float mass1, float temp1, float mass2, float temp2)
@@ -123,9 +121,9 @@ namespace Klei
 		[Conditional("STRICT_CHECKING")]
 		public static void CheckValidValue(float value)
 		{
-			if (float.IsNaN(value) || float.IsInfinity(value))
+			if (!float.IsNaN(value) && !float.IsInfinity(value))
 			{
-				Assert.IsTrue(false);
+				return;
 			}
 		}
 

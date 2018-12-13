@@ -220,19 +220,19 @@ public class MinionStorage : KMonoBehaviour
 	public GameObject DeserializeMinion(Guid id, Vector3 pos)
 	{
 		int minionIndex = GetMinionIndex(id);
-		if (minionIndex >= 0 && minionIndex < serializedMinions.Count)
+		if (minionIndex < 0 || minionIndex >= serializedMinions.Count)
 		{
-			Info info = serializedMinions[minionIndex];
-			KPrefabID kPrefabID = info.serializedMinion.Get();
-			serializedMinions.RemoveAt(minionIndex);
-			if (!((UnityEngine.Object)kPrefabID == (UnityEngine.Object)null))
-			{
-				GameObject gameObject = kPrefabID.gameObject;
-				return DeserializeMinion(gameObject, pos);
-			}
 			return null;
 		}
-		return null;
+		Info info = serializedMinions[minionIndex];
+		KPrefabID kPrefabID = info.serializedMinion.Get();
+		serializedMinions.RemoveAt(minionIndex);
+		if ((UnityEngine.Object)kPrefabID == (UnityEngine.Object)null)
+		{
+			return null;
+		}
+		GameObject gameObject = kPrefabID.gameObject;
+		return DeserializeMinion(gameObject, pos);
 	}
 
 	public static GameObject DeserializeMinion(GameObject sourceMinion, Vector3 pos)

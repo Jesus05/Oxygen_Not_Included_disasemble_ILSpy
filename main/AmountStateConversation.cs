@@ -85,33 +85,33 @@ public class AmountStateConversation : ConversationType
 
 	public override Conversation.Topic GetNextTopic(MinionIdentity speaker, Conversation.Topic lastTopic)
 	{
-		if (lastTopic != null)
+		if (lastTopic == null)
 		{
-			List<Conversation.ModeType> list = transitions[lastTopic.mode];
-			Conversation.ModeType modeType = list[Random.Range(0, list.Count)];
-			if (modeType != Conversation.ModeType.Statement)
-			{
-				return new Conversation.Topic(target, modeType);
-			}
+			return new Conversation.Topic(target, Conversation.ModeType.Query);
+		}
+		List<Conversation.ModeType> list = transitions[lastTopic.mode];
+		Conversation.ModeType modeType = list[Random.Range(0, list.Count)];
+		if (modeType == Conversation.ModeType.Statement)
+		{
 			Conversation.ModeType modeForAmount = GetModeForAmount(speaker, target);
 			return new Conversation.Topic(target, modeForAmount);
 		}
-		return new Conversation.Topic(target, Conversation.ModeType.Query);
+		return new Conversation.Topic(target, modeType);
 	}
 
 	public override Sprite GetSprite(string topic)
 	{
-		if (!Db.Get().Amounts.Exists(topic))
+		if (Db.Get().Amounts.Exists(topic))
 		{
-			if (!Db.Get().Attributes.Exists(topic))
-			{
-				return null;
-			}
+			Amount amount = Db.Get().Amounts.Get(topic);
+			return Assets.GetSprite(amount.thoughtSprite);
+		}
+		if (Db.Get().Attributes.Exists(topic))
+		{
 			Attribute attribute = Db.Get().Attributes.Get(topic);
 			return Assets.GetSprite(attribute.thoughtSprite);
 		}
-		Amount amount = Db.Get().Amounts.Get(topic);
-		return Assets.GetSprite(amount.thoughtSprite);
+		return null;
 	}
 
 	private Conversation.ModeType GetModeForAmount(MinionIdentity speaker, string target)

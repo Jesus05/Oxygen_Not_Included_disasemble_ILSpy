@@ -49,9 +49,9 @@ namespace TMPro
 
 		private int[] m_characterSet;
 
-		public float normalStyle = 0f;
+		public float normalStyle;
 
-		public float normalSpacingOffset = 0f;
+		public float normalSpacingOffset;
 
 		public float boldStyle = 0.75f;
 
@@ -280,12 +280,12 @@ namespace TMPro
 
 		public bool HasCharacter(int character)
 		{
-			if (m_characterDictionary != null)
+			if (m_characterDictionary == null)
 			{
-				if (!m_characterDictionary.ContainsKey(character))
-				{
-					return false;
-				}
+				return false;
+			}
+			if (m_characterDictionary.ContainsKey(character))
+			{
 				return true;
 			}
 			return false;
@@ -293,12 +293,12 @@ namespace TMPro
 
 		public bool HasCharacter(char character)
 		{
-			if (m_characterDictionary != null)
+			if (m_characterDictionary == null)
 			{
-				if (!m_characterDictionary.ContainsKey(character))
-				{
-					return false;
-				}
+				return false;
+			}
+			if (m_characterDictionary.ContainsKey(character))
+			{
 				return true;
 			}
 			return false;
@@ -306,76 +306,76 @@ namespace TMPro
 
 		public bool HasCharacter(char character, bool searchFallbacks)
 		{
-			if (m_characterDictionary != null)
+			if (m_characterDictionary == null)
 			{
-				if (!m_characterDictionary.ContainsKey(character))
+				return false;
+			}
+			if (m_characterDictionary.ContainsKey(character))
+			{
+				return true;
+			}
+			if (searchFallbacks)
+			{
+				if (fallbackFontAssets != null && fallbackFontAssets.Count > 0)
 				{
-					if (searchFallbacks)
+					for (int i = 0; i < fallbackFontAssets.Count && (UnityEngine.Object)fallbackFontAssets[i] != (UnityEngine.Object)null; i++)
 					{
-						if (fallbackFontAssets != null && fallbackFontAssets.Count > 0)
+						if (fallbackFontAssets[i].characterDictionary != null && fallbackFontAssets[i].characterDictionary.ContainsKey(character))
 						{
-							for (int i = 0; i < fallbackFontAssets.Count && (UnityEngine.Object)fallbackFontAssets[i] != (UnityEngine.Object)null; i++)
-							{
-								if (fallbackFontAssets[i].characterDictionary != null && fallbackFontAssets[i].characterDictionary.ContainsKey(character))
-								{
-									return true;
-								}
-							}
-						}
-						if (TMP_Settings.fallbackFontAssets != null && TMP_Settings.fallbackFontAssets.Count > 0)
-						{
-							for (int j = 0; j < TMP_Settings.fallbackFontAssets.Count && (UnityEngine.Object)TMP_Settings.fallbackFontAssets[j] != (UnityEngine.Object)null; j++)
-							{
-								if (TMP_Settings.fallbackFontAssets[j].characterDictionary != null && TMP_Settings.fallbackFontAssets[j].characterDictionary.ContainsKey(character))
-								{
-									return true;
-								}
-							}
+							return true;
 						}
 					}
-					return false;
 				}
-				return true;
+				if (TMP_Settings.fallbackFontAssets != null && TMP_Settings.fallbackFontAssets.Count > 0)
+				{
+					for (int j = 0; j < TMP_Settings.fallbackFontAssets.Count && (UnityEngine.Object)TMP_Settings.fallbackFontAssets[j] != (UnityEngine.Object)null; j++)
+					{
+						if (TMP_Settings.fallbackFontAssets[j].characterDictionary != null && TMP_Settings.fallbackFontAssets[j].characterDictionary.ContainsKey(character))
+						{
+							return true;
+						}
+					}
+				}
 			}
 			return false;
 		}
 
 		public bool HasCharacters(string text, out List<char> missingCharacters)
 		{
-			if (m_characterDictionary != null)
+			if (m_characterDictionary == null)
 			{
-				missingCharacters = new List<char>();
-				for (int i = 0; i < text.Length; i++)
+				missingCharacters = null;
+				return false;
+			}
+			missingCharacters = new List<char>();
+			for (int i = 0; i < text.Length; i++)
+			{
+				if (!m_characterDictionary.ContainsKey(text[i]))
 				{
-					if (!m_characterDictionary.ContainsKey(text[i]))
-					{
-						missingCharacters.Add(text[i]);
-					}
+					missingCharacters.Add(text[i]);
 				}
-				if (missingCharacters.Count != 0)
-				{
-					return false;
-				}
+			}
+			if (missingCharacters.Count == 0)
+			{
 				return true;
 			}
-			missingCharacters = null;
 			return false;
 		}
 
 		public bool HasCharacters(string text)
 		{
-			if (m_characterDictionary != null)
+			if (m_characterDictionary == null)
 			{
-				for (int i = 0; i < text.Length; i++)
-				{
-					if (!m_characterDictionary.ContainsKey(text[i]))
-					{
-						return false;
-					}
-				}
-				return true;
+				return false;
 			}
-			return false;
+			for (int i = 0; i < text.Length; i++)
+			{
+				if (!m_characterDictionary.ContainsKey(text[i]))
+				{
+					return false;
+				}
+			}
+			return true;
 		}
 
 		public static string GetCharacters(TMP_FontAsset fontAsset)

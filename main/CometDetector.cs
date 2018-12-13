@@ -29,7 +29,7 @@ public class CometDetector : GameStateMachine<CometDetector, CometDetector.Insta
 
 	public new class Instance : GameInstance
 	{
-		public bool ShowWorkingStatus = false;
+		public bool ShowWorkingStatus;
 
 		private const float BEST_WARNING_TIME = 200f;
 

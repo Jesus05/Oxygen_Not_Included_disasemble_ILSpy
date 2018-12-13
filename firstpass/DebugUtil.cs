@@ -80,6 +80,25 @@ public static class DebugUtil
 		}
 	}
 
+	public static void DevAssertWithStack(bool test, params object[] objs)
+	{
+		if (!test)
+		{
+			if (Application.isEditor)
+			{
+				Debug.LogError(Output.BuildString(objs), null);
+				Debug.Break();
+				Debugger.Break();
+			}
+			else
+			{
+				StackTrace arg = new StackTrace(1, true);
+				string obj = $"{Output.BuildString(objs)}\n{arg}";
+				Debug.LogWarning(obj, null);
+			}
+		}
+	}
+
 	public static void SoftAssert(bool test, params object[] objs)
 	{
 		if (!test)

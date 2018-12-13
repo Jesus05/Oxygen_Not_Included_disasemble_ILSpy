@@ -161,6 +161,7 @@ public class MournChore : Chore<MournChore.StatesInstance>
 					result = grave;
 				}
 			}
+			return result;
 		}
 		finally
 		{
@@ -170,7 +171,6 @@ public class MournChore : Chore<MournChore.StatesInstance>
 				disposable.Dispose();
 			}
 		}
-		return result;
 	}
 
 	public override void Begin(Precondition.Context context)

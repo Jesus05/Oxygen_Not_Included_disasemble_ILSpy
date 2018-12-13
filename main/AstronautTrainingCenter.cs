@@ -48,12 +48,12 @@ public class AstronautTrainingCenter : Workable
 
 	protected override bool OnWorkTick(Worker worker, float dt)
 	{
-		if (!((Object)worker == (Object)null))
+		if ((Object)worker == (Object)null)
 		{
-			MinionResume component = worker.GetComponent<MinionResume>();
-			return component.HasMasteredRole(AstronautTrainee.ID);
+			return true;
 		}
-		return true;
+		MinionResume component = worker.GetComponent<MinionResume>();
+		return component.HasMasteredRole(AstronautTrainee.ID);
 	}
 
 	protected override void OnCompleteWork(Worker worker)
@@ -74,13 +74,13 @@ public class AstronautTrainingCenter : Workable
 
 	public override float GetPercentComplete()
 	{
-		if (!((Object)base.worker == (Object)null))
+		if ((Object)base.worker == (Object)null)
 		{
-			MinionResume component = base.worker.GetComponent<MinionResume>();
-			float num = component.ExperienceByRoleID[AstronautTrainee.ID];
-			RoleConfig role = Game.Instance.roleManager.GetRole(AstronautTrainee.ID);
-			return Mathf.Clamp01(num / role.experienceRequired);
+			return 0f;
 		}
-		return 0f;
+		MinionResume component = base.worker.GetComponent<MinionResume>();
+		float num = component.ExperienceByRoleID[AstronautTrainee.ID];
+		RoleConfig role = Game.Instance.roleManager.GetRole(AstronautTrainee.ID);
+		return Mathf.Clamp01(num / role.experienceRequired);
 	}
 }

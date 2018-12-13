@@ -79,11 +79,11 @@ public class EconomyDetails
 
 		public float Transform(Element element, float amount)
 		{
-			if (!(resource.tag == element.tag))
+			if (resource.tag == element.tag)
 			{
-				return 0f;
+				return ratio * amount;
 			}
-			return ratio * amount;
+			return 0f;
 		}
 	}
 

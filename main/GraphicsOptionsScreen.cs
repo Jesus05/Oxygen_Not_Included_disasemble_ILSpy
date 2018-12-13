@@ -63,7 +63,7 @@ internal class GraphicsOptionsScreen : KModalScreen
 
 	private Settings originalSettings;
 
-	private bool resDropdownAlwaysActive = false;
+	private bool resDropdownAlwaysActive;
 
 	protected override void OnSpawn()
 	{

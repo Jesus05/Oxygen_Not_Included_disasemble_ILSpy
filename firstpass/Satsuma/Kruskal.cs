@@ -62,13 +62,13 @@ namespace Satsuma
 
 		public bool Step()
 		{
-			if (arcsToGo > 0 && arcEnumerator != null && arcEnumerator.MoveNext())
+			if (arcsToGo <= 0 || arcEnumerator == null || !arcEnumerator.MoveNext())
 			{
-				AddArc(arcEnumerator.Current);
-				return true;
+				arcEnumerator = null;
+				return false;
 			}
-			arcEnumerator = null;
-			return false;
+			AddArc(arcEnumerator.Current);
+			return true;
 		}
 
 		public void Run()
@@ -92,19 +92,19 @@ namespace Satsuma
 				return false;
 			}
 			DisjointSetSet<Node> b = components.WhereIs(node2);
-			if (!(a == b))
+			if (a == b)
 			{
-				Forest.Add(arc);
-				components.Union(a, b);
-				Node key;
-				Dictionary<Node, int> degree;
-				(degree = Degree)[key = node] = degree[key] + 1;
-				Node key2;
-				(degree = Degree)[key2 = node2] = degree[key2] + 1;
-				arcsToGo--;
-				return true;
+				return false;
 			}
-			return false;
+			Forest.Add(arc);
+			components.Union(a, b);
+			Node key;
+			Dictionary<Node, int> degree;
+			(degree = Degree)[key = node] = degree[key] + 1;
+			Node key2;
+			(degree = Degree)[key2 = node2] = degree[key2] + 1;
+			arcsToGo--;
+			return true;
 		}
 	}
 }

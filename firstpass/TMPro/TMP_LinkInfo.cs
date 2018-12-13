@@ -43,11 +43,11 @@ namespace TMPro
 
 		public string GetLinkID()
 		{
-			if (!((Object)textComponent == (Object)null))
+			if ((Object)textComponent == (Object)null)
 			{
-				return new string(linkID, 0, linkIdLength);
+				return string.Empty;
 			}
-			return string.Empty;
+			return new string(linkID, 0, linkIdLength);
 		}
 	}
 }

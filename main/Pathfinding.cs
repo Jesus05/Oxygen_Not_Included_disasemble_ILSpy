@@ -1,6 +1,4 @@
-#define UNITY_ASSERTIONS
 using System.Collections.Generic;
-using UnityEngine;
 
 public class Pathfinding : KMonoBehaviour
 {
@@ -119,13 +117,11 @@ public class Pathfinding : KMonoBehaviour
 
 	public void AddNavigationFeature(int cell, INavigationFeature feature)
 	{
-		UnityEngine.Debug.Assert(!NavigationFeatures.ContainsKey(cell));
 		NavigationFeatures[cell] = feature;
 	}
 
 	public void RemoveNavigationFeature(int cell, INavigationFeature feature)
 	{
-		UnityEngine.Debug.Assert(NavigationFeatures.ContainsKey(cell));
 		NavigationFeatures.Remove(cell);
 	}
 

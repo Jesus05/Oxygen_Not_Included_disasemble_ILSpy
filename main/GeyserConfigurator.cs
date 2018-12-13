@@ -95,7 +95,7 @@ public class GeyserConfigurator : KMonoBehaviour
 
 		private float scaledYearPercent;
 
-		private bool didInit = false;
+		private bool didInit;
 
 		public GeyserType geyserType => FindType(typeId);
 
@@ -209,7 +209,7 @@ public class GeyserConfigurator : KMonoBehaviour
 
 	public HashedString presetType;
 
-	public float presetMin = 0f;
+	public float presetMin;
 
 	public float presetMax = 1f;
 

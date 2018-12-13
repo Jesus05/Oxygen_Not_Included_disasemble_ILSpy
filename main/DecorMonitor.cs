@@ -9,10 +9,10 @@ public class DecorMonitor : GameStateMachine<DecorMonitor, DecorMonitor.Instance
 	public new class Instance : GameInstance
 	{
 		[Serialize]
-		private float cycleTotalDecor = 0f;
+		private float cycleTotalDecor;
 
 		[Serialize]
-		private float yesterdaysTotalDecor = 0f;
+		private float yesterdaysTotalDecor;
 
 		private AmountInstance amount;
 

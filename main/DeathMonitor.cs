@@ -15,7 +15,7 @@ public class DeathMonitor : GameStateMachine<DeathMonitor, DeathMonitor.Instance
 
 	public new class Instance : GameInstance
 	{
-		private bool isDuplicant = false;
+		private bool isDuplicant;
 
 		public bool IsDuplicant => isDuplicant;
 

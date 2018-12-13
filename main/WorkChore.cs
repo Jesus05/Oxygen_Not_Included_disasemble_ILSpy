@@ -149,33 +149,33 @@ public class WorkChore<WorkableType> : Chore<WorkChore<WorkableType>.StatesInsta
 
 	public override bool CanPreempt(Precondition.Context context)
 	{
-		if (base.CanPreempt(context))
+		if (!base.CanPreempt(context))
 		{
-			if (!((UnityEngine.Object)context.chore.driver == (UnityEngine.Object)null))
-			{
-				if (!((UnityEngine.Object)context.chore.driver == (UnityEngine.Object)context.consumerState.choreDriver))
-				{
-					Workable workable = smi.sm.workable.Get<WorkableType>(smi);
-					if (!((UnityEngine.Object)workable == (UnityEngine.Object)null))
-					{
-						int navigationCost = ((Component)context.chore.driver).GetComponent<Navigator>().GetNavigationCost(workable);
-						int num = 4;
-						if (navigationCost != -1 && navigationCost >= num)
-						{
-							int navigationCost2 = context.consumerState.navigator.GetNavigationCost(workable);
-							if (navigationCost2 * 2 > navigationCost)
-							{
-								return false;
-							}
-							return true;
-						}
-						return false;
-					}
-					return false;
-				}
-				return false;
-			}
 			return false;
+		}
+		if ((UnityEngine.Object)context.chore.driver == (UnityEngine.Object)null)
+		{
+			return false;
+		}
+		if ((UnityEngine.Object)context.chore.driver == (UnityEngine.Object)context.consumerState.choreDriver)
+		{
+			return false;
+		}
+		Workable workable = smi.sm.workable.Get<WorkableType>(smi);
+		if ((UnityEngine.Object)workable == (UnityEngine.Object)null)
+		{
+			return false;
+		}
+		int navigationCost = ((Component)context.chore.driver).GetComponent<Navigator>().GetNavigationCost(workable);
+		int num = 4;
+		if (navigationCost == -1 || navigationCost < num)
+		{
+			return false;
+		}
+		int navigationCost2 = context.consumerState.navigator.GetNavigationCost(workable);
+		if (navigationCost2 * 2 <= navigationCost)
+		{
+			return true;
 		}
 		return false;
 	}

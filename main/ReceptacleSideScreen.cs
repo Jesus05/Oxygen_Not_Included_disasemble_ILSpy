@@ -89,7 +89,7 @@ public class ReceptacleSideScreen : SideScreenContent, IRender1000ms
 	private Sprite elementPlaceholderSpr;
 
 	[SerializeField]
-	private bool hideUndiscoveredEntities = false;
+	private bool hideUndiscoveredEntities;
 
 	private ReceptacleToggle selectedEntityToggle;
 
@@ -109,11 +109,11 @@ public class ReceptacleSideScreen : SideScreenContent, IRender1000ms
 
 	public override string GetTitle()
 	{
-		if (!((Object)targetReceptacle == (Object)null))
+		if ((Object)targetReceptacle == (Object)null)
 		{
-			return string.Format(Strings.Get(titleKey), targetReceptacle.GetProperName());
+			return Strings.Get(titleKey).ToString().Replace("{0}", string.Empty);
 		}
-		return Strings.Get(titleKey).ToString().Replace("{0}", "");
+		return string.Format(Strings.Get(titleKey), targetReceptacle.GetProperName());
 	}
 
 	public void Initialize(SingleEntityReceptacle target)

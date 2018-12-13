@@ -358,7 +358,7 @@ public class LanguageOptionsScreen : KModalScreen, SteamUGCService.IUGCEventHand
 
 	public static string GetInstalledLanguageCode(out PublishedFileId_t installed)
 	{
-		string result = "";
+		string result = string.Empty;
 		System.DateTime lastModified;
 		string languageFile = GetLanguageFile(out installed, out lastModified);
 		if (languageFile != null && File.Exists(languageFile))
@@ -447,26 +447,26 @@ public class LanguageOptionsScreen : KModalScreen, SteamUGCService.IUGCEventHand
 	private static string GetLanguageFileFromSteam(PublishedFileId_t item, out System.DateTime lastModified)
 	{
 		lastModified = System.DateTime.MinValue;
-		if (!(item == PublishedFileId_t.Invalid))
+		if (item == PublishedFileId_t.Invalid)
 		{
-			EItemState itemState = (EItemState)SteamUGC.GetItemState(item);
-			if ((itemState & EItemState.k_EItemStateInstalled) == EItemState.k_EItemStateInstalled)
-			{
-				byte[] bytesFromZip = SteamUGCService.GetBytesFromZip(item, poFile, out lastModified, false);
-				if (bytesFromZip != null && bytesFromZip.Length > 0)
-				{
-					return Encoding.UTF8.GetString(bytesFromZip);
-				}
-				Debug.LogWarning("Empty bytes from Zip file, trying redownload", null);
-				SteamUGCService.DoDownloadItem(item);
-			}
-			else
-			{
-				Debug.LogWarning("Steam says item not installed [" + itemState + "]", null);
-			}
+			Debug.LogWarning("Cant get INVALID file id from Steam", null);
 			return null;
 		}
-		Debug.LogWarning("Cant get INVALID file id from Steam", null);
+		EItemState itemState = (EItemState)SteamUGC.GetItemState(item);
+		if ((itemState & EItemState.k_EItemStateInstalled) == EItemState.k_EItemStateInstalled)
+		{
+			byte[] bytesFromZip = SteamUGCService.GetBytesFromZip(item, poFile, out lastModified, false);
+			if (bytesFromZip != null && bytesFromZip.Length > 0)
+			{
+				return Encoding.UTF8.GetString(bytesFromZip);
+			}
+			Debug.LogWarning("Empty bytes from Zip file, trying redownload", null);
+			SteamUGCService.DoDownloadItem(item);
+		}
+		else
+		{
+			Debug.LogWarning("Steam says item not installed [" + itemState + "]", null);
+		}
 		return null;
 	}
 

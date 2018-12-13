@@ -14,7 +14,7 @@ namespace Klei.AI
 
 		public ArrayRef<AttributeModifier> Modifiers;
 
-		public bool hide = false;
+		public bool hide;
 
 		public string Id => Attribute.Id;
 
@@ -85,20 +85,20 @@ namespace Klei.AI
 
 		public float GetModifierContribution(AttributeModifier testModifier)
 		{
-			if (testModifier.IsMultiplier)
+			if (!testModifier.IsMultiplier)
 			{
-				float num = Attribute.BaseValue;
-				for (int i = 0; i != Modifiers.Count; i++)
-				{
-					AttributeModifier attributeModifier = Modifiers[i];
-					if (!attributeModifier.IsMultiplier)
-					{
-						num += attributeModifier.Value;
-					}
-				}
-				return num * testModifier.Value;
+				return testModifier.Value;
 			}
-			return testModifier.Value;
+			float num = Attribute.BaseValue;
+			for (int i = 0; i != Modifiers.Count; i++)
+			{
+				AttributeModifier attributeModifier = Modifiers[i];
+				if (!attributeModifier.IsMultiplier)
+				{
+					num += attributeModifier.Value;
+				}
+			}
+			return num * testModifier.Value;
 		}
 
 		public void Add(AttributeModifier modifier)

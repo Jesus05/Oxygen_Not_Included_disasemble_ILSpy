@@ -26,11 +26,7 @@ internal class GrowUpStates : GameStateMachine<GrowUpStates, GrowUpStates.Instan
 	public override void InitializeStates(out BaseState default_state)
 	{
 		default_state = grow_up_pre;
-		State root = base.root;
-		string name = CREATURES.STATUSITEMS.GROWINGUP.NAME;
-		string tooltip = CREATURES.STATUSITEMS.GROWINGUP.TOOLTIP;
-		StatusItemCategory main = Db.Get().StatusItemCategories.Main;
-		root.ToggleStatusItem(name, tooltip, "", StatusItem.IconType.Info, NotificationType.Neutral, false, default(HashedString), 63486, null, null, main);
+		root.ToggleStatusItem(CREATURES.STATUSITEMS.GROWINGUP.NAME, CREATURES.STATUSITEMS.GROWINGUP.TOOLTIP, category: Db.Get().StatusItemCategories.Main, icon: string.Empty, icon_type: StatusItem.IconType.Info, notification_type: NotificationType.Neutral, allow_multiples: false, render_overlay: default(HashedString), status_overlays: 63486, resolve_string_callback: null, resolve_tooltip_callback: null);
 		grow_up_pre.QueueAnim("growup_pre", false, null).OnAnimQueueComplete(spawn_adult);
 		spawn_adult.Enter(SpawnAdult);
 	}

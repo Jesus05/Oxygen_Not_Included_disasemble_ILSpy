@@ -72,22 +72,22 @@ public static class UtilityConnectionsExtensions
 
 	public static UtilityConnections DirectionFromToCell(int from_cell, int to_cell)
 	{
-		if (to_cell != from_cell - 1)
+		if (to_cell == from_cell - 1)
 		{
-			if (to_cell != from_cell + 1)
-			{
-				if (to_cell != from_cell + Grid.WidthInCells)
-				{
-					if (to_cell != from_cell - Grid.WidthInCells)
-					{
-						return (UtilityConnections)0;
-					}
-					return UtilityConnections.Down;
-				}
-				return UtilityConnections.Up;
-			}
+			return UtilityConnections.Left;
+		}
+		if (to_cell == from_cell + 1)
+		{
 			return UtilityConnections.Right;
 		}
-		return UtilityConnections.Left;
+		if (to_cell == from_cell + Grid.WidthInCells)
+		{
+			return UtilityConnections.Up;
+		}
+		if (to_cell == from_cell - Grid.WidthInCells)
+		{
+			return UtilityConnections.Down;
+		}
+		return (UtilityConnections)0;
 	}
 }

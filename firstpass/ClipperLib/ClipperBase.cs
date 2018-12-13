@@ -74,11 +74,11 @@ namespace ClipperLib
 
 		internal bool PointOnLineSegment(IntPoint pt, IntPoint linePt1, IntPoint linePt2, bool UseFullRange)
 		{
-			if (!UseFullRange)
+			if (UseFullRange)
 			{
-				return (pt.X == linePt1.X && pt.Y == linePt1.Y) || (pt.X == linePt2.X && pt.Y == linePt2.Y) || (pt.X > linePt1.X == pt.X < linePt2.X && pt.Y > linePt1.Y == pt.Y < linePt2.Y && (pt.X - linePt1.X) * (linePt2.Y - linePt1.Y) == (linePt2.X - linePt1.X) * (pt.Y - linePt1.Y));
+				return (pt.X == linePt1.X && pt.Y == linePt1.Y) || (pt.X == linePt2.X && pt.Y == linePt2.Y) || (pt.X > linePt1.X == pt.X < linePt2.X && pt.Y > linePt1.Y == pt.Y < linePt2.Y && Int128.Int128Mul(pt.X - linePt1.X, linePt2.Y - linePt1.Y) == Int128.Int128Mul(linePt2.X - linePt1.X, pt.Y - linePt1.Y));
 			}
-			return (pt.X == linePt1.X && pt.Y == linePt1.Y) || (pt.X == linePt2.X && pt.Y == linePt2.Y) || (pt.X > linePt1.X == pt.X < linePt2.X && pt.Y > linePt1.Y == pt.Y < linePt2.Y && Int128.Int128Mul(pt.X - linePt1.X, linePt2.Y - linePt1.Y) == Int128.Int128Mul(linePt2.X - linePt1.X, pt.Y - linePt1.Y));
+			return (pt.X == linePt1.X && pt.Y == linePt1.Y) || (pt.X == linePt2.X && pt.Y == linePt2.Y) || (pt.X > linePt1.X == pt.X < linePt2.X && pt.Y > linePt1.Y == pt.Y < linePt2.Y && (pt.X - linePt1.X) * (linePt2.Y - linePt1.Y) == (linePt2.X - linePt1.X) * (pt.Y - linePt1.Y));
 		}
 
 		internal bool PointOnPolygon(IntPoint pt, OutPt pp, bool UseFullRange)
@@ -98,29 +98,29 @@ namespace ClipperLib
 
 		internal static bool SlopesEqual(TEdge e1, TEdge e2, bool UseFullRange)
 		{
-			if (!UseFullRange)
+			if (UseFullRange)
 			{
-				return e1.Delta.Y * e2.Delta.X == e1.Delta.X * e2.Delta.Y;
+				return Int128.Int128Mul(e1.Delta.Y, e2.Delta.X) == Int128.Int128Mul(e1.Delta.X, e2.Delta.Y);
 			}
-			return Int128.Int128Mul(e1.Delta.Y, e2.Delta.X) == Int128.Int128Mul(e1.Delta.X, e2.Delta.Y);
+			return e1.Delta.Y * e2.Delta.X == e1.Delta.X * e2.Delta.Y;
 		}
 
 		protected static bool SlopesEqual(IntPoint pt1, IntPoint pt2, IntPoint pt3, bool UseFullRange)
 		{
-			if (!UseFullRange)
+			if (UseFullRange)
 			{
-				return (pt1.Y - pt2.Y) * (pt2.X - pt3.X) - (pt1.X - pt2.X) * (pt2.Y - pt3.Y) == 0;
+				return Int128.Int128Mul(pt1.Y - pt2.Y, pt2.X - pt3.X) == Int128.Int128Mul(pt1.X - pt2.X, pt2.Y - pt3.Y);
 			}
-			return Int128.Int128Mul(pt1.Y - pt2.Y, pt2.X - pt3.X) == Int128.Int128Mul(pt1.X - pt2.X, pt2.Y - pt3.Y);
+			return (pt1.Y - pt2.Y) * (pt2.X - pt3.X) - (pt1.X - pt2.X) * (pt2.Y - pt3.Y) == 0;
 		}
 
 		protected static bool SlopesEqual(IntPoint pt1, IntPoint pt2, IntPoint pt3, IntPoint pt4, bool UseFullRange)
 		{
-			if (!UseFullRange)
+			if (UseFullRange)
 			{
-				return (pt1.Y - pt2.Y) * (pt3.X - pt4.X) - (pt1.X - pt2.X) * (pt3.Y - pt4.Y) == 0;
+				return Int128.Int128Mul(pt1.Y - pt2.Y, pt3.X - pt4.X) == Int128.Int128Mul(pt1.X - pt2.X, pt3.Y - pt4.Y);
 			}
-			return Int128.Int128Mul(pt1.Y - pt2.Y, pt3.X - pt4.X) == Int128.Int128Mul(pt1.X - pt2.X, pt3.Y - pt4.Y);
+			return (pt1.Y - pt2.Y) * (pt3.X - pt4.X) - (pt1.X - pt2.X) * (pt3.Y - pt4.Y) == 0;
 		}
 
 		public virtual void Clear()
@@ -229,150 +229,146 @@ namespace ClipperLib
 		private TEdge ProcessBound(TEdge E, bool LeftBoundIsForward)
 		{
 			TEdge tEdge = E;
-			if (tEdge.OutIdx != -2)
+			if (tEdge.OutIdx == -2)
 			{
-				TEdge tEdge2;
-				if (E.Dx == -3.4E+38)
+				E = tEdge;
+				if (!LeftBoundIsForward)
 				{
-					tEdge2 = ((!LeftBoundIsForward) ? E.Next : E.Prev);
-					if (tEdge2.OutIdx != -2)
+					while (E.Top.Y == E.Prev.Bot.Y)
 					{
-						if (tEdge2.Dx == -3.4E+38)
-						{
-							if (tEdge2.Bot.X != E.Bot.X && tEdge2.Top.X != E.Bot.X)
-							{
-								ReverseHorizontal(E);
-							}
-						}
-						else if (tEdge2.Bot.X != E.Bot.X)
-						{
-							ReverseHorizontal(E);
-						}
+						E = E.Prev;
 					}
-				}
-				tEdge2 = E;
-				if (LeftBoundIsForward)
-				{
-					while (tEdge.Top.Y == tEdge.Next.Bot.Y && tEdge.Next.OutIdx != -2)
+					while (E != tEdge && E.Dx == -3.4E+38)
 					{
-						tEdge = tEdge.Next;
-					}
-					if (tEdge.Dx == -3.4E+38 && tEdge.Next.OutIdx != -2)
-					{
-						TEdge tEdge3 = tEdge;
-						while (tEdge3.Prev.Dx == -3.4E+38)
-						{
-							tEdge3 = tEdge3.Prev;
-						}
-						if (tEdge3.Prev.Top.X == tEdge.Next.Top.X)
-						{
-							if (!LeftBoundIsForward)
-							{
-								tEdge = tEdge3.Prev;
-							}
-						}
-						else if (tEdge3.Prev.Top.X > tEdge.Next.Top.X)
-						{
-							tEdge = tEdge3.Prev;
-						}
-					}
-					while (E != tEdge)
-					{
-						E.NextInLML = E.Next;
-						if (E.Dx == -3.4E+38 && E != tEdge2 && E.Bot.X != E.Prev.Top.X)
-						{
-							ReverseHorizontal(E);
-						}
 						E = E.Next;
 					}
-					if (E.Dx == -3.4E+38 && E != tEdge2 && E.Bot.X != E.Prev.Top.X)
-					{
-						ReverseHorizontal(E);
-					}
-					tEdge = tEdge.Next;
 				}
 				else
 				{
-					while (tEdge.Top.Y == tEdge.Prev.Bot.Y && tEdge.Prev.OutIdx != -2)
+					while (E.Top.Y == E.Next.Bot.Y)
 					{
-						tEdge = tEdge.Prev;
+						E = E.Next;
 					}
-					if (tEdge.Dx == -3.4E+38 && tEdge.Prev.OutIdx != -2)
+					while (E != tEdge && E.Dx == -3.4E+38)
 					{
-						TEdge tEdge3 = tEdge;
-						while (tEdge3.Next.Dx == -3.4E+38)
+						E = E.Prev;
+					}
+				}
+				if (E == tEdge)
+				{
+					tEdge = ((!LeftBoundIsForward) ? E.Prev : E.Next);
+				}
+				else
+				{
+					E = ((!LeftBoundIsForward) ? tEdge.Prev : tEdge.Next);
+					LocalMinima localMinima = new LocalMinima();
+					localMinima.Next = null;
+					localMinima.Y = E.Bot.Y;
+					localMinima.LeftBound = null;
+					localMinima.RightBound = E;
+					E.WindDelta = 0;
+					tEdge = ProcessBound(E, LeftBoundIsForward);
+					InsertLocalMinima(localMinima);
+				}
+				return tEdge;
+			}
+			TEdge tEdge2;
+			if (E.Dx == -3.4E+38)
+			{
+				tEdge2 = ((!LeftBoundIsForward) ? E.Next : E.Prev);
+				if (tEdge2.OutIdx != -2)
+				{
+					if (tEdge2.Dx == -3.4E+38)
+					{
+						if (tEdge2.Bot.X != E.Bot.X && tEdge2.Top.X != E.Bot.X)
 						{
-							tEdge3 = tEdge3.Next;
+							ReverseHorizontal(E);
 						}
-						if (tEdge3.Next.Top.X == tEdge.Prev.Top.X)
-						{
-							if (!LeftBoundIsForward)
-							{
-								tEdge = tEdge3.Next;
-							}
-						}
-						else if (tEdge3.Next.Top.X > tEdge.Prev.Top.X)
+					}
+					else if (tEdge2.Bot.X != E.Bot.X)
+					{
+						ReverseHorizontal(E);
+					}
+				}
+			}
+			tEdge2 = E;
+			if (!LeftBoundIsForward)
+			{
+				while (tEdge.Top.Y == tEdge.Prev.Bot.Y && tEdge.Prev.OutIdx != -2)
+				{
+					tEdge = tEdge.Prev;
+				}
+				if (tEdge.Dx == -3.4E+38 && tEdge.Prev.OutIdx != -2)
+				{
+					TEdge tEdge3 = tEdge;
+					while (tEdge3.Next.Dx == -3.4E+38)
+					{
+						tEdge3 = tEdge3.Next;
+					}
+					if (tEdge3.Next.Top.X == tEdge.Prev.Top.X)
+					{
+						if (!LeftBoundIsForward)
 						{
 							tEdge = tEdge3.Next;
 						}
 					}
-					while (E != tEdge)
+					else if (tEdge3.Next.Top.X > tEdge.Prev.Top.X)
 					{
-						E.NextInLML = E.Prev;
-						if (E.Dx == -3.4E+38 && E != tEdge2 && E.Bot.X != E.Next.Top.X)
-						{
-							ReverseHorizontal(E);
-						}
-						E = E.Prev;
+						tEdge = tEdge3.Next;
 					}
+				}
+				while (E != tEdge)
+				{
+					E.NextInLML = E.Prev;
 					if (E.Dx == -3.4E+38 && E != tEdge2 && E.Bot.X != E.Next.Top.X)
 					{
 						ReverseHorizontal(E);
 					}
-					tEdge = tEdge.Prev;
-				}
-				return tEdge;
-			}
-			E = tEdge;
-			if (!LeftBoundIsForward)
-			{
-				while (E.Top.Y == E.Prev.Bot.Y)
-				{
 					E = E.Prev;
 				}
-				while (E != tEdge && E.Dx == -3.4E+38)
+				if (E.Dx == -3.4E+38 && E != tEdge2 && E.Bot.X != E.Next.Top.X)
 				{
-					E = E.Next;
+					ReverseHorizontal(E);
+				}
+				return tEdge.Prev;
+			}
+			while (tEdge.Top.Y == tEdge.Next.Bot.Y && tEdge.Next.OutIdx != -2)
+			{
+				tEdge = tEdge.Next;
+			}
+			if (tEdge.Dx == -3.4E+38 && tEdge.Next.OutIdx != -2)
+			{
+				TEdge tEdge3 = tEdge;
+				while (tEdge3.Prev.Dx == -3.4E+38)
+				{
+					tEdge3 = tEdge3.Prev;
+				}
+				if (tEdge3.Prev.Top.X == tEdge.Next.Top.X)
+				{
+					if (!LeftBoundIsForward)
+					{
+						tEdge = tEdge3.Prev;
+					}
+				}
+				else if (tEdge3.Prev.Top.X > tEdge.Next.Top.X)
+				{
+					tEdge = tEdge3.Prev;
 				}
 			}
-			else
+			while (E != tEdge)
 			{
-				while (E.Top.Y == E.Next.Bot.Y)
+				E.NextInLML = E.Next;
+				if (E.Dx == -3.4E+38 && E != tEdge2 && E.Bot.X != E.Prev.Top.X)
 				{
-					E = E.Next;
+					ReverseHorizontal(E);
 				}
-				while (E != tEdge && E.Dx == -3.4E+38)
-				{
-					E = E.Prev;
-				}
+				E = E.Next;
 			}
-			if (E == tEdge)
+			if (E.Dx == -3.4E+38 && E != tEdge2 && E.Bot.X != E.Prev.Top.X)
 			{
-				tEdge = ((!LeftBoundIsForward) ? E.Prev : E.Next);
+				ReverseHorizontal(E);
 			}
-			else
-			{
-				E = ((!LeftBoundIsForward) ? tEdge.Prev : tEdge.Next);
-				LocalMinima localMinima = new LocalMinima();
-				localMinima.Next = null;
-				localMinima.Y = E.Bot.Y;
-				localMinima.LeftBound = null;
-				localMinima.RightBound = E;
-				E.WindDelta = 0;
-				tEdge = ProcessBound(E, LeftBoundIsForward);
-				InsertLocalMinima(localMinima);
-			}
-			return tEdge;
+			return tEdge.Next;
 		}
 
 		public bool AddPath(List<IntPoint> pg, PolyType polyType, bool Closed)
@@ -393,194 +389,194 @@ namespace ClipperLib
 			{
 				num--;
 			}
-			if ((!Closed || num >= 2) && (Closed || num >= 1))
+			if ((Closed && num < 2) || (!Closed && num < 1))
 			{
-				List<TEdge> list = new List<TEdge>(num + 1);
-				for (int i = 0; i <= num; i++)
+				return false;
+			}
+			List<TEdge> list = new List<TEdge>(num + 1);
+			for (int i = 0; i <= num; i++)
+			{
+				list.Add(new TEdge());
+			}
+			bool flag = true;
+			list[1].Curr = pg[1];
+			RangeTest(pg[0], ref m_UseFullRange);
+			RangeTest(pg[num], ref m_UseFullRange);
+			InitEdge(list[0], list[1], list[num], pg[0]);
+			InitEdge(list[num], list[0], list[num - 1], pg[num]);
+			for (int num2 = num - 1; num2 >= 1; num2--)
+			{
+				RangeTest(pg[num2], ref m_UseFullRange);
+				InitEdge(list[num2], list[num2 + 1], list[num2 - 1], pg[num2]);
+			}
+			TEdge tEdge = list[0];
+			TEdge tEdge2 = tEdge;
+			TEdge tEdge3 = tEdge;
+			while (true)
+			{
+				if (tEdge2.Curr == tEdge2.Next.Curr && (Closed || tEdge2.Next != tEdge))
 				{
-					list.Add(new TEdge());
-				}
-				bool flag = true;
-				list[1].Curr = pg[1];
-				RangeTest(pg[0], ref m_UseFullRange);
-				RangeTest(pg[num], ref m_UseFullRange);
-				InitEdge(list[0], list[1], list[num], pg[0]);
-				InitEdge(list[num], list[0], list[num - 1], pg[num]);
-				for (int num2 = num - 1; num2 >= 1; num2--)
-				{
-					RangeTest(pg[num2], ref m_UseFullRange);
-					InitEdge(list[num2], list[num2 + 1], list[num2 - 1], pg[num2]);
-				}
-				TEdge tEdge = list[0];
-				TEdge tEdge2 = tEdge;
-				TEdge tEdge3 = tEdge;
-				while (true)
-				{
-					if (tEdge2.Curr == tEdge2.Next.Curr && (Closed || tEdge2.Next != tEdge))
+					if (tEdge2 == tEdge2.Next)
 					{
-						if (tEdge2 == tEdge2.Next)
-						{
-							break;
-						}
+						break;
+					}
+					if (tEdge2 == tEdge)
+					{
+						tEdge = tEdge2.Next;
+					}
+					tEdge2 = RemoveEdge(tEdge2);
+					tEdge3 = tEdge2;
+				}
+				else
+				{
+					if (tEdge2.Prev == tEdge2.Next)
+					{
+						break;
+					}
+					if (Closed && SlopesEqual(tEdge2.Prev.Curr, tEdge2.Curr, tEdge2.Next.Curr, m_UseFullRange) && (!PreserveCollinear || !Pt2IsBetweenPt1AndPt3(tEdge2.Prev.Curr, tEdge2.Curr, tEdge2.Next.Curr)))
+					{
 						if (tEdge2 == tEdge)
 						{
 							tEdge = tEdge2.Next;
 						}
 						tEdge2 = RemoveEdge(tEdge2);
+						tEdge2 = tEdge2.Prev;
 						tEdge3 = tEdge2;
 					}
 					else
 					{
-						if (tEdge2.Prev == tEdge2.Next)
+						tEdge2 = tEdge2.Next;
+						if (tEdge2 == tEdge3 || (!Closed && tEdge2.Next == tEdge))
 						{
 							break;
 						}
-						if (Closed && SlopesEqual(tEdge2.Prev.Curr, tEdge2.Curr, tEdge2.Next.Curr, m_UseFullRange) && (!PreserveCollinear || !Pt2IsBetweenPt1AndPt3(tEdge2.Prev.Curr, tEdge2.Curr, tEdge2.Next.Curr)))
-						{
-							if (tEdge2 == tEdge)
-							{
-								tEdge = tEdge2.Next;
-							}
-							tEdge2 = RemoveEdge(tEdge2);
-							tEdge2 = tEdge2.Prev;
-							tEdge3 = tEdge2;
-						}
-						else
-						{
-							tEdge2 = tEdge2.Next;
-							if (tEdge2 == tEdge3 || (!Closed && tEdge2.Next == tEdge))
-							{
-								break;
-							}
-						}
 					}
 				}
-				if ((Closed || tEdge2 != tEdge2.Next) && (!Closed || tEdge2.Prev != tEdge2.Next))
-				{
-					if (!Closed)
-					{
-						m_HasOpenPaths = true;
-						tEdge.Prev.OutIdx = -2;
-					}
-					tEdge2 = tEdge;
-					do
-					{
-						InitEdge2(tEdge2, polyType);
-						tEdge2 = tEdge2.Next;
-						if (flag && tEdge2.Curr.Y != tEdge.Curr.Y)
-						{
-							flag = false;
-						}
-					}
-					while (tEdge2 != tEdge);
-					if (!flag)
-					{
-						m_edges.Add(list);
-						TEdge tEdge4 = null;
-						if (tEdge2.Prev.Bot == tEdge2.Prev.Top)
-						{
-							tEdge2 = tEdge2.Next;
-						}
-						while (true)
-						{
-							tEdge2 = FindNextLocMin(tEdge2);
-							if (tEdge2 == tEdge4)
-							{
-								break;
-							}
-							if (tEdge4 == null)
-							{
-								tEdge4 = tEdge2;
-							}
-							LocalMinima localMinima = new LocalMinima();
-							localMinima.Next = null;
-							localMinima.Y = tEdge2.Bot.Y;
-							bool flag2;
-							if (tEdge2.Dx < tEdge2.Prev.Dx)
-							{
-								localMinima.LeftBound = tEdge2.Prev;
-								localMinima.RightBound = tEdge2;
-								flag2 = false;
-							}
-							else
-							{
-								localMinima.LeftBound = tEdge2;
-								localMinima.RightBound = tEdge2.Prev;
-								flag2 = true;
-							}
-							localMinima.LeftBound.Side = EdgeSide.esLeft;
-							localMinima.RightBound.Side = EdgeSide.esRight;
-							if (!Closed)
-							{
-								localMinima.LeftBound.WindDelta = 0;
-							}
-							else if (localMinima.LeftBound.Next == localMinima.RightBound)
-							{
-								localMinima.LeftBound.WindDelta = -1;
-							}
-							else
-							{
-								localMinima.LeftBound.WindDelta = 1;
-							}
-							localMinima.RightBound.WindDelta = -localMinima.LeftBound.WindDelta;
-							tEdge2 = ProcessBound(localMinima.LeftBound, flag2);
-							if (tEdge2.OutIdx == -2)
-							{
-								tEdge2 = ProcessBound(tEdge2, flag2);
-							}
-							TEdge tEdge5 = ProcessBound(localMinima.RightBound, !flag2);
-							if (tEdge5.OutIdx == -2)
-							{
-								tEdge5 = ProcessBound(tEdge5, !flag2);
-							}
-							if (localMinima.LeftBound.OutIdx == -2)
-							{
-								localMinima.LeftBound = null;
-							}
-							else if (localMinima.RightBound.OutIdx == -2)
-							{
-								localMinima.RightBound = null;
-							}
-							InsertLocalMinima(localMinima);
-							if (!flag2)
-							{
-								tEdge2 = tEdge5;
-							}
-						}
-						return true;
-					}
-					if (!Closed)
-					{
-						tEdge2.Prev.OutIdx = -2;
-						if (tEdge2.Prev.Bot.X < tEdge2.Prev.Top.X)
-						{
-							ReverseHorizontal(tEdge2.Prev);
-						}
-						LocalMinima localMinima2 = new LocalMinima();
-						localMinima2.Next = null;
-						localMinima2.Y = tEdge2.Bot.Y;
-						localMinima2.LeftBound = null;
-						localMinima2.RightBound = tEdge2;
-						localMinima2.RightBound.Side = EdgeSide.esRight;
-						localMinima2.RightBound.WindDelta = 0;
-						while (tEdge2.Next.OutIdx != -2)
-						{
-							tEdge2.NextInLML = tEdge2.Next;
-							if (tEdge2.Bot.X != tEdge2.Prev.Top.X)
-							{
-								ReverseHorizontal(tEdge2);
-							}
-							tEdge2 = tEdge2.Next;
-						}
-						InsertLocalMinima(localMinima2);
-						m_edges.Add(list);
-						return true;
-					}
-					return false;
-				}
+			}
+			if ((!Closed && tEdge2 == tEdge2.Next) || (Closed && tEdge2.Prev == tEdge2.Next))
+			{
 				return false;
 			}
-			return false;
+			if (!Closed)
+			{
+				m_HasOpenPaths = true;
+				tEdge.Prev.OutIdx = -2;
+			}
+			tEdge2 = tEdge;
+			do
+			{
+				InitEdge2(tEdge2, polyType);
+				tEdge2 = tEdge2.Next;
+				if (flag && tEdge2.Curr.Y != tEdge.Curr.Y)
+				{
+					flag = false;
+				}
+			}
+			while (tEdge2 != tEdge);
+			if (flag)
+			{
+				if (Closed)
+				{
+					return false;
+				}
+				tEdge2.Prev.OutIdx = -2;
+				if (tEdge2.Prev.Bot.X < tEdge2.Prev.Top.X)
+				{
+					ReverseHorizontal(tEdge2.Prev);
+				}
+				LocalMinima localMinima = new LocalMinima();
+				localMinima.Next = null;
+				localMinima.Y = tEdge2.Bot.Y;
+				localMinima.LeftBound = null;
+				localMinima.RightBound = tEdge2;
+				localMinima.RightBound.Side = EdgeSide.esRight;
+				localMinima.RightBound.WindDelta = 0;
+				while (tEdge2.Next.OutIdx != -2)
+				{
+					tEdge2.NextInLML = tEdge2.Next;
+					if (tEdge2.Bot.X != tEdge2.Prev.Top.X)
+					{
+						ReverseHorizontal(tEdge2);
+					}
+					tEdge2 = tEdge2.Next;
+				}
+				InsertLocalMinima(localMinima);
+				m_edges.Add(list);
+				return true;
+			}
+			m_edges.Add(list);
+			TEdge tEdge4 = null;
+			if (tEdge2.Prev.Bot == tEdge2.Prev.Top)
+			{
+				tEdge2 = tEdge2.Next;
+			}
+			while (true)
+			{
+				tEdge2 = FindNextLocMin(tEdge2);
+				if (tEdge2 == tEdge4)
+				{
+					break;
+				}
+				if (tEdge4 == null)
+				{
+					tEdge4 = tEdge2;
+				}
+				LocalMinima localMinima2 = new LocalMinima();
+				localMinima2.Next = null;
+				localMinima2.Y = tEdge2.Bot.Y;
+				bool flag2;
+				if (tEdge2.Dx < tEdge2.Prev.Dx)
+				{
+					localMinima2.LeftBound = tEdge2.Prev;
+					localMinima2.RightBound = tEdge2;
+					flag2 = false;
+				}
+				else
+				{
+					localMinima2.LeftBound = tEdge2;
+					localMinima2.RightBound = tEdge2.Prev;
+					flag2 = true;
+				}
+				localMinima2.LeftBound.Side = EdgeSide.esLeft;
+				localMinima2.RightBound.Side = EdgeSide.esRight;
+				if (!Closed)
+				{
+					localMinima2.LeftBound.WindDelta = 0;
+				}
+				else if (localMinima2.LeftBound.Next == localMinima2.RightBound)
+				{
+					localMinima2.LeftBound.WindDelta = -1;
+				}
+				else
+				{
+					localMinima2.LeftBound.WindDelta = 1;
+				}
+				localMinima2.RightBound.WindDelta = -localMinima2.LeftBound.WindDelta;
+				tEdge2 = ProcessBound(localMinima2.LeftBound, flag2);
+				if (tEdge2.OutIdx == -2)
+				{
+					tEdge2 = ProcessBound(tEdge2, flag2);
+				}
+				TEdge tEdge5 = ProcessBound(localMinima2.RightBound, !flag2);
+				if (tEdge5.OutIdx == -2)
+				{
+					tEdge5 = ProcessBound(tEdge5, !flag2);
+				}
+				if (localMinima2.LeftBound.OutIdx == -2)
+				{
+					localMinima2.LeftBound = null;
+				}
+				else if (localMinima2.RightBound.OutIdx == -2)
+				{
+					localMinima2.RightBound = null;
+				}
+				InsertLocalMinima(localMinima2);
+				if (!flag2)
+				{
+					tEdge2 = tEdge5;
+				}
+			}
+			return true;
 		}
 
 		public bool AddPaths(List<List<IntPoint>> ppg, PolyType polyType, bool closed)
@@ -598,15 +594,15 @@ namespace ClipperLib
 
 		internal bool Pt2IsBetweenPt1AndPt3(IntPoint pt1, IntPoint pt2, IntPoint pt3)
 		{
-			if (!(pt1 == pt3) && !(pt1 == pt2) && !(pt3 == pt2))
+			if (pt1 == pt3 || pt1 == pt2 || pt3 == pt2)
 			{
-				if (pt1.X == pt3.X)
-				{
-					return pt2.Y > pt1.Y == pt2.Y < pt3.Y;
-				}
+				return false;
+			}
+			if (pt1.X != pt3.X)
+			{
 				return pt2.X > pt1.X == pt2.X < pt3.X;
 			}
-			return false;
+			return pt2.Y > pt1.Y == pt2.Y < pt3.Y;
 		}
 
 		private TEdge RemoveEdge(TEdge e)
@@ -700,54 +696,54 @@ namespace ClipperLib
 			for (count = paths.Count; i < count && paths[i].Count == 0; i++)
 			{
 			}
-			if (i != count)
+			if (i == count)
 			{
-				IntRect result = default(IntRect);
-				IntPoint intPoint = paths[i][0];
-				result.left = intPoint.X;
-				result.right = result.left;
-				IntPoint intPoint2 = paths[i][0];
-				result.top = intPoint2.Y;
-				result.bottom = result.top;
-				for (; i < count; i++)
+				return new IntRect(0L, 0L, 0L, 0L);
+			}
+			IntRect result = default(IntRect);
+			IntPoint intPoint = paths[i][0];
+			result.left = intPoint.X;
+			result.right = result.left;
+			IntPoint intPoint2 = paths[i][0];
+			result.top = intPoint2.Y;
+			result.bottom = result.top;
+			for (; i < count; i++)
+			{
+				for (int j = 0; j < paths[i].Count; j++)
 				{
-					for (int j = 0; j < paths[i].Count; j++)
+					IntPoint intPoint3 = paths[i][j];
+					if (intPoint3.X < result.left)
 					{
-						IntPoint intPoint3 = paths[i][j];
-						if (intPoint3.X < result.left)
+						IntPoint intPoint4 = paths[i][j];
+						result.left = intPoint4.X;
+					}
+					else
+					{
+						IntPoint intPoint5 = paths[i][j];
+						if (intPoint5.X > result.right)
 						{
-							IntPoint intPoint4 = paths[i][j];
-							result.left = intPoint4.X;
+							IntPoint intPoint6 = paths[i][j];
+							result.right = intPoint6.X;
 						}
-						else
+					}
+					IntPoint intPoint7 = paths[i][j];
+					if (intPoint7.Y < result.top)
+					{
+						IntPoint intPoint8 = paths[i][j];
+						result.top = intPoint8.Y;
+					}
+					else
+					{
+						IntPoint intPoint9 = paths[i][j];
+						if (intPoint9.Y > result.bottom)
 						{
-							IntPoint intPoint5 = paths[i][j];
-							if (intPoint5.X > result.right)
-							{
-								IntPoint intPoint6 = paths[i][j];
-								result.right = intPoint6.X;
-							}
-						}
-						IntPoint intPoint7 = paths[i][j];
-						if (intPoint7.Y < result.top)
-						{
-							IntPoint intPoint8 = paths[i][j];
-							result.top = intPoint8.Y;
-						}
-						else
-						{
-							IntPoint intPoint9 = paths[i][j];
-							if (intPoint9.Y > result.bottom)
-							{
-								IntPoint intPoint10 = paths[i][j];
-								result.bottom = intPoint10.Y;
-							}
+							IntPoint intPoint10 = paths[i][j];
+							result.bottom = intPoint10.Y;
 						}
 					}
 				}
-				return result;
 			}
-			return new IntRect(0L, 0L, 0L, 0L);
+			return result;
 		}
 	}
 }

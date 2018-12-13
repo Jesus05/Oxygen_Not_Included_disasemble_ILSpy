@@ -194,38 +194,38 @@ namespace TMPro
 
 		public static TMP_Settings GetSettings()
 		{
-			if (!((UnityEngine.Object)instance == (UnityEngine.Object)null))
+			if ((UnityEngine.Object)instance == (UnityEngine.Object)null)
 			{
-				return instance;
+				return null;
 			}
-			return null;
+			return instance;
 		}
 
 		public static TMP_FontAsset GetFontAsset()
 		{
-			if (!((UnityEngine.Object)instance == (UnityEngine.Object)null))
+			if ((UnityEngine.Object)instance == (UnityEngine.Object)null)
 			{
-				return instance.m_defaultFontAsset;
+				return null;
 			}
-			return null;
+			return instance.m_defaultFontAsset;
 		}
 
 		public static TMP_SpriteAsset GetSpriteAsset()
 		{
-			if (!((UnityEngine.Object)instance == (UnityEngine.Object)null))
+			if ((UnityEngine.Object)instance == (UnityEngine.Object)null)
 			{
-				return instance.m_defaultSpriteAsset;
+				return null;
 			}
-			return null;
+			return instance.m_defaultSpriteAsset;
 		}
 
 		public static TMP_StyleSheet GetStyleSheet()
 		{
-			if (!((UnityEngine.Object)instance == (UnityEngine.Object)null))
+			if ((UnityEngine.Object)instance == (UnityEngine.Object)null)
 			{
-				return instance.m_defaultStyleSheet;
+				return null;
 			}
-			return null;
+			return instance.m_defaultStyleSheet;
 		}
 
 		public static void LoadLinebreakingRules()

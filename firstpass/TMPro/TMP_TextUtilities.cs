@@ -32,34 +32,34 @@ namespace TMPro
 			Vector3 vector = rectTransform.TransformPoint(tMP_CharacterInfo.bottomLeft);
 			Vector3 vector2 = rectTransform.TransformPoint(tMP_CharacterInfo.topRight);
 			float num2 = (position.x - vector.x) / (vector2.x - vector.x);
-			if (!(num2 < 0.5f))
+			if (num2 < 0.5f)
 			{
-				return num + 1;
+				return num;
 			}
-			return num;
+			return num + 1;
 		}
 
 		public static int GetCursorIndexFromPosition(TMP_Text textComponent, Vector3 position, Camera camera, out CaretPosition cursor)
 		{
 			int num = FindNearestLine(textComponent, position, camera);
 			int num2 = FindNearestCharacterOnLine(textComponent, position, num, camera, false);
-			if (textComponent.textInfo.lineInfo[num].characterCount != 1)
+			if (textComponent.textInfo.lineInfo[num].characterCount == 1)
 			{
-				RectTransform rectTransform = textComponent.rectTransform;
-				ScreenPointToWorldPointInRectangle(rectTransform, position, camera, out position);
-				TMP_CharacterInfo tMP_CharacterInfo = textComponent.textInfo.characterInfo[num2];
-				Vector3 vector = rectTransform.TransformPoint(tMP_CharacterInfo.bottomLeft);
-				Vector3 vector2 = rectTransform.TransformPoint(tMP_CharacterInfo.topRight);
-				float num3 = (position.x - vector.x) / (vector2.x - vector.x);
-				if (!(num3 < 0.5f))
-				{
-					cursor = CaretPosition.Right;
-					return num2;
-				}
 				cursor = CaretPosition.Left;
 				return num2;
 			}
-			cursor = CaretPosition.Left;
+			RectTransform rectTransform = textComponent.rectTransform;
+			ScreenPointToWorldPointInRectangle(rectTransform, position, camera, out position);
+			TMP_CharacterInfo tMP_CharacterInfo = textComponent.textInfo.characterInfo[num2];
+			Vector3 vector = rectTransform.TransformPoint(tMP_CharacterInfo.bottomLeft);
+			Vector3 vector2 = rectTransform.TransformPoint(tMP_CharacterInfo.topRight);
+			float num3 = (position.x - vector.x) / (vector2.x - vector.x);
+			if (num3 < 0.5f)
+			{
+				cursor = CaretPosition.Left;
+				return num2;
+			}
+			cursor = CaretPosition.Right;
 			return num2;
 		}
 
@@ -135,11 +135,11 @@ namespace TMPro
 		{
 			ScreenPointToWorldPointInRectangle(rectTransform, position, camera, out position);
 			rectTransform.GetWorldCorners(m_rectWorldCorners);
-			if (!PointIntersectRectangle(position, m_rectWorldCorners[0], m_rectWorldCorners[1], m_rectWorldCorners[2], m_rectWorldCorners[3]))
+			if (PointIntersectRectangle(position, m_rectWorldCorners[0], m_rectWorldCorners[1], m_rectWorldCorners[2], m_rectWorldCorners[3]))
 			{
-				return false;
+				return true;
 			}
-			return true;
+			return false;
 		}
 
 		public static int FindIntersectingCharacter(TMP_Text text, Vector3 position, Camera camera, bool visibleOnly)
@@ -569,12 +569,12 @@ namespace TMPro
 		{
 			worldPoint = Vector2.zero;
 			Ray ray = RectTransformUtility.ScreenPointToRay(cam, screenPoint);
-			if (new Plane(transform.rotation * Vector3.back, transform.position).Raycast(ray, out float enter))
+			if (!new Plane(transform.rotation * Vector3.back, transform.position).Raycast(ray, out float enter))
 			{
-				worldPoint = ray.GetPoint(enter);
-				return true;
+				return false;
 			}
-			return false;
+			worldPoint = ray.GetPoint(enter);
+			return true;
 		}
 
 		private static bool IntersectLinePlane(LineSegment line, Vector3 point, Vector3 normal, out Vector3 intersectingPoint)
@@ -584,20 +584,20 @@ namespace TMPro
 			Vector3 rhs = line.Point1 - point;
 			float num = Vector3.Dot(normal, vector);
 			float num2 = 0f - Vector3.Dot(normal, rhs);
-			if (!(Mathf.Abs(num) < Mathf.Epsilon))
+			if (Mathf.Abs(num) < Mathf.Epsilon)
 			{
-				float num3 = num2 / num;
-				if (!(num3 < 0f) && !(num3 > 1f))
+				if (num2 == 0f)
 				{
-					intersectingPoint = line.Point1 + num3 * vector;
 					return true;
 				}
 				return false;
 			}
-			if (num2 != 0f)
+			float num3 = num2 / num;
+			if (num3 < 0f || num3 > 1f)
 			{
 				return false;
 			}
+			intersectingPoint = line.Point1 + num3 * vector;
 			return true;
 		}
 
@@ -606,35 +606,35 @@ namespace TMPro
 			Vector3 vector = b - a;
 			Vector3 vector2 = a - point;
 			float num = Vector3.Dot(vector, vector2);
-			if (!(num > 0f))
+			if (num > 0f)
 			{
-				Vector3 vector3 = point - b;
-				if (!(Vector3.Dot(vector, vector3) > 0f))
-				{
-					Vector3 vector4 = vector2 - vector * (num / Vector3.Dot(vector, vector));
-					return Vector3.Dot(vector4, vector4);
-				}
+				return Vector3.Dot(vector2, vector2);
+			}
+			Vector3 vector3 = point - b;
+			if (Vector3.Dot(vector, vector3) > 0f)
+			{
 				return Vector3.Dot(vector3, vector3);
 			}
-			return Vector3.Dot(vector2, vector2);
+			Vector3 vector4 = vector2 - vector * (num / Vector3.Dot(vector, vector));
+			return Vector3.Dot(vector4, vector4);
 		}
 
 		public static char ToLowerFast(char c)
 		{
-			if (c <= "-------------------------------- !-#$%&-()*+,-./0123456789:;<=>?@abcdefghijklmnopqrstuvwxyz[-]^_`abcdefghijklmnopqrstuvwxyz{|}~-".Length - 1)
+			if (c > "-------------------------------- !-#$%&-()*+,-./0123456789:;<=>?@abcdefghijklmnopqrstuvwxyz[-]^_`abcdefghijklmnopqrstuvwxyz{|}~-".Length - 1)
 			{
-				return "-------------------------------- !-#$%&-()*+,-./0123456789:;<=>?@abcdefghijklmnopqrstuvwxyz[-]^_`abcdefghijklmnopqrstuvwxyz{|}~-"[c];
+				return c;
 			}
-			return c;
+			return "-------------------------------- !-#$%&-()*+,-./0123456789:;<=>?@abcdefghijklmnopqrstuvwxyz[-]^_`abcdefghijklmnopqrstuvwxyz{|}~-"[c];
 		}
 
 		public static char ToUpperFast(char c)
 		{
-			if (c <= "-------------------------------- !-#$%&-()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[-]^_`ABCDEFGHIJKLMNOPQRSTUVWXYZ{|}~-".Length - 1)
+			if (c > "-------------------------------- !-#$%&-()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[-]^_`ABCDEFGHIJKLMNOPQRSTUVWXYZ{|}~-".Length - 1)
 			{
-				return "-------------------------------- !-#$%&-()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[-]^_`ABCDEFGHIJKLMNOPQRSTUVWXYZ{|}~-"[c];
+				return c;
 			}
-			return c;
+			return "-------------------------------- !-#$%&-()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[-]^_`ABCDEFGHIJKLMNOPQRSTUVWXYZ{|}~-"[c];
 		}
 
 		public static int GetSimpleHashCode(string s)

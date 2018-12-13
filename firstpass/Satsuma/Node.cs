@@ -25,11 +25,11 @@ namespace Satsuma
 
 		public override bool Equals(object obj)
 		{
-			if (!(obj is Node))
+			if (obj is Node)
 			{
-				return false;
+				return Equals((Node)obj);
 			}
-			return Equals((Node)obj);
+			return false;
 		}
 
 		public override int GetHashCode()

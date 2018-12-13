@@ -22,7 +22,7 @@ public class AnimCommandFile : YamlIO<AnimCommandFile>
 	}
 
 	[NonSerialized]
-	public string directory = "";
+	public string directory = string.Empty;
 
 	[NonSerialized]
 	private List<KAnimGroupFile.GroupFile> groupFiles = new List<KAnimGroupFile.GroupFile>();
@@ -87,19 +87,19 @@ public class AnimCommandFile : YamlIO<AnimCommandFile>
 
 	public bool IsSwap(KAnimFile file)
 	{
-		if (TagGroup == GroupBy.NamedGroup)
+		if (TagGroup != GroupBy.NamedGroup)
 		{
-			string fileName = Path.GetFileName(file.homedirectory);
-			foreach (KeyValuePair<string, List<string>> defaultBuild in DefaultBuilds)
-			{
-				if (defaultBuild.Value.Contains(fileName))
-				{
-					return false;
-				}
-			}
-			return true;
+			return false;
 		}
-		return false;
+		string fileName = Path.GetFileName(file.homedirectory);
+		foreach (KeyValuePair<string, List<string>> defaultBuild in DefaultBuilds)
+		{
+			if (defaultBuild.Value.Contains(fileName))
+			{
+				return false;
+			}
+		}
+		return true;
 	}
 
 	public void AddGroupFile(KAnimGroupFile.GroupFile gf)

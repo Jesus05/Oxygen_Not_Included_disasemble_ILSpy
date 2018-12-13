@@ -17,16 +17,16 @@ public class KAnimSequencer : KMonoBehaviour, ISaveLoadable
 	}
 
 	[Serialize]
-	public bool autoRun = false;
+	public bool autoRun;
 
 	[Serialize]
 	public KAnimSequence[] sequence = new KAnimSequence[0];
 
-	private int currentIndex = 0;
+	private int currentIndex;
 
-	private KBatchedAnimController kbac = null;
+	private KBatchedAnimController kbac;
 
-	private MinionBrain mb = null;
+	private MinionBrain mb;
 
 	protected override void OnSpawn()
 	{

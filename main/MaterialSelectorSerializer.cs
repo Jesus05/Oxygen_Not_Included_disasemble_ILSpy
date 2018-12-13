@@ -28,11 +28,11 @@ public class MaterialSelectorSerializer : KMonoBehaviour
 	public Tag GetPreviousElement(int selectorIndex, Tag recipe)
 	{
 		Tag value = Tag.Invalid;
-		if (previouslySelectedElements.Count > selectorIndex)
+		if (previouslySelectedElements.Count <= selectorIndex)
 		{
-			previouslySelectedElements[selectorIndex].TryGetValue(recipe, out value);
 			return value;
 		}
+		previouslySelectedElements[selectorIndex].TryGetValue(recipe, out value);
 		return value;
 	}
 }

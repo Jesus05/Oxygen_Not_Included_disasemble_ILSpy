@@ -115,13 +115,13 @@ public class RescueIncapacitatedChore : Chore<RescueIncapacitatedChore.StatesIns
 		fn = (PreconditionFn)delegate(ref Precondition.Context context, object data)
 		{
 			GameObject gameObject = (GameObject)data;
-			if (!((UnityEngine.Object)gameObject == (UnityEngine.Object)null))
+			if ((UnityEngine.Object)gameObject == (UnityEngine.Object)null)
 			{
-				int navigationCost = context.consumerState.navigator.GetNavigationCost(Grid.PosToCell(gameObject.transform.GetPosition()));
-				if (navigationCost == -1)
-				{
-					return false;
-				}
+				return false;
+			}
+			int navigationCost = context.consumerState.navigator.GetNavigationCost(Grid.PosToCell(gameObject.transform.GetPosition()));
+			if (navigationCost != -1)
+			{
 				context.cost += navigationCost;
 				return true;
 			}

@@ -65,18 +65,18 @@ public class PathGrid
 	{
 		int num = OffsetCell(cell);
 		is_cell_in_range = IsValidOffsetCell(num);
-		if (is_cell_in_range)
+		if (!is_cell_in_range)
 		{
-			int num2 = NavTypeTable[(uint)nav_type];
-			int num3 = num * ValidNavTypes.Length + num2;
-			PathFinder.Cell result = Cells[num3];
-			if (result.queryId != query_id)
-			{
-				PathFinder.Cell result2 = default(PathFinder.Cell);
-				result2.cost = -1;
-				return result2;
-			}
+			PathFinder.Cell result = default(PathFinder.Cell);
+			result.cost = -1;
 			return result;
+		}
+		int num2 = NavTypeTable[(uint)nav_type];
+		int num3 = num * ValidNavTypes.Length + num2;
+		PathFinder.Cell result2 = Cells[num3];
+		if (result2.queryId == query_id)
+		{
+			return result2;
 		}
 		PathFinder.Cell result3 = default(PathFinder.Cell);
 		result3.cost = -1;
@@ -129,17 +129,17 @@ public class PathGrid
 	public int GetCost(int cell, int query_id)
 	{
 		int num = OffsetCell(cell);
-		if (IsValidOffsetCell(num))
+		if (!IsValidOffsetCell(num))
 		{
-			int result = -1;
-			ProberCell proberCell = ProberCells[num];
-			if (proberCell.queryId == query_id)
-			{
-				result = proberCell.cost;
-			}
-			return result;
+			return -1;
 		}
-		return -1;
+		int result = -1;
+		ProberCell proberCell = ProberCells[num];
+		if (proberCell.queryId == query_id)
+		{
+			result = proberCell.cost;
+		}
+		return result;
 	}
 
 	private bool IsValidOffsetCell(int offset_cell)
@@ -149,18 +149,18 @@ public class PathGrid
 
 	private int OffsetCell(int cell)
 	{
-		if (!applyOffset)
+		if (applyOffset)
 		{
-			return cell;
-		}
-		Grid.CellToXY(cell, out int x, out int y);
-		if (x >= rootX && x < rootX + widthInCells && y >= rootY && y < rootY + heightInCells)
-		{
+			Grid.CellToXY(cell, out int x, out int y);
+			if (x < rootX || x >= rootX + widthInCells || y < rootY || y >= rootY + heightInCells)
+			{
+				return -1;
+			}
 			int num = x - rootX;
 			int num2 = y - rootY;
 			return num2 * widthInCells + num;
 		}
-		return -1;
+		return cell;
 	}
 
 	public void SetRootCell(int root_cell)

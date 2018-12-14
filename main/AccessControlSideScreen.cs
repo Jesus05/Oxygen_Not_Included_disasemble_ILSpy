@@ -179,8 +179,8 @@ public class AccessControlSideScreen : SideScreenContent
 			{
 				accessControlSideScreenRow = identityRowMap[identity];
 			}
-			AccessControl.Permission setPermission = target.GetSetPermission(identity.gameObject);
-			bool isDefault = target.IsDefaultPermission(identity.gameObject);
+			AccessControl.Permission setPermission = target.GetSetPermission(identity);
+			bool isDefault = target.IsDefaultPermission(identity);
 			accessControlSideScreenRow.SetRotated(rotated);
 			accessControlSideScreenRow.SetMinionContent(identity, setPermission, isDefault, OnPermissionChanged, OnPermissionDefault);
 		}
@@ -197,7 +197,7 @@ public class AccessControlSideScreen : SideScreenContent
 
 	private void SortByPermission(bool state)
 	{
-		ExecuteSort(sortByPermissionToggle, state, (MinionAssignablesProxy identity) => (int)((!target.IsDefaultPermission(identity.gameObject)) ? target.GetSetPermission(identity.gameObject) : ((AccessControl.Permission)(-1))), false);
+		ExecuteSort(sortByPermissionToggle, state, (MinionAssignablesProxy identity) => (int)((!target.IsDefaultPermission(identity)) ? target.GetSetPermission(identity) : ((AccessControl.Permission)(-1))), false);
 	}
 
 	private void ExecuteSort<T>(Toggle toggle, bool state, Func<MinionAssignablesProxy, T> sortFunction, bool refresh = false)
@@ -256,18 +256,18 @@ public class AccessControlSideScreen : SideScreenContent
 
 	private void OnPermissionChanged(MinionAssignablesProxy identity, AccessControl.Permission permission)
 	{
-		target.SetPermission(identity.gameObject, permission);
+		target.SetPermission(identity, permission);
 	}
 
 	private void OnPermissionDefault(MinionAssignablesProxy identity, bool isDefault)
 	{
 		if (isDefault)
 		{
-			target.ClearPermission(identity.gameObject);
+			target.ClearPermission(identity);
 		}
 		else
 		{
-			target.SetPermission(identity.gameObject, target.DefaultPermission);
+			target.SetPermission(identity, target.DefaultPermission);
 		}
 		Refresh(identityList, false);
 	}

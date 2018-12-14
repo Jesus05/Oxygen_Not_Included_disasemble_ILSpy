@@ -18,6 +18,17 @@ public class Equipment : Assignables
 		private set;
 	}
 
+	private GameObject GetTargetGameObject()
+	{
+		IAssignableIdentity assignableIdentity = GetAssignableIdentity();
+		MinionAssignablesProxy minionAssignablesProxy = (MinionAssignablesProxy)assignableIdentity;
+		if ((bool)minionAssignablesProxy)
+		{
+			return minionAssignablesProxy.GetTargetGameObject();
+		}
+		return null;
+	}
+
 	protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
@@ -42,9 +53,10 @@ public class Equipment : Assignables
 	{
 		AssignableSlotInstance slot = GetSlot(equippable.slot);
 		slot.Assign(equippable);
-		GetTargetGameObject().Trigger(-448952673, equippable.GetComponent<KPrefabID>());
+		GameObject targetGameObject = GetTargetGameObject();
+		targetGameObject.Trigger(-448952673, equippable.GetComponent<KPrefabID>());
 		equippable.Trigger(-1617557748, this);
-		Attributes attributes = GetTargetGameObject().GetAttributes();
+		Attributes attributes = targetGameObject.GetAttributes();
 		if (attributes != null)
 		{
 			foreach (AttributeModifier attributeModifier in equippable.def.AttributeModifiers)
@@ -52,7 +64,7 @@ public class Equipment : Assignables
 				attributes.Add(attributeModifier);
 			}
 		}
-		SnapOn component = GetTargetGameObject().GetComponent<SnapOn>();
+		SnapOn component = targetGameObject.GetComponent<SnapOn>();
 		if ((Object)component != (Object)null)
 		{
 			component.AttachSnapOnByName(equippable.def.SnapOn);
@@ -61,7 +73,7 @@ public class Equipment : Assignables
 				component.AttachSnapOnByName(equippable.def.SnapOn1);
 			}
 		}
-		KBatchedAnimController component2 = GetTargetGameObject().GetComponent<KBatchedAnimController>();
+		KBatchedAnimController component2 = targetGameObject.GetComponent<KBatchedAnimController>();
 		if ((Object)component2 != (Object)null && (Object)equippable.def.BuildOverride != (Object)null)
 		{
 			component2.GetComponent<SymbolOverrideController>().AddBuildOverride(equippable.def.BuildOverride.GetData(), equippable.def.BuildOverridePriority);
@@ -70,10 +82,10 @@ public class Equipment : Assignables
 		equippable.OnEquip(slot);
 		if (refreshHandle.TimeRemaining > 0f)
 		{
-			Debug.LogWarning(GetTargetGameObject().GetProperName() + " is already in the process of changing equipment", null);
+			Debug.LogWarning(targetGameObject.GetProperName() + " is already in the process of changing equipment", null);
 			refreshHandle.ClearScheduler();
 		}
-		CreatureSimTemperatureTransfer transferer = GetTargetGameObject().GetComponent<CreatureSimTemperatureTransfer>();
+		CreatureSimTemperatureTransfer transferer = targetGameObject.GetComponent<CreatureSimTemperatureTransfer>();
 		if (!((Object)component2 == (Object)null))
 		{
 			refreshHandle = GameScheduler.Instance.Schedule("ChangeEquipment", 2f, delegate
@@ -92,48 +104,57 @@ public class Equipment : Assignables
 		equippable.GetComponent<KBatchedAnimController>().enabled = true;
 		AssignableSlotInstance slot = GetSlot(equippable.slot);
 		slot.Unassign(true);
-		GetTargetGameObject().Trigger(-1285462312, equippable.GetComponent<KPrefabID>());
 		equippable.Trigger(-170173755, this);
-		KBatchedAnimController component = GetTargetGameObject().GetComponent<KBatchedAnimController>();
-		if (!destroyed)
+		GameObject targetGameObject = GetTargetGameObject();
+		if (!(bool)targetGameObject)
 		{
-			if ((Object)equippable.def.BuildOverride != (Object)null && (Object)component != (Object)null)
-			{
-				component.GetComponent<SymbolOverrideController>().TryRemoveBuildOverride(equippable.def.BuildOverride.GetData(), equippable.def.BuildOverridePriority);
-			}
-			Attributes attributes = GetTargetGameObject().GetAttributes();
-			if (attributes != null)
-			{
-				foreach (AttributeModifier attributeModifier in equippable.def.AttributeModifiers)
-				{
-					attributes.Remove(attributeModifier);
-				}
-			}
-			if (!equippable.def.IsBody)
-			{
-				SnapOn component2 = GetTargetGameObject().GetComponent<SnapOn>();
-				component2.DetachSnapOnByName(equippable.def.SnapOn);
-				if (equippable.def.SnapOn1 != null)
-				{
-					component2.DetachSnapOnByName(equippable.def.SnapOn1);
-				}
-			}
-			if (!((Object)component == (Object)null))
-			{
-				refreshHandle = GameScheduler.Instance.Schedule("ChangeEquipment", 1f, delegate
-				{
-					if ((Object)this != (Object)null && (Object)GetTargetGameObject() != (Object)null)
-					{
-						CreatureSimTemperatureTransfer component3 = GetTargetGameObject().GetComponent<CreatureSimTemperatureTransfer>();
-						if ((Object)component3 != (Object)null)
-						{
-							component3.RefreshRegistration();
-						}
-					}
-				}, null, null);
-			}
+			DebugUtil.DevAssert(false, "GetTargetGameObject returned null in Unequip");
 		}
-		Game.Instance.Trigger(-2146166042, null);
+		else
+		{
+			targetGameObject.Trigger(-1285462312, equippable.GetComponent<KPrefabID>());
+			KBatchedAnimController component = targetGameObject.GetComponent<KBatchedAnimController>();
+			if (!destroyed)
+			{
+				if ((Object)equippable.def.BuildOverride != (Object)null && (Object)component != (Object)null)
+				{
+					component.GetComponent<SymbolOverrideController>().TryRemoveBuildOverride(equippable.def.BuildOverride.GetData(), equippable.def.BuildOverridePriority);
+				}
+				Attributes attributes = targetGameObject.GetAttributes();
+				if (attributes != null)
+				{
+					foreach (AttributeModifier attributeModifier in equippable.def.AttributeModifiers)
+					{
+						attributes.Remove(attributeModifier);
+					}
+				}
+				if (!equippable.def.IsBody)
+				{
+					SnapOn component2 = targetGameObject.GetComponent<SnapOn>();
+					component2.DetachSnapOnByName(equippable.def.SnapOn);
+					if (equippable.def.SnapOn1 != null)
+					{
+						component2.DetachSnapOnByName(equippable.def.SnapOn1);
+					}
+				}
+				if (!((Object)component == (Object)null))
+				{
+					refreshHandle = GameScheduler.Instance.Schedule("ChangeEquipment", 1f, delegate
+					{
+						GameObject gameObject = (!((Object)this != (Object)null)) ? null : GetTargetGameObject();
+						if ((bool)gameObject)
+						{
+							CreatureSimTemperatureTransfer component3 = gameObject.GetComponent<CreatureSimTemperatureTransfer>();
+							if ((Object)component3 != (Object)null)
+							{
+								component3.RefreshRegistration();
+							}
+						}
+					}, null, null);
+				}
+			}
+			Game.Instance.Trigger(-2146166042, null);
+		}
 	}
 
 	public bool IsEquipped(Equippable equippable)

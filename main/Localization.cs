@@ -145,36 +145,38 @@ public static class Localization
 
 	public static void Initialize(bool dontCheckSteam = false)
 	{
-		Debug.Log("Localization.Initialize!", null);
+		Output.Log("Localization.Initialize!");
 		switch ((SelectedLanguageType)Enum.Parse(typeof(SelectedLanguageType), KPlayerPrefs.GetString(SELECTED_LANGUAGE_TYPE_KEY, 0.ToString()), true))
 		{
 		case SelectedLanguageType.Preinstalled:
 		{
-			Debug.Log("Initialize... Preinstalled localization", null);
+			Output.Log("Localization Initialize... Preinstalled localization");
 			string @string = KPlayerPrefs.GetString(SELECTED_LANGUAGE_CODE_KEY, string.Empty);
+			Output.Log(" -> ", @string);
 			LoadPreinstalledTranslation(@string);
 			return;
 		}
 		case SelectedLanguageType.UGC:
 			if (!dontCheckSteam && SteamManager.Initialized && LanguageOptionsScreen.HasInstalledLanguage())
 			{
-				Debug.Log("Initialize... SteamUGCService", null);
+				Output.Log("Localization Initialize... SteamUGCService");
 				PublishedFileId_t item = PublishedFileId_t.Invalid;
 				LanguageOptionsScreen.LoadTranslation(ref item);
 				if (item != PublishedFileId_t.Invalid)
 				{
-					Console.WriteLine("LOCALIZATION: Loaded steamworks file id: " + item.ToString());
+					Output.Log(" -> Loaded steamworks file id: ", item.ToString());
 				}
 				else
 				{
-					Console.WriteLine("LOCALIZATION: Failed to load steamworks file id: " + item.ToString());
+					Output.Log(" -> Failed to load steamworks file id: ", item.ToString());
 				}
 				return;
 			}
 			break;
 		}
-		Debug.Log("Initialize... Local mod localization", null);
+		Output.Log("Initialize... Local mod localization");
 		string modLocalizationFilePath = GetModLocalizationFilePath();
+		Output.Log(" -> ", modLocalizationFilePath);
 		LoadLocalTranslationFile(SelectedLanguageType.None, modLocalizationFilePath);
 	}
 
@@ -219,6 +221,7 @@ public static class Localization
 		if (lines != null && lines.Length > 0)
 		{
 			sLocale = GetLocale(lines);
+			Output.Log(" -> Locale is now ", sLocale.ToString());
 			flag = LoadTranslation(lines, false);
 			if (flag)
 			{
@@ -237,9 +240,9 @@ public static class Localization
 			OverloadStrings(translated_strings);
 			return true;
 		}
-		catch (Exception obj)
+		catch (Exception ex)
 		{
-			Debug.LogWarning(obj, null);
+			Output.LogWarning(ex);
 			return false;
 		}
 	}
@@ -345,15 +348,15 @@ public static class Localization
 		}
 		if (!string.IsNullOrEmpty(parameter_errors))
 		{
-			Debug.Log("TRANSLATION ERROR! The following have missing or mismatched parameters:\n" + parameter_errors, null);
+			Output.Log("TRANSLATION ERROR! The following have missing or mismatched parameters:\n" + parameter_errors);
 		}
 		if (!string.IsNullOrEmpty(link_errors))
 		{
-			Debug.Log("TRANSLATION ERROR! The following have mismatched <link> tags:\n" + link_errors, null);
+			Output.Log("TRANSLATION ERROR! The following have mismatched <link> tags:\n" + link_errors);
 		}
 		if (!string.IsNullOrEmpty(link_count_errors))
 		{
-			Debug.Log("TRANSLATION ERROR! The following do not have the same amount of <link> tags as the english string which can cause nested link errors:\n" + link_count_errors, null);
+			Output.Log("TRANSLATION ERROR! The following do not have the same amount of <link> tags as the english string which can cause nested link errors:\n" + link_count_errors);
 		}
 	}
 
@@ -442,6 +445,7 @@ public static class Localization
 	public static void SetLocale(Locale locale)
 	{
 		sLocale = locale;
+		Output.Log(" -> Locale is now ", sLocale.ToString());
 	}
 
 	private static string GetFontParam(string line)
@@ -755,6 +759,7 @@ public static class Localization
 
 	public static void ClearLanguage()
 	{
+		Output.Log(" -> Clearing selected language! Either it didn't load correct or returning to english by menu.");
 		sFontAsset = null;
 		sLocale = null;
 		KPlayerPrefs.SetString(SELECTED_LANGUAGE_TYPE_KEY, 0.ToString());

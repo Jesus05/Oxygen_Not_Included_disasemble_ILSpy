@@ -56,7 +56,10 @@ public class BuildingHP : Workable
 			{
 				ShowProgressBar(true);
 			}
-			progressBar.Update();
+			if ((bool)progressBar)
+			{
+				progressBar.Update();
+			}
 		}
 
 		private float HealthPercent()

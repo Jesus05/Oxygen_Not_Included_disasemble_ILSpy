@@ -22,16 +22,6 @@ public class Assignables : KMonoBehaviour
 		return GetComponent<MinionAssignablesProxy>();
 	}
 
-	protected GameObject GetTargetGameObject()
-	{
-		IAssignableIdentity assignableIdentity = GetAssignableIdentity();
-		if (assignableIdentity is MinionAssignablesProxy)
-		{
-			return ((assignableIdentity as MinionAssignablesProxy).target as KMonoBehaviour).gameObject;
-		}
-		return null;
-	}
-
 	protected override void OnSpawn()
 	{
 		base.OnSpawn();

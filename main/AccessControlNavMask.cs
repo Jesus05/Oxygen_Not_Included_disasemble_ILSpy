@@ -27,7 +27,7 @@ internal struct AccessControlNavMask
 		AccessControl component = gameObject.GetComponent<AccessControl>();
 		if (!((Object)component == (Object)null))
 		{
-			AccessControl.Permission permission = component.GetPermission(agent.gameObject);
+			AccessControl.Permission permission = component.GetPermission(agent);
 			switch (permission)
 			{
 			case AccessControl.Permission.Neither:

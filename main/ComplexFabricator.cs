@@ -261,26 +261,6 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms
 
 	private void OnStorageChanged(object data = null)
 	{
-		if (machineOrders.Count > 0 && (machineOrders[0].chore != null || (!duplicantOperated && machineOrders[0].underway)) && (!((UnityEngine.Object)workable != (UnityEngine.Object)null) || !(workable.WorkTimeRemaining < 0f)) && !(orderProgress >= machineOrders[0].parentOrder.recipe.time))
-		{
-			ComplexRecipe.RecipeElement[] ingredients = machineOrders[0].parentOrder.recipe.ingredients;
-			int num = 0;
-			while (true)
-			{
-				if (num >= ingredients.Length)
-				{
-					return;
-				}
-				ComplexRecipe.RecipeElement recipeElement = ingredients[num];
-				if (buildStorage.GetAmountAvailable(recipeElement.material) < recipeElement.amount)
-				{
-					break;
-				}
-				num++;
-			}
-			CancelAllMachineOrders();
-			UpdateMachineOrders(false);
-		}
 	}
 
 	private void OnCopySettings(object data)

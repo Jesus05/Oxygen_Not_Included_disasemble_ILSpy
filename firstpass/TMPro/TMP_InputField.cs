@@ -2222,9 +2222,13 @@ namespace TMPro
 				{
 					if (caretPositionInternal > 0)
 					{
-						m_Text = text.Remove(GetStringIndexFromCaretPosition(caretPositionInternal - 1), 1);
-						caretSelectPositionInternal = --caretPositionInternal;
-						int num2 = stringSelectPositionInternal = (stringPositionInternal = GetStringIndexFromCaretPosition(caretPositionInternal));
+						caretPositionInternal = Math.Min(stringPositionInternal, m_Text.Length);
+						if (m_Text.Length > 0)
+						{
+							m_Text = text.Remove(GetStringIndexFromCaretPosition(caretPositionInternal - 1), 1);
+							caretSelectPositionInternal = --caretPositionInternal;
+							int num2 = stringSelectPositionInternal = (stringPositionInternal = GetStringIndexFromCaretPosition(caretPositionInternal));
+						}
 					}
 					m_isLastKeyBackspace = true;
 					SendOnValueChangedAndUpdateLabel();

@@ -126,10 +126,16 @@ internal class NestingPoopState : GameStateMachine<NestingPoopState, NestingPoop
 
 	public State behaviourcomplete;
 
+	public State failedtonest;
+
 	public override void InitializeStates(out BaseState default_state)
 	{
 		default_state = goingtopoop;
-		goingtopoop.MoveTo((Instance smi) => smi.GetPoopPosition(), pooping, pooping, false);
+		goingtopoop.MoveTo((Instance smi) => smi.GetPoopPosition(), pooping, failedtonest, false);
+		failedtonest.Enter(delegate(Instance smi)
+		{
+			smi.SetLastPoopCell();
+		}).GoTo(pooping);
 		pooping.Enter(delegate(Instance smi)
 		{
 			Facing component = smi.master.GetComponent<Facing>();

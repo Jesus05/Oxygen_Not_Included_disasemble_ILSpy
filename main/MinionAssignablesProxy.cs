@@ -169,19 +169,19 @@ public class MinionAssignablesProxy : KMonoBehaviour, IAssignableIdentity
 		}
 	}
 
-	List<Ownables> IAssignableIdentity.GetOwners()
+	public List<Ownables> GetOwners()
 	{
 		CheckTarget();
 		return target.GetOwners();
 	}
 
-	string IAssignableIdentity.GetProperName()
+	public string GetProperName()
 	{
 		CheckTarget();
 		return target.GetProperName();
 	}
 
-	Ownables IAssignableIdentity.GetSoleOwner()
+	public Ownables GetSoleOwner()
 	{
 		CheckTarget();
 		return target.GetSoleOwner();

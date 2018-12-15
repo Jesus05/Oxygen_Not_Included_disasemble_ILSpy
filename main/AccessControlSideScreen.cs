@@ -49,9 +49,20 @@ public class AccessControlSideScreen : SideScreenContent
 
 		public static int CompareByRole(MinionAssignablesProxy a, MinionAssignablesProxy b)
 		{
-			ChoreConsumer component = a.GetComponent<ChoreConsumer>();
-			ChoreConsumer component2 = b.GetComponent<ChoreConsumer>();
-			return component.resume.CurrentRole.CompareTo(component2.resume.CurrentRole);
+			GameObject targetGameObject = a.GetTargetGameObject();
+			GameObject targetGameObject2 = b.GetTargetGameObject();
+			MinionResume component = targetGameObject.GetComponent<MinionResume>();
+			MinionResume component2 = targetGameObject2.GetComponent<MinionResume>();
+			if ((UnityEngine.Object)component2 == (UnityEngine.Object)null)
+			{
+				return 1;
+			}
+			if ((UnityEngine.Object)component == (UnityEngine.Object)null)
+			{
+				return -1;
+			}
+			int num = component.CurrentRole.CompareTo(component2.CurrentRole);
+			return (num != 0) ? num : CompareByName(a, b);
 		}
 	}
 

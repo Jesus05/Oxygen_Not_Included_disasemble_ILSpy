@@ -190,6 +190,13 @@ public class FetchAreaChore : Chore<FetchAreaChore.StatesInstance>
 			}
 			float num = Mathf.Max(1f, Db.Get().Attributes.CarryAmount.Lookup(context.consumerState.consumer).GetTotalValue());
 			Pickupable pickupable = context.data as Pickupable;
+			if ((UnityEngine.Object)pickupable == (UnityEngine.Object)null)
+			{
+				Precondition.Context context2 = pooledList[0];
+				FetchChore fetchChore = (FetchChore)context2.chore;
+				Output.LogWarning("Missing root_fetchable for FetchAreaChore", fetchChore.destination, fetchChore.tags[0]);
+				pickupable = fetchChore.FindFetchTarget(context.consumerState);
+			}
 			List<Pickupable> list = new List<Pickupable>();
 			list.Add(pickupable);
 			float num2 = pickupable.UnreservedAmount;
@@ -247,17 +254,17 @@ public class FetchAreaChore : Chore<FetchAreaChore.StatesInstance>
 				{
 					break;
 				}
-				Precondition.Context context2 = pooledList[j];
-				FetchChore fetchChore = context2.chore as FetchChore;
-				if (fetchChore != rootChore && context2.IsSuccess() && (UnityEngine.Object)fetchChore.overrideTarget == (UnityEngine.Object)null && (UnityEngine.Object)fetchChore.driver == (UnityEngine.Object)null && fetchChore.tagBits.AreEqual(ref rootChore.tagBits))
+				Precondition.Context context3 = pooledList[j];
+				FetchChore fetchChore2 = context3.chore as FetchChore;
+				if (fetchChore2 != rootChore && context3.IsSuccess() && (UnityEngine.Object)fetchChore2.overrideTarget == (UnityEngine.Object)null && (UnityEngine.Object)fetchChore2.driver == (UnityEngine.Object)null && fetchChore2.tagBits.AreEqual(ref rootChore.tagBits))
 				{
-					num4 = Mathf.Min(fetchChore.originalAmount, num2 - num5);
+					num4 = Mathf.Min(fetchChore2.originalAmount, num2 - num5);
 					if (minTakeAmount > 0f)
 					{
 						num4 -= num4 % minTakeAmount;
 					}
-					chores.Add(fetchChore);
-					deliveries.Add(new Delivery(context2, num4, OnFetchChoreCancelled));
+					chores.Add(fetchChore2);
+					deliveries.Add(new Delivery(context3, num4, OnFetchChoreCancelled));
 					num5 += num4;
 					if (deliveries.Count >= 10)
 					{
@@ -646,6 +653,14 @@ public class FetchAreaChore : Chore<FetchAreaChore.StatesInstance>
 	{
 		smi.End();
 		base.End(reason);
+	}
+
+	private void OnTagsChanged(object data)
+	{
+		if ((UnityEngine.Object)smi.sm.fetchTarget.Get(smi) != (UnityEngine.Object)null)
+		{
+			Fail("Tags changed");
+		}
 	}
 
 	public override string GetReportName()

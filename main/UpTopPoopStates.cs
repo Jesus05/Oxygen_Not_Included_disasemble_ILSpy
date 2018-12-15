@@ -17,14 +17,16 @@ internal class UpTopPoopStates : GameStateMachine<UpTopPoopStates, UpTopPoopStat
 
 		public int GetPoopCell()
 		{
-			int num = Grid.PosToCell(base.gameObject);
-			int num2 = Grid.OffsetCell(num, 0, 1);
-			while (Grid.IsValidCell(num2) && !Grid.Solid[num2] && !IsClosedDoor(num2))
+			int num = base.master.gameObject.GetComponent<Navigator>().maxProbingRadius - 1;
+			int num2 = Grid.PosToCell(base.gameObject);
+			int num3 = Grid.OffsetCell(num2, 0, 1);
+			while (num > 0 && Grid.IsValidCell(num3) && !Grid.Solid[num3] && !IsClosedDoor(num3))
 			{
-				num = num2;
-				num2 = Grid.OffsetCell(num, 0, 1);
+				num--;
+				num2 = num3;
+				num3 = Grid.OffsetCell(num2, 0, 1);
 			}
-			return num;
+			return num2;
 		}
 
 		public bool IsClosedDoor(int cellAbove)

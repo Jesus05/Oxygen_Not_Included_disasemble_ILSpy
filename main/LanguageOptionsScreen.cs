@@ -178,32 +178,35 @@ public class LanguageOptionsScreen : KModalScreen, SteamUGCService.IUGCEventHand
 
 	private void RebuildUGCButtons()
 	{
-		List<SteamUGCService.Subscribed> subs = SteamUGCService.Instance.GetSubscribed("language");
-		if (subs.Count != 0)
+		if (!((UnityEngine.Object)SteamUGCService.Instance == (UnityEngine.Object)null))
 		{
-			for (int i = 0; i < subs.Count; i++)
+			List<SteamUGCService.Subscribed> subs = SteamUGCService.Instance.GetSubscribed("language");
+			if (subs.Count != 0)
 			{
-				GameObject gameObject = Util.KInstantiateUI(languageButtonPrefab, ugcLanguagesContainer, false);
-				gameObject.name = subs[i].title + "_button";
-				HierarchyReferences component = gameObject.GetComponent<HierarchyReferences>();
-				TMP_FontAsset fontForLangage = GetFontForLangage(subs[i].fileId);
-				LocText reference = component.GetReference<LocText>("Title");
-				reference.SetText(string.Format(UI.FRONTEND.TRANSLATIONS_SCREEN.UGC_MOD_TITLE_FORMAT, subs[i].title));
-				reference.font = fontForLangage;
-				Texture2D previewImage = SteamUGCService.Instance.GetPreviewImage(subs[i].fileId);
-				if ((UnityEngine.Object)previewImage != (UnityEngine.Object)null)
+				for (int i = 0; i < subs.Count; i++)
 				{
-					Image reference2 = component.GetReference<Image>("Image");
-					reference2.sprite = Sprite.Create(previewImage, new Rect(Vector2.zero, new Vector2((float)previewImage.width, (float)previewImage.height)), Vector2.one * 0.5f);
+					GameObject gameObject = Util.KInstantiateUI(languageButtonPrefab, ugcLanguagesContainer, false);
+					gameObject.name = subs[i].title + "_button";
+					HierarchyReferences component = gameObject.GetComponent<HierarchyReferences>();
+					TMP_FontAsset fontForLangage = GetFontForLangage(subs[i].fileId);
+					LocText reference = component.GetReference<LocText>("Title");
+					reference.SetText(string.Format(UI.FRONTEND.TRANSLATIONS_SCREEN.UGC_MOD_TITLE_FORMAT, subs[i].title));
+					reference.font = fontForLangage;
+					Texture2D previewImage = SteamUGCService.Instance.GetPreviewImage(subs[i].fileId);
+					if ((UnityEngine.Object)previewImage != (UnityEngine.Object)null)
+					{
+						Image reference2 = component.GetReference<Image>("Image");
+						reference2.sprite = Sprite.Create(previewImage, new Rect(Vector2.zero, new Vector2((float)previewImage.width, (float)previewImage.height)), Vector2.one * 0.5f);
+					}
+					KButton component2 = gameObject.GetComponent<KButton>();
+					int index = i;
+					component2.onClick += delegate
+					{
+						PublishedFileId_t fileId = subs[index].fileId;
+						SetCurrentLanguage(fileId);
+					};
+					buttons.Add(gameObject);
 				}
-				KButton component2 = gameObject.GetComponent<KButton>();
-				int index = i;
-				component2.onClick += delegate
-				{
-					PublishedFileId_t fileId = subs[index].fileId;
-					SetCurrentLanguage(fileId);
-				};
-				buttons.Add(gameObject);
 			}
 		}
 	}
@@ -265,18 +268,24 @@ public class LanguageOptionsScreen : KModalScreen, SteamUGCService.IUGCEventHand
 	{
 		base.OnActivate();
 		currentLanguage = GetInstalledFileID(out currentLastModified);
-		if (!SteamUGCService.Instance.IsSubscribedTo(currentLanguage))
+		if ((UnityEngine.Object)SteamUGCService.Instance != (UnityEngine.Object)null)
 		{
-			currentLanguage = PublishedFileId_t.Invalid;
-			InstallLanguageFile(currentLanguage, false);
+			if (!SteamUGCService.Instance.IsSubscribedTo(currentLanguage))
+			{
+				currentLanguage = PublishedFileId_t.Invalid;
+				InstallLanguageFile(currentLanguage, false);
+			}
+			SteamUGCService.Instance.ugcEventHandlers.Add(this);
 		}
-		SteamUGCService.Instance.ugcEventHandlers.Add(this);
 	}
 
 	protected override void OnDeactivate()
 	{
 		base.OnDeactivate();
-		SteamUGCService.Instance.ugcEventHandlers.Remove(this);
+		if ((UnityEngine.Object)SteamUGCService.Instance != (UnityEngine.Object)null)
+		{
+			SteamUGCService.Instance.ugcEventHandlers.Remove(this);
+		}
 	}
 
 	private void OnClickUninstall()

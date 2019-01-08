@@ -139,6 +139,8 @@ public class Storage : Workable, ISaveLoadableDetails, IEffectDescriptor
 		component.OnCopySettings(data);
 	});
 
+	private List<GameObject> deleted_objects;
+
 	[CompilerGenerated]
 	private static Action<GameObject, bool, bool> _003C_003Ef__mg_0024cache0;
 
@@ -416,6 +418,7 @@ public class Storage : Workable, ISaveLoadableDetails, IEffectDescriptor
 			else
 			{
 				Transfer(gameObject, dest_storage, block_events, hide_popups);
+				amount = component.Units;
 			}
 			return amount;
 		}
@@ -659,51 +662,54 @@ public class Storage : Workable, ISaveLoadableDetails, IEffectDescriptor
 	{
 		DebugUtil.Assert(tag.IsValid);
 		disease_info = SimUtil.DiseaseInfo.Invalid;
-		List<GameObject> list = null;
 		aggregate_temperature = 0f;
 		float num = 0f;
 		bool flag = false;
 		for (int i = 0; i < items.Count; i++)
 		{
+			if (amount <= 0f)
+			{
+				break;
+			}
 			GameObject gameObject = items[i];
 			if (!((UnityEngine.Object)gameObject == (UnityEngine.Object)null) && gameObject.HasTag(tag))
 			{
-				flag = true;
 				PrimaryElement component = gameObject.GetComponent<PrimaryElement>();
-				float num2 = Math.Min(component.Units, amount);
-				aggregate_temperature = SimUtil.CalculateFinalTemperature(num, aggregate_temperature, num2, component.Temperature);
-				SimUtil.DiseaseInfo percentOfDisease = SimUtil.GetPercentOfDisease(component, num2 / component.Units);
-				disease_info = SimUtil.CalculateFinalDiseaseInfo(disease_info, percentOfDisease);
-				component.Units -= num2;
-				component.ModifyDiseaseCount(-percentOfDisease.count, "Storage.ConsumeAndGetDisease");
+				if (component.Units > 0f)
+				{
+					flag = true;
+					float num2 = Math.Min(component.Units, amount);
+					aggregate_temperature = SimUtil.CalculateFinalTemperature(num, aggregate_temperature, num2, component.Temperature);
+					SimUtil.DiseaseInfo percentOfDisease = SimUtil.GetPercentOfDisease(component, num2 / component.Units);
+					disease_info = SimUtil.CalculateFinalDiseaseInfo(disease_info, percentOfDisease);
+					component.Units -= num2;
+					component.ModifyDiseaseCount(-percentOfDisease.count, "Storage.ConsumeAndGetDisease");
+					amount -= num2;
+					num += num2;
+				}
 				if (component.Units <= 0f && !component.KeepZeroMassObject)
 				{
-					if (list == null)
+					if (deleted_objects == null)
 					{
-						list = new List<GameObject>();
+						deleted_objects = new List<GameObject>();
 					}
-					list.Add(gameObject);
+					deleted_objects.Add(gameObject);
 				}
-				amount -= num2;
-				num += num2;
 				Trigger(-1697596308, gameObject);
-				if (amount <= 0f)
-				{
-					break;
-				}
 			}
 		}
 		if (!flag)
 		{
 			aggregate_temperature = GetComponent<PrimaryElement>().Temperature;
 		}
-		if (list != null)
+		if (deleted_objects != null)
 		{
-			for (int j = 0; j < list.Count; j++)
+			for (int j = 0; j < deleted_objects.Count; j++)
 			{
-				items.Remove(list[j]);
-				Util.KDestroyGameObject(list[j]);
+				items.Remove(deleted_objects[j]);
+				Util.KDestroyGameObject(deleted_objects[j]);
 			}
+			deleted_objects.Clear();
 		}
 	}
 

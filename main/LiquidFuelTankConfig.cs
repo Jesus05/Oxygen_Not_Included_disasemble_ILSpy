@@ -69,7 +69,13 @@ public class LiquidFuelTankConfig : IBuildingConfig
 			Storage.StoredItemModifier.Seal,
 			Storage.StoredItemModifier.Insulate
 		});
-		fuelTank.allowUIItemRemoval = true;
+		go.AddOrGet<DropToUserCapacity>();
+		ManualDeliveryKG manualDeliveryKG = go.AddOrGet<ManualDeliveryKG>();
+		manualDeliveryKG.SetStorage(fuelTank);
+		manualDeliveryKG.refillMass = fuelTank.capacityKg;
+		manualDeliveryKG.capacity = fuelTank.capacityKg;
+		manualDeliveryKG.operationalRequirement = FetchOrder2.OperationalRequirement.None;
+		manualDeliveryKG.choreTypeIDHash = Db.Get().ChoreTypes.Fetch.IdHash;
 		ConduitConsumer conduitConsumer = go.AddOrGet<ConduitConsumer>();
 		conduitConsumer.conduitType = ConduitType.Liquid;
 		conduitConsumer.consumptionRate = 10f;

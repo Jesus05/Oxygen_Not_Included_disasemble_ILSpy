@@ -137,8 +137,14 @@ public class SelectedRecipeQueueScreen : KScreen
 			if (element != null)
 			{
 				List<Descriptor> materialDescriptors = GameUtil.GetMaterialDescriptors(element);
-				GameUtil.IndentListOfDescriptors(materialDescriptors, 2);
+				GameUtil.IndentListOfDescriptors(materialDescriptors, 1);
 				list.AddRange(materialDescriptors);
+			}
+			else
+			{
+				List<Descriptor> effectDescriptors = GameUtil.GetEffectDescriptors(GameUtil.GetAllDescriptors(prefab, false));
+				GameUtil.IndentListOfDescriptors(effectDescriptors, 1);
+				list.AddRange(effectDescriptors);
 			}
 		}
 		return list;

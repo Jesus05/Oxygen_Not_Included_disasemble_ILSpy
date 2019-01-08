@@ -66,6 +66,12 @@ public class ComplexFabricatorSideScreen : SideScreenContent
 	[SerializeField]
 	private RectTransform content;
 
+	[SerializeField]
+	private LocText subtitleLabel;
+
+	[SerializeField]
+	private LocText noRecipesDiscoveredLabel;
+
 	public ScriptableObject styleTooltipHeader;
 
 	public ScriptableObject styleTooltipBody;
@@ -225,22 +231,9 @@ public class ComplexFabricatorSideScreen : SideScreenContent
 				{
 					flag = true;
 				}
-				else
+				else if (HasAnyRecipeRequirements(recipe))
 				{
-					bool flag2 = true;
-					ComplexRecipe.RecipeElement[] ingredients = recipe.ingredients;
-					foreach (ComplexRecipe.RecipeElement recipeElement in ingredients)
-					{
-						if (!WorldInventory.Instance.IsDiscovered(recipeElement.material) && !DebugHandler.InstantBuildMode)
-						{
-							flag2 = false;
-							break;
-						}
-					}
-					if (flag2)
-					{
-						flag = true;
-					}
+					flag = true;
 				}
 				if (flag)
 				{
@@ -257,21 +250,21 @@ public class ComplexFabricatorSideScreen : SideScreenContent
 						newToggle = Util.KInstantiateUI<KToggle>(recipeButtonMultiple, recipeGrid, false);
 						entryGO = newToggle.gameObject;
 						HierarchyReferences component2 = newToggle.GetComponent<HierarchyReferences>();
-						ComplexRecipe.RecipeElement[] ingredients2 = recipe.ingredients;
-						foreach (ComplexRecipe.RecipeElement recipeElement2 in ingredients2)
+						ComplexRecipe.RecipeElement[] ingredients = recipe.ingredients;
+						foreach (ComplexRecipe.RecipeElement recipeElement in ingredients)
 						{
 							GameObject gameObject = Util.KInstantiateUI(component2.GetReference("FromIconPrefab").gameObject, component2.GetReference("FromIcons").gameObject, true);
-							gameObject.GetComponent<Image>().sprite = Def.GetUISprite(recipeElement2.material, "ui", false).first;
-							gameObject.GetComponent<Image>().color = Def.GetUISprite(recipeElement2.material, "ui", false).second;
-							gameObject.gameObject.name = recipeElement2.material.Name;
+							gameObject.GetComponent<Image>().sprite = Def.GetUISprite(recipeElement.material, "ui", false).first;
+							gameObject.GetComponent<Image>().color = Def.GetUISprite(recipeElement.material, "ui", false).second;
+							gameObject.gameObject.name = recipeElement.material.Name;
 						}
 						ComplexRecipe.RecipeElement[] results = recipe.results;
-						foreach (ComplexRecipe.RecipeElement recipeElement3 in results)
+						foreach (ComplexRecipe.RecipeElement recipeElement2 in results)
 						{
 							GameObject gameObject2 = Util.KInstantiateUI(component2.GetReference("ToIconPrefab").gameObject, component2.GetReference("ToIcons").gameObject, true);
-							gameObject2.GetComponent<Image>().sprite = Def.GetUISprite(recipeElement3.material, "ui", false).first;
-							gameObject2.GetComponent<Image>().color = Def.GetUISprite(recipeElement3.material, "ui", false).second;
-							gameObject2.gameObject.name = recipeElement3.material.Name;
+							gameObject2.GetComponent<Image>().sprite = Def.GetUISprite(recipeElement2.material, "ui", false).first;
+							gameObject2.GetComponent<Image>().color = Def.GetUISprite(recipeElement2.material, "ui", false).second;
+							gameObject2.gameObject.name = recipeElement2.material.Name;
 						}
 						break;
 					}
@@ -292,8 +285,8 @@ public class ComplexFabricatorSideScreen : SideScreenContent
 							image.color = uISprite2.second;
 						}
 						entryGO.GetComponentInChildren<LocText>().text = recipe.GetUIName();
-						bool flag3 = CheckRecipeRequirements(recipe);
-						image.material = ((!flag3) ? Assets.UIPrefabs.TableScreenWidgets.DesaturatedUIMaterial : Assets.UIPrefabs.TableScreenWidgets.DefaultUIMaterial);
+						bool flag2 = HasAllRecipeRequirements(recipe);
+						image.material = ((!flag2) ? Assets.UIPrefabs.TableScreenWidgets.DesaturatedUIMaterial : Assets.UIPrefabs.TableScreenWidgets.DefaultUIMaterial);
 						RefreshQueueCountDisplay(entryGO, targetFab);
 						entryGO.GetComponent<HierarchyReferences>().GetReference<MultiToggle>("DecrementButton").onClick = delegate
 						{
@@ -350,13 +343,24 @@ public class ComplexFabricatorSideScreen : SideScreenContent
 					recipeToggles.Add(entryGO);
 				}
 			}
-			LayoutElement component4 = buttonScrollContainer.GetComponent<LayoutElement>();
-			float num2 = (float)num;
-			Vector2 sizeDelta = recipeButtonQueueHybrid.rectTransform().sizeDelta;
-			component4.minHeight = Mathf.Min(451f, 2f + num2 * sizeDelta.y);
 			if (recipeToggles.Count > 0)
 			{
-				bool flag4 = false;
+				LayoutElement component4 = buttonScrollContainer.GetComponent<LayoutElement>();
+				float num2 = (float)num;
+				Vector2 sizeDelta = recipeButtonQueueHybrid.rectTransform().sizeDelta;
+				component4.minHeight = Mathf.Min(451f, 2f + num2 * sizeDelta.y);
+				subtitleLabel.SetText(UI.UISIDESCREENS.FABRICATORSIDESCREEN.SUBTITLE);
+				noRecipesDiscoveredLabel.gameObject.SetActive(false);
+				bool flag3 = false;
+			}
+			else
+			{
+				subtitleLabel.SetText(UI.UISIDESCREENS.FABRICATORSIDESCREEN.NORECIPEDISCOVERED);
+				noRecipesDiscoveredLabel.SetText(UI.UISIDESCREENS.FABRICATORSIDESCREEN.NORECIPEDISCOVERED_BODY);
+				noRecipesDiscoveredLabel.gameObject.SetActive(true);
+				LayoutElement component5 = buttonScrollContainer.GetComponent<LayoutElement>();
+				Vector2 sizeDelta2 = noRecipesDiscoveredLabel.rectTransform.sizeDelta;
+				component5.minHeight = sizeDelta2.y + 10f;
 			}
 			RefreshIngredientAvailabilityVis();
 		}
@@ -413,7 +417,20 @@ public class ComplexFabricatorSideScreen : SideScreenContent
 		}
 	}
 
-	private bool CheckRecipeRequirements(ComplexRecipe recipe)
+	private bool HasAnyRecipeRequirements(ComplexRecipe recipe)
+	{
+		ComplexRecipe.RecipeElement[] ingredients = recipe.ingredients;
+		foreach (ComplexRecipe.RecipeElement recipeElement in ingredients)
+		{
+			if (WorldInventory.Instance.GetAmount(recipeElement.material) + targetFab.inStorage.GetAmountAvailable(recipeElement.material) + targetFab.buildStorage.GetAmountAvailable(recipeElement.material) >= recipeElement.amount)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private bool HasAllRecipeRequirements(ComplexRecipe recipe)
 	{
 		bool result = true;
 		ComplexRecipe.RecipeElement[] ingredients = recipe.ingredients;
@@ -437,7 +454,7 @@ public class ComplexFabricatorSideScreen : SideScreenContent
 		foreach (KeyValuePair<GameObject, ComplexRecipe> item in recipeMap)
 		{
 			HierarchyReferences component = item.Key.GetComponent<HierarchyReferences>();
-			bool flag = CheckRecipeRequirements(item.Value);
+			bool flag = HasAllRecipeRequirements(item.Value);
 			KToggle component2 = item.Key.GetComponent<KToggle>();
 			if (flag)
 			{

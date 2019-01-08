@@ -43,6 +43,14 @@ public class RancherChore : Chore<RancherChore.RancherChoreStates.Instance>
 			{
 				ranchStation.TriggerRanchStationNoLongerAvailable();
 			}
+
+			public void TellCreatureRancherIsReady()
+			{
+				if (!ranchStation.targetRanchable.IsNullOrStopped())
+				{
+					ranchStation.targetRanchable.Trigger(1084749845, null);
+				}
+			}
 		}
 
 		public TargetParameter rancher;
@@ -134,7 +142,7 @@ public class RancherChore : Chore<RancherChore.RancherChoreStates.Instance>
 				.OnAnimQueueComplete(ranchcreature.loop);
 			ranchcreature.loop.Enter("TellCreatureRancherIsReady", delegate(Instance smi)
 			{
-				smi.ranchStation.targetRanchable.Trigger(1084749845, null);
+				smi.TellCreatureRancherIsReady();
 			}).Enter(PlayBuildingWorkingLoop).Enter(PlayRancherWorkingLoops)
 				.Target(rancher)
 				.OnAnimQueueComplete(ranchcreature.pst);

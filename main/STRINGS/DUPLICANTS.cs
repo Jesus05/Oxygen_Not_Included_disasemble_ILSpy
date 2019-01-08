@@ -4515,7 +4515,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Creativity";
 
-				public static LocString DESC = "Determines the speed and finesse with which a Duplicant creates artwork.";
+				public static LocString DESC = "Determines the speed at which a Duplicant creates artwork.";
 
 				public static LocString SPEEDMODIFIER = "{0} Decorating Speed";
 			}

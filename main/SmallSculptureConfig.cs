@@ -45,7 +45,7 @@ public class SmallSculptureConfig : IBuildingConfig
 		Artable artable = go.AddComponent<Sculpture>();
 		artable.stages.Add(new Artable.Stage("Default", STRINGS.BUILDINGS.PREFABS.SMALLSCULPTURE.NAME, "slab", 0, false, Artable.Status.Ready));
 		artable.stages.Add(new Artable.Stage("Bad", STRINGS.BUILDINGS.PREFABS.SMALLSCULPTURE.POORQUALITYNAME, "crap_1", 5, false, Artable.Status.Ugly));
-		artable.stages.Add(new Artable.Stage("Average", STRINGS.BUILDINGS.PREFABS.SMALLSCULPTURE.AVERAGEQUALITYNAME, "good_1", 10, false, Artable.Status.Ugly));
+		artable.stages.Add(new Artable.Stage("Average", STRINGS.BUILDINGS.PREFABS.SMALLSCULPTURE.AVERAGEQUALITYNAME, "good_1", 10, false, Artable.Status.Okay));
 		artable.stages.Add(new Artable.Stage("Good", STRINGS.BUILDINGS.PREFABS.SMALLSCULPTURE.EXCELLENTQUALITYNAME, "amazing_1", 15, true, Artable.Status.Great));
 		artable.stages.Add(new Artable.Stage("Good2", STRINGS.BUILDINGS.PREFABS.SMALLSCULPTURE.EXCELLENTQUALITYNAME, "amazing_2", 15, true, Artable.Status.Great));
 		artable.stages.Add(new Artable.Stage("Good3", STRINGS.BUILDINGS.PREFABS.SMALLSCULPTURE.EXCELLENTQUALITYNAME, "amazing_3", 15, true, Artable.Status.Great));

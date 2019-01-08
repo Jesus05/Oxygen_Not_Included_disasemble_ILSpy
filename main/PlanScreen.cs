@@ -1100,19 +1100,19 @@ public class PlanScreen : KIconToggleMenu
 				break;
 			}
 		}
-		if ((UnityEngine.Object)buildingDef == (UnityEngine.Object)null)
+		DebugUtil.DevAssert(buildingDef, "def is null");
+		if ((bool)buildingDef)
 		{
-			Debug.Log("No def!", null);
-		}
-		if (buildingDef.isKAnimTile && buildingDef.isUtility)
-		{
-			IList<Tag> getSelectedElementAsList = productInfoScreen.materialSelectionPanel.GetSelectedElementAsList;
-			BaseUtilityBuildTool baseUtilityBuildTool = (!((UnityEngine.Object)buildingDef.BuildingComplete.GetComponent<Wire>() != (UnityEngine.Object)null)) ? ((BaseUtilityBuildTool)UtilityBuildTool.Instance) : ((BaseUtilityBuildTool)WireBuildTool.Instance);
-			baseUtilityBuildTool.Activate(buildingDef, getSelectedElementAsList);
-		}
-		else
-		{
-			BuildTool.Instance.Activate(buildingDef, productInfoScreen.materialSelectionPanel.GetSelectedElementAsList, null);
+			if (buildingDef.isKAnimTile && buildingDef.isUtility)
+			{
+				IList<Tag> getSelectedElementAsList = productInfoScreen.materialSelectionPanel.GetSelectedElementAsList;
+				BaseUtilityBuildTool baseUtilityBuildTool = (!((UnityEngine.Object)buildingDef.BuildingComplete.GetComponent<Wire>() != (UnityEngine.Object)null)) ? ((BaseUtilityBuildTool)UtilityBuildTool.Instance) : ((BaseUtilityBuildTool)WireBuildTool.Instance);
+				baseUtilityBuildTool.Activate(buildingDef, getSelectedElementAsList);
+			}
+			else
+			{
+				BuildTool.Instance.Activate(buildingDef, productInfoScreen.materialSelectionPanel.GetSelectedElementAsList, null);
+			}
 		}
 	}
 

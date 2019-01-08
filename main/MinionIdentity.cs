@@ -62,6 +62,10 @@ public class MinionIdentity : KMonoBehaviour, ISaveLoadable, IAssignableIdentity
 	[Serialize]
 	public Ref<MinionAssignablesProxy> assignableProxy;
 
+	private Navigator navigator;
+
+	private ChoreDriver choreDriver;
+
 	public float timeLastSpoke;
 
 	private string voiceId;
@@ -258,10 +262,13 @@ public class MinionIdentity : KMonoBehaviour, ISaveLoadable, IAssignableIdentity
 
 	protected override void OnCleanUp()
 	{
-		MinionAssignablesProxy minionAssignablesProxy = assignableProxy.Get();
-		if ((bool)minionAssignablesProxy && minionAssignablesProxy.target == this)
+		if (assignableProxy != null)
 		{
-			Util.KDestroyGameObject(minionAssignablesProxy.gameObject);
+			MinionAssignablesProxy minionAssignablesProxy = assignableProxy.Get();
+			if ((bool)minionAssignablesProxy && minionAssignablesProxy.target == this)
+			{
+				Util.KDestroyGameObject(minionAssignablesProxy.gameObject);
+			}
 		}
 		Components.MinionIdentities.Remove(this);
 		Components.LiveMinionIdentities.Remove(this);
@@ -298,20 +305,34 @@ public class MinionIdentity : KMonoBehaviour, ISaveLoadable, IAssignableIdentity
 
 	public void Sim1000ms(float dt)
 	{
-		if (!((UnityEngine.Object)this == (UnityEngine.Object)null) && GetComponent<Navigator>().IsMoving())
+		if (!((UnityEngine.Object)this == (UnityEngine.Object)null))
 		{
-			Chore currentChore = GetComponent<ChoreDriver>().GetCurrentChore();
-			if (currentChore != null)
+			if ((UnityEngine.Object)navigator == (UnityEngine.Object)null)
 			{
-				ReportManager.Instance.ReportValue(ReportManager.ReportType.TravelTime, dt, currentChore.choreType.Name, currentChore.driver.GetProperName());
-				if (currentChore is FetchAreaChore)
+				navigator = GetComponent<Navigator>();
+			}
+			if (!((UnityEngine.Object)navigator != (UnityEngine.Object)null) || navigator.IsMoving())
+			{
+				if ((UnityEngine.Object)choreDriver == (UnityEngine.Object)null)
 				{
-					MinionResume component = GetComponent<MinionResume>();
-					if ((UnityEngine.Object)component != (UnityEngine.Object)null)
+					choreDriver = GetComponent<ChoreDriver>();
+				}
+				if ((UnityEngine.Object)choreDriver != (UnityEngine.Object)null)
+				{
+					Chore currentChore = choreDriver.GetCurrentChore();
+					if (currentChore != null)
 					{
-						component.AddExperienceIfRole("Hauler", dt * ROLES.ACTIVE_EXPERIENCE_VERY_SLOW);
-						component.AddExperienceIfRole(MaterialsManager.ID, dt * ROLES.ACTIVE_EXPERIENCE_VERY_SLOW);
-						component.AddExperienceIfRole(Handyman.ID, dt * ROLES.ACTIVE_EXPERIENCE_VERY_SLOW);
+						ReportManager.Instance.ReportValue(ReportManager.ReportType.TravelTime, dt, currentChore.choreType.Name, currentChore.driver.GetProperName());
+						if (currentChore is FetchAreaChore)
+						{
+							MinionResume component = GetComponent<MinionResume>();
+							if ((UnityEngine.Object)component != (UnityEngine.Object)null)
+							{
+								component.AddExperienceIfRole("Hauler", dt * ROLES.ACTIVE_EXPERIENCE_VERY_SLOW);
+								component.AddExperienceIfRole(MaterialsManager.ID, dt * ROLES.ACTIVE_EXPERIENCE_VERY_SLOW);
+								component.AddExperienceIfRole(Handyman.ID, dt * ROLES.ACTIVE_EXPERIENCE_VERY_SLOW);
+							}
+						}
 					}
 				}
 			}

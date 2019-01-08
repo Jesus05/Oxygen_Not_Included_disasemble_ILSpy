@@ -231,10 +231,10 @@ public class KCrashReporter : MonoBehaviour
 		{
 			using (WebClient webClient = new WebClient())
 			{
+				Encoding encoding = webClient.Encoding = Encoding.UTF8;
 				byte[] array = File.ReadAllBytes(save_file);
 				string text = "----" + System.DateTime.Now.Ticks.ToString("x");
 				webClient.Headers.Add("Content-Type", "multipart/form-data; boundary=" + text);
-				string @string = webClient.Encoding.GetString(array);
 				string empty = string.Empty;
 				string text2 = default(string);
 				using (SHA1CryptoServiceProvider sHA1CryptoServiceProvider = new SHA1CryptoServiceProvider())
@@ -247,13 +247,23 @@ public class KCrashReporter : MonoBehaviour
 					string arg = JsonConvert.SerializeObject(metadata);
 					empty += string.Format("--{0}\r\nContent-Disposition: form-data; name=\"{1}\"\r\n\r\n{2}\r\n", text, "metadata", arg);
 				}
-				empty += string.Format("--{0}\r\nContent-Disposition: form-data; name=\"save\"; filename=\"{1}\"\r\nContent-Type: {2}\r\n\r\n{3}", text, save_file, "application/x-spss-sav", @string);
-				empty += $"\r\n--{text}--\r\n";
-				byte[] bytes = webClient.Encoding.GetBytes(empty);
+				empty += string.Format("--{0}\r\nContent-Disposition: form-data; name=\"save\"; filename=\"{1}\"\r\nContent-Type: {2}\r\n\r\n", new object[3]
+				{
+					text,
+					save_file,
+					"application/x-spss-sav"
+				});
+				byte[] bytes = encoding.GetBytes(empty);
+				string s = $"\r\n--{text}--\r\n";
+				byte[] bytes2 = encoding.GetBytes(s);
+				byte[] array2 = new byte[bytes.Length + array.Length + bytes2.Length];
+				Buffer.BlockCopy(bytes, 0, array2, 0, bytes.Length);
+				Buffer.BlockCopy(array, 0, array2, bytes.Length, array.Length);
+				Buffer.BlockCopy(bytes2, 0, array2, bytes.Length + array.Length, bytes2.Length);
 				Uri address = new Uri("http://crashes.klei.ca/submitSave");
 				try
 				{
-					webClient.UploadData(address, "POST", bytes);
+					webClient.UploadData(address, "POST", array2);
 					return text2;
 				}
 				catch (Exception obj)
@@ -401,7 +411,7 @@ public class KCrashReporter : MonoBehaviour
 						msg = "Debug tools were used in this game.\n\n" + msg;
 					}
 					error.fullstack = msg;
-					error.build = 299985;
+					error.build = 302293;
 					error.log = GetLogContents();
 					error.summaryline = msg;
 					error.user_message = userMessage;

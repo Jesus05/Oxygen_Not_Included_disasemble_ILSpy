@@ -45,15 +45,20 @@ public class JetSuitConfig : IEquipmentConfig
 			if ((Object)soleOwner2 != (Object)null)
 			{
 				GameObject targetGameObject2 = soleOwner2.GetComponent<MinionAssignablesProxy>().GetTargetGameObject();
-				Navigator component2 = targetGameObject2.GetComponent<Navigator>();
-				if ((Object)component2 != (Object)null)
+				Navigator component3 = targetGameObject2.GetComponent<Navigator>();
+				if ((Object)component3 != (Object)null)
 				{
-					component2.SetFlags(PathFinder.PotentialPath.Flags.HasJetPack);
+					component3.SetFlags(PathFinder.PotentialPath.Flags.HasJetPack);
 				}
-				MinionResume component3 = targetGameObject2.GetComponent<MinionResume>();
-				if ((Object)component3 != (Object)null && component3.HasPerk(RoleManager.rolePerks.ExosuitExpertise.id))
+				MinionResume component4 = targetGameObject2.GetComponent<MinionResume>();
+				if ((Object)component4 != (Object)null && component4.HasPerk(RoleManager.rolePerks.ExosuitExpertise.id))
 				{
 					targetGameObject2.GetAttributes().Get(Db.Get().Attributes.Athletics).Add(SuitExpert.AthleticsModifier);
+				}
+				KAnimControllerBase component5 = targetGameObject2.GetComponent<KAnimControllerBase>();
+				if ((bool)component5)
+				{
+					component5.AddAnimOverrides(Assets.GetAnim("anim_loco_hover_kanim"), 0f);
 				}
 			}
 		};
@@ -63,11 +68,20 @@ public class JetSuitConfig : IEquipmentConfig
 			{
 				Ownables soleOwner = eq.assignee.GetSoleOwner();
 				GameObject targetGameObject = soleOwner.GetComponent<MinionAssignablesProxy>().GetTargetGameObject();
-				targetGameObject.GetAttributes()?.Get(Db.Get().Attributes.Athletics).Remove(SuitExpert.AthleticsModifier);
-				Navigator component = targetGameObject.GetComponent<Navigator>();
-				if ((Object)component != (Object)null)
+				Attributes attributes = targetGameObject.GetAttributes();
+				if (attributes != null)
 				{
-					component.ClearFlags(PathFinder.PotentialPath.Flags.HasJetPack);
+					attributes.Get(Db.Get().Attributes.Athletics).Remove(SuitExpert.AthleticsModifier);
+					KAnimControllerBase component = targetGameObject.GetComponent<KAnimControllerBase>();
+					if ((bool)component)
+					{
+						component.RemoveAnimOverrides(Assets.GetAnim("anim_loco_hover_kanim"));
+					}
+				}
+				Navigator component2 = targetGameObject.GetComponent<Navigator>();
+				if ((Object)component2 != (Object)null)
+				{
+					component2.ClearFlags(PathFinder.PotentialPath.Flags.HasJetPack);
 				}
 			}
 		};

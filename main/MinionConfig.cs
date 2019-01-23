@@ -100,7 +100,7 @@ public class MinionConfig : IEntityConfig
 		KBatchedAnimController kBatchedAnimController = gameObject.AddOrGet<KBatchedAnimController>();
 		kBatchedAnimController.isMovable = true;
 		kBatchedAnimController.sceneLayer = Grid.SceneLayer.Move;
-		kBatchedAnimController.AnimFiles = new KAnimFile[9]
+		kBatchedAnimController.AnimFiles = new KAnimFile[8]
 		{
 			Assets.GetAnim("body_comp_default_kanim"),
 			Assets.GetAnim("anim_construction_default_kanim"),
@@ -108,7 +108,6 @@ public class MinionConfig : IEntityConfig
 			Assets.GetAnim("anim_loco_firepole_kanim"),
 			Assets.GetAnim("anim_loco_new_kanim"),
 			Assets.GetAnim("anim_loco_tube_kanim"),
-			Assets.GetAnim("anim_loco_hover_kanim"),
 			Assets.GetAnim("anim_construction_firepole_kanim"),
 			Assets.GetAnim("anim_construction_jetsuit_kanim")
 		};

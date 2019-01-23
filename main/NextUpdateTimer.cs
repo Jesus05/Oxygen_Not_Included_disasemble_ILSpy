@@ -20,7 +20,7 @@ public class NextUpdateTimer : KMonoBehaviour
 	{
 		base.OnPrefabInit();
 		currentReleaseDate = new System.DateTime(2018, 12, 13, 17, 0, 0, DateTimeKind.Utc);
-		nextReleaseDate = new System.DateTime(2019, 2, 7, 17, 0, 0, DateTimeKind.Utc);
+		nextReleaseDate = new System.DateTime(2019, 2, 19, 17, 0, 0, DateTimeKind.Utc);
 		initialAnimScale = UpdateAnimController.animScale;
 		ScreenResize instance = ScreenResize.Instance;
 		instance.OnResize = (System.Action)Delegate.Combine(instance.OnResize, new System.Action(RefreshScale));

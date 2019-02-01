@@ -2,7 +2,7 @@ public abstract class ConduitSensor : Switch
 {
 	public ConduitType conduitType;
 
-	protected bool wasOn;
+	protected bool wasOn = false;
 
 	protected KBatchedAnimController animController;
 

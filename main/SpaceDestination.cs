@@ -48,16 +48,16 @@ public class SpaceDestination
 
 		public bool TryComplete(SpaceDestination destination)
 		{
-			if (!completed)
+			if (completed)
 			{
-				completed = true;
-				if (discoveredRareResource != SimHashes.Void && !destination.recoverableElements.ContainsKey(discoveredRareResource))
-				{
-					destination.recoverableElements.Add(discoveredRareResource, Random.value);
-				}
-				return true;
+				return false;
 			}
-			return false;
+			completed = true;
+			if (discoveredRareResource != SimHashes.Void && !destination.recoverableElements.ContainsKey(discoveredRareResource))
+			{
+				destination.recoverableElements.Add(discoveredRareResource, Random.value);
+			}
+			return true;
 		}
 	}
 
@@ -229,15 +229,15 @@ public class SpaceDestination
 
 	public float GetResourceValue(SimHashes resource, float roll)
 	{
-		if (GetDestinationType().elementTable.ContainsKey(resource))
+		if (!GetDestinationType().elementTable.ContainsKey(resource))
 		{
-			return GetDestinationType().elementTable[resource].Lerp(roll);
-		}
-		if (SpaceDestinationTypes.extendedElementTable.ContainsKey(resource))
-		{
+			if (!SpaceDestinationTypes.extendedElementTable.ContainsKey(resource))
+			{
+				return 0f;
+			}
 			return SpaceDestinationTypes.extendedElementTable[resource].Lerp(roll);
 		}
-		return 0f;
+		return GetDestinationType().elementTable[resource].Lerp(roll);
 	}
 
 	public Dictionary<SimHashes, float> GetMissionResourceResult(float totalCargoSpace, bool solids = true, bool liquids = true, bool gasses = true)
@@ -271,7 +271,6 @@ public class SpaceDestination
 			{
 				dictionary.Add(item.Key, item.Value);
 			}
-			return dictionary;
 		}
 		return dictionary;
 	}

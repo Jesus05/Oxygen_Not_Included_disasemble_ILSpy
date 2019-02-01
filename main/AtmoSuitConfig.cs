@@ -26,7 +26,7 @@ public class AtmoSuitConfig : IEquipmentConfig
 		SimHashes outputElement = SimHashes.Dirt;
 		float mass = (float)TUNING.EQUIPMENT.SUITS.ATMOSUIT_MASS;
 		string anim = "suit_oxygen_kanim";
-		string empty = string.Empty;
+		string snapOn = "";
 		string buildOverride = "body_oxygen_kanim";
 		int buildOverridePriority = 6;
 		List<AttributeModifier> attributeModifiers = list;
@@ -34,7 +34,7 @@ public class AtmoSuitConfig : IEquipmentConfig
 		{
 			GameTags.Suit
 		};
-		EquipmentDef equipmentDef = EquipmentTemplates.CreateEquipmentDef(id, sLOT, outputElement, mass, anim, empty, buildOverride, buildOverridePriority, attributeModifiers, null, true, EntityTemplates.CollisionShape.CIRCLE, 0.325f, 0.325f, additional_tags, null);
+		EquipmentDef equipmentDef = EquipmentTemplates.CreateEquipmentDef(id, sLOT, outputElement, mass, anim, snapOn, buildOverride, buildOverridePriority, attributeModifiers, null, true, EntityTemplates.CollisionShape.CIRCLE, 0.325f, 0.325f, additional_tags, null);
 		equipmentDef.RecipeDescription = STRINGS.EQUIPMENT.PREFABS.ATMO_SUIT.RECIPE_DESC;
 		equipmentDef.EffectImmunites.Add(Db.Get().effects.Get("SoakingWet"));
 		equipmentDef.EffectImmunites.Add(Db.Get().effects.Get("WetFeet"));
@@ -63,12 +63,18 @@ public class AtmoSuitConfig : IEquipmentConfig
 			if (eq.assignee != null)
 			{
 				Ownables soleOwner = eq.assignee.GetSoleOwner();
-				GameObject targetGameObject = soleOwner.GetComponent<MinionAssignablesProxy>().GetTargetGameObject();
-				targetGameObject.GetAttributes()?.Get(Db.Get().Attributes.Athletics).Remove(SuitExpert.AthleticsModifier);
-				Navigator component = targetGameObject.GetComponent<Navigator>();
-				if ((Object)component != (Object)null)
+				if ((Object)soleOwner != (Object)null)
 				{
-					component.ClearFlags(PathFinder.PotentialPath.Flags.HasAtmoSuit);
+					GameObject targetGameObject = soleOwner.GetComponent<MinionAssignablesProxy>().GetTargetGameObject();
+					if ((bool)targetGameObject)
+					{
+						targetGameObject.GetAttributes()?.Get(Db.Get().Attributes.Athletics).Remove(SuitExpert.AthleticsModifier);
+						Navigator component = targetGameObject.GetComponent<Navigator>();
+						if ((Object)component != (Object)null)
+						{
+							component.ClearFlags(PathFinder.PotentialPath.Flags.HasAtmoSuit);
+						}
+					}
 				}
 			}
 		};

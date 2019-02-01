@@ -120,7 +120,7 @@ public class MournChore : Chore<MournChore.StatesInstance>
 	};
 
 	public MournChore(IStateMachineTarget master)
-		: base(Db.Get().ChoreTypes.Mourn, master, master.GetComponent<ChoreProvider>(), false, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.high, 5, false, true, 0, (Tag[])null)
+		: base(Db.Get().ChoreTypes.Mourn, master, master.GetComponent<ChoreProvider>(), false, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.high, 5, false, true, 0, (Tag[])null, false)
 	{
 		smi = new StatesInstance(this);
 		AddPrecondition(ChorePreconditions.instance.IsNotRedAlert, null);
@@ -161,7 +161,6 @@ public class MournChore : Chore<MournChore.StatesInstance>
 					result = grave;
 				}
 			}
-			return result;
 		}
 		finally
 		{
@@ -171,6 +170,7 @@ public class MournChore : Chore<MournChore.StatesInstance>
 				disposable.Dispose();
 			}
 		}
+		return result;
 	}
 
 	public override void Begin(Precondition.Context context)

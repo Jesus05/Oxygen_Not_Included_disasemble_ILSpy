@@ -70,7 +70,7 @@ public class LocString
 		string text = parent_path;
 		if (text == null)
 		{
-			text = string.Empty;
+			text = "";
 		}
 		text = text + type.Name + ".";
 		FieldInfo[] array = fields;

@@ -188,16 +188,16 @@ namespace UnityEngine.UI.Extensions
 		{
 			Vector2 a = CalculateBezierPoint(curveIndex, t0);
 			Vector2 vector = CalculateBezierPoint(curveIndex, t1);
-			if ((a - vector).sqrMagnitude < MINIMUM_SQR_DISTANCE)
+			if (!((a - vector).sqrMagnitude < MINIMUM_SQR_DISTANCE))
 			{
-				return 0;
-			}
-			float num = (t0 + t1) / 2f;
-			Vector2 vector2 = CalculateBezierPoint(curveIndex, num);
-			Vector2 normalized = (a - vector2).normalized;
-			Vector2 normalized2 = (vector - vector2).normalized;
-			if (Vector2.Dot(normalized, normalized2) > DIVISION_THRESHOLD || Mathf.Abs(num - 0.5f) < 0.0001f)
-			{
+				float num = (t0 + t1) / 2f;
+				Vector2 vector2 = CalculateBezierPoint(curveIndex, num);
+				Vector2 normalized = (a - vector2).normalized;
+				Vector2 normalized2 = (vector - vector2).normalized;
+				if (!(Vector2.Dot(normalized, normalized2) > DIVISION_THRESHOLD) && !(Mathf.Abs(num - 0.5f) < 0.0001f))
+				{
+					return 0;
+				}
 				int num2 = 0;
 				num2 += FindDrawingPoints(curveIndex, t0, num, pointList, insertionIndex);
 				pointList.Insert(insertionIndex + num2, vector2);

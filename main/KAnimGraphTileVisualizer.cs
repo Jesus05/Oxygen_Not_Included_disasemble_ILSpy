@@ -16,18 +16,18 @@ public class KAnimGraphTileVisualizer : KMonoBehaviour, ISaveLoadable, IUtilityI
 	}
 
 	[Serialize]
-	private UtilityConnections _connections;
+	private UtilityConnections _connections = (UtilityConnections)0;
 
 	public bool isPhysicalBuilding;
 
-	public bool skipCleanup;
+	public bool skipCleanup = false;
 
-	public bool skipRefresh;
+	public bool skipRefresh = false;
 
 	public ConnectionSource connectionSource;
 
 	[NonSerialized]
-	public IUtilityNetworkMgr connectionManager;
+	public IUtilityNetworkMgr connectionManager = null;
 
 	public UtilityConnections Connections
 	{
@@ -104,7 +104,7 @@ public class KAnimGraphTileVisualizer : KMonoBehaviour, ISaveLoadable, IUtilityI
 				{
 					text += "_place";
 				}
-				if (text != null && text != string.Empty)
+				if (text != null && text != "")
 				{
 					component.Play(text, KAnim.PlayMode.Once, 1f, 0f);
 				}

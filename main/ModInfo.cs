@@ -64,11 +64,11 @@ public struct ModInfo : IEquatable<ModInfo>
 
 	public override bool Equals(object other)
 	{
-		if (!(other is ModInfo))
+		if (other is ModInfo)
 		{
-			return false;
+			ModInfo other2 = (ModInfo)other;
+			return Equals(other2);
 		}
-		ModInfo other2 = (ModInfo)other;
-		return Equals(other2);
+		return false;
 	}
 }

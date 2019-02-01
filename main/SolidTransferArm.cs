@@ -108,7 +108,7 @@ public class SolidTransferArm : StateMachineComponent<SolidTransferArm.SMInstanc
 
 	private bool rotation_complete;
 
-	private ArmAnim arm_anim;
+	private ArmAnim arm_anim = ArmAnim.Idle;
 
 	private List<int> reachableCells = new List<int>(100);
 
@@ -197,6 +197,7 @@ public class SolidTransferArm : StateMachineComponent<SolidTransferArm.SMInstanc
 		if (operational.IsOperational)
 		{
 			RefreshReachableCells();
+			pickupablesDirty = true;
 			Chore.Precondition.Context out_context = default(Chore.Precondition.Context);
 			if (choreConsumer.FindNextChore(ref out_context))
 			{
@@ -235,6 +236,10 @@ public class SolidTransferArm : StateMachineComponent<SolidTransferArm.SMInstanc
 
 	private void RefreshReachableCells()
 	{
+		foreach (int reachableCell in reachableCells)
+		{
+			MinionGroupProber.Get().ProxyProberCell(reachableCell, false);
+		}
 		reachableCells.Clear();
 		Grid.CellToXY(Grid.PosToCell(this), out int x, out int y);
 		for (int i = y - pickupRange; i < y + pickupRange + 1; i++)
@@ -254,7 +259,7 @@ public class SolidTransferArm : StateMachineComponent<SolidTransferArm.SMInstanc
 	{
 		foreach (int reachableCell in reachableCells)
 		{
-			MinionGroupProber.Get().SetProberCell(reachableCell);
+			MinionGroupProber.Get().ProxyProberCell(reachableCell, true);
 		}
 	}
 
@@ -299,22 +304,20 @@ public class SolidTransferArm : StateMachineComponent<SolidTransferArm.SMInstanc
 	private bool IsPickupableRelevantToMyInterests(Pickupable pickupable)
 	{
 		KPrefabID kPrefabID = pickupable.KPrefabID;
-		if (!kPrefabID.HasAnyTags(ref tagBits))
+		if (kPrefabID.HasAnyTags(ref tagBits))
 		{
+			int pickupableCell = GetPickupableCell(pickupable);
+			if (IsCellReachable(pickupableCell))
+			{
+				return true;
+			}
 			return false;
 		}
-		int pickupableCell = GetPickupableCell(pickupable);
-		if (!IsCellReachable(pickupableCell))
-		{
-			return false;
-		}
-		return true;
+		return false;
 	}
 
 	public void FindFetchTarget(Storage destination, TagBits tag_bits, TagBits required_tags, TagBits forbid_tags, float required_amount, ref Pickupable target)
 	{
-		target = null;
-		pickupablesDirty = true;
 		RefreshPickupables();
 		target = FetchManager.FindFetchTarget(pickupables, destination, ref tag_bits, ref required_tags, ref forbid_tags, required_amount);
 	}
@@ -343,11 +346,11 @@ public class SolidTransferArm : StateMachineComponent<SolidTransferArm.SMInstanc
 
 	private int GetPickupableCell(Pickupable pickupable)
 	{
-		if ((bool)pickupable.storage)
+		if (!(bool)pickupable.storage)
 		{
-			return Grid.PosToCell(pickupable.storage);
+			return pickupable.cachedCell;
 		}
-		return pickupable.cachedCell;
+		return Grid.PosToCell(pickupable.storage);
 	}
 
 	private void SetArmAnim(ArmAnim new_anim)

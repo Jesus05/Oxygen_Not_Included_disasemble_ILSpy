@@ -31,15 +31,15 @@ public class ComplexRecipe
 
 	public GameObject FabricationVisualizer;
 
-	public bool useResultAsDescription;
+	public bool useResultAsDescription = false;
 
-	public bool displayInputAndOutput;
+	public bool displayInputAndOutput = false;
 
 	public string description;
 
 	public List<Tag> fabricators;
 
-	public int sortOrder;
+	public int sortOrder = 0;
 
 	public string requiredTech;
 
@@ -69,12 +69,12 @@ public class ComplexRecipe
 
 	public bool IsRequiredTechUnlocked()
 	{
-		if (string.IsNullOrEmpty(requiredTech))
+		if (!string.IsNullOrEmpty(requiredTech))
 		{
-			return true;
+			Tech tech = Db.Get().Techs.Get(requiredTech);
+			return tech.IsComplete();
 		}
-		Tech tech = Db.Get().Techs.Get(requiredTech);
-		return tech.IsComplete();
+		return true;
 	}
 
 	public Sprite GetUIIcon()
@@ -97,14 +97,14 @@ public class ComplexRecipe
 
 	public string GetUIName()
 	{
-		if (displayInputAndOutput)
+		if (!displayInputAndOutput)
 		{
-			return string.Format(UI.UISIDESCREENS.REFINERYSIDESCREEN.RECIPE_FROM_TO, ingredients[0].material.ProperName(), results[0].material.ProperName());
-		}
-		if (useResultAsDescription)
-		{
+			if (!useResultAsDescription)
+			{
+				return ingredients[0].material.ProperName();
+			}
 			return results[0].material.ProperName();
 		}
-		return ingredients[0].material.ProperName();
+		return string.Format(UI.UISIDESCREENS.REFINERYSIDESCREEN.RECIPE_FROM_TO, ingredients[0].material.ProperName(), results[0].material.ProperName());
 	}
 }

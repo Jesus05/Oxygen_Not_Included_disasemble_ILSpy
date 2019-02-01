@@ -1,3 +1,5 @@
+using STRINGS;
+
 namespace TUNING
 {
 	public class DECOR
@@ -96,6 +98,23 @@ namespace TUNING
 				amount = -25,
 				radius = 6
 			};
+		}
+
+		public class SPACEARTIFACT
+		{
+			public static readonly ArtifactTier TIER_NONE = new ArtifactTier(UI.SPACEARTIFACTS.ARTIFACTTIERS.TIER_NONE, NONE);
+
+			public static readonly ArtifactTier TIER0 = new ArtifactTier(UI.SPACEARTIFACTS.ARTIFACTTIERS.TIER0, BONUS.TIER0);
+
+			public static readonly ArtifactTier TIER1 = new ArtifactTier(UI.SPACEARTIFACTS.ARTIFACTTIERS.TIER1, BONUS.TIER2);
+
+			public static readonly ArtifactTier TIER2 = new ArtifactTier(UI.SPACEARTIFACTS.ARTIFACTTIERS.TIER2, BONUS.TIER4);
+
+			public static readonly ArtifactTier TIER3 = new ArtifactTier(UI.SPACEARTIFACTS.ARTIFACTTIERS.TIER3, BONUS.TIER5);
+
+			public static readonly ArtifactTier TIER4 = new ArtifactTier(UI.SPACEARTIFACTS.ARTIFACTTIERS.TIER4, BONUS.TIER6);
+
+			public static readonly ArtifactTier TIER5 = new ArtifactTier(UI.SPACEARTIFACTS.ARTIFACTTIERS.TIER5, BONUS.TIER7);
 		}
 
 		public static int LIT_BONUS = 15;

@@ -71,11 +71,11 @@ public class AssignableSideScreenRow : KMonoBehaviour
 						flag = true;
 					}
 				}
-				if (!flag)
-				{
-					currentState = AssignableState.Unassigned;
-					assignmentText.text = UI.UISIDESCREENS.ASSIGNABLESIDESCREEN.UNASSIGNED;
-				}
+			}
+			if (!flag)
+			{
+				currentState = AssignableState.Unassigned;
+				assignmentText.text = UI.UISIDESCREENS.ASSIGNABLESIDESCREEN.UNASSIGNED;
 			}
 		}
 		toggle.ChangeState((int)currentState);
@@ -140,6 +140,6 @@ public class AssignableSideScreenRow : KMonoBehaviour
 				break;
 			}
 		}
-		return string.Empty;
+		return "";
 	}
 }

@@ -7,7 +7,7 @@ public class LogicMassSensor : Switch, ISaveLoadable, IThresholdSwitch
 {
 	[SerializeField]
 	[Serialize]
-	private float threshold;
+	private float threshold = 0f;
 
 	[SerializeField]
 	[Serialize]
@@ -16,22 +16,22 @@ public class LogicMassSensor : Switch, ISaveLoadable, IThresholdSwitch
 	[MyCmpGet]
 	private LogicPorts logicPorts;
 
-	private bool was_pressed;
+	private bool was_pressed = false;
 
-	private bool was_on;
+	private bool was_on = false;
 
-	public float rangeMin;
+	public float rangeMin = 0f;
 
 	public float rangeMax = 1f;
 
 	[Serialize]
-	private float massSolid;
+	private float massSolid = 0f;
 
 	[Serialize]
-	private float massPickupables;
+	private float massPickupables = 0f;
 
 	[Serialize]
-	private float massActivators;
+	private float massActivators = 0f;
 
 	private const float MIN_TOGGLE_TIME = 0.15f;
 

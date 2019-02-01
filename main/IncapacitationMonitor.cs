@@ -32,15 +32,15 @@ public class IncapacitationMonitor : GameStateMachine<IncapacitationMonitor, Inc
 		public Death GetCauseOfIncapacitation()
 		{
 			KPrefabID component = GetComponent<KPrefabID>();
-			if (component.HasTag(GameTags.CaloriesDepleted))
+			if (!component.HasTag(GameTags.CaloriesDepleted))
 			{
-				return Db.Get().Deaths.Starvation;
-			}
-			if (component.HasTag(GameTags.HitPointsDepleted))
-			{
+				if (!component.HasTag(GameTags.HitPointsDepleted))
+				{
+					return Db.Get().Deaths.Generic;
+				}
 				return Db.Get().Deaths.Slain;
 			}
-			return Db.Get().Deaths.Generic;
+			return Db.Get().Deaths.Starvation;
 		}
 	}
 

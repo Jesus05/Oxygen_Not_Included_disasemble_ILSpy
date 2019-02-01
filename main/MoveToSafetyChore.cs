@@ -45,7 +45,7 @@ public class MoveToSafetyChore : Chore<MoveToSafetyChore.StatesInstance>
 	}
 
 	public MoveToSafetyChore(IStateMachineTarget target)
-		: base(Db.Get().ChoreTypes.MoveToSafety, target, target.GetComponent<ChoreProvider>(), false, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.basic, -1, false, true, 0, (Tag[])null)
+		: base(Db.Get().ChoreTypes.MoveToSafety, target, target.GetComponent<ChoreProvider>(), false, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.basic, -1, false, true, 0, (Tag[])null, false)
 	{
 		smi = new StatesInstance(this, target.gameObject);
 	}

@@ -52,7 +52,7 @@ public class Growing : StateMachineComponent<Growing.StatesInstance>, IGameObjec
 
 		public bool CanExitStalled()
 		{
-			return !IsWilting() && !IsSleeping() && !IsGrown();
+			return !IsWilting() && !IsSleeping();
 		}
 	}
 
@@ -88,15 +88,16 @@ public class Growing : StateMachineComponent<Growing.StatesInstance>, IGameObjec
 		{
 			default_state = growing;
 			base.serializable = true;
-			root.EventTransition(GameHashes.Wilt, stalled, (StatesInstance smi) => smi.IsWilting()).EventTransition(GameHashes.CropSleep, stalled, (StatesInstance smi) => smi.IsSleeping()).Enter(AddToScenePartitioner)
-				.Exit(RemoveFromScenePartitioner);
-			growing.TriggerOnEnter(GameHashes.Grow, null).Update("CheckGrown", delegate(StatesInstance smi, float dt)
-			{
-				if (smi.ReachedNextHarvest())
+			root.Enter(AddToScenePartitioner).Exit(RemoveFromScenePartitioner);
+			growing.EventTransition(GameHashes.Wilt, stalled, (StatesInstance smi) => smi.IsWilting()).EventTransition(GameHashes.CropSleep, stalled, (StatesInstance smi) => smi.IsSleeping()).TriggerOnEnter(GameHashes.Grow, null)
+				.Update("CheckGrown", delegate(StatesInstance smi, float dt)
 				{
-					smi.GoTo(grown);
-				}
-			}, UpdateRate.SIM_4000ms, false).ToggleStatusItem(Db.Get().CreatureStatusItems.Growing, (StatesInstance smi) => smi.master.GetComponent<Growing>())
+					if (smi.ReachedNextHarvest())
+					{
+						smi.GoTo(grown);
+					}
+				}, UpdateRate.SIM_4000ms, false)
+				.ToggleStatusItem(Db.Get().CreatureStatusItems.Growing, (StatesInstance smi) => smi.master.GetComponent<Growing>())
 				.Enter(delegate(StatesInstance smi)
 				{
 					State state = (!smi.master.replanted) ? growing.wild : growing.planted;
@@ -104,6 +105,7 @@ public class Growing : StateMachineComponent<Growing.StatesInstance>, IGameObjec
 				});
 			growing.wild.ToggleAttributeModifier("GrowingWild", (StatesInstance smi) => smi.wildGrowingRate, null);
 			growing.planted.ToggleAttributeModifier("Growing", (StatesInstance smi) => smi.baseGrowingRate, null);
+			stalled.EventTransition(GameHashes.WiltRecover, growing, (StatesInstance smi) => smi.CanExitStalled()).EventTransition(GameHashes.CropWakeUp, growing, (StatesInstance smi) => smi.CanExitStalled());
 			grown.DefaultState(grown.idle).TriggerOnEnter(GameHashes.Grow, null).Update("CheckNotGrown", delegate(StatesInstance smi, float dt)
 			{
 				if (!smi.ReachedNextHarvest())
@@ -143,13 +145,6 @@ public class Growing : StateMachineComponent<Growing.StatesInstance>, IGameObjec
 				smi.master.maturity.SetValue(0f);
 				smi.master.oldAge.SetValue(0f);
 			}).GoTo(grown.idle);
-			stalled.EventTransition(GameHashes.WiltRecover, growing, (StatesInstance smi) => smi.CanExitStalled()).EventTransition(GameHashes.CropWakeUp, growing, (StatesInstance smi) => smi.CanExitStalled()).Update("Growing.stalled", delegate(StatesInstance smi, float dt)
-			{
-				if (smi.master.oldAge.value >= smi.master.oldAge.GetMax())
-				{
-					smi.GoTo(grown.try_self_harvest);
-				}
-			}, UpdateRate.SIM_4000ms, false);
 		}
 	}
 
@@ -162,7 +157,7 @@ public class Growing : StateMachineComponent<Growing.StatesInstance>, IGameObjec
 	private AttributeModifier baseMaturityMax;
 
 	[Serialize]
-	private bool replanted;
+	private bool replanted = false;
 
 	[MyCmpGet]
 	private WiltCondition wiltCondition;
@@ -314,7 +309,7 @@ public class Growing : StateMachineComponent<Growing.StatesInstance>, IGameObjec
 	public List<Descriptor> GetDescriptors(GameObject go)
 	{
 		List<Descriptor> list = new List<Descriptor>();
-		list.Add(new Descriptor(string.Format(UI.GAMEOBJECTEFFECTS.GROWTHTIME_SIMPLE, GameUtil.GetFormattedCycles(growthTime, string.Empty)), string.Format(UI.GAMEOBJECTEFFECTS.TOOLTIPS.GROWTHTIME_SIMPLE, GameUtil.GetFormattedCycles(growthTime, string.Empty)), Descriptor.DescriptorType.Requirement, false));
+		list.Add(new Descriptor(string.Format(UI.GAMEOBJECTEFFECTS.GROWTHTIME_SIMPLE, GameUtil.GetFormattedCycles(growthTime, "")), string.Format(UI.GAMEOBJECTEFFECTS.TOOLTIPS.GROWTHTIME_SIMPLE, GameUtil.GetFormattedCycles(growthTime, "")), Descriptor.DescriptorType.Requirement, false));
 		return list;
 	}
 }

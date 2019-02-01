@@ -1,4 +1,5 @@
 using STRINGS;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,6 +8,10 @@ public class RedAlertManager : GameStateMachine<RedAlertManager, RedAlertManager
 	public new class Instance : GameInstance
 	{
 		private static Instance instance;
+
+		private bool isToggled = false;
+
+		private bool hasEmergencyChore = false;
 
 		public Notification notification = new Notification(MISC.NOTIFICATIONS.REDALERT.NAME, NotificationType.Bad, HashedString.Invalid, (List<Notification> notificationList, object data) => MISC.NOTIFICATIONS.REDALERT.TOOLTIP, null, false, 0f, null, null);
 
@@ -31,15 +36,34 @@ public class RedAlertManager : GameStateMachine<RedAlertManager, RedAlertManager
 			return base.sm.isOn.Get(base.smi);
 		}
 
+		public bool IsToggledOn()
+		{
+			return isToggled;
+		}
+
 		public void Toggle(bool on)
 		{
-			base.sm.isOn.Set(on, base.smi);
+			isToggled = on;
+			Refresh();
+		}
+
+		public void HasEmergencyChore(bool on)
+		{
+			hasEmergencyChore = on;
+			Refresh();
+		}
+
+		private void Refresh()
+		{
+			base.sm.isOn.Set(isToggled || hasEmergencyChore, base.smi);
 		}
 	}
 
 	public State off;
 
 	public State on;
+
+	public State on_pst;
 
 	public BoolParameter isOn = new BoolParameter();
 
@@ -62,7 +86,16 @@ public class RedAlertManager : GameStateMachine<RedAlertManager, RedAlertManager
 			{
 				Vignette.Instance.Reset();
 			})
+			.Enter("Sounds", delegate
+			{
+				KMonoBehaviour.PlaySound(GlobalAssets.GetSound("RedAlert_ON", false));
+			})
+			.ToggleLoopingSound(GlobalAssets.GetSound("RedAlert_LP", false), (Func<Instance, bool>)null)
 			.ToggleNotification((Instance smi) => smi.notification)
 			.ParamTransition(isOn, off, GameStateMachine<RedAlertManager, Instance, IStateMachineTarget, object>.IsFalse);
+		on_pst.Enter("Sounds", delegate
+		{
+			KMonoBehaviour.PlaySound(GlobalAssets.GetSound("RedAlert_OFF", false));
+		});
 	}
 }

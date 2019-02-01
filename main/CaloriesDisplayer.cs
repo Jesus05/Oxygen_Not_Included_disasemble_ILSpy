@@ -12,11 +12,11 @@ public class CaloriesDisplayer : StandardAmountDisplayer
 
 		public override string GetFormattedModifier(AttributeModifier modifier, GameObject parent_instance)
 		{
-			if (modifier.IsMultiplier)
+			if (!modifier.IsMultiplier)
 			{
-				return GameUtil.GetFormattedPercent((0f - modifier.Value) * 100f, GameUtil.TimeSlice.None);
+				return base.GetFormattedModifier(modifier, parent_instance);
 			}
-			return base.GetFormattedModifier(modifier, parent_instance);
+			return GameUtil.GetFormattedPercent((0f - modifier.Value) * 100f, GameUtil.TimeSlice.None);
 		}
 
 		public override string GetTooltip(Attribute master, AttributeInstance instance)

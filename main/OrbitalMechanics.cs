@@ -23,17 +23,19 @@ public class OrbitalMechanics : KMonoBehaviour, IRenderEveryTick
 		public Vector3 scale;
 
 		public float distance;
+
+		public float renderZ;
 	}
 
 	[SerializeField]
 	private OrbitData[] orbitData;
 
 	[SerializeField]
-	private bool applyOverrides;
+	private bool applyOverrides = false;
 
 	[SerializeField]
 	[Range(0f, 100f)]
-	private float overridePercent;
+	private float overridePercent = 0f;
 
 	[SerializeField]
 	private GameObject[] orbitingObjects;
@@ -123,7 +125,7 @@ public class OrbitalMechanics : KMonoBehaviour, IRenderEveryTick
 		Quaternion rotation = Quaternion.Euler(data.angle, 0f, 0f);
 		Vector3 b = rotation * (a2 * d);
 		Vector3 result = a + b;
-		result.z = 100f;
+		result.z = data.renderZ;
 		return result;
 	}
 }

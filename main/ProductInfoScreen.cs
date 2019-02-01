@@ -39,7 +39,7 @@ public class ProductInfoScreen : KScreen
 
 	private bool expandedInfo = true;
 
-	private bool configuring;
+	private bool configuring = false;
 
 	private void RefreshScreen()
 	{
@@ -178,7 +178,7 @@ public class ProductInfoScreen : KScreen
 	private void SetTitle(BuildingDef def)
 	{
 		titleBar.SetTitle(def.Name);
-		bool flag = ((UnityEngine.Object)PlanScreen.Instance != (UnityEngine.Object)null && PlanScreen.Instance.isActiveAndEnabled && PlanScreen.Instance.BuildableState(currentDef) == PlanScreen.RequirementsState.Complete) || ((UnityEngine.Object)BuildMenu.Instance != (UnityEngine.Object)null && BuildMenu.Instance.isActiveAndEnabled && BuildMenu.Instance.BuildableState(currentDef) == PlanScreen.RequirementsState.Complete);
+		bool flag = ((UnityEngine.Object)PlanScreen.Instance != (UnityEngine.Object)null && PlanScreen.Instance.isActiveAndEnabled && PlanScreen.Instance.BuildableState(def) == PlanScreen.RequirementsState.Complete) || ((UnityEngine.Object)BuildMenu.Instance != (UnityEngine.Object)null && BuildMenu.Instance.isActiveAndEnabled && BuildMenu.Instance.BuildableState(def) == PlanScreen.RequirementsState.Complete);
 		titleBar.GetComponentInChildren<KImage>().ColorState = ((!flag) ? KImage.ColorSelector.Disabled : KImage.ColorSelector.Active);
 	}
 
@@ -240,7 +240,7 @@ public class ProductInfoScreen : KScreen
 					float value4 = 0f;
 					dictionary.TryGetValue(item.Key, out value4);
 					float value5 = 0f;
-					string text2 = string.Empty;
+					string text2 = "";
 					if (dictionary2.TryGetValue(item.Key, out value5))
 					{
 						value5 = Mathf.Abs(value4 * value5);
@@ -321,17 +321,17 @@ public class ProductInfoScreen : KScreen
 
 	private bool BuildRequirementsMet(BuildingDef def)
 	{
-		if (DebugHandler.InstantBuildMode || Game.Instance.SandboxModeActive)
+		if (!DebugHandler.InstantBuildMode && !Game.Instance.SandboxModeActive)
 		{
-			return true;
-		}
-		Recipe craftRecipe = def.CraftRecipe;
-		if (!materialSelectionPanel.CanBuild(craftRecipe))
-		{
-			return false;
-		}
-		if (!Db.Get().TechItems.IsTechItemComplete(def.PrefabID))
-		{
+			Recipe craftRecipe = def.CraftRecipe;
+			if (materialSelectionPanel.CanBuild(craftRecipe))
+			{
+				if (Db.Get().TechItems.IsTechItemComplete(def.PrefabID))
+				{
+					return true;
+				}
+				return false;
+			}
 			return false;
 		}
 		return true;
@@ -360,36 +360,36 @@ public class ProductInfoScreen : KScreen
 			}
 			if ((UnityEngine.Object)PlanScreen.Instance != (UnityEngine.Object)null)
 			{
-				PrebuildTool.Instance.Activate(currentDef, PlanScreen.Instance.BuildableState(currentDef));
+				PrebuildTool.Instance.Activate(def, PlanScreen.Instance.BuildableState(def));
 			}
 			if ((UnityEngine.Object)BuildMenu.Instance != (UnityEngine.Object)null)
 			{
-				PrebuildTool.Instance.Activate(currentDef, BuildMenu.Instance.BuildableState(currentDef));
+				PrebuildTool.Instance.Activate(def, BuildMenu.Instance.BuildableState(def));
 			}
 		}
 	}
 
 	public static bool MaterialsMet(Recipe recipe)
 	{
-		if (recipe == null)
+		if (recipe != null)
 		{
-			Debug.LogError("Trying to verify the materials on a null recipe!", null);
-			return false;
-		}
-		if (recipe.Ingredients == null || recipe.Ingredients.Count == 0)
-		{
+			if (recipe.Ingredients != null && recipe.Ingredients.Count != 0)
+			{
+				for (int i = 0; i < recipe.Ingredients.Count; i++)
+				{
+					MaterialSelectionPanel.SelectedElemInfo selectedElemInfo = MaterialSelectionPanel.Filter(recipe.Ingredients[i].tag);
+					if (selectedElemInfo.kgAvailable < recipe.Ingredients[i].amount)
+					{
+						return false;
+					}
+				}
+				return true;
+			}
 			Debug.LogError("Trying to verify the materials on a recipe with no MaterialCategoryTags!", null);
 			return false;
 		}
-		for (int i = 0; i < recipe.Ingredients.Count; i++)
-		{
-			MaterialSelectionPanel.SelectedElemInfo selectedElemInfo = MaterialSelectionPanel.Filter(recipe.Ingredients[i].tag);
-			if (selectedElemInfo.kgAvailable < recipe.Ingredients[i].amount)
-			{
-				return false;
-			}
-		}
-		return true;
+		Debug.LogError("Trying to verify the materials on a null recipe!", null);
+		return false;
 	}
 
 	public void Close()

@@ -40,9 +40,9 @@ public class TouristModule : StateMachineComponent<TouristModule.StatesInstance>
 	public Storage storage;
 
 	[Serialize]
-	private bool isSuspended;
+	private bool isSuspended = false;
 
-	private bool releasingAstronaut;
+	private bool releasingAstronaut = false;
 
 	private const Sim.Cell.Properties floorCellProperties = (Sim.Cell.Properties)39;
 
@@ -147,7 +147,7 @@ public class TouristModule : StateMachineComponent<TouristModule.StatesInstance>
 	{
 		ChoreType astronaut = Db.Get().ChoreTypes.Astronaut;
 		KAnimFile anim = Assets.GetAnim("anim_hat_kanim");
-		WorkChore<CommandModuleWorkable> workChore = new WorkChore<CommandModuleWorkable>(astronaut, this, null, null, true, null, null, null, false, null, false, true, anim, false, true, false, PriorityScreen.PriorityClass.emergency, 5, false);
+		WorkChore<CommandModuleWorkable> workChore = new WorkChore<CommandModuleWorkable>(astronaut, this, null, null, true, null, null, null, false, null, false, true, anim, false, true, false, PriorityScreen.PriorityClass.personalNeeds, 5, false, true);
 		workChore.AddPrecondition(ChorePreconditions.instance.IsAssignedtoMe, assignable);
 		return workChore;
 	}

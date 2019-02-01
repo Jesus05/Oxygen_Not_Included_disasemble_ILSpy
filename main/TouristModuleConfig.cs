@@ -42,6 +42,7 @@ public class TouristModuleConfig : IBuildingConfig
 		go.AddOrGet<RocketModule>();
 		go.AddOrGet<TouristModule>();
 		go.AddOrGet<CommandModuleWorkable>();
+		go.AddOrGet<ArtifactFinder>();
 		BuildingAttachPoint buildingAttachPoint = go.AddOrGet<BuildingAttachPoint>();
 		buildingAttachPoint.points = new BuildingAttachPoint.HardPoint[1]
 		{

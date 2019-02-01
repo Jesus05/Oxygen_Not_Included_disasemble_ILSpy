@@ -22,7 +22,7 @@ public class MinionIdentity : KMonoBehaviour, ISaveLoadable, IAssignableIdentity
 			for (int i = 0; i < array.Length; i++)
 			{
 				string[] array2 = array[i].Split(' ');
-				if (array2[array2.Length - 1] != string.Empty && array2[array2.Length - 1] != null)
+				if (array2[array2.Length - 1] != "" && array2[array2.Length - 1] != null)
 				{
 					names.Add(array2[array2.Length - 1]);
 				}
@@ -253,11 +253,11 @@ public class MinionIdentity : KMonoBehaviour, ISaveLoadable, IAssignableIdentity
 			maleNameList = new NameList(Game.Instance.maleNamesFile);
 			femaleNameList = new NameList(Game.Instance.femaleNamesFile);
 		}
-		if (UnityEngine.Random.value > 0.5f)
+		if (!(UnityEngine.Random.value > 0.5f))
 		{
-			return maleNameList.Next();
+			return femaleNameList.Next();
 		}
-		return femaleNameList.Next();
+		return maleNameList.Next();
 	}
 
 	protected override void OnCleanUp()

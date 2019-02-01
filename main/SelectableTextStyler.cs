@@ -18,7 +18,7 @@ public class SelectableTextStyler : MonoBehaviour, IPointerEnterHandler, IPointe
 	private LocText target;
 
 	[SerializeField]
-	private State state;
+	private State state = State.Normal;
 
 	[SerializeField]
 	private TextStyleSetting normalNormal;

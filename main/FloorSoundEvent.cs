@@ -79,13 +79,26 @@ public class FloorSoundEvent : SoundEvent
 
 	private static string GetAudioCategory(int cell)
 	{
-		if (!Grid.IsValidCell(cell))
+		if (Grid.IsValidCell(cell))
 		{
-			return "Rock";
-		}
-		Element element = Grid.Element[cell];
-		if (Grid.Foundation[cell])
-		{
+			Element element = Grid.Element[cell];
+			if (!Grid.Foundation[cell])
+			{
+				string floorEventAudioCategory = element.substance.GetFloorEventAudioCategory();
+				if (floorEventAudioCategory == null)
+				{
+					if (!element.HasTag(GameTags.RefinedMetal))
+					{
+						if (!element.HasTag(GameTags.Metal))
+						{
+							return "Rock";
+						}
+						return "RawMetal";
+					}
+					return "RefinedMetal";
+				}
+				return floorEventAudioCategory;
+			}
 			BuildingDef buildingDef = null;
 			GameObject gameObject = Grid.Objects[cell, 1];
 			if ((Object)gameObject != (Object)null)
@@ -96,26 +109,13 @@ public class FloorSoundEvent : SoundEvent
 					buildingDef = component.Def;
 				}
 			}
-			string result = string.Empty;
+			string result = "";
 			if ((Object)buildingDef != (Object)null)
 			{
 				string prefabID = buildingDef.PrefabID;
 				result = ((prefabID == "PlasticTile") ? "TilePlastic" : ((prefabID == "GlassTile") ? "TileGlass" : ((prefabID == "BunkerTile") ? "TileBunker" : ((prefabID == "MetalTile") ? "TileMetal" : ((!(prefabID == "CarpetTile")) ? "Tile" : "Carpet")))));
 			}
 			return result;
-		}
-		string floorEventAudioCategory = element.substance.GetFloorEventAudioCategory();
-		if (floorEventAudioCategory != null)
-		{
-			return floorEventAudioCategory;
-		}
-		if (element.HasTag(GameTags.RefinedMetal))
-		{
-			return "RefinedMetal";
-		}
-		if (element.HasTag(GameTags.Metal))
-		{
-			return "RawMetal";
 		}
 		return "Rock";
 	}

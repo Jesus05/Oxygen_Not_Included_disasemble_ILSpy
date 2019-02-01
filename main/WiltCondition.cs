@@ -26,10 +26,10 @@ public class WiltCondition : KMonoBehaviour
 	private Growing growing;
 
 	[Serialize]
-	private bool goingToWilt;
+	private bool goingToWilt = false;
 
 	[Serialize]
-	private bool wilting;
+	private bool wilting = false;
 
 	private Dictionary<int, bool> WiltConditions = new Dictionary<int, bool>();
 
@@ -332,7 +332,7 @@ public class WiltCondition : KMonoBehaviour
 
 	public string WiltCausesString()
 	{
-		string text = string.Empty;
+		string text = "";
 		List<IWiltCause> allSMI = this.GetAllSMI<IWiltCause>();
 		allSMI.AddRange(GetComponents<IWiltCause>());
 		foreach (IWiltCause item in allSMI)

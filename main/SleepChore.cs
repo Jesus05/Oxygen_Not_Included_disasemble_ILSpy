@@ -7,13 +7,13 @@ public class SleepChore : Chore<SleepChore.StatesInstance>
 {
 	public class StatesInstance : GameStateMachine<States, StatesInstance, SleepChore, object>.GameInstance
 	{
-		public bool hadPeacefulSleep;
+		public bool hadPeacefulSleep = false;
 
-		public bool hadNormalSleep;
+		public bool hadNormalSleep = false;
 
-		public bool hadBadSleep;
+		public bool hadBadSleep = false;
 
-		public bool hadTerribleSleep;
+		public bool hadTerribleSleep = false;
 
 		public int lastEvaluatedDay = -1;
 
@@ -21,7 +21,7 @@ public class SleepChore : Chore<SleepChore.StatesInstance>
 
 		public string stateChangeNoiseSource;
 
-		private GameObject locator;
+		private GameObject locator = null;
 
 		public StatesInstance(SleepChore master, GameObject sleeper, GameObject bed, bool bedIsLocator, bool isInterruptable)
 			: base(master)
@@ -162,7 +162,7 @@ public class SleepChore : Chore<SleepChore.StatesInstance>
 	};
 
 	public SleepChore(ChoreType choreType, IStateMachineTarget target, GameObject bed, bool bedIsLocator, bool isInterruptable)
-		: base(choreType, target, target.GetComponent<ChoreProvider>(), false, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.emergency, 5, false, true, 0, (Tag[])null)
+		: base(choreType, target, target.GetComponent<ChoreProvider>(), false, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.personalNeeds, 5, false, true, 0, (Tag[])null, false)
 	{
 		smi = new StatesInstance(this, target.gameObject, bed, bedIsLocator, isInterruptable);
 		if (isInterruptable)

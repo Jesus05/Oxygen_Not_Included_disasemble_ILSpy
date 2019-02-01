@@ -31,7 +31,7 @@ public class LogicOperationalController : KMonoBehaviour
 		Subscribe(-801688580, OnLogicValueChangedDelegate);
 		if (infoStatusItem == null)
 		{
-			infoStatusItem = new StatusItem("LogicOperationalInfo", "BUILDING", string.Empty, StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, true, 63486);
+			infoStatusItem = new StatusItem("LogicOperationalInfo", "BUILDING", "", StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, true, 63486);
 			infoStatusItem.resolveStringCallback = ResolveInfoStatusItemString;
 		}
 		CheckWireState();

@@ -12,7 +12,7 @@ public class SnapOn : KMonoBehaviour
 
 		public HashedString context;
 
-		public KAnimFile buildFile;
+		public KAnimFile buildFile = null;
 
 		public HashedString overrideSymbol;
 	}
@@ -83,7 +83,7 @@ public class SnapOn : KMonoBehaviour
 	{
 		OverrideEntry value = null;
 		KAnimFile buildFile = point.buildFile;
-		string symbol_name = string.Empty;
+		string symbol_name = "";
 		if (overrideMap.TryGetValue(point.pointName, out value))
 		{
 			buildFile = value.buildFile;

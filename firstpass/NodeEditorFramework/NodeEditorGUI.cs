@@ -42,31 +42,31 @@ namespace NodeEditorFramework
 			GUIBox = ResourceManager.LoadTexture("Textures/NE_Box.png");
 			GUIButton = ResourceManager.LoadTexture("Textures/NE_Button.png");
 			GUIBoxSelection = ResourceManager.LoadTexture("Textures/BoxSelection.png");
-			if (!(bool)Background || !(bool)AALineTex || !(bool)GUIBox || !(bool)GUIButton)
+			if ((bool)Background && (bool)AALineTex && (bool)GUIBox && (bool)GUIButton)
 			{
-				return false;
-			}
-			if (!GUIFunction)
-			{
+				if (GUIFunction)
+				{
+					nodeSkin = Object.Instantiate(GUI.skin);
+					nodeSkin.label.normal.textColor = NE_TextColor;
+					nodeLabel = nodeSkin.label;
+					nodeSkin.box.normal.textColor = NE_TextColor;
+					nodeSkin.box.normal.background = GUIBox;
+					nodeBox = nodeSkin.box;
+					nodeSkin.button.normal.textColor = NE_TextColor;
+					nodeSkin.button.normal.background = GUIButton;
+					nodeSkin.textArea.normal.background = GUIBox;
+					nodeSkin.textArea.active.background = GUIBox;
+					nodeLabelBold = new GUIStyle(nodeLabel);
+					nodeLabelBold.fontStyle = FontStyle.Bold;
+					nodeLabelSelected = new GUIStyle(nodeLabel);
+					nodeLabelSelected.normal.background = RTEditorGUI.ColorToTex(1, NE_LightColor);
+					nodeBoxBold = new GUIStyle(nodeBox);
+					nodeBoxBold.fontStyle = FontStyle.Bold;
+					return true;
+				}
 				return true;
 			}
-			nodeSkin = Object.Instantiate(GUI.skin);
-			nodeSkin.label.normal.textColor = NE_TextColor;
-			nodeLabel = nodeSkin.label;
-			nodeSkin.box.normal.textColor = NE_TextColor;
-			nodeSkin.box.normal.background = GUIBox;
-			nodeBox = nodeSkin.box;
-			nodeSkin.button.normal.textColor = NE_TextColor;
-			nodeSkin.button.normal.background = GUIButton;
-			nodeSkin.textArea.normal.background = GUIBox;
-			nodeSkin.textArea.active.background = GUIBox;
-			nodeLabelBold = new GUIStyle(nodeLabel);
-			nodeLabelBold.fontStyle = FontStyle.Bold;
-			nodeLabelSelected = new GUIStyle(nodeLabel);
-			nodeLabelSelected.normal.background = RTEditorGUI.ColorToTex(1, NE_LightColor);
-			nodeBoxBold = new GUIStyle(nodeBox);
-			nodeBoxBold.fontStyle = FontStyle.Bold;
-			return true;
+			return false;
 		}
 
 		public static void StartNodeGUI()

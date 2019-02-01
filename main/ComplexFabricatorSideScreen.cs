@@ -92,11 +92,11 @@ public class ComplexFabricatorSideScreen : SideScreenContent
 
 	public override string GetTitle()
 	{
-		if ((UnityEngine.Object)targetFab == (UnityEngine.Object)null)
+		if (!((UnityEngine.Object)targetFab == (UnityEngine.Object)null))
 		{
-			return Strings.Get(titleKey).ToString().Replace("{0}", string.Empty);
+			return string.Format(Strings.Get(titleKey), targetFab.GetProperName());
 		}
-		return string.Format(Strings.Get(titleKey), targetFab.GetProperName());
+		return Strings.Get(titleKey).ToString().Replace("{0}", "");
 	}
 
 	public override bool IsValidForTarget(GameObject target)
@@ -168,6 +168,15 @@ public class ComplexFabricatorSideScreen : SideScreenContent
 		base.OnShow(show);
 	}
 
+	private int CompareRecipe(ComplexRecipe a, ComplexRecipe b)
+	{
+		if (a.sortOrder == b.sortOrder)
+		{
+			return StringComparer.InvariantCulture.Compare(a.id, b.id);
+		}
+		return a.sortOrder - b.sortOrder;
+	}
+
 	public void Initialize(ComplexFabricator target)
 	{
 		if ((UnityEngine.Object)target == (UnityEngine.Object)null)
@@ -179,7 +188,7 @@ public class ComplexFabricatorSideScreen : SideScreenContent
 			targetFab = target;
 			base.gameObject.SetActive(true);
 			ComplexRecipe[] recipes = targetFab.GetRecipes();
-			Array.Sort(recipes, (ComplexRecipe a, ComplexRecipe b) => a.sortOrder - b.sortOrder);
+			Array.Sort(recipes, CompareRecipe);
 			recipeMap = new Dictionary<GameObject, ComplexRecipe>();
 			recipeToggles.ForEach(delegate(GameObject rbi)
 			{
@@ -228,6 +237,14 @@ public class ComplexFabricatorSideScreen : SideScreenContent
 					flag = true;
 				}
 				else if (recipe.RequiresTechUnlock() && recipe.IsRequiredTechUnlocked())
+				{
+					flag = true;
+				}
+				else if (target.GetRecipeQueueCount(recipe) != 0)
+				{
+					flag = true;
+				}
+				else if (AnyRecipeRequirementsDiscovered(recipe))
 				{
 					flag = true;
 				}
@@ -379,7 +396,7 @@ public class ComplexFabricatorSideScreen : SideScreenContent
 	{
 		HierarchyReferences component = entryGO.GetComponent<HierarchyReferences>();
 		bool flag = fabricator.GetRecipeQueueCount(recipeMap[entryGO]) == ComplexFabricator.QUEUE_INFINITE;
-		component.GetReference<LocText>("CountLabel").text = ((!flag) ? fabricator.GetRecipeQueueCount(recipeMap[entryGO]).ToString() : string.Empty);
+		component.GetReference<LocText>("CountLabel").text = ((!flag) ? fabricator.GetRecipeQueueCount(recipeMap[entryGO]).ToString() : "");
 		component.GetReference<RectTransform>("InfiniteIcon").gameObject.SetActive(flag);
 	}
 
@@ -442,6 +459,19 @@ public class ComplexFabricatorSideScreen : SideScreenContent
 			}
 		}
 		return result;
+	}
+
+	private bool AnyRecipeRequirementsDiscovered(ComplexRecipe recipe)
+	{
+		ComplexRecipe.RecipeElement[] ingredients = recipe.ingredients;
+		foreach (ComplexRecipe.RecipeElement recipeElement in ingredients)
+		{
+			if (WorldInventory.Instance.IsDiscovered(recipeElement.material))
+			{
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private void Update()

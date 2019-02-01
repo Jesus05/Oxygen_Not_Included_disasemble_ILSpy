@@ -32,20 +32,20 @@ namespace Satsuma
 
 			protected override bool NodeEnter(Node node, Arc arc)
 			{
-				if (!base.NodeEnter(node, arc))
+				if (base.NodeEnter(node, arc))
 				{
-					return false;
+					if (Parent.Cutvertices != null && arc == Arc.Invalid)
+					{
+						Parent.Cutvertices[node] = -1;
+					}
+					if (Parent.Components != null)
+					{
+						blockStack.Push(node);
+					}
+					oneNodeComponent = (arc == Arc.Invalid);
+					return true;
 				}
-				if (Parent.Cutvertices != null && arc == Arc.Invalid)
-				{
-					Parent.Cutvertices[node] = -1;
-				}
-				if (Parent.Components != null)
-				{
-					blockStack.Push(node);
-				}
-				oneNodeComponent = (arc == Arc.Invalid);
-				return true;
+				return false;
 			}
 
 			protected override bool NodeExit(Node node, Arc arc)

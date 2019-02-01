@@ -9,11 +9,11 @@ public class Telescope : Workable, OxygenBreather.IGasProvider, IEffectDescripto
 {
 	public int clearScanCellRadius = 15;
 
-	private OxygenBreather.IGasProvider workerGasProvider;
+	private OxygenBreather.IGasProvider workerGasProvider = null;
 
 	private Operational operational;
 
-	private float percentClear;
+	private float percentClear = 0f;
 
 	private static readonly Operational.Flag visibleSkyFlag = new Operational.Flag("VisibleSky", Operational.Flag.Type.Requirement);
 
@@ -130,11 +130,11 @@ public class Telescope : Workable, OxygenBreather.IGasProvider, IEffectDescripto
 				ShowProgressBar(true);
 				progressBar.SetUpdateFunc(delegate
 				{
-					if (SpacecraftManager.instance.HasAnalysisTarget())
+					if (!SpacecraftManager.instance.HasAnalysisTarget())
 					{
-						return SpacecraftManager.instance.GetDestinationAnalysisScore(SpacecraftManager.instance.GetStarmapAnalysisDestinationID()) / (float)ROCKETRY.DESTINATION_ANALYSIS.COMPLETE;
+						return 0f;
 					}
-					return 0f;
+					return SpacecraftManager.instance.GetDestinationAnalysisScore(SpacecraftManager.instance.GetStarmapAnalysisDestinationID()) / (float)ROCKETRY.DESTINATION_ANALYSIS.COMPLETE;
 				});
 				workerGasProvider = component.GetGasProvider();
 				component.SetGasProvider(this);
@@ -183,7 +183,7 @@ public class Telescope : Workable, OxygenBreather.IGasProvider, IEffectDescripto
 	{
 		ChoreType research = Db.Get().ChoreTypes.Research;
 		Tag[] researchChores = GameTags.ChoreTypes.ResearchChores;
-		WorkChore<Telescope> workChore = new WorkChore<Telescope>(research, this, null, researchChores, true, null, null, null, true, null, false, true, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, false);
+		WorkChore<Telescope> workChore = new WorkChore<Telescope>(research, this, null, researchChores, true, null, null, null, true, null, false, true, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, false, true);
 		workChore.AddPrecondition(ContainsOxygen, null);
 		return workChore;
 	}
@@ -219,18 +219,18 @@ public class Telescope : Workable, OxygenBreather.IGasProvider, IEffectDescripto
 
 	public bool ConsumeGas(OxygenBreather oxygen_breather, float amount)
 	{
-		if (storage.items.Count <= 0)
+		if (storage.items.Count > 0)
 		{
+			GameObject gameObject = storage.items[0];
+			if (!((UnityEngine.Object)gameObject == (UnityEngine.Object)null))
+			{
+				PrimaryElement component = gameObject.GetComponent<PrimaryElement>();
+				bool result = component.Mass >= amount;
+				component.Mass = Mathf.Max(0f, component.Mass - amount);
+				return result;
+			}
 			return false;
 		}
-		GameObject gameObject = storage.items[0];
-		if ((UnityEngine.Object)gameObject == (UnityEngine.Object)null)
-		{
-			return false;
-		}
-		PrimaryElement component = gameObject.GetComponent<PrimaryElement>();
-		bool result = component.Mass >= amount;
-		component.Mass = Mathf.Max(0f, component.Mass - amount);
-		return result;
+		return false;
 	}
 }

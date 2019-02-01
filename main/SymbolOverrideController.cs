@@ -5,7 +5,7 @@ using UnityEngine;
 public class SymbolOverrideController : KMonoBehaviour
 {
 	[Serializable]
-	private struct SymbolEntry
+	public struct SymbolEntry
 	{
 		public HashedString targetSymbol;
 
@@ -51,6 +51,8 @@ public class SymbolOverrideController : KMonoBehaviour
 	private FaceGraph faceGraph;
 
 	private bool requiresSorting;
+
+	public SymbolEntry[] GetSymbolOverrides => symbolOverrides.ToArray();
 
 	public int version
 	{

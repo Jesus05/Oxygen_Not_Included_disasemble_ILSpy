@@ -45,11 +45,11 @@ namespace Satsuma
 
 		private T GetLast(T x)
 		{
-			if (last.TryGetValue(x, out T value))
+			if (!last.TryGetValue(x, out T value))
 			{
-				return value;
+				return x;
 			}
-			return x;
+			return value;
 		}
 
 		public DisjointSetSet<T> Union(DisjointSetSet<T> a, DisjointSetSet<T> b)

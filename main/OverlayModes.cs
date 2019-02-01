@@ -244,7 +244,7 @@ public abstract class OverlayModes
 
 		private List<UpdateCropInfo> updateCropInfo = new List<UpdateCropInfo>();
 
-		private int freeHarvestableNotificationIdx;
+		private int freeHarvestableNotificationIdx = 0;
 
 		private List<GameObject> harvestableNotificationList = new List<GameObject>();
 
@@ -653,7 +653,7 @@ public abstract class OverlayModes
 
 		private int cameraLayerMask;
 
-		private int freeDiseaseUI;
+		private int freeDiseaseUI = 0;
 
 		private List<GameObject> diseaseUIList = new List<GameObject>();
 
@@ -1960,9 +1960,9 @@ public abstract class OverlayModes
 
 		private Color32 circuitStrainingColour;
 
-		private int freePowerLabelIdx;
+		private int freePowerLabelIdx = 0;
 
-		private int freeBatteryUIIdx;
+		private int freeBatteryUIIdx = 0;
 
 		private List<LocText> powerLabels = new List<LocText>();
 

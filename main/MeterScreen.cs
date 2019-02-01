@@ -33,14 +33,12 @@ public class MeterScreen : KScreen, IRender1000ms
 
 	public TextStyleSetting ToolTipStyle_Property;
 
-	private bool startValuesSet;
+	private bool startValuesSet = false;
 
 	[SerializeField]
 	private KToggle RedAlertButton;
 
 	public ToolTip RedAlertTooltip;
-
-	private HandleVector<int>.Handle loopInstance = HandleVector<int>.InvalidHandle;
 
 	private DisplayInfo stressDisplayInfo = new DisplayInfo
 	{
@@ -90,26 +88,15 @@ public class MeterScreen : KScreen, IRender1000ms
 
 	private void OnRedAlertClick()
 	{
-		bool flag = !RedAlertManager.Instance.Get().IsOn();
+		bool flag = !RedAlertManager.Instance.Get().IsToggledOn();
 		RedAlertManager.Instance.Get().Toggle(flag);
 		if (flag)
 		{
 			KMonoBehaviour.PlaySound(GlobalAssets.GetSound("HUD_Click_Open", false));
-			KMonoBehaviour.PlaySound(GlobalAssets.GetSound("RedAlert_ON", false));
-			if (!loopInstance.IsValid())
-			{
-				loopInstance = LoopingSoundManager.StartSound(GlobalAssets.GetSound("RedAlert_LP", false), Vector3.zero, true, false);
-			}
 		}
 		else
 		{
 			KMonoBehaviour.PlaySound(GlobalAssets.GetSound("HUD_Click_Close", false));
-			KMonoBehaviour.PlaySound(GlobalAssets.GetSound("RedAlert_OFF", false));
-			if (loopInstance.IsValid())
-			{
-				LoopingSoundManager.StopSound(loopInstance);
-				loopInstance.Clear();
-			}
 		}
 	}
 
@@ -155,17 +142,17 @@ public class MeterScreen : KScreen, IRender1000ms
 
 	private float GetWorstImmunity()
 	{
-		if (Components.LiveMinionIdentities.Count <= 0)
+		if (Components.LiveMinionIdentities.Count > 0)
 		{
-			return 100f;
+			Components.Cmps<MinionIdentity> liveMinionIdentities = Components.LiveMinionIdentities;
+			float num = Db.Get().Amounts.ImmuneLevel.Lookup(liveMinionIdentities[0]).value;
+			for (int i = 1; i < liveMinionIdentities.Count; i++)
+			{
+				num = Mathf.Min(Db.Get().Amounts.ImmuneLevel.Lookup(liveMinionIdentities[i]).value, num);
+			}
+			return num;
 		}
-		Components.Cmps<MinionIdentity> liveMinionIdentities = Components.LiveMinionIdentities;
-		float num = Db.Get().Amounts.ImmuneLevel.Lookup(liveMinionIdentities[0]).value;
-		for (int i = 1; i < liveMinionIdentities.Count; i++)
-		{
-			num = Mathf.Min(Db.Get().Amounts.ImmuneLevel.Lookup(liveMinionIdentities[i]).value, num);
-		}
-		return num;
+		return 100f;
 	}
 
 	private void RefreshRations()
@@ -203,7 +190,7 @@ public class MeterScreen : KScreen, IRender1000ms
 			AmountInstance amount = stress.Lookup(minionIdentity);
 			AddToolTipAmountLine(StressTooltip, amount, minionIdentity, i == stressDisplayInfo.selectedIndex);
 		}
-		return string.Empty;
+		return "";
 	}
 
 	private IList<MinionIdentity> GetImmunityLevels()
@@ -228,7 +215,7 @@ public class MeterScreen : KScreen, IRender1000ms
 			AmountInstance amount = immuneLevel.Lookup(minionIdentity);
 			AddToolTipAmountLine(ImmunityTooltip, amount, minionIdentity, i == immunityDisplayInfo.selectedIndex);
 		}
-		return string.Empty;
+		return "";
 	}
 
 	private void AddToolTipAmountLine(ToolTip tooltip, AmountInstance amount, MinionIdentity id, bool selected)
@@ -252,7 +239,7 @@ public class MeterScreen : KScreen, IRender1000ms
 		RationsText.text = GameUtil.GetFormattedCalories(calories, GameUtil.TimeSlice.None, true);
 		RationsTooltip.ClearMultiStringTooltip();
 		RationsTooltip.AddMultiStringTooltip(string.Format(UI.TOOLTIPS.METERSCREEN_MEALHISTORY, GameUtil.GetFormattedCalories(calories, GameUtil.TimeSlice.None, true)), ToolTipStyle_Header);
-		RationsTooltip.AddMultiStringTooltip(string.Empty, ToolTipStyle_Property);
+		RationsTooltip.AddMultiStringTooltip("", ToolTipStyle_Property);
 		IOrderedEnumerable<KeyValuePair<string, float>> source = from x in rationsDict
 		orderby x.Value * Game.Instance.ediblesManager.GetFoodInfo(x.Key).CaloriesPerUnit descending
 		select x;
@@ -262,7 +249,7 @@ public class MeterScreen : KScreen, IRender1000ms
 			EdiblesManager.FoodInfo foodInfo = Game.Instance.ediblesManager.GetFoodInfo(item.Key);
 			RationsTooltip.AddMultiStringTooltip($"{foodInfo.Name}: {GameUtil.GetFormattedCalories(item.Value * foodInfo.CaloriesPerUnit, GameUtil.TimeSlice.None, true)}", ToolTipStyle_Property);
 		}
-		return string.Empty;
+		return "";
 	}
 
 	private string OnRedAlertTooltip()
@@ -270,7 +257,7 @@ public class MeterScreen : KScreen, IRender1000ms
 		RedAlertTooltip.ClearMultiStringTooltip();
 		RedAlertTooltip.AddMultiStringTooltip(UI.TOOLTIPS.RED_ALERT_TITLE, ToolTipStyle_Header);
 		RedAlertTooltip.AddMultiStringTooltip(UI.TOOLTIPS.RED_ALERT_CONTENT, ToolTipStyle_Property);
-		return string.Empty;
+		return "";
 	}
 
 	private void RefreshStress()

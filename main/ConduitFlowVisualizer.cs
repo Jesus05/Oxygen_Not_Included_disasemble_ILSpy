@@ -121,11 +121,11 @@ public class ConduitFlowVisualizer
 
 	private string overlaySound;
 
-	private bool showContents;
+	private bool showContents = false;
 
 	private double animTime;
 
-	private int layer;
+	private int layer = 0;
 
 	private static Vector2 GRID_OFFSET = new Vector2(0.5f, 0.5f);
 
@@ -171,13 +171,13 @@ public class ConduitFlowVisualizer
 
 	private Color32 GetContentsColor(Element element, Color32 default_color)
 	{
-		if (element != null)
+		if (element == null)
 		{
-			Color c = element.substance.conduitColour;
-			c.a = 128f;
-			return c;
+			return default_color;
 		}
-		return default_color;
+		Color c = element.substance.conduitColour;
+		c.a = 128f;
+		return c;
 	}
 
 	private Color32 GetTintColour()

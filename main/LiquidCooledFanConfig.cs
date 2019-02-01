@@ -52,7 +52,7 @@ public class LiquidCooledFanConfig : IBuildingConfig
 		manualDeliveryKG.requestedItemTag = new Tag("Water");
 		manualDeliveryKG.capacity = 500f;
 		manualDeliveryKG.refillMass = 50f;
-		manualDeliveryKG.choreTypeIDHash = Db.Get().ChoreTypes.Fetch.IdHash;
+		manualDeliveryKG.choreTypeIDHash = Db.Get().ChoreTypes.MachineFetch.IdHash;
 		ElementConsumer elementConsumer = go.AddOrGet<ElementConsumer>();
 		elementConsumer.storeOnConsume = true;
 		elementConsumer.storage = storage;

@@ -31,7 +31,7 @@ public class OilRefinery : StateMachineComponent<OilRefinery.StatesInstance>
 			root.EventTransition(GameHashes.OperationalChanged, disabled, (StatesInstance smi) => !smi.master.operational.IsOperational);
 			disabled.EventTransition(GameHashes.OperationalChanged, needResources, (StatesInstance smi) => smi.master.operational.IsOperational);
 			needResources.EventTransition(GameHashes.OnStorageChange, ready, (StatesInstance smi) => smi.master.GetComponent<ElementConverter>().HasEnoughMassToStartConverting());
-			ready.Transition(needResources, (StatesInstance smi) => !smi.master.GetComponent<ElementConverter>().HasEnoughMassToStartConverting(), UpdateRate.SIM_200ms).Transition(overpressure, (StatesInstance smi) => smi.master.IsOverPressure(), UpdateRate.SIM_200ms).ToggleChore((StatesInstance smi) => new WorkChore<WorkableTarget>(Db.Get().ChoreTypes.Fabricate, smi.master.workable, null, null, true, null, null, null, true, null, false, true, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, false), needResources);
+			ready.Transition(needResources, (StatesInstance smi) => !smi.master.GetComponent<ElementConverter>().HasEnoughMassToStartConverting(), UpdateRate.SIM_200ms).Transition(overpressure, (StatesInstance smi) => smi.master.IsOverPressure(), UpdateRate.SIM_200ms).ToggleChore((StatesInstance smi) => new WorkChore<WorkableTarget>(Db.Get().ChoreTypes.Fabricate, smi.master.workable, null, null, true, null, null, null, true, null, false, true, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, false, true), needResources);
 			overpressure.ToggleStatusItem(Db.Get().BuildingStatusItems.PressureOk, (object)null).Transition(ready, (StatesInstance smi) => !smi.master.IsOverPressure(), UpdateRate.SIM_200ms);
 		}
 	}

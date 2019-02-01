@@ -15,7 +15,7 @@ namespace FMODUnity
 		}
 
 		public EventNotFoundException(Guid guid)
-			: base("FMOD Studio event not found " + guid.ToString("b") + string.Empty)
+			: base("FMOD Studio event not found " + guid.ToString("b") + "")
 		{
 			Guid = guid;
 		}

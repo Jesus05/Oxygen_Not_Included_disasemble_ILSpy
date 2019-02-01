@@ -27,12 +27,12 @@ public class TerminalNodeEditor : BaseNodeEditor
 
 	public override bool Calculate()
 	{
-		if (allInputsReady())
+		if (!allInputsReady())
 		{
-			Outputs[0].SetValue(Inputs[0].GetValue<IModule3D>());
-			return true;
+			return false;
 		}
-		return false;
+		Outputs[0].SetValue(Inputs[0].GetValue<IModule3D>());
+		return true;
 	}
 
 	protected override void NodeGUI()

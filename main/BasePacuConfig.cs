@@ -92,10 +92,10 @@ public static class BasePacuConfig
 
 	private static string GetLandAnim(FallStates.Instance smi)
 	{
-		if (smi.GetSMI<CreatureFallMonitor.Instance>().CanSwimAtCurrentLocation(true))
+		if (!smi.GetSMI<CreatureFallMonitor.Instance>().CanSwimAtCurrentLocation(true))
 		{
-			return "idle_loop";
+			return "flop_loop";
 		}
-		return "flop_loop";
+		return "idle_loop";
 	}
 }

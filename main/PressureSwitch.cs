@@ -7,13 +7,13 @@ public class PressureSwitch : CircuitSwitch, ISaveLoadable, IThresholdSwitch, IS
 {
 	[SerializeField]
 	[Serialize]
-	private float threshold;
+	private float threshold = 0f;
 
 	[SerializeField]
 	[Serialize]
 	private bool activateAboveThreshold = true;
 
-	public float rangeMin;
+	public float rangeMin = 0f;
 
 	public float rangeMax = 1f;
 
@@ -23,7 +23,7 @@ public class PressureSwitch : CircuitSwitch, ISaveLoadable, IThresholdSwitch, IS
 
 	private float[] samples = new float[8];
 
-	private int sampleIdx;
+	private int sampleIdx = 0;
 
 	public float Threshold
 	{

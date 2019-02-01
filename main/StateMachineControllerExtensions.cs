@@ -16,11 +16,11 @@ public static class StateMachineControllerExtensions
 	public static DefType GetDef<DefType>(this GameObject go) where DefType : StateMachine.BaseDef
 	{
 		StateMachineController component = go.GetComponent<StateMachineController>();
-		if ((Object)component == (Object)null)
+		if (!((Object)component == (Object)null))
 		{
-			return (DefType)null;
+			return component.GetDef<DefType>();
 		}
-		return component.GetDef<DefType>();
+		return (DefType)null;
 	}
 
 	public static StateMachineInstanceType GetSMI<StateMachineInstanceType>(this Component cmp) where StateMachineInstanceType : class
@@ -31,11 +31,11 @@ public static class StateMachineControllerExtensions
 	public static StateMachineInstanceType GetSMI<StateMachineInstanceType>(this GameObject go) where StateMachineInstanceType : class
 	{
 		StateMachineController component = go.GetComponent<StateMachineController>();
-		if ((Object)component != (Object)null)
+		if (!((Object)component != (Object)null))
 		{
-			return component.GetSMI<StateMachineInstanceType>();
+			return (StateMachineInstanceType)null;
 		}
-		return (StateMachineInstanceType)null;
+		return component.GetSMI<StateMachineInstanceType>();
 	}
 
 	public static List<StateMachineInstanceType> GetAllSMI<StateMachineInstanceType>(this Component cmp) where StateMachineInstanceType : class
@@ -46,10 +46,10 @@ public static class StateMachineControllerExtensions
 	public static List<StateMachineInstanceType> GetAllSMI<StateMachineInstanceType>(this GameObject go) where StateMachineInstanceType : class
 	{
 		StateMachineController component = go.GetComponent<StateMachineController>();
-		if ((Object)component != (Object)null)
+		if (!((Object)component != (Object)null))
 		{
-			return component.GetAllSMI<StateMachineInstanceType>();
+			return new List<StateMachineInstanceType>();
 		}
-		return new List<StateMachineInstanceType>();
+		return component.GetAllSMI<StateMachineInstanceType>();
 	}
 }

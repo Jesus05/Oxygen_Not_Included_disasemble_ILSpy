@@ -52,7 +52,7 @@ public class EspressoMachineConfig : IBuildingConfig
 		{
 			GameTags.ChoreTypes.Cooking
 		};
-		manualDeliveryKG.choreTypeIDHash = Db.Get().ChoreTypes.Fetch.IdHash;
+		manualDeliveryKG.choreTypeIDHash = Db.Get().ChoreTypes.MachineFetch.IdHash;
 		go.AddOrGet<EspressoMachineWorkable>();
 		go.AddOrGet<EspressoMachine>();
 		RoomTracker roomTracker = go.AddOrGet<RoomTracker>();

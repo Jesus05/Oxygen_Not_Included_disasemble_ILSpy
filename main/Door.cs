@@ -209,7 +209,7 @@ public class Door : Workable, ISaveLoadable, ISim200ms
 
 		private Chore CreateUnsealChore(Instance smi, bool approach_right)
 		{
-			return new WorkChore<Unsealable>(Db.Get().ChoreTypes.Toggle, smi.master, null, null, true, null, null, null, true, null, false, true, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, false);
+			return new WorkChore<Unsealable>(Db.Get().ChoreTypes.Toggle, smi.master, null, null, true, null, null, null, true, null, false, true, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, false, true);
 		}
 	}
 
@@ -231,10 +231,10 @@ public class Door : Workable, ISaveLoadable, ISim200ms
 	[MyCmpAdd]
 	private LoopingSounds loopingSounds;
 
-	public Orientation verticalOrientation;
+	public Orientation verticalOrientation = Orientation.Neutral;
 
 	[SerializeField]
-	public bool hasComplexUserControls;
+	public bool hasComplexUserControls = false;
 
 	[SerializeField]
 	public float unpoweredAnimSpeed = 0.25f;
@@ -263,16 +263,16 @@ public class Door : Workable, ISaveLoadable, ISim200ms
 	private static readonly HashedString SOUND_PROGRESS_PARAMETER = "doorProgress";
 
 	[Serialize]
-	private bool hasBeenUnsealed;
+	private bool hasBeenUnsealed = false;
 
 	[Serialize]
-	private ControlState controlState;
+	private ControlState controlState = ControlState.Auto;
 
-	private bool on;
+	private bool on = false;
 
-	private bool do_melt_check;
+	private bool do_melt_check = false;
 
-	private int openCount;
+	private int openCount = 0;
 
 	private ControlState requestedState;
 
@@ -299,7 +299,7 @@ public class Door : Workable, ISaveLoadable, ISim200ms
 		component.OnLogicValueChanged(data);
 	});
 
-	private bool applyLogicChange;
+	private bool applyLogicChange = false;
 
 	public ControlState CurrentState => controlState;
 
@@ -654,7 +654,7 @@ public class Door : Workable, ISaveLoadable, ISim200ms
 				changeStateChore.Cancel("Change state");
 			}
 			GetComponent<KSelectable>().AddStatusItem(Db.Get().BuildingStatusItems.ChangeDoorControlState, this);
-			changeStateChore = new WorkChore<Door>(Db.Get().ChoreTypes.Toggle, this, null, null, true, null, null, null, true, null, false, false, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, false);
+			changeStateChore = new WorkChore<Door>(Db.Get().ChoreTypes.Toggle, this, null, null, true, null, null, null, true, null, false, false, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, false, true);
 		}
 	}
 

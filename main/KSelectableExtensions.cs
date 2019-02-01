@@ -8,7 +8,7 @@ public static class KSelectableExtensions
 		{
 			return cmp.gameObject.GetProperName();
 		}
-		return string.Empty;
+		return "";
 	}
 
 	public static string GetProperName(this GameObject go)
@@ -21,15 +21,15 @@ public static class KSelectableExtensions
 				return component.GetName();
 			}
 		}
-		return string.Empty;
+		return "";
 	}
 
 	public static string GetProperName(this KSelectable cmp)
 	{
-		if ((Object)cmp != (Object)null)
+		if (!((Object)cmp != (Object)null))
 		{
-			return cmp.GetName();
+			return "";
 		}
-		return string.Empty;
+		return cmp.GetName();
 	}
 }

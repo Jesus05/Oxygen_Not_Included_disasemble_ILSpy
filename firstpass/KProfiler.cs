@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -18,7 +19,7 @@ public static class KProfiler
 		}
 	}
 
-	public static int counter;
+	public static int counter = 0;
 
 	public static Thread main_thread;
 
@@ -78,7 +79,16 @@ public static class KProfiler
 	{
 	}
 
+	public static void AddCounter(string event_name, List<KeyValuePair<string, int>> series_name_counts)
+	{
+	}
+
+	public static void AddCounter(string event_name, string series_name, int count)
+	{
+	}
+
 	public static void AddCounter(string event_name, int count)
 	{
+		AddCounter(event_name, event_name, count);
 	}
 }

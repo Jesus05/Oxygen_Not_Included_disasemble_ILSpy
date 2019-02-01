@@ -89,7 +89,7 @@ public class ReceptacleSideScreen : SideScreenContent, IRender1000ms
 	private Sprite elementPlaceholderSpr;
 
 	[SerializeField]
-	private bool hideUndiscoveredEntities;
+	private bool hideUndiscoveredEntities = false;
 
 	private ReceptacleToggle selectedEntityToggle;
 
@@ -109,11 +109,11 @@ public class ReceptacleSideScreen : SideScreenContent, IRender1000ms
 
 	public override string GetTitle()
 	{
-		if ((Object)targetReceptacle == (Object)null)
+		if (!((Object)targetReceptacle == (Object)null))
 		{
-			return Strings.Get(titleKey).ToString().Replace("{0}", string.Empty);
+			return string.Format(Strings.Get(titleKey), targetReceptacle.GetProperName());
 		}
-		return string.Format(Strings.Get(titleKey), targetReceptacle.GetProperName());
+		return Strings.Get(titleKey).ToString().Replace("{0}", "");
 	}
 
 	public void Initialize(SingleEntityReceptacle target)
@@ -370,7 +370,8 @@ public class ReceptacleSideScreen : SideScreenContent, IRender1000ms
 	{
 		GameObject prefab = Assets.GetPrefab(prefabTag);
 		KBatchedAnimController component = prefab.GetComponent<KBatchedAnimController>();
-		return Def.GetUISpriteFromMultiObjectAnim(component.AnimFiles[0], "ui", false);
+		Tuple<Sprite, Color> uISprite = Def.GetUISprite(prefab, "ui", false);
+		return uISprite.first;
 	}
 
 	public override bool IsValidForTarget(GameObject target)

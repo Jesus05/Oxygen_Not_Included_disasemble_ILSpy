@@ -64,7 +64,7 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms
 
 		public Chore chore;
 
-		public bool underway;
+		public bool underway = false;
 
 		public void Cancel()
 		{
@@ -106,13 +106,13 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms
 	public Action<MachineOrder> OnMachineOrderCancelledOrComplete;
 
 	[SerializeField]
-	public HashedString fetchChoreTypeIdHash = Db.Get().ChoreTypes.MachineFetch.IdHash;
+	public HashedString fetchChoreTypeIdHash = Db.Get().ChoreTypes.FabricateFetch.IdHash;
 
 	[SerializeField]
-	public ResultState resultState;
+	public ResultState resultState = ResultState.Normal;
 
 	[SerializeField]
-	public bool storeProduced;
+	public bool storeProduced = false;
 
 	public ComplexFabricatorSideScreen.StyleSetting sideScreenStyle = ComplexFabricatorSideScreen.StyleSetting.ListQueueHybrid;
 
@@ -143,11 +143,11 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms
 	[Serialize]
 	private int currentOrderIdx;
 
-	private bool isCancellingOrder;
+	private bool isCancellingOrder = false;
 
-	private float orderProgress;
+	private float orderProgress = 0f;
 
-	private bool willBeSadIfMachineOrdersChanges;
+	private bool willBeSadIfMachineOrdersChanges = false;
 
 	private ComplexRecipe[] possible_recipes_cache;
 
@@ -256,11 +256,6 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms
 		buildStorage.Transfer(inStorage, true, true);
 		UpdateMachineOrders(true);
 		Subscribe(-905833192, OnCopySettingsDelegate);
-		Subscribe(-1697596308, OnStorageChanged);
-	}
-
-	private void OnStorageChanged(object data = null)
-	{
 	}
 
 	private void OnCopySettings(object data)
@@ -271,18 +266,17 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms
 			ComplexFabricator component = gameObject.GetComponent<ComplexFabricator>();
 			if (!((UnityEngine.Object)component == (UnityEngine.Object)null))
 			{
-				string[] array = recipeQueueCounts.Keys.ToArray();
-				foreach (string key in array)
+				ComplexRecipe[] array = possible_recipes_cache;
+				foreach (ComplexRecipe complexRecipe in array)
 				{
-					if (component.recipeQueueCounts.ContainsKey(key))
+					if (!component.recipeQueueCounts.TryGetValue(complexRecipe.id, out int value))
 					{
-						recipeQueueCounts[key] = component.recipeQueueCounts[key];
+						value = 0;
 					}
-					else
-					{
-						recipeQueueCounts[key] = 0;
-					}
+					SetRecipeQueueCountInternal(complexRecipe, value);
 				}
+				SetOperationalInactive();
+				buildStorage.Transfer(inStorage, true, true);
 				RefreshUserOrdersFromQueueCounts();
 				UpdateMachineOrders(false);
 			}
@@ -291,11 +285,8 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms
 
 	protected override void OnCleanUp()
 	{
-		ingredientSearchHandle.ClearScheduler();
-		foreach (UserOrder userOrder in userOrders)
-		{
-			CancelMachineOrdersByUserOrder(userOrder);
-		}
+		StopCheckWorldInventory();
+		CancelAllMachineOrders(false);
 		Components.ComplexFabricators.Remove(this);
 		base.OnCleanUp();
 	}
@@ -374,13 +365,13 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms
 
 	public List<T> ShiftListLeft<T>(List<T> list, int shiftBy)
 	{
-		if (list.Count <= shiftBy)
+		if (list.Count > shiftBy)
 		{
-			return list;
+			List<T> range = list.GetRange(shiftBy, list.Count - shiftBy);
+			range.AddRange((IEnumerable<T>)list.GetRange(0, shiftBy));
+			return range;
 		}
-		List<T> range = list.GetRange(shiftBy, list.Count - shiftBy);
-		range.AddRange((IEnumerable<T>)list.GetRange(0, shiftBy));
-		return range;
+		return list;
 	}
 
 	public int GetRecipeQueueCount(ComplexRecipe recipe)
@@ -390,31 +381,23 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms
 
 	public void SetRecipeQueueCount(ComplexRecipe recipe, int count)
 	{
-		bool flag = true;
-		if (machineOrders.Count == 0)
-		{
-			flag = true;
-		}
+		SetRecipeQueueCountInternal(recipe, count);
+		RefreshUserOrdersFromQueueCounts();
+		UpdateMachineOrders(false);
+	}
+
+	private void SetRecipeQueueCountInternal(ComplexRecipe recipe, int count)
+	{
 		UserOrder userOrder = userOrders.Find((UserOrder match) => match.recipe == recipe);
 		if (userOrder != null && GetUserOrderIndex(userOrder) == currentOrderIdx && GetRecipeQueueCount(recipe) == QUEUE_INFINITE)
 		{
 			CancelMachineOrdersByUserOrder(userOrder);
 		}
 		recipeQueueCounts[recipe.id] = count;
-		RefreshUserOrdersFromQueueCounts();
-		if (flag)
-		{
-			UpdateMachineOrders(false);
-		}
 	}
 
 	public void IncrementRecipeQueueCount(ComplexRecipe recipe)
 	{
-		bool flag = true;
-		if (machineOrders.Count == 0)
-		{
-			flag = true;
-		}
 		UserOrder userOrder = userOrders.Find((UserOrder match) => match.recipe == recipe);
 		if (userOrder != null && GetUserOrderIndex(userOrder) == currentOrderIdx && GetRecipeQueueCount(recipe) == QUEUE_INFINITE)
 		{
@@ -423,25 +406,19 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms
 		if (recipeQueueCounts[recipe.id] == QUEUE_INFINITE)
 		{
 			recipeQueueCounts[recipe.id] = 0;
-			flag = true;
 		}
 		else if (recipeQueueCounts[recipe.id] >= MAX_QUEUE_SIZE)
 		{
 			recipeQueueCounts[recipe.id] = QUEUE_INFINITE;
-			flag = true;
 		}
 		else
 		{
 			Dictionary<string, int> dictionary;
 			string id;
 			(dictionary = recipeQueueCounts)[id = recipe.id] = dictionary[id] + 1;
-			flag = true;
 		}
 		RefreshUserOrdersFromQueueCounts();
-		if (flag)
-		{
-			UpdateMachineOrders(false);
-		}
+		UpdateMachineOrders(false);
 	}
 
 	public void DecrementRecipeQueueCount(ComplexRecipe recipe, bool respectInfinite = true)
@@ -807,9 +784,12 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms
 		isCancellingOrder = false;
 	}
 
-	private void CancelAllMachineOrders()
+	private void CancelAllMachineOrders(bool clear_storage)
 	{
-		buildStorage.Transfer(inStorage, true, true);
+		if (clear_storage)
+		{
+			buildStorage.Transfer(inStorage, true, true);
+		}
 		DebugUtil.DevAssertWithStack(machineOrders.Count == 0 || !willBeSadIfMachineOrdersChanges, "machineOrders changed when it wasn't expected. sad.");
 		while (machineOrders.Count > 0)
 		{
@@ -1050,12 +1030,12 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms
 		ComplexRecipe[] array = recipes;
 		foreach (ComplexRecipe complexRecipe in array)
 		{
-			string text = string.Empty;
-			string text2 = string.Empty;
+			string text = "";
+			string text2 = "";
 			ComplexRecipe.RecipeElement[] ingredients = complexRecipe.ingredients;
 			foreach (ComplexRecipe.RecipeElement recipeElement in ingredients)
 			{
-				text = text + "• " + string.Format(UI.BUILDINGEFFECTS.PROCESSEDITEM, string.Empty, recipeElement.material.ProperName());
+				text = text + "• " + string.Format(UI.BUILDINGEFFECTS.PROCESSEDITEM, "", recipeElement.material.ProperName());
 				text2 += string.Format(UI.BUILDINGEFFECTS.TOOLTIPS.PROCESSEDITEM, string.Join(", ", (from r in complexRecipe.results
 				select r.material.ProperName()).ToArray()));
 			}
@@ -1109,7 +1089,7 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms
 
 	private void OnDroppedAll(object data)
 	{
-		CancelAllMachineOrders();
+		CancelAllMachineOrders(true);
 		UpdateMachineOrders(false);
 	}
 
@@ -1128,12 +1108,12 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms
 
 	public string GetConversationTopic()
 	{
-		if (machineOrders.Count > 0)
+		if (machineOrders.Count <= 0)
 		{
-			UserOrder parentOrder = machineOrders[0].parentOrder;
-			ComplexRecipe recipe = parentOrder.recipe;
-			return recipe.results[0].material.Name;
+			return null;
 		}
-		return null;
+		UserOrder parentOrder = machineOrders[0].parentOrder;
+		ComplexRecipe recipe = parentOrder.recipe;
+		return recipe.results[0].material.Name;
 	}
 }

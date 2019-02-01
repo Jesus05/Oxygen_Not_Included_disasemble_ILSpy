@@ -97,7 +97,7 @@ public class Telepad : StateMachineComponent<Telepad.StatesInstance>
 
 	private List<MinionStartingStats> minionStats;
 
-	private static readonly HashedString[] PortalBirthAnim = new HashedString[1]
+	public static readonly HashedString[] PortalBirthAnim = new HashedString[1]
 	{
 		"portalbirth"
 	};
@@ -147,34 +147,28 @@ public class Telepad : StateMachineComponent<Telepad.StatesInstance>
 			if (GetTimeRemaining() < -120f)
 			{
 				Messenger.Instance.QueueMessage(new DuplicantsLeftMessage());
-				Immigration.Instance.SpawnMinions();
+				Immigration.Instance.EndImmigration();
 			}
 		}
 	}
 
 	public void RejectAll()
 	{
-		Immigration.Instance.SpawnMinions();
+		Immigration.Instance.EndImmigration();
 		base.smi.sm.closePortal.Trigger(base.smi);
 	}
 
-	public void OnClickImmigrant(MinionStartingStats starting_stats)
+	public void OnAcceptDelivery(ITelepadDeliverable delivery)
 	{
 		int cell = Grid.PosToCell(this);
-		int num = Immigration.Instance.SpawnMinions();
-		foreach (MinionIdentity item in Components.LiveMinionIdentities.Items)
+		Immigration.Instance.EndImmigration();
+		GameObject gameObject = delivery.Deliver(Grid.CellToPosCBC(cell, Grid.SceneLayer.Move));
+		if ((Object)gameObject.GetComponent<MinionIdentity>() != (Object)null)
 		{
-			item.GetComponent<Effects>().Add("NewCrewArrival", true);
-		}
-		for (int i = 0; i < num; i++)
-		{
-			GameObject gameObject = Util.KInstantiate(Assets.GetPrefab(MinionConfig.ID), null, null);
-			gameObject.transform.SetLocalPosition(Grid.CellToPosCBC(cell, Grid.SceneLayer.Move));
-			gameObject.SetActive(true);
-			starting_stats.Apply(gameObject);
-			Immigration.Instance.ApplyDefaultPersonalPriorities(gameObject);
-			ChoreProvider component = gameObject.GetComponent<ChoreProvider>();
-			new EmoteChore(component, Db.Get().ChoreTypes.EmoteHighPriority, "anim_interacts_portal_kanim", PortalBirthAnim, null);
+			foreach (MinionIdentity item in Components.LiveMinionIdentities.Items)
+			{
+				item.GetComponent<Effects>().Add("NewCrewArrival", true);
+			}
 		}
 		base.smi.sm.closePortal.Trigger(base.smi);
 	}

@@ -26,7 +26,7 @@ public class ImmigrantScreen : CharacterSelectionController
 
 	private Telepad telepad;
 
-	private bool hasShown;
+	private bool hasShown = false;
 
 	public static void DestroyInstance()
 	{
@@ -106,20 +106,24 @@ public class ImmigrantScreen : CharacterSelectionController
 	private void Initialize(Telepad telepad)
 	{
 		InitializeContainers();
-		containers.ForEach(delegate(CharacterContainer c)
+		foreach (ITelepadDeliverableContainer container in containers)
 		{
-			c.SetReshufflingState(false);
-		});
+			CharacterContainer characterContainer = container as CharacterContainer;
+			if ((Object)characterContainer != (Object)null)
+			{
+				characterContainer.SetReshufflingState(false);
+			}
+		}
 		this.telepad = telepad;
 	}
 
 	protected override void OnProceed()
 	{
-		telepad.OnClickImmigrant(startingStats[0]);
+		telepad.OnAcceptDelivery(selectedDeliverables[0]);
 		Show(false);
-		containers.ForEach(delegate(CharacterContainer cc)
+		containers.ForEach(delegate(ITelepadDeliverableContainer cc)
 		{
-			Object.Destroy(cc.gameObject);
+			Object.Destroy(cc.GetGameObject());
 		});
 		containers.Clear();
 		AudioMixer.instance.Stop(AudioMixerSnapshots.Get().MENUNewDuplicantSnapshot, STOP_MODE.ALLOWFADEOUT);
@@ -142,9 +146,9 @@ public class ImmigrantScreen : CharacterSelectionController
 	private void OnRejectionConfirmed()
 	{
 		telepad.RejectAll();
-		containers.ForEach(delegate(CharacterContainer cc)
+		containers.ForEach(delegate(ITelepadDeliverableContainer cc)
 		{
-			Object.Destroy(cc.gameObject);
+			Object.Destroy(cc.GetGameObject());
 		});
 		containers.Clear();
 		rejectConfirmationScreen.SetActive(false);

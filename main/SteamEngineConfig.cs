@@ -75,7 +75,6 @@ public class SteamEngineConfig : IBuildingConfig
 			Storage.StoredItemModifier.Seal,
 			Storage.StoredItemModifier.Insulate
 		});
-		fuelTank.allowItemRemoval = true;
 		ConduitConsumer conduitConsumer = go.AddOrGet<ConduitConsumer>();
 		conduitConsumer.conduitType = ConduitType.Gas;
 		conduitConsumer.consumptionRate = 10f;

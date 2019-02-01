@@ -24,6 +24,8 @@ public class Immigration : KMonoBehaviour, ISaveLoadable, ISim200ms, IPersonalPr
 	[Serialize]
 	private bool stopped;
 
+	private CarePackageInfo[] carePackages;
+
 	public static Immigration Instance;
 
 	public bool ImmigrantsAvailable => bImmigrantAvailable;
@@ -40,9 +42,50 @@ public class Immigration : KMonoBehaviour, ISaveLoadable, ISim200ms, IPersonalPr
 		int num = Math.Min(spawnIdx, spawnInterval.Length - 1);
 		timeBeforeSpawn = spawnInterval[num];
 		ResetPersonalPriorities();
+		ConfigureCarePackages();
 	}
 
-	public int SpawnMinions()
+	private void ConfigureCarePackages()
+	{
+		carePackages = new CarePackageInfo[33]
+		{
+			new CarePackageInfo(ElementLoader.FindElementByHash(SimHashes.OxyRock).tag.ToString(), 100f, 0),
+			new CarePackageInfo(ElementLoader.FindElementByHash(SimHashes.Algae).tag.ToString(), 500f, 0),
+			new CarePackageInfo(ElementLoader.FindElementByHash(SimHashes.Water).tag.ToString(), 2000f, 0),
+			new CarePackageInfo(ElementLoader.FindElementByHash(SimHashes.Ice).tag.ToString(), 4000f, 12),
+			new CarePackageInfo(ElementLoader.FindElementByHash(SimHashes.Carbon).tag.ToString(), 3000f, 0),
+			new CarePackageInfo(ElementLoader.FindElementByHash(SimHashes.Sand).tag.ToString(), 3000f, 0),
+			new CarePackageInfo(ElementLoader.FindElementByHash(SimHashes.Cuprite).tag.ToString(), 3000f, 12),
+			new CarePackageInfo(ElementLoader.FindElementByHash(SimHashes.Lime).tag.ToString(), 500f, 12),
+			new CarePackageInfo(ElementLoader.FindElementByHash(SimHashes.Steel).tag.ToString(), 500f, 12),
+			new CarePackageInfo("PrickleGrassSeed", 3f, 0),
+			new CarePackageInfo("LeafyPlantSeed", 3f, 0),
+			new CarePackageInfo("CactusPlantSeed", 3f, 0),
+			new CarePackageInfo("MushroomSeed", 1f, 0),
+			new CarePackageInfo("PrickleFlowerSeed", 2f, 0),
+			new CarePackageInfo("ColdBreatherSeed", 1f, 0),
+			new CarePackageInfo("FieldRation", 5f, 0),
+			new CarePackageInfo("CookedMeat", 3f, 12),
+			new CarePackageInfo("BasicForagePlant", 6f, 0),
+			new CarePackageInfo("LightBugBaby", 1f, 0),
+			new CarePackageInfo("HatchBaby", 1f, 0),
+			new CarePackageInfo("DreckoBaby", 1f, 0),
+			new CarePackageInfo("MoleBaby", 1f, 12),
+			new CarePackageInfo("PuftBaby", 1f, 0),
+			new CarePackageInfo("OilfloaterBaby", 1f, 12),
+			new CarePackageInfo("Pacu", 8f, 12),
+			new CarePackageInfo("LightBugEgg", 3f, 0),
+			new CarePackageInfo("DreckoEgg", 3f, 0),
+			new CarePackageInfo("HatchEgg", 3f, 0),
+			new CarePackageInfo("MoleEgg", 3f, 12),
+			new CarePackageInfo("PuftEgg", 3f, 0),
+			new CarePackageInfo("OilfloaterEgg", 3f, 12),
+			new CarePackageInfo("VitaminSupplement", 3f, 0),
+			new CarePackageInfo("Funky_Vest", 1f, 0)
+		};
+	}
+
+	public int EndImmigration()
 	{
 		bImmigrantAvailable = false;
 		spawnIdx++;
@@ -96,6 +139,20 @@ public class Immigration : KMonoBehaviour, ISaveLoadable, ISim200ms, IPersonalPr
 		}
 		value = 3;
 		return value;
+	}
+
+	public CarePackageInfo RandomCarePackage()
+	{
+		List<CarePackageInfo> list = new List<CarePackageInfo>();
+		CarePackageInfo[] array = carePackages;
+		foreach (CarePackageInfo carePackageInfo in array)
+		{
+			if (carePackageInfo.cycleRequirement <= GameClock.Instance.GetCycle())
+			{
+				list.Add(carePackageInfo);
+			}
+		}
+		return list[UnityEngine.Random.Range(0, list.Count)];
 	}
 
 	public void SetPersonalPriority(ChoreGroup group, int value, bool is_auto_assigned)

@@ -6,7 +6,28 @@ namespace Klei
 {
 	public class GenericGameSettings : YamlIO<GenericGameSettings>
 	{
-		private static GenericGameSettings _instance;
+		public class PerformanceCapture : YamlIO<PerformanceCapture>
+		{
+			public string saveGame
+			{
+				get;
+				set;
+			}
+
+			public float waitTime
+			{
+				get;
+				set;
+			}
+
+			public bool gcStats
+			{
+				get;
+				set;
+			}
+		}
+
+		private static GenericGameSettings _instance = null;
 
 		public static GenericGameSettings instance
 		{
@@ -61,12 +82,6 @@ namespace Klei
 		{
 			get;
 			private set;
-		}
-
-		public float developerCaptureGCStatsTime
-		{
-			get;
-			set;
 		}
 
 		public bool disableGameOver
@@ -129,6 +144,12 @@ namespace Klei
 			private set;
 		}
 
+		public PerformanceCapture performanceCapture
+		{
+			get;
+			set;
+		}
+
 		private static string Path => System.IO.Path.GetDirectoryName(Application.dataPath) + "/settings.yml";
 
 		public GenericGameSettings()
@@ -139,6 +160,7 @@ namespace Klei
 			sleepWhenOutOfFocus = true;
 			debugEnable = false;
 			developerDebugEnable = false;
+			performanceCapture = new PerformanceCapture();
 			_instance = this;
 		}
 

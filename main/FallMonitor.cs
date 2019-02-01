@@ -24,7 +24,7 @@ public class FallMonitor : GameStateMachine<FallMonitor, FallMonitor.Instance>
 
 		private Navigator navigator;
 
-		private bool flipRecoverEmote;
+		private bool flipRecoverEmote = false;
 
 		public Instance(IStateMachineTarget master)
 			: base(master)
@@ -49,7 +49,7 @@ public class FallMonitor : GameStateMachine<FallMonitor, FallMonitor.Instance>
 				transition = transitions[num];
 				if (transition.isEscape && navigator.CurrentNavType == transition.start)
 				{
-					num2 = transition.IsValid(cell, navigator.NavGrid.NavTable, Grid.BitFields);
+					num2 = transition.IsValid(cell, navigator.NavGrid.NavTable);
 					if (Grid.InvalidCell != num2)
 					{
 						break;
@@ -98,7 +98,7 @@ public class FallMonitor : GameStateMachine<FallMonitor, FallMonitor.Instance>
 					NavGrid.Transition transition = transitions[num];
 					if (transition.isEscape && navigator.CurrentNavType == transition.start)
 					{
-						int num2 = transition.IsValid(cell, navigator.NavGrid.NavTable, Grid.BitFields);
+						int num2 = transition.IsValid(cell, navigator.NavGrid.NavTable);
 						if (Grid.InvalidCell != num2)
 						{
 							break;
@@ -136,22 +136,22 @@ public class FallMonitor : GameStateMachine<FallMonitor, FallMonitor.Instance>
 
 		public bool IsFalling()
 		{
-			if (navigator.IsMoving())
+			if (!navigator.IsMoving())
 			{
+				int cell = Grid.PosToCell(base.master.transform.GetPosition());
+				if (Grid.IsValidCell(cell))
+				{
+					int cell2 = Grid.CellBelow(cell);
+					if (Grid.IsValidCell(cell2))
+					{
+						bool flag = navigator.NavGrid.NavTable.IsValid(cell, navigator.CurrentNavType);
+						return !flag;
+					}
+					return false;
+				}
 				return false;
 			}
-			int cell = Grid.PosToCell(base.master.transform.GetPosition());
-			if (!Grid.IsValidCell(cell))
-			{
-				return false;
-			}
-			int cell2 = Grid.CellBelow(cell);
-			if (!Grid.IsValidCell(cell2))
-			{
-				return false;
-			}
-			bool flag = navigator.NavGrid.NavTable.IsValid(cell, navigator.CurrentNavType);
-			return !flag;
+			return false;
 		}
 
 		public void UpdateFalling()

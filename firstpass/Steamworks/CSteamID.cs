@@ -195,27 +195,27 @@ namespace Steamworks
 
 		public bool IsValid()
 		{
-			if (GetEAccountType() <= EAccountType.k_EAccountTypeInvalid || GetEAccountType() >= EAccountType.k_EAccountTypeMax)
+			if (GetEAccountType() > EAccountType.k_EAccountTypeInvalid && GetEAccountType() < EAccountType.k_EAccountTypeMax)
 			{
+				if (GetEUniverse() > EUniverse.k_EUniverseInvalid && GetEUniverse() < EUniverse.k_EUniverseMax)
+				{
+					if (GetEAccountType() == EAccountType.k_EAccountTypeIndividual && (GetAccountID() == new AccountID_t(0u) || GetUnAccountInstance() > 4))
+					{
+						return false;
+					}
+					if (GetEAccountType() == EAccountType.k_EAccountTypeClan && (GetAccountID() == new AccountID_t(0u) || GetUnAccountInstance() != 0))
+					{
+						return false;
+					}
+					if (GetEAccountType() == EAccountType.k_EAccountTypeGameServer && GetAccountID() == new AccountID_t(0u))
+					{
+						return false;
+					}
+					return true;
+				}
 				return false;
 			}
-			if (GetEUniverse() <= EUniverse.k_EUniverseInvalid || GetEUniverse() >= EUniverse.k_EUniverseMax)
-			{
-				return false;
-			}
-			if (GetEAccountType() == EAccountType.k_EAccountTypeIndividual && (GetAccountID() == new AccountID_t(0u) || GetUnAccountInstance() > 4))
-			{
-				return false;
-			}
-			if (GetEAccountType() == EAccountType.k_EAccountTypeClan && (GetAccountID() == new AccountID_t(0u) || GetUnAccountInstance() != 0))
-			{
-				return false;
-			}
-			if (GetEAccountType() == EAccountType.k_EAccountTypeGameServer && GetAccountID() == new AccountID_t(0u))
-			{
-				return false;
-			}
-			return true;
+			return false;
 		}
 
 		public override string ToString()

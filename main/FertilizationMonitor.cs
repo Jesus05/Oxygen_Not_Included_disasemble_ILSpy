@@ -13,18 +13,18 @@ public class FertilizationMonitor : GameStateMachine<FertilizationMonitor, Ferti
 
 		public List<Descriptor> GetDescriptors(GameObject obj)
 		{
-			if (consumedElements.Length > 0)
+			if (consumedElements.Length <= 0)
 			{
-				List<Descriptor> list = new List<Descriptor>();
-				PlantElementAbsorber.ConsumeInfo[] array = consumedElements;
-				for (int i = 0; i < array.Length; i++)
-				{
-					PlantElementAbsorber.ConsumeInfo consumeInfo = array[i];
-					list.Add(new Descriptor(string.Format(UI.GAMEOBJECTEFFECTS.IDEAL_FERTILIZER, consumeInfo.tag.ProperName(), GameUtil.GetFormattedMass(0f - consumeInfo.massConsumptionRate, GameUtil.TimeSlice.PerCycle, GameUtil.MetricMassFormat.UseThreshold, true, "{0:0.#}")), string.Format(UI.GAMEOBJECTEFFECTS.TOOLTIPS.IDEAL_FERTILIZER, consumeInfo.tag.ProperName(), GameUtil.GetFormattedMass(consumeInfo.massConsumptionRate, GameUtil.TimeSlice.PerCycle, GameUtil.MetricMassFormat.UseThreshold, true, "{0:0.#}")), Descriptor.DescriptorType.Requirement, false));
-				}
-				return list;
+				return null;
 			}
-			return null;
+			List<Descriptor> list = new List<Descriptor>();
+			PlantElementAbsorber.ConsumeInfo[] array = consumedElements;
+			for (int i = 0; i < array.Length; i++)
+			{
+				PlantElementAbsorber.ConsumeInfo consumeInfo = array[i];
+				list.Add(new Descriptor(string.Format(UI.GAMEOBJECTEFFECTS.IDEAL_FERTILIZER, consumeInfo.tag.ProperName(), GameUtil.GetFormattedMass(0f - consumeInfo.massConsumptionRate, GameUtil.TimeSlice.PerCycle, GameUtil.MetricMassFormat.UseThreshold, true, "{0:0.#}")), string.Format(UI.GAMEOBJECTEFFECTS.TOOLTIPS.IDEAL_FERTILIZER, consumeInfo.tag.ProperName(), GameUtil.GetFormattedMass(consumeInfo.massConsumptionRate, GameUtil.TimeSlice.PerCycle, GameUtil.MetricMassFormat.UseThreshold, true, "{0:0.#}")), Descriptor.DescriptorType.Requirement, false));
+			}
+			return list;
 		}
 	}
 
@@ -76,7 +76,7 @@ public class FertilizationMonitor : GameStateMachine<FertilizationMonitor, Ferti
 		{
 			get
 			{
-				string result = string.Empty;
+				string result = "";
 				if (base.smi.IsInsideState(base.smi.sm.replanted.fertilized.decaying.wrongFert))
 				{
 					result = GetIncorrectFertStatusItemMajor().resolveStringCallback(CREATURES.STATUSITEMS.WRONGFERTILIZERMAJOR.NAME, this);
@@ -162,11 +162,11 @@ public class FertilizationMonitor : GameStateMachine<FertilizationMonitor, Ferti
 		public virtual bool AcceptsFertilizer()
 		{
 			PlantablePlot component = base.sm.fertilizerStorage.Get(this).GetComponent<PlantablePlot>();
-			if ((Object)component != (Object)null)
+			if (!((Object)component != (Object)null))
 			{
-				return component.AcceptsFertilizer;
+				return false;
 			}
-			return false;
+			return component.AcceptsFertilizer;
 		}
 
 		public bool Starved()

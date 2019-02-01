@@ -63,7 +63,7 @@ public class OuthouseConfig : IBuildingConfig
 		manualDeliveryKG.requestedItemTag = new Tag("Dirt");
 		manualDeliveryKG.capacity = 200f;
 		manualDeliveryKG.refillMass = 0.01f;
-		manualDeliveryKG.choreTypeIDHash = Db.Get().ChoreTypes.OperateFetch.IdHash;
+		manualDeliveryKG.choreTypeIDHash = Db.Get().ChoreTypes.FetchCritical.IdHash;
 		Ownable ownable = go.AddOrGet<Ownable>();
 		ownable.slotID = Db.Get().AssignableSlots.Toilet.Id;
 		ownable.canBePublic = true;

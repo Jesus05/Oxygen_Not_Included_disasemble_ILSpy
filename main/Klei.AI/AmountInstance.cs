@@ -18,7 +18,7 @@ namespace Klei.AI
 
 		public AttributeInstance deltaAttribute;
 
-		public Action<float> OnDelta;
+		public Action<float> OnDelta = null;
 
 		public System.Action OnMaxValueReached;
 
@@ -117,10 +117,13 @@ namespace Klei.AI
 
 		public void Sim200ms(float dt)
 		{
-			float delta = GetDelta();
-			if (delta != 0f)
+			if (dt != 0f)
 			{
-				ApplyDelta(delta * dt);
+				float delta = GetDelta();
+				if (delta != 0f)
+				{
+					ApplyDelta(delta * dt);
+				}
 			}
 		}
 

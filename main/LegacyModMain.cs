@@ -70,7 +70,7 @@ public class LegacyModMain
 			}
 		}
 		list.Sort((Entry x, Entry y) => y.count.CompareTo(x.count));
-		string text = string.Empty;
+		string text = "";
 		foreach (Entry item2 in list)
 		{
 			Entry current2 = item2;

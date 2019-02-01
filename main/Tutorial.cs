@@ -58,9 +58,9 @@ public class Tutorial : KMonoBehaviour, IRender1000ms
 
 	private Dictionary<TutorialMessages, bool> hiddenTutorialMessages = new Dictionary<TutorialMessages, bool>();
 
-	private int debugMessageCount;
+	private int debugMessageCount = 0;
 
-	private bool queuedPrioritiesMessage;
+	private bool queuedPrioritiesMessage = false;
 
 	private const float LOW_RATION_AMOUNT = 1f;
 
@@ -72,7 +72,7 @@ public class Tutorial : KMonoBehaviour, IRender1000ms
 
 	public List<GameObject> oxygenGenerators = new List<GameObject>();
 
-	private int focusedOxygenGenerator;
+	private int focusedOxygenGenerator = 0;
 
 	public static Tutorial Instance
 	{
@@ -258,6 +258,16 @@ public class Tutorial : KMonoBehaviour, IRender1000ms
 			minTimeToNotify = 10f,
 			lastNotifyTime = 0f
 		});
+		warningItems.Add(new Item
+		{
+			notification = new Notification(string.Format(UI.ENDOFDAYREPORT.TRAVELTIMEWARNING.WARNING_TITLE), NotificationType.BadMinor, HashedString.Invalid, (List<Notification> n, object d) => string.Format(UI.ENDOFDAYREPORT.TRAVELTIMEWARNING.WARNING_MESSAGE, GameUtil.GetFormattedPercent(40f, GameUtil.TimeSlice.None)), null, true, 0f, delegate
+			{
+				ManagementMenu.Instance.OpenReports(GameClock.Instance.GetCycle());
+			}, null),
+			requirementSatisfied = new RequirementSatisfiedDelegate(LongTravelTimes),
+			minTimeToNotify = 1f,
+			lastNotifyTime = 0f
+		});
 	}
 
 	public void TutorialMessage(TutorialMessages tm)
@@ -350,28 +360,28 @@ public class Tutorial : KMonoBehaviour, IRender1000ms
 
 	public void DebugNotification()
 	{
-		string empty = string.Empty;
+		string text = "";
 		NotificationType type;
 		if (debugMessageCount % 3 == 0)
 		{
 			type = NotificationType.Tutorial;
-			empty = "Warning message e.g. \"not enough oxygen\" uses Warning Color";
+			text = "Warning message e.g. \"not enough oxygen\" uses Warning Color";
 		}
 		else if (debugMessageCount % 3 == 1)
 		{
 			type = NotificationType.BadMinor;
-			empty = "Normal message e.g. Idle. Uses Normal Color BG";
+			text = "Normal message e.g. Idle. Uses Normal Color BG";
 		}
 		else
 		{
 			type = NotificationType.Bad;
-			empty = "Urgent important message. Uses Bad Color BG";
+			text = "Urgent important message. Uses Bad Color BG";
 		}
-		string arg = empty;
+		string arg = text;
 		int num = debugMessageCount++;
 		num = num;
 		Notification notification = new Notification($"{arg} ({num.ToString()})", type, HashedString.Invalid, (List<Notification> n, object d) => MISC.NOTIFICATIONS.NEEDTOILET.TOOLTIP.text, null, true, 0f, null, null);
-		notifier.Add(notification, string.Empty);
+		notifier.Add(notification, "");
 	}
 
 	public void DebugNotificationMessage()
@@ -407,7 +417,7 @@ public class Tutorial : KMonoBehaviour, IRender1000ms
 						else
 						{
 							UpdateNotifierPosition();
-							notifier.Add(item.notification, string.Empty);
+							notifier.Add(item.notification, "");
 						}
 					}
 				}
@@ -430,7 +440,7 @@ public class Tutorial : KMonoBehaviour, IRender1000ms
 				}
 				else if (warningItem.lastNotifyTime == 0f || Time.time - warningItem.lastNotifyTime > warningItem.minTimeToNotify)
 				{
-					notifier.Add(warningItem.notification, string.Empty);
+					notifier.Add(warningItem.notification, "");
 					warningItem.lastNotifyTime = Time.time;
 				}
 			}
@@ -457,22 +467,22 @@ public class Tutorial : KMonoBehaviour, IRender1000ms
 
 	private bool SufficientOxygenLastCycleAndThisCycle()
 	{
-		if (ReportManager.Instance.YesterdaysReport == null)
+		if (ReportManager.Instance.YesterdaysReport != null)
 		{
-			return true;
+			ReportManager.ReportEntry entry = ReportManager.Instance.YesterdaysReport.GetEntry(ReportManager.ReportType.OxygenCreated);
+			ReportManager.ReportEntry entry2 = ReportManager.Instance.TodaysReport.GetEntry(ReportManager.ReportType.OxygenCreated);
+			return entry2.Net > 0.0001f || entry.Net > 0.0001f || (GameClock.Instance.GetCycle() < 1 && !GameClock.Instance.IsNighttime());
 		}
-		ReportManager.ReportEntry entry = ReportManager.Instance.YesterdaysReport.GetEntry(ReportManager.ReportType.OxygenCreated);
-		ReportManager.ReportEntry entry2 = ReportManager.Instance.TodaysReport.GetEntry(ReportManager.ReportType.OxygenCreated);
-		return entry2.Net > 0.0001f || entry.Net > 0.0001f || (GameClock.Instance.GetCycle() < 1 && !GameClock.Instance.IsNighttime());
+		return true;
 	}
 
 	private bool FoodIsRefrigerated()
 	{
-		if (GetUnrefrigeratedFood(null) > 0)
+		if (GetUnrefrigeratedFood(null) <= 0)
 		{
-			return false;
+			return true;
 		}
-		return true;
+		return false;
 	}
 
 	private int GetUnrefrigeratedFood(List<string> foods)
@@ -533,6 +543,24 @@ public class Tutorial : KMonoBehaviour, IRender1000ms
 		return count >= num;
 	}
 
+	private bool LongTravelTimes()
+	{
+		int num = 3;
+		if (ReportManager.Instance.reports.Count >= num)
+		{
+			float num2 = 0f;
+			float num3 = 0f;
+			for (int num4 = ReportManager.Instance.reports.Count - 1; num4 >= ReportManager.Instance.reports.Count - num; num4--)
+			{
+				num2 += ReportManager.Instance.reports[num4].GetEntry(ReportManager.ReportType.TravelTime).Net;
+				num3 += ReportManager.Instance.reports[num4].GetEntry(ReportManager.ReportType.TimeSpent).Net;
+			}
+			float num5 = num2 / num3;
+			return num5 <= 0.4f;
+		}
+		return true;
+	}
+
 	private bool FoodSourceExists()
 	{
 		foreach (ComplexFabricator item in Components.ComplexFabricators.Items)
@@ -557,9 +585,12 @@ public class Tutorial : KMonoBehaviour, IRender1000ms
 
 	private void ZoomToNextOxygenGenerator()
 	{
-		Vector3 position = oxygenGenerators[focusedOxygenGenerator].transform.position;
-		position.z = -40f;
-		CameraController.Instance.SetTargetPos(position, 8f, true);
-		focusedOxygenGenerator = (focusedOxygenGenerator + 1) % oxygenGenerators.Count;
+		if (oxygenGenerators.Count != 0)
+		{
+			focusedOxygenGenerator %= oxygenGenerators.Count;
+			Vector3 position = oxygenGenerators[focusedOxygenGenerator].transform.position;
+			CameraController.Instance.SetTargetPos(position, 8f, true);
+			focusedOxygenGenerator++;
+		}
 	}
 }

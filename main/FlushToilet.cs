@@ -179,7 +179,7 @@ public class FlushToilet : StateMachineComponent<FlushToilet.SMInstance>, IUsabl
 
 		private Chore CreateUseChore(SMInstance smi, ChoreType choreType)
 		{
-			WorkChore<ToiletWorkableUse> workChore = new WorkChore<ToiletWorkableUse>(choreType, smi.master, null, null, true, null, null, null, false, null, true, true, null, false, true, false, PriorityScreen.PriorityClass.emergency, 5, false);
+			WorkChore<ToiletWorkableUse> workChore = new WorkChore<ToiletWorkableUse>(choreType, smi.master, null, null, true, null, null, null, false, null, true, true, null, false, true, false, PriorityScreen.PriorityClass.personalNeeds, 5, false, false);
 			smi.activeUseChores.Add(workChore);
 			WorkChore<ToiletWorkableUse> workChore2 = workChore;
 			workChore2.onExit = (Action<Chore>)Delegate.Combine(workChore2.onExit, (Action<Chore>)delegate(Chore exiting_chore)

@@ -8,7 +8,7 @@ namespace LibNoiseDotNet.Graphics.Tools.Noise.Filter
 
 		protected float _displacement = 1f;
 
-		protected bool _distance;
+		protected bool _distance = false;
 
 		public float Displacement
 		{

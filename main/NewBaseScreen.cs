@@ -16,7 +16,7 @@ public class NewBaseScreen : KScreen
 	[EventRef]
 	public string BuildBaseSoundMigrated;
 
-	private MinionStartingStats[] minionStartingStats;
+	private ITelepadDeliverable[] minionStartingStats;
 
 	public override float GetSortKey()
 	{
@@ -64,7 +64,7 @@ public class NewBaseScreen : KScreen
 		Final();
 	}
 
-	public void SetStartingMinionStats(MinionStartingStats[] stats)
+	public void SetStartingMinionStats(ITelepadDeliverable[] stats)
 	{
 		minionStartingStats = stats;
 	}
@@ -138,7 +138,7 @@ public class NewBaseScreen : KScreen
 					Immigration.Instance.ApplyDefaultPersonalPriorities(gameObject);
 					gameObject.transform.SetLocalPosition(Grid.CellToPosCBC(cell, Grid.SceneLayer.Move));
 					gameObject.SetActive(true);
-					minionStartingStats[i].Apply(gameObject);
+					((MinionStartingStats)minionStartingStats[i]).Apply(gameObject);
 					GameScheduler.Instance.Schedule("ANewHope", 3f + 0.5f * (float)i, delegate(object m)
 					{
 						GameObject gameObject2 = m as GameObject;

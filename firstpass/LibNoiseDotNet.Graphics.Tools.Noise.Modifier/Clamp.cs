@@ -53,15 +53,15 @@ namespace LibNoiseDotNet.Graphics.Tools.Noise.Modifier
 		public float GetValue(float x, float y, float z)
 		{
 			float value = ((IModule3D)_sourceModule).GetValue(x, y, z);
-			if (value < _lowerBound)
+			if (!(value < _lowerBound))
 			{
-				return _lowerBound;
-			}
-			if (value > _upperBound)
-			{
+				if (!(value > _upperBound))
+				{
+					return value;
+				}
 				return _upperBound;
 			}
-			return value;
+			return _lowerBound;
 		}
 	}
 }

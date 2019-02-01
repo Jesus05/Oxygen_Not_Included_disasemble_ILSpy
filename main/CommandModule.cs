@@ -106,14 +106,14 @@ public class CommandModule : StateMachineComponent<CommandModule.StatesInstance>
 			});
 			grounded.waitingToRelease.ToggleStatusItem(Db.Get().BuildingStatusItems.DisembarkingDuplicant, (object)null).OnSignal(gantryChanged, grounded.awaitingAstronaut, delegate(StatesInstance smi)
 			{
-				if (HasValidGantry(smi.gameObject))
+				if (!HasValidGantry(smi.gameObject))
 				{
-					smi.master.ReleaseAstronaut(accumulatedPee.Get(smi));
-					accumulatedPee.Set(false, smi);
-					Game.Instance.userMenu.Refresh(smi.gameObject);
-					return true;
+					return false;
 				}
-				return false;
+				smi.master.ReleaseAstronaut(accumulatedPee.Get(smi));
+				accumulatedPee.Set(false, smi);
+				Game.Instance.userMenu.Refresh(smi.gameObject);
+				return true;
 			});
 			spaceborne.DefaultState(spaceborne.launch);
 			spaceborne.launch.Enter(delegate(StatesInstance smi)
@@ -134,7 +134,7 @@ public class CommandModule : StateMachineComponent<CommandModule.StatesInstance>
 
 	public RocketStats rocketStats;
 
-	private bool releasingAstronaut;
+	private bool releasingAstronaut = false;
 
 	private const Sim.Cell.Properties floorCellProperties = (Sim.Cell.Properties)39;
 
@@ -200,15 +200,15 @@ public class CommandModule : StateMachineComponent<CommandModule.StatesInstance>
 		assignable = GetComponent<Assignable>();
 		assignable.eligibleFilter = delegate(MinionAssignablesProxy identity)
 		{
-			if (identity.target is MinionIdentity)
+			if (!(identity.target is MinionIdentity))
 			{
-				return (identity.target as KMonoBehaviour).GetComponent<MinionResume>().HasPerk(RoleManager.rolePerks.CanUseRockets);
-			}
-			if (identity.target is StoredMinionIdentity)
-			{
+				if (!(identity.target is StoredMinionIdentity))
+				{
+					return false;
+				}
 				return (identity.target as StoredMinionIdentity).HasPerk(RoleManager.rolePerks.CanUseRockets);
 			}
-			return false;
+			return (identity.target as KMonoBehaviour).GetComponent<MinionResume>().HasPerk(RoleManager.rolePerks.CanUseRockets);
 		};
 		base.smi.StartSM();
 		int cell = Grid.OffsetCell(Grid.PosToCell(base.gameObject), 0, -1);
@@ -250,7 +250,7 @@ public class CommandModule : StateMachineComponent<CommandModule.StatesInstance>
 	{
 		ChoreType astronaut = Db.Get().ChoreTypes.Astronaut;
 		KAnimFile anim = Assets.GetAnim("anim_hat_kanim");
-		WorkChore<CommandModuleWorkable> workChore = new WorkChore<CommandModuleWorkable>(astronaut, this, null, null, true, null, null, null, false, null, false, true, anim, false, true, false, PriorityScreen.PriorityClass.emergency, 5, false);
+		WorkChore<CommandModuleWorkable> workChore = new WorkChore<CommandModuleWorkable>(astronaut, this, null, null, true, null, null, null, false, null, false, true, anim, false, true, false, PriorityScreen.PriorityClass.personalNeeds, 5, false, true);
 		workChore.AddPrecondition(ChorePreconditions.instance.HasRolePerk, RoleManager.rolePerks.CanUseRockets);
 		workChore.AddPrecondition(ChorePreconditions.instance.IsAssignedtoMe, assignable);
 		return workChore;
@@ -262,6 +262,12 @@ public class CommandModule : StateMachineComponent<CommandModule.StatesInstance>
 		partitionerEntry.Clear();
 		ReleaseAstronaut(false);
 		base.smi.StopSM("cleanup");
+	}
+
+	public void SpawnArtifacts(object data)
+	{
+		SpaceDestination spacecraftDestination = SpacecraftManager.instance.GetSpacecraftDestination(SpacecraftManager.instance.GetSpacecraftID(GetComponent<RocketModule>().conditionManager.GetComponent<LaunchableRocket>()));
+		int num = Grid.PosToCell(base.gameObject);
 	}
 
 	public List<Descriptor> GetDescriptors(BuildingDef def)

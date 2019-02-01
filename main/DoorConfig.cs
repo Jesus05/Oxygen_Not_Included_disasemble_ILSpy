@@ -26,6 +26,7 @@ public class DoorConfig : IBuildingConfig
 		EffectorValues nONE = NOISE_POLLUTION.NONE;
 		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, tIER, aLL_METALS, melting_point, build_location_rule, TUNING.BUILDINGS.DECOR.NONE, nONE, 1f);
 		buildingDef.Entombable = true;
+		buildingDef.Floodable = false;
 		buildingDef.IsFoundation = false;
 		buildingDef.AudioCategory = "Metal";
 		buildingDef.PermittedRotations = PermittedRotations.R90;

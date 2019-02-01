@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class Sculpture : Artable
 {
-	private static KAnimFile[] sculptureOverrides;
+	private static KAnimFile[] sculptureOverrides = null;
 
 	protected override void OnPrefabInit()
 	{

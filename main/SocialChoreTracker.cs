@@ -73,6 +73,6 @@ public class SocialChoreTracker
 		int cell = Grid.PosToCell(owner);
 		int cell2 = Grid.OffsetCell(cell, offset);
 		int anchor_cell = Grid.CellBelow(cell2);
-		return GameNavGrids.FloorValidator.IsWalkableCell(cell2, anchor_cell, Grid.BitFields, false, false);
+		return GameNavGrids.FloorValidator.IsWalkableCell(cell2, anchor_cell, false, false);
 	}
 }

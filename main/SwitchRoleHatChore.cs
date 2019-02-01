@@ -62,7 +62,7 @@ public class SwitchRoleHatChore : Chore<SwitchRoleHatChore.StatesInstance>
 	}
 
 	public SwitchRoleHatChore(IStateMachineTarget target, ChoreType chore_type)
-		: base(chore_type, target, target.GetComponent<ChoreProvider>(), false, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.basic, 5, false, true, 0, (Tag[])null)
+		: base(chore_type, target, target.GetComponent<ChoreProvider>(), false, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.basic, 5, false, true, 0, (Tag[])null, false)
 	{
 		smi = new StatesInstance(this, target.gameObject);
 	}

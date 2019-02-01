@@ -86,7 +86,7 @@ public class PrioritizableRenderer
 						vertices[1 + num] = new Vector3(vector.x - vector2.x, vector.y + vector2.y, z);
 						vertices[2 + num] = new Vector3(vector.x + vector2.x, vector.y - vector2.y, z);
 						vertices[3 + num] = new Vector3(vector.x + vector2.x, vector.y + vector2.y, z);
-						float num2 = 0.111111112f;
+						float num2 = 0.1f;
 						PrioritySetting masterPriority = prioritizable2.GetMasterPriority();
 						float num3 = -1f;
 						if (masterPriority.priority_class >= PriorityScreen.PriorityClass.high)
@@ -95,7 +95,7 @@ public class PrioritizableRenderer
 						}
 						if (masterPriority.priority_class >= PriorityScreen.PriorityClass.emergency)
 						{
-							num3 += 9f;
+							num3 = num3;
 						}
 						num3 += (float)masterPriority.priority_value;
 						float num4 = num2 * num3;

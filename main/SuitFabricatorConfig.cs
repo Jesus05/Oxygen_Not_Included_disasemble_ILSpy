@@ -67,6 +67,7 @@ public class SuitFabricatorConfig : IBuildingConfig
 		{
 			"SuitFabricator"
 		};
+		complexRecipe.requiredTech = Db.Get().TechItems.suitsOverlay.parentTech.Id;
 		AtmoSuitConfig.recipe = complexRecipe;
 		ComplexRecipe.RecipeElement[] array3 = new ComplexRecipe.RecipeElement[2]
 		{

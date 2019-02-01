@@ -39,12 +39,16 @@ public class MinionSelectScreen : CharacterSelectionController
 
 	protected override void OnSpawn()
 	{
-		OnCharacterAdded();
+		OnDeliverableAdded();
 		EnableProceedButton();
 		proceedButton.GetComponentInChildren<LocText>().text = UI.IMMIGRANTSCREEN.EMBARK;
-		containers.ForEach(delegate(CharacterContainer container)
+		containers.ForEach(delegate(ITelepadDeliverableContainer container)
 		{
-			container.DisableSelectButton();
+			CharacterContainer characterContainer = container as CharacterContainer;
+			if ((Object)characterContainer != (Object)null)
+			{
+				characterContainer.DisableSelectButton();
+			}
 		});
 	}
 
@@ -54,12 +58,12 @@ public class MinionSelectScreen : CharacterSelectionController
 		MusicManager.instance.StopSong("Music_FrontEnd", true, STOP_MODE.ALLOWFADEOUT);
 		AudioMixer.instance.Start(AudioMixerSnapshots.Get().NewBaseSetupSnapshot);
 		AudioMixer.instance.Stop(AudioMixerSnapshots.Get().FrontEndWorldGenerationSnapshot, STOP_MODE.ALLOWFADEOUT);
-		startingStats.Clear();
+		selectedDeliverables.Clear();
 		foreach (CharacterContainer container in containers)
 		{
-			startingStats.Add(container.Stats);
+			selectedDeliverables.Add(container.Stats);
 		}
-		NewBaseScreen.Instance.SetStartingMinionStats(startingStats.ToArray());
+		NewBaseScreen.Instance.SetStartingMinionStats(selectedDeliverables.ToArray());
 		if (OnProceedEvent != null)
 		{
 			OnProceedEvent();
@@ -87,9 +91,13 @@ public class MinionSelectScreen : CharacterSelectionController
 
 	public override void OnPressBack()
 	{
-		foreach (CharacterContainer container in containers)
+		foreach (ITelepadDeliverableContainer container in containers)
 		{
-			container.ForceStopEditingTitle();
+			CharacterContainer characterContainer = container as CharacterContainer;
+			if ((Object)characterContainer != (Object)null)
+			{
+				characterContainer.ForceStopEditingTitle();
+			}
 		}
 	}
 }

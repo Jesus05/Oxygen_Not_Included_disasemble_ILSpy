@@ -124,11 +124,28 @@ namespace STRINGS
 
 		public class SPACEARTIFACTS
 		{
+			public class ARTIFACTTIERS
+			{
+				public static string TIER_NONE = "Nothing";
+
+				public static string TIER0 = "Tier 0";
+
+				public static string TIER1 = "Tier 1";
+
+				public static string TIER2 = "Tier 2";
+
+				public static string TIER3 = "Tier 3";
+
+				public static string TIER4 = "Tier 4";
+
+				public static string TIER5 = "Tier 5";
+			}
+
 			public class ROBOTARM
 			{
 				public static string NAME = "Robot Arm";
 
-				public static string DESCRIPTION = string.Empty;
+				public static string DESCRIPTION = "";
 			}
 
 			public class HATCHFOSSIL
@@ -140,9 +157,9 @@ namespace STRINGS
 
 			public class MODERNART
 			{
-				public static string NAME = string.Empty;
+				public static string NAME = "Modern Art";
 
-				public static string DESCRIPTION = string.Empty;
+				public static string DESCRIPTION = "";
 			}
 
 			public class EGGROCK
@@ -163,7 +180,7 @@ namespace STRINGS
 			{
 				public static string NAME = "Old X-Ray";
 
-				public static string DESCRIPTION = string.Empty;
+				public static string DESCRIPTION = "";
 			}
 
 			public class SHIELDGENERATOR
@@ -184,7 +201,7 @@ namespace STRINGS
 			{
 				public static string NAME = "Double Helix Model";
 
-				public static string DESCRIPTION = string.Empty;
+				public static string DESCRIPTION = "";
 			}
 
 			public class SANDSTONE
@@ -210,23 +227,23 @@ namespace STRINGS
 
 			public class RUBIKSCUBE
 			{
-				public static string NAME = string.Empty;
+				public static string NAME = "Rubik's Cube";
 
-				public static string DESCRIPTION = string.Empty;
+				public static string DESCRIPTION = "";
 			}
 
 			public class OFFICEMUG
 			{
 				public static string NAME = "Office Mug";
 
-				public static string DESCRIPTION = string.Empty;
+				public static string DESCRIPTION = "";
 			}
 
 			public class AMELIASWATCH
 			{
 				public static string NAME = "Wrist Watch";
 
-				public static string DESCRIPTION = string.Empty;
+				public static string DESCRIPTION = "";
 			}
 
 			public class MOONMOONMOON
@@ -240,77 +257,77 @@ namespace STRINGS
 			{
 				public static string NAME = "Bioluminescent Rock";
 
-				public static string DESCRIPTION = string.Empty;
+				public static string DESCRIPTION = "";
 			}
 
 			public class PLASMALAMP
 			{
 				public static string NAME = "Plasma Lamp";
 
-				public static string DESCRIPTION = string.Empty;
+				public static string DESCRIPTION = "";
 			}
 
 			public class MOLDAVITE
 			{
 				public static string NAME = "Moldavite";
 
-				public static string DESCRIPTION = string.Empty;
+				public static string DESCRIPTION = "";
 			}
 
 			public class BRICKPHONE
 			{
 				public static string NAME = "Strange Brick";
 
-				public static string DESCRIPTION = string.Empty;
+				public static string DESCRIPTION = "";
 			}
 
 			public class SOLARSYSTEM
 			{
 				public static string NAME = "Self-Contained System";
 
-				public static string DESCRIPTION = string.Empty;
+				public static string DESCRIPTION = "";
 			}
 
 			public class SINK
 			{
 				public static string NAME = "Sink";
 
-				public static string DESCRIPTION = string.Empty;
+				public static string DESCRIPTION = "";
 			}
 
 			public class ROCKTORNADO
 			{
 				public static string NAME = "Tornado Rock";
 
-				public static string DESCRIPTION = string.Empty;
+				public static string DESCRIPTION = "";
 			}
 
 			public class BLENDER
 			{
 				public static string NAME = "Blender";
 
-				public static string DESCRIPTION = string.Empty;
+				public static string DESCRIPTION = "";
 			}
 
 			public class SAXOPHONE
 			{
 				public static string NAME = "Mangled Saxophone";
 
-				public static string DESCRIPTION = string.Empty;
+				public static string DESCRIPTION = "";
 			}
 
 			public class STETHOSCOPE
 			{
 				public static string NAME = "Stethoscope";
 
-				public static string DESCRIPTION = string.Empty;
+				public static string DESCRIPTION = "";
 			}
 
 			public class VHS
 			{
 				public static string NAME = "Archaic Tech";
 
-				public static string DESCRIPTION = string.Empty;
+				public static string DESCRIPTION = "";
 			}
 		}
 
@@ -1838,14 +1855,14 @@ namespace STRINGS
 				public static LocString MORE = "More";
 			}
 
-			public static LocString ENTER_TEXT = string.Empty;
+			public static LocString ENTER_TEXT = "";
 
 			public static LocString INVALID_LOCATION = "Invalid Location";
 		}
 
 		public class WORLDGEN
 		{
-			public static LocString NOHEADERS = string.Empty;
+			public static LocString NOHEADERS = "";
 
 			public static LocString COMPLETE = "Success! Space adventure awaits.";
 
@@ -2120,7 +2137,7 @@ namespace STRINGS
 
 			public static LocString HARVESTBUTTON = "Harvest plants";
 
-			public static LocString PRIORITIZEMAINBUTTON = string.Empty;
+			public static LocString PRIORITIZEMAINBUTTON = "";
 
 			public static LocString PRIORITIZEBUTTON = "Set Specific Errand Priority";
 
@@ -2353,6 +2370,8 @@ namespace STRINGS
 				public static LocString PASSENGERS = "Passengers";
 
 				public static LocString RESEARCH = "Research";
+
+				public static LocString ARTIFACTS = "Artifacts";
 
 				public static LocString ANALYSIS = "Analysis";
 
@@ -3499,6 +3518,21 @@ namespace STRINGS
 				public static LocString DISABLED = "Disallowed";
 			}
 
+			public class PRIORITY_CLASS
+			{
+				public static LocString IDLE = "Idle";
+
+				public static LocString BASIC = "Normal";
+
+				public static LocString HIGH = "Urgent";
+
+				public static LocString PERSONAL_NEEDS = "Personal Needs";
+
+				public static LocString EMERGENCY = "Emergency";
+
+				public static LocString COMPULSORY = "Compulsory";
+			}
+
 			public static LocString TITLE = "MANAGE ERRAND TYPE PRIORITIES";
 
 			public static LocString TOOLTIP_TOGGLE_ALL = "Set priority of all Errand Types colonywide";
@@ -3713,7 +3747,7 @@ namespace STRINGS
 
 			public static LocString DESCRIPTION = "Thank you for playing <color=#F44A47>Oxygen Not Included</color>!";
 
-			public static LocString DESCRIPTION_2 = string.Empty;
+			public static LocString DESCRIPTION_2 = "";
 
 			public static LocString QUITBUTTON = "RESET";
 		}
@@ -3734,11 +3768,11 @@ namespace STRINGS
 		{
 			public static LocString BASIC = "Set the order in which specific pending errands should be done" + HORIZONTAL_BR_RULE + "1: Least Urgent\n9: Most Urgent";
 
-			public static LocString HIGH = string.Empty;
+			public static LocString HIGH = "";
 
-			public static LocString EMERGENCY = string.Empty;
+			public static LocString EMERGENCY = "";
 
-			public static LocString HIGH_TOGGLE = string.Empty;
+			public static LocString HIGH_TOGGLE = "";
 
 			public static LocString OPEN_JOBS_SCREEN = "Click to open the Priorities Screen" + HORIZONTAL_BR_RULE + "Duplicants will choose errands based on their Errand Type Priorities first, and Specific Errand Priority second";
 
@@ -3908,7 +3942,7 @@ namespace STRINGS
 
 				public static LocString RECIPE_DETAILS = "Recipe Details";
 
-				public static LocString RECIPE_QUEUE = "Production Order:";
+				public static LocString RECIPE_QUEUE = "Order Production Quantity:";
 			}
 
 			public class GENESHUFFLERSIDESREEN
@@ -3928,6 +3962,29 @@ namespace STRINGS
 				public static LocString BUTTON_RECHARGE = "Recharge";
 
 				public static LocString BUTTON_RECHARGE_CANCEL = "Cancel Recharge";
+			}
+
+			public class MINIONTODOSIDESCREEN
+			{
+				public static LocString TITLE = "'To Do' List";
+
+				public static LocString CURRENT_SCHEDULE_BLOCK = "Current schedule block: {0}";
+
+				public static LocString CHORE_TARGET = "{0}";
+
+				public static LocString CHORE_GROUP_TYPE = " -- {0}";
+
+				public static LocString SELF_LABEL = "Self";
+
+				public static LocString TOOLTIP = "{Description}\n\n{Errand}'s Type: {Groups}\n\n{Name}'s {BestGroup} Priority: {PersonalPriorityValue} ({PersonalPriority})\n{Building} Priority: {BuildingPriority}\nAll {BestGroup} Errands: {TypePriority}\n\nTotal Priority: {TotalPriority}";
+
+				public static LocString TOOLTIP_DESC_ACTIVE = "{Name} is currently working on '{Errand}'.";
+
+				public static LocString TOOLTIP_DESC_INACTIVE = "{Name} could work on '{Errand}', but it's not the top priority right now.";
+
+				public static LocString TOOLTIP_NA = "--";
+
+				public static LocString CHORE_GROUP_SEPARATOR = " or ";
 			}
 
 			public class PLANTERSIDESCREEN
@@ -5113,7 +5170,7 @@ namespace STRINGS
 
 				public static LocString BUILDMENUTITLE = "Ladders";
 
-				public static LocString TOOLTIP = string.Empty;
+				public static LocString TOOLTIP = "";
 			}
 
 			public static class TILES
@@ -5122,7 +5179,7 @@ namespace STRINGS
 
 				public static LocString BUILDMENUTITLE = "Tiles";
 
-				public static LocString TOOLTIP = string.Empty;
+				public static LocString TOOLTIP = "";
 			}
 
 			public static class DOORS
@@ -5131,7 +5188,7 @@ namespace STRINGS
 
 				public static LocString BUILDMENUTITLE = "Doors";
 
-				public static LocString TOOLTIP = string.Empty;
+				public static LocString TOOLTIP = "";
 			}
 
 			public static class TRAVELTUBES
@@ -5140,7 +5197,7 @@ namespace STRINGS
 
 				public static LocString BUILDMENUTITLE = "Transit Tubes";
 
-				public static LocString TOOLTIP = string.Empty;
+				public static LocString TOOLTIP = "";
 			}
 
 			public static class STORAGE
@@ -5149,7 +5206,7 @@ namespace STRINGS
 
 				public static LocString BUILDMENUTITLE = "Storage";
 
-				public static LocString TOOLTIP = string.Empty;
+				public static LocString TOOLTIP = "";
 			}
 
 			public static class RESEARCH
@@ -5158,7 +5215,7 @@ namespace STRINGS
 
 				public static LocString BUILDMENUTITLE = "Research";
 
-				public static LocString TOOLTIP = string.Empty;
+				public static LocString TOOLTIP = "";
 			}
 
 			public static class GENERATORS
@@ -5167,7 +5224,7 @@ namespace STRINGS
 
 				public static LocString BUILDMENUTITLE = "Generators";
 
-				public static LocString TOOLTIP = string.Empty;
+				public static LocString TOOLTIP = "";
 			}
 
 			public static class WIRES
@@ -5176,7 +5233,7 @@ namespace STRINGS
 
 				public static LocString BUILDMENUTITLE = "Wires";
 
-				public static LocString TOOLTIP = string.Empty;
+				public static LocString TOOLTIP = "";
 			}
 
 			public static class POWERCONTROL
@@ -5185,7 +5242,7 @@ namespace STRINGS
 
 				public static LocString BUILDMENUTITLE = "Power Regulation";
 
-				public static LocString TOOLTIP = string.Empty;
+				public static LocString TOOLTIP = "";
 			}
 
 			public static class PLUMBINGSTRUCTURES
@@ -5203,7 +5260,7 @@ namespace STRINGS
 
 				public static LocString BUILDMENUTITLE = "Pipes";
 
-				public static LocString TOOLTIP = string.Empty;
+				public static LocString TOOLTIP = "";
 			}
 
 			public static class VENTILATIONSTRUCTURES
@@ -5230,7 +5287,7 @@ namespace STRINGS
 
 				public static LocString BUILDMENUTITLE = "Logic Wiring";
 
-				public static LocString TOOLTIP = string.Empty;
+				public static LocString TOOLTIP = "";
 			}
 
 			public static class LOGICGATES
@@ -5239,7 +5296,7 @@ namespace STRINGS
 
 				public static LocString BUILDMENUTITLE = "Logic Gates";
 
-				public static LocString TOOLTIP = string.Empty;
+				public static LocString TOOLTIP = "";
 			}
 
 			public static class LOGICSWITCHES
@@ -5248,7 +5305,7 @@ namespace STRINGS
 
 				public static LocString BUILDMENUTITLE = "Logic Switches";
 
-				public static LocString TOOLTIP = string.Empty;
+				public static LocString TOOLTIP = "";
 			}
 
 			public static class COOKING
@@ -5257,7 +5314,7 @@ namespace STRINGS
 
 				public static LocString BUILDMENUTITLE = "Cooking";
 
-				public static LocString TOOLTIP = string.Empty;
+				public static LocString TOOLTIP = "";
 			}
 
 			public static class FARMING
@@ -5266,7 +5323,7 @@ namespace STRINGS
 
 				public static LocString BUILDMENUTITLE = "Farming";
 
-				public static LocString TOOLTIP = string.Empty;
+				public static LocString TOOLTIP = "";
 			}
 
 			public static class RANCHING
@@ -5275,7 +5332,7 @@ namespace STRINGS
 
 				public static LocString BUILDMENUTITLE = "Ranching";
 
-				public static LocString TOOLTIP = string.Empty;
+				public static LocString TOOLTIP = "";
 			}
 
 			public static class HYGIENE
@@ -5338,7 +5395,7 @@ namespace STRINGS
 
 				public static LocString BUILDMENUTITLE = "Temperature Control";
 
-				public static LocString TOOLTIP = string.Empty;
+				public static LocString TOOLTIP = "";
 			}
 
 			public static class REFINING
@@ -5365,7 +5422,7 @@ namespace STRINGS
 
 				public static LocString BUILDMENUTITLE = "Pipe Sensors";
 
-				public static LocString TOOLTIP = string.Empty;
+				public static LocString TOOLTIP = "";
 			}
 
 			public static class ROCKETRY
@@ -5374,7 +5431,7 @@ namespace STRINGS
 
 				public static LocString BUILDMENUTITLE = "Rocketry";
 
-				public static LocString TOOLTIP = string.Empty;
+				public static LocString TOOLTIP = "";
 			}
 		}
 
@@ -6042,6 +6099,19 @@ namespace STRINGS
 
 				public static LocString CHANCE_FORMAT_TOOLTIP_NOMOD = "This critter has a {1} chance of laying {0}s.";
 			}
+
+			public class BUILDING_CHORES
+			{
+				public static LocString NAME = "Errands";
+
+				public static LocString TOOLTIP = "See what errands this building has waiting to be done";
+
+				public static LocString DUPE_TOOLTIP = "{Description}\n\n{Errand}'s Type: {Groups}\n\n{Name}'s {BestGroup} Priority: {PersonalPriorityValue} ({PersonalPriority})\n{Building} Priority: {BuildingPriority}\nAll {BestGroup} Errands: {TypePriority}\n\nTotal Priority: {TotalPriority}";
+
+				public static LocString DUPE_TOOLTIP_DESC_ACTIVE = "{Name} is currently working on '{Errand}'.";
+
+				public static LocString DUPE_TOOLTIP_DESC_INACTIVE = "{Name} could work on '{Errand}', but currently it's #{Rank} on their To Do list.";
+			}
 		}
 
 		public class BUILDINGEFFECTS
@@ -6602,6 +6672,13 @@ namespace STRINGS
 				public static LocString POSITIVE_TOOLTIP = "My Duplicants spent a total of {0} traveling between errands throughout of the day";
 			}
 
+			public class TRAVELTIMEWARNING
+			{
+				public static LocString WARNING_TITLE = "Long Commutes";
+
+				public static LocString WARNING_MESSAGE = "Your duplicates are spending a large amount of their time travelling between tasks. (> {0})";
+			}
+
 			public class IDLE_TIME
 			{
 				public static LocString NAME = "Idle Time:";
@@ -6629,7 +6706,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = FormatAsLink("Power", "POWER") + " Wasted:";
 
-				public static LocString POSITIVE_TOOLTIP = string.Empty;
+				public static LocString POSITIVE_TOOLTIP = "";
 
 				public static LocString NEGATIVE_TOOLTIP = "My colony lost {0} of " + FormatAsLink("Power", "POWER") + " today due to overproduction and battery runoff";
 			}
@@ -6689,6 +6766,15 @@ namespace STRINGS
 				public static LocString NAME = "Disease Status:";
 
 				public static LocString TOOLTIP = "My Duplicants are covered in {0}";
+			}
+
+			public class CHORE_STATUS
+			{
+				public static LocString NAME = "Chores:";
+
+				public static LocString POSITIVE_TOOLTIP = "My Duplicants have chores outstanding {0}";
+
+				public static LocString NEGATIVE_TOOLTIP = "My Duplicants completed {0} chores over the course of the day";
 			}
 
 			public class NOTES
@@ -6964,6 +7050,10 @@ namespace STRINGS
 			public static LocString NAME_YOUR_COLONY = "NAME THE COLONY";
 
 			public static LocString SHUFFLE_COLONY_NAME = "Randomize colony name";
+
+			public static LocString CARE_PACKAGE_ELEMENT_QUANTITY = "{0} of {1}";
+
+			public static LocString CARE_PACKAGE_ELEMENT_COUNT = "{0} x {1}";
 		}
 
 		public class METERS
@@ -7055,6 +7145,8 @@ namespace STRINGS
 		public static LocString CHARACTERCONTAINER_STRESSTRAIT = "Stress Reaction: {0}";
 
 		public static LocString CHARACTERCONTAINER_CONGENITALTRAIT = "Genetic Trait: {0}";
+
+		public static LocString CAREPACKAGECONTAINER_INFORMATION_TITLE = "INFORMATION";
 
 		public static LocString PRODUCTINFO_SELECTMATERIAL = "Select {0}:";
 
@@ -7219,13 +7311,13 @@ namespace STRINGS
 						Debug.LogWarningFormat("String has no open link tag: {0}");
 					}
 				}
-				return text2;
 			}
 			catch
 			{
 				Debug.Log("STRIP LINK FORMATTING FAILED ON: " + text, null);
-				return text;
+				text2 = text;
 			}
+			return text2;
 		}
 	}
 }

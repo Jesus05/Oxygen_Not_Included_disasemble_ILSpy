@@ -65,14 +65,16 @@ public class WorkChore<WorkableType> : Chore<WorkChore<WorkableType>.StatesInsta
 		}
 	}
 
+	public Func<Precondition.Context, bool> preemption_cb;
+
 	public bool onlyWhenOperational
 	{
 		get;
 		private set;
 	}
 
-	public WorkChore(ChoreType chore_type, IStateMachineTarget target, ChoreProvider chore_provider = null, Tag[] chore_tags = null, bool run_until_complete = true, Action<Chore> on_complete = null, Action<Chore> on_begin = null, Action<Chore> on_end = null, bool allow_in_red_alert = true, ScheduleBlockType schedule_block = null, bool ignore_schedule_block = false, bool only_when_operational = true, KAnimFile override_anims = null, bool is_preemptable = false, bool allow_in_context_menu = true, bool allow_prioritization = true, PriorityScreen.PriorityClass priority_class = PriorityScreen.PriorityClass.basic, int priority_class_value = 5, bool ignore_building_assignment = false)
-		: base(chore_type, target, chore_provider, run_until_complete, on_complete, on_begin, on_end, priority_class, priority_class_value, is_preemptable, allow_in_context_menu, 0, chore_tags)
+	public WorkChore(ChoreType chore_type, IStateMachineTarget target, ChoreProvider chore_provider = null, Tag[] chore_tags = null, bool run_until_complete = true, Action<Chore> on_complete = null, Action<Chore> on_begin = null, Action<Chore> on_end = null, bool allow_in_red_alert = true, ScheduleBlockType schedule_block = null, bool ignore_schedule_block = false, bool only_when_operational = true, KAnimFile override_anims = null, bool is_preemptable = false, bool allow_in_context_menu = true, bool allow_prioritization = true, PriorityScreen.PriorityClass priority_class = PriorityScreen.PriorityClass.basic, int priority_class_value = 5, bool ignore_building_assignment = false, bool add_to_daily_report = true)
+		: base(chore_type, target, chore_provider, run_until_complete, on_complete, on_begin, on_end, priority_class, priority_class_value, is_preemptable, allow_in_context_menu, 0, chore_tags, add_to_daily_report)
 	{
 		smi = new StatesInstance(this, target.gameObject, override_anims);
 		onlyWhenOperational = only_when_operational;
@@ -149,33 +151,43 @@ public class WorkChore<WorkableType> : Chore<WorkChore<WorkableType>.StatesInsta
 
 	public override bool CanPreempt(Precondition.Context context)
 	{
-		if (!base.CanPreempt(context))
+		if (base.CanPreempt(context))
 		{
+			if (!((UnityEngine.Object)context.chore.driver == (UnityEngine.Object)null))
+			{
+				if (!((UnityEngine.Object)context.chore.driver == (UnityEngine.Object)context.consumerState.choreDriver))
+				{
+					Workable workable = smi.sm.workable.Get<WorkableType>(smi);
+					if (!((UnityEngine.Object)workable == (UnityEngine.Object)null))
+					{
+						if (preemption_cb != null)
+						{
+							if (!preemption_cb(context))
+							{
+								return false;
+							}
+						}
+						else
+						{
+							int num = 4;
+							int navigationCost = ((Component)context.chore.driver).GetComponent<Navigator>().GetNavigationCost(workable);
+							if (navigationCost == -1 || navigationCost < num)
+							{
+								return false;
+							}
+							int navigationCost2 = context.consumerState.navigator.GetNavigationCost(workable);
+							if (navigationCost2 * 2 > navigationCost)
+							{
+								return false;
+							}
+						}
+						return true;
+					}
+					return false;
+				}
+				return false;
+			}
 			return false;
-		}
-		if ((UnityEngine.Object)context.chore.driver == (UnityEngine.Object)null)
-		{
-			return false;
-		}
-		if ((UnityEngine.Object)context.chore.driver == (UnityEngine.Object)context.consumerState.choreDriver)
-		{
-			return false;
-		}
-		Workable workable = smi.sm.workable.Get<WorkableType>(smi);
-		if ((UnityEngine.Object)workable == (UnityEngine.Object)null)
-		{
-			return false;
-		}
-		int navigationCost = ((Component)context.chore.driver).GetComponent<Navigator>().GetNavigationCost(workable);
-		int num = 4;
-		if (navigationCost == -1 || navigationCost < num)
-		{
-			return false;
-		}
-		int navigationCost2 = context.consumerState.navigator.GetNavigationCost(workable);
-		if (navigationCost2 * 2 <= navigationCost)
-		{
-			return true;
 		}
 		return false;
 	}

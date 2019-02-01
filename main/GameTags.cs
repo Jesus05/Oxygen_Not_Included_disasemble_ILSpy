@@ -262,6 +262,8 @@ public class GameTags
 
 	public static readonly Tag PreciousRock = TagManager.Create("PreciousRock");
 
+	public static readonly Tag Artifact = TagManager.Create("Artifact");
+
 	public static readonly Tag Incapacitated = TagManager.Create("Incapacitated");
 
 	public static readonly Tag CaloriesDepleted = TagManager.Create("CaloriesDepleted");
@@ -495,6 +497,8 @@ public class GameTags
 	public static readonly Tag JetSuitBlocker = TagManager.Create("JetSuitBlocker");
 
 	public static readonly Tag HasInvalidPorts = TagManager.Create("HasInvalidPorts");
+
+	public static readonly Tag NotRoomAssignable = TagManager.Create("NotRoomAssignable");
 
 	public static readonly Tag Rocket = TagManager.Create("Rocket");
 

@@ -10,12 +10,12 @@ public class Reservable : KMonoBehaviour
 
 	public bool Reserve(GameObject reserver)
 	{
-		if ((Object)reservedBy == (Object)null)
+		if (!((Object)reservedBy == (Object)null))
 		{
-			reservedBy = reserver;
-			return true;
+			return false;
 		}
-		return false;
+		reservedBy = reserver;
+		return true;
 	}
 
 	public void ClearReservation(GameObject reserver)

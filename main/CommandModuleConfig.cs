@@ -69,6 +69,7 @@ public class CommandModuleConfig : IBuildingConfig
 		go.AddOrGet<CommandModule>();
 		go.AddOrGet<CommandModuleWorkable>();
 		go.AddOrGet<MinionStorage>();
+		go.AddOrGet<ArtifactFinder>();
 		go.AddOrGet<LaunchableRocket>();
 	}
 

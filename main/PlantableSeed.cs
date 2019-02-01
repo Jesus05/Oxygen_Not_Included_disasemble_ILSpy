@@ -10,13 +10,13 @@ public class PlantableSeed : KMonoBehaviour, IReceptacleDirection, IGameObjectEf
 	public Tag PreviewID;
 
 	[Serialize]
-	public float timeUntilSelfPlant;
+	public float timeUntilSelfPlant = 0f;
 
 	public Tag replantGroundTag;
 
 	public string domesticatedDescription;
 
-	public SingleEntityReceptacle.ReceptacleDirection direction;
+	public SingleEntityReceptacle.ReceptacleDirection direction = SingleEntityReceptacle.ReceptacleDirection.Top;
 
 	private static readonly EventSystem.IntraObjectHandler<PlantableSeed> OnAbsorbDelegate = new EventSystem.IntraObjectHandler<PlantableSeed>(delegate(PlantableSeed component, object data)
 	{
@@ -76,59 +76,59 @@ public class PlantableSeed : KMonoBehaviour, IReceptacleDirection, IGameObjectEf
 		Crop component2 = gameObject.GetComponent<Crop>();
 		if (!((Object)component2 != (Object)null))
 		{
-			goto IL_008a;
+			goto IL_008f;
 		}
-		goto IL_008a;
-		IL_008a:
+		goto IL_008f;
+		IL_008f:
 		Util.KDestroyGameObject(pickupable.gameObject);
 	}
 
 	private bool TestSuitableGround(int cell, bool ignoreGround = false)
 	{
-		if (!Grid.IsValidCell(cell))
+		if (Grid.IsValidCell(cell))
 		{
-			return false;
-		}
-		GameObject prefab = Assets.GetPrefab(PlantID);
-		EntombVulnerable component = prefab.GetComponent<EntombVulnerable>();
-		if ((Object)component != (Object)null && !component.IsCellSafe(cell))
-		{
-			return false;
-		}
-		PressureVulnerable component2 = prefab.GetComponent<PressureVulnerable>();
-		if ((Object)component2 != (Object)null && !component2.IsCellSafe(cell))
-		{
-			return false;
-		}
-		DrowningMonitor component3 = prefab.GetComponent<DrowningMonitor>();
-		if ((Object)component3 != (Object)null && !component3.IsCellSafe(cell))
-		{
-			return false;
-		}
-		TemperatureVulnerable component4 = prefab.GetComponent<TemperatureVulnerable>();
-		if ((Object)component4 != (Object)null && !component4.IsCellSafe(cell))
-		{
-			return false;
-		}
-		UprootedMonitor component5 = prefab.GetComponent<UprootedMonitor>();
-		if ((Object)component5 != (Object)null && !component5.IsCellSafe(cell))
-		{
-			return false;
-		}
-		OccupyArea component6 = prefab.GetComponent<OccupyArea>();
-		if ((Object)component6 != (Object)null && !component6.CanOccupyArea(cell, ObjectLayer.Building))
-		{
-			return false;
-		}
-		if (!ignoreGround)
-		{
-			int num = Grid.CellBelow(cell);
-			if (Grid.Foundation[num] || (replantGroundTag.IsValid && !Grid.Element[num].HasTag(replantGroundTag)))
+			GameObject prefab = Assets.GetPrefab(PlantID);
+			EntombVulnerable component = prefab.GetComponent<EntombVulnerable>();
+			if ((Object)component != (Object)null && !component.IsCellSafe(cell))
 			{
 				return false;
 			}
+			PressureVulnerable component2 = prefab.GetComponent<PressureVulnerable>();
+			if ((Object)component2 != (Object)null && !component2.IsCellSafe(cell))
+			{
+				return false;
+			}
+			DrowningMonitor component3 = prefab.GetComponent<DrowningMonitor>();
+			if ((Object)component3 != (Object)null && !component3.IsCellSafe(cell))
+			{
+				return false;
+			}
+			TemperatureVulnerable component4 = prefab.GetComponent<TemperatureVulnerable>();
+			if ((Object)component4 != (Object)null && !component4.IsCellSafe(cell))
+			{
+				return false;
+			}
+			UprootedMonitor component5 = prefab.GetComponent<UprootedMonitor>();
+			if ((Object)component5 != (Object)null && !component5.IsCellSafe(cell))
+			{
+				return false;
+			}
+			OccupyArea component6 = prefab.GetComponent<OccupyArea>();
+			if ((Object)component6 != (Object)null && !component6.CanOccupyArea(cell, ObjectLayer.Building))
+			{
+				return false;
+			}
+			if (!ignoreGround)
+			{
+				int num = Grid.CellBelow(cell);
+				if (Grid.Foundation[num] || (replantGroundTag.IsValid && !Grid.Element[num].HasTag(replantGroundTag)))
+				{
+					return false;
+				}
+			}
+			return true;
 		}
-		return true;
+		return false;
 	}
 
 	public List<Descriptor> GetDescriptors(GameObject go)

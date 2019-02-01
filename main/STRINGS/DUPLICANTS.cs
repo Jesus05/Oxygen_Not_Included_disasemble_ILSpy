@@ -212,6 +212,15 @@ namespace STRINGS
 
 		public class CHORES
 		{
+			public class THINKING
+			{
+				public static LocString NAME = "Thinking";
+
+				public static LocString STATUS = "Thinking";
+
+				public static LocString TOOLTIP = "This Duplicant is thinking about what to do";
+			}
+
 			public class ASTRONAUT
 			{
 				public static LocString NAME = "Space Mission";
@@ -378,7 +387,7 @@ namespace STRINGS
 
 				public static LocString STATUS = "Recovering breath";
 
-				public static LocString TOOLTIP = string.Empty;
+				public static LocString TOOLTIP = "";
 			}
 
 			public class MOVETOQUARANTINE
@@ -406,15 +415,6 @@ namespace STRINGS
 				public static LocString STATUS = "Wrangling";
 
 				public static LocString TOOLTIP = "Duplicants employed as Ranchers can wrangle most critters without traps";
-			}
-
-			public class FETCHCREATURE
-			{
-				public static LocString NAME = "Relocate Critter";
-
-				public static LocString STATUS = "Relocating Critter";
-
-				public static LocString TOOLTIP = "This Rancher Duplicant is moving a critter";
 			}
 
 			public class SINGTOEGG
@@ -914,13 +914,124 @@ namespace STRINGS
 				public static LocString REPORT_NAME = "Deliver to {0}";
 			}
 
+			public class STORAGEFETCH
+			{
+				public static LocString NAME = "Store Materials";
+
+				public static LocString STATUS = "Storing Materials";
+
+				public static LocString TOOLTIP = "This Duplicant is putting materials in to storage for use later";
+
+				public static LocString REPORT_NAME = "Store {0}";
+			}
+
+			public class REPAIRFETCH
+			{
+				public static LocString NAME = "Repair Supply";
+
+				public static LocString STATUS = "Supplying Repair Materials";
+
+				public static LocString TOOLTIP = "This Duplicant is delivering materials to where they'll be needed";
+			}
+
+			public class RESEARCHFETCH
+			{
+				public static LocString NAME = "Research Supply";
+
+				public static LocString STATUS = "Supplying Research Materials";
+
+				public static LocString TOOLTIP = "This Duplicant is delivering materials to where they'll be needed";
+			}
+
+			public class FARMFETCH
+			{
+				public static LocString NAME = "Farming Supply";
+
+				public static LocString STATUS = "Supplying Farming Materials";
+
+				public static LocString TOOLTIP = "This Duplicant is delivering materials to where they'll be needed";
+			}
+
+			public class FETCHCRITICAL
+			{
+				public static LocString NAME = "Life Support Supply";
+
+				public static LocString STATUS = "Supplying Critical Materials";
+
+				public static LocString TOOLTIP = "This Duplicant is delivering materials to where they'll be needed";
+
+				public static LocString REPORT_NAME = "Life Support Supply to {0}";
+			}
+
+			public class MACHINEFETCH
+			{
+				public static LocString NAME = "Operational Supply";
+
+				public static LocString STATUS = "Supplying Operational Materials";
+
+				public static LocString TOOLTIP = "This Duplicant is delivering materials to where they'll be needed";
+
+				public static LocString REPORT_NAME = "Operational Supply to {0}";
+			}
+
+			public class COOKFETCH
+			{
+				public static LocString NAME = "Kitchen Supply";
+
+				public static LocString STATUS = "Supplying Kitchen Ingredients";
+
+				public static LocString TOOLTIP = "This Duplicant is delivering materials to where they'll be needed";
+			}
+
+			public class FOODFETCH
+			{
+				public static LocString NAME = "Store Food";
+
+				public static LocString STATUS = "Storing Food";
+
+				public static LocString TOOLTIP = "This Duplicant is putting edibles where they belong";
+
+				public static LocString REPORT_NAME = "Store {0}";
+			}
+
+			public class POWERFETCH
+			{
+				public static LocString NAME = "Power Supply";
+
+				public static LocString STATUS = "Supplying Power Materials";
+
+				public static LocString TOOLTIP = "This Duplicant is delivering materials to where they'll be needed";
+
+				public static LocString REPORT_NAME = "Power Supply to {0}";
+			}
+
+			public class FABRICATEFETCH
+			{
+				public static LocString NAME = "Manufacturing Supply";
+
+				public static LocString STATUS = "Supplying Manufacturing Materials";
+
+				public static LocString TOOLTIP = "This Duplicant is delivering materials to where they'll be needed";
+
+				public static LocString REPORT_NAME = "Manufacturing Supply to {0}";
+			}
+
 			public class BUILDFETCH
 			{
-				public static LocString NAME = "Construction Deliver";
+				public static LocString NAME = "Construction Supply";
 
-				public static LocString STATUS = "Construction Delivering";
+				public static LocString STATUS = "Supplying Construction Materials";
 
 				public static LocString TOOLTIP = "This delivery will provide materials to a planned construction site";
+			}
+
+			public class FETCHCREATURE
+			{
+				public static LocString NAME = "Relocate Critter";
+
+				public static LocString STATUS = "Relocating Critter";
+
+				public static LocString TOOLTIP = "This Rancher Duplicant is moving a critter";
 			}
 
 			public class TRANSPORT
@@ -3615,9 +3726,9 @@ namespace STRINGS
 
 			public class BANHI
 			{
-				public static LocString NAME = string.Empty;
+				public static LocString NAME = "";
 
-				public static LocString DESC = string.Empty;
+				public static LocString DESC = "";
 			}
 
 			public class STINKY
@@ -3985,6 +4096,13 @@ namespace STRINGS
 				public static LocString NAME = "Gourmet";
 
 				public static LocString DESC = "This Duplicant has a highly refined palate and desires luxurious foods.";
+			}
+
+			public class ARCHAEOLOGIST
+			{
+				public static LocString NAME = "Archaeologist";
+
+				public static LocString DESC = "This Duplicant will always bring back an artifact from space expeditions.";
 			}
 
 			public static LocString ATTRIBUTE_MODIFIERS = "\n• {0}: {1}";
@@ -4616,35 +4734,35 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Bladder Change";
 
-				public static LocString DESC = string.Empty;
+				public static LocString DESC = "";
 			}
 
 			public class CALORIESDELTA
 			{
 				public static LocString NAME = "Calories Change Rate";
 
-				public static LocString DESC = string.Empty;
+				public static LocString DESC = "";
 			}
 
 			public class STAMINADELTA
 			{
 				public static LocString NAME = "Stamina Change";
 
-				public static LocString DESC = string.Empty;
+				public static LocString DESC = "";
 			}
 
 			public class TOXICITYDELTA
 			{
 				public static LocString NAME = "Toxicity Change";
 
-				public static LocString DESC = string.Empty;
+				public static LocString DESC = "";
 			}
 
 			public class IMMUNELEVELDELTA
 			{
 				public static LocString NAME = "Immunity Regen";
 
-				public static LocString DESC = string.Empty;
+				public static LocString DESC = "";
 			}
 
 			public class TOILETEFFICIENCY
@@ -4719,14 +4837,14 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Incubation Rate";
 
-				public static LocString DESC = string.Empty;
+				public static LocString DESC = "";
 			}
 
 			public class HAPPINESS
 			{
 				public static LocString NAME = "Happiness";
 
-				public static LocString DESC = string.Empty;
+				public static LocString DESC = "";
 			}
 
 			public class SCALEGROWTHDELTA
@@ -4740,7 +4858,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Viability Loss Rate";
 
-				public static LocString DESC = string.Empty;
+				public static LocString DESC = "";
 			}
 
 			public static LocString VALUE = "{0}: {1}";

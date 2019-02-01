@@ -31,7 +31,7 @@ public class CameraRenderTexture : MonoBehaviour
 		resultTexture.name = base.name;
 		resultTexture.filterMode = FilterMode.Point;
 		resultTexture.autoGenerateMips = false;
-		if (TextureName != string.Empty)
+		if (TextureName != "")
 		{
 			Shader.SetGlobalTexture(TextureName, resultTexture);
 		}

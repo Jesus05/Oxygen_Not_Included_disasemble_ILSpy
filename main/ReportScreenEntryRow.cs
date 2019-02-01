@@ -88,7 +88,7 @@ public class ReportScreenEntryRow : KMonoBehaviour
 				notes.Add(note);
 			}
 		});
-		string text = string.Empty;
+		string text = "";
 		foreach (ReportManager.ReportEntry.Note item in Sort(notes, reportGroup.posNoteOrder))
 		{
 			ReportManager.ReportEntry.Note current = item;
@@ -101,11 +101,11 @@ public class ReportScreenEntryRow : KMonoBehaviour
 	{
 		return OnNoteTooltip(entry.Negative, reportGroup.negativeTooltip, reportGroup.negNoteOrder, reportGroup.formatfn, delegate(ReportManager.ReportEntry.Note note)
 		{
-			if (note.value < 0f)
+			if (!(note.value < 0f))
 			{
-				return true;
+				return false;
 			}
-			return false;
+			return true;
 		});
 	}
 
@@ -113,21 +113,21 @@ public class ReportScreenEntryRow : KMonoBehaviour
 	{
 		return OnNoteTooltip(entry.Positive, reportGroup.positiveTooltip, reportGroup.posNoteOrder, reportGroup.formatfn, delegate(ReportManager.ReportEntry.Note note)
 		{
-			if (note.value > 0f)
+			if (!(note.value > 0f))
 			{
-				return true;
+				return false;
 			}
-			return false;
+			return true;
 		});
 	}
 
 	private string OnNetNoteTooltip()
 	{
-		if (entry.Net > 0f)
+		if (!(entry.Net > 0f))
 		{
-			return OnPositiveNoteTooltip();
+			return OnNegativeNoteTooltip();
 		}
-		return OnNegativeNoteTooltip();
+		return OnPositiveNoteTooltip();
 	}
 
 	public void SetLine(ReportManager.ReportEntry entry, ReportManager.ReportGroup reportGroup)

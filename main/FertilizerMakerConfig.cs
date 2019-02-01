@@ -59,11 +59,13 @@ public class FertilizerMakerConfig : IBuildingConfig
 		go.AddOrGet<WaterPurifier>();
 		ManualDeliveryKG manualDeliveryKG = go.AddComponent<ManualDeliveryKG>();
 		manualDeliveryKG.SetStorage(storage);
+		manualDeliveryKG.choreTypeIDHash = Db.Get().ChoreTypes.MachineFetch.IdHash;
 		manualDeliveryKG.requestedItemTag = new Tag("Dirt");
 		manualDeliveryKG.capacity = 136.5f;
 		manualDeliveryKG.refillMass = 19.5f;
 		ManualDeliveryKG manualDeliveryKG2 = go.AddComponent<ManualDeliveryKG>();
 		manualDeliveryKG2.SetStorage(storage);
+		manualDeliveryKG2.choreTypeIDHash = Db.Get().ChoreTypes.MachineFetch.IdHash;
 		manualDeliveryKG2.requestedItemTag = new Tag("Phosphorite");
 		manualDeliveryKG2.capacity = 54.6f;
 		manualDeliveryKG2.refillMass = 7.79999971f;

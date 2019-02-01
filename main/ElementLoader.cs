@@ -1,3 +1,4 @@
+#define UNITY_ASSERTIONS
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using ProcGenGame;
@@ -36,7 +37,7 @@ public class ElementLoader
 
 		public string lowTempTransitionTarget;
 
-		public float lowTemp;
+		public float lowTemp = 0f;
 
 		public string highTempTransitionTarget;
 
@@ -316,6 +317,7 @@ public class ElementLoader
 	private static void Copy(ElementEntry entry, Element elem)
 	{
 		int num = Hash.SDBMLower(entry.elementId);
+		UnityEngine.Debug.Assert(num == (int)elem.id);
 		elem.tag = TagManager.Create(entry.elementId.ToString());
 		elem.specificHeatCapacity = entry.specificHeatCapacity;
 		elem.thermalConductivity = entry.thermalConductivity;
@@ -498,66 +500,66 @@ public class ElementLoader
 
 	private static SimHashes GetID(int column, int row, string[,] grid, SimHashes defaultValue = SimHashes.Vacuum)
 	{
-		if (column >= grid.GetLength(0) || row > grid.GetLength(1))
+		if (column < grid.GetLength(0) && row <= grid.GetLength(1))
 		{
-			Output.LogError($"Could not find element at loc [{column},{row}] grid is only [{grid.GetLength(0)},{grid.GetLength(1)}]");
+			string text = grid[column, row];
+			if (text != null && !(text == ""))
+			{
+				object obj = null;
+				try
+				{
+					obj = Enum.Parse(typeof(SimHashes), text);
+				}
+				catch (Exception ex)
+				{
+					Output.LogError($"Could not find element {text}: {ex.ToString()}");
+					return defaultValue;
+				}
+				return (SimHashes)obj;
+			}
 			return defaultValue;
 		}
-		string text = grid[column, row];
-		if (text == null || text == string.Empty)
-		{
-			return defaultValue;
-		}
-		object obj = null;
-		try
-		{
-			obj = Enum.Parse(typeof(SimHashes), text);
-		}
-		catch (Exception ex)
-		{
-			Output.LogError($"Could not find element {text}: {ex.ToString()}");
-			return defaultValue;
-		}
-		return (SimHashes)obj;
+		Output.LogError($"Could not find element at loc [{column},{row}] grid is only [{grid.GetLength(0)},{grid.GetLength(1)}]");
+		return defaultValue;
 	}
 
 	private static SpawnFXHashes GetSpawnFX(int column, int row, string[,] grid)
 	{
-		if (column >= grid.GetLength(0) || row > grid.GetLength(1))
+		if (column < grid.GetLength(0) && row <= grid.GetLength(1))
 		{
-			Output.LogError($"Could not find SpawnFXHashes at loc [{column},{row}] grid is only [{grid.GetLength(0)},{grid.GetLength(1)}]");
+			string text = grid[column, row];
+			if (text != null && !(text == ""))
+			{
+				object obj = null;
+				try
+				{
+					obj = Enum.Parse(typeof(SpawnFXHashes), text);
+				}
+				catch (Exception ex)
+				{
+					Output.LogError($"Could not find FX {text}: {ex.ToString()}");
+					return SpawnFXHashes.None;
+				}
+				return (SpawnFXHashes)obj;
+			}
 			return SpawnFXHashes.None;
 		}
-		string text = grid[column, row];
-		if (text == null || text == string.Empty)
-		{
-			return SpawnFXHashes.None;
-		}
-		object obj = null;
-		try
-		{
-			obj = Enum.Parse(typeof(SpawnFXHashes), text);
-		}
-		catch (Exception ex)
-		{
-			Output.LogError($"Could not find FX {text}: {ex.ToString()}");
-			return SpawnFXHashes.None;
-		}
-		return (SpawnFXHashes)obj;
+		Output.LogError($"Could not find SpawnFXHashes at loc [{column},{row}] grid is only [{grid.GetLength(0)},{grid.GetLength(1)}]");
+		return SpawnFXHashes.None;
 	}
 
 	private static Tag CreateMaterialCategoryTag(SimHashes element_id, Tag phaseTag, string materialCategoryField)
 	{
-		if (!string.IsNullOrEmpty(materialCategoryField))
+		if (string.IsNullOrEmpty(materialCategoryField))
 		{
-			Tag tag = TagManager.Create(materialCategoryField);
-			if (!GameTags.MaterialCategories.Contains(tag) && !GameTags.IgnoredMaterialCategories.Contains(tag))
-			{
-				Debug.LogWarningFormat("Element {0} has category {1}, but that isn't in GameTags.MaterialCategores!", element_id, materialCategoryField);
-			}
-			return tag;
+			return phaseTag;
 		}
-		return phaseTag;
+		Tag tag = TagManager.Create(materialCategoryField);
+		if (!GameTags.MaterialCategories.Contains(tag) && !GameTags.IgnoredMaterialCategories.Contains(tag))
+		{
+			Debug.LogWarningFormat("Element {0} has category {1}, but that isn't in GameTags.MaterialCategores!", element_id, materialCategoryField);
+		}
+		return tag;
 	}
 
 	private static Tag[] CreateOreTags(Tag materialCategory, Tag phaseTag, string[] ore_tags_split)

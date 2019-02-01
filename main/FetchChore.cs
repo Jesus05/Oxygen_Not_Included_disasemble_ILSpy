@@ -126,7 +126,7 @@ public class FetchChore : Chore<FetchChore.StatesInstance>
 	public Storage destination => smi.sm.destination.Get<Storage>(smi);
 
 	public FetchChore(ChoreType choreType, Storage destination, float amount, Tag[] tags, Tag[] required_tags = null, Tag[] forbidden_tags = null, ChoreProvider chore_provider = null, bool run_until_complete = true, Action<Chore> on_complete = null, Action<Chore> on_begin = null, Action<Chore> on_end = null, FetchOrder2.OperationalRequirement operational_requirement = FetchOrder2.OperationalRequirement.Operational, int priority_mod = 0, Tag[] chore_tags = null)
-		: base(choreType, (IStateMachineTarget)destination, chore_provider, run_until_complete, on_complete, on_begin, on_end, PriorityScreen.PriorityClass.basic, 5, false, true, priority_mod, chore_tags)
+		: base(choreType, (IStateMachineTarget)destination, chore_provider, run_until_complete, on_complete, on_begin, on_end, PriorityScreen.PriorityClass.basic, 5, false, true, priority_mod, chore_tags, false)
 	{
 		if (choreType == null)
 		{
@@ -195,6 +195,7 @@ public class FetchChore : Chore<FetchChore.StatesInstance>
 	{
 		amount = amount_to_be_fetched;
 		smi.sm.fetcher.Set(context.consumerState.gameObject, smi);
+		ReportManager.Instance.ReportValue(ReportManager.ReportType.ChoreStatus, 1f, context.chore.choreType.Name, GameUtil.GetChoreName(this, context.data));
 		base.Begin(context);
 	}
 
@@ -202,6 +203,7 @@ public class FetchChore : Chore<FetchChore.StatesInstance>
 	{
 		if (is_success)
 		{
+			ReportManager.Instance.ReportValue(ReportManager.ReportType.ChoreStatus, -1f, base.choreType.Name, GameUtil.GetChoreName(this, pickupable));
 			fetchTarget = pickupable;
 			base.driver = driver;
 			fetcher = driver.gameObject;
@@ -269,11 +271,11 @@ public class FetchChore : Chore<FetchChore.StatesInstance>
 
 	public float AmountWaitingToFetch()
 	{
-		if ((UnityEngine.Object)fetcher == (UnityEngine.Object)null)
+		if (!((UnityEngine.Object)fetcher == (UnityEngine.Object)null))
 		{
-			return originalAmount;
+			return amount;
 		}
-		return amount;
+		return originalAmount;
 	}
 
 	private void OnOnlyFetchMarkedItemsSettingChanged(object data)

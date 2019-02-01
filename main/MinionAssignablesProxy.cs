@@ -10,7 +10,7 @@ public class MinionAssignablesProxy : KMonoBehaviour, IAssignableIdentity
 	[Serialize]
 	private int target_instance_id = -1;
 
-	private bool slotsConfigured;
+	private bool slotsConfigured = false;
 
 	private static readonly EventSystem.IntraObjectHandler<MinionAssignablesProxy> OnAssignablesChangedDelegate = new EventSystem.IntraObjectHandler<MinionAssignablesProxy>(delegate(MinionAssignablesProxy component, object data)
 	{
@@ -33,12 +33,12 @@ public class MinionAssignablesProxy : KMonoBehaviour, IAssignableIdentity
 		{
 			RestoreTargetFromInstanceID();
 		}
-		if (target != null)
+		KMonoBehaviour kMonoBehaviour = (KMonoBehaviour)target;
+		if (!((Object)kMonoBehaviour != (Object)null))
 		{
-			KMonoBehaviour kMonoBehaviour = (KMonoBehaviour)target;
-			return kMonoBehaviour.gameObject;
+			return null;
 		}
-		return null;
+		return kMonoBehaviour.gameObject;
 	}
 
 	public void SetTarget(IAssignableIdentity target, GameObject targetGO)

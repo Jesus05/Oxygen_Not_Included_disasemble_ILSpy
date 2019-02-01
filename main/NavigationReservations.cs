@@ -15,11 +15,11 @@ public class NavigationReservations : KMonoBehaviour
 
 	public int GetOccupancyCount(int cell)
 	{
-		if (cellOccupancyDensity.ContainsKey(cell))
+		if (!cellOccupancyDensity.ContainsKey(cell))
 		{
-			return cellOccupancyDensity[cell];
+			return 0;
 		}
-		return 0;
+		return cellOccupancyDensity[cell];
 	}
 
 	public void AddOccupancy(int cell)

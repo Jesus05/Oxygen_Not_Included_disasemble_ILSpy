@@ -15,7 +15,7 @@ public class CargoBay : KMonoBehaviour
 
 	public Storage storage;
 
-	public CargoType storageType;
+	public CargoType storageType = CargoType.solids;
 
 	private static readonly EventSystem.IntraObjectHandler<CargoBay> OnLaunchDelegate = new EventSystem.IntraObjectHandler<CargoBay>(delegate(CargoBay component, object data)
 	{

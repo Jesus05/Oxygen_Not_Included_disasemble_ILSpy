@@ -1,6 +1,5 @@
 using KSerialization;
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 [SerializationConfig(MemberSerialization.OptIn)]
@@ -18,13 +17,13 @@ public class TravelTubeEntrance : StateMachineComponent<TravelTubeEntrance.SMIns
 
 		public override bool InternalCanBegin(GameObject new_reactor, Navigator.ActiveTransition transition)
 		{
-			if (base.InternalCanBegin(new_reactor, transition))
+			if (!base.InternalCanBegin(new_reactor, transition))
 			{
-				Navigator component = new_reactor.GetComponent<Navigator>();
-				if (!(bool)component)
-				{
-					return false;
-				}
+				return false;
+			}
+			Navigator component = new_reactor.GetComponent<Navigator>();
+			if ((bool)component)
+			{
 				return entrance.HasChargeSlotReserved(component);
 			}
 			return false;
@@ -44,16 +43,16 @@ public class TravelTubeEntrance : StateMachineComponent<TravelTubeEntrance.SMIns
 
 		public override bool InternalCanBegin(GameObject new_reactor, Navigator.ActiveTransition transition)
 		{
-			if ((UnityEngine.Object)reactor != (UnityEngine.Object)null)
+			if (!((UnityEngine.Object)reactor != (UnityEngine.Object)null))
 			{
-				return false;
-			}
-			if ((UnityEngine.Object)entrance == (UnityEngine.Object)null)
-			{
+				if (!((UnityEngine.Object)entrance == (UnityEngine.Object)null))
+				{
+					return entrance.ShouldWait(new_reactor);
+				}
 				Cleanup();
 				return false;
 			}
-			return entrance.ShouldWait(new_reactor);
+			return false;
 		}
 
 		protected override void InternalBegin()
@@ -187,8 +186,6 @@ public class TravelTubeEntrance : StateMachineComponent<TravelTubeEntrance.SMIns
 
 	private WaitReactable wait_reactable;
 
-	private List<TubeTraveller.Instance> chargeReservations = new List<TubeTraveller.Instance>();
-
 	private MeterController meter;
 
 	private const int MAX_CHARGES = 3;
@@ -234,7 +231,7 @@ public class TravelTubeEntrance : StateMachineComponent<TravelTubeEntrance.SMIns
 		Subscribe(-592767678, OnOperationalChangedDelegate);
 		meter = new MeterController(this, Meter.Offset.Infront, Grid.SceneLayer.NoLayer);
 		CreateNewWaitReactable();
-		Grid.HasTubeEntrance[Grid.PosToCell(this)] = true;
+		Grid.RegisterTubeEntrance(Grid.PosToCell(this), Mathf.FloorToInt(availableJoules / joulesPerLaunch));
 		base.smi.StartSM();
 		UpdateCharge();
 	}
@@ -246,7 +243,7 @@ public class TravelTubeEntrance : StateMachineComponent<TravelTubeEntrance.SMIns
 			travelTube.Unsubscribe(-1041684577, TubeConnectionsChanged);
 			travelTube = null;
 		}
-		Grid.HasTubeEntrance[Grid.PosToCell(this)] = false;
+		Grid.UnregisterTubeEntrance(Grid.PosToCell(this));
 		ClearWaitReactable();
 		GameScenePartitioner.Instance.Free(ref tubeChangedEntry);
 		base.OnCleanUp();
@@ -303,68 +300,52 @@ public class TravelTubeEntrance : StateMachineComponent<TravelTubeEntrance.SMIns
 		UpdateConnectionStatus();
 	}
 
-	public void Reserve(TubeTraveller.Instance traveller)
+	public void Reserve(TubeTraveller.Instance traveller, int prefabInstanceID)
 	{
-		chargeReservations.Add(traveller);
+		Grid.ReserveTubeEntrance(Grid.PosToCell(this), prefabInstanceID, true);
 	}
 
-	public void Unreserve(TubeTraveller.Instance traveller)
+	public void Unreserve(TubeTraveller.Instance traveller, int prefabInstanceID)
 	{
-		chargeReservations.Remove(traveller);
+		Grid.ReserveTubeEntrance(Grid.PosToCell(this), prefabInstanceID, false);
 	}
 
 	public bool IsTraversable(Navigator agent)
 	{
-		if (!operational.IsOperational)
-		{
-			return false;
-		}
-		TubeTraveller.Instance sMI = agent.GetSMI<TubeTraveller.Instance>();
-		return IsChargedSlotAvailable(sMI);
+		return Grid.HasUsableTubeEntrance(Grid.PosToCell(this), agent.gameObject.GetComponent<KPrefabID>().InstanceID);
 	}
 
 	public bool HasChargeSlotReserved(Navigator agent)
 	{
-		TubeTraveller.Instance sMI = agent.GetSMI<TubeTraveller.Instance>();
-		return chargeReservations.Contains(sMI);
+		return Grid.HasReservedTubeEntrance(Grid.PosToCell(this), agent.gameObject.GetComponent<KPrefabID>().InstanceID);
 	}
 
-	public bool HasChargeSlotReserved(TubeTraveller.Instance tube_traveller)
+	public bool HasChargeSlotReserved(TubeTraveller.Instance tube_traveller, int prefabInstanceID)
 	{
-		return chargeReservations.Contains(tube_traveller);
+		return Grid.HasReservedTubeEntrance(Grid.PosToCell(this), prefabInstanceID);
 	}
 
-	public bool IsChargedSlotAvailable(TubeTraveller.Instance tube_traveller)
+	public bool IsChargedSlotAvailable(TubeTraveller.Instance tube_traveller, int prefabInstanceID)
 	{
-		int num = Mathf.FloorToInt(availableJoules / joulesPerLaunch);
-		int count = chargeReservations.Count;
-		if (count < num)
-		{
-			return true;
-		}
-		if (count == num && chargeReservations.Contains(tube_traveller))
-		{
-			return true;
-		}
-		return false;
+		return Grid.HasUsableTubeEntrance(Grid.PosToCell(this), prefabInstanceID);
 	}
 
 	public bool ShouldWait(GameObject reactor)
 	{
-		if (!operational.IsOperational)
+		if (operational.IsOperational)
 		{
+			if (HasLaunchPower)
+			{
+				if (!((UnityEngine.Object)launch_workable.worker == (UnityEngine.Object)null))
+				{
+					TubeTraveller.Instance sMI = reactor.GetSMI<TubeTraveller.Instance>();
+					return HasChargeSlotReserved(sMI, reactor.GetComponent<KPrefabID>().InstanceID);
+				}
+				return false;
+			}
 			return false;
 		}
-		if (!HasLaunchPower)
-		{
-			return false;
-		}
-		if ((UnityEngine.Object)launch_workable.worker == (UnityEngine.Object)null)
-		{
-			return false;
-		}
-		TubeTraveller.Instance sMI = reactor.GetSMI<TubeTraveller.Instance>();
-		return HasChargeSlotReserved(sMI);
+		return false;
 	}
 
 	public void ConsumeCharge(GameObject reactor)
@@ -400,6 +381,8 @@ public class TravelTubeEntrance : StateMachineComponent<TravelTubeEntrance.SMIns
 
 	private void OnOperationalChanged(object data)
 	{
+		bool activate = (bool)data;
+		Grid.ActivateTubeEntrance(Grid.PosToCell(this), activate);
 		UpdateActive();
 	}
 
@@ -420,6 +403,7 @@ public class TravelTubeEntrance : StateMachineComponent<TravelTubeEntrance.SMIns
 		float positionPercent = Mathf.Clamp01(availableJoules / jouleCapacity);
 		meter.SetPositionPercent(positionPercent);
 		energyConsumer.UpdatePoweredStatus();
+		Grid.SetTubeEntranceReservationCapacity(Grid.PosToCell(this), Mathf.FloorToInt(availableJoules / joulesPerLaunch));
 	}
 
 	private void UpdateConnectionStatus()

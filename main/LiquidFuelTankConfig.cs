@@ -75,7 +75,7 @@ public class LiquidFuelTankConfig : IBuildingConfig
 		manualDeliveryKG.refillMass = fuelTank.capacityKg;
 		manualDeliveryKG.capacity = fuelTank.capacityKg;
 		manualDeliveryKG.operationalRequirement = FetchOrder2.OperationalRequirement.None;
-		manualDeliveryKG.choreTypeIDHash = Db.Get().ChoreTypes.Fetch.IdHash;
+		manualDeliveryKG.choreTypeIDHash = Db.Get().ChoreTypes.MachineFetch.IdHash;
 		ConduitConsumer conduitConsumer = go.AddOrGet<ConduitConsumer>();
 		conduitConsumer.conduitType = ConduitType.Liquid;
 		conduitConsumer.consumptionRate = 10f;

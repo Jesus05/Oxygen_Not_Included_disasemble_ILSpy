@@ -43,12 +43,12 @@ public class BottleEmptier : StateMachineComponent<BottleEmptier.StatesInstance>
 					GameTags.LiquidSource
 				};
 				Storage component2 = GetComponent<Storage>();
-				ChoreType fetch = Db.Get().ChoreTypes.Fetch;
+				ChoreType storageFetch = Db.Get().ChoreTypes.StorageFetch;
 				Storage destination = component2;
 				float amount = component2.Capacity();
 				Tag[] tags2 = GetComponent<TreeFilterable>().GetTags();
 				Tag[] forbidden_tags = array;
-				chore = new FetchChore(fetch, destination, amount, tags2, null, forbidden_tags, null, true, null, null, null, FetchOrder2.OperationalRequirement.Operational, 0, null);
+				chore = new FetchChore(storageFetch, destination, amount, tags2, null, forbidden_tags, null, true, null, null, null, FetchOrder2.OperationalRequirement.Operational, 0, null);
 			}
 		}
 
@@ -155,32 +155,32 @@ public class BottleEmptier : StateMachineComponent<BottleEmptier.StatesInstance>
 		public override void InitializeStates(out BaseState default_state)
 		{
 			default_state = waitingfordelivery;
-			statusItem = new StatusItem("BottleEmptier", string.Empty, string.Empty, string.Empty, StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, 63486);
+			statusItem = new StatusItem("BottleEmptier", "", "", "", StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, 63486);
 			statusItem.resolveStringCallback = delegate(string str, object data)
 			{
 				BottleEmptier bottleEmptier2 = (BottleEmptier)data;
-				if ((UnityEngine.Object)bottleEmptier2 == (UnityEngine.Object)null)
+				if (!((UnityEngine.Object)bottleEmptier2 == (UnityEngine.Object)null))
 				{
-					return str;
-				}
-				if (bottleEmptier2.allowManualPumpingStationFetching)
-				{
+					if (!bottleEmptier2.allowManualPumpingStationFetching)
+					{
+						return BUILDING.STATUSITEMS.BOTTLE_EMPTIER.DENIED.NAME;
+					}
 					return BUILDING.STATUSITEMS.BOTTLE_EMPTIER.ALLOWED.NAME;
 				}
-				return BUILDING.STATUSITEMS.BOTTLE_EMPTIER.DENIED.NAME;
+				return str;
 			};
 			statusItem.resolveTooltipCallback = delegate(string str, object data)
 			{
 				BottleEmptier bottleEmptier = (BottleEmptier)data;
-				if ((UnityEngine.Object)bottleEmptier == (UnityEngine.Object)null)
+				if (!((UnityEngine.Object)bottleEmptier == (UnityEngine.Object)null))
 				{
-					return str;
-				}
-				if (bottleEmptier.allowManualPumpingStationFetching)
-				{
+					if (!bottleEmptier.allowManualPumpingStationFetching)
+					{
+						return BUILDING.STATUSITEMS.BOTTLE_EMPTIER.DENIED.TOOLTIP;
+					}
 					return BUILDING.STATUSITEMS.BOTTLE_EMPTIER.ALLOWED.TOOLTIP;
 				}
-				return BUILDING.STATUSITEMS.BOTTLE_EMPTIER.DENIED.TOOLTIP;
+				return str;
 			};
 			root.ToggleStatusItem(statusItem, (StatesInstance smi) => smi.master);
 			unoperational.TagTransition(GameTags.Operational, waitingfordelivery, false).PlayAnim("off");

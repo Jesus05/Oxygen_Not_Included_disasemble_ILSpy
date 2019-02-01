@@ -51,7 +51,7 @@ public class KIconButtonMenu : KScreen
 
 		public string GetTooltipText()
 		{
-			string text = (!(tooltipText == string.Empty)) ? tooltipText : this.text;
+			string text = (!(tooltipText == "")) ? tooltipText : this.text;
 			if (shortcutKey != Action.NumActions)
 			{
 				text = text + " " + GameUtil.GetHotkeyString(shortcutKey);
@@ -176,7 +176,7 @@ public class KIconButtonMenu : KScreen
 						}
 					}
 					ToolTip componentInChildren2 = binstance.GetComponentInChildren<ToolTip>();
-					if (buttonInfo.text != null && buttonInfo.text != string.Empty && (UnityEngine.Object)componentInChildren2 != (UnityEngine.Object)null)
+					if (buttonInfo.text != null && buttonInfo.text != "" && (UnityEngine.Object)componentInChildren2 != (UnityEngine.Object)null)
 					{
 						componentInChildren2.toolTip = buttonInfo.GetTooltipText();
 						LocText componentInChildren3 = binstance.GetComponentInChildren<LocText>();

@@ -1,3 +1,4 @@
+#define UNITY_ASSERTIONS
 using STRINGS;
 using System.Collections.Generic;
 using UnityEngine;
@@ -130,6 +131,10 @@ public class Light2D : KMonoBehaviour, IGameObjectEffectDescriptor
 					Vector2I vector2I3 = new Vector2I(vector2I.x - num2, vector2I.y - num2);
 					solidPartitionerEntry = GameScenePartitioner.Instance.Add("Light2D", base.gameObject, vector2I3.x, vector2I3.y, 2 * num2, num2, GameScenePartitioner.Instance.solidChangedLayer, TriggerRefresh);
 					liquidPartitionerEntry = GameScenePartitioner.Instance.Add("Light2D", base.gameObject, vector2I3.x, vector2I3.y, 2 * num2, num2, GameScenePartitioner.Instance.liquidChangedLayer, TriggerRefresh);
+				}
+				else
+				{
+					UnityEngine.Debug.Assert(false);
 				}
 				cell = num;
 				litCells.Clear();

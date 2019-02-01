@@ -13,18 +13,18 @@ public class IrrigationMonitor : GameStateMachine<IrrigationMonitor, IrrigationM
 
 		public List<Descriptor> GetDescriptors(GameObject obj)
 		{
-			if (consumedElements.Length > 0)
+			if (consumedElements.Length <= 0)
 			{
-				List<Descriptor> list = new List<Descriptor>();
-				PlantElementAbsorber.ConsumeInfo[] array = consumedElements;
-				for (int i = 0; i < array.Length; i++)
-				{
-					PlantElementAbsorber.ConsumeInfo consumeInfo = array[i];
-					list.Add(new Descriptor(string.Format(UI.GAMEOBJECTEFFECTS.IDEAL_FERTILIZER, consumeInfo.tag.ProperName(), GameUtil.GetFormattedMass(0f - consumeInfo.massConsumptionRate, GameUtil.TimeSlice.PerCycle, GameUtil.MetricMassFormat.UseThreshold, true, "{0:0.#}")), string.Format(UI.GAMEOBJECTEFFECTS.TOOLTIPS.IDEAL_FERTILIZER, consumeInfo.tag.ProperName(), GameUtil.GetFormattedMass(consumeInfo.massConsumptionRate, GameUtil.TimeSlice.PerCycle, GameUtil.MetricMassFormat.UseThreshold, true, "{0:0.#}")), Descriptor.DescriptorType.Requirement, false));
-				}
-				return list;
+				return null;
 			}
-			return null;
+			List<Descriptor> list = new List<Descriptor>();
+			PlantElementAbsorber.ConsumeInfo[] array = consumedElements;
+			for (int i = 0; i < array.Length; i++)
+			{
+				PlantElementAbsorber.ConsumeInfo consumeInfo = array[i];
+				list.Add(new Descriptor(string.Format(UI.GAMEOBJECTEFFECTS.IDEAL_FERTILIZER, consumeInfo.tag.ProperName(), GameUtil.GetFormattedMass(0f - consumeInfo.massConsumptionRate, GameUtil.TimeSlice.PerCycle, GameUtil.MetricMassFormat.UseThreshold, true, "{0:0.#}")), string.Format(UI.GAMEOBJECTEFFECTS.TOOLTIPS.IDEAL_FERTILIZER, consumeInfo.tag.ProperName(), GameUtil.GetFormattedMass(consumeInfo.massConsumptionRate, GameUtil.TimeSlice.PerCycle, GameUtil.MetricMassFormat.UseThreshold, true, "{0:0.#}")), Descriptor.DescriptorType.Requirement, false));
+			}
+			return list;
 		}
 	}
 
@@ -72,7 +72,7 @@ public class IrrigationMonitor : GameStateMachine<IrrigationMonitor, IrrigationM
 		{
 			get
 			{
-				string result = string.Empty;
+				string result = "";
 				if (base.smi.IsInsideState(base.smi.sm.replanted.irrigated.absorbing.wrongLiquid))
 				{
 					result = GetIncorrectLiquidStatusItem().resolveStringCallback(CREATURES.STATUSITEMS.WRONGIRRIGATION.NAME, this);
@@ -222,11 +222,11 @@ public class IrrigationMonitor : GameStateMachine<IrrigationMonitor, IrrigationM
 		public virtual bool AcceptsLiquid()
 		{
 			PlantablePlot component = base.sm.resourceStorage.Get(this).GetComponent<PlantablePlot>();
-			if ((Object)component != (Object)null)
+			if (!((Object)component != (Object)null))
 			{
-				return component.AcceptsIrrigation;
+				return false;
 			}
-			return false;
+			return component.AcceptsIrrigation;
 		}
 
 		public bool Starved()

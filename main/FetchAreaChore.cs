@@ -1,4 +1,3 @@
-using STRINGS;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -631,8 +630,10 @@ public class FetchAreaChore : Chore<FetchAreaChore.StatesInstance>
 
 	public bool IsDelivering => smi.delivering;
 
+	public GameObject GetFetchTarget => smi.sm.fetchTarget.Get(smi);
+
 	public FetchAreaChore(Precondition.Context context)
-		: base(context.chore.choreType, (IStateMachineTarget)context.consumerState.consumer, context.consumerState.choreProvider, false, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, context.masterPriority.priority_class, context.masterPriority.priority_value, false, true, 0, (Tag[])null)
+		: base(context.chore.choreType, (IStateMachineTarget)context.consumerState.consumer, context.consumerState.choreProvider, false, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, context.masterPriority.priority_class, context.masterPriority.priority_value, false, true, 0, (Tag[])null, false)
 	{
 		showAvailabilityInHoverText = false;
 		smi = new StatesInstance(this, context);
@@ -661,16 +662,6 @@ public class FetchAreaChore : Chore<FetchAreaChore.StatesInstance>
 		{
 			Fail("Tags changed");
 		}
-	}
-
-	public override string GetReportName()
-	{
-		if (smi.deliveries.Count > 0 && (UnityEngine.Object)smi.deliveries[0].destination != (UnityEngine.Object)null)
-		{
-			string text = DUPLICANTS.CHORES.FETCH.REPORT_NAME;
-			return StringFormatter.Replace(DUPLICANTS.CHORES.FETCH.REPORT_NAME, "{0}", smi.deliveries[0].destination.GetProperName());
-		}
-		return base.GetReportName();
 	}
 
 	public static void GatherNearbyFetchChores(FetchChore root_chore, Precondition.Context context, int x, int y, int radius, List<Precondition.Context> succeeded_contexts, List<Precondition.Context> failed_contexts)

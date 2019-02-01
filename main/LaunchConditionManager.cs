@@ -42,7 +42,7 @@ public class LaunchConditionManager : KMonoBehaviour, ISim4000ms, ISim1000ms
 		{
 			foreach (Tuple<string, string, string> dEBUG_ModuleDestruction in DEBUG_ModuleDestructions)
 			{
-				Output.Log("\n\nBEGIN MODULE DUMP\n", dEBUG_ModuleDestruction.first, ">", dEBUG_ModuleDestruction.second, "\n", dEBUG_ModuleDestruction.third, "\nEND MODULE DUMP\n\n");
+				Output.Log(dEBUG_ModuleDestruction.first, ">", dEBUG_ModuleDestruction.second, "\n", dEBUG_ModuleDestruction.third, "\nEND MODULE DUMP\n\n");
 			}
 		}
 	}

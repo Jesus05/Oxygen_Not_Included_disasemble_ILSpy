@@ -10,7 +10,7 @@ public class Uncoverable : KMonoBehaviour
 	private OccupyArea occupyArea;
 
 	[Serialize]
-	private bool hasBeenUncovered;
+	private bool hasBeenUncovered = false;
 
 	private HandleVector<int>.Handle partitionerEntry;
 
@@ -60,7 +60,7 @@ public class Uncoverable : KMonoBehaviour
 			hasBeenUncovered = true;
 			GetComponent<KSelectable>().IsSelectable = true;
 			Notification notification = new Notification(MISC.STATUSITEMS.BURIEDITEM.NOTIFICATION, NotificationType.Good, HashedString.Invalid, OnNotificationToolTip, this, true, 0f, null, null);
-			base.gameObject.AddOrGet<Notifier>().Add(notification, string.Empty);
+			base.gameObject.AddOrGet<Notifier>().Add(notification, "");
 		}
 	}
 

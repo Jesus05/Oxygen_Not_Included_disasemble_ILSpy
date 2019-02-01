@@ -1,19 +1,21 @@
-using System;
 using UnityEngine;
 
 internal class TaskDivision<Task, SharedData> where Task : DivisibleTask<SharedData>, new()
 {
 	public Task[] tasks;
 
-	public TaskDivision()
+	public TaskDivision(int taskCount)
 	{
-		tasks = new Task[Math.Max(1, SystemInfo.processorCount - 1)];
+		tasks = new Task[taskCount];
 		for (int i = 0; i != tasks.Length; i++)
 		{
 			tasks[i] = new Task();
-			Task val = tasks[i];
-			val.name += $"{i}";
 		}
+	}
+
+	public TaskDivision()
+		: this(SystemInfo.processorCount - 1)
+	{
 	}
 
 	public void Initialize(int count)

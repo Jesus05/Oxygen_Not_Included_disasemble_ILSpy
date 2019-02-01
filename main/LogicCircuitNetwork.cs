@@ -15,7 +15,7 @@ public class LogicCircuitNetwork : UtilityNetwork
 
 	private int outputValue;
 
-	private bool resetting;
+	private bool resetting = false;
 
 	public int OutputValue => outputValue;
 

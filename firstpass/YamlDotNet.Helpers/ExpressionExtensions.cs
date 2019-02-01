@@ -18,30 +18,30 @@ namespace YamlDotNet.Helpers
 
 		private static TMemberInfo TryGetMemberExpression<TMemberInfo>(LambdaExpression lambdaExpression) where TMemberInfo : MemberInfo
 		{
-			if (lambdaExpression.Parameters.Count != 1)
+			if (lambdaExpression.Parameters.Count == 1)
 			{
-				return (TMemberInfo)null;
-			}
-			Expression expression = lambdaExpression.Body;
-			UnaryExpression unaryExpression = expression as UnaryExpression;
-			if (unaryExpression != null)
-			{
-				if (unaryExpression.NodeType != ExpressionType.Convert)
+				Expression expression = lambdaExpression.Body;
+				UnaryExpression unaryExpression = expression as UnaryExpression;
+				if (unaryExpression != null)
 				{
+					if (unaryExpression.NodeType != ExpressionType.Convert)
+					{
+						return (TMemberInfo)null;
+					}
+					expression = unaryExpression.Operand;
+				}
+				MemberExpression memberExpression = expression as MemberExpression;
+				if (memberExpression != null)
+				{
+					if (memberExpression.Expression == lambdaExpression.Parameters[0])
+					{
+						return memberExpression.Member as TMemberInfo;
+					}
 					return (TMemberInfo)null;
 				}
-				expression = unaryExpression.Operand;
-			}
-			MemberExpression memberExpression = expression as MemberExpression;
-			if (memberExpression == null)
-			{
 				return (TMemberInfo)null;
 			}
-			if (memberExpression.Expression != lambdaExpression.Parameters[0])
-			{
-				return (TMemberInfo)null;
-			}
-			return memberExpression.Member as TMemberInfo;
+			return (TMemberInfo)null;
 		}
 	}
 }

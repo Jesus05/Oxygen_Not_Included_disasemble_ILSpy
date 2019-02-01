@@ -20,12 +20,12 @@ public class NavTable
 
 	public bool IsValid(int cell, NavType nav_type = NavType.Floor)
 	{
-		if (Grid.IsValidCell(cell))
+		if (!Grid.IsValidCell(cell))
 		{
-			short num = NavTypeMasks[(uint)nav_type];
-			return (num & ValidCells[cell]) != 0;
+			return false;
 		}
-		return false;
+		short num = NavTypeMasks[(uint)nav_type];
+		return (num & ValidCells[cell]) != 0;
 	}
 
 	public void SetValid(int cell, NavType nav_type, bool is_valid)

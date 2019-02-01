@@ -16,6 +16,7 @@ public class EggConfig
 		KPrefabID kPrefabID = gameObject.AddOrGet<KPrefabID>();
 		kPrefabID.AddTag(GameTags.Egg);
 		kPrefabID.AddTag(GameTags.IncubatableEgg);
+		kPrefabID.AddTag(GameTags.PedestalDisplayable);
 		IncubationMonitor.Def def = gameObject.AddOrGetDef<IncubationMonitor.Def>();
 		def.spawnedCreature = creature_id;
 		def.baseIncubationRate = base_incubation_rate;

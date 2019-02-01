@@ -63,7 +63,7 @@ public class Moppable : Workable, ISim1000ms, ISim200ms
 		else
 		{
 			Grid.Objects[Grid.PosToCell(base.gameObject), 8] = base.gameObject;
-			new WorkChore<Moppable>(Db.Get().ChoreTypes.Mop, this, null, null, true, null, null, null, true, null, false, true, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, false);
+			new WorkChore<Moppable>(Db.Get().ChoreTypes.Mop, this, null, null, true, null, null, null, true, null, false, true, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, false, true);
 			SetWorkTime(float.PositiveInfinity);
 			KSelectable component = GetComponent<KSelectable>();
 			component.SetStatusItem(Db.Get().StatusItemCategories.Main, Db.Get().MiscStatusItems.WaitingForMop, null);

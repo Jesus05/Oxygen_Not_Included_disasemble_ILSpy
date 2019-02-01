@@ -10,7 +10,7 @@ using UnityEngine.UI;
 
 public class JobsTableScreen : TableScreen
 {
-	private struct PriorityInfo
+	public struct PriorityInfo
 	{
 		public int priority;
 
@@ -76,11 +76,31 @@ public class JobsTableScreen : TableScreen
 
 	private HashSet<MinionIdentity> dirty_single_minion_rows = new HashSet<MinionIdentity>();
 
-	private List<PriorityInfo> priorityInfo;
+	private static List<PriorityInfo> _priorityInfo;
 
 	private List<Sprite> prioritySprites;
 
 	private List<KeyValuePair<GameObject, SkillEventHandlerID>> EffectListeners = new List<KeyValuePair<GameObject, SkillEventHandlerID>>();
+
+	public static List<PriorityInfo> priorityInfo
+	{
+		get
+		{
+			if (_priorityInfo == null)
+			{
+				List<PriorityInfo> list = new List<PriorityInfo>();
+				list.Add(new PriorityInfo(0, Assets.GetSprite("icon_priority_disabled"), UI.JOBSSCREEN.PRIORITY.DISABLED));
+				list.Add(new PriorityInfo(1, Assets.GetSprite("icon_priority_down_2"), UI.JOBSSCREEN.PRIORITY.VERYLOW));
+				list.Add(new PriorityInfo(2, Assets.GetSprite("icon_priority_down"), UI.JOBSSCREEN.PRIORITY.LOW));
+				list.Add(new PriorityInfo(3, Assets.GetSprite("icon_priority_flat"), UI.JOBSSCREEN.PRIORITY.STANDARD));
+				list.Add(new PriorityInfo(4, Assets.GetSprite("icon_priority_up"), UI.JOBSSCREEN.PRIORITY.HIGH));
+				list.Add(new PriorityInfo(5, Assets.GetSprite("icon_priority_up_2"), UI.JOBSSCREEN.PRIORITY.VERYHIGH));
+				list.Add(new PriorityInfo(5, Assets.GetSprite("icon_priority_automatic"), UI.JOBSSCREEN.PRIORITY.VERYHIGH));
+				_priorityInfo = list;
+			}
+			return _priorityInfo;
+		}
+	}
 
 	public override float GetSortKey()
 	{
@@ -93,16 +113,6 @@ public class JobsTableScreen : TableScreen
 		title = UI.JOBSSCREEN.TITLE;
 		base.OnActivate();
 		resetSettingsButton.onClick += OnResetSettingsClicked;
-		priorityInfo = new List<PriorityInfo>
-		{
-			new PriorityInfo(0, Assets.GetSprite("icon_priority_disabled"), UI.JOBSSCREEN.PRIORITY.DISABLED),
-			new PriorityInfo(1, Assets.GetSprite("icon_priority_down_2"), UI.JOBSSCREEN.PRIORITY.VERYLOW),
-			new PriorityInfo(2, Assets.GetSprite("icon_priority_down"), UI.JOBSSCREEN.PRIORITY.LOW),
-			new PriorityInfo(3, Assets.GetSprite("icon_priority_flat"), UI.JOBSSCREEN.PRIORITY.STANDARD),
-			new PriorityInfo(4, Assets.GetSprite("icon_priority_up"), UI.JOBSSCREEN.PRIORITY.HIGH),
-			new PriorityInfo(5, Assets.GetSprite("icon_priority_up_2"), UI.JOBSSCREEN.PRIORITY.VERYHIGH),
-			new PriorityInfo(5, Assets.GetSprite("icon_priority_automatic"), UI.JOBSSCREEN.PRIORITY.VERYHIGH)
-		};
 		prioritySprites = new List<Sprite>();
 		foreach (PriorityInfo item in priorityInfo)
 		{
@@ -246,7 +256,7 @@ public class JobsTableScreen : TableScreen
 			}
 			componentInChildren.AddMultiStringTooltip(UI.HORIZONTAL_RULE + "\n" + GetUsageString(), null);
 		}
-		return string.Empty;
+		return "";
 	}
 
 	private string HoverChangeColumnPriorityButton(object widget_go_obj)
@@ -390,12 +400,12 @@ public class JobsTableScreen : TableScreen
 	private PriorityInfo GetPriorityInfo(int priority)
 	{
 		PriorityInfo result = default(PriorityInfo);
-		for (int i = 0; i < this.priorityInfo.Count; i++)
+		for (int i = 0; i < JobsTableScreen.priorityInfo.Count; i++)
 		{
-			PriorityInfo priorityInfo = this.priorityInfo[i];
+			PriorityInfo priorityInfo = JobsTableScreen.priorityInfo[i];
 			if (priorityInfo.priority == priority)
 			{
-				return this.priorityInfo[i];
+				return JobsTableScreen.priorityInfo[i];
 			}
 		}
 		return result;
@@ -411,10 +421,10 @@ public class JobsTableScreen : TableScreen
 		TableRow widgetRow = GetWidgetRow(widget_go);
 		if (widgetRow.rowType == TableRow.RowType.Header)
 		{
-			goto IL_002d;
+			goto IL_0032;
 		}
-		goto IL_002d;
-		IL_002d:
+		goto IL_0032;
+		IL_0032:
 		PrioritizationGroupTableColumn prioritizationGroupTableColumn = GetWidgetColumn(widget_go) as PrioritizationGroupTableColumn;
 		ChoreGroup chore_group = prioritizationGroupTableColumn.userData as ChoreGroup;
 		IPersonalPriorityManager priorityManager = GetPriorityManager(widgetRow);
@@ -432,10 +442,10 @@ public class JobsTableScreen : TableScreen
 		TableRow widgetRow = GetWidgetRow(widget_go);
 		if (widgetRow.rowType == TableRow.RowType.Header)
 		{
-			goto IL_0032;
+			goto IL_0038;
 		}
-		goto IL_0032;
-		IL_0032:
+		goto IL_0038;
+		IL_0038:
 		PrioritizationGroupTableColumn prioritizationGroupTableColumn = GetWidgetColumn(widget_go) as PrioritizationGroupTableColumn;
 		ChoreGroup choreGroup = prioritizationGroupTableColumn.userData as ChoreGroup;
 		foreach (TableRow row in rows)
@@ -536,9 +546,9 @@ public class JobsTableScreen : TableScreen
 		value = Mathf.Clamp(value, 0, 5);
 		if (!auto_assigned)
 		{
-			for (int i = 0; i < this.priorityInfo.Count - 1; i++)
+			for (int i = 0; i < JobsTableScreen.priorityInfo.Count - 1; i++)
 			{
-				PriorityInfo priorityInfo = this.priorityInfo[i];
+				PriorityInfo priorityInfo = JobsTableScreen.priorityInfo[i];
 				if (priorityInfo.priority == value)
 				{
 					fgIndex = i;
@@ -548,7 +558,7 @@ public class JobsTableScreen : TableScreen
 		}
 		else
 		{
-			fgIndex = this.priorityInfo.Count - 1;
+			fgIndex = JobsTableScreen.priorityInfo.Count - 1;
 		}
 		OptionSelector component = widget_go.GetComponent<OptionSelector>();
 		int associatedSkillLevel = priority_mgr.GetAssociatedSkillLevel(chore_group);
@@ -792,27 +802,30 @@ public class JobsTableScreen : TableScreen
 			is_hovering_button = false;
 			is_hovering_screen = false;
 		}
-		List<RaycastResult> list = new List<RaycastResult>();
-		PointerEventData pointerEventData = new PointerEventData(current);
-		pointerEventData.position = KInputManager.GetMousePos();
-		current.RaycastAll(pointerEventData, list);
-		bool flag = false;
-		bool flag2 = false;
-		foreach (RaycastResult item in list)
+		else
 		{
-			if ((UnityEngine.Object)item.gameObject.GetComponent<OptionSelector>() != (UnityEngine.Object)null || ((UnityEngine.Object)item.gameObject.transform.parent != (UnityEngine.Object)null && (UnityEngine.Object)item.gameObject.transform.parent.GetComponent<OptionSelector>() != (UnityEngine.Object)null))
+			List<RaycastResult> list = new List<RaycastResult>();
+			PointerEventData pointerEventData = new PointerEventData(current);
+			pointerEventData.position = KInputManager.GetMousePos();
+			current.RaycastAll(pointerEventData, list);
+			bool flag = false;
+			bool flag2 = false;
+			foreach (RaycastResult item in list)
 			{
-				flag = true;
-				flag2 = true;
-				break;
+				if ((UnityEngine.Object)item.gameObject.GetComponent<OptionSelector>() != (UnityEngine.Object)null || ((UnityEngine.Object)item.gameObject.transform.parent != (UnityEngine.Object)null && (UnityEngine.Object)item.gameObject.transform.parent.GetComponent<OptionSelector>() != (UnityEngine.Object)null))
+				{
+					flag = true;
+					flag2 = true;
+					break;
+				}
+				if (HasParent(item.gameObject, base.gameObject))
+				{
+					flag2 = true;
+				}
 			}
-			if (HasParent(item.gameObject, base.gameObject))
-			{
-				flag2 = true;
-			}
+			is_hovering_screen = flag2;
+			is_hovering_button = flag;
 		}
-		is_hovering_screen = flag2;
-		is_hovering_button = flag;
 	}
 
 	public override void OnKeyDown(KButtonEvent e)

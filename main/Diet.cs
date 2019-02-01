@@ -70,20 +70,20 @@ public class Diet
 
 		public bool IsMatch(HashSet<Tag> tags)
 		{
-			if (tags.Count < consumedTags.Count)
+			if (tags.Count >= consumedTags.Count)
 			{
-				foreach (Tag tag in tags)
+				foreach (Tag consumedTag in consumedTags)
 				{
-					if (consumedTags.Contains(tag))
+					if (tags.Contains(consumedTag))
 					{
 						return true;
 					}
 				}
 				return false;
 			}
-			foreach (Tag consumedTag in consumedTags)
+			foreach (Tag tag in tags)
 			{
-				if (tags.Contains(consumedTag))
+				if (consumedTags.Contains(tag))
 				{
 					return true;
 				}

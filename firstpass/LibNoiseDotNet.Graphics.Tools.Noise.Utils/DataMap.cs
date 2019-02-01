@@ -6,23 +6,23 @@ namespace LibNoiseDotNet.Graphics.Tools.Noise.Utils
 	{
 		protected T _borderValue;
 
-		protected int _width;
+		protected int _width = 0;
 
-		protected int _height;
+		protected int _height = 0;
 
-		private int _stride;
+		private int _stride = 0;
 
-		protected int _memoryUsage;
+		protected int _memoryUsage = 0;
 
-		protected int _cellsCount;
+		protected int _cellsCount = 0;
 
-		protected T[] _data;
+		protected T[] _data = null;
 
-		protected bool _hasMaxDimension;
+		protected bool _hasMaxDimension = false;
 
-		protected int _maxWidth;
+		protected int _maxWidth = 0;
 
-		protected int _maxHeight;
+		protected int _maxHeight = 0;
 
 		public int Width => _width;
 

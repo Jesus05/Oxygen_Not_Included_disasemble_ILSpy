@@ -35,13 +35,13 @@ public class Constructable : Workable, ISaveLoadable
 
 	private Chore buildChore;
 
-	private bool materialNeedsCleared;
+	private bool materialNeedsCleared = false;
 
 	private bool hasUnreachableDigs;
 
-	private bool finished;
+	private bool finished = false;
 
-	private bool unmarked;
+	private bool unmarked = false;
 
 	public bool isDiggingRequired = true;
 
@@ -52,7 +52,7 @@ public class Constructable : Workable, ISaveLoadable
 	private Extents ladderDetectionExtents;
 
 	[Serialize]
-	public bool IsReplacementTile;
+	public bool IsReplacementTile = false;
 
 	[Serialize]
 	public Tag[] choreTags;
@@ -607,6 +607,7 @@ public class Constructable : Workable, ISaveLoadable
 							diggable.gameObject.SetActive(true);
 							diggable.transform.SetPosition(Grid.CellToPosCBC(offset_cell, Grid.SceneLayer.Move));
 							diggable.Subscribe(-1432940121, OnDiggableReachabilityChanged);
+							Grid.Objects[offset_cell, 7] = diggable.gameObject;
 						}
 						else
 						{
@@ -633,7 +634,7 @@ public class Constructable : Workable, ISaveLoadable
 			}
 			else
 			{
-				notifier.Add(invalidLocation, string.Empty);
+				notifier.Add(invalidLocation, "");
 			}
 			GetComponent<KSelectable>().ToggleStatusItem(Db.Get().BuildingStatusItems.InvalidBuildingLocation, !flag, this);
 			bool flag2 = digs_complete && flag && fetchList == null;
@@ -641,7 +642,7 @@ public class Constructable : Workable, ISaveLoadable
 			{
 				ChoreType build = Db.Get().ChoreTypes.Build;
 				Tag[] chore_tags = choreTags;
-				buildChore = new WorkChore<Constructable>(build, this, null, chore_tags, true, UpdateBuildState, UpdateBuildState, UpdateBuildState, true, null, false, true, null, true, true, true, PriorityScreen.PriorityClass.basic, 5, false);
+				buildChore = new WorkChore<Constructable>(build, this, null, chore_tags, true, UpdateBuildState, UpdateBuildState, UpdateBuildState, true, null, false, true, null, true, true, true, PriorityScreen.PriorityClass.basic, 5, false, true);
 				UpdateBuildState(buildChore);
 			}
 			else if (!flag2 && buildChore != null)

@@ -51,7 +51,6 @@ public class QualityOfLifeNeed : Need, ISim4000ms
 			statusItem = Db.Get().DuplicantStatusItems.PoorQualityOfLife
 		};
 		qolAttribute = Db.Get().Attributes.QualityOfLife.Lookup(base.gameObject);
-		Subscribe(1714332666, OnScheduleBlocksTickDelegate);
 	}
 
 	protected override void OnSpawn()
@@ -65,6 +64,7 @@ public class QualityOfLifeNeed : Need, ISim4000ms
 		{
 			breakBlocks.RemoveAt(breakBlocks.Count - 1);
 		}
+		Subscribe(1714332666, OnScheduleBlocksTickDelegate);
 	}
 
 	public void Sim4000ms(float dt)
@@ -151,14 +151,14 @@ public class QualityOfLifeNeed : Need, ISim4000ms
 	public static string GetBreakBonus(int numBlocks)
 	{
 		int num = numBlocks - 1;
-		if (num >= breakLengthEffects.Count)
+		if (num < breakLengthEffects.Count)
 		{
-			return breakLengthEffects[breakLengthEffects.Count - 1];
-		}
-		if (num >= 0)
-		{
+			if (num < 0)
+			{
+				return null;
+			}
 			return breakLengthEffects[num];
 		}
-		return null;
+		return breakLengthEffects[breakLengthEffects.Count - 1];
 	}
 }

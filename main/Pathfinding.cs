@@ -2,16 +2,7 @@ using System.Collections.Generic;
 
 public class Pathfinding : KMonoBehaviour
 {
-	public interface INavigationFeature
-	{
-		bool IsTraversable(Navigator agent, PathFinder.PotentialPath path, int from_cell, int cost, PathFinderAbilities abilities);
-
-		void ApplyTraversalToPath(Navigator agent, ref PathFinder.PotentialPath path, int from_cell);
-	}
-
 	private List<NavGrid> NavGrids = new List<NavGrid>();
-
-	private Dictionary<int, INavigationFeature> NavigationFeatures = new Dictionary<int, INavigationFeature>();
 
 	private int UpdateIdx;
 
@@ -113,23 +104,6 @@ public class Pathfinding : KMonoBehaviour
 		{
 			navGrid.UpdateGraph(hashSet);
 		}
-	}
-
-	public void AddNavigationFeature(int cell, INavigationFeature feature)
-	{
-		NavigationFeatures[cell] = feature;
-	}
-
-	public void RemoveNavigationFeature(int cell, INavigationFeature feature)
-	{
-		NavigationFeatures.Remove(cell);
-	}
-
-	public INavigationFeature GetNavigationFeature(int cell)
-	{
-		INavigationFeature value = null;
-		NavigationFeatures.TryGetValue(cell, out value);
-		return value;
 	}
 
 	protected override void OnCleanUp()

@@ -129,7 +129,7 @@ public class LoadScreen : KModalScreen
 					SaveGame.Header first = fileInfo.first;
 					SaveGame.GameInfo second = fileInfo.second;
 					System.DateTime lastWriteTime = File.GetLastWriteTime(allFiles[i]);
-					string path = (!(second.originalSaveName != string.Empty)) ? allFiles[i] : second.originalSaveName;
+					string path = (!(second.originalSaveName != "")) ? allFiles[i] : second.originalSaveName;
 					path = Path.GetFileNameWithoutExtension(path);
 					SaveGameFileDetails item = default(SaveGameFileDetails);
 					item.BaseName = second.baseName;
@@ -155,13 +155,12 @@ public class LoadScreen : KModalScreen
 			SaveGame.Header header;
 			SaveGame.GameInfo gameInfo = SaveLoader.LoadHeader(filename, out header);
 			result = (gameInfo.saveMajorVersion >= 7);
-			return result;
 		}
 		catch (Exception ex)
 		{
 			Debug.LogWarning("Corrupted save file: " + filename + "\n" + ex.ToString(), null);
-			return result;
 		}
+		return result;
 	}
 
 	private Tuple<SaveGame.Header, SaveGame.GameInfo> GetFileInfo(string filename)
@@ -201,7 +200,7 @@ public class LoadScreen : KModalScreen
 				AddExistingSaveFile(saveFile.Key, saveFile.Value);
 			}
 		}
-		InfoText.text = string.Empty;
+		InfoText.text = "";
 		CyclesSurvivedValue.text = "-";
 		DuplicantsAliveValue.text = "-";
 		deleteButton.isInteractable = false;
@@ -318,7 +317,7 @@ public class LoadScreen : KModalScreen
 
 	private static bool IsSaveFileFromUnsupportedFutureBuild(SaveGame.Header header)
 	{
-		return header.buildVersion > 303707;
+		return header.buildVersion > 306320;
 	}
 
 	private void SetSelectedGame(string filename)
@@ -351,10 +350,10 @@ public class LoadScreen : KModalScreen
 				}
 				CyclesSurvivedValue.text = gameInfo.numberOfCycles.ToString();
 				DuplicantsAliveValue.text = gameInfo.numberOfDuplicants.ToString();
-				InfoText.text = string.Empty;
+				InfoText.text = "";
 				if (IsSaveFileFromUnsupportedFutureBuild(header))
 				{
-					InfoText.text = string.Format(UI.FRONTEND.LOADSCREEN.SAVE_TOO_NEW, filename, header.buildVersion, 303707u);
+					InfoText.text = string.Format(UI.FRONTEND.LOADSCREEN.SAVE_TOO_NEW, filename, header.buildVersion, 306320u);
 					loadButton.isInteractable = false;
 					loadButton.GetComponent<ImageToggleState>().SetState(ImageToggleState.State.Disabled);
 				}
@@ -369,7 +368,7 @@ public class LoadScreen : KModalScreen
 					loadButton.isInteractable = true;
 					loadButton.GetComponent<ImageToggleState>().SetState(ImageToggleState.State.Inactive);
 				}
-				if (InfoText.text == string.Empty && gameInfo.isAutoSave)
+				if (InfoText.text == "" && gameInfo.isAutoSave)
 				{
 					InfoText.text = UI.FRONTEND.LOADSCREEN.AUTOSAVEWARNING;
 				}
@@ -407,10 +406,10 @@ public class LoadScreen : KModalScreen
 		SaveGame.GameInfo gameInfo = SaveLoader.LoadHeader(filename, out header);
 		string arg = null;
 		string arg2 = null;
-		if (header.buildVersion > 303707)
+		if (header.buildVersion > 306320)
 		{
 			arg = header.buildVersion.ToString();
-			arg2 = 303707.ToString();
+			arg2 = 306320.ToString();
 		}
 		else if (gameInfo.saveMajorVersion < 7)
 		{

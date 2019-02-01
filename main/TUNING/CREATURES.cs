@@ -2,7 +2,6 @@ using STRINGS;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using UnityEngine;
 
 namespace TUNING
@@ -128,9 +127,6 @@ namespace TUNING
 				CreateDietaryModifier("DreckoPlastic", "DreckoPlasticEgg".ToTag(), "BasicSingleHarvestPlant".ToTag(), 0.025f / DreckoTuning.STANDARD_CALORIES_PER_CYCLE)
 			};
 
-			[CompilerGenerated]
-			private static Func<Tag, string> _003C_003Ef__mg_0024cache0;
-
 			private static System.Action CreateDietaryModifier(string id, Tag eggTag, TagBits foodTags, float modifierPerCal)
 			{
 				return delegate
@@ -140,7 +136,8 @@ namespace TUNING
 					List<Tag> foodTagsActual = foodTags.GetTagsVerySlow();
 					Db.Get().CreateFertilityModifier(id, eggTag, name, description, delegate(string descStr)
 					{
-						string arg = string.Join(", ", foodTagsActual.Select(GameTagExtensions.ProperName).ToArray());
+						string arg = string.Join(", ", (from t in foodTagsActual
+						select t.ProperName()).ToArray());
 						descStr = string.Format(descStr, arg);
 						return descStr;
 					}, delegate(FertilityMonitor.Instance inst, Tag eggType)

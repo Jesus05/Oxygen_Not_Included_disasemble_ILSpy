@@ -25,7 +25,7 @@ public static class CSVUtil
 
 	public static bool IsValidColumn(string[,] grid, int col)
 	{
-		return grid[col, 0] != null && grid[col, 0] != string.Empty;
+		return grid[col, 0] != null && grid[col, 0] != "";
 	}
 
 	public static void ParseData<T>(object def, string[,] grid, int row)
@@ -61,7 +61,7 @@ public static class CSVUtil
 		if (field.FieldType.IsEnum)
 		{
 			object value = null;
-			if (val != null && val != string.Empty && EnumTryParse(field.FieldType, val, out value))
+			if (val != null && val != "" && EnumTryParse(field.FieldType, val, out value))
 			{
 				field.SetValue(target, value);
 			}
@@ -83,11 +83,11 @@ public static class CSVUtil
 		}
 		else if (field.FieldType == typeof(float))
 		{
-			field.SetValue(target, (!(val == string.Empty)) ? float.Parse(val) : 0f);
+			field.SetValue(target, (!(val == "")) ? float.Parse(val) : 0f);
 		}
 		else if (field.FieldType == typeof(int))
 		{
-			field.SetValue(target, (!(val == string.Empty)) ? int.Parse(val) : 0);
+			field.SetValue(target, (!(val == "")) ? int.Parse(val) : 0);
 		}
 		else if (field.FieldType == typeof(byte))
 		{
@@ -99,7 +99,7 @@ public static class CSVUtil
 		}
 		else if (field.FieldType == typeof(CellOffset))
 		{
-			if (val == null || val == string.Empty)
+			if (val == null || val == "")
 			{
 				field.SetValue(target, default(CellOffset));
 			}
@@ -111,7 +111,7 @@ public static class CSVUtil
 		}
 		else if (field.FieldType == typeof(Vector3))
 		{
-			if (val == null || val == string.Empty)
+			if (val == null || val == "")
 			{
 				field.SetValue(target, Vector3.zero);
 			}
@@ -130,7 +130,7 @@ public static class CSVUtil
 			for (int i = 0; i < array3.Length; i++)
 			{
 				string a = array3[i].Trim();
-				if (a != string.Empty)
+				if (a != "")
 				{
 					num++;
 				}
@@ -140,7 +140,7 @@ public static class CSVUtil
 			for (int j = 0; j < array3.Length; j++)
 			{
 				string text = array3[j].Trim();
-				if (text != string.Empty)
+				if (text != "")
 				{
 					object value2 = Convert.ChangeType(text, elementType);
 					array4.SetValue(value2, num);
@@ -161,65 +161,65 @@ public static class CSVUtil
 		{
 			throw new ArgumentException(null, "type");
 		}
-		if (input == null)
+		if (input != null)
 		{
-			value = Activator.CreateInstance(type);
-			return false;
-		}
-		input = input.Trim();
-		if (input.Length == 0)
-		{
-			value = Activator.CreateInstance(type);
-			return false;
-		}
-		string[] names = Enum.GetNames(type);
-		if (names.Length == 0)
-		{
-			value = Activator.CreateInstance(type);
-			return false;
-		}
-		Type underlyingType = Enum.GetUnderlyingType(type);
-		Array values = Enum.GetValues(type);
-		if (!type.IsDefined(typeof(FlagsAttribute), true) && input.IndexOfAny(_enumSeperators) < 0)
-		{
-			return EnumToObject(type, underlyingType, names, values, input, out value);
-		}
-		string[] array = input.Split(_enumSeperators, StringSplitOptions.RemoveEmptyEntries);
-		if (array.Length == 0)
-		{
-			value = Activator.CreateInstance(type);
-			return false;
-		}
-		ulong num = 0uL;
-		string[] array2 = array;
-		foreach (string text in array2)
-		{
-			string text2 = text.Trim();
-			if (text2.Length != 0)
+			input = input.Trim();
+			if (input.Length != 0)
 			{
-				if (!EnumToObject(type, underlyingType, names, values, text2, out object value2))
+				string[] names = Enum.GetNames(type);
+				if (names.Length != 0)
 				{
+					Type underlyingType = Enum.GetUnderlyingType(type);
+					Array values = Enum.GetValues(type);
+					if (!type.IsDefined(typeof(FlagsAttribute), true) && input.IndexOfAny(_enumSeperators) < 0)
+					{
+						return EnumToObject(type, underlyingType, names, values, input, out value);
+					}
+					string[] array = input.Split(_enumSeperators, StringSplitOptions.RemoveEmptyEntries);
+					if (array.Length != 0)
+					{
+						ulong num = 0uL;
+						string[] array2 = array;
+						foreach (string text in array2)
+						{
+							string text2 = text.Trim();
+							if (text2.Length != 0)
+							{
+								if (!EnumToObject(type, underlyingType, names, values, text2, out object value2))
+								{
+									value = Activator.CreateInstance(type);
+									return false;
+								}
+								ulong num2;
+								switch (Convert.GetTypeCode(value2))
+								{
+								case TypeCode.SByte:
+								case TypeCode.Int16:
+								case TypeCode.Int32:
+								case TypeCode.Int64:
+									num2 = (ulong)Convert.ToInt64(value2, CultureInfo.InvariantCulture);
+									break;
+								default:
+									num2 = Convert.ToUInt64(value2, CultureInfo.InvariantCulture);
+									break;
+								}
+								num |= num2;
+							}
+						}
+						value = Enum.ToObject(type, num);
+						return true;
+					}
 					value = Activator.CreateInstance(type);
 					return false;
 				}
-				ulong num2;
-				switch (Convert.GetTypeCode(value2))
-				{
-				case TypeCode.SByte:
-				case TypeCode.Int16:
-				case TypeCode.Int32:
-				case TypeCode.Int64:
-					num2 = (ulong)Convert.ToInt64(value2, CultureInfo.InvariantCulture);
-					break;
-				default:
-					num2 = Convert.ToUInt64(value2, CultureInfo.InvariantCulture);
-					break;
-				}
-				num |= num2;
+				value = Activator.CreateInstance(type);
+				return false;
 			}
+			value = Activator.CreateInstance(type);
+			return false;
 		}
-		value = Enum.ToObject(type, num);
-		return true;
+		value = Activator.CreateInstance(type);
+		return false;
 	}
 
 	private static object EnumToObject(Type underlyingType, string input)
@@ -269,14 +269,14 @@ public static class CSVUtil
 				return true;
 			}
 		}
-		if (char.IsDigit(input[0]) || input[0] == '-' || input[0] == '+')
+		if (!char.IsDigit(input[0]) && input[0] != '-' && input[0] != '+')
 		{
-			object obj = EnumToObject(underlyingType, input);
-			if (obj == null)
-			{
-				value = Activator.CreateInstance(type);
-				return false;
-			}
+			value = Activator.CreateInstance(type);
+			return false;
+		}
+		object obj = EnumToObject(underlyingType, input);
+		if (obj != null)
+		{
 			value = obj;
 			return true;
 		}

@@ -28,33 +28,33 @@ namespace Klei
 
 		private string GetActualPath(string filename)
 		{
-			if (filename.StartsWith(prefix))
+			if (!filename.StartsWith(prefix))
 			{
-				string str = filename.Substring(prefix.Length);
-				return FSUtil.Normalize(root + str);
+				return filename;
 			}
-			return filename;
+			string str = filename.Substring(prefix.Length);
+			return FSUtil.Normalize(root + str);
 		}
 
 		private string GetVirtualPath(string filename)
 		{
-			if (filename.StartsWith(root))
+			if (!filename.StartsWith(root))
 			{
-				string str = filename.Substring(root.Length);
-				return FSUtil.Normalize(prefix + str);
+				return filename;
 			}
-			return filename;
+			string str = filename.Substring(root.Length);
+			return FSUtil.Normalize(prefix + str);
 		}
 
 		public byte[] ReadBytes(string src_filename)
 		{
 			string actualPath = GetActualPath(src_filename);
-			if (!File.Exists(actualPath))
+			if (File.Exists(actualPath))
 			{
-				return null;
+				byte[] array = null;
+				return File.ReadAllBytes(actualPath);
 			}
-			byte[] array = null;
-			return File.ReadAllBytes(actualPath);
+			return null;
 		}
 
 		public void GetFiles(Regex re, string src_path, ICollection<string> result)

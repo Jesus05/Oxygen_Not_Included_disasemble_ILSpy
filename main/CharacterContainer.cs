@@ -8,7 +8,7 @@ using TUNING;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class CharacterContainer : KScreen
+public class CharacterContainer : KScreen, ITelepadDeliverableContainer
 {
 	[Serializable]
 	public struct ProfessionIcon
@@ -114,6 +114,11 @@ public class CharacterContainer : KScreen
 	public float baseCharacterScale = 0.38f;
 
 	public MinionStartingStats Stats => stats;
+
+	public GameObject GetGameObject()
+	{
+		return base.gameObject;
+	}
 
 	protected override void OnSpawn()
 	{
@@ -229,7 +234,7 @@ public class CharacterContainer : KScreen
 		{
 			selectButton.onClick += delegate
 			{
-				SelectCharacter();
+				SelectDeliverable();
 			};
 		}
 	}
@@ -272,10 +277,6 @@ public class CharacterContainer : KScreen
 		});
 		traitLabels.Clear();
 		characterNameTitle.SetTitle(stats.Name);
-		string empty = string.Empty;
-		characterJob.text = empty;
-		string empty2 = string.Empty;
-		characterJob.GetComponent<ToolTip>().toolTip = empty2;
 		for (int i = 1; i < stats.Traits.Count; i++)
 		{
 			Trait trait = stats.Traits[i];
@@ -354,11 +355,11 @@ public class CharacterContainer : KScreen
 		/*Error: Unable to find new state assignment for yield return*/;
 	}
 
-	private void SelectCharacter()
+	public void SelectDeliverable()
 	{
 		if ((UnityEngine.Object)controller != (UnityEngine.Object)null)
 		{
-			controller.AddCharacter(stats);
+			controller.AddDeliverable(stats);
 		}
 		if (MusicManager.instance.SongIsPlaying("Music_SelectDuplicant"))
 		{
@@ -368,7 +369,7 @@ public class CharacterContainer : KScreen
 		selectButton.ClearOnClick();
 		selectButton.onClick += delegate
 		{
-			DeselectCharacter();
+			DeselectDeliverable();
 			if (MusicManager.instance.SongIsPlaying("Music_SelectDuplicant"))
 			{
 				MusicManager.instance.SetSongParameter("Music_SelectDuplicant", "songSection", 0f, true);
@@ -380,18 +381,18 @@ public class CharacterContainer : KScreen
 		animController.Play("cheer_loop", KAnim.PlayMode.Loop, 1f, 0f);
 	}
 
-	private void DeselectCharacter()
+	public void DeselectDeliverable()
 	{
 		if ((UnityEngine.Object)controller != (UnityEngine.Object)null)
 		{
-			controller.RemoveCharacter(stats);
+			controller.RemoveDeliverable(stats);
 		}
 		selectButton.GetComponent<ImageToggleState>().SetInactive();
 		selectButton.Deselect();
 		selectButton.ClearOnClick();
 		selectButton.onClick += delegate
 		{
-			SelectCharacter();
+			SelectDeliverable();
 		};
 		selectedBorder.SetActive(false);
 		titleBar.color = deselectedTitleColor;
@@ -399,11 +400,11 @@ public class CharacterContainer : KScreen
 		animController.Queue("idle_default", KAnim.PlayMode.Loop, 1f, 0f);
 	}
 
-	private void OnReplacedEvent(MinionStartingStats stats)
+	private void OnReplacedEvent(ITelepadDeliverable deliverable)
 	{
-		if (stats == this.stats)
+		if (deliverable == stats)
 		{
-			DeselectCharacter();
+			DeselectDeliverable();
 		}
 	}
 
@@ -433,7 +434,7 @@ public class CharacterContainer : KScreen
 		if (!((UnityEngine.Object)controller == (UnityEngine.Object)null))
 		{
 			controller.RemoveLast();
-			SelectCharacter();
+			SelectDeliverable();
 		}
 	}
 
@@ -444,7 +445,7 @@ public class CharacterContainer : KScreen
 			selectButton.ClearOnClick();
 			selectButton.onClick += delegate
 			{
-				SelectCharacter();
+				SelectDeliverable();
 			};
 		}
 	}
@@ -458,7 +459,7 @@ public class CharacterContainer : KScreen
 	{
 		if ((UnityEngine.Object)controller != (UnityEngine.Object)null && controller.IsSelected(stats))
 		{
-			DeselectCharacter();
+			DeselectDeliverable();
 		}
 		GenerateCharacter(is_starter);
 	}
@@ -475,7 +476,7 @@ public class CharacterContainer : KScreen
 			CharacterSelectionController characterSelectionController3 = controller;
 			characterSelectionController3.OnReshuffleEvent = (Action<bool>)Delegate.Combine(characterSelectionController3.OnReshuffleEvent, new Action<bool>(Reshuffle));
 			CharacterSelectionController characterSelectionController4 = controller;
-			characterSelectionController4.OnReplacedEvent = (Action<MinionStartingStats>)Delegate.Combine(characterSelectionController4.OnReplacedEvent, new Action<MinionStartingStats>(OnReplacedEvent));
+			characterSelectionController4.OnReplacedEvent = (Action<ITelepadDeliverable>)Delegate.Combine(characterSelectionController4.OnReplacedEvent, new Action<ITelepadDeliverable>(OnReplacedEvent));
 		}
 	}
 

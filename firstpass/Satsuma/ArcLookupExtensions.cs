@@ -4,21 +4,21 @@ namespace Satsuma
 	{
 		public static string ArcToString(this IArcLookup graph, Arc arc)
 		{
-			if (arc == Arc.Invalid)
+			if (!(arc == Arc.Invalid))
 			{
-				return "Arc.Invalid";
+				return graph.U(arc) + ((!graph.IsEdge(arc)) ? "--->" : "<-->") + graph.V(arc);
 			}
-			return graph.U(arc) + ((!graph.IsEdge(arc)) ? "--->" : "<-->") + graph.V(arc);
+			return "Arc.Invalid";
 		}
 
 		public static Node Other(this IArcLookup graph, Arc arc, Node node)
 		{
 			Node node2 = graph.U(arc);
-			if (node2 != node)
+			if (!(node2 != node))
 			{
-				return node2;
+				return graph.V(arc);
 			}
-			return graph.V(arc);
+			return node2;
 		}
 
 		public static Node[] Nodes(this IArcLookup graph, Arc arc, bool allowDuplicates = true)

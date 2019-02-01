@@ -9,7 +9,7 @@ public class PressureVulnerable : StateMachineComponent<PressureVulnerable.State
 {
 	public class StatesInstance : GameStateMachine<States, StatesInstance, PressureVulnerable, object>.GameInstance
 	{
-		public bool hasMaturity;
+		public bool hasMaturity = false;
 
 		public StatesInstance(PressureVulnerable master)
 			: base(master)
@@ -156,7 +156,7 @@ public class PressureVulnerable : StateMachineComponent<PressureVulnerable.State
 	{
 		get
 		{
-			string text = string.Empty;
+			string text = "";
 			if (base.smi.IsInsideState(base.smi.sm.warningLow) || base.smi.IsInsideState(base.smi.sm.lethalLow))
 			{
 				text += Db.Get().CreatureStatusItems.AtmosphericPressureTooLow.resolveStringCallback(CREATURES.STATUSITEMS.ATMOSPHERICPRESSURETOOLOW.NAME, this);
@@ -230,20 +230,20 @@ public class PressureVulnerable : StateMachineComponent<PressureVulnerable.State
 
 	public bool IsSafeElement(Element element)
 	{
-		if (safe_atmospheres == null || safe_atmospheres.Count == 0 || safe_atmospheres.Contains(element))
+		if (safe_atmospheres != null && safe_atmospheres.Count != 0 && !safe_atmospheres.Contains(element))
 		{
-			return true;
+			return false;
 		}
-		return false;
+		return true;
 	}
 
 	public bool IsSafePressure(float pressure)
 	{
-		if (pressure_sensitive)
+		if (!pressure_sensitive)
 		{
-			return pressure > pressureLethal_Low && pressure < pressureLethal_High;
+			return true;
 		}
-		return true;
+		return pressure > pressureLethal_Low && pressure < pressureLethal_High;
 	}
 
 	public void Sim1000ms(float dt)
@@ -273,7 +273,7 @@ public class PressureVulnerable : StateMachineComponent<PressureVulnerable.State
 		}
 		if (safe_atmospheres != null && safe_atmospheres.Count > 0)
 		{
-			string text = string.Empty;
+			string text = "";
 			foreach (Element safe_atmosphere in safe_atmospheres)
 			{
 				text = text + "\n        • " + safe_atmosphere.name;

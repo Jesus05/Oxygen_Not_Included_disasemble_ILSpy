@@ -15,7 +15,7 @@ public class Grave : StateMachineComponent<Grave.StatesInstance>
 
 		public void CreateFetchTask()
 		{
-			chore = new FetchChore(Db.Get().ChoreTypes.OperateFetch, GetComponent<Storage>(), 1f, new Tag[1]
+			chore = new FetchChore(Db.Get().ChoreTypes.FetchCritical, GetComponent<Storage>(), 1f, new Tag[1]
 			{
 				GameTags.Corpse
 			}, null, null, null, true, null, null, null, FetchOrder2.OperationalRequirement.Operational, 0, null);

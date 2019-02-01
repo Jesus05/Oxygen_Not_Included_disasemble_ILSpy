@@ -8,13 +8,13 @@ public class SimTemperatureTransfer : KMonoBehaviour
 {
 	private const float MIN_MASS_FOR_TEMPERATURE_TRANSFER = 0.01f;
 
-	public float deltaKJ;
+	public float deltaKJ = 0f;
 
 	public Action<SimTemperatureTransfer> onSimRegistered;
 
 	protected int simHandle = -1;
 
-	private float pendingEnergyModifications;
+	private float pendingEnergyModifications = 0f;
 
 	[SerializeField]
 	protected float surfaceArea = 10f;

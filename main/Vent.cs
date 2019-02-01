@@ -90,7 +90,7 @@ public class Vent : KMonoBehaviour, IEffectDescriptor
 
 	private int cell = -1;
 
-	private int sortKey;
+	private int sortKey = 0;
 
 	private StatesInstance smi;
 
@@ -98,7 +98,7 @@ public class Vent : KMonoBehaviour, IEffectDescriptor
 	public ConduitType conduitType = ConduitType.Gas;
 
 	[SerializeField]
-	public Endpoint endpointType;
+	public Endpoint endpointType = Endpoint.Source;
 
 	[SerializeField]
 	public float overpressureMass = 1f;
@@ -158,11 +158,11 @@ public class Vent : KMonoBehaviour, IEffectDescriptor
 	{
 		IUtilityNetworkMgr networkManager = Conduit.GetNetworkManager(conduitType);
 		UtilityNetwork networkForCell = networkManager.GetNetworkForCell(cell);
-		if (networkForCell != null)
+		if (networkForCell == null)
 		{
-			return (networkForCell as FlowUtilityNetwork).HasSinks;
+			return false;
 		}
-		return false;
+		return (networkForCell as FlowUtilityNetwork).HasSinks;
 	}
 
 	private bool IsValidOutputCell(int output_cell)

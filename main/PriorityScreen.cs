@@ -11,7 +11,9 @@ public class PriorityScreen : KScreen
 		idle = -1,
 		basic,
 		high,
-		emergency
+		personalNeeds,
+		emergency,
+		compulsory
 	}
 
 	[SerializeField]
@@ -60,8 +62,10 @@ public class PriorityScreen : KScreen
 			priorityButton.tooltip.SetSimpleTooltip(string.Format(UI.PRIORITYSCREEN.BASIC, num));
 		}
 		buttonPrefab_basic.gameObject.SetActive(false);
-		EmergencyContainer.SetActive(false);
-		button_emergency.gameObject.SetActive(false);
+		button_emergency.playSelectionSound = playSelectionSound;
+		button_emergency.onClick = onClick;
+		button_emergency.priority = new PrioritySetting(PriorityClass.emergency, 1);
+		button_emergency.tooltip.SetSimpleTooltip(UI.PRIORITYSCREEN.EMERGENCY);
 		button_toggleHigh.gameObject.SetActive(false);
 		PriorityMenuContainer.SetActive(true);
 		button_priorityMenu.gameObject.SetActive(true);
@@ -151,7 +155,7 @@ public class PriorityScreen : KScreen
 			}
 			if (priority.priority_class >= PriorityClass.emergency)
 			{
-				num += 9f;
+				num = num;
 			}
 			num += (float)priority.priority_value;
 			instance.setParameterValue("priority", num);

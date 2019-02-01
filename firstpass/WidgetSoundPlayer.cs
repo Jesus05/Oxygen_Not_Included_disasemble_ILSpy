@@ -29,7 +29,7 @@ public class WidgetSoundPlayer
 
 	public virtual string GetDefaultPath(int idx)
 	{
-		return string.Empty;
+		return "";
 	}
 
 	public virtual WidgetSoundEvent[] widget_sound_events()
@@ -50,9 +50,9 @@ public class WidgetSoundPlayer
 					break;
 				}
 			}
-			if (KInputManager.isFocused && widgetSoundEvent.PlaySound && widgetSoundEvent.Name != null && widgetSoundEvent.Name.Length >= 0 && !(widgetSoundEvent.Name == string.Empty))
+			if (KInputManager.isFocused && widgetSoundEvent.PlaySound && widgetSoundEvent.Name != null && widgetSoundEvent.Name.Length >= 0 && !(widgetSoundEvent.Name == ""))
 			{
-				KFMOD.PlayOneShot(getSoundPath((!(widgetSoundEvent.OverrideAssetName == string.Empty)) ? widgetSoundEvent.OverrideAssetName : GetDefaultPath(widgetSoundEvent.idx)));
+				KFMOD.PlayOneShot(getSoundPath((!(widgetSoundEvent.OverrideAssetName == "")) ? widgetSoundEvent.OverrideAssetName : GetDefaultPath(widgetSoundEvent.idx)));
 			}
 		}
 	}

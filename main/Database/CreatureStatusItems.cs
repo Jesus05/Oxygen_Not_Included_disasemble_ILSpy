@@ -108,7 +108,7 @@ namespace Database
 
 		private void CreateStatusItems()
 		{
-			Hot = new StatusItem("Hot", "CREATURES", string.Empty, StatusItem.IconType.Exclamation, NotificationType.BadMinor, false, OverlayModes.None.ID, false, 63486);
+			Hot = new StatusItem("Hot", "CREATURES", "", StatusItem.IconType.Exclamation, NotificationType.BadMinor, false, OverlayModes.None.ID, false, 63486);
 			Hot.resolveStringCallback = delegate(string str, object data)
 			{
 				TemperatureVulnerable temperatureVulnerable4 = (TemperatureVulnerable)data;
@@ -122,7 +122,7 @@ namespace Database
 				str = str.Replace("{high_temperature}", GameUtil.GetFormattedTemperature(temperatureVulnerable3.internalTemperatureWarning_High, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false));
 				return str;
 			};
-			Scalding = new StatusItem("Scalding", "CREATURES", string.Empty, StatusItem.IconType.Exclamation, NotificationType.DuplicantThreatening, true, OverlayModes.None.ID, true, 63486);
+			Scalding = new StatusItem("Scalding", "CREATURES", "", StatusItem.IconType.Exclamation, NotificationType.DuplicantThreatening, true, OverlayModes.None.ID, true, 63486);
 			Scalding.resolveTooltipCallback = delegate(string str, object data)
 			{
 				float averageExternalTemperature = ((ExternalTemperatureMonitor.Instance)data).AverageExternalTemperature;
@@ -132,7 +132,7 @@ namespace Database
 				return str;
 			};
 			Scalding.AddNotification(null, null, null, 0f);
-			Cold = new StatusItem("Cold", "CREATURES", string.Empty, StatusItem.IconType.Exclamation, NotificationType.BadMinor, false, OverlayModes.None.ID, false, 63486);
+			Cold = new StatusItem("Cold", "CREATURES", "", StatusItem.IconType.Exclamation, NotificationType.BadMinor, false, OverlayModes.None.ID, false, 63486);
 			Cold.resolveStringCallback = delegate(string str, object data)
 			{
 				TemperatureVulnerable temperatureVulnerable2 = (TemperatureVulnerable)data;
@@ -150,7 +150,7 @@ namespace Database
 			Crop_Too_Dark.resolveStringCallback = ((string str, object data) => str);
 			Crop_Too_Bright = new StatusItem("Crop_Too_Bright", "CREATURES", "status_item_plant_light", StatusItem.IconType.Custom, NotificationType.BadMinor, false, OverlayModes.None.ID, false, 63486);
 			Crop_Too_Bright.resolveStringCallback = ((string str, object data) => str);
-			Hyperthermia = new StatusItem("Hyperthermia", "CREATURES", string.Empty, StatusItem.IconType.Exclamation, NotificationType.Bad, false, OverlayModes.None.ID, true, 63486);
+			Hyperthermia = new StatusItem("Hyperthermia", "CREATURES", "", StatusItem.IconType.Exclamation, NotificationType.Bad, false, OverlayModes.None.ID, true, 63486);
 			Hyperthermia.resolveTooltipCallback = delegate(string str, object data)
 			{
 				float value2 = ((TemperatureMonitor.Instance)data).temperature.value;
@@ -159,7 +159,7 @@ namespace Database
 				str = str.Replace("{TargetTemperature}", GameUtil.GetFormattedTemperature(hyperthermiaThreshold, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false));
 				return str;
 			};
-			Hypothermia = new StatusItem("Hypothermia", "CREATURES", string.Empty, StatusItem.IconType.Exclamation, NotificationType.Bad, false, OverlayModes.None.ID, true, 63486);
+			Hypothermia = new StatusItem("Hypothermia", "CREATURES", "", StatusItem.IconType.Exclamation, NotificationType.Bad, false, OverlayModes.None.ID, true, 63486);
 			Hypothermia.resolveTooltipCallback = delegate(string str, object data)
 			{
 				float value = ((TemperatureMonitor.Instance)data).temperature.value;
@@ -168,15 +168,15 @@ namespace Database
 				str = str.Replace("{TargetTemperature}", GameUtil.GetFormattedTemperature(hypothermiaThreshold, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false));
 				return str;
 			};
-			Suffocating = new StatusItem("Suffocating", "CREATURES", string.Empty, StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, true, 63486);
-			Hatching = new StatusItem("Hatching", "CREATURES", string.Empty, StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, true, 63486);
-			Incubating = new StatusItem("Incubating", "CREATURES", string.Empty, StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, true, 63486);
+			Suffocating = new StatusItem("Suffocating", "CREATURES", "", StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, true, 63486);
+			Hatching = new StatusItem("Hatching", "CREATURES", "", StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, true, 63486);
+			Incubating = new StatusItem("Incubating", "CREATURES", "", StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, true, 63486);
 			Drowning = new StatusItem("Drowning", "CREATURES", "status_item_flooded", StatusItem.IconType.Custom, NotificationType.BadMinor, true, OverlayModes.None.ID, true, 63486);
 			Drowning.resolveStringCallback = ((string str, object data) => str);
-			DryingOut = new StatusItem("DryingOut", "CREATURES", string.Empty, StatusItem.IconType.Info, NotificationType.BadMinor, false, OverlayModes.None.ID, true, 1026);
+			DryingOut = new StatusItem("DryingOut", "CREATURES", "", StatusItem.IconType.Info, NotificationType.BadMinor, false, OverlayModes.None.ID, true, 1026);
 			DryingOut.resolveStringCallback = ((string str, object data) => str);
-			ReadyForHarvest = new StatusItem("ReadyForHarvest", "CREATURES", string.Empty, StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, true, 1026);
-			Growing = new StatusItem("Growing", "CREATURES", string.Empty, StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, true, 1026);
+			ReadyForHarvest = new StatusItem("ReadyForHarvest", "CREATURES", "", StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, true, 1026);
+			Growing = new StatusItem("Growing", "CREATURES", "", StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, true, 1026);
 			Growing.resolveStringCallback = delegate(string str, object data)
 			{
 				Crop component = ((Growing)data).GetComponent<Crop>();
@@ -189,7 +189,7 @@ namespace Database
 				str = str.Replace("{PercentGrow}", Math.Floor((double)Math.Max(val, 0f)).ToString("F0"));
 				return str;
 			};
-			CropSleeping = new StatusItem("Crop_Sleeping", "CREATURES", string.Empty, StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, true, 1026);
+			CropSleeping = new StatusItem("Crop_Sleeping", "CREATURES", "", StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, true, 1026);
 			CropSleeping.resolveStringCallback = delegate(string str, object data)
 			{
 				CropSleepingMonitor.Instance instance7 = (CropSleepingMonitor.Instance)data;
@@ -201,7 +201,7 @@ namespace Database
 				string newValue3 = string.Format(CREATURES.STATUSITEMS.CROP_SLEEPING.REQUIREMENT_LUMINANCE, instance6.def.lightIntensityThreshold);
 				return str.Replace("{REQUIREMENTS}", newValue3);
 			};
-			EnvironmentTooWarm = new StatusItem("EnvironmentTooWarm", "CREATURES", string.Empty, StatusItem.IconType.Info, NotificationType.BadMinor, false, OverlayModes.None.ID, true, 63486);
+			EnvironmentTooWarm = new StatusItem("EnvironmentTooWarm", "CREATURES", "", StatusItem.IconType.Info, NotificationType.BadMinor, false, OverlayModes.None.ID, true, 63486);
 			EnvironmentTooWarm.resolveStringCallback = delegate(string str, object data)
 			{
 				float temp3 = Grid.Temperature[Grid.PosToCell(((TemperatureVulnerable)data).gameObject)];
@@ -210,7 +210,7 @@ namespace Database
 				str = str.Replace("{TargetTemperature}", GameUtil.GetFormattedTemperature(temp4, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false));
 				return str;
 			};
-			EnvironmentTooCold = new StatusItem("EnvironmentTooCold", "CREATURES", string.Empty, StatusItem.IconType.Info, NotificationType.BadMinor, false, OverlayModes.None.ID, true, 63486);
+			EnvironmentTooCold = new StatusItem("EnvironmentTooCold", "CREATURES", "", StatusItem.IconType.Info, NotificationType.BadMinor, false, OverlayModes.None.ID, true, 63486);
 			EnvironmentTooCold.resolveStringCallback = delegate(string str, object data)
 			{
 				float temp = Grid.Temperature[Grid.PosToCell(((TemperatureVulnerable)data).gameObject)];
@@ -219,7 +219,7 @@ namespace Database
 				str = str.Replace("{TargetTemperature}", GameUtil.GetFormattedTemperature(temp2, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false));
 				return str;
 			};
-			Entombed = new StatusItem("Entombed", "CREATURES", string.Empty, StatusItem.IconType.Info, NotificationType.BadMinor, false, OverlayModes.None.ID, true, 63486);
+			Entombed = new StatusItem("Entombed", "CREATURES", "", StatusItem.IconType.Info, NotificationType.BadMinor, false, OverlayModes.None.ID, true, 63486);
 			Entombed.resolveStringCallback = ((string str, object go) => str);
 			Entombed.resolveTooltipCallback = delegate(string str, object go)
 			{
@@ -263,7 +263,7 @@ namespace Database
 			WrongAtmosphere = new StatusItem("WrongAtmosphere", "CREATURES", "status_item_plant_atmosphere", StatusItem.IconType.Custom, NotificationType.BadMinor, false, OverlayModes.None.ID, false, 63486);
 			WrongAtmosphere.resolveStringCallback = delegate(string str, object data)
 			{
-				string text = string.Empty;
+				string text = "";
 				foreach (Element safe_atmosphere in (data as PressureVulnerable).safe_atmospheres)
 				{
 					text = text + "\n    •  " + safe_atmosphere.name;
@@ -287,10 +287,10 @@ namespace Database
 				str = str.Replace("{high_mass}", GameUtil.GetFormattedMass(pressureVulnerable.pressureWarning_High, GameUtil.TimeSlice.None, GameUtil.MetricMassFormat.UseThreshold, true, "{0:0.#}"));
 				return str;
 			};
-			HealthStatus = new StatusItem("HealthStatus", "CREATURES", string.Empty, StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, true, 63486);
+			HealthStatus = new StatusItem("HealthStatus", "CREATURES", "", StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, true, 63486);
 			HealthStatus.resolveStringCallback = delegate(string str, object data)
 			{
-				string newValue2 = string.Empty;
+				string newValue2 = "";
 				switch ((Health.HealthState)data)
 				{
 				case Health.HealthState.Perfect:
@@ -317,7 +317,7 @@ namespace Database
 			};
 			HealthStatus.resolveTooltipCallback = delegate(string str, object data)
 			{
-				string newValue = string.Empty;
+				string newValue = "";
 				switch ((Health.HealthState)data)
 				{
 				case Health.HealthState.Perfect:
@@ -342,27 +342,27 @@ namespace Database
 				str = str.Replace("{healthState}", newValue);
 				return str;
 			};
-			Barren = new StatusItem("Barren", "CREATURES", string.Empty, StatusItem.IconType.Info, NotificationType.BadMinor, false, OverlayModes.None.ID, true, 63486);
+			Barren = new StatusItem("Barren", "CREATURES", "", StatusItem.IconType.Info, NotificationType.BadMinor, false, OverlayModes.None.ID, true, 63486);
 			NeedsFertilizer = new StatusItem("NeedsFertilizer", "CREATURES", "status_item_plant_solid", StatusItem.IconType.Custom, NotificationType.BadMinor, false, OverlayModes.None.ID, false, 63486);
 			Func<string, object, string> resolveStringCallback = (string str, object data) => str;
 			NeedsFertilizer.resolveStringCallback = resolveStringCallback;
 			NeedsIrrigation = new StatusItem("NeedsIrrigation", "CREATURES", "status_item_plant_liquid", StatusItem.IconType.Custom, NotificationType.BadMinor, false, OverlayModes.None.ID, false, 63486);
 			Func<string, object, string> resolveStringCallback2 = (string str, object data) => str;
 			NeedsIrrigation.resolveStringCallback = resolveStringCallback2;
-			WrongFertilizer = new StatusItem("WrongFertilizer", "CREATURES", string.Empty, StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, true, 63486);
+			WrongFertilizer = new StatusItem("WrongFertilizer", "CREATURES", "", StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, true, 63486);
 			Func<string, object, string> resolveStringCallback3 = (string str, object data) => str;
 			WrongFertilizer.resolveStringCallback = resolveStringCallback3;
 			WrongFertilizerMajor = new StatusItem("WrongFertilizerMajor", "CREATURES", "status_item_fabricator_empty", StatusItem.IconType.Custom, NotificationType.BadMinor, false, OverlayModes.None.ID, true, 63486);
 			WrongFertilizerMajor.resolveStringCallback = resolveStringCallback3;
-			WrongIrrigation = new StatusItem("WrongIrrigation", "CREATURES", string.Empty, StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, true, 63486);
+			WrongIrrigation = new StatusItem("WrongIrrigation", "CREATURES", "", StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, true, 63486);
 			Func<string, object, string> resolveStringCallback4 = (string str, object data) => str;
 			WrongIrrigation.resolveStringCallback = resolveStringCallback4;
 			WrongIrrigationMajor = new StatusItem("WrongIrrigationMajor", "CREATURES", "status_item_fabricator_empty", StatusItem.IconType.Custom, NotificationType.BadMinor, false, OverlayModes.None.ID, true, 63486);
 			WrongIrrigationMajor.resolveStringCallback = resolveStringCallback4;
-			CantAcceptFertilizer = new StatusItem("CantAcceptFertilizer", "CREATURES", string.Empty, StatusItem.IconType.Info, NotificationType.BadMinor, false, OverlayModes.None.ID, true, 63486);
-			Rotting = new StatusItem("Rotting", "CREATURES", string.Empty, StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, true, 63486);
+			CantAcceptFertilizer = new StatusItem("CantAcceptFertilizer", "CREATURES", "", StatusItem.IconType.Info, NotificationType.BadMinor, false, OverlayModes.None.ID, true, 63486);
+			Rotting = new StatusItem("Rotting", "CREATURES", "", StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, true, 63486);
 			Rotting.resolveStringCallback = ((string str, object data) => str.Replace("{RotTemperature}", GameUtil.GetFormattedTemperature(277.15f, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false)));
-			Fresh = new StatusItem("Fresh", "CREATURES", string.Empty, StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, true, 63486);
+			Fresh = new StatusItem("Fresh", "CREATURES", "", StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, true, 63486);
 			Fresh.resolveStringCallback = delegate(string str, object data)
 			{
 				Rottable.Instance instance5 = (Rottable.Instance)data;
@@ -373,7 +373,7 @@ namespace Database
 				Rottable.Instance instance4 = (Rottable.Instance)data;
 				return str.Replace("{RotTooltip}", instance4.GetToolTip());
 			};
-			Stale = new StatusItem("Stale", "CREATURES", string.Empty, StatusItem.IconType.Info, NotificationType.BadMinor, false, OverlayModes.None.ID, true, 63486);
+			Stale = new StatusItem("Stale", "CREATURES", "", StatusItem.IconType.Info, NotificationType.BadMinor, false, OverlayModes.None.ID, true, 63486);
 			Stale.resolveStringCallback = delegate(string str, object data)
 			{
 				Rottable.Instance instance3 = (Rottable.Instance)data;
@@ -384,13 +384,13 @@ namespace Database
 				Rottable.Instance instance2 = (Rottable.Instance)data;
 				return str.Replace("{RotTooltip}", instance2.GetToolTip());
 			};
-			Spoiled = new StatusItem("Spoiled", "CREATURES", string.Empty, StatusItem.IconType.Info, NotificationType.BadMinor, false, OverlayModes.None.ID, true, 63486);
-			Refrigerated = new StatusItem("Refrigerated", "CREATURES", string.Empty, StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, true, 63486);
-			Unrefrigerated = new StatusItem("Unrefrigerated", "CREATURES", string.Empty, StatusItem.IconType.Info, NotificationType.BadMinor, false, OverlayModes.None.ID, true, 63486);
+			Spoiled = new StatusItem("Spoiled", "CREATURES", "", StatusItem.IconType.Info, NotificationType.BadMinor, false, OverlayModes.None.ID, true, 63486);
+			Refrigerated = new StatusItem("Refrigerated", "CREATURES", "", StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, true, 63486);
+			Unrefrigerated = new StatusItem("Unrefrigerated", "CREATURES", "", StatusItem.IconType.Info, NotificationType.BadMinor, false, OverlayModes.None.ID, true, 63486);
 			Unrefrigerated.resolveStringCallback = ((string str, object data) => str.Replace("{RotTemperature}", GameUtil.GetFormattedTemperature(277.15f, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false)));
-			SterilizingAtmosphere = new StatusItem("SterilizingAtmosphere", "CREATURES", string.Empty, StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, true, 63486);
-			ContaminatedAtmosphere = new StatusItem("ContaminatedAtmosphere", "CREATURES", string.Empty, StatusItem.IconType.Info, NotificationType.BadMinor, false, OverlayModes.None.ID, true, 63486);
-			Old = new StatusItem("Old", "CREATURES", string.Empty, StatusItem.IconType.Info, NotificationType.BadMinor, false, OverlayModes.None.ID, true, 63486);
+			SterilizingAtmosphere = new StatusItem("SterilizingAtmosphere", "CREATURES", "", StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, true, 63486);
+			ContaminatedAtmosphere = new StatusItem("ContaminatedAtmosphere", "CREATURES", "", StatusItem.IconType.Info, NotificationType.BadMinor, false, OverlayModes.None.ID, true, 63486);
+			Old = new StatusItem("Old", "CREATURES", "", StatusItem.IconType.Info, NotificationType.BadMinor, false, OverlayModes.None.ID, true, 63486);
 			Old.resolveTooltipCallback = delegate(string str, object data)
 			{
 				AgeMonitor.Instance instance = (AgeMonitor.Instance)data;

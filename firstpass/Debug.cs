@@ -1,5 +1,7 @@
+#define UNITY_ASSERTIONS
 using System;
 using System.Diagnostics;
+using System.Threading;
 using UnityEngine;
 
 public static class Debug
@@ -20,7 +22,7 @@ public static class Debug
 
 	private static string TimeStamp()
 	{
-		return string.Empty;
+		return DateTime.UtcNow.ToString("[HH:mm:ss.fff] [") + Thread.CurrentThread.ManagedThreadId + "] ";
 	}
 
 	public static void Break()
@@ -55,34 +57,38 @@ public static class Debug
 
 	public static void LogError(object obj, UnityEngine.Object context = null)
 	{
+		Console.Out.Write(TimeStamp() + "[ERROR] " + obj + "\n");
 		if (context == (UnityEngine.Object)null)
 		{
-			UnityEngine.Debug.LogError(TimeStamp() + obj);
+			UnityEngine.Debug.LogError(obj);
 		}
 		else
 		{
-			UnityEngine.Debug.LogError(TimeStamp() + obj, context);
+			UnityEngine.Debug.LogError(obj, context);
 		}
 	}
 
 	public static void LogErrorFormat(string format, params object[] args)
 	{
-		UnityEngine.Debug.LogErrorFormat(TimeStamp() + format, args);
+		Console.Out.Write(TimeStamp() + "[ERROR] " + string.Format(format, args) + "\n");
 	}
 
 	[Conditional("UNITY_EDITOR")]
 	public static void Assert(bool condition)
 	{
+		UnityEngine.Debug.Assert(condition);
 	}
 
 	[Conditional("UNITY_EDITOR")]
 	public static void Assert(bool condition, object message)
 	{
+		UnityEngine.Debug.Assert(condition, message);
 	}
 
 	[Conditional("UNITY_EDITOR")]
 	public static void Assert(bool condition, object message, UnityEngine.Object context)
 	{
+		UnityEngine.Debug.Assert(condition, message, context);
 	}
 
 	[Conditional("UNITY_EDITOR")]

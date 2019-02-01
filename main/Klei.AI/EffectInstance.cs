@@ -107,7 +107,7 @@ namespace Klei.AI
 
 		private void ConfigureStatusItem()
 		{
-			statusItem = new StatusItem(effect.Id, effect.Name, effect.description, string.Empty, effect.isBad ? StatusItem.IconType.Exclamation : StatusItem.IconType.Info, effect.isBad ? NotificationType.Bad : NotificationType.Neutral, false, OverlayModes.None.ID, 2);
+			statusItem = new StatusItem(effect.Id, effect.Name, effect.description, "", effect.isBad ? StatusItem.IconType.Exclamation : StatusItem.IconType.Info, effect.isBad ? NotificationType.Bad : NotificationType.Neutral, false, OverlayModes.None.ID, 2);
 			statusItem.resolveStringCallback = ResolveString;
 			statusItem.resolveTooltipCallback = ResolveTooltip;
 		}

@@ -58,41 +58,41 @@ namespace LibNoiseDotNet.Graphics.Tools.Noise
 
 		public static int Clamp(int value, int lowerBound, int upperBound)
 		{
-			if (value < lowerBound)
+			if (value >= lowerBound)
 			{
-				return lowerBound;
-			}
-			if (value > upperBound)
-			{
+				if (value <= upperBound)
+				{
+					return value;
+				}
 				return upperBound;
 			}
-			return value;
+			return lowerBound;
 		}
 
 		public static float Clamp(float value, float lowerBound, float upperBound)
 		{
-			if (value < lowerBound)
+			if (!(value < lowerBound))
 			{
-				return lowerBound;
-			}
-			if (value > upperBound)
-			{
+				if (!(value > upperBound))
+				{
+					return value;
+				}
 				return upperBound;
 			}
-			return value;
+			return lowerBound;
 		}
 
 		public static double Clamp(double value, double lowerBound, double upperBound)
 		{
-			if (value < lowerBound)
+			if (!(value < lowerBound))
 			{
-				return lowerBound;
-			}
-			if (value > upperBound)
-			{
+				if (!(value > upperBound))
+				{
+					return value;
+				}
 				return upperBound;
 			}
-			return value;
+			return lowerBound;
 		}
 
 		public static int Clamp01(int value)
@@ -134,15 +134,15 @@ namespace LibNoiseDotNet.Graphics.Tools.Noise
 
 		public static double ToInt32Range(double value)
 		{
-			if (value >= 1073741824.0)
+			if (!(value >= 1073741824.0))
 			{
-				return 2.0 * Math.IEEERemainder(value, 1073741824.0) - 1073741824.0;
-			}
-			if (value <= -1073741824.0)
-			{
+				if (!(value <= -1073741824.0))
+				{
+					return value;
+				}
 				return 2.0 * Math.IEEERemainder(value, 1073741824.0) + 1073741824.0;
 			}
-			return value;
+			return 2.0 * Math.IEEERemainder(value, 1073741824.0) - 1073741824.0;
 		}
 
 		public static byte[] UnpackBigUint32(int value, ref byte[] buffer)

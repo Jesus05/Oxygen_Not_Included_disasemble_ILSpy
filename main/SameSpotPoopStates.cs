@@ -51,11 +51,15 @@ internal class SameSpotPoopStates : GameStateMachine<SameSpotPoopStates, SameSpo
 			targetCell.Set(smi.GetSMI<GasAndLiquidConsumerMonitor.Instance>().targetCell, smi);
 		});
 		goingtopoop.MoveTo((Instance smi) => smi.GetLastPoopCell(), pooping, updatepoopcell, false);
-		pooping.PlayAnim("poop").ToggleStatusItem(CREATURES.STATUSITEMS.EXPELLING_SOLID.NAME, CREATURES.STATUSITEMS.EXPELLING_SOLID.TOOLTIP, category: Db.Get().StatusItemCategories.Main, icon: string.Empty, icon_type: StatusItem.IconType.Info, notification_type: NotificationType.Neutral, allow_multiples: false, render_overlay: default(HashedString), status_overlays: 63486, resolve_string_callback: null, resolve_tooltip_callback: null).OnAnimQueueComplete(behaviourcomplete);
+		State state = pooping.PlayAnim("poop");
+		string name = CREATURES.STATUSITEMS.EXPELLING_SOLID.NAME;
+		string tooltip = CREATURES.STATUSITEMS.EXPELLING_SOLID.TOOLTIP;
+		StatusItemCategory main = Db.Get().StatusItemCategories.Main;
+		state.ToggleStatusItem(name, tooltip, "", StatusItem.IconType.Info, NotificationType.Neutral, false, default(HashedString), 63486, null, null, main).OnAnimQueueComplete(behaviourcomplete);
 		updatepoopcell.Enter(delegate(Instance smi)
 		{
 			smi.SetLastPoopCell();
 		}).GoTo(pooping);
-		behaviourcomplete.BehaviourComplete(GameTags.Creatures.Poop, false);
+		behaviourcomplete.PlayAnim("idle_loop", KAnim.PlayMode.Loop).BehaviourComplete(GameTags.Creatures.Poop, false);
 	}
 }

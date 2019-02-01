@@ -1,4 +1,6 @@
+#define UNITY_ASSERTIONS
 using System.Collections.Generic;
+using UnityEngine.Assertions;
 
 public abstract class KCompactedVectorBase
 {
@@ -22,23 +24,24 @@ public abstract class KCompactedVectorBase
 	protected bool Free(HandleVector<int>.Handle handle, int last_idx, out int free_component_idx)
 	{
 		free_component_idx = -1;
-		if (!handle.IsValid())
+		if (handle.IsValid())
 		{
-			return false;
-		}
-		free_component_idx = handles.Release(handle);
-		if (free_component_idx < last_idx)
-		{
-			int num = dataHandleIndices[last_idx];
-			if (handles.Items[num] != last_idx)
+			free_component_idx = handles.Release(handle);
+			if (free_component_idx < last_idx)
 			{
-				Output.LogError("KCompactedVector: Bad state after attempting to free handle", handle.index);
+				int num = dataHandleIndices[last_idx];
+				if (handles.Items[num] != last_idx)
+				{
+					Output.LogError("KCompactedVector: Bad state after attempting to free handle", handle.index);
+					Assert.IsTrue(false);
+				}
+				handles.Items[num] = free_component_idx;
+				dataHandleIndices[free_component_idx] = num;
 			}
-			handles.Items[num] = free_component_idx;
-			dataHandleIndices[free_component_idx] = num;
+			dataHandleIndices.RemoveAt(last_idx);
+			return true;
 		}
-		dataHandleIndices.RemoveAt(last_idx);
-		return true;
+		return false;
 	}
 
 	public bool IsValid(HandleVector<int>.Handle handle)

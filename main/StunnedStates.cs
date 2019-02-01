@@ -29,7 +29,11 @@ internal class StunnedStates : GameStateMachine<StunnedStates, StunnedStates.Ins
 	public override void InitializeStates(out BaseState default_state)
 	{
 		default_state = stunned;
-		root.ToggleStatusItem(CREATURES.STATUSITEMS.GETTING_WRANGLED.NAME, CREATURES.STATUSITEMS.GETTING_WRANGLED.TOOLTIP, category: Db.Get().StatusItemCategories.Main, icon: string.Empty, icon_type: StatusItem.IconType.Info, notification_type: NotificationType.Neutral, allow_multiples: false, render_overlay: default(HashedString), status_overlays: 63486, resolve_string_callback: null, resolve_tooltip_callback: null);
+		State root = base.root;
+		string name = CREATURES.STATUSITEMS.GETTING_WRANGLED.NAME;
+		string tooltip = CREATURES.STATUSITEMS.GETTING_WRANGLED.TOOLTIP;
+		StatusItemCategory main = Db.Get().StatusItemCategories.Main;
+		root.ToggleStatusItem(name, tooltip, "", StatusItem.IconType.Info, NotificationType.Neutral, false, default(HashedString), 63486, null, null, main);
 		stunned.PlayAnim("idle_loop", KAnim.PlayMode.Loop).TagTransition(GameTags.Creatures.Stunned, null, true);
 	}
 }

@@ -10,7 +10,7 @@ namespace NodeEditorFramework
 
 		private static List<NodeEditorCallbackReceiver> callbackReceiver;
 
-		public static System.Action OnEditorStartUp;
+		public static System.Action OnEditorStartUp = null;
 
 		public static Action<NodeCanvas> OnLoadCanvas;
 

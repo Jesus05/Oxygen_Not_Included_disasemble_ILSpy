@@ -131,41 +131,41 @@ public abstract class Chore
 			{
 				bool flag = failedPreconditionId != -1;
 				bool flag2 = obj.failedPreconditionId != -1;
-				if (flag == flag2)
+				if (flag != flag2)
 				{
-					int num = masterPriority.priority_class - obj.masterPriority.priority_class;
-					if (num != 0)
-					{
-						return num;
-					}
+					return (!flag) ? 1 : (-1);
+				}
+				int num = masterPriority.priority_class - obj.masterPriority.priority_class;
+				if (num == 0)
+				{
 					int num2 = personalPriority - obj.personalPriority;
-					if (num2 != 0)
+					if (num2 == 0)
 					{
-						return num2;
-					}
-					int num3 = masterPriority.priority_value - obj.masterPriority.priority_value;
-					if (num3 != 0)
-					{
+						int num3 = masterPriority.priority_value - obj.masterPriority.priority_value;
+						if (num3 == 0)
+						{
+							int num4 = priority - obj.priority;
+							if (num4 == 0)
+							{
+								int num5 = priorityMod - obj.priorityMod;
+								if (num5 == 0)
+								{
+									int num6 = consumerPriority - obj.consumerPriority;
+									if (num6 == 0)
+									{
+										return obj.cost - cost;
+									}
+									return num6;
+								}
+								return num5;
+							}
+							return num4;
+						}
 						return num3;
 					}
-					int num4 = priority - obj.priority;
-					if (num4 != 0)
-					{
-						return num4;
-					}
-					int num5 = priorityMod - obj.priorityMod;
-					if (num5 != 0)
-					{
-						return num5;
-					}
-					int num6 = consumerPriority - obj.consumerPriority;
-					if (num6 != 0)
-					{
-						return num6;
-					}
-					return obj.cost - cost;
+					return num2;
 				}
-				return (!flag) ? 1 : (-1);
+				return num;
 			}
 
 			public override bool Equals(object obj)
@@ -228,15 +228,17 @@ public abstract class Chore
 
 	private bool arePreconditionsDirty;
 
+	public bool addToDailyReport;
+
 	private Prioritizable prioritizable;
 
 	public const int MAX_PLAYER_BASIC_PRIORITY = 9;
 
 	public const int MIN_PLAYER_BASIC_PRIORITY = 1;
 
-	public const int MAX_PLAYER_HIGH_PRIORITY = 9;
+	public const int MAX_PLAYER_HIGH_PRIORITY = 0;
 
-	public const int MIN_PLAYER_HIGH_PRIORITY = 1;
+	public const int MIN_PLAYER_HIGH_PRIORITY = 0;
 
 	public const int MAX_PLAYER_EMERGENCY_PRIORITY = 1;
 
@@ -332,7 +334,7 @@ public abstract class Chore
 		protected set;
 	}
 
-	public Chore(ChoreType chore_type, ChoreProvider chore_provider, Tag[] chore_tags, bool run_until_complete, Action<Chore> on_complete, Action<Chore> on_begin, Action<Chore> on_end, PriorityScreen.PriorityClass priority_class, int priority_value, bool is_preemptable, bool allow_in_context_menu, int priority_mod)
+	public Chore(ChoreType chore_type, ChoreProvider chore_provider, Tag[] chore_tags, bool run_until_complete, Action<Chore> on_complete, Action<Chore> on_begin, Action<Chore> on_end, PriorityScreen.PriorityClass priority_class, int priority_value, bool is_preemptable, bool allow_in_context_menu, int priority_mod, bool add_to_daily_report)
 	{
 		if (priority_value == 2147483647)
 		{
@@ -402,6 +404,10 @@ public abstract class Chore
 			this.prioritizable = prioritizable;
 			masterPriority = prioritizable.GetMasterPriority();
 			prioritizable.onPriorityChanged = (Action<PrioritySetting>)Delegate.Combine(prioritizable.onPriorityChanged, new Action<PrioritySetting>(OnMasterPriorityChanged));
+			if ((UnityEngine.Object)GlobalChoreProvider.Instance != (UnityEngine.Object)null)
+			{
+				GlobalChoreProvider.Instance.RefreshEmergencyChoreStatus();
+			}
 		}
 	}
 
@@ -533,6 +539,10 @@ public abstract class Chore
 			{
 				onComplete(this);
 			}
+			if (addToDailyReport)
+			{
+				ReportManager.Instance.ReportValue(ReportManager.ReportType.ChoreStatus, -1f, choreType.Name, GameUtil.GetChoreName(this, null));
+			}
 			End(reason);
 			Cleanup();
 		}
@@ -562,6 +572,10 @@ public abstract class Chore
 	{
 		if (RemoveFromProvider())
 		{
+			if (addToDailyReport)
+			{
+				ReportManager.Instance.ReportValue(ReportManager.ReportType.ChoreStatus, -1f, choreType.Name, GameUtil.GetChoreName(this, null));
+			}
 			End(reason);
 			Cleanup();
 		}
@@ -581,13 +595,13 @@ public abstract class Chore
 
 	private bool RemoveFromProvider()
 	{
-		if ((UnityEngine.Object)provider != (UnityEngine.Object)null)
+		if (!((UnityEngine.Object)provider != (UnityEngine.Object)null))
 		{
-			provider.RemoveChore(this);
-			provider = null;
-			return true;
+			return false;
 		}
-		return false;
+		provider.RemoveChore(this);
+		provider = null;
+		return true;
 	}
 
 	public virtual bool CanPreempt(Precondition.Context context)
@@ -599,8 +613,12 @@ public abstract class Chore
 	{
 	}
 
-	public virtual string GetReportName()
+	public virtual string GetReportName(string context = null)
 	{
+		if (context != null && choreType.reportName != null)
+		{
+			return string.Format(choreType.reportName, context);
+		}
 		return choreType.Name;
 	}
 }
@@ -618,11 +636,16 @@ public class Chore<StateMachineInstanceType> : Chore, IStateMachineTarget where 
 
 	public override bool isNull => base.target.isNull;
 
-	public Chore(ChoreType chore_type, IStateMachineTarget target, ChoreProvider chore_provider, bool run_until_complete = true, Action<Chore> on_complete = null, Action<Chore> on_begin = null, Action<Chore> on_end = null, PriorityScreen.PriorityClass master_priority_class = PriorityScreen.PriorityClass.basic, int master_priority_value = 5, bool is_preemptable = false, bool allow_in_context_menu = true, int priority_mod = 0, Tag[] chore_tags = null)
-		: base(chore_type, chore_provider, chore_tags, run_until_complete, on_complete, on_begin, on_end, master_priority_class, master_priority_value, is_preemptable, allow_in_context_menu, priority_mod)
+	public Chore(ChoreType chore_type, IStateMachineTarget target, ChoreProvider chore_provider, bool run_until_complete = true, Action<Chore> on_complete = null, Action<Chore> on_begin = null, Action<Chore> on_end = null, PriorityScreen.PriorityClass master_priority_class = PriorityScreen.PriorityClass.basic, int master_priority_value = 5, bool is_preemptable = false, bool allow_in_context_menu = true, int priority_mod = 0, Tag[] chore_tags = null, bool add_to_daily_report = false)
+		: base(chore_type, chore_provider, chore_tags, run_until_complete, on_complete, on_begin, on_end, master_priority_class, master_priority_value, is_preemptable, allow_in_context_menu, priority_mod, add_to_daily_report)
 	{
 		base.target = target;
 		target.Subscribe(1969584890, OnTargetDestroyed);
+		addToDailyReport = add_to_daily_report;
+		if (addToDailyReport)
+		{
+			ReportManager.Instance.ReportValue(ReportManager.ReportType.ChoreStatus, 1f, chore_type.Name, GameUtil.GetChoreName(this, null));
+		}
 	}
 
 	protected override StateMachine.Instance GetSMI()

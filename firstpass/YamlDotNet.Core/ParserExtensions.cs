@@ -28,22 +28,22 @@ namespace YamlDotNet.Core
 
 		public static T Allow<T>(this IParser parser) where T : ParsingEvent
 		{
-			if (!parser.Accept<T>())
+			if (parser.Accept<T>())
 			{
-				return (T)null;
+				T result = (T)parser.Current;
+				parser.MoveNext();
+				return result;
 			}
-			T result = (T)parser.Current;
-			parser.MoveNext();
-			return result;
+			return (T)null;
 		}
 
 		public static T Peek<T>(this IParser parser) where T : ParsingEvent
 		{
-			if (!parser.Accept<T>())
+			if (parser.Accept<T>())
 			{
-				return (T)null;
+				return (T)parser.Current;
 			}
-			return (T)parser.Current;
+			return (T)null;
 		}
 
 		public static void SkipThisAndNestedEvents(this IParser parser)

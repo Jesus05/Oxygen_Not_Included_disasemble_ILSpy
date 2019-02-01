@@ -8,23 +8,27 @@ public class CharacterSelectionController : KModalScreen
 	private CharacterContainer containerPrefab;
 
 	[SerializeField]
+	private CarePackageContainer carePackageContainerPrefab;
+
+	[SerializeField]
 	private GameObject containerParent;
 
 	[SerializeField]
 	protected KButton proceedButton;
 
-	[SerializeField]
-	protected int availableCharCount;
+	protected int numberOfDuplicantOptions = 3;
+
+	protected int numberOfCarePackageOptions = 0;
 
 	[SerializeField]
-	protected int selectableCharCount;
+	protected int selectableCount;
 
 	[SerializeField]
-	private bool allowsReplacing;
+	private bool allowsReplacing = false;
 
-	protected List<MinionStartingStats> startingStats;
+	protected List<ITelepadDeliverable> selectedDeliverables;
 
-	protected List<CharacterContainer> containers;
+	protected List<ITelepadDeliverableContainer> containers;
 
 	public System.Action OnLimitReachedEvent;
 
@@ -32,7 +36,7 @@ public class CharacterSelectionController : KModalScreen
 
 	public Action<bool> OnReshuffleEvent;
 
-	public Action<MinionStartingStats> OnReplacedEvent;
+	public Action<ITelepadDeliverable> OnReplacedEvent;
 
 	public System.Action OnProceedEvent;
 
@@ -48,11 +52,11 @@ public class CharacterSelectionController : KModalScreen
 	{
 	}
 
-	protected virtual void OnCharacterAdded()
+	protected virtual void OnDeliverableAdded()
 	{
 	}
 
-	protected virtual void OnCharacterRemoved()
+	protected virtual void OnDeliverableRemoved()
 	{
 	}
 
@@ -69,31 +73,52 @@ public class CharacterSelectionController : KModalScreen
 		DisableProceedButton();
 		if (containers == null || containers.Count <= 0)
 		{
-			containers = new List<CharacterContainer>();
-			for (int i = 0; i < availableCharCount; i++)
+			containers = new List<ITelepadDeliverableContainer>();
+			if (IsStarterMinion)
+			{
+				numberOfDuplicantOptions = 3;
+				numberOfCarePackageOptions = 0;
+			}
+			else
+			{
+				numberOfCarePackageOptions = ((UnityEngine.Random.Range(0, 101) <= 70) ? 1 : 2);
+				numberOfDuplicantOptions = 4 - numberOfCarePackageOptions;
+			}
+			for (int i = 0; i < numberOfDuplicantOptions; i++)
 			{
 				CharacterContainer characterContainer = Util.KInstantiateUI<CharacterContainer>(containerPrefab.gameObject, containerParent, false);
 				characterContainer.SetController(this);
 				containers.Add(characterContainer);
 			}
-			startingStats = new List<MinionStartingStats>();
+			for (int j = 0; j < numberOfCarePackageOptions; j++)
+			{
+				CarePackageContainer carePackageContainer = Util.KInstantiateUI<CarePackageContainer>(carePackageContainerPrefab.gameObject, containerParent, false);
+				carePackageContainer.SetController(this);
+				containers.Add(carePackageContainer);
+				carePackageContainer.gameObject.transform.SetSiblingIndex(UnityEngine.Random.Range(0, carePackageContainer.transform.parent.childCount));
+			}
+			selectedDeliverables = new List<ITelepadDeliverable>();
 		}
 	}
 
 	public virtual void OnPressBack()
 	{
-		foreach (CharacterContainer container in containers)
+		foreach (ITelepadDeliverableContainer container in containers)
 		{
-			container.ForceStopEditingTitle();
+			CharacterContainer characterContainer = container as CharacterContainer;
+			if ((UnityEngine.Object)characterContainer != (UnityEngine.Object)null)
+			{
+				characterContainer.ForceStopEditingTitle();
+			}
 		}
 		Show(false);
 	}
 
 	public void RemoveLast()
 	{
-		if (startingStats != null && startingStats.Count != 0)
+		if (selectedDeliverables != null && selectedDeliverables.Count != 0)
 		{
-			MinionStartingStats obj = startingStats[startingStats.Count - 1];
+			ITelepadDeliverable obj = selectedDeliverables[selectedDeliverables.Count - 1];
 			if (OnReplacedEvent != null)
 			{
 				OnReplacedEvent(obj);
@@ -101,21 +126,21 @@ public class CharacterSelectionController : KModalScreen
 		}
 	}
 
-	public void AddCharacter(MinionStartingStats charStats)
+	public void AddDeliverable(ITelepadDeliverable deliverable)
 	{
-		if (startingStats.Contains(charStats))
+		if (selectedDeliverables.Contains(deliverable))
 		{
 			Debug.Log("Tried to add the same minion twice.", null);
 		}
-		else if (startingStats.Count >= selectableCharCount)
+		else if (selectedDeliverables.Count >= selectableCount)
 		{
 			Debug.LogError("Tried to add minions beyond the allowed limit", null);
 		}
 		else
 		{
-			startingStats.Add(charStats);
-			OnCharacterAdded();
-			if (startingStats.Count == selectableCharCount)
+			selectedDeliverables.Add(deliverable);
+			OnDeliverableAdded();
+			if (selectedDeliverables.Count == selectableCount)
 			{
 				EnableProceedButton();
 				if (OnLimitReachedEvent != null)
@@ -127,12 +152,12 @@ public class CharacterSelectionController : KModalScreen
 		}
 	}
 
-	public void RemoveCharacter(MinionStartingStats charStats)
+	public void RemoveDeliverable(ITelepadDeliverable deliverable)
 	{
-		bool flag = startingStats.Count >= selectableCharCount;
-		startingStats.Remove(charStats);
-		OnCharacterRemoved();
-		if (flag && startingStats.Count < selectableCharCount)
+		bool flag = selectedDeliverables.Count >= selectableCount;
+		selectedDeliverables.Remove(deliverable);
+		OnDeliverableRemoved();
+		if (flag && selectedDeliverables.Count < selectableCount)
 		{
 			DisableProceedButton();
 			if (OnLimitUnreachedEvent != null)
@@ -143,9 +168,9 @@ public class CharacterSelectionController : KModalScreen
 		}
 	}
 
-	public bool IsSelected(MinionStartingStats charStats)
+	public bool IsSelected(ITelepadDeliverable deliverable)
 	{
-		return startingStats.Contains(charStats);
+		return selectedDeliverables.Contains(deliverable);
 	}
 
 	protected void EnableProceedButton()

@@ -1,3 +1,4 @@
+#define UNITY_ASSERTIONS
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -109,6 +110,7 @@ public class FlowUtilityNetwork : UtilityNetwork
 				}
 				break;
 			default:
+				UnityEngine.Debug.Assert(false, "wtf");
 				item.Network = this;
 				break;
 			}

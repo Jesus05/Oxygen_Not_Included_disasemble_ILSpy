@@ -111,26 +111,26 @@ namespace Delaunay
 		public List<Vector2> Region(Vector2 p)
 		{
 			Site site = _sitesIndexedByLocation[p];
-			if (site == null)
+			if (site != null)
 			{
-				return new List<Vector2>();
+				return site.Region(_plotBounds);
 			}
-			return site.Region(_plotBounds);
+			return new List<Vector2>();
 		}
 
 		public List<Vector2> NeighborSitesForSite(Vector2 coord)
 		{
 			List<Vector2> list = new List<Vector2>();
 			Site site = _sitesIndexedByLocation[coord];
-			if (site == null)
+			if (site != null)
 			{
+				List<Site> list2 = site.NeighborSites();
+				for (int i = 0; i < list2.Count; i++)
+				{
+					Site site2 = list2[i];
+					list.Add(site2.Coord);
+				}
 				return list;
-			}
-			List<Site> list2 = site.NeighborSites();
-			for (int i = 0; i < list2.Count; i++)
-			{
-				Site site2 = list2[i];
-				list.Add(site2.Coord);
 			}
 			return list;
 		}
@@ -139,14 +139,14 @@ namespace Delaunay
 		{
 			HashSet<uint> hashSet = new HashSet<uint>();
 			Site site = _sitesIndexedByLocation[coord];
-			if (site == null)
+			if (site != null)
 			{
+				List<Site> list = site.NeighborSites();
+				for (int i = 0; i < list.Count; i++)
+				{
+					hashSet.Add(list[i].color);
+				}
 				return hashSet;
-			}
-			List<Site> list = site.NeighborSites();
-			for (int i = 0; i < list.Count; i++)
-			{
-				hashSet.Add(list[i].color);
 			}
 			return hashSet;
 		}
@@ -155,14 +155,14 @@ namespace Delaunay
 		{
 			List<uint> list = new List<uint>();
 			Site site = _sitesIndexedByLocation[coord];
-			if (site == null)
+			if (site != null)
 			{
+				List<Site> list2 = site.NeighborSites();
+				for (int i = 0; i < list2.Count; i++)
+				{
+					list.Add(list2[i].color);
+				}
 				return list;
-			}
-			List<Site> list2 = site.NeighborSites();
-			for (int i = 0; i < list2.Count; i++)
-			{
-				list.Add(list2[i].color);
 			}
 			return list;
 		}
@@ -206,20 +206,20 @@ namespace Delaunay
 		{
 			List<Edge> list = HullEdges();
 			List<Vector2> list2 = new List<Vector2>();
-			if (list.Count == 0)
+			if (list.Count != 0)
 			{
+				EdgeReorderer edgeReorderer = new EdgeReorderer(list, VertexOrSite.SITE);
+				list = edgeReorderer.edges;
+				List<Side> edgeOrientations = edgeReorderer.edgeOrientations;
+				edgeReorderer.Dispose();
+				int count = list.Count;
+				for (int i = 0; i < count; i++)
+				{
+					Edge edge = list[i];
+					Side leftRight = edgeOrientations[i];
+					list2.Add(edge.Site(leftRight).Coord);
+				}
 				return list2;
-			}
-			EdgeReorderer edgeReorderer = new EdgeReorderer(list, VertexOrSite.SITE);
-			list = edgeReorderer.edges;
-			List<Side> edgeOrientations = edgeReorderer.edgeOrientations;
-			edgeReorderer.Dispose();
-			int count = list.Count;
-			for (int i = 0; i < count; i++)
-			{
-				Edge edge = list[i];
-				Side leftRight = edgeOrientations[i];
-				list2.Add(edge.Site(leftRight).Coord);
 			}
 			return list2;
 		}
@@ -374,67 +374,67 @@ namespace Delaunay
 		private Site FortunesAlgorithm_leftRegion(Halfedge he)
 		{
 			Edge edge = he.edge;
-			if (edge == null)
+			if (edge != null)
 			{
-				return fortunesAlgorithm_bottomMostSite;
+				Edge edge2 = edge;
+				Side? leftRight = he.leftRight;
+				return edge2.Site(leftRight.Value);
 			}
-			Edge edge2 = edge;
-			Side? leftRight = he.leftRight;
-			return edge2.Site(leftRight.Value);
+			return fortunesAlgorithm_bottomMostSite;
 		}
 
 		private Site FortunesAlgorithm_rightRegion(Halfedge he)
 		{
 			Edge edge = he.edge;
-			if (edge == null)
+			if (edge != null)
 			{
-				return fortunesAlgorithm_bottomMostSite;
+				Edge edge2 = edge;
+				Side? leftRight = he.leftRight;
+				return edge2.Site(SideHelper.Other(leftRight.Value));
 			}
-			Edge edge2 = edge;
-			Side? leftRight = he.leftRight;
-			return edge2.Site(SideHelper.Other(leftRight.Value));
+			return fortunesAlgorithm_bottomMostSite;
 		}
 
 		public static int CompareByYThenX(Site s1, Site s2)
 		{
-			if (s1.y < s2.y)
+			if (!(s1.y < s2.y))
 			{
-				return -1;
-			}
-			if (s1.y > s2.y)
-			{
+				if (!(s1.y > s2.y))
+				{
+					if (!(s1.x < s2.x))
+					{
+						if (!(s1.x > s2.x))
+						{
+							return 0;
+						}
+						return 1;
+					}
+					return -1;
+				}
 				return 1;
 			}
-			if (s1.x < s2.x)
-			{
-				return -1;
-			}
-			if (s1.x > s2.x)
-			{
-				return 1;
-			}
-			return 0;
+			return -1;
 		}
 
 		public static int CompareByYThenX(Site s1, Vector2 s2)
 		{
-			if (s1.y < s2.y)
+			if (!(s1.y < s2.y))
 			{
-				return -1;
-			}
-			if (s1.y > s2.y)
-			{
+				if (!(s1.y > s2.y))
+				{
+					if (!(s1.x < s2.x))
+					{
+						if (!(s1.x > s2.x))
+						{
+							return 0;
+						}
+						return 1;
+					}
+					return -1;
+				}
 				return 1;
 			}
-			if (s1.x < s2.x)
-			{
-				return -1;
-			}
-			if (s1.x > s2.x)
-			{
-				return 1;
-			}
-			return 0;
+			return -1;
 		}
 	}
 }

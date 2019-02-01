@@ -121,11 +121,11 @@ public class SolidConduitFlowVisualizer
 
 	private string overlaySound;
 
-	private bool showContents;
+	private bool showContents = false;
 
 	private double animTime;
 
-	private int layer;
+	private int layer = 0;
 
 	private static Vector2 GRID_OFFSET = new Vector2(0.5f, 0.5f);
 
@@ -171,22 +171,22 @@ public class SolidConduitFlowVisualizer
 
 	private Color32 GetContentsColor(Element element, Color32 default_color)
 	{
-		if (element != null)
+		if (element == null)
 		{
-			Color c = element.substance.conduitColour;
-			c.a = 128f;
-			return c;
+			return default_color;
 		}
-		return default_color;
+		Color c = element.substance.conduitColour;
+		c.a = 128f;
+		return c;
 	}
 
 	private Color32 GetBackgroundColor(float insulation_lerp)
 	{
-		if (showContents)
+		if (!showContents)
 		{
-			return Color32.Lerp(visInfo.overlayTint, visInfo.overlayInsulatedTint, insulation_lerp);
+			return Color32.Lerp(visInfo.tint, visInfo.insulatedTint, insulation_lerp);
 		}
-		return Color32.Lerp(visInfo.tint, visInfo.insulatedTint, insulation_lerp);
+		return Color32.Lerp(visInfo.overlayTint, visInfo.overlayInsulatedTint, insulation_lerp);
 	}
 
 	public void Render(float z, int render_layer, float lerp_percent, bool trigger_audio = false)

@@ -15,7 +15,7 @@ public class Unlocks : KMonoBehaviour
 	{
 		{
 			"emails",
-			new string[20]
+			new string[21]
 			{
 				"email_preliminarycalculations",
 				"email_researchgiant",
@@ -35,13 +35,14 @@ public class Unlocks : KMonoBehaviour
 				"email_arthistoryrequest",
 				"email_AIcontrol",
 				"email_AIcontrol2",
+				"email_friendlyemail",
 				"email_AIcontrol3",
 				"email_AIcontrol4"
 			}
 		},
 		{
 			"journals",
-			new string[31]
+			new string[38]
 			{
 				"journal_sunflowerseeds",
 				"journal_debrief",
@@ -58,12 +59,14 @@ public class Unlocks : KMonoBehaviour
 				"journal_A046_2",
 				"journal_A046_3",
 				"journal_A046_4",
-				"journal_movedrats",
 				"journal_spittingimage",
+				"journal_elliesbirthday1",
+				"journal_movedrats",
 				"journal_B327_1",
 				"journal_B327_2",
 				"journal_B327_3",
 				"journal_B327_4",
+				"journal_elliesbirthday2",
 				"journal_revisitednumbers",
 				"journal_ants",
 				"journal_B556_1",
@@ -73,6 +76,11 @@ public class Unlocks : KMonoBehaviour
 				"journal_timemusings",
 				"journal_timesarrowthoughts",
 				"journal_magazine",
+				"journal_planetaryechoes1",
+				"journal_planetaryechoes2",
+				"journal_planetaryechoes3",
+				"journal_planetaryechoes4",
+				"journal_planetaryechoes5",
 				"journal_notetojodi"
 			}
 		},
@@ -121,15 +129,15 @@ public class Unlocks : KMonoBehaviour
 
 	public bool IsUnlocked(string unlockID)
 	{
-		if (string.IsNullOrEmpty(unlockID))
+		if (!string.IsNullOrEmpty(unlockID))
 		{
-			return false;
-		}
-		if (DebugHandler.InstantBuildMode)
-		{
+			if (!DebugHandler.InstantBuildMode)
+			{
+				return unlocked.Contains(unlockID);
+			}
 			return true;
 		}
-		return unlocked.Contains(unlockID);
+		return false;
 	}
 
 	public void Unlock(string unlockID)
@@ -181,7 +189,7 @@ public class Unlocks : KMonoBehaviour
 		unlocked.Clear();
 		if (File.Exists(UnlocksFilename))
 		{
-			string text = string.Empty;
+			string text = "";
 			bool flag = false;
 			int num = 0;
 			while (!flag && num < 5)

@@ -48,7 +48,7 @@ public class RoleManager
 		},
 		{
 			"Management",
-			new RoleGroup("Management", string.Empty, string.Empty)
+			new RoleGroup("Management", "", "")
 		},
 		{
 			"Research",
@@ -56,7 +56,7 @@ public class RoleManager
 		},
 		{
 			"Suits",
-			new RoleGroup("Suits", string.Empty, string.Empty)
+			new RoleGroup("Suits", "", "")
 		},
 		{
 			"Hauling",
@@ -357,20 +357,20 @@ public class RoleManager
 
 	public string GetHat(string roleID)
 	{
-		if (roleHatIndex.ContainsKey(roleID))
+		if (!roleHatIndex.ContainsKey(roleID))
 		{
-			return roleHatIndex[roleID];
+			return "";
 		}
-		return string.Empty;
+		return roleHatIndex[roleID];
 	}
 
 	public int GetRowIndex(string roleID)
 	{
-		if (roleRowIndex.ContainsKey(roleID))
+		if (!roleRowIndex.ContainsKey(roleID))
 		{
-			return roleRowIndex[roleID];
+			return -1;
 		}
-		return -1;
+		return roleRowIndex[roleID];
 	}
 
 	private void OnIDsChanged(MinionIdentity changedID)
@@ -597,21 +597,21 @@ public class RoleManager
 
 	public string RoleTooltip(string roleID)
 	{
-		string empty = string.Empty;
+		string str = "";
 		RoleConfig role = GetRole(roleID);
-		empty = empty + "<b><size=16>" + role.name + "</size></b>";
-		empty = empty + UI.HORIZONTAL_BR_RULE + role.description;
+		str = str + "<b><size=16>" + role.name + "</size></b>";
+		str = str + UI.HORIZONTAL_BR_RULE + role.description;
 		if (roleID != "NoRole")
 		{
-			empty = empty + "\n\n" + RolePerkString(roleID);
-			empty = empty + "\n\n" + RoleCriteriaString(roleID, null);
+			str = str + "\n\n" + RolePerkString(roleID);
+			str = str + "\n\n" + RoleCriteriaString(roleID, null);
 		}
-		return empty;
+		return str;
 	}
 
 	public string RolePerkString(string roleID)
 	{
-		string text = string.Empty;
+		string text = "";
 		RoleConfig role = GetRole(roleID);
 		if (!(roleID == "NoRole"))
 		{
@@ -643,7 +643,7 @@ public class RoleManager
 
 	public string RoleCriteriaString(string roleID, MinionResume resume)
 	{
-		string text = string.Empty;
+		string text = "";
 		RoleConfig role = GetRole(roleID);
 		if ((Object)resume != (Object)null)
 		{
@@ -740,17 +740,17 @@ public class RoleManager
 				text = text + "<b>" + UI.ROLES_SCREEN.ASSIGNMENT_REQUIREMENTS.TITLE + "</b>\n";
 				if (!((Object)resume != (Object)null))
 				{
-					goto IL_054b;
+					goto IL_0573;
 				}
-				goto IL_054b;
+				goto IL_0573;
 			}
 			text = text + "<b>" + UI.ROLES_SCREEN.ASSIGNMENT_REQUIREMENTS.TITLE + "</b>\n";
 			text = text + "    • " + string.Format(UI.ROLES_SCREEN.ASSIGNMENT_REQUIREMENTS.NONE, role.name);
 		}
-		goto IL_0631;
-		IL_0631:
+		goto IL_0660;
+		IL_0660:
 		return text;
-		IL_054b:
+		IL_0573:
 		for (int j = 0; j < role.requirements.Length; j++)
 		{
 			text += ((!((Object)resume == (Object)null) && !role.requirements[j].isSatisfied(resume)) ? "<color=#F44A47FF>" : "<color=#FFFFFF>");
@@ -761,37 +761,37 @@ public class RoleManager
 				text += "\n";
 			}
 		}
-		goto IL_0631;
+		goto IL_0660;
 	}
 
 	public bool CanAssignToRole(string roleID, MinionResume resume)
 	{
 		RoleConfig role = GetRole(roleID);
-		if (resume.TargetRole == roleID)
+		if (!(resume.TargetRole == roleID))
 		{
-			return false;
-		}
-		if (resume.CurrentRole == roleID && resume.TargetRole == roleID)
-		{
-			return false;
-		}
-		if (GetRoleAssignees(roleID).Count >= SlotsByRoleID[roleID])
-		{
-			return false;
-		}
-		if (DebugHandler.InstantBuildMode)
-		{
-			return true;
-		}
-		RoleAssignmentRequirement[] requirements = role.requirements;
-		foreach (RoleAssignmentRequirement roleAssignmentRequirement in requirements)
-		{
-			if (!roleAssignmentRequirement.isSatisfied(resume))
+			if (resume.CurrentRole == roleID && resume.TargetRole == roleID)
 			{
 				return false;
 			}
+			if (GetRoleAssignees(roleID).Count < SlotsByRoleID[roleID])
+			{
+				if (!DebugHandler.InstantBuildMode)
+				{
+					RoleAssignmentRequirement[] requirements = role.requirements;
+					foreach (RoleAssignmentRequirement roleAssignmentRequirement in requirements)
+					{
+						if (!roleAssignmentRequirement.isSatisfied(resume))
+						{
+							return false;
+						}
+					}
+					return true;
+				}
+				return true;
+			}
+			return false;
 		}
-		return true;
+		return false;
 	}
 
 	public static void RemoveHat(KBatchedAnimController controller)

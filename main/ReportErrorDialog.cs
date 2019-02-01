@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 public class ReportErrorDialog : MonoBehaviour
 {
-	public static string MOST_RECENT_SAVEFILE;
+	public static string MOST_RECENT_SAVEFILE = null;
 
 	private System.Action confirmAction;
 
@@ -52,7 +52,7 @@ public class ReportErrorDialog : MonoBehaviour
 	[SerializeField]
 	private LocText saveFileInfoLabel;
 
-	public static bool hasCrash;
+	public static bool hasCrash = false;
 
 	private void Start()
 	{

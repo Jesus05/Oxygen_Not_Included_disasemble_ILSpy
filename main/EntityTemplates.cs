@@ -340,7 +340,7 @@ public class EntityTemplates
 		{
 			template.AddOrGet<EntombVulnerable>();
 		}
-		if (onDeathDropCount > 0 && onDeathDropID != string.Empty)
+		if (onDeathDropCount > 0 && onDeathDropID != "")
 		{
 			string[] array = new string[onDeathDropCount];
 			for (int i = 0; i < array.Length; i++)
@@ -624,27 +624,27 @@ public class EntityTemplates
 
 	public static GameObject CreateAndRegisterCompostableFromPrefab(GameObject original)
 	{
-		if ((Object)original.GetComponent<Compostable>() != (Object)null)
+		if (!((Object)original.GetComponent<Compostable>() != (Object)null))
 		{
-			return null;
+			Compostable compostable = original.AddComponent<Compostable>();
+			compostable.isMarkedForCompost = false;
+			KPrefabID component = original.GetComponent<KPrefabID>();
+			GameObject gameObject = Object.Instantiate(original);
+			Object.DontDestroyOnLoad(gameObject);
+			string tag_string = "Compost" + component.PrefabTag.Name;
+			string text = MISC.TAGS.COMPOST_FORMAT.Replace("{Item}", component.PrefabTag.ProperName());
+			gameObject.GetComponent<KPrefabID>().PrefabTag = TagManager.Create(tag_string, text);
+			gameObject.name = text;
+			gameObject.GetComponent<Compostable>().isMarkedForCompost = true;
+			gameObject.GetComponent<KSelectable>().SetName(text);
+			gameObject.GetComponent<Compostable>().originalPrefab = original;
+			gameObject.GetComponent<Compostable>().compostPrefab = gameObject;
+			original.GetComponent<Compostable>().originalPrefab = original;
+			original.GetComponent<Compostable>().compostPrefab = gameObject;
+			Assets.AddPrefab(gameObject.GetComponent<KPrefabID>());
+			return gameObject;
 		}
-		Compostable compostable = original.AddComponent<Compostable>();
-		compostable.isMarkedForCompost = false;
-		KPrefabID component = original.GetComponent<KPrefabID>();
-		GameObject gameObject = Object.Instantiate(original);
-		Object.DontDestroyOnLoad(gameObject);
-		string tag_string = "Compost" + component.PrefabTag.Name;
-		string text = MISC.TAGS.COMPOST_FORMAT.Replace("{Item}", component.PrefabTag.ProperName());
-		gameObject.GetComponent<KPrefabID>().PrefabTag = TagManager.Create(tag_string, text);
-		gameObject.name = text;
-		gameObject.GetComponent<Compostable>().isMarkedForCompost = true;
-		gameObject.GetComponent<KSelectable>().SetName(text);
-		gameObject.GetComponent<Compostable>().originalPrefab = original;
-		gameObject.GetComponent<Compostable>().compostPrefab = gameObject;
-		original.GetComponent<Compostable>().originalPrefab = original;
-		original.GetComponent<Compostable>().compostPrefab = gameObject;
-		Assets.AddPrefab(gameObject.GetComponent<KPrefabID>());
-		return gameObject;
+		return null;
 	}
 
 	public static GameObject CreateAndRegisterSeedForPlant(GameObject plant, SeedProducer.ProductionType productionType, string id, string name, string desc, KAnimFile anim, string initialAnim = "object", int numberOfSeeds = 1, List<Tag> additionalTags = null, SingleEntityReceptacle.ReceptacleDirection planterDirection = SingleEntityReceptacle.ReceptacleDirection.Top, Tag replantGroundTag = default(Tag), int sortOrder = 0, string domesticatedDescription = "", CollisionShape collisionShape = CollisionShape.CIRCLE, float width = 0.25f, float height = 0.25f, Recipe.Ingredient[] recipe_ingredients = null, string recipe_description = "", bool ignoreDefaultSeedTag = false)

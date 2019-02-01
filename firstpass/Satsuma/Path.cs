@@ -165,17 +165,17 @@ namespace Satsuma
 
 		public IEnumerable<Arc> Arcs(ArcFilter filter = ArcFilter.All)
 		{
-			if (filter == ArcFilter.All)
+			if (filter != 0)
 			{
-				return arcs;
-			}
-			if (edgeCount == 0)
-			{
+				if (edgeCount != 0)
+				{
+					return from arc in arcs
+					where IsEdge(arc)
+					select arc;
+				}
 				return Enumerable.Empty<Arc>();
 			}
-			return from arc in arcs
-			where IsEdge(arc)
-			select arc;
+			return arcs;
 		}
 
 		public IEnumerable<Arc> Arcs(Node u, ArcFilter filter = ArcFilter.All)

@@ -38,15 +38,15 @@ namespace ClipperLib
 
 		public static bool operator ==(Int128 val1, Int128 val2)
 		{
-			if ((object)val1 == (object)val2)
+			if ((object)val1 != (object)val2)
 			{
-				return true;
-			}
-			if ((object)val1 == null || (object)val2 == null)
-			{
+				if ((object)val1 != null && (object)val2 != null)
+				{
+					return val1.hi == val2.hi && val1.lo == val2.lo;
+				}
 				return false;
 			}
-			return val1.hi == val2.hi && val1.lo == val2.lo;
+			return true;
 		}
 
 		public static bool operator !=(Int128 val1, Int128 val2)
@@ -56,12 +56,12 @@ namespace ClipperLib
 
 		public override bool Equals(object obj)
 		{
-			if (obj == null || !(obj is Int128))
+			if (obj != null && obj is Int128)
 			{
-				return false;
+				Int128 @int = (Int128)obj;
+				return @int.hi == hi && @int.lo == lo;
 			}
-			Int128 @int = (Int128)obj;
-			return @int.hi == hi && @int.lo == lo;
+			return false;
 		}
 
 		public override int GetHashCode()
@@ -71,20 +71,20 @@ namespace ClipperLib
 
 		public static bool operator >(Int128 val1, Int128 val2)
 		{
-			if (val1.hi != val2.hi)
+			if (val1.hi == val2.hi)
 			{
-				return val1.hi > val2.hi;
+				return val1.lo > val2.lo;
 			}
-			return val1.lo > val2.lo;
+			return val1.hi > val2.hi;
 		}
 
 		public static bool operator <(Int128 val1, Int128 val2)
 		{
-			if (val1.hi != val2.hi)
+			if (val1.hi == val2.hi)
 			{
-				return val1.hi < val2.hi;
+				return val1.lo < val2.lo;
 			}
-			return val1.lo < val2.lo;
+			return val1.hi < val2.hi;
 		}
 
 		public static Int128 operator +(Int128 lhs, Int128 rhs)
@@ -105,24 +105,24 @@ namespace ClipperLib
 
 		public static Int128 operator -(Int128 val)
 		{
-			if (val.lo == 0)
+			if (val.lo != 0)
 			{
-				return new Int128(-val.hi, 0uL);
+				return new Int128(~val.hi, ~val.lo + 1);
 			}
-			return new Int128(~val.hi, ~val.lo + 1);
+			return new Int128(-val.hi, 0uL);
 		}
 
 		public static explicit operator double(Int128 val)
 		{
-			if (val.hi < 0)
+			if (val.hi >= 0)
 			{
-				if (val.lo == 0)
-				{
-					return (double)val.hi * 1.8446744073709552E+19;
-				}
+				return (double)val.lo + (double)val.hi * 1.8446744073709552E+19;
+			}
+			if (val.lo != 0)
+			{
 				return 0.0 - ((double)(~val.lo) + (double)(~val.hi) * 1.8446744073709552E+19);
 			}
-			return (double)val.lo + (double)val.hi * 1.8446744073709552E+19;
+			return (double)val.hi * 1.8446744073709552E+19;
 		}
 
 		public static Int128 Int128Mul(long lhs, long rhs)

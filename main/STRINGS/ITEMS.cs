@@ -26,14 +26,14 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Antifungal Cream";
 
-				public static LocString DESC = string.Empty;
+				public static LocString DESC = "";
 			}
 
 			public class MUSCARINICANTAGONIST
 			{
 				public static LocString NAME = "Anti Inflammatory Pills";
 
-				public static LocString DESC = string.Empty;
+				public static LocString DESC = "";
 			}
 
 			public class PUTRIDODOURMEDICINE
@@ -375,6 +375,13 @@ namespace STRINGS
 
 				public static LocString DESC = "Replenishes one charge to a depleted Neural Vacillator.";
 			}
+		}
+
+		public class CARGO_CAPSULE
+		{
+			public static LocString NAME = "Cargo Capsule";
+
+			public static LocString DESC = "Temporary container";
 		}
 	}
 }

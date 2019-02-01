@@ -33,7 +33,7 @@ public class FilteredStorage
 
 	private bool hasMeter = true;
 
-	private bool useLogicMeter;
+	private bool useLogicMeter = false;
 
 	private static StatusItem capacityStatusItem;
 
@@ -58,7 +58,7 @@ public class FilteredStorage
 		storage.Subscribe(644822890, OnOnlyFetchMarkedItemsSettingChanged);
 		if (capacityStatusItem == null)
 		{
-			capacityStatusItem = new StatusItem("StorageLocker", "BUILDING", string.Empty, StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, true, 63486);
+			capacityStatusItem = new StatusItem("StorageLocker", "BUILDING", "", StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, true, 63486);
 			capacityStatusItem.resolveStringCallback = delegate(string str, object data)
 			{
 				FilteredStorage filteredStorage = (FilteredStorage)data;
@@ -214,7 +214,7 @@ public class FilteredStorage
 		component.TintColour = ((!flag) ? noFilterTint : filterTint);
 		if (fetchList != null)
 		{
-			fetchList.Cancel(string.Empty);
+			fetchList.Cancel("");
 			fetchList = null;
 		}
 		float maxCapacityMinusStorageMargin = GetMaxCapacityMinusStorageMargin();

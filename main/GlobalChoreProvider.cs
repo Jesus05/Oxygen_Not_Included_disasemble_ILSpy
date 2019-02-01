@@ -17,32 +17,32 @@ public class GlobalChoreProvider : ChoreProvider
 
 		public bool IsBetterThan(Fetch fetch)
 		{
-			if (category != fetch.category)
+			if (category == fetch.category)
 			{
-				return false;
-			}
-			if (tagBitsHash != fetch.tagBitsHash)
-			{
-				return false;
-			}
-			if (!chore.tagBits.AreEqual(ref fetch.chore.tagBits))
-			{
-				return false;
-			}
-			if (priority.priority_class > fetch.priority.priority_class)
-			{
-				return true;
-			}
-			if (priority.priority_class == fetch.priority.priority_class)
-			{
-				if (priority.priority_value > fetch.priority.priority_value)
+				if (tagBitsHash == fetch.tagBitsHash)
 				{
-					return true;
+					if (chore.tagBits.AreEqual(ref fetch.chore.tagBits))
+					{
+						if (priority.priority_class <= fetch.priority.priority_class)
+						{
+							if (priority.priority_class == fetch.priority.priority_class)
+							{
+								if (priority.priority_value > fetch.priority.priority_value)
+								{
+									return true;
+								}
+								if (priority.priority_value == fetch.priority.priority_value)
+								{
+									return cost <= fetch.cost;
+								}
+							}
+							return false;
+						}
+						return true;
+					}
+					return false;
 				}
-				if (priority.priority_value == fetch.priority.priority_value)
-				{
-					return cost <= fetch.cost;
-				}
+				return false;
 			}
 			return false;
 		}
@@ -53,16 +53,16 @@ public class GlobalChoreProvider : ChoreProvider
 		public int Compare(Fetch a, Fetch b)
 		{
 			int num = b.priority.priority_class - a.priority.priority_class;
-			if (num != 0)
+			if (num == 0)
 			{
-				return num;
-			}
-			int num2 = b.priority.priority_value - a.priority.priority_value;
-			if (num2 != 0)
-			{
+				int num2 = b.priority.priority_value - a.priority.priority_value;
+				if (num2 == 0)
+				{
+					return a.cost - b.cost;
+				}
 				return num2;
 			}
-			return a.cost - b.cost;
+			return num;
 		}
 	}
 
@@ -85,22 +85,26 @@ public class GlobalChoreProvider : ChoreProvider
 
 	public override Chore AddChore(Chore chore)
 	{
+		chore = base.AddChore(chore);
 		FetchChore fetchChore = chore as FetchChore;
 		if (fetchChore != null)
 		{
 			fetchChores.Add(fetchChore);
 		}
-		return base.AddChore(chore);
+		RefreshEmergencyChoreStatus();
+		return chore;
 	}
 
 	public override Chore RemoveChore(Chore chore)
 	{
+		chore = base.RemoveChore(chore);
 		FetchChore fetchChore = chore as FetchChore;
 		if (fetchChore != null)
 		{
 			fetchChores.Remove(fetchChore);
 		}
-		return base.RemoveChore(chore);
+		RefreshEmergencyChoreStatus();
+		return chore;
 	}
 
 	public void UpdateFetches(PathProber path_prober)
@@ -172,5 +176,19 @@ public class GlobalChoreProvider : ChoreProvider
 	{
 		base.OnLoadLevel();
 		Instance = null;
+	}
+
+	public void RefreshEmergencyChoreStatus()
+	{
+		bool on = false;
+		foreach (Chore chore in chores)
+		{
+			if (chore.masterPriority.priority_class == PriorityScreen.PriorityClass.emergency)
+			{
+				on = true;
+				break;
+			}
+		}
+		RedAlertManager.Instance.Get().HasEmergencyChore(on);
 	}
 }

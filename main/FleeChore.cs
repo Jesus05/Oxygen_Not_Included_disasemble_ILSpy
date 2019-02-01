@@ -89,7 +89,7 @@ public class FleeChore : Chore<FleeChore.StatesInstance>
 	private Navigator nav;
 
 	public FleeChore(IStateMachineTarget target, GameObject enemy)
-		: base(Db.Get().ChoreTypes.Flee, target, target.GetComponent<ChoreProvider>(), false, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.emergency, 5, false, true, 0, (Tag[])null)
+		: base(Db.Get().ChoreTypes.Flee, target, target.GetComponent<ChoreProvider>(), false, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.compulsory, 5, false, true, 0, (Tag[])null, false)
 	{
 		smi = new StatesInstance(this);
 		smi.sm.self.Set(gameObject, smi);

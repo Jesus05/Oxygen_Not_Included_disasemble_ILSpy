@@ -125,7 +125,7 @@ public class BeIncapacitatedChore : Chore<BeIncapacitatedChore.StatesInstance>
 	private static string IncapacitatedDuplicantAnim_place = "place";
 
 	public BeIncapacitatedChore(IStateMachineTarget master)
-		: base(Db.Get().ChoreTypes.BeIncapacitated, master, master.GetComponent<ChoreProvider>(), true, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.emergency, 5, false, true, 0, (Tag[])null)
+		: base(Db.Get().ChoreTypes.BeIncapacitated, master, master.GetComponent<ChoreProvider>(), true, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.compulsory, 5, false, true, 0, (Tag[])null, false)
 	{
 		smi = new StatesInstance(this);
 	}

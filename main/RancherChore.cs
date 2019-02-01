@@ -77,16 +77,16 @@ public class RancherChore : Chore<RancherChore.RancherChoreStates.Instance>
 		private static Transition.ConditionCallback _003C_003Ef__mg_0024cache2;
 
 		[CompilerGenerated]
-		private static Func<Instance, HashedString> _003C_003Ef__mg_0024cache3;
+		private static StateMachine<RancherChoreStates, Instance, IStateMachineTarget, object>.State.Callback _003C_003Ef__mg_0024cache3;
 
 		[CompilerGenerated]
-		private static StateMachine<RancherChoreStates, Instance, IStateMachineTarget, object>.State.Callback _003C_003Ef__mg_0024cache4;
+		private static Transition.ConditionCallback _003C_003Ef__mg_0024cache4;
 
 		[CompilerGenerated]
-		private static Transition.ConditionCallback _003C_003Ef__mg_0024cache5;
+		private static Func<Instance, HashedString> _003C_003Ef__mg_0024cache5;
 
 		[CompilerGenerated]
-		private static Func<Instance, HashedString> _003C_003Ef__mg_0024cache6;
+		private static StateMachine<RancherChoreStates, Instance, IStateMachineTarget, object>.State.Callback _003C_003Ef__mg_0024cache6;
 
 		[CompilerGenerated]
 		private static StateMachine<RancherChoreStates, Instance, IStateMachineTarget, object>.State.Callback _003C_003Ef__mg_0024cache7;
@@ -109,9 +109,6 @@ public class RancherChore : Chore<RancherChore.RancherChoreStates.Instance>
 		[CompilerGenerated]
 		private static StateMachine<RancherChoreStates, Instance, IStateMachineTarget, object>.State.Callback _003C_003Ef__mg_0024cacheD;
 
-		[CompilerGenerated]
-		private static StateMachine<RancherChoreStates, Instance, IStateMachineTarget, object>.State.Callback _003C_003Ef__mg_0024cacheE;
-
 		public override void InitializeStates(out BaseState default_state)
 		{
 			default_state = movetoranch;
@@ -122,7 +119,7 @@ public class RancherChore : Chore<RancherChore.RancherChoreStates.Instance>
 			});
 			movetoranch.MoveTo((Instance smi) => Grid.PosToCell(smi.transform.GetPosition()), waitforcreature_pre, null, false).Transition(checkformoreranchables, HasCreatureLeft, UpdateRate.SIM_1000ms);
 			waitforcreature_pre.EnterTransition(null, (Instance smi) => smi.ranchStation.IsNullOrStopped()).Transition(checkformoreranchables, HasCreatureLeft, UpdateRate.SIM_1000ms).EnterTransition(waitforcreature, (Instance smi) => true);
-			waitforcreature.Transition(checkformoreranchables, HasCreatureLeft, UpdateRate.SIM_1000ms).ToggleAnims(GetRancherInteractAnim).PlayAnim("calling_loop", KAnim.PlayMode.Loop)
+			waitforcreature.Transition(checkformoreranchables, HasCreatureLeft, UpdateRate.SIM_1000ms).ToggleAnims("anim_interacts_rancherstation_kanim", 0f).PlayAnim("calling_loop", KAnim.PlayMode.Loop)
 				.Enter(FaceCreature)
 				.Enter("TellCreatureToGoGetRanched", delegate(Instance smi)
 				{
@@ -249,7 +246,7 @@ public class RancherChore : Chore<RancherChore.RancherChoreStates.Instance>
 	};
 
 	public RancherChore(KPrefabID rancher_station)
-		: base(Db.Get().ChoreTypes.Ranch, (IStateMachineTarget)rancher_station, (ChoreProvider)null, false, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.basic, 5, false, true, 0, (Tag[])null)
+		: base(Db.Get().ChoreTypes.Ranch, (IStateMachineTarget)rancher_station, (ChoreProvider)null, false, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.basic, 5, false, true, 0, (Tag[])null, false)
 	{
 		AddPrecondition(IsCreatureAvailableForRanching, rancher_station.GetSMI<RanchStation.Instance>());
 		AddPrecondition(ChorePreconditions.instance.HasRolePerk, RoleManager.rolePerks.CanUseRanchStation.id);

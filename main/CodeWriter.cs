@@ -190,7 +190,7 @@ public class CodeWriter
 
 	private void InternalNamedParameter(string name, string value, bool last_parameter)
 	{
-		string str = string.Empty;
+		string str = "";
 		if (!last_parameter)
 		{
 			str = ",";

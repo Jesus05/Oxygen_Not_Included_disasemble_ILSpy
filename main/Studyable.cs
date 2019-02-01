@@ -14,10 +14,10 @@ public class Studyable : Workable, ISidescreenButtonControl
 	private const float STUDY_WORK_TIME = 3600f;
 
 	[Serialize]
-	private bool studied;
+	private bool studied = false;
 
 	[Serialize]
-	private bool markedForStudy;
+	private bool markedForStudy = false;
 
 	private Guid statusItemGuid;
 
@@ -33,15 +33,15 @@ public class Studyable : Workable, ISidescreenButtonControl
 	{
 		get
 		{
-			if (studied)
+			if (!studied)
 			{
-				return UI.UISIDESCREENS.STUDYABLE_SIDE_SCREEN.STUDIED_STATUS;
-			}
-			if (markedForStudy)
-			{
+				if (!markedForStudy)
+				{
+					return UI.UISIDESCREENS.STUDYABLE_SIDE_SCREEN.SEND_STATUS;
+				}
 				return UI.UISIDESCREENS.STUDYABLE_SIDE_SCREEN.PENDING_STATUS;
 			}
-			return UI.UISIDESCREENS.STUDYABLE_SIDE_SCREEN.SEND_STATUS;
+			return UI.UISIDESCREENS.STUDYABLE_SIDE_SCREEN.STUDIED_STATUS;
 		}
 	}
 
@@ -49,15 +49,15 @@ public class Studyable : Workable, ISidescreenButtonControl
 	{
 		get
 		{
-			if (studied)
+			if (!studied)
 			{
-				return UI.UISIDESCREENS.STUDYABLE_SIDE_SCREEN.STUDIED_BUTTON;
-			}
-			if (markedForStudy)
-			{
+				if (!markedForStudy)
+				{
+					return UI.UISIDESCREENS.STUDYABLE_SIDE_SCREEN.SEND_BUTTON;
+				}
 				return UI.UISIDESCREENS.STUDYABLE_SIDE_SCREEN.PENDING_BUTTON;
 			}
-			return UI.UISIDESCREENS.STUDYABLE_SIDE_SCREEN.SEND_BUTTON;
+			return UI.UISIDESCREENS.STUDYABLE_SIDE_SCREEN.STUDIED_BUTTON;
 		}
 	}
 
@@ -113,7 +113,7 @@ public class Studyable : Workable, ISidescreenButtonControl
 				{
 					if (chore == null)
 					{
-						chore = new WorkChore<Studyable>(Db.Get().ChoreTypes.Research, this, null, null, true, null, null, null, true, null, false, false, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, false);
+						chore = new WorkChore<Studyable>(Db.Get().ChoreTypes.Research, this, null, null, true, null, null, null, true, null, false, false, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, false, true);
 					}
 					statusItemGuid = component.ReplaceStatusItem(statusItemGuid, Db.Get().MiscStatusItems.AwaitingStudy, null);
 				}

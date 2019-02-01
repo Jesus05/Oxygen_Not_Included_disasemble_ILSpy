@@ -850,7 +850,7 @@ public static class Sim
 
 	public unsafe static IntPtr HandleMessage(SimMessageHashes sim_msg_id, int msg_length, byte[] msg)
 	{
-		//IL_0017: Incompatible stack types: I vs Ref
+		//IL_0018: Incompatible stack types: I vs Ref
 		fixed (byte* msg2 = &((msg != null && msg.Length != 0) ? ref msg[0] : ref *(byte*)null))
 		{
 			return SIM_HandleMessage((int)sim_msg_id, msg_length, msg2);
@@ -870,7 +870,7 @@ public static class Sim
 
 	public unsafe static int Load(FastReader reader)
 	{
-		//IL_0026: Incompatible stack types: I vs Ref
+		//IL_0027: Incompatible stack types: I vs Ref
 		int num = reader.ReadInt32();
 		byte[] array = reader.ReadBytes(num);
 		IntPtr intPtr;
@@ -878,25 +878,25 @@ public static class Sim
 		{
 			intPtr = SIM_HandleMessage(-672538170, num, msg);
 		}
-		if (intPtr == IntPtr.Zero)
+		if (!(intPtr == IntPtr.Zero))
 		{
-			return -1;
+			GameDataUpdate* ptr = (GameDataUpdate*)(void*)intPtr;
+			Grid.elementIdx = ptr->elementIdx;
+			Grid.temperature = ptr->temperature;
+			Grid.mass = ptr->mass;
+			Grid.properties = ptr->properties;
+			Grid.strengthInfo = ptr->strengthInfo;
+			Grid.insulation = ptr->insulation;
+			Grid.diseaseIdx = ptr->diseaseIdx;
+			Grid.diseaseCount = ptr->diseaseCount;
+			Grid.AccumulatedFlowValues = ptr->accumulatedFlow;
+			PropertyTextures.externalFlowTex = ptr->propertyTextureFlow;
+			PropertyTextures.externalLiquidTex = ptr->propertyTextureLiquid;
+			PropertyTextures.externalExposedToSunlight = ptr->propertyTextureExposedToSunlight;
+			Grid.InitializeCells();
+			return 0;
 		}
-		GameDataUpdate* ptr = (GameDataUpdate*)(void*)intPtr;
-		Grid.elementIdx = ptr->elementIdx;
-		Grid.temperature = ptr->temperature;
-		Grid.mass = ptr->mass;
-		Grid.properties = ptr->properties;
-		Grid.strengthInfo = ptr->strengthInfo;
-		Grid.insulation = ptr->insulation;
-		Grid.diseaseIdx = ptr->diseaseIdx;
-		Grid.diseaseCount = ptr->diseaseCount;
-		Grid.AccumulatedFlowValues = ptr->accumulatedFlow;
-		PropertyTextures.externalFlowTex = ptr->propertyTextureFlow;
-		PropertyTextures.externalLiquidTex = ptr->propertyTextureLiquid;
-		PropertyTextures.externalExposedToSunlight = ptr->propertyTextureExposedToSunlight;
-		Grid.InitializeCells();
-		return 0;
+		return -1;
 	}
 
 	public unsafe static void Shutdown()

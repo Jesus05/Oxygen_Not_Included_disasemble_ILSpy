@@ -97,8 +97,6 @@ public class EatChore : Chore<EatChore.StatesInstance>
 
 		public TargetParameter locator;
 
-		public State interruptedbyschedule;
-
 		public FetchSubState fetch;
 
 		public EatOnFloorState eatonfloorstate;
@@ -137,7 +135,6 @@ public class EatChore : Chore<EatChore.StatesInstance>
 			});
 			eatonfloorstate.moveto.InitializeStates(eater, locator, eatonfloorstate.eat, eatonfloorstate.eat, null, null);
 			eatonfloorstate.eat.ToggleAnims("anim_eat_floor_kanim", 0f).DoEat(ediblechunk, actualfoodunits, null, null);
-			interruptedbyschedule.GoTo(null);
 		}
 	}
 
@@ -152,7 +149,7 @@ public class EatChore : Chore<EatChore.StatesInstance>
 	};
 
 	public EatChore(IStateMachineTarget master)
-		: base(Db.Get().ChoreTypes.Eat, master, master.GetComponent<ChoreProvider>(), false, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.emergency, 5, false, true, 0, (Tag[])null)
+		: base(Db.Get().ChoreTypes.Eat, master, master.GetComponent<ChoreProvider>(), false, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.personalNeeds, 5, false, true, 0, (Tag[])null, false)
 	{
 		smi = new StatesInstance(this);
 		showAvailabilityInHoverText = false;

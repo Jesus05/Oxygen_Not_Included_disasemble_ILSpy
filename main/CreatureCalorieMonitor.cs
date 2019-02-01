@@ -300,10 +300,13 @@ public class CreatureCalorieMonitor : GameStateMachine<CreatureCalorieMonitor, C
 	public FloatParameter starvationStartTime;
 
 	[CompilerGenerated]
-	private static Action<Instance, float> _003C_003Ef__mg_0024cache0;
+	private static Transition.ConditionCallback _003C_003Ef__mg_0024cache0;
 
 	[CompilerGenerated]
-	private static StateMachine<CreatureCalorieMonitor, Instance, IStateMachineTarget, Def>.State.Callback _003C_003Ef__mg_0024cache1;
+	private static Action<Instance, float> _003C_003Ef__mg_0024cache1;
+
+	[CompilerGenerated]
+	private static StateMachine<CreatureCalorieMonitor, Instance, IStateMachineTarget, Def>.State.Callback _003C_003Ef__mg_0024cache2;
 
 	public override void InitializeStates(out BaseState default_state)
 	{
@@ -312,21 +315,21 @@ public class CreatureCalorieMonitor : GameStateMachine<CreatureCalorieMonitor, C
 		root.EventHandler(GameHashes.CaloriesConsumed, delegate(Instance smi, object data)
 		{
 			smi.OnCaloriesConsumed(data);
-		}).ToggleBehaviour(GameTags.Creatures.Poop, (Instance smi) => smi.stomach.IsReadyToPoop() && Time.time - smi.lastMealOrPoopTime > smi.def.minimumTimeBeforePooping, delegate(Instance smi)
+		}).ToggleBehaviour(GameTags.Creatures.Poop, ReadyToPoop, delegate(Instance smi)
 		{
 			smi.Poop();
 		}).Update(UpdateMetabolismCalorieModifier, UpdateRate.SIM_200ms, false);
 		normal.Transition(hungry, (Instance smi) => smi.IsHungry(), UpdateRate.SIM_1000ms);
 		hungry.DefaultState(hungry.hungry).ToggleTag(GameTags.Creatures.Hungry).EventTransition(GameHashes.CaloriesConsumed, normal, (Instance smi) => !smi.IsHungry());
-		hungry.hungry.Transition(normal, (Instance smi) => !smi.IsHungry(), UpdateRate.SIM_1000ms).Transition(hungry.outofcalories, (Instance smi) => smi.IsOutOfCalories(), UpdateRate.SIM_1000ms).ToggleStatusItem(CREATURES.STATUSITEMS.HUNGRY.NAME, CREATURES.STATUSITEMS.HUNGRY.TOOLTIP, string.Empty, StatusItem.IconType.Info, (NotificationType)0, false, default(HashedString), 0, null, null, null);
+		hungry.hungry.Transition(normal, (Instance smi) => !smi.IsHungry(), UpdateRate.SIM_1000ms).Transition(hungry.outofcalories, (Instance smi) => smi.IsOutOfCalories(), UpdateRate.SIM_1000ms).ToggleStatusItem(CREATURES.STATUSITEMS.HUNGRY.NAME, CREATURES.STATUSITEMS.HUNGRY.TOOLTIP, "", StatusItem.IconType.Info, (NotificationType)0, false, default(HashedString), 0, null, null, null);
 		hungry.outofcalories.DefaultState(hungry.outofcalories.wild).Transition(hungry.hungry, (Instance smi) => !smi.IsOutOfCalories(), UpdateRate.SIM_1000ms);
-		hungry.outofcalories.wild.TagTransition(GameTags.Creatures.Wild, hungry.outofcalories.tame, true).ToggleStatusItem(CREATURES.STATUSITEMS.HUNGRY.NAME, CREATURES.STATUSITEMS.HUNGRY.TOOLTIP, string.Empty, StatusItem.IconType.Info, (NotificationType)0, false, default(HashedString), 0, null, null, null);
+		hungry.outofcalories.wild.TagTransition(GameTags.Creatures.Wild, hungry.outofcalories.tame, true).ToggleStatusItem(CREATURES.STATUSITEMS.HUNGRY.NAME, CREATURES.STATUSITEMS.HUNGRY.TOOLTIP, "", StatusItem.IconType.Info, (NotificationType)0, false, default(HashedString), 0, null, null, null);
 		hungry.outofcalories.tame.Enter("StarvationStartTime", StarvationStartTime).Exit("ClearStarvationTime", delegate(Instance smi)
 		{
 			starvationStartTime.Set(0f, smi);
 		}).Transition(hungry.outofcalories.starvedtodeath, (Instance smi) => smi.GetDeathTimeRemaining() <= 0f, UpdateRate.SIM_1000ms)
 			.TagTransition(GameTags.Creatures.Wild, hungry.outofcalories.wild, false)
-			.ToggleStatusItem(CREATURES.STATUSITEMS.STARVING.NAME, CREATURES.STATUSITEMS.STARVING.TOOLTIP, string.Empty, StatusItem.IconType.Info, NotificationType.BadMinor, false, default(HashedString), 0, (string str, Instance smi) => str.Replace("{TimeUntilDeath}", GameUtil.GetFormattedCycles(smi.GetDeathTimeRemaining(), "F1")), null, null)
+			.ToggleStatusItem(CREATURES.STATUSITEMS.STARVING.NAME, CREATURES.STATUSITEMS.STARVING.TOOLTIP, "", StatusItem.IconType.Info, NotificationType.BadMinor, false, default(HashedString), 0, (string str, Instance smi) => str.Replace("{TimeUntilDeath}", GameUtil.GetFormattedCycles(smi.GetDeathTimeRemaining(), "F1")), null, null)
 			.ToggleNotification((Instance smi) => new Notification(CREATURES.STATUSITEMS.STARVING.NOTIFICATION_NAME, NotificationType.BadMinor, HashedString.Invalid, (List<Notification> notifications, object data) => CREATURES.STATUSITEMS.STARVING.NOTIFICATION_TOOLTIP + notifications.ReduceMessages(false), null, true, 0f, null, null))
 			.ToggleEffect((Instance smi) => outOfCaloriesTame);
 		hungry.outofcalories.starvedtodeath.Enter(delegate(Instance smi)
@@ -335,6 +338,19 @@ public class CreatureCalorieMonitor : GameStateMachine<CreatureCalorieMonitor, C
 		});
 		outOfCaloriesTame = new Effect("OutOfCaloriesTame", CREATURES.MODIFIERS.OUT_OF_CALORIES.NAME, CREATURES.MODIFIERS.OUT_OF_CALORIES.TOOLTIP, 0f, false, false, false, null, 0f, null);
 		outOfCaloriesTame.Add(new AttributeModifier(Db.Get().CritterAttributes.Happiness.Id, -10f, CREATURES.MODIFIERS.OUT_OF_CALORIES.NAME, false, false, true));
+	}
+
+	private static bool ReadyToPoop(Instance smi)
+	{
+		if (smi.stomach.IsReadyToPoop())
+		{
+			if (!(Time.time - smi.lastMealOrPoopTime < smi.def.minimumTimeBeforePooping))
+			{
+				return true;
+			}
+			return false;
+		}
+		return false;
 	}
 
 	private static void UpdateMetabolismCalorieModifier(Instance smi, float dt)

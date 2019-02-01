@@ -25,12 +25,12 @@ public class WhiteBoard : KGameObjectComponentManager<WhiteBoard.Data>, IKCompon
 
 	public bool HasValue(HandleVector<int>.Handle h, HashedString key)
 	{
-		if (!h.IsValid())
+		if (h.IsValid())
 		{
-			return false;
+			Data data = GetData(h);
+			return data.keyValueStore.ContainsKey(key);
 		}
-		Data data = GetData(h);
-		return data.keyValueStore.ContainsKey(key);
+		return false;
 	}
 
 	public object GetValue(HandleVector<int>.Handle h, HashedString key)

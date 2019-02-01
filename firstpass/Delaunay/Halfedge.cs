@@ -30,11 +30,11 @@ namespace Delaunay
 
 		public static Halfedge Create(Edge edge, Side? lr)
 		{
-			if (_pool.Count > 0)
+			if (_pool.Count <= 0)
 			{
-				return _pool.Pop().Init(edge, lr);
+				return new Halfedge(edge, lr);
 			}
-			return new Halfedge(edge, lr);
+			return _pool.Pop().Init(edge, lr);
 		}
 
 		public static Halfedge CreateDummy()

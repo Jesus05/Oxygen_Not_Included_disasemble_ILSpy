@@ -63,15 +63,11 @@ internal class GraphicsOptionsScreen : KModalScreen
 
 	private Settings originalSettings;
 
-	private bool resDropdownAlwaysActive;
+	private const bool RES_DROPDOWN_ALWAYS_ACTIVE = true;
 
 	protected override void OnSpawn()
 	{
 		base.OnSpawn();
-		if (Application.platform == RuntimePlatform.LinuxPlayer || Application.platform == RuntimePlatform.LinuxEditor)
-		{
-			resDropdownAlwaysActive = true;
-		}
 		title.SetText(UI.FRONTEND.GRAPHICS_OPTIONS_SCREEN.TITLE);
 		originalSettings = CaptureSettings();
 		applyButton.isInteractable = false;
@@ -90,7 +86,7 @@ internal class GraphicsOptionsScreen : KModalScreen
 		fullscreenToggle.isOn = Screen.fullScreen;
 		fullscreenToggle.onValueChanged.AddListener(OnFullscreenToggle);
 		fullscreenToggle.GetComponentInChildren<LocText>().SetText(UI.FRONTEND.GRAPHICS_OPTIONS_SCREEN.FULLSCREEN);
-		resolutionDropdown.interactable = (resDropdownAlwaysActive || fullscreenToggle.isOn);
+		resolutionDropdown.interactable = true;
 		resolutionDropdown.transform.parent.GetComponentInChildren<LocText>().SetText(UI.FRONTEND.GRAPHICS_OPTIONS_SCREEN.RESOLUTION);
 		if (fullscreenToggle.isOn)
 		{
@@ -112,9 +108,9 @@ internal class GraphicsOptionsScreen : KModalScreen
 		int num3 = Screen.currentResolution.refreshRate;
 		bool flag = Screen.fullScreen;
 		Output.Log($"Starting up with a resolution of {num}x{num2} @{num3}hz (fullscreen: {flag})");
-		if ((Application.platform == RuntimePlatform.OSXPlayer || Application.platform == RuntimePlatform.OSXEditor) && KPlayerPrefs.HasKey(ResolutionWidthKey) && KPlayerPrefs.HasKey(ResolutionHeightKey))
+		if (KPlayerPrefs.HasKey(ResolutionWidthKey) && KPlayerPrefs.HasKey(ResolutionHeightKey))
 		{
-			Output.Log("Found OSX player prefs resolution, overriding with that");
+			Output.Log("Found player prefs resolution, overriding with that");
 			num = KPlayerPrefs.GetInt(ResolutionWidthKey);
 			num2 = KPlayerPrefs.GetInt(ResolutionHeightKey);
 			num3 = KPlayerPrefs.GetInt(RefreshRateKey, Screen.currentResolution.refreshRate);
@@ -178,15 +174,23 @@ internal class GraphicsOptionsScreen : KModalScreen
 		Screen.SetResolution(num, num2, flag, num3);
 	}
 
-	private void SaveResolutionToPrefs(Settings settings)
+	public static void OnResize()
 	{
-		if (Application.platform == RuntimePlatform.OSXPlayer || Application.platform == RuntimePlatform.OSXEditor)
-		{
-			KPlayerPrefs.SetInt(ResolutionWidthKey, settings.resolution.width);
-			KPlayerPrefs.SetInt(ResolutionHeightKey, settings.resolution.height);
-			KPlayerPrefs.SetInt(RefreshRateKey, settings.resolution.refreshRate);
-			KPlayerPrefs.SetInt(FullScreenKey, settings.fullscreen ? 1 : 0);
-		}
+		Settings settings = default(Settings);
+		settings.resolution = Screen.currentResolution;
+		settings.resolution.width = Screen.width;
+		settings.resolution.height = Screen.height;
+		settings.fullscreen = Screen.fullScreen;
+		SaveResolutionToPrefs(settings);
+	}
+
+	private static void SaveResolutionToPrefs(Settings settings)
+	{
+		Output.Log($"Screen resolution updated, saving values to prefs: {settings.resolution.width}x{settings.resolution.height} @ {settings.resolution.refreshRate}, fullscreen: {settings.fullscreen}");
+		KPlayerPrefs.SetInt(ResolutionWidthKey, settings.resolution.width);
+		KPlayerPrefs.SetInt(ResolutionHeightKey, settings.resolution.height);
+		KPlayerPrefs.SetInt(RefreshRateKey, settings.resolution.refreshRate);
+		KPlayerPrefs.SetInt(FullScreenKey, settings.fullscreen ? 1 : 0);
 	}
 
 	private void UpdateUIScale(float value)
@@ -322,20 +326,16 @@ internal class GraphicsOptionsScreen : KModalScreen
 		{
 			applyButton.isInteractable = true;
 		}
-		else if (resDropdownAlwaysActive || fullscreenToggle.isOn)
+		else
 		{
 			int resolutionIndex = GetResolutionIndex(settings.resolution);
 			applyButton.isInteractable = (resolutionDropdown.value != resolutionIndex);
-		}
-		else
-		{
-			applyButton.isInteractable = false;
 		}
 	}
 
 	private void OnFullscreenToggle(bool enabled)
 	{
-		resolutionDropdown.interactable = (resDropdownAlwaysActive || fullscreenToggle.isOn);
+		resolutionDropdown.interactable = true;
 		RefreshApplyButton();
 	}
 

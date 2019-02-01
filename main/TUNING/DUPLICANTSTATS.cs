@@ -395,6 +395,8 @@ namespace TUNING
 
 		public const float RECOVER_BREATH_DELTA = 3f;
 
+		public const float TRAVEL_TIME_WARNING_THRESHOLD = 0.4f;
+
 		public static readonly string[] DISTRIBUTED_ATTRIBUTES = new string[10]
 		{
 			"Strength",

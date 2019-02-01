@@ -108,6 +108,10 @@ public class StarmapScreen : KModalScreen
 
 	public Sprite destinationDetailsResourcesIcon;
 
+	private BreakdownList destinationDetailsArtifacts;
+
+	public Sprite destinationDetailsArtifactsIcon;
+
 	public RectTransform destinationDetailsContainer;
 
 	public MultiToggle showRocketsButton;
@@ -161,7 +165,7 @@ public class StarmapScreen : KModalScreen
 
 	private int selectionUpdateHandle = -1;
 
-	private SpaceDestination selectedDestination;
+	private SpaceDestination selectedDestination = null;
 
 	private KSelectable currentSelectable;
 
@@ -169,13 +173,13 @@ public class StarmapScreen : KModalScreen
 
 	private LaunchConditionManager currentLaunchConditionManager;
 
-	private bool currentRocketHasGasContainer;
+	private bool currentRocketHasGasContainer = false;
 
-	private bool currentRocketHasLiquidContainer;
+	private bool currentRocketHasLiquidContainer = false;
 
-	private bool currentRocketHasSolidContainer;
+	private bool currentRocketHasSolidContainer = false;
 
-	private bool currentRocketHasEntitiesContainer;
+	private bool currentRocketHasEntitiesContainer = false;
 
 	private bool forceScrollDown = true;
 
@@ -247,6 +251,10 @@ public class StarmapScreen : KModalScreen
 		destinationDetailsResources.SetTitle(UI.STARMAP.LISTTITLES.RESOURCES);
 		destinationDetailsResources.SetIcon(destinationDetailsResourcesIcon);
 		destinationDetailsResources.gameObject.name = "destinationDetailsResources";
+		destinationDetailsArtifacts = UnityEngine.Object.Instantiate(breakdownListPrefab, destinationDetailsContainer);
+		destinationDetailsArtifacts.SetTitle(UI.STARMAP.LISTTITLES.ARTIFACTS);
+		destinationDetailsArtifacts.SetIcon(destinationDetailsArtifactsIcon);
+		destinationDetailsArtifacts.gameObject.name = "destinationDetailsArtifacts";
 		LoadPlanets();
 		selectionUpdateHandle = Game.Instance.Subscribe(-1503271301, OnSelectableChanged);
 		titleBarLabel.text = UI.STARMAP.TITLE;
@@ -729,7 +737,7 @@ public class StarmapScreen : KModalScreen
 			}
 			if (item.state == Spacecraft.MissionState.Grounded)
 			{
-				string text = string.Empty;
+				string text = "";
 				List<GameObject> attachedNetwork = AttachableBuilding.GetAttachedNetwork(launchConditionManager.GetComponent<AttachableBuilding>());
 				foreach (GameObject item2 in attachedNetwork)
 				{
@@ -781,7 +789,7 @@ public class StarmapScreen : KModalScreen
 			BreakdownListRow breakdownListRow = rocketDetailsChecklist.AddRow();
 			string launchStatusMessage = launchCondition.GetLaunchStatusMessage(true);
 			bool flag = launchCondition.EvaluateLaunchCondition();
-			breakdownListRow.ShowCheckmarkData(launchStatusMessage, string.Empty, flag);
+			breakdownListRow.ShowCheckmarkData(launchStatusMessage, "", flag);
 			if (!flag)
 			{
 				breakdownListRow.SetHighlighted(true);
@@ -1168,7 +1176,7 @@ public class StarmapScreen : KModalScreen
 				BreakdownListRow breakdownListRow4 = destinationDetailsResources.AddRow();
 				GameObject prefab = Assets.GetPrefab(recoverableEntity.Key);
 				Tuple<Sprite, Color> uISprite2 = Def.GetUISprite(prefab, "ui", false);
-				breakdownListRow4.ShowIconData(prefab.GetProperName(), string.Empty, uISprite2.first, uISprite2.second);
+				breakdownListRow4.ShowIconData(prefab.GetProperName(), "", uISprite2.first, uISprite2.second);
 				string properName4 = Assets.GetPrefab("SpecialCargoBay".ToTag()).GetProperName();
 				if (currentRocketHasEntitiesContainer)
 				{
@@ -1180,6 +1188,16 @@ public class StarmapScreen : KModalScreen
 					breakdownListRow4.SetDisabled(true);
 					breakdownListRow4.AddTooltip(string.Format(UI.STARMAP.CANT_CARRY_ELEMENT, properName4, prefab.GetProperName()));
 				}
+			}
+		}
+		destinationDetailsArtifacts.ClearRows();
+		if (SpacecraftManager.instance.GetDestinationAnalysisState(selectedDestination) == SpacecraftManager.DestinationAnalysisState.Complete)
+		{
+			ArtifactDropRate artifactDropTable = selectedDestination.GetDestinationType().artifactDropTable;
+			foreach (Tuple<ArtifactTier, float> rate in artifactDropTable.rates)
+			{
+				BreakdownListRow breakdownListRow5 = destinationDetailsArtifacts.AddRow();
+				breakdownListRow5.ShowData(rate.first.name, GameUtil.GetFormattedPercent(rate.second / artifactDropTable.totalWeight * 100f, GameUtil.TimeSlice.None));
 			}
 		}
 		destinationDetailsContainer.gameObject.SetActive(true);

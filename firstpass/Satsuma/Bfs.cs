@@ -41,28 +41,28 @@ namespace Satsuma
 		public bool Step(Func<Node, bool> isTarget, out Node reachedTargetNode)
 		{
 			reachedTargetNode = Node.Invalid;
-			if (queue.Count == 0)
+			if (queue.Count != 0)
 			{
-				return false;
-			}
-			Node node = queue.Dequeue();
-			int value = level[node] + 1;
-			foreach (Arc item in Graph.Arcs(node, ArcFilter.Forward))
-			{
-				Node node2 = Graph.Other(item, node);
-				if (!parentArc.ContainsKey(node2))
+				Node node = queue.Dequeue();
+				int value = level[node] + 1;
+				foreach (Arc item in Graph.Arcs(node, ArcFilter.Forward))
 				{
-					queue.Enqueue(node2);
-					level[node2] = value;
-					parentArc[node2] = item;
-					if (isTarget != null && isTarget(node2))
+					Node node2 = Graph.Other(item, node);
+					if (!parentArc.ContainsKey(node2))
 					{
-						reachedTargetNode = node2;
-						return false;
+						queue.Enqueue(node2);
+						level[node2] = value;
+						parentArc[node2] = item;
+						if (isTarget != null && isTarget(node2))
+						{
+							reachedTargetNode = node2;
+							return false;
+						}
 					}
 				}
+				return true;
 			}
-			return true;
+			return false;
 		}
 
 		public void Run()
@@ -75,26 +75,26 @@ namespace Satsuma
 
 		public Node RunUntilReached(Node target)
 		{
-			if (Reached(target))
+			if (!Reached(target))
 			{
-				return target;
+				Node reachedTargetNode;
+				while (Step((Node node) => node == target, out reachedTargetNode))
+				{
+				}
+				return reachedTargetNode;
 			}
-			Node reachedTargetNode;
-			while (Step((Node node) => node == target, out reachedTargetNode))
-			{
-			}
-			return reachedTargetNode;
+			return target;
 		}
 
 		public Node RunUntilReached(Func<Node, bool> isTarget)
 		{
 			Node reachedTargetNode = ReachedNodes.FirstOrDefault(isTarget);
-			if (reachedTargetNode != Node.Invalid)
+			if (!(reachedTargetNode != Node.Invalid))
 			{
+				while (Step(isTarget, out reachedTargetNode))
+				{
+				}
 				return reachedTargetNode;
-			}
-			while (Step(isTarget, out reachedTargetNode))
-			{
 			}
 			return reachedTargetNode;
 		}
@@ -118,23 +118,23 @@ namespace Satsuma
 
 		public IPath GetPath(Node node)
 		{
-			if (!Reached(node))
+			if (Reached(node))
 			{
-				return null;
-			}
-			Path path = new Path(Graph);
-			path.Begin(node);
-			while (true)
-			{
-				Arc arc = GetParentArc(node);
-				if (arc == Arc.Invalid)
+				Path path = new Path(Graph);
+				path.Begin(node);
+				while (true)
 				{
-					break;
+					Arc arc = GetParentArc(node);
+					if (arc == Arc.Invalid)
+					{
+						break;
+					}
+					path.AddFirst(arc);
+					node = Graph.Other(arc, node);
 				}
-				path.AddFirst(arc);
-				node = Graph.Other(arc, node);
+				return path;
 			}
-			return path;
+			return null;
 		}
 	}
 }

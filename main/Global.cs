@@ -28,9 +28,9 @@ public class Global : MonoBehaviour
 
 	public ZipFileSystem worldGenZipFS;
 
-	private bool gotKleiUserID;
+	private bool gotKleiUserID = false;
 
-	private Thread mainThread;
+	public Thread mainThread;
 
 	public static readonly string LanguagePackKey = "LanguagePack";
 
@@ -145,7 +145,6 @@ public class Global : MonoBehaviour
 		list.Add(new BindingEntry("Debug", GamepadButton.NumButtons, KKeyCode.F3, Modifier.Alt, Action.DebugCollectGarbage, true, false));
 		list.Add(new BindingEntry("Debug", GamepadButton.NumButtons, KKeyCode.F7, Modifier.Alt, Action.DebugInvincible, true, false));
 		list.Add(new BindingEntry("Debug", GamepadButton.NumButtons, KKeyCode.F10, Modifier.Alt, Action.DebugForceLightEverywhere, true, false));
-		list.Add(new BindingEntry("Debug", GamepadButton.NumButtons, KKeyCode.F6, Modifier.Shift, Action.DebugVisualTest, true, false));
 		list.Add(new BindingEntry("Debug", GamepadButton.NumButtons, KKeyCode.F10, Modifier.Shift, Action.DebugElementTest, true, false));
 		list.Add(new BindingEntry("Debug", GamepadButton.NumButtons, KKeyCode.F11, Modifier.Shift, Action.DebugRiverTest, true, false));
 		list.Add(new BindingEntry("Debug", GamepadButton.NumButtons, KKeyCode.F12, Modifier.Shift, Action.DebugTileTest, true, false));
@@ -299,6 +298,7 @@ public class Global : MonoBehaviour
 		Singleton<KBatchedAnimUpdater>.CreateInstance();
 		DistributionPlatform.Initialize();
 		Localization.Initialize(false);
+		mainThread = Thread.CurrentThread;
 		KProfiler.main_thread = Thread.CurrentThread;
 		RestoreLegacyMetricsSetting();
 		if (DistributionPlatform.Initialized)
@@ -335,11 +335,11 @@ public class Global : MonoBehaviour
 
 	public AnimEventManager GetAnimEventManager()
 	{
-		if (App.IsExiting)
+		if (!App.IsExiting)
 		{
-			return null;
+			return mAnimEventManager;
 		}
-		return mAnimEventManager;
+		return null;
 	}
 
 	private void OnApplicationFocus(bool focus)
@@ -378,8 +378,8 @@ public class Global : MonoBehaviour
 
 	private void SetONIStaticSessionVariables()
 	{
-		ThreadedHttps<KleiMetrics>.Instance.SetStaticSessionVariable("Branch", "release");
-		ThreadedHttps<KleiMetrics>.Instance.SetStaticSessionVariable("Build", 303707u);
+		ThreadedHttps<KleiMetrics>.Instance.SetStaticSessionVariable("Branch", "preview");
+		ThreadedHttps<KleiMetrics>.Instance.SetStaticSessionVariable("Build", 306320u);
 		if (KPlayerPrefs.HasKey(UnitConfigurationScreen.MassUnitKey))
 		{
 			ThreadedHttps<KleiMetrics>.Instance.SetStaticSessionVariable(UnitConfigurationScreen.MassUnitKey, KPlayerPrefs.GetInt(UnitConfigurationScreen.MassUnitKey).ToString());
@@ -434,6 +434,16 @@ public class Global : MonoBehaviour
 	{
 		KGlobalAnimParser.DestroyInstance();
 		ThreadedHttps<KleiMetrics>.Instance.EndSession(false);
+	}
+
+	private void OutputCommandLine()
+	{
+		string[] commandLineArgs = Environment.GetCommandLineArgs();
+		Console.WriteLine($"Command Line[{commandLineArgs.Length}]");
+		for (int i = 0; i < commandLineArgs.Length; i++)
+		{
+			Console.WriteLine($"    {i}={commandLineArgs[i]}");
+		}
 	}
 
 	private void OutputSystemInfo()

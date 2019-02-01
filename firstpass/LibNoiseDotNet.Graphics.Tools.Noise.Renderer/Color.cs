@@ -6,11 +6,11 @@ namespace LibNoiseDotNet.Graphics.Tools.Noise.Renderer
 	{
 		public delegate byte GrayscaleStrategy(IColor color);
 
-		protected byte _red;
+		protected byte _red = 0;
 
-		protected byte _green;
+		protected byte _green = 0;
 
-		protected byte _blue;
+		protected byte _blue = 0;
 
 		protected byte _alpha = byte.MaxValue;
 
@@ -176,11 +176,11 @@ namespace LibNoiseDotNet.Graphics.Tools.Noise.Renderer
 
 		public override bool Equals(object other)
 		{
-			if (other is IColor)
+			if (!(other is IColor))
 			{
-				return _red == ((IColor)other).Red && _green == ((IColor)other).Green && _blue == ((IColor)other).Blue && _alpha == ((IColor)other).Alpha;
+				return false;
 			}
-			return false;
+			return _red == ((IColor)other).Red && _green == ((IColor)other).Green && _blue == ((IColor)other).Blue && _alpha == ((IColor)other).Alpha;
 		}
 
 		public override int GetHashCode()

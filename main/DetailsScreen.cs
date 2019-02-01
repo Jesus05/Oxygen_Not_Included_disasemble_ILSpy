@@ -93,11 +93,11 @@ public class DetailsScreen : KTabMenu
 	[SerializeField]
 	private LocText sideScreen2Title;
 
-	private KScreen activeSideScreen2;
+	private KScreen activeSideScreen2 = null;
 
 	private bool HasActivated;
 
-	private bool isEditing;
+	private bool isEditing = false;
 
 	private SideScreenContent currentSideScreen;
 
@@ -119,11 +119,11 @@ public class DetailsScreen : KTabMenu
 
 	public override float GetSortKey()
 	{
-		if (isEditing)
+		if (!isEditing)
 		{
-			return 10f;
+			return base.GetSortKey();
 		}
-		return base.GetSortKey();
+		return 10f;
 	}
 
 	protected override void OnPrefabInit()
@@ -226,27 +226,27 @@ public class DetailsScreen : KTabMenu
 
 	private static bool IsExcludedPrefabTag(GameObject go, Tag[] excluded_tags)
 	{
-		if (excluded_tags == null || excluded_tags.Length == 0)
+		if (excluded_tags != null && excluded_tags.Length != 0)
 		{
-			return false;
-		}
-		bool result = false;
-		KPrefabID component = go.GetComponent<KPrefabID>();
-		foreach (Tag b in excluded_tags)
-		{
-			if (component.PrefabTag == b)
+			bool result = false;
+			KPrefabID component = go.GetComponent<KPrefabID>();
+			foreach (Tag b in excluded_tags)
 			{
-				result = true;
-				break;
+				if (component.PrefabTag == b)
+				{
+					result = true;
+					break;
+				}
 			}
+			return result;
 		}
-		return result;
+		return false;
 	}
 
 	private void UpdateCodexButton()
 	{
 		string selectedObjectCodexID = GetSelectedObjectCodexID();
-		CodexEntryButton.isInteractable = (selectedObjectCodexID != string.Empty);
+		CodexEntryButton.isInteractable = (selectedObjectCodexID != "");
 		CodexEntryButton.GetComponent<ToolTip>().SetSimpleTooltip((!CodexEntryButton.isInteractable) ? UI.TOOLTIPS.NO_CODEX_ENTRY : UI.TOOLTIPS.OPEN_CODEX_ENTRY);
 	}
 
@@ -292,7 +292,7 @@ public class DetailsScreen : KTabMenu
 			for (int j = 0; j < screens.Length; j++)
 			{
 				string requiredComponentType = screens[j].requiredComponentType;
-				bool flag = requiredComponentType == null || requiredComponentType == string.Empty || (UnityEngine.Object)GetComponent(go, requiredComponentType) != (UnityEngine.Object)null;
+				bool flag = requiredComponentType == null || requiredComponentType == "" || (UnityEngine.Object)GetComponent(go, requiredComponentType) != (UnityEngine.Object)null;
 				if (flag && requiredComponentType == "Storage")
 				{
 					flag = go.GetComponent<Storage>().showInUI;
@@ -438,44 +438,44 @@ public class DetailsScreen : KTabMenu
 
 	private string GetSelectedObjectCodexID()
 	{
-		string empty = string.Empty;
+		string text = "";
 		CellSelectionObject component = SelectTool.Instance.selected.GetComponent<CellSelectionObject>();
 		BuildingUnderConstruction component2 = SelectTool.Instance.selected.GetComponent<BuildingUnderConstruction>();
 		CreatureBrain component3 = SelectTool.Instance.selected.GetComponent<CreatureBrain>();
 		PlantableSeed component4 = SelectTool.Instance.selected.GetComponent<PlantableSeed>();
 		if ((UnityEngine.Object)component != (UnityEngine.Object)null)
 		{
-			empty = CodexCache.FormatLinkID(component.element.id.ToString());
+			text = CodexCache.FormatLinkID(component.element.id.ToString());
 		}
 		else if ((UnityEngine.Object)component2 != (UnityEngine.Object)null)
 		{
-			empty = CodexCache.FormatLinkID(component2.Def.PrefabID);
+			text = CodexCache.FormatLinkID(component2.Def.PrefabID);
 		}
 		else if ((UnityEngine.Object)component3 != (UnityEngine.Object)null)
 		{
-			empty = CodexCache.FormatLinkID(SelectTool.Instance.selected.PrefabID().ToString());
-			empty = empty.Replace("BABY", string.Empty);
+			text = CodexCache.FormatLinkID(SelectTool.Instance.selected.PrefabID().ToString());
+			text = text.Replace("BABY", "");
 		}
 		else if ((UnityEngine.Object)component4 != (UnityEngine.Object)null)
 		{
-			empty = CodexCache.FormatLinkID(SelectTool.Instance.selected.PrefabID().ToString());
-			empty = empty.Replace("SEED", string.Empty);
+			text = CodexCache.FormatLinkID(SelectTool.Instance.selected.PrefabID().ToString());
+			text = text.Replace("SEED", "");
 		}
 		else
 		{
-			empty = CodexCache.FormatLinkID(SelectTool.Instance.selected.PrefabID().ToString());
+			text = CodexCache.FormatLinkID(SelectTool.Instance.selected.PrefabID().ToString());
 		}
-		if (CodexCache.entries.ContainsKey(empty) || CodexCache.FindSubEntry(empty) != null)
+		if (!CodexCache.entries.ContainsKey(text) && CodexCache.FindSubEntry(text) == null)
 		{
-			return empty;
+			return "";
 		}
-		return string.Empty;
+		return text;
 	}
 
 	public void OpenCodexEntry()
 	{
 		string selectedObjectCodexID = GetSelectedObjectCodexID();
-		if (selectedObjectCodexID != string.Empty)
+		if (selectedObjectCodexID != "")
 		{
 			ManagementMenu.Instance.OpenCodexToEntry(selectedObjectCodexID);
 		}
@@ -574,7 +574,7 @@ public class DetailsScreen : KTabMenu
 			}
 			else
 			{
-				TabTitle.SetSubText(string.Empty, string.Empty);
+				TabTitle.SetSubText("", "");
 				TabTitle.SetUserEditable(false);
 			}
 		}

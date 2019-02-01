@@ -155,12 +155,12 @@ public class Repairable : Workable
 			{
 				GameTagExtensions.Create(component.ElementID)
 			};
-			return new FetchChore(Db.Get().ChoreTypes.Fetch, smi.master.storageProxy, amount, tags, null, null, null, true, null, null, null, FetchOrder2.OperationalRequirement.None, 0, null);
+			return new FetchChore(Db.Get().ChoreTypes.RepairFetch, smi.master.storageProxy, amount, tags, null, null, null, true, null, null, null, FetchOrder2.OperationalRequirement.None, 0, null);
 		}
 
 		private Chore CreateRepairChore(SMInstance smi)
 		{
-			WorkChore<Repairable> workChore = new WorkChore<Repairable>(Db.Get().ChoreTypes.Repair, smi.master, null, null, true, null, null, null, true, null, false, false, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, true);
+			WorkChore<Repairable> workChore = new WorkChore<Repairable>(Db.Get().ChoreTypes.Repair, smi.master, null, null, true, null, null, null, true, null, false, false, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, true, true);
 			Deconstructable component = smi.master.GetComponent<Deconstructable>();
 			if ((UnityEngine.Object)component != (UnityEngine.Object)null)
 			{
@@ -188,7 +188,7 @@ public class Repairable : Workable
 	[Serialize]
 	private byte[] storedData;
 
-	private float timeSpentRepairing;
+	private float timeSpentRepairing = 0f;
 
 	private static readonly Operational.Flag repairedFlag = new Operational.Flag("repaired", Operational.Flag.Type.Functional);
 
@@ -208,6 +208,8 @@ public class Repairable : Workable
 		faceTargetWhenWorking = true;
 		multitoolContext = "build";
 		multitoolHitEffectTag = EffectConfigs.BuildSplashId;
+		workingPstComplete = HashedString.Invalid;
+		workingPstFailed = HashedString.Invalid;
 	}
 
 	protected override void OnSpawn()

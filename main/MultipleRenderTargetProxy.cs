@@ -5,7 +5,7 @@ public class MultipleRenderTargetProxy : MonoBehaviour
 {
 	public RenderTexture[] Textures = new RenderTexture[3];
 
-	private bool colouredOverlayBufferEnabled;
+	private bool colouredOverlayBufferEnabled = false;
 
 	private void Start()
 	{

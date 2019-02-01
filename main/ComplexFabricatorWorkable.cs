@@ -112,17 +112,17 @@ public class ComplexFabricatorWorkable : Workable
 	public override float GetWorkTime()
 	{
 		ComplexFabricator.MachineOrder currentMachineOrder = fabricator.CurrentMachineOrder;
-		if (currentMachineOrder != null)
+		if (currentMachineOrder == null)
 		{
-			workTime = currentMachineOrder.parentOrder.recipe.time;
-			return workTime;
+			return -1f;
 		}
-		return -1f;
+		workTime = currentMachineOrder.parentOrder.recipe.time;
+		return workTime;
 	}
 
 	public void CreateOrder(ComplexFabricator.MachineOrder buildable_order, ChoreType choreType, Tag[] choreTags)
 	{
-		buildable_order.chore = new WorkChore<ComplexFabricatorWorkable>(choreType, this, null, choreTags, true, null, null, null, true, null, false, true, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, false);
+		buildable_order.chore = new WorkChore<ComplexFabricatorWorkable>(choreType, this, null, choreTags, true, null, null, null, true, null, false, true, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, false, true);
 		if (workTimeRemaining <= 0f)
 		{
 			workTimeRemaining = GetWorkTime();

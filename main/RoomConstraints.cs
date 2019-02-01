@@ -91,11 +91,11 @@ public static class RoomConstraints
 					}
 				}
 			}
-			if (num < times_required)
+			if (num >= times_required)
 			{
-				return false;
+				return true;
 			}
-			return true;
+			return false;
 		}
 	}
 
@@ -207,36 +207,36 @@ public static class RoomConstraints
 
 	public static string RoomCriteriaString(Room room)
 	{
-		string empty = string.Empty;
+		string str = "";
 		RoomType roomType = room.roomType;
 		if (roomType != Db.Get().RoomTypes.Neutral)
 		{
-			empty = empty + "<b>" + ROOMS.CRITERIA.HEADER + "</b>";
-			empty = empty + "\n    • " + roomType.primary_constraint.name;
+			str = str + "<b>" + ROOMS.CRITERIA.HEADER + "</b>";
+			str = str + "\n    • " + roomType.primary_constraint.name;
 			if (roomType.additional_constraints != null)
 			{
 				Constraint[] additional_constraints = roomType.additional_constraints;
 				foreach (Constraint constraint in additional_constraints)
 				{
-					empty = ((!constraint.isSatisfied(room)) ? (empty + "\n<color=#F44A47FF>    • " + constraint.name + "</color>") : (empty + "\n    • " + constraint.name));
+					str = ((!constraint.isSatisfied(room)) ? (str + "\n<color=#F44A47FF>    • " + constraint.name + "</color>") : (str + "\n    • " + constraint.name));
 				}
 			}
 		}
 		else
 		{
 			RoomType[] possibleRoomTypes = Db.Get().RoomTypes.GetPossibleRoomTypes(room);
-			empty += ((possibleRoomTypes.Length <= 1) ? string.Empty : ("<b>" + ROOMS.CRITERIA.POSSIBLE_TYPES_HEADER + "</b>"));
+			str += ((possibleRoomTypes.Length <= 1) ? "" : ("<b>" + ROOMS.CRITERIA.POSSIBLE_TYPES_HEADER + "</b>"));
 			RoomType[] array = possibleRoomTypes;
 			foreach (RoomType roomType2 in array)
 			{
 				if (roomType2 != Db.Get().RoomTypes.Neutral)
 				{
-					if (empty != string.Empty)
+					if (str != "")
 					{
-						empty += "\n";
+						str += "\n";
 					}
-					string text = empty;
-					empty = text + "<b><color=#BCBCBC>    • " + roomType2.Name + "</b> (" + roomType2.primary_constraint.name + ")</color>";
+					string text = str;
+					str = text + "<b><color=#BCBCBC>    • " + roomType2.Name + "</b> (" + roomType2.primary_constraint.name + ")</color>";
 					bool flag = false;
 					if (roomType2.additional_constraints != null)
 					{
@@ -246,7 +246,7 @@ public static class RoomConstraints
 							if (!constraint2.isSatisfied(room))
 							{
 								flag = true;
-								empty = ((constraint2.building_criteria == null) ? (empty + "\n<color=#F44A47FF>        • " + string.Format(ROOMS.CRITERIA.CRITERIA_FAILED.FAILED, constraint2.name) + "</color>") : (empty + "\n<color=#F44A47FF>        • " + string.Format(ROOMS.CRITERIA.CRITERIA_FAILED.MISSING_BUILDING, constraint2.name) + "</color>"));
+								str = ((constraint2.building_criteria == null) ? (str + "\n<color=#F44A47FF>        • " + string.Format(ROOMS.CRITERIA.CRITERIA_FAILED.FAILED, constraint2.name) + "</color>") : (str + "\n<color=#F44A47FF>        • " + string.Format(ROOMS.CRITERIA.CRITERIA_FAILED.MISSING_BUILDING, constraint2.name) + "</color>"));
 							}
 						}
 					}
@@ -263,12 +263,12 @@ public static class RoomConstraints
 						}
 						if (flag2)
 						{
-							empty = empty + "\n<color=#F44A47FF>        • " + ROOMS.CRITERIA.NO_TYPE_CONFLICTS + "</color>";
+							str = str + "\n<color=#F44A47FF>        • " + ROOMS.CRITERIA.NO_TYPE_CONFLICTS + "</color>";
 						}
 					}
 				}
 			}
 		}
-		return empty;
+		return str;
 	}
 }

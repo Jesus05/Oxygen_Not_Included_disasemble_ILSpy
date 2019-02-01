@@ -6,10 +6,10 @@ using UnityEngine;
 public class SubworldZoneRenderData : KMonoBehaviour
 {
 	[SerializeField]
-	private Texture2D colourTex;
+	private Texture2D colourTex = null;
 
 	[SerializeField]
-	private Texture2D indexTex;
+	private Texture2D indexTex = null;
 
 	[HideInInspector]
 	public SubWorld.ZoneType[] worldZoneTypes;
@@ -127,7 +127,7 @@ public class SubworldZoneRenderData : KMonoBehaviour
 
 	private unsafe void InitSimZones(byte[] bytes)
 	{
-		//IL_0017: Incompatible stack types: I vs Ref
+		//IL_0018: Incompatible stack types: I vs Ref
 		fixed (byte* msg = &((bytes != null && bytes.Length != 0) ? ref bytes[0] : ref *(byte*)null))
 		{
 			Sim.SIM_HandleMessage(-457308393, bytes.Length, msg);

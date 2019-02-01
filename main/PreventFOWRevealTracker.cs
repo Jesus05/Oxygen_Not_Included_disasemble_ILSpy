@@ -12,7 +12,7 @@ public class PreventFOWRevealTracker : KMonoBehaviour
 	private void OnSerialize()
 	{
 		preventFOWRevealCells.Clear();
-		for (int i = 0; i < Grid.PreventFogOfWarReveal.Length; i++)
+		for (int i = 0; i < Grid.VisMasks.Length; i++)
 		{
 			if (Grid.PreventFogOfWarReveal[i])
 			{

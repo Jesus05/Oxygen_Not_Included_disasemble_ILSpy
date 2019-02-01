@@ -6,13 +6,13 @@ using UnityEngine;
 public class SolidConduitDispenser : KMonoBehaviour, ISaveLoadable
 {
 	[SerializeField]
-	public SimHashes[] elementFilter;
+	public SimHashes[] elementFilter = null;
 
 	[SerializeField]
-	public bool invertElementFilter;
+	public bool invertElementFilter = false;
 
 	[SerializeField]
-	public bool alwaysDispense;
+	public bool alwaysDispense = false;
 
 	private static readonly Operational.Flag outputConduitFlag = new Operational.Flag("output_conduit", Operational.Flag.Type.Functional);
 

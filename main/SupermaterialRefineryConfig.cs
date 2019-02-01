@@ -47,7 +47,7 @@ public class SupermaterialRefineryConfig : IBuildingConfig
 		BuildingTemplates.CreateComplexFabricatorStorage(go, complexFabricator);
 		complexFabricatorWorkable.overrideAnims = new KAnimFile[1]
 		{
-			Assets.GetAnim("anim_interacts_rockrefinery_kanim")
+			Assets.GetAnim("anim_interacts_supermaterial_refinery_kanim")
 		};
 		Prioritizable.AddRef(go);
 		float num = 0.01f;

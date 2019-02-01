@@ -92,7 +92,7 @@ public class MingleChore : Chore<MingleChore.StatesInstance>, IWorkerPrioritizab
 	};
 
 	public MingleChore(IStateMachineTarget target)
-		: base(Db.Get().ChoreTypes.Relax, target, target.GetComponent<ChoreProvider>(), false, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.high, 5, false, true, 0, (Tag[])null)
+		: base(Db.Get().ChoreTypes.Relax, target, target.GetComponent<ChoreProvider>(), false, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.high, 5, false, true, 0, (Tag[])null, false)
 	{
 		showAvailabilityInHoverText = false;
 		smi = new StatesInstance(this, target.gameObject);

@@ -23,9 +23,9 @@ public class RootMenu : KScreen
 
 	private List<KScreen> subMenus = new List<KScreen>();
 
-	private TileScreen tileScreenInst;
+	private TileScreen tileScreenInst = null;
 
-	public GameObject selectedGO;
+	public GameObject selectedGO = null;
 
 	public static RootMenu Instance
 	{

@@ -11,13 +11,13 @@ namespace ProcGen
 	{
 		private delegate bool ParserFn<T>(string input, out T res);
 
-		private World world;
+		private World world = null;
 
 		private Dictionary<string, FeatureSettings> featuresettings = new Dictionary<string, FeatureSettings>();
 
 		private static Dictionary<string, BiomeSettings> biomeSettingsCache = new Dictionary<string, BiomeSettings>();
 
-		private string base_path;
+		private string base_path = null;
 
 		private static string LAYERS_FILE = "layers";
 
@@ -111,12 +111,12 @@ namespace ProcGen
 
 		public string GetDefaultBiome(string name)
 		{
-			if (features.TerrainFeatures.ContainsKey(name))
+			if (!features.TerrainFeatures.ContainsKey(name))
 			{
-				return features.TerrainFeatures[name].defaultBiome.type;
+				Debug.LogError("Couldn't get default biome [" + name + "]", null);
+				return null;
 			}
-			Debug.LogError("Couldn't get default biome [" + name + "]", null);
-			return null;
+			return features.TerrainFeatures[name].defaultBiome.type;
 		}
 
 		public FeatureSettings GetFeature(string name)
@@ -126,15 +126,15 @@ namespace ProcGen
 				int num = 0;
 				num++;
 			}
-			if (!name.StartsWith("features/"))
+			if (name.StartsWith("features/"))
 			{
-				return null;
-			}
-			if (featuresettings.ContainsKey(name))
-			{
+				if (!featuresettings.ContainsKey(name))
+				{
+					throw new Exception("Couldnt get feature [" + name + "]");
+				}
 				return featuresettings[name];
 			}
-			throw new Exception("Couldnt get feature [" + name + "]");
+			return null;
 		}
 
 		public string[] GetFeatureSettingsNames()
@@ -180,23 +180,23 @@ namespace ProcGen
 
 		private bool GetSetting<T>(DefaultSettings set, string target, ParserFn<T> parser, out T res)
 		{
-			if (set == null || set.data == null || !set.data.ContainsKey(target))
+			if (set != null && set.data != null && set.data.ContainsKey(target))
 			{
-				res = default(T);
-				return false;
-			}
-			object obj = set.data[target];
-			if (obj.GetType() == typeof(T))
-			{
+				object obj = set.data[target];
+				if (obj.GetType() != typeof(T))
+				{
+					bool flag = parser(obj as string, out res);
+					if (flag)
+					{
+						set.data[target] = res;
+					}
+					return flag;
+				}
 				res = (T)obj;
 				return true;
 			}
-			bool flag = parser(obj as string, out res);
-			if (flag)
-			{
-				set.data[target] = res;
-			}
-			return flag;
+			res = default(T);
+			return false;
 		}
 
 		private T GetSetting<T>(string target, ParserFn<T> parser)
@@ -282,28 +282,28 @@ namespace ProcGen
 
 		private bool GetPathAndName(string srcPath, string srcName, out string name)
 		{
-			if (File.Exists(srcPath + srcName + ".yaml"))
+			if (!File.Exists(srcPath + srcName + ".yaml"))
 			{
-				name = srcName;
-				return true;
-			}
-			string[] array = srcName.Split('/');
-			name = array[0];
-			for (int i = 1; i < array.Length - 1; i++)
-			{
-				name = name + "/" + array[i];
-			}
-			if (File.Exists(srcPath + name + ".yaml"))
-			{
+				string[] array = srcName.Split('/');
+				name = array[0];
+				for (int i = 1; i < array.Length - 1; i++)
+				{
+					name = name + "/" + array[i];
+				}
+				if (!File.Exists(srcPath + name + ".yaml"))
+				{
+					name = srcName;
+					return false;
+				}
 				return true;
 			}
 			name = srcName;
-			return false;
+			return true;
 		}
 
 		private void LoadBiome(string longName)
 		{
-			string name = string.Empty;
+			string name = "";
 			if (GetPathAndName(base_path, longName, out name) && !biomeSettingsCache.ContainsKey(name))
 			{
 				BiomeSettings biomeSettings = YamlIO<BiomeSettings>.LoadFile(base_path + name + ".yaml", null);
@@ -334,25 +334,25 @@ namespace ProcGen
 
 		private string LoadFeature(string longName)
 		{
-			string name = string.Empty;
-			if (!GetPathAndName(base_path, longName, out name))
+			string name = "";
+			if (GetPathAndName(base_path, longName, out name))
 			{
-				Debug.LogWarning("LoadFeature GetPathAndName: Attempting to load feature: " + name + " failed", null);
-				return longName;
-			}
-			if (!featuresettings.ContainsKey(name))
-			{
-				FeatureSettings featureSettings = YamlIO<FeatureSettings>.LoadFile(base_path + name + ".yaml", null);
-				if (featureSettings != null)
+				if (!featuresettings.ContainsKey(name))
 				{
-					featuresettings.Add(name, featureSettings);
+					FeatureSettings featureSettings = YamlIO<FeatureSettings>.LoadFile(base_path + name + ".yaml", null);
+					if (featureSettings != null)
+					{
+						featuresettings.Add(name, featureSettings);
+					}
+					else
+					{
+						Debug.LogWarning("WorldGen: Attempting to load feature: " + name + " failed", null);
+					}
 				}
-				else
-				{
-					Debug.LogWarning("WorldGen: Attempting to load feature: " + name + " failed", null);
-				}
+				return name;
 			}
-			return name;
+			Debug.LogWarning("LoadFeature GetPathAndName: Attempting to load feature: " + name + " failed", null);
+			return longName;
 		}
 
 		public void SetDefaultWorld(string path)

@@ -12,7 +12,7 @@ public class KSelectable : KMonoBehaviour
 
 	public string entityGender;
 
-	private bool selected;
+	private bool selected = false;
 
 	[SerializeField]
 	private bool selectable = true;
@@ -45,10 +45,10 @@ public class KSelectable : KMonoBehaviour
 		KPrefabID component = GetComponent<KPrefabID>();
 		if (!((UnityEngine.Object)component != (UnityEngine.Object)null))
 		{
-			goto IL_002a;
+			goto IL_002d;
 		}
-		goto IL_002a;
-		IL_002a:
+		goto IL_002d;
+		IL_002d:
 		if (entityName == null || entityName.Length <= 0)
 		{
 			SetName(base.name);
@@ -61,12 +61,12 @@ public class KSelectable : KMonoBehaviour
 
 	public virtual string GetName()
 	{
-		if (entityName == null || entityName == string.Empty || entityName.Length <= 0)
+		if (entityName != null && !(entityName == "") && entityName.Length > 0)
 		{
-			Output.LogWithObj(base.gameObject, "Warning Item has blank name!");
-			return base.name;
+			return entityName;
 		}
-		return entityName;
+		Output.LogWithObj(base.gameObject, "Warning Item has blank name!");
+		return base.name;
 	}
 
 	public void SetStatusIndicatorOffset(Vector3 offset)
@@ -172,88 +172,88 @@ public class KSelectable : KMonoBehaviour
 
 	public Guid ToggleStatusItem(StatusItem status_item, bool on, object data = null)
 	{
-		if (on)
+		if (!on)
 		{
-			return AddStatusItem(status_item, data);
+			return RemoveStatusItem(status_item, false);
 		}
-		return RemoveStatusItem(status_item, false);
+		return AddStatusItem(status_item, data);
 	}
 
 	public Guid ToggleStatusItem(StatusItem status_item, Guid guid, bool show, object data = null)
 	{
-		if (show)
+		if (!show)
 		{
-			if (guid != Guid.Empty)
+			if (!(guid != Guid.Empty))
 			{
 				return guid;
 			}
-			return AddStatusItem(status_item, data);
-		}
-		if (guid != Guid.Empty)
-		{
 			return RemoveStatusItem(guid, false);
+		}
+		if (!(guid != Guid.Empty))
+		{
+			return AddStatusItem(status_item, data);
 		}
 		return guid;
 	}
 
 	public Guid SetStatusItem(StatusItemCategory category, StatusItem status_item, object data = null)
 	{
-		if (statusItemGroup == null)
+		if (statusItemGroup != null)
 		{
-			return Guid.Empty;
+			return statusItemGroup.SetStatusItem(category, status_item, data);
 		}
-		return statusItemGroup.SetStatusItem(category, status_item, data);
+		return Guid.Empty;
 	}
 
 	public Guid ReplaceStatusItem(Guid guid, StatusItem status_item, object data = null)
 	{
-		if (statusItemGroup == null)
+		if (statusItemGroup != null)
 		{
-			return Guid.Empty;
+			if (guid != Guid.Empty)
+			{
+				statusItemGroup.RemoveStatusItem(guid, false);
+			}
+			return AddStatusItem(status_item, data);
 		}
-		if (guid != Guid.Empty)
-		{
-			statusItemGroup.RemoveStatusItem(guid, false);
-		}
-		return AddStatusItem(status_item, data);
+		return Guid.Empty;
 	}
 
 	public Guid AddStatusItem(StatusItem status_item, object data = null)
 	{
-		if (statusItemGroup == null)
+		if (statusItemGroup != null)
 		{
-			return Guid.Empty;
+			return statusItemGroup.AddStatusItem(status_item, data, null);
 		}
-		return statusItemGroup.AddStatusItem(status_item, data, null);
+		return Guid.Empty;
 	}
 
 	public Guid RemoveStatusItem(StatusItem status_item, bool immediate = false)
 	{
-		if (statusItemGroup == null)
+		if (statusItemGroup != null)
 		{
+			statusItemGroup.RemoveStatusItem(status_item, immediate);
 			return Guid.Empty;
 		}
-		statusItemGroup.RemoveStatusItem(status_item, immediate);
 		return Guid.Empty;
 	}
 
 	public Guid RemoveStatusItem(Guid guid, bool immediate = false)
 	{
-		if (statusItemGroup == null)
+		if (statusItemGroup != null)
 		{
+			statusItemGroup.RemoveStatusItem(guid, immediate);
 			return Guid.Empty;
 		}
-		statusItemGroup.RemoveStatusItem(guid, immediate);
 		return Guid.Empty;
 	}
 
 	public bool HasStatusItem(StatusItem status_item)
 	{
-		if (statusItemGroup == null)
+		if (statusItemGroup != null)
 		{
-			return false;
+			return statusItemGroup.HasStatusItem(status_item);
 		}
-		return statusItemGroup.HasStatusItem(status_item);
+		return false;
 	}
 
 	public StatusItemGroup.Entry GetStatusItem(StatusItemCategory category)

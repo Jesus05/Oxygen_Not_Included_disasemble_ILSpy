@@ -17,7 +17,7 @@ internal struct EffectorEntry
 
 	public override string ToString()
 	{
-		string arg = string.Empty;
+		string arg = "";
 		if (count > 1)
 		{
 			arg = string.Format(UI.OVERLAYS.DECOR.COUNT, count);

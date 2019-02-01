@@ -93,7 +93,7 @@ public class CrewJobsEntry : CrewListEntry
 	{
 		GameObject gameObject = Util.KInstantiateUI(Prefab_JobPriorityButtonAllTasks, base.transform.gameObject, false);
 		gameObject.GetComponent<OverviewColumnIdentity>().columnID = "AllTasks";
-		gameObject.GetComponent<OverviewColumnIdentity>().Column_DisplayName = string.Empty;
+		gameObject.GetComponent<OverviewColumnIdentity>().Column_DisplayName = "";
 		Button b = gameObject.GetComponent<Button>();
 		b.onClick.AddListener(delegate
 		{
@@ -234,7 +234,7 @@ public class CrewJobsEntry : CrewListEntry
 				{
 					string newString = string.Format(UI.TOOLTIPS.JOBSSCREEN_CANNOTPERFORMTASK, consumer.GetComponent<MinionIdentity>().GetProperName());
 					b.tooltip.AddMultiStringTooltip(newString, TooltipTextStyle_AbilityNegativeModifier);
-					return string.Empty;
+					return "";
 				}
 				b.tooltip.AddMultiStringTooltip(UI.TOOLTIPS.JOBSSCREEN_RELEVANT_ATTRIBUTES, TooltipTextStyle_Ability);
 				Klei.AI.Attribute attribute = b.choreGroup.attribute;
@@ -252,7 +252,7 @@ public class CrewJobsEntry : CrewListEntry
 				b.tooltip.AddMultiStringTooltip(attribute.Name + " " + attributeInstance.GetTotalValue(), styleSetting);
 			}
 		}
-		return string.Empty;
+		return "";
 	}
 
 	private void LateUpdate()

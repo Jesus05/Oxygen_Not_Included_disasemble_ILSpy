@@ -12,7 +12,7 @@ public class CringeMonitor : GameStateMachine<CringeMonitor, CringeMonitor.Insta
 		public void SetCringeSourceData(object data)
 		{
 			string name = (string)data;
-			statusItem = new StatusItem("CringeSource", name, null, string.Empty, StatusItem.IconType.Exclamation, NotificationType.BadMinor, false, OverlayModes.None.ID, 63486);
+			statusItem = new StatusItem("CringeSource", name, null, "", StatusItem.IconType.Exclamation, NotificationType.BadMinor, false, OverlayModes.None.ID, 63486);
 		}
 
 		public StatusItem GetStatusItem()

@@ -87,11 +87,11 @@ public class WoundMonitor : GameStateMachine<WoundMonitor, WoundMonitor.Instance
 
 		public bool ShouldExitInfirmary()
 		{
-			if (health.State == Health.HealthState.Perfect)
+			if (health.State != 0)
 			{
-				return true;
+				return false;
 			}
-			return false;
+			return true;
 		}
 	}
 

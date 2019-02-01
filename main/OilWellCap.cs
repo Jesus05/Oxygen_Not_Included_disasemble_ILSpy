@@ -240,7 +240,7 @@ public class OilWellCap : Workable, ISingleSliderControl, IElementEmitter, ISlid
 
 	private WorkChore<OilWellCap> CreateWorkChore()
 	{
-		WorkChore<OilWellCap> workChore = new WorkChore<OilWellCap>(Db.Get().ChoreTypes.Depressurize, this, null, null, true, null, null, null, true, null, false, false, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, false);
+		WorkChore<OilWellCap> workChore = new WorkChore<OilWellCap>(Db.Get().ChoreTypes.Depressurize, this, null, null, true, null, null, null, true, null, false, false, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, false, true);
 		workChore.AddPrecondition(AllowedToDepressurize, this);
 		return workChore;
 	}

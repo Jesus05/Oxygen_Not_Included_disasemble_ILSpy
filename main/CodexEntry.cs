@@ -8,9 +8,9 @@ public class CodexEntry : YamlIO<CodexEntry>
 
 	public Color iconColor = Color.white;
 
-	public bool searchOnly;
+	public bool searchOnly = false;
 
-	public int customContentLength;
+	public int customContentLength = 0;
 
 	public List<ContentContainer> contentContainers
 	{

@@ -3,6 +3,8 @@ using TUNING;
 
 public class ArcadeMachineWorkable : Workable, IWorkerPrioritizable
 {
+	public ArcadeMachine owner;
+
 	public int basePriority = RELAXATION.PRIORITY.TIER4;
 
 	private static string specificEffect = "PlayedArcade";

@@ -8,6 +8,7 @@ public class ConditionHasAtmoSuit : RocketLaunchCondition
 	{
 		this.module = module;
 		ManualDeliveryKG manualDeliveryKG = this.module.FindOrAdd<ManualDeliveryKG>();
+		manualDeliveryKG.choreTypeIDHash = Db.Get().ChoreTypes.MachineFetch.IdHash;
 		manualDeliveryKG.SetStorage(module.storage);
 		manualDeliveryKG.requestedItemTag = GameTags.AtmoSuit;
 		manualDeliveryKG.minimumMass = 1f;
@@ -27,19 +28,19 @@ public class ConditionHasAtmoSuit : RocketLaunchCondition
 
 	public override string GetLaunchStatusMessage(bool ready)
 	{
-		if (ready)
+		if (!ready)
 		{
-			return UI.STARMAP.HASSUIT.NAME;
+			return UI.STARMAP.NOSUIT.NAME;
 		}
-		return UI.STARMAP.NOSUIT.NAME;
+		return UI.STARMAP.HASSUIT.NAME;
 	}
 
 	public override string GetLaunchStatusTooltip(bool ready)
 	{
-		if (ready)
+		if (!ready)
 		{
-			return UI.STARMAP.HASSUIT.TOOLTIP;
+			return UI.STARMAP.NOSUIT.TOOLTIP;
 		}
-		return UI.STARMAP.NOSUIT.TOOLTIP;
+		return UI.STARMAP.HASSUIT.TOOLTIP;
 	}
 }

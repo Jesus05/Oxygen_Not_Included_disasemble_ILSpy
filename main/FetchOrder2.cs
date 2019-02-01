@@ -90,14 +90,15 @@ public class FetchOrder2
 			{
 				if (chore.InProgress())
 				{
-					return true;
+					result = true;
+					break;
 				}
 			}
 			return result;
 		}
 	}
 
-	public FetchOrder2(ChoreType chore_type, Tag[] tags, Tag[] required_tags, Tag[] forbidden_tags, Storage destination, float amount, OperationalRequirement operationalRequirement = OperationalRequirement.None, int priorityMod = 0, Tag[] chore_tags = null)
+	public FetchOrder2(ChoreType chore_type, Tag[] tags, Tag[] required_tags, Tag[] forbidden_tags, Storage destination, float amount, OperationalRequirement operationalRequirementDEPRECATED = OperationalRequirement.None, int priorityMod = 0, Tag[] chore_tags = null)
 	{
 		if (amount <= 0f)
 		{
@@ -112,7 +113,7 @@ public class FetchOrder2
 		UnfetchedAmount = amount;
 		PriorityMod = priorityMod;
 		ChoreTags = chore_tags;
-		this.operationalRequirement = operationalRequirement;
+		operationalRequirement = operationalRequirementDEPRECATED;
 	}
 
 	private void IssueTask()
@@ -247,17 +248,17 @@ public class FetchOrder2
 
 	public float AmountWaitingToFetch()
 	{
-		if (!checkStorageContents)
+		if (checkStorageContents)
 		{
-			float num = UnfetchedAmount;
-			for (int i = 0; i < Chores.Count; i++)
-			{
-				num += Chores[i].AmountWaitingToFetch();
-			}
-			return num;
+			Pickupable out_item;
+			return GetRemaining(out out_item);
 		}
-		Pickupable out_item;
-		return GetRemaining(out out_item);
+		float num = UnfetchedAmount;
+		for (int i = 0; i < Chores.Count; i++)
+		{
+			num += Chores[i].AmountWaitingToFetch();
+		}
+		return num;
 	}
 
 	public float GetRemaining(out Pickupable out_item)

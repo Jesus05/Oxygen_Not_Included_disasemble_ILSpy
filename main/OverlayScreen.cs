@@ -236,7 +236,7 @@ public class OverlayScreen : KMonoBehaviour
 	private void UpdateOverlaySounds()
 	{
 		string soundName = currentModeInfo.mode.GetSoundName();
-		if (soundName != string.Empty)
+		if (soundName != "")
 		{
 			soundName = GlobalAssets.GetSound(soundName, false);
 			KMonoBehaviour.PlaySound(soundName);

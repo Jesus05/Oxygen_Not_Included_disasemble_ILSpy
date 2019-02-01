@@ -70,21 +70,21 @@ public class SteamUGCService : MonoBehaviour
 
 	private CallResult<SteamUGCQueryCompleted_t> OnSteamUGCQueryDetailsCompletedCallResult;
 
-	private bool listPending;
+	private bool listPending = false;
 
-	private List<PublishedFileId_t> subscribed;
+	private List<PublishedFileId_t> subscribed = null;
 
-	private SteamUGCDetails_t[] details;
+	private SteamUGCDetails_t[] details = null;
 
 	private Dictionary<PublishedFileId_t, Texture2D> previewImages = new Dictionary<PublishedFileId_t, Texture2D>();
 
 	private Dictionary<UGCHandle_t, PublishedFileId_t> previews = new Dictionary<UGCHandle_t, PublishedFileId_t>();
 
-	private bool doClearList;
+	private bool doClearList = false;
 
 	private static PublishedFileId_t waitingForDownload = PublishedFileId_t.Invalid;
 
-	private bool setupComplete;
+	private bool setupComplete = false;
 
 	private static Dictionary<PublishedFileId_t, int> getBytesRetryCount = new Dictionary<PublishedFileId_t, int>();
 
@@ -178,21 +178,21 @@ public class SteamUGCService : MonoBehaviour
 				PublishedFileId_t current = item;
 				if (current.m_PublishedFileId == id.m_PublishedFileId)
 				{
-					return true;
+					result = true;
+					break;
 				}
 			}
-			return result;
 		}
 		return result;
 	}
 
 	public Texture2D GetPreviewImage(PublishedFileId_t item)
 	{
-		if (previewImages.ContainsKey(item))
+		if (!previewImages.ContainsKey(item))
 		{
-			return previewImages[item];
+			return null;
 		}
-		return null;
+		return previewImages[item];
 	}
 
 	public void Awake()
@@ -272,35 +272,35 @@ public class SteamUGCService : MonoBehaviour
 
 	public static bool DoDownloadItem(PublishedFileId_t item)
 	{
-		if (waitingForDownload == item)
+		if (!(waitingForDownload == item))
 		{
-			Debug.Log("We are waiting for [" + item + "] to download", null);
-			return false;
-		}
-		if (waitingForDownload != PublishedFileId_t.Invalid)
-		{
+			if (!(waitingForDownload != PublishedFileId_t.Invalid))
+			{
+				if (!getBytesRetryCount.ContainsKey(item))
+				{
+					getBytesRetryCount.Add(item, 0);
+				}
+				if (getBytesRetryCount[item] <= MAX_FILE_RETRY_COUNT)
+				{
+					if (SteamUGC.DownloadItem(item, true))
+					{
+						Dictionary<PublishedFileId_t, int> dictionary;
+						PublishedFileId_t key;
+						(dictionary = getBytesRetryCount)[key = item] = dictionary[key] + 1;
+						waitingForDownload = item;
+						return true;
+					}
+					Debug.Log("SteamUGC.DownloadItem returned false for [" + item + "]", null);
+					return false;
+				}
+				Debug.Log("Max retry count reached for [" + item + "]", null);
+				return false;
+			}
 			Debug.Log("We are waiting for [" + waitingForDownload + "] to download, cant download [" + item + "] now", null);
 			return false;
 		}
-		if (!getBytesRetryCount.ContainsKey(item))
-		{
-			getBytesRetryCount.Add(item, 0);
-		}
-		if (getBytesRetryCount[item] > MAX_FILE_RETRY_COUNT)
-		{
-			Debug.Log("Max retry count reached for [" + item + "]", null);
-			return false;
-		}
-		if (!SteamUGC.DownloadItem(item, true))
-		{
-			Debug.Log("SteamUGC.DownloadItem returned false for [" + item + "]", null);
-			return false;
-		}
-		Dictionary<PublishedFileId_t, int> dictionary;
-		PublishedFileId_t key;
-		(dictionary = getBytesRetryCount)[key = item] = dictionary[key] + 1;
-		waitingForDownload = item;
-		return true;
+		Debug.Log("We are waiting for [" + item + "] to download", null);
+		return false;
 	}
 
 	private void GetSubscribedDetails()
@@ -324,18 +324,19 @@ public class SteamUGCService : MonoBehaviour
 	public SteamUGCDetails_t GetDetails(PublishedFileId_t item)
 	{
 		SteamUGCDetails_t result = default(SteamUGCDetails_t);
-		if (details == null)
+		if (details != null)
 		{
-			return result;
-		}
-		SteamUGCDetails_t[] array = details;
-		for (int i = 0; i < array.Length; i++)
-		{
-			SteamUGCDetails_t result2 = array[i];
-			if (result2.m_nPublishedFileId == item)
+			SteamUGCDetails_t[] array = details;
+			for (int i = 0; i < array.Length; i++)
 			{
-				return result2;
+				SteamUGCDetails_t steamUGCDetails_t = array[i];
+				if (steamUGCDetails_t.m_nPublishedFileId == item)
+				{
+					result = steamUGCDetails_t;
+					break;
+				}
 			}
+			return result;
 		}
 		return result;
 	}
@@ -514,12 +515,11 @@ public class SteamUGCService : MonoBehaviour
 				}
 				memoryStream.Flush();
 				result = memoryStream.ToArray();
-				return result;
 			}
 		}
 		catch (Exception)
 		{
-			return result;
 		}
+		return result;
 	}
 }

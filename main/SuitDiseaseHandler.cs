@@ -24,6 +24,10 @@ public class SuitDiseaseHandler : KMonoBehaviour
 		Equipment equipment = (Equipment)data;
 		MinionAssignablesProxy component = equipment.GetComponent<MinionAssignablesProxy>();
 		GameObject targetGameObject = component.GetTargetGameObject();
+		if (!(bool)targetGameObject)
+		{
+			return null;
+		}
 		return targetGameObject.GetComponent<PrimaryElement>();
 	}
 

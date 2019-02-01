@@ -81,7 +81,7 @@ public class TagFilterScreen : SideScreenContent
 	private KTreeControl.UserItem BuildDisplay(TagEntry root)
 	{
 		KTreeControl.UserItem userItem = null;
-		if (root.name != null && root.name != string.Empty)
+		if (root.name != null && root.name != "")
 		{
 			KTreeControl.UserItem userItem2 = new KTreeControl.UserItem();
 			userItem2.text = root.name;

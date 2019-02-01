@@ -49,24 +49,24 @@ public class HandSanitizer : StateMachineComponent<HandSanitizer.SMInstance>, IE
 		public bool OutputFull()
 		{
 			PrimaryElement primaryElement = GetComponent<Storage>().FindPrimaryElement(base.master.outputElement);
-			if ((UnityEngine.Object)primaryElement != (UnityEngine.Object)null)
+			if (!((UnityEngine.Object)primaryElement != (UnityEngine.Object)null))
 			{
-				return primaryElement.Mass >= (float)base.master.maxUses * base.master.massConsumedPerUse;
+				return false;
 			}
-			return false;
+			return primaryElement.Mass >= (float)base.master.maxUses * base.master.massConsumedPerUse;
 		}
 
 		public bool IsReady()
 		{
-			if (!HasSufficientMass())
+			if (HasSufficientMass())
 			{
+				if (!OutputFull())
+				{
+					return true;
+				}
 				return false;
 			}
-			if (OutputFull())
-			{
-				return false;
-			}
-			return true;
+			return false;
 		}
 
 		public void OnCompleteWork(Worker worker)
@@ -128,7 +128,7 @@ public class HandSanitizer : StateMachineComponent<HandSanitizer.SMInstance>, IE
 
 	public class Work : Workable, IGameObjectEffectDescriptor
 	{
-		private int diseaseRemoved;
+		private int diseaseRemoved = 0;
 
 		protected override void OnPrefabInit()
 		{
@@ -157,28 +157,28 @@ public class HandSanitizer : StateMachineComponent<HandSanitizer.SMInstance>, IE
 			HandSanitizer component = GetComponent<HandSanitizer>();
 			Storage component2 = GetComponent<Storage>();
 			float massAvailable = component2.GetMassAvailable(component.consumedElement);
-			if (massAvailable == 0f)
+			if (massAvailable != 0f)
 			{
-				return true;
+				PrimaryElement component3 = worker.GetComponent<PrimaryElement>();
+				float a = component.massConsumedPerUse * dt / workTime;
+				float num = Mathf.Min(a, massAvailable);
+				int num2 = Math.Min((int)(dt / workTime * (float)component.diseaseRemovalCount), component3.DiseaseCount);
+				diseaseRemoved += num2;
+				SimUtil.DiseaseInfo invalid = SimUtil.DiseaseInfo.Invalid;
+				invalid.idx = component3.DiseaseIdx;
+				invalid.count = num2;
+				component3.ModifyDiseaseCount(-num2, "HandSanitizer.OnWorkTick");
+				component.maxPossiblyRemoved += num2;
+				SimUtil.DiseaseInfo disease_info = SimUtil.DiseaseInfo.Invalid;
+				component2.ConsumeAndGetDisease(ElementLoader.FindElementByHash(component.consumedElement).tag, num, out disease_info, out float aggregate_temperature);
+				if (component.outputElement != SimHashes.Vacuum)
+				{
+					disease_info = SimUtil.CalculateFinalDiseaseInfo(invalid, disease_info);
+					component2.AddLiquid(component.outputElement, num, aggregate_temperature, disease_info.idx, disease_info.count, false, true);
+				}
+				return diseaseRemoved > component.diseaseRemovalCount;
 			}
-			PrimaryElement component3 = worker.GetComponent<PrimaryElement>();
-			float a = component.massConsumedPerUse * dt / workTime;
-			float num = Mathf.Min(a, massAvailable);
-			int num2 = Math.Min((int)(dt / workTime * (float)component.diseaseRemovalCount), component3.DiseaseCount);
-			diseaseRemoved += num2;
-			SimUtil.DiseaseInfo invalid = SimUtil.DiseaseInfo.Invalid;
-			invalid.idx = component3.DiseaseIdx;
-			invalid.count = num2;
-			component3.ModifyDiseaseCount(-num2, "HandSanitizer.OnWorkTick");
-			component.maxPossiblyRemoved += num2;
-			SimUtil.DiseaseInfo disease_info = SimUtil.DiseaseInfo.Invalid;
-			component2.ConsumeAndGetDisease(ElementLoader.FindElementByHash(component.consumedElement).tag, num, out disease_info, out float aggregate_temperature);
-			if (component.outputElement != SimHashes.Vacuum)
-			{
-				disease_info = SimUtil.CalculateFinalDiseaseInfo(invalid, disease_info);
-				component2.AddLiquid(component.outputElement, num, aggregate_temperature, disease_info.idx, disease_info.count, false, true);
-			}
-			return diseaseRemoved > component.diseaseRemovalCount;
+			return true;
 		}
 
 		protected override void OnCompleteWork(Worker worker)
@@ -197,7 +197,7 @@ public class HandSanitizer : StateMachineComponent<HandSanitizer.SMInstance>, IE
 
 	public SimHashes outputElement = SimHashes.Vacuum;
 
-	public bool dumpWhenFull;
+	public bool dumpWhenFull = false;
 
 	private WorkableReactable reactable;
 
@@ -205,12 +205,12 @@ public class HandSanitizer : StateMachineComponent<HandSanitizer.SMInstance>, IE
 
 	private MeterController dirtyMeter;
 
-	public Meter.Offset cleanMeterOffset;
+	public Meter.Offset cleanMeterOffset = Meter.Offset.Infront;
 
-	public Meter.Offset dirtyMeterOffset;
+	public Meter.Offset dirtyMeterOffset = Meter.Offset.Infront;
 
 	[Serialize]
-	public int maxPossiblyRemoved;
+	public int maxPossiblyRemoved = 0;
 
 	private static readonly EventSystem.IntraObjectHandler<HandSanitizer> OnStorageChangeDelegate = new EventSystem.IntraObjectHandler<HandSanitizer>(delegate(HandSanitizer component, object data)
 	{

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <ProjectGuid>{CB42CF30-0A4C-4D88-BD88-D47DE40FBB3A}</ProjectGuid>
+    <ProjectGuid>{18B36AAA-31B3-411A-9561-E9CC7250F48B}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <OutputType>Library</OutputType>
@@ -50,6 +50,9 @@
     <Reference Include="UnityEngine.TextRenderingModule">
       <HintPath>E:\Program Files (x86)\Steam\steamapps\common\OxygenNotIncluded\OxygenNotIncluded_Data\Managed\UnityEngine.TextRenderingModule.dll</HintPath>
     </Reference>
+    <Reference Include="Unity.TextMeshPro">
+      <HintPath>E:\Program Files (x86)\Steam\steamapps\common\OxygenNotIncluded\OxygenNotIncluded_Data\Managed\Unity.TextMeshPro.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEngine.ScreenCaptureModule">
       <HintPath>E:\Program Files (x86)\Steam\steamapps\common\OxygenNotIncluded\OxygenNotIncluded_Data\Managed\UnityEngine.ScreenCaptureModule.dll</HintPath>
     </Reference>
@@ -83,7 +86,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AccessControl.cs" />
-    <Compile Include="AccessControlNavMask.cs" />
     <Compile Include="AccessControlSideScreen.cs" />
     <Compile Include="AccessControlSideScreenDoor.cs" />
     <Compile Include="AccessControlSideScreenRow.cs" />
@@ -130,6 +132,9 @@
     <Compile Include="ArcadeMachineConfig.cs" />
     <Compile Include="ArcadeMachineWorkable.cs" />
     <Compile Include="Artable.cs" />
+    <Compile Include="ArtifactConfig.cs" />
+    <Compile Include="ArtifactFinder.cs" />
+    <Compile Include="ArtifactTier.cs" />
     <Compile Include="Artist.cs" />
     <Compile Include="AsPercentAmountDisplayer.cs" />
     <Compile Include="Assets.cs" />
@@ -254,6 +259,7 @@
     <Compile Include="BuildingAttachPoint.cs" />
     <Compile Include="BuildingCellVisualizer.cs" />
     <Compile Include="BuildingCellVisualizerResources.cs" />
+    <Compile Include="BuildingChoresPanel.cs" />
     <Compile Include="BuildingComplete.cs" />
     <Compile Include="BuildingConduitEndpoints.cs" />
     <Compile Include="BuildingConfigManager.cs" />
@@ -300,6 +306,10 @@
     <Compile Include="CapacityControlSideScreen.cs" />
     <Compile Include="Capturable.cs" />
     <Compile Include="CaptureTool.cs" />
+    <Compile Include="CarePackage.cs" />
+    <Compile Include="CarePackageConfig.cs" />
+    <Compile Include="CarePackageContainer.cs" />
+    <Compile Include="CarePackageInfo.cs" />
     <Compile Include="CargoBay.cs" />
     <Compile Include="CargoBayConfig.cs" />
     <Compile Include="CargoBayIsEmpty.cs" />
@@ -493,6 +503,8 @@
     <Compile Include="Database\Accessories.cs" />
     <Compile Include="Database\AccessorySlots.cs" />
     <Compile Include="Database\Amounts.cs" />
+    <Compile Include="Database\ArtifactDropRate.cs" />
+    <Compile Include="Database\ArtifactDropRates.cs" />
     <Compile Include="Database\AssignableSlots.cs" />
     <Compile Include="Database\AttributeConverters.cs" />
     <Compile Include="Database\Attributes.cs" />
@@ -690,6 +702,7 @@
     <Compile Include="EntombVulnerable.cs" />
     <Compile Include="EnvironmentGenerator.cs" />
     <Compile Include="EODReportMessage.cs" />
+    <Compile Include="EquipChore.cs" />
     <Compile Include="Equipment.cs" />
     <Compile Include="EquipmentConfigManager.cs" />
     <Compile Include="EquipmentDef.cs" />
@@ -782,7 +795,6 @@
     <Compile Include="FloatListType.cs" />
     <Compile Include="FloatPointsNodeEditor.cs" />
     <Compile Include="Floodable.cs" />
-    <Compile Include="FloodableMonitor.cs" />
     <Compile Include="FloodTool.cs" />
     <Compile Include="FloorLampConfig.cs" />
     <Compile Include="FloorSoundEvent.cs" />
@@ -961,7 +973,6 @@
     <Compile Include="IdleCellSensor.cs" />
     <Compile Include="IdleChore.cs" />
     <Compile Include="IdleMonitor.cs" />
-    <Compile Include="IdleNavMask.cs" />
     <Compile Include="IdleStates.cs" />
     <Compile Include="IDualSliderControl.cs" />
     <Compile Include="IEffectDescriptor.cs" />
@@ -1032,6 +1043,8 @@
     <Compile Include="ISidescreenButtonControl.cs" />
     <Compile Include="ISingleSliderControl.cs" />
     <Compile Include="ISliderControl.cs" />
+    <Compile Include="ITelepadDeliverable.cs" />
+    <Compile Include="ITelepadDeliverableContainer.cs" />
     <Compile Include="ItemPedestal.cs" />
     <Compile Include="ItemPedestalConfig.cs" />
     <Compile Include="IThresholdSwitch.cs" />
@@ -1046,7 +1059,6 @@
     <Compile Include="IWattageRating.cs" />
     <Compile Include="IWiltCause.cs" />
     <Compile Include="IWorkerPrioritizable.cs" />
-    <Compile Include="JetPackNavMask.cs" />
     <Compile Include="JetSuitConfig.cs" />
     <Compile Include="JetSuitLocker.cs" />
     <Compile Include="JetSuitLockerConfig.cs" />
@@ -1372,6 +1384,7 @@
     <Compile Include="MinionStartingStats.cs" />
     <Compile Include="MinionStatsPanel.cs" />
     <Compile Include="MinionStorage.cs" />
+    <Compile Include="MinionTodoSideScreen.cs" />
     <Compile Include="MinionVitalsPanel.cs" />
     <Compile Include="MinionVitalsScreen.cs" />
     <Compile Include="MinMaxSlider.cs" />
@@ -1423,7 +1436,6 @@
     <Compile Include="NavGraph.cs" />
     <Compile Include="NavGrid.cs" />
     <Compile Include="NavGridUpdater.cs" />
-    <Compile Include="NavigationFeatureMask.cs" />
     <Compile Include="NavigationReservations.cs" />
     <Compile Include="NavigationTactics.cs" />
     <Compile Include="Navigator.cs" />
@@ -1462,6 +1474,7 @@
     <Compile Include="ObjectPool.cs" />
     <Compile Include="OccupyArea.cs" />
     <Compile Include="OfflineWorldGen.cs" />
+    <Compile Include="OffscreenIndicator.cs" />
     <Compile Include="OffsetGroups.cs" />
     <Compile Include="OffsetTable.cs" />
     <Compile Include="OffsetTableTracker.cs" />
@@ -1947,6 +1960,7 @@
     <Compile Include="SOUNDPATHS.cs" />
     <Compile Include="Sounds.cs" />
     <Compile Include="SoundUtil.cs" />
+    <Compile Include="SpaceArtifact.cs" />
     <Compile Include="Spacecraft.cs" />
     <Compile Include="SpacecraftManager.cs" />
     <Compile Include="SpaceDestination.cs" />
@@ -2154,7 +2168,6 @@
     <Compile Include="TravelTubeConfig.cs" />
     <Compile Include="TravelTubeEntrance.cs" />
     <Compile Include="TravelTubeEntranceConfig.cs" />
-    <Compile Include="TravelTubeNavMask.cs" />
     <Compile Include="TravelTubeNetwork.cs" />
     <Compile Include="TravelTubeUtilityNetworkLink.cs" />
     <Compile Include="TravelTubeWallBridgeConfig.cs" />

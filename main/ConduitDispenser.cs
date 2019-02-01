@@ -9,13 +9,13 @@ public class ConduitDispenser : KMonoBehaviour, ISaveLoadable
 	public ConduitType conduitType;
 
 	[SerializeField]
-	public SimHashes[] elementFilter;
+	public SimHashes[] elementFilter = null;
 
 	[SerializeField]
-	public bool invertElementFilter;
+	public bool invertElementFilter = false;
 
 	[SerializeField]
-	public bool alwaysDispense;
+	public bool alwaysDispense = false;
 
 	private static readonly Operational.Flag outputConduitFlag = new Operational.Flag("output_conduit", Operational.Flag.Type.Functional);
 
@@ -29,7 +29,7 @@ public class ConduitDispenser : KMonoBehaviour, ISaveLoadable
 
 	private int utilityCell = -1;
 
-	private int elementOutputOffset;
+	private int elementOutputOffset = 0;
 
 	public ConduitType TypeOfConduit => conduitType;
 

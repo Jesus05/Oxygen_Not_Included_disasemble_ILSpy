@@ -18,11 +18,11 @@ public class SteamManager : MonoBehaviour
 	{
 		get
 		{
-			if ((UnityEngine.Object)s_instance == (UnityEngine.Object)null)
+			if (!((UnityEngine.Object)s_instance == (UnityEngine.Object)null))
 			{
-				return new GameObject("SteamManager").AddComponent<SteamManager>();
+				return s_instance;
 			}
-			return s_instance;
+			return new GameObject("SteamManager").AddComponent<SteamManager>();
 		}
 	}
 
@@ -66,7 +66,7 @@ public class SteamManager : MonoBehaviour
 				return;
 			}
 			m_bInitialized = SteamAPI.Init();
-			if (!m_bInitialized)
+			if (m_bInitialized)
 			{
 				return;
 			}

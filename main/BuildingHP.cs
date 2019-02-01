@@ -25,7 +25,7 @@ public class BuildingHP : Workable
 
 	public class SMInstance : GameStateMachine<States, SMInstance, BuildingHP, object>.GameInstance
 	{
-		private ProgressBar progressBar;
+		private ProgressBar progressBar = null;
 
 		public SMInstance(BuildingHP master)
 			: base(master)
@@ -85,7 +85,7 @@ public class BuildingHP : Workable
 				Vector3 vector = base.gameObject.transform.GetPosition() + Vector3.down * d;
 				vector.z += 0.05f;
 				Rotatable component2 = GetComponent<Rotatable>();
-				vector = ((!((UnityEngine.Object)component2 == (UnityEngine.Object)null) && component2.GetOrientation() != 0) ? (vector + Vector3.left * (1f + 0.5f * (float)(base.smi.master.building.Def.WidthInCells % 2))) : (vector - Vector3.right * 0.5f * (float)(base.smi.master.building.Def.WidthInCells % 2)));
+				vector = ((!((UnityEngine.Object)component2 == (UnityEngine.Object)null) && component2.GetOrientation() != 0 && base.smi.master.building.Def.WidthInCells >= 2 && base.smi.master.building.Def.HeightInCells >= 2) ? (vector + Vector3.left * (1f + 0.5f * (float)(base.smi.master.building.Def.WidthInCells % 2))) : (vector - Vector3.right * 0.5f * (float)(base.smi.master.building.Def.WidthInCells % 2)));
 				progressBar.transform.SetPosition(vector);
 				progressBar.gameObject.SetActive(true);
 			}
@@ -93,7 +93,7 @@ public class BuildingHP : Workable
 
 		private static string ToolTipResolver(List<Notification> notificationList, object data)
 		{
-			string text = string.Empty;
+			string text = "";
 			for (int i = 0; i < notificationList.Count; i++)
 			{
 				Notification notification = notificationList[i];
@@ -213,7 +213,7 @@ public class BuildingHP : Workable
 
 		private Chore CreateRepairChore(SMInstance smi)
 		{
-			return new WorkChore<BuildingHP>(Db.Get().ChoreTypes.Repair, smi.master, null, null, true, null, null, null, true, null, false, false, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, false);
+			return new WorkChore<BuildingHP>(Db.Get().ChoreTypes.Repair, smi.master, null, null, true, null, null, null, true, null, false, false, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, false, true);
 		}
 	}
 
@@ -236,9 +236,9 @@ public class BuildingHP : Workable
 
 	public static List<Meter> kbacQueryList = new List<Meter>();
 
-	public bool destroyOnDamaged;
+	public bool destroyOnDamaged = false;
 
-	public bool invincible;
+	public bool invincible = false;
 
 	[MyCmpGet]
 	private Building building;
@@ -247,7 +247,7 @@ public class BuildingHP : Workable
 
 	private float minDamagePopInterval = 4f;
 
-	private float lastPopTime;
+	private float lastPopTime = 0f;
 
 	public int HitPoints => hitpoints;
 

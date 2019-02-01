@@ -30,7 +30,7 @@ public class Crop : KMonoBehaviour, IGameObjectEffectDescriptor
 
 	public CropVal cropVal;
 
-	public string domesticatedDesc = string.Empty;
+	public string domesticatedDesc = "";
 
 	private Storage planterStorage;
 
@@ -137,7 +137,7 @@ public class Crop : KMonoBehaviour, IGameObjectEffectDescriptor
 		GameObject prefab = Assets.GetPrefab(tag);
 		Edible component = prefab.GetComponent<Edible>();
 		float num = 0f;
-		string arg = string.Empty;
+		string arg = "";
 		if ((UnityEngine.Object)component != (UnityEngine.Object)null)
 		{
 			num = component.FoodInfo.CaloriesPerUnit;

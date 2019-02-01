@@ -11,7 +11,7 @@ public class SimulatedTemperatureAdjuster
 
 	private float thermalConductivity;
 
-	private bool operational;
+	private bool operational = false;
 
 	private Storage storage;
 

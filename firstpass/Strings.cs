@@ -12,7 +12,7 @@ public static class Strings
 		for (int i = 0; i < keys.Length; i++)
 		{
 			StringKey stringKey = keys[i];
-			if (text != string.Empty)
+			if (text != "")
 			{
 				text += ".";
 			}
@@ -61,6 +61,6 @@ public static class Strings
 
 	public static void PrintTable()
 	{
-		RootTable.Print(string.Empty);
+		RootTable.Print("");
 	}
 }

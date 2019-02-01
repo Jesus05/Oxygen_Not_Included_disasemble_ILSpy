@@ -12,9 +12,9 @@ public abstract class UtilityNetworkLink : KMonoBehaviour
 	public CellOffset link2;
 
 	[SerializeField]
-	public bool visualizeOnly;
+	public bool visualizeOnly = false;
 
-	private bool connected;
+	private bool connected = false;
 
 	private static readonly EventSystem.IntraObjectHandler<UtilityNetworkLink> OnBuildingBrokenDelegate = new EventSystem.IntraObjectHandler<UtilityNetworkLink>(delegate(UtilityNetworkLink component, object data)
 	{

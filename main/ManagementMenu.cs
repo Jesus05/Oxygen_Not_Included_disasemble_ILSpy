@@ -98,16 +98,16 @@ public class ManagementMenu : KIconToggleMenu
 		scheduleScreen = instantiator.GetComponentInChildren<ScheduleScreen>(true);
 		rolesScreen = (Resources.FindObjectsOfTypeAll(typeof(RolesScreen))[0] as RolesScreen);
 		Subscribe(Game.Instance.gameObject, 288942073, OnUIClear);
-		consumablesInfo = new ToggleInfo(UI.CONSUMABLES, "OverviewUI_consumables_icon", null, Action.ManageConsumables, UI.TOOLTIPS.MANAGEMENTMENU_CONSUMABLES, string.Empty);
-		vitalsInfo = new ToggleInfo(UI.VITALS, "OverviewUI_vitals_icon", null, Action.ManageVitals, UI.TOOLTIPS.MANAGEMENTMENU_VITALS, string.Empty);
-		reportsInfo = new ToggleInfo(UI.REPORT, "OverviewUI_reports_icon", null, Action.ManageReport, UI.TOOLTIPS.MANAGEMENTMENU_DAILYREPORT, string.Empty);
-		researchInfo = new ToggleInfo(UI.RESEARCH, "OverviewUI_research_nav_icon", null, Action.ManageResearch, UI.TOOLTIPS.MANAGEMENTMENU_RESEARCH, string.Empty);
-		jobsInfo = new ToggleInfo(UI.JOBS, "OverviewUI_priority_icon", null, Action.ManagePeople, UI.TOOLTIPS.MANAGEMENTMENU_JOBS, string.Empty);
-		rolesInfo = new ToggleInfo(UI.ROLES_SCREEN.MANAGEMENT_BUTTON, "OverviewUI_jobs_icon", null, Action.ManageRoles, UI.TOOLTIPS.MANAGEMENTMENU_ROLES, string.Empty);
-		starmapInfo = new ToggleInfo(UI.STARMAP.MANAGEMENT_BUTTON, "ic_rocket", null, Action.ManageStarmap, UI.TOOLTIPS.MANAGEMENTMENU_STARMAP, string.Empty);
-		codexInfo = new ToggleInfo(UI.CODEX.MANAGEMENT_BUTTON, "OverviewUI_database_icon", null, Action.ManageCodex, UI.TOOLTIPS.MANAGEMENTMENU_CODEX, string.Empty);
+		consumablesInfo = new ToggleInfo(UI.CONSUMABLES, "OverviewUI_consumables_icon", null, Action.ManageConsumables, UI.TOOLTIPS.MANAGEMENTMENU_CONSUMABLES, "");
+		vitalsInfo = new ToggleInfo(UI.VITALS, "OverviewUI_vitals_icon", null, Action.ManageVitals, UI.TOOLTIPS.MANAGEMENTMENU_VITALS, "");
+		reportsInfo = new ToggleInfo(UI.REPORT, "OverviewUI_reports_icon", null, Action.ManageReport, UI.TOOLTIPS.MANAGEMENTMENU_DAILYREPORT, "");
+		researchInfo = new ToggleInfo(UI.RESEARCH, "OverviewUI_research_nav_icon", null, Action.ManageResearch, UI.TOOLTIPS.MANAGEMENTMENU_RESEARCH, "");
+		jobsInfo = new ToggleInfo(UI.JOBS, "OverviewUI_priority_icon", null, Action.ManagePeople, UI.TOOLTIPS.MANAGEMENTMENU_JOBS, "");
+		rolesInfo = new ToggleInfo(UI.ROLES_SCREEN.MANAGEMENT_BUTTON, "OverviewUI_jobs_icon", null, Action.ManageRoles, UI.TOOLTIPS.MANAGEMENTMENU_ROLES, "");
+		starmapInfo = new ToggleInfo(UI.STARMAP.MANAGEMENT_BUTTON, "ic_rocket", null, Action.ManageStarmap, UI.TOOLTIPS.MANAGEMENTMENU_STARMAP, "");
+		codexInfo = new ToggleInfo(UI.CODEX.MANAGEMENT_BUTTON, "OverviewUI_database_icon", null, Action.ManageCodex, UI.TOOLTIPS.MANAGEMENTMENU_CODEX, "");
 		codexInfo.prefabOverride = smallPrefab;
-		scheduleInfo = new ToggleInfo(UI.SCHEDULE, null, null, Action.ManageSchedule, UI.TOOLTIPS.MANAGEMENTMENU_SCHEDULE, string.Empty);
+		scheduleInfo = new ToggleInfo(UI.SCHEDULE, null, null, Action.ManageSchedule, UI.TOOLTIPS.MANAGEMENTMENU_SCHEDULE, "");
 		scheduleInfo.instanceOverride = DateTime.Instance.scheduleToggle;
 		ScreenInfoMatch.Add(consumablesInfo, new ScreenData
 		{

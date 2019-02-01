@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class FuelTank : Storage, IUserControlledCapacity
 {
-	private bool isSuspended;
+	private bool isSuspended = false;
 
 	private MeterController meter;
 
@@ -85,6 +85,7 @@ public class FuelTank : Storage, IUserControlledCapacity
 		base.OnSpawn();
 		GetComponent<KBatchedAnimController>().Play("grounded", KAnim.PlayMode.Loop, 1f, 0f);
 		base.gameObject.Subscribe(1366341636, OnReturn);
+		UserMaxCapacity = UserMaxCapacity;
 		meter = new MeterController(GetComponent<KBatchedAnimController>(), "meter_target", "meter", Meter.Offset.UserSpecified, Grid.SceneLayer.TransferArm, "meter_target", "meter_fill", "meter_frame", "meter_OL");
 		Subscribe(-1697596308, delegate
 		{

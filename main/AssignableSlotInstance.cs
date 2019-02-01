@@ -6,7 +6,7 @@ public abstract class AssignableSlotInstance
 
 	public Assignable assignable;
 
-	private bool unassigning;
+	private bool unassigning = false;
 
 	public Assignables assignables
 	{

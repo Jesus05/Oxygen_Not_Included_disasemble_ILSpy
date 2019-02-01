@@ -4,6 +4,53 @@ using System.Collections.Generic;
 
 public class KSplitCompactedVector<Header, Payload> : KCompactedVectorBase, ICollection, IEnumerable
 {
+	private struct Enumerator : IEnumerator
+	{
+		public struct Value
+		{
+			public Header header;
+
+			public Payload payload;
+		}
+
+		private readonly List<Header>.Enumerator headerBegin;
+
+		private readonly List<Payload>.Enumerator payloadBegin;
+
+		private List<Header>.Enumerator headerCurrent;
+
+		private List<Payload>.Enumerator payloadCurrent;
+
+		public object Current
+		{
+			get
+			{
+				Value value = default(Value);
+				value.header = headerCurrent.Current;
+				value.payload = payloadCurrent.Current;
+				return value;
+			}
+		}
+
+		public Enumerator(List<Header>.Enumerator headerEnumerator, List<Payload>.Enumerator payloadEnumerator)
+		{
+			headerBegin = headerEnumerator;
+			payloadBegin = payloadEnumerator;
+			Reset();
+		}
+
+		public bool MoveNext()
+		{
+			return headerCurrent.MoveNext() && payloadCurrent.MoveNext();
+		}
+
+		public void Reset()
+		{
+			headerCurrent = headerBegin;
+			payloadCurrent = payloadBegin;
+		}
+	}
+
 	protected List<Header> headers;
 
 	protected List<Payload> payloads;
@@ -112,7 +159,6 @@ public class KSplitCompactedVector<Header, Payload> : KCompactedVectorBase, ICol
 
 	public IEnumerator GetEnumerator()
 	{
-		DebugUtil.Assert(false);
-		return headers.GetEnumerator();
+		return new Enumerator(headers.GetEnumerator(), payloads.GetEnumerator());
 	}
 }

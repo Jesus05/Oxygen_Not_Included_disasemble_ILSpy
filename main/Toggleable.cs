@@ -33,11 +33,11 @@ public class Toggleable : Workable
 	public IToggleHandler GetToggleHandlerForWorker(Worker worker)
 	{
 		int targetForWorker = GetTargetForWorker(worker);
-		if (targetForWorker != -1)
+		if (targetForWorker == -1)
 		{
-			return targets[targetForWorker].Key;
+			return null;
 		}
-		return null;
+		return targets[targetForWorker].Key;
 	}
 
 	private int GetTargetForWorker(Worker worker)
@@ -73,7 +73,7 @@ public class Toggleable : Workable
 			}
 			else
 			{
-				targets[targetIdx] = new KeyValuePair<IToggleHandler, Chore>(targets[targetIdx].Key, new WorkChore<Toggleable>(Db.Get().ChoreTypes.Toggle, this, null, null, true, null, null, null, true, null, false, false, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, true));
+				targets[targetIdx] = new KeyValuePair<IToggleHandler, Chore>(targets[targetIdx].Key, new WorkChore<Toggleable>(Db.Get().ChoreTypes.Toggle, this, null, null, true, null, null, null, true, null, false, false, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, true, true));
 				GetComponent<KSelectable>().AddStatusItem(Db.Get().BuildingStatusItems.PendingSwitchToggle, null);
 			}
 		}

@@ -63,6 +63,8 @@ public class Db : EntityModifierSet
 
 	public RoomTypes RoomTypes;
 
+	public ArtifactDropRates ArtifactDropRates;
+
 	public SpaceDestinationTypes SpaceDestinationTypes;
 
 	public static Db Get()
@@ -97,6 +99,7 @@ public class Db : EntityModifierSet
 		ScheduleGroups = new ScheduleGroups(Root);
 		RoomTypeCategories = new RoomTypeCategories(Root);
 		RoomTypes = new RoomTypes(Root);
+		ArtifactDropRates = new ArtifactDropRates(Root);
 		SpaceDestinationTypes = new SpaceDestinationTypes(Root);
 		Diseases = new Database.Diseases(Root);
 		MiscStatusItems = new MiscStatusItems(Root);
@@ -128,17 +131,17 @@ public class Db : EntityModifierSet
 	public ResourceType GetResource<ResourceType>(ResourceGuid guid) where ResourceType : Resource
 	{
 		Resource resource = ResourceTable.FirstOrDefault((Resource s) => s.Guid == guid);
-		if (resource == null)
+		if (resource != null)
 		{
-			Debug.LogWarning("Could not find resource: " + guid, null);
-			return (ResourceType)null;
-		}
-		ResourceType val = (ResourceType)resource;
-		if (val == null)
-		{
+			ResourceType val = (ResourceType)resource;
+			if (val != null)
+			{
+				return val;
+			}
 			Debug.LogError("Resource type mismatch for resource: " + resource.Id + "\nExpecting Type: " + typeof(ResourceType).Name + "\nGot Type: " + resource.GetType().Name, null);
 			return (ResourceType)null;
 		}
-		return val;
+		Debug.LogWarning("Could not find resource: " + guid, null);
+		return (ResourceType)null;
 	}
 }

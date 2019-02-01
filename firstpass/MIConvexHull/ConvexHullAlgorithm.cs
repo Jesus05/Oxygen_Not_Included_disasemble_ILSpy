@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
 
 namespace MIConvexHull
 {
@@ -69,12 +68,6 @@ namespace MIConvexHull
 
 		private readonly double[] maxima;
 
-		[CompilerGenerated]
-		private static Func<double, double> _003C_003Ef__mg_0024cache0;
-
-		[CompilerGenerated]
-		private static Func<double, double> _003C_003Ef__mg_0024cache1;
-
 		private ConvexHullAlgorithm(IVertex[] vertices, bool lift, double PlaneDistanceTolerance)
 		{
 			IsLifted = lift;
@@ -125,14 +118,14 @@ namespace MIConvexHull
 		{
 			ConvexHullAlgorithm convexHullAlgorithm = new ConvexHullAlgorithm(data.Cast<IVertex>().ToArray(), false, PlaneDistanceTolerance);
 			convexHullAlgorithm.GetConvexHull();
-			if (convexHullAlgorithm.NumOfDimensions == 2)
+			if (convexHullAlgorithm.NumOfDimensions != 2)
 			{
-				return convexHullAlgorithm.Return2DResultInOrder<TVertex, TFace>(data);
+				ConvexHull<TVertex, TFace> convexHull = new ConvexHull<TVertex, TFace>();
+				convexHull.Points = convexHullAlgorithm.GetHullVertices(data);
+				convexHull.Faces = convexHullAlgorithm.GetConvexFaces<TVertex, TFace>();
+				return convexHull;
 			}
-			ConvexHull<TVertex, TFace> convexHull = new ConvexHull<TVertex, TFace>();
-			convexHull.Points = convexHullAlgorithm.GetHullVertices(data);
-			convexHull.Faces = convexHullAlgorithm.GetConvexFaces<TVertex, TFace>();
-			return convexHull;
+			return convexHullAlgorithm.Return2DResultInOrder<TVertex, TFace>(data);
 		}
 
 		private int DetermineDimension()
@@ -278,7 +271,7 @@ namespace MIConvexHull
 			if (IsLifted)
 			{
 				int num2 = NumOfDimensions - 1;
-				double num3 = 2.0 / (((IEnumerable<double>)minima).Sum((Func<double, double>)Math.Abs) + ((IEnumerable<double>)maxima).Sum((Func<double, double>)Math.Abs) - Math.Abs(maxima[num2]) - Math.Abs(minima[num2]));
+				double num3 = 2.0 / (minima.Sum((double x) => Math.Abs(x)) + maxima.Sum((double x) => Math.Abs(x)) - Math.Abs(maxima[num2]) - Math.Abs(minima[num2]));
 				minima[num2] *= num3;
 				maxima[num2] *= num3;
 				for (int i = num2; i < num; i += NumOfDimensions)

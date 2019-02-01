@@ -34,17 +34,22 @@ public class ProfilerBase
 		{
 			ProfilerBase.WriteLine(sb, category, region_name, id, sw, ph, suffix);
 		}
+
+		public void StartLine(string category, string region_name, Stopwatch sw, string ph)
+		{
+			ProfilerBase.StartLine(sb, category, region_name, id, sw, ph);
+		}
 	}
 
-	private bool initialised;
+	private bool initialised = false;
 
-	private int idx;
+	private int idx = 0;
 
-	protected StreamWriter proFile;
+	protected StreamWriter proFile = null;
 
 	private string category = "GAME";
 
-	private string filePrefix;
+	private string filePrefix = null;
 
 	protected Dictionary<int, ThreadInfo> threadInfos;
 
@@ -57,7 +62,7 @@ public class ProfilerBase
 		sw = new Stopwatch();
 	}
 
-	public static void WriteLine(StringBuilder sb, string category, string region_name, int tid, Stopwatch sw, string ph, string suffix)
+	public static void StartLine(StringBuilder sb, string category, string region_name, int tid, Stopwatch sw, string ph)
 	{
 		sb.Append("{\"cat\":\"").Append(category).Append("\"");
 		sb.Append(",\"name\":\"").Append(region_name).Append("\"");
@@ -68,6 +73,11 @@ public class ProfilerBase
 		long value = elapsedTicks * 1000000 / frequency;
 		sb.Append(",\"ts\":").Append(value);
 		sb.Append(",\"ph\":\"").Append(ph).Append("\"");
+	}
+
+	public static void WriteLine(StringBuilder sb, string category, string region_name, int tid, Stopwatch sw, string ph, string suffix)
+	{
+		StartLine(sb, category, region_name, tid, sw, ph);
 		sb.Append(suffix).Append("\n");
 	}
 
@@ -185,7 +195,6 @@ public class ProfilerBase
 			lock (threadInfos)
 			{
 				threadInfos[value.id] = value;
-				return value;
 			}
 		}
 		return value;

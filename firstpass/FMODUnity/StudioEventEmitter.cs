@@ -9,23 +9,23 @@ namespace FMODUnity
 	public class StudioEventEmitter : MonoBehaviour
 	{
 		[EventRef]
-		public string Event = string.Empty;
+		public string Event = "";
 
-		public EmitterGameEvent PlayEvent;
+		public EmitterGameEvent PlayEvent = EmitterGameEvent.None;
 
-		public EmitterGameEvent StopEvent;
+		public EmitterGameEvent StopEvent = EmitterGameEvent.None;
 
-		public string CollisionTag = string.Empty;
+		public string CollisionTag = "";
 
 		public bool AllowFadeout = true;
 
-		public bool TriggerOnce;
+		public bool TriggerOnce = false;
 
-		public bool Preload;
+		public bool Preload = false;
 
 		public ParamRef[] Params = new ParamRef[0];
 
-		public bool OverrideAttenuation;
+		public bool OverrideAttenuation = false;
 
 		public float OverrideMinDistance = -1f;
 
@@ -35,9 +35,9 @@ namespace FMODUnity
 
 		private EventInstance instance;
 
-		private bool hasTriggered;
+		private bool hasTriggered = false;
 
-		private bool isQuitting;
+		private bool isQuitting = false;
 
 		public EventDescription EventDescription => eventDescription;
 

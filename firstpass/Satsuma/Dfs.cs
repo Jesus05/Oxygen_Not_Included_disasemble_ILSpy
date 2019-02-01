@@ -62,34 +62,34 @@ namespace Satsuma
 		private bool Traverse(Node node, Arc arc)
 		{
 			traversed.Add(node);
-			if (!NodeEnter(node, arc))
+			if (NodeEnter(node, arc))
 			{
-				return false;
-			}
-			foreach (Arc item in Graph.Arcs(node, arcFilter))
-			{
-				if (!(item == arc))
+				foreach (Arc item in Graph.Arcs(node, arcFilter))
 				{
-					Node node2 = Graph.Other(item, node);
-					if (traversed.Contains(node2))
+					if (!(item == arc))
 					{
-						if (!BackArc(node, item))
+						Node node2 = Graph.Other(item, node);
+						if (traversed.Contains(node2))
 						{
-							return false;
+							if (!BackArc(node, item))
+							{
+								return false;
+							}
 						}
-					}
-					else
-					{
-						Level++;
-						if (!Traverse(node2, item))
+						else
 						{
-							return false;
+							Level++;
+							if (!Traverse(node2, item))
+							{
+								return false;
+							}
+							Level--;
 						}
-						Level--;
 					}
 				}
+				return NodeExit(node, arc);
 			}
-			return NodeExit(node, arc);
+			return false;
 		}
 
 		protected abstract void Start(out Direction direction);

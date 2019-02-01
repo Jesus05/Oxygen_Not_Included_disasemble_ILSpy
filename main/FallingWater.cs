@@ -182,7 +182,7 @@ public class FallingWater : KMonoBehaviour, ISim200ms
 
 	private Mesh mesh;
 
-	private float offset;
+	private float offset = 0f;
 
 	private float[] lastSpawnTime;
 

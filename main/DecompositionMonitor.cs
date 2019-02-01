@@ -159,10 +159,10 @@ public class DecompositionMonitor : GameStateMachine<DecompositionMonitor, Decom
 
 	private FliesFX.Instance CreateFX(Instance smi)
 	{
-		if (!smi.isMasterNull)
+		if (smi.isMasterNull)
 		{
-			return new FliesFX.Instance(smi.master, new Vector3(0f, 0f, -0.1f));
+			return null;
 		}
-		return null;
+		return new FliesFX.Instance(smi.master, new Vector3(0f, 0f, -0.1f));
 	}
 }

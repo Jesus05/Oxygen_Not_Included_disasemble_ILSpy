@@ -217,8 +217,6 @@ namespace STRINGS
 
 			public static LocString DEBUGFORCELIGHTEVERYWHERE = "DebugForceLightEverywhere";
 
-			public static LocString DEBUGVISUALTEST = "DebugVisualTest";
-
 			public static LocString DEBUGELEMENTTEST = "DebugElementTest";
 
 			public static LocString DEBUGRIVERTEST = "DebugRiverTest";

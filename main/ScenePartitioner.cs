@@ -25,7 +25,7 @@ public class ScenePartitioner : ISim1000ms
 
 	private List<DirtyNode> dirtyNodes = new List<DirtyNode>();
 
-	private ScenePartitionerNode[,,] nodes;
+	private ScenePartitionerNode[,,] nodes = null;
 
 	private int queryId;
 

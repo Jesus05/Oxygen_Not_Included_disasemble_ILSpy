@@ -14,6 +14,8 @@ public class TubeTraveller : GameStateMachine<TubeTraveller, TubeTraveller.Insta
 
 		private bool hadSuitTank;
 
+		public int prefabInstanceID => GetComponent<Navigator>().gameObject.GetComponent<KPrefabID>().InstanceID;
+
 		public Instance(IStateMachineTarget master)
 			: base(master)
 		{
@@ -40,7 +42,7 @@ public class TubeTraveller : GameStateMachine<TubeTraveller, TubeTraveller.Insta
 						{
 							PathFinder.Path.Node node3 = path.nodes[i];
 							int cell = node3.cell;
-							if (Grid.HasTubeEntrance[cell])
+							if (Grid.HasUsableTubeEntrance(cell, prefabInstanceID))
 							{
 								GameObject gameObject = Grid.Objects[cell, 1];
 								if ((bool)gameObject)
@@ -48,7 +50,7 @@ public class TubeTraveller : GameStateMachine<TubeTraveller, TubeTraveller.Insta
 									TravelTubeEntrance component = gameObject.GetComponent<TravelTubeEntrance>();
 									if ((bool)component)
 									{
-										component.Reserve(this);
+										component.Reserve(this, prefabInstanceID);
 										reservations.Add(component);
 									}
 								}
@@ -65,7 +67,7 @@ public class TubeTraveller : GameStateMachine<TubeTraveller, TubeTraveller.Insta
 			{
 				if (!((Object)reservation == (Object)null))
 				{
-					reservation.Unreserve(this);
+					reservation.Unreserve(this, prefabInstanceID);
 				}
 			}
 			reservations.Clear();

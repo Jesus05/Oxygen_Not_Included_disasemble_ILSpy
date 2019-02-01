@@ -280,13 +280,13 @@ public class Game : KMonoBehaviour
 	public Action<GameSaveData> OnLoad;
 
 	[NonSerialized]
-	public bool baseAlreadyCreated;
+	public bool baseAlreadyCreated = false;
 
 	[NonSerialized]
-	public bool autoPrioritizeRoles;
+	public bool autoPrioritizeRoles = false;
 
 	[NonSerialized]
-	public bool advancedPersonalPriorities;
+	public bool advancedPersonalPriorities = false;
 
 	public SavedInfo savedInfo;
 
@@ -308,7 +308,7 @@ public class Game : KMonoBehaviour
 
 	public Element VisualTunerElement;
 
-	public float currentSunlightIntensity;
+	public float currentSunlightIntensity = 0f;
 
 	public RoomProber roomProber;
 
@@ -324,7 +324,7 @@ public class Game : KMonoBehaviour
 
 	public Unlocks unlocks;
 
-	private bool sandboxModeActive;
+	private bool sandboxModeActive = false;
 
 	public HandleVector<CallbackInfo> callbackManager = new HandleVector<CallbackInfo>(256);
 
@@ -435,7 +435,7 @@ public class Game : KMonoBehaviour
 
 	private List<SolidInfo> gameSolidInfo = new List<SolidInfo>();
 
-	private bool IsPaused;
+	private bool IsPaused = false;
 
 	private HashSet<int> solidChangedFilter = new HashSet<int>();
 
@@ -446,7 +446,7 @@ public class Game : KMonoBehaviour
 	[MyCmpGet]
 	private GameScenePartitioner gameScenePartitioner;
 
-	private bool gameStarted;
+	private bool gameStarted = false;
 
 	private static readonly EventSystem.IntraObjectHandler<Game> MarkStatusItemRendererDirtyDelegate = new EventSystem.IntraObjectHandler<Game>(delegate(Game component, object data)
 	{
@@ -459,10 +459,10 @@ public class Game : KMonoBehaviour
 
 	private Vector2I simActiveRegionMax;
 
-	public bool debugWasUsed;
+	public bool debugWasUsed = false;
 
 	[SerializeField]
-	private bool forceActiveArea;
+	private bool forceActiveArea = false;
 
 	[SerializeField]
 	private Vector2 minForcedActiveArea = new Vector2(0f, 0f);
@@ -470,7 +470,7 @@ public class Game : KMonoBehaviour
 	[SerializeField]
 	private Vector2 maxForcedActiveArea = new Vector2(128f, 128f);
 
-	private bool isLoading;
+	private bool isLoading = false;
 
 	private HashedString previousOverlayMode = OverlayModes.None.ID;
 
@@ -487,11 +487,11 @@ public class Game : KMonoBehaviour
 
 	private Dictionary<int, ObjectPool> fxPools = new Dictionary<int, ObjectPool>();
 
-	private SavingPreCB activatePreCB;
+	private SavingPreCB activatePreCB = null;
 
-	private SavingActiveCB activateActiveCB;
+	private SavingActiveCB activateActiveCB = null;
 
-	private SavingPostCB activatePostCB;
+	private SavingPostCB activatePostCB = null;
 
 	[SerializeField]
 	public UIColours uiColours = new UIColours();
@@ -1249,54 +1249,70 @@ public class Game : KMonoBehaviour
 			}
 		}
 		KFMOD.RenderEveryTick(Time.deltaTime);
-		if (GenericGameSettings.instance.developerDebugEnable)
+		if (GenericGameSettings.instance.performanceCapture.waitTime != 0f)
 		{
-			UpdateGCProfileCapture();
+			UpdatePerformanceCapture();
 		}
 	}
 
-	private void UpdateGCProfileCapture()
+	private void UpdatePerformanceCapture()
 	{
-		if (GenericGameSettings.instance.developerCaptureGCStatsTime != 0f)
+		if (IsPaused && (UnityEngine.Object)SpeedControlScreen.Instance != (UnityEngine.Object)null)
 		{
-			if (IsPaused && (UnityEngine.Object)SpeedControlScreen.Instance != (UnityEngine.Object)null)
+			SpeedControlScreen.Instance.Unpause(true);
+		}
+		if (!(Time.timeSinceLevelLoad < GenericGameSettings.instance.performanceCapture.waitTime))
+		{
+			uint num = 306320u;
+			string text = System.DateTime.Now.ToShortDateString();
+			string text2 = System.DateTime.Now.ToShortTimeString();
+			string fileName = Path.GetFileName(GenericGameSettings.instance.performanceCapture.saveGame);
+			string text3 = "Version,Date,Time,SaveGame";
+			string text4 = $"{num},{text},{text2},{fileName}";
+			float num2 = 0.1f;
+			if (GenericGameSettings.instance.performanceCapture.gcStats)
 			{
-				SpeedControlScreen.Instance.Unpause(true);
-			}
-			if (!(Time.timeSinceLevelLoad < GenericGameSettings.instance.developerCaptureGCStatsTime))
-			{
-				float fPS = Global.Instance.GetComponent<PerformanceMonitor>().FPS;
 				Debug.Log("Begin GC profiling...", null);
 				float realtimeSinceStartup = Time.realtimeSinceStartup;
 				GC.Collect();
-				float num = Time.realtimeSinceStartup - realtimeSinceStartup;
-				Debug.Log("\tGC.Collect() took " + num.ToString() + " seconds", null);
-				uint num2 = 303707u;
-				string text = System.DateTime.Now.ToShortDateString();
-				string text2 = System.DateTime.Now.ToShortTimeString();
-				string fileName = Path.GetFileName(SaveLoader.GetLatestSaveFile());
-				string text3 = "Version,Date,Time,SaveGame";
-				string text4 = $"{num2},{text},{text2},{fileName}";
-				using (StreamWriter streamWriter = new StreamWriter("./memory/GeneralMetrics.csv"))
-				{
-					string format = "{0},{1},{2}";
-					streamWriter.WriteLine(string.Format(format, text3, "GCDuration", "FPS"));
-					streamWriter.WriteLine(string.Format(format, text4, num, fPS));
-				}
+				num2 = Time.realtimeSinceStartup - realtimeSinceStartup;
+				Debug.Log("\tGC.Collect() took " + num2.ToString() + " seconds", null);
 				MemorySnapshot memorySnapshot = new MemorySnapshot();
-				using (StreamWriter streamWriter2 = new StreamWriter("./memory/GCTypeMetrics.csv"))
+				string format = "{0},{1},{2},{3}";
+				string path = "./memory/GCTypeMetrics.csv";
+				if (!File.Exists(path))
 				{
-					string format2 = "{0},{1},{2},{3}";
-					streamWriter2.WriteLine(string.Format(format2, text3, "Type", "Instances", "References"));
-					foreach (MemorySnapshot.TypeData value in memorySnapshot.types.Values)
+					using (StreamWriter streamWriter = new StreamWriter(path))
 					{
-						streamWriter2.WriteLine(string.Format(format2, text4, "\"" + value.type.ToString() + "\"", value.instanceCount, value.refCount));
+						streamWriter.WriteLine(string.Format(format, text3, "Type", "Instances", "References"));
 					}
 				}
-				GenericGameSettings.instance.developerCaptureGCStatsTime = 0f;
+				using (StreamWriter streamWriter2 = new StreamWriter(path, true))
+				{
+					foreach (MemorySnapshot.TypeData value in memorySnapshot.types.Values)
+					{
+						streamWriter2.WriteLine(string.Format(format, text4, "\"" + value.type.ToString() + "\"", value.instanceCount, value.refCount));
+					}
+				}
 				Debug.Log("...end GC profiling", null);
-				Application.Quit();
 			}
+			float fPS = Global.Instance.GetComponent<PerformanceMonitor>().FPS;
+			Directory.CreateDirectory("./memory");
+			string format2 = "{0},{1},{2}";
+			string path2 = "./memory/GeneralMetrics.csv";
+			if (!File.Exists(path2))
+			{
+				using (StreamWriter streamWriter3 = new StreamWriter(path2))
+				{
+					streamWriter3.WriteLine(string.Format(format2, text3, "GCDuration", "FPS"));
+				}
+			}
+			using (StreamWriter streamWriter4 = new StreamWriter(path2, true))
+			{
+				streamWriter4.WriteLine(string.Format(format2, text4, num2, fPS));
+			}
+			GenericGameSettings.instance.performanceCapture.waitTime = 0f;
+			Application.Quit();
 		}
 	}
 
@@ -1762,6 +1778,7 @@ public class Game : KMonoBehaviour
 		MinionGroupProber.DestroyInstance();
 		NavPathDrawer.DestroyInstance();
 		MinionIdentity.DestroyStatics();
+		PathFinder.PathGrid.OnCleanUp();
 		PathFinder.PathGrid = null;
 		Pathfinding.DestroyInstance();
 		PrebuildTool.DestroyInstance();

@@ -327,11 +327,11 @@ public class GroundRenderer : KMonoBehaviour
 
 		private static int GetBiomeIdx(int cell)
 		{
-			if (!Grid.IsValidCell(cell))
+			if (Grid.IsValidCell(cell))
 			{
-				return 0;
+				return (int)World.Instance.zoneRenderData.GetSubWorldZoneType(cell);
 			}
-			return (int)World.Instance.zoneRenderData.GetSubWorldZoneType(cell);
+			return 0;
 		}
 
 		private static float GetStaticRandom(int x, int y)
@@ -374,7 +374,7 @@ public class GroundRenderer : KMonoBehaviour
 
 	private Vector2I size;
 
-	private static bool forceVisibleRebuild;
+	private static bool forceVisibleRebuild = false;
 
 	protected override void OnPrefabInit()
 	{
@@ -504,7 +504,8 @@ public class GroundRenderer : KMonoBehaviour
 			string key = biomeMask.Key;
 			if (a == key)
 			{
-				return biomeMask.Value;
+				result = biomeMask.Value;
+				break;
 			}
 		}
 		return result;

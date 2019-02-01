@@ -68,10 +68,10 @@ public class BaseNaming : KMonoBehaviour
 
 	private string ReplaceStringWithRandom(string fullString, string replacementKey, string[] replacementValues)
 	{
-		if (!fullString.Contains(replacementKey))
+		if (fullString.Contains(replacementKey))
 		{
-			return fullString;
+			return fullString.Replace(replacementKey, replacementValues.GetRandom());
 		}
-		return fullString.Replace(replacementKey, replacementValues.GetRandom());
+		return fullString;
 	}
 }

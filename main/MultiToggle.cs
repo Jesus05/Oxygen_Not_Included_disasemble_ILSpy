@@ -25,13 +25,13 @@ public class MultiToggle : KMonoBehaviour, IPointerClickHandler, IPointerEnterHa
 
 	public System.Action onStopHold;
 
-	protected bool clickHeldDown;
+	protected bool clickHeldDown = false;
 
-	protected float totalHeldTime;
+	protected float totalHeldTime = 0f;
 
 	protected float heldTimeThreshold = 0.4f;
 
-	private bool pointerOver;
+	private bool pointerOver = false;
 
 	public int CurrentState => state;
 
@@ -192,7 +192,7 @@ public class MultiToggle : KMonoBehaviour, IPointerClickHandler, IPointerEnterHa
 		clickHeldDown = true;
 		if (play_sound_on_click)
 		{
-			if (states[state].on_click_override_sound_path == string.Empty)
+			if (states[state].on_click_override_sound_path == "")
 			{
 				KFMOD.PlayOneShot(GlobalAssets.GetSound("HUD_Click", false));
 			}

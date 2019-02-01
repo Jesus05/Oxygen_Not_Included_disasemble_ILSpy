@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <ProjectGuid>{77D0C6D6-32C1-4D6B-AA35-BA3E6AD750A4}</ProjectGuid>
+    <ProjectGuid>{DB13B71B-0D48-44C2-9EB7-6364075F1BA5}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <OutputType>Library</OutputType>
@@ -47,6 +47,9 @@
     <Reference Include="UnityEngine.UI">
       <HintPath>E:\Program Files (x86)\Steam\steamapps\common\OxygenNotIncluded\OxygenNotIncluded_Data\Managed\UnityEngine.UI.dll</HintPath>
     </Reference>
+    <Reference Include="Unity.TextMeshPro">
+      <HintPath>E:\Program Files (x86)\Steam\steamapps\common\OxygenNotIncluded\OxygenNotIncluded_Data\Managed\Unity.TextMeshPro.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEngine.AnimationModule">
       <HintPath>E:\Program Files (x86)\Steam\steamapps\common\OxygenNotIncluded\OxygenNotIncluded_Data\Managed\UnityEngine.AnimationModule.dll</HintPath>
     </Reference>
@@ -62,11 +65,11 @@
     <Reference Include="System.Xml.Linq">
       <HintPath>E:\Program Files (x86)\Steam\steamapps\common\OxygenNotIncluded\OxygenNotIncluded_Data\Managed\System.Xml.Linq.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEngine.TextRenderingModule">
-      <HintPath>E:\Program Files (x86)\Steam\steamapps\common\OxygenNotIncluded\OxygenNotIncluded_Data\Managed\UnityEngine.TextRenderingModule.dll</HintPath>
-    </Reference>
     <Reference Include="System.Xml">
       <HintPath>E:\Program Files (x86)\Steam\steamapps\common\OxygenNotIncluded\OxygenNotIncluded_Data\Managed\System.Xml.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.TextRenderingModule">
+      <HintPath>E:\Program Files (x86)\Steam\steamapps\common\OxygenNotIncluded\OxygenNotIncluded_Data\Managed\UnityEngine.TextRenderingModule.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -126,6 +129,7 @@
     <Compile Include="ColorStyleSetting.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="ContainerPool.cs" />
+    <Compile Include="CPUBudget.cs" />
     <Compile Include="CSVUtil.cs" />
     <Compile Include="Debug.cs" />
     <Compile Include="DebugExtension.cs" />
@@ -446,6 +450,7 @@
     <Compile Include="HoverCallback.cs" />
     <Compile Include="HUSL\ColorConverter.cs" />
     <Compile Include="IComponentManager.cs" />
+    <Compile Include="ICPULoad.cs" />
     <Compile Include="IGlobalAsyncLoader.cs" />
     <Compile Include="IInputHandler.cs" />
     <Compile Include="ImageToggleState.cs" />
@@ -1296,99 +1301,6 @@
     <Compile Include="TextureUtil.cs" />
     <Compile Include="ThreadedHttps.cs" />
     <Compile Include="Timer.cs" />
-    <Compile Include="TMPro.SpriteAssetUtilities\SpriteAssetImportFormats.cs" />
-    <Compile Include="TMPro.SpriteAssetUtilities\TexturePacker.cs" />
-    <Compile Include="TMPro\CaretInfo.cs" />
-    <Compile Include="TMPro\CaretPosition.cs" />
-    <Compile Include="TMPro\ColorTween.cs" />
-    <Compile Include="TMPro\Compute_DistanceTransform_EventTypes.cs" />
-    <Compile Include="TMPro\Compute_DT_EventArgs.cs" />
-    <Compile Include="TMPro\Extents.cs" />
-    <Compile Include="TMPro\FaceInfo.cs" />
-    <Compile Include="TMPro\FastAction.cs" />
-    <Compile Include="TMPro\FloatTween.cs" />
-    <Compile Include="TMPro\FontCreationSetting.cs" />
-    <Compile Include="TMPro\FontStyles.cs" />
-    <Compile Include="TMPro\FontWeights.cs" />
-    <Compile Include="TMPro\GlyphValueRecord.cs" />
-    <Compile Include="TMPro\InlineGraphic.cs" />
-    <Compile Include="TMPro\InlineGraphicManager.cs" />
-    <Compile Include="TMPro\ITextElement.cs" />
-    <Compile Include="TMPro\ITweenValue.cs" />
-    <Compile Include="TMPro\KerningPair.cs" />
-    <Compile Include="TMPro\KerningPairKey.cs" />
-    <Compile Include="TMPro\KerningTable.cs" />
-    <Compile Include="TMPro\MaskingOffsetMode.cs" />
-    <Compile Include="TMPro\MaskingTypes.cs" />
-    <Compile Include="TMPro\MaterialReference.cs" />
-    <Compile Include="TMPro\MaterialReferenceManager.cs" />
-    <Compile Include="TMPro\Mesh_Extents.cs" />
-    <Compile Include="TMPro\SetPropertyUtility.cs" />
-    <Compile Include="TMPro\ShaderUtilities.cs" />
-    <Compile Include="TMPro\TagAttribute.cs" />
-    <Compile Include="TMPro\TagType.cs" />
-    <Compile Include="TMPro\TagUnits.cs" />
-    <Compile Include="TMPro\TextAlignmentOptions.cs" />
-    <Compile Include="TMPro\TextContainer.cs" />
-    <Compile Include="TMPro\TextContainerAnchors.cs" />
-    <Compile Include="TMPro\TextMeshPro.cs" />
-    <Compile Include="TMPro\TextMeshProUGUI.cs" />
-    <Compile Include="TMPro\TextOverflowModes.cs" />
-    <Compile Include="TMPro\TextRenderFlags.cs" />
-    <Compile Include="TMPro\TextureMappingOptions.cs" />
-    <Compile Include="TMPro\TMPro_EventManager.cs" />
-    <Compile Include="TMPro\TMPro_ExtensionMethods.cs" />
-    <Compile Include="TMPro\TMP_Asset.cs" />
-    <Compile Include="TMPro\TMP_BasicXmlTagStack.cs" />
-    <Compile Include="TMPro\TMP_CharacterInfo.cs" />
-    <Compile Include="TMPro\TMP_ColorGradient.cs" />
-    <Compile Include="TMPro\TMP_Compatibility.cs" />
-    <Compile Include="TMPro\TMP_DefaultControls.cs" />
-    <Compile Include="TMPro\TMP_Dropdown.cs" />
-    <Compile Include="TMPro\TMP_FontAsset.cs" />
-    <Compile Include="TMPro\TMP_FontUtilities.cs" />
-    <Compile Include="TMPro\TMP_FontWeights.cs" />
-    <Compile Include="TMPro\TMP_Glyph.cs" />
-    <Compile Include="TMPro\TMP_InputField.cs" />
-    <Compile Include="TMPro\TMP_InputValidator.cs" />
-    <Compile Include="TMPro\TMP_LineInfo.cs" />
-    <Compile Include="TMPro\TMP_LinkInfo.cs" />
-    <Compile Include="TMPro\TMP_ListPool.cs" />
-    <Compile Include="TMPro\TMP_MaterialManager.cs" />
-    <Compile Include="TMPro\TMP_Math.cs" />
-    <Compile Include="TMPro\TMP_MeshInfo.cs" />
-    <Compile Include="TMPro\TMP_ObjectPool.cs" />
-    <Compile Include="TMPro\TMP_PageInfo.cs" />
-    <Compile Include="TMPro\TMP_PhoneNumberValidator.cs" />
-    <Compile Include="TMPro\TMP_ScrollbarEventHandler.cs" />
-    <Compile Include="TMPro\TMP_SelectionCaret.cs" />
-    <Compile Include="TMPro\TMP_Settings.cs" />
-    <Compile Include="TMPro\TMP_Sprite.cs" />
-    <Compile Include="TMPro\TMP_SpriteAnimator.cs" />
-    <Compile Include="TMPro\TMP_SpriteAsset.cs" />
-    <Compile Include="TMPro\TMP_SpriteInfo.cs" />
-    <Compile Include="TMPro\TMP_Style.cs" />
-    <Compile Include="TMPro\TMP_StyleSheet.cs" />
-    <Compile Include="TMPro\TMP_SubMesh.cs" />
-    <Compile Include="TMPro\TMP_SubMeshUI.cs" />
-    <Compile Include="TMPro\TMP_Text.cs" />
-    <Compile Include="TMPro\TMP_TextElement.cs" />
-    <Compile Include="TMPro\TMP_TextElementType.cs" />
-    <Compile Include="TMPro\TMP_TextInfo.cs" />
-    <Compile Include="TMPro\TMP_TextUtilities.cs" />
-    <Compile Include="TMPro\TMP_UpdateManager.cs" />
-    <Compile Include="TMPro\TMP_UpdateRegistry.cs" />
-    <Compile Include="TMPro\TMP_Vertex.cs" />
-    <Compile Include="TMPro\TMP_VertexDataUpdateFlags.cs" />
-    <Compile Include="TMPro\TMP_WordInfo.cs" />
-    <Compile Include="TMPro\TMP_XmlTagStack.cs" />
-    <Compile Include="TMPro\TweenRunner.cs" />
-    <Compile Include="TMPro\VertexGradient.cs" />
-    <Compile Include="TMPro\VertexSortingOrder.cs" />
-    <Compile Include="TMPro\WordWrapState.cs" />
-    <Compile Include="TMPro\XML_TagAttribute.cs" />
-    <Compile Include="TMPro\_HorizontalAlignmentOptions.cs" />
-    <Compile Include="TMPro\_VerticalAlignmentOptions.cs" />
     <Compile Include="ToggleSoundPlayer.cs" />
     <Compile Include="ToolTip.cs" />
     <Compile Include="ToolTipScreen.cs" />

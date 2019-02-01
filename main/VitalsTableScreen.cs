@@ -35,7 +35,7 @@ public class VitalsTableScreen : TableScreen
 		}
 		else
 		{
-			componentInChildren.text = ((!widgetRow.isDefault) ? UI.VITALSSCREEN.STRESS.ToString() : string.Empty);
+			componentInChildren.text = ((!widgetRow.isDefault) ? UI.VITALSSCREEN.STRESS.ToString() : "");
 		}
 	}
 
@@ -89,7 +89,7 @@ public class VitalsTableScreen : TableScreen
 		}
 		else
 		{
-			componentInChildren.text = ((!widgetRow.isDefault) ? UI.VITALSSCREEN.QUALITYOFLIFE_EXPECTATIONS.ToString() : string.Empty);
+			componentInChildren.text = ((!widgetRow.isDefault) ? UI.VITALSSCREEN.QUALITYOFLIFE_EXPECTATIONS.ToString() : "");
 		}
 	}
 
@@ -149,7 +149,7 @@ public class VitalsTableScreen : TableScreen
 			object text;
 			if (widgetRow.isDefault)
 			{
-				text = string.Empty;
+				text = "";
 			}
 			else
 			{
@@ -210,38 +210,39 @@ public class VitalsTableScreen : TableScreen
 		}
 		else
 		{
-			componentInChildren.text = ((!widgetRow.isDefault) ? UI.VITALSSCREEN_IMMUNITY.ToString() : string.Empty);
+			componentInChildren.text = ((!widgetRow.isDefault) ? UI.VITALSSCREEN_IMMUNITY.ToString() : "");
 		}
 	}
 
 	private string get_value_immunity_label(MinionIdentity minion, GameObject widget_go)
 	{
 		Diseases diseases = minion.GetComponent<MinionModifiers>().diseases;
-		if (diseases.IsInfected())
+		if (!diseases.IsInfected())
 		{
-			string text = string.Empty;
-			if (diseases.Count <= 1)
-			{
-				{
-					foreach (DiseaseInstance item in diseases)
-					{
-						if (!string.IsNullOrEmpty(text))
-						{
-							text += "\n";
-						}
-						text += string.Format(UI.VITALSSCREEN.IMMUNITY_DISEASE, item.modifier.Name, GameUtil.GetFormattedCycles(item.GetInfectedTimeRemaining(), "F1"));
-					}
-					return text;
-				}
-			}
+			return Db.Get().Amounts.ImmuneLevel.Lookup(minion).GetValueString();
+		}
+		string text = "";
+		if (diseases.Count > 1)
+		{
 			float seconds = 0f;
+			foreach (DiseaseInstance item in diseases)
+			{
+				seconds = Mathf.Min(item.GetInfectedTimeRemaining());
+			}
+			text += string.Format(UI.VITALSSCREEN.IMMUNITY_MULTIPLE_DISEASES, GameUtil.GetFormattedCycles(seconds, "F1"));
+		}
+		else
+		{
 			foreach (DiseaseInstance item2 in diseases)
 			{
-				seconds = Mathf.Min(item2.GetInfectedTimeRemaining());
+				if (!string.IsNullOrEmpty(text))
+				{
+					text += "\n";
+				}
+				text += string.Format(UI.VITALSSCREEN.IMMUNITY_DISEASE, item2.modifier.Name, GameUtil.GetFormattedCycles(item2.GetInfectedTimeRemaining(), "F1"));
 			}
-			return text + string.Format(UI.VITALSSCREEN.IMMUNITY_MULTIPLE_DISEASES, GameUtil.GetFormattedCycles(seconds, "F1"));
 		}
-		return Db.Get().Amounts.ImmuneLevel.Lookup(minion).GetValueString();
+		return text;
 	}
 
 	private int compare_rows_immunity(MinionIdentity a, MinionIdentity b)
@@ -303,7 +304,7 @@ public class VitalsTableScreen : TableScreen
 		}
 		else
 		{
-			componentInChildren.text = ((!widgetRow.isDefault) ? UI.VITALSSCREEN_CALORIES.ToString() : string.Empty);
+			componentInChildren.text = ((!widgetRow.isDefault) ? UI.VITALSSCREEN_CALORIES.ToString() : "");
 		}
 	}
 
@@ -372,7 +373,7 @@ public class VitalsTableScreen : TableScreen
 		}
 		else
 		{
-			componentInChildren.text = ((!widgetRow.isDefault) ? UI.VITALSSCREEN_EATENTODAY.ToString() : string.Empty);
+			componentInChildren.text = ((!widgetRow.isDefault) ? UI.VITALSSCREEN_EATENTODAY.ToString() : "");
 		}
 	}
 

@@ -98,31 +98,31 @@ namespace FMOD.Studio
 		{
 			array = null;
 			RESULT rESULT = FMOD_Studio_Bank_GetEventCount(handle, out int count);
-			if (rESULT != 0)
+			if (rESULT == RESULT.OK)
 			{
-				return rESULT;
-			}
-			if (count == 0)
-			{
+				if (count != 0)
+				{
+					IntPtr[] array2 = new IntPtr[count];
+					rESULT = FMOD_Studio_Bank_GetEventList(handle, array2, count, out int count2);
+					if (rESULT == RESULT.OK)
+					{
+						if (count2 > count)
+						{
+							count2 = count;
+						}
+						array = new EventDescription[count2];
+						for (int i = 0; i < count2; i++)
+						{
+							array[i].handle = array2[i];
+						}
+						return RESULT.OK;
+					}
+					return rESULT;
+				}
 				array = new EventDescription[0];
 				return rESULT;
 			}
-			IntPtr[] array2 = new IntPtr[count];
-			rESULT = FMOD_Studio_Bank_GetEventList(handle, array2, count, out int count2);
-			if (rESULT != 0)
-			{
-				return rESULT;
-			}
-			if (count2 > count)
-			{
-				count2 = count;
-			}
-			array = new EventDescription[count2];
-			for (int i = 0; i < count2; i++)
-			{
-				array[i].handle = array2[i];
-			}
-			return RESULT.OK;
+			return rESULT;
 		}
 
 		public RESULT getBusCount(out int count)
@@ -134,31 +134,31 @@ namespace FMOD.Studio
 		{
 			array = null;
 			RESULT rESULT = FMOD_Studio_Bank_GetBusCount(handle, out int count);
-			if (rESULT != 0)
+			if (rESULT == RESULT.OK)
 			{
-				return rESULT;
-			}
-			if (count == 0)
-			{
+				if (count != 0)
+				{
+					IntPtr[] array2 = new IntPtr[count];
+					rESULT = FMOD_Studio_Bank_GetBusList(handle, array2, count, out int count2);
+					if (rESULT == RESULT.OK)
+					{
+						if (count2 > count)
+						{
+							count2 = count;
+						}
+						array = new Bus[count2];
+						for (int i = 0; i < count2; i++)
+						{
+							array[i].handle = array2[i];
+						}
+						return RESULT.OK;
+					}
+					return rESULT;
+				}
 				array = new Bus[0];
 				return rESULT;
 			}
-			IntPtr[] array2 = new IntPtr[count];
-			rESULT = FMOD_Studio_Bank_GetBusList(handle, array2, count, out int count2);
-			if (rESULT != 0)
-			{
-				return rESULT;
-			}
-			if (count2 > count)
-			{
-				count2 = count;
-			}
-			array = new Bus[count2];
-			for (int i = 0; i < count2; i++)
-			{
-				array[i].handle = array2[i];
-			}
-			return RESULT.OK;
+			return rESULT;
 		}
 
 		public RESULT getVCACount(out int count)
@@ -170,31 +170,31 @@ namespace FMOD.Studio
 		{
 			array = null;
 			RESULT rESULT = FMOD_Studio_Bank_GetVCACount(handle, out int count);
-			if (rESULT != 0)
+			if (rESULT == RESULT.OK)
 			{
-				return rESULT;
-			}
-			if (count == 0)
-			{
+				if (count != 0)
+				{
+					IntPtr[] array2 = new IntPtr[count];
+					rESULT = FMOD_Studio_Bank_GetVCAList(handle, array2, count, out int count2);
+					if (rESULT == RESULT.OK)
+					{
+						if (count2 > count)
+						{
+							count2 = count;
+						}
+						array = new VCA[count2];
+						for (int i = 0; i < count2; i++)
+						{
+							array[i].handle = array2[i];
+						}
+						return RESULT.OK;
+					}
+					return rESULT;
+				}
 				array = new VCA[0];
 				return rESULT;
 			}
-			IntPtr[] array2 = new IntPtr[count];
-			rESULT = FMOD_Studio_Bank_GetVCAList(handle, array2, count, out int count2);
-			if (rESULT != 0)
-			{
-				return rESULT;
-			}
-			if (count2 > count)
-			{
-				count2 = count;
-			}
-			array = new VCA[count2];
-			for (int i = 0; i < count2; i++)
-			{
-				array[i].handle = array2[i];
-			}
-			return RESULT.OK;
+			return rESULT;
 		}
 
 		public RESULT getUserData(out IntPtr userdata)

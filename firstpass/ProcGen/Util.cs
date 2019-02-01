@@ -48,21 +48,21 @@ namespace ProcGen
 		public static List<Vector2I> StaggerLine(Vector2 p0, Vector2 p1, int numberOfBreaks, SeededRandom rand, float staggerRange = 3f)
 		{
 			List<Vector2I> list = new List<Vector2I>();
-			if (numberOfBreaks == 0)
+			if (numberOfBreaks != 0)
 			{
-				return GetLine(p0, p1);
+				Vector2 a = p1 - p0;
+				Vector2 p2 = p0;
+				Vector2 vector = p1;
+				for (int i = 0; i < numberOfBreaks; i++)
+				{
+					vector = p0 + a * (1f / (float)numberOfBreaks) * (float)i + Vector2.one * rand.RandomRange(0f - staggerRange, staggerRange);
+					list.AddRange(GetLine(p2, vector));
+					p2 = vector;
+				}
+				list.AddRange(GetLine(vector, p1));
+				return list;
 			}
-			Vector2 a = p1 - p0;
-			Vector2 p2 = p0;
-			Vector2 vector = p1;
-			for (int i = 0; i < numberOfBreaks; i++)
-			{
-				vector = p0 + a * (1f / (float)numberOfBreaks) * (float)i + Vector2.one * rand.RandomRange(0f - staggerRange, staggerRange);
-				list.AddRange(GetLine(p2, vector));
-				p2 = vector;
-			}
-			list.AddRange(GetLine(vector, p1));
-			return list;
+			return GetLine(p0, p1);
 		}
 
 		public static List<Vector2I> GetLine(Vector2 p0, Vector2 p1)
@@ -179,14 +179,14 @@ namespace ProcGen
 
 		public static Vector2 RandomInUnitCircle(System.Random rng = null)
 		{
-			if (rng == null)
+			if (rng != null)
 			{
-				return UnityEngine.Random.insideUnitCircle;
+				double d = rng.NextDouble();
+				double num = rng.NextDouble();
+				double num2 = Math.Sqrt(d);
+				return new Vector2((float)(num2 * Math.Cos(num)), (float)(num2 * Math.Sin(num)));
 			}
-			double d = rng.NextDouble();
-			double num = rng.NextDouble();
-			double num2 = Math.Sqrt(d);
-			return new Vector2((float)(num2 * Math.Cos(num)), (float)(num2 * Math.Sin(num)));
+			return UnityEngine.Random.insideUnitCircle;
 		}
 
 		public static List<Vector2I> GetBlob(Vector2 center, float radius, System.Random rng)

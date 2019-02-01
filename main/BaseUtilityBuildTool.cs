@@ -31,11 +31,11 @@ public class BaseUtilityBuildTool : DragTool
 
 	private Coroutine visUpdater;
 
-	private int buildingCount;
+	private int buildingCount = 0;
 
 	private int lastCell = -1;
 
-	private BuildingCellVisualizer previousCellConnection;
+	private BuildingCellVisualizer previousCellConnection = null;
 
 	private int previousCell;
 
@@ -123,7 +123,7 @@ public class BaseUtilityBuildTool : DragTool
 					previousCellConnection = null;
 				}
 				previousCell = cell;
-				CheckForConnection(cell, def.PrefabID, string.Empty, ref previousCellConnection, false);
+				CheckForConnection(cell, def.PrefabID, "", ref previousCellConnection, false);
 				PathNode pathNode3 = path[path.Count - 1];
 				Object.Destroy(pathNode3.visualizer);
 				PathNode pathNode4 = path[path.Count - 1];
@@ -132,7 +132,7 @@ public class BaseUtilityBuildTool : DragTool
 				buildingCount = ((buildingCount != 1) ? (buildingCount - 1) : (buildingCount = 14));
 				instance.setParameterValue("tileCount", (float)buildingCount);
 				SoundEvent.EndOneShot(instance);
-				goto IL_029c;
+				goto IL_02a7;
 			}
 		}
 		if (!path.Exists((PathNode n) => n.cell == cell))
@@ -149,8 +149,8 @@ public class BaseUtilityBuildTool : DragTool
 			instance.setParameterValue("tileCount", (float)buildingCount);
 			SoundEvent.EndOneShot(instance);
 		}
-		goto IL_029c;
-		IL_029c:
+		goto IL_02a7;
+		IL_02a7:
 		visualizer.SetActive(path.Count < 2);
 		ResourceRemainingDisplayScreen.instance.SetNumberOfPendingConstructions(path.Count);
 	}
@@ -282,11 +282,11 @@ public class BaseUtilityBuildTool : DragTool
 	private Building GetBuilding(int cell)
 	{
 		GameObject gameObject = Grid.Objects[cell, 1];
-		if ((Object)gameObject != (Object)null)
+		if (!((Object)gameObject != (Object)null))
 		{
-			return gameObject.GetComponent<Building>();
+			return null;
 		}
-		return null;
+		return gameObject.GetComponent<Building>();
 	}
 
 	protected override Mode GetMode()

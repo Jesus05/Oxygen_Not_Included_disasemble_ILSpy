@@ -37,7 +37,7 @@ public class Clinic : Workable, IEffectDescriptor
 			{
 				if (base.master.IsValidEffect(base.master.doctoredHealthEffect) || base.master.IsValidEffect(base.master.doctoredDiseaseEffect))
 				{
-					doctorChore = new WorkChore<DoctorChoreWorkable>(Db.Get().ChoreTypes.Doctor, base.smi.master, null, null, true, null, null, null, true, null, false, true, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, true);
+					doctorChore = new WorkChore<DoctorChoreWorkable>(Db.Get().ChoreTypes.Doctor, base.smi.master, null, null, true, null, null, null, true, null, false, true, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, true, true);
 					WorkChore<DoctorChoreWorkable> workChore = doctorChore;
 					workChore.onComplete = (Action<Chore>)Delegate.Combine(workChore.onComplete, (Action<Chore>)delegate
 					{
@@ -115,10 +115,10 @@ public class Clinic : Workable, IEffectDescriptor
 				component4.Unassign();
 			});
 			operational.DefaultState(operational.idle).EventTransition(GameHashes.OperationalChanged, unoperational, (Instance smi) => !smi.master.GetComponent<Operational>().IsOperational).EventTransition(GameHashes.AssigneeChanged, unoperational, null)
-				.ToggleRecurringChore((Instance smi) => new WorkChore<Clinic>(Db.Get().ChoreTypes.Heal, smi.master, null, null, true, null, null, null, false, null, false, true, null, false, true, false, PriorityScreen.PriorityClass.emergency, 5, false), (Instance smi) => !string.IsNullOrEmpty(smi.master.healthEffect))
-				.ToggleRecurringChore((Instance smi) => new WorkChore<Clinic>(Db.Get().ChoreTypes.HealCritical, smi.master, null, null, true, null, null, null, false, null, false, true, null, false, true, false, PriorityScreen.PriorityClass.emergency, 5, false), (Instance smi) => !string.IsNullOrEmpty(smi.master.healthEffect))
-				.ToggleRecurringChore((Instance smi) => new WorkChore<Clinic>(Db.Get().ChoreTypes.RestDueToDisease, smi.master, null, null, true, null, null, null, false, null, true, true, null, false, true, false, PriorityScreen.PriorityClass.emergency, 5, false), (Instance smi) => !string.IsNullOrEmpty(smi.master.diseaseEffect))
-				.ToggleRecurringChore((Instance smi) => new WorkChore<Clinic>(Db.Get().ChoreTypes.SleepDueToDisease, smi.master, null, null, true, null, null, null, false, null, true, true, null, false, true, false, PriorityScreen.PriorityClass.emergency, 5, false), (Instance smi) => !string.IsNullOrEmpty(smi.master.diseaseEffect));
+				.ToggleRecurringChore((Instance smi) => new WorkChore<Clinic>(Db.Get().ChoreTypes.Heal, smi.master, null, null, true, null, null, null, false, null, false, true, null, false, true, false, PriorityScreen.PriorityClass.compulsory, 5, false, false), (Instance smi) => !string.IsNullOrEmpty(smi.master.healthEffect))
+				.ToggleRecurringChore((Instance smi) => new WorkChore<Clinic>(Db.Get().ChoreTypes.HealCritical, smi.master, null, null, true, null, null, null, false, null, false, true, null, false, true, false, PriorityScreen.PriorityClass.compulsory, 5, false, false), (Instance smi) => !string.IsNullOrEmpty(smi.master.healthEffect))
+				.ToggleRecurringChore((Instance smi) => new WorkChore<Clinic>(Db.Get().ChoreTypes.RestDueToDisease, smi.master, null, null, true, null, null, null, false, null, true, true, null, false, true, false, PriorityScreen.PriorityClass.compulsory, 5, false, false), (Instance smi) => !string.IsNullOrEmpty(smi.master.diseaseEffect))
+				.ToggleRecurringChore((Instance smi) => new WorkChore<Clinic>(Db.Get().ChoreTypes.SleepDueToDisease, smi.master, null, null, true, null, null, null, false, null, true, true, null, false, true, false, PriorityScreen.PriorityClass.compulsory, 5, false, false), (Instance smi) => !string.IsNullOrEmpty(smi.master.diseaseEffect));
 			operational.idle.WorkableStartTransition((Instance smi) => smi.master, operational.healing);
 			operational.healing.DefaultState(operational.healing.undoctored).WorkableStopTransition((Instance smi) => smi.GetComponent<Clinic>(), operational.idle).Enter(delegate(Instance smi)
 			{
@@ -307,12 +307,12 @@ public class Clinic : Workable, IEffectDescriptor
 	protected override bool OnWorkTick(Worker worker, float dt)
 	{
 		KAnimFile[] appropriateOverrideAnims = GetAppropriateOverrideAnims(worker);
-		if (appropriateOverrideAnims == null || appropriateOverrideAnims != overrideAnims)
+		if (appropriateOverrideAnims != null && appropriateOverrideAnims == overrideAnims)
 		{
-			return true;
+			base.OnWorkTick(worker, dt);
+			return false;
 		}
-		base.OnWorkTick(worker, dt);
-		return false;
+		return true;
 	}
 
 	protected override void OnStopWork(Worker worker)
@@ -355,7 +355,7 @@ public class Clinic : Workable, IEffectDescriptor
 
 	private bool IsValidEffect(string effect)
 	{
-		return effect != null && effect != string.Empty;
+		return effect != null && effect != "";
 	}
 
 	private bool AllowDoctoring()

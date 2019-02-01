@@ -257,10 +257,10 @@ public class ThresholdSwitchSideScreen : SideScreenContent, IRender200ms
 
 	public override string GetTitle()
 	{
-		if ((Object)target != (Object)null)
+		if (!((Object)target != (Object)null))
 		{
-			return thresholdSwitch.Title;
+			return UI.UISIDESCREENS.THRESHOLD_SWITCH_SIDESCREEN.TITLE;
 		}
-		return UI.UISIDESCREENS.THRESHOLD_SWITCH_SIDESCREEN.TITLE;
+		return thresholdSwitch.Title;
 	}
 }

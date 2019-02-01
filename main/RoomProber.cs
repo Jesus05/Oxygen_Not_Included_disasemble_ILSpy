@@ -52,7 +52,7 @@ public class RoomProber : ISim1000ms
 
 		private static bool IsWall(int cell)
 		{
-			return Grid.Solid[cell] || Grid.HasDoor[cell] || Grid.Foundation[cell];
+			return (Grid.BuildMasks[cell] & (Grid.BuildFlags.Foundation | Grid.BuildFlags.Solid)) != 0 || Grid.HasDoor[cell];
 		}
 
 		public bool ShouldContinue(int flood_cell)
@@ -303,10 +303,13 @@ public class RoomProber : ISim1000ms
 		{
 			foreach (KPrefabID building in room.buildings)
 			{
-				Assignable component = building.GetComponent<Assignable>();
-				if ((UnityEngine.Object)component != (UnityEngine.Object)null && (roomType.primary_constraint == null || !roomType.primary_constraint.building_criteria(building.GetComponent<KPrefabID>())))
+				if (!building.HasTag(GameTags.NotRoomAssignable))
 				{
-					component.Assign(room);
+					Assignable component = building.GetComponent<Assignable>();
+					if ((UnityEngine.Object)component != (UnityEngine.Object)null && (roomType.primary_constraint == null || !roomType.primary_constraint.building_criteria(building.GetComponent<KPrefabID>())))
+					{
+						component.Assign(room);
+					}
 				}
 			}
 		}
@@ -330,27 +333,27 @@ public class RoomProber : ISim1000ms
 
 	public Room GetRoomOfGameObject(GameObject go)
 	{
-		if ((UnityEngine.Object)go == (UnityEngine.Object)null)
+		if (!((UnityEngine.Object)go == (UnityEngine.Object)null))
 		{
+			int cell = Grid.PosToCell(go);
+			if (Grid.IsValidCell(cell))
+			{
+				return GetCavityForCell(cell)?.room;
+			}
 			return null;
 		}
-		int cell = Grid.PosToCell(go);
-		if (!Grid.IsValidCell(cell))
-		{
-			return null;
-		}
-		return GetCavityForCell(cell)?.room;
+		return null;
 	}
 
 	public bool IsInRoomType(GameObject go, RoomType checkType)
 	{
 		Room roomOfGameObject = GetRoomOfGameObject(go);
-		if (roomOfGameObject != null)
+		if (roomOfGameObject == null)
 		{
-			RoomType roomType = roomOfGameObject.roomType;
-			return checkType == roomType;
+			return false;
 		}
-		return false;
+		RoomType roomType = roomOfGameObject.roomType;
+		return checkType == roomType;
 	}
 
 	private CavityInfo GetCavityInfo(HandleVector<int>.Handle id)
@@ -365,11 +368,11 @@ public class RoomProber : ISim1000ms
 
 	public CavityInfo GetCavityForCell(int cell)
 	{
-		if (!Grid.IsValidCell(cell))
+		if (Grid.IsValidCell(cell))
 		{
-			return null;
+			HandleVector<int>.Handle id = CellCavityID[cell];
+			return GetCavityInfo(id);
 		}
-		HandleVector<int>.Handle id = CellCavityID[cell];
-		return GetCavityInfo(id);
+		return null;
 	}
 }

@@ -8,7 +8,7 @@ public class IlluminationVulnerable : StateMachineComponent<IlluminationVulnerab
 {
 	public class StatesInstance : GameStateMachine<States, StatesInstance, IlluminationVulnerable, object>.GameInstance
 	{
-		public bool hasMaturity;
+		public bool hasMaturity = false;
 
 		public StatesInstance(IlluminationVulnerable master)
 			: base(master)
@@ -64,13 +64,13 @@ public class IlluminationVulnerable : StateMachineComponent<IlluminationVulnerab
 		}
 	}
 
-	public float lightIntensityThreshold;
+	public float lightIntensityThreshold = 0f;
 
 	private OccupyArea _occupyArea;
 
 	private SchedulerHandle handle;
 
-	public bool prefersDarkness;
+	public bool prefersDarkness = false;
 
 	WiltCondition.Condition[] IWiltCause.Conditions
 	{
@@ -100,15 +100,15 @@ public class IlluminationVulnerable : StateMachineComponent<IlluminationVulnerab
 	{
 		get
 		{
-			if (base.smi.IsInsideState(base.smi.sm.too_bright))
+			if (!base.smi.IsInsideState(base.smi.sm.too_bright))
 			{
-				return Db.Get().CreatureStatusItems.Crop_Too_Bright.resolveStringCallback(CREATURES.STATUSITEMS.CROP_TOO_BRIGHT.NAME, this);
-			}
-			if (base.smi.IsInsideState(base.smi.sm.too_dark))
-			{
+				if (!base.smi.IsInsideState(base.smi.sm.too_dark))
+				{
+					return "";
+				}
 				return Db.Get().CreatureStatusItems.Crop_Too_Dark.resolveStringCallback(CREATURES.STATUSITEMS.CROP_TOO_DARK.NAME, this);
 			}
-			return string.Empty;
+			return Db.Get().CreatureStatusItems.Crop_Too_Bright.resolveStringCallback(CREATURES.STATUSITEMS.CROP_TOO_BRIGHT.NAME, this);
 		}
 	}
 
@@ -137,11 +137,11 @@ public class IlluminationVulnerable : StateMachineComponent<IlluminationVulnerab
 
 	public bool IsCellSafe(int cell)
 	{
-		if (prefersDarkness)
+		if (!prefersDarkness)
 		{
-			return (float)Grid.LightIntensity[cell] <= lightIntensityThreshold;
+			return (float)Grid.LightIntensity[cell] > lightIntensityThreshold;
 		}
-		return (float)Grid.LightIntensity[cell] > lightIntensityThreshold;
+		return (float)Grid.LightIntensity[cell] <= lightIntensityThreshold;
 	}
 
 	public bool IsComfortable()
@@ -152,14 +152,14 @@ public class IlluminationVulnerable : StateMachineComponent<IlluminationVulnerab
 	public List<Descriptor> GetDescriptors(GameObject go)
 	{
 		List<Descriptor> list;
-		if (prefersDarkness)
+		if (!prefersDarkness)
 		{
 			list = new List<Descriptor>();
-			list.Add(new Descriptor(UI.GAMEOBJECTEFFECTS.REQUIRES_DARKNESS, UI.GAMEOBJECTEFFECTS.TOOLTIPS.REQUIRES_DARKNESS, Descriptor.DescriptorType.Requirement, false));
+			list.Add(new Descriptor(UI.GAMEOBJECTEFFECTS.REQUIRES_LIGHT, UI.GAMEOBJECTEFFECTS.TOOLTIPS.REQUIRES_LIGHT, Descriptor.DescriptorType.Requirement, false));
 			return list;
 		}
 		list = new List<Descriptor>();
-		list.Add(new Descriptor(UI.GAMEOBJECTEFFECTS.REQUIRES_LIGHT, UI.GAMEOBJECTEFFECTS.TOOLTIPS.REQUIRES_LIGHT, Descriptor.DescriptorType.Requirement, false));
+		list.Add(new Descriptor(UI.GAMEOBJECTEFFECTS.REQUIRES_DARKNESS, UI.GAMEOBJECTEFFECTS.TOOLTIPS.REQUIRES_DARKNESS, Descriptor.DescriptorType.Requirement, false));
 		return list;
 	}
 }

@@ -62,7 +62,7 @@ public class ColdBreatherConfig : IEntityConfig
 		List<Tag> list = new List<Tag>();
 		list.Add(GameTags.DecorSeed);
 		list = list;
-		GameObject seed = EntityTemplates.CreateAndRegisterSeedForPlant(plant, productionType, id, name, desc, anim, "object", 1, list, SingleEntityReceptacle.ReceptacleDirection.Top, default(Tag), 2, STRINGS.CREATURES.SPECIES.COLDBREATHER.DOMESTICATEDDESC, EntityTemplates.CollisionShape.CIRCLE, 0.3f, 0.3f, null, string.Empty, false);
+		GameObject seed = EntityTemplates.CreateAndRegisterSeedForPlant(plant, productionType, id, name, desc, anim, "object", 1, list, SingleEntityReceptacle.ReceptacleDirection.Top, default(Tag), 2, STRINGS.CREATURES.SPECIES.COLDBREATHER.DOMESTICATEDDESC, EntityTemplates.CollisionShape.CIRCLE, 0.3f, 0.3f, null, "", false);
 		EntityTemplates.CreateAndRegisterPreviewForPlant(seed, "ColdBreather_preview", Assets.GetAnim("coldbreather_kanim"), "place", 1, 2);
 		SoundEventVolumeCache.instance.AddVolume("coldbreather_kanim", "ColdBreather_grow", NOISE_POLLUTION.CREATURES.TIER3);
 		SoundEventVolumeCache.instance.AddVolume("coldbreather_kanim", "ColdBreather_intake", NOISE_POLLUTION.CREATURES.TIER3);

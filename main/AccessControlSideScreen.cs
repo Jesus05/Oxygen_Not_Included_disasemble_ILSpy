@@ -53,16 +53,16 @@ public class AccessControlSideScreen : SideScreenContent
 			GameObject targetGameObject2 = b.GetTargetGameObject();
 			MinionResume component = targetGameObject.GetComponent<MinionResume>();
 			MinionResume component2 = targetGameObject2.GetComponent<MinionResume>();
-			if ((UnityEngine.Object)component2 == (UnityEngine.Object)null)
+			if (!((UnityEngine.Object)component2 == (UnityEngine.Object)null))
 			{
-				return 1;
-			}
-			if ((UnityEngine.Object)component == (UnityEngine.Object)null)
-			{
+				if (!((UnityEngine.Object)component == (UnityEngine.Object)null))
+				{
+					int num = component.CurrentRole.CompareTo(component2.CurrentRole);
+					return (num != 0) ? num : CompareByName(a, b);
+				}
 				return -1;
 			}
-			int num = component.CurrentRole.CompareTo(component2.CurrentRole);
-			return (num != 0) ? num : CompareByName(a, b);
+			return 1;
 		}
 	}
 
@@ -110,11 +110,11 @@ public class AccessControlSideScreen : SideScreenContent
 
 	public override string GetTitle()
 	{
-		if ((UnityEngine.Object)target != (UnityEngine.Object)null)
+		if (!((UnityEngine.Object)target != (UnityEngine.Object)null))
 		{
-			return string.Format(base.GetTitle(), target.GetProperName());
+			return base.GetTitle();
 		}
-		return base.GetTitle();
+		return string.Format(base.GetTitle(), target.GetProperName());
 	}
 
 	protected override void OnSpawn()
@@ -263,6 +263,13 @@ public class AccessControlSideScreen : SideScreenContent
 	{
 		target.DefaultPermission = permission;
 		Refresh(identityList, false);
+		foreach (MinionAssignablesProxy identity2 in identityList)
+		{
+			if (target.IsDefaultPermission(identity2))
+			{
+				target.ClearPermission(identity2);
+			}
+		}
 	}
 
 	private void OnPermissionChanged(MinionAssignablesProxy identity, AccessControl.Permission permission)

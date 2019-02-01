@@ -1,6 +1,7 @@
 using Klei;
 using STRINGS;
 using System;
+using System.Diagnostics;
 using System.IO;
 using UnityEngine;
 
@@ -28,11 +29,11 @@ public class DebugHandler : IInputHandler
 
 	public static bool DebugNextCall;
 
-	private bool superTestMode;
+	private bool superTestMode = false;
 
-	private bool ultraTestMode;
+	private bool ultraTestMode = false;
 
-	private bool slowTestMode;
+	private bool slowTestMode = false;
 
 	public static bool enabled
 	{
@@ -402,8 +403,10 @@ public class DebugHandler : IInputHandler
 				{
 					if (GenericGameSettings.instance.developerDebugEnable)
 					{
-						string stack_trace = Guid.NewGuid().ToString();
-						KCrashReporter.ReportError("Debug crash with random stack", stack_trace, null, ScreenPrefabs.Instance.ConfirmDialogScreen, string.Empty);
+						string str = Guid.NewGuid().ToString();
+						StackTrace stackTrace = new StackTrace(1, true);
+						str = str + "\n" + stackTrace.ToString();
+						KCrashReporter.ReportError("Debug crash with random stack", str, null, ScreenPrefabs.Instance.ConfirmDialogScreen, "");
 					}
 				}
 				else if (e.TryConsume(Action.DebugTriggerError))
@@ -432,7 +435,7 @@ public class DebugHandler : IInputHandler
 				{
 					if (!GenericGameSettings.instance.developerDebugEnable)
 					{
-						goto IL_0b27;
+						goto IL_0bfc;
 					}
 				}
 				else if (e.TryConsume(Action.DebugCrashSim))
@@ -452,8 +455,8 @@ public class DebugHandler : IInputHandler
 				}
 			}
 		}
-		goto IL_0b27;
-		IL_0b27:
+		goto IL_0bfc;
+		IL_0bfc:
 		if (e.Consumed && (UnityEngine.Object)Game.Instance != (UnityEngine.Object)null)
 		{
 			Game.Instance.debugWasUsed = true;

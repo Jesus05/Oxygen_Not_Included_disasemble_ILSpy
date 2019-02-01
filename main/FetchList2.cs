@@ -42,19 +42,20 @@ public class FetchList2 : IFetchList
 	{
 		get
 		{
-			if (FetchOrders.Count < 0)
+			if (FetchOrders.Count >= 0)
 			{
-				return false;
-			}
-			bool result = false;
-			foreach (FetchOrder2 fetchOrder in FetchOrders)
-			{
-				if (fetchOrder.InProgress)
+				bool result = false;
+				foreach (FetchOrder2 fetchOrder in FetchOrders)
 				{
-					return true;
+					if (fetchOrder.InProgress)
+					{
+						result = true;
+						break;
+					}
 				}
+				return result;
 			}
-			return result;
+			return false;
 		}
 	}
 
@@ -86,7 +87,7 @@ public class FetchList2 : IFetchList
 		}
 	}
 
-	public void Add(Tag[] tags, Tag[] required_tags = null, Tag[] forbidden_tags = null, float amount = 1f, FetchOrder2.OperationalRequirement operationalRequirement = FetchOrder2.OperationalRequirement.None)
+	public void Add(Tag[] tags, Tag[] required_tags = null, Tag[] forbidden_tags = null, float amount = 1f, FetchOrder2.OperationalRequirement operationalRequirementDEPRECATED = FetchOrder2.OperationalRequirement.None)
 	{
 		if (amount <= 0f)
 		{
@@ -99,16 +100,16 @@ public class FetchList2 : IFetchList
 				MinimumAmount[key] = amount;
 			}
 		}
-		FetchOrder2 item = new FetchOrder2(choreType, tags, required_tags, forbidden_tags, Destination, amount, operationalRequirement, PriorityMod, choreTags);
+		FetchOrder2 item = new FetchOrder2(choreType, tags, required_tags, forbidden_tags, Destination, amount, operationalRequirementDEPRECATED, PriorityMod, choreTags);
 		FetchOrders.Add(item);
 	}
 
-	public void Add(Tag tag, Tag[] required_tags = null, Tag[] forbidden_tags = null, float amount = 1f, FetchOrder2.OperationalRequirement operationalRequirement = FetchOrder2.OperationalRequirement.None)
+	public void Add(Tag tag, Tag[] required_tags = null, Tag[] forbidden_tags = null, float amount = 1f, FetchOrder2.OperationalRequirement operationalRequirementDEPRECATED = FetchOrder2.OperationalRequirement.None)
 	{
 		Add(new Tag[1]
 		{
 			tag
-		}, required_tags, forbidden_tags, amount, operationalRequirement);
+		}, required_tags, forbidden_tags, amount, operationalRequirementDEPRECATED);
 	}
 
 	public float GetMinimumAmount(Tag tag)

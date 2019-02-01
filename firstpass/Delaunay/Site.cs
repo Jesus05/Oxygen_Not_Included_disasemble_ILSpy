@@ -61,11 +61,11 @@ namespace Delaunay
 
 		public static Site Create(Vector2 p, uint index, float weight, uint color)
 		{
-			if (_pool.Count > 0)
+			if (_pool.Count <= 0)
 			{
-				return _pool.Pop().Init(p, index, weight, color);
+				return new Site(p, index, weight, color);
 			}
-			return new Site(p, index, weight, color);
+			return _pool.Pop().Init(p, index, weight, color);
 		}
 
 		internal static void SortSites(List<Site> sites)
@@ -166,70 +166,70 @@ namespace Delaunay
 
 		public List<Site> NeighborSites()
 		{
-			if (_edges == null || _edges.Count == 0)
+			if (_edges != null && _edges.Count != 0)
 			{
-				return new List<Site>();
+				if (_edgeOrientations == null)
+				{
+					ReorderEdges();
+				}
+				List<Site> list = new List<Site>();
+				for (int i = 0; i < _edges.Count; i++)
+				{
+					Edge edge = _edges[i];
+					list.Add(NeighborSite(edge));
+				}
+				return list;
 			}
-			if (_edgeOrientations == null)
-			{
-				ReorderEdges();
-			}
-			List<Site> list = new List<Site>();
-			for (int i = 0; i < _edges.Count; i++)
-			{
-				Edge edge = _edges[i];
-				list.Add(NeighborSite(edge));
-			}
-			return list;
+			return new List<Site>();
 		}
 
 		private Site NeighborSite(Edge edge)
 		{
-			if (this == edge.leftSite)
+			if (this != edge.leftSite)
 			{
-				return edge.rightSite;
-			}
-			if (this == edge.rightSite)
-			{
+				if (this != edge.rightSite)
+				{
+					return null;
+				}
 				return edge.leftSite;
 			}
-			return null;
+			return edge.rightSite;
 		}
 
 		internal List<Vector2> Region(Rect clippingBounds)
 		{
-			if (_edges == null || _edges.Count == 0)
+			if (_edges != null && _edges.Count != 0)
 			{
-				return new List<Vector2>();
-			}
-			if (_edgeOrientations == null)
-			{
-				ReorderEdges();
-				_region = ClipToBounds(clippingBounds);
-				if (new Polygon(_region).Winding() == Winding.CLOCKWISE)
+				if (_edgeOrientations == null)
 				{
-					_region.Reverse();
+					ReorderEdges();
+					_region = ClipToBounds(clippingBounds);
+					if (new Polygon(_region).Winding() == Winding.CLOCKWISE)
+					{
+						_region.Reverse();
+					}
 				}
+				return _region;
 			}
-			return _region;
+			return new List<Vector2>();
 		}
 
 		internal List<Vector2> Region(Polygon clippingBounds)
 		{
-			if (_edges == null || _edges.Count == 0)
+			if (_edges != null && _edges.Count != 0)
 			{
-				return new List<Vector2>();
-			}
-			if (_edgeOrientations == null)
-			{
-				ReorderEdges();
-				_region = ClipToBounds(clippingBounds);
-				if (new Polygon(_region).Winding() == Winding.CLOCKWISE)
+				if (_edgeOrientations == null)
 				{
-					_region.Reverse();
+					ReorderEdges();
+					_region = ClipToBounds(clippingBounds);
+					if (new Polygon(_region).Winding() == Winding.CLOCKWISE)
+					{
+						_region.Reverse();
+					}
 				}
+				return _region;
 			}
-			return _region;
+			return new List<Vector2>();
 		}
 
 		private void ReorderEdges()
@@ -248,32 +248,32 @@ namespace Delaunay
 			for (i = 0; i < count && !_edges[i].visible; i++)
 			{
 			}
-			if (i == count)
+			if (i != count)
 			{
-				return new List<Vector2>();
-			}
-			Edge edge = _edges[i];
-			Side side = _edgeOrientations[i];
-			if (!edge.clippedEnds[side].HasValue)
-			{
-				Debug.LogError("XXX: Null detected when there should be a Vector2!", null);
-			}
-			if (!edge.clippedEnds[SideHelper.Other(side)].HasValue)
-			{
-				Debug.LogError("XXX: Null detected when there should be a Vector2!", null);
-			}
-			list.Add(edge.clippedEnds[side].Value);
-			list.Add(edge.clippedEnds[SideHelper.Other(side)].Value);
-			for (int j = i + 1; j < count; j++)
-			{
-				edge = _edges[j];
-				if (edge.visible)
+				Edge edge = _edges[i];
+				Side side = _edgeOrientations[i];
+				if (!edge.clippedEnds[side].HasValue)
 				{
-					Connect(list, j, bounds, false);
+					Debug.LogError("XXX: Null detected when there should be a Vector2!", null);
 				}
+				if (!edge.clippedEnds[SideHelper.Other(side)].HasValue)
+				{
+					Debug.LogError("XXX: Null detected when there should be a Vector2!", null);
+				}
+				list.Add(edge.clippedEnds[side].Value);
+				list.Add(edge.clippedEnds[SideHelper.Other(side)].Value);
+				for (int j = i + 1; j < count; j++)
+				{
+					edge = _edges[j];
+					if (edge.visible)
+					{
+						Connect(list, j, bounds, false);
+					}
+				}
+				Connect(list, i, bounds, true);
+				return list;
 			}
-			Connect(list, i, bounds, true);
-			return list;
+			return new List<Vector2>();
 		}
 
 		private List<Vector2> ClipToBounds(Polygon bounds)

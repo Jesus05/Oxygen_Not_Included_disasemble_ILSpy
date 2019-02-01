@@ -280,7 +280,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Invalid Port Overlap";
 
-				public static LocString TOOLTIP = "Ports on this building overlap those on another building. This building must be rebuilt in a valid location.";
+				public static LocString TOOLTIP = "Ports on this building overlap those on another building" + UI.HORIZONTAL_BR_RULE + "This building must be rebuilt in a valid location";
 
 				public static LocString NOTIFICATION_NAME = "Building has overlapping ports";
 
@@ -581,13 +581,13 @@ namespace STRINGS
 
 			public class NOAPPLICABLEANALYSISSELECTED
 			{
-				public static LocString NAME = "No studyable starmap destination selected";
+				public static LocString NAME = "No Anaylsis Focus Selected";
 
-				public static LocString TOOLTIP = "Select an unknown destination in the starmap to study";
+				public static LocString TOOLTIP = "Select an unknown destination from the Starmap <color=#F44A47><b>[R]</b></color> to begin analysis";
 
 				public static LocString NOTIFICATION_NAME = UI.FormatAsLink("Telescope", "TELESCOPE") + " idle";
 
-				public static LocString NOTIFICATION_TOOLTIP = "These buildings need a space destination to study";
+				public static LocString NOTIFICATION_TOOLTIP = "These buildings require an analysis focus:";
 			}
 
 			public class NOAVAILABLESEED

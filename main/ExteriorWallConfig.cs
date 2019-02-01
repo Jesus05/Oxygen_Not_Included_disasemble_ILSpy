@@ -16,7 +16,7 @@ public class ExteriorWallConfig : IBuildingConfig
 		float[] tIER = BUILDINGS.CONSTRUCTION_MASS_KG.TIER4;
 		string[] rAW_MINERALS = MATERIALS.RAW_MINERALS;
 		float melting_point = 1600f;
-		BuildLocationRule build_location_rule = BuildLocationRule.Anywhere;
+		BuildLocationRule build_location_rule = BuildLocationRule.NotInTiles;
 		EffectorValues nONE = NOISE_POLLUTION.NONE;
 		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, tIER, rAW_MINERALS, melting_point, build_location_rule, DECOR.NONE, nONE, 0.2f);
 		buildingDef.Entombable = false;

@@ -166,7 +166,7 @@ public class NewGameSettingsScreen : KModalScreen
 									}
 									else
 									{
-										input.text = string.Empty;
+										input.text = "";
 									}
 								}
 								if (num > 2147483647)

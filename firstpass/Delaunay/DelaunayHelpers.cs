@@ -153,11 +153,11 @@ namespace Delaunay
 
 		private static Node Find(Node node)
 		{
-			if (node.parent == node)
+			if (node.parent != node)
 			{
-				return node;
+				return node.parent = Find(node.parent);
 			}
-			return node.parent = Find(node.parent);
+			return node;
 		}
 	}
 }

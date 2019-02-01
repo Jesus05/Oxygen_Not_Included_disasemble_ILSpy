@@ -63,7 +63,7 @@ public class HandSanitizerConfig : IBuildingConfig
 		manualDeliveryKG.requestedItemTag = GameTagExtensions.Create(SimHashes.BleachStone);
 		manualDeliveryKG.capacity = 15f;
 		manualDeliveryKG.refillMass = 3f;
-		manualDeliveryKG.choreTypeIDHash = Db.Get().ChoreTypes.OperateFetch.IdHash;
+		manualDeliveryKG.choreTypeIDHash = Db.Get().ChoreTypes.FetchCritical.IdHash;
 	}
 
 	public override void DoPostConfigureComplete(GameObject go)

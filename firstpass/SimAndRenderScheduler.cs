@@ -60,7 +60,7 @@ public class SimAndRenderScheduler
 		{
 			if (!Contains(updater))
 			{
-				string value = string.Empty;
+				string value = "";
 				if (!bucketIds.TryGetValue(updater.GetType(), out value))
 				{
 					value = updater.GetType().Name + " " + base.updateRate.ToString();

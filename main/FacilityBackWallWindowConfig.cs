@@ -16,7 +16,7 @@ public class FacilityBackWallWindowConfig : IBuildingConfig
 		float[] tIER = BUILDINGS.CONSTRUCTION_MASS_KG.TIER4;
 		string[] gLASSES = MATERIALS.GLASSES;
 		float melting_point = 1600f;
-		BuildLocationRule build_location_rule = BuildLocationRule.Anywhere;
+		BuildLocationRule build_location_rule = BuildLocationRule.NotInTiles;
 		EffectorValues nONE = NOISE_POLLUTION.NONE;
 		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, tIER, gLASSES, melting_point, build_location_rule, DECOR.BONUS.TIER3, nONE, 0.2f);
 		buildingDef.Floodable = false;

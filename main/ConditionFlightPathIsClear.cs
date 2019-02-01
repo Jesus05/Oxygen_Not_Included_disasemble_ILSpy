@@ -7,7 +7,7 @@ public class ConditionFlightPathIsClear : RocketFlightCondition
 
 	private int bufferWidth;
 
-	private bool hasClearSky;
+	private bool hasClearSky = false;
 
 	private int obstructedTile = -1;
 
@@ -72,16 +72,16 @@ public class ConditionFlightPathIsClear : RocketFlightCondition
 
 	public string GetObstruction()
 	{
-		if (obstructedTile == -1)
+		if (obstructedTile != -1)
 		{
-			return null;
-		}
-		if ((Object)Grid.Objects[obstructedTile, 1] != (Object)null)
-		{
+			if (!((Object)Grid.Objects[obstructedTile, 1] != (Object)null))
+			{
+				return string.Format(BUILDING.STATUSITEMS.PATH_NOT_CLEAR.TILE_FORMAT, Grid.Element[obstructedTile].tag.ProperName());
+			}
 			GameObject gameObject = Grid.Objects[obstructedTile, 1];
 			BuildingDef def = gameObject.GetComponent<Building>().Def;
 			return def.Name;
 		}
-		return string.Format(BUILDING.STATUSITEMS.PATH_NOT_CLEAR.TILE_FORMAT, Grid.Element[obstructedTile].tag.ProperName());
+		return null;
 	}
 }

@@ -109,7 +109,7 @@ public class Pickupable : Workable, IHasSortOrder
 
 	private bool isEntombed;
 
-	private bool cleaningUp;
+	private bool cleaningUp = false;
 
 	public bool trackOnPickup = true;
 
@@ -576,35 +576,35 @@ public class Pickupable : Workable, IHasSortOrder
 
 	public bool TryAbsorb(Pickupable other, bool hide_effects, bool allow_cross_storage = false)
 	{
-		if ((UnityEngine.Object)other == (UnityEngine.Object)null)
+		if (!((UnityEngine.Object)other == (UnityEngine.Object)null))
 		{
+			if (!other.wasAbsorbed)
+			{
+				if (!wasAbsorbed)
+				{
+					if (other.CanAbsorb(this))
+					{
+						if (!allow_cross_storage && (UnityEngine.Object)storage == (UnityEngine.Object)null != ((UnityEngine.Object)other.storage == (UnityEngine.Object)null))
+						{
+							return false;
+						}
+						Absorb(other);
+						if (!hide_effects && (UnityEngine.Object)EffectPrefabs.Instance != (UnityEngine.Object)null)
+						{
+							Vector3 position = base.transform.GetPosition();
+							position.z = Grid.GetLayerZ(Grid.SceneLayer.Front);
+							GameObject gameObject = Util.KInstantiate(Assets.GetPrefab(EffectConfigs.OreAbsorbId), position, Quaternion.identity, null, null, true, 0);
+							gameObject.SetActive(true);
+						}
+						return true;
+					}
+					return false;
+				}
+				return false;
+			}
 			return false;
 		}
-		if (other.wasAbsorbed)
-		{
-			return false;
-		}
-		if (wasAbsorbed)
-		{
-			return false;
-		}
-		if (!other.CanAbsorb(this))
-		{
-			return false;
-		}
-		if (!allow_cross_storage && (UnityEngine.Object)storage == (UnityEngine.Object)null != ((UnityEngine.Object)other.storage == (UnityEngine.Object)null))
-		{
-			return false;
-		}
-		Absorb(other);
-		if (!hide_effects && (UnityEngine.Object)EffectPrefabs.Instance != (UnityEngine.Object)null)
-		{
-			Vector3 position = base.transform.GetPosition();
-			position.z = Grid.GetLayerZ(Grid.SceneLayer.Front);
-			GameObject gameObject = Util.KInstantiate(Assets.GetPrefab(EffectConfigs.OreAbsorbId), position, Quaternion.identity, null, null, true, 0);
-			gameObject.SetActive(true);
-		}
-		return true;
+		return false;
 	}
 
 	protected override void OnCleanUp()
@@ -635,28 +635,28 @@ public class Pickupable : Workable, IHasSortOrder
 
 	public Pickupable Take(float amount)
 	{
-		if (amount <= 0f)
+		if (!(amount <= 0f))
 		{
-			return null;
-		}
-		if (OnTake != null)
-		{
+			if (OnTake == null)
+			{
+				if ((UnityEngine.Object)storage != (UnityEngine.Object)null)
+				{
+					storage.Remove(base.gameObject);
+				}
+				return this;
+			}
 			if (amount >= TotalAmount && (UnityEngine.Object)storage != (UnityEngine.Object)null)
 			{
 				storage.Remove(base.gameObject);
 			}
 			float num = Math.Min(TotalAmount, amount);
-			if (num <= 0f)
+			if (!(num <= 0f))
 			{
-				return null;
+				return OnTake(num);
 			}
-			return OnTake(num);
+			return null;
 		}
-		if ((UnityEngine.Object)storage != (UnityEngine.Object)null)
-		{
-			storage.Remove(base.gameObject);
-		}
-		return this;
+		return null;
 	}
 
 	private void Absorb(Pickupable pickupable)

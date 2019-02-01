@@ -22,7 +22,7 @@ public class KAnimBatchManager
 
 	public static Vector2 GROUP_SIZE = new Vector2(32f, 32f);
 
-	private bool ready;
+	private bool ready = false;
 
 	private Dictionary<HashedString, KBatchGroupData> batchGroupData = new Dictionary<HashedString, KBatchGroupData>();
 
@@ -109,17 +109,17 @@ public class KAnimBatchManager
 
 	public KBatchGroupData GetBatchGroupData(HashedString groupID)
 	{
-		if (!groupID.IsValid || groupID == NO_BATCH || groupID == IGNORE)
+		if (groupID.IsValid && !(groupID == NO_BATCH) && !(groupID == IGNORE))
 		{
-			return null;
+			KBatchGroupData value = null;
+			if (!batchGroupData.TryGetValue(groupID, out value))
+			{
+				value = new KBatchGroupData(groupID);
+				batchGroupData[groupID] = value;
+			}
+			return value;
 		}
-		KBatchGroupData value = null;
-		if (!batchGroupData.TryGetValue(groupID, out value))
-		{
-			value = new KBatchGroupData(groupID);
-			batchGroupData[groupID] = value;
-		}
-		return value;
+		return null;
 	}
 
 	public KAnimBatchGroup GetBatchGroup(BatchGroupKey group_key)
@@ -216,16 +216,16 @@ public class KAnimBatchManager
 
 	public int UpdateDirty(int frame)
 	{
-		if (!ready)
+		if (ready)
 		{
-			return 0;
+			dirtyBatchLastFrame = 0;
+			foreach (BatchSet activeBatchSet in activeBatchSets)
+			{
+				dirtyBatchLastFrame += activeBatchSet.UpdateDirty(frame);
+			}
+			return dirtyBatchLastFrame;
 		}
-		dirtyBatchLastFrame = 0;
-		foreach (BatchSet activeBatchSet in activeBatchSets)
-		{
-			dirtyBatchLastFrame += activeBatchSet.UpdateDirty(frame);
-		}
-		return dirtyBatchLastFrame;
+		return 0;
 	}
 
 	public void Render()

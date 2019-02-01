@@ -91,18 +91,18 @@ public class PlanScreen : KIconToggleMenu
 
 		public bool AreAnyRequiredTechItemsAvailable()
 		{
-			if (requiredTechItems.Count == 0)
+			if (requiredTechItems.Count != 0)
 			{
-				return true;
-			}
-			foreach (TechItem requiredTechItem in requiredTechItems)
-			{
-				if (TechRequirementsUpcoming(requiredTechItem))
+				foreach (TechItem requiredTechItem in requiredTechItems)
 				{
-					return true;
+					if (TechRequirementsUpcoming(requiredTechItem))
+					{
+						return true;
+					}
 				}
+				return false;
 			}
-			return false;
+			return true;
 		}
 
 		public void CollectToggleImages()
@@ -203,13 +203,13 @@ public class PlanScreen : KIconToggleMenu
 
 	public Dictionary<BuildingDef, KToggle> ActiveToggles = new Dictionary<BuildingDef, KToggle>();
 
-	private float timeSinceNotificationPing;
+	private float timeSinceNotificationPing = 0f;
 
 	private float notificationPingExpire = 0.5f;
 
 	private float specialNotificationEmbellishDelay = 8f;
 
-	private int notificationPingCount;
+	private int notificationPingCount = 0;
 
 	private GameObject selectedBuildingGameObject;
 
@@ -233,7 +233,7 @@ public class PlanScreen : KIconToggleMenu
 
 	private List<ToggleEntry> toggleEntries = new List<ToggleEntry>();
 
-	private int ignoreToolChangeMessages;
+	private int ignoreToolChangeMessages = 0;
 
 	private Dictionary<Def, RequirementsState> buildableDefs = new Dictionary<Def, RequirementsState>();
 
@@ -246,9 +246,9 @@ public class PlanScreen : KIconToggleMenu
 
 	private Dictionary<Tag, int> tagOrderMap;
 
-	private int buildable_state_update_idx;
+	private int buildable_state_update_idx = 0;
 
-	private int building_button_refresh_idx;
+	private int building_button_refresh_idx = 0;
 
 	private float buildGrid_bg_width = 274f;
 
@@ -283,13 +283,11 @@ public class PlanScreen : KIconToggleMenu
 
 	public RequirementsState BuildableState(BuildingDef def)
 	{
-		RequirementsState value = RequirementsState.Materials;
-		if (buildableDefs.TryGetValue(def, out value))
+		if (!((UnityEngine.Object)def == (UnityEngine.Object)null) && buildableDefs.TryGetValue(def, out RequirementsState value))
 		{
-			goto IL_0015;
+			return value;
 		}
-		goto IL_0015;
-		IL_0015:
+		value = RequirementsState.Materials;
 		return value;
 	}
 
@@ -402,7 +400,7 @@ public class PlanScreen : KIconToggleMenu
 				Action hotkey = (Action)((i >= 12) ? 233 : (36 + i));
 				string icon = iconNameMap[planInfo.category];
 				string str = HashCache.Get().Get(planInfo.category).ToUpper();
-				ToggleInfo toggleInfo = new ToggleInfo(UI.StripLinkFormatting(Strings.Get("STRINGS.UI.BUILDCATEGORIES." + str + ".NAME")), icon, planInfo.category, hotkey, Strings.Get("STRINGS.UI.BUILDCATEGORIES." + str + ".TOOLTIP"), string.Empty);
+				ToggleInfo toggleInfo = new ToggleInfo(UI.StripLinkFormatting(Strings.Get("STRINGS.UI.BUILDCATEGORIES." + str + ".NAME")), icon, planInfo.category, hotkey, Strings.Get("STRINGS.UI.BUILDCATEGORIES." + str + ".TOOLTIP"), "");
 				list.Add(toggleInfo);
 				PopulateOrderInfo(planInfo.category, planInfo.data, tagCategoryMap, tagOrderMap, ref building_index);
 				List<BuildingDef> list2 = new List<BuildingDef>();
@@ -751,7 +749,7 @@ public class PlanScreen : KIconToggleMenu
 			ClearButtons();
 			buildingGroupsRoot.gameObject.SetActive(false);
 		});
-		PlanCategoryLabel.text = string.Empty;
+		PlanCategoryLabel.text = "";
 	}
 
 	private void OnClickCategory(ToggleInfo toggle_info)
@@ -1021,7 +1019,7 @@ public class PlanScreen : KIconToggleMenu
 						string newString3 = string.Format("{0}{1}: {2}", "• ", ingredient.tag.ProperName(), GameUtil.GetFormattedMass(ingredient.amount, GameUtil.TimeSlice.None, GameUtil.MetricMassFormat.UseThreshold, true, "{0:0.#}"));
 						component.AddMultiStringTooltip(newString3, buildingToolTipSettings.ResearchRequirement);
 					}
-					component.AddMultiStringTooltip(string.Empty, buildingToolTipSettings.ResearchRequirement);
+					component.AddMultiStringTooltip("", buildingToolTipSettings.ResearchRequirement);
 				}
 			}
 		}
@@ -1049,10 +1047,10 @@ public class PlanScreen : KIconToggleMenu
 		}
 		if (mouseOver && ConsumeMouseScroll && !e.TryConsume(Action.ZoomIn) && !e.TryConsume(Action.ZoomOut))
 		{
-			goto IL_003a;
+			goto IL_0043;
 		}
-		goto IL_003a;
-		IL_003a:
+		goto IL_0043;
+		IL_0043:
 		if (e.IsAction(Action.CopyBuilding) && e.TryConsume(Action.CopyBuilding))
 		{
 			OnClickCopyBuilding();

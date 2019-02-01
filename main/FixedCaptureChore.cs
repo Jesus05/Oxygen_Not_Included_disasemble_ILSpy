@@ -84,7 +84,7 @@ public class FixedCaptureChore : Chore<FixedCaptureChore.FixedCaptureChoreStates
 	};
 
 	public FixedCaptureChore(KPrefabID capture_point)
-		: base(Db.Get().ChoreTypes.Ranch, (IStateMachineTarget)capture_point, (ChoreProvider)null, false, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.basic, 5, false, true, 0, (Tag[])null)
+		: base(Db.Get().ChoreTypes.Ranch, (IStateMachineTarget)capture_point, (ChoreProvider)null, false, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.basic, 5, false, true, 0, (Tag[])null, false)
 	{
 		AddPrecondition(IsCreatureAvailableForFixedCapture, capture_point.GetSMI<FixedCapturePoint.Instance>());
 		AddPrecondition(ChorePreconditions.instance.HasRolePerk, RoleManager.rolePerks.CanWrangleCreatures.id);

@@ -35,7 +35,7 @@ public class UIDupeRandomizer : MonoBehaviour
 
 	public AnimChoice[] anims;
 
-	private AccessorySlots slots;
+	private AccessorySlots slots = null;
 
 	protected virtual void Start()
 	{
@@ -104,16 +104,16 @@ public class UIDupeRandomizer : MonoBehaviour
 
 	public static KAnimHashedString AddAccessory(KBatchedAnimController minion, Accessory accessory)
 	{
-		if (accessory != null)
+		if (accessory == null)
 		{
-			SymbolOverrideController component = minion.GetComponent<SymbolOverrideController>();
-			DebugUtil.Assert((UnityEngine.Object)component != (UnityEngine.Object)null, minion.name + " is missing symbol override controller");
-			component.TryRemoveSymbolOverride(accessory.slot.targetSymbolId, 0);
-			component.AddSymbolOverride(accessory.slot.targetSymbolId, accessory.symbol, 0);
-			minion.SetSymbolVisiblity(accessory.slot.targetSymbolId, true);
-			return accessory.slot.targetSymbolId;
+			return HashedString.Invalid;
 		}
-		return HashedString.Invalid;
+		SymbolOverrideController component = minion.GetComponent<SymbolOverrideController>();
+		DebugUtil.Assert((UnityEngine.Object)component != (UnityEngine.Object)null, minion.name + " is missing symbol override controller");
+		component.TryRemoveSymbolOverride(accessory.slot.targetSymbolId, 0);
+		component.AddSymbolOverride(accessory.slot.targetSymbolId, accessory.symbol, 0);
+		minion.SetSymbolVisiblity(accessory.slot.targetSymbolId, true);
+		return accessory.slot.targetSymbolId;
 	}
 
 	public KAnimHashedString AddRandomAccessory(KBatchedAnimController minion, List<Accessory> choices)

@@ -166,11 +166,11 @@ public class IncubationMonitor : GameStateMachine<IncubationMonitor, IncubationM
 
 	private static bool IsReadyToHatch(Instance smi)
 	{
-		if (smi.gameObject.HasTag(GameTags.Entombed))
+		if (!smi.gameObject.HasTag(GameTags.Entombed))
 		{
-			return false;
+			return smi.incubation.value >= smi.incubation.GetMax();
 		}
-		return smi.incubation.value >= smi.incubation.GetMax();
+		return false;
 	}
 
 	private static void SpawnBaby(Instance smi)
@@ -196,11 +196,11 @@ public class IncubationMonitor : GameStateMachine<IncubationMonitor, IncubationM
 
 	private static bool NoLongerViable(Instance smi)
 	{
-		if (smi.gameObject.HasTag(GameTags.Entombed))
+		if (!smi.gameObject.HasTag(GameTags.Entombed))
 		{
-			return false;
+			return smi.viability.value <= smi.viability.GetMin();
 		}
-		return smi.viability.value <= smi.viability.GetMin();
+		return false;
 	}
 
 	private static GameObject SpawnShell(Instance smi)

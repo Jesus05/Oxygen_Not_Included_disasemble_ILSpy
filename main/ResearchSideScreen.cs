@@ -88,7 +88,7 @@ public class ResearchSideScreen : SideScreenContent
 				}
 				else
 				{
-					string str = string.Empty;
+					string str = "";
 					if (!activeResearch.tech.costsByResearchTypeID.ContainsKey(component.research_point_type_id) || activeResearch.tech.costsByResearchTypeID[component.research_point_type_id] <= 0f)
 					{
 						str += "<color=#7f7f7f>";

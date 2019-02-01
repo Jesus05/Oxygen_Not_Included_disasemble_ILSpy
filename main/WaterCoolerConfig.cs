@@ -37,7 +37,7 @@ public class WaterCoolerConfig : IBuildingConfig
 		manualDeliveryKG.capacity = 10f;
 		manualDeliveryKG.refillMass = 10f;
 		manualDeliveryKG.minimumMass = 1f;
-		manualDeliveryKG.choreTypeIDHash = Db.Get().ChoreTypes.Fetch.IdHash;
+		manualDeliveryKG.choreTypeIDHash = Db.Get().ChoreTypes.MachineFetch.IdHash;
 		go.AddOrGet<WaterCooler>();
 		RoomTracker roomTracker = go.AddOrGet<RoomTracker>();
 		roomTracker.requiredRoomType = Db.Get().RoomTypes.RecRoom.Id;

@@ -94,7 +94,7 @@ public class KAnimBatch
 
 	private static int nextBatchId;
 
-	private int currentOffset;
+	private int currentOffset = 0;
 
 	private static int ShaderProperty_SYMBOL_INSTANCE_TEXTURE_SIZE = Shader.PropertyToID("SYMBOL_INSTANCE_TEXTURE_SIZE");
 
@@ -114,7 +114,7 @@ public class KAnimBatch
 
 	public AtlasList atlases = new AtlasList(0);
 
-	private bool needsWrite;
+	private bool needsWrite = false;
 
 	public int id
 	{
@@ -437,63 +437,63 @@ public class KAnimBatch
 
 	public int UpdateDirty(int frame)
 	{
-		if (!needsWrite)
+		if (needsWrite)
 		{
-			return 0;
-		}
-		if (dataTex == null || dataTex.floats.Length == 0)
-		{
-			Init();
-		}
-		writtenLastFrame = 0;
-		bool flag = false;
-		bool flag2 = false;
-		if (dirtySet.Count > 0)
-		{
-			foreach (int item in dirtySet)
+			if (dataTex == null || dataTex.floats.Length == 0)
 			{
-				KAnimConverter.IAnimConverter animConverter = controllers[item];
-				if (animConverter != null && animConverter as Object != (Object)null)
+				Init();
+			}
+			writtenLastFrame = 0;
+			bool flag = false;
+			bool flag2 = false;
+			if (dirtySet.Count > 0)
+			{
+				foreach (int item in dirtySet)
 				{
-					WriteBatchedAnimInstanceData(item, animConverter);
-					bool flag3 = WriteSymbolInstanceData(item, animConverter);
-					flag = (flag || flag3);
-					if (animConverter.ApplySymbolOverrides())
+					KAnimConverter.IAnimConverter animConverter = controllers[item];
+					if (animConverter != null && animConverter as Object != (Object)null)
 					{
-						if (symbolOverrideInfoTex == null)
+						WriteBatchedAnimInstanceData(item, animConverter);
+						bool flag3 = WriteSymbolInstanceData(item, animConverter);
+						flag = (flag || flag3);
+						if (animConverter.ApplySymbolOverrides())
 						{
-							int bestTextureSize = KAnimBatchGroup.GetBestTextureSize((float)(group.data.maxSymbolFrameInstancesPerbuild * group.maxGroupSize * 12));
-							symbolOverrideInfoTex = group.CreateTexture("SymbolOverrideInfoTex", bestTextureSize, ShaderProperty_symbolOverrideInfoTex, ShaderProperty_SYMBOL_OVERRIDE_INFO_TEXTURE_SIZE);
-							symbolOverrideInfoTex.SetTextureAndSize(matProperties);
-							matProperties.SetFloat(ShaderProperty_SUPPORTS_SYMBOL_OVERRIDING, 1f);
+							if (symbolOverrideInfoTex == null)
+							{
+								int bestTextureSize = KAnimBatchGroup.GetBestTextureSize((float)(group.data.maxSymbolFrameInstancesPerbuild * group.maxGroupSize * 12));
+								symbolOverrideInfoTex = group.CreateTexture("SymbolOverrideInfoTex", bestTextureSize, ShaderProperty_symbolOverrideInfoTex, ShaderProperty_SYMBOL_OVERRIDE_INFO_TEXTURE_SIZE);
+								symbolOverrideInfoTex.SetTextureAndSize(matProperties);
+								matProperties.SetFloat(ShaderProperty_SUPPORTS_SYMBOL_OVERRIDING, 1f);
+							}
+							bool flag4 = WriteSymbolOverrideInfoTex(item, animConverter);
+							flag2 = (flag2 || flag4);
 						}
-						bool flag4 = WriteSymbolOverrideInfoTex(item, animConverter);
-						flag2 = (flag2 || flag4);
+						writtenLastFrame++;
 					}
-					writtenLastFrame++;
+				}
+				if (writtenLastFrame != 0)
+				{
+					ClearDirty();
+				}
+				else
+				{
+					Debug.LogError("dirtySet not written", null);
 				}
 			}
-			if (writtenLastFrame != 0)
+			dataTex.LoadRawTextureData();
+			dataTex.Apply();
+			if (flag)
 			{
-				ClearDirty();
+				symbolInstanceTex.LoadRawTextureData();
+				symbolInstanceTex.Apply();
 			}
-			else
+			if (flag2)
 			{
-				Debug.LogError("dirtySet not written", null);
+				symbolOverrideInfoTex.LoadRawTextureData();
+				symbolOverrideInfoTex.Apply();
 			}
+			return writtenLastFrame;
 		}
-		dataTex.LoadRawTextureData();
-		dataTex.Apply();
-		if (flag)
-		{
-			symbolInstanceTex.LoadRawTextureData();
-			symbolInstanceTex.Apply();
-		}
-		if (flag2)
-		{
-			symbolOverrideInfoTex.LoadRawTextureData();
-			symbolOverrideInfoTex.Apply();
-		}
-		return writtenLastFrame;
+		return 0;
 	}
 }

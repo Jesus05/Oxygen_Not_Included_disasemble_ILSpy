@@ -64,12 +64,12 @@ public class SandboxToolParameterMenu : KScreen
 
 		public bool runCurrentFilter(object obj)
 		{
-			if (currentFilter == null)
+			if (currentFilter != null)
 			{
-				return true;
-			}
-			if (!currentFilter.condition(obj))
-			{
+				if (currentFilter.condition(obj))
+				{
+					return true;
+				}
 				return false;
 			}
 			return true;
@@ -149,17 +149,17 @@ public class SandboxToolParameterMenu : KScreen
 
 	public SelectorValue elementSelector;
 
-	public SliderValue brushRadiusSlider = new SliderValue(1f, 10f, "dash", "circle_hard", string.Empty, UI.SANDBOXTOOLS.SETTINGS.BRUSH_SIZE.TOOLTIP, delegate(float value)
+	public SliderValue brushRadiusSlider = new SliderValue(1f, 10f, "dash", "circle_hard", "", UI.SANDBOXTOOLS.SETTINGS.BRUSH_SIZE.TOOLTIP, delegate(float value)
 	{
 		instance.settings.BrushSize = Mathf.RoundToInt(value);
 	});
 
-	public SliderValue noiseScaleSlider = new SliderValue(0f, 1f, "little", "lots", string.Empty, UI.SANDBOXTOOLS.SETTINGS.BRUSH_NOISE.TOOLTIP, delegate(float value)
+	public SliderValue noiseScaleSlider = new SliderValue(0f, 1f, "little", "lots", "", UI.SANDBOXTOOLS.SETTINGS.BRUSH_NOISE.TOOLTIP, delegate(float value)
 	{
 		instance.settings.NoiseScale = value;
 	});
 
-	public SliderValue noiseDensitySlider = new SliderValue(1f, 20f, "little", "lots", string.Empty, UI.SANDBOXTOOLS.SETTINGS.BRUSH_NOISE.TOOLTIP, delegate(float value)
+	public SliderValue noiseDensitySlider = new SliderValue(1f, 20f, "little", "lots", "", UI.SANDBOXTOOLS.SETTINGS.BRUSH_NOISE.TOOLTIP, delegate(float value)
 	{
 		instance.settings.NoiseDensity = value;
 	});
@@ -342,11 +342,11 @@ public class SandboxToolParameterMenu : KScreen
 		Func<object, string> getOptionName = (object element) => (element as Element).name + " (" + (element as Element).GetStateString() + ")";
 		Func<string, object, bool> filterOptionFunction = delegate(string filterString, object option)
 		{
-			if (((option as Element).name.ToUpper() + (option as Element).GetStateString().ToUpper()).Contains(filterString.ToUpper()))
+			if (!((option as Element).name.ToUpper() + (option as Element).GetStateString().ToUpper()).Contains(filterString.ToUpper()))
 			{
-				return true;
+				return false;
 			}
-			return false;
+			return true;
 		};
 		Func<object, Tuple<Sprite, Color>> getOptionSprite = (object element) => Def.GetUISprite(element as Element, "ui", false);
 		SelectorValue.SearchFilter[] obj = new SelectorValue.SearchFilter[4]
@@ -417,13 +417,13 @@ public class SandboxToolParameterMenu : KScreen
 		name = UI.SANDBOXTOOLS.FILTERS.ENTITIES.EQUIPMENT;
 		condition = delegate(object entity)
 		{
-			if ((UnityEngine.Object)(entity as KPrefabID).gameObject == (UnityEngine.Object)null)
+			if (!((UnityEngine.Object)(entity as KPrefabID).gameObject == (UnityEngine.Object)null))
 			{
-				return false;
-			}
-			GameObject gameObject4 = (entity as KPrefabID).gameObject;
-			if ((UnityEngine.Object)gameObject4 != (UnityEngine.Object)null)
-			{
+				GameObject gameObject4 = (entity as KPrefabID).gameObject;
+				if (!((UnityEngine.Object)gameObject4 != (UnityEngine.Object)null))
+				{
+					return false;
+				}
 				return (UnityEngine.Object)gameObject4.GetComponent<Equippable>() != (UnityEngine.Object)null;
 			}
 			return false;
@@ -434,13 +434,13 @@ public class SandboxToolParameterMenu : KScreen
 		name = UI.SANDBOXTOOLS.FILTERS.ENTITIES.PLANTS;
 		condition = delegate(object entity)
 		{
-			if ((UnityEngine.Object)(entity as KPrefabID).gameObject == (UnityEngine.Object)null)
+			if (!((UnityEngine.Object)(entity as KPrefabID).gameObject == (UnityEngine.Object)null))
 			{
-				return false;
-			}
-			GameObject gameObject3 = (entity as KPrefabID).gameObject;
-			if ((UnityEngine.Object)gameObject3 != (UnityEngine.Object)null)
-			{
+				GameObject gameObject3 = (entity as KPrefabID).gameObject;
+				if (!((UnityEngine.Object)gameObject3 != (UnityEngine.Object)null))
+				{
+					return false;
+				}
 				return (UnityEngine.Object)gameObject3.GetComponent<Harvestable>() != (UnityEngine.Object)null || (UnityEngine.Object)gameObject3.GetComponent<WiltCondition>() != (UnityEngine.Object)null;
 			}
 			return false;
@@ -450,13 +450,13 @@ public class SandboxToolParameterMenu : KScreen
 		list.Add(searchFilter3);
 		SelectorValue.SearchFilter item5 = new SelectorValue.SearchFilter(UI.SANDBOXTOOLS.FILTERS.ENTITIES.SEEDS, delegate(object entity)
 		{
-			if ((UnityEngine.Object)(entity as KPrefabID).gameObject == (UnityEngine.Object)null)
+			if (!((UnityEngine.Object)(entity as KPrefabID).gameObject == (UnityEngine.Object)null))
 			{
-				return false;
-			}
-			GameObject gameObject2 = (entity as KPrefabID).gameObject;
-			if ((UnityEngine.Object)gameObject2 != (UnityEngine.Object)null)
-			{
+				GameObject gameObject2 = (entity as KPrefabID).gameObject;
+				if (!((UnityEngine.Object)gameObject2 != (UnityEngine.Object)null))
+				{
+					return false;
+				}
 				return (UnityEngine.Object)gameObject2.GetComponent<PlantableSeed>() != (UnityEngine.Object)null;
 			}
 			return false;
@@ -465,13 +465,13 @@ public class SandboxToolParameterMenu : KScreen
 		name = UI.SANDBOXTOOLS.FILTERS.ENTITIES.INDUSTRIAL_PRODUCTS;
 		condition = delegate(object entity)
 		{
-			if ((UnityEngine.Object)(entity as KPrefabID).gameObject == (UnityEngine.Object)null)
+			if (!((UnityEngine.Object)(entity as KPrefabID).gameObject == (UnityEngine.Object)null))
 			{
-				return false;
-			}
-			GameObject gameObject = (entity as KPrefabID).gameObject;
-			if ((UnityEngine.Object)gameObject != (UnityEngine.Object)null)
-			{
+				GameObject gameObject = (entity as KPrefabID).gameObject;
+				if (!((UnityEngine.Object)gameObject != (UnityEngine.Object)null))
+				{
+					return false;
+				}
 				return gameObject.HasTag(GameTags.IndustrialIngredient) || gameObject.HasTag(GameTags.IndustrialProduct) || gameObject.HasTag(GameTags.Medicine);
 			}
 			return false;
@@ -496,11 +496,11 @@ public class SandboxToolParameterMenu : KScreen
 			settings.SelectEntity(entity as KPrefabID);
 		}, (object entity) => (entity as KPrefabID).GetProperName(), delegate(string filterString, object option)
 		{
-			if ((option as KPrefabID).GetProperName().ToUpper().Contains(filterString.ToUpper()))
+			if (!(option as KPrefabID).GetProperName().ToUpper().Contains(filterString.ToUpper()))
 			{
-				return true;
+				return false;
 			}
-			return false;
+			return true;
 		}, delegate(object entity)
 		{
 			GameObject prefab = Assets.GetPrefab((entity as KPrefabID).PrefabTag);
@@ -531,11 +531,11 @@ public class SandboxToolParameterMenu : KScreen
 			settings.SelectDisease(disease as Disease);
 		}, (object disease) => (disease as Disease).Name, delegate(string filterText, object option)
 		{
-			if ((option as Disease).Name.ToUpper().Contains(filterText.ToUpper()))
+			if (!(option as Disease).Name.ToUpper().Contains(filterText.ToUpper()))
 			{
-				return true;
+				return false;
 			}
-			return false;
+			return true;
 		}, (object disease) => new Tuple<Sprite, Color>(Assets.GetSprite("germ"), (disease as Disease).overlayColour), null);
 	}
 
@@ -678,7 +678,7 @@ public class SandboxToolParameterMenu : KScreen
 				list = selector.optionButtons.FindAll((KeyValuePair<object, GameObject> match) => match.Key == option2);
 				foreach (KeyValuePair<object, GameObject> item in list)
 				{
-					if (filterString == string.Empty)
+					if (filterString == "")
 					{
 						item.Value.SetActive(false);
 					}
@@ -783,10 +783,10 @@ public class SandboxToolParameterMenu : KScreen
 				{
 					if ((UnityEngine.Object)currentSelectedGameObject == (UnityEngine.Object)inputField.gameObject)
 					{
-						return true;
+						result = true;
+						break;
 					}
 				}
-				return result;
 			}
 		}
 		return result;

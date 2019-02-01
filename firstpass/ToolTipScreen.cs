@@ -20,7 +20,7 @@ public class ToolTipScreen : KScreen
 
 	private Vector2 ScreenEdgePadding = new Vector2(8f, 8f);
 
-	private ToolTip dirtyHoverTooltip;
+	private ToolTip dirtyHoverTooltip = null;
 
 	private bool tooltipIncubating = true;
 

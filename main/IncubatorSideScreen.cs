@@ -17,7 +17,7 @@ public class IncubatorSideScreen : ReceptacleSideScreen
 
 	protected override void SetResultDescriptions(GameObject go)
 	{
-		string text = string.Empty;
+		string text = "";
 		InfoDescription component = go.GetComponent<InfoDescription>();
 		if ((bool)component)
 		{

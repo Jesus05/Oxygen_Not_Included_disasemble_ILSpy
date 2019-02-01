@@ -8,9 +8,9 @@ public class RequireInputs : KMonoBehaviour, ISim200ms
 	private bool requirePower = true;
 
 	[SerializeField]
-	private bool requireConduit;
+	private bool requireConduit = false;
 
-	private bool wasConnected;
+	private bool wasConnected = false;
 
 	public bool requireConduitHasMass = true;
 
@@ -22,7 +22,7 @@ public class RequireInputs : KMonoBehaviour, ISim200ms
 
 	private Guid wireConnectedStatusItem;
 
-	private bool requirementsMet;
+	private bool requirementsMet = false;
 
 	private BuildingEnabledButton button;
 

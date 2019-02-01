@@ -24,8 +24,6 @@ public class Edible : Workable, IGameObjectEffectDescriptor
 
 	private EdiblesManager.FoodInfo foodInfo;
 
-	private bool started;
-
 	private float consumptionStartTime = float.NaN;
 
 	public float unitsConsumed = float.NaN;
@@ -124,6 +122,12 @@ public class Edible : Workable, IGameObjectEffectDescriptor
 		}
 	}
 
+	public bool isBeingConsumed
+	{
+		get;
+		private set;
+	}
+
 	private Edible()
 	{
 		showProgressBar = false;
@@ -169,7 +173,7 @@ public class Edible : Workable, IGameObjectEffectDescriptor
 	public override HashedString GetWorkPstAnim(Worker worker, bool successfully_completed)
 	{
 		MinionResume component = worker.GetComponent<MinionResume>();
-		if ((Object)GetComponent<Building>() != (Object)null && (Object)component != (Object)null && component.CurrentRole != "NoRole")
+		if ((Object)component != (Object)null && component.CurrentRole != "NoRole")
 		{
 			return hatWorkPstAnim;
 		}
@@ -218,15 +222,16 @@ public class Edible : Workable, IGameObjectEffectDescriptor
 
 	private void StartConsuming()
 	{
-		started = true;
+		DebugUtil.DevAssert(!isBeingConsumed, "Can't StartConsuming()...we've already started");
+		isBeingConsumed = true;
 		consumptionStartTime = Time.time;
 		base.worker.Trigger(1406130139, this);
 	}
 
 	private void StopConsuming(Worker worker)
 	{
-		DebugUtil.DevAssert(started, "StopConsuming() called without StartConsuming()");
-		started = false;
+		DebugUtil.DevAssert(isBeingConsumed, "StopConsuming() called without StartConsuming()");
+		isBeingConsumed = false;
 		if (float.IsNaN(consumptionStartTime))
 		{
 			DebugUtil.DevAssert(false, "consumptionStartTime NaN in StopConsuming()");

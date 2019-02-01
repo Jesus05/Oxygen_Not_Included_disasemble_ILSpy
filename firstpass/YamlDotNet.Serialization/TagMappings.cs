@@ -24,11 +24,11 @@ namespace YamlDotNet.Serialization
 
 		internal Type GetMapping(string tag)
 		{
-			if (mappings.TryGetValue(tag, out Type value))
+			if (!mappings.TryGetValue(tag, out Type value))
 			{
-				return value;
+				return null;
 			}
-			return null;
+			return value;
 		}
 	}
 }

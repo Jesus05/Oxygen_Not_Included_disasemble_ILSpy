@@ -27,7 +27,7 @@ public class BingeEatChore : Chore<BingeEatChore.StatesInstance>
 			{
 				foreach (Edible item in Components.Edibles.Items)
 				{
-					if (!((UnityEngine.Object)item == (UnityEngine.Object)null) && !((UnityEngine.Object)item == (UnityEngine.Object)base.sm.ediblesource.Get<Edible>(base.smi)) && !(item.GetComponent<Pickupable>().UnreservedAmount <= 0f) && item.GetComponent<Pickupable>().CouldBePickedUpByMinion(base.gameObject))
+					if (!((UnityEngine.Object)item == (UnityEngine.Object)null) && !((UnityEngine.Object)item == (UnityEngine.Object)base.sm.ediblesource.Get<Edible>(base.smi)) && !item.isBeingConsumed && !(item.GetComponent<Pickupable>().UnreservedAmount <= 0f) && item.GetComponent<Pickupable>().CouldBePickedUpByMinion(base.gameObject))
 					{
 						int navigationCost = component.GetNavigationCost(item);
 						if (navigationCost != -1 && navigationCost < num)
@@ -122,7 +122,7 @@ public class BingeEatChore : Chore<BingeEatChore.StatesInstance>
 	}
 
 	public BingeEatChore(IStateMachineTarget target, Action<Chore> on_complete = null)
-		: base(Db.Get().ChoreTypes.BingeEat, target, target.GetComponent<ChoreProvider>(), false, on_complete, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.emergency, 5, false, true, 0, (Tag[])null)
+		: base(Db.Get().ChoreTypes.BingeEat, target, target.GetComponent<ChoreProvider>(), false, on_complete, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.compulsory, 5, false, true, 0, (Tag[])null, false)
 	{
 		smi = new StatesInstance(this, target.gameObject);
 		Subscribe(1121894420, OnEat);

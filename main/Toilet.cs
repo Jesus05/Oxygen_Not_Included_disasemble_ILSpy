@@ -48,11 +48,11 @@ public class Toilet : StateMachineComponent<Toilet.StatesInstance>, ISaveLoadabl
 
 		public bool HasDirt()
 		{
-			if (base.master.storage.IsEmpty())
+			if (!base.master.storage.IsEmpty())
 			{
-				return false;
+				return base.master.storage.Has(ElementLoader.FindElementByHash(SimHashes.Dirt).tag);
 			}
-			return base.master.storage.Has(ElementLoader.FindElementByHash(SimHashes.Dirt).tag);
+			return false;
 		}
 
 		public float MassPerFlush()
@@ -73,7 +73,7 @@ public class Toilet : StateMachineComponent<Toilet.StatesInstance>, ISaveLoadabl
 				cleanChore.Cancel("dupe");
 			}
 			ToiletWorkableClean component = base.master.GetComponent<ToiletWorkableClean>();
-			cleanChore = new WorkChore<ToiletWorkableClean>(Db.Get().ChoreTypes.CleanToilet, component, null, null, true, OnCleanComplete, null, null, true, null, false, true, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, true);
+			cleanChore = new WorkChore<ToiletWorkableClean>(Db.Get().ChoreTypes.CleanToilet, component, null, null, true, OnCleanComplete, null, null, true, null, false, true, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, true, true);
 		}
 
 		public void CancelCleanChore()
@@ -209,7 +209,7 @@ public class Toilet : StateMachineComponent<Toilet.StatesInstance>, ISaveLoadabl
 
 		private Chore CreateUseChore(StatesInstance smi, ChoreType choreType)
 		{
-			WorkChore<ToiletWorkableUse> workChore = new WorkChore<ToiletWorkableUse>(choreType, smi.master, null, null, true, null, null, null, false, null, true, true, null, false, true, false, PriorityScreen.PriorityClass.emergency, 5, false);
+			WorkChore<ToiletWorkableUse> workChore = new WorkChore<ToiletWorkableUse>(choreType, smi.master, null, null, true, null, null, null, false, null, true, true, null, false, true, false, PriorityScreen.PriorityClass.personalNeeds, 5, false, false);
 			smi.activeUseChores.Add(workChore);
 			WorkChore<ToiletWorkableUse> workChore2 = workChore;
 			workChore2.onExit = (Action<Chore>)Delegate.Combine(workChore2.onExit, (Action<Chore>)delegate(Chore exiting_chore)
@@ -241,7 +241,7 @@ public class Toilet : StateMachineComponent<Toilet.StatesInstance>, ISaveLoadabl
 	public int diseaseOnDupePerFlush;
 
 	[Serialize]
-	public int _flushesUsed;
+	public int _flushesUsed = 0;
 
 	private MeterController meter;
 

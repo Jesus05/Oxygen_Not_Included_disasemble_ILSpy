@@ -32,7 +32,7 @@ public class TransitionDriver
 
 	private Vector3 targetPos;
 
-	private bool isComplete;
+	private bool isComplete = false;
 
 	private Brain brain;
 
@@ -77,7 +77,7 @@ public class TransitionDriver
 		{
 			KAnimControllerBase component3 = navigator.GetComponent<KAnimControllerBase>();
 			component3.PlaySpeedMultiplier = transition.animSpeed;
-			bool flag = transition.preAnim != (HashedString)string.Empty;
+			bool flag = transition.preAnim != (HashedString)"";
 			bool flag2 = component3.CurrentAnim != null && (HashedString)component3.CurrentAnim.name == transition.anim;
 			if (flag && component3.CurrentAnim != null && (HashedString)component3.CurrentAnim.name == transition.preAnim)
 			{
@@ -150,10 +150,10 @@ public class TransitionDriver
 		}
 		if ((Object)brain != (Object)null && !isComplete)
 		{
-			goto IL_00ae;
+			goto IL_00be;
 		}
-		goto IL_00ae;
-		IL_00ae:
+		goto IL_00be;
+		IL_00be:
 		if (transition.isLooping)
 		{
 			float speed = transition.speed;

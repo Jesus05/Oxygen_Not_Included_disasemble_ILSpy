@@ -109,11 +109,11 @@ namespace Database
 		{
 			string text = Strings.Get(string.Format("{1}.{0}.NAME", id.ToUpper(), string_root.ToUpper()));
 			string description = Strings.Get(string.Format("{1}.{0}.TOOLTIP", id.ToUpper(), string_root.ToUpper()));
-			Attribute attribute = new Attribute(id + "Min", "Minimum" + text, string.Empty, string.Empty, min, Attribute.Display.Normal, false, null, null);
-			Attribute attribute2 = new Attribute(id + "Max", "Maximum" + text, string.Empty, string.Empty, max, Attribute.Display.Normal, false, null, null);
+			Attribute attribute = new Attribute(id + "Min", "Minimum" + text, "", "", min, Attribute.Display.Normal, false, null, null);
+			Attribute attribute2 = new Attribute(id + "Max", "Maximum" + text, "", "", max, Attribute.Display.Normal, false, null, null);
 			string text2 = id + "Delta";
 			string name = Strings.Get($"STRINGS.DUPLICANTS.ATTRIBUTES.{text2.ToUpper()}.NAME");
-			Attribute attribute3 = new Attribute(text2, name, string.Empty, string.Empty, 0f, Attribute.Display.Normal, false, null, null);
+			Attribute attribute3 = new Attribute(text2, name, "", "", 0f, Attribute.Display.Normal, false, null, null);
 			Amount amount = new Amount(id, text, description, attribute, attribute2, attribute3, show_max, units, delta_threshold, show_in_ui, uiSprite, thoughtSprite);
 			Db.Get().Attributes.Add(attribute);
 			Db.Get().Attributes.Add(attribute2);

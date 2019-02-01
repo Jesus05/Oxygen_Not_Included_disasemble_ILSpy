@@ -42,7 +42,7 @@ public class Sublimates : KMonoBehaviour, ISim200ms
 	private KSelectable selectable;
 
 	[SerializeField]
-	public SpawnFXHashes spawnFXHash;
+	public SpawnFXHashes spawnFXHash = SpawnFXHashes.None;
 
 	[SerializeField]
 	public Info info;

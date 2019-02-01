@@ -30,7 +30,7 @@ public class CargoBayIsEmpty : RocketLaunchCondition
 
 	public override string GetLaunchStatusMessage(bool ready)
 	{
-		if (ready)
+		if (!ready)
 		{
 			return UI.STARMAP.CARGOEMPTY.NAME;
 		}
@@ -39,7 +39,7 @@ public class CargoBayIsEmpty : RocketLaunchCondition
 
 	public override string GetLaunchStatusTooltip(bool ready)
 	{
-		if (ready)
+		if (!ready)
 		{
 			return UI.STARMAP.CARGOEMPTY.TOOLTIP;
 		}

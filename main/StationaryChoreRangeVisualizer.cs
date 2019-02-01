@@ -25,7 +25,7 @@ public class StationaryChoreRangeVisualizer : KMonoBehaviour
 
 	public int height;
 
-	public bool movable;
+	public bool movable = false;
 
 	public Grid.SceneLayer sceneLayer = Grid.SceneLayer.FXFront;
 

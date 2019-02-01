@@ -4,7 +4,7 @@ namespace NodeEditorFramework
 {
 	public class NodeAttribute : Attribute
 	{
-		public Type[] typeOfNodeCanvas;
+		public Type[] typeOfNodeCanvas = null;
 
 		public bool hide
 		{

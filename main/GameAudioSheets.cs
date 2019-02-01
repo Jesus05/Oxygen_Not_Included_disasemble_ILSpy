@@ -88,7 +88,7 @@ public class GameAudioSheets : AudioSheets
 		bool shouldCameraScalePosition = true;
 		if (sound_name.Contains(":disable_camera_position_scaling"))
 		{
-			sound_name = sound_name.Replace(":disable_camera_position_scaling", string.Empty);
+			sound_name = sound_name.Replace(":disable_camera_position_scaling", "");
 			shouldCameraScalePosition = false;
 		}
 		if (type == "FloorSoundEvent")
@@ -183,10 +183,10 @@ public class GameAudioSheets : AudioSheets
 	public bool IsAnimAllowedToPlaySpeech(KAnim.Anim anim)
 	{
 		HashSet<HashedString> value = null;
-		if (animsNotAllowedToPlaySpeech.TryGetValue(anim.animFile.name, out value))
+		if (!animsNotAllowedToPlaySpeech.TryGetValue(anim.animFile.name, out value))
 		{
-			return !value.Contains(anim.hash);
+			return true;
 		}
-		return true;
+		return !value.Contains(anim.hash);
 	}
 }

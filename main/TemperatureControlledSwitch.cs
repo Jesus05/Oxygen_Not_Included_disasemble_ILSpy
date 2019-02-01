@@ -7,7 +7,7 @@ public class TemperatureControlledSwitch : CircuitSwitch, ISaveLoadable, IThresh
 {
 	private HandleVector<int>.Handle structureTemperature;
 
-	private int simUpdateCounter;
+	private int simUpdateCounter = 0;
 
 	[Serialize]
 	public float thresholdTemperature = 280f;
@@ -15,7 +15,7 @@ public class TemperatureControlledSwitch : CircuitSwitch, ISaveLoadable, IThresh
 	[Serialize]
 	public bool activateOnWarmerThan;
 
-	public float minTemp;
+	public float minTemp = 0f;
 
 	public float maxTemp = 373.15f;
 

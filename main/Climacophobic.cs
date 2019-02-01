@@ -45,52 +45,52 @@ public class Climacophobic : StateMachineComponent<Climacophobic.StatesInstance>
 	{
 		int num = 5;
 		int cell = Grid.PosToCell(base.gameObject);
-		if (isCellLadder(cell))
+		if (!isCellLadder(cell))
 		{
-			int num2 = 1;
-			bool flag = true;
-			bool flag2 = true;
-			for (int i = 1; i < num; i++)
-			{
-				int cell2 = Grid.OffsetCell(cell, 0, i);
-				int cell3 = Grid.OffsetCell(cell, 0, -i);
-				if (flag && isCellLadder(cell2))
-				{
-					num2++;
-				}
-				else
-				{
-					flag = false;
-				}
-				if (flag2 && isCellLadder(cell3))
-				{
-					num2++;
-				}
-				else
-				{
-					flag2 = false;
-				}
-			}
-			return num2 >= num;
+			return false;
 		}
-		return false;
+		int num2 = 1;
+		bool flag = true;
+		bool flag2 = true;
+		for (int i = 1; i < num; i++)
+		{
+			int cell2 = Grid.OffsetCell(cell, 0, i);
+			int cell3 = Grid.OffsetCell(cell, 0, -i);
+			if (flag && isCellLadder(cell2))
+			{
+				num2++;
+			}
+			else
+			{
+				flag = false;
+			}
+			if (flag2 && isCellLadder(cell3))
+			{
+				num2++;
+			}
+			else
+			{
+				flag2 = false;
+			}
+		}
+		return num2 >= num;
 	}
 
 	private bool isCellLadder(int cell)
 	{
-		if (!Grid.IsValidCell(cell))
+		if (Grid.IsValidCell(cell))
 		{
+			GameObject gameObject = Grid.Objects[cell, 1];
+			if (!((Object)gameObject == (Object)null))
+			{
+				if (!((Object)gameObject.GetComponent<Ladder>() == (Object)null))
+				{
+					return true;
+				}
+				return false;
+			}
 			return false;
 		}
-		GameObject gameObject = Grid.Objects[cell, 1];
-		if ((Object)gameObject == (Object)null)
-		{
-			return false;
-		}
-		if ((Object)gameObject.GetComponent<Ladder>() == (Object)null)
-		{
-			return false;
-		}
-		return true;
+		return false;
 	}
 }

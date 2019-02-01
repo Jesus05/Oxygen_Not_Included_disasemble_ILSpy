@@ -22,11 +22,11 @@ public class Equipment : Assignables
 	{
 		IAssignableIdentity assignableIdentity = GetAssignableIdentity();
 		MinionAssignablesProxy minionAssignablesProxy = (MinionAssignablesProxy)assignableIdentity;
-		if ((bool)minionAssignablesProxy)
+		if (!(bool)minionAssignablesProxy)
 		{
-			return minionAssignablesProxy.GetTargetGameObject();
+			return null;
 		}
-		return null;
+		return minionAssignablesProxy.GetTargetGameObject();
 	}
 
 	protected override void OnPrefabInit()
@@ -78,11 +78,20 @@ public class Equipment : Assignables
 		{
 			component2.GetComponent<SymbolOverrideController>().AddBuildOverride(equippable.def.BuildOverride.GetData(), equippable.def.BuildOverridePriority);
 		}
-		equippable.GetComponent<KBatchedAnimController>().enabled = false;
+		if ((bool)equippable.transform.parent)
+		{
+			Storage component3 = equippable.transform.parent.GetComponent<Storage>();
+			if ((bool)component3)
+			{
+				component3.Drop(equippable.gameObject);
+			}
+		}
+		equippable.transform.parent = slot.gameObject.transform;
+		equippable.transform.SetLocalPosition(Vector3.zero);
 		equippable.OnEquip(slot);
 		if (refreshHandle.TimeRemaining > 0f)
 		{
-			Debug.LogWarning(targetGameObject.GetProperName() + " is already in the process of changing equipment", null);
+			Debug.LogWarning(targetGameObject.GetProperName() + " is already in the process of changing equipment (equip)", null);
 			refreshHandle.ClearScheduler();
 		}
 		CreatureSimTemperatureTransfer transferer = targetGameObject.GetComponent<CreatureSimTemperatureTransfer>();
@@ -101,16 +110,11 @@ public class Equipment : Assignables
 
 	public void Unequip(Equippable equippable)
 	{
-		equippable.GetComponent<KBatchedAnimController>().enabled = true;
 		AssignableSlotInstance slot = GetSlot(equippable.slot);
 		slot.Unassign(true);
 		equippable.Trigger(-170173755, this);
 		GameObject targetGameObject = GetTargetGameObject();
-		if (!(bool)targetGameObject)
-		{
-			DebugUtil.DevAssert(false, "GetTargetGameObject returned null in Unequip");
-		}
-		else
+		if ((bool)targetGameObject)
 		{
 			targetGameObject.Trigger(-1285462312, equippable.GetComponent<KPrefabID>());
 			KBatchedAnimController component = targetGameObject.GetComponent<KBatchedAnimController>();
@@ -137,17 +141,36 @@ public class Equipment : Assignables
 						component2.DetachSnapOnByName(equippable.def.SnapOn1);
 					}
 				}
+				if ((bool)equippable.transform.parent)
+				{
+					Storage component3 = equippable.transform.parent.GetComponent<Storage>();
+					if ((bool)component3)
+					{
+						component3.Drop(equippable.gameObject);
+					}
+				}
+				equippable.transform.parent = null;
+				equippable.transform.SetPosition(targetGameObject.transform.GetPosition() + Vector3.up / 2f);
+				KBatchedAnimController component4 = equippable.GetComponent<KBatchedAnimController>();
+				if ((bool)component4)
+				{
+					component4.SetSceneLayer(Grid.SceneLayer.Ore);
+				}
 				if (!((Object)component == (Object)null))
 				{
+					if (refreshHandle.TimeRemaining > 0f)
+					{
+						refreshHandle.ClearScheduler();
+					}
 					refreshHandle = GameScheduler.Instance.Schedule("ChangeEquipment", 1f, delegate
 					{
 						GameObject gameObject = (!((Object)this != (Object)null)) ? null : GetTargetGameObject();
 						if ((bool)gameObject)
 						{
-							CreatureSimTemperatureTransfer component3 = gameObject.GetComponent<CreatureSimTemperatureTransfer>();
-							if ((Object)component3 != (Object)null)
+							CreatureSimTemperatureTransfer component5 = gameObject.GetComponent<CreatureSimTemperatureTransfer>();
+							if ((Object)component5 != (Object)null)
 							{
-								component3.RefreshRegistration();
+								component5.RefreshRegistration();
 							}
 						}
 					}, null, null);

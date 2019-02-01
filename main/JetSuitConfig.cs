@@ -33,7 +33,7 @@ public class JetSuitConfig : IEquipmentConfig
 		{
 			GameTags.Suit
 		};
-		EquipmentDef equipmentDef = EquipmentTemplates.CreateEquipmentDef(id, sLOT, outputElement, mass, "suit_jetpack_kanim", string.Empty, "body_jetpack_kanim", 6, attributeModifiers, null, true, EntityTemplates.CollisionShape.CIRCLE, 0.325f, 0.325f, additional_tags, "JetSuit");
+		EquipmentDef equipmentDef = EquipmentTemplates.CreateEquipmentDef(id, sLOT, outputElement, mass, "suit_jetpack_kanim", "", "body_jetpack_kanim", 6, attributeModifiers, null, true, EntityTemplates.CollisionShape.CIRCLE, 0.325f, 0.325f, additional_tags, "JetSuit");
 		equipmentDef.RecipeDescription = STRINGS.EQUIPMENT.PREFABS.JET_SUIT.RECIPE_DESC;
 		equipmentDef.EffectImmunites.Add(Db.Get().effects.Get("SoakingWet"));
 		equipmentDef.EffectImmunites.Add(Db.Get().effects.Get("WetFeet"));
@@ -67,21 +67,23 @@ public class JetSuitConfig : IEquipmentConfig
 			if (eq.assignee != null)
 			{
 				Ownables soleOwner = eq.assignee.GetSoleOwner();
-				GameObject targetGameObject = soleOwner.GetComponent<MinionAssignablesProxy>().GetTargetGameObject();
-				Attributes attributes = targetGameObject.GetAttributes();
-				if (attributes != null)
+				if ((bool)soleOwner)
 				{
-					attributes.Get(Db.Get().Attributes.Athletics).Remove(SuitExpert.AthleticsModifier);
-					KAnimControllerBase component = targetGameObject.GetComponent<KAnimControllerBase>();
-					if ((bool)component)
+					GameObject targetGameObject = soleOwner.GetComponent<MinionAssignablesProxy>().GetTargetGameObject();
+					if ((bool)targetGameObject)
 					{
-						component.RemoveAnimOverrides(Assets.GetAnim("anim_loco_hover_kanim"));
+						targetGameObject.GetAttributes()?.Get(Db.Get().Attributes.Athletics).Remove(SuitExpert.AthleticsModifier);
+						Navigator component = targetGameObject.GetComponent<Navigator>();
+						if ((Object)component != (Object)null)
+						{
+							component.ClearFlags(PathFinder.PotentialPath.Flags.HasJetPack);
+						}
+						KAnimControllerBase component2 = targetGameObject.GetComponent<KAnimControllerBase>();
+						if ((bool)component2)
+						{
+							component2.RemoveAnimOverrides(Assets.GetAnim("anim_loco_hover_kanim"));
+						}
 					}
-				}
-				Navigator component2 = targetGameObject.GetComponent<Navigator>();
-				if ((Object)component2 != (Object)null)
-				{
-					component2.ClearFlags(PathFinder.PotentialPath.Flags.HasJetPack);
 				}
 			}
 		};
@@ -97,7 +99,6 @@ public class JetSuitConfig : IEquipmentConfig
 		suitTank.capacity = 75f;
 		go.AddComponent<JetSuitTank>();
 		HelmetController helmetController = go.AddComponent<HelmetController>();
-		helmetController.anim_file = "helm_jetpack_kanim";
 		helmetController.has_jets = true;
 		KPrefabID component = go.GetComponent<KPrefabID>();
 		component.AddTag(GameTags.Clothes);

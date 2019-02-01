@@ -70,16 +70,16 @@ public struct StructureTemperaturePayload
 	{
 		get
 		{
-			if (energySourcesKW == null || energySourcesKW.Count == 0)
+			if (energySourcesKW != null && energySourcesKW.Count != 0)
 			{
-				return 0f;
+				float num = 0f;
+				for (int i = 0; i < energySourcesKW.Count; i++)
+				{
+					num += energySourcesKW[i].value;
+				}
+				return num;
 			}
-			float num = 0f;
-			for (int i = 0; i < energySourcesKW.Count; i++)
-			{
-				num += energySourcesKW[i].value;
-			}
-			return num;
+			return 0f;
 		}
 	}
 

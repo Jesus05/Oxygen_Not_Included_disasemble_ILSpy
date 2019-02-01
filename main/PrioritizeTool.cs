@@ -71,7 +71,7 @@ public class PrioritizeTool : DragTool
 		}
 		if (lastSelectedPriority.priority_class >= PriorityScreen.PriorityClass.emergency)
 		{
-			num += 9;
+			num = num;
 		}
 		num += lastSelectedPriority.priority_value;
 		Texture2D mainTexture = cursors[num - 1];

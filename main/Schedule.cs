@@ -195,26 +195,26 @@ public class Schedule : ISaveLoadable, IListableOption
 
 	public static bool AreScheduleTypesIdentical(List<ScheduleBlockType> a, List<ScheduleBlockType> b)
 	{
-		if (a.Count != b.Count)
+		if (a.Count == b.Count)
 		{
-			return false;
-		}
-		foreach (ScheduleBlockType item in a)
-		{
-			bool flag = false;
-			foreach (ScheduleBlockType item2 in b)
+			foreach (ScheduleBlockType item in a)
 			{
-				if (item.IdHash == item2.IdHash)
+				bool flag = false;
+				foreach (ScheduleBlockType item2 in b)
 				{
-					flag = true;
-					break;
+					if (item.IdHash == item2.IdHash)
+					{
+						flag = true;
+						break;
+					}
+				}
+				if (!flag)
+				{
+					return false;
 				}
 			}
-			if (!flag)
-			{
-				return false;
-			}
+			return true;
 		}
-		return true;
+		return false;
 	}
 }

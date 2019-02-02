@@ -6,6 +6,11 @@ public class ToiletWorkableUse : Workable, IGameObjectEffectDescriptor
 	[Serialize]
 	public int timesUsed;
 
+	private ToiletWorkableUse()
+	{
+		SetReportType(ReportManager.ReportType.PersonalTime);
+	}
+
 	protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();

@@ -633,7 +633,7 @@ public class FetchAreaChore : Chore<FetchAreaChore.StatesInstance>
 	public GameObject GetFetchTarget => smi.sm.fetchTarget.Get(smi);
 
 	public FetchAreaChore(Precondition.Context context)
-		: base(context.chore.choreType, (IStateMachineTarget)context.consumerState.consumer, context.consumerState.choreProvider, false, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, context.masterPriority.priority_class, context.masterPriority.priority_value, false, true, 0, (Tag[])null, false)
+		: base(context.chore.choreType, (IStateMachineTarget)context.consumerState.consumer, context.consumerState.choreProvider, false, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, context.masterPriority.priority_class, context.masterPriority.priority_value, false, true, 0, (Tag[])null, false, ReportManager.ReportType.WorkTime)
 	{
 		showAvailabilityInHoverText = false;
 		smi = new StatesInstance(this, context);

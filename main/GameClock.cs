@@ -101,6 +101,11 @@ public class GameClock : KMonoBehaviour, ISaveLoadable, ISim33ms, IRender1000ms
 		}
 	}
 
+	public float GetTimeSinceStartOfCycle()
+	{
+		return timeSinceStartOfCycle;
+	}
+
 	public float GetCurrentCycleAsPercentage()
 	{
 		return timeSinceStartOfCycle / 600f;

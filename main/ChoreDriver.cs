@@ -88,9 +88,9 @@ public class ChoreDriver : StateMachineComponent<ChoreDriver.StatesInstance>
 			saveHistory = true;
 			nochore.Update(delegate(StatesInstance smi, float dt)
 			{
-				if (smi.master.HasTag(GameTags.Minion))
+				if (smi.master.HasTag(GameTags.Minion) && !smi.master.HasTag(GameTags.Dead))
 				{
-					ReportManager.Instance.ReportValue(ReportManager.ReportType.TimeSpent, dt, StringFormatter.Replace(UI.ENDOFDAYREPORT.NOTES.TIME_SPENT, "{0}", DUPLICANTS.CHORES.THINKING.NAME), smi.master.GetProperName());
+					ReportManager.Instance.ReportValue(ReportManager.ReportType.WorkTime, dt, string.Format(UI.ENDOFDAYREPORT.NOTES.TIME_SPENT, DUPLICANTS.CHORES.THINKING.NAME), smi.master.GetProperName());
 				}
 			}, UpdateRate.SIM_200ms, false).ParamTransition(nextChore, haschore, (StatesInstance smi, Chore next_chore) => next_chore != null);
 			haschore.Enter("BeginChore", delegate(StatesInstance smi)
@@ -99,15 +99,7 @@ public class ChoreDriver : StateMachineComponent<ChoreDriver.StatesInstance>
 			}).Exit("EndChore", delegate(StatesInstance smi)
 			{
 				smi.EndChore("ChoreDriver.SignalStop");
-			}).OnSignal(stop, nochore)
-				.Update(delegate(StatesInstance smi, float dt)
-				{
-					Chore chore = currentChore.Get(smi);
-					if (chore != null && smi.master.HasTag(GameTags.Minion))
-					{
-						ReportManager.Instance.ReportValue(ReportManager.ReportType.TimeSpent, dt, StringFormatter.Replace(UI.ENDOFDAYREPORT.NOTES.TIME_SPENT, "{0}", chore.GetReportName(null)), smi.master.GetProperName());
-					}
-				}, UpdateRate.SIM_200ms, false);
+			}).OnSignal(stop, nochore);
 		}
 	}
 

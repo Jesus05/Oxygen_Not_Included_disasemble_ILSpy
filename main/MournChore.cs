@@ -120,7 +120,7 @@ public class MournChore : Chore<MournChore.StatesInstance>
 	};
 
 	public MournChore(IStateMachineTarget master)
-		: base(Db.Get().ChoreTypes.Mourn, master, master.GetComponent<ChoreProvider>(), false, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.high, 5, false, true, 0, (Tag[])null, false)
+		: base(Db.Get().ChoreTypes.Mourn, master, master.GetComponent<ChoreProvider>(), false, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.high, 5, false, true, 0, (Tag[])null, false, ReportManager.ReportType.WorkTime)
 	{
 		smi = new StatesInstance(this);
 		AddPrecondition(ChorePreconditions.instance.IsNotRedAlert, null);

@@ -46,6 +46,7 @@ public class RelaxationPoint : Workable, IEffectDescriptor
 
 	public RelaxationPoint()
 	{
+		SetReportType(ReportManager.ReportType.PersonalTime);
 		showProgressBar = false;
 	}
 

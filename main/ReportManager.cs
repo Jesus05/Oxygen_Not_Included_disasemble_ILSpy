@@ -12,29 +12,38 @@ public class ReportManager : KMonoBehaviour
 {
 	public delegate string FormattingFn(float v);
 
+	public delegate string GroupFormattingFn(float v, float numEntries);
+
 	public enum ReportType
 	{
-		OxygenCreated,
+		DuplicantHeader,
 		CaloriesCreated,
 		StressDelta,
-		EnergyCreated,
-		EnergyWasted,
 		LevelUp,
-		TravelTime,
-		IdleTime,
+		DiseaseStatus,
 		DiseaseAdded,
 		ToiletIncident,
+		ChoreStatus,
+		TimeSpentHeader,
+		TimeSpent,
+		WorkTime,
+		TravelTime,
+		PersonalTime,
+		IdleTime,
+		BaseHeader,
 		ContaminatedOxygenFlatulence,
 		ContaminatedOxygenToilet,
 		ContaminatedOxygenSublimation,
-		DiseaseStatus,
-		TimeSpent,
-		ChoreStatus
+		OxygenCreated,
+		EnergyCreated,
+		EnergyWasted
 	}
 
 	public struct ReportGroup
 	{
 		public FormattingFn formatfn;
+
+		public GroupFormattingFn groupFormatfn;
 
 		public string stringKey;
 
@@ -46,13 +55,16 @@ public class ReportManager : KMonoBehaviour
 
 		public int group;
 
+		public bool isHeader;
+
 		public ReportEntry.Order posNoteOrder;
 
 		public ReportEntry.Order negNoteOrder;
 
-		public ReportGroup(FormattingFn formatfn, bool reportIfZero, int group, string stringKey, string positiveTooltip, string negativeTooltip, ReportEntry.Order pos_note_order = ReportEntry.Order.Unordered, ReportEntry.Order neg_note_order = ReportEntry.Order.Unordered)
+		public ReportGroup(FormattingFn formatfn, bool reportIfZero, int group, string stringKey, string positiveTooltip, string negativeTooltip, ReportEntry.Order pos_note_order = ReportEntry.Order.Unordered, ReportEntry.Order neg_note_order = ReportEntry.Order.Unordered, bool is_header = false, GroupFormattingFn group_format_fn = null)
 		{
 			this.formatfn = ((formatfn == null) ? ((FormattingFn)((float v) => v.ToString())) : formatfn);
+			groupFormatfn = group_format_fn;
 			this.stringKey = stringKey;
 			this.positiveTooltip = positiveTooltip;
 			this.negativeTooltip = negativeTooltip;
@@ -60,6 +72,7 @@ public class ReportManager : KMonoBehaviour
 			this.group = group;
 			posNoteOrder = pos_note_order;
 			negNoteOrder = neg_note_order;
+			isHeader = is_header;
 		}
 	}
 
@@ -110,16 +123,19 @@ public class ReportManager : KMonoBehaviour
 		[Serialize]
 		public ArrayRef<ReportEntry> contextEntries;
 
+		public bool isChild;
+
 		public float Positive => accPositive;
 
 		public float Negative => accNegative;
 
 		public float Net => accPositive + accNegative;
 
-		public ReportEntry(ReportType reportType, int note_storage_id, string context)
+		public ReportEntry(ReportType reportType, int note_storage_id, string context, bool is_child = false)
 		{
 			this.reportType = reportType;
 			this.context = context;
+			isChild = is_child;
 			accumulate = 0f;
 			accPositive = 0f;
 			accNegative = 0f;
@@ -163,7 +179,7 @@ public class ReportManager : KMonoBehaviour
 				}
 				if (reportEntry == null)
 				{
-					reportEntry = new ReportEntry(reportType, note_storage.GetNewNoteId(), dataContext);
+					reportEntry = new ReportEntry(reportType, note_storage.GetNewNoteId(), dataContext, true);
 					contextEntries.Add(reportEntry);
 				}
 				reportEntry.AddActualData(note_storage, value, note);
@@ -207,7 +223,7 @@ public class ReportManager : KMonoBehaviour
 		{
 			foreach (KeyValuePair<ReportType, ReportGroup> reportGroup in manager.ReportGroups)
 			{
-				reportEntries.Add(new ReportEntry(reportGroup.Key, noteStorage.GetNewNoteId(), null));
+				reportEntries.Add(new ReportEntry(reportGroup.Key, noteStorage.GetNewNoteId(), null, false));
 			}
 		}
 
@@ -221,7 +237,7 @@ public class ReportManager : KMonoBehaviour
 					return reportEntry;
 				}
 			}
-			ReportEntry reportEntry2 = new ReportEntry(reportType, noteStorage.GetNewNoteId(), null);
+			ReportEntry reportEntry2 = new ReportEntry(reportType, noteStorage.GetNewNoteId(), null, false);
 			reportEntries.Add(reportEntry2);
 			return reportEntry2;
 		}
@@ -513,64 +529,80 @@ public class ReportManager : KMonoBehaviour
 	public Dictionary<ReportType, ReportGroup> ReportGroups = new Dictionary<ReportType, ReportGroup>
 	{
 		{
+			ReportType.DuplicantHeader,
+			new ReportGroup(null, true, 1, "Duplicant Details:", "", "", ReportEntry.Order.Unordered, ReportEntry.Order.Unordered, true, null)
+		},
+		{
 			ReportType.CaloriesCreated,
-			new ReportGroup((float v) => GameUtil.GetFormattedCalories(v, GameUtil.TimeSlice.None, true), true, 1, UI.ENDOFDAYREPORT.CALORIES_CREATED.NAME, UI.ENDOFDAYREPORT.CALORIES_CREATED.POSITIVE_TOOLTIP, UI.ENDOFDAYREPORT.CALORIES_CREATED.NEGATIVE_TOOLTIP, ReportEntry.Order.Descending, ReportEntry.Order.Descending)
+			new ReportGroup((float v) => GameUtil.GetFormattedCalories(v, GameUtil.TimeSlice.None, true), true, 1, UI.ENDOFDAYREPORT.CALORIES_CREATED.NAME, UI.ENDOFDAYREPORT.CALORIES_CREATED.POSITIVE_TOOLTIP, UI.ENDOFDAYREPORT.CALORIES_CREATED.NEGATIVE_TOOLTIP, ReportEntry.Order.Descending, ReportEntry.Order.Descending, false, null)
 		},
 		{
 			ReportType.StressDelta,
-			new ReportGroup((float v) => GameUtil.GetFormattedPercent(v, GameUtil.TimeSlice.None), true, 1, UI.ENDOFDAYREPORT.STRESS_DELTA.NAME, UI.ENDOFDAYREPORT.STRESS_DELTA.POSITIVE_TOOLTIP, UI.ENDOFDAYREPORT.STRESS_DELTA.NEGATIVE_TOOLTIP, ReportEntry.Order.Descending, ReportEntry.Order.Descending)
+			new ReportGroup((float v) => GameUtil.GetFormattedPercent(v, GameUtil.TimeSlice.None), true, 1, UI.ENDOFDAYREPORT.STRESS_DELTA.NAME, UI.ENDOFDAYREPORT.STRESS_DELTA.POSITIVE_TOOLTIP, UI.ENDOFDAYREPORT.STRESS_DELTA.NEGATIVE_TOOLTIP, ReportEntry.Order.Descending, ReportEntry.Order.Descending, false, null)
 		},
 		{
 			ReportType.DiseaseAdded,
-			new ReportGroup(null, false, 1, UI.ENDOFDAYREPORT.DISEASE_ADDED.NAME, UI.ENDOFDAYREPORT.DISEASE_ADDED.POSITIVE_TOOLTIP, UI.ENDOFDAYREPORT.DISEASE_ADDED.NEGATIVE_TOOLTIP, ReportEntry.Order.Descending, ReportEntry.Order.Descending)
+			new ReportGroup(null, false, 1, UI.ENDOFDAYREPORT.DISEASE_ADDED.NAME, UI.ENDOFDAYREPORT.DISEASE_ADDED.POSITIVE_TOOLTIP, UI.ENDOFDAYREPORT.DISEASE_ADDED.NEGATIVE_TOOLTIP, ReportEntry.Order.Descending, ReportEntry.Order.Descending, false, null)
 		},
 		{
 			ReportType.DiseaseStatus,
-			new ReportGroup((float v) => GameUtil.GetFormattedDiseaseAmount((int)v), true, 1, UI.ENDOFDAYREPORT.DISEASE_STATUS.NAME, UI.ENDOFDAYREPORT.DISEASE_STATUS.TOOLTIP, "", ReportEntry.Order.Descending, ReportEntry.Order.Descending)
-		},
-		{
-			ReportType.TimeSpent,
-			new ReportGroup((float v) => GameUtil.GetFormattedTime(v), true, 1, UI.ENDOFDAYREPORT.TIME_SPENT.NAME, UI.ENDOFDAYREPORT.TIME_SPENT.POSITIVE_TOOLTIP, "", ReportEntry.Order.Descending, ReportEntry.Order.Descending)
-		},
-		{
-			ReportType.TravelTime,
-			new ReportGroup((float v) => GameUtil.GetFormattedTime(v), true, 1, UI.ENDOFDAYREPORT.TRAVEL_TIME.NAME, UI.ENDOFDAYREPORT.TRAVEL_TIME.POSITIVE_TOOLTIP, "", ReportEntry.Order.Descending, ReportEntry.Order.Descending)
-		},
-		{
-			ReportType.IdleTime,
-			new ReportGroup((float v) => GameUtil.GetFormattedTime(v), true, 2, UI.ENDOFDAYREPORT.IDLE_TIME.NAME, UI.ENDOFDAYREPORT.IDLE_TIME.POSITIVE_TOOLTIP, "", ReportEntry.Order.Descending, ReportEntry.Order.Descending)
-		},
-		{
-			ReportType.ChoreStatus,
-			new ReportGroup(null, true, 1, UI.ENDOFDAYREPORT.CHORE_STATUS.NAME, UI.ENDOFDAYREPORT.CHORE_STATUS.POSITIVE_TOOLTIP, UI.ENDOFDAYREPORT.CHORE_STATUS.NEGATIVE_TOOLTIP, ReportEntry.Order.Descending, ReportEntry.Order.Descending)
-		},
-		{
-			ReportType.OxygenCreated,
-			new ReportGroup((float v) => GameUtil.GetFormattedMass(v, GameUtil.TimeSlice.None, GameUtil.MetricMassFormat.UseThreshold, true, "{0:0.#}"), true, 2, UI.ENDOFDAYREPORT.OXYGEN_CREATED.NAME, UI.ENDOFDAYREPORT.OXYGEN_CREATED.POSITIVE_TOOLTIP, UI.ENDOFDAYREPORT.OXYGEN_CREATED.NEGATIVE_TOOLTIP, ReportEntry.Order.Descending, ReportEntry.Order.Descending)
-		},
-		{
-			ReportType.EnergyCreated,
-			new ReportGroup(GameUtil.GetFormattedRoundedJoules, true, 2, UI.ENDOFDAYREPORT.ENERGY_USAGE.NAME, UI.ENDOFDAYREPORT.ENERGY_USAGE.POSITIVE_TOOLTIP, UI.ENDOFDAYREPORT.ENERGY_USAGE.NEGATIVE_TOOLTIP, ReportEntry.Order.Descending, ReportEntry.Order.Descending)
-		},
-		{
-			ReportType.EnergyWasted,
-			new ReportGroup(GameUtil.GetFormattedRoundedJoules, true, 2, UI.ENDOFDAYREPORT.ENERGY_WASTED.NAME, UI.ENDOFDAYREPORT.ENERGY_WASTED.POSITIVE_TOOLTIP, UI.ENDOFDAYREPORT.ENERGY_WASTED.NEGATIVE_TOOLTIP, ReportEntry.Order.Descending, ReportEntry.Order.Descending)
+			new ReportGroup((float v) => GameUtil.GetFormattedDiseaseAmount((int)v), true, 1, UI.ENDOFDAYREPORT.DISEASE_STATUS.NAME, UI.ENDOFDAYREPORT.DISEASE_STATUS.TOOLTIP, "", ReportEntry.Order.Descending, ReportEntry.Order.Descending, false, null)
 		},
 		{
 			ReportType.LevelUp,
-			new ReportGroup(null, false, 2, UI.ENDOFDAYREPORT.LEVEL_UP.NAME, UI.ENDOFDAYREPORT.LEVEL_UP.TOOLTIP, "", ReportEntry.Order.Descending, ReportEntry.Order.Descending)
+			new ReportGroup(null, false, 1, UI.ENDOFDAYREPORT.LEVEL_UP.NAME, UI.ENDOFDAYREPORT.LEVEL_UP.TOOLTIP, "", ReportEntry.Order.Descending, ReportEntry.Order.Descending, false, null)
 		},
 		{
 			ReportType.ToiletIncident,
-			new ReportGroup(null, false, 2, UI.ENDOFDAYREPORT.TOILET_INCIDENT.NAME, UI.ENDOFDAYREPORT.TOILET_INCIDENT.TOOLTIP, "", ReportEntry.Order.Descending, ReportEntry.Order.Descending)
+			new ReportGroup(null, false, 1, UI.ENDOFDAYREPORT.TOILET_INCIDENT.NAME, UI.ENDOFDAYREPORT.TOILET_INCIDENT.TOOLTIP, "", ReportEntry.Order.Descending, ReportEntry.Order.Descending, false, null)
+		},
+		{
+			ReportType.ChoreStatus,
+			new ReportGroup(null, true, 1, UI.ENDOFDAYREPORT.CHORE_STATUS.NAME, UI.ENDOFDAYREPORT.CHORE_STATUS.POSITIVE_TOOLTIP, UI.ENDOFDAYREPORT.CHORE_STATUS.NEGATIVE_TOOLTIP, ReportEntry.Order.Descending, ReportEntry.Order.Descending, false, null)
+		},
+		{
+			ReportType.TimeSpentHeader,
+			new ReportGroup(null, true, 2, "Time Details:", "", "", ReportEntry.Order.Unordered, ReportEntry.Order.Unordered, true, null)
+		},
+		{
+			ReportType.WorkTime,
+			new ReportGroup((float v) => GameUtil.GetFormattedPercent(v / 600f * 100f, GameUtil.TimeSlice.None), true, 2, UI.ENDOFDAYREPORT.WORK_TIME.NAME, UI.ENDOFDAYREPORT.WORK_TIME.POSITIVE_TOOLTIP, "", ReportEntry.Order.Descending, ReportEntry.Order.Descending, false, (float v, float num_entries) => GameUtil.GetFormattedPercent(v / 600f * 100f / num_entries, GameUtil.TimeSlice.None))
+		},
+		{
+			ReportType.TravelTime,
+			new ReportGroup((float v) => GameUtil.GetFormattedPercent(v / 600f * 100f, GameUtil.TimeSlice.None), true, 2, UI.ENDOFDAYREPORT.TRAVEL_TIME.NAME, UI.ENDOFDAYREPORT.TRAVEL_TIME.POSITIVE_TOOLTIP, "", ReportEntry.Order.Descending, ReportEntry.Order.Descending, false, (float v, float num_entries) => GameUtil.GetFormattedPercent(v / 600f * 100f / num_entries, GameUtil.TimeSlice.None))
+		},
+		{
+			ReportType.PersonalTime,
+			new ReportGroup((float v) => GameUtil.GetFormattedPercent(v / 600f * 100f, GameUtil.TimeSlice.None), true, 2, UI.ENDOFDAYREPORT.PERSONAL_TIME.NAME, UI.ENDOFDAYREPORT.PERSONAL_TIME.POSITIVE_TOOLTIP, "", ReportEntry.Order.Descending, ReportEntry.Order.Descending, false, (float v, float num_entries) => GameUtil.GetFormattedPercent(v / 600f * 100f / num_entries, GameUtil.TimeSlice.None))
+		},
+		{
+			ReportType.IdleTime,
+			new ReportGroup((float v) => GameUtil.GetFormattedPercent(v / 600f * 100f, GameUtil.TimeSlice.None), true, 2, UI.ENDOFDAYREPORT.IDLE_TIME.NAME, UI.ENDOFDAYREPORT.IDLE_TIME.POSITIVE_TOOLTIP, "", ReportEntry.Order.Descending, ReportEntry.Order.Descending, false, (float v, float num_entries) => GameUtil.GetFormattedPercent(v / 600f * 100f / num_entries, GameUtil.TimeSlice.None))
+		},
+		{
+			ReportType.BaseHeader,
+			new ReportGroup(null, true, 3, "Base Details:", "", "", ReportEntry.Order.Unordered, ReportEntry.Order.Unordered, true, null)
+		},
+		{
+			ReportType.OxygenCreated,
+			new ReportGroup((float v) => GameUtil.GetFormattedMass(v, GameUtil.TimeSlice.None, GameUtil.MetricMassFormat.UseThreshold, true, "{0:0.#}"), true, 3, UI.ENDOFDAYREPORT.OXYGEN_CREATED.NAME, UI.ENDOFDAYREPORT.OXYGEN_CREATED.POSITIVE_TOOLTIP, UI.ENDOFDAYREPORT.OXYGEN_CREATED.NEGATIVE_TOOLTIP, ReportEntry.Order.Descending, ReportEntry.Order.Descending, false, null)
+		},
+		{
+			ReportType.EnergyCreated,
+			new ReportGroup(GameUtil.GetFormattedRoundedJoules, true, 3, UI.ENDOFDAYREPORT.ENERGY_USAGE.NAME, UI.ENDOFDAYREPORT.ENERGY_USAGE.POSITIVE_TOOLTIP, UI.ENDOFDAYREPORT.ENERGY_USAGE.NEGATIVE_TOOLTIP, ReportEntry.Order.Descending, ReportEntry.Order.Descending, false, null)
+		},
+		{
+			ReportType.EnergyWasted,
+			new ReportGroup(GameUtil.GetFormattedRoundedJoules, true, 3, UI.ENDOFDAYREPORT.ENERGY_WASTED.NAME, UI.ENDOFDAYREPORT.ENERGY_WASTED.POSITIVE_TOOLTIP, UI.ENDOFDAYREPORT.ENERGY_WASTED.NEGATIVE_TOOLTIP, ReportEntry.Order.Descending, ReportEntry.Order.Descending, false, null)
 		},
 		{
 			ReportType.ContaminatedOxygenToilet,
-			new ReportGroup((float v) => GameUtil.GetFormattedMass(v, GameUtil.TimeSlice.None, GameUtil.MetricMassFormat.UseThreshold, true, "{0:0.#}"), false, 2, UI.ENDOFDAYREPORT.CONTAMINATED_OXYGEN_TOILET.NAME, UI.ENDOFDAYREPORT.CONTAMINATED_OXYGEN_TOILET.POSITIVE_TOOLTIP, UI.ENDOFDAYREPORT.CONTAMINATED_OXYGEN_TOILET.NEGATIVE_TOOLTIP, ReportEntry.Order.Descending, ReportEntry.Order.Descending)
+			new ReportGroup((float v) => GameUtil.GetFormattedMass(v, GameUtil.TimeSlice.None, GameUtil.MetricMassFormat.UseThreshold, true, "{0:0.#}"), false, 3, UI.ENDOFDAYREPORT.CONTAMINATED_OXYGEN_TOILET.NAME, UI.ENDOFDAYREPORT.CONTAMINATED_OXYGEN_TOILET.POSITIVE_TOOLTIP, UI.ENDOFDAYREPORT.CONTAMINATED_OXYGEN_TOILET.NEGATIVE_TOOLTIP, ReportEntry.Order.Descending, ReportEntry.Order.Descending, false, null)
 		},
 		{
 			ReportType.ContaminatedOxygenSublimation,
-			new ReportGroup((float v) => GameUtil.GetFormattedMass(v, GameUtil.TimeSlice.None, GameUtil.MetricMassFormat.UseThreshold, true, "{0:0.#}"), false, 2, UI.ENDOFDAYREPORT.CONTAMINATED_OXYGEN_SUBLIMATION.NAME, UI.ENDOFDAYREPORT.CONTAMINATED_OXYGEN_SUBLIMATION.POSITIVE_TOOLTIP, UI.ENDOFDAYREPORT.CONTAMINATED_OXYGEN_SUBLIMATION.NEGATIVE_TOOLTIP, ReportEntry.Order.Descending, ReportEntry.Order.Descending)
+			new ReportGroup((float v) => GameUtil.GetFormattedMass(v, GameUtil.TimeSlice.None, GameUtil.MetricMassFormat.UseThreshold, true, "{0:0.#}"), false, 3, UI.ENDOFDAYREPORT.CONTAMINATED_OXYGEN_SUBLIMATION.NAME, UI.ENDOFDAYREPORT.CONTAMINATED_OXYGEN_SUBLIMATION.POSITIVE_TOOLTIP, UI.ENDOFDAYREPORT.CONTAMINATED_OXYGEN_SUBLIMATION.NEGATIVE_TOOLTIP, ReportEntry.Order.Descending, ReportEntry.Order.Descending, false, null)
 		}
 	};
 
@@ -686,13 +718,6 @@ public class ReportManager : KMonoBehaviour
 		}
 		todaysReport = new DailyReport(this);
 		todaysReport.day = GameUtil.GetCurrentCycle() + 1;
-		foreach (Chore chore in GlobalChoreProvider.Instance.chores)
-		{
-			if (chore.addToDailyReport)
-			{
-				ReportValue(ReportType.ChoreStatus, 1f, chore.choreType.Name, GameUtil.GetChoreName(chore, chore.target));
-			}
-		}
 	}
 
 	public DailyReport FindReport(int day)

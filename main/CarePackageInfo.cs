@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class CarePackageInfo : ITelepadDeliverable
@@ -6,13 +7,13 @@ public class CarePackageInfo : ITelepadDeliverable
 
 	public readonly float quantity;
 
-	public readonly int cycleRequirement;
+	public readonly Func<bool> requirement;
 
-	public CarePackageInfo(string ID, float amount, int cycleRequirement)
+	public CarePackageInfo(string ID, float amount, Func<bool> requirement)
 	{
 		id = ID;
 		quantity = amount;
-		this.cycleRequirement = cycleRequirement;
+		this.requirement = requirement;
 	}
 
 	public GameObject Deliver(Vector3 location)

@@ -37,6 +37,7 @@ public class Sleepable : Workable
 
 	private Sleepable()
 	{
+		SetReportType(ReportManager.ReportType.PersonalTime);
 		showProgressBar = false;
 	}
 

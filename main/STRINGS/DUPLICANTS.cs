@@ -214,9 +214,9 @@ namespace STRINGS
 		{
 			public class THINKING
 			{
-				public static LocString NAME = "Thinking";
+				public static LocString NAME = "Ponder";
 
-				public static LocString STATUS = "Thinking";
+				public static LocString STATUS = "Pondering";
 
 				public static LocString TOOLTIP = "This Duplicant is thinking about what to do";
 			}
@@ -1208,6 +1208,10 @@ namespace STRINGS
 
 				public static LocString CURRENTLY_PEEING = "Currently Peeing";
 			}
+
+			public static LocString NOT_EXISTING_TASK = "Not Existing";
+
+			public static LocString IS_DEAD_TASK = "Uhh... 'Sleeping'";
 		}
 
 		public class CHOREGROUPS
@@ -4477,7 +4481,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Tinkering";
 
-				public static LocString DESC = "Determines how adeptly a Duplicant uses machines.";
+				public static LocString DESC = "Determines how quickly a Duplicant uses machines.";
 
 				public static LocString SPEEDMODIFIER = "{0} Tinkering Speed";
 			}
@@ -4580,7 +4584,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Strength";
 
-				public static LocString DESC = "Determines a Duplicant's carrying capacity, and how much elbow grease they can put into cleaning errands.";
+				public static LocString DESC = "Determines a Duplicant's carrying capacity and cleaning speed.";
 
 				public static LocString CARRYMODIFIER = "{0} " + CARRYAMOUNT.NAME;
 
@@ -4591,7 +4595,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Kindness";
 
-				public static LocString DESC = "Determines medical skill and how well a Duplicant works with peers and critters.";
+				public static LocString DESC = "Determines medical skill and sociability with peers and critters.";
 
 				public static LocString SPEEDMODIFIER = "{0} Medical Care Speed";
 
@@ -4613,7 +4617,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Farming";
 
-				public static LocString DESC = "Determines how quickly and efficiently a Duplicant raises plants.";
+				public static LocString DESC = "Determines how quickly and efficiently a Duplicant cultivates plants.";
 
 				public static LocString HARVEST_SPEED_MODIFIER = "{0} Harvesting Speed";
 
@@ -4626,14 +4630,14 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Ranching";
 
-				public static LocString DESC = "Determines how quickly and efficiently a Duplicant raises critters.";
+				public static LocString DESC = "Determines how quickly and efficiently a Duplicant tends critters.";
 			}
 
 			public class ART
 			{
 				public static LocString NAME = "Creativity";
 
-				public static LocString DESC = "Determines the speed at which a Duplicant creates artwork.";
+				public static LocString DESC = "Determines how quickly a Duplicant can produce artwork.";
 
 				public static LocString SPEEDMODIFIER = "{0} Decorating Speed";
 			}

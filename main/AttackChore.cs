@@ -108,7 +108,7 @@ public class AttackChore : Chore<AttackChore.StatesInstance>
 	private MultitoolController.Instance multiTool;
 
 	public AttackChore(IStateMachineTarget target, GameObject enemy)
-		: base(Db.Get().ChoreTypes.Attack, target, target.GetComponent<ChoreProvider>(), false, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.basic, 5, false, true, 0, (Tag[])null, false)
+		: base(Db.Get().ChoreTypes.Attack, target, target.GetComponent<ChoreProvider>(), false, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.basic, 5, false, true, 0, (Tag[])null, false, ReportManager.ReportType.WorkTime)
 	{
 		smi = new StatesInstance(this);
 		smi.sm.attackTarget.Set(enemy, smi);

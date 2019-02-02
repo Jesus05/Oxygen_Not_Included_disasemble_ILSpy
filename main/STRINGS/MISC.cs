@@ -118,6 +118,8 @@ namespace STRINGS
 
 			public static LocString MARKEDFORCOMPOST = "Marked For Compost";
 
+			public static LocString MARKEDFORCOMPOSTINSTORAGE = "In Compost Storage";
+
 			public static LocString COMPOSTMEAT = "Compost Meat";
 
 			public static LocString PICKLED = "Pickled";
@@ -366,6 +368,13 @@ namespace STRINGS
 				public static LocString NAME = "{Temp}";
 
 				public static LocString TOOLTIP = "The selected object is currently {Temp}";
+			}
+
+			public class MARKEDFORCOMPOSTINSTORAGE
+			{
+				public static LocString NAME = "Composted";
+
+				public static LocString TOOLTIP = "The selected object is currently in the compost";
 			}
 
 			public class BURIEDITEM

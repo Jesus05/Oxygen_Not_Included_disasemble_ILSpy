@@ -28,6 +28,11 @@ public class PhonoboxWorkable : Workable, IWorkerPrioritizable
 		}
 	};
 
+	private PhonoboxWorkable()
+	{
+		SetReportType(ReportManager.ReportType.PersonalTime);
+	}
+
 	protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();

@@ -2183,7 +2183,7 @@ namespace STRINGS
 
 			public static LocString HELP_BUILDLOCATION_WIRE_OBSTRUCTION = "Obstructed by Heavi-Watt Wire";
 
-			public static LocString HELP_BUILDLOCATION_PLATE_OBSTRUCTION = "Obstructed by Tempshift Plate";
+			public static LocString HELP_BUILDLOCATION_BACK_WALL = "Obstructed by back wall";
 
 			public static LocString HELP_TUBELOCATION_NO_UTURNS = "Can't U-Turn";
 
@@ -3966,7 +3966,7 @@ namespace STRINGS
 
 			public class MINIONTODOSIDESCREEN
 			{
-				public static LocString TITLE = "'To Do' List";
+				public static LocString TITLE = "\"To Do\" List";
 
 				public static LocString CURRENT_SCHEDULE_BLOCK = "Current schedule block: {0}";
 
@@ -3976,11 +3976,19 @@ namespace STRINGS
 
 				public static LocString SELF_LABEL = "Self";
 
-				public static LocString TOOLTIP = "{Description}\n\n{Errand}'s Type: {Groups}\n\n{Name}'s {BestGroup} Priority: {PersonalPriorityValue} ({PersonalPriority})\n{Building} Priority: {BuildingPriority}\nAll {BestGroup} Errands: {TypePriority}\n\nTotal Priority: {TotalPriority}";
+				public static LocString TOOLTIP_IDLE = "{Name} is currently idle.\n\nDuplicants will only {Errand} when there is nothing else for them to do.\n\n" + JOBSSCREEN.PRIORITY_CLASS.IDLE + ": {ClassPriority}\nAll {BestGroup} Errands: {TypePriority}\n\nTotal Priority: {TotalPriority}";
 
-				public static LocString TOOLTIP_DESC_ACTIVE = "{Name} is currently working on '{Errand}'.";
+				public static LocString TOOLTIP_NORMAL = "{Description}\n\n{Errand}'s Type: {Groups}\n\n{Name}'s {BestGroup} Priority: {PersonalPriorityValue} ({PersonalPriority})\n{Building} Priority: {BuildingPriority}\nAll {BestGroup} Errands: {TypePriority}\n\nTotal Priority: {TotalPriority}";
 
-				public static LocString TOOLTIP_DESC_INACTIVE = "{Name} could work on '{Errand}', but it's not the top priority right now.";
+				public static LocString TOOLTIP_PERSONAL = "{Description}\n\n{Errand} is a " + JOBSSCREEN.PRIORITY_CLASS.PERSONAL_NEEDS + " errand, and so will be performed before all Regular chores.\n\n" + JOBSSCREEN.PRIORITY_CLASS.PERSONAL_NEEDS + ": {ClassPriority}\nAll {BestGroup} Errands: {TypePriority}\n\nTotal Priority: {TotalPriority}";
+
+				public static LocString TOOLTIP_EMERGENCY = "{Description}\n\n{Errand} is an " + JOBSSCREEN.PRIORITY_CLASS.EMERGENCY + " errand, and so will be performed before all Regular and Personal chores.\n\n" + JOBSSCREEN.PRIORITY_CLASS.EMERGENCY + " : {ClassPriority}\n{Building} Priority: {BuildingPriority}\nAll {BestGroup} Errands: {TypePriority}\n\nTotal Priority: {TotalPriority}";
+
+				public static LocString TOOLTIP_COMPULSORY = "{Description}\n\n{Errand} is a " + JOBSSCREEN.PRIORITY_CLASS.COMPULSORY + " action, and so will happen immediately.\n\n" + JOBSSCREEN.PRIORITY_CLASS.COMPULSORY + ": {ClassPriority}\nAll {BestGroup} Errands: {TypePriority}\n\nTotal Priority: {TotalPriority}";
+
+				public static LocString TOOLTIP_DESC_ACTIVE = "{Name} is currently working on \"{Errand}\".";
+
+				public static LocString TOOLTIP_DESC_INACTIVE = "{Name} could work on \"{Errand}\", but it's not their top priority right now.";
 
 				public static LocString TOOLTIP_NA = "--";
 
@@ -6665,13 +6673,6 @@ namespace STRINGS
 				public static LocString NEGATIVE_TOOLTIP = "My colony's total " + FormatAsLink("Stress", "STRESS") + " has decreased by {0}";
 			}
 
-			public class TRAVEL_TIME
-			{
-				public static LocString NAME = "Travel Time:";
-
-				public static LocString POSITIVE_TOOLTIP = "My Duplicants spent a total of {0} traveling between errands throughout of the day";
-			}
-
 			public class TRAVELTIMEWARNING
 			{
 				public static LocString WARNING_TITLE = "Long Commutes";
@@ -6679,18 +6680,32 @@ namespace STRINGS
 				public static LocString WARNING_MESSAGE = "Your duplicates are spending a large amount of their time travelling between tasks. (> {0})";
 			}
 
+			public class TRAVEL_TIME
+			{
+				public static LocString NAME = "Travel Time:";
+
+				public static LocString POSITIVE_TOOLTIP = "On average, my Duplicants spent {0} of their time travelling between tasks";
+			}
+
+			public class WORK_TIME
+			{
+				public static LocString NAME = "Working Time:";
+
+				public static LocString POSITIVE_TOOLTIP = "On average, my Duplicants spent {0} of their time working";
+			}
+
 			public class IDLE_TIME
 			{
 				public static LocString NAME = "Idle Time:";
 
-				public static LocString POSITIVE_TOOLTIP = "My Duplicants spent a total of {0} idling over the course of the day";
+				public static LocString POSITIVE_TOOLTIP = "On average, my Duplicants {0} of their time idling";
 			}
 
-			public class TIME_SPENT
+			public class PERSONAL_TIME
 			{
-				public static LocString NAME = "Time Breakdown:";
+				public static LocString NAME = "Personal Time:";
 
-				public static LocString POSITIVE_TOOLTIP = "My Duplicants spent a total of {0} doing errands over the course of the day";
+				public static LocString POSITIVE_TOOLTIP = "On average, my Duplicants spent {0} of their time tending to personal needs";
 			}
 
 			public class ENERGY_USAGE
@@ -6804,6 +6819,10 @@ namespace STRINGS
 				public static LocString GERMS = "On {0}";
 
 				public static LocString TIME_SPENT = "{0}";
+
+				public static LocString WORK_TIME = "{0}";
+
+				public static LocString PERSONAL_TIME = "{0}";
 			}
 
 			public static LocString REPORT_TITLE = "DAILY REPORTS";

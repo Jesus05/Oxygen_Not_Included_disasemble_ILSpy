@@ -78,7 +78,7 @@ public class ReportScreenEntryRow : KMonoBehaviour
 		name.GetComponent<ToolTip>().OnToolTip = OnNetNoteTooltip;
 	}
 
-	private string OnNoteTooltip(float total_accumulation, string tooltip_text, ReportManager.ReportEntry.Order order, ReportManager.FormattingFn format_fn, Func<ReportManager.ReportEntry.Note, bool> is_note_applicable_cb)
+	private string OnNoteTooltip(float total_accumulation, string tooltip_text, ReportManager.ReportEntry.Order order, ReportManager.FormattingFn format_fn, Func<ReportManager.ReportEntry.Note, bool> is_note_applicable_cb, ReportManager.GroupFormattingFn group_format_fn = null)
 	{
 		notes.Clear();
 		entry.IterateNotes(delegate(ReportManager.ReportEntry.Note note)
@@ -89,36 +89,35 @@ public class ReportScreenEntryRow : KMonoBehaviour
 			}
 		});
 		string text = "";
+		float num = 0f;
+		num = ((entry.contextEntries.Count <= 0) ? ((float)notes.Count) : ((float)entry.contextEntries.Count));
+		num = Mathf.Max(num, 1f);
 		foreach (ReportManager.ReportEntry.Note item in Sort(notes, reportGroup.posNoteOrder))
 		{
 			ReportManager.ReportEntry.Note current = item;
-			text = string.Format(UI.ENDOFDAYREPORT.NOTES.NOTE_ENTRY_LINE_ITEM, text, current.note, format_fn(current.value));
+			string arg = format_fn(current.value);
+			if (toggle.gameObject.activeInHierarchy && group_format_fn != null)
+			{
+				arg = group_format_fn(current.value, num);
+			}
+			text = string.Format(UI.ENDOFDAYREPORT.NOTES.NOTE_ENTRY_LINE_ITEM, text, current.note, arg);
 		}
-		return string.Format(tooltip_text + "\n" + text, format_fn(total_accumulation));
+		string arg2 = format_fn(total_accumulation);
+		if (group_format_fn != null && entry.context == null)
+		{
+			arg2 = group_format_fn(total_accumulation, num);
+		}
+		return string.Format(tooltip_text + "\n" + text, arg2);
 	}
 
 	private string OnNegativeNoteTooltip()
 	{
-		return OnNoteTooltip(entry.Negative, reportGroup.negativeTooltip, reportGroup.negNoteOrder, reportGroup.formatfn, delegate(ReportManager.ReportEntry.Note note)
-		{
-			if (!(note.value < 0f))
-			{
-				return false;
-			}
-			return true;
-		});
+		return OnNoteTooltip(entry.Negative, reportGroup.negativeTooltip, reportGroup.negNoteOrder, reportGroup.formatfn, (ReportManager.ReportEntry.Note note) => IsNegativeNote(note), reportGroup.groupFormatfn);
 	}
 
 	private string OnPositiveNoteTooltip()
 	{
-		return OnNoteTooltip(entry.Positive, reportGroup.positiveTooltip, reportGroup.posNoteOrder, reportGroup.formatfn, delegate(ReportManager.ReportEntry.Note note)
-		{
-			if (!(note.value > 0f))
-			{
-				return false;
-			}
-			return true;
-		});
+		return OnNoteTooltip(entry.Positive, reportGroup.positiveTooltip, reportGroup.posNoteOrder, reportGroup.formatfn, (ReportManager.ReportEntry.Note note) => IsPositiveNote(note), reportGroup.groupFormatfn);
 	}
 
 	private string OnNetNoteTooltip()
@@ -130,10 +129,44 @@ public class ReportScreenEntryRow : KMonoBehaviour
 		return OnPositiveNoteTooltip();
 	}
 
+	private bool IsPositiveNote(ReportManager.ReportEntry.Note note)
+	{
+		if (!(note.value > 0f))
+		{
+			return false;
+		}
+		return true;
+	}
+
+	private bool IsNegativeNote(ReportManager.ReportEntry.Note note)
+	{
+		if (!(note.value < 0f))
+		{
+			return false;
+		}
+		return true;
+	}
+
 	public void SetLine(ReportManager.ReportEntry entry, ReportManager.ReportGroup reportGroup)
 	{
 		this.entry = entry;
 		this.reportGroup = reportGroup;
+		ListPool<ReportManager.ReportEntry.Note, ReportScreenEntryRow>.PooledList pos_notes = ListPool<ReportManager.ReportEntry.Note, ReportScreenEntryRow>.Allocate();
+		entry.IterateNotes(delegate(ReportManager.ReportEntry.Note note)
+		{
+			if (IsPositiveNote(note))
+			{
+				pos_notes.Add(note);
+			}
+		});
+		ListPool<ReportManager.ReportEntry.Note, ReportScreenEntryRow>.PooledList neg_notes = ListPool<ReportManager.ReportEntry.Note, ReportScreenEntryRow>.Allocate();
+		entry.IterateNotes(delegate(ReportManager.ReportEntry.Note note)
+		{
+			if (IsNegativeNote(note))
+			{
+				neg_notes.Add(note);
+			}
+		});
 		LayoutElement component = name.GetComponent<LayoutElement>();
 		float num3;
 		if (entry.context == null)
@@ -164,29 +197,54 @@ public class ReportScreenEntryRow : KMonoBehaviour
 		}
 		if (addedValue != entry.Positive)
 		{
-			added.text = reportGroup.formatfn(entry.Positive);
+			string text = reportGroup.formatfn(entry.Positive);
+			if (reportGroup.groupFormatfn != null && entry.context == null)
+			{
+				float num6 = 0f;
+				num6 = ((entry.contextEntries.Count <= 0) ? ((float)pos_notes.Count) : ((float)entry.contextEntries.Count));
+				num6 = Mathf.Max(num6, 1f);
+				text = reportGroup.groupFormatfn(entry.Positive, num6);
+			}
+			added.text = text;
 			addedValue = entry.Positive;
 		}
 		if (removedValue != entry.Negative)
 		{
-			removed.text = reportGroup.formatfn(entry.Negative);
+			string text2 = reportGroup.formatfn(entry.Negative);
+			if (reportGroup.groupFormatfn != null && entry.context == null)
+			{
+				float num7 = 0f;
+				num7 = ((entry.contextEntries.Count <= 0) ? ((float)neg_notes.Count) : ((float)entry.contextEntries.Count));
+				num7 = Mathf.Max(num7, 1f);
+				text2 = reportGroup.groupFormatfn(entry.Negative, num7);
+			}
+			removed.text = text2;
 			removedValue = entry.Negative;
 		}
 		if (netValue != entry.Net)
 		{
-			LocText locText = net;
-			object text;
+			object text3;
 			if (reportGroup.formatfn == null)
 			{
 				num3 = entry.Net;
-				text = num3.ToString();
+				text3 = num3.ToString();
 			}
 			else
 			{
-				text = reportGroup.formatfn(entry.Net);
+				text3 = reportGroup.formatfn(entry.Net);
 			}
-			locText.text = (string)text;
+			string text4 = (string)text3;
+			if (reportGroup.groupFormatfn != null && entry.context == null)
+			{
+				float num8 = 0f;
+				num8 = ((entry.contextEntries.Count <= 0) ? ((float)(pos_notes.Count + neg_notes.Count)) : ((float)entry.contextEntries.Count));
+				num8 = Mathf.Max(num8, 1f);
+				text4 = reportGroup.groupFormatfn(entry.Net, num8);
+			}
+			net.text = text4;
 			netValue = entry.Net;
 		}
+		pos_notes.Recycle();
+		neg_notes.Recycle();
 	}
 }

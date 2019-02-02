@@ -552,8 +552,9 @@ public class Tutorial : KMonoBehaviour, IRender1000ms
 			float num3 = 0f;
 			for (int num4 = ReportManager.Instance.reports.Count - 1; num4 >= ReportManager.Instance.reports.Count - num; num4--)
 			{
-				num2 += ReportManager.Instance.reports[num4].GetEntry(ReportManager.ReportType.TravelTime).Net;
-				num3 += ReportManager.Instance.reports[num4].GetEntry(ReportManager.ReportType.TimeSpent).Net;
+				ReportManager.ReportEntry entry = ReportManager.Instance.reports[num4].GetEntry(ReportManager.ReportType.TravelTime);
+				num2 += entry.Net;
+				num3 += 600f * (float)entry.contextEntries.Count;
 			}
 			float num5 = num2 / num3;
 			return num5 <= 0.4f;

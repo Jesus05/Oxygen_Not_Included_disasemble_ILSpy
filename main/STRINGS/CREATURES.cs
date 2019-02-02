@@ -162,7 +162,7 @@ namespace STRINGS
 
 					public static LocString NAME = UI.FormatAsLink("Smooth Hatch", "HATCHMETAL");
 
-					public static LocString DESC = "Smooth Hatches excrete solid " + ELEMENTS.COPPER.NAME + " as waste and enjoy burrowing into the ground.";
+					public static LocString DESC = "Smooth Hatches enjoy burrowing into the ground and excrete " + UI.FormatAsLink("Refined Metal", "REFINEDMETAL") + " when fed " + UI.FormatAsLink("Metal Ore", "RAWMETAL") + ".";
 
 					public static LocString EGG_NAME = UI.FormatAsLink("Smooth Hatchling Egg", "HATCHMETAL");
 				}
@@ -487,7 +487,7 @@ namespace STRINGS
 				{
 					public static LocString NAME = UI.FormatAsLink("Water Geyser", "GeyserGeneric_HOT_WATER");
 
-					public static LocString DESC = "A highly pressurized geyser that periodically erupts with hot " + UI.FormatAsLink("Steam", "STEAM") + ".";
+					public static LocString DESC = "A highly pressurized geyser that periodically erupts with hot " + UI.FormatAsLink("Water", "WATER") + ".";
 				}
 
 				public class SLUSH_WATER

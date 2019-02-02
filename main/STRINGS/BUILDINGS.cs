@@ -1256,7 +1256,7 @@ namespace STRINGS
 
 				public static LocString DESC = "Telescopes are necessary for learning starmaps and conducting rocket missions.";
 
-				public static LocString EFFECT = "Maps Starmap destinations and produces " + UI.FormatAsLink("Databanks", "RESEARCH_DATABANK") + ".\n\nAssigned Duplicants must possess the " + UI.FormatAsLink("Geographical Analysis", UI.StripLinkFormatting(Researcher.ID)) + " trait.\n\nBuilding must be exposed to space to function.";
+				public static LocString EFFECT = "Maps Starmap destinations.\n\nAssigned Duplicants must possess the " + UI.FormatAsLink("Geographical Analysis", UI.StripLinkFormatting(Researcher.ID)) + " trait.\n\nBuilding must be exposed to space to function.";
 
 				public static LocString REQUIREMENT_TOOLTIP = "A steady {0} supply is required to sustain working Duplicants.";
 			}

@@ -149,7 +149,7 @@ public class EatChore : Chore<EatChore.StatesInstance>
 	};
 
 	public EatChore(IStateMachineTarget master)
-		: base(Db.Get().ChoreTypes.Eat, master, master.GetComponent<ChoreProvider>(), false, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.personalNeeds, 5, false, true, 0, (Tag[])null, false)
+		: base(Db.Get().ChoreTypes.Eat, master, master.GetComponent<ChoreProvider>(), false, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.personalNeeds, 5, false, true, 0, (Tag[])null, false, ReportManager.ReportType.PersonalTime)
 	{
 		smi = new StatesInstance(this);
 		showAvailabilityInHoverText = false;

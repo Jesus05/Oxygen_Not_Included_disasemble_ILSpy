@@ -50,6 +50,8 @@ public class Workable : KMonoBehaviour, ISaveLoadable, IApproachable
 
 	public bool triggerWorkReactions = true;
 
+	public ReportManager.ReportType reportType = ReportManager.ReportType.WorkTime;
+
 	[SerializeField]
 	[Tooltip("What layer does the dupe switch to when interacting with the building")]
 	public Grid.SceneLayer workLayer = Grid.SceneLayer.Move;
@@ -273,6 +275,7 @@ public class Workable : KMonoBehaviour, ISaveLoadable, IApproachable
 		bool flag = false;
 		if (dt > 0f)
 		{
+			StatusItem statusItem = GetWorkerStatusItem();
 			workTimeRemaining -= dt;
 			flag = OnWorkTick(worker, dt);
 		}
@@ -374,6 +377,16 @@ public class Workable : KMonoBehaviour, ISaveLoadable, IApproachable
 		}
 		workTimeRemaining = GetWorkTime();
 		ShowProgressBar(false);
+	}
+
+	public void SetReportType(ReportManager.ReportType report_type)
+	{
+		reportType = report_type;
+	}
+
+	public ReportManager.ReportType GetReportType()
+	{
+		return reportType;
 	}
 
 	protected virtual void OnStartWork(Worker worker)

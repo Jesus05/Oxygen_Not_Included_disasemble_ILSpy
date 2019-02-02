@@ -80,7 +80,7 @@ public class ChoreTable
 	public class ChoreTableChore<StateMachineType, StateMachineInstanceType> : Chore<StateMachineInstanceType> where StateMachineInstanceType : StateMachine.Instance
 	{
 		public ChoreTableChore(StateMachine.BaseDef state_machine_def, ChoreType chore_type, KPrefabID prefab_id)
-			: base(chore_type, (IStateMachineTarget)prefab_id, ((Component)prefab_id).GetComponent<ChoreProvider>(), true, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.basic, 5, false, true, 0, (Tag[])null, false)
+			: base(chore_type, (IStateMachineTarget)prefab_id, ((Component)prefab_id).GetComponent<ChoreProvider>(), true, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.basic, 5, false, true, 0, (Tag[])null, false, ReportManager.ReportType.WorkTime)
 		{
 			showAvailabilityInHoverText = false;
 			smi = (state_machine_def.CreateSMI(this) as StateMachineInstanceType);

@@ -11,6 +11,11 @@ public class ArcadeMachineWorkable : Workable, IWorkerPrioritizable
 
 	private static string trackingEffect = "RecentlyPlayedArcade";
 
+	private ArcadeMachineWorkable()
+	{
+		SetReportType(ReportManager.ReportType.PersonalTime);
+	}
+
 	protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();

@@ -599,14 +599,22 @@ public static class Localization
 	{
 		if (!string.IsNullOrEmpty(fontname))
 		{
-			TMP_FontAsset font = GetFont(fontname);
+			sFontAsset = GetFont(fontname);
+			TextStyleSetting[] array = Resources.FindObjectsOfTypeAll<TextStyleSetting>();
+			foreach (TextStyleSetting textStyleSetting in array)
+			{
+				if ((UnityEngine.Object)textStyleSetting != (UnityEngine.Object)null)
+				{
+					textStyleSetting.sdfFont = sFontAsset;
+				}
+			}
 			bool isRightToLeft = IsRightToLeft;
-			LocText[] array = Resources.FindObjectsOfTypeAll<LocText>();
-			foreach (LocText locText in array)
+			LocText[] array2 = Resources.FindObjectsOfTypeAll<LocText>();
+			foreach (LocText locText in array2)
 			{
 				if ((UnityEngine.Object)locText != (UnityEngine.Object)null)
 				{
-					locText.SwapFont(font, isRightToLeft);
+					locText.SwapFont(sFontAsset, isRightToLeft);
 				}
 			}
 		}

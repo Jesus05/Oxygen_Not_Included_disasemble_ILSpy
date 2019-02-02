@@ -203,11 +203,11 @@ public abstract class Assignable : KMonoBehaviour, ISaveLoadable
 				if ((bool)soleOwner)
 				{
 					soleOwner.GetSlot(slot)?.Unassign(true);
-				}
-				Equipment component = soleOwner.GetComponent<Equipment>();
-				if ((UnityEngine.Object)component != (UnityEngine.Object)null)
-				{
-					component.GetSlot(slot)?.Unassign(true);
+					Equipment component = soleOwner.GetComponent<Equipment>();
+					if ((UnityEngine.Object)component != (UnityEngine.Object)null)
+					{
+						component.GetSlot(slot)?.Unassign(true);
+					}
 				}
 			}
 			assignee = null;

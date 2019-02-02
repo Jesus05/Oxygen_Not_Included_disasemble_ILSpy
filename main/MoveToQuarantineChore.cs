@@ -31,7 +31,7 @@ public class MoveToQuarantineChore : Chore<MoveToQuarantineChore.StatesInstance>
 	}
 
 	public MoveToQuarantineChore(IStateMachineTarget target, KMonoBehaviour quarantine_area)
-		: base(Db.Get().ChoreTypes.MoveToQuarantine, target, target.GetComponent<ChoreProvider>(), false, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.compulsory, 5, false, true, 0, (Tag[])null, false)
+		: base(Db.Get().ChoreTypes.MoveToQuarantine, target, target.GetComponent<ChoreProvider>(), false, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.compulsory, 5, false, true, 0, (Tag[])null, false, ReportManager.ReportType.WorkTime)
 	{
 		smi = new StatesInstance(this, target.gameObject);
 		smi.sm.locator.Set(quarantine_area.gameObject, smi);

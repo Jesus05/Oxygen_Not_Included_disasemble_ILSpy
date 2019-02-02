@@ -128,6 +128,11 @@ public class Shower : Workable, IEffectDescriptor, IGameObjectEffectDescriptor
 		"WetFeet"
 	};
 
+	private Shower()
+	{
+		SetReportType(ReportManager.ReportType.PersonalTime);
+	}
+
 	protected override void OnSpawn()
 	{
 		base.OnSpawn();

@@ -13,6 +13,11 @@ public class EspressoMachineWorkable : Workable, IGameObjectEffectDescriptor, IW
 
 	private static string trackingEffect = "RecentlyEspresso";
 
+	private EspressoMachineWorkable()
+	{
+		SetReportType(ReportManager.ReportType.PersonalTime);
+	}
+
 	protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();

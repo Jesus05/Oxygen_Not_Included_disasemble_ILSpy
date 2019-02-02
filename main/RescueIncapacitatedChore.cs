@@ -130,7 +130,7 @@ public class RescueIncapacitatedChore : Chore<RescueIncapacitatedChore.StatesIns
 	};
 
 	public RescueIncapacitatedChore(IStateMachineTarget master, GameObject incapacitatedDuplicant)
-		: base(Db.Get().ChoreTypes.RescueIncapacitated, master, (ChoreProvider)null, false, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.personalNeeds, 5, false, true, 0, (Tag[])null, false)
+		: base(Db.Get().ChoreTypes.RescueIncapacitated, master, (ChoreProvider)null, false, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.personalNeeds, 5, false, true, 0, (Tag[])null, false, ReportManager.ReportType.WorkTime)
 	{
 		smi = new StatesInstance(this);
 		base.runUntilComplete = true;

@@ -1,12 +1,10 @@
-using STRINGS;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class BuildingChoresPanel : TargetScreen
 {
-	private class DupeEntryData : IComparable<DupeEntryData>
+	public class DupeEntryData : IComparable<DupeEntryData>
 	{
 		public ChoreConsumer consumer;
 
@@ -26,7 +24,7 @@ public class BuildingChoresPanel : TargetScreen
 
 	public GameObject chorePrefab;
 
-	public GameObject dupePrefab;
+	public BuildingChoresPanelDupeRow dupePrefab;
 
 	private GameObject detailsPanel;
 
@@ -38,7 +36,7 @@ public class BuildingChoresPanel : TargetScreen
 
 	private int activeChoreEntries = 0;
 
-	private List<HierarchyReferences> dupeEntries = new List<HierarchyReferences>();
+	private List<BuildingChoresPanelDupeRow> dupeEntries = new List<BuildingChoresPanelDupeRow>();
 
 	private int activeDupeEntries = 0;
 
@@ -127,11 +125,7 @@ public class BuildingChoresPanel : TargetScreen
 		DupeEntryDatas.Sort();
 		foreach (DupeEntryData dupeEntryData in DupeEntryDatas)
 		{
-			string str = (dupeEntryData.rank != 1) ? ("#" + dupeEntryData.rank.ToString()) : "Current Errand";
-			string label = dupeEntryData.consumer.name + " -- " + str;
-			string tooltip = TooltipForDupe(dupeEntryData.context, dupeEntryData.consumer, dupeEntryData.rank);
-			JobsTableScreen.PriorityInfo priorityInfo = JobsTableScreen.priorityInfo[dupeEntryData.personalPriority];
-			GetDupeEntry(label, tooltip, priorityInfo.sprite, choreEntry.GetReference<RectTransform>("DupeContainer"));
+			GetDupeEntry(dupeEntryData, choreEntry.GetReference<RectTransform>("DupeContainer"));
 		}
 		DupeEntryDatas.Clear();
 	}
@@ -157,66 +151,23 @@ public class BuildingChoresPanel : TargetScreen
 		return hierarchyReferences;
 	}
 
-	private HierarchyReferences GetDupeEntry(string label, string tooltip, Sprite icon, RectTransform parent)
+	private BuildingChoresPanelDupeRow GetDupeEntry(DupeEntryData data, RectTransform parent)
 	{
-		HierarchyReferences hierarchyReferences;
+		BuildingChoresPanelDupeRow buildingChoresPanelDupeRow;
 		if (activeDupeEntries >= dupeEntries.Count)
 		{
-			hierarchyReferences = Util.KInstantiateUI<HierarchyReferences>(dupePrefab, parent.gameObject, false);
-			dupeEntries.Add(hierarchyReferences);
+			buildingChoresPanelDupeRow = Util.KInstantiateUI<BuildingChoresPanelDupeRow>(dupePrefab.gameObject, parent.gameObject, false);
+			dupeEntries.Add(buildingChoresPanelDupeRow);
 		}
 		else
 		{
-			hierarchyReferences = dupeEntries[activeDupeEntries];
-			hierarchyReferences.transform.SetParent(parent);
-			hierarchyReferences.transform.SetAsLastSibling();
+			buildingChoresPanelDupeRow = dupeEntries[activeDupeEntries];
+			buildingChoresPanelDupeRow.transform.SetParent(parent);
+			buildingChoresPanelDupeRow.transform.SetAsLastSibling();
 		}
 		activeDupeEntries++;
-		hierarchyReferences.GetReference<LocText>("Label").text = label;
-		hierarchyReferences.GetReference<Image>("Icon").sprite = icon;
-		hierarchyReferences.GetReference<ToolTip>("ToolTip").toolTip = tooltip;
-		hierarchyReferences.gameObject.SetActive(true);
-		return hierarchyReferences;
-	}
-
-	private string TooltipForDupe(Chore.Precondition.Context context, ChoreConsumer choreConsumer, int rank)
-	{
-		string text = UI.DETAILTABS.BUILDING_CHORES.DUPE_TOOLTIP;
-		float num = 0f;
-		int personalPriority = choreConsumer.GetPersonalPriority(context.chore.choreType);
-		num += (float)(personalPriority * 10);
-		int priority_value = context.chore.masterPriority.priority_value;
-		num += (float)priority_value;
-		float num2 = (float)context.priority / 10000f;
-		num += num2;
-		text = text.Replace("{Description}", (!((UnityEngine.Object)context.chore.driver == (UnityEngine.Object)choreConsumer.choreDriver)) ? UI.DETAILTABS.BUILDING_CHORES.DUPE_TOOLTIP_DESC_INACTIVE : UI.DETAILTABS.BUILDING_CHORES.DUPE_TOOLTIP_DESC_ACTIVE);
-		string newValue = GameUtil.ChoreGroupsForChoreType(context.chore.choreType);
-		string newValue2 = UI.UISIDESCREENS.MINIONTODOSIDESCREEN.TOOLTIP_NA.text;
-		if (context.chore.choreType.groups.Length > 0)
-		{
-			ChoreGroup choreGroup = context.chore.choreType.groups[0];
-			for (int i = 1; i < context.chore.choreType.groups.Length; i++)
-			{
-				bool auto_assigned = true;
-				if (choreConsumer.GetPersonalPriority(choreGroup, out auto_assigned) < choreConsumer.GetPersonalPriority(context.chore.choreType.groups[i], out auto_assigned))
-				{
-					choreGroup = context.chore.choreType.groups[i];
-				}
-			}
-			newValue2 = choreGroup.Name;
-		}
-		text = text.Replace("{Name}", choreConsumer.name);
-		text = text.Replace("{Rank}", rank.ToString());
-		text = text.Replace("{Errand}", GameUtil.GetChoreName(context.chore, context.data));
-		text = text.Replace("{Groups}", newValue);
-		text = text.Replace("{BestGroup}", newValue2);
-		string text2 = text;
-		JobsTableScreen.PriorityInfo priorityInfo = JobsTableScreen.priorityInfo[personalPriority];
-		text = text2.Replace("{PersonalPriority}", priorityInfo.name.text);
-		text = text.Replace("{PersonalPriorityValue}", (personalPriority * 10).ToString());
-		text = text.Replace("{Building}", context.chore.gameObject.GetProperName());
-		text = text.Replace("{BuildingPriority}", priority_value.ToString());
-		text = text.Replace("{TypePriority}", num2.ToString());
-		return text.Replace("{TotalPriority}", num.ToString());
+		buildingChoresPanelDupeRow.Init(data);
+		buildingChoresPanelDupeRow.gameObject.SetActive(true);
+		return buildingChoresPanelDupeRow;
 	}
 }

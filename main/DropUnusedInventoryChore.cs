@@ -28,7 +28,7 @@ public class DropUnusedInventoryChore : Chore<DropUnusedInventoryChore.StatesIns
 	}
 
 	public DropUnusedInventoryChore(ChoreType chore_type, IStateMachineTarget target)
-		: base(chore_type, target, target.GetComponent<ChoreProvider>(), true, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.compulsory, 5, false, true, 0, (Tag[])null, false)
+		: base(chore_type, target, target.GetComponent<ChoreProvider>(), true, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.compulsory, 5, false, true, 0, (Tag[])null, false, ReportManager.ReportType.WorkTime)
 	{
 		smi = new StatesInstance(this);
 	}

@@ -130,6 +130,7 @@ public class Edible : Workable, IGameObjectEffectDescriptor
 
 	private Edible()
 	{
+		SetReportType(ReportManager.ReportType.PersonalTime);
 		showProgressBar = false;
 		SetOffsetTable(OffsetGroups.InvertedStandardTable);
 		shouldTransferDiseaseWithWorker = false;

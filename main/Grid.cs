@@ -297,8 +297,7 @@ public class Grid
 		TubeEntrance = 0x2,
 		PreventIdleTraversal = 0x4,
 		Reserved = 0x8,
-		Restricted = 0x10,
-		SuitMarker = 0x20
+		SuitMarker = 0x10
 	}
 
 	[StructLayout(LayoutKind.Sequential, Size = 1)]
@@ -366,22 +365,6 @@ public class Grid
 	}
 
 	[StructLayout(LayoutKind.Sequential, Size = 1)]
-	private struct NavFlagsRestrictedIndexer
-	{
-		public bool this[int i]
-		{
-			get
-			{
-				return (NavMasks[i] & NavFlags.Restricted) != (NavFlags)0;
-			}
-			set
-			{
-				UpdateNavMask(i, NavFlags.Restricted, value);
-			}
-		}
-	}
-
-	[StructLayout(LayoutKind.Sequential, Size = 1)]
 	public struct NavFlagsSuitMarkerIndexer
 	{
 		public bool this[int i]
@@ -406,35 +389,9 @@ public class Grid
 			Right = 0x2
 		}
 
+		public const int DefaultID = -1;
+
 		public Dictionary<int, Directions> directionMasks;
-
-		public void Set(int minion, Directions directions)
-		{
-			if (directions == (Directions)0)
-			{
-				directionMasks.Remove(minion);
-			}
-			else
-			{
-				directionMasks[minion] = directions;
-			}
-		}
-
-		public void Clear(int minion)
-		{
-			Set(minion, (Directions)0);
-		}
-
-		public bool IsEmpty()
-		{
-			return directionMasks.Count == 0;
-		}
-
-		public bool Test(int minion, Directions directions)
-		{
-			Directions value = (Directions)0;
-			return !directionMasks.TryGetValue(minion, out value) || (value & directions) == (Directions)0;
-		}
 	}
 
 	private struct TubeEntrance
@@ -767,8 +724,6 @@ public class Grid
 
 	public static NavFlagsReservedIndexer Reserved;
 
-	private static NavFlagsRestrictedIndexer Restricted;
-
 	public static NavFlagsSuitMarkerIndexer HasSuitMarker;
 
 	private static Dictionary<int, Restriction> restrictions = new Dictionary<int, Restriction>();
@@ -926,33 +881,43 @@ public class Grid
 		suitMarkers.Clear();
 	}
 
+	public static void RegisterRestriction(int cell, bool register)
+	{
+		if (register)
+		{
+			restrictions.Add(cell, new Restriction
+			{
+				directionMasks = new Dictionary<int, Restriction.Directions>()
+			});
+		}
+		else
+		{
+			restrictions.Remove(cell);
+		}
+	}
+
 	public static void SetRestriction(int cell, int minion, Restriction.Directions directions)
 	{
-		if (directions != 0 || Restricted[cell])
-		{
-			if (!restrictions.TryGetValue(cell, out Restriction value))
-			{
-				Restriction restriction = default(Restriction);
-				restriction.directionMasks = new Dictionary<int, Restriction.Directions>();
-				value = restriction;
-				restrictions.Add(cell, value);
-			}
-			value.Set(minion, directions);
-			if (!(Restricted[cell] = !value.IsEmpty()))
-			{
-				restrictions.Remove(cell);
-			}
-		}
+		Restriction restriction = restrictions[cell];
+		restriction.directionMasks[minion] = directions;
 	}
 
 	public static void ClearRestriction(int cell, int minion)
 	{
-		SetRestriction(cell, minion, (Restriction.Directions)0);
+		Restriction restriction = restrictions[cell];
+		restriction.directionMasks.Remove(minion);
 	}
 
 	public static bool HasPermission(int cell, int minion, Restriction.Directions direction)
 	{
-		return !Restricted[cell] || restrictions[cell].Test(minion, direction);
+		DebugUtil.Assert(HasAccessDoor[cell]);
+		Restriction.Directions value = (Restriction.Directions)0;
+		Restriction restriction = restrictions[cell];
+		if (!restriction.directionMasks.TryGetValue(minion, out value) && !restriction.directionMasks.TryGetValue(-1, out value))
+		{
+			return true;
+		}
+		return (value & direction) == (Restriction.Directions)0;
 	}
 
 	public static void RegisterTubeEntrance(int cell, int reservationCapacity)

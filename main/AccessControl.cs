@@ -56,6 +56,7 @@ public class AccessControl : KMonoBehaviour, ISaveLoadable
 		{
 			_defaultPermission = value;
 			SetStatusItem();
+			SetGridRestrictions(null, _defaultPermission);
 		}
 	}
 
@@ -75,17 +76,24 @@ public class AccessControl : KMonoBehaviour, ISaveLoadable
 	protected override void OnSpawn()
 	{
 		base.OnSpawn();
+		RegisterInGrid(true);
+		SetGridRestrictions(null, DefaultPermission);
+		foreach (KeyValuePair<Ref<KPrefabID>, Permission> savedPermission in savedPermissions)
+		{
+			SetGridRestrictions(savedPermission.Key.Get(), savedPermission.Value);
+		}
 		ListPool<Tuple<MinionAssignablesProxy, Permission>, AccessControl>.PooledList pooledList = ListPool<Tuple<MinionAssignablesProxy, Permission>, AccessControl>.Allocate();
 		for (int num = savedPermissions.Count - 1; num >= 0; num--)
 		{
 			KPrefabID kPrefabID = savedPermissions[num].Key.Get();
 			if ((Object)kPrefabID != (Object)null)
 			{
-				MinionAssignablesProxy component = kPrefabID.GetComponent<MinionAssignablesProxy>();
+				MinionIdentity component = kPrefabID.GetComponent<MinionIdentity>();
 				if ((Object)component != (Object)null)
 				{
-					pooledList.Add(new Tuple<MinionAssignablesProxy, Permission>(component, savedPermissions[num].Value));
+					pooledList.Add(new Tuple<MinionAssignablesProxy, Permission>(component.assignableProxy.Get(), savedPermissions[num].Value));
 					savedPermissions.RemoveAt(num);
+					ClearGridRestrictions(kPrefabID);
 				}
 			}
 		}
@@ -95,6 +103,12 @@ public class AccessControl : KMonoBehaviour, ISaveLoadable
 		}
 		pooledList.Recycle();
 		SetStatusItem();
+	}
+
+	protected override void OnCleanUp()
+	{
+		RegisterInGrid(false);
+		base.OnCleanUp();
 	}
 
 	private void OnControlStateChanged(object data)
@@ -117,6 +131,7 @@ public class AccessControl : KMonoBehaviour, ISaveLoadable
 				}
 			}
 			_defaultPermission = component._defaultPermission;
+			SetGridRestrictions(null, DefaultPermission);
 		}
 	}
 
@@ -141,15 +156,29 @@ public class AccessControl : KMonoBehaviour, ISaveLoadable
 				savedPermissions.Add(new KeyValuePair<Ref<KPrefabID>, Permission>(new Ref<KPrefabID>(component), permission));
 			}
 			SetStatusItem();
-			UpdateGrid(component, permission);
+			SetGridRestrictions(component, permission);
 		}
 	}
 
-	private void UpdateGrid(KPrefabID kpid, Permission permission)
+	private void RegisterInGrid(bool register)
 	{
 		Building component = GetComponent<Building>();
 		if (!((Object)component == (Object)null))
 		{
+			int[] placementCells = component.PlacementCells;
+			foreach (int cell in placementCells)
+			{
+				Grid.RegisterRestriction(cell, register);
+			}
+		}
+	}
+
+	private void SetGridRestrictions(KPrefabID kpid, Permission permission)
+	{
+		Building component = GetComponent<Building>();
+		if (!((Object)component == (Object)null))
+		{
+			int minion = (!((Object)kpid != (Object)null)) ? (-1) : kpid.InstanceID;
 			Grid.Restriction.Directions directions = (Grid.Restriction.Directions)0;
 			switch (permission)
 			{
@@ -169,7 +198,21 @@ public class AccessControl : KMonoBehaviour, ISaveLoadable
 			int[] placementCells = component.PlacementCells;
 			foreach (int cell in placementCells)
 			{
-				Grid.SetRestriction(cell, kpid.InstanceID, directions);
+				Grid.SetRestriction(cell, minion, directions);
+			}
+		}
+	}
+
+	private void ClearGridRestrictions(KPrefabID kpid)
+	{
+		Building component = GetComponent<Building>();
+		if (!((Object)component == (Object)null))
+		{
+			int minion = (!((Object)kpid != (Object)null)) ? (-1) : kpid.InstanceID;
+			int[] placementCells = component.PlacementCells;
+			foreach (int cell in placementCells)
+			{
+				Grid.ClearRestriction(cell, minion);
 			}
 		}
 	}
@@ -217,7 +260,6 @@ public class AccessControl : KMonoBehaviour, ISaveLoadable
 
 	public void ClearPermission(MinionAssignablesProxy key)
 	{
-		Permission defaultPermission = DefaultPermission;
 		KPrefabID component = key.GetComponent<KPrefabID>();
 		if ((Object)component != (Object)null)
 		{
@@ -231,7 +273,7 @@ public class AccessControl : KMonoBehaviour, ISaveLoadable
 			}
 		}
 		SetStatusItem();
-		UpdateGrid(component, defaultPermission);
+		ClearGridRestrictions(component);
 	}
 
 	public bool IsDefaultPermission(MinionAssignablesProxy key)

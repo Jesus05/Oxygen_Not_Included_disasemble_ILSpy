@@ -10,6 +10,11 @@ public class SocialGatheringPointWorkable : Workable, IWorkerPrioritizable
 
 	public string specificEffect;
 
+	private SocialGatheringPointWorkable()
+	{
+		SetReportType(ReportManager.ReportType.PersonalTime);
+	}
+
 	protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();

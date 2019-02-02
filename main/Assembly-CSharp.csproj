@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <ProjectGuid>{18B36AAA-31B3-411A-9561-E9CC7250F48B}</ProjectGuid>
+    <ProjectGuid>{D10FB4FB-6C07-4D6D-93D4-DA614CBF433D}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <OutputType>Library</OutputType>
@@ -260,6 +260,7 @@
     <Compile Include="BuildingCellVisualizer.cs" />
     <Compile Include="BuildingCellVisualizerResources.cs" />
     <Compile Include="BuildingChoresPanel.cs" />
+    <Compile Include="BuildingChoresPanelDupeRow.cs" />
     <Compile Include="BuildingComplete.cs" />
     <Compile Include="BuildingConduitEndpoints.cs" />
     <Compile Include="BuildingConfigManager.cs" />
@@ -1728,6 +1729,8 @@
     <Compile Include="ReportScreen.cs" />
     <Compile Include="ReportScreenEntry.cs" />
     <Compile Include="ReportScreenEntryRow.cs" />
+    <Compile Include="ReportScreenHeader.cs" />
+    <Compile Include="ReportScreenHeaderRow.cs" />
     <Compile Include="RequireAttachedComponent.cs" />
     <Compile Include="RequireInputs.cs" />
     <Compile Include="RequireOutputs.cs" />

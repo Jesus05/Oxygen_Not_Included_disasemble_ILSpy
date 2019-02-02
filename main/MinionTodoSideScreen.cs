@@ -295,17 +295,37 @@ public class MinionTodoSideScreen : SideScreenContent
 	private string TooltipForChore(Chore.Precondition.Context context, ChoreConsumer choreConsumer)
 	{
 		bool flag = context.chore.masterPriority.priority_class == PriorityScreen.PriorityClass.basic || context.chore.masterPriority.priority_class == PriorityScreen.PriorityClass.high;
-		string text = UI.UISIDESCREENS.MINIONTODOSIDESCREEN.TOOLTIP;
+		string text;
+		switch (context.chore.masterPriority.priority_class)
+		{
+		case PriorityScreen.PriorityClass.idle:
+			text = UI.UISIDESCREENS.MINIONTODOSIDESCREEN.TOOLTIP_IDLE;
+			break;
+		case PriorityScreen.PriorityClass.personalNeeds:
+			text = UI.UISIDESCREENS.MINIONTODOSIDESCREEN.TOOLTIP_PERSONAL;
+			break;
+		case PriorityScreen.PriorityClass.emergency:
+			text = UI.UISIDESCREENS.MINIONTODOSIDESCREEN.TOOLTIP_EMERGENCY;
+			break;
+		case PriorityScreen.PriorityClass.compulsory:
+			text = UI.UISIDESCREENS.MINIONTODOSIDESCREEN.TOOLTIP_COMPULSORY;
+			break;
+		default:
+			text = UI.UISIDESCREENS.MINIONTODOSIDESCREEN.TOOLTIP_NORMAL;
+			break;
+		}
 		float num = 0f;
-		int num2 = flag ? choreConsumer.GetPersonalPriority(context.chore.choreType) : 0;
-		num += (float)(num2 * 10);
-		int num3 = flag ? context.chore.masterPriority.priority_value : 0;
-		num += (float)num3;
-		float num4 = (float)context.priority / 10000f;
-		num += num4;
+		int num2 = (int)context.chore.masterPriority.priority_class * 100;
+		num += (float)num2;
+		int num3 = flag ? choreConsumer.GetPersonalPriority(context.chore.choreType) : 0;
+		num += (float)(num3 * 10);
+		int num4 = flag ? context.chore.masterPriority.priority_value : 0;
+		num += (float)num4;
+		float num5 = (float)context.priority / 10000f;
+		num += num5;
 		text = text.Replace("{Description}", (!((UnityEngine.Object)context.chore.driver == (UnityEngine.Object)choreConsumer.choreDriver)) ? UI.UISIDESCREENS.MINIONTODOSIDESCREEN.TOOLTIP_DESC_INACTIVE : UI.UISIDESCREENS.MINIONTODOSIDESCREEN.TOOLTIP_DESC_ACTIVE);
 		string newValue = GameUtil.ChoreGroupsForChoreType(context.chore.choreType);
-		string newValue2 = UI.UISIDESCREENS.MINIONTODOSIDESCREEN.TOOLTIP_NA.text;
+		string name = context.chore.choreType.Name;
 		if (context.chore.choreType.groups.Length > 0)
 		{
 			ChoreGroup choreGroup = context.chore.choreType.groups[0];
@@ -317,28 +337,20 @@ public class MinionTodoSideScreen : SideScreenContent
 					choreGroup = context.chore.choreType.groups[i];
 				}
 			}
-			newValue2 = choreGroup.Name;
+			name = choreGroup.Name;
 		}
 		text = text.Replace("{Name}", choreConsumer.name);
 		text = text.Replace("{Errand}", GameUtil.GetChoreName(context.chore, context.data));
 		text = text.Replace("{Groups}", newValue);
-		text = text.Replace("{BestGroup}", newValue2);
+		text = text.Replace("{BestGroup}", name);
+		text = text.Replace("{ClassPriority}", num2.ToString());
 		string text2 = text;
-		object text3;
-		if (flag)
-		{
-			JobsTableScreen.PriorityInfo priorityInfo = JobsTableScreen.priorityInfo[num2];
-			text3 = priorityInfo.name.text;
-		}
-		else
-		{
-			text3 = UI.UISIDESCREENS.MINIONTODOSIDESCREEN.TOOLTIP_NA.text;
-		}
-		text = text2.Replace("{PersonalPriority}", (string)text3);
-		text = text.Replace("{PersonalPriorityValue}", (!flag) ? UI.UISIDESCREENS.MINIONTODOSIDESCREEN.TOOLTIP_NA.text : (num2 * 10).ToString());
-		text = text.Replace("{Building}", (!flag) ? UI.UISIDESCREENS.MINIONTODOSIDESCREEN.TOOLTIP_NA.text : context.chore.gameObject.GetProperName());
-		text = text.Replace("{BuildingPriority}", (!flag) ? UI.UISIDESCREENS.MINIONTODOSIDESCREEN.TOOLTIP_NA.text : num3.ToString());
-		text = text.Replace("{TypePriority}", num4.ToString());
+		JobsTableScreen.PriorityInfo priorityInfo = JobsTableScreen.priorityInfo[num3];
+		text = text2.Replace("{PersonalPriority}", priorityInfo.name.text);
+		text = text.Replace("{PersonalPriorityValue}", (num3 * 10).ToString());
+		text = text.Replace("{Building}", context.chore.gameObject.GetProperName());
+		text = text.Replace("{BuildingPriority}", num4.ToString());
+		text = text.Replace("{TypePriority}", num5.ToString());
 		return text.Replace("{TotalPriority}", num.ToString());
 	}
 

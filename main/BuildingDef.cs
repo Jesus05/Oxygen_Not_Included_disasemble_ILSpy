@@ -529,7 +529,7 @@ public class BuildingDef : Def
 			Building component3 = gameObject.GetComponent<Building>();
 			if ((UnityEngine.Object)component3 != (UnityEngine.Object)null && component3.Def.BuildLocationRule == BuildLocationRule.NotInTiles)
 			{
-				fail_reason = UI.TOOLTIPS.HELP_BUILDLOCATION_PLATE_OBSTRUCTION;
+				fail_reason = UI.TOOLTIPS.HELP_BUILDLOCATION_BACK_WALL;
 				return false;
 			}
 		}

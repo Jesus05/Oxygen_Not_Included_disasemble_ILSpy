@@ -1,4 +1,5 @@
 using Klei.AI;
+using STRINGS;
 using System;
 using UnityEngine;
 
@@ -151,10 +152,19 @@ public class Worker : KMonoBehaviour
 				}
 				float efficiencyMultiplier = workable.GetEfficiencyMultiplier(this);
 				float num = dt * efficiencyMultiplier * 1f;
+				float value = dt * 1f;
 				if ((UnityEngine.Object)resume != (UnityEngine.Object)null)
 				{
 					workable.AwardExperience(num, resume);
 				}
+				Chore currentChore = GetComponent<ChoreConsumer>().choreDriver.GetCurrentChore();
+				ReportManager.ReportType reportType = currentChore.GetReportType();
+				ReportManager.ReportType reportType2 = workable.GetReportType();
+				if (reportType2 != reportType)
+				{
+					reportType = reportType2;
+				}
+				ReportManager.Instance.ReportValue(reportType, value, string.Format(UI.ENDOFDAYREPORT.NOTES.WORK_TIME, GameUtil.GetChoreName(currentChore, null)), this.GetProperName());
 				if (workable.WorkTick(this, num) && state == State.Working)
 				{
 					successFullyCompleted = true;

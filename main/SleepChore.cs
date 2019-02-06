@@ -164,7 +164,7 @@ public class SleepChore : Chore<SleepChore.StatesInstance>
 	public SleepChore(ChoreType choreType, IStateMachineTarget target, GameObject bed, bool bedIsLocator, bool isInterruptable)
 		: base(choreType, target, target.GetComponent<ChoreProvider>(), false, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.personalNeeds, 5, false, true, 0, (Tag[])null, false, ReportManager.ReportType.PersonalTime)
 	{
-		smi = new StatesInstance(this, target.gameObject, bed, bedIsLocator, isInterruptable);
+		base.smi = new StatesInstance(this, target.gameObject, bed, bedIsLocator, isInterruptable);
 		if (isInterruptable)
 		{
 			AddPrecondition(ChorePreconditions.instance.IsNotRedAlert, null);

@@ -76,7 +76,7 @@ public class WorkChore<WorkableType> : Chore<WorkChore<WorkableType>.StatesInsta
 	public WorkChore(ChoreType chore_type, IStateMachineTarget target, ChoreProvider chore_provider = null, Tag[] chore_tags = null, bool run_until_complete = true, Action<Chore> on_complete = null, Action<Chore> on_begin = null, Action<Chore> on_end = null, bool allow_in_red_alert = true, ScheduleBlockType schedule_block = null, bool ignore_schedule_block = false, bool only_when_operational = true, KAnimFile override_anims = null, bool is_preemptable = false, bool allow_in_context_menu = true, bool allow_prioritization = true, PriorityScreen.PriorityClass priority_class = PriorityScreen.PriorityClass.basic, int priority_class_value = 5, bool ignore_building_assignment = false, bool add_to_daily_report = true)
 		: base(chore_type, target, chore_provider, run_until_complete, on_complete, on_begin, on_end, priority_class, priority_class_value, is_preemptable, allow_in_context_menu, 0, chore_tags, add_to_daily_report, ReportManager.ReportType.WorkTime)
 	{
-		smi = new StatesInstance(this, target.gameObject, override_anims);
+		base.smi = new StatesInstance(this, target.gameObject, override_anims);
 		onlyWhenOperational = only_when_operational;
 		if (allow_prioritization)
 		{
@@ -95,7 +95,7 @@ public class WorkChore<WorkableType> : Chore<WorkChore<WorkableType>.StatesInsta
 		{
 			AddPrecondition(ChorePreconditions.instance.IsScheduledTime, Db.Get().ScheduleBlockTypes.Work);
 		}
-		AddPrecondition(ChorePreconditions.instance.CanMoveTo, smi.sm.workable.Get<WorkableType>(smi));
+		AddPrecondition(ChorePreconditions.instance.CanMoveTo, base.smi.sm.workable.Get<WorkableType>(base.smi));
 		Operational component = target.GetComponent<Operational>();
 		if (only_when_operational && (UnityEngine.Object)component != (UnityEngine.Object)null)
 		{
@@ -114,9 +114,9 @@ public class WorkChore<WorkableType> : Chore<WorkChore<WorkableType>.StatesInsta
 				AddPrecondition(ChorePreconditions.instance.IsNotMarkedForDisable, component3);
 			}
 		}
-		if (!ignore_building_assignment && (UnityEngine.Object)smi.sm.workable.Get(smi).GetComponent<Assignable>() != (UnityEngine.Object)null)
+		if (!ignore_building_assignment && (UnityEngine.Object)base.smi.sm.workable.Get(base.smi).GetComponent<Assignable>() != (UnityEngine.Object)null)
 		{
-			AddPrecondition(ChorePreconditions.instance.IsAssignedtoMe, smi.sm.workable.Get<Assignable>(smi));
+			AddPrecondition(ChorePreconditions.instance.IsAssignedtoMe, base.smi.sm.workable.Get<Assignable>(base.smi));
 		}
 		WorkableType val = target as WorkableType;
 		if ((UnityEngine.Object)val != (UnityEngine.Object)null && val.requiredRolePerk.IsValid)
@@ -132,7 +132,7 @@ public class WorkChore<WorkableType> : Chore<WorkChore<WorkableType>.StatesInsta
 
 	public override void Begin(Precondition.Context context)
 	{
-		smi.sm.worker.Set(context.consumerState.gameObject, smi);
+		base.smi.sm.worker.Set(context.consumerState.gameObject, base.smi);
 		base.Begin(context);
 	}
 
@@ -140,7 +140,7 @@ public class WorkChore<WorkableType> : Chore<WorkChore<WorkableType>.StatesInsta
 	{
 		if (onlyWhenOperational)
 		{
-			Operational component = smi.master.GetComponent<Operational>();
+			Operational component = base.smi.master.GetComponent<Operational>();
 			if ((UnityEngine.Object)component != (UnityEngine.Object)null && !component.IsOperational)
 			{
 				return false;
@@ -157,7 +157,7 @@ public class WorkChore<WorkableType> : Chore<WorkChore<WorkableType>.StatesInsta
 			{
 				if (!((UnityEngine.Object)context.chore.driver == (UnityEngine.Object)context.consumerState.choreDriver))
 				{
-					Workable workable = smi.sm.workable.Get<WorkableType>(smi);
+					Workable workable = base.smi.sm.workable.Get<WorkableType>(base.smi);
 					if (!((UnityEngine.Object)workable == (UnityEngine.Object)null))
 					{
 						if (preemption_cb != null)

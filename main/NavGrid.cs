@@ -148,21 +148,19 @@ public class NavGrid
 				int num = Grid.OffsetCell(cell, x, y);
 				if (nav_table.IsValid(num, end))
 				{
+					Grid.BuildFlags buildFlags = Grid.BuildFlags.FakeFloor | Grid.BuildFlags.Solid;
+					if (impassableNotVoid)
+					{
+						buildFlags |= Grid.BuildFlags.Impassable;
+					}
 					CellOffset[] array = voidOffsets;
 					for (int i = 0; i < array.Length; i++)
 					{
 						CellOffset cellOffset = array[i];
 						int num2 = Grid.OffsetCell(cell, cellOffset.x, cellOffset.y);
-						if (Grid.IsValidCell(num2))
+						if (Grid.IsValidCell(num2) && (Grid.BuildMasks[num2] & buildFlags) != 0)
 						{
-							if (Grid.Solid[num2])
-							{
-								return Grid.InvalidCell;
-							}
-							if (impassableNotVoid && Grid.Impassable[num2])
-							{
-								return Grid.InvalidCell;
-							}
+							return Grid.InvalidCell;
 						}
 					}
 					CellOffset[] array2 = solidOffsets;

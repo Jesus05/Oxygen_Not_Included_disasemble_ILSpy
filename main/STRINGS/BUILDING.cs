@@ -559,13 +559,13 @@ namespace STRINGS
 
 			public class NEWDUPLICANTSAVAILABLE
 			{
-				public static LocString NAME = "New Duplicants Available";
+				public static LocString NAME = "Printables Available";
 
-				public static LocString TOOLTIP = "I am ready to print a new colony member";
+				public static LocString TOOLTIP = "I am ready to print a new colony member or care package";
 
-				public static LocString NOTIFICATION_NAME = "New Duplicants are available";
+				public static LocString NOTIFICATION_NAME = "New Printables are available";
 
-				public static LocString NOTIFICATION_TOOLTIP = "The Printing Pod <color=#F44A47><b>[H]</b></color> is ready to print a new Duplicant.\nI'll need to select a DNA blueprint:";
+				public static LocString NOTIFICATION_TOOLTIP = "The Printing Pod <color=#F44A47><b>[H]</b></color> is ready to print a new Duplicant or care package.\nI'll need to select a blueprint:";
 			}
 
 			public class NOAPPLICABLERESEARCHSELECTED
@@ -1116,9 +1116,9 @@ namespace STRINGS
 
 			public class WATTSON
 			{
-				public static LocString NAME = "Next Duplicant: {TimeRemaining}";
+				public static LocString NAME = "Next Print: {TimeRemaining}";
 
-				public static LocString TOOLTIP = "The Printing Pod can print out new Duplicants over time.\nThe next one will be ready in {TimeRemaining}";
+				public static LocString TOOLTIP = "The Printing Pod can print out new Duplicants and useful resources over time.\nThe next print be ready in {TimeRemaining}";
 
 				public static LocString UNAVAILABLE = "UNAVAILABLE";
 			}

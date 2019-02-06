@@ -165,10 +165,23 @@ public class AccessControl : KMonoBehaviour, ISaveLoadable
 		Building component = GetComponent<Building>();
 		if (!((Object)component == (Object)null))
 		{
-			int[] placementCells = component.PlacementCells;
-			foreach (int cell in placementCells)
+			if (register)
 			{
-				Grid.RegisterRestriction(cell, register);
+				Rotatable component2 = GetComponent<Rotatable>();
+				Grid.Restriction.Orientation orientation = (!((Object)component2 == (Object)null) && component2.GetOrientation() != 0) ? Grid.Restriction.Orientation.Horizontal : Grid.Restriction.Orientation.Vertical;
+				int[] placementCells = component.PlacementCells;
+				foreach (int cell in placementCells)
+				{
+					Grid.RegisterRestriction(cell, orientation);
+				}
+			}
+			else
+			{
+				int[] placementCells2 = component.PlacementCells;
+				foreach (int cell2 in placementCells2)
+				{
+					Grid.UnregisterRestriction(cell2);
+				}
 			}
 		}
 	}

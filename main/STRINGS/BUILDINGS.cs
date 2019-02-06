@@ -786,7 +786,7 @@ namespace STRINGS
 
 				public static LocString DESC = "New Duplicants will come out here, but thank goodness, they'll never go back in.";
 
-				public static LocString EFFECT = "An exceptionally advanced bioprinter of unknown origin.\n\nIt periodically produces new Duplicants.";
+				public static LocString EFFECT = "An exceptionally advanced bioprinter of unknown origin.\n\nIt periodically produces new Duplicants or care packages containing resources.";
 			}
 
 			public class HYDROGENGENERATOR

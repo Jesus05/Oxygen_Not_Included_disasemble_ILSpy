@@ -258,13 +258,13 @@ public class RancherChore : Chore<RancherChore.RancherChoreStates.Instance>
 		AddPrecondition(ChorePreconditions.instance.IsNotMarkedForDeconstruction, component2);
 		BuildingEnabledButton component3 = rancher_station.GetComponent<BuildingEnabledButton>();
 		AddPrecondition(ChorePreconditions.instance.IsNotMarkedForDisable, component3);
-		smi = new RancherChoreStates.Instance(rancher_station);
+		base.smi = new RancherChoreStates.Instance(rancher_station);
 		SetPrioritizable(rancher_station.GetComponent<Prioritizable>());
 	}
 
 	public override void Begin(Precondition.Context context)
 	{
-		smi.sm.rancher.Set(context.consumerState.gameObject, smi);
+		base.smi.sm.rancher.Set(context.consumerState.gameObject, base.smi);
 		base.Begin(context);
 	}
 }

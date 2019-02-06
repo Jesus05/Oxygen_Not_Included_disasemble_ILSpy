@@ -40,6 +40,6 @@ public class DieChore : Chore<DieChore.StatesInstance>
 		: base(Db.Get().ChoreTypes.Die, master, master.GetComponent<ChoreProvider>(), false, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.compulsory, 5, false, true, 0, (Tag[])null, false, ReportManager.ReportType.WorkTime)
 	{
 		showAvailabilityInHoverText = false;
-		smi = new StatesInstance(this, death);
+		base.smi = new StatesInstance(this, death);
 	}
 }

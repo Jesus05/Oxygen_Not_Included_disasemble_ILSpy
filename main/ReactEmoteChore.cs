@@ -53,7 +53,7 @@ public class ReactEmoteChore : Chore<ReactEmoteChore.StatesInstance>
 		AddPrecondition(ChorePreconditions.instance.NotInTube, null);
 		AddPrecondition(ChorePreconditions.instance.IsAwake, null);
 		getStatusItem = get_status_item;
-		smi = new StatesInstance(this, target.gameObject, reactable, emote_kanim, emote_anims, play_mode);
+		base.smi = new StatesInstance(this, target.gameObject, reactable, emote_kanim, emote_anims, play_mode);
 	}
 
 	protected override StatusItem GetStatusItem()
@@ -63,10 +63,10 @@ public class ReactEmoteChore : Chore<ReactEmoteChore.StatesInstance>
 
 	public override string ToString()
 	{
-		if (!smi.emoteKAnim.IsValid)
+		if (!base.smi.emoteKAnim.IsValid)
 		{
-			return "ReactEmoteChore<" + smi.emoteAnims[0] + ">";
+			return "ReactEmoteChore<" + base.smi.emoteAnims[0] + ">";
 		}
-		return "ReactEmoteChore<" + smi.emoteKAnim + ">";
+		return "ReactEmoteChore<" + base.smi.emoteKAnim + ">";
 	}
 }

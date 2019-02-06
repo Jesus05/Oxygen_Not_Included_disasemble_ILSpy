@@ -11,7 +11,7 @@ public class ChorePreconditions
 	{
 		id = "IsPreemptable",
 		sortOrder = 1,
-		description = (string)DUPLICANTS.CHORES.PRECONDITIONS.CHORE_DRIVER_IS_NULL,
+		description = (string)DUPLICANTS.CHORES.PRECONDITIONS.IS_PREEMPTABLE,
 		fn = (Chore.PreconditionFn)delegate(ref Chore.Precondition.Context context, object data)
 		{
 			return context.isAttemptingOverride || context.chore.CanPreempt(context) || (Object)context.chore.driver == (Object)null;
@@ -158,6 +158,7 @@ public class ChorePreconditions
 	public Chore.Precondition IsNotTransferArm = new Chore.Precondition
 	{
 		id = "IsNotTransferArm",
+		description = "",
 		fn = (Chore.PreconditionFn)delegate(ref Chore.Precondition.Context context, object data)
 		{
 			return !context.consumerState.hasSolidTransferArm;

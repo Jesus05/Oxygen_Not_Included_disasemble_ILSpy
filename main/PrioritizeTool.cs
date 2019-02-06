@@ -26,7 +26,7 @@ public class PrioritizeTool : DragTool
 	{
 		PrioritySetting lastSelectedPriority = ToolMenu.Instance.PriorityScreen.GetLastSelectedPriority();
 		int num = 0;
-		for (int i = 0; i < 37; i++)
+		for (int i = 0; i < 39; i++)
 		{
 			GameObject gameObject = Grid.Objects[cell, i];
 			if ((Object)gameObject != (Object)null)

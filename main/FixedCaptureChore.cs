@@ -96,14 +96,14 @@ public class FixedCaptureChore : Chore<FixedCaptureChore.FixedCaptureChoreStates
 		AddPrecondition(ChorePreconditions.instance.IsNotMarkedForDeconstruction, component2);
 		BuildingEnabledButton component3 = capture_point.GetComponent<BuildingEnabledButton>();
 		AddPrecondition(ChorePreconditions.instance.IsNotMarkedForDisable, component3);
-		smi = new FixedCaptureChoreStates.Instance(capture_point);
+		base.smi = new FixedCaptureChoreStates.Instance(capture_point);
 		SetPrioritizable(capture_point.GetComponent<Prioritizable>());
 	}
 
 	public override void Begin(Precondition.Context context)
 	{
-		smi.sm.rancher.Set(context.consumerState.gameObject, smi);
-		smi.sm.creature.Set(smi.fixedCapturePoint.targetCapturable.gameObject, smi);
+		base.smi.sm.rancher.Set(context.consumerState.gameObject, base.smi);
+		base.smi.sm.creature.Set(base.smi.fixedCapturePoint.targetCapturable.gameObject, base.smi);
 		base.Begin(context);
 	}
 }

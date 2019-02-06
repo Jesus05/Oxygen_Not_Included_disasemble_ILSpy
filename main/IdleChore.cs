@@ -104,6 +104,6 @@ public class IdleChore : Chore<IdleChore.StatesInstance>
 		: base(Db.Get().ChoreTypes.Idle, target, target.GetComponent<ChoreProvider>(), false, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.idle, 5, false, true, 0, (Tag[])null, false, ReportManager.ReportType.WorkTime)
 	{
 		showAvailabilityInHoverText = false;
-		smi = new StatesInstance(this, target.gameObject);
+		base.smi = new StatesInstance(this, target.gameObject);
 	}
 }

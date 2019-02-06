@@ -2179,7 +2179,7 @@ namespace STRINGS
 
 			public static LocString HELP_BUILDLOCATION_WIRECONNECTORS_OVERLAP = "Power connectors cannot overlap";
 
-			public static LocString HELP_BUILDLOCATION_HIGHWATT_NOT_IN_TILE = "Heavi-Watt power connectors cannot be built inside tile";
+			public static LocString HELP_BUILDLOCATION_HIGHWATT_NOT_IN_TILE = "Heavi-Watt connectors cannot be built inside tile";
 
 			public static LocString HELP_BUILDLOCATION_WIRE_OBSTRUCTION = "Obstructed by Heavi-Watt Wire";
 
@@ -3966,17 +3966,19 @@ namespace STRINGS
 
 			public class MINIONTODOSIDESCREEN
 			{
-				public static LocString TITLE = "\"To Do\" List";
+				public static LocString CURRENT_TITLE = "Current Errand";
+
+				public static LocString LIST_TITLE = "\"To Do\" List";
 
 				public static LocString CURRENT_SCHEDULE_BLOCK = "Current schedule block: {0}";
 
-				public static LocString CHORE_TARGET = "{0}";
+				public static LocString CHORE_TARGET = "{Target}";
 
-				public static LocString CHORE_GROUP_TYPE = " -- {0}";
+				public static LocString CHORE_TARGET_AND_GROUP = "{Target} -- {Groups}";
 
 				public static LocString SELF_LABEL = "Self";
 
-				public static LocString TOOLTIP_IDLE = "{Name} is currently idle.\n\nDuplicants will only {Errand} when there is nothing else for them to do.\n\n" + JOBSSCREEN.PRIORITY_CLASS.IDLE + ": {ClassPriority}\nAll {BestGroup} Errands: {TypePriority}\n\nTotal Priority: {TotalPriority}";
+				public static LocString TOOLTIP_IDLE = "{IdleDescription}\n\nDuplicants will only {Errand} when there is nothing else for them to do.\n\n" + JOBSSCREEN.PRIORITY_CLASS.IDLE + ": {ClassPriority}\nAll {BestGroup} Errands: {TypePriority}\n\nTotal Priority: {TotalPriority}";
 
 				public static LocString TOOLTIP_NORMAL = "{Description}\n\n{Errand}'s Type: {Groups}\n\n{Name}'s {BestGroup} Priority: {PersonalPriorityValue} ({PersonalPriority})\n{Building} Priority: {BuildingPriority}\nAll {BestGroup} Errands: {TypePriority}\n\nTotal Priority: {TotalPriority}";
 
@@ -3989,6 +3991,10 @@ namespace STRINGS
 				public static LocString TOOLTIP_DESC_ACTIVE = "{Name} is currently working on \"{Errand}\".";
 
 				public static LocString TOOLTIP_DESC_INACTIVE = "{Name} could work on \"{Errand}\", but it's not their top priority right now.";
+
+				public static LocString TOOLTIP_IDLEDESC_ACTIVE = "{Name} is currently idle.";
+
+				public static LocString TOOLTIP_IDLEDESC_INACTIVE = "{Name} could become idle if all other errands are cancelled or completed.";
 
 				public static LocString TOOLTIP_NA = "--";
 
@@ -4305,7 +4311,7 @@ namespace STRINGS
 
 			public class TELEPADSIDESCREEN
 			{
-				public static LocString TITLE = "Duplicant Printing";
+				public static LocString TITLE = "Printables";
 
 				public static LocString NEXTPRODUCTION = "Next Production: {0}";
 
@@ -6114,11 +6120,13 @@ namespace STRINGS
 
 				public static LocString TOOLTIP = "See what errands this building has waiting to be done";
 
-				public static LocString DUPE_TOOLTIP = "{Description}\n\n{Errand}'s Type: {Groups}\n\n{Name}'s {BestGroup} Priority: {PersonalPriorityValue} ({PersonalPriority})\n{Building} Priority: {BuildingPriority}\nAll {BestGroup} Errands: {TypePriority}\n\nTotal Priority: {TotalPriority}";
+				public static LocString DUPE_TOOLTIP_FAILED = "{Name} can't do {Errand} right now. Reason:\n{FailedPrecondition}";
+
+				public static LocString DUPE_TOOLTIP_SUCCEEDED = "{Description}\n\n{Errand}'s Type: {Groups}\n\n{Name}'s {BestGroup} Priority: {PersonalPriorityValue} ({PersonalPriority})\n{Building} Priority: {BuildingPriority}\nAll {BestGroup} Errands: {TypePriority}\n\nTotal Priority: {TotalPriority}";
 
 				public static LocString DUPE_TOOLTIP_DESC_ACTIVE = "{Name} is currently working on '{Errand}'.";
 
-				public static LocString DUPE_TOOLTIP_DESC_INACTIVE = "{Name} could work on '{Errand}', but currently it's #{Rank} on their To Do list.";
+				public static LocString DUPE_TOOLTIP_DESC_INACTIVE = "'{Errand}' is #{Rank} on {Name}'s To Do list, after they finish their current errand.";
 			}
 		}
 
@@ -7042,7 +7050,7 @@ namespace STRINGS
 
 		public class IMMIGRANTSCREEN
 		{
-			public static LocString IMMIGRANTSCREENTITLE = "Select a DNA Blueprint";
+			public static LocString IMMIGRANTSCREENTITLE = "Select a Blueprint";
 
 			public static LocString PROCEEDBUTTON = "Print";
 
@@ -7062,9 +7070,9 @@ namespace STRINGS
 
 			public static LocString BACK = "BACK";
 
-			public static LocString CONFIRMATIONTITLE = "Reject All Duplicants?";
+			public static LocString CONFIRMATIONTITLE = "Reject All Printables?";
 
-			public static LocString CONFIRMATIONBODY = "The Printing Pod will need time to recharge if I return these Duplicants to ooze.";
+			public static LocString CONFIRMATIONBODY = "The Printing Pod will need time to recharge if I reject these Printables.";
 
 			public static LocString NAME_YOUR_COLONY = "NAME THE COLONY";
 
@@ -7249,7 +7257,7 @@ namespace STRINGS
 
 		public static LocString WELCOMEMESSAGEBEGIN = "BEGIN";
 
-		public static LocString VIEWDUPLICANTS = "Choose a Duplicant";
+		public static LocString VIEWDUPLICANTS = "Choose a Blueprint";
 
 		public static LocString DUPLICANTPRINTING = "Duplicant Printing";
 

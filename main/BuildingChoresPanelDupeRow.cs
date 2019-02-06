@@ -23,8 +23,25 @@ public class BuildingChoresPanelDupeRow : KMonoBehaviour
 	public void Init(BuildingChoresPanel.DupeEntryData data)
 	{
 		choreConsumer = data.consumer;
-		string str = (data.rank != 1) ? ("#" + data.rank.ToString()) : "Current Errand";
-		label.text = data.consumer.name + " -- " + str;
+		if (data.context.IsPotentialSuccess())
+		{
+			string str = (!((Object)data.context.chore.driver == (Object)data.consumer.choreDriver)) ? ("#" + data.rank.ToString()) : "Current Errand";
+			label.text = data.consumer.name + " -- " + str;
+		}
+		else
+		{
+			Chore.PreconditionInstance preconditionInstance = data.context.chore.GetPreconditions()[data.context.failedPreconditionId];
+			string text = preconditionInstance.description;
+			bool test = text != null;
+			Chore.PreconditionInstance preconditionInstance2 = data.context.chore.GetPreconditions()[data.context.failedPreconditionId];
+			DebugUtil.Assert(test, "Chore requires description!", preconditionInstance2.id);
+			if ((Object)data.context.chore.driver != (Object)null)
+			{
+				text = text.Replace("{Assignee}", data.context.chore.driver.GetProperName());
+			}
+			text = text.Replace("{Selected}", this.GetProperName());
+			label.text = data.consumer.name + " -- " + text;
+		}
 		Image image = icon;
 		JobsTableScreen.PriorityInfo priorityInfo = JobsTableScreen.priorityInfo[data.personalPriority];
 		image.sprite = priorityInfo.sprite;
@@ -39,7 +56,8 @@ public class BuildingChoresPanelDupeRow : KMonoBehaviour
 
 	private static string TooltipForDupe(Chore.Precondition.Context context, ChoreConsumer choreConsumer, int rank)
 	{
-		string text = UI.DETAILTABS.BUILDING_CHORES.DUPE_TOOLTIP;
+		bool flag = context.IsPotentialSuccess();
+		string text = (!flag) ? UI.DETAILTABS.BUILDING_CHORES.DUPE_TOOLTIP_FAILED : UI.DETAILTABS.BUILDING_CHORES.DUPE_TOOLTIP_SUCCEEDED;
 		float num = 0f;
 		int personalPriority = choreConsumer.GetPersonalPriority(context.chore.choreType);
 		num += (float)(personalPriority * 10);
@@ -50,7 +68,7 @@ public class BuildingChoresPanelDupeRow : KMonoBehaviour
 		text = text.Replace("{Description}", (!((Object)context.chore.driver == (Object)choreConsumer.choreDriver)) ? UI.DETAILTABS.BUILDING_CHORES.DUPE_TOOLTIP_DESC_INACTIVE : UI.DETAILTABS.BUILDING_CHORES.DUPE_TOOLTIP_DESC_ACTIVE);
 		string newValue = GameUtil.ChoreGroupsForChoreType(context.chore.choreType);
 		string newValue2 = UI.UISIDESCREENS.MINIONTODOSIDESCREEN.TOOLTIP_NA.text;
-		if (context.chore.choreType.groups.Length > 0)
+		if (flag && context.chore.choreType.groups.Length > 0)
 		{
 			ChoreGroup choreGroup = context.chore.choreType.groups[0];
 			for (int i = 1; i < context.chore.choreType.groups.Length; i++)
@@ -64,17 +82,25 @@ public class BuildingChoresPanelDupeRow : KMonoBehaviour
 			newValue2 = choreGroup.Name;
 		}
 		text = text.Replace("{Name}", choreConsumer.name);
-		text = text.Replace("{Rank}", rank.ToString());
 		text = text.Replace("{Errand}", GameUtil.GetChoreName(context.chore, context.data));
-		text = text.Replace("{Groups}", newValue);
-		text = text.Replace("{BestGroup}", newValue2);
-		string text2 = text;
-		JobsTableScreen.PriorityInfo priorityInfo = JobsTableScreen.priorityInfo[personalPriority];
-		text = text2.Replace("{PersonalPriority}", priorityInfo.name.text);
-		text = text.Replace("{PersonalPriorityValue}", (personalPriority * 10).ToString());
-		text = text.Replace("{Building}", context.chore.gameObject.GetProperName());
-		text = text.Replace("{BuildingPriority}", priority_value.ToString());
-		text = text.Replace("{TypePriority}", num2.ToString());
-		return text.Replace("{TotalPriority}", num.ToString());
+		if (flag)
+		{
+			text = text.Replace("{Rank}", rank.ToString());
+			text = text.Replace("{Groups}", newValue);
+			text = text.Replace("{BestGroup}", newValue2);
+			string text2 = text;
+			JobsTableScreen.PriorityInfo priorityInfo = JobsTableScreen.priorityInfo[personalPriority];
+			text = text2.Replace("{PersonalPriority}", priorityInfo.name.text);
+			text = text.Replace("{PersonalPriorityValue}", (personalPriority * 10).ToString());
+			text = text.Replace("{Building}", context.chore.gameObject.GetProperName());
+			text = text.Replace("{BuildingPriority}", priority_value.ToString());
+			text = text.Replace("{TypePriority}", num2.ToString());
+			return text.Replace("{TotalPriority}", num.ToString());
+		}
+		string text3 = text;
+		Chore.PreconditionInstance preconditionInstance = context.chore.GetPreconditions()[context.failedPreconditionId];
+		string id = preconditionInstance.id;
+		Chore.PreconditionInstance preconditionInstance2 = context.chore.GetPreconditions()[context.failedPreconditionId];
+		return text3.Replace("{FailedPrecondition}", id + "\n" + preconditionInstance2.description);
 	}
 }

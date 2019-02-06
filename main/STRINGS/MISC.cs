@@ -783,11 +783,11 @@ namespace STRINGS
 
 			public class DUPLICANTABSORBED
 			{
-				public static LocString NAME = "New Duplicants have been reabsorbed";
+				public static LocString NAME = "Printables have been reabsorbed";
 
-				public static LocString MESSAGEBODY = "New Duplicants are no longer available for printing.\nCountdown to the next production was rebooted.";
+				public static LocString MESSAGEBODY = "The Printing Pod is no longer available for printing.\nCountdown to the next production was rebooted.";
 
-				public static LocString TOOLTIP = "The printable Duplicants have been reabsorbed";
+				public static LocString TOOLTIP = "Printables have been reabsorbed";
 			}
 
 			public class DUPLICANTDIED
@@ -1037,9 +1037,9 @@ namespace STRINGS
 
 			public class IMMIGRANTSLEFT
 			{
-				public static LocString NAME = "New Duplicants have been reabsorbed";
+				public static LocString NAME = "Printables have been reabsorbed";
 
-				public static LocString TOOLTIP = "The printable Duplicants have been Oozed";
+				public static LocString TOOLTIP = "The care packages have been disintegrated and printable Duplicants have been Oozed";
 			}
 
 			public class LEVELUP

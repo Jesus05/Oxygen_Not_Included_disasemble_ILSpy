@@ -389,9 +389,17 @@ public class Grid
 			Right = 0x2
 		}
 
+		public enum Orientation : byte
+		{
+			Vertical,
+			Horizontal
+		}
+
 		public const int DefaultID = -1;
 
 		public Dictionary<int, Directions> directionMasks;
+
+		public Orientation orientation;
 	}
 
 	private struct TubeEntrance
@@ -881,19 +889,18 @@ public class Grid
 		suitMarkers.Clear();
 	}
 
-	public static void RegisterRestriction(int cell, bool register)
+	public static void RegisterRestriction(int cell, Restriction.Orientation orientation)
 	{
-		if (register)
+		restrictions.Add(cell, new Restriction
 		{
-			restrictions.Add(cell, new Restriction
-			{
-				directionMasks = new Dictionary<int, Restriction.Directions>()
-			});
-		}
-		else
-		{
-			restrictions.Remove(cell);
-		}
+			directionMasks = new Dictionary<int, Restriction.Directions>(),
+			orientation = orientation
+		});
+	}
+
+	public static void UnregisterRestriction(int cell)
+	{
+		restrictions.Remove(cell);
 	}
 
 	public static void SetRestriction(int cell, int minion, Restriction.Directions directions)
@@ -908,16 +915,48 @@ public class Grid
 		restriction.directionMasks.Remove(minion);
 	}
 
-	public static bool HasPermission(int cell, int minion, Restriction.Directions direction)
+	public static bool HasPermission(int cell, int minion, int fromCell)
 	{
 		DebugUtil.Assert(HasAccessDoor[cell]);
-		Restriction.Directions value = (Restriction.Directions)0;
 		Restriction restriction = restrictions[cell];
+		Vector2I vector2I = CellToXY(cell);
+		Vector2I vector2I2 = CellToXY(fromCell);
+		Restriction.Directions directions = (Restriction.Directions)0;
+		switch (restriction.orientation)
+		{
+		case Restriction.Orientation.Vertical:
+		{
+			int num2 = vector2I.x - vector2I2.x;
+			if (num2 < 0)
+			{
+				directions |= Restriction.Directions.Left;
+			}
+			if (num2 > 0)
+			{
+				directions |= Restriction.Directions.Right;
+			}
+			break;
+		}
+		case Restriction.Orientation.Horizontal:
+		{
+			int num = vector2I.y - vector2I2.y;
+			if (num > 0)
+			{
+				directions |= Restriction.Directions.Left;
+			}
+			if (num < 0)
+			{
+				directions |= Restriction.Directions.Right;
+			}
+			break;
+		}
+		}
+		Restriction.Directions value = (Restriction.Directions)0;
 		if (!restriction.directionMasks.TryGetValue(minion, out value) && !restriction.directionMasks.TryGetValue(-1, out value))
 		{
 			return true;
 		}
-		return (value & direction) == (Restriction.Directions)0;
+		return (value & directions) == (Restriction.Directions)0;
 	}
 
 	public static void RegisterTubeEntrance(int cell, int reservationCapacity)

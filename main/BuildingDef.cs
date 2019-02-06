@@ -373,7 +373,7 @@ public class BuildingDef : Def
 			}
 			if (layer == ObjectLayer.Building && AttachmentSlotTag != GameTags.Rocket)
 			{
-				GameObject x = Grid.Objects[num, 36];
+				GameObject x = Grid.Objects[num, 38];
 				if ((UnityEngine.Object)x != (UnityEngine.Object)null)
 				{
 					if ((UnityEngine.Object)BuildingComplete.GetComponent<Wire>() == (UnityEngine.Object)null)
@@ -503,7 +503,7 @@ public class BuildingDef : Def
 
 	private bool IsValidTileLocation(GameObject source_go, int cell, Orientation orientation, ObjectLayer layer, ref string fail_reason)
 	{
-		GameObject gameObject = Grid.Objects[cell, 25];
+		GameObject gameObject = Grid.Objects[cell, 27];
 		if ((UnityEngine.Object)gameObject != (UnityEngine.Object)null && (UnityEngine.Object)gameObject != (UnityEngine.Object)source_go)
 		{
 			Building component = gameObject.GetComponent<Building>();
@@ -513,7 +513,7 @@ public class BuildingDef : Def
 				return false;
 			}
 		}
-		gameObject = Grid.Objects[cell, 27];
+		gameObject = Grid.Objects[cell, 29];
 		if ((UnityEngine.Object)gameObject != (UnityEngine.Object)null && (UnityEngine.Object)gameObject != (UnityEngine.Object)source_go)
 		{
 			Building component2 = gameObject.GetComponent<Building>();
@@ -579,24 +579,24 @@ public class BuildingDef : Def
 		{
 			CellOffset rotatedCellOffset4 = Rotatable.GetRotatedCellOffset(PowerInputOffset, orientation);
 			int cell5 = Grid.OffsetCell(cell, rotatedCellOffset4);
-			MarkOverlappingPorts(Grid.Objects[cell5, 27], go);
-			Grid.Objects[cell5, 27] = go;
+			MarkOverlappingPorts(Grid.Objects[cell5, 29], go);
+			Grid.Objects[cell5, 29] = go;
 		}
 		if (RequiresPowerOutput || GeneratorWattageRating > 0f)
 		{
 			CellOffset rotatedCellOffset5 = Rotatable.GetRotatedCellOffset(PowerOutputOffset, orientation);
 			int cell6 = Grid.OffsetCell(cell, rotatedCellOffset5);
-			MarkOverlappingPorts(Grid.Objects[cell6, 27], go);
-			Grid.Objects[cell6, 27] = go;
+			MarkOverlappingPorts(Grid.Objects[cell6, 29], go);
+			Grid.Objects[cell6, 29] = go;
 		}
 		if (BuildLocationRule == BuildLocationRule.WireBridge || BuildLocationRule == BuildLocationRule.HighWattBridgeTile)
 		{
 			UtilityNetworkLink component = go.GetComponent<UtilityNetworkLink>();
 			component.GetCells(cell, orientation, out int linked_cell, out int linked_cell2);
-			MarkOverlappingPorts(Grid.Objects[linked_cell, 27], go);
-			MarkOverlappingPorts(Grid.Objects[linked_cell2, 27], go);
-			Grid.Objects[linked_cell, 27] = go;
-			Grid.Objects[linked_cell2, 27] = go;
+			MarkOverlappingPorts(Grid.Objects[linked_cell, 29], go);
+			MarkOverlappingPorts(Grid.Objects[linked_cell2, 29], go);
+			Grid.Objects[linked_cell, 29] = go;
+			Grid.Objects[linked_cell2, 29] = go;
 		}
 		if (BuildLocationRule == BuildLocationRule.LogicBridge)
 		{
@@ -680,31 +680,31 @@ public class BuildingDef : Def
 		{
 			CellOffset rotatedCellOffset4 = Rotatable.GetRotatedCellOffset(PowerInputOffset, orientation);
 			int cell5 = Grid.OffsetCell(cell, rotatedCellOffset4);
-			if ((UnityEngine.Object)Grid.Objects[cell5, 27] == (UnityEngine.Object)go)
+			if ((UnityEngine.Object)Grid.Objects[cell5, 29] == (UnityEngine.Object)go)
 			{
-				Grid.Objects[cell5, 27] = null;
+				Grid.Objects[cell5, 29] = null;
 			}
 		}
 		if (RequiresPowerOutput || GeneratorWattageRating > 0f)
 		{
 			CellOffset rotatedCellOffset5 = Rotatable.GetRotatedCellOffset(PowerOutputOffset, orientation);
 			int cell6 = Grid.OffsetCell(cell, rotatedCellOffset5);
-			if ((UnityEngine.Object)Grid.Objects[cell6, 27] == (UnityEngine.Object)go)
+			if ((UnityEngine.Object)Grid.Objects[cell6, 29] == (UnityEngine.Object)go)
 			{
-				Grid.Objects[cell6, 27] = null;
+				Grid.Objects[cell6, 29] = null;
 			}
 		}
 		if (BuildLocationRule == BuildLocationRule.HighWattBridgeTile)
 		{
 			UtilityNetworkLink component = go.GetComponent<UtilityNetworkLink>();
 			component.GetCells(cell, orientation, out int linked_cell, out int linked_cell2);
-			if ((UnityEngine.Object)Grid.Objects[linked_cell, 27] == (UnityEngine.Object)go)
+			if ((UnityEngine.Object)Grid.Objects[linked_cell, 29] == (UnityEngine.Object)go)
 			{
-				Grid.Objects[linked_cell, 27] = null;
+				Grid.Objects[linked_cell, 29] = null;
 			}
-			if ((UnityEngine.Object)Grid.Objects[linked_cell2, 27] == (UnityEngine.Object)go)
+			if ((UnityEngine.Object)Grid.Objects[linked_cell2, 29] == (UnityEngine.Object)go)
 			{
-				Grid.Objects[linked_cell2, 27] = null;
+				Grid.Objects[linked_cell2, 29] = null;
 			}
 		}
 		ISecondaryInput component2 = BuildingComplete.GetComponent<ISecondaryInput>();
@@ -910,7 +910,7 @@ public class BuildingDef : Def
 				case BuildLocationRule.Tile:
 				{
 					flag = true;
-					GameObject gameObject2 = Grid.Objects[cell, 25];
+					GameObject gameObject2 = Grid.Objects[cell, 27];
 					if ((UnityEngine.Object)gameObject2 != (UnityEngine.Object)null)
 					{
 						Building component2 = gameObject2.GetComponent<Building>();
@@ -1035,7 +1035,7 @@ public class BuildingDef : Def
 			{
 				CellOffset rotatedCellOffset = Rotatable.GetRotatedCellOffset(PowerInputOffset, orientation);
 				int cell2 = Grid.OffsetCell(cell, rotatedCellOffset);
-				GameObject x = Grid.Objects[cell2, 27];
+				GameObject x = Grid.Objects[cell2, 29];
 				if ((UnityEngine.Object)x != (UnityEngine.Object)null && (UnityEngine.Object)x != (UnityEngine.Object)source_go)
 				{
 					fail_reason = UI.TOOLTIPS.HELP_BUILDLOCATION_WIRECONNECTORS_OVERLAP;
@@ -1046,7 +1046,7 @@ public class BuildingDef : Def
 			{
 				CellOffset rotatedCellOffset2 = Rotatable.GetRotatedCellOffset(PowerOutputOffset, orientation);
 				int cell3 = Grid.OffsetCell(cell, rotatedCellOffset2);
-				GameObject x2 = Grid.Objects[cell3, 27];
+				GameObject x2 = Grid.Objects[cell3, 29];
 				if ((UnityEngine.Object)x2 != (UnityEngine.Object)null && (UnityEngine.Object)x2 != (UnityEngine.Object)source_go)
 				{
 					fail_reason = UI.TOOLTIPS.HELP_BUILDLOCATION_WIRECONNECTORS_OVERLAP;
@@ -1110,7 +1110,7 @@ public class BuildingDef : Def
 		if ((UnityEngine.Object)component != (UnityEngine.Object)null)
 		{
 			component.GetCells(out int linked_cell, out int linked_cell2);
-			if ((UnityEngine.Object)Grid.Objects[linked_cell, 27] != (UnityEngine.Object)null || (UnityEngine.Object)Grid.Objects[linked_cell2, 27] != (UnityEngine.Object)null)
+			if ((UnityEngine.Object)Grid.Objects[linked_cell, 29] != (UnityEngine.Object)null || (UnityEngine.Object)Grid.Objects[linked_cell2, 29] != (UnityEngine.Object)null)
 			{
 				fail_reason = UI.TOOLTIPS.HELP_BUILDLOCATION_WIRECONNECTORS_OVERLAP;
 				return false;
@@ -1131,7 +1131,7 @@ public class BuildingDef : Def
 				return false;
 			}
 			component.GetCells(out int linked_cell, out int linked_cell2);
-			if ((UnityEngine.Object)Grid.Objects[linked_cell, 27] != (UnityEngine.Object)null || (UnityEngine.Object)Grid.Objects[linked_cell2, 27] != (UnityEngine.Object)null)
+			if ((UnityEngine.Object)Grid.Objects[linked_cell, 29] != (UnityEngine.Object)null || (UnityEngine.Object)Grid.Objects[linked_cell2, 29] != (UnityEngine.Object)null)
 			{
 				fail_reason = UI.TOOLTIPS.HELP_BUILDLOCATION_WIRECONNECTORS_OVERLAP;
 				return false;

@@ -127,7 +127,7 @@ public class BeIncapacitatedChore : Chore<BeIncapacitatedChore.StatesInstance>
 	public BeIncapacitatedChore(IStateMachineTarget master)
 		: base(Db.Get().ChoreTypes.BeIncapacitated, master, master.GetComponent<ChoreProvider>(), true, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.compulsory, 5, false, true, 0, (Tag[])null, false, ReportManager.ReportType.WorkTime)
 	{
-		smi = new StatesInstance(this);
+		base.smi = new StatesInstance(this);
 	}
 
 	public void FindAvailableMedicalBed(Navigator navigator)
@@ -150,13 +150,13 @@ public class BeIncapacitatedChore : Chore<BeIncapacitatedChore.StatesInstance>
 		}
 		if ((UnityEngine.Object)clinic != (UnityEngine.Object)null && navigator.CanReach(clinic))
 		{
-			smi.sm.clinic.Set(clinic.gameObject, smi);
-			smi.GoTo(smi.sm.incapacitation_root.rescue.waitingForPickup);
+			base.smi.sm.clinic.Set(clinic.gameObject, base.smi);
+			base.smi.GoTo(base.smi.sm.incapacitation_root.rescue.waitingForPickup);
 		}
 	}
 
 	public GameObject GetChosenClinic()
 	{
-		return smi.sm.clinic.Get(smi);
+		return base.smi.sm.clinic.Get(base.smi);
 	}
 }

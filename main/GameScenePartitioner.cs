@@ -94,8 +94,8 @@ public class GameScenePartitioner : KMonoBehaviour
 		lure = partitioner.CreateMask("Lure");
 		plants = partitioner.CreateMask("Plants");
 		industrialBuildings = partitioner.CreateMask("IndustrialBuildings");
-		objectLayers = new ScenePartitionerLayer[37];
-		for (int i = 0; i < 37; i++)
+		objectLayers = new ScenePartitionerLayer[39];
+		for (int i = 0; i < 39; i++)
 		{
 			ObjectLayer objectLayer = (ObjectLayer)i;
 			objectLayers[i] = partitioner.CreateMask(new HashedString(objectLayer.ToString()));

@@ -74,7 +74,7 @@ public class TakeMedicineChore : Chore<TakeMedicineChore.StatesInstance>
 	{
 		medicine = master;
 		pickupable = medicine.GetComponent<Pickupable>();
-		smi = new StatesInstance(this);
+		base.smi = new StatesInstance(this);
 		AddPrecondition(ChorePreconditions.instance.CanPickup, pickupable);
 		AddPrecondition(CanCure, this);
 		AddPrecondition(IsConsumptionPermitted, this);
@@ -82,9 +82,9 @@ public class TakeMedicineChore : Chore<TakeMedicineChore.StatesInstance>
 
 	public override void Begin(Precondition.Context context)
 	{
-		smi.sm.source.Set(pickupable.gameObject, smi);
-		smi.sm.requestedpillcount.Set(1f, smi);
-		smi.sm.eater.Set(context.consumerState.gameObject, smi);
+		base.smi.sm.source.Set(pickupable.gameObject, base.smi);
+		base.smi.sm.requestedpillcount.Set(1f, base.smi);
+		base.smi.sm.eater.Set(context.consumerState.gameObject, base.smi);
 		base.Begin(context);
 		new TakeMedicineChore(medicine);
 	}

@@ -254,7 +254,7 @@ public class BuildingCellVisualizer : KMonoBehaviour
 
 	private bool CompareWireConnection(int cell, UtilityConnections[] connections)
 	{
-		GameObject gameObject = Grid.Objects[cell, 24];
+		GameObject gameObject = Grid.Objects[cell, 26];
 		if ((UnityEngine.Object)gameObject != (UnityEngine.Object)null)
 		{
 			Wire component = gameObject.GetComponent<Wire>();
@@ -276,7 +276,7 @@ public class BuildingCellVisualizer : KMonoBehaviour
 	private Color GetWireColor(int cell)
 	{
 		Color result = Color.white;
-		GameObject gameObject = Grid.Objects[cell, 24];
+		GameObject gameObject = Grid.Objects[cell, 26];
 		if ((UnityEngine.Object)gameObject != (UnityEngine.Object)null)
 		{
 			KBatchedAnimController component = gameObject.GetComponent<KBatchedAnimController>();

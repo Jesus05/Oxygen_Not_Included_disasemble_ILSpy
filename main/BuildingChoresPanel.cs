@@ -16,7 +16,19 @@ public class BuildingChoresPanel : TargetScreen
 
 		public int CompareTo(DupeEntryData other)
 		{
-			return (personalPriority == other.personalPriority) ? rank.CompareTo(other.rank) : other.personalPriority.CompareTo(personalPriority);
+			if (personalPriority == other.personalPriority)
+			{
+				if (rank == other.rank)
+				{
+					if (!(consumer.GetProperName() != other.consumer.GetProperName()))
+					{
+						return consumer.GetInstanceID().CompareTo(other.consumer.GetInstanceID());
+					}
+					return consumer.GetProperName().CompareTo(other.consumer.GetProperName());
+				}
+				return rank.CompareTo(other.rank);
+			}
+			return other.personalPriority.CompareTo(personalPriority);
 		}
 	}
 
@@ -95,19 +107,46 @@ public class BuildingChoresPanel : TargetScreen
 	private void AddChoreEntry(Chore chore)
 	{
 		HierarchyReferences choreEntry = GetChoreEntry(GameUtil.GetChoreName(chore, null), GameUtil.ChoreGroupsForChoreType(chore.choreType), choreGroup.GetReference<RectTransform>("EntriesContainer"));
+		FetchChore fetchChore = chore as FetchChore;
+		ListPool<Chore.Precondition.Context, BuildingChoresPanel>.PooledList pooledList = ListPool<Chore.Precondition.Context, BuildingChoresPanel>.Allocate();
 		foreach (MinionIdentity item in Components.LiveMinionIdentities.Items)
 		{
+			pooledList.Clear();
 			ChoreConsumer component = item.GetComponent<ChoreConsumer>();
-			int num = -1;
 			Chore.Precondition.Context context = default(Chore.Precondition.Context);
-			List<Chore.Precondition.Context> suceededPreconditionContexts = component.GetSuceededPreconditionContexts();
-			for (int num2 = suceededPreconditionContexts.Count - 1; num2 >= 0; num2--)
+			ChoreConsumer.PreconditionSnapshot lastPreconditionSnapshot = component.GetLastPreconditionSnapshot();
+			if (lastPreconditionSnapshot.doFailedContextsNeedSorting)
 			{
-				Chore.Precondition.Context context2 = suceededPreconditionContexts[num2];
-				if (context2.chore == chore)
+				lastPreconditionSnapshot.failedContexts.Sort();
+				lastPreconditionSnapshot.doFailedContextsNeedSorting = false;
+			}
+			pooledList.AddRange(lastPreconditionSnapshot.failedContexts);
+			pooledList.AddRange(lastPreconditionSnapshot.succeededContexts);
+			int num = -1;
+			int num2 = 0;
+			for (int num3 = pooledList.Count - 1; num3 >= 0; num3--)
+			{
+				Chore.Precondition.Context context2 = pooledList[num3];
+				if ((UnityEngine.Object)context2.chore.driver != (UnityEngine.Object)null)
 				{
-					num = suceededPreconditionContexts.Count - num2;
-					context = suceededPreconditionContexts[num2];
+					Chore.Precondition.Context context3 = pooledList[num3];
+					if ((UnityEngine.Object)context3.chore.driver != (UnityEngine.Object)component.choreDriver)
+					{
+						continue;
+					}
+				}
+				bool flag = pooledList[num3].IsPotentialSuccess();
+				if (flag)
+				{
+					num2++;
+				}
+				Chore.Precondition.Context context4 = pooledList[num3];
+				FetchAreaChore fetchAreaChore = context4.chore as FetchAreaChore;
+				Chore.Precondition.Context context5 = pooledList[num3];
+				if (context5.chore == chore || (fetchChore != null && fetchAreaChore != null && fetchAreaChore.smi.SameDestination(fetchChore)))
+				{
+					num = ((!flag) ? 2147483647 : num2);
+					context = pooledList[num3];
 					break;
 				}
 			}
@@ -122,6 +161,7 @@ public class BuildingChoresPanel : TargetScreen
 				});
 			}
 		}
+		pooledList.Recycle();
 		DupeEntryDatas.Sort();
 		foreach (DupeEntryData dupeEntryData in DupeEntryDatas)
 		{

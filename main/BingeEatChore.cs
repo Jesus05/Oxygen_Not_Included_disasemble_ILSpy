@@ -124,7 +124,7 @@ public class BingeEatChore : Chore<BingeEatChore.StatesInstance>
 	public BingeEatChore(IStateMachineTarget target, Action<Chore> on_complete = null)
 		: base(Db.Get().ChoreTypes.BingeEat, target, target.GetComponent<ChoreProvider>(), false, on_complete, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.compulsory, 5, false, true, 0, (Tag[])null, false, ReportManager.ReportType.WorkTime)
 	{
-		smi = new StatesInstance(this, target.gameObject);
+		base.smi = new StatesInstance(this, target.gameObject);
 		Subscribe(1121894420, OnEat);
 	}
 
@@ -133,7 +133,7 @@ public class BingeEatChore : Chore<BingeEatChore.StatesInstance>
 		Edible edible = (Edible)data;
 		if ((UnityEngine.Object)edible != (UnityEngine.Object)null)
 		{
-			smi.sm.bingeremaining.Set(Mathf.Max(0f, smi.sm.bingeremaining.Get(smi) - edible.unitsConsumed), smi);
+			base.smi.sm.bingeremaining.Set(Mathf.Max(0f, base.smi.sm.bingeremaining.Get(base.smi) - edible.unitsConsumed), base.smi);
 		}
 	}
 

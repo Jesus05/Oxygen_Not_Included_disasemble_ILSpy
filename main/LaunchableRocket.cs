@@ -274,7 +274,7 @@ public class LaunchableRocket : StateMachineComponent<LaunchableRocket.StatesIns
 					}
 					else if (Grid.FakeFloor[num])
 					{
-						GameObject gameObject = Grid.Objects[num, 36];
+						GameObject gameObject = Grid.Objects[num, 38];
 						if ((Object)gameObject != (Object)null)
 						{
 							BuildingHP component2 = gameObject.GetComponent<BuildingHP>();

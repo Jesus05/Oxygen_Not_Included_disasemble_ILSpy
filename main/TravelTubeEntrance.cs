@@ -227,7 +227,7 @@ public class TravelTubeEntrance : StateMachineComponent<TravelTubeEntrance.SMIns
 		Extents extents = new Extents(x, y, 1, 1);
 		UtilityConnections connections = Game.Instance.travelTubeSystem.GetConnections(Grid.XYToCell(x, y), true);
 		TubeConnectionsChanged(connections);
-		tubeChangedEntry = GameScenePartitioner.Instance.Add("TravelTubeEntrance.TubeListener", base.gameObject, extents, GameScenePartitioner.Instance.objectLayers[32], TubeChanged);
+		tubeChangedEntry = GameScenePartitioner.Instance.Add("TravelTubeEntrance.TubeListener", base.gameObject, extents, GameScenePartitioner.Instance.objectLayers[34], TubeChanged);
 		Subscribe(-592767678, OnOperationalChangedDelegate);
 		meter = new MeterController(this, Meter.Offset.Infront, Grid.SceneLayer.NoLayer);
 		CreateNewWaitReactable();

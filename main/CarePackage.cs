@@ -1,3 +1,4 @@
+using KSerialization;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -40,7 +41,8 @@ public class CarePackage : StateMachineComponent<CarePackage.SMInstance>
 		}
 	}
 
-	private CarePackageInfo info;
+	[Serialize]
+	public CarePackageInfo info;
 
 	private Reactable reactable;
 
@@ -48,6 +50,10 @@ public class CarePackage : StateMachineComponent<CarePackage.SMInstance>
 	{
 		base.OnSpawn();
 		base.smi.StartSM();
+		if (info != null)
+		{
+			SetAnimToInfo();
+		}
 		reactable = CreateReactable();
 	}
 
@@ -74,6 +80,11 @@ public class CarePackage : StateMachineComponent<CarePackage.SMInstance>
 	public void SetInfo(CarePackageInfo info)
 	{
 		this.info = info;
+		SetAnimToInfo();
+	}
+
+	private void SetAnimToInfo()
+	{
 		GameObject prefab = Assets.GetPrefab(info.id);
 		GameObject gameObject = Util.KInstantiate(Assets.GetPrefab("Meter".ToTag()), base.gameObject, null);
 		GameObject prefab2 = Assets.GetPrefab(info.id);

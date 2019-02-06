@@ -16,7 +16,7 @@ public class ChoreConsumer : KMonoBehaviour, IPersonalPriorityManager
 		public object arg;
 	}
 
-	private class PreconditionSnapshot
+	public class PreconditionSnapshot
 	{
 		public List<Chore.Precondition.Context> succeededContexts = new List<Chore.Precondition.Context>();
 
@@ -108,9 +108,19 @@ public class ChoreConsumer : KMonoBehaviour, IPersonalPriorityManager
 		return providers;
 	}
 
+	public PreconditionSnapshot GetLastPreconditionSnapshot()
+	{
+		return preconditionSnapshot;
+	}
+
 	public List<Chore.Precondition.Context> GetSuceededPreconditionContexts()
 	{
 		return lastSuccessfulPreconditionSnapshot.succeededContexts;
+	}
+
+	public List<Chore.Precondition.Context> GetFailedPreconditionContexts()
+	{
+		return lastSuccessfulPreconditionSnapshot.failedContexts;
 	}
 
 	protected override void OnPrefabInit()

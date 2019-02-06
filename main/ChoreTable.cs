@@ -83,7 +83,7 @@ public class ChoreTable
 			: base(chore_type, (IStateMachineTarget)prefab_id, ((Component)prefab_id).GetComponent<ChoreProvider>(), true, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.basic, 5, false, true, 0, (Tag[])null, false, ReportManager.ReportType.WorkTime)
 		{
 			showAvailabilityInHoverText = false;
-			smi = (state_machine_def.CreateSMI(this) as StateMachineInstanceType);
+			base.smi = (state_machine_def.CreateSMI(this) as StateMachineInstanceType);
 		}
 	}
 

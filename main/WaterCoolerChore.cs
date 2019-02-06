@@ -73,8 +73,8 @@ public class WaterCoolerChore : Chore<WaterCoolerChore.StatesInstance>, IWorkerP
 	public WaterCoolerChore(IStateMachineTarget master, Workable chat_workable, Action<Chore> on_complete = null, Action<Chore> on_begin = null, Action<Chore> on_end = null)
 		: base(Db.Get().ChoreTypes.Relax, master, master.GetComponent<ChoreProvider>(), true, on_complete, on_begin, on_end, PriorityScreen.PriorityClass.high, 5, false, true, 0, (Tag[])null, false, ReportManager.ReportType.PersonalTime)
 	{
-		smi = new StatesInstance(this);
-		smi.sm.chitchatlocator.Set(chat_workable, smi);
+		base.smi = new StatesInstance(this);
+		base.smi.sm.chitchatlocator.Set(chat_workable, base.smi);
 		AddPrecondition(ChorePreconditions.instance.CanMoveTo, chat_workable);
 		AddPrecondition(ChorePreconditions.instance.IsNotRedAlert, null);
 		AddPrecondition(ChorePreconditions.instance.IsScheduledTime, Db.Get().ScheduleBlockTypes.Recreation);
@@ -83,7 +83,7 @@ public class WaterCoolerChore : Chore<WaterCoolerChore.StatesInstance>, IWorkerP
 
 	public override void Begin(Precondition.Context context)
 	{
-		smi.sm.drinker.Set(context.consumerState.gameObject, smi);
+		base.smi.sm.drinker.Set(context.consumerState.gameObject, base.smi);
 		base.Begin(context);
 	}
 

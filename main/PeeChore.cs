@@ -64,6 +64,6 @@ public class PeeChore : Chore<PeeChore.StatesInstance>
 	public PeeChore(IStateMachineTarget target)
 		: base(Db.Get().ChoreTypes.Pee, target, target.GetComponent<ChoreProvider>(), false, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.compulsory, 5, false, true, 0, (Tag[])null, false, ReportManager.ReportType.WorkTime)
 	{
-		smi = new StatesInstance(this, target.gameObject);
+		base.smi = new StatesInstance(this, target.gameObject);
 	}
 }

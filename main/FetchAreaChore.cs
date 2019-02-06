@@ -493,6 +493,18 @@ public class FetchAreaChore : Chore<FetchAreaChore.StatesInstance>
 			}
 			reservations.Clear();
 		}
+
+		public bool SameDestination(FetchChore fetch)
+		{
+			foreach (FetchChore chore in chores)
+			{
+				if ((UnityEngine.Object)chore.destination == (UnityEngine.Object)fetch.destination)
+				{
+					return true;
+				}
+			}
+			return false;
+		}
 	}
 
 	public class States : GameStateMachine<States, StatesInstance, FetchAreaChore>
@@ -626,17 +638,17 @@ public class FetchAreaChore : Chore<FetchAreaChore.StatesInstance>
 		}
 	}
 
-	public bool IsFetching => smi.pickingup;
+	public bool IsFetching => base.smi.pickingup;
 
-	public bool IsDelivering => smi.delivering;
+	public bool IsDelivering => base.smi.delivering;
 
-	public GameObject GetFetchTarget => smi.sm.fetchTarget.Get(smi);
+	public GameObject GetFetchTarget => base.smi.sm.fetchTarget.Get(base.smi);
 
 	public FetchAreaChore(Precondition.Context context)
 		: base(context.chore.choreType, (IStateMachineTarget)context.consumerState.consumer, context.consumerState.choreProvider, false, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, context.masterPriority.priority_class, context.masterPriority.priority_value, false, true, 0, (Tag[])null, false, ReportManager.ReportType.WorkTime)
 	{
 		showAvailabilityInHoverText = false;
-		smi = new StatesInstance(this, context);
+		base.smi = new StatesInstance(this, context);
 	}
 
 	public override void Cleanup()
@@ -646,19 +658,19 @@ public class FetchAreaChore : Chore<FetchAreaChore.StatesInstance>
 
 	public override void Begin(Precondition.Context context)
 	{
-		smi.Begin(context);
+		base.smi.Begin(context);
 		base.Begin(context);
 	}
 
 	protected override void End(string reason)
 	{
-		smi.End();
+		base.smi.End();
 		base.End(reason);
 	}
 
 	private void OnTagsChanged(object data)
 	{
-		if ((UnityEngine.Object)smi.sm.fetchTarget.Get(smi) != (UnityEngine.Object)null)
+		if ((UnityEngine.Object)base.smi.sm.fetchTarget.Get(base.smi) != (UnityEngine.Object)null)
 		{
 			Fail("Tags changed");
 		}

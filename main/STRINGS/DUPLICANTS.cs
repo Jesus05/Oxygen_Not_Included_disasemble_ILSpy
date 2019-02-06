@@ -279,7 +279,7 @@ namespace STRINGS
 
 				public static LocString STATUS = "Going to disinfect";
 
-				public static LocString TOOLTIP = "Buildings can be disinfected to remove contagious Germs on their surfaces";
+				public static LocString TOOLTIP = "Buildings can be disinfected to remove contagious Germs from their surface";
 			}
 
 			public class EQUIPPINGSUIT
@@ -792,7 +792,7 @@ namespace STRINGS
 
 				public static LocString STATUS = "Going to uproot";
 
-				public static LocString TOOLTIP = "This Duplicant is uprooting a plant for a seed";
+				public static LocString TOOLTIP = "This Duplicant is uprooting a plant to retrieve a seed";
 			}
 
 			public class CLEANTOILET
@@ -891,7 +891,7 @@ namespace STRINGS
 
 				public static LocString STATUS = "Going to construction dig";
 
-				public static LocString TOOLTIP = "This dig will make room for a planned building to be constructed";
+				public static LocString TOOLTIP = "This Duplicant will make room for a planned building by performing this dig";
 			}
 
 			public class DIG
@@ -900,7 +900,7 @@ namespace STRINGS
 
 				public static LocString STATUS = "Going to dig";
 
-				public static LocString TOOLTIP = "Digging produces usable ores and materials and makes space";
+				public static LocString TOOLTIP = "This Duplicant is digging out a tile";
 			}
 
 			public class FETCH
@@ -909,7 +909,7 @@ namespace STRINGS
 
 				public static LocString STATUS = "Delivering";
 
-				public static LocString TOOLTIP = "This Duplicant is delivering materials to where they'll be needed";
+				public static LocString TOOLTIP = "This Duplicant is delivering materials where they'll be needed";
 
 				public static LocString REPORT_NAME = "Deliver to {0}";
 			}
@@ -918,9 +918,9 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Store Materials";
 
-				public static LocString STATUS = "Storing Materials";
+				public static LocString STATUS = "Storing materials";
 
-				public static LocString TOOLTIP = "This Duplicant is putting materials in to storage for use later";
+				public static LocString TOOLTIP = "This Duplicant is moving materials into storage for later use";
 
 				public static LocString REPORT_NAME = "Store {0}";
 			}
@@ -929,36 +929,36 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Repair Supply";
 
-				public static LocString STATUS = "Supplying Repair Materials";
+				public static LocString STATUS = "Supplying repair materials";
 
-				public static LocString TOOLTIP = "This Duplicant is delivering materials to where they'll be needed";
+				public static LocString TOOLTIP = "This Duplicant is delivering materials to where they'll be needed to repair buildings";
 			}
 
 			public class RESEARCHFETCH
 			{
 				public static LocString NAME = "Research Supply";
 
-				public static LocString STATUS = "Supplying Research Materials";
+				public static LocString STATUS = "Supplying research materials";
 
-				public static LocString TOOLTIP = "This Duplicant is delivering materials to where they'll be needed";
+				public static LocString TOOLTIP = "This Duplicant is delivering materials where they'll be needed to conduct research";
 			}
 
 			public class FARMFETCH
 			{
 				public static LocString NAME = "Farming Supply";
 
-				public static LocString STATUS = "Supplying Farming Materials";
+				public static LocString STATUS = "Supplying farming materials";
 
-				public static LocString TOOLTIP = "This Duplicant is delivering materials to where they'll be needed";
+				public static LocString TOOLTIP = "This Duplicant is delivering farming materials where they're needed to tend crops";
 			}
 
 			public class FETCHCRITICAL
 			{
 				public static LocString NAME = "Life Support Supply";
 
-				public static LocString STATUS = "Supplying Critical Materials";
+				public static LocString STATUS = "Supplying critical materials";
 
-				public static LocString TOOLTIP = "This Duplicant is delivering materials to where they'll be needed";
+				public static LocString TOOLTIP = "This Duplicant is delivering materials required to perform Life Support Errands";
 
 				public static LocString REPORT_NAME = "Life Support Supply to {0}";
 			}
@@ -967,27 +967,27 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Operational Supply";
 
-				public static LocString STATUS = "Supplying Operational Materials";
+				public static LocString STATUS = "Supplying operational materials";
 
-				public static LocString TOOLTIP = "This Duplicant is delivering materials to where they'll be needed";
+				public static LocString TOOLTIP = "This Duplicant is delivering materials to where they'll be needed for machine operation";
 
 				public static LocString REPORT_NAME = "Operational Supply to {0}";
 			}
 
 			public class COOKFETCH
 			{
-				public static LocString NAME = "Kitchen Supply";
+				public static LocString NAME = "Cook Supply";
 
-				public static LocString STATUS = "Supplying Kitchen Ingredients";
+				public static LocString STATUS = "Supplying cook ingredients";
 
-				public static LocString TOOLTIP = "This Duplicant is delivering materials to where they'll be needed";
+				public static LocString TOOLTIP = "This Duplicant is delivering materials required to cook food";
 			}
 
 			public class FOODFETCH
 			{
 				public static LocString NAME = "Store Food";
 
-				public static LocString STATUS = "Storing Food";
+				public static LocString STATUS = "Storing food";
 
 				public static LocString TOOLTIP = "This Duplicant is putting edibles where they belong";
 
@@ -998,29 +998,29 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Power Supply";
 
-				public static LocString STATUS = "Supplying Power Materials";
+				public static LocString STATUS = "Supplying power materials";
 
-				public static LocString TOOLTIP = "This Duplicant is delivering materials to where they'll be needed";
+				public static LocString TOOLTIP = "This Duplicant is delivering materials to where they'll be needed for power";
 
 				public static LocString REPORT_NAME = "Power Supply to {0}";
 			}
 
 			public class FABRICATEFETCH
 			{
-				public static LocString NAME = "Manufacturing Supply";
+				public static LocString NAME = "Fabrication Supply";
 
-				public static LocString STATUS = "Supplying Manufacturing Materials";
+				public static LocString STATUS = "Supplying fabrication materials";
 
-				public static LocString TOOLTIP = "This Duplicant is delivering materials to where they'll be needed";
+				public static LocString TOOLTIP = "This Duplicant is delivering materials required to fabricate new objects";
 
-				public static LocString REPORT_NAME = "Manufacturing Supply to {0}";
+				public static LocString REPORT_NAME = "Fabrication Supply to {0}";
 			}
 
 			public class BUILDFETCH
 			{
 				public static LocString NAME = "Construction Supply";
 
-				public static LocString STATUS = "Supplying Construction Materials";
+				public static LocString STATUS = "Supplying construction materials";
 
 				public static LocString TOOLTIP = "This delivery will provide materials to a planned construction site";
 			}
@@ -1029,9 +1029,9 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Relocate Critter";
 
-				public static LocString STATUS = "Relocating Critter";
+				public static LocString STATUS = "Relocating critter";
 
-				public static LocString TOOLTIP = "This Rancher Duplicant is moving a critter";
+				public static LocString TOOLTIP = "This Rancher is moving a critter to a new location";
 			}
 
 			public class TRANSPORT
@@ -1040,7 +1040,7 @@ namespace STRINGS
 
 				public static LocString STATUS = "Going to sweep";
 
-				public static LocString TOOLTIP = "Sweeping debris from the ground improves colony decor";
+				public static LocString TOOLTIP = "Moving debris off the ground and into storage improves colony decor";
 			}
 
 			public class MOVETOSAFETY
@@ -1078,7 +1078,7 @@ namespace STRINGS
 
 				public static LocString STATUS = "Tending plant";
 
-				public static LocString TOOLTIP = "Tending plants increases their growth rate";
+				public static LocString TOOLTIP = "Tending to plants increases their growth rate";
 			}
 
 			public class IDLE
@@ -1096,7 +1096,7 @@ namespace STRINGS
 
 				public static LocString CONTAINS_OXYGEN = "Not enough Oxygen";
 
-				public static LocString CHORE_DRIVER_IS_NULL = "Assigned to: {Assignee}";
+				public static LocString IS_PREEMPTABLE = "Already assigned to {Assignee}";
 
 				public static LocString HAS_URGE = "No current need";
 
@@ -1211,7 +1211,7 @@ namespace STRINGS
 
 			public static LocString NOT_EXISTING_TASK = "Not Existing";
 
-			public static LocString IS_DEAD_TASK = "Uhh... 'Sleeping'";
+			public static LocString IS_DEAD_TASK = "Uhh... \"Sleeping\"";
 		}
 
 		public class CHOREGROUPS
@@ -4104,7 +4104,7 @@ namespace STRINGS
 
 			public class ARCHAEOLOGIST
 			{
-				public static LocString NAME = "Archaeologist";
+				public static LocString NAME = "Archeologist";
 
 				public static LocString DESC = "This Duplicant will always bring back an artifact from space expeditions.";
 			}

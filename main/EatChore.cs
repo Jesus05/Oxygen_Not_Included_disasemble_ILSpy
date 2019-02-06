@@ -151,7 +151,7 @@ public class EatChore : Chore<EatChore.StatesInstance>
 	public EatChore(IStateMachineTarget master)
 		: base(Db.Get().ChoreTypes.Eat, master, master.GetComponent<ChoreProvider>(), false, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.personalNeeds, 5, false, true, 0, (Tag[])null, false, ReportManager.ReportType.PersonalTime)
 	{
-		smi = new StatesInstance(this);
+		base.smi = new StatesInstance(this);
 		showAvailabilityInHoverText = false;
 		AddPrecondition(ChorePreconditions.instance.IsNotRedAlert, null);
 		AddPrecondition(EdibleIsNotNull, null);
@@ -177,27 +177,27 @@ public class EatChore : Chore<EatChore.StatesInstance>
 				{
 					Debug.LogError("EATCHORE null edible.gameObject", null);
 				}
-				else if (smi == null)
+				else if (base.smi == null)
 				{
 					Debug.LogError("EATCHORE null smi", null);
 				}
-				else if (smi.sm == null)
+				else if (base.smi.sm == null)
 				{
 					Debug.LogError("EATCHORE null smi.sm", null);
 				}
-				else if (smi.sm.ediblesource == null)
+				else if (base.smi.sm.ediblesource == null)
 				{
 					Debug.LogError("EATCHORE null smi.sm.ediblesource", null);
 				}
 				else
 				{
-					smi.sm.ediblesource.Set(edible.gameObject, smi);
+					base.smi.sm.ediblesource.Set(edible.gameObject, base.smi);
 					KCrashReporter.Assert(edible.FoodInfo.CaloriesPerUnit > 0f, edible.GetProperName() + " has invalid calories per unit. Will result in NaNs");
 					AmountInstance amountInstance = Db.Get().Amounts.Calories.Lookup(gameObject);
 					float num = (amountInstance.GetMax() - amountInstance.value) / edible.FoodInfo.CaloriesPerUnit;
 					KCrashReporter.Assert(num > 0f, "EatChore is requesting an invalid amount of food");
-					smi.sm.requestedfoodunits.Set(num, smi);
-					smi.sm.eater.Set(context.consumerState.gameObject, smi);
+					base.smi.sm.requestedfoodunits.Set(num, base.smi);
+					base.smi.sm.eater.Set(context.consumerState.gameObject, base.smi);
 					base.Begin(context);
 				}
 			}

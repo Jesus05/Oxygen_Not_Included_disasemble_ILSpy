@@ -44,7 +44,7 @@ public class StressEmoteChore : Chore<StressEmoteChore.StatesInstance>
 		AddPrecondition(ChorePreconditions.instance.NotInTube, null);
 		AddPrecondition(ChorePreconditions.instance.IsAwake, null);
 		getStatusItem = get_status_item;
-		smi = new StatesInstance(this, target.gameObject, emote_kanim, emote_anims, play_mode);
+		base.smi = new StatesInstance(this, target.gameObject, emote_kanim, emote_anims, play_mode);
 	}
 
 	protected override StatusItem GetStatusItem()
@@ -54,10 +54,10 @@ public class StressEmoteChore : Chore<StressEmoteChore.StatesInstance>
 
 	public override string ToString()
 	{
-		if (!smi.emoteKAnim.IsValid)
+		if (!base.smi.emoteKAnim.IsValid)
 		{
-			return "StressEmoteChore<" + smi.emoteAnims[0] + ">";
+			return "StressEmoteChore<" + base.smi.emoteAnims[0] + ">";
 		}
-		return "StressEmoteChore<" + smi.emoteKAnim + ">";
+		return "StressEmoteChore<" + base.smi.emoteKAnim + ">";
 	}
 }

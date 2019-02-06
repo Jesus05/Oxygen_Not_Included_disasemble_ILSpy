@@ -420,7 +420,6 @@ public class RoleWidget : KMonoBehaviour, IPointerEnterHandler, IPointerExitHand
 			entry.tooltip.SetSimpleTooltip(Game.Instance.roleManager.RoleCriteriaString(roleConfig.id, minionResume));
 			entry.button.isInteractable = Game.Instance.roleManager.CanAssignToRole(roleConfig.id, minionResume);
 			reference.transform.parent.gameObject.SetActive(true);
-			reference2.transform.parent.gameObject.SetActive(true);
 			float num = 0f;
 			for (int i = 0; i < roleConfig.relevantAttributes.Length; i++)
 			{
@@ -436,6 +435,7 @@ public class RoleWidget : KMonoBehaviour, IPointerEnterHandler, IPointerExitHand
 			{
 				reference.SetAlpha(0f);
 			}
+			reference2.transform.parent.gameObject.SetActive(num2 > 0f);
 			reference2.gameObject.SetActive(num2 > 0f);
 			AttributeInstance attributeInstance = Db.Get().Attributes.QualityOfLife.Lookup(minionResume);
 			int num3 = roleConfig.QOLExpectation();
@@ -595,8 +595,8 @@ public class RoleWidget : KMonoBehaviour, IPointerEnterHandler, IPointerExitHand
 			{
 				string currentRole = (entry.entryData as MinionIdentity).GetComponent<MinionResume>().CurrentRole;
 			}
-			reference.transform.parent.gameObject.SetActive(true);
 			float num = component.AptitudeByRoleGroup[roleConfig.roleGroup];
+			reference.transform.parent.gameObject.SetActive(num > 0f);
 			if (roleConfig.relevantAttributes.Length > 0)
 			{
 				reference.gameObject.SetActive(num > 0f);

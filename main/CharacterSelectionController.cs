@@ -73,6 +73,7 @@ public class CharacterSelectionController : KModalScreen
 		DisableProceedButton();
 		if (containers == null || containers.Count <= 0)
 		{
+			OnReplacedEvent = null;
 			containers = new List<ITelepadDeliverableContainer>();
 			if (IsStarterMinion)
 			{

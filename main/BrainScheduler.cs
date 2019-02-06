@@ -130,12 +130,12 @@ public class BrainScheduler : KMonoBehaviour, IRenderEveryTick, ICPULoad
 			pathProbeJob.Reset(null);
 			for (int i = 0; i != brains.Count; i++)
 			{
-				Navigator component = brains[nextPathProbeBrain].GetComponent<Navigator>();
-				nextPathProbeBrain++;
 				if (nextPathProbeBrain < 0 || brains.Count <= nextPathProbeBrain)
 				{
 					nextPathProbeBrain = 0;
 				}
+				Navigator component = brains[nextPathProbeBrain].GetComponent<Navigator>();
+				nextPathProbeBrain++;
 				if ((UnityEngine.Object)component != (UnityEngine.Object)null)
 				{
 					component.executePathProbeTaskAsync = true;

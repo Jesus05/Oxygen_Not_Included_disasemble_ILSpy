@@ -122,7 +122,7 @@ public class MournChore : Chore<MournChore.StatesInstance>
 	public MournChore(IStateMachineTarget master)
 		: base(Db.Get().ChoreTypes.Mourn, master, master.GetComponent<ChoreProvider>(), false, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.high, 5, false, true, 0, (Tag[])null, false, ReportManager.ReportType.WorkTime)
 	{
-		smi = new StatesInstance(this);
+		base.smi = new StatesInstance(this);
 		AddPrecondition(ChorePreconditions.instance.IsNotRedAlert, null);
 		AddPrecondition(ChorePreconditions.instance.NoDeadBodies, null);
 		AddPrecondition(HasValidMournLocation, master);
@@ -179,11 +179,11 @@ public class MournChore : Chore<MournChore.StatesInstance>
 		{
 			Debug.LogError("MournChore null context.consumer", null);
 		}
-		else if (smi == null)
+		else if (base.smi == null)
 		{
 			Debug.LogError("MournChore null smi", null);
 		}
-		else if (smi.sm == null)
+		else if (base.smi.sm == null)
 		{
 			Debug.LogError("MournChore null smi.sm", null);
 		}
@@ -196,7 +196,7 @@ public class MournChore : Chore<MournChore.StatesInstance>
 			}
 			else
 			{
-				smi.sm.mourner.Set(context.consumerState.gameObject, smi);
+				base.smi.sm.mourner.Set(context.consumerState.gameObject, base.smi);
 				base.Begin(context);
 			}
 		}

@@ -47,9 +47,9 @@ public class EquipChore : Chore<EquipChore.StatesInstance>
 	public EquipChore(IStateMachineTarget equippable)
 		: base(Db.Get().ChoreTypes.Equip, equippable, (ChoreProvider)null, false, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.personalNeeds, 5, false, true, 0, (Tag[])null, false, ReportManager.ReportType.WorkTime)
 	{
-		smi = new StatesInstance(this);
-		smi.sm.equippable_source.Set(equippable.gameObject, smi);
-		smi.sm.requested_units.Set(1f, smi);
+		base.smi = new StatesInstance(this);
+		base.smi.sm.equippable_source.Set(equippable.gameObject, base.smi);
+		base.smi.sm.requested_units.Set(1f, base.smi);
 		showAvailabilityInHoverText = false;
 		AddPrecondition(ChorePreconditions.instance.IsAssignedtoMe, equippable.GetComponent<Assignable>());
 		AddPrecondition(ChorePreconditions.instance.CanPickup, equippable.GetComponent<Pickupable>());
@@ -61,21 +61,21 @@ public class EquipChore : Chore<EquipChore.StatesInstance>
 		{
 			Debug.LogError("EquipChore null context.consumer", null);
 		}
-		else if (smi == null)
+		else if (base.smi == null)
 		{
 			Debug.LogError("EquipChore null smi", null);
 		}
-		else if (smi.sm == null)
+		else if (base.smi.sm == null)
 		{
 			Debug.LogError("EquipChore null smi.sm", null);
 		}
-		else if (smi.sm.equippable_source == null)
+		else if (base.smi.sm.equippable_source == null)
 		{
 			Debug.LogError("EquipChore null smi.sm.equippable_source", null);
 		}
 		else
 		{
-			smi.sm.equipper.Set(context.consumerState.gameObject, smi);
+			base.smi.sm.equipper.Set(context.consumerState.gameObject, base.smi);
 			base.Begin(context);
 		}
 	}

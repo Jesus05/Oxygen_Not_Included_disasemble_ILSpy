@@ -36,6 +36,7 @@ public class ItemPedestal : KMonoBehaviour
 			{
 				component.enabled = true;
 			}
+			OnOccupantChanged(receptacle.Occupant);
 		}
 	}
 

@@ -1,5 +1,4 @@
 using System.Diagnostics;
-using UnityEngine;
 
 public class MinionPathFinderAbilities : PathFinderAbilities
 {
@@ -37,21 +36,7 @@ public class MinionPathFinderAbilities : PathFinderAbilities
 
 	private static bool IsAccessPermitted(int proxyID, int cell, int from_cell)
 	{
-		if (Grid.HasAccessDoor[cell])
-		{
-			Vector3 vector = Grid.CellToPosCCC(cell, Grid.SceneLayer.NoLayer) - Grid.CellToPosCCC(from_cell, Grid.SceneLayer.NoLayer);
-			Grid.Restriction.Directions directions = (Grid.Restriction.Directions)0;
-			if (vector.x < 0f || vector.y > 0f)
-			{
-				directions |= Grid.Restriction.Directions.Left;
-			}
-			if (vector.x > 0f || vector.y < 0f)
-			{
-				directions |= Grid.Restriction.Directions.Right;
-			}
-			return Grid.HasPermission(cell, proxyID, directions);
-		}
-		return true;
+		return !Grid.HasAccessDoor[cell] || Grid.HasPermission(cell, proxyID, from_cell);
 	}
 
 	public override bool TraversePath(ref PathFinder.PotentialPath path, int from_cell, NavType from_nav_type, int cost, int transition_id, int underwater_cost)

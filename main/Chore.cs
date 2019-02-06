@@ -98,6 +98,28 @@ public abstract class Chore
 				return failedPreconditionId == -1;
 			}
 
+			public bool IsPotentialSuccess()
+			{
+				int result;
+				if (!IsSuccess() && !((UnityEngine.Object)chore.driver == (UnityEngine.Object)consumerState.choreDriver))
+				{
+					if (failedPreconditionId != -1)
+					{
+						PreconditionInstance preconditionInstance = chore.preconditions[failedPreconditionId];
+						result = ((preconditionInstance.id == ChorePreconditions.instance.IsMoreSatisfying.id) ? 1 : 0);
+					}
+					else
+					{
+						result = 0;
+					}
+				}
+				else
+				{
+					result = 1;
+				}
+				return (byte)result != 0;
+			}
+
 			public void RunPreconditions()
 			{
 				if (chore.debug)
@@ -153,7 +175,24 @@ public abstract class Chore
 									int num6 = consumerPriority - obj.consumerPriority;
 									if (num6 == 0)
 									{
-										return obj.cost - cost;
+										int num7 = obj.cost - cost;
+										if (num7 == 0)
+										{
+											if (chore == null && obj.chore == null)
+											{
+												return 0;
+											}
+											if (chore != null)
+											{
+												if (obj.chore != null)
+												{
+													return chore.id - obj.chore.id;
+												}
+												return 1;
+											}
+											return -1;
+										}
+										return num7;
 									}
 									return num6;
 								}
@@ -631,9 +670,11 @@ public abstract class Chore
 }
 public class Chore<StateMachineInstanceType> : Chore, IStateMachineTarget where StateMachineInstanceType : StateMachine.Instance
 {
-	protected StateMachineInstanceType smi;
-
-	public StateMachine.Instance sm => smi;
+	public StateMachineInstanceType smi
+	{
+		get;
+		protected set;
+	}
 
 	public override GameObject gameObject => base.target.gameObject;
 

@@ -273,7 +273,8 @@ public class CarePackageContainer : KScreen, ITelepadDeliverableContainer
 		{
 			controller.RemoveDeliverable(info);
 		}
-		selectButton.GetComponent<ImageToggleState>().SetInactive();
+		ImageToggleState component = selectButton.GetComponent<ImageToggleState>();
+		component.SetInactive();
 		selectButton.Deselect();
 		selectButton.ClearOnClick();
 		selectButton.onClick += delegate
@@ -373,6 +374,17 @@ public class CarePackageContainer : KScreen, ITelepadDeliverableContainer
 
 	private bool IsCharacterRedundant()
 	{
+		foreach (ITelepadDeliverableContainer container in containers)
+		{
+			if (container != this)
+			{
+				CarePackageContainer carePackageContainer = container as CarePackageContainer;
+				if ((UnityEngine.Object)carePackageContainer != (UnityEngine.Object)null && carePackageContainer.info == info)
+				{
+					return true;
+				}
+			}
+		}
 		return false;
 	}
 

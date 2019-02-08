@@ -369,7 +369,6 @@ public class ReceptacleSideScreen : SideScreenContent, IRender1000ms
 	protected virtual Sprite GetEntityIcon(Tag prefabTag)
 	{
 		GameObject prefab = Assets.GetPrefab(prefabTag);
-		KBatchedAnimController component = prefab.GetComponent<KBatchedAnimController>();
 		Tuple<Sprite, Color> uISprite = Def.GetUISprite(prefab, "ui", false);
 		return uISprite.first;
 	}

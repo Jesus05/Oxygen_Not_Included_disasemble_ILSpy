@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <ProjectGuid>{8C0ABBD7-D0D7-4CB8-9883-7E03915269FF}</ProjectGuid>
+    <ProjectGuid>{6D2DA418-C755-4A44-9ED6-B651BE26A8C6}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <OutputType>Library</OutputType>
@@ -1763,6 +1763,7 @@
     <Compile Include="RockCrusherConfig.cs" />
     <Compile Include="RocketEngine.cs" />
     <Compile Include="RocketFlightCondition.cs" />
+    <Compile Include="RocketGantryBGConfig.cs" />
     <Compile Include="RocketLaunchCondition.cs" />
     <Compile Include="RocketModule.cs" />
     <Compile Include="RocketStats.cs" />

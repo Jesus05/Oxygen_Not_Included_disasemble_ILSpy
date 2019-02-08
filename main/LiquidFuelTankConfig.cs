@@ -83,7 +83,8 @@ public class LiquidFuelTankConfig : IBuildingConfig
 		conduitConsumer.capacityKG = fuelTank.capacityKg;
 		conduitConsumer.forceAlwaysSatisfied = true;
 		conduitConsumer.wrongElementResult = ConduitConsumer.WrongElementResult.Store;
-		go.AddOrGet<RocketModule>();
+		RocketModule rocketModule = go.AddOrGet<RocketModule>();
+		rocketModule.SetBGKAnim(Assets.GetAnim("rocket_liquid_fuel_tank_bg_kanim"));
 		EntityTemplates.ExtendBuildingToRocketModule(go);
 	}
 }

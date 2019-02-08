@@ -85,12 +85,11 @@ public class CarePackage : StateMachineComponent<CarePackage.SMInstance>
 
 	private void SetAnimToInfo()
 	{
-		GameObject prefab = Assets.GetPrefab(info.id);
 		GameObject gameObject = Util.KInstantiate(Assets.GetPrefab("Meter".ToTag()), base.gameObject, null);
-		GameObject prefab2 = Assets.GetPrefab(info.id);
+		GameObject prefab = Assets.GetPrefab(info.id);
 		KBatchedAnimController component = GetComponent<KBatchedAnimController>();
-		KBatchedAnimController component2 = prefab2.GetComponent<KBatchedAnimController>();
-		SymbolOverrideController component3 = prefab2.GetComponent<SymbolOverrideController>();
+		KBatchedAnimController component2 = prefab.GetComponent<KBatchedAnimController>();
+		SymbolOverrideController component3 = prefab.GetComponent<SymbolOverrideController>();
 		KBatchedAnimController component4 = gameObject.GetComponent<KBatchedAnimController>();
 		component4.transform.SetLocalPosition(Vector3.forward);
 		component4.AnimFiles = component2.AnimFiles;

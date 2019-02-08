@@ -82,7 +82,8 @@ public class SteamEngineConfig : IBuildingConfig
 		conduitConsumer.capacityKG = fuelTank.capacityKg;
 		conduitConsumer.forceAlwaysSatisfied = true;
 		conduitConsumer.wrongElementResult = ConduitConsumer.WrongElementResult.Dump;
-		go.AddOrGet<RocketModule>();
+		RocketModule rocketModule = go.AddOrGet<RocketModule>();
+		rocketModule.SetBGKAnim(Assets.GetAnim("rocket_steam_engine_bg_kanim"));
 		EntityTemplates.ExtendBuildingToRocketModule(go);
 	}
 }

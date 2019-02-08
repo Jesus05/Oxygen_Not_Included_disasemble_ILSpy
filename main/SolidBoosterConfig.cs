@@ -79,7 +79,8 @@ public class SolidBoosterConfig : IBuildingConfig
 		manualDeliveryKG2.refillMass = storage.capacityKg / 2f;
 		manualDeliveryKG2.capacity = storage.capacityKg / 2f;
 		manualDeliveryKG2.choreTypeIDHash = Db.Get().ChoreTypes.MachineFetch.IdHash;
-		go.AddOrGet<RocketModule>();
+		RocketModule rocketModule = go.AddOrGet<RocketModule>();
+		rocketModule.SetBGKAnim(Assets.GetAnim("rocket_solid_booster_bg_kanim"));
 		EntityTemplates.ExtendBuildingToRocketModule(go);
 	}
 }

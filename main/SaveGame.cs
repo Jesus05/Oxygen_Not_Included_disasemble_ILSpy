@@ -1,5 +1,6 @@
 using KSerialization;
 using Newtonsoft.Json;
+using ProcGenGame;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization;
@@ -97,6 +98,8 @@ public class SaveGame : KMonoBehaviour, ISaveLoadable
 	[MyCmpReq]
 	public MaterialSelectorSerializer materialSelectorSerializer;
 
+	public WorldGen worldGen;
+
 	public string BaseName => baseName;
 
 	public static void DestroyInstance()
@@ -112,6 +115,7 @@ public class SaveGame : KMonoBehaviour, ISaveLoadable
 		RedAlertManager.Instance instance2 = new RedAlertManager.Instance(this);
 		instance2.StartSM();
 		entombedItemManager = base.gameObject.AddComponent<EntombedItemManager>();
+		worldGen = SaveLoader.Instance.worldGen;
 		worldGenSpawner = base.gameObject.AddComponent<WorldGenSpawner>();
 	}
 
@@ -139,7 +143,7 @@ public class SaveGame : KMonoBehaviour, ISaveLoadable
 		text = ((!isAutoSave) ? JsonConvert.SerializeObject(new GameInfo(GameClock.Instance.GetCycle(), Components.LiveMinionIdentities.Count, baseName, false)) : JsonConvert.SerializeObject(new GameInfo(GameClock.Instance.GetCycle(), Components.LiveMinionIdentities.Count, baseName, true, SaveLoader.GetActiveSaveFilePath(), false)));
 		byte[] bytes = Encoding.UTF8.GetBytes(text);
 		header = default(Header);
-		header.buildVersion = 306910u;
+		header.buildVersion = 307409u;
 		header.headerSize = bytes.Length;
 		header.headerVersion = 1u;
 		header.compression = (isCompressed ? 1 : 0);

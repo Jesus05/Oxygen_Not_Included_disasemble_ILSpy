@@ -66,7 +66,8 @@ public class CargoBayConfig : IBuildingConfig
 		cargoBay.storageType = CargoBay.CargoType.solids;
 		cargoBay.storage.capacityKg = 1000f;
 		cargoBay.storage.SetDefaultStoredItemModifiers(Storage.StandardSealedStorage);
-		go.AddOrGet<RocketModule>();
+		RocketModule rocketModule = go.AddOrGet<RocketModule>();
+		rocketModule.SetBGKAnim(Assets.GetAnim("rocket_storage_solid_bg_kanim"));
 		EntityTemplates.ExtendBuildingToRocketModule(go);
 		go.AddOrGet<SolidConduitDispenser>();
 	}

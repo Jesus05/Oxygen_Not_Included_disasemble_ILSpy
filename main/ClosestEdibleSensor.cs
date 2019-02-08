@@ -6,8 +6,6 @@ public class ClosestEdibleSensor : Sensor
 
 	private Edible edible;
 
-	private Worker worker;
-
 	private bool hasEdible;
 
 	public bool edibleInReachButNotPermitted;
@@ -15,7 +13,6 @@ public class ClosestEdibleSensor : Sensor
 	public ClosestEdibleSensor(Sensors sensors)
 		: base(sensors)
 	{
-		worker = GetComponent<Worker>();
 	}
 
 	public override void Update()

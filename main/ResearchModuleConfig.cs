@@ -39,7 +39,8 @@ public class ResearchModuleConfig : IBuildingConfig
 		BuildingConfigManager.Instance.IgnoreDefaultKComponent(typeof(RequiresFoundation), prefab_tag);
 		go.AddOrGet<LoopingSounds>();
 		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.IndustrialMachinery);
-		go.AddOrGet<RocketModule>();
+		RocketModule rocketModule = go.AddOrGet<RocketModule>();
+		rocketModule.SetBGKAnim(Assets.GetAnim("rocket_research_module_bg_kanim"));
 		go.AddOrGet<ResearchModule>();
 		BuildingAttachPoint buildingAttachPoint = go.AddOrGet<BuildingAttachPoint>();
 		buildingAttachPoint.points = new BuildingAttachPoint.HardPoint[1]

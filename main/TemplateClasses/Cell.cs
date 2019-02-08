@@ -1,5 +1,4 @@
 using Klei;
-using ProcGenGame;
 using System;
 
 namespace TemplateClasses
@@ -64,15 +63,16 @@ namespace TemplateClasses
 			location_x = loc_x;
 			location_y = loc_y;
 			element = SimHashes.Oxygen;
-			temperature = WorldGen.Settings.GetFloatSetting("StartAreaTemperatureOffset");
-			mass = WorldGen.Settings.GetFloatSetting("StartAreaPressureMultiplier");
+			temperature = SaveGame.Instance.worldGen.Settings.GetFloatSetting("StartAreaTemperatureOffset");
+			mass = SaveGame.Instance.worldGen.Settings.GetFloatSetting("StartAreaPressureMultiplier");
 			diseaseName = null;
 			diseaseCount = 0;
 		}
 
 		public Cell(int loc_x, int loc_y, SimHashes _element, float _temperature, float _mass, string _diseaseName, int _diseaseCount, bool _preventFoWReveal = false)
-			: this(loc_x, loc_y)
 		{
+			location_x = loc_x;
+			location_y = loc_y;
 			element = _element;
 			temperature = _temperature;
 			mass = _mass;

@@ -264,12 +264,6 @@ public class CommandModule : StateMachineComponent<CommandModule.StatesInstance>
 		base.smi.StopSM("cleanup");
 	}
 
-	public void SpawnArtifacts(object data)
-	{
-		SpaceDestination spacecraftDestination = SpacecraftManager.instance.GetSpacecraftDestination(SpacecraftManager.instance.GetSpacecraftID(GetComponent<RocketModule>().conditionManager.GetComponent<LaunchableRocket>()));
-		int num = Grid.PosToCell(base.gameObject);
-	}
-
 	public List<Descriptor> GetDescriptors(BuildingDef def)
 	{
 		return null;

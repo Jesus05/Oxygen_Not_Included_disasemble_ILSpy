@@ -122,7 +122,6 @@ public abstract class KAnimControllerBase : MonoBehaviour
 
 	protected KBatchedAnimInstanceData batchInstanceData;
 
-	[NonSerialized]
 	public VisibilityType visibilityType;
 
 	public Action<GameObject> onDestroySelf;

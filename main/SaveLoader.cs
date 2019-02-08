@@ -127,6 +127,8 @@ public class SaveLoader : KMonoBehaviour
 
 	private bool mustRestartOnFail = false;
 
+	public WorldGen worldGen;
+
 	public const string METRIC_SAVED_PREFAB_KEY = "SavedPrefabs";
 
 	public const string METRIC_IS_AUTO_SAVE_KEY = "IsAutoSave";
@@ -407,13 +409,7 @@ public class SaveLoader : KMonoBehaviour
 			}
 		}
 		Game.worldID = text2;
-		WorldGen.LoadSettings();
-		string path = WorldGen.GetPath();
-		if (!WorldGen.Settings.SetWorld(text2, path))
-		{
-			Output.LogWarning($"Failed to get worldGen data for {text2}. Using worlds/Default instead");
-			WorldGen.Settings.SetDefaultWorld(path);
-		}
+		worldGen = new WorldGen(text2);
 		Game.LoadSettings(deserializer);
 		GridSettings.Reset(saveFileRoot.WidthInCells, saveFileRoot.HeightInCells);
 		Sim.SIM_Initialize(Sim.DLL_MessageHandler);
@@ -741,7 +737,18 @@ public class SaveLoader : KMonoBehaviour
 	public bool LoadFromWorldGen()
 	{
 		Output.Log("Attempting to start a new game with current world gen");
-		SimSaveFileStructure simSaveFileStructure = WorldGen.LoadWorldGenSim();
+		WorldGen.LoadSettings();
+		string worldName;
+		try
+		{
+			worldName = CustomGameSettings.Instance.GetCurrentQualitySetting(CustomGameSettingConfigs.World).id;
+		}
+		catch
+		{
+			worldName = "worlds/Default";
+		}
+		worldGen = new WorldGen(worldName);
+		SimSaveFileStructure simSaveFileStructure = worldGen.LoadWorldGenSim();
 		if (simSaveFileStructure != null)
 		{
 			worldDetailSave = simSaveFileStructure.worldDetail;
@@ -772,7 +779,7 @@ public class SaveLoader : KMonoBehaviour
 			Debug.Log("Attempt success", null);
 			SceneInitializer.Instance.PostLoadPrefabs();
 			SceneInitializer.Instance.NewSaveGamePrefab();
-			WorldGen.ReplayGenerate(Reset);
+			worldGen.ReplayGenerate(Reset);
 			OnWorldGenComplete.Signal();
 			ThreadedHttps<KleiMetrics>.Instance.StartNewGame();
 			return true;

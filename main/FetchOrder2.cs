@@ -100,7 +100,7 @@ public class FetchOrder2
 
 	public FetchOrder2(ChoreType chore_type, Tag[] tags, Tag[] required_tags, Tag[] forbidden_tags, Storage destination, float amount, OperationalRequirement operationalRequirementDEPRECATED = OperationalRequirement.None, int priorityMod = 0, Tag[] chore_tags = null)
 	{
-		if (amount <= 0f)
+		if (amount <= 0.001f)
 		{
 			Output.LogError("Requesting an invalid FetchOrder2 amount");
 		}

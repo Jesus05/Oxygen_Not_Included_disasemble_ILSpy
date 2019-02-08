@@ -175,7 +175,10 @@ public class Constructable : Workable, ISaveLoadable
 						{
 							component5.Subscribe(-21016276, delegate
 							{
-								FinishConstruction(connections);
+								GameScheduler.Instance.Schedule("finishConstruction", 0.001f, delegate
+								{
+									FinishConstruction(connections);
+								}, null, null);
 							});
 						}
 						else

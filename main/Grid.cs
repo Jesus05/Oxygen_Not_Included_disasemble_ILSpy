@@ -726,7 +726,7 @@ public class Grid
 
 	public static NavFlagsAccessDoorIndexer HasAccessDoor;
 
-	private static NavFlagsTubeEntranceIndexer HasTubeEntrance;
+	public static NavFlagsTubeEntranceIndexer HasTubeEntrance;
 
 	public static NavFlagsPreventIdleTraversalIndexer PreventIdleTraversal;
 

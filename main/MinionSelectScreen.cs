@@ -1,5 +1,4 @@
 using FMOD.Studio;
-using ProcGenGame;
 using STRINGS;
 using UnityEngine;
 
@@ -31,7 +30,7 @@ public class MinionSelectScreen : CharacterSelectionController
 		backButton.onClick += delegate
 		{
 			LoadScreen.ForceStopGame();
-			WorldGen.Reset();
+			SaveGame.Instance.worldGen.Reset();
 			App.LoadScene("frontend");
 		};
 		InitializeContainers();

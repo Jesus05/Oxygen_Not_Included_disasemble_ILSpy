@@ -63,8 +63,6 @@ internal class GraphicsOptionsScreen : KModalScreen
 
 	private Settings originalSettings;
 
-	private const bool RES_DROPDOWN_ALWAYS_ACTIVE = true;
-
 	protected override void OnSpawn()
 	{
 		base.OnSpawn();
@@ -86,7 +84,6 @@ internal class GraphicsOptionsScreen : KModalScreen
 		fullscreenToggle.isOn = Screen.fullScreen;
 		fullscreenToggle.onValueChanged.AddListener(OnFullscreenToggle);
 		fullscreenToggle.GetComponentInChildren<LocText>().SetText(UI.FRONTEND.GRAPHICS_OPTIONS_SCREEN.FULLSCREEN);
-		resolutionDropdown.interactable = true;
 		resolutionDropdown.transform.parent.GetComponentInChildren<LocText>().SetText(UI.FRONTEND.GRAPHICS_OPTIONS_SCREEN.RESOLUTION);
 		if (fullscreenToggle.isOn)
 		{
@@ -335,7 +332,6 @@ internal class GraphicsOptionsScreen : KModalScreen
 
 	private void OnFullscreenToggle(bool enabled)
 	{
-		resolutionDropdown.interactable = true;
 		RefreshApplyButton();
 	}
 

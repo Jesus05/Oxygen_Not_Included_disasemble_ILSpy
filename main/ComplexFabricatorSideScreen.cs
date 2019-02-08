@@ -368,7 +368,6 @@ public class ComplexFabricatorSideScreen : SideScreenContent
 				component4.minHeight = Mathf.Min(451f, 2f + num2 * sizeDelta.y);
 				subtitleLabel.SetText(UI.UISIDESCREENS.FABRICATORSIDESCREEN.SUBTITLE);
 				noRecipesDiscoveredLabel.gameObject.SetActive(false);
-				bool flag3 = false;
 			}
 			else
 			{

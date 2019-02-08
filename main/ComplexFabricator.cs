@@ -43,7 +43,6 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms
 
 		public bool CheckMaterialRequirements(WorldInventory worldInventory, Storage storage)
 		{
-			Dictionary<Tag, float> dictionary = new Dictionary<Tag, float>();
 			ComplexRecipe.RecipeElement[] ingredients = recipe.ingredients;
 			foreach (ComplexRecipe.RecipeElement recipeElement in ingredients)
 			{
@@ -964,7 +963,7 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms
 		{
 			foreach (ComplexRecipe.RecipeElement recipeElement in ingredients)
 			{
-				if (recipeElement != null && recipeElement.amount > 0f)
+				if (recipeElement != null && recipeElement.amount > 0.001f)
 				{
 					Tag material = recipeElement.material;
 					float amount = recipeElement.amount;

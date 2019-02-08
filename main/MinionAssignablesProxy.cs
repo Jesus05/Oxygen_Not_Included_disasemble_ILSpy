@@ -195,7 +195,6 @@ public class MinionAssignablesProxy : KMonoBehaviour, IAssignableIdentity
 
 	public static Ref<MinionAssignablesProxy> InitAssignableProxy(Ref<MinionAssignablesProxy> assignableProxyRef, IAssignableIdentity source)
 	{
-		bool flag = false;
 		if (assignableProxyRef == null)
 		{
 			assignableProxyRef = new Ref<MinionAssignablesProxy>();
@@ -204,7 +203,6 @@ public class MinionAssignablesProxy : KMonoBehaviour, IAssignableIdentity
 		MinionAssignablesProxy minionAssignablesProxy = assignableProxyRef.Get();
 		if ((Object)minionAssignablesProxy == (Object)null)
 		{
-			flag = true;
 			GameObject gameObject2 = GameUtil.KInstantiate(Assets.GetPrefab(MinionAssignablesProxyConfig.ID), Grid.SceneLayer.NoLayer, null, 0);
 			minionAssignablesProxy = gameObject2.GetComponent<MinionAssignablesProxy>();
 			minionAssignablesProxy.SetTarget(source, gameObject);

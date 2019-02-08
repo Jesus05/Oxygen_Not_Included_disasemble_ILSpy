@@ -59,6 +59,7 @@ public class NewGameSettingsScreen : KModalScreen
 	protected override void OnSpawn()
 	{
 		base.OnSpawn();
+		WorldGen.LoadSettings();
 		CustomGameSettings.Instance.LoadWorlds();
 		MultiToggle multiToggle = toggle_standard_game;
 		multiToggle.onClick = (System.Action)Delegate.Combine(multiToggle.onClick, (System.Action)delegate
@@ -251,7 +252,6 @@ public class NewGameSettingsScreen : KModalScreen
 			Global.Instance.modManager.ActivateWorldGenMod(info);
 		}
 		TriggerLoadingMusic();
-		WorldGen.Reset();
 		SaveLoader.SetActiveSaveFilePath(null);
 		try
 		{

@@ -275,7 +275,6 @@ public class Workable : KMonoBehaviour, ISaveLoadable, IApproachable
 		bool flag = false;
 		if (dt > 0f)
 		{
-			StatusItem statusItem = GetWorkerStatusItem();
 			workTimeRemaining -= dt;
 			flag = OnWorkTick(worker, dt);
 		}

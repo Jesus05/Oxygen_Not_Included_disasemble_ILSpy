@@ -1,6 +1,5 @@
 using FMODUnity;
 using Klei.AI;
-using ProcGenGame;
 using UnityEngine;
 
 public class NewBaseScreen : KScreen
@@ -126,8 +125,8 @@ public class NewBaseScreen : KScreen
 			Grid.CellToXY(headquartersCell, out int x, out int y);
 			if (Grid.WidthInCells >= 64)
 			{
-				int baseLeft = WorldGen.BaseLeft;
-				int baseRight = WorldGen.BaseRight;
+				int baseLeft = SaveGame.Instance.worldGen.BaseLeft;
+				int baseRight = SaveGame.Instance.worldGen.BaseRight;
 				Effect a_new_hope = Db.Get().effects.Get("AnewHope");
 				for (int i = 0; i < minionStartingStats.Length; i++)
 				{

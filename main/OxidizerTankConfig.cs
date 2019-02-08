@@ -79,7 +79,8 @@ public class OxidizerTankConfig : IBuildingConfig
 		manualDeliveryKG.capacity = storage.capacityKg;
 		manualDeliveryKG.operationalRequirement = FetchOrder2.OperationalRequirement.None;
 		manualDeliveryKG.choreTypeIDHash = Db.Get().ChoreTypes.MachineFetch.IdHash;
-		go.AddOrGet<RocketModule>();
+		RocketModule rocketModule = go.AddOrGet<RocketModule>();
+		rocketModule.SetBGKAnim(Assets.GetAnim("rocket_oxidizer_tank_bg_kanim"));
 		EntityTemplates.ExtendBuildingToRocketModule(go);
 	}
 }

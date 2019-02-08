@@ -19,11 +19,10 @@ namespace Klei
 			{
 			}
 
-			public OverworldCell(TerrainCell tc)
+			public OverworldCell(SubWorld.ZoneType zoneType, TerrainCell tc)
 			{
 				poly = tc.poly;
-				SubWorld subWorld = WorldGen.Settings.GetSubWorld(tc.node.type);
-				zoneType = subWorld.zoneType;
+				this.zoneType = zoneType;
 			}
 		}
 

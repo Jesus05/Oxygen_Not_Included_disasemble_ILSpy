@@ -21,6 +21,5 @@ public class Refinery : KMonoBehaviour
 	protected override void OnSpawn()
 	{
 		base.OnSpawn();
-		ComplexFabricator component = GetComponent<ComplexFabricator>();
 	}
 }

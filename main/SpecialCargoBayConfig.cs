@@ -60,7 +60,8 @@ public class SpecialCargoBayConfig : IBuildingConfig
 		cargoBay.storage = go.AddOrGet<Storage>();
 		cargoBay.storageType = CargoBay.CargoType.entities;
 		cargoBay.storage.capacityKg = 100f;
-		go.AddOrGet<RocketModule>();
+		RocketModule rocketModule = go.AddOrGet<RocketModule>();
+		rocketModule.SetBGKAnim(Assets.GetAnim("rocket_storage_live_bg_kanim"));
 		EntityTemplates.ExtendBuildingToRocketModule(go);
 	}
 }

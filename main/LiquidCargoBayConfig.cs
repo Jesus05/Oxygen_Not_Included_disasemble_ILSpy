@@ -62,7 +62,8 @@ public class LiquidCargoBayConfig : IBuildingConfig
 		cargoBay.storageType = CargoBay.CargoType.liquids;
 		cargoBay.storage.capacityKg = 1000f;
 		cargoBay.storage.SetDefaultStoredItemModifiers(Storage.StandardSealedStorage);
-		go.AddOrGet<RocketModule>();
+		RocketModule rocketModule = go.AddOrGet<RocketModule>();
+		rocketModule.SetBGKAnim(Assets.GetAnim("rocket_storage_liquid_bg_kanim"));
 		ConduitDispenser conduitDispenser = go.AddOrGet<ConduitDispenser>();
 		conduitDispenser.conduitType = ConduitType.Liquid;
 		conduitDispenser.storage = cargoBay.storage;

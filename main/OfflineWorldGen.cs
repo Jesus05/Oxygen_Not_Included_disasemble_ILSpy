@@ -79,7 +79,7 @@ public class OfflineWorldGen : KMonoBehaviour
 	[SerializeField]
 	private Text titleText;
 
-	private WorldGen world = new WorldGen();
+	private WorldGen worldGen;
 
 	private List<VoronoiTree.Node> startNodes = null;
 
@@ -227,7 +227,7 @@ public class OfflineWorldGen : KMonoBehaviour
 
 	private void ChooseBaseLocation(VoronoiTree.Node startNode)
 	{
-		WorldGen.ChooseBaseLocation(startNode);
+		worldGen.ChooseBaseLocation(startNode);
 		DoRenderWorld();
 		RemoveLocationButtons();
 	}
@@ -238,7 +238,7 @@ public class OfflineWorldGen : KMonoBehaviour
 		{
 			titleText.text = "Choose Starting Location";
 		}
-		startNodes = WorldGen.WorldLayout.GetStartNodes();
+		startNodes = worldGen.WorldLayout.GetStartNodes();
 		startNodes.Shuffle();
 		if (startNodes.Count > 0)
 		{
@@ -252,13 +252,13 @@ public class OfflineWorldGen : KMonoBehaviour
 				Tree tree = startNodes[i] as Tree;
 				if (tree == null)
 				{
-					tree = WorldGen.GetOverworldForNode(startNodes[i] as Leaf);
+					tree = worldGen.GetOverworldForNode(startNodes[i] as Leaf);
 					if (tree == null)
 					{
 						continue;
 					}
 				}
-				SubWorld subWorldForNode = WorldGen.GetSubWorldForNode(tree);
+				SubWorld subWorldForNode = worldGen.GetSubWorldForNode(tree);
 				if (subWorldForNode != null && !list.Contains(subWorldForNode))
 				{
 					list.Add(subWorldForNode);
@@ -271,7 +271,7 @@ public class OfflineWorldGen : KMonoBehaviour
 					Tree parent = startNodes[i].parent;
 					while (subWorld == null && parent != null)
 					{
-						subWorld = WorldGen.GetSubWorldForNode(parent);
+						subWorld = worldGen.GetSubWorldForNode(parent);
 						if (subWorld == null)
 						{
 							parent = parent.parent;
@@ -391,7 +391,7 @@ public class OfflineWorldGen : KMonoBehaviour
 					percentText.text = currentPercent.ToString("N1");
 					if (firstPassGeneration)
 					{
-						generateThreadComplete = world.IsGenerateComplete();
+						generateThreadComplete = worldGen.IsGenerateComplete();
 						if (!generateThreadComplete)
 						{
 							renderThreadComplete = false;
@@ -399,7 +399,7 @@ public class OfflineWorldGen : KMonoBehaviour
 					}
 					if (secondPassGeneration)
 					{
-						renderThreadComplete = world.IsRenderComplete();
+						renderThreadComplete = worldGen.IsRenderComplete();
 					}
 					if (!shownStartingLocations && firstPassGeneration && generateThreadComplete)
 					{
@@ -461,7 +461,7 @@ public class OfflineWorldGen : KMonoBehaviour
 	private void DoWorldGen(int selectedDimension)
 	{
 		RemoveButtons();
-		DoWordGenInitialise();
+		DoWorldGenInitialize();
 	}
 
 	public static void SetSeed(int seed)
@@ -488,28 +488,27 @@ public class OfflineWorldGen : KMonoBehaviour
 		noiseSeed = KPlayerPrefs.GetInt(NOISE_SEED_KEY, -1);
 	}
 
-	private void DoWordGenInitialise()
+	private void DoWorldGenInitialize()
 	{
 		SettingLevel currentQualitySetting = CustomGameSettings.Instance.GetCurrentQualitySetting(CustomGameSettingConfigs.World);
-		WorldGen.LoadSettings();
-		WorldGen.Settings.SetWorld(currentQualitySetting.id, WorldGen.GetPath());
-		Vector2I worldsize = WorldGen.Settings.GetWorld().worldsize;
+		worldGen = new WorldGen(currentQualitySetting.id);
+		Vector2I worldsize = worldGen.Settings.world.worldsize;
 		GridSettings.Reset(worldsize.x, worldsize.y);
 		if (KPlayerPrefs.GetInt(USE_WORLD_SEED_KEY, 0) != 0)
 		{
 			Debug.Log("Using player defined seed", null);
 			InitSeeds();
 		}
-		world.Initialise(UpdateProgress, OnError, worldSeed, layoutSeed, terrainSeed, noiseSeed);
+		worldGen.Initialise(UpdateProgress, OnError, worldSeed, layoutSeed, terrainSeed, noiseSeed);
 		firstPassGeneration = true;
-		world.GenerateOfflineThreaded();
+		worldGen.GenerateOfflineThreaded();
 	}
 
 	private void DoRenderWorld()
 	{
 		firstPassGeneration = false;
 		secondPassGeneration = true;
-		world.RenderWorldThreaded();
+		worldGen.RenderWorldThreaded();
 	}
 
 	private void OnError(ErrorInfo error)

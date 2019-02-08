@@ -376,7 +376,7 @@ public class CarePackageContainer : KScreen, ITelepadDeliverableContainer
 	{
 		foreach (ITelepadDeliverableContainer container in containers)
 		{
-			if (container != this)
+			if (!object.ReferenceEquals(container, this))
 			{
 				CarePackageContainer carePackageContainer = container as CarePackageContainer;
 				if ((UnityEngine.Object)carePackageContainer != (UnityEngine.Object)null && carePackageContainer.info == info)

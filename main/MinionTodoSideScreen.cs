@@ -14,7 +14,7 @@ public class MinionTodoSideScreen : SideScreenContent
 
 	public GameObject taskEntryContainer;
 
-	public RectTransform currentTaskContainer;
+	public HierarchyReferences currentTask;
 
 	public LocText currentScheduleBlockLabel;
 
@@ -170,33 +170,33 @@ public class MinionTodoSideScreen : SideScreenContent
 				if (!context2.chore.target.isNull)
 				{
 					Chore.Precondition.Context context3 = pooledList[num2];
-					if (!((UnityEngine.Object)context3.chore.target.gameObject == (UnityEngine.Object)null))
+					if (!((UnityEngine.Object)context3.chore.target.gameObject == (UnityEngine.Object)null) && pooledList[num2].IsPotentialSuccess())
 					{
 						Chore.Precondition.Context context4 = pooledList[num2];
 						if ((UnityEngine.Object)context4.chore.driver == (UnityEngine.Object)choreConsumer.choreDriver)
 						{
-							GetChoreEntry(pooledList[num2], currentTaskContainer);
+							ApplyChoreEntry(currentTask, pooledList[num2]);
+							hierarchyReferences = currentTask;
+							choreB = pooledList[num2];
+							num = 0;
 							flag = true;
 						}
-						else if (pooledList[num2].IsPotentialSuccess())
+						else if (!flag && activeChoreEntries != 0 && GameUtil.AreChoresUIMergeable(pooledList[num2], choreB))
 						{
-							if (activeChoreEntries != 0 && !flag)
-							{
-								if (GameUtil.AreChoresUIMergeable(pooledList[num2], choreB))
-								{
-									num++;
-									hierarchyReferences.GetReference<LocText>("MoreLabelText").text = num + " more";
-									continue;
-								}
-								num = 0;
-							}
-							flag = false;
-							choreB = pooledList[num2];
+							num++;
+							hierarchyReferences.GetReference<LocText>("MoreLabelText").text = num + " more";
+						}
+						else
+						{
 							ChoreConsumer obj = choreConsumer;
 							Chore.Precondition.Context context5 = pooledList[num2];
 							HierarchyReferences hierarchyReferences2 = PriorityGroupForPriority(obj, context5.chore);
-							HierarchyReferences choreEntry = GetChoreEntry(pooledList[num2], hierarchyReferences2.GetReference<RectTransform>("EntriesContainer"));
+							HierarchyReferences choreEntry = GetChoreEntry(hierarchyReferences2.GetReference<RectTransform>("EntriesContainer"));
+							ApplyChoreEntry(choreEntry, pooledList[num2]);
 							hierarchyReferences = choreEntry;
+							choreB = pooledList[num2];
+							num = 0;
+							flag = false;
 						}
 					}
 				}
@@ -214,7 +214,7 @@ public class MinionTodoSideScreen : SideScreenContent
 		}
 	}
 
-	private HierarchyReferences GetChoreEntry(Chore.Precondition.Context context, RectTransform parent)
+	private HierarchyReferences GetChoreEntry(RectTransform parent)
 	{
 		HierarchyReferences hierarchyReferences;
 		if (activeChoreEntries >= choreEntries.Count - 1)
@@ -229,6 +229,12 @@ public class MinionTodoSideScreen : SideScreenContent
 			hierarchyReferences.transform.SetAsLastSibling();
 		}
 		activeChoreEntries++;
+		hierarchyReferences.gameObject.SetActive(true);
+		return hierarchyReferences;
+	}
+
+	private void ApplyChoreEntry(HierarchyReferences entry, Chore.Precondition.Context context)
+	{
 		string choreName = GameUtil.GetChoreName(context.chore, context.data);
 		string text = GameUtil.ChoreGroupsForChoreType(context.chore.choreType);
 		string text2 = (text == null) ? UI.UISIDESCREENS.MINIONTODOSIDESCREEN.CHORE_TARGET : UI.UISIDESCREENS.MINIONTODOSIDESCREEN.CHORE_TARGET_AND_GROUP;
@@ -238,15 +244,18 @@ public class MinionTodoSideScreen : SideScreenContent
 			text2 = text2.Replace("{Groups}", text);
 		}
 		string text3 = (context.chore.masterPriority.priority_class != 0) ? "" : context.chore.masterPriority.priority_value.ToString();
-		hierarchyReferences.GetReference<LocText>("LabelText").SetText(choreName);
-		hierarchyReferences.GetReference<LocText>("SubLabelText").SetText(text2);
-		hierarchyReferences.GetReference<LocText>("PriorityLabel").SetText(text3);
-		hierarchyReferences.GetReference<LocText>("MoreLabelText").text = "";
-		hierarchyReferences.GetComponent<ToolTip>().SetSimpleTooltip(TooltipForChore(context, choreConsumer));
-		KButton componentInChildren = hierarchyReferences.GetComponentInChildren<KButton>();
+		entry.GetReference<LocText>("LabelText").SetText(choreName);
+		entry.GetReference<LocText>("SubLabelText").SetText(text2);
+		entry.GetReference<LocText>("PriorityLabel").SetText(text3);
+		entry.GetReference<LocText>("MoreLabelText").text = "";
+		entry.GetComponent<ToolTip>().SetSimpleTooltip(TooltipForChore(context, choreConsumer));
+		KButton componentInChildren = entry.GetComponentInChildren<KButton>();
 		componentInChildren.ClearOnClick();
-		componentInChildren.bgImage.colorStyleSetting = ((!((UnityEngine.Object)context.chore.driver == (UnityEngine.Object)choreConsumer.choreDriver)) ? buttonColorSettingStandard : buttonColorSettingCurrent);
-		componentInChildren.bgImage.ApplyColorStyleSetting();
+		if ((UnityEngine.Object)componentInChildren.bgImage != (UnityEngine.Object)null)
+		{
+			componentInChildren.bgImage.colorStyleSetting = ((!((UnityEngine.Object)context.chore.driver == (UnityEngine.Object)choreConsumer.choreDriver)) ? buttonColorSettingStandard : buttonColorSettingCurrent);
+			componentInChildren.bgImage.ApplyColorStyleSetting();
+		}
 		GameObject choreTarget = context.chore.target.gameObject;
 		componentInChildren.ClearOnPointerEvents();
 		if (useOffscreenIndicators)
@@ -287,8 +296,6 @@ public class MinionTodoSideScreen : SideScreenContent
 			}
 		};
 		choreTargets.Add(choreTarget);
-		hierarchyReferences.gameObject.SetActive(true);
-		return hierarchyReferences;
 	}
 
 	private static string TooltipForChore(Chore.Precondition.Context context, ChoreConsumer choreConsumer)

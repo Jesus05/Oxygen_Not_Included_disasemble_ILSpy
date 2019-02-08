@@ -1,5 +1,6 @@
 using Klei;
 using KSerialization;
+using ProcGen;
 using STRINGS;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ namespace ProcGenGame
 {
 	public static class WorldGenSimUtil
 	{
-		public unsafe static bool DoSettleSim(Sim.Cell[] cells, float[] bgTemp, Sim.DiseaseCell[] dcs, WorldGen.OfflineCallbackFunction updateProgressFn, Data data, List<KeyValuePair<Vector2I, TemplateContainer>> templateSpawnTargets, Action<OfflineWorldGen.ErrorInfo> error_cb, Action<Sim.Cell[], float[], Sim.DiseaseCell[]> onSettleComplete)
+		public unsafe static bool DoSettleSim(WorldGenSettings settings, Sim.Cell[] cells, float[] bgTemp, Sim.DiseaseCell[] dcs, WorldGen.OfflineCallbackFunction updateProgressFn, Data data, List<KeyValuePair<Vector2I, TemplateContainer>> templateSpawnTargets, Action<OfflineWorldGen.ErrorInfo> error_cb, Action<Sim.Cell[], float[], Sim.DiseaseCell[]> onSettleComplete)
 		{
 			Sim.SIM_Initialize(null);
 			SimMessages.CreateSimElementsTable(ElementLoader.elements);
@@ -114,7 +115,7 @@ namespace ProcGenGame
 					}
 				}
 				Sim.HandleMessage(SimMessageHashes.SettleWorldGen, 0, null);
-				bool result = SaveSim(data, error_cb);
+				bool result = SaveSim(settings, data, error_cb);
 				onSettleComplete(cells, bgTemp, dcs);
 				Sim.Shutdown();
 				return result;
@@ -123,7 +124,7 @@ namespace ProcGenGame
 			return true;
 		}
 
-		private static bool SaveSim(Data data, Action<OfflineWorldGen.ErrorInfo> error_cb)
+		private static bool SaveSim(WorldGenSettings settings, Data data, Action<OfflineWorldGen.ErrorInfo> error_cb)
 		{
 			try
 			{
@@ -131,7 +132,7 @@ namespace ProcGenGame
 				SimSaveFileStructure simSaveFileStructure = new SimSaveFileStructure();
 				for (int i = 0; i < data.overworldCells.Count; i++)
 				{
-					simSaveFileStructure.worldDetail.overworldCells.Add(new WorldDetailSave.OverworldCell(data.overworldCells[i]));
+					simSaveFileStructure.worldDetail.overworldCells.Add(new WorldDetailSave.OverworldCell(settings.GetSubWorld(data.overworldCells[i].node.type).zoneType, data.overworldCells[i]));
 				}
 				simSaveFileStructure.worldDetail.globalWorldSeed = data.globalWorldSeed;
 				simSaveFileStructure.worldDetail.globalWorldLayoutSeed = data.globalWorldLayoutSeed;

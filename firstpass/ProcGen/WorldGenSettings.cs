@@ -1,5 +1,3 @@
-using Klei;
-using ProcGen.Noise;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -11,27 +9,7 @@ namespace ProcGen
 	{
 		private delegate bool ParserFn<T>(string input, out T res);
 
-		private World world = null;
-
-		private Dictionary<string, FeatureSettings> featuresettings = new Dictionary<string, FeatureSettings>();
-
-		private static Dictionary<string, BiomeSettings> biomeSettingsCache = new Dictionary<string, BiomeSettings>();
-
-		private string base_path = null;
-
-		private static string LAYERS_FILE = "layers";
-
-		private static string FEATURES_FILE = "features";
-
-		private static string RIVERS_FILE = "rivers";
-
-		private static string ROOMS_FILE = "rooms";
-
-		private static string TEMPERATURES_FILE = "temperatures";
-
-		private static string DEFAULTS_FILE = "defaults";
-
-		private static string MOBS_FILE = "mobs";
+		public const string defaultWorldName = "worlds/Default";
 
 		[CompilerGenerated]
 		private static ParserFn<bool> _003C_003Ef__mg_0024cache0;
@@ -42,110 +20,23 @@ namespace ProcGen
 		[CompilerGenerated]
 		private static ParserFn<int> _003C_003Ef__mg_0024cache2;
 
-		public TerrainElementBandSettings biomes
+		public World world
 		{
 			get;
 			private set;
 		}
 
-		public LevelLayerSettings layers
+		public WorldGenSettings(string worldName = "worlds/Default")
 		{
-			get;
-			private set;
-		}
-
-		public TerrainFeatureSettings features
-		{
-			get;
-			private set;
-		}
-
-		public Worlds worlds
-		{
-			get;
-			private set;
-		}
-
-		public Rivers rivers
-		{
-			get;
-			private set;
-		}
-
-		public RoomDescriptions rooms
-		{
-			get;
-			private set;
-		}
-
-		public Temperatures temperatures
-		{
-			get;
-			private set;
-		}
-
-		public NoiseTreeFiles noise
-		{
-			get;
-			private set;
-		}
-
-		private DefaultSettings defaults
-		{
-			get;
-			set;
-		}
-
-		public MobSettings mobs
-		{
-			get;
-			private set;
-		}
-
-		public WorldGenSettings()
-		{
-			noise = new NoiseTreeFiles();
-			worlds = new Worlds();
-			biomes = new TerrainElementBandSettings();
-		}
-
-		public string GetDefaultBiome(string name)
-		{
-			if (!features.TerrainFeatures.ContainsKey(name))
+			if (!SettingsCache.worlds.HasWorld(worldName))
 			{
-				Debug.LogError("Couldn't get default biome [" + name + "]", null);
-				return null;
+				Output.LogWarning(string.Format("Failed to get worldGen data for {0}. Using {1} instead", worldName, "worlds/Default"));
+				DebugUtil.Assert(SettingsCache.worlds.HasWorld("worlds/Default"));
+				worldName = "worlds/Default";
 			}
-			return features.TerrainFeatures[name].defaultBiome.type;
-		}
-
-		public FeatureSettings GetFeature(string name)
-		{
-			if (name == "features/Sedimentary/StartLocation")
-			{
-				int num = 0;
-				num++;
-			}
-			if (name.StartsWith("features/"))
-			{
-				if (!featuresettings.ContainsKey(name))
-				{
-					throw new Exception("Couldnt get feature [" + name + "]");
-				}
-				return featuresettings[name];
-			}
-			return null;
-		}
-
-		public string[] GetFeatureSettingsNames()
-		{
-			string[] array = new string[featuresettings.Keys.Count];
-			int num = 0;
-			foreach (KeyValuePair<string, FeatureSettings> featuresetting in featuresettings)
-			{
-				array[num++] = featuresetting.Key;
-			}
-			return array;
+			Worlds.Data worldData = SettingsCache.worlds.GetWorldData(worldName);
+			world = worldData.world;
+			Debug.Log("Set world to [" + worldName + "] " + SettingsCache.GetPath(), null);
 		}
 
 		public BaseLocation GetBaseLocation()
@@ -155,7 +46,7 @@ namespace ProcGen
 				Output.Log($"World '{world.name}' is overriding baseData");
 				return world.defaultsOverrides.baseData;
 			}
-			return defaults.baseData;
+			return SettingsCache.defaults.baseData;
 		}
 
 		public List<string> GetOverworldAddTags()
@@ -165,7 +56,7 @@ namespace ProcGen
 				Output.Log($"World '{world.name}' is overriding overworldAddTags");
 				return world.defaultsOverrides.overworldAddTags;
 			}
-			return defaults.overworldAddTags;
+			return SettingsCache.defaults.overworldAddTags;
 		}
 
 		public List<string> GetDefaultMoveTags()
@@ -175,7 +66,7 @@ namespace ProcGen
 				Output.Log($"World '{world.name}' is overriding defaultMoveTags");
 				return world.defaultsOverrides.defaultMoveTags;
 			}
-			return defaults.defaultMoveTags;
+			return SettingsCache.defaults.defaultMoveTags;
 		}
 
 		private bool GetSetting<T>(DefaultSettings set, string target, ParserFn<T> parser, out T res)
@@ -206,14 +97,14 @@ namespace ProcGen
 			{
 				if (!GetSetting(world.defaultsOverrides, target, parser, out res))
 				{
-					GetSetting(defaults, target, parser, out res);
+					GetSetting(SettingsCache.defaults, target, parser, out res);
 				}
 				else
 				{
 					Output.Log($"World '{world.name}' is overriding setting '{target}'");
 				}
 			}
-			else if (!GetSetting(defaults, target, parser, out res))
+			else if (!GetSetting(SettingsCache.defaults, target, parser, out res))
 			{
 				Output.LogWarning($"Couldn't find setting '{target}' in default settings!");
 			}
@@ -244,20 +135,6 @@ namespace ProcGen
 		public int GetIntSetting(string target)
 		{
 			return GetSetting<int>(target, int.TryParse);
-		}
-
-		private static bool TryParseEnum<E>(string value, out E result) where E : struct
-		{
-			try
-			{
-				result = (E)Enum.Parse(typeof(E), value);
-				return true;
-			}
-			catch (Exception)
-			{
-				result = new E();
-			}
-			return false;
 		}
 
 		public E GetEnumSetting<E>(string target) where E : struct
@@ -301,158 +178,24 @@ namespace ProcGen
 			return true;
 		}
 
-		private void LoadBiome(string longName)
+		private static bool TryParseEnum<E>(string value, out E result) where E : struct
 		{
-			string name = "";
-			if (GetPathAndName(base_path, longName, out name) && !biomeSettingsCache.ContainsKey(name))
+			try
 			{
-				BiomeSettings biomeSettings = YamlIO<BiomeSettings>.LoadFile(base_path + name + ".yaml", null);
-				if (biomeSettings != null)
-				{
-					biomeSettingsCache.Add(name, biomeSettings);
-					foreach (KeyValuePair<string, ElementBandConfiguration> item in biomeSettings.TerrainBiomeLookupTable)
-					{
-						string key = name + "/" + item.Key;
-						if (!biomes.BiomeBackgroundElementBandConfigurations.ContainsKey(key))
-						{
-							biomes.BiomeBackgroundElementBandConfigurations.Add(key, item.Value);
-						}
-					}
-				}
-				else
-				{
-					Debug.LogWarning("WorldGen: Attempting to load biome: " + name + " failed", null);
-				}
+				result = (E)Enum.Parse(typeof(E), value);
+				return true;
 			}
+			catch (Exception)
+			{
+				result = new E();
+			}
+			return false;
 		}
 
 		public static string GetSimpleName(string longName)
 		{
 			string[] array = longName.Split('/');
 			return array[array.Length - 1];
-		}
-
-		private string LoadFeature(string longName)
-		{
-			string name = "";
-			if (GetPathAndName(base_path, longName, out name))
-			{
-				if (!featuresettings.ContainsKey(name))
-				{
-					FeatureSettings featureSettings = YamlIO<FeatureSettings>.LoadFile(base_path + name + ".yaml", null);
-					if (featureSettings != null)
-					{
-						featuresettings.Add(name, featureSettings);
-					}
-					else
-					{
-						Debug.LogWarning("WorldGen: Attempting to load feature: " + name + " failed", null);
-					}
-				}
-				return name;
-			}
-			Debug.LogWarning("LoadFeature GetPathAndName: Attempting to load feature: " + name + " failed", null);
-			return longName;
-		}
-
-		public void SetDefaultWorld(string path)
-		{
-			SetWorld("worlds/Default", path);
-		}
-
-		public bool SetWorld(string name, string path)
-		{
-			bool result = false;
-			if (worlds.HasWorld(name))
-			{
-				Worlds.Data worldData = worlds.GetWorldData(name);
-				world = worldData.world;
-				Debug.Log("Set world to [" + name + "] " + path, null);
-				biomeSettingsCache.Clear();
-				base_path = path;
-				world.LoadZones(noise, path);
-				foreach (KeyValuePair<string, SubWorld> zone in world.Zones)
-				{
-					if (zone.Value.centralFeature != null)
-					{
-						zone.Value.centralFeature.type = LoadFeature(zone.Value.centralFeature.type);
-					}
-					foreach (WeightedBiome biome in zone.Value.biomes)
-					{
-						LoadBiome(biome.name);
-					}
-					foreach (Feature feature in zone.Value.features)
-					{
-						feature.type = LoadFeature(feature.type);
-					}
-				}
-				foreach (KeyValuePair<string, TerrainFeature> terrainFeature in features.TerrainFeatures)
-				{
-					if (terrainFeature.Value.defaultBiome != null && terrainFeature.Value.defaultBiome.type != null)
-					{
-						LoadBiome(terrainFeature.Value.defaultBiome.type);
-					}
-				}
-				foreach (KeyValuePair<string, ElementBandConfiguration> biomeBackgroundElementBandConfiguration in biomes.BiomeBackgroundElementBandConfigurations)
-				{
-					biomeBackgroundElementBandConfiguration.Value.ConvertBandSizeToMaxSize();
-				}
-				result = true;
-			}
-			return result;
-		}
-
-		public List<string> GetWorldNames()
-		{
-			return worlds.GetNames();
-		}
-
-		public Dictionary<string, Worlds.Data> GetAllWorldData()
-		{
-			return worlds.worldCache;
-		}
-
-		public World GetWorld()
-		{
-			return world;
-		}
-
-		public void Save(string path)
-		{
-			layers.Save(path + LAYERS_FILE + ".yaml", null);
-			features.Save(path + FEATURES_FILE + ".yaml", null);
-			rivers.Save(path + RIVERS_FILE + ".yaml", null);
-			rooms.Save(path + ROOMS_FILE + ".yaml", null);
-			temperatures.Save(path + TEMPERATURES_FILE + ".yaml", null);
-			defaults.Save(path + DEFAULTS_FILE + ".yaml", null);
-			mobs.Save(path + MOBS_FILE + ".yaml", null);
-		}
-
-		public static WorldGenSettings LoadFile(string path, IFileSystem filesystem)
-		{
-			WorldGenSettings worldGenSettings = new WorldGenSettings();
-			worldGenSettings.worlds.LoadFiles(path, filesystem);
-			worldGenSettings.layers = YamlIO<LevelLayerSettings>.LoadFile(path + LAYERS_FILE + ".yaml", null);
-			worldGenSettings.layers.LevelLayers.ConvertBandSizeToMaxSize();
-			worldGenSettings.features = YamlIO<TerrainFeatureSettings>.LoadFile(path + FEATURES_FILE + ".yaml", null);
-			foreach (KeyValuePair<string, TerrainFeature> terrainFeature in worldGenSettings.features.TerrainFeatures)
-			{
-				terrainFeature.Value.name = terrainFeature.Key;
-			}
-			worldGenSettings.rivers = YamlIO<Rivers>.LoadFile(path + RIVERS_FILE + ".yaml", null);
-			worldGenSettings.rooms = YamlIO<RoomDescriptions>.LoadFile(path + ROOMS_FILE + ".yaml", null);
-			foreach (KeyValuePair<string, Room> room in worldGenSettings.rooms.rooms)
-			{
-				room.Value.name = room.Key;
-			}
-			worldGenSettings.temperatures = YamlIO<Temperatures>.LoadFile(path + TEMPERATURES_FILE + ".yaml", null);
-			worldGenSettings.defaults = YamlIO<DefaultSettings>.LoadFile(path + DEFAULTS_FILE + ".yaml", null);
-			worldGenSettings.mobs = YamlIO<MobSettings>.LoadFile(path + MOBS_FILE + ".yaml", null);
-			foreach (KeyValuePair<string, Mob> item in worldGenSettings.mobs.MobLookupTable)
-			{
-				item.Value.name = item.Key;
-			}
-			return worldGenSettings;
 		}
 	}
 }

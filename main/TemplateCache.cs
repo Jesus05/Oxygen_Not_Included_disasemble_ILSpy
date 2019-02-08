@@ -5,21 +5,11 @@ using UnityEngine;
 
 public static class TemplateCache
 {
-	private struct ParseTemplateWorkItem : IWorkItem<object>
-	{
-		public string path;
-
-		public TemplateContainer template;
-
-		public void Run(object shared_data)
-		{
-			template = YamlIO<TemplateContainer>.LoadFile(path, null);
-		}
-	}
-
 	private static string baseTemplatePath = null;
 
 	private static Dictionary<string, TemplateContainer> templates = null;
+
+	private const string defaultAssetFolder = "bases/";
 
 	public static void Init()
 	{
@@ -91,26 +81,10 @@ public static class TemplateCache
 		List<TemplateContainer> list = new List<TemplateContainer>();
 		string path = Path.Combine(baseTemplatePath, folder);
 		string[] files = Directory.GetFiles(path, "*.yaml");
-		WorkItemCollection<ParseTemplateWorkItem, object> workItemCollection = new WorkItemCollection<ParseTemplateWorkItem, object>();
-		workItemCollection.Reset(null);
 		string[] array = files;
-		foreach (string path2 in array)
+		foreach (string filename in array)
 		{
-			workItemCollection.Add(new ParseTemplateWorkItem
-			{
-				path = path2
-			});
-		}
-		GlobalJobManager.Run(workItemCollection);
-		for (int j = 0; j < workItemCollection.Count; j++)
-		{
-			ParseTemplateWorkItem workItem = workItemCollection.GetWorkItem(j);
-			if (workItem.template != null)
-			{
-				List<TemplateContainer> list2 = list;
-				ParseTemplateWorkItem workItem2 = workItemCollection.GetWorkItem(j);
-				list2.Add(workItem2.template);
-			}
+			list.Add(YamlIO<TemplateContainer>.LoadFile(filename, null));
 		}
 		list.Sort(delegate(TemplateContainer x, TemplateContainer y)
 		{

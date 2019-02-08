@@ -98,8 +98,6 @@ namespace ProcGen
 
 		public Dictionary<string, SubWorld> Zones;
 
-		private Dictionary<string, SubWorld> ZoneLookupTable = new Dictionary<string, SubWorld>();
-
 		public string name
 		{
 			get;
@@ -181,7 +179,7 @@ namespace ProcGen
 				{
 					text = zoneFile.overrideName;
 				}
-				if (!ZoneLookupTable.ContainsKey(text))
+				if (!Zones.ContainsKey(text))
 				{
 					SubWorldFile subWorldFile = YamlIO<SubWorldFile>.LoadFile(path + zoneFile.name + ".yaml", null);
 					if (subWorldFile != null)
@@ -189,7 +187,7 @@ namespace ProcGen
 						subWorld = subWorldFile.zone;
 						subWorld.name = text;
 						subWorld.pdWeight = zoneFile.weight;
-						ZoneLookupTable[text] = subWorld;
+						Zones[text] = subWorld;
 						noise.LoadTree(subWorld.biomeNoise, path);
 						noise.LoadTree(subWorld.densityNoise, path);
 						noise.LoadTree(subWorld.overrideNoise, path);
@@ -199,11 +197,6 @@ namespace ProcGen
 						Debug.LogWarning("WorldGen: Attempting to load zone: " + zoneFile.name + " failed", null);
 					}
 				}
-				else
-				{
-					subWorld = ZoneLookupTable[text];
-				}
-				Zones[text] = subWorld;
 			}
 		}
 	}

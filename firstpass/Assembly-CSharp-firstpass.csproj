@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <ProjectGuid>{DB750936-F72E-41E5-8BF8-FAC0E76814E9}</ProjectGuid>
+    <ProjectGuid>{6FEDAF75-A9F6-4592-BB23-D150AA599F78}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <OutputType>Library</OutputType>
@@ -802,6 +802,7 @@
     <Compile Include="ProcGen\RoomDescriptions.cs" />
     <Compile Include="ProcGen\SampleDescriber.cs" />
     <Compile Include="ProcGen\Segment.cs" />
+    <Compile Include="ProcGen\SettingsCache.cs" />
     <Compile Include="ProcGen\SubWorld.cs" />
     <Compile Include="ProcGen\SubWorldFile.cs" />
     <Compile Include="ProcGen\Temperature.cs" />

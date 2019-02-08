@@ -420,7 +420,7 @@ public class KCrashReporter : MonoBehaviour
 						error.callstack = error.callstack + "\n" + Guid.NewGuid().ToString();
 					}
 					error.fullstack = $"{msg}\n\n{stack_trace}";
-					error.build = 306910;
+					error.build = 307409;
 					error.log = GetLogContents();
 					error.summaryline = string.Join("\n", list.ToArray());
 					error.user_message = userMessage;

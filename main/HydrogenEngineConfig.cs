@@ -63,6 +63,7 @@ public class HydrogenEngineConfig : IBuildingConfig
 		rocketEngine.exhaustElement = SimHashes.Steam;
 		rocketEngine.exhaustTemperature = 2000f;
 		EntityTemplates.ExtendBuildingToRocketModule(go);
-		go.AddOrGet<RocketModule>();
+		RocketModule rocketModule = go.AddOrGet<RocketModule>();
+		rocketModule.SetBGKAnim(Assets.GetAnim("rocket_hydrogen_engine_bg_kanim"));
 	}
 }

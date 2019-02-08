@@ -61,6 +61,7 @@ public class KeroseneEngineConfig : IBuildingConfig
 		rocketEngine.efficiency = ROCKETRY.ENGINE_EFFICIENCY.MEDIUM;
 		rocketEngine.explosionEffectHash = SpawnFXHashes.MeteorImpactDust;
 		EntityTemplates.ExtendBuildingToRocketModule(go);
-		go.AddOrGet<RocketModule>();
+		RocketModule rocketModule = go.AddOrGet<RocketModule>();
+		rocketModule.SetBGKAnim(Assets.GetAnim("rocket_petroleum_engine_bg_kanim"));
 	}
 }

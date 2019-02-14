@@ -28,6 +28,7 @@ public class ManualPressureDoorConfig : IBuildingConfig
 		door.hasComplexUserControls = true;
 		door.unpoweredAnimSpeed = 1f;
 		door.doorType = Door.DoorType.ManualPressure;
+		go.AddOrGet<ZoneTile>();
 		go.AddOrGet<AccessControl>();
 		go.AddOrGet<KBoxCollider2D>();
 		Prioritizable.AddRef(go);

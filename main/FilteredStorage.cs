@@ -222,7 +222,7 @@ public class FilteredStorage
 		float num = Mathf.Max(0f, maxCapacityMinusStorageMargin - amountStored);
 		if (num > 0f && flag)
 		{
-			num = Mathf.Max(0f, GetMaxCapacity() - amountStored);
+			num = Mathf.Max(PICKUPABLETUNING.MINIMUM_PICKABLE_AMOUNT, GetMaxCapacity() - amountStored);
 			fetchList = new FetchList2(storage, choreType, null);
 			fetchList.ShowStatusItem = false;
 			fetchList.Add(tags, requiredTags, forbiddenTags, num, FetchOrder2.OperationalRequirement.Functional);

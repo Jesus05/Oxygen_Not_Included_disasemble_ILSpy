@@ -2,37 +2,32 @@ using ProcGen;
 
 internal class ZoneTile : KMonoBehaviour
 {
-	public int width = 1;
+	[MyCmpReq]
+	public Building building;
 
-	public int height = 1;
+	private int width = 1;
+
+	private int height = 1;
+
+	private Orientation orientation = Orientation.Neutral;
 
 	protected override void OnSpawn()
 	{
-		base.OnSpawn();
-		int cell = Grid.PosToCell(this);
-		for (int i = 0; i < width; i++)
+		int[] placementCells = building.PlacementCells;
+		foreach (int cell in placementCells)
 		{
-			for (int j = 0; j < height; j++)
-			{
-				int cell2 = Grid.OffsetCell(cell, i, j);
-				SimMessages.ModifyCellWorldZone(cell2, 0);
-			}
+			SimMessages.ModifyCellWorldZone(cell, 0);
 		}
 	}
 
 	protected override void OnCleanUp()
 	{
-		base.OnCleanUp();
-		int cell = Grid.PosToCell(this);
-		for (int i = 0; i < width; i++)
+		int[] placementCells = building.PlacementCells;
+		foreach (int cell in placementCells)
 		{
-			for (int j = 0; j < height; j++)
-			{
-				int cell2 = Grid.OffsetCell(cell, i, j);
-				SubWorld.ZoneType subWorldZoneType = World.Instance.zoneRenderData.GetSubWorldZoneType(cell2);
-				byte zone_id = (byte)((subWorldZoneType != SubWorld.ZoneType.Space) ? ((byte)subWorldZoneType) : 255);
-				SimMessages.ModifyCellWorldZone(cell2, zone_id);
-			}
+			SubWorld.ZoneType subWorldZoneType = World.Instance.zoneRenderData.GetSubWorldZoneType(cell);
+			byte zone_id = (byte)((subWorldZoneType != SubWorld.ZoneType.Space) ? ((byte)subWorldZoneType) : 255);
+			SimMessages.ModifyCellWorldZone(cell, zone_id);
 		}
 	}
 }

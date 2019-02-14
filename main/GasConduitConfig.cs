@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using TUNING;
 using UnityEngine;
 
@@ -35,6 +36,8 @@ public class GasConduitConfig : IBuildingConfig
 		buildingDef.isKAnimTile = true;
 		buildingDef.isUtility = true;
 		buildingDef.DragBuild = true;
+		buildingDef.ReplacementTags = new List<Tag>();
+		buildingDef.ReplacementTags.Add(GameTags.Vents);
 		GeneratedBuildings.RegisterWithOverlay(OverlayScreen.GasVentIDs, buildingDef.PrefabID);
 		return buildingDef;
 	}
@@ -54,6 +57,7 @@ public class GasConduitConfig : IBuildingConfig
 		KAnimGraphTileVisualizer kAnimGraphTileVisualizer = go.AddComponent<KAnimGraphTileVisualizer>();
 		kAnimGraphTileVisualizer.connectionSource = KAnimGraphTileVisualizer.ConnectionSource.Gas;
 		kAnimGraphTileVisualizer.isPhysicalBuilding = true;
+		go.GetComponent<KPrefabID>().AddTag(GameTags.Vents);
 		LiquidConduitConfig.CommonConduitPostConfigureComplete(go);
 	}
 

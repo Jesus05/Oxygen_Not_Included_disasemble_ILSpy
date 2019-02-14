@@ -49,7 +49,7 @@ public class DeathMonitor : GameStateMachine<DeathMonitor, DeathMonitor.Instance
 			if (isDuplicant)
 			{
 				GetComponent<KSelectable>().SetStatusItem(Db.Get().StatusItemCategories.Main, Db.Get().DuplicantStatusItems.Dead, base.smi.sm.death.Get(base.smi));
-				float value = 600f - GameClock.Instance.GetTimeSinceStartOfCycle();
+				float value = 600f - GameClock.Instance.GetTimeSinceStartOfReport();
 				ReportManager.Instance.ReportValue(ReportManager.ReportType.PersonalTime, value, string.Format(UI.ENDOFDAYREPORT.NOTES.PERSONAL_TIME, DUPLICANTS.CHORES.IS_DEAD_TASK), base.smi.master.gameObject.GetProperName());
 				Pickupable component = GetComponent<Pickupable>();
 				if ((Object)component != (Object)null)

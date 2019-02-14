@@ -271,7 +271,7 @@ public class JobsTableScreen : TableScreen
 
 	private string GetUsageString()
 	{
-		return UI.JOBSSCREEN.INCREASE_PRIORITY_TUTORIAL.ToString().Replace("{Key}", GameUtil.GetHotkeyString(Action.MouseLeft)) + "\n" + UI.JOBSSCREEN.DECREASE_PRIORITY_TUTORIAL.ToString().Replace("{Key}", GameUtil.GetHotkeyString(Action.MouseRight));
+		return GameUtil.ReplaceHotkeyString(UI.JOBSSCREEN.INCREASE_PRIORITY_TUTORIAL, Action.MouseLeft) + "\n" + GameUtil.ReplaceHotkeyString(UI.JOBSSCREEN.DECREASE_PRIORITY_TUTORIAL, Action.MouseRight);
 	}
 
 	private string HoverChangeRowPriorityButton(object widget_go_obj, int delta)

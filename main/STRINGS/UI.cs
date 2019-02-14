@@ -141,6 +141,13 @@ namespace STRINGS
 				public static string TIER5 = "Tier 5";
 			}
 
+			public class PERCOLATOR
+			{
+				public static string NAME = "Pacu in a Percolator";
+
+				public static string DESCRIPTION = "";
+			}
+
 			public class ROBOTARM
 			{
 				public static string NAME = "Robot Arm";
@@ -388,56 +395,56 @@ namespace STRINGS
 				{
 					public static LocString NAME = "Brush";
 
-					public static LocString TOOLTIP = "Paint elements into the world simulation";
+					public static LocString TOOLTIP = "Paint elements into the world simulation {Hotkey}";
 				}
 
 				public class SPRINKLE
 				{
 					public static LocString NAME = "Sprinkle";
 
-					public static LocString TOOLTIP = "Paint elements into the simulation using noise";
+					public static LocString TOOLTIP = "Paint elements into the simulation using noise {Hotkey}";
 				}
 
 				public class FLOOD
 				{
 					public static LocString NAME = "Fill";
 
-					public static LocString TOOLTIP = "Fill a section of the simulation with the chosen element";
+					public static LocString TOOLTIP = "Fill a section of the simulation with the chosen element {Hotkey}";
 				}
 
 				public class SAMPLE
 				{
 					public static LocString NAME = "Sample";
 
-					public static LocString TOOLTIP = "Copy the settings from a cell to use with brush tools";
+					public static LocString TOOLTIP = "Copy the settings from a cell to use with brush tools {Hotkey}";
 				}
 
 				public class HEATGUN
 				{
 					public static LocString NAME = "Heat Gun";
 
-					public static LocString TOOLTIP = "Inject thermal energy into the simulation";
+					public static LocString TOOLTIP = "Inject thermal energy into the simulation {Hotkey}";
 				}
 
 				public class SPAWNER
 				{
 					public static LocString NAME = "Spawner";
 
-					public static LocString TOOLTIP = "Spawn critters, food, equipment, and other entities";
+					public static LocString TOOLTIP = "Spawn critters, food, equipment, and other entities {Hotkey}";
 				}
 
 				public class CLEAR_FLOOR
 				{
 					public static LocString NAME = "Clear Debris";
 
-					public static LocString TOOLTIP = "Delete loose items cluttering the floor";
+					public static LocString TOOLTIP = "Delete loose items cluttering the floor {Hotkey}";
 				}
 
 				public class DESTROY
 				{
 					public static LocString NAME = "Destroy";
 
-					public static LocString TOOLTIP = "Delete everything in the selected cell(s)";
+					public static LocString TOOLTIP = "Delete everything in the selected cell(s) {Hotkey}";
 				}
 
 				public class SPAWN_ENTITY
@@ -449,7 +456,7 @@ namespace STRINGS
 				{
 					public static LocString NAME = "Reveal";
 
-					public static LocString TOOLTIP = "Dispel the Fog of War shrouding the map";
+					public static LocString TOOLTIP = "Dispel the Fog of War shrouding the map {Hotkey}";
 				}
 			}
 
@@ -849,11 +856,11 @@ namespace STRINGS
 
 			public class PATCHNOTESSCREEN
 			{
-				public static LocString TITLE = "QUALITY OF LIFE UPGRADE MK I";
+				public static LocString TITLE = "QUALITY OF LIFE UPGRADE MK II";
 
-				public static LocString BODY = "<b>Welcome to the Quality of Life Upgrade Mk I!!</b>\n\n{0}";
+				public static LocString BODY = "<b>Welcome to the Quality of Life Upgrade Mk II!!</b>\n\n{0}";
 
-				public static LocString PATCHNOTES = "<b>Update Features:</b>\n\n• New Decor items and updated Artist job roles for more decor possibilities\n• Redesigned recipe queue controls for improved item fabrication automation\n• Many, many bug fixes, optimizations, polish passes, updated animations and more!\n\nPlease view the full patch notes for further details!";
+				public static LocString PATCHNOTES = "<b>Update Features:</b>\n\n• New UI tools for displaying and managing Duplicant priorities\n• New artifacts can be retrieved from Space expeditions\n• Printing Pod can now print objects other than Duplicants\n• Many, many bug fixes, optimizations, polish passes, updated animations and more!\n\nPlease view the full patch notes for further details!";
 
 				public static LocString OK_BUTTON = "OK";
 			}
@@ -1250,9 +1257,9 @@ namespace STRINGS
 
 		public class SANDBOX_TOGGLE
 		{
-			public static LocString TOOLTIP_LOCKED = "Sandbox mode must be unlocked in the options menu before it can be used.";
+			public static LocString TOOLTIP_LOCKED = "Sandbox mode must be unlocked in the options menu before it can be used. {Hotkey}";
 
-			public static LocString TOOLTIP_UNLOCKED = "Toggle Sandbox mode";
+			public static LocString TOOLTIP_UNLOCKED = "Toggle Sandbox mode {Hotkey}";
 		}
 
 		public class ROLES_SCREEN
@@ -2065,33 +2072,33 @@ namespace STRINGS
 
 		public class TOOLTIPS
 		{
-			public static LocString MANAGEMENTMENU_JOBS = "Manage my Duplicants' Errand Type Priorities";
+			public static LocString MANAGEMENTMENU_JOBS = "Manage my Duplicants' Errand Type Priorities {Hotkey}" + HORIZONTAL_BR_RULE + "Duplicants' priorities are calculated <i>before</i> specific errand priority set using the Priority tool.";
 
-			public static LocString MANAGEMENTMENU_CONSUMABLES = "Manage colony diets";
+			public static LocString MANAGEMENTMENU_CONSUMABLES = "Manage colony diets {Hotkey}";
 
-			public static LocString MANAGEMENTMENU_VITALS = "View my Duplicants' vitals";
+			public static LocString MANAGEMENTMENU_VITALS = "View my Duplicants' vitals {Hotkey}";
 
-			public static LocString MANAGEMENTMENU_RESEARCH = "View the Research Tree";
-
-			public static LocString MANAGEMENTMENU_DAILYREPORT = "View each cycle's Colony Report";
+			public static LocString MANAGEMENTMENU_RESEARCH = "View the Research Tree {Hotkey} {Hotkey}";
 
 			public static LocString MANAGEMENTMENU_REQUIRES_RESEARCH = "Build a Research Station to unlock" + HORIZONTAL_BR_RULE + "Research buildings can be found in the Stations Tab <color=#F44A47><b>[0]</b></color> of the Build Menu";
 
-			public static LocString MANAGEMENTMENU_REQUIRES_ROLES_STATION = "Build a Jobs Board to unlock" + HORIZONTAL_BR_RULE + "The Jobs Board can be found in the Stations Tab <color=#F44A47><b>[0]</b></color> of the Build Menu";
+			public static LocString MANAGEMENTMENU_DAILYREPORT = "View each cycle's Colony Report {Hotkey}";
+
+			public static LocString MANAGEMENTMENU_CODEX = "Browse entries in my Database {Hotkey}";
+
+			public static LocString MANAGEMENTMENU_SCHEDULE = "Adjust the colony's time usage {Hotkey}";
+
+			public static LocString MANAGEMENTMENU_STARMAP = "Manage astronaut rocket missions {Hotkey} {Hotkey}";
 
 			public static LocString MANAGEMENTMENU_REQUIRES_TELESCOPE = "Build a " + BUILDINGS.PREFABS.TELESCOPE.NAME + " to unlock" + HORIZONTAL_BR_RULE + "The " + BUILDINGS.PREFABS.TELESCOPE.NAME + " can be found in the Stations Tab <color=#F44A47><b>[0]</b></color> of the Build Menu";
 
-			public static LocString MANAGEMENTMENU_CODEX = "Browse entries in my Database";
+			public static LocString MANAGEMENTMENU_ROLES = "Manage Duplicants' job assignments {Hotkey} {Hotkey}";
 
-			public static LocString MANAGEMENTMENU_SCHEDULE = "Adjust the colony's time usage";
-
-			public static LocString MANAGEMENTMENU_STARMAP = "Manage astronaut rocket missions";
+			public static LocString MANAGEMENTMENU_REQUIRES_ROLES_STATION = "Build a Jobs Board to unlock" + HORIZONTAL_BR_RULE + "The Jobs Board can be found in the Stations Tab <color=#F44A47><b>[0]</b></color> of the Build Menu";
 
 			public static LocString OPEN_CODEX_ENTRY = "View full entry in database";
 
 			public static LocString NO_CODEX_ENTRY = "No database entry available";
-
-			public static LocString MANAGEMENTMENU_ROLES = "Manage Duplicants' job assignments";
 
 			public static LocString METERSCREEN_AVGSTRESS = "Highest Stress: {0}";
 
@@ -2105,45 +2112,45 @@ namespace STRINGS
 
 			public static LocString PAUSEBUTTON = "Pause";
 
-			public static LocString PAUSE = "Pause";
+			public static LocString PAUSE = "Pause {Hotkey}";
 
-			public static LocString UNPAUSE = "Unpause";
+			public static LocString UNPAUSE = "Unpause {Hotkey}";
 
-			public static LocString SPEEDBUTTON_SLOW = "Slow speed {0}";
+			public static LocString SPEEDBUTTON_SLOW = "Slow speed {Hotkey}";
 
-			public static LocString SPEEDBUTTON_MEDIUM = "Medium speed {0}";
+			public static LocString SPEEDBUTTON_MEDIUM = "Medium speed {Hotkey}";
 
-			public static LocString SPEEDBUTTON_FAST = "Fast speed {0}";
+			public static LocString SPEEDBUTTON_FAST = "Fast speed {Hotkey}";
 
 			public static LocString RED_ALERT_TITLE = "Toggle Red Alert";
 
 			public static LocString RED_ALERT_CONTENT = "Duplicants will work, ignoring schedules and their basic needs\n\nUse in case of emergency";
 
-			public static LocString DISINFECTBUTTON = "Disinfect buildings";
+			public static LocString DISINFECTBUTTON = "Disinfect buildings {Hotkey}";
 
-			public static LocString MOPBUTTON = "Mop liquid spills";
+			public static LocString MOPBUTTON = "Mop liquid spills {Hotkey}";
 
-			public static LocString DIGBUTTON = "Set dig errands";
+			public static LocString DIGBUTTON = "Set dig errands {Hotkey}";
 
-			public static LocString CANCELBUTTON = "Cancel errands";
+			public static LocString CANCELBUTTON = "Cancel errands {Hotkey}";
 
-			public static LocString DECONSTRUCTBUTTON = "Demolish buildings";
+			public static LocString DECONSTRUCTBUTTON = "Demolish buildings {Hotkey}";
 
-			public static LocString ATTACKBUTTON = "Attack poor, wild critters";
+			public static LocString ATTACKBUTTON = "Attack poor, wild critters {Hotkey}";
 
-			public static LocString CAPTUREBUTTON = "Capture critters";
+			public static LocString CAPTUREBUTTON = "Capture critters {Hotkey}";
 
-			public static LocString CLEARBUTTON = "Move debris into storage";
+			public static LocString CLEARBUTTON = "Move debris into storage {Hotkey}";
 
-			public static LocString HARVESTBUTTON = "Harvest plants";
+			public static LocString HARVESTBUTTON = "Harvest plants {Hotkey}";
 
 			public static LocString PRIORITIZEMAINBUTTON = "";
 
-			public static LocString PRIORITIZEBUTTON = "Set Specific Errand Priority";
+			public static LocString PRIORITIZEBUTTON = "Set Specific Errand Priority {Hotkey}" + HORIZONTAL_BR_RULE + "Specific priority set from this tool are calculated <i>after</i> the Duplicants' priorities set on the Priorities Screen";
 
-			public static LocString CLEANUPMAINBUTTON = "Mop and sweep messy floors";
+			public static LocString CLEANUPMAINBUTTON = "Mop and sweep messy floors {Hotkey}";
 
-			public static LocString CANCELDECONSTRUCTIONBUTTON = "Cancel queued orders or deconstruct existing buildings";
+			public static LocString CANCELDECONSTRUCTIONBUTTON = "Cancel queued orders or deconstruct existing buildings {Hotkey}";
 
 			public static LocString HELP_ROTATE_KEY = "Press <color=#F44A47><b>[{Key}]</b></color> to Rotate";
 
@@ -2191,39 +2198,39 @@ namespace STRINGS
 
 			public static LocString HELP_REQUIRES_ROOM = "Must be in a room";
 
-			public static LocString OXYGENOVERLAYSTRING = "Displays ambient oxygen density";
+			public static LocString OXYGENOVERLAYSTRING = "Displays ambient oxygen density {Hotkey}";
 
-			public static LocString POWEROVERLAYSTRING = "Displays power grid components";
+			public static LocString POWEROVERLAYSTRING = "Displays power grid components {Hotkey}";
 
-			public static LocString TEMPERATUREOVERLAYSTRING = "Displays ambient temperature";
+			public static LocString TEMPERATUREOVERLAYSTRING = "Displays ambient temperature {Hotkey}";
 
-			public static LocString HEATFLOWOVERLAYSTRING = "Displays comfortable temperatures for Duplicants";
+			public static LocString HEATFLOWOVERLAYSTRING = "Displays comfortable temperatures for Duplicants {Hotkey}";
 
-			public static LocString SUITOVERLAYSTRING = "Displays Exosuits and related buildings";
+			public static LocString SUITOVERLAYSTRING = "Displays Exosuits and related buildings {Hotkey}";
 
-			public static LocString LOGICOVERLAYSTRING = "Displays automation grid components";
+			public static LocString LOGICOVERLAYSTRING = "Displays automation grid components {Hotkey}";
 
-			public static LocString ROOMSOVERLAYSTRING = "Displays special purpose rooms and bonuses";
+			public static LocString ROOMSOVERLAYSTRING = "Displays special purpose rooms and bonuses {Hotkey}";
 
 			public static LocString JOULESOVERLAYSTRING = "Displays the thermal energy in each cell";
 
-			public static LocString LIGHTSOVERLAYSTRING = "Displays the visibility radius of light sources";
+			public static LocString LIGHTSOVERLAYSTRING = "Displays the visibility radius of light sources {Hotkey}";
 
-			public static LocString LIQUIDVENTOVERLAYSTRING = "Displays liquid pipe system components";
+			public static LocString LIQUIDVENTOVERLAYSTRING = "Displays liquid pipe system components {Hotkey}";
 
-			public static LocString GASVENTOVERLAYSTRING = "Displays gas pipe system components";
+			public static LocString GASVENTOVERLAYSTRING = "Displays gas pipe system components {Hotkey}";
 
-			public static LocString DECOROVERLAYSTRING = "Displays areas with Morale-boosting decor values";
+			public static LocString DECOROVERLAYSTRING = "Displays areas with Morale-boosting decor values {Hotkey}";
 
-			public static LocString PRIORITIESOVERLAYSTRING = "Displays work priority values";
+			public static LocString PRIORITIESOVERLAYSTRING = "Displays work priority values {Hotkey}";
 
-			public static LocString DISEASEOVERLAYSTRING = "Displays areas of disease risk";
+			public static LocString DISEASEOVERLAYSTRING = "Displays areas of disease risk {Hotkey}";
 
-			public static LocString NOISE_POLLUTION_OVERLAY_STRING = "Displays ambient noise levels";
+			public static LocString NOISE_POLLUTION_OVERLAY_STRING = "Displays ambient noise levels {Hotkey}";
 
-			public static LocString CROPS_OVERLAY_STRING = "Displays plant growth progress";
+			public static LocString CROPS_OVERLAY_STRING = "Displays plant growth progress {Hotkey}";
 
-			public static LocString CONVEYOR_OVERLAY_STRING = "Displays conveyor transport components";
+			public static LocString CONVEYOR_OVERLAY_STRING = "Displays conveyor transport components {Hotkey}";
 
 			public static LocString REACHABILITYOVERLAYSTRING = "Displays areas accessible by Duplicants";
 
@@ -3561,9 +3568,9 @@ namespace STRINGS
 
 			public static LocString DECREASE_ROW_PRIORITY_MINION_TOOLTIP = "Deprioritize <b>All Errands</b> for <b>{Name}</b>";
 
-			public static LocString INCREASE_PRIORITY_TUTORIAL = "{Key} Increase priority";
+			public static LocString INCREASE_PRIORITY_TUTORIAL = "{Hotkey} Increase priority";
 
-			public static LocString DECREASE_PRIORITY_TUTORIAL = "{Key} Decrease priority";
+			public static LocString DECREASE_PRIORITY_TUTORIAL = "{Hotkey} Decrease priority";
 
 			public static LocString SORT_TOOLTIP = "Sort by the {Job} Errand Type";
 
@@ -4767,11 +4774,11 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Disable Building";
 
-				public static LocString TOOLTIP = "Halt the use of this building" + HORIZONTAL_BR_RULE + "Disabled buildings consume no energy or resources";
+				public static LocString TOOLTIP = "Halt the use of this building {Hotkey}" + HORIZONTAL_BR_RULE + "Disabled buildings consume no energy or resources";
 
 				public static LocString NAME_OFF = "Enable Building";
 
-				public static LocString TOOLTIP_OFF = "Resume the use of this building";
+				public static LocString TOOLTIP_OFF = "Resume the use of this building {Hotkey}";
 			}
 
 			public class READLORE
@@ -4886,7 +4893,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Copy Settings";
 
-				public static LocString TOOLTIP = "Apply the settings and priorities of this building to other buildings of the same type";
+				public static LocString TOOLTIP = "Apply the settings and priorities of this building to other buildings of the same type {Hotkey}";
 			}
 
 			public class CLEAR
@@ -5032,105 +5039,105 @@ namespace STRINGS
 			{
 				public static LocString NAME = FormatAsLink("Base", "BUILDCATEGORYBASE");
 
-				public static LocString TOOLTIP = "Maintain the colony's infrastructure with these homebase basics.";
+				public static LocString TOOLTIP = "Maintain the colony's infrastructure with these homebase basics. {Hotkey}";
 			}
 
 			public static class CONVEYANCE
 			{
 				public static LocString NAME = FormatAsLink("Shipping", "BUILDCATEGORYCONVEYANCE");
 
-				public static LocString TOOLTIP = "Effortlessly transport ore and solid materials around my base.";
+				public static LocString TOOLTIP = "Effortlessly transport ore and solid materials around my base. {Hotkey}";
 			}
 
 			public static class OXYGEN
 			{
 				public static LocString NAME = FormatAsLink("Oxygen", "BUILDCATEGORYOXYGEN");
 
-				public static LocString TOOLTIP = "Everything I need to keep the colony breathing.";
+				public static LocString TOOLTIP = "Everything I need to keep the colony breathing. {Hotkey}";
 			}
 
 			public static class POWER
 			{
 				public static LocString NAME = FormatAsLink("Power", "BUILDCATEGORYPOWER");
 
-				public static LocString TOOLTIP = "Need to power the colony? Here's how to do it!";
+				public static LocString TOOLTIP = "Need to power the colony? Here's how to do it! {Hotkey}";
 			}
 
 			public static class FOOD
 			{
 				public static LocString NAME = FormatAsLink("Food", "BUILDCATEGORYFOOD");
 
-				public static LocString TOOLTIP = "Keep my Duplicants' spirits high and their bellies full.";
+				public static LocString TOOLTIP = "Keep my Duplicants' spirits high and their bellies full. {Hotkey}";
 			}
 
 			public static class UTILITIES
 			{
 				public static LocString NAME = FormatAsLink("Utilities", "BUILDCATEGORYUTILITIES");
 
-				public static LocString TOOLTIP = "Heat up and cool down.";
+				public static LocString TOOLTIP = "Heat up and cool down. {Hotkey}";
 			}
 
 			public static class PLUMBING
 			{
 				public static LocString NAME = FormatAsLink("Plumbing", "BUILDCATEGORYPLUMBING");
 
-				public static LocString TOOLTIP = "Get the colony's water running and its sewage flowing.";
+				public static LocString TOOLTIP = "Get the colony's water running and its sewage flowing. {Hotkey}";
 			}
 
 			public static class HVAC
 			{
 				public static LocString NAME = FormatAsLink("Ventilation", "BUILDCATEGORYHVAC");
 
-				public static LocString TOOLTIP = "Control the flow of gas in the base.";
+				public static LocString TOOLTIP = "Control the flow of gas in the base. {Hotkey}";
 			}
 
 			public static class REFINING
 			{
 				public static LocString NAME = FormatAsLink("Refinement", "BUILDCATEGORYREFINING");
 
-				public static LocString TOOLTIP = "Use the resources I want, filter the ones I don't.";
+				public static LocString TOOLTIP = "Use the resources I want, filter the ones I don't. {Hotkey}";
 			}
 
 			public static class ROCKETRY
 			{
 				public static LocString NAME = FormatAsLink("Rocketry", "BUILDCATEGORYROCKETRY");
 
-				public static LocString TOOLTIP = "Rocketry";
+				public static LocString TOOLTIP = "Rocketry {Hotkey}";
 			}
 
 			public static class MEDICAL
 			{
 				public static LocString NAME = FormatAsLink("Medicine", "BUILDCATEGORYMEDICAL");
 
-				public static LocString TOOLTIP = "A cure for everything but the common cold.";
+				public static LocString TOOLTIP = "A cure for everything but the common cold. {Hotkey}";
 			}
 
 			public static class FURNITURE
 			{
 				public static LocString NAME = FormatAsLink("Furniture", "BUILDCATEGORYFURNITURE");
 
-				public static LocString TOOLTIP = "Amenities to keep my Duplicants happy, comfy and efficient.";
+				public static LocString TOOLTIP = "Amenities to keep my Duplicants happy, comfy and efficient. {Hotkey}";
 			}
 
 			public static class EQUIPMENT
 			{
 				public static LocString NAME = FormatAsLink("Stations", "BUILDCATEGORYEQUIPMENT");
 
-				public static LocString TOOLTIP = "Unlock new technologies through the power of science!";
+				public static LocString TOOLTIP = "Unlock new technologies through the power of science! {Hotkey}";
 			}
 
 			public static class MISC
 			{
 				public static LocString NAME = FormatAsLink("Decor", "BUILDCATEGORYMISC");
 
-				public static LocString TOOLTIP = "Spruce up my colony with some lovely interior decorating.";
+				public static LocString TOOLTIP = "Spruce up my colony with some lovely interior decorating. {Hotkey}";
 			}
 
 			public static class AUTOMATION
 			{
 				public static LocString NAME = FormatAsLink("Automation", "BUILDCATEGORYAUTOMATION");
 
-				public static LocString TOOLTIP = "Automate my base with logic circuits and sensors.";
+				public static LocString TOOLTIP = "Automate my base with logic circuits and sensors. {Hotkey}";
 			}
 		}
 
@@ -5140,42 +5147,42 @@ namespace STRINGS
 			{
 				public static LocString NAME = FormatAsLink("Base", "BUILD_CATEGORY_BASE");
 
-				public static LocString TOOLTIP = "Maintain your colony's infrastructure with these homebase basics.";
+				public static LocString TOOLTIP = "Maintain your colony's infrastructure with these homebase basics. {Hotkey}";
 			}
 
 			public static class INFRASTRUCTURE
 			{
 				public static LocString NAME = FormatAsLink("Utilities", "BUILD_CATEGORY_INFRASTRUCTURE");
 
-				public static LocString TOOLTIP = "Power, plumbing, and ventilation can all be found here.";
+				public static LocString TOOLTIP = "Power, plumbing, and ventilation can all be found here. {Hotkey}";
 			}
 
 			public static class FOODANDAGRICULTURE
 			{
 				public static LocString NAME = FormatAsLink("Food", "BUILD_CATEGORY_FOODANDAGRICULTURE");
 
-				public static LocString TOOLTIP = "Keep your Duplicants' spirits high and their bellies full.";
+				public static LocString TOOLTIP = "Keep your Duplicants' spirits high and their bellies full. {Hotkey}";
 			}
 
 			public static class LOGISTICS
 			{
 				public static LocString NAME = FormatAsLink("Logistics", "BUILD_CATEGORY_LOGISTICS");
 
-				public static LocString TOOLTIP = "Devices for base automation and material transport.";
+				public static LocString TOOLTIP = "Devices for base automation and material transport. {Hotkey}";
 			}
 
 			public static class HEALTHANDHAPPINESS
 			{
 				public static LocString NAME = FormatAsLink("Accommodation", "BUILD_CATEGORY_HEALTHANDHAPPINESS");
 
-				public static LocString TOOLTIP = "Everything a Duplicant needs to stay happy, healthy, and fulfilled.";
+				public static LocString TOOLTIP = "Everything a Duplicant needs to stay happy, healthy, and fulfilled. {Hotkey}";
 			}
 
 			public static class INDUSTRIAL
 			{
 				public static LocString NAME = FormatAsLink("Industrials", "BUILD_CATEGORY_INDUSTRIAL");
 
-				public static LocString TOOLTIP = "Machinery for oxygen production, heat management, and material refinement.";
+				public static LocString TOOLTIP = "Machinery for oxygen production, heat management, and material refinement. {Hotkey}";
 			}
 
 			public static class LADDERS
@@ -5265,7 +5272,7 @@ namespace STRINGS
 
 				public static LocString BUILDMENUTITLE = "Plumbing";
 
-				public static LocString TOOLTIP = "Get your water running and the sewage flowing.";
+				public static LocString TOOLTIP = "Get your water running and the sewage flowing. {Hotkey}";
 			}
 
 			public static class PIPES
@@ -5283,7 +5290,7 @@ namespace STRINGS
 
 				public static LocString BUILDMENUTITLE = "Ventilation";
 
-				public static LocString TOOLTIP = "Control the flow of gas in your base.";
+				public static LocString TOOLTIP = "Control the flow of gas in your base. {Hotkey}";
 			}
 
 			public static class CONVEYANCE
@@ -5292,7 +5299,7 @@ namespace STRINGS
 
 				public static LocString BUILDMENUTITLE = "Ore Transport";
 
-				public static LocString TOOLTIP = "Move solids objects around.";
+				public static LocString TOOLTIP = "Move solids objects around. {Hotkey}";
 			}
 
 			public static class LOGICWIRING
@@ -5364,7 +5371,7 @@ namespace STRINGS
 
 				public static LocString BUILDMENUTITLE = "Medical";
 
-				public static LocString TOOLTIP = "A cure for everything but the common cold.";
+				public static LocString TOOLTIP = "A cure for everything but the common cold. {Hotkey}";
 			}
 
 			public static class RECREATION
@@ -5382,7 +5389,7 @@ namespace STRINGS
 
 				public static LocString BUILDMENUTITLE = "Furniture";
 
-				public static LocString TOOLTIP = "Amenities to keep your Duplicants happy, comfy and efficient.";
+				public static LocString TOOLTIP = "Amenities to keep your Duplicants happy, comfy and efficient. {Hotkey}";
 			}
 
 			public static class DECOR
@@ -5391,7 +5398,7 @@ namespace STRINGS
 
 				public static LocString BUILDMENUTITLE = "Decor";
 
-				public static LocString TOOLTIP = "Spruce up your colony with some lovely interior decorating.";
+				public static LocString TOOLTIP = "Spruce up your colony with some lovely interior decorating. {Hotkey}";
 			}
 
 			public static class OXYGEN
@@ -5400,7 +5407,7 @@ namespace STRINGS
 
 				public static LocString BUILDMENUTITLE = "Oxygen";
 
-				public static LocString TOOLTIP = "Everything you need to keep your colony breathing.";
+				public static LocString TOOLTIP = "Everything you need to keep your colony breathing. {Hotkey}";
 			}
 
 			public static class UTILITIES
@@ -5418,7 +5425,7 @@ namespace STRINGS
 
 				public static LocString BUILDMENUTITLE = "Refinement";
 
-				public static LocString TOOLTIP = "Use the resources you want, filter the ones you don't.";
+				public static LocString TOOLTIP = "Use the resources you want, filter the ones you don't. {Hotkey}";
 			}
 
 			public static class EQUIPMENT
@@ -5427,7 +5434,7 @@ namespace STRINGS
 
 				public static LocString BUILDMENUTITLE = "Stations";
 
-				public static LocString TOOLTIP = "Unlock new technologies through the power of science!";
+				public static LocString TOOLTIP = "Unlock new technologies through the power of science! {Hotkey}";
 			}
 
 			public static class CONDUITSENSORS
@@ -5445,7 +5452,7 @@ namespace STRINGS
 
 				public static LocString BUILDMENUTITLE = "Rocketry";
 
-				public static LocString TOOLTIP = "";
+				public static LocString TOOLTIP = "Rocketry {Hotkey}";
 			}
 		}
 
@@ -5668,7 +5675,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Empty Pipe";
 
-				public static LocString TOOLTIP = "Extract pipe contents";
+				public static LocString TOOLTIP = "Extract pipe contents {Hotkey}";
 
 				public static LocString TOOLNAME = "Empty Pipe tool";
 
@@ -6854,6 +6861,12 @@ namespace STRINGS
 			public static LocString REMOVED = "Removed";
 
 			public static LocString NET = "Net";
+
+			public static LocString DUPLICANT_DETAILS_HEADER = "Duplicant Details:";
+
+			public static LocString TIME_DETAILS_HEADER = "Time Details:";
+
+			public static LocString BASE_DETAILS_HEADER = "Base Details:";
 		}
 
 		public static class SCHEDULEBLOCKTYPES
@@ -7111,7 +7124,7 @@ namespace STRINGS
 
 		public static LocString COPY_BUILDING = "Copy";
 
-		public static LocString COPY_BUILDING_TOOLTIP = "Create new build orders for the selected building.";
+		public static LocString COPY_BUILDING_TOOLTIP = "Create new build orders for the selected building. {Hotkey}";
 
 		public static LocString NAME_WITH_UNITS = "{0} x {1}";
 

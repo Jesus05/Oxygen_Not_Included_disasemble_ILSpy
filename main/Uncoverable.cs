@@ -59,7 +59,7 @@ public class Uncoverable : KMonoBehaviour
 			GameScenePartitioner.Instance.Free(ref partitionerEntry);
 			hasBeenUncovered = true;
 			GetComponent<KSelectable>().IsSelectable = true;
-			Notification notification = new Notification(MISC.STATUSITEMS.BURIEDITEM.NOTIFICATION, NotificationType.Good, HashedString.Invalid, OnNotificationToolTip, this, true, 0f, null, null);
+			Notification notification = new Notification(MISC.STATUSITEMS.BURIEDITEM.NOTIFICATION, NotificationType.Good, HashedString.Invalid, OnNotificationToolTip, this, true, 0f, null, null, null);
 			base.gameObject.AddOrGet<Notifier>().Add(notification, "");
 		}
 	}

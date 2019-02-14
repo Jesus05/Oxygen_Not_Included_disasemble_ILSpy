@@ -41,6 +41,8 @@ public class DebugHandler : IInputHandler
 		private set;
 	}
 
+	public string handlerName => "DebugHandler";
+
 	public KInputHandler inputHandler
 	{
 		get;
@@ -474,6 +476,10 @@ public class DebugHandler : IInputHandler
 		if ((UnityEngine.Object)CameraController.Instance != (UnityEngine.Object)null)
 		{
 			CameraController.Instance.FreeCameraEnabled = !CameraController.Instance.FreeCameraEnabled;
+		}
+		if ((UnityEngine.Object)KScreenManager.Instance != (UnityEngine.Object)null)
+		{
+			KScreenManager.Instance.DisableInput(HideUI);
 		}
 	}
 

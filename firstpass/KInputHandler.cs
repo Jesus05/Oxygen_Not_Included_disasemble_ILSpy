@@ -24,14 +24,19 @@ public class KInputHandler
 
 	private KInputController mController;
 
-	public KInputHandler(object obj, KInputController controller)
+	private string name;
+
+	private KButtonEvent lastConsumedEvent;
+
+	public KInputHandler(IInputHandler obj, KInputController controller)
 		: this(obj)
 	{
 		mController = controller;
 	}
 
-	public KInputHandler(object obj)
+	public KInputHandler(IInputHandler obj)
 	{
+		name = obj.handlerName;
 		MethodInfo method = obj.GetType().GetMethod("OnKeyDown");
 		if (method != null)
 		{
@@ -132,9 +137,14 @@ public class KInputHandler
 
 	public void HandleKeyDown(KButtonEvent e)
 	{
+		lastConsumedEvent = null;
 		foreach (Action<KButtonEvent> mOnKeyDownDelegate in mOnKeyDownDelegates)
 		{
 			mOnKeyDownDelegate(e);
+			if (e.Consumed)
+			{
+				lastConsumedEvent = e;
+			}
 		}
 		if (!e.Consumed && mChildren != null)
 		{
@@ -152,9 +162,14 @@ public class KInputHandler
 
 	public void HandleKeyUp(KButtonEvent e)
 	{
+		lastConsumedEvent = null;
 		foreach (Action<KButtonEvent> mOnKeyUpDelegate in mOnKeyUpDelegates)
 		{
 			mOnKeyUpDelegate(e);
+			if (e.Consumed)
+			{
+				lastConsumedEvent = e;
+			}
 		}
 		if (!e.Consumed && mChildren != null)
 		{

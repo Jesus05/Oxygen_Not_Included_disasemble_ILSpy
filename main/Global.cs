@@ -379,7 +379,7 @@ public class Global : MonoBehaviour
 	private void SetONIStaticSessionVariables()
 	{
 		ThreadedHttps<KleiMetrics>.Instance.SetStaticSessionVariable("Branch", "preview");
-		ThreadedHttps<KleiMetrics>.Instance.SetStaticSessionVariable("Build", 307409u);
+		ThreadedHttps<KleiMetrics>.Instance.SetStaticSessionVariable("Build", 308684u);
 		if (KPlayerPrefs.HasKey(UnitConfigurationScreen.MassUnitKey))
 		{
 			ThreadedHttps<KleiMetrics>.Instance.SetStaticSessionVariable(UnitConfigurationScreen.MassUnitKey, KPlayerPrefs.GetInt(UnitConfigurationScreen.MassUnitKey).ToString());
@@ -434,16 +434,6 @@ public class Global : MonoBehaviour
 	{
 		KGlobalAnimParser.DestroyInstance();
 		ThreadedHttps<KleiMetrics>.Instance.EndSession(false);
-	}
-
-	private void OutputCommandLine()
-	{
-		string[] commandLineArgs = Environment.GetCommandLineArgs();
-		Console.WriteLine($"Command Line[{commandLineArgs.Length}]");
-		for (int i = 0; i < commandLineArgs.Length; i++)
-		{
-			Console.WriteLine($"    {i}={commandLineArgs[i]}");
-		}
 	}
 
 	private void OutputSystemInfo()

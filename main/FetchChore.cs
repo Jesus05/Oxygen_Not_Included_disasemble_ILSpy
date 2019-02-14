@@ -132,9 +132,9 @@ public class FetchChore : Chore<FetchChore.StatesInstance>
 		{
 			Output.LogError("You must specify a chore type for fetching!");
 		}
-		if (amount <= 0f)
+		if (amount <= PICKUPABLETUNING.MINIMUM_PICKABLE_AMOUNT)
 		{
-			Output.LogError("Requesting an invalid FetchChore amount");
+			Output.LogWarning(string.Format("Chore {0} is requesting {1} {2} to {3}", choreType.Id, tags[0], amount, (!((UnityEngine.Object)destination != (UnityEngine.Object)null)) ? "to nowhere" : destination.name));
 		}
 		SetPrioritizable((!((UnityEngine.Object)destination.prioritizable != (UnityEngine.Object)null)) ? destination.GetComponent<Prioritizable>() : destination.prioritizable);
 		base.smi = new StatesInstance(this);

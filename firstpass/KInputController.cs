@@ -93,6 +93,8 @@ public class KInputController : IInputHandler
 		KKeyCode.CapsLock
 	};
 
+	public string handlerName => "KInputController";
+
 	public KInputHandler inputHandler
 	{
 		get;

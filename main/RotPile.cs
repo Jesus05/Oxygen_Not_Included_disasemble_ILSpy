@@ -19,7 +19,7 @@ public class RotPile : StateMachineComponent<RotPile.StatesInstance>
 		{
 			if (WorldInventory.Instance.IsReachable(base.smi.master.gameObject.GetComponent<Pickupable>()))
 			{
-				Notification notification = new Notification(MISC.NOTIFICATIONS.FOODROT.NAME, NotificationType.BadMinor, HashedString.Invalid, OnRottenTooltip, null, true, 0f, null, null)
+				Notification notification = new Notification(MISC.NOTIFICATIONS.FOODROT.NAME, NotificationType.BadMinor, HashedString.Invalid, OnRottenTooltip, null, true, 0f, null, null, null)
 				{
 					tooltipData = master.gameObject.GetProperName()
 				};

@@ -1468,7 +1468,9 @@ public class ConduitFlow : IConduitFlow
 										num = AddElementToGrid(cell2, contents.element, num, contents.temperature, contents.diseaseIdx, disease_count);
 										ConduitContents contents4 = RemoveElementFromGrid(conduit, num);
 										soaInfo.SetLastFlowInfo(conduit.idx, soaInfo.GetTargetFlowDirection(conduit.idx), ref contents4);
-										soaInfo.SetUpdated(conduitFromDirection.idx, true);
+										Conduit conduitFromDirection3 = soaInfo.GetConduitFromDirection(conduitFromDirection.idx, soaInfo.GetTargetFlowDirection(conduit.idx));
+										bool is_updated = conduitFromDirection3.idx == -1;
+										soaInfo.SetUpdated(conduitFromDirection.idx, is_updated);
 										soaInfo.SetSrcFlowDirection(conduitFromDirection.idx, conduitFromDirection.GetNextFlowSource(this));
 									}
 								}

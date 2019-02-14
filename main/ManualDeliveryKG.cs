@@ -178,7 +178,7 @@ public class ManualDeliveryKG : KMonoBehaviour, ISim200ms
 				ChoreType byHash = Db.Get().ChoreTypes.GetByHash(choreTypeIDHash);
 				this.fetchList = new FetchList2(storage, byHash, choreTags);
 				this.fetchList.ShowStatusItem = ShowStatusItem;
-				this.fetchList.MinimumAmount[requestedItemTag] = minimumMass;
+				this.fetchList.MinimumAmount[requestedItemTag] = Mathf.Max(PICKUPABLETUNING.MINIMUM_PICKABLE_AMOUNT, minimumMass);
 				FetchList2 fetchList = this.fetchList;
 				Tag[] tags = new Tag[1]
 				{
@@ -201,7 +201,7 @@ public class ManualDeliveryKG : KMonoBehaviour, ISim200ms
 		}
 		if (num < refillMass)
 		{
-			result = Mathf.Max(0f, capacity - num);
+			result = Mathf.Max(PICKUPABLETUNING.MINIMUM_PICKABLE_AMOUNT, capacity - num);
 		}
 		return result;
 	}

@@ -167,7 +167,7 @@ public class ScheduleManager : KMonoBehaviour, ISim33ms
 
 	public void PlayScheduleAlarm(Schedule schedule, ScheduleBlock block, bool forwards)
 	{
-		Notification notification = new Notification(string.Format(MISC.NOTIFICATIONS.SCHEDULE_CHANGED.NAME, schedule.name, block.name), NotificationType.Good, HashedString.Invalid, (List<Notification> notificationList, object data) => string.Format(MISC.NOTIFICATIONS.SCHEDULE_CHANGED.TOOLTIP, schedule.name, block.name, Db.Get().ScheduleGroups.Get(block.GroupId).notificationTooltip), null, true, 0f, null, null);
+		Notification notification = new Notification(string.Format(MISC.NOTIFICATIONS.SCHEDULE_CHANGED.NAME, schedule.name, block.name), NotificationType.Good, HashedString.Invalid, (List<Notification> notificationList, object data) => string.Format(MISC.NOTIFICATIONS.SCHEDULE_CHANGED.TOOLTIP, schedule.name, block.name, Db.Get().ScheduleGroups.Get(block.GroupId).notificationTooltip), null, true, 0f, null, null, null);
 		GetComponent<Notifier>().Add(notification, "");
 		StartCoroutine(PlayScheduleTone(schedule, forwards));
 	}

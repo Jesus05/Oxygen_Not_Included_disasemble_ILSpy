@@ -176,19 +176,19 @@ public class Tutorial : KMonoBehaviour, IRender1000ms
 			notification = new Notification(MISC.NOTIFICATIONS.NEEDTOILET.NAME, NotificationType.Tutorial, HashedString.Invalid, (List<Notification> n, object d) => MISC.NOTIFICATIONS.NEEDTOILET.TOOLTIP.text, null, true, 5f, delegate
 			{
 				PlanScreen.Instance.OpenCategoryByName("Plumbing");
-			}, null),
+			}, null, null),
 			requirementSatisfied = new RequirementSatisfiedDelegate(ToiletExists)
 		});
 		itemTree.Add(list);
 		List<Item> list2 = new List<Item>();
 		list2.Add(new Item
 		{
-			notification = new Notification(MISC.NOTIFICATIONS.NEEDFOOD.NAME, NotificationType.Tutorial, HashedString.Invalid, (List<Notification> n, object d) => MISC.NOTIFICATIONS.NEEDFOOD.TOOLTIP.text, null, true, 20f, null, null),
+			notification = new Notification(MISC.NOTIFICATIONS.NEEDFOOD.NAME, NotificationType.Tutorial, HashedString.Invalid, (List<Notification> n, object d) => MISC.NOTIFICATIONS.NEEDFOOD.TOOLTIP.text, null, true, 20f, null, null, null),
 			requirementSatisfied = new RequirementSatisfiedDelegate(FoodSourceExists)
 		});
 		list2.Add(new Item
 		{
-			notification = new Notification(MISC.NOTIFICATIONS.THERMALCOMFORT.NAME, NotificationType.Tutorial, HashedString.Invalid, (List<Notification> n, object d) => MISC.NOTIFICATIONS.THERMALCOMFORT.TOOLTIP.text, null, true, 0f, null, null)
+			notification = new Notification(MISC.NOTIFICATIONS.THERMALCOMFORT.NAME, NotificationType.Tutorial, HashedString.Invalid, (List<Notification> n, object d) => MISC.NOTIFICATIONS.THERMALCOMFORT.TOOLTIP.text, null, true, 0f, null, null, null)
 		});
 		itemTree.Add(list2);
 		List<Item> list3 = new List<Item>();
@@ -197,7 +197,7 @@ public class Tutorial : KMonoBehaviour, IRender1000ms
 			notification = new Notification(MISC.NOTIFICATIONS.HYGENE_NEEDED.NAME, NotificationType.Tutorial, HashedString.Invalid, (List<Notification> n, object d) => MISC.NOTIFICATIONS.HYGENE_NEEDED.TOOLTIP, null, true, 20f, delegate
 			{
 				PlanScreen.Instance.OpenCategoryByName("Medicine");
-			}, null),
+			}, null, null),
 			requirementSatisfied = new RequirementSatisfiedDelegate(HygeneExists)
 		});
 		itemTree.Add(list3);
@@ -209,7 +209,7 @@ public class Tutorial : KMonoBehaviour, IRender1000ms
 		item2.notification = new Notification(title, NotificationType.Tutorial, invalid, (List<Notification> n, object d) => MISC.NOTIFICATIONS.NO_OXYGEN_GENERATOR.TOOLTIP, null, false, 0f, delegate
 		{
 			PlanScreen.Instance.OpenCategoryByName("Oxygen");
-		}, null);
+		}, null, null);
 		item.requirementSatisfied = OxygenGeneratorBuilt;
 		item.minTimeToNotify = 80f;
 		item.lastNotifyTime = 0f;
@@ -222,7 +222,7 @@ public class Tutorial : KMonoBehaviour, IRender1000ms
 		item3.notification = new Notification(title, NotificationType.Tutorial, invalid, OnOxygenTooltip, null, false, 0f, delegate
 		{
 			ZoomToNextOxygenGenerator();
-		}, null);
+		}, null, null);
 		item.hideCondition = OxygenGeneratorNotBuilt;
 		item.requirementSatisfied = SufficientOxygenLastCycleAndThisCycle;
 		item.minTimeToNotify = 80f;
@@ -233,7 +233,7 @@ public class Tutorial : KMonoBehaviour, IRender1000ms
 			notification = new Notification(MISC.NOTIFICATIONS.UNREFRIGERATEDFOOD.NAME, NotificationType.Tutorial, HashedString.Invalid, UnrefrigeratedFoodTooltip, null, false, 0f, delegate
 			{
 				PlanScreen.Instance.OpenCategoryByName("Food");
-			}, null),
+			}, null, null),
 			requirementSatisfied = new RequirementSatisfiedDelegate(FoodIsRefrigerated),
 			minTimeToNotify = 6f,
 			lastNotifyTime = 0f
@@ -243,7 +243,7 @@ public class Tutorial : KMonoBehaviour, IRender1000ms
 			notification = new Notification(MISC.NOTIFICATIONS.FOODLOW.NAME, NotificationType.Bad, HashedString.Invalid, OnLowFoodTooltip, null, false, 0f, delegate
 			{
 				PlanScreen.Instance.OpenCategoryByName("Food");
-			}, null),
+			}, null, null),
 			requirementSatisfied = new RequirementSatisfiedDelegate(EnoughFood),
 			minTimeToNotify = 10f,
 			lastNotifyTime = 0f
@@ -253,7 +253,7 @@ public class Tutorial : KMonoBehaviour, IRender1000ms
 			notification = new Notification(MISC.NOTIFICATIONS.NO_MEDICAL_COTS.NAME, NotificationType.Bad, HashedString.Invalid, (List<Notification> n, object o) => MISC.NOTIFICATIONS.NO_MEDICAL_COTS.TOOLTIP, null, false, 0f, delegate
 			{
 				PlanScreen.Instance.OpenCategoryByName("Medicine");
-			}, null),
+			}, null, null),
 			requirementSatisfied = new RequirementSatisfiedDelegate(EnoughMedicalCots),
 			minTimeToNotify = 10f,
 			lastNotifyTime = 0f
@@ -263,7 +263,7 @@ public class Tutorial : KMonoBehaviour, IRender1000ms
 			notification = new Notification(string.Format(UI.ENDOFDAYREPORT.TRAVELTIMEWARNING.WARNING_TITLE), NotificationType.BadMinor, HashedString.Invalid, (List<Notification> n, object d) => string.Format(UI.ENDOFDAYREPORT.TRAVELTIMEWARNING.WARNING_MESSAGE, GameUtil.GetFormattedPercent(40f, GameUtil.TimeSlice.None)), null, true, 0f, delegate
 			{
 				ManagementMenu.Instance.OpenReports(GameClock.Instance.GetCycle());
-			}, null),
+			}, null, null),
 			requirementSatisfied = new RequirementSatisfiedDelegate(LongTravelTimes),
 			minTimeToNotify = 1f,
 			lastNotifyTime = 0f
@@ -380,7 +380,7 @@ public class Tutorial : KMonoBehaviour, IRender1000ms
 		string arg = text;
 		int num = debugMessageCount++;
 		num = num;
-		Notification notification = new Notification($"{arg} ({num.ToString()})", type, HashedString.Invalid, (List<Notification> n, object d) => MISC.NOTIFICATIONS.NEEDTOILET.TOOLTIP.text, null, true, 0f, null, null);
+		Notification notification = new Notification($"{arg} ({num.ToString()})", type, HashedString.Invalid, (List<Notification> n, object d) => MISC.NOTIFICATIONS.NEEDTOILET.TOOLTIP.text, null, true, 0f, null, null, null);
 		notifier.Add(notification, "");
 	}
 

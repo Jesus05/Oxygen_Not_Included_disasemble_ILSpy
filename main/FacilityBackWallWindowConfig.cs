@@ -25,7 +25,7 @@ public class FacilityBackWallWindowConfig : IBuildingConfig
 		buildingDef.BaseTimeUntilRepair = -1f;
 		buildingDef.DefaultAnimState = "off";
 		buildingDef.ObjectLayer = ObjectLayer.Backwall;
-		buildingDef.SceneLayer = Grid.SceneLayer.TempShiftPlate;
+		buildingDef.SceneLayer = Grid.SceneLayer.Backwall;
 		return buildingDef;
 	}
 
@@ -33,9 +33,7 @@ public class FacilityBackWallWindowConfig : IBuildingConfig
 	{
 		AnimTileable animTileable = go.AddOrGet<AnimTileable>();
 		animTileable.objectLayer = ObjectLayer.Backwall;
-		ZoneTile zoneTile = go.AddComponent<ZoneTile>();
-		zoneTile.width = 1;
-		zoneTile.height = 6;
+		go.AddComponent<ZoneTile>();
 		go.GetComponent<PrimaryElement>().SetElement(SimHashes.Steel);
 		go.GetComponent<PrimaryElement>().Temperature = 273f;
 		BuildingConfigManager.Instance.IgnoreDefaultKComponent(typeof(RequiresFoundation), prefab_tag);

@@ -24,7 +24,7 @@ namespace Klei.AI
 
 		public AttributeLevel(AttributeInstance attribute)
 		{
-			notification = new Notification(MISC.NOTIFICATIONS.LEVELUP.NAME, NotificationType.Good, HashedString.Invalid, OnLevelUpTooltip, null, true, 0f, null, null);
+			notification = new Notification(MISC.NOTIFICATIONS.LEVELUP.NAME, NotificationType.Good, HashedString.Invalid, OnLevelUpTooltip, null, true, 0f, null, null, null);
 			this.attribute = attribute;
 		}
 

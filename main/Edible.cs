@@ -250,6 +250,10 @@ public class Edible : Workable, IGameObjectEffectDescriptor
 			float num = Time.time - consumptionStartTime;
 			float num2 = Mathf.Clamp01(num / GetFeedingTime(worker));
 			unitsConsumed = Units * num2;
+			if (Units < PICKUPABLETUNING.MINIMUM_PICKABLE_AMOUNT && unitsConsumed < PICKUPABLETUNING.MINIMUM_PICKABLE_AMOUNT)
+			{
+				unitsConsumed = Units;
+			}
 			if (float.IsNaN(unitsConsumed))
 			{
 				KCrashReporter.Assert(false, "Why is unitsConsumed NaN?");
@@ -294,6 +298,10 @@ public class Edible : Workable, IGameObjectEffectDescriptor
 
 	protected override void OnCleanUp()
 	{
+		if (isBeingConsumed)
+		{
+			StopConsuming(base.worker);
+		}
 		base.OnCleanUp();
 		Components.Edibles.Remove(this);
 	}

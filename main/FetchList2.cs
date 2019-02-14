@@ -89,10 +89,6 @@ public class FetchList2 : IFetchList
 
 	public void Add(Tag[] tags, Tag[] required_tags = null, Tag[] forbidden_tags = null, float amount = 1f, FetchOrder2.OperationalRequirement operationalRequirementDEPRECATED = FetchOrder2.OperationalRequirement.None)
 	{
-		if (amount <= 0f)
-		{
-			Output.LogError("Requesting an invalid FetchList2 amount");
-		}
 		foreach (Tag key in tags)
 		{
 			if (!MinimumAmount.ContainsKey(key))

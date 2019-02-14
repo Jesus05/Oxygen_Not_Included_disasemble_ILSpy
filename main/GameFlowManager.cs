@@ -8,7 +8,7 @@ public class GameFlowManager : StateMachineComponent<GameFlowManager.StatesInsta
 {
 	public class StatesInstance : GameStateMachine<States, StatesInstance, GameFlowManager, object>.GameInstance
 	{
-		public Notification colonyLostNotification = new Notification(MISC.NOTIFICATIONS.COLONYLOST.NAME, NotificationType.Bad, HashedString.Invalid, null, null, false, 0f, null, null);
+		public Notification colonyLostNotification = new Notification(MISC.NOTIFICATIONS.COLONYLOST.NAME, NotificationType.Bad, HashedString.Invalid, null, null, false, 0f, null, null, null);
 
 		public StatesInstance(GameFlowManager smi)
 			: base(smi)

@@ -257,27 +257,37 @@ public class KBatchedAnimController : KAnimControllerBase, KAnimConverter.IAnimC
 			}
 			SetDirty();
 		}
-		if (!(batchGroupID == KAnimBatchManager.NO_BATCH) && IsActive() && (isVisible || forceRebuild))
+		if (!(batchGroupID == KAnimBatchManager.NO_BATCH) && IsActive())
 		{
 			if (!forceRebuild && (mode == KAnim.PlayMode.Paused || stopped || curAnim == null || (mode == KAnim.PlayMode.Once && curAnim != null && (base.elapsedTime > curAnim.totalTime || curAnim.totalTime <= 0f) && animQueue.Count == 0)))
 			{
 				SuspendUpdates(true);
 			}
-			curAnimFrameIdx = GetFrameIdx(base.elapsedTime, true);
-			if (eventManagerHandle.IsValid() && aem != null)
+			if (!isVisible && !forceRebuild)
 			{
-				float elapsedTime = aem.GetElapsedTime(eventManagerHandle);
-				if ((int)((base.elapsedTime - elapsedTime) * 100f) != 0)
+				if (visibilityType == VisibilityType.OffscreenUpdate && !stopped && mode != KAnim.PlayMode.Paused)
 				{
-					UpdateAnimEventSequenceTime();
+					SetElapsedTime(base.elapsedTime + dt * playSpeed);
 				}
 			}
-			UpdateFrame(base.elapsedTime);
-			if (!stopped && mode != KAnim.PlayMode.Paused)
+			else
 			{
-				SetElapsedTime(base.elapsedTime + dt * playSpeed);
+				curAnimFrameIdx = GetFrameIdx(base.elapsedTime, true);
+				if (eventManagerHandle.IsValid() && aem != null)
+				{
+					float elapsedTime = aem.GetElapsedTime(eventManagerHandle);
+					if ((int)((base.elapsedTime - elapsedTime) * 100f) != 0)
+					{
+						UpdateAnimEventSequenceTime();
+					}
+				}
+				UpdateFrame(base.elapsedTime);
+				if (!stopped && mode != KAnim.PlayMode.Paused)
+				{
+					SetElapsedTime(base.elapsedTime + dt * playSpeed);
+				}
+				forceRebuild = false;
 			}
-			forceRebuild = false;
 		}
 	}
 
@@ -550,7 +560,7 @@ public class KBatchedAnimController : KAnimControllerBase, KAnimConverter.IAnimC
 		LoadAnims();
 		if (visibilityType == VisibilityType.Default)
 		{
-			visibilityType = ((materialType == KAnimBatchGroup.MaterialType.UI) ? VisibilityType.Always : visibilityType);
+			visibilityType = ((materialType != KAnimBatchGroup.MaterialType.UI) ? visibilityType : VisibilityType.Always);
 		}
 		symbolOverrideController = GetComponent<SymbolOverrideController>();
 		UpdateHidden();
@@ -563,7 +573,7 @@ public class KBatchedAnimController : KAnimControllerBase, KAnimConverter.IAnimC
 		{
 			Initialize();
 		}
-		if (visibilityType == VisibilityType.Always)
+		if (visibilityType == VisibilityType.Always || visibilityType == VisibilityType.OffscreenUpdate)
 		{
 			ConfigureUpdateListener();
 		}
@@ -693,7 +703,7 @@ public class KBatchedAnimController : KAnimControllerBase, KAnimConverter.IAnimC
 
 	private void ConfigureUpdateListener()
 	{
-		if ((IsActive() && !suspendUpdates && isVisible) || moving || visibilityType == VisibilityType.Always)
+		if ((IsActive() && !suspendUpdates && isVisible) || moving || visibilityType == VisibilityType.OffscreenUpdate || visibilityType == VisibilityType.Always)
 		{
 			Singleton<KBatchedAnimUpdater>.Instance.UpdateRegister(this);
 		}
@@ -730,7 +740,7 @@ public class KBatchedAnimController : KAnimControllerBase, KAnimConverter.IAnimC
 
 	private void ConfigureVisibilityListener(bool enabled)
 	{
-		if (visibilityType != VisibilityType.Always)
+		if (visibilityType != VisibilityType.Always && visibilityType != VisibilityType.OffscreenUpdate)
 		{
 			if (enabled)
 			{

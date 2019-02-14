@@ -530,7 +530,7 @@ public class ReportManager : KMonoBehaviour
 	{
 		{
 			ReportType.DuplicantHeader,
-			new ReportGroup(null, true, 1, "Duplicant Details:", "", "", ReportEntry.Order.Unordered, ReportEntry.Order.Unordered, true, null)
+			new ReportGroup(null, true, 1, UI.ENDOFDAYREPORT.DUPLICANT_DETAILS_HEADER, "", "", ReportEntry.Order.Unordered, ReportEntry.Order.Unordered, true, null)
 		},
 		{
 			ReportType.CaloriesCreated,
@@ -562,7 +562,7 @@ public class ReportManager : KMonoBehaviour
 		},
 		{
 			ReportType.TimeSpentHeader,
-			new ReportGroup(null, true, 2, "Time Details:", "", "", ReportEntry.Order.Unordered, ReportEntry.Order.Unordered, true, null)
+			new ReportGroup(null, true, 2, UI.ENDOFDAYREPORT.TIME_DETAILS_HEADER, "", "", ReportEntry.Order.Unordered, ReportEntry.Order.Unordered, true, null)
 		},
 		{
 			ReportType.WorkTime,
@@ -582,7 +582,7 @@ public class ReportManager : KMonoBehaviour
 		},
 		{
 			ReportType.BaseHeader,
-			new ReportGroup(null, true, 3, "Base Details:", "", "", ReportEntry.Order.Unordered, ReportEntry.Order.Unordered, true, null)
+			new ReportGroup(null, true, 3, UI.ENDOFDAYREPORT.BASE_DETAILS_HEADER, "", "", ReportEntry.Order.Unordered, ReportEntry.Order.Unordered, true, null)
 		},
 		{
 			ReportType.OxygenCreated,
@@ -707,7 +707,7 @@ public class ReportManager : KMonoBehaviour
 		Notification notification = new Notification(string.Format(UI.ENDOFDAYREPORT.NOTIFICATION_TITLE, day), NotificationType.Good, HashedString.Invalid, (List<Notification> n, object d) => string.Format(UI.ENDOFDAYREPORT.NOTIFICATION_TOOLTIP, day), null, true, 0f, delegate
 		{
 			ManagementMenu.Instance.OpenReports(day);
-		}, null);
+		}, null, null);
 		if ((UnityEngine.Object)notifier == (UnityEngine.Object)null)
 		{
 			Debug.LogError("Cant notify, null notifier", null);

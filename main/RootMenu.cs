@@ -183,20 +183,10 @@ public class RootMenu : KScreen
 	public override void OnKeyUp(KButtonEvent e)
 	{
 		base.OnKeyUp(e);
-		if (!e.Consumed)
+		if (!e.Consumed && e.TryConsume(Action.AlternateView) && (Object)tileScreenInst != (Object)null)
 		{
-			if (e.TryConsume(Action.AlternateView))
-			{
-				if ((Object)tileScreenInst != (Object)null)
-				{
-					tileScreenInst.Deactivate();
-					tileScreenInst = null;
-				}
-			}
-			else if ((Object)SaveGame.Instance != (Object)null)
-			{
-				SaveGame.Instance.GetComponent<UserNavigation>().Handle(e);
-			}
+			tileScreenInst.Deactivate();
+			tileScreenInst = null;
 		}
 	}
 

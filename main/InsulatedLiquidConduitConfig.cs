@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using TUNING;
 using UnityEngine;
 
@@ -36,6 +37,8 @@ public class InsulatedLiquidConduitConfig : IBuildingConfig
 		buildingDef.isKAnimTile = true;
 		buildingDef.isUtility = true;
 		buildingDef.DragBuild = true;
+		buildingDef.ReplacementTags = new List<Tag>();
+		buildingDef.ReplacementTags.Add(GameTags.Pipes);
 		GeneratedBuildings.RegisterWithOverlay(OverlayScreen.LiquidVentIDs, "InsulatedLiquidConduit");
 		return buildingDef;
 	}
@@ -61,6 +64,7 @@ public class InsulatedLiquidConduitConfig : IBuildingConfig
 		KAnimGraphTileVisualizer kAnimGraphTileVisualizer = go.AddComponent<KAnimGraphTileVisualizer>();
 		kAnimGraphTileVisualizer.connectionSource = KAnimGraphTileVisualizer.ConnectionSource.Liquid;
 		kAnimGraphTileVisualizer.isPhysicalBuilding = true;
+		go.GetComponent<KPrefabID>().AddTag(GameTags.Pipes);
 		LiquidConduitConfig.CommonConduitPostConfigureComplete(go);
 	}
 }

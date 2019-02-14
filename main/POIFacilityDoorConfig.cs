@@ -30,6 +30,7 @@ public class POIFacilityDoorConfig : IBuildingConfig
 		door.hasComplexUserControls = false;
 		door.unpoweredAnimSpeed = 1f;
 		door.doorType = Door.DoorType.ManualPressure;
+		go.AddOrGet<ZoneTile>();
 		go.AddOrGet<AccessControl>();
 		go.AddOrGet<Unsealable>();
 		go.AddOrGet<KBoxCollider2D>();

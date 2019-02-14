@@ -461,10 +461,6 @@ public class NotificationScreen : KScreen
 			{
 				num2++;
 			}
-			if ((UnityEngine.Object)notification.Notifier != (UnityEngine.Object)null)
-			{
-				notification.Position = notification.Notifier.transform.GetPosition();
-			}
 			if (notification.expires && KTime.Instance.UnscaledGameTime - notification.Time > lifetime)
 			{
 				dirty = true;
@@ -483,7 +479,6 @@ public class NotificationScreen : KScreen
 	private void OnClick(Entry entry)
 	{
 		Notification nextClickedNotification = entry.NextClickedNotification;
-		Notifier notifier = nextClickedNotification.Notifier;
 		PlaySound3D(GlobalAssets.GetSound("HUD_Click_Open", false));
 		if (nextClickedNotification.customClickCallback != null)
 		{
@@ -491,19 +486,23 @@ public class NotificationScreen : KScreen
 		}
 		else
 		{
-			if ((UnityEngine.Object)notifier != (UnityEngine.Object)null)
+			if ((UnityEngine.Object)nextClickedNotification.clickFocus != (UnityEngine.Object)null)
 			{
-				SelectTool.Instance.Select(notifier.GetComponent<KSelectable>(), false);
+				Vector3 position = nextClickedNotification.clickFocus.GetPosition();
+				position.z = -40f;
+				CameraController.Instance.SetTargetPos(position, 8f, true);
+				if ((UnityEngine.Object)nextClickedNotification.clickFocus.GetComponent<KSelectable>() != (UnityEngine.Object)null)
+				{
+					SelectTool.Instance.Select(nextClickedNotification.clickFocus.GetComponent<KSelectable>(), false);
+				}
+			}
+			else if ((UnityEngine.Object)nextClickedNotification.Notifier != (UnityEngine.Object)null)
+			{
+				SelectTool.Instance.Select(nextClickedNotification.Notifier.GetComponent<KSelectable>(), false);
 			}
 			if (nextClickedNotification.Type == NotificationType.Messages)
 			{
 				ShowMessage((MessageNotification)nextClickedNotification);
-			}
-			if (nextClickedNotification.hasLocation)
-			{
-				Vector3 position = nextClickedNotification.Position;
-				position.z = -40f;
-				CameraController.Instance.SetTargetPos(position, 8f, true);
 			}
 		}
 	}

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using TUNING;
 using UnityEngine;
 
@@ -34,6 +35,8 @@ public class FarmTileConfig : IBuildingConfig
 		buildingDef.PermittedRotations = PermittedRotations.FlipV;
 		buildingDef.isSolidTile = false;
 		buildingDef.DragBuild = true;
+		buildingDef.ReplacementTags = new List<Tag>();
+		buildingDef.ReplacementTags.Add(GameTags.FloorTiles);
 		return buildingDef;
 	}
 
@@ -61,6 +64,7 @@ public class FarmTileConfig : IBuildingConfig
 	public override void DoPostConfigureComplete(GameObject go)
 	{
 		GeneratedBuildings.RemoveLoopingSounds(go);
+		go.GetComponent<KPrefabID>().AddTag(GameTags.FarmTiles);
 		SetUpFarmPlotTags(go);
 	}
 

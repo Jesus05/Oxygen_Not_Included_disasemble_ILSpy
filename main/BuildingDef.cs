@@ -84,6 +84,8 @@ public class BuildingDef : Def
 
 	public bool CanMove = false;
 
+	public List<Tag> ReplacementTags;
+
 	[NonSerialized]
 	[HashedEnum]
 	public HashedString ViewMode = OverlayModes.None.ID;
@@ -222,6 +224,22 @@ public class BuildingDef : Def
 	public string Effect => Strings.Get("STRINGS.BUILDINGS.PREFABS." + PrefabID.ToUpper() + ".EFFECT");
 
 	public bool IsTilePiece => TileLayer != ObjectLayer.NumLayers;
+
+	public bool CanReplace(GameObject go)
+	{
+		if (ReplacementTags != null)
+		{
+			foreach (Tag replacementTag in ReplacementTags)
+			{
+				if (go.GetComponent<KPrefabID>().HasTag(replacementTag))
+				{
+					return true;
+				}
+			}
+			return false;
+		}
+		return false;
+	}
 
 	public GameObject Create(Vector3 pos, Storage resource_storage, IList<Tag> selected_elements, Recipe recipe, float temperature, GameObject obj)
 	{

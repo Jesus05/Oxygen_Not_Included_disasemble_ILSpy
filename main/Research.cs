@@ -27,9 +27,9 @@ public class Research : KMonoBehaviour, ISaveLoadable
 
 	private TechInstance activeResearch;
 
-	private Notification NoResearcherRole = new Notification(RESEARCH.MESSAGING.NO_RESEARCHER_ROLE, NotificationType.Bad, HashedString.Invalid, (List<Notification> list, object data) => RESEARCH.MESSAGING.NO_RESEARCHER_ROLE_TOOLTIP, null, false, 12f, null, null);
+	private Notification NoResearcherRole = new Notification(RESEARCH.MESSAGING.NO_RESEARCHER_ROLE, NotificationType.Bad, HashedString.Invalid, (List<Notification> list, object data) => RESEARCH.MESSAGING.NO_RESEARCHER_ROLE_TOOLTIP, null, false, 12f, null, null, null);
 
-	private Notification MissingResearchStation = new Notification(RESEARCH.MESSAGING.MISSING_RESEARCH_STATION, NotificationType.Bad, HashedString.Invalid, (List<Notification> list, object data) => RESEARCH.MESSAGING.MISSING_RESEARCH_STATION_TOOLTIP.ToString().Replace("{0}", Instance.GetMissingResearchBuildingName()), null, false, 11f, null, null);
+	private Notification MissingResearchStation = new Notification(RESEARCH.MESSAGING.MISSING_RESEARCH_STATION, NotificationType.Bad, HashedString.Invalid, (List<Notification> list, object data) => RESEARCH.MESSAGING.MISSING_RESEARCH_STATION_TOOLTIP.ToString().Replace("{0}", Instance.GetMissingResearchBuildingName()), null, false, 11f, null, null, null);
 
 	private List<ResearchCenter> researchCenterPrefabs = new List<ResearchCenter>();
 

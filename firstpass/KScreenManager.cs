@@ -13,11 +13,17 @@ public class KScreenManager : KMonoBehaviour, IInputHandler
 
 	private UnityEngine.EventSystems.EventSystem evSys;
 
+	private KButtonEvent lastConsumedEvent;
+
+	private KScreen lastConsumedEventScreen;
+
 	public static KScreenManager Instance
 	{
 		get;
 		private set;
 	}
+
+	public string handlerName => base.gameObject.name;
 
 	public KInputHandler inputHandler
 	{
@@ -154,9 +160,15 @@ public class KScreenManager : KMonoBehaviour, IInputHandler
 	{
 		if (!inputDisabled)
 		{
-			for (int num = screenStack.Count - 1; num >= 0; num--)
+			int num = screenStack.Count - 1;
+			KScreen kScreen;
+			while (true)
 			{
-				KScreen kScreen = screenStack[num];
+				if (num < 0)
+				{
+					return;
+				}
+				kScreen = screenStack[num];
 				if ((Object)kScreen != (Object)null && kScreen.isActiveAndEnabled)
 				{
 					kScreen.OnKeyDown(e);
@@ -165,7 +177,10 @@ public class KScreenManager : KMonoBehaviour, IInputHandler
 						break;
 					}
 				}
+				num--;
 			}
+			lastConsumedEvent = e;
+			lastConsumedEventScreen = kScreen;
 		}
 	}
 
@@ -173,9 +188,15 @@ public class KScreenManager : KMonoBehaviour, IInputHandler
 	{
 		if (!inputDisabled)
 		{
-			for (int num = screenStack.Count - 1; num >= 0; num--)
+			int num = screenStack.Count - 1;
+			KScreen kScreen;
+			while (true)
 			{
-				KScreen kScreen = screenStack[num];
+				if (num < 0)
+				{
+					return;
+				}
+				kScreen = screenStack[num];
 				if ((Object)kScreen != (Object)null && kScreen.isActiveAndEnabled)
 				{
 					kScreen.OnKeyUp(e);
@@ -184,7 +205,10 @@ public class KScreenManager : KMonoBehaviour, IInputHandler
 						break;
 					}
 				}
+				num--;
 			}
+			lastConsumedEvent = e;
+			lastConsumedEventScreen = kScreen;
 		}
 	}
 

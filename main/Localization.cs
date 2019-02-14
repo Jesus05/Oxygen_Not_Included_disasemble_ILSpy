@@ -146,38 +146,35 @@ public static class Localization
 	public static void Initialize(bool dontCheckSteam = false)
 	{
 		Output.Log("Localization.Initialize!");
-		switch ((SelectedLanguageType)Enum.Parse(typeof(SelectedLanguageType), KPlayerPrefs.GetString(SELECTED_LANGUAGE_TYPE_KEY, 0.ToString()), true))
-		{
-		case SelectedLanguageType.Preinstalled:
+		SelectedLanguageType selectedPreinstalledLanguageType = GetSelectedPreinstalledLanguageType();
+		string selectedPreinstalledLanguageCode = GetSelectedPreinstalledLanguageCode();
+		if (!string.IsNullOrEmpty(selectedPreinstalledLanguageCode))
 		{
 			Output.Log("Localization Initialize... Preinstalled localization");
-			string @string = KPlayerPrefs.GetString(SELECTED_LANGUAGE_CODE_KEY, "");
-			Output.Log(" -> ", @string);
-			LoadPreinstalledTranslation(@string);
-			return;
+			Output.Log(" -> ", selectedPreinstalledLanguageCode);
+			LoadPreinstalledTranslation(selectedPreinstalledLanguageCode);
 		}
-		case SelectedLanguageType.UGC:
-			if (!dontCheckSteam && SteamManager.Initialized && LanguageOptionsScreen.HasInstalledLanguage())
+		else if (selectedPreinstalledLanguageType == SelectedLanguageType.UGC && !dontCheckSteam && SteamManager.Initialized && LanguageOptionsScreen.HasInstalledLanguage())
+		{
+			Output.Log("Localization Initialize... SteamUGCService");
+			PublishedFileId_t item = PublishedFileId_t.Invalid;
+			LanguageOptionsScreen.LoadTranslation(ref item);
+			if (item != PublishedFileId_t.Invalid)
 			{
-				Output.Log("Localization Initialize... SteamUGCService");
-				PublishedFileId_t item = PublishedFileId_t.Invalid;
-				LanguageOptionsScreen.LoadTranslation(ref item);
-				if (item != PublishedFileId_t.Invalid)
-				{
-					Output.Log(" -> Loaded steamworks file id: ", item.ToString());
-				}
-				else
-				{
-					Output.Log(" -> Failed to load steamworks file id: ", item.ToString());
-				}
-				return;
+				Output.Log(" -> Loaded steamworks file id: ", item.ToString());
 			}
-			break;
+			else
+			{
+				Output.Log(" -> Failed to load steamworks file id: ", item.ToString());
+			}
 		}
-		Output.Log("Initialize... Local mod localization");
-		string modLocalizationFilePath = GetModLocalizationFilePath();
-		Output.Log(" -> ", modLocalizationFilePath);
-		LoadLocalTranslationFile(SelectedLanguageType.None, modLocalizationFilePath);
+		else
+		{
+			Output.Log("Initialize... Local mod localization");
+			string modLocalizationFilePath = GetModLocalizationFilePath();
+			Output.Log(" -> ", modLocalizationFilePath);
+			LoadLocalTranslationFile(SelectedLanguageType.None, modLocalizationFilePath);
+		}
 	}
 
 	public static void LoadPreinstalledTranslation(string code)
@@ -458,6 +455,21 @@ public static class Localization
 			result = result.Replace("\"", "");
 		}
 		return result;
+	}
+
+	public static string GetSelectedPreinstalledLanguageCode()
+	{
+		SelectedLanguageType selectedPreinstalledLanguageType = GetSelectedPreinstalledLanguageType();
+		if (selectedPreinstalledLanguageType != SelectedLanguageType.Preinstalled)
+		{
+			return "";
+		}
+		return KPlayerPrefs.GetString(SELECTED_LANGUAGE_CODE_KEY, "");
+	}
+
+	public static SelectedLanguageType GetSelectedPreinstalledLanguageType()
+	{
+		return (SelectedLanguageType)Enum.Parse(typeof(SelectedLanguageType), KPlayerPrefs.GetString(SELECTED_LANGUAGE_TYPE_KEY, 0.ToString()), true);
 	}
 
 	private static string GetLanguageCode(string line)

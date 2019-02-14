@@ -16,7 +16,7 @@ public class BuildWatermark : KScreen
 	protected override void OnSpawn()
 	{
 		base.OnSpawn();
-		string arg = (!Application.isEditor) ? ("Q2-" + 307409.ToString()) : "<EDITOR>";
+		string arg = (!Application.isEditor) ? ("Q2-" + 308684.ToString()) : "<EDITOR>";
 		textDisplay.SetText(string.Format(UI.DEVELOPMENTBUILDS.WATERMARK, arg));
 	}
 

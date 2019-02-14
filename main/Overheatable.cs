@@ -124,7 +124,7 @@ public class Overheatable : StateMachineComponent<Overheatable.StatesInstance>, 
 	public Notification CreateOverheatedNotification()
 	{
 		KSelectable component = GetComponent<KSelectable>();
-		return new Notification(MISC.NOTIFICATIONS.BUILDINGOVERHEATED.NAME, NotificationType.BadMinor, HashedString.Invalid, (List<Notification> notificationList, object data) => MISC.NOTIFICATIONS.BUILDINGOVERHEATED.TOOLTIP + notificationList.ReduceMessages(false), "/t• " + component.GetProperName(), false, 0f, null, null);
+		return new Notification(MISC.NOTIFICATIONS.BUILDINGOVERHEATED.NAME, NotificationType.BadMinor, HashedString.Invalid, (List<Notification> notificationList, object data) => MISC.NOTIFICATIONS.BUILDINGOVERHEATED.TOOLTIP + notificationList.ReduceMessages(false), "/t• " + component.GetProperName(), false, 0f, null, null, null);
 	}
 
 	private static string ToolTipResolver(List<Notification> notificationList, object data)

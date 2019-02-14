@@ -30,6 +30,8 @@ public class PlayerController : KMonoBehaviour, IInputHandler
 
 	private Vector3 worldDragDelta;
 
+	public string handlerName => "PlayerController";
+
 	public KInputHandler inputHandler
 	{
 		get;

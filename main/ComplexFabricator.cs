@@ -963,7 +963,7 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms
 		{
 			foreach (ComplexRecipe.RecipeElement recipeElement in ingredients)
 			{
-				if (recipeElement != null && recipeElement.amount > 0.001f)
+				if (recipeElement != null && recipeElement.amount > PICKUPABLETUNING.MINIMUM_PICKABLE_AMOUNT)
 				{
 					Tag material = recipeElement.material;
 					float amount = recipeElement.amount;

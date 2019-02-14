@@ -1158,7 +1158,7 @@ namespace STRINGS
 
 				public static LocString IS_CREATURE_AVAILABLE_FOR_FIXED_CAPTURE = "Pen Status OK";
 
-				public static LocString IS_MARKED_FOR_DISABLE = "Being disabled";
+				public static LocString IS_MARKED_FOR_DISABLE = "Building Disabled";
 
 				public static LocString IS_FUNCTIONAL = "Not functioning";
 
@@ -1211,7 +1211,7 @@ namespace STRINGS
 
 			public static LocString NOT_EXISTING_TASK = "Not Existing";
 
-			public static LocString IS_DEAD_TASK = "Uhh... \"Sleeping\"";
+			public static LocString IS_DEAD_TASK = "Dead";
 		}
 
 		public class CHOREGROUPS

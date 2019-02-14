@@ -394,6 +394,22 @@ public class GameTags
 
 	public static readonly Tag StorageLocker = TagManager.Create("StorageLocker");
 
+	public static readonly Tag FloorTiles = TagManager.Create("FloorTiles");
+
+	public static readonly Tag FarmTiles = TagManager.Create("FarmTiles");
+
+	public static readonly Tag Ladders = TagManager.Create("Ladders");
+
+	public static readonly Tag Wires = TagManager.Create("Wires");
+
+	public static readonly Tag Vents = TagManager.Create("Vents");
+
+	public static readonly Tag Pipes = TagManager.Create("Pipes");
+
+	public static readonly Tag WireBridges = TagManager.Create("WireBridges");
+
+	public static readonly Tag TravelTubeBridges = TagManager.Create("TravelTubeBridges");
+
 	public static readonly Tag MISSING_TAG = TagManager.Create("MISSING_TAG");
 
 	public static readonly Tag PlantRenderer = TagManager.Create("PlantRenderer");

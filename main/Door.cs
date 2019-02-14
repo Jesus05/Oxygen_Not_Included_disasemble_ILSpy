@@ -370,35 +370,34 @@ public class Door : Workable, ISaveLoadable, ISim200ms
 		Subscribe(-801688580, OnLogicValueChangedDelegate);
 		requestedState = CurrentState;
 		ApplyRequestedControlState(true);
-		if (rotatable.IsRotated)
+		int num = (rotatable.GetOrientation() == Orientation.Neutral) ? (building.Def.WidthInCells * (building.Def.HeightInCells - 1)) : 0;
+		int num2 = (rotatable.GetOrientation() != 0) ? building.Def.HeightInCells : building.Def.WidthInCells;
+		for (int i = 0; i != num2; i++)
 		{
-			int[] placementCells = building.PlacementCells;
-			foreach (int num in placementCells)
-			{
-				Grid.FakeFloor[num] = true;
-				Pathfinding.Instance.AddDirtyNavGridCell(num);
-			}
+			int num3 = building.PlacementCells[num + i];
+			Grid.FakeFloor[num3] = true;
+			Pathfinding.Instance.AddDirtyNavGridCell(num3);
 		}
 		List<int> list = new List<int>();
-		int[] placementCells2 = building.PlacementCells;
-		foreach (int num2 in placementCells2)
+		int[] placementCells = building.PlacementCells;
+		foreach (int num4 in placementCells)
 		{
-			Grid.HasDoor[num2] = true;
-			Grid.HasAccessDoor[num2] = ((Object)GetComponent<AccessControl>() != (Object)null);
+			Grid.HasDoor[num4] = true;
+			Grid.HasAccessDoor[num4] = ((Object)GetComponent<AccessControl>() != (Object)null);
 			if (rotatable.IsRotated)
 			{
-				list.Add(Grid.CellAbove(num2));
-				list.Add(Grid.CellBelow(num2));
+				list.Add(Grid.CellAbove(num4));
+				list.Add(Grid.CellBelow(num4));
 			}
 			else
 			{
-				list.Add(Grid.CellLeft(num2));
-				list.Add(Grid.CellRight(num2));
+				list.Add(Grid.CellLeft(num4));
+				list.Add(Grid.CellRight(num4));
 			}
-			SimMessages.SetCellProperties(num2, 8);
+			SimMessages.SetCellProperties(num4, 8);
 			if (DisplacesGas(doorType))
 			{
-				Grid.RenderedByWorld[num2] = false;
+				Grid.RenderedByWorld[num4] = false;
 			}
 		}
 	}

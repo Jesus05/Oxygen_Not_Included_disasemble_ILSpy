@@ -81,6 +81,7 @@ public class DistributionPlatform : MonoBehaviour
 			{
 				Debug.LogError("Steam not initialized in time.", null);
 			}
+			Output.Log("Distribution platform: " + sImpl.Platform);
 		}
 	}
 }

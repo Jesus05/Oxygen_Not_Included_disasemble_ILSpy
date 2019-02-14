@@ -51,8 +51,6 @@ public class ScreenPrefabs : KMonoBehaviour
 
 	public LanguageOptionsScreen languageOptionsScreen;
 
-	public ScenariosMenu scenariosMenu;
-
 	public ModsScreen modsMenu;
 
 	public GameObject GameOverScreen;

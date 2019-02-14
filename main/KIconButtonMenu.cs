@@ -54,7 +54,7 @@ public class KIconButtonMenu : KScreen
 			string text = (!(tooltipText == "")) ? tooltipText : this.text;
 			if (shortcutKey != Action.NumActions)
 			{
-				text = text + " " + GameUtil.GetHotkeyString(shortcutKey);
+				text = GameUtil.ReplaceHotkeyString(text, shortcutKey);
 			}
 			return text;
 		}
@@ -88,9 +88,6 @@ public class KIconButtonMenu : KScreen
 
 	[SerializeField]
 	public TextStyleSetting ToggleToolTipTextStyleSetting;
-
-	[SerializeField]
-	public string tooltipHotKeyColor = "#ff2222ff";
 
 	protected GameObject go;
 

@@ -30,6 +30,7 @@ public abstract class KAnimControllerBase : MonoBehaviour
 	public enum VisibilityType
 	{
 		Default,
+		OffscreenUpdate,
 		Always
 	}
 

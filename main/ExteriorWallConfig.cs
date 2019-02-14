@@ -26,7 +26,7 @@ public class ExteriorWallConfig : IBuildingConfig
 		buildingDef.BaseTimeUntilRepair = -1f;
 		buildingDef.DefaultAnimState = "off";
 		buildingDef.ObjectLayer = ObjectLayer.Backwall;
-		buildingDef.SceneLayer = Grid.SceneLayer.TempShiftPlate;
+		buildingDef.SceneLayer = Grid.SceneLayer.Backwall;
 		return buildingDef;
 	}
 

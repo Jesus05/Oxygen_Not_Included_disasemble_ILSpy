@@ -99,6 +99,8 @@ public class CameraController : KMonoBehaviour, IInputHandler
 
 	public SoundCuller soundCuller;
 
+	public string handlerName => base.gameObject.name;
+
 	public KInputHandler inputHandler
 	{
 		get;
@@ -263,7 +265,7 @@ public class CameraController : KMonoBehaviour, IInputHandler
 
 	public void OnKeyDown(KButtonEvent e)
 	{
-		if (!e.Consumed && !DisableUserCameraControl && !WithinInputField())
+		if (!e.Consumed && !DisableUserCameraControl && !WithinInputField() && (!((UnityEngine.Object)SaveGame.Instance != (UnityEngine.Object)null) || !SaveGame.Instance.GetComponent<UserNavigation>().Handle(e)))
 		{
 			if (e.TryConsume(Action.ZoomIn))
 			{
@@ -413,13 +415,13 @@ public class CameraController : KMonoBehaviour, IInputHandler
 
 	private void Update()
 	{
-		float num = (!(overrideZoomSpeed > 0f)) ? zoomSpeed : overrideZoomSpeed;
 		float unscaledDeltaTime = Time.unscaledDeltaTime;
 		Camera main = Camera.main;
-		Vector3 vector = (!(overrideZoomSpeed > 0f)) ? KInputManager.GetMousePos() : new Vector3((float)Screen.width / 2f, (float)Screen.height / 2f, 0f);
+		float num = (overrideZoomSpeed == 0f) ? zoomSpeed : overrideZoomSpeed;
+		Vector3 localPosition = base.transform.GetLocalPosition();
+		Vector3 vector = (overrideZoomSpeed == 0f) ? KInputManager.GetMousePos() : new Vector3((float)Screen.width / 2f, (float)Screen.height / 2f, 0f);
 		Vector3 position = PointUnderCursor(vector, main);
 		Vector3 position2 = main.ScreenToViewportPoint(vector);
-		Vector3 localPosition = base.transform.GetLocalPosition();
 		float t = Mathf.Min(num * unscaledDeltaTime, 0.1f);
 		SetOrthographicsSize(Mathf.Lerp(main.orthographicSize, targetOrthographicSize, t));
 		base.transform.SetLocalPosition(localPosition);

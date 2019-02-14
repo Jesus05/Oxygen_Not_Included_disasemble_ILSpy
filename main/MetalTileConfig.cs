@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using TUNING;
 using UnityEngine;
 
@@ -40,6 +41,8 @@ public class MetalTileConfig : IBuildingConfig
 		buildingDef.BlockTileShineAtlas = Assets.GetTextureAtlas("tiles_metal_spec");
 		buildingDef.DecorBlockTileInfo = Assets.GetBlockTileDecorInfo("tiles_metal_tops_decor_info");
 		buildingDef.DecorPlaceBlockTileInfo = Assets.GetBlockTileDecorInfo("tiles_metal_tops_decor_place_info");
+		buildingDef.ReplacementTags = new List<Tag>();
+		buildingDef.ReplacementTags.Add(GameTags.FloorTiles);
 		buildingDef.ConstructionOffsetFilter = BuildingDef.ConstructionOffsetFilter_OneDown;
 		return buildingDef;
 	}
@@ -61,6 +64,7 @@ public class MetalTileConfig : IBuildingConfig
 	public override void DoPostConfigureComplete(GameObject go)
 	{
 		GeneratedBuildings.RemoveLoopingSounds(go);
+		go.GetComponent<KPrefabID>().AddTag(GameTags.FloorTiles);
 	}
 
 	public override void DoPostConfigureUnderConstruction(GameObject go)

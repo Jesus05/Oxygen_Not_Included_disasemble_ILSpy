@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using TUNING;
 using UnityEngine;
 
@@ -35,6 +36,8 @@ public class HydroponicFarmConfig : IBuildingConfig
 		buildingDef.PermittedRotations = PermittedRotations.FlipV;
 		buildingDef.InputConduitType = ConduitType.Liquid;
 		buildingDef.UtilityInputOffset = new CellOffset(0, 0);
+		buildingDef.ReplacementTags = new List<Tag>();
+		buildingDef.ReplacementTags.Add(GameTags.FloorTiles);
 		return buildingDef;
 	}
 
@@ -68,6 +71,7 @@ public class HydroponicFarmConfig : IBuildingConfig
 	public override void DoPostConfigureComplete(GameObject go)
 	{
 		FarmTileConfig.SetUpFarmPlotTags(go);
+		go.GetComponent<KPrefabID>().AddTag(GameTags.FarmTiles);
 		go.GetComponent<RequireInputs>().requireConduitHasMass = false;
 	}
 }

@@ -45,6 +45,7 @@ public class ArtifactConfig : IMultiEntityConfig
 		list.Add(CreateArtifact("EggRock", UI.SPACEARTIFACTS.EGGROCK.NAME, UI.SPACEARTIFACTS.EGGROCK.DESCRIPTION, "idle_egg_rock_light", "ui_egg_rock_light", DECOR.SPACEARTIFACT.TIER3, null, SimHashes.Creature));
 		list.Add(CreateArtifact("HatchFossil", UI.SPACEARTIFACTS.HATCHFOSSIL.NAME, UI.SPACEARTIFACTS.HATCHFOSSIL.DESCRIPTION, "idle_fossil_hatch", "ui_fossil_hatch", DECOR.SPACEARTIFACT.TIER3, null, SimHashes.Creature));
 		list.Add(CreateArtifact("RockTornado", UI.SPACEARTIFACTS.ROCKTORNADO.NAME, UI.SPACEARTIFACTS.ROCKTORNADO.DESCRIPTION, "idle_whirlwind_rock", "ui_whirlwind_rock", DECOR.SPACEARTIFACT.TIER3, null, SimHashes.Creature));
+		list.Add(CreateArtifact("PacuPercolator", UI.SPACEARTIFACTS.PERCOLATOR.NAME, UI.SPACEARTIFACTS.PERCOLATOR.DESCRIPTION, "idle_percolator", "ui_percolator", DECOR.SPACEARTIFACT.TIER3, null, SimHashes.Creature));
 		list.Add(CreateArtifact("MagmaLamp", UI.SPACEARTIFACTS.MAGMALAMP.NAME, UI.SPACEARTIFACTS.MAGMALAMP.DESCRIPTION, "idle_lava_lamp", "ui_lava_lamp", DECOR.SPACEARTIFACT.TIER3, delegate(GameObject go)
 		{
 			go.AddOrGet<LoopingSounds>();

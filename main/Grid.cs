@@ -622,7 +622,7 @@ public class Grid
 	{
 		NoLayer = -2,
 		Background = -1,
-		TempShiftPlate = 1,
+		Backwall = 1,
 		GasConduits = 2,
 		GasConduitBridges = 3,
 		LiquidConduits = 4,
@@ -961,7 +961,7 @@ public class Grid
 
 	public static void RegisterTubeEntrance(int cell, int reservationCapacity)
 	{
-		DebugUtil.Assert(!HasTubeEntrance[cell]);
+		DebugUtil.Assert(!tubeEntrances.ContainsKey(cell));
 		HasTubeEntrance[cell] = true;
 		tubeEntrances.Add(cell, new TubeEntrance
 		{
@@ -972,20 +972,20 @@ public class Grid
 
 	public static void UnregisterTubeEntrance(int cell)
 	{
-		DebugUtil.Assert(HasTubeEntrance[cell]);
+		DebugUtil.Assert(tubeEntrances.ContainsKey(cell));
 		HasTubeEntrance[cell] = false;
 		tubeEntrances.Remove(cell);
 	}
 
 	public static bool ReserveTubeEntrance(int cell, int minion, bool reserve)
 	{
-		DebugUtil.Assert(HasTubeEntrance[cell]);
 		TubeEntrance tubeEntrance = tubeEntrances[cell];
 		HashSet<int> reservations = tubeEntrance.reservations;
 		if (!reserve)
 		{
 			return reservations.Remove(minion);
 		}
+		DebugUtil.Assert(HasTubeEntrance[cell]);
 		if (reservations.Count != tubeEntrance.reservationCapacity)
 		{
 			bool test = reservations.Add(minion);

@@ -19,7 +19,7 @@ namespace Klei.AI
 
 				private SchedulerHandle vomitHandle;
 
-				public Notification vomiting = new Notification(DUPLICANTS.STATUSITEMS.VOMITING.NOTIFICATION_NAME, NotificationType.Bad, HashedString.Invalid, (List<Notification> notificationList, object data) => DUPLICANTS.STATUSITEMS.VOMITING.NOTIFICATION_TOOLTIP + notificationList.ReduceMessages(false), null, true, 0f, null, null);
+				public Notification vomiting = new Notification(DUPLICANTS.STATUSITEMS.VOMITING.NOTIFICATION_NAME, NotificationType.Bad, HashedString.Invalid, (List<Notification> notificationList, object data) => DUPLICANTS.STATUSITEMS.VOMITING.NOTIFICATION_TOOLTIP + notificationList.ReduceMessages(false), null, true, 0f, null, null, null);
 
 				public InstanceData(GameObject go, DiseaseInstance diseaseInstance)
 				{

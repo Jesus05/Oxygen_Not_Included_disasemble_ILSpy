@@ -212,7 +212,7 @@ namespace Klei.AI
 			NotificationType type = (disease.severity > Disease.Severity.Minor) ? NotificationType.Bad : NotificationType.BadMinor;
 			HashedString invalid = HashedString.Invalid;
 			string infectionSourceInfo = exposureInfo.infectionSourceInfo;
-			notification = new Notification(title, type, invalid, tooltip, infectionSourceInfo, true, 0f, null, null);
+			notification = new Notification(title, type, invalid, tooltip, infectionSourceInfo, true, 0f, null, null, null);
 			statusItem = new StatusItem(disease.Id, disease.Name, DUPLICANTS.DISEASES.STATUS_ITEM_TOOLTIP.TEMPLATE, "", (disease.severity > Disease.Severity.Minor) ? StatusItem.IconType.Exclamation : StatusItem.IconType.Info, (disease.severity > Disease.Severity.Minor) ? NotificationType.Bad : NotificationType.BadMinor, false, OverlayModes.None.ID, 63486);
 			statusItem.resolveTooltipCallback = ResolveString;
 			if (smi != null)

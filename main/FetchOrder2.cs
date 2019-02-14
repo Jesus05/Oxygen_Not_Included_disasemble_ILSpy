@@ -100,9 +100,9 @@ public class FetchOrder2
 
 	public FetchOrder2(ChoreType chore_type, Tag[] tags, Tag[] required_tags, Tag[] forbidden_tags, Storage destination, float amount, OperationalRequirement operationalRequirementDEPRECATED = OperationalRequirement.None, int priorityMod = 0, Tag[] chore_tags = null)
 	{
-		if (amount <= 0.001f)
+		if (amount <= PICKUPABLETUNING.MINIMUM_PICKABLE_AMOUNT)
 		{
-			Output.LogError("Requesting an invalid FetchOrder2 amount");
+			Output.LogWarning(string.Format("FetchOrder2 {0} is requesting {1} {2} to {3}", chore_type.Id, tags[0], amount, (!((UnityEngine.Object)destination != (UnityEngine.Object)null)) ? "to nowhere" : destination.name));
 		}
 		choreType = chore_type;
 		Tags = tags;

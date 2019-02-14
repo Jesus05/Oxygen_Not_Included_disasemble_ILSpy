@@ -119,34 +119,41 @@ public class CarePackage : StateMachineComponent<CarePackage.SMInstance>
 
 	private void SpawnContents()
 	{
-		GameObject gameObject = null;
-		GameObject prefab = Assets.GetPrefab(info.id);
-		Element element = null;
-		element = ElementLoader.GetElement(info.id.ToTag());
-		Vector3 position = base.transform.position + Vector3.up / 2f;
-		if (element == null && (Object)prefab != (Object)null)
+		if (info == null)
 		{
-			for (int i = 0; (float)i < info.quantity; i++)
-			{
-				gameObject = Util.KInstantiate(prefab, position);
-				if ((Object)gameObject != (Object)null)
-				{
-					gameObject.SetActive(true);
-				}
-			}
-		}
-		else if (element != null)
-		{
-			float quantity = info.quantity;
-			gameObject = element.substance.SpawnResource(position, quantity, element.defaultValues.temperature, byte.MaxValue, 0, false, true);
+			Debug.LogWarning("CarePackage has no data to spawn from. Probably a save from before the CarePackage info data was serialized.", null);
 		}
 		else
 		{
-			Debug.LogWarning("Can't find spawnable thing from tag " + info.id, null);
-		}
-		if ((Object)gameObject != (Object)null)
-		{
-			gameObject.SetActive(true);
+			GameObject gameObject = null;
+			GameObject prefab = Assets.GetPrefab(info.id);
+			Element element = null;
+			element = ElementLoader.GetElement(info.id.ToTag());
+			Vector3 position = base.transform.position + Vector3.up / 2f;
+			if (element == null && (Object)prefab != (Object)null)
+			{
+				for (int i = 0; (float)i < info.quantity; i++)
+				{
+					gameObject = Util.KInstantiate(prefab, position);
+					if ((Object)gameObject != (Object)null)
+					{
+						gameObject.SetActive(true);
+					}
+				}
+			}
+			else if (element != null)
+			{
+				float quantity = info.quantity;
+				gameObject = element.substance.SpawnResource(position, quantity, element.defaultValues.temperature, byte.MaxValue, 0, false, true);
+			}
+			else
+			{
+				Debug.LogWarning("Can't find spawnable thing from tag " + info.id, null);
+			}
+			if ((Object)gameObject != (Object)null)
+			{
+				gameObject.SetActive(true);
+			}
 		}
 	}
 }

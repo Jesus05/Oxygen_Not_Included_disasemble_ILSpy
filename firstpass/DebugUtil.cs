@@ -99,6 +99,18 @@ public static class DebugUtil
 		}
 	}
 
+	public static void DevLogErrorWithObj(GameObject gameObject, string msg)
+	{
+		if (Debug.isDebugBuild)
+		{
+			Output.LogErrorWithObj(gameObject, msg);
+		}
+		else
+		{
+			Output.LogWarningWithObj(gameObject, msg);
+		}
+	}
+
 	public static void SoftAssert(bool test, params object[] objs)
 	{
 		if (!test)

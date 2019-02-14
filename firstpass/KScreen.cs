@@ -32,6 +32,8 @@ public class KScreen : KMonoBehaviour, IInputHandler, IPointerEnterHandler, IPoi
 
 	private bool hasFocus = false;
 
+	public string handlerName => base.gameObject.name;
+
 	public KInputHandler inputHandler
 	{
 		get;

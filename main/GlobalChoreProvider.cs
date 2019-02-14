@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GlobalChoreProvider : ChoreProvider
+public class GlobalChoreProvider : ChoreProvider, ISim200ms
 {
 	public struct Fetch
 	{
@@ -105,6 +105,11 @@ public class GlobalChoreProvider : ChoreProvider
 		}
 		RefreshEmergencyChoreStatus();
 		return chore;
+	}
+
+	public void Sim200ms(float dt)
+	{
+		RefreshEmergencyChoreStatus();
 	}
 
 	public void UpdateFetches(PathProber path_prober)

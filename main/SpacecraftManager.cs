@@ -331,7 +331,7 @@ public class SpacecraftManager : KMonoBehaviour, ISim1000ms
 
 	public void PushReadyToLandNotification(Spacecraft spacecraft)
 	{
-		Notification notification = new Notification(BUILDING.STATUSITEMS.SPACECRAFTREADYTOLAND.NOTIFICATION, NotificationType.Good, HashedString.Invalid, (List<Notification> notificationList, object data) => BUILDING.STATUSITEMS.SPACECRAFTREADYTOLAND.NOTIFICATION_TOOLTIP + notificationList.ReduceMessages(false), spacecraft.launchConditions.GetProperName(), false, 0f, null, null);
+		Notification notification = new Notification(BUILDING.STATUSITEMS.SPACECRAFTREADYTOLAND.NOTIFICATION, NotificationType.Good, HashedString.Invalid, (List<Notification> notificationList, object data) => BUILDING.STATUSITEMS.SPACECRAFTREADYTOLAND.NOTIFICATION_TOOLTIP + notificationList.ReduceMessages(false), spacecraft.launchConditions.GetProperName(), false, 0f, null, null, null);
 		base.gameObject.AddOrGet<Notifier>().Add(notification, "");
 	}
 

@@ -285,7 +285,7 @@ public class BuildTool : DragTool
 						if ((Object)gameObject2 != (Object)null && (Object)Grid.Objects[cell, (int)def.ReplacementLayer] == (Object)null)
 						{
 							BuildingComplete component = gameObject2.GetComponent<BuildingComplete>();
-							if ((Object)component != (Object)null && component.Def.Replaceable && ((Object)component.Def != (Object)def || selectedElements[0] != gameObject2.GetComponent<PrimaryElement>().Element.tag))
+							if ((Object)component != (Object)null && component.Def.Replaceable && def.CanReplace(gameObject2) && ((Object)component.Def != (Object)def || selectedElements[0] != gameObject2.GetComponent<PrimaryElement>().Element.tag))
 							{
 								gameObject = def.TryReplaceTile(visualizer, vector, buildingOrientation, selectedElements, 0);
 								Grid.Objects[cell, (int)def.ReplacementLayer] = gameObject;

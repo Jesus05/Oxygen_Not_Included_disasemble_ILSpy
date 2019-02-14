@@ -198,7 +198,7 @@ public class TerrainBG : KMonoBehaviour
 				}
 			}
 			gasMaterial.renderQueue = RenderQueues.Gas;
-			Graphics.DrawMesh(gasPlane, Vector3.zero, Quaternion.identity, gasMaterial, layer, null, 0, null);
+			Graphics.DrawMesh(position: new Vector3(0f, 0f, Grid.GetLayerZ(Grid.SceneLayer.Backwall) - 1f), mesh: gasPlane, rotation: Quaternion.identity, material: gasMaterial, layer: layer);
 		}
 	}
 }

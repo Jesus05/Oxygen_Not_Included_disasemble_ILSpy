@@ -1215,6 +1215,13 @@ namespace STRINGS
 
 				public static LocString TOOLTIP = "Amazing!\n\nMy Duplicants have managed to breach the surface of our rocky prison.\n\nI should be careful; the region is extremely inhospitable and I could easily lose resources to the vacuum of space.";
 			}
+
+			public class EMERGENCY_CHORES
+			{
+				public static LocString NAME = "Emergency Errands";
+
+				public static LocString TOOLTIP = "The colony is in Red Alert mode because Emergency Priority has been set.";
+			}
 		}
 
 		public class TUTORIAL

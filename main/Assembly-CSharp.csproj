@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <ProjectGuid>{6D2DA418-C755-4A44-9ED6-B651BE26A8C6}</ProjectGuid>
+    <ProjectGuid>{E661B64B-A596-4498-9E0A-0B6DD8D52BAC}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <OutputType>Library</OutputType>
@@ -1562,6 +1562,7 @@
     <Compile Include="PickledMealConfig.cs" />
     <Compile Include="Pickupable.cs" />
     <Compile Include="PickupableSensor.cs" />
+    <Compile Include="PICKUPABLETUNING.cs" />
     <Compile Include="Placeable.cs" />
     <Compile Include="PlaceTool.cs" />
     <Compile Include="PlanCategoryNotifications.cs" />

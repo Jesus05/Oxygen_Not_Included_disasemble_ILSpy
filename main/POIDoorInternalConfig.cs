@@ -43,6 +43,7 @@ public class POIDoorInternalConfig : IBuildingConfig
 		Door door = go.AddOrGet<Door>();
 		door.unpoweredAnimSpeed = 1f;
 		door.doorType = Door.DoorType.Internal;
+		go.AddOrGet<ZoneTile>();
 		go.AddOrGet<AccessControl>();
 		Workable workable = go.AddOrGet<Workable>();
 		workable.workTime = 3f;

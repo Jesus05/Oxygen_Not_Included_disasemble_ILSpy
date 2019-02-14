@@ -1179,10 +1179,22 @@ public static class GameUtil
 		return string.Format(ELEMENTS.BREATHABLEDESC, color4.ToHexString(), arg);
 	}
 
-	public static string GetHotkeyString(Action action)
+	public static string AppendHotkeyString(string template, Action action)
 	{
 		Color c = new Color(0.956862748f, 0.2901961f, 0.2784314f);
-		return "<color=#" + c.ToHexString() + ">(" + GetActionString(action) + ") </color>";
+		return template + "<color=#" + c.ToHexString() + ">(" + GetActionString(action) + ")</color>";
+	}
+
+	public static string ReplaceHotkeyString(string template, Action action)
+	{
+		Color c = new Color(0.956862748f, 0.2901961f, 0.2784314f);
+		return template.Replace("{Hotkey}", "<color=#" + c.ToHexString() + ">(" + GetActionString(action) + ")</color>");
+	}
+
+	public static string ReplaceHotkeyString(string template, Action action1, Action action2)
+	{
+		Color c = new Color(0.956862748f, 0.2901961f, 0.2784314f);
+		return template.Replace("{Hotkey}", "<color=#" + c.ToHexString() + ">(" + GetActionString(action2) + ") + (" + GetActionString(action2) + ")</color>");
 	}
 
 	public static string GetKeycodeLocalized(KKeyCode key_code)

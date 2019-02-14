@@ -52,6 +52,7 @@ public class PressureDoorConfig : IBuildingConfig
 		door.poweredAnimSpeed = 5f;
 		door.doorClosingSoundEventName = "MechanizedAirlock_closing";
 		door.doorOpeningSoundEventName = "MechanizedAirlock_opening";
+		go.AddOrGet<ZoneTile>();
 		go.AddOrGet<AccessControl>();
 		go.AddOrGet<KBoxCollider2D>();
 		Prioritizable.AddRef(go);

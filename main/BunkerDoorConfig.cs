@@ -69,7 +69,8 @@ public class BunkerDoorConfig : IBuildingConfig
 		workable.workTime = 3f;
 		KBatchedAnimController component = go.GetComponent<KBatchedAnimController>();
 		component.initialAnim = "closed";
-		component.visibilityType = KAnimControllerBase.VisibilityType.Always;
+		component.visibilityType = KAnimControllerBase.VisibilityType.OffscreenUpdate;
+		go.AddOrGet<ZoneTile>();
 		go.AddOrGet<KBoxCollider2D>();
 		Prioritizable.AddRef(go);
 		GeneratedBuildings.RegisterLogicPorts(go, INPUT_PORTS);

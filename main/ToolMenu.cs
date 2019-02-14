@@ -800,15 +800,15 @@ public class ToolMenu : KScreen
 				{
 					if (row[i].tools.Count == 1)
 					{
-						string hotkeyString = GameUtil.GetHotkeyString(row[i].tools[0].hotkey);
-						component3.AddMultiStringTooltip(row[i].tools[0].tooltip + " " + hotkeyString, ToggleToolTipTextStyleSetting);
+						string newString = GameUtil.ReplaceHotkeyString(row[i].tools[0].tooltip, row[i].tools[0].hotkey);
+						component3.AddMultiStringTooltip(newString, ToggleToolTipTextStyleSetting);
 					}
 					else
 					{
 						string text = row[i].tooltip;
 						if (row[i].hotkey != Action.NumActions)
 						{
-							text = text + " " + GameUtil.GetHotkeyString(row[i].hotkey);
+							text = GameUtil.ReplaceHotkeyString(text, row[i].hotkey);
 						}
 						component3.AddMultiStringTooltip(text, ToggleToolTipTextStyleSetting);
 					}
@@ -848,8 +848,8 @@ public class ToolMenu : KScreen
 					ToolTip component3 = gameObject.GetComponent<ToolTip>();
 					if ((bool)component3)
 					{
-						string str = (toolCollection.tools.Count <= 1) ? GameUtil.GetHotkeyString(toolCollection.tools[j].hotkey) : (GameUtil.GetHotkeyString(toolCollection.hotkey) + "+ " + GameUtil.GetHotkeyString(toolCollection.tools[j].hotkey));
-						component3.AddMultiStringTooltip(toolCollection.tools[j].tooltip + " " + str, ToggleToolTipTextStyleSetting);
+						string newString = (toolCollection.tools.Count <= 1) ? GameUtil.ReplaceHotkeyString(toolCollection.tools[j].tooltip, toolCollection.tools[j].hotkey) : GameUtil.ReplaceHotkeyString(toolCollection.tools[j].tooltip, toolCollection.hotkey, toolCollection.tools[j].hotkey);
+						component3.AddMultiStringTooltip(newString, ToggleToolTipTextStyleSetting);
 					}
 				}
 			}

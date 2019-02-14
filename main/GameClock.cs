@@ -101,6 +101,15 @@ public class GameClock : KMonoBehaviour, ISaveLoadable, ISim33ms, IRender1000ms
 		}
 	}
 
+	public float GetTimeSinceStartOfReport()
+	{
+		if (!IsNighttime())
+		{
+			return GetTimeSinceStartOfCycle() + 75f;
+		}
+		return 525f - GetTimeSinceStartOfCycle();
+	}
+
 	public float GetTimeSinceStartOfCycle()
 	{
 		return timeSinceStartOfCycle;

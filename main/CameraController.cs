@@ -413,7 +413,7 @@ public class CameraController : KMonoBehaviour, IInputHandler
 		return ray.origin + b;
 	}
 
-	private void Update()
+	private void NormalCamUpdate()
 	{
 		float unscaledDeltaTime = Time.unscaledDeltaTime;
 		Camera main = Camera.main;
@@ -501,14 +501,20 @@ public class CameraController : KMonoBehaviour, IInputHandler
 		{
 			base.transform.SetLocalPosition(vector2);
 		}
+	}
+
+	private void Update()
+	{
+		NormalCamUpdate();
 		ConstrainToWorld();
-		Vector3 position4 = base.transform.GetPosition();
-		float x = position4.x;
-		Vector3 position5 = base.transform.GetPosition();
-		float y = position5.y;
-		Vector3 position6 = base.transform.GetPosition();
-		Shader.SetGlobalVector("_WorldCameraPos", new Vector4(x, y, position6.z, main.orthographicSize));
-		Shader.SetGlobalVector("_WorldCursorPos", new Vector4(position.x, position.y, 0f, 0f));
+		Vector3 vector = PointUnderCursor(KInputManager.GetMousePos(), Camera.main);
+		Vector3 position = base.transform.GetPosition();
+		float x = position.x;
+		Vector3 position2 = base.transform.GetPosition();
+		float y = position2.y;
+		Vector3 position3 = base.transform.GetPosition();
+		Shader.SetGlobalVector("_WorldCameraPos", new Vector4(x, y, position3.z, Camera.main.orthographicSize));
+		Shader.SetGlobalVector("_WorldCursorPos", new Vector4(vector.x, vector.y, 0f, 0f));
 		VisibleArea.Update();
 		soundCuller = SoundCuller.CreateCuller();
 	}

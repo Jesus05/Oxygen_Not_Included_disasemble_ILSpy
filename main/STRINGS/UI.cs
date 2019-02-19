@@ -126,215 +126,215 @@ namespace STRINGS
 		{
 			public class ARTIFACTTIERS
 			{
-				public static string TIER_NONE = "Nothing";
+				public static LocString TIER_NONE = "Nothing";
 
-				public static string TIER0 = "Tier 0";
+				public static LocString TIER0 = "Tier 0";
 
-				public static string TIER1 = "Tier 1";
+				public static LocString TIER1 = "Tier 1";
 
-				public static string TIER2 = "Tier 2";
+				public static LocString TIER2 = "Tier 2";
 
-				public static string TIER3 = "Tier 3";
+				public static LocString TIER3 = "Tier 3";
 
-				public static string TIER4 = "Tier 4";
+				public static LocString TIER4 = "Tier 4";
 
-				public static string TIER5 = "Tier 5";
+				public static LocString TIER5 = "Tier 5";
 			}
 
 			public class PERCOLATOR
 			{
-				public static string NAME = "Pacu in a Percolator";
+				public static LocString NAME = "Pacu in a Percolator";
 
-				public static string DESCRIPTION = "";
+				public static LocString DESCRIPTION = "";
 			}
 
 			public class ROBOTARM
 			{
-				public static string NAME = "Robot Arm";
+				public static LocString NAME = "Robot Arm";
 
-				public static string DESCRIPTION = "";
+				public static LocString DESCRIPTION = "";
 			}
 
 			public class HATCHFOSSIL
 			{
-				public static string NAME = "Pristine Fossil";
+				public static LocString NAME = "Pristine Fossil";
 
-				public static string DESCRIPTION = "The preserved bones of an early species of Hatch.";
+				public static LocString DESCRIPTION = "The preserved bones of an early species of Hatch.";
 			}
 
 			public class MODERNART
 			{
-				public static string NAME = "Modern Art";
+				public static LocString NAME = "Modern Art";
 
-				public static string DESCRIPTION = "";
+				public static LocString DESCRIPTION = "";
 			}
 
 			public class EGGROCK
 			{
-				public static string NAME = "Egg-Shaped Rock";
+				public static LocString NAME = "Egg-Shaped Rock";
 
-				public static string DESCRIPTION = "It's unclear whether this is its naturally occurring shape, or if its appearance as been sculpted.";
+				public static LocString DESCRIPTION = "It's unclear whether this is its naturally occurring shape, or if its appearance as been sculpted.";
 			}
 
 			public class RAINBOWEGGROCK
 			{
-				public static string NAME = "Egg-Shaped Rock";
+				public static LocString NAME = "Egg-Shaped Rock";
 
-				public static string DESCRIPTION = "It's unclear whether this is its naturally occurring shape, or if its appearance as been sculpted.\n\nThis one is rainbow coloured.";
+				public static LocString DESCRIPTION = "It's unclear whether this is its naturally occurring shape, or if its appearance as been sculpted.\n\nThis one is rainbow coloured.";
 			}
 
 			public class OKAYXRAY
 			{
-				public static string NAME = "Old X-Ray";
+				public static LocString NAME = "Old X-Ray";
 
-				public static string DESCRIPTION = "";
+				public static LocString DESCRIPTION = "";
 			}
 
 			public class SHIELDGENERATOR
 			{
-				public static string NAME = "Shield Generator";
+				public static LocString NAME = "Shield Generator";
 
-				public static string DESCRIPTION = "A mechanical prototype capable of producing a small section of shielding.";
+				public static LocString DESCRIPTION = "A mechanical prototype capable of producing a small section of shielding.";
 			}
 
 			public class TEAPOT
 			{
-				public static string NAME = "Encrusted Teapot";
+				public static LocString NAME = "Encrusted Teapot";
 
-				public static string DESCRIPTION = "A teapot from the depths of space, coated in a thick layer of Neutronium.";
+				public static LocString DESCRIPTION = "A teapot from the depths of space, coated in a thick layer of Neutronium.";
 			}
 
 			public class DNAMODEL
 			{
-				public static string NAME = "Double Helix Model";
+				public static LocString NAME = "Double Helix Model";
 
-				public static string DESCRIPTION = "";
+				public static LocString DESCRIPTION = "";
 			}
 
 			public class SANDSTONE
 			{
-				public static string NAME = "Sandstone";
+				public static LocString NAME = "Sandstone";
 
-				public static string DESCRIPTION = "A beautiful rock composed of multiple layers of sediment.";
+				public static LocString DESCRIPTION = "A beautiful rock composed of multiple layers of sediment.";
 			}
 
 			public class MAGMALAMP
 			{
-				public static string NAME = "Magma Lamp";
+				public static LocString NAME = "Magma Lamp";
 
-				public static string DESCRIPTION = "Sequel to \"Lava Lamp\".";
+				public static LocString DESCRIPTION = "Sequel to \"Lava Lamp\".";
 			}
 
 			public class OBELISK
 			{
-				public static string NAME = "Small Obelisk";
+				public static LocString NAME = "Small Obelisk";
 
-				public static string DESCRIPTION = "A rectangular stone piece.\n\nIts function is unclear.";
+				public static LocString DESCRIPTION = "A rectangular stone piece.\n\nIts function is unclear.";
 			}
 
 			public class RUBIKSCUBE
 			{
-				public static string NAME = "Rubik's Cube";
+				public static LocString NAME = "Rubik's Cube";
 
-				public static string DESCRIPTION = "";
+				public static LocString DESCRIPTION = "";
 			}
 
 			public class OFFICEMUG
 			{
-				public static string NAME = "Office Mug";
+				public static LocString NAME = "Office Mug";
 
-				public static string DESCRIPTION = "";
+				public static LocString DESCRIPTION = "";
 			}
 
 			public class AMELIASWATCH
 			{
-				public static string NAME = "Wrist Watch";
+				public static LocString NAME = "Wrist Watch";
 
-				public static string DESCRIPTION = "";
+				public static LocString DESCRIPTION = "";
 			}
 
 			public class MOONMOONMOON
 			{
-				public static string NAME = "Moonmoonmoon";
+				public static LocString NAME = "Moonmoonmoon";
 
-				public static string DESCRIPTION = "A very, very small moon.";
+				public static LocString DESCRIPTION = "A very, very small moon.";
 			}
 
 			public class BIOLUMROCK
 			{
-				public static string NAME = "Bioluminescent Rock";
+				public static LocString NAME = "Bioluminescent Rock";
 
-				public static string DESCRIPTION = "";
+				public static LocString DESCRIPTION = "";
 			}
 
 			public class PLASMALAMP
 			{
-				public static string NAME = "Plasma Lamp";
+				public static LocString NAME = "Plasma Lamp";
 
-				public static string DESCRIPTION = "";
+				public static LocString DESCRIPTION = "";
 			}
 
 			public class MOLDAVITE
 			{
-				public static string NAME = "Moldavite";
+				public static LocString NAME = "Moldavite";
 
-				public static string DESCRIPTION = "";
+				public static LocString DESCRIPTION = "";
 			}
 
 			public class BRICKPHONE
 			{
-				public static string NAME = "Strange Brick";
+				public static LocString NAME = "Strange Brick";
 
-				public static string DESCRIPTION = "";
+				public static LocString DESCRIPTION = "";
 			}
 
 			public class SOLARSYSTEM
 			{
-				public static string NAME = "Self-Contained System";
+				public static LocString NAME = "Self-Contained System";
 
-				public static string DESCRIPTION = "";
+				public static LocString DESCRIPTION = "";
 			}
 
 			public class SINK
 			{
-				public static string NAME = "Sink";
+				public static LocString NAME = "Sink";
 
-				public static string DESCRIPTION = "";
+				public static LocString DESCRIPTION = "";
 			}
 
 			public class ROCKTORNADO
 			{
-				public static string NAME = "Tornado Rock";
+				public static LocString NAME = "Tornado Rock";
 
-				public static string DESCRIPTION = "";
+				public static LocString DESCRIPTION = "";
 			}
 
 			public class BLENDER
 			{
-				public static string NAME = "Blender";
+				public static LocString NAME = "Blender";
 
-				public static string DESCRIPTION = "";
+				public static LocString DESCRIPTION = "";
 			}
 
 			public class SAXOPHONE
 			{
-				public static string NAME = "Mangled Saxophone";
+				public static LocString NAME = "Mangled Saxophone";
 
-				public static string DESCRIPTION = "";
+				public static LocString DESCRIPTION = "";
 			}
 
 			public class STETHOSCOPE
 			{
-				public static string NAME = "Stethoscope";
+				public static LocString NAME = "Stethoscope";
 
-				public static string DESCRIPTION = "";
+				public static LocString DESCRIPTION = "";
 			}
 
 			public class VHS
 			{
-				public static string NAME = "Archaic Tech";
+				public static LocString NAME = "Archaic Tech";
 
-				public static string DESCRIPTION = "";
+				public static LocString DESCRIPTION = "";
 			}
 		}
 
@@ -2078,7 +2078,7 @@ namespace STRINGS
 
 			public static LocString MANAGEMENTMENU_VITALS = "View my Duplicants' vitals {Hotkey}";
 
-			public static LocString MANAGEMENTMENU_RESEARCH = "View the Research Tree {Hotkey} {Hotkey}";
+			public static LocString MANAGEMENTMENU_RESEARCH = "View the Research Tree {Hotkey}";
 
 			public static LocString MANAGEMENTMENU_REQUIRES_RESEARCH = "Build a Research Station to unlock" + HORIZONTAL_BR_RULE + "Research buildings can be found in the Stations Tab <color=#F44A47><b>[0]</b></color> of the Build Menu";
 
@@ -2088,11 +2088,11 @@ namespace STRINGS
 
 			public static LocString MANAGEMENTMENU_SCHEDULE = "Adjust the colony's time usage {Hotkey}";
 
-			public static LocString MANAGEMENTMENU_STARMAP = "Manage astronaut rocket missions {Hotkey} {Hotkey}";
+			public static LocString MANAGEMENTMENU_STARMAP = "Manage astronaut rocket missions {Hotkey}";
 
 			public static LocString MANAGEMENTMENU_REQUIRES_TELESCOPE = "Build a " + BUILDINGS.PREFABS.TELESCOPE.NAME + " to unlock" + HORIZONTAL_BR_RULE + "The " + BUILDINGS.PREFABS.TELESCOPE.NAME + " can be found in the Stations Tab <color=#F44A47><b>[0]</b></color> of the Build Menu";
 
-			public static LocString MANAGEMENTMENU_ROLES = "Manage Duplicants' job assignments {Hotkey} {Hotkey}";
+			public static LocString MANAGEMENTMENU_ROLES = "Manage Duplicants' job assignments {Hotkey}";
 
 			public static LocString MANAGEMENTMENU_REQUIRES_ROLES_STATION = "Build a Jobs Board to unlock" + HORIZONTAL_BR_RULE + "The Jobs Board can be found in the Stations Tab <color=#F44A47><b>[0]</b></color> of the Build Menu";
 
@@ -2875,6 +2875,13 @@ namespace STRINGS
 
 		public class OVERLAYS
 		{
+			public class TILEMODE
+			{
+				public static LocString NAME = "ELEMENTS OVERLAY";
+
+				public static LocString BUTTON = "Elements Overlay";
+			}
+
 			public class OXYGEN
 			{
 				public class TOOLTIPS
@@ -3552,7 +3559,7 @@ namespace STRINGS
 
 			public static LocString NEW_MINION_ITEM_TOOLTIP = "The {Job} Errand Type is automatically a {Priority} Priority for <b>Arriving Duplicants</b>";
 
-			public static LocString ITEM_TOOLTIP = "The {Job} Errand Type is a {Priority} Priority for <b>{Name}</b>";
+			public static LocString ITEM_TOOLTIP = "{Job} Errand Type for {Name}:\n<b>{Priority} Priority ({PriorityValue})</b>";
 
 			public static LocString MINION_SKILL_TOOLTIP = "{Name}'s {Attribute} skill: ";
 
@@ -3777,7 +3784,7 @@ namespace STRINGS
 
 			public static LocString HIGH = "";
 
-			public static LocString EMERGENCY = "";
+			public static LocString EMERGENCY = "Emergency Priority" + HORIZONTAL_BR_RULE + "This priority will override all other priorities and set the colony on Red Alert until the errand is completed.";
 
 			public static LocString HIGH_TOGGLE = "";
 
@@ -3984,6 +3991,8 @@ namespace STRINGS
 				public static LocString CHORE_TARGET_AND_GROUP = "{Target} -- {Groups}";
 
 				public static LocString SELF_LABEL = "Self";
+
+				public static LocString TRUNCATED_CHORES = "{0} more";
 
 				public static LocString TOOLTIP_IDLE = "{IdleDescription}\n\nDuplicants will only {Errand} when there is nothing else for them to do.\n\n" + JOBSSCREEN.PRIORITY_CLASS.IDLE + ": {ClassPriority}\nAll {BestGroup} Errands: {TypePriority}\n\nTotal Priority: {TotalPriority}";
 
@@ -4261,6 +4270,8 @@ namespace STRINGS
 			public class COMETDETECTORSIDESCREEN
 			{
 				public static LocString TITLE = "Space Scanner";
+
+				public static LocString HEADER = "Sends automation signal when selected object is detected";
 
 				public static LocString ASSIGNED = "Assigned";
 
@@ -5716,6 +5727,30 @@ namespace STRINGS
 				public static LocString LOGIC = "Automation";
 
 				public static LocString BACKWALL = "Background Buildings";
+
+				public static LocString METAL = "Metal";
+
+				public static LocString BUILDABLE = "Mineral";
+
+				public static LocString FILTER = "Filtration Medium";
+
+				public static LocString LIQUIFIABLE = "Liquefiable";
+
+				public static LocString LIQUID = "Liquid";
+
+				public static LocString GAS = "Gas";
+
+				public static LocString CONSUMABLEORE = "Consumable Ore";
+
+				public static LocString ORGANICS = "Organic";
+
+				public static LocString FARMABLE = "Cultivable Soil";
+
+				public static LocString BREATHABLE = "Breathable Gas";
+
+				public static LocString UNBREATHABLE = "Unbreathable Gas";
+
+				public static LocString AGRICULTURE = "Agriculture";
 			}
 
 			public static LocString TOOL_AREA_FMT = "{0} x {1}";

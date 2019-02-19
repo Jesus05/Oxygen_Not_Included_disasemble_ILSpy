@@ -298,10 +298,6 @@ public class Edible : Workable, IGameObjectEffectDescriptor
 
 	protected override void OnCleanUp()
 	{
-		if (isBeingConsumed)
-		{
-			StopConsuming(base.worker);
-		}
 		base.OnCleanUp();
 		Components.Edibles.Remove(this);
 	}

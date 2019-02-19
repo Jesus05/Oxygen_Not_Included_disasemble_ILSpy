@@ -192,6 +192,7 @@ public class JobsTableScreen : TableScreen
 		bool auto_assigned;
 		int personalPriority = priorityManager.GetPersonalPriority(choreGroup, out auto_assigned);
 		string newValue = GetPriorityStr(personalPriority);
+		string priorityValue = GetPriorityValue(personalPriority);
 		MinionIdentity minionIdentity = widgetRow.GetMinionIdentity();
 		if ((UnityEngine.Object)minionIdentity != (UnityEngine.Object)null && auto_assigned)
 		{
@@ -233,6 +234,7 @@ public class JobsTableScreen : TableScreen
 		{
 			text = text.Replace("{Job}", choreGroup.Name);
 			text = text.Replace("{Priority}", newValue);
+			text = text.Replace("{PriorityValue}", priorityValue);
 			componentInChildren.ClearMultiStringTooltip();
 			componentInChildren.AddMultiStringTooltip(text, null);
 			if ((UnityEngine.Object)minionIdentity != (UnityEngine.Object)null)
@@ -362,6 +364,11 @@ public class JobsTableScreen : TableScreen
 			}
 		}
 		return result;
+	}
+
+	private string GetPriorityValue(int priority)
+	{
+		return (priority * 10).ToString();
 	}
 
 	private void LoadValue(MinionIdentity minion, GameObject widget_go)

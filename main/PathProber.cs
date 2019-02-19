@@ -25,7 +25,10 @@ public class PathProber : KMonoBehaviour
 
 	protected override void OnCleanUp()
 	{
-		PathGrid.OnCleanUp();
+		if (PathGrid != null)
+		{
+			PathGrid.OnCleanUp();
+		}
 		base.OnCleanUp();
 	}
 

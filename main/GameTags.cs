@@ -418,6 +418,8 @@ public class GameTags
 
 	public static readonly Tag PedestalDisplayable = TagManager.Create("PedestalDisplayable");
 
+	public static readonly Tag HasChores = TagManager.Create("HasChores");
+
 	public static readonly Tag Suit = TagManager.Create("Suit");
 
 	public static readonly Tag AtmoSuit = TagManager.Create("Atmo_Suit");

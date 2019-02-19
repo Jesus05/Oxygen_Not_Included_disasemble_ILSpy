@@ -33,7 +33,7 @@ public class CanvasConfig : IBuildingConfig
 			radius = 6
 		}, nONE, 0.2f);
 		buildingDef.Floodable = false;
-		buildingDef.SceneLayer = Grid.SceneLayer.Paintings;
+		buildingDef.SceneLayer = Grid.SceneLayer.InteriorWall;
 		buildingDef.Overheatable = false;
 		buildingDef.AudioCategory = "Metal";
 		buildingDef.BaseTimeUntilRepair = -1f;

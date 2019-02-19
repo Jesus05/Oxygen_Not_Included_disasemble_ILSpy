@@ -32,7 +32,7 @@ public class GlassTileConfig : IBuildingConfig
 		buildingDef.AudioCategory = "Glass";
 		buildingDef.AudioSize = "small";
 		buildingDef.BaseTimeUntilRepair = -1f;
-		buildingDef.SceneLayer = Grid.SceneLayer.TileMain;
+		buildingDef.SceneLayer = Grid.SceneLayer.GlassTile;
 		buildingDef.isKAnimTile = true;
 		buildingDef.isSolidTile = true;
 		buildingDef.BlockTileIsTransparent = true;

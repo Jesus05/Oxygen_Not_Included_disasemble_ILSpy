@@ -61,11 +61,17 @@ public class MeterController
 		switch (front_back)
 		{
 		case Meter.Offset.Behind:
-			position.z = Grid.GetLayerZ(Grid.SceneLayer.BuildingBack);
+		{
+			Vector3 position3 = building_controller.transform.GetPosition();
+			position.z = position3.z + 0.1f;
 			break;
+		}
 		case Meter.Offset.Infront:
-			position.z = Grid.GetLayerZ(Grid.SceneLayer.BuildingFront);
+		{
+			Vector3 position2 = building_controller.transform.GetPosition();
+			position.z = position2.z - 0.1f;
 			break;
+		}
 		case Meter.Offset.UserSpecified:
 			position.z = Grid.GetLayerZ(user_specified_render_layer);
 			break;

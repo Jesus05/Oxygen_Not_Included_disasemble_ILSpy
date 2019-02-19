@@ -5,12 +5,6 @@ internal class ZoneTile : KMonoBehaviour
 	[MyCmpReq]
 	public Building building;
 
-	private int width = 1;
-
-	private int height = 1;
-
-	private Orientation orientation = Orientation.Neutral;
-
 	protected override void OnSpawn()
 	{
 		int[] placementCells = building.PlacementCells;

@@ -40,7 +40,7 @@ public class WireBridgeHighWattageConfig : IBuildingConfig
 		buildingDef.ReplacementLayer = ObjectLayer.ReplacementTile;
 		buildingDef.TileLayer = ObjectLayer.FoundationTile;
 		buildingDef.SceneLayer = Grid.SceneLayer.WireBridgesFront;
-		buildingDef.ForegroundLayer = Grid.SceneLayer.TileFront;
+		buildingDef.ForegroundLayer = Grid.SceneLayer.TileMain;
 		GeneratedBuildings.RegisterWithOverlay(OverlayScreen.WireIDs, "WireBridgeHighWattage");
 		buildingDef.ReplacementTags = new List<Tag>();
 		buildingDef.ReplacementTags.Add(GameTags.FloorTiles);

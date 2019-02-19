@@ -31,6 +31,8 @@ public class ChoreConsumerState
 
 	public ConsumableConsumer consumableConsumer;
 
+	public KSelectable selectable;
+
 	public Worker worker;
 
 	public SolidTransferArm solidTransferArm;
@@ -71,6 +73,7 @@ public class ChoreConsumerState
 		storage = consumer.GetComponent<Storage>();
 		consumableConsumer = consumer.GetComponent<ConsumableConsumer>();
 		worker = consumer.GetComponent<Worker>();
+		selectable = consumer.GetComponent<KSelectable>();
 		if ((Object)schedulable != (Object)null)
 		{
 			int blockIdx = Schedule.GetBlockIdx();

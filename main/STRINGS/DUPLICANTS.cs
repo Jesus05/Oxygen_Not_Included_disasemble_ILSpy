@@ -1045,11 +1045,11 @@ namespace STRINGS
 
 			public class MOVETOSAFETY
 			{
-				public static LocString NAME = "Move to Safety";
+				public static LocString NAME = "Find Somewhere Safer";
 
-				public static LocString STATUS = "Moving to safety";
+				public static LocString STATUS = "Finding Somewhere Safer";
 
-				public static LocString TOOLTIP = "This Duplicant's getting out of here!";
+				public static LocString TOOLTIP = "This Duplicant is idle and looking for somewhere safer to hang out";
 			}
 
 			public class POWER_TINKER

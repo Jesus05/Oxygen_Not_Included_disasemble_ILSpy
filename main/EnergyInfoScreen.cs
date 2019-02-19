@@ -24,6 +24,11 @@ public class EnergyInfoScreen : TargetScreen
 
 	private Dictionary<string, GameObject> batteriesLabels = new Dictionary<string, GameObject>();
 
+	public override bool IsValidForTarget(GameObject target)
+	{
+		return (Object)target.GetComponent<Generator>() != (Object)null || (Object)target.GetComponent<Wire>() != (Object)null || (Object)target.GetComponent<EnergyConsumer>() != (Object)null;
+	}
+
 	protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();

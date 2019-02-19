@@ -4,6 +4,11 @@ public class MinionVitalsScreen : TargetScreen
 {
 	public MinionVitalsPanel panel;
 
+	public override bool IsValidForTarget(GameObject target)
+	{
+		return target.GetComponent<MinionIdentity>();
+	}
+
 	public override void ScreenUpdate(bool topLevel)
 	{
 		base.ScreenUpdate(topLevel);

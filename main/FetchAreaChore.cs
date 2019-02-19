@@ -60,13 +60,28 @@ public class FetchAreaChore : Chore<FetchAreaChore.StatesInstance>
 							{
 								break;
 							}
-							if (!((UnityEngine.Object)deliverables[i] == (UnityEngine.Object)null))
+							if ((UnityEngine.Object)deliverables[i] == (UnityEngine.Object)null)
+							{
+								if (num < PICKUPABLETUNING.MINIMUM_PICKABLE_AMOUNT)
+								{
+									destination.ForceStore(this.chore.tags[0], num);
+								}
+							}
+							else
 							{
 								Pickupable pickupable2 = deliverables[i].Take(num);
 								if ((UnityEngine.Object)pickupable2 != (UnityEngine.Object)null && pickupable2.TotalAmount > 0f)
 								{
 									num -= pickupable2.TotalAmount;
-									destination.Store(pickupable2.gameObject, false, false, true, false);
+									if (pickupable2.TotalAmount < PICKUPABLETUNING.MINIMUM_PICKABLE_AMOUNT)
+									{
+										destination.ForceStore(pickupable2.GetComponent<KPrefabID>().PrefabTag, pickupable2.TotalAmount);
+										deliverables[i] = null;
+									}
+									else
+									{
+										destination.Store(pickupable2.gameObject, false, false, true, false);
+									}
 									pickupable = pickupable2;
 									if ((UnityEngine.Object)pickupable2 == (UnityEngine.Object)deliverables[i])
 									{
@@ -386,17 +401,32 @@ public class FetchAreaChore : Chore<FetchAreaChore.StatesInstance>
 			Pickupable pickupable = base.sm.deliveryObject.Get<Pickupable>(base.smi);
 			if ((UnityEngine.Object)pickupable == (UnityEngine.Object)null || pickupable.TotalAmount <= 0f)
 			{
-				base.smi.GoTo(base.sm.delivering.deliverfail);
-			}
-			else
-			{
-				if (deliveries.Count > 0)
+				if (deliveries.Count > 0 && deliveries[0].chore.amount < PICKUPABLETUNING.MINIMUM_PICKABLE_AMOUNT)
 				{
 					Delivery delivery = deliveries[0];
 					Chore chore = delivery.chore;
 					delivery.Complete(deliverables);
 					delivery.Cleanup();
 					if (deliveries.Count > 0 && deliveries[0].chore == chore)
+					{
+						deliveries.RemoveAt(0);
+					}
+					GoTo(base.sm.delivering.next);
+				}
+				else
+				{
+					base.smi.GoTo(base.sm.delivering.deliverfail);
+				}
+			}
+			else
+			{
+				if (deliveries.Count > 0)
+				{
+					Delivery delivery2 = deliveries[0];
+					Chore chore2 = delivery2.chore;
+					delivery2.Complete(deliverables);
+					delivery2.Cleanup();
+					if (deliveries.Count > 0 && deliveries[0].chore == chore2)
 					{
 						deliveries.RemoveAt(0);
 					}

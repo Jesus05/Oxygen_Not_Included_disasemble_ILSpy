@@ -11,6 +11,11 @@ public class AdditionalDetailsPanel : TargetScreen
 
 	private DetailsPanelDrawer drawer;
 
+	public override bool IsValidForTarget(GameObject target)
+	{
+		return true;
+	}
+
 	protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();

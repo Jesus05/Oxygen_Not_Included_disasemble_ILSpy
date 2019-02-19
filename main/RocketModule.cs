@@ -100,7 +100,7 @@ public class RocketModule : KMonoBehaviour
 		gameObject.name = string.Format(rocket_module_bg_base_string, base.name, rocket_module_bg_affix);
 		gameObject.SetActive(false);
 		Vector3 position = component.transform.GetPosition();
-		position.z = Grid.GetLayerZ(Grid.SceneLayer.BuildingBack);
+		position.z = Grid.GetLayerZ(Grid.SceneLayer.InteriorWall);
 		gameObject.transform.SetPosition(position);
 		gameObject.transform.parent = base.transform;
 		KBatchedAnimController component2 = gameObject.GetComponent<KBatchedAnimController>();

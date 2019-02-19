@@ -184,7 +184,7 @@ public class MinionTodoSideScreen : SideScreenContent
 						else if (!flag && activeChoreEntries != 0 && GameUtil.AreChoresUIMergeable(pooledList[num2], choreB))
 						{
 							num++;
-							hierarchyReferences.GetReference<LocText>("MoreLabelText").text = num + " more";
+							hierarchyReferences.GetReference<LocText>("MoreLabelText").text = string.Format(UI.UISIDESCREENS.MINIONTODOSIDESCREEN.TRUNCATED_CHORES, num);
 						}
 						else
 						{

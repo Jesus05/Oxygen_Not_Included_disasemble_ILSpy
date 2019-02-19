@@ -144,7 +144,7 @@ public class LaunchConditionManager : KMonoBehaviour, ISim4000ms, ISim1000ms
 			Debug.LogError("Null destination passed to launch", null);
 		}
 		Spacecraft spacecraftFromLaunchConditionManager = SpacecraftManager.instance.GetSpacecraftFromLaunchConditionManager(this);
-		if (spacecraftFromLaunchConditionManager.state == Spacecraft.MissionState.Grounded && CheckReadyToLaunch() && CheckAbleToFly())
+		if (spacecraftFromLaunchConditionManager.state == Spacecraft.MissionState.Grounded && (DebugHandler.InstantBuildMode || (CheckReadyToLaunch() && CheckAbleToFly())))
 		{
 			launchable.Trigger(-1056989049, null);
 			SpacecraftManager.instance.SetSpacecraftDestination(this, destination);

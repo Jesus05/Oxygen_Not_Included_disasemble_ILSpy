@@ -19,7 +19,7 @@ public class BingeEatChore : Chore<BingeEatChore.StatesInstance>
 			Navigator component = GetComponent<Navigator>();
 			int num = 2147483647;
 			Edible edible = null;
-			if (base.sm.bingeremaining.Get(base.smi) <= 0f)
+			if (base.sm.bingeremaining.Get(base.smi) <= PICKUPABLETUNING.MINIMUM_PICKABLE_AMOUNT)
 			{
 				GoTo(base.sm.eat_pst);
 			}

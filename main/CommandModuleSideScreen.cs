@@ -98,7 +98,7 @@ public class CommandModuleSideScreen : SideScreenContent
 				gameObject.SetActive(true);
 			}
 			bool flag2 = item.EvaluateLaunchCondition();
-			component.GetReference<LocText>("Label").text = item.GetLaunchStatusMessage(true);
+			component.GetReference<LocText>("Label").text = item.GetLaunchStatusMessage(flag2);
 			component.GetReference<LocText>("Label").color = ((!flag2) ? Color.red : Color.black);
 			component.GetReference<Image>("Box").color = ((!flag2) ? Color.red : Color.black);
 			component.GetReference<Image>("Check").gameObject.SetActive(flag2);

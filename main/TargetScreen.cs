@@ -1,8 +1,10 @@
 using UnityEngine;
 
-public class TargetScreen : KScreen
+public abstract class TargetScreen : KScreen
 {
 	protected GameObject selectedTarget;
+
+	public abstract bool IsValidForTarget(GameObject target);
 
 	public void SetTarget(GameObject target)
 	{

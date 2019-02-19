@@ -226,12 +226,13 @@ public class Navigator : StateMachineComponent<Navigator.StatesInstance>, ISaveL
 		simRenderLoadBalance = true;
 		autoRegisterSimRender = false;
 		NavGrid = Pathfinding.Instance.GetNavGrid(NavGridName);
+		PathProber component = GetComponent<PathProber>();
+		component.SetValidNavTypes(NavGrid.ValidNavTypes, maxProbingRadius);
 	}
 
 	protected override void OnSpawn()
 	{
 		base.OnSpawn();
-		GetComponent<PathProber>().SetValidNavTypes(NavGrid.ValidNavTypes, maxProbingRadius);
 		Subscribe(1623392196, OnDefeatedDelegate);
 		Subscribe(-1506500077, OnDefeatedDelegate);
 		Subscribe(493375141, OnRefreshUserMenuDelegate);

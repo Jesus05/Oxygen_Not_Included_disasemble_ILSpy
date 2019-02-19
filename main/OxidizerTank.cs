@@ -74,6 +74,7 @@ public class OxidizerTank : KMonoBehaviour, IUserControlledCapacity
 	protected override void OnSpawn()
 	{
 		base.OnSpawn();
+		GetComponent<KBatchedAnimController>().Play("grounded", KAnim.PlayMode.Loop, 1f, 0f);
 		UserMaxCapacity = UserMaxCapacity;
 		Subscribe(1366341636, OnReturnRocketDelegate);
 		Subscribe(-1697596308, OnStorageChangeDelegate);

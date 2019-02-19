@@ -54,6 +54,12 @@ public class BuildingChoresPanel : TargetScreen
 
 	private List<DupeEntryData> DupeEntryDatas = new List<DupeEntryData>();
 
+	public override bool IsValidForTarget(GameObject target)
+	{
+		KPrefabID component = target.GetComponent<KPrefabID>();
+		return (UnityEngine.Object)component != (UnityEngine.Object)null && component.HasTag(GameTags.HasChores) && !component.HasTag(GameTags.Minion);
+	}
+
 	protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();

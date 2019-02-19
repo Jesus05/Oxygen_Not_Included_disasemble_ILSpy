@@ -15,6 +15,8 @@ public class CargoBay : KMonoBehaviour
 
 	public Storage storage;
 
+	private MeterController meter;
+
 	public CargoType storageType = CargoType.solids;
 
 	private static readonly EventSystem.IntraObjectHandler<CargoBay> OnLaunchDelegate = new EventSystem.IntraObjectHandler<CargoBay>(delegate(CargoBay component, object data)
@@ -44,6 +46,11 @@ public class CargoBay : KMonoBehaviour
 		Subscribe(-1056989049, OnLaunchDelegate);
 		Subscribe(238242047, OnLandDelegate);
 		Subscribe(493375141, OnRefreshUserMenuDelegate);
+		meter = new MeterController(GetComponent<KBatchedAnimController>(), "meter_target", "meter", Meter.Offset.Infront, Grid.SceneLayer.NoLayer, "meter_target", "meter_fill", "meter_frame", "meter_OL");
+		Subscribe(-1697596308, delegate
+		{
+			meter.SetPositionPercent(storage.MassStored() / storage.Capacity());
+		});
 	}
 
 	private void OnRefreshUserMenu(object data)

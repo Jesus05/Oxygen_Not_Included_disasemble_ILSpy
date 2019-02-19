@@ -108,7 +108,7 @@ public abstract class Chore
 					if (failedPreconditionId != -1)
 					{
 						PreconditionInstance preconditionInstance = chore.preconditions[failedPreconditionId];
-						result = ((preconditionInstance.id == ChorePreconditions.instance.IsMoreSatisfying.id) ? 1 : 0);
+						result = ((preconditionInstance.id == ChorePreconditions.instance.IsMoreSatisfyingLate.id) ? 1 : 0);
 					}
 					else
 					{
@@ -133,6 +133,11 @@ public abstract class Chore
 						num++;
 						Debugger.Break();
 					}
+				}
+				if (chore.arePreconditionsDirty)
+				{
+					chore.preconditions.Sort((PreconditionInstance x, PreconditionInstance y) => x.sortOrder.CompareTo(y.sortOrder));
+					chore.arePreconditionsDirty = false;
 				}
 				int num2 = 0;
 				while (true)
@@ -410,7 +415,8 @@ public abstract class Chore
 		AddPrecondition(ChorePreconditions.instance.IsPermitted, null);
 		AddPrecondition(ChorePreconditions.instance.IsPreemptable, null);
 		AddPrecondition(ChorePreconditions.instance.HasUrge, null);
-		AddPrecondition(ChorePreconditions.instance.IsMoreSatisfying, null);
+		AddPrecondition(ChorePreconditions.instance.IsMoreSatisfyingEarly, null);
+		AddPrecondition(ChorePreconditions.instance.IsMoreSatisfyingLate, null);
 		AddPrecondition(ChorePreconditions.instance.IsOverrideTargetNullOrMe, null);
 		chore_provider.AddChore(this);
 	}

@@ -19,6 +19,11 @@ public class MinionPersonalityPanel : TargetScreen
 
 	private SchedulerHandle updateHandle;
 
+	public override bool IsValidForTarget(GameObject target)
+	{
+		return (Object)target.GetComponent<MinionIdentity>() != (Object)null;
+	}
+
 	public override void ScreenUpdate(bool topLevel)
 	{
 		base.ScreenUpdate(topLevel);

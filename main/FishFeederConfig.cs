@@ -25,7 +25,7 @@ public class FishFeederConfig : IBuildingConfig
 		buildingDef.AudioCategory = "Metal";
 		buildingDef.Entombable = true;
 		buildingDef.Floodable = true;
-		buildingDef.ForegroundLayer = Grid.SceneLayer.TileFront;
+		buildingDef.ForegroundLayer = Grid.SceneLayer.TileMain;
 		return buildingDef;
 	}
 

@@ -23,6 +23,11 @@ public class MinionStatsPanel : TargetScreen
 
 	private List<ReportManager.ReportEntry.Note> stressNotes = new List<ReportManager.ReportEntry.Note>();
 
+	public override bool IsValidForTarget(GameObject target)
+	{
+		return target.GetComponent<MinionIdentity>();
+	}
+
 	protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();

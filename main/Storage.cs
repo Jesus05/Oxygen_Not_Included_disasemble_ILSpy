@@ -903,6 +903,21 @@ public class Storage : Workable, ISaveLoadableDetails, IEffectDescriptor
 		ApplyStoredItemModifiers(go, false, false);
 	}
 
+	public bool ForceStore(Tag tag, float amount)
+	{
+		for (int i = 0; i < items.Count; i++)
+		{
+			GameObject gameObject = items[i];
+			if ((UnityEngine.Object)gameObject != (UnityEngine.Object)null && gameObject.HasTag(tag))
+			{
+				PrimaryElement component = gameObject.GetComponent<PrimaryElement>();
+				component.Mass += amount;
+				return true;
+			}
+		}
+		return false;
+	}
+
 	public float GetAmountAvailable(Tag tag)
 	{
 		float num = 0f;

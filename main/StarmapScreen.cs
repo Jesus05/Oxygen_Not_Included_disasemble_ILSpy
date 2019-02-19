@@ -1197,7 +1197,7 @@ public class StarmapScreen : KModalScreen
 			foreach (Tuple<ArtifactTier, float> rate in artifactDropTable.rates)
 			{
 				BreakdownListRow breakdownListRow5 = destinationDetailsArtifacts.AddRow();
-				breakdownListRow5.ShowData(rate.first.name, GameUtil.GetFormattedPercent(rate.second / artifactDropTable.totalWeight * 100f, GameUtil.TimeSlice.None));
+				breakdownListRow5.ShowData(rate.first.name_key.String, GameUtil.GetFormattedPercent(rate.second / artifactDropTable.totalWeight * 100f, GameUtil.TimeSlice.None));
 			}
 		}
 		destinationDetailsContainer.gameObject.SetActive(true);

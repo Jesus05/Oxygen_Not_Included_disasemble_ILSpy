@@ -86,7 +86,7 @@ public class FuelTank : Storage, IUserControlledCapacity
 		GetComponent<KBatchedAnimController>().Play("grounded", KAnim.PlayMode.Loop, 1f, 0f);
 		base.gameObject.Subscribe(1366341636, OnReturn);
 		UserMaxCapacity = UserMaxCapacity;
-		meter = new MeterController(GetComponent<KBatchedAnimController>(), "meter_target", "meter", Meter.Offset.UserSpecified, Grid.SceneLayer.TransferArm, "meter_target", "meter_fill", "meter_frame", "meter_OL");
+		meter = new MeterController(GetComponent<KBatchedAnimController>(), "meter_target", "meter", Meter.Offset.Infront, Grid.SceneLayer.NoLayer, "meter_target", "meter_fill", "meter_frame", "meter_OL");
 		Subscribe(-1697596308, delegate
 		{
 			meter.SetPositionPercent(MassStored() / capacityKg);

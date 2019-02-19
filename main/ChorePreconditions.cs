@@ -229,33 +229,73 @@ public class ChorePreconditions
 		}
 	};
 
-	public Chore.Precondition IsMoreSatisfying = new Chore.Precondition
+	public Chore.Precondition IsMoreSatisfyingEarly = new Chore.Precondition
 	{
-		id = "IsMoreSatisfying",
+		id = "IsMoreSatisfyingEarly",
 		description = (string)DUPLICANTS.CHORES.PRECONDITIONS.IS_MORE_SATISFYING,
-		sortOrder = 1,
+		sortOrder = -1,
 		fn = (Chore.PreconditionFn)delegate(ref Chore.Precondition.Context context, object data)
 		{
 			if (!context.isAttemptingOverride)
 			{
-				Chore currentChore2 = context.consumerState.choreDriver.GetCurrentChore();
-				if (currentChore2 == null)
+				if (!context.consumerState.selectable.IsSelected)
 				{
-					return true;
+					Chore currentChore3 = context.consumerState.choreDriver.GetCurrentChore();
+					if (currentChore3 == null)
+					{
+						return true;
+					}
+					if (context.masterPriority.priority_class == currentChore3.masterPriority.priority_class)
+					{
+						if ((Object)context.consumerState.consumer != (Object)null && context.personalPriority != context.consumerState.consumer.GetPersonalPriority(currentChore3.choreType))
+						{
+							return context.personalPriority > context.consumerState.consumer.GetPersonalPriority(currentChore3.choreType);
+						}
+						if (context.masterPriority.priority_value == currentChore3.masterPriority.priority_value)
+						{
+							return context.priority > currentChore3.choreType.priority;
+						}
+						return context.masterPriority.priority_value > currentChore3.masterPriority.priority_value;
+					}
+					return context.masterPriority.priority_class > currentChore3.masterPriority.priority_class;
 				}
-				if (context.masterPriority.priority_class == currentChore2.masterPriority.priority_class)
+				return true;
+			}
+			return true;
+		}
+	};
+
+	public Chore.Precondition IsMoreSatisfyingLate = new Chore.Precondition
+	{
+		id = "IsMoreSatisfyingLate",
+		description = (string)DUPLICANTS.CHORES.PRECONDITIONS.IS_MORE_SATISFYING,
+		sortOrder = 10000,
+		fn = (Chore.PreconditionFn)delegate(ref Chore.Precondition.Context context, object data)
+		{
+			if (!context.isAttemptingOverride)
+			{
+				if (context.consumerState.selectable.IsSelected)
 				{
-					if ((Object)context.consumerState.consumer != (Object)null && context.personalPriority != context.consumerState.consumer.GetPersonalPriority(currentChore2.choreType))
+					Chore currentChore2 = context.consumerState.choreDriver.GetCurrentChore();
+					if (currentChore2 == null)
 					{
-						return context.personalPriority > context.consumerState.consumer.GetPersonalPriority(currentChore2.choreType);
+						return true;
 					}
-					if (context.masterPriority.priority_value == currentChore2.masterPriority.priority_value)
+					if (context.masterPriority.priority_class == currentChore2.masterPriority.priority_class)
 					{
-						return context.priority > currentChore2.choreType.priority;
+						if ((Object)context.consumerState.consumer != (Object)null && context.personalPriority != context.consumerState.consumer.GetPersonalPriority(currentChore2.choreType))
+						{
+							return context.personalPriority > context.consumerState.consumer.GetPersonalPriority(currentChore2.choreType);
+						}
+						if (context.masterPriority.priority_value == currentChore2.masterPriority.priority_value)
+						{
+							return context.priority > currentChore2.choreType.priority;
+						}
+						return context.masterPriority.priority_value > currentChore2.masterPriority.priority_value;
 					}
-					return context.masterPriority.priority_value > currentChore2.masterPriority.priority_value;
+					return context.masterPriority.priority_class > currentChore2.masterPriority.priority_class;
 				}
-				return context.masterPriority.priority_class > currentChore2.masterPriority.priority_class;
+				return true;
 			}
 			return true;
 		}
@@ -288,9 +328,13 @@ public class ChorePreconditions
 	{
 		id = "IsNotRedAlert",
 		description = (string)DUPLICANTS.CHORES.PRECONDITIONS.IS_NOT_RED_ALERT,
-		fn = (Chore.PreconditionFn)delegate
+		fn = (Chore.PreconditionFn)delegate(ref Chore.Precondition.Context context, object data)
 		{
-			return !RedAlertManager.Instance.Get().IsOn();
+			if (context.chore.masterPriority.priority_class != PriorityScreen.PriorityClass.emergency)
+			{
+				return !RedAlertManager.Instance.Get().IsOn();
+			}
+			return true;
 		}
 	};
 

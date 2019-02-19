@@ -21,6 +21,11 @@ public class DiseaseInfoScreen : TargetScreen
 		component.OnRefreshData(data);
 	});
 
+	public override bool IsValidForTarget(GameObject target)
+	{
+		return (Object)target.GetComponent<CellSelectionObject>() != (Object)null || (Object)target.GetComponent<PrimaryElement>() != (Object)null;
+	}
+
 	protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();

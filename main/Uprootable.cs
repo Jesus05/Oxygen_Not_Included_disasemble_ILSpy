@@ -82,6 +82,7 @@ public class Uprootable : Workable
 
 	protected override void OnSpawn()
 	{
+		base.OnSpawn();
 		Subscribe(2127324410, ForceCancelUprootDelegate);
 		SetWorkTime(12.5f);
 		Subscribe(2127324410, OnCancelDelegate);

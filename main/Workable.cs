@@ -205,6 +205,8 @@ public class Workable : KMonoBehaviour, ISaveLoadable, IApproachable
 			}
 			roleUpdateHandle = Game.Instance.Subscribe(-1523247426, UpdateStatusItem);
 		}
+		KPrefabID component = GetComponent<KPrefabID>();
+		component.AddTag(GameTags.HasChores);
 		UpdateStatusItem(null);
 	}
 

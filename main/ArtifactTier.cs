@@ -2,11 +2,11 @@ public class ArtifactTier
 {
 	public EffectorValues decorValues;
 
-	public string name;
+	public StringKey name_key;
 
-	public ArtifactTier(string id, EffectorValues values)
+	public ArtifactTier(StringKey str_key, EffectorValues values)
 	{
 		decorValues = values;
-		name = id;
+		name_key = str_key;
 	}
 }

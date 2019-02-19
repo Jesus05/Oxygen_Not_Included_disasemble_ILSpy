@@ -19,12 +19,6 @@ public class DetailsScreen : KTabMenu
 
 		public TargetScreen screen;
 
-		public string requiredComponentType;
-
-		public string[] excludeComponentType;
-
-		public Tag[] excludedPrefabTags;
-
 		public int displayOrderPriority;
 
 		public bool hideWhenDead;
@@ -291,25 +285,11 @@ public class DetailsScreen : KTabMenu
 			int num2 = 0;
 			for (int j = 0; j < screens.Length; j++)
 			{
-				string requiredComponentType = screens[j].requiredComponentType;
-				bool flag = requiredComponentType == null || requiredComponentType == "" || (UnityEngine.Object)GetComponent(go, requiredComponentType) != (UnityEngine.Object)null;
-				if (flag && requiredComponentType == "Storage")
-				{
-					flag = go.GetComponent<Storage>().showInUI;
-				}
-				bool flag2 = false;
-				for (int k = 0; k < screens[j].excludeComponentType.Length; k++)
-				{
-					string text = screens[j].excludeComponentType[k];
-					if (text != null && (UnityEngine.Object)GetComponent(go, text) != (UnityEngine.Object)null)
-					{
-						flag2 = true;
-						break;
-					}
-				}
-				bool flag3 = screens[j].hideWhenDead && base.gameObject.HasTag(GameTags.Dead);
-				SetTabEnabled(screens[j].tabIdx, flag && !flag2 && !flag3);
-				if (flag)
+				bool flag = screens[j].screen.IsValidForTarget(go);
+				bool flag2 = screens[j].hideWhenDead && base.gameObject.HasTag(GameTags.Dead);
+				bool flag3 = flag && !flag2;
+				SetTabEnabled(screens[j].tabIdx, flag3);
+				if (flag3)
 				{
 					num2++;
 					if (num == -1)

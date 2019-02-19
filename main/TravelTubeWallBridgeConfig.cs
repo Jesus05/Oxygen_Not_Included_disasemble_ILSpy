@@ -34,7 +34,7 @@ public class TravelTubeWallBridgeConfig : IBuildingConfig
 		buildingDef.UtilityOutputOffset = new CellOffset(0, 2);
 		buildingDef.IsFoundation = true;
 		buildingDef.SceneLayer = Grid.SceneLayer.BuildingFront;
-		buildingDef.ForegroundLayer = Grid.SceneLayer.TileFront;
+		buildingDef.ForegroundLayer = Grid.SceneLayer.TileMain;
 		buildingDef.ReplacementTags = new List<Tag>();
 		buildingDef.ReplacementTags.Add(GameTags.FloorTiles);
 		return buildingDef;

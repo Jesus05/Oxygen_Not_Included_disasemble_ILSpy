@@ -176,9 +176,9 @@ public class KAnimBatchGroup
 
 	private static KAnimBatchTextureCache cache = new KAnimBatchTextureCache();
 
-	public int batchCount = 0;
+	public int batchCount;
 
-	private int float4sPerSide = 0;
+	private int float4sPerSide;
 
 	private static int ShaderProperty_BUILD_AND_ANIM_TEXTURE_SIZE = Shader.PropertyToID("BUILD_AND_ANIM_TEXTURE_SIZE");
 

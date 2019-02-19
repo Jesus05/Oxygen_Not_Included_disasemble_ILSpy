@@ -71,23 +71,23 @@ namespace ProcGen
 
 		private bool GetSetting<T>(DefaultSettings set, string target, ParserFn<T> parser, out T res)
 		{
-			if (set != null && set.data != null && set.data.ContainsKey(target))
+			if (set == null || set.data == null || !set.data.ContainsKey(target))
 			{
-				object obj = set.data[target];
-				if (obj.GetType() != typeof(T))
-				{
-					bool flag = parser(obj as string, out res);
-					if (flag)
-					{
-						set.data[target] = res;
-					}
-					return flag;
-				}
+				res = default(T);
+				return false;
+			}
+			object obj = set.data[target];
+			if (obj.GetType() == typeof(T))
+			{
 				res = (T)obj;
 				return true;
 			}
-			res = default(T);
-			return false;
+			bool flag = parser(obj as string, out res);
+			if (flag)
+			{
+				set.data[target] = res;
+			}
+			return flag;
 		}
 
 		private T GetSetting<T>(string target, ParserFn<T> parser)
@@ -159,23 +159,23 @@ namespace ProcGen
 
 		private bool GetPathAndName(string srcPath, string srcName, out string name)
 		{
-			if (!File.Exists(srcPath + srcName + ".yaml"))
+			if (File.Exists(srcPath + srcName + ".yaml"))
 			{
-				string[] array = srcName.Split('/');
-				name = array[0];
-				for (int i = 1; i < array.Length - 1; i++)
-				{
-					name = name + "/" + array[i];
-				}
-				if (!File.Exists(srcPath + name + ".yaml"))
-				{
-					name = srcName;
-					return false;
-				}
+				name = srcName;
+				return true;
+			}
+			string[] array = srcName.Split('/');
+			name = array[0];
+			for (int i = 1; i < array.Length - 1; i++)
+			{
+				name = name + "/" + array[i];
+			}
+			if (File.Exists(srcPath + name + ".yaml"))
+			{
 				return true;
 			}
 			name = srcName;
-			return true;
+			return false;
 		}
 
 		private static bool TryParseEnum<E>(string value, out E result) where E : struct

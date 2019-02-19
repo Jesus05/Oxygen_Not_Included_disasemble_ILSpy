@@ -21,13 +21,13 @@ namespace YamlDotNet.Serialization.NodeDeserializers
 		bool INodeDeserializer.Deserialize(IParser parser, Type expectedType, Func<IParser, Type, object> nestedObjectDeserializer, out object value)
 		{
 			IYamlTypeConverter yamlTypeConverter = converters.FirstOrDefault((IYamlTypeConverter c) => c.Accepts(expectedType));
-			if (yamlTypeConverter != null)
+			if (yamlTypeConverter == null)
 			{
-				value = yamlTypeConverter.ReadYaml(parser, expectedType);
-				return true;
+				value = null;
+				return false;
 			}
-			value = null;
-			return false;
+			value = yamlTypeConverter.ReadYaml(parser, expectedType);
+			return true;
 		}
 	}
 }

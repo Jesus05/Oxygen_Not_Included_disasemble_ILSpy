@@ -9,7 +9,7 @@ public class IncrementorToggle : MultiToggle
 
 	private const float incrementAccelerationScale = 2.5f;
 
-	private float timeToNextIncrement = 0f;
+	private float timeToNextIncrement;
 
 	protected override void Update()
 	{
@@ -33,7 +33,7 @@ public class IncrementorToggle : MultiToggle
 	{
 		if (play_sound_on_click)
 		{
-			if (states[state].on_click_override_sound_path == "")
+			if (states[state].on_click_override_sound_path == string.Empty)
 			{
 				KFMOD.PlayOneShot(GlobalAssets.GetSound("HUD_Click", false));
 			}

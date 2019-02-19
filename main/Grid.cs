@@ -955,11 +955,11 @@ public class Grid
 		}
 		}
 		Restriction.Directions value = (Restriction.Directions)0;
-		if (!restriction.directionMasks.TryGetValue(minion, out value) && !restriction.directionMasks.TryGetValue(-1, out value))
+		if (restriction.directionMasks.TryGetValue(minion, out value) || restriction.directionMasks.TryGetValue(-1, out value))
 		{
-			return true;
+			return (value & directions) == (Restriction.Directions)0;
 		}
-		return (value & directions) == (Restriction.Directions)0;
+		return true;
 	}
 
 	public static void RegisterTubeEntrance(int cell, int reservationCapacity)
@@ -984,18 +984,18 @@ public class Grid
 	{
 		TubeEntrance tubeEntrance = tubeEntrances[cell];
 		HashSet<int> reservations = tubeEntrance.reservations;
-		if (!reserve)
+		if (reserve)
 		{
-			return reservations.Remove(minion);
-		}
-		DebugUtil.Assert(HasTubeEntrance[cell]);
-		if (reservations.Count != tubeEntrance.reservationCapacity)
-		{
+			DebugUtil.Assert(HasTubeEntrance[cell]);
+			if (reservations.Count == tubeEntrance.reservationCapacity)
+			{
+				return false;
+			}
 			bool test = reservations.Add(minion);
 			DebugUtil.Assert(test);
 			return true;
 		}
-		return false;
+		return reservations.Remove(minion);
 	}
 
 	public static void SetTubeEntranceReservationCapacity(int cell, int newReservationCapacity)
@@ -1008,13 +1008,13 @@ public class Grid
 
 	public static bool HasUsableTubeEntrance(int cell, int minion)
 	{
-		if (HasTubeEntrance[cell])
+		if (!HasTubeEntrance[cell])
 		{
-			TubeEntrance tubeEntrance = tubeEntrances[cell];
-			HashSet<int> reservations = tubeEntrance.reservations;
-			return reservations.Count < tubeEntrance.reservationCapacity || reservations.Contains(minion);
+			return false;
 		}
-		return false;
+		TubeEntrance tubeEntrance = tubeEntrances[cell];
+		HashSet<int> reservations = tubeEntrance.reservations;
+		return reservations.Count < tubeEntrance.reservationCapacity || reservations.Contains(minion);
 	}
 
 	public static bool HasReservedTubeEntrance(int cell, int minion)
@@ -1056,17 +1056,17 @@ public class Grid
 		DebugUtil.Assert(HasSuitMarker[cell]);
 		SuitMarker suitMarker = suitMarkers[cell];
 		HashSet<int> suitReservations = suitMarker.suitReservations;
-		if (!reserve)
+		if (reserve)
 		{
-			return suitReservations.Remove(minion);
-		}
-		if (suitReservations.Count != suitMarker.suitCount)
-		{
+			if (suitReservations.Count == suitMarker.suitCount)
+			{
+				return false;
+			}
 			bool test = suitReservations.Add(minion);
 			DebugUtil.Assert(test);
 			return true;
 		}
-		return false;
+		return suitReservations.Remove(minion);
 	}
 
 	public static bool ReserveEmptyLocker(int cell, int minion, bool reserve)
@@ -1074,17 +1074,17 @@ public class Grid
 		DebugUtil.Assert(HasSuitMarker[cell]);
 		SuitMarker suitMarker = suitMarkers[cell];
 		HashSet<int> emptyLockerReservations = suitMarker.emptyLockerReservations;
-		if (!reserve)
+		if (reserve)
 		{
-			return emptyLockerReservations.Remove(minion);
-		}
-		if (emptyLockerReservations.Count != suitMarker.emptyLockerCount)
-		{
+			if (emptyLockerReservations.Count == suitMarker.emptyLockerCount)
+			{
+				return false;
+			}
 			bool test = emptyLockerReservations.Add(minion);
 			DebugUtil.Assert(test);
 			return true;
 		}
-		return false;
+		return emptyLockerReservations.Remove(minion);
 	}
 
 	public static void UpdateSuitMarker(int cell, int fullLockerCount, int emptyLockerCount, SuitMarker.Flags flags, PathFinder.PotentialPath.Flags pathFlags)
@@ -1100,39 +1100,39 @@ public class Grid
 
 	public static bool TryGetSuitMarkerFlags(int cell, out SuitMarker.Flags flags, out PathFinder.PotentialPath.Flags pathFlags)
 	{
-		if (!HasSuitMarker[cell])
+		if (HasSuitMarker[cell])
 		{
-			flags = (SuitMarker.Flags)0;
-			pathFlags = PathFinder.PotentialPath.Flags.None;
-			return false;
+			SuitMarker suitMarker = suitMarkers[cell];
+			flags = suitMarker.flags;
+			SuitMarker suitMarker2 = suitMarkers[cell];
+			pathFlags = suitMarker2.pathFlags;
+			return true;
 		}
-		SuitMarker suitMarker = suitMarkers[cell];
-		flags = suitMarker.flags;
-		SuitMarker suitMarker2 = suitMarkers[cell];
-		pathFlags = suitMarker2.pathFlags;
-		return true;
+		flags = (SuitMarker.Flags)0;
+		pathFlags = PathFinder.PotentialPath.Flags.None;
+		return false;
 	}
 
 	public static bool HasSuit(int cell, int minion)
 	{
-		if (HasSuitMarker[cell])
+		if (!HasSuitMarker[cell])
 		{
-			SuitMarker suitMarker = suitMarkers[cell];
-			HashSet<int> suitReservations = suitMarker.suitReservations;
-			return suitReservations.Count < suitMarker.suitCount || suitReservations.Contains(minion);
+			return false;
 		}
-		return false;
+		SuitMarker suitMarker = suitMarkers[cell];
+		HashSet<int> suitReservations = suitMarker.suitReservations;
+		return suitReservations.Count < suitMarker.suitCount || suitReservations.Contains(minion);
 	}
 
 	public static bool HasEmptyLocker(int cell, int minion)
 	{
-		if (HasSuitMarker[cell])
+		if (!HasSuitMarker[cell])
 		{
-			SuitMarker suitMarker = suitMarkers[cell];
-			HashSet<int> emptyLockerReservations = suitMarker.emptyLockerReservations;
-			return emptyLockerReservations.Count < suitMarker.emptyLockerCount || emptyLockerReservations.Contains(minion);
+			return false;
 		}
-		return false;
+		SuitMarker suitMarker = suitMarkers[cell];
+		HashSet<int> emptyLockerReservations = suitMarker.emptyLockerReservations;
+		return emptyLockerReservations.Count < suitMarker.emptyLockerCount || emptyLockerReservations.Contains(minion);
 	}
 
 	public unsafe static void InitializeCells()
@@ -1575,21 +1575,21 @@ public class Grid
 	public static bool IsLiquid(int cell)
 	{
 		Element element = ElementLoader.elements[ElementIdx[cell]];
-		if (!element.IsLiquid)
+		if (element.IsLiquid)
 		{
-			return false;
+			return true;
 		}
-		return true;
+		return false;
 	}
 
 	public static bool IsGas(int cell)
 	{
 		Element element = ElementLoader.elements[ElementIdx[cell]];
-		if (!element.IsGas)
+		if (element.IsGas)
 		{
-			return false;
+			return true;
 		}
-		return true;
+		return false;
 	}
 
 	public static void GetVisibleExtents(out int min_x, out int min_y, out int max_x, out int max_y)

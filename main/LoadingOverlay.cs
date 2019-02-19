@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class LoadingOverlay : KModalScreen
 {
-	private bool loadNextFrame = false;
+	private bool loadNextFrame;
 
-	private bool showLoad = false;
+	private bool showLoad;
 
 	private System.Action loadCb;
 

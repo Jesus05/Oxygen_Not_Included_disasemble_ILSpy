@@ -132,16 +132,16 @@ namespace Satsuma
 
 		public long Flow(Arc arc)
 		{
-			if (!Saturated.Contains(arc))
+			if (Saturated.Contains(arc))
 			{
-				if (!Tree.TryGetValue(arc, out long value))
-				{
-					value = LowerBound(arc);
-					return (value != -9223372036854775808L) ? value : 0;
-				}
+				return UpperBound(arc);
+			}
+			if (Tree.TryGetValue(arc, out long value))
+			{
 				return value;
 			}
-			return UpperBound(arc);
+			value = LowerBound(arc);
+			return (value != -9223372036854775808L) ? value : 0;
 		}
 
 		public void Clear()
@@ -211,11 +211,11 @@ namespace Satsuma
 
 		private static ulong MySubtract(long a, long b)
 		{
-			if (a != 9223372036854775807L && b != -9223372036854775808L)
+			if (a == 9223372036854775807L || b == -9223372036854775808L)
 			{
-				return (ulong)(a - b);
+				return ulong.MaxValue;
 			}
-			return ulong.MaxValue;
+			return (ulong)(a - b);
 		}
 
 		public void Step()

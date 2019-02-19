@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Trappable : KMonoBehaviour, IGameObjectEffectDescriptor
 {
-	private bool registered = false;
+	private bool registered;
 
 	private static readonly EventSystem.IntraObjectHandler<Trappable> OnStoreDelegate = new EventSystem.IntraObjectHandler<Trappable>(delegate(Trappable component, object data)
 	{

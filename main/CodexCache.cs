@@ -7,9 +7,9 @@ using UnityEngine;
 
 public static class CodexCache
 {
-	private static string baseEntryPath = null;
+	private static string baseEntryPath;
 
-	public static Dictionary<string, CodexEntry> entries = null;
+	public static Dictionary<string, CodexEntry> entries;
 
 	private static Dictionary<string, List<string>> unlockedEntryLookup;
 
@@ -18,7 +18,7 @@ public static class CodexCache
 	public static string FormatLinkID(string linkID)
 	{
 		linkID = linkID.ToUpper();
-		linkID = linkID.Replace("_", "");
+		linkID = linkID.Replace("_", string.Empty);
 		return linkID;
 	}
 
@@ -146,7 +146,7 @@ public static class CodexCache
 	private static void CollectYAMLEntries(List<CategoryEntry> categories)
 	{
 		baseEntryPath = Application.streamingAssetsPath + "/codex";
-		List<CodexEntry> list = CollectEntries("");
+		List<CodexEntry> list = CollectEntries(string.Empty);
 		foreach (CodexEntry item in list)
 		{
 			if (item != null && item.id != null && item.contentContainers != null)
@@ -185,7 +185,7 @@ public static class CodexCache
 	private static void CollectYAMLSubEntries(List<CategoryEntry> categories)
 	{
 		baseEntryPath = Application.streamingAssetsPath + "/codex";
-		List<SubEntry> list = CollectSubEntries("");
+		List<SubEntry> list = CollectSubEntries(string.Empty);
 		foreach (SubEntry item in list)
 		{
 			if (item.parentEntryID != null && item.id != null)
@@ -368,7 +368,7 @@ public static class CodexCache
 	public static List<CodexEntry> CollectEntries(string folder)
 	{
 		List<CodexEntry> list = new List<CodexEntry>();
-		string path = (!(folder == "")) ? Path.Combine(baseEntryPath, folder) : baseEntryPath;
+		string path = (!(folder == string.Empty)) ? Path.Combine(baseEntryPath, folder) : baseEntryPath;
 		string[] array = new string[0];
 		try
 		{
@@ -396,7 +396,7 @@ public static class CodexCache
 	public static List<SubEntry> CollectSubEntries(string folder)
 	{
 		List<SubEntry> list = new List<SubEntry>();
-		string path = (!(folder == "")) ? Path.Combine(baseEntryPath, folder) : baseEntryPath;
+		string path = (!(folder == string.Empty)) ? Path.Combine(baseEntryPath, folder) : baseEntryPath;
 		string[] array = new string[0];
 		try
 		{

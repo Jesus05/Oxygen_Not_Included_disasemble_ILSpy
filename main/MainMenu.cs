@@ -51,7 +51,7 @@ public class MainMenu : KMonoBehaviour
 	[SerializeField]
 	private GameObject buttonParent;
 
-	private static bool HasAutoresumedOnce = false;
+	private static bool HasAutoresumedOnce;
 
 	private static int LANGUAGE_CONFIRMATION_VERSION = 2;
 
@@ -231,7 +231,7 @@ public class MainMenu : KMonoBehaviour
 					header = value.header;
 					gameInfo = value.headerData;
 				}
-				if (header.buildVersion > 309354 || gameInfo.saveMajorVersion < 7)
+				if (header.buildVersion > 309851 || gameInfo.saveMajorVersion < 7)
 				{
 					flag = false;
 				}
@@ -317,7 +317,7 @@ public class MainMenu : KMonoBehaviour
 
 	private void CheckDoubleBoundKeys()
 	{
-		string text = "";
+		string text = string.Empty;
 		HashSet<BindingEntry> hashSet = new HashSet<BindingEntry>();
 		for (int i = 0; i < GameInputMapping.KeyBindings.Length; i++)
 		{
@@ -355,7 +355,7 @@ public class MainMenu : KMonoBehaviour
 				hashSet.Add(GameInputMapping.KeyBindings[i]);
 			}
 		}
-		if (text != "")
+		if (text != string.Empty)
 		{
 			ConfirmDialogScreen confirmDialogScreen = Util.KInstantiateUI<ConfirmDialogScreen>(ScreenPrefabs.Instance.ConfirmDialogScreen.gameObject, base.gameObject, true);
 			ConfirmDialogScreen confirmDialogScreen2 = confirmDialogScreen;

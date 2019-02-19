@@ -47,37 +47,37 @@ public class SolitarySleeper : StateMachineComponent<SolitarySleeper.StatesInsta
 
 	protected bool IsUncomfortable()
 	{
-		if (base.gameObject.GetSMI<StaminaMonitor.Instance>().IsSleeping())
+		if (!base.gameObject.GetSMI<StaminaMonitor.Instance>().IsSleeping())
 		{
-			int num = 5;
-			bool flag = true;
-			bool flag2 = true;
-			int cell = Grid.PosToCell(base.gameObject);
-			for (int i = 1; i < num; i++)
+			return false;
+		}
+		int num = 5;
+		bool flag = true;
+		bool flag2 = true;
+		int cell = Grid.PosToCell(base.gameObject);
+		for (int i = 1; i < num; i++)
+		{
+			int num2 = Grid.OffsetCell(cell, i, 0);
+			int num3 = Grid.OffsetCell(cell, -i, 0);
+			if (Grid.Solid[num3])
 			{
-				int num2 = Grid.OffsetCell(cell, i, 0);
-				int num3 = Grid.OffsetCell(cell, -i, 0);
-				if (Grid.Solid[num3])
+				flag = false;
+			}
+			if (Grid.Solid[num2])
+			{
+				flag2 = false;
+			}
+			foreach (MinionIdentity item in Components.LiveMinionIdentities.Items)
+			{
+				if (flag && Grid.PosToCell(item.gameObject) == num3)
 				{
-					flag = false;
+					return true;
 				}
-				if (Grid.Solid[num2])
+				if (flag2 && Grid.PosToCell(item.gameObject) == num2)
 				{
-					flag2 = false;
-				}
-				foreach (MinionIdentity item in Components.LiveMinionIdentities.Items)
-				{
-					if (flag && Grid.PosToCell(item.gameObject) == num3)
-					{
-						return true;
-					}
-					if (flag2 && Grid.PosToCell(item.gameObject) == num2)
-					{
-						return true;
-					}
+					return true;
 				}
 			}
-			return false;
 		}
 		return false;
 	}

@@ -379,11 +379,11 @@ public static class DiscreteShadowCaster
 
 	private static double GetSlope(double pX1, double pY1, double pX2, double pY2, bool pInvert)
 	{
-		if (!pInvert)
+		if (pInvert)
 		{
-			return (pX1 - pX2) / (pY1 - pY2);
+			return (pY1 - pY2) / (pX1 - pX2);
 		}
-		return (pY1 - pY2) / (pX1 - pX2);
+		return (pX1 - pX2) / (pY1 - pY2);
 	}
 
 	private static int GetVisDistance(int pX1, int pY1, int pX2, int pY2)

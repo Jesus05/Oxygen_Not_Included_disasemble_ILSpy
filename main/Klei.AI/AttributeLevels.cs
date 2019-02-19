@@ -104,21 +104,21 @@ namespace Klei.AI
 		public bool AddExperience(string attribute_id, float time_spent, float multiplier)
 		{
 			AttributeLevel attributeLevel = GetAttributeLevel(attribute_id);
-			if (attributeLevel != null)
+			if (attributeLevel == null)
 			{
-				time_spent *= multiplier;
-				AttributeConverterInstance attributeConverterInstance = Db.Get().AttributeConverters.TrainingSpeed.Lookup(this);
-				if (attributeConverterInstance != null)
-				{
-					float num = attributeConverterInstance.Evaluate();
-					time_spent += time_spent * num;
-				}
-				bool result = attributeLevel.AddExperience(this, time_spent);
-				attributeLevel.Apply(this);
-				return result;
+				Debug.LogWarning(attribute_id + " has no level.", null);
+				return false;
 			}
-			Debug.LogWarning(attribute_id + " has no level.", null);
-			return false;
+			time_spent *= multiplier;
+			AttributeConverterInstance attributeConverterInstance = Db.Get().AttributeConverters.TrainingSpeed.Lookup(this);
+			if (attributeConverterInstance != null)
+			{
+				float num = attributeConverterInstance.Evaluate();
+				time_spent += time_spent * num;
+			}
+			bool result = attributeLevel.AddExperience(this, time_spent);
+			attributeLevel.Apply(this);
+			return result;
 		}
 
 		public void SetLevel(string attribute_id, int level)
@@ -160,8 +160,8 @@ namespace Klei.AI
 						num = current.GetLevel();
 					}
 				}
+				return num;
 			}
-			return num;
 		}
 	}
 }

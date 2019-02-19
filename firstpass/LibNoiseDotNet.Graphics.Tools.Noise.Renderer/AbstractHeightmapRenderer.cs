@@ -4,11 +4,11 @@ namespace LibNoiseDotNet.Graphics.Tools.Noise.Renderer
 {
 	public abstract class AbstractHeightmapRenderer : AbstractRenderer
 	{
-		protected float _lowerHeightBound = 0f;
+		protected float _lowerHeightBound;
 
-		protected float _upperHeightBound = 0f;
+		protected float _upperHeightBound;
 
-		protected bool _WrapEnabled = false;
+		protected bool _WrapEnabled;
 
 		public float LowerHeightBound => _lowerHeightBound;
 

@@ -139,13 +139,13 @@ public class FixedCapturePoint : GameStateMachine<FixedCapturePoint, FixedCaptur
 
 		public bool IsCreatureAvailableForFixedCapture()
 		{
-			if (targetCapturable.IsNullOrStopped())
+			if (!targetCapturable.IsNullOrStopped())
 			{
-				return false;
+				int num = Grid.PosToCell(base.transform.GetPosition());
+				CavityInfo cavityForCell = Game.Instance.roomProber.GetCavityForCell(num);
+				return CanCapturableBeCapturedAtCapturePoint(targetCapturable, this, cavityForCell, num);
 			}
-			int num = Grid.PosToCell(base.transform.GetPosition());
-			CavityInfo cavityForCell = Game.Instance.roomProber.GetCavityForCell(num);
-			return CanCapturableBeCapturedAtCapturePoint(targetCapturable, this, cavityForCell, num);
+			return false;
 		}
 
 		public void SetRancherIsAvailableForCapturing()
@@ -160,44 +160,44 @@ public class FixedCapturePoint : GameStateMachine<FixedCapturePoint, FixedCaptur
 
 		private static bool CanCapturableBeCapturedAtCapturePoint(FixedCapturableMonitor.Instance capturable, Instance capture_point, CavityInfo capture_cavity_info, int capture_cell)
 		{
-			if (capturable.IsRunning())
+			if (!capturable.IsRunning())
 			{
-				if (!capturable.HasTag(GameTags.Creatures.Bagged))
-				{
-					if (capturable.targetCapturePoint != capture_point && !capturable.targetCapturePoint.IsNullOrStopped())
-					{
-						return false;
-					}
-					if (capture_point.def.isCreatureEligibleToBeCapturedCb != null && !capture_point.def.isCreatureEligibleToBeCapturedCb(capturable.gameObject, capture_point))
-					{
-						return false;
-					}
-					if (capturable.GetComponent<ChoreConsumer>().IsChoreEqualOrAboveCurrentChorePriority<FixedCaptureStates>())
-					{
-						int cell = Grid.PosToCell(capturable.transform.GetPosition());
-						CavityInfo cavityForCell = Game.Instance.roomProber.GetCavityForCell(cell);
-						if (cavityForCell != null && cavityForCell == capture_cavity_info)
-						{
-							int navigationCost = capturable.GetComponent<Navigator>().GetNavigationCost(capture_cell);
-							if (navigationCost != -1)
-							{
-								TreeFilterable component = capture_point.GetComponent<TreeFilterable>();
-								IUserControlledCapacity component2 = capture_point.GetComponent<IUserControlledCapacity>();
-								if (component.ContainsTag(capturable.GetComponent<KPrefabID>().PrefabTag) && component2.AmountStored <= component2.UserMaxCapacity)
-								{
-									return false;
-								}
-								return true;
-							}
-							return false;
-						}
-						return false;
-					}
-					return false;
-				}
 				return false;
 			}
-			return false;
+			if (capturable.HasTag(GameTags.Creatures.Bagged))
+			{
+				return false;
+			}
+			if (capturable.targetCapturePoint != capture_point && !capturable.targetCapturePoint.IsNullOrStopped())
+			{
+				return false;
+			}
+			if (capture_point.def.isCreatureEligibleToBeCapturedCb != null && !capture_point.def.isCreatureEligibleToBeCapturedCb(capturable.gameObject, capture_point))
+			{
+				return false;
+			}
+			if (!capturable.GetComponent<ChoreConsumer>().IsChoreEqualOrAboveCurrentChorePriority<FixedCaptureStates>())
+			{
+				return false;
+			}
+			int cell = Grid.PosToCell(capturable.transform.GetPosition());
+			CavityInfo cavityForCell = Game.Instance.roomProber.GetCavityForCell(cell);
+			if (cavityForCell == null || cavityForCell != capture_cavity_info)
+			{
+				return false;
+			}
+			int navigationCost = capturable.GetComponent<Navigator>().GetNavigationCost(capture_cell);
+			if (navigationCost == -1)
+			{
+				return false;
+			}
+			TreeFilterable component = capture_point.GetComponent<TreeFilterable>();
+			IUserControlledCapacity component2 = capture_point.GetComponent<IUserControlledCapacity>();
+			if (component.ContainsTag(capturable.GetComponent<KPrefabID>().PrefabTag) && component2.AmountStored <= component2.UserMaxCapacity)
+			{
+				return false;
+			}
+			return true;
 		}
 
 		public void FindFixedCapturable()

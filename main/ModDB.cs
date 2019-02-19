@@ -87,23 +87,23 @@ internal class ModDB
 	{
 		moddb_filename = Path.GetFullPath(moddb_filename);
 		string directoryName = Path.GetDirectoryName(moddb_filename);
-		if (FileUtil.CreateDirectory(directoryName))
+		if (!FileUtil.CreateDirectory(directoryName))
 		{
-			using (FileStream fileStream = FileUtil.Create(moddb_filename))
-			{
-				if (fileStream == null)
-				{
-					return false;
-				}
-				using (StreamWriter streamWriter = new StreamWriter(fileStream))
-				{
-					string value = JsonConvert.SerializeObject(mods, Formatting.Indented);
-					streamWriter.Write(value);
-				}
-			}
-			return true;
+			return false;
 		}
-		return false;
+		using (FileStream fileStream = FileUtil.Create(moddb_filename))
+		{
+			if (fileStream == null)
+			{
+				return false;
+			}
+			using (StreamWriter streamWriter = new StreamWriter(fileStream))
+			{
+				string value = JsonConvert.SerializeObject(mods, Formatting.Indented);
+				streamWriter.Write(value);
+			}
+		}
+		return true;
 	}
 
 	public void Start(string mods_root)
@@ -196,7 +196,7 @@ internal class ModDB
 										infoIdx = i,
 										modDir = modDir
 									});
-									goto IL_0329;
+									goto IL_030a;
 								}
 							}
 							catch (Exception ex)
@@ -213,7 +213,7 @@ internal class ModDB
 								string title_text = UI.FRONTEND.MOD_ERRORS.TITLE;
 								confirmDialogScreen2.PopupConfirmDialog(text2, on_confirm, on_cancel, null, null, title_text, null, null, null);
 								UnityEngine.Object.DontDestroyOnLoad(confirmDialogScreen.gameObject);
-								goto IL_0329;
+								goto IL_030a;
 							}
 						}
 					}
@@ -224,7 +224,7 @@ internal class ModDB
 						mods[i] = modInfo;
 					}
 				}
-				IL_0329:;
+				IL_030a:;
 			}
 			MethodInfoQueryData[] array4 = new MethodInfoQueryData[2]
 			{
@@ -290,24 +290,29 @@ internal class ModDB
 			try
 			{
 				Assembly assembly = Assembly.LoadFile(path);
-				if (assembly != null)
+				if (assembly == null)
 				{
-					Type type = assembly.GetType("ModLoader.ModLoader");
-					if (type != null)
-					{
-						MethodInfo method = type.GetMethod("Start");
-						if (method != null)
-						{
-							method.Invoke(null, null);
-							Console.Out.WriteLine("Started ModLoader.dll");
-							result = true;
-						}
-					}
+					return result;
 				}
+				Type type = assembly.GetType("ModLoader.ModLoader");
+				if (type == null)
+				{
+					return result;
+				}
+				MethodInfo method = type.GetMethod("Start");
+				if (method == null)
+				{
+					return result;
+				}
+				method.Invoke(null, null);
+				Console.Out.WriteLine("Started ModLoader.dll");
+				result = true;
+				return result;
 			}
 			catch (Exception ex)
 			{
 				Console.Out.WriteLine(ex.ToString());
+				return result;
 			}
 		}
 		return result;
@@ -358,52 +363,52 @@ internal class ModDB
 	public bool Uninstall(string mods_root, ModInfo mod_info)
 	{
 		int num = mods.IndexOf(mod_info);
-		if (num >= 0)
+		if (num < 0)
 		{
-			ModInfo value = mods[num];
-			value.enabled = false;
-			value.markedForDelete = true;
-			mods[num] = value;
-			return true;
+			return false;
 		}
-		return false;
+		ModInfo value = mods[num];
+		value.enabled = false;
+		value.markedForDelete = true;
+		mods[num] = value;
+		return true;
 	}
 
 	public bool IsEnabled(ModInfo mod_info)
 	{
 		int num = mods.IndexOf(mod_info);
-		if (num >= 0)
+		if (num < 0)
 		{
-			ModInfo modInfo = mods[num];
-			return modInfo.enabled;
+			return false;
 		}
-		return false;
+		ModInfo modInfo = mods[num];
+		return modInfo.enabled;
 	}
 
 	public bool Enable(ModInfo mod_info)
 	{
 		int num = mods.IndexOf(mod_info);
-		if (num >= 0)
+		if (num < 0)
 		{
-			ModInfo value = mods[num];
-			value.enabled = true;
-			mods[num] = value;
-			return true;
+			return false;
 		}
-		return false;
+		ModInfo value = mods[num];
+		value.enabled = true;
+		mods[num] = value;
+		return true;
 	}
 
 	public bool Disable(ModInfo mod_info)
 	{
 		int num = mods.IndexOf(mod_info);
-		if (num >= 0)
+		if (num < 0)
 		{
-			ModInfo value = mods[num];
-			value.enabled = false;
-			mods[num] = value;
-			return true;
+			return false;
 		}
-		return false;
+		ModInfo value = mods[num];
+		value.enabled = false;
+		mods[num] = value;
+		return true;
 	}
 
 	public string GetModDir(string root, ModInfo info)
@@ -441,7 +446,7 @@ internal class ModDB
 					using (ZipFile zipFile = ZipFile.Read(assetPath))
 					{
 						zipFile.ExtractAll(dest_path, ExtractExistingFileAction.OverwriteSilently);
-						result = true;
+						return true;
 					}
 				}
 			}

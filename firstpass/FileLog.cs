@@ -3,7 +3,7 @@ using System.IO;
 
 public class FileLog
 {
-	private static FileLog instance = null;
+	private static FileLog instance;
 
 	private StreamWriter writer;
 
@@ -42,7 +42,7 @@ public class FileLog
 
 	private static string BuildString(object[] objs)
 	{
-		string text = "";
+		string text = string.Empty;
 		if (objs.Length > 0)
 		{
 			text = ((objs[0] == null) ? "null" : objs[0].ToString());

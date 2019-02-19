@@ -42,14 +42,14 @@ internal class NestingPoopState : GameStateMachine<NestingPoopState, NestingPoop
 
 		private static bool IsValidPoopFromCell(int cell, bool look_left)
 		{
-			if (!look_left)
+			if (look_left)
 			{
-				int num = Grid.CellDownRight(cell);
-				int num2 = Grid.CellRight(cell);
+				int num = Grid.CellDownLeft(cell);
+				int num2 = Grid.CellLeft(cell);
 				return Grid.IsValidCell(num) && Grid.Solid[num] && Grid.IsValidCell(num2) && !Grid.Solid[num2];
 			}
-			int num3 = Grid.CellDownLeft(cell);
-			int num4 = Grid.CellLeft(cell);
+			int num3 = Grid.CellDownRight(cell);
+			int num4 = Grid.CellRight(cell);
 			return Grid.IsValidCell(num3) && Grid.Solid[num3] && Grid.IsValidCell(num4) && !Grid.Solid[num4];
 		}
 
@@ -74,15 +74,15 @@ internal class NestingPoopState : GameStateMachine<NestingPoopState, NestingPoop
 					return cellInDirection;
 				}
 			}
-			if (!Grid.IsValidCell(targetPoopCell))
+			if (Grid.IsValidCell(targetPoopCell))
 			{
-				if (!Grid.IsValidCell(Grid.PosToCell(this)))
-				{
-					Debug.LogWarning("This is bad, how is Mole occupying an invalid cell?", null);
-				}
-				return Grid.PosToCell(this);
+				return targetPoopCell;
 			}
-			return targetPoopCell;
+			if (!Grid.IsValidCell(Grid.PosToCell(this)))
+			{
+				Debug.LogWarning("This is bad, how is Mole occupying an invalid cell?", null);
+			}
+			return Grid.PosToCell(this);
 		}
 
 		private int GetTargetPoopCell()
@@ -136,15 +136,12 @@ internal class NestingPoopState : GameStateMachine<NestingPoopState, NestingPoop
 		{
 			smi.SetLastPoopCell();
 		}).GoTo(pooping);
-		State state = pooping.Enter(delegate(Instance smi)
+		pooping.Enter(delegate(Instance smi)
 		{
 			Facing component = smi.master.GetComponent<Facing>();
 			component.SetFacing(Grid.PosToCell(smi.master.gameObject) > smi.targetPoopCell);
-		});
-		string name = CREATURES.STATUSITEMS.EXPELLING_SOLID.NAME;
-		string tooltip = CREATURES.STATUSITEMS.EXPELLING_SOLID.TOOLTIP;
-		StatusItemCategory main = Db.Get().StatusItemCategories.Main;
-		state.ToggleStatusItem(name, tooltip, "", StatusItem.IconType.Info, NotificationType.Neutral, false, default(HashedString), 63486, null, null, main).PlayAnim("poop").OnAnimQueueComplete(behaviourcomplete);
+		}).ToggleStatusItem(CREATURES.STATUSITEMS.EXPELLING_SOLID.NAME, CREATURES.STATUSITEMS.EXPELLING_SOLID.TOOLTIP, category: Db.Get().StatusItemCategories.Main, icon: string.Empty, icon_type: StatusItem.IconType.Info, notification_type: NotificationType.Neutral, allow_multiples: false, render_overlay: default(HashedString), status_overlays: 63486, resolve_string_callback: null, resolve_tooltip_callback: null).PlayAnim("poop")
+			.OnAnimQueueComplete(behaviourcomplete);
 		behaviourcomplete.Enter(delegate(Instance smi)
 		{
 			smi.SetLastPoopCell();

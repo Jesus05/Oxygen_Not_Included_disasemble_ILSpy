@@ -157,75 +157,75 @@ namespace Satsuma
 
 		public bool DeleteNode(Node node)
 		{
-			if (nodes.Remove(node))
+			if (!nodes.Remove(node))
 			{
-				Func<Arc, bool> condition = (Arc a) => U(a) == node || V(a) == node;
-				Utils.RemoveAll(arcs, condition);
-				Utils.RemoveAll(edges, condition);
-				Utils.RemoveAll(arcProperties, condition);
-				nodeArcs_All.Remove(node);
-				nodeArcs_Edge.Remove(node);
-				nodeArcs_Forward.Remove(node);
-				nodeArcs_Backward.Remove(node);
-				return true;
+				return false;
 			}
-			return false;
+			Func<Arc, bool> condition = (Arc a) => U(a) == node || V(a) == node;
+			Utils.RemoveAll(arcs, condition);
+			Utils.RemoveAll(edges, condition);
+			Utils.RemoveAll(arcProperties, condition);
+			nodeArcs_All.Remove(node);
+			nodeArcs_Edge.Remove(node);
+			nodeArcs_Forward.Remove(node);
+			nodeArcs_Backward.Remove(node);
+			return true;
 		}
 
 		public bool DeleteArc(Arc arc)
 		{
-			if (arcs.Remove(arc))
+			if (!arcs.Remove(arc))
 			{
-				ArcProperties arcProperties = this.arcProperties[arc];
-				this.arcProperties.Remove(arc);
-				Utils.RemoveLast(nodeArcs_All[arcProperties.U], arc);
-				Utils.RemoveLast(nodeArcs_Forward[arcProperties.U], arc);
-				Utils.RemoveLast(nodeArcs_Backward[arcProperties.V], arc);
+				return false;
+			}
+			ArcProperties arcProperties = this.arcProperties[arc];
+			this.arcProperties.Remove(arc);
+			Utils.RemoveLast(nodeArcs_All[arcProperties.U], arc);
+			Utils.RemoveLast(nodeArcs_Forward[arcProperties.U], arc);
+			Utils.RemoveLast(nodeArcs_Backward[arcProperties.V], arc);
+			if (arcProperties.IsEdge)
+			{
+				edges.Remove(arc);
+				Utils.RemoveLast(nodeArcs_Edge[arcProperties.U], arc);
+			}
+			if (arcProperties.V != arcProperties.U)
+			{
+				Utils.RemoveLast(nodeArcs_All[arcProperties.V], arc);
 				if (arcProperties.IsEdge)
 				{
-					edges.Remove(arc);
-					Utils.RemoveLast(nodeArcs_Edge[arcProperties.U], arc);
+					Utils.RemoveLast(nodeArcs_Edge[arcProperties.V], arc);
+					Utils.RemoveLast(nodeArcs_Forward[arcProperties.V], arc);
+					Utils.RemoveLast(nodeArcs_Backward[arcProperties.U], arc);
 				}
-				if (arcProperties.V != arcProperties.U)
-				{
-					Utils.RemoveLast(nodeArcs_All[arcProperties.V], arc);
-					if (arcProperties.IsEdge)
-					{
-						Utils.RemoveLast(nodeArcs_Edge[arcProperties.V], arc);
-						Utils.RemoveLast(nodeArcs_Forward[arcProperties.V], arc);
-						Utils.RemoveLast(nodeArcs_Backward[arcProperties.U], arc);
-					}
-				}
-				return true;
 			}
-			return false;
+			return true;
 		}
 
 		public Node U(Arc arc)
 		{
-			if (!arcProperties.TryGetValue(arc, out ArcProperties value))
+			if (arcProperties.TryGetValue(arc, out ArcProperties value))
 			{
-				return graph.U(arc);
+				return value.U;
 			}
-			return value.U;
+			return graph.U(arc);
 		}
 
 		public Node V(Arc arc)
 		{
-			if (!arcProperties.TryGetValue(arc, out ArcProperties value))
+			if (arcProperties.TryGetValue(arc, out ArcProperties value))
 			{
-				return graph.V(arc);
+				return value.V;
 			}
-			return value.V;
+			return graph.V(arc);
 		}
 
 		public bool IsEdge(Arc arc)
 		{
-			if (!arcProperties.TryGetValue(arc, out ArcProperties value))
+			if (arcProperties.TryGetValue(arc, out ArcProperties value))
 			{
-				return graph.IsEdge(arc);
+				return value.IsEdge;
 			}
-			return value.IsEdge;
+			return graph.IsEdge(arc);
 		}
 
 		private HashSet<Arc> ArcsInternal(ArcFilter filter)
@@ -266,11 +266,11 @@ namespace Satsuma
 
 		public IEnumerable<Arc> Arcs(Node u, ArcFilter filter = ArcFilter.All)
 		{
-			if (graph != null && !nodes.Contains(u))
+			if (graph == null || nodes.Contains(u))
 			{
-				return ArcsInternal(u, filter).Concat(graph.Arcs(u, filter));
+				return ArcsInternal(u, filter);
 			}
-			return ArcsInternal(u, filter);
+			return ArcsInternal(u, filter).Concat(graph.Arcs(u, filter));
 		}
 
 		public IEnumerable<Arc> Arcs(Node u, Node v, ArcFilter filter = ArcFilter.All)
@@ -296,8 +296,8 @@ namespace Satsuma
 				}
 			}
 			yield break;
-			IL_01d8:
-			/*Error near IL_01d9: Unexpected return in MoveNext()*/;
+			IL_01d5:
+			/*Error near IL_01d6: Unexpected return in MoveNext()*/;
 		}
 
 		public int NodeCount()

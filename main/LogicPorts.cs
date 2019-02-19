@@ -58,7 +58,7 @@ public class LogicPorts : KMonoBehaviour, IEffectDescriptor, IRenderEveryTick
 	[Serialize]
 	private int[] serializedOutputValues;
 
-	private bool isPhysical = false;
+	private bool isPhysical;
 
 	protected override void OnPrefabInit()
 	{
@@ -412,18 +412,18 @@ public class LogicPorts : KMonoBehaviour, IEffectDescriptor, IRenderEveryTick
 		{
 			if (component.inputPortInfo != null && component.inputPortInfo.Length > 0)
 			{
-				string text = "";
-				string str = (component.inputPortInfo.Length != 1) ? "\n\t\t" : "";
+				string text = string.Empty;
+				string str = (component.inputPortInfo.Length != 1) ? "\n\t\t" : string.Empty;
 				Port[] array = component.inputPortInfo;
 				for (int i = 0; i < array.Length; i++)
 				{
 					Port port = array[i];
 					text = text + str + port.description;
 				}
-				string tooltip = "";
+				string empty = string.Empty;
 				string txt = string.Format(UI.LOGIC_PORTS.INPUT_PORTS, text);
 				Descriptor item = default(Descriptor);
-				item.SetupDescriptor(txt, tooltip, Descriptor.DescriptorType.Effect);
+				item.SetupDescriptor(txt, empty, Descriptor.DescriptorType.Effect);
 				if (list == null)
 				{
 					list = new List<Descriptor>();
@@ -432,18 +432,18 @@ public class LogicPorts : KMonoBehaviour, IEffectDescriptor, IRenderEveryTick
 			}
 			if (component.outputPortInfo != null && component.outputPortInfo.Length > 0)
 			{
-				string text2 = "";
-				string str2 = (component.outputPortInfo.Length != 1) ? "\n\t\t" : "";
+				string text2 = string.Empty;
+				string str2 = (component.outputPortInfo.Length != 1) ? "\n\t\t" : string.Empty;
 				Port[] array2 = component.outputPortInfo;
 				for (int j = 0; j < array2.Length; j++)
 				{
 					Port port2 = array2[j];
 					text2 = text2 + str2 + port2.description;
 				}
-				string tooltip2 = "";
+				string empty2 = string.Empty;
 				string txt2 = string.Format(UI.LOGIC_PORTS.OUTPUT_PORTS, text2);
 				Descriptor item2 = default(Descriptor);
-				item2.SetupDescriptor(txt2, tooltip2, Descriptor.DescriptorType.Effect);
+				item2.SetupDescriptor(txt2, empty2, Descriptor.DescriptorType.Effect);
 				if (list == null)
 				{
 					list = new List<Descriptor>();

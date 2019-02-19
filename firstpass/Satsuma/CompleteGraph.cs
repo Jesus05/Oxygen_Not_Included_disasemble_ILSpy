@@ -46,17 +46,17 @@ namespace Satsuma
 		{
 			int num = GetNodeIndex(u);
 			int num2 = GetNodeIndex(v);
-			if (num != num2)
+			if (num == num2)
 			{
-				if (!Directed && num > num2)
-				{
-					int num3 = num;
-					num = num2;
-					num2 = num3;
-				}
-				return GetArcInternal(num, num2);
+				return Arc.Invalid;
 			}
-			return Arc.Invalid;
+			if (!Directed && num > num2)
+			{
+				int num3 = num;
+				num = num2;
+				num2 = num3;
+			}
+			return GetArcInternal(num, num2);
 		}
 
 		private Arc GetArcInternal(int x, int y)
@@ -158,8 +158,8 @@ namespace Satsuma
 				}
 			}
 			yield break;
-			IL_01e6:
-			/*Error near IL_01e7: Unexpected return in MoveNext()*/;
+			IL_01e1:
+			/*Error near IL_01e2: Unexpected return in MoveNext()*/;
 		}
 
 		public IEnumerable<Arc> Arcs(Node u, Node v, ArcFilter filter = ArcFilter.All)
@@ -241,12 +241,12 @@ namespace Satsuma
 		public bool HasArc(Arc arc)
 		{
 			Node node = V(arc);
-			if (HasNode(node))
+			if (!HasNode(node))
 			{
-				Node node2 = U(arc);
-				return Directed || node2.Id < node.Id;
+				return false;
 			}
-			return false;
+			Node node2 = U(arc);
+			return Directed || node2.Id < node.Id;
 		}
 	}
 }

@@ -74,11 +74,11 @@ public class ThoughtGraph : GameStateMachine<ThoughtGraph, ThoughtGraph.Instance
 
 		private int SortThoughts(Thought a, Thought b)
 		{
-			if (a.showImmediately == b.showImmediately)
+			if (a.showImmediately != b.showImmediately)
 			{
-				return b.priority.CompareTo(a.priority);
+				return (!a.showImmediately) ? 1 : (-1);
 			}
-			return (!a.showImmediately) ? 1 : (-1);
+			return b.priority.CompareTo(a.priority);
 		}
 
 		public void CreateBubble()

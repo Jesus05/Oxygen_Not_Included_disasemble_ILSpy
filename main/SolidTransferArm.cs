@@ -108,7 +108,7 @@ public class SolidTransferArm : StateMachineComponent<SolidTransferArm.SMInstanc
 
 	private bool rotation_complete;
 
-	private ArmAnim arm_anim = ArmAnim.Idle;
+	private ArmAnim arm_anim;
 
 	private List<int> reachableCells = new List<int>(100);
 
@@ -304,16 +304,16 @@ public class SolidTransferArm : StateMachineComponent<SolidTransferArm.SMInstanc
 	private bool IsPickupableRelevantToMyInterests(Pickupable pickupable)
 	{
 		KPrefabID kPrefabID = pickupable.KPrefabID;
-		if (kPrefabID.HasAnyTags(ref tagBits))
+		if (!kPrefabID.HasAnyTags(ref tagBits))
 		{
-			int pickupableCell = GetPickupableCell(pickupable);
-			if (IsCellReachable(pickupableCell))
-			{
-				return true;
-			}
 			return false;
 		}
-		return false;
+		int pickupableCell = GetPickupableCell(pickupable);
+		if (!IsCellReachable(pickupableCell))
+		{
+			return false;
+		}
+		return true;
 	}
 
 	public void FindFetchTarget(Storage destination, TagBits tag_bits, TagBits required_tags, TagBits forbid_tags, float required_amount, ref Pickupable target)
@@ -346,11 +346,11 @@ public class SolidTransferArm : StateMachineComponent<SolidTransferArm.SMInstanc
 
 	private int GetPickupableCell(Pickupable pickupable)
 	{
-		if (!(bool)pickupable.storage)
+		if ((bool)pickupable.storage)
 		{
-			return pickupable.cachedCell;
+			return Grid.PosToCell(pickupable.storage);
 		}
-		return Grid.PosToCell(pickupable.storage);
+		return pickupable.cachedCell;
 	}
 
 	private void SetArmAnim(ArmAnim new_anim)

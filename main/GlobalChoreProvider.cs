@@ -17,32 +17,32 @@ public class GlobalChoreProvider : ChoreProvider, ISim200ms
 
 		public bool IsBetterThan(Fetch fetch)
 		{
-			if (category == fetch.category)
+			if (category != fetch.category)
 			{
-				if (tagBitsHash == fetch.tagBitsHash)
-				{
-					if (chore.tagBits.AreEqual(ref fetch.chore.tagBits))
-					{
-						if (priority.priority_class <= fetch.priority.priority_class)
-						{
-							if (priority.priority_class == fetch.priority.priority_class)
-							{
-								if (priority.priority_value > fetch.priority.priority_value)
-								{
-									return true;
-								}
-								if (priority.priority_value == fetch.priority.priority_value)
-								{
-									return cost <= fetch.cost;
-								}
-							}
-							return false;
-						}
-						return true;
-					}
-					return false;
-				}
 				return false;
+			}
+			if (tagBitsHash != fetch.tagBitsHash)
+			{
+				return false;
+			}
+			if (!chore.tagBits.AreEqual(ref fetch.chore.tagBits))
+			{
+				return false;
+			}
+			if (priority.priority_class > fetch.priority.priority_class)
+			{
+				return true;
+			}
+			if (priority.priority_class == fetch.priority.priority_class)
+			{
+				if (priority.priority_value > fetch.priority.priority_value)
+				{
+					return true;
+				}
+				if (priority.priority_value == fetch.priority.priority_value)
+				{
+					return cost <= fetch.cost;
+				}
 			}
 			return false;
 		}
@@ -53,16 +53,16 @@ public class GlobalChoreProvider : ChoreProvider, ISim200ms
 		public int Compare(Fetch a, Fetch b)
 		{
 			int num = b.priority.priority_class - a.priority.priority_class;
-			if (num == 0)
+			if (num != 0)
 			{
-				int num2 = b.priority.priority_value - a.priority.priority_value;
-				if (num2 == 0)
-				{
-					return a.cost - b.cost;
-				}
+				return num;
+			}
+			int num2 = b.priority.priority_value - a.priority.priority_value;
+			if (num2 != 0)
+			{
 				return num2;
 			}
-			return num;
+			return a.cost - b.cost;
 		}
 	}
 

@@ -28,7 +28,7 @@ public class KSlider : Slider
 
 	public static string[] DefaultSounds = new string[5];
 
-	private string[] currentSounds = null;
+	private string[] currentSounds;
 
 	private bool playSounds = true;
 
@@ -38,7 +38,7 @@ public class KSlider : Slider
 
 	private float lastMoveValue;
 
-	public bool playedBoundaryBump = false;
+	public bool playedBoundaryBump;
 
 	private ToolTip tooltip;
 

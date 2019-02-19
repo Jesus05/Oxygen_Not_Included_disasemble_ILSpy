@@ -21,10 +21,10 @@ public class EventInstanceBase : ISaveLoadable
 	public override string ToString()
 	{
 		string str = "[" + frame.ToString() + "] ";
-		if (ev == null)
+		if (ev != null)
 		{
-			return str + "Unknown event";
+			return str + ev.GetDescription(this);
 		}
-		return str + ev.GetDescription(this);
+		return str + "Unknown event";
 	}
 }

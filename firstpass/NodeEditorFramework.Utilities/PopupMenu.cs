@@ -21,9 +21,9 @@ namespace NodeEditorFramework.Utilities
 
 			public object userData;
 
-			public bool separator = false;
+			public bool separator;
 
-			public bool group = false;
+			public bool group;
 
 			public Rect groupPos;
 
@@ -116,7 +116,7 @@ namespace NodeEditorFramework.Utilities
 		{
 			minWidth = MinWidth;
 			position = calculateRect(pos, menuItems, minWidth);
-			selectedPath = "";
+			selectedPath = string.Empty;
 			OverlayGUI.currentPopup = this;
 		}
 
@@ -165,39 +165,39 @@ namespace NodeEditorFramework.Utilities
 		private MenuItem AddHierarchy(ref GUIContent content, out string path)
 		{
 			path = content.text;
-			if (!path.Contains("/"))
+			if (path.Contains("/"))
 			{
-				return null;
-			}
-			string[] array = path.Split('/');
-			string folderPath = array[0];
-			MenuItem menuItem = menuItems.Find((MenuItem item) => item.content != null && item.content.text == folderPath && item.group);
-			if (menuItem == null)
-			{
-				menuItems.Add(menuItem = new MenuItem(folderPath, new GUIContent(folderPath), true));
-			}
-			for (int i = 1; i < array.Length - 1; i++)
-			{
-				string folder = array[i];
-				folderPath = folderPath + "/" + folder;
+				string[] array = path.Split('/');
+				string folderPath = array[0];
+				MenuItem menuItem = menuItems.Find((MenuItem item) => item.content != null && item.content.text == folderPath && item.group);
 				if (menuItem == null)
 				{
-					Debug.LogError("Parent is null!", null);
+					menuItems.Add(menuItem = new MenuItem(folderPath, new GUIContent(folderPath), true));
 				}
-				else if (menuItem.subItems == null)
+				for (int i = 1; i < array.Length - 1; i++)
 				{
-					Debug.LogError("Subitems of " + menuItem.content.text + " is null!", null);
+					string folder = array[i];
+					folderPath = folderPath + "/" + folder;
+					if (menuItem == null)
+					{
+						Debug.LogError("Parent is null!", null);
+					}
+					else if (menuItem.subItems == null)
+					{
+						Debug.LogError("Subitems of " + menuItem.content.text + " is null!", null);
+					}
+					MenuItem menuItem2 = menuItem.subItems.Find((MenuItem item) => item.content != null && item.content.text == folder && item.group);
+					if (menuItem2 == null)
+					{
+						menuItem.subItems.Add(menuItem2 = new MenuItem(folderPath, new GUIContent(folder), true));
+					}
+					menuItem = menuItem2;
 				}
-				MenuItem menuItem2 = menuItem.subItems.Find((MenuItem item) => item.content != null && item.content.text == folder && item.group);
-				if (menuItem2 == null)
-				{
-					menuItem.subItems.Add(menuItem2 = new MenuItem(folderPath, new GUIContent(folder), true));
-				}
-				menuItem = menuItem2;
+				path = content.text;
+				content = new GUIContent(array[array.Length - 1], content.tooltip);
+				return menuItem;
 			}
-			path = content.text;
-			content = new GUIContent(array[array.Length - 1], content.tooltip);
-			return menuItem;
+			return null;
 		}
 
 		public void Draw()

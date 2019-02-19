@@ -38,23 +38,23 @@ public class FetchManager : KMonoBehaviour, ISim1000ms
 		public int Compare(Pickup a, Pickup b)
 		{
 			int num = a.tagBitsHash - b.tagBitsHash;
-			if (num != 0)
+			if (num == 0)
 			{
-				return num;
-			}
-			if (a.masterPriority == b.masterPriority)
-			{
-				if (a.PathCost == b.PathCost)
+				if (a.masterPriority != b.masterPriority)
 				{
-					if (a.foodQuality == b.foodQuality)
-					{
-						return b.freshness - a.freshness;
-					}
+					return b.masterPriority - a.masterPriority;
+				}
+				if (a.PathCost != b.PathCost)
+				{
+					return a.PathCost - b.PathCost;
+				}
+				if (a.foodQuality != b.foodQuality)
+				{
 					return b.foodQuality - a.foodQuality;
 				}
-				return a.PathCost - b.PathCost;
+				return b.freshness - a.freshness;
 			}
-			return b.masterPriority - a.masterPriority;
+			return num;
 		}
 	}
 
@@ -62,15 +62,15 @@ public class FetchManager : KMonoBehaviour, ISim1000ms
 	{
 		public int Compare(Pickup a, Pickup b)
 		{
-			if (a.PathCost == b.PathCost)
+			if (a.PathCost != b.PathCost)
 			{
-				if (a.foodQuality == b.foodQuality)
-				{
-					return b.freshness - a.freshness;
-				}
+				return a.PathCost - b.PathCost;
+			}
+			if (a.foodQuality != b.foodQuality)
+			{
 				return b.foodQuality - a.foodQuality;
 			}
-			return a.PathCost - b.PathCost;
+			return b.freshness - a.freshness;
 		}
 	}
 
@@ -414,39 +414,39 @@ public class FetchManager : KMonoBehaviour, ISim1000ms
 
 	public static bool IsFetchablePickup(KPrefabID pickup_id, Storage source, float pickup_unreserved_amount, ref TagBits tag_bits, ref TagBits required_tags, ref TagBits forbid_tags, Storage destination)
 	{
-		if (!(pickup_unreserved_amount <= 0f))
+		if (pickup_unreserved_amount <= 0f)
 		{
-			if (!((Object)pickup_id == (Object)null))
-			{
-				pickup_id.UpdateTagBits();
-				if (pickup_id.HasAnyTags_AssumeLaundered(ref tag_bits))
-				{
-					if (pickup_id.HasAllTags_AssumeLaundered(ref required_tags))
-					{
-						if (!pickup_id.HasAnyTags_AssumeLaundered(ref forbid_tags))
-						{
-							if ((Object)source != (Object)null)
-							{
-								if (destination.ShouldOnlyTransferFromLowerPriority && destination.masterPriority <= source.masterPriority)
-								{
-									return false;
-								}
-								if (destination.storageNetworkID != -1 && destination.storageNetworkID == source.storageNetworkID)
-								{
-									return false;
-								}
-							}
-							return true;
-						}
-						return false;
-					}
-					return false;
-				}
-				return false;
-			}
 			return false;
 		}
-		return false;
+		if ((Object)pickup_id == (Object)null)
+		{
+			return false;
+		}
+		pickup_id.UpdateTagBits();
+		if (!pickup_id.HasAnyTags_AssumeLaundered(ref tag_bits))
+		{
+			return false;
+		}
+		if (!pickup_id.HasAllTags_AssumeLaundered(ref required_tags))
+		{
+			return false;
+		}
+		if (pickup_id.HasAnyTags_AssumeLaundered(ref forbid_tags))
+		{
+			return false;
+		}
+		if ((Object)source != (Object)null)
+		{
+			if (destination.ShouldOnlyTransferFromLowerPriority && destination.masterPriority <= source.masterPriority)
+			{
+				return false;
+			}
+			if (destination.storageNetworkID != -1 && destination.storageNetworkID == source.storageNetworkID)
+			{
+				return false;
+			}
+		}
+		return true;
 	}
 
 	public static bool IsFetchablePickup(Pickupable pickupable, ref TagBits tag_bits, ref TagBits required_tags, ref TagBits forbid_tags, Storage destination)

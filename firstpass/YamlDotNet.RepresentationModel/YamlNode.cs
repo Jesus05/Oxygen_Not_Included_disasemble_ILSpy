@@ -81,24 +81,24 @@ namespace YamlDotNet.RepresentationModel
 
 		internal static YamlNode ParseNode(IParser parser, DocumentLoadingState state)
 		{
-			if (!parser.Accept<Scalar>())
+			if (parser.Accept<Scalar>())
 			{
-				if (!parser.Accept<SequenceStart>())
-				{
-					if (!parser.Accept<MappingStart>())
-					{
-						if (!parser.Accept<AnchorAlias>())
-						{
-							throw new ArgumentException("The current event is of an unsupported type.", "events");
-						}
-						AnchorAlias anchorAlias = parser.Expect<AnchorAlias>();
-						return state.GetNode(anchorAlias.Value, false, anchorAlias.Start, anchorAlias.End) ?? new YamlAliasNode(anchorAlias.Value);
-					}
-					return new YamlMappingNode(parser, state);
-				}
+				return new YamlScalarNode(parser, state);
+			}
+			if (parser.Accept<SequenceStart>())
+			{
 				return new YamlSequenceNode(parser, state);
 			}
-			return new YamlScalarNode(parser, state);
+			if (parser.Accept<MappingStart>())
+			{
+				return new YamlMappingNode(parser, state);
+			}
+			if (parser.Accept<AnchorAlias>())
+			{
+				AnchorAlias anchorAlias = parser.Expect<AnchorAlias>();
+				return state.GetNode(anchorAlias.Value, false, anchorAlias.Start, anchorAlias.End) ?? new YamlAliasNode(anchorAlias.Value);
+			}
+			throw new ArgumentException("The current event is of an unsupported type.", "events");
 		}
 
 		internal abstract void ResolveAliases(DocumentLoadingState state);

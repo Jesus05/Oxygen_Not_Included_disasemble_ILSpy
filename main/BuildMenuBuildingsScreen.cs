@@ -98,7 +98,7 @@ public class BuildMenuBuildingsScreen : KIconToggleMenu
 		SetHasFocus(true);
 		List<ToggleInfo> list = new List<ToggleInfo>();
 		string text = HashCache.Get().Get(category).ToUpper();
-		text = text.Replace(" ", "");
+		text = text.Replace(" ", string.Empty);
 		titleLabel.text = Strings.Get("STRINGS.UI.NEWBUILDCATEGORIES." + text + ".BUILDMENUTITLE");
 		foreach (BuildMenu.BuildingInfo building_info in building_infos)
 		{
@@ -275,7 +275,7 @@ public class BuildMenuBuildingsScreen : KIconToggleMenu
 						string newString3 = string.Format("{0}{1}: {2}", "• ", ingredient.tag.ProperName(), GameUtil.GetFormattedMass(ingredient.amount, GameUtil.TimeSlice.None, GameUtil.MetricMassFormat.UseThreshold, true, "{0:0.#}"));
 						component.AddMultiStringTooltip(newString3, buildingToolTipSettings.ResearchRequirement);
 					}
-					component.AddMultiStringTooltip("", buildingToolTipSettings.ResearchRequirement);
+					component.AddMultiStringTooltip(string.Empty, buildingToolTipSettings.ResearchRequirement);
 				}
 			}
 		}
@@ -392,10 +392,10 @@ public class BuildMenuBuildingsScreen : KIconToggleMenu
 	{
 		if (mouseOver && ConsumeMouseScroll && !e.TryConsume(Action.ZoomIn) && !e.TryConsume(Action.ZoomOut))
 		{
-			goto IL_0033;
+			goto IL_002e;
 		}
-		goto IL_0033;
-		IL_0033:
+		goto IL_002e;
+		IL_002e:
 		if (HasFocus)
 		{
 			if (e.TryConsume(Action.Escape))

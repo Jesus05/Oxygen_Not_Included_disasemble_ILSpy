@@ -47,7 +47,7 @@ public class DetailsPanelDrawer
 		}
 		activeLabelCount++;
 		item.text.text = text;
-		item.tooltip.toolTip = "";
+		item.tooltip.toolTip = string.Empty;
 		item.tooltip.OnToolTip = null;
 		item.text.gameObject.SetActive(true);
 		return this;

@@ -7,7 +7,7 @@ public class ButtonLabelColumn : LabelTableColumn
 
 	private Action<GameObject> on_double_click_action;
 
-	private bool whiteText = false;
+	private bool whiteText;
 
 	public ButtonLabelColumn(Action<MinionIdentity, GameObject> on_load_action, Func<MinionIdentity, GameObject, string> get_value_action, Action<GameObject> on_click_action, Action<GameObject> on_double_click_action, Comparison<MinionIdentity> sort_comparison, Action<MinionIdentity, GameObject, ToolTip> on_tooltip, Action<MinionIdentity, GameObject, ToolTip> on_sort_tooltip, bool whiteText = false)
 		: base(on_load_action, get_value_action, sort_comparison, on_tooltip, on_sort_tooltip, 128, false)

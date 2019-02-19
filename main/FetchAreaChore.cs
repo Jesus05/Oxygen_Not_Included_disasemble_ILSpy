@@ -73,15 +73,7 @@ public class FetchAreaChore : Chore<FetchAreaChore.StatesInstance>
 								if ((UnityEngine.Object)pickupable2 != (UnityEngine.Object)null && pickupable2.TotalAmount > 0f)
 								{
 									num -= pickupable2.TotalAmount;
-									if (pickupable2.TotalAmount < PICKUPABLETUNING.MINIMUM_PICKABLE_AMOUNT)
-									{
-										destination.ForceStore(pickupable2.GetComponent<KPrefabID>().PrefabTag, pickupable2.TotalAmount);
-										deliverables[i] = null;
-									}
-									else
-									{
-										destination.Store(pickupable2.gameObject, false, false, true, false);
-									}
+									destination.Store(pickupable2.gameObject, false, false, true, false);
 									pickupable = pickupable2;
 									if ((UnityEngine.Object)pickupable2 == (UnityEngine.Object)deliverables[i])
 									{

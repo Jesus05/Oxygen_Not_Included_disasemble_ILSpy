@@ -21,7 +21,7 @@ namespace NodeEditorFramework.Utilities
 
 		private static float activeFloatFieldLastValue = 0f;
 
-		private static string activeFloatFieldString = "";
+		private static string activeFloatFieldString = string.Empty;
 
 		private static Material texVizMat;
 
@@ -33,24 +33,24 @@ namespace NodeEditorFramework.Utilities
 
 		public static Rect PrefixLabel(Rect totalPos, GUIContent label, GUIStyle style)
 		{
-			if (label != GUIContent.none)
+			if (label == GUIContent.none)
 			{
-				Rect position = new Rect(totalPos.x + indent, totalPos.y, Mathf.Min(getLabelWidth() - indent, totalPos.width / 2f), totalPos.height);
-				GUI.Label(position, label, style);
-				return new Rect(totalPos.x + getLabelWidth(), totalPos.y, totalPos.width - getLabelWidth(), totalPos.height);
+				return totalPos;
 			}
-			return totalPos;
+			Rect position = new Rect(totalPos.x + indent, totalPos.y, Mathf.Min(getLabelWidth() - indent, totalPos.width / 2f), totalPos.height);
+			GUI.Label(position, label, style);
+			return new Rect(totalPos.x + getLabelWidth(), totalPos.y, totalPos.width - getLabelWidth(), totalPos.height);
 		}
 
 		public static Rect PrefixLabel(Rect totalPos, float percentage, GUIContent label, GUIStyle style)
 		{
-			if (label != GUIContent.none)
+			if (label == GUIContent.none)
 			{
-				Rect position = new Rect(totalPos.x + indent, totalPos.y, totalPos.width * percentage, totalPos.height);
-				GUI.Label(position, label, style);
-				return new Rect(totalPos.x + totalPos.width * percentage, totalPos.y, totalPos.width * (1f - percentage), totalPos.height);
+				return totalPos;
 			}
-			return totalPos;
+			Rect position = new Rect(totalPos.x + indent, totalPos.y, totalPos.width * percentage, totalPos.height);
+			GUI.Label(position, label, style);
+			return new Rect(totalPos.x + totalPos.width * percentage, totalPos.y, totalPos.width * (1f - percentage), totalPos.height);
 		}
 
 		private static Rect IndentedRect(Rect source)
@@ -60,20 +60,20 @@ namespace NodeEditorFramework.Utilities
 
 		private static float getLabelWidth()
 		{
-			if (labelWidth != 0f)
+			if (labelWidth == 0f)
 			{
-				return labelWidth;
+				return 150f;
 			}
-			return 150f;
+			return labelWidth;
 		}
 
 		private static float getFieldWidth()
 		{
-			if (fieldWidth != 0f)
+			if (fieldWidth == 0f)
 			{
-				return fieldWidth;
+				return 50f;
 			}
-			return 50f;
+			return fieldWidth;
 		}
 
 		private static Rect GetFieldRect(GUIContent label, GUIStyle style, params GUILayoutOption[] options)
@@ -322,87 +322,87 @@ namespace NodeEditorFramework.Utilities
 		public static float FloatField(Rect pos, float value, params GUILayoutOption[] options)
 		{
 			int num = GUIUtility.GetControlID("FloatField".GetHashCode(), FocusType.Keyboard, pos) + 1;
-			if (num != 0)
+			if (num == 0)
 			{
-				bool flag = activeFloatField == num;
-				bool flag2 = num == GUIUtility.keyboardControl;
-				if (flag2 && flag && activeFloatFieldLastValue != value)
-				{
-					activeFloatFieldLastValue = value;
-					activeFloatFieldString = value.ToString();
-				}
-				string text = (!flag) ? value.ToString() : activeFloatFieldString;
-				string text2 = GUI.TextField(pos, text);
-				if (flag)
-				{
-					activeFloatFieldString = text2;
-				}
-				bool flag3 = true;
-				if (text2 == "")
-				{
-					value = (activeFloatFieldLastValue = 0f);
-				}
-				else if (text2 != value.ToString())
-				{
-					flag3 = float.TryParse(text2, out float result);
-					if (flag3)
-					{
-						value = (activeFloatFieldLastValue = result);
-					}
-				}
-				if (flag2 && !flag)
-				{
-					activeFloatField = num;
-					activeFloatFieldString = text2;
-					activeFloatFieldLastValue = value;
-				}
-				else if (!flag2 && flag)
-				{
-					activeFloatField = -1;
-					if (!flag3)
-					{
-						value = text2.ForceParse();
-					}
-				}
 				return value;
+			}
+			bool flag = activeFloatField == num;
+			bool flag2 = num == GUIUtility.keyboardControl;
+			if (flag2 && flag && activeFloatFieldLastValue != value)
+			{
+				activeFloatFieldLastValue = value;
+				activeFloatFieldString = value.ToString();
+			}
+			string text = (!flag) ? value.ToString() : activeFloatFieldString;
+			string text2 = GUI.TextField(pos, text);
+			if (flag)
+			{
+				activeFloatFieldString = text2;
+			}
+			bool flag3 = true;
+			if (text2 == string.Empty)
+			{
+				value = (activeFloatFieldLastValue = 0f);
+			}
+			else if (text2 != value.ToString())
+			{
+				flag3 = float.TryParse(text2, out float result);
+				if (flag3)
+				{
+					value = (activeFloatFieldLastValue = result);
+				}
+			}
+			if (flag2 && !flag)
+			{
+				activeFloatField = num;
+				activeFloatFieldString = text2;
+				activeFloatFieldLastValue = value;
+			}
+			else if (!flag2 && flag)
+			{
+				activeFloatField = -1;
+				if (!flag3)
+				{
+					value = text2.ForceParse();
+				}
 			}
 			return value;
 		}
 
 		public static float ForceParse(this string str)
 		{
-			if (!float.TryParse(str, out float result))
+			if (float.TryParse(str, out float result))
 			{
-				bool flag = false;
-				List<char> list = new List<char>(str);
-				for (int i = 0; i < list.Count; i++)
+				return result;
+			}
+			bool flag = false;
+			List<char> list = new List<char>(str);
+			for (int i = 0; i < list.Count; i++)
+			{
+				UnicodeCategory unicodeCategory = CharUnicodeInfo.GetUnicodeCategory(str[i]);
+				if (unicodeCategory != UnicodeCategory.DecimalDigitNumber)
 				{
-					UnicodeCategory unicodeCategory = CharUnicodeInfo.GetUnicodeCategory(str[i]);
-					if (unicodeCategory != UnicodeCategory.DecimalDigitNumber)
+					list.RemoveRange(i, list.Count - i);
+					break;
+				}
+				if (str[i] == '.')
+				{
+					if (flag)
 					{
 						list.RemoveRange(i, list.Count - i);
 						break;
 					}
-					if (str[i] == '.')
-					{
-						if (flag)
-						{
-							list.RemoveRange(i, list.Count - i);
-							break;
-						}
-						flag = true;
-					}
+					flag = true;
 				}
-				if (list.Count != 0)
-				{
-					str = new string(list.ToArray());
-					if (!float.TryParse(str, out result))
-					{
-						Debug.LogError("Could not parse " + str, null);
-					}
-					return result;
-				}
+			}
+			if (list.Count == 0)
+			{
 				return 0f;
+			}
+			str = new string(list.ToArray());
+			if (!float.TryParse(str, out result))
+			{
+				Debug.LogError("Could not parse " + str, null);
 			}
 			return result;
 		}
@@ -434,10 +434,10 @@ namespace NodeEditorFramework.Utilities
 			}
 			if (!flag)
 			{
-				goto IL_009b;
+				goto IL_0094;
 			}
-			goto IL_009b;
-			IL_009b:
+			goto IL_0094;
+			IL_0094:
 			return obj;
 		}
 
@@ -475,7 +475,7 @@ namespace NodeEditorFramework.Utilities
 
 		public static int Popup(int selected, string[] displayedOptions)
 		{
-			return Popup("", selected, displayedOptions);
+			return Popup(string.Empty, selected, displayedOptions);
 		}
 
 		public static void DrawTexture(Texture texture, int texSize, GUIStyle style, params GUILayoutOption[] options)
@@ -771,29 +771,29 @@ namespace NodeEditorFramework.Utilities
 
 		public static Texture2D RotateTextureCCW(Texture2D tex, int quarterSteps)
 		{
-			if (!((UnityEngine.Object)tex == (UnityEngine.Object)null))
+			if ((UnityEngine.Object)tex == (UnityEngine.Object)null)
 			{
-				tex = UnityEngine.Object.Instantiate(tex);
-				int width = tex.width;
-				int height = tex.height;
-				Color[] pixels = tex.GetPixels();
-				Color[] array = new Color[width * height];
-				for (int i = 0; i < quarterSteps; i++)
-				{
-					for (int j = 0; j < width; j++)
-					{
-						for (int k = 0; k < height; k++)
-						{
-							array[j * width + k] = pixels[(width - k - 1) * width + j];
-						}
-					}
-					array.CopyTo(pixels, 0);
-				}
-				tex.SetPixels(pixels);
-				tex.Apply();
-				return tex;
+				return null;
 			}
-			return null;
+			tex = UnityEngine.Object.Instantiate(tex);
+			int width = tex.width;
+			int height = tex.height;
+			Color[] pixels = tex.GetPixels();
+			Color[] array = new Color[width * height];
+			for (int i = 0; i < quarterSteps; i++)
+			{
+				for (int j = 0; j < width; j++)
+				{
+					for (int k = 0; k < height; k++)
+					{
+						array[j * width + k] = pixels[(width - k - 1) * width + j];
+					}
+				}
+				array.CopyTo(pixels, 0);
+			}
+			tex.SetPixels(pixels);
+			tex.Apply();
+			return tex;
 		}
 	}
 }

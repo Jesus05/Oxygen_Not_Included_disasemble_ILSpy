@@ -203,15 +203,15 @@ public class EggIncubator : SingleEntityReceptacle, ISaveLoadable, ISim1000ms
 
 	private bool EggNeedsAttention()
 	{
-		if ((bool)base.Occupant)
+		if (!(bool)base.Occupant)
 		{
-			IncubationMonitor.Instance sMI = base.Occupant.GetSMI<IncubationMonitor.Instance>();
-			if (sMI != null)
-			{
-				return !sMI.HasSongBuff();
-			}
 			return false;
 		}
-		return false;
+		IncubationMonitor.Instance sMI = base.Occupant.GetSMI<IncubationMonitor.Instance>();
+		if (sMI == null)
+		{
+			return false;
+		}
+		return !sMI.HasSongBuff();
 	}
 }

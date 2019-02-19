@@ -149,12 +149,12 @@ public class AmbienceManager : KMonoBehaviour
 
 			public bool ShouldPlay()
 			{
-				if (!(Time.unscaledTime > solidTargetTime))
+				if (Time.unscaledTime > solidTargetTime)
 				{
-					return false;
+					solidTargetTime = Time.unscaledTime + solidMinTime + UnityEngine.Random.value * (solidMaxTime - solidMinTime);
+					return true;
 				}
-				solidTargetTime = Time.unscaledTime + solidMinTime + UnityEngine.Random.value * (solidMaxTime - solidMinTime);
-				return true;
+				return false;
 			}
 		}
 
@@ -332,7 +332,7 @@ public class AmbienceManager : KMonoBehaviour
 		}
 	}
 
-	private float emitterZPosition = 0f;
+	private float emitterZPosition;
 
 	public QuadrantDef[] quadrantDefs;
 

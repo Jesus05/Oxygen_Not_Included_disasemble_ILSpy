@@ -16,7 +16,7 @@ public class LoopingSounds : KMonoBehaviour
 	private Dictionary<HashedString, float> lastTimePlayed = new Dictionary<HashedString, float>();
 
 	[SerializeField]
-	public bool updatePosition = false;
+	public bool updatePosition;
 
 	public bool IsSoundPlaying(string path)
 	{
@@ -33,39 +33,39 @@ public class LoopingSounds : KMonoBehaviour
 
 	public bool StartSound(string asset, AnimEventManager.EventPlayerData behaviour, EffectorValues noiseValues, bool ignore_pause = false, bool enable_camera_scaled_position = true)
 	{
-		if (asset != null && !(asset == ""))
+		if (asset == null || asset == string.Empty)
 		{
-			if (!IsSoundPlaying(asset))
-			{
-				LoopingSoundEvent loopingSoundEvent = default(LoopingSoundEvent);
-				loopingSoundEvent.asset = asset;
-				LoopingSoundEvent item = loopingSoundEvent;
-				Vector3 position = behaviour.GetComponent<Transform>().GetPosition();
-				item.handle = LoopingSoundManager.Get().Add(asset, position, base.transform, !ignore_pause, true, enable_camera_scaled_position);
-				loopingSounds.Add(item);
-			}
-			return true;
+			Debug.LogWarning("Missing sound", null);
+			return false;
 		}
-		Debug.LogWarning("Missing sound", null);
-		return false;
+		if (!IsSoundPlaying(asset))
+		{
+			LoopingSoundEvent loopingSoundEvent = default(LoopingSoundEvent);
+			loopingSoundEvent.asset = asset;
+			LoopingSoundEvent item = loopingSoundEvent;
+			Vector3 position = behaviour.GetComponent<Transform>().GetPosition();
+			item.handle = LoopingSoundManager.Get().Add(asset, position, base.transform, !ignore_pause, true, enable_camera_scaled_position);
+			loopingSounds.Add(item);
+		}
+		return true;
 	}
 
 	public bool StartSound(string asset)
 	{
-		if (asset != null && !(asset == ""))
+		if (asset == null || asset == string.Empty)
 		{
-			if (!IsSoundPlaying(asset))
-			{
-				LoopingSoundEvent loopingSoundEvent = default(LoopingSoundEvent);
-				loopingSoundEvent.asset = asset;
-				LoopingSoundEvent item = loopingSoundEvent;
-				item.handle = LoopingSoundManager.Get().Add(asset, base.transform.GetPosition(), base.transform, true, true, true);
-				loopingSounds.Add(item);
-			}
-			return true;
+			Debug.LogWarning("Missing sound", null);
+			return false;
 		}
-		Debug.LogWarning("Missing sound", null);
-		return false;
+		if (!IsSoundPlaying(asset))
+		{
+			LoopingSoundEvent loopingSoundEvent = default(LoopingSoundEvent);
+			loopingSoundEvent.asset = asset;
+			LoopingSoundEvent item = loopingSoundEvent;
+			item.handle = LoopingSoundManager.Get().Add(asset, base.transform.GetPosition(), base.transform, true, true, true);
+			loopingSounds.Add(item);
+		}
+		return true;
 	}
 
 	public void UpdateVelocity(string asset, Vector2 value)

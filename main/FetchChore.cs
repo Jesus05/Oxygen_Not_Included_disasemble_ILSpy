@@ -271,11 +271,11 @@ public class FetchChore : Chore<FetchChore.StatesInstance>
 
 	public float AmountWaitingToFetch()
 	{
-		if (!((UnityEngine.Object)fetcher == (UnityEngine.Object)null))
+		if ((UnityEngine.Object)fetcher == (UnityEngine.Object)null)
 		{
-			return amount;
+			return originalAmount;
 		}
-		return originalAmount;
+		return amount;
 	}
 
 	private void OnOnlyFetchMarkedItemsSettingChanged(object data)

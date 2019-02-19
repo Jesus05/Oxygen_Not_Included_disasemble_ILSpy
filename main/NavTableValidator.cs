@@ -25,11 +25,11 @@ public class NavTableValidator
 	protected static bool IsCellSolid(int cell, bool allow_forcefield_traversal)
 	{
 		Grid.BuildFlags buildFlags = Grid.BuildMasks[cell] & (Grid.BuildFlags.ForceField | Grid.BuildFlags.Solid | Grid.BuildFlags.Impassable);
-		if (buildFlags != 0)
+		if (buildFlags == ~(Grid.BuildFlags.FakeFloor | Grid.BuildFlags.ForceField | Grid.BuildFlags.Foundation | Grid.BuildFlags.Solid | Grid.BuildFlags.PreviousSolid | Grid.BuildFlags.Impassable | Grid.BuildFlags.LiquidPumpFloor | Grid.BuildFlags.Door))
 		{
-			return (buildFlags & (Grid.BuildFlags.Solid | Grid.BuildFlags.Impassable)) != 0 && ((buildFlags & Grid.BuildFlags.ForceField) == ~(Grid.BuildFlags.FakeFloor | Grid.BuildFlags.ForceField | Grid.BuildFlags.Foundation | Grid.BuildFlags.Solid | Grid.BuildFlags.PreviousSolid | Grid.BuildFlags.Impassable | Grid.BuildFlags.LiquidPumpFloor | Grid.BuildFlags.Door) || !allow_forcefield_traversal);
+			return false;
 		}
-		return false;
+		return (buildFlags & (Grid.BuildFlags.Solid | Grid.BuildFlags.Impassable)) != 0 && ((buildFlags & Grid.BuildFlags.ForceField) == ~(Grid.BuildFlags.FakeFloor | Grid.BuildFlags.ForceField | Grid.BuildFlags.Foundation | Grid.BuildFlags.Solid | Grid.BuildFlags.PreviousSolid | Grid.BuildFlags.Impassable | Grid.BuildFlags.LiquidPumpFloor | Grid.BuildFlags.Door) || !allow_forcefield_traversal);
 	}
 
 	public virtual void UpdateCell(int cell, NavTable nav_table, CellOffset[] bounding_offsets)

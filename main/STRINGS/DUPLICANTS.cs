@@ -387,7 +387,7 @@ namespace STRINGS
 
 				public static LocString STATUS = "Recovering breath";
 
-				public static LocString TOOLTIP = "";
+				public static LocString TOOLTIP = string.Empty;
 			}
 
 			public class MOVETOQUARANTINE
@@ -3730,9 +3730,9 @@ namespace STRINGS
 
 			public class BANHI
 			{
-				public static LocString NAME = "";
+				public static LocString NAME = string.Empty;
 
-				public static LocString DESC = "";
+				public static LocString DESC = string.Empty;
 			}
 
 			public class STINKY
@@ -4738,35 +4738,35 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Bladder Change";
 
-				public static LocString DESC = "";
+				public static LocString DESC = string.Empty;
 			}
 
 			public class CALORIESDELTA
 			{
 				public static LocString NAME = "Calories Change Rate";
 
-				public static LocString DESC = "";
+				public static LocString DESC = string.Empty;
 			}
 
 			public class STAMINADELTA
 			{
 				public static LocString NAME = "Stamina Change";
 
-				public static LocString DESC = "";
+				public static LocString DESC = string.Empty;
 			}
 
 			public class TOXICITYDELTA
 			{
 				public static LocString NAME = "Toxicity Change";
 
-				public static LocString DESC = "";
+				public static LocString DESC = string.Empty;
 			}
 
 			public class IMMUNELEVELDELTA
 			{
 				public static LocString NAME = "Immunity Regen";
 
-				public static LocString DESC = "";
+				public static LocString DESC = string.Empty;
 			}
 
 			public class TOILETEFFICIENCY
@@ -4841,14 +4841,14 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Incubation Rate";
 
-				public static LocString DESC = "";
+				public static LocString DESC = string.Empty;
 			}
 
 			public class HAPPINESS
 			{
 				public static LocString NAME = "Happiness";
 
-				public static LocString DESC = "";
+				public static LocString DESC = string.Empty;
 			}
 
 			public class SCALEGROWTHDELTA
@@ -4862,7 +4862,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Viability Loss Rate";
 
-				public static LocString DESC = "";
+				public static LocString DESC = string.Empty;
 			}
 
 			public static LocString VALUE = "{0}: {1}";

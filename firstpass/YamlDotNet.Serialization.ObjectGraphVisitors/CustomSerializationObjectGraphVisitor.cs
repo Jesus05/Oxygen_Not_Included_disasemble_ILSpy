@@ -20,24 +20,24 @@ namespace YamlDotNet.Serialization.ObjectGraphVisitors
 		public override bool Enter(IObjectDescriptor value, IEmitter context)
 		{
 			IYamlTypeConverter yamlTypeConverter = typeConverters.FirstOrDefault((IYamlTypeConverter t) => t.Accepts(value.Type));
-			if (yamlTypeConverter == null)
+			if (yamlTypeConverter != null)
 			{
-				IYamlConvertible yamlConvertible = value.Value as IYamlConvertible;
-				if (yamlConvertible == null)
-				{
-					IYamlSerializable yamlSerializable = value.Value as IYamlSerializable;
-					if (yamlSerializable == null)
-					{
-						return base.Enter(value, context);
-					}
-					yamlSerializable.WriteYaml(context);
-					return false;
-				}
+				yamlTypeConverter.WriteYaml(context, value.Value, value.Type);
+				return false;
+			}
+			IYamlConvertible yamlConvertible = value.Value as IYamlConvertible;
+			if (yamlConvertible != null)
+			{
 				yamlConvertible.Write(context, nestedObjectSerializer);
 				return false;
 			}
-			yamlTypeConverter.WriteYaml(context, value.Value, value.Type);
-			return false;
+			IYamlSerializable yamlSerializable = value.Value as IYamlSerializable;
+			if (yamlSerializable != null)
+			{
+				yamlSerializable.WriteYaml(context);
+				return false;
+			}
+			return base.Enter(value, context);
 		}
 	}
 }

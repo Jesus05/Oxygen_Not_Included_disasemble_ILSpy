@@ -36,29 +36,29 @@ public class AggressiveChore : Chore<AggressiveChore.StatesInstance>
 			{
 				int value = GameUtil.FloodFillFind(delegate(int cell, object arg)
 				{
-					if (!Grid.Solid[cell])
+					if (Grid.Solid[cell])
 					{
-						if (navigator.CanReach(cell))
-						{
-							if (Grid.IsValidCell(Grid.CellLeft(cell)) && Grid.Solid[Grid.CellLeft(cell)])
-							{
-								return true;
-							}
-							if (Grid.IsValidCell(Grid.CellRight(cell)) && Grid.Solid[Grid.CellRight(cell)])
-							{
-								return true;
-							}
-							if (Grid.IsValidCell(Grid.OffsetCell(cell, 1, 1)) && Grid.Solid[Grid.OffsetCell(cell, 1, 1)])
-							{
-								return true;
-							}
-							if (Grid.IsValidCell(Grid.OffsetCell(cell, -1, 1)) && Grid.Solid[Grid.OffsetCell(cell, -1, 1)])
-							{
-								return true;
-							}
-							return false;
-						}
 						return false;
+					}
+					if (!navigator.CanReach(cell))
+					{
+						return false;
+					}
+					if (Grid.IsValidCell(Grid.CellLeft(cell)) && Grid.Solid[Grid.CellLeft(cell)])
+					{
+						return true;
+					}
+					if (Grid.IsValidCell(Grid.CellRight(cell)) && Grid.Solid[Grid.CellRight(cell)])
+					{
+						return true;
+					}
+					if (Grid.IsValidCell(Grid.OffsetCell(cell, 1, 1)) && Grid.Solid[Grid.OffsetCell(cell, 1, 1)])
+					{
+						return true;
+					}
+					if (Grid.IsValidCell(Grid.OffsetCell(cell, -1, 1)) && Grid.Solid[Grid.OffsetCell(cell, -1, 1)])
+					{
+						return true;
 					}
 					return false;
 				}, null, Grid.PosToCell(navigator.gameObject), 128, true, true);

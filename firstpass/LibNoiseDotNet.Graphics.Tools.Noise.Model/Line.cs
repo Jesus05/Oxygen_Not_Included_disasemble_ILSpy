@@ -65,11 +65,11 @@ namespace LibNoiseDotNet.Graphics.Tools.Noise.Model
 			float y = (_endPosition.y - _startPosition.y) * p + _startPosition.y;
 			float z = (_endPosition.z - _startPosition.z) * p + _startPosition.z;
 			float value = ((IModule3D)_sourceModule).GetValue(x, y, z);
-			if (!_attenuate)
+			if (_attenuate)
 			{
-				return value;
+				return p * (1f - p) * 4f * value;
 			}
-			return p * (1f - p) * 4f * value;
+			return value;
 		}
 	}
 }

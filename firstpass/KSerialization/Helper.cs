@@ -900,11 +900,11 @@ namespace KSerialization
 
 		public static bool IsPOD(Type type)
 		{
-			if (type != typeof(int) && type != typeof(uint) && type != typeof(byte) && type != typeof(sbyte) && type != typeof(float) && type != typeof(double) && type != typeof(short) && type != typeof(ushort) && type != typeof(long) && type != typeof(ulong))
+			if (type == typeof(int) || type == typeof(uint) || type == typeof(byte) || type == typeof(sbyte) || type == typeof(float) || type == typeof(double) || type == typeof(short) || type == typeof(ushort) || type == typeof(long) || type == typeof(ulong))
 			{
-				return false;
+				return true;
 			}
-			return true;
+			return false;
 		}
 
 		public static string GetKTypeString(this Type type)

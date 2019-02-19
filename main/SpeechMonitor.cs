@@ -122,21 +122,21 @@ public class SpeechMonitor : GameStateMachine<SpeechMonitor, SpeechMonitor.Insta
 
 	public static bool IsAllowedToPlaySpeech(GameObject go)
 	{
-		if (!go.HasTag(GameTags.Dead))
+		if (go.HasTag(GameTags.Dead))
 		{
-			if (!go.GetComponent<Navigator>().IsMoving())
-			{
-				KBatchedAnimController component = go.GetComponent<KBatchedAnimController>();
-				KAnim.Anim currentAnim = component.GetCurrentAnim();
-				if (currentAnim != null)
-				{
-					return GameAudioSheets.Get().IsAnimAllowedToPlaySpeech(currentAnim);
-				}
-				return true;
-			}
+			return false;
+		}
+		if (go.GetComponent<Navigator>().IsMoving())
+		{
 			return true;
 		}
-		return false;
+		KBatchedAnimController component = go.GetComponent<KBatchedAnimController>();
+		KAnim.Anim currentAnim = component.GetCurrentAnim();
+		if (currentAnim == null)
+		{
+			return true;
+		}
+		return GameAudioSheets.Get().IsAnimAllowedToPlaySpeech(currentAnim);
 	}
 
 	public static void BeginTalking(Instance smi)
@@ -172,27 +172,27 @@ public class SpeechMonitor : GameStateMachine<SpeechMonitor, SpeechMonitor.Insta
 		result.symbol = HashedString.Invalid;
 		int currentFrameIndex = controller.GetCurrentFrameIndex();
 		KAnimBatch batch = controller.GetBatch();
-		if (currentFrameIndex != -1 && batch != null)
+		if (currentFrameIndex == -1 || batch == null)
 		{
-			KAnim.Anim.Frame frame = controller.GetBatch().group.data.GetFrame(currentFrameIndex);
-			if (!(frame == KAnim.Anim.Frame.InvalidFrame))
-			{
-				for (int i = 0; i < frame.numElements; i++)
-				{
-					int num = frame.firstElementIdx + i;
-					if (num < batch.group.data.frameElements.Count)
-					{
-						KAnim.Anim.FrameElement frameElement = batch.group.data.frameElements[num];
-						if (!(frameElement.symbol == HashedString.Invalid))
-						{
-							result = frameElement;
-							break;
-						}
-					}
-				}
-				return result;
-			}
 			return result;
+		}
+		KAnim.Anim.Frame frame = controller.GetBatch().group.data.GetFrame(currentFrameIndex);
+		if (frame == KAnim.Anim.Frame.InvalidFrame)
+		{
+			return result;
+		}
+		for (int i = 0; i < frame.numElements; i++)
+		{
+			int num = frame.firstElementIdx + i;
+			if (num < batch.group.data.frameElements.Count)
+			{
+				KAnim.Anim.FrameElement frameElement = batch.group.data.frameElements[num];
+				if (!(frameElement.symbol == HashedString.Invalid))
+				{
+					result = frameElement;
+					return result;
+				}
+			}
 		}
 		return result;
 	}

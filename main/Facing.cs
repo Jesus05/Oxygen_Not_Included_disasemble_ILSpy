@@ -81,10 +81,10 @@ public class Facing : KMonoBehaviour
 	public int GetFrontCell()
 	{
 		int cell = Grid.PosToCell(this);
-		if (!GetFacing())
+		if (GetFacing())
 		{
-			return Grid.CellRight(cell);
+			return Grid.CellLeft(cell);
 		}
-		return Grid.CellLeft(cell);
+		return Grid.CellRight(cell);
 	}
 }

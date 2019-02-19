@@ -2,11 +2,11 @@ public static class UnitsUtil
 {
 	public static bool IsTimeUnit(Units unit)
 	{
-		if (unit != Units.PerSecond && unit != Units.PerDay)
+		if (unit == Units.PerSecond || unit == Units.PerDay)
 		{
-			return false;
+			return true;
 		}
-		return true;
+		return false;
 	}
 
 	public static string GetUnitSuffix(Units unit)
@@ -15,6 +15,6 @@ public static class UnitsUtil
 		{
 			return "K";
 		}
-		return "";
+		return string.Empty;
 	}
 }

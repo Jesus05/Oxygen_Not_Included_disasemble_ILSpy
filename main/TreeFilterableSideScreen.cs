@@ -32,7 +32,7 @@ public class TreeFilterableSideScreen : SideScreenContent
 
 	private GameObject target;
 
-	private bool visualDirty = false;
+	private bool visualDirty;
 
 	private KImage onlyAllowTransportItemsImg;
 
@@ -139,23 +139,23 @@ public class TreeFilterableSideScreen : SideScreenContent
 				}
 			}
 		}
-		if (!flag3)
+		if (flag3)
 		{
-			if (flag && !flag2)
-			{
-				return TreeFilterableSideScreenRow.State.On;
-			}
-			if (!flag && flag2)
-			{
-				return TreeFilterableSideScreenRow.State.Off;
-			}
-			if (flag && flag2)
-			{
-				return TreeFilterableSideScreenRow.State.Mixed;
-			}
+			return TreeFilterableSideScreenRow.State.Mixed;
+		}
+		if (flag && !flag2)
+		{
+			return TreeFilterableSideScreenRow.State.On;
+		}
+		if (!flag && flag2)
+		{
 			return TreeFilterableSideScreenRow.State.Off;
 		}
-		return TreeFilterableSideScreenRow.State.Mixed;
+		if (flag && flag2)
+		{
+			return TreeFilterableSideScreenRow.State.Mixed;
+		}
+		return TreeFilterableSideScreenRow.State.Off;
 	}
 
 	private void SetAllCheckboxState(TreeFilterableSideScreenRow.State newState)
@@ -289,11 +289,11 @@ public class TreeFilterableSideScreen : SideScreenContent
 
 	public float GetAmountInStorage(Tag tag)
 	{
-		if (IsStorage)
+		if (!IsStorage)
 		{
-			return storage.GetMassAvailable(tag);
+			return 0f;
 		}
-		return 0f;
+		return storage.GetMassAvailable(tag);
 	}
 
 	private void CreateCategories()

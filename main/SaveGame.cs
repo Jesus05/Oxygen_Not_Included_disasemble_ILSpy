@@ -56,7 +56,7 @@ public class SaveGame : KMonoBehaviour, ISaveLoadable
 			this.numberOfDuplicants = numberOfDuplicants;
 			this.baseName = baseName;
 			isAutoSave = false;
-			originalSaveName = "";
+			originalSaveName = string.Empty;
 			saveMajorVersion = 7;
 			saveMinorVersion = 6;
 		}
@@ -85,7 +85,7 @@ public class SaveGame : KMonoBehaviour, ISaveLoadable
 	public bool enableAutoDisinfect = true;
 
 	[Serialize]
-	public bool sandboxEnabled = false;
+	public bool sandboxEnabled;
 
 	private string baseName;
 
@@ -143,7 +143,7 @@ public class SaveGame : KMonoBehaviour, ISaveLoadable
 		text = ((!isAutoSave) ? JsonConvert.SerializeObject(new GameInfo(GameClock.Instance.GetCycle(), Components.LiveMinionIdentities.Count, baseName, false)) : JsonConvert.SerializeObject(new GameInfo(GameClock.Instance.GetCycle(), Components.LiveMinionIdentities.Count, baseName, true, SaveLoader.GetActiveSaveFilePath(), false)));
 		byte[] bytes = Encoding.UTF8.GetBytes(text);
 		header = default(Header);
-		header.buildVersion = 309354u;
+		header.buildVersion = 309851u;
 		header.headerSize = bytes.Length;
 		header.headerVersion = 1u;
 		header.compression = (isCompressed ? 1 : 0);

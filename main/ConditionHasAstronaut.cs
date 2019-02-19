@@ -34,19 +34,19 @@ public class ConditionHasAstronaut : RocketLaunchCondition
 
 	public override string GetLaunchStatusMessage(bool ready)
 	{
-		if (!ready)
+		if (ready)
 		{
-			return UI.STARMAP.LAUNCHCHECKLIST.ASTRONAUGHT;
+			return UI.STARMAP.LAUNCHCHECKLIST.ASTRONAUT_TITLE;
 		}
-		return UI.STARMAP.LAUNCHCHECKLIST.ASTRONAUT_TITLE;
+		return UI.STARMAP.LAUNCHCHECKLIST.ASTRONAUGHT;
 	}
 
 	public override string GetLaunchStatusTooltip(bool ready)
 	{
-		if (!ready)
+		if (ready)
 		{
-			return UI.STARMAP.LAUNCHCHECKLIST.ASTRONAUGHT;
+			return UI.STARMAP.LAUNCHCHECKLIST.HASASTRONAUT;
 		}
-		return UI.STARMAP.LAUNCHCHECKLIST.HASASTRONAUT;
+		return UI.STARMAP.LAUNCHCHECKLIST.ASTRONAUGHT;
 	}
 }

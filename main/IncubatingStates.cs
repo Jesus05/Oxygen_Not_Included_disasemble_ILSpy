@@ -51,11 +51,7 @@ internal class IncubatingStates : GameStateMachine<IncubatingStates, IncubatingS
 	public override void InitializeStates(out BaseState default_state)
 	{
 		default_state = incubator;
-		State root = base.root;
-		string name = CREATURES.STATUSITEMS.IN_INCUBATOR.NAME;
-		string tooltip = CREATURES.STATUSITEMS.IN_INCUBATOR.TOOLTIP;
-		StatusItemCategory main = Db.Get().StatusItemCategories.Main;
-		root.ToggleStatusItem(name, tooltip, "", StatusItem.IconType.Info, (NotificationType)0, false, default(HashedString), 0, null, null, main);
+		root.ToggleStatusItem(CREATURES.STATUSITEMS.IN_INCUBATOR.NAME, CREATURES.STATUSITEMS.IN_INCUBATOR.TOOLTIP, category: Db.Get().StatusItemCategories.Main, icon: string.Empty, icon_type: StatusItem.IconType.Info, notification_type: (NotificationType)0, allow_multiples: false, render_overlay: default(HashedString), status_overlays: 0, resolve_string_callback: null, resolve_tooltip_callback: null);
 		incubator.DefaultState(incubator.idle).ToggleTag(GameTags.Creatures.Deliverable).TagTransition(GameTags.Creatures.InIncubator, null, true);
 		incubator.idle.Enter("VariantUpdate", VariantUpdate).PlayAnim("incubator_idle_loop").OnAnimQueueComplete(incubator.choose);
 		incubator.choose.Transition(incubator.variant, DoVariant, UpdateRate.SIM_200ms).Transition(incubator.idle, GameStateMachine<IncubatingStates, Instance, IStateMachineTarget, Def>.Not(DoVariant), UpdateRate.SIM_200ms);

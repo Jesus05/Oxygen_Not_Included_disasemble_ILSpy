@@ -188,12 +188,12 @@ public class MinionResume : KMonoBehaviour, ISaveLoadable, ISim200ms
 
 	public bool IsChoreGroupInCurrentRoleGroup(ChoreGroup choregroup)
 	{
-		if (!(CurrentRole == "NoRole"))
+		if (CurrentRole == "NoRole")
 		{
-			RoleConfig role = Game.Instance.roleManager.GetRole(currentRole);
-			return Game.Instance.roleManager.RoleGroups[role.roleGroup].choreGroupID == choregroup.Id;
+			return false;
 		}
-		return false;
+		RoleConfig role = Game.Instance.roleManager.GetRole(currentRole);
+		return Game.Instance.roleManager.RoleGroups[role.roleGroup].choreGroupID == choregroup.Id;
 	}
 
 	public void SetTargetRole(string newRole)
@@ -277,7 +277,7 @@ public class MinionResume : KMonoBehaviour, ISaveLoadable, ISim200ms
 
 	private string GetExperienceString()
 	{
-		return "";
+		return string.Empty;
 	}
 
 	public string GetCurrentRoleString()

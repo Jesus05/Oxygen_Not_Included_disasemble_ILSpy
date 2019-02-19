@@ -8,7 +8,7 @@ public class MultipleRenderTarget : MonoBehaviour
 
 	private FullScreenQuad quad;
 
-	public bool isFrontEnd = false;
+	public bool isFrontEnd;
 
 	public event Action<Camera> onSetupComplete;
 

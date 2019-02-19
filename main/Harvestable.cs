@@ -11,17 +11,17 @@ public class Harvestable : Workable
 	protected bool isMarkedForHarvest;
 
 	[Serialize]
-	protected bool canBeHarvested = false;
+	protected bool canBeHarvested;
 
 	[Serialize]
-	protected bool harvestWhenReady = false;
+	protected bool harvestWhenReady;
 
 	public bool defaultHarvestStateWhenPlanted = true;
 
 	public RectTransform HarvestWhenReadyOverlayIcon;
 
 	[Serialize]
-	private bool isInPlanterBox = false;
+	private bool isInPlanterBox;
 
 	protected Chore chore;
 
@@ -275,11 +275,11 @@ public class Harvestable : Workable
 
 	public bool HasChore()
 	{
-		if (chore != null)
+		if (chore == null)
 		{
-			return true;
+			return false;
 		}
-		return false;
+		return true;
 	}
 
 	protected virtual void OnClickHarvestWhenReady()

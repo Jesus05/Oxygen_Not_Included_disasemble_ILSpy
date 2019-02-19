@@ -79,32 +79,32 @@ public class CurrentJobConversation : ConversationType
 
 	public override Conversation.Topic GetNextTopic(MinionIdentity speaker, Conversation.Topic lastTopic)
 	{
-		if (lastTopic != null)
+		if (lastTopic == null)
 		{
-			List<Conversation.ModeType> list = transitions[lastTopic.mode];
-			Conversation.ModeType modeType = list[Random.Range(0, list.Count)];
-			if (modeType != Conversation.ModeType.Statement)
-			{
-				return new Conversation.Topic(target, modeType);
-			}
+			return new Conversation.Topic(target, Conversation.ModeType.Query);
+		}
+		List<Conversation.ModeType> list = transitions[lastTopic.mode];
+		Conversation.ModeType modeType = list[Random.Range(0, list.Count)];
+		if (modeType == Conversation.ModeType.Statement)
+		{
 			target = GetRoleForSpeaker(speaker);
 			Conversation.ModeType modeForRole = GetModeForRole(speaker, target);
 			return new Conversation.Topic(target, modeForRole);
 		}
-		return new Conversation.Topic(target, Conversation.ModeType.Query);
+		return new Conversation.Topic(target, modeType);
 	}
 
 	public override Sprite GetSprite(string topic)
 	{
-		if (!(topic == "hows_role"))
+		if (topic == "hows_role")
 		{
-			if (!RoleManager.roleHatIndex.ContainsKey(topic))
-			{
-				return null;
-			}
+			return Assets.GetSprite("crew_state_role");
+		}
+		if (RoleManager.roleHatIndex.ContainsKey(topic))
+		{
 			return Assets.GetSprite(RoleManager.roleHatIndex[topic]);
 		}
-		return Assets.GetSprite("crew_state_role");
+		return null;
 	}
 
 	private Conversation.ModeType GetModeForRole(MinionIdentity speaker, string roleId)
@@ -113,19 +113,19 @@ public class CurrentJobConversation : ConversationType
 		RoleConfig role = Game.Instance.roleManager.GetRole(roleId);
 		AttributeInstance attributeInstance = Db.Get().Attributes.QualityOfLife.Lookup(speaker);
 		AttributeInstance attributeInstance2 = Db.Get().Attributes.QualityOfLifeExpectation.Lookup(speaker);
-		if (!(component.AptitudeByRoleGroup[role.roleGroup] > 0f))
+		if (component.AptitudeByRoleGroup[role.roleGroup] > 0f)
 		{
-			if (!(attributeInstance.GetTotalValue() < attributeInstance2.GetTotalValue()))
-			{
-				if (!(roleId == "NoRole"))
-				{
-					return Conversation.ModeType.Nominal;
-				}
-				return Conversation.ModeType.Dissatisfaction;
-			}
+			return Conversation.ModeType.Satisfaction;
+		}
+		if (attributeInstance.GetTotalValue() < attributeInstance2.GetTotalValue())
+		{
 			return Conversation.ModeType.Stressing;
 		}
-		return Conversation.ModeType.Satisfaction;
+		if (roleId == "NoRole")
+		{
+			return Conversation.ModeType.Dissatisfaction;
+		}
+		return Conversation.ModeType.Nominal;
 	}
 
 	private string GetRoleForSpeaker(MinionIdentity speaker)

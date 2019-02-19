@@ -30,18 +30,18 @@ public struct GravityComponent
 	public static float GetRadius(Transform transform)
 	{
 		KCircleCollider2D component = transform.GetComponent<KCircleCollider2D>();
-		if (!((UnityEngine.Object)component != (UnityEngine.Object)null))
+		if ((UnityEngine.Object)component != (UnityEngine.Object)null)
 		{
-			KCollider2D component2 = transform.GetComponent<KCollider2D>();
-			if (!((UnityEngine.Object)component2 != (UnityEngine.Object)null))
-			{
-				return 0f;
-			}
+			return component.radius;
+		}
+		KCollider2D component2 = transform.GetComponent<KCollider2D>();
+		if ((UnityEngine.Object)component2 != (UnityEngine.Object)null)
+		{
 			Vector3 position = transform.GetPosition();
 			float y = position.y;
 			Vector3 min = component2.bounds.min;
 			return y - min.y;
 		}
-		return component.radius;
+		return 0f;
 	}
 }

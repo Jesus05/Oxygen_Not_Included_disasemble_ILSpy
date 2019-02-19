@@ -5,9 +5,9 @@ using UnityEngine;
 
 public static class TemplateCache
 {
-	private static string baseTemplatePath = null;
+	private static string baseTemplatePath;
 
-	private static Dictionary<string, TemplateContainer> templates = null;
+	private static Dictionary<string, TemplateContainer> templates;
 
 	private const string defaultAssetFolder = "bases/";
 
@@ -88,11 +88,11 @@ public static class TemplateCache
 		}
 		list.Sort(delegate(TemplateContainer x, TemplateContainer y)
 		{
-			if (y.priority - x.priority != 0)
+			if (y.priority - x.priority == 0)
 			{
-				return y.priority - x.priority;
+				return x.name.CompareTo(y.name);
 			}
-			return x.name.CompareTo(y.name);
+			return y.priority - x.priority;
 		});
 		return list;
 	}

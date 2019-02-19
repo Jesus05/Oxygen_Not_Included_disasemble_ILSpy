@@ -27,12 +27,12 @@ namespace YamlDotNet.Core
 
 		public bool TryIncrement()
 		{
-			if (current >= Maximum)
+			if (current < Maximum)
 			{
-				return false;
+				current++;
+				return true;
 			}
-			current++;
-			return true;
+			return false;
 		}
 
 		public void Decrement()

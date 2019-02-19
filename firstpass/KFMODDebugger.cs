@@ -37,7 +37,7 @@ public class KFMODDebugger : KMonoBehaviour
 
 	public Dictionary<DebugSoundType, bool> allDebugSoundTypes = new Dictionary<DebugSoundType, bool>();
 
-	public bool debugEnabled = false;
+	public bool debugEnabled;
 
 	public static KFMODDebugger Get()
 	{
@@ -79,54 +79,54 @@ public class KFMODDebugger : KMonoBehaviour
 
 	private DebugSoundType GetDebugSoundType(string s)
 	{
-		if (!s.Contains("Buildings"))
+		if (s.Contains("Buildings"))
 		{
-			if (!s.Contains("Notifications"))
-			{
-				if (!s.Contains("UI"))
-				{
-					if (!s.Contains("Creatures"))
-					{
-						if (!s.Contains("Duplicant_voices"))
-						{
-							if (!s.Contains("Ambience"))
-							{
-								if (!s.Contains("Environment"))
-								{
-									if (!s.Contains("FX"))
-									{
-										if (!s.Contains("Duplicant_actions/LowImportance/Movement"))
-										{
-											if (!s.Contains("Duplicant_actions"))
-											{
-												if (!s.Contains("Plants"))
-												{
-													if (!s.Contains("Music"))
-													{
-														return DebugSoundType.Uncategorized;
-													}
-													return DebugSoundType.Music;
-												}
-												return DebugSoundType.Plants;
-											}
-											return DebugSoundType.DupeActions;
-										}
-										return DebugSoundType.DupeMovement;
-									}
-									return DebugSoundType.FX;
-								}
-								return DebugSoundType.Environment;
-							}
-							return DebugSoundType.Ambience;
-						}
-						return DebugSoundType.DupeVoices;
-					}
-					return DebugSoundType.Creatures;
-				}
-				return DebugSoundType.UI;
-			}
+			return DebugSoundType.Buildings;
+		}
+		if (s.Contains("Notifications"))
+		{
 			return DebugSoundType.Notifications;
 		}
-		return DebugSoundType.Buildings;
+		if (s.Contains("UI"))
+		{
+			return DebugSoundType.UI;
+		}
+		if (s.Contains("Creatures"))
+		{
+			return DebugSoundType.Creatures;
+		}
+		if (s.Contains("Duplicant_voices"))
+		{
+			return DebugSoundType.DupeVoices;
+		}
+		if (s.Contains("Ambience"))
+		{
+			return DebugSoundType.Ambience;
+		}
+		if (s.Contains("Environment"))
+		{
+			return DebugSoundType.Environment;
+		}
+		if (s.Contains("FX"))
+		{
+			return DebugSoundType.FX;
+		}
+		if (s.Contains("Duplicant_actions/LowImportance/Movement"))
+		{
+			return DebugSoundType.DupeMovement;
+		}
+		if (s.Contains("Duplicant_actions"))
+		{
+			return DebugSoundType.DupeActions;
+		}
+		if (s.Contains("Plants"))
+		{
+			return DebugSoundType.Plants;
+		}
+		if (s.Contains("Music"))
+		{
+			return DebugSoundType.Music;
+		}
+		return DebugSoundType.Uncategorized;
 	}
 }

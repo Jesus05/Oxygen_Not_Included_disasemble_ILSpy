@@ -88,12 +88,12 @@ namespace ProcGen
 
 		public static string GetDefaultBiome(string name)
 		{
-			if (!features.TerrainFeatures.ContainsKey(name))
+			if (features.TerrainFeatures.ContainsKey(name))
 			{
-				Debug.LogError("Couldn't get default biome [" + name + "]", null);
-				return null;
+				return features.TerrainFeatures[name].defaultBiome.type;
 			}
-			return features.TerrainFeatures[name].defaultBiome.type;
+			Debug.LogError("Couldn't get default biome [" + name + "]", null);
+			return null;
 		}
 
 		public static FeatureSettings GetFeature(string name)
@@ -103,15 +103,15 @@ namespace ProcGen
 				int num = 0;
 				num++;
 			}
-			if (name.StartsWith("features/"))
+			if (!name.StartsWith("features/"))
 			{
-				if (!featuresettings.ContainsKey(name))
-				{
-					throw new Exception("Couldnt get feature [" + name + "]");
-				}
+				return null;
+			}
+			if (featuresettings.ContainsKey(name))
+			{
 				return featuresettings[name];
 			}
-			return null;
+			throw new Exception("Couldnt get feature [" + name + "]");
 		}
 
 		public static string[] GetFeatureSettingsNames()
@@ -127,28 +127,28 @@ namespace ProcGen
 
 		private static bool GetPathAndName(string srcPath, string srcName, out string name)
 		{
-			if (!File.Exists(srcPath + srcName + ".yaml"))
+			if (File.Exists(srcPath + srcName + ".yaml"))
 			{
-				string[] array = srcName.Split('/');
-				name = array[0];
-				for (int i = 1; i < array.Length - 1; i++)
-				{
-					name = name + "/" + array[i];
-				}
-				if (!File.Exists(srcPath + name + ".yaml"))
-				{
-					name = srcName;
-					return false;
-				}
+				name = srcName;
+				return true;
+			}
+			string[] array = srcName.Split('/');
+			name = array[0];
+			for (int i = 1; i < array.Length - 1; i++)
+			{
+				name = name + "/" + array[i];
+			}
+			if (File.Exists(srcPath + name + ".yaml"))
+			{
 				return true;
 			}
 			name = srcName;
-			return true;
+			return false;
 		}
 
 		private static void LoadBiome(string longName)
 		{
-			string name = "";
+			string name = string.Empty;
 			if (GetPathAndName(GetPath(), longName, out name) && !biomeSettingsCache.ContainsKey(name))
 			{
 				BiomeSettings biomeSettings = YamlIO<BiomeSettings>.LoadFile(GetPath() + name + ".yaml", null);
@@ -173,25 +173,25 @@ namespace ProcGen
 
 		private static string LoadFeature(string longName)
 		{
-			string name = "";
-			if (GetPathAndName(GetPath(), longName, out name))
+			string name = string.Empty;
+			if (!GetPathAndName(GetPath(), longName, out name))
 			{
-				if (!featuresettings.ContainsKey(name))
-				{
-					FeatureSettings featureSettings = YamlIO<FeatureSettings>.LoadFile(GetPath() + name + ".yaml", null);
-					if (featureSettings != null)
-					{
-						featuresettings.Add(name, featureSettings);
-					}
-					else
-					{
-						Debug.LogWarning("WorldGen: Attempting to load feature: " + name + " failed", null);
-					}
-				}
-				return name;
+				Debug.LogWarning("LoadFeature GetPathAndName: Attempting to load feature: " + name + " failed", null);
+				return longName;
 			}
-			Debug.LogWarning("LoadFeature GetPathAndName: Attempting to load feature: " + name + " failed", null);
-			return longName;
+			if (!featuresettings.ContainsKey(name))
+			{
+				FeatureSettings featureSettings = YamlIO<FeatureSettings>.LoadFile(GetPath() + name + ".yaml", null);
+				if (featureSettings != null)
+				{
+					featuresettings.Add(name, featureSettings);
+				}
+				else
+				{
+					Debug.LogWarning("WorldGen: Attempting to load feature: " + name + " failed", null);
+				}
+			}
+			return name;
 		}
 
 		public static void LoadZoneContents(IEnumerable<SubWorld> zones)
@@ -252,47 +252,47 @@ namespace ProcGen
 
 		public static bool LoadFiles(IFileSystem filesystem)
 		{
-			if (worlds.worldCache.Count <= 0)
+			if (worlds.worldCache.Count > 0)
 			{
-				worlds.LoadFiles(GetPath(), filesystem);
-				foreach (KeyValuePair<string, Worlds.Data> item in worlds.worldCache)
-				{
-					Worlds.Data value = item.Value;
-					value.world.LoadZones(noise, GetPath());
-					Worlds.Data value2 = item.Value;
-					LoadZoneContents(value2.world.Zones.Values);
-				}
-				layers = YamlIO<LevelLayerSettings>.LoadFile(GetPath() + "layers.yaml", null);
-				layers.LevelLayers.ConvertBandSizeToMaxSize();
-				features = YamlIO<TerrainFeatureSettings>.LoadFile(GetPath() + "features.yaml", null);
-				foreach (KeyValuePair<string, TerrainFeature> terrainFeature in features.TerrainFeatures)
-				{
-					terrainFeature.Value.name = terrainFeature.Key;
-					if (terrainFeature.Value.defaultBiome != null && terrainFeature.Value.defaultBiome.type != null)
-					{
-						LoadBiome(terrainFeature.Value.defaultBiome.type);
-					}
-				}
-				rivers = YamlIO<Rivers>.LoadFile(GetPath() + "rivers.yaml", null);
-				rooms = YamlIO<RoomDescriptions>.LoadFile(path + "rooms.yaml", null);
-				foreach (KeyValuePair<string, Room> room in rooms.rooms)
-				{
-					room.Value.name = room.Key;
-				}
-				temperatures = YamlIO<Temperatures>.LoadFile(GetPath() + "temperatures.yaml", null);
-				defaults = YamlIO<DefaultSettings>.LoadFile(GetPath() + "defaults.yaml", null);
-				mobs = YamlIO<MobSettings>.LoadFile(GetPath() + "mobs.yaml", null);
-				foreach (KeyValuePair<string, Mob> item2 in mobs.MobLookupTable)
-				{
-					item2.Value.name = item2.Key;
-				}
-				foreach (KeyValuePair<string, ElementBandConfiguration> biomeBackgroundElementBandConfiguration in biomes.BiomeBackgroundElementBandConfigurations)
-				{
-					biomeBackgroundElementBandConfiguration.Value.ConvertBandSizeToMaxSize();
-				}
-				return true;
+				return false;
 			}
-			return false;
+			worlds.LoadFiles(GetPath(), filesystem);
+			foreach (KeyValuePair<string, Worlds.Data> item in worlds.worldCache)
+			{
+				Worlds.Data value = item.Value;
+				value.world.LoadZones(noise, GetPath());
+				Worlds.Data value2 = item.Value;
+				LoadZoneContents(value2.world.Zones.Values);
+			}
+			layers = YamlIO<LevelLayerSettings>.LoadFile(GetPath() + "layers.yaml", null);
+			layers.LevelLayers.ConvertBandSizeToMaxSize();
+			features = YamlIO<TerrainFeatureSettings>.LoadFile(GetPath() + "features.yaml", null);
+			foreach (KeyValuePair<string, TerrainFeature> terrainFeature in features.TerrainFeatures)
+			{
+				terrainFeature.Value.name = terrainFeature.Key;
+				if (terrainFeature.Value.defaultBiome != null && terrainFeature.Value.defaultBiome.type != null)
+				{
+					LoadBiome(terrainFeature.Value.defaultBiome.type);
+				}
+			}
+			rivers = YamlIO<Rivers>.LoadFile(GetPath() + "rivers.yaml", null);
+			rooms = YamlIO<RoomDescriptions>.LoadFile(path + "rooms.yaml", null);
+			foreach (KeyValuePair<string, Room> room in rooms.rooms)
+			{
+				room.Value.name = room.Key;
+			}
+			temperatures = YamlIO<Temperatures>.LoadFile(GetPath() + "temperatures.yaml", null);
+			defaults = YamlIO<DefaultSettings>.LoadFile(GetPath() + "defaults.yaml", null);
+			mobs = YamlIO<MobSettings>.LoadFile(GetPath() + "mobs.yaml", null);
+			foreach (KeyValuePair<string, Mob> item2 in mobs.MobLookupTable)
+			{
+				item2.Value.name = item2.Key;
+			}
+			foreach (KeyValuePair<string, ElementBandConfiguration> biomeBackgroundElementBandConfiguration in biomes.BiomeBackgroundElementBandConfigurations)
+			{
+				biomeBackgroundElementBandConfiguration.Value.ConvertBandSizeToMaxSize();
+			}
+			return true;
 		}
 	}
 }

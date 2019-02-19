@@ -23,11 +23,11 @@ public class Exhaust : KMonoBehaviour, ISim200ms
 
 	private bool isAnimating;
 
-	private bool recentlyExhausted = false;
+	private bool recentlyExhausted;
 
 	private const float MinSwitchTime = 1f;
 
-	private float elapsedSwitchTime = 0f;
+	private float elapsedSwitchTime;
 
 	private static readonly EventSystem.IntraObjectHandler<Exhaust> OnConduitStateChangedDelegate = new EventSystem.IntraObjectHandler<Exhaust>(delegate(Exhaust component, object data)
 	{

@@ -6,27 +6,29 @@ using UnityEngine.UI;
 
 public class MinionTodoSideScreen : SideScreenContent
 {
-	private bool useOffscreenIndicators = false;
+	private bool useOffscreenIndicators;
 
-	public GameObject taskEntryPrefab;
+	public MinionTodoChoreEntry taskEntryPrefab;
 
 	public GameObject priorityGroupPrefab;
 
 	public GameObject taskEntryContainer;
 
-	public HierarchyReferences currentTask;
+	public MinionTodoChoreEntry currentTask;
 
 	public LocText currentScheduleBlockLabel;
 
 	private List<Tuple<PriorityScreen.PriorityClass, int, HierarchyReferences>> priorityGroups = new List<Tuple<PriorityScreen.PriorityClass, int, HierarchyReferences>>();
 
-	private List<HierarchyReferences> choreEntries = new List<HierarchyReferences>();
+	private List<MinionTodoChoreEntry> choreEntries = new List<MinionTodoChoreEntry>();
 
 	private List<GameObject> choreTargets = new List<GameObject>();
 
 	private SchedulerHandle refreshHandle;
 
 	private ChoreConsumer choreConsumer;
+
+	public List<Sprite> prioritySprites;
 
 	[SerializeField]
 	private ColorStyleSetting buttonColorSettingCurrent;
@@ -36,7 +38,7 @@ public class MinionTodoSideScreen : SideScreenContent
 
 	private static List<JobsTableScreen.PriorityInfo> _priorityInfo;
 
-	private int activeChoreEntries = 0;
+	private int activeChoreEntries;
 
 	public static List<JobsTableScreen.PriorityInfo> priorityInfo
 	{
@@ -72,7 +74,7 @@ public class MinionTodoSideScreen : SideScreenContent
 					tuple.third.name = "PriorityGroup_" + (string)current.name + "_" + num;
 					tuple.third.gameObject.SetActive(true);
 					JobsTableScreen.PriorityInfo priorityInfo = JobsTableScreen.priorityInfo[num];
-					tuple.third.GetReference<LocText>("Title").text = priorityInfo.name;
+					tuple.third.GetReference<LocText>("Title").text = priorityInfo.name.text.ToUpper();
 					tuple.third.GetReference<Image>("PriorityIcon").sprite = priorityInfo.sprite;
 					priorityGroups.Add(tuple);
 				}
@@ -82,7 +84,7 @@ public class MinionTodoSideScreen : SideScreenContent
 				Tuple<PriorityScreen.PriorityClass, int, HierarchyReferences> tuple2 = new Tuple<PriorityScreen.PriorityClass, int, HierarchyReferences>(priority, 3, Util.KInstantiateUI<HierarchyReferences>(priorityGroupPrefab, taskEntryContainer, false));
 				tuple2.third.name = "PriorityGroup_" + current.name;
 				tuple2.third.gameObject.SetActive(true);
-				tuple2.third.GetReference<LocText>("Title").text = current.name;
+				tuple2.third.GetReference<LocText>("Title").text = current.name.text.ToUpper();
 				tuple2.third.GetReference<Image>("PriorityIcon").sprite = current.sprite;
 				priorityGroups.Add(tuple2);
 			}
@@ -147,10 +149,10 @@ public class MinionTodoSideScreen : SideScreenContent
 		pooledList.AddRange(lastPreconditionSnapshot.failedContexts);
 		pooledList.AddRange(lastPreconditionSnapshot.succeededContexts);
 		Chore.Precondition.Context choreB = default(Chore.Precondition.Context);
-		HierarchyReferences hierarchyReferences = null;
+		MinionTodoChoreEntry minionTodoChoreEntry = null;
 		int num = 0;
 		Schedulable component = DetailsScreen.Instance.target.GetComponent<Schedulable>();
-		string arg = "";
+		string arg = string.Empty;
 		Schedule schedule = component.GetSchedule();
 		if (schedule != null)
 		{
@@ -175,8 +177,8 @@ public class MinionTodoSideScreen : SideScreenContent
 						Chore.Precondition.Context context4 = pooledList[num2];
 						if ((UnityEngine.Object)context4.chore.driver == (UnityEngine.Object)choreConsumer.choreDriver)
 						{
-							ApplyChoreEntry(currentTask, pooledList[num2]);
-							hierarchyReferences = currentTask;
+							currentTask.Apply(pooledList[num2]);
+							minionTodoChoreEntry = currentTask;
 							choreB = pooledList[num2];
 							num = 0;
 							flag = true;
@@ -184,16 +186,16 @@ public class MinionTodoSideScreen : SideScreenContent
 						else if (!flag && activeChoreEntries != 0 && GameUtil.AreChoresUIMergeable(pooledList[num2], choreB))
 						{
 							num++;
-							hierarchyReferences.GetReference<LocText>("MoreLabelText").text = string.Format(UI.UISIDESCREENS.MINIONTODOSIDESCREEN.TRUNCATED_CHORES, num);
+							minionTodoChoreEntry.SetMoreAmount(num);
 						}
 						else
 						{
 							ChoreConsumer obj = choreConsumer;
 							Chore.Precondition.Context context5 = pooledList[num2];
-							HierarchyReferences hierarchyReferences2 = PriorityGroupForPriority(obj, context5.chore);
-							HierarchyReferences choreEntry = GetChoreEntry(hierarchyReferences2.GetReference<RectTransform>("EntriesContainer"));
-							ApplyChoreEntry(choreEntry, pooledList[num2]);
-							hierarchyReferences = choreEntry;
+							HierarchyReferences hierarchyReferences = PriorityGroupForPriority(obj, context5.chore);
+							MinionTodoChoreEntry choreEntry = GetChoreEntry(hierarchyReferences.GetReference<RectTransform>("EntriesContainer"));
+							choreEntry.Apply(pooledList[num2]);
+							minionTodoChoreEntry = choreEntry;
 							choreB = pooledList[num2];
 							num = 0;
 							flag = false;
@@ -214,151 +216,23 @@ public class MinionTodoSideScreen : SideScreenContent
 		}
 	}
 
-	private HierarchyReferences GetChoreEntry(RectTransform parent)
+	private MinionTodoChoreEntry GetChoreEntry(RectTransform parent)
 	{
-		HierarchyReferences hierarchyReferences;
+		MinionTodoChoreEntry minionTodoChoreEntry;
 		if (activeChoreEntries >= choreEntries.Count - 1)
 		{
-			hierarchyReferences = Util.KInstantiateUI<HierarchyReferences>(taskEntryPrefab, parent.gameObject, false);
-			choreEntries.Add(hierarchyReferences);
+			minionTodoChoreEntry = Util.KInstantiateUI<MinionTodoChoreEntry>(taskEntryPrefab.gameObject, parent.gameObject, false);
+			choreEntries.Add(minionTodoChoreEntry);
 		}
 		else
 		{
-			hierarchyReferences = choreEntries[activeChoreEntries];
-			hierarchyReferences.transform.SetParent(parent);
-			hierarchyReferences.transform.SetAsLastSibling();
+			minionTodoChoreEntry = choreEntries[activeChoreEntries];
+			minionTodoChoreEntry.transform.SetParent(parent);
+			minionTodoChoreEntry.transform.SetAsLastSibling();
 		}
 		activeChoreEntries++;
-		hierarchyReferences.gameObject.SetActive(true);
-		return hierarchyReferences;
-	}
-
-	private void ApplyChoreEntry(HierarchyReferences entry, Chore.Precondition.Context context)
-	{
-		string choreName = GameUtil.GetChoreName(context.chore, context.data);
-		string text = GameUtil.ChoreGroupsForChoreType(context.chore.choreType);
-		string text2 = (text == null) ? UI.UISIDESCREENS.MINIONTODOSIDESCREEN.CHORE_TARGET : UI.UISIDESCREENS.MINIONTODOSIDESCREEN.CHORE_TARGET_AND_GROUP;
-		text2 = text2.Replace("{Target}", (!((UnityEngine.Object)context.chore.target.gameObject == (UnityEngine.Object)choreConsumer.gameObject)) ? context.chore.target.gameObject.GetProperName() : UI.UISIDESCREENS.MINIONTODOSIDESCREEN.SELF_LABEL.text);
-		if (text != null)
-		{
-			text2 = text2.Replace("{Groups}", text);
-		}
-		string text3 = (context.chore.masterPriority.priority_class != 0) ? "" : context.chore.masterPriority.priority_value.ToString();
-		entry.GetReference<LocText>("LabelText").SetText(choreName);
-		entry.GetReference<LocText>("SubLabelText").SetText(text2);
-		entry.GetReference<LocText>("PriorityLabel").SetText(text3);
-		entry.GetReference<LocText>("MoreLabelText").text = "";
-		entry.GetComponent<ToolTip>().SetSimpleTooltip(TooltipForChore(context, choreConsumer));
-		KButton componentInChildren = entry.GetComponentInChildren<KButton>();
-		componentInChildren.ClearOnClick();
-		if ((UnityEngine.Object)componentInChildren.bgImage != (UnityEngine.Object)null)
-		{
-			componentInChildren.bgImage.colorStyleSetting = ((!((UnityEngine.Object)context.chore.driver == (UnityEngine.Object)choreConsumer.choreDriver)) ? buttonColorSettingStandard : buttonColorSettingCurrent);
-			componentInChildren.bgImage.ApplyColorStyleSetting();
-		}
-		GameObject choreTarget = context.chore.target.gameObject;
-		componentInChildren.ClearOnPointerEvents();
-		if (useOffscreenIndicators)
-		{
-			componentInChildren.onPointerEnter += delegate
-			{
-				if (context.chore != null && !context.chore.target.isNull)
-				{
-					if ((UnityEngine.Object)choreTarget.GetComponent<KBatchedAnimController>() == (UnityEngine.Object)null || (UnityEngine.Object)choreTarget.GetComponent<MinionIdentity>() != (UnityEngine.Object)null)
-					{
-						OffscreenIndicator.Instance.ActivateIndicator(choreTarget, DetailsScreen.Instance.target);
-					}
-					else
-					{
-						OffscreenIndicator.Instance.ActivateIndicator(choreTarget);
-					}
-				}
-			};
-			componentInChildren.onPointerExit += delegate
-			{
-				if (context.chore != null && !context.chore.target.isNull)
-				{
-					OffscreenIndicator.Instance.DeactivateIndicator(context.chore.target.gameObject);
-				}
-			};
-		}
-		componentInChildren.GetComponentInChildren<KButton>().onClick += delegate
-		{
-			if (context.chore != null && !context.chore.target.isNull)
-			{
-				Vector3 position = context.chore.target.gameObject.transform.position;
-				float x = position.x;
-				Vector3 position2 = context.chore.target.gameObject.transform.position;
-				float y = position2.y + 1f;
-				Vector3 position3 = CameraController.Instance.transform.position;
-				Vector3 pos = new Vector3(x, y, position3.z);
-				CameraController.Instance.SetTargetPos(pos, 10f, true);
-			}
-		};
-		choreTargets.Add(choreTarget);
-	}
-
-	private static string TooltipForChore(Chore.Precondition.Context context, ChoreConsumer choreConsumer)
-	{
-		bool flag = context.chore.masterPriority.priority_class == PriorityScreen.PriorityClass.basic || context.chore.masterPriority.priority_class == PriorityScreen.PriorityClass.high;
-		string text;
-		switch (context.chore.masterPriority.priority_class)
-		{
-		case PriorityScreen.PriorityClass.idle:
-			text = UI.UISIDESCREENS.MINIONTODOSIDESCREEN.TOOLTIP_IDLE;
-			break;
-		case PriorityScreen.PriorityClass.personalNeeds:
-			text = UI.UISIDESCREENS.MINIONTODOSIDESCREEN.TOOLTIP_PERSONAL;
-			break;
-		case PriorityScreen.PriorityClass.emergency:
-			text = UI.UISIDESCREENS.MINIONTODOSIDESCREEN.TOOLTIP_EMERGENCY;
-			break;
-		case PriorityScreen.PriorityClass.compulsory:
-			text = UI.UISIDESCREENS.MINIONTODOSIDESCREEN.TOOLTIP_COMPULSORY;
-			break;
-		default:
-			text = UI.UISIDESCREENS.MINIONTODOSIDESCREEN.TOOLTIP_NORMAL;
-			break;
-		}
-		float num = 0f;
-		int num2 = (int)context.chore.masterPriority.priority_class * 100;
-		num += (float)num2;
-		int num3 = flag ? choreConsumer.GetPersonalPriority(context.chore.choreType) : 0;
-		num += (float)(num3 * 10);
-		int num4 = flag ? context.chore.masterPriority.priority_value : 0;
-		num += (float)num4;
-		float num5 = (float)context.priority / 10000f;
-		num += num5;
-		text = text.Replace("{Description}", (!((UnityEngine.Object)context.chore.driver == (UnityEngine.Object)choreConsumer.choreDriver)) ? UI.UISIDESCREENS.MINIONTODOSIDESCREEN.TOOLTIP_DESC_INACTIVE : UI.UISIDESCREENS.MINIONTODOSIDESCREEN.TOOLTIP_DESC_ACTIVE);
-		text = text.Replace("{IdleDescription}", (!((UnityEngine.Object)context.chore.driver == (UnityEngine.Object)choreConsumer.choreDriver)) ? UI.UISIDESCREENS.MINIONTODOSIDESCREEN.TOOLTIP_IDLEDESC_INACTIVE : UI.UISIDESCREENS.MINIONTODOSIDESCREEN.TOOLTIP_IDLEDESC_ACTIVE);
-		string newValue = GameUtil.ChoreGroupsForChoreType(context.chore.choreType);
-		string name = context.chore.choreType.Name;
-		if (context.chore.choreType.groups.Length > 0)
-		{
-			ChoreGroup choreGroup = context.chore.choreType.groups[0];
-			for (int i = 1; i < context.chore.choreType.groups.Length; i++)
-			{
-				bool auto_assigned = true;
-				if (choreConsumer.GetPersonalPriority(choreGroup, out auto_assigned) < choreConsumer.GetPersonalPriority(context.chore.choreType.groups[i], out auto_assigned))
-				{
-					choreGroup = context.chore.choreType.groups[i];
-				}
-			}
-			name = choreGroup.Name;
-		}
-		text = text.Replace("{Name}", choreConsumer.name);
-		text = text.Replace("{Errand}", GameUtil.GetChoreName(context.chore, context.data));
-		text = text.Replace("{Groups}", newValue);
-		text = text.Replace("{BestGroup}", name);
-		text = text.Replace("{ClassPriority}", num2.ToString());
-		string text2 = text;
-		JobsTableScreen.PriorityInfo priorityInfo = JobsTableScreen.priorityInfo[num3];
-		text = text2.Replace("{PersonalPriority}", priorityInfo.name.text);
-		text = text.Replace("{PersonalPriorityValue}", (num3 * 10).ToString());
-		text = text.Replace("{Building}", context.chore.gameObject.GetProperName());
-		text = text.Replace("{BuildingPriority}", num4.ToString());
-		text = text.Replace("{TypePriority}", num5.ToString());
-		return text.Replace("{TotalPriority}", num.ToString());
+		minionTodoChoreEntry.gameObject.SetActive(true);
+		return minionTodoChoreEntry;
 	}
 
 	private HierarchyReferences PriorityGroupForPriority(ChoreConsumer choreConsumer, Chore chore)

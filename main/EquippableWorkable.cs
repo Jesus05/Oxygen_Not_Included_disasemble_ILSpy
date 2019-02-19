@@ -8,7 +8,7 @@ public class EquippableWorkable : Workable, ISaveLoadable
 
 	private Chore chore;
 
-	private QualityLevel quality = QualityLevel.Poor;
+	private QualityLevel quality;
 
 	protected override void OnPrefabInit()
 	{

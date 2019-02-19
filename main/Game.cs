@@ -280,13 +280,13 @@ public class Game : KMonoBehaviour
 	public Action<GameSaveData> OnLoad;
 
 	[NonSerialized]
-	public bool baseAlreadyCreated = false;
+	public bool baseAlreadyCreated;
 
 	[NonSerialized]
-	public bool autoPrioritizeRoles = false;
+	public bool autoPrioritizeRoles;
 
 	[NonSerialized]
-	public bool advancedPersonalPriorities = false;
+	public bool advancedPersonalPriorities;
 
 	public SavedInfo savedInfo;
 
@@ -308,7 +308,7 @@ public class Game : KMonoBehaviour
 
 	public Element VisualTunerElement;
 
-	public float currentSunlightIntensity = 0f;
+	public float currentSunlightIntensity;
 
 	public RoomProber roomProber;
 
@@ -324,7 +324,7 @@ public class Game : KMonoBehaviour
 
 	public Unlocks unlocks;
 
-	private bool sandboxModeActive = false;
+	private bool sandboxModeActive;
 
 	public HandleVector<CallbackInfo> callbackManager = new HandleVector<CallbackInfo>(256);
 
@@ -435,7 +435,7 @@ public class Game : KMonoBehaviour
 
 	private List<SolidInfo> gameSolidInfo = new List<SolidInfo>();
 
-	private bool IsPaused = false;
+	private bool IsPaused;
 
 	private HashSet<int> solidChangedFilter = new HashSet<int>();
 
@@ -446,7 +446,7 @@ public class Game : KMonoBehaviour
 	[MyCmpGet]
 	private GameScenePartitioner gameScenePartitioner;
 
-	private bool gameStarted = false;
+	private bool gameStarted;
 
 	private static readonly EventSystem.IntraObjectHandler<Game> MarkStatusItemRendererDirtyDelegate = new EventSystem.IntraObjectHandler<Game>(delegate(Game component, object data)
 	{
@@ -459,10 +459,10 @@ public class Game : KMonoBehaviour
 
 	private Vector2I simActiveRegionMax;
 
-	public bool debugWasUsed = false;
+	public bool debugWasUsed;
 
 	[SerializeField]
-	private bool forceActiveArea = false;
+	private bool forceActiveArea;
 
 	[SerializeField]
 	private Vector2 minForcedActiveArea = new Vector2(0f, 0f);
@@ -470,7 +470,7 @@ public class Game : KMonoBehaviour
 	[SerializeField]
 	private Vector2 maxForcedActiveArea = new Vector2(128f, 128f);
 
-	private bool isLoading = false;
+	private bool isLoading;
 
 	private HashedString previousOverlayMode = OverlayModes.None.ID;
 
@@ -487,11 +487,11 @@ public class Game : KMonoBehaviour
 
 	private Dictionary<int, ObjectPool> fxPools = new Dictionary<int, ObjectPool>();
 
-	private SavingPreCB activatePreCB = null;
+	private SavingPreCB activatePreCB;
 
-	private SavingActiveCB activateActiveCB = null;
+	private SavingActiveCB activateActiveCB;
 
-	private SavingPostCB activatePostCB = null;
+	private SavingPostCB activatePostCB;
 
 	[SerializeField]
 	public UIColours uiColours = new UIColours();
@@ -1263,7 +1263,7 @@ public class Game : KMonoBehaviour
 		}
 		if (!(Time.timeSinceLevelLoad < GenericGameSettings.instance.performanceCapture.waitTime))
 		{
-			uint num = 309354u;
+			uint num = 309851u;
 			string text = System.DateTime.Now.ToShortDateString();
 			string text2 = System.DateTime.Now.ToShortTimeString();
 			string fileName = Path.GetFileName(GenericGameSettings.instance.performanceCapture.saveGame);

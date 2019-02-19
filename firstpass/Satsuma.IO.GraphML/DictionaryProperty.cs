@@ -37,17 +37,17 @@ namespace Satsuma.IO.GraphML
 
 		public bool TryGetValue(object key, out T result)
 		{
-			if (!Values.TryGetValue(key, out result))
+			if (Values.TryGetValue(key, out result))
 			{
-				if (!HasDefaultValue)
-				{
-					result = default(T);
-					return false;
-				}
+				return true;
+			}
+			if (HasDefaultValue)
+			{
 				result = DefaultValue;
 				return true;
 			}
-			return true;
+			result = default(T);
+			return false;
 		}
 
 		public override void ReadData(XElement x, object key)
@@ -80,15 +80,15 @@ namespace Satsuma.IO.GraphML
 
 		public override XElement WriteData(object key)
 		{
-			if (key != null)
+			if (key == null)
 			{
-				if (Values.TryGetValue(key, out T value))
-				{
-					return WriteValue(value);
-				}
+				return (!HasDefaultValue) ? null : WriteValue(DefaultValue);
+			}
+			if (!Values.TryGetValue(key, out T value))
+			{
 				return null;
 			}
-			return (!HasDefaultValue) ? null : WriteValue(DefaultValue);
+			return WriteValue(value);
 		}
 
 		protected abstract T ReadValue(XElement x);

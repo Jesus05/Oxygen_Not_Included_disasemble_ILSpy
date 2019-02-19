@@ -101,13 +101,13 @@ namespace PriorityQueueDemo
 
 		public KeyValuePair<TPriority, TValue> Dequeue()
 		{
-			if (IsEmpty)
+			if (!IsEmpty)
 			{
-				throw new InvalidOperationException("Priority queue is empty");
+				KeyValuePair<TPriority, TValue> result = _baseHeap[0];
+				DeleteRoot();
+				return result;
 			}
-			KeyValuePair<TPriority, TValue> result = _baseHeap[0];
-			DeleteRoot();
-			return result;
+			throw new InvalidOperationException("Priority queue is empty");
 		}
 
 		public TValue DequeueValue()
@@ -117,11 +117,11 @@ namespace PriorityQueueDemo
 
 		public KeyValuePair<TPriority, TValue> Peek()
 		{
-			if (IsEmpty)
+			if (!IsEmpty)
 			{
-				throw new InvalidOperationException("Priority queue is empty");
+				return _baseHeap[0];
 			}
-			return _baseHeap[0];
+			throw new InvalidOperationException("Priority queue is empty");
 		}
 
 		public TValue PeekValue()
@@ -145,21 +145,21 @@ namespace PriorityQueueDemo
 
 		private int HeapifyFromEndToBeginning(int pos)
 		{
-			if (pos < _baseHeap.Count)
+			if (pos >= _baseHeap.Count)
 			{
-				while (pos > 0)
-				{
-					int num = (pos - 1) / 2;
-					if (_comparer.Compare(_baseHeap[num].Key, _baseHeap[pos].Key) <= 0)
-					{
-						break;
-					}
-					ExchangeElements(num, pos);
-					pos = num;
-				}
-				return pos;
+				return -1;
 			}
-			return -1;
+			while (pos > 0)
+			{
+				int num = (pos - 1) / 2;
+				if (_comparer.Compare(_baseHeap[num].Key, _baseHeap[pos].Key) <= 0)
+				{
+					break;
+				}
+				ExchangeElements(num, pos);
+				pos = num;
+			}
+			return pos;
 		}
 
 		private void DeleteRoot()
@@ -226,18 +226,18 @@ namespace PriorityQueueDemo
 		public bool Remove(KeyValuePair<TPriority, TValue> item)
 		{
 			int num = _baseHeap.IndexOf(item);
-			if (num >= 0)
+			if (num < 0)
 			{
-				_baseHeap[num] = _baseHeap[_baseHeap.Count - 1];
-				_baseHeap.RemoveAt(_baseHeap.Count - 1);
-				int num2 = HeapifyFromEndToBeginning(num);
-				if (num2 == num)
-				{
-					HeapifyFromBeginningToEnd(num);
-				}
-				return true;
+				return false;
 			}
-			return false;
+			_baseHeap[num] = _baseHeap[_baseHeap.Count - 1];
+			_baseHeap.RemoveAt(_baseHeap.Count - 1);
+			int num2 = HeapifyFromEndToBeginning(num);
+			if (num2 == num)
+			{
+				HeapifyFromBeginningToEnd(num);
+			}
+			return true;
 		}
 
 		public IEnumerator<KeyValuePair<TPriority, TValue>> GetEnumerator()

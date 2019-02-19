@@ -122,14 +122,14 @@ public class EasingAnimations : MonoBehaviour
 		float num = 1.70158f;
 		end -= start;
 		value /= 0.5f;
-		if (!(value < 1f))
+		if (value < 1f)
 		{
-			value -= 2f;
 			num *= 1.525f;
-			return end * 0.5f * (value * value * ((num + 1f) * value + num) + 2f) + start;
+			return end * 0.5f * (value * value * ((num + 1f) * value - num)) + start;
 		}
+		value -= 2f;
 		num *= 1.525f;
-		return end * 0.5f * (value * value * ((num + 1f) * value - num)) + start;
+		return end * 0.5f * (value * value * ((num + 1f) * value + num) + 2f) + start;
 	}
 
 	public float EaseInBack(float start, float end, float value)

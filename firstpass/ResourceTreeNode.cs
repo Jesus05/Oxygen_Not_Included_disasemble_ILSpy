@@ -87,10 +87,10 @@ public class ResourceTreeNode : Resource
 			EdgeType edgeType = this.edgeType;
 			if (edgeType == EdgeType.GenericEdge)
 			{
-				goto IL_0014;
+				goto IL_0013;
 			}
-			goto IL_0014;
-			IL_0014:
+			goto IL_0013;
+			IL_0013:
 			RTEditorGUI.DrawLine(rect, SourcePos(), TargetPos(), colour, null, width);
 		}
 	}

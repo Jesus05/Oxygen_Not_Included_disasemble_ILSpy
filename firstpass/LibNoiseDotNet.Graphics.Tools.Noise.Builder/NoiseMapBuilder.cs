@@ -10,9 +10,9 @@ namespace LibNoiseDotNet.Graphics.Tools.Noise.Builder
 
 		protected NoiseMapBuilderCallback _callBack;
 
-		protected int _width = 0;
+		protected int _width;
 
-		protected int _height = 0;
+		protected int _height;
 
 		protected IBuilderFilter _filter;
 

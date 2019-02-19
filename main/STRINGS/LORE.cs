@@ -13,14 +13,14 @@ namespace STRINGS
 
 			public class SET_LOCKER1
 			{
-				public static LocString HEADER = "";
+				public static LocString HEADER = string.Empty;
 
 				public static LocString ENTRY = "FIRST LAW\nEnergy can neither be created or destroyed, only change forms.\n\nSECOND LAW\nEntropy in an isolated system that is not in equilibrium tends to increase over time, approaching the maximum value at equilibrium.\n\nTHIRD LAW\nEntropy in a system approaches a constant minimum as temperature approaches absolute zero.\n\nZEROTH LAW\nIf two thermodynamic systems are in thermal equilibrium with a third, then they are in thermal equilibrium with each other.";
 			}
 
 			public class SET_LOCKER2
 			{
-				public static LocString HEADER = "";
+				public static LocString HEADER = string.Empty;
 
 				public static LocString ENTRY = "A powerful stench emanates from this locker.";
 			}

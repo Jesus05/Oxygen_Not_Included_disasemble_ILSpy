@@ -5,19 +5,19 @@ public static class CreatureHelpers
 {
 	public static bool isClear(int cell)
 	{
-		if (Grid.IsValidCell(cell))
+		if (!Grid.IsValidCell(cell))
 		{
-			if (!Grid.Solid[cell])
-			{
-				if (!Grid.IsSubstantialLiquid(cell, 0.9f) && (!Grid.IsValidCell(Grid.CellBelow(cell)) || !Grid.IsLiquid(cell) || !Grid.IsLiquid(Grid.CellBelow(cell))))
-				{
-					return true;
-				}
-				return false;
-			}
 			return false;
 		}
-		return false;
+		if (Grid.Solid[cell])
+		{
+			return false;
+		}
+		if (Grid.IsSubstantialLiquid(cell, 0.9f) || (Grid.IsValidCell(Grid.CellBelow(cell)) && Grid.IsLiquid(cell) && Grid.IsLiquid(Grid.CellBelow(cell))))
+		{
+			return false;
+		}
+		return true;
 	}
 
 	public static int FindNearbyBreathableCell(int currentLocation, SimHashes breathableElement)
@@ -62,29 +62,29 @@ public static class CreatureHelpers
 
 	public static bool isSwimmable(int cell)
 	{
-		if (Grid.IsValidCell(cell))
+		if (!Grid.IsValidCell(cell))
 		{
-			if (!Grid.Solid[cell])
-			{
-				if (Grid.IsSubstantialLiquid(cell, 0.35f))
-				{
-					return true;
-				}
-				return false;
-			}
 			return false;
 		}
-		return false;
+		if (Grid.Solid[cell])
+		{
+			return false;
+		}
+		if (!Grid.IsSubstantialLiquid(cell, 0.35f))
+		{
+			return false;
+		}
+		return true;
 	}
 
 	public static bool isSolidGround(int cell)
 	{
-		if (Grid.IsValidCell(cell))
+		if (!Grid.IsValidCell(cell))
 		{
-			if (!Grid.Solid[cell])
-			{
-				return false;
-			}
+			return false;
+		}
+		if (Grid.Solid[cell])
+		{
 			return true;
 		}
 		return false;
@@ -253,43 +253,43 @@ public static class CreatureHelpers
 
 	public static GameObject GetFleeTargetLocatorObject(GameObject self, GameObject threat)
 	{
-		if (!((Object)threat == (Object)null))
+		if ((Object)threat == (Object)null)
 		{
-			int num = Grid.PosToCell(threat);
-			int num2 = Grid.PosToCell(self);
-			Navigator nav = self.GetComponent<Navigator>();
-			if (!((Object)nav == (Object)null))
-			{
-				HashSet<int> hashSet = GameUtil.FloodCollectCells(Grid.PosToCell(self), (int cell) => CanFleeTo(cell, nav), 300, null, true);
-				int num3 = -1;
-				int num4 = -1;
-				foreach (int item in hashSet)
-				{
-					if (nav.CanReach(item) && item != num2)
-					{
-						int num5 = -1;
-						num5 += Grid.GetCellDistance(item, num);
-						if (isInFavoredFleeDirection(item, num, self))
-						{
-							num5 += 2;
-						}
-						if (num5 > num4)
-						{
-							num4 = num5;
-							num3 = item;
-						}
-					}
-				}
-				if (num3 == -1)
-				{
-					return null;
-				}
-				return ChoreHelpers.CreateLocator("GoToLocator", Grid.CellToPos(num3));
-			}
+			Debug.LogWarning(self.name + " is trying to flee, bus has no threats", null);
+			return null;
+		}
+		int num = Grid.PosToCell(threat);
+		int num2 = Grid.PosToCell(self);
+		Navigator nav = self.GetComponent<Navigator>();
+		if ((Object)nav == (Object)null)
+		{
 			Debug.LogWarning(self.name + " is trying to flee, bus has no navigator component attached.", null);
 			return null;
 		}
-		Debug.LogWarning(self.name + " is trying to flee, bus has no threats", null);
+		HashSet<int> hashSet = GameUtil.FloodCollectCells(Grid.PosToCell(self), (int cell) => CanFleeTo(cell, nav), 300, null, true);
+		int num3 = -1;
+		int num4 = -1;
+		foreach (int item in hashSet)
+		{
+			if (nav.CanReach(item) && item != num2)
+			{
+				int num5 = -1;
+				num5 += Grid.GetCellDistance(item, num);
+				if (isInFavoredFleeDirection(item, num, self))
+				{
+					num5 += 2;
+				}
+				if (num5 > num4)
+				{
+					num4 = num5;
+					num3 = item;
+				}
+			}
+		}
+		if (num3 != -1)
+		{
+			return ChoreHelpers.CreateLocator("GoToLocator", Grid.CellToPos(num3));
+		}
 		return null;
 	}
 

@@ -7,15 +7,15 @@ public class LogicPressureSensor : Switch, ISaveLoadable, IThresholdSwitch, ISim
 {
 	[SerializeField]
 	[Serialize]
-	private float threshold = 0f;
+	private float threshold;
 
 	[SerializeField]
 	[Serialize]
 	private bool activateAboveThreshold = true;
 
-	private bool wasOn = false;
+	private bool wasOn;
 
-	public float rangeMin = 0f;
+	public float rangeMin;
 
 	public float rangeMax = 1f;
 
@@ -25,7 +25,7 @@ public class LogicPressureSensor : Switch, ISaveLoadable, IThresholdSwitch, ISim
 
 	private float[] samples = new float[8];
 
-	private int sampleIdx = 0;
+	private int sampleIdx;
 
 	[MyCmpAdd]
 	private CopyBuildingSettings copyBuildingSettings;

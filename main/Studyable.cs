@@ -14,10 +14,10 @@ public class Studyable : Workable, ISidescreenButtonControl
 	private const float STUDY_WORK_TIME = 3600f;
 
 	[Serialize]
-	private bool studied = false;
+	private bool studied;
 
 	[Serialize]
-	private bool markedForStudy = false;
+	private bool markedForStudy;
 
 	private Guid statusItemGuid;
 
@@ -33,15 +33,15 @@ public class Studyable : Workable, ISidescreenButtonControl
 	{
 		get
 		{
-			if (!studied)
+			if (studied)
 			{
-				if (!markedForStudy)
-				{
-					return UI.UISIDESCREENS.STUDYABLE_SIDE_SCREEN.SEND_STATUS;
-				}
+				return UI.UISIDESCREENS.STUDYABLE_SIDE_SCREEN.STUDIED_STATUS;
+			}
+			if (markedForStudy)
+			{
 				return UI.UISIDESCREENS.STUDYABLE_SIDE_SCREEN.PENDING_STATUS;
 			}
-			return UI.UISIDESCREENS.STUDYABLE_SIDE_SCREEN.STUDIED_STATUS;
+			return UI.UISIDESCREENS.STUDYABLE_SIDE_SCREEN.SEND_STATUS;
 		}
 	}
 
@@ -49,15 +49,15 @@ public class Studyable : Workable, ISidescreenButtonControl
 	{
 		get
 		{
-			if (!studied)
+			if (studied)
 			{
-				if (!markedForStudy)
-				{
-					return UI.UISIDESCREENS.STUDYABLE_SIDE_SCREEN.SEND_BUTTON;
-				}
+				return UI.UISIDESCREENS.STUDYABLE_SIDE_SCREEN.STUDIED_BUTTON;
+			}
+			if (markedForStudy)
+			{
 				return UI.UISIDESCREENS.STUDYABLE_SIDE_SCREEN.PENDING_BUTTON;
 			}
-			return UI.UISIDESCREENS.STUDYABLE_SIDE_SCREEN.STUDIED_BUTTON;
+			return UI.UISIDESCREENS.STUDYABLE_SIDE_SCREEN.SEND_BUTTON;
 		}
 	}
 

@@ -31,7 +31,7 @@ public class PasteBaseTemplateScreen : KScreen
 		template_buttons.Clear();
 		base_template_assets = TemplateCache.CollectBaseTemplateNames("bases/");
 		base_template_assets.AddRange(TemplateCache.CollectBaseTemplateNames("poi/"));
-		base_template_assets.AddRange(TemplateCache.CollectBaseTemplateNames(""));
+		base_template_assets.AddRange(TemplateCache.CollectBaseTemplateNames(string.Empty));
 		foreach (string base_template_asset in base_template_assets)
 		{
 			GameObject gameObject = Util.KInstantiateUI(prefab_paste_button, button_list_container, true);

@@ -59,7 +59,7 @@ public class ManualGenerator : Workable, ISingleSliderControl, ISliderControl
 	[MyCmpGet]
 	private BuildingEnabledButton buildingEnabledButton;
 
-	private Chore chore = null;
+	private Chore chore;
 
 	private int powerCell;
 

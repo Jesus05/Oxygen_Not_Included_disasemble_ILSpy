@@ -93,7 +93,7 @@ namespace STRINGS
 
 				public static LocString EFFECT = "Stores most runoff " + UI.FormatAsLink("Power", "POWER") + " from generators, but loses charge over time.\n\nLogic input becomes " + UI.FormatAsLink("Active", "LOGIC") + " when charged above the set threshold.";
 
-				public static LocString LOGIC_PORT_DESC = "" + UI.FormatAsLink("Active", "LOGIC") + " if charge exceeds threshold";
+				public static LocString LOGIC_PORT_DESC = string.Empty + UI.FormatAsLink("Active", "LOGIC") + " if charge exceeds threshold";
 
 				public static LocString ACTIVATE_TOOLTIP = "Logic input will become " + UI.FormatAsLink("Active", "LOGIC") + " when battery is less than {0}% charged";
 
@@ -1643,7 +1643,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = UI.FormatAsLink("Tile", "TILEPOI");
 
-				public static LocString DESC = "";
+				public static LocString DESC = string.Empty;
 
 				public static LocString EFFECT = "Used to build the walls and floor of rooms.";
 			}
@@ -1978,7 +1978,7 @@ namespace STRINGS
 
 				public static LocString EFFECT = "Becomes " + UI.FormatAsLink("Active", "LOGIC") + " or on " + UI.FormatAsLink("Standby", "LOGIC") + " when ambient " + UI.FormatAsLink("Temperature", "HEAT") + " enters the chosen range.";
 
-				public static LocString LOGIC_PORT_DESC = "Active/Standby based on Ambient " + UI.FormatAsLink("Temperature", "HEAT") + "";
+				public static LocString LOGIC_PORT_DESC = "Active/Standby based on Ambient " + UI.FormatAsLink("Temperature", "HEAT") + string.Empty;
 			}
 
 			public class LOGICTIMEOFDAYSENSOR
@@ -2252,7 +2252,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = UI.FormatAsLink("Anti Entropy Thermo-Nullifier", "MASSIVEHEATSINK");
 
-				public static LocString DESC = "";
+				public static LocString DESC = string.Empty;
 
 				public static LocString EFFECT = "A self-sustaining machine powered by what appears to be refined " + UI.FormatAsLink("Neutronium", "UNOBTANIUM") + ".\n\nAbsorbs and neutralizes " + UI.FormatAsLink("Heat", "HEAT") + " energy when submersed in " + UI.FormatAsLink("Hydrogen", "HYDROGEN") + ".";
 			}
@@ -2261,7 +2261,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = UI.FormatAsLink("Window", "FACILITYBACKWALLWINDOW");
 
-				public static LocString DESC = "";
+				public static LocString DESC = string.Empty;
 
 				public static LocString EFFECT = "A tall, thin window.";
 			}
@@ -2272,7 +2272,7 @@ namespace STRINGS
 
 				public static LocString EFFECT = "A strong door with a sophisticated genetic lock.";
 
-				public static LocString DESC = "";
+				public static LocString DESC = string.Empty;
 			}
 
 			public class POIDOORINTERNAL
@@ -2281,7 +2281,7 @@ namespace STRINGS
 
 				public static LocString EFFECT = "A strong door with a sophisticated genetic lock.";
 
-				public static LocString DESC = "";
+				public static LocString DESC = string.Empty;
 			}
 
 			public class POIFACILITYDOOR
@@ -2290,7 +2290,7 @@ namespace STRINGS
 
 				public static LocString EFFECT = "Large double doors that were once the main entrance to a large facility.";
 
-				public static LocString DESC = "";
+				public static LocString DESC = string.Empty;
 			}
 
 			public class VENDINGMACHINE

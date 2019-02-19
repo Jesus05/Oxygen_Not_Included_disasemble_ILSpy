@@ -53,16 +53,16 @@ public class AccessControlSideScreen : SideScreenContent
 			GameObject targetGameObject2 = b.GetTargetGameObject();
 			MinionResume component = targetGameObject.GetComponent<MinionResume>();
 			MinionResume component2 = targetGameObject2.GetComponent<MinionResume>();
-			if (!((UnityEngine.Object)component2 == (UnityEngine.Object)null))
+			if ((UnityEngine.Object)component2 == (UnityEngine.Object)null)
 			{
-				if (!((UnityEngine.Object)component == (UnityEngine.Object)null))
-				{
-					int num = component.CurrentRole.CompareTo(component2.CurrentRole);
-					return (num != 0) ? num : CompareByName(a, b);
-				}
+				return 1;
+			}
+			if ((UnityEngine.Object)component == (UnityEngine.Object)null)
+			{
 				return -1;
 			}
-			return 1;
+			int num = component.CurrentRole.CompareTo(component2.CurrentRole);
+			return (num != 0) ? num : CompareByName(a, b);
 		}
 	}
 
@@ -110,11 +110,11 @@ public class AccessControlSideScreen : SideScreenContent
 
 	public override string GetTitle()
 	{
-		if (!((UnityEngine.Object)target != (UnityEngine.Object)null))
+		if ((UnityEngine.Object)target != (UnityEngine.Object)null)
 		{
-			return base.GetTitle();
+			return string.Format(base.GetTitle(), target.GetProperName());
 		}
-		return string.Format(base.GetTitle(), target.GetProperName());
+		return base.GetTitle();
 	}
 
 	protected override void OnSpawn()

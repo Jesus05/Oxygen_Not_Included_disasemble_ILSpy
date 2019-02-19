@@ -7,7 +7,7 @@ public class LogicSwitch : Switch
 {
 	public static readonly HashedString PORT_ID = "LogicSwitch";
 
-	private System.Action firstFrameCallback = null;
+	private System.Action firstFrameCallback;
 
 	protected override void OnSpawn()
 	{

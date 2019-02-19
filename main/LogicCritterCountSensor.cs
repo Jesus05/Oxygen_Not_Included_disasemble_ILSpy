@@ -6,12 +6,12 @@ using UnityEngine;
 [SerializationConfig(MemberSerialization.OptIn)]
 public class LogicCritterCountSensor : Switch, ISaveLoadable, ISim200ms, IIntSliderControl, ISliderControl
 {
-	private bool wasOn = false;
+	private bool wasOn;
 
 	private bool countEggs = true;
 
 	[Serialize]
-	public int countThreshold = 0;
+	public int countThreshold;
 
 	private KSelectable selectable;
 

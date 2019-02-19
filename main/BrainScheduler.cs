@@ -6,7 +6,7 @@ public class BrainScheduler : KMonoBehaviour, IRenderEveryTick, ICPULoad
 {
 	private class Tuning : TuningData<Tuning>
 	{
-		public bool disableAsyncPathProbes = false;
+		public bool disableAsyncPathProbes;
 
 		public float frameTime = 5f;
 	}
@@ -15,15 +15,15 @@ public class BrainScheduler : KMonoBehaviour, IRenderEveryTick, ICPULoad
 	{
 		private List<Brain> brains = new List<Brain>();
 
-		private List<Brain> updatedBrains = new List<Brain>();
-
 		private string increaseLoadLabel;
 
 		private string decreaseLoadLabel;
 
 		private WorkItemCollection<Navigator.PathProbeTask, object> pathProbeJob = new WorkItemCollection<Navigator.PathProbeTask, object>();
 
-		private int nextPathProbeBrain = 0;
+		private int nextUpdateBrain;
+
+		private int nextPathProbeBrain;
 
 		public Tag tag
 		{
@@ -64,14 +64,8 @@ public class BrainScheduler : KMonoBehaviour, IRenderEveryTick, ICPULoad
 			if (num != -1)
 			{
 				brains.RemoveAt(num);
-				if (brains.Count == 0)
-				{
-					nextPathProbeBrain = 0;
-				}
-				else if (num <= nextPathProbeBrain)
-				{
-					nextPathProbeBrain--;
-				}
+				OnRemoveBrain(num, ref nextUpdateBrain);
+				OnRemoveBrain(num, ref nextPathProbeBrain);
 			}
 		}
 
@@ -124,18 +118,41 @@ public class BrainScheduler : KMonoBehaviour, IRenderEveryTick, ICPULoad
 			return num != 0;
 		}
 
+		private void IncrementBrainIndex(ref int brainIndex)
+		{
+			brainIndex++;
+			if (brainIndex == brains.Count)
+			{
+				brainIndex = 0;
+			}
+		}
+
+		private void ClampBrainIndex(ref int brainIndex)
+		{
+			brainIndex = MathUtil.Clamp(0, brains.Count - 1, brainIndex);
+		}
+
+		private void OnRemoveBrain(int removedIndex, ref int brainIndex)
+		{
+			if (removedIndex < brainIndex)
+			{
+				brainIndex--;
+			}
+			else if (brainIndex == brains.Count)
+			{
+				brainIndex = 0;
+			}
+		}
+
 		private void AsyncPathProbe()
 		{
 			int probeSize = this.probeSize;
 			pathProbeJob.Reset(null);
 			for (int i = 0; i != brains.Count; i++)
 			{
-				if (nextPathProbeBrain < 0 || brains.Count <= nextPathProbeBrain)
-				{
-					nextPathProbeBrain = 0;
-				}
+				ClampBrainIndex(ref nextPathProbeBrain);
 				Navigator component = brains[nextPathProbeBrain].GetComponent<Navigator>();
-				nextPathProbeBrain++;
+				IncrementBrainIndex(ref nextPathProbeBrain);
 				if ((UnityEngine.Object)component != (UnityEngine.Object)null)
 				{
 					component.executePathProbeTaskAsync = true;
@@ -159,25 +176,22 @@ public class BrainScheduler : KMonoBehaviour, IRenderEveryTick, ICPULoad
 			{
 				AsyncPathProbe();
 			}
-			updatedBrains.Clear();
 			int num = InitialProbeCount();
-			int num2 = 0;
-			while (num2 < brains.Count && num > 0)
+			for (int i = 0; i != brains.Count; i++)
 			{
-				Brain brain = brains[num2];
+				if (num == 0)
+				{
+					break;
+				}
+				ClampBrainIndex(ref nextPathProbeBrain);
+				Brain brain = brains[nextUpdateBrain];
+				IncrementBrainIndex(ref nextUpdateBrain);
 				if (brain.IsRunning())
 				{
 					brain.UpdateBrain();
-					updatedBrains.Add(brain);
-					brains.RemoveAt(num2);
 					num--;
 				}
-				else
-				{
-					num2++;
-				}
 			}
-			brains.AddRange(updatedBrains);
 		}
 
 		public void AccumulatePathProbeIterations(Dictionary<string, int> pathProbeIterations)

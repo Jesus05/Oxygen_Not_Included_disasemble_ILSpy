@@ -32,11 +32,11 @@ namespace Klei.AI
 		public AttributeConverterInstance Lookup(GameObject go)
 		{
 			AttributeConverters component = go.GetComponent<AttributeConverters>();
-			if (!((Object)component != (Object)null))
+			if ((Object)component != (Object)null)
 			{
-				return null;
+				return component.Get(this);
 			}
-			return component.Get(this);
+			return null;
 		}
 	}
 }

@@ -21,62 +21,62 @@ public class HatchDrillSoundEvent : SoundEvent
 
 	private static int GetAudioCategory(int cell)
 	{
-		if (Grid.IsValidCell(cell))
+		if (!Grid.IsValidCell(cell))
 		{
-			Element element = Grid.Element[cell];
-			if (element.id != SimHashes.Dirt)
-			{
-				if (!element.HasTag(GameTags.IceOre))
-				{
-					if (element.id != SimHashes.CrushedIce)
-					{
-						if (element.id != SimHashes.DirtyIce)
-						{
-							if (!Grid.Foundation[cell])
-							{
-								if (element.id != SimHashes.OxyRock)
-								{
-									if (element.id != SimHashes.PhosphateNodules && element.id != SimHashes.Phosphorus && element.id != SimHashes.Phosphorite)
-									{
-										if (!element.HasTag(GameTags.Metal))
-										{
-											if (!element.HasTag(GameTags.RefinedMetal))
-											{
-												if (element.id != SimHashes.Sand)
-												{
-													if (element.id != SimHashes.Clay)
-													{
-														if (element.id != SimHashes.Algae)
-														{
-															if (element.id != SimHashes.SlimeMold)
-															{
-																return 7;
-															}
-															return 11;
-														}
-														return 10;
-													}
-													return 9;
-												}
-												return 8;
-											}
-											return 6;
-										}
-										return 5;
-									}
-									return 4;
-								}
-								return 3;
-							}
-							return 2;
-						}
-						return 13;
-					}
-					return 12;
-				}
-				return 1;
-			}
+			return 7;
+		}
+		Element element = Grid.Element[cell];
+		if (element.id == SimHashes.Dirt)
+		{
 			return 0;
+		}
+		if (element.HasTag(GameTags.IceOre))
+		{
+			return 1;
+		}
+		if (element.id == SimHashes.CrushedIce)
+		{
+			return 12;
+		}
+		if (element.id == SimHashes.DirtyIce)
+		{
+			return 13;
+		}
+		if (Grid.Foundation[cell])
+		{
+			return 2;
+		}
+		if (element.id == SimHashes.OxyRock)
+		{
+			return 3;
+		}
+		if (element.id == SimHashes.PhosphateNodules || element.id == SimHashes.Phosphorus || element.id == SimHashes.Phosphorite)
+		{
+			return 4;
+		}
+		if (element.HasTag(GameTags.Metal))
+		{
+			return 5;
+		}
+		if (element.HasTag(GameTags.RefinedMetal))
+		{
+			return 6;
+		}
+		if (element.id == SimHashes.Sand)
+		{
+			return 8;
+		}
+		if (element.id == SimHashes.Clay)
+		{
+			return 9;
+		}
+		if (element.id == SimHashes.Algae)
+		{
+			return 10;
+		}
+		if (element.id == SimHashes.SlimeMold)
+		{
+			return 11;
 		}
 		return 7;
 	}

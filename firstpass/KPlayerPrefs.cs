@@ -5,11 +5,11 @@ using System.IO;
 
 public class KPlayerPrefs : YamlIO<KPlayerPrefs>
 {
-	private static KPlayerPrefs _instance = null;
+	private static KPlayerPrefs _instance;
 
 	public static readonly string FILENAME = "kplayerprefs.yaml";
 
-	private static string PATH = null;
+	private static string PATH;
 
 	public static KPlayerPrefs instance
 	{
@@ -152,19 +152,19 @@ public class KPlayerPrefs : YamlIO<KPlayerPrefs>
 
 	public static bool HasKey(string key)
 	{
-		if (!instance.strings.ContainsKey(key))
+		if (instance.strings.ContainsKey(key))
 		{
-			if (!instance.ints.ContainsKey(key))
-			{
-				if (!instance.floats.ContainsKey(key))
-				{
-					return false;
-				}
-				return true;
-			}
 			return true;
 		}
-		return true;
+		if (instance.ints.ContainsKey(key))
+		{
+			return true;
+		}
+		if (instance.floats.ContainsKey(key))
+		{
+			return true;
+		}
+		return false;
 	}
 
 	public static void SetFloat(string key, float value)

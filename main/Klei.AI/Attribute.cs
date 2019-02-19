@@ -63,7 +63,7 @@ namespace Klei.AI
 			IsTrainable = is_trainable;
 			this.uiSprite = uiSprite;
 			this.thoughtSprite = thoughtSprite;
-			if (ProfessionName == "")
+			if (ProfessionName == string.Empty)
 			{
 				ProfessionName = null;
 			}

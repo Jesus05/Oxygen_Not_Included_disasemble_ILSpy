@@ -42,86 +42,86 @@ namespace ProcGenGame
 				bytes = memoryStream.ToArray();
 			}
 			FastReader reader = new FastReader(bytes);
-			if (Sim.Load(reader) == 0)
+			if (Sim.Load(reader) != 0)
 			{
-				byte[] array = new byte[Grid.CellCount];
-				for (int i = 0; i < Grid.CellCount; i++)
-				{
-					array[i] = byte.MaxValue;
-				}
-				for (int j = 0; j < num; j++)
-				{
-					SimMessages.NewGameFrame(0.2f, min, max);
-					IntPtr intPtr = Sim.HandleMessage(SimMessageHashes.PrepareGameData, array.Length, array);
-					updateProgressFn(UI.WORLDGEN.SETTLESIM.key, (float)j / (float)num * 100f, WorldGenProgressStages.Stages.SettleSim);
-					if (!(intPtr == IntPtr.Zero))
-					{
-						Sim.GameDataUpdate* ptr = (Sim.GameDataUpdate*)(void*)intPtr;
-						for (int k = 0; k < ptr->numSubstanceChangeInfo; k++)
-						{
-							Sim.SubstanceChangeInfo substanceChangeInfo = ptr->substanceChangeInfo[k];
-							int cellIdx = substanceChangeInfo.cellIdx;
-							cells[cellIdx].elementIdx = ptr->elementIdx[cellIdx];
-							cells[cellIdx].insulation = ptr->insulation[cellIdx];
-							cells[cellIdx].properties = ptr->properties[cellIdx];
-							cells[cellIdx].temperature = ptr->temperature[cellIdx];
-							cells[cellIdx].mass = ptr->mass[cellIdx];
-							cells[cellIdx].strengthInfo = ptr->strengthInfo[cellIdx];
-						}
-						foreach (KeyValuePair<Vector2I, TemplateContainer> templateSpawnTarget in templateSpawnTargets)
-						{
-							Cell templateCellData;
-							for (int l = 0; l < templateSpawnTarget.Value.cells.Count; l++)
-							{
-								templateCellData = templateSpawnTarget.Value.cells[l];
-								Vector2I key = templateSpawnTarget.Key;
-								int x = key.x;
-								Vector2I key2 = templateSpawnTarget.Key;
-								int num2 = Grid.OffsetCell(Grid.XYToCell(x, key2.y), templateCellData.location_x, templateCellData.location_y);
-								if (Grid.IsValidCell(num2))
-								{
-									cells[num2].elementIdx = (byte)ElementLoader.GetElementIndex(templateCellData.element);
-									cells[num2].temperature = templateCellData.temperature;
-									cells[num2].mass = templateCellData.mass;
-									dcs[num2].diseaseIdx = (byte)WorldGen.diseaseIds.FindIndex((string name) => name == templateCellData.diseaseName);
-									dcs[num2].elementCount = templateCellData.diseaseCount;
-								}
-							}
-						}
-					}
-				}
-				for (int m = 0; m < Grid.CellCount; m++)
-				{
-					int callbackIdx = (m != Grid.CellCount - 1) ? (-1) : 2147481337;
-					SimMessages.ModifyCell(m, cells[m].elementIdx, cells[m].temperature, cells[m].mass, dcs[m].diseaseIdx, dcs[m].elementCount, SimMessages.ReplaceType.Replace, false, callbackIdx);
-				}
-				bool flag = false;
-				while (!flag)
-				{
-					SimMessages.NewGameFrame(0.2f, min, max);
-					IntPtr intPtr2 = Sim.HandleMessage(SimMessageHashes.PrepareGameData, array.Length, array);
-					if (!(intPtr2 == IntPtr.Zero))
-					{
-						Sim.GameDataUpdate* ptr2 = (Sim.GameDataUpdate*)(void*)intPtr2;
-						for (int n = 0; n < ptr2->numCallbackInfo; n++)
-						{
-							Sim.CallbackInfo callbackInfo = ptr2->callbackInfo[n];
-							if (callbackInfo.callbackIdx == 2147481337)
-							{
-								flag = true;
-								break;
-							}
-						}
-					}
-				}
-				Sim.HandleMessage(SimMessageHashes.SettleWorldGen, 0, null);
-				bool result = SaveSim(settings, data, error_cb);
-				onSettleComplete(cells, bgTemp, dcs);
-				Sim.Shutdown();
-				return result;
+				updateProgressFn(UI.WORLDGEN.FAILED.key, -1f, WorldGenProgressStages.Stages.Failure);
+				return true;
 			}
-			updateProgressFn(UI.WORLDGEN.FAILED.key, -1f, WorldGenProgressStages.Stages.Failure);
-			return true;
+			byte[] array = new byte[Grid.CellCount];
+			for (int i = 0; i < Grid.CellCount; i++)
+			{
+				array[i] = byte.MaxValue;
+			}
+			for (int j = 0; j < num; j++)
+			{
+				SimMessages.NewGameFrame(0.2f, min, max);
+				IntPtr intPtr = Sim.HandleMessage(SimMessageHashes.PrepareGameData, array.Length, array);
+				updateProgressFn(UI.WORLDGEN.SETTLESIM.key, (float)j / (float)num * 100f, WorldGenProgressStages.Stages.SettleSim);
+				if (!(intPtr == IntPtr.Zero))
+				{
+					Sim.GameDataUpdate* ptr = (Sim.GameDataUpdate*)(void*)intPtr;
+					for (int k = 0; k < ptr->numSubstanceChangeInfo; k++)
+					{
+						Sim.SubstanceChangeInfo substanceChangeInfo = ptr->substanceChangeInfo[k];
+						int cellIdx = substanceChangeInfo.cellIdx;
+						cells[cellIdx].elementIdx = ptr->elementIdx[cellIdx];
+						cells[cellIdx].insulation = ptr->insulation[cellIdx];
+						cells[cellIdx].properties = ptr->properties[cellIdx];
+						cells[cellIdx].temperature = ptr->temperature[cellIdx];
+						cells[cellIdx].mass = ptr->mass[cellIdx];
+						cells[cellIdx].strengthInfo = ptr->strengthInfo[cellIdx];
+					}
+					foreach (KeyValuePair<Vector2I, TemplateContainer> templateSpawnTarget in templateSpawnTargets)
+					{
+						Cell templateCellData;
+						for (int l = 0; l < templateSpawnTarget.Value.cells.Count; l++)
+						{
+							templateCellData = templateSpawnTarget.Value.cells[l];
+							Vector2I key = templateSpawnTarget.Key;
+							int x = key.x;
+							Vector2I key2 = templateSpawnTarget.Key;
+							int num2 = Grid.OffsetCell(Grid.XYToCell(x, key2.y), templateCellData.location_x, templateCellData.location_y);
+							if (Grid.IsValidCell(num2))
+							{
+								cells[num2].elementIdx = (byte)ElementLoader.GetElementIndex(templateCellData.element);
+								cells[num2].temperature = templateCellData.temperature;
+								cells[num2].mass = templateCellData.mass;
+								dcs[num2].diseaseIdx = (byte)WorldGen.diseaseIds.FindIndex((string name) => name == templateCellData.diseaseName);
+								dcs[num2].elementCount = templateCellData.diseaseCount;
+							}
+						}
+					}
+				}
+			}
+			for (int m = 0; m < Grid.CellCount; m++)
+			{
+				int callbackIdx = (m != Grid.CellCount - 1) ? (-1) : 2147481337;
+				SimMessages.ModifyCell(m, cells[m].elementIdx, cells[m].temperature, cells[m].mass, dcs[m].diseaseIdx, dcs[m].elementCount, SimMessages.ReplaceType.Replace, false, callbackIdx);
+			}
+			bool flag = false;
+			while (!flag)
+			{
+				SimMessages.NewGameFrame(0.2f, min, max);
+				IntPtr intPtr2 = Sim.HandleMessage(SimMessageHashes.PrepareGameData, array.Length, array);
+				if (!(intPtr2 == IntPtr.Zero))
+				{
+					Sim.GameDataUpdate* ptr2 = (Sim.GameDataUpdate*)(void*)intPtr2;
+					for (int n = 0; n < ptr2->numCallbackInfo; n++)
+					{
+						Sim.CallbackInfo callbackInfo = ptr2->callbackInfo[n];
+						if (callbackInfo.callbackIdx == 2147481337)
+						{
+							flag = true;
+							break;
+						}
+					}
+				}
+			}
+			Sim.HandleMessage(SimMessageHashes.SettleWorldGen, 0, null);
+			bool result = SaveSim(settings, data, error_cb);
+			onSettleComplete(cells, bgTemp, dcs);
+			Sim.Shutdown();
+			return result;
 		}
 
 		private static bool SaveSim(WorldGenSettings settings, Data data, Action<OfflineWorldGen.ErrorInfo> error_cb)

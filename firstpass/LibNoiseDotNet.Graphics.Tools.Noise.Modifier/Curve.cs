@@ -63,39 +63,39 @@ namespace LibNoiseDotNet.Graphics.Tools.Noise.Modifier
 			int num2 = Libnoise.Clamp(i - 1, 0, _controlPoints.Count - 1);
 			int num3 = Libnoise.Clamp(i, 0, _controlPoints.Count - 1);
 			int index2 = Libnoise.Clamp(i + 1, 0, _controlPoints.Count - 1);
-			if (num2 != num3)
+			if (num2 == num3)
 			{
 				ControlPoint controlPoint2 = _controlPoints[num2];
-				float input = controlPoint2.Input;
-				ControlPoint controlPoint3 = _controlPoints[num3];
-				float input2 = controlPoint3.Input;
-				float a = (value - input) / (input2 - input);
-				ControlPoint controlPoint4 = _controlPoints[index];
-				float output = controlPoint4.Output;
-				ControlPoint controlPoint5 = _controlPoints[num2];
-				float output2 = controlPoint5.Output;
-				ControlPoint controlPoint6 = _controlPoints[num3];
-				float output3 = controlPoint6.Output;
-				ControlPoint controlPoint7 = _controlPoints[index2];
-				return Libnoise.Cerp(output, output2, output3, controlPoint7.Output, a);
+				return controlPoint2.Output;
 			}
-			ControlPoint controlPoint8 = _controlPoints[num2];
-			return controlPoint8.Output;
+			ControlPoint controlPoint3 = _controlPoints[num2];
+			float input = controlPoint3.Input;
+			ControlPoint controlPoint4 = _controlPoints[num3];
+			float input2 = controlPoint4.Input;
+			float a = (value - input) / (input2 - input);
+			ControlPoint controlPoint5 = _controlPoints[index];
+			float output = controlPoint5.Output;
+			ControlPoint controlPoint6 = _controlPoints[num2];
+			float output2 = controlPoint6.Output;
+			ControlPoint controlPoint7 = _controlPoints[num3];
+			float output3 = controlPoint7.Output;
+			ControlPoint controlPoint8 = _controlPoints[index2];
+			return Libnoise.Cerp(output, output2, output3, controlPoint8.Output, a);
 		}
 
 		protected void SortControlPoints()
 		{
 			_controlPoints.Sort(delegate(ControlPoint p1, ControlPoint p2)
 			{
-				if (!(p1.Input > p2.Input))
+				if (p1.Input > p2.Input)
 				{
-					if (!(p1.Input < p2.Input))
-					{
-						return 0;
-					}
+					return 1;
+				}
+				if (p1.Input < p2.Input)
+				{
 					return -1;
 				}
-				return 1;
+				return 0;
 			});
 		}
 	}

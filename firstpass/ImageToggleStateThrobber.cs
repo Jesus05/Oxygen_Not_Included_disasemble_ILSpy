@@ -11,9 +11,9 @@ public class ImageToggleStateThrobber : KMonoBehaviour
 
 	public float period = 2f;
 
-	public bool useScaledTime = false;
+	public bool useScaledTime;
 
-	private float t = 0f;
+	private float t;
 
 	protected override void OnPrefabInit()
 	{

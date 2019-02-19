@@ -129,10 +129,10 @@ public class ActiveRangeSideScreen : SideScreenContent
 
 	public override string GetTitle()
 	{
-		if (target == null)
+		if (target != null)
 		{
-			return UI.UISIDESCREENS.ACTIVATION_RANGE_SIDE_SCREEN.NAME;
+			return target.ActivationRangeTitleText;
 		}
-		return target.ActivationRangeTitleText;
+		return UI.UISIDESCREENS.ACTIVATION_RANGE_SIDE_SCREEN.NAME;
 	}
 }

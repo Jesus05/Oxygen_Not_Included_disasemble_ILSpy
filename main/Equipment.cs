@@ -22,11 +22,11 @@ public class Equipment : Assignables
 	{
 		IAssignableIdentity assignableIdentity = GetAssignableIdentity();
 		MinionAssignablesProxy minionAssignablesProxy = (MinionAssignablesProxy)assignableIdentity;
-		if (!(bool)minionAssignablesProxy)
+		if ((bool)minionAssignablesProxy)
 		{
-			return null;
+			return minionAssignablesProxy.GetTargetGameObject();
 		}
-		return minionAssignablesProxy.GetTargetGameObject();
+		return null;
 	}
 
 	protected override void OnPrefabInit()

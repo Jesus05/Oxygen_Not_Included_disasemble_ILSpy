@@ -191,49 +191,49 @@ public class CarePackageContainer : KScreen, ITelepadDeliverableContainer
 	private string GetSpawnableName()
 	{
 		GameObject prefab = Assets.GetPrefab(info.id);
-		if (!((UnityEngine.Object)prefab == (UnityEngine.Object)null))
+		if ((UnityEngine.Object)prefab == (UnityEngine.Object)null)
 		{
-			return prefab.GetProperName();
+			Element element = ElementLoader.FindElementByName(info.id);
+			if (element != null)
+			{
+				return element.substance.name;
+			}
+			return string.Empty;
 		}
-		Element element = ElementLoader.FindElementByName(info.id);
-		if (element == null)
-		{
-			return "";
-		}
-		return element.substance.name;
+		return prefab.GetProperName();
 	}
 
 	private string GetSpawnableQuantity()
 	{
-		if (ElementLoader.GetElement(info.id.ToTag()) == null)
+		if (ElementLoader.GetElement(info.id.ToTag()) != null)
 		{
-			if (Game.Instance.ediblesManager.GetFoodInfo(info.id) == null)
-			{
-				return string.Format(UI.IMMIGRANTSCREEN.CARE_PACKAGE_ELEMENT_COUNT, Assets.GetPrefab(info.id).GetProperName(), info.quantity.ToString());
-			}
+			return string.Format(UI.IMMIGRANTSCREEN.CARE_PACKAGE_ELEMENT_QUANTITY, GameUtil.GetFormattedMass(info.quantity, GameUtil.TimeSlice.None, GameUtil.MetricMassFormat.UseThreshold, true, "{0:0.#}"), Assets.GetPrefab(info.id).GetProperName());
+		}
+		if (Game.Instance.ediblesManager.GetFoodInfo(info.id) != null)
+		{
 			return string.Format(UI.IMMIGRANTSCREEN.CARE_PACKAGE_ELEMENT_QUANTITY, GameUtil.GetFormattedCaloriesForItem(info.id, info.quantity, GameUtil.TimeSlice.None, true), Assets.GetPrefab(info.id).GetProperName());
 		}
-		return string.Format(UI.IMMIGRANTSCREEN.CARE_PACKAGE_ELEMENT_QUANTITY, GameUtil.GetFormattedMass(info.quantity, GameUtil.TimeSlice.None, GameUtil.MetricMassFormat.UseThreshold, true, "{0:0.#}"), Assets.GetPrefab(info.id).GetProperName());
+		return string.Format(UI.IMMIGRANTSCREEN.CARE_PACKAGE_ELEMENT_COUNT, Assets.GetPrefab(info.id).GetProperName(), info.quantity.ToString());
 	}
 
 	private string GetSpawnableDescription()
 	{
 		Element element = ElementLoader.GetElement(info.id.ToTag());
-		if (element == null)
+		if (element != null)
 		{
-			GameObject prefab = Assets.GetPrefab(info.id);
-			if (!((UnityEngine.Object)prefab == (UnityEngine.Object)null))
-			{
-				InfoDescription component = prefab.GetComponent<InfoDescription>();
-				if (!((UnityEngine.Object)component != (UnityEngine.Object)null))
-				{
-					return prefab.GetProperName();
-				}
-				return component.description;
-			}
-			return "";
+			return element.Description();
 		}
-		return element.Description();
+		GameObject prefab = Assets.GetPrefab(info.id);
+		if ((UnityEngine.Object)prefab == (UnityEngine.Object)null)
+		{
+			return string.Empty;
+		}
+		InfoDescription component = prefab.GetComponent<InfoDescription>();
+		if ((UnityEngine.Object)component != (UnityEngine.Object)null)
+		{
+			return component.description;
+		}
+		return prefab.GetProperName();
 	}
 
 	private void SetInfoText()

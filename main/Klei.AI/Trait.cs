@@ -15,7 +15,7 @@ namespace Klei.AI
 
 		public bool ValidStarterTrait;
 
-		public Action<GameObject> OnAddTrait = null;
+		public Action<GameObject> OnAddTrait;
 
 		public Func<string> ExtendedTooltip;
 

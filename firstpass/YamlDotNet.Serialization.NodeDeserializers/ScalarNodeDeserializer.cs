@@ -17,64 +17,64 @@ namespace YamlDotNet.Serialization.NodeDeserializers
 		bool INodeDeserializer.Deserialize(IParser parser, Type expectedType, Func<IParser, Type, object> nestedObjectDeserializer, out object value)
 		{
 			Scalar scalar = parser.Allow<Scalar>();
-			if (scalar != null)
+			if (scalar == null)
 			{
-				if (expectedType.IsEnum())
-				{
-					value = Enum.Parse(expectedType, scalar.Value, true);
-				}
-				else
-				{
-					TypeCode typeCode = expectedType.GetTypeCode();
-					switch (typeCode)
-					{
-					case TypeCode.Boolean:
-						value = DeserializeBooleanHelper(scalar.Value);
-						break;
-					case TypeCode.SByte:
-					case TypeCode.Byte:
-					case TypeCode.Int16:
-					case TypeCode.UInt16:
-					case TypeCode.Int32:
-					case TypeCode.UInt32:
-					case TypeCode.Int64:
-					case TypeCode.UInt64:
-						value = DeserializeIntegerHelper(typeCode, scalar.Value);
-						break;
-					case TypeCode.Single:
-						value = float.Parse(scalar.Value, YamlFormatter.NumberFormat);
-						break;
-					case TypeCode.Double:
-						value = double.Parse(scalar.Value, YamlFormatter.NumberFormat);
-						break;
-					case TypeCode.Decimal:
-						value = decimal.Parse(scalar.Value, YamlFormatter.NumberFormat);
-						break;
-					case TypeCode.String:
-						value = scalar.Value;
-						break;
-					case TypeCode.Char:
-						value = scalar.Value[0];
-						break;
-					case TypeCode.DateTime:
-						value = DateTime.Parse(scalar.Value, CultureInfo.InvariantCulture);
-						break;
-					default:
-						if (expectedType == typeof(object))
-						{
-							value = scalar.Value;
-						}
-						else
-						{
-							value = TypeConverter.ChangeType(scalar.Value, expectedType);
-						}
-						break;
-					}
-				}
-				return true;
+				value = null;
+				return false;
 			}
-			value = null;
-			return false;
+			if (expectedType.IsEnum())
+			{
+				value = Enum.Parse(expectedType, scalar.Value, true);
+			}
+			else
+			{
+				TypeCode typeCode = expectedType.GetTypeCode();
+				switch (typeCode)
+				{
+				case TypeCode.Boolean:
+					value = DeserializeBooleanHelper(scalar.Value);
+					break;
+				case TypeCode.SByte:
+				case TypeCode.Byte:
+				case TypeCode.Int16:
+				case TypeCode.UInt16:
+				case TypeCode.Int32:
+				case TypeCode.UInt32:
+				case TypeCode.Int64:
+				case TypeCode.UInt64:
+					value = DeserializeIntegerHelper(typeCode, scalar.Value);
+					break;
+				case TypeCode.Single:
+					value = float.Parse(scalar.Value, YamlFormatter.NumberFormat);
+					break;
+				case TypeCode.Double:
+					value = double.Parse(scalar.Value, YamlFormatter.NumberFormat);
+					break;
+				case TypeCode.Decimal:
+					value = decimal.Parse(scalar.Value, YamlFormatter.NumberFormat);
+					break;
+				case TypeCode.String:
+					value = scalar.Value;
+					break;
+				case TypeCode.Char:
+					value = scalar.Value[0];
+					break;
+				case TypeCode.DateTime:
+					value = DateTime.Parse(scalar.Value, CultureInfo.InvariantCulture);
+					break;
+				default:
+					if (expectedType == typeof(object))
+					{
+						value = scalar.Value;
+					}
+					else
+					{
+						value = TypeConverter.ChangeType(scalar.Value, expectedType);
+					}
+					break;
+				}
+			}
+			return true;
 		}
 
 		private object DeserializeBooleanHelper(string value)
@@ -161,14 +161,14 @@ namespace YamlDotNet.Serialization.NodeDeserializers
 				for (int j = 0; j < array.Length; j++)
 				{
 					num2 *= 60;
-					num2 += ulong.Parse(array[j].Replace("_", ""));
+					num2 += ulong.Parse(array[j].Replace("_", string.Empty));
 				}
 			}
-			if (!flag)
+			if (flag)
 			{
-				return CastInteger(num2, typeCode);
+				return CastInteger(checked(-(long)num2), typeCode);
 			}
-			return CastInteger(checked(-(long)num2), typeCode);
+			return CastInteger(num2, typeCode);
 		}
 
 		private static object CastInteger(long number, TypeCode typeCode)

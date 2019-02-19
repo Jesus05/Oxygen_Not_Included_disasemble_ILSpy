@@ -42,7 +42,7 @@ public class EquipmentDef : Def
 
 	public Action<Equippable> OnUnequipCallBack;
 
-	public EntityTemplates.CollisionShape CollisionShape = EntityTemplates.CollisionShape.CIRCLE;
+	public EntityTemplates.CollisionShape CollisionShape;
 
 	public float width;
 

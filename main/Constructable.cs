@@ -35,13 +35,13 @@ public class Constructable : Workable, ISaveLoadable
 
 	private Chore buildChore;
 
-	private bool materialNeedsCleared = false;
+	private bool materialNeedsCleared;
 
 	private bool hasUnreachableDigs;
 
-	private bool finished = false;
+	private bool finished;
 
-	private bool unmarked = false;
+	private bool unmarked;
 
 	public bool isDiggingRequired = true;
 
@@ -52,7 +52,7 @@ public class Constructable : Workable, ISaveLoadable
 	private Extents ladderDetectionExtents;
 
 	[Serialize]
-	public bool IsReplacementTile = false;
+	public bool IsReplacementTile;
 
 	[Serialize]
 	public Tag[] choreTags;
@@ -637,7 +637,7 @@ public class Constructable : Workable, ISaveLoadable
 			}
 			else
 			{
-				notifier.Add(invalidLocation, "");
+				notifier.Add(invalidLocation, string.Empty);
 			}
 			GetComponent<KSelectable>().ToggleStatusItem(Db.Get().BuildingStatusItems.InvalidBuildingLocation, !flag, this);
 			bool flag2 = digs_complete && flag && fetchList == null;

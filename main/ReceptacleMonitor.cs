@@ -48,7 +48,7 @@ public class ReceptacleMonitor : StateMachineComponent<ReceptacleMonitor.StatesI
 	{
 		get
 		{
-			string text = "";
+			string text = string.Empty;
 			if (base.smi.IsInsideState(base.smi.sm.inoperational))
 			{
 				text += CREATURES.STATUSITEMS.RECEPTACLEINOPERATIONAL.NAME;

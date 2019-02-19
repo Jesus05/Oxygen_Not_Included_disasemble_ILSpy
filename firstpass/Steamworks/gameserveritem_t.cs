@@ -85,11 +85,11 @@ namespace Steamworks
 
 		public string GetServerName()
 		{
-			if (m_szServerName[0] != 0)
+			if (m_szServerName[0] == 0)
 			{
-				return Encoding.UTF8.GetString(m_szServerName, 0, Array.IndexOf(m_szServerName, (byte)0));
+				return m_NetAdr.GetConnectionAddressString();
 			}
-			return m_NetAdr.GetConnectionAddressString();
+			return Encoding.UTF8.GetString(m_szServerName, 0, Array.IndexOf(m_szServerName, (byte)0));
 		}
 
 		public void SetServerName(string name)

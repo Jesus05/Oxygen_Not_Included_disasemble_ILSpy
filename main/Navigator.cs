@@ -171,7 +171,7 @@ public class Navigator : StateMachineComponent<Navigator.StatesInstance>, ISaveL
 		component.OnStore(data);
 	});
 
-	public bool executePathProbeTaskAsync = false;
+	public bool executePathProbeTaskAsync;
 
 	public KMonoBehaviour target
 	{
@@ -351,7 +351,7 @@ public class Navigator : StateMachineComponent<Navigator.StatesInstance>, ISaveL
 						if (currentNavType == node2.navType)
 						{
 							flag = !ValidatePath(ref path);
-							goto IL_01a4;
+							goto IL_018c;
 						}
 					}
 					int num4 = num;
@@ -364,7 +364,7 @@ public class Navigator : StateMachineComponent<Navigator.StatesInstance>, ISaveL
 						{
 							path.nodes.RemoveAt(0);
 							flag = !ValidatePath(ref path);
-							goto IL_01a4;
+							goto IL_018c;
 						}
 					}
 					flag = true;
@@ -373,12 +373,12 @@ public class Navigator : StateMachineComponent<Navigator.StatesInstance>, ISaveL
 				{
 					flag = true;
 				}
-				goto IL_01a4;
+				goto IL_018c;
 			}
 			Stop(true);
 		}
-		goto IL_02a2;
-		IL_01a4:
+		goto IL_027b;
+		IL_018c:
 		if (flag)
 		{
 			int cellPreferences = tactic.GetCellPreferences(num2, targetOffsets, this);
@@ -407,8 +407,8 @@ public class Navigator : StateMachineComponent<Navigator.StatesInstance>, ISaveL
 			ClearReservedCell();
 			Stop(false);
 		}
-		goto IL_02a2;
-		IL_02a2:
+		goto IL_027b;
+		IL_027b:
 		if (trigger_advance)
 		{
 			Trigger(1347184327, null);
@@ -638,11 +638,11 @@ public class Navigator : StateMachineComponent<Navigator.StatesInstance>, ISaveL
 
 	public int GetNavigationCost(int cell)
 	{
-		if (!Grid.IsValidCell(cell))
+		if (Grid.IsValidCell(cell))
 		{
-			return -1;
+			return PathProber.GetCost(cell);
 		}
-		return PathProber.GetCost(cell);
+		return -1;
 	}
 
 	public int GetNavigationCostIgnoreProberOffset(int cell, CellOffset[] offsets)

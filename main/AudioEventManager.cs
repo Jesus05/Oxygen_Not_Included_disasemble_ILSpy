@@ -107,6 +107,7 @@ public class AudioEventManager : KMonoBehaviour
 					result = noiseSplat.GetProvider().GetName();
 				}
 			}
+			return result;
 		}
 		finally
 		{
@@ -116,7 +117,6 @@ public class AudioEventManager : KMonoBehaviour
 				disposable.Dispose();
 			}
 		}
-		return result;
 	}
 
 	public void ClearNoiseSplat(NoiseSplat splat)

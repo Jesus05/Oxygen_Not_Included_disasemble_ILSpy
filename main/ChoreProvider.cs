@@ -26,12 +26,12 @@ public class ChoreProvider : KMonoBehaviour
 
 	public virtual Chore RemoveChore(Chore chore)
 	{
-		if (chore != null)
+		if (chore == null)
 		{
-			chores.Remove(chore);
-			return chore;
+			return null;
 		}
-		return null;
+		chores.Remove(chore);
+		return chore;
 	}
 
 	public virtual void CollectChores(ChoreConsumerState consumer_state, List<Chore.Precondition.Context> succeeded, List<Chore.Precondition.Context> failed_contexts)

@@ -13,7 +13,7 @@ public class PlaceTool : DragTool
 
 	public static PlaceTool Instance;
 
-	private bool active = false;
+	private bool active;
 
 	public static void DestroyInstance()
 	{

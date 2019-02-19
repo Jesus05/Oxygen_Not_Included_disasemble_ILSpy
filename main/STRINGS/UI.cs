@@ -143,16 +143,16 @@ namespace STRINGS
 
 			public class PERCOLATOR
 			{
-				public static LocString NAME = "Pacu in a Percolator";
+				public static LocString NAME = "Percolator";
 
-				public static LocString DESCRIPTION = "";
+				public static LocString DESCRIPTION = "Don't drink from it! There was a pacu... IN the percolator!";
 			}
 
 			public class ROBOTARM
 			{
 				public static LocString NAME = "Robot Arm";
 
-				public static LocString DESCRIPTION = "";
+				public static LocString DESCRIPTION = "It's not functional. Just cool.";
 			}
 
 			public class HATCHFOSSIL
@@ -166,7 +166,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Modern Art";
 
-				public static LocString DESCRIPTION = "";
+				public static LocString DESCRIPTION = "I don't get it.";
 			}
 
 			public class EGGROCK
@@ -187,7 +187,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Old X-Ray";
 
-				public static LocString DESCRIPTION = "";
+				public static LocString DESCRIPTION = "Ew, weird. It has five fingers!";
 			}
 
 			public class SHIELDGENERATOR
@@ -208,7 +208,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Double Helix Model";
 
-				public static LocString DESCRIPTION = "";
+				public static LocString DESCRIPTION = "An educational model of genetic information.";
 			}
 
 			public class SANDSTONE
@@ -222,7 +222,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Magma Lamp";
 
-				public static LocString DESCRIPTION = "Sequel to \"Lava Lamp\".";
+				public static LocString DESCRIPTION = "The sequel to \"Lava Lamp\".";
 			}
 
 			public class OBELISK
@@ -236,105 +236,105 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Rubik's Cube";
 
-				public static LocString DESCRIPTION = "";
+				public static LocString DESCRIPTION = "This mystery of the universe has already been solved.";
 			}
 
 			public class OFFICEMUG
 			{
 				public static LocString NAME = "Office Mug";
 
-				public static LocString DESCRIPTION = "";
+				public static LocString DESCRIPTION = "An intermediary place to store espresso before you move it to your mouth.";
 			}
 
 			public class AMELIASWATCH
 			{
 				public static LocString NAME = "Wrist Watch";
 
-				public static LocString DESCRIPTION = "";
+				public static LocString DESCRIPTION = "It was discovered in a package labeled \"To be entrusted to Dr. Walker\".";
 			}
 
 			public class MOONMOONMOON
 			{
 				public static LocString NAME = "Moonmoonmoon";
 
-				public static LocString DESCRIPTION = "A very, very small moon.";
+				public static LocString DESCRIPTION = "A moon's moon's moon. It's very small.";
 			}
 
 			public class BIOLUMROCK
 			{
 				public static LocString NAME = "Bioluminescent Rock";
 
-				public static LocString DESCRIPTION = "";
+				public static LocString DESCRIPTION = "A thriving colony of tiny, microscopic organisms is responsible for giving it its bluish glow.";
 			}
 
 			public class PLASMALAMP
 			{
 				public static LocString NAME = "Plasma Lamp";
 
-				public static LocString DESCRIPTION = "";
+				public static LocString DESCRIPTION = "No space colony is complete without one.";
 			}
 
 			public class MOLDAVITE
 			{
 				public static LocString NAME = "Moldavite";
 
-				public static LocString DESCRIPTION = "";
+				public static LocString DESCRIPTION = "A unique green stone formed from the impact of a meteorite.";
 			}
 
 			public class BRICKPHONE
 			{
 				public static LocString NAME = "Strange Brick";
 
-				public static LocString DESCRIPTION = "";
+				public static LocString DESCRIPTION = "It still works.";
 			}
 
 			public class SOLARSYSTEM
 			{
 				public static LocString NAME = "Self-Contained System";
 
-				public static LocString DESCRIPTION = "";
+				public static LocString DESCRIPTION = "A marvel of the cosmos, inside this display is an entirely self-contained solar system.";
 			}
 
 			public class SINK
 			{
 				public static LocString NAME = "Sink";
 
-				public static LocString DESCRIPTION = "";
+				public static LocString DESCRIPTION = "No collection is complete without it.";
 			}
 
 			public class ROCKTORNADO
 			{
 				public static LocString NAME = "Tornado Rock";
 
-				public static LocString DESCRIPTION = "";
+				public static LocString DESCRIPTION = "It's unclear how it formed, although I'm glad it did.";
 			}
 
 			public class BLENDER
 			{
 				public static LocString NAME = "Blender";
 
-				public static LocString DESCRIPTION = "";
+				public static LocString DESCRIPTION = "Equipment used to conduct experiments answering the age-old question, \"Could that blend\"?";
 			}
 
 			public class SAXOPHONE
 			{
 				public static LocString NAME = "Mangled Saxophone";
 
-				public static LocString DESCRIPTION = "";
+				public static LocString DESCRIPTION = "The name \"Pesquet\" is barely legible on the inside.";
 			}
 
 			public class STETHOSCOPE
 			{
 				public static LocString NAME = "Stethoscope";
 
-				public static LocString DESCRIPTION = "";
+				public static LocString DESCRIPTION = "Listens to Duplicant heartbeats, or gurgley tummies.";
 			}
 
 			public class VHS
 			{
 				public static LocString NAME = "Archaic Tech";
 
-				public static LocString DESCRIPTION = "";
+				public static LocString DESCRIPTION = "Be kind when you handle it. It's very fragile.";
 			}
 		}
 
@@ -1862,14 +1862,14 @@ namespace STRINGS
 				public static LocString MORE = "More";
 			}
 
-			public static LocString ENTER_TEXT = "";
+			public static LocString ENTER_TEXT = string.Empty;
 
 			public static LocString INVALID_LOCATION = "Invalid Location";
 		}
 
 		public class WORLDGEN
 		{
-			public static LocString NOHEADERS = "";
+			public static LocString NOHEADERS = string.Empty;
 
 			public static LocString COMPLETE = "Success! Space adventure awaits.";
 
@@ -2144,7 +2144,7 @@ namespace STRINGS
 
 			public static LocString HARVESTBUTTON = "Harvest plants {Hotkey}";
 
-			public static LocString PRIORITIZEMAINBUTTON = "";
+			public static LocString PRIORITIZEMAINBUTTON = string.Empty;
 
 			public static LocString PRIORITIZEBUTTON = "Set Specific Errand Priority {Hotkey}" + HORIZONTAL_BR_RULE + "Specific priority set from this tool are calculated <i>after</i> the Duplicants' priorities set on the Priorities Screen";
 
@@ -3761,7 +3761,7 @@ namespace STRINGS
 
 			public static LocString DESCRIPTION = "Thank you for playing <color=#F44A47>Oxygen Not Included</color>!";
 
-			public static LocString DESCRIPTION_2 = "";
+			public static LocString DESCRIPTION_2 = string.Empty;
 
 			public static LocString QUITBUTTON = "RESET";
 		}
@@ -3782,11 +3782,11 @@ namespace STRINGS
 		{
 			public static LocString BASIC = "Set the order in which specific pending errands should be done" + HORIZONTAL_BR_RULE + "1: Least Urgent\n9: Most Urgent";
 
-			public static LocString HIGH = "";
+			public static LocString HIGH = string.Empty;
 
 			public static LocString EMERGENCY = "Emergency Priority" + HORIZONTAL_BR_RULE + "This priority will override all other priorities and set the colony on Red Alert until the errand is completed.";
 
-			public static LocString HIGH_TOGGLE = "";
+			public static LocString HIGH_TOGGLE = string.Empty;
 
 			public static LocString OPEN_JOBS_SCREEN = "Click to open the Priorities Screen" + HORIZONTAL_BR_RULE + "Duplicants will choose errands based on their Errand Type Priorities first, and Specific Errand Priority second";
 
@@ -5202,7 +5202,7 @@ namespace STRINGS
 
 				public static LocString BUILDMENUTITLE = "Ladders";
 
-				public static LocString TOOLTIP = "";
+				public static LocString TOOLTIP = string.Empty;
 			}
 
 			public static class TILES
@@ -5211,7 +5211,7 @@ namespace STRINGS
 
 				public static LocString BUILDMENUTITLE = "Tiles";
 
-				public static LocString TOOLTIP = "";
+				public static LocString TOOLTIP = string.Empty;
 			}
 
 			public static class DOORS
@@ -5220,7 +5220,7 @@ namespace STRINGS
 
 				public static LocString BUILDMENUTITLE = "Doors";
 
-				public static LocString TOOLTIP = "";
+				public static LocString TOOLTIP = string.Empty;
 			}
 
 			public static class TRAVELTUBES
@@ -5229,7 +5229,7 @@ namespace STRINGS
 
 				public static LocString BUILDMENUTITLE = "Transit Tubes";
 
-				public static LocString TOOLTIP = "";
+				public static LocString TOOLTIP = string.Empty;
 			}
 
 			public static class STORAGE
@@ -5238,7 +5238,7 @@ namespace STRINGS
 
 				public static LocString BUILDMENUTITLE = "Storage";
 
-				public static LocString TOOLTIP = "";
+				public static LocString TOOLTIP = string.Empty;
 			}
 
 			public static class RESEARCH
@@ -5247,7 +5247,7 @@ namespace STRINGS
 
 				public static LocString BUILDMENUTITLE = "Research";
 
-				public static LocString TOOLTIP = "";
+				public static LocString TOOLTIP = string.Empty;
 			}
 
 			public static class GENERATORS
@@ -5256,7 +5256,7 @@ namespace STRINGS
 
 				public static LocString BUILDMENUTITLE = "Generators";
 
-				public static LocString TOOLTIP = "";
+				public static LocString TOOLTIP = string.Empty;
 			}
 
 			public static class WIRES
@@ -5265,7 +5265,7 @@ namespace STRINGS
 
 				public static LocString BUILDMENUTITLE = "Wires";
 
-				public static LocString TOOLTIP = "";
+				public static LocString TOOLTIP = string.Empty;
 			}
 
 			public static class POWERCONTROL
@@ -5274,7 +5274,7 @@ namespace STRINGS
 
 				public static LocString BUILDMENUTITLE = "Power Regulation";
 
-				public static LocString TOOLTIP = "";
+				public static LocString TOOLTIP = string.Empty;
 			}
 
 			public static class PLUMBINGSTRUCTURES
@@ -5292,7 +5292,7 @@ namespace STRINGS
 
 				public static LocString BUILDMENUTITLE = "Pipes";
 
-				public static LocString TOOLTIP = "";
+				public static LocString TOOLTIP = string.Empty;
 			}
 
 			public static class VENTILATIONSTRUCTURES
@@ -5319,7 +5319,7 @@ namespace STRINGS
 
 				public static LocString BUILDMENUTITLE = "Logic Wiring";
 
-				public static LocString TOOLTIP = "";
+				public static LocString TOOLTIP = string.Empty;
 			}
 
 			public static class LOGICGATES
@@ -5328,7 +5328,7 @@ namespace STRINGS
 
 				public static LocString BUILDMENUTITLE = "Logic Gates";
 
-				public static LocString TOOLTIP = "";
+				public static LocString TOOLTIP = string.Empty;
 			}
 
 			public static class LOGICSWITCHES
@@ -5337,7 +5337,7 @@ namespace STRINGS
 
 				public static LocString BUILDMENUTITLE = "Logic Switches";
 
-				public static LocString TOOLTIP = "";
+				public static LocString TOOLTIP = string.Empty;
 			}
 
 			public static class COOKING
@@ -5346,7 +5346,7 @@ namespace STRINGS
 
 				public static LocString BUILDMENUTITLE = "Cooking";
 
-				public static LocString TOOLTIP = "";
+				public static LocString TOOLTIP = string.Empty;
 			}
 
 			public static class FARMING
@@ -5355,7 +5355,7 @@ namespace STRINGS
 
 				public static LocString BUILDMENUTITLE = "Farming";
 
-				public static LocString TOOLTIP = "";
+				public static LocString TOOLTIP = string.Empty;
 			}
 
 			public static class RANCHING
@@ -5364,7 +5364,7 @@ namespace STRINGS
 
 				public static LocString BUILDMENUTITLE = "Ranching";
 
-				public static LocString TOOLTIP = "";
+				public static LocString TOOLTIP = string.Empty;
 			}
 
 			public static class HYGIENE
@@ -5427,7 +5427,7 @@ namespace STRINGS
 
 				public static LocString BUILDMENUTITLE = "Temperature Control";
 
-				public static LocString TOOLTIP = "";
+				public static LocString TOOLTIP = string.Empty;
 			}
 
 			public static class REFINING
@@ -5454,7 +5454,7 @@ namespace STRINGS
 
 				public static LocString BUILDMENUTITLE = "Pipe Sensors";
 
-				public static LocString TOOLTIP = "";
+				public static LocString TOOLTIP = string.Empty;
 			}
 
 			public static class ROCKETRY
@@ -6162,6 +6162,8 @@ namespace STRINGS
 
 				public static LocString TOOLTIP = "See what errands this building has waiting to be done";
 
+				public static LocString AVAILABLE_CHORES = "AVAILABLE ERRANDS";
+
 				public static LocString DUPE_TOOLTIP_FAILED = "{Name} can't do {Errand} right now. Reason:\n{FailedPrecondition}";
 
 				public static LocString DUPE_TOOLTIP_SUCCEEDED = "{Description}\n\n{Errand}'s Type: {Groups}\n\n{Name}'s {BestGroup} Priority: {PersonalPriorityValue} ({PersonalPriority})\n{Building} Priority: {BuildingPriority}\nAll {BestGroup} Errands: {TypePriority}\n\nTotal Priority: {TotalPriority}";
@@ -6727,7 +6729,7 @@ namespace STRINGS
 			{
 				public static LocString WARNING_TITLE = "Long Commutes";
 
-				public static LocString WARNING_MESSAGE = "Your duplicates are spending a large amount of their time travelling between tasks. (> {0})";
+				public static LocString WARNING_MESSAGE = "Your Duplicants are spending a significant amount of time travelling between their errands (> {0})";
 			}
 
 			public class TRAVEL_TIME
@@ -6771,7 +6773,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = FormatAsLink("Power", "POWER") + " Wasted:";
 
-				public static LocString POSITIVE_TOOLTIP = "";
+				public static LocString POSITIVE_TOOLTIP = string.Empty;
 
 				public static LocString NEGATIVE_TOOLTIP = "My colony lost {0} of " + FormatAsLink("Power", "POWER") + " today due to overproduction and battery runoff";
 			}
@@ -7386,13 +7388,13 @@ namespace STRINGS
 						Debug.LogWarningFormat("String has no open link tag: {0}");
 					}
 				}
+				return text2;
 			}
 			catch
 			{
 				Debug.Log("STRIP LINK FORMATTING FAILED ON: " + text, null);
-				text2 = text;
+				return text;
 			}
-			return text2;
 		}
 	}
 }

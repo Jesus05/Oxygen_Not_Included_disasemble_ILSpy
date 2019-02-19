@@ -25,7 +25,7 @@ public class BuildingHP : Workable
 
 	public class SMInstance : GameStateMachine<States, SMInstance, BuildingHP, object>.GameInstance
 	{
-		private ProgressBar progressBar = null;
+		private ProgressBar progressBar;
 
 		public SMInstance(BuildingHP master)
 			: base(master)
@@ -93,7 +93,7 @@ public class BuildingHP : Workable
 
 		private static string ToolTipResolver(List<Notification> notificationList, object data)
 		{
-			string text = "";
+			string text = string.Empty;
 			for (int i = 0; i < notificationList.Count; i++)
 			{
 				Notification notification = notificationList[i];
@@ -236,9 +236,9 @@ public class BuildingHP : Workable
 
 	public static List<Meter> kbacQueryList = new List<Meter>();
 
-	public bool destroyOnDamaged = false;
+	public bool destroyOnDamaged;
 
-	public bool invincible = false;
+	public bool invincible;
 
 	[MyCmpGet]
 	private Building building;
@@ -247,7 +247,7 @@ public class BuildingHP : Workable
 
 	private float minDamagePopInterval = 4f;
 
-	private float lastPopTime = 0f;
+	private float lastPopTime;
 
 	public int HitPoints => hitpoints;
 

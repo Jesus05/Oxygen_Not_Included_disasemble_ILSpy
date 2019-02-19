@@ -21,15 +21,15 @@ public class StandardCropPlant : StateMachineComponent<StandardCropPlant.StatesI
 		public int WiltStage()
 		{
 			float num = base.master.growing.PercentOfCurrentHarvest();
-			if (!(num < 0.75f))
+			if (num < 0.75f)
 			{
-				if (!(num < 1f))
-				{
-					return 3;
-				}
+				return 1;
+			}
+			if (num < 1f)
+			{
 				return 2;
 			}
-			return 1;
+			return 3;
 		}
 
 		public bool IsSleeping()
@@ -85,17 +85,13 @@ public class StandardCropPlant : StateMachineComponent<StandardCropPlant.StatesI
 		{
 			base.serializable = true;
 			default_state = alive;
-			State state = dead;
-			string name = CREATURES.STATUSITEMS.DEAD.NAME;
-			string tooltip = CREATURES.STATUSITEMS.DEAD.TOOLTIP;
-			StatusItemCategory main = Db.Get().StatusItemCategories.Main;
-			state.ToggleStatusItem(name, tooltip, "", StatusItem.IconType.Info, (NotificationType)0, false, default(HashedString), 0, null, null, main).Enter(delegate(StatesInstance smi)
+			dead.ToggleStatusItem(CREATURES.STATUSITEMS.DEAD.NAME, CREATURES.STATUSITEMS.DEAD.TOOLTIP, category: Db.Get().StatusItemCategories.Main, icon: string.Empty, icon_type: StatusItem.IconType.Info, notification_type: (NotificationType)0, allow_multiples: false, render_overlay: default(HashedString), status_overlays: 0, resolve_string_callback: null, resolve_tooltip_callback: null).Enter(delegate(StatesInstance smi)
 			{
 				if (smi.master.growing.Replanted && !UprootedMonitor.IsObjectUprooted(masterTarget.Get(smi)))
 				{
 					Notifier notifier = smi.master.gameObject.AddOrGet<Notifier>();
 					Notification notification = smi.master.CreateDeathNotification();
-					notifier.Add(notification, "");
+					notifier.Add(notification, string.Empty);
 				}
 				GameUtil.KInstantiate(Assets.GetPrefab(EffectConfigs.PlantDeathId), smi.master.transform.GetPosition(), Grid.SceneLayer.FXFront, null, 0).SetActive(true);
 				smi.master.Trigger(1623392196, null);
@@ -195,7 +191,7 @@ public class StandardCropPlant : StateMachineComponent<StandardCropPlant.StatesI
 
 	private static string ToolTipResolver(List<Notification> notificationList, object data)
 	{
-		string text = "";
+		string text = string.Empty;
 		for (int i = 0; i < notificationList.Count; i++)
 		{
 			Notification notification = notificationList[i];

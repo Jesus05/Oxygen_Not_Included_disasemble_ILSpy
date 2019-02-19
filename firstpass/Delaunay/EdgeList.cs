@@ -118,17 +118,17 @@ namespace Delaunay
 
 		private Halfedge GetHash(int b)
 		{
-			if (b >= 0 && b < _hashsize)
+			if (b < 0 || b >= _hashsize)
 			{
-				Halfedge halfedge = _hash[b];
-				if (halfedge != null && halfedge.edge == Edge.DELETED)
-				{
-					_hash[b] = null;
-					return null;
-				}
-				return halfedge;
+				return null;
 			}
-			return null;
+			Halfedge halfedge = _hash[b];
+			if (halfedge != null && halfedge.edge == Edge.DELETED)
+			{
+				_hash[b] = null;
+				return null;
+			}
+			return halfedge;
 		}
 	}
 }

@@ -31,10 +31,10 @@ public class CustomGameSettings : KMonoBehaviour
 	private static CustomGameSettings instance;
 
 	[Serialize]
-	public bool is_custom_game = false;
+	public bool is_custom_game;
 
 	[Serialize]
-	public CustomGameMode customGameMode = CustomGameMode.Survival;
+	public CustomGameMode customGameMode;
 
 	[Serialize]
 	private Dictionary<string, string> CurrentQualityLevelsBySetting = new Dictionary<string, string>();
@@ -107,20 +107,20 @@ public class CustomGameSettings : KMonoBehaviour
 
 	public SettingLevel GetCurrentQualitySetting(string setting_id)
 	{
-		if (customGameMode != 0)
+		if (customGameMode == CustomGameMode.Survival)
 		{
-			if (customGameMode != CustomGameMode.Nosweat)
-			{
-				if (!CurrentQualityLevelsBySetting.ContainsKey(setting_id))
-				{
-					CurrentQualityLevelsBySetting[setting_id] = QualitySettings[setting_id].default_level_id;
-				}
-				string level_id = CurrentQualityLevelsBySetting[setting_id];
-				return QualitySettings[setting_id].GetLevel(level_id);
-			}
+			return QualitySettings[setting_id].GetLevel(QualitySettings[setting_id].default_level_id);
+		}
+		if (customGameMode == CustomGameMode.Nosweat)
+		{
 			return QualitySettings[setting_id].GetLevel(QualitySettings[setting_id].nosweat_default_level_id);
 		}
-		return QualitySettings[setting_id].GetLevel(QualitySettings[setting_id].default_level_id);
+		if (!CurrentQualityLevelsBySetting.ContainsKey(setting_id))
+		{
+			CurrentQualityLevelsBySetting[setting_id] = QualitySettings[setting_id].default_level_id;
+		}
+		string level_id = CurrentQualityLevelsBySetting[setting_id];
+		return QualitySettings[setting_id].GetLevel(level_id);
 	}
 
 	public string GetSettingLevelLabel(string setting_id, string level_id)
@@ -135,7 +135,7 @@ public class CustomGameSettings : KMonoBehaviour
 			}
 		}
 		Debug.LogWarning("No label string for setting: " + setting_id + " level: " + level_id, null);
-		return "";
+		return string.Empty;
 	}
 
 	public string GetSettingLevelTooltip(string setting_id, string level_id)
@@ -150,7 +150,7 @@ public class CustomGameSettings : KMonoBehaviour
 			}
 		}
 		Debug.LogWarning("No tooltip string for setting: " + setting_id + " level: " + level_id, null);
-		return "";
+		return string.Empty;
 	}
 
 	public void AddSettingConfig(SettingConfig config)
@@ -239,8 +239,7 @@ public class CustomGameSettings : KMonoBehaviour
 				}
 				if (data.ContainsKey(qualitySetting.Key) && data[qualitySetting.Key] != b)
 				{
-					result = false;
-					break;
+					return false;
 				}
 			}
 		}

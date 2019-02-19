@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <ProjectGuid>{9C0154F4-399B-4BAB-B6E0-AF913F256403}</ProjectGuid>
+    <ProjectGuid>{9489E1FF-BA3E-4D59-9EE0-AB4C00DF9CB1}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <OutputType>Library</OutputType>
@@ -1385,6 +1385,7 @@
     <Compile Include="MinionStartingStats.cs" />
     <Compile Include="MinionStatsPanel.cs" />
     <Compile Include="MinionStorage.cs" />
+    <Compile Include="MinionTodoChoreEntry.cs" />
     <Compile Include="MinionTodoSideScreen.cs" />
     <Compile Include="MinionVitalsPanel.cs" />
     <Compile Include="MinionVitalsScreen.cs" />

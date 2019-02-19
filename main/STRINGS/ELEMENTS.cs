@@ -68,7 +68,7 @@ namespace STRINGS
 		{
 			public static LocString NAME = UI.FormatAsLink("Aerogel", "AEROGEL");
 
-			public static LocString DESC = "";
+			public static LocString DESC = string.Empty;
 		}
 
 		public class ALGAE
@@ -695,7 +695,7 @@ namespace STRINGS
 		{
 			public static LocString NAME = UI.FormatAsLink("Sand Cement", "SANDCEMENT");
 
-			public static LocString DESC = "";
+			public static LocString DESC = string.Empty;
 		}
 
 		public class SANDSTONE
@@ -744,7 +744,7 @@ namespace STRINGS
 		{
 			public static LocString NAME = UI.FormatAsLink("Crude Oil", "SOLIDCRUDEOIL");
 
-			public static LocString DESC = "";
+			public static LocString DESC = string.Empty;
 		}
 
 		public class SOLIDHYDROGEN

@@ -48,7 +48,7 @@ public class Notifier : KMonoBehaviour
 				{
 					notification.clickFocus = base.transform;
 				}
-				if (notification.Group.IsValid && notification.Group != (HashedString)"")
+				if (notification.Group.IsValid && notification.Group != (HashedString)string.Empty)
 				{
 					if (NotificationGroups == null)
 					{
@@ -80,7 +80,7 @@ public class Notifier : KMonoBehaviour
 		if ((UnityEngine.Object)notification.Notifier != (UnityEngine.Object)null)
 		{
 			notification.Notifier = null;
-			if (NotificationGroups != null && notification.Group.IsValid && notification.Group != (HashedString)"")
+			if (NotificationGroups != null && notification.Group.IsValid && notification.Group != (HashedString)string.Empty)
 			{
 				NotificationGroups.Remove(notification.Group);
 			}

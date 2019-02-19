@@ -42,20 +42,19 @@ public class FetchList2 : IFetchList
 	{
 		get
 		{
-			if (FetchOrders.Count >= 0)
+			if (FetchOrders.Count < 0)
 			{
-				bool result = false;
-				foreach (FetchOrder2 fetchOrder in FetchOrders)
-				{
-					if (fetchOrder.InProgress)
-					{
-						result = true;
-						break;
-					}
-				}
-				return result;
+				return false;
 			}
-			return false;
+			bool result = false;
+			foreach (FetchOrder2 fetchOrder in FetchOrders)
+			{
+				if (fetchOrder.InProgress)
+				{
+					return true;
+				}
+			}
+			return result;
 		}
 	}
 

@@ -19,9 +19,9 @@ public class EmoteReactable : Reactable
 
 	private KBatchedAnimController kbac;
 
-	public Expression expression = null;
+	public Expression expression;
 
-	public Thought thought = null;
+	public Thought thought;
 
 	private KAnimFile animset;
 
@@ -29,7 +29,7 @@ public class EmoteReactable : Reactable
 
 	private int currentStep = -1;
 
-	private float elapsed = 0f;
+	private float elapsed;
 
 	public EmoteReactable(GameObject gameObject, HashedString id, ChoreType chore_type, HashedString animset, int range_width = 15, int range_height = 8, float min_reactable_time = 0f, float min_reactor_time = 20f, float max_trigger_time = float.PositiveInfinity)
 		: base(gameObject, id, chore_type, range_width, range_height, true, min_reactable_time, min_reactor_time, max_trigger_time)
@@ -57,28 +57,28 @@ public class EmoteReactable : Reactable
 
 	public override bool InternalCanBegin(GameObject new_reactor, Navigator.ActiveTransition transition)
 	{
-		if (!((UnityEngine.Object)reactor != (UnityEngine.Object)null))
+		if ((UnityEngine.Object)reactor != (UnityEngine.Object)null)
 		{
-			if (!((UnityEngine.Object)new_reactor == (UnityEngine.Object)null))
-			{
-				Navigator component = new_reactor.GetComponent<Navigator>();
-				if (!((UnityEngine.Object)component == (UnityEngine.Object)null))
-				{
-					if (component.IsMoving())
-					{
-						if (component.CurrentNavType != NavType.Tube && component.CurrentNavType != NavType.Ladder && component.CurrentNavType != NavType.Pole)
-						{
-							return (UnityEngine.Object)gameObject != (UnityEngine.Object)new_reactor;
-						}
-						return false;
-					}
-					return false;
-				}
-				return false;
-			}
 			return false;
 		}
-		return false;
+		if ((UnityEngine.Object)new_reactor == (UnityEngine.Object)null)
+		{
+			return false;
+		}
+		Navigator component = new_reactor.GetComponent<Navigator>();
+		if ((UnityEngine.Object)component == (UnityEngine.Object)null)
+		{
+			return false;
+		}
+		if (!component.IsMoving())
+		{
+			return false;
+		}
+		if (component.CurrentNavType == NavType.Tube || component.CurrentNavType == NavType.Ladder || component.CurrentNavType == NavType.Pole)
+		{
+			return false;
+		}
+		return (UnityEngine.Object)gameObject != (UnityEngine.Object)new_reactor;
 	}
 
 	public override void Update(float dt)

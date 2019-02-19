@@ -9,7 +9,7 @@ public class AccessControlSideScreenDoor : KMonoBehaviour
 
 	private Action<MinionAssignablesProxy, AccessControl.Permission> permissionChangedCallback;
 
-	private bool isUpDown = false;
+	private bool isUpDown;
 
 	protected MinionAssignablesProxy targetIdentity;
 

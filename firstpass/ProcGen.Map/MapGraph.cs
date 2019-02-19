@@ -37,19 +37,19 @@ namespace ProcGen.Map
 		{
 			Edge edge = null;
 			edge = edgeList.Find((Edge e) => (e.corner0 == corner0 || e.corner0 == corner1) && (e.corner1 == corner0 || e.corner1 == corner1));
-			if (edge == null)
+			if (edge != null)
 			{
-				if (createOK)
-				{
-					Satsuma.Arc arc = base.baseGraph.AddArc(corner0.node, corner1.node, Directedness.Undirected);
-					edge = new Edge(arc, corner0, corner1);
-					arcList.Add(edge);
-					edgeList.Add(edge);
-					return edge;
-				}
+				return edge;
+			}
+			if (!createOK)
+			{
 				Debug.LogWarning("Cant create Edge but no edge found", null);
 				return null;
 			}
+			Satsuma.Arc arc = base.baseGraph.AddArc(corner0.node, corner1.node, Directedness.Undirected);
+			edge = new Edge(arc, corner0, corner1);
+			arcList.Add(edge);
+			edgeList.Add(edge);
 			return edge;
 		}
 
@@ -57,19 +57,19 @@ namespace ProcGen.Map
 		{
 			Edge edge = null;
 			edge = edgeList.Find((Edge e) => (e.corner0 == corner0 || e.corner0 == corner1) && (e.corner1 == corner0 || e.corner1 == corner1));
-			if (edge == null)
+			if (edge != null)
 			{
-				if (createOK)
-				{
-					Satsuma.Arc arc = base.baseGraph.AddArc(corner0.node, corner1.node, Directedness.Undirected);
-					edge = new Edge(arc, corner0, corner1, site0, site1);
-					arcList.Add(edge);
-					edgeList.Add(edge);
-					return edge;
-				}
+				return edge;
+			}
+			if (!createOK)
+			{
 				Debug.LogWarning("Cant create Edge but no edge found", null);
 				return null;
 			}
+			Satsuma.Arc arc = base.baseGraph.AddArc(corner0.node, corner1.node, Directedness.Undirected);
+			edge = new Edge(arc, corner0, corner1, site0, site1);
+			arcList.Add(edge);
+			edgeList.Add(edge);
 			return edge;
 		}
 

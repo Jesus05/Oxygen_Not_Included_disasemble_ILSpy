@@ -104,7 +104,7 @@ public class InitializeCheck : MonoBehaviour
 		catch
 		{
 			savePathState = SavePathIssue.WriteTestFail;
-			goto IL_010c;
+			goto IL_00fa;
 		}
 		using (FileStream fileStream2 = File.Open(savePrefix + testSave, FileMode.Create, FileAccess.Write))
 		{
@@ -118,7 +118,7 @@ public class InitializeCheck : MonoBehaviour
 			{
 				fileStream2.Close();
 				savePathState = SavePathIssue.SpaceTestFail;
-				goto IL_010c;
+				goto IL_00fa;
 			}
 		}
 		try
@@ -134,8 +134,8 @@ public class InitializeCheck : MonoBehaviour
 		{
 			savePathState = SavePathIssue.WorldGenFilesFail;
 		}
-		goto IL_010c;
-		IL_010c:
+		goto IL_00fa;
+		IL_00fa:
 		try
 		{
 			if (File.Exists(savePrefix + testFile))

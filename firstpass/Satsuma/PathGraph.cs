@@ -49,11 +49,11 @@ namespace Satsuma
 
 		public Arc PrevArc(Node node)
 		{
-			if (node.Id != 1)
+			if (node.Id == 1)
 			{
-				return new Arc(node.Id - 1);
+				return (!isCycle) ? Arc.Invalid : new Arc(nodeCount);
 			}
-			return (!isCycle) ? Arc.Invalid : new Arc(nodeCount);
+			return new Arc(node.Id - 1);
 		}
 
 		public Node U(Arc arc)

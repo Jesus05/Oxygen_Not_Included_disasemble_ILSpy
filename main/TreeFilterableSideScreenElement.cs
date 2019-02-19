@@ -18,7 +18,7 @@ public class TreeFilterableSideScreenElement : KMonoBehaviour
 
 	private TreeFilterableSideScreen parent;
 
-	private bool initialized = false;
+	private bool initialized;
 
 	public bool IsSelected => checkBox.isOn;
 

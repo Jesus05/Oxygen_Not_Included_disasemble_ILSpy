@@ -209,7 +209,7 @@ public class MinionConfig : IEntityConfig
 			{
 				pointName = "carry",
 				automatic = false,
-				context = (HashedString)"",
+				context = (HashedString)string.Empty,
 				buildFile = null,
 				overrideSymbol = (HashedString)"snapTo_chest"
 			},
@@ -217,7 +217,7 @@ public class MinionConfig : IEntityConfig
 			{
 				pointName = "build",
 				automatic = false,
-				context = (HashedString)"",
+				context = (HashedString)string.Empty,
 				buildFile = null,
 				overrideSymbol = (HashedString)"snapTo_rgtHand"
 			},
@@ -225,7 +225,7 @@ public class MinionConfig : IEntityConfig
 			{
 				pointName = "remote",
 				automatic = false,
-				context = (HashedString)"",
+				context = (HashedString)string.Empty,
 				buildFile = null,
 				overrideSymbol = (HashedString)"snapTo_rgtHand"
 			},
@@ -233,7 +233,7 @@ public class MinionConfig : IEntityConfig
 			{
 				pointName = "snapTo_neck",
 				automatic = false,
-				context = (HashedString)"",
+				context = (HashedString)string.Empty,
 				buildFile = Assets.GetAnim("helm_oxygen_kanim"),
 				overrideSymbol = (HashedString)"snapTo_neck"
 			},

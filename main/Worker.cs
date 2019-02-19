@@ -79,11 +79,11 @@ public class Worker : KMonoBehaviour
 	{
 		get
 		{
-			if (startWorkInfo == null)
+			if (startWorkInfo != null)
 			{
-				return null;
+				return startWorkInfo.workable;
 			}
-			return startWorkInfo.workable;
+			return null;
 		}
 	}
 
@@ -96,11 +96,11 @@ public class Worker : KMonoBehaviour
 
 	private string GetWorkableDebugString()
 	{
-		if (!((UnityEngine.Object)workable == (UnityEngine.Object)null))
+		if ((UnityEngine.Object)workable == (UnityEngine.Object)null)
 		{
-			return workable.name;
+			return "Null";
 		}
-		return "Null";
+		return workable.name;
 	}
 
 	public void CompleteWork()
@@ -125,74 +125,74 @@ public class Worker : KMonoBehaviour
 
 	public WorkResult Work(float dt)
 	{
-		if (state != State.PendingCompletion)
+		if (state == State.PendingCompletion)
 		{
-			if ((UnityEngine.Object)workable != (UnityEngine.Object)null)
+			if (GetComponent<KAnimControllerBase>().IsStopped() || Time.time - workPendingCompletionTime > 4f / Mathf.Max(Time.timeScale, 1f))
 			{
-				if ((bool)facing)
+				Navigator component = GetComponent<Navigator>();
+				if ((UnityEngine.Object)component != (UnityEngine.Object)null)
 				{
-					if (workable.ShouldFaceTargetWhenWorking())
+					NavGrid.NavTypeData navTypeData = component.NavGrid.GetNavTypeData(component.CurrentNavType);
+					if (navTypeData.idleAnim.IsValid)
 					{
-						facing.Face(workable.GetFacingTarget());
-					}
-					else
-					{
-						Rotatable component = workable.GetComponent<Rotatable>();
-						bool flag = (UnityEngine.Object)component != (UnityEngine.Object)null && component.GetOrientation() == Orientation.FlipH;
-						Vector3 position = facing.transform.GetPosition();
-						position += ((!flag) ? Vector3.right : Vector3.left);
-						facing.Face(position);
+						GetComponent<KAnimControllerBase>().Play(navTypeData.idleAnim, KAnim.PlayMode.Once, 1f, 0f);
 					}
 				}
-				Klei.AI.Attribute workAttribute = workable.GetWorkAttribute();
-				if (workAttribute != null && workAttribute.IsTrainable)
+				if (successFullyCompleted)
 				{
-					float attributeExperienceMultiplier = workable.GetAttributeExperienceMultiplier();
-					GetComponent<AttributeLevels>().AddExperience(workAttribute.Id, dt, attributeExperienceMultiplier);
+					CompleteWork();
+					return WorkResult.Success;
 				}
-				float efficiencyMultiplier = workable.GetEfficiencyMultiplier(this);
-				float num = dt * efficiencyMultiplier * 1f;
-				float value = dt * 1f;
-				if ((UnityEngine.Object)resume != (UnityEngine.Object)null)
-				{
-					workable.AwardExperience(num, resume);
-				}
-				Chore currentChore = GetComponent<ChoreConsumer>().choreDriver.GetCurrentChore();
-				ReportManager.ReportType reportType = currentChore.GetReportType();
-				ReportManager.ReportType reportType2 = workable.GetReportType();
-				if (reportType2 != reportType)
-				{
-					reportType = reportType2;
-				}
-				ReportManager.Instance.ReportValue(reportType, value, string.Format(UI.ENDOFDAYREPORT.NOTES.WORK_TIME, GameUtil.GetChoreName(currentChore, null)), this.GetProperName());
-				if (workable.WorkTick(this, num) && state == State.Working)
-				{
-					successFullyCompleted = true;
-					StartPlayingPostAnim();
-				}
+				StopWork();
+				return WorkResult.Failed;
 			}
 			return WorkResult.InProgress;
 		}
-		if (!GetComponent<KAnimControllerBase>().IsStopped() && !(Time.time - workPendingCompletionTime > 4f / Mathf.Max(Time.timeScale, 1f)))
+		if ((UnityEngine.Object)workable != (UnityEngine.Object)null)
 		{
-			return WorkResult.InProgress;
-		}
-		Navigator component2 = GetComponent<Navigator>();
-		if ((UnityEngine.Object)component2 != (UnityEngine.Object)null)
-		{
-			NavGrid.NavTypeData navTypeData = component2.NavGrid.GetNavTypeData(component2.CurrentNavType);
-			if (navTypeData.idleAnim.IsValid)
+			if ((bool)facing)
 			{
-				GetComponent<KAnimControllerBase>().Play(navTypeData.idleAnim, KAnim.PlayMode.Once, 1f, 0f);
+				if (workable.ShouldFaceTargetWhenWorking())
+				{
+					facing.Face(workable.GetFacingTarget());
+				}
+				else
+				{
+					Rotatable component2 = workable.GetComponent<Rotatable>();
+					bool flag = (UnityEngine.Object)component2 != (UnityEngine.Object)null && component2.GetOrientation() == Orientation.FlipH;
+					Vector3 position = facing.transform.GetPosition();
+					position += ((!flag) ? Vector3.right : Vector3.left);
+					facing.Face(position);
+				}
+			}
+			Klei.AI.Attribute workAttribute = workable.GetWorkAttribute();
+			if (workAttribute != null && workAttribute.IsTrainable)
+			{
+				float attributeExperienceMultiplier = workable.GetAttributeExperienceMultiplier();
+				GetComponent<AttributeLevels>().AddExperience(workAttribute.Id, dt, attributeExperienceMultiplier);
+			}
+			float efficiencyMultiplier = workable.GetEfficiencyMultiplier(this);
+			float num = dt * efficiencyMultiplier * 1f;
+			float value = dt * 1f;
+			if ((UnityEngine.Object)resume != (UnityEngine.Object)null)
+			{
+				workable.AwardExperience(num, resume);
+			}
+			Chore currentChore = GetComponent<ChoreConsumer>().choreDriver.GetCurrentChore();
+			ReportManager.ReportType reportType = currentChore.GetReportType();
+			ReportManager.ReportType reportType2 = workable.GetReportType();
+			if (reportType2 != reportType)
+			{
+				reportType = reportType2;
+			}
+			ReportManager.Instance.ReportValue(reportType, value, string.Format(UI.ENDOFDAYREPORT.NOTES.WORK_TIME, GameUtil.GetChoreName(currentChore, null)), this.GetProperName());
+			if (workable.WorkTick(this, num) && state == State.Working)
+			{
+				successFullyCompleted = true;
+				StartPlayingPostAnim();
 			}
 		}
-		if (!successFullyCompleted)
-		{
-			StopWork();
-			return WorkResult.Failed;
-		}
-		CompleteWork();
-		return WorkResult.Success;
+		return WorkResult.InProgress;
 	}
 
 	private void StartPlayingPostAnim()
@@ -318,7 +318,7 @@ public class Worker : KMonoBehaviour
 		Game.Instance.StartedWork();
 		if (state != 0)
 		{
-			string text = "";
+			string text = string.Empty;
 			if ((UnityEngine.Object)workable != (UnityEngine.Object)null)
 			{
 				text = workable.name;
@@ -450,7 +450,7 @@ public class Worker : KMonoBehaviour
 			tuple = Def.GetUISprite(topic, "ui", true);
 			if (tuple != null)
 			{
-				Thought thought = new Thought("Completion_" + topic, null, tuple.first, "mode_satisfaction", "conversation_short", "bubble_conversation", SpeechMonitor.PREFIX_HAPPY, "", true, 4f);
+				Thought thought = new Thought("Completion_" + topic, null, tuple.first, "mode_satisfaction", "conversation_short", "bubble_conversation", SpeechMonitor.PREFIX_HAPPY, string.Empty, true, 4f);
 				emoteReactable.AddThought(thought);
 			}
 		}

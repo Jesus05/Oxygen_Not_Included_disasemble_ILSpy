@@ -24,7 +24,7 @@ public class NumericDropDownTableColumn : TableColumn
 	private List<TMP_Dropdown.OptionData> options;
 
 	public NumericDropDownTableColumn(object user_data, List<TMP_Dropdown.OptionData> options, Action<MinionIdentity, GameObject> on_load_action, Action<GameObject, int> set_value_action, Comparison<MinionIdentity> sort_comparer, ToolTipCallbacks callbacks, Func<bool> revealed = null)
-		: base(on_load_action, sort_comparer, callbacks.headerTooltip, callbacks.headerSortTooltip, revealed, false, "")
+		: base(on_load_action, sort_comparer, callbacks.headerTooltip, callbacks.headerSortTooltip, revealed, false, string.Empty)
 	{
 		userData = user_data;
 		this.set_value_action = set_value_action;
@@ -76,13 +76,13 @@ public class NumericDropDownTableColumn : TableColumn
 		tt.OnToolTip = delegate
 		{
 			callbacks.headerTooltip(null, widget_go, tt);
-			return "";
+			return string.Empty;
 		};
 		ToolTip tt2 = multiToggle.transform.GetComponent<ToolTip>();
 		tt2.OnToolTip = delegate
 		{
 			callbacks.headerSortTooltip(null, widget_go, tt2);
-			return "";
+			return string.Empty;
 		};
 		Component reference2 = component.GetReference("DropDown");
 		TMP_Dropdown componentInChildren = reference2.GetComponentInChildren<TMP_Dropdown>();
@@ -95,7 +95,7 @@ public class NumericDropDownTableColumn : TableColumn
 		tt3.OnToolTip = delegate
 		{
 			callbacks.headerDropdownTooltip(null, widget_go, tt3);
-			return "";
+			return string.Empty;
 		};
 		LayoutElement component2 = widget_go.GetComponentInChildren<LocText>().GetComponent<LayoutElement>();
 		float num3 = component2.preferredWidth = (component2.minWidth = 83f);

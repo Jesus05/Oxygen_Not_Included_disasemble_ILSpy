@@ -72,7 +72,7 @@ public class NotificationScreen : KScreen
 
 	private float initTime;
 
-	private int notificationIncrement = 0;
+	private int notificationIncrement;
 
 	[MyCmpAdd]
 	private Notifier notifier;
@@ -195,7 +195,7 @@ public class NotificationScreen : KScreen
 	private void OnNewMessage(object data)
 	{
 		Message m = (Message)data;
-		notifier.Add(new MessageNotification(m), "");
+		notifier.Add(new MessageNotification(m), string.Empty);
 	}
 
 	private void ShowMessage(MessageNotification mn)
@@ -257,7 +257,7 @@ public class NotificationScreen : KScreen
 		{
 			Notification notification = new MessageNotification(message);
 			notification.playSound = false;
-			notifier.Add(notification, "");
+			notifier.Add(notification, string.Empty);
 		}
 	}
 
@@ -327,7 +327,7 @@ public class NotificationScreen : KScreen
 					ToolTip componentInChildren2 = label.GetComponentInChildren<ToolTip>();
 					componentInChildren2.ClearMultiStringTooltip();
 					componentInChildren2.AddMultiStringTooltip(notification.ToolTip(entry.notifications, notification.tooltipData), TooltipTextStyle);
-					return "";
+					return string.Empty;
 				};
 			}
 			entry = new Entry(label);
@@ -361,7 +361,7 @@ public class NotificationScreen : KScreen
 					break;
 				}
 				componentInChildren.color = locText.color;
-				string str = "";
+				string str = string.Empty;
 				if (KTime.Instance.UnscaledGameTime - initTime > 5f && notification.playSound)
 				{
 					PlayDingSound(notification, 0);
@@ -386,11 +386,11 @@ public class NotificationScreen : KScreen
 	{
 		notifications.Sort(delegate(Notification n1, Notification n2)
 		{
-			if (n1.Type != n2.Type)
+			if (n1.Type == n2.Type)
 			{
-				return n1.Type - n2.Type;
+				return n1.Idx - n2.Idx;
 			}
-			return n1.Idx - n2.Idx;
+			return n1.Type - n2.Type;
 		});
 		foreach (Notification notification in notifications)
 		{

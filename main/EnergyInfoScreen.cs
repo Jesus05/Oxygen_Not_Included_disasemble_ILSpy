@@ -26,7 +26,7 @@ public class EnergyInfoScreen : TargetScreen
 
 	public override bool IsValidForTarget(GameObject target)
 	{
-		return (Object)target.GetComponent<Generator>() != (Object)null || (Object)target.GetComponent<Wire>() != (Object)null || (Object)target.GetComponent<EnergyConsumer>() != (Object)null;
+		return (Object)target.GetComponent<Generator>() != (Object)null || (Object)target.GetComponent<Wire>() != (Object)null || (Object)target.GetComponent<Battery>() != (Object)null || (Object)target.GetComponent<EnergyConsumer>() != (Object)null;
 	}
 
 	protected override void OnPrefabInit()

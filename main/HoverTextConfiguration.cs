@@ -25,15 +25,15 @@ public class HoverTextConfiguration : KMonoBehaviour
 
 	public TextStyleSetting[] HoverTextStyleSettings;
 
-	public string ToolNameStringKey = "";
+	public string ToolNameStringKey = string.Empty;
 
-	public string ActionStringKey = "";
-
-	[HideInInspector]
-	public string ActionName = "";
+	public string ActionStringKey = string.Empty;
 
 	[HideInInspector]
-	public string ToolName = null;
+	public string ActionName = string.Empty;
+
+	[HideInInspector]
+	public string ToolName;
 
 	protected string backStr;
 

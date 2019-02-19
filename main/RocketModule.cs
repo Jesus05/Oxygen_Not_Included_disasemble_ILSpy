@@ -23,7 +23,7 @@ public class RocketModule : KMonoBehaviour
 	private string rocket_gantry_bg_prefab = "RocketGantryBG";
 
 	[SerializeField]
-	private KAnimFile bgAnimFile = null;
+	private KAnimFile bgAnimFile;
 
 	protected string parentRocketName = UI.STARMAP.DEFAULT_NAME;
 

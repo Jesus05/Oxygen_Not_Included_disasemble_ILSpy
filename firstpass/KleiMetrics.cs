@@ -72,7 +72,7 @@ public class KleiMetrics : ThreadedHttps<KleiMetrics>
 
 	private static int gameID = -1;
 
-	private static string installTimeStamp = null;
+	private static string installTimeStamp;
 
 	private static System.Timers.Timer heartbeatTimer;
 
@@ -82,17 +82,17 @@ public class KleiMetrics : ThreadedHttps<KleiMetrics>
 
 	private long currentSessionTicks = DateTime.Now.Ticks;
 
-	private float timeSinceLastUserAction = 0f;
+	private float timeSinceLastUserAction;
 
 	private long lastHeartBeatTicks = DateTime.Now.Ticks;
 
 	private long startTimeTicks = DateTime.Now.Ticks;
 
-	private bool shouldEndSession = false;
+	private bool shouldEndSession;
 
-	private bool shouldStartSession = false;
+	private bool shouldStartSession;
 
-	private bool hasStarted = false;
+	private bool hasStarted;
 
 	private Dictionary<string, object> userSession = new Dictionary<string, object>();
 
@@ -100,7 +100,7 @@ public class KleiMetrics : ThreadedHttps<KleiMetrics>
 
 	private System.Action SetStaticSessionVariables;
 
-	private bool sessionStarted = false;
+	private bool sessionStarted;
 
 	private long sessionStartUtcTicks = DateTime.UtcNow.Ticks;
 
@@ -138,24 +138,24 @@ public class KleiMetrics : ThreadedHttps<KleiMetrics>
 		PostData postData = new PostData(CLIENT_KEY, data);
 		string s = JsonConvert.SerializeObject(postData);
 		byte[] bytes = Encoding.UTF8.GetBytes(s);
-		if (!isMultiThreaded)
+		if (isMultiThreaded)
 		{
-			return Send(bytes, false);
+			PutPacket(bytes, false);
+			return "OK";
 		}
-		PutPacket(bytes, false);
-		return "OK";
+		return Send(bytes, false);
 	}
 
 	public static string PlatformUserID()
 	{
 		DistributionPlatform.User localUser = DistributionPlatform.Inst.LocalUser;
-		return (localUser == null) ? "" : localUser.Id.ToString();
+		return (localUser == null) ? string.Empty : localUser.Id.ToString();
 	}
 
 	public static string UserID()
 	{
 		DistributionPlatform.User localUser = DistributionPlatform.Inst.LocalUser;
-		return (localUser == null) ? "" : localUser.Id.ToString();
+		return (localUser == null) ? string.Empty : localUser.Id.ToString();
 	}
 
 	private void IncrementSessionCount()
@@ -198,7 +198,7 @@ public class KleiMetrics : ThreadedHttps<KleiMetrics>
 		if (installTimeStamp == null)
 		{
 			installTimeStamp = KPlayerPrefs.GetString("INSTALL_TIMESTAMP", null);
-			if (installTimeStamp == null || installTimeStamp == "")
+			if (installTimeStamp == null || installTimeStamp == string.Empty)
 			{
 				installTimeStamp = DateTime.UtcNow.Ticks.ToString();
 				KPlayerPrefs.SetString("INSTALL_TIMESTAMP", installTimeStamp);
@@ -344,35 +344,37 @@ public class KleiMetrics : ThreadedHttps<KleiMetrics>
 	private Dictionary<string, object> GetUserSession()
 	{
 		Dictionary<string, object> dictionary = new Dictionary<string, object>();
-		if (sessionStarted)
+		if (!sessionStarted)
 		{
-			foreach (KeyValuePair<string, object> item in userSession)
-			{
-				dictionary.Add(item.Key, item.Value);
-			}
-			dictionary.Add("SessionTimeSeconds", GetSessionTime());
-			int num = GameID();
-			if (num != -1)
-			{
-				dictionary.Add("GameID", GameID());
-			}
-			string text = CurrentLevel();
-			if (text != null)
-			{
-				dictionary.Add("Level", text);
-			}
-			if (SetDynamicSessionVariables != null)
-			{
-				try
-				{
-					SetDynamicSessionVariables(dictionary);
-				}
-				catch (Exception ex)
-				{
-					Debug.LogError("Dynamic session variables may be set from a thread. " + ex.Message + "\n" + ex.StackTrace, null);
-				}
-			}
 			return dictionary;
+		}
+		foreach (KeyValuePair<string, object> item in userSession)
+		{
+			dictionary.Add(item.Key, item.Value);
+		}
+		dictionary.Add("SessionTimeSeconds", GetSessionTime());
+		int num = GameID();
+		if (num != -1)
+		{
+			dictionary.Add("GameID", GameID());
+		}
+		string text = CurrentLevel();
+		if (text != null)
+		{
+			dictionary.Add("Level", text);
+		}
+		if (SetDynamicSessionVariables != null)
+		{
+			try
+			{
+				SetDynamicSessionVariables(dictionary);
+				return dictionary;
+			}
+			catch (Exception ex)
+			{
+				Debug.LogError("Dynamic session variables may be set from a thread. " + ex.Message + "\n" + ex.StackTrace, null);
+				return dictionary;
+			}
 		}
 		return dictionary;
 	}
@@ -494,12 +496,12 @@ public class KleiMetrics : ThreadedHttps<KleiMetrics>
 
 	public bool SendProfileStats()
 	{
-		if (enabled)
+		if (!enabled)
 		{
-			Dictionary<string, object> data = GetUserSession();
-			return ThreadedHttps<KleiMetrics>.Instance.PostMetricData(data) == "OK";
+			return false;
 		}
-		return false;
+		Dictionary<string, object> data = GetUserSession();
+		return ThreadedHttps<KleiMetrics>.Instance.PostMetricData(data) == "OK";
 	}
 
 	public static Dictionary<string, object> GetHardwareStats()

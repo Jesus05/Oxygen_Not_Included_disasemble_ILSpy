@@ -23,10 +23,10 @@ public class ToggleSoundPlayer : WidgetSoundPlayer
 
 	public WidgetSoundEvent[] toggle_widget_sound_events = new WidgetSoundEvent[4]
 	{
-		new WidgetSoundEvent(0, "On Use On", "", true),
-		new WidgetSoundEvent(1, "On Use Off", "", true),
-		new WidgetSoundEvent(2, "On Pointer Enter", "", true),
-		new WidgetSoundEvent(3, "On Use Rejected", "", true)
+		new WidgetSoundEvent(0, "On Use On", string.Empty, true),
+		new WidgetSoundEvent(1, "On Use Off", string.Empty, true),
+		new WidgetSoundEvent(2, "On Pointer Enter", string.Empty, true),
+		new WidgetSoundEvent(3, "On Use Rejected", string.Empty, true)
 	};
 
 	public override string GetDefaultPath(int idx)

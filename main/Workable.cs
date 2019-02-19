@@ -75,7 +75,7 @@ public class Workable : KMonoBehaviour, ISaveLoadable, IApproachable
 
 	[SerializeField]
 	[Tooltip("Whether to display number of uses in the details panel")]
-	public bool trackUses = false;
+	public bool trackUses;
 
 	[Serialize]
 	protected int numberOfUses;
@@ -101,11 +101,11 @@ public class Workable : KMonoBehaviour, ISaveLoadable, IApproachable
 
 	public HashedString workingPstFailed = "working_pst";
 
-	public KAnim.PlayMode workAnimPlayMode = KAnim.PlayMode.Loop;
+	public KAnim.PlayMode workAnimPlayMode;
 
-	public bool faceTargetWhenWorking = false;
+	public bool faceTargetWhenWorking;
 
-	protected ProgressBar progressBar = null;
+	protected ProgressBar progressBar;
 
 	public Worker worker
 	{
@@ -172,11 +172,11 @@ public class Workable : KMonoBehaviour, ISaveLoadable, IApproachable
 
 	public virtual HashedString GetWorkPstAnim(Worker worker, bool successfully_completed)
 	{
-		if (!successfully_completed)
+		if (successfully_completed)
 		{
-			return workingPstFailed;
+			return workingPstComplete;
 		}
-		return workingPstComplete;
+		return workingPstFailed;
 	}
 
 	public virtual Vector3 GetWorkOffset()
@@ -285,21 +285,21 @@ public class Workable : KMonoBehaviour, ISaveLoadable, IApproachable
 
 	public virtual float GetEfficiencyMultiplier(Worker worker)
 	{
-		if (attributeConverter == null)
+		if (attributeConverter != null)
 		{
-			return 1f;
+			AttributeConverterInstance converter = worker.GetComponent<AttributeConverters>().GetConverter(attributeConverter.Id);
+			return Mathf.Max(1f + converter.Evaluate(), minimumAttributeMultiplier);
 		}
-		AttributeConverterInstance converter = worker.GetComponent<AttributeConverters>().GetConverter(attributeConverter.Id);
-		return Mathf.Max(1f + converter.Evaluate(), minimumAttributeMultiplier);
+		return 1f;
 	}
 
 	public virtual Klei.AI.Attribute GetWorkAttribute()
 	{
-		if (attributeConverter == null)
+		if (attributeConverter != null)
 		{
-			return null;
+			return attributeConverter.attribute;
 		}
-		return attributeConverter.attribute;
+		return null;
 	}
 
 	public virtual string GetConversationTopic()

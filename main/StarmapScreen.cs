@@ -165,7 +165,7 @@ public class StarmapScreen : KModalScreen
 
 	private int selectionUpdateHandle = -1;
 
-	private SpaceDestination selectedDestination = null;
+	private SpaceDestination selectedDestination;
 
 	private KSelectable currentSelectable;
 
@@ -173,13 +173,13 @@ public class StarmapScreen : KModalScreen
 
 	private LaunchConditionManager currentLaunchConditionManager;
 
-	private bool currentRocketHasGasContainer = false;
+	private bool currentRocketHasGasContainer;
 
-	private bool currentRocketHasLiquidContainer = false;
+	private bool currentRocketHasLiquidContainer;
 
-	private bool currentRocketHasSolidContainer = false;
+	private bool currentRocketHasSolidContainer;
 
-	private bool currentRocketHasEntitiesContainer = false;
+	private bool currentRocketHasEntitiesContainer;
 
 	private bool forceScrollDown = true;
 
@@ -737,7 +737,7 @@ public class StarmapScreen : KModalScreen
 			}
 			if (item.state == Spacecraft.MissionState.Grounded)
 			{
-				string text = "";
+				string text = string.Empty;
 				List<GameObject> attachedNetwork = AttachableBuilding.GetAttachedNetwork(launchConditionManager.GetComponent<AttachableBuilding>());
 				foreach (GameObject item2 in attachedNetwork)
 				{
@@ -789,7 +789,7 @@ public class StarmapScreen : KModalScreen
 			BreakdownListRow breakdownListRow = rocketDetailsChecklist.AddRow();
 			string launchStatusMessage = launchCondition.GetLaunchStatusMessage(true);
 			bool flag = launchCondition.EvaluateLaunchCondition();
-			breakdownListRow.ShowCheckmarkData(launchStatusMessage, "", flag);
+			breakdownListRow.ShowCheckmarkData(launchStatusMessage, string.Empty, flag);
 			if (!flag)
 			{
 				breakdownListRow.SetHighlighted(true);
@@ -1176,7 +1176,7 @@ public class StarmapScreen : KModalScreen
 				BreakdownListRow breakdownListRow4 = destinationDetailsResources.AddRow();
 				GameObject prefab = Assets.GetPrefab(recoverableEntity.Key);
 				Tuple<Sprite, Color> uISprite2 = Def.GetUISprite(prefab, "ui", false);
-				breakdownListRow4.ShowIconData(prefab.GetProperName(), "", uISprite2.first, uISprite2.second);
+				breakdownListRow4.ShowIconData(prefab.GetProperName(), string.Empty, uISprite2.first, uISprite2.second);
 				string properName4 = Assets.GetPrefab("SpecialCargoBay".ToTag()).GetProperName();
 				if (currentRocketHasEntitiesContainer)
 				{

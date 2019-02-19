@@ -9,9 +9,9 @@ public class RedAlertManager : GameStateMachine<RedAlertManager, RedAlertManager
 	{
 		private static Instance instance;
 
-		private bool isToggled = false;
+		private bool isToggled;
 
-		private bool hasEmergencyChore = false;
+		private bool hasEmergencyChore;
 
 		public Notification notification = new Notification(MISC.NOTIFICATIONS.REDALERT.NAME, NotificationType.Bad, HashedString.Invalid, (List<Notification> notificationList, object data) => MISC.NOTIFICATIONS.REDALERT.TOOLTIP, null, false, 0f, null, null, null);
 

@@ -62,8 +62,7 @@ namespace Klei.AI
 			{
 				if (trait.Id == trait_id)
 				{
-					result = true;
-					break;
+					return true;
 				}
 			}
 			return result;

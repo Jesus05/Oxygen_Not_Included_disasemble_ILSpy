@@ -10,11 +10,11 @@ public class ContainerPool<ContainerType, PoolIdentifier> : ContainerPool where 
 
 	public ContainerType Allocate()
 	{
-		if (freeContainers.Count != 0)
+		if (freeContainers.Count == 0)
 		{
-			return freeContainers.Pop();
+			return new ContainerType();
 		}
-		return new ContainerType();
+		return freeContainers.Pop();
 	}
 
 	public void Free(ContainerType container)

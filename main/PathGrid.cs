@@ -123,12 +123,12 @@ public class PathGrid
 	{
 		int num = OffsetCell(cell);
 		is_cell_in_range = (-1 != num);
-		if (is_cell_in_range)
+		if (!is_cell_in_range)
 		{
-			PathFinder.Cell cell2 = Cells[num * ValidNavTypes.Length + NavTypeTable[(uint)nav_type]];
-			return (!IsValidSerialNo(cell2.queryId)) ? InvalidCell : cell2;
+			return InvalidCell;
 		}
-		return InvalidCell;
+		PathFinder.Cell cell2 = Cells[num * ValidNavTypes.Length + NavTypeTable[(uint)nav_type]];
+		return (!IsValidSerialNo(cell2.queryId)) ? InvalidCell : cell2;
 	}
 
 	public void SetCell(PathFinder.PotentialPath potential_path, ref PathFinder.Cell cell_data)
@@ -178,27 +178,27 @@ public class PathGrid
 	public int GetCost(int cell)
 	{
 		int num = OffsetCell(cell);
-		if (num != -1)
+		if (num == -1)
 		{
-			ProberCell proberCell = ProberCells[num];
-			return (!IsValidSerialNo(proberCell.queryId)) ? (-1) : proberCell.cost;
+			return -1;
 		}
-		return -1;
+		ProberCell proberCell = ProberCells[num];
+		return (!IsValidSerialNo(proberCell.queryId)) ? (-1) : proberCell.cost;
 	}
 
 	private int OffsetCell(int cell)
 	{
-		if (!applyOffset)
+		if (applyOffset)
 		{
-			return cell;
-		}
-		Grid.CellToXY(cell, out int x, out int y);
-		if (x >= rootX && x < rootX + widthInCells && y >= rootY && y < rootY + heightInCells)
-		{
+			Grid.CellToXY(cell, out int x, out int y);
+			if (x < rootX || x >= rootX + widthInCells || y < rootY || y >= rootY + heightInCells)
+			{
+				return -1;
+			}
 			int num = x - rootX;
 			int num2 = y - rootY;
 			return num2 * widthInCells + num;
 		}
-		return -1;
+		return cell;
 	}
 }

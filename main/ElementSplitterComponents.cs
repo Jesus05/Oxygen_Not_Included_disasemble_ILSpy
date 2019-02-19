@@ -52,13 +52,13 @@ public class ElementSplitterComponents : KGameObjectComponentManager<ElementSpli
 
 	private static bool CanFirstAbsorbSecond(HandleVector<int>.Handle first, HandleVector<int>.Handle second)
 	{
-		if (!(first == HandleVector<int>.InvalidHandle) && !(second == HandleVector<int>.InvalidHandle))
+		if (first == HandleVector<int>.InvalidHandle || second == HandleVector<int>.InvalidHandle)
 		{
-			ElementSplitter data = GameComps.ElementSplitters.GetData(first);
-			ElementSplitter data2 = GameComps.ElementSplitters.GetData(second);
-			return data.primaryElement.ElementID == data2.primaryElement.ElementID && data.primaryElement.Units + data2.primaryElement.Units < 25000f;
+			return false;
 		}
-		return false;
+		ElementSplitter data = GameComps.ElementSplitters.GetData(first);
+		ElementSplitter data2 = GameComps.ElementSplitters.GetData(second);
+		return data.primaryElement.ElementID == data2.primaryElement.ElementID && data.primaryElement.Units + data2.primaryElement.Units < 25000f;
 	}
 
 	private static Pickupable OnTake(HandleVector<int>.Handle handle, float amount)

@@ -83,35 +83,35 @@ public abstract class Reactable
 
 	public bool CanBegin(GameObject reactor, Navigator.ActiveTransition transition)
 	{
-		if (!(GameClock.Instance.GetTime() - lastTriggerTime < minReactableTime))
+		if (GameClock.Instance.GetTime() - lastTriggerTime < minReactableTime)
 		{
-			ChoreConsumer component = reactor.GetComponent<ChoreConsumer>();
-			if (!((Object)component == (Object)null))
-			{
-				Chore currentChore = component.choreDriver.GetCurrentChore();
-				if (currentChore != null)
-				{
-					if (choreType.priority > currentChore.choreType.priority)
-					{
-						if (additionalPreconditions != null)
-						{
-							foreach (ReactablePrecondition additionalPrecondition in additionalPreconditions)
-							{
-								if (!additionalPrecondition(reactor, transition))
-								{
-									return false;
-								}
-							}
-						}
-						return InternalCanBegin(reactor, transition);
-					}
-					return false;
-				}
-				return false;
-			}
 			return false;
 		}
-		return false;
+		ChoreConsumer component = reactor.GetComponent<ChoreConsumer>();
+		if ((Object)component == (Object)null)
+		{
+			return false;
+		}
+		Chore currentChore = component.choreDriver.GetCurrentChore();
+		if (currentChore == null)
+		{
+			return false;
+		}
+		if (choreType.priority <= currentChore.choreType.priority)
+		{
+			return false;
+		}
+		if (additionalPreconditions != null)
+		{
+			foreach (ReactablePrecondition additionalPrecondition in additionalPreconditions)
+			{
+				if (!additionalPrecondition(reactor, transition))
+				{
+					return false;
+				}
+			}
+		}
+		return InternalCanBegin(reactor, transition);
 	}
 
 	public bool IsExpired()

@@ -6,7 +6,7 @@ namespace Database
 	{
 		public List<Tuple<ArtifactTier, float>> rates = new List<Tuple<ArtifactTier, float>>();
 
-		public float totalWeight = 0f;
+		public float totalWeight;
 
 		public void AddItem(ArtifactTier tier, float weight)
 		{

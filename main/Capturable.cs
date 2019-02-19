@@ -100,23 +100,23 @@ public class Capturable : Workable, IGameObjectEffectDescriptor
 
 	public bool IsCapturable()
 	{
-		if (allowCapture)
+		if (!allowCapture)
 		{
-			if (!base.gameObject.HasTag(GameTags.Trapped))
-			{
-				if (!base.gameObject.HasTag(GameTags.Stored))
-				{
-					if (!base.gameObject.HasTag(GameTags.Creatures.Bagged))
-					{
-						return true;
-					}
-					return false;
-				}
-				return false;
-			}
 			return false;
 		}
-		return false;
+		if (base.gameObject.HasTag(GameTags.Trapped))
+		{
+			return false;
+		}
+		if (base.gameObject.HasTag(GameTags.Stored))
+		{
+			return false;
+		}
+		if (base.gameObject.HasTag(GameTags.Creatures.Bagged))
+		{
+			return false;
+		}
+		return true;
 	}
 
 	private void OnRefreshUserMenu(object data)

@@ -103,12 +103,12 @@ public class MinionGroupProber : KMonoBehaviour, IGroupProber
 	public bool ReleasePathGrid(PathGrid pathGrid)
 	{
 		int num = pathGrids.IndexOf(pathGrid);
-		if (num == -1)
+		if (num != -1)
 		{
-			return false;
+			pendingPathGridRemovals.Add(num);
+			return true;
 		}
-		pendingPathGridRemovals.Add(num);
-		return true;
+		return false;
 	}
 
 	private void LaunderCells()

@@ -30,62 +30,62 @@ public class BurrowMonitor : GameStateMachine<BurrowMonitor, BurrowMonitor.Insta
 		public bool EmergeIsClear()
 		{
 			int cell = Grid.PosToCell(base.gameObject);
-			if (Grid.IsValidCell(cell) && Grid.IsValidCell(Grid.CellAbove(cell)))
+			if (!Grid.IsValidCell(cell) || !Grid.IsValidCell(Grid.CellAbove(cell)))
 			{
-				int i = Grid.CellAbove(cell);
-				if (!Grid.Solid[i])
-				{
-					if (!Grid.IsSubstantialLiquid(Grid.CellAbove(cell), 0.9f))
-					{
-						return true;
-					}
-					return false;
-				}
 				return false;
 			}
-			return false;
+			int i = Grid.CellAbove(cell);
+			if (Grid.Solid[i])
+			{
+				return false;
+			}
+			if (Grid.IsSubstantialLiquid(Grid.CellAbove(cell), 0.9f))
+			{
+				return false;
+			}
+			return true;
 		}
 
 		public bool ShouldBurrow()
 		{
-			if (!GameClock.Instance.IsNighttime())
+			if (GameClock.Instance.IsNighttime())
 			{
-				if (CanBurrowInto(Grid.CellBelow(Grid.PosToCell(base.gameObject))))
-				{
-					return true;
-				}
 				return false;
 			}
-			return false;
+			if (!CanBurrowInto(Grid.CellBelow(Grid.PosToCell(base.gameObject))))
+			{
+				return false;
+			}
+			return true;
 		}
 
 		public bool CanBurrowInto(int cell)
 		{
-			if (Grid.IsValidCell(cell))
+			if (!Grid.IsValidCell(cell))
 			{
-				if (Grid.Solid[cell])
-				{
-					if (!Grid.IsSubstantialLiquid(Grid.CellAbove(cell), 0.35f))
-					{
-						if (!((Object)Grid.Objects[cell, 1] != (Object)null))
-						{
-							if (!((float)(int)Grid.Element[cell].hardness > base.def.burrowHardnessLimit))
-							{
-								if (!Grid.Foundation[cell])
-								{
-									return true;
-								}
-								return false;
-							}
-							return false;
-						}
-						return false;
-					}
-					return false;
-				}
 				return false;
 			}
-			return false;
+			if (!Grid.Solid[cell])
+			{
+				return false;
+			}
+			if (Grid.IsSubstantialLiquid(Grid.CellAbove(cell), 0.35f))
+			{
+				return false;
+			}
+			if ((Object)Grid.Objects[cell, 1] != (Object)null)
+			{
+				return false;
+			}
+			if ((float)(int)Grid.Element[cell].hardness > base.def.burrowHardnessLimit)
+			{
+				return false;
+			}
+			if (Grid.Foundation[cell])
+			{
+				return false;
+			}
+			return true;
 		}
 
 		public bool IsEntombed()

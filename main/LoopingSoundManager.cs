@@ -324,12 +324,12 @@ public class LoopingSoundManager : KMonoBehaviour, IRenderEveryTick
 
 	public static HandleVector<int>.Handle StartSound(string path, Vector3 pos, bool pause_on_game_pause = true, bool enable_culling = true)
 	{
-		if (!string.IsNullOrEmpty(path))
+		if (string.IsNullOrEmpty(path))
 		{
-			return Get().Add(path, pos, null, pause_on_game_pause, enable_culling, true);
+			Debug.LogWarning("Missing sound", null);
+			return HandleVector<int>.InvalidHandle;
 		}
-		Debug.LogWarning("Missing sound", null);
-		return HandleVector<int>.InvalidHandle;
+		return Get().Add(path, pos, null, pause_on_game_pause, enable_culling, true);
 	}
 
 	public static void StopSound(HandleVector<int>.Handle handle)

@@ -1,7 +1,7 @@
 [SkipSaveFileSerialization]
 public class CharacterOverlay : KMonoBehaviour
 {
-	private bool registered = false;
+	private bool registered;
 
 	protected override void OnSpawn()
 	{

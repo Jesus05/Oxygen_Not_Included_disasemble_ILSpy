@@ -1,4 +1,3 @@
-#define UNITY_ASSERTIONS
 using System;
 using System.Diagnostics;
 using System.Threading;
@@ -76,19 +75,16 @@ public static class Debug
 	[Conditional("UNITY_EDITOR")]
 	public static void Assert(bool condition)
 	{
-		UnityEngine.Debug.Assert(condition);
 	}
 
 	[Conditional("UNITY_EDITOR")]
 	public static void Assert(bool condition, object message)
 	{
-		UnityEngine.Debug.Assert(condition, message);
 	}
 
 	[Conditional("UNITY_EDITOR")]
 	public static void Assert(bool condition, object message, UnityEngine.Object context)
 	{
-		UnityEngine.Debug.Assert(condition, message, context);
 	}
 
 	[Conditional("UNITY_EDITOR")]

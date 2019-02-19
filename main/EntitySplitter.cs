@@ -1,4 +1,3 @@
-#define UNITY_ASSERTIONS
 using Klei;
 using System;
 using UnityEngine;
@@ -31,41 +30,41 @@ public class EntitySplitter : KMonoBehaviour
 
 	private static bool CanFirstAbsorbSecond(Pickupable pickupable, Rottable.Instance rottable, Pickupable other, float maxStackSize)
 	{
-		if (!((UnityEngine.Object)other == (UnityEngine.Object)null))
+		if ((UnityEngine.Object)other == (UnityEngine.Object)null)
 		{
-			KPrefabID component = pickupable.GetComponent<KPrefabID>();
-			KPrefabID component2 = other.GetComponent<KPrefabID>();
-			if (!((UnityEngine.Object)component == (UnityEngine.Object)null))
-			{
-				if (!((UnityEngine.Object)component2 == (UnityEngine.Object)null))
-				{
-					if (!(component.PrefabTag != component2.PrefabTag))
-					{
-						if (!(pickupable.TotalAmount + other.TotalAmount > maxStackSize))
-						{
-							if (rottable != null)
-							{
-								Rottable.Instance sMI = other.GetSMI<Rottable.Instance>();
-								if (sMI == null)
-								{
-									return false;
-								}
-								if (!rottable.IsRotLevelStackable(sMI))
-								{
-									return false;
-								}
-							}
-							return true;
-						}
-						return false;
-					}
-					return false;
-				}
-				return false;
-			}
 			return false;
 		}
-		return false;
+		KPrefabID component = pickupable.GetComponent<KPrefabID>();
+		KPrefabID component2 = other.GetComponent<KPrefabID>();
+		if ((UnityEngine.Object)component == (UnityEngine.Object)null)
+		{
+			return false;
+		}
+		if ((UnityEngine.Object)component2 == (UnityEngine.Object)null)
+		{
+			return false;
+		}
+		if (component.PrefabTag != component2.PrefabTag)
+		{
+			return false;
+		}
+		if (pickupable.TotalAmount + other.TotalAmount > maxStackSize)
+		{
+			return false;
+		}
+		if (rottable != null)
+		{
+			Rottable.Instance sMI = other.GetSMI<Rottable.Instance>();
+			if (sMI == null)
+			{
+				return false;
+			}
+			if (!rottable.IsRotLevelStackable(sMI))
+			{
+				return false;
+			}
+		}
+		return true;
 	}
 
 	public static Pickupable Split(Pickupable pickupable, float amount, GameObject prefab = null)
@@ -127,7 +126,6 @@ public class EntitySplitter : KMonoBehaviour
 					temperature = primaryElement.Temperature;
 				}
 				component.SetMassTemperature(mass + mass2, temperature);
-				UnityEngine.Debug.Assert(component.Temperature > 0f || component.Mass == 0f, "OnAbsorb resulted in a temperature of 0", base.gameObject);
 				if ((UnityEngine.Object)CameraController.Instance != (UnityEngine.Object)null)
 				{
 					string sound = GlobalAssets.GetSound("Ore_absorb", false);

@@ -29,7 +29,7 @@ public class LineLayer : GraphLayer
 	public void NewLine(Vector2[] points, string ID = "")
 	{
 		GameObject gameObject = Util.KInstantiateUI(prefab_line, line_container, true);
-		if (ID == "")
+		if (ID == string.Empty)
 		{
 			ID = lines.Count.ToString();
 		}

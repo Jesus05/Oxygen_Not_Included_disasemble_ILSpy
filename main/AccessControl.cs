@@ -27,12 +27,12 @@ public class AccessControl : KMonoBehaviour, ISaveLoadable
 	private List<KeyValuePair<Ref<KPrefabID>, Permission>> savedPermissions = new List<KeyValuePair<Ref<KPrefabID>, Permission>>();
 
 	[Serialize]
-	private Permission _defaultPermission = Permission.Both;
+	private Permission _defaultPermission;
 
 	[Serialize]
 	public bool controlEnabled;
 
-	public Door.ControlState overrideAccess = Door.ControlState.Auto;
+	public Door.ControlState overrideAccess;
 
 	private static StatusItem accessControlActive;
 
@@ -67,7 +67,7 @@ public class AccessControl : KMonoBehaviour, ISaveLoadable
 		base.OnPrefabInit();
 		if (accessControlActive == null)
 		{
-			accessControlActive = new StatusItem("accessControlActive", BUILDING.STATUSITEMS.ACCESS_CONTROL.ACTIVE.NAME, BUILDING.STATUSITEMS.ACCESS_CONTROL.ACTIVE.TOOLTIP, "", StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, 63486);
+			accessControlActive = new StatusItem("accessControlActive", BUILDING.STATUSITEMS.ACCESS_CONTROL.ACTIVE.NAME, BUILDING.STATUSITEMS.ACCESS_CONTROL.ACTIVE.TOOLTIP, string.Empty, StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, 63486);
 		}
 		Subscribe(279163026, OnControlStateChangedDelegate);
 		Subscribe(-905833192, OnCopySettingsDelegate);

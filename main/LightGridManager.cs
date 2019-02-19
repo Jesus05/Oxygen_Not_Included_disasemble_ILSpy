@@ -7,7 +7,7 @@ public static class LightGridManager
 	{
 		public int cell = -1;
 
-		public LightShape shape = LightShape.Circle;
+		public LightShape shape;
 
 		public float radius = 4f;
 

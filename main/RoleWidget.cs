@@ -138,7 +138,7 @@ public class RoleWidget : KMonoBehaviour, IPointerEnterHandler, IPointerExitHand
 		{
 			TitleBarBG.color = header_color_disabled;
 		}
-		string text = "";
+		string text = string.Empty;
 		List<MinionResume> list = new List<MinionResume>();
 		foreach (MinionIdentity item2 in Components.LiveMinionIdentities.Items)
 		{
@@ -474,29 +474,29 @@ public class RoleWidget : KMonoBehaviour, IPointerEnterHandler, IPointerExitHand
 		}
 		float num = minionResume.AptitudeByRoleGroup[roleConfig.roleGroup];
 		float num2 = minionResume.AptitudeByRoleGroup[roleConfig2.roleGroup];
-		if (num == num2)
+		if (num != num2)
 		{
-			float num3 = 0f;
-			float num4 = 0f;
-			for (int i = 0; i < roleConfig.relevantAttributes.Length; i++)
-			{
-				num3 += minionResume.GetAttributes().Get(roleConfig.relevantAttributes[i]).GetTotalDisplayValue();
-			}
-			for (int j = 0; j < roleConfig2.relevantAttributes.Length; j++)
-			{
-				num4 += minionResume.GetAttributes().Get(roleConfig2.relevantAttributes[j]).GetTotalDisplayValue();
-			}
-			if (!(num3 > num4))
-			{
-				if (!(num4 > num3))
-				{
-					return 0;
-				}
-				return -1;
-			}
+			return (num > num2) ? 1 : (-1);
+		}
+		float num3 = 0f;
+		float num4 = 0f;
+		for (int i = 0; i < roleConfig.relevantAttributes.Length; i++)
+		{
+			num3 += minionResume.GetAttributes().Get(roleConfig.relevantAttributes[i]).GetTotalDisplayValue();
+		}
+		for (int j = 0; j < roleConfig2.relevantAttributes.Length; j++)
+		{
+			num4 += minionResume.GetAttributes().Get(roleConfig2.relevantAttributes[j]).GetTotalDisplayValue();
+		}
+		if (num3 > num4)
+		{
 			return 1;
 		}
-		return (num > num2) ? 1 : (-1);
+		if (num4 > num3)
+		{
+			return -1;
+		}
+		return 0;
 	}
 
 	private int roleSlotDropDownSort(IListableOption a, IListableOption b, object targetData)
@@ -527,34 +527,34 @@ public class RoleWidget : KMonoBehaviour, IPointerEnterHandler, IPointerExitHand
 		}
 		float num = component.AptitudeByRoleGroup[roleConfig.roleGroup];
 		float num2 = component2.AptitudeByRoleGroup[roleConfig.roleGroup];
-		if (num == num2)
+		if (num != num2)
 		{
-			float num3 = 0f;
-			float num4 = 0f;
-			for (int i = 0; i < roleConfig.relevantAttributes.Length; i++)
-			{
-				num3 += component.GetAttributes().Get(roleConfig.relevantAttributes[i]).GetTotalDisplayValue();
-				num4 += component2.GetAttributes().Get(roleConfig.relevantAttributes[i]).GetTotalDisplayValue();
-			}
-			if (!(num3 > num4))
-			{
-				if (!(num4 > num3))
-				{
-					if (component.CurrentRole == "NoRole" == (component2.CurrentRole == "NoRole"))
-					{
-						return 0;
-					}
-					if (!(component.CurrentRole == "NoRole"))
-					{
-						return -1;
-					}
-					return 1;
-				}
-				return -1;
-			}
+			return (num > num2) ? 1 : (-1);
+		}
+		float num3 = 0f;
+		float num4 = 0f;
+		for (int i = 0; i < roleConfig.relevantAttributes.Length; i++)
+		{
+			num3 += component.GetAttributes().Get(roleConfig.relevantAttributes[i]).GetTotalDisplayValue();
+			num4 += component2.GetAttributes().Get(roleConfig.relevantAttributes[i]).GetTotalDisplayValue();
+		}
+		if (num3 > num4)
+		{
 			return 1;
 		}
-		return (num > num2) ? 1 : (-1);
+		if (num4 > num3)
+		{
+			return -1;
+		}
+		if (component.CurrentRole == "NoRole" != (component2.CurrentRole == "NoRole"))
+		{
+			if (component.CurrentRole == "NoRole")
+			{
+				return 1;
+			}
+			return -1;
+		}
+		return 0;
 	}
 
 	private void roleRefreshAction(DropDownEntry entry, object targetData)

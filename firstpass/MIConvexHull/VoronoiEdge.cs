@@ -27,15 +27,15 @@ namespace MIConvexHull
 		public override bool Equals(object obj)
 		{
 			VoronoiEdge<TVertex, TCell> voronoiEdge = obj as VoronoiEdge<TVertex, TCell>;
-			if (voronoiEdge != null)
+			if (voronoiEdge == null)
 			{
-				if (!object.ReferenceEquals(this, voronoiEdge))
-				{
-					return (Source == voronoiEdge.Source && Target == voronoiEdge.Target) || (Source == voronoiEdge.Target && Target == voronoiEdge.Source);
-				}
+				return false;
+			}
+			if (object.ReferenceEquals(this, voronoiEdge))
+			{
 				return true;
 			}
-			return false;
+			return (Source == voronoiEdge.Source && Target == voronoiEdge.Target) || (Source == voronoiEdge.Target && Target == voronoiEdge.Source);
 		}
 
 		public override int GetHashCode()

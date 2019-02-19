@@ -24,7 +24,7 @@ public class FallMonitor : GameStateMachine<FallMonitor, FallMonitor.Instance>
 
 		private Navigator navigator;
 
-		private bool flipRecoverEmote = false;
+		private bool flipRecoverEmote;
 
 		public Instance(IStateMachineTarget master)
 			: base(master)
@@ -136,22 +136,22 @@ public class FallMonitor : GameStateMachine<FallMonitor, FallMonitor.Instance>
 
 		public bool IsFalling()
 		{
-			if (!navigator.IsMoving())
+			if (navigator.IsMoving())
 			{
-				int cell = Grid.PosToCell(base.master.transform.GetPosition());
-				if (Grid.IsValidCell(cell))
-				{
-					int cell2 = Grid.CellBelow(cell);
-					if (Grid.IsValidCell(cell2))
-					{
-						bool flag = navigator.NavGrid.NavTable.IsValid(cell, navigator.CurrentNavType);
-						return !flag;
-					}
-					return false;
-				}
 				return false;
 			}
-			return false;
+			int cell = Grid.PosToCell(base.master.transform.GetPosition());
+			if (!Grid.IsValidCell(cell))
+			{
+				return false;
+			}
+			int cell2 = Grid.CellBelow(cell);
+			if (!Grid.IsValidCell(cell2))
+			{
+				return false;
+			}
+			bool flag = navigator.NavGrid.NavTable.IsValid(cell, navigator.CurrentNavType);
+			return !flag;
 		}
 
 		public void UpdateFalling()

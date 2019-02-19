@@ -11,7 +11,7 @@ public class NoiseNodeCanvas : NodeCanvas
 {
 	private NoiseTreeFiles ntf;
 
-	private TerminalNodeEditor terminator = null;
+	private TerminalNodeEditor terminator;
 
 	private Rect lastRectPos;
 
@@ -212,7 +212,7 @@ public class NoiseNodeCanvas : NodeCanvas
 			if (type == typeof(PrimitiveNodeEditor))
 			{
 				PrimitiveNodeEditor primitiveNodeEditor = node as PrimitiveNodeEditor;
-				if (primitiveNodeEditor.target.name == null || primitiveNodeEditor.target.name == "" || tree.primitives.ContainsKey(primitiveNodeEditor.target.name))
+				if (primitiveNodeEditor.target.name == null || primitiveNodeEditor.target.name == string.Empty || tree.primitives.ContainsKey(primitiveNodeEditor.target.name))
 				{
 					primitiveNodeEditor.target.name = "Primitive" + tree.primitives.Count;
 				}
@@ -221,7 +221,7 @@ public class NoiseNodeCanvas : NodeCanvas
 			else if (type == typeof(FilterNodeEditor))
 			{
 				FilterNodeEditor filterNodeEditor = node as FilterNodeEditor;
-				if (filterNodeEditor.target.name == null || filterNodeEditor.target.name == "" || tree.filters.ContainsKey(filterNodeEditor.target.name))
+				if (filterNodeEditor.target.name == null || filterNodeEditor.target.name == string.Empty || tree.filters.ContainsKey(filterNodeEditor.target.name))
 				{
 					filterNodeEditor.target.name = "Filter" + tree.filters.Count;
 				}
@@ -230,7 +230,7 @@ public class NoiseNodeCanvas : NodeCanvas
 			else if (type == typeof(TransformerNodeEditor))
 			{
 				TransformerNodeEditor transformerNodeEditor = node as TransformerNodeEditor;
-				if (transformerNodeEditor.target.name == null || transformerNodeEditor.target.name == "" || tree.transformers.ContainsKey(transformerNodeEditor.target.name))
+				if (transformerNodeEditor.target.name == null || transformerNodeEditor.target.name == string.Empty || tree.transformers.ContainsKey(transformerNodeEditor.target.name))
 				{
 					transformerNodeEditor.target.name = "Transformer" + tree.transformers.Count;
 				}
@@ -239,7 +239,7 @@ public class NoiseNodeCanvas : NodeCanvas
 			else if (type == typeof(SelectorModuleNodeEditor))
 			{
 				SelectorModuleNodeEditor selectorModuleNodeEditor = node as SelectorModuleNodeEditor;
-				if (selectorModuleNodeEditor.target.name == null || selectorModuleNodeEditor.target.name == "" || tree.selectors.ContainsKey(selectorModuleNodeEditor.target.name))
+				if (selectorModuleNodeEditor.target.name == null || selectorModuleNodeEditor.target.name == string.Empty || tree.selectors.ContainsKey(selectorModuleNodeEditor.target.name))
 				{
 					selectorModuleNodeEditor.target.name = "Selector" + tree.selectors.Count;
 				}
@@ -248,7 +248,7 @@ public class NoiseNodeCanvas : NodeCanvas
 			else if (type == typeof(ModifierModuleNodeEditor))
 			{
 				ModifierModuleNodeEditor modifierModuleNodeEditor = node as ModifierModuleNodeEditor;
-				if (modifierModuleNodeEditor.target.name == null || modifierModuleNodeEditor.target.name == "" || tree.modifiers.ContainsKey(modifierModuleNodeEditor.target.name))
+				if (modifierModuleNodeEditor.target.name == null || modifierModuleNodeEditor.target.name == string.Empty || tree.modifiers.ContainsKey(modifierModuleNodeEditor.target.name))
 				{
 					modifierModuleNodeEditor.target.name = "Modifier" + tree.modifiers.Count;
 				}
@@ -257,7 +257,7 @@ public class NoiseNodeCanvas : NodeCanvas
 			else if (type == typeof(CombinerModuleNodeEditor))
 			{
 				CombinerModuleNodeEditor combinerModuleNodeEditor = node as CombinerModuleNodeEditor;
-				if (combinerModuleNodeEditor.target.name == null || combinerModuleNodeEditor.target.name == "" || tree.combiners.ContainsKey(combinerModuleNodeEditor.target.name))
+				if (combinerModuleNodeEditor.target.name == null || combinerModuleNodeEditor.target.name == string.Empty || tree.combiners.ContainsKey(combinerModuleNodeEditor.target.name))
 				{
 					combinerModuleNodeEditor.target.name = "Combiner" + tree.combiners.Count;
 				}
@@ -266,7 +266,7 @@ public class NoiseNodeCanvas : NodeCanvas
 			else if (type == typeof(FloatPointsNodeEditor))
 			{
 				FloatPointsNodeEditor floatPointsNodeEditor = node as FloatPointsNodeEditor;
-				if (floatPointsNodeEditor.target.name == null || floatPointsNodeEditor.target.name == "" || tree.floats.ContainsKey(floatPointsNodeEditor.target.name))
+				if (floatPointsNodeEditor.target.name == null || floatPointsNodeEditor.target.name == string.Empty || tree.floats.ContainsKey(floatPointsNodeEditor.target.name))
 				{
 					floatPointsNodeEditor.target.name = "Terrace Control" + tree.combiners.Count;
 				}
@@ -275,7 +275,7 @@ public class NoiseNodeCanvas : NodeCanvas
 			else if (type == typeof(ControlPointsNodeEditor))
 			{
 				ControlPointsNodeEditor controlPointsNodeEditor = node as ControlPointsNodeEditor;
-				if (controlPointsNodeEditor.target.name == null || controlPointsNodeEditor.target.name == "" || tree.controlpoints.ContainsKey(controlPointsNodeEditor.target.name))
+				if (controlPointsNodeEditor.target.name == null || controlPointsNodeEditor.target.name == string.Empty || tree.controlpoints.ContainsKey(controlPointsNodeEditor.target.name))
 				{
 					controlPointsNodeEditor.target.name = "Curve Control" + tree.combiners.Count;
 				}
@@ -398,7 +398,7 @@ public class NoiseNodeCanvas : NodeCanvas
 		Tree tree = YamlIO<Tree>.LoadFile(treeFilePath, null);
 		if (tree != null)
 		{
-			if (tree.settings.name == null || tree.settings.name == "")
+			if (tree.settings.name == null || tree.settings.name == string.Empty)
 			{
 				tree.settings.name = name;
 			}
@@ -410,77 +410,77 @@ public class NoiseNodeCanvas : NodeCanvas
 
 	private Node GetNodeFromLink(Link link)
 	{
-		if (link != null)
+		if (link == null)
 		{
-			switch (link.type)
-			{
-			case Link.Type.Primitive:
-				if (primitiveLookup.ContainsKey(link.name))
-				{
-					return primitiveLookup[link.name];
-				}
-				Debug.LogError("Couldnt find [" + link.name + "] in primitives", null);
-				break;
-			case Link.Type.Filter:
-				if (filterLookup.ContainsKey(link.name))
-				{
-					return filterLookup[link.name];
-				}
-				Debug.LogError("Couldnt find [" + link.name + "] in filters", null);
-				break;
-			case Link.Type.Modifier:
-				if (modifierLookup.ContainsKey(link.name))
-				{
-					return modifierLookup[link.name];
-				}
-				Debug.LogError("Couldnt find [" + link.name + "] in modifiers", null);
-				break;
-			case Link.Type.Selector:
-				if (selectorLookup.ContainsKey(link.name))
-				{
-					return selectorLookup[link.name];
-				}
-				Debug.LogError("Couldnt find [" + link.name + "] in selectors", null);
-				break;
-			case Link.Type.Transformer:
-				if (transformerLookup.ContainsKey(link.name))
-				{
-					return transformerLookup[link.name];
-				}
-				Debug.LogError("Couldnt find [" + link.name + "] in transformers", null);
-				break;
-			case Link.Type.Combiner:
-				if (combinerLookup.ContainsKey(link.name))
-				{
-					return combinerLookup[link.name];
-				}
-				Debug.LogError("Couldnt find [" + link.name + "] in combiners", null);
-				break;
-			case Link.Type.FloatPoints:
-				if (floatlistLookup.ContainsKey(link.name))
-				{
-					return floatlistLookup[link.name];
-				}
-				Debug.LogError("Couldnt find [" + link.name + "] in float points", null);
-				break;
-			case Link.Type.ControlPoints:
-				if (ctrlpointsLookup.ContainsKey(link.name))
-				{
-					return ctrlpointsLookup[link.name];
-				}
-				Debug.LogError("Couldnt find [" + link.name + "] in control points", null);
-				break;
-			case Link.Type.Terminator:
-				if ((UnityEngine.Object)terminator == (UnityEngine.Object)null)
-				{
-					terminator = (TerminalNodeEditor)Node.Create("terminalNodeEditor", Vector2.zero);
-					terminator.name = link.name;
-				}
-				return terminator;
-			}
-			Debug.LogError("Couldnt find link [" + link.name + "] [" + link.type.ToString() + "]", null);
 			return null;
 		}
+		switch (link.type)
+		{
+		case Link.Type.Primitive:
+			if (primitiveLookup.ContainsKey(link.name))
+			{
+				return primitiveLookup[link.name];
+			}
+			Debug.LogError("Couldnt find [" + link.name + "] in primitives", null);
+			break;
+		case Link.Type.Filter:
+			if (filterLookup.ContainsKey(link.name))
+			{
+				return filterLookup[link.name];
+			}
+			Debug.LogError("Couldnt find [" + link.name + "] in filters", null);
+			break;
+		case Link.Type.Modifier:
+			if (modifierLookup.ContainsKey(link.name))
+			{
+				return modifierLookup[link.name];
+			}
+			Debug.LogError("Couldnt find [" + link.name + "] in modifiers", null);
+			break;
+		case Link.Type.Selector:
+			if (selectorLookup.ContainsKey(link.name))
+			{
+				return selectorLookup[link.name];
+			}
+			Debug.LogError("Couldnt find [" + link.name + "] in selectors", null);
+			break;
+		case Link.Type.Transformer:
+			if (transformerLookup.ContainsKey(link.name))
+			{
+				return transformerLookup[link.name];
+			}
+			Debug.LogError("Couldnt find [" + link.name + "] in transformers", null);
+			break;
+		case Link.Type.Combiner:
+			if (combinerLookup.ContainsKey(link.name))
+			{
+				return combinerLookup[link.name];
+			}
+			Debug.LogError("Couldnt find [" + link.name + "] in combiners", null);
+			break;
+		case Link.Type.FloatPoints:
+			if (floatlistLookup.ContainsKey(link.name))
+			{
+				return floatlistLookup[link.name];
+			}
+			Debug.LogError("Couldnt find [" + link.name + "] in float points", null);
+			break;
+		case Link.Type.ControlPoints:
+			if (ctrlpointsLookup.ContainsKey(link.name))
+			{
+				return ctrlpointsLookup[link.name];
+			}
+			Debug.LogError("Couldnt find [" + link.name + "] in control points", null);
+			break;
+		case Link.Type.Terminator:
+			if ((UnityEngine.Object)terminator == (UnityEngine.Object)null)
+			{
+				terminator = (TerminalNodeEditor)Node.Create("terminalNodeEditor", Vector2.zero);
+				terminator.name = link.name;
+			}
+			return terminator;
+		}
+		Debug.LogError("Couldnt find link [" + link.name + "] [" + link.type.ToString() + "]", null);
 		return null;
 	}
 

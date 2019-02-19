@@ -10,7 +10,7 @@ public class Valve : Workable, ISaveLoadable
 	[Serialize]
 	private float desiredFlow = 0.5f;
 
-	private Chore chore = null;
+	private Chore chore;
 
 	[MyCmpAdd]
 	private CopyBuildingSettings copyBuildingSettings;

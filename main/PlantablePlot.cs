@@ -20,13 +20,13 @@ public class PlantablePlot : SingleEntityReceptacle, ISaveLoadable, IEffectDescr
 	private EntityPreview plantPreview;
 
 	[SerializeField]
-	private bool accepts_fertilizer = false;
+	private bool accepts_fertilizer;
 
 	[SerializeField]
 	private bool accepts_irrigation = true;
 
 	[SerializeField]
-	public bool has_liquid_pipe_input = false;
+	public bool has_liquid_pipe_input;
 
 	private static readonly EventSystem.IntraObjectHandler<PlantablePlot> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<PlantablePlot>(delegate(PlantablePlot component, object data)
 	{
@@ -173,35 +173,35 @@ public class PlantablePlot : SingleEntityReceptacle, ISaveLoadable, IEffectDescr
 	public override GameObject SpawnOccupyingObject(GameObject depositedEntity)
 	{
 		PlantableSeed component = depositedEntity.GetComponent<PlantableSeed>();
-		if (!((UnityEngine.Object)component == (UnityEngine.Object)null))
+		if ((UnityEngine.Object)component == (UnityEngine.Object)null)
 		{
-			Vector3 position = Grid.CellToPosCBC(Grid.PosToCell(this), plantLayer);
-			GameObject gameObject = GameUtil.KInstantiate(Assets.GetPrefab(component.PlantID), position, plantLayer, null, 0);
-			gameObject.SetActive(true);
-			KPrefabID component2 = gameObject.GetComponent<KPrefabID>();
-			plantRef.Set(component2);
-			RegisterWithPlant(gameObject);
-			UprootedMonitor component3 = gameObject.GetComponent<UprootedMonitor>();
-			if ((bool)component3)
-			{
-				component3.canBeUprooted = false;
-			}
-			autoReplaceEntity = false;
-			Prioritizable component4 = GetComponent<Prioritizable>();
-			if ((UnityEngine.Object)component4 != (UnityEngine.Object)null)
-			{
-				Prioritizable component5 = gameObject.GetComponent<Prioritizable>();
-				if ((UnityEngine.Object)component5 != (UnityEngine.Object)null)
-				{
-					component5.SetMasterPriority(component4.GetMasterPriority());
-					Prioritizable prioritizable = component5;
-					prioritizable.onPriorityChanged = (Action<PrioritySetting>)Delegate.Combine(prioritizable.onPriorityChanged, new Action<PrioritySetting>(SyncPriority));
-				}
-			}
-			return gameObject;
+			Debug.LogError("Planted seed " + depositedEntity.gameObject.name + " is missing PlantableSeed component", null);
+			return null;
 		}
-		Debug.LogError("Planted seed " + depositedEntity.gameObject.name + " is missing PlantableSeed component", null);
-		return null;
+		Vector3 position = Grid.CellToPosCBC(Grid.PosToCell(this), plantLayer);
+		GameObject gameObject = GameUtil.KInstantiate(Assets.GetPrefab(component.PlantID), position, plantLayer, null, 0);
+		gameObject.SetActive(true);
+		KPrefabID component2 = gameObject.GetComponent<KPrefabID>();
+		plantRef.Set(component2);
+		RegisterWithPlant(gameObject);
+		UprootedMonitor component3 = gameObject.GetComponent<UprootedMonitor>();
+		if ((bool)component3)
+		{
+			component3.canBeUprooted = false;
+		}
+		autoReplaceEntity = false;
+		Prioritizable component4 = GetComponent<Prioritizable>();
+		if ((UnityEngine.Object)component4 != (UnityEngine.Object)null)
+		{
+			Prioritizable component5 = gameObject.GetComponent<Prioritizable>();
+			if ((UnityEngine.Object)component5 != (UnityEngine.Object)null)
+			{
+				component5.SetMasterPriority(component4.GetMasterPriority());
+				Prioritizable prioritizable = component5;
+				prioritizable.onPriorityChanged = (Action<PrioritySetting>)Delegate.Combine(prioritizable.onPriorityChanged, new Action<PrioritySetting>(SyncPriority));
+			}
+		}
+		return gameObject;
 	}
 
 	protected override void PositionOccupyingObject()

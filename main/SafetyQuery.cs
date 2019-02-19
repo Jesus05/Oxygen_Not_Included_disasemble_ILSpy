@@ -43,11 +43,11 @@ public class SafetyQuery : PathFinderQuery
 				return true;
 			}
 		}
-		if (cost < maxCost)
+		if (cost >= maxCost)
 		{
-			return false;
+			return true;
 		}
-		return true;
+		return false;
 	}
 
 	public override int GetResultCell()

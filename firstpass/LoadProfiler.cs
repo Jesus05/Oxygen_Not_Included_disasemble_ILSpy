@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class LoadProfiler : ProfilerBase
 {
-	private static LoadProfiler instance = null;
+	private static LoadProfiler instance;
 
 	public static LoadProfiler Instance
 	{

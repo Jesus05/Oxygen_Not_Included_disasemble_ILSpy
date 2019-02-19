@@ -16,10 +16,10 @@ public class CellEvent : EventBase
 
 	public string GetMessagePrefix()
 	{
-		if (!isSend)
+		if (isSend)
 		{
-			return "<<<: ";
+			return ">>>: ";
 		}
-		return ">>>: ";
+		return "<<<: ";
 	}
 }

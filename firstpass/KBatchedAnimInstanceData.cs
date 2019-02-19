@@ -55,7 +55,7 @@ public class KBatchedAnimInstanceData
 
 	public const int SIZE_IN_FLOATS = 28;
 
-	private KAnimConverter.IAnimConverter target = null;
+	private KAnimConverter.IAnimConverter target;
 
 	private bool isTransformOverriden;
 
@@ -92,12 +92,12 @@ public class KBatchedAnimInstanceData
 
 	public bool SetOverlayColour(Color color)
 	{
-		if (!(color != converter.animInstanceData[0].overlayColour))
+		if (color != converter.animInstanceData[0].overlayColour)
 		{
-			return false;
+			converter.animInstanceData[0].overlayColour = color;
+			return true;
 		}
-		converter.animInstanceData[0].overlayColour = color;
-		return true;
+		return false;
 	}
 
 	public Color GetTintColour()
@@ -107,12 +107,12 @@ public class KBatchedAnimInstanceData
 
 	public bool SetTintColour(Color color)
 	{
-		if (!(color != converter.animInstanceData[0].tintColour))
+		if (color != converter.animInstanceData[0].tintColour)
 		{
-			return false;
+			converter.animInstanceData[0].tintColour = color;
+			return true;
 		}
-		converter.animInstanceData[0].tintColour = color;
-		return true;
+		return false;
 	}
 
 	public Color GetHighlightcolour()
@@ -122,12 +122,12 @@ public class KBatchedAnimInstanceData
 
 	public bool SetHighlightColour(Color color)
 	{
-		if (!(color != converter.animInstanceData[0].highlightColour))
+		if (color != converter.animInstanceData[0].highlightColour)
 		{
-			return false;
+			converter.animInstanceData[0].highlightColour = color;
+			return true;
 		}
-		converter.animInstanceData[0].highlightColour = color;
-		return true;
+		return false;
 	}
 
 	public void WriteToTexture(byte[] output_bytes, int output_index, int this_index)

@@ -34,7 +34,7 @@ public class SingleEntityReceptacle : Workable, IRender1000ms
 	private List<Tag> possibleDepositTagsList = new List<Tag>();
 
 	[SerializeField]
-	protected bool destroyEntityOnDeposit = false;
+	protected bool destroyEntityOnDeposit;
 
 	[SerializeField]
 	protected ReceptacleDirection direction;
@@ -60,11 +60,11 @@ public class SingleEntityReceptacle : Workable, IRender1000ms
 	{
 		get
 		{
-			if (!((Object)occupyObjectRef.Get() != (Object)null))
+			if ((Object)occupyObjectRef.Get() != (Object)null)
 			{
-				return null;
+				return occupyObjectRef.Get().gameObject;
 			}
-			return occupyObjectRef.Get().gameObject;
+			return null;
 		}
 		set
 		{

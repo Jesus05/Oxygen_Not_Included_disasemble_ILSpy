@@ -42,9 +42,9 @@ public class SimpleInfoScreen : TargetScreen
 
 		private FadeStage fadeStage;
 
-		private float fade = 0f;
+		private float fade;
 
-		private float fadeInTime = 0f;
+		private float fadeInTime;
 
 		private float fadeOutTime = 1.8f;
 
@@ -122,7 +122,7 @@ public class SimpleInfoScreen : TargetScreen
 		private string OnToolTip()
 		{
 			item.ShowToolTip(toolTip, tooltipStyle);
-			return "";
+			return string.Empty;
 		}
 
 		public void Refresh()
@@ -468,8 +468,8 @@ public class SimpleInfoScreen : TargetScreen
 		});
 		attributeLabels.Clear();
 		vitalsPanel.gameObject.SetActive(amounts != null);
-		string text = "";
-		string text2 = "";
+		string text = string.Empty;
+		string text2 = string.Empty;
 		if (amounts != null)
 		{
 			vitalsContainer.selectedEntity = selectedTarget;
@@ -486,7 +486,7 @@ public class SimpleInfoScreen : TargetScreen
 		}
 		if ((bool)component)
 		{
-			text = "";
+			text = string.Empty;
 		}
 		else if ((bool)component6)
 		{
@@ -514,7 +514,7 @@ public class SimpleInfoScreen : TargetScreen
 		else if ((UnityEngine.Object)component2 != (UnityEngine.Object)null)
 		{
 			Element element = ElementLoader.FindElementByHash(component2.ElementID);
-			text = ((element == null) ? "" : element.FullDescription(false));
+			text = ((element == null) ? string.Empty : element.FullDescription(false));
 		}
 		List<Descriptor> gameObjectEffects = GameUtil.GetGameObjectEffects(target, true);
 		bool flag = gameObjectEffects.Count > 0;
@@ -528,7 +528,7 @@ public class SimpleInfoScreen : TargetScreen
 		descriptionContainer.flavour.text = text2;
 		infoPanel.gameObject.SetActive((UnityEngine.Object)component == (UnityEngine.Object)null);
 		descriptionContainer.gameObject.SetActive(infoPanel.activeSelf);
-		descriptionContainer.flavour.gameObject.SetActive(text2 != "" && text2 != "\n");
+		descriptionContainer.flavour.gameObject.SetActive(text2 != string.Empty && text2 != "\n");
 		if (vitalsPanel.gameObject.activeSelf && amounts.Count == 0)
 		{
 			vitalsPanel.gameObject.SetActive(false);
@@ -556,7 +556,7 @@ public class SimpleInfoScreen : TargetScreen
 					List<FertilityModifier> forTag = Db.Get().FertilityModifiers.GetForTag(breedingChance.egg);
 					if (forTag.Count > 0)
 					{
-						string text = "";
+						string text = string.Empty;
 						foreach (FertilityModifier item in forTag)
 						{
 							text += string.Format(UI.DETAILTABS.EGG_CHANCES.CHANCE_MOD_FORMAT, item.GetTooltip());

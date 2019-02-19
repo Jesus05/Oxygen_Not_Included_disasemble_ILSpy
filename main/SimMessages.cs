@@ -1,4 +1,3 @@
-#define UNITY_ASSERTIONS
 using Database;
 using Klei.AI;
 using Klei.AI.DiseaseGrowthRules;
@@ -7,7 +6,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
-using UnityEngine;
 
 public static class SimMessages
 {
@@ -613,23 +611,19 @@ public static class SimMessages
 
 	public unsafe static void AddElementChunk(int gameCell, SimHashes element, float mass, float temperature, float surface_area, float thickness, float ground_transfer_scale, int cb_handle)
 	{
-		if (Grid.IsValidCell(gameCell))
+		if (Grid.IsValidCell(gameCell) && mass * temperature > 0f)
 		{
-			UnityEngine.Debug.Assert(mass * temperature > 0f, "Tried to add an SimTemperatureTransfer component with 0 mass or temperature. Unsupported! Your game is now in a bad state.");
-			if (mass * temperature > 0f)
-			{
-				int elementIndex = ElementLoader.GetElementIndex(element);
-				AddElementChunkMessage* ptr = stackalloc AddElementChunkMessage[1];
-				ptr->gameCell = gameCell;
-				ptr->callbackIdx = cb_handle;
-				ptr->mass = mass;
-				ptr->temperature = temperature;
-				ptr->surfaceArea = surface_area;
-				ptr->thickness = thickness;
-				ptr->groundTransferScale = ground_transfer_scale;
-				ptr->elementIdx = (byte)elementIndex;
-				Sim.SIM_HandleMessage(1445724082, sizeof(AddElementChunkMessage), (byte*)ptr);
-			}
+			int elementIndex = ElementLoader.GetElementIndex(element);
+			AddElementChunkMessage* ptr = stackalloc AddElementChunkMessage[1];
+			ptr->gameCell = gameCell;
+			ptr->callbackIdx = cb_handle;
+			ptr->mass = mass;
+			ptr->temperature = temperature;
+			ptr->surfaceArea = surface_area;
+			ptr->thickness = thickness;
+			ptr->groundTransferScale = ground_transfer_scale;
+			ptr->elementIdx = (byte)elementIndex;
+			Sim.SIM_HandleMessage(1445724082, sizeof(AddElementChunkMessage), (byte*)ptr);
 		}
 	}
 
@@ -818,7 +812,7 @@ public static class SimMessages
 
 	public unsafe static void CreateSimElementsTable(List<Element> elements)
 	{
-		//IL_00c7: Incompatible stack types: I vs Ref
+		//IL_00c2: Incompatible stack types: I vs Ref
 		MemoryStream memoryStream = new MemoryStream(Marshal.SizeOf(typeof(int)) + Marshal.SizeOf(typeof(Sim.Element)) * elements.Count);
 		BinaryWriter binaryWriter = new BinaryWriter(memoryStream);
 		binaryWriter.Write(elements.Count);
@@ -839,7 +833,7 @@ public static class SimMessages
 
 	public unsafe static void CreateWorldGenHACKDiseaseTable(List<string> diseaseIds)
 	{
-		//IL_0154: Incompatible stack types: I vs Ref
+		//IL_014f: Incompatible stack types: I vs Ref
 		MemoryStream memoryStream = new MemoryStream(1024);
 		BinaryWriter binaryWriter = new BinaryWriter(memoryStream);
 		binaryWriter.Write(diseaseIds.Count);
@@ -857,7 +851,7 @@ public static class SimMessages
 		rangeInfo2.maxViable = float.PositiveInfinity;
 		for (int i = 0; i < diseaseIds.Count; i++)
 		{
-			binaryWriter.WriteKleiString("");
+			binaryWriter.WriteKleiString(string.Empty);
 			binaryWriter.Write(new HashedString(diseaseIds[i]).GetHashCode());
 			binaryWriter.Write(0f);
 			rangeInfo.Write(binaryWriter);
@@ -878,7 +872,7 @@ public static class SimMessages
 
 	public unsafe static void CreateDiseaseTable()
 	{
-		//IL_012a: Incompatible stack types: I vs Ref
+		//IL_0125: Incompatible stack types: I vs Ref
 		Database.Diseases diseases = Db.Get().Diseases;
 		MemoryStream memoryStream = new MemoryStream(1024);
 		BinaryWriter binaryWriter = new BinaryWriter(memoryStream);
@@ -1180,7 +1174,7 @@ public static class SimMessages
 
 	public unsafe static void CreateElementInteractions(ElementInteraction[] interactions)
 	{
-		//IL_0018: Incompatible stack types: I vs Ref
+		//IL_0017: Incompatible stack types: I vs Ref
 		fixed (ElementInteraction* interactions2 = &((interactions != null && interactions.Length != 0) ? ref interactions[0] : ref *(ElementInteraction*)null))
 		{
 			CreateElementInteractionsMsg* ptr = stackalloc CreateElementInteractionsMsg[1];

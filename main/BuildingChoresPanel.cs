@@ -16,19 +16,19 @@ public class BuildingChoresPanel : TargetScreen
 
 		public int CompareTo(DupeEntryData other)
 		{
-			if (personalPriority == other.personalPriority)
+			if (personalPriority != other.personalPriority)
 			{
-				if (rank == other.rank)
-				{
-					if (!(consumer.GetProperName() != other.consumer.GetProperName()))
-					{
-						return consumer.GetInstanceID().CompareTo(other.consumer.GetInstanceID());
-					}
-					return consumer.GetProperName().CompareTo(other.consumer.GetProperName());
-				}
+				return other.personalPriority.CompareTo(personalPriority);
+			}
+			if (rank != other.rank)
+			{
 				return rank.CompareTo(other.rank);
 			}
-			return other.personalPriority.CompareTo(personalPriority);
+			if (consumer.GetProperName() != other.consumer.GetProperName())
+			{
+				return consumer.GetProperName().CompareTo(other.consumer.GetProperName());
+			}
+			return consumer.GetInstanceID().CompareTo(other.consumer.GetInstanceID());
 		}
 	}
 
@@ -46,11 +46,11 @@ public class BuildingChoresPanel : TargetScreen
 
 	private List<HierarchyReferences> choreEntries = new List<HierarchyReferences>();
 
-	private int activeChoreEntries = 0;
+	private int activeChoreEntries;
 
 	private List<BuildingChoresPanelDupeRow> dupeEntries = new List<BuildingChoresPanelDupeRow>();
 
-	private int activeDupeEntries = 0;
+	private int activeDupeEntries;
 
 	private List<DupeEntryData> DupeEntryDatas = new List<DupeEntryData>();
 

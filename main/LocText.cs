@@ -8,9 +8,9 @@ public class LocText : TextMeshProUGUI
 
 	public TextStyleSetting textStyleSetting;
 
-	public bool allowOverride = false;
+	public bool allowOverride;
 
-	public bool staticLayout = false;
+	public bool staticLayout;
 
 	private TextLinkHandler textLinkHandler;
 
@@ -53,7 +53,7 @@ public class LocText : TextMeshProUGUI
 	[ContextMenu("Apply Settings")]
 	public void ApplySettings()
 	{
-		if (this.key != "" && Application.isPlaying)
+		if (this.key != string.Empty && Application.isPlaying)
 		{
 			StringKey key = new StringKey(this.key);
 			text = Strings.Get(key);
@@ -69,7 +69,7 @@ public class LocText : TextMeshProUGUI
 		base.Awake();
 		if (Application.isPlaying)
 		{
-			if (this.key != "")
+			if (this.key != string.Empty)
 			{
 				StringKey key = new StringKey(this.key);
 				StringEntry stringEntry = Strings.Get(key);
@@ -112,11 +112,11 @@ public class LocText : TextMeshProUGUI
 
 	private string FilterInput(string input)
 	{
-		if (!AllowLinks)
+		if (AllowLinks)
 		{
-			return input;
+			return ModifyLinkStrings(input);
 		}
-		return ModifyLinkStrings(input);
+		return input;
 	}
 
 	protected override void GenerateTextMesh()
@@ -127,7 +127,7 @@ public class LocText : TextMeshProUGUI
 	internal void SwapFont(TMP_FontAsset font, bool isRightToLeft)
 	{
 		base.font = font;
-		if (this.key != "")
+		if (this.key != string.Empty)
 		{
 			StringKey key = new StringKey(this.key);
 			StringEntry stringEntry = Strings.Get(key);
@@ -144,36 +144,36 @@ public class LocText : TextMeshProUGUI
 		string text2 = "<b><style=\"KLink\">";
 		string value = "</style></b>";
 		string pattern2 = text2 + text;
-		if (input != null && Regex.Split(input, pattern2).Length <= 1)
+		if (input == null || Regex.Split(input, pattern2).Length > 1)
 		{
-			splits = Regex.Split(input, text);
-			if (splits.Length > 1)
-			{
-				for (int i = 1; i < splits.Length; i++)
-				{
-					if (!(splits[i] == ""))
-					{
-						int num = input.IndexOf(splits[i]);
-						input = input.Insert(num - text.Length, text2);
-					}
-				}
-			}
-			splits = Regex.Split(input, pattern);
-			if (splits.Length > 1)
-			{
-				for (int j = 0; j < splits.Length; j++)
-				{
-					if (!(splits[j] == ""))
-					{
-						int num2 = input.IndexOf(splits[j]);
-						if (num2 != 0)
-						{
-							input = input.Insert(num2, value);
-						}
-					}
-				}
-			}
 			return input;
+		}
+		splits = Regex.Split(input, text);
+		if (splits.Length > 1)
+		{
+			for (int i = 1; i < splits.Length; i++)
+			{
+				if (!(splits[i] == string.Empty))
+				{
+					int num = input.IndexOf(splits[i]);
+					input = input.Insert(num - text.Length, text2);
+				}
+			}
+		}
+		splits = Regex.Split(input, pattern);
+		if (splits.Length > 1)
+		{
+			for (int j = 0; j < splits.Length; j++)
+			{
+				if (!(splits[j] == string.Empty))
+				{
+					int num2 = input.IndexOf(splits[j]);
+					if (num2 != 0)
+					{
+						input = input.Insert(num2, value);
+					}
+				}
+			}
 		}
 		return input;
 	}

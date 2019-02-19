@@ -27,7 +27,7 @@ public class ElementConsumer : SimComponent, ISaveLoadable, IEffectDescriptor
 	public byte consumptionRadius = 1;
 
 	[SerializeField]
-	public float minimumMass = 0f;
+	public float minimumMass;
 
 	[SerializeField]
 	public bool showInStatusPanel = true;
@@ -39,18 +39,18 @@ public class ElementConsumer : SimComponent, ISaveLoadable, IEffectDescriptor
 	public float capacityKG = float.PositiveInfinity;
 
 	[SerializeField]
-	public Configuration configuration = Configuration.Element;
+	public Configuration configuration;
 
 	[NonSerialized]
 	[Serialize]
-	public float consumedMass = 0f;
+	public float consumedMass;
 
 	[NonSerialized]
 	[Serialize]
-	public float consumedTemperature = 0f;
+	public float consumedTemperature;
 
 	[SerializeField]
-	public bool storeOnConsume = false;
+	public bool storeOnConsume;
 
 	[MyCmpGet]
 	public Storage storage;
@@ -69,7 +69,7 @@ public class ElementConsumer : SimComponent, ISaveLoadable, IEffectDescriptor
 
 	public bool isRequired = true;
 
-	private bool consumptionEnabled = false;
+	private bool consumptionEnabled;
 
 	private bool hasAvailableCapacity = true;
 
@@ -146,11 +146,11 @@ public class ElementConsumer : SimComponent, ISaveLoadable, IEffectDescriptor
 	private bool IsStorageFull()
 	{
 		PrimaryElement primaryElement = storage.FindPrimaryElement(elementToConsume);
-		if (!((UnityEngine.Object)primaryElement != (UnityEngine.Object)null))
+		if ((UnityEngine.Object)primaryElement != (UnityEngine.Object)null)
 		{
-			return false;
+			return primaryElement.Mass >= capacityKG;
 		}
-		return primaryElement.Mass >= capacityKG;
+		return false;
 	}
 
 	public void RefreshConsumptionRate()

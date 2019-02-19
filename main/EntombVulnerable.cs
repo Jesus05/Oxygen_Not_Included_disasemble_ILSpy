@@ -12,7 +12,7 @@ public class EntombVulnerable : KMonoBehaviour, IWiltCause
 	private OccupyArea _occupyArea;
 
 	[Serialize]
-	private bool isEntombed = false;
+	private bool isEntombed;
 
 	private HandleVector<int>.Handle partitionerEntry;
 

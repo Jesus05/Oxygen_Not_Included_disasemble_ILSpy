@@ -32,7 +32,7 @@ namespace Rendering
 				public string name;
 			}
 
-			private AtlasInfo[] atlasInfo = null;
+			private AtlasInfo[] atlasInfo;
 
 			private bool[,] dirtyChunks;
 
@@ -497,7 +497,7 @@ namespace Rendering
 		}
 
 		[SerializeField]
-		private bool forceRebuild = false;
+		private bool forceRebuild;
 
 		[SerializeField]
 		private Color highlightColour = new Color(1.25f, 1.25f, 1.25f, 1f);

@@ -133,22 +133,22 @@ public class ScheduleScreenEntry : KMonoBehaviour
 	private bool MinionWidgetsNeedRebuild()
 	{
 		List<Ref<Schedulable>> assigned = schedule.GetAssigned();
-		if (assigned.Count == minionWidgets.Count)
+		if (assigned.Count != minionWidgets.Count)
 		{
-			if (assigned.Count != Components.LiveMinionIdentities.Count == blankMinionWidget.gameObject.activeSelf)
-			{
-				for (int i = 0; i < assigned.Count; i++)
-				{
-					if ((UnityEngine.Object)assigned[i].Get() != (UnityEngine.Object)minionWidgets[i].schedulable)
-					{
-						return true;
-					}
-				}
-				return false;
-			}
 			return true;
 		}
-		return true;
+		if (assigned.Count != Components.LiveMinionIdentities.Count != blankMinionWidget.gameObject.activeSelf)
+		{
+			return true;
+		}
+		for (int i = 0; i < assigned.Count; i++)
+		{
+			if ((UnityEngine.Object)assigned[i].Get() != (UnityEngine.Object)minionWidgets[i].schedulable)
+			{
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private void OnNameChanged(string newName)
@@ -232,7 +232,7 @@ public class ScheduleScreenEntry : KMonoBehaviour
 		}
 		else
 		{
-			noteEntryRight.text = "";
+			noteEntryRight.text = string.Empty;
 		}
 		int numBlocks = blockTypeCounts[Db.Get().ScheduleBlockTypes.Recreation.Id];
 		string breakBonus = QualityOfLifeNeed.GetBreakBonus(numBlocks);

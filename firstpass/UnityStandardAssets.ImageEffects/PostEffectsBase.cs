@@ -8,58 +8,58 @@ namespace UnityStandardAssets.ImageEffects
 	{
 		protected bool supportHDRTextures = true;
 
-		protected bool supportDX11 = false;
+		protected bool supportDX11;
 
 		protected bool isSupported = true;
 
 		protected Material CheckShaderAndCreateMaterial(Shader s, Material m2Create)
 		{
-			if ((bool)s)
+			if (!(bool)s)
 			{
-				if (s.isSupported && (bool)m2Create && (Object)m2Create.shader == (Object)s)
-				{
-					return m2Create;
-				}
-				if (s.isSupported)
-				{
-					m2Create = new Material(s);
-					m2Create.hideFlags = HideFlags.DontSave;
-					if (!(bool)m2Create)
-					{
-						return null;
-					}
-					return m2Create;
-				}
+				Debug.Log("Missing shader in " + ToString(), null);
+				base.enabled = false;
+				return null;
+			}
+			if (s.isSupported && (bool)m2Create && (Object)m2Create.shader == (Object)s)
+			{
+				return m2Create;
+			}
+			if (!s.isSupported)
+			{
 				NotSupported();
 				Debug.Log("The shader " + s.ToString() + " on effect " + ToString() + " is not supported on this platform!", null);
 				return null;
 			}
-			Debug.Log("Missing shader in " + ToString(), null);
-			base.enabled = false;
+			m2Create = new Material(s);
+			m2Create.hideFlags = HideFlags.DontSave;
+			if ((bool)m2Create)
+			{
+				return m2Create;
+			}
 			return null;
 		}
 
 		protected Material CreateMaterial(Shader s, Material m2Create)
 		{
-			if ((bool)s)
+			if (!(bool)s)
 			{
-				if ((bool)m2Create && (Object)m2Create.shader == (Object)s && s.isSupported)
-				{
-					return m2Create;
-				}
-				if (s.isSupported)
-				{
-					m2Create = new Material(s);
-					m2Create.hideFlags = HideFlags.DontSave;
-					if (!(bool)m2Create)
-					{
-						return null;
-					}
-					return m2Create;
-				}
+				Debug.Log("Missing shader in " + ToString(), null);
 				return null;
 			}
-			Debug.Log("Missing shader in " + ToString(), null);
+			if ((bool)m2Create && (Object)m2Create.shader == (Object)s && s.isSupported)
+			{
+				return m2Create;
+			}
+			if (!s.isSupported)
+			{
+				return null;
+			}
+			m2Create = new Material(s);
+			m2Create.hideFlags = HideFlags.DontSave;
+			if ((bool)m2Create)
+			{
+				return m2Create;
+			}
 			return null;
 		}
 
@@ -89,35 +89,35 @@ namespace UnityStandardAssets.ImageEffects
 			isSupported = true;
 			supportHDRTextures = SystemInfo.SupportsRenderTextureFormat(RenderTextureFormat.ARGBHalf);
 			supportDX11 = (SystemInfo.graphicsShaderLevel >= 50 && SystemInfo.supportsComputeShaders);
-			if (SystemInfo.supportsImageEffects)
+			if (!SystemInfo.supportsImageEffects)
 			{
-				if (needDepth && !SystemInfo.SupportsRenderTextureFormat(RenderTextureFormat.Depth))
-				{
-					NotSupported();
-					return false;
-				}
-				if (needDepth)
-				{
-					GetComponent<Camera>().depthTextureMode |= DepthTextureMode.Depth;
-				}
-				return true;
+				NotSupported();
+				return false;
 			}
-			NotSupported();
-			return false;
+			if (needDepth && !SystemInfo.SupportsRenderTextureFormat(RenderTextureFormat.Depth))
+			{
+				NotSupported();
+				return false;
+			}
+			if (needDepth)
+			{
+				GetComponent<Camera>().depthTextureMode |= DepthTextureMode.Depth;
+			}
+			return true;
 		}
 
 		protected bool CheckSupport(bool needDepth, bool needHdr)
 		{
-			if (CheckSupport(needDepth))
+			if (!CheckSupport(needDepth))
 			{
-				if (needHdr && !supportHDRTextures)
-				{
-					NotSupported();
-					return false;
-				}
-				return true;
+				return false;
 			}
-			return false;
+			if (needHdr && !supportHDRTextures)
+			{
+				NotSupported();
+				return false;
+			}
+			return true;
 		}
 
 		public bool Dx11Support()
@@ -133,11 +133,11 @@ namespace UnityStandardAssets.ImageEffects
 		private bool CheckShader(Shader s)
 		{
 			Debug.Log("The shader " + s.ToString() + " on effect " + ToString() + " is not part of the Unity 3.2+ effects suite anymore. For best performance and quality, please ensure you are using the latest Standard Assets Image Effects (Pro only) package.", null);
-			if (s.isSupported)
+			if (!s.isSupported)
 			{
+				NotSupported();
 				return false;
 			}
-			NotSupported();
 			return false;
 		}
 

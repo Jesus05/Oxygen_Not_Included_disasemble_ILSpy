@@ -63,7 +63,7 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms
 
 		public Chore chore;
 
-		public bool underway = false;
+		public bool underway;
 
 		public void Cancel()
 		{
@@ -108,10 +108,10 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms
 	public HashedString fetchChoreTypeIdHash = Db.Get().ChoreTypes.FabricateFetch.IdHash;
 
 	[SerializeField]
-	public ResultState resultState = ResultState.Normal;
+	public ResultState resultState;
 
 	[SerializeField]
-	public bool storeProduced = false;
+	public bool storeProduced;
 
 	public ComplexFabricatorSideScreen.StyleSetting sideScreenStyle = ComplexFabricatorSideScreen.StyleSetting.ListQueueHybrid;
 
@@ -142,11 +142,11 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms
 	[Serialize]
 	private int currentOrderIdx;
 
-	private bool isCancellingOrder = false;
+	private bool isCancellingOrder;
 
-	private float orderProgress = 0f;
+	private float orderProgress;
 
-	private bool willBeSadIfMachineOrdersChanges = false;
+	private bool willBeSadIfMachineOrdersChanges;
 
 	private ComplexRecipe[] possible_recipes_cache;
 
@@ -364,13 +364,13 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms
 
 	public List<T> ShiftListLeft<T>(List<T> list, int shiftBy)
 	{
-		if (list.Count > shiftBy)
+		if (list.Count <= shiftBy)
 		{
-			List<T> range = list.GetRange(shiftBy, list.Count - shiftBy);
-			range.AddRange((IEnumerable<T>)list.GetRange(0, shiftBy));
-			return range;
+			return list;
 		}
-		return list;
+		List<T> range = list.GetRange(shiftBy, list.Count - shiftBy);
+		range.AddRange((IEnumerable<T>)list.GetRange(0, shiftBy));
+		return range;
 	}
 
 	public int GetRecipeQueueCount(ComplexRecipe recipe)
@@ -1029,12 +1029,12 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms
 		ComplexRecipe[] array = recipes;
 		foreach (ComplexRecipe complexRecipe in array)
 		{
-			string text = "";
-			string text2 = "";
+			string text = string.Empty;
+			string text2 = string.Empty;
 			ComplexRecipe.RecipeElement[] ingredients = complexRecipe.ingredients;
 			foreach (ComplexRecipe.RecipeElement recipeElement in ingredients)
 			{
-				text = text + "• " + string.Format(UI.BUILDINGEFFECTS.PROCESSEDITEM, "", recipeElement.material.ProperName());
+				text = text + "• " + string.Format(UI.BUILDINGEFFECTS.PROCESSEDITEM, string.Empty, recipeElement.material.ProperName());
 				text2 += string.Format(UI.BUILDINGEFFECTS.TOOLTIPS.PROCESSEDITEM, string.Join(", ", (from r in complexRecipe.results
 				select r.material.ProperName()).ToArray()));
 			}
@@ -1107,12 +1107,12 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms
 
 	public string GetConversationTopic()
 	{
-		if (machineOrders.Count <= 0)
+		if (machineOrders.Count > 0)
 		{
-			return null;
+			UserOrder parentOrder = machineOrders[0].parentOrder;
+			ComplexRecipe recipe = parentOrder.recipe;
+			return recipe.results[0].material.Name;
 		}
-		UserOrder parentOrder = machineOrders[0].parentOrder;
-		ComplexRecipe recipe = parentOrder.recipe;
-		return recipe.results[0].material.Name;
+		return null;
 	}
 }

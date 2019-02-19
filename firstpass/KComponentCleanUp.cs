@@ -4,7 +4,7 @@ public class KComponentCleanUp : MonoBehaviour
 {
 	public static KComponentCleanUp instance;
 
-	private static bool inCleanUpPhase = false;
+	private static bool inCleanUpPhase;
 
 	private KComponents comps;
 

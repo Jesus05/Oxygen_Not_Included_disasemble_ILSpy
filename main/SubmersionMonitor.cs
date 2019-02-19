@@ -6,7 +6,7 @@ public class SubmersionMonitor : KMonoBehaviour, IGameObjectEffectDescriptor, IW
 {
 	private int position;
 
-	private bool dry = false;
+	private bool dry;
 
 	protected float cellLiquidThreshold = 0.2f;
 
@@ -31,11 +31,11 @@ public class SubmersionMonitor : KMonoBehaviour, IGameObjectEffectDescriptor, IW
 	{
 		get
 		{
-			if (!Dry)
+			if (Dry)
 			{
-				return "";
+				return Db.Get().CreatureStatusItems.DryingOut.resolveStringCallback(CREATURES.STATUSITEMS.DRYINGOUT.NAME, this);
 			}
-			return Db.Get().CreatureStatusItems.DryingOut.resolveStringCallback(CREATURES.STATUSITEMS.DRYINGOUT.NAME, this);
+			return string.Empty;
 		}
 	}
 
@@ -105,12 +105,12 @@ public class SubmersionMonitor : KMonoBehaviour, IGameObjectEffectDescriptor, IW
 	public bool IsCellSafe()
 	{
 		int cell = Grid.PosToCell(base.gameObject);
-		if (Grid.IsValidCell(cell))
+		if (!Grid.IsValidCell(cell))
 		{
-			if (!Grid.IsSubstantialLiquid(cell, cellLiquidThreshold))
-			{
-				return false;
-			}
+			return false;
+		}
+		if (Grid.IsSubstantialLiquid(cell, cellLiquidThreshold))
+		{
 			return true;
 		}
 		return false;

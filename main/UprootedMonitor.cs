@@ -11,7 +11,7 @@ public class UprootedMonitor : KMonoBehaviour
 	public bool canBeUprooted = true;
 
 	[Serialize]
-	private bool uprooted = false;
+	private bool uprooted;
 
 	public CellOffset monitorCell = new CellOffset(0, -1);
 
@@ -49,16 +49,16 @@ public class UprootedMonitor : KMonoBehaviour
 
 	public bool CheckTileGrowable()
 	{
-		if (canBeUprooted)
+		if (!canBeUprooted)
 		{
-			if (!uprooted)
-			{
-				if (IsCellSafe(position))
-				{
-					return true;
-				}
-				return false;
-			}
+			return true;
+		}
+		if (uprooted)
+		{
+			return false;
+		}
+		if (!IsCellSafe(position))
+		{
 			return false;
 		}
 		return true;
@@ -81,10 +81,10 @@ public class UprootedMonitor : KMonoBehaviour
 	public static bool IsObjectUprooted(GameObject plant)
 	{
 		UprootedMonitor component = plant.GetComponent<UprootedMonitor>();
-		if (!((Object)component == (Object)null))
+		if ((Object)component == (Object)null)
 		{
-			return component.IsUprooted;
+			return false;
 		}
-		return false;
+		return component.IsUprooted;
 	}
 }

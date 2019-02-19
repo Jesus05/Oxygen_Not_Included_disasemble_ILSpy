@@ -19,15 +19,15 @@ public class CellCostQuery : PathFinderQuery
 
 	public override bool IsMatch(int cell, int parent_cell, int cost)
 	{
-		if (cost <= maxCost)
+		if (cost > maxCost)
 		{
-			if (cell != targetCell)
-			{
-				return false;
-			}
+			return true;
+		}
+		if (cell == targetCell)
+		{
 			resultCost = cost;
 			return true;
 		}
-		return true;
+		return false;
 	}
 }

@@ -20,7 +20,7 @@ public class KButton : KMonoBehaviour, IPointerEnterHandler, IPointerClickHandle
 
 	private bool interactable = true;
 
-	private bool mouseOver = false;
+	private bool mouseOver;
 
 	public bool isInteractable
 	{
@@ -194,7 +194,7 @@ public class KButton : KMonoBehaviour, IPointerEnterHandler, IPointerClickHandle
 		if ((UnityEngine.Object)bgImage == (UnityEngine.Object)null)
 		{
 			bgImage = GetComponent<KImage>();
-			string arg = "";
+			string arg = string.Empty;
 			Transform transform = base.transform;
 			for (int i = 0; i < 5; i++)
 			{

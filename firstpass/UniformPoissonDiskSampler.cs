@@ -38,7 +38,7 @@ public class UniformPoissonDiskSampler
 
 	private static readonly float SquareRootTwo = (float)Math.Sqrt(2.0);
 
-	private SeededRandom myRandom = null;
+	private SeededRandom myRandom;
 
 	public UniformPoissonDiskSampler(SeededRandom seed)
 	{
@@ -140,7 +140,7 @@ public class UniformPoissonDiskSampler
 				float? rejectionSqDistance2 = settings.RejectionSqDistance;
 				if (!rejectionSqDistance2.HasValue || !(Vector2.SqrMagnitude(settings.Center - vector) <= rejectionSqDistance2.GetValueOrDefault()))
 				{
-					goto IL_01ff;
+					goto IL_01f4;
 				}
 			}
 			Vector2 vector2 = Denormalize(vector, settings.TopLeft, (double)settings.CellSize);
@@ -171,8 +171,8 @@ public class UniformPoissonDiskSampler
 				state.Grid[(int)vector2.x, (int)vector2.y] = vector;
 			}
 		}
-		goto IL_01ff;
-		IL_01ff:
+		goto IL_01f4;
+		IL_01f4:
 		return result;
 	}
 

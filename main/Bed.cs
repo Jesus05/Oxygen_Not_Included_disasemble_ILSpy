@@ -105,7 +105,7 @@ public class Bed : Workable, IEffectDescriptor
 			string[] array = effects;
 			foreach (string text in array)
 			{
-				if (text != null && text != "")
+				if (text != null && text != string.Empty)
 				{
 					Effect.AddModifierDescriptions(base.gameObject, list, text, false);
 				}

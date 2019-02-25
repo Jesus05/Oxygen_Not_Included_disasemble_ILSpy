@@ -84,6 +84,12 @@ public class Capturable : Workable, IGameObjectEffectDescriptor
 
 	public void MarkForCapture(bool mark)
 	{
+		PrioritySetting priority = new PrioritySetting(PriorityScreen.PriorityClass.basic, 5);
+		MarkForCapture(mark, priority);
+	}
+
+	public void MarkForCapture(bool mark, PrioritySetting priority)
+	{
 		mark = (mark && IsCapturable());
 		if (markedForCapture && !mark)
 		{
@@ -92,6 +98,11 @@ public class Capturable : Workable, IGameObjectEffectDescriptor
 		else if (!markedForCapture && mark)
 		{
 			Prioritizable.AddRef(base.gameObject);
+			Prioritizable component = GetComponent<Prioritizable>();
+			if ((bool)component)
+			{
+				component.SetMasterPriority(priority);
+			}
 		}
 		markedForCapture = mark;
 		UpdateStatusItem();

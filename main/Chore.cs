@@ -300,6 +300,8 @@ public abstract class Chore
 
 	public static bool ENABLE_PERSONAL_PRIORITIES = true;
 
+	public static PrioritySetting DefaultPrioritySetting = new PrioritySetting(PriorityScreen.PriorityClass.basic, 5);
+
 	private static HashedString highPriorityGroup = "HighPriorityGroup";
 
 	private Notification highPriorityNotification;
@@ -395,6 +397,10 @@ public abstract class Chore
 		{
 			priority_class = PriorityScreen.PriorityClass.emergency;
 			priority_value = 2;
+		}
+		if (priority_value < 0 || priority_value > 9)
+		{
+			Debug.LogErrorFormat("Priority Value Out Of Range: {0}", priority_value);
 		}
 		masterPriority = new PrioritySetting(priority_class, priority_value);
 		priorityMod = priority_mod;

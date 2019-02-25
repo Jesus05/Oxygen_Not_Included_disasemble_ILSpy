@@ -14,7 +14,7 @@ internal class TaskDivision<Task, SharedData> where Task : DivisibleTask<SharedD
 	}
 
 	public TaskDivision()
-		: this(SystemInfo.processorCount - 1)
+		: this(SystemInfo.processorCount)
 	{
 	}
 

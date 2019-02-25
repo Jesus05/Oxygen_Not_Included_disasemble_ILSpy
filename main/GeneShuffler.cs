@@ -254,7 +254,7 @@ public class GeneShuffler : Workable
 		chore = new WorkChore<Workable>(Db.Get().ChoreTypes.GeneShuffle, override_anims: Assets.GetAnim("anim_interacts_neuralvacillator_kanim"), target: this, chore_provider: null, chore_tags: null, run_until_complete: true, on_complete: delegate
 		{
 			CompleteChore();
-		}, on_begin: null, on_end: null, allow_in_red_alert: true, schedule_block: null, ignore_schedule_block: false, only_when_operational: true, is_preemptable: false, allow_in_context_menu: true, allow_prioritization: true, priority_class: PriorityScreen.PriorityClass.compulsory, priority_class_value: 5, ignore_building_assignment: false, add_to_daily_report: true);
+		}, on_begin: null, on_end: null, allow_in_red_alert: true, schedule_block: null, ignore_schedule_block: false, only_when_operational: true, is_preemptable: false, allow_in_context_menu: true, allow_prioritization: false, priority_class: PriorityScreen.PriorityClass.high, priority_class_value: 5, ignore_building_assignment: false, add_to_daily_report: true);
 	}
 
 	private void CancelChore()

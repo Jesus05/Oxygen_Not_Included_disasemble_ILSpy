@@ -181,7 +181,11 @@ public class ConversationManager : KMonoBehaviour, ISim200ms
 		StartedTalkingEvent data = startedTalkingEvent;
 		foreach (MinionIdentity minion in setup.minions)
 		{
-			minion.Trigger(-594200555, data);
+			DebugUtil.DevAssert(minion, "minion in setup.minions was null");
+			if ((bool)minion)
+			{
+				minion.Trigger(-594200555, data);
+			}
 		}
 		setup.numUtterances++;
 		return true;

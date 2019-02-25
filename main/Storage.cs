@@ -165,21 +165,15 @@ public class Storage : Workable, ISaveLoadableDetails, IEffectDescriptor
 
 	public int Count => items.Count;
 
-	public int masterPriority
+	public PrioritySetting masterPriority
 	{
 		get
 		{
-			int result;
-			if ((UnityEngine.Object)prioritizable != (UnityEngine.Object)null)
+			if ((bool)prioritizable)
 			{
-				PrioritySetting masterPriority = prioritizable.GetMasterPriority();
-				result = masterPriority.priority_value;
+				return prioritizable.GetMasterPriority();
 			}
-			else
-			{
-				result = 10;
-			}
-			return result;
+			return Chore.DefaultPrioritySetting;
 		}
 	}
 

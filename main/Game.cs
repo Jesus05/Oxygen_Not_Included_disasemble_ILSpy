@@ -328,6 +328,8 @@ public class Game : KMonoBehaviour
 
 	public HandleVector<CallbackInfo> callbackManager = new HandleVector<CallbackInfo>(256);
 
+	public List<int> callbackManagerManuallyReleasedHandles = new List<int>();
+
 	public ComplexCallbackHandleVector<int> simComponentCallbackManager = new ComplexCallbackHandleVector<int>(256);
 
 	public ComplexCallbackHandleVector<Sim.MassConsumedCallback> massConsumedCallbackManager = new ComplexCallbackHandleVector<Sim.MassConsumedCallback>(64);
@@ -832,8 +834,11 @@ public class Game : KMonoBehaviour
 					Sim.CallbackInfo callbackInfo = ptr->callbackInfo[k];
 					HandleVector<CallbackInfo>.Handle handle = default(HandleVector<CallbackInfo>.Handle);
 					handle.index = callbackInfo.callbackIdx;
-					HandleVector<CallbackInfo>.Handle h = handle;
-					this.callbackInfo.Add(new Klei.CallbackInfo(h));
+					HandleVector<CallbackInfo>.Handle handle2 = handle;
+					if (!IsManuallyReleasedHandle(handle2))
+					{
+						this.callbackInfo.Add(new Klei.CallbackInfo(handle2));
+					}
 				}
 				int numSpawnFallingLiquidInfo = ptr->numSpawnFallingLiquidInfo;
 				for (int l = 0; l < numSpawnFallingLiquidInfo; l++)
@@ -892,26 +897,26 @@ public class Game : KMonoBehaviour
 					ElementConsumer.AddMass(consumed_info);
 				}
 				int numMassConsumedCallbacks = ptr->numMassConsumedCallbacks;
-				HandleVector<ComplexCallbackInfo<Sim.MassConsumedCallback>>.Handle handle2 = default(HandleVector<ComplexCallbackInfo<Sim.MassConsumedCallback>>.Handle);
+				HandleVector<ComplexCallbackInfo<Sim.MassConsumedCallback>>.Handle handle3 = default(HandleVector<ComplexCallbackInfo<Sim.MassConsumedCallback>>.Handle);
 				for (int num5 = 0; num5 < numMassConsumedCallbacks; num5++)
 				{
 					Sim.MassConsumedCallback arg = ptr->massConsumedCallbacks[num5];
-					handle2.index = arg.callbackIdx;
-					ComplexCallbackInfo<Sim.MassConsumedCallback> complexCallbackInfo = massConsumedCallbackManager.Release(handle2, "massConsumedCB");
+					handle3.index = arg.callbackIdx;
+					ComplexCallbackInfo<Sim.MassConsumedCallback> complexCallbackInfo = massConsumedCallbackManager.Release(handle3, "massConsumedCB");
 					if (complexCallbackInfo.cb != null)
 					{
 						complexCallbackInfo.cb(arg, complexCallbackInfo.callbackData);
 					}
 				}
 				int numMassEmittedCallbacks = ptr->numMassEmittedCallbacks;
-				HandleVector<ComplexCallbackInfo<Sim.MassEmittedCallback>>.Handle handle3 = default(HandleVector<ComplexCallbackInfo<Sim.MassEmittedCallback>>.Handle);
+				HandleVector<ComplexCallbackInfo<Sim.MassEmittedCallback>>.Handle handle4 = default(HandleVector<ComplexCallbackInfo<Sim.MassEmittedCallback>>.Handle);
 				for (int num6 = 0; num6 < numMassEmittedCallbacks; num6++)
 				{
 					Sim.MassEmittedCallback arg2 = ptr->massEmittedCallbacks[num6];
-					handle3.index = arg2.callbackIdx;
-					if (massEmitCallbackManager.IsVersionValid(handle3))
+					handle4.index = arg2.callbackIdx;
+					if (massEmitCallbackManager.IsVersionValid(handle4))
 					{
-						ComplexCallbackInfo<Sim.MassEmittedCallback> item = massEmitCallbackManager.GetItem(handle3);
+						ComplexCallbackInfo<Sim.MassEmittedCallback> item = massEmitCallbackManager.GetItem(handle4);
 						if (item.cb != null)
 						{
 							item.cb(arg2, item.callbackData);
@@ -919,14 +924,14 @@ public class Game : KMonoBehaviour
 					}
 				}
 				int numDiseaseConsumptionCallbacks = ptr->numDiseaseConsumptionCallbacks;
-				HandleVector<ComplexCallbackInfo<Sim.DiseaseConsumptionCallback>>.Handle handle4 = default(HandleVector<ComplexCallbackInfo<Sim.DiseaseConsumptionCallback>>.Handle);
+				HandleVector<ComplexCallbackInfo<Sim.DiseaseConsumptionCallback>>.Handle handle5 = default(HandleVector<ComplexCallbackInfo<Sim.DiseaseConsumptionCallback>>.Handle);
 				for (int num7 = 0; num7 < numDiseaseConsumptionCallbacks; num7++)
 				{
 					Sim.DiseaseConsumptionCallback arg3 = ptr->diseaseConsumptionCallbacks[num7];
-					handle4.index = arg3.callbackIdx;
-					if (diseaseConsumptionCallbackManager.IsVersionValid(handle4))
+					handle5.index = arg3.callbackIdx;
+					if (diseaseConsumptionCallbackManager.IsVersionValid(handle5))
 					{
-						ComplexCallbackInfo<Sim.DiseaseConsumptionCallback> item2 = diseaseConsumptionCallbackManager.GetItem(handle4);
+						ComplexCallbackInfo<Sim.DiseaseConsumptionCallback> item2 = diseaseConsumptionCallbackManager.GetItem(handle5);
 						if (item2.cb != null)
 						{
 							item2.cb(arg3, item2.callbackData);
@@ -934,14 +939,14 @@ public class Game : KMonoBehaviour
 					}
 				}
 				int numComponentStateChangedMessages = ptr->numComponentStateChangedMessages;
-				HandleVector<ComplexCallbackInfo<int>>.Handle handle5 = default(HandleVector<ComplexCallbackInfo<int>>.Handle);
+				HandleVector<ComplexCallbackInfo<int>>.Handle handle6 = default(HandleVector<ComplexCallbackInfo<int>>.Handle);
 				for (int num8 = 0; num8 < numComponentStateChangedMessages; num8++)
 				{
 					Sim.ComponentStateChangedMessage componentStateChangedMessage = ptr->componentStateChangedMessages[num8];
-					handle5.index = componentStateChangedMessage.callbackIdx;
-					if (simComponentCallbackManager.IsVersionValid(handle5))
+					handle6.index = componentStateChangedMessage.callbackIdx;
+					if (simComponentCallbackManager.IsVersionValid(handle6))
 					{
-						ComplexCallbackInfo<int> complexCallbackInfo2 = simComponentCallbackManager.Release(handle5, "component state changed cb");
+						ComplexCallbackInfo<int> complexCallbackInfo2 = simComponentCallbackManager.Release(handle6, "component state changed cb");
 						if (complexCallbackInfo2.cb != null)
 						{
 							complexCallbackInfo2.cb(componentStateChangedMessage.simHandle, complexCallbackInfo2.callbackData);
@@ -1145,6 +1150,7 @@ public class Game : KMonoBehaviour
 			gameSolidInfo.Clear();
 			solidInfo.Clear();
 			callbackInfo.Clear();
+			callbackManagerManuallyReleasedHandles.Clear();
 			Pathfinding.Instance.UpdateNavGrids(false);
 		}
 	}
@@ -1263,7 +1269,7 @@ public class Game : KMonoBehaviour
 		}
 		if (!(Time.timeSinceLevelLoad < GenericGameSettings.instance.performanceCapture.waitTime))
 		{
-			uint num = 309851u;
+			uint num = 311032u;
 			string text = System.DateTime.Now.ToShortDateString();
 			string text2 = System.DateTime.Now.ToShortTimeString();
 			string fileName = Path.GetFileName(GenericGameSettings.instance.performanceCapture.saveGame);
@@ -1730,6 +1736,24 @@ public class Game : KMonoBehaviour
 
 	private void SpawnOxygenBubbles(Vector3 position, float angle)
 	{
+	}
+
+	public void ManualReleaseHandle(HandleVector<CallbackInfo>.Handle handle)
+	{
+		if (handle.IsValid())
+		{
+			callbackManagerManuallyReleasedHandles.Add(handle.index);
+			callbackManager.Release(handle);
+		}
+	}
+
+	private bool IsManuallyReleasedHandle(HandleVector<CallbackInfo>.Handle handle)
+	{
+		if (!callbackManager.IsVersionValid(handle) && callbackManagerManuallyReleasedHandles.Contains(handle.index))
+		{
+			return true;
+		}
+		return false;
 	}
 
 	[ContextMenu("Print")]

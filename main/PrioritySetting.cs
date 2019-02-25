@@ -1,6 +1,6 @@
 using System;
 
-public struct PrioritySetting : IComparable
+public struct PrioritySetting : IComparable<PrioritySetting>
 {
 	public PriorityScreen.PriorityClass priority_class;
 
@@ -27,6 +27,26 @@ public struct PrioritySetting : IComparable
 		return !lhs.Equals(rhs);
 	}
 
+	public static bool operator <=(PrioritySetting lhs, PrioritySetting rhs)
+	{
+		return lhs.CompareTo(rhs) <= 0;
+	}
+
+	public static bool operator >=(PrioritySetting lhs, PrioritySetting rhs)
+	{
+		return lhs.CompareTo(rhs) >= 0;
+	}
+
+	public static bool operator <(PrioritySetting lhs, PrioritySetting rhs)
+	{
+		return lhs.CompareTo(rhs) < 0;
+	}
+
+	public static bool operator >(PrioritySetting lhs, PrioritySetting rhs)
+	{
+		return lhs.CompareTo(rhs) > 0;
+	}
+
 	public override bool Equals(object obj)
 	{
 		if (!(obj is PrioritySetting))
@@ -42,33 +62,21 @@ public struct PrioritySetting : IComparable
 		return prioritySetting2.priority_value == priority_value;
 	}
 
-	public int CompareTo(object obj)
+	public int CompareTo(PrioritySetting other)
 	{
-		if (!(obj is PrioritySetting))
+		if (priority_class > other.priority_class)
 		{
 			return 1;
 		}
-		PriorityScreen.PriorityClass num = priority_class;
-		PrioritySetting prioritySetting = (PrioritySetting)obj;
-		if (num > prioritySetting.priority_class)
-		{
-			return 1;
-		}
-		PriorityScreen.PriorityClass num2 = priority_class;
-		PrioritySetting prioritySetting2 = (PrioritySetting)obj;
-		if (num2 < prioritySetting2.priority_class)
+		if (priority_class < other.priority_class)
 		{
 			return -1;
 		}
-		int num3 = priority_value;
-		PrioritySetting prioritySetting3 = (PrioritySetting)obj;
-		if (num3 > prioritySetting3.priority_value)
+		if (priority_value > other.priority_value)
 		{
 			return 1;
 		}
-		int num4 = priority_value;
-		PrioritySetting prioritySetting4 = (PrioritySetting)obj;
-		if (num4 < prioritySetting4.priority_value)
+		if (priority_value < other.priority_value)
 		{
 			return -1;
 		}

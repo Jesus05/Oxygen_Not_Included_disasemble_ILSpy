@@ -135,10 +135,10 @@ public class SetLocker : StateMachineComponent<SetLocker.StatesInstance>
 		if (chore == null)
 		{
 			GetComponent<Workable>().SetWorkTime(1.5f);
-			chore = new WorkChore<Workable>(Db.Get().ChoreTypes.EmptyStorage, this, null, null, true, delegate
+			chore = new WorkChore<Workable>(Db.Get().ChoreTypes.EmptyStorage, override_anims: Assets.GetAnim(overrideAnim), target: this, chore_provider: null, chore_tags: null, run_until_complete: true, on_complete: delegate
 			{
 				CompleteChore();
-			}, null, null, true, null, false, true, Assets.GetAnim(overrideAnim), false, true, true, PriorityScreen.PriorityClass.basic, 10, false, true);
+			}, on_begin: null, on_end: null, allow_in_red_alert: true, schedule_block: null, ignore_schedule_block: false, only_when_operational: true, is_preemptable: false, allow_in_context_menu: true, allow_prioritization: true, priority_class: PriorityScreen.PriorityClass.high, priority_class_value: 5, ignore_building_assignment: false, add_to_daily_report: true);
 			OnRefreshUserMenu(null);
 		}
 	}

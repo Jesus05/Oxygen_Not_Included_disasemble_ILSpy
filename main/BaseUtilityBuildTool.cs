@@ -188,91 +188,95 @@ public class BaseUtilityBuildTool : DragTool
 
 	private bool CheckForConnection(int cell, string defName, string soundName, ref BuildingCellVisualizer outBcv, bool fireEvents = true)
 	{
+		outBcv = null;
 		Building building = GetBuilding(cell);
-		if ((Object)building != (Object)null)
+		if (!(bool)building)
 		{
-			int num = -1;
-			int num2 = -1;
-			int num3 = -1;
-			if (defName.Contains("LogicWire"))
+			return false;
+		}
+		int num = -1;
+		int num2 = -1;
+		int num3 = -1;
+		if (defName.Contains("LogicWire"))
+		{
+			LogicPorts component = building.gameObject.GetComponent<LogicPorts>();
+			if ((Object)component != (Object)null)
 			{
-				LogicPorts component = building.gameObject.GetComponent<LogicPorts>();
-				if ((Object)component != (Object)null)
+				foreach (ILogicUIElement inputPort in component.inputPorts)
 				{
-					foreach (ILogicUIElement inputPort in component.inputPorts)
+					DebugUtil.DevAssert(inputPort != null, "input port was null");
+					if (inputPort.GetLogicUICell() == cell)
 					{
-						if (inputPort.GetLogicUICell() == cell)
+						num = cell;
+						break;
+					}
+				}
+				if (num == -1)
+				{
+					foreach (ILogicUIElement outputPort in component.outputPorts)
+					{
+						DebugUtil.DevAssert(outputPort != null, "output port was null");
+						if (outputPort.GetLogicUICell() == cell)
 						{
-							num = inputPort.GetLogicUICell();
+							num2 = cell;
 							break;
 						}
 					}
-					if (num == -1)
+				}
+			}
+		}
+		else if (defName.Contains("Wire"))
+		{
+			num = building.GetPowerInputCell();
+			num2 = building.GetPowerOutputCell();
+		}
+		else if (defName.Contains("Liquid"))
+		{
+			if (building.Def.InputConduitType == ConduitType.Liquid)
+			{
+				num = building.GetUtilityInputCell();
+			}
+			if (building.Def.OutputConduitType == ConduitType.Liquid)
+			{
+				num2 = building.GetUtilityOutputCell();
+			}
+			ElementFilter component2 = building.GetComponent<ElementFilter>();
+			if ((Object)component2 != (Object)null && component2.portInfo.conduitType == ConduitType.Liquid)
+			{
+				num3 = component2.GetFilteredCell();
+			}
+		}
+		else if (defName.Contains("Gas"))
+		{
+			if (building.Def.InputConduitType == ConduitType.Gas)
+			{
+				num = building.GetUtilityInputCell();
+			}
+			if (building.Def.OutputConduitType == ConduitType.Gas)
+			{
+				num2 = building.GetUtilityOutputCell();
+			}
+			ElementFilter component3 = building.GetComponent<ElementFilter>();
+			if ((Object)component3 != (Object)null && component3.portInfo.conduitType == ConduitType.Gas)
+			{
+				num3 = component3.GetFilteredCell();
+			}
+		}
+		if (cell == num || cell == num2 || cell == num3)
+		{
+			BuildingCellVisualizer buildingCellVisualizer = outBcv = building.gameObject.GetComponent<BuildingCellVisualizer>();
+			if (((Object)buildingCellVisualizer != (Object)null) ? true : false)
+			{
+				if (fireEvents)
+				{
+					buildingCellVisualizer.ConnectedEvent(cell);
+					string sound = GlobalAssets.GetSound(soundName, false);
+					if (sound != null)
 					{
-						foreach (ILogicUIElement outputPort in component.outputPorts)
-						{
-							if (outputPort.GetLogicUICell() == cell)
-							{
-								num2 = outputPort.GetLogicUICell();
-								break;
-							}
-						}
+						KMonoBehaviour.PlaySound(sound);
 					}
 				}
-			}
-			else if (defName.Contains("Wire"))
-			{
-				num = building.GetPowerInputCell();
-				num2 = building.GetPowerOutputCell();
-			}
-			else if (defName.Contains("Liquid"))
-			{
-				if (building.Def.InputConduitType == ConduitType.Liquid)
-				{
-					num = building.GetUtilityInputCell();
-				}
-				if (building.Def.OutputConduitType == ConduitType.Liquid)
-				{
-					num2 = building.GetUtilityOutputCell();
-				}
-				ElementFilter component2 = building.GetComponent<ElementFilter>();
-				if ((Object)component2 != (Object)null && component2.portInfo.conduitType == ConduitType.Liquid)
-				{
-					num3 = component2.GetFilteredCell();
-				}
-			}
-			else if (defName.Contains("Gas"))
-			{
-				if (building.Def.InputConduitType == ConduitType.Gas)
-				{
-					num = building.GetUtilityInputCell();
-				}
-				if (building.Def.OutputConduitType == ConduitType.Gas)
-				{
-					num2 = building.GetUtilityOutputCell();
-				}
-				ElementFilter component3 = building.GetComponent<ElementFilter>();
-				if ((Object)component3 != (Object)null && component3.portInfo.conduitType == ConduitType.Gas)
-				{
-					num3 = component3.GetFilteredCell();
-				}
-			}
-			if (cell == num || cell == num2 || cell == num3)
-			{
-				BuildingCellVisualizer buildingCellVisualizer = outBcv = building.gameObject.GetComponent<BuildingCellVisualizer>();
-				if (((Object)buildingCellVisualizer != (Object)null) ? true : false)
-				{
-					if (fireEvents)
-					{
-						buildingCellVisualizer.ConnectedEvent(cell);
-						string sound = GlobalAssets.GetSound(soundName, false);
-						if (sound != null)
-						{
-							KMonoBehaviour.PlaySound(sound);
-						}
-					}
-					return true;
-				}
+				return true;
 			}
 		}
 		outBcv = null;

@@ -74,6 +74,8 @@ public class Prioritizable : KMonoBehaviour
 		}
 	};
 
+	private Guid highPriorityStatusItem;
+
 	protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
@@ -110,6 +112,7 @@ public class Prioritizable : KMonoBehaviour
 		{
 			onPriorityChanged(masterPrioritySetting);
 		}
+		RefreshHighPriorityNotification();
 		Components.Prioritizables.Add(this);
 	}
 
@@ -127,22 +130,30 @@ public class Prioritizable : KMonoBehaviour
 			{
 				onPriorityChanged(masterPrioritySetting);
 			}
+			RefreshHighPriorityNotification();
 		}
 	}
 
 	public void AddRef()
 	{
 		refCount++;
+		RefreshHighPriorityNotification();
 	}
 
 	public void RemoveRef()
 	{
 		refCount--;
+		RefreshHighPriorityNotification();
 	}
 
 	public bool IsPrioritizable()
 	{
 		return refCount > 0;
+	}
+
+	public bool IsEmergency()
+	{
+		return masterPrioritySetting.priority_class == PriorityScreen.PriorityClass.emergency && IsPrioritizable();
 	}
 
 	protected override void OnCleanUp()
@@ -166,6 +177,23 @@ public class Prioritizable : KMonoBehaviour
 		if ((UnityEngine.Object)component != (UnityEngine.Object)null)
 		{
 			component.RemoveRef();
+		}
+	}
+
+	private void RefreshHighPriorityNotification()
+	{
+		bool flag = masterPrioritySetting.priority_class == PriorityScreen.PriorityClass.emergency && IsPrioritizable();
+		if (flag && highPriorityStatusItem == Guid.Empty)
+		{
+			highPriorityStatusItem = GetComponent<KSelectable>().AddStatusItem(Db.Get().BuildingStatusItems.EmergencyPriority, null);
+		}
+		else if (!flag && highPriorityStatusItem != Guid.Empty)
+		{
+			highPriorityStatusItem = GetComponent<KSelectable>().RemoveStatusItem(highPriorityStatusItem, false);
+		}
+		if ((UnityEngine.Object)GlobalChoreProvider.Instance != (UnityEngine.Object)null)
+		{
+			GlobalChoreProvider.Instance.RefreshEmergencyChoreStatus();
 		}
 	}
 }

@@ -257,18 +257,17 @@ public class BrushTool : InterfaceTool
 	private void HandlePriortyKeysDown(KButtonEvent e)
 	{
 		Action action = e.GetAction();
-		if (Action.Plan1 <= action && action <= Action.Plan9 && e.TryConsume(action))
+		if (Action.Plan1 <= action && action <= Action.Plan10 && e.TryConsume(action))
 		{
 			int num = (int)(action - 36 + 1);
 			if (num <= 9)
 			{
 				ToolMenu.Instance.PriorityScreen.SetScreenPriority(new PrioritySetting(PriorityScreen.PriorityClass.basic, num), true);
-				return;
 			}
-		}
-		if (!e.Consumed)
-		{
-			e.TryConsume(Action.Plan10);
+			else
+			{
+				ToolMenu.Instance.PriorityScreen.SetScreenPriority(new PrioritySetting(PriorityScreen.PriorityClass.emergency, 1), true);
+			}
 		}
 	}
 

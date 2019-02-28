@@ -1467,7 +1467,7 @@ public class ConduitFlow : IConduitFlow
 										ConduitContents contents4 = RemoveElementFromGrid(conduit, num);
 										soaInfo.SetLastFlowInfo(conduit.idx, soaInfo.GetTargetFlowDirection(conduit.idx), ref contents4);
 										Conduit conduitFromDirection3 = soaInfo.GetConduitFromDirection(conduitFromDirection.idx, soaInfo.GetTargetFlowDirection(conduit.idx));
-										bool is_updated = conduitFromDirection3.idx == -1;
+										bool is_updated = conduitFromDirection3.idx == -1 || contents.mass - contents4.mass <= 0f;
 										soaInfo.SetUpdated(conduitFromDirection.idx, is_updated);
 										soaInfo.SetSrcFlowDirection(conduitFromDirection.idx, conduitFromDirection.GetNextFlowSource(this));
 									}

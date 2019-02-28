@@ -320,6 +320,8 @@ namespace Database
 
 		public StatusItem InvalidPortOverlap;
 
+		public StatusItem EmergencyPriority;
+
 		[CompilerGenerated]
 		private static Func<HashedString, object, bool> _003C_003Ef__mg_0024cache0;
 
@@ -1009,6 +1011,10 @@ namespace Database
 			};
 			InvalidPortOverlap = CreateStatusItem("InvalidPortOverlap", "BUILDING", "status_item_exclamation", StatusItem.IconType.Custom, NotificationType.BadMinor, false, OverlayModes.None.ID, true, 63486);
 			InvalidPortOverlap.AddNotification(null, null, null, 0f);
+			EmergencyPriority = CreateStatusItem("EmergencyPriority", BUILDING.STATUSITEMS.EMERGENCY_PRIORITY.NAME, BUILDING.STATUSITEMS.EMERGENCY_PRIORITY.TOOLTIP, "status_item_doubleexclamation", StatusItem.IconType.Custom, NotificationType.Bad, false, OverlayModes.None.ID, 63486);
+			StatusItem emergencyPriority = EmergencyPriority;
+			string notification_text = BUILDING.STATUSITEMS.EMERGENCY_PRIORITY.NOTIFICATION_NAME;
+			emergencyPriority.AddNotification(null, notification_text, BUILDING.STATUSITEMS.EMERGENCY_PRIORITY.NOTIFICATION_TOOLTIP, 0f);
 		}
 
 		private static bool ShowInUtilityOverlay(HashedString mode, object data)

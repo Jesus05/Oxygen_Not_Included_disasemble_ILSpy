@@ -1,3 +1,5 @@
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -119,15 +121,15 @@ public class GlobalChoreProvider : ChoreProvider, ISim200ms
 		foreach (FetchChore fetchChore in fetchChores)
 		{
 			int num = -1;
-			if ((Object)fetchChore.destination != (Object)null)
+			if ((UnityEngine.Object)fetchChore.destination != (UnityEngine.Object)null)
 			{
-				if ((Object)fetchChore.automatable != (Object)null && fetchChore.automatable.GetAutomationOnly())
+				if ((UnityEngine.Object)fetchChore.automatable != (UnityEngine.Object)null && fetchChore.automatable.GetAutomationOnly())
 				{
 					continue;
 				}
 				num = component.GetNavigationCost(fetchChore.destination);
 			}
-			if (num != -1 && !((Object)fetchChore.driver != (Object)null))
+			if (num != -1 && !((UnityEngine.Object)fetchChore.driver != (UnityEngine.Object)null))
 			{
 				fetches.Add(new Fetch
 				{
@@ -186,12 +188,25 @@ public class GlobalChoreProvider : ChoreProvider, ISim200ms
 	public void RefreshEmergencyChoreStatus()
 	{
 		bool on = false;
-		foreach (Chore chore in chores)
+		IEnumerator enumerator = Components.Prioritizables.GetEnumerator();
+		try
 		{
-			if (chore.masterPriority.priority_class == PriorityScreen.PriorityClass.emergency)
+			while (enumerator.MoveNext())
 			{
-				on = true;
-				break;
+				Prioritizable prioritizable = (Prioritizable)enumerator.Current;
+				if (prioritizable.IsEmergency())
+				{
+					on = true;
+					break;
+				}
+			}
+		}
+		finally
+		{
+			IDisposable disposable;
+			if ((disposable = (enumerator as IDisposable)) != null)
+			{
+				disposable.Dispose();
 			}
 		}
 		RedAlertManager.Instance.Get().HasEmergencyChore(on);

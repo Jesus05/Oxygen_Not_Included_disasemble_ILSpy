@@ -320,18 +320,14 @@ public class MinionIdentity : KMonoBehaviour, ISaveLoadable, IAssignableIdentity
 				if ((UnityEngine.Object)choreDriver != (UnityEngine.Object)null)
 				{
 					Chore currentChore = choreDriver.GetCurrentChore();
-					if (currentChore != null)
+					if (currentChore != null && currentChore is FetchAreaChore)
 					{
-						ReportManager.Instance.ReportValue(ReportManager.ReportType.TravelTime, dt, GameUtil.GetChoreName(currentChore, null), currentChore.driver.GetProperName());
-						if (currentChore is FetchAreaChore)
+						MinionResume component = GetComponent<MinionResume>();
+						if ((UnityEngine.Object)component != (UnityEngine.Object)null)
 						{
-							MinionResume component = GetComponent<MinionResume>();
-							if ((UnityEngine.Object)component != (UnityEngine.Object)null)
-							{
-								component.AddExperienceIfRole("Hauler", dt * ROLES.ACTIVE_EXPERIENCE_VERY_SLOW);
-								component.AddExperienceIfRole(MaterialsManager.ID, dt * ROLES.ACTIVE_EXPERIENCE_VERY_SLOW);
-								component.AddExperienceIfRole(Handyman.ID, dt * ROLES.ACTIVE_EXPERIENCE_VERY_SLOW);
-							}
+							component.AddExperienceIfRole("Hauler", dt * ROLES.ACTIVE_EXPERIENCE_VERY_SLOW);
+							component.AddExperienceIfRole(MaterialsManager.ID, dt * ROLES.ACTIVE_EXPERIENCE_VERY_SLOW);
+							component.AddExperienceIfRole(Handyman.ID, dt * ROLES.ACTIVE_EXPERIENCE_VERY_SLOW);
 						}
 					}
 				}

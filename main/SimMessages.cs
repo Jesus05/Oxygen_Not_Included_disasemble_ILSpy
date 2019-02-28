@@ -990,27 +990,25 @@ public static class SimMessages
 		{
 			if (temperature < 0f || 10000f < temperature)
 			{
-				KCrashReporter.Assert(false, "Invalid temperature for cell modification T=" + temperature.ToString());
+				Debug.LogWarningFormat("Invalid cell modification (temp out of bounds): Cell={0}, EIdx={1}, T={2}, M={3}", gameCell, elementIdx, temperature, mass);
+				temperature = ElementLoader.elements[elementIdx].defaultValues.temperature;
 			}
-			else
+			if (temperature == 0f && mass > 0f && elementIdx >= 0)
 			{
-				if (temperature == 0f && mass > 0f && elementIdx >= 0)
-				{
-					KCrashReporter.Assert(false, string.Format("RESET TEMPERATURE: Invalid cell modification. Set temperature to zero with non-zero mass"));
-					temperature = ElementLoader.elements[elementIdx].defaultValues.temperature;
-				}
-				ModifyCellMessage* ptr = stackalloc ModifyCellMessage[1];
-				ptr->cellIdx = gameCell;
-				ptr->callbackIdx = callbackIdx;
-				ptr->temperature = temperature;
-				ptr->mass = mass;
-				ptr->elementIdx = (byte)elementIdx;
-				ptr->replaceType = (byte)replace_type;
-				ptr->diseaseIdx = disease_idx;
-				ptr->diseaseCount = disease_count;
-				ptr->addSubType = (byte)((!do_vertical_solid_displacement) ? 1 : 0);
-				Sim.SIM_HandleMessage(-1252920804, sizeof(ModifyCellMessage), (byte*)ptr);
+				Debug.LogWarningFormat("Invalid cell modification (zero temp with non-zero mass): Cell={0}, EIdx={1}, T={2}, M={3}", gameCell, elementIdx, temperature, mass);
+				temperature = ElementLoader.elements[elementIdx].defaultValues.temperature;
 			}
+			ModifyCellMessage* ptr = stackalloc ModifyCellMessage[1];
+			ptr->cellIdx = gameCell;
+			ptr->callbackIdx = callbackIdx;
+			ptr->temperature = temperature;
+			ptr->mass = mass;
+			ptr->elementIdx = (byte)elementIdx;
+			ptr->replaceType = (byte)replace_type;
+			ptr->diseaseIdx = disease_idx;
+			ptr->diseaseCount = disease_count;
+			ptr->addSubType = (byte)((!do_vertical_solid_displacement) ? 1 : 0);
+			Sim.SIM_HandleMessage(-1252920804, sizeof(ModifyCellMessage), (byte*)ptr);
 		}
 	}
 

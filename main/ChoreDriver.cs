@@ -96,10 +96,35 @@ public class ChoreDriver : StateMachineComponent<ChoreDriver.StatesInstance>
 			haschore.Enter("BeginChore", delegate(StatesInstance smi)
 			{
 				smi.BeginChore();
-			}).Exit("EndChore", delegate(StatesInstance smi)
+			}).Update(delegate(StatesInstance smi, float dt)
+			{
+				if (smi.master.HasTag(GameTags.Minion) && !smi.master.HasTag(GameTags.Dead))
+				{
+					Chore chore = currentChore.Get(smi);
+					if (smi.master.GetComponent<Navigator>().IsMoving())
+					{
+						ReportManager.Instance.ReportValue(ReportManager.ReportType.TravelTime, dt, GameUtil.GetChoreName(chore, null), smi.master.GetProperName());
+					}
+					else
+					{
+						ReportManager.ReportType reportType = chore.GetReportType();
+						Workable workable = smi.master.GetComponent<Worker>().workable;
+						if ((UnityEngine.Object)workable != (UnityEngine.Object)null)
+						{
+							ReportManager.ReportType reportType2 = workable.GetReportType();
+							if (reportType != reportType2)
+							{
+								reportType = reportType2;
+							}
+						}
+						ReportManager.Instance.ReportValue(reportType, dt, string.Format(UI.ENDOFDAYREPORT.NOTES.WORK_TIME, GameUtil.GetChoreName(chore, null)), smi.master.GetProperName());
+					}
+				}
+			}, UpdateRate.SIM_200ms, false).Exit("EndChore", delegate(StatesInstance smi)
 			{
 				smi.EndChore("ChoreDriver.SignalStop");
-			}).OnSignal(stop, nochore);
+			})
+				.OnSignal(stop, nochore);
 		}
 	}
 

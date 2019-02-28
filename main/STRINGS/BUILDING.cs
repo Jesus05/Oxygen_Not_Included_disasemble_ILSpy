@@ -1683,6 +1683,17 @@ namespace STRINGS
 
 				public static LocString TILE_FORMAT = "Solid {0}";
 			}
+
+			public class EMERGENCY_PRIORITY
+			{
+				public static LocString NAME = "Emergency Priority";
+
+				public static LocString TOOLTIP = "The colony is in Red Alert because Emergency Priority has been set";
+
+				public static LocString NOTIFICATION_NAME = "Emergency Priority";
+
+				public static LocString NOTIFICATION_TOOLTIP = "The colony is in Red Alert because the following items are set to Emergency Priority:";
+			}
 		}
 
 		public class DETAILS

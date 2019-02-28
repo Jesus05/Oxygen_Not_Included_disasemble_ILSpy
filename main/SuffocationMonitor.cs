@@ -57,7 +57,7 @@ public class SuffocationMonitor : GameStateMachine<SuffocationMonitor, Suffocati
 
 		public bool IsInBreathableArea()
 		{
-			return base.master.GetComponent<Sensors>().GetSensor<BreathableAreaSensor>().IsBreathable();
+			return base.master.GetComponent<KPrefabID>().HasTag(GameTags.RecoveringBreath) || base.master.GetComponent<Sensors>().GetSensor<BreathableAreaSensor>().IsBreathable();
 		}
 
 		public bool HasSuffocated()
@@ -67,7 +67,7 @@ public class SuffocationMonitor : GameStateMachine<SuffocationMonitor, Suffocati
 
 		public bool IsSuffocating()
 		{
-			return breath.value <= 45.4545441f;
+			return breath.deltaAttribute.GetTotalValue() <= 0f && breath.value <= 45.4545441f;
 		}
 
 		public void Kill()
@@ -128,7 +128,8 @@ public class SuffocationMonitor : GameStateMachine<SuffocationMonitor, Suffocati
 		satisfied.DefaultState(satisfied.normal).ToggleAttributeModifier("Breathing", (Instance smi) => smi.breathing, null).EventTransition(GameHashes.ExitedBreathableArea, nooxygen, (Instance smi) => !smi.IsInBreathableArea());
 		satisfied.normal.Transition(satisfied.low, (Instance smi) => smi.oxygenBreather.IsLowOxygen(), UpdateRate.SIM_200ms);
 		satisfied.low.Transition(satisfied.normal, (Instance smi) => !smi.oxygenBreather.IsLowOxygen(), UpdateRate.SIM_200ms).ToggleEffect("LowOxygen");
-		nooxygen.EventTransition(GameHashes.EnteredBreathableArea, satisfied, (Instance smi) => smi.IsInBreathableArea()).ToggleExpression(Db.Get().Expressions.Suffocate, null).ToggleAttributeModifier("Holding Breath", (Instance smi) => smi.holdingbreath, null)
+		nooxygen.EventTransition(GameHashes.EnteredBreathableArea, satisfied, (Instance smi) => smi.IsInBreathableArea()).TagTransition(GameTags.RecoveringBreath, satisfied, false).ToggleExpression(Db.Get().Expressions.Suffocate, null)
+			.ToggleAttributeModifier("Holding Breath", (Instance smi) => smi.holdingbreath, null)
 			.ToggleTag(GameTags.NoOxygen)
 			.DefaultState(nooxygen.holdingbreath);
 		nooxygen.holdingbreath.ToggleCategoryStatusItem(Db.Get().StatusItemCategories.Suffocation, Db.Get().DuplicantStatusItems.HoldingBreath, null).Transition(nooxygen.suffocating, (Instance smi) => smi.IsSuffocating(), UpdateRate.SIM_200ms);

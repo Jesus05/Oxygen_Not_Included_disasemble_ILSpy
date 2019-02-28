@@ -1,8 +1,6 @@
-using STRINGS;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Runtime.CompilerServices;
 using UnityEngine;
 
 public abstract class Chore
@@ -302,13 +300,6 @@ public abstract class Chore
 
 	public static PrioritySetting DefaultPrioritySetting = new PrioritySetting(PriorityScreen.PriorityClass.basic, 5);
 
-	private static HashedString highPriorityGroup = "HighPriorityGroup";
-
-	private Notification highPriorityNotification;
-
-	[CompilerGenerated]
-	private static Func<List<Notification>, object, string> _003C_003Ef__mg_0024cache0;
-
 	public int id
 	{
 		get;
@@ -466,7 +457,6 @@ public abstract class Chore
 			this.prioritizable = prioritizable;
 			masterPriority = prioritizable.GetMasterPriority();
 			prioritizable.onPriorityChanged = (Action<PrioritySetting>)Delegate.Combine(prioritizable.onPriorityChanged, new Action<PrioritySetting>(OnMasterPriorityChanged));
-			RefreshHighPriorityNotification(masterPriority.priority_class);
 		}
 	}
 
@@ -482,32 +472,6 @@ public abstract class Chore
 	private void OnMasterPriorityChanged(PrioritySetting priority)
 	{
 		masterPriority = priority;
-		RefreshHighPriorityNotification(masterPriority.priority_class);
-	}
-
-	private void RefreshHighPriorityNotification(PriorityScreen.PriorityClass priority_class)
-	{
-		if (priority_class == PriorityScreen.PriorityClass.emergency && highPriorityNotification == null)
-		{
-			highPriorityNotification = new Notification(MISC.NOTIFICATIONS.EMERGENCY_CHORES.NAME, NotificationType.Bad, highPriorityGroup, EmergencyChoreTooltip, null, false, 0f, null, null, null);
-			Notifier notifier = gameObject.AddOrGet<Notifier>();
-			notifier.Add(highPriorityNotification, string.Empty);
-		}
-		else if (priority_class != PriorityScreen.PriorityClass.emergency && highPriorityNotification != null)
-		{
-			Notifier component = gameObject.GetComponent<Notifier>();
-			component.Remove(highPriorityNotification);
-			highPriorityNotification = null;
-		}
-		if ((UnityEngine.Object)GlobalChoreProvider.Instance != (UnityEngine.Object)null)
-		{
-			GlobalChoreProvider.Instance.RefreshEmergencyChoreStatus();
-		}
-	}
-
-	private static string EmergencyChoreTooltip(List<Notification> notifications, object data)
-	{
-		return MISC.NOTIFICATIONS.EMERGENCY_CHORES.TOOLTIP + notifications.ReduceMessages(true);
 	}
 
 	public void SetOverrideTarget(ChoreConsumer chore_consumer)

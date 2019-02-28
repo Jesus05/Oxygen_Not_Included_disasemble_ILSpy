@@ -262,19 +262,7 @@ public class StatusItemGroup
 	private static string OnToolTip(List<Notification> notifications, object data)
 	{
 		StatusItem statusItem = (StatusItem)data;
-		string text = statusItem.notificationTooltipText;
-		foreach (Notification notification in notifications)
-		{
-			if (notification != null && (UnityEngine.Object)notification.Notifier != (UnityEngine.Object)null)
-			{
-				KSelectable component = notification.Notifier.GetComponent<KSelectable>();
-				if ((UnityEngine.Object)component != (UnityEngine.Object)null)
-				{
-					text = text + "\n• " + component.GetName();
-				}
-			}
-		}
-		return text;
+		return statusItem.notificationTooltipText + notifications.ReduceMessages(true);
 	}
 
 	public void Destroy()

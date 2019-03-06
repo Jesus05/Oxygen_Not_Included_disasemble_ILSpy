@@ -1000,13 +1000,23 @@ public class StarmapScreen : KModalScreen
 			if ((UnityEngine.Object)component != (UnityEngine.Object)null)
 			{
 				BreakdownListRow breakdownListRow = rocketDetailsFuel.AddRow();
-				breakdownListRow.ShowData(item.gameObject.GetProperName() + " (" + ElementLoader.GetElement(engineFuelTag).name + ")", GameUtil.GetFormattedMass(component.GetAmountAvailable(engineFuelTag), GameUtil.TimeSlice.None, GameUtil.MetricMassFormat.Tonne, true, "{0:0.#}"));
+				if (engineFuelTag.IsValid)
+				{
+					Element element = ElementLoader.GetElement(engineFuelTag);
+					breakdownListRow.ShowData(item.gameObject.GetProperName() + " (" + element.name + ")", GameUtil.GetFormattedMass(component.GetAmountAvailable(engineFuelTag), GameUtil.TimeSlice.None, GameUtil.MetricMassFormat.Tonne, true, "{0:0.#}"));
+				}
+				else
+				{
+					breakdownListRow.ShowData(item.gameObject.GetProperName(), UI.STARMAP.ROCKETSTATS.NO_ENGINE);
+					breakdownListRow.SetStatusColor(Color.red);
+				}
 			}
 			SolidBooster component2 = item.GetComponent<SolidBooster>();
 			if ((UnityEngine.Object)component2 != (UnityEngine.Object)null)
 			{
 				BreakdownListRow breakdownListRow2 = rocketDetailsFuel.AddRow();
-				breakdownListRow2.ShowData(item.gameObject.GetProperName() + " (" + ElementLoader.GetElement(component2.fuelTag).name + ")", GameUtil.GetFormattedMass(component2.fuelStorage.GetMassAvailable(component2.fuelTag), GameUtil.TimeSlice.None, GameUtil.MetricMassFormat.Tonne, true, "{0:0.#}"));
+				Element element2 = ElementLoader.GetElement(component2.fuelTag);
+				breakdownListRow2.ShowData(item.gameObject.GetProperName() + " (" + element2.name + ")", GameUtil.GetFormattedMass(component2.fuelStorage.GetMassAvailable(component2.fuelTag), GameUtil.TimeSlice.None, GameUtil.MetricMassFormat.Tonne, true, "{0:0.#}"));
 			}
 		}
 		BreakdownListRow breakdownListRow3 = rocketDetailsFuel.AddRow();
@@ -1197,7 +1207,7 @@ public class StarmapScreen : KModalScreen
 			foreach (Tuple<ArtifactTier, float> rate in artifactDropTable.rates)
 			{
 				BreakdownListRow breakdownListRow5 = destinationDetailsArtifacts.AddRow();
-				breakdownListRow5.ShowData(rate.first.name_key.String, GameUtil.GetFormattedPercent(rate.second / artifactDropTable.totalWeight * 100f, GameUtil.TimeSlice.None));
+				breakdownListRow5.ShowData(Strings.Get(rate.first.name_key), GameUtil.GetFormattedPercent(rate.second / artifactDropTable.totalWeight * 100f, GameUtil.TimeSlice.None));
 			}
 		}
 		destinationDetailsContainer.gameObject.SetActive(true);

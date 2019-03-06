@@ -2535,6 +2535,8 @@ namespace STRINGS
 
 				public static LocString TOTAL_FUEL = "Total fuel";
 
+				public static LocString NO_ENGINE = "NO ENGINE";
+
 				public static LocString ENGINE_EFFICIENCY = "Main engine efficiency";
 
 				public static LocString OXIDIZER_EFFICIENCY = "Average oxidizer efficiency";

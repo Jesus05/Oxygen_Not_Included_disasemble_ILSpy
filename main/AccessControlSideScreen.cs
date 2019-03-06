@@ -51,17 +51,17 @@ public class AccessControlSideScreen : SideScreenContent
 		{
 			GameObject targetGameObject = a.GetTargetGameObject();
 			GameObject targetGameObject2 = b.GetTargetGameObject();
-			MinionResume component = targetGameObject.GetComponent<MinionResume>();
-			MinionResume component2 = targetGameObject2.GetComponent<MinionResume>();
-			if ((UnityEngine.Object)component2 == (UnityEngine.Object)null)
+			MinionResume minionResume = (!(bool)targetGameObject) ? null : targetGameObject.GetComponent<MinionResume>();
+			MinionResume minionResume2 = (!(bool)targetGameObject2) ? null : targetGameObject2.GetComponent<MinionResume>();
+			if ((UnityEngine.Object)minionResume2 == (UnityEngine.Object)null)
 			{
 				return 1;
 			}
-			if ((UnityEngine.Object)component == (UnityEngine.Object)null)
+			if ((UnityEngine.Object)minionResume == (UnityEngine.Object)null)
 			{
 				return -1;
 			}
-			int num = component.CurrentRole.CompareTo(component2.CurrentRole);
+			int num = minionResume.CurrentRole.CompareTo(minionResume2.CurrentRole);
 			return (num != 0) ? num : CompareByName(a, b);
 		}
 	}

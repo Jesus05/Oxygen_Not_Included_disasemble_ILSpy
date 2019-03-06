@@ -45,6 +45,7 @@ public class MinionAssignablesProxy : KMonoBehaviour, IAssignableIdentity
 	{
 		if ((Object)targetGO == (Object)null)
 		{
+			Debug.LogWarningFormat("{0} MinionAssignablesProxy.SetTarget {1}, {2}, {3}. DESTROYING", GetInstanceID(), target_instance_id, target, targetGO);
 			Util.KDestroyGameObject(base.gameObject);
 		}
 		this.target = target;
@@ -102,7 +103,15 @@ public class MinionAssignablesProxy : KMonoBehaviour, IAssignableIdentity
 			if ((bool)instance)
 			{
 				IAssignableIdentity component = instance.GetComponent<IAssignableIdentity>();
-				SetTarget(component, instance.gameObject);
+				if (component != null)
+				{
+					SetTarget(component, instance.gameObject);
+				}
+				else
+				{
+					Debug.LogWarningFormat("RestoreTargetFromInstanceID target ID {0} was found but it wasn't an IAssignableIdentity, destroying proxy object.", target_instance_id);
+					Util.KDestroyGameObject(base.gameObject);
+				}
 			}
 			else
 			{

@@ -100,24 +100,24 @@ public abstract class Chore
 
 			public bool IsPotentialSuccess()
 			{
-				int result;
-				if (!IsSuccess() && !((UnityEngine.Object)chore.driver == (UnityEngine.Object)consumerState.choreDriver))
+				if (IsSuccess())
 				{
-					if (failedPreconditionId != -1)
+					return true;
+				}
+				if ((UnityEngine.Object)chore.driver == (UnityEngine.Object)consumerState.choreDriver)
+				{
+					return true;
+				}
+				if (failedPreconditionId != -1)
+				{
+					if (failedPreconditionId >= 0 && failedPreconditionId < chore.preconditions.Count)
 					{
 						PreconditionInstance preconditionInstance = chore.preconditions[failedPreconditionId];
-						result = ((preconditionInstance.id == ChorePreconditions.instance.IsMoreSatisfyingLate.id) ? 1 : 0);
+						return preconditionInstance.id == ChorePreconditions.instance.IsMoreSatisfyingLate.id;
 					}
-					else
-					{
-						result = 0;
-					}
+					DebugUtil.DevAssert(false, $"failedPreconditionId out of range {failedPreconditionId}/{chore.preconditions.Count}");
 				}
-				else
-				{
-					result = 1;
-				}
-				return (byte)result != 0;
+				return false;
 			}
 
 			public void RunPreconditions()
@@ -389,7 +389,7 @@ public abstract class Chore
 			priority_class = PriorityScreen.PriorityClass.emergency;
 			priority_value = 2;
 		}
-		if (priority_value < 0 || priority_value > 9)
+		if (priority_value < 1 || priority_value > 9)
 		{
 			Debug.LogErrorFormat("Priority Value Out Of Range: {0}", priority_value);
 		}

@@ -101,23 +101,26 @@ public class ChoreDriver : StateMachineComponent<ChoreDriver.StatesInstance>
 				if (smi.master.HasTag(GameTags.Minion) && !smi.master.HasTag(GameTags.Dead))
 				{
 					Chore chore = currentChore.Get(smi);
-					if (smi.master.GetComponent<Navigator>().IsMoving())
+					if (chore != null)
 					{
-						ReportManager.Instance.ReportValue(ReportManager.ReportType.TravelTime, dt, GameUtil.GetChoreName(chore, null), smi.master.GetProperName());
-					}
-					else
-					{
-						ReportManager.ReportType reportType = chore.GetReportType();
-						Workable workable = smi.master.GetComponent<Worker>().workable;
-						if ((UnityEngine.Object)workable != (UnityEngine.Object)null)
+						if (smi.master.GetComponent<Navigator>().IsMoving())
 						{
-							ReportManager.ReportType reportType2 = workable.GetReportType();
-							if (reportType != reportType2)
-							{
-								reportType = reportType2;
-							}
+							ReportManager.Instance.ReportValue(ReportManager.ReportType.TravelTime, dt, GameUtil.GetChoreName(chore, null), smi.master.GetProperName());
 						}
-						ReportManager.Instance.ReportValue(reportType, dt, string.Format(UI.ENDOFDAYREPORT.NOTES.WORK_TIME, GameUtil.GetChoreName(chore, null)), smi.master.GetProperName());
+						else
+						{
+							ReportManager.ReportType reportType = chore.GetReportType();
+							Workable workable = smi.master.GetComponent<Worker>().workable;
+							if ((UnityEngine.Object)workable != (UnityEngine.Object)null)
+							{
+								ReportManager.ReportType reportType2 = workable.GetReportType();
+								if (reportType != reportType2)
+								{
+									reportType = reportType2;
+								}
+							}
+							ReportManager.Instance.ReportValue(reportType, dt, string.Format(UI.ENDOFDAYREPORT.NOTES.WORK_TIME, GameUtil.GetChoreName(chore, null)), smi.master.GetProperName());
+						}
 					}
 				}
 			}, UpdateRate.SIM_200ms, false).Exit("EndChore", delegate(StatesInstance smi)

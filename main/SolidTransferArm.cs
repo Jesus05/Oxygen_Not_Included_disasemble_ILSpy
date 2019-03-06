@@ -253,6 +253,7 @@ public class SolidTransferArm : StateMachineComponent<SolidTransferArm.SMInstanc
 				}
 			}
 		}
+		MarkReachableCells();
 	}
 
 	private void MarkReachableCells()

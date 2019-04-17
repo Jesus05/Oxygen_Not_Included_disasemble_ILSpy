@@ -29,7 +29,7 @@ public class SituationalAnim : KMonoBehaviour
 	{
 		base.OnSpawn();
 		Situation situation = GetSituation();
-		Output.Log("Situation is", situation);
+		DebugUtil.LogArgs("Situation is", situation);
 		SetAnimForSituation(situation);
 	}
 
@@ -39,7 +39,7 @@ public class SituationalAnim : KMonoBehaviour
 		{
 			if ((anim.first & situation) == anim.first)
 			{
-				Output.Log("Chose Anim", anim.first, anim.second);
+				DebugUtil.LogArgs("Chose Anim", anim.first, anim.second);
 				SetAnim(anim.second);
 				break;
 			}

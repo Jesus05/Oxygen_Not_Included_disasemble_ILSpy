@@ -85,6 +85,7 @@ namespace Delaunay.Geo
 
 		public void Initialize()
 		{
+			Debug.Assert(vertices != null, "No verts added");
 			Vector2 vector = new Vector2(3.40282347E+38f, 3.40282347E+38f);
 			Vector2 vector2 = new Vector2(-3.40282347E+38f, -3.40282347E+38f);
 			for (int i = 0; i < vertices.Count; i++)

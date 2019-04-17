@@ -117,7 +117,7 @@ public class Def : ScriptableObject
 				return new Tuple<Sprite, Color>(Assets.GetSprite(((Tag)item).Name), Color.white);
 			}
 		}
-		Debug.LogErrorFormat("Can't get sprite for type {0}", item.ToString());
+		DebugUtil.DevAssertArgs(false, "Can't get sprite for type ", item.ToString());
 		return null;
 	}
 
@@ -130,13 +130,13 @@ public class Def : ScriptableObject
 		}
 		if ((UnityEngine.Object)animFile == (UnityEngine.Object)null)
 		{
-			Output.LogWarning(animName, "missing Anim File");
+			DebugUtil.LogWarningArgs(animName, "missing Anim File");
 			return null;
 		}
 		KAnimFileData data = animFile.GetData();
 		if (data == null)
 		{
-			Output.LogWarning(animName, "KAnimFileData is null");
+			DebugUtil.LogWarningArgs(animName, "KAnimFileData is null");
 			return null;
 		}
 		if (data.build == null)
@@ -154,7 +154,7 @@ public class Def : ScriptableObject
 		}
 		if (!frame.IsValid())
 		{
-			Output.LogWarning($"missing '{animName}' anim in '{animFile}'");
+			DebugUtil.LogWarningArgs($"missing '{animName}' anim in '{animFile}'");
 			return null;
 		}
 		if (data.elementCount == 0)
@@ -167,14 +167,14 @@ public class Def : ScriptableObject
 		KAnim.Build.Symbol symbol = data.build.GetSymbol(frameElement.symbol);
 		if (symbol == null)
 		{
-			Output.LogWarning(animFile.name, animName, "placeSymbol [", frameElement.symbol, "] is missing");
+			DebugUtil.LogWarningArgs(animFile.name, animName, "placeSymbol [", frameElement.symbol, "] is missing");
 			return null;
 		}
 		KAnim.Build.SymbolFrameInstance frame2 = symbol.GetFrame(frameElement.frame);
 		KAnim.Build.SymbolFrame symbolFrame = frame2.symbolFrame;
 		if (symbolFrame == null)
 		{
-			Output.LogWarning(animName, "SymbolFrame [", frameElement.frame, "] is missing");
+			DebugUtil.LogWarningArgs(animName, "SymbolFrame [", frameElement.frame, "] is missing");
 			return null;
 		}
 		Texture2D texture = data.build.GetTexture(0);

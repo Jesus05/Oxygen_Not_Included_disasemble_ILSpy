@@ -243,7 +243,7 @@ public class Unlocks : KMonoBehaviour
 		{
 			if (string.IsNullOrEmpty(text))
 			{
-				DebugUtil.DevAssert(false, "Found null/empty string in Unlocks collection: ", collectionID);
+				DebugUtil.DevAssertArgs(false, "Found null/empty string in Unlocks collection: ", collectionID);
 			}
 			else if (!IsUnlocked(text))
 			{

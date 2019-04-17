@@ -318,6 +318,7 @@ public class KAnimBatchGroup
 
 	private void SetupMeshData()
 	{
+		Debug.Assert(maxGroupSize > 0, "Group size must be >0");
 		maxGroupSize = Mathf.Min(maxGroupSize, 30);
 		mesh = BuildMesh(maxGroupSize * data.maxVisibleSymbols);
 		float cost = (float)(maxGroupSize * 28) / 4f;

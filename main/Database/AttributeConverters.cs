@@ -43,6 +43,8 @@ namespace Database
 
 		public AttributeConverter SeedHarvestChance;
 
+		public AttributeConverter RanchingEffectDuration;
+
 		public AttributeConverters()
 		{
 			ToPercentAttributeFormatter formatter = new ToPercentAttributeFormatter(1f, GameUtil.TimeSlice.None);
@@ -66,6 +68,7 @@ namespace Database
 			CarryAmountFromStrength = Create("CarryAmountFromStrength", "Carry Amount", DUPLICANTS.ATTRIBUTES.STRENGTH.CARRYMODIFIER, Db.Get().Attributes.Strength, 40f, 0f, formatter2);
 			TemperatureInsulation = Create("TemperatureInsulation", "Temperature Insulation", DUPLICANTS.ATTRIBUTES.INSULATION.SPEEDMODIFIER, Db.Get().Attributes.Insulation, 0.1f, 0f, formatter);
 			SeedHarvestChance = Create("SeedHarvestChance", "Seed Harvest Chance", DUPLICANTS.ATTRIBUTES.BOTANIST.BONUS_SEEDS, Db.Get().Attributes.Botanist, 0.033f, 0f, formatter);
+			RanchingEffectDuration = Create("RanchingEffectDuration", "Ranching Effect Duration", DUPLICANTS.ATTRIBUTES.RANCHING.EFFECTMODIFIER, Db.Get().Attributes.Ranching, 0.1f, 0f, formatter);
 		}
 
 		public AttributeConverter Create(string id, string name, string description, Attribute attribute, float multiplier, float base_value, IAttributeFormatter formatter)

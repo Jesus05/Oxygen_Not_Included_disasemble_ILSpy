@@ -1,3 +1,4 @@
+using Klei.AI;
 using STRINGS;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
@@ -21,7 +22,12 @@ public static class BaseMooConfig
 		{
 			gameObject.AddOrGet<SymbolOverrideController>().ApplySymbolOverridesByPrefix(Assets.GetAnim(anim_file), symbol_override_prefix, 0);
 		}
-		gameObject.GetComponent<KPrefabID>().AddTag(GameTags.Creatures.Flyer);
+		KPrefabID component = gameObject.GetComponent<KPrefabID>();
+		component.AddTag(GameTags.Creatures.Flyer);
+		component.prefabInitFn += delegate(GameObject inst)
+		{
+			inst.GetAttributes().Add(Db.Get().Attributes.MaxUnderwaterTravelCost);
+		};
 		gameObject.AddOrGet<LoopingSounds>();
 		LureableMonitor.Def def = gameObject.AddOrGetDef<LureableMonitor.Def>();
 		def.lures = new Tag[1]

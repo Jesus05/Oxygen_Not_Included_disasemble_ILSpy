@@ -12,9 +12,7 @@ public class DoctorChoreWorkable : Workable
 		base.OnPrefabInit();
 		attributeConverter = Db.Get().AttributeConverters.DoctorSpeed;
 		attributeExperienceMultiplier = DUPLICANTSTATS.ATTRIBUTE_LEVELING.BARELY_EVER_EXPERIENCE;
-	}
-
-	public override void AwardExperience(float work_dt, MinionResume resume)
-	{
+		skillExperienceSkillGroup = Db.Get().SkillGroups.MedicalAid.Id;
+		skillExperienceMultiplier = SKILLS.BARELY_EVER_EXPERIENCE;
 	}
 }

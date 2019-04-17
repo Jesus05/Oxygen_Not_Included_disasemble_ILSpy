@@ -60,7 +60,7 @@ public class KFMOD
 			{
 				throw ex;
 			}
-			Debug.LogWarning(ex, null);
+			Debug.LogWarning(ex);
 		}
 		CollectParameterUpdaters();
 		CollectSoundDescriptions();
@@ -137,7 +137,7 @@ public class KFMOD
 		}
 		catch (EventNotFoundException obj)
 		{
-			Debug.LogWarning(obj, null);
+			Debug.LogWarning(obj);
 			return default(EventInstance);
 		}
 		HashedString path2 = path;

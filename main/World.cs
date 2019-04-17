@@ -36,6 +36,7 @@ public class World : KMonoBehaviour
 
 	protected override void OnPrefabInit()
 	{
+		Debug.Assert((UnityEngine.Object)Instance == (UnityEngine.Object)null);
 		Instance = this;
 		blockTileRenderer = GetComponent<BlockTileRenderer>();
 	}
@@ -97,7 +98,7 @@ public class World : KMonoBehaviour
 			int cellIdx2 = solid_substance_change_info[k].cellIdx;
 			if (!Grid.IsValidCell(cellIdx2))
 			{
-				Debug.LogError(cellIdx2, null);
+				Debug.LogError(cellIdx2);
 			}
 			else
 			{

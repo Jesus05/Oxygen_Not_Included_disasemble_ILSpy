@@ -301,6 +301,7 @@ public class MultitoolController : GameStateMachine<MultitoolController, Multito
 
 	public static string[] GetAnimationStrings(Workable workable, Worker worker, string toolString = "dig")
 	{
+		Debug.Assert(toolString != "build");
 		if (!TOOL_ANIM_SETS.TryGetValue(toolString, out string[][][] value))
 		{
 			value = new string[ANIM_BASE.Length][][];

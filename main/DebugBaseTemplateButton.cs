@@ -532,14 +532,14 @@ public class DebugBaseTemplateButton : KScreen
 		TemplateContainer selectionAsAsset = GetSelectionAsAsset();
 		if (SelectedCells.Count <= 0)
 		{
-			Debug.LogWarning("No cells selected. Use buttons above to select the area you want to save.", null);
+			Debug.LogWarning("No cells selected. Use buttons above to select the area you want to save.");
 		}
 		else
 		{
 			SaveName = nameField.text;
 			if (SaveName == null || SaveName == string.Empty)
 			{
-				Debug.LogWarning("Invalid save name. Please enter a name in the input field.", null);
+				Debug.LogWarning("Invalid save name. Please enter a name in the input field.");
 			}
 			else
 			{

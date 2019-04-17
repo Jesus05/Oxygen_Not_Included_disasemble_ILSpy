@@ -53,8 +53,6 @@ namespace Database
 
 		public StatusItem NervousBreakdown;
 
-		public StatusItem NoRole;
-
 		public StatusItem Unhappy;
 
 		public StatusItem Suffocating;
@@ -175,8 +173,6 @@ namespace Database
 
 		public StatusItem LowImmunity;
 
-		public StatusItem Role;
-
 		public StatusItem Studying;
 
 		public StatusItem Socializing;
@@ -186,6 +182,8 @@ namespace Database
 		public StatusItem Gaming;
 
 		public StatusItem Mingling;
+
+		public StatusItem ExposedToGerms;
 
 		private const int NONE_OVERLAY = 0;
 
@@ -268,7 +266,6 @@ namespace Database
 			ToiletUnreachable.AddNotification(null, null, null, 0f);
 			NoUsableToilets = CreateStatusItem("NoUsableToilets", "DUPLICANTS", string.Empty, StatusItem.IconType.Exclamation, NotificationType.BadMinor, false, OverlayModes.None.ID, true, 2);
 			NoUsableToilets.AddNotification(null, null, null, 0f);
-			NoRole = CreateStatusItem("NoRole", "DUPLICANTS", string.Empty, StatusItem.IconType.Exclamation, NotificationType.BadMinor, false, OverlayModes.None.ID, true, 2);
 			NoToilets = CreateStatusItem("NoToilets", "DUPLICANTS", string.Empty, StatusItem.IconType.Exclamation, NotificationType.BadMinor, false, OverlayModes.None.ID, true, 2);
 			NoToilets.AddNotification(null, null, null, 0f);
 			BreathingO2 = CreateStatusItem("BreathingO2", "DUPLICANTS", string.Empty, StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, true, 130);
@@ -337,12 +334,6 @@ namespace Database
 					return string.Format(str, tinkerable.tinkerMaterialTag.ProperName());
 				}
 				return str;
-			};
-			Role = CreateStatusItem("Role", "DUPLICANTS", string.Empty, StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, true, 2);
-			Role.resolveStringCallback = delegate(string str, object data)
-			{
-				RoleConfig role = Game.Instance.roleManager.GetRole((data as MinionResume).CurrentRole);
-				return str.Replace("{Role}", role.name).Replace("{Progress}", GameUtil.GetFormattedPercent(Mathf.Floor(100f * ((data as MinionResume).ExperienceByRoleID[role.id] / Game.Instance.roleManager.GetRole(role.id).experienceRequired)), GameUtil.TimeSlice.None));
 			};
 			Storing = CreateStatusItem("Storing", "DUPLICANTS", string.Empty, StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, true, 2);
 			Storing.resolveStringCallback = delegate(string str, object data)
@@ -479,6 +470,14 @@ namespace Database
 			Dancing = CreateStatusItem("Dancing", "DUPLICANTS", string.Empty, StatusItem.IconType.Info, NotificationType.Good, false, OverlayModes.None.ID, true, 2);
 			Gaming = CreateStatusItem("Gaming", "DUPLICANTS", string.Empty, StatusItem.IconType.Info, NotificationType.Good, false, OverlayModes.None.ID, true, 2);
 			Mingling = CreateStatusItem("Mingling", "DUPLICANTS", string.Empty, StatusItem.IconType.Info, NotificationType.Good, false, OverlayModes.None.ID, true, 2);
+			ExposedToGerms = CreateStatusItem("ExposedToGerms", "DUPLICANTS", string.Empty, StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, true, 2);
+			ExposedToGerms.resolveStringCallback = delegate(string str, object data)
+			{
+				string id = (string)data;
+				string name = Db.Get().Sicknesses.Get(id).Name;
+				str = str.Replace("{Sickness}", name);
+				return str;
+			};
 		}
 	}
 }

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 public class GameScenePartitioner : KMonoBehaviour
 {
@@ -58,6 +59,10 @@ public class GameScenePartitioner : KMonoBehaviour
 
 	public ScenePartitionerLayer industrialBuildings;
 
+	public ScenePartitionerLayer completeBuildings;
+
+	public ScenePartitionerLayer prioritizableObjects;
+
 	private ScenePartitioner partitioner;
 
 	private static GameScenePartitioner instance;
@@ -66,10 +71,18 @@ public class GameScenePartitioner : KMonoBehaviour
 
 	private List<int> changedCells = new List<int>();
 
-	public static GameScenePartitioner Instance => instance;
+	public static GameScenePartitioner Instance
+	{
+		get
+		{
+			Debug.Assert((UnityEngine.Object)instance != (UnityEngine.Object)null);
+			return instance;
+		}
+	}
 
 	protected override void OnPrefabInit()
 	{
+		Debug.Assert((UnityEngine.Object)instance == (UnityEngine.Object)null);
 		instance = this;
 		partitioner = new ScenePartitioner(16, 64, Grid.WidthInCells, Grid.HeightInCells);
 		solidChangedLayer = partitioner.CreateMask("SolidChanged");
@@ -94,6 +107,8 @@ public class GameScenePartitioner : KMonoBehaviour
 		lure = partitioner.CreateMask("Lure");
 		plants = partitioner.CreateMask("Plants");
 		industrialBuildings = partitioner.CreateMask("IndustrialBuildings");
+		completeBuildings = partitioner.CreateMask("CompleteBuildings");
+		prioritizableObjects = partitioner.CreateMask("PrioritizableObjects");
 		objectLayers = new ScenePartitionerLayer[39];
 		for (int i = 0; i < 39; i++)
 		{

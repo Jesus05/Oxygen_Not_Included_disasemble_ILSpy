@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <ProjectGuid>{346DCD03-C8D1-4B74-A1C0-DBD19010D93D}</ProjectGuid>
+    <ProjectGuid>{A4B5B4F0-3081-4EF4-8D10-45E94A18D64C}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <OutputType>Library</OutputType>
@@ -499,7 +499,6 @@
     <Compile Include="KComponentManager.cs" />
     <Compile Include="KComponents.cs" />
     <Compile Include="KComponentSpawn.cs" />
-    <Compile Include="KDebug.cs" />
     <Compile Include="KFMOD.cs" />
     <Compile Include="KFMODDebugger.cs" />
     <Compile Include="KGameObjectComponentManager.cs" />
@@ -753,7 +752,6 @@
     <Compile Include="NodeEditorFramework\NodeTypes.cs" />
     <Compile Include="NodeEditorFramework\TypeData.cs" />
     <Compile Include="OneShotSoundParameterUpdater.cs" />
-    <Compile Include="Output.cs" />
     <Compile Include="Pair.cs" />
     <Compile Include="PerformanceMonitor.cs" />
     <Compile Include="PerlinNoise.cs" />

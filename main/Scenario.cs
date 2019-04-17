@@ -481,18 +481,25 @@ public class Scenario : KMonoBehaviour
 		b.FinalizeRoom(SimHashes.Oxygen, SimHashes.Steel);
 	}
 
-	private void SetupBuildingTest(Builder b, bool is_powered, bool break_building)
+	private void SetupBuildingTest(RowLayout row_layout, bool is_powered, bool break_building)
 	{
-		if (is_powered)
-		{
-			b.Minion(null);
-			b.Minion(null);
-		}
+		Builder builder = null;
+		int num = 0;
 		foreach (BuildingDef buildingDef in Assets.BuildingDefs)
 		{
+			if (builder == null)
+			{
+				builder = row_layout.NextRow();
+				num = Left;
+				if (is_powered)
+				{
+					builder.Minion(null);
+					builder.Minion(null);
+				}
+			}
 			if (buildingDef.Name != "Excavator")
 			{
-				GameObject gameObject = b.Building(buildingDef.PrefabID);
+				GameObject gameObject = builder.Building(buildingDef.PrefabID);
 				if (break_building)
 				{
 					BuildingHP component = gameObject.GetComponent<BuildingHP>();
@@ -502,8 +509,13 @@ public class Scenario : KMonoBehaviour
 					}
 				}
 			}
+			if (builder.Left > num + 100)
+			{
+				builder.FinalizeRoom(SimHashes.Oxygen, SimHashes.Steel);
+				builder = null;
+			}
 		}
-		b.FinalizeRoom(SimHashes.Oxygen, SimHashes.Steel);
+		builder.FinalizeRoom(SimHashes.Oxygen, SimHashes.Steel);
 	}
 
 	private IEnumerator RunAfterNextUpdateRoutine(System.Action action)
@@ -856,9 +868,8 @@ public class Scenario : KMonoBehaviour
 	public void SetupVisualTest()
 	{
 		Init();
-		RowLayout rowLayout = new RowLayout(Left, Bot);
-		SetupBuildingTest(rowLayout.NextRow(), false, true);
-		SetupPlacerTest(rowLayout.NextRow(), ElementLoader.FindElementByHash(SimHashes.Cuprite));
+		RowLayout row_layout = new RowLayout(Left, Bot);
+		SetupBuildingTest(row_layout, false, false);
 	}
 
 	private void SpawnMaterialTest(Builder b)
@@ -885,9 +896,10 @@ public class Scenario : KMonoBehaviour
 		BuildingDef buildingDef = Assets.GetBuildingDef(prefab_id);
 		if ((UnityEngine.Object)buildingDef == (UnityEngine.Object)null || buildingDef.PlacementOffsets == null)
 		{
-			Output.LogError("Missing def for", prefab_id);
+			DebugUtil.LogErrorArgs("Missing def for", prefab_id);
 		}
 		Element element2 = ElementLoader.FindElementByHash(element);
+		Debug.Assert(element2 != null, "Missing primary element.");
 		GameObject gameObject = buildingDef.Build(buildingDef.GetBuildingCell(cell), Orientation.Neutral, null, new Tag[2]
 		{
 			element2.tag,
@@ -906,7 +918,7 @@ public class Scenario : KMonoBehaviour
 			int cell = Grid.OffsetCell(RootCell, x, y);
 			Vector3 position = Grid.CellToPosCCC(cell, Grid.SceneLayer.Ore);
 			position.x += UnityEngine.Random.Range(-0.1f, 0.1f);
-			ElementLoader.FindElementByHash(element).substance.SpawnResource(position, 4000f, 293f, byte.MaxValue, 0, false, false);
+			ElementLoader.FindElementByHash(element).substance.SpawnResource(position, 4000f, 293f, byte.MaxValue, 0, false, false, false);
 		});
 	}
 

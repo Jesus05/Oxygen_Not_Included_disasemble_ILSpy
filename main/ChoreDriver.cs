@@ -159,6 +159,7 @@ public class ChoreDriver : StateMachineComponent<ChoreDriver.StatesInstance>
 			StopChore();
 			if (context.chore.IsValid())
 			{
+				context.chore.PrepareChore(ref context);
 				this.context = context;
 				base.smi.sm.nextChore.Set(context.chore, base.smi);
 			}
@@ -175,7 +176,7 @@ public class ChoreDriver : StateMachineComponent<ChoreDriver.StatesInstance>
 					text2 = context.chore.GetType().Name;
 				}
 				string obj = "Stopping chore " + text + " to start " + text2 + " but stopping the first chore cancelled the second one.";
-				Debug.LogWarning(obj, null);
+				Debug.LogWarning(obj);
 			}
 		}
 	}

@@ -13,12 +13,12 @@ public class CommandModuleConfig : IBuildingConfig
 
 	private static readonly LogicPorts.Port[] INPUT_PORTS = new LogicPorts.Port[1]
 	{
-		LogicPorts.Port.InputPort("TriggerLaunch", new CellOffset(0, 1), UI.LOGIC_PORTS.CONTROL_OPERATIONAL, false)
+		LogicPorts.Port.InputPort("TriggerLaunch", new CellOffset(0, 1), STRINGS.BUILDINGS.PREFABS.COMMANDMODULE.LOGIC_PORT_LAUNCH, STRINGS.BUILDINGS.PREFABS.COMMANDMODULE.LOGIC_PORT_LAUNCH_ACTIVE, STRINGS.BUILDINGS.PREFABS.COMMANDMODULE.LOGIC_PORT_LAUNCH_INACTIVE, false)
 	};
 
 	private static readonly LogicPorts.Port[] OUTPUT_PORTS = new LogicPorts.Port[1]
 	{
-		LogicPorts.Port.OutputPort("LaunchReady", new CellOffset(0, 2), "Ready For Launch", false)
+		LogicPorts.Port.OutputPort("LaunchReady", new CellOffset(0, 2), STRINGS.BUILDINGS.PREFABS.COMMANDMODULE.LOGIC_PORT_READY, STRINGS.BUILDINGS.PREFABS.COMMANDMODULE.LOGIC_PORT_READY_ACTIVE, STRINGS.BUILDINGS.PREFABS.COMMANDMODULE.LOGIC_PORT_READY_INACTIVE, false)
 	};
 
 	public override BuildingDef CreateBuildingDef()

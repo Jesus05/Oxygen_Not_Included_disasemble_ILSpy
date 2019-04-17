@@ -59,12 +59,12 @@ public class DiseaseInfoScreen : TargetScreen
 			return;
 		}
 		List<Descriptor> allDescriptors = GameUtil.GetAllDescriptors(selectedTarget, true);
-		Diseases diseases = selectedTarget.GetDiseases();
-		if (diseases != null)
+		Sicknesses sicknesses = selectedTarget.GetSicknesses();
+		if (sicknesses != null)
 		{
-			for (int i = 0; i < diseases.Count; i++)
+			for (int i = 0; i < sicknesses.Count; i++)
 			{
-				allDescriptors.AddRange(diseases[i].GetDescriptors());
+				allDescriptors.AddRange(sicknesses[i].GetDescriptors());
 			}
 		}
 		allDescriptors = allDescriptors.FindAll((Descriptor e) => e.type == Descriptor.DescriptorType.DiseaseSource);
@@ -100,25 +100,6 @@ public class DiseaseInfoScreen : TargetScreen
 
 	private bool CreateImmuneInfo()
 	{
-		ImmuneSystemMonitor.Instance sMI = selectedTarget.GetSMI<ImmuneSystemMonitor.Instance>();
-		if (sMI != null)
-		{
-			for (int i = 0; i < Db.Get().Diseases.Count; i++)
-			{
-				Disease disease = Db.Get().Diseases[i];
-				AmountInstance amountInstance = disease.amount.Lookup(selectedTarget);
-				if (amountInstance.value > 0f)
-				{
-					immuneSystemPanel.SetLabel("disease_" + disease.Id, string.Format(UI.DETAILTABS.DISEASE.IMMUNE_FACTORS.INTERNAL_GERMS, disease.Name, GameUtil.GetFormattedDiseaseAmount(Mathf.RoundToInt(amountInstance.value))), string.Format(UI.DETAILTABS.DISEASE.IMMUNE_FACTORS.INTERNAL_GERMS_TOOLTIP, disease.Name, GameUtil.GetFormattedDiseaseAmount(Mathf.RoundToInt(amountInstance.value))));
-					AttributeModifier currentImmuneModifier = sMI.GetCurrentImmuneModifier(disease);
-					if (currentImmuneModifier != null)
-					{
-						immuneSystemPanel.SetLabel("disease_rate2_" + disease.Id, string.Format(UI.DETAILTABS.DISEASE.IMMUNE_FACTORS.IMMUNE_ATTACK_RATE2, currentImmuneModifier.GetFormattedString(selectedTarget), GameUtil.GetFormattedDiseaseAmount(Mathf.RoundToInt(amountInstance.value))), string.Format(UI.DETAILTABS.DISEASE.IMMUNE_FACTORS.IMMUNE_ATTACK_RATE2_TOOLTIP, currentImmuneModifier.GetFormattedString(selectedTarget), GameUtil.GetFormattedDiseaseAmount(Mathf.RoundToInt(amountInstance.value))));
-					}
-				}
-			}
-			return true;
-		}
 		return false;
 	}
 

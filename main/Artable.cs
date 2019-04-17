@@ -69,7 +69,9 @@ public class Artable : Workable
 		workerStatusItem = Db.Get().DuplicantStatusItems.Arting;
 		attributeConverter = Db.Get().AttributeConverters.ArtSpeed;
 		attributeExperienceMultiplier = DUPLICANTSTATS.ATTRIBUTE_LEVELING.MOST_DAY_EXPERIENCE;
-		requiredRolePerk = RoleManager.rolePerks.CanArt.id;
+		skillExperienceSkillGroup = Db.Get().SkillGroups.Art.Id;
+		skillExperienceMultiplier = SKILLS.MOST_DAY_EXPERIENCE;
+		requiredSkillPerk = Db.Get().SkillPerks.CanArt.Id;
 		SetWorkTime(80f);
 	}
 
@@ -80,15 +82,15 @@ public class Artable : Workable
 			currentStage = "Default";
 		}
 		SetStage(currentStage, true);
-		shouldShowRolePerkStatusItem = false;
+		shouldShowSkillPerkStatusItem = false;
 		if (currentStage == "Default")
 		{
-			shouldShowRolePerkStatusItem = true;
+			shouldShowSkillPerkStatusItem = true;
 			Prioritizable.AddRef(base.gameObject);
 			ChoreType art = Db.Get().ChoreTypes.Art;
 			Tag[] artChores = GameTags.ChoreTypes.ArtChores;
 			chore = new WorkChore<Artable>(art, this, null, artChores, true, null, null, null, true, null, false, true, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, false, true);
-			chore.AddPrecondition(ChorePreconditions.instance.HasRolePerk, requiredRolePerk);
+			chore.AddPrecondition(ChorePreconditions.instance.HasSkillPerk, requiredSkillPerk);
 		}
 		base.OnSpawn();
 	}
@@ -99,11 +101,11 @@ public class Artable : Workable
 		MinionResume component = worker.GetComponent<MinionResume>();
 		if ((UnityEngine.Object)component != (UnityEngine.Object)null)
 		{
-			if (component.HasPerk(RoleManager.rolePerks.CanArtGreat.id))
+			if (component.HasPerk(Db.Get().SkillPerks.CanArtGreat.Id))
 			{
 				artist_skill = Status.Great;
 			}
-			else if (component.HasPerk(RoleManager.rolePerks.CanArtOkay.id))
+			else if (component.HasPerk(Db.Get().SkillPerks.CanArtOkay.Id))
 			{
 				artist_skill = Status.Okay;
 			}
@@ -137,7 +139,7 @@ public class Artable : Workable
 				"disappointed_pst"
 			}, null);
 		}
-		shouldShowRolePerkStatusItem = false;
+		shouldShowSkillPerkStatusItem = false;
 		UpdateStatusItem(null);
 		Prioritizable.RemoveRef(base.gameObject);
 	}
@@ -155,7 +157,7 @@ public class Artable : Workable
 		}
 		if (stage == null)
 		{
-			Debug.LogError("Missing stage: " + stage_id, null);
+			Debug.LogError("Missing stage: " + stage_id);
 		}
 		else
 		{
@@ -169,13 +171,8 @@ public class Artable : Workable
 			KSelectable component = GetComponent<KSelectable>();
 			component.SetName(stage.name);
 			component.SetStatusItem(Db.Get().StatusItemCategories.Main, statuses[stage.statusItem], this);
-			shouldShowRolePerkStatusItem = false;
+			shouldShowSkillPerkStatusItem = false;
 			UpdateStatusItem(null);
 		}
-	}
-
-	public override void AwardExperience(float work_dt, MinionResume resume)
-	{
-		resume.AddExperienceIfRole(Artist.ID, work_dt * ROLES.ACTIVE_EXPERIENCE_QUICK);
 	}
 }

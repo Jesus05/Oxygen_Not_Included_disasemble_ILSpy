@@ -131,7 +131,7 @@ public class FetchAreaChore : Chore<FetchAreaChore.StatesInstance>
 				this = default(Reservation);
 				if (reservation_amount <= 0f)
 				{
-					Debug.LogError("Invalid amount: " + reservation_amount, null);
+					Debug.LogError("Invalid amount: " + reservation_amount);
 				}
 				amount = reservation_amount;
 				this.pickupable = pickupable;
@@ -184,25 +184,20 @@ public class FetchAreaChore : Chore<FetchAreaChore.StatesInstance>
 			ListPool<Precondition.Context, FetchAreaChore>.PooledList pooledList2 = ListPool<Precondition.Context, FetchAreaChore>.Allocate();
 			if (rootChore.allowMultifetch)
 			{
-				if ((UnityEngine.Object)context.consumerState.resume != (UnityEngine.Object)null && context.consumerState.resume.CurrentRole != "NoRole")
-				{
-					RoleConfig role = Game.Instance.roleManager.GetRole(context.consumerState.resume.CurrentRole);
-					role.GatherNearbyFetchChores(rootChore, context, x, y, 3, pooledList, pooledList2);
-				}
-				else
-				{
-					GatherNearbyFetchChores(rootChore, context, x, y, 3, pooledList, pooledList2);
-				}
+				GatherNearbyFetchChores(rootChore, context, x, y, 3, pooledList, pooledList2);
 			}
 			float num = Mathf.Max(1f, Db.Get().Attributes.CarryAmount.Lookup(context.consumerState.consumer).GetTotalValue());
 			Pickupable pickupable = context.data as Pickupable;
 			if ((UnityEngine.Object)pickupable == (UnityEngine.Object)null)
 			{
+				Debug.Assert(pooledList.Count > 0, "succeeded_contexts was empty");
 				Precondition.Context context2 = pooledList[0];
 				FetchChore fetchChore = (FetchChore)context2.chore;
-				Output.LogWarning("Missing root_fetchable for FetchAreaChore", fetchChore.destination, fetchChore.tags[0]);
+				Debug.Assert(fetchChore != null, "fetch_chore was null");
+				DebugUtil.LogWarningArgs("Missing root_fetchable for FetchAreaChore", fetchChore.destination, fetchChore.tags[0]);
 				pickupable = fetchChore.FindFetchTarget(context.consumerState);
 			}
+			Debug.Assert((UnityEngine.Object)pickupable != (UnityEngine.Object)null, "root_fetchable was null");
 			List<Pickupable> list = new List<Pickupable>();
 			list.Add(pickupable);
 			float num2 = pickupable.UnreservedAmount;

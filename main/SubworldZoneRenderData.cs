@@ -122,7 +122,9 @@ public class SubworldZoneRenderData : KMonoBehaviour
 
 	private Color32 GetZoneColor(SubWorld.ZoneType zone_type)
 	{
-		return new Color32(byte.MaxValue, byte.MaxValue, byte.MaxValue, 3);
+		Color32 result = new Color32(byte.MaxValue, byte.MaxValue, byte.MaxValue, 3);
+		Debug.Assert((int)zone_type < zoneColours.Length, "Need to add more colours to handle this zone" + (int)zone_type + "<" + zoneColours.Length);
+		return result;
 	}
 
 	private unsafe void InitSimZones(byte[] bytes)

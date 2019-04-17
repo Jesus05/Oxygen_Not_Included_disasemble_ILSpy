@@ -1,4 +1,3 @@
-using STRINGS;
 using TUNING;
 using UnityEngine;
 
@@ -16,11 +15,6 @@ public class MethaneGeneratorConfig : IBuildingConfig
 
 	private const int HEIGHT = 3;
 
-	private static readonly LogicPorts.Port[] INPUT_PORTS = new LogicPorts.Port[1]
-	{
-		LogicPorts.Port.InputPort(LogicOperationalController.PORT_ID, new CellOffset(0, 0), UI.LOGIC_PORTS.CONTROL_OPERATIONAL, false)
-	};
-
 	public override BuildingDef CreateBuildingDef()
 	{
 		string id = "MethaneGenerator";
@@ -29,12 +23,12 @@ public class MethaneGeneratorConfig : IBuildingConfig
 		string anim = "generatormethane_kanim";
 		int hitpoints = 100;
 		float construction_time = 120f;
-		float[] tIER = TUNING.BUILDINGS.CONSTRUCTION_MASS_KG.TIER5;
+		float[] tIER = BUILDINGS.CONSTRUCTION_MASS_KG.TIER5;
 		string[] rAW_METALS = MATERIALS.RAW_METALS;
 		float melting_point = 2400f;
 		BuildLocationRule build_location_rule = BuildLocationRule.OnFloor;
 		EffectorValues tIER2 = NOISE_POLLUTION.NOISY.TIER5;
-		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, tIER, rAW_METALS, melting_point, build_location_rule, TUNING.BUILDINGS.DECOR.PENALTY.TIER2, tIER2, 0.2f);
+		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, tIER, rAW_METALS, melting_point, build_location_rule, BUILDINGS.DECOR.PENALTY.TIER2, tIER2, 0.2f);
 		buildingDef.GeneratorWattageRating = 800f;
 		buildingDef.GeneratorBaseCapacity = 1000f;
 		buildingDef.ExhaustKilowattsWhenActive = 2f;
@@ -51,17 +45,17 @@ public class MethaneGeneratorConfig : IBuildingConfig
 
 	public override void DoPostConfigurePreview(BuildingDef def, GameObject go)
 	{
-		GeneratedBuildings.RegisterLogicPorts(go, INPUT_PORTS);
+		GeneratedBuildings.RegisterLogicPorts(go, LogicOperationalController.INPUT_PORTS_0_0);
 	}
 
 	public override void DoPostConfigureUnderConstruction(GameObject go)
 	{
-		GeneratedBuildings.RegisterLogicPorts(go, INPUT_PORTS);
+		GeneratedBuildings.RegisterLogicPorts(go, LogicOperationalController.INPUT_PORTS_0_0);
 	}
 
 	public override void DoPostConfigureComplete(GameObject go)
 	{
-		GeneratedBuildings.RegisterLogicPorts(go, INPUT_PORTS);
+		GeneratedBuildings.RegisterLogicPorts(go, LogicOperationalController.INPUT_PORTS_0_0);
 		go.AddOrGet<LogicOperationalController>();
 		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.IndustrialMachinery);
 		go.AddOrGet<LoopingSounds>();

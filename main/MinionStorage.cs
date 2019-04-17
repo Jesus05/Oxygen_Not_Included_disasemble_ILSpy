@@ -82,11 +82,11 @@ public class MinionStorage : KMonoBehaviour
 			dest_id.forbiddenTags = new List<Tag>(component3.forbiddenTags);
 		}
 		MinionResume component4 = src_id.GetComponent<MinionResume>();
-		dest_id.ExperienceByRoleID = component4.ExperienceByRoleID;
-		dest_id.MasteryByRoleID = component4.MasteryByRoleID;
-		dest_id.AptitudeByRoleGroup = component4.AptitudeByRoleGroup;
-		dest_id.currentRole = component4.CurrentRole;
-		dest_id.targetRole = component4.TargetRole;
+		dest_id.MasteryBySkillID = component4.MasteryBySkillID;
+		dest_id.AptitudeBySkillGroup = component4.AptitudeBySkillGroup;
+		dest_id.TotalExperienceGained = component4.TotalExperienceGained;
+		dest_id.currentHat = component4.CurrentHat;
+		dest_id.targetHat = component4.TargetHat;
 		ChoreConsumer component5 = src_id.GetComponent<ChoreConsumer>();
 		dest_id.choreGroupPriorities = component5.GetChoreGroupPriorities();
 		AttributeLevels component6 = src_id.GetComponent<AttributeLevels>();
@@ -126,14 +126,11 @@ public class MinionStorage : KMonoBehaviour
 		{
 			component3.forbiddenTags = src_id.forbiddenTags.ToArray();
 		}
-		if (src_id.ExperienceByRoleID != null)
+		if (src_id.MasteryBySkillID != null)
 		{
 			MinionResume component4 = dest_id.GetComponent<MinionResume>();
-			component4.ExperienceByRoleID = src_id.ExperienceByRoleID;
-			component4.MasteryByRoleID = src_id.MasteryByRoleID;
-			component4.AptitudeByRoleGroup = src_id.AptitudeByRoleGroup;
-			component4.SetCurrentRole(src_id.currentRole);
-			component4.SetTargetRole(src_id.targetRole);
+			component4.RestoreResume(src_id.MasteryBySkillID, src_id.AptitudeBySkillGroup, src_id.TotalExperienceGained);
+			component4.SetHats(src_id.currentHat, src_id.targetHat);
 		}
 		if (src_id.choreGroupPriorities != null)
 		{

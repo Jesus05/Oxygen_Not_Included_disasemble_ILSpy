@@ -250,6 +250,7 @@ public class GeneShuffler : Workable
 
 	private void ActivateChore()
 	{
+		Debug.Assert(chore == null);
 		GetComponent<Workable>().SetWorkTime(float.PositiveInfinity);
 		chore = new WorkChore<Workable>(Db.Get().ChoreTypes.GeneShuffle, override_anims: Assets.GetAnim("anim_interacts_neuralvacillator_kanim"), target: this, chore_provider: null, chore_tags: null, run_until_complete: true, on_complete: delegate
 		{

@@ -142,9 +142,6 @@ public class Assets : KMonoBehaviour, ISerializationCallbackReceiver
 	public static SubstanceTable SubstanceTable;
 
 	[SerializeField]
-	public TextAsset elementsFile;
-
-	[SerializeField]
 	public TextAsset elementAudio;
 
 	[SerializeField]
@@ -272,7 +269,7 @@ public class Assets : KMonoBehaviour, ISerializationCallbackReceiver
 	{
 		Hashtable substanceList = new Hashtable();
 		ElementsAudio.Instance.LoadData(AsyncLoadManager<IGlobalAsyncLoader>.AsyncLoader<ElementAudioFileLoader>.Get().entries);
-		ElementLoader.Load(ref substanceList, elementsFile.text, substanceTable);
+		ElementLoader.Load(ref substanceList, substanceTable);
 		SubstanceTable = substanceTable;
 	}
 
@@ -357,7 +354,7 @@ public class Assets : KMonoBehaviour, ISerializationCallbackReceiver
 			prefab.UpdateSaveLoadTag();
 			if (PrefabsByTag.ContainsKey(prefab.PrefabTag))
 			{
-				Debug.LogWarning("Tried loading prefab with duplicate tag, ignoring: " + prefab.PrefabTag, null);
+				Debug.LogWarning("Tried loading prefab with duplicate tag, ignoring: " + prefab.PrefabTag);
 			}
 			PrefabsByTag[prefab.PrefabTag] = prefab;
 			foreach (Tag tag in prefab.Tags)
@@ -401,7 +398,7 @@ public class Assets : KMonoBehaviour, ISerializationCallbackReceiver
 		GameObject gameObject = TryGetPrefab(tag);
 		if ((UnityEngine.Object)gameObject == (UnityEngine.Object)null)
 		{
-			Debug.LogWarning("Missing prefab: " + tag, null);
+			Debug.LogWarning("Missing prefab: " + tag);
 		}
 		return gameObject;
 	}
@@ -495,7 +492,7 @@ public class Assets : KMonoBehaviour, ISerializationCallbackReceiver
 				return blockTileDecorInfo;
 			}
 		}
-		Output.LogError("Could not find BlockTileDecorInfo named [" + name + "]");
+		Debug.LogError("Could not find BlockTileDecorInfo named [" + name + "]");
 		return null;
 	}
 
@@ -503,14 +500,14 @@ public class Assets : KMonoBehaviour, ISerializationCallbackReceiver
 	{
 		if (!name.IsValid)
 		{
-			Debug.LogWarning("Invalid hash name", null);
+			Debug.LogWarning("Invalid hash name");
 			return null;
 		}
 		KAnimFile value = null;
 		AnimTable.TryGetValue(name, out value);
 		if ((UnityEngine.Object)value == (UnityEngine.Object)null)
 		{
-			Debug.LogWarning("Missing Anim: [" + name.ToString() + "]. You may have to run Collect Anim on the Assets prefab", null);
+			Debug.LogWarning("Missing Anim: [" + name.ToString() + "]. You may have to run Collect Anim on the Assets prefab");
 		}
 		return value;
 	}

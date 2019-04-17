@@ -313,7 +313,7 @@ namespace VoronoiTree
 				}
 				catch (Exception ex)
 				{
-					Debug.LogError("Error [" + num + "] iters " + completedIterations + "/" + maxIterations + " Exception:" + ex.Message + "\n" + ex.StackTrace, null);
+					Debug.LogError("Error [" + num + "] iters " + completedIterations + "/" + maxIterations + " Exception:" + ex.Message + "\n" + ex.StackTrace);
 					return;
 				}
 				num = 0f;
@@ -330,7 +330,7 @@ namespace VoronoiTree
 				}
 				completedIterations++;
 			}
-			Debug.Log("error [" + num + "] iters " + completedIterations + "/" + maxIterations, null);
+			Debug.Log("error [" + num + "] iters " + completedIterations + "/" + maxIterations);
 		}
 
 		public void ComputeVD()
@@ -743,6 +743,7 @@ namespace VoronoiTree
 			{
 				if (!dual3dSites[i].site.dummy)
 				{
+					Debug.Assert(dual3dSites[i].site.currentWeight != 0f);
 					for (int j = i + 1; j < dual3dSites.Count; j++)
 					{
 						if (!dual3dSites[j].site.dummy && dual3dSites[i].coord == dual3dSites[j].coord)

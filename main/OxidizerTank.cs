@@ -117,7 +117,7 @@ public class OxidizerTank : KMonoBehaviour, IUserControlledCapacity
 		}
 		else if (ElementLoader.FindElementByHash(element).IsSolid)
 		{
-			GameObject go = ElementLoader.FindElementByHash(element).substance.SpawnResource(base.gameObject.transform.GetPosition(), targetFillMass, 300f, byte.MaxValue, 0, false, false);
+			GameObject go = ElementLoader.FindElementByHash(element).substance.SpawnResource(base.gameObject.transform.GetPosition(), targetFillMass, 300f, byte.MaxValue, 0, false, false, false);
 			storage.Store(go, false, false, true, false);
 		}
 	}

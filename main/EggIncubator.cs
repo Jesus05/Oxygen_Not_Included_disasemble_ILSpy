@@ -38,7 +38,7 @@ public class EggIncubator : SingleEntityReceptacle, ISaveLoadable, ISim1000ms
 		statusItemNeed = Db.Get().BuildingStatusItems.NeedEgg;
 		statusItemNoneAvailable = Db.Get().BuildingStatusItems.NoAvailableEgg;
 		statusItemAwaitingDelivery = Db.Get().BuildingStatusItems.AwaitingEggDelivery;
-		requiredRolePerk = RoleManager.rolePerks.CanWrangleCreatures.id;
+		requiredSkillPerk = Db.Get().SkillPerks.CanWrangleCreatures.Id;
 		occupyingObjectRelativePosition = new Vector3(0.5f, 1f, -1f);
 		synchronizeAnims = false;
 		KBatchedAnimController component = GetComponent<KBatchedAnimController>();
@@ -95,7 +95,7 @@ public class EggIncubator : SingleEntityReceptacle, ISaveLoadable, ISim1000ms
 	{
 		if (!(bool)base.occupyingObject)
 		{
-			storage.DropAll(false);
+			storage.DropAll(false, false, default(Vector3), true);
 		}
 	}
 
@@ -146,7 +146,7 @@ public class EggIncubator : SingleEntityReceptacle, ISaveLoadable, ISim1000ms
 	{
 		Object.Destroy(tracker);
 		tracker = null;
-		storage.DropAll(false);
+		storage.DropAll(false, false, default(Vector3), true);
 		base.occupyingObject = null;
 		ClearOccupant();
 	}
@@ -177,7 +177,7 @@ public class EggIncubator : SingleEntityReceptacle, ISaveLoadable, ISim1000ms
 	public void StoreBaby(GameObject baby)
 	{
 		UnsubscribeFromOccupant();
-		storage.DropAll(false);
+		storage.DropAll(false, false, default(Vector3), true);
 		storage.allowItemRemoval = true;
 		storage.Store(baby, false, false, true, false);
 		base.occupyingObject = baby;

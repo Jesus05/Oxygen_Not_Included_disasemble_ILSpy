@@ -15,7 +15,7 @@ public abstract class LogicGateBaseConfig : IBuildingConfig
 		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(ID, width, height, anim, hitpoints, construction_time, tIER, rEFINED_METALS, melting_point, build_location_rule, BUILDINGS.DECOR.PENALTY.TIER0, nONE, 0.2f);
 		buildingDef.ViewMode = OverlayModes.Logic.ID;
 		buildingDef.ObjectLayer = ObjectLayer.LogicGates;
-		buildingDef.SceneLayer = Grid.SceneLayer.LogicWireBridges;
+		buildingDef.SceneLayer = Grid.SceneLayer.LogicGates;
 		buildingDef.ThermalConductivity = 0.05f;
 		buildingDef.Floodable = false;
 		buildingDef.Overheatable = false;
@@ -31,6 +31,8 @@ public abstract class LogicGateBaseConfig : IBuildingConfig
 	}
 
 	protected abstract LogicGateBase.Op GetLogicOp();
+
+	protected abstract LogicGate.LogicGateDescriptions GetDescriptions();
 
 	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
@@ -56,5 +58,10 @@ public abstract class LogicGateBaseConfig : IBuildingConfig
 	{
 		LogicGate logicGate = go.AddComponent<LogicGate>();
 		logicGate.op = GetLogicOp();
+		go.GetComponent<KPrefabID>().prefabInitFn += delegate(GameObject game_object)
+		{
+			LogicGate component = game_object.GetComponent<LogicGate>();
+			component.SetPortDescriptions(GetDescriptions());
+		};
 	}
 }

@@ -115,7 +115,7 @@ public abstract class Chore
 						PreconditionInstance preconditionInstance = chore.preconditions[failedPreconditionId];
 						return preconditionInstance.id == ChorePreconditions.instance.IsMoreSatisfyingLate.id;
 					}
-					DebugUtil.DevAssert(false, $"failedPreconditionId out of range {failedPreconditionId}/{chore.preconditions.Count}");
+					DebugUtil.DevLogErrorFormat("failedPreconditionId out of range {0}/{1}", failedPreconditionId, chore.preconditions.Count);
 				}
 				return false;
 			}
@@ -386,7 +386,7 @@ public abstract class Chore
 	{
 		if (priority_value == 2147483647)
 		{
-			priority_class = PriorityScreen.PriorityClass.emergency;
+			priority_class = PriorityScreen.PriorityClass.topPriority;
 			priority_value = 2;
 		}
 		if (priority_value < 1 || priority_value > 9)
@@ -533,10 +533,13 @@ public abstract class Chore
 
 	public virtual void Begin(Precondition.Context context)
 	{
-		DebugUtil.Assert((UnityEngine.Object)driver == (UnityEngine.Object)null);
+		if ((UnityEngine.Object)driver != (UnityEngine.Object)null)
+		{
+			Debug.LogErrorFormat("Chore.Begin driver already set {0} {1} {2}, provider {3}, driver {4} -> {5}", id, GetType(), choreType.Id, provider, driver, context.consumerState.choreDriver);
+		}
 		if ((UnityEngine.Object)provider == (UnityEngine.Object)null)
 		{
-			Debug.LogError("Chore has null provider: " + GetType() + " " + choreType.Id, null);
+			Debug.LogErrorFormat("Chore.Begin provider is null {0} {1} {2}, provider {3}, driver {4}", id, GetType(), choreType.Id, provider, driver);
 		}
 		driver = context.consumerState.choreDriver;
 		StateMachine.Instance sMI = GetSMI();
@@ -652,7 +655,6 @@ public abstract class Chore
 		if ((UnityEngine.Object)provider != (UnityEngine.Object)null)
 		{
 			provider.RemoveChore(this);
-			provider = null;
 			return true;
 		}
 		return false;

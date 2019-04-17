@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class LaunchInitializer : MonoBehaviour
 {
-	public const string BUILD_PREFIX = "Q2";
+	public const string BUILD_PREFIX = "Q3";
 
 	public GameObject[] SpawnPrefabs;
 
@@ -18,11 +18,11 @@ public class LaunchInitializer : MonoBehaviour
 		{
 			if (!SystemInfo.SupportsTextureFormat(TextureFormat.RGBAFloat))
 			{
-				Debug.LogError("Machine does not support RGBAFloat32", null);
+				Debug.LogError("Machine does not support RGBAFloat32");
 			}
 			GraphicsOptionsScreen.SetResolutionFromPrefs();
 			Util.ApplyInvariantCultureToThread(Thread.CurrentThread);
-			Debug.Log("Development Build: Q2-" + 312713.ToString(), null);
+			Debug.Log("Development Build: Q3-" + 326399.ToString());
 			UnityEngine.Object.DontDestroyOnLoad(base.gameObject);
 			KPlayerPrefs.instance.Load();
 			KFMOD.Initialize();
@@ -61,7 +61,7 @@ public class LaunchInitializer : MonoBehaviour
 			}
 			catch (Exception obj)
 			{
-				Debug.LogWarning(obj, null);
+				Debug.LogWarning(obj);
 			}
 		}
 	}

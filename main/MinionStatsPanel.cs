@@ -1,3 +1,4 @@
+using Database;
 using Klei.AI;
 using STRINGS;
 using System.Collections.Generic;
@@ -7,21 +8,15 @@ public class MinionStatsPanel : TargetScreen
 {
 	public GameObject attributesLabelTemplate;
 
+	private GameObject resumePanel;
+
 	private GameObject attributesPanel;
 
-	private GameObject stressPanel;
-
-	private GameObject traitsPanel;
+	private DetailsPanelDrawer resumeDrawer;
 
 	private DetailsPanelDrawer attributesDrawer;
 
-	private DetailsPanelDrawer stressDrawer;
-
-	private DetailsPanelDrawer traitsDrawer;
-
 	private SchedulerHandle updateHandle;
-
-	private List<ReportManager.ReportEntry.Note> stressNotes = new List<ReportManager.ReportEntry.Note>();
 
 	public override bool IsValidForTarget(GameObject target)
 	{
@@ -31,12 +26,10 @@ public class MinionStatsPanel : TargetScreen
 	protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
-		stressPanel = Util.KInstantiateUI(ScreenPrefabs.Instance.CollapsableContentPanel, base.gameObject, false);
+		resumePanel = Util.KInstantiateUI(ScreenPrefabs.Instance.CollapsableContentPanel, base.gameObject, false);
 		attributesPanel = Util.KInstantiateUI(ScreenPrefabs.Instance.CollapsableContentPanel, base.gameObject, false);
-		traitsPanel = Util.KInstantiateUI(ScreenPrefabs.Instance.CollapsableContentPanel, base.gameObject, false);
+		resumeDrawer = new DetailsPanelDrawer(attributesLabelTemplate, resumePanel.GetComponent<CollapsibleDetailContentPanel>().Content.gameObject);
 		attributesDrawer = new DetailsPanelDrawer(attributesLabelTemplate, attributesPanel.GetComponent<CollapsibleDetailContentPanel>().Content.gameObject);
-		stressDrawer = new DetailsPanelDrawer(attributesLabelTemplate, stressPanel.GetComponent<CollapsibleDetailContentPanel>().Content.gameObject);
-		traitsDrawer = new DetailsPanelDrawer(attributesLabelTemplate, traitsPanel.GetComponent<CollapsibleDetailContentPanel>().Content.gameObject);
 	}
 
 	protected override void OnCleanUp()
@@ -88,9 +81,8 @@ public class MinionStatsPanel : TargetScreen
 	{
 		if (base.gameObject.activeSelf && !((Object)selectedTarget == (Object)null) && !((Object)selectedTarget.GetComponent<MinionIdentity>() == (Object)null))
 		{
+			RefreshResume();
 			RefreshAttributes();
-			RefreshTraits();
-			RefreshStress();
 		}
 	}
 
@@ -119,72 +111,45 @@ public class MinionStatsPanel : TargetScreen
 		}
 	}
 
-	private void RefreshStress()
+	private void RefreshResume()
 	{
-		MinionIdentity identity = selectedTarget.GetComponent<MinionIdentity>();
-		if (!(bool)identity)
-		{
-			stressPanel.SetActive(false);
-		}
-		else
-		{
-			stressPanel.SetActive(true);
-			stressPanel.GetComponent<CollapsibleDetailContentPanel>().HeaderLabel.text = UI.DETAILTABS.STATS.GROUPNAME_STRESS;
-			ReportManager.ReportEntry reportEntry = ReportManager.Instance.TodaysReport.reportEntries.Find((ReportManager.ReportEntry entry) => entry.reportType == ReportManager.ReportType.StressDelta);
-			stressDrawer.BeginDrawing();
-			float num = 0f;
-			stressNotes.Clear();
-			int num2 = reportEntry.contextEntries.FindIndex((ReportManager.ReportEntry entry) => entry.context == identity.GetProperName());
-			ReportManager.ReportEntry reportEntry2 = (num2 == -1) ? null : reportEntry.contextEntries[num2];
-			if (reportEntry2 != null)
-			{
-				reportEntry2.IterateNotes(delegate(ReportManager.ReportEntry.Note note)
-				{
-					stressNotes.Add(note);
-				});
-				stressNotes.Sort((ReportManager.ReportEntry.Note a, ReportManager.ReportEntry.Note b) => a.value.CompareTo(b.value));
-				for (int i = 0; i < stressNotes.Count; i++)
-				{
-					DetailsPanelDrawer detailsPanelDrawer = stressDrawer;
-					string[] obj = new string[6];
-					ReportManager.ReportEntry.Note note2 = stressNotes[i];
-					obj[0] = ((!(note2.value > 0f)) ? string.Empty : UIConstants.ColorPrefixRed);
-					ReportManager.ReportEntry.Note note3 = stressNotes[i];
-					obj[1] = note3.note;
-					obj[2] = ": ";
-					ReportManager.ReportEntry.Note note4 = stressNotes[i];
-					obj[3] = Util.FormatTwoDecimalPlace(note4.value);
-					obj[4] = "%";
-					ReportManager.ReportEntry.Note note5 = stressNotes[i];
-					obj[5] = ((!(note5.value > 0f)) ? string.Empty : UIConstants.ColorSuffix);
-					detailsPanelDrawer.NewLabel(string.Concat(obj));
-					float num3 = num;
-					ReportManager.ReportEntry.Note note6 = stressNotes[i];
-					num = num3 + note6.value;
-				}
-			}
-			stressDrawer.NewLabel(((!(num > 0f)) ? string.Empty : UIConstants.ColorPrefixRed) + string.Format(UI.DETAILTABS.DETAILS.NET_STRESS, Util.FormatTwoDecimalPlace(num)) + ((!(num > 0f)) ? string.Empty : UIConstants.ColorSuffix));
-			stressDrawer.EndDrawing();
-		}
-	}
-
-	private void RefreshTraits()
-	{
-		MinionIdentity component = selectedTarget.GetComponent<MinionIdentity>();
+		MinionResume component = selectedTarget.GetComponent<MinionResume>();
 		if (!(bool)component)
 		{
-			traitsPanel.SetActive(false);
+			resumePanel.SetActive(false);
 		}
 		else
 		{
-			traitsPanel.SetActive(true);
-			traitsPanel.GetComponent<CollapsibleDetailContentPanel>().HeaderLabel.text = UI.DETAILTABS.STATS.GROUPNAME_TRAITS;
-			traitsDrawer.BeginDrawing();
-			foreach (Trait trait in selectedTarget.GetComponent<Traits>().TraitList)
+			resumePanel.SetActive(true);
+			resumePanel.GetComponent<CollapsibleDetailContentPanel>().HeaderLabel.text = string.Format(UI.DETAILTABS.PERSONALITY.GROUPNAME_RESUME, selectedTarget.name.ToUpper());
+			resumeDrawer.BeginDrawing();
+			List<Skill> list = new List<Skill>();
+			foreach (KeyValuePair<string, bool> item2 in component.MasteryBySkillID)
 			{
-				traitsDrawer.NewLabel(trait.Name).Tooltip(trait.GetTooltip());
+				if (item2.Value)
+				{
+					Skill item = Db.Get().Skills.Get(item2.Key);
+					list.Add(item);
+				}
 			}
-			traitsDrawer.EndDrawing();
+			resumeDrawer.NewLabel(UI.DETAILTABS.PERSONALITY.RESUME.MASTERED_SKILLS).Tooltip(UI.DETAILTABS.PERSONALITY.RESUME.MASTERED_SKILLS_TOOLTIP);
+			if (list.Count == 0)
+			{
+				resumeDrawer.NewLabel("  • " + UI.DETAILTABS.PERSONALITY.RESUME.NO_MASTERED_SKILLS.NAME).Tooltip(string.Format(UI.DETAILTABS.PERSONALITY.RESUME.NO_MASTERED_SKILLS.TOOLTIP, selectedTarget.name));
+			}
+			else
+			{
+				foreach (Skill item3 in list)
+				{
+					string text = string.Empty;
+					foreach (SkillPerk perk in item3.perks)
+					{
+						text = text + "  • " + perk.Name + "\n";
+					}
+					resumeDrawer.NewLabel("  • " + item3.Name).Tooltip(item3.description + "\n" + text);
+				}
+			}
+			resumeDrawer.EndDrawing();
 		}
 	}
 }

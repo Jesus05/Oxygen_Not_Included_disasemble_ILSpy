@@ -187,7 +187,7 @@ public class GeyserGenericConfig : IMultiEntityConfig
 			}
 			else
 			{
-				Debug.LogWarning("Could not load global world seed for geysers", null);
+				Debug.LogWarning("Could not load global world seed for geysers");
 			}
 			int num2 = num;
 			Vector3 position = inst.transform.GetPosition();

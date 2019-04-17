@@ -104,7 +104,7 @@ public class JobsTableScreen : TableScreen
 
 	public override float GetSortKey()
 	{
-		return 102f;
+		return 101f;
 	}
 
 	protected override void OnActivate()
@@ -183,80 +183,82 @@ public class JobsTableScreen : TableScreen
 			text = UI.JOBSSCREEN.NEW_MINION_ITEM_TOOLTIP.ToString();
 			break;
 		case TableRow.RowType.Minion:
+		case TableRow.RowType.StoredMinon:
 			text = UI.JOBSSCREEN.ITEM_TOOLTIP.ToString();
 			text = text.Replace("{Name}", widgetRow.name);
 			break;
 		}
 		ToolTip componentInChildren = gameObject.GetComponentInChildren<ToolTip>();
-		IPersonalPriorityManager priorityManager = GetPriorityManager(widgetRow);
-		bool auto_assigned;
-		int personalPriority = priorityManager.GetPersonalPriority(choreGroup, out auto_assigned);
-		string newValue = GetPriorityStr(personalPriority);
-		string priorityValue = GetPriorityValue(personalPriority);
-		MinionIdentity minionIdentity = widgetRow.GetMinionIdentity();
-		if ((UnityEngine.Object)minionIdentity != (UnityEngine.Object)null && auto_assigned)
+		IAssignableIdentity identity = widgetRow.GetIdentity();
+		MinionIdentity minionIdentity = identity as MinionIdentity;
+		if ((UnityEngine.Object)minionIdentity != (UnityEngine.Object)null)
 		{
-			text = UI.JOBSSCREEN.ITEM_AUTO_ASSIGNED_TOOLTIP.ToString();
-			text = text.Replace("{Role}", minionIdentity.GetComponent<MinionResume>().GetCurrentRoleString());
-			text = text.Replace("{Name}", minionIdentity.GetProperName());
-		}
-		if (priorityManager.IsChoreGroupDisabled(choreGroup))
-		{
-			Trait trait = null;
-			Traits component = minionIdentity.GetComponent<Traits>();
-			foreach (Trait trait2 in component.TraitList)
+			IPersonalPriorityManager priorityManager = GetPriorityManager(widgetRow);
+			int personalPriority = priorityManager.GetPersonalPriority(choreGroup);
+			string newValue = GetPriorityStr(personalPriority);
+			string priorityValue = GetPriorityValue(personalPriority);
+			if (priorityManager.IsChoreGroupDisabled(choreGroup))
 			{
-				if (trait2.disabledChoreGroups != null)
+				Trait trait = null;
+				Traits component = minionIdentity.GetComponent<Traits>();
+				foreach (Trait trait2 in component.TraitList)
 				{
-					ChoreGroup[] disabledChoreGroups = trait2.disabledChoreGroups;
-					foreach (ChoreGroup choreGroup2 in disabledChoreGroups)
+					if (trait2.disabledChoreGroups != null)
 					{
-						if (choreGroup2.IdHash == choreGroup.IdHash)
+						ChoreGroup[] disabledChoreGroups = trait2.disabledChoreGroups;
+						foreach (ChoreGroup choreGroup2 in disabledChoreGroups)
 						{
-							trait = trait2;
+							if (choreGroup2.IdHash == choreGroup.IdHash)
+							{
+								trait = trait2;
+								break;
+							}
+						}
+						if (trait != null)
+						{
 							break;
 						}
 					}
-					if (trait != null)
-					{
-						break;
-					}
 				}
-			}
-			text = UI.JOBSSCREEN.TRAIT_DISABLED.ToString();
-			text = text.Replace("{Name}", minionIdentity.GetProperName());
-			text = text.Replace("{Job}", choreGroup.Name);
-			text = text.Replace("{Trait}", trait.Name);
-			componentInChildren.ClearMultiStringTooltip();
-			componentInChildren.AddMultiStringTooltip(text, null);
-		}
-		else
-		{
-			text = text.Replace("{Job}", choreGroup.Name);
-			text = text.Replace("{Priority}", newValue);
-			text = text.Replace("{PriorityValue}", priorityValue);
-			componentInChildren.ClearMultiStringTooltip();
-			componentInChildren.AddMultiStringTooltip(text, null);
-			if ((UnityEngine.Object)minionIdentity != (UnityEngine.Object)null)
-			{
-				text = "\n" + UI.JOBSSCREEN.MINION_SKILL_TOOLTIP.ToString();
+				text = UI.JOBSSCREEN.TRAIT_DISABLED.ToString();
 				text = text.Replace("{Name}", minionIdentity.GetProperName());
-				text = text.Replace("{Attribute}", choreGroup.attribute.Name);
-				AttributeInstance attributeInstance = minionIdentity.GetAttributes().Get(choreGroup.attribute);
-				float totalValue = attributeInstance.GetTotalValue();
-				TextStyleSetting textStyleSetting = TooltipTextStyle_Ability;
-				if (totalValue > 0f)
-				{
-					textStyleSetting = TooltipTextStyle_AbilityPositiveModifier;
-				}
-				else if (totalValue < 0f)
-				{
-					textStyleSetting = TooltipTextStyle_AbilityNegativeModifier;
-				}
-				text += GameUtil.ColourizeString(textStyleSetting.textColor, totalValue.ToString());
+				text = text.Replace("{Job}", choreGroup.Name);
+				text = text.Replace("{Trait}", trait.Name);
+				componentInChildren.ClearMultiStringTooltip();
 				componentInChildren.AddMultiStringTooltip(text, null);
 			}
-			componentInChildren.AddMultiStringTooltip(UI.HORIZONTAL_RULE + "\n" + GetUsageString(), null);
+			else
+			{
+				text = text.Replace("{Job}", choreGroup.Name);
+				text = text.Replace("{Priority}", newValue);
+				text = text.Replace("{PriorityValue}", priorityValue);
+				componentInChildren.ClearMultiStringTooltip();
+				componentInChildren.AddMultiStringTooltip(text, null);
+				if ((UnityEngine.Object)minionIdentity != (UnityEngine.Object)null)
+				{
+					text = "\n" + UI.JOBSSCREEN.MINION_SKILL_TOOLTIP.ToString();
+					text = text.Replace("{Name}", minionIdentity.GetProperName());
+					text = text.Replace("{Attribute}", choreGroup.attribute.Name);
+					AttributeInstance attributeInstance = minionIdentity.GetAttributes().Get(choreGroup.attribute);
+					float totalValue = attributeInstance.GetTotalValue();
+					TextStyleSetting textStyleSetting = TooltipTextStyle_Ability;
+					if (totalValue > 0f)
+					{
+						textStyleSetting = TooltipTextStyle_AbilityPositiveModifier;
+					}
+					else if (totalValue < 0f)
+					{
+						textStyleSetting = TooltipTextStyle_AbilityNegativeModifier;
+					}
+					text += GameUtil.ColourizeString(textStyleSetting.textColor, totalValue.ToString());
+					componentInChildren.AddMultiStringTooltip(text, null);
+				}
+				componentInChildren.AddMultiStringTooltip(UI.HORIZONTAL_RULE + "\n" + GetUsageString(), null);
+			}
+		}
+		else if ((UnityEngine.Object)(identity as StoredMinionIdentity) != (UnityEngine.Object)null)
+		{
+			componentInChildren.AddMultiStringTooltip(string.Format(UI.JOBSSCREEN.CANNOT_ADJUST_PRIORITY, identity.GetProperName(), (identity as StoredMinionIdentity).GetStorageReason()), null);
 		}
 		return string.Empty;
 	}
@@ -286,6 +288,7 @@ public class JobsTableScreen : TableScreen
 		switch (widgetRow.rowType)
 		{
 		case TableRow.RowType.Header:
+			Debug.Assert(false);
 			return null;
 		case TableRow.RowType.Default:
 			locString = UI.JOBSSCREEN.INCREASE_ROW_PRIORITY_NEW_MINION_TOOLTIP;
@@ -294,8 +297,17 @@ public class JobsTableScreen : TableScreen
 		case TableRow.RowType.Minion:
 			locString = UI.JOBSSCREEN.INCREASE_ROW_PRIORITY_MINION_TOOLTIP;
 			locString2 = UI.JOBSSCREEN.DECREASE_ROW_PRIORITY_MINION_TOOLTIP;
-			text = widgetRow.GetMinionIdentity().GetProperName();
+			text = widgetRow.GetIdentity().GetProperName();
 			break;
+		case TableRow.RowType.StoredMinon:
+		{
+			StoredMinionIdentity storedMinionIdentity = widgetRow.GetIdentity() as StoredMinionIdentity;
+			if ((UnityEngine.Object)storedMinionIdentity != (UnityEngine.Object)null)
+			{
+				return string.Format(UI.JOBSSCREEN.CANNOT_ADJUST_PRIORITY, storedMinionIdentity.GetProperName(), storedMinionIdentity.GetStorageReason());
+			}
+			break;
+		}
 		}
 		LocString locString3 = (delta <= 0) ? locString2 : locString;
 		string text2 = locString3.ToString();
@@ -316,13 +328,26 @@ public class JobsTableScreen : TableScreen
 			sort_is_reversed = !sort_is_reversed;
 		}
 		active_sort_column = prioritizationGroupTableColumn;
-		active_sort_method = delegate(MinionIdentity m1, MinionIdentity m2)
+		active_sort_method = delegate(IAssignableIdentity a, IAssignableIdentity b)
 		{
-			ChoreConsumer component = m1.GetComponent<ChoreConsumer>();
-			ChoreConsumer component2 = m2.GetComponent<ChoreConsumer>();
-			bool auto_assigned;
-			int personalPriority = component.GetPersonalPriority(chore_group, out auto_assigned);
-			int personalPriority2 = component2.GetPersonalPriority(chore_group, out auto_assigned);
+			MinionIdentity minionIdentity = a as MinionIdentity;
+			MinionIdentity minionIdentity2 = b as MinionIdentity;
+			if ((UnityEngine.Object)minionIdentity == (UnityEngine.Object)null && (UnityEngine.Object)minionIdentity2 == (UnityEngine.Object)null)
+			{
+				return 0;
+			}
+			if ((UnityEngine.Object)minionIdentity == (UnityEngine.Object)null)
+			{
+				return -1;
+			}
+			if ((UnityEngine.Object)minionIdentity2 == (UnityEngine.Object)null)
+			{
+				return 1;
+			}
+			ChoreConsumer component = minionIdentity.GetComponent<ChoreConsumer>();
+			ChoreConsumer component2 = minionIdentity2.GetComponent<ChoreConsumer>();
+			int personalPriority = component.GetPersonalPriority(chore_group);
+			int personalPriority2 = component2.GetPersonalPriority(chore_group);
 			return personalPriority2 - personalPriority;
 		};
 		SortRows();
@@ -345,7 +370,16 @@ public class JobsTableScreen : TableScreen
 			result = Immigration.Instance;
 			break;
 		case TableRow.RowType.Minion:
-			result = row.GetMinionIdentity().GetComponent<ChoreConsumer>();
+		{
+			MinionIdentity minionIdentity = row.GetIdentity() as MinionIdentity;
+			if ((UnityEngine.Object)minionIdentity != (UnityEngine.Object)null)
+			{
+				result = minionIdentity.GetComponent<ChoreConsumer>();
+			}
+			break;
+		}
+		case TableRow.RowType.StoredMinon:
+			result = (row.GetIdentity() as StoredMinionIdentity);
 			break;
 		}
 		return result;
@@ -371,7 +405,7 @@ public class JobsTableScreen : TableScreen
 		return (priority * 10).ToString();
 	}
 
-	private void LoadValue(MinionIdentity minion, GameObject widget_go)
+	private void LoadValue(IAssignableIdentity minion, GameObject widget_go)
 	{
 		if (!((UnityEngine.Object)widget_go == (UnityEngine.Object)null))
 		{
@@ -385,6 +419,7 @@ public class JobsTableScreen : TableScreen
 				break;
 			case TableRow.RowType.Default:
 			case TableRow.RowType.Minion:
+			case TableRow.RowType.StoredMinon:
 			{
 				IPersonalPriorityManager priorityManager = GetPriorityManager(widgetRow);
 				bool flag = priorityManager.IsChoreGroupDisabled(choreGroup);
@@ -421,48 +456,42 @@ public class JobsTableScreen : TableScreen
 	private void ChangePersonalPriority(object widget_go_obj, int delta)
 	{
 		GameObject widget_go = widget_go_obj as GameObject;
-		if (widget_go_obj == null)
+		if (widget_go_obj != null)
 		{
-			return;
+			TableRow widgetRow = GetWidgetRow(widget_go);
+			if (widgetRow.rowType == TableRow.RowType.Header)
+			{
+				Debug.Assert(false);
+			}
+			PrioritizationGroupTableColumn prioritizationGroupTableColumn = GetWidgetColumn(widget_go) as PrioritizationGroupTableColumn;
+			ChoreGroup chore_group = prioritizationGroupTableColumn.userData as ChoreGroup;
+			IPersonalPriorityManager priorityManager = GetPriorityManager(widgetRow);
+			ChangePersonalPriority(priorityManager, chore_group, delta, true);
+			UpdateWidget(widget_go, chore_group, priorityManager);
 		}
-		TableRow widgetRow = GetWidgetRow(widget_go);
-		if (widgetRow.rowType == TableRow.RowType.Header)
-		{
-			goto IL_002d;
-		}
-		goto IL_002d;
-		IL_002d:
-		PrioritizationGroupTableColumn prioritizationGroupTableColumn = GetWidgetColumn(widget_go) as PrioritizationGroupTableColumn;
-		ChoreGroup chore_group = prioritizationGroupTableColumn.userData as ChoreGroup;
-		IPersonalPriorityManager priorityManager = GetPriorityManager(widgetRow);
-		ChangePersonalPriority(priorityManager, chore_group, delta, true);
-		UpdateWidget(widget_go, chore_group, priorityManager);
 	}
 
 	private void ChangeColumnPriority(object widget_go_obj, int new_priority)
 	{
 		GameObject widget_go = widget_go_obj as GameObject;
-		if (widget_go_obj == null)
+		if (widget_go_obj != null)
 		{
-			return;
-		}
-		TableRow widgetRow = GetWidgetRow(widget_go);
-		if (widgetRow.rowType == TableRow.RowType.Header)
-		{
-			goto IL_0032;
-		}
-		goto IL_0032;
-		IL_0032:
-		PrioritizationGroupTableColumn prioritizationGroupTableColumn = GetWidgetColumn(widget_go) as PrioritizationGroupTableColumn;
-		ChoreGroup choreGroup = prioritizationGroupTableColumn.userData as ChoreGroup;
-		foreach (TableRow row in rows)
-		{
-			IPersonalPriorityManager priorityManager = GetPriorityManager(row);
-			if (priorityManager != null)
+			TableRow widgetRow = GetWidgetRow(widget_go);
+			if (widgetRow.rowType != 0)
 			{
-				priorityManager.SetPersonalPriority(choreGroup, new_priority, false);
-				GameObject widget = row.GetWidget(prioritizationGroupTableColumn);
-				UpdateWidget(widget, choreGroup, priorityManager);
+				Debug.Assert(false);
+			}
+			PrioritizationGroupTableColumn prioritizationGroupTableColumn = GetWidgetColumn(widget_go) as PrioritizationGroupTableColumn;
+			ChoreGroup choreGroup = prioritizationGroupTableColumn.userData as ChoreGroup;
+			foreach (TableRow row in rows)
+			{
+				IPersonalPriorityManager priorityManager = GetPriorityManager(row);
+				if (priorityManager != null)
+				{
+					priorityManager.SetPersonalPriority(choreGroup, new_priority);
+					GameObject widget = row.GetWidget(prioritizationGroupTableColumn);
+					UpdateWidget(widget, choreGroup, priorityManager);
+				}
 			}
 		}
 	}
@@ -473,7 +502,11 @@ public class JobsTableScreen : TableScreen
 		if (widget_go_obj != null)
 		{
 			TableRow widgetRow = GetWidgetRow(widget_go);
-			if (widgetRow.rowType != 0)
+			if (widgetRow.rowType == TableRow.RowType.Header)
+			{
+				Debug.Assert(false);
+			}
+			else
 			{
 				IPersonalPriorityManager priorityManager = GetPriorityManager(widgetRow);
 				foreach (TableColumn value in columns.Values)
@@ -499,36 +532,18 @@ public class JobsTableScreen : TableScreen
 		}
 		else
 		{
-			int num = priority_mgr.GetPersonalPriority(chore_group, out bool auto_assigned);
-			bool auto_assigned2 = false;
-			if (num == 5)
-			{
-				if (delta > 0)
-				{
-					if (priority_mgr.CanRoleManageChoreGroup(chore_group))
-					{
-						auto_assigned2 = true;
-					}
-				}
-				else if (!auto_assigned)
-				{
-					num += delta;
-				}
-			}
-			else
-			{
-				num += delta;
-			}
-			num = Mathf.Clamp(num, 0, 5);
+			int personalPriority = priority_mgr.GetPersonalPriority(chore_group);
+			personalPriority += delta;
 			if (wrap_around)
 			{
-				num %= 6;
-				if (num < 0)
+				personalPriority %= 6;
+				if (personalPriority < 0)
 				{
-					num += 6;
+					personalPriority += 6;
 				}
 			}
-			priority_mgr.SetPersonalPriority(chore_group, num, auto_assigned2);
+			personalPriority = Mathf.Clamp(personalPriority, 0, 5);
+			priority_mgr.SetPersonalPriority(chore_group, personalPriority);
 			if (delta > 0)
 			{
 				KMonoBehaviour.PlaySound(GlobalAssets.GetSound("HUD_Click", false));
@@ -543,38 +558,30 @@ public class JobsTableScreen : TableScreen
 	private void UpdateWidget(GameObject widget_go, ChoreGroup chore_group, IPersonalPriorityManager priority_mgr)
 	{
 		int fgIndex = 0;
-		bool auto_assigned = false;
 		int value = 0;
 		bool flag = priority_mgr.IsChoreGroupDisabled(chore_group);
 		if (!flag)
 		{
-			value = priority_mgr.GetPersonalPriority(chore_group, out auto_assigned);
+			value = priority_mgr.GetPersonalPriority(chore_group);
 		}
 		value = Mathf.Clamp(value, 0, 5);
-		if (!auto_assigned)
+		for (int i = 0; i < JobsTableScreen.priorityInfo.Count - 1; i++)
 		{
-			for (int i = 0; i < JobsTableScreen.priorityInfo.Count - 1; i++)
+			PriorityInfo priorityInfo = JobsTableScreen.priorityInfo[i];
+			if (priorityInfo.priority == value)
 			{
-				PriorityInfo priorityInfo = JobsTableScreen.priorityInfo[i];
-				if (priorityInfo.priority == value)
-				{
-					fgIndex = i;
-					break;
-				}
+				fgIndex = i;
+				break;
 			}
 		}
-		else
-		{
-			fgIndex = JobsTableScreen.priorityInfo.Count - 1;
-		}
 		OptionSelector component = widget_go.GetComponent<OptionSelector>();
-		int associatedSkillLevel = priority_mgr.GetAssociatedSkillLevel(chore_group);
+		int num = priority_mgr?.GetAssociatedSkillLevel(chore_group) ?? 0;
 		Color32 fillColour = new Color32(byte.MaxValue, byte.MaxValue, byte.MaxValue, 128);
-		if (associatedSkillLevel > 0)
+		if (num > 0)
 		{
-			float num = (float)(associatedSkillLevel - skillLevelLow);
-			num /= (float)(skillLevelHigh - skillLevelLow);
-			fillColour = Color32.Lerp(skillOutlineColourLow, skillOutlineColourHigh, num);
+			float num2 = (float)(num - skillLevelLow);
+			num2 /= (float)(skillLevelHigh - skillLevelLow);
+			fillColour = Color32.Lerp(skillOutlineColourLow, skillOutlineColourHigh, num2);
 		}
 		component.ConfigureItem(flag, new OptionSelector.DisplayOptionInfo
 		{
@@ -609,8 +616,8 @@ public class JobsTableScreen : TableScreen
 		{
 			foreach (TableRow row in rows)
 			{
-				MinionIdentity minionIdentity = row.GetMinionIdentity();
-				if (!((UnityEngine.Object)minionIdentity == (UnityEngine.Object)null) && !((UnityEngine.Object)minionIdentity.gameObject != (UnityEngine.Object)minion_resume.gameObject))
+				IAssignableIdentity identity = row.GetIdentity();
+				if (!((UnityEngine.Object)(identity as MinionIdentity) == (UnityEngine.Object)null) && !((UnityEngine.Object)(identity as MinionIdentity).gameObject != (UnityEngine.Object)minion_resume.gameObject))
 				{
 					foreach (TableColumn value in columns.Values)
 					{
@@ -618,7 +625,7 @@ public class JobsTableScreen : TableScreen
 						if (prioritizationGroupTableColumn != null)
 						{
 							GameObject widget = row.GetWidget(prioritizationGroupTableColumn);
-							UpdateWidget(widget, prioritizationGroupTableColumn.userData as ChoreGroup, minionIdentity.GetComponent<ChoreConsumer>());
+							UpdateWidget(widget, prioritizationGroupTableColumn.userData as ChoreGroup, (identity as MinionIdentity).GetComponent<ChoreConsumer>());
 						}
 					}
 				}
@@ -705,8 +712,8 @@ public class JobsTableScreen : TableScreen
 			skillEventHandlerID.level_up = Components.LiveMinionIdentities[j].gameObject.Subscribe(-110704193, handler);
 			skillEventHandlerID.effect_added = Components.LiveMinionIdentities[j].gameObject.Subscribe(-1901442097, handler);
 			skillEventHandlerID.effect_removed = Components.LiveMinionIdentities[j].gameObject.Subscribe(-1157678353, handler);
-			skillEventHandlerID.disease_added = Components.LiveMinionIdentities[j].gameObject.Subscribe(-1089020, handler);
-			skillEventHandlerID.disease_cured = Components.LiveMinionIdentities[j].gameObject.Subscribe(-1516186173, handler);
+			skillEventHandlerID.disease_added = Components.LiveMinionIdentities[j].gameObject.Subscribe(1592732331, handler);
+			skillEventHandlerID.disease_cured = Components.LiveMinionIdentities[j].gameObject.Subscribe(77635178, handler);
 		}
 		for (int k = 0; k < Components.LiveMinionIdentities.Count; k++)
 		{
@@ -739,7 +746,7 @@ public class JobsTableScreen : TableScreen
 		dirty_single_minion_rows.Add(id);
 	}
 
-	private void RefreshSingleMinionRow(MinionIdentity id)
+	private void RefreshSingleMinionRow(IAssignableIdentity id)
 	{
 		foreach (KeyValuePair<string, TableColumn> column in columns)
 		{
@@ -747,7 +754,7 @@ public class JobsTableScreen : TableScreen
 			{
 				foreach (KeyValuePair<TableRow, GameObject> item in column.Value.widgets_by_row)
 				{
-					if (!((UnityEngine.Object)item.Value == (UnityEngine.Object)null) && !((UnityEngine.Object)item.Key.GetMinionIdentity() != (UnityEngine.Object)id))
+					if (!((UnityEngine.Object)item.Value == (UnityEngine.Object)null) && item.Key.GetIdentity() == id)
 					{
 						column.Value.on_load_action(id, item.Value);
 					}
@@ -898,36 +905,46 @@ public class JobsTableScreen : TableScreen
 		return result;
 	}
 
-	private void ConfigureNameLabel(MinionIdentity minion, GameObject widget_go)
+	private void ConfigureNameLabel(IAssignableIdentity identity, GameObject widget_go)
 	{
-		on_load_name_label(minion, widget_go);
-		if (!((UnityEngine.Object)minion == (UnityEngine.Object)null))
+		on_load_name_label(identity, widget_go);
+		if (identity != null)
 		{
+			string result = string.Empty;
 			ToolTip component = widget_go.GetComponent<ToolTip>();
 			if ((UnityEngine.Object)component != (UnityEngine.Object)null)
 			{
 				ToolTip toolTip = component;
 				toolTip.OnToolTip = (Func<string>)Delegate.Combine(toolTip.OnToolTip, (Func<string>)delegate
 				{
-					StringBuilder stringBuilder = new StringBuilder();
-					stringBuilder.Append("<b>" + UI.DETAILTABS.STATS.NAME + "</b>");
-					foreach (AttributeInstance attribute in minion.GetAttributes())
+					MinionIdentity minionIdentity = identity as MinionIdentity;
+					if ((UnityEngine.Object)minionIdentity != (UnityEngine.Object)null)
 					{
-						if (attribute.Attribute.ShowInUI == Klei.AI.Attribute.Display.Skill)
+						StringBuilder stringBuilder = new StringBuilder();
+						stringBuilder.Append("<b>" + UI.DETAILTABS.STATS.NAME + "</b>");
+						foreach (AttributeInstance attribute in minionIdentity.GetAttributes())
 						{
-							string text = UIConstants.ColorPrefixWhite;
-							if (attribute.GetTotalValue() > 0f)
+							if (attribute.Attribute.ShowInUI == Klei.AI.Attribute.Display.Skill)
 							{
-								text = UIConstants.ColorPrefixGreen;
+								string text = UIConstants.ColorPrefixWhite;
+								if (attribute.GetTotalValue() > 0f)
+								{
+									text = UIConstants.ColorPrefixGreen;
+								}
+								else if (attribute.GetTotalValue() < 0f)
+								{
+									text = UIConstants.ColorPrefixRed;
+								}
+								stringBuilder.Append("\n    • " + attribute.Name + ": " + text + attribute.GetTotalValue() + UIConstants.ColorSuffix);
 							}
-							else if (attribute.GetTotalValue() < 0f)
-							{
-								text = UIConstants.ColorPrefixRed;
-							}
-							stringBuilder.Append("\n    • " + attribute.Name + ": " + text + attribute.GetTotalValue() + UIConstants.ColorSuffix);
 						}
+						result = stringBuilder.ToString();
 					}
-					return stringBuilder.ToString();
+					else if ((UnityEngine.Object)(identity as StoredMinionIdentity) != (UnityEngine.Object)null)
+					{
+						result = string.Format(UI.TABLESCREENS.INFORMATION_NOT_AVAILABLE_TOOLTIP, (identity as StoredMinionIdentity).GetStorageReason(), identity.GetProperName());
+					}
+					return result;
 				});
 			}
 		}
@@ -993,7 +1010,6 @@ public class JobsTableScreen : TableScreen
 				if (!((UnityEngine.Object)item == (UnityEngine.Object)null))
 				{
 					Immigration.Instance.ApplyDefaultPersonalPriorities(item.gameObject);
-					Game.Instance.roleManager.ResetPersonalPriorities(item);
 				}
 			}
 		}
@@ -1006,9 +1022,8 @@ public class JobsTableScreen : TableScreen
 					ChoreConsumer component = item2.GetComponent<ChoreConsumer>();
 					foreach (ChoreGroup resource in Db.Get().ChoreGroups.resources)
 					{
-						component.SetPersonalPriority(resource, 3, false);
+						component.SetPersonalPriority(resource, 3);
 					}
-					Game.Instance.roleManager.ResetPersonalPriorities(item2);
 				}
 			}
 		}

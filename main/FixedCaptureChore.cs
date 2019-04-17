@@ -87,7 +87,7 @@ public class FixedCaptureChore : Chore<FixedCaptureChore.FixedCaptureChoreStates
 		: base(Db.Get().ChoreTypes.Ranch, (IStateMachineTarget)capture_point, (ChoreProvider)null, false, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.basic, 5, false, true, 0, (Tag[])null, false, ReportManager.ReportType.WorkTime)
 	{
 		AddPrecondition(IsCreatureAvailableForFixedCapture, capture_point.GetSMI<FixedCapturePoint.Instance>());
-		AddPrecondition(ChorePreconditions.instance.HasRolePerk, RoleManager.rolePerks.CanWrangleCreatures.id);
+		AddPrecondition(ChorePreconditions.instance.HasSkillPerk, Db.Get().SkillPerks.CanWrangleCreatures.Id);
 		AddPrecondition(ChorePreconditions.instance.IsScheduledTime, Db.Get().ScheduleBlockTypes.Work);
 		AddPrecondition(ChorePreconditions.instance.CanMoveTo, capture_point.GetComponent<Building>());
 		Operational component = capture_point.GetComponent<Operational>();

@@ -269,7 +269,7 @@ public class FallingWater : KMonoBehaviour, ISim200ms
 		{
 			if (temperature <= 0f || base_mass <= 0f)
 			{
-				Output.LogError($"Unexpected water mass/temperature values added to the falling water manager T({temperature}) M({base_mass})");
+				Debug.LogError($"Unexpected water mass/temperature values added to the falling water manager T({temperature}) M({base_mass})");
 			}
 			float time = GetTime();
 			if (!skip_sound)
@@ -657,7 +657,7 @@ public class FallingWater : KMonoBehaviour, ISim200ms
 		int num3 = Mathf.Min(physics.Count, 16249);
 		if (num3 < physics.Count)
 		{
-			Output.LogWarning("Too many water particles to render. Wanted", physics.Count, "but truncating to limit");
+			DebugUtil.LogWarningArgs("Too many water particles to render. Wanted", physics.Count, "but truncating to limit");
 		}
 		for (int i = 0; i < num3; i++)
 		{

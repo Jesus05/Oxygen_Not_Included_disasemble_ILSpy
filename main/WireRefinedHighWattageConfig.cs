@@ -22,6 +22,6 @@ public class WireRefinedHighWattageConfig : BaseWireConfig
 	{
 		base.DoPostConfigureUnderConstruction(go);
 		Constructable component = go.GetComponent<Constructable>();
-		component.requiredRolePerk = RoleManager.rolePerks.CanPowerTinker.id;
+		component.requiredSkillPerk = Db.Get().SkillPerks.CanPowerTinker.Id;
 	}
 }

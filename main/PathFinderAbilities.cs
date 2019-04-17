@@ -1,6 +1,6 @@
 public abstract class PathFinderAbilities
 {
-	private Navigator navigator;
+	protected Navigator navigator;
 
 	protected int prefabInstanceID;
 
@@ -18,4 +18,9 @@ public abstract class PathFinderAbilities
 	protected abstract void Refresh(Navigator navigator);
 
 	public abstract bool TraversePath(ref PathFinder.PotentialPath path, int from_cell, NavType from_nav_type, int cost, int transition_id, int underwater_cost);
+
+	public virtual int GetSubmergedPathCostPenalty(PathFinder.PotentialPath path)
+	{
+		return 0;
+	}
 }

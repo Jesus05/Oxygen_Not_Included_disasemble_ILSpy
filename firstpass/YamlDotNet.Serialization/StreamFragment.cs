@@ -15,16 +15,17 @@ namespace YamlDotNet.Serialization
 		{
 			events.Clear();
 			int num = 0;
-			while (parser.MoveNext())
+			do
 			{
+				if (!parser.MoveNext())
+				{
+					throw new InvalidOperationException("The parser has reached the end before deserialization completed.");
+				}
 				events.Add(parser.Current);
 				num += parser.Current.NestingIncrease;
-				if (num <= 0)
-				{
-					return;
-				}
 			}
-			throw new InvalidOperationException("The parser has reached the end before deserialization completed.");
+			while (num > 0);
+			Debug.Assert(num == 0);
 		}
 
 		void IYamlConvertible.Write(IEmitter emitter, ObjectSerializer nestedObjectSerializer)

@@ -32,6 +32,8 @@ namespace Database
 
 		public Expression SickSpores;
 
+		public Expression Zombie;
+
 		public Expression SickFierySkin;
 
 		public Expression SickCold;
@@ -48,6 +50,7 @@ namespace Database
 			RedAlert = new Expression("RedAlert", this, faces.Hot);
 			Hungry = new Expression("Hungry", this, faces.Hungry);
 			SickSpores = new Expression("SickSpores", this, faces.SickSpores);
+			Zombie = new Expression("Zombie", this, faces.Zombie);
 			SickFierySkin = new Expression("SickFierySkin", this, faces.SickFierySkin);
 			SickCold = new Expression("SickCold", this, faces.SickCold);
 			Sick = new Expression("Sick", this, faces.Sick);

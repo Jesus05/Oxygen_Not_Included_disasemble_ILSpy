@@ -17,7 +17,7 @@ public class Door : Workable, ISaveLoadable, ISim200ms
 	{
 		Auto,
 		Opened,
-		Closed,
+		Locked,
 		NumStates
 	}
 
@@ -169,7 +169,7 @@ public class Door : Workable, ISaveLoadable, ISim200ms
 					Grid.PreventFogOfWarReveal[Grid.OffsetCell(Grid.PosToCell(smi.master.gameObject), component.OccupiedCellsOffsets[i])] = false;
 				}
 				smi.sm.isLocked.Set(true, smi);
-				smi.master.controlState = ControlState.Closed;
+				smi.master.controlState = ControlState.Locked;
 				smi.master.RefreshControlState();
 				if (smi.master.GetComponent<Unsealable>().facingRight)
 				{
@@ -350,7 +350,7 @@ public class Door : Workable, ISaveLoadable, ISim200ms
 		}
 		if (!allowAutoControl && controlState == ControlState.Auto)
 		{
-			controlState = ControlState.Closed;
+			controlState = ControlState.Locked;
 		}
 		StructureTemperatureComponents structureTemperatures = GameComps.StructureTemperatures;
 		HandleVector<int>.Handle handle = structureTemperatures.GetHandle(base.gameObject);
@@ -433,8 +433,8 @@ public class Door : Workable, ISaveLoadable, ISim200ms
 		{
 			Grid.HasDoor[num2] = false;
 			Grid.HasAccessDoor[num2] = false;
-			Game.Instance.SetForceField(num2, false, Grid.Solid[num2]);
-			Grid.Impassable[num2] = false;
+			Game.Instance.SetDupePassableSolid(num2, false, Grid.Solid[num2]);
+			Grid.CritterImpassable[num2] = false;
 			Pathfinding.Instance.AddDirtyNavGridCell(num2);
 		}
 		base.OnCleanUp();
@@ -460,7 +460,7 @@ public class Door : Workable, ISaveLoadable, ISim200ms
 		case ControlState.Opened:
 			controller.sm.isLocked.Set(false, controller);
 			break;
-		case ControlState.Closed:
+		case ControlState.Locked:
 			controller.sm.isLocked.Set(true, controller);
 			break;
 		}
@@ -535,14 +535,12 @@ public class Door : Workable, ISaveLoadable, ISim200ms
 	{
 		int[] placementCells = building.PlacementCells;
 		bool is_door_open = IsOpen();
-		SetForceFieldState(is_door_open, placementCells);
+		SetPassableState(is_door_open, placementCells);
 		SetSimState(is_door_open, placementCells);
 	}
 
-	private void SetForceFieldState(bool is_door_open, IList<int> cells)
+	private void SetPassableState(bool is_door_open, IList<int> cells)
 	{
-		bool solid = !is_door_open;
-		bool force_field = is_door_open || controlState == ControlState.Auto;
 		for (int i = 0; i < cells.Count; i++)
 		{
 			int num = cells[i];
@@ -551,11 +549,16 @@ public class Door : Workable, ISaveLoadable, ISim200ms
 			case DoorType.Pressure:
 			case DoorType.ManualPressure:
 			case DoorType.Sealed:
-				Game.Instance.SetForceField(num, force_field, solid);
+			{
+				Grid.CritterImpassable[num] = (controlState != ControlState.Opened);
+				bool solid = !is_door_open;
+				bool passable = controlState != ControlState.Locked;
+				Game.Instance.SetDupePassableSolid(num, passable, solid);
 				break;
+			}
 			case DoorType.Internal:
-				Grid.Impassable[num] = (controlState != ControlState.Opened);
-				Game.Instance.SetForceField(num, controlState != ControlState.Closed, false);
+				Grid.CritterImpassable[num] = (controlState != ControlState.Opened);
+				Grid.DupeImpassable[num] = (controlState == ControlState.Locked);
 				Pathfinding.Instance.AddDirtyNavGridCell(num);
 				break;
 			}
@@ -745,7 +748,7 @@ public class Door : Workable, ISaveLoadable, ISim200ms
 		}
 		switch (controlState)
 		{
-		case ControlState.Closed:
+		case ControlState.Locked:
 			controller.sm.isOpen.Set(false, controller);
 			break;
 		case ControlState.Auto:
@@ -791,7 +794,7 @@ public class Door : Workable, ISaveLoadable, ISim200ms
 				changeStateChore.Cancel("Change state");
 				changeStateChore = null;
 			}
-			requestedState = ((newValue == 1) ? ControlState.Opened : ControlState.Closed);
+			requestedState = ((newValue == 1) ? ControlState.Opened : ControlState.Locked);
 			applyLogicChange = true;
 		}
 	}

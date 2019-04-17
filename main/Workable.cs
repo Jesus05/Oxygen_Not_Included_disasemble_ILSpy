@@ -30,6 +30,8 @@ public class Workable : KMonoBehaviour, ISaveLoadable, IApproachable
 
 	protected bool showProgressBar = true;
 
+	public bool alwaysShowProgressBar;
+
 	protected StatusItem workerStatusItem;
 
 	protected StatusItem workingStatusItem;
@@ -37,6 +39,9 @@ public class Workable : KMonoBehaviour, ISaveLoadable, IApproachable
 	protected Guid workStatusItemHandle;
 
 	protected OffsetTracker offsetTracker;
+
+	[SerializeField]
+	protected string attributeConverterId;
 
 	protected AttributeConverter attributeConverter;
 
@@ -46,7 +51,14 @@ public class Workable : KMonoBehaviour, ISaveLoadable, IApproachable
 
 	protected bool shouldTransferDiseaseWithWorker = true;
 
+	[SerializeField]
 	protected float attributeExperienceMultiplier = DUPLICANTSTATS.ATTRIBUTE_LEVELING.PART_DAY_EXPERIENCE;
+
+	[SerializeField]
+	protected string skillExperienceSkillGroup;
+
+	[SerializeField]
+	protected float skillExperienceMultiplier = SKILLS.PART_DAY_EXPERIENCE;
 
 	public bool triggerWorkReactions = true;
 
@@ -82,14 +94,14 @@ public class Workable : KMonoBehaviour, ISaveLoadable, IApproachable
 
 	public Action<WorkableEvent> OnWorkableEventCB;
 
-	private int roleUpdateHandle = -1;
+	private int skillsUpdateHandle = -1;
 
-	public HashedString requiredRolePerk;
+	public string requiredSkillPerk;
 
 	[SerializeField]
-	protected bool shouldShowRolePerkStatusItem = true;
+	protected bool shouldShowSkillPerkStatusItem = true;
 
-	protected StatusItem readyForRoleWorkStatusItem;
+	protected StatusItem readyForSkillWorkStatusItem;
 
 	public HashedString[] workAnims = new HashedString[2]
 	{
@@ -189,7 +201,7 @@ public class Workable : KMonoBehaviour, ISaveLoadable, IApproachable
 		base.OnPrefabInit();
 		workerStatusItem = Db.Get().MiscStatusItems.Using;
 		workingStatusItem = Db.Get().MiscStatusItems.Operating;
-		readyForRoleWorkStatusItem = Db.Get().BuildingStatusItems.RequiresRolePerk;
+		readyForSkillWorkStatusItem = Db.Get().BuildingStatusItems.RequiresSkillPerk;
 		workTime = GetWorkTime();
 		workTimeRemaining = Mathf.Min(workTimeRemaining, workTime);
 	}
@@ -197,16 +209,17 @@ public class Workable : KMonoBehaviour, ISaveLoadable, IApproachable
 	protected override void OnSpawn()
 	{
 		base.OnSpawn();
-		if (shouldShowRolePerkStatusItem && requiredRolePerk.IsValid)
+		if (shouldShowSkillPerkStatusItem && !string.IsNullOrEmpty(requiredSkillPerk))
 		{
-			if (roleUpdateHandle != -1)
+			if (skillsUpdateHandle != -1)
 			{
-				Game.Instance.Unsubscribe(roleUpdateHandle);
+				Game.Instance.Unsubscribe(skillsUpdateHandle);
 			}
-			roleUpdateHandle = Game.Instance.Subscribe(-1523247426, UpdateStatusItem);
+			skillsUpdateHandle = Game.Instance.Subscribe(-1523247426, UpdateStatusItem);
 		}
 		KPrefabID component = GetComponent<KPrefabID>();
 		component.AddTag(GameTags.HasChores);
+		ShowProgressBar(alwaysShowProgressBar && workTimeRemaining < GetWorkTime());
 		UpdateStatusItem(null);
 	}
 
@@ -218,15 +231,15 @@ public class Workable : KMonoBehaviour, ISaveLoadable, IApproachable
 			component.RemoveStatusItem(workStatusItemHandle, false);
 			if ((UnityEngine.Object)worker == (UnityEngine.Object)null)
 			{
-				if (shouldShowRolePerkStatusItem && requiredRolePerk.IsValid)
+				if (shouldShowSkillPerkStatusItem && !string.IsNullOrEmpty(requiredSkillPerk))
 				{
-					if (Game.Instance.roleManager.GetRoleAssigneesWithPerk(requiredRolePerk).Count == 0)
+					if (!MinionResume.AnyMinionHasPerk(requiredSkillPerk))
 					{
-						workStatusItemHandle = component.AddStatusItem(Db.Get().BuildingStatusItems.ColonyLacksRequiredRolePerk, requiredRolePerk);
+						workStatusItemHandle = component.AddStatusItem(Db.Get().BuildingStatusItems.ColonyLacksRequiredSkillPerk, requiredSkillPerk);
 					}
 					else
 					{
-						workStatusItemHandle = component.AddStatusItem(readyForRoleWorkStatusItem, requiredRolePerk);
+						workStatusItemHandle = component.AddStatusItem(readyForSkillWorkStatusItem, requiredSkillPerk);
 					}
 				}
 			}
@@ -250,6 +263,7 @@ public class Workable : KMonoBehaviour, ISaveLoadable, IApproachable
 
 	public void StartWork(Worker worker_to_start)
 	{
+		Debug.Assert((UnityEngine.Object)worker_to_start != (UnityEngine.Object)null, "How did we get a null worker?");
 		worker = worker_to_start;
 		UpdateStatusItem(null);
 		if (showProgressBar)
@@ -308,18 +322,19 @@ public class Workable : KMonoBehaviour, ISaveLoadable, IApproachable
 		return (!component.HasTag(GameTags.NotConversationTopic)) ? component.PrefabTag.Name : null;
 	}
 
-	public virtual void AwardExperience(float work_dt, MinionResume resume)
-	{
-	}
-
-	public void SetAttributeConverter(AttributeConverter attributeConverter)
-	{
-		this.attributeConverter = attributeConverter;
-	}
-
 	public float GetAttributeExperienceMultiplier()
 	{
 		return attributeExperienceMultiplier;
+	}
+
+	public string GetSkillExperienceSkillGroup()
+	{
+		return skillExperienceSkillGroup;
+	}
+
+	public float GetSkillExperienceMultiplier()
+	{
+		return skillExperienceMultiplier;
 	}
 
 	protected virtual bool OnWorkTick(Worker worker, float dt)
@@ -346,7 +361,7 @@ public class Workable : KMonoBehaviour, ISaveLoadable, IApproachable
 		{
 			workTimeRemaining = GetWorkTime();
 		}
-		ShowProgressBar(false);
+		ShowProgressBar(alwaysShowProgressBar && workTimeRemaining < GetWorkTime());
 		worker = null;
 		UpdateStatusItem(null);
 	}
@@ -481,9 +496,9 @@ public class Workable : KMonoBehaviour, ISaveLoadable, IApproachable
 		{
 			offsetTracker.Clear();
 		}
-		if (roleUpdateHandle != -1)
+		if (skillsUpdateHandle != -1)
 		{
-			Game.Instance.Unsubscribe(roleUpdateHandle);
+			Game.Instance.Unsubscribe(skillsUpdateHandle);
 		}
 		base.OnCleanUp();
 		OnWorkableEventCB = null;

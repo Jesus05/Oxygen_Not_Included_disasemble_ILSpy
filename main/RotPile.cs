@@ -88,7 +88,7 @@ public class RotPile : StateMachineComponent<RotPile.StatesInstance>
 		{
 			SimHashes hash = SimHashes.ToxicSand;
 			Substance substance = ElementLoader.FindElementByHash(hash).substance;
-			GameObject gameObject = substance.SpawnResource(base.smi.master.transform.GetPosition(), mass, temperature, byte.MaxValue, 0, false, false);
+			GameObject gameObject = substance.SpawnResource(base.smi.master.transform.GetPosition(), mass, temperature, byte.MaxValue, 0, false, false, false);
 			PopFXManager.Instance.SpawnFX(PopFXManager.Instance.sprite_Resource, ElementLoader.FindElementByHash(hash).name, gameObject.transform, 1.5f, false);
 			Util.KDestroyGameObject(base.smi.gameObject);
 		}

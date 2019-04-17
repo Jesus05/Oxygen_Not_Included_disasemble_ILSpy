@@ -23,6 +23,7 @@ public class Resource
 
 	public Resource(string id, ResourceSet parent = null, string name = null)
 	{
+		Debug.Assert(id != null);
 		Id = id;
 		IdHash = new HashedString(Id);
 		Guid = new ResourceGuid(id, parent);
@@ -39,6 +40,7 @@ public class Resource
 
 	public Resource(string id, string name)
 	{
+		Debug.Assert(id != null);
 		Guid = new ResourceGuid(id, null);
 		Id = id;
 		IdHash = new HashedString(Id);

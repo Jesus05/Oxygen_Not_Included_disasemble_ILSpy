@@ -18,7 +18,7 @@ public class LogicCircuitManager
 		}
 	}
 
-	private static float ClockTickInterval = 0.1f;
+	public static float ClockTickInterval = 0.1f;
 
 	private float elapsedTime;
 

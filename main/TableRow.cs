@@ -8,12 +8,13 @@ public class TableRow : KMonoBehaviour
 	{
 		Header,
 		Default,
-		Minion
+		Minion,
+		StoredMinon
 	}
 
 	public RowType rowType;
 
-	private MinionIdentity minion;
+	private IAssignableIdentity minion;
 
 	private Dictionary<TableColumn, GameObject> widgets = new Dictionary<TableColumn, GameObject>();
 
@@ -59,33 +60,40 @@ public class TableRow : KMonoBehaviour
 
 	public void SelectMinion()
 	{
-		if (!((Object)minion == (Object)null))
+		MinionIdentity minionIdentity = minion as MinionIdentity;
+		if (!((Object)minionIdentity == (Object)null))
 		{
-			SelectTool.Instance.Select(minion.GetComponent<KSelectable>(), false);
+			SelectTool.Instance.Select(minionIdentity.GetComponent<KSelectable>(), false);
 		}
 	}
 
 	public void SelectAndFocusMinion()
 	{
-		if (!((Object)minion == (Object)null))
+		MinionIdentity minionIdentity = minion as MinionIdentity;
+		if (!((Object)minionIdentity == (Object)null))
 		{
-			SelectTool.Instance.SelectAndFocus(minion.transform.GetPosition(), minion.GetComponent<KSelectable>(), new Vector3(8f, 0f, 0f));
+			SelectTool.Instance.SelectAndFocus(minionIdentity.transform.GetPosition(), minionIdentity.GetComponent<KSelectable>(), new Vector3(8f, 0f, 0f));
 		}
 	}
 
-	public void ConfigureContent(MinionIdentity minion, Dictionary<string, TableColumn> columns)
+	public void ConfigureContent(IAssignableIdentity minion, Dictionary<string, TableColumn> columns)
 	{
 		this.minion = minion;
 		KImage componentInChildren = GetComponentInChildren<KImage>(true);
-		componentInChildren.colorStyleSetting = ((!((Object)minion == (Object)null)) ? style_setting_minion : style_setting_default);
+		componentInChildren.colorStyleSetting = ((minion != null) ? style_setting_minion : style_setting_default);
 		componentInChildren.ColorState = KImage.ColorSelector.Inactive;
+		CanvasGroup component = GetComponent<CanvasGroup>();
+		if ((Object)component != (Object)null && (Object)(minion as StoredMinionIdentity) != (Object)null)
+		{
+			component.alpha = 0.6f;
+		}
 		foreach (KeyValuePair<string, TableColumn> column in columns)
 		{
 			GameObject gameObject = null;
-			gameObject = ((!((Object)minion == (Object)null)) ? column.Value.GetMinionWidget(base.gameObject) : ((!isDefault) ? column.Value.GetHeaderWidget(base.gameObject) : column.Value.GetDefaultWidget(base.gameObject)));
+			gameObject = ((minion != null) ? column.Value.GetMinionWidget(base.gameObject) : ((!isDefault) ? column.Value.GetHeaderWidget(base.gameObject) : column.Value.GetDefaultWidget(base.gameObject)));
 			widgets.Add(column.Value, gameObject);
 			column.Value.widgets_by_row.Add(this, gameObject);
-			if (column.Key.Contains("scroller_spacer_") && ((Object)minion != (Object)null || isDefault))
+			if (column.Key.Contains("scroller_spacer_") && (minion != null || isDefault))
 			{
 				gameObject.GetComponentInChildren<LayoutElement>().minWidth += 3f;
 			}
@@ -130,7 +138,7 @@ public class TableRow : KMonoBehaviour
 				column2.Value.on_load_action(minion, column2.Value.widgets_by_row[this]);
 			}
 		}
-		if ((Object)minion != (Object)null)
+		if (minion != null)
 		{
 			base.gameObject.name = minion.GetProperName();
 		}
@@ -198,11 +206,11 @@ public class TableRow : KMonoBehaviour
 		{
 			return widgets[column];
 		}
-		Debug.LogWarning("Widget is null or row does not contain widget for column " + column, null);
+		Debug.LogWarning("Widget is null or row does not contain widget for column " + column);
 		return null;
 	}
 
-	public MinionIdentity GetMinionIdentity()
+	public IAssignableIdentity GetIdentity()
 	{
 		return minion;
 	}

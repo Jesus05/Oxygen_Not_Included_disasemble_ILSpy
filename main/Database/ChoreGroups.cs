@@ -24,7 +24,7 @@ namespace Database
 
 		public ChoreGroup Storage;
 
-		public ChoreGroup Operating;
+		public ChoreGroup MachineOperating;
 
 		public ChoreGroup MedicalAid;
 
@@ -45,13 +45,14 @@ namespace Database
 			Cook = Add("Cook", DUPLICANTS.CHOREGROUPS.COOK.NAME, "Cooking", 3);
 			Art = Add("Art", DUPLICANTS.CHOREGROUPS.ART.NAME, "Art", 3);
 			Research = Add("Research", DUPLICANTS.CHOREGROUPS.RESEARCH.NAME, "Learning", 3);
-			Operating = Add("MachineOperating", DUPLICANTS.CHOREGROUPS.MACHINEOPERATING.NAME, "Machinery", 3);
+			MachineOperating = Add("MachineOperating", DUPLICANTS.CHOREGROUPS.MACHINEOPERATING.NAME, "Machinery", 3);
 			Farming = Add("Farming", DUPLICANTS.CHOREGROUPS.FARMING.NAME, "Botanist", 3);
 			Ranching = Add("Ranching", DUPLICANTS.CHOREGROUPS.RANCHING.NAME, "Ranching", 3);
 			Build = Add("Build", DUPLICANTS.CHOREGROUPS.BUILD.NAME, "Construction", 2);
 			Dig = Add("Dig", DUPLICANTS.CHOREGROUPS.DIG.NAME, "Digging", 2);
 			Hauling = Add("Hauling", DUPLICANTS.CHOREGROUPS.HAULING.NAME, "Athletics", 1);
 			Storage = Add("Storage", DUPLICANTS.CHOREGROUPS.STORAGE.NAME, "Athletics", 1);
+			Debug.Assert(true);
 		}
 
 		private ChoreGroup Add(string id, string name, string attribute, int default_personal_priority)

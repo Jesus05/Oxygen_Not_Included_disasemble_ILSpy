@@ -4,15 +4,6 @@ namespace STRINGS
 	{
 		public class PILLS
 		{
-			public class HERBALREMEDY
-			{
-				public static LocString NAME = "Digestive Tonic";
-
-				public static LocString DESC = UI.FormatAsLink("Medicine", "MEDICINE") + " for " + UI.FormatAsLink("disease", "DIARRHEA") + ".";
-
-				public static LocString RECIPEDESC = "Cures " + UI.FormatAsLink("Diarrhea", "DISEASE") + ".";
-			}
-
 			public class PLACEBO
 			{
 				public static LocString NAME = "Placebo";
@@ -22,36 +13,58 @@ namespace STRINGS
 				public static LocString RECIPEDESC = "All-purpose " + UI.FormatAsLink("Medicine", "MEDICINE") + ".";
 			}
 
-			public class GINKONUT
-			{
-				public static LocString NAME = "Antifungal Cream";
-
-				public static LocString DESC = string.Empty;
-			}
-
-			public class MUSCARINICANTAGONIST
-			{
-				public static LocString NAME = "Anti Inflammatory Pills";
-
-				public static LocString DESC = string.Empty;
-			}
-
-			public class PUTRIDODOURMEDICINE
-			{
-				public static LocString NAME = "Deodorant";
-
-				public static LocString DESC = "A medical-grade destinkifier.";
-
-				public static LocString RECIPEDESC = "A medical-grade destinkifier.";
-			}
-
-			public class VITAMINSUPPLEMENT
+			public class BASICBOOSTER
 			{
 				public static LocString NAME = "Vitamin Chews";
 
-				public static LocString DESC = "A health Supplement for improving " + UI.FormatAsLink("Immune System", "DISEASE") + " strength.";
+				public static LocString DESC = "Minorly reduces the chance of becoming sick.";
 
-				public static LocString RECIPEDESC = "Improves " + UI.FormatAsLink("Immune System", "DISEASE") + " strength.";
+				public static LocString RECIPEDESC = "A supplement that minorly reduces the chance of contracting a germ-based " + UI.FormatAsLink("Disease", "DISEASE") + " when taken daily.";
+			}
+
+			public class INTERMEDIATEBOOSTER
+			{
+				public static LocString NAME = "Immuno Booster";
+
+				public static LocString DESC = "Significantly reduces the chance of becoming sick.";
+
+				public static LocString RECIPEDESC = "A powerful supplement that significantly reduces the chance of contracting a germ-based " + UI.FormatAsLink("Disease", "DISEASE") + " when taken daily.";
+			}
+
+			public class ANTIHISTAMINE
+			{
+				public static LocString NAME = "Allergy Medication";
+
+				public static LocString DESC = "Surpresses and prevents allergic reactions.";
+
+				public static LocString RECIPEDESC = "Duplicants can take this to cure an allergic reaction, and temporarily prevent further reactions.";
+			}
+
+			public class BASICCURE
+			{
+				public static LocString NAME = "Curative Tablet";
+
+				public static LocString DESC = "A simple easy-to-take remedy for minor germ-based diseases.";
+
+				public static LocString RECIPEDESC = "Duplicants can take this to cure themselves of minor germ-based " + UI.FormatAsLink("Diseases", "DISEASE") + ".";
+			}
+
+			public class INTERMEDIATECURE
+			{
+				public static LocString NAME = "Medicine Pack";
+
+				public static LocString DESC = "A doctor administered cure for moderate ailments.";
+
+				public static LocString RECIPEDESC = "A doctor administered cure for moderate ailments.";
+			}
+
+			public class ADVANCEDCURE
+			{
+				public static LocString NAME = "Medicine Vial";
+
+				public static LocString DESC = "A doctor administered cure for severe ailments.";
+
+				public static LocString RECIPEDESC = "A doctor administered cure for severe ailments.";
 			}
 		}
 
@@ -326,7 +339,7 @@ namespace STRINGS
 
 				public static LocString TINKER_REQUIREMENT_NAME = "Job: " + DUPLICANTS.ROLES.POWER_TECHNICIAN.NAME;
 
-				public static LocString TINKER_REQUIREMENT_TOOLTIP = "Can only be used by the " + DUPLICANTS.ROLES.POWER_TECHNICIAN.NAME + " to apply a Tune Up.";
+				public static LocString TINKER_REQUIREMENT_TOOLTIP = "Can only be used by a Duplicant with " + DUPLICANTS.ROLES.POWER_TECHNICIAN.NAME + " to apply a Tune Up.";
 
 				public static LocString TINKER_EFFECT_NAME = "Engie's Tune-Up: {0} {1}";
 
@@ -348,7 +361,7 @@ namespace STRINGS
 
 				public static LocString TINKER_REQUIREMENT_NAME = "Job: " + DUPLICANTS.ROLES.MECHATRONIC_ENGINEER.NAME;
 
-				public static LocString TINKER_REQUIREMENT_TOOLTIP = "Can only be used by the " + DUPLICANTS.ROLES.MECHATRONIC_ENGINEER.NAME + " to apply a Jerry Rig.";
+				public static LocString TINKER_REQUIREMENT_TOOLTIP = "Can only be used by a Duplicant with " + DUPLICANTS.ROLES.MECHATRONIC_ENGINEER.NAME + " to apply a Jerry Rig.";
 
 				public static LocString TINKER_EFFECT_NAME = "Engineer's Jerry Rig: {0} {1}";
 

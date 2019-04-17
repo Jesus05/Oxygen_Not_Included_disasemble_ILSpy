@@ -15,17 +15,20 @@ public class CookingStation : ComplexFabricator, IEffectDescriptor
 		choreType = Db.Get().ChoreTypes.Cook;
 		fetchChoreTypeIdHash = Db.Get().ChoreTypes.CookFetch.IdHash;
 		choreTags = GameTags.ChoreTypes.CookingChores;
-		base.workable.requiredRolePerk = RoleManager.rolePerks.CanElectricGrill.id;
+		base.workable.requiredSkillPerk = Db.Get().SkillPerks.CanElectricGrill.Id;
 		base.workable.WorkerStatusItem = Db.Get().DuplicantStatusItems.Cooking;
 		base.workable.overrideAnims = new KAnimFile[1]
 		{
 			Assets.GetAnim("anim_interacts_cookstation_kanim")
 		};
-		base.workable.AttributeConvertor = Db.Get().AttributeConverters.CookingSpeed;
+		base.workable.AttributeConverter = Db.Get().AttributeConverters.CookingSpeed;
 		base.workable.AttributeExperienceMultiplier = DUPLICANTSTATS.ATTRIBUTE_LEVELING.MOST_DAY_EXPERIENCE;
+		base.workable.SkillExperienceSkillGroup = Db.Get().SkillGroups.Cooking.Id;
+		base.workable.SkillExperienceMultiplier = SKILLS.MOST_DAY_EXPERIENCE;
 		ComplexFabricatorWorkable workable = base.workable;
 		workable.OnWorkTickActions = (Action<Worker, float>)Delegate.Combine(workable.OnWorkTickActions, (Action<Worker, float>)delegate(Worker worker, float dt)
 		{
+			Debug.Assert((UnityEngine.Object)worker != (UnityEngine.Object)null, "How did we get a null worker?");
 			if (diseaseCountKillRate > 0)
 			{
 				PrimaryElement component = GetComponent<PrimaryElement>();

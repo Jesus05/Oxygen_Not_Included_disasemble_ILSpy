@@ -348,6 +348,7 @@ public class ProductInfoScreen : KScreen
 
 	private void ActivateAppropriateTool(BuildingDef def)
 	{
+		Debug.Assert((UnityEngine.Object)def != (UnityEngine.Object)null, "def was null");
 		if (materialSelectionPanel.AllSelectorsSelected() && BuildRequirementsMet(def))
 		{
 			onElementsFullySelected.Signal();
@@ -373,12 +374,12 @@ public class ProductInfoScreen : KScreen
 	{
 		if (recipe == null)
 		{
-			Debug.LogError("Trying to verify the materials on a null recipe!", null);
+			Debug.LogError("Trying to verify the materials on a null recipe!");
 			return false;
 		}
 		if (recipe.Ingredients == null || recipe.Ingredients.Count == 0)
 		{
-			Debug.LogError("Trying to verify the materials on a recipe with no MaterialCategoryTags!", null);
+			Debug.LogError("Trying to verify the materials on a recipe with no MaterialCategoryTags!");
 			return false;
 		}
 		for (int i = 0; i < recipe.Ingredients.Count; i++)

@@ -1,6 +1,7 @@
 using KSerialization;
 using STRINGS;
 using System;
+using UnityEngine;
 
 public class Dumpable : Workable
 {
@@ -64,6 +65,16 @@ public class Dumpable : Workable
 		if (component.Mass > 0f)
 		{
 			SimMessages.AddRemoveSubstance(Grid.PosToCell(this), component.ElementID, CellEventLogger.Instance.Dumpable, component.Mass, component.Temperature, component.DiseaseIdx, component.DiseaseCount, true, -1);
+		}
+		Util.KDestroyGameObject(base.gameObject);
+	}
+
+	public void Dump(Vector3 pos)
+	{
+		PrimaryElement component = GetComponent<PrimaryElement>();
+		if (component.Mass > 0f)
+		{
+			SimMessages.AddRemoveSubstance(Grid.PosToCell(pos), component.ElementID, CellEventLogger.Instance.Dumpable, component.Mass, component.Temperature, component.DiseaseIdx, component.DiseaseCount, true, -1);
 		}
 		Util.KDestroyGameObject(base.gameObject);
 	}

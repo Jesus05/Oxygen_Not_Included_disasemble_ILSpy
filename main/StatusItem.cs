@@ -86,10 +86,6 @@ public class StatusItem : Resource
 			StatusItemOverlays.Temperature
 		},
 		{
-			OverlayModes.HeatFlow.ID,
-			StatusItemOverlays.ThermalComfort
-		},
-		{
 			OverlayModes.ThermalConductivity.ID,
 			StatusItemOverlays.ThermalComfort
 		},
@@ -136,6 +132,10 @@ public class StatusItem : Resource
 		{
 			OverlayModes.Oxygen.ID,
 			StatusItemOverlays.None
+		},
+		{
+			OverlayModes.TileMode.ID,
+			StatusItemOverlays.None
 		}
 	};
 
@@ -168,7 +168,7 @@ public class StatusItem : Resource
 		this.status_overlays = status_overlays;
 		if (sprite == null)
 		{
-			Debug.LogWarning("Status item '" + id + "' references a missing icon: " + icon, null);
+			Debug.LogWarning("Status item '" + id + "' references a missing icon: " + icon);
 		}
 	}
 
@@ -194,7 +194,7 @@ public class StatusItem : Resource
 		this.status_overlays = status_overlays;
 		if (sprite == null)
 		{
-			Debug.LogWarning("Status item '" + id + "' references a missing icon: " + icon, null);
+			Debug.LogWarning("Status item '" + id + "' references a missing icon: " + icon);
 		}
 	}
 
@@ -311,7 +311,7 @@ public class StatusItem : Resource
 		{
 			return value;
 		}
-		Debug.LogWarning("ViewMode " + mode + " has no StatusItemOverlay value", null);
+		Debug.LogWarning("ViewMode " + mode + " has no StatusItemOverlay value");
 		value = StatusItemOverlays.None;
 		return value;
 	}

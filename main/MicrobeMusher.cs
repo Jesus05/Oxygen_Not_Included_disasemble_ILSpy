@@ -17,8 +17,10 @@ public class MicrobeMusher : ComplexFabricator
 		choreType = Db.Get().ChoreTypes.Cook;
 		choreTags = GameTags.ChoreTypes.CookingChores;
 		workable.WorkerStatusItem = Db.Get().DuplicantStatusItems.Mushing;
-		workable.AttributeConvertor = Db.Get().AttributeConverters.CookingSpeed;
+		workable.AttributeConverter = Db.Get().AttributeConverters.CookingSpeed;
 		workable.AttributeExperienceMultiplier = DUPLICANTSTATS.ATTRIBUTE_LEVELING.MOST_DAY_EXPERIENCE;
+		workable.SkillExperienceSkillGroup = Db.Get().SkillGroups.Cooking.Id;
+		workable.SkillExperienceMultiplier = SKILLS.MOST_DAY_EXPERIENCE;
 		fetchChoreTypeIdHash = Db.Get().ChoreTypes.CookFetch.IdHash;
 		workable.meter = new MeterController(GetComponent<KBatchedAnimController>(), "meter_target", "meter", Meter.Offset.Behind, Grid.SceneLayer.NoLayer, "meter_target", "meter_ration");
 		workable.meter.meterController.SetSymbolVisiblity(canHash, false);
@@ -40,9 +42,18 @@ public class MicrobeMusher : ComplexFabricator
 		List<GameObject> list = base.SpawnOrderProduct(completed_order);
 		foreach (GameObject item in list)
 		{
-			if ((Object)item.GetComponent<PrimaryElement>() != (Object)null && item.GetComponent<PrimaryElement>().DiseaseCount > 0)
+			PrimaryElement component = item.GetComponent<PrimaryElement>();
+			if ((Object)component != (Object)null)
 			{
-				Tutorial.Instance.TutorialMessage(Tutorial.TutorialMessages.TM_DiseaseCooking);
+				if (item.PrefabID() == (Tag)"MushBar")
+				{
+					byte index = Db.Get().Diseases.GetIndex("FoodPoisoning");
+					component.AddDisease(index, 1000, "Made of mud");
+				}
+				if (item.GetComponent<PrimaryElement>().DiseaseCount > 0)
+				{
+					Tutorial.Instance.TutorialMessage(Tutorial.TutorialMessages.TM_DiseaseCooking);
+				}
 			}
 		}
 		return list;

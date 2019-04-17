@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
-using TUNING;
 using UnityEngine;
 
 [SerializationConfig(MemberSerialization.OptIn)]
@@ -122,6 +121,13 @@ public class Storage : Workable, ISaveLoadableDetails, IEffectDescriptor
 	{
 		StoredItemModifier.Hide,
 		StoredItemModifier.Preserve
+	};
+
+	public static readonly List<StoredItemModifier> StandardInsulatedStorage = new List<StoredItemModifier>
+	{
+		StoredItemModifier.Hide,
+		StoredItemModifier.Seal,
+		StoredItemModifier.Insulate
 	};
 
 	private static readonly EventSystem.IntraObjectHandler<Storage> OnDeathDelegate = new EventSystem.IntraObjectHandler<Storage>(delegate(Storage component, object data)
@@ -288,21 +294,28 @@ public class Storage : Workable, ISaveLoadableDetails, IEffectDescriptor
 		{
 			foreach (GameObject item in items)
 			{
-				if ((UnityEngine.Object)item != (UnityEngine.Object)null && (UnityEngine.Object)component != (UnityEngine.Object)null && item.GetComponent<Pickupable>().TryAbsorb(component, hide_popups, true))
+				if ((UnityEngine.Object)item != (UnityEngine.Object)null)
 				{
-					if (!block_events)
+					if ((UnityEngine.Object)component != (UnityEngine.Object)null && component.prevent_absorb_until_stored)
 					{
-						Trigger(-1697596308, go);
-						Trigger(-778359855, null);
-						if (this.OnStorageIncreased != null)
-						{
-							this.OnStorageIncreased();
-						}
+						component.prevent_absorb_until_stored = false;
 					}
-					ApplyStoredItemModifiers(go, true, false);
-					result = item;
-					go = null;
-					break;
+					if ((UnityEngine.Object)component != (UnityEngine.Object)null && item.GetComponent<Pickupable>().TryAbsorb(component, hide_popups, true))
+					{
+						if (!block_events)
+						{
+							Trigger(-1697596308, go);
+							Trigger(-778359855, null);
+							if (this.OnStorageIncreased != null)
+							{
+								this.OnStorageIncreased();
+							}
+						}
+						ApplyStoredItemModifiers(go, true, false);
+						result = item;
+						go = null;
+						break;
+					}
 				}
 			}
 		}
@@ -325,6 +338,37 @@ public class Storage : Workable, ISaveLoadableDetails, IEffectDescriptor
 			}
 		}
 		return result;
+	}
+
+	public PrimaryElement AddOre(SimHashes element, float mass, float temperature, byte disease_idx, int disease_count, bool keep_zero_mass = false, bool do_disease_transfer = true)
+	{
+		if (mass <= 0f)
+		{
+			return null;
+		}
+		PrimaryElement primaryElement = FindPrimaryElement(element);
+		if ((UnityEngine.Object)primaryElement != (UnityEngine.Object)null)
+		{
+			float finalTemperature = GameUtil.GetFinalTemperature(primaryElement.Temperature, primaryElement.Mass, temperature, mass);
+			primaryElement.KeepZeroMassObject = keep_zero_mass;
+			primaryElement.Mass += mass;
+			primaryElement.Temperature = finalTemperature;
+			primaryElement.AddDisease(disease_idx, disease_count, "Storage.AddOre");
+			Trigger(-1697596308, primaryElement.gameObject);
+		}
+		else
+		{
+			Element element2 = ElementLoader.FindElementByHash(element);
+			GameObject gameObject = element2.substance.SpawnResource(base.transform.GetPosition(), mass, temperature, disease_idx, disease_count, true, false, true);
+			Pickupable component = gameObject.GetComponent<Pickupable>();
+			component.prevent_absorb_until_stored = true;
+			element2.substance.ActivateSubstanceGameObject(gameObject, disease_idx, disease_count);
+			GameObject go = gameObject;
+			bool hide_popups = true;
+			bool do_disease_transfer2 = do_disease_transfer;
+			Store(go, hide_popups, false, do_disease_transfer2, false);
+		}
+		return primaryElement;
 	}
 
 	public PrimaryElement AddLiquid(SimHashes element, float mass, float temperature, byte disease_idx, int disease_count, bool keep_zero_mass = false, bool do_disease_transfer = true)
@@ -440,28 +484,83 @@ public class Storage : Workable, ISaveLoadableDetails, IEffectDescriptor
 		return false;
 	}
 
-	public void DropAll(bool empty_containers = false)
+	public void DropAll(Vector3 position, bool vent_gas = false, bool dump_liquid = false, Vector3 offset = default(Vector3), bool do_disease_transfer = true)
 	{
 		while (items.Count > 0)
 		{
 			GameObject gameObject = items[0];
-			TransferDiseaseWithObject(gameObject);
+			if (do_disease_transfer)
+			{
+				TransferDiseaseWithObject(gameObject);
+			}
 			items.RemoveAt(0);
 			if ((UnityEngine.Object)gameObject != (UnityEngine.Object)null)
 			{
 				bool flag = false;
-				if (empty_containers)
+				if (vent_gas || dump_liquid)
 				{
 					Dumpable component = gameObject.GetComponent<Dumpable>();
-					if ((UnityEngine.Object)component != (UnityEngine.Object)null && gameObject.GetComponent<PrimaryElement>().Element.IsGas)
+					if ((UnityEngine.Object)component != (UnityEngine.Object)null)
 					{
-						component.Dump();
-						flag = true;
+						if (vent_gas && gameObject.GetComponent<PrimaryElement>().Element.IsGas)
+						{
+							component.Dump(position + offset);
+							flag = true;
+						}
+						if (dump_liquid && gameObject.GetComponent<PrimaryElement>().Element.IsLiquid)
+						{
+							component.Dump(position + offset);
+							flag = true;
+						}
 					}
 				}
 				if (!flag)
 				{
-					Vector3 position = Grid.CellToPosCCC(Grid.PosToCell(this), Grid.SceneLayer.Ore);
+					gameObject.transform.SetPosition(position + offset);
+					KBatchedAnimController component2 = gameObject.GetComponent<KBatchedAnimController>();
+					if ((bool)component2)
+					{
+						component2.SetSceneLayer(Grid.SceneLayer.Ore);
+					}
+					MakeWorldActive(gameObject);
+				}
+			}
+		}
+	}
+
+	public void DropAll(bool vent_gas = false, bool dump_liquid = false, Vector3 offset = default(Vector3), bool do_disease_transfer = true)
+	{
+		while (items.Count > 0)
+		{
+			GameObject gameObject = items[0];
+			if (do_disease_transfer)
+			{
+				TransferDiseaseWithObject(gameObject);
+			}
+			items.RemoveAt(0);
+			if ((UnityEngine.Object)gameObject != (UnityEngine.Object)null)
+			{
+				bool flag = false;
+				if (vent_gas || dump_liquid)
+				{
+					Dumpable component = gameObject.GetComponent<Dumpable>();
+					if ((UnityEngine.Object)component != (UnityEngine.Object)null)
+					{
+						if (vent_gas && gameObject.GetComponent<PrimaryElement>().Element.IsGas)
+						{
+							component.Dump();
+							flag = true;
+						}
+						if (dump_liquid && gameObject.GetComponent<PrimaryElement>().Element.IsLiquid)
+						{
+							component.Dump();
+							flag = true;
+						}
+					}
+				}
+				if (!flag)
+				{
+					Vector3 position = Grid.CellToPosCCC(Grid.PosToCell(this), Grid.SceneLayer.Ore) + offset;
 					gameObject.transform.SetPosition(position);
 					KBatchedAnimController component2 = gameObject.GetComponent<KBatchedAnimController>();
 					if ((bool)component2)
@@ -480,13 +579,13 @@ public class Storage : Workable, ISaveLoadableDetails, IEffectDescriptor
 		Find(t, pooledList);
 		foreach (GameObject item in pooledList)
 		{
-			Drop(item);
+			Drop(item, true);
 		}
 		pooledList.Recycle();
 		return pooledList;
 	}
 
-	public GameObject Drop(GameObject go)
+	public GameObject Drop(GameObject go, bool do_disease_transfer = true)
 	{
 		if ((UnityEngine.Object)go != (UnityEngine.Object)null)
 		{
@@ -497,7 +596,10 @@ public class Storage : Workable, ISaveLoadableDetails, IEffectDescriptor
 				{
 					items[i] = items[count - 1];
 					items.RemoveAt(count - 1);
-					TransferDiseaseWithObject(go);
+					if (do_disease_transfer)
+					{
+						TransferDiseaseWithObject(go);
+					}
 					MakeWorldActive(go);
 					break;
 				}
@@ -513,12 +615,6 @@ public class Storage : Workable, ISaveLoadableDetails, IEffectDescriptor
 		{
 			item.Trigger(856640610, this);
 		}
-	}
-
-	public override void AwardExperience(float work_dt, MinionResume resume)
-	{
-		resume.AddExperienceIfRole("Hauler", work_dt * ROLES.ACTIVE_EXPERIENCE_VERY_SLOW);
-		resume.AddExperienceIfRole(MaterialsManager.ID, work_dt * ROLES.ACTIVE_EXPERIENCE_VERY_SLOW);
 	}
 
 	private void TransferDiseaseWithObject(GameObject obj)
@@ -671,6 +767,7 @@ public class Storage : Workable, ISaveLoadableDetails, IEffectDescriptor
 				{
 					flag = true;
 					float num2 = Math.Min(component.Units, amount);
+					Debug.Assert(num2 > 0f, "Delta amount was zero, which should be impossible.");
 					aggregate_temperature = SimUtil.CalculateFinalTemperature(num, aggregate_temperature, num2, component.Temperature);
 					SimUtil.DiseaseInfo percentOfDisease = SimUtil.GetPercentOfDisease(component, num2 / component.Units);
 					disease_info = SimUtil.CalculateFinalDiseaseInfo(disease_info, percentOfDisease);
@@ -737,12 +834,12 @@ public class Storage : Workable, ISaveLoadableDetails, IEffectDescriptor
 
 	public GameObject Drop(int ID)
 	{
-		return Drop(Find(ID));
+		return Drop(Find(ID), true);
 	}
 
 	private void OnDeath(object data)
 	{
-		DropAll(true);
+		DropAll(true, true, default(Vector3), true);
 	}
 
 	public bool IsFull()
@@ -883,20 +980,24 @@ public class Storage : Workable, ISaveLoadableDetails, IEffectDescriptor
 	private void OnQueueDestroyObject(object data)
 	{
 		endOfLife = true;
-		DropAll(true);
+		DropAll(true, false, default(Vector3), true);
 		OnCleanUp();
 	}
 
-	public void Remove(GameObject go)
+	public void Remove(GameObject go, bool do_disease_transfer = true)
 	{
 		items.Remove(go);
-		TransferDiseaseWithObject(go);
+		if (do_disease_transfer)
+		{
+			TransferDiseaseWithObject(go);
+		}
 		Trigger(-1697596308, go);
 		ApplyStoredItemModifiers(go, false, false);
 	}
 
 	public bool ForceStore(Tag tag, float amount)
 	{
+		Debug.Assert(amount < PICKUPABLETUNING.MINIMUM_PICKABLE_AMOUNT);
 		for (int i = 0; i < items.Count; i++)
 		{
 			GameObject gameObject = items[i];
@@ -1138,7 +1239,7 @@ public class Storage : Workable, ISaveLoadableDetails, IEffectDescriptor
 					}
 					else
 					{
-						Output.LogWithObj(gameObject, "Tried to save obj in storage but obj has no SaveLoadRoot");
+						Debug.Log("Tried to save obj in storage but obj has no SaveLoadRoot", gameObject);
 					}
 				}
 			}
@@ -1179,13 +1280,13 @@ public class Storage : Workable, ISaveLoadableDetails, IEffectDescriptor
 					num3 += Time.realtimeSinceStartup - realtimeSinceStartup4;
 					if (dropOnLoad)
 					{
-						Drop(saveLoadRoot.gameObject);
+						Drop(saveLoadRoot.gameObject, true);
 					}
 				}
 			}
 			else
 			{
-				Output.LogWarningWithObj(base.gameObject, "Tried to deserialize " + tag.ToString() + " into storage but failed");
+				Debug.LogWarning("Tried to deserialize " + tag.ToString() + " into storage but failed", base.gameObject);
 			}
 		}
 	}

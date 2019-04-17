@@ -166,7 +166,7 @@ public class Trap : StateMachineComponent<Trap.StatesInstance>
 			}
 			else
 			{
-				component.DropAll(false);
+				component.DropAll(false, false, default(Vector3), true);
 			}
 		}
 	}

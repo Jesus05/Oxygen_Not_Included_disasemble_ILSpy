@@ -50,7 +50,7 @@ public class Scheduler : IScheduler
 	{
 		if (group != null && group.scheduler != this)
 		{
-			Debug.LogError("Scheduler group mismatch!", null);
+			Debug.LogError("Scheduler group mismatch!");
 		}
 		SchedulerHandle schedulerHandle = Schedule(name, time, -1f, callback, callback_data, null);
 		group?.Add(schedulerHandle);

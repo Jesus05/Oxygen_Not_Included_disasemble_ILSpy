@@ -40,7 +40,7 @@ namespace Klei.CustomSettings
 					return levels[j];
 				}
 			}
-			Debug.LogError("Unable to find setting level for setting:" + base.id + " level: " + level_id, null);
+			Debug.LogError("Unable to find setting level for setting:" + base.id + " level: " + level_id);
 			return null;
 		}
 

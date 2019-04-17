@@ -98,7 +98,7 @@ public class UnstableGroundManager : KMonoBehaviour
 		Vector3 pos = Grid.CellToPosCCC(cell, Grid.SceneLayer.TileMain);
 		if (float.IsNaN(temperature) || float.IsInfinity(temperature))
 		{
-			Debug.LogError("Tried to spawn unstable ground with NaN temperature", null);
+			Debug.LogError("Tried to spawn unstable ground with NaN temperature");
 			temperature = 293f;
 		}
 		KBatchedAnimController kBatchedAnimController = Spawn(pos, element, mass, temperature, disease_idx, disease_count);
@@ -119,7 +119,7 @@ public class UnstableGroundManager : KMonoBehaviour
 	{
 		if (!element.IsUnstable)
 		{
-			Output.LogError("Spawning falling ground with a stable element");
+			Debug.LogError("Spawning falling ground with a stable element");
 		}
 		KBatchedAnimController kBatchedAnimController = Spawn(pos, element, mass, temperature, disease_idx, disease_count);
 		GameComps.Gravities.Add(kBatchedAnimController.gameObject, Vector2.zero, null);
@@ -132,7 +132,7 @@ public class UnstableGroundManager : KMonoBehaviour
 	{
 		if (!element.IsUnstable)
 		{
-			Output.LogError("Spawning sand puff with a stable element");
+			Debug.LogError("Spawning sand puff with a stable element");
 		}
 		KBatchedAnimController kBatchedAnimController = Spawn(pos, element, mass, temperature, disease_idx, disease_count);
 		kBatchedAnimController.Play("sandPuff", KAnim.PlayMode.Once, 1f, 0f);
@@ -144,13 +144,13 @@ public class UnstableGroundManager : KMonoBehaviour
 	{
 		if (!runtimeInfo.TryGetValue(element.id, out EffectRuntimeInfo value))
 		{
-			Debug.LogError(element.id.ToString() + " needs unstable ground info hookup!", null);
+			Debug.LogError(element.id.ToString() + " needs unstable ground info hookup!");
 		}
 		GameObject instance = value.pool.GetInstance();
 		instance.transform.SetPosition(pos);
 		if (float.IsNaN(temperature) || float.IsInfinity(temperature))
 		{
-			Debug.LogError("Tried to spawn unstable ground with NaN temperature", null);
+			Debug.LogError("Tried to spawn unstable ground with NaN temperature");
 			temperature = 293f;
 		}
 		UnstableGround component = instance.GetComponent<UnstableGround>();

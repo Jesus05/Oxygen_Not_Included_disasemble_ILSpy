@@ -33,7 +33,7 @@ public class TakeMedicineChore : Chore<TakeMedicineChore.StatesInstance>
 			default_state = fetch;
 			Target(eater);
 			fetch.InitializeStates(eater, source, chunk, requestedpillcount, actualpillcount, takemedicine, null);
-			takemedicine.ToggleAnims("anim_eat_floor_kanim", 0f).ToggleWork("TakeMedicine", delegate(StatesInstance smi)
+			takemedicine.ToggleAnims("anim_eat_floor_kanim", 0f).ToggleTag(GameTags.TakingMedicine).ToggleWork("TakeMedicine", delegate(StatesInstance smi)
 			{
 				MedicinalPill workable = chunk.Get<MedicinalPill>(smi);
 				Worker worker = eater.Get<Worker>(smi);

@@ -212,7 +212,7 @@ public class RootMenu : KScreen
 		}
 		else
 		{
-			Debug.LogWarning("OnUIClear() Event system is null", null);
+			Debug.LogWarning("OnUIClear() Event system is null");
 		}
 	}
 

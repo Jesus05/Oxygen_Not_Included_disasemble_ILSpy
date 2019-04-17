@@ -22,9 +22,10 @@ public class CreatureTrapConfig : IBuildingConfig
 		storage.SetDefaultStoredItemModifiers(StoredItemModifiers);
 		storage.sendOnStoreOnSpawn = true;
 		Trap trap = go.AddOrGet<Trap>();
-		trap.trappableCreatures = new Tag[1]
+		trap.trappableCreatures = new Tag[2]
 		{
-			GameTags.Creatures.GroundBased
+			GameTags.Creatures.Walker,
+			GameTags.Creatures.Hoverer
 		};
 		trap.trappedOffset = new Vector2(0.5f, 0f);
 	}

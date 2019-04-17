@@ -30,4 +30,20 @@ public class SuitEquipper : KMonoBehaviour
 			}
 		}
 	}
+
+	public Equippable IsWearingAirtightSuit()
+	{
+		Equippable result = null;
+		MinionIdentity component = GetComponent<MinionIdentity>();
+		Equipment equipment = component.GetEquipment();
+		foreach (EquipmentSlotInstance slot in equipment.Slots)
+		{
+			Equippable equippable = slot.assignable as Equippable;
+			if ((bool)equippable && equippable.GetComponent<KPrefabID>().HasTag(GameTags.AirtightSuit))
+			{
+				return equippable;
+			}
+		}
+		return result;
+	}
 }

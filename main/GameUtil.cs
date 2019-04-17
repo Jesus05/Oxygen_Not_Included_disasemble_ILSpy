@@ -322,7 +322,7 @@ public static class GameUtil
 		value = Mathf.Clamp(value, num3, num4);
 		if (float.IsNaN(value) || float.IsInfinity(value))
 		{
-			Debug.LogError($"Calculated an invalid temperature: t1={t1}, m1={m1}, t2={t2}, m2={m2}, min_temp={num3}, max_temp={num4}", null);
+			Debug.LogError($"Calculated an invalid temperature: t1={t1}, m1={m1}, t2={t2}, m2={m2}, min_temp={num3}, max_temp={num4}");
 		}
 		return value;
 	}
@@ -1361,7 +1361,7 @@ public static class GameUtil
 			}
 			else
 			{
-				Debug.LogWarning("Unable to find proper string for KKeyCode: " + key_code.ToString() + " using key_code.ToString()", null);
+				Debug.LogWarning("Unable to find proper string for KKeyCode: " + key_code.ToString() + " using key_code.ToString()");
 			}
 			break;
 		case KKeyCode.None:
@@ -1422,7 +1422,7 @@ public static class GameUtil
 	private static void GetNonSolidCells(int x, int y, List<int> cells, int min_x, int min_y, int max_x, int max_y)
 	{
 		int num = Grid.XYToCell(x, y);
-		if (Grid.IsValidCell(num) && !Grid.Solid[num] && !Grid.ForceField[num] && x >= min_x && x <= max_x && y >= min_y && y <= max_y && !cells.Contains(num))
+		if (Grid.IsValidCell(num) && !Grid.Solid[num] && !Grid.DupePassable[num] && x >= min_x && x <= max_x && y >= min_y && y <= max_y && !cells.Contains(num))
 		{
 			cells.Add(num);
 			GetNonSolidCells(x + 1, y, cells, min_x, min_y, max_x, max_y);
@@ -1796,6 +1796,7 @@ public static class GameUtil
 
 	public static List<Descriptor> GetEquipmentEffects(EquipmentDef def)
 	{
+		Debug.Assert((UnityEngine.Object)def != (UnityEngine.Object)null);
 		List<Descriptor> list = new List<Descriptor>();
 		List<AttributeModifier> attributeModifiers = def.AttributeModifiers;
 		if (attributeModifiers != null)
@@ -1824,7 +1825,7 @@ public static class GameUtil
 		if (text == null)
 		{
 			text = "MISSING RECIPEDESCRIPTION";
-			Debug.LogWarning("Missing recipeDescription", null);
+			Debug.LogWarning("Missing recipeDescription");
 		}
 		return text;
 	}
@@ -2040,7 +2041,7 @@ public static class GameUtil
 			num4 |= num3;
 		}
 		string text = (num4 == (num | num2 | num3)) ? ((string)NAMEGEN.ROCKET.FMT_PREFIX_ADJECTIVE_NOUN_SUFFIX) : ((num4 == (num2 | num3)) ? ((string)NAMEGEN.ROCKET.FMT_ADJECTIVE_NOUN_SUFFIX) : ((num4 == (num | num3)) ? ((string)NAMEGEN.ROCKET.FMT_PREFIX_NOUN_SUFFIX) : ((num4 == num3) ? ((string)NAMEGEN.ROCKET.FMT_NOUN_SUFFIX) : ((num4 == (num | num2)) ? ((string)NAMEGEN.ROCKET.FMT_PREFIX_ADJECTIVE_NOUN) : ((num4 == num) ? ((string)NAMEGEN.ROCKET.FMT_PREFIX_NOUN) : ((num4 != num2) ? ((string)NAMEGEN.ROCKET.FMT_NOUN) : ((string)NAMEGEN.ROCKET.FMT_ADJECTIVE_NOUN)))))));
-		Output.Log("Rocket name bits:", Convert.ToString(num4, 2));
+		DebugUtil.LogArgs("Rocket name bits:", Convert.ToString(num4, 2));
 		return text.Replace("{Prefix}", newValue).Replace("{Adjective}", newValue2).Replace("{Noun}", empty)
 			.Replace("{Suffix}", newValue3);
 	}

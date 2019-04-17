@@ -180,11 +180,11 @@ namespace NodeEditorFramework.Utilities
 					folderPath = folderPath + "/" + folder;
 					if (menuItem == null)
 					{
-						Debug.LogError("Parent is null!", null);
+						Debug.LogError("Parent is null!");
 					}
 					else if (menuItem.subItems == null)
 					{
-						Debug.LogError("Subitems of " + menuItem.content.text + " is null!", null);
+						Debug.LogError("Subitems of " + menuItem.content.text + " is null!");
 					}
 					MenuItem menuItem2 = menuItem.subItems.Find((MenuItem item) => item.content != null && item.content.text == folder && item.group);
 					if (menuItem2 == null)

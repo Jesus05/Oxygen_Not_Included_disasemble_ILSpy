@@ -49,6 +49,8 @@ public class Moppable : Workable, ISim1000ms, ISim200ms
 		workerStatusItem = Db.Get().DuplicantStatusItems.Mopping;
 		attributeConverter = Db.Get().AttributeConverters.TidyingSpeed;
 		attributeExperienceMultiplier = DUPLICANTSTATS.ATTRIBUTE_LEVELING.PART_DAY_EXPERIENCE;
+		skillExperienceSkillGroup = Db.Get().SkillGroups.Basekeeping.Id;
+		skillExperienceMultiplier = SKILLS.PART_DAY_EXPERIENCE;
 		childRenderer = GetComponentInChildren<MeshRenderer>();
 		Prioritizable.AddRef(base.gameObject);
 	}
@@ -111,11 +113,6 @@ public class Moppable : Workable, ISim1000ms, ISim200ms
 	protected override void OnStopWork(Worker worker)
 	{
 		SimAndRenderScheduler.instance.Remove(this);
-	}
-
-	public override void AwardExperience(float work_dt, MinionResume resume)
-	{
-		resume.AddExperienceIfRole(Handyman.ID, work_dt * ROLES.ACTIVE_EXPERIENCE_QUICK);
 	}
 
 	protected override void OnCompleteWork(Worker worker)

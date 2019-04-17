@@ -1,4 +1,5 @@
 using Klei;
+using KMod;
 using Steamworks;
 using STRINGS;
 using System;
@@ -13,7 +14,7 @@ public class LanguageOptionsScreen : KModalScreen, SteamUGCService.IUGCEventHand
 {
 	private class InstalledLanguageData : YamlIO<InstalledLanguageData>
 	{
-		private static readonly string FILE_NAME = "Mods/mod_installed.dat";
+		private static readonly string FILE_NAME = "strings/mod_installed.dat";
 
 		public ulong PublishedFileId
 		{
@@ -200,17 +201,22 @@ public class LanguageOptionsScreen : KModalScreen, SteamUGCService.IUGCEventHand
 		}
 	}
 
-	private void ActivatePreinstalledLanguage(string code)
+	private void RequestRestartDialog()
 	{
-		Localization.LoadPreinstalledTranslation(code);
 		ConfirmDialogScreen confirmDialog = GetConfirmDialog();
 		confirmDialog.PopupConfirmDialog(UI.FRONTEND.TRANSLATIONS_SCREEN.PLEASE_REBOOT, delegate
 		{
-			Application.Quit();
+			App.Quit();
 		}, delegate
 		{
 			App.LoadScene("frontend");
 		}, null, null, null, null, null, null);
+	}
+
+	private void ActivatePreinstalledLanguage(string code)
+	{
+		Localization.LoadPreinstalledTranslation(code);
+		RequestRestartDialog();
 	}
 
 	private ConfirmDialogScreen GetConfirmDialog()
@@ -225,30 +231,29 @@ public class LanguageOptionsScreen : KModalScreen, SteamUGCService.IUGCEventHand
 	{
 		if (!((UnityEngine.Object)SteamUGCService.Instance == (UnityEngine.Object)null))
 		{
-			List<SteamUGCService.Subscribed> subs = SteamUGCService.Instance.GetSubscribed("language");
-			if (subs.Count != 0)
+			foreach (Mod mod in Global.Instance.modManager.mods)
 			{
-				for (int i = 0; i < subs.Count; i++)
+				if ((mod.available_content & Content.Translation) != 0)
 				{
 					GameObject gameObject = Util.KInstantiateUI(languageButtonPrefab, ugcLanguagesContainer, false);
-					gameObject.name = subs[i].title + "_button";
+					gameObject.name = mod.title + "_button";
 					HierarchyReferences component = gameObject.GetComponent<HierarchyReferences>();
-					TMP_FontAsset fontForLangage = GetFontForLangage(subs[i].fileId);
+					PublishedFileId_t file_id = new PublishedFileId_t(ulong.Parse(mod.label.id));
+					TMP_FontAsset fontForLangage = GetFontForLangage(file_id);
 					LocText reference = component.GetReference<LocText>("Title");
-					reference.SetText(string.Format(UI.FRONTEND.TRANSLATIONS_SCREEN.UGC_MOD_TITLE_FORMAT, subs[i].title));
+					reference.SetText(string.Format(UI.FRONTEND.TRANSLATIONS_SCREEN.UGC_MOD_TITLE_FORMAT, mod.title));
 					reference.font = fontForLangage;
-					Texture2D previewImage = SteamUGCService.Instance.GetPreviewImage(subs[i].fileId);
+					Texture2D previewImage = SteamUGCService.Instance.GetPreviewImage(file_id);
 					if ((UnityEngine.Object)previewImage != (UnityEngine.Object)null)
 					{
 						Image reference2 = component.GetReference<Image>("Image");
 						reference2.sprite = Sprite.Create(previewImage, new Rect(Vector2.zero, new Vector2((float)previewImage.width, (float)previewImage.height)), Vector2.one * 0.5f);
 					}
 					KButton component2 = gameObject.GetComponent<KButton>();
-					int index = i;
 					component2.onClick += delegate
 					{
-						PublishedFileId_t fileId = subs[index].fileId;
-						SetCurrentLanguage(fileId);
+						SetCurrentLanguage(file_id);
+						RequestRestartDialog();
 					};
 					buttons.Add(gameObject);
 				}
@@ -262,7 +267,7 @@ public class LanguageOptionsScreen : KModalScreen, SteamUGCService.IUGCEventHand
 		ConfirmDialogScreen confirmDialog = GetConfirmDialog();
 		confirmDialog.PopupConfirmDialog(UI.FRONTEND.TRANSLATIONS_SCREEN.PLEASE_REBOOT, delegate
 		{
-			Application.Quit();
+			App.Quit();
 		}, delegate
 		{
 			App.LoadScene("frontend");
@@ -278,7 +283,7 @@ public class LanguageOptionsScreen : KModalScreen, SteamUGCService.IUGCEventHand
 			ConfirmDialogScreen confirmDialog2 = GetConfirmDialog();
 			confirmDialog2.PopupConfirmDialog(UI.FRONTEND.TRANSLATIONS_SCREEN.PLEASE_REBOOT, delegate
 			{
-				Application.Quit();
+				App.Quit();
 			}, delegate
 			{
 				App.LoadScene("frontend");
@@ -298,6 +303,10 @@ public class LanguageOptionsScreen : KModalScreen, SteamUGCService.IUGCEventHand
 		Application.OpenURL("http://steamcommunity.com/workshop/browse/?appid=457140&requiredtags[]=language");
 	}
 
+	public void OnUGCItemSubscribed(RemoteStoragePublishedFileSubscribed_t pCallback)
+	{
+	}
+
 	public void OnUGCItemInstalled(ItemInstalled_t pCallback)
 	{
 	}
@@ -312,7 +321,7 @@ public class LanguageOptionsScreen : KModalScreen, SteamUGCService.IUGCEventHand
 		ulong currentLanguage = GetCurrentLanguage();
 		if (currentLanguage == pCallback.m_nPublishedFileId.m_PublishedFileId)
 		{
-			Debug.Log("Update detected for currently installed font [" + pCallback.m_nPublishedFileId + "]", null);
+			Debug.Log("Update detected for currently installed font [" + pCallback.m_nPublishedFileId + "]");
 			SteamUGCService.DoDownloadItem(pCallback.m_nPublishedFileId);
 		}
 	}
@@ -322,7 +331,7 @@ public class LanguageOptionsScreen : KModalScreen, SteamUGCService.IUGCEventHand
 		ulong currentLanguage = GetCurrentLanguage();
 		if (pCallback.m_nPublishedFileId.m_PublishedFileId == currentLanguage)
 		{
-			Debug.Log("Unsubscribe detected for currently installed font [" + pCallback.m_nPublishedFileId + "]", null);
+			Debug.Log("Unsubscribe detected for currently installed font [" + pCallback.m_nPublishedFileId + "]");
 			CleanUpCurrentModLanguage();
 		}
 	}
@@ -349,7 +358,7 @@ public class LanguageOptionsScreen : KModalScreen, SteamUGCService.IUGCEventHand
 		ulong currentLanguage = GetCurrentLanguage();
 		if (currentLanguage == pCallback.m_nPublishedFileId.m_PublishedFileId)
 		{
-			Debug.Log("Download complete for currently installed font [" + pCallback.m_nPublishedFileId + "] updating in background. Changes will happen next restart.", null);
+			Debug.Log("Download complete for currently installed font [" + pCallback.m_nPublishedFileId + "] updating in background. Changes will happen next restart.");
 			UpdateInstalledLanguage(pCallback.m_nPublishedFileId);
 		}
 	}
@@ -417,7 +426,7 @@ public class LanguageOptionsScreen : KModalScreen, SteamUGCService.IUGCEventHand
 		}
 		else
 		{
-			Debug.LogWarning("Loc file was empty.. [" + item + "]  [" + currentLastModified + "]", null);
+			Debug.LogWarning("Loc file was empty.. [" + item + "]  [" + currentLastModified + "]");
 		}
 	}
 
@@ -448,7 +457,7 @@ public class LanguageOptionsScreen : KModalScreen, SteamUGCService.IUGCEventHand
 			{
 				return modLocalizationFilePath;
 			}
-			Debug.LogWarning("GetLanguagFile [" + modLocalizationFilePath + "] missing for [" + item + "]", null);
+			Debug.LogWarning("GetLanguagFile [" + modLocalizationFilePath + "] missing for [" + item + "]");
 		}
 		return null;
 	}
@@ -458,7 +467,7 @@ public class LanguageOptionsScreen : KModalScreen, SteamUGCService.IUGCEventHand
 		lastModified = System.DateTime.MinValue;
 		if (item == PublishedFileId_t.Invalid)
 		{
-			Debug.LogWarning("Cant get INVALID file id from Steam", null);
+			Debug.LogWarning("Cant get INVALID file id from Steam");
 			return null;
 		}
 		EItemState itemState = (EItemState)SteamUGC.GetItemState(item);
@@ -469,12 +478,12 @@ public class LanguageOptionsScreen : KModalScreen, SteamUGCService.IUGCEventHand
 			{
 				return Encoding.UTF8.GetString(bytesFromZip);
 			}
-			Debug.LogWarning("Empty bytes from Zip file, trying redownload", null);
+			Debug.LogWarning("Empty bytes from Zip file, trying redownload");
 			SteamUGCService.DoDownloadItem(item);
 		}
 		else
 		{
-			Debug.LogWarning("Steam says item not installed [" + itemState + "]", null);
+			Debug.LogWarning("Steam says item not installed [" + itemState + "]");
 		}
 		return null;
 	}
@@ -492,12 +501,12 @@ public class LanguageOptionsScreen : KModalScreen, SteamUGCService.IUGCEventHand
 				{
 					if (!SteamUGCService.Instance.IsSubscribedTo(item))
 					{
-						Debug.LogWarning("It doesn't look like we are subscribed..." + item, null);
+						Debug.LogWarning("It doesn't look like we are subscribed..." + item);
 					}
 				}
 				else
 				{
-					Debug.LogWarning("Cant check yet..." + item, null);
+					Debug.LogWarning("Cant check yet..." + item);
 				}
 			}
 		}

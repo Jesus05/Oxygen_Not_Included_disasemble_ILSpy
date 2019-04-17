@@ -243,7 +243,7 @@ public class WorldInventory : KMonoBehaviour, ISaveLoadable
 			if (!Inventory.ContainsKey(tag))
 			{
 				Tag categoryForEntity = GetCategoryForEntity(component2);
-				DebugUtil.SoftAssert(categoryForEntity.IsValid, component.name, "was found by worldinventory but doesn't have a category! Add it to the element definition.");
+				DebugUtil.DevAssertArgs(categoryForEntity.IsValid, component.name, "was found by worldinventory but doesn't have a category! Add it to the element definition.");
 				Discover(tag, categoryForEntity);
 			}
 			foreach (Tag tag2 in component2.Tags)

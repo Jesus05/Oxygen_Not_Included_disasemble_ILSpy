@@ -152,5 +152,13 @@ public class RockCrusherConfig : IBuildingConfig
 	public override void DoPostConfigureComplete(GameObject go)
 	{
 		SymbolOverrideControllerUtil.AddToPrefab(go);
+		go.GetComponent<KPrefabID>().prefabInitFn += delegate(GameObject game_object)
+		{
+			ComplexFabricatorWorkable component = game_object.GetComponent<ComplexFabricatorWorkable>();
+			component.AttributeConverter = Db.Get().AttributeConverters.MachinerySpeed;
+			component.AttributeExperienceMultiplier = DUPLICANTSTATS.ATTRIBUTE_LEVELING.PART_DAY_EXPERIENCE;
+			component.SkillExperienceSkillGroup = Db.Get().SkillGroups.Technicals.Id;
+			component.SkillExperienceMultiplier = SKILLS.PART_DAY_EXPERIENCE;
+		};
 	}
 }

@@ -30,7 +30,7 @@ namespace Klei
 			T val = Parse(readText, tagMappings);
 			if (val == null)
 			{
-				Debug.LogWarning("Exception while loading yaml file [" + filename + "]", null);
+				Debug.LogWarning("Exception while loading yaml file [" + filename + "]");
 			}
 			return val;
 		}
@@ -56,7 +56,7 @@ namespace Klei
 			catch (Exception ex)
 			{
 				string message = ex.Message;
-				Output.LogWarning("Exception while loading yaml data: " + message + "\n YAML FILE:\n" + readText);
+				DebugUtil.DevLogError("Exception while loading yaml data: " + message + "\n YAML FILE:\n" + readText);
 			}
 			return default(T);
 		}

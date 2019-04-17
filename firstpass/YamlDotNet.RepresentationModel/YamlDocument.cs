@@ -104,6 +104,7 @@ namespace YamlDotNet.RepresentationModel
 			parser.Expect<DocumentStart>();
 			while (!parser.Accept<DocumentEnd>())
 			{
+				Debug.Assert(RootNode == null);
 				RootNode = YamlNode.ParseNode(parser, documentLoadingState);
 				if (RootNode is YamlAliasNode)
 				{

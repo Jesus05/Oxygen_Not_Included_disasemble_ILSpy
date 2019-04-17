@@ -1,4 +1,3 @@
-using STRINGS;
 using TUNING;
 using UnityEngine;
 
@@ -18,11 +17,6 @@ public class AlgaeDistilleryConfig : IBuildingConfig
 
 	public const float ALGAE_STORAGE_AMOUNT = 480f;
 
-	private static readonly LogicPorts.Port[] INPUT_PORTS = new LogicPorts.Port[1]
-	{
-		LogicPorts.Port.InputPort(LogicOperationalController.PORT_ID, new CellOffset(0, 1), UI.LOGIC_PORTS.CONTROL_OPERATIONAL, false)
-	};
-
 	public override BuildingDef CreateBuildingDef()
 	{
 		string id = "AlgaeDistillery";
@@ -31,12 +25,12 @@ public class AlgaeDistilleryConfig : IBuildingConfig
 		string anim = "algae_distillery_kanim";
 		int hitpoints = 100;
 		float construction_time = 30f;
-		float[] tIER = TUNING.BUILDINGS.CONSTRUCTION_MASS_KG.TIER3;
+		float[] tIER = BUILDINGS.CONSTRUCTION_MASS_KG.TIER3;
 		string[] aLL_METALS = MATERIALS.ALL_METALS;
 		float melting_point = 800f;
 		BuildLocationRule build_location_rule = BuildLocationRule.OnFloor;
 		EffectorValues tIER2 = NOISE_POLLUTION.NOISY.TIER5;
-		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, tIER, aLL_METALS, melting_point, build_location_rule, TUNING.BUILDINGS.DECOR.PENALTY.TIER1, tIER2, 0.2f);
+		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, tIER, aLL_METALS, melting_point, build_location_rule, BUILDINGS.DECOR.PENALTY.TIER1, tIER2, 0.2f);
 		buildingDef.Overheatable = false;
 		buildingDef.RequiresPowerInput = true;
 		buildingDef.PowerInputOffset = new CellOffset(1, 0);
@@ -88,17 +82,17 @@ public class AlgaeDistilleryConfig : IBuildingConfig
 
 	public override void DoPostConfigurePreview(BuildingDef def, GameObject go)
 	{
-		GeneratedBuildings.RegisterLogicPorts(go, INPUT_PORTS);
+		GeneratedBuildings.RegisterLogicPorts(go, LogicOperationalController.INPUT_PORTS_0_1);
 	}
 
 	public override void DoPostConfigureUnderConstruction(GameObject go)
 	{
-		GeneratedBuildings.RegisterLogicPorts(go, INPUT_PORTS);
+		GeneratedBuildings.RegisterLogicPorts(go, LogicOperationalController.INPUT_PORTS_0_1);
 	}
 
 	public override void DoPostConfigureComplete(GameObject go)
 	{
-		GeneratedBuildings.RegisterLogicPorts(go, INPUT_PORTS);
+		GeneratedBuildings.RegisterLogicPorts(go, LogicOperationalController.INPUT_PORTS_0_1);
 		go.AddOrGet<LogicOperationalController>();
 		go.AddOrGetDef<PoweredActiveController.Def>();
 	}

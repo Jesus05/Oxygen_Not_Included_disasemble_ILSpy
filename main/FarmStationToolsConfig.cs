@@ -1,4 +1,5 @@
 using STRINGS;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class FarmStationToolsConfig : IEntityConfig
@@ -11,7 +12,22 @@ public class FarmStationToolsConfig : IEntityConfig
 
 	public GameObject CreatePrefab()
 	{
-		return EntityTemplates.CreateLooseEntity("FarmStationTools", ITEMS.INDUSTRIAL_PRODUCTS.FARM_STATION_TOOLS.NAME, ITEMS.INDUSTRIAL_PRODUCTS.FARM_STATION_TOOLS.DESC, 5f, true, Assets.GetAnim("kit_planttender_kanim"), "object", Grid.SceneLayer.Front, EntityTemplates.CollisionShape.RECTANGLE, 0.8f, 0.6f, true, 0, SimHashes.Creature, null);
+		string id = "FarmStationTools";
+		string name = ITEMS.INDUSTRIAL_PRODUCTS.FARM_STATION_TOOLS.NAME;
+		string desc = ITEMS.INDUSTRIAL_PRODUCTS.FARM_STATION_TOOLS.DESC;
+		float mass = 5f;
+		bool unitMass = true;
+		KAnimFile anim = Assets.GetAnim("kit_planttender_kanim");
+		string initialAnim = "object";
+		Grid.SceneLayer sceneLayer = Grid.SceneLayer.Front;
+		EntityTemplates.CollisionShape collisionShape = EntityTemplates.CollisionShape.RECTANGLE;
+		float width = 0.8f;
+		float height = 0.6f;
+		bool isPickupable = true;
+		List<Tag> list = new List<Tag>();
+		list.Add(GameTags.MiscPickupable);
+		list = list;
+		return EntityTemplates.CreateLooseEntity(id, name, desc, mass, unitMass, anim, initialAnim, sceneLayer, collisionShape, width, height, isPickupable, 0, SimHashes.Creature, list);
 	}
 
 	public void OnPrefabInit(GameObject inst)

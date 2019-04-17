@@ -46,7 +46,7 @@ public class AlgaeHabitat : StateMachineComponent<AlgaeHabitat.SMInstance>
 		private void OnEmptyComplete(Chore chore)
 		{
 			emptyChore = null;
-			base.master.pollutedWaterStorage.DropAll(true);
+			base.master.pollutedWaterStorage.DropAll(true, false, default(Vector3), true);
 		}
 	}
 

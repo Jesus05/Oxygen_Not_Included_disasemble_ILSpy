@@ -29,14 +29,6 @@ public class CrewPortrait : KMonoBehaviour
 
 	private bool areEventsRegistered;
 
-	private static readonly HashedString snapTo_neck = new HashedString("snapTo_neck");
-
-	private static readonly HashedString snapTo_pivot = new HashedString("snapTo_pivot");
-
-	private static readonly HashedString snapTo_rgthand = new HashedString("snapTo_rgthand");
-
-	private static readonly HashedString snapTo_chest = new HashedString("snapTo_chest");
-
 	public IAssignableIdentity identityObject
 	{
 		get;
@@ -133,7 +125,7 @@ public class CrewPortrait : KMonoBehaviour
 		{
 			targetImage.enabled = false;
 		}
-		if ((useLabels && identity is MinionIdentity) || identity is MinionAssignablesProxy)
+		if (useLabels && (identity is MinionIdentity || identity is MinionAssignablesProxy))
 		{
 			SetDuplicantJobTitleActive(jobEnabled);
 		}
@@ -203,44 +195,45 @@ public class CrewPortrait : KMonoBehaviour
 				{
 					targetImage.enabled = true;
 				}
-				Debug.LogWarning("Controller for [" + base.name + "] null", null);
+				Debug.LogWarning("Controller for [" + base.name + "] null");
 				return;
 			}
 		}
 		SetPortraitData(identityObject, controller, useDefaultExpression);
 		if (useLabels && (UnityEngine.Object)duplicantName != (UnityEngine.Object)null)
 		{
-			duplicantName.SetText(identityObject.GetProperName());
+			duplicantName.SetText((identityObject == null) ? string.Empty : identityObject.GetProperName());
 			if (identityObject is MinionIdentity && (UnityEngine.Object)duplicantJob != (UnityEngine.Object)null)
 			{
-				duplicantJob.SetText((identityObject == null) ? string.Empty : (identityObject as MinionIdentity).GetComponent<MinionResume>().GetCurrentRoleString());
-				duplicantJob.GetComponent<ToolTip>().toolTip = (identityObject as MinionIdentity).GetComponent<MinionResume>().GetCurrentRoleDescription();
+				duplicantJob.SetText((identityObject == null) ? string.Empty : (identityObject as MinionIdentity).GetComponent<MinionResume>().GetSkillsSubtitle());
+				duplicantJob.GetComponent<ToolTip>().toolTip = (identityObject as MinionIdentity).GetComponent<MinionResume>().GetSkillsSubtitle();
 			}
 		}
 	}
 
 	private static void RefreshHat(IAssignableIdentity identityObject, KBatchedAnimController controller)
 	{
+		string hat_id = string.Empty;
 		MinionIdentity minionIdentity = identityObject as MinionIdentity;
-		if (!((UnityEngine.Object)minionIdentity == (UnityEngine.Object)null))
+		if ((UnityEngine.Object)minionIdentity != (UnityEngine.Object)null)
 		{
 			MinionResume component = minionIdentity.GetComponent<MinionResume>();
-			if ((UnityEngine.Object)component != (UnityEngine.Object)null)
-			{
-				RoleConfig role = null;
-				if (!string.IsNullOrEmpty(component.CurrentRole))
-				{
-					role = Game.Instance.roleManager.GetRole(component.CurrentRole);
-				}
-				RoleManager.ApplyRoleHat(role, component.GetComponent<Accessorizer>(), controller);
-			}
+			hat_id = component.CurrentHat;
 		}
+		else if ((UnityEngine.Object)(identityObject as StoredMinionIdentity) != (UnityEngine.Object)null)
+		{
+			hat_id = (identityObject as StoredMinionIdentity).currentHat;
+		}
+		MinionResume.ApplyHat(hat_id, controller);
 	}
 
 	public static void SetPortraitData(IAssignableIdentity identityObject, KBatchedAnimController controller, bool useDefaultExpression = true)
 	{
-		controller.gameObject.SetActive(true);
-		if (identityObject != null)
+		if (identityObject == null)
+		{
+			controller.gameObject.SetActive(false);
+		}
+		else
 		{
 			MinionIdentity minionIdentity = identityObject as MinionIdentity;
 			if ((UnityEngine.Object)minionIdentity == (UnityEngine.Object)null)
@@ -251,10 +244,12 @@ public class CrewPortrait : KMonoBehaviour
 					minionIdentity = (minionAssignablesProxy.target as MinionIdentity);
 				}
 			}
-			if (!((UnityEngine.Object)minionIdentity == (UnityEngine.Object)null))
+			controller.gameObject.SetActive(true);
+			controller.Play("ui_idle", KAnim.PlayMode.Once, 1f, 0f);
+			SymbolOverrideController component = controller.GetComponent<SymbolOverrideController>();
+			component.RemoveAllSymbolOverrides(0);
+			if ((UnityEngine.Object)minionIdentity != (UnityEngine.Object)null)
 			{
-				SymbolOverrideController component = controller.GetComponent<SymbolOverrideController>();
-				component.RemoveAllSymbolOverrides(0);
 				Accessorizer component2 = minionIdentity.GetComponent<Accessorizer>();
 				foreach (AccessorySlot resource in Db.Get().AccessorySlots.resources)
 				{
@@ -266,20 +261,45 @@ public class CrewPortrait : KMonoBehaviour
 					}
 				}
 				component.AddSymbolOverride(Db.Get().AccessorySlots.HatHair.targetSymbolId, Db.Get().AccessorySlots.HatHair.Lookup("hat_" + HashCache.Get().Get(component2.GetAccessory(Db.Get().AccessorySlots.Hair).symbol.hash)).symbol, 1);
-				RefreshHat(identityObject, controller);
-				float animScale = 1f;
-				if ((UnityEngine.Object)GameScreenManager.Instance != (UnityEngine.Object)null && (UnityEngine.Object)GameScreenManager.Instance.ssOverlayCanvas != (UnityEngine.Object)null)
-				{
-					animScale = 0.2f * (1f / GameScreenManager.Instance.ssOverlayCanvas.GetComponent<KCanvasScaler>().GetUserScale());
-				}
-				controller.animScale = animScale;
-				string s = "ui";
-				controller.Play(s, KAnim.PlayMode.Loop, 1f, 0f);
-				controller.SetSymbolVisiblity(snapTo_neck, false);
-				controller.SetSymbolVisiblity(snapTo_pivot, false);
-				controller.SetSymbolVisiblity(snapTo_rgthand, false);
-				controller.SetSymbolVisiblity(snapTo_chest, false);
 			}
+			else
+			{
+				StoredMinionIdentity storedMinionIdentity = identityObject as StoredMinionIdentity;
+				if ((UnityEngine.Object)storedMinionIdentity == (UnityEngine.Object)null)
+				{
+					MinionAssignablesProxy minionAssignablesProxy2 = identityObject as MinionAssignablesProxy;
+					if ((UnityEngine.Object)minionAssignablesProxy2 != (UnityEngine.Object)null && minionAssignablesProxy2.target != null)
+					{
+						storedMinionIdentity = (minionAssignablesProxy2.target as StoredMinionIdentity);
+					}
+				}
+				if (!((UnityEngine.Object)storedMinionIdentity != (UnityEngine.Object)null))
+				{
+					controller.gameObject.SetActive(false);
+					return;
+				}
+				foreach (AccessorySlot resource2 in Db.Get().AccessorySlots.resources)
+				{
+					Accessory accessory2 = storedMinionIdentity.GetAccessory(resource2);
+					if (accessory2 != null)
+					{
+						component.AddSymbolOverride(resource2.targetSymbolId, accessory2.symbol, 0);
+						controller.SetSymbolVisiblity(resource2.targetSymbolId, true);
+					}
+				}
+				component.AddSymbolOverride(Db.Get().AccessorySlots.HatHair.targetSymbolId, Db.Get().AccessorySlots.HatHair.Lookup("hat_" + HashCache.Get().Get(storedMinionIdentity.GetAccessory(Db.Get().AccessorySlots.Hair).symbol.hash)).symbol, 1);
+			}
+			RefreshHat(identityObject, controller);
+			float animScale = 1f;
+			if ((UnityEngine.Object)GameScreenManager.Instance != (UnityEngine.Object)null && (UnityEngine.Object)GameScreenManager.Instance.ssOverlayCanvas != (UnityEngine.Object)null)
+			{
+				animScale = 0.2f * (1f / GameScreenManager.Instance.ssOverlayCanvas.GetComponent<KCanvasScaler>().GetUserScale());
+			}
+			controller.animScale = animScale;
+			string s = "ui";
+			controller.Play(s, KAnim.PlayMode.Loop, 1f, 0f);
+			controller.SetSymbolVisiblity("snapTo_neck", false);
+			controller.SetSymbolVisiblity("snapTo_goggles", false);
 		}
 	}
 

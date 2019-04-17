@@ -30,10 +30,10 @@ public class HierarchyReferences : KMonoBehaviour
 				{
 					return (SpecifiedType)elementReference.behaviour;
 				}
-				Debug.LogError(string.Format("Behavior is not specified type"), null);
+				Debug.LogError(string.Format("Behavior is not specified type"));
 			}
 		}
-		Debug.LogError($"Could not find UI reference '{name}' or convert to specified type)", null);
+		Debug.LogError($"Could not find UI reference '{name}' or convert to specified type)");
 		return (SpecifiedType)null;
 	}
 
@@ -48,7 +48,7 @@ public class HierarchyReferences : KMonoBehaviour
 				return elementReference.behaviour;
 			}
 		}
-		Debug.LogWarning("Couldn't find reference to object named {0} Make sure the name matches the field in the inspector.", null);
+		Debug.LogWarning("Couldn't find reference to object named {0} Make sure the name matches the field in the inspector.");
 		return null;
 	}
 }

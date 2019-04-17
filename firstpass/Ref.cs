@@ -67,12 +67,12 @@ public class Ref<ReferenceType> : ISaveLoadable where ReferenceType : KMonoBehav
 				if ((Object)obj == (Object)null)
 				{
 					id = -1;
-					Debug.LogWarning("Missing " + typeof(ReferenceType).Name + " reference: " + id, null);
+					Debug.LogWarning("Missing " + typeof(ReferenceType).Name + " reference: " + id);
 				}
 			}
 			else
 			{
-				Debug.LogWarning("Missing KPrefabID reference: " + id, null);
+				Debug.LogWarning("Missing KPrefabID reference: " + id);
 				id = -1;
 			}
 		}

@@ -116,10 +116,9 @@ public class TouristModule : StateMachineComponent<TouristModule.StatesInstance>
 		base.OnSpawn();
 		storage = GetComponent<Storage>();
 		assignable = GetComponent<Assignable>();
-		assignable.eligibleFilter = ((MinionAssignablesProxy identity) => true);
 		base.smi.StartSM();
-		int cell = Grid.OffsetCell(Grid.PosToCell(base.gameObject), 0, -1);
-		partitionerEntry = GameScenePartitioner.Instance.Add("TouristModule.gantryChanged", base.gameObject, cell, GameScenePartitioner.Instance.solidChangedLayer, OnGantryChanged);
+		int cell = Grid.PosToCell(base.gameObject);
+		partitionerEntry = GameScenePartitioner.Instance.Add("TouristModule.gantryChanged", base.gameObject, cell, GameScenePartitioner.Instance.validNavCellChangedLayer, OnGantryChanged);
 		OnGantryChanged(null);
 		Subscribe(-1056989049, OnSuspendDelegate);
 		Subscribe(684616645, OnAssigneeChangedDelegate);
@@ -132,7 +131,8 @@ public class TouristModule : StateMachineComponent<TouristModule.StatesInstance>
 			KSelectable component = GetComponent<KSelectable>();
 			component.RemoveStatusItem(Db.Get().BuildingStatusItems.HasGantry, false);
 			component.RemoveStatusItem(Db.Get().BuildingStatusItems.MissingGantry, false);
-			if (Grid.FakeFloor[Grid.OffsetCell(Grid.PosToCell(base.smi.master.gameObject), 0, -1)])
+			int i = Grid.OffsetCell(Grid.PosToCell(base.smi.master.gameObject), 0, -1);
+			if (Grid.FakeFloor[i])
 			{
 				component.AddStatusItem(Db.Get().BuildingStatusItems.HasGantry, null);
 			}

@@ -451,7 +451,7 @@ public abstract class GameStateMachine<StateMachineType, StateMachineInstanceTyp
 					KAnimFile anim2 = Assets.GetAnim(hashedString);
 					if ((UnityEngine.Object)anim2 == (UnityEngine.Object)null)
 					{
-						Debug.LogWarning("Missing anims: " + hashedString, null);
+						Debug.LogWarning("Missing anims: " + hashedString);
 					}
 					else
 					{
@@ -482,7 +482,7 @@ public abstract class GameStateMachine<StateMachineType, StateMachineInstanceTyp
 				KAnimFile anim2 = Assets.GetAnim(anim_file);
 				if ((UnityEngine.Object)anim2 == (UnityEngine.Object)null)
 				{
-					Debug.LogError("Trying to add missing override anims:" + anim_file, null);
+					Debug.LogError("Trying to add missing override anims:" + anim_file);
 				}
 				KAnimControllerBase kAnimControllerBase = state_target.Get<KAnimControllerBase>(smi);
 				kAnimControllerBase.AddAnimOverrides(anim2, priority);
@@ -524,7 +524,7 @@ public abstract class GameStateMachine<StateMachineType, StateMachineInstanceTyp
 			return this;
 		}
 
-		public State ToggleLoopingSound(string event_name, Func<StateMachineInstanceType, bool> condition = null)
+		public State ToggleLoopingSound(string event_name, Func<StateMachineInstanceType, bool> condition = null, bool pause_on_game_pause = true, bool enable_culling = true, bool enable_camera_scaled_position = true)
 		{
 			TargetParameter state_target = GetStateTarget();
 			Enter("StartLoopingSound( " + event_name + " )", delegate(StateMachineInstanceType smi)
@@ -532,7 +532,7 @@ public abstract class GameStateMachine<StateMachineType, StateMachineInstanceTyp
 				if (condition == null || condition(smi))
 				{
 					LoopingSounds component2 = state_target.Get(smi).GetComponent<LoopingSounds>();
-					component2.StartSound(event_name);
+					component2.StartSound(event_name, pause_on_game_pause, enable_culling, enable_camera_scaled_position);
 				}
 			});
 			Exit("StopLoopingSound( " + event_name + " )", delegate(StateMachineInstanceType smi)
@@ -1363,7 +1363,7 @@ public abstract class GameStateMachine<StateMachineType, StateMachineInstanceTyp
 				if (val <= 0f)
 				{
 					pickupable2.PrintReservations();
-					Debug.LogError(num2 + ", " + num + ", " + pickupable2.UnreservedAmount + ", " + val, null);
+					Debug.LogError(num2 + ", " + num + ", " + pickupable2.UnreservedAmount + ", " + val);
 				}
 				actual_amount.Set(val, smi);
 				int num3 = pickupable2.Reserve("ToggleReserve", gameObject, val);
@@ -2108,7 +2108,7 @@ public abstract class GameStateMachine<StateMachineType, StateMachineInstanceTyp
 			{
 				Storage storage = carrier.Get<Storage>(smi);
 				GameObject gameObject = item.Get(smi);
-				storage.Drop(gameObject);
+				storage.Drop(gameObject, true);
 				Transform transform = drop_target.Get<Transform>(smi);
 				int cell = Grid.PosToCell(transform.GetPosition());
 				int cell2 = Grid.CellAbove(cell);

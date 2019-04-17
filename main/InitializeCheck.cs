@@ -24,6 +24,8 @@ public class InitializeCheck : MonoBehaviour
 
 	public Sprite sadDupe;
 
+	private SavePathIssue test_issue;
+
 	public static SavePathIssue savePathState
 	{
 		get;
@@ -33,7 +35,7 @@ public class InitializeCheck : MonoBehaviour
 	private void Awake()
 	{
 		CheckForSavePathIssue();
-		if (savePathState == SavePathIssue.Ok)
+		if (savePathState == SavePathIssue.Ok && !ReportErrorDialog.hasCrash)
 		{
 			AudioMixer.Create();
 			App.LoadScene("frontend");
@@ -49,7 +51,7 @@ public class InitializeCheck : MonoBehaviour
 			camera.backgroundColor = Color.black;
 			camera.clearFlags = CameraClearFlags.Color;
 			camera.nearClipPlane = 0f;
-			Debug.Log("Cannot initialize filesystem. [" + savePathState.ToString() + "]", null);
+			Debug.Log("Cannot initialize filesystem. [" + savePathState.ToString() + "]");
 			Localization.Initialize(true);
 			ShowFileErrorDialogs();
 		}
@@ -58,6 +60,17 @@ public class InitializeCheck : MonoBehaviour
 	private GameObject CreateUIRoot()
 	{
 		return Util.KInstantiate(rootCanvasPrefab, null, "CanvasRoot");
+	}
+
+	private void ShowErrorDialog(string msg)
+	{
+		GameObject parent = CreateUIRoot();
+		ConfirmDialogScreen confirmDialogScreen = Util.KInstantiateUI<ConfirmDialogScreen>(this.confirmDialogScreen.gameObject, parent, true);
+		ConfirmDialogScreen obj = confirmDialogScreen;
+		System.Action on_confirm = Quit;
+		System.Action on_cancel = null;
+		Sprite image_sprite = sadDupe;
+		obj.PopupConfirmDialog(msg, on_confirm, on_cancel, null, null, null, null, null, image_sprite);
 	}
 
 	private void ShowFileErrorDialogs()
@@ -77,19 +90,17 @@ public class InitializeCheck : MonoBehaviour
 		}
 		if (text != null)
 		{
-			GameObject parent = CreateUIRoot();
-			ConfirmDialogScreen confirmDialogScreen = Util.KInstantiateUI<ConfirmDialogScreen>(this.confirmDialogScreen.gameObject, parent, true);
-			ConfirmDialogScreen obj = confirmDialogScreen;
-			string text2 = text;
-			System.Action on_confirm = Quit;
-			System.Action on_cancel = null;
-			Sprite image_sprite = sadDupe;
-			obj.PopupConfirmDialog(text2, on_confirm, on_cancel, null, null, null, null, null, image_sprite);
+			ShowErrorDialog(text);
 		}
 	}
 
 	private void CheckForSavePathIssue()
 	{
+		if (test_issue != 0)
+		{
+			savePathState = test_issue;
+			return;
+		}
 		string savePrefix = SaveLoader.GetSavePrefix();
 		savePathState = SavePathIssue.Ok;
 		try
@@ -104,7 +115,7 @@ public class InitializeCheck : MonoBehaviour
 		catch
 		{
 			savePathState = SavePathIssue.WriteTestFail;
-			goto IL_00fa;
+			goto IL_0111;
 		}
 		using (FileStream fileStream2 = File.Open(savePrefix + testSave, FileMode.Create, FileAccess.Write))
 		{
@@ -118,7 +129,7 @@ public class InitializeCheck : MonoBehaviour
 			{
 				fileStream2.Close();
 				savePathState = SavePathIssue.SpaceTestFail;
-				goto IL_00fa;
+				goto IL_0111;
 			}
 		}
 		try
@@ -134,8 +145,8 @@ public class InitializeCheck : MonoBehaviour
 		{
 			savePathState = SavePathIssue.WorldGenFilesFail;
 		}
-		goto IL_00fa;
-		IL_00fa:
+		goto IL_0111;
+		IL_0111:
 		try
 		{
 			if (File.Exists(savePrefix + testFile))
@@ -154,7 +165,7 @@ public class InitializeCheck : MonoBehaviour
 
 	private void Quit()
 	{
-		Debug.Log("Quitting...", null);
-		Application.Quit();
+		Debug.Log("Quitting...");
+		App.Quit();
 	}
 }

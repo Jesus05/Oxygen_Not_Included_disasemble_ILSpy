@@ -10,8 +10,8 @@ public class LogicWireBridgeConfig : IBuildingConfig
 
 	public static readonly LogicPorts.Port[] INPUT_PORTS = new LogicPorts.Port[2]
 	{
-		LogicPorts.Port.InputPort(BRIDGE_LOGIC_IO_ID, new CellOffset(-1, 0), STRINGS.BUILDINGS.PREFABS.DOOR.LOGIC_PORT_DESC, false),
-		LogicPorts.Port.InputPort(BRIDGE_LOGIC_IO_ID, new CellOffset(1, 0), STRINGS.BUILDINGS.PREFABS.DOOR.LOGIC_PORT_DESC, false)
+		LogicPorts.Port.InputPort(BRIDGE_LOGIC_IO_ID, new CellOffset(-1, 0), STRINGS.BUILDINGS.PREFABS.LOGICWIREBRIDGE.LOGIC_PORT, STRINGS.BUILDINGS.PREFABS.LOGICWIREBRIDGE.LOGIC_PORT_ACTIVE, STRINGS.BUILDINGS.PREFABS.LOGICWIREBRIDGE.LOGIC_PORT_INACTIVE, false),
+		LogicPorts.Port.InputPort(BRIDGE_LOGIC_IO_ID, new CellOffset(1, 0), STRINGS.BUILDINGS.PREFABS.LOGICWIREBRIDGE.LOGIC_PORT, STRINGS.BUILDINGS.PREFABS.LOGICWIREBRIDGE.LOGIC_PORT_ACTIVE, STRINGS.BUILDINGS.PREFABS.LOGICWIREBRIDGE.LOGIC_PORT_INACTIVE, false)
 	};
 
 	public override BuildingDef CreateBuildingDef()
@@ -30,7 +30,7 @@ public class LogicWireBridgeConfig : IBuildingConfig
 		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, tIER_TINY, rEFINED_METALS, melting_point, build_location_rule, TUNING.BUILDINGS.DECOR.PENALTY.TIER0, nONE, 0.2f);
 		buildingDef.ViewMode = OverlayModes.Logic.ID;
 		buildingDef.ObjectLayer = ObjectLayer.LogicGates;
-		buildingDef.SceneLayer = Grid.SceneLayer.LogicWireBridges;
+		buildingDef.SceneLayer = Grid.SceneLayer.LogicGates;
 		buildingDef.Overheatable = false;
 		buildingDef.Floodable = false;
 		buildingDef.Entombable = false;

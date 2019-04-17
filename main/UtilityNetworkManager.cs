@@ -155,7 +155,7 @@ public class UtilityNetworkManager<NetworkType, ItemType> : IUtilityNetworkMgr w
 			{
 				if (endpoints.ContainsKey(cell))
 				{
-					Output.LogWarning("Cell", cell, "already has a utility network endpoint assigned. Adding", item.ToString(), "will stomp previous endpoint");
+					DebugUtil.LogWarningArgs("Cell", cell, "already has a utility network endpoint assigned. Adding", item.ToString(), "will stomp previous endpoint");
 				}
 				endpoints[cell] = item;
 			}
@@ -163,7 +163,7 @@ public class UtilityNetworkManager<NetworkType, ItemType> : IUtilityNetworkMgr w
 			{
 				if (items.ContainsKey(cell))
 				{
-					Output.LogWarning("Cell", cell, "already has a utility network connector assigned. Adding", item.ToString(), "will stomp previous item");
+					DebugUtil.LogWarningArgs("Cell", cell, "already has a utility network connector assigned. Adding", item.ToString(), "will stomp previous item");
 				}
 				items[cell] = item;
 			}

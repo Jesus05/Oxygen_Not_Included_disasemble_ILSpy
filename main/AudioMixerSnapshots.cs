@@ -1,4 +1,5 @@
 using FMODUnity;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -73,17 +74,24 @@ public class AudioMixerSnapshots : ScriptableObject
 	[EventRef]
 	public string MENUStarmapSnapshot;
 
+	[EventRef]
+	public string GameNotFocusedSnapshot;
+
+	[EventRef]
+	public string FacilityVisibleSnapshot;
+
 	[SerializeField]
 	[EventRef]
 	private string[] snapshots;
 
+	[NonSerialized]
 	public List<string> snapshotMap = new List<string>();
 
 	public static AudioMixerSnapshots instance;
 
 	public static AudioMixerSnapshots Get()
 	{
-		if ((Object)instance == (Object)null)
+		if ((UnityEngine.Object)instance == (UnityEngine.Object)null)
 		{
 			instance = Resources.Load<AudioMixerSnapshots>("AudioMixerSnapshots");
 		}

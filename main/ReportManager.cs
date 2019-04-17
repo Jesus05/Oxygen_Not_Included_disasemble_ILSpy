@@ -710,7 +710,7 @@ public class ReportManager : KMonoBehaviour
 		}, null, null);
 		if ((UnityEngine.Object)notifier == (UnityEngine.Object)null)
 		{
-			Debug.LogError("Cant notify, null notifier", null);
+			Debug.LogError("Cant notify, null notifier");
 		}
 		else
 		{

@@ -17,7 +17,9 @@ public class Db : EntityModifierSet
 
 	public TextAsset researchTreeFile;
 
-	public Database.Diseases Diseases;
+	public Diseases Diseases;
+
+	public Database.Sicknesses Sicknesses;
 
 	public Urges Urges;
 
@@ -67,6 +69,12 @@ public class Db : EntityModifierSet
 
 	public SpaceDestinationTypes SpaceDestinationTypes;
 
+	public SkillPerks SkillPerks;
+
+	public SkillGroups SkillGroups;
+
+	public Skills Skills;
+
 	public static Db Get()
 	{
 		if ((UnityEngine.Object)_Instance == (UnityEngine.Object)null)
@@ -101,7 +109,11 @@ public class Db : EntityModifierSet
 		RoomTypes = new RoomTypes(Root);
 		ArtifactDropRates = new ArtifactDropRates(Root);
 		SpaceDestinationTypes = new SpaceDestinationTypes(Root);
-		Diseases = new Database.Diseases(Root);
+		Diseases = new Diseases(Root);
+		Sicknesses = new Database.Sicknesses(Root);
+		SkillPerks = new SkillPerks(Root);
+		SkillGroups = new SkillGroups(Root);
+		Skills = new Skills(Root);
 		MiscStatusItems = new MiscStatusItems(Root);
 		CreatureStatusItems = new CreatureStatusItems(Root);
 		BuildingStatusItems = new BuildingStatusItems(Root);
@@ -133,13 +145,13 @@ public class Db : EntityModifierSet
 		Resource resource = ResourceTable.FirstOrDefault((Resource s) => s.Guid == guid);
 		if (resource == null)
 		{
-			Debug.LogWarning("Could not find resource: " + guid, null);
+			Debug.LogWarning("Could not find resource: " + guid);
 			return (ResourceType)null;
 		}
 		ResourceType val = (ResourceType)resource;
 		if (val == null)
 		{
-			Debug.LogError("Resource type mismatch for resource: " + resource.Id + "\nExpecting Type: " + typeof(ResourceType).Name + "\nGot Type: " + resource.GetType().Name, null);
+			Debug.LogError("Resource type mismatch for resource: " + resource.Id + "\nExpecting Type: " + typeof(ResourceType).Name + "\nGot Type: " + resource.GetType().Name);
 			return (ResourceType)null;
 		}
 		return val;

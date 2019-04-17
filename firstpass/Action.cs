@@ -130,6 +130,7 @@ public enum Action
 	Overlay12,
 	Overlay13,
 	Overlay14,
+	Overlay15,
 	PanUp,
 	PanDown,
 	PanLeft,

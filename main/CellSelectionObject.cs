@@ -93,11 +93,11 @@ public class CellSelectionObject : KMonoBehaviour
 					{
 						if (item.Value == null)
 						{
-							Debug.LogWarning("Filter value is null", null);
+							Debug.LogWarning("Filter value is null");
 						}
 						else if ((UnityEngine.Object)OverlayScreen.Instance == (UnityEngine.Object)null)
 						{
-							Debug.LogWarning("Overlay screen Instance is null", null);
+							Debug.LogWarning("Overlay screen Instance is null");
 						}
 						else if (OverlayScreen.Instance.GetMode() == item.Key)
 						{

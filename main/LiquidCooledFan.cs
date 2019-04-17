@@ -133,11 +133,6 @@ public class LiquidCooledFan : StateMachineComponent<LiquidCooledFan.StatesInsta
 					component.RefreshConsumptionRate();
 				});
 			workable.emitting.EventTransition(GameHashes.ActiveChanged, unworkable, (StatesInstance smi) => (Object)smi.master.workable.worker == (Object)null).EventTransition(GameHashes.OperationalChanged, unworkable, (StatesInstance smi) => (Object)smi.master.workable.worker == (Object)null).ScheduleGoTo(3f, workable.consuming)
-				.Update("LiquidFanEmitCooledContents", delegate(StatesInstance smi, float dt)
-				{
-					smi.master.EmitContents();
-				}, UpdateRate.SIM_200ms, false);
-			workable.emitting.EventTransition(GameHashes.ActiveChanged, unworkable, (StatesInstance smi) => (Object)smi.master.workable.worker == (Object)null).EventTransition(GameHashes.OperationalChanged, unworkable, (StatesInstance smi) => (Object)smi.master.workable.worker == (Object)null).ScheduleGoTo(3f, workable.consuming)
 				.Update(delegate(StatesInstance smi, float dt)
 				{
 					smi.master.CoolContents(dt);
@@ -196,7 +191,7 @@ public class LiquidCooledFan : StateMachineComponent<LiquidCooledFan.StatesInsta
 		base.smi.master.gasStorage.Find(GameTags.Water, pooledList);
 		if (pooledList.Count > 0)
 		{
-			Debug.LogWarning("Liquid Cooled fan Gas storage contains water - A duplicant probably delivered to the wrong storage - moving it to liquid storage.", null);
+			Debug.LogWarning("Liquid Cooled fan Gas storage contains water - A duplicant probably delivered to the wrong storage - moving it to liquid storage.");
 			foreach (GameObject item in pooledList)
 			{
 				base.smi.master.gasStorage.Transfer(item, base.smi.master.liquidStorage, false, false);

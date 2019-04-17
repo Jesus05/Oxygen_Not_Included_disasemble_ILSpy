@@ -82,11 +82,27 @@ public class KModalScreen : KScreen
 		{
 			Deactivate();
 		}
+		if (!e.Consumed)
+		{
+			KScrollRect componentInChildren = GetComponentInChildren<KScrollRect>();
+			if ((Object)componentInChildren != (Object)null)
+			{
+				componentInChildren.OnKeyDown(e);
+			}
+		}
 		e.Consumed = true;
 	}
 
 	public override void OnKeyUp(KButtonEvent e)
 	{
+		if (!e.Consumed)
+		{
+			KScrollRect componentInChildren = GetComponentInChildren<KScrollRect>();
+			if ((Object)componentInChildren != (Object)null)
+			{
+				componentInChildren.OnKeyUp(e);
+			}
+		}
 		e.Consumed = true;
 	}
 

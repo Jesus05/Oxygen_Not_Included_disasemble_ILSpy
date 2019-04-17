@@ -175,7 +175,7 @@ public class PlantablePlot : SingleEntityReceptacle, ISaveLoadable, IEffectDescr
 		PlantableSeed component = depositedEntity.GetComponent<PlantableSeed>();
 		if ((UnityEngine.Object)component == (UnityEngine.Object)null)
 		{
-			Debug.LogError("Planted seed " + depositedEntity.gameObject.name + " is missing PlantableSeed component", null);
+			Debug.LogError("Planted seed " + depositedEntity.gameObject.name + " is missing PlantableSeed component");
 			return null;
 		}
 		Vector3 position = Grid.CellToPosCBC(Grid.PosToCell(this), plantLayer);
@@ -267,7 +267,7 @@ public class PlantablePlot : SingleEntityReceptacle, ISaveLoadable, IEffectDescr
 			GameObject prefab = Assets.GetPrefab(entityTag);
 			if ((UnityEngine.Object)prefab == (UnityEngine.Object)null)
 			{
-				Output.LogWarningWithObj(base.gameObject, "Planter tried previewing a tag with no asset! If this was the 'Empty' tag, ignore it, that will go away in new save games. Otherwise... Eh? Tag was: ", entityTag);
+				DebugUtil.LogWarningArgs(base.gameObject, "Planter tried previewing a tag with no asset! If this was the 'Empty' tag, ignore it, that will go away in new save games. Otherwise... Eh? Tag was: ", entityTag);
 				return;
 			}
 			plantableSeed = prefab.GetComponent<PlantableSeed>();

@@ -89,7 +89,7 @@ public class DropToUserCapacity : Workable
 				return;
 			}
 			num -= component3.PrimaryElement.Mass;
-			component.Drop(component3.gameObject);
+			component.Drop(component3.gameObject, true);
 		}
 		chore = null;
 	}

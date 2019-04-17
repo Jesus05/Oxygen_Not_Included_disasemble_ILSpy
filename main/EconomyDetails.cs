@@ -964,7 +964,7 @@ public class EconomyDetails
 
 	private static void DumpEconomyDetails()
 	{
-		Debug.Log("Starting Economy Details Dump...", null);
+		Debug.Log("Starting Economy Details Dump...");
 		EconomyDetails details = new EconomyDetails();
 		List<Scenario> list = new List<Scenario>();
 		Scenario item = new Scenario("default", 1, (Transformation t) => true);
@@ -1167,6 +1167,6 @@ public class EconomyDetails
 				streamWriter.Write("\n");
 			}
 		}
-		Debug.Log("Completed economy details dump!!", null);
+		Debug.Log("Completed economy details dump!!");
 	}
 }

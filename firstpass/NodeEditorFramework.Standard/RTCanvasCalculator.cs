@@ -75,7 +75,7 @@ namespace NodeEditorFramework.Standard
 						text = text2 + output.typeID + " " + ((!output.IsValueNull) ? output.GetValue().ToString() : "NULL") + "; ";
 					}
 				}
-				Debug.Log(text, null);
+				Debug.Log(text);
 			}
 		}
 

@@ -4,15 +4,17 @@ namespace TUNING
 	{
 		public class DURATION
 		{
-			public const float LONG = 5400f;
+			public const float LONG = 10800f;
 
-			public const float LONGISH = 2400f;
+			public const float LONGISH = 4620f;
 
-			public const float NORMAL = 900f;
+			public const float NORMAL = 2220f;
 
-			public const float SHORT = 540f;
+			public const float SHORT = 1020f;
 
-			public const float TEMPORARY = 120f;
+			public const float TEMPORARY = 180f;
+
+			public const float VERY_BRIEF = 60f;
 		}
 
 		public class IMMUNE_ATTACK_STRENGTH_PERCENT

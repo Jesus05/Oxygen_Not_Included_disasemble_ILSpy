@@ -52,7 +52,7 @@ public static class TemplateLoader
 		int num = Grid.OffsetCell(0, baseX, baseY);
 		if (template == null)
 		{
-			Debug.LogError("No stamp template", null);
+			Debug.LogError("No stamp template");
 		}
 		if (template.buildings != null)
 		{
@@ -91,7 +91,7 @@ public static class TemplateLoader
 		GameObject gameObject = Scenario.PlaceBuilding(root_cell, num, location_y, prefab.id, prefab.element);
 		if ((UnityEngine.Object)gameObject == (UnityEngine.Object)null)
 		{
-			Debug.LogWarning("Null prefab for " + prefab.id, null);
+			Debug.LogWarning("Null prefab for " + prefab.id);
 			return gameObject;
 		}
 		BuildingComplete component = gameObject.GetComponent<BuildingComplete>();
@@ -127,7 +127,7 @@ public static class TemplateLoader
 				}
 				catch
 				{
-					Debug.LogWarning($"Building does not have amount with ID {template_amount_value.id}", null);
+					Debug.LogWarning($"Building does not have amount with ID {template_amount_value.id}");
 				}
 			}
 		}
@@ -178,7 +178,7 @@ public static class TemplateLoader
 			Storage component6 = component.gameObject.GetComponent<Storage>();
 			if ((UnityEngine.Object)component6 == (UnityEngine.Object)null)
 			{
-				Debug.LogWarning("No storage component on stampTemplate building " + prefab.id + ". Saved storage contents will be ignored.", null);
+				Debug.LogWarning("No storage component on stampTemplate building " + prefab.id + ". Saved storage contents will be ignored.");
 			}
 			for (int l = 0; l < prefab.storage.Count; l++)
 			{
@@ -188,14 +188,14 @@ public static class TemplateLoader
 				if (storageItem.isOre)
 				{
 					Substance substance = ElementLoader.FindElementByHash(storageItem.element).substance;
-					gameObject2 = substance.SpawnResource(Vector3.zero, storageItem.units, storageItem.temperature, Db.Get().Diseases.GetIndex(storageItem.diseaseName), storageItem.diseaseCount, false, false);
+					gameObject2 = substance.SpawnResource(Vector3.zero, storageItem.units, storageItem.temperature, Db.Get().Diseases.GetIndex(storageItem.diseaseName), storageItem.diseaseCount, false, false, false);
 				}
 				else
 				{
 					gameObject2 = Scenario.SpawnPrefab(root_cell, 0, 0, id2, Grid.SceneLayer.Ore);
 					if ((UnityEngine.Object)gameObject2 == (UnityEngine.Object)null)
 					{
-						Debug.LogWarning("Null prefab for " + id2, null);
+						Debug.LogWarning("Null prefab for " + id2);
 						continue;
 					}
 					gameObject2.SetActive(true);
@@ -313,7 +313,7 @@ public static class TemplateLoader
 		GameObject gameObject = Scenario.SpawnPrefab(root_cell, location_x, location_y, prefab.id, Grid.SceneLayer.Ore);
 		if ((UnityEngine.Object)gameObject == (UnityEngine.Object)null)
 		{
-			Debug.LogWarning("Null prefab for " + prefab.id, null);
+			Debug.LogWarning("Null prefab for " + prefab.id);
 			return null;
 		}
 		gameObject.SetActive(true);
@@ -354,7 +354,7 @@ public static class TemplateLoader
 		GameObject gameObject = Scenario.SpawnPrefab(root_cell, location_x, location_y, prefab.id, scene_layer);
 		if ((UnityEngine.Object)gameObject == (UnityEngine.Object)null)
 		{
-			Debug.LogWarning("Null prefab for " + prefab.id, null);
+			Debug.LogWarning("Null prefab for " + prefab.id);
 			return null;
 		}
 		gameObject.SetActive(true);
@@ -369,7 +369,7 @@ public static class TemplateLoader
 				}
 				catch
 				{
-					Debug.LogWarning($"Entity {gameObject.GetProperName()} does not have amount with ID {template_amount_value.id}", null);
+					Debug.LogWarning($"Entity {gameObject.GetProperName()} does not have amount with ID {template_amount_value.id}");
 				}
 			}
 		}
@@ -390,10 +390,10 @@ public static class TemplateLoader
 		byte index = Db.Get().Diseases.GetIndex(prefab.diseaseName);
 		if (prefab.temperature <= 0f)
 		{
-			Debug.LogWarning("Template trying to spawn zero temperature substance!", null);
+			Debug.LogWarning("Template trying to spawn zero temperature substance!");
 			prefab.temperature = 300f;
 		}
-		return substance.SpawnResource(position, prefab.units, prefab.temperature, index, prefab.diseaseCount, false, false);
+		return substance.SpawnResource(position, prefab.units, prefab.temperature, index, prefab.diseaseCount, false, false, false);
 	}
 
 	private static void BuildPhase3(int baseX, int baseY, System.Action callback)
@@ -478,14 +478,14 @@ public static class TemplateLoader
 		HandleVector<Game.CallbackInfo>.Handle handle = Game.Instance.callbackManager.Add(new Game.CallbackInfo(callback, false));
 		if (template == null)
 		{
-			Debug.LogError("Template Loader does not have template.", null);
+			Debug.LogError("Template Loader does not have template.");
 		}
 		for (int i = 0; i < template.cells.Count; i++)
 		{
 			int num = Grid.XYToCell(template.cells[i].location_x + baseX, template.cells[i].location_y + baseY);
 			if (!Grid.IsValidCell(num))
 			{
-				Debug.LogError($"Trying to replace invalid cells cell{num} root{baseX}:{baseY} offset{template.cells[i].location_x}:{template.cells[i].location_y}", null);
+				Debug.LogError($"Trying to replace invalid cells cell{num} root{baseX}:{baseY} offset{template.cells[i].location_x}:{template.cells[i].location_y}");
 			}
 			SimHashes element = template.cells[i].element;
 			float mass = template.cells[i].mass;

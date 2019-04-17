@@ -19,6 +19,20 @@ public class PrioritizableRenderer
 
 	private List<Prioritizable> prioritizables;
 
+	private PrioritizeTool tool;
+
+	public PrioritizeTool currentTool
+	{
+		get
+		{
+			return tool;
+		}
+		set
+		{
+			tool = value;
+		}
+	}
+
 	public PrioritizableRenderer()
 	{
 		layer = LayerMask.NameToLayer("UI");
@@ -50,16 +64,18 @@ public class PrioritizableRenderer
 			if (!((Object)GameScreenManager.Instance == (Object)null) && !((Object)SimDebugView.Instance == (Object)null) && !(SimDebugView.Instance.GetMode() != OverlayModes.Priorities.ID))
 			{
 				prioritizables.Clear();
-				for (int i = 0; i < Components.Prioritizables.Count; i++)
+				Grid.GetVisibleExtents(out Vector2I min, out Vector2I max);
+				int height = max.y - min.y;
+				int width = max.x - min.x;
+				Extents extents = new Extents(min.x, min.y, width, height);
+				List<ScenePartitionerEntry> list = new List<ScenePartitionerEntry>();
+				GameScenePartitioner.Instance.GatherEntries(extents, GameScenePartitioner.Instance.prioritizableObjects, list);
+				foreach (ScenePartitionerEntry item in list)
 				{
-					Prioritizable prioritizable = Components.Prioritizables[i];
-					if ((Object)prioritizable != (Object)null && prioritizable.showIcon && prioritizable.IsPrioritizable())
+					Prioritizable prioritizable = (Prioritizable)item.obj;
+					if ((Object)prioritizable != (Object)null && prioritizable.showIcon && prioritizable.IsPrioritizable() && tool.IsActiveLayer(tool.GetFilterLayerFromGameObject(prioritizable.gameObject)))
 					{
-						int cell = Grid.PosToCell(prioritizable);
-						if (Grid.IsVisible(cell))
-						{
-							prioritizables.Add(prioritizable);
-						}
+						prioritizables.Add(prioritizable);
 					}
 				}
 				if (prioritizableCount != prioritizables.Count)
@@ -71,9 +87,9 @@ public class PrioritizableRenderer
 				}
 				if (prioritizableCount != 0)
 				{
-					for (int j = 0; j < prioritizables.Count; j++)
+					for (int i = 0; i < prioritizables.Count; i++)
 					{
-						Prioritizable prioritizable2 = prioritizables[j];
+						Prioritizable prioritizable2 = prioritizables[i];
 						Vector3 vector = Vector3.zero;
 						KAnimControllerBase component = prioritizable2.GetComponent<KAnimControllerBase>();
 						vector = ((!((Object)component != (Object)null)) ? prioritizable2.transform.GetPosition() : component.GetWorldPivot());
@@ -81,7 +97,7 @@ public class PrioritizableRenderer
 						vector.y += prioritizable2.iconOffset.y;
 						Vector2 vector2 = new Vector2(0.2f, 0.3f) * prioritizable2.iconScale;
 						float z = -5f;
-						int num = 4 * j;
+						int num = 4 * i;
 						vertices[num] = new Vector3(vector.x - vector2.x, vector.y - vector2.y, z);
 						vertices[1 + num] = new Vector3(vector.x - vector2.x, vector.y + vector2.y, z);
 						vertices[2 + num] = new Vector3(vector.x + vector2.x, vector.y - vector2.y, z);
@@ -93,7 +109,7 @@ public class PrioritizableRenderer
 						{
 							num3 += 9f;
 						}
-						if (masterPriority.priority_class >= PriorityScreen.PriorityClass.emergency)
+						if (masterPriority.priority_class >= PriorityScreen.PriorityClass.topPriority)
 						{
 							num3 = num3;
 						}
@@ -106,7 +122,7 @@ public class PrioritizableRenderer
 						uvs[1 + num] = new Vector2(num4, num5 + num7);
 						uvs[2 + num] = new Vector2(num4 + num6, num5);
 						uvs[3 + num] = new Vector2(num4 + num6, num5 + num7);
-						int num8 = 6 * j;
+						int num8 = 6 * i;
 						triangles[num8] = num;
 						triangles[1 + num8] = num + 1;
 						triangles[2 + num8] = num + 2;

@@ -78,7 +78,7 @@ public class DropAllWorkable : Workable
 			List<GameObject> list = new List<GameObject>(array[i].items);
 			for (int j = 0; j < list.Count; j++)
 			{
-				GameObject gameObject = array[i].Drop(list[j]);
+				GameObject gameObject = array[i].Drop(list[j], true);
 				if ((UnityEngine.Object)gameObject != (UnityEngine.Object)null)
 				{
 					Pickupable component = gameObject.GetComponent<Pickupable>();

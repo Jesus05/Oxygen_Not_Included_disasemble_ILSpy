@@ -77,7 +77,7 @@ public class LegacyModMain
 			string text2 = text;
 			text = text2 + current2.type.Name + ": " + current2.count + "\n";
 		}
-		Debug.Log(text, null);
+		Debug.Log(text);
 	}
 
 	private static void ListUnusedTypes()
@@ -114,7 +114,7 @@ public class LegacyModMain
 		{
 			text = text + "\n" + item.FullName;
 		}
-		Debug.Log(text, null);
+		Debug.Log(text);
 	}
 
 	private static void DebugSelected()
@@ -126,7 +126,7 @@ public class LegacyModMain
 		Constructable component = go.GetComponent<Constructable>();
 		int num = 0;
 		num++;
-		Debug.Log(component, null);
+		Debug.Log(component);
 	}
 
 	private static void LoadOre(List<Type> types)

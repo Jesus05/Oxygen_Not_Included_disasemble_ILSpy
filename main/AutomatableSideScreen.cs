@@ -37,14 +37,14 @@ public class AutomatableSideScreen : SideScreenContent
 		base.SetTarget(target);
 		if ((Object)target == (Object)null)
 		{
-			Debug.LogError("The target object provided was null", null);
+			Debug.LogError("The target object provided was null");
 		}
 		else
 		{
 			targetAutomatable = target.GetComponent<Automatable>();
 			if ((Object)targetAutomatable == (Object)null)
 			{
-				Debug.LogError("The target provided does not have an Automatable component", null);
+				Debug.LogError("The target provided does not have an Automatable component");
 			}
 			else
 			{

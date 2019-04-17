@@ -1,3 +1,4 @@
+using Database;
 using Klei.AI;
 using System;
 using System.Collections.Generic;
@@ -26,7 +27,7 @@ public class MinionStartingStats : ITelepadDeliverable
 
 	public List<Accessory> accessories = new List<Accessory>();
 
-	public Dictionary<HashedString, float> roleAptitudes = new Dictionary<HashedString, float>();
+	public Dictionary<HashedString, float> skillAptitudes = new Dictionary<HashedString, float>();
 
 	public MinionStartingStats(bool is_starter_minion)
 	{
@@ -144,7 +145,7 @@ public class MinionStartingStats : ITelepadDeliverable
 					if (current.requiredNonPositiveAptitudes != null)
 					{
 						bool flag2 = false;
-						foreach (KeyValuePair<HashedString, float> roleAptitude in roleAptitudes)
+						foreach (KeyValuePair<HashedString, float> skillAptitude in skillAptitudes)
 						{
 							if (flag2)
 							{
@@ -152,7 +153,7 @@ public class MinionStartingStats : ITelepadDeliverable
 							}
 							foreach (HashedString requiredNonPositiveAptitude in current.requiredNonPositiveAptitudes)
 							{
-								if (requiredNonPositiveAptitude == roleAptitude.Key && roleAptitude.Value > 0f)
+								if (requiredNonPositiveAptitude == skillAptitude.Key && skillAptitude.Value > 0f)
 								{
 									flag2 = true;
 									break;
@@ -185,7 +186,7 @@ public class MinionStartingStats : ITelepadDeliverable
 						Trait trait3 = Db.Get().traits.TryGet(current.id);
 						if (trait3 == null)
 						{
-							Debug.LogWarning("Trying to add nonexistent trait: " + current.id, null);
+							Debug.LogWarning("Trying to add nonexistent trait: " + current.id);
 						}
 						else if (!is_starter_minion || trait3.ValidStarterTrait)
 						{
@@ -229,17 +230,11 @@ public class MinionStartingStats : ITelepadDeliverable
 	private void GenerateAptitudes()
 	{
 		int num = UnityEngine.Random.Range(1, 4);
+		List<SkillGroup> list = new List<SkillGroup>(Db.Get().SkillGroups.resources);
+		list.Shuffle();
 		for (int i = 0; i < num; i++)
 		{
-			RoleConfig random = Game.Instance.roleManager.RolesConfigs.GetRandom();
-			if (random.id != "NoRole" && !roleAptitudes.ContainsKey(random.roleGroup))
-			{
-				roleAptitudes.Add(random.roleGroup, 1f);
-			}
-			else if (num < roleAptitudes.Count)
-			{
-				i--;
-			}
+			skillAptitudes.Add(list[i].IdHash, (float)DUPLICANTSTATS.APTITUDE_BONUS);
 		}
 	}
 
@@ -366,9 +361,9 @@ public class MinionStartingStats : ITelepadDeliverable
 	public void ApplyAptitudes(GameObject go)
 	{
 		MinionResume component = go.GetComponent<MinionResume>();
-		foreach (KeyValuePair<HashedString, float> roleAptitude in roleAptitudes)
+		foreach (KeyValuePair<HashedString, float> skillAptitude in skillAptitudes)
 		{
-			component.AddAptitude(roleAptitude.Key, roleAptitude.Value);
+			component.SetAptitude(skillAptitude.Key, skillAptitude.Value);
 		}
 	}
 

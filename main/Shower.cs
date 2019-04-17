@@ -197,10 +197,6 @@ public class Shower : Workable, IEffectDescriptor, IGameObjectEffectDescriptor
 		worker.GetSMI<HygieneMonitor.Instance>()?.SetDirtiness(1f - GetPercentComplete());
 	}
 
-	public override void AwardExperience(float work_dt, MinionResume resume)
-	{
-	}
-
 	public List<Descriptor> GetDescriptors(BuildingDef def)
 	{
 		List<Descriptor> list = new List<Descriptor>();

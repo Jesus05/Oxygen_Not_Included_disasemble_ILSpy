@@ -416,7 +416,7 @@ public class Turbine : KMonoBehaviour
 		{
 			Turbine turbine = (Turbine)data;
 			str = str.Replace("{MASS}", GameUtil.GetFormattedMass(turbine.requiredMassFlowDifferential, GameUtil.TimeSlice.None, GameUtil.MetricMassFormat.UseThreshold, true, "{0:0.#}"));
-			str = str.Replace("{ELEMENT}", ElementLoader.FindElementByHash(turbine.srcElem).name);
+			str = str.Replace("{SRC_ELEMENT}", ElementLoader.FindElementByHash(turbine.srcElem).name);
 			return str;
 		};
 		insufficientTemperatureStatusItem = new StatusItem("TURBINE_INSUFFICIENT_TEMPERATURE", "BUILDING", "status_item_plant_temperature", StatusItem.IconType.Custom, NotificationType.BadMinor, false, OverlayModes.Power.ID, true, 63486);
@@ -427,8 +427,8 @@ public class Turbine : KMonoBehaviour
 	private static string ResolveStrings(string str, object data)
 	{
 		Turbine turbine = (Turbine)data;
-		str = str.Replace("{ELEMENT}", ElementLoader.FindElementByHash(turbine.srcElem).name);
-		str = str.Replace("{TEMPERATURE}", GameUtil.GetFormattedTemperature(turbine.minActiveTemperature, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false));
+		str = str.Replace("{SRC_ELEMENT}", ElementLoader.FindElementByHash(turbine.srcElem).name);
+		str = str.Replace("{ACTIVE_TEMPERATURE}", GameUtil.GetFormattedTemperature(turbine.minActiveTemperature, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false));
 		return str;
 	}
 }

@@ -145,34 +145,34 @@ public static class Localization
 
 	public static void Initialize(bool dontCheckSteam = false)
 	{
-		Output.Log("Localization.Initialize!");
+		DebugUtil.LogArgs("Localization.Initialize!");
 		SelectedLanguageType selectedPreinstalledLanguageType = GetSelectedPreinstalledLanguageType();
 		string selectedPreinstalledLanguageCode = GetSelectedPreinstalledLanguageCode();
 		if (!string.IsNullOrEmpty(selectedPreinstalledLanguageCode))
 		{
-			Output.Log("Localization Initialize... Preinstalled localization");
-			Output.Log(" -> ", selectedPreinstalledLanguageCode);
+			DebugUtil.LogArgs("Localization Initialize... Preinstalled localization");
+			DebugUtil.LogArgs(" -> ", selectedPreinstalledLanguageCode);
 			LoadPreinstalledTranslation(selectedPreinstalledLanguageCode);
 		}
 		else if (selectedPreinstalledLanguageType == SelectedLanguageType.UGC && !dontCheckSteam && SteamManager.Initialized && LanguageOptionsScreen.HasInstalledLanguage())
 		{
-			Output.Log("Localization Initialize... SteamUGCService");
+			DebugUtil.LogArgs("Localization Initialize... SteamUGCService");
 			PublishedFileId_t item = PublishedFileId_t.Invalid;
 			LanguageOptionsScreen.LoadTranslation(ref item);
 			if (item != PublishedFileId_t.Invalid)
 			{
-				Output.Log(" -> Loaded steamworks file id: ", item.ToString());
+				DebugUtil.LogArgs(" -> Loaded steamworks file id: ", item.ToString());
 			}
 			else
 			{
-				Output.Log(" -> Failed to load steamworks file id: ", item.ToString());
+				DebugUtil.LogArgs(" -> Failed to load steamworks file id: ", item.ToString());
 			}
 		}
 		else
 		{
-			Output.Log("Initialize... Local mod localization");
+			DebugUtil.LogArgs("Initialize... Local mod localization");
 			string modLocalizationFilePath = GetModLocalizationFilePath();
-			Output.Log(" -> ", modLocalizationFilePath);
+			DebugUtil.LogArgs(" -> ", modLocalizationFilePath);
 			LoadLocalTranslationFile(SelectedLanguageType.None, modLocalizationFilePath);
 		}
 	}
@@ -218,7 +218,7 @@ public static class Localization
 		if (lines != null && lines.Length > 0)
 		{
 			sLocale = GetLocale(lines);
-			Output.Log(" -> Locale is now ", sLocale.ToString());
+			DebugUtil.LogArgs(" -> Locale is now ", sLocale.ToString());
 			flag = LoadTranslation(lines, false);
 			if (flag)
 			{
@@ -239,7 +239,7 @@ public static class Localization
 		}
 		catch (Exception ex)
 		{
-			Output.LogWarning(ex);
+			DebugUtil.LogWarningArgs(ex);
 			return false;
 		}
 	}
@@ -328,7 +328,7 @@ public static class Localization
 		return text3;
 	}
 
-	private static void OverloadStrings(Dictionary<string, string> translated_strings)
+	public static void OverloadStrings(Dictionary<string, string> translated_strings)
 	{
 		Assembly assembly = Assembly.GetAssembly(typeof(UI));
 		IEnumerable<Type> source = from t in assembly.GetTypes()
@@ -345,15 +345,15 @@ public static class Localization
 		}
 		if (!string.IsNullOrEmpty(parameter_errors))
 		{
-			Output.Log("TRANSLATION ERROR! The following have missing or mismatched parameters:\n" + parameter_errors);
+			DebugUtil.LogArgs("TRANSLATION ERROR! The following have missing or mismatched parameters:\n" + parameter_errors);
 		}
 		if (!string.IsNullOrEmpty(link_errors))
 		{
-			Output.Log("TRANSLATION ERROR! The following have mismatched <link> tags:\n" + link_errors);
+			DebugUtil.LogArgs("TRANSLATION ERROR! The following have mismatched <link> tags:\n" + link_errors);
 		}
 		if (!string.IsNullOrEmpty(link_count_errors))
 		{
-			Output.Log("TRANSLATION ERROR! The following do not have the same amount of <link> tags as the english string which can cause nested link errors:\n" + link_count_errors);
+			DebugUtil.LogArgs("TRANSLATION ERROR! The following do not have the same amount of <link> tags as the english string which can cause nested link errors:\n" + link_count_errors);
 		}
 	}
 
@@ -407,17 +407,17 @@ public static class Localization
 
 	public static string GetDefaultLocalizationFilePath()
 	{
-		return Path.Combine(Application.streamingAssetsPath, "Mods/strings_template.pot");
+		return Path.Combine(Application.streamingAssetsPath, "strings/strings_template.pot");
 	}
 
 	public static string GetModLocalizationFilePath()
 	{
-		return Path.Combine(Application.streamingAssetsPath, "Mods/strings.po");
+		return Path.Combine(Application.streamingAssetsPath, "strings/strings.po");
 	}
 
 	public static string GetPreinstalledLocalizationFilePath(string code)
 	{
-		string path = "Mods/strings_preinstalled_" + code + ".po";
+		string path = "strings/strings_preinstalled_" + code + ".po";
 		return Path.Combine(Application.streamingAssetsPath, path);
 	}
 
@@ -428,7 +428,7 @@ public static class Localization
 
 	public static Texture2D GetPreinstalledLocalizationImage(string code)
 	{
-		string path = Path.Combine(Application.streamingAssetsPath, "Mods/preinstalled_icon_" + code + ".png");
+		string path = Path.Combine(Application.streamingAssetsPath, "strings/preinstalled_icon_" + code + ".png");
 		if (File.Exists(path))
 		{
 			byte[] data = File.ReadAllBytes(path);
@@ -442,7 +442,7 @@ public static class Localization
 	public static void SetLocale(Locale locale)
 	{
 		sLocale = locale;
-		Output.Log(" -> Locale is now ", sLocale.ToString());
+		DebugUtil.LogArgs(" -> Locale is now ", sLocale.ToString());
 	}
 
 	private static string GetFontParam(string line)
@@ -766,7 +766,7 @@ public static class Localization
 
 	public static void ClearLanguage()
 	{
-		Output.Log(" -> Clearing selected language! Either it didn't load correct or returning to english by menu.");
+		DebugUtil.LogArgs(" -> Clearing selected language! Either it didn't load correct or returning to english by menu.");
 		sFontAsset = null;
 		sLocale = null;
 		KPlayerPrefs.SetString(SELECTED_LANGUAGE_TYPE_KEY, 0.ToString());

@@ -40,14 +40,14 @@ public class CommandModuleSideScreen : SideScreenContent
 	{
 		if ((Object)new_target == (Object)null)
 		{
-			Debug.LogError("Invalid gameObject received", null);
+			Debug.LogError("Invalid gameObject received");
 		}
 		else
 		{
 			target = new_target.GetComponent<LaunchConditionManager>();
 			if ((Object)target == (Object)null)
 			{
-				Debug.LogError("The gameObject received does not contain a LaunchConditionManager component", null);
+				Debug.LogError("The gameObject received does not contain a LaunchConditionManager component");
 			}
 			else
 			{

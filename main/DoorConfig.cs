@@ -6,9 +6,14 @@ public class DoorConfig : IBuildingConfig
 {
 	public const string ID = "Door";
 
-	public static readonly LogicPorts.Port[] INPUT_PORTS = new LogicPorts.Port[1]
+	public static readonly LogicPorts.Port[] INPUT_PORTS_0_0 = new LogicPorts.Port[1]
 	{
-		LogicPorts.Port.InputPort(Door.OPEN_CLOSE_PORT_ID, new CellOffset(0, 0), STRINGS.BUILDINGS.PREFABS.DOOR.LOGIC_PORT_DESC, false)
+		LogicPorts.Port.InputPort(Door.OPEN_CLOSE_PORT_ID, new CellOffset(0, 0), STRINGS.BUILDINGS.PREFABS.DOOR.LOGIC_OPEN, STRINGS.BUILDINGS.PREFABS.DOOR.LOGIC_OPEN_ACTIVE, STRINGS.BUILDINGS.PREFABS.DOOR.LOGIC_OPEN_INACTIVE, false)
+	};
+
+	public static readonly LogicPorts.Port[] INPUT_PORTS_N1_0 = new LogicPorts.Port[1]
+	{
+		LogicPorts.Port.InputPort(Door.OPEN_CLOSE_PORT_ID, new CellOffset(-1, 0), STRINGS.BUILDINGS.PREFABS.DOOR.LOGIC_OPEN, STRINGS.BUILDINGS.PREFABS.DOOR.LOGIC_OPEN_ACTIVE, STRINGS.BUILDINGS.PREFABS.DOOR.LOGIC_OPEN_INACTIVE, false)
 	};
 
 	public override BuildingDef CreateBuildingDef()
@@ -38,12 +43,12 @@ public class DoorConfig : IBuildingConfig
 
 	public override void DoPostConfigurePreview(BuildingDef def, GameObject go)
 	{
-		GeneratedBuildings.RegisterLogicPorts(go, INPUT_PORTS);
+		GeneratedBuildings.RegisterLogicPorts(go, INPUT_PORTS_0_0);
 	}
 
 	public override void DoPostConfigureUnderConstruction(GameObject go)
 	{
-		GeneratedBuildings.RegisterLogicPorts(go, INPUT_PORTS);
+		GeneratedBuildings.RegisterLogicPorts(go, INPUT_PORTS_0_0);
 	}
 
 	public override void DoPostConfigureComplete(GameObject go)
@@ -64,7 +69,7 @@ public class DoorConfig : IBuildingConfig
 		go.AddOrGet<ZoneTile>();
 		go.AddOrGet<KBoxCollider2D>();
 		Prioritizable.AddRef(go);
-		GeneratedBuildings.RegisterLogicPorts(go, INPUT_PORTS);
+		GeneratedBuildings.RegisterLogicPorts(go, INPUT_PORTS_0_0);
 		Object.DestroyImmediate(go.GetComponent<BuildingEnabledButton>());
 	}
 }

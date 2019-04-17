@@ -167,7 +167,7 @@ public class EmoteReactable : Reactable
 				kbac.Play(emoteSteps[currentStep].anim, emoteSteps[currentStep].mode, 1f, 0f);
 				if (kbac.IsStopped())
 				{
-					DebugUtil.DevAssert(false, "Emote is missing anim: " + emoteSteps[currentStep].anim);
+					DebugUtil.DevAssertArgs(false, "Emote is missing anim:", emoteSteps[currentStep].anim);
 					emoteSteps[currentStep].timeout = 0.25f;
 				}
 			}

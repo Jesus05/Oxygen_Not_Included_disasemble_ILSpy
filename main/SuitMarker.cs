@@ -229,6 +229,7 @@ public class SuitMarker : KMonoBehaviour
 	{
 		base.OnSpawn();
 		OnlyTraverseIfUnequipAvailable = onlyTraverseIfUnequipAvailable;
+		Debug.Assert((UnityEngine.Object)interactAnim != (UnityEngine.Object)null, "interactAnim is null");
 		Subscribe(493375141, OnRefreshUserMenuDelegate);
 		isOperational = GetComponent<Operational>().IsOperational;
 		Subscribe(-592767678, OnOperationalChangedDelegate);

@@ -1,4 +1,5 @@
 using System;
+using TUNING;
 using UnityEngine;
 
 public class EggCracker : KMonoBehaviour
@@ -16,6 +17,11 @@ public class EggCracker : KMonoBehaviour
 	protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
+		workable.WorkerStatusItem = Db.Get().DuplicantStatusItems.Mushing;
+		workable.AttributeConverter = Db.Get().AttributeConverters.CookingSpeed;
+		workable.AttributeExperienceMultiplier = DUPLICANTSTATS.ATTRIBUTE_LEVELING.MOST_DAY_EXPERIENCE;
+		workable.SkillExperienceSkillGroup = Db.Get().SkillGroups.Cooking.Id;
+		workable.SkillExperienceMultiplier = SKILLS.MOST_DAY_EXPERIENCE;
 	}
 
 	protected override void OnSpawn()

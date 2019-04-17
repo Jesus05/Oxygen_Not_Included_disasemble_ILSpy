@@ -85,12 +85,12 @@ public class BatchSet
 		int layer = controller.GetLayer();
 		if (layer != key.layer)
 		{
-			Debug.LogError("Registering with wrong batch set (layer) " + controller.GetName(), null);
+			Debug.LogError("Registering with wrong batch set (layer) " + controller.GetName());
 		}
 		HashedString batchGroupID = controller.GetBatchGroupID(false);
 		if (!(batchGroupID == key.groupID))
 		{
-			Debug.LogError("Registering with wrong batch set (groupID) " + controller.GetName(), null);
+			Debug.LogError("Registering with wrong batch set (groupID) " + controller.GetName());
 		}
 		KAnimBatchGroup.MaterialType materialType = controller.GetMaterialType();
 		for (int i = 0; i < batches.Count; i++)
@@ -112,6 +112,7 @@ public class BatchSet
 
 	public void RemoveBatch(KAnimBatch batch)
 	{
+		Debug.Assert(batch.batchset == this);
 		if (batches.Contains(batch))
 		{
 			group.batchCount--;
@@ -135,13 +136,21 @@ public class BatchSet
 				batches.Add(batch);
 				batches.Sort(delegate(KAnimBatch b0, KAnimBatch b1)
 				{
-					Vector3 position = b0.position;
-					ref float z = ref position.z;
-					Vector3 position2 = b1.position;
-					return z.CompareTo(position2.z);
+					Vector3 position3 = b0.position;
+					ref float z = ref position3.z;
+					Vector3 position4 = b1.position;
+					return z.CompareTo(position4.z);
 				});
 			}
 		}
+		Vector3 position = batch.position;
+		float x = position.x;
+		Vector2I idx = this.idx;
+		Debug.Assert(x == (float)(idx.x * 32));
+		Vector3 position2 = batch.position;
+		float y = position2.y;
+		Vector2I idx2 = this.idx;
+		Debug.Assert(y == (float)(idx2.y * 32));
 		SetDirty();
 	}
 

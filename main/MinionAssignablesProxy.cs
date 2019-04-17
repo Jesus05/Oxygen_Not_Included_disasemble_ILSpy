@@ -43,6 +43,7 @@ public class MinionAssignablesProxy : KMonoBehaviour, IAssignableIdentity
 
 	public void SetTarget(IAssignableIdentity target, GameObject targetGO)
 	{
+		Debug.Assert(target != null, "target was null");
 		if ((Object)targetGO == (Object)null)
 		{
 			Debug.LogWarningFormat("{0} MinionAssignablesProxy.SetTarget {1}, {2}, {3}. DESTROYING", GetInstanceID(), target_instance_id, target, targetGO);

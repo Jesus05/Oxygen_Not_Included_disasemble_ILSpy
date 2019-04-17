@@ -51,6 +51,7 @@ public class ResourceRemainingDisplayScreen : KScreen
 			selected_elements.Add(_selected_element);
 		}
 		currentRecipe = recipe;
+		Debug.Assert(selected_elements.Count == recipe.Ingredients.Count);
 	}
 
 	public void SetNumberOfPendingConstructions(int number)

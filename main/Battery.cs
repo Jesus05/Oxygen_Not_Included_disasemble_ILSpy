@@ -199,4 +199,10 @@ public class Battery : KMonoBehaviour, IEnergyConsumer, IEffectDescriptor, IEner
 		list.Add(new Descriptor(string.Format(UI.BUILDINGEFFECTS.BATTERYLEAK, GameUtil.GetFormattedJoules(joulesLostPerSecond, "F1", GameUtil.TimeSlice.PerCycle)), string.Format(UI.BUILDINGEFFECTS.TOOLTIPS.BATTERYLEAK, GameUtil.GetFormattedJoules(joulesLostPerSecond, "F1", GameUtil.TimeSlice.PerCycle)), Descriptor.DescriptorType.Effect, false));
 		return list;
 	}
+
+	[ContextMenu("Refill Power")]
+	public void DEBUG_RefillPower()
+	{
+		joulesAvailable = capacity;
+	}
 }

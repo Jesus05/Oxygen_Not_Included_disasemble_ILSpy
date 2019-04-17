@@ -95,7 +95,7 @@ public struct TagBits
 			{
 				text = text + "\n" + item.Key.ToString();
 			}
-			Debug.LogError(text, null);
+			Debug.LogError(text);
 		}
 		return value;
 	}
@@ -125,7 +125,7 @@ public struct TagBits
 		}
 		else
 		{
-			Debug.LogError("Out of bits!", null);
+			Debug.LogError("Out of bits!");
 		}
 	}
 
@@ -154,7 +154,7 @@ public struct TagBits
 		}
 		else
 		{
-			Debug.LogError("Out of bits!", null);
+			Debug.LogError("Out of bits!");
 		}
 	}
 

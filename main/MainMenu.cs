@@ -1,4 +1,5 @@
 using Klei;
+using KMod;
 using Steamworks;
 using STRINGS;
 using System;
@@ -53,38 +54,36 @@ public class MainMenu : KMonoBehaviour
 
 	private static bool HasAutoresumedOnce;
 
+	private KButton mods_button;
+
+	private bool subscribed_to_mod_manager;
+
 	private static int LANGUAGE_CONFIRMATION_VERSION = 2;
 
 	private Dictionary<string, SaveFileEntry> saveFileEntries = new Dictionary<string, SaveFileEntry>();
 
+	private KButton MakeButton(ButtonInfo info)
+	{
+		KButton kButton = Util.KInstantiateUI<KButton>(buttonPrefab.gameObject, buttonParent, true);
+		kButton.onClick += info.action;
+		LocText componentInChildren = kButton.GetComponentInChildren<LocText>();
+		componentInChildren.text = info.text;
+		componentInChildren.fontSize = (float)info.fontSize;
+		return kButton;
+	}
+
 	protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
-		Global.Instance.modManager.DeactivateWorldGenMod();
-		List<ButtonInfo> list = new List<ButtonInfo>();
-		list.Add(new ButtonInfo(UI.FRONTEND.MAINMENU.NEWGAME, NewGame, 22));
-		list.Add(new ButtonInfo(UI.FRONTEND.MAINMENU.LOADGAME, LoadGame, 14));
-		list.Add(new ButtonInfo(UI.FRONTEND.MAINMENU.TRANSLATIONS, Translations, 14));
-		list.Add(new ButtonInfo(UI.FRONTEND.MAINMENU.OPTIONS, Options, 14));
-		list.Add(new ButtonInfo(UI.FRONTEND.MAINMENU.QUITTODESKTOP, QuitGame, 14));
-		List<ButtonInfo> list2 = list;
-		if (!DistributionPlatform.Initialized)
+		MakeButton(new ButtonInfo(UI.FRONTEND.MAINMENU.NEWGAME, NewGame, 22));
+		MakeButton(new ButtonInfo(UI.FRONTEND.MAINMENU.LOADGAME, LoadGame, 14));
+		if (DistributionPlatform.Initialized)
 		{
-			int num = list2.FindIndex((ButtonInfo x) => x.text == UI.FRONTEND.MAINMENU.TRANSLATIONS);
-			if (num >= 0)
-			{
-				list2.RemoveAt(num);
-			}
+			MakeButton(new ButtonInfo(UI.FRONTEND.MAINMENU.TRANSLATIONS, Translations, 14));
+			mods_button = MakeButton(new ButtonInfo(UI.FRONTEND.MODS.TITLE, Mods, 14));
 		}
-		foreach (ButtonInfo item in list2)
-		{
-			ButtonInfo current = item;
-			KButton kButton = Util.KInstantiateUI<KButton>(buttonPrefab.gameObject, buttonParent, true);
-			kButton.onClick += current.action;
-			LocText componentInChildren = kButton.GetComponentInChildren<LocText>();
-			componentInChildren.text = current.text;
-			componentInChildren.fontSize = (float)current.fontSize;
-		}
+		MakeButton(new ButtonInfo(UI.FRONTEND.MAINMENU.OPTIONS, Options, 14));
+		MakeButton(new ButtonInfo(UI.FRONTEND.MAINMENU.QUITTODESKTOP, QuitGame, 14));
 		KCrashReporter.MOST_RECENT_SAVEFILE = null;
 		RefreshResumeButton();
 		Button_ResumeGame.onClick += ResumeGame;
@@ -94,6 +93,8 @@ public class MainMenu : KMonoBehaviour
 			patchNotesScreen.SetActive(true);
 		}
 		CheckDoubleBoundKeys();
+		Global.Instance.modManager.Unload(Content.LayerableFiles);
+		OnModManagerUpdate(this);
 		lastUpdateTime = Time.unscaledTime;
 	}
 
@@ -114,10 +115,11 @@ public class MainMenu : KMonoBehaviour
 
 	protected override void OnSpawn()
 	{
-		Debug.Log("-- MAIN MENU -- ", null);
+		Debug.Log("-- MAIN MENU -- ");
 		base.OnSpawn();
 		Canvas.ForceUpdateCanvases();
 		ShowLanguageConfirmation();
+		SubscribeToModManager(true);
 		string savePrefix = SaveLoader.GetSavePrefix();
 		try
 		{
@@ -139,11 +141,36 @@ public class MainMenu : KMonoBehaviour
 			ConfirmDialogScreen confirmDialogScreen = Util.KInstantiateUI<ConfirmDialogScreen>(ScreenPrefabs.Instance.ConfirmDialogScreen.gameObject, base.gameObject, true);
 			confirmDialogScreen.PopupConfirmDialog(text, null, null, null, null, null, null, null, null);
 		}
+		Global.Instance.modManager.Report(base.gameObject);
 		if ((GenericGameSettings.instance.autoResumeGame && !HasAutoresumedOnce) || !string.IsNullOrEmpty(GenericGameSettings.instance.performanceCapture.saveGame))
 		{
 			HasAutoresumedOnce = true;
 			ResumeGame();
 		}
+	}
+
+	private void SubscribeToModManager(bool subscribe)
+	{
+		if (subscribe != subscribed_to_mod_manager)
+		{
+			if (subscribe)
+			{
+				Manager modManager = Global.Instance.modManager;
+				modManager.on_update = (Manager.OnUpdate)Delegate.Combine(modManager.on_update, new Manager.OnUpdate(OnModManagerUpdate));
+			}
+			else
+			{
+				Manager modManager2 = Global.Instance.modManager;
+				modManager2.on_update = (Manager.OnUpdate)Delegate.Remove(modManager2.on_update, new Manager.OnUpdate(OnModManagerUpdate));
+			}
+			subscribed_to_mod_manager = subscribe;
+		}
+	}
+
+	protected override void OnLoadLevel()
+	{
+		SubscribeToModManager(false);
+		base.OnLoadLevel();
 	}
 
 	private void ShowLanguageConfirmation()
@@ -231,7 +258,7 @@ public class MainMenu : KMonoBehaviour
 					header = value.header;
 					gameInfo = value.headerData;
 				}
-				if (header.buildVersion > 312713 || gameInfo.saveMajorVersion < 7)
+				if (header.buildVersion > 326399 || gameInfo.saveMajorVersion < 7)
 				{
 					flag = false;
 				}
@@ -247,7 +274,7 @@ public class MainMenu : KMonoBehaviour
 			}
 			catch (Exception obj)
 			{
-				Debug.LogWarning(obj, null);
+				Debug.LogWarning(obj);
 				flag = false;
 			}
 		}
@@ -257,7 +284,7 @@ public class MainMenu : KMonoBehaviour
 		}
 		else
 		{
-			Debug.LogWarning("Why is the resume game button null?", null);
+			Debug.LogWarning("Why is the resume game button null?");
 		}
 	}
 
@@ -265,6 +292,16 @@ public class MainMenu : KMonoBehaviour
 	{
 		LanguageOptionsScreen languageOptionsScreen = Util.KInstantiateUI<LanguageOptionsScreen>(ScreenPrefabs.Instance.languageOptionsScreen.gameObject, base.transform.parent.gameObject, false);
 		languageOptionsScreen.SetBackgroundActive(true);
+	}
+
+	private void Mods()
+	{
+		ModsScreen modsScreen = Util.KInstantiateUI<ModsScreen>(ScreenPrefabs.Instance.modsMenu.gameObject, base.transform.parent.gameObject, false);
+		modsScreen.SetBackgroundActive(true);
+	}
+
+	private void OnModManagerUpdate(object change_source)
+	{
 	}
 
 	private void Options()
@@ -275,10 +312,7 @@ public class MainMenu : KMonoBehaviour
 
 	private void QuitGame()
 	{
-		if (!Application.isEditor)
-		{
-			Application.Quit();
-		}
+		App.Quit();
 	}
 
 	public void StartFEAudio()

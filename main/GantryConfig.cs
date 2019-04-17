@@ -8,7 +8,7 @@ public class GantryConfig : IBuildingConfig
 
 	private static readonly LogicPorts.Port[] INPUT_PORTS = new LogicPorts.Port[1]
 	{
-		LogicPorts.Port.InputPort(Gantry.PORT_ID, new CellOffset(-1, 1), UI.LOGIC_PORTS.CONTROL_OPERATIONAL, false)
+		LogicPorts.Port.InputPort(Gantry.PORT_ID, new CellOffset(-1, 1), STRINGS.BUILDINGS.PREFABS.GANTRY.LOGIC_PORT, STRINGS.BUILDINGS.PREFABS.GANTRY.LOGIC_PORT_ACTIVE, STRINGS.BUILDINGS.PREFABS.GANTRY.LOGIC_PORT_INACTIVE, false)
 	};
 
 	public override BuildingDef CreateBuildingDef()

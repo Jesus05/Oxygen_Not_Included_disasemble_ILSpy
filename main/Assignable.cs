@@ -25,11 +25,9 @@ public abstract class Assignable : KMonoBehaviour, ISaveLoadable
 	[Serialize]
 	private bool canBeAssigned = true;
 
-	private List<Func<MinionIdentity, bool>> autoassignmentPreconditions = new List<Func<MinionIdentity, bool>>();
+	private List<Func<MinionAssignablesProxy, bool>> autoassignmentPreconditions = new List<Func<MinionAssignablesProxy, bool>>();
 
-	private List<Func<MinionIdentity, bool>> assignmentPreconditions = new List<Func<MinionIdentity, bool>>();
-
-	public Func<MinionAssignablesProxy, bool> eligibleFilter;
+	private List<Func<MinionAssignablesProxy, bool>> assignmentPreconditions = new List<Func<MinionAssignablesProxy, bool>>();
 
 	public AssignableSlot slot
 	{
@@ -94,18 +92,18 @@ public abstract class Assignable : KMonoBehaviour, ISaveLoadable
 
 	public bool CanAutoAssignTo(IAssignableIdentity identity)
 	{
-		MinionIdentity minionIdentity = identity as MinionIdentity;
-		if ((UnityEngine.Object)minionIdentity == (UnityEngine.Object)null)
+		MinionAssignablesProxy minionAssignablesProxy = identity as MinionAssignablesProxy;
+		if ((UnityEngine.Object)minionAssignablesProxy == (UnityEngine.Object)null)
 		{
 			return true;
 		}
-		if (!CanAssignTo(minionIdentity))
+		if (!CanAssignTo(minionAssignablesProxy))
 		{
 			return false;
 		}
-		foreach (Func<MinionIdentity, bool> autoassignmentPrecondition in autoassignmentPreconditions)
+		foreach (Func<MinionAssignablesProxy, bool> autoassignmentPrecondition in autoassignmentPreconditions)
 		{
-			if (!autoassignmentPrecondition(minionIdentity))
+			if (!autoassignmentPrecondition(minionAssignablesProxy))
 			{
 				return false;
 			}
@@ -115,14 +113,14 @@ public abstract class Assignable : KMonoBehaviour, ISaveLoadable
 
 	public bool CanAssignTo(IAssignableIdentity identity)
 	{
-		MinionIdentity minionIdentity = identity as MinionIdentity;
-		if ((UnityEngine.Object)minionIdentity == (UnityEngine.Object)null)
+		MinionAssignablesProxy minionAssignablesProxy = identity as MinionAssignablesProxy;
+		if ((UnityEngine.Object)minionAssignablesProxy == (UnityEngine.Object)null)
 		{
 			return true;
 		}
-		foreach (Func<MinionIdentity, bool> assignmentPrecondition in assignmentPreconditions)
+		foreach (Func<MinionAssignablesProxy, bool> assignmentPrecondition in assignmentPreconditions)
 		{
-			if (!assignmentPrecondition(minionIdentity))
+			if (!assignmentPrecondition(minionAssignablesProxy))
 			{
 				return false;
 			}
@@ -137,11 +135,14 @@ public abstract class Assignable : KMonoBehaviour, ISaveLoadable
 
 	public bool IsAssignedTo(IAssignableIdentity identity)
 	{
+		Debug.Assert(identity != null, "IsAssignedTo identity is null");
 		Ownables soleOwner = identity.GetSoleOwner();
+		Debug.Assert((UnityEngine.Object)soleOwner != (UnityEngine.Object)null, "IsAssignedTo identity sole owner is null");
 		if (assignee != null)
 		{
 			foreach (Ownables owner in assignee.GetOwners())
 			{
+				Debug.Assert(owner, "Assignable owners list contained null");
 				if ((UnityEngine.Object)owner.gameObject == (UnityEngine.Object)soleOwner.gameObject)
 				{
 					return true;
@@ -230,12 +231,12 @@ public abstract class Assignable : KMonoBehaviour, ISaveLoadable
 		canBeAssigned = state;
 	}
 
-	public void AddAssignPrecondition(Func<MinionIdentity, bool> precondition)
+	public void AddAssignPrecondition(Func<MinionAssignablesProxy, bool> precondition)
 	{
 		assignmentPreconditions.Add(precondition);
 	}
 
-	public void AddAutoassignPrecondition(Func<MinionIdentity, bool> precondition)
+	public void AddAutoassignPrecondition(Func<MinionAssignablesProxy, bool> precondition)
 	{
 		autoassignmentPreconditions.Add(precondition);
 	}

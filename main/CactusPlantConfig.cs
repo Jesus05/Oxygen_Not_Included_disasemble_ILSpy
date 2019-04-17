@@ -43,7 +43,7 @@ public class CactusPlantConfig : IEntityConfig
 		List<Tag> list = new List<Tag>();
 		list.Add(GameTags.DecorSeed);
 		list = list;
-		GameObject seed = EntityTemplates.CreateAndRegisterSeedForPlant(template, productionType, initialAnim, desc, name, anim, "object", 1, list, SingleEntityReceptacle.ReceptacleDirection.Top, default(Tag), 5, CREATURES.SPECIES.CACTUSPLANT.DOMESTICATEDDESC, EntityTemplates.CollisionShape.CIRCLE, 0.25f, 0.25f, null, string.Empty, false);
+		GameObject seed = EntityTemplates.CreateAndRegisterSeedForPlant(template, productionType, initialAnim, desc, name, anim, "object", 1, list, SingleEntityReceptacle.ReceptacleDirection.Top, default(Tag), 8, CREATURES.SPECIES.CACTUSPLANT.DOMESTICATEDDESC, EntityTemplates.CollisionShape.CIRCLE, 0.25f, 0.25f, null, string.Empty, false);
 		EntityTemplates.CreateAndRegisterPreviewForPlant(seed, "CactusPlant_preview", Assets.GetAnim("potted_cactus_kanim"), "place", 1, 1);
 		gameObject.AddOrGet<KBatchedAnimController>().randomiseLoopedOffset = true;
 		return gameObject;

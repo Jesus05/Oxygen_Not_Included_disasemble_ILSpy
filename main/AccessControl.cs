@@ -234,7 +234,7 @@ public class AccessControl : KMonoBehaviour, ISaveLoadable
 	{
 		switch (overrideAccess)
 		{
-		case Door.ControlState.Closed:
+		case Door.ControlState.Locked:
 			return Permission.Neither;
 		case Door.ControlState.Opened:
 			return Permission.Both;

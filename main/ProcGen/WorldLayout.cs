@@ -147,6 +147,8 @@ namespace ProcGen
 
 		public Tree GenerateOverworld(bool usePD)
 		{
+			Debug.Assert(mapWidth != 0 && mapHeight != 0, "Map size has not been set");
+			Debug.Assert(worldGen.Settings.world != null, "You need to set a world");
 			Diagram.Site site = new Diagram.Site(0u, new Vector2((float)(mapWidth / 2), (float)(mapHeight / 2)), 1f);
 			topEdge = new LineSegment(new Vector2(0f, (float)(mapHeight - 5)), new Vector2((float)mapWidth, (float)(mapHeight - 5)));
 			bottomEdge = new LineSegment(new Vector2(0f, 5f), new Vector2((float)mapWidth, 5f));
@@ -595,24 +597,25 @@ namespace ProcGen
 				HashSet<SubWorld> collection = Filter(item2, dictionary3, subWorldList, dictionary, dictionary2);
 				List<SubWorld> list2 = new List<SubWorld>(collection);
 				list2.ShuffleSeeded(myRandom.RandomSource());
-				string type = "NONE";
+				string text = "NONE";
 				foreach (KeyValuePair<string, SubWorld> subWorld in worldGen.Settings.GetSubWorlds())
 				{
 					if (list2.Count > 0)
 					{
 						if (subWorld.Value == list2[0])
 						{
-							type = subWorld.Key;
+							text = subWorld.Key;
 							break;
 						}
 					}
 					else
 					{
-						Debug.LogWarning("No allowed Subworld types. Using default.", null);
-						type = "Default";
+						Debug.LogWarning("No allowed Subworld types. Using default.");
+						text = "Default";
 					}
 				}
-				node.SetType(type);
+				Debug.Assert(text != "NONE", "Cant find subworld");
+				node.SetType(text);
 				if (list2.Count > 0)
 				{
 					foreach (string tag in list2[0].tags)
@@ -638,7 +641,7 @@ namespace ProcGen
 			{
 				string message = ex.Message;
 				string stackTrace = ex.StackTrace;
-				Output.LogError("ex: " + message + " " + stackTrace);
+				Debug.LogError("ex: " + message + " " + stackTrace);
 			}
 		}
 
@@ -687,6 +690,7 @@ namespace ProcGen
 						Tree tree3 = child3 as Tree;
 						Node node2 = overworldGraph.FindNodeByID(tree3.site.id);
 						Cell cell2 = overworldGraph.GetCell(node2.node);
+						Debug.Assert(cell2 != null, "cell is null: " + node2.node);
 						List<KeyValuePair<VoronoiTree.Node, LineSegment>> neighborsByEdge2 = tree3.GetNeighborsByEdge();
 						for (int m = 0; m < neighborsByEdge2.Count; m++)
 						{
@@ -694,18 +698,23 @@ namespace ProcGen
 							MapGraph mapGraph3 = overworldGraph;
 							Vector2? p3 = keyValuePair2.Value.p0;
 							Corner corner = mapGraph3.GetCorner(p3.Value, false);
+							Debug.Assert(corner != null, "corner0 is null: " + keyValuePair2.Value.p0);
 							MapGraph mapGraph4 = overworldGraph;
 							Vector2? p4 = keyValuePair2.Value.p1;
 							Corner corner2 = mapGraph4.GetCorner(p4.Value, false);
+							Debug.Assert(corner2 != null, "corner1 is null: " + keyValuePair2.Value.p1);
 							Edge edge = null;
 							VoronoiTree.Node key = keyValuePair2.Key;
 							if (key != null)
 							{
 								Node node3 = overworldGraph.FindNodeByID(key.site.id);
 								Cell cell3 = overworldGraph.GetCell(node3.node);
+								Debug.Assert(cell3 != null, "otherCell is null: " + node3.node);
 								edge = overworldGraph.GetEdge(corner, corner2, cell2, cell3, true);
 								SubWorld subWorld = worldGen.Settings.GetSubWorld(node2.type);
+								Debug.Assert(subWorld != null, "SubWorld is null: " + node2.type);
 								SubWorld subWorld2 = worldGen.Settings.GetSubWorld(node3.type);
+								Debug.Assert(subWorld2 != null, "other SubWorld is null: " + node3.type);
 								if (node2.type == node3.type || subWorld.zoneType == subWorld2.zoneType || (subWorld.zoneType == SubWorld.ZoneType.Space && subWorld2.zoneType == SubWorld.ZoneType.Space) || (cell2.tags.ContainsOne(tagSet) && cell3.tags.ContainsOne(tagSet)))
 								{
 									edge.tags.Add(WorldGenTags.EdgeOpen);
@@ -730,7 +739,7 @@ namespace ProcGen
 			{
 				string message = ex.Message;
 				string stackTrace = ex.StackTrace;
-				Output.LogError("ex: " + message + " " + stackTrace);
+				Debug.LogError("ex: " + message + " " + stackTrace);
 			}
 			UpdateEdgesAroundStart();
 		}
@@ -812,7 +821,7 @@ namespace ProcGen
 								Tree tree2 = list[l].Split(splitCommand);
 								if (tree2.ChildCount() <= 1)
 								{
-									Debug.LogError("split did not work.", null);
+									Debug.LogError("split did not work.");
 								}
 								for (int m = 0; m < tree2.ChildCount(); m++)
 								{
@@ -839,7 +848,7 @@ namespace ProcGen
 					density *= 0.8f;
 					if (worldGen.isRunningDebugGen)
 					{
-						Debug.LogWarning("Recaluclating points for " + name + " iter: " + num + " density:" + density, null);
+						Debug.LogWarning("Recaluclating points for " + name + " iter: " + num + " density:" + density);
 					}
 				}
 				num++;
@@ -908,9 +917,9 @@ namespace ProcGen
 				{
 					arg = arg + node.site.poly.Vertices[l] + ", ";
 				}
-				if (!worldGen.isRunningDebugGen)
+				if (worldGen.isRunningDebugGen)
 				{
-					return;
+					Debug.Assert(points.Count >= num, "Error not enough points " + sw.name);
 				}
 				return;
 			}
@@ -986,10 +995,10 @@ namespace ProcGen
 			}
 			if (sw.features.Count <= points.Count)
 			{
-				goto IL_07ea;
+				goto IL_080d;
 			}
-			goto IL_07ea;
-			IL_07ea:
+			goto IL_080d;
+			IL_080d:
 			for (; m < points.Count; m++)
 			{
 				string text = null;
@@ -1023,7 +1032,7 @@ namespace ProcGen
 			{
 				for (int num5 = 0; num5 < tagSet2.Count; num5++)
 				{
-					Debug.Log($"Applying Moved Tag {tagSet2[num5].Name} to {node.site.id}", null);
+					Debug.Log($"Applying Moved Tag {tagSet2[num5].Name} to {node.site.id}");
 					VoronoiTree.Node child = node.GetChild(seededRandom.RandomSource().Next(node.ChildCount()));
 					child.AddTag(tagSet2[num5]);
 				}
@@ -1076,6 +1085,7 @@ namespace ProcGen
 		{
 			Node node = null;
 			node = ((!tree.tags.Contains(WorldGenTags.Overworld)) ? worldGen.WorldLayout.localGraph.FindNodeByID(tree.site.id) : worldGen.WorldLayout.overworldGraph.FindNodeByID(tree.site.id));
+			Debug.Assert(node != null, "Null terrain node WTF");
 			TagSet tagSet = new TagSet(tree.tags);
 			if (cmd.dontCopyTags != null)
 			{
@@ -1138,20 +1148,15 @@ namespace ProcGen
 			List<Vector2> points = GetPoints(tree.site.id.ToString(), tree.log, cmd.minChildCount, tree.site.poly, density, 1f, list, PointGenerator.SampleBehaviour.PoissonDisk, true, tree.myRandom, true, true);
 			if (points.Count < cmd.minChildCount)
 			{
-				if (!worldGen.isRunningDebugGen)
+				if (worldGen.isRunningDebugGen)
 				{
-					goto IL_039f;
+					Debug.Assert(points.Count >= cmd.minChildCount, "Error not enough points [" + cmd.minChildCount + "] for tree split " + tree.site.id.ToString());
 				}
-				goto IL_039f;
+				if (points.Count == 0)
+				{
+					return;
+				}
 			}
-			goto IL_03ac;
-			IL_039f:
-			if (points.Count == 0)
-			{
-				return;
-			}
-			goto IL_03ac;
-			IL_03ac:
 			for (int j = 0; j < points.Count; j++)
 			{
 				Node node4 = worldGen.WorldLayout.localGraph.AddNode((cmd.typeOverride != null) ? cmd.typeOverride(points[j]) : node.type);
@@ -1357,7 +1362,7 @@ namespace ProcGen
 				List<VoronoiTree.Node> nodes = GetStartNodes();
 				if (nodes == null || nodes.Count == 0)
 				{
-					Debug.LogWarning("Couldnt find start node", null);
+					Debug.LogWarning("Couldnt find start node");
 					return new Vector2I(mapWidth / 2, mapHeight / 2);
 				}
 				node2 = localGraph.FindNode((Node node) => (uint)node.node.Id == nodes[0].site.id);
@@ -1365,7 +1370,7 @@ namespace ProcGen
 			}
 			if (node2 == null)
 			{
-				Debug.LogWarning("Couldnt find start node", null);
+				Debug.LogWarning("Couldnt find start node");
 				return new Vector2I(mapWidth / 2, mapHeight / 2);
 			}
 			Vector2 position = node2.position;
@@ -1512,7 +1517,7 @@ namespace ProcGen
 				string message = ex.Message;
 				string stackTrace = ex.StackTrace;
 				WorldGenLogger.LogException(message, stackTrace);
-				Debug.Log("Error deserialising " + ex.Message, null);
+				Debug.Log("Error deserialising " + ex.Message);
 			}
 		}
 
@@ -1554,7 +1559,7 @@ namespace ProcGen
 				string message = ex.Message;
 				string stackTrace = ex.StackTrace;
 				WorldGenLogger.LogException(message, stackTrace);
-				Debug.Log("Error deserialising " + ex.Message, null);
+				Debug.Log("Error deserialising " + ex.Message);
 			}
 			extra = null;
 		}

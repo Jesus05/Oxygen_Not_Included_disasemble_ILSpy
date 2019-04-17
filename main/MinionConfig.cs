@@ -56,6 +56,7 @@ public class MinionConfig : IEntityConfig
 		trait.Add(new AttributeModifier(Db.Get().Attributes.RoomTemperaturePreference.Id, 0f, text, false, false, true));
 		trait.Add(new AttributeModifier(Db.Get().Attributes.CarryAmount.Id, 200f, text, false, false, true));
 		trait.Add(new AttributeModifier(Db.Get().Attributes.QualityOfLife.Id, 1f, text, false, false, true));
+		trait.Add(new AttributeModifier(Db.Get().Attributes.SpaceNavigation.Id, 1f, text, false, false, true));
 		trait.Add(new AttributeModifier(Db.Get().Attributes.Sneezyness.Id, 0f, text, false, false, true));
 		trait.Add(new AttributeModifier(Db.Get().Amounts.ImmuneLevel.deltaAttribute.Id, 0.025f, text, false, false, true));
 		gameObject.AddOrGet<MinionBrain>();
@@ -292,7 +293,7 @@ public class MinionConfig : IEntityConfig
 		CreatureSimTemperatureTransfer creatureSimTemperatureTransfer = gameObject.AddOrGet<CreatureSimTemperatureTransfer>();
 		creatureSimTemperatureTransfer.SurfaceArea = 10f;
 		creatureSimTemperatureTransfer.Thickness = 0.01f;
-		gameObject.AddOrGet<DiseaseTrigger>();
+		gameObject.AddOrGet<SicknessTrigger>();
 		gameObject.AddOrGet<ClothingWearer>();
 		gameObject.AddOrGet<SuitEquipper>();
 		DecorProvider decorProvider = gameObject.AddOrGet<DecorProvider>();

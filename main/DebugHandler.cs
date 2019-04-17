@@ -159,6 +159,10 @@ public class DebugHandler : IInputHandler
 		else if (e.TryConsume(Action.DebugInstantBuildMode))
 		{
 			InstantBuildMode = !InstantBuildMode;
+			if ((UnityEngine.Object)Game.Instance == (UnityEngine.Object)null)
+			{
+				return;
+			}
 			if ((UnityEngine.Object)PlanScreen.Instance != (UnityEngine.Object)null)
 			{
 				PlanScreen.Instance.Refresh();
@@ -171,11 +175,14 @@ public class DebugHandler : IInputHandler
 			{
 				OverlayMenu.Instance.Refresh();
 			}
-			ConsumerManager.instance.RefreshDiscovered(null);
+			if ((UnityEngine.Object)ConsumerManager.instance != (UnityEngine.Object)null)
+			{
+				ConsumerManager.instance.RefreshDiscovered(null);
+			}
 			if ((UnityEngine.Object)ManagementMenu.Instance != (UnityEngine.Object)null)
 			{
 				ManagementMenu.Instance.CheckResearch(null);
-				ManagementMenu.Instance.CheckRoles(null);
+				ManagementMenu.Instance.CheckSkills(null);
 				ManagementMenu.Instance.CheckStarmap(null);
 			}
 			Game.Instance.Trigger(1594320620, "all_the_things");
@@ -291,7 +298,7 @@ public class DebugHandler : IInputHandler
 		}
 		else if (e.TryConsume(Action.DebugGotoTarget))
 		{
-			Debug.Log("Debug GoTo", null);
+			Debug.Log("Debug GoTo");
 			Game.Instance.Trigger(775300118, null);
 			foreach (Brain item in Components.Brains.Items)
 			{
@@ -370,7 +377,7 @@ public class DebugHandler : IInputHandler
 			else if (e.TryConsume(Action.DebugPathFinding))
 			{
 				DebugPathFinding = !DebugPathFinding;
-				Debug.Log("DebugPathFinding=" + DebugPathFinding, null);
+				Debug.Log("DebugPathFinding=" + DebugPathFinding);
 			}
 			else if (!e.TryConsume(Action.DebugFocus))
 			{
@@ -398,7 +405,7 @@ public class DebugHandler : IInputHandler
 					}
 					else
 					{
-						Debug.Log("Debug crash keys are not enabled.", null);
+						Debug.Log("Debug crash keys are not enabled.");
 					}
 				}
 				else if (e.TryConsume(Action.DebugTriggerException))
@@ -415,7 +422,7 @@ public class DebugHandler : IInputHandler
 				{
 					if (GenericGameSettings.instance.developerDebugEnable)
 					{
-						Debug.LogError("Oooops! Testing error!", null);
+						Debug.LogError("Oooops! Testing error!");
 					}
 				}
 				else if (e.TryConsume(Action.DebugDumpGCRoots))
@@ -437,7 +444,7 @@ public class DebugHandler : IInputHandler
 				{
 					if (!GenericGameSettings.instance.developerDebugEnable)
 					{
-						goto IL_0b45;
+						goto IL_0b62;
 					}
 				}
 				else if (e.TryConsume(Action.DebugCrashSim))
@@ -457,8 +464,8 @@ public class DebugHandler : IInputHandler
 				}
 			}
 		}
-		goto IL_0b45;
-		IL_0b45:
+		goto IL_0b62;
+		IL_0b62:
 		if (e.Consumed && (UnityEngine.Object)Game.Instance != (UnityEngine.Object)null)
 		{
 			Game.Instance.debugWasUsed = true;

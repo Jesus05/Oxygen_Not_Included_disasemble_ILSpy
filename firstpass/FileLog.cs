@@ -10,6 +10,7 @@ public class FileLog
 	private FileLog(string filename)
 	{
 		writer = new StreamWriter(filename);
+		writer.AutoFlush = true;
 	}
 
 	[Conditional("ENABLE_LOG")]

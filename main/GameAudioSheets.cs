@@ -111,7 +111,7 @@ public class GameAudioSheets : AudioSheets
 				}
 				else
 				{
-					Debug.LogWarning(sound_name + " has unknown parameter " + array[i], null);
+					Debug.LogWarning(sound_name + " has unknown parameter " + array[i]);
 				}
 			}
 		}

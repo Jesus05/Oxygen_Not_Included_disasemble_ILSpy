@@ -26,6 +26,7 @@ public class LiquidCooledFanConfig : IBuildingConfig
 		buildingDef.AudioCategory = "Metal";
 		buildingDef.UtilityInputOffset = new CellOffset(0, 0);
 		buildingDef.UtilityOutputOffset = new CellOffset(0, 0);
+		buildingDef.Deprecated = true;
 		return buildingDef;
 	}
 

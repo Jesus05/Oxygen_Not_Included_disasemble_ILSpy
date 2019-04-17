@@ -204,6 +204,10 @@ public class SimpleInfoScreen : TargetScreen
 
 	public GameObject TextContainerPrefab;
 
+	private GameObject stressPanel;
+
+	private DetailsPanelDrawer stressDrawer;
+
 	private Dictionary<string, GameObject> storageLabels = new Dictionary<string, GameObject>();
 
 	public TextStyleSetting ToolTipStyle_Property;
@@ -263,6 +267,8 @@ public class SimpleInfoScreen : TargetScreen
 		GameObject gameObject = infoPanel.GetComponent<CollapsibleDetailContentPanel>().Content.gameObject;
 		descriptionContainer = Util.KInstantiateUI<DescriptionContainer>(DescriptionContainerTemplate, gameObject, false);
 		storagePanel = Util.KInstantiateUI(ScreenPrefabs.Instance.CollapsableContentPanel, base.gameObject, false);
+		stressPanel = Util.KInstantiateUI(ScreenPrefabs.Instance.CollapsableContentPanel, base.gameObject, false);
+		stressDrawer = new DetailsPanelDrawer(attributesLabelTemplate, stressPanel.GetComponent<CollapsibleDetailContentPanel>().Content.gameObject);
 		stampContainer = Util.KInstantiateUI(StampContainerTemplate, gameObject, false);
 		Subscribe(-1514841199, OnRefreshDataDelegate);
 	}
@@ -449,6 +455,7 @@ public class SimpleInfoScreen : TargetScreen
 		{
 			vitalsContainer.Refresh();
 		}
+		RefreshStress();
 		RefreshStorage();
 	}
 
@@ -627,7 +634,7 @@ public class SimpleInfoScreen : TargetScreen
 										selected_storage = storage;
 										component.onClick += delegate
 										{
-											selected_storage.Remove(select_item);
+											selected_storage.Remove(select_item, true);
 										};
 									}
 								}
@@ -697,6 +704,56 @@ public class SimpleInfoScreen : TargetScreen
 		}
 		gameObject.SetActive(true);
 		return gameObject;
+	}
+
+	private void RefreshStress()
+	{
+		MinionIdentity identity = (!((UnityEngine.Object)selectedTarget != (UnityEngine.Object)null)) ? null : selectedTarget.GetComponent<MinionIdentity>();
+		if ((UnityEngine.Object)identity == (UnityEngine.Object)null)
+		{
+			stressPanel.SetActive(false);
+		}
+		else
+		{
+			List<ReportManager.ReportEntry.Note> stressNotes = new List<ReportManager.ReportEntry.Note>();
+			stressPanel.SetActive(true);
+			stressPanel.GetComponent<CollapsibleDetailContentPanel>().HeaderLabel.text = UI.DETAILTABS.STATS.GROUPNAME_STRESS;
+			ReportManager.ReportEntry reportEntry = ReportManager.Instance.TodaysReport.reportEntries.Find((ReportManager.ReportEntry entry) => entry.reportType == ReportManager.ReportType.StressDelta);
+			stressDrawer.BeginDrawing();
+			float num = 0f;
+			stressNotes.Clear();
+			int num2 = reportEntry.contextEntries.FindIndex((ReportManager.ReportEntry entry) => entry.context == identity.GetProperName());
+			ReportManager.ReportEntry reportEntry2 = (num2 == -1) ? null : reportEntry.contextEntries[num2];
+			if (reportEntry2 != null)
+			{
+				reportEntry2.IterateNotes(delegate(ReportManager.ReportEntry.Note note)
+				{
+					stressNotes.Add(note);
+				});
+				stressNotes.Sort((ReportManager.ReportEntry.Note a, ReportManager.ReportEntry.Note b) => a.value.CompareTo(b.value));
+				for (int i = 0; i < stressNotes.Count; i++)
+				{
+					DetailsPanelDrawer detailsPanelDrawer = stressDrawer;
+					string[] obj = new string[6];
+					ReportManager.ReportEntry.Note note2 = stressNotes[i];
+					obj[0] = ((!(note2.value > 0f)) ? string.Empty : UIConstants.ColorPrefixRed);
+					ReportManager.ReportEntry.Note note3 = stressNotes[i];
+					obj[1] = note3.note;
+					obj[2] = ": ";
+					ReportManager.ReportEntry.Note note4 = stressNotes[i];
+					obj[3] = Util.FormatTwoDecimalPlace(note4.value);
+					obj[4] = "%";
+					ReportManager.ReportEntry.Note note5 = stressNotes[i];
+					obj[5] = ((!(note5.value > 0f)) ? string.Empty : UIConstants.ColorSuffix);
+					detailsPanelDrawer.NewLabel(string.Concat(obj));
+					float num3 = num;
+					ReportManager.ReportEntry.Note note6 = stressNotes[i];
+					num = num3 + note6.value;
+				}
+			}
+			stressDrawer.NewLabel(((!(num > 0f)) ? string.Empty : UIConstants.ColorPrefixRed) + string.Format(UI.DETAILTABS.DETAILS.NET_STRESS, Util.FormatTwoDecimalPlace(num)) + ((!(num > 0f)) ? string.Empty : UIConstants.ColorSuffix));
+			stressDrawer.EndDrawing();
+		}
 	}
 
 	private void ShowAttributes(GameObject target)

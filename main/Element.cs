@@ -1,6 +1,4 @@
 using Klei.AI;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 using STRINGS;
 using System;
 using System.Collections.Generic;
@@ -22,7 +20,6 @@ public class Element : IComparable<Element>
 		TemperatureInsulated = 0x10
 	}
 
-	[JsonConverter(typeof(StringEnumConverter))]
 	public SimHashes id;
 
 	public Tag tag;
@@ -55,42 +52,34 @@ public class Element : IComparable<Element>
 
 	public float gasSurfaceAreaMultiplier;
 
-	[JsonConverter(typeof(StringEnumConverter))]
 	public State state;
 
 	public byte hardness;
 
 	public float lowTemp;
 
-	[JsonConverter(typeof(StringEnumConverter))]
 	public SimHashes lowTempTransitionTarget;
 
 	public Element lowTempTransition;
 
 	public float highTemp;
 
-	[JsonConverter(typeof(StringEnumConverter))]
 	public SimHashes highTempTransitionTarget;
 
 	public Element highTempTransition;
 
-	[JsonConverter(typeof(StringEnumConverter))]
 	public SimHashes highTempTransitionOreID = SimHashes.Vacuum;
 
 	public float highTempTransitionOreMassConversion;
 
-	[JsonConverter(typeof(StringEnumConverter))]
 	public SimHashes lowTempTransitionOreID = SimHashes.Vacuum;
 
 	public float lowTempTransitionOreMassConversion;
 
-	[JsonConverter(typeof(StringEnumConverter))]
 	public SimHashes sublimateId;
 
-	[JsonConverter(typeof(StringEnumConverter))]
 	public SimHashes convertId;
 
-	[JsonConverter(typeof(StringEnumConverter))]
 	public SpawnFXHashes sublimateFX;
 
 	public float lightAbsorptionFactor;

@@ -2,11 +2,9 @@ public interface IPersonalPriorityManager
 {
 	int GetAssociatedSkillLevel(ChoreGroup group);
 
-	int GetPersonalPriority(ChoreGroup group, out bool auto_assigned);
+	int GetPersonalPriority(ChoreGroup group);
 
-	void SetPersonalPriority(ChoreGroup group, int value, bool auto_assigned);
-
-	bool CanRoleManageChoreGroup(ChoreGroup group);
+	void SetPersonalPriority(ChoreGroup group, int value);
 
 	bool IsChoreGroupDisabled(ChoreGroup group);
 

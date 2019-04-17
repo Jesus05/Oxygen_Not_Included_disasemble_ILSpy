@@ -108,7 +108,7 @@ public static class Util
 		Component component = go.GetComponent(name);
 		if ((UnityEngine.Object)component == (UnityEngine.Object)null)
 		{
-			Output.LogErrorWithObj(go, $"{go.GetType().ToString()} '{go.name}' requires a component of type {name}!");
+			Debug.LogErrorFormat(go, "{0} '{1}' requires a component of type {2}!", go.GetType().ToString(), go.name, name);
 			return null;
 		}
 		InitializeComponent(component);
@@ -120,7 +120,7 @@ public static class Util
 		T component = cmp.gameObject.GetComponent<T>();
 		if ((UnityEngine.Object)component == (UnityEngine.Object)null)
 		{
-			Output.LogErrorWithObj(cmp.gameObject, $"{cmp.gameObject.GetType().ToString()} '{cmp.gameObject.name}' requires a component of type {typeof(T).ToString()} as requested by {cmp.GetType().ToString()}!");
+			Debug.LogErrorFormat(cmp.gameObject, "{0} '{1}' requires a component of type {2} as requested by {3}!", cmp.gameObject.GetType().ToString(), cmp.gameObject.name, typeof(T).ToString(), cmp.GetType().ToString());
 			return (T)null;
 		}
 		InitializeComponent(component);
@@ -132,7 +132,7 @@ public static class Util
 		T component = gameObject.GetComponent<T>();
 		if ((UnityEngine.Object)component == (UnityEngine.Object)null)
 		{
-			Output.LogErrorWithObj(gameObject, $"{gameObject.GetType().ToString()} '{gameObject.name}' requires a component of type {typeof(T).ToString()}!");
+			Debug.LogErrorFormat(gameObject, "{0} '{1}' requires a component of type {2}!", gameObject.GetType().ToString(), gameObject.name, typeof(T).ToString());
 			return (T)null;
 		}
 		InitializeComponent(component);
@@ -222,7 +222,7 @@ public static class Util
 		GameObject gameObject = null;
 		if ((UnityEngine.Object)original == (UnityEngine.Object)null)
 		{
-			Output.LogWarning("Missing prefab");
+			DebugUtil.LogWarningArgs("Missing prefab");
 		}
 		if ((UnityEngine.Object)gameObject == (UnityEngine.Object)null)
 		{
@@ -284,7 +284,7 @@ public static class Util
 		GameObject gameObject = null;
 		if ((UnityEngine.Object)original == (UnityEngine.Object)null)
 		{
-			Output.LogWarning("Missing prefab");
+			DebugUtil.LogWarningArgs("Missing prefab");
 		}
 		if ((UnityEngine.Object)gameObject == (UnityEngine.Object)null)
 		{

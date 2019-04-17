@@ -85,33 +85,31 @@ public class GlobalChoreProvider : ChoreProvider, ISim200ms
 		clearableManager = new ClearableManager();
 	}
 
-	public override Chore AddChore(Chore chore)
+	public override void AddChore(Chore chore)
 	{
-		chore = base.AddChore(chore);
+		base.AddChore(chore);
 		FetchChore fetchChore = chore as FetchChore;
 		if (fetchChore != null)
 		{
 			fetchChores.Add(fetchChore);
 		}
-		RefreshEmergencyChoreStatus();
-		return chore;
+		RefreshTopPriorityChoreStatus();
 	}
 
-	public override Chore RemoveChore(Chore chore)
+	public override void RemoveChore(Chore chore)
 	{
-		chore = base.RemoveChore(chore);
+		base.RemoveChore(chore);
 		FetchChore fetchChore = chore as FetchChore;
 		if (fetchChore != null)
 		{
 			fetchChores.Remove(fetchChore);
 		}
-		RefreshEmergencyChoreStatus();
-		return chore;
+		RefreshTopPriorityChoreStatus();
 	}
 
 	public void Sim200ms(float dt)
 	{
-		RefreshEmergencyChoreStatus();
+		RefreshTopPriorityChoreStatus();
 	}
 
 	public void UpdateFetches(PathProber path_prober)
@@ -185,7 +183,7 @@ public class GlobalChoreProvider : ChoreProvider, ISim200ms
 		Instance = null;
 	}
 
-	public void RefreshEmergencyChoreStatus()
+	public void RefreshTopPriorityChoreStatus()
 	{
 		bool on = false;
 		IEnumerator enumerator = Components.Prioritizables.GetEnumerator();
@@ -194,7 +192,7 @@ public class GlobalChoreProvider : ChoreProvider, ISim200ms
 			while (enumerator.MoveNext())
 			{
 				Prioritizable prioritizable = (Prioritizable)enumerator.Current;
-				if (prioritizable.IsEmergency())
+				if (prioritizable.IsTopPriority())
 				{
 					on = true;
 					break;
@@ -209,6 +207,6 @@ public class GlobalChoreProvider : ChoreProvider, ISim200ms
 				disposable.Dispose();
 			}
 		}
-		RedAlertManager.Instance.Get().HasEmergencyChore(on);
+		VignetteManager.Instance.Get().HasTopPriorityChore(on);
 	}
 }

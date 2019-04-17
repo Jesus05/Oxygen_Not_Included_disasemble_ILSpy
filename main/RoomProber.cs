@@ -52,7 +52,7 @@ public class RoomProber : ISim1000ms
 
 		private static bool IsWall(int cell)
 		{
-			return (Grid.BuildMasks[cell] & (Grid.BuildFlags.Foundation | Grid.BuildFlags.Solid)) != 0 || Grid.HasDoor[cell];
+			return (Grid.BuildMasks[cell] & (Grid.BuildFlags.Solid | Grid.BuildFlags.Foundation)) != 0 || Grid.HasDoor[cell];
 		}
 
 		public bool ShouldContinue(int flood_cell)
@@ -257,6 +257,7 @@ public class RoomProber : ISim1000ms
 
 	private void CreateRoom(CavityInfo cavity)
 	{
+		Debug.Assert(cavity.room == null);
 		Room room = new Room();
 		room.cavity = cavity;
 		cavity.room = room;
@@ -279,6 +280,7 @@ public class RoomProber : ISim1000ms
 		{
 			if (data.dirty)
 			{
+				Debug.Assert(data.room == null, "I expected info.room to always be null by this point");
 				if (data.numCells > 0)
 				{
 					if (data.numCells <= maxRoomSize)
@@ -298,6 +300,7 @@ public class RoomProber : ISim1000ms
 
 	private void AssignBuildingsToRoom(Room room)
 	{
+		Debug.Assert(room != null);
 		RoomType roomType = room.roomType;
 		if (roomType != Db.Get().RoomTypes.Neutral)
 		{
@@ -317,6 +320,7 @@ public class RoomProber : ISim1000ms
 
 	private void UnassignBuildingsToRoom(Room room)
 	{
+		Debug.Assert(room != null);
 		foreach (KPrefabID building in room.buildings)
 		{
 			if (!((UnityEngine.Object)building == (UnityEngine.Object)null))

@@ -1,3 +1,4 @@
+using Database;
 using Klei.AI;
 using STRINGS;
 using System.Collections.Generic;
@@ -165,67 +166,33 @@ public class ChorePreconditions
 		}
 	};
 
-	public Chore.Precondition HasRolePerk = new Chore.Precondition
+	public Chore.Precondition HasSkillPerk = new Chore.Precondition
 	{
-		id = "HasRolePerk",
-		description = (string)DUPLICANTS.CHORES.PRECONDITIONS.HAS_ROLE_PERK,
-		fn = (Chore.PreconditionFn)delegate(ref Chore.Precondition.Context context, object data)
-		{
-			MinionResume resume3 = context.consumerState.resume;
-			if (!(bool)resume3)
-			{
-				return false;
-			}
-			if (data is RolePerk)
-			{
-				RolePerk perk = data as RolePerk;
-				return resume3.HasPerk(perk);
-			}
-			if (data is HashedString)
-			{
-				HashedString perk2 = (HashedString)data;
-				return resume3.HasPerk(perk2);
-			}
-			return false;
-		}
-	};
-
-	public Chore.Precondition IsRole = new Chore.Precondition
-	{
-		id = "IsRole",
-		description = (string)DUPLICANTS.CHORES.PRECONDITIONS.IS_ROLE,
-		fn = (Chore.PreconditionFn)delegate(ref Chore.Precondition.Context context, object data)
-		{
-			MinionResume resume2 = context.consumerState.resume;
-			if (!(bool)resume2)
-			{
-				return false;
-			}
-			if (data is string)
-			{
-				string a = (string)data;
-				return !string.IsNullOrEmpty(resume2.CurrentRole) && a == resume2.CurrentRole;
-			}
-			for (int i = 0; i < (data as string[]).Length; i++)
-			{
-				if ((data as string[])[i] == resume2.CurrentRole)
-				{
-					return true;
-				}
-			}
-			return false;
-		}
-	};
-
-	public Chore.Precondition HasNotMasteredRole = new Chore.Precondition
-	{
-		id = "HasNotMastered",
-		description = (string)DUPLICANTS.CHORES.PRECONDITIONS.HAS_NOT_MASTERED,
+		id = "HasSkillPerk",
+		description = (string)DUPLICANTS.CHORES.PRECONDITIONS.HAS_SKILL_PERK,
 		fn = (Chore.PreconditionFn)delegate(ref Chore.Precondition.Context context, object data)
 		{
 			MinionResume resume = context.consumerState.resume;
-			string roleId = (string)data;
-			return !resume.HasMasteredRole(roleId);
+			if (!(bool)resume)
+			{
+				return false;
+			}
+			if (data is SkillPerk)
+			{
+				SkillPerk perk = data as SkillPerk;
+				return resume.HasPerk(perk);
+			}
+			if (data is HashedString)
+			{
+				HashedString perkId = (HashedString)data;
+				return resume.HasPerk(perkId);
+			}
+			if (data is string)
+			{
+				HashedString perkId2 = (string)data;
+				return resume.HasPerk(perkId2);
+			}
+			return false;
 		}
 	};
 
@@ -330,11 +297,11 @@ public class ChorePreconditions
 		description = (string)DUPLICANTS.CHORES.PRECONDITIONS.IS_NOT_RED_ALERT,
 		fn = (Chore.PreconditionFn)delegate(ref Chore.Precondition.Context context, object data)
 		{
-			if (context.chore.masterPriority.priority_class == PriorityScreen.PriorityClass.emergency)
+			if (context.chore.masterPriority.priority_class == PriorityScreen.PriorityClass.topPriority)
 			{
 				return true;
 			}
-			return !RedAlertManager.Instance.Get().IsOn();
+			return !VignetteManager.Instance.Get().IsRedAlert();
 		}
 	};
 
@@ -344,7 +311,7 @@ public class ChorePreconditions
 		description = (string)DUPLICANTS.CHORES.PRECONDITIONS.IS_SCHEDULED_TIME,
 		fn = (Chore.PreconditionFn)delegate(ref Chore.Precondition.Context context, object data)
 		{
-			if (RedAlertManager.Instance.Get().IsOn())
+			if (VignetteManager.Instance.Get().IsRedAlert())
 			{
 				return true;
 			}

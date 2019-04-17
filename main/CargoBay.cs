@@ -59,7 +59,7 @@ public class CargoBay : KMonoBehaviour
 		string text = UI.USERMENUACTIONS.EMPTYSTORAGE.NAME;
 		System.Action on_click = delegate
 		{
-			storage.DropAll(false);
+			storage.DropAll(false, false, default(Vector3), true);
 		};
 		string tooltipText = UI.USERMENUACTIONS.EMPTYSTORAGE.TOOLTIP;
 		KIconButtonMenu.ButtonInfo button = new KIconButtonMenu.ButtonInfo(iconName, text, on_click, Action.NumActions, null, null, null, tooltipText, true);

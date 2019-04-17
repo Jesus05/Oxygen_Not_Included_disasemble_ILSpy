@@ -15,6 +15,8 @@ public class OxygenBreather : KMonoBehaviour, ISim200ms
 		bool ConsumeGas(OxygenBreather oxygen_breather, float amount);
 
 		bool ShouldEmitCO2();
+
+		bool ShouldStoreCO2();
 	}
 
 	public float O2toCO2conversion = 0.5f;
@@ -131,19 +133,37 @@ public class OxygenBreather : KMonoBehaviour, ISim200ms
 		{
 			float num = airConsumptionRate.GetTotalValue() * dt;
 			bool flag = gasProvider.ConsumeGas(this, num);
-			if (flag && gasProvider.ShouldEmitCO2())
+			if (flag)
 			{
-				float num2 = num * O2toCO2conversion;
-				Game.Instance.accumulators.Accumulate(co2Accumulator, num2);
-				accumulatedCO2 += num2;
-				if (accumulatedCO2 >= minCO2ToEmit)
+				if (gasProvider.ShouldEmitCO2())
 				{
-					accumulatedCO2 -= minCO2ToEmit;
-					Vector3 position = base.transform.GetPosition();
-					position.x += ((!facing.GetFacing()) ? mouthOffset.x : (0f - mouthOffset.x));
-					position.y += mouthOffset.y;
-					position.z -= 0.5f;
-					CO2Manager.instance.SpawnBreath(position, minCO2ToEmit, temperature.value);
+					float num2 = num * O2toCO2conversion;
+					Game.Instance.accumulators.Accumulate(co2Accumulator, num2);
+					accumulatedCO2 += num2;
+					if (accumulatedCO2 >= minCO2ToEmit)
+					{
+						accumulatedCO2 -= minCO2ToEmit;
+						Vector3 position = base.transform.GetPosition();
+						position.x += ((!facing.GetFacing()) ? mouthOffset.x : (0f - mouthOffset.x));
+						position.y += mouthOffset.y;
+						position.z -= 0.5f;
+						CO2Manager.instance.SpawnBreath(position, minCO2ToEmit, temperature.value);
+					}
+				}
+				else if (gasProvider.ShouldStoreCO2())
+				{
+					Equippable equippable = GetComponent<SuitEquipper>().IsWearingAirtightSuit();
+					if ((UnityEngine.Object)equippable != (UnityEngine.Object)null)
+					{
+						float num3 = num * O2toCO2conversion;
+						Game.Instance.accumulators.Accumulate(co2Accumulator, num3);
+						accumulatedCO2 += num3;
+						if (accumulatedCO2 >= minCO2ToEmit)
+						{
+							accumulatedCO2 -= minCO2ToEmit;
+							equippable.GetComponent<Storage>().AddGasChunk(SimHashes.CarbonDioxide, minCO2ToEmit, temperature.value, byte.MaxValue, 0, false, true);
+						}
+					}
 				}
 			}
 			if (flag != hasAir)

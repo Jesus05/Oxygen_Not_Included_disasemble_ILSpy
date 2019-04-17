@@ -80,6 +80,7 @@ public class LoadScreen : KModalScreen
 
 	protected override void OnPrefabInit()
 	{
+		Debug.Assert((UnityEngine.Object)Instance == (UnityEngine.Object)null);
 		Instance = this;
 		base.OnPrefabInit();
 		savenameRowPool = new UIPool<HierarchyReferences>(saveButtonPrefab);
@@ -95,7 +96,7 @@ public class LoadScreen : KModalScreen
 		{
 			closeButton.onClick += delegate
 			{
-				Show(false);
+				Deactivate();
 			};
 		}
 		if ((UnityEngine.Object)loadButton != (UnityEngine.Object)null)
@@ -159,7 +160,7 @@ public class LoadScreen : KModalScreen
 		}
 		catch (Exception ex)
 		{
-			Debug.LogWarning("Corrupted save file: " + filename + "\n" + ex.ToString(), null);
+			Debug.LogWarning("Corrupted save file: " + filename + "\n" + ex.ToString());
 			return result;
 		}
 	}
@@ -177,7 +178,7 @@ public class LoadScreen : KModalScreen
 		}
 		catch (Exception obj)
 		{
-			Debug.LogWarning(obj, null);
+			Debug.LogWarning(obj);
 			InfoText.text = string.Format(UI.FRONTEND.LOADSCREEN.CORRUPTEDSAVE, filename);
 		}
 		return null;
@@ -318,14 +319,14 @@ public class LoadScreen : KModalScreen
 
 	private static bool IsSaveFileFromUnsupportedFutureBuild(SaveGame.Header header)
 	{
-		return header.buildVersion > 312713;
+		return header.buildVersion > 326399;
 	}
 
 	private void SetSelectedGame(string filename)
 	{
 		if (string.IsNullOrEmpty(filename) || !File.Exists(filename))
 		{
-			Debug.LogError("The filename provided is not valid.", null);
+			Debug.LogError("The filename provided is not valid.");
 			deleteButton.isInteractable = false;
 		}
 		else
@@ -354,13 +355,13 @@ public class LoadScreen : KModalScreen
 				InfoText.text = string.Empty;
 				if (IsSaveFileFromUnsupportedFutureBuild(header))
 				{
-					InfoText.text = string.Format(UI.FRONTEND.LOADSCREEN.SAVE_TOO_NEW, filename, header.buildVersion, 312713u);
+					InfoText.text = string.Format(UI.FRONTEND.LOADSCREEN.SAVE_TOO_NEW, filename, header.buildVersion, 326399u);
 					loadButton.isInteractable = false;
 					loadButton.GetComponent<ImageToggleState>().SetState(ImageToggleState.State.Disabled);
 				}
 				else if (gameInfo.saveMajorVersion < 7)
 				{
-					InfoText.text = string.Format(UI.FRONTEND.LOADSCREEN.UNSUPPORTED_SAVE_VERSION, filename, gameInfo.saveMajorVersion, gameInfo.saveMinorVersion, 7, 6);
+					InfoText.text = string.Format(UI.FRONTEND.LOADSCREEN.UNSUPPORTED_SAVE_VERSION, filename, gameInfo.saveMajorVersion, gameInfo.saveMinorVersion, 7, 8);
 					loadButton.isInteractable = false;
 					loadButton.GetComponent<ImageToggleState>().SetState(ImageToggleState.State.Disabled);
 				}
@@ -376,7 +377,7 @@ public class LoadScreen : KModalScreen
 			}
 			catch (Exception obj)
 			{
-				Debug.LogWarning(obj, null);
+				Debug.LogWarning(obj);
 				InfoText.text = string.Format(UI.FRONTEND.LOADSCREEN.CORRUPTEDSAVE, filename);
 				if (loadButton.isInteractable)
 				{
@@ -407,15 +408,15 @@ public class LoadScreen : KModalScreen
 		SaveGame.GameInfo gameInfo = SaveLoader.LoadHeader(filename, out header);
 		string arg = null;
 		string arg2 = null;
-		if (header.buildVersion > 312713)
+		if (header.buildVersion > 326399)
 		{
 			arg = header.buildVersion.ToString();
-			arg2 = 312713.ToString();
+			arg2 = 326399.ToString();
 		}
 		else if (gameInfo.saveMajorVersion < 7)
 		{
 			arg = $"v{gameInfo.saveMajorVersion}.{gameInfo.saveMinorVersion}";
-			arg2 = $"v{7}.{6}";
+			arg2 = $"v{7}.{8}";
 		}
 		if (!flag)
 		{
@@ -444,7 +445,7 @@ public class LoadScreen : KModalScreen
 	{
 		if (string.IsNullOrEmpty(selectedFileName))
 		{
-			Debug.LogError("The path provided is not valid and cannot be deleted.", null);
+			Debug.LogError("The path provided is not valid and cannot be deleted.");
 		}
 		else
 		{

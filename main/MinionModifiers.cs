@@ -112,7 +112,7 @@ public class MinionModifiers : Modifiers, ISaveLoadable
 		Storage component = GetComponent<Storage>();
 		if ((UnityEngine.Object)component != (UnityEngine.Object)null)
 		{
-			component.DropAll(false);
+			component.DropAll(false, false, default(Vector3), true);
 		}
 	}
 

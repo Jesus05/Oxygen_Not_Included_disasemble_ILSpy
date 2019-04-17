@@ -8,7 +8,7 @@ using TUNING;
 using UnityEngine;
 
 [SerializationConfig(MemberSerialization.OptIn)]
-public class SolidTransferArm : StateMachineComponent<SolidTransferArm.SMInstance>, ISim1000ms, ISim33ms, IRenderEveryTick
+public class SolidTransferArm : StateMachineComponent<SolidTransferArm.SMInstance>, ISim1000ms, IRenderEveryTick
 {
 	private enum ArmAnim
 	{
@@ -122,6 +122,8 @@ public class SolidTransferArm : StateMachineComponent<SolidTransferArm.SMInstanc
 		component.OnEndChore(data);
 	});
 
+	private int serial_no;
+
 	private static HashedString HASH_ROTATION = "rotation";
 
 	protected override void OnPrefabInit()
@@ -183,13 +185,15 @@ public class SolidTransferArm : StateMachineComponent<SolidTransferArm.SMInstanc
 		DropLeftovers();
 		component.enabled = false;
 		component.enabled = true;
+		MinionGroupProber.Get().SetValidSerialNos(this, serial_no, serial_no);
 		base.smi.StartSM();
 	}
 
 	protected override void OnCleanUp()
 	{
-		base.OnCleanUp();
 		GameScenePartitioner.Instance.Free(ref pickupablesChangedEntry);
+		MinionGroupProber.Get().ReleaseProber(this);
+		base.OnCleanUp();
 	}
 
 	public void Sim1000ms(float dt)
@@ -201,12 +205,15 @@ public class SolidTransferArm : StateMachineComponent<SolidTransferArm.SMInstanc
 			Chore.Precondition.Context out_context = default(Chore.Precondition.Context);
 			if (choreConsumer.FindNextChore(ref out_context))
 			{
-				FetchAreaChore fetchAreaChore = out_context.chore as FetchAreaChore;
-				if (fetchAreaChore != null)
+				if (out_context.chore is FetchChore)
 				{
 					choreDriver.SetChore(out_context);
 					arm_anim_ctrl.enabled = false;
 					arm_anim_ctrl.enabled = true;
+				}
+				else
+				{
+					Debug.Assert(false, "I am but a lowly transfer arm. I should only acquire FetchChores: " + out_context.chore);
 				}
 			}
 			operational.SetActive(choreDriver.HasChore(), false);
@@ -236,10 +243,7 @@ public class SolidTransferArm : StateMachineComponent<SolidTransferArm.SMInstanc
 
 	private void RefreshReachableCells()
 	{
-		foreach (int reachableCell in reachableCells)
-		{
-			MinionGroupProber.Get().ProxyProberCell(reachableCell, false);
-		}
+		ListPool<int, SolidTransferArm>.PooledList pooledList = ListPool<int, SolidTransferArm>.Allocate(reachableCells);
 		reachableCells.Clear();
 		Grid.CellToXY(Grid.PosToCell(this), out int x, out int y);
 		for (int i = y - pickupRange; i < y + pickupRange + 1; i++)
@@ -253,14 +257,25 @@ public class SolidTransferArm : StateMachineComponent<SolidTransferArm.SMInstanc
 				}
 			}
 		}
-		MarkReachableCells();
-	}
-
-	private void MarkReachableCells()
-	{
-		foreach (int reachableCell in reachableCells)
+		bool flag = false;
+		if (reachableCells.Count == pooledList.Count)
 		{
-			MinionGroupProber.Get().ProxyProberCell(reachableCell, true);
+			flag = true;
+			for (int k = 0; k != reachableCells.Count; k++)
+			{
+				if (reachableCells[k] != pooledList[k])
+				{
+					flag = false;
+					break;
+				}
+			}
+		}
+		pooledList.Recycle();
+		if (!flag)
+		{
+			serial_no++;
+			MinionGroupProber.Get().SetValidSerialNos(this, serial_no, serial_no);
+			MinionGroupProber.Get().Occupy(this, serial_no, reachableCells);
 		}
 	}
 
@@ -321,14 +336,6 @@ public class SolidTransferArm : StateMachineComponent<SolidTransferArm.SMInstanc
 	{
 		RefreshPickupables();
 		target = FetchManager.FindFetchTarget(pickupables, destination, ref tag_bits, ref required_tags, ref forbid_tags, required_amount);
-	}
-
-	public void Sim33ms(float dt)
-	{
-		if (operational.IsOperational)
-		{
-			MarkReachableCells();
-		}
 	}
 
 	public void RenderEveryTick(float dt)
@@ -395,7 +402,7 @@ public class SolidTransferArm : StateMachineComponent<SolidTransferArm.SMInstanc
 	{
 		if (!storage.IsEmpty() && !choreDriver.HasChore())
 		{
-			storage.DropAll(false);
+			storage.DropAll(false, false, default(Vector3), true);
 		}
 	}
 

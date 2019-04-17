@@ -23,17 +23,13 @@ public class ToolMenu : KScreen
 
 		public string tooltip;
 
-		public HashedString viewMode;
-
-		public bool forceViewMode;
-
 		public KToggle toggle;
 
 		public Action<object> onSelectCallback;
 
 		public object toolData;
 
-		public ToolInfo(string text, string icon_name, Action hotkey, string ToolName, ToolCollection toolCollection, string tooltip = "", bool forceViewMode = false, Action<object> onSelectCallback = null, object toolData = null)
+		public ToolInfo(string text, string icon_name, Action hotkey, string ToolName, ToolCollection toolCollection, string tooltip = "", Action<object> onSelectCallback = null, object toolData = null)
 		{
 			this.text = text;
 			icon = icon_name;
@@ -42,10 +38,8 @@ public class ToolMenu : KScreen
 			collection = toolCollection;
 			toolCollection.tools.Add(this);
 			this.tooltip = tooltip;
-			this.forceViewMode = forceViewMode;
 			this.onSelectCallback = onSelectCallback;
 			this.toolData = toolData;
-			viewMode = OverlayModes.None.ID;
 		}
 	}
 
@@ -150,6 +144,8 @@ public class ToolMenu : KScreen
 
 	public ToolInfo currentlySelectedTool;
 
+	public InterfaceTool activeTool;
+
 	private Coroutine activeOpenAnimationRoutine;
 
 	private Coroutine activeCloseAnimationRoutine;
@@ -184,8 +180,25 @@ public class ToolMenu : KScreen
 	{
 		base.OnPrefabInit();
 		Instance = this;
+		Game.Instance.Subscribe(1798162660, OnOverlayChanged);
 		priorityScreen = Util.KInstantiateUI<PriorityScreen>(Prefab_priorityScreen.gameObject, base.gameObject, false);
 		priorityScreen.InstantiateButtons(OnPriorityClicked, false);
+	}
+
+	protected override void OnCleanUp()
+	{
+		base.OnCleanUp();
+		Game.Instance.Unsubscribe(1798162660, OnOverlayChanged);
+	}
+
+	private void OnOverlayChanged(object overlay_data)
+	{
+		HashedString y = (HashedString)overlay_data;
+		if ((UnityEngine.Object)PlayerController.Instance.ActiveTool != (UnityEngine.Object)null && PlayerController.Instance.ActiveTool.ViewMode != OverlayModes.None.ID && PlayerController.Instance.ActiveTool.ViewMode != y)
+		{
+			ChooseCollection(null, true);
+			ChooseTool(null);
+		}
 	}
 
 	protected override void OnSpawn()
@@ -306,7 +319,7 @@ public class ToolMenu : KScreen
 		string text = collection_name;
 		bool largeIcon2 = largeIcon;
 		ToolCollection toolCollection = new ToolCollection(text, icon_name, string.Empty, false, Action.NumActions, largeIcon2);
-		new ToolInfo(collection_name, icon_name, hotkey, tool_name, toolCollection, tooltip, false, null, null);
+		new ToolInfo(collection_name, icon_name, hotkey, tool_name, toolCollection, tooltip, null, null);
 		return toolCollection;
 	}
 
@@ -461,11 +474,8 @@ public class ToolMenu : KScreen
 					if (currentlySelectedTool.toolName == interfaceTool.name)
 					{
 						UISounds.PlaySound(UISounds.Sound.ClickObject);
+						activeTool = interfaceTool;
 						PlayerController.Instance.ActivateTool(interfaceTool);
-						if (tool.forceViewMode && OverlayScreen.Instance.GetMode() != tool.viewMode)
-						{
-							Game.Instance.gameObject.Trigger(1248612973, tool.viewMode);
-						}
 						break;
 					}
 				}
@@ -644,7 +654,7 @@ public class ToolMenu : KScreen
 			{
 				if (Application.isEditor)
 				{
-					Output.Log("Force-enabling sandbox mode because we're in editor.");
+					DebugUtil.LogArgs("Force-enabling sandbox mode because we're in editor.");
 					SaveGame.Instance.sandboxEnabled = true;
 				}
 				if (SaveGame.Instance.sandboxEnabled)

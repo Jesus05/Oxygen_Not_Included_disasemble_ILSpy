@@ -72,11 +72,11 @@ namespace Database
 
 		public StatusItem PendingUpgrade;
 
-		public StatusItem RequiresRolePerk;
+		public StatusItem RequiresSkillPerk;
 
-		public StatusItem DigRequiresRolePerk;
+		public StatusItem DigRequiresSkillPerk;
 
-		public StatusItem ColonyLacksRequiredRolePerk;
+		public StatusItem ColonyLacksRequiredSkillPerk;
 
 		public StatusItem PendingWork;
 
@@ -321,6 +321,8 @@ namespace Database
 		public StatusItem InvalidPortOverlap;
 
 		public StatusItem EmergencyPriority;
+
+		public StatusItem SkillPointsAvailable;
 
 		[CompilerGenerated]
 		private static Func<HashedString, object, bool> _003C_003Ef__mg_0024cache0;
@@ -595,6 +597,7 @@ namespace Database
 			{
 				Telepad telepad2 = (Telepad)data;
 				ImmigrantScreen.InitializeImmigrantScreen(telepad2);
+				Game.Instance.Trigger(288942073, null);
 			};
 			NoStorageFilterSet = CreateStatusItem("NoStorageFilterSet", "BUILDING", "status_item_no_filter_set", StatusItem.IconType.Custom, NotificationType.BadMinor, false, OverlayModes.None.ID, true, 63486);
 			NoSuitMarker = CreateStatusItem("NoSuitMarker", "BUILDING", "status_item_no_filter_set", StatusItem.IconType.Custom, NotificationType.BadMinor, false, OverlayModes.None.ID, true, 63486);
@@ -627,45 +630,24 @@ namespace Database
 				return str.Replace("{DamageInfo}", component4.GetDamageSourceInfo().ToString());
 			};
 			PendingRepair.conditionalOverlayCallback = ((HashedString mode, object data) => true);
-			RequiresRolePerk = CreateStatusItem("RequiresRolePerk", "BUILDING", string.Empty, StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, true, 63486);
-			RequiresRolePerk.resolveStringCallback = delegate(string str, object data)
+			RequiresSkillPerk = CreateStatusItem("RequiresSkillPerk", "BUILDING", string.Empty, StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, true, 63486);
+			RequiresSkillPerk.resolveStringCallback = delegate(string str, object data)
 			{
-				HashedString perk_id3 = (HashedString)data;
-				List<RoleConfig> rolesWithPerk3 = Game.Instance.roleManager.GetRolesWithPerk(perk_id3);
-				List<string> list3 = new List<string>();
-				foreach (RoleConfig item4 in rolesWithPerk3)
-				{
-					list3.Add(item4.GetProperName());
-				}
-				str = str.Replace("{Roles}", string.Join(", ", list3.ToArray()));
-				return str;
-			};
-			DigRequiresRolePerk = CreateStatusItem("DigRequiresRolePerk", "BUILDING", string.Empty, StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, true, 63486);
-			DigRequiresRolePerk.resolveStringCallback = delegate(string str, object data)
-			{
-				HashedString perk_id2 = (HashedString)data;
-				List<RoleConfig> rolesWithPerk2 = Game.Instance.roleManager.GetRolesWithPerk(perk_id2);
-				List<string> list2 = new List<string>();
-				foreach (RoleConfig item5 in rolesWithPerk2)
-				{
-					list2.Add(item5.GetProperName());
-				}
-				str = str.Replace("{Roles}", string.Join(", ", list2.ToArray()));
-				return str;
-			};
-			ColonyLacksRequiredRolePerk = CreateStatusItem("ColonyLacksRequiredRolePerk", "BUILDING", "status_item_role_required", StatusItem.IconType.Custom, NotificationType.BadMinor, false, OverlayModes.None.ID, true, 63486);
-			ColonyLacksRequiredRolePerk.resolveStringCallback = delegate(string str, object data)
-			{
-				HashedString perk_id = (HashedString)data;
-				List<RoleConfig> rolesWithPerk = Game.Instance.roleManager.GetRolesWithPerk(perk_id);
+				string id = (string)data;
+				SkillPerk perk = Db.Get().SkillPerks.Get(id);
+				List<Skill> skillsWithPerk = Db.Get().Skills.GetSkillsWithPerk(perk);
 				List<string> list = new List<string>();
-				foreach (RoleConfig item6 in rolesWithPerk)
+				foreach (Skill item4 in skillsWithPerk)
 				{
-					list.Add(item6.GetProperName());
+					list.Add(item4.Name);
 				}
-				str = str.Replace("{Roles}", string.Join(", ", list.ToArray()));
+				str = str.Replace("{Skills}", string.Join(", ", list.ToArray()));
 				return str;
 			};
+			DigRequiresSkillPerk = CreateStatusItem("DigRequiresSkillPerk", "BUILDING", string.Empty, StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, true, 63486);
+			DigRequiresSkillPerk.resolveStringCallback = RequiresSkillPerk.resolveStringCallback;
+			ColonyLacksRequiredSkillPerk = CreateStatusItem("ColonyLacksRequiredSkillPerk", "BUILDING", "status_item_role_required", StatusItem.IconType.Custom, NotificationType.BadMinor, false, OverlayModes.None.ID, true, 63486);
+			ColonyLacksRequiredSkillPerk.resolveStringCallback = RequiresSkillPerk.resolveStringCallback;
 			SwitchStatusActive = CreateStatusItem("SwitchStatusActive", "BUILDING", string.Empty, StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, true, 63486);
 			SwitchStatusInactive = CreateStatusItem("SwitchStatusInactive", "BUILDING", string.Empty, StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, true, 63486);
 			PendingFish = CreateStatusItem("PendingFish", "BUILDING", "status_item_pending_fish", StatusItem.IconType.Custom, NotificationType.Neutral, false, OverlayModes.None.ID, true, 63486);
@@ -798,9 +780,9 @@ namespace Database
 					return str;
 				}
 				float num2 = 0f;
-				foreach (GameObject item7 in component.items)
+				foreach (GameObject item5 in component.items)
 				{
-					Edible component2 = item7.GetComponent<Edible>();
+					Edible component2 = item5.GetComponent<Edible>();
 					if ((bool)component2)
 					{
 						num2 += component2.Calories;
@@ -1011,10 +993,11 @@ namespace Database
 			};
 			InvalidPortOverlap = CreateStatusItem("InvalidPortOverlap", "BUILDING", "status_item_exclamation", StatusItem.IconType.Custom, NotificationType.BadMinor, false, OverlayModes.None.ID, true, 63486);
 			InvalidPortOverlap.AddNotification(null, null, null, 0f);
-			EmergencyPriority = CreateStatusItem("EmergencyPriority", BUILDING.STATUSITEMS.EMERGENCY_PRIORITY.NAME, BUILDING.STATUSITEMS.EMERGENCY_PRIORITY.TOOLTIP, "status_item_doubleexclamation", StatusItem.IconType.Custom, NotificationType.Bad, false, OverlayModes.None.ID, 63486);
+			EmergencyPriority = CreateStatusItem("EmergencyPriority", BUILDING.STATUSITEMS.TOP_PRIORITY_CHORE.NAME, BUILDING.STATUSITEMS.TOP_PRIORITY_CHORE.TOOLTIP, "status_item_doubleexclamation", StatusItem.IconType.Custom, NotificationType.Bad, false, OverlayModes.None.ID, 63486);
 			StatusItem emergencyPriority = EmergencyPriority;
-			string notification_text = BUILDING.STATUSITEMS.EMERGENCY_PRIORITY.NOTIFICATION_NAME;
-			emergencyPriority.AddNotification(null, notification_text, BUILDING.STATUSITEMS.EMERGENCY_PRIORITY.NOTIFICATION_TOOLTIP, 0f);
+			string notification_text = BUILDING.STATUSITEMS.TOP_PRIORITY_CHORE.NOTIFICATION_NAME;
+			emergencyPriority.AddNotification(null, notification_text, BUILDING.STATUSITEMS.TOP_PRIORITY_CHORE.NOTIFICATION_TOOLTIP, 0f);
+			SkillPointsAvailable = CreateStatusItem("SkillPointsAvailable", BUILDING.STATUSITEMS.SKILL_POINTS_AVAILABLE.NAME, BUILDING.STATUSITEMS.SKILL_POINTS_AVAILABLE.TOOLTIP, "status_item_jobs", StatusItem.IconType.Custom, NotificationType.Neutral, false, OverlayModes.None.ID, 63486);
 		}
 
 		private static bool ShowInUtilityOverlay(HashedString mode, object data)
@@ -1040,6 +1023,11 @@ namespace Database
 			{
 				Tag prefabTag4 = transform.GetComponent<KPrefabID>().PrefabTag;
 				result = OverlayModes.Logic.HighlightItemIDs.Contains(prefabTag4);
+			}
+			else if (mode == OverlayModes.SolidConveyor.ID)
+			{
+				Tag prefabTag5 = transform.GetComponent<KPrefabID>().PrefabTag;
+				result = OverlayScreen.SolidConveyorIDs.Contains(prefabTag5);
 			}
 			return result;
 		}

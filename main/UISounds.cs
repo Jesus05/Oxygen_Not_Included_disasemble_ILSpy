@@ -59,7 +59,7 @@ public class UISounds : KMonoBehaviour
 			{
 				if (logSounds)
 				{
-					Output.Log("Play sound", soundData[i].name);
+					DebugUtil.LogArgs("Play sound", soundData[i].name);
 				}
 				KMonoBehaviour.PlaySound(GlobalAssets.GetSound(soundData[i].name, false));
 			}

@@ -54,6 +54,7 @@ public class Equipment : Assignables
 		AssignableSlotInstance slot = GetSlot(equippable.slot);
 		slot.Assign(equippable);
 		GameObject targetGameObject = GetTargetGameObject();
+		Debug.Assert(targetGameObject, "GetTargetGameObject returned null in Equip");
 		targetGameObject.Trigger(-448952673, equippable.GetComponent<KPrefabID>());
 		equippable.Trigger(-1617557748, this);
 		Attributes attributes = targetGameObject.GetAttributes();
@@ -83,7 +84,7 @@ public class Equipment : Assignables
 			Storage component3 = equippable.transform.parent.GetComponent<Storage>();
 			if ((bool)component3)
 			{
-				component3.Drop(equippable.gameObject);
+				component3.Drop(equippable.gameObject, true);
 			}
 		}
 		equippable.transform.parent = slot.gameObject.transform;
@@ -91,7 +92,7 @@ public class Equipment : Assignables
 		equippable.OnEquip(slot);
 		if (refreshHandle.TimeRemaining > 0f)
 		{
-			Debug.LogWarning(targetGameObject.GetProperName() + " is already in the process of changing equipment (equip)", null);
+			Debug.LogWarning(targetGameObject.GetProperName() + " is already in the process of changing equipment (equip)");
 			refreshHandle.ClearScheduler();
 		}
 		CreatureSimTemperatureTransfer transferer = targetGameObject.GetComponent<CreatureSimTemperatureTransfer>();
@@ -146,7 +147,7 @@ public class Equipment : Assignables
 					Storage component3 = equippable.transform.parent.GetComponent<Storage>();
 					if ((bool)component3)
 					{
-						component3.Drop(equippable.gameObject);
+						component3.Drop(equippable.gameObject, true);
 					}
 				}
 				equippable.transform.parent = null;

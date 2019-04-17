@@ -46,7 +46,7 @@ public class AccessControlSideScreenRow : AccessControlSideScreenDoor
 		SetContent(permission, onPermissionChange);
 		if ((UnityEngine.Object)identity == (UnityEngine.Object)null)
 		{
-			Debug.LogError("Invalid data received.", null);
+			Debug.LogError("Invalid data received.");
 		}
 		else
 		{

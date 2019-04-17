@@ -31,7 +31,7 @@ public class ComplexFabricatorWorkable : Workable
 		}
 	}
 
-	public AttributeConverter AttributeConvertor
+	public AttributeConverter AttributeConverter
 	{
 		get
 		{
@@ -55,11 +55,30 @@ public class ComplexFabricatorWorkable : Workable
 		}
 	}
 
-	public override void AwardExperience(float work_dt, MinionResume resume)
+	public string SkillExperienceSkillGroup
 	{
-		resume.AddExperienceIfRole(MachineTechnician.ID, work_dt * ROLES.ACTIVE_EXPERIENCE_QUICK);
-		resume.AddExperienceIfRole("PowerTechnician", work_dt * ROLES.ACTIVE_EXPERIENCE_QUICK);
-		resume.AddExperienceIfRole("MechatronicEngineer", work_dt * ROLES.ACTIVE_EXPERIENCE_QUICK);
+		set
+		{
+			skillExperienceSkillGroup = value;
+		}
+	}
+
+	public float SkillExperienceMultiplier
+	{
+		set
+		{
+			skillExperienceMultiplier = value;
+		}
+	}
+
+	protected override void OnSpawn()
+	{
+		base.OnSpawn();
+		workerStatusItem = Db.Get().DuplicantStatusItems.Processing;
+		attributeConverter = Db.Get().AttributeConverters.MachinerySpeed;
+		attributeExperienceMultiplier = DUPLICANTSTATS.ATTRIBUTE_LEVELING.PART_DAY_EXPERIENCE;
+		skillExperienceSkillGroup = Db.Get().SkillGroups.Technicals.Id;
+		skillExperienceMultiplier = SKILLS.PART_DAY_EXPERIENCE;
 	}
 
 	public override string GetConversationTopic()
@@ -80,7 +99,7 @@ public class ComplexFabricatorWorkable : Workable
 			}
 			else
 			{
-				DebugUtil.DevAssert(false, "ComplexFabricatorWorkable.OnStartWork called but CurrentMachineOrder is null", base.gameObject);
+				DebugUtil.DevAssertArgs(false, "ComplexFabricatorWorkable.OnStartWork called but CurrentMachineOrder is null", base.gameObject);
 			}
 		}
 	}

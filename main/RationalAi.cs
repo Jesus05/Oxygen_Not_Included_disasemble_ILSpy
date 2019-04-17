@@ -1,3 +1,5 @@
+using UnityEngine;
+
 public class RationalAi : GameStateMachine<RationalAi, RationalAi.Instance>
 {
 	public new class Instance : GameInstance
@@ -35,9 +37,8 @@ public class RationalAi : GameStateMachine<RationalAi, RationalAi.Instance>
 			.ToggleStateMachine((Instance smi) => new RationMonitor.Instance(smi.master))
 			.ToggleStateMachine((Instance smi) => new CalorieMonitor.Instance(smi.master))
 			.ToggleStateMachine((Instance smi) => new DoctorMonitor.Instance(smi.master))
-			.ToggleStateMachine((Instance smi) => new DiseaseMonitor.Instance(smi.master))
-			.ToggleStateMachine((Instance smi) => new ImmuneSystemMonitor.Instance(smi.master))
-			.ToggleStateMachine((Instance smi) => new SkinInfectionMonitor.Instance(smi.master))
+			.ToggleStateMachine((Instance smi) => new SicknessMonitor.Instance(smi.master))
+			.ToggleStateMachine((Instance smi) => new GermExposureMonitor.Instance(smi.master))
 			.ToggleStateMachine((Instance smi) => new BreathMonitor.Instance(smi.master))
 			.ToggleStateMachine((Instance smi) => new TemperatureMonitor.Instance(smi.master))
 			.ToggleStateMachine((Instance smi) => new ExternalTemperatureMonitor.Instance(smi.master))
@@ -63,7 +64,7 @@ public class RationalAi : GameStateMachine<RationalAi, RationalAi.Instance>
 		})
 			.Enter("DropStorage", delegate(Instance smi)
 			{
-				smi.GetComponent<Storage>().DropAll(false);
+				smi.GetComponent<Storage>().DropAll(false, false, default(Vector3), true);
 			});
 	}
 }

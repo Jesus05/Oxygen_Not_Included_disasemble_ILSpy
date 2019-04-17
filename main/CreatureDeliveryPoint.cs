@@ -50,7 +50,7 @@ public class CreatureDeliveryPoint : StateMachineComponent<CreatureDeliveryPoint
 				for (int num = count - 1; num >= 0; num--)
 				{
 					GameObject gameObject = items[num];
-					component.Drop(gameObject);
+					component.Drop(gameObject, true);
 					gameObject.transform.SetPosition(position);
 					KBatchedAnimController component2 = gameObject.GetComponent<KBatchedAnimController>();
 					component2.SetSceneLayer(Grid.SceneLayer.Creatures);

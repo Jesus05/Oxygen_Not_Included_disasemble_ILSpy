@@ -510,7 +510,7 @@ public class SuitLocker : StateMachineComponent<SuitLocker.StatesInstance>
 		KPrefabID storedOutfit = GetStoredOutfit();
 		if (!((UnityEngine.Object)storedOutfit == (UnityEngine.Object)null))
 		{
-			GetComponent<Storage>().Drop(storedOutfit.gameObject);
+			GetComponent<Storage>().Drop(storedOutfit.gameObject, true);
 		}
 	}
 
@@ -519,7 +519,7 @@ public class SuitLocker : StateMachineComponent<SuitLocker.StatesInstance>
 		KPrefabID storedOutfit = GetStoredOutfit();
 		if (!((UnityEngine.Object)storedOutfit == (UnityEngine.Object)null))
 		{
-			GetComponent<Storage>().Drop(storedOutfit.gameObject);
+			GetComponent<Storage>().Drop(storedOutfit.gameObject, true);
 			storedOutfit.GetComponent<Equippable>().Assign(equipment.GetComponent<IAssignableIdentity>());
 			storedOutfit.GetComponent<EquippableWorkable>().CancelChore();
 			equipment.Equip(storedOutfit.GetComponent<Equippable>());

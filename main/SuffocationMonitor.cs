@@ -127,7 +127,7 @@ public class SuffocationMonitor : GameStateMachine<SuffocationMonitor, Suffocati
 		}, UpdateRate.SIM_200ms, false).TagTransition(GameTags.Dead, dead, false);
 		satisfied.DefaultState(satisfied.normal).ToggleAttributeModifier("Breathing", (Instance smi) => smi.breathing, null).EventTransition(GameHashes.ExitedBreathableArea, nooxygen, (Instance smi) => !smi.IsInBreathableArea());
 		satisfied.normal.Transition(satisfied.low, (Instance smi) => smi.oxygenBreather.IsLowOxygen(), UpdateRate.SIM_200ms);
-		satisfied.low.Transition(satisfied.normal, (Instance smi) => !smi.oxygenBreather.IsLowOxygen(), UpdateRate.SIM_200ms).ToggleEffect("LowOxygen");
+		satisfied.low.Transition(satisfied.normal, (Instance smi) => !smi.oxygenBreather.IsLowOxygen(), UpdateRate.SIM_200ms).Transition(nooxygen, (Instance smi) => !smi.IsInBreathableArea(), UpdateRate.SIM_200ms).ToggleEffect("LowOxygen");
 		nooxygen.EventTransition(GameHashes.EnteredBreathableArea, satisfied, (Instance smi) => smi.IsInBreathableArea()).TagTransition(GameTags.RecoveringBreath, satisfied, false).ToggleExpression(Db.Get().Expressions.Suffocate, null)
 			.ToggleAttributeModifier("Holding Breath", (Instance smi) => smi.holdingbreath, null)
 			.ToggleTag(GameTags.NoOxygen)

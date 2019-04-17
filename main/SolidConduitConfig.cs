@@ -53,7 +53,7 @@ public class SolidConduitConfig : IBuildingConfig
 		kAnimGraphTileVisualizer.isPhysicalBuilding = false;
 		Constructable component = go.GetComponent<Constructable>();
 		component.choreTags = GameTags.ChoreTypes.ConveyorChores;
-		component.requiredRolePerk = RoleManager.rolePerks.ConveyorBuild.id;
+		component.requiredSkillPerk = Db.Get().SkillPerks.ConveyorBuild.Id;
 	}
 
 	public override void DoPostConfigureComplete(GameObject go)

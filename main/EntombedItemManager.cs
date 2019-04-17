@@ -230,7 +230,7 @@ public class EntombedItemManager : KMonoBehaviour, ISim33ms
 			component.RemoveItem(item.cell);
 			RemoveItem(uncovered_item_index);
 			SimHashes elementId = (SimHashes)item.elementId;
-			ElementLoader.FindElementByHash(elementId)?.substance.SpawnResource(Grid.CellToPosCCC(item.cell, Grid.SceneLayer.Ore), item.mass, item.temperature, item.diseaseIdx, item.diseaseCount, false, false);
+			ElementLoader.FindElementByHash(elementId)?.substance.SpawnResource(Grid.CellToPosCCC(item.cell, Grid.SceneLayer.Ore), item.mass, item.temperature, item.diseaseIdx, item.diseaseCount, false, false, false);
 		}
 	}
 

@@ -336,9 +336,9 @@ public class ElementConverter : StateMachineComponent<ElementConverter.StatesIns
 							break;
 						}
 					}
-					if (!(num8 <= 0f))
+					if (num8 <= 0f)
 					{
-						continue;
+						Debug.Assert(num8 <= 0f);
 					}
 				}
 			}
@@ -393,7 +393,7 @@ public class ElementConverter : StateMachineComponent<ElementConverter.StatesIns
 							}
 							else
 							{
-								GameObject go = element.substance.SpawnResource(base.transform.GetPosition(), num13, temperature, a.idx, a.count, true, false);
+								GameObject go = element.substance.SpawnResource(base.transform.GetPosition(), num13, temperature, a.idx, a.count, true, false, false);
 								storage.Store(go, true, false, true, false);
 							}
 						}
@@ -416,7 +416,7 @@ public class ElementConverter : StateMachineComponent<ElementConverter.StatesIns
 						}
 						else if (element.IsSolid)
 						{
-							element.substance.SpawnResource(vector, num13, temperature, a.idx, a.count, false, false);
+							element.substance.SpawnResource(vector, num13, temperature, a.idx, a.count, false, false, false);
 						}
 						else
 						{

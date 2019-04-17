@@ -121,7 +121,7 @@ public class CarePackage : StateMachineComponent<CarePackage.SMInstance>
 	{
 		if (info == null)
 		{
-			Debug.LogWarning("CarePackage has no data to spawn from. Probably a save from before the CarePackage info data was serialized.", null);
+			Debug.LogWarning("CarePackage has no data to spawn from. Probably a save from before the CarePackage info data was serialized.");
 		}
 		else
 		{
@@ -144,11 +144,11 @@ public class CarePackage : StateMachineComponent<CarePackage.SMInstance>
 			else if (element != null)
 			{
 				float quantity = info.quantity;
-				gameObject = element.substance.SpawnResource(position, quantity, element.defaultValues.temperature, byte.MaxValue, 0, false, true);
+				gameObject = element.substance.SpawnResource(position, quantity, element.defaultValues.temperature, byte.MaxValue, 0, false, true, false);
 			}
 			else
 			{
-				Debug.LogWarning("Can't find spawnable thing from tag " + info.id, null);
+				Debug.LogWarning("Can't find spawnable thing from tag " + info.id);
 			}
 			if ((Object)gameObject != (Object)null)
 			{

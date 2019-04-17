@@ -932,7 +932,7 @@ public static class Sim
 				int line = ptr2->line;
 				stack_trace = arg + ":" + line;
 			}
-			KCrashReporter.ReportDLLCrash(msg, stack_trace, null);
+			KCrashReporter.ReportSimDLLCrash(msg, stack_trace, null);
 			return 0;
 		}
 		case 0:
@@ -940,7 +940,7 @@ public static class Sim
 			DLLExceptionHandlerMessage* ptr = (DLLExceptionHandlerMessage*)(void*)data;
 			string text = Marshal.PtrToStringAnsi(ptr->callstack);
 			string dmp_filename = Marshal.PtrToStringAnsi(ptr->dmpFilename);
-			KCrashReporter.ReportDLLCrash(text, text, dmp_filename);
+			KCrashReporter.ReportSimDLLCrash(text, text, dmp_filename);
 			return 0;
 		}
 		default:

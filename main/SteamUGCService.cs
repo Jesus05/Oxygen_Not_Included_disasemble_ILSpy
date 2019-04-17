@@ -3,13 +3,14 @@ using Steamworks;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using UnityEngine;
 
 public class SteamUGCService : MonoBehaviour
 {
 	public interface IUGCEventHandler
 	{
+		void OnUGCItemSubscribed(RemoteStoragePublishedFileSubscribed_t pCallback);
+
 		void OnUGCItemInstalled(ItemInstalled_t pCallback);
 
 		void OnUGCItemUpdated(RemoteStoragePublishedFileUpdated_t pCallback);
@@ -58,6 +59,8 @@ public class SteamUGCService : MonoBehaviour
 
 	private UGCQueryHandle_t m_UGCQueryHandle;
 
+	protected Callback<RemoteStoragePublishedFileSubscribed_t> m_ItemSubscribed;
+
 	protected Callback<RemoteStoragePublishedFileUpdated_t> m_ItemUpdated;
 
 	protected Callback<RemoteStoragePublishedFileUnsubscribed_t> m_ItemUnsubscribed;
@@ -84,8 +87,6 @@ public class SteamUGCService : MonoBehaviour
 
 	private static PublishedFileId_t waitingForDownload = PublishedFileId_t.Invalid;
 
-	private bool setupComplete;
-
 	private static Dictionary<PublishedFileId_t, int> getBytesRetryCount = new Dictionary<PublishedFileId_t, int>();
 
 	private static readonly string[] previewFileNames = new string[4]
@@ -108,13 +109,19 @@ public class SteamUGCService : MonoBehaviour
 		private set;
 	}
 
+	public bool setupComplete
+	{
+		get;
+		private set;
+	}
+
 	public static SteamUGCService Instance => instance;
 
 	public static void Initialize()
 	{
 		if ((UnityEngine.Object)instance == (UnityEngine.Object)null)
 		{
-			Debug.Log("Initialising UGC Service", null);
+			Debug.Log("Initialising UGC Service");
 			GameObject gameObject = GameObject.Find("/SteamManager");
 			instance = gameObject.GetComponent<SteamUGCService>();
 			if ((UnityEngine.Object)instance == (UnityEngine.Object)null)
@@ -128,22 +135,50 @@ public class SteamUGCService : MonoBehaviour
 	{
 	}
 
+	public List<Subscribed> GetSubscribed()
+	{
+		List<Subscribed> list = new List<Subscribed>();
+		if (details == null)
+		{
+			return list;
+		}
+		if (subscribed == null)
+		{
+			return list;
+		}
+		SteamUGCDetails_t[] array = details;
+		for (int i = 0; i < array.Length; i++)
+		{
+			SteamUGCDetails_t item = array[i];
+			if (subscribed.Contains(item.m_nPublishedFileId))
+			{
+				list.Add(new Subscribed(item));
+			}
+		}
+		return list;
+	}
+
 	public List<Subscribed> GetSubscribed(string required_tag)
 	{
 		List<Subscribed> list = new List<Subscribed>();
-		if (details != null && subscribed != null)
+		if (details == null)
 		{
-			for (int i = 0; i < details.Length; i++)
+			return list;
+		}
+		if (subscribed == null)
+		{
+			return list;
+		}
+		for (int i = 0; i < details.Length; i++)
+		{
+			SteamUGCDetails_t item = details[i];
+			string[] array = item.m_rgchTags.Split(',');
+			if (Array.IndexOf(array, required_tag) >= 0)
 			{
-				SteamUGCDetails_t item = details[i];
-				string[] array = item.m_rgchTags.Split(',');
-				if (Array.IndexOf(array, required_tag) >= 0)
+				PublishedFileId_t nPublishedFileId = item.m_nPublishedFileId;
+				if (subscribed.Contains(nPublishedFileId))
 				{
-					PublishedFileId_t nPublishedFileId = item.m_nPublishedFileId;
-					if (subscribed.Contains(nPublishedFileId))
-					{
-						list.Add(new Subscribed(item));
-					}
+					list.Add(new Subscribed(item));
 				}
 			}
 		}
@@ -153,16 +188,21 @@ public class SteamUGCService : MonoBehaviour
 	public Subscribed GetSubscribed(PublishedFileId_t id)
 	{
 		Subscribed result = null;
-		if (subscribed != null)
+		if (details == null)
 		{
-			for (int i = 0; i < details.Length; i++)
+			return null;
+		}
+		if (subscribed == null)
+		{
+			return null;
+		}
+		for (int i = 0; i < details.Length; i++)
+		{
+			SteamUGCDetails_t item = details[i];
+			if (item.m_nPublishedFileId == id)
 			{
-				SteamUGCDetails_t item = details[i];
-				if (item.m_nPublishedFileId == id)
-				{
-					result = new Subscribed(item);
-					break;
-				}
+				result = new Subscribed(item);
+				break;
 			}
 		}
 		return result;
@@ -198,11 +238,13 @@ public class SteamUGCService : MonoBehaviour
 	public void Awake()
 	{
 		setupComplete = false;
+		Debug.Assert((UnityEngine.Object)instance == (UnityEngine.Object)null);
 		instance = this;
 	}
 
 	private void OnDestroy()
 	{
+		Debug.Assert((UnityEngine.Object)instance == (UnityEngine.Object)this);
 		instance = null;
 	}
 
@@ -260,6 +302,7 @@ public class SteamUGCService : MonoBehaviour
 
 	private void Setup()
 	{
+		m_ItemSubscribed = Callback<RemoteStoragePublishedFileSubscribed_t>.Create(OnItemSubscribed);
 		m_ItemInstalled = Callback<ItemInstalled_t>.Create(OnItemInstalled);
 		m_DownloadItemResult = Callback<DownloadItemResult_t>.Create(OnDownloadItemResult);
 		m_ItemUnsubscribed = Callback<RemoteStoragePublishedFileUnsubscribed_t>.Create(OnItemUnsubscribed);
@@ -267,19 +310,19 @@ public class SteamUGCService : MonoBehaviour
 		OnSteamUGCQueryDetailsCompletedCallResult = CallResult<SteamUGCQueryCompleted_t>.Create(OnSteamUGCQueryDetailsCompleted);
 		doClearList = true;
 		setupComplete = true;
-		Debug.Log("UGC Service setup complete..", null);
+		Debug.Log("UGC Service setup complete..");
 	}
 
 	public static bool DoDownloadItem(PublishedFileId_t item)
 	{
 		if (waitingForDownload == item)
 		{
-			Debug.Log("We are waiting for [" + item + "] to download", null);
+			Debug.Log("We are waiting for [" + item + "] to download");
 			return false;
 		}
 		if (waitingForDownload != PublishedFileId_t.Invalid)
 		{
-			Debug.Log("We are waiting for [" + waitingForDownload + "] to download, cant download [" + item + "] now", null);
+			Debug.Log("We are waiting for [" + waitingForDownload + "] to download, cant download [" + item + "] now");
 			return false;
 		}
 		if (!getBytesRetryCount.ContainsKey(item))
@@ -288,12 +331,12 @@ public class SteamUGCService : MonoBehaviour
 		}
 		if (getBytesRetryCount[item] > MAX_FILE_RETRY_COUNT)
 		{
-			Debug.Log("Max retry count reached for [" + item + "]", null);
+			Debug.Log("Max retry count reached for [" + item + "]");
 			return false;
 		}
 		if (!SteamUGC.DownloadItem(item, true))
 		{
-			Debug.Log("SteamUGC.DownloadItem returned false for [" + item + "]", null);
+			Debug.Log("SteamUGC.DownloadItem returned false for [" + item + "]");
 			return false;
 		}
 		Dictionary<PublishedFileId_t, int> dictionary;
@@ -376,7 +419,7 @@ public class SteamUGCService : MonoBehaviour
 		}
 		else
 		{
-			Debug.Log("[SteamUGCQueryCompleted] - handle: " + pCallback.m_handle + " -- Result: " + pCallback.m_eResult + " -- NUm results: " + pCallback.m_unNumResultsReturned + " --Total Matching: " + pCallback.m_unTotalMatchingResults + " -- cached: " + pCallback.m_bCachedData, null);
+			Debug.Log("[SteamUGCQueryCompleted] - handle: " + pCallback.m_handle + " -- Result: " + pCallback.m_eResult + " -- NUm results: " + pCallback.m_unNumResultsReturned + " --Total Matching: " + pCallback.m_unTotalMatchingResults + " -- cached: " + pCallback.m_bCachedData);
 		}
 		SteamUGC.ReleaseQueryUGCRequest(m_UGCQueryHandle);
 	}
@@ -403,12 +446,12 @@ public class SteamUGCService : MonoBehaviour
 		}
 		else if (pCallback.m_eResult == EResult.k_EResultBusy)
 		{
-			Debug.Log("[OnSteamUGCQueryDetailsCompleted] - handle: " + pCallback.m_handle + " -- Result: " + pCallback.m_eResult + " Resending", null);
+			Debug.Log("[OnSteamUGCQueryDetailsCompleted] - handle: " + pCallback.m_handle + " -- Result: " + pCallback.m_eResult + " Resending");
 			listPending = false;
 		}
 		else
 		{
-			Debug.Log("[OnSteamUGCQueryDetailsCompleted] - handle: " + pCallback.m_handle + " -- Result: " + pCallback.m_eResult + " -- NUm results: " + pCallback.m_unNumResultsReturned + " --Total Matching: " + pCallback.m_unTotalMatchingResults + " -- cached: " + pCallback.m_bCachedData, null);
+			Debug.Log("[OnSteamUGCQueryDetailsCompleted] - handle: " + pCallback.m_handle + " -- Result: " + pCallback.m_eResult + " -- NUm results: " + pCallback.m_unNumResultsReturned + " --Total Matching: " + pCallback.m_unTotalMatchingResults + " -- cached: " + pCallback.m_bCachedData);
 		}
 		SteamUGC.ReleaseQueryUGCRequest(m_UGCQueryHandle);
 	}
@@ -423,19 +466,32 @@ public class SteamUGCService : MonoBehaviour
 
 	private void OnDownloadPreviewResult(RemoteStorageDownloadUGCResult_t pCallback, bool bIOFailure)
 	{
-		if (pCallback.m_eResult == EResult.k_EResultOK && !previewImages.ContainsKey(previews[pCallback.m_hFile]))
+		if (pCallback.m_eResult == EResult.k_EResultOK)
 		{
-			byte[] array = new byte[pCallback.m_nSizeInBytes];
-			SteamRemoteStorage.UGCRead(pCallback.m_hFile, array, array.Length, 0u, EUGCReadAction.k_EUGCRead_ContinueReadingUntilFinished);
-			Texture2D texture2D = new Texture2D(2, 2);
-			texture2D.LoadImage(array);
-			previewImages.Add(previews[pCallback.m_hFile], texture2D);
+			Texture2D value = null;
+			if (!previewImages.TryGetValue(previews[pCallback.m_hFile], out value) || (UnityEngine.Object)value == (UnityEngine.Object)null)
+			{
+				byte[] array = new byte[pCallback.m_nSizeInBytes];
+				SteamRemoteStorage.UGCRead(pCallback.m_hFile, array, array.Length, 0u, EUGCReadAction.k_EUGCRead_ContinueReadingUntilFinished);
+				value = new Texture2D(2, 2);
+				value.LoadImage(array);
+				previewImages[previews[pCallback.m_hFile]] = value;
+			}
 		}
 		m_DownloadPreviewResult.Remove(pCallback.m_hFile);
 		if (m_DownloadPreviewResult.Count == 0)
 		{
 			doClearList = true;
 		}
+	}
+
+	private void OnItemSubscribed(RemoteStoragePublishedFileSubscribed_t pCallback)
+	{
+		foreach (IUGCEventHandler ugcEventHandler in ugcEventHandlers)
+		{
+			ugcEventHandler.OnUGCItemSubscribed(pCallback);
+		}
+		doClearList = true;
 	}
 
 	private void OnItemInstalled(ItemInstalled_t pCallback)
@@ -469,7 +525,7 @@ public class SteamUGCService : MonoBehaviour
 	{
 		if (waitingForDownload == pCallback.m_nPublishedFileId)
 		{
-			Debug.Log("Download complete for waitingForDownload [" + waitingForDownload + "]", null);
+			Debug.Log("Download complete for waitingForDownload [" + waitingForDownload + "]");
 			waitingForDownload = PublishedFileId_t.Invalid;
 		}
 		foreach (IUGCEventHandler ugcEventHandler in ugcEventHandlers)
@@ -492,29 +548,40 @@ public class SteamUGCService : MonoBehaviour
 				using (ZipFile zipFile = ZipFile.Read(pchFolder))
 				{
 					ZipEntry zipEntry = null;
-					foreach (string file in filesToExtract)
+					foreach (string text in filesToExtract)
 					{
-						if (file.Length > 4)
+						if (text.Length > 4)
 						{
-							if (zipFile.ContainsEntry(file))
+							if (zipFile.ContainsEntry(text))
 							{
-								zipEntry = zipFile[file];
+								zipEntry = zipFile[text];
 							}
 						}
 						else
 						{
-							zipEntry = zipFile.Entries.First((ZipEntry x) => x.FileName.EndsWith(file));
+							foreach (ZipEntry entry in zipFile.Entries)
+							{
+								if (entry.FileName.EndsWith(text))
+								{
+									zipEntry = entry;
+									break;
+								}
+							}
 						}
 						if (zipEntry != null)
 						{
 							break;
 						}
 					}
-					zipEntry?.Extract(memoryStream);
+					if (zipEntry == null)
+					{
+						return result;
+					}
+					zipEntry.Extract(memoryStream);
+					memoryStream.Flush();
+					result = memoryStream.ToArray();
+					return result;
 				}
-				memoryStream.Flush();
-				result = memoryStream.ToArray();
-				return result;
 			}
 		}
 		catch (Exception)

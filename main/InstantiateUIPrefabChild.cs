@@ -22,7 +22,7 @@ public class InstantiateUIPrefabChild : KMonoBehaviour
 	{
 		if (alreadyInstantiated)
 		{
-			Debug.LogWarning(base.gameObject.name + "trying to instantiate UI prefabs multiple times.", null);
+			Debug.LogWarning(base.gameObject.name + "trying to instantiate UI prefabs multiple times.");
 		}
 		else
 		{

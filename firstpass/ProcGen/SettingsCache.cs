@@ -92,7 +92,7 @@ namespace ProcGen
 			{
 				return features.TerrainFeatures[name].defaultBiome.type;
 			}
-			Debug.LogError("Couldn't get default biome [" + name + "]", null);
+			Debug.LogError("Couldn't get default biome [" + name + "]");
 			return null;
 		}
 
@@ -154,6 +154,7 @@ namespace ProcGen
 				BiomeSettings biomeSettings = YamlIO<BiomeSettings>.LoadFile(GetPath() + name + ".yaml", null);
 				if (biomeSettings != null)
 				{
+					Debug.Assert(biomeSettings.TerrainBiomeLookupTable.Count > 0, longName);
 					biomeSettingsCache.Add(name, biomeSettings);
 					foreach (KeyValuePair<string, ElementBandConfiguration> item in biomeSettings.TerrainBiomeLookupTable)
 					{
@@ -166,7 +167,7 @@ namespace ProcGen
 				}
 				else
 				{
-					Debug.LogWarning("WorldGen: Attempting to load biome: " + name + " failed", null);
+					Debug.LogWarning("WorldGen: Attempting to load biome: " + name + " failed");
 				}
 			}
 		}
@@ -176,7 +177,7 @@ namespace ProcGen
 			string name = string.Empty;
 			if (!GetPathAndName(GetPath(), longName, out name))
 			{
-				Debug.LogWarning("LoadFeature GetPathAndName: Attempting to load feature: " + name + " failed", null);
+				Debug.LogWarning("LoadFeature GetPathAndName: Attempting to load feature: " + name + " failed");
 				return longName;
 			}
 			if (!featuresettings.ContainsKey(name))
@@ -188,7 +189,7 @@ namespace ProcGen
 				}
 				else
 				{
-					Debug.LogWarning("WorldGen: Attempting to load feature: " + name + " failed", null);
+					Debug.LogWarning("WorldGen: Attempting to load feature: " + name + " failed");
 				}
 			}
 			return name;

@@ -1,3 +1,4 @@
+using Database;
 using Klei.AI;
 using STRINGS;
 using System;
@@ -311,20 +312,21 @@ public class CharacterContainer : KScreen, ITelepadDeliverableContainer
 				locText3.GetComponent<ToolTip>().SetSimpleTooltip(tooltip);
 			}
 		}
-		foreach (KeyValuePair<HashedString, float> roleAptitude in stats.roleAptitudes)
+		foreach (KeyValuePair<HashedString, float> skillAptitude in stats.skillAptitudes)
 		{
-			if (roleAptitude.Value != 0f)
+			if (skillAptitude.Value != 0f)
 			{
-				if (!Game.Instance.roleManager.RoleGroups.ContainsKey(roleAptitude.Key))
+				SkillGroup skillGroup = Db.Get().SkillGroups.Get(skillAptitude.Key);
+				if (skillGroup == null)
 				{
-					Debug.LogWarningFormat("Role group not found for aptitude: {0}", roleAptitude.Key);
+					Debug.LogWarningFormat("Role group not found for aptitude: {0}", skillAptitude.Key);
 				}
 				else
 				{
 					LocText locText4 = Util.KInstantiateUI<LocText>(aptitudeLabel.gameObject, aptitudeContainer.gameObject, false);
 					locText4.gameObject.SetActive(true);
-					locText4.text = Game.Instance.roleManager.RoleGroups[roleAptitude.Key].Name;
-					string simpleTooltip = string.Format(DUPLICANTS.ROLES.GROUPS.APTITUDE_DESCRIPTION, Game.Instance.roleManager.RoleGroups[roleAptitude.Key].Name, roleAptitude.Value * ROLES.APTITUDE_EXPERIENCE_SCALE);
+					locText4.text = skillGroup.Name;
+					string simpleTooltip = string.Format(DUPLICANTS.ROLES.GROUPS.APTITUDE_DESCRIPTION, skillGroup.Name, DUPLICANTSTATS.APTITUDE_BONUS);
 					locText4.GetComponent<ToolTip>().SetSimpleTooltip(simpleTooltip);
 					aptitudeLabels.Add(locText4);
 				}

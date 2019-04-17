@@ -17,20 +17,21 @@ public class MedicineInfo
 
 	public MedicineType medicineType;
 
-	public List<string> curedDiseases;
+	public List<string> curedSicknesses;
 
 	public MedicineInfo(string id, string effect, MedicineType medicineType, string[] curedDiseases = null)
 	{
+		Debug.Assert(!string.IsNullOrEmpty(effect) || (curedDiseases != null && curedDiseases.Length > 0), "Medicine should have an effect or cure diseases");
 		this.id = id;
 		this.effect = effect;
 		this.medicineType = medicineType;
 		if (curedDiseases != null)
 		{
-			this.curedDiseases = new List<string>(curedDiseases);
+			curedSicknesses = new List<string>(curedDiseases);
 		}
 		else
 		{
-			this.curedDiseases = new List<string>();
+			curedSicknesses = new List<string>();
 		}
 	}
 }

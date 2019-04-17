@@ -42,7 +42,7 @@ public class CheckedHandleVector<T> where T : new()
 	{
 		if (isFree[handle.index])
 		{
-			Output.LogError("Tried to double free checked handle ", handle.index, "- Debug info:", debugInfo[handle.index]);
+			DebugUtil.LogErrorArgs("Tried to double free checked handle ", handle.index, "- Debug info:", debugInfo[handle.index]);
 		}
 		isFree[handle.index] = true;
 		return handleVector.Release(handle);

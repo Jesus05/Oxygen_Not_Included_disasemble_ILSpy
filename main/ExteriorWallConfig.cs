@@ -23,6 +23,7 @@ public class ExteriorWallConfig : IBuildingConfig
 		buildingDef.Floodable = false;
 		buildingDef.Overheatable = false;
 		buildingDef.AudioCategory = "Metal";
+		buildingDef.AudioSize = "small";
 		buildingDef.BaseTimeUntilRepair = -1f;
 		buildingDef.DefaultAnimState = "off";
 		buildingDef.ObjectLayer = ObjectLayer.Backwall;

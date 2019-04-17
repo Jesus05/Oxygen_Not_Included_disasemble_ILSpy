@@ -185,7 +185,7 @@ public class ChoreTable
 				return entry.choreType.priority;
 			}
 		}
-		Debug.LogError(chore_consumer.name + "'s chore table does not have an entry for: " + typeof(StateMachineType).Name, null);
+		Debug.LogError(chore_consumer.name + "'s chore table does not have an entry for: " + typeof(StateMachineType).Name);
 		return -1;
 	}
 }

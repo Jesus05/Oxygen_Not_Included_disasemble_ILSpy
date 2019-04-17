@@ -131,7 +131,7 @@ public class Constructable : Workable, ISaveLoadable
 		}
 		if (num <= 0f)
 		{
-			Output.LogWarningWithObj(base.gameObject, "uhhh this constructable is about to generate a nan", "Item Count: ", storage.items.Count);
+			DebugUtil.LogWarningArgs(base.gameObject, "uhhh this constructable is about to generate a nan", "Item Count: ", storage.items.Count);
 		}
 		else
 		{
@@ -175,15 +175,12 @@ public class Constructable : Workable, ISaveLoadable
 						{
 							component5.Subscribe(-21016276, delegate
 							{
-								GameScheduler.Instance.Schedule("finishConstruction", 0.001f, delegate
-								{
-									FinishConstruction(connections);
-								}, null, null);
+								FinishConstruction(connections);
 							});
 						}
 						else
 						{
-							Debug.LogWarning("Why am I trying to replace a: " + gameObject.name, null);
+							Debug.LogWarning("Why am I trying to replace a: " + gameObject.name);
 							FinishConstruction(connections);
 						}
 					}
@@ -197,6 +194,7 @@ public class Constructable : Workable, ISaveLoadable
 					float temperature = component7.Temperature;
 					byte diseaseIdx = component7.DiseaseIdx;
 					int diseaseCount = component7.DiseaseCount;
+					Debug.Assert(component7.Element != null && component7.Element.tag != (Tag)null);
 					Deconstructable.SpawnItem(component7.transform.GetPosition(), component7.GetComponent<Building>().Def, component7.Element.tag, mass, temperature, diseaseIdx, diseaseCount);
 					gameObject.Trigger(1606648047, null);
 					gameObject.DeleteObject();
@@ -208,13 +206,6 @@ public class Constructable : Workable, ISaveLoadable
 			}
 			PopFXManager.Instance.SpawnFX(PopFXManager.Instance.sprite_Building, GetComponent<KSelectable>().GetName(), base.transform, 1.5f, false);
 		}
-	}
-
-	public override void AwardExperience(float work_dt, MinionResume resume)
-	{
-		resume.AddExperienceIfRole(JuniorBuilder.ID, work_dt * ROLES.ACTIVE_EXPERIENCE_QUICK);
-		resume.AddExperienceIfRole(Builder.ID, work_dt * ROLES.ACTIVE_EXPERIENCE_QUICK);
-		resume.AddExperienceIfRole(SeniorBuilder.ID, work_dt * ROLES.ACTIVE_EXPERIENCE_QUICK);
 	}
 
 	private void FinishConstruction(UtilityConnections connections)
@@ -272,8 +263,10 @@ public class Constructable : Workable, ISaveLoadable
 		workerStatusItem = Db.Get().DuplicantStatusItems.Building;
 		workingStatusItem = null;
 		attributeConverter = Db.Get().AttributeConverters.ConstructionSpeed;
-		attributeExperienceMultiplier = DUPLICANTSTATS.ATTRIBUTE_LEVELING.PART_DAY_EXPERIENCE;
+		attributeExperienceMultiplier = DUPLICANTSTATS.ATTRIBUTE_LEVELING.MOST_DAY_EXPERIENCE;
 		minimumAttributeMultiplier = 0.75f;
+		skillExperienceSkillGroup = Db.Get().SkillGroups.Building.Id;
+		skillExperienceMultiplier = SKILLS.MOST_DAY_EXPERIENCE;
 		Prioritizable.AddRef(base.gameObject);
 		synchronizeAnims = false;
 		multitoolContext = "build";
@@ -302,6 +295,7 @@ public class Constructable : Workable, ISaveLoadable
 		this.fetchList = new FetchList2(storage, Db.Get().ChoreTypes.BuildFetch, choreTags);
 		PrimaryElement component = GetComponent<PrimaryElement>();
 		Element element = ElementLoader.GetElement(SelectedElementsTags[0]);
+		Debug.Assert(element != null, "Missing primary element for Constructable");
 		component.ElementID = element.id;
 		float num3 = component.Temperature = (component.Temperature = 293.15f);
 		Recipe.Ingredient[] allIngredients = Recipe.GetAllIngredients(selectedElementsTags);
@@ -348,7 +342,7 @@ public class Constructable : Workable, ISaveLoadable
 				}
 				else
 				{
-					Output.LogError("multiple replacement tiles on the same cell!");
+					Debug.LogError("multiple replacement tiles on the same cell!");
 					Util.KDestroyGameObject(base.gameObject);
 				}
 			}
@@ -715,8 +709,10 @@ public class Constructable : Workable, ISaveLoadable
 					selectedElementsTags[j] = ElementLoader.FindElementByHash((SimHashes)ids[j]).tag;
 				}
 			}
+			Debug.Assert(selectedElements.Length == selectedElementsTags.Length);
 			for (int k = 0; k < selectedElements.Length; k++)
 			{
+				Debug.Assert(selectedElements[k].tag == SelectedElementsTags[k]);
 			}
 		}
 	}

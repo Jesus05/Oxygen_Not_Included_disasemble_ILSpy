@@ -155,7 +155,7 @@ public class CreatureLure : StateMachineComponent<CreatureLure.StatesInstance>
 		if (baitSetting != activeBaitSetting)
 		{
 			activeBaitSetting = baitSetting;
-			baitStorage.DropAll(false);
+			baitStorage.DropAll(false, false, default(Vector3), true);
 		}
 		base.smi.GoTo(base.smi.sm.idle);
 		baitStorage.storageFilters = new List<Tag>

@@ -2,6 +2,13 @@ using UnityEngine;
 
 public class LogicGateBase : KMonoBehaviour
 {
+	public enum PortId
+	{
+		InputOne,
+		InputTwo,
+		Output
+	}
+
 	public enum Op
 	{
 		And,
@@ -40,6 +47,40 @@ public class LogicGateBase : KMonoBehaviour
 		}
 		int cell = Grid.PosToCell(base.transform.GetPosition());
 		return Grid.OffsetCell(cell, offset);
+	}
+
+	public int PortCell(PortId port)
+	{
+		switch (port)
+		{
+		case PortId.InputOne:
+			return InputCellOne;
+		case PortId.InputTwo:
+			return InputCellTwo;
+		default:
+			return OutputCell;
+		}
+	}
+
+	public bool TryGetPortAtCell(int cell, out PortId port)
+	{
+		if (cell == InputCellOne)
+		{
+			port = PortId.InputOne;
+			return true;
+		}
+		if (cell == InputCellTwo && RequiresTwoInputs)
+		{
+			port = PortId.InputTwo;
+			return true;
+		}
+		if (cell == OutputCell)
+		{
+			port = PortId.Output;
+			return true;
+		}
+		port = PortId.InputOne;
+		return false;
 	}
 
 	public static bool OpRequiresTwoInputs(Op op)

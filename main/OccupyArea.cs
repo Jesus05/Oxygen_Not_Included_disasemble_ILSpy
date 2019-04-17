@@ -54,7 +54,7 @@ public class OccupyArea : KMonoBehaviour
 		int cell = Grid.PosToCell(this);
 		if (!Grid.IsValidCell(cell))
 		{
-			Debug.LogWarning(base.name + " is outside the grid! DELETING!", null);
+			Debug.LogWarning(base.name + " is outside the grid! DELETING!");
 			Util.KDestroyGameObject(base.gameObject);
 		}
 	}

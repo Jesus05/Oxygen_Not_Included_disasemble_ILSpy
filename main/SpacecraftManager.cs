@@ -339,7 +339,7 @@ public class SpacecraftManager : KMonoBehaviour, ISim1000ms
 	{
 		foreach (KeyValuePair<SimHashes, float> result in results)
 		{
-			ElementLoader.FindElementByHash(result.Key).substance.SpawnResource(PlayerController.GetCursorPos(KInputManager.GetMousePos()), result.Value, 300f, 0, 0, false, false);
+			ElementLoader.FindElementByHash(result.Key).substance.SpawnResource(PlayerController.GetCursorPos(KInputManager.GetMousePos()), result.Value, 300f, 0, 0, false, false, false);
 		}
 	}
 

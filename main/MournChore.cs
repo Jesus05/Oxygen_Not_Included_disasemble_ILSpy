@@ -177,22 +177,22 @@ public class MournChore : Chore<MournChore.StatesInstance>
 	{
 		if ((UnityEngine.Object)context.consumerState.consumer == (UnityEngine.Object)null)
 		{
-			Debug.LogError("MournChore null context.consumer", null);
+			Debug.LogError("MournChore null context.consumer");
 		}
 		else if (base.smi == null)
 		{
-			Debug.LogError("MournChore null smi", null);
+			Debug.LogError("MournChore null smi");
 		}
 		else if (base.smi.sm == null)
 		{
-			Debug.LogError("MournChore null smi.sm", null);
+			Debug.LogError("MournChore null smi.sm");
 		}
 		else
 		{
 			Grave x = FindGraveToMournAt();
 			if ((UnityEngine.Object)x == (UnityEngine.Object)null)
 			{
-				Debug.LogError("MournChore no grave", null);
+				Debug.LogError("MournChore no grave");
 			}
 			else
 			{

@@ -30,20 +30,20 @@ namespace ProcGen
 		{
 			if (!SettingsCache.worlds.HasWorld(worldName))
 			{
-				Output.LogWarning(string.Format("Failed to get worldGen data for {0}. Using {1} instead", worldName, "worlds/Default"));
+				DebugUtil.LogWarningArgs(string.Format("Failed to get worldGen data for {0}. Using {1} instead", worldName, "worlds/Default"));
 				DebugUtil.Assert(SettingsCache.worlds.HasWorld("worlds/Default"));
 				worldName = "worlds/Default";
 			}
 			Worlds.Data worldData = SettingsCache.worlds.GetWorldData(worldName);
 			world = worldData.world;
-			Debug.Log("Set world to [" + worldName + "] " + SettingsCache.GetPath(), null);
+			Debug.Log("Set world to [" + worldName + "] " + SettingsCache.GetPath());
 		}
 
 		public BaseLocation GetBaseLocation()
 		{
 			if (world != null && world.defaultsOverrides != null && world.defaultsOverrides.baseData != null)
 			{
-				Output.Log($"World '{world.name}' is overriding baseData");
+				DebugUtil.LogArgs($"World '{world.name}' is overriding baseData");
 				return world.defaultsOverrides.baseData;
 			}
 			return SettingsCache.defaults.baseData;
@@ -53,7 +53,7 @@ namespace ProcGen
 		{
 			if (world != null && world.defaultsOverrides != null && world.defaultsOverrides.overworldAddTags != null)
 			{
-				Output.Log($"World '{world.name}' is overriding overworldAddTags");
+				DebugUtil.LogArgs($"World '{world.name}' is overriding overworldAddTags");
 				return world.defaultsOverrides.overworldAddTags;
 			}
 			return SettingsCache.defaults.overworldAddTags;
@@ -63,7 +63,7 @@ namespace ProcGen
 		{
 			if (world != null && world.defaultsOverrides != null && world.defaultsOverrides.defaultMoveTags != null)
 			{
-				Output.Log($"World '{world.name}' is overriding defaultMoveTags");
+				DebugUtil.LogArgs($"World '{world.name}' is overriding defaultMoveTags");
 				return world.defaultsOverrides.defaultMoveTags;
 			}
 			return SettingsCache.defaults.defaultMoveTags;
@@ -101,12 +101,12 @@ namespace ProcGen
 				}
 				else
 				{
-					Output.Log($"World '{world.name}' is overriding setting '{target}'");
+					DebugUtil.LogArgs($"World '{world.name}' is overriding setting '{target}'");
 				}
 			}
 			else if (!GetSetting(SettingsCache.defaults, target, parser, out res))
 			{
-				Output.LogWarning($"Couldn't find setting '{target}' in default settings!");
+				DebugUtil.LogWarningArgs($"Couldn't find setting '{target}' in default settings!");
 			}
 			return res;
 		}

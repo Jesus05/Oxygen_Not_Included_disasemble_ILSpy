@@ -1,5 +1,3 @@
-using TUNING;
-
 public class LiquidCooledFanWorkable : Workable
 {
 	[MyCmpGet]
@@ -34,12 +32,5 @@ public class LiquidCooledFanWorkable : Workable
 	protected override void OnCompleteWork(Worker worker)
 	{
 		operational.SetActive(false, false);
-	}
-
-	public override void AwardExperience(float work_dt, MinionResume resume)
-	{
-		resume.AddExperienceIfRole(MachineTechnician.ID, work_dt * ROLES.ACTIVE_EXPERIENCE_QUICK);
-		resume.AddExperienceIfRole("PowerTechnician", work_dt * ROLES.ACTIVE_EXPERIENCE_QUICK);
-		resume.AddExperienceIfRole("MechatronicEngineer", work_dt * ROLES.ACTIVE_EXPERIENCE_QUICK);
 	}
 }

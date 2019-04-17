@@ -49,7 +49,7 @@ public class TelescopeConfig : IBuildingConfig
 		{
 			Assets.GetAnim("anim_interacts_telescope_kanim")
 		};
-		telescope.requiredRolePerk = RoleManager.rolePerks.CanStudyWorldObjects.id;
+		telescope.requiredSkillPerk = Db.Get().SkillPerks.CanStudyWorldObjects.Id;
 		telescope.workLayer = Grid.SceneLayer.BuildingFront;
 		Storage storage = go.AddOrGet<Storage>();
 		storage.capacityKg = 1000f;

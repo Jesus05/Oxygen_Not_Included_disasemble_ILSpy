@@ -11,7 +11,7 @@ namespace Klei.AI
 
 		public Attributes attributes;
 
-		public Diseases diseases;
+		public Sicknesses sicknesses;
 
 		public string[] initialTraits;
 
@@ -21,7 +21,7 @@ namespace Klei.AI
 		{
 			base.OnPrefabInit();
 			amounts = new Amounts(base.gameObject);
-			diseases = new Diseases(base.gameObject);
+			sicknesses = new Sicknesses(base.gameObject);
 			attributes = new Attributes(base.gameObject);
 			foreach (string initialAmount in initialAmounts)
 			{
@@ -52,13 +52,13 @@ namespace Klei.AI
 		public virtual void OnSerialize(BinaryWriter writer)
 		{
 			amounts.Serialize(writer);
-			diseases.Serialize(writer);
+			sicknesses.Serialize(writer);
 		}
 
 		public virtual void OnDeserialize(IReader reader)
 		{
 			amounts.Deserialize(reader);
-			diseases.Deserialize(reader);
+			sicknesses.Deserialize(reader);
 		}
 
 		protected override void OnCleanUp()

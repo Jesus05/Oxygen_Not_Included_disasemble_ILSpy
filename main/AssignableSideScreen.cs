@@ -62,6 +62,12 @@ public class AssignableSideScreen : SideScreenContent
 		{
 			SortByAssignment(true);
 		});
+		Subscribe(Game.Instance.gameObject, 875045922, OnRefreshData);
+	}
+
+	private void OnRefreshData(object obj)
+	{
+		SetTarget(targetAssignable.gameObject);
 	}
 
 	public override void ClearTarget()
@@ -93,7 +99,7 @@ public class AssignableSideScreen : SideScreenContent
 		targetAssignable = target.GetComponent<Assignable>();
 		if ((UnityEngine.Object)targetAssignable == (UnityEngine.Object)null)
 		{
-			Debug.LogError("Object selected has no Assignable component.", null);
+			Debug.LogError($"{target.GetProperName()} selected has no Assignable component.");
 		}
 		else
 		{
@@ -139,42 +145,42 @@ public class AssignableSideScreen : SideScreenContent
 	{
 		ClearContent();
 		currentOwnerText.text = string.Format(UI.UISIDESCREENS.ASSIGNABLESIDESCREEN.UNASSIGNED);
-		if ((UnityEngine.Object)targetAssignable != (UnityEngine.Object)null && (UnityEngine.Object)targetAssignable.GetComponent<Equippable>() == (UnityEngine.Object)null && !targetAssignable.HasTag(GameTags.NotRoomAssignable))
+		if (!((UnityEngine.Object)targetAssignable == (UnityEngine.Object)null))
 		{
-			Room room = null;
-			room = Game.Instance.roomProber.GetRoomOfGameObject(targetAssignable.gameObject);
-			if (room != null)
+			if ((UnityEngine.Object)targetAssignable.GetComponent<Equippable>() == (UnityEngine.Object)null && !targetAssignable.HasTag(GameTags.NotRoomAssignable))
 			{
-				RoomType roomType = room.roomType;
-				if (roomType.primary_constraint != null && !roomType.primary_constraint.building_criteria(targetAssignable.GetComponent<KPrefabID>()))
+				Room room = null;
+				room = Game.Instance.roomProber.GetRoomOfGameObject(targetAssignable.gameObject);
+				if (room != null)
 				{
-					AssignableSideScreenRow freeElement = rowPool.GetFreeElement(rowGroup, true);
-					freeElement.sideScreen = this;
-					identityRowMap.Add(room, freeElement);
-					freeElement.SetContent(room, OnRowClicked, this);
-					return;
+					RoomType roomType = room.roomType;
+					if (roomType.primary_constraint != null && !roomType.primary_constraint.building_criteria(targetAssignable.GetComponent<KPrefabID>()))
+					{
+						AssignableSideScreenRow freeElement = rowPool.GetFreeElement(rowGroup, true);
+						freeElement.sideScreen = this;
+						identityRowMap.Add(room, freeElement);
+						freeElement.SetContent(room, OnRowClicked, this);
+						return;
+					}
 				}
 			}
-		}
-		if (targetAssignable.canBePublic)
-		{
-			AssignableSideScreenRow freeElement2 = rowPool.GetFreeElement(rowGroup, true);
-			freeElement2.sideScreen = this;
-			freeElement2.transform.SetAsFirstSibling();
-			identityRowMap.Add(Game.Instance.assignmentManager.assignment_groups["public"], freeElement2);
-			freeElement2.SetContent(Game.Instance.assignmentManager.assignment_groups["public"], OnRowClicked, this);
-		}
-		foreach (MinionAssignablesProxy identity in identities)
-		{
-			if (targetAssignable.eligibleFilter == null || targetAssignable.eligibleFilter(identity))
+			if (targetAssignable.canBePublic)
+			{
+				AssignableSideScreenRow freeElement2 = rowPool.GetFreeElement(rowGroup, true);
+				freeElement2.sideScreen = this;
+				freeElement2.transform.SetAsFirstSibling();
+				identityRowMap.Add(Game.Instance.assignmentManager.assignment_groups["public"], freeElement2);
+				freeElement2.SetContent(Game.Instance.assignmentManager.assignment_groups["public"], OnRowClicked, this);
+			}
+			foreach (MinionAssignablesProxy identity in identities)
 			{
 				AssignableSideScreenRow freeElement3 = rowPool.GetFreeElement(rowGroup, true);
 				freeElement3.sideScreen = this;
 				identityRowMap.Add(identity, freeElement3);
 				freeElement3.SetContent(identity, OnRowClicked, this);
 			}
+			ExecuteSort(activeSortFunction);
 		}
-		ExecuteSort(activeSortFunction);
 	}
 
 	private void SortByName(bool reselect)

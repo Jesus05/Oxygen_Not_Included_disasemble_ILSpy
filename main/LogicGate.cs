@@ -1,9 +1,51 @@
 using KSerialization;
+using STRINGS;
 using UnityEngine;
 
 [SerializationConfig(MemberSerialization.OptIn)]
 public class LogicGate : LogicGateBase, ILogicEventSender, ILogicNetworkConnection
 {
+	public class LogicGateDescriptions
+	{
+		public class Description
+		{
+			public string name;
+
+			public string active;
+
+			public string inactive;
+		}
+
+		public Description inputOne;
+
+		public Description inputTwo;
+
+		public Description output;
+	}
+
+	private static readonly LogicGateDescriptions.Description INPUT_ONE_SINGLE_DESCRIPTION = new LogicGateDescriptions.Description
+	{
+		name = (string)UI.LOGIC_PORTS.GATE_SINGLE_INPUT_ONE_NAME,
+		active = (string)UI.LOGIC_PORTS.GATE_SINGLE_INPUT_ONE_ACTIVE,
+		inactive = (string)UI.LOGIC_PORTS.GATE_SINGLE_INPUT_ONE_INACTIVE
+	};
+
+	private static readonly LogicGateDescriptions.Description INPUT_ONE_DOUBLE_DESCRIPTION = new LogicGateDescriptions.Description
+	{
+		name = (string)UI.LOGIC_PORTS.GATE_DOUBLE_INPUT_ONE_NAME,
+		active = (string)UI.LOGIC_PORTS.GATE_DOUBLE_INPUT_ONE_ACTIVE,
+		inactive = (string)UI.LOGIC_PORTS.GATE_DOUBLE_INPUT_ONE_INACTIVE
+	};
+
+	private static readonly LogicGateDescriptions.Description INPUT_TWO_DESCRIPTION = new LogicGateDescriptions.Description
+	{
+		name = (string)UI.LOGIC_PORTS.GATE_DOUBLE_INPUT_TWO_NAME,
+		active = (string)UI.LOGIC_PORTS.GATE_DOUBLE_INPUT_TWO_ACTIVE,
+		inactive = (string)UI.LOGIC_PORTS.GATE_DOUBLE_INPUT_TWO_INACTIVE
+	};
+
+	private LogicGateDescriptions descriptions;
+
 	private const bool IS_CIRCUIT_ENDPOINT = true;
 
 	private bool connected;
@@ -143,9 +185,56 @@ public class LogicGate : LogicGateBase, ILogicEventSender, ILogicNetworkConnecti
 		}
 	}
 
+	public virtual void LogicTick()
+	{
+	}
+
 	protected virtual int GetCustomValue(int val1, int val2)
 	{
 		return val1;
+	}
+
+	public int GetPortValue(PortId port)
+	{
+		switch (port)
+		{
+		case PortId.InputOne:
+			return inputOne.Value;
+		case PortId.InputTwo:
+			return base.RequiresTwoInputs ? inputTwo.Value : 0;
+		default:
+			return outputValue;
+		}
+	}
+
+	public bool GetPortConnected(PortId port)
+	{
+		if (port == PortId.InputTwo && !base.RequiresTwoInputs)
+		{
+			return false;
+		}
+		int cell = PortCell(port);
+		LogicCircuitManager logicCircuitManager = Game.Instance.logicCircuitManager;
+		LogicCircuitNetwork networkForCell = logicCircuitManager.GetNetworkForCell(cell);
+		return networkForCell != null;
+	}
+
+	public void SetPortDescriptions(LogicGateDescriptions descriptions)
+	{
+		this.descriptions = descriptions;
+	}
+
+	public LogicGateDescriptions.Description GetPortDescription(PortId port)
+	{
+		switch (port)
+		{
+		case PortId.InputOne:
+			return (descriptions.inputOne != null) ? descriptions.inputOne : ((!base.RequiresTwoInputs) ? INPUT_ONE_SINGLE_DESCRIPTION : INPUT_ONE_DOUBLE_DESCRIPTION);
+		case PortId.InputTwo:
+			return (descriptions.inputTwo == null) ? INPUT_TWO_DESCRIPTION : descriptions.inputTwo;
+		default:
+			return descriptions.output;
+		}
 	}
 
 	public int GetLogicValue()

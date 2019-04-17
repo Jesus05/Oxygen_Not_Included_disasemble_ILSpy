@@ -561,7 +561,7 @@ public class GroundRenderer : KMonoBehaviour
 			{
 				if ((UnityEngine.Object)element.substance.material == (UnityEngine.Object)null)
 				{
-					Output.LogError(element.name, "must have material associated with it in the substance table");
+					DebugUtil.LogErrorArgs(element.name, "must have material associated with it in the substance table");
 				}
 				Material material = new Material(element.substance.material);
 				InitOpaqueMaterial(material, element);

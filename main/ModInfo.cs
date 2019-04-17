@@ -3,7 +3,7 @@ using Newtonsoft.Json.Converters;
 using System;
 
 [Serializable]
-public struct ModInfo : IEquatable<ModInfo>
+public struct ModInfo
 {
 	public enum Source
 	{
@@ -38,37 +38,4 @@ public struct ModInfo : IEquatable<ModInfo>
 	public string description;
 
 	public ulong lastModifiedTime;
-
-	public ModInfo(Source source, ModType type, string asset_id, string description, string asset_path, ulong last_modified_time = 0uL)
-	{
-		this.source = source;
-		this.type = type;
-		assetID = asset_id;
-		this.description = description;
-		assetPath = asset_path;
-		enabled = false;
-		markedForDelete = false;
-		markedForUpdate = false;
-		lastModifiedTime = last_modified_time;
-	}
-
-	public bool Equals(ModInfo other)
-	{
-		return source == other.source && assetID == other.assetID;
-	}
-
-	public override int GetHashCode()
-	{
-		return source.GetHashCode() ^ assetID.GetHashCode();
-	}
-
-	public override bool Equals(object other)
-	{
-		if (!(other is ModInfo))
-		{
-			return false;
-		}
-		ModInfo other2 = (ModInfo)other;
-		return Equals(other2);
-	}
 }

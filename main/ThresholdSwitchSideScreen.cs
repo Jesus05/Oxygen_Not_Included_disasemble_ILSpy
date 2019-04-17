@@ -99,7 +99,7 @@ public class ThresholdSwitchSideScreen : SideScreenContent, IRender200ms
 		target = null;
 		if ((Object)new_target == (Object)null)
 		{
-			Debug.LogError("Invalid gameObject received", null);
+			Debug.LogError("Invalid gameObject received");
 		}
 		else
 		{
@@ -108,7 +108,7 @@ public class ThresholdSwitchSideScreen : SideScreenContent, IRender200ms
 			if (thresholdSwitch == null)
 			{
 				target = null;
-				Debug.LogError("The gameObject received does not contain a IThresholdSwitch component", null);
+				Debug.LogError("The gameObject received does not contain a IThresholdSwitch component");
 			}
 			else
 			{

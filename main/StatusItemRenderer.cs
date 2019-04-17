@@ -214,7 +214,7 @@ public class StatusItemRenderer
 					{
 						text += statusItem3.Id;
 					}
-					Debug.LogWarning(text, null);
+					Debug.LogWarning(text);
 				}
 			}
 		}

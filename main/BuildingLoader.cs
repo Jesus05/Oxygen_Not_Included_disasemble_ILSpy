@@ -116,7 +116,7 @@ public class BuildingLoader : KMonoBehaviour
 		}
 		if (def.AnimFiles == null)
 		{
-			Debug.LogError(def.Name + " Def missing anim files", null);
+			Debug.LogError(def.Name + " Def missing anim files");
 		}
 		return flag;
 	}
@@ -173,7 +173,7 @@ public class BuildingLoader : KMonoBehaviour
 		UpdateComponentRequirement<AnimTileable>(gameObject, required);
 		if (def.RequiresPowerInput)
 		{
-			GeneratedBuildings.RegisterLogicPorts(gameObject, LogicOperationalController.INPUT_PORTS);
+			GeneratedBuildings.RegisterLogicPorts(gameObject, LogicOperationalController.INPUT_PORTS_0_0);
 		}
 		Assets.AddPrefab(kPrefabID);
 		gameObject.PreInit();
@@ -212,7 +212,7 @@ public class BuildingLoader : KMonoBehaviour
 		}
 		if (!Add2DComponents(def, go, null, false, -1))
 		{
-			Debug.Log(def.Name + " is not yet a 2d building!", null);
+			Debug.Log(def.Name + " is not yet a 2d building!");
 		}
 		UpdateComponentRequirement<EnergyConsumer>(go, def.RequiresPowerInput);
 		Rotatable rotatable = UpdateComponentRequirement<Rotatable>(go, def.PermittedRotations != PermittedRotations.Unrotatable);
@@ -258,7 +258,7 @@ public class BuildingLoader : KMonoBehaviour
 		}
 		if (def.RequiresPowerInput)
 		{
-			GeneratedBuildings.RegisterLogicPorts(go, LogicOperationalController.INPUT_PORTS);
+			GeneratedBuildings.RegisterLogicPorts(go, LogicOperationalController.INPUT_PORTS_0_0);
 			go.AddOrGet<LogicOperationalController>();
 		}
 		UpdateComponentRequirement<BuildingCellVisualizer>(go, BuildingCellVisualizer.CheckRequiresComponent(def));
@@ -309,7 +309,7 @@ public class BuildingLoader : KMonoBehaviour
 		}
 		if (def.RequiresPowerInput)
 		{
-			GeneratedBuildings.RegisterLogicPorts(gameObject, LogicOperationalController.INPUT_PORTS);
+			GeneratedBuildings.RegisterLogicPorts(gameObject, LogicOperationalController.INPUT_PORTS_0_0);
 		}
 		gameObject.PreInit();
 		Assets.AddPrefab(gameObject.GetComponent<KPrefabID>());

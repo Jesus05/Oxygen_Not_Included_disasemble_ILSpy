@@ -8,11 +8,11 @@ public class NumericDropDownTableColumn : TableColumn
 {
 	public class ToolTipCallbacks
 	{
-		public Action<MinionIdentity, GameObject, ToolTip> headerTooltip;
+		public Action<IAssignableIdentity, GameObject, ToolTip> headerTooltip;
 
-		public Action<MinionIdentity, GameObject, ToolTip> headerSortTooltip;
+		public Action<IAssignableIdentity, GameObject, ToolTip> headerSortTooltip;
 
-		public Action<MinionIdentity, GameObject, ToolTip> headerDropdownTooltip;
+		public Action<IAssignableIdentity, GameObject, ToolTip> headerDropdownTooltip;
 	}
 
 	public object userData;
@@ -23,7 +23,7 @@ public class NumericDropDownTableColumn : TableColumn
 
 	private List<TMP_Dropdown.OptionData> options;
 
-	public NumericDropDownTableColumn(object user_data, List<TMP_Dropdown.OptionData> options, Action<MinionIdentity, GameObject> on_load_action, Action<GameObject, int> set_value_action, Comparison<MinionIdentity> sort_comparer, ToolTipCallbacks callbacks, Func<bool> revealed = null)
+	public NumericDropDownTableColumn(object user_data, List<TMP_Dropdown.OptionData> options, Action<IAssignableIdentity, GameObject> on_load_action, Action<GameObject, int> set_value_action, Comparison<IAssignableIdentity> sort_comparer, ToolTipCallbacks callbacks, Func<bool> revealed = null)
 		: base(on_load_action, sort_comparer, callbacks.headerTooltip, callbacks.headerSortTooltip, revealed, false, string.Empty)
 	{
 		userData = user_data;

@@ -99,7 +99,7 @@ public class Immigration : KMonoBehaviour, ISaveLoadable, ISim200ms, IPersonalPr
 			new CarePackageInfo("OilfloaterEgg", 3f, () => CycleCondition(12)),
 			new CarePackageInfo("MoleEgg", 3f, () => CycleCondition(24)),
 			new CarePackageInfo("DreckoEgg", 3f, () => CycleCondition(24)),
-			new CarePackageInfo("VitaminSupplement", 3f, null),
+			new CarePackageInfo("BasicCure", 3f, null),
 			new CarePackageInfo("Funky_Vest", 1f, null)
 		};
 	}
@@ -159,9 +159,8 @@ public class Immigration : KMonoBehaviour, ISaveLoadable, ISim200ms, IPersonalPr
 		stopped = false;
 	}
 
-	public int GetPersonalPriority(ChoreGroup group, out bool auto_assigned)
+	public int GetPersonalPriority(ChoreGroup group)
 	{
-		auto_assigned = false;
 		if (defaultPersonalPriorities.TryGetValue(group.IdHash, out int value))
 		{
 			return value;
@@ -184,7 +183,7 @@ public class Immigration : KMonoBehaviour, ISaveLoadable, ISim200ms, IPersonalPr
 		return list[UnityEngine.Random.Range(0, list.Count)];
 	}
 
-	public void SetPersonalPriority(ChoreGroup group, int value, bool is_auto_assigned)
+	public void SetPersonalPriority(ChoreGroup group, int value)
 	{
 		defaultPersonalPriorities[group.IdHash] = value;
 	}
@@ -194,20 +193,14 @@ public class Immigration : KMonoBehaviour, ISaveLoadable, ISim200ms, IPersonalPr
 		return 0;
 	}
 
-	public bool CanRoleManageChoreGroup(ChoreGroup group)
-	{
-		return false;
-	}
-
 	public void ApplyDefaultPersonalPriorities(GameObject minion)
 	{
 		IPersonalPriorityManager instance = Instance;
 		IPersonalPriorityManager component = minion.GetComponent<ChoreConsumer>();
 		foreach (ChoreGroup resource in Db.Get().ChoreGroups.resources)
 		{
-			bool auto_assigned;
-			int personalPriority = instance.GetPersonalPriority(resource, out auto_assigned);
-			component.SetPersonalPriority(resource, personalPriority, false);
+			int personalPriority = instance.GetPersonalPriority(resource);
+			component.SetPersonalPriority(resource, personalPriority);
 		}
 	}
 

@@ -386,15 +386,13 @@ public class CircuitManager
 				CircuitInfo value2 = this.circuitInfo[num7];
 				value2.batteries.Sort((Battery a, Battery b) => (a.Capacity - a.JoulesAvailable).CompareTo(b.Capacity - b.JoulesAvailable));
 				value2.inputTransformers.Sort((Battery a, Battery b) => (a.Capacity - a.JoulesAvailable).CompareTo(b.Capacity - b.JoulesAvailable));
+				value2.generators.Sort((Generator a, Generator b) => a.JoulesAvailable.CompareTo(b.JoulesAvailable));
 				float joules_used = 0f;
-				foreach (Battery inputTransformer in value2.inputTransformers)
-				{
-					ChargeTransformer(dt, inputTransformer, value2.generators, ref joules_used);
-				}
-				ChargeBatteries(num7, value2.outputTransformers, value2.inputTransformers, ref joules_used);
+				ChargeTransformers(value2.inputTransformers, value2.generators, ref joules_used);
+				ChargeBatteries(value2.inputTransformers, value2.outputTransformers, ref joules_used);
 				float joules_used2 = 0f;
-				ChargeBatteries(num7, value2.generators, value2.batteries, ref joules_used2);
-				ChargeBatteries(num7, value2.outputTransformers, value2.batteries, ref joules_used2);
+				ChargeBatteries(value2.batteries, value2.generators, ref joules_used2);
+				ChargeBatteries(value2.batteries, value2.outputTransformers, ref joules_used2);
 				value2.minBatteryPercentFull = 1f;
 				for (int num8 = 0; num8 < value2.batteries.Count; num8++)
 				{
@@ -420,20 +418,17 @@ public class CircuitManager
 			for (int num10 = 0; num10 < this.circuitInfo.Count; num10++)
 			{
 				CircuitInfo value3 = this.circuitInfo[num10];
+				value3.batteries.Sort((Battery a, Battery b) => a.JoulesAvailable.CompareTo(b.JoulesAvailable));
 				float joules_used3 = 0f;
-				for (int num11 = 0; num11 < value3.inputTransformers.Count; num11++)
-				{
-					Battery transformer = value3.inputTransformers[num11];
-					ChargeTransformer(dt, transformer, value3.batteries, ref joules_used3);
-				}
+				ChargeTransformers(value3.inputTransformers, value3.batteries, ref joules_used3);
 				value3.wattsUsed += joules_used3 / 0.2f;
 				this.circuitInfo[num10] = value3;
 			}
-			for (int num12 = 0; num12 < this.circuitInfo.Count; num12++)
+			for (int num11 = 0; num11 < this.circuitInfo.Count; num11++)
 			{
-				CircuitInfo value4 = this.circuitInfo[num12];
+				CircuitInfo value4 = this.circuitInfo[num11];
 				bool is_connected_to_something_useful = value4.generators.Count + value4.consumers.Count + value4.outputTransformers.Count > 0;
-				UpdateBatteryConnectionStatus(value4.batteries, is_connected_to_something_useful, num12);
+				UpdateBatteryConnectionStatus(value4.batteries, is_connected_to_something_useful, num11);
 				bool flag4 = value4.generators.Count > 0 || value4.outputTransformers.Count > 0;
 				if (!flag4)
 				{
@@ -446,18 +441,18 @@ public class CircuitManager
 						}
 					}
 				}
-				UpdateBatteryConnectionStatus(value4.inputTransformers, flag4, num12);
-				this.circuitInfo[num12] = value4;
-				for (int num13 = 0; num13 < value4.generators.Count; num13++)
+				UpdateBatteryConnectionStatus(value4.inputTransformers, flag4, num11);
+				this.circuitInfo[num11] = value4;
+				for (int num12 = 0; num12 < value4.generators.Count; num12++)
 				{
-					Generator generator3 = value4.generators[num13];
+					Generator generator3 = value4.generators[num12];
 					ReportManager.Instance.ReportValue(ReportManager.ReportType.EnergyWasted, 0f - generator3.JoulesAvailable, StringFormatter.Replace(BUILDINGS.PREFABS.GENERATOR.OVERPRODUCTION, "{Generator}", generator3.gameObject.GetProperName()), null);
 				}
 			}
-			for (int num14 = 0; num14 < this.circuitInfo.Count; num14++)
+			for (int num13 = 0; num13 < this.circuitInfo.Count; num13++)
 			{
-				CircuitInfo circuitInfo = this.circuitInfo[num14];
-				CheckCircuitOverloaded(0.2f, num14, circuitInfo.wattsUsed);
+				CircuitInfo circuitInfo = this.circuitInfo[num13];
+				CheckCircuitOverloaded(0.2f, num13, circuitInfo.wattsUsed);
 			}
 		}
 	}
@@ -492,56 +487,45 @@ public class CircuitManager
 		return joules_needed;
 	}
 
-	private float GetBatteryChargeCapacity(Generator g, List<Battery> batteries, out int num_to_charge)
+	private void ChargeBatteries(List<Battery> sink_batteries, List<Generator> source_generators, ref float joules_used)
 	{
-		float result = 0f;
-		num_to_charge = 0;
-		for (int i = 0; i < batteries.Count; i++)
+		if (sink_batteries.Count != 0)
 		{
-			Battery battery = batteries[i];
-			if ((Object)battery != (Object)null && (Object)g != (Object)null && (Object)battery.gameObject != (Object)g.gameObject && battery.Capacity > battery.JoulesAvailable)
+			foreach (Generator source_generator in source_generators)
 			{
-				result = battery.Capacity - battery.JoulesAvailable;
-				num_to_charge = batteries.Count - i;
-				break;
-			}
-		}
-		return result;
-	}
-
-	private void ChargeBatteries(int circuit_id, List<Generator> generators, List<Battery> batteries, ref float joules_used)
-	{
-		if (batteries.Count != 0)
-		{
-			foreach (Generator generator in generators)
-			{
-				for (bool flag = true; flag && generator.JoulesAvailable >= 1f; flag = ChargeBattery(generator, batteries, ref joules_used))
+				for (bool flag = true; flag && source_generator.JoulesAvailable >= 1f; flag = ChargeBatteriesFromGenerator(sink_batteries, source_generator, ref joules_used))
 				{
 				}
 			}
 		}
 	}
 
-	private bool ChargeBattery(Generator g, List<Battery> batteries, ref float joules_used)
+	private bool ChargeBatteriesFromGenerator(List<Battery> sink_batteries, Generator source_generator, ref float joules_used)
 	{
-		int num_to_charge;
-		float batteryChargeCapacity = GetBatteryChargeCapacity(g, batteries, out num_to_charge);
-		if (batteryChargeCapacity <= 0f)
+		float num = source_generator.JoulesAvailable;
+		float num2 = 0f;
+		for (int i = 0; i < sink_batteries.Count; i++)
 		{
-			return false;
-		}
-		float num = Mathf.Min(batteryChargeCapacity, g.JoulesAvailable / (float)num_to_charge);
-		g.ApplyDeltaJoules((0f - num) * (float)num_to_charge, false);
-		joules_used += num * (float)num_to_charge;
-		for (int i = batteries.Count - num_to_charge; i < batteries.Count; i++)
-		{
-			Battery battery = batteries[i];
-			if ((Object)g != (Object)null && (Object)battery != (Object)null && (Object)g.gameObject != (Object)battery.gameObject)
+			Battery battery = sink_batteries[i];
+			if ((Object)battery != (Object)null && (Object)source_generator != (Object)null && (Object)battery.gameObject != (Object)source_generator.gameObject)
 			{
-				battery.AddEnergy(num);
+				float num3 = battery.Capacity - battery.JoulesAvailable;
+				if (num3 > 0f)
+				{
+					float num4 = Mathf.Min(num3, num / (float)(sink_batteries.Count - i));
+					battery.AddEnergy(num4);
+					num -= num4;
+					num2 += num4;
+				}
 			}
 		}
-		return true;
+		if (num2 > 0f)
+		{
+			source_generator.ApplyDeltaJoules(0f - num2, false);
+			joules_used += num2;
+			return true;
+		}
+		return false;
 	}
 
 	private void UpdateBatteryConnectionStatus(List<Battery> batteries, bool is_connected_to_something_useful, int circuit_id)
@@ -566,36 +550,37 @@ public class CircuitManager
 		}
 	}
 
-	private void ChargeTransformer<T>(float dt, Battery transformer, List<T> energy_producers, ref float joules_used) where T : IEnergyProducer
+	private void ChargeTransformer<T>(Battery sink_transformer, List<T> source_energy_producers, ref float joules_used) where T : IEnergyProducer
 	{
-		if (energy_producers.Count > 0)
+		if (source_energy_producers.Count > 0)
 		{
-			float num = Mathf.Min(transformer.Capacity - transformer.JoulesAvailable, transformer.ChargeCapacity);
+			float num = Mathf.Min(sink_transformer.Capacity - sink_transformer.JoulesAvailable, sink_transformer.ChargeCapacity);
 			if (!(num <= 0f))
 			{
-				float a = 0f;
-				int num2 = 0;
-				for (int i = 0; i < energy_producers.Count; i++)
+				float num2 = num;
+				float num3 = 0f;
+				for (int i = 0; i < source_energy_producers.Count; i++)
 				{
-					T val = energy_producers[i];
+					T val = source_energy_producers[i];
 					if (val.JoulesAvailable > 0f)
 					{
-						num2 = energy_producers.Count - i;
-						a = val.JoulesAvailable;
-						break;
+						float num4 = Mathf.Min(val.JoulesAvailable, num2 / (float)(source_energy_producers.Count - i));
+						val.ConsumeEnergy(num4);
+						num2 -= num4;
+						num3 += num4;
 					}
 				}
-				if (num2 > 0)
-				{
-					float num3 = Mathf.Min(a, num / (float)num2);
-					transformer.AddEnergy(num3 * (float)num2);
-					joules_used += num3 * (float)num2;
-					for (int j = energy_producers.Count - num2; j < energy_producers.Count; j++)
-					{
-						energy_producers[j].ConsumeEnergy(num3);
-					}
-				}
+				sink_transformer.AddEnergy(num3);
+				joules_used += num3;
 			}
+		}
+	}
+
+	private void ChargeTransformers<T>(List<Battery> sink_transformers, List<T> source_energy_producers, ref float joules_used) where T : IEnergyProducer
+	{
+		foreach (Battery sink_transformer in sink_transformers)
+		{
+			ChargeTransformer(sink_transformer, source_energy_producers, ref joules_used);
 		}
 	}
 

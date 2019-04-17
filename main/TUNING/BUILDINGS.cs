@@ -5,6 +5,18 @@ namespace TUNING
 {
 	public class BUILDINGS
 	{
+		public class PHARMACY
+		{
+			public class FABRICATIONTIME
+			{
+				public const float TIER0 = 50f;
+
+				public const float TIER1 = 100f;
+
+				public const float TIER2 = 200f;
+			}
+		}
+
 		public class OVERPRESSURE
 		{
 			public const float TIER0 = 1.8f;
@@ -490,12 +502,6 @@ namespace TUNING
 
 		public const float GEOREFINERY_FABRICATIONTIME = 120f;
 
-		public const float PHARMACY_FABRICATIONTIME = 40f;
-
-		public const float PHARMACY_GENERIC_INPUTKG = 100f;
-
-		public const float PHARMACY_GENERIC_SINGLE = 1f;
-
 		public const float MASS_BURN_RATE_HYDROGENGENERATOR = 0.1f;
 
 		public const float COOKER_FOOD_TEMPERATURE = 368.15f;
@@ -536,6 +542,7 @@ namespace TUNING
 				"StorageLockerSmart",
 				"LiquidReservoir",
 				"GasReservoir",
+				"ObjectDispenser",
 				"TravelTube",
 				"TravelTubeEntrance",
 				"TravelTubeWallBridge"
@@ -556,6 +563,7 @@ namespace TUNING
 				"MethaneGenerator",
 				"PetroleumGenerator",
 				"SteamTurbine",
+				"SteamTurbine2",
 				"SolarPanel",
 				"Wire",
 				"WireBridge",
@@ -660,8 +668,9 @@ namespace TUNING
 				"WashSink",
 				"HandSanitizer",
 				"Apothecary",
+				"DoctorStation",
+				"AdvancedDoctorStation",
 				"MedicalCot",
-				"MedicalBed",
 				"MassageTable",
 				"Grave"
 			}),
@@ -703,6 +712,7 @@ namespace TUNING
 				"RanchStation",
 				"ShearingStation",
 				"RoleStation",
+				"ResetSkillsStation",
 				"ClothingFabricator",
 				"SuitFabricator",
 				"SuitMarker",
@@ -716,6 +726,8 @@ namespace TUNING
 				"SpaceHeater",
 				"LiquidHeater",
 				"LiquidCooledFan",
+				"IceCooledFan",
+				"IceMachine",
 				"AirConditioner",
 				"LiquidConditioner",
 				"OreScrubber",
@@ -752,6 +764,8 @@ namespace TUNING
 				"SolidConduit",
 				"SolidConduitInbox",
 				"SolidConduitOutbox",
+				"SolidVent",
+				"SolidLogicValve",
 				"SolidConduitBridge",
 				"AutoMiner"
 			}),
@@ -844,7 +858,7 @@ namespace TUNING
 			typeof(WaterCooler),
 			typeof(Edible),
 			typeof(PlantableSeed),
-			typeof(DiseaseTrigger),
+			typeof(SicknessTrigger),
 			typeof(MedicinalPill),
 			typeof(SeedProducer),
 			typeof(Geyser),
@@ -865,6 +879,7 @@ namespace TUNING
 			typeof(LogicPorts),
 			typeof(Capturable),
 			typeof(Trappable),
+			typeof(SpaceArtifact),
 			typeof(DecorProvider)
 		};
 	}

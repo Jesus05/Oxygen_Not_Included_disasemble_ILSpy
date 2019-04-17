@@ -60,60 +60,11 @@ namespace Klei.AI
 			}
 		}
 
-		public abstract class DiseaseComponent
-		{
-			public abstract object OnInfect(GameObject go, DiseaseInstance diseaseInstance);
-
-			public abstract void OnCure(GameObject go, object instance_data);
-
-			public virtual List<Descriptor> GetSymptoms()
-			{
-				return null;
-			}
-		}
-
-		public enum InfectionVector
-		{
-			Contact,
-			Digestion,
-			Inhalation,
-			Exposure
-		}
-
-		public enum DiseaseType
-		{
-			Pathogen,
-			Ailment,
-			Injury
-		}
-
-		public enum Severity
-		{
-			Benign,
-			Minor,
-			Major,
-			Critical
-		}
-
 		private StringKey name;
-
-		private StringKey descriptiveSymptoms;
-
-		private float sicknessDuration = 600f;
-
-		public bool doctorRequired;
-
-		public float fatalityDuration;
 
 		public HashedString id;
 
-		public DiseaseType diseaseType;
-
-		public Severity severity;
-
 		public float strength;
-
-		public float immuneAttackStrength;
 
 		public RangeInfo temperatureRange;
 
@@ -131,13 +82,9 @@ namespace Klei.AI
 
 		public ElemExposureInfo[] elemExposureInfo;
 
-		public List<InfectionVector> infectionVectors;
-
 		public Color32 overlayColour = new Color32(byte.MaxValue, 0, 0, byte.MaxValue);
 
 		public string overlayLegendHovertext;
-
-		private List<DiseaseComponent> components = new List<DiseaseComponent>();
 
 		public Amount amount;
 
@@ -164,32 +111,20 @@ namespace Klei.AI
 
 		public new string Name => Strings.Get(name);
 
-		public float SicknessDuration => sicknessDuration;
-
-		public Disease(string id, DiseaseType type, Severity severity, float immune_attack_strength, List<InfectionVector> infection_vectors, float sickness_duration, byte strength, RangeInfo temperature_range, RangeInfo temperature_half_lives, RangeInfo pressure_range, RangeInfo pressure_half_lives)
+		public Disease(string id, byte strength, RangeInfo temperature_range, RangeInfo temperature_half_lives, RangeInfo pressure_range, RangeInfo pressure_half_lives)
 			: base(id, null, null)
 		{
 			name = new StringKey("STRINGS.DUPLICANTS.DISEASES." + id.ToUpper() + ".NAME");
 			this.id = id;
-			diseaseType = type;
-			this.severity = severity;
-			immuneAttackStrength = immune_attack_strength;
-			infectionVectors = infection_vectors;
-			sicknessDuration = sickness_duration;
 			DiseaseVisualization.Info info = Assets.instance.DiseaseVisualization.GetInfo(id);
 			overlayColour = info.overlayColour;
 			temperatureRange = temperature_range;
 			temperatureHalfLives = temperature_half_lives;
 			pressureRange = pressure_range;
 			pressureHalfLives = pressure_half_lives;
-			descriptiveSymptoms = new StringKey("STRINGS.DUPLICANTS.DISEASES." + id.ToUpper() + ".DESCRIPTIVE_SYMPTOMS");
 			PopulateElemGrowthInfo();
 			ApplyRules();
 			string str = Strings.Get("STRINGS.DUPLICANTS.DISEASES." + id.ToUpper() + ".LEGEND_HOVERTEXT").ToString();
-			foreach (Descriptor qualitativeDescriptor in GetQualitativeDescriptors())
-			{
-				str = str + string.Empty + qualitativeDescriptor.IndentedText() + "\n";
-			}
 			overlayLegendHovertext = str + DUPLICANTS.DISEASES.LEGEND_POSTAMBLE;
 			Attribute attribute = new Attribute(id + "Min", "Minimum" + id.ToString(), string.Empty, string.Empty, 0f, Attribute.Display.Normal, false, null, null);
 			Attribute attribute2 = new Attribute(id + "Max", "Maximum" + id.ToString(), string.Empty, string.Empty, 1E+07f, Attribute.Display.Normal, false, null, null);
@@ -230,6 +165,27 @@ namespace Klei.AI
 			if (growthRules == null)
 			{
 				growthRules = new List<GrowthRule>();
+				Debug.Assert(g.GetType() == typeof(GrowthRule), "First rule must be a fully defined base rule.");
+				float? underPopulationDeathRate = g.underPopulationDeathRate;
+				Debug.Assert(underPopulationDeathRate.HasValue, "First rule must be a fully defined base rule.");
+				float? populationHalfLife = g.populationHalfLife;
+				Debug.Assert(populationHalfLife.HasValue, "First rule must be a fully defined base rule.");
+				float? overPopulationHalfLife = g.overPopulationHalfLife;
+				Debug.Assert(overPopulationHalfLife.HasValue, "First rule must be a fully defined base rule.");
+				float? diffusionScale = g.diffusionScale;
+				Debug.Assert(diffusionScale.HasValue, "First rule must be a fully defined base rule.");
+				float? minCountPerKG = g.minCountPerKG;
+				Debug.Assert(minCountPerKG.HasValue, "First rule must be a fully defined base rule.");
+				float? maxCountPerKG = g.maxCountPerKG;
+				Debug.Assert(maxCountPerKG.HasValue, "First rule must be a fully defined base rule.");
+				int? minDiffusionCount = g.minDiffusionCount;
+				Debug.Assert(minDiffusionCount.HasValue, "First rule must be a fully defined base rule.");
+				byte? minDiffusionInfestationTickCount = g.minDiffusionInfestationTickCount;
+				Debug.Assert(minDiffusionInfestationTickCount.HasValue, "First rule must be a fully defined base rule.");
+			}
+			else
+			{
+				Debug.Assert(g.GetType() != typeof(GrowthRule), "Subsequent rules should not be base rules");
 			}
 			growthRules.Add(g);
 		}
@@ -239,6 +195,13 @@ namespace Klei.AI
 			if (exposureRules == null)
 			{
 				exposureRules = new List<ExposureRule>();
+				Debug.Assert(g.GetType() == typeof(ExposureRule), "First rule must be a fully defined base rule.");
+				float? populationHalfLife = g.populationHalfLife;
+				Debug.Assert(populationHalfLife.HasValue, "First rule must be a fully defined base rule.");
+			}
+			else
+			{
+				Debug.Assert(g.GetType() != typeof(ExposureRule), "Subsequent rules should not be base rules");
 			}
 			exposureRules.Add(g);
 		}
@@ -367,42 +330,6 @@ namespace Klei.AI
 			return num;
 		}
 
-		public object[] Infect(GameObject go, DiseaseInstance diseaseInstance, DiseaseExposureInfo exposure_info)
-		{
-			object[] array = new object[components.Count];
-			for (int i = 0; i < components.Count; i++)
-			{
-				array[i] = components[i].OnInfect(go, diseaseInstance);
-			}
-			return array;
-		}
-
-		public void Cure(GameObject go, object[] componentData)
-		{
-			for (int i = 0; i < components.Count; i++)
-			{
-				components[i].OnCure(go, componentData[i]);
-			}
-		}
-
-		public List<Descriptor> GetSymptoms()
-		{
-			List<Descriptor> list = new List<Descriptor>();
-			for (int i = 0; i < components.Count; i++)
-			{
-				List<Descriptor> symptoms = components[i].GetSymptoms();
-				if (symptoms != null)
-				{
-					list.AddRange(symptoms);
-				}
-			}
-			if (fatalityDuration > 0f)
-			{
-				list.Add(new Descriptor(string.Format(DUPLICANTS.DISEASES.DEATH_SYMPTOM, GameUtil.GetFormattedCycles(fatalityDuration, "F1")), string.Format(DUPLICANTS.DISEASES.DEATH_SYMPTOM_TOOLTIP, GameUtil.GetFormattedCycles(fatalityDuration, "F1")), Descriptor.DescriptorType.SymptomAidable, false));
-			}
-			return list;
-		}
-
 		public static float HalfLifeToGrowthRate(float half_life_in_seconds, float dt)
 		{
 			float num = 1f;
@@ -473,56 +400,6 @@ namespace Klei.AI
 				t = (range_value - value3) / num3;
 			}
 			return Mathf.Lerp(value, value2, t);
-		}
-
-		protected void AddDiseaseComponent(DiseaseComponent cmp)
-		{
-			components.Add(cmp);
-		}
-
-		public T GetDiseaseComponent<T>() where T : DiseaseComponent
-		{
-			for (int i = 0; i < components.Count; i++)
-			{
-				if (components[i] is T)
-				{
-					return components[i] as T;
-				}
-			}
-			return (T)null;
-		}
-
-		public virtual List<Descriptor> GetDiseaseSourceDescriptors()
-		{
-			return new List<Descriptor>();
-		}
-
-		public List<Descriptor> GetQualitativeDescriptors()
-		{
-			List<Descriptor> list = new List<Descriptor>();
-			using (List<InfectionVector>.Enumerator enumerator = infectionVectors.GetEnumerator())
-			{
-				while (enumerator.MoveNext())
-				{
-					switch (enumerator.Current)
-					{
-					case InfectionVector.Contact:
-						list.Add(new Descriptor(DUPLICANTS.DISEASES.DESCRIPTORS.INFO.SKINBORNE, DUPLICANTS.DISEASES.DESCRIPTORS.INFO.SKINBORNE_TOOLTIP, Descriptor.DescriptorType.Information, false));
-						break;
-					case InfectionVector.Inhalation:
-						list.Add(new Descriptor(DUPLICANTS.DISEASES.DESCRIPTORS.INFO.AIRBORNE, DUPLICANTS.DISEASES.DESCRIPTORS.INFO.AIRBORNE_TOOLTIP, Descriptor.DescriptorType.Information, false));
-						break;
-					case InfectionVector.Digestion:
-						list.Add(new Descriptor(DUPLICANTS.DISEASES.DESCRIPTORS.INFO.FOODBORNE, DUPLICANTS.DISEASES.DESCRIPTORS.INFO.FOODBORNE_TOOLTIP, Descriptor.DescriptorType.Information, false));
-						break;
-					case InfectionVector.Exposure:
-						list.Add(new Descriptor(DUPLICANTS.DISEASES.DESCRIPTORS.INFO.SUNBORNE, DUPLICANTS.DISEASES.DESCRIPTORS.INFO.SUNBORNE_TOOLTIP, Descriptor.DescriptorType.Information, false));
-						break;
-					}
-				}
-			}
-			list.Add(new Descriptor(Strings.Get(descriptiveSymptoms), string.Empty, Descriptor.DescriptorType.Information, false));
-			return list;
 		}
 
 		public List<Descriptor> GetQuantitativeDescriptors()

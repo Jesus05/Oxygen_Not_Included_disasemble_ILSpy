@@ -85,7 +85,7 @@ public class SerializedList<ItemType>
 				Type type = Type.GetType(text);
 				if (type == null)
 				{
-					Output.LogWarning("Type no longer exists: " + text);
+					DebugUtil.LogWarningArgs("Type no longer exists: " + text);
 					fastReader.SkipBytes(num2);
 				}
 				else
@@ -94,7 +94,7 @@ public class SerializedList<ItemType>
 					Deserializer.DeserializeTypeless(val, fastReader);
 					if (fastReader.Position != position + num2)
 					{
-						Output.LogWarning("Expected to be at offset", position + num2, "but was only at offset", fastReader.Position, ". Skipping to catch up.");
+						DebugUtil.LogWarningArgs("Expected to be at offset", position + num2, "but was only at offset", fastReader.Position, ". Skipping to catch up.");
 						fastReader.SkipBytes(position + num2 - fastReader.Position);
 					}
 					items.Add(val);

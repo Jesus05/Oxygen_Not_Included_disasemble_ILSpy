@@ -41,7 +41,7 @@ public class GlobalAssets : MonoBehaviour
 					if (eventList != 0)
 					{
 						bank.getPath(out path);
-						Output.LogError($"ERROR [{eventList}] loading FMOD events for bank [{path}]");
+						Debug.LogError($"ERROR [{eventList}] loading FMOD events for bank [{path}]");
 					}
 					else
 					{

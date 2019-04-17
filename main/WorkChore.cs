@@ -119,9 +119,10 @@ public class WorkChore<WorkableType> : Chore<WorkChore<WorkableType>.StatesInsta
 			AddPrecondition(ChorePreconditions.instance.IsAssignedtoMe, base.smi.sm.workable.Get<Assignable>(base.smi));
 		}
 		WorkableType val = target as WorkableType;
-		if ((UnityEngine.Object)val != (UnityEngine.Object)null && val.requiredRolePerk.IsValid)
+		if ((UnityEngine.Object)val != (UnityEngine.Object)null && !string.IsNullOrEmpty(val.requiredSkillPerk))
 		{
-			AddPrecondition(ChorePreconditions.instance.HasRolePerk, val.requiredRolePerk);
+			HashedString hashedString = val.requiredSkillPerk;
+			AddPrecondition(ChorePreconditions.instance.HasSkillPerk, hashedString);
 		}
 	}
 

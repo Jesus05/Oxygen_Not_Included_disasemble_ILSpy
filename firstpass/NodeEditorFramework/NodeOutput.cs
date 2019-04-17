@@ -123,7 +123,7 @@ namespace NodeEditorFramework
 			{
 				return value;
 			}
-			Debug.LogError("Trying to GetValue<" + type.FullName + "> for Output Type: " + typeData.Type.FullName, null);
+			Debug.LogError("Trying to GetValue<" + type.FullName + "> for Output Type: " + typeData.Type.FullName);
 			return null;
 		}
 
@@ -136,7 +136,7 @@ namespace NodeEditorFramework
 			}
 			else
 			{
-				Debug.LogError("Trying to SetValue of type " + Value.GetType().FullName + " for Output Type: " + typeData.Type.FullName, null);
+				Debug.LogError("Trying to SetValue of type " + Value.GetType().FullName + " for Output Type: " + typeData.Type.FullName);
 			}
 		}
 
@@ -147,7 +147,7 @@ namespace NodeEditorFramework
 			{
 				return (T)(value ?? (value = GetDefault<T>()));
 			}
-			Debug.LogError("Trying to GetValue<" + typeof(T).FullName + "> for Output Type: " + typeData.Type.FullName, null);
+			Debug.LogError("Trying to GetValue<" + typeof(T).FullName + "> for Output Type: " + typeData.Type.FullName);
 			return GetDefault<T>();
 		}
 
@@ -160,7 +160,7 @@ namespace NodeEditorFramework
 			}
 			else
 			{
-				Debug.LogError("Trying to SetValue<" + typeof(T).FullName + "> for Output Type: " + typeData.Type.FullName, null);
+				Debug.LogError("Trying to SetValue<" + typeof(T).FullName + "> for Output Type: " + typeData.Type.FullName);
 			}
 		}
 

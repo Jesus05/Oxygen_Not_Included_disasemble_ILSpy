@@ -43,7 +43,7 @@ namespace ProcGen.Map
 			}
 			if (!createOK)
 			{
-				Debug.LogWarning("Cant create Edge but no edge found", null);
+				Debug.LogWarning("Cant create Edge but no edge found");
 				return null;
 			}
 			Satsuma.Arc arc = base.baseGraph.AddArc(corner0.node, corner1.node, Directedness.Undirected);
@@ -63,7 +63,7 @@ namespace ProcGen.Map
 			}
 			if (!createOK)
 			{
-				Debug.LogWarning("Cant create Edge but no edge found", null);
+				Debug.LogWarning("Cant create Edge but no edge found");
 				return null;
 			}
 			Satsuma.Arc arc = base.baseGraph.AddArc(corner0.node, corner1.node, Directedness.Undirected);
@@ -81,7 +81,7 @@ namespace ProcGen.Map
 			{
 				if (!createOK)
 				{
-					Debug.LogWarning("Cant create Corner but no corner found", null);
+					Debug.LogWarning("Cant create Corner but no corner found");
 					return null;
 				}
 				corner = new Corner(base.baseGraph.AddNode());
@@ -111,7 +111,7 @@ namespace ProcGen.Map
 			{
 				if (!createOK)
 				{
-					Debug.LogWarning("Cant create Cell but no cell found", null);
+					Debug.LogWarning("Cant create Cell but no cell found");
 					return null;
 				}
 				cell = cellList.Find((Cell c) => c.node == node);
@@ -123,7 +123,7 @@ namespace ProcGen.Map
 				}
 				else
 				{
-					Debug.LogWarning("GetCell Same node [" + node.Id + "] differnt position!", null);
+					Debug.LogWarning("GetCell Same node [" + node.Id + "] differnt position!");
 				}
 			}
 			return cell;
@@ -159,17 +159,17 @@ namespace ProcGen.Map
 					{
 						if (cellList[i] == cellList[j])
 						{
-							Debug.LogError("Duplicate cell (class)", null);
+							Debug.LogError("Duplicate cell (class)");
 							return;
 						}
 						if (cellList[i].position == cellList[j].position)
 						{
-							Debug.LogError("Duplicate cell (position)", null);
+							Debug.LogError("Duplicate cell (position)");
 							return;
 						}
 						if (cellList[i].node == cellList[j].node)
 						{
-							Debug.LogError("Duplicate cell (node)", null);
+							Debug.LogError("Duplicate cell (node)");
 							return;
 						}
 					}
@@ -183,17 +183,17 @@ namespace ProcGen.Map
 					{
 						if (cornerList[k] == cornerList[l])
 						{
-							Debug.LogError("Duplicate corner (class)", null);
+							Debug.LogError("Duplicate corner (class)");
 							return;
 						}
 						if (cornerList[k].position == cornerList[l].position)
 						{
-							Debug.LogError("Duplicate corner (position)", null);
+							Debug.LogError("Duplicate corner (position)");
 							return;
 						}
 						if (cornerList[k].node == cornerList[l].node)
 						{
-							Debug.LogError("Duplicate corner (node)", null);
+							Debug.LogError("Duplicate corner (node)");
 							return;
 						}
 					}
@@ -209,40 +209,40 @@ namespace ProcGen.Map
 						Edge edge2 = edgeList[n];
 						if (edge == edge2)
 						{
-							Debug.LogError("Duplicate edge (class)", null);
+							Debug.LogError("Duplicate edge (class)");
 							return;
 						}
 						if (edge.arc == edge2.arc)
 						{
-							Debug.LogError("Duplicate EDGE [" + edge.arc + "] & [" + edge2.arc + "] - (ARC) [" + edge.site0.node.Id + "] &  [" + edge.site1.node.Id + "]", null);
+							Debug.LogError("Duplicate EDGE [" + edge.arc + "] & [" + edge2.arc + "] - (ARC) [" + edge.site0.node.Id + "] &  [" + edge.site1.node.Id + "]");
 							return;
 						}
 						if (edge.corner0 == edge2.corner0 && edge.corner1 == edge2.corner1)
 						{
-							Debug.LogError("Duplicate edge (corner same order)", null);
+							Debug.LogError("Duplicate edge (corner same order)");
 							return;
 						}
 						if (edge.corner0 == edge2.corner1 && edge.corner1 == edge2.corner0)
 						{
-							Debug.LogError("Duplicate edge (corner different order)", null);
+							Debug.LogError("Duplicate edge (corner different order)");
 							return;
 						}
 						if (edge.site0 != edge.site1 && edge2.site0 != edge2.site1)
 						{
 							if (edge.site0 == edge2.site0 && edge.site1 == edge2.site1)
 							{
-								Debug.LogError("Duplicate edge (site same order)", null);
+								Debug.LogError("Duplicate edge (site same order)");
 								return;
 							}
 							if (edge.site0 == edge2.site1 && edge.site1 == edge2.site0)
 							{
-								Debug.LogError("Duplicate Edge [" + edge.arc.Id + "] -> [" + edge.corner0.node.Id + "<-->" + edge.corner1.node.Id + "] sites: [" + edge.site0.node.Id + " -- " + edge.site1.node.Id + "] and [" + edge2.arc.Id + "] -> [" + edge2.corner0.node.Id + "<-->" + edge2.corner1.node.Id + "] sites: [" + edge2.site0.node.Id + " -- " + edge2.site1.node.Id + "] - (site differnt order)", null);
-								Debug.Log("CE 0: " + edge.corner0.position + " 1: " + edge.corner1.position, null);
-								Debug.Log("OE 0: " + edge2.corner0.position + " 1: " + edge2.corner1.position, null);
-								Debug.Log("Sites C 0: " + edge.site0.position + " 1: " + edge.site1.position, null);
+								Debug.LogError("Duplicate Edge [" + edge.arc.Id + "] -> [" + edge.corner0.node.Id + "<-->" + edge.corner1.node.Id + "] sites: [" + edge.site0.node.Id + " -- " + edge.site1.node.Id + "] and [" + edge2.arc.Id + "] -> [" + edge2.corner0.node.Id + "<-->" + edge2.corner1.node.Id + "] sites: [" + edge2.site0.node.Id + " -- " + edge2.site1.node.Id + "] - (site differnt order)");
+								Debug.Log("CE 0: " + edge.corner0.position + " 1: " + edge.corner1.position);
+								Debug.Log("OE 0: " + edge2.corner0.position + " 1: " + edge2.corner1.position);
+								Debug.Log("Sites C 0: " + edge.site0.position + " 1: " + edge.site1.position);
 								DebugExtension.DebugCircle2d(edge.site0.position, Color.red, 1f, 15f, true, 4f);
 								DebugExtension.DebugCircle2d(edge.site1.position, Color.magenta, 2f, 15f, true, 4f);
-								Debug.Log("Sites O 0: " + edge2.site0.position + " 1: " + edge2.site1.position, null);
+								Debug.Log("Sites O 0: " + edge2.site0.position + " 1: " + edge2.site1.position);
 								DebugExtension.DebugCircle2d(edge2.site0.position, Color.green, 3f, 15f, true, 4f);
 								DebugExtension.DebugCircle2d(edge2.site1.position, Color.cyan, 4f, 15f, true, 4f);
 							}
@@ -250,12 +250,12 @@ namespace ProcGen.Map
 							{
 								if (edge.site0.node == edge2.site0.node && edge.site1.node == edge2.site1.node)
 								{
-									Debug.LogError("Duplicate edge (site node same order)", null);
+									Debug.LogError("Duplicate edge (site node same order)");
 									return;
 								}
 								if (edge.site1.node == edge2.site0.node && edge.site0.node == edge2.site1.node)
 								{
-									Debug.LogError("Duplicate edge (site node differnt order)", null);
+									Debug.LogError("Duplicate edge (site node differnt order)");
 									return;
 								}
 							}
@@ -276,7 +276,7 @@ namespace ProcGen.Map
 			{
 				string message = ex.Message;
 				string stackTrace = ex.StackTrace;
-				Debug.Log("Error deserialising " + message + "\n" + stackTrace, null);
+				Debug.Log("Error deserialising " + message + "\n" + stackTrace);
 			}
 		}
 	}

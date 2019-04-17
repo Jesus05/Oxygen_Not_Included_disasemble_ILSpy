@@ -63,6 +63,7 @@ public class WorldGenSpawner : KMonoBehaviour
 				}
 			}
 			cell = num;
+			Debug.Assert(Grid.IsValidCell(cell));
 			if (Grid.Spawnable[cell] > 0)
 			{
 				TrySpawn();

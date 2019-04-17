@@ -80,7 +80,7 @@ namespace NodeEditorFramework
 				{
 					return true;
 				}
-				Debug.LogWarning("Method " + method.Name + " has incorrect signature for HotkeyAttribute!", null);
+				Debug.LogWarning("Method " + method.Name + " has incorrect signature for HotkeyAttribute!");
 			}
 			return false;
 		}

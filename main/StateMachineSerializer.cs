@@ -92,13 +92,13 @@ public class StateMachineSerializer
 		}
 		catch (Exception obj)
 		{
-			Debug.Log("Stream size: " + memoryStream.Length, null);
-			Debug.Log("StateMachines: ", null);
+			Debug.Log("Stream size: " + memoryStream.Length);
+			Debug.Log("StateMachines: ");
 			foreach (StateMachine.Instance state_machine in state_machines)
 			{
-				Debug.Log(state_machine.ToString(), null);
+				Debug.Log(state_machine.ToString());
 			}
-			Debug.LogError(obj, null);
+			Debug.LogError(obj);
 		}
 		WriteDataSize(position, data_size_pos, writer);
 	}
@@ -163,7 +163,7 @@ public class StateMachineSerializer
 		int length = reader.ReadInt32();
 		if (num != serializerVersion)
 		{
-			Debug.LogWarning("State machine serializer version mismatch: " + num + "!=" + serializerVersion + "\nDiscarding data.", null);
+			Debug.LogWarning("State machine serializer version mismatch: " + num + "!=" + serializerVersion + "\nDiscarding data.");
 			reader.SkipBytes(length);
 			return false;
 		}

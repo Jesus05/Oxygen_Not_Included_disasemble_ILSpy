@@ -14,9 +14,17 @@ public class SaveManager : KMonoBehaviour
 		Complete = 3735929054u
 	}
 
+	public const int SAVE_MAJOR_VERSION_LAST_UNDOCUMENTED = 7;
+
 	public const int SAVE_MAJOR_VERSION = 7;
 
-	public const int SAVE_MINOR_VERSION = 6;
+	public const int SAVE_MINOR_VERSION_EXPLICIT_VALUE_TYPES = 4;
+
+	public const int SAVE_MINOR_VERSION_LAST_UNDOCUMENTED = 7;
+
+	public const int SAVE_MINOR_VERSION_MOD_IDENTIFIER = 8;
+
+	public const int SAVE_MINOR_VERSION = 8;
 
 	private Dictionary<Tag, GameObject> prefabMap = new Dictionary<Tag, GameObject>();
 
@@ -66,7 +74,7 @@ public class SaveManager : KMonoBehaviour
 		KPrefabID component = saver.GetComponent<KPrefabID>();
 		if ((UnityEngine.Object)component == (UnityEngine.Object)null)
 		{
-			Output.LogErrorWithObj(saver.gameObject, "All savers must also have a KPrefabID on them but", saver.gameObject.name, "does not have one.");
+			DebugUtil.LogErrorArgs(saver.gameObject, "All savers must also have a KPrefabID on them but", saver.gameObject.name, "does not have one.");
 			return null;
 		}
 		if (!sceneObjects.TryGetValue(component.GetSaveLoadTag(), out List<SaveLoadRoot> value))
@@ -106,7 +114,7 @@ public class SaveManager : KMonoBehaviour
 		{
 			return value;
 		}
-		Output.Log("Item not found in prefabMap", "[" + tag.Name + "]");
+		DebugUtil.LogArgs("Item not found in prefabMap", "[" + tag.Name + "]");
 		return null;
 	}
 
@@ -114,7 +122,7 @@ public class SaveManager : KMonoBehaviour
 	{
 		writer.Write(SAVE_HEADER);
 		writer.Write(7);
-		writer.Write(6);
+		writer.Write(8);
 		int num = 0;
 		foreach (KeyValuePair<Tag, List<SaveLoadRoot>> sceneObject in sceneObjects)
 		{
@@ -186,7 +194,7 @@ public class SaveManager : KMonoBehaviour
 			}
 			else
 			{
-				Output.LogWarning("Null game object when saving");
+				DebugUtil.LogWarningArgs("Null game object when saving");
 			}
 		}
 		long position3 = writer.BaseStream.Position;
@@ -212,9 +220,9 @@ public class SaveManager : KMonoBehaviour
 		}
 		int num = reader.ReadInt32();
 		int num2 = reader.ReadInt32();
-		if (num != 7 || num2 > 6)
+		if (num != 7 || num2 > 8)
 		{
-			Output.LogWarning($"SAVE FILE VERSION MISMATCH! Expected {7}.{6} but got {num}.{num2}");
+			DebugUtil.LogWarningArgs($"SAVE FILE VERSION MISMATCH! Expected {7}.{8} but got {num}.{num2}");
 			return false;
 		}
 		ClearScene();
@@ -230,7 +238,7 @@ public class SaveManager : KMonoBehaviour
 				Tag key = TagManager.Create(text);
 				if (!prefabMap.TryGetValue(key, out GameObject value))
 				{
-					Output.LogWarning("Could not find prefab '" + text + "'");
+					DebugUtil.LogWarningArgs("Could not find prefab '" + text + "'");
 					reader.SkipBytes(num5);
 				}
 				else
@@ -242,7 +250,7 @@ public class SaveManager : KMonoBehaviour
 						SaveLoadRoot x = SaveLoadRoot.Load(value, reader);
 						if ((UnityEngine.Object)x == (UnityEngine.Object)null)
 						{
-							Output.LogError("Error loading data [" + text + "]");
+							Debug.LogError("Error loading data [" + text + "]");
 							return false;
 						}
 					}
@@ -251,7 +259,7 @@ public class SaveManager : KMonoBehaviour
 		}
 		catch (Exception ex)
 		{
-			Output.LogError("Error deserializing prefabs\n\n", ex.ToString());
+			DebugUtil.LogErrorArgs("Error deserializing prefabs\n\n", ex.ToString());
 			throw ex;
 		}
 		return true;

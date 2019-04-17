@@ -18,7 +18,7 @@ public class EntitySplitter : KMonoBehaviour
 		Pickupable pickupable = GetComponent<Pickupable>();
 		if ((UnityEngine.Object)pickupable == (UnityEngine.Object)null)
 		{
-			Debug.LogError(base.name + " does not have a pickupable component!", null);
+			Debug.LogError(base.name + " does not have a pickupable component!");
 		}
 		Pickupable pickupable2 = pickupable;
 		pickupable2.OnTake = (Func<float, Pickupable>)Delegate.Combine(pickupable2.OnTake, (Func<float, Pickupable>)((float amount) => Split(pickupable, amount, null)));
@@ -84,6 +84,7 @@ public class EntitySplitter : KMonoBehaviour
 			parent = pickupable.transform.parent.gameObject;
 		}
 		GameObject gameObject = GameUtil.KInstantiate(prefab, pickupable.transform.GetPosition(), Grid.SceneLayer.Ore, parent, null, 0);
+		Debug.Assert((UnityEngine.Object)gameObject != (UnityEngine.Object)null, "WTH, the GO is null, shouldn't happen on instantiate");
 		Pickupable component = gameObject.GetComponent<Pickupable>();
 		if ((UnityEngine.Object)component == (UnityEngine.Object)null)
 		{

@@ -1,8 +1,10 @@
+using System.Collections.Generic;
+
 public interface IGroupProber
 {
-	void SetProberCell(int cell, PathGrid pathGrid);
+	void Occupy(object prober, int serial_no, List<int> cells);
 
-	void ProxyProberCell(int cell, bool set);
+	void SetValidSerialNos(object prober, int previous_serial_no, int serial_no);
 
-	bool ReleasePathGrid(PathGrid pathGrid);
+	bool ReleaseProber(object prober);
 }

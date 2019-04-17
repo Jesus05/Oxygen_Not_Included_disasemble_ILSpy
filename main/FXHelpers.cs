@@ -21,7 +21,7 @@ public static class FXHelpers
 		KAnimFile anim = Assets.GetAnim(anim_file_name);
 		if ((Object)anim == (Object)null)
 		{
-			Debug.LogWarning("Missing effect anim: " + anim_file_name, null);
+			Debug.LogWarning("Missing effect anim: " + anim_file_name);
 		}
 		else
 		{

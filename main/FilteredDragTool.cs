@@ -96,7 +96,7 @@ public class FilteredDragTool : DragTool
 		base.OnDeactivateTool(new_tool);
 	}
 
-	protected string GetFilterLayerFromGameObject(GameObject input)
+	public virtual string GetFilterLayerFromGameObject(GameObject input)
 	{
 		BuildingComplete component = input.GetComponent<BuildingComplete>();
 		BuildingUnderConstruction component2 = input.GetComponent<BuildingUnderConstruction>();
@@ -119,13 +119,14 @@ public class FilteredDragTool : DragTool
 		return "Default";
 	}
 
-	protected string GetFilterLayerFromObjectLayer(ObjectLayer gamer_layer)
+	public string GetFilterLayerFromObjectLayer(ObjectLayer gamer_layer)
 	{
 		switch (gamer_layer)
 		{
 		case ObjectLayer.Building:
 			return "Buildings";
 		case ObjectLayer.Wire:
+		case ObjectLayer.WireConnectors:
 			return "Wires";
 		case ObjectLayer.LiquidConduit:
 		case ObjectLayer.LiquidConduitConnection:

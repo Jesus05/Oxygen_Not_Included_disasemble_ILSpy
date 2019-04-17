@@ -632,20 +632,29 @@ public class PathFinder
 			NavGrid.Link link7 = pathGridCellData2.link;
 			int link8 = link7.link;
 			Cell cell_data = pathGridCellData2.pathGridCell;
-			int cost2 = cost + link7.cost;
+			int num7 = cost + link7.cost;
 			PotentialPath path = potential;
 			path.cell = link8;
 			path.navType = link7.endNavType;
-			int underwater_cost2 = pathGridCellData2.isSubmerged ? (underwater_cost + 1) : 0;
+			int underwater_cost2;
+			if (pathGridCellData2.isSubmerged)
+			{
+				underwater_cost2 = underwater_cost + 1;
+				num7 += abilities.GetSubmergedPathCostPenalty(path);
+			}
+			else
+			{
+				underwater_cost2 = 0;
+			}
 			PotentialPath.Flags flags = path.flags;
-			bool flag3 = abilities.TraversePath(ref path, potential.cell, potential.navType, cost2, link7.transitionId, underwater_cost2);
+			bool flag3 = abilities.TraversePath(ref path, potential.cell, potential.navType, num7, link7.transitionId, underwater_cost2);
 			if (path.flags != flags)
 			{
 				KProfiler.AddEvent("NavChange");
 			}
 			if (flag3)
 			{
-				AddPotential(path, potential.cell, potential.navType, cost2, underwater_cost2, link7.transitionId, potentials, path_grid, ref cell_data);
+				AddPotential(path, potential.cell, potential.navType, num7, underwater_cost2, link7.transitionId, potentials, path_grid, ref cell_data);
 			}
 		}
 	}

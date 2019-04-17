@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class ScheduledUIInstantiation : KMonoBehaviour
@@ -22,6 +23,8 @@ public class ScheduledUIInstantiation : KMonoBehaviour
 	public GameHashes InstantiationEvent = GameHashes.StartGameUser;
 
 	private bool completed;
+
+	private List<GameObject> instantiatedObjects = new List<GameObject>();
 
 	protected override void OnPrefabInit()
 	{
@@ -49,9 +52,10 @@ public class ScheduledUIInstantiation : KMonoBehaviour
 				foreach (GameObject gameObject in prefabs)
 				{
 					Vector3 v = gameObject.rectTransform().anchoredPosition;
-					GameObject go = Util.KInstantiateUI(gameObject, instantiation.parent.gameObject, false);
-					go.rectTransform().anchoredPosition = v;
-					go.rectTransform().localScale = Vector3.one;
+					GameObject gameObject2 = Util.KInstantiateUI(gameObject, instantiation.parent.gameObject, false);
+					gameObject2.rectTransform().anchoredPosition = v;
+					gameObject2.rectTransform().localScale = Vector3.one;
+					instantiatedObjects.Add(gameObject2);
 				}
 			}
 			if (!InstantiateOnAwake)
@@ -59,5 +63,17 @@ public class ScheduledUIInstantiation : KMonoBehaviour
 				Unsubscribe((int)InstantiationEvent, InstantiateElements);
 			}
 		}
+	}
+
+	public T GetInstantiatedObject<T>() where T : Component
+	{
+		for (int i = 0; i < instantiatedObjects.Count; i++)
+		{
+			if ((UnityEngine.Object)instantiatedObjects[i].GetComponent(typeof(T)) != (UnityEngine.Object)null)
+			{
+				return instantiatedObjects[i].GetComponent(typeof(T)) as T;
+			}
+		}
+		return (T)null;
 	}
 }

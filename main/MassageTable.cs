@@ -100,10 +100,6 @@ public class MassageTable : RelaxationPoint, IEffectDescriptor, IActivationRange
 		}
 	}
 
-	public override void AwardExperience(float work_dt, MinionResume resume)
-	{
-	}
-
 	public new List<Descriptor> GetDescriptors(BuildingDef def)
 	{
 		List<Descriptor> list = new List<Descriptor>();

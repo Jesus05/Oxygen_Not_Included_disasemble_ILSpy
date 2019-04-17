@@ -843,7 +843,7 @@ public class StateMachine<StateMachineType, StateMachineInstanceType, MasterType
 							Action action2 = actions[currentActionIdx];
 							obj[6] = action2.name;
 							string str = string.Concat(obj);
-							Output.LogErrorWithObj(controller, str + "\n" + ex.ToString());
+							DebugUtil.LogErrorArgs(controller, str + "\n" + ex.ToString());
 						}
 					}
 					currentActionIdx++;
@@ -980,7 +980,7 @@ public class StateMachine<StateMachineType, StateMachineInstanceType, MasterType
 						{
 							text = text + "\n" + item.name;
 						}
-						Output.LogError(text);
+						Debug.LogError(text);
 						Error();
 					}
 					else
@@ -1038,7 +1038,7 @@ public class StateMachine<StateMachineType, StateMachineInstanceType, MasterType
 							text3 = "(" + base.gameObject.name + ").";
 						}
 						string str = "Exception in: " + text3 + stateMachine.ToString() + ".GoTo(" + text2 + ")";
-						Output.LogErrorWithObj(controller, str + "\n" + ex.ToString());
+						DebugUtil.LogErrorArgs(controller, str + "\n" + ex.ToString());
 					}
 				}
 			}
@@ -1476,7 +1476,7 @@ public class StateMachine<StateMachineType, StateMachineInstanceType, MasterType
 				{
 					if (value.Guid == (ResourceGuid)null)
 					{
-						Debug.LogError("Cannot serialize resource with invalid guid: " + value.Id, null);
+						Debug.LogError("Cannot serialize resource with invalid guid: " + value.Id);
 					}
 					else
 					{
@@ -1616,7 +1616,7 @@ public class StateMachine<StateMachineType, StateMachineInstanceType, MasterType
 				{
 					return sMI;
 				}
-				Debug.LogError(gameObject.name + " does not have state machine " + typeof(StateMachineType).Name, null);
+				Debug.LogError(gameObject.name + " does not have state machine " + typeof(StateMachineType).Name);
 			}
 			return (SMT)null;
 		}
@@ -1637,7 +1637,7 @@ public class StateMachine<StateMachineType, StateMachineInstanceType, MasterType
 				{
 					return component;
 				}
-				Debug.LogError(gameObject.name + " does not have component " + typeof(ComponentType).Name, null);
+				Debug.LogError(gameObject.name + " does not have component " + typeof(ComponentType).Name);
 			}
 			return default(ComponentType);
 		}

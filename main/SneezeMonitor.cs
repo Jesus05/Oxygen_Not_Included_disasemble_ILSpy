@@ -34,20 +34,21 @@ public class SneezeMonitor : GameStateMachine<SneezeMonitor, SneezeMonitor.Insta
 			base.StopSM(reason);
 		}
 
+		public float NextSneezeTime()
+		{
+			AttributeInstance attributeInstance = Db.Get().Attributes.Sneezyness.Lookup(base.master.gameObject);
+			if (attributeInstance.GetTotalValue() <= 0f)
+			{
+				return 70f;
+			}
+			float num = 70f / attributeInstance.GetTotalValue();
+			return UnityEngine.Random.Range(num * 0.7f, num * 1.3f);
+		}
+
 		private void OnSneezyChange()
 		{
 			AttributeInstance attributeInstance = Db.Get().Attributes.Sneezyness.Lookup(base.master.gameObject);
-			if (attributeInstance.GetTotalValue() > 0f)
-			{
-				if (base.smi.GetCurrentState() != base.smi.sm.Sneezy.idle)
-				{
-					base.smi.GoTo(base.smi.sm.Sneezy.idle);
-				}
-			}
-			else if (base.smi.GetCurrentState() != base.smi.sm.idle)
-			{
-				base.smi.GoTo(base.smi.sm.idle);
-			}
+			base.smi.sm.isSneezy.Set(attributeInstance.GetTotalValue() > 0f, base.smi);
 		}
 	}
 
@@ -57,18 +58,24 @@ public class SneezeMonitor : GameStateMachine<SneezeMonitor, SneezeMonitor.Insta
 		"sneeze_pst"
 	};
 
+	public BoolParameter isSneezy = new BoolParameter(false);
+
 	public State idle;
+
+	public State taking_medicine;
 
 	public SneezyStates Sneezy;
 
-	public const float SNEEZE_INTERVAL_MIN = 45f;
+	public const float SINGLE_SNEEZE_TIME = 70f;
 
-	public const float SNEEZE_INTERVAL_MAX = 90f;
+	public const float SNEEZE_TIME_VARIANCE = 0.3f;
 
 	public override void InitializeStates(out BaseState default_state)
 	{
 		default_state = idle;
-		Sneezy.idle.ScheduleGoTo(UnityEngine.Random.Range(45f, 90f), Sneezy.sneeze_pre);
+		idle.ParamTransition(isSneezy, Sneezy.idle, (Instance smi, bool p) => p);
+		taking_medicine.TagTransition(GameTags.TakingMedicine, Sneezy.idle, true);
+		Sneezy.idle.ScheduleGoTo((Instance smi) => smi.NextSneezeTime(), Sneezy.sneeze_pre).ParamTransition(isSneezy, idle, (Instance smi, bool p) => !p).TagTransition(GameTags.TakingMedicine, taking_medicine, false);
 		Sneezy.sneeze_pre.ToggleScheduleCallback("Sneeze", (Instance smi) => 2f, delegate(Instance instanceObject)
 		{
 			AcousticDisturbance.Emit(instanceObject.master.gameObject, 3);

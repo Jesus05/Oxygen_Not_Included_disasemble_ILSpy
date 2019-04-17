@@ -20,7 +20,7 @@ public class AlgaeDistillery : StateMachineComponent<AlgaeDistillery.StatesInsta
 				PrimaryElement component = gameObject.GetComponent<PrimaryElement>();
 				if (component.Mass >= base.master.emitMass)
 				{
-					storage.Drop(gameObject);
+					storage.Drop(gameObject, true);
 				}
 			}
 		}

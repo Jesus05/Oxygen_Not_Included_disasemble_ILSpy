@@ -1,4 +1,3 @@
-using STRINGS;
 using System.Collections.Generic;
 using TUNING;
 using UnityEngine;
@@ -6,11 +5,6 @@ using UnityEngine;
 public class SolidConduitInboxConfig : IBuildingConfig
 {
 	public const string ID = "SolidConduitInbox";
-
-	private static readonly LogicPorts.Port[] INPUT_PORTS = new LogicPorts.Port[1]
-	{
-		LogicPorts.Port.InputPort(LogicOperationalController.PORT_ID, new CellOffset(0, 1), UI.LOGIC_PORTS.CONTROL_OPERATIONAL, false)
-	};
 
 	public override BuildingDef CreateBuildingDef()
 	{
@@ -20,12 +14,12 @@ public class SolidConduitInboxConfig : IBuildingConfig
 		string anim = "conveyorin_kanim";
 		int hitpoints = 100;
 		float construction_time = 60f;
-		float[] tIER = TUNING.BUILDINGS.CONSTRUCTION_MASS_KG.TIER3;
+		float[] tIER = BUILDINGS.CONSTRUCTION_MASS_KG.TIER3;
 		string[] rEFINED_METALS = MATERIALS.REFINED_METALS;
 		float melting_point = 1600f;
 		BuildLocationRule build_location_rule = BuildLocationRule.Anywhere;
 		EffectorValues nONE = NOISE_POLLUTION.NONE;
-		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, tIER, rEFINED_METALS, melting_point, build_location_rule, TUNING.BUILDINGS.DECOR.PENALTY.TIER1, nONE, 0.2f);
+		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, tIER, rEFINED_METALS, melting_point, build_location_rule, BUILDINGS.DECOR.PENALTY.TIER1, nONE, 0.2f);
 		buildingDef.RequiresPowerInput = true;
 		buildingDef.EnergyConsumptionWhenActive = 120f;
 		buildingDef.ExhaustKilowattsWhenActive = 0f;
@@ -43,20 +37,20 @@ public class SolidConduitInboxConfig : IBuildingConfig
 
 	public override void DoPostConfigurePreview(BuildingDef def, GameObject go)
 	{
-		GeneratedBuildings.RegisterLogicPorts(go, INPUT_PORTS);
+		GeneratedBuildings.RegisterLogicPorts(go, LogicOperationalController.INPUT_PORTS_0_1);
 	}
 
 	public override void DoPostConfigureUnderConstruction(GameObject go)
 	{
-		GeneratedBuildings.RegisterLogicPorts(go, INPUT_PORTS);
+		GeneratedBuildings.RegisterLogicPorts(go, LogicOperationalController.INPUT_PORTS_0_1);
 		Constructable component = go.GetComponent<Constructable>();
 		component.choreTags = GameTags.ChoreTypes.ConveyorChores;
-		component.requiredRolePerk = RoleManager.rolePerks.ConveyorBuild.id;
+		component.requiredSkillPerk = Db.Get().SkillPerks.ConveyorBuild.Id;
 	}
 
 	public override void DoPostConfigureComplete(GameObject go)
 	{
-		GeneratedBuildings.RegisterLogicPorts(go, INPUT_PORTS);
+		GeneratedBuildings.RegisterLogicPorts(go, LogicOperationalController.INPUT_PORTS_0_1);
 		go.AddOrGet<LogicOperationalController>();
 		Prioritizable.AddRef(go);
 		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.IndustrialMachinery);

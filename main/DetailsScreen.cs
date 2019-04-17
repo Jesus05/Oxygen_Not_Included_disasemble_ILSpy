@@ -125,6 +125,7 @@ public class DetailsScreen : KTabMenu
 		base.OnPrefabInit();
 		SortScreenOrder();
 		ConsumeMouseScroll = true;
+		Debug.Assert((UnityEngine.Object)Instance == (UnityEngine.Object)null);
 		Instance = this;
 		UIRegistry.detailsScreen = this;
 		DeactivateSideContent();
@@ -154,9 +155,14 @@ public class DetailsScreen : KTabMenu
 		if (!string.IsNullOrEmpty(newName))
 		{
 			MinionIdentity component = target.GetComponent<MinionIdentity>();
-			if (!((UnityEngine.Object)component == (UnityEngine.Object)null))
+			StorageLocker component2 = target.GetComponent<StorageLocker>();
+			if ((UnityEngine.Object)component != (UnityEngine.Object)null)
 			{
 				component.SetName(newName);
+			}
+			else if ((UnityEngine.Object)component2 != (UnityEngine.Object)null)
+			{
+				component2.SetName(newName);
 			}
 		}
 	}
@@ -543,13 +549,20 @@ public class DetailsScreen : KTabMenu
 		{
 			TabTitle.SetTitle(target.GetProperName());
 			MinionIdentity minionIdentity = null;
+			StorageLocker x = null;
 			if ((UnityEngine.Object)target != (UnityEngine.Object)null)
 			{
 				minionIdentity = target.gameObject.GetComponent<MinionIdentity>();
+				x = target.gameObject.GetComponent<StorageLocker>();
 			}
 			if ((UnityEngine.Object)minionIdentity != (UnityEngine.Object)null)
 			{
-				TabTitle.SetSubText(minionIdentity.GetComponent<MinionResume>().GetCurrentRoleString(), minionIdentity.GetComponent<MinionResume>().GetCurrentRoleDescription());
+				TabTitle.SetSubText(minionIdentity.GetComponent<MinionResume>().GetSkillsSubtitle(), string.Empty);
+				TabTitle.SetUserEditable(true);
+			}
+			else if ((UnityEngine.Object)x != (UnityEngine.Object)null)
+			{
+				TabTitle.SetSubText(string.Empty, string.Empty);
 				TabTitle.SetUserEditable(true);
 			}
 			else

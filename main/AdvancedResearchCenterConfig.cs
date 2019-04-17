@@ -59,7 +59,7 @@ public class AdvancedResearchCenterConfig : IBuildingConfig
 		researchCenter.research_point_type_id = "beta";
 		researchCenter.inputMaterial = INPUT_MATERIAL;
 		researchCenter.mass_per_point = 50f;
-		researchCenter.requiredRolePerk = RoleManager.rolePerks.AllowAdvancedResearch.id;
+		researchCenter.requiredSkillPerk = Db.Get().SkillPerks.AllowAdvancedResearch.Id;
 		ElementConverter elementConverter = go.AddOrGet<ElementConverter>();
 		elementConverter.consumedElements = new ElementConverter.ConsumedElement[1]
 		{

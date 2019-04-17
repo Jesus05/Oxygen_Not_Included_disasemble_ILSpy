@@ -42,7 +42,7 @@ namespace ProcGen
 		private void UpdateWorldCache(string path, IFileSystem filesystem)
 		{
 			List<string> list = new List<string>();
-			FSUtil.GetFiles(filesystem, System.IO.Path.Combine(path, "worlds"), "*.yaml", list);
+			FSUtil.GetFiles(filesystem, FSUtil.Normalize(System.IO.Path.Combine(path, "worlds")), "*.yaml", list);
 			foreach (string item in list)
 			{
 				World world = YamlIO<World>.LoadFile(item, null);

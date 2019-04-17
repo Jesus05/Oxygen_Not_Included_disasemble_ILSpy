@@ -113,6 +113,37 @@ namespace Database
 				}
 			},
 			{
+				"MedicineI",
+				new string[1]
+				{
+					"Apothecary"
+				}
+			},
+			{
+				"MedicineII",
+				new string[2]
+				{
+					"DoctorStation",
+					"HandSanitizer"
+				}
+			},
+			{
+				"MedicineIII",
+				new string[3]
+				{
+					LogicDiseaseSensorConfig.ID,
+					GasConduitDiseaseSensorConfig.ID,
+					LiquidConduitDiseaseSensorConfig.ID
+				}
+			},
+			{
+				"MedicineIV",
+				new string[1]
+				{
+					"AdvancedDoctorStation"
+				}
+			},
+			{
 				"LiquidPiping",
 				new string[4]
 				{
@@ -149,16 +180,6 @@ namespace Database
 					"FlushToilet",
 					ShowerConfig.ID,
 					"MeshTile"
-				}
-			},
-			{
-				"Medbay",
-				new string[4]
-				{
-					"HandSanitizer",
-					"MedicalBed",
-					GasConduitDiseaseSensorConfig.ID,
-					LiquidConduitDiseaseSensorConfig.ID
 				}
 			},
 			{
@@ -220,9 +241,10 @@ namespace Database
 			},
 			{
 				"RenewableEnergy",
-				new string[2]
+				new string[3]
 				{
 					"SteamTurbine",
+					"SteamTurbine2",
 					"SolarPanel"
 				}
 			},
@@ -345,10 +367,11 @@ namespace Database
 			},
 			{
 				"AdvancedResearch",
-				new string[2]
+				new string[3]
 				{
 					"AdvancedResearchCenter",
-					"BetaResearchPoint"
+					"BetaResearchPoint",
+					"ResetSkillsStation"
 				}
 			},
 			{
@@ -357,14 +380,6 @@ namespace Database
 				{
 					"RockCrusher",
 					"Kiln"
-				}
-			},
-			{
-				"MedicalResearch",
-				new string[2]
-				{
-					"Apothecary",
-					LogicDiseaseSensorConfig.ID
 				}
 			},
 			{
@@ -394,9 +409,11 @@ namespace Database
 			},
 			{
 				"TemperatureModulation",
-				new string[3]
+				new string[5]
 				{
 					"LiquidCooledFan",
+					"IceCooledFan",
+					"IceMachine",
 					"SpaceHeater",
 					"InsulationTile"
 				}
@@ -488,21 +505,24 @@ namespace Database
 			},
 			{
 				"SmartStorage",
-				new string[3]
+				new string[4]
 				{
 					"StorageLockerSmart",
 					"SolidTransferArm",
+					"ObjectDispenser",
 					"ConveyorOverlay"
 				}
 			},
 			{
 				"SolidTransport",
-				new string[5]
+				new string[7]
 				{
 					"SolidConduit",
 					"SolidConduitBridge",
 					"SolidConduitInbox",
 					"SolidConduitOutbox",
+					"SolidVent",
+					"SolidLogicValve",
 					"AutoMiner"
 				}
 			},

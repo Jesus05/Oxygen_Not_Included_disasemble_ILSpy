@@ -161,33 +161,33 @@ public class EatChore : Chore<EatChore.StatesInstance>
 	{
 		if ((UnityEngine.Object)context.consumerState.consumer == (UnityEngine.Object)null)
 		{
-			Debug.LogError("EATCHORE null context.consumer", null);
+			Debug.LogError("EATCHORE null context.consumer");
 		}
 		else
 		{
 			RationMonitor.Instance sMI = context.consumerState.consumer.GetSMI<RationMonitor.Instance>();
 			if (sMI == null)
 			{
-				Debug.LogError("EATCHORE null RationMonitor.Instance", null);
+				Debug.LogError("EATCHORE null RationMonitor.Instance");
 			}
 			else
 			{
 				Edible edible = sMI.GetEdible();
 				if ((UnityEngine.Object)edible.gameObject == (UnityEngine.Object)null)
 				{
-					Debug.LogError("EATCHORE null edible.gameObject", null);
+					Debug.LogError("EATCHORE null edible.gameObject");
 				}
 				else if (base.smi == null)
 				{
-					Debug.LogError("EATCHORE null smi", null);
+					Debug.LogError("EATCHORE null smi");
 				}
 				else if (base.smi.sm == null)
 				{
-					Debug.LogError("EATCHORE null smi.sm", null);
+					Debug.LogError("EATCHORE null smi.sm");
 				}
 				else if (base.smi.sm.ediblesource == null)
 				{
-					Debug.LogError("EATCHORE null smi.sm.ediblesource", null);
+					Debug.LogError("EATCHORE null smi.sm.ediblesource");
 				}
 				else
 				{

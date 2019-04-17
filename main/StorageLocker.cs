@@ -8,6 +8,9 @@ public class StorageLocker : KMonoBehaviour, IUserControlledCapacity
 	[Serialize]
 	private float userMaxCapacity = float.PositiveInfinity;
 
+	[Serialize]
+	public string lockerName = string.Empty;
+
 	protected FilteredStorage filteredStorage;
 
 	private static readonly EventSystem.IntraObjectHandler<StorageLocker> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<StorageLocker>(delegate(StorageLocker component, object data)
@@ -54,6 +57,10 @@ public class StorageLocker : KMonoBehaviour, IUserControlledCapacity
 	protected override void OnSpawn()
 	{
 		filteredStorage.FilterChanged();
+		if (!lockerName.IsNullOrWhiteSpace())
+		{
+			SetName(lockerName);
+		}
 	}
 
 	protected override void OnCleanUp()
@@ -72,5 +79,18 @@ public class StorageLocker : KMonoBehaviour, IUserControlledCapacity
 				UserMaxCapacity = component.UserMaxCapacity;
 			}
 		}
+	}
+
+	public void SetName(string name)
+	{
+		KSelectable component = GetComponent<KSelectable>();
+		base.name = name;
+		lockerName = name;
+		if ((Object)component != (Object)null)
+		{
+			component.SetName(name);
+		}
+		base.gameObject.name = name;
+		NameDisplayScreen.Instance.UpdateName(base.gameObject);
 	}
 }

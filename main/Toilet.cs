@@ -93,7 +93,7 @@ public class Toilet : StateMachineComponent<Toilet.StatesInstance>, ISaveLoadabl
 			base.master.storage.Find(tag, pooledList);
 			foreach (GameObject item in pooledList)
 			{
-				base.master.storage.Drop(item);
+				base.master.storage.Drop(item, true);
 			}
 			pooledList.Recycle();
 			base.master.meter.SetPositionPercent((float)base.master.FlushesUsed / (float)base.master.maxFlushes);
@@ -295,7 +295,7 @@ public class Toilet : StateMachineComponent<Toilet.StatesInstance>, ISaveLoadabl
 		float temperature = GetComponent<PrimaryElement>().Temperature;
 		Element element = ElementLoader.FindElementByHash(solidWastePerUse.elementID);
 		byte index = Db.Get().Diseases.GetIndex(diseaseId);
-		GameObject go = element.substance.SpawnResource(base.transform.GetPosition(), base.smi.MassPerFlush(), temperature, index, diseasePerFlush, true, false);
+		GameObject go = element.substance.SpawnResource(base.transform.GetPosition(), base.smi.MassPerFlush(), temperature, index, diseasePerFlush, true, false, false);
 		storage.Store(go, false, false, true, false);
 		PrimaryElement component = worker.GetComponent<PrimaryElement>();
 		component.AddDisease(index, diseaseOnDupePerFlush, "Toilet.Flush");

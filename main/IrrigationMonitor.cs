@@ -184,7 +184,7 @@ public class IrrigationMonitor : GameStateMachine<IrrigationMonitor, IrrigationM
 							}
 							if (!flag)
 							{
-								storage.Drop(gameObject);
+								storage.Drop(gameObject, true);
 							}
 						}
 					}

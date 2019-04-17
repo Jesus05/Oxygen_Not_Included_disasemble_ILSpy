@@ -49,6 +49,8 @@ public class AccessControlSideScreen : SideScreenContent
 
 		public static int CompareByRole(MinionAssignablesProxy a, MinionAssignablesProxy b)
 		{
+			Debug.Assert(a, "a was null");
+			Debug.Assert(b, "b was null");
 			GameObject targetGameObject = a.GetTargetGameObject();
 			GameObject targetGameObject2 = b.GetTargetGameObject();
 			MinionResume minionResume = (!(bool)targetGameObject) ? null : targetGameObject.GetComponent<MinionResume>();

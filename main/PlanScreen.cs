@@ -391,13 +391,13 @@ public class PlanScreen : KIconToggleMenu
 			tagOrderMap = new Dictionary<Tag, int>();
 			if (TUNING.BUILDINGS.PLANORDER.Count > 12)
 			{
-				Output.LogWarning("Insufficient keys to cover root plan menu", "Max of 12 keys supported but TUNING.BUILDINGS.PLANORDER has " + TUNING.BUILDINGS.PLANORDER.Count);
+				DebugUtil.LogWarningArgs("Insufficient keys to cover root plan menu", "Max of 12 keys supported but TUNING.BUILDINGS.PLANORDER has " + TUNING.BUILDINGS.PLANORDER.Count);
 			}
 			toggleEntries.Clear();
 			for (int i = 0; i < TUNING.BUILDINGS.PLANORDER.Count; i++)
 			{
 				PlanInfo planInfo = TUNING.BUILDINGS.PLANORDER[i];
-				Action hotkey = (Action)((i >= 12) ? 233 : (36 + i));
+				Action hotkey = (Action)((i >= 12) ? 234 : (36 + i));
 				string icon = iconNameMap[planInfo.category];
 				string str = HashCache.Get().Get(planInfo.category).ToUpper();
 				ToggleInfo toggleInfo = new ToggleInfo(UI.StripLinkFormatting(Strings.Get("STRINGS.UI.BUILDCATEGORIES." + str + ".NAME")), icon, planInfo.category, hotkey, Strings.Get("STRINGS.UI.BUILDCATEGORIES." + str + ".TOOLTIP"), string.Empty);
@@ -501,7 +501,7 @@ public class PlanScreen : KIconToggleMenu
 	{
 		if ((UnityEngine.Object)button_go == (UnityEngine.Object)null)
 		{
-			Output.LogWithObj(base.gameObject, "Button gameObject is null");
+			Debug.Log("Button gameObject is null", base.gameObject);
 		}
 		else if ((UnityEngine.Object)button_go == (UnityEngine.Object)selectedBuildingGameObject)
 		{

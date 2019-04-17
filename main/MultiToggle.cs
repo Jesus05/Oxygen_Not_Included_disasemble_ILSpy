@@ -92,7 +92,7 @@ public class MultiToggle : KMonoBehaviour, IPointerClickHandler, IPointerEnterHa
 	{
 		if (states.Length - 1 < state)
 		{
-			Debug.LogWarning("Multi toggle has too few / no states", null);
+			Debug.LogWarning("Multi toggle has too few / no states");
 		}
 		if (onClick != null)
 		{

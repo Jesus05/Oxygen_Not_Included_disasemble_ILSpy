@@ -225,7 +225,7 @@ namespace TUNING
 						}
 						else
 						{
-							Output.LogError("Ack! Trying to add temperature modifier", id, "to", inst.master.name, "but it's not temperature vulnerable!");
+							DebugUtil.LogErrorArgs("Ack! Trying to add temperature modifier", id, "to", inst.master.name, "but it's not temperature vulnerable!");
 						}
 					});
 				};

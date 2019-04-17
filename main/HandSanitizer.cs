@@ -147,10 +147,6 @@ public class HandSanitizer : StateMachineComponent<HandSanitizer.SMInstance>, IE
 			diseaseRemoved = 0;
 		}
 
-		public override void AwardExperience(float work_dt, MinionResume resume)
-		{
-		}
-
 		protected override bool OnWorkTick(Worker worker, float dt)
 		{
 			base.OnWorkTick(worker, dt);

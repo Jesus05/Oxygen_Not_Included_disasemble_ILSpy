@@ -97,6 +97,11 @@ public class Geyser : StateMachineComponent<Geyser.StatesInstance>, IGameObjectE
 		emitter.maxPressure = configuration.GetMaxPressure();
 		emitter.outputElement = new ElementConverter.OutputElement(configuration.GetEmitRate(), configuration.GetElement(), configuration.GetTemperature(), outputElementOffsetx: (float)outputOffset.x, addedDiseaseCount: Mathf.RoundToInt((float)configuration.GetDiseaseCount() * configuration.GetEmitRate()), storeOutput: false, outputElementOffsety: (float)outputOffset.y, apply_input_temperature: false, diseaseWeight: 1f, addedDiseaseIdx: configuration.GetDiseaseIdx());
 		base.smi.StartSM();
+		Workable component = GetComponent<Studyable>();
+		if ((Object)component != (Object)null)
+		{
+			component.alwaysShowProgressBar = true;
+		}
 	}
 
 	public float RemainingPhaseTimeFrom2(float onDuration, float offDuration, float time, Phase expectedPhase)

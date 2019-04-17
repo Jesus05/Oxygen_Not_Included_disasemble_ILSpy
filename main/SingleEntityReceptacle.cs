@@ -203,7 +203,7 @@ public class SingleEntityReceptacle : Workable, IRender1000ms
 	{
 		if ((bool)occupyingObject)
 		{
-			storage.DropAll(false);
+			storage.DropAll(false, false, default(Vector3), true);
 		}
 		occupyingObject = null;
 		UpdateActive();
@@ -268,7 +268,7 @@ public class SingleEntityReceptacle : Workable, IRender1000ms
 		}
 		else
 		{
-			Debug.LogWarning(base.gameObject.name + " EntityReceptacle did not spawn occupying entity.", null);
+			Debug.LogWarning(base.gameObject.name + " EntityReceptacle did not spawn occupying entity.");
 		}
 		fetchChore = null;
 		if (!autoReplaceEntity)

@@ -217,6 +217,11 @@ public class Telescope : Workable, OxygenBreather.IGasProvider, IEffectDescripto
 		return false;
 	}
 
+	public bool ShouldStoreCO2()
+	{
+		return false;
+	}
+
 	public bool ConsumeGas(OxygenBreather oxygen_breather, float amount)
 	{
 		if (storage.items.Count <= 0)

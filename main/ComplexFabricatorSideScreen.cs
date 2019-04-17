@@ -109,7 +109,7 @@ public class ComplexFabricatorSideScreen : SideScreenContent
 		ComplexFabricator component = target.GetComponent<ComplexFabricator>();
 		if ((UnityEngine.Object)component == (UnityEngine.Object)null)
 		{
-			Debug.LogError("The object selected doesn't have a ComplexFabricator!", null);
+			Debug.LogError("The object selected doesn't have a ComplexFabricator!");
 		}
 		else
 		{
@@ -181,7 +181,7 @@ public class ComplexFabricatorSideScreen : SideScreenContent
 	{
 		if ((UnityEngine.Object)target == (UnityEngine.Object)null)
 		{
-			Debug.LogError("ComplexFabricator provided was null.", null);
+			Debug.LogError("ComplexFabricator provided was null.");
 		}
 		else
 		{
@@ -403,7 +403,7 @@ public class ComplexFabricatorSideScreen : SideScreenContent
 	{
 		if (!recipeMap.ContainsKey(toggle.gameObject))
 		{
-			Debug.LogError("Recipe not found on recipe list.", null);
+			Debug.LogError("Recipe not found on recipe list.");
 		}
 		else
 		{

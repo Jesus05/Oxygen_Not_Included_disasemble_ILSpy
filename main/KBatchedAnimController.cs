@@ -145,9 +145,10 @@ public class KBatchedAnimController : KAnimControllerBase, KAnimConverter.IAnimC
 	{
 		if (!batchGroupID.IsValid || !(batchGroupID != KAnimBatchManager.NO_BATCH))
 		{
-			Debug.LogError(base.name + " batch not ready", null);
+			Debug.LogError(base.name + " batch not ready");
 		}
 		KBatchGroupData batchGroupData = KAnimBatchManager.Instance().GetBatchGroupData(batchGroupID);
+		Debug.Assert(batchGroupData != null);
 		return batchGroupData.GetAnim(index);
 	}
 
@@ -186,6 +187,7 @@ public class KBatchedAnimController : KAnimControllerBase, KAnimConverter.IAnimC
 		HashedString batchGroupID = kafd.build.batchTag;
 		if (group.renderType == KAnimBatchGroup.RendererType.DontRender || group.renderType == KAnimBatchGroup.RendererType.AnimOnly)
 		{
+			Debug.Assert(group.swapTarget.IsValid, "Invalid swap target fro group [" + group.id + "]");
 			batchGroupID = group.swapTarget;
 		}
 		this.batchGroupID = batchGroupID;
@@ -193,7 +195,7 @@ public class KBatchedAnimController : KAnimControllerBase, KAnimConverter.IAnimC
 		base.symbolOverrideInfoGpuData = new SymbolOverrideInfoGpuData(KAnimBatchManager.instance.GetBatchGroupData(this.batchGroupID).symbolFrameInstances.Count);
 		if (!this.batchGroupID.IsValid || this.batchGroupID == KAnimBatchManager.NO_BATCH)
 		{
-			Debug.LogError("Batch is not ready: " + base.name, null);
+			Debug.LogError("Batch is not ready: " + base.name);
 		}
 	}
 
@@ -201,7 +203,7 @@ public class KBatchedAnimController : KAnimControllerBase, KAnimConverter.IAnimC
 	{
 		if (!KAnimBatchManager.Instance().isReady)
 		{
-			Debug.LogError("KAnimBatchManager is not ready when loading anim:" + base.name, null);
+			Debug.LogError("KAnimBatchManager is not ready when loading anim:" + base.name);
 		}
 		if (animFiles.Length <= 0)
 		{
@@ -209,7 +211,7 @@ public class KBatchedAnimController : KAnimControllerBase, KAnimConverter.IAnimC
 		}
 		if ((UnityEngine.Object)animFiles[0].buildFile == (UnityEngine.Object)null)
 		{
-			Output.LogErrorWithObj(base.gameObject, $"First anim file needs to be the build file but {animFiles[0].animFile.name} doesn't have an associated build");
+			DebugUtil.LogErrorArgs(base.gameObject, $"First anim file needs to be the build file but {animFiles[0].animFile.name} doesn't have an associated build");
 		}
 		overrideAnims.Clear();
 		anims.Clear();
@@ -355,6 +357,7 @@ public class KBatchedAnimController : KAnimControllerBase, KAnimConverter.IAnimC
 
 	public HashedString GetBatchGroupID(bool isEditorWindow = false)
 	{
+		Debug.Assert(isEditorWindow || animFiles == null || animFiles.Length == 0 || (batchGroupID.IsValid && batchGroupID != KAnimBatchManager.NO_BATCH));
 		return batchGroupID;
 	}
 

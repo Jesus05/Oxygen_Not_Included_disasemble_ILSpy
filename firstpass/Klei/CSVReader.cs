@@ -33,7 +33,7 @@ namespace Klei
 				}
 				text += "\n";
 			}
-			Debug.Log(text, null);
+			Debug.Log(text);
 		}
 
 		public static string[,] SplitCsvGrid(string csvText, string csv_name)

@@ -23,8 +23,8 @@ public class ResourceTreeLoader<T> : ResourceLoader<T> where T : ResourceTreeNod
 				string value = xmlReader.Value;
 				float nodeX = 0f;
 				float nodeY = 0f;
-				float width = 40f;
-				float height = 20f;
+				float num = 40f;
+				float num2 = 20f;
 				if (xmlReader.ReadToFollowing("Geometry"))
 				{
 					xmlReader.MoveToAttribute("x");
@@ -32,10 +32,11 @@ public class ResourceTreeLoader<T> : ResourceLoader<T> where T : ResourceTreeNod
 					xmlReader.MoveToAttribute("y");
 					nodeY = 0f - float.Parse(xmlReader.Value);
 					xmlReader.MoveToAttribute("width");
-					width = float.Parse(xmlReader.Value);
+					num = float.Parse(xmlReader.Value);
 					xmlReader.MoveToAttribute("height");
-					height = float.Parse(xmlReader.Value);
+					num2 = float.Parse(xmlReader.Value);
 				}
+				Debug.Assert(num != 0f && num2 != 0f, "Error parsing GRAPHML");
 				if (xmlReader.ReadToFollowing("NodeLabel"))
 				{
 					string text = xmlReader.ReadString();
@@ -44,8 +45,8 @@ public class ResourceTreeLoader<T> : ResourceLoader<T> where T : ResourceTreeNod
 					val.Name = text;
 					val.nodeX = nodeX;
 					val.nodeY = nodeY;
-					val.width = width;
-					val.height = height;
+					val.width = num;
+					val.height = num2;
 					dictionary[value] = val;
 					resources.Add(val);
 				}

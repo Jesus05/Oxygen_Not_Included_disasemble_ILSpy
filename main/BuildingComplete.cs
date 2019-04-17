@@ -28,6 +28,8 @@ public class BuildingComplete : Building
 		component.OnObjectReplaced(data);
 	});
 
+	private HandleVector<int>.Handle scenePartitionerEntry;
+
 	protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
@@ -123,6 +125,7 @@ public class BuildingComplete : Building
 		Components.BuildingCompletes.Add(this);
 		BuildingConfigManager.Instance.AddBuildingCompleteKComponents(base.gameObject, Def.Tag);
 		hasSpawnedKComponents = true;
+		scenePartitionerEntry = GameScenePartitioner.Instance.Add(base.name, this, GetExtents(), GameScenePartitioner.Instance.completeBuildings, null);
 		Attributes attributes = this.GetAttributes();
 		if (attributes != null)
 		{
@@ -170,6 +173,7 @@ public class BuildingComplete : Building
 	{
 		if (!Game.quitting)
 		{
+			GameScenePartitioner.Instance.Free(ref scenePartitionerEntry);
 			if (hasSpawnedKComponents)
 			{
 				BuildingConfigManager.Instance.DestroyBuildingCompleteKComponents(base.gameObject, Def.Tag);

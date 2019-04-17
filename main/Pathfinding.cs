@@ -35,7 +35,7 @@ public class Pathfinding : KMonoBehaviour
 				return navGrid;
 			}
 		}
-		Debug.LogError("Could not find nav grid: " + id, null);
+		Debug.LogError("Could not find nav grid: " + id);
 		return null;
 	}
 

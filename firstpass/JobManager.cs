@@ -64,7 +64,7 @@ public class JobManager
 		{
 			foreach (Exception exception in exceptions)
 			{
-				Debug.LogError(exception, null);
+				Debug.LogError(exception);
 			}
 		}
 

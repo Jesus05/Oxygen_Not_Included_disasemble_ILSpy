@@ -122,7 +122,7 @@ public class ScenariosMenu : KModalScreen, SteamUGCService.IUGCEventHandler
 	private void LoadScenario(PublishedFileId_t item)
 	{
 		SteamUGC.GetItemInstallInfo(item, out ulong punSizeOnDisk, out string pchFolder, 1024u, out uint punTimeStamp);
-		Output.Log("LoadScenario", pchFolder, punSizeOnDisk, punTimeStamp);
+		DebugUtil.LogArgs("LoadScenario", pchFolder, punSizeOnDisk, punTimeStamp);
 		System.DateTime lastModified;
 		byte[] bytesFromZip = SteamUGCService.GetBytesFromZip(item, new string[1]
 		{
@@ -177,6 +177,10 @@ public class ScenariosMenu : KModalScreen, SteamUGCService.IUGCEventHandler
 	private void OnClickOpenWorkshop()
 	{
 		Application.OpenURL("http://steamcommunity.com/workshop/browse/?appid=457140&requiredtags[]=scenario");
+	}
+
+	public void OnUGCItemSubscribed(RemoteStoragePublishedFileSubscribed_t pCallback)
+	{
 	}
 
 	public void OnUGCItemInstalled(ItemInstalled_t pCallback)

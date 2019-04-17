@@ -114,7 +114,7 @@ public class RanchStation : GameStateMachine<RanchStation, RanchStation.Instance
 		{
 			int targetRanchCell = GetTargetRanchCell();
 			CavityInfo cavityForCell = Game.Instance.roomProber.GetCavityForCell(targetRanchCell);
-			if (cavityForCell == null)
+			if (cavityForCell == null || cavityForCell.room == null || cavityForCell.room.roomType != Db.Get().RoomTypes.CreaturePen)
 			{
 				TriggerRanchStationNoLongerAvailable();
 			}
@@ -166,6 +166,10 @@ public class RanchStation : GameStateMachine<RanchStation, RanchStation.Instance
 		{
 			if (!targetRanchable.IsNullOrStopped())
 			{
+				Debug.Assert(targetRanchable != null, "targetRanchable was null");
+				Debug.Assert(targetRanchable.GetMaster() != null, "GetMaster was null");
+				Debug.Assert(base.def != null, "def was null");
+				Debug.Assert(base.def.onRanchCompleteCb != null, "onRanchCompleteCb cb was null");
 				base.def.onRanchCompleteCb(targetRanchable.gameObject);
 				targetRanchable.Trigger(1827504087, null);
 			}

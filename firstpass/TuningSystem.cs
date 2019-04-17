@@ -45,7 +45,7 @@ public class TuningSystem
 		}
 		catch (Exception ex)
 		{
-			Debug.LogWarning("Error when attempting to monitor path: " + directoryName + "\n" + ex.ToString(), null);
+			Debug.LogWarning("Error when attempting to monitor path: " + directoryName + "\n" + ex.ToString());
 		}
 	}
 

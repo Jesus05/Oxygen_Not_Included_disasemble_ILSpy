@@ -22,7 +22,15 @@ public class UglyCryChore : Chore<UglyCryChore.StatesInstance>
 			if (!(dt <= 0f))
 			{
 				int gameCell = Grid.PosToCell(base.smi.master.gameObject);
-				SimMessages.AddRemoveSubstance(gameCell, SimHashes.Water, CellEventLogger.Instance.Tears, 1f * STRESS.TEARS_RATE * dt, bodyTemperature.value, byte.MaxValue, 0, true, -1);
+				Equippable equippable = GetComponent<SuitEquipper>().IsWearingAirtightSuit();
+				if ((UnityEngine.Object)equippable != (UnityEngine.Object)null)
+				{
+					equippable.GetComponent<Storage>().AddLiquid(SimHashes.Water, 1f * STRESS.TEARS_RATE * dt, bodyTemperature.value, byte.MaxValue, 0, false, true);
+				}
+				else
+				{
+					SimMessages.AddRemoveSubstance(gameCell, SimHashes.Water, CellEventLogger.Instance.Tears, 1f * STRESS.TEARS_RATE * dt, bodyTemperature.value, byte.MaxValue, 0, true, -1);
+				}
 			}
 		}
 	}

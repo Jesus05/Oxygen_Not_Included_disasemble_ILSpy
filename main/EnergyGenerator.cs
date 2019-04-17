@@ -104,6 +104,11 @@ public class EnergyGenerator : Generator, IEffectDescriptor, ISingleSliderContro
 
 	public static StatusItem BatteriesSufficientlyFull => batteriesSufficientlyFull;
 
+	public int SliderDecimalPlaces(int index)
+	{
+		return 0;
+	}
+
 	public float GetSliderMin(int index)
 	{
 		return 0f;
@@ -367,7 +372,7 @@ public class EnergyGenerator : Generator, IEffectDescriptor, ISingleSliderContro
 			}
 			else
 			{
-				GameObject go = element.substance.SpawnResource(base.transform.GetPosition(), num, root_pe.Temperature, byte.MaxValue, 0, false, false);
+				GameObject go = element.substance.SpawnResource(base.transform.GetPosition(), num, root_pe.Temperature, byte.MaxValue, 0, false, false, false);
 				storage.Store(go, true, false, true, false);
 			}
 		}
@@ -387,7 +392,7 @@ public class EnergyGenerator : Generator, IEffectDescriptor, ISingleSliderContro
 			}
 			else
 			{
-				element.substance.SpawnResource(Grid.CellToPosCCC(num2, Grid.SceneLayer.Front), num, temperature, byte.MaxValue, 0, true, false);
+				element.substance.SpawnResource(Grid.CellToPosCCC(num2, Grid.SceneLayer.Front), num, temperature, byte.MaxValue, 0, true, false, false);
 			}
 		}
 	}

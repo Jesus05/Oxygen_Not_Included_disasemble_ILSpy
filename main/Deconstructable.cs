@@ -42,8 +42,10 @@ public class Deconstructable : Workable
 		synchronizeAnims = false;
 		workerStatusItem = Db.Get().DuplicantStatusItems.Deconstructing;
 		attributeConverter = Db.Get().AttributeConverters.ConstructionSpeed;
-		attributeExperienceMultiplier = DUPLICANTSTATS.ATTRIBUTE_LEVELING.PART_DAY_EXPERIENCE;
+		attributeExperienceMultiplier = DUPLICANTSTATS.ATTRIBUTE_LEVELING.MOST_DAY_EXPERIENCE;
 		minimumAttributeMultiplier = 0.75f;
+		skillExperienceSkillGroup = Db.Get().SkillGroups.Building.Id;
+		skillExperienceMultiplier = SKILLS.MOST_DAY_EXPERIENCE;
 		multitoolContext = "build";
 		multitoolHitEffectTag = EffectConfigs.BuildSplashId;
 		workingPstComplete = HashedString.Invalid;
@@ -74,10 +76,6 @@ public class Deconstructable : Workable
 		{
 			QueueDeconstruction();
 		}
-	}
-
-	public override void AwardExperience(float work_dt, MinionResume resume)
-	{
 	}
 
 	public override float GetWorkTime()
@@ -233,7 +231,7 @@ public class Deconstructable : Workable
 					mass = 400f;
 					num -= 400f;
 				}
-				gameObject = element.substance.SpawnResource(Grid.CellToPosCBC(cell2, Grid.SceneLayer.Ore), mass, src_temperature, disease_idx, disease_count, false, false);
+				gameObject = element.substance.SpawnResource(Grid.CellToPosCBC(cell2, Grid.SceneLayer.Ore), mass, src_temperature, disease_idx, disease_count, false, false, false);
 			}
 		}
 		else

@@ -48,6 +48,7 @@ public class MaterialSelectionPanel : KScreen
 			{
 				if (materialSelector.gameObject.activeSelf)
 				{
+					Debug.Assert(materialSelector.CurrentSelectedElement != (Tag)null);
 					currentSelectedElements.Add(materialSelector.CurrentSelectedElement);
 				}
 			}

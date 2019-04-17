@@ -239,6 +239,7 @@ public class AudioEventManager : KMonoBehaviour
 		if (pol != null)
 		{
 			pol.Clear();
+			Debug.Assert(inusePool[pol.radius].Contains(pol));
 			inusePool[pol.radius].Remove(pol);
 			freePool[pol.radius].Add(pol);
 		}
@@ -263,6 +264,6 @@ public class AudioEventManager : KMonoBehaviour
 
 	private static void SoundLog(long itemId, string message)
 	{
-		Debug.Log(" [" + itemId + "] \t" + message, null);
+		Debug.Log(" [" + itemId + "] \t" + message);
 	}
 }

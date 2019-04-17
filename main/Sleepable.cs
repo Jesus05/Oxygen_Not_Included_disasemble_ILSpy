@@ -58,7 +58,7 @@ public class Sleepable : Workable
 	public override HashedString[] GetWorkAnims(Worker worker)
 	{
 		MinionResume component = worker.GetComponent<MinionResume>();
-		if ((Object)GetComponent<Building>() != (Object)null && (Object)component != (Object)null && component.CurrentRole != "NoRole")
+		if ((Object)GetComponent<Building>() != (Object)null && (Object)component != (Object)null && component.CurrentHat != null)
 		{
 			return hatWorkAnims;
 		}
@@ -68,7 +68,7 @@ public class Sleepable : Workable
 	public override HashedString GetWorkPstAnim(Worker worker, bool successfully_completed)
 	{
 		MinionResume component = worker.GetComponent<MinionResume>();
-		if ((Object)GetComponent<Building>() != (Object)null && (Object)component != (Object)null && component.CurrentRole != "NoRole")
+		if ((Object)GetComponent<Building>() != (Object)null && (Object)component != (Object)null && component.CurrentHat != null)
 		{
 			return hatWorkPstAnim;
 		}
@@ -134,10 +134,6 @@ public class Sleepable : Workable
 				worker.Trigger(1338475637, this);
 			}
 		}
-	}
-
-	public override void AwardExperience(float work_dt, MinionResume resume)
-	{
 	}
 
 	protected override void OnCleanUp()

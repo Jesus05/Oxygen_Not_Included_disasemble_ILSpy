@@ -8,13 +8,13 @@ public class LogicMemoryConfig : IBuildingConfig
 
 	private static readonly LogicPorts.Port[] INPUT_PORTS = new LogicPorts.Port[2]
 	{
-		new LogicPorts.Port(LogicMemory.SET_PORT_ID, new CellOffset(0, 0), STRINGS.BUILDINGS.PREFABS.LOGICMEMORY.SET_PORT_DESC, true, LogicPortSpriteType.Input),
-		new LogicPorts.Port(LogicMemory.RESET_PORT_ID, new CellOffset(1, 0), STRINGS.BUILDINGS.PREFABS.LOGICMEMORY.RESET_PORT_DESC, true, LogicPortSpriteType.ResetUpdate)
+		new LogicPorts.Port(LogicMemory.SET_PORT_ID, new CellOffset(0, 0), STRINGS.BUILDINGS.PREFABS.LOGICMEMORY.SET_PORT, STRINGS.BUILDINGS.PREFABS.LOGICMEMORY.SET_PORT_ACTIVE, STRINGS.BUILDINGS.PREFABS.LOGICMEMORY.SET_PORT_INACTIVE, true, LogicPortSpriteType.Input),
+		new LogicPorts.Port(LogicMemory.RESET_PORT_ID, new CellOffset(1, 0), STRINGS.BUILDINGS.PREFABS.LOGICMEMORY.RESET_PORT, STRINGS.BUILDINGS.PREFABS.LOGICMEMORY.RESET_PORT_ACTIVE, STRINGS.BUILDINGS.PREFABS.LOGICMEMORY.RESET_PORT_INACTIVE, true, LogicPortSpriteType.ResetUpdate)
 	};
 
 	private static readonly LogicPorts.Port[] OUTPUT_PORTS = new LogicPorts.Port[1]
 	{
-		new LogicPorts.Port(LogicMemory.READ_PORT_ID, new CellOffset(0, 1), STRINGS.BUILDINGS.PREFABS.LOGICMEMORY.READ_PORT_DESC, true, LogicPortSpriteType.Output)
+		new LogicPorts.Port(LogicMemory.READ_PORT_ID, new CellOffset(0, 1), STRINGS.BUILDINGS.PREFABS.LOGICMEMORY.READ_PORT, STRINGS.BUILDINGS.PREFABS.LOGICMEMORY.READ_PORT_ACTIVE, STRINGS.BUILDINGS.PREFABS.LOGICMEMORY.READ_PORT_INACTIVE, true, LogicPortSpriteType.Output)
 	};
 
 	public override BuildingDef CreateBuildingDef()
@@ -38,7 +38,7 @@ public class LogicMemoryConfig : IBuildingConfig
 		buildingDef.PermittedRotations = PermittedRotations.R360;
 		buildingDef.ViewMode = OverlayModes.Logic.ID;
 		buildingDef.AudioCategory = "Metal";
-		buildingDef.SceneLayer = Grid.SceneLayer.WireBridges;
+		buildingDef.SceneLayer = Grid.SceneLayer.LogicGates;
 		buildingDef.ObjectLayer = ObjectLayer.LogicGates;
 		SoundEventVolumeCache.instance.AddVolume("logic_memory_kanim", "PowerMemory_on", NOISE_POLLUTION.NOISY.TIER3);
 		SoundEventVolumeCache.instance.AddVolume("logic_memory_kanim", "PowerMemory_off", NOISE_POLLUTION.NOISY.TIER3);

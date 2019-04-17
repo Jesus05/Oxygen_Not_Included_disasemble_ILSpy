@@ -161,7 +161,8 @@ public class BuildMenu : KScreen
 				new BuildingInfo("Refrigerator", Action.BuildMenuKeyF),
 				new BuildingInfo("StorageLockerSmart", Action.BuildMenuKeyA),
 				new BuildingInfo("LiquidReservoir", Action.BuildMenuKeyQ),
-				new BuildingInfo("GasReservoir", Action.BuildMenuKeyG)
+				new BuildingInfo("GasReservoir", Action.BuildMenuKeyG),
+				new BuildingInfo("ObjectDispenser", Action.BuildMenuKeyO)
 			}),
 			new DisplayInfo(CacheHashString("Research"), "icon_category_misc", Action.BuildCategoryResearch, KKeyCode.R, new List<BuildingInfo>
 			{
@@ -206,8 +207,9 @@ public class BuildMenu : KScreen
 			new DisplayInfo(CacheHashString("Medical"), "icon_category_medical", Action.BuildCategoryMedical, KKeyCode.C, new List<BuildingInfo>
 			{
 				new BuildingInfo("Apothecary", Action.BuildMenuKeyA),
+				new BuildingInfo("DoctorStation", Action.BuildMenuKeyD),
+				new BuildingInfo("AdvancedDoctorStation", Action.BuildMenuKeyO),
 				new BuildingInfo("MedicalCot", Action.BuildMenuKeyB),
-				new BuildingInfo("MedicalBed", Action.BuildMenuKeyC),
 				new BuildingInfo("MassageTable", Action.BuildMenuKeyT),
 				new BuildingInfo("Grave", Action.BuildMenuKeyR)
 			}),
@@ -269,6 +271,7 @@ public class BuildMenu : KScreen
 				new BuildingInfo("MethaneGenerator", Action.BuildMenuKeyA),
 				new BuildingInfo("PetroleumGenerator", Action.BuildMenuKeyR),
 				new BuildingInfo("SteamTurbine", Action.BuildMenuKeyT),
+				new BuildingInfo("SteamTurbine2", Action.BuildMenuKeyT),
 				new BuildingInfo("SolarPanel", Action.BuildMenuKeyS)
 			}),
 			new DisplayInfo(CacheHashString("PowerControl"), "icon_category_electrical", Action.BuildCategoryPowerControl, KKeyCode.R, new List<BuildingInfo>
@@ -337,7 +340,8 @@ public class BuildMenu : KScreen
 			{
 				new BuildingInfo("SpaceHeater", Action.BuildMenuKeyS),
 				new BuildingInfo("LiquidHeater", Action.BuildMenuKeyT),
-				new BuildingInfo("LiquidCooledFan", Action.BuildMenuKeyQ),
+				new BuildingInfo("IceCooledFan", Action.BuildMenuKeyQ),
+				new BuildingInfo("IceMachine", Action.BuildMenuKeyI),
 				new BuildingInfo("AirConditioner", Action.BuildMenuKeyR),
 				new BuildingInfo("LiquidConditioner", Action.BuildMenuKeyA),
 				new BuildingInfo("OreScrubber", Action.BuildMenuKeyC),
@@ -364,6 +368,7 @@ public class BuildMenu : KScreen
 				new BuildingInfo("FarmStation", Action.BuildMenuKeyF),
 				new BuildingInfo("PowerControlStation", Action.BuildMenuKeyC),
 				new BuildingInfo("AstronautTrainingCenter", Action.BuildMenuKeyA),
+				new BuildingInfo("ResetSkillsStation", Action.BuildMenuKeyR),
 				new BuildingInfo("ClothingFabricator", Action.BuildMenuKeyT),
 				new BuildingInfo("SuitFabricator", Action.BuildMenuKeyX),
 				new BuildingInfo("SuitMarker", Action.BuildMenuKeyE),
@@ -402,6 +407,8 @@ public class BuildMenu : KScreen
 				new BuildingInfo("SolidConduit", Action.BuildMenuKeyC),
 				new BuildingInfo("SolidConduitInbox", Action.BuildMenuKeyI),
 				new BuildingInfo("SolidConduitOutbox", Action.BuildMenuKeyO),
+				new BuildingInfo("SolidVent", Action.BuildMenuKeyV),
+				new BuildingInfo("SolidLogicValve", Action.BuildMenuKeyL),
 				new BuildingInfo("SolidConduitBridge", Action.BuildMenuKeyB),
 				new BuildingInfo("AutoMiner", Action.BuildMenuKeyM)
 			}),
@@ -835,7 +842,7 @@ public class BuildMenu : KScreen
 	{
 		if ((UnityEngine.Object)selectedBuilding == (UnityEngine.Object)null)
 		{
-			Debug.Log("No def!", null);
+			Debug.Log("No def!");
 		}
 		if (selectedBuilding.isKAnimTile && selectedBuilding.isUtility)
 		{
@@ -975,7 +982,7 @@ public class BuildMenu : KScreen
 			BuildingDef buildingDef = Assets.GetBuildingDef(unlockedItem.Id);
 			if ((UnityEngine.Object)buildingDef == (UnityEngine.Object)null)
 			{
-				Output.LogWarning($"Tech '{tech.Name}' unlocked building '{unlockedItem.Id}' but no such building exists");
+				DebugUtil.LogWarningArgs($"Tech '{tech.Name}' unlocked building '{unlockedItem.Id}' but no such building exists");
 			}
 			else
 			{

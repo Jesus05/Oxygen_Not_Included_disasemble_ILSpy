@@ -50,7 +50,7 @@ public class CoolVestConfig : IEquipmentConfig
 				}
 				else
 				{
-					Debug.LogWarning("Clothing item cannot be equipped to assignee because they lack ClothingWearer component", null);
+					Debug.LogWarning("Clothing item cannot be equipped to assignee because they lack ClothingWearer component");
 				}
 			}
 		}

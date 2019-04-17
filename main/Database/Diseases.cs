@@ -4,39 +4,24 @@ namespace Database
 {
 	public class Diseases : ResourceSet<Disease>
 	{
-		public Disease Dweebcephaly;
+		public Disease FoodGerms;
 
-		public Disease Lazibonitis;
+		public Disease SlimeGerms;
 
-		public Disease FoodPoisoning;
+		public Disease PollenGerms;
 
-		public Disease PutridOdour;
-
-		public Disease Spores;
-
-		public Disease ColdBrain;
-
-		public Disease HeatRash;
-
-		public Disease SlimeLung;
-
-		public Disease Sunburn;
+		public Disease ZombieSpores;
 
 		public Diseases(ResourceSet parent)
 			: base("Diseases", parent)
 		{
-			FoodPoisoning = Add(new FoodPoisoning());
-			ColdBrain = Add(new ColdBrain());
-			HeatRash = Add(new HeatRash());
-			SlimeLung = Add(new SlimeLung());
-			Sunburn = Add(new Sunburn());
-			PutridOdour = Add(new PutridOdour());
-			PutridOdour.Disabled = true;
-			Spores = Add(new Spores());
-			Spores.Disabled = true;
+			FoodGerms = Add(new FoodGerms());
+			SlimeGerms = Add(new SlimeGerms());
+			PollenGerms = Add(new PollenGerms());
+			ZombieSpores = Add(new ZombieSpores());
 		}
 
-		public static bool IsValidDiseaseID(string id)
+		public static bool IsValidID(string id)
 		{
 			bool result = false;
 			foreach (Disease resource in Db.Get().Diseases.resources)

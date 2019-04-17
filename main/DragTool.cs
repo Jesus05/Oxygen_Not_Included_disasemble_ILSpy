@@ -391,7 +391,7 @@ public class DragTool : InterfaceTool
 			}
 			else
 			{
-				ToolMenu.Instance.PriorityScreen.SetScreenPriority(new PrioritySetting(PriorityScreen.PriorityClass.emergency, 1), true);
+				ToolMenu.Instance.PriorityScreen.SetScreenPriority(new PrioritySetting(PriorityScreen.PriorityClass.topPriority, 1), true);
 			}
 		}
 	}

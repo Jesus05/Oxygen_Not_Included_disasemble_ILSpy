@@ -80,6 +80,6 @@ public class KPrivacyPrefs : YamlIO<KPrivacyPrefs>
 
 	private static void LogError(string msg)
 	{
-		Debug.LogWarning(msg, null);
+		Debug.LogWarning(msg);
 	}
 }

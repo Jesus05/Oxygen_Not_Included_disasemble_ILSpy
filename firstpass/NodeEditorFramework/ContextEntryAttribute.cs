@@ -33,7 +33,7 @@ namespace NodeEditorFramework
 				{
 					return true;
 				}
-				Debug.LogWarning("Method " + method.Name + " has incorrect signature for ContextAttribute!", null);
+				Debug.LogWarning("Method " + method.Name + " has incorrect signature for ContextAttribute!");
 			}
 			return false;
 		}

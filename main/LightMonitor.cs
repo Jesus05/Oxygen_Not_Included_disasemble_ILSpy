@@ -51,7 +51,7 @@ public class LightMonitor : GameStateMachine<LightMonitor, LightMonitor.Instance
 	public override void InitializeStates(out BaseState default_state)
 	{
 		default_state = unburnt;
-		root.EventTransition(GameHashes.DiseaseAdded, burnt, (Instance smi) => smi.gameObject.GetDiseases().Has(Db.Get().Diseases.Sunburn)).Update(CheckLightLevel, UpdateRate.SIM_1000ms, false);
+		root.EventTransition(GameHashes.SicknessAdded, burnt, (Instance smi) => smi.gameObject.GetSicknesses().Has(Db.Get().Sicknesses.Sunburn)).Update(CheckLightLevel, UpdateRate.SIM_1000ms, false);
 		unburnt.DefaultState(unburnt.safe).ParamTransition(burnResistance, get_burnt, GameStateMachine<LightMonitor, Instance, IStateMachineTarget, object>.IsLTEZero);
 		unburnt.safe.DefaultState(unburnt.safe.unlit).Update(delegate(Instance smi, float dt)
 		{
@@ -66,9 +66,9 @@ public class LightMonitor : GameStateMachine<LightMonitor, LightMonitor.Instance
 		}, UpdateRate.SIM_200ms, false).ToggleEffect("Sunlight_Burning");
 		get_burnt.Enter(delegate(Instance smi)
 		{
-			smi.gameObject.GetDiseases().Infect(new DiseaseExposureInfo(Db.Get().Diseases.Sunburn.Id, DUPLICANTS.DISEASES.SUNBURN.SUNEXPOSURE));
+			smi.gameObject.GetSicknesses().Infect(new SicknessExposureInfo(Db.Get().Sicknesses.Sunburn.Id, DUPLICANTS.DISEASES.SUNBURNSICKNESS.SUNEXPOSURE));
 		}).GoTo(burnt);
-		burnt.EventTransition(GameHashes.DiseaseCured, unburnt, (Instance smi) => !smi.gameObject.GetDiseases().Has(Db.Get().Diseases.Sunburn)).Exit(delegate(Instance smi)
+		burnt.EventTransition(GameHashes.SicknessCured, unburnt, (Instance smi) => !smi.gameObject.GetSicknesses().Has(Db.Get().Sicknesses.Sunburn)).Exit(delegate(Instance smi)
 		{
 			smi.sm.burnResistance.Set(120f, smi);
 		});

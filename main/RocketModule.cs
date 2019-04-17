@@ -220,7 +220,7 @@ public class RocketModule : KMonoBehaviour
 		}
 		else
 		{
-			Debug.LogWarning("Module conditionManager is null", null);
+			Debug.LogWarning("Module conditionManager is null");
 		}
 	}
 

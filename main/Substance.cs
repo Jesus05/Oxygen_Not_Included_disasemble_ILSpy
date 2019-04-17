@@ -49,7 +49,7 @@ public class Substance
 	[EventRef]
 	public string fallingStopSound;
 
-	public GameObject SpawnResource(Vector3 position, float mass, float temperature, byte disease_idx, int disease_count, bool prevent_merge = false, bool forceTemperature = false)
+	public GameObject SpawnResource(Vector3 position, float mass, float temperature, byte disease_idx, int disease_count, bool prevent_merge = false, bool forceTemperature = false, bool manual_activation = false)
 	{
 		GameObject gameObject = null;
 		PrimaryElement primaryElement = null;
@@ -92,9 +92,17 @@ public class Substance
 		primaryElement.InternalTemperature = temperature;
 		position.z = Grid.GetLayerZ(Grid.SceneLayer.Ore);
 		gameObject.transform.SetPosition(position);
-		gameObject.SetActive(true);
-		primaryElement.AddDisease(disease_idx, disease_count, "Substances.SpawnResource");
+		if (!manual_activation)
+		{
+			ActivateSubstanceGameObject(gameObject, disease_idx, disease_count);
+		}
 		return gameObject;
+	}
+
+	public void ActivateSubstanceGameObject(GameObject obj, byte disease_idx, int disease_count)
+	{
+		obj.SetActive(true);
+		obj.GetComponent<PrimaryElement>().AddDisease(disease_idx, disease_count, "Substances.SpawnResource");
 	}
 
 	private void SetTexture(MaterialPropertyBlock block, string texture_name)

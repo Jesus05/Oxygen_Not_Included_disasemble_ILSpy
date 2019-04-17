@@ -213,7 +213,7 @@ namespace STRINGS
 
 				public static LocString AUTO = "Auto";
 
-				public static LocString CLOSED = "Locked";
+				public static LocString LOCKED = "Locked";
 			}
 
 			public class CONDUITBLOCKED
@@ -581,7 +581,7 @@ namespace STRINGS
 
 			public class NOAPPLICABLEANALYSISSELECTED
 			{
-				public static LocString NAME = "No Anaylsis Focus Selected";
+				public static LocString NAME = "No Analysis Focus Selected";
 
 				public static LocString TOOLTIP = "Select an unknown destination from the Starmap <color=#F44A47><b>[R]</b></color> to begin analysis";
 
@@ -735,6 +735,13 @@ namespace STRINGS
 				public static LocString NAME = "Storing: {Stored} / {Capacity} {Units}";
 
 				public static LocString TOOLTIP = "This container is storing {Stored} {Units} of a maximum {Capacity} {Units}.";
+			}
+
+			public class SKILL_POINTS_AVAILABLE
+			{
+				public static LocString NAME = "Skill points available";
+
+				public static LocString TOOLTIP = "A Duplicant has skill points available";
 			}
 
 			public class UNASSIGNED
@@ -1380,25 +1387,25 @@ namespace STRINGS
 				}
 			}
 
-			public class REQUIRESROLEPERK
+			public class REQUIRESSKILLPERK
 			{
 				public static LocString NAME = "Specialist-Operated Building";
 
-				public static LocString TOOLTIP = "Only Duplicants trained in one of the following jobs can operate this building:\n{Roles}";
+				public static LocString TOOLTIP = "Only Duplicants with one of the following skills can operate this building:\n{Skills}";
 			}
 
-			public class DIGREQUIRESROLEPERK
+			public class DIGREQUIRESSKILLPERK
 			{
 				public static LocString NAME = "Miner-Only Dig";
 
-				public static LocString TOOLTIP = "Only Duplicants trained in one of the following jobs can mine this material:\n{Roles}";
+				public static LocString TOOLTIP = "Only Duplicants with one of the following skills can mine this material:\n{Skills}";
 			}
 
-			public class COLONYLACKSREQUIREDROLEPERK
+			public class COLONYLACKSREQUIREDSKILLPERK
 			{
-				public static LocString NAME = "Colony Lacks {Roles}s";
+				public static LocString NAME = "Colony Lacks {Skills} Skill";
 
-				public static LocString TOOLTIP = "Open the Jobs Panel <color=#F44A47><b>[L]</b></color> and assign a Duplicant to the {Roles} position to use this building";
+				public static LocString TOOLTIP = "Open the Skills Panel <color=#F44A47><b>[L]</b></color> and assign a Duplicant the {Skills} skill to use this building";
 			}
 
 			public class SWITCHSTATUSACTIVE
@@ -1429,11 +1436,32 @@ namespace STRINGS
 				public static LocString TOOLTIP = "Recuperating Duplicants must have toilets available within {0} cells";
 			}
 
+			public class BUILDING_DEPRECATED
+			{
+				public static LocString NAME = "Building Deprecated";
+
+				public static LocString TOOLTIP = "This building has been deprecated and use is not intended";
+			}
+
 			public class TURBINE_BLOCKED_INPUT
 			{
-				public static LocString NAME = "Input Blocked";
+				public static LocString NAME = "All Inputs Blocked";
 
-				public static LocString TOOLTIP = "A blocked input has stopped this turbine from functioning";
+				public static LocString TOOLTIP = "This Turbine's input vents are blocked, so it can't intake any steam.\n\nThe input vents are located directly below the foundation tile this building is resting on.";
+			}
+
+			public class TURBINE_PARTIALLY_BLOCKED_INPUT
+			{
+				public static LocString NAME = "{Blocked}/{Total} Inputs Blocked";
+
+				public static LocString TOOLTIP = "{Blocked} of this turbine's {Total} inputs have been blocked, resulting in reduced throughput.";
+			}
+
+			public class TURBINE_TOO_HOT
+			{
+				public static LocString NAME = "Turbine Too Hot";
+
+				public static LocString TOOLTIP = "The turbine must be below {Overheat_Temperature} to properly process {Src_Element} into {Dest_Element}";
 			}
 
 			public class TURBINE_BLOCKED_OUTPUT
@@ -1445,16 +1473,23 @@ namespace STRINGS
 
 			public class TURBINE_INSUFFICIENT_MASS
 			{
-				public static LocString NAME = "Underpressure";
+				public static LocString NAME = "Not Enough {Src_Element}";
 
-				public static LocString TOOLTIP = "The {ELEMENT} present below this turbine must be {MASS} more pressurized than the {ELEMENT} above it in order to turn the turbine";
+				public static LocString TOOLTIP = "The {Src_Element} present below this turbine must be at least {Min_Mass} in order to turn the turbine";
 			}
 
 			public class TURBINE_INSUFFICIENT_TEMPERATURE
 			{
-				public static LocString NAME = "Cold {ELEMENT}";
+				public static LocString NAME = "{Src_Element} Temperature Below {Active_Temperature}";
 
-				public static LocString TOOLTIP = "This turbine requires {ELEMENT} that is a minimum of {TEMPERATURE}";
+				public static LocString TOOLTIP = "This turbine requires {Src_Element} that is a minimum of {Active_Temperature} in order to produce power";
+			}
+
+			public class TURBINE_ACTIVE_WATTAGE
+			{
+				public static LocString NAME = "Current Wattage: {Wattage}";
+
+				public static LocString TOOLTIP = "This turbine is generating {Wattage} of power\n\nIt is running at {Efficiency} of full capacity. Increase {Src_Element} mass and temperature to improve output.";
 			}
 
 			public class TURBINE_SPINNING_UP
@@ -1543,6 +1578,17 @@ namespace STRINGS
 				public static LocString EXTENDED = "Extended";
 
 				public static LocString RETRACTED = "Retracted";
+			}
+
+			public class OBJECTDISPENSER
+			{
+				public static LocString AUTOMATION_CONTROL = "Automation Control: {0}";
+
+				public static LocString MANUAL_CONTROL = "Manual Control: {0}";
+
+				public static LocString OPENED = "Opened";
+
+				public static LocString CLOSED = "Closed";
 			}
 
 			public class TOO_COLD
@@ -1684,15 +1730,15 @@ namespace STRINGS
 				public static LocString TILE_FORMAT = "Solid {0}";
 			}
 
-			public class EMERGENCY_PRIORITY
+			public class TOP_PRIORITY_CHORE
 			{
-				public static LocString NAME = "Emergency Priority";
+				public static LocString NAME = "Top Priority";
 
-				public static LocString TOOLTIP = "The colony is in Red Alert because Emergency Priority has been set";
+				public static LocString TOOLTIP = "The colony is in Yellow Alert because Top Priority has been set";
 
-				public static LocString NOTIFICATION_NAME = "Emergency Priority";
+				public static LocString NOTIFICATION_NAME = "Top Priority";
 
-				public static LocString NOTIFICATION_TOOLTIP = "The colony is in Red Alert because the following items are set to Emergency Priority:";
+				public static LocString NOTIFICATION_TOOLTIP = "The colony is in Yellow Alert because the following items are set to Top Priority:";
 			}
 		}
 

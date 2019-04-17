@@ -1,4 +1,3 @@
-using STRINGS;
 using TUNING;
 using UnityEngine;
 
@@ -24,11 +23,6 @@ public class PetroleumGeneratorConfig : IBuildingConfig
 
 	private const int HEIGHT = 4;
 
-	private static readonly LogicPorts.Port[] INPUT_PORTS = new LogicPorts.Port[1]
-	{
-		LogicPorts.Port.InputPort(LogicOperationalController.PORT_ID, new CellOffset(0, 0), UI.LOGIC_PORTS.CONTROL_OPERATIONAL, false)
-	};
-
 	public override BuildingDef CreateBuildingDef()
 	{
 		string id = "PetroleumGenerator";
@@ -45,9 +39,9 @@ public class PetroleumGeneratorConfig : IBuildingConfig
 		EffectorValues tIER = NOISE_POLLUTION.NOISY.TIER5;
 		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, new float[2]
 		{
-			TUNING.BUILDINGS.CONSTRUCTION_MASS_KG.TIER5[0],
-			TUNING.BUILDINGS.CONSTRUCTION_MASS_KG.TIER2[0]
-		}, construction_materials, 2400f, BuildLocationRule.OnFloor, TUNING.BUILDINGS.DECOR.PENALTY.TIER2, tIER, 0.2f);
+			BUILDINGS.CONSTRUCTION_MASS_KG.TIER5[0],
+			BUILDINGS.CONSTRUCTION_MASS_KG.TIER2[0]
+		}, construction_materials, 2400f, BuildLocationRule.OnFloor, BUILDINGS.DECOR.PENALTY.TIER2, tIER, 0.2f);
 		buildingDef.GeneratorWattageRating = 2000f;
 		buildingDef.GeneratorBaseCapacity = 2000f;
 		buildingDef.ExhaustKilowattsWhenActive = 4f;
@@ -62,17 +56,17 @@ public class PetroleumGeneratorConfig : IBuildingConfig
 
 	public override void DoPostConfigurePreview(BuildingDef def, GameObject go)
 	{
-		GeneratedBuildings.RegisterLogicPorts(go, INPUT_PORTS);
+		GeneratedBuildings.RegisterLogicPorts(go, LogicOperationalController.INPUT_PORTS_0_0);
 	}
 
 	public override void DoPostConfigureUnderConstruction(GameObject go)
 	{
-		GeneratedBuildings.RegisterLogicPorts(go, INPUT_PORTS);
+		GeneratedBuildings.RegisterLogicPorts(go, LogicOperationalController.INPUT_PORTS_0_0);
 	}
 
 	public override void DoPostConfigureComplete(GameObject go)
 	{
-		GeneratedBuildings.RegisterLogicPorts(go, INPUT_PORTS);
+		GeneratedBuildings.RegisterLogicPorts(go, LogicOperationalController.INPUT_PORTS_0_0);
 		go.AddOrGet<LogicOperationalController>();
 		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.IndustrialMachinery);
 		go.AddOrGet<LoopingSounds>();

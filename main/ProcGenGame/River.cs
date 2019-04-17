@@ -74,7 +74,7 @@ namespace ProcGenGame
 				}
 				else
 				{
-					Debug.LogError("Process::SetValuesFunction Index [" + index + "] is not valid. cells.Length [" + cells.Length + "]", null);
+					Debug.LogError("Process::SetValuesFunction Index [" + index + "] is not valid. cells.Length [" + cells.Length + "]");
 				}
 			};
 			float temperatureMin = 265f;

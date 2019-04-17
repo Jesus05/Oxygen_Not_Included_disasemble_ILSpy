@@ -385,6 +385,8 @@ namespace TUNING
 
 		public const float STANDARD_STRESS_BONUS = -0.0333333351f;
 
+		public const float RANCHING_DURATION_MULTIPLIER_BONUS_PER_POINT = 0.1f;
+
 		public const float STRESS_BELOW_EXPECTATIONS_FOOD = 0.25f;
 
 		public const float STRESS_ABOVE_EXPECTATIONS_FOOD = -0.5f;
@@ -437,6 +439,8 @@ namespace TUNING
 		public static int MAX_STAT_POINTS = 10;
 
 		public static int MAX_TRAITS = 4;
+
+		public static int APTITUDE_BONUS = 1;
 
 		public static readonly List<string> CONTRACTEDTRAITS_HEALING = new List<string>
 		{
@@ -543,7 +547,7 @@ namespace TUNING
 				probability = PROBABILITY_LOW,
 				requiredNonPositiveAptitudes = new List<HashedString>
 				{
-					"Research"
+					"MedicalAid"
 				}
 			},
 			new TraitVal
@@ -619,6 +623,12 @@ namespace TUNING
 			new TraitVal
 			{
 				id = "ScaredyCat",
+				statBonus = SMALL_STATPOINT_BONUS,
+				probability = PROBABILITY_MED
+			},
+			new TraitVal
+			{
+				id = "Allergies",
 				statBonus = SMALL_STATPOINT_BONUS,
 				probability = PROBABILITY_MED
 			}
@@ -800,7 +810,8 @@ namespace TUNING
 				probability = PROBABILITY_MED,
 				mutuallyExclusiveTraits = new List<string>
 				{
-					"SimpleTastes"
+					"SimpleTastes",
+					"CantCook"
 				},
 				requiredNonPositiveAptitudes = new List<HashedString>
 				{

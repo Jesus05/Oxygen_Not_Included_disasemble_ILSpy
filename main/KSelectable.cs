@@ -63,7 +63,7 @@ public class KSelectable : KMonoBehaviour
 	{
 		if (entityName == null || entityName == string.Empty || entityName.Length <= 0)
 		{
-			Output.LogWithObj(base.gameObject, "Warning Item has blank name!");
+			Debug.Log("Warning Item has blank name!", base.gameObject);
 			return base.name;
 		}
 		return entityName;

@@ -156,7 +156,7 @@ public class RescueIncapacitatedChore : Chore<RescueIncapacitatedChore.StatesIns
 	{
 		if ((UnityEngine.Object)base.smi.sm.rescuer.Get(base.smi) != (UnityEngine.Object)null && (UnityEngine.Object)base.smi.sm.rescueTarget.Get(base.smi) != (UnityEngine.Object)null)
 		{
-			base.smi.sm.rescuer.Get(base.smi).GetComponent<Storage>().Drop(base.smi.sm.rescueTarget.Get(base.smi));
+			base.smi.sm.rescuer.Get(base.smi).GetComponent<Storage>().Drop(base.smi.sm.rescueTarget.Get(base.smi), true);
 		}
 	}
 }

@@ -28,7 +28,7 @@ public class TakeOffHatChore : Chore<TakeOffHatChore.StatesInstance>
 			Target(duplicant);
 			remove_hat_pre.Enter(delegate(StatesInstance smi)
 			{
-				if (duplicant.Get(smi).GetComponent<MinionResume>().CurrentRole != "NoRole")
+				if (duplicant.Get(smi).GetComponent<MinionResume>().CurrentHat != null)
 				{
 					smi.GoTo(remove_hat);
 				}
@@ -40,8 +40,7 @@ public class TakeOffHatChore : Chore<TakeOffHatChore.StatesInstance>
 			remove_hat.ToggleAnims("anim_hat_kanim", 0f).PlayAnim("hat_off").OnAnimQueueComplete(complete);
 			complete.Enter(delegate(StatesInstance smi)
 			{
-				RoleManager.RemoveHat(smi.master.GetComponent<KBatchedAnimController>());
-				smi.master.GetComponent<MinionResume>().OnExitRole();
+				smi.master.GetComponent<MinionResume>().RemoveHat();
 			}).ReturnSuccess();
 		}
 	}

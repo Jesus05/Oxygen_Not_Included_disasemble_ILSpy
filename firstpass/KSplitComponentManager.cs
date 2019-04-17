@@ -76,7 +76,7 @@ public abstract class KSplitComponentManager<Header, Payload> : KSplitCompactedV
 		{
 			if (!instanceHandleMap.ContainsKey(info.instance))
 			{
-				Output.LogError("Tried to remove component of type", typeof(Header).ToString(), typeof(Payload).ToString(), "on instance", info.instance.ToString(), "but instance has not been registered yet. Handle:", info.handle);
+				DebugUtil.LogErrorArgs("Tried to remove component of type", typeof(Header).ToString(), typeof(Payload).ToString(), "on instance", info.instance.ToString(), "but instance has not been registered yet. Handle:", info.handle);
 				return;
 			}
 			instanceHandleMap.Remove(info.instance);

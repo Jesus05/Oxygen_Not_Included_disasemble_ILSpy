@@ -148,7 +148,7 @@ public class KAnimBatchManager
 	{
 		if (!isReady)
 		{
-			Debug.LogError($"Batcher isnt finished setting up, controller [{controller.GetName()}] is registering too early.", null);
+			Debug.LogError($"Batcher isnt finished setting up, controller [{controller.GetName()}] is registering too early.");
 		}
 		BatchKey batchKey = BatchKey.Create(controller);
 		Vector2I vector2I = ControllerToChunkXY(controller);

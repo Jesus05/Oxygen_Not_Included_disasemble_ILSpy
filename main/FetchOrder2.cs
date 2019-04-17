@@ -101,7 +101,7 @@ public class FetchOrder2
 	{
 		if (amount <= PICKUPABLETUNING.MINIMUM_PICKABLE_AMOUNT)
 		{
-			Output.LogWarning(string.Format("FetchOrder2 {0} is requesting {1} {2} to {3}", chore_type.Id, tags[0], amount, (!((UnityEngine.Object)destination != (UnityEngine.Object)null)) ? "to nowhere" : destination.name));
+			DebugUtil.LogWarningArgs(string.Format("FetchOrder2 {0} is requesting {1} {2} to {3}", chore_type.Id, tags[0], amount, (!((UnityEngine.Object)destination != (UnityEngine.Object)null)) ? "to nowhere" : destination.name));
 		}
 		choreType = chore_type;
 		Tags = tags;
@@ -184,12 +184,12 @@ public class FetchOrder2
 
 	public void Suspend(string reason)
 	{
-		Debug.LogError("UNIMPLEMENTED!", null);
+		Debug.LogError("UNIMPLEMENTED!");
 	}
 
 	public void Resume(string reason)
 	{
-		Debug.LogError("UNIMPLEMENTED!", null);
+		Debug.LogError("UNIMPLEMENTED!");
 	}
 
 	public void Submit(Action<FetchOrder2, Pickupable> on_complete, bool check_storage_contents, Action<FetchOrder2, Pickupable> on_begin = null)
@@ -292,7 +292,7 @@ public class FetchOrder2
 			str = ((!((UnityEngine.Object)Destination == (UnityEngine.Object)null)) ? (str + "\nDestination: " + Destination.name) : (str + "\nDestination: None"));
 			str = str + "\nTotal Amount: " + TotalAmount;
 			str = str + "\nUnfetched Amount: " + _UnfetchedAmount;
-			Debug.LogError(str, null);
+			Debug.LogError(str);
 		}
 	}
 }

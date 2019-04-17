@@ -68,7 +68,7 @@ public class Weapon : KMonoBehaviour
 	{
 		if (properties == null)
 		{
-			Debug.LogWarning($"Attack properties not configured. {base.gameObject.name} cannot attack with weapon.", null);
+			Debug.LogWarning($"Attack properties not configured. {base.gameObject.name} cannot attack with weapon.");
 		}
 		else
 		{

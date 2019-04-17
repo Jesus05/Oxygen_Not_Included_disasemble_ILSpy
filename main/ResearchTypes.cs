@@ -49,7 +49,7 @@ public class ResearchTypes
 				return type;
 			}
 		}
-		Debug.LogWarning($"No research with type id {id} found", null);
+		Debug.LogWarning($"No research with type id {id} found");
 		return null;
 	}
 }

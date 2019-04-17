@@ -1,3 +1,4 @@
+using Database;
 using Klei.AI;
 using STRINGS;
 using System;
@@ -188,7 +189,7 @@ public static class CodexEntryGenerator
 			TechItem techItem = resource.unlockedItems[0];
 			if (techItem == null)
 			{
-				Output.LogError("Unknown tech:", resource.Name);
+				DebugUtil.LogErrorArgs("Unknown tech:", resource.Name);
 			}
 			codexEntry.icon = techItem.getUISprite("ui", false);
 			codexEntry.parentId = "TECH";
@@ -201,21 +202,21 @@ public static class CodexEntryGenerator
 	public static Dictionary<string, CodexEntry> GenerateRoleEntries()
 	{
 		Dictionary<string, CodexEntry> dictionary = new Dictionary<string, CodexEntry>();
-		foreach (RoleConfig rolesConfig in Game.Instance.roleManager.RolesConfigs)
+		foreach (Skill resource in Db.Get().Skills.resources)
 		{
 			List<ContentContainer> list = new List<ContentContainer>();
 			Sprite sprite = null;
-			sprite = Assets.GetSprite(rolesConfig.hat);
-			GenerateTitleContainers(rolesConfig.name, list);
+			sprite = Assets.GetSprite(resource.hat);
+			GenerateTitleContainers(resource.Name, list);
 			GenerateImageContainers(sprite, list);
-			GenerateGenericDescriptionContainers(rolesConfig.description, list);
-			GenerateRoleRequirementsAndPerksContainers(rolesConfig, list);
-			GenerateRelatedRoleContainers(rolesConfig, list);
-			CodexEntry codexEntry = new CodexEntry("ROLES", list, rolesConfig.name);
+			GenerateGenericDescriptionContainers(resource.description, list);
+			GenerateSkillRequirementsAndPerksContainers(resource, list);
+			GenerateRelatedSkillContainers(resource, list);
+			CodexEntry codexEntry = new CodexEntry("ROLES", list, resource.Name);
 			codexEntry.parentId = "ROLES";
 			codexEntry.icon = sprite;
-			CodexCache.AddEntry(rolesConfig.id, codexEntry, null);
-			dictionary.Add(rolesConfig.id, codexEntry);
+			CodexCache.AddEntry(resource.Id, codexEntry, null);
+			dictionary.Add(resource.Id, codexEntry);
 		}
 		return dictionary;
 	}
@@ -511,7 +512,7 @@ public static class CodexEntryGenerator
 		}
 	}
 
-	private static void GenerateRoleRequirementsAndPerksContainers(RoleConfig role, List<ContentContainer> containers)
+	private static void GenerateSkillRequirementsAndPerksContainers(Skill skill, List<ContentContainer> containers)
 	{
 		List<ICodexWidget> list = new List<ICodexWidget>();
 		CodexText item = new CodexText(CODEX.HEADERS.ROLE_PERKS, CodexTextStyle.Subtitle);
@@ -520,17 +521,16 @@ public static class CodexEntryGenerator
 		list.Add(new CodexDividerLine());
 		list.Add(item2);
 		list.Add(new CodexSpacer());
-		RolePerk[] perks = role.perks;
-		foreach (RolePerk rolePerk in perks)
+		foreach (SkillPerk perk in skill.perks)
 		{
-			CodexText item3 = new CodexText(rolePerk.description, CodexTextStyle.Body);
+			CodexText item3 = new CodexText(perk.Name, CodexTextStyle.Body);
 			list.Add(item3);
 		}
 		containers.Add(new ContentContainer(list, ContentContainer.ContentLayout.Vertical));
 		list.Add(new CodexSpacer());
 	}
 
-	private static void GenerateRelatedRoleContainers(RoleConfig role, List<ContentContainer> containers)
+	private static void GenerateRelatedSkillContainers(Skill skill, List<ContentContainer> containers)
 	{
 		bool flag = false;
 		List<ICodexWidget> list = new List<ICodexWidget>();
@@ -538,15 +538,11 @@ public static class CodexEntryGenerator
 		list.Add(item);
 		list.Add(new CodexDividerLine());
 		list.Add(new CodexSpacer());
-		RoleAssignmentRequirement[] requirements = role.requirements;
-		foreach (RoleAssignmentRequirement roleAssignmentRequirement in requirements)
+		foreach (string priorSkill in skill.priorSkills)
 		{
-			if (roleAssignmentRequirement is PreviousRoleAssignmentRequirement)
-			{
-				CodexText item2 = new CodexText(Game.Instance.roleManager.GetRole((roleAssignmentRequirement as PreviousRoleAssignmentRequirement).previousRoleID).name, CodexTextStyle.Body);
-				list.Add(item2);
-				flag = true;
-			}
+			CodexText item2 = new CodexText(Db.Get().Skills.Get(priorSkill).Name, CodexTextStyle.Body);
+			list.Add(item2);
+			flag = true;
 		}
 		if (flag)
 		{
@@ -561,14 +557,13 @@ public static class CodexEntryGenerator
 		list2.Add(new CodexDividerLine());
 		list2.Add(item4);
 		list2.Add(new CodexSpacer());
-		foreach (RoleConfig rolesConfig in Game.Instance.roleManager.RolesConfigs)
+		foreach (Skill resource in Db.Get().Skills.resources)
 		{
-			RoleAssignmentRequirement[] requirements2 = rolesConfig.requirements;
-			foreach (RoleAssignmentRequirement roleAssignmentRequirement2 in requirements2)
+			foreach (string priorSkill2 in resource.priorSkills)
 			{
-				if (roleAssignmentRequirement2 is PreviousRoleAssignmentRequirement && (roleAssignmentRequirement2 as PreviousRoleAssignmentRequirement).previousRoleID == role.id)
+				if (priorSkill2 == skill.Id)
 				{
-					CodexText item5 = new CodexText(rolesConfig.name, CodexTextStyle.Body);
+					CodexText item5 = new CodexText(resource.Name, CodexTextStyle.Body);
 					list2.Add(item5);
 					flag2 = true;
 				}
@@ -872,16 +867,11 @@ public static class CodexEntryGenerator
 	private static void GenerateDiseaseDescriptionContainers(Disease disease, List<ContentContainer> containers)
 	{
 		List<ICodexWidget> list = new List<ICodexWidget>();
-		foreach (Descriptor qualitativeDescriptor in disease.GetQualitativeDescriptors())
-		{
-			Descriptor current = qualitativeDescriptor;
-			list.Add(new CodexText(current.text, CodexTextStyle.Body));
-		}
 		list.Add(new CodexSpacer());
 		foreach (Descriptor quantitativeDescriptor in disease.GetQuantitativeDescriptors())
 		{
-			Descriptor current2 = quantitativeDescriptor;
-			list.Add(new CodexText(current2.text, CodexTextStyle.Body));
+			Descriptor current = quantitativeDescriptor;
+			list.Add(new CodexText(current.text, CodexTextStyle.Body));
 		}
 		list.Add(new CodexSpacer());
 		containers.Add(new ContentContainer(list, ContentContainer.ContentLayout.Vertical));

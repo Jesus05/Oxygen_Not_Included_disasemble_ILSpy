@@ -83,7 +83,7 @@ namespace KSerialization
 							break;
 						}
 						string text = "Found conflicting serialization configurations on type " + type2.ToString() + " and " + type.ToString();
-						Output.LogError(text);
+						Debug.LogError(text);
 						throw new ArgumentException(text);
 					}
 				}
@@ -257,7 +257,7 @@ namespace KSerialization
 				catch (Exception innerException)
 				{
 					string text = $"Error occurred while serializing field {current.field.Name} on template {serializableType.Name}";
-					Output.LogError(text);
+					Debug.LogError(text);
 					throw new ArgumentException(text, innerException);
 				}
 			}
@@ -272,7 +272,7 @@ namespace KSerialization
 				catch (Exception innerException2)
 				{
 					string text2 = $"Error occurred while serializing property {current2.property.Name} on template {serializableType.Name}";
-					Output.LogError(text2);
+					Debug.LogError(text2);
 					throw new ArgumentException(text2, innerException2);
 				}
 			}

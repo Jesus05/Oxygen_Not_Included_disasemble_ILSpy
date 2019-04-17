@@ -202,7 +202,7 @@ public class WaterCooler : StateMachineComponent<WaterCooler.StatesInstance>, IA
 		int cell = Grid.PosToCell(this);
 		int cell2 = Grid.OffsetCell(cell, offset);
 		int anchor_cell = Grid.CellBelow(cell2);
-		return GameNavGrids.FloorValidator.IsWalkableCell(cell2, anchor_cell, false, false);
+		return GameNavGrids.FloorValidator.IsWalkableCell(cell2, anchor_cell, false);
 	}
 
 	private void OnChoreEnd(Chore chore)

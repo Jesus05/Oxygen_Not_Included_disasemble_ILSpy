@@ -10,9 +10,9 @@ namespace STRINGS
 
 			public static LocString RESEARCHTYPEALSOREQUIRED = "{0} also required";
 
-			public static LocString NO_RESEARCHER_ROLE = "No Researchers assigned";
+			public static LocString NO_RESEARCHER_SKILL = "No Researchers assigned";
 
-			public static LocString NO_RESEARCHER_ROLE_TOOLTIP = "The selected research focus requires an advanced type of research to complete\n\nAssign a Duplicant to the Research Assistant job using the Jobs Panel <color=#F44A47><b>[J]</b></color> to enable this errand";
+			public static LocString NO_RESEARCHER_SKILL_TOOLTIP = "The selected research focus requires an advanced type of research to complete\n\nAssign a Duplicant to the Research Assistant job using the Jobs Panel <color=#F44A47><b>[J]</b></color> to enable this errand";
 
 			public static LocString MISSING_RESEARCH_STATION = "Missing Research Station";
 
@@ -98,9 +98,9 @@ namespace STRINGS
 		{
 			public class JOBS
 			{
-				public static LocString NAME = UI.FormatAsLink("Jobs", "JOBS");
+				public static LocString NAME = UI.FormatAsLink("Employment", "JOBS");
 
-				public static LocString DESC = "Assign Duplicants jobs";
+				public static LocString DESC = "Assign Duplicants skills";
 			}
 
 			public class IMPROVEDOXYGEN
@@ -229,18 +229,32 @@ namespace STRINGS
 				public static LocString DESC = "Make daily ablutions less of a hassle.";
 			}
 
-			public class MEDICALRESEARCH
+			public class MEDICINEI
 			{
-				public static LocString NAME = UI.FormatAsLink("Medical Research", "MEDICALRESEARCH");
+				public static LocString NAME = UI.FormatAsLink("Pharmacology", "MEDICINEI");
 
-				public static LocString DESC = "Basic medical knowledge to fight the common " + UI.FormatAsLink("Diseases", "DISEASE") + " that plague Duplicants.";
+				public static LocString DESC = "Craft natural cures to fight the common " + UI.FormatAsLink("Sicknesses", "SICKNESSES") + " that plague Duplicants.";
 			}
 
-			public class MEDBAY
+			public class MEDICINEII
 			{
-				public static LocString NAME = UI.FormatAsLink("Healthcare", "MEDBAY");
+				public static LocString NAME = UI.FormatAsLink("Medical Care", "MEDICINEII");
 
-				public static LocString DESC = "Prevent injury and " + UI.FormatAsLink("Disease", "DISEASE") + " from running rampant in the colony.";
+				public static LocString DESC = "Care providers allow the administration of powerful cures";
+			}
+
+			public class MEDICINEIII
+			{
+				public static LocString NAME = UI.FormatAsLink("Pathogen Diagnostics", "MEDICINEIII");
+
+				public static LocString DESC = "Treat disease at the source with medical automation equipment";
+			}
+
+			public class MEDICINEIV
+			{
+				public static LocString NAME = UI.FormatAsLink("Micro-Targeted Medicine", "MEDICINEIV");
+
+				public static LocString DESC = "Advanced medical care can cure the most stubborn of illnesses";
 			}
 
 			public class ADVANCEDFILTRATION

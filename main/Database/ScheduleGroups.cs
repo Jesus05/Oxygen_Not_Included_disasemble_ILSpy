@@ -44,6 +44,7 @@ namespace Database
 			{
 				num += allGroup.defaultSegments;
 			}
+			Debug.Assert(num == 24, "Default schedule groups must add up to exactly 1 cycle!");
 		}
 
 		public ScheduleGroup Add(string id, int defaultSegments, string name, string description, string notificationTooltip, List<ScheduleBlockType> allowedTypes, bool alarm = false)

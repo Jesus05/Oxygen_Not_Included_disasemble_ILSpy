@@ -26,7 +26,7 @@ public class KPrefabIDTracker
 		{
 			if (prefabIdMap.ContainsKey(instance.InstanceID))
 			{
-				Output.LogWarningWithObj(instance.gameObject, $"KPID instance id {instance.InstanceID} was previously used by {prefabIdMap[instance.InstanceID].gameObject} but we're trying to add it from {instance.name}. Conflict!");
+				Debug.LogWarningFormat(instance.gameObject, "KPID instance id {0} was previously used by {1} but we're trying to add it from {2}. Conflict!", instance.InstanceID, prefabIdMap[instance.InstanceID].gameObject, instance.name);
 			}
 			prefabIdMap[instance.InstanceID] = instance;
 		}

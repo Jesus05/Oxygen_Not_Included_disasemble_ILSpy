@@ -42,7 +42,7 @@ public class Capturable : Workable, IGameObjectEffectDescriptor
 		base.OnPrefabInit();
 		Components.Capturables.Add(this);
 		SetOffsetTable(OffsetGroups.InvertedStandardTable);
-		requiredRolePerk = RoleManager.rolePerks.CanWrangleCreatures.id;
+		requiredSkillPerk = Db.Get().SkillPerks.CanWrangleCreatures.Id;
 		resetProgressOnStop = true;
 		faceTargetWhenWorking = true;
 		synchronizeAnims = false;
@@ -164,7 +164,7 @@ public class Capturable : Workable, IGameObjectEffectDescriptor
 
 	private void UpdateStatusItem()
 	{
-		shouldShowRolePerkStatusItem = markedForCapture;
+		shouldShowSkillPerkStatusItem = markedForCapture;
 		base.UpdateStatusItem(null);
 		if (markedForCapture)
 		{

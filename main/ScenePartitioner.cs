@@ -108,18 +108,18 @@ public class ScenePartitioner : ISim1000ms
 	{
 		if (entry.obj == null)
 		{
-			Debug.LogWarning("Trying to put null go into scene partitioner", null);
+			Debug.LogWarning("Trying to put null go into scene partitioner");
 		}
 		else
 		{
 			Extents nodeExtents = GetNodeExtents(entry);
 			if (nodeExtents.x + nodeExtents.width > nodes.GetLength(2))
 			{
-				Debug.LogError(entry.obj.ToString() + " x/w " + nodeExtents.x + "/" + nodeExtents.width + " < " + nodes.GetLength(2), null);
+				Debug.LogError(entry.obj.ToString() + " x/w " + nodeExtents.x + "/" + nodeExtents.width + " < " + nodes.GetLength(2));
 			}
 			if (nodeExtents.y + nodeExtents.height > nodes.GetLength(1))
 			{
-				Debug.LogError(entry.obj.ToString() + " y/h " + nodeExtents.y + "/" + nodeExtents.height + " < " + nodes.GetLength(1), null);
+				Debug.LogError(entry.obj.ToString() + " y/h " + nodeExtents.y + "/" + nodeExtents.height + " < " + nodes.GetLength(1));
 			}
 			int layer = entry.layer;
 			for (int i = nodeExtents.y; i < nodeExtents.y + nodeExtents.height; i++)
@@ -147,11 +147,11 @@ public class ScenePartitioner : ISim1000ms
 		Extents nodeExtents = GetNodeExtents(entry);
 		if (nodeExtents.x + nodeExtents.width > nodes.GetLength(2))
 		{
-			Debug.LogError(" x/w " + nodeExtents.x + "/" + nodeExtents.width + " < " + nodes.GetLength(2), null);
+			Debug.LogError(" x/w " + nodeExtents.x + "/" + nodeExtents.width + " < " + nodes.GetLength(2));
 		}
 		if (nodeExtents.y + nodeExtents.height > nodes.GetLength(1))
 		{
-			Debug.LogError(" y/h " + nodeExtents.y + "/" + nodeExtents.height + " < " + nodes.GetLength(1), null);
+			Debug.LogError(" y/h " + nodeExtents.y + "/" + nodeExtents.height + " < " + nodes.GetLength(1));
 		}
 		int layer = entry.layer;
 		for (int i = nodeExtents.y; i < nodeExtents.y + nodeExtents.height; i++)
@@ -200,11 +200,11 @@ public class ScenePartitioner : ISim1000ms
 		Extents nodeExtents = GetNodeExtents(entry);
 		if (nodeExtents.x + nodeExtents.width > nodes.GetLength(2))
 		{
-			Debug.LogError(" x/w " + nodeExtents.x + "/" + nodeExtents.width + " < " + nodes.GetLength(2), null);
+			Debug.LogError(" x/w " + nodeExtents.x + "/" + nodeExtents.width + " < " + nodes.GetLength(2));
 		}
 		if (nodeExtents.y + nodeExtents.height > nodes.GetLength(1))
 		{
-			Debug.LogError(" y/h " + nodeExtents.y + "/" + nodeExtents.height + " < " + nodes.GetLength(1), null);
+			Debug.LogError(" y/h " + nodeExtents.y + "/" + nodeExtents.height + " < " + nodes.GetLength(1));
 		}
 		int layer = entry.layer;
 		for (int i = nodeExtents.y; i < nodeExtents.y + nodeExtents.height; i++)

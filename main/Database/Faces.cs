@@ -28,6 +28,8 @@ namespace Database
 
 		public Face SickSpores;
 
+		public Face Zombie;
+
 		public Face SickFierySkin;
 
 		public Face SickCold;
@@ -46,6 +48,7 @@ namespace Database
 			Suffocate = Add(new Face("Suffocate"));
 			Sick = Add(new Face("Sick"));
 			SickSpores = Add(new Face("Spores"));
+			Zombie = Add(new Face("Zombie"));
 			SickFierySkin = Add(new Face("Fiery"));
 			SickCold = Add(new Face("Cold"));
 			Dead = Add(new Face("Death"));

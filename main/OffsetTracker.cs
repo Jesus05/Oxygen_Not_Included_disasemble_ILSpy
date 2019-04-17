@@ -12,11 +12,13 @@ public class OffsetTracker
 	{
 		if (current_cell != previousCell)
 		{
+			Debug.Assert(!isExecutingWithinJob, "OffsetTracker.GetOffsets() is making a mutating call but is currently executing within a job");
 			UpdateCell(previousCell, current_cell);
 			previousCell = current_cell;
 		}
 		if (offsets == null)
 		{
+			Debug.Assert(!isExecutingWithinJob, "OffsetTracker.GetOffsets() is making a mutating call but is currently executing within a job");
 			UpdateOffsets(previousCell);
 		}
 		return offsets;

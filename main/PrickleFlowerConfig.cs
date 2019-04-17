@@ -43,6 +43,9 @@ public class PrickleFlowerConfig : IEntityConfig
 			}
 		});
 		gameObject.AddOrGet<StandardCropPlant>();
+		DiseaseDropper.Def def = gameObject.AddOrGetDef<DiseaseDropper.Def>();
+		def.diseaseIdx = Db.Get().Diseases.GetIndex(Db.Get().Diseases.PollenGerms.id);
+		def.singleEmitQuantity = 1000000;
 		IlluminationVulnerable illuminationVulnerable = gameObject.AddOrGet<IlluminationVulnerable>();
 		illuminationVulnerable.SetPrefersDarkness(false);
 		template = gameObject;

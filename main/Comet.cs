@@ -174,7 +174,7 @@ public class Comet : KMonoBehaviour, ISim33ms
 			Vector3 a3 = normalized.normalized * 0.75f;
 			a3 += new Vector3(0f, 0.55f, 0f);
 			a3 += pos;
-			GameObject go = substance.SpawnResource(a3, mass, temperature, byte.MaxValue, 0, false, false);
+			GameObject go = substance.SpawnResource(a3, mass, temperature, byte.MaxValue, 0, false, false, false);
 			if (GameComps.Fallers.Has(go))
 			{
 				GameComps.Fallers.Remove(go);

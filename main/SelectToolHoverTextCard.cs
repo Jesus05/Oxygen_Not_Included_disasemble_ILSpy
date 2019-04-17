@@ -1,4 +1,3 @@
-using Klei.AI;
 using STRINGS;
 using System;
 using System.Collections.Generic;
@@ -18,6 +17,12 @@ public class SelectToolHoverTextCard : HoverTextConfiguration
 	private Sprite iconWarning;
 
 	private Sprite iconDash;
+
+	private Sprite iconHighlighted;
+
+	public TextStylePair Styles_LogicActive;
+
+	public TextStylePair Styles_LogicStandby;
 
 	public static List<GameObject> highlightedObjects = new List<GameObject>();
 
@@ -63,6 +68,10 @@ public class SelectToolHoverTextCard : HoverTextConfiguration
 		{
 			OverlayModes.Logic.ID,
 			ShouldShowLogicOverlay
+		},
+		{
+			OverlayModes.TileMode.ID,
+			ShouldShowTileOverlay
 		},
 		{
 			OverlayModes.Disease.ID,
@@ -115,27 +124,43 @@ public class SelectToolHoverTextCard : HoverTextConfiguration
 	[CompilerGenerated]
 	private static Func<KSelectable, bool> _003C_003Ef__mg_0024cacheA;
 
+	[CompilerGenerated]
+	private static Func<KSelectable, bool> _003C_003Ef__mg_0024cacheB;
+
 	protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		overlayFilterMap.Add(OverlayModes.Oxygen.ID, delegate
 		{
-			int num3 = Grid.PosToCell(CameraController.Instance.baseCamera.ScreenToWorldPoint(KInputManager.GetMousePos()));
-			return Grid.Element[num3].IsGas;
+			int num4 = Grid.PosToCell(CameraController.Instance.baseCamera.ScreenToWorldPoint(KInputManager.GetMousePos()));
+			return Grid.Element[num4].IsGas;
 		});
 		overlayFilterMap.Add(OverlayModes.GasConduits.ID, delegate
 		{
-			int num2 = Grid.PosToCell(CameraController.Instance.baseCamera.ScreenToWorldPoint(KInputManager.GetMousePos()));
-			return Grid.Element[num2].IsGas;
+			int num3 = Grid.PosToCell(CameraController.Instance.baseCamera.ScreenToWorldPoint(KInputManager.GetMousePos()));
+			return Grid.Element[num3].IsGas;
 		});
 		overlayFilterMap.Add(OverlayModes.LiquidConduits.ID, delegate
 		{
-			int num = Grid.PosToCell(CameraController.Instance.baseCamera.ScreenToWorldPoint(KInputManager.GetMousePos()));
-			return Grid.Element[num].IsLiquid;
+			int num2 = Grid.PosToCell(CameraController.Instance.baseCamera.ScreenToWorldPoint(KInputManager.GetMousePos()));
+			return Grid.Element[num2].IsLiquid;
 		});
 		overlayFilterMap.Add(OverlayModes.Decor.ID, () => false);
 		overlayFilterMap.Add(OverlayModes.Rooms.ID, () => false);
 		overlayFilterMap.Add(OverlayModes.Logic.ID, () => false);
+		overlayFilterMap.Add(OverlayModes.TileMode.ID, delegate
+		{
+			int num = Grid.PosToCell(CameraController.Instance.baseCamera.ScreenToWorldPoint(KInputManager.GetMousePos()));
+			Element element = Grid.Element[num];
+			foreach (Tag tileOverlayFilter in Game.Instance.tileOverlayFilters)
+			{
+				if (element.HasTag(tileOverlayFilter))
+				{
+					return true;
+				}
+			}
+			return false;
+		});
 	}
 
 	public override void ConfigureHoverScreen()
@@ -144,6 +169,7 @@ public class SelectToolHoverTextCard : HoverTextConfiguration
 		HoverTextScreen instance = HoverTextScreen.Instance;
 		iconWarning = instance.GetSprite("iconWarning");
 		iconDash = instance.GetSprite("dash");
+		iconHighlighted = instance.GetSprite("dash_arrow");
 		maskOverlay = LayerMask.GetMask("MaskedOverlay", "MaskedOverlayBG");
 	}
 
@@ -183,7 +209,7 @@ public class SelectToolHoverTextCard : HoverTextConfiguration
 			HashedString mode = SimDebugView.Instance.GetMode();
 			bool flag = mode == OverlayModes.Disease.ID;
 			bool flag2 = true;
-			if (Grid.ForceField[num])
+			if (Grid.DupePassable[num])
 			{
 				flag2 = false;
 			}
@@ -205,7 +231,7 @@ public class SelectToolHoverTextCard : HoverTextConfiguration
 			}
 			string text = string.Empty;
 			string empty = string.Empty;
-			if (mode == OverlayModes.HeatFlow.ID)
+			if (mode == OverlayModes.Temperature.ID && Game.Instance.temperatureOverlayMode == Game.TemperatureOverlayModes.HeatFlow)
 			{
 				if (!Grid.Solid[num] && flag3)
 				{
@@ -398,17 +424,77 @@ public class SelectToolHoverTextCard : HoverTextConfiguration
 					hoverTextDrawer.EndShadowBar();
 				}
 			}
-			else if (mode == OverlayModes.Light.ID && flag3)
+			else if (mode == OverlayModes.Light.ID)
 			{
-				string text3 = text;
-				text = text3 + string.Format(UI.OVERLAYS.LIGHTING.DESC, Grid.LightIntensity[num]) + " (" + GameUtil.GetLightDescription(Grid.LightIntensity[num]) + ")";
-				hoverTextDrawer.BeginShadowBar(false);
-				hoverTextDrawer.DrawText(UI.OVERLAYS.LIGHTING.HOVERTITLE, Styles_Title.Standard);
-				hoverTextDrawer.NewLine(26);
-				hoverTextDrawer.DrawText(text, Styles_BodyText.Standard);
-				hoverTextDrawer.EndShadowBar();
+				if (flag3)
+				{
+					string text3 = text;
+					text = text3 + string.Format(UI.OVERLAYS.LIGHTING.DESC, Grid.LightIntensity[num]) + " (" + GameUtil.GetLightDescription(Grid.LightIntensity[num]) + ")";
+					hoverTextDrawer.BeginShadowBar(false);
+					hoverTextDrawer.DrawText(UI.OVERLAYS.LIGHTING.HOVERTITLE, Styles_Title.Standard);
+					hoverTextDrawer.NewLine(26);
+					hoverTextDrawer.DrawText(text, Styles_BodyText.Standard);
+					hoverTextDrawer.EndShadowBar();
+				}
 			}
-			int num3 = 0;
+			else if (mode == OverlayModes.Logic.ID)
+			{
+				foreach (KSelectable hoverObject2 in hoverObjects)
+				{
+					LogicPorts component2 = hoverObject2.GetComponent<LogicPorts>();
+					if ((UnityEngine.Object)component2 != (UnityEngine.Object)null && component2.TryGetPortAtCell(num, out LogicPorts.Port port, out bool isInput))
+					{
+						bool flag5 = component2.IsPortConnected(port.id);
+						hoverTextDrawer.BeginShadowBar(false);
+						int num3;
+						if (isInput)
+						{
+							num3 = component2.GetInputValue(port.id);
+							hoverTextDrawer.DrawText(UI.TOOLS.GENERIC.LOGIC_INPUT_HOVER_FMT.Replace("{Port}", port.description).Replace("{Name}", hoverObject2.GetProperName().ToUpper()), Styles_Title.Standard);
+						}
+						else
+						{
+							num3 = component2.GetOutputValue(port.id);
+							hoverTextDrawer.DrawText(UI.TOOLS.GENERIC.LOGIC_OUTPUT_HOVER_FMT.Replace("{Port}", port.description).Replace("{Name}", hoverObject2.GetProperName().ToUpper()), Styles_Title.Standard);
+						}
+						hoverTextDrawer.NewLine(26);
+						TextStyleSetting textStyleSetting = (num3 != 1 || !flag5) ? Styles_LogicActive.Standard : Styles_LogicActive.Selected;
+						hoverTextDrawer.DrawIcon((num3 != 1 || !flag5) ? iconDash : iconHighlighted, textStyleSetting.textColor, 18, 2);
+						hoverTextDrawer.DrawText(port.activeDescription, textStyleSetting);
+						hoverTextDrawer.NewLine(26);
+						TextStyleSetting textStyleSetting2 = (num3 != 0 || !flag5) ? Styles_LogicStandby.Standard : Styles_LogicStandby.Selected;
+						hoverTextDrawer.DrawIcon((num3 != 0 || !flag5) ? iconDash : iconHighlighted, textStyleSetting2.textColor, 18, 2);
+						hoverTextDrawer.DrawText(port.inactiveDescription, textStyleSetting2);
+						hoverTextDrawer.EndShadowBar();
+					}
+					LogicGate component3 = hoverObject2.GetComponent<LogicGate>();
+					if ((UnityEngine.Object)component3 != (UnityEngine.Object)null && component3.TryGetPortAtCell(num, out LogicGateBase.PortId port2))
+					{
+						int portValue = component3.GetPortValue(port2);
+						bool portConnected = component3.GetPortConnected(port2);
+						LogicGate.LogicGateDescriptions.Description portDescription = component3.GetPortDescription(port2);
+						hoverTextDrawer.BeginShadowBar(false);
+						if (port2 == LogicGateBase.PortId.Output)
+						{
+							hoverTextDrawer.DrawText(UI.TOOLS.GENERIC.LOGIC_OUTPUT_HOVER_FMT.Replace("{Port}", portDescription.name).Replace("{Name}", hoverObject2.GetProperName().ToUpper()), Styles_Title.Standard);
+						}
+						else
+						{
+							hoverTextDrawer.DrawText(UI.TOOLS.GENERIC.LOGIC_INPUT_HOVER_FMT.Replace("{Port}", portDescription.name).Replace("{Name}", hoverObject2.GetProperName().ToUpper()), Styles_Title.Standard);
+						}
+						hoverTextDrawer.NewLine(26);
+						TextStyleSetting textStyleSetting3 = (portValue != 1 || !portConnected) ? Styles_LogicActive.Standard : Styles_LogicActive.Selected;
+						hoverTextDrawer.DrawIcon((portValue != 1 || !portConnected) ? iconDash : iconHighlighted, textStyleSetting3.textColor, 18, 2);
+						hoverTextDrawer.DrawText(portDescription.active, textStyleSetting3);
+						hoverTextDrawer.NewLine(26);
+						TextStyleSetting textStyleSetting4 = (portValue != 0 || !portConnected) ? Styles_LogicStandby.Standard : Styles_LogicStandby.Selected;
+						hoverTextDrawer.DrawIcon((portValue != 0 || !portConnected) ? iconDash : iconHighlighted, textStyleSetting4.textColor, 18, 2);
+						hoverTextDrawer.DrawText(portDescription.inactive, textStyleSetting4);
+						hoverTextDrawer.EndShadowBar();
+					}
+				}
+			}
+			int num4 = 0;
 			ChoreConsumer choreConsumer = null;
 			if ((UnityEngine.Object)SelectTool.Instance.selected != (UnityEngine.Object)null)
 			{
@@ -421,128 +507,110 @@ public class SelectToolHoverTextCard : HoverTextConfiguration
 					KSelectable kSelectable = overlayValidHoverObjects[k];
 					if ((!((UnityEngine.Object)OverlayScreen.Instance != (UnityEngine.Object)null) || !(OverlayScreen.Instance.mode != OverlayModes.None.ID) || (kSelectable.gameObject.layer & maskOverlay) == 0) && flag3)
 					{
-						PrimaryElement component2 = kSelectable.GetComponent<PrimaryElement>();
-						bool flag5 = (UnityEngine.Object)SelectTool.Instance.selected == (UnityEngine.Object)overlayValidHoverObjects[k];
-						if (flag5)
+						PrimaryElement component4 = kSelectable.GetComponent<PrimaryElement>();
+						bool flag6 = (UnityEngine.Object)SelectTool.Instance.selected == (UnityEngine.Object)overlayValidHoverObjects[k];
+						if (flag6)
 						{
 							currentSelectedSelectableIndex = k;
 						}
-						num3++;
-						hoverTextDrawer.BeginShadowBar(flag5);
+						num4++;
+						hoverTextDrawer.BeginShadowBar(flag6);
 						string text4 = GameUtil.GetUnitFormattedName(overlayValidHoverObjects[k].gameObject, true);
-						if ((UnityEngine.Object)component2 != (UnityEngine.Object)null && (UnityEngine.Object)kSelectable.GetComponent<Building>() != (UnityEngine.Object)null)
+						if ((UnityEngine.Object)component4 != (UnityEngine.Object)null && (UnityEngine.Object)kSelectable.GetComponent<Building>() != (UnityEngine.Object)null)
 						{
-							text4 = StringFormatter.Replace(StringFormatter.Replace(UI.TOOLS.GENERIC.BUILDING_HOVER_NAME_FMT, "{Name}", text4), "{Element}", component2.Element.nameUpperCase);
+							text4 = StringFormatter.Replace(StringFormatter.Replace(UI.TOOLS.GENERIC.BUILDING_HOVER_NAME_FMT, "{Name}", text4), "{Element}", component4.Element.nameUpperCase);
 						}
 						hoverTextDrawer.DrawText(text4, Styles_Title.Standard);
-						bool flag6 = false;
+						bool flag7 = false;
 						string text5 = UI.OVERLAYS.DISEASE.NO_DISEASE;
 						if (flag)
 						{
-							if ((UnityEngine.Object)component2 != (UnityEngine.Object)null && component2.DiseaseIdx != 255)
+							if ((UnityEngine.Object)component4 != (UnityEngine.Object)null && component4.DiseaseIdx != 255)
 							{
-								text5 = GameUtil.GetFormattedDisease(component2.DiseaseIdx, component2.DiseaseCount, true);
+								text5 = GameUtil.GetFormattedDisease(component4.DiseaseIdx, component4.DiseaseCount, true);
 							}
-							flag6 = true;
-							Storage component3 = kSelectable.GetComponent<Storage>();
-							if ((UnityEngine.Object)component3 != (UnityEngine.Object)null && component3.showInUI)
+							flag7 = true;
+							Storage component5 = kSelectable.GetComponent<Storage>();
+							if ((UnityEngine.Object)component5 != (UnityEngine.Object)null && component5.showInUI)
 							{
-								List<GameObject> items = component3.items;
+								List<GameObject> items = component5.items;
 								for (int l = 0; l < items.Count; l++)
 								{
 									GameObject gameObject = items[l];
 									if ((UnityEngine.Object)gameObject != (UnityEngine.Object)null)
 									{
-										PrimaryElement component4 = gameObject.GetComponent<PrimaryElement>();
-										if (component4.DiseaseIdx != 255)
+										PrimaryElement component6 = gameObject.GetComponent<PrimaryElement>();
+										if (component6.DiseaseIdx != 255)
 										{
-											text5 += string.Format(UI.OVERLAYS.DISEASE.CONTAINER_FORMAT, gameObject.GetComponent<KSelectable>().GetProperName(), GameUtil.GetFormattedDisease(component4.DiseaseIdx, component4.DiseaseCount, true));
+											text5 += string.Format(UI.OVERLAYS.DISEASE.CONTAINER_FORMAT, gameObject.GetComponent<KSelectable>().GetProperName(), GameUtil.GetFormattedDisease(component6.DiseaseIdx, component6.DiseaseCount, true));
 										}
 									}
 								}
 							}
 						}
-						if (flag6)
+						if (flag7)
 						{
-							StateMachineController component5 = kSelectable.GetComponent<StateMachineController>();
-							if ((UnityEngine.Object)component5 != (UnityEngine.Object)null)
-							{
-								ImmuneSystemMonitor.Instance sMI = component5.GetSMI<ImmuneSystemMonitor.Instance>();
-								if (sMI != null)
-								{
-									AmountInstance amountInstance = Db.Get().Amounts.ImmuneLevel.Lookup(kSelectable);
-									float value3 = amountInstance.value;
-									bool flag7 = sMI.sm.isLosingImmunity.Get(sMI);
-									Color32 badColorBG = NotificationScreen.Instance.BadColorBG;
-									badColorBG.a = byte.MaxValue;
-									Color32 colour = (!flag7) ? new Color32(byte.MaxValue, byte.MaxValue, byte.MaxValue, byte.MaxValue) : badColorBG;
-									string str = string.Format(UI.OVERLAYS.DISEASE.IMMUNITY, GameUtil.GetFormattedPercent(value3, GameUtil.TimeSlice.None));
-									hoverTextDrawer.NewLine(26);
-									hoverTextDrawer.DrawIcon(iconDash, 18);
-									hoverTextDrawer.DrawText(GameUtil.ColourizeString(colour, str), Styles_Values.Property.Standard);
-								}
-							}
 							hoverTextDrawer.NewLine(26);
 							hoverTextDrawer.DrawIcon(iconDash, 18);
 							hoverTextDrawer.DrawText(text5, Styles_Values.Property.Standard);
 						}
-						int num4 = 0;
+						int num5 = 0;
 						foreach (StatusItemGroup.Entry item5 in overlayValidHoverObjects[k].GetStatusItemGroup())
 						{
-							StatusItemGroup.Entry current6 = item5;
-							if (ShowStatusItemInCurrentOverlay(current6.item))
+							StatusItemGroup.Entry current7 = item5;
+							if (ShowStatusItemInCurrentOverlay(current7.item))
 							{
-								if (num4 >= maxNumberOfDisplayedSelectableWarnings)
+								if (num5 >= maxNumberOfDisplayedSelectableWarnings)
 								{
 									break;
 								}
-								if (current6.category != null && current6.category.Id == "Main" && num4 < maxNumberOfDisplayedSelectableWarnings)
+								if (current7.category != null && current7.category.Id == "Main" && num5 < maxNumberOfDisplayedSelectableWarnings)
 								{
-									TextStyleSetting style = (!IsStatusItemWarning(current6)) ? Styles_BodyText.Standard : HoverTextStyleSettings[1];
-									Sprite icon = (current6.item.sprite == null) ? iconWarning : current6.item.sprite.sprite;
-									Color color = (!IsStatusItemWarning(current6)) ? Styles_BodyText.Standard.textColor : HoverTextStyleSettings[1].textColor;
+									TextStyleSetting style = (!IsStatusItemWarning(current7)) ? Styles_BodyText.Standard : HoverTextStyleSettings[1];
+									Sprite icon = (current7.item.sprite == null) ? iconWarning : current7.item.sprite.sprite;
+									Color color = (!IsStatusItemWarning(current7)) ? Styles_BodyText.Standard.textColor : HoverTextStyleSettings[1].textColor;
 									hoverTextDrawer.NewLine(26);
 									hoverTextDrawer.DrawIcon(icon, color, 18, 2);
-									hoverTextDrawer.DrawText(current6.GetName(), style);
-									num4++;
+									hoverTextDrawer.DrawText(current7.GetName(), style);
+									num5++;
 								}
 							}
 						}
 						foreach (StatusItemGroup.Entry item6 in overlayValidHoverObjects[k].GetStatusItemGroup())
 						{
-							StatusItemGroup.Entry current7 = item6;
-							if (ShowStatusItemInCurrentOverlay(current7.item))
+							StatusItemGroup.Entry current8 = item6;
+							if (ShowStatusItemInCurrentOverlay(current8.item))
 							{
-								if (num4 >= maxNumberOfDisplayedSelectableWarnings)
+								if (num5 >= maxNumberOfDisplayedSelectableWarnings)
 								{
 									break;
 								}
-								if ((current7.category == null || current7.category.Id != "Main") && num4 < maxNumberOfDisplayedSelectableWarnings)
+								if ((current8.category == null || current8.category.Id != "Main") && num5 < maxNumberOfDisplayedSelectableWarnings)
 								{
-									TextStyleSetting style2 = (!IsStatusItemWarning(current7)) ? Styles_BodyText.Standard : HoverTextStyleSettings[1];
-									Sprite icon2 = (current7.item.sprite == null) ? iconWarning : current7.item.sprite.sprite;
-									Color color2 = (!IsStatusItemWarning(current7)) ? Styles_BodyText.Standard.textColor : HoverTextStyleSettings[1].textColor;
+									TextStyleSetting style2 = (!IsStatusItemWarning(current8)) ? Styles_BodyText.Standard : HoverTextStyleSettings[1];
+									Sprite icon2 = (current8.item.sprite == null) ? iconWarning : current8.item.sprite.sprite;
+									Color color2 = (!IsStatusItemWarning(current8)) ? Styles_BodyText.Standard.textColor : HoverTextStyleSettings[1].textColor;
 									hoverTextDrawer.NewLine(26);
 									hoverTextDrawer.DrawIcon(icon2, color2, 18, 2);
-									hoverTextDrawer.DrawText(current7.GetName(), style2);
-									num4++;
+									hoverTextDrawer.DrawText(current8.GetName(), style2);
+									num5++;
 								}
 							}
 						}
 						float temp = 0f;
 						bool flag8 = true;
-						bool flag9 = OverlayModes.Temperature.ID == SimDebugView.Instance.GetMode();
+						bool flag9 = OverlayModes.Temperature.ID == SimDebugView.Instance.GetMode() && Game.Instance.temperatureOverlayMode != Game.TemperatureOverlayModes.HeatFlow;
 						if ((bool)kSelectable.GetComponent<Constructable>())
 						{
 							flag8 = false;
 						}
-						else if (flag9 && (bool)component2)
+						else if (flag9 && (bool)component4)
 						{
-							temp = component2.Temperature;
+							temp = component4.Temperature;
 						}
-						else if ((bool)kSelectable.GetComponent<Building>() && (bool)component2)
+						else if ((bool)kSelectable.GetComponent<Building>() && (bool)component4)
 						{
-							temp = component2.Temperature;
+							temp = component4.Temperature;
 						}
 						else if ((UnityEngine.Object)kSelectable.GetComponent<CellSelectionObject>() != (UnityEngine.Object)null)
 						{
@@ -562,8 +630,8 @@ public class SelectToolHoverTextCard : HoverTextConfiguration
 							hoverTextDrawer.DrawIcon(iconDash, 18);
 							hoverTextDrawer.DrawText(GameUtil.GetFormattedTemperature(temp, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false), Styles_BodyText.Standard);
 						}
-						BuildingComplete component6 = kSelectable.GetComponent<BuildingComplete>();
-						if ((UnityEngine.Object)component6 != (UnityEngine.Object)null && component6.Def.IsFoundation)
+						BuildingComplete component7 = kSelectable.GetComponent<BuildingComplete>();
+						if ((UnityEngine.Object)component7 != (UnityEngine.Object)null && component7.Def.IsFoundation)
 						{
 							flag2 = false;
 						}
@@ -630,10 +698,10 @@ public class SelectToolHoverTextCard : HoverTextConfiguration
 					hoverTextDrawer.DrawIcon(iconDash, 18);
 					Element element2 = Grid.Element[num];
 					string text6 = cachedTemperatureString;
-					float num5 = Grid.Temperature[num];
-					if (num5 != cachedTemperature)
+					float num6 = Grid.Temperature[num];
+					if (num6 != cachedTemperature)
 					{
-						cachedTemperature = num5;
+						cachedTemperature = num6;
 						text6 = (cachedTemperatureString = GameUtil.GetFormattedTemperature(Grid.Temperature[num], GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false));
 					}
 					string text7 = (element2.specificHeatCapacity != 0f) ? text6 : "N/A";
@@ -653,13 +721,13 @@ public class SelectToolHoverTextCard : HoverTextConfiguration
 				}
 				if (element.id == SimHashes.OxyRock)
 				{
-					float num6 = Grid.AccumulatedFlow[num] / 3f;
+					float num7 = Grid.AccumulatedFlow[num] / 3f;
 					string text8 = BUILDING.STATUSITEMS.EMITTINGOXYGENAVG.NAME;
-					text8 = text8.Replace("{FlowRate}", GameUtil.GetFormattedMass(num6, GameUtil.TimeSlice.PerSecond, GameUtil.MetricMassFormat.UseThreshold, true, "{0:0.#}"));
+					text8 = text8.Replace("{FlowRate}", GameUtil.GetFormattedMass(num7, GameUtil.TimeSlice.PerSecond, GameUtil.MetricMassFormat.UseThreshold, true, "{0:0.#}"));
 					hoverTextDrawer.NewLine(26);
 					hoverTextDrawer.DrawIcon(iconDash, 18);
 					hoverTextDrawer.DrawText(text8, Styles_BodyText.Standard);
-					if (num6 <= 0f)
+					if (num7 <= 0f)
 					{
 						GameUtil.IsEmissionBlocked(num, out bool all_not_gaseous, out bool all_over_pressure);
 						string text9 = null;
@@ -688,7 +756,7 @@ public class SelectToolHoverTextCard : HoverTextConfiguration
 				hoverTextDrawer.DrawText(UI.TOOLS.GENERIC.UNKNOWN, Styles_BodyText.Standard);
 				hoverTextDrawer.EndShadowBar();
 			}
-			recentNumberOfDisplayedSelectables = num3 + 1;
+			recentNumberOfDisplayedSelectables = num4 + 1;
 			hoverTextDrawer.EndDrawing();
 		}
 	}
@@ -749,6 +817,27 @@ public class SelectToolHoverTextCard : HoverTextConfiguration
 	{
 		Tag prefabTag = selectable.GetComponent<KPrefabID>().PrefabTag;
 		return OverlayScreen.WireIDs.Contains(prefabTag) || (UnityEngine.Object)selectable.GetComponent<Battery>() != (UnityEngine.Object)null || (UnityEngine.Object)selectable.GetComponent<PowerTransformer>() != (UnityEngine.Object)null || (UnityEngine.Object)selectable.GetComponent<EnergyConsumer>() != (UnityEngine.Object)null || (UnityEngine.Object)selectable.GetComponent<EnergyGenerator>() != (UnityEngine.Object)null;
+	}
+
+	private static bool ShouldShowTileOverlay(KSelectable selectable)
+	{
+		bool result = false;
+		PrimaryElement component = selectable.GetComponent<PrimaryElement>();
+		if ((UnityEngine.Object)component != (UnityEngine.Object)null)
+		{
+			Element element = component.Element;
+			{
+				foreach (Tag tileOverlayFilter in Game.Instance.tileOverlayFilters)
+				{
+					if (element.HasTag(tileOverlayFilter))
+					{
+						return true;
+					}
+				}
+				return result;
+			}
+		}
+		return result;
 	}
 
 	private static bool ShouldShowTemperatureOverlay(KSelectable selectable)

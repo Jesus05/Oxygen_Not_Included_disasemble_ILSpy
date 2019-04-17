@@ -25,7 +25,7 @@ public class KInputController : IInputHandler
 
 		private void Print()
 		{
-			Debug.Log(mKeyCode.ToString() + mModifier.ToString(), null);
+			Debug.Log(mKeyCode.ToString() + mModifier.ToString());
 		}
 	}
 
@@ -44,7 +44,7 @@ public class KInputController : IInputHandler
 		{
 			mKeyCode = key_code;
 			mModifier = modifier;
-			mActionFlags = new bool[233];
+			mActionFlags = new bool[234];
 		}
 	}
 
@@ -115,7 +115,7 @@ public class KInputController : IInputHandler
 		IsGamepad = is_gamepad;
 		mAxis = new float[4];
 		mActiveModifiers = Modifier.None;
-		mActionState = new bool[233];
+		mActionState = new bool[234];
 		mScrollState = new bool[2];
 		inputHandler = new KInputHandler(this, this);
 	}

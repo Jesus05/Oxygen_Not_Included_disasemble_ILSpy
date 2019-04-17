@@ -1,5 +1,3 @@
-using STRINGS;
-using System.Collections.Generic;
 using TUNING;
 using UnityEngine;
 
@@ -15,12 +13,12 @@ public class ApothecaryConfig : IBuildingConfig
 		string anim = "apothecary_kanim";
 		int hitpoints = 30;
 		float construction_time = 120f;
-		float[] tIER = TUNING.BUILDINGS.CONSTRUCTION_MASS_KG.TIER4;
+		float[] tIER = BUILDINGS.CONSTRUCTION_MASS_KG.TIER4;
 		string[] aLL_METALS = MATERIALS.ALL_METALS;
 		float melting_point = 800f;
 		BuildLocationRule build_location_rule = BuildLocationRule.OnFloor;
 		EffectorValues nONE = NOISE_POLLUTION.NONE;
-		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, tIER, aLL_METALS, melting_point, build_location_rule, TUNING.BUILDINGS.DECOR.NONE, nONE, 0.2f);
+		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, tIER, aLL_METALS, melting_point, build_location_rule, BUILDINGS.DECOR.NONE, nONE, 0.2f);
 		buildingDef.RequiresPowerInput = true;
 		buildingDef.EnergyConsumptionWhenActive = 240f;
 		buildingDef.ExhaustKilowattsWhenActive = 0.25f;
@@ -46,44 +44,6 @@ public class ApothecaryConfig : IBuildingConfig
 		go.AddOrGet<ComplexFabricatorWorkable>().AnimOffset = new Vector3(-1f, 0f, 0f);
 		complexFabricator.sideScreenStyle = ComplexFabricatorSideScreen.StyleSetting.ListQueueHybrid;
 		BuildingTemplates.CreateComplexFabricatorStorage(go, complexFabricator);
-		ComplexRecipe.RecipeElement[] array = new ComplexRecipe.RecipeElement[2]
-		{
-			new ComplexRecipe.RecipeElement("Water".ToTag(), 100f),
-			new ComplexRecipe.RecipeElement("Sand".ToTag(), 100f)
-		};
-		ComplexRecipe.RecipeElement[] array2 = new ComplexRecipe.RecipeElement[1]
-		{
-			new ComplexRecipe.RecipeElement("GenericPill".ToTag(), 1f)
-		};
-		string id = ComplexRecipeManager.MakeRecipeID("Apothecary", array, array2);
-		ComplexRecipe complexRecipe = new ComplexRecipe(id, array, array2);
-		complexRecipe.time = 40f;
-		complexRecipe.description = ITEMS.PILLS.PLACEBO.RECIPEDESC;
-		complexRecipe.useResultAsDescription = true;
-		complexRecipe.fabricators = new List<Tag>
-		{
-			"Apothecary"
-		};
-		GenericPillConfig.recipe = complexRecipe;
-		ComplexRecipe.RecipeElement[] array3 = new ComplexRecipe.RecipeElement[2]
-		{
-			new ComplexRecipe.RecipeElement("Carbon".ToTag(), 100f),
-			new ComplexRecipe.RecipeElement(SwampLilyFlowerConfig.ID, 1f)
-		};
-		ComplexRecipe.RecipeElement[] array4 = new ComplexRecipe.RecipeElement[1]
-		{
-			new ComplexRecipe.RecipeElement("VitaminSupplement".ToTag(), 1f)
-		};
-		string id2 = ComplexRecipeManager.MakeRecipeID("Apothecary", array3, array4);
-		complexRecipe = new ComplexRecipe(id2, array3, array4);
-		complexRecipe.time = 40f;
-		complexRecipe.description = ITEMS.PILLS.VITAMINSUPPLEMENT.RECIPEDESC;
-		complexRecipe.useResultAsDescription = true;
-		complexRecipe.fabricators = new List<Tag>
-		{
-			"Apothecary"
-		};
-		VitaminSupplementConfig.recipe = complexRecipe;
 	}
 
 	public override void DoPostConfigureComplete(GameObject go)
@@ -92,7 +52,10 @@ public class ApothecaryConfig : IBuildingConfig
 		go.GetComponent<KPrefabID>().prefabInitFn += delegate(GameObject game_object)
 		{
 			ComplexFabricatorWorkable component = game_object.GetComponent<ComplexFabricatorWorkable>();
-			component.SetAttributeConverter(Db.Get().AttributeConverters.CompoundingSpeed);
+			component.AttributeConverter = Db.Get().AttributeConverters.CompoundingSpeed;
+			component.SkillExperienceSkillGroup = Db.Get().SkillGroups.MedicalAid.Id;
+			component.SkillExperienceMultiplier = SKILLS.PART_DAY_EXPERIENCE;
+			component.requiredSkillPerk = Db.Get().SkillPerks.CanCompound.Id;
 		};
 	}
 }

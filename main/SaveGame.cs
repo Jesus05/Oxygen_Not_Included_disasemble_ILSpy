@@ -47,7 +47,7 @@ public class SaveGame : KMonoBehaviour, ISaveLoadable
 			this.isAutoSave = isAutoSave;
 			this.originalSaveName = originalSaveName;
 			saveMajorVersion = 7;
-			saveMinorVersion = 6;
+			saveMinorVersion = 8;
 		}
 
 		public GameInfo(int numberOfCycles, int numberOfDuplicants, string baseName, bool sandboxEnabled = false)
@@ -58,7 +58,7 @@ public class SaveGame : KMonoBehaviour, ISaveLoadable
 			isAutoSave = false;
 			originalSaveName = string.Empty;
 			saveMajorVersion = 7;
-			saveMinorVersion = 6;
+			saveMinorVersion = 8;
 		}
 
 		public bool IsVersionOlderThan(int major, int minor)
@@ -112,7 +112,7 @@ public class SaveGame : KMonoBehaviour, ISaveLoadable
 		Instance = this;
 		ColonyRationMonitor.Instance instance = new ColonyRationMonitor.Instance(this);
 		instance.StartSM();
-		RedAlertManager.Instance instance2 = new RedAlertManager.Instance(this);
+		VignetteManager.Instance instance2 = new VignetteManager.Instance(this);
 		instance2.StartSM();
 		entombedItemManager = base.gameObject.AddComponent<EntombedItemManager>();
 		worldGen = SaveLoader.Instance.worldGen;
@@ -143,7 +143,7 @@ public class SaveGame : KMonoBehaviour, ISaveLoadable
 		text = ((!isAutoSave) ? JsonConvert.SerializeObject(new GameInfo(GameClock.Instance.GetCycle(), Components.LiveMinionIdentities.Count, baseName, false)) : JsonConvert.SerializeObject(new GameInfo(GameClock.Instance.GetCycle(), Components.LiveMinionIdentities.Count, baseName, true, SaveLoader.GetActiveSaveFilePath(), false)));
 		byte[] bytes = Encoding.UTF8.GetBytes(text);
 		header = default(Header);
-		header.buildVersion = 312713u;
+		header.buildVersion = 326399u;
 		header.headerSize = bytes.Length;
 		header.headerVersion = 1u;
 		header.compression = (isCompressed ? 1 : 0);

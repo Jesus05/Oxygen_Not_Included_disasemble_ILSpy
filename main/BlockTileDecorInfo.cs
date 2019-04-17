@@ -71,7 +71,7 @@ public class BlockTileDecorInfo : ScriptableObject
 						}
 						if (!flag)
 						{
-							Output.LogError(base.name, "/", decor[i].name, "could not find ", decor[i].variants[j].name, "in", atlas.name);
+							DebugUtil.LogErrorArgs(base.name, "/", decor[i].name, "could not find ", decor[i].variants[j].name, "in", atlas.name);
 						}
 					}
 				}

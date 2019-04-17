@@ -1,4 +1,3 @@
-using Klei.AI;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -100,31 +99,15 @@ public class CurrentJobConversation : ConversationType
 		{
 			return Assets.GetSprite("crew_state_role");
 		}
-		if (RoleManager.roleHatIndex.ContainsKey(topic))
+		if (Db.Get().Skills.TryGet(topic) != null)
 		{
-			return Assets.GetSprite(RoleManager.roleHatIndex[topic]);
+			return Assets.GetSprite(Db.Get().Skills.Get(topic).hat);
 		}
 		return null;
 	}
 
 	private Conversation.ModeType GetModeForRole(MinionIdentity speaker, string roleId)
 	{
-		MinionResume component = speaker.GetComponent<MinionResume>();
-		RoleConfig role = Game.Instance.roleManager.GetRole(roleId);
-		AttributeInstance attributeInstance = Db.Get().Attributes.QualityOfLife.Lookup(speaker);
-		AttributeInstance attributeInstance2 = Db.Get().Attributes.QualityOfLifeExpectation.Lookup(speaker);
-		if (component.AptitudeByRoleGroup[role.roleGroup] > 0f)
-		{
-			return Conversation.ModeType.Satisfaction;
-		}
-		if (attributeInstance.GetTotalValue() < attributeInstance2.GetTotalValue())
-		{
-			return Conversation.ModeType.Stressing;
-		}
-		if (roleId == "NoRole")
-		{
-			return Conversation.ModeType.Dissatisfaction;
-		}
 		return Conversation.ModeType.Nominal;
 	}
 

@@ -54,7 +54,7 @@ public class UIPool<T> where T : MonoBehaviour
 		if (!activeElements.Contains(element))
 		{
 			string obj = (!freeElements.Contains(element)) ? "The element provided does not belong to this pool" : "The element provided is already inactive";
-			Debug.LogError(obj, null);
+			Debug.LogError(obj);
 		}
 		else
 		{

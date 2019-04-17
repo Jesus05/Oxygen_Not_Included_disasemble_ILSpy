@@ -48,6 +48,7 @@ public class Assignables : KMonoBehaviour
 
 	public AssignableSlotInstance GetSlot(AssignableSlot slot)
 	{
+		Debug.Assert(slots.Count > 0, "GetSlot called with no slots configured");
 		if (slot == null)
 		{
 			return null;
@@ -73,7 +74,7 @@ public class Assignables : KMonoBehaviour
 		GameObject targetGameObject = component.GetTargetGameObject();
 		if ((Object)targetGameObject == (Object)null)
 		{
-			Debug.LogWarning("AutoAssignSlot failed, proxy game object was null.", null);
+			Debug.LogWarning("AutoAssignSlot failed, proxy game object was null.");
 			return null;
 		}
 		Navigator component2 = targetGameObject.GetComponent<Navigator>();

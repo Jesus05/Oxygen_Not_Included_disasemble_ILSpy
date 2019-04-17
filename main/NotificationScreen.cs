@@ -296,6 +296,7 @@ public class NotificationScreen : KScreen
 			else if (notification.Type == NotificationType.Messages)
 			{
 				colors.normalColor = messageColorBG;
+				Debug.Assert(notification.GetType() == typeof(MessageNotification), $"Notification: \"{notification.titleText}\" is not of type MessageNotification");
 				componentsInChildren[1].onClick.AddListener(delegate
 				{
 					List<Notification> list = notifications.FindAll((Notification n) => n.titleText == notification.titleText);
@@ -372,7 +373,7 @@ public class NotificationScreen : KScreen
 				}
 				if (AudioDebug.Get().debugNotificationSounds)
 				{
-					Debug.Log("Notification(" + notification.titleText + "):" + str, null);
+					Debug.Log("Notification(" + notification.titleText + "):" + str);
 				}
 			}
 		}

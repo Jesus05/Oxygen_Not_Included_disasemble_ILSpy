@@ -80,29 +80,37 @@ public class Flatulence : StateMachineComponent<Flatulence.StatesInstance>
 	private void Emit(object data)
 	{
 		GameObject gameObject = (GameObject)data;
-		Components.Cmps<MinionIdentity> liveMinionIdentities = Components.LiveMinionIdentities;
-		Vector2 a = gameObject.transform.GetPosition();
-		for (int i = 0; i < liveMinionIdentities.Count; i++)
+		float value = Db.Get().Amounts.Temperature.Lookup(this).value;
+		Equippable equippable = GetComponent<SuitEquipper>().IsWearingAirtightSuit();
+		if ((Object)equippable != (Object)null)
 		{
-			MinionIdentity minionIdentity = liveMinionIdentities[i];
-			if ((Object)minionIdentity.gameObject != (Object)gameObject.gameObject)
+			equippable.GetComponent<Storage>().AddGasChunk(SimHashes.Methane, 0.1f, value, byte.MaxValue, 0, false, true);
+		}
+		else
+		{
+			Components.Cmps<MinionIdentity> liveMinionIdentities = Components.LiveMinionIdentities;
+			Vector2 a = gameObject.transform.GetPosition();
+			for (int i = 0; i < liveMinionIdentities.Count; i++)
 			{
-				Vector2 b = minionIdentity.transform.GetPosition();
-				float num = Vector2.SqrMagnitude(a - b);
-				if (num <= 2.25f)
+				MinionIdentity minionIdentity = liveMinionIdentities[i];
+				if ((Object)minionIdentity.gameObject != (Object)gameObject.gameObject)
 				{
-					minionIdentity.Trigger(508119890, Strings.Get("STRINGS.DUPLICANTS.DISEASES.PUTRIDODOUR.CRINGE_EFFECT").String);
-					minionIdentity.gameObject.GetSMI<ThoughtGraph.Instance>().AddThought(Db.Get().Thoughts.PutridOdour);
+					Vector2 b = minionIdentity.transform.GetPosition();
+					float num = Vector2.SqrMagnitude(a - b);
+					if (num <= 2.25f)
+					{
+						minionIdentity.Trigger(508119890, Strings.Get("STRINGS.DUPLICANTS.DISEASES.PUTRIDODOUR.CRINGE_EFFECT").String);
+						minionIdentity.gameObject.GetSMI<ThoughtGraph.Instance>().AddThought(Db.Get().Thoughts.PutridOdour);
+					}
 				}
 			}
+			int gameCell = Grid.PosToCell(gameObject.transform.GetPosition());
+			SimMessages.AddRemoveSubstance(gameCell, SimHashes.Methane, CellEventLogger.Instance.ElementConsumerSimUpdate, 0.1f, value, byte.MaxValue, 0, true, -1);
+			KBatchedAnimController kBatchedAnimController = FXHelpers.CreateEffect("odor_fx_kanim", gameObject.transform.GetPosition(), gameObject.transform, true, Grid.SceneLayer.Front, false);
+			kBatchedAnimController.Play(WorkLoopAnims, KAnim.PlayMode.Once);
+			kBatchedAnimController.destroyOnAnimComplete = true;
 		}
-		int gameCell = Grid.PosToCell(gameObject.transform.GetPosition());
-		float value = Db.Get().Amounts.Temperature.Lookup(this).value;
-		SimMessages.AddRemoveSubstance(gameCell, SimHashes.Methane, CellEventLogger.Instance.ElementConsumerSimUpdate, 0.1f, value, byte.MaxValue, 0, true, -1);
 		KFMOD.PlayOneShot(GlobalAssets.GetSound("Dupe_Flatulence", false), base.transform.GetPosition());
-		KBatchedAnimController kBatchedAnimController = FXHelpers.CreateEffect("odor_fx_kanim", gameObject.transform.GetPosition(), gameObject.transform, true, Grid.SceneLayer.Front, false);
-		kBatchedAnimController.Play(WorkLoopAnims, KAnim.PlayMode.Once);
-		kBatchedAnimController.destroyOnAnimComplete = true;
 	}
 
 	private void OnDeath(object data)

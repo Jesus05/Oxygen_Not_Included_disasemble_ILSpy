@@ -14,13 +14,13 @@ public class SolidConduitBridgeConfig : IBuildingConfig
 		int height = 1;
 		string anim = "utilities_conveyorbridge_kanim";
 		int hitpoints = 10;
-		float construction_time = 3f;
-		float[] tIER = BUILDINGS.CONSTRUCTION_MASS_KG.TIER2;
-		string[] rAW_MINERALS = MATERIALS.RAW_MINERALS;
+		float construction_time = 30f;
+		float[] tIER = BUILDINGS.CONSTRUCTION_MASS_KG.TIER4;
+		string[] aLL_METALS = MATERIALS.ALL_METALS;
 		float melting_point = 1600f;
 		BuildLocationRule build_location_rule = BuildLocationRule.Conduit;
 		EffectorValues nONE = NOISE_POLLUTION.NONE;
-		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, tIER, rAW_MINERALS, melting_point, build_location_rule, BUILDINGS.DECOR.NONE, nONE, 0.2f);
+		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, tIER, aLL_METALS, melting_point, build_location_rule, BUILDINGS.DECOR.NONE, nONE, 0.2f);
 		buildingDef.ObjectLayer = ObjectLayer.SolidConduitConnection;
 		buildingDef.SceneLayer = Grid.SceneLayer.SolidConduitBridges;
 		buildingDef.InputConduitType = ConduitType.Solid;
@@ -50,7 +50,7 @@ public class SolidConduitBridgeConfig : IBuildingConfig
 		base.DoPostConfigureUnderConstruction(go);
 		Constructable component = go.GetComponent<Constructable>();
 		component.choreTags = GameTags.ChoreTypes.ConveyorChores;
-		component.requiredRolePerk = RoleManager.rolePerks.ConveyorBuild.id;
+		component.requiredSkillPerk = Db.Get().SkillPerks.ConveyorBuild.Id;
 	}
 
 	public override void DoPostConfigureComplete(GameObject go)

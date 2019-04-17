@@ -110,7 +110,7 @@ public class FuelTank : Storage, IUserControlledCapacity
 		}
 		else
 		{
-			Debug.LogWarning("Fuel tank couldn't find rocket engine", null);
+			Debug.LogWarning("Fuel tank couldn't find rocket engine");
 		}
 	}
 

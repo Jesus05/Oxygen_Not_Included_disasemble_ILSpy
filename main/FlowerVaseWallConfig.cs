@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using TUNING;
 using UnityEngine;
 
@@ -25,6 +24,7 @@ public class FlowerVaseWallConfig : IBuildingConfig
 		buildingDef.ViewMode = OverlayModes.Decor.ID;
 		buildingDef.AudioCategory = "Glass";
 		buildingDef.AudioSize = "large";
+		buildingDef.PermittedRotations = PermittedRotations.FlipH;
 		return buildingDef;
 	}
 
@@ -35,28 +35,10 @@ public class FlowerVaseWallConfig : IBuildingConfig
 		PlantablePlot plantablePlot = go.AddOrGet<PlantablePlot>();
 		plantablePlot.AddDepositTag(GameTags.DecorSeed);
 		plantablePlot.occupyingObjectVisualOffset = new Vector3(0f, -0.25f, 0f);
-		SituationalAnim situationalAnim = go.AddOrGet<SituationalAnim>();
-		situationalAnim.mustSatisfy = SituationalAnim.MustSatisfy.All;
 		go.GetComponent<KPrefabID>().AddTag(GameTags.Decoration);
 	}
 
 	public override void DoPostConfigureComplete(GameObject go)
 	{
-		KPrefabID component = go.GetComponent<KPrefabID>();
-		component.instantiateFn += delegate(GameObject inst)
-		{
-			SituationalAnim component2 = inst.GetComponent<SituationalAnim>();
-			component2.anims = new List<Tuple<SituationalAnim.Situation, string>>
-			{
-				new Tuple<SituationalAnim.Situation, string>(SituationalAnim.Situation.Left, "leftwall"),
-				new Tuple<SituationalAnim.Situation, string>(SituationalAnim.Situation.Right, "rightwall")
-			};
-			component2.test = IsSolidOrTile;
-		};
-	}
-
-	private bool IsSolidOrTile(int cell)
-	{
-		return Grid.Solid[cell];
 	}
 }

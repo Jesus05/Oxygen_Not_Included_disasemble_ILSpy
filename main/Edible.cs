@@ -24,7 +24,7 @@ public class Edible : Workable, IGameObjectEffectDescriptor
 
 	private EdiblesManager.FoodInfo foodInfo;
 
-	private float consumptionStartTime = float.NaN;
+	private float consumptionTime = float.NaN;
 
 	public float unitsConsumed = float.NaN;
 
@@ -143,7 +143,7 @@ public class Edible : Workable, IGameObjectEffectDescriptor
 		{
 			if (FoodID == null)
 			{
-				Output.LogError("No food FoodID");
+				Debug.LogError("No food FoodID");
 			}
 			foodInfo = Game.Instance.ediblesManager.GetFoodInfo(FoodID);
 		}
@@ -164,7 +164,7 @@ public class Edible : Workable, IGameObjectEffectDescriptor
 	public override HashedString[] GetWorkAnims(Worker worker)
 	{
 		MinionResume component = worker.GetComponent<MinionResume>();
-		if ((Object)component != (Object)null && component.CurrentRole != "NoRole")
+		if ((Object)component != (Object)null && component.CurrentHat != null)
 		{
 			return hatWorkAnims;
 		}
@@ -174,7 +174,7 @@ public class Edible : Workable, IGameObjectEffectDescriptor
 	public override HashedString GetWorkPstAnim(Worker worker, bool successfully_completed)
 	{
 		MinionResume component = worker.GetComponent<MinionResume>();
-		if ((Object)component != (Object)null && component.CurrentRole != "NoRole")
+		if ((Object)component != (Object)null && component.CurrentHat != null)
 		{
 			return hatWorkPstAnim;
 		}
@@ -209,8 +209,10 @@ public class Edible : Workable, IGameObjectEffectDescriptor
 		StartConsuming();
 	}
 
-	public override void AwardExperience(float work_dt, MinionResume resume)
+	protected override bool OnWorkTick(Worker worker, float dt)
 	{
+		consumptionTime += dt;
+		return false;
 	}
 
 	protected override void OnStopWork(Worker worker)
@@ -225,7 +227,7 @@ public class Edible : Workable, IGameObjectEffectDescriptor
 	{
 		DebugUtil.DevAssert(!isBeingConsumed, "Can't StartConsuming()...we've already started");
 		isBeingConsumed = true;
-		consumptionStartTime = Time.time;
+		consumptionTime = 0f;
 		base.worker.Trigger(1406130139, this);
 	}
 
@@ -233,9 +235,9 @@ public class Edible : Workable, IGameObjectEffectDescriptor
 	{
 		DebugUtil.DevAssert(isBeingConsumed, "StopConsuming() called without StartConsuming()");
 		isBeingConsumed = false;
-		if (float.IsNaN(consumptionStartTime))
+		if (float.IsNaN(consumptionTime))
 		{
-			DebugUtil.DevAssert(false, "consumptionStartTime NaN in StopConsuming()");
+			DebugUtil.DevAssert(false, "consumptionTime NaN in StopConsuming()");
 		}
 		else
 		{
@@ -247,13 +249,8 @@ public class Edible : Workable, IGameObjectEffectDescriptor
 					"react"
 				}, null);
 			}
-			float num = Time.time - consumptionStartTime;
-			float num2 = Mathf.Clamp01(num / GetFeedingTime(worker));
-			unitsConsumed = Units * num2;
-			if (Units < PICKUPABLETUNING.MINIMUM_PICKABLE_AMOUNT && unitsConsumed < PICKUPABLETUNING.MINIMUM_PICKABLE_AMOUNT)
-			{
-				unitsConsumed = Units;
-			}
+			float num = Mathf.Clamp01(consumptionTime / GetFeedingTime(worker));
+			unitsConsumed = Units * num;
 			if (float.IsNaN(unitsConsumed))
 			{
 				KCrashReporter.Assert(false, "Why is unitsConsumed NaN?");
@@ -271,7 +268,7 @@ public class Edible : Workable, IGameObjectEffectDescriptor
 			Trigger(-10536414, worker.gameObject);
 			unitsConsumed = float.NaN;
 			caloriesConsumed = float.NaN;
-			consumptionStartTime = float.NaN;
+			consumptionTime = float.NaN;
 			if (Units <= 0f)
 			{
 				base.gameObject.DeleteObject();

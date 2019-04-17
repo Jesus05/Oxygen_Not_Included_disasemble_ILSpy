@@ -36,7 +36,7 @@ public class SwitchRoleHatChore : Chore<SwitchRoleHatChore.StatesInstance>
 			Target(duplicant);
 			start.Enter(delegate(StatesInstance smi)
 			{
-				if (duplicant.Get(smi).GetComponent<MinionResume>().CurrentRole == "NoRole")
+				if (duplicant.Get(smi).GetComponent<MinionResume>().CurrentHat == null)
 				{
 					smi.GoTo(delay);
 				}
@@ -53,7 +53,7 @@ public class SwitchRoleHatChore : Chore<SwitchRoleHatChore.StatesInstance>
 				.OnAnimQueueComplete(applyHat_pre);
 			applyHat_pre.ToggleAnims("anim_hat_kanim", 0f).Enter(delegate(StatesInstance smi)
 			{
-				RoleManager.ApplyRoleHat(Game.Instance.roleManager.GetRole(duplicant.Get(smi).GetComponent<MinionResume>().CurrentRole), duplicant.Get(smi).GetComponent<Accessorizer>(), duplicant.Get(smi).GetComponent<KBatchedAnimController>());
+				duplicant.Get(smi).GetComponent<MinionResume>().ApplyTargetHat();
 			}).PlayAnim("hat_first")
 				.OnAnimQueueComplete(applyHat);
 			applyHat.ToggleAnims("anim_hat_kanim", 0f).PlayAnim("working_pst").OnAnimQueueComplete(complete);

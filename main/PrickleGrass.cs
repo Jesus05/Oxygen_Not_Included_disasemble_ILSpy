@@ -43,7 +43,7 @@ public class PrickleGrass : StateMachineComponent<PrickleGrass.StatesInstance>
 		{
 			default_state = grow;
 			base.serializable = true;
-			dead.ToggleStatusItem(STRINGS.CREATURES.STATUSITEMS.DEAD.NAME, STRINGS.CREATURES.STATUSITEMS.DEAD.TOOLTIP, category: Db.Get().StatusItemCategories.Main, icon: string.Empty, icon_type: StatusItem.IconType.Info, notification_type: (NotificationType)0, allow_multiples: false, render_overlay: default(HashedString), status_overlays: 0, resolve_string_callback: null, resolve_tooltip_callback: null).Enter(delegate(StatesInstance smi)
+			dead.ToggleStatusItem(STRINGS.CREATURES.STATUSITEMS.DEAD.NAME, STRINGS.CREATURES.STATUSITEMS.DEAD.TOOLTIP, category: Db.Get().StatusItemCategories.Main, icon: string.Empty, icon_type: StatusItem.IconType.Info, notification_type: (NotificationType)0, allow_multiples: false, render_overlay: default(HashedString), status_overlays: 0, resolve_string_callback: null, resolve_tooltip_callback: null).ToggleTag(GameTags.PreventEmittingDisease).Enter(delegate(StatesInstance smi)
 			{
 				GameUtil.KInstantiate(Assets.GetPrefab(EffectConfigs.PlantDeathId), smi.master.transform.GetPosition(), Grid.SceneLayer.FXFront, null, 0).SetActive(true);
 				smi.master.Trigger(1623392196, null);
@@ -71,15 +71,16 @@ public class PrickleGrass : StateMachineComponent<PrickleGrass.StatesInstance>
 				smi.master.GetComponent<DecorProvider>().Refresh();
 				smi.master.AddTag(GameTags.Decoration);
 			});
-			alive.wilting.PlayAnim("wilt1", KAnim.PlayMode.Loop).EventTransition(GameHashes.WiltRecover, alive.idle, null).Enter(delegate(StatesInstance smi)
-			{
-				smi.master.growth_bonus.Description = STRINGS.CREATURES.SPECIES.PRICKLEGRASS.WILT_PENALTY;
-				smi.master.GetAttributes().Get(Db.Get().Attributes.Decor).Remove(smi.master.growth_bonus);
-				smi.master.GetAttributes().Get(Db.Get().Attributes.Decor).Add(smi.master.wilt_penalty);
-				smi.master.GetComponent<DecorProvider>().SetValues(DECOR.PENALTY.TIER1);
-				smi.master.GetComponent<DecorProvider>().Refresh();
-				smi.master.RemoveTag(GameTags.Decoration);
-			});
+			alive.wilting.PlayAnim("wilt1", KAnim.PlayMode.Loop).EventTransition(GameHashes.WiltRecover, alive.idle, null).ToggleTag(GameTags.PreventEmittingDisease)
+				.Enter(delegate(StatesInstance smi)
+				{
+					smi.master.growth_bonus.Description = STRINGS.CREATURES.SPECIES.PRICKLEGRASS.WILT_PENALTY;
+					smi.master.GetAttributes().Get(Db.Get().Attributes.Decor).Remove(smi.master.growth_bonus);
+					smi.master.GetAttributes().Get(Db.Get().Attributes.Decor).Add(smi.master.wilt_penalty);
+					smi.master.GetComponent<DecorProvider>().SetValues(DECOR.PENALTY.TIER1);
+					smi.master.GetComponent<DecorProvider>().Refresh();
+					smi.master.RemoveTag(GameTags.Decoration);
+				});
 		}
 	}
 

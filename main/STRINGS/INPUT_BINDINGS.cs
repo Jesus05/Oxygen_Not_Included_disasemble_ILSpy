@@ -100,6 +100,8 @@ namespace STRINGS
 
 			public static LocString OVERLAY14 = "Overlay14";
 
+			public static LocString OVERLAY15 = "Overlay15";
+
 			public static LocString SPEEDUP = "SpeedUp";
 
 			public static LocString SLOWDOWN = "SlowDown";

@@ -39,6 +39,9 @@ public class ResearchScreen : KModalScreen
 	[SerializeField]
 	private KButton filterClearButton;
 
+	[SerializeField]
+	private KScrollRect scrollRect;
+
 	private Tech currentResearch;
 
 	public KButton CloseButton;
@@ -179,7 +182,7 @@ public class ResearchScreen : KModalScreen
 	{
 		if (!entryMap.ContainsKey(tech))
 		{
-			Debug.LogError("The Tech provided was not present in the dictionary", null);
+			Debug.LogError("The Tech provided was not present in the dictionary");
 			return Vector3.zero;
 		}
 		return entryMap[tech].transform.GetPosition();
@@ -193,7 +196,7 @@ public class ResearchScreen : KModalScreen
 		}
 		if (!entryMap.ContainsKey(tech))
 		{
-			Debug.LogError("The Tech provided was not present in the dictionary", null);
+			Debug.LogError("The Tech provided was not present in the dictionary");
 			return null;
 		}
 		return entryMap[tech];
@@ -320,9 +323,21 @@ public class ResearchScreen : KModalScreen
 		UpdatePointDisplay();
 	}
 
+	public override void OnKeyUp(KButtonEvent e)
+	{
+		if (!e.Consumed && !scrollRect.isDragging && e.TryConsume(Action.MouseRight))
+		{
+			ManagementMenu.Instance.CloseAll();
+		}
+		else
+		{
+			base.OnKeyUp(e);
+		}
+	}
+
 	public override void OnKeyDown(KButtonEvent e)
 	{
-		if (!e.Consumed && (e.TryConsume(Action.MouseRight) || e.TryConsume(Action.Escape)))
+		if (!e.Consumed && e.TryConsume(Action.Escape))
 		{
 			ManagementMenu.Instance.CloseAll();
 		}

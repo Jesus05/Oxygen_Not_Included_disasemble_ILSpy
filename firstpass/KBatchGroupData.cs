@@ -212,6 +212,7 @@ public class KBatchGroupData
 
 	public void AddAnim(KAnim.Anim anim)
 	{
+		Debug.Assert(anim.index == anims.Count);
 		anims.Add(anim);
 	}
 
@@ -219,7 +220,7 @@ public class KBatchGroupData
 	{
 		if (anim < 0 || anim >= anims.Count)
 		{
-			Debug.LogError($"Anim [{anim}] out of range [{anims.Count}] in batch [{groupID}]", null);
+			Debug.LogError($"Anim [{anim}] out of range [{anims.Count}] in batch [{groupID}]");
 		}
 		return anims[anim];
 	}
@@ -334,7 +335,7 @@ public class KBatchGroupData
 		int num = 1 + ((animFrames.Count != 0) ? animFrames.Count : symbolFrameInstances.Count);
 		if (animFrames.Count == 0 && symbolFrameInstances.Count == 0 && animFrameElements.Count == 0)
 		{
-			Debug.LogError("Eh, no data " + animFrames.Count + " " + symbolFrameInstances.Count + " " + animFrameElements.Count, null);
+			Debug.LogError("Eh, no data " + animFrames.Count + " " + symbolFrameInstances.Count + " " + animFrameElements.Count);
 		}
 		data[start_index++] = (float)num;
 		data[start_index++] = (float)animFrames.Count;
@@ -372,7 +373,7 @@ public class KBatchGroupData
 					KAnim.Build.Symbol buildSymbol = GetBuildSymbol(element.symbolIdx);
 					if (buildSymbol == null)
 					{
-						Debug.LogError("Missing symbol for Anim Frame Element: [" + HashCache.Get().Get(element.symbol) + ": " + element.symbol + "]", null);
+						Debug.LogError("Missing symbol for Anim Frame Element: [" + HashCache.Get().Get(element.symbol) + ": " + element.symbol + "]");
 					}
 					int frameIdx = buildSymbol.GetFrameIdx(element.frame);
 					Write(data, start_index, frameIdx, l, element);

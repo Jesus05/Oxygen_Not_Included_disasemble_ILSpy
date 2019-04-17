@@ -27,7 +27,7 @@ public class Research : KMonoBehaviour, ISaveLoadable
 
 	private TechInstance activeResearch;
 
-	private Notification NoResearcherRole = new Notification(RESEARCH.MESSAGING.NO_RESEARCHER_ROLE, NotificationType.Bad, HashedString.Invalid, (List<Notification> list, object data) => RESEARCH.MESSAGING.NO_RESEARCHER_ROLE_TOOLTIP, null, false, 12f, null, null, null);
+	private Notification NoResearcherRole = new Notification(RESEARCH.MESSAGING.NO_RESEARCHER_SKILL, NotificationType.Bad, HashedString.Invalid, (List<Notification> list, object data) => RESEARCH.MESSAGING.NO_RESEARCHER_SKILL_TOOLTIP, null, false, 12f, null, null, null);
 
 	private Notification MissingResearchStation = new Notification(RESEARCH.MESSAGING.MISSING_RESEARCH_STATION, NotificationType.Bad, HashedString.Invalid, (List<Notification> list, object data) => RESEARCH.MESSAGING.MISSING_RESEARCH_STATION_TOOLTIP.ToString().Replace("{0}", Instance.GetMissingResearchBuildingName()), null, false, 11f, null, null, null);
 
@@ -215,7 +215,7 @@ public class Research : KMonoBehaviour, ISaveLoadable
 			CheckResearchBuildings(null);
 			if (activeResearch.tech.costsByResearchTypeID.Count > 1)
 			{
-				if (Game.Instance.roleManager.GetRoleAssigneesWithPerk(RoleManager.rolePerks.AllowAdvancedResearch.id).Count == 0)
+				if (!MinionResume.AnyMinionHasPerk(Db.Get().SkillPerks.AllowAdvancedResearch.Id))
 				{
 					notifier.Remove(NoResearcherRole);
 					notifier.Add(NoResearcherRole, string.Empty);
@@ -228,7 +228,7 @@ public class Research : KMonoBehaviour, ISaveLoadable
 			}
 			if (activeResearch.tech.costsByResearchTypeID.Count > 2)
 			{
-				if (Game.Instance.roleManager.GetRoleAssigneesWithPerk(RoleManager.rolePerks.AllowInterstellarResearch.id).Count == 0)
+				if (!MinionResume.AnyMinionHasPerk(Db.Get().SkillPerks.AllowInterstellarResearch.Id))
 				{
 					notifier.Remove(NoResearcherRole);
 					notifier.Add(NoResearcherRole, string.Empty);
@@ -251,7 +251,7 @@ public class Research : KMonoBehaviour, ISaveLoadable
 	{
 		if (!UseGlobalPointInventory && activeResearch == null)
 		{
-			Debug.LogWarning("No active research to add research points to. Global research inventory is disabled.", null);
+			Debug.LogWarning("No active research to add research points to. Global research inventory is disabled.");
 		}
 		else
 		{
@@ -361,7 +361,7 @@ public class Research : KMonoBehaviour, ISaveLoadable
 	{
 		if (activeResearch != null && activeResearch.tech.costsByResearchTypeID.Count > 1)
 		{
-			if (Game.Instance.roleManager.GetRoleAssigneesWithPerk(RoleManager.rolePerks.AllowAdvancedResearch.id).Count == 0)
+			if (!MinionResume.AnyMinionHasPerk(Db.Get().SkillPerks.AllowAdvancedResearch.Id))
 			{
 				notifier.Add(NoResearcherRole, string.Empty);
 			}

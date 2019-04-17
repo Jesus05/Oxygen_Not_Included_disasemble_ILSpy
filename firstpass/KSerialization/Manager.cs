@@ -123,7 +123,7 @@ namespace KSerialization
 				}
 				catch (Exception ex)
 				{
-					Output.LogError("Error serializing template " + key + "\n", ex.Message, ex.StackTrace);
+					DebugUtil.LogErrorArgs("Error serializing template " + key + "\n", ex.Message, ex.StackTrace);
 				}
 			}
 		}
@@ -150,7 +150,7 @@ namespace KSerialization
 				catch (Exception ex)
 				{
 					string text2 = "Error deserializing template " + text + "\n" + ex.Message + "\n" + ex.StackTrace;
-					Output.LogError(text2);
+					Debug.LogError(text2);
 					throw new Exception(text2, ex);
 				}
 			}

@@ -28,7 +28,7 @@ public class PutOnHatChore : Chore<PutOnHatChore.StatesInstance>
 			Target(duplicant);
 			applyHat_pre.ToggleAnims("anim_hat_kanim", 0f).Enter(delegate(StatesInstance smi)
 			{
-				duplicant.Get(smi).GetComponent<MinionResume>().AssumeTargetRole();
+				duplicant.Get(smi).GetComponent<MinionResume>().ApplyTargetHat();
 			}).PlayAnim("hat_first")
 				.OnAnimQueueComplete(applyHat);
 			applyHat.ToggleAnims("anim_hat_kanim", 0f).PlayAnim("working_pst").OnAnimQueueComplete(complete);

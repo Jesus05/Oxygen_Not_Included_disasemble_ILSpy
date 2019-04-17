@@ -112,7 +112,7 @@ public class Telepad : StateMachineComponent<Telepad.StatesInstance>
 		Grid.CellToXY(Grid.PosToCell(this), out x, out y);
 		if (x == 0)
 		{
-			Debug.LogError("Headquarters spawned at: (" + x.ToString() + "," + y.ToString() + ")", null);
+			Debug.LogError("Headquarters spawned at: (" + x.ToString() + "," + y.ToString() + ")");
 		}
 	}
 

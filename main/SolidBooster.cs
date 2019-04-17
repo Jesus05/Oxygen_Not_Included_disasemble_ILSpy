@@ -8,10 +8,10 @@ public class SolidBooster : RocketEngine
 	public void FillTank()
 	{
 		Element element = ElementLoader.GetElement(fuelTag);
-		GameObject go = element.substance.SpawnResource(base.gameObject.transform.GetPosition(), fuelStorage.capacityKg / 2f, element.defaultValues.temperature, byte.MaxValue, 0, false, false);
+		GameObject go = element.substance.SpawnResource(base.gameObject.transform.GetPosition(), fuelStorage.capacityKg / 2f, element.defaultValues.temperature, byte.MaxValue, 0, false, false, false);
 		fuelStorage.Store(go, false, false, true, false);
 		element = ElementLoader.GetElement(GameTags.OxyRock);
-		go = element.substance.SpawnResource(base.gameObject.transform.GetPosition(), fuelStorage.capacityKg / 2f, element.defaultValues.temperature, byte.MaxValue, 0, false, false);
+		go = element.substance.SpawnResource(base.gameObject.transform.GetPosition(), fuelStorage.capacityKg / 2f, element.defaultValues.temperature, byte.MaxValue, 0, false, false, false);
 		fuelStorage.Store(go, false, false, true, false);
 	}
 }

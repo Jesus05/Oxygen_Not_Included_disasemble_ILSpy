@@ -4,7 +4,7 @@ using STRINGS;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using TUNING;
+using System.Runtime.Serialization;
 using UnityEngine;
 
 [SerializationConfig(MemberSerialization.OptIn)]
@@ -216,6 +216,23 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms
 		return machineOrders;
 	}
 
+	[OnDeserialized]
+	private void OnDeserializedMethod()
+	{
+		List<string> list = new List<string>();
+		foreach (string key in recipeQueueCounts.Keys)
+		{
+			if (ComplexRecipeManager.Get().GetRecipe(key) == null)
+			{
+				list.Add(key);
+			}
+		}
+		foreach (string item in list)
+		{
+			recipeQueueCounts.Remove(item);
+		}
+	}
+
 	protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
@@ -227,12 +244,12 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms
 		Subscribe(-1957399615, OnDroppedAllDelegate);
 		Subscribe(-592767678, OnOperationalChangedDelegate);
 		workable = GetComponent<ComplexFabricatorWorkable>();
-		if (duplicantOperated)
+		if (!duplicantOperated)
 		{
-			workable.WorkerStatusItem = Db.Get().DuplicantStatusItems.Processing;
-			workable.AttributeConvertor = Db.Get().AttributeConverters.MachinerySpeed;
-			workable.AttributeExperienceMultiplier = DUPLICANTSTATS.ATTRIBUTE_LEVELING.PART_DAY_EXPERIENCE;
+			goto IL_006f;
 		}
+		goto IL_006f;
+		IL_006f:
 		Components.ComplexFabricators.Add(this);
 	}
 
@@ -348,7 +365,9 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms
 			if (recipeQueueCount.Value > 0 || recipeQueueCount.Value == QUEUE_INFINITE)
 			{
 				num++;
-				UserOrder item = new UserOrder(ComplexRecipeManager.Get().GetRecipe(recipeQueueCount.Key), true);
+				ComplexRecipe recipe = ComplexRecipeManager.Get().GetRecipe(recipeQueueCount.Key);
+				Debug.Assert(recipe != null, string.Format("{1} missing recipe: {0}", recipeQueueCount.Key, base.name));
+				UserOrder item = new UserOrder(recipe, true);
 				userOrders.Add(item);
 			}
 		}
@@ -532,7 +551,7 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms
 		{
 			for (int num2 = machineOrders.Count - 1; num2 >= num; num2--)
 			{
-				DebugUtil.DevAssertWithStack(!willBeSadIfMachineOrdersChanges, "machineOrders changed when it wasn't expected. sad.");
+				Debug.Assert(!willBeSadIfMachineOrdersChanges, "machineOrders changed when it wasn't expected. sad.");
 				if (num2 == 0 && machineOrders[0].chore != null)
 				{
 					buildStorage.Transfer(inStorage, true, true);
@@ -551,7 +570,7 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms
 	{
 		for (int i = machineOrders.Count; i < nextMachineOrderSources.Count; i++)
 		{
-			DebugUtil.DevAssertWithStack(!willBeSadIfMachineOrdersChanges, "machineOrders changed when it wasn't expected. sad.");
+			Debug.Assert(!willBeSadIfMachineOrdersChanges, "machineOrders changed when it wasn't expected. sad.");
 			MachineOrder machineOrder = new MachineOrder();
 			machineOrder.parentOrder = nextMachineOrderSources[i];
 			machineOrders.Add(machineOrder);
@@ -747,7 +766,7 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms
 
 	private void CancelMachineOrder(MachineOrder order)
 	{
-		DebugUtil.DevAssertWithStack(!willBeSadIfMachineOrdersChanges, "machineOrders changed when it wasn't expected. sad.");
+		Debug.Assert(!willBeSadIfMachineOrdersChanges, "machineOrders changed when it wasn't expected. sad.");
 		OnMachineOrderCancelledOrComplete(order);
 		order.Cancel();
 		machineOrders.Remove(order);
@@ -789,7 +808,7 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms
 		{
 			buildStorage.Transfer(inStorage, true, true);
 		}
-		DebugUtil.DevAssertWithStack(machineOrders.Count == 0 || !willBeSadIfMachineOrdersChanges, "machineOrders changed when it wasn't expected. sad.");
+		Debug.Assert(machineOrders.Count == 0 || !willBeSadIfMachineOrdersChanges, "machineOrders changed when it wasn't expected. sad.");
 		while (machineOrders.Count > 0)
 		{
 			MachineOrder machineOrder = machineOrders[0];
@@ -884,7 +903,7 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms
 					}
 					else
 					{
-						Debug.LogWarning(component3.name + " is missing symbol " + build.name, null);
+						Debug.LogWarning(component3.name + " is missing symbol " + build.name);
 					}
 				}
 			}
@@ -957,7 +976,7 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms
 	{
 		if (fetchList == null || ingredients == null || ingredients.Length == 0)
 		{
-			Debug.LogError("Invalid parameters received for the fetch list.", null);
+			Debug.LogError("Invalid parameters received for the fetch list.");
 		}
 		else
 		{
@@ -1051,7 +1070,7 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms
 		{
 			if (machineOrders.Count <= 0)
 			{
-				Debug.LogWarning("Somehow we tried to complete an order when there was no orders to complete. Need more info on how to reproduce this for a proper fix.", null);
+				Debug.LogWarning("Somehow we tried to complete an order when there was no orders to complete. Need more info on how to reproduce this for a proper fix.");
 			}
 			else
 			{

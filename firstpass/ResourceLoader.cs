@@ -47,7 +47,7 @@ public class ResourceLoader<T> where T : Resource, new()
 	{
 		if ((Object)file == (Object)null)
 		{
-			Debug.LogWarning("Missing resource file of type: " + typeof(T).Name, null);
+			Debug.LogWarning("Missing resource file of type: " + typeof(T).Name);
 		}
 		else
 		{

@@ -53,7 +53,7 @@ namespace ProcGenGame
 			{
 				if (isDebug)
 				{
-					Debug.LogWarning("No where to put mobs possibleSpawnPoints [" + tc.node.node.Id + "]", null);
+					Debug.LogWarning("No where to put mobs possibleSpawnPoints [" + tc.node.node.Id + "]");
 				}
 				return null;
 			}
@@ -68,7 +68,7 @@ namespace ProcGenGame
 				{
 					if (!SettingsCache.mobs.GetMobTags().Contains(list[j]))
 					{
-						Debug.LogError("Missing sample description for tag [" + list[j].Name + "]", null);
+						Debug.LogError("Missing sample description for tag [" + list[j].Name + "]");
 					}
 					else
 					{
@@ -79,7 +79,7 @@ namespace ProcGenGame
 						{
 							if (isDebug)
 							{
-								Debug.LogWarning("No SuitableMobSpawnPoint to put mobs mobPossibleSpawnPoints [" + list[j].Name + "] [" + tc.node.node.Id + "]", null);
+								Debug.LogWarning("No SuitableMobSpawnPoint to put mobs mobPossibleSpawnPoints [" + list[j].Name + "] [" + tc.node.node.Id + "]");
 							}
 						}
 						else
@@ -91,7 +91,7 @@ namespace ProcGenGame
 							{
 								if (isDebug)
 								{
-									Debug.LogWarning("Got a mob density greater than 1.0 for " + list[j].Name + ". Probably using density as spacing!", null);
+									Debug.LogWarning("Got a mob density greater than 1.0 for " + list[j].Name + ". Probably using density as spacing!");
 								}
 								num4 = 1f;
 							}

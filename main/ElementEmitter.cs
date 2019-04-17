@@ -91,7 +91,7 @@ public class ElementEmitter : SimComponent
 			}
 			else if (element.IsSolid)
 			{
-				element.substance.SpawnResource(base.transform.GetPosition() + new Vector3(0f, 0.5f, 0f), mass, temperature2, disease_idx, disease_count, false, true);
+				element.substance.SpawnResource(base.transform.GetPosition() + new Vector3(0f, 0.5f, 0f), mass, temperature2, disease_idx, disease_count, false, true, false);
 			}
 			PopFXManager.Instance.SpawnFX(PopFXManager.Instance.sprite_Resource, ElementLoader.FindElementByHash(outputElement.elementHash).name, base.gameObject.transform, 1.5f, false);
 		}
@@ -122,6 +122,7 @@ public class ElementEmitter : SimComponent
 
 	private static void StaticUnregister(int sim_handle)
 	{
+		Debug.Assert(Sim.IsValidHandle(sim_handle));
 		SimMessages.RemoveElementEmitter(-1, sim_handle);
 	}
 

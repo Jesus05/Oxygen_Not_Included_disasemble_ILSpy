@@ -54,11 +54,6 @@ public class Clearable : Workable, ISaveLoadable
 	protected override void OnSpawn()
 	{
 		base.OnSpawn();
-		Prioritizable component = GetComponent<Prioritizable>();
-		if ((UnityEngine.Object)component != (UnityEngine.Object)null && (UnityEngine.Object)GetComponent<Health>() == (UnityEngine.Object)null)
-		{
-			component.showIcon = false;
-		}
 		if (isMarkedForClear)
 		{
 			if (this.HasTag(GameTags.Stored))

@@ -12,9 +12,22 @@ public class GravityComponents : KGameObjectComponentManager<GravityComponent>
 
 	private const float Acceleration = -9.8f;
 
+	private static Tag[] LANDS_ON_FAKEFLOOR = new Tag[3]
+	{
+		GameTags.Minion,
+		GameTags.Creatures.Walker,
+		GameTags.Creatures.Hoverer
+	};
+
 	public HandleVector<int>.Handle Add(GameObject go, Vector2 initial_velocity, System.Action on_landed = null)
 	{
-		return Add(go, new GravityComponent(go.transform, on_landed, initial_velocity));
+		bool land_on_fake_floors = false;
+		KPrefabID component = go.GetComponent<KPrefabID>();
+		if ((UnityEngine.Object)component != (UnityEngine.Object)null)
+		{
+			land_on_fake_floors = component.HasAnyTags(LANDS_ON_FAKEFLOOR);
+		}
+		return Add(go, new GravityComponent(go.transform, on_landed, initial_velocity, land_on_fake_floors));
 	}
 
 	public override void FixedUpdate(float dt)
@@ -74,7 +87,7 @@ public class GravityComponents : KGameObjectComponentManager<GravityComponent>
 							}
 						}
 					}
-					if (Grid.Solid[num6] || (Grid.LiquidPumpFloor[num6] && (UnityEngine.Object)value.transform.GetComponent<MinionIdentity>() != (UnityEngine.Object)null))
+					if (Grid.Solid[num6] || (value.landOnFakeFloors && Grid.FakeFloor[num6]))
 					{
 						Vector3 vector4 = Grid.CellToPosCBC(Grid.CellAbove(num6), Grid.SceneLayer.Move);
 						vector3.y = vector4.y + value.radius;

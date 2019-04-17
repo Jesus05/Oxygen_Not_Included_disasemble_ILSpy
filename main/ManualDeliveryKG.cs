@@ -110,6 +110,7 @@ public class ManualDeliveryKG : KMonoBehaviour, ISim1000ms
 		this.storage = storage;
 		if ((UnityEngine.Object)this.storage != (UnityEngine.Object)null && base.isSpawned)
 		{
+			Debug.Assert(onStorageChangeSubscription == -1);
 			onStorageChangeSubscription = this.storage.Subscribe(-1697596308, delegate
 			{
 				OnStorageChanged(this.storage);

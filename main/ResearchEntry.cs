@@ -194,7 +194,7 @@ public class ResearchEntry : KMonoBehaviour
 	{
 		if (newTech == null)
 		{
-			Debug.LogError("The research provided is null!", null);
+			Debug.LogError("The research provided is null!");
 		}
 		else if (targetTech != newTech)
 		{

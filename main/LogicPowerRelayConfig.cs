@@ -8,7 +8,7 @@ public class LogicPowerRelayConfig : IBuildingConfig
 
 	private static readonly LogicPorts.Port[] INPUT_PORTS = new LogicPorts.Port[1]
 	{
-		LogicPorts.Port.InputPort(LogicOperationalController.PORT_ID, new CellOffset(0, 0), STRINGS.BUILDINGS.PREFABS.LOGICPOWERRELAY.LOGIC_PORT_DESC, true)
+		LogicPorts.Port.InputPort(LogicOperationalController.PORT_ID, new CellOffset(0, 0), STRINGS.BUILDINGS.PREFABS.LOGICPOWERRELAY.LOGIC_PORT, STRINGS.BUILDINGS.PREFABS.LOGICPOWERRELAY.LOGIC_PORT_ACTIVE, STRINGS.BUILDINGS.PREFABS.LOGICPOWERRELAY.LOGIC_PORT_INACTIVE, true)
 	};
 
 	public override BuildingDef CreateBuildingDef()

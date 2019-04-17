@@ -12,7 +12,7 @@ public class KButtonEvent : KInputEvent
 	{
 		if (base.Consumed)
 		{
-			Debug.LogError(action.ToString() + " was already consumed", null);
+			Debug.LogError(action.ToString() + " was already consumed");
 		}
 		if (action != Action.NumActions && mIsAction[(int)action])
 		{

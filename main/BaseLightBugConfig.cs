@@ -1,3 +1,4 @@
+using Klei.AI;
 using System.Collections.Generic;
 using TUNING;
 using UnityEngine;
@@ -24,7 +25,12 @@ public static class BaseLightBugConfig
 		{
 			gameObject.AddOrGet<SymbolOverrideController>().ApplySymbolOverridesByPrefix(Assets.GetAnim(anim_file), symbolOverridePrefix, 0);
 		}
-		gameObject.GetComponent<KPrefabID>().AddTag(GameTags.Creatures.Flyer);
+		KPrefabID component = gameObject.GetComponent<KPrefabID>();
+		component.AddTag(GameTags.Creatures.Flyer);
+		component.prefabInitFn += delegate(GameObject inst)
+		{
+			inst.GetAttributes().Add(Db.Get().Attributes.MaxUnderwaterTravelCost);
+		};
 		gameObject.AddOrGet<LoopingSounds>();
 		LureableMonitor.Def def = gameObject.AddOrGetDef<LureableMonitor.Def>();
 		def.lures = new Tag[1]
@@ -36,9 +42,9 @@ public static class BaseLightBugConfig
 		EntityTemplates.CreateAndRegisterBaggedCreature(gameObject, true, false, false);
 		if (is_baby)
 		{
-			KBatchedAnimController component = gameObject.GetComponent<KBatchedAnimController>();
-			component.animWidth = 0.5f;
-			component.animHeight = 0.5f;
+			KBatchedAnimController component2 = gameObject.GetComponent<KBatchedAnimController>();
+			component2.animWidth = 0.5f;
+			component2.animHeight = 0.5f;
 		}
 		if (lightColor != Color.black)
 		{

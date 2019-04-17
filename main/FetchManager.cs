@@ -102,13 +102,11 @@ public class FetchManager : KMonoBehaviour, ISim1000ms
 
 		public HandleVector<int>.Handle AddPickupable(Pickupable pickupable)
 		{
-			DebugUtil.DevAssert(true);
-			byte b = 5;
+			byte foodQuality = 5;
 			Edible component = pickupable.GetComponent<Edible>();
 			if ((Object)component != (Object)null)
 			{
-				b = (byte)component.GetQuality();
-				DebugUtil.DevAssert(b == b);
+				foodQuality = (byte)component.GetQuality();
 			}
 			byte masterPriority = 0;
 			Prioritizable prioritizable = null;
@@ -133,7 +131,7 @@ public class FetchManager : KMonoBehaviour, ISim1000ms
 			HandleVector<int>.Handle handle = fetchables.Allocate(new Fetchable
 			{
 				pickupable = pickupable,
-				foodQuality = b,
+				foodQuality = foodQuality,
 				freshness = freshness,
 				masterPriority = masterPriority,
 				tagBitsHash = rhs.GetHashCode()

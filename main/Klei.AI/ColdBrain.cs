@@ -3,32 +3,32 @@ using System.Collections.Generic;
 
 namespace Klei.AI
 {
-	public class ColdBrain : Disease
+	public class ColdBrain : Sickness
 	{
-		public const string ID = "ColdBrain";
+		public const string ID = "ColdSickness";
 
 		public ColdBrain()
-			: base("ColdBrain", DiseaseType.Ailment, Severity.Minor, 0.005f, new List<InfectionVector>
+			: base("ColdSickness", SicknessType.Ailment, Severity.Minor, 0.005f, new List<InfectionVector>
 			{
 				InfectionVector.Inhalation
-			}, 120f, 0, new RangeInfo(0f, 0f, 1000f, 1000f), new RangeInfo(1f, 1f, 1f, 1f), new RangeInfo(0f, 0f, 1000f, 1000f), new RangeInfo(1f, 1f, 1f, 1f))
+			}, 180f)
 		{
-			AddDiseaseComponent(new CommonSickEffectDisease());
-			AddDiseaseComponent(new AttributeModifierDisease(new AttributeModifier[5]
+			AddSicknessComponent(new CommonSickEffectSickness());
+			AddSicknessComponent(new AttributeModifierSickness(new AttributeModifier[5]
 			{
-				new AttributeModifier("Learning", -5f, DUPLICANTS.DISEASES.COLDBRAIN.NAME, false, false, true),
-				new AttributeModifier("Machinery", -5f, DUPLICANTS.DISEASES.COLDBRAIN.NAME, false, false, true),
-				new AttributeModifier("Construction", -5f, DUPLICANTS.DISEASES.COLDBRAIN.NAME, false, false, true),
-				new AttributeModifier("Cooking", -5f, DUPLICANTS.DISEASES.COLDBRAIN.NAME, false, false, true),
-				new AttributeModifier("Sneezyness", 1f, DUPLICANTS.DISEASES.COLDBRAIN.NAME, false, false, true)
+				new AttributeModifier("Learning", -5f, DUPLICANTS.DISEASES.COLDSICKNESS.NAME, false, false, true),
+				new AttributeModifier("Machinery", -5f, DUPLICANTS.DISEASES.COLDSICKNESS.NAME, false, false, true),
+				new AttributeModifier("Construction", -5f, DUPLICANTS.DISEASES.COLDSICKNESS.NAME, false, false, true),
+				new AttributeModifier("Cooking", -5f, DUPLICANTS.DISEASES.COLDSICKNESS.NAME, false, false, true),
+				new AttributeModifier("Sneezyness", 1f, DUPLICANTS.DISEASES.COLDSICKNESS.NAME, false, false, true)
 			}));
-			AddDiseaseComponent(new AnimatedDisease(new HashedString[3]
+			AddSicknessComponent(new AnimatedSickness(new HashedString[3]
 			{
 				"anim_idle_cold_kanim",
 				"anim_loco_run_cold_kanim",
 				"anim_loco_walk_cold_kanim"
 			}, Db.Get().Expressions.SickCold));
-			AddDiseaseComponent(new PeriodicEmoteDisease("anim_idle_cold_kanim", new HashedString[3]
+			AddSicknessComponent(new PeriodicEmoteSickness("anim_idle_cold_kanim", new HashedString[3]
 			{
 				"idle_pre",
 				"idle_default",

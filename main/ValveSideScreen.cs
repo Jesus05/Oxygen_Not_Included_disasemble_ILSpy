@@ -67,7 +67,7 @@ public class ValveSideScreen : SideScreenContent
 		targetValve = target.GetComponent<Valve>();
 		if ((Object)targetValve == (Object)null)
 		{
-			Debug.LogError("The target object does not have a Valve component.", null);
+			Debug.LogError("The target object does not have a Valve component.");
 		}
 		else
 		{
@@ -118,7 +118,7 @@ public class ValveSideScreen : SideScreenContent
 
 	public override void OnKeyDown(KButtonEvent e)
 	{
-		Debug.Log("ValveSideScreen OnKeyDown", null);
+		Debug.Log("ValveSideScreen OnKeyDown");
 		if (isEditing)
 		{
 			e.Consumed = true;

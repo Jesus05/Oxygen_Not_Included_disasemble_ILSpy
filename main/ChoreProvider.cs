@@ -17,21 +17,19 @@ public class ChoreProvider : KMonoBehaviour
 		Name = base.name;
 	}
 
-	public virtual Chore AddChore(Chore chore)
+	public virtual void AddChore(Chore chore)
 	{
 		chore.provider = this;
 		chores.Add(chore);
-		return chore;
 	}
 
-	public virtual Chore RemoveChore(Chore chore)
+	public virtual void RemoveChore(Chore chore)
 	{
-		if (chore == null)
+		if (chore != null)
 		{
-			return null;
+			chore.provider = null;
+			chores.Remove(chore);
 		}
-		chores.Remove(chore);
-		return chore;
 	}
 
 	public virtual void CollectChores(ChoreConsumerState consumer_state, List<Chore.Precondition.Context> succeeded, List<Chore.Precondition.Context> failed_contexts)

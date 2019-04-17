@@ -302,7 +302,7 @@ public class SandboxToolParameterMenu : KScreen
 			temperatureSlider.SetRange(Mathf.Max(instance.settings.Element.lowTemp - 10f, 1f), instance.settings.Element.highTemp + 10f);
 			massSlider.SetRange(0.1f, instance.settings.Element.defaultValues.mass * 2f);
 			massSlider.SetValue(settings.Mass);
-			settings.SelectDisease(Db.Get().Diseases.FoodPoisoning);
+			settings.SelectDisease(Db.Get().Diseases.FoodGerms);
 			settings.SelectEntity(Assets.GetPrefab("MushBar".ToTag()).GetComponent<KPrefabID>());
 		}
 	}
@@ -472,11 +472,11 @@ public class SandboxToolParameterMenu : KScreen
 			GameObject gameObject = (entity as KPrefabID).gameObject;
 			if ((UnityEngine.Object)gameObject != (UnityEngine.Object)null)
 			{
-				return gameObject.HasTag(GameTags.IndustrialIngredient) || gameObject.HasTag(GameTags.IndustrialProduct) || gameObject.HasTag(GameTags.Medicine);
+				return gameObject.HasTag(GameTags.IndustrialIngredient) || gameObject.HasTag(GameTags.IndustrialProduct) || gameObject.HasTag(GameTags.Medicine) || gameObject.HasTag(GameTags.MedicalSupplies);
 			}
 			return false;
 		};
-		uISprite = Def.GetUISprite(Assets.GetPrefab("GenericPill"), "ui", false);
+		uISprite = Def.GetUISprite(Assets.GetPrefab("BasicCure"), "ui", false);
 		SelectorValue.SearchFilter item6 = new SelectorValue.SearchFilter(name, condition, null, uISprite);
 		list.Add(item6);
 		List<KPrefabID> list3 = new List<KPrefabID>();

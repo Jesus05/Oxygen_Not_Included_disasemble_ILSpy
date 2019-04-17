@@ -34,10 +34,6 @@ public class CommandModuleWorkable : Workable
 	{
 	}
 
-	public override void AwardExperience(float work_dt, MinionResume resume)
-	{
-	}
-
 	protected override void OnStartWork(Worker worker)
 	{
 		base.OnStartWork(worker);

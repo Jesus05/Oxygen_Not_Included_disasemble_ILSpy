@@ -116,7 +116,7 @@ namespace ProcGenGame
 
 		public virtual void LogInfo(string evt, string param, float value)
 		{
-			Debug.Log(evt + ":" + param + "=" + value, null);
+			Debug.Log(evt + ":" + param + "=" + value);
 		}
 
 		public static void ClearClaimedCells()
@@ -203,9 +203,16 @@ namespace ProcGenGame
 			mobs.Add(mob);
 			bool flag = RemoveFromAvailableSpawnCells(mob.Key);
 			LogInfo("\t\tRemoveFromAvailableCells", mob.Value.Name + ": " + ((!flag) ? "failed" : "success"), (float)mob.Key);
-			if (!flag && allCells.Contains(mob.Key))
+			if (!flag)
 			{
-				return;
+				if (!allCells.Contains(mob.Key))
+				{
+					Debug.Assert(false, "Couldnt find cell [" + mob.Key + "] we dont own, to remove for mob [" + mob.Value.Name + "]");
+				}
+				else
+				{
+					Debug.Assert(false, "Couldnt find cell [" + mob.Key + "] to remove for mob [" + mob.Value.Name + "]");
+				}
 			}
 		}
 
@@ -245,6 +252,7 @@ namespace ProcGenGame
 			{
 				return 0f;
 			}
+			Debug.Assert(world.density[cellIdx] >= 0f && world.density[cellIdx] <= 1f, "Density [" + world.density[cellIdx] + "] out of range [0-1]");
 			float num = world.density[cellIdx] - 0.5f;
 			float num2 = mass + mass * num;
 			if (num2 > 10000f)
@@ -315,7 +323,7 @@ namespace ProcGenGame
 			}
 			if (centerPoints.Count == 0)
 			{
-				Debug.LogWarning("Room has no centerpoints. Terrain Cell [ shape: " + shape.ToString() + " size: " + finalSize + "] [" + node.node.Id + " " + node.type + " " + node.position + "]", null);
+				Debug.LogWarning("Room has no centerpoints. Terrain Cell [ shape: " + shape.ToString() + " size: " + finalSize + "] [" + node.node.Id + " " + node.type + " " + node.position + "]");
 			}
 			else if (bordersWidths != null && bordersWidths.Count > 0 && bordersWidths[0] > 0)
 			{
@@ -332,6 +340,7 @@ namespace ProcGenGame
 
 		public static ElementOverride GetElementOverride(string element, SampleDescriber.Override overrides)
 		{
+			Debug.Assert(element != null && element.Length > 0);
 			ElementOverride result = default(ElementOverride);
 			result.element = ElementLoader.FindElementByName(element);
 			result.pdelement = result.element.defaultValues;
@@ -519,7 +528,7 @@ namespace ProcGenGame
 				{
 					if (!SettingsCache.mobs.HasMob(mobTags[i].type))
 					{
-						Debug.LogError("Missing sample description for tag [" + mobTags[i].type + "]", null);
+						Debug.LogError("Missing sample description for tag [" + mobTags[i].type + "]");
 					}
 					else
 					{
@@ -610,7 +619,7 @@ namespace ProcGenGame
 					{
 						if (debugMode)
 						{
-							Debug.LogWarning(node.type + " " + feature.shape + "  blob size too large to fit in node. Size reduced. " + num + "->" + (num2 - 6f).ToString(), null);
+							Debug.LogWarning(node.type + " " + feature.shape + "  blob size too large to fit in node. Size reduced. " + num + "->" + (num2 - 6f).ToString());
 						}
 						num = num2 - 6f;
 					}
@@ -826,7 +835,7 @@ namespace ProcGenGame
 				}
 				else
 				{
-					Debug.LogError("Process::SetValuesFunction Index [" + index + "] is not valid. cells.Length [" + cells.Length + "]", null);
+					Debug.LogError("Process::SetValuesFunction Index [" + index + "] is not valid. cells.Length [" + cells.Length + "]");
 				}
 			};
 			DoProcess(worldGen, world, setValues, rnd);

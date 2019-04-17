@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 public class PathGrid
 {
 	private struct ProberCell
@@ -10,6 +12,8 @@ public class PathGrid
 	private PathFinder.Cell[] Cells;
 
 	private ProberCell[] ProberCells;
+
+	private List<int> freshlyOccupiedCells = new List<int>();
 
 	private NavType[] ValidNavTypes;
 
@@ -74,7 +78,7 @@ public class PathGrid
 	{
 		if (groupProber != null)
 		{
-			groupProber.ReleasePathGrid(this);
+			groupProber.ReleaseProber(this);
 		}
 	}
 
@@ -86,6 +90,7 @@ public class PathGrid
 	public void BeginUpdate(int root_cell, bool isContinuation)
 	{
 		isUpdating = true;
+		freshlyOccupiedCells.Clear();
 		if (!isContinuation)
 		{
 			KProfiler.AddEvent("PathGrid.BeginUpdate");
@@ -96,14 +101,26 @@ public class PathGrid
 				rootY -= heightInCells / 2;
 			}
 			serialNo++;
+			if (groupProber != null)
+			{
+				groupProber.SetValidSerialNos(this, previousSerialNo, serialNo);
+			}
 		}
 	}
 
 	public void EndUpdate(bool isComplete)
 	{
 		isUpdating = false;
+		if (groupProber != null)
+		{
+			groupProber.Occupy(this, serialNo, freshlyOccupiedCells);
+		}
 		if (isComplete)
 		{
+			if (groupProber != null)
+			{
+				groupProber.SetValidSerialNos(this, serialNo, serialNo);
+			}
 			previousSerialNo = serialNo;
 			KProfiler.AddEvent("PathGrid.EndUpdate");
 		}
@@ -148,10 +165,7 @@ public class PathGrid
 					proberCell.queryId = cell_data.queryId;
 					proberCell.cost = cell_data.cost;
 					ProberCells[num] = proberCell;
-					if (groupProber != null)
-					{
-						groupProber.SetProberCell(potential_path.cell, this);
-					}
+					freshlyOccupiedCells.Add(potential_path.cell);
 				}
 			}
 		}

@@ -159,7 +159,7 @@ public class AttackChore : Chore<AttackChore.StatesInstance>
 				}
 				else
 				{
-					Debug.Log("has no approachable", null);
+					Debug.Log("has no approachable");
 				}
 			}
 			if (multiTool != null)

@@ -268,7 +268,7 @@ public static class CodexCache
 		id = FormatLinkID(id);
 		if (entries.ContainsKey(id))
 		{
-			Debug.LogError("Tried to add " + id + " to the Codex screen multiple times", null);
+			Debug.LogError("Tried to add " + id + " to the Codex screen multiple times");
 		}
 		entries.Add(id, entry);
 		entry.id = id;
@@ -358,7 +358,7 @@ public static class CodexCache
 			CodexEntry codexEntry = YamlIO<CodexEntry>.LoadFile(text + ".yaml", widgetTagMappings);
 			if (codexEntry == null)
 			{
-				Debug.LogWarning("Missing template [" + text + ".yaml]", null);
+				Debug.LogWarning("Missing template [" + text + ".yaml]");
 			}
 			entries[templatePath] = codexEntry;
 		}
@@ -376,7 +376,7 @@ public static class CodexCache
 		}
 		catch (UnauthorizedAccessException obj)
 		{
-			Debug.LogWarning(obj, null);
+			Debug.LogWarning(obj);
 		}
 		string category = folder.ToUpper();
 		string[] array2 = array;
@@ -404,7 +404,7 @@ public static class CodexCache
 		}
 		catch (UnauthorizedAccessException obj)
 		{
-			Debug.LogWarning(obj, null);
+			Debug.LogWarning(obj);
 		}
 		string[] array2 = array;
 		foreach (string filename in array2)

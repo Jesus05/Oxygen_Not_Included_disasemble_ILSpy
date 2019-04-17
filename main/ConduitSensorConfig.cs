@@ -30,19 +30,8 @@ public abstract class ConduitSensorConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void DoPostConfigurePreview(BuildingDef def, GameObject go)
-	{
-		GeneratedBuildings.RegisterLogicPorts(go, LogicSwitchConfig.OUTPUT_PORT);
-	}
-
-	public override void DoPostConfigureUnderConstruction(GameObject go)
-	{
-		GeneratedBuildings.RegisterLogicPorts(go, LogicSwitchConfig.OUTPUT_PORT);
-	}
-
 	public override void DoPostConfigureComplete(GameObject go)
 	{
 		GeneratedBuildings.MakeBuildingAlwaysOperational(go);
-		GeneratedBuildings.RegisterLogicPorts(go, LogicSwitchConfig.OUTPUT_PORT);
 	}
 }

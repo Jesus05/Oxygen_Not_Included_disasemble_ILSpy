@@ -33,15 +33,15 @@ namespace Klei.CustomSettings
 			}
 			if (base.default_level_id == on_level.id)
 			{
-				Debug.LogWarning("Unable to find level for setting:" + base.id + "(" + level_id + ") Using default level.", null);
+				Debug.LogWarning("Unable to find level for setting:" + base.id + "(" + level_id + ") Using default level.");
 				return on_level;
 			}
 			if (base.default_level_id == off_level.id)
 			{
-				Debug.LogWarning("Unable to find level for setting:" + base.id + "(" + level_id + ") Using default level.", null);
+				Debug.LogWarning("Unable to find level for setting:" + base.id + "(" + level_id + ") Using default level.");
 				return off_level;
 			}
-			Debug.LogError("Unable to find setting level for setting:" + base.id + " level: " + level_id, null);
+			Debug.LogError("Unable to find setting level for setting:" + base.id + " level: " + level_id);
 			return null;
 		}
 

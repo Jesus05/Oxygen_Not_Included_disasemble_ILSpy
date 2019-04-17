@@ -172,7 +172,7 @@ namespace Klei
 			}
 			catch (Exception ex)
 			{
-				Debug.LogWarning("Failed to save settings.yml: " + ex.ToString(), null);
+				Debug.LogWarning("Failed to save settings.yml: " + ex.ToString());
 			}
 		}
 	}

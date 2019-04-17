@@ -18,7 +18,7 @@ public class SculptingSoundEvent : SoundEvent
 			string[] array = sound_name.Split(':');
 			if (array.Length != 2)
 			{
-				Output.LogError("Invalid CountedSoundEvent parameter for", file_name + "." + sound_name + "." + frame.ToString() + ":", "'" + sound_name + "'");
+				DebugUtil.LogErrorArgs("Invalid CountedSoundEvent parameter for", file_name + "." + sound_name + "." + frame.ToString() + ":", "'" + sound_name + "'");
 			}
 			for (int i = 1; i < array.Length; i++)
 			{
@@ -27,7 +27,7 @@ public class SculptingSoundEvent : SoundEvent
 		}
 		else
 		{
-			Output.LogError("CountedSoundEvent for", file_name + "." + sound_name + "." + frame.ToString(), " - Must specify max number of steps on event: '" + sound_name + "'");
+			DebugUtil.LogErrorArgs("CountedSoundEvent for", file_name + "." + sound_name + "." + frame.ToString(), " - Must specify max number of steps on event: '" + sound_name + "'");
 		}
 	}
 

@@ -1,3 +1,4 @@
+using Database;
 using STRINGS;
 using System;
 using System.Collections.Generic;
@@ -18,6 +19,10 @@ public class Building : KMonoBehaviour, IEffectDescriptor, IUniformGridObject, I
 	private int[] placementCells;
 
 	private Extents extents;
+
+	private static StatusItem deprecatedBuildingStatusItem;
+
+	private Guid deprecatedBuildingHandle = Guid.Empty;
 
 	private HandleVector<int>.Handle scenePartitionerEntry;
 
@@ -110,7 +115,7 @@ public class Building : KMonoBehaviour, IEffectDescriptor, IUniformGridObject, I
 	{
 		if ((UnityEngine.Object)Def == (UnityEngine.Object)null)
 		{
-			Debug.LogError("Missing building definition on object " + base.name, null);
+			Debug.LogError("Missing building definition on object " + base.name);
 		}
 		KSelectable component = GetComponent<KSelectable>();
 		if ((UnityEngine.Object)component != (UnityEngine.Object)null)
@@ -127,6 +132,12 @@ public class Building : KMonoBehaviour, IEffectDescriptor, IUniformGridObject, I
 		if (component3.HasTag(RoomConstraints.ConstraintTags.IndustrialMachinery))
 		{
 			scenePartitionerEntry = GameScenePartitioner.Instance.Add(base.name, base.gameObject, GetExtents(), GameScenePartitioner.Instance.industrialBuildings, null);
+		}
+		if (Def.Deprecated && (UnityEngine.Object)GetComponent<KSelectable>() != (UnityEngine.Object)null)
+		{
+			KSelectable component4 = GetComponent<KSelectable>();
+			deprecatedBuildingStatusItem = new StatusItem("BUILDING_DEPRECATED", "BUILDING", string.Empty, StatusItem.IconType.Info, NotificationType.BadMinor, false, OverlayModes.None.ID, true, 63486);
+			component4.AddStatusItem(deprecatedBuildingStatusItem, null);
 		}
 	}
 
@@ -270,21 +281,21 @@ public class Building : KMonoBehaviour, IEffectDescriptor, IUniformGridObject, I
 		if ((UnityEngine.Object)def.BuildingUnderConstruction != (UnityEngine.Object)null)
 		{
 			Constructable component2 = def.BuildingUnderConstruction.GetComponent<Constructable>();
-			if ((UnityEngine.Object)component2 != (UnityEngine.Object)null && component2.requiredRolePerk != HashedString.Invalid)
+			if ((UnityEngine.Object)component2 != (UnityEngine.Object)null && (HashedString)component2.requiredSkillPerk != HashedString.Invalid)
 			{
 				StringBuilder stringBuilder = new StringBuilder();
-				List<RoleConfig> rolesWithPerk = Game.Instance.roleManager.GetRolesWithPerk(component2.requiredRolePerk);
-				for (int i = 0; i < rolesWithPerk.Count; i++)
+				List<Skill> skillsWithPerk = Db.Get().Skills.GetSkillsWithPerk(component2.requiredSkillPerk);
+				for (int i = 0; i < skillsWithPerk.Count; i++)
 				{
-					RoleConfig roleConfig = rolesWithPerk[i];
-					stringBuilder.Append(roleConfig.GetProperName());
-					if (i != rolesWithPerk.Count - 1)
+					Skill skill = skillsWithPerk[i];
+					stringBuilder.Append(skill.Name);
+					if (i != skillsWithPerk.Count - 1)
 					{
 						stringBuilder.Append(", ");
 					}
 				}
 				string replacement = stringBuilder.ToString();
-				list.Add(new Descriptor(UI.BUILD_REQUIRES_ROLE.Replace("{ROLE}", replacement), UI.BUILD_REQUIRES_ROLE_TOOLTIP.Replace("{ROLE}", replacement), Descriptor.DescriptorType.Requirement, false));
+				list.Add(new Descriptor(UI.BUILD_REQUIRES_SKILL.Replace("{Skill}", replacement), UI.BUILD_REQUIRES_SKILL_TOOLTIP.Replace("{Skill}", replacement), Descriptor.DescriptorType.Requirement, false));
 			}
 		}
 		return list;

@@ -377,7 +377,9 @@ public class ConduitFlow : IConduitFlow
 		public float GetConduitTemperature(int idx)
 		{
 			HandleVector<int>.Handle handle = temperatureHandles[idx];
-			return Game.Instance.conduitTemperatureManager.GetTemperature(handle);
+			float temperature = Game.Instance.conduitTemperatureManager.GetTemperature(handle);
+			Debug.Assert(!float.IsNaN(temperature));
+			return temperature;
 		}
 
 		public void SetConduitTemperatureData(int idx, ref ConduitContents contents)
@@ -838,6 +840,7 @@ public class ConduitFlow : IConduitFlow
 
 		public ConduitContents(SimHashes element, float mass, float temperature, byte disease_idx, int disease_count)
 		{
+			Debug.Assert(!float.IsNaN(temperature));
 			this.element = element;
 			this.mass = mass;
 			this.temperature = temperature;
@@ -1311,7 +1314,7 @@ public class ConduitFlow : IConduitFlow
 		}
 		if (contents.mass > 0f && contents.temperature <= 0f)
 		{
-			Output.LogError("unexpected temperature");
+			Debug.LogError("unexpected temperature");
 		}
 		return contents;
 	}
@@ -1462,6 +1465,7 @@ public class ConduitFlow : IConduitFlow
 									float num = Mathf.Min(contents.mass, b);
 									if (num > 0f)
 									{
+										Debug.Assert(contents.temperature > 0f);
 										int disease_count = (int)(num / contents.mass * (float)contents.diseaseCount);
 										num = AddElementToGrid(cell2, contents.element, num, contents.temperature, contents.diseaseIdx, disease_count);
 										ConduitContents contents4 = RemoveElementFromGrid(conduit, num);
@@ -1666,7 +1670,7 @@ public class ConduitFlow : IConduitFlow
 	{
 		if (contents.mass > 0f && contents.temperature <= 0f)
 		{
-			Output.LogError("zero degree pipe contents");
+			Debug.LogError("zero degree pipe contents");
 		}
 	}
 

@@ -12,6 +12,8 @@ public class JetSuitConfig : IEquipmentConfig
 
 	private const PathFinder.PotentialPath.Flags suit_flags = PathFinder.PotentialPath.Flags.HasJetPack;
 
+	private AttributeModifier expertAthleticsModifier;
+
 	public EquipmentDef CreateEquipmentDef()
 	{
 		Dictionary<string, float> dictionary = new Dictionary<string, float>();
@@ -24,6 +26,7 @@ public class JetSuitConfig : IEquipmentConfig
 		list.Add(new AttributeModifier(Db.Get().Attributes.Digging.Id, (float)TUNING.EQUIPMENT.SUITS.ATMOSUIT_DIGGING, STRINGS.EQUIPMENT.PREFABS.ATMO_SUIT.NAME, false, false, true));
 		list.Add(new AttributeModifier(Db.Get().Amounts.Bladder.deltaAttribute.Id, TUNING.EQUIPMENT.SUITS.ATMOSUIT_BLADDER, STRINGS.EQUIPMENT.PREFABS.ATMO_SUIT.NAME, false, false, true));
 		list.Add(new AttributeModifier(Db.Get().Attributes.ScaldingThreshold.Id, (float)TUNING.EQUIPMENT.SUITS.ATMOSUIT_SCALDING, STRINGS.EQUIPMENT.PREFABS.ATMO_SUIT.NAME, false, false, true));
+		expertAthleticsModifier = new AttributeModifier(TUNING.EQUIPMENT.ATTRIBUTE_MOD_IDS.ATHLETICS, (float)(-TUNING.EQUIPMENT.SUITS.ATMOSUIT_ATHLETICS), Db.Get().Skills.Suits1.Name, false, false, true);
 		string id = "Jet_Suit";
 		string sLOT = TUNING.EQUIPMENT.SUITS.SLOT;
 		SimHashes outputElement = SimHashes.Steel;
@@ -51,9 +54,9 @@ public class JetSuitConfig : IEquipmentConfig
 					component3.SetFlags(PathFinder.PotentialPath.Flags.HasJetPack);
 				}
 				MinionResume component4 = targetGameObject2.GetComponent<MinionResume>();
-				if ((Object)component4 != (Object)null && component4.HasPerk(RoleManager.rolePerks.ExosuitExpertise.id))
+				if ((Object)component4 != (Object)null && component4.HasPerk(Db.Get().SkillPerks.ExosuitExpertise.Id))
 				{
-					targetGameObject2.GetAttributes().Get(Db.Get().Attributes.Athletics).Add(SuitExpert.AthleticsModifier);
+					targetGameObject2.GetAttributes().Get(Db.Get().Attributes.Athletics).Add(expertAthleticsModifier);
 				}
 				KAnimControllerBase component5 = targetGameObject2.GetComponent<KAnimControllerBase>();
 				if ((bool)component5)
@@ -72,7 +75,7 @@ public class JetSuitConfig : IEquipmentConfig
 					GameObject targetGameObject = soleOwner.GetComponent<MinionAssignablesProxy>().GetTargetGameObject();
 					if ((bool)targetGameObject)
 					{
-						targetGameObject.GetAttributes()?.Get(Db.Get().Attributes.Athletics).Remove(SuitExpert.AthleticsModifier);
+						targetGameObject.GetAttributes()?.Get(Db.Get().Attributes.Athletics).Remove(expertAthleticsModifier);
 						Navigator component = targetGameObject.GetComponent<Navigator>();
 						if ((Object)component != (Object)null)
 						{

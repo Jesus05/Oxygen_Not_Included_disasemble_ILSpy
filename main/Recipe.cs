@@ -105,6 +105,7 @@ public class Recipe : IHasSortOrder
 
 	public Recipe(string prefabId, float outputUnits = 1f, SimHashes elementOverride = (SimHashes)0, string nameOverride = null, string recipeDescription = null, int sortOrder = 0)
 	{
+		Debug.Assert(prefabId != null);
 		Result = TagManager.Create(prefabId);
 		ResultElementOverride = elementOverride;
 		this.nameOverride = nameOverride;

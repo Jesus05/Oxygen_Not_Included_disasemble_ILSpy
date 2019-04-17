@@ -55,6 +55,8 @@ namespace Database
 
 		public ChoreType TakeMedicine;
 
+		public ChoreType GetDoctored;
+
 		public ChoreType RestDueToDisease;
 
 		public ChoreType SleepDueToDisease;
@@ -147,6 +149,8 @@ namespace Database
 
 		public ChoreType LiquidCooledFan;
 
+		public ChoreType IceCooledFan;
+
 		public ChoreType CompostWorkable;
 
 		public ChoreType Fabricate;
@@ -201,13 +205,15 @@ namespace Database
 
 		public ChoreType TravelTubeEntrance;
 
-		public ChoreType SwitchRole;
+		public ChoreType LearnSkill;
 
 		public ChoreType SwitchHat;
 
 		public ChoreType EggSing;
 
 		public ChoreType Astronaut;
+
+		public ChoreType TopPriority;
 
 		private int nextImplicitPriority = 10000;
 
@@ -256,7 +262,7 @@ namespace Database
 			}, DUPLICANTS.CHORES.STRESSACTINGOUT.NAME, DUPLICANTS.CHORES.STRESSACTINGOUT.STATUS, DUPLICANTS.CHORES.STRESSACTINGOUT.TOOLTIP, false, -1, null);
 			Vomit = Add("Vomit", new string[0], "EmoteHighPriority", new string[0], DUPLICANTS.CHORES.VOMIT.NAME, DUPLICANTS.CHORES.VOMIT.STATUS, DUPLICANTS.CHORES.VOMIT.TOOLTIP, false, -1, null);
 			Cough = Add("Cough", new string[0], "EmoteHighPriority", new string[0], DUPLICANTS.CHORES.COUGH.NAME, DUPLICANTS.CHORES.COUGH.STATUS, DUPLICANTS.CHORES.COUGH.TOOLTIP, false, -1, null);
-			SwitchHat = Add("SwitchHat", new string[0], string.Empty, new string[0], DUPLICANTS.CHORES.SWITCHROLE.NAME, DUPLICANTS.CHORES.SWITCHROLE.STATUS, DUPLICANTS.CHORES.SWITCHROLE.TOOLTIP, false, -1, null);
+			SwitchHat = Add("SwitchHat", new string[0], string.Empty, new string[0], DUPLICANTS.CHORES.LEARNSKILL.NAME, DUPLICANTS.CHORES.LEARNSKILL.STATUS, DUPLICANTS.CHORES.LEARNSKILL.TOOLTIP, false, -1, null);
 			StressIdle = Add("StressIdle", new string[0], string.Empty, new string[0], DUPLICANTS.CHORES.STRESSIDLE.NAME, DUPLICANTS.CHORES.STRESSIDLE.STATUS, DUPLICANTS.CHORES.STRESSIDLE.TOOLTIP, false, -1, null);
 			RescueIncapacitated = Add("RescueIncapacitated", new string[0], string.Empty, new string[0], DUPLICANTS.CHORES.RESCUEINCAPACITATED.NAME, DUPLICANTS.CHORES.RESCUEINCAPACITATED.STATUS, DUPLICANTS.CHORES.RESCUEINCAPACITATED.TOOLTIP, false, -1, null);
 			BreakPee = Add("BreakPee", new string[0], "Pee", new string[0], DUPLICANTS.CHORES.BREAK_PEE.NAME, DUPLICANTS.CHORES.BREAK_PEE.STATUS, DUPLICANTS.CHORES.BREAK_PEE.TOOLTIP, false, -1, null);
@@ -271,6 +277,7 @@ namespace Database
 			}, DUPLICANTS.CHORES.RESTDUETODISEASE.NAME, DUPLICANTS.CHORES.RESTDUETODISEASE.STATUS, DUPLICANTS.CHORES.RESTDUETODISEASE.TOOLTIP, false, -1, null);
 			Sleep = Add("Sleep", new string[0], "Sleep", new string[0], DUPLICANTS.CHORES.SLEEP.NAME, DUPLICANTS.CHORES.SLEEP.STATUS, DUPLICANTS.CHORES.SLEEP.TOOLTIP, false, -1, null);
 			TakeMedicine = Add("TakeMedicine", new string[0], string.Empty, new string[0], DUPLICANTS.CHORES.TAKEMEDICINE.NAME, DUPLICANTS.CHORES.TAKEMEDICINE.STATUS, DUPLICANTS.CHORES.TAKEMEDICINE.TOOLTIP, false, -1, null);
+			GetDoctored = Add("GetDoctored", new string[0], string.Empty, new string[0], DUPLICANTS.CHORES.GETDOCTORED.NAME, DUPLICANTS.CHORES.GETDOCTORED.STATUS, DUPLICANTS.CHORES.GETDOCTORED.TOOLTIP, false, -1, null);
 			RestDueToDisease = Add("RestDueToDisease", new string[0], "RestDueToDisease", new string[3]
 			{
 				"Vomit",
@@ -287,7 +294,7 @@ namespace Database
 				"EmoteHighPriority"
 			}, DUPLICANTS.CHORES.HEAL.NAME, DUPLICANTS.CHORES.HEAL.STATUS, DUPLICANTS.CHORES.HEAL.TOOLTIP, false, -1, null);
 			Shower = Add("Shower", new string[0], "Shower", new string[0], DUPLICANTS.CHORES.SHOWER.NAME, DUPLICANTS.CHORES.SHOWER.STATUS, DUPLICANTS.CHORES.SHOWER.TOOLTIP, false, -1, null);
-			SwitchRole = Add("SwitchRole", new string[0], "SwitchRole", new string[0], DUPLICANTS.CHORES.SWITCHROLE.NAME, DUPLICANTS.CHORES.SWITCHROLE.STATUS, DUPLICANTS.CHORES.SWITCHROLE.TOOLTIP, false, -1, null);
+			LearnSkill = Add("LearnSkill", new string[0], "LearnSkill", new string[0], DUPLICANTS.CHORES.LEARNSKILL.NAME, DUPLICANTS.CHORES.LEARNSKILL.STATUS, DUPLICANTS.CHORES.LEARNSKILL.TOOLTIP, false, -1, null);
 			Equip = Add("Equip", new string[0], string.Empty, new string[0], DUPLICANTS.CHORES.EQUIP.NAME, DUPLICANTS.CHORES.EQUIP.STATUS, DUPLICANTS.CHORES.EQUIP.TOOLTIP, false, -1, null);
 			StressHeal = Add("StressHeal", new string[0], string.Empty, new string[1]
 			{
@@ -300,6 +307,7 @@ namespace Database
 			Recharge = Add("Recharge", new string[0], string.Empty, new string[0], DUPLICANTS.CHORES.RECHARGE.NAME, DUPLICANTS.CHORES.RECHARGE.STATUS, DUPLICANTS.CHORES.RECHARGE.TOOLTIP, false, -1, null);
 			Unequip = Add("Unequip", new string[0], string.Empty, new string[0], DUPLICANTS.CHORES.UNEQUIP.NAME, DUPLICANTS.CHORES.UNEQUIP.STATUS, DUPLICANTS.CHORES.UNEQUIP.TOOLTIP, false, -1, null);
 			Mourn = Add("Mourn", new string[0], string.Empty, new string[0], DUPLICANTS.CHORES.MOURN.NAME, DUPLICANTS.CHORES.MOURN.STATUS, DUPLICANTS.CHORES.MOURN.TOOLTIP, false, -1, null);
+			TopPriority = Add("TopPriority", new string[0], string.Empty, new string[0], string.Empty, string.Empty, string.Empty, false, -1, null);
 			Attack = Add("Attack", new string[1]
 			{
 				"Combat"
@@ -418,6 +426,10 @@ namespace Database
 			{
 				"MachineOperating"
 			}, string.Empty, new string[0], DUPLICANTS.CHORES.LIQUIDCOOLEDFAN.NAME, DUPLICANTS.CHORES.LIQUIDCOOLEDFAN.STATUS, DUPLICANTS.CHORES.LIQUIDCOOLEDFAN.TOOLTIP, false, 5000, null);
+			IceCooledFan = Add("IceCooledFan", new string[1]
+			{
+				"MachineOperating"
+			}, string.Empty, new string[0], DUPLICANTS.CHORES.ICECOOLEDFAN.NAME, DUPLICANTS.CHORES.ICECOOLEDFAN.STATUS, DUPLICANTS.CHORES.ICECOOLEDFAN.TOOLTIP, false, 5000, null);
 			Train = Add("Train", new string[1]
 			{
 				"MachineOperating"
@@ -503,7 +515,7 @@ namespace Database
 			MoveToSafety = Add("MoveToSafety", new string[0], "MoveToSafety", new string[0], DUPLICANTS.CHORES.MOVETOSAFETY.NAME, DUPLICANTS.CHORES.MOVETOSAFETY.STATUS, DUPLICANTS.CHORES.MOVETOSAFETY.TOOLTIP, false, -1, null);
 			ReturnSuitIdle = Add("ReturnSuitIdle", new string[0], string.Empty, new string[0], DUPLICANTS.CHORES.RETURNSUIT.NAME, DUPLICANTS.CHORES.RETURNSUIT.STATUS, DUPLICANTS.CHORES.RETURNSUIT.TOOLTIP, false, -1, null);
 			Idle = Add("IdleChore", new string[0], string.Empty, new string[0], DUPLICANTS.CHORES.IDLE.NAME, DUPLICANTS.CHORES.IDLE.STATUS, DUPLICANTS.CHORES.IDLE.TOOLTIP, false, -1, null);
-			ChoreType[][] array = new ChoreType[27][]
+			ChoreType[][] array = new ChoreType[29][]
 			{
 				new ChoreType[1]
 				{
@@ -567,6 +579,10 @@ namespace Database
 				},
 				new ChoreType[1]
 				{
+					TopPriority
+				},
+				new ChoreType[1]
+				{
 					Attack
 				},
 				new ChoreType[1]
@@ -575,7 +591,7 @@ namespace Database
 				},
 				new ChoreType[3]
 				{
-					SwitchRole,
+					LearnSkill,
 					Eat,
 					BreakPee
 				},
@@ -593,6 +609,10 @@ namespace Database
 				{
 					Sleep,
 					Narcolepsy
+				},
+				new ChoreType[1]
+				{
+					GetDoctored
 				},
 				new ChoreType[1]
 				{
@@ -615,7 +635,7 @@ namespace Database
 					Equip,
 					Unequip
 				},
-				new ChoreType[58]
+				new ChoreType[59]
 				{
 					DeliverFood,
 					Sigh,
@@ -625,6 +645,7 @@ namespace Database
 					Shower,
 					CleanToilet,
 					LiquidCooledFan,
+					IceCooledFan,
 					SuitMarker,
 					Checkpoint,
 					TravelTubeEntrance,
@@ -704,7 +725,7 @@ namespace Database
 			}
 			if (!string.IsNullOrEmpty(text))
 			{
-				Debug.LogError(text, null);
+				Debug.LogError(text);
 			}
 			string text2 = string.Empty;
 			foreach (ChoreType resource in resources)
@@ -716,7 +737,7 @@ namespace Database
 			}
 			if (!string.IsNullOrEmpty(text2))
 			{
-				Debug.LogError(text2, null);
+				Debug.LogError(text2);
 			}
 		}
 

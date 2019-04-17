@@ -248,7 +248,7 @@ public class IncubationMonitor : GameStateMachine<IncubationMonitor, IncubationM
 			Storage storage = smi.GetStorage();
 			if ((bool)storage)
 			{
-				storage.Drop(smi.gameObject);
+				storage.Drop(smi.gameObject, true);
 			}
 			smi.gameObject.AddTag(GameTags.StoredPrivate);
 		}

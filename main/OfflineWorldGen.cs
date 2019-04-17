@@ -135,7 +135,7 @@ public class OfflineWorldGen : KMonoBehaviour
 	{
 		if (trackProgress)
 		{
-			Debug.Log(text, null);
+			Debug.Log(text);
 		}
 	}
 
@@ -496,7 +496,7 @@ public class OfflineWorldGen : KMonoBehaviour
 		GridSettings.Reset(worldsize.x, worldsize.y);
 		if (KPlayerPrefs.GetInt(USE_WORLD_SEED_KEY, 0) != 0)
 		{
-			Debug.Log("Using player defined seed", null);
+			Debug.Log("Using player defined seed");
 			InitSeeds();
 		}
 		worldGen.Initialise(UpdateProgress, OnError, worldSeed, layoutSeed, terrainSeed, noiseSeed);

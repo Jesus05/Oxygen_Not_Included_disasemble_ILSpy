@@ -8,27 +8,14 @@ public static class DebugUtil
 
 	private static StringBuilder fullNameBuilder = new StringBuilder();
 
-	private static void Break(string message)
-	{
-		Debug.LogError(message, null);
-		Debug.Break();
-		Debugger.Break();
-	}
-
 	public static void Assert(bool test)
 	{
-		if (!test)
-		{
-			Break("Failed assertion");
-		}
+		Debug.Assert(test);
 	}
 
 	public static void Assert(bool test, string message)
 	{
-		if (!test)
-		{
-			Break(message);
-		}
+		Debug.Assert(test, message);
 	}
 
 	public static void Assert(bool test, string message0, string message1)
@@ -36,7 +23,7 @@ public static class DebugUtil
 		if (!test)
 		{
 			errorMessageBuilder.Length = 0;
-			Break(errorMessageBuilder.Append(message0).Append(" ").Append(message1)
+			Debug.Assert(test, errorMessageBuilder.Append(message0).Append(" ").Append(message1)
 				.ToString());
 		}
 	}
@@ -46,77 +33,108 @@ public static class DebugUtil
 		if (!test)
 		{
 			errorMessageBuilder.Length = 0;
-			Break(errorMessageBuilder.Append(message0).Append(" ").Append(message1)
+			Debug.Assert(test, errorMessageBuilder.Append(message0).Append(" ").Append(message1)
 				.Append(" ")
 				.Append(message2)
 				.ToString());
 		}
 	}
 
-	public static void Assert(bool test, params object[] objs)
+	public static string BuildString(object[] objs)
+	{
+		string text = string.Empty;
+		if (objs.Length > 0)
+		{
+			text = ((objs[0] == null) ? "null" : objs[0].ToString());
+			for (int i = 1; i < objs.Length; i++)
+			{
+				object obj = objs[i];
+				text = text + " " + ((obj == null) ? "null" : obj.ToString());
+			}
+		}
+		return text;
+	}
+
+	public static void DevAssert(bool test, string msg)
 	{
 		if (!test)
 		{
-			Debug.LogError(Output.BuildString(objs), null);
-			Debug.Break();
-			Debugger.Break();
+			Debug.LogWarning(msg);
 		}
 	}
 
-	public static void DevAssert(bool test, params object[] objs)
+	public static void DevAssertArgs(bool test, params object[] objs)
 	{
 		if (!test)
 		{
-			if (Application.isEditor)
-			{
-				Debug.LogError(Output.BuildString(objs), null);
-				Debug.Break();
-				Debugger.Break();
-			}
-			else
-			{
-				Debug.LogWarning(Output.BuildString(objs), null);
-			}
+			Debug.LogWarning(BuildString(objs));
 		}
 	}
 
-	public static void DevAssertWithStack(bool test, params object[] objs)
+	public static void DevAssertArgsWithStack(bool test, params object[] objs)
 	{
 		if (!test)
 		{
-			if (Application.isEditor)
-			{
-				Debug.LogError(Output.BuildString(objs), null);
-				Debug.Break();
-				Debugger.Break();
-			}
-			else
-			{
-				StackTrace arg = new StackTrace(1, true);
-				string obj = $"{Output.BuildString(objs)}\n{arg}";
-				Debug.LogWarning(obj, null);
-			}
+			StackTrace arg = new StackTrace(1, true);
+			string obj = $"{BuildString(objs)}\n{arg}";
+			Debug.LogWarning(obj);
 		}
 	}
 
-	public static void DevLogErrorWithObj(GameObject gameObject, string msg)
+	public static void DevLogError(Object context, string msg)
 	{
-		if (Debug.isDebugBuild)
-		{
-			Output.LogErrorWithObj(gameObject, msg);
-		}
-		else
-		{
-			Output.LogWarningWithObj(gameObject, msg);
-		}
+		Debug.LogWarningFormat(context, msg);
 	}
 
-	public static void SoftAssert(bool test, params object[] objs)
+	public static void DevLogError(string msg)
 	{
-		if (!test)
-		{
-			Debug.LogWarning(Output.BuildString(objs), null);
-		}
+		Debug.LogWarningFormat(msg);
+	}
+
+	public static void DevLogErrorFormat(Object context, string format, params object[] args)
+	{
+		Debug.LogWarningFormat(context, format, args);
+	}
+
+	public static void DevLogErrorFormat(string format, params object[] args)
+	{
+		Debug.LogWarningFormat(format, args);
+	}
+
+	public static void LogArgs(params object[] objs)
+	{
+		string obj = BuildString(objs);
+		Debug.Log(obj);
+	}
+
+	public static void LogArgs(Object context, params object[] objs)
+	{
+		string obj = BuildString(objs);
+		Debug.Log(obj, context);
+	}
+
+	public static void LogWarningArgs(params object[] objs)
+	{
+		string obj = BuildString(objs);
+		Debug.LogWarning(obj);
+	}
+
+	public static void LogWarningArgs(Object context, params object[] objs)
+	{
+		string obj = BuildString(objs);
+		Debug.LogWarning(obj, context);
+	}
+
+	public static void LogErrorArgs(params object[] objs)
+	{
+		string obj = BuildString(objs);
+		Debug.LogError(obj);
+	}
+
+	public static void LogErrorArgs(Object context, params object[] objs)
+	{
+		string obj = BuildString(objs);
+		Debug.LogError(obj, context);
 	}
 
 	private static void RecursiveBuildFullName(GameObject obj)
@@ -148,6 +166,7 @@ public static class DebugUtil
 			.ToString();
 	}
 
+	[Conditional("UNITY_EDITOR")]
 	public static void LogIfSelected(GameObject obj, params object[] objs)
 	{
 	}

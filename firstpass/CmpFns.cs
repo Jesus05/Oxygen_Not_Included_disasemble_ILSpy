@@ -46,10 +46,10 @@ public class CmpFns
 		}
 		catch (Exception obj)
 		{
-			Debug.LogError(obj, null);
+			Debug.LogError(obj);
 			foreach (Type obj2 in type_array)
 			{
-				Debug.Log(obj2, null);
+				Debug.Log(obj2);
 			}
 		}
 		return (Func<KMonoBehaviour, Component>)Delegate.CreateDelegate(typeof(Func<KMonoBehaviour, Component>), method2);

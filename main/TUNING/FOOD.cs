@@ -19,10 +19,7 @@ namespace TUNING
 		{
 			public static readonly EdiblesManager.FoodInfo FIELDRATION = new EdiblesManager.FoodInfo("FieldRation", 800000f, -1, 255.15f, 277.15f, 9600f, false);
 
-			public static readonly EdiblesManager.FoodInfo MUSHBAR = new EdiblesManager.FoodInfo("MushBar", 800000f, -1, 255.15f, 277.15f, 2400f, true).AddEffects(new List<string>
-			{
-				"Diarrhea"
-			});
+			public static readonly EdiblesManager.FoodInfo MUSHBAR = new EdiblesManager.FoodInfo("MushBar", 800000f, -1, 255.15f, 277.15f, 2400f, true);
 
 			public static readonly EdiblesManager.FoodInfo BASICPLANTFOOD = new EdiblesManager.FoodInfo("BasicPlantFood", 600000f, -1, 255.15f, 277.15f, 2400f, true);
 
@@ -104,6 +101,8 @@ namespace TUNING
 		public const float DEFAULT_SPICE_MASS = 1f;
 
 		public const float ROT_TO_ELEMENT_TIME = 600f;
+
+		public const int MUSH_BAR_SPAWN_GERMS = 1000;
 
 		public static List<EdiblesManager.FoodInfo> FOOD_TYPES_LIST = new List<EdiblesManager.FoodInfo>();
 

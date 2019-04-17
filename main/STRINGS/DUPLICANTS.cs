@@ -121,13 +121,6 @@ namespace STRINGS
 				public static LocString TOOLTIP = "Combatants become incapacitated at zero health";
 			}
 
-			public class IMMUNELEVEL
-			{
-				public static LocString NAME = "Immune System";
-
-				public static LocString TOOLTIP = "Duplicants contract diseases when immune system reaches zero";
-			}
-
 			public class SKIN_THICKNESS
 			{
 				public static LocString NAME = "Skin Thickness";
@@ -534,6 +527,15 @@ namespace STRINGS
 				public static LocString TOOLTIP = "This Duplicant is taking a dose of medicine to keep disease at bay";
 			}
 
+			public class GETDOCTORED
+			{
+				public static LocString NAME = "Visit Doctor";
+
+				public static LocString STATUS = "Visiting Doctor";
+
+				public static LocString TOOLTIP = "This Duplicant is visiting a doctor to receive treatment";
+			}
+
 			public class DOCTOR
 			{
 				public static LocString NAME = "Treat Patient";
@@ -624,13 +626,13 @@ namespace STRINGS
 				public static LocString TOOLTIP = "This Duplicant is putting on a piece of equipment";
 			}
 
-			public class SWITCHROLE
+			public class LEARNSKILL
 			{
-				public static LocString NAME = "Start Job";
+				public static LocString NAME = "Learn Skill";
 
-				public static LocString STATUS = "Starting job assignment";
+				public static LocString STATUS = "Learning a skill";
 
-				public static LocString TOOLTIP = "This Duplicant is preparing for their new job assignment";
+				public static LocString TOOLTIP = "This Duplicant is learning a new skill";
 			}
 
 			public class RECHARGE
@@ -805,6 +807,15 @@ namespace STRINGS
 			}
 
 			public class LIQUIDCOOLEDFAN
+			{
+				public static LocString NAME = "Use Fan";
+
+				public static LocString STATUS = "Going to use fan";
+
+				public static LocString TOOLTIP = "This Duplicant is attempting to cool down the area";
+			}
+
+			public class ICECOOLEDFAN
 			{
 				public static LocString NAME = "Use Fan";
 
@@ -1045,11 +1056,11 @@ namespace STRINGS
 
 			public class MOVETOSAFETY
 			{
-				public static LocString NAME = "Find Somewhere Safer";
+				public static LocString NAME = "Find Safe Area";
 
-				public static LocString STATUS = "Finding Somewhere Safer";
+				public static LocString STATUS = "Finding safer area";
 
-				public static LocString TOOLTIP = "This Duplicant is idle and looking for somewhere safer to hang out";
+				public static LocString TOOLTIP = "This Duplicant is idle and looking for somewhere safe and comfy to chill";
 			}
 
 			public class POWER_TINKER
@@ -1112,11 +1123,7 @@ namespace STRINGS
 
 				public static LocString IS_PREFERRED_ASSIGNABLE_OR_URGENT_BLADDER = "Not preferred assignment";
 
-				public static LocString HAS_ROLE_PERK = "Requires job perk";
-
-				public static LocString IS_ROLE = "Incorrect job assignment";
-
-				public static LocString HAS_NOT_MASTERED = "Fully mastered";
+				public static LocString HAS_SKILL_PERK = "Requires skill mastery";
 
 				public static LocString IS_MORE_SATISFYING = "Low priority";
 
@@ -1188,7 +1195,11 @@ namespace STRINGS
 
 				public static LocString IS_CONSUMPTION_PERMITTED = "Disallowed by consumable permissions";
 
-				public static LocString CAN_CURE = "No applicable diseases";
+				public static LocString CAN_CURE = "No applicable illness";
+
+				public static LocString TREATMENT_AVAILABLE = "No treatable illness";
+
+				public static LocString DOCTOR_AVAILABLE = "No doctors available\n(Duplicants cannot treat themselves)";
 
 				public static LocString IS_OKAY_TIME_TO_SLEEP = "No current need";
 
@@ -1871,11 +1882,11 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Feeling ill";
 
-				public static LocString TOOLTIP = "This Duplicant has contracted a " + UI.FormatAsLink("Disease", "DISEASE") + " and requires time on a " + UI.FormatAsLink("Med-Bed", "MEDICALCOT");
+				public static LocString TOOLTIP = "This Duplicant has contracted a " + UI.FormatAsLink("Disease", "DISEASE") + " and must take recovery time at a " + UI.FormatAsLink("Sick Bay", "DOCTORSTATION");
 
 				public static LocString NOTIFICATION_NAME = "Illness";
 
-				public static LocString NOTIFICATION_TOOLTIP = "These Duplicants have contracted a " + UI.FormatAsLink("Disease", "DISEASE") + " and require time on a " + UI.FormatAsLink("Med-Bed", "MEDICALCOT") + ":";
+				public static LocString NOTIFICATION_TOOLTIP = "These Duplicants have contracted a " + UI.FormatAsLink("Disease", "DISEASE") + " and require recovery time at a " + UI.FormatAsLink("Sick Bay", "DOCTORSTATION") + ":";
 			}
 
 			public class BODYREGULATINGHEATING
@@ -2350,6 +2361,13 @@ namespace STRINGS
 
 				public static LocString TOOLTIP = "This Duplicant is making functional improvements to a building";
 			}
+
+			public class EXPOSEDTOGERMS
+			{
+				public static LocString NAME = "Exposed to {Sickness} Germs";
+
+				public static LocString TOOLTIP = "This Duplicant has been exposed to a concentration of {Sickness} Germs and is at risk of waking up sick on their next shift.";
+			}
 		}
 
 		public class DISEASES
@@ -2525,9 +2543,35 @@ namespace STRINGS
 			{
 				public static LocString NAME = UI.FormatAsLink("Food Poisoning", "FOODPOISONING");
 
-				public static LocString DESCRIPTION = "This Duplicant's last meal wasn't exactly sanitary";
-
 				public static LocString LEGEND_HOVERTEXT = "Food Poisoning Germs Present\n";
+			}
+
+			public class SLIMELUNG
+			{
+				public static LocString NAME = UI.FormatAsLink("Slimelung", "SLIMELUNG");
+
+				public static LocString LEGEND_HOVERTEXT = "Slimelung Germs Present\n";
+			}
+
+			public class POLLENGERMS
+			{
+				public static LocString NAME = UI.FormatAsLink("Floral Scents", "POLLENGERMS");
+
+				public static LocString LEGEND_HOVERTEXT = "Floral Scents Present\n";
+			}
+
+			public class ZOMBIESPORES
+			{
+				public static LocString NAME = UI.FormatAsLink("Zombie Spores", "ZOMBIESPORES");
+
+				public static LocString LEGEND_HOVERTEXT = "Zombie Spores Present\n";
+			}
+
+			public class FOODSICKNESS
+			{
+				public static LocString NAME = UI.FormatAsLink("Food Poisoning", "FOODSICKNESS");
+
+				public static LocString DESCRIPTION = "This Duplicant's last meal wasn't exactly sanitary";
 
 				public static LocString VOMIT_SYMPTOM = "Vomiting";
 
@@ -2540,13 +2584,11 @@ namespace STRINGS
 				public static LocString DISEASE_SOURCE_DESCRIPTOR_TOOLTIP = "This Duplicant will vomit approximately every {0}" + UI.HORIZONTAL_BR_RULE + "Each time they vomit, they will release {1} and lose calories";
 			}
 
-			public class SLIMELUNG
+			public class SLIMESICKNESS
 			{
-				public static LocString NAME = UI.FormatAsLink("Slimelung", "SLIMELUNG");
+				public static LocString NAME = UI.FormatAsLink("Slimelung", "SLIMESICKNESS");
 
 				public static LocString DESCRIPTION = "This Duplicant's chest congestion is making it difficult to breathe";
-
-				public static LocString LEGEND_HOVERTEXT = "Slimelung Germs Present\n";
 
 				public static LocString COUGH_SYMPTOM = "Coughing";
 
@@ -2559,9 +2601,29 @@ namespace STRINGS
 				public static LocString DISEASE_SOURCE_DESCRIPTOR_TOOLTIP = "This Duplicant will cough approximately every {0}" + UI.HORIZONTAL_BR_RULE + "Each time they cough, they will release {1}";
 			}
 
-			public class COLDBRAIN
+			public class ZOMBIESICKNESS
 			{
-				public static LocString NAME = UI.FormatAsLink("Hypothermia", "COLDBRAIN");
+				public static LocString NAME = UI.FormatAsLink("The Spores", "ZOMBIESICKNESS");
+
+				public static LocString DESCRIPTIVE_SYMPTOMS = "Duplicants lose much of their motor control and experience extreme discomfort.";
+
+				public static LocString DESCRIPTION = "Parasitic spores have infiltrated the Duplicant's brainpan and are sending unnatural electrical impulses to the brain stem.";
+
+				public static LocString LEGEND_HOVERTEXT = "Area Causes The Spores\n";
+			}
+
+			public class ALLERGIES
+			{
+				public static LocString NAME = UI.FormatAsLink("Allergic Reaction", "ALLERGIES");
+
+				public static LocString DESCRIPTIVE_SYMPTOMS = "Irritants cause excessive sneezing fits";
+
+				public static LocString DESCRIPTION = "Pollen and other irritiants are causing this poor Duplicant's immune system to overreact, causing needless sneezing and congestion";
+			}
+
+			public class COLDSICKNESS
+			{
+				public static LocString NAME = UI.FormatAsLink("Hypothermia", "COLDSICKNESS");
 
 				public static LocString DESCRIPTIVE_SYMPTOMS = "Nonlethal. Duplicants experience extreme body heat loss causing chills and discomfort.";
 
@@ -2570,9 +2632,9 @@ namespace STRINGS
 				public static LocString LEGEND_HOVERTEXT = "Area Causes Hypothermia\n";
 			}
 
-			public class SUNBURN
+			public class SUNBURNSICKNESS
 			{
-				public static LocString NAME = UI.FormatAsLink("Sunburn", "SUNBURN");
+				public static LocString NAME = UI.FormatAsLink("Sunburn", "SUNBURNSICKNESS");
 
 				public static LocString DESCRIPTION = "Extreme sun exposure has given this Duplicant a nasty burn";
 
@@ -2583,24 +2645,15 @@ namespace STRINGS
 				public static LocString DESCRIPTIVE_SYMPTOMS = "Nonlethal. Duplicants experience temporary discomfort due to dermatological damage.";
 			}
 
-			public class HEATRASH
+			public class HEATSICKNESS
 			{
-				public static LocString NAME = UI.FormatAsLink("Heat Stroke", "HEATRASH");
+				public static LocString NAME = UI.FormatAsLink("Heat Stroke", "HEATSICKNESS");
 
 				public static LocString DESCRIPTIVE_SYMPTOMS = "Nonlethal. Duplicants experience high fever and discomfort.";
 
 				public static LocString DESCRIPTION = "This Duplicant's thought processes have short circuited from extreme heat exposure";
 
 				public static LocString LEGEND_HOVERTEXT = "Area Causes Heat Stroke\n";
-			}
-
-			public class SPORES
-			{
-				public static LocString NAME = UI.FormatAsLink("The Spores", "SPORES");
-
-				public static LocString DESCRIPTION = "This Duplicant has become a walking fungal pod";
-
-				public static LocString LEGEND_HOVERTEXT = "Spores Germs Present\n";
 			}
 
 			public class PUTRIDODOUR
@@ -2846,6 +2899,15 @@ namespace STRINGS
 				public static LocString TOOLTIP = "This Duplicant is dirty and needs a shower";
 
 				public static LocString CAUSE = "Obtained by coming into contact with polluted substances";
+			}
+
+			public class SOILEDSUIT
+			{
+				public static LocString NAME = "Soiled Suit";
+
+				public static LocString TOOLTIP = "This Duplicant's suit is full of waste";
+
+				public static LocString CAUSE = "Obtained when a Duplicant is wearing a suit full of... \"fluids\"";
 			}
 
 			public class SHOWERED
@@ -3376,38 +3438,17 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Med-Bed Rest";
 
-				public static LocString TOOLTIP = "This Duplicant's injury and disease recovery times are being improved";
+				public static LocString TOOLTIP = "This Duplicant's injury recovery times are being improved";
 			}
 
 			public class MEDICALCOTDOCTORED
 			{
 				public static LocString NAME = "Receiving care";
 
-				public static LocString TOOLTIP = "This Duplicant is receiving medical care to lessen the duration and severity of their illness";
+				public static LocString TOOLTIP = "This Duplicant is receiving medical care to lessen the duration and severity of their injuries";
 			}
 
 			public class DOCTOREDOFFCOTEFFECT
-			{
-				public static LocString NAME = "Runaway Patient";
-
-				public static LocString TOOLTIP = "Tsk tsk!\nThis Duplicant cannot receive medical care while out of their Med-Bed";
-			}
-
-			public class REJUVENATOR
-			{
-				public static LocString NAME = "Pharma Chamber Recovery";
-
-				public static LocString TOOLTIP = "This chamber is vastly accelerating this Duplicant's disease recovery time";
-			}
-
-			public class REJUVENATORDOCTORED
-			{
-				public static LocString NAME = "Receiving care";
-
-				public static LocString TOOLTIP = "This Duplicant is receiving improved medical care to lessen the duration and severity of their illness";
-			}
-
-			public class DOCTOREDOFFREJUVENATOREFFECT
 			{
 				public static LocString NAME = "Runaway Patient";
 
@@ -3439,11 +3480,18 @@ namespace STRINGS
 				public static LocString EFFECT_DESC = "Applies the <style=\"disease\">{0}</style> effect";
 			}
 
-			public class MEDICINE_VITAMINSUPPLEMENT
+			public class MEDICINE_BASICBOOSTER
 			{
-				public static LocString NAME = "Vitamin Supplement";
+				public static LocString NAME = ITEMS.PILLS.BASICBOOSTER.NAME;
 
-				public static LocString TOOLTIP = ITEMS.PILLS.VITAMINSUPPLEMENT.DESC;
+				public static LocString TOOLTIP = ITEMS.PILLS.BASICBOOSTER.DESC;
+			}
+
+			public class MEDICINE_INTERMEDIATEBOOSTER
+			{
+				public static LocString NAME = ITEMS.PILLS.INTERMEDIATEBOOSTER.NAME;
+
+				public static LocString TOOLTIP = ITEMS.PILLS.INTERMEDIATEBOOSTER.DESC;
 			}
 
 			public class SUNLIGHT_PLEASANT
@@ -3689,6 +3737,62 @@ namespace STRINGS
 				public static LocString NAME = "Morale Upgrade Helper";
 
 				public static LocString TOOLTIP = "This Duplicant will receive a temporary Morale bonus to buffer the new Morale system introduction";
+			}
+
+			public class EXPOSEDTOFOODGERMS
+			{
+				public static LocString NAME = "Exposed to Food Germs";
+
+				public static LocString TOOLTIP = "Exposed to Food Germs, at risk of getting sick.";
+			}
+
+			public class EXPOSEDTOSLIMEGERMS
+			{
+				public static LocString NAME = "Exposed to Slime Germs";
+
+				public static LocString TOOLTIP = "Exposed to Slime Germs, at risk of getting sick.";
+			}
+
+			public class EXPOSEDTOZOMBIESPORES
+			{
+				public static LocString NAME = "Exposed to Zombie Spores";
+
+				public static LocString TOOLTIP = "Exposed to Zombie Spores, at risk of getting sick.";
+			}
+
+			public class FEELINGSICKFOODGERMS
+			{
+				public static LocString NAME = "Contracted Food Sickness";
+
+				public static LocString TOOLTIP = "Contracted Food Sickness, will see symptoms shortly.";
+			}
+
+			public class FEELINGSICKSLIMEGERMS
+			{
+				public static LocString NAME = "Contracted Slime Sickness";
+
+				public static LocString TOOLTIP = "Contracted Slime Sickness, will see symptoms shortly.";
+			}
+
+			public class FEELINGSICKZOMBIESPORES
+			{
+				public static LocString NAME = "Contracted Zombie Spores";
+
+				public static LocString TOOLTIP = "Contracted Zombie Spores, will see symptoms shortly.";
+			}
+
+			public class SMELLEDFLOWERS
+			{
+				public static LocString NAME = "Smelled Flowers";
+
+				public static LocString TOOLTIP = "Pleasant floral scents have brightened this Duplicant's day.";
+			}
+
+			public class HISTAMINESUPPRESSION
+			{
+				public static LocString NAME = "Antihistamines";
+
+				public static LocString TOOLTIP = "This Duplicant's allergic reactions have been suppressed.";
 			}
 
 			public static LocString MODIFIER_FORMAT = "{0}: {1}";
@@ -3937,6 +4041,13 @@ namespace STRINGS
 				public static LocString NAME = "Pacifist";
 
 				public static LocString DESC = "This Duplicant abhors violence";
+			}
+
+			public class ALLERGIES
+			{
+				public static LocString NAME = "Allergies";
+
+				public static LocString DESC = "This Duplicant will sneeze uncontrollably when exposed to pollen and other irritants";
 			}
 
 			public class WEAKIMMUNESYSTEM
@@ -4433,7 +4544,7 @@ namespace STRINGS
 
 				public static LocString EXPECTATION_TOOLTIP = "The more responsibilities a Duplicant has, the more they will desire additional leisure time and improved amenities.\n\nFailing to keep a Duplicant's Morale at or above their Morale Requirements means they will not be able to unwind, causing them " + UI.FormatAsLink("Stress", "STRESS") + " over time.";
 
-				public static LocString EXPECTATION_MOD_NAME = "Job Tier Request";
+				public static LocString EXPECTATION_MOD_NAME = "Skills Mastered";
 
 				public static LocString GOOD_MODIFIER = "High Morale";
 
@@ -4528,6 +4639,13 @@ namespace STRINGS
 				public static LocString NAME = "Sneeziness";
 
 				public static LocString DESC = "Determines how frequently a Duplicant sneezes.";
+			}
+
+			public class GERMSUSCEPTIBILITY
+			{
+				public static LocString NAME = "Germ Susceptibility";
+
+				public static LocString DESC = "How likely is a Duplicant to become sick from exposure to germ based diseases.";
 			}
 
 			public class LEARNING
@@ -4630,7 +4748,9 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Ranching";
 
-				public static LocString DESC = "Determines how quickly and efficiently a Duplicant tends critters.";
+				public static LocString DESC = "Determines how efficiently a Duplicant tends critters.";
+
+				public static LocString EFFECTMODIFIER = "{0} " + CREATURES.MODIFIERS.RANCHED.NAME + " effect duration";
 			}
 
 			public class ART
@@ -4696,6 +4816,13 @@ namespace STRINGS
 				public static LocString NAME = "Carrying Capacity";
 
 				public static LocString DESC = "Determines the maximum weight that a Duplicant can carry.";
+			}
+
+			public class SPACENAVIGATION
+			{
+				public static LocString NAME = "Rocket Navigation Efficiency";
+
+				public static LocString DESC = "How quickly this Duplicant can make a rocket go there and back again.";
 			}
 
 			public class QUALITYOFLIFE
@@ -4884,7 +5011,9 @@ namespace STRINGS
 		{
 			public class GROUPS
 			{
-				public static LocString APTITUDE_DESCRIPTION = "This Duplicant enjoys performing {0} jobs and will master them {1}% faster";
+				public static LocString APTITUDE_DESCRIPTION = "This Duplicant enjoys performing {0} errands will incur {1} less Morale Expectation from learning an associated skill";
+
+				public static LocString SUITS = "Suit Wearing";
 			}
 
 			public class NO_ROLE
@@ -4896,229 +5025,234 @@ namespace STRINGS
 
 			public class JUNIOR_ARTIST
 			{
-				public static LocString NAME = UI.FormatAsLink("Art Student", "JUNIOR_ARTIST");
+				public static LocString NAME = UI.FormatAsLink("Art Fundamentals", "JUNIOR_ARTIST");
 
-				public static LocString DESCRIPTION = "Becoming an art student will improve a Duplicant's sculptures and paintings.";
+				public static LocString DESCRIPTION = "Duplicant gains the most basic level of art skill";
 			}
 
 			public class ARTIST
 			{
-				public static LocString NAME = UI.FormatAsLink("Artist", "ARTIST");
+				public static LocString NAME = UI.FormatAsLink("Aesthetic Design", "ARTIST");
 
-				public static LocString DESCRIPTION = "Becoming an artist will vastly improve a Duplicant's creative abilities.";
+				public static LocString DESCRIPTION = "Allows moderatly attractive art to be created";
 			}
 
 			public class MASTER_ARTIST
 			{
-				public static LocString NAME = UI.FormatAsLink("Master Artist", "MASTER_ARTIST");
+				public static LocString NAME = UI.FormatAsLink("Masterworks", "MASTER_ARTIST");
 
-				public static LocString DESCRIPTION = "Becoming a master artist will vastly improve a Duplicant's creative abilities.";
+				public static LocString DESCRIPTION = "Enables the painting and sculpting of masterpieces";
 			}
 
 			public class JUNIOR_BUILDER
 			{
-				public static LocString NAME = UI.FormatAsLink("Apprentice Architect", "JUNIOR_BUILDER");
+				public static LocString NAME = UI.FormatAsLink("Improved Construction I", "JUNIOR_BUILDER");
 
-				public static LocString DESCRIPTION = "Becoming an Apprentice Architect marginally improves a Duplicant's\nconstruction speeds.";
+				public static LocString DESCRIPTION = "Marginally improves a Duplicant's construction speeds.";
 			}
 
 			public class BUILDER
 			{
-				public static LocString NAME = UI.FormatAsLink("Architect", "BUILDER");
+				public static LocString NAME = UI.FormatAsLink("Improved Construction II", "BUILDER");
 
-				public static LocString DESCRIPTION = "Promotion to the full-fledged Architect position further increases\na Duplicant's construction speeds.";
+				public static LocString DESCRIPTION = "Further increases a Duplicant's construction speeds.";
 			}
 
 			public class SENIOR_BUILDER
 			{
-				public static LocString NAME = UI.FormatAsLink("Senior Architect", "SENIOR_BUILDER");
+				public static LocString NAME = UI.FormatAsLink("Improved Construction III", "SENIOR_BUILDER");
 
-				public static LocString DESCRIPTION = "Promotion to the Senior Architect position further increases a\nDuplicant's construction speeds.";
+				public static LocString DESCRIPTION = "Further increases a Duplicant's construction speeds.";
 			}
 
 			public class JUNIOR_RESEARCHER
 			{
-				public static LocString NAME = UI.FormatAsLink("Research Assistant", "JUNIOR_RESEARCHER");
+				public static LocString NAME = UI.FormatAsLink("Advanced Research", "JUNIOR_RESEARCHER");
 
-				public static LocString DESCRIPTION = "This job provides training in the use of Super Computers and\nimproves a Duplicant's researching ability.";
+				public static LocString DESCRIPTION = "Allows research of more advanced topics";
 			}
 
 			public class RESEARCHER
 			{
-				public static LocString NAME = UI.FormatAsLink("Scientist", "RESEARCHER");
+				public static LocString NAME = UI.FormatAsLink("Field Research", "RESEARCHER");
 
-				public static LocString DESCRIPTION = "Promotion to the Scientist position further increases a Duplicant's\nresearching ability.";
+				public static LocString DESCRIPTION = "Duplicants can perform studies on Geysers and other phenomena";
 			}
 
 			public class SENIOR_RESEARCHER
 			{
-				public static LocString NAME = UI.FormatAsLink("Tenured Scientist", "SENIOR_RESEARCHER");
+				public static LocString NAME = UI.FormatAsLink("Astronomy", "SENIOR_RESEARCHER");
 
-				public static LocString DESCRIPTION = "Promotion to the esteemed Tenured Scientist position further\nincreases a Duplicant's researching ability.";
+				public static LocString DESCRIPTION = "Enables the study of outer space";
 			}
 
 			public class JUNIOR_COOK
 			{
-				public static LocString NAME = UI.FormatAsLink("Sous Chef", "JUNIOR_COOK");
+				public static LocString NAME = UI.FormatAsLink("Grilling", "JUNIOR_COOK");
 
-				public static LocString DESCRIPTION = "This job provides training in the use of Electric Grills and\nimproves a Duplicant's cooking speed.";
+				public static LocString DESCRIPTION = "Allows the use of Electric Grills";
 			}
 
 			public class COOK
 			{
-				public static LocString NAME = UI.FormatAsLink("Chef", "COOK");
+				public static LocString NAME = UI.FormatAsLink("Improved Cooking I", "COOK");
 
-				public static LocString DESCRIPTION = "Promotion to the Chef position further increases a Duplicant's\ncooking skills.";
+				public static LocString DESCRIPTION = "Improves a Duplicant's cooking speed";
+			}
+
+			public class JUNIOR_MEDIC
+			{
+				public static LocString NAME = UI.FormatAsLink("Medicine Compounding", "MEDIC");
+
+				public static LocString DESCRIPTION = "Allows compounding of medicines at the Apothecary";
 			}
 
 			public class MEDIC
 			{
-				public static LocString NAME = UI.FormatAsLink("Medic", "MEDIC");
+				public static LocString NAME = UI.FormatAsLink("Duplicant Care", "MEDIC");
 
-				public static LocString DESCRIPTION = "Becoming a Medic will allow a Duplicant to treat the sick and\ninjured with more efficiency.";
+				public static LocString DESCRIPTION = "Trains a Duplicant to administer medicine to other Duplicants";
+			}
+
+			public class SENIOR_MEDIC
+			{
+				public static LocString NAME = UI.FormatAsLink("Improved Kindness I", "MEDIC");
+
+				public static LocString DESCRIPTION = "Improves the speed of medical errands";
 			}
 
 			public class MACHINE_TECHNICIAN
 			{
-				public static LocString NAME = UI.FormatAsLink("General Engineer", "MACHINE_TECHNICIAN");
+				public static LocString NAME = UI.FormatAsLink("Improved Tinkering I", "MACHINE_TECHNICIAN");
 
-				public static LocString DESCRIPTION = "Becoming an Engineer marginally improves a Duplicant's\ntinkering speeds.";
+				public static LocString DESCRIPTION = "Marginally improves a Duplicant's tinkering speeds.";
 			}
 
 			public class OIL_TECHNICIAN
 			{
-				public static LocString NAME = UI.FormatAsLink("Oil Technician", "OIL_TECHNICIAN");
+				public static LocString NAME = UI.FormatAsLink("Oil Engineering", "OIL_TECHNICIAN");
 
-				public static LocString DESCRIPTION = "Oil Technicians can extract and refine crude oil";
+				public static LocString DESCRIPTION = "Allows the extraction and refinement of crude oil";
 			}
 
 			public class HAULER
 			{
-				public static LocString NAME = UI.FormatAsLink("Gofer", "HAULER");
+				public static LocString NAME = UI.FormatAsLink("Improved Carrying I", "HAULER");
 
-				public static LocString DESCRIPTION = "Becoming a Gofer will minorly increase a Duplicant's strength\nand carrying capacity.";
-			}
-
-			public class JUNIOR_FARMER
-			{
-				public static LocString NAME = UI.FormatAsLink("Farmhand", "JUNIOR_FARMER");
-
-				public static LocString DESCRIPTION = "Becoming a Farmhand will minorly increase a Duplicant's farming\nskills, increasing their chances of harvesting new plant seeds.";
-			}
-
-			public class FARMER
-			{
-				public static LocString NAME = UI.FormatAsLink("Farmer", "FARMER");
-
-				public static LocString DESCRIPTION = "This job provides additional training in the tending of crops.\nTending plants will increase their growth speed.";
-			}
-
-			public class SENIOR_FARMER
-			{
-				public static LocString NAME = UI.FormatAsLink("Seasoned Farmer", "SENIOR_FARMER");
-
-				public static LocString DESCRIPTION = "Promotion to the Seasoned Farmer position further increases a\nDuplicant's farming skills.";
-			}
-
-			public class JUNIOR_MINER
-			{
-				public static LocString NAME = UI.FormatAsLink("Apprentice Miner", "JUNIOR_MINER");
-
-				public static LocString DESCRIPTION = "This job provides training in the excavation of very firm\nmaterials such as Granite.";
-			}
-
-			public class MINER
-			{
-				public static LocString NAME = UI.FormatAsLink("Miner", "MINER");
-
-				public static LocString DESCRIPTION = "This job provides training in the excavation of the element\nAbyssalite.";
-			}
-
-			public class SENIOR_MINER
-			{
-				public static LocString NAME = UI.FormatAsLink("Seasoned Miner", "SENIOR_MINER");
-
-				public static LocString DESCRIPTION = "Promotion to the Seasoned Miner position further increases a\nDuplicant's digging speed.";
-			}
-
-			public class SUIT_EXPERT
-			{
-				public static LocString NAME = UI.FormatAsLink("Exosuit Engineer", "SUIT_EXPERT");
-
-				public static LocString DESCRIPTION = "This job provides additional training in correct use of Exosuits,\neliminating the runspeed loss experienced while wearing them.";
-			}
-
-			public class BOTANIST
-			{
-				public static LocString NAME = UI.FormatAsLink("Botanist", "BOTANIST");
-
-				public static LocString DESCRIPTION = "Becoming a Botanist broadens a Duplicant's understanding of\nplants, improving their crop tending abilities.";
+				public static LocString DESCRIPTION = "Minorly increase a Duplicant's strength and carrying capacity.";
 			}
 
 			public class MATERIALS_MANAGER
 			{
-				public static LocString NAME = UI.FormatAsLink("Courier", "MATERIALS_MANAGER");
+				public static LocString NAME = UI.FormatAsLink("Improved Carrying II", "MATERIALS_MANAGER");
 
-				public static LocString DESCRIPTION = "Promotion to the Courier position further increases a Duplicant's\nstrength and carrying capacity for even swifter deliveries.";
+				public static LocString DESCRIPTION = "Further increases a Duplicant's strength and carrying capacity for even swifter deliveries.";
+			}
+
+			public class JUNIOR_FARMER
+			{
+				public static LocString NAME = UI.FormatAsLink("Improved Farming I", "JUNIOR_FARMER");
+
+				public static LocString DESCRIPTION = "Minorly increase a Duplicant's farming skills, increasing their chances of harvesting new plant seeds.";
+			}
+
+			public class FARMER
+			{
+				public static LocString NAME = UI.FormatAsLink("Crop Tending", "FARMER");
+
+				public static LocString DESCRIPTION = "Enables tending plants, which will increase their growth speed.";
+			}
+
+			public class SENIOR_FARMER
+			{
+				public static LocString NAME = UI.FormatAsLink("Improved Farming II", "SENIOR_FARMER");
+
+				public static LocString DESCRIPTION = "Further increases a Duplicant's farming skills.";
+			}
+
+			public class JUNIOR_MINER
+			{
+				public static LocString NAME = UI.FormatAsLink("Hard Digging", "JUNIOR_MINER");
+
+				public static LocString DESCRIPTION = "Allows excavation of very firm materials such as Granite.";
+			}
+
+			public class MINER
+			{
+				public static LocString NAME = UI.FormatAsLink("Superhard Digging", "MINER");
+
+				public static LocString DESCRIPTION = "Allows excavation of the element Abyssalite.";
+			}
+
+			public class SENIOR_MINER
+			{
+				public static LocString NAME = UI.FormatAsLink("Improved Digging I", "SENIOR_MINER");
+
+				public static LocString DESCRIPTION = "Further increases a Duplicant's digging speed.";
+			}
+
+			public class SUIT_EXPERT
+			{
+				public static LocString NAME = UI.FormatAsLink("Exosuit Training", "SUIT_EXPERT");
+
+				public static LocString DESCRIPTION = "Eliminates the runspeed loss experienced while wearing exosuits.";
 			}
 
 			public class POWER_TECHNICIAN
 			{
-				public static LocString NAME = UI.FormatAsLink("Electrical Engineer", "POWER_TECHNICIAN");
+				public static LocString NAME = UI.FormatAsLink("Electrical Engineering", "POWER_TECHNICIAN");
 
-				public static LocString DESCRIPTION = "This job provides additional training in the tuning of generators.\nTuned generators will temporarily have improved power output.";
+				public static LocString DESCRIPTION = "Enables generator tune-ups, which will temporarily provide improved power output.";
 			}
 
 			public class MECHATRONIC_ENGINEER
 			{
-				public static LocString NAME = UI.FormatAsLink("Mechatronics Engineer", "MECHATRONIC_ENGINEER");
+				public static LocString NAME = UI.FormatAsLink("Mechatronics Engineering", "MECHATRONIC_ENGINEER");
 
-				public static LocString DESCRIPTION = "This job provides additional training in the construction and\nmaintenance of conveyor rail systems.";
+				public static LocString DESCRIPTION = "Allows construction and maintenance of conveyor rail systems.";
 			}
 
 			public class HANDYMAN
 			{
-				public static LocString NAME = UI.FormatAsLink("Groundskeeper", "HANDYMAN");
+				public static LocString NAME = UI.FormatAsLink("Improved Strength I", "HANDYMAN");
 
-				public static LocString DESCRIPTION = "Becoming a Groundskeeper minorly improves a Duplicant's physical strength.";
+				public static LocString DESCRIPTION = "Minorly improves a Duplicant's physical strength.";
 			}
 
 			public class PLUMBER
 			{
-				public static LocString NAME = UI.FormatAsLink("Plumber", "PLUMBER");
+				public static LocString NAME = UI.FormatAsLink("Plumbing", "PLUMBER");
 
-				public static LocString DESCRIPTION = "Becoming a Plumber allows a Duplicant to empty plumbing pipes without making a mess.";
+				public static LocString DESCRIPTION = "Allows a Duplicant to empty plumbing pipes without making a mess.";
 			}
 
 			public class RANCHER
 			{
-				public static LocString NAME = UI.FormatAsLink("Rancher", "RANCHER");
+				public static LocString NAME = UI.FormatAsLink("Critter Ranching", "RANCHER");
 
-				public static LocString DESCRIPTION = "Becoming a Rancher improves a Duplicant's ability to care for\ndomestic critters.";
+				public static LocString DESCRIPTION = "Allows a Duplicant to handle and care for critters";
 			}
 
 			public class SENIOR_RANCHER
 			{
-				public static LocString NAME = UI.FormatAsLink("Seasoned Rancher", "SENIOR_RANCHER");
+				public static LocString NAME = UI.FormatAsLink("Improved Ranching I", "SENIOR_RANCHER");
 
-				public static LocString DESCRIPTION = "Seasoned Ranchers have spent time studying domestic critters\nand are adept at caring for them.";
-			}
-
-			public class ASTRONAUT
-			{
-				public static LocString NAME = UI.FormatAsLink("Astronaut", "ASTRONAUT");
-
-				public static LocString DESCRIPTION = "Astronauts are trained rocket pilots capable of going on\nspace missions deep into the unknown.";
+				public static LocString DESCRIPTION = "Improves a Duplicant's Ranching skill";
 			}
 
 			public class ASTRONAUTTRAINEE
 			{
-				public static LocString NAME = UI.FormatAsLink("Space Cadet", "ASTRONAUTTRAINEE");
+				public static LocString NAME = UI.FormatAsLink("Rocket Piloting", "ASTRONAUTTRAINEE");
 
-				public static LocString DESCRIPTION = "Space Cadets are research and exosuit experts who may\ntrain to become astronauts.";
+				public static LocString DESCRIPTION = "Allows a Duplicant to command a rocket ship";
 			}
 
-			public static LocString ROLE_MASTERED = "Job Mastered";
+			public class ASTRONAUT
+			{
+				public static LocString NAME = UI.FormatAsLink("Rocket Navigation", "ASTRONAUT");
+
+				public static LocString DESCRIPTION = "Improves the speed that space missions are completed";
+			}
 		}
 
 		public class THOUGHTS
@@ -5210,7 +5344,7 @@ namespace STRINGS
 
 			public class NEWROLE
 			{
-				public static LocString TOOLTIP = "New Job";
+				public static LocString TOOLTIP = "New Skill";
 			}
 
 			public class CHATTY

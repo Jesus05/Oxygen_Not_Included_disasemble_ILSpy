@@ -10,14 +10,13 @@ public class Grid
 	[Flags]
 	public enum BuildFlags : byte
 	{
-		FakeFloor = 0x1,
-		ForceField = 0x2,
-		Foundation = 0x4,
-		Solid = 0x8,
-		PreviousSolid = 0x10,
-		Impassable = 0x20,
-		LiquidPumpFloor = 0x40,
-		Door = 0x80
+		Solid = 0x1,
+		Foundation = 0x2,
+		Door = 0x4,
+		FakeFloor = 0x8,
+		DupePassable = 0x10,
+		DupeImpassable = 0x20,
+		CritterImpassable = 0x40
 	}
 
 	[StructLayout(LayoutKind.Sequential, Size = 1)]
@@ -27,7 +26,7 @@ public class Grid
 		{
 			get
 			{
-				return (BuildMasks[i] & BuildFlags.Foundation) != ~(BuildFlags.FakeFloor | BuildFlags.ForceField | BuildFlags.Foundation | BuildFlags.Solid | BuildFlags.PreviousSolid | BuildFlags.Impassable | BuildFlags.LiquidPumpFloor | BuildFlags.Door);
+				return (BuildMasks[i] & BuildFlags.Foundation) != (BuildFlags)0;
 			}
 			set
 			{
@@ -43,23 +42,23 @@ public class Grid
 		{
 			get
 			{
-				return (BuildMasks[i] & BuildFlags.Solid) != ~(BuildFlags.FakeFloor | BuildFlags.ForceField | BuildFlags.Foundation | BuildFlags.Solid | BuildFlags.PreviousSolid | BuildFlags.Impassable | BuildFlags.LiquidPumpFloor | BuildFlags.Door);
+				return (BuildMasks[i] & BuildFlags.Solid) != (BuildFlags)0;
 			}
 		}
 	}
 
 	[StructLayout(LayoutKind.Sequential, Size = 1)]
-	public struct BuildFlagsPreviousSolidIndexer
+	public struct BuildFlagsDupeImpassableIndexer
 	{
 		public bool this[int i]
 		{
 			get
 			{
-				return (BuildMasks[i] & BuildFlags.PreviousSolid) != ~(BuildFlags.FakeFloor | BuildFlags.ForceField | BuildFlags.Foundation | BuildFlags.Solid | BuildFlags.PreviousSolid | BuildFlags.Impassable | BuildFlags.LiquidPumpFloor | BuildFlags.Door);
+				return (BuildMasks[i] & BuildFlags.DupeImpassable) != (BuildFlags)0;
 			}
 			set
 			{
-				UpdateBuildMask(i, BuildFlags.PreviousSolid, value);
+				UpdateBuildMask(i, BuildFlags.DupeImpassable, value);
 			}
 		}
 	}
@@ -71,7 +70,7 @@ public class Grid
 		{
 			get
 			{
-				return (BuildMasks[i] & BuildFlags.FakeFloor) != ~(BuildFlags.FakeFloor | BuildFlags.ForceField | BuildFlags.Foundation | BuildFlags.Solid | BuildFlags.PreviousSolid | BuildFlags.Impassable | BuildFlags.LiquidPumpFloor | BuildFlags.Door);
+				return (BuildMasks[i] & BuildFlags.FakeFloor) != (BuildFlags)0;
 			}
 			set
 			{
@@ -81,33 +80,17 @@ public class Grid
 	}
 
 	[StructLayout(LayoutKind.Sequential, Size = 1)]
-	public struct BuildFlagsLiquidPumpFloorIndexer
+	public struct BuildFlagsDupePassableIndexer
 	{
 		public bool this[int i]
 		{
 			get
 			{
-				return (BuildMasks[i] & BuildFlags.LiquidPumpFloor) != ~(BuildFlags.FakeFloor | BuildFlags.ForceField | BuildFlags.Foundation | BuildFlags.Solid | BuildFlags.PreviousSolid | BuildFlags.Impassable | BuildFlags.LiquidPumpFloor | BuildFlags.Door);
+				return (BuildMasks[i] & BuildFlags.DupePassable) != (BuildFlags)0;
 			}
 			set
 			{
-				UpdateBuildMask(i, BuildFlags.LiquidPumpFloor, value);
-			}
-		}
-	}
-
-	[StructLayout(LayoutKind.Sequential, Size = 1)]
-	public struct BuildFlagsForceFieldIndexer
-	{
-		public bool this[int i]
-		{
-			get
-			{
-				return (BuildMasks[i] & BuildFlags.ForceField) != ~(BuildFlags.FakeFloor | BuildFlags.ForceField | BuildFlags.Foundation | BuildFlags.Solid | BuildFlags.PreviousSolid | BuildFlags.Impassable | BuildFlags.LiquidPumpFloor | BuildFlags.Door);
-			}
-			set
-			{
-				UpdateBuildMask(i, BuildFlags.ForceField, value);
+				UpdateBuildMask(i, BuildFlags.DupePassable, value);
 			}
 		}
 	}
@@ -119,11 +102,11 @@ public class Grid
 		{
 			get
 			{
-				return (BuildMasks[i] & BuildFlags.Impassable) != ~(BuildFlags.FakeFloor | BuildFlags.ForceField | BuildFlags.Foundation | BuildFlags.Solid | BuildFlags.PreviousSolid | BuildFlags.Impassable | BuildFlags.LiquidPumpFloor | BuildFlags.Door);
+				return (BuildMasks[i] & BuildFlags.CritterImpassable) != (BuildFlags)0;
 			}
 			set
 			{
-				UpdateBuildMask(i, BuildFlags.Impassable, value);
+				UpdateBuildMask(i, BuildFlags.CritterImpassable, value);
 			}
 		}
 	}
@@ -135,7 +118,7 @@ public class Grid
 		{
 			get
 			{
-				return (BuildMasks[i] & BuildFlags.Door) != ~(BuildFlags.FakeFloor | BuildFlags.ForceField | BuildFlags.Foundation | BuildFlags.Solid | BuildFlags.PreviousSolid | BuildFlags.Impassable | BuildFlags.LiquidPumpFloor | BuildFlags.Door);
+				return (BuildMasks[i] & BuildFlags.Door) != (BuildFlags)0;
 			}
 			set
 			{
@@ -635,8 +618,8 @@ public class Grid
 		WireBridges = 11,
 		WireBridgesFront = 12,
 		LogicWires = 13,
-		LogicWireBridges = 14,
-		LogicWireBridgesFront = 0xF,
+		LogicGates = 14,
+		LogicGatesFront = 0xF,
 		InteriorWall = 0x10,
 		GasFront = 17,
 		BuildingBack = 18,
@@ -693,15 +676,13 @@ public class Grid
 
 	public static BuildFlagsSolidIndexer Solid;
 
-	public static BuildFlagsPreviousSolidIndexer PreviousSolid;
+	public static BuildFlagsDupeImpassableIndexer DupeImpassable;
 
 	public static BuildFlagsFakeFloorIndexer FakeFloor;
 
-	public static BuildFlagsLiquidPumpFloorIndexer LiquidPumpFloor;
+	public static BuildFlagsDupePassableIndexer DupePassable;
 
-	public static BuildFlagsForceFieldIndexer ForceField;
-
-	public static BuildFlagsImpassableIndexer Impassable;
+	public static BuildFlagsImpassableIndexer CritterImpassable;
 
 	public static BuildFlagsDoorIndexer HasDoor;
 
@@ -894,11 +875,11 @@ public class Grid
 
 	public static void RegisterRestriction(int cell, Restriction.Orientation orientation)
 	{
-		restrictions.Add(cell, new Restriction
+		restrictions[cell] = new Restriction
 		{
 			directionMasks = new Dictionary<int, Restriction.Directions>(),
 			orientation = orientation
-		});
+		};
 	}
 
 	public static void UnregisterRestriction(int cell)
@@ -966,11 +947,11 @@ public class Grid
 	{
 		DebugUtil.Assert(!tubeEntrances.ContainsKey(cell));
 		HasTubeEntrance[cell] = true;
-		tubeEntrances.Add(cell, new TubeEntrance
+		tubeEntrances[cell] = new TubeEntrance
 		{
 			reservationCapacity = reservationCapacity,
 			reservations = new HashSet<int>()
-		});
+		};
 	}
 
 	public static void UnregisterTubeEntrance(int cell)
@@ -1034,14 +1015,14 @@ public class Grid
 	{
 		DebugUtil.Assert(!HasSuitMarker[cell]);
 		HasSuitMarker[cell] = true;
-		suitMarkers.Add(cell, new SuitMarker
+		suitMarkers[cell] = new SuitMarker
 		{
 			suitCount = 0,
 			lockerCount = 0,
 			flags = SuitMarker.Flags.Operational,
 			suitReservations = new HashSet<int>(),
 			emptyLockerReservations = new HashSet<int>()
-		});
+		};
 	}
 
 	public static void UnregisterSuitMarker(int cell)
@@ -1146,13 +1127,13 @@ public class Grid
 			{
 				BuildFlags[] buildMasks;
 				int num;
-				(buildMasks = BuildMasks)[num = i] = (buildMasks[num] | (BuildFlags.Solid | BuildFlags.PreviousSolid));
+				(buildMasks = BuildMasks)[num = i] = (buildMasks[num] | BuildFlags.Solid);
 			}
 			else
 			{
 				BuildFlags[] buildMasks;
 				int num2;
-				(buildMasks = BuildMasks)[num2 = i] = (buildMasks[num2] & ~(BuildFlags.Solid | BuildFlags.PreviousSolid));
+				(buildMasks = BuildMasks)[num2 = i] = (buildMasks[num2] & ~BuildFlags.Solid);
 			}
 			RenderedByWorld[i] = (element.substance != null && element.substance.renderedByWorld && (UnityEngine.Object)Objects[i, 9] == (UnityEngine.Object)null);
 		}

@@ -104,18 +104,29 @@ internal class GraphicsOptionsScreen : KModalScreen
 		int num2 = Screen.currentResolution.height;
 		int num3 = Screen.currentResolution.refreshRate;
 		bool flag = Screen.fullScreen;
-		Output.Log($"Starting up with a resolution of {num}x{num2} @{num3}hz (fullscreen: {flag})");
+		DebugUtil.LogArgs($"Starting up with a resolution of {num}x{num2} @{num3}hz (fullscreen: {flag})");
 		if (KPlayerPrefs.HasKey(ResolutionWidthKey) && KPlayerPrefs.HasKey(ResolutionHeightKey))
 		{
-			Output.Log("Found player prefs resolution, overriding with that");
-			num = KPlayerPrefs.GetInt(ResolutionWidthKey);
-			num2 = KPlayerPrefs.GetInt(ResolutionHeightKey);
-			num3 = KPlayerPrefs.GetInt(RefreshRateKey, Screen.currentResolution.refreshRate);
-			flag = ((KPlayerPrefs.GetInt(FullScreenKey, Screen.fullScreen ? 1 : 0) == 1) ? true : false);
+			int @int = KPlayerPrefs.GetInt(ResolutionWidthKey);
+			int int2 = KPlayerPrefs.GetInt(ResolutionHeightKey);
+			int int3 = KPlayerPrefs.GetInt(RefreshRateKey, Screen.currentResolution.refreshRate);
+			bool flag2 = (KPlayerPrefs.GetInt(FullScreenKey, Screen.fullScreen ? 1 : 0) == 1) ? true : false;
+			DebugUtil.LogArgs($"Found player prefs resolution {@int}x{int2} @{int3}hz (fullscreen: {flag2})");
+			if (int2 <= 1 || @int <= 1)
+			{
+				DebugUtil.LogArgs("Saved resolution was invalid, ignoring...");
+			}
+			else
+			{
+				num = @int;
+				num2 = int2;
+				num3 = int3;
+				flag = flag2;
+			}
 		}
-		else if (num <= 1 || num2 <= 1)
+		if (num <= 1 || num2 <= 1)
 		{
-			Output.LogWarning("Detected a degenerate resolution, attempting to fix...");
+			DebugUtil.LogWarningArgs("Detected a degenerate resolution, attempting to fix...");
 			Resolution[] array = Screen.resolutions;
 			for (int i = 0; i < array.Length; i++)
 			{
@@ -162,12 +173,16 @@ internal class GraphicsOptionsScreen : KModalScreen
 				for (int l = 0; l < array4.Length; l++)
 				{
 					Resolution resolution4 = array4[l];
-					text += $"\n{resolution4.width}x{resolution4.height} @ {resolution4.refreshRate}";
+					text += $"\n{resolution4.width}x{resolution4.height} @ {resolution4.refreshRate}hz";
 				}
-				Output.LogError(text);
+				Debug.LogError(text);
+				num = 1280;
+				num2 = 720;
+				flag = false;
+				num3 = 0;
 			}
 		}
-		Output.Log($"Reapplying a resolution of {num}x{num2} @{num3}hz (fullscreen: {flag})");
+		DebugUtil.LogArgs($"Applying resolution {num}x{num2} @{num3}hz (fullscreen: {flag})");
 		Screen.SetResolution(num, num2, flag, num3);
 	}
 
@@ -183,7 +198,7 @@ internal class GraphicsOptionsScreen : KModalScreen
 
 	private static void SaveResolutionToPrefs(Settings settings)
 	{
-		Output.Log($"Screen resolution updated, saving values to prefs: {settings.resolution.width}x{settings.resolution.height} @ {settings.resolution.refreshRate}, fullscreen: {settings.fullscreen}");
+		Debug.LogFormat("Screen resolution updated, saving values to prefs: {0}x{1} @ {2}, fullscreen: {3}", settings.resolution.width, settings.resolution.height, settings.resolution.refreshRate, settings.fullscreen);
 		KPlayerPrefs.SetInt(ResolutionWidthKey, settings.resolution.width);
 		KPlayerPrefs.SetInt(ResolutionHeightKey, settings.resolution.height);
 		KPlayerPrefs.SetInt(RefreshRateKey, settings.resolution.refreshRate);
@@ -296,7 +311,7 @@ internal class GraphicsOptionsScreen : KModalScreen
 			}
 			stringBuilder.Append("Selected Resolution Idx: " + resolutionDropdown.value.ToString());
 			stringBuilder.Append("FullScreen: " + fullscreenToggle.isOn.ToString());
-			Output.LogError(stringBuilder.ToString());
+			Debug.LogError(stringBuilder.ToString());
 			throw ex;
 		}
 	}

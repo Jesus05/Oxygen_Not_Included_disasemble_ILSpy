@@ -246,7 +246,7 @@ public class PrimaryElement : KMonoBehaviour, ISaveLoadable
 		}
 		if (Mass < 0f)
 		{
-			DebugUtil.DevLogErrorWithObj(base.gameObject, "deserialized ore with less than 0 mass. Error! Destroying");
+			DebugUtil.DevLogError(base.gameObject, "deserialized ore with less than 0 mass. Error! Destroying");
 			Util.KDestroyGameObject(base.gameObject);
 		}
 		else
@@ -287,12 +287,12 @@ public class PrimaryElement : KMonoBehaviour, ISaveLoadable
 	{
 		if (_Temperature <= 0f)
 		{
-			DebugUtil.DevLogErrorWithObj(base.gameObject, $"{base.gameObject.name} is attempting to serialize a temperature of <= 0K. Resetting to default.");
+			DebugUtil.DevLogErrorFormat(base.gameObject, "{0} is attempting to serialize a temperature of <= 0K. Resetting to default.", base.gameObject.name);
 			_Temperature = Element.defaultValues.temperature;
 		}
 		if (Mass > MAX_MASS)
 		{
-			DebugUtil.DevLogErrorWithObj(base.gameObject, $"{base.gameObject.name} is attempting to serialize very large mass {Mass}. Resetting to default.");
+			DebugUtil.DevLogErrorFormat(base.gameObject, "{0} is attempting to serialize very large mass {1}. Resetting to default.", base.gameObject.name, Mass);
 			Mass = Element.defaultValues.mass;
 		}
 	}
@@ -301,7 +301,7 @@ public class PrimaryElement : KMonoBehaviour, ISaveLoadable
 	{
 		if ((mass > MAX_MASS || mass < 0f) && ElementID != SimHashes.Regolith)
 		{
-			DebugUtil.DevLogErrorWithObj(base.gameObject, $"{base.gameObject.name} is getting an abnormal mass set {Mass}.");
+			DebugUtil.DevLogErrorFormat(base.gameObject, "{0} is getting an abnormal mass set {1}.", base.gameObject.name, Mass);
 		}
 		mass = Mathf.Clamp(mass, 0f, MAX_MASS);
 		Units = mass / MassPerUnit;
@@ -319,7 +319,7 @@ public class PrimaryElement : KMonoBehaviour, ISaveLoadable
 	{
 		if (float.IsNaN(temperature) || float.IsInfinity(temperature))
 		{
-			Output.LogErrorWithObj(base.gameObject, "Invalid temperature [" + temperature + "]");
+			DebugUtil.LogErrorArgs(base.gameObject, "Invalid temperature [" + temperature + "]");
 		}
 		else
 		{
@@ -351,16 +351,9 @@ public class PrimaryElement : KMonoBehaviour, ISaveLoadable
 		if (attributes != null)
 		{
 			Element element = Element;
-			try
+			foreach (AttributeModifier attributeModifier in element.attributeModifiers)
 			{
-				foreach (AttributeModifier attributeModifier in element.attributeModifiers)
-				{
-					attributes.Add(attributeModifier);
-				}
-			}
-			catch
-			{
-				Debug.Log("!", null);
+				attributes.Add(attributeModifier);
 			}
 		}
 	}
@@ -403,7 +396,7 @@ public class PrimaryElement : KMonoBehaviour, ISaveLoadable
 	{
 		if (ElementID == (SimHashes)0)
 		{
-			Output.LogWithObj(base.gameObject, "UpdateTags() Primary element 0");
+			Debug.Log("UpdateTags() Primary element 0", base.gameObject);
 		}
 		else
 		{
@@ -491,9 +484,10 @@ public class PrimaryElement : KMonoBehaviour, ISaveLoadable
 
 	private static void OnSetTemperature(PrimaryElement primary_element, float temperature)
 	{
+		Debug.Assert(!float.IsNaN(temperature));
 		if (temperature <= 0f)
 		{
-			Output.LogErrorWithObj(primary_element.gameObject, primary_element.gameObject.name + " has a temperature of zero which has always been an error in my experience.");
+			DebugUtil.LogErrorArgs(primary_element.gameObject, primary_element.gameObject.name + " has a temperature of zero which has always been an error in my experience.");
 		}
 		primary_element._Temperature = temperature;
 	}
@@ -534,5 +528,6 @@ public class PrimaryElement : KMonoBehaviour, ISaveLoadable
 	{
 		SetDiseaseVisualProvider(target);
 		diseaseRedirectTarget = ((!(bool)target) ? null : target.GetComponent<PrimaryElement>());
+		Debug.Assert((UnityEngine.Object)diseaseRedirectTarget != (UnityEngine.Object)this, "Disease redirect target set to myself");
 	}
 }

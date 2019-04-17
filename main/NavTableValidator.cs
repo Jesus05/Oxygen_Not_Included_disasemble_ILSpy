@@ -4,12 +4,12 @@ public class NavTableValidator
 {
 	public Action<int> onDirty;
 
-	protected bool IsClear(int cell, CellOffset[] bounding_offsets, bool allow_forcefield_traversal)
+	protected bool IsClear(int cell, CellOffset[] bounding_offsets, bool is_dupe)
 	{
 		foreach (CellOffset offset in bounding_offsets)
 		{
 			int cell2 = Grid.OffsetCell(cell, offset);
-			if (!Grid.IsValidCell(cell2) || IsCellSolid(cell2, allow_forcefield_traversal))
+			if (!Grid.IsValidCell(cell2) || !IsCellPassable(cell2, is_dupe))
 			{
 				return false;
 			}
@@ -22,14 +22,22 @@ public class NavTableValidator
 		return true;
 	}
 
-	protected static bool IsCellSolid(int cell, bool allow_forcefield_traversal)
+	protected static bool IsCellPassable(int cell, bool is_dupe)
 	{
-		Grid.BuildFlags buildFlags = Grid.BuildMasks[cell] & (Grid.BuildFlags.ForceField | Grid.BuildFlags.Solid | Grid.BuildFlags.Impassable);
-		if (buildFlags == ~(Grid.BuildFlags.FakeFloor | Grid.BuildFlags.ForceField | Grid.BuildFlags.Foundation | Grid.BuildFlags.Solid | Grid.BuildFlags.PreviousSolid | Grid.BuildFlags.Impassable | Grid.BuildFlags.LiquidPumpFloor | Grid.BuildFlags.Door))
+		Grid.BuildFlags buildFlags = Grid.BuildMasks[cell] & (Grid.BuildFlags.Solid | Grid.BuildFlags.DupePassable | Grid.BuildFlags.DupeImpassable | Grid.BuildFlags.CritterImpassable);
+		if (buildFlags == (Grid.BuildFlags)0)
 		{
-			return false;
+			return true;
 		}
-		return (buildFlags & (Grid.BuildFlags.Solid | Grid.BuildFlags.Impassable)) != 0 && ((buildFlags & Grid.BuildFlags.ForceField) == ~(Grid.BuildFlags.FakeFloor | Grid.BuildFlags.ForceField | Grid.BuildFlags.Foundation | Grid.BuildFlags.Solid | Grid.BuildFlags.PreviousSolid | Grid.BuildFlags.Impassable | Grid.BuildFlags.LiquidPumpFloor | Grid.BuildFlags.Door) || !allow_forcefield_traversal);
+		if (is_dupe)
+		{
+			if ((buildFlags & Grid.BuildFlags.DupeImpassable) != 0)
+			{
+				return false;
+			}
+			return (buildFlags & Grid.BuildFlags.Solid) == (Grid.BuildFlags)0 || (buildFlags & Grid.BuildFlags.DupePassable) != (Grid.BuildFlags)0;
+		}
+		return (buildFlags & (Grid.BuildFlags.Solid | Grid.BuildFlags.CritterImpassable)) == (Grid.BuildFlags)0;
 	}
 
 	public virtual void UpdateCell(int cell, NavTable nav_table, CellOffset[] bounding_offsets)

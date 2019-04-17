@@ -59,19 +59,19 @@ public class EquipChore : Chore<EquipChore.StatesInstance>
 	{
 		if ((UnityEngine.Object)context.consumerState.consumer == (UnityEngine.Object)null)
 		{
-			Debug.LogError("EquipChore null context.consumer", null);
+			Debug.LogError("EquipChore null context.consumer");
 		}
 		else if (base.smi == null)
 		{
-			Debug.LogError("EquipChore null smi", null);
+			Debug.LogError("EquipChore null smi");
 		}
 		else if (base.smi.sm == null)
 		{
-			Debug.LogError("EquipChore null smi.sm", null);
+			Debug.LogError("EquipChore null smi.sm");
 		}
 		else if (base.smi.sm.equippable_source == null)
 		{
-			Debug.LogError("EquipChore null smi.sm.equippable_source", null);
+			Debug.LogError("EquipChore null smi.sm.equippable_source");
 		}
 		else
 		{

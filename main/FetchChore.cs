@@ -71,7 +71,7 @@ public class FetchChore : Chore<FetchChore.StatesInstance>
 			{
 				if ((UnityEngine.Object)pickupable == (UnityEngine.Object)null)
 				{
-					Debug.Log($"Failed to find fetch target for {fetchChore.destination}", null);
+					Debug.Log($"Failed to find fetch target for {fetchChore.destination}");
 					return false;
 				}
 				context.data = pickupable;
@@ -130,11 +130,11 @@ public class FetchChore : Chore<FetchChore.StatesInstance>
 	{
 		if (choreType == null)
 		{
-			Output.LogError("You must specify a chore type for fetching!");
+			Debug.LogError("You must specify a chore type for fetching!");
 		}
 		if (amount <= PICKUPABLETUNING.MINIMUM_PICKABLE_AMOUNT)
 		{
-			Output.LogWarning(string.Format("Chore {0} is requesting {1} {2} to {3}", choreType.Id, tags[0], amount, (!((UnityEngine.Object)destination != (UnityEngine.Object)null)) ? "to nowhere" : destination.name));
+			DebugUtil.LogWarningArgs(string.Format("Chore {0} is requesting {1} {2} to {3}", choreType.Id, tags[0], amount, (!((UnityEngine.Object)destination != (UnityEngine.Object)null)) ? "to nowhere" : destination.name));
 		}
 		SetPrioritizable((!((UnityEngine.Object)destination.prioritizable != (UnityEngine.Object)null)) ? destination.GetComponent<Prioritizable>() : destination.prioritizable);
 		base.smi = new StatesInstance(this);

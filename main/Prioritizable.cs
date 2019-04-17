@@ -74,6 +74,8 @@ public class Prioritizable : KMonoBehaviour
 		}
 	};
 
+	private HandleVector<int>.Handle scenePartitionerEntry;
+
 	private Guid highPriorityStatusItem;
 
 	protected override void OnPrefabInit()
@@ -113,6 +115,9 @@ public class Prioritizable : KMonoBehaviour
 			onPriorityChanged(masterPrioritySetting);
 		}
 		RefreshHighPriorityNotification();
+		Vector3 position = base.transform.GetPosition();
+		Extents extents = new Extents((int)position.x, (int)position.y, 1, 1);
+		scenePartitionerEntry = GameScenePartitioner.Instance.Add(base.name, this, extents, GameScenePartitioner.Instance.prioritizableObjects, null);
 		Components.Prioritizables.Add(this);
 	}
 
@@ -151,14 +156,15 @@ public class Prioritizable : KMonoBehaviour
 		return refCount > 0;
 	}
 
-	public bool IsEmergency()
+	public bool IsTopPriority()
 	{
-		return masterPrioritySetting.priority_class == PriorityScreen.PriorityClass.emergency && IsPrioritizable();
+		return masterPrioritySetting.priority_class == PriorityScreen.PriorityClass.topPriority && IsPrioritizable();
 	}
 
 	protected override void OnCleanUp()
 	{
 		base.OnCleanUp();
+		GameScenePartitioner.Instance.Free(ref scenePartitionerEntry);
 		Components.Prioritizables.Remove(this);
 	}
 
@@ -182,7 +188,7 @@ public class Prioritizable : KMonoBehaviour
 
 	private void RefreshHighPriorityNotification()
 	{
-		bool flag = masterPrioritySetting.priority_class == PriorityScreen.PriorityClass.emergency && IsPrioritizable();
+		bool flag = masterPrioritySetting.priority_class == PriorityScreen.PriorityClass.topPriority && IsPrioritizable();
 		if (flag && highPriorityStatusItem == Guid.Empty)
 		{
 			highPriorityStatusItem = GetComponent<KSelectable>().AddStatusItem(Db.Get().BuildingStatusItems.EmergencyPriority, null);
@@ -193,7 +199,7 @@ public class Prioritizable : KMonoBehaviour
 		}
 		if ((UnityEngine.Object)GlobalChoreProvider.Instance != (UnityEngine.Object)null)
 		{
-			GlobalChoreProvider.Instance.RefreshEmergencyChoreStatus();
+			GlobalChoreProvider.Instance.RefreshTopPriorityChoreStatus();
 		}
 	}
 }

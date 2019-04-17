@@ -26,6 +26,42 @@ public class ToolParameterMenu : KMonoBehaviour
 
 		public static string BACKWALL = "BACKWALL";
 
+		public static string CONSTRUCTION = "CONSTRUCTION";
+
+		public static string DIG = "DIG";
+
+		public static string CLEAN = "CLEAN";
+
+		public static string OPERATE = "OPERATE";
+
+		public static string METAL = "METAL";
+
+		public static string BUILDABLE = "BUILDABLE";
+
+		public static string FILTER = "FILTER";
+
+		public static string LIQUIFIABLE = "LIQUIFIABLE";
+
+		public static string LIQUID = "LIQUID";
+
+		public static string CONSUMABLEORE = "CONSUMABLEORE";
+
+		public static string ORGANICS = "ORGANICS";
+
+		public static string FARMABLE = "FARMABLE";
+
+		public static string GAS = "GAS";
+
+		public static string AGRICULTURE = "AGRICULTURE";
+
+		public static string HEATFLOW = "HEATFLOW";
+
+		public static string ABSOLUTETEMPERATURE = "ABSOLUTETEMPERATURE";
+
+		public static string ADAPTIVETEMPERATURE = "ADAPTIVETEMPERATURE";
+
+		public static string STATECHANGE = "STATECHANGE";
+
 		public static string ALL = "ALL";
 	}
 
@@ -45,6 +81,8 @@ public class ToolParameterMenu : KMonoBehaviour
 	private Dictionary<string, GameObject> widgets = new Dictionary<string, GameObject>();
 
 	private Dictionary<string, ToggleState> currentParameters;
+
+	private string lastEnabledFilter;
 
 	public event System.Action onParametersChanged;
 
@@ -71,6 +109,7 @@ public class ToolParameterMenu : KMonoBehaviour
 				break;
 			case ToggleState.On:
 				toggle.ChangeState(1);
+				lastEnabledFilter = parameter.Key;
 				break;
 			default:
 				toggle.ChangeState(0);
@@ -132,6 +171,7 @@ public class ToolParameterMenu : KMonoBehaviour
 				break;
 			case ToggleState.On:
 				widget.Value.GetComponentInChildren<MultiToggle>().ChangeState(1);
+				lastEnabledFilter = widget.Key;
 				break;
 			}
 		}
@@ -139,5 +179,10 @@ public class ToolParameterMenu : KMonoBehaviour
 		{
 			this.onParametersChanged();
 		}
+	}
+
+	public string GetLastEnabledFilter()
+	{
+		return lastEnabledFilter;
 	}
 }

@@ -75,5 +75,10 @@ namespace Klei
 				}
 			}
 		}
+
+		public bool FileExists(string path)
+		{
+			return File.Exists(GetActualPath(path));
+		}
 	}
 }

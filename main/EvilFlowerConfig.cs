@@ -35,7 +35,7 @@ public class EvilFlowerConfig : IEntityConfig
 		initialAnim = "EvilFlowerSeed";
 		desc = CREATURES.SPECIES.SEEDS.EVILFLOWER.NAME;
 		name = CREATURES.SPECIES.SEEDS.EVILFLOWER.DESC;
-		anim = Assets.GetAnim("seed_bristlebriar_kanim");
+		anim = Assets.GetAnim("seed_potted_evilflower_kanim");
 		List<Tag> list = new List<Tag>();
 		list.Add(GameTags.DecorSeed);
 		list = list;

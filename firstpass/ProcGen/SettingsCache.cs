@@ -125,9 +125,9 @@ namespace ProcGen
 			return array;
 		}
 
-		private static bool GetPathAndName(string srcPath, string srcName, out string name)
+		private static bool GetPathAndName(IFileSystem file_system, string srcPath, string srcName, out string name)
 		{
-			if (File.Exists(srcPath + srcName + ".yaml"))
+			if (file_system.FileExists(srcPath + srcName + ".yaml"))
 			{
 				name = srcName;
 				return true;
@@ -138,7 +138,7 @@ namespace ProcGen
 			{
 				name = name + "/" + array[i];
 			}
-			if (File.Exists(srcPath + name + ".yaml"))
+			if (file_system.FileExists(srcPath + name + ".yaml"))
 			{
 				return true;
 			}
@@ -146,10 +146,10 @@ namespace ProcGen
 			return false;
 		}
 
-		private static void LoadBiome(string longName)
+		private static void LoadBiome(IFileSystem file_system, string longName)
 		{
 			string name = string.Empty;
-			if (GetPathAndName(GetPath(), longName, out name) && !biomeSettingsCache.ContainsKey(name))
+			if (GetPathAndName(file_system, GetPath(), longName, out name) && !biomeSettingsCache.ContainsKey(name))
 			{
 				BiomeSettings biomeSettings = YamlIO<BiomeSettings>.LoadFile(GetPath() + name + ".yaml", null);
 				if (biomeSettings != null)
@@ -172,10 +172,10 @@ namespace ProcGen
 			}
 		}
 
-		private static string LoadFeature(string longName)
+		private static string LoadFeature(IFileSystem file_system, string longName)
 		{
 			string name = string.Empty;
-			if (!GetPathAndName(GetPath(), longName, out name))
+			if (!GetPathAndName(file_system, GetPath(), longName, out name))
 			{
 				Debug.LogWarning("LoadFeature GetPathAndName: Attempting to load feature: " + name + " failed");
 				return longName;
@@ -195,21 +195,21 @@ namespace ProcGen
 			return name;
 		}
 
-		public static void LoadZoneContents(IEnumerable<SubWorld> zones)
+		public static void LoadZoneContents(IFileSystem file_system, IEnumerable<SubWorld> zones)
 		{
 			foreach (SubWorld zone in zones)
 			{
 				if (zone.centralFeature != null)
 				{
-					zone.centralFeature.type = LoadFeature(zone.centralFeature.type);
+					zone.centralFeature.type = LoadFeature(file_system, zone.centralFeature.type);
 				}
 				foreach (WeightedBiome biome in zone.biomes)
 				{
-					LoadBiome(biome.name);
+					LoadBiome(file_system, biome.name);
 				}
 				foreach (Feature feature in zone.features)
 				{
-					feature.type = LoadFeature(feature.type);
+					feature.type = LoadFeature(file_system, feature.type);
 				}
 			}
 		}
@@ -251,19 +251,19 @@ namespace ProcGen
 			featuresettings.Clear();
 		}
 
-		public static bool LoadFiles(IFileSystem filesystem)
+		public static bool LoadFiles(IFileSystem file_system)
 		{
 			if (worlds.worldCache.Count > 0)
 			{
 				return false;
 			}
-			worlds.LoadFiles(GetPath(), filesystem);
+			worlds.LoadFiles(GetPath(), file_system);
 			foreach (KeyValuePair<string, Worlds.Data> item in worlds.worldCache)
 			{
 				Worlds.Data value = item.Value;
 				value.world.LoadZones(noise, GetPath());
 				Worlds.Data value2 = item.Value;
-				LoadZoneContents(value2.world.Zones.Values);
+				LoadZoneContents(file_system, value2.world.Zones.Values);
 			}
 			layers = YamlIO<LevelLayerSettings>.LoadFile(GetPath() + "layers.yaml", null);
 			layers.LevelLayers.ConvertBandSizeToMaxSize();
@@ -273,7 +273,7 @@ namespace ProcGen
 				terrainFeature.Value.name = terrainFeature.Key;
 				if (terrainFeature.Value.defaultBiome != null && terrainFeature.Value.defaultBiome.type != null)
 				{
-					LoadBiome(terrainFeature.Value.defaultBiome.type);
+					LoadBiome(file_system, terrainFeature.Value.defaultBiome.type);
 				}
 			}
 			rivers = YamlIO<Rivers>.LoadFile(GetPath() + "rivers.yaml", null);

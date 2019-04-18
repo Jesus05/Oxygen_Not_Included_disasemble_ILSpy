@@ -65,5 +65,14 @@ namespace Klei
 				}
 			}
 		}
+
+		public bool FileExists(string path)
+		{
+			if (mountPoint.Length > 0)
+			{
+				path = path.Substring(mountPoint.Length);
+			}
+			return zipfile.ContainsEntry(path);
+		}
 	}
 }

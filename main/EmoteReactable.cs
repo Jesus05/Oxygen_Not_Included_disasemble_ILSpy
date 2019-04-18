@@ -156,7 +156,7 @@ public class EmoteReactable : Reactable
 			}
 		}
 		currentStep++;
-		if (currentStep >= emoteSteps.Count)
+		if (currentStep >= emoteSteps.Count || (UnityEngine.Object)kbac == (UnityEngine.Object)null)
 		{
 			End();
 		}

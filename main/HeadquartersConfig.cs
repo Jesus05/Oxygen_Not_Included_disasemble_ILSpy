@@ -34,7 +34,8 @@ public class HeadquartersConfig : IBuildingConfig
 	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.AddOrGet<LoreBearer>();
-		go.AddOrGet<Telepad>();
+		Telepad telepad = go.AddOrGet<Telepad>();
+		telepad.startingSkillPoints = 1f;
 		SocialGatheringPoint socialGatheringPoint = go.AddOrGet<SocialGatheringPoint>();
 		socialGatheringPoint.choreOffsets = new CellOffset[6]
 		{

@@ -8,41 +8,30 @@ public class ObjectDispenser : Switch, IUserControlledCapacity
 {
 	public class States : GameStateMachine<States, Instance, ObjectDispenser>
 	{
-		public State closed_pre;
+		public State load_item;
 
-		public State closed;
+		public State load_item_pst;
 
-		public State opened_pre;
+		public State drop_item;
 
-		public State opened;
+		public State idle;
 
 		public BoolParameter should_open;
 
 		public override void InitializeStates(out BaseState default_state)
 		{
-			default_state = opened;
+			default_state = idle;
 			base.serializable = true;
-			closed_pre.Enter(delegate(ObjectDispenser.Instance smi)
+			idle.PlayAnim("on").EventHandler(GameHashes.OnStorageChange, delegate(ObjectDispenser.Instance smi)
 			{
-				smi.SetActive(true);
-			}).Exit(delegate(ObjectDispenser.Instance smi)
-			{
-				smi.SetActive(false);
-			}).PlayAnim("off_pre")
-				.OnAnimQueueComplete(closed);
-			closed.PlayAnim("off").ParamTransition(should_open, opened_pre, GameStateMachine<States, ObjectDispenser.Instance, ObjectDispenser, object>.IsTrue);
-			opened_pre.Enter(delegate(ObjectDispenser.Instance smi)
-			{
-				smi.SetActive(true);
-			}).Exit(delegate(ObjectDispenser.Instance smi)
-			{
-				smi.SetActive(false);
-			}).PlayAnim("on_pre")
-				.OnAnimQueueComplete(opened);
-			opened.Update(delegate(ObjectDispenser.Instance smi, float dt)
+				smi.UpdateState();
+			}).ParamTransition(should_open, drop_item, (ObjectDispenser.Instance smi, bool p) => p && !smi.master.GetComponent<Storage>().IsEmpty());
+			load_item.PlayAnim("working_load").OnAnimQueueComplete(load_item_pst);
+			load_item_pst.ParamTransition(should_open, idle, (ObjectDispenser.Instance smi, bool p) => !p).ParamTransition(should_open, drop_item, (ObjectDispenser.Instance smi, bool p) => p);
+			drop_item.PlayAnim("working_dispense").OnAnimQueueComplete(idle).Exit(delegate(ObjectDispenser.Instance smi)
 			{
 				smi.master.DropHeldItems();
-			}, UpdateRate.SIM_200ms, false).PlayAnim("on").ParamTransition(should_open, closed_pre, GameStateMachine<States, ObjectDispenser.Instance, ObjectDispenser, object>.IsFalse);
+			});
 		}
 	}
 
@@ -56,6 +45,8 @@ public class ObjectDispenser : Switch, IUserControlledCapacity
 
 		private bool manual_on;
 
+		public bool IsOpened => (!IsAutomated()) ? manual_on : logic_on;
+
 		public Instance(ObjectDispenser master, bool manual_start_state)
 			: base(master)
 		{
@@ -67,14 +58,14 @@ public class ObjectDispenser : Switch, IUserControlledCapacity
 			base.smi.sm.should_open.Set(true, base.smi);
 		}
 
+		public void UpdateState()
+		{
+			base.smi.GoTo(base.sm.load_item);
+		}
+
 		public bool IsAutomated()
 		{
 			return logic.IsPortConnected(PORT_ID);
-		}
-
-		public bool IsOpened()
-		{
-			return (!IsAutomated()) ? manual_on : logic_on;
 		}
 
 		public void SetSwitchState(bool on)
@@ -254,7 +245,7 @@ public class ObjectDispenser : Switch, IUserControlledCapacity
 	{
 		Instance instance = (Instance)data;
 		string format = (!instance.IsAutomated()) ? BUILDING.STATUSITEMS.OBJECTDISPENSER.MANUAL_CONTROL : BUILDING.STATUSITEMS.OBJECTDISPENSER.AUTOMATION_CONTROL;
-		string arg = (!instance.IsOpened()) ? BUILDING.STATUSITEMS.OBJECTDISPENSER.CLOSED : BUILDING.STATUSITEMS.OBJECTDISPENSER.OPENED;
+		string arg = (!instance.IsOpened) ? BUILDING.STATUSITEMS.OBJECTDISPENSER.CLOSED : BUILDING.STATUSITEMS.OBJECTDISPENSER.OPENED;
 		return string.Format(format, arg);
 	}
 }

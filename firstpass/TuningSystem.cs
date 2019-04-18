@@ -102,7 +102,7 @@ public class TuningSystem
 		string[] array2 = array;
 		foreach (string text in array2)
 		{
-			if (!string.IsNullOrEmpty(text) && ((LayeredFileSystem.instance != null) ? LayeredFileSystem.instance.Exists(text) : File.Exists(text)))
+			if (!string.IsNullOrEmpty(text) && ((LayeredFileSystem.instance != null) ? LayeredFileSystem.instance.FileExists(text) : File.Exists(text)))
 			{
 				string value = (LayeredFileSystem.instance != null) ? LayeredFileSystem.instance.ReadText(text) : File.ReadAllText(text);
 				Dictionary<string, object> dictionary = JsonConvert.DeserializeObject<Dictionary<string, object>>(value);

@@ -394,13 +394,13 @@ namespace Database
 				str = str.Replace("{StressModification}", GameUtil.GetFormattedPercent(Db.Get().effects.Get("ColdAir").SelfModifiers[0].Value, GameUtil.TimeSlice.PerCycle));
 				float dtu_s2 = ((ExternalTemperatureMonitor.Instance)data).temperatureTransferer.average_kilowatts_exchanged.GetWeightedAverage * 1000f;
 				str = str.Replace("{currentTransferWattage}", GameUtil.GetFormattedHeatEnergyRate(dtu_s2, GameUtil.HeatEnergyFormatterUnit.Automatic));
-				AttributeInstance attributeInstance2 = ((ExternalTemperatureMonitor.Instance)data).attributes.Get("ThermalConductivityBarrier");
-				string formattedValue2 = attributeInstance2.GetFormattedValue();
+				AttributeInstance attributeInstance3 = ((ExternalTemperatureMonitor.Instance)data).attributes.Get("ThermalConductivityBarrier");
+				string formattedValue2 = attributeInstance3.GetFormattedValue();
 				formattedValue2 += UI.HORIZONTAL_BR_RULE;
-				for (int j = 0; j != attributeInstance2.Modifiers.Count; j++)
+				for (int j = 0; j != attributeInstance3.Modifiers.Count; j++)
 				{
-					AttributeModifier attributeModifier2 = attributeInstance2.Modifiers[j];
-					formattedValue2 = formattedValue2 + attributeModifier2.GetDescription() + " " + attributeModifier2.GetFormattedString(attributeInstance2.gameObject);
+					AttributeModifier attributeModifier2 = attributeInstance3.Modifiers[j];
+					formattedValue2 = formattedValue2 + attributeModifier2.GetDescription() + " " + attributeModifier2.GetFormattedString(attributeInstance3.gameObject);
 					formattedValue2 += "\n";
 				}
 				str = str.Replace("{conductivityBarrier}", formattedValue2);
@@ -412,13 +412,13 @@ namespace Database
 				str = str.Replace("{StressModification}", GameUtil.GetFormattedPercent(Db.Get().effects.Get("WarmAir").SelfModifiers[0].Value, GameUtil.TimeSlice.PerCycle));
 				float dtu_s = ((ExternalTemperatureMonitor.Instance)data).temperatureTransferer.average_kilowatts_exchanged.GetWeightedAverage * 1000f;
 				str = str.Replace("{currentTransferWattage}", GameUtil.GetFormattedHeatEnergyRate(dtu_s, GameUtil.HeatEnergyFormatterUnit.Automatic));
-				AttributeInstance attributeInstance = ((ExternalTemperatureMonitor.Instance)data).attributes.Get("ThermalConductivityBarrier");
-				string formattedValue = attributeInstance.GetFormattedValue();
+				AttributeInstance attributeInstance2 = ((ExternalTemperatureMonitor.Instance)data).attributes.Get("ThermalConductivityBarrier");
+				string formattedValue = attributeInstance2.GetFormattedValue();
 				formattedValue += UI.HORIZONTAL_BR_RULE;
-				for (int i = 0; i != attributeInstance.Modifiers.Count; i++)
+				for (int i = 0; i != attributeInstance2.Modifiers.Count; i++)
 				{
-					AttributeModifier attributeModifier = attributeInstance.Modifiers[i];
-					formattedValue = formattedValue + attributeModifier.GetDescription() + " " + attributeModifier.GetFormattedString(attributeInstance.gameObject);
+					AttributeModifier attributeModifier = attributeInstance2.Modifiers[i];
+					formattedValue = formattedValue + attributeModifier.GetDescription() + " " + attributeModifier.GetFormattedString(attributeInstance2.gameObject);
 					formattedValue += "\n";
 				}
 				str = str.Replace("{conductivityBarrier}", formattedValue);
@@ -473,9 +473,16 @@ namespace Database
 			ExposedToGerms = CreateStatusItem("ExposedToGerms", "DUPLICANTS", string.Empty, StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, true, 2);
 			ExposedToGerms.resolveStringCallback = delegate(string str, object data)
 			{
-				string id = (string)data;
-				string name = Db.Get().Sicknesses.Get(id).Name;
+				GermExposureMonitor.ExposureStatusData exposureStatusData = (GermExposureMonitor.ExposureStatusData)data;
+				string name = Db.Get().Sicknesses.Get(exposureStatusData.exposure_type.sickness_id).Name;
+				AttributeInstance attributeInstance = Db.Get().Attributes.GermSusceptibility.Lookup(exposureStatusData.owner.gameObject);
+				float contraction_rate = exposureStatusData.exposure_type.contraction_rate;
+				float num = contraction_rate * attributeInstance.GetTotalValue();
+				float num2 = num - contraction_rate;
 				str = str.Replace("{Sickness}", name);
+				str = str.Replace("{Base}", GameUtil.GetFormattedPercent(contraction_rate * 100f, GameUtil.TimeSlice.None));
+				str = str.Replace("{Modifiers}", GameUtil.GetFormattedPercent(num2 * 100f, GameUtil.TimeSlice.None));
+				str = str.Replace("{Total}", GameUtil.GetFormattedPercent(num * 100f, GameUtil.TimeSlice.None));
 				return str;
 			};
 		}

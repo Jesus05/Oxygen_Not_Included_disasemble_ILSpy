@@ -68,5 +68,10 @@ namespace Klei
 				}
 			}
 		}
+
+		public bool FileExists(string path)
+		{
+			return dataMap.ContainsKey(path);
+		}
 	}
 }

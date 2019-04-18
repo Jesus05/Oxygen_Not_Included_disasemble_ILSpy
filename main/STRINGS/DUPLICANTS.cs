@@ -2366,7 +2366,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Exposed to {Sickness} Germs";
 
-				public static LocString TOOLTIP = "This Duplicant has been exposed to a concentration of {Sickness} Germs and is at risk of waking up sick on their next shift.";
+				public static LocString TOOLTIP = "This Duplicant has been exposed to a concentration of {Sickness} Germs and is at risk of waking up sick on their next shift.\n\nChance of Contracting {Sickness}: {Total}\n\n    • Baseline: {Base}\n    • " + ATTRIBUTES.GERMSUSCEPTIBILITY.NAME + ": {Modifiers}";
 			}
 		}
 

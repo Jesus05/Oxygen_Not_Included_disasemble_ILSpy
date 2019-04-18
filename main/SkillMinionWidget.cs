@@ -116,7 +116,7 @@ public class SkillMinionWidget : KMonoBehaviour, IPointerEnterHandler, IPointerE
 					}
 				}
 				hatDropDown.Initialize(list, OnHatDropEntryClick, hatDropDownSort, hatDropEntryRefreshAction, false, minion);
-				empty = component.CurrentHat;
+				empty = ((!string.IsNullOrEmpty(component.TargetHat)) ? component.TargetHat : component.CurrentHat);
 			}
 			else
 			{
@@ -124,13 +124,13 @@ public class SkillMinionWidget : KMonoBehaviour, IPointerEnterHandler, IPointerE
 				ToolTip component2 = GetComponent<ToolTip>();
 				component2.ClearMultiStringTooltip();
 				component2.AddMultiStringTooltip(string.Format(UI.TABLESCREENS.INFORMATION_NOT_AVAILABLE_TOOLTIP, storedMinionIdentity.GetStorageReason(), minion.GetProperName()), null);
-				empty = storedMinionIdentity.currentHat;
+				empty = ((!string.IsNullOrEmpty(storedMinionIdentity.targetHat)) ? storedMinionIdentity.targetHat : storedMinionIdentity.currentHat);
 				masteryPoints.text = UI.TABLESCREENS.NA;
 				morale.text = UI.TABLESCREENS.NA;
 			}
 			SetColor((skillsScreen.CurrentlySelectedMinion != minion) ? unselected_color : selected_color);
 			HierarchyReferences component3 = GetComponent<HierarchyReferences>();
-			component3.GetReference("selectedHat").GetComponent<Image>().sprite = Assets.GetSprite((!string.IsNullOrEmpty(empty)) ? empty : "hat_role_none");
+			RefreshHat(empty);
 			component3.GetReference("openButton").gameObject.SetActive((Object)minionIdentity != (Object)null);
 		}
 	}
@@ -165,24 +165,29 @@ public class SkillMinionWidget : KMonoBehaviour, IPointerEnterHandler, IPointerE
 		}
 	}
 
+	public void RefreshHat(string hat)
+	{
+		HierarchyReferences component = GetComponent<HierarchyReferences>();
+		component.GetReference("selectedHat").GetComponent<Image>().sprite = Assets.GetSprite((!string.IsNullOrEmpty(hat)) ? hat : "hat_role_none");
+	}
+
 	private void OnHatDropEntryClick(IListableOption skill, object data)
 	{
 		MinionIdentity minionIdentity = minion as MinionIdentity;
 		if (!((Object)minionIdentity == (Object)null))
 		{
-			string text = "hat_role_none";
+			MinionResume component = minionIdentity.GetComponent<MinionResume>();
 			if (skill != null)
 			{
-				HierarchyReferences component = GetComponent<HierarchyReferences>();
-				component.GetReference("selectedHat").GetComponent<Image>().sprite = Assets.GetSprite((skill as SkillListable).skillHat);
-				MinionResume component2 = minionIdentity.GetComponent<MinionResume>();
-				if ((Object)component2 != (Object)null)
+				HierarchyReferences component2 = GetComponent<HierarchyReferences>();
+				component2.GetReference("selectedHat").GetComponent<Image>().sprite = Assets.GetSprite((skill as SkillListable).skillHat);
+				if ((Object)component != (Object)null)
 				{
-					text = (skill as SkillListable).skillHat;
-					component2.SetHats(component2.CurrentHat, text);
-					if (component2.OwnsHat(text))
+					string skillHat = (skill as SkillListable).skillHat;
+					component.SetHats(component.CurrentHat, skillHat);
+					if (component.OwnsHat(skillHat))
 					{
-						new PutOnHatChore(component2, Db.Get().ChoreTypes.SwitchHat);
+						new PutOnHatChore(component, Db.Get().ChoreTypes.SwitchHat);
 					}
 				}
 			}
@@ -190,16 +195,15 @@ public class SkillMinionWidget : KMonoBehaviour, IPointerEnterHandler, IPointerE
 			{
 				HierarchyReferences component3 = GetComponent<HierarchyReferences>();
 				component3.GetReference("selectedHat").GetComponent<Image>().sprite = Assets.GetSprite("hat_role_none");
-				MinionResume component4 = minionIdentity.GetComponent<MinionResume>();
-				if ((Object)component4 != (Object)null)
+				if ((Object)component != (Object)null)
 				{
-					component4.SetHats(component4.CurrentHat, null);
-					component4.ApplyTargetHat();
+					component.SetHats(component.CurrentHat, null);
+					component.ApplyTargetHat();
 				}
 			}
 			if (minion == skillsScreen.CurrentlySelectedMinion)
 			{
-				skillsScreen.selectedHat.sprite = Assets.GetSprite(text);
+				skillsScreen.selectedHat.sprite = Assets.GetSprite(component.TargetHat);
 			}
 		}
 	}

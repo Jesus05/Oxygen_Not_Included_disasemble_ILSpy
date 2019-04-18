@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -80,22 +79,16 @@ namespace Klei
 			}
 		}
 
-		public bool Exists(string fullpath)
+		public bool FileExists(string fullpath)
 		{
-			string fileName = Path.GetFileName(fullpath);
-			string directoryName = Path.GetDirectoryName(fullpath);
-			FSUtil.GetFilesSearchParams(directoryName, fileName, out string normalized_path, out Regex filename_regex);
-			List<string> list = new List<string>();
 			foreach (IFileSystem filesystem in filesystems)
 			{
-				filesystem.GetFiles(filename_regex, normalized_path, list);
-				if (list.Count > 0)
+				if (filesystem.FileExists(fullpath))
 				{
-					break;
+					return true;
 				}
 			}
-			GetFiles(directoryName, fileName, list);
-			return list.Count > 0;
+			return false;
 		}
 	}
 }

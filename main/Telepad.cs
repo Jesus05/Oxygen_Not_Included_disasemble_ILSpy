@@ -98,6 +98,8 @@ public class Telepad : StateMachineComponent<Telepad.StatesInstance>
 
 	private List<MinionStartingStats> minionStats;
 
+	public float startingSkillPoints;
+
 	public static readonly HashedString[] PortalBirthAnim = new HashedString[1]
 	{
 		"portalbirth"
@@ -164,12 +166,18 @@ public class Telepad : StateMachineComponent<Telepad.StatesInstance>
 		int cell = Grid.PosToCell(this);
 		Immigration.Instance.EndImmigration();
 		GameObject gameObject = delivery.Deliver(Grid.CellToPosCBC(cell, Grid.SceneLayer.Move));
-		if ((Object)gameObject.GetComponent<MinionIdentity>() != (Object)null)
+		MinionIdentity component = gameObject.GetComponent<MinionIdentity>();
+		if ((Object)component != (Object)null)
 		{
 			ReportManager.Instance.ReportValue(ReportManager.ReportType.PersonalTime, GameClock.Instance.GetTimeSinceStartOfReport(), string.Format(UI.ENDOFDAYREPORT.NOTES.PERSONAL_TIME, DUPLICANTS.CHORES.NOT_EXISTING_TASK), gameObject.GetProperName());
 			foreach (MinionIdentity item in Components.LiveMinionIdentities.Items)
 			{
 				item.GetComponent<Effects>().Add("NewCrewArrival", true);
+			}
+			MinionResume component2 = component.GetComponent<MinionResume>();
+			for (int i = 0; (float)i < startingSkillPoints; i++)
+			{
+				component2.ForceAddSkillPoint();
 			}
 		}
 		base.smi.sm.closePortal.Trigger(base.smi);

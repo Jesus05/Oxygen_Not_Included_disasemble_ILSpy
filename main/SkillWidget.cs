@@ -125,7 +125,13 @@ public class SkillWidget : KMonoBehaviour, IPointerEnterHandler, IPointerExitHan
 				}
 			}
 			hatImage.sprite = Assets.GetSprite(skill.hat);
-			aptitudeBox.SetActive((Object)minionResume != (Object)null && minionResume.AptitudeBySkillGroup.ContainsKey(skill.skillGroup));
+			bool active = false;
+			if ((Object)minionResume != (Object)null)
+			{
+				minionResume.AptitudeBySkillGroup.TryGetValue(skill.skillGroup, out float value);
+				active = (value > 0f);
+			}
+			aptitudeBox.SetActive(active);
 			traitDisabledIcon.SetActive((Object)minionResume != (Object)null && minionResume.CheckSkillTraitDisabled(skill.Id));
 			string text = string.Empty;
 			List<string> list = new List<string>();

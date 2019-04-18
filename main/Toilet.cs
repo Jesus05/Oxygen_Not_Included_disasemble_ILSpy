@@ -203,7 +203,7 @@ public class Toilet : StateMachineComponent<Toilet.StatesInstance>, ISaveLoadabl
 		{
 			Chore chore = CreateUseChore(smi, Db.Get().ChoreTypes.BreakPee);
 			chore.AddPrecondition(ChorePreconditions.instance.IsBladderNotFull, null);
-			chore.AddPrecondition(ChorePreconditions.instance.IsScheduledTime, Db.Get().ScheduleBlockTypes.Recreation);
+			chore.AddPrecondition(ChorePreconditions.instance.IsScheduledTime, Db.Get().ScheduleBlockTypes.Hygiene);
 			return chore;
 		}
 

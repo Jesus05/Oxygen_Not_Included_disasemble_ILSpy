@@ -37,6 +37,13 @@ public class GermExposureMonitor : GameStateMachine<GermExposureMonitor, GermExp
 		public List<string> excluded_effects;
 	}
 
+	public class ExposureStatusData
+	{
+		public ExposureType exposure_type;
+
+		public Instance owner;
+	}
+
 	public new class Instance : GameInstance
 	{
 		public class DiseaseSourceInfo
@@ -66,6 +73,7 @@ public class GermExposureMonitor : GameStateMachine<GermExposureMonitor, GermExp
 
 		private Traits traits;
 
+		[Serialize]
 		private Dictionary<string, ExposureState> exposureStates = new Dictionary<string, ExposureState>();
 
 		private Dictionary<string, Guid> statusItemHandles = new Dictionary<string, Guid>();
@@ -154,7 +162,8 @@ public class GermExposureMonitor : GameStateMachine<GermExposureMonitor, GermExp
 							else
 							{
 								SetExposureState(exposureType.germ_id, ExposureState.Exposed);
-								GermExposureTracker.Instance.AddExposure(exposureType, num);
+								float amount = Mathf.Clamp01(num);
+								GermExposureTracker.Instance.AddExposure(exposureType, amount);
 							}
 						}
 					}
@@ -255,7 +264,11 @@ public class GermExposureMonitor : GameStateMachine<GermExposureMonitor, GermExp
 				if (value == Guid.Empty && (exposureState == ExposureState.Exposed || exposureState == ExposureState.Contracted))
 				{
 					KSelectable component = GetComponent<KSelectable>();
-					value = component.AddStatusItem(Db.Get().DuplicantStatusItems.ExposedToGerms, exposureType.sickness_id);
+					value = component.AddStatusItem(Db.Get().DuplicantStatusItems.ExposedToGerms, new ExposureStatusData
+					{
+						exposure_type = exposureType,
+						owner = this
+					});
 				}
 				else if (value != Guid.Empty && exposureState != ExposureState.Exposed && exposureState != ExposureState.Contracted)
 				{

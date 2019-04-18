@@ -51,6 +51,8 @@ public class KCrashReporter : MonoBehaviour
 
 	public static bool debugWasUsed = false;
 
+	public static bool haveActiveMods = false;
+
 	public static string error_canvas_name = "ErrorCanvas";
 
 	private static bool disableDeduping = false;
@@ -395,7 +397,11 @@ public class KCrashReporter : MonoBehaviour
 					List<string> list = new List<string>();
 					if (debugWasUsed)
 					{
-						msg = $"(Debug Used)\n{msg}";
+						list.Add("(Debug Used)");
+					}
+					if (haveActiveMods)
+					{
+						list.Add("(Mods Active)");
 					}
 					list.Add(msg);
 					string[] array = new string[8]
@@ -446,7 +452,7 @@ public class KCrashReporter : MonoBehaviour
 						error.callstack = error.callstack + "\n" + Guid.NewGuid().ToString();
 					}
 					error.fullstack = $"{msg}\n\n{stack_trace}";
-					error.build = 326399;
+					error.build = 326830;
 					error.log = GetLogContents();
 					error.summaryline = string.Join("\n", list.ToArray());
 					error.user_message = userMessage;

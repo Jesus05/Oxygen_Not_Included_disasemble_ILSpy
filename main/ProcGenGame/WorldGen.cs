@@ -196,8 +196,8 @@ namespace ProcGenGame
 			{
 				obj = new StandardFileSystem();
 			}
-			IFileSystem filesystem = (IFileSystem)obj;
-			if (SettingsCache.LoadFiles(filesystem))
+			IFileSystem file_system = (IFileSystem)obj;
+			if (SettingsCache.LoadFiles(file_system))
 			{
 				TemplateCache.Init();
 			}

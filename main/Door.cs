@@ -282,6 +282,11 @@ public class Door : Workable, ISaveLoadable, ISim200ms
 
 	private LoggerFSS log;
 
+	private static readonly EventSystem.IntraObjectHandler<Door> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<Door>(delegate(Door component, object data)
+	{
+		component.OnCopySettings(data);
+	});
+
 	public static readonly HashedString OPEN_CLOSE_PORT_ID = new HashedString("DoorOpenClose");
 
 	private static readonly KAnimFile[] OVERRIDE_ANIMS = new KAnimFile[1]
@@ -314,6 +319,16 @@ public class Door : Workable, ISaveLoadable, ISim200ms
 		SetOffsetTable(OffsetGroups.InvertedStandardTable);
 	}
 
+	private void OnCopySettings(object data)
+	{
+		GameObject gameObject = (GameObject)data;
+		Door component = gameObject.GetComponent<Door>();
+		if ((Object)component != (Object)null)
+		{
+			QueueStateChange(component.requestedState);
+		}
+	}
+
 	protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
@@ -328,6 +343,7 @@ public class Door : Workable, ISaveLoadable, ISim200ms
 		{
 			doorOpeningSound = GlobalAssets.GetSound(doorOpeningSoundEventName, false);
 		}
+		Subscribe(-905833192, OnCopySettingsDelegate);
 	}
 
 	private ControlState GetNextState(ControlState wantedState)

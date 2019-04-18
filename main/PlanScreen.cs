@@ -345,7 +345,7 @@ public class PlanScreen : KIconToggleMenu
 		if (!((UnityEngine.Object)selected == (UnityEngine.Object)null))
 		{
 			Building component = SelectTool.Instance.selected.GetComponent<Building>();
-			if ((UnityEngine.Object)component != (UnityEngine.Object)null && component.Def.ShowInBuildMenu)
+			if ((UnityEngine.Object)component != (UnityEngine.Object)null && component.Def.ShowInBuildMenu && !component.Def.Deprecated)
 			{
 				Instance.CopyBuildingOrder(component);
 				copyBuildingButton.SetActive(false);
@@ -365,7 +365,7 @@ public class PlanScreen : KIconToggleMenu
 		else
 		{
 			Building component2 = SelectTool.Instance.selected.GetComponent<Building>();
-			if ((UnityEngine.Object)component2 != (UnityEngine.Object)null && component2.Def.ShowInBuildMenu)
+			if ((UnityEngine.Object)component2 != (UnityEngine.Object)null && component2.Def.ShowInBuildMenu && !component2.Def.Deprecated)
 			{
 				Tuple<Sprite, Color> uISprite = Def.GetUISprite(component2.gameObject, "ui", false);
 				component.gameObject.SetActive(true);

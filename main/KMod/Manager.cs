@@ -30,9 +30,9 @@ namespace KMod
 			}
 		}
 
-		public const Content all_content = Content.LayerableFiles | Content.Strings | Content.DLL | Content.Translation;
+		public const Content all_content = Content.LayerableFiles | Content.Strings | Content.DLL | Content.Translation | Content.Animation;
 
-		public const Content boot_content = Content.Strings | Content.DLL | Content.Translation;
+		public const Content boot_content = Content.Strings | Content.DLL | Content.Translation | Content.Animation;
 
 		public const Content install_content = Content.DLL;
 
@@ -48,6 +48,8 @@ namespace KMod
 
 		public OnUpdate on_update;
 
+		private const int IO_OP_RETRY_COUNT = 5;
+
 		private bool load_user_mod_loader_dll = true;
 
 		private int current_version = 1;
@@ -58,60 +60,38 @@ namespace KMod
 			string filename = GetFilename();
 			try
 			{
-				if (Testing.save_load == Testing.SaveLoad.FailLoad)
+				FileUtil.DoIOAction(delegate
 				{
-					throw new Exception("KMod.Testing.SaveLoad.FailLoad");
-				}
-				if (File.Exists(filename))
-				{
-					string value = File.ReadAllText(filename);
-					PersistentData persistentData = JsonConvert.DeserializeObject<PersistentData>(value);
-					mods = persistentData.mods;
-				}
-			}
-			catch (Exception ex)
-			{
-				ErrorDialog(string.Format(UI.FRONTEND.MODS.DB_CORRUPT, filename, ex.Message), null, null);
-				return;
-			}
-			switch (Testing.install)
-			{
-			case Testing.Install.ForceReinstall:
-				foreach (Mod mod in mods)
-				{
-					if (mod.status == Mod.Status.Installed)
+					if (File.Exists(filename))
 					{
-						mod.status = Mod.Status.ReinstallPending;
+						string value = File.ReadAllText(filename);
+						PersistentData persistentData = JsonConvert.DeserializeObject<PersistentData>(value);
+						mods = persistentData.mods;
 					}
-				}
-				break;
-			case Testing.Install.ForceUninstall:
-				foreach (Mod mod2 in mods)
-				{
-					if (mod2.status == Mod.Status.Installed)
-					{
-						mod2.status = Mod.Status.UninstallPending;
-					}
-				}
-				break;
+				}, 5);
+			}
+			catch (Exception)
+			{
+				Debug.LogWarningFormat(UI.FRONTEND.MODS.DB_CORRUPT, filename);
+				mods = new List<Mod>();
 			}
 			List<Mod> list = new List<Mod>();
 			bool flag = false;
-			foreach (Mod mod3 in mods)
+			foreach (Mod mod in mods)
 			{
-				if (mod3.status == Mod.Status.UninstallPending)
+				if (mod.status == Mod.Status.UninstallPending)
 				{
-					Debug.LogFormat("Latent uninstall of mod {0} from {1}", mod3.title, mod3.label.install_path);
-					if (mod3.Uninstall())
+					Debug.LogFormat("Latent uninstall of mod {0} from {1}", mod.title, mod.label.install_path);
+					if (mod.Uninstall())
 					{
-						list.Add(mod3);
+						list.Add(mod);
 					}
 					else
 					{
-						DebugUtil.Assert(mod3.status == Mod.Status.UninstallPending);
-						Debug.LogFormat("\t...failed to uninstall mod {0}", mod3.title);
+						DebugUtil.Assert(mod.status == Mod.Status.UninstallPending);
+						Debug.LogFormat("\t...failed to uninstall mod {0}", mod.title);
 					}
-					if (mod3.status != Mod.Status.UninstallPending)
+					if (mod.status != Mod.Status.UninstallPending)
 					{
 						flag = true;
 					}
@@ -121,17 +101,13 @@ namespace KMod
 			{
 				mods.Remove(item);
 			}
-			foreach (Mod mod4 in mods)
+			foreach (Mod mod2 in mods)
 			{
-				mod4.ScanContent();
+				mod2.ScanContent();
 			}
 			if (flag)
 			{
 				Save();
-			}
-			if (Testing.boot == Testing.Boot.Crash)
-			{
-				HandleCrash();
 			}
 		}
 
@@ -254,7 +230,7 @@ namespace KMod
 				}
 				bool flag = mod2.label.version != mod.label.version;
 				bool flag2 = mod2.available_content != mod.available_content;
-				bool flag3 = flag || flag2 || mod2.status == Mod.Status.ReinstallPending || Testing.install == Testing.Install.ForceUpdate;
+				bool flag3 = (flag || flag2 || mod2.status == Mod.Status.ReinstallPending) ? true : false;
 				if (flag)
 				{
 					events.Add(new Event
@@ -282,7 +258,7 @@ namespace KMod
 						Uninstall(mod);
 					}
 					Install(mod);
-					if (mod.enabled && (mod.available_content & (Content.Strings | Content.DLL | Content.Translation)) != 0)
+					if (mod.enabled && (mod.available_content & (Content.Strings | Content.DLL | Content.Translation | Content.Animation)) != 0)
 					{
 						events.Add(new Event
 						{
@@ -710,32 +686,32 @@ namespace KMod
 
 		public bool Save()
 		{
-			if (!FileUtil.CreateDirectory(GetDirectory()))
+			if (!FileUtil.CreateDirectory(GetDirectory(), 5))
 			{
 				return false;
 			}
-			using (FileStream fileStream = FileUtil.Create(GetFilename()))
+			FileStream stream = FileUtil.Create(GetFilename(), 5);
+			try
 			{
-				try
+				if (stream == null)
 				{
-					if (Testing.save_load == Testing.SaveLoad.FailSave)
-					{
-						throw new Exception("KMod.Testing.SaveLoad.FailSave");
-					}
-					if (fileStream == null)
+					return false;
+				}
+				using (StreamWriter streamWriter = FileUtil.DoIODialog(() => new StreamWriter(stream), GetFilename(), null, 5))
+				{
+					if (streamWriter == null)
 					{
 						return false;
 					}
-					using (StreamWriter streamWriter = new StreamWriter(fileStream))
-					{
-						string value = JsonConvert.SerializeObject(new PersistentData(current_version, mods), Formatting.Indented);
-						streamWriter.Write(value);
-					}
+					string value = JsonConvert.SerializeObject(new PersistentData(current_version, mods), Formatting.Indented);
+					streamWriter.Write(value);
 				}
-				catch (Exception ex)
+			}
+			finally
+			{
+				if (stream != null)
 				{
-					ErrorDialog(string.Format(UI.FRONTEND.SUPPORTWARNINGS.IO_UNAUTHORIZED, ex.Message), null, null);
-					return false;
+					((IDisposable)stream).Dispose();
 				}
 			}
 			return true;

@@ -6,26 +6,40 @@ namespace Klei.AI
 	{
 		public class StatesInstance : GameStateMachine<States, StatesInstance, SicknessInstance, object>.GameInstance
 		{
-			public PeriodicEmoteSickness periodicEmoteDisease;
+			public PeriodicEmoteSickness periodicEmoteSickness;
 
-			public StatesInstance(SicknessInstance master, PeriodicEmoteSickness periodicEmoteDisease)
+			public StatesInstance(SicknessInstance master, PeriodicEmoteSickness periodicEmoteSickness)
 				: base(master)
 			{
-				this.periodicEmoteDisease = periodicEmoteDisease;
+				this.periodicEmoteSickness = periodicEmoteSickness;
+			}
+
+			public Reactable GetReactable()
+			{
+				GameObject gameObject = base.master.gameObject;
+				HashedString id = "PeriodicEmoteSickness";
+				ChoreType emote = Db.Get().ChoreTypes.Emote;
+				HashedString animset = "anim_sneeze_kanim";
+				float cooldown = periodicEmoteSickness.cooldown;
+				SelfEmoteReactable selfEmoteReactable = new SelfEmoteReactable(gameObject, id, emote, animset, 0f, cooldown, float.PositiveInfinity);
+				HashedString[] anims = periodicEmoteSickness.anims;
+				foreach (HashedString anim in anims)
+				{
+					selfEmoteReactable.AddStep(new EmoteReactable.EmoteStep
+					{
+						anim = anim
+					});
+				}
+				return selfEmoteReactable;
 			}
 		}
 
 		public class States : GameStateMachine<States, StatesInstance, SicknessInstance>
 		{
-			public State emoting;
-
-			public State cooldown;
-
 			public override void InitializeStates(out BaseState default_state)
 			{
-				default_state = emoting;
-				emoting.ToggleChore((StatesInstance smi) => new EmoteChore(smi.master, Db.Get().ChoreTypes.Emote, smi.periodicEmoteDisease.kanim, smi.periodicEmoteDisease.anims, KAnim.PlayMode.Once, false), cooldown);
-				cooldown.ScheduleGoTo((StatesInstance smi) => smi.periodicEmoteDisease.cooldown, emoting);
+				default_state = root;
+				root.ToggleReactable((StatesInstance smi) => smi.GetReactable());
 			}
 		}
 

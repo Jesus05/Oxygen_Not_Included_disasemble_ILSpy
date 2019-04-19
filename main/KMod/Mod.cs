@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using UnityEngine;
 
 namespace KMod
 {
@@ -140,7 +141,14 @@ namespace KMod
 						{
 							if (!(text == "templates"))
 							{
-								if (text == "worldgen")
+								if (!(text == "worldgen"))
+								{
+									if (text == "anims")
+									{
+										available_content |= Content.Animation;
+									}
+								}
+								else
 								{
 									available_content |= Content.LayerableFiles;
 								}
@@ -210,7 +218,7 @@ namespace KMod
 			if (label.distribution_platform != 0 && label.distribution_platform != Label.DistributionPlatform.Dev)
 			{
 				status = Status.ReinstallPending;
-				if (file_source != null && FileUtil.DeleteDirectory(label.install_path) && FileUtil.CreateDirectory(label.install_path))
+				if (file_source != null && FileUtil.DeleteDirectory(label.install_path, 0) && FileUtil.CreateDirectory(label.install_path, 0))
 				{
 					file_source.CopyTo(label.install_path, null);
 					file_source = new Directory(label.install_path);
@@ -232,7 +240,7 @@ namespace KMod
 				status = Status.UninstallPending;
 				return false;
 			}
-			if (!FileUtil.DeleteDirectory(label.install_path))
+			if (!FileUtil.DeleteDirectory(label.install_path, 0))
 			{
 				Debug.Log($"Can't uninstall {label.ToString()}: directory deletion failed");
 				status = Status.UninstallPending;
@@ -279,6 +287,54 @@ namespace KMod
 			return num > 0;
 		}
 
+		private bool LoadAnimation()
+		{
+			string path = FSUtil.Normalize(Path.Combine(label.install_path, "anims"));
+			if (!System.IO.Directory.Exists(path))
+			{
+				return false;
+			}
+			int num = 0;
+			ListPool<Texture2D, Mod>.PooledList pooledList = ListPool<Texture2D, Mod>.Allocate();
+			DirectoryInfo directoryInfo = new DirectoryInfo(path);
+			FileInfo[] files = directoryInfo.GetFiles();
+			foreach (FileInfo fileInfo in files)
+			{
+				TextAsset anim_file = null;
+				TextAsset build_file = null;
+				pooledList.Clear();
+				AssetBundle assetBundle = AssetBundle.LoadFromFile(fileInfo.FullName);
+				UnityEngine.Object[] array = assetBundle.LoadAllAssets();
+				UnityEngine.Object[] array2 = array;
+				foreach (UnityEngine.Object @object in array2)
+				{
+					Texture2D texture2D = @object as Texture2D;
+					if ((UnityEngine.Object)texture2D != (UnityEngine.Object)null)
+					{
+						pooledList.Add(texture2D);
+					}
+					else if (@object.name.EndsWith("_anim"))
+					{
+						anim_file = (@object as TextAsset);
+					}
+					else if (@object.name.EndsWith("_build"))
+					{
+						build_file = (@object as TextAsset);
+					}
+					else
+					{
+						DebugUtil.LogWarningArgs($"Unhandled asset ({@object.name}) in bundle ({fileInfo.FullName})...ignoring");
+					}
+				}
+				if ((UnityEngine.Object)ModUtil.AddKAnim(fileInfo.Name, anim_file, build_file, pooledList) != (UnityEngine.Object)null)
+				{
+					num++;
+				}
+			}
+			pooledList.Recycle();
+			return num != 0;
+		}
+
 		public void Load(Content content)
 		{
 			content = (Content)((int)content & (int)(byte)((int)available_content & (int)(byte)(~(uint)loaded_content)));
@@ -298,6 +354,10 @@ namespace KMod
 			{
 				Global.Instance.layeredFileSystem.AddFileSystem(file_source.GetFileSystem());
 				loaded_content |= Content.LayerableFiles;
+			}
+			if ((content & Content.Animation) != 0 && LoadAnimation())
+			{
+				loaded_content |= Content.Animation;
 			}
 		}
 

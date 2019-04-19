@@ -261,6 +261,7 @@ public class CrewPortrait : KMonoBehaviour
 					}
 				}
 				component.AddSymbolOverride(Db.Get().AccessorySlots.HatHair.targetSymbolId, Db.Get().AccessorySlots.HatHair.Lookup("hat_" + HashCache.Get().Get(component2.GetAccessory(Db.Get().AccessorySlots.Hair).symbol.hash)).symbol, 1);
+				RefreshHat(minionIdentity, controller);
 			}
 			else
 			{
@@ -288,8 +289,8 @@ public class CrewPortrait : KMonoBehaviour
 					}
 				}
 				component.AddSymbolOverride(Db.Get().AccessorySlots.HatHair.targetSymbolId, Db.Get().AccessorySlots.HatHair.Lookup("hat_" + HashCache.Get().Get(storedMinionIdentity.GetAccessory(Db.Get().AccessorySlots.Hair).symbol.hash)).symbol, 1);
+				RefreshHat(storedMinionIdentity, controller);
 			}
-			RefreshHat(identityObject, controller);
 			float animScale = 1f;
 			if ((UnityEngine.Object)GameScreenManager.Instance != (UnityEngine.Object)null && (UnityEngine.Object)GameScreenManager.Instance.ssOverlayCanvas != (UnityEngine.Object)null)
 			{

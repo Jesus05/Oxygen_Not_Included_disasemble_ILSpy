@@ -319,7 +319,7 @@ public class LoadScreen : KModalScreen
 
 	private static bool IsSaveFileFromUnsupportedFutureBuild(SaveGame.Header header)
 	{
-		return header.buildVersion > 326830;
+		return header.buildVersion > 327401;
 	}
 
 	private void SetSelectedGame(string filename)
@@ -355,7 +355,7 @@ public class LoadScreen : KModalScreen
 				InfoText.text = string.Empty;
 				if (IsSaveFileFromUnsupportedFutureBuild(header))
 				{
-					InfoText.text = string.Format(UI.FRONTEND.LOADSCREEN.SAVE_TOO_NEW, filename, header.buildVersion, 326830u);
+					InfoText.text = string.Format(UI.FRONTEND.LOADSCREEN.SAVE_TOO_NEW, filename, header.buildVersion, 327401u);
 					loadButton.isInteractable = false;
 					loadButton.GetComponent<ImageToggleState>().SetState(ImageToggleState.State.Disabled);
 				}
@@ -408,10 +408,10 @@ public class LoadScreen : KModalScreen
 		SaveGame.GameInfo gameInfo = SaveLoader.LoadHeader(filename, out header);
 		string arg = null;
 		string arg2 = null;
-		if (header.buildVersion > 326830)
+		if (header.buildVersion > 327401)
 		{
 			arg = header.buildVersion.ToString();
-			arg2 = 326830.ToString();
+			arg2 = 327401.ToString();
 		}
 		else if (gameInfo.saveMajorVersion < 7)
 		{

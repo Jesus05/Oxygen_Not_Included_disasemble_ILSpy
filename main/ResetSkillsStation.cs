@@ -14,6 +14,7 @@ public class ResetSkillsStation : Workable
 	protected override void OnSpawn()
 	{
 		base.OnSpawn();
+		OnAssign(assignable.assignee);
 		assignable.OnAssign += OnAssign;
 	}
 

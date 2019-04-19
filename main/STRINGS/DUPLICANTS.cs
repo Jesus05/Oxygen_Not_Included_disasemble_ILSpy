@@ -2366,7 +2366,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Exposed to {Sickness} Germs";
 
-				public static LocString TOOLTIP = "This Duplicant has been exposed to a concentration of {Sickness} Germs and is at risk of waking up sick on their next shift.\n\nChance of Contracting {Sickness}: {Total}\n\n    • Baseline: {Base}\n    • " + ATTRIBUTES.GERMSUSCEPTIBILITY.NAME + ": {Modifiers}";
+				public static LocString TOOLTIP = "This Duplicant has been exposed to a concentration of {Sickness} Germs and is at risk of waking up sick on their next shift.\n\nExposed {Source}\n\nChance of Contracting {Sickness}: {Chance}\n\nResistance Rating: {Total}\n    • {Sickness}: {Base}\n    • " + ATTRIBUTES.GERMRESISTANCE.NAME + ": {Dupe}";
 			}
 		}
 
@@ -2448,9 +2448,9 @@ namespace STRINGS
 
 				public static LocString TOXIC_AREA = "through exposure to toxic areas";
 
-				public static LocString FOOD = "by eating {0}";
+				public static LocString FOOD = "by eating a germ-covered {0}";
 
-				public static LocString AIR = "by breathing {0}";
+				public static LocString AIR = "by breathing germ-filled {0}";
 
 				public static LocString SKIN = "through skin contamination";
 
@@ -4641,11 +4641,11 @@ namespace STRINGS
 				public static LocString DESC = "Determines how frequently a Duplicant sneezes.";
 			}
 
-			public class GERMSUSCEPTIBILITY
+			public class GERMRESISTANCE
 			{
-				public static LocString NAME = "Germ Susceptibility";
+				public static LocString NAME = "Germ Resistance";
 
-				public static LocString DESC = "How likely is a Duplicant to become sick from exposure to germ based diseases.";
+				public static LocString DESC = "Duplicants with higher Germ Resistance are less likely to contract germ base diseases.";
 			}
 
 			public class LEARNING

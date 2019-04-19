@@ -76,12 +76,12 @@ namespace KMod
 				{
 					string path2 = FSUtil.Normalize(Path.Combine(path, entry.FileName));
 					string directoryName = Path.GetDirectoryName(path2);
-					if (string.IsNullOrEmpty(directoryName) || FileUtil.CreateDirectory(directoryName))
+					if (string.IsNullOrEmpty(directoryName) || FileUtil.CreateDirectory(directoryName, 0))
 					{
 						using (MemoryStream memoryStream = new MemoryStream((int)entry.UncompressedSize))
 						{
 							entry.Extract(memoryStream);
-							using (FileStream fileStream = FileUtil.Create(path2))
+							using (FileStream fileStream = FileUtil.Create(path2, 0))
 							{
 								fileStream.Write(memoryStream.GetBuffer(), 0, memoryStream.GetBuffer().Length);
 							}

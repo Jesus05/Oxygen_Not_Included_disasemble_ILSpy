@@ -38,7 +38,7 @@ namespace Database
 
 		public Attribute Immunity;
 
-		public Attribute GermSusceptibility;
+		public Attribute GermResistance;
 
 		public Attribute Insulation;
 
@@ -146,8 +146,8 @@ namespace Database
 			CarryAmount.SetFormatter(new StandardAttributeFormatter(GameUtil.UnitClass.Mass, GameUtil.TimeSlice.None));
 			QualityOfLife = Add(new Attribute("QualityOfLife", false, Attribute.Display.Details, false, 0f, "ui_icon_qualityoflife", "attribute_qualityoflife"));
 			QualityOfLife.SetFormatter(new QualityOfLifeAttributeFormatter());
-			GermSusceptibility = Add(new Attribute("GermSusceptibility", false, Attribute.Display.Details, false, 1f, "ui_icon_immunelevel", "attribute_immunelevel"));
-			GermSusceptibility.SetFormatter(new PercentAttributeFormatter());
+			GermResistance = Add(new Attribute("GermResistance", false, Attribute.Display.Details, false, 0f, "ui_icon_immunelevel", "attribute_immunelevel"));
+			GermResistance.SetFormatter(new StandardAttributeFormatter(GameUtil.UnitClass.SimpleFloat, GameUtil.TimeSlice.None));
 			LifeSupport = Add(new Attribute("LifeSupport", true, Attribute.Display.Never, false, 0f, null, null));
 			LifeSupport.SetFormatter(new StandardAttributeFormatter(GameUtil.UnitClass.SimpleInteger, GameUtil.TimeSlice.None));
 			Toggle = Add(new Attribute("Toggle", true, Attribute.Display.Never, false, 0f, null, null));

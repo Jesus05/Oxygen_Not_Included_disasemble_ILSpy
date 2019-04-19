@@ -3,8 +3,6 @@ using System.Collections.Generic;
 
 public class HarvestToolHoverTextCard : HoverTextConfiguration
 {
-	private string lastUpdatedFilter;
-
 	public override void UpdateHoverElements(List<KSelectable> selected)
 	{
 		ToolParameterMenu toolParameterMenu = ToolMenu.Instance.toolParameterMenu;
@@ -34,6 +32,5 @@ public class HarvestToolHoverTextCard : HoverTextConfiguration
 		{
 			ToolName = Strings.Get(ToolNameStringKey).String.ToUpper() + string.Format(UI.TOOLS.FILTER_HOVERCARD_HEADER, Strings.Get("STRINGS.UI.TOOLS.FILTERLAYERS." + lastEnabledFilter).String.ToUpper());
 		}
-		lastUpdatedFilter = lastEnabledFilter;
 	}
 }

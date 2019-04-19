@@ -32,6 +32,7 @@ public class AdvancedCureConfig : IEntityConfig
 			"Apothecary"
 		};
 		complexRecipe.sortOrder = 20;
+		complexRecipe.requiredTech = "MedicineIV";
 		recipe = complexRecipe;
 		return gameObject;
 	}

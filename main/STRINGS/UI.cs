@@ -580,7 +580,7 @@ namespace STRINGS
 
 								public static LocString TOOLTIP = "Duplicants are exceptionally vulnerable to infection";
 
-								public static LocString ATTRIBUTE_MODIFIER_NAME = "Very Low Germ Resistance";
+								public static LocString ATTRIBUTE_MODIFIER_NAME = "Miserable Germ Resistance";
 							}
 
 							public static class WEAK
@@ -589,7 +589,7 @@ namespace STRINGS
 
 								public static LocString TOOLTIP = "Duplicants have decreased germ resistance";
 
-								public static LocString ATTRIBUTE_MODIFIER_NAME = "Low Germ Resistance";
+								public static LocString ATTRIBUTE_MODIFIER_NAME = "Weak Germ Resistance";
 							}
 
 							public static class DEFAULT
@@ -605,7 +605,7 @@ namespace STRINGS
 
 								public static LocString TOOLTIP = "Duplicants have increased germ resistance";
 
-								public static LocString ATTRIBUTE_MODIFIER_NAME = "High Germ Resistence";
+								public static LocString ATTRIBUTE_MODIFIER_NAME = "Strong Germ Resistance";
 							}
 
 							public static class INVINCIBLE
@@ -614,7 +614,7 @@ namespace STRINGS
 
 								public static LocString TOOLTIP = "Duplicants will never catch a germ-based disease";
 
-								public static LocString ATTRIBUTE_MODIFIER_NAME = "Total Germ Resistence";
+								public static LocString ATTRIBUTE_MODIFIER_NAME = "Perfect Germ Resistance";
 							}
 						}
 

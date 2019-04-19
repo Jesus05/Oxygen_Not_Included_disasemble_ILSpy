@@ -31,7 +31,7 @@ namespace Klei.AI
 				"idle_pre",
 				"idle_default",
 				"idle_pst"
-			}, 5f));
+			}, 10f));
 		}
 	}
 }

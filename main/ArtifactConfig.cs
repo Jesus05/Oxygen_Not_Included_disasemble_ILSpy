@@ -27,10 +27,12 @@ public class ArtifactConfig : IMultiEntityConfig
 		list.Add(CreateArtifact("TeaPot", UI.SPACEARTIFACTS.TEAPOT.NAME, UI.SPACEARTIFACTS.TEAPOT.DESCRIPTION, "idle_teapot", "ui_teapot", DECOR.SPACEARTIFACT.TIER2, null, SimHashes.Creature));
 		list.Add(CreateArtifact("BrickPhone", UI.SPACEARTIFACTS.BRICKPHONE.NAME, UI.SPACEARTIFACTS.BRICKPHONE.DESCRIPTION, "idle_brick_phone", "ui_brick_phone", DECOR.SPACEARTIFACT.TIER2, null, SimHashes.Creature));
 		list.Add(CreateArtifact("RobotArm", UI.SPACEARTIFACTS.ROBOTARM.NAME, UI.SPACEARTIFACTS.ROBOTARM.DESCRIPTION, "idle_robot_arm", "ui_robot_arm", DECOR.SPACEARTIFACT.TIER2, null, SimHashes.Creature));
-		list.Add(CreateArtifact("ShieldGenerator", UI.SPACEARTIFACTS.SHIELDGENERATOR.NAME, UI.SPACEARTIFACTS.SHIELDGENERATOR.DESCRIPTION, "idle_hologram_generator_loop", "ui_hologram_generator", DECOR.SPACEARTIFACT.TIER2, null, SimHashes.Creature));
-		list.Add(CreateArtifact("BioluminescentRock", UI.SPACEARTIFACTS.BIOLUMROCK.NAME, UI.SPACEARTIFACTS.BIOLUMROCK.DESCRIPTION, "idle_bioluminescent_rock", "ui_bioluminescent_rock", DECOR.SPACEARTIFACT.TIER2, delegate(GameObject go)
+		list.Add(CreateArtifact("ShieldGenerator", UI.SPACEARTIFACTS.SHIELDGENERATOR.NAME, UI.SPACEARTIFACTS.SHIELDGENERATOR.DESCRIPTION, "idle_hologram_generator_loop", "ui_hologram_generator", DECOR.SPACEARTIFACT.TIER2, delegate(GameObject go)
 		{
 			go.AddOrGet<LoopingSounds>();
+		}, SimHashes.Creature));
+		list.Add(CreateArtifact("BioluminescentRock", UI.SPACEARTIFACTS.BIOLUMROCK.NAME, UI.SPACEARTIFACTS.BIOLUMROCK.DESCRIPTION, "idle_bioluminescent_rock", "ui_bioluminescent_rock", DECOR.SPACEARTIFACT.TIER2, delegate(GameObject go)
+		{
 			Light2D light2D3 = go.AddOrGet<Light2D>();
 			light2D3.overlayColour = LIGHT2D.BIOLUMROCK_COLOR;
 			light2D3.Color = LIGHT2D.BIOLUMROCK_COLOR;
@@ -48,7 +50,6 @@ public class ArtifactConfig : IMultiEntityConfig
 		list.Add(CreateArtifact("PacuPercolator", UI.SPACEARTIFACTS.PERCOLATOR.NAME, UI.SPACEARTIFACTS.PERCOLATOR.DESCRIPTION, "idle_percolator", "ui_percolator", DECOR.SPACEARTIFACT.TIER3, null, SimHashes.Creature));
 		list.Add(CreateArtifact("MagmaLamp", UI.SPACEARTIFACTS.MAGMALAMP.NAME, UI.SPACEARTIFACTS.MAGMALAMP.DESCRIPTION, "idle_lava_lamp", "ui_lava_lamp", DECOR.SPACEARTIFACT.TIER3, delegate(GameObject go)
 		{
-			go.AddOrGet<LoopingSounds>();
 			Light2D light2D2 = go.AddOrGet<Light2D>();
 			light2D2.overlayColour = LIGHT2D.MAGMALAMP_COLOR;
 			light2D2.Color = LIGHT2D.MAGMALAMP_COLOR;
@@ -74,7 +75,10 @@ public class ArtifactConfig : IMultiEntityConfig
 			light2D.shape = LightShape.Circle;
 			light2D.drawOverlay = true;
 		}, SimHashes.Creature));
-		list.Add(CreateArtifact("SolarSystem", UI.SPACEARTIFACTS.SOLARSYSTEM.NAME, UI.SPACEARTIFACTS.SOLARSYSTEM.DESCRIPTION, "idle_solar_system_loop", "ui_solar_system", DECOR.SPACEARTIFACT.TIER5, null, SimHashes.Creature));
+		list.Add(CreateArtifact("SolarSystem", UI.SPACEARTIFACTS.SOLARSYSTEM.NAME, UI.SPACEARTIFACTS.SOLARSYSTEM.DESCRIPTION, "idle_solar_system_loop", "ui_solar_system", DECOR.SPACEARTIFACT.TIER5, delegate(GameObject go)
+		{
+			go.AddOrGet<LoopingSounds>();
+		}, SimHashes.Creature));
 		list.Add(CreateArtifact("Moonmoonmoon", UI.SPACEARTIFACTS.MOONMOONMOON.NAME, UI.SPACEARTIFACTS.MOONMOONMOON.DESCRIPTION, "idle_moon", "ui_moon", DECOR.SPACEARTIFACT.TIER5, null, SimHashes.Creature));
 		foreach (GameObject item in list)
 		{

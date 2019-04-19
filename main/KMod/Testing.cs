@@ -32,10 +32,10 @@ namespace KMod
 
 		public static DLLLoading dll_loading;
 
-		public static SaveLoad save_load;
+		public const SaveLoad SAVE_LOAD = SaveLoad.NoTesting;
 
-		public static Install install;
+		public const Install INSTALL = Install.NoTesting;
 
-		public static Boot boot;
+		public const Boot BOOT = Boot.NoTesting;
 	}
 }

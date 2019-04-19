@@ -408,7 +408,7 @@ public class SaveLoader : KMonoBehaviour
 		IL_00f7:
 		KMod.Manager modManager = Global.Instance.modManager;
 		modManager.Load(Content.LayerableFiles);
-		if (!modManager.MatchFootprint(saveFileRoot.active_mods, Content.LayerableFiles | Content.Strings | Content.DLL | Content.Translation))
+		if (!modManager.MatchFootprint(saveFileRoot.active_mods, Content.LayerableFiles | Content.Strings | Content.DLL | Content.Translation | Content.Animation))
 		{
 			DebugUtil.LogWarningArgs("Mod footprint of save file doesn't match current mod configuration");
 		}

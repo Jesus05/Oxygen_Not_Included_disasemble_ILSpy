@@ -32,6 +32,7 @@ public class IntermediateCureConfig : IEntityConfig
 			"Apothecary"
 		};
 		complexRecipe.sortOrder = 10;
+		complexRecipe.requiredTech = "MedicineII";
 		recipe = complexRecipe;
 		return gameObject;
 	}

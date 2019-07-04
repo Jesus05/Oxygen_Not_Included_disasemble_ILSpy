@@ -318,7 +318,7 @@ public class ToolMenu : KScreen
 	{
 		string text = collection_name;
 		bool largeIcon2 = largeIcon;
-		ToolCollection toolCollection = new ToolCollection(text, icon_name, string.Empty, false, Action.NumActions, largeIcon2);
+		ToolCollection toolCollection = new ToolCollection(text, icon_name, "", false, Action.NumActions, largeIcon2);
 		new ToolInfo(collection_name, icon_name, hotkey, tool_name, toolCollection, tooltip, null, null);
 		return toolCollection;
 	}

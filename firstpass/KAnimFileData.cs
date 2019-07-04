@@ -41,16 +41,16 @@ public class KAnimFileData
 	{
 		get
 		{
-			if (buildIndex == -1)
+			if (buildIndex != -1)
 			{
-				return null;
+				KBatchGroupData batchGroupData = KAnimBatchManager.Instance().GetBatchGroupData(batchTag);
+				if (batchGroupData == null)
+				{
+					Debug.LogErrorFormat("[{0}] No such batch group [{1}]", name, batchTag.ToString());
+				}
+				return batchGroupData.GetBuild(buildIndex);
 			}
-			KBatchGroupData batchGroupData = KAnimBatchManager.Instance().GetBatchGroupData(batchTag);
-			if (batchGroupData == null)
-			{
-				Debug.LogErrorFormat("[{0}] No such batch group [{1}]", name, batchTag.ToString());
-			}
-			return batchGroupData.GetBuild(buildIndex);
+			return null;
 		}
 	}
 

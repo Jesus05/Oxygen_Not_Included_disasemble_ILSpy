@@ -21,9 +21,9 @@ public class SaveLoader : KMonoBehaviour
 
 		public SimHashes containedElement = SimHashes.Vacuum;
 
-		public float containedMass;
+		public float containedMass = 0f;
 
-		public float containedTemperature;
+		public float containedTemperature = 0f;
 	}
 
 	[SerializationConfig(KSerialization.MemberSerialization.OptOut)]
@@ -103,13 +103,13 @@ public class SaveLoader : KMonoBehaviour
 	[MyCmpGet]
 	private GridSettings gridSettings;
 
-	private bool saveFileCorrupt;
+	private bool saveFileCorrupt = false;
 
 	private bool compressSaveData = true;
 
-	public bool saveAsText;
+	public bool saveAsText = false;
 
-	public bool zipStreams;
+	public bool zipStreams = false;
 
 	public const string MAINMENU_LEVELNAME = "launchscene";
 
@@ -126,7 +126,7 @@ public class SaveLoader : KMonoBehaviour
 
 	private const string CorruptFileSuffix = "_";
 
-	private bool mustRestartOnFail;
+	private bool mustRestartOnFail = false;
 
 	public WorldGen worldGen;
 
@@ -148,7 +148,7 @@ public class SaveLoader : KMonoBehaviour
 
 	public const string METRIC_FRAME_TIME = "AverageFrameTime";
 
-	private static bool force_infinity;
+	private static bool force_infinity = false;
 
 	[CompilerGenerated]
 	private static Sim.GAME_MessageHandler _003C_003Ef__mg_0024cache0;
@@ -358,8 +358,8 @@ public class SaveLoader : KMonoBehaviour
 				Camera.main.transform.parent.GetComponent<CameraController>().Save(writer2);
 			}
 			saveFileRoot.streamed["Camera"] = memoryStream2.ToArray();
-			return saveFileRoot;
 		}
+		return saveFileRoot;
 	}
 
 	private void Save(BinaryWriter writer)
@@ -385,7 +385,7 @@ public class SaveLoader : KMonoBehaviour
 			SaveGame.GameInfo gameInfo2 = GameInfo;
 			if (gameInfo2.saveMinorVersion >= 8)
 			{
-				goto IL_00f7;
+				goto IL_00ff;
 			}
 		}
 		if (saveFileRoot.requiredMods != null)
@@ -404,8 +404,8 @@ public class SaveLoader : KMonoBehaviour
 			}
 			saveFileRoot.requiredMods.Clear();
 		}
-		goto IL_00f7;
-		IL_00f7:
+		goto IL_00ff;
+		IL_00ff:
 		KMod.Manager modManager = Global.Instance.modManager;
 		modManager.Load(Content.LayerableFiles);
 		if (!modManager.MatchFootprint(saveFileRoot.active_mods, Content.LayerableFiles | Content.Strings | Content.DLL | Content.Translation | Content.Animation))
@@ -422,43 +422,44 @@ public class SaveLoader : KMonoBehaviour
 			}
 			catch
 			{
-				text = "worlds/Default";
+				text = "worlds/SandstoneDefault";
 			}
 		}
 		Game.worldID = text;
-		worldGen = new WorldGen(text);
+		worldGen = new WorldGen(text, null);
 		Game.LoadSettings(deserializer);
 		GridSettings.Reset(saveFileRoot.WidthInCells, saveFileRoot.HeightInCells);
+		Singleton<KBatchedAnimUpdater>.Instance.InitializeGrid();
 		Sim.SIM_Initialize(Sim.DLL_MessageHandler);
 		SimMessages.CreateSimElementsTable(ElementLoader.elements);
 		SimMessages.CreateDiseaseTable();
 		byte[] bytes = saveFileRoot.streamed["Sim"];
 		FastReader reader2 = new FastReader(bytes);
-		if (Sim.Load(reader2) != 0)
+		if (Sim.Load(reader2) == 0)
 		{
-			DebugUtil.LogWarningArgs("\n--- Error loading save ---\nSimDLL found bad data\n");
-			Sim.Shutdown();
-			return false;
-		}
-		SceneInitializer.Instance.PostLoadPrefabs();
-		mustRestartOnFail = true;
-		if (!saveManager.Load(reader))
-		{
+			SceneInitializer.Instance.PostLoadPrefabs();
+			mustRestartOnFail = true;
+			if (saveManager.Load(reader))
+			{
+				Grid.Visible = saveFileRoot.streamed["GridVisible"];
+				if (saveFileRoot.streamed.ContainsKey("GridSpawnable"))
+				{
+					Grid.Spawnable = saveFileRoot.streamed["GridSpawnable"];
+				}
+				Grid.Damage = BytesToFloat(saveFileRoot.streamed["GridDamage"]);
+				Game.Instance.Load(deserializer);
+				FastReader reader3 = new FastReader(saveFileRoot.streamed["Camera"]);
+				CameraSaveData.Load(reader3);
+				return true;
+			}
 			Sim.Shutdown();
 			DebugUtil.LogWarningArgs("\n--- Error loading save ---\n");
 			SetActiveSaveFilePath(null);
 			return false;
 		}
-		Grid.Visible = saveFileRoot.streamed["GridVisible"];
-		if (saveFileRoot.streamed.ContainsKey("GridSpawnable"))
-		{
-			Grid.Spawnable = saveFileRoot.streamed["GridSpawnable"];
-		}
-		Grid.Damage = BytesToFloat(saveFileRoot.streamed["GridDamage"]);
-		Game.Instance.Load(deserializer);
-		FastReader reader3 = new FastReader(saveFileRoot.streamed["Camera"]);
-		CameraSaveData.Load(reader3);
-		return true;
+		DebugUtil.LogWarningArgs("\n--- Error loading save ---\nSimDLL found bad data\n");
+		Sim.Shutdown();
+		return false;
 	}
 
 	public static string GetSavePrefix()
@@ -505,11 +506,11 @@ public class SaveLoader : KMonoBehaviour
 	public static string GetActiveSaveFolder()
 	{
 		string activeSaveFilePath = GetActiveSaveFilePath();
-		if (!string.IsNullOrEmpty(activeSaveFilePath))
+		if (string.IsNullOrEmpty(activeSaveFilePath))
 		{
-			return Path.GetDirectoryName(activeSaveFilePath);
+			return null;
 		}
-		return null;
+		return Path.GetDirectoryName(activeSaveFilePath);
 	}
 
 	public static List<string> GetSaveFiles(string save_dir)
@@ -546,7 +547,6 @@ public class SaveLoader : KMonoBehaviour
 				SaveFileEntry current = item2;
 				list.Add(current.path);
 			}
-			return list;
 		}
 		catch (Exception ex2)
 		{
@@ -565,9 +565,9 @@ public class SaveLoader : KMonoBehaviour
 			}
 			GameObject parent = (!((UnityEngine.Object)FrontEndManager.Instance == (UnityEngine.Object)null)) ? FrontEndManager.Instance.gameObject : GameScreenManager.Instance.ssOverlayCanvas;
 			ConfirmDialogScreen component = Util.KInstantiateUI(ScreenPrefabs.Instance.ConfirmDialogScreen.gameObject, parent, true).GetComponent<ConfirmDialogScreen>();
-			component.PopupConfirmDialog(text2, null, null, null, null, null, null, null, null);
-			return list;
+			component.PopupConfirmDialog(text2, null, null, null, null, null, null, null, null, true);
 		}
+		return list;
 	}
 
 	public static List<string> GetAllFiles()
@@ -578,11 +578,11 @@ public class SaveLoader : KMonoBehaviour
 	public static string GetLatestSaveFile()
 	{
 		List<string> allFiles = GetAllFiles();
-		if (allFiles.Count == 0)
+		if (allFiles.Count != 0)
 		{
-			return null;
+			return allFiles[0];
 		}
-		return allFiles[0];
+		return null;
 	}
 
 	public void InitialSave()
@@ -603,6 +603,7 @@ public class SaveLoader : KMonoBehaviour
 	{
 		KSerialization.Manager.Clear();
 		ReportSaveMetrics(isAutoSave);
+		RetireColonyUtility.SaveColonySummaryData();
 		if (isAutoSave && !GenericGameSettings.instance.keepAllAutosaves)
 		{
 			List<string> saveFiles = GetSaveFiles(Path.GetDirectoryName(filename));
@@ -670,12 +671,12 @@ public class SaveLoader : KMonoBehaviour
 				}
 				DebugUtil.LogArgs("IOException (probably out of disk space) for " + filename);
 				ConfirmDialogScreen confirmDialogScreen = (ConfirmDialogScreen)GameScreenManager.Instance.StartScreen(ScreenPrefabs.Instance.ConfirmDialogScreen.gameObject, GameScreenManager.Instance.ssOverlayCanvas.gameObject, GameScreenManager.UIRenderTarget.ScreenSpaceOverlay);
-				confirmDialogScreen.PopupConfirmDialog(string.Format(UI.CRASHSCREEN.SAVEFAILED, "IOException. You may not have enough free space!"), null, null, null, null, null, null, null, null);
+				confirmDialogScreen.PopupConfirmDialog(string.Format(UI.CRASHSCREEN.SAVEFAILED, "IOException. You may not have enough free space!"), null, null, null, null, null, null, null, null, true);
 				return GetActiveSaveFilePath();
 			}
 			DebugUtil.LogArgs("UnauthorizedAccessException for " + filename);
 			ConfirmDialogScreen confirmDialogScreen2 = (ConfirmDialogScreen)GameScreenManager.Instance.StartScreen(ScreenPrefabs.Instance.ConfirmDialogScreen.gameObject, GameScreenManager.Instance.ssOverlayCanvas.gameObject, GameScreenManager.UIRenderTarget.ScreenSpaceOverlay);
-			confirmDialogScreen2.PopupConfirmDialog(string.Format(UI.CRASHSCREEN.SAVEFAILED, "Unauthorized Access Exception"), null, null, null, null, null, null, null, null);
+			confirmDialogScreen2.PopupConfirmDialog(string.Format(UI.CRASHSCREEN.SAVEFAILED, "Unauthorized Access Exception"), null, null, null, null, null, null, null, null, true);
 			return GetActiveSaveFilePath();
 		}
 		if (updateSavePointer)
@@ -790,47 +791,48 @@ public class SaveLoader : KMonoBehaviour
 		}
 		catch
 		{
-			worldName = "worlds/Default";
+			worldName = "worlds/SandstoneDefault";
 		}
-		worldGen = new WorldGen(worldName);
+		worldGen = new WorldGen(worldName, null);
 		SimSaveFileStructure simSaveFileStructure = worldGen.LoadWorldGenSim();
-		if (simSaveFileStructure == null)
+		if (simSaveFileStructure != null)
 		{
-			Debug.LogError("Attempt failed");
-			return false;
-		}
-		worldDetailSave = simSaveFileStructure.worldDetail;
-		if (worldDetailSave == null)
-		{
-			Debug.LogError("Detail is null");
-		}
-		GridSettings.Reset(simSaveFileStructure.WidthInCells, simSaveFileStructure.HeightInCells);
-		Sim.SIM_Initialize(Sim.DLL_MessageHandler);
-		SimMessages.CreateSimElementsTable(ElementLoader.elements);
-		SimMessages.CreateDiseaseTable();
-		try
-		{
-			FastReader reader = new FastReader(simSaveFileStructure.Sim);
-			if (Sim.Load(reader) != 0)
+			worldDetailSave = simSaveFileStructure.worldDetail;
+			if (worldDetailSave == null)
 			{
-				DebugUtil.LogWarningArgs("\n--- Error loading save ---\nSimDLL found bad data\n");
+				Debug.LogError("Detail is null");
+			}
+			GridSettings.Reset(simSaveFileStructure.WidthInCells, simSaveFileStructure.HeightInCells);
+			Singleton<KBatchedAnimUpdater>.Instance.InitializeGrid();
+			Sim.SIM_Initialize(Sim.DLL_MessageHandler);
+			SimMessages.CreateSimElementsTable(ElementLoader.elements);
+			SimMessages.CreateDiseaseTable();
+			try
+			{
+				FastReader reader = new FastReader(simSaveFileStructure.Sim);
+				if (Sim.Load(reader) != 0)
+				{
+					DebugUtil.LogWarningArgs("\n--- Error loading save ---\nSimDLL found bad data\n");
+					Sim.Shutdown();
+					return false;
+				}
+			}
+			catch (Exception ex)
+			{
+				Debug.LogWarning("--- Error loading Sim FROM NEW WORLDGEN ---" + ex.Message + "\n" + ex.StackTrace);
 				Sim.Shutdown();
 				return false;
 			}
+			Debug.Log("Attempt success");
+			SceneInitializer.Instance.PostLoadPrefabs();
+			SceneInitializer.Instance.NewSaveGamePrefab();
+			worldGen.ReplayGenerate(Reset);
+			OnWorldGenComplete.Signal();
+			ThreadedHttps<KleiMetrics>.Instance.StartNewGame();
+			return true;
 		}
-		catch (Exception ex)
-		{
-			Debug.LogWarning("--- Error loading Sim FROM NEW WORLDGEN ---" + ex.Message + "\n" + ex.StackTrace);
-			Sim.Shutdown();
-			return false;
-		}
-		Debug.Log("Attempt success");
-		SceneInitializer.Instance.PostLoadPrefabs();
-		SceneInitializer.Instance.NewSaveGamePrefab();
-		worldGen.ReplayGenerate(Reset);
-		OnWorldGenComplete.Signal();
-		ThreadedHttps<KleiMetrics>.Instance.StartNewGame();
-		return true;
+		Debug.LogError("Attempt failed");
+		return false;
 	}
 
 	public void SetWorldDetail(WorldDetailSave worldDetail)

@@ -49,7 +49,6 @@ public class CosmicResearchCenterConfig : IBuildingConfig
 		manualDeliveryKG.requestedItemTag = INPUT_MATERIAL;
 		manualDeliveryKG.refillMass = 3f;
 		manualDeliveryKG.capacity = 300f;
-		manualDeliveryKG.choreTags = GameTags.ChoreTypes.ResearchChores;
 		manualDeliveryKG.choreTypeIDHash = Db.Get().ChoreTypes.ResearchFetch.IdHash;
 		ResearchCenter researchCenter = go.AddOrGet<ResearchCenter>();
 		researchCenter.overrideAnims = new KAnimFile[1]

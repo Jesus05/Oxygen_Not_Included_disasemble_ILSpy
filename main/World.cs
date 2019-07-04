@@ -1,3 +1,4 @@
+#define UNITY_ASSERTIONS
 using Klei;
 using Rendering;
 using System;
@@ -111,6 +112,7 @@ public class World : KMonoBehaviour
 		for (int l = 0; l < num_liquid_change_info; l++)
 		{
 			int cellIdx3 = liquid_change_info[l].cellIdx;
+			UnityEngine.Debug.Assert(Grid.IsValidCell(cellIdx3));
 			changedCells.Add(cellIdx3);
 			if (OnLiquidChanged != null)
 			{
@@ -129,12 +131,23 @@ public class World : KMonoBehaviour
 	{
 		if (!Game.IsQuitting())
 		{
-			GridArea visibleArea = GridVisibleArea.GetVisibleArea();
-			groundRenderer.Render(visibleArea.Min, visibleArea.Max);
-			Singleton<KBatchedAnimUpdater>.Instance.GetVisibleArea(out Vector2I vis_chunk_min, out Vector2I vis_chunk_max);
-			KAnimBatchManager.Instance().UpdateActiveArea(vis_chunk_min, vis_chunk_max);
-			KAnimBatchManager.Instance().UpdateDirty(Time.frameCount);
-			KAnimBatchManager.Instance().Render();
+			if (GameUtil.IsCapturingTimeLapse())
+			{
+				Game.Instance.UpdateGameActiveRegion(0, 0, Grid.WidthInCells, Grid.HeightInCells);
+				groundRenderer.RenderAll();
+				KAnimBatchManager.Instance().UpdateActiveArea(new Vector2I(0, 0), new Vector2I(9999, 9999));
+				KAnimBatchManager.Instance().UpdateDirty(Time.frameCount);
+				KAnimBatchManager.Instance().Render();
+			}
+			else
+			{
+				GridArea visibleArea = GridVisibleArea.GetVisibleArea();
+				groundRenderer.Render(visibleArea.Min, visibleArea.Max, false);
+				Singleton<KBatchedAnimUpdater>.Instance.GetVisibleArea(out Vector2I vis_chunk_min, out Vector2I vis_chunk_max);
+				KAnimBatchManager.Instance().UpdateActiveArea(vis_chunk_min, vis_chunk_max);
+				KAnimBatchManager.Instance().UpdateDirty(Time.frameCount);
+				KAnimBatchManager.Instance().Render();
+			}
 			if ((UnityEngine.Object)Camera.main != (UnityEngine.Object)null)
 			{
 				Camera main = Camera.main;

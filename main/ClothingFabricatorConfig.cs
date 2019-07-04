@@ -62,7 +62,7 @@ public class ClothingFabricatorConfig : IBuildingConfig
 		ComplexRecipe complexRecipe = new ComplexRecipe(id, array, array2);
 		complexRecipe.time = TUNING.EQUIPMENT.VESTS.WARM_VEST_FABTIME;
 		complexRecipe.description = STRINGS.EQUIPMENT.PREFABS.WARM_VEST.RECIPE_DESC;
-		complexRecipe.useResultAsDescription = true;
+		complexRecipe.nameDisplay = ComplexRecipe.RecipeNameDisplay.Result;
 		complexRecipe.fabricators = new List<Tag>
 		{
 			"ClothingFabricator"
@@ -81,7 +81,7 @@ public class ClothingFabricatorConfig : IBuildingConfig
 		complexRecipe = new ComplexRecipe(id2, array3, array4);
 		complexRecipe.time = TUNING.EQUIPMENT.VESTS.COOL_VEST_FABTIME;
 		complexRecipe.description = STRINGS.EQUIPMENT.PREFABS.COOL_VEST.RECIPE_DESC;
-		complexRecipe.useResultAsDescription = true;
+		complexRecipe.nameDisplay = ComplexRecipe.RecipeNameDisplay.Result;
 		complexRecipe.fabricators = new List<Tag>
 		{
 			"ClothingFabricator"
@@ -100,7 +100,7 @@ public class ClothingFabricatorConfig : IBuildingConfig
 		complexRecipe = new ComplexRecipe(id3, array5, array6);
 		complexRecipe.time = TUNING.EQUIPMENT.VESTS.FUNKY_VEST_FABTIME;
 		complexRecipe.description = STRINGS.EQUIPMENT.PREFABS.FUNKY_VEST.RECIPE_DESC;
-		complexRecipe.useResultAsDescription = true;
+		complexRecipe.nameDisplay = ComplexRecipe.RecipeNameDisplay.Result;
 		complexRecipe.fabricators = new List<Tag>
 		{
 			"ClothingFabricator"
@@ -111,7 +111,7 @@ public class ClothingFabricatorConfig : IBuildingConfig
 
 	public override void DoPostConfigureComplete(GameObject go)
 	{
-		go.GetComponent<KPrefabID>().prefabInitFn += delegate(GameObject game_object)
+		go.GetComponent<KPrefabID>().prefabSpawnFn += delegate(GameObject game_object)
 		{
 			ComplexFabricatorWorkable component = game_object.GetComponent<ComplexFabricatorWorkable>();
 			component.AttributeConverter = Db.Get().AttributeConverters.MachinerySpeed;

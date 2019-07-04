@@ -26,6 +26,7 @@ public class GridSettings : KMonoBehaviour
 		Grid.Spawnable = new byte[Grid.CellCount];
 		Grid.BuildMasks = new Grid.BuildFlags[Grid.CellCount];
 		Grid.LightCount = new int[Grid.CellCount];
+		Grid.RadiationCount = new int[Grid.CellCount];
 		Grid.Damage = new float[Grid.CellCount];
 		Grid.NavMasks = new Grid.NavFlags[Grid.CellCount];
 		Grid.NavValidatorMasks = new Grid.NavValidatorFlags[Grid.CellCount];
@@ -50,10 +51,6 @@ public class GridSettings : KMonoBehaviour
 			Game.Instance.gasConduitFlow.Initialize(Grid.CellCount);
 			Game.Instance.liquidConduitFlow.Initialize(Grid.CellCount);
 		}
-		if (Application.isPlaying)
-		{
-			Singleton<KBatchedAnimUpdater>.Instance.InitializeGrid();
-		}
 		Grid.OnReveal = null;
 	}
 
@@ -73,6 +70,7 @@ public class GridSettings : KMonoBehaviour
 		Grid.BuildMasks = null;
 		Grid.NavValidatorMasks = null;
 		Grid.LightCount = null;
+		Grid.RadiationCount = null;
 		Grid.Damage = null;
 		Grid.Decor = null;
 		Grid.Loudness = null;

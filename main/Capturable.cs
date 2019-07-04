@@ -111,23 +111,23 @@ public class Capturable : Workable, IGameObjectEffectDescriptor
 
 	public bool IsCapturable()
 	{
-		if (!allowCapture)
+		if (allowCapture)
 		{
+			if (!base.gameObject.HasTag(GameTags.Trapped))
+			{
+				if (!base.gameObject.HasTag(GameTags.Stored))
+				{
+					if (!base.gameObject.HasTag(GameTags.Creatures.Bagged))
+					{
+						return true;
+					}
+					return false;
+				}
+				return false;
+			}
 			return false;
 		}
-		if (base.gameObject.HasTag(GameTags.Trapped))
-		{
-			return false;
-		}
-		if (base.gameObject.HasTag(GameTags.Stored))
-		{
-			return false;
-		}
-		if (base.gameObject.HasTag(GameTags.Creatures.Bagged))
-		{
-			return false;
-		}
-		return true;
+		return false;
 	}
 
 	private void OnRefreshUserMenu(object data)
@@ -180,12 +180,7 @@ public class Capturable : Workable, IGameObjectEffectDescriptor
 	{
 		if (markedForCapture && chore == null)
 		{
-			ChoreType capture = Db.Get().ChoreTypes.Capture;
-			Tag[] chore_tags = new Tag[1]
-			{
-				GameTags.ChoreTypes.Ranching
-			};
-			chore = new WorkChore<Capturable>(capture, this, null, chore_tags, true, null, null, null, true, null, false, true, null, true, true, true, PriorityScreen.PriorityClass.basic, 5, false, true);
+			chore = new WorkChore<Capturable>(Db.Get().ChoreTypes.Capture, this, null, true, null, null, null, true, null, false, true, null, true, true, true, PriorityScreen.PriorityClass.basic, 5, false, true);
 		}
 		else if (!markedForCapture && chore != null)
 		{

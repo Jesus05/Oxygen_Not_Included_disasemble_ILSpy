@@ -22,9 +22,9 @@ public class ToolTip : KMonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 		DynamicWidthNoWrap
 	}
 
-	public bool UseFixedStringKey;
+	public bool UseFixedStringKey = false;
 
-	public string FixedStringKey = string.Empty;
+	public string FixedStringKey = "";
 
 	private List<string> multiStringToolTips = new List<string>();
 
@@ -32,11 +32,11 @@ public class ToolTip : KMonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
 	public bool worldSpace;
 
-	public bool forceRefresh;
+	public bool forceRefresh = false;
 
-	public bool refreshWhileHovering;
+	public bool refreshWhileHovering = false;
 
-	private bool isHovering;
+	private bool isHovering = false;
 
 	private float lastUpdateTime;
 

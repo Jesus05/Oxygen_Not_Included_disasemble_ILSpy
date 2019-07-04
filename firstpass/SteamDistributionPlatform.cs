@@ -41,7 +41,7 @@ internal class SteamDistributionPlatform : MonoBehaviour, DistributionPlatform.I
 		}
 	}
 
-	private SteamUser mLocalUser;
+	private SteamUser mLocalUser = null;
 
 	public bool Initialized => SteamManager.Initialized;
 

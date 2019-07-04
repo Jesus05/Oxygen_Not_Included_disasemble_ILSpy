@@ -32,13 +32,13 @@ public class KleiAccount : ThreadedHttps<KleiAccount>
 
 	private const string UserIDFieldName = "UserID";
 
-	public static string KleiUserID;
+	public static string KleiUserID = null;
 
-	private GetUserIDdelegate gotUserID;
+	private GetUserIDdelegate gotUserID = null;
 
 	private const string AuthTicketKey = "AUTH_TICKET";
 
-	private byte[] authTicket;
+	private byte[] authTicket = null;
 
 	public KleiAccount()
 	{
@@ -75,7 +75,7 @@ public class KleiAccount : ThreadedHttps<KleiAccount>
 			if (!accountReply.Error)
 			{
 				Debug.Log("[Account] Got login for user " + accountReply.UserID);
-				KleiUserID = ((!(accountReply.UserID == string.Empty)) ? accountReply.UserID : null);
+				KleiUserID = ((!(accountReply.UserID == "")) ? accountReply.UserID : null);
 				gotUserID();
 			}
 			else
@@ -89,7 +89,7 @@ public class KleiAccount : ThreadedHttps<KleiAccount>
 
 	private string EncodeToAsciiHEX(byte[] data)
 	{
-		string text = string.Empty;
+		string text = "";
 		for (int i = 0; i < data.Length; i++)
 		{
 			text += data[i].ToString("X2");

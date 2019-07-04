@@ -135,8 +135,12 @@ public class ScaleGrowthMonitor : GameStateMachine<ScaleGrowthMonitor, ScaleGrow
 		}).Update(UpdateScales, UpdateRate.SIM_1000ms, false);
 		growing.DefaultState(growing.growing).Transition(fullyGrown, AreScalesFullyGrown, UpdateRate.SIM_1000ms);
 		growing.growing.Transition(growing.stunted, GameStateMachine<ScaleGrowthMonitor, Instance, IStateMachineTarget, Def>.Not(IsInCorrectAtmosphere), UpdateRate.SIM_1000ms).Enter(ApplyModifier).Exit(RemoveModifier);
-		growing.stunted.Transition(growing.growing, IsInCorrectAtmosphere, UpdateRate.SIM_1000ms).ToggleStatusItem(CREATURES.STATUSITEMS.STUNTED_SCALE_GROWTH.NAME, CREATURES.STATUSITEMS.STUNTED_SCALE_GROWTH.TOOLTIP, category: Db.Get().StatusItemCategories.Main, icon: string.Empty, icon_type: StatusItem.IconType.Info, notification_type: (NotificationType)0, allow_multiples: false, render_overlay: default(HashedString), status_overlays: 0, resolve_string_callback: null, resolve_tooltip_callback: null);
-		fullyGrown.Transition(growing, GameStateMachine<ScaleGrowthMonitor, Instance, IStateMachineTarget, Def>.Not(AreScalesFullyGrown), UpdateRate.SIM_1000ms);
+		State state = growing.stunted.Transition(growing.growing, IsInCorrectAtmosphere, UpdateRate.SIM_1000ms);
+		string name = CREATURES.STATUSITEMS.STUNTED_SCALE_GROWTH.NAME;
+		string tooltip = CREATURES.STATUSITEMS.STUNTED_SCALE_GROWTH.TOOLTIP;
+		StatusItemCategory main = Db.Get().StatusItemCategories.Main;
+		state.ToggleStatusItem(name, tooltip, "", StatusItem.IconType.Info, (NotificationType)0, false, default(HashedString), 0, null, null, main);
+		fullyGrown.ToggleTag(GameTags.Creatures.ScalesGrown).ToggleBehaviour(GameTags.Creatures.ScalesGrown, (Instance smi) => smi.HasTag(GameTags.Creatures.CanMolt), null).Transition(growing, GameStateMachine<ScaleGrowthMonitor, Instance, IStateMachineTarget, Def>.Not(AreScalesFullyGrown), UpdateRate.SIM_1000ms);
 	}
 
 	private static bool IsInCorrectAtmosphere(Instance smi)

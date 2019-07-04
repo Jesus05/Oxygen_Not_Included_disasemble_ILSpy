@@ -52,24 +52,24 @@ public class Shower : Workable, IEffectDescriptor, IGameObjectEffectDescriptor
 			public bool OutputFull()
 			{
 				PrimaryElement primaryElement = GetComponent<Storage>().FindPrimaryElement(SimHashes.DirtyWater);
-				if ((Object)primaryElement != (Object)null)
+				if (!((Object)primaryElement != (Object)null))
 				{
-					return primaryElement.Mass >= 5f;
+					return false;
 				}
-				return false;
+				return primaryElement.Mass >= 5f;
 			}
 
 			public bool IsReady()
 			{
-				if (!HasSufficientMass())
+				if (HasSufficientMass())
 				{
+					if (!OutputFull())
+					{
+						return true;
+					}
 					return false;
 				}
-				if (OutputFull())
-				{
-					return false;
-				}
-				return true;
+				return false;
 			}
 		}
 
@@ -92,7 +92,7 @@ public class Shower : Workable, IEffectDescriptor, IGameObjectEffectDescriptor
 			ChoreType shower = Db.Get().ChoreTypes.Shower;
 			Shower master = smi.master;
 			ScheduleBlockType hygiene = Db.Get().ScheduleBlockTypes.Hygiene;
-			return new WorkChore<Shower>(shower, master, null, null, true, null, null, null, false, hygiene, false, true, null, false, true, false, PriorityScreen.PriorityClass.personalNeeds, 5, false, true);
+			return new WorkChore<Shower>(shower, master, null, true, null, null, null, false, hygiene, false, true, null, false, true, false, PriorityScreen.PriorityClass.high, 5, false, true);
 		}
 
 		private void UpdateStatusItems(Instance smi, float dt)
@@ -110,7 +110,7 @@ public class Shower : Workable, IEffectDescriptor, IGameObjectEffectDescriptor
 
 	private ShowerSM.Instance smi;
 
-	public string showerEffect = "Showered";
+	public static string SHOWER_EFFECT = "Showered";
 
 	public SimHashes outputTargetElement;
 
@@ -164,7 +164,7 @@ public class Shower : Workable, IEffectDescriptor, IGameObjectEffectDescriptor
 			string effect_id = EffectsRemoved[i];
 			component.Remove(effect_id);
 		}
-		component.Add(showerEffect, true);
+		component.Add(SHOWER_EFFECT, true);
 		worker.GetSMI<HygieneMonitor.Instance>()?.SetDirtiness(0f);
 	}
 
@@ -216,7 +216,7 @@ public class Shower : Workable, IEffectDescriptor, IGameObjectEffectDescriptor
 				list.Add(item2);
 			}
 		}
-		Effect.AddModifierDescriptions(base.gameObject, list, showerEffect, true);
+		Effect.AddModifierDescriptions(base.gameObject, list, SHOWER_EFFECT, true);
 		return list;
 	}
 }

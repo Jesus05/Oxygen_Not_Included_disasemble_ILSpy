@@ -17,7 +17,7 @@ public class CargoBay : KMonoBehaviour
 
 	private MeterController meter;
 
-	public CargoType storageType;
+	public CargoType storageType = CargoType.solids;
 
 	private static readonly EventSystem.IntraObjectHandler<CargoBay> OnLaunchDelegate = new EventSystem.IntraObjectHandler<CargoBay>(delegate(CargoBay component, object data)
 	{
@@ -124,11 +124,19 @@ public class CargoBay : KMonoBehaviour
 
 	public void OnLaunch(object data)
 	{
+		ReserveResources();
 		ConduitDispenser component = GetComponent<ConduitDispenser>();
 		if ((UnityEngine.Object)component != (UnityEngine.Object)null)
 		{
 			component.conduitType = ConduitType.None;
 		}
+	}
+
+	private void ReserveResources()
+	{
+		int spacecraftID = SpacecraftManager.instance.GetSpacecraftID(GetComponent<RocketModule>().conditionManager.GetComponent<LaunchableRocket>());
+		SpaceDestination spacecraftDestination = SpacecraftManager.instance.GetSpacecraftDestination(spacecraftID);
+		spacecraftDestination.UpdateRemainingResources(this);
 	}
 
 	public void OnLand(object data)

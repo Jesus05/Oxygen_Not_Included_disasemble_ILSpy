@@ -8,7 +8,7 @@ public class BabyPuftOxyliteConfig : IEntityConfig
 	public GameObject CreatePrefab()
 	{
 		GameObject gameObject = PuftOxyliteConfig.CreatePuftOxylite("PuftOxyliteBaby", CREATURES.SPECIES.PUFT.VARIANT_OXYLITE.BABY.NAME, CREATURES.SPECIES.PUFT.VARIANT_OXYLITE.BABY.DESC, "baby_puft_kanim", true);
-		EntityTemplates.ExtendEntityToBeingABaby(gameObject, "PuftOxylite");
+		EntityTemplates.ExtendEntityToBeingABaby(gameObject, "PuftOxylite", null);
 		return gameObject;
 	}
 

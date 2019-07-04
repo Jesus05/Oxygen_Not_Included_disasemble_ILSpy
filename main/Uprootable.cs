@@ -9,7 +9,7 @@ public class Uprootable : Workable
 	[Serialize]
 	protected bool isMarkedForUproot;
 
-	protected bool uprootComplete;
+	protected bool uprootComplete = false;
 
 	[MyCmpReq]
 	private Prioritizable prioritizable;
@@ -34,6 +34,8 @@ public class Uprootable : Workable
 	public OccupyArea area;
 
 	private Storage planterStorage;
+
+	public bool showUserMenuButtons = true;
 
 	private static readonly EventSystem.IntraObjectHandler<Uprootable> OnPlanterStorageDelegate = new EventSystem.IntraObjectHandler<Uprootable>(delegate(Uprootable component, object data)
 	{
@@ -97,7 +99,7 @@ public class Uprootable : Workable
 		Prioritizable.AddRef(base.gameObject);
 		if (isMarkedForUproot)
 		{
-			MarkForUproot();
+			MarkForUproot(true);
 		}
 	}
 
@@ -142,17 +144,17 @@ public class Uprootable : Workable
 		uprootComplete = state;
 	}
 
-	public void MarkForUproot()
+	public void MarkForUproot(bool instantOnDebug = true)
 	{
 		if (canBeUprooted)
 		{
-			if (DebugHandler.InstantBuildMode)
+			if (DebugHandler.InstantBuildMode && instantOnDebug)
 			{
 				Uproot();
 			}
 			else if (chore == null)
 			{
-				chore = new WorkChore<Uprootable>(Db.Get().ChoreTypes.Uproot, this, null, null, true, null, null, null, true, null, false, true, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, false, true);
+				chore = new WorkChore<Uprootable>(Db.Get().ChoreTypes.Uproot, this, null, true, null, null, null, true, null, false, true, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, false, true);
 				GetComponent<KSelectable>().AddStatusItem(pendingStatusItem, this);
 			}
 			isMarkedForUproot = true;
@@ -178,16 +180,16 @@ public class Uprootable : Workable
 
 	public bool HasChore()
 	{
-		if (chore == null)
+		if (chore != null)
 		{
-			return false;
+			return true;
 		}
-		return true;
+		return false;
 	}
 
 	private void OnClickUproot()
 	{
-		MarkForUproot();
+		MarkForUproot(true);
 	}
 
 	protected void OnClickCancelUproot()
@@ -202,38 +204,41 @@ public class Uprootable : Workable
 
 	private void OnRefreshUserMenu(object data)
 	{
-		if (uprootComplete)
+		if (showUserMenuButtons)
 		{
-			if (deselectOnUproot)
+			if (uprootComplete)
 			{
-				KSelectable component = GetComponent<KSelectable>();
-				if ((UnityEngine.Object)component != (UnityEngine.Object)null && (UnityEngine.Object)SelectTool.Instance.selected == (UnityEngine.Object)component)
+				if (deselectOnUproot)
 				{
-					SelectTool.Instance.Select(null, false);
+					KSelectable component = GetComponent<KSelectable>();
+					if ((UnityEngine.Object)component != (UnityEngine.Object)null && (UnityEngine.Object)SelectTool.Instance.selected == (UnityEngine.Object)component)
+					{
+						SelectTool.Instance.Select(null, false);
+					}
 				}
 			}
-		}
-		else if (canBeUprooted)
-		{
-			object buttonInfo;
-			if (chore != null)
+			else if (canBeUprooted)
 			{
-				string iconName = "action_uproot";
-				string text = cancelButtonLabel;
-				System.Action on_click = OnClickCancelUproot;
-				string tooltipText = cancelButtonTooltip;
-				buttonInfo = new KIconButtonMenu.ButtonInfo(iconName, text, on_click, Action.NumActions, null, null, null, tooltipText, true);
+				object buttonInfo;
+				if (chore != null)
+				{
+					string iconName = "action_uproot";
+					string text = cancelButtonLabel;
+					System.Action on_click = OnClickCancelUproot;
+					string tooltipText = cancelButtonTooltip;
+					buttonInfo = new KIconButtonMenu.ButtonInfo(iconName, text, on_click, Action.NumActions, null, null, null, tooltipText, true);
+				}
+				else
+				{
+					string tooltipText = "action_uproot";
+					string text = buttonLabel;
+					System.Action on_click = OnClickUproot;
+					string iconName = buttonTooltip;
+					buttonInfo = new KIconButtonMenu.ButtonInfo(tooltipText, text, on_click, Action.NumActions, null, null, null, iconName, true);
+				}
+				KIconButtonMenu.ButtonInfo button = (KIconButtonMenu.ButtonInfo)buttonInfo;
+				Game.Instance.userMenu.AddButton(base.gameObject, button, 1f);
 			}
-			else
-			{
-				string tooltipText = "action_uproot";
-				string text = buttonLabel;
-				System.Action on_click = OnClickUproot;
-				string iconName = buttonTooltip;
-				buttonInfo = new KIconButtonMenu.ButtonInfo(tooltipText, text, on_click, Action.NumActions, null, null, null, iconName, true);
-			}
-			KIconButtonMenu.ButtonInfo button = (KIconButtonMenu.ButtonInfo)buttonInfo;
-			Game.Instance.userMenu.AddButton(base.gameObject, button, 1f);
 		}
 	}
 

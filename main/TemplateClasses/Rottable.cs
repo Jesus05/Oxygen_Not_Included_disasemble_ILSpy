@@ -1,10 +1,9 @@
-using Klei;
 using System;
 
 namespace TemplateClasses
 {
 	[Serializable]
-	public class Rottable : YamlIO<Rottable>
+	public class Rottable
 	{
 		public float rotAmount
 		{

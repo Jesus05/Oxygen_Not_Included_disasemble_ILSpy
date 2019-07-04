@@ -48,18 +48,20 @@ public class SpaceDestination
 
 		public bool TryComplete(SpaceDestination destination)
 		{
-			if (!completed)
+			if (completed)
 			{
-				completed = true;
-				if (discoveredRareResource != SimHashes.Void && !destination.recoverableElements.ContainsKey(discoveredRareResource))
-				{
-					destination.recoverableElements.Add(discoveredRareResource, Random.value);
-				}
-				return true;
+				return false;
 			}
-			return false;
+			completed = true;
+			if (discoveredRareResource != SimHashes.Void && !destination.recoverableElements.ContainsKey(discoveredRareResource))
+			{
+				destination.recoverableElements.Add(discoveredRareResource, Random.value);
+			}
+			return true;
 		}
 	}
+
+	private const int MASS_TO_RECOVER_AMOUNT = 1000;
 
 	private static List<Tuple<float, int>> RARE_ELEMENT_CHANCES = new List<Tuple<float, int>>
 	{
@@ -111,13 +113,26 @@ public class SpaceDestination
 
 	public List<SpaceMission> missions = new List<SpaceMission>();
 
+	[Serialize]
+	private float currentMass;
+
+	[Serialize]
+	private float availableMass;
+
 	public int OneBasedDistance => distance + 1;
+
+	public float CurrentMass => currentMass;
+
+	public float AvailableMass => availableMass;
 
 	public SpaceDestination(int id, string type, int distance)
 	{
 		this.id = id;
 		this.type = type;
 		this.distance = distance;
+		SpaceDestinationType destinationType = GetDestinationType();
+		currentMass = (float)destinationType.maxiumMass;
+		availableMass = (float)(destinationType.maxiumMass - destinationType.minimumMass);
 		GenerateSurfaceElements();
 		GenerateMissions();
 		GenerateResearchOpportunities();
@@ -138,6 +153,12 @@ public class SpaceDestination
 	[OnDeserialized]
 	private void OnDeserialized()
 	{
+		if (!SaveLoader.Instance.GameInfo.IsVersionOlderThan(7, 9))
+		{
+			SpaceDestinationType destinationType = GetDestinationType();
+			currentMass = (float)destinationType.maxiumMass;
+			availableMass = (float)(destinationType.maxiumMass - destinationType.minimumMass);
+		}
 	}
 
 	public SpaceDestinationType GetDestinationType()
@@ -229,15 +250,15 @@ public class SpaceDestination
 
 	public float GetResourceValue(SimHashes resource, float roll)
 	{
-		if (GetDestinationType().elementTable.ContainsKey(resource))
+		if (!GetDestinationType().elementTable.ContainsKey(resource))
 		{
-			return GetDestinationType().elementTable[resource].Lerp(roll);
-		}
-		if (SpaceDestinationTypes.extendedElementTable.ContainsKey(resource))
-		{
+			if (!SpaceDestinationTypes.extendedElementTable.ContainsKey(resource))
+			{
+				return 0f;
+			}
 			return SpaceDestinationTypes.extendedElementTable[resource].Lerp(roll);
 		}
-		return 0f;
+		return GetDestinationType().elementTable[resource].Lerp(roll);
 	}
 
 	public Dictionary<SimHashes, float> GetMissionResourceResult(float totalCargoSpace, bool solids = true, bool liquids = true, bool gasses = true)
@@ -251,13 +272,18 @@ public class SpaceDestination
 				num += GetResourceValue(recoverableElement.Key, recoverableElement.Value);
 			}
 		}
+		float num2 = Mathf.Min(currentMass - (float)GetDestinationType().minimumMass, totalCargoSpace);
+		float num3 = 0f;
 		foreach (KeyValuePair<SimHashes, float> recoverableElement2 in recoverableElements)
 		{
 			if ((ElementLoader.FindElementByHash(recoverableElement2.Key).IsSolid && solids) || (ElementLoader.FindElementByHash(recoverableElement2.Key).IsLiquid && liquids) || (ElementLoader.FindElementByHash(recoverableElement2.Key).IsGas && gasses))
 			{
-				dictionary.Add(recoverableElement2.Key, totalCargoSpace * (GetResourceValue(recoverableElement2.Key, recoverableElement2.Value) / num));
+				float num4 = num2 * (GetResourceValue(recoverableElement2.Key, recoverableElement2.Value) / num);
+				dictionary.Add(recoverableElement2.Key, num4);
+				num3 += num4;
 			}
 		}
+		currentMass = Mathf.Max(0f, currentMass - num3);
 		return dictionary;
 	}
 
@@ -271,7 +297,6 @@ public class SpaceDestination
 			{
 				dictionary.Add(item.Key, item.Value);
 			}
-			return dictionary;
 		}
 		return dictionary;
 	}
@@ -279,5 +304,67 @@ public class SpaceDestination
 	public Dictionary<Tag, int> GetMissionEntityResult()
 	{
 		return GetRecoverableEntities();
+	}
+
+	public void UpdateRemainingResources(CargoBay bay)
+	{
+		if ((Object)bay != (Object)null)
+		{
+			foreach (KeyValuePair<SimHashes, float> recoverableElement in recoverableElements)
+			{
+				if (HasElementType(bay.storageType))
+				{
+					Storage component = bay.GetComponent<Storage>();
+					availableMass = Mathf.Max(0f, availableMass - component.capacityKg);
+					break;
+				}
+			}
+		}
+	}
+
+	public bool HasElementType(CargoBay.CargoType type)
+	{
+		foreach (KeyValuePair<SimHashes, float> recoverableElement in recoverableElements)
+		{
+			if ((ElementLoader.FindElementByHash(recoverableElement.Key).IsSolid && type == CargoBay.CargoType.solids) || (ElementLoader.FindElementByHash(recoverableElement.Key).IsLiquid && type == CargoBay.CargoType.liquids) || (ElementLoader.FindElementByHash(recoverableElement.Key).IsGas && type == CargoBay.CargoType.gasses))
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public void Replenish(float dt)
+	{
+		SpaceDestinationType destinationType = GetDestinationType();
+		if (currentMass < (float)destinationType.maxiumMass)
+		{
+			currentMass += destinationType.replishmentPerSim1000ms;
+			availableMass += destinationType.replishmentPerSim1000ms;
+		}
+	}
+
+	public float GetAvailableResourcesPercentage(CargoBay.CargoType cargoType)
+	{
+		float num = 0f;
+		float totalMass = GetTotalMass();
+		foreach (KeyValuePair<SimHashes, float> recoverableElement in recoverableElements)
+		{
+			if ((ElementLoader.FindElementByHash(recoverableElement.Key).IsSolid && cargoType == CargoBay.CargoType.solids) || (ElementLoader.FindElementByHash(recoverableElement.Key).IsLiquid && cargoType == CargoBay.CargoType.liquids) || (ElementLoader.FindElementByHash(recoverableElement.Key).IsGas && cargoType == CargoBay.CargoType.gasses))
+			{
+				num += GetResourceValue(recoverableElement.Key, recoverableElement.Value) / totalMass;
+			}
+		}
+		return num;
+	}
+
+	public float GetTotalMass()
+	{
+		float num = 0f;
+		foreach (KeyValuePair<SimHashes, float> recoverableElement in recoverableElements)
+		{
+			num += GetResourceValue(recoverableElement.Key, recoverableElement.Value);
+		}
+		return num;
 	}
 }

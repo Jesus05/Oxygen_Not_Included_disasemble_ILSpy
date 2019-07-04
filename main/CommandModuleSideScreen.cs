@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -12,6 +13,8 @@ public class CommandModuleSideScreen : SideScreenContent
 
 	public MultiToggle destinationButton;
 
+	public MultiToggle debugVictoryButton;
+
 	private Dictionary<RocketLaunchCondition, GameObject> conditionTable = new Dictionary<RocketLaunchCondition, GameObject>();
 
 	private SchedulerHandle updateHandle;
@@ -20,6 +23,23 @@ public class CommandModuleSideScreen : SideScreenContent
 	{
 		base.OnSpawn();
 		ScheduleUpdate();
+		MultiToggle multiToggle = debugVictoryButton;
+		multiToggle.onClick = (System.Action)Delegate.Combine(multiToggle.onClick, (System.Action)delegate
+		{
+			SpaceDestination destination = SpacecraftManager.instance.destinations.Find((SpaceDestination match) => match.GetDestinationType() == Db.Get().SpaceDestinationTypes.Wormhole);
+			target.Launch(destination);
+		});
+		debugVictoryButton.gameObject.SetActive(DebugHandler.InstantBuildMode && CheckHydrogenRocket());
+	}
+
+	private bool CheckHydrogenRocket()
+	{
+		RocketModule rocketModule = target.rocketModules.Find((RocketModule match) => match.GetComponent<RocketEngine>());
+		if (!((UnityEngine.Object)rocketModule != (UnityEngine.Object)null))
+		{
+			return false;
+		}
+		return rocketModule.GetComponent<RocketEngine>().fuelTag == ElementLoader.FindElementByHash(SimHashes.LiquidHydrogen).tag;
 	}
 
 	private void ScheduleUpdate()
@@ -33,19 +53,19 @@ public class CommandModuleSideScreen : SideScreenContent
 
 	public override bool IsValidForTarget(GameObject target)
 	{
-		return (Object)target.GetComponent<LaunchConditionManager>() != (Object)null;
+		return (UnityEngine.Object)target.GetComponent<LaunchConditionManager>() != (UnityEngine.Object)null;
 	}
 
 	public override void SetTarget(GameObject new_target)
 	{
-		if ((Object)new_target == (Object)null)
+		if ((UnityEngine.Object)new_target == (UnityEngine.Object)null)
 		{
 			Debug.LogError("Invalid gameObject received");
 		}
 		else
 		{
 			target = new_target.GetComponent<LaunchConditionManager>();
-			if ((Object)target == (Object)null)
+			if ((UnityEngine.Object)target == (UnityEngine.Object)null)
 			{
 				Debug.LogError("The gameObject received does not contain a LaunchConditionManager component");
 			}
@@ -53,6 +73,7 @@ public class CommandModuleSideScreen : SideScreenContent
 			{
 				ClearConditions();
 				ConfigureConditions();
+				debugVictoryButton.gameObject.SetActive(DebugHandler.InstantBuildMode && CheckHydrogenRocket());
 			}
 		}
 	}
@@ -89,7 +110,7 @@ public class CommandModuleSideScreen : SideScreenContent
 			}
 			GameObject gameObject = conditionTable[item];
 			HierarchyReferences component = gameObject.GetComponent<HierarchyReferences>();
-			if (item.GetParentCondition() != null && !item.GetParentCondition().EvaluateLaunchCondition())
+			if (item.GetParentCondition() != null && item.GetParentCondition().EvaluateLaunchCondition() == RocketLaunchCondition.LaunchStatus.Failure)
 			{
 				gameObject.SetActive(false);
 			}
@@ -97,7 +118,7 @@ public class CommandModuleSideScreen : SideScreenContent
 			{
 				gameObject.SetActive(true);
 			}
-			bool flag2 = item.EvaluateLaunchCondition();
+			bool flag2 = item.EvaluateLaunchCondition() != RocketLaunchCondition.LaunchStatus.Failure;
 			component.GetReference<LocText>("Label").text = item.GetLaunchStatusMessage(flag2);
 			component.GetReference<LocText>("Label").color = ((!flag2) ? Color.red : Color.black);
 			component.GetReference<Image>("Box").color = ((!flag2) ? Color.red : Color.black);

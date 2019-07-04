@@ -71,7 +71,7 @@ public class Rottable : GameStateMachine<Rottable, Rottable.Instance, IStateMach
 
 		public string StateString()
 		{
-			string result = string.Empty;
+			string result = "";
 			if (base.smi.GetCurrentState() == base.sm.Fresh)
 			{
 				result = Db.Get().CreatureStatusItems.Fresh.resolveStringCallback(CREATURES.STATUSITEMS.FRESH.NAME, this);
@@ -412,18 +412,18 @@ public class Rottable : GameStateMachine<Rottable, Rottable.Instance, IStateMach
 		{
 			value2 = value;
 		}
-		if (value == value2)
+		if (value != value2)
 		{
-			return value;
-		}
-		if (value == RotAtmosphereQuality.Contaminating || value2 == RotAtmosphereQuality.Contaminating)
-		{
+			if (value != RotAtmosphereQuality.Contaminating && value2 != RotAtmosphereQuality.Contaminating)
+			{
+				if (value != 0 && value2 != 0)
+				{
+					return RotAtmosphereQuality.Sterilizing;
+				}
+				return RotAtmosphereQuality.Normal;
+			}
 			return RotAtmosphereQuality.Contaminating;
 		}
-		if (value == RotAtmosphereQuality.Normal || value2 == RotAtmosphereQuality.Normal)
-		{
-			return RotAtmosphereQuality.Normal;
-		}
-		return RotAtmosphereQuality.Sterilizing;
+		return value;
 	}
 }

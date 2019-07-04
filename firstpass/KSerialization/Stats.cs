@@ -46,10 +46,10 @@ namespace KSerialization
 		{
 			if (serializationStats.Count <= 0)
 			{
-				goto IL_0010;
+				goto IL_0013;
 			}
-			goto IL_0010;
-			IL_0010:
+			goto IL_0013;
+			IL_0013:
 			if (deserializationStats.Count <= 0)
 			{
 				return;

@@ -15,22 +15,22 @@ public class CargoBayIsEmpty : RocketLaunchCondition
 		return null;
 	}
 
-	public override bool EvaluateLaunchCondition()
+	public override LaunchStatus EvaluateLaunchCondition()
 	{
 		foreach (GameObject item in AttachableBuilding.GetAttachedNetwork(commandModule.GetComponent<AttachableBuilding>()))
 		{
 			CargoBay component = item.GetComponent<CargoBay>();
 			if ((Object)component != (Object)null && component.storage.MassStored() != 0f)
 			{
-				return false;
+				return LaunchStatus.Failure;
 			}
 		}
-		return true;
+		return LaunchStatus.Ready;
 	}
 
 	public override string GetLaunchStatusMessage(bool ready)
 	{
-		if (ready)
+		if (!ready)
 		{
 			return UI.STARMAP.CARGOEMPTY.NAME;
 		}
@@ -39,7 +39,7 @@ public class CargoBayIsEmpty : RocketLaunchCondition
 
 	public override string GetLaunchStatusTooltip(bool ready)
 	{
-		if (ready)
+		if (!ready)
 		{
 			return UI.STARMAP.CARGOEMPTY.TOOLTIP;
 		}

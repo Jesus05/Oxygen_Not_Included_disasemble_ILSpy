@@ -57,6 +57,7 @@ public class MetalRefineryConfig : IBuildingConfig
 		LiquidCooledRefinery liquidCooledRefinery = go.AddOrGet<LiquidCooledRefinery>();
 		liquidCooledRefinery.duplicantOperated = true;
 		liquidCooledRefinery.sideScreenStyle = ComplexFabricatorSideScreen.StyleSetting.ListQueueHybrid;
+		liquidCooledRefinery.keepExcessLiquids = true;
 		go.AddOrGet<FabricatorIngredientStatusManager>();
 		go.AddOrGet<CopyBuildingSettings>();
 		ComplexFabricatorWorkable complexFabricatorWorkable = go.AddOrGet<ComplexFabricatorWorkable>();
@@ -107,8 +108,7 @@ public class MetalRefineryConfig : IBuildingConfig
 				complexRecipe = new ComplexRecipe(text, array, array2);
 				complexRecipe.time = 40f;
 				complexRecipe.description = string.Format(STRINGS.BUILDINGS.PREFABS.METALREFINERY.RECIPE_DESCRIPTION, lowTempTransition.name, item.name);
-				complexRecipe.useResultAsDescription = true;
-				complexRecipe.displayInputAndOutput = true;
+				complexRecipe.nameDisplay = ComplexRecipe.RecipeNameDisplay.IngredientToResult;
 				complexRecipe.fabricators = new List<Tag>
 				{
 					TagManager.Create("MetalRefinery")
@@ -131,8 +131,7 @@ public class MetalRefineryConfig : IBuildingConfig
 		string text2 = ComplexRecipeManager.MakeRecipeID("MetalRefinery", array3, array4);
 		complexRecipe = new ComplexRecipe(text2, array3, array4);
 		complexRecipe.time = 40f;
-		complexRecipe.useResultAsDescription = true;
-		complexRecipe.displayInputAndOutput = true;
+		complexRecipe.nameDisplay = ComplexRecipe.RecipeNameDisplay.IngredientToResult;
 		complexRecipe.description = string.Format(STRINGS.BUILDINGS.PREFABS.METALREFINERY.RECIPE_DESCRIPTION, ElementLoader.FindElementByHash(SimHashes.Steel).name, ElementLoader.FindElementByHash(SimHashes.Iron).name);
 		complexRecipe.fabricators = new List<Tag>
 		{
@@ -146,7 +145,7 @@ public class MetalRefineryConfig : IBuildingConfig
 	{
 		SymbolOverrideControllerUtil.AddToPrefab(go);
 		go.AddOrGetDef<PoweredActiveStoppableController.Def>();
-		go.GetComponent<KPrefabID>().prefabInitFn += delegate(GameObject game_object)
+		go.GetComponent<KPrefabID>().prefabSpawnFn += delegate(GameObject game_object)
 		{
 			ComplexFabricatorWorkable component = game_object.GetComponent<ComplexFabricatorWorkable>();
 			component.AttributeConverter = Db.Get().AttributeConverters.MachinerySpeed;

@@ -31,31 +31,18 @@ public class ApothecaryConfig : IBuildingConfig
 
 	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
-		go.AddOrGet<DropAllWorkable>();
 		Prioritizable.AddRef(go);
+		go.AddOrGet<DropAllWorkable>();
 		go.AddOrGet<BuildingComplete>().isManuallyOperated = true;
-		ComplexFabricator complexFabricator = go.AddOrGet<ComplexFabricator>();
+		Apothecary fabricator = go.AddOrGet<Apothecary>();
+		BuildingTemplates.CreateComplexFabricatorStorage(go, fabricator);
+		go.AddOrGet<ComplexFabricatorWorkable>();
 		go.AddOrGet<FabricatorIngredientStatusManager>();
 		go.AddOrGet<CopyBuildingSettings>();
-		go.AddOrGet<ComplexFabricatorWorkable>().overrideAnims = new KAnimFile[1]
-		{
-			Assets.GetAnim("anim_interacts_apothecary_kanim")
-		};
-		go.AddOrGet<ComplexFabricatorWorkable>().AnimOffset = new Vector3(-1f, 0f, 0f);
-		complexFabricator.sideScreenStyle = ComplexFabricatorSideScreen.StyleSetting.ListQueueHybrid;
-		BuildingTemplates.CreateComplexFabricatorStorage(go, complexFabricator);
 	}
 
 	public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.AddOrGetDef<PoweredActiveStoppableController.Def>();
-		go.GetComponent<KPrefabID>().prefabInitFn += delegate(GameObject game_object)
-		{
-			ComplexFabricatorWorkable component = game_object.GetComponent<ComplexFabricatorWorkable>();
-			component.AttributeConverter = Db.Get().AttributeConverters.CompoundingSpeed;
-			component.SkillExperienceSkillGroup = Db.Get().SkillGroups.MedicalAid.Id;
-			component.SkillExperienceMultiplier = SKILLS.PART_DAY_EXPERIENCE;
-			component.requiredSkillPerk = Db.Get().SkillPerks.CanCompound.Id;
-		};
 	}
 }

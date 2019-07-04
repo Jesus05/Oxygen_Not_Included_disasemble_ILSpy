@@ -17,7 +17,7 @@ public class HashCache
 
 	public string Get(int hash)
 	{
-		string value = string.Empty;
+		string value = "";
 		hashes.TryGetValue(hash, out value);
 		return value;
 	}

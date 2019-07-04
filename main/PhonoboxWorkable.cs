@@ -39,6 +39,7 @@ public class PhonoboxWorkable : Workable, IWorkerPrioritizable
 		synchronizeAnims = false;
 		showProgressBar = true;
 		resetProgressOnStop = true;
+		lightEfficiencyBonus = false;
 		SetWorkTime(15f);
 	}
 

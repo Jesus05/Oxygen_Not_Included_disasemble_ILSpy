@@ -26,7 +26,7 @@ public class ImmigrantScreen : CharacterSelectionController
 
 	private Telepad telepad;
 
-	private bool hasShown;
+	private bool hasShown = false;
 
 	public static void DestroyInstance()
 	{

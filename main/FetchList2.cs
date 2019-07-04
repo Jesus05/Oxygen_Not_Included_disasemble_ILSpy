@@ -8,8 +8,6 @@ public class FetchList2 : IFetchList
 
 	private ChoreType choreType;
 
-	private Tag[] choreTags;
-
 	public Guid waitingForMaterialsHandle = Guid.Empty;
 
 	public Guid materialsUnavailableForRefillHandle = Guid.Empty;
@@ -42,19 +40,20 @@ public class FetchList2 : IFetchList
 	{
 		get
 		{
-			if (FetchOrders.Count < 0)
+			if (FetchOrders.Count >= 0)
 			{
-				return false;
-			}
-			bool result = false;
-			foreach (FetchOrder2 fetchOrder in FetchOrders)
-			{
-				if (fetchOrder.InProgress)
+				bool result = false;
+				foreach (FetchOrder2 fetchOrder in FetchOrders)
 				{
-					return true;
+					if (fetchOrder.InProgress)
+					{
+						result = true;
+						break;
+					}
 				}
+				return result;
 			}
-			return result;
+			return false;
 		}
 	}
 
@@ -70,11 +69,10 @@ public class FetchList2 : IFetchList
 		private set;
 	}
 
-	public FetchList2(Storage destination, ChoreType chore_type, Tag[] chore_tags)
+	public FetchList2(Storage destination, ChoreType chore_type)
 	{
 		Destination = destination;
 		choreType = chore_type;
-		choreTags = chore_tags;
 	}
 
 	public void SetPriorityMod(int priorityMod)
@@ -95,7 +93,7 @@ public class FetchList2 : IFetchList
 				MinimumAmount[key] = amount;
 			}
 		}
-		FetchOrder2 item = new FetchOrder2(choreType, tags, required_tags, forbidden_tags, Destination, amount, operationalRequirementDEPRECATED, PriorityMod, choreTags);
+		FetchOrder2 item = new FetchOrder2(choreType, tags, required_tags, forbidden_tags, Destination, amount, operationalRequirementDEPRECATED, PriorityMod);
 		FetchOrders.Add(item);
 	}
 

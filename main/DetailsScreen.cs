@@ -87,11 +87,11 @@ public class DetailsScreen : KTabMenu
 	[SerializeField]
 	private LocText sideScreen2Title;
 
-	private KScreen activeSideScreen2;
+	private KScreen activeSideScreen2 = null;
 
 	private bool HasActivated;
 
-	private bool isEditing;
+	private bool isEditing = false;
 
 	private SideScreenContent currentSideScreen;
 
@@ -113,11 +113,11 @@ public class DetailsScreen : KTabMenu
 
 	public override float GetSortKey()
 	{
-		if (isEditing)
+		if (!isEditing)
 		{
-			return 10f;
+			return base.GetSortKey();
 		}
-		return base.GetSortKey();
+		return 10f;
 	}
 
 	protected override void OnPrefabInit()
@@ -226,27 +226,27 @@ public class DetailsScreen : KTabMenu
 
 	private static bool IsExcludedPrefabTag(GameObject go, Tag[] excluded_tags)
 	{
-		if (excluded_tags == null || excluded_tags.Length == 0)
+		if (excluded_tags != null && excluded_tags.Length != 0)
 		{
-			return false;
-		}
-		bool result = false;
-		KPrefabID component = go.GetComponent<KPrefabID>();
-		foreach (Tag b in excluded_tags)
-		{
-			if (component.PrefabTag == b)
+			bool result = false;
+			KPrefabID component = go.GetComponent<KPrefabID>();
+			foreach (Tag b in excluded_tags)
 			{
-				result = true;
-				break;
+				if (component.PrefabTag == b)
+				{
+					result = true;
+					break;
+				}
 			}
+			return result;
 		}
-		return result;
+		return false;
 	}
 
 	private void UpdateCodexButton()
 	{
 		string selectedObjectCodexID = GetSelectedObjectCodexID();
-		CodexEntryButton.isInteractable = (selectedObjectCodexID != string.Empty);
+		CodexEntryButton.isInteractable = (selectedObjectCodexID != "");
 		CodexEntryButton.GetComponent<ToolTip>().SetSimpleTooltip((!CodexEntryButton.isInteractable) ? UI.TOOLTIPS.NO_CODEX_ENTRY : UI.TOOLTIPS.OPEN_CODEX_ENTRY);
 	}
 
@@ -424,44 +424,44 @@ public class DetailsScreen : KTabMenu
 
 	private string GetSelectedObjectCodexID()
 	{
-		string empty = string.Empty;
+		string text = "";
 		CellSelectionObject component = SelectTool.Instance.selected.GetComponent<CellSelectionObject>();
 		BuildingUnderConstruction component2 = SelectTool.Instance.selected.GetComponent<BuildingUnderConstruction>();
 		CreatureBrain component3 = SelectTool.Instance.selected.GetComponent<CreatureBrain>();
 		PlantableSeed component4 = SelectTool.Instance.selected.GetComponent<PlantableSeed>();
 		if ((UnityEngine.Object)component != (UnityEngine.Object)null)
 		{
-			empty = CodexCache.FormatLinkID(component.element.id.ToString());
+			text = CodexCache.FormatLinkID(component.element.id.ToString());
 		}
 		else if ((UnityEngine.Object)component2 != (UnityEngine.Object)null)
 		{
-			empty = CodexCache.FormatLinkID(component2.Def.PrefabID);
+			text = CodexCache.FormatLinkID(component2.Def.PrefabID);
 		}
 		else if ((UnityEngine.Object)component3 != (UnityEngine.Object)null)
 		{
-			empty = CodexCache.FormatLinkID(SelectTool.Instance.selected.PrefabID().ToString());
-			empty = empty.Replace("BABY", string.Empty);
+			text = CodexCache.FormatLinkID(SelectTool.Instance.selected.PrefabID().ToString());
+			text = text.Replace("BABY", "");
 		}
 		else if ((UnityEngine.Object)component4 != (UnityEngine.Object)null)
 		{
-			empty = CodexCache.FormatLinkID(SelectTool.Instance.selected.PrefabID().ToString());
-			empty = empty.Replace("SEED", string.Empty);
+			text = CodexCache.FormatLinkID(SelectTool.Instance.selected.PrefabID().ToString());
+			text = text.Replace("SEED", "");
 		}
 		else
 		{
-			empty = CodexCache.FormatLinkID(SelectTool.Instance.selected.PrefabID().ToString());
+			text = CodexCache.FormatLinkID(SelectTool.Instance.selected.PrefabID().ToString());
 		}
-		if (CodexCache.entries.ContainsKey(empty) || CodexCache.FindSubEntry(empty) != null)
+		if (!CodexCache.entries.ContainsKey(text) && CodexCache.FindSubEntry(text) == null)
 		{
-			return empty;
+			return "";
 		}
-		return string.Empty;
+		return text;
 	}
 
 	public void OpenCodexEntry()
 	{
 		string selectedObjectCodexID = GetSelectedObjectCodexID();
-		if (selectedObjectCodexID != string.Empty)
+		if (selectedObjectCodexID != "")
 		{
 			ManagementMenu.Instance.OpenCodexToEntry(selectedObjectCodexID);
 		}
@@ -512,7 +512,7 @@ public class DetailsScreen : KTabMenu
 				if ((UnityEngine.Object)component4 != (UnityEngine.Object)null)
 				{
 					KBatchedAnimController component5 = component4.GetComponent<KBatchedAnimController>();
-					Sprite uISpriteFromMultiObjectAnim = Def.GetUISpriteFromMultiObjectAnim(component5.AnimFiles[0], "ui", false);
+					Sprite uISpriteFromMultiObjectAnim = Def.GetUISpriteFromMultiObjectAnim(component5.AnimFiles[0], "ui", false, "");
 					TabTitle.portrait.SetPortrait(uISpriteFromMultiObjectAnim);
 				}
 				else
@@ -520,7 +520,7 @@ public class DetailsScreen : KTabMenu
 					PrimaryElement component6 = target.GetComponent<PrimaryElement>();
 					if ((UnityEngine.Object)component6 != (UnityEngine.Object)null)
 					{
-						TabTitle.portrait.SetPortrait(Def.GetUISpriteFromMultiObjectAnim(ElementLoader.FindElementByHash(component6.ElementID).substance.anim, "ui", false));
+						TabTitle.portrait.SetPortrait(Def.GetUISpriteFromMultiObjectAnim(ElementLoader.FindElementByHash(component6.ElementID).substance.anim, "ui", false, ""));
 					}
 					else
 					{
@@ -528,7 +528,7 @@ public class DetailsScreen : KTabMenu
 						if ((UnityEngine.Object)component7 != (UnityEngine.Object)null)
 						{
 							string animName = (!component7.element.IsSolid) ? component7.element.substance.name : "ui";
-							Sprite uISpriteFromMultiObjectAnim2 = Def.GetUISpriteFromMultiObjectAnim(component7.element.substance.anim, animName, false);
+							Sprite uISpriteFromMultiObjectAnim2 = Def.GetUISpriteFromMultiObjectAnim(component7.element.substance.anim, animName, false, "");
 							TabTitle.portrait.SetPortrait(uISpriteFromMultiObjectAnim2);
 						}
 					}
@@ -557,17 +557,17 @@ public class DetailsScreen : KTabMenu
 			}
 			if ((UnityEngine.Object)minionIdentity != (UnityEngine.Object)null)
 			{
-				TabTitle.SetSubText(minionIdentity.GetComponent<MinionResume>().GetSkillsSubtitle(), string.Empty);
+				TabTitle.SetSubText(minionIdentity.GetComponent<MinionResume>().GetSkillsSubtitle(), "");
 				TabTitle.SetUserEditable(true);
 			}
 			else if ((UnityEngine.Object)x != (UnityEngine.Object)null)
 			{
-				TabTitle.SetSubText(string.Empty, string.Empty);
+				TabTitle.SetSubText("", "");
 				TabTitle.SetUserEditable(true);
 			}
 			else
 			{
-				TabTitle.SetSubText(string.Empty, string.Empty);
+				TabTitle.SetSubText("", "");
 				TabTitle.SetUserEditable(false);
 			}
 		}

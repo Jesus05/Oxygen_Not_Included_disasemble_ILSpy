@@ -1,3 +1,4 @@
+#define UNITY_ASSERTIONS
 using Klei;
 using System;
 using UnityEngine;
@@ -56,6 +57,7 @@ public class ElementChunk : KMonoBehaviour
 					float mass2 = component.Mass;
 					num = ((!(mass2 > 0f)) ? primaryElement.Temperature : SimUtil.CalculateFinalTemperature(mass2, component.Temperature, mass, primaryElement.Temperature));
 					component.SetMassTemperature(mass2 + mass, num);
+					UnityEngine.Debug.Assert(component.Temperature > 0f || component.Mass == 0f, "OnAbsorb resulted in a temperature of 0", base.gameObject);
 				}
 				if ((UnityEngine.Object)CameraController.Instance != (UnityEngine.Object)null)
 				{

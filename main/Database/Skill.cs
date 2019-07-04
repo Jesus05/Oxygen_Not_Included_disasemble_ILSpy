@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using TUNING;
 
 namespace Database
 {
@@ -10,21 +11,29 @@ namespace Database
 
 		public string hat;
 
+		public string badge;
+
 		public int tier;
 
 		public List<SkillPerk> perks;
 
 		public List<string> priorSkills;
 
-		public Skill(string id, string name, string description, int tier, string hat, string skillGroup)
+		public Skill(string id, string name, string description, int tier, string hat, string badge, string skillGroup)
 			: base(id, name)
 		{
 			this.description = description;
 			this.tier = tier;
 			this.hat = hat;
+			this.badge = badge;
 			this.skillGroup = skillGroup;
 			perks = new List<SkillPerk>();
 			priorSkills = new List<string>();
+		}
+
+		public int GetMoraleExpectation()
+		{
+			return SKILLS.SKILL_TIER_MORALE_COST[tier];
 		}
 
 		public bool GivesPerk(SkillPerk perk)

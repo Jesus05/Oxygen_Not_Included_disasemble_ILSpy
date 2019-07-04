@@ -80,7 +80,7 @@ public class DisinfectThresholdDiagram : MonoBehaviour
 			{
 				toolTip.AddMultiStringTooltip(UI.OVERLAYS.DISEASE.DISINFECT_THRESHOLD_DIAGRAM.TOOLTIP_DISABLED.ToString(), null);
 			}
-			return string.Empty;
+			return "";
 		};
 		disabledImage.gameObject.SetActive(!SaveGame.Instance.enableAutoDisinfect);
 		toggle.isOn = SaveGame.Instance.enableAutoDisinfect;

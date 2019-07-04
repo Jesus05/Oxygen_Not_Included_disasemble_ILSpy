@@ -81,17 +81,17 @@ public class DragMe : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHa
 
 	public static T FindInParents<T>(GameObject go) where T : Component
 	{
-		if ((Object)go == (Object)null)
+		if (!((Object)go == (Object)null))
 		{
-			return (T)null;
+			T val = (T)null;
+			Transform parent = go.transform.parent;
+			while ((Object)parent != (Object)null && (Object)val == (Object)null)
+			{
+				val = parent.gameObject.GetComponent<T>();
+				parent = parent.parent;
+			}
+			return val;
 		}
-		T val = (T)null;
-		Transform parent = go.transform.parent;
-		while ((Object)parent != (Object)null && (Object)val == (Object)null)
-		{
-			val = parent.gameObject.GetComponent<T>();
-			parent = parent.parent;
-		}
-		return val;
+		return (T)null;
 	}
 }

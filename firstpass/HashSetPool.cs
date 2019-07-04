@@ -1,7 +1,9 @@
 using System.Collections.Generic;
+using System.Diagnostics;
 
 public static class HashSetPool<ObjectType, PoolIdentifier>
 {
+	[DebuggerDisplay("Count={Count}")]
 	public class PooledHashSet : HashSet<ObjectType>
 	{
 		public void Recycle()

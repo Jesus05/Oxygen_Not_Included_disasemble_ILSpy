@@ -32,7 +32,7 @@ public class RequireAttachedComponent : RocketLaunchCondition
 		typeNameString = type_name_string;
 	}
 
-	public override bool EvaluateLaunchCondition()
+	public override LaunchStatus EvaluateLaunchCondition()
 	{
 		if ((UnityEngine.Object)myAttachable != (UnityEngine.Object)null)
 		{
@@ -40,28 +40,28 @@ public class RequireAttachedComponent : RocketLaunchCondition
 			{
 				if ((bool)item.GetComponent(requiredType))
 				{
-					return true;
+					return LaunchStatus.Ready;
 				}
 			}
 		}
-		return false;
+		return LaunchStatus.Failure;
 	}
 
 	public override string GetLaunchStatusMessage(bool ready)
 	{
-		if (ready)
+		if (!ready)
 		{
-			return typeNameString + " " + UI.STARMAP.LAUNCHCHECKLIST.REQUIRED;
+			return typeNameString + " " + UI.STARMAP.LAUNCHCHECKLIST.INSTALLED;
 		}
-		return typeNameString + " " + UI.STARMAP.LAUNCHCHECKLIST.INSTALLED;
+		return typeNameString + " " + UI.STARMAP.LAUNCHCHECKLIST.REQUIRED;
 	}
 
 	public override string GetLaunchStatusTooltip(bool ready)
 	{
-		if (ready)
+		if (!ready)
 		{
-			return string.Format(UI.STARMAP.LAUNCHCHECKLIST.INSTALLED_TOOLTIP, typeNameString);
+			return string.Format(UI.STARMAP.LAUNCHCHECKLIST.REQUIRED_TOOLTIP, typeNameString);
 		}
-		return string.Format(UI.STARMAP.LAUNCHCHECKLIST.REQUIRED_TOOLTIP, typeNameString);
+		return string.Format(UI.STARMAP.LAUNCHCHECKLIST.INSTALLED_TOOLTIP, typeNameString);
 	}
 }

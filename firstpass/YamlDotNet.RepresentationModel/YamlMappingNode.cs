@@ -174,18 +174,18 @@ namespace YamlDotNet.RepresentationModel
 		public override bool Equals(object obj)
 		{
 			YamlMappingNode yamlMappingNode = obj as YamlMappingNode;
-			if (yamlMappingNode == null || !Equals(yamlMappingNode) || children.Count != yamlMappingNode.children.Count)
+			if (yamlMappingNode != null && Equals(yamlMappingNode) && children.Count == yamlMappingNode.children.Count)
 			{
-				return false;
-			}
-			foreach (KeyValuePair<YamlNode, YamlNode> child in children)
-			{
-				if (!yamlMappingNode.children.TryGetValue(child.Key, out YamlNode value) || !YamlNode.SafeEquals(child.Value, value))
+				foreach (KeyValuePair<YamlNode, YamlNode> child in children)
 				{
-					return false;
+					if (!yamlMappingNode.children.TryGetValue(child.Key, out YamlNode value) || !YamlNode.SafeEquals(child.Value, value))
+					{
+						return false;
+					}
 				}
+				return true;
 			}
-			return true;
+			return false;
 		}
 
 		public override int GetHashCode()
@@ -208,24 +208,24 @@ namespace YamlDotNet.RepresentationModel
 
 		internal override string ToString(RecursionLevel level)
 		{
-			if (!level.TryIncrement())
+			if (level.TryIncrement())
 			{
-				return "WARNING! INFINITE RECURSION!";
-			}
-			StringBuilder stringBuilder = new StringBuilder("{ ");
-			foreach (KeyValuePair<YamlNode, YamlNode> child in children)
-			{
-				if (stringBuilder.Length > 2)
+				StringBuilder stringBuilder = new StringBuilder("{ ");
+				foreach (KeyValuePair<YamlNode, YamlNode> child in children)
 				{
-					stringBuilder.Append(", ");
+					if (stringBuilder.Length > 2)
+					{
+						stringBuilder.Append(", ");
+					}
+					stringBuilder.Append("{ ").Append(child.Key.ToString(level)).Append(", ")
+						.Append(child.Value.ToString(level))
+						.Append(" }");
 				}
-				stringBuilder.Append("{ ").Append(child.Key.ToString(level)).Append(", ")
-					.Append(child.Value.ToString(level))
-					.Append(" }");
+				stringBuilder.Append(" }");
+				level.Decrement();
+				return stringBuilder.ToString();
 			}
-			stringBuilder.Append(" }");
-			level.Decrement();
-			return stringBuilder.ToString();
+			return "WARNING! INFINITE RECURSION!";
 		}
 
 		public IEnumerator<KeyValuePair<YamlNode, YamlNode>> GetEnumerator()

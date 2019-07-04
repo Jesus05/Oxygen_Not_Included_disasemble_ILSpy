@@ -8,7 +8,9 @@ namespace ProcGen
 	{
 		private delegate bool ParserFn<T>(string input, out T res);
 
-		public const string defaultWorldName = "worlds/Default";
+		private MutatedWorldData mutatedWorldData;
+
+		public const string defaultWorldName = "worlds/SandstoneDefault";
 
 		[CompilerGenerated]
 		private static ParserFn<bool> _003C_003Ef__mg_0024cache0;
@@ -19,22 +21,27 @@ namespace ProcGen
 		[CompilerGenerated]
 		private static ParserFn<int> _003C_003Ef__mg_0024cache2;
 
-		public World world
-		{
-			get;
-			private set;
-		}
+		public World world => mutatedWorldData.world;
 
-		public WorldGenSettings(string worldName = "worlds/Default")
+		public WorldGenSettings(string worldName = "worlds/SandstoneDefault", List<string> traits = null)
 		{
 			if (!SettingsCache.worlds.HasWorld(worldName))
 			{
-				DebugUtil.LogWarningArgs(string.Format("Failed to get worldGen data for {0}. Using {1} instead", worldName, "worlds/Default"));
-				DebugUtil.Assert(SettingsCache.worlds.HasWorld("worlds/Default"));
-				worldName = "worlds/Default";
+				DebugUtil.LogWarningArgs(string.Format("Failed to get worldGen data for {0}. Using {1} instead", worldName, "worlds/SandstoneDefault"));
+				DebugUtil.Assert(SettingsCache.worlds.HasWorld("worlds/SandstoneDefault"));
+				worldName = "worlds/SandstoneDefault";
 			}
-			Worlds.Data worldData = SettingsCache.worlds.GetWorldData(worldName);
-			world = worldData.world;
+			World worldData = SettingsCache.worlds.GetWorldData(worldName);
+			List<WorldTrait> list = new List<WorldTrait>();
+			if (traits != null)
+			{
+				DebugUtil.LogArgs("Generating a world with the traits:", string.Join(", ", traits.ToArray()));
+				foreach (string trait in traits)
+				{
+					list.Add(SettingsCache.GetCachedTrait(trait));
+				}
+			}
+			mutatedWorldData = new MutatedWorldData(worldData, list);
 			Debug.Log("Set world to [" + worldName + "] " + SettingsCache.GetPath());
 		}
 
@@ -70,23 +77,23 @@ namespace ProcGen
 
 		private bool GetSetting<T>(DefaultSettings set, string target, ParserFn<T> parser, out T res)
 		{
-			if (set == null || set.data == null || !set.data.ContainsKey(target))
+			if (set != null && set.data != null && set.data.ContainsKey(target))
 			{
-				res = default(T);
-				return false;
-			}
-			object obj = set.data[target];
-			if (obj.GetType() == typeof(T))
-			{
+				object obj = set.data[target];
+				if (obj.GetType() != typeof(T))
+				{
+					bool flag = parser(obj as string, out res);
+					if (flag)
+					{
+						set.data[target] = res;
+					}
+					return flag;
+				}
 				res = (T)obj;
 				return true;
 			}
-			bool flag = parser(obj as string, out res);
-			if (flag)
-			{
-				set.data[target] = res;
-			}
-			return flag;
+			res = default(T);
+			return false;
 		}
 
 		private T GetSetting<T>(string target, ParserFn<T> parser)
@@ -141,21 +148,6 @@ namespace ProcGen
 			return GetSetting<E>(target, WorldGenSettings.TryParseEnum<E>);
 		}
 
-		public List<SubWorld> GetSubWorldList()
-		{
-			return new List<SubWorld>(world.Zones.Values);
-		}
-
-		public Dictionary<string, SubWorld> GetSubWorlds()
-		{
-			return world.Zones;
-		}
-
-		public SubWorld GetSubWorld(string name)
-		{
-			return world.GetSubWorld(name);
-		}
-
 		private static bool TryParseEnum<E>(string value, out E result) where E : struct
 		{
 			try
@@ -170,10 +162,79 @@ namespace ProcGen
 			return false;
 		}
 
-		public static string GetSimpleName(string longName)
+		public bool HasFeature(string name)
 		{
-			string[] array = longName.Split('/');
-			return array[array.Length - 1];
+			return mutatedWorldData.features.ContainsKey(name);
+		}
+
+		public FeatureSettings GetFeature(string name)
+		{
+			if (!mutatedWorldData.features.ContainsKey(name))
+			{
+				throw new Exception("Couldnt get feature from active world data [" + name + "]");
+			}
+			return mutatedWorldData.features[name];
+		}
+
+		public FeatureSettings TryGetFeature(string name)
+		{
+			mutatedWorldData.features.TryGetValue(name, out FeatureSettings value);
+			return value;
+		}
+
+		public bool HasSubworld(string name)
+		{
+			return mutatedWorldData.subworlds.ContainsKey(name);
+		}
+
+		public SubWorld GetSubWorld(string name)
+		{
+			if (!mutatedWorldData.subworlds.ContainsKey(name))
+			{
+				throw new Exception("Couldnt get subworld from active world data [" + name + "]");
+			}
+			return mutatedWorldData.subworlds[name];
+		}
+
+		public SubWorld TryGetSubWorld(string name)
+		{
+			mutatedWorldData.subworlds.TryGetValue(name, out SubWorld value);
+			return value;
+		}
+
+		public List<WeightedSubWorld> GetSubworldsForWorld(List<WeightedName> subworldList)
+		{
+			List<WeightedSubWorld> list = new List<WeightedSubWorld>();
+			foreach (KeyValuePair<string, SubWorld> subworld in mutatedWorldData.subworlds)
+			{
+				foreach (WeightedName subworld2 in subworldList)
+				{
+					if (subworld.Key == subworld2.name)
+					{
+						list.Add(new WeightedSubWorld(subworld2.weight, subworld.Value));
+					}
+				}
+			}
+			return list;
+		}
+
+		public bool HasMob(string id)
+		{
+			return mutatedWorldData.mobs.HasMob(id);
+		}
+
+		public Mob GetMob(string id)
+		{
+			return mutatedWorldData.mobs.GetMob(id);
+		}
+
+		public ElementBandConfiguration GetElementBandForBiome(string name)
+		{
+			if (!mutatedWorldData.biomes.BiomeBackgroundElementBandConfigurations.TryGetValue(name, out ElementBandConfiguration value))
+			{
+				return null;
+			}
+			return value;
 		}
 	}
 }

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-internal class DiggerStates : GameStateMachine<DiggerStates, DiggerStates.Instance, IStateMachineTarget, DiggerStates.Def>
+public class DiggerStates : GameStateMachine<DiggerStates, DiggerStates.Instance, IStateMachineTarget, DiggerStates.Def>
 {
 	public class Def : BaseDef
 	{

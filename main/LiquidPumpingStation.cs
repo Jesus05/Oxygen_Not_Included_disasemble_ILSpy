@@ -105,12 +105,12 @@ public class LiquidPumpingStation : Workable, ISim200ms
 
 		public float GetTemperature()
 		{
-			if (temperature <= 0f)
+			if (!(temperature <= 0f))
 			{
-				Debug.LogWarning("TODO(YOG): Fix bad temperature in liquid pumping station.");
-				return ElementLoader.FindElementByHash(element).defaultValues.temperature;
+				return temperature;
 			}
-			return temperature;
+			Debug.LogWarning("TODO(YOG): Fix bad temperature in liquid pumping station.");
+			return ElementLoader.FindElementByHash(element).defaultValues.temperature;
 		}
 
 		public void Cleanup()
@@ -151,7 +151,7 @@ public class LiquidPumpingStation : Workable, ISim200ms
 
 	private LiquidInfo[] infos;
 
-	private int infoCount;
+	private int infoCount = 0;
 
 	private int depthAvailable = -1;
 
@@ -304,7 +304,7 @@ public class LiquidPumpingStation : Workable, ISim200ms
 
 	public string ResolveString(string base_string)
 	{
-		string text = string.Empty;
+		string text = "";
 		for (int i = 0; i < infoCount; i++)
 		{
 			if ((UnityEngine.Object)infos[i].source != (UnityEngine.Object)null)
@@ -323,11 +323,11 @@ public class LiquidPumpingStation : Workable, ISim200ms
 
 	public override float GetPercentComplete()
 	{
-		if (session != null)
+		if (session == null)
 		{
-			return session.GetPercentComplete();
+			return 0f;
 		}
-		return 0f;
+		return session.GetPercentComplete();
 	}
 
 	protected override void OnStartWork(Worker worker)

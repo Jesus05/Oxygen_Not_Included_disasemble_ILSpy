@@ -8,7 +8,7 @@ public class OilFloaterDecorBabyConfig : IEntityConfig
 	public GameObject CreatePrefab()
 	{
 		GameObject gameObject = OilFloaterDecorConfig.CreateOilFloater("OilfloaterDecorBaby", CREATURES.SPECIES.OILFLOATER.VARIANT_DECOR.BABY.NAME, CREATURES.SPECIES.OILFLOATER.VARIANT_DECOR.BABY.DESC, "baby_oilfloater_kanim", true);
-		EntityTemplates.ExtendEntityToBeingABaby(gameObject, "OilfloaterDecor");
+		EntityTemplates.ExtendEntityToBeingABaby(gameObject, "OilfloaterDecor", null);
 		return gameObject;
 	}
 

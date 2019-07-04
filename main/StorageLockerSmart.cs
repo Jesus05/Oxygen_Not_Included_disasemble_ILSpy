@@ -1,3 +1,6 @@
+#define DEBUG
+using System.Diagnostics;
+
 public class StorageLockerSmart : StorageLocker
 {
 	[MyCmpGet]
@@ -45,6 +48,7 @@ public class StorageLockerSmart : StorageLocker
 
 	private void UpdateLogicAndActiveState()
 	{
+		System.Diagnostics.Debug.WriteLine("UpdateLogicAndActiveState");
 		bool flag = filteredStorage.IsFull();
 		bool isOperational = operational.IsOperational;
 		bool flag2 = flag && isOperational;

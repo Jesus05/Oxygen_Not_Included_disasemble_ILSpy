@@ -33,7 +33,7 @@ public class FilteredStorage
 
 	private bool hasMeter = true;
 
-	private bool useLogicMeter;
+	private bool useLogicMeter = false;
 
 	private static StatusItem capacityStatusItem;
 
@@ -58,7 +58,7 @@ public class FilteredStorage
 		storage.Subscribe(644822890, OnOnlyFetchMarkedItemsSettingChanged);
 		if (capacityStatusItem == null)
 		{
-			capacityStatusItem = new StatusItem("StorageLocker", "BUILDING", string.Empty, StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, true, 63486);
+			capacityStatusItem = new StatusItem("StorageLocker", "BUILDING", "", StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, true, 129022);
 			capacityStatusItem.resolveStringCallback = delegate(string str, object data)
 			{
 				FilteredStorage filteredStorage = (FilteredStorage)data;
@@ -77,7 +77,7 @@ public class FilteredStorage
 				str = ((component == null) ? str.Replace("{Units}", GameUtil.GetCurrentMassUnit(false)) : str.Replace("{Units}", component.CapacityUnits));
 				return str;
 			};
-			noFilterStatusItem = new StatusItem("NoStorageFilterSet", "BUILDING", "status_item_no_filter_set", StatusItem.IconType.Custom, NotificationType.BadMinor, false, OverlayModes.None.ID, true, 63486);
+			noFilterStatusItem = new StatusItem("NoStorageFilterSet", "BUILDING", "status_item_no_filter_set", StatusItem.IconType.Custom, NotificationType.BadMinor, false, OverlayModes.None.ID, true, 129022);
 		}
 		root.GetComponent<KSelectable>().SetStatusItem(Db.Get().StatusItemCategories.Main, capacityStatusItem, this);
 	}
@@ -211,7 +211,7 @@ public class FilteredStorage
 		component.TintColour = ((!flag) ? noFilterTint : filterTint);
 		if (fetchList != null)
 		{
-			fetchList.Cancel(string.Empty);
+			fetchList.Cancel("");
 			fetchList = null;
 		}
 		float maxCapacityMinusStorageMargin = GetMaxCapacityMinusStorageMargin();
@@ -220,7 +220,7 @@ public class FilteredStorage
 		if (num > 0f && flag)
 		{
 			num = Mathf.Max(0f, GetMaxCapacity() - amountStored);
-			fetchList = new FetchList2(storage, choreType, null);
+			fetchList = new FetchList2(storage, choreType);
 			fetchList.ShowStatusItem = false;
 			fetchList.Add(tags, requiredTags, forbiddenTags, num, FetchOrder2.OperationalRequirement.Functional);
 			fetchList.Submit(OnFetchComplete, false);

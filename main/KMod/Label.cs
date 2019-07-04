@@ -1,5 +1,6 @@
 using Klei;
 using Newtonsoft.Json;
+using System;
 using System.Diagnostics;
 using System.IO;
 
@@ -22,7 +23,7 @@ namespace KMod
 
 		public string id;
 
-		public ulong version;
+		public long version;
 
 		public string title;
 
@@ -40,7 +41,16 @@ namespace KMod
 		{
 			get
 			{
-				return FSUtil.Normalize(Path.Combine(Path.Combine(Manager.GetDirectory(), distribution_platform_name), id));
+				return FileSystem.Normalize(Path.Combine(Path.Combine(Manager.GetDirectory(), distribution_platform_name), id));
+			}
+		}
+
+		[JsonIgnore]
+		public System.DateTime time_stamp
+		{
+			get
+			{
+				return System.DateTime.FromFileTimeUtc(version);
 			}
 		}
 

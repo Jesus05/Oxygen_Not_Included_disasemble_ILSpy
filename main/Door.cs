@@ -209,7 +209,7 @@ public class Door : Workable, ISaveLoadable, ISim200ms
 
 		private Chore CreateUnsealChore(Instance smi, bool approach_right)
 		{
-			return new WorkChore<Unsealable>(Db.Get().ChoreTypes.Toggle, smi.master, null, null, true, null, null, null, true, null, false, true, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, false, true);
+			return new WorkChore<Unsealable>(Db.Get().ChoreTypes.Toggle, smi.master, null, true, null, null, null, true, null, false, true, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, false, true);
 		}
 	}
 
@@ -231,10 +231,10 @@ public class Door : Workable, ISaveLoadable, ISim200ms
 	[MyCmpAdd]
 	private LoopingSounds loopingSounds;
 
-	public Orientation verticalOrientation;
+	public Orientation verticalOrientation = Orientation.Neutral;
 
 	[SerializeField]
-	public bool hasComplexUserControls;
+	public bool hasComplexUserControls = false;
 
 	[SerializeField]
 	public float unpoweredAnimSpeed = 0.25f;
@@ -263,16 +263,16 @@ public class Door : Workable, ISaveLoadable, ISim200ms
 	private static readonly HashedString SOUND_PROGRESS_PARAMETER = "doorProgress";
 
 	[Serialize]
-	private bool hasBeenUnsealed;
+	private bool hasBeenUnsealed = false;
 
 	[Serialize]
-	private ControlState controlState;
+	private ControlState controlState = ControlState.Auto;
 
-	private bool on;
+	private bool on = false;
 
-	private bool do_melt_check;
+	private bool do_melt_check = false;
 
-	private int openCount;
+	private int openCount = 0;
 
 	private ControlState requestedState;
 
@@ -281,6 +281,12 @@ public class Door : Workable, ISaveLoadable, ISim200ms
 	private Controller.Instance controller;
 
 	private LoggerFSS log;
+
+	private const float REFRESH_HACK_DELAY = 1f;
+
+	private bool doorOpenLiquidRefreshHack;
+
+	private float doorOpenLiquidRefreshTime;
 
 	private static readonly EventSystem.IntraObjectHandler<Door> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<Door>(delegate(Door component, object data)
 	{
@@ -304,7 +310,7 @@ public class Door : Workable, ISaveLoadable, ISim200ms
 		component.OnLogicValueChanged(data);
 	});
 
-	private bool applyLogicChange;
+	private bool applyLogicChange = false;
 
 	public ControlState CurrentState => controlState;
 
@@ -451,6 +457,7 @@ public class Door : Workable, ISaveLoadable, ISim200ms
 			Grid.HasAccessDoor[num2] = false;
 			Game.Instance.SetDupePassableSolid(num2, false, Grid.Solid[num2]);
 			Grid.CritterImpassable[num2] = false;
+			Grid.DupeImpassable[num2] = false;
 			Pathfinding.Instance.AddDirtyNavGridCell(num2);
 		}
 		base.OnCleanUp();
@@ -570,14 +577,19 @@ public class Door : Workable, ISaveLoadable, ISim200ms
 				bool solid = !is_door_open;
 				bool passable = controlState != ControlState.Locked;
 				Game.Instance.SetDupePassableSolid(num, passable, solid);
+				if (controlState == ControlState.Opened)
+				{
+					doorOpenLiquidRefreshHack = true;
+					doorOpenLiquidRefreshTime = 1f;
+				}
 				break;
 			}
 			case DoorType.Internal:
 				Grid.CritterImpassable[num] = (controlState != ControlState.Opened);
 				Grid.DupeImpassable[num] = (controlState == ControlState.Locked);
-				Pathfinding.Instance.AddDirtyNavGridCell(num);
 				break;
 			}
+			Pathfinding.Instance.AddDirtyNavGridCell(num);
 		}
 	}
 
@@ -672,7 +684,7 @@ public class Door : Workable, ISaveLoadable, ISim200ms
 				changeStateChore.Cancel("Change state");
 			}
 			GetComponent<KSelectable>().AddStatusItem(Db.Get().BuildingStatusItems.ChangeDoorControlState, this);
-			changeStateChore = new WorkChore<Door>(Db.Get().ChoreTypes.Toggle, this, null, null, true, null, null, null, true, null, false, false, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, false, true);
+			changeStateChore = new WorkChore<Door>(Db.Get().ChoreTypes.Toggle, this, null, true, null, null, null, true, null, false, false, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, false, true);
 		}
 	}
 
@@ -819,6 +831,19 @@ public class Door : Workable, ISaveLoadable, ISim200ms
 	{
 		if (!((Object)this == (Object)null))
 		{
+			if (doorOpenLiquidRefreshHack)
+			{
+				doorOpenLiquidRefreshTime -= dt;
+				if (doorOpenLiquidRefreshTime <= 0f)
+				{
+					doorOpenLiquidRefreshHack = false;
+					int[] placementCells = building.PlacementCells;
+					foreach (int cell in placementCells)
+					{
+						Pathfinding.Instance.AddDirtyNavGridCell(cell);
+					}
+				}
+			}
 			if (applyLogicChange)
 			{
 				applyLogicChange = false;
@@ -833,16 +858,16 @@ public class Door : Workable, ISaveLoadable, ISim200ms
 					StructureTemperaturePayload payload = structureTemperatures.GetPayload(handle);
 					if (!payload.enabled)
 					{
-						int[] placementCells = building.PlacementCells;
+						int[] placementCells2 = building.PlacementCells;
 						int num = 0;
 						while (true)
 						{
-							if (num >= placementCells.Length)
+							if (num >= placementCells2.Length)
 							{
 								return;
 							}
-							int i = placementCells[num];
-							if (!Grid.Solid[i])
+							int i2 = placementCells2[num];
+							if (!Grid.Solid[i2])
 							{
 								break;
 							}

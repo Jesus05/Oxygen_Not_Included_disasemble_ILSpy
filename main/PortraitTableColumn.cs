@@ -8,7 +8,7 @@ public class PortraitTableColumn : TableColumn
 	private bool double_click_to_target;
 
 	public PortraitTableColumn(Action<IAssignableIdentity, GameObject> on_load_action, Comparison<IAssignableIdentity> sort_comparison, bool double_click_to_target = true)
-		: base(on_load_action, sort_comparison, null, null, null, false, string.Empty)
+		: base(on_load_action, sort_comparison, null, null, null, false, "")
 	{
 		this.double_click_to_target = double_click_to_target;
 	}

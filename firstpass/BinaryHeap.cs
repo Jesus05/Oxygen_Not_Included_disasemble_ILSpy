@@ -94,8 +94,8 @@ public class BinaryHeap<T> : IEnumerable<T>, IEnumerable
 			}
 		}
 		yield break;
-		IL_00b4:
-		/*Error near IL_00b5: Unexpected return in MoveNext()*/;
+		IL_00b8:
+		/*Error near IL_00b9: Unexpected return in MoveNext()*/;
 	}
 
 	public IEnumerator GetEnumerator()

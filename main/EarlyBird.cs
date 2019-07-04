@@ -15,12 +15,12 @@ public class EarlyBird : StateMachineComponent<EarlyBird.StatesInstance>
 
 		public bool IsMorning()
 		{
-			if ((Object)ScheduleManager.Instance == (Object)null || base.master.kPrefabID.PrefabTag == GameTags.MinionSelectPreview)
+			if (!((Object)ScheduleManager.Instance == (Object)null) && !(base.master.kPrefabID.PrefabTag == GameTags.MinionSelectPreview))
 			{
-				return false;
+				int blockIdx = global::Schedule.GetBlockIdx();
+				return blockIdx < TRAITS.EARLYBIRD_SCHEDULEBLOCK;
 			}
-			int blockIdx = global::Schedule.GetBlockIdx();
-			return blockIdx < TRAITS.EARLYBIRD_SCHEDULEBLOCK;
+			return false;
 		}
 	}
 

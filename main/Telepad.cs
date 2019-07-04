@@ -32,7 +32,11 @@ public class Telepad : StateMachineComponent<Telepad.StatesInstance>
 
 		public Signal closePortal;
 
+		public Signal idlePortal;
+
 		public State idle;
+
+		public State resetToIdle;
 
 		public State opening;
 
@@ -52,6 +56,8 @@ public class Telepad : StateMachineComponent<Telepad.StatesInstance>
 		{
 			default_state = idle;
 			base.serializable = true;
+			root.OnSignal(idlePortal, resetToIdle);
+			resetToIdle.GoTo(idle);
 			idle.Enter(delegate(StatesInstance smi)
 			{
 				smi.UpdateMeter();

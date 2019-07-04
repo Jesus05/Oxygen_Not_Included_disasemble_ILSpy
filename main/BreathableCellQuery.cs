@@ -10,10 +10,10 @@ public class BreathableCellQuery : PathFinderQuery
 
 	public override bool IsMatch(int cell, int parent_cell, int cost)
 	{
-		if (breather.IsBreathableElementAtCell(cell, null))
+		if (!breather.IsBreathableElementAtCell(cell, null))
 		{
-			return true;
+			return false;
 		}
-		return false;
+		return true;
 	}
 }

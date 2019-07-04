@@ -7,9 +7,9 @@ using UnityEngine;
 
 public class DebugBaseTemplateButton : KScreen
 {
-	private bool SaveAllBuildings;
+	private bool SaveAllBuildings = false;
 
-	private bool SaveAllPickups;
+	private bool SaveAllPickups = false;
 
 	public KButton saveBaseButton;
 
@@ -33,7 +33,7 @@ public class DebugBaseTemplateButton : KScreen
 
 	public TMP_InputField nameField;
 
-	private bool editing;
+	private bool editing = false;
 
 	private string SaveName = "enter_template_name";
 
@@ -148,19 +148,6 @@ public class DebugBaseTemplateButton : KScreen
 	{
 	}
 
-	private void OnClickPasteStartingBase()
-	{
-		DebugTool.Instance.DeactivateTool(null);
-		pasteAndSelectAsset = null;
-		pasteAndSelectAsset = TemplateCache.GetBaseStartingTemplate();
-		if (pasteAndSelectAsset != null)
-		{
-			ClearSelection();
-			StampTool.Instance.Activate(pasteAndSelectAsset, true, false);
-			nameField.text = pasteAndSelectAsset.name;
-		}
-	}
-
 	private void OnClickDestroySelection()
 	{
 		DebugTool.Instance.Activate(DebugTool.Type.Destroy);
@@ -191,7 +178,7 @@ public class DebugBaseTemplateButton : KScreen
 	private void OnClickClearSelection()
 	{
 		ClearSelection();
-		nameField.text = string.Empty;
+		nameField.text = "";
 	}
 
 	private void OnClickClear()
@@ -537,7 +524,7 @@ public class DebugBaseTemplateButton : KScreen
 		else
 		{
 			SaveName = nameField.text;
-			if (SaveName == null || SaveName == string.Empty)
+			if (SaveName == null || SaveName == "")
 			{
 				Debug.LogWarning("Invalid save name. Please enter a name in the input field.");
 			}

@@ -19,7 +19,7 @@ public abstract class PathFinderAbilities
 
 	public abstract bool TraversePath(ref PathFinder.PotentialPath path, int from_cell, NavType from_nav_type, int cost, int transition_id, int underwater_cost);
 
-	public virtual int GetSubmergedPathCostPenalty(PathFinder.PotentialPath path)
+	public virtual int GetSubmergedPathCostPenalty(PathFinder.PotentialPath path, NavGrid.Link link)
 	{
 		return 0;
 	}

@@ -46,15 +46,19 @@ public static class SymbolOverrideControllerUtil
 		}
 	}
 
-	public static void ApplySymbolOverridesByPrefix(this SymbolOverrideController symbol_override_controller, KAnimFile anim_file, string prefix, int priority = 0)
+	public static void ApplySymbolOverridesByAffix(this SymbolOverrideController symbol_override_controller, KAnimFile anim_file, string prefix = null, string postfix = null, int priority = 0)
 	{
 		for (int i = 0; i < anim_file.GetData().build.symbols.Length; i++)
 		{
 			KAnim.Build.Symbol symbol = anim_file.GetData().build.symbols[i];
 			string text = HashCache.Get().Get(symbol.hash);
-			if (text.StartsWith(prefix))
+			if (prefix != null && text.StartsWith(prefix))
 			{
 				symbol_override_controller.AddSymbolOverride(text.Substring(prefix.Length, text.Length - prefix.Length), symbol, priority);
+			}
+			else if (postfix != null && text.EndsWith(postfix))
+			{
+				symbol_override_controller.AddSymbolOverride(text.Substring(0, text.Length - postfix.Length), symbol, priority);
 			}
 		}
 	}

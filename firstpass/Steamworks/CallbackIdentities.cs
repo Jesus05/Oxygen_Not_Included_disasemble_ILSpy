@@ -8,17 +8,17 @@ namespace Steamworks
 		{
 			object[] customAttributes = callbackStruct.GetCustomAttributes(typeof(CallbackIdentityAttribute), false);
 			int num = 0;
-			goto IL_002d;
-			IL_002d:
-			if (num < customAttributes.Length)
+			goto IL_0035;
+			IL_0035:
+			if (num >= customAttributes.Length)
 			{
-				CallbackIdentityAttribute callbackIdentityAttribute = (CallbackIdentityAttribute)customAttributes[num];
-				return callbackIdentityAttribute.Identity;
+				throw new Exception("Callback number not found for struct " + callbackStruct);
 			}
-			throw new Exception("Callback number not found for struct " + callbackStruct);
-			IL_0029:
+			CallbackIdentityAttribute callbackIdentityAttribute = (CallbackIdentityAttribute)customAttributes[num];
+			return callbackIdentityAttribute.Identity;
+			IL_0031:
 			num++;
-			goto IL_002d;
+			goto IL_0035;
 		}
 	}
 }

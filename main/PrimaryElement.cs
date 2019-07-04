@@ -22,7 +22,7 @@ public class PrimaryElement : KMonoBehaviour, ISaveLoadable
 
 	private PrimaryElement diseaseRedirectTarget;
 
-	private bool useSimDiseaseInfo;
+	private bool useSimDiseaseInfo = false;
 
 	public const float DefaultChunkMass = 400f;
 
@@ -34,7 +34,7 @@ public class PrimaryElement : KMonoBehaviour, ISaveLoadable
 
 	[Serialize]
 	[HashedEnum]
-	public SimHashes ElementID;
+	public SimHashes ElementID = (SimHashes)0;
 
 	private float _units = 1f;
 
@@ -44,7 +44,7 @@ public class PrimaryElement : KMonoBehaviour, ISaveLoadable
 
 	[NonSerialized]
 	[Serialize]
-	public bool KeepZeroMassObject;
+	public bool KeepZeroMassObject = false;
 
 	[Serialize]
 	private HashedString diseaseID;
@@ -57,13 +57,13 @@ public class PrimaryElement : KMonoBehaviour, ISaveLoadable
 	public float MassPerUnit = 1f;
 
 	[NonSerialized]
-	private Element _Element;
+	private Element _Element = null;
 
 	[NonSerialized]
 	public Action<PrimaryElement> onDataChanged;
 
 	[NonSerialized]
-	private bool forcePermanentDiseaseContainer;
+	private bool forcePermanentDiseaseContainer = false;
 
 	private static readonly EventSystem.IntraObjectHandler<PrimaryElement> OnSplitFromChunkDelegate = new EventSystem.IntraObjectHandler<PrimaryElement>(delegate(PrimaryElement component, object data)
 	{
@@ -150,22 +150,22 @@ public class PrimaryElement : KMonoBehaviour, ISaveLoadable
 	{
 		get
 		{
-			if ((bool)diseaseRedirectTarget)
+			if (!(bool)diseaseRedirectTarget)
 			{
-				return diseaseRedirectTarget.DiseaseIdx;
+				byte result = byte.MaxValue;
+				if (useSimDiseaseInfo)
+				{
+					int i = Grid.PosToCell(base.transform.GetPosition());
+					result = Grid.DiseaseIdx[i];
+				}
+				else if (diseaseHandle.IsValid())
+				{
+					DiseaseHeader header = GameComps.DiseaseContainers.GetHeader(diseaseHandle);
+					result = header.diseaseIdx;
+				}
+				return result;
 			}
-			byte result = byte.MaxValue;
-			if (useSimDiseaseInfo)
-			{
-				int i = Grid.PosToCell(base.transform.GetPosition());
-				result = Grid.DiseaseIdx[i];
-			}
-			else if (diseaseHandle.IsValid())
-			{
-				DiseaseHeader header = GameComps.DiseaseContainers.GetHeader(diseaseHandle);
-				result = header.diseaseIdx;
-			}
-			return result;
+			return diseaseRedirectTarget.DiseaseIdx;
 		}
 	}
 
@@ -173,22 +173,22 @@ public class PrimaryElement : KMonoBehaviour, ISaveLoadable
 	{
 		get
 		{
-			if ((bool)diseaseRedirectTarget)
+			if (!(bool)diseaseRedirectTarget)
 			{
-				return diseaseRedirectTarget.DiseaseCount;
+				int result = 0;
+				if (useSimDiseaseInfo)
+				{
+					int i = Grid.PosToCell(base.transform.GetPosition());
+					result = Grid.DiseaseCount[i];
+				}
+				else if (diseaseHandle.IsValid())
+				{
+					DiseaseHeader header = GameComps.DiseaseContainers.GetHeader(diseaseHandle);
+					result = header.diseaseCount;
+				}
+				return result;
 			}
-			int result = 0;
-			if (useSimDiseaseInfo)
-			{
-				int i = Grid.PosToCell(base.transform.GetPosition());
-				result = Grid.DiseaseCount[i];
-			}
-			else if (diseaseHandle.IsValid())
-			{
-				DiseaseHeader header = GameComps.DiseaseContainers.GetHeader(diseaseHandle);
-				result = header.diseaseCount;
-			}
-			return result;
+			return diseaseRedirectTarget.DiseaseCount;
 		}
 	}
 

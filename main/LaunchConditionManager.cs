@@ -144,12 +144,19 @@ public class LaunchConditionManager : KMonoBehaviour, ISim4000ms, ISim1000ms
 			Debug.LogError("Null destination passed to launch");
 		}
 		Spacecraft spacecraftFromLaunchConditionManager = SpacecraftManager.instance.GetSpacecraftFromLaunchConditionManager(this);
-		if (spacecraftFromLaunchConditionManager.state == Spacecraft.MissionState.Grounded && (DebugHandler.InstantBuildMode || (CheckReadyToLaunch() && CheckAbleToFly())))
+		if (spacecraftFromLaunchConditionManager.state == Spacecraft.MissionState.Grounded)
 		{
-			launchable.Trigger(-1056989049, null);
-			SpacecraftManager.instance.SetSpacecraftDestination(this, destination);
-			Spacecraft spacecraftFromLaunchConditionManager2 = SpacecraftManager.instance.GetSpacecraftFromLaunchConditionManager(this);
-			spacecraftFromLaunchConditionManager2.BeginMission(destination);
+			if (DebugHandler.InstantBuildMode || (CheckReadyToLaunch() && CheckAbleToFly()))
+			{
+				launchable.Trigger(-1056989049, null);
+				SpacecraftManager.instance.SetSpacecraftDestination(this, destination);
+				Spacecraft spacecraftFromLaunchConditionManager2 = SpacecraftManager.instance.GetSpacecraftFromLaunchConditionManager(this);
+				spacecraftFromLaunchConditionManager2.BeginMission(destination);
+			}
+			GameScheduler.Instance.Schedule("VictoryConditionCheck", 0.1f, delegate
+			{
+				Game.Instance.Trigger(395452326, null);
+			}, null, null);
 		}
 	}
 
@@ -159,7 +166,7 @@ public class LaunchConditionManager : KMonoBehaviour, ISim4000ms, ISim1000ms
 		{
 			foreach (RocketLaunchCondition launchCondition in rocketModule.launchConditions)
 			{
-				if (!launchCondition.EvaluateLaunchCondition())
+				if (launchCondition.EvaluateLaunchCondition() == RocketLaunchCondition.LaunchStatus.Failure)
 				{
 					return false;
 				}

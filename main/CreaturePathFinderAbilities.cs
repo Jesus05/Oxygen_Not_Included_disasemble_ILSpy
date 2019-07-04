@@ -25,10 +25,10 @@ public class CreaturePathFinderAbilities : PathFinderAbilities
 
 	public override bool TraversePath(ref PathFinder.PotentialPath path, int from_cell, NavType from_nav_type, int cost, int transition_id, int underwater_cost)
 	{
-		if (underwater_cost > maxUnderwaterCost)
+		if (underwater_cost <= maxUnderwaterCost)
 		{
-			return false;
+			return true;
 		}
-		return true;
+		return false;
 	}
 }

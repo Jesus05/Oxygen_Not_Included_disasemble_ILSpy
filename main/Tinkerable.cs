@@ -21,8 +21,6 @@ public class Tinkerable : Workable
 
 	public string addedEffect;
 
-	public Tag[] choreTags;
-
 	public HashedString choreTypeTinker = Db.Get().ChoreTypes.PowerTinker.IdHash;
 
 	public HashedString choreTypeFetch = Db.Get().ChoreTypes.PowerFetch.IdHash;
@@ -47,7 +45,7 @@ public class Tinkerable : Workable
 		component.OnOperationalChanged(data);
 	});
 
-	private bool hasReservedMaterial;
+	private bool hasReservedMaterial = false;
 
 	public static Tinkerable MakePowerTinkerable(GameObject prefab)
 	{
@@ -65,7 +63,6 @@ public class Tinkerable : Workable
 		tinkerable.attributeExperienceMultiplier = DUPLICANTSTATS.ATTRIBUTE_LEVELING.PART_DAY_EXPERIENCE;
 		tinkerable.choreTypeTinker = Db.Get().ChoreTypes.PowerTinker.IdHash;
 		tinkerable.choreTypeFetch = Db.Get().ChoreTypes.PowerFetch.IdHash;
-		tinkerable.choreTags = GameTags.ChoreTypes.PowerChores;
 		tinkerable.multitoolContext = "powertinker";
 		tinkerable.multitoolHitEffectTag = "fx_powertinker_splash";
 		tinkerable.shouldShowSkillPerkStatusItem = false;
@@ -95,7 +92,6 @@ public class Tinkerable : Workable
 		tinkerable.attributeExperienceMultiplier = DUPLICANTSTATS.ATTRIBUTE_LEVELING.PART_DAY_EXPERIENCE;
 		tinkerable.choreTypeTinker = Db.Get().ChoreTypes.CropTend.IdHash;
 		tinkerable.choreTypeFetch = Db.Get().ChoreTypes.FarmFetch.IdHash;
-		tinkerable.choreTags = GameTags.ChoreTypes.FarmingChores;
 		tinkerable.multitoolContext = "tend";
 		tinkerable.multitoolHitEffectTag = "fx_tend_splash";
 		tinkerable.shouldShowSkillPerkStatusItem = false;
@@ -163,7 +159,7 @@ public class Tinkerable : Workable
 			SetWorkTime(workTime);
 			if (HasMaterial())
 			{
-				chore = new WorkChore<Tinkerable>(Db.Get().ChoreTypes.GetByHash(choreTypeTinker), this, null, null, true, null, null, null, true, null, false, false, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, false, true);
+				chore = new WorkChore<Tinkerable>(Db.Get().ChoreTypes.GetByHash(choreTypeTinker), this, null, true, null, null, null, true, null, false, false, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, false, true);
 				if ((Object)component != (Object)null)
 				{
 					chore.AddPrecondition(ChorePreconditions.instance.IsFunctional, component);
@@ -174,7 +170,7 @@ public class Tinkerable : Workable
 				chore = new FetchChore(Db.Get().ChoreTypes.GetByHash(choreTypeFetch), storage, tinkerMaterialAmount, new Tag[1]
 				{
 					tinkerMaterialTag
-				}, null, null, null, true, OnFetchComplete, null, null, FetchOrder2.OperationalRequirement.Functional, 0, choreTags);
+				}, null, null, null, true, OnFetchComplete, null, null, FetchOrder2.OperationalRequirement.Functional, 0);
 			}
 			chore.AddPrecondition(ChorePreconditions.instance.HasSkillPerk, requiredSkillPerk);
 			RoomTracker component2 = GetComponent<RoomTracker>();
@@ -193,28 +189,28 @@ public class Tinkerable : Workable
 
 	private bool RoomHasActiveTinkerstation()
 	{
-		if (!roomTracker.IsInCorrectRoom())
+		if (roomTracker.IsInCorrectRoom())
 		{
-			return false;
-		}
-		if (roomTracker.room == null)
-		{
-			return false;
-		}
-		foreach (KPrefabID building in roomTracker.room.buildings)
-		{
-			if (!((Object)building == (Object)null))
+			if (roomTracker.room != null)
 			{
-				TinkerStation component = building.GetComponent<TinkerStation>();
-				if ((Object)component != (Object)null && component.outputPrefab == tinkerMaterialTag)
+				foreach (KPrefabID building in roomTracker.room.buildings)
 				{
-					Operational component2 = building.GetComponent<Operational>();
-					if (component2.IsOperational)
+					if (!((Object)building == (Object)null))
 					{
-						return true;
+						TinkerStation component = building.GetComponent<TinkerStation>();
+						if ((Object)component != (Object)null && component.outputPrefab == tinkerMaterialTag)
+						{
+							Operational component2 = building.GetComponent<Operational>();
+							if (component2.IsOperational)
+							{
+								return true;
+							}
+						}
 					}
 				}
+				return false;
 			}
+			return false;
 		}
 		return false;
 	}

@@ -33,7 +33,16 @@ public class FloorLampConfig : IBuildingConfig
 		lightShapePreview.lux = 1000;
 		lightShapePreview.radius = 4f;
 		lightShapePreview.shape = LightShape.Circle;
-		lightShapePreview.offset = new CellOffset((int)def.BuildingComplete.GetComponent<Light2D>().Offset.x, (int)def.BuildingComplete.GetComponent<Light2D>().Offset.y);
+		LightShapePreview lightShapePreview2 = lightShapePreview;
+		Vector2 offset = def.BuildingComplete.GetComponent<Light2D>().Offset;
+		int x = (int)offset.x;
+		Vector2 offset2 = def.BuildingComplete.GetComponent<Light2D>().Offset;
+		lightShapePreview2.offset = new CellOffset(x, (int)offset2.y);
+	}
+
+	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+	{
+		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.LightSource);
 	}
 
 	public override void DoPostConfigureComplete(GameObject go)

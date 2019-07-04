@@ -6,6 +6,8 @@ public class IdleCellSensor : Sensor
 
 	private Navigator navigator;
 
+	private KPrefabID prefabid;
+
 	private int cell;
 
 	public IdleCellSensor(Sensors sensors)
@@ -13,15 +15,24 @@ public class IdleCellSensor : Sensor
 	{
 		navigator = GetComponent<Navigator>();
 		brain = GetComponent<MinionBrain>();
+		prefabid = GetComponent<KPrefabID>();
 	}
 
 	public override void Update()
 	{
-		IdleCellQuery idleCellQuery = PathFinderQueries.idleCellQuery.Reset(brain, Random.Range(30, 60));
-		(brain.GetComponent<Navigator>().GetCurrentAbilities() as MinionPathFinderAbilities).SetIdleNavMaskEnabled(true);
-		navigator.RunQuery(idleCellQuery);
-		(brain.GetComponent<Navigator>().GetCurrentAbilities() as MinionPathFinderAbilities).SetIdleNavMaskEnabled(false);
-		cell = idleCellQuery.GetResultCell();
+		if (!prefabid.HasTag(GameTags.Idle))
+		{
+			cell = Grid.InvalidCell;
+		}
+		else
+		{
+			MinionPathFinderAbilities minionPathFinderAbilities = (MinionPathFinderAbilities)navigator.GetCurrentAbilities();
+			minionPathFinderAbilities.SetIdleNavMaskEnabled(true);
+			IdleCellQuery idleCellQuery = PathFinderQueries.idleCellQuery.Reset(brain, Random.Range(30, 60));
+			navigator.RunQuery(idleCellQuery);
+			minionPathFinderAbilities.SetIdleNavMaskEnabled(false);
+			cell = idleCellQuery.GetResultCell();
+		}
 	}
 
 	public int GetCell()

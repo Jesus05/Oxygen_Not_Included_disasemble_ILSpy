@@ -63,7 +63,7 @@ public class SandboxSpawnerTool : InterfaceTool
 		Vector3 position = Grid.CellToPosCBC(currentCell, Grid.SceneLayer.Move);
 		gameObject.transform.SetLocalPosition(position);
 		gameObject.SetActive(true);
-		MinionStartingStats minionStartingStats = new MinionStartingStats(false);
+		MinionStartingStats minionStartingStats = new MinionStartingStats(false, null);
 		minionStartingStats.Apply(gameObject);
 	}
 }

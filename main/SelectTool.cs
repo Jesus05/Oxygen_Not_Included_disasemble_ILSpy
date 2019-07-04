@@ -36,7 +36,7 @@ public class SelectTool : InterfaceTool
 
 	private List<KSelectable> hits = new List<KSelectable>();
 
-	private int hitCycleCount;
+	private int hitCycleCount = 0;
 
 	private List<Intersection> intersections = new List<Intersection>();
 
@@ -48,9 +48,9 @@ public class SelectTool : InterfaceTool
 
 	private bool delayedSkipSound;
 
-	private KSelectable previousSelection;
+	private KSelectable previousSelection = null;
 
-	private bool playedSoundThisFrame;
+	private bool playedSoundThisFrame = false;
 
 	[CompilerGenerated]
 	private static Predicate<Intersection> _003C_003Ef__mg_0024cache0;
@@ -260,19 +260,19 @@ public class SelectTool : InterfaceTool
 		{
 			return 0;
 		}
-		if ((UnityEngine.Object)x == (UnityEngine.Object)null)
+		if (!((UnityEngine.Object)x == (UnityEngine.Object)null))
 		{
-			return -1;
-		}
-		if ((UnityEngine.Object)y == (UnityEngine.Object)null)
-		{
+			if (!((UnityEngine.Object)y == (UnityEngine.Object)null))
+			{
+				Vector3 position = x.transform.GetPosition();
+				ref float z = ref position.z;
+				Vector3 position2 = y.transform.GetPosition();
+				int num = z.CompareTo(position2.z);
+				return (num != 0) ? num : x.GetInstanceID().CompareTo(y.GetInstanceID());
+			}
 			return 1;
 		}
-		Vector3 position = x.transform.GetPosition();
-		ref float z = ref position.z;
-		Vector3 position2 = y.transform.GetPosition();
-		int num = z.CompareTo(position2.z);
-		return (num != 0) ? num : x.GetInstanceID().CompareTo(y.GetInstanceID());
+		return -1;
 	}
 
 	private static bool is_component_null(Intersection intersection)
@@ -285,40 +285,40 @@ public class SelectTool : InterfaceTool
 		intersections.Clear();
 		GetObjectUnderCursor2D(intersections, condition, layerMask);
 		intersections.RemoveAll((Predicate<Intersection>)is_component_null);
-		if (intersections.Count <= 0)
+		if (intersections.Count > 0)
 		{
-			prevIntersectionGroup.Clear();
-			return (T)null;
-		}
-		curIntersectionGroup.Clear();
-		foreach (Intersection intersection3 in intersections)
-		{
-			Intersection current = intersection3;
-			curIntersectionGroup.Add((Component)current.component);
-		}
-		if (!prevIntersectionGroup.Equals(curIntersectionGroup))
-		{
-			hitCycleCount = 0;
-			prevIntersectionGroup = curIntersectionGroup;
-		}
-		intersections.Sort((Comparison<Intersection>)((Intersection a, Intersection b) => SortSelectables(a.component as KMonoBehaviour, b.component as KMonoBehaviour)));
-		int index = 0;
-		if (cycleSelection)
-		{
-			index = hitCycleCount % intersections.Count;
-			Intersection intersection = intersections[index];
-			if ((UnityEngine.Object)intersection.component != (UnityEngine.Object)previous_selection || (UnityEngine.Object)previous_selection == (UnityEngine.Object)null)
+			curIntersectionGroup.Clear();
+			foreach (Intersection intersection3 in intersections)
 			{
-				index = 0;
+				Intersection current = intersection3;
+				curIntersectionGroup.Add((Component)current.component);
+			}
+			if (!prevIntersectionGroup.Equals(curIntersectionGroup))
+			{
 				hitCycleCount = 0;
+				prevIntersectionGroup = curIntersectionGroup;
 			}
-			else
+			intersections.Sort((Comparison<Intersection>)((Intersection a, Intersection b) => SortSelectables(a.component as KMonoBehaviour, b.component as KMonoBehaviour)));
+			int index = 0;
+			if (cycleSelection)
 			{
-				index = ++hitCycleCount % intersections.Count;
+				index = hitCycleCount % intersections.Count;
+				Intersection intersection = intersections[index];
+				if ((UnityEngine.Object)intersection.component != (UnityEngine.Object)previous_selection || (UnityEngine.Object)previous_selection == (UnityEngine.Object)null)
+				{
+					index = 0;
+					hitCycleCount = 0;
+				}
+				else
+				{
+					index = ++hitCycleCount % intersections.Count;
+				}
 			}
+			Intersection intersection2 = intersections[index];
+			return intersection2.component as T;
 		}
-		Intersection intersection2 = intersections[index];
-		return intersection2.component as T;
+		prevIntersectionGroup.Clear();
+		return (T)null;
 	}
 
 	private void ClearHover()

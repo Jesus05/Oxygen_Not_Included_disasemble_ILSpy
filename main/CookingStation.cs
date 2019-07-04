@@ -14,7 +14,11 @@ public class CookingStation : ComplexFabricator, IEffectDescriptor
 		base.OnPrefabInit();
 		choreType = Db.Get().ChoreTypes.Cook;
 		fetchChoreTypeIdHash = Db.Get().ChoreTypes.CookFetch.IdHash;
-		choreTags = GameTags.ChoreTypes.CookingChores;
+	}
+
+	protected override void OnSpawn()
+	{
+		base.OnSpawn();
 		base.workable.requiredSkillPerk = Db.Get().SkillPerks.CanElectricGrill.Id;
 		base.workable.WorkerStatusItem = Db.Get().DuplicantStatusItems.Cooking;
 		base.workable.overrideAnims = new KAnimFile[1]
@@ -38,9 +42,9 @@ public class CookingStation : ComplexFabricator, IEffectDescriptor
 		});
 	}
 
-	protected override List<GameObject> SpawnOrderProduct(UserOrder completed_order)
+	protected override List<GameObject> SpawnOrderProduct(ComplexRecipe recipe)
 	{
-		List<GameObject> list = base.SpawnOrderProduct(completed_order);
+		List<GameObject> list = base.SpawnOrderProduct(recipe);
 		foreach (GameObject item in list)
 		{
 			PrimaryElement component = item.GetComponent<PrimaryElement>();

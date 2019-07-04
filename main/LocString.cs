@@ -5,6 +5,8 @@ using System.Reflection;
 [Serializable]
 public class LocString
 {
+	public const BindingFlags data_member_fields = BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy;
+
 	public string text
 	{
 		get;
@@ -71,7 +73,7 @@ public class LocString
 		string text = parent_path;
 		if (text == null)
 		{
-			text = string.Empty;
+			text = "";
 		}
 		text = text + type.Name + ".";
 		FieldInfo[] array = fields;

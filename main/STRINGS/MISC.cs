@@ -76,6 +76,8 @@ namespace STRINGS
 
 			public static LocString SOLID = "Solid";
 
+			public static LocString FLYINGCRITTEREDIBLE = "Bait";
+
 			public static LocString INDUSTRIALPRODUCT = "Industrial Product";
 
 			public static LocString INDUSTRIALINGREDIENT = "Industrial Ingredient";
@@ -164,6 +166,12 @@ namespace STRINGS
 
 			public static LocString COMMAND_MODULE = "Command Module";
 
+			public static LocString COMBUSTIBLEGAS = "Combustible Gas";
+
+			public static LocString COMBUSTIBLELIQUID = "Combustible Liquid";
+
+			public static LocString COMBUSTIBLESOLID = "Combustible Solid";
+
 			public static LocString GENE_SHUFFLER = "Neural Vacillator";
 
 			public static LocString FARMING = "Farm Build-Delivery";
@@ -182,7 +190,7 @@ namespace STRINGS
 
 			public static LocString ART = "Art Build-Delivery";
 
-			public static LocString DOCTORING = "Care Delivery";
+			public static LocString DOCTORING = "Treatment Delivery";
 
 			public static LocString CONVEYOR = "Shipping Build";
 
@@ -295,6 +303,13 @@ namespace STRINGS
 				public static LocString TOOLTIP = "Debris will be swept once a Duplicant is available";
 			}
 
+			public class PENDINGCLEARNOSTORAGE
+			{
+				public static LocString NAME = "Storage Unavailable";
+
+				public static LocString TOOLTIP = "No available storage lockers can accept this item";
+			}
+
 			public class MARKEDFORCOMPOST
 			{
 				public static LocString NAME = "Compost Errand";
@@ -342,6 +357,13 @@ namespace STRINGS
 				public static LocString NAME = "No Harvest Pending";
 
 				public static LocString TOOLTIP = "Use the Harvest Tool to mark this plant for harvest";
+			}
+
+			public class GROWINGBRANCHES
+			{
+				public static LocString NAME = "Growing Branches";
+
+				public static LocString TOOLTIP = "This plant is currently growing branches";
 			}
 
 			public class ELEMENTALCATEGORY
@@ -543,7 +565,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Pending Wrangle";
 
-				public static LocString TOOLTIP = "Waiting for a Duplicant to capture this critter" + UI.HORIZONTAL_BR_RULE + "Only Duplicants trained as Ranchers can catch critters without traps";
+				public static LocString TOOLTIP = "Waiting for a Duplicant to capture this critter" + UI.HORIZONTAL_BR_RULE + "Only Duplicants with Ranching skills can catch critters without traps";
 			}
 
 			public class OPERATING
@@ -647,7 +669,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Tutorial: Errand Priorities";
 
-				public static LocString MESSAGEBODY = "Duplicants will choose where to work based on the priority of the errands that I give them. I can open the " + UI.FormatAsLink("PRIORITIES SCREEN", "PRIORITIES") + " <color=#F44A47><b>[L]</b></color> to set their Errand Type priorities, and the " + UI.FormatAsLink("PRIORITY TOOL", "PRIORITIES") + " <color=#F44A47><b>[P]</b></color> to fine tune Specific Errand Priority. Many buildings will also let me change their Priority level when I select them.";
+				public static LocString MESSAGEBODY = "Duplicants will choose where to work based on the priority of the errands that I give them. I can open the " + UI.FormatAsLink("PRIORITIES SCREEN", "PRIORITIES") + " <color=#F44A47><b>[L]</b></color> to set their " + UI.PRE_KEYWORD + "Duplicant Priorities" + UI.PST_KEYWORD + ", and the " + UI.FormatAsLink("PRIORITY TOOL", "PRIORITIES") + " " + UI.FormatAsHotkey("[P]") + " to fine tune " + UI.PRE_KEYWORD + "Building Priority" + UI.PST_KEYWORD + ". Many buildings will also let me change their Priority level when I select them.";
 
 				public static LocString TOOLTIP = "Notes on my Duplicants' priorities";
 			}
@@ -694,7 +716,7 @@ namespace STRINGS
 
 				public static LocString TOOLTIP = "Notes on Duplicant disease risks";
 
-				public static LocString MESSAGEBODY = UI.FormatAsLink("Germs", "DISEASE") + " such as " + UI.FormatAsLink("Food Poisoning", "FOODSICKNESS") + " and " + UI.FormatAsLink("Slimelung", "SLIMESICKNESS") + " can cause " + UI.FormatAsLink("Disease", "DISEASE") + " in my Duplicants. I can use the " + UI.FormatAsLink("GERM OVERLAY", "MISC") + " <color=#F44A47><b>[F9]</b></color> to view all germ concentrations in my colony and even detect the sources spawning them.\n\nBuilding Wash Basins from the " + UI.FormatAsLink("MEDICINE TAB", "MISC") + " <color=#F44A47><b>[8]</b></color> by colony toilets will tell my Duplicants they need to wash up.\n\nIf I keep my colony free of contaminated materials and encourage good Duplicant hygiene, their natural " + UI.FormatAsLink("Immunity", "IMMUNE SYSTEM") + " should handle the rest.";
+				public static LocString MESSAGEBODY = UI.FormatAsLink("Germs", "DISEASE") + " such as " + UI.FormatAsLink("Food Poisoning", "FOODSICKNESS") + " and " + UI.FormatAsLink("Slimelung", "SLIMESICKNESS") + " can cause " + UI.FormatAsLink("Disease", "DISEASE") + " in my Duplicants. I can use the " + UI.FormatAsLink("GERM OVERLAY", "MISC") + " <color=#F44A47><b>[F9]</b></color> to view all germ concentrations in my colony, and even detect the sources spawning them.\n\nBuilding Wash Basins from the " + UI.FormatAsLink("MEDICINE TAB", "MISC") + " <color=#F44A47><b>[8]</b></color> by colony toilets will tell my Duplicants they need to wash up.";
 			}
 
 			public class BEING_INFECTED
@@ -733,6 +755,33 @@ namespace STRINGS
 				public static LocString MESSAGEBODY = "The Foods, Rooms, Decor, and Recreation a Duplicant experiences will have an effect on their Morale. Good experiences improve their Morale and poor experiences drop it. When Morale is below their Expectations, Duplicants will become Stressed.\n\nAs Duplicants are assigned to Jobs, they gain increased Expectations, and so the colony will have to be improved to keep up their Morale. An overview of Morale and Stress can be viewed on the Vitals screen.";
 			}
 
+			public class POWER
+			{
+				public static LocString NAME = "Tutorial: Power Circuits";
+
+				public static LocString TOOLTIP = "Notes on managing electricity";
+
+				public static LocString MESSAGEBODY = "<<PLACEHOLDER>>";
+			}
+
+			public class DIGGING
+			{
+				public static LocString NAME = "Tutorial: Digging for Resources";
+
+				public static LocString TOOLTIP = "Notes on buried riches";
+
+				public static LocString MESSAGEBODY = "<<PLACEHOLDER>>";
+			}
+
+			public class INSULATION
+			{
+				public static LocString NAME = "Tutorial: Insulation";
+
+				public static LocString TOOLTIP = "Notes on effective temperature management";
+
+				public static LocString MESSAGEBODY = "<<PLACEHOLDER>>";
+			}
+
 			public class DTU
 			{
 				public static LocString NAME = "Tutorial: Duplicant Thermal Units";
@@ -744,16 +793,16 @@ namespace STRINGS
 
 			public class NOMESSAGES
 			{
-				public static LocString NAME = string.Empty;
+				public static LocString NAME = "";
 
-				public static LocString TOOLTIP = string.Empty;
+				public static LocString TOOLTIP = "";
 			}
 
 			public class NOALERTS
 			{
-				public static LocString NAME = string.Empty;
+				public static LocString NAME = "";
 
-				public static LocString TOOLTIP = string.Empty;
+				public static LocString TOOLTIP = "";
 			}
 
 			public class NEWTRAIT
@@ -774,13 +823,13 @@ namespace STRINGS
 
 			public class SKILL_POINT_EARNED
 			{
-				public static LocString NAME = "Skill Point Earned";
+				public static LocString NAME = "Skill point earned";
 
-				public static LocString MESSAGEBODY = "These Duplicants have new Skill Points that can be assigned:\n{0}";
+				public static LocString MESSAGEBODY = "These Duplicants have Skill Points that can be spent on new abilities:\n{0}";
 
 				public static LocString LINE = "\n• <b>{0}</b>";
 
-				public static LocString TOOLTIP = "Skill Point Earned";
+				public static LocString TOOLTIP = "A Duplicant can now learn new skills";
 			}
 
 			public class DUPLICANTABSORBED
@@ -866,21 +915,21 @@ namespace STRINGS
 			{
 				public static LocString NAME = "No " + UI.FormatAsLink("Oxygen Diffuser", "MINERALDEOXIDIZER") + " built";
 
-				public static LocString TOOLTIP = "My colony is not producing any new " + UI.FormatAsLink("Oxygen", "OXYGEN") + UI.HORIZONTAL_BR_RULE + UI.FormatAsLink("Oxygen Diffusers", "MINERALDEOXIDIZER") + " can be built from the " + UI.FormatAsLink("OXYGEN TAB", "MISC") + " <color=#F44A47><b>[2]</b></color> of the Build Menu";
+				public static LocString TOOLTIP = "My colony is not producing any new " + UI.FormatAsLink("Oxygen", "OXYGEN") + UI.HORIZONTAL_BR_RULE + UI.FormatAsLink("Oxygen Diffusers", "MINERALDEOXIDIZER") + " can be built from the " + UI.FormatAsLink("OXYGEN TAB", "MISC") + " " + UI.FormatAsHotkey("[2]") + " of the Build Menu";
 			}
 
 			public class INSUFFICIENTOXYGENLASTCYCLE
 			{
 				public static LocString NAME = "Insufficient Oxygen generation";
 
-				public static LocString TOOLTIP = "My colony consumed more " + UI.FormatAsLink("Oxygen", "OXYGEN") + " last cycle than it produced, and will exhaust its air supply without increased generation\n\nI should check my existing oxygen production buildings to ensure they're operating correctly" + UI.HORIZONTAL_BR_RULE + "• " + UI.FormatAsLink("Oxygen", "OXYGEN") + " produced last cycle: {EmittingRate}\n• Consumed last cycle: {ConsumptionRate}";
+				public static LocString TOOLTIP = "My colony is consuming more " + UI.FormatAsLink("Oxygen", "OXYGEN") + " than it is producing, and will run out air if I do not increase production.\n\nI should check my existing oxygen production buildings to ensure they're operating correctly" + UI.HORIZONTAL_BR_RULE + "• " + UI.FormatAsLink("Oxygen", "OXYGEN") + " produced last cycle: {EmittingRate}\n• Consumed last cycle: {ConsumptionRate}";
 			}
 
 			public class UNREFRIGERATEDFOOD
 			{
 				public static LocString NAME = "Unrefrigerated Food";
 
-				public static LocString TOOLTIP = "These " + UI.FormatAsLink("Food", "FOOD") + " items are in storage but are not refrigerated:\n";
+				public static LocString TOOLTIP = "These " + UI.FormatAsLink("Food", "FOOD") + " items are stored but not refrigerated:\n";
 			}
 
 			public class FOODLOW
@@ -892,9 +941,9 @@ namespace STRINGS
 
 			public class NO_MEDICAL_COTS
 			{
-				public static LocString NAME = "No " + UI.FormatAsLink("Med-Bed", "MEDICALCOT") + " built";
+				public static LocString NAME = "No " + UI.FormatAsLink("Sick Bay", "DOCTORSTATION") + " built";
 
-				public static LocString TOOLTIP = "There is nowhere for sick Duplicants receive medical care" + UI.HORIZONTAL_BR_RULE + UI.FormatAsLink("Med-Beds", "MEDICALCOT") + " can be built from the " + UI.FormatAsLink("MEDICINE TAB", "MISC") + " <color=#F44A47><b>[8]</b></color>";
+				public static LocString TOOLTIP = "There is nowhere for sick Duplicants receive medical care" + UI.HORIZONTAL_BR_RULE + UI.FormatAsLink("Sick Bays", "DOCTORSTATION") + " can be built from the " + UI.FormatAsLink("MEDICINE TAB", "MISC") + " <color=#F44A47><b>[8]</b></color>";
 			}
 
 			public class NEEDTOILET
@@ -992,28 +1041,28 @@ namespace STRINGS
 			{
 				public static LocString NAME = "The colony is entering a cloud of gas";
 
-				public static LocString TOOLTIP = string.Empty;
+				public static LocString TOOLTIP = "";
 			}
 
 			public class GASCLOUDPEAK
 			{
 				public static LocString NAME = "The gas cloud is at its densest point";
 
-				public static LocString TOOLTIP = string.Empty;
+				public static LocString TOOLTIP = "";
 			}
 
 			public class GASCLOUDDEPARTING
 			{
 				public static LocString NAME = "The gas cloud is receding";
 
-				public static LocString TOOLTIP = string.Empty;
+				public static LocString TOOLTIP = "";
 			}
 
 			public class GASCLOUDGONE
 			{
 				public static LocString NAME = "The colony is once again in open space";
 
-				public static LocString TOOLTIP = string.Empty;
+				public static LocString TOOLTIP = "";
 			}
 
 			public class AVAILABLE
@@ -1213,7 +1262,7 @@ namespace STRINGS
 
 			public class DEATH_DISEASE
 			{
-				public static LocString NAME = "Duplicants have succumb to illness";
+				public static LocString NAME = "Duplicants have succumb to disease";
 
 				public static LocString TOOLTIP = "These Duplicants died from an untreated " + UI.FormatAsLink("Disease", "DISEASE") + ":";
 			}
@@ -1230,6 +1279,13 @@ namespace STRINGS
 				public static LocString NAME = "ALERT - Surface Breach";
 
 				public static LocString TOOLTIP = "Amazing!\n\nMy Duplicants have managed to breach the surface of our rocky prison.\n\nI should be careful; the region is extremely inhospitable and I could easily lose resources to the vacuum of space.";
+			}
+
+			public class COLONY_ACHIEVEMENT_EARNED
+			{
+				public static LocString NAME = "Colony Achievement earned";
+
+				public static LocString TOOLTIP = "Colony has earned a new achievement.";
 			}
 		}
 

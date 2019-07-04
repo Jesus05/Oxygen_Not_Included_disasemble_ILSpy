@@ -31,15 +31,16 @@ public class SocialGatheringPointWorkable : Workable, IWorkerPrioritizable
 		synchronizeAnims = false;
 		showProgressBar = false;
 		resetProgressOnStop = true;
+		lightEfficiencyBonus = false;
 	}
 
 	public override Vector3 GetFacingTarget()
 	{
-		if ((Object)lastTalker != (Object)null)
+		if (!((Object)lastTalker != (Object)null))
 		{
-			return lastTalker.transform.GetPosition();
+			return base.GetFacingTarget();
 		}
-		return base.GetFacingTarget();
+		return lastTalker.transform.GetPosition();
 	}
 
 	protected override bool OnWorkTick(Worker worker, float dt)

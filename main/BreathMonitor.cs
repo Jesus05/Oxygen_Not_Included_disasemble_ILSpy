@@ -109,7 +109,7 @@ public class BreathMonitor : GameStateMachine<BreathMonitor, BreathMonitor.Insta
 			.ToggleTag(GameTags.HoldingBreath)
 			.Enter(ShowBreathBar)
 			.Enter(UpdateRecoverBreathCell)
-			.Update(UpdateRecoverBreathCell, UpdateRate.SIM_200ms, false);
+			.Update(UpdateRecoverBreathCell, UpdateRate.RENDER_1000ms, true);
 		lowbreath.nowheretorecover.ParamTransition(recoverBreathCell, lowbreath.recoveryavailable, IsValidRecoverCell);
 		lowbreath.recoveryavailable.ParamTransition(recoverBreathCell, lowbreath.nowheretorecover, IsNotValidRecoverCell).Enter(UpdateRecoverBreathCell).ToggleChore(CreateRecoverBreathChore, lowbreath.nowheretorecover);
 	}

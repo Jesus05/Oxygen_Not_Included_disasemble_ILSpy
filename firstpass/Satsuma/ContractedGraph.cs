@@ -28,12 +28,12 @@ namespace Satsuma
 		{
 			DisjointSetSet<Node> a = nodeGroups.WhereIs(u);
 			DisjointSetSet<Node> disjointSetSet = nodeGroups.WhereIs(v);
-			if (a.Equals(disjointSetSet))
+			if (!a.Equals(disjointSetSet))
 			{
-				return a.Representative;
+				unionCount++;
+				return nodeGroups.Union(a, disjointSetSet).Representative;
 			}
-			unionCount++;
-			return nodeGroups.Union(a, disjointSetSet).Representative;
+			return a.Representative;
 		}
 
 		public Node Contract(Arc arc)
@@ -67,8 +67,8 @@ namespace Satsuma
 				}
 			}
 			yield break;
-			IL_00ec:
-			/*Error near IL_00ed: Unexpected return in MoveNext()*/;
+			IL_00ee:
+			/*Error near IL_00ef: Unexpected return in MoveNext()*/;
 		}
 
 		public IEnumerable<Arc> Arcs(ArcFilter filter = ArcFilter.All)
@@ -91,8 +91,8 @@ namespace Satsuma
 				}
 			}
 			yield break;
-			IL_01db:
-			/*Error near IL_01dc: Unexpected return in MoveNext()*/;
+			IL_01e2:
+			/*Error near IL_01e3: Unexpected return in MoveNext()*/;
 		}
 
 		public IEnumerable<Arc> Arcs(Node u, Node v, ArcFilter filter = ArcFilter.All)
@@ -106,8 +106,8 @@ namespace Satsuma
 				}
 			}
 			yield break;
-			IL_00ec:
-			/*Error near IL_00ed: Unexpected return in MoveNext()*/;
+			IL_00ee:
+			/*Error near IL_00ef: Unexpected return in MoveNext()*/;
 		}
 
 		public int NodeCount()

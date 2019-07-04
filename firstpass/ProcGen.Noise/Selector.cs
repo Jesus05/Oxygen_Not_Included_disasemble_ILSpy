@@ -52,23 +52,23 @@ namespace ProcGen.Noise
 
 		public IModule3D CreateModule()
 		{
-			if (selectType == SelectType.Blend)
+			if (selectType != SelectType.Blend)
 			{
-				return new Blend();
+				Select select = new Select();
+				select.SetBounds(lower, upper);
+				select.EdgeFalloff = edge;
+				return select;
 			}
-			Select select = new Select();
-			select.SetBounds(lower, upper);
-			select.EdgeFalloff = edge;
-			return select;
+			return new Blend();
 		}
 
 		public IModule3D CreateModule(IModule3D selectModule, IModule3D leftModule, IModule3D rightModule)
 		{
-			if (selectType == SelectType.Blend)
+			if (selectType != SelectType.Blend)
 			{
-				return new Blend(selectModule, rightModule, leftModule);
+				return new Select(selectModule, rightModule, leftModule, lower, upper, edge);
 			}
-			return new Select(selectModule, rightModule, leftModule, lower, upper, edge);
+			return new Blend(selectModule, rightModule, leftModule);
 		}
 
 		public void SetSouces(IModule3D target, IModule3D controlModule, IModule3D rightModule, IModule3D leftModule)

@@ -21,6 +21,10 @@ namespace STRINGS
 			public static LocString MOO = UI.FormatAsLink("Moo", "MOOSPECIES");
 
 			public static LocString MOLE = UI.FormatAsLink("Shove Vole", "MOLESPECIES");
+
+			public static LocString SQUIRREL = UI.FormatAsLink("Pip", "SQUIRRELSPECIES");
+
+			public static LocString CRAB = UI.FormatAsLink("Pokeshell", "CRABSPECIES");
 		}
 
 		public class FAMILY_PLURAL
@@ -42,10 +46,30 @@ namespace STRINGS
 			public static LocString MOOSPECIES = UI.FormatAsLink("Moos", "MOOSPECIES");
 
 			public static LocString MOLESPECIES = UI.FormatAsLink("Shove Voles", "MOLESPECIES");
+
+			public static LocString CRABSPECIES = UI.FormatAsLink("Pokeshells", "MOLESPECIES");
+
+			public static LocString SQUIRRELSPECIES = UI.FormatAsLink("Pips", "SQUIRRELSPECIES");
 		}
 
 		public class SPECIES
 		{
+			public class CRAB
+			{
+				public class BABY
+				{
+					public static LocString NAME = UI.FormatAsLink("Pokeshell Spawn", "CRAB");
+
+					public static LocString DESC = "A snippy little Pokeshell Spawn.\n\nIn time it will mature into a fully grown " + UI.FormatAsLink("Pokeshell", "CRAB") + ".";
+				}
+
+				public static LocString NAME = UI.FormatAsLink("Pokeshell", "Crab");
+
+				public static LocString DESC = "Pokeshells are nonhostile critters that eat " + UI.FormatAsLink("Polluted Dirt", "TOXICSAND") + " and " + UI.FormatAsLink("Rot Piles", "COMPOST") + ".\n\nThe shells they leave behind after molting can be crushed into " + UI.FormatAsLink("Lime", "LIME") + ".";
+
+				public static LocString EGG_NAME = UI.FormatAsLink("Pinch Roe", "Crab");
+			}
+
 			public class CHLORINEGEYSER
 			{
 				public static LocString NAME = UI.FormatAsLink("Chlorine Geyser", "GeyserGeneric_CHLORINE_GAS");
@@ -204,6 +228,22 @@ namespace STRINGS
 				public static LocString DESC = "Dreckos are nonhostile critters that graze only on live " + UI.FormatAsLink("Mealwood Plants", "BASICSINGLEHARVESTPLANT") + ".\n\nTheir backsides are covered in thick woolly fibers that only grow in " + UI.FormatAsLink("Hydrogen", "HYDROGEN") + " climates.";
 
 				public static LocString EGG_NAME = UI.FormatAsLink("Drecklet Egg", "DRECKO");
+			}
+
+			public class SQUIRREL
+			{
+				public class BABY
+				{
+					public static LocString NAME = UI.FormatAsLink("Pipsqueak", "SQUIRREL");
+
+					public static LocString DESC = "A little purring Pipsqueak.\n\nIn time it will mature into a fully grown " + UI.FormatAsLink("Pip", "SQUIRREL") + ".";
+				}
+
+				public static LocString NAME = UI.FormatAsLink("Pip", "SQUIRREL");
+
+				public static LocString DESC = "Pips are pesky, nonhostile critters that subsist on " + UI.FormatAsLink("Lumber", "WOOD") + " and enjoy foraging for " + UI.FormatAsLink("Seeds", "PLANTS") + ".";
+
+				public static LocString EGG_NAME = UI.FormatAsLink("Pip Egg", "SQUIRREL");
 			}
 
 			public class OILFLOATER
@@ -483,6 +523,13 @@ namespace STRINGS
 					public static LocString DESC = "A highly pressurized vent that periodically erupts with scalding " + UI.FormatAsLink("Steam", "STEAM") + ".";
 				}
 
+				public class SALT_WATER
+				{
+					public static LocString NAME = UI.FormatAsLink("Salt Water Geyser", "GeyserGeneric_SALT_WATER");
+
+					public static LocString DESC = "A highly pressurized geyser that periodically erupts with " + UI.FormatAsLink("Salt Water", "SALTWATER") + ".";
+				}
+
 				public class HOT_WATER
 				{
 					public static LocString NAME = UI.FormatAsLink("Water Geyser", "GeyserGeneric_HOT_WATER");
@@ -734,9 +781,9 @@ namespace STRINGS
 			{
 				public static LocString NAME = UI.FormatAsLink("Sporechid", "EVILFLOWER");
 
-				public static LocString DESC = "This beautiful specemin is actually the host for a particularly nasty strain of brain fungus.";
+				public static LocString DESC = "Sporechids have an eerily alluring appearance to mask the fact that they host particularly nasty strain of brain fungus.";
 
-				public static LocString DOMESTICATEDDESC = "This plant improves " + UI.FormatAsLink("Decor", "DECOR") + " but also produces " + UI.FormatAsLink("Zombie Spores", "ZOMBIESPORES") + " in abundance.";
+				public static LocString DOMESTICATEDDESC = "This plant improves " + UI.FormatAsLink("Decor", "DECOR") + " but produces high quantities of " + UI.FormatAsLink("Zombie Spores", "ZOMBIESPORES") + ".";
 
 				public static LocString GROWTH_BONUS = "Growth Bonus";
 
@@ -825,6 +872,51 @@ namespace STRINGS
 				public static LocString DOMESTICATEDDESC = "This plant produces " + ITEMS.FOOD.SPICENUT.NAME + " spices.";
 			}
 
+			public class SALTPLANT
+			{
+				public static LocString NAME = UI.FormatAsLink("Dasha Saltvine", "SALTPLANT");
+
+				public static LocString DESC = "Dasha Saltvines naturally collect sodium deposits as they grow, producing harvestable " + UI.FormatAsLink("Salt", "SALT") + ".";
+
+				public static LocString DOMESTICATEDDESC = "This plant produces unrefined " + UI.FormatAsLink("Salt", "SALT") + ".";
+			}
+
+			public class OXYFERN
+			{
+				public static LocString NAME = UI.FormatAsLink("Oxyfern", "OXYFERN");
+
+				public static LocString DESC = "Oxyferns absorb " + UI.FormatAsLink("Carbon Dioxide", "CARBONDIOXIDE") + " and exude breathable " + UI.FormatAsLink("Oxygen", "OXYGEN") + ".";
+
+				public static LocString DOMESTICATEDDESC = "This plant converts " + UI.FormatAsLink("CO<sub>2</sub>", "CARBONDIOXIDE") + " into " + UI.FormatAsLink("Oxygen", "OXYGEN") + ".";
+			}
+
+			public class BEAN_PLANT
+			{
+				public static LocString NAME = UI.FormatAsLink("Nosh Sprout", "BEAN_PLANT");
+
+				public static LocString DESC = "Nosh Sprouts thrive in colder climates and produce edible " + UI.FormatAsLink("Nosh Beans", "BEAN") + ".";
+
+				public static LocString DOMESTICATEDDESC = "This plant produces " + UI.FormatAsLink("Nosh Beans", "BEAN") + ".";
+			}
+
+			public class WOOD_TREE
+			{
+				public static LocString NAME = UI.FormatAsLink("Arbor Tree", "WOOD_TREE");
+
+				public static LocString DESC = "Arbor Trees grow branches that can be harvested for " + UI.FormatAsLink("Lumber", "WOOD") + ".";
+
+				public static LocString DOMESTICATEDDESC = "This plant produces " + UI.FormatAsLink("Lumber", "WOOD") + ".";
+			}
+
+			public class SEALETTUCE
+			{
+				public static LocString NAME = UI.FormatAsLink("Waterweed", "SEALETTUCE");
+
+				public static LocString DESC = "Waterweeds thrive in salty water and can be harvested for fresh, edible " + UI.FormatAsLink("Lettuce", "LETTUCE") + ".";
+
+				public static LocString DOMESTICATEDDESC = "This plant produces " + UI.FormatAsLink("Lettuce", "LETTUCE") + ".";
+			}
+
 			public class SEEDS
 			{
 				public class LEAFYPLANT
@@ -838,7 +930,7 @@ namespace STRINGS
 				{
 					public static LocString NAME = UI.FormatAsLink("Joya Seed", "CACTUSPLANT");
 
-					public static LocString DESC = "The " + UI.FormatAsLink("Seed", "PLANTS") + " of a " + UI.FormatAsLink("Jumping Joya", "CACTUSPLANT") + ".\n\nDigging up Buried Objects may uncover a Joy Seed.";
+					public static LocString DESC = "The " + UI.FormatAsLink("Seed", "PLANTS") + " of a " + UI.FormatAsLink("Jumping Joya", "CACTUSPLANT") + ".\n\nDigging up Buried Objects may uncover a Joya Seed.";
 				}
 
 				public class BULBPLANT
@@ -891,7 +983,7 @@ namespace STRINGS
 				{
 					public static LocString NAME = UI.FormatAsLink("Sporechid Seed", "EVILFLOWER");
 
-					public static LocString DESC = "The " + UI.FormatAsLink("Seed", "PLANTS") + " of a " + SPECIES.EVILFLOWER.NAME + ".\n\nDigging up Buried Objects may uncover a " + NAME;
+					public static LocString DESC = "The " + UI.FormatAsLink("Seed", "PLANTS") + " of a " + SPECIES.EVILFLOWER.NAME + ".\n\nDigging up Buried Objects may uncover a " + NAME + ".";
 				}
 
 				public class SWAMPLILY
@@ -922,6 +1014,13 @@ namespace STRINGS
 					public static LocString DESC = "The " + UI.FormatAsLink("Seed", "PLANTS") + " of a " + SPECIES.BASICFABRICMATERIALPLANT.NAME + ".\n\nDigging up Buried Objects may uncover a Thimble Reed Seed.";
 				}
 
+				public class SALTPLANT
+				{
+					public static LocString NAME = UI.FormatAsLink("Salt Plant Seed", "SALTPLANT");
+
+					public static LocString DESC = "The " + UI.FormatAsLink("Seed", "PLANTS") + " of a " + SPECIES.SALTPLANT.NAME + ".\n\nDigging up Buried Objects may uncover a Salt Plant Seed.";
+				}
+
 				public class SPICE_VINE
 				{
 					public static LocString NAME = UI.FormatAsLink("Pincha Pepper Seed", "SPICE_VINE");
@@ -929,11 +1028,39 @@ namespace STRINGS
 					public static LocString DESC = "The " + UI.FormatAsLink("Seed", "PLANTS") + " of a " + SPECIES.SPICE_VINE.NAME + ".\n\nDigging up Buried Objects may uncover a Pincha Pepper Seed.";
 				}
 
+				public class BEAN_PLANT
+				{
+					public static LocString NAME = UI.FormatAsLink("Nosh Bean", "BEAN_PLANT");
+
+					public static LocString DESC = "The " + UI.FormatAsLink("Seed", "PLANTS") + " of a " + UI.FormatAsLink("Nosh Sprout", "BEAN_PLANT") + ".\n\nDigging up Buried Objects may uncover a Nosh Bean.";
+				}
+
+				public class WOOD_TREE
+				{
+					public static LocString NAME = UI.FormatAsLink("Arbor Acorn", "WOOD_TREE");
+
+					public static LocString DESC = "The " + UI.FormatAsLink("Seed", "PLANTS") + " of an " + UI.FormatAsLink("Arbor Tree", "WOOD_TREE") + ".\n\nDigging up Buried Objects may uncover an Arbor Acorn.";
+				}
+
 				public class OILEATER
 				{
 					public static LocString NAME = UI.FormatAsLink("Ink Bloom Seed", "OILEATER");
 
 					public static LocString DESC = "The " + UI.FormatAsLink("Seed", "PLANTS") + " of a " + UI.FormatAsLink("plant", "Ink Bloom") + ".\n\nDigging up Buried Objects may uncover an Ink Bloom Seed.";
+				}
+
+				public class OXYFERN
+				{
+					public static LocString NAME = UI.FormatAsLink("Oxyfern Seed", "OXYFERN");
+
+					public static LocString DESC = "The " + UI.FormatAsLink("Seed", "PLANTS") + " of an " + UI.FormatAsLink("Oxyfern", "OXYFERN") + " plant.";
+				}
+
+				public class SEALETTUCE
+				{
+					public static LocString NAME = UI.FormatAsLink("Waterweed Seed", "SEALETTUCE");
+
+					public static LocString DESC = "The " + UI.FormatAsLink("Seed", "PLANTS") + " of a " + UI.FormatAsLink("Waterweed", "SEALETTUCE") + ".\n\nDigging up Buried Objects may uncover a Waterweed Seed.";
 				}
 			}
 		}
@@ -1042,7 +1169,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Excited";
 
-				public static LocString TOOLTIP = "This critter heard a Rancher call for it and is very excited!";
+				public static LocString TOOLTIP = "This critter heard a Duplicant call for it and is very excited!";
 			}
 
 			public class GETTING_RANCHED
@@ -1165,6 +1292,20 @@ namespace STRINGS
 				public static LocString TOOLTIP = "This critter is leaving its burrow";
 			}
 
+			public class PLANTINGSEED
+			{
+				public static LocString NAME = "Planting Seed";
+
+				public static LocString TOOLTIP = "This critter is burying a seed for later";
+			}
+
+			public class RUMMAGINGSEED
+			{
+				public static LocString NAME = "Rummaging for seeds";
+
+				public static LocString TOOLTIP = "This critter is searching for tasty seeds";
+			}
+
 			public class EXPELLING_SOLID
 			{
 				public static LocString NAME = "Expelling Waste";
@@ -1205,6 +1346,13 @@ namespace STRINGS
 				public static LocString NAME = "Combat!";
 
 				public static LocString TOOLTIP = "This critter is on the attack!";
+			}
+
+			public class PROTECTINGENTITY
+			{
+				public static LocString NAME = "Protecting";
+
+				public static LocString TOOLTIP = "This creature is guarding something special to them and will likely attack if approached";
 			}
 
 			public class LAYINGANEGG
@@ -1288,6 +1436,13 @@ namespace STRINGS
 				public static LocString REASON_TOO_DARK = "Too Dark";
 
 				public static LocString REASON_TOO_BRIGHT = "Too Bright";
+			}
+
+			public class MOLTING
+			{
+				public static LocString NAME = "Molting";
+
+				public static LocString TOOLTIP = "This critter is shedding its skin. Yuck";
 			}
 
 			public class NEEDSFERTILIZER
@@ -1497,6 +1652,20 @@ namespace STRINGS
 				public static LocString TOOLTIP = "Microbe destroying conditions are preventing this food from decaying";
 			}
 
+			public class EXCHANGINGELEMENTCONSUME
+			{
+				public static LocString NAME = "Consuming {ConsumeElement} at {ConsumeRate}";
+
+				public static LocString TOOLTIP = "{ConsumeElement} is being used at a rate of {ConsumeRate}";
+			}
+
+			public class EXCHANGINGELEMENTOUTPUT
+			{
+				public static LocString NAME = "Outputting {OutputElement} at {OutputRate}";
+
+				public static LocString TOOLTIP = "{OutputElement} is being expelled at a rate of {OutputRate}";
+			}
+
 			public class FRESH
 			{
 				public static LocString NAME = "Fresh {RotPercentage}";
@@ -1671,7 +1840,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Wildness";
 
-				public static LocString TOOLTIP = "At 0% Wildness a critter becomes Tame, increasing its metabolism and requiring regular care from a Rancher";
+				public static LocString TOOLTIP = "At 0% Wildness a critter becomes Tame, increasing its metabolism and requiring regular care from Duplicants\n\nDuplicants must possess the Critter Ranching Skill to care for critters";
 			}
 
 			public class FERTILITY
@@ -1775,7 +1944,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Lullabied";
 
-				public static LocString TOOLTIP = "This calm egg was recently sung to by a Rancher" + UI.HORIZONTAL_BR_RULE + "Increased incubation rate";
+				public static LocString TOOLTIP = "This egg was recently sung to by a kind Duplicant" + UI.HORIZONTAL_BR_RULE + "Increased incubation rate\n\nDuplicants must possess the Critter Ranching Skill to sing to eggs";
 			}
 
 			public class INCUBATING
@@ -1796,7 +1965,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Groomed";
 
-				public static LocString TOOLTIP = "This critter has recently been attended to by a Rancher";
+				public static LocString TOOLTIP = "This critter has recently been attended to by a kind Duplicant\n\nDuplicants must possess the Critter Ranching Skill to care for critters";
 			}
 
 			public class HAPPY

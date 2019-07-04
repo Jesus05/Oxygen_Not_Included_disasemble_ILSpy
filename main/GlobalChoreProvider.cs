@@ -1,9 +1,7 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GlobalChoreProvider : ChoreProvider, ISim200ms
+public class GlobalChoreProvider : ChoreProvider, ISim200ms, IRender200ms
 {
 	public struct Fetch
 	{
@@ -19,32 +17,32 @@ public class GlobalChoreProvider : ChoreProvider, ISim200ms
 
 		public bool IsBetterThan(Fetch fetch)
 		{
-			if (category != fetch.category)
+			if (category == fetch.category)
 			{
-				return false;
-			}
-			if (tagBitsHash != fetch.tagBitsHash)
-			{
-				return false;
-			}
-			if (!chore.tagBits.AreEqual(ref fetch.chore.tagBits))
-			{
-				return false;
-			}
-			if (priority.priority_class > fetch.priority.priority_class)
-			{
-				return true;
-			}
-			if (priority.priority_class == fetch.priority.priority_class)
-			{
-				if (priority.priority_value > fetch.priority.priority_value)
+				if (tagBitsHash == fetch.tagBitsHash)
 				{
-					return true;
+					if (chore.tagBits.AreEqual(ref fetch.chore.tagBits))
+					{
+						if (priority.priority_class <= fetch.priority.priority_class)
+						{
+							if (priority.priority_class == fetch.priority.priority_class)
+							{
+								if (priority.priority_value > fetch.priority.priority_value)
+								{
+									return true;
+								}
+								if (priority.priority_value == fetch.priority.priority_value)
+								{
+									return cost <= fetch.cost;
+								}
+							}
+							return false;
+						}
+						return true;
+					}
+					return false;
 				}
-				if (priority.priority_value == fetch.priority.priority_value)
-				{
-					return cost <= fetch.cost;
-				}
+				return false;
 			}
 			return false;
 		}
@@ -55,16 +53,53 @@ public class GlobalChoreProvider : ChoreProvider, ISim200ms
 		public int Compare(Fetch a, Fetch b)
 		{
 			int num = b.priority.priority_class - a.priority.priority_class;
-			if (num != 0)
+			if (num == 0)
 			{
-				return num;
-			}
-			int num2 = b.priority.priority_value - a.priority.priority_value;
-			if (num2 != 0)
-			{
+				int num2 = b.priority.priority_value - a.priority.priority_value;
+				if (num2 == 0)
+				{
+					return a.cost - b.cost;
+				}
 				return num2;
 			}
-			return a.cost - b.cost;
+			return num;
+		}
+	}
+
+	private struct FindTopPriorityTask : IWorkItem<object>
+	{
+		private int start;
+
+		private int end;
+
+		public bool found;
+
+		public static bool abort;
+
+		public FindTopPriorityTask(int start, int end)
+		{
+			this.start = start;
+			this.end = end;
+			found = false;
+		}
+
+		public void Run(object context)
+		{
+			if (!abort)
+			{
+				for (int i = start; i != end; i++)
+				{
+					if (Components.Prioritizables.Items[i].IsTopPriority())
+					{
+						found = true;
+						break;
+					}
+				}
+				if (found)
+				{
+					abort = true;
+				}
+			}
 		}
 	}
 
@@ -77,6 +112,10 @@ public class GlobalChoreProvider : ChoreProvider, ISim200ms
 	private static readonly FetchComparer Comparer = new FetchComparer();
 
 	private ClearableManager clearableManager;
+
+	private TagBits storageFetchableBits = default(TagBits);
+
+	private static WorkItemCollection<FindTopPriorityTask, object> find_top_priority_job = new WorkItemCollection<FindTopPriorityTask, object>();
 
 	protected override void OnPrefabInit()
 	{
@@ -93,7 +132,6 @@ public class GlobalChoreProvider : ChoreProvider, ISim200ms
 		{
 			fetchChores.Add(fetchChore);
 		}
-		RefreshTopPriorityChoreStatus();
 	}
 
 	public override void RemoveChore(Chore chore)
@@ -104,12 +142,6 @@ public class GlobalChoreProvider : ChoreProvider, ISim200ms
 		{
 			fetchChores.Remove(fetchChore);
 		}
-		RefreshTopPriorityChoreStatus();
-	}
-
-	public void Sim200ms(float dt)
-	{
-		RefreshTopPriorityChoreStatus();
 	}
 
 	public void UpdateFetches(PathProber path_prober)
@@ -118,41 +150,40 @@ public class GlobalChoreProvider : ChoreProvider, ISim200ms
 		Navigator component = path_prober.GetComponent<Navigator>();
 		foreach (FetchChore fetchChore in fetchChores)
 		{
-			int num = -1;
-			if ((UnityEngine.Object)fetchChore.destination != (UnityEngine.Object)null)
+			if (!((Object)fetchChore.driver != (Object)null) && (!((Object)fetchChore.automatable != (Object)null) || !fetchChore.automatable.GetAutomationOnly()))
 			{
-				if ((UnityEngine.Object)fetchChore.automatable != (UnityEngine.Object)null && fetchChore.automatable.GetAutomationOnly())
+				Storage destination = fetchChore.destination;
+				if (!((Object)destination == (Object)null))
 				{
-					continue;
+					int navigationCost = component.GetNavigationCost(destination);
+					if (navigationCost != -1)
+					{
+						fetches.Add(new Fetch
+						{
+							chore = fetchChore,
+							tagBitsHash = fetchChore.tagBitsHash,
+							cost = navigationCost,
+							priority = fetchChore.masterPriority,
+							category = destination.fetchCategory
+						});
+					}
 				}
-				num = component.GetNavigationCost(fetchChore.destination);
-			}
-			if (num != -1 && !((UnityEngine.Object)fetchChore.driver != (UnityEngine.Object)null))
-			{
-				fetches.Add(new Fetch
-				{
-					chore = fetchChore,
-					tagBitsHash = fetchChore.tagBitsHash,
-					cost = num,
-					priority = fetchChore.masterPriority,
-					category = fetchChore.destination.fetchCategory
-				});
 			}
 		}
 		if (fetches.Count > 0)
 		{
 			fetches.Sort(Comparer);
 			int i = 1;
-			int num2 = 0;
+			int num = 0;
 			for (; i < fetches.Count; i++)
 			{
-				if (!fetches[num2].IsBetterThan(fetches[i]))
+				if (!fetches[num].IsBetterThan(fetches[i]))
 				{
-					num2++;
-					fetches[num2] = fetches[i];
+					num++;
+					fetches[num] = fetches[i];
 				}
 			}
-			fetches.RemoveRange(num2 + 1, fetches.Count - num2 - 1);
+			fetches.RemoveRange(num + 1, fetches.Count - num - 1);
 		}
 	}
 
@@ -183,30 +214,61 @@ public class GlobalChoreProvider : ChoreProvider, ISim200ms
 		Instance = null;
 	}
 
-	public void RefreshTopPriorityChoreStatus()
+	public void Sim200ms(float time_delta)
 	{
-		bool on = false;
-		IEnumerator enumerator = Components.Prioritizables.GetEnumerator();
-		try
+		find_top_priority_job.Reset(null);
+		FindTopPriorityTask.abort = false;
+		int num = 512;
+		for (int i = 0; i < Components.Prioritizables.Items.Count; i += num)
 		{
-			while (enumerator.MoveNext())
+			int num2 = i + num;
+			if (Components.Prioritizables.Items.Count < num2)
 			{
-				Prioritizable prioritizable = (Prioritizable)enumerator.Current;
-				if (prioritizable.IsTopPriority())
-				{
-					on = true;
-					break;
-				}
+				num2 = Components.Prioritizables.Items.Count;
 			}
+			find_top_priority_job.Add(new FindTopPriorityTask(i, num2));
 		}
-		finally
+		GlobalJobManager.Run(find_top_priority_job);
+		bool on = false;
+		for (int j = 0; j != find_top_priority_job.Count; j++)
 		{
-			IDisposable disposable;
-			if ((disposable = (enumerator as IDisposable)) != null)
+			FindTopPriorityTask workItem = find_top_priority_job.GetWorkItem(j);
+			if (workItem.found)
 			{
-				disposable.Dispose();
+				on = true;
+				break;
 			}
 		}
 		VignetteManager.Instance.Get().HasTopPriorityChore(on);
+	}
+
+	public void Render200ms(float dt)
+	{
+		UpdateStorageFetchableBits();
+	}
+
+	private void UpdateStorageFetchableBits()
+	{
+		ChoreType storageFetch = Db.Get().ChoreTypes.StorageFetch;
+		ChoreType foodFetch = Db.Get().ChoreTypes.FoodFetch;
+		storageFetchableBits.ClearAll();
+		foreach (FetchChore fetchChore in fetchChores)
+		{
+			if ((fetchChore.choreType == storageFetch || fetchChore.choreType == foodFetch) && (bool)fetchChore.destination)
+			{
+				int cell = Grid.PosToCell(fetchChore.destination);
+				if (MinionGroupProber.Get().IsReachable(cell, fetchChore.destination.GetOffsets(cell)))
+				{
+					storageFetchableBits.Or(ref fetchChore.tagBits);
+				}
+			}
+		}
+	}
+
+	public bool ClearableHasDestination(Pickupable pickupable)
+	{
+		KPrefabID kPrefabID = pickupable.KPrefabID;
+		kPrefabID.UpdateTagBits();
+		return kPrefabID.HasAnyTags_AssumeLaundered(ref storageFetchableBits);
 	}
 }

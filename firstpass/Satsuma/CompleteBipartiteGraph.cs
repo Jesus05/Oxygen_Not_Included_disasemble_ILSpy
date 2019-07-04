@@ -63,19 +63,19 @@ namespace Satsuma
 		{
 			bool flag = IsRed(u);
 			bool flag2 = IsRed(v);
-			if (flag == flag2)
+			if (flag != flag2)
 			{
-				return Arc.Invalid;
+				if (flag2)
+				{
+					Node node = u;
+					u = v;
+					v = node;
+				}
+				int num = (int)(u.Id - 1);
+				int num2 = (int)(v.Id - RedNodeCount - 1);
+				return new Arc(1 + (long)num2 * (long)RedNodeCount + num);
 			}
-			if (flag2)
-			{
-				Node node = u;
-				u = v;
-				v = node;
-			}
-			int num = (int)(u.Id - 1);
-			int num2 = (int)(v.Id - RedNodeCount - 1);
-			return new Arc(1 + (long)num2 * (long)RedNodeCount + num);
+			return Arc.Invalid;
 		}
 
 		public Node U(Arc arc)
@@ -253,11 +253,11 @@ namespace Satsuma
 
 		public int ArcCount(Node u, Node v, ArcFilter filter = ArcFilter.All)
 		{
-			if (IsRed(u) == IsRed(v))
+			if (IsRed(u) != IsRed(v))
 			{
-				return 0;
+				return (ArcCount(u, filter) > 0) ? 1 : 0;
 			}
-			return (ArcCount(u, filter) > 0) ? 1 : 0;
+			return 0;
 		}
 
 		public bool HasNode(Node node)

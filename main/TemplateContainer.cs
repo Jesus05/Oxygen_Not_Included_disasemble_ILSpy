@@ -6,10 +6,10 @@ using TemplateClasses;
 using UnityEngine;
 
 [Serializable]
-public class TemplateContainer : YamlIO<TemplateContainer>
+public class TemplateContainer
 {
 	[Serializable]
-	public class Info : YamlIO<Info>
+	public class Info
 	{
 		public Vector2f size
 		{
@@ -163,6 +163,6 @@ public class TemplateContainer : YamlIO<TemplateContainer>
 		{
 			Directory.CreateDirectory(templatePath);
 		}
-		Save(templatePath + "/" + save_name + ".yaml", null);
+		YamlIO.Save(this, templatePath + "/" + save_name + ".yaml", null);
 	}
 }

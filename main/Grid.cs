@@ -387,6 +387,8 @@ public class Grid
 
 	private struct TubeEntrance
 	{
+		public bool operational;
+
 		public int reservationCapacity;
 
 		public HashSet<int> reservations;
@@ -760,6 +762,8 @@ public class Grid
 
 	public static int[] LightCount;
 
+	public static int[] RadiationCount;
+
 	public static PressureIndexer Pressure;
 
 	public static TransparentIndexer Transparent;
@@ -936,11 +940,11 @@ public class Grid
 		}
 		}
 		Restriction.Directions value = (Restriction.Directions)0;
-		if (restriction.directionMasks.TryGetValue(minion, out value) || restriction.directionMasks.TryGetValue(-1, out value))
+		if (!restriction.directionMasks.TryGetValue(minion, out value) && !restriction.directionMasks.TryGetValue(-1, out value))
 		{
-			return (value & directions) == (Restriction.Directions)0;
+			return true;
 		}
-		return true;
+		return (value & directions) == (Restriction.Directions)0;
 	}
 
 	public static void RegisterTubeEntrance(int cell, int reservationCapacity)
@@ -965,18 +969,18 @@ public class Grid
 	{
 		TubeEntrance tubeEntrance = tubeEntrances[cell];
 		HashSet<int> reservations = tubeEntrance.reservations;
-		if (reserve)
+		if (!reserve)
 		{
-			DebugUtil.Assert(HasTubeEntrance[cell]);
-			if (reservations.Count == tubeEntrance.reservationCapacity)
-			{
-				return false;
-			}
+			return reservations.Remove(minion);
+		}
+		DebugUtil.Assert(HasTubeEntrance[cell]);
+		if (reservations.Count != tubeEntrance.reservationCapacity)
+		{
 			bool test = reservations.Add(minion);
 			DebugUtil.Assert(test);
 			return true;
 		}
-		return reservations.Remove(minion);
+		return false;
 	}
 
 	public static void SetTubeEntranceReservationCapacity(int cell, int newReservationCapacity)
@@ -989,13 +993,17 @@ public class Grid
 
 	public static bool HasUsableTubeEntrance(int cell, int minion)
 	{
-		if (!HasTubeEntrance[cell])
+		if (HasTubeEntrance[cell])
 		{
+			TubeEntrance tubeEntrance = tubeEntrances[cell];
+			if (tubeEntrance.operational)
+			{
+				HashSet<int> reservations = tubeEntrance.reservations;
+				return reservations.Count < tubeEntrance.reservationCapacity || reservations.Contains(minion);
+			}
 			return false;
 		}
-		TubeEntrance tubeEntrance = tubeEntrances[cell];
-		HashSet<int> reservations = tubeEntrance.reservations;
-		return reservations.Count < tubeEntrance.reservationCapacity || reservations.Contains(minion);
+		return false;
 	}
 
 	public static bool HasReservedTubeEntrance(int cell, int minion)
@@ -1005,10 +1013,12 @@ public class Grid
 		return tubeEntrance.reservations.Contains(minion);
 	}
 
-	public static void ActivateTubeEntrance(int cell, bool activate)
+	public static void SetTubeEntranceOperational(int cell, bool operational)
 	{
-		DebugUtil.Assert(tubeEntrances.ContainsKey(cell));
-		HasTubeEntrance[cell] = activate;
+		DebugUtil.Assert(HasTubeEntrance[cell]);
+		TubeEntrance value = tubeEntrances[cell];
+		value.operational = operational;
+		tubeEntrances[cell] = value;
 	}
 
 	public static void RegisterSuitMarker(int cell)
@@ -1037,17 +1047,17 @@ public class Grid
 		DebugUtil.Assert(HasSuitMarker[cell]);
 		SuitMarker suitMarker = suitMarkers[cell];
 		HashSet<int> suitReservations = suitMarker.suitReservations;
-		if (reserve)
+		if (!reserve)
 		{
-			if (suitReservations.Count == suitMarker.suitCount)
-			{
-				return false;
-			}
+			return suitReservations.Remove(minion);
+		}
+		if (suitReservations.Count != suitMarker.suitCount)
+		{
 			bool test = suitReservations.Add(minion);
 			DebugUtil.Assert(test);
 			return true;
 		}
-		return suitReservations.Remove(minion);
+		return false;
 	}
 
 	public static bool ReserveEmptyLocker(int cell, int minion, bool reserve)
@@ -1055,17 +1065,17 @@ public class Grid
 		DebugUtil.Assert(HasSuitMarker[cell]);
 		SuitMarker suitMarker = suitMarkers[cell];
 		HashSet<int> emptyLockerReservations = suitMarker.emptyLockerReservations;
-		if (reserve)
+		if (!reserve)
 		{
-			if (emptyLockerReservations.Count == suitMarker.emptyLockerCount)
-			{
-				return false;
-			}
+			return emptyLockerReservations.Remove(minion);
+		}
+		if (emptyLockerReservations.Count != suitMarker.emptyLockerCount)
+		{
 			bool test = emptyLockerReservations.Add(minion);
 			DebugUtil.Assert(test);
 			return true;
 		}
-		return emptyLockerReservations.Remove(minion);
+		return false;
 	}
 
 	public static void UpdateSuitMarker(int cell, int fullLockerCount, int emptyLockerCount, SuitMarker.Flags flags, PathFinder.PotentialPath.Flags pathFlags)
@@ -1081,39 +1091,39 @@ public class Grid
 
 	public static bool TryGetSuitMarkerFlags(int cell, out SuitMarker.Flags flags, out PathFinder.PotentialPath.Flags pathFlags)
 	{
-		if (HasSuitMarker[cell])
+		if (!HasSuitMarker[cell])
 		{
-			SuitMarker suitMarker = suitMarkers[cell];
-			flags = suitMarker.flags;
-			SuitMarker suitMarker2 = suitMarkers[cell];
-			pathFlags = suitMarker2.pathFlags;
-			return true;
+			flags = (SuitMarker.Flags)0;
+			pathFlags = PathFinder.PotentialPath.Flags.None;
+			return false;
 		}
-		flags = (SuitMarker.Flags)0;
-		pathFlags = PathFinder.PotentialPath.Flags.None;
-		return false;
+		SuitMarker suitMarker = suitMarkers[cell];
+		flags = suitMarker.flags;
+		SuitMarker suitMarker2 = suitMarkers[cell];
+		pathFlags = suitMarker2.pathFlags;
+		return true;
 	}
 
 	public static bool HasSuit(int cell, int minion)
 	{
-		if (!HasSuitMarker[cell])
+		if (HasSuitMarker[cell])
 		{
-			return false;
+			SuitMarker suitMarker = suitMarkers[cell];
+			HashSet<int> suitReservations = suitMarker.suitReservations;
+			return suitReservations.Count < suitMarker.suitCount || suitReservations.Contains(minion);
 		}
-		SuitMarker suitMarker = suitMarkers[cell];
-		HashSet<int> suitReservations = suitMarker.suitReservations;
-		return suitReservations.Count < suitMarker.suitCount || suitReservations.Contains(minion);
+		return false;
 	}
 
 	public static bool HasEmptyLocker(int cell, int minion)
 	{
-		if (!HasSuitMarker[cell])
+		if (HasSuitMarker[cell])
 		{
-			return false;
+			SuitMarker suitMarker = suitMarkers[cell];
+			HashSet<int> emptyLockerReservations = suitMarker.emptyLockerReservations;
+			return emptyLockerReservations.Count < suitMarker.emptyLockerCount || emptyLockerReservations.Contains(minion);
 		}
-		SuitMarker suitMarker = suitMarkers[cell];
-		HashSet<int> emptyLockerReservations = suitMarker.emptyLockerReservations;
-		return emptyLockerReservations.Count < suitMarker.emptyLockerCount || emptyLockerReservations.Contains(minion);
+		return false;
 	}
 
 	public unsafe static void InitializeCells()
@@ -1149,13 +1159,13 @@ public class Grid
 		switch (d)
 		{
 		case Direction.Up:
-			return cell + WidthInCells;
+			return CellAbove(cell);
 		case Direction.Down:
-			return cell - WidthInCells;
+			return CellBelow(cell);
 		case Direction.Left:
-			return cell - 1;
+			return CellLeft(cell);
 		case Direction.Right:
-			return cell + 1;
+			return CellRight(cell);
 		case Direction.None:
 			return cell;
 		default:
@@ -1556,31 +1566,45 @@ public class Grid
 	public static bool IsLiquid(int cell)
 	{
 		Element element = ElementLoader.elements[ElementIdx[cell]];
-		if (element.IsLiquid)
+		if (!element.IsLiquid)
 		{
-			return true;
+			return false;
 		}
-		return false;
+		return true;
 	}
 
 	public static bool IsGas(int cell)
 	{
 		Element element = ElementLoader.elements[ElementIdx[cell]];
-		if (element.IsGas)
+		if (!element.IsGas)
 		{
-			return true;
+			return false;
 		}
-		return false;
+		return true;
 	}
 
 	public static void GetVisibleExtents(out int min_x, out int min_y, out int max_x, out int max_y)
 	{
-		Camera main = Camera.main;
-		Vector3 position = Camera.main.transform.GetPosition();
-		Vector3 vector = main.ViewportToWorldPoint(new Vector3(1f, 1f, position.z));
-		Camera main2 = Camera.main;
-		Vector3 position2 = Camera.main.transform.GetPosition();
-		Vector3 vector2 = main2.ViewportToWorldPoint(new Vector3(0f, 0f, position2.z));
+		Vector3 vector;
+		Vector3 vector2;
+		if (GameUtil.IsCapturingTimeLapse())
+		{
+			Camera captureCamera = Game.Instance.timelapser.captureCamera;
+			Vector3 position = Game.Instance.timelapser.captureCamera.transform.GetPosition();
+			vector = captureCamera.ViewportToWorldPoint(new Vector3(1f, 1f, position.z));
+			Camera captureCamera2 = Game.Instance.timelapser.captureCamera;
+			Vector3 position2 = Game.Instance.timelapser.captureCamera.transform.GetPosition();
+			vector2 = captureCamera2.ViewportToWorldPoint(new Vector3(0f, 0f, position2.z));
+		}
+		else
+		{
+			Camera main = Camera.main;
+			Vector3 position3 = Camera.main.transform.GetPosition();
+			vector = main.ViewportToWorldPoint(new Vector3(1f, 1f, position3.z));
+			Camera main2 = Camera.main;
+			Vector3 position4 = Camera.main.transform.GetPosition();
+			vector2 = main2.ViewportToWorldPoint(new Vector3(0f, 0f, position4.z));
+		}
 		min_y = (int)vector2.y;
 		max_y = (int)(vector.y + 0.5f);
 		min_x = (int)vector2.x;

@@ -10,7 +10,7 @@ public class Valve : Workable, ISaveLoadable
 	[Serialize]
 	private float desiredFlow = 0.5f;
 
-	private Chore chore;
+	private Chore chore = null;
 
 	[MyCmpAdd]
 	private CopyBuildingSettings copyBuildingSettings;
@@ -74,7 +74,7 @@ public class Valve : Workable, ISaveLoadable
 			{
 				component.AddStatusItem(Db.Get().BuildingStatusItems.ValveRequest, this);
 				component.AddStatusItem(Db.Get().BuildingStatusItems.PendingWork, this);
-				chore = new WorkChore<Valve>(Db.Get().ChoreTypes.Toggle, this, null, null, true, null, null, null, true, null, false, false, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, false, true);
+				chore = new WorkChore<Valve>(Db.Get().ChoreTypes.Toggle, this, null, true, null, null, null, true, null, false, false, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, false, true);
 			}
 		}
 		else

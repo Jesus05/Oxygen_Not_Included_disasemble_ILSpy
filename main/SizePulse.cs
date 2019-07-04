@@ -20,11 +20,11 @@ public class SizePulse : MonoBehaviour
 
 	public float speed = 1f;
 
-	public bool updateWhenPaused;
+	public bool updateWhenPaused = false;
 
 	private Vector2 cur;
 
-	private State state;
+	private State state = State.Up;
 
 	private void Start()
 	{

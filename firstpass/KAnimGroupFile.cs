@@ -1,4 +1,3 @@
-using Klei;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -12,7 +11,7 @@ public class KAnimGroupFile : ScriptableObject
 		public HashedString id;
 
 		[SerializeField]
-		public string commandDirectory = string.Empty;
+		public string commandDirectory = "";
 
 		[SerializeField]
 		public List<KAnimFile> files = new List<KAnimFile>();
@@ -41,7 +40,7 @@ public class KAnimGroupFile : ScriptableObject
 		}
 	}
 
-	public class GroupFile : YamlIO<GroupFile>
+	public class GroupFile
 	{
 		public string groupID
 		{
@@ -60,7 +59,7 @@ public class KAnimGroupFile : ScriptableObject
 
 	public const int MAX_ANIMS_PER_GROUP = 10;
 
-	private static KAnimGroupFile groupfile;
+	private static KAnimGroupFile groupfile = null;
 
 	private Dictionary<int, KAnimFileData> fileData = new Dictionary<int, KAnimFileData>();
 
@@ -70,7 +69,7 @@ public class KAnimGroupFile : ScriptableObject
 	[SerializeField]
 	private List<Pair<HashedString, HashedString>> currentGroup = new List<Pair<HashedString, HashedString>>();
 
-	private static bool hasCompletedLoadAll;
+	private static bool hasCompletedLoadAll = false;
 
 	public static void DestroyInstance()
 	{
@@ -200,28 +199,28 @@ public class KAnimGroupFile : ScriptableObject
 
 	private bool AddFile(int groupIndex, KAnimFile file)
 	{
-		if (!groups[groupIndex].files.Contains(file))
+		if (groups[groupIndex].files.Contains(file))
 		{
-			Pair<HashedString, HashedString> pair = new Pair<HashedString, HashedString>(file.homedirectory, groups[groupIndex].id);
-			bool flag = false;
-			for (int i = 0; i < currentGroup.Count; i++)
-			{
-				Pair<HashedString, HashedString> pair2 = currentGroup[i];
-				if (pair2.first == (HashedString)file.homedirectory)
-				{
-					currentGroup[i] = pair;
-					flag = true;
-					break;
-				}
-			}
-			if (!flag)
-			{
-				currentGroup.Add(pair);
-			}
-			groups[groupIndex].files.Add(file);
-			return true;
+			return false;
 		}
-		return false;
+		Pair<HashedString, HashedString> pair = new Pair<HashedString, HashedString>(file.homedirectory, groups[groupIndex].id);
+		bool flag = false;
+		for (int i = 0; i < currentGroup.Count; i++)
+		{
+			Pair<HashedString, HashedString> pair2 = currentGroup[i];
+			if (pair2.first == (HashedString)file.homedirectory)
+			{
+				currentGroup[i] = pair;
+				flag = true;
+				break;
+			}
+		}
+		if (!flag)
+		{
+			currentGroup.Add(pair);
+		}
+		groups[groupIndex].files.Add(file);
+		return true;
 	}
 
 	public void LoadAll()

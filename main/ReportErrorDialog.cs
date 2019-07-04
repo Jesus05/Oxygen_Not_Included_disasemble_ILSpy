@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 public class ReportErrorDialog : MonoBehaviour
 {
-	public static string MOST_RECENT_SAVEFILE;
+	public static string MOST_RECENT_SAVEFILE = null;
 
 	private System.Action confirmAction;
 
@@ -52,7 +52,7 @@ public class ReportErrorDialog : MonoBehaviour
 	[SerializeField]
 	private LocText saveFileInfoLabel;
 
-	public static bool hasCrash;
+	public static bool hasCrash = false;
 
 	private void Start()
 	{
@@ -71,7 +71,7 @@ public class ReportErrorDialog : MonoBehaviour
 		quitButton.onClick += OnSelect_QUIT;
 		uploadSaveButton.onClick += OnSelect_UPLOADSAVE;
 		skipUploadSaveButton.onClick += OnSelect_SKIPUPLOADSAVE;
-		messageInputField.text = UI.CRASHSCREEN.BODY.text;
+		messageInputField.text = UI.CRASHSCREEN.BODY;
 		hasCrash = true;
 	}
 
@@ -100,22 +100,14 @@ public class ReportErrorDialog : MonoBehaviour
 		}
 	}
 
-	public void PopupConfirmDialog(string text, System.Action onConfirm, System.Action onQuit, System.Action onContinue)
+	public void PopupConfirmDialog(System.Action onConfirm, System.Action onQuit, System.Action onContinue)
 	{
 		confirmAction = onConfirm;
 		quitAction = onQuit;
 		continueAction = onContinue;
+		continueGameButton.gameObject.SetActive(continueAction != null);
 		VCCrashLabel.gameObject.SetActive(false);
 		VCLinkButton.gameObject.SetActive(false);
-		int num = 0;
-		if (confirmAction != null)
-		{
-			num++;
-		}
-		if (quitAction != null)
-		{
-			num++;
-		}
 		quitButton.gameObject.SetActive(onQuit != null);
 	}
 

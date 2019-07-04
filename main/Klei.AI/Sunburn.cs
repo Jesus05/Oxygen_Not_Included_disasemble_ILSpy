@@ -11,7 +11,7 @@ namespace Klei.AI
 			: base("SunburnSickness", SicknessType.Ailment, Severity.Minor, 0.005f, new List<InfectionVector>
 			{
 				InfectionVector.Exposure
-			}, 1020f)
+			}, 1020f, null)
 		{
 			AddSicknessComponent(new CommonSickEffectSickness());
 			AddSicknessComponent(new AttributeModifierSickness(new AttributeModifier[1]

@@ -18,17 +18,17 @@ public class UtilityNetworkManager<NetworkType, ItemType> : IUtilityNetworkMgr w
 
 	private Queue<int> queued = new Queue<int>();
 
-	protected UtilityNetworkGridNode[] visualGrid;
+	protected UtilityNetworkGridNode[] visualGrid = null;
 
-	private UtilityNetworkGridNode[] stashedVisualGrid;
+	private UtilityNetworkGridNode[] stashedVisualGrid = null;
 
-	protected UtilityNetworkGridNode[] physicalGrid;
+	protected UtilityNetworkGridNode[] physicalGrid = null;
 
-	protected HashSet<int> physicalNodes;
+	protected HashSet<int> physicalNodes = null;
 
-	protected HashSet<int> visualNodes;
+	protected HashSet<int> visualNodes = null;
 
-	private bool dirty;
+	private bool dirty = false;
 
 	private int tileLayer = -1;
 
@@ -419,18 +419,18 @@ public class UtilityNetworkManager<NetworkType, ItemType> : IUtilityNetworkMgr w
 	public UtilityNetwork GetNetworkForDirection(int cell, Direction direction)
 	{
 		cell = Grid.GetCellInDirection(cell, direction);
-		if (!Grid.IsValidCell(cell))
+		if (Grid.IsValidCell(cell))
 		{
-			return null;
+			UtilityNetworkGridNode[] grid = GetGrid(true);
+			UtilityNetworkGridNode utilityNetworkGridNode = grid[cell];
+			UtilityNetwork result = null;
+			if (utilityNetworkGridNode.networkIdx != -1 && utilityNetworkGridNode.networkIdx < networks.Count)
+			{
+				result = networks[utilityNetworkGridNode.networkIdx];
+			}
+			return result;
 		}
-		UtilityNetworkGridNode[] grid = GetGrid(true);
-		UtilityNetworkGridNode utilityNetworkGridNode = grid[cell];
-		UtilityNetwork result = null;
-		if (utilityNetworkGridNode.networkIdx != -1 && utilityNetworkGridNode.networkIdx < networks.Count)
-		{
-			result = networks[utilityNetworkGridNode.networkIdx];
-		}
-		return result;
+		return null;
 	}
 
 	private UtilityConnections GetNeighboursAsConnections(int cell, HashSet<int> nodes)
@@ -529,7 +529,7 @@ public class UtilityNetworkManager<NetworkType, ItemType> : IUtilityNetworkMgr w
 
 	public string GetVisualizerString(UtilityConnections connections)
 	{
-		string text = string.Empty;
+		string text = "";
 		if ((connections & UtilityConnections.Left) != 0)
 		{
 			text += "L";
@@ -546,7 +546,7 @@ public class UtilityNetworkManager<NetworkType, ItemType> : IUtilityNetworkMgr w
 		{
 			text += "D";
 		}
-		if (text == string.Empty)
+		if (text == "")
 		{
 			text = "None";
 		}

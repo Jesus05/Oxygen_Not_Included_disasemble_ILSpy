@@ -8,7 +8,7 @@ public class BabyPacuCleanerConfig : IEntityConfig
 	public GameObject CreatePrefab()
 	{
 		GameObject gameObject = PacuCleanerConfig.CreatePacu("PacuCleanerBaby", CREATURES.SPECIES.PACU.VARIANT_CLEANER.BABY.NAME, CREATURES.SPECIES.PACU.VARIANT_CLEANER.BABY.DESC, "baby_pacu_kanim", true);
-		EntityTemplates.ExtendEntityToBeingABaby(gameObject, "PacuCleaner");
+		EntityTemplates.ExtendEntityToBeingABaby(gameObject, "PacuCleaner", null);
 		return gameObject;
 	}
 

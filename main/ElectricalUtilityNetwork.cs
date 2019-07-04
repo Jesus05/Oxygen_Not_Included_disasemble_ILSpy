@@ -12,11 +12,11 @@ public class ElectricalUtilityNetwork : UtilityNetwork
 
 	private const float MIN_OVERLOAD_NOTIFICATION_DISPLAY_TIME = 5f;
 
-	private GameObject targetOverloadedWire;
+	private GameObject targetOverloadedWire = null;
 
-	private float timeOverloaded;
+	private float timeOverloaded = 0f;
 
-	private float timeOverloadNotificationDisplayed;
+	private float timeOverloadNotificationDisplayed = 0f;
 
 	public override void AddItem(int cell, object item)
 	{
@@ -103,7 +103,10 @@ public class ElectricalUtilityNetwork : UtilityNetwork
 					{
 						damage = 1,
 						source = (string)BUILDINGS.DAMAGESOURCES.CIRCUIT_OVERLOADED,
-						popString = (string)UI.GAMEOBJECTEFFECTS.DAMAGE_POPS.CIRCUIT_OVERLOADED
+						popString = (string)UI.GAMEOBJECTEFFECTS.DAMAGE_POPS.CIRCUIT_OVERLOADED,
+						takeDamageEffect = SpawnFXHashes.BuildingSpark,
+						fullDamageEffectName = "spark_damage_kanim",
+						statusItemID = Db.Get().BuildingStatusItems.Overloaded.Id
 					});
 				}
 				if (overloadedNotification == null)
@@ -115,7 +118,7 @@ public class ElectricalUtilityNetwork : UtilityNetwork
 					Transform transform = targetOverloadedWire.transform;
 					overloadedNotification = new Notification(title, type, invalid, null, null, true, 0f, null, null, transform);
 					Notifier notifier = Game.Instance.FindOrAdd<Notifier>();
-					notifier.Add(overloadedNotification, string.Empty);
+					notifier.Add(overloadedNotification, "");
 				}
 			}
 		}

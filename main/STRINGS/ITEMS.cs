@@ -19,7 +19,7 @@ namespace STRINGS
 
 				public static LocString DESC = "Minorly reduces the chance of becoming sick.";
 
-				public static LocString RECIPEDESC = "A supplement that minorly reduces the chance of contracting a germ-based " + UI.FormatAsLink("Disease", "DISEASE") + " when taken daily.";
+				public static LocString RECIPEDESC = "A supplement that minorly reduces the chance of contracting a germ-based " + UI.FormatAsLink("Disease", "DISEASE") + ".\n\nMust be taken daily.";
 			}
 
 			public class INTERMEDIATEBOOSTER
@@ -28,43 +28,43 @@ namespace STRINGS
 
 				public static LocString DESC = "Significantly reduces the chance of becoming sick.";
 
-				public static LocString RECIPEDESC = "A powerful supplement that significantly reduces the chance of contracting a germ-based " + UI.FormatAsLink("Disease", "DISEASE") + " when taken daily.";
+				public static LocString RECIPEDESC = "A supplement that significantly reduces the chance of contracting a germ-based " + UI.FormatAsLink("Disease", "DISEASE") + ".\n\nMust be taken daily.";
 			}
 
 			public class ANTIHISTAMINE
 			{
 				public static LocString NAME = "Allergy Medication";
 
-				public static LocString DESC = "Surpresses and prevents allergic reactions.";
+				public static LocString DESC = "Suppresses and prevents allergic reactions.";
 
-				public static LocString RECIPEDESC = "Duplicants can take this to cure an allergic reaction, and temporarily prevent further reactions.";
+				public static LocString RECIPEDESC = "A strong antihistamine Duplicants can take to halt an allergic reaction. Allergy Medication will also prevent further reactions from occurring for a short time after ingestion.";
 			}
 
 			public class BASICCURE
 			{
 				public static LocString NAME = "Curative Tablet";
 
-				public static LocString DESC = "A simple easy-to-take remedy for minor germ-based diseases.";
+				public static LocString DESC = "A simple, easy-to-take remedy for minor germ-based diseases.";
 
-				public static LocString RECIPEDESC = "Duplicants can take this to cure themselves of minor germ-based " + UI.FormatAsLink("Diseases", "DISEASE") + ".";
+				public static LocString RECIPEDESC = "Duplicants can take this to cure themselves of minor germ-based " + UI.FormatAsLink("Diseases", "DISEASE") + ".\n\nCurative Tablets are very effective against " + UI.FormatAsLink("Food Poisoning", "FOODSICKNESS") + ".";
 			}
 
 			public class INTERMEDIATECURE
 			{
-				public static LocString NAME = "Medicine Pack";
+				public static LocString NAME = "Medical Pack";
 
-				public static LocString DESC = "A doctor administered cure for moderate ailments.";
+				public static LocString DESC = "A doctor-administered cure for moderate ailments.";
 
-				public static LocString RECIPEDESC = "A doctor administered cure for moderate ailments.";
+				public static LocString RECIPEDESC = "A doctor-administered cure for moderate " + UI.FormatAsLink("Diseases", "DISEASE") + ". Medical Packs are very effective against " + UI.FormatAsLink("Slimelung", "SLIMESICKNESS") + ".\n\nMust be administered by a Duplicant with doctoring skills.";
 			}
 
 			public class ADVANCEDCURE
 			{
-				public static LocString NAME = "Medicine Vial";
+				public static LocString NAME = "Serum Vial";
 
-				public static LocString DESC = "A doctor administered cure for severe ailments.";
+				public static LocString DESC = "A doctor-administered cure for severe ailments.";
 
-				public static LocString RECIPEDESC = "A doctor administered cure for severe ailments.";
+				public static LocString RECIPEDESC = "An extremely powerful medication created to treat severe " + UI.FormatAsLink("Diseases", "DISEASE") + ". Serum is very effective against " + UI.FormatAsLink("Slimelung", "SLIMESICKNESS") + ".\n\nMust be administered by a Duplicant with doctoring skills.";
 			}
 		}
 
@@ -86,6 +86,15 @@ namespace STRINGS
 				public static LocString RECIPEDESC = "An edible, putrefied mudslop.\n\nMush Bars are preferable to starvation, but only just barely.";
 			}
 
+			public class MUSHROOMWRAP
+			{
+				public static LocString NAME = UI.FormatAsLink("Mushroom Wrap", "MUSHROOMWRAP");
+
+				public static LocString DESC = "Flavorful " + UI.FormatAsLink("Mushrooms", "MUSHROOM") + " wrapped in " + UI.FormatAsLink("Lettuce", "LETTUCE") + ".\n\nIt has an earthy flavor punctuated by a refreshing crunch.";
+
+				public static LocString RECIPEDESC = "Flavorful " + UI.FormatAsLink("Mushrooms", "MUSHROOM") + " wrapped in " + UI.FormatAsLink("Lettuce", "LETTUCE") + ".";
+			}
+
 			public class FRUITCAKE
 			{
 				public static LocString NAME = UI.FormatAsLink("Berry Sludge", "FRUITCAKE");
@@ -93,6 +102,15 @@ namespace STRINGS
 				public static LocString DESC = "A mashed up " + UI.FormatAsLink("Bristle Berry", "PRICKLEFRUIT") + " sludge with an exceptionally long shelf life.\n\nIts aggressive, overbearing sweetness can leave the tongue feeling temporarily numb.";
 
 				public static LocString RECIPEDESC = "A mashed up " + UI.FormatAsLink("Bristle Berry", "PRICKLEFRUIT") + " sludge with an exceptionally long shelf life.";
+			}
+
+			public class SUSHI
+			{
+				public static LocString NAME = UI.FormatAsLink("Sushi", "SUSHI");
+
+				public static LocString DESC = "Raw " + UI.FormatAsLink("Pacu Fillet", "FISHMEAT") + " wrapped with fresh " + UI.FormatAsLink("Lettuce", "LETTUCE") + ".\n\nWhile the salt of the lettuce may initially overpower the flavor, a keen palate can discern the subtle sweetness of the fillet beneath.";
+
+				public static LocString RECIPEDESC = "Raw " + UI.FormatAsLink("Pacu Fillet", "FISHMEAT") + " wrapped with fresh " + UI.FormatAsLink("Lettuce", "LETTUCE") + ".";
 			}
 
 			public class HATCHEGG
@@ -122,6 +140,15 @@ namespace STRINGS
 				public static LocString RECIPEDESC = "An egg laid by a " + UI.FormatAsLink("Shine Bug", "LIGHTBUG") + ".";
 			}
 
+			public class LETTUCE
+			{
+				public static LocString NAME = "Lettuce";
+
+				public static LocString DESC = "Crunchy, slightly salty leaves from a " + UI.FormatAsLink("Waterweed", "SEALETTUCE") + " plant.";
+
+				public static LocString RECIPEDESC = "Edible roughage from a " + UI.FormatAsLink("Waterweed", "SEALETTUCE") + ".";
+			}
+
 			public class OILFLOATEREGG
 			{
 				public static LocString NAME = CREATURES.SPECIES.OILFLOATER.EGG_NAME;
@@ -138,6 +165,13 @@ namespace STRINGS
 				public static LocString DESC = "An egg laid by a " + UI.FormatAsLink("Puft", "PUFT") + ".\n\nIf incubated, it will hatch into a " + UI.FormatAsLink("Puftlet", "PUFT") + ".";
 
 				public static LocString RECIPEDESC = "An egg laid by a " + UI.FormatAsLink("Puft", "PUFT") + ".";
+			}
+
+			public class FISHMEAT
+			{
+				public static LocString NAME = UI.FormatAsLink("Pacu Fillet", "FISHMEAT");
+
+				public static LocString DESC = "An uncooked fillet from a very dead Pacu. Yum!";
 			}
 
 			public class MEAT
@@ -233,6 +267,13 @@ namespace STRINGS
 				public static LocString RECIPEDESC = "A simple bun baked from " + UI.FormatAsLink("Sleet Wheat Grain", "COLDWHEATSEED") + " grain.";
 			}
 
+			public class BEAN
+			{
+				public static LocString NAME = UI.FormatAsLink("Nosh Bean", "BEAN");
+
+				public static LocString DESC = "The flavorful bean of a " + UI.FormatAsLink("Nosh Sprout", "BEAN_PLANT") + ".\n\nEach bite tastes refreshingly natural and wholesome.";
+			}
+
 			public class SPICENUT
 			{
 				public static LocString NAME = UI.FormatAsLink("Pincha Peppernut", "SPICENUT");
@@ -247,6 +288,15 @@ namespace STRINGS
 				public static LocString DESC = "A loaf of bread, lightly spiced with " + UI.FormatAsLink("Pincha Peppernut", "SPICENUT") + " for a mild bite.\n\nThere's a simple joy to be had in pulling it apart in one's fingers.";
 
 				public static LocString RECIPEDESC = "A loaf of bread, lightly spiced with " + UI.FormatAsLink("Pincha Peppernut", "SPICENUT") + " for a mild bite.";
+			}
+
+			public class SPICYTOFU
+			{
+				public static LocString NAME = UI.FormatAsLink("Spicy Tofu", "SPICYTOFU");
+
+				public static LocString DESC = "Bean curd marinated in " + UI.FormatAsLink("Pincha Pepperplant", "SPICE_VINE") + " sauce.\n\nIt has an unusual but pleasant consistency.";
+
+				public static LocString RECIPEDESC = UI.FormatAsLink("Nosh Bean", "BEAN") + " curd marinated in " + UI.FormatAsLink("Pincha Peppernut", "SPICENUT") + " sauce.";
 			}
 
 			public class SALSA
@@ -350,7 +400,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Micronutrient Fertilizer";
 
-				public static LocString DESC = "Specialized " + UI.FormatAsLink("Fertilizer", "FERTILIZER") + " mixed by a professional farmer.\n\nIncreases the growth rate of one " + UI.FormatAsLink("Plant", "PLANTS") + ".";
+				public static LocString DESC = "Specialized " + UI.FormatAsLink("Fertilizer", "FERTILIZER") + " mixed by a Duplicant with farming skills.\n\nIncreases the growth rate of one " + UI.FormatAsLink("Plant", "PLANTS") + ".";
 			}
 
 			public class MACHINE_PARTS
@@ -379,7 +429,21 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Egg Shell";
 
-				public static LocString DESC = "Can be crushed to produce " + ELEMENTS.LIME.NAME + ".";
+				public static LocString DESC = "Can be crushed to produce " + UI.FormatAsLink("Lime", "LIME") + ".";
+			}
+
+			public class CRAB_SHELL
+			{
+				public static LocString NAME = "Pokeshell Molt";
+
+				public static LocString DESC = "Can be crushed to produce " + UI.FormatAsLink("Lime", "LIME") + ".";
+			}
+
+			public class WOOD
+			{
+				public static LocString NAME = "Lumber";
+
+				public static LocString DESC = "Wood harvested from an " + UI.FormatAsLink("Arbor Tree", "WOOD_TREE") + ".";
 			}
 
 			public class GENE_SHUFFLER_RECHARGE
@@ -388,13 +452,20 @@ namespace STRINGS
 
 				public static LocString DESC = "Replenishes one charge to a depleted Neural Vacillator.";
 			}
+
+			public class TABLE_SALT
+			{
+				public static LocString NAME = "Table Salt";
+
+				public static LocString DESC = "A seasoning that Duplicants can add to their " + UI.FormatAsLink("Food", "FOOD") + " to boost " + UI.FormatAsLink("Morale", "MORALE") + ".\n\nDuplicants will automatically use Table Salt while sitting at a Mess Table during mealtime.";
+			}
 		}
 
 		public class CARGO_CAPSULE
 		{
-			public static LocString NAME = "Cargo Capsule";
+			public static LocString NAME = "Care Package";
 
-			public static LocString DESC = "Temporary container";
+			public static LocString DESC = "A delivery system for recently printed resources.\n\nIt will dematerialize shortly.";
 		}
 	}
 }

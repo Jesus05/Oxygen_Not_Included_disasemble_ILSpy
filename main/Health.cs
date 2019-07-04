@@ -19,12 +19,12 @@ public class Health : KMonoBehaviour, ISaveLoadable
 	}
 
 	[Serialize]
-	public bool CanBeIncapacitated;
+	public bool CanBeIncapacitated = false;
 
 	[Serialize]
-	public HealthState State;
+	public HealthState State = HealthState.Perfect;
 
-	public HealthBar healthBar;
+	public HealthBar healthBar = null;
 
 	private Effects effects;
 
@@ -127,6 +127,29 @@ public class Health : KMonoBehaviour, ISaveLoadable
 		UpdateStatus();
 		UpdateWoundEffects();
 		UpdateHealthBar();
+	}
+
+	public void RegisterHitReaction()
+	{
+		ReactionMonitor.Instance sMI = base.gameObject.GetSMI<ReactionMonitor.Instance>();
+		if (sMI != null)
+		{
+			SelfEmoteReactable selfEmoteReactable = new SelfEmoteReactable(base.gameObject, "Hit", Db.Get().ChoreTypes.Cough, "anim_hits_kanim", 0f, 1f, 1f);
+			selfEmoteReactable.AddStep(new EmoteReactable.EmoteStep
+			{
+				anim = (HashedString)"hit"
+			});
+			if (!base.gameObject.GetComponent<Navigator>().IsMoving())
+			{
+				EmoteChore emoteChore = new EmoteChore(base.gameObject.GetComponent<ChoreProvider>(), Db.Get().ChoreTypes.EmoteIdle, "anim_hits_kanim", new HashedString[1]
+				{
+					"hit"
+				}, null);
+				emoteChore.PairReactable(selfEmoteReactable);
+				selfEmoteReactable.PairEmote(emoteChore);
+			}
+			sMI.AddOneshotReactable(selfEmoteReactable);
+		}
 	}
 
 	[ContextMenu("DoDamage")]

@@ -26,9 +26,6 @@ public class Diggable : Workable
 	public HashedString choreTypeIdHash;
 
 	[SerializeField]
-	public Tag[] choreTags;
-
-	[SerializeField]
 	public Material[] materials;
 
 	[SerializeField]
@@ -95,7 +92,7 @@ public class Diggable : Workable
 		{
 			chore_type = Db.Get().ChoreTypes.GetByHash(choreTypeIdHash);
 		}
-		chore = new WorkChore<Diggable>(chore_type, this, null, choreTags, true, null, null, null, true, null, false, true, null, true, true, true, PriorityScreen.PriorityClass.basic, 5, false, true);
+		chore = new WorkChore<Diggable>(chore_type, this, null, true, null, null, null, true, null, false, true, null, true, true, true, PriorityScreen.PriorityClass.basic, 5, false, true);
 		SetWorkTime(float.PositiveInfinity);
 		partitionerEntry = GameScenePartitioner.Instance.Add("Diggable.OnSpawn", base.gameObject, Grid.PosToCell(this), GameScenePartitioner.Instance.solidChangedLayer, OnSolidChanged);
 		OnSolidChanged(null);
@@ -104,7 +101,6 @@ public class Diggable : Workable
 		Subscribe(493375141, OnRefreshUserMenuDelegate);
 		handle = Game.Instance.Subscribe(-1523247426, UpdateStatusItem);
 		Components.Diggables.Add(this);
-		UpdateBuildableDiggables(num);
 	}
 
 	public override AnimInfo GetAnim(Worker worker)
@@ -119,87 +115,6 @@ public class Diggable : Workable
 			result.smi = new MultitoolController.Instance(this, worker, multitoolContext, Assets.GetPrefab(multitoolHitEffectTag));
 		}
 		return result;
-	}
-
-	public static void UpdateBuildableDiggables(int cell)
-	{
-		Queue<GameUtil.FloodFillInfo> floodFillNext = GameUtil.FloodFillNext;
-		floodFillNext.Clear();
-		floodFillNext.Enqueue(new GameUtil.FloodFillInfo
-		{
-			cell = Grid.CellLeft(cell),
-			depth = 0
-		});
-		floodFillNext.Enqueue(new GameUtil.FloodFillInfo
-		{
-			cell = Grid.CellRight(cell),
-			depth = 0
-		});
-		floodFillNext.Enqueue(new GameUtil.FloodFillInfo
-		{
-			cell = Grid.CellAbove(cell),
-			depth = 0
-		});
-		floodFillNext.Enqueue(new GameUtil.FloodFillInfo
-		{
-			cell = Grid.CellBelow(cell),
-			depth = 0
-		});
-		UpdateBuildableDiggables(floodFillNext);
-		floodFillNext.Clear();
-	}
-
-	public static void UpdateBuildableDiggables(Queue<GameUtil.FloodFillInfo> queue)
-	{
-		List<Diggable> adjacentDiggables = new List<Diggable>();
-		bool any_buildables = false;
-		GameUtil.FloodFillConditional(queue, delegate(int visited_cell)
-		{
-			bool result = false;
-			if (IsCellBuildable(visited_cell))
-			{
-				result = true;
-				any_buildables = true;
-			}
-			else
-			{
-				GameObject gameObject = Grid.Objects[visited_cell, 7];
-				if ((UnityEngine.Object)gameObject != (UnityEngine.Object)null)
-				{
-					result = true;
-					adjacentDiggables.Add(gameObject.GetComponent<Diggable>());
-				}
-			}
-			return result;
-		}, GameUtil.FloodFillVisited, null, 10000);
-		GameUtil.FloodFillVisited.Clear();
-		if (any_buildables)
-		{
-			foreach (Diggable item in adjacentDiggables)
-			{
-				if (!((UnityEngine.Object)item == (UnityEngine.Object)null) && Array.IndexOf(item.choreTags, GameTags.ChoreTypes.Building) < 0)
-				{
-					Array.Resize(ref item.choreTags, item.choreTags.Length + 1);
-					item.choreTags[item.choreTags.Length - 1] = GameTags.ChoreTypes.Building;
-				}
-			}
-		}
-		else
-		{
-			foreach (Diggable item2 in adjacentDiggables)
-			{
-				if (!((UnityEngine.Object)item2 == (UnityEngine.Object)null))
-				{
-					int num = Array.IndexOf(item2.choreTags, GameTags.ChoreTypes.Building);
-					if (num >= 0)
-					{
-						item2.choreTags[num] = item2.choreTags[item2.choreTags.Length - 1];
-						Array.Resize(ref item2.choreTags, item2.choreTags.Length - 1);
-					}
-				}
-			}
-		}
-		queue.Clear();
 	}
 
 	private static bool IsCellBuildable(int cell)
@@ -231,7 +146,7 @@ public class Diggable : Workable
 			int num = Grid.PosToCell(this);
 			int num2 = -1;
 			UpdateColor(isReachable);
-			if (Grid.Element[num].hardness >= 150)
+			if (Grid.Element[num].hardness >= 200)
 			{
 				bool flag = false;
 				foreach (Chore.PreconditionInstance precondition in chore.GetPreconditions())
@@ -245,12 +160,12 @@ public class Diggable : Workable
 				}
 				if (!flag)
 				{
-					chore.AddPrecondition(ChorePreconditions.instance.HasSkillPerk, Db.Get().SkillPerks.CanDigNearlyImpenetrable);
+					chore.AddPrecondition(ChorePreconditions.instance.HasSkillPerk, Db.Get().SkillPerks.CanDigSupersuperhard);
 				}
-				requiredSkillPerk = Db.Get().SkillPerks.CanDigNearlyImpenetrable.Id;
-				materialDisplay.sharedMaterial = materials[2];
+				requiredSkillPerk = Db.Get().SkillPerks.CanDigSupersuperhard.Id;
+				materialDisplay.sharedMaterial = materials[3];
 			}
-			else if (Grid.Element[num].hardness >= 50)
+			else if (Grid.Element[num].hardness >= 150)
 			{
 				bool flag2 = false;
 				foreach (Chore.PreconditionInstance precondition2 in chore.GetPreconditions())
@@ -264,6 +179,25 @@ public class Diggable : Workable
 				}
 				if (!flag2)
 				{
+					chore.AddPrecondition(ChorePreconditions.instance.HasSkillPerk, Db.Get().SkillPerks.CanDigNearlyImpenetrable);
+				}
+				requiredSkillPerk = Db.Get().SkillPerks.CanDigNearlyImpenetrable.Id;
+				materialDisplay.sharedMaterial = materials[2];
+			}
+			else if (Grid.Element[num].hardness >= 50)
+			{
+				bool flag3 = false;
+				foreach (Chore.PreconditionInstance precondition3 in chore.GetPreconditions())
+				{
+					Chore.PreconditionInstance current3 = precondition3;
+					if (current3.id == ChorePreconditions.instance.HasSkillPerk.id)
+					{
+						flag3 = true;
+						break;
+					}
+				}
+				if (!flag3)
+				{
 					chore.AddPrecondition(ChorePreconditions.instance.HasSkillPerk, Db.Get().SkillPerks.CanDigVeryFirm);
 				}
 				requiredSkillPerk = Db.Get().SkillPerks.CanDigVeryFirm.Id;
@@ -275,13 +209,13 @@ public class Diggable : Workable
 				chore.GetPreconditions().Remove(chore.GetPreconditions().Find((Chore.PreconditionInstance o) => o.id == ChorePreconditions.instance.HasSkillPerk.id));
 			}
 			UpdateStatusItem(null);
-			bool flag3 = false;
+			bool flag4 = false;
 			if (!Grid.Solid[num])
 			{
 				num2 = GetUnstableCellAbove(num);
 				if (num2 == -1)
 				{
-					flag3 = true;
+					flag4 = true;
 				}
 				else
 				{
@@ -290,9 +224,9 @@ public class Diggable : Workable
 			}
 			else if (Grid.Foundation[num])
 			{
-				flag3 = true;
+				flag4 = true;
 			}
-			if (flag3)
+			if (flag4)
 			{
 				isDigComplete = true;
 				if (chore == null || !chore.InProgress())
@@ -359,20 +293,20 @@ public class Diggable : Workable
 	public static Diggable GetDiggable(int cell)
 	{
 		GameObject gameObject = Grid.Objects[cell, 7];
-		if ((UnityEngine.Object)gameObject != (UnityEngine.Object)null)
+		if (!((UnityEngine.Object)gameObject != (UnityEngine.Object)null))
 		{
-			return gameObject.GetComponent<Diggable>();
+			return null;
 		}
-		return null;
+		return gameObject.GetComponent<Diggable>();
 	}
 
 	public static bool IsDiggable(int cell)
 	{
-		if (Grid.Solid[cell])
+		if (!Grid.Solid[cell])
 		{
-			return !Grid.Foundation[cell];
+			return GetUnstableCellAbove(cell) != Grid.InvalidCell;
 		}
-		return GetUnstableCellAbove(cell) != Grid.InvalidCell;
+		return !Grid.Foundation[cell];
 	}
 
 	private static int GetUnstableCellAbove(int cell)
@@ -380,32 +314,32 @@ public class Diggable : Workable
 		Vector2I cellXY = Grid.CellToXY(cell);
 		UnstableGroundManager component = World.Instance.GetComponent<UnstableGroundManager>();
 		List<int> cellsContainingFallingAbove = component.GetCellsContainingFallingAbove(cellXY);
-		if (cellsContainingFallingAbove.Contains(cell))
+		if (!cellsContainingFallingAbove.Contains(cell))
 		{
-			return cell;
-		}
-		int num = Grid.CellAbove(cell);
-		while (Grid.IsValidCell(num))
-		{
-			if (Grid.Foundation[num])
+			int num = Grid.CellAbove(cell);
+			while (Grid.IsValidCell(num))
 			{
-				return Grid.InvalidCell;
-			}
-			if (Grid.Solid[num])
-			{
-				if (Grid.Element[num].IsUnstable)
+				if (Grid.Foundation[num])
+				{
+					return Grid.InvalidCell;
+				}
+				if (Grid.Solid[num])
+				{
+					if (!Grid.Element[num].IsUnstable)
+					{
+						return Grid.InvalidCell;
+					}
+					return num;
+				}
+				if (cellsContainingFallingAbove.Contains(num))
 				{
 					return num;
 				}
-				return Grid.InvalidCell;
+				num = Grid.CellAbove(num);
 			}
-			if (cellsContainingFallingAbove.Contains(num))
-			{
-				return num;
-			}
-			num = Grid.CellAbove(num);
+			return Grid.InvalidCell;
 		}
-		return Grid.InvalidCell;
+		return cell;
 	}
 
 	public static bool RequiresTool(Element e)
@@ -509,7 +443,6 @@ public class Diggable : Workable
 		int cell = Grid.PosToCell(this);
 		GameScenePartitioner.Instance.TriggerEvent(cell, GameScenePartitioner.Instance.digDestroyedLayer, null);
 		Components.Diggables.Remove(this);
-		UpdateBuildableDiggables(cell);
 	}
 
 	private void OnCancel()

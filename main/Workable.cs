@@ -30,7 +30,13 @@ public class Workable : KMonoBehaviour, ISaveLoadable, IApproachable
 
 	protected bool showProgressBar = true;
 
-	public bool alwaysShowProgressBar;
+	public bool alwaysShowProgressBar = false;
+
+	protected bool lightEfficiencyBonus = true;
+
+	protected StatusItem lightEfficiencyBonusStatusItem;
+
+	protected Guid lightEfficiencyBonusStatusItemHandle;
 
 	protected StatusItem workerStatusItem;
 
@@ -55,7 +61,7 @@ public class Workable : KMonoBehaviour, ISaveLoadable, IApproachable
 	protected float attributeExperienceMultiplier = DUPLICANTSTATS.ATTRIBUTE_LEVELING.PART_DAY_EXPERIENCE;
 
 	[SerializeField]
-	protected string skillExperienceSkillGroup;
+	protected string skillExperienceSkillGroup = null;
 
 	[SerializeField]
 	protected float skillExperienceMultiplier = SKILLS.PART_DAY_EXPERIENCE;
@@ -87,7 +93,7 @@ public class Workable : KMonoBehaviour, ISaveLoadable, IApproachable
 
 	[SerializeField]
 	[Tooltip("Whether to display number of uses in the details panel")]
-	public bool trackUses;
+	public bool trackUses = false;
 
 	[Serialize]
 	protected int numberOfUses;
@@ -113,11 +119,11 @@ public class Workable : KMonoBehaviour, ISaveLoadable, IApproachable
 
 	public HashedString workingPstFailed = "working_pst";
 
-	public KAnim.PlayMode workAnimPlayMode;
+	public KAnim.PlayMode workAnimPlayMode = KAnim.PlayMode.Loop;
 
-	public bool faceTargetWhenWorking;
+	public bool faceTargetWhenWorking = false;
 
-	protected ProgressBar progressBar;
+	protected ProgressBar progressBar = null;
 
 	public Worker worker
 	{
@@ -184,11 +190,11 @@ public class Workable : KMonoBehaviour, ISaveLoadable, IApproachable
 
 	public virtual HashedString GetWorkPstAnim(Worker worker, bool successfully_completed)
 	{
-		if (successfully_completed)
+		if (!successfully_completed)
 		{
-			return workingPstComplete;
+			return workingPstFailed;
 		}
-		return workingPstFailed;
+		return workingPstComplete;
 	}
 
 	public virtual Vector3 GetWorkOffset()
@@ -219,6 +225,7 @@ public class Workable : KMonoBehaviour, ISaveLoadable, IApproachable
 		}
 		KPrefabID component = GetComponent<KPrefabID>();
 		component.AddTag(GameTags.HasChores);
+		lightEfficiencyBonusStatusItem = Db.Get().DuplicantStatusItems.LightWorkEfficiencyBonus;
 		ShowProgressBar(alwaysShowProgressBar && workTimeRemaining < GetWorkTime());
 		UpdateStatusItem(null);
 	}
@@ -299,21 +306,42 @@ public class Workable : KMonoBehaviour, ISaveLoadable, IApproachable
 
 	public virtual float GetEfficiencyMultiplier(Worker worker)
 	{
+		float num = 1f;
 		if (attributeConverter != null)
 		{
 			AttributeConverterInstance converter = worker.GetComponent<AttributeConverters>().GetConverter(attributeConverter.Id);
-			return Mathf.Max(1f + converter.Evaluate(), minimumAttributeMultiplier);
+			num += converter.Evaluate();
 		}
-		return 1f;
+		if (lightEfficiencyBonus)
+		{
+			int num2 = Grid.PosToCell(worker.gameObject);
+			if (Grid.IsValidCell(num2))
+			{
+				int num3 = Grid.LightIntensity[num2];
+				if (num3 > 0)
+				{
+					num += DUPLICANTSTATS.LIGHT.LIGHT_WORK_EFFICIENCY_BONUS;
+					if (lightEfficiencyBonusStatusItemHandle == Guid.Empty)
+					{
+						lightEfficiencyBonusStatusItemHandle = worker.GetComponent<KSelectable>().AddStatusItem(Db.Get().DuplicantStatusItems.LightWorkEfficiencyBonus, this);
+					}
+				}
+				else if (lightEfficiencyBonusStatusItemHandle != Guid.Empty)
+				{
+					worker.GetComponent<KSelectable>().RemoveStatusItem(lightEfficiencyBonusStatusItemHandle, false);
+				}
+			}
+		}
+		return Mathf.Max(num, minimumAttributeMultiplier);
 	}
 
 	public virtual Klei.AI.Attribute GetWorkAttribute()
 	{
-		if (attributeConverter != null)
+		if (attributeConverter == null)
 		{
-			return attributeConverter.attribute;
+			return null;
 		}
-		return null;
+		return attributeConverter.attribute;
 	}
 
 	public virtual string GetConversationTopic()
@@ -362,6 +390,10 @@ public class Workable : KMonoBehaviour, ISaveLoadable, IApproachable
 			workTimeRemaining = GetWorkTime();
 		}
 		ShowProgressBar(alwaysShowProgressBar && workTimeRemaining < GetWorkTime());
+		if (lightEfficiencyBonusStatusItemHandle != Guid.Empty)
+		{
+			lightEfficiencyBonusStatusItemHandle = workerToStop.GetComponent<KSelectable>().RemoveStatusItem(lightEfficiencyBonusStatusItemHandle, false);
+		}
 		worker = null;
 		UpdateStatusItem(null);
 	}

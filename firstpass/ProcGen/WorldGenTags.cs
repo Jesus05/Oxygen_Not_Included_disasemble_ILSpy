@@ -36,6 +36,12 @@ namespace ProcGen
 
 		public static readonly Tag ErodePointToEdgeInv = TagManager.Create("ErodePointToEdgeInv");
 
+		public static readonly Tag ErodePointToBorder = TagManager.Create("ErodePointToBorder");
+
+		public static readonly Tag ErodePointToBorderInv = TagManager.Create("ErodePointToBorderInv");
+
+		public static readonly Tag ErodePointToWorldTop = TagManager.Create("ErodePointToWorldTop");
+
 		public static readonly Tag DistFunctionPointCentroid = TagManager.Create("DistFunctionPointCentroid");
 
 		public static readonly Tag DistFunctionPointEdge = TagManager.Create("DistFunctionPointEdge");
@@ -72,6 +78,8 @@ namespace ProcGen
 
 		public static readonly Tag NearDepths = TagManager.Create("NearDepths");
 
+		public static readonly Tag AtStart = TagManager.Create("AtStart");
+
 		public static readonly Tag AtSurface = TagManager.Create("AtSurface");
 
 		public static readonly Tag AtDepths = TagManager.Create("AtDepths");
@@ -94,13 +102,13 @@ namespace ProcGen
 
 		public static readonly Tag POI = TagManager.Create("POI");
 
-		public static readonly Tag RoomBorderNone = TagManager.Create("RoomBorderNone");
+		public static readonly Tag NoGlobalFeatureSpawning = TagManager.Create("NoGlobalFeatureSpawning");
 
-		public static readonly Tag RoomBorderMixed = TagManager.Create("BorderMixed");
-
-		public static readonly Tag RoomBorderRandom = TagManager.Create("BorderRandom");
+		public static readonly Tag PreventAmbientMobsInFeature = TagManager.Create("PreventAmbientMobsInFeature");
 
 		public static readonly Tag AllowExceedNodeBorders = TagManager.Create("AllowExceedNodeBorders");
+
+		public static readonly Tag HighPriorityFeature = TagManager.Create("HighPriorityFeature");
 
 		public static readonly Tag CaveVoidSliver = TagManager.Create("CaveVoidSliver");
 
@@ -179,7 +187,7 @@ namespace ProcGen
 			MediumDensitySplit
 		});
 
-		public static readonly TagSet WorldTags = new TagSet(new Tag[11]
+		public static readonly TagSet WorldTags = new TagSet(new Tag[12]
 		{
 			UnassignedNode,
 			Feature,
@@ -190,19 +198,17 @@ namespace ProcGen
 			AtSurface,
 			AtDepths,
 			AtEdge,
+			AtStart,
 			StartNear,
 			StartMedium
 		});
 
-		public static readonly TagSet DistanceTags = new TagSet(new Tag[7]
+		public static readonly TagSet DistanceTags = new TagSet(new Tag[4]
 		{
-			NearEdge,
-			NearSurface,
-			NearDepths,
 			AtSurface,
 			AtDepths,
 			AtEdge,
-			StartWorld
+			AtStart
 		});
 	}
 }

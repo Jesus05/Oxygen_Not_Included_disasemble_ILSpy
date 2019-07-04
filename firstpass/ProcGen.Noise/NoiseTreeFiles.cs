@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace ProcGen.Noise
 {
-	public class NoiseTreeFiles : YamlIO<NoiseTreeFiles>
+	public class NoiseTreeFiles
 	{
 		public static string NOISE_FILE = "noise";
 
@@ -34,11 +34,17 @@ namespace ProcGen.Noise
 			return System.IO.Path.Combine(Application.streamingAssetsPath, "worldgen/noise/" + filename + ".yaml");
 		}
 
+		public void Clear()
+		{
+			tree_files.Clear();
+			trees.Clear();
+		}
+
 		public void LoadAllTrees()
 		{
 			for (int i = 0; i < tree_files.Count; i++)
 			{
-				Tree tree = YamlIO<Tree>.LoadFile(GetTreeFilePath(tree_files[i]), null);
+				Tree tree = YamlIO.LoadFile<Tree>(GetTreeFilePath(tree_files[i]), null, null);
 				if (tree != null)
 				{
 					trees.Add(tree_files[i], tree);
@@ -52,7 +58,7 @@ namespace ProcGen.Noise
 			{
 				if (!trees.ContainsKey(name))
 				{
-					Tree tree = YamlIO<Tree>.LoadFile(path + name + ".yaml", null);
+					Tree tree = YamlIO.LoadFile<Tree>(path + name + ".yaml", null, null);
 					if (tree != null)
 					{
 						trees.Add(name, tree);
@@ -65,20 +71,20 @@ namespace ProcGen.Noise
 
 		public float GetZoomForTree(string name)
 		{
-			if (!trees.ContainsKey(name))
+			if (trees.ContainsKey(name))
 			{
-				return 1f;
+				return trees[name].settings.zoom;
 			}
-			return trees[name].settings.zoom;
+			return 1f;
 		}
 
 		public bool ShouldNormaliseTree(string name)
 		{
-			if (!trees.ContainsKey(name))
+			if (trees.ContainsKey(name))
 			{
-				return false;
+				return trees[name].settings.normalise;
 			}
-			return trees[name].settings.normalise;
+			return false;
 		}
 
 		public string[] GetTreeNames()
@@ -96,7 +102,7 @@ namespace ProcGen.Noise
 		{
 			if (!trees.ContainsKey(name))
 			{
-				Tree tree = YamlIO<Tree>.LoadFile(path + "/" + name + ".yaml", null);
+				Tree tree = YamlIO.LoadFile<Tree>(path + "/" + name + ".yaml", null, null);
 				if (tree == null)
 				{
 					return null;
@@ -108,20 +114,20 @@ namespace ProcGen.Noise
 
 		public Tree GetTree(string name)
 		{
-			if (!trees.ContainsKey(name))
+			if (trees.ContainsKey(name))
 			{
-				return null;
+				return trees[name];
 			}
-			return trees[name];
+			return null;
 		}
 
 		public IModule3D BuildTree(string name, int globalSeed)
 		{
-			if (!trees.ContainsKey(name))
+			if (trees.ContainsKey(name))
 			{
-				return null;
+				return trees[name].BuildFinalModule(globalSeed);
 			}
-			return trees[name].BuildFinalModule(globalSeed);
+			return null;
 		}
 	}
 }

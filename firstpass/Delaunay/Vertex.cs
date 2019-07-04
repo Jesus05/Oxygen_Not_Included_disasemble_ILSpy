@@ -31,15 +31,15 @@ namespace Delaunay
 
 		private static Vertex Create(float x, float y)
 		{
-			if (float.IsNaN(x) || float.IsNaN(y))
+			if (!float.IsNaN(x) && !float.IsNaN(y))
 			{
-				return VERTEX_AT_INFINITY;
-			}
-			if (_pool.Count > 0)
-			{
+				if (_pool.Count <= 0)
+				{
+					return new Vertex(x, y);
+				}
 				return _pool.Pop().Init(x, y);
 			}
-			return new Vertex(x, y);
+			return VERTEX_AT_INFINITY;
 		}
 
 		private Vertex Init(float x, float y)
@@ -100,15 +100,15 @@ namespace Delaunay
 				Side? leftRight = halfedge2.leftRight;
 				if (leftRight.GetValueOrDefault() == Side.LEFT && leftRight.HasValue)
 				{
-					goto IL_0138;
+					goto IL_0152;
 				}
 			}
 			if (flag || halfedge2.leftRight != Side.RIGHT)
 			{
 				return Create(num2, y);
 			}
-			goto IL_0138;
-			IL_0138:
+			goto IL_0152;
+			IL_0152:
 			return null;
 		}
 	}

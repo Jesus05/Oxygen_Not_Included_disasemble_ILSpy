@@ -1,5 +1,7 @@
+#define ENABLE_PROFILER
 using System;
 using UnityEngine;
+using UnityEngine.Profiling;
 
 public class GarbageCollectionProfiler : MonoBehaviour
 {
@@ -50,6 +52,8 @@ public class GarbageCollectionProfiler : MonoBehaviour
 				_Items[i] = new DelegateWithSingleHandler();
 			}
 		}
+		Profiler.BeginSample("GCCollect");
 		GC.Collect();
+		Profiler.EndSample();
 	}
 }

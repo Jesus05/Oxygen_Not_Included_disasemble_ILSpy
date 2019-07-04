@@ -1,7 +1,6 @@
 using FMOD.Studio;
 using FMODUnity;
 using STRINGS;
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -92,22 +91,22 @@ public class ComplexFabricatorSideScreen : SideScreenContent
 
 	public override string GetTitle()
 	{
-		if ((UnityEngine.Object)targetFab == (UnityEngine.Object)null)
+		if (!((Object)targetFab == (Object)null))
 		{
-			return Strings.Get(titleKey).ToString().Replace("{0}", string.Empty);
+			return string.Format(Strings.Get(titleKey), targetFab.GetProperName());
 		}
-		return string.Format(Strings.Get(titleKey), targetFab.GetProperName());
+		return Strings.Get(titleKey).ToString().Replace("{0}", "");
 	}
 
 	public override bool IsValidForTarget(GameObject target)
 	{
-		return (UnityEngine.Object)target.GetComponent<ComplexFabricator>() != (UnityEngine.Object)null;
+		return (Object)target.GetComponent<ComplexFabricator>() != (Object)null;
 	}
 
 	public override void SetTarget(GameObject target)
 	{
 		ComplexFabricator component = target.GetComponent<ComplexFabricator>();
-		if ((UnityEngine.Object)component == (UnityEngine.Object)null)
+		if ((Object)component == (Object)null)
 		{
 			Debug.LogError("The object selected doesn't have a ComplexFabricator!");
 		}
@@ -129,22 +128,22 @@ public class ComplexFabricatorSideScreen : SideScreenContent
 		foreach (ComplexRecipe r in recipes)
 		{
 			GameObject gameObject = recipeToggles.Find((GameObject match) => recipeMap[match] == r);
-			if ((UnityEngine.Object)gameObject != (UnityEngine.Object)null)
+			if ((Object)gameObject != (Object)null)
 			{
 				RefreshQueueCountDisplay(gameObject, targetFab);
 			}
 		}
-		if (targetFab.CurrentMachineOrder != null)
+		if (targetFab.CurrentWorkingOrder != null)
 		{
-			currentOrderLabel.text = string.Format(UI.UISIDESCREENS.FABRICATORSIDESCREEN.CURRENT_ORDER, targetFab.CurrentMachineOrder.parentOrder.recipe.GetUIName());
+			currentOrderLabel.text = string.Format(UI.UISIDESCREENS.FABRICATORSIDESCREEN.CURRENT_ORDER, targetFab.CurrentWorkingOrder.GetUIName());
 		}
 		else
 		{
 			currentOrderLabel.text = string.Format(UI.UISIDESCREENS.FABRICATORSIDESCREEN.CURRENT_ORDER, UI.UISIDESCREENS.FABRICATORSIDESCREEN.NO_WORKABLE_ORDER);
 		}
-		if (targetFab.GetMachineOrders().Count > 1)
+		if (targetFab.NextOrder != null)
 		{
-			nextOrderLabel.text = string.Format(UI.UISIDESCREENS.FABRICATORSIDESCREEN.NEXT_ORDER, targetFab.GetMachineOrders()[1].parentOrder.recipe.GetUIName());
+			nextOrderLabel.text = string.Format(UI.UISIDESCREENS.FABRICATORSIDESCREEN.NEXT_ORDER, targetFab.NextOrder.GetUIName());
 		}
 		else
 		{
@@ -168,18 +167,9 @@ public class ComplexFabricatorSideScreen : SideScreenContent
 		base.OnShow(show);
 	}
 
-	private int CompareRecipe(ComplexRecipe a, ComplexRecipe b)
-	{
-		if (a.sortOrder != b.sortOrder)
-		{
-			return a.sortOrder - b.sortOrder;
-		}
-		return StringComparer.InvariantCulture.Compare(a.id, b.id);
-	}
-
 	public void Initialize(ComplexFabricator target)
 	{
-		if ((UnityEngine.Object)target == (UnityEngine.Object)null)
+		if ((Object)target == (Object)null)
 		{
 			Debug.LogError("ComplexFabricator provided was null.");
 		}
@@ -187,12 +177,10 @@ public class ComplexFabricatorSideScreen : SideScreenContent
 		{
 			targetFab = target;
 			base.gameObject.SetActive(true);
-			ComplexRecipe[] recipes = targetFab.GetRecipes();
-			Array.Sort(recipes, CompareRecipe);
 			recipeMap = new Dictionary<GameObject, ComplexRecipe>();
 			recipeToggles.ForEach(delegate(GameObject rbi)
 			{
-				UnityEngine.Object.Destroy(rbi.gameObject);
+				Object.Destroy(rbi.gameObject);
 			});
 			recipeToggles.Clear();
 			GridLayoutGroup component = recipeGrid.GetComponent<GridLayoutGroup>();
@@ -228,6 +216,7 @@ public class ComplexFabricatorSideScreen : SideScreenContent
 			}
 			}
 			int num = 0;
+			ComplexRecipe[] recipes = targetFab.GetRecipes();
 			ComplexRecipe[] array = recipes;
 			foreach (ComplexRecipe recipe in array)
 			{
@@ -291,7 +280,7 @@ public class ComplexFabricatorSideScreen : SideScreenContent
 						entryGO = newToggle.gameObject;
 						recipeMap.Add(entryGO, recipe);
 						Image image = entryGO.GetComponentsInChildrenOnly<Image>()[2];
-						if (!recipe.useResultAsDescription)
+						if (recipe.nameDisplay == ComplexRecipe.RecipeNameDisplay.Ingredient)
 						{
 							image.sprite = uISprite.first;
 							image.color = uISprite.second;
@@ -385,7 +374,7 @@ public class ComplexFabricatorSideScreen : SideScreenContent
 	public void RefreshQueueCountDisplayForRecipe(ComplexRecipe recipe, ComplexFabricator fabricator)
 	{
 		GameObject gameObject = recipeToggles.Find((GameObject match) => recipeMap[match] == recipe);
-		if ((UnityEngine.Object)gameObject != (UnityEngine.Object)null)
+		if ((Object)gameObject != (Object)null)
 		{
 			RefreshQueueCountDisplay(gameObject, fabricator);
 		}
@@ -395,7 +384,7 @@ public class ComplexFabricatorSideScreen : SideScreenContent
 	{
 		HierarchyReferences component = entryGO.GetComponent<HierarchyReferences>();
 		bool flag = fabricator.GetRecipeQueueCount(recipeMap[entryGO]) == ComplexFabricator.QUEUE_INFINITE;
-		component.GetReference<LocText>("CountLabel").text = ((!flag) ? fabricator.GetRecipeQueueCount(recipeMap[entryGO]).ToString() : string.Empty);
+		component.GetReference<LocText>("CountLabel").text = ((!flag) ? fabricator.GetRecipeQueueCount(recipeMap[entryGO]).ToString() : "");
 		component.GetReference<RectTransform>("InfiniteIcon").gameObject.SetActive(flag);
 	}
 
@@ -407,7 +396,7 @@ public class ComplexFabricatorSideScreen : SideScreenContent
 		}
 		else
 		{
-			if ((UnityEngine.Object)selectedToggle == (UnityEngine.Object)toggle)
+			if ((Object)selectedToggle == (Object)toggle)
 			{
 				selectedToggle.isOn = false;
 				selectedToggle = null;

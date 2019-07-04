@@ -1,13 +1,48 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.CompilerServices;
 using YamlDotNet.Serialization;
 
 namespace Klei
 {
-	public class YamlIO<T>
+	public static class YamlIO
 	{
-		public void Save(string filename, List<Tuple<string, Type>> tagMappings = null)
+		public struct Error
+		{
+			public enum Severity
+			{
+				Fatal,
+				Recoverable
+			}
+
+			public FileHandle file;
+
+			public string message;
+
+			public Exception inner_exception;
+
+			public string text;
+
+			public Severity severity;
+		}
+
+		public delegate void ErrorHandler(Error error, bool force_log_as_warning);
+
+		private delegate void ErrorLogger(string format, params object[] args);
+
+		private const bool verbose_errors = false;
+
+		[CompilerGenerated]
+		private static ErrorLogger _003C_003Ef__mg_0024cache0;
+
+		[CompilerGenerated]
+		private static ErrorLogger _003C_003Ef__mg_0024cache1;
+
+		[CompilerGenerated]
+		private static ErrorHandler _003C_003Ef__mg_0024cache2;
+
+		public static void Save<T>(T some_object, string filename, List<Tuple<string, Type>> tagMappings = null)
 		{
 			using (StreamWriter writer = new StreamWriter(filename))
 			{
@@ -20,28 +55,52 @@ namespace Klei
 					}
 				}
 				Serializer serializer = serializerBuilder.Build();
-				serializer.Serialize(writer, this);
+				serializer.Serialize(writer, some_object);
 			}
 		}
 
-		public static T LoadFile(string filename, List<Tuple<string, Type>> tagMappings = null)
+		public static T LoadFile<T>(string filename, ErrorHandler handle_error = null, List<Tuple<string, Type>> tagMappings = null)
 		{
-			string readText = (LayeredFileSystem.instance == null) ? File.ReadAllText(filename) : LayeredFileSystem.instance.ReadText(filename);
-			T val = Parse(readText, tagMappings);
-			if (val == null)
-			{
-				Debug.LogWarning("Exception while loading yaml file [" + filename + "]");
-			}
-			return val;
+			return Parse<T>(FileSystem.ConvertToText(FileSystem.ReadBytes(filename)), filename, handle_error, tagMappings);
 		}
 
-		public static T Parse(string readText, List<Tuple<string, Type>> tagMappings = null)
+		public static void LogError(Error error, bool force_log_as_warning)
+		{
+			ErrorLogger errorLogger = (!force_log_as_warning && error.severity != Error.Severity.Recoverable) ? new ErrorLogger(Debug.LogErrorFormat) : new ErrorLogger(Debug.LogWarningFormat);
+			if (error.inner_exception == null)
+			{
+				errorLogger("{0} parse error in {1}\n{2}", error.severity, error.file.full_path, error.message);
+			}
+			else
+			{
+				errorLogger("{0} parse error in {1}\n{2}\n{3}", error.severity, error.file.full_path, error.message, error.inner_exception.Message);
+			}
+		}
+
+		public static T Parse<T>(string readText, string debugFilename, ErrorHandler handle_error = null, List<Tuple<string, Type>> tagMappings = null)
 		{
 			try
 			{
+				if (handle_error == null)
+				{
+					handle_error = LogError;
+				}
 				readText = readText.Replace("\t", "    ");
+				Action<string> unmatchedLogFn = delegate(string error)
+				{
+					handle_error(new Error
+					{
+						file = new FileHandle
+						{
+							full_path = debugFilename
+						},
+						text = readText,
+						message = error,
+						severity = Error.Severity.Recoverable
+					}, false);
+				};
 				DeserializerBuilder deserializerBuilder = new DeserializerBuilder();
-				deserializerBuilder.IgnoreUnmatchedProperties();
+				deserializerBuilder.IgnoreUnmatchedProperties(unmatchedLogFn);
 				if (tagMappings != null)
 				{
 					foreach (Tuple<string, Type> tagMapping in tagMappings)
@@ -51,12 +110,21 @@ namespace Klei
 				}
 				Deserializer deserializer = deserializerBuilder.Build();
 				StringReader input = new StringReader(readText);
-				return deserializer.Deserialize<T>((TextReader)input);
+				return deserializer.Deserialize<T>(input);
 			}
 			catch (Exception ex)
 			{
-				string message = ex.Message;
-				DebugUtil.DevLogError("Exception while loading yaml data: " + message + "\n YAML FILE:\n" + readText);
+				handle_error(new Error
+				{
+					file = new FileHandle
+					{
+						full_path = debugFilename
+					},
+					text = readText,
+					message = ex.Message,
+					inner_exception = ex.InnerException,
+					severity = Error.Severity.Fatal
+				}, false);
 			}
 			return default(T);
 		}

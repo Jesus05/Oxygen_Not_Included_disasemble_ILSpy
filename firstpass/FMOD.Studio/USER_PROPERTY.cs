@@ -25,7 +25,7 @@ namespace FMOD.Studio
 
 		public string stringValue()
 		{
-			return (type != USER_PROPERTY_TYPE.STRING) ? string.Empty : ((string)value.stringvalue);
+			return (type != USER_PROPERTY_TYPE.STRING) ? "" : ((string)value.stringvalue);
 		}
 	}
 }

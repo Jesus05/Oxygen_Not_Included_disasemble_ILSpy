@@ -38,8 +38,12 @@ public class ColdBreather : StateMachineComponent<ColdBreather.StatesInstance>, 
 		{
 			base.serializable = true;
 			default_state = grow;
-			statusItemCooling = new StatusItem("cooling", CREATURES.STATUSITEMS.COOLING.NAME, CREATURES.STATUSITEMS.COOLING.TOOLTIP, string.Empty, StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, 63486);
-			dead.ToggleStatusItem(CREATURES.STATUSITEMS.DEAD.NAME, CREATURES.STATUSITEMS.DEAD.TOOLTIP, category: Db.Get().StatusItemCategories.Main, icon: string.Empty, icon_type: StatusItem.IconType.Info, notification_type: (NotificationType)0, allow_multiples: false, render_overlay: default(HashedString), status_overlays: 0, resolve_string_callback: null, resolve_tooltip_callback: null).Enter(delegate(StatesInstance smi)
+			statusItemCooling = new StatusItem("cooling", CREATURES.STATUSITEMS.COOLING.NAME, CREATURES.STATUSITEMS.COOLING.TOOLTIP, "", StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, 129022);
+			State state = dead;
+			string name = CREATURES.STATUSITEMS.DEAD.NAME;
+			string tooltip = CREATURES.STATUSITEMS.DEAD.TOOLTIP;
+			StatusItemCategory main = Db.Get().StatusItemCategories.Main;
+			state.ToggleStatusItem(name, tooltip, "", StatusItem.IconType.Info, (NotificationType)0, false, default(HashedString), 0, null, null, main).Enter(delegate(StatesInstance smi)
 			{
 				GameUtil.KInstantiate(Assets.GetPrefab(EffectConfigs.PlantDeathId), smi.master.transform.GetPosition(), Grid.SceneLayer.FXFront, null, 0).SetActive(true);
 				smi.master.Trigger(1623392196, null);
@@ -91,6 +95,8 @@ public class ColdBreather : StateMachineComponent<ColdBreather.StatesInstance>, 
 
 	private const float EXHALE_PERIOD = 1f;
 
+	public float consumptionRate = 0f;
+
 	public float deltaEmitTemperature = -5f;
 
 	public Vector3 emitOffsetCell = new Vector3(0f, 0f);
@@ -99,7 +105,7 @@ public class ColdBreather : StateMachineComponent<ColdBreather.StatesInstance>, 
 
 	private Tag lastEmitTag;
 
-	private int nextGasEmitIndex;
+	private int nextGasEmitIndex = 0;
 
 	private HandleVector<Game.ComplexCallbackInfo<Sim.MassEmittedCallback>>.Handle simEmitCBHandle = HandleVector<Game.ComplexCallbackInfo<Sim.MassEmittedCallback>>.InvalidHandle;
 
@@ -111,7 +117,25 @@ public class ColdBreather : StateMachineComponent<ColdBreather.StatesInstance>, 
 		base.OnSpawn();
 		simEmitCBHandle = Game.Instance.massEmitCallbackManager.Add(OnSimEmittedCallback, this, "ColdBreather");
 		elementConsumer.EnableConsumption(false);
+		Subscribe(1309017699, OnReplanted);
 		base.smi.StartSM();
+	}
+
+	private void OnReplanted(object data = null)
+	{
+		ReceptacleMonitor component = GetComponent<ReceptacleMonitor>();
+		if (!((UnityEngine.Object)component == (UnityEngine.Object)null))
+		{
+			ElementConsumer component2 = GetComponent<ElementConsumer>();
+			if (component.Replanted)
+			{
+				component2.consumptionRate = consumptionRate;
+			}
+			else
+			{
+				component2.consumptionRate = consumptionRate * 0.25f;
+			}
+		}
 	}
 
 	protected override void OnCleanUp()

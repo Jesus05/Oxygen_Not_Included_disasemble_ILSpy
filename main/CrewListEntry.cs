@@ -13,7 +13,7 @@ public class CrewListEntry : KMonoBehaviour, IPointerEnterHandler, IPointerExitH
 
 	public GameObject crewPortraitParent;
 
-	protected bool mouseOver;
+	protected bool mouseOver = false;
 
 	public Image BorderHighlight;
 

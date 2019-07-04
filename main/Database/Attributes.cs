@@ -147,7 +147,7 @@ namespace Database
 			QualityOfLife = Add(new Attribute("QualityOfLife", false, Attribute.Display.Details, false, 0f, "ui_icon_qualityoflife", "attribute_qualityoflife"));
 			QualityOfLife.SetFormatter(new QualityOfLifeAttributeFormatter());
 			GermResistance = Add(new Attribute("GermResistance", false, Attribute.Display.Details, false, 0f, "ui_icon_immunelevel", "attribute_immunelevel"));
-			GermResistance.SetFormatter(new StandardAttributeFormatter(GameUtil.UnitClass.SimpleFloat, GameUtil.TimeSlice.None));
+			GermResistance.SetFormatter(new GermResistanceAttributeFormatter());
 			LifeSupport = Add(new Attribute("LifeSupport", true, Attribute.Display.Never, false, 0f, null, null));
 			LifeSupport.SetFormatter(new StandardAttributeFormatter(GameUtil.UnitClass.SimpleInteger, GameUtil.TimeSlice.None));
 			Toggle = Add(new Attribute("Toggle", true, Attribute.Display.Never, false, 0f, null, null));

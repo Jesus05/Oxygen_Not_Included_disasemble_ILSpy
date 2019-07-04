@@ -17,7 +17,7 @@ public class Filterable : KMonoBehaviour
 	private CopyBuildingSettings copyBuildingSettings;
 
 	[Serialize]
-	public ElementState filterElementState;
+	public ElementState filterElementState = ElementState.None;
 
 	[Serialize]
 	private Tag selectedTag;

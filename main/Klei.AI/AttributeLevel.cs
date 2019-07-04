@@ -90,14 +90,14 @@ namespace Klei.AI
 
 		public bool AddExperience(AttributeLevels levels, float experience)
 		{
-			if (level >= DUPLICANTSTATS.ATTRIBUTE_LEVELING.MAX_GAINED_ATTRIBUTE_LEVEL)
+			if (level < DUPLICANTSTATS.ATTRIBUTE_LEVELING.MAX_GAINED_ATTRIBUTE_LEVEL)
 			{
-				return false;
-			}
-			this.experience += experience;
-			this.experience = Mathf.Max(0f, this.experience);
-			if (this.experience >= GetExperienceForNextLevel())
-			{
+				this.experience += experience;
+				this.experience = Mathf.Max(0f, this.experience);
+				if (!(this.experience >= GetExperienceForNextLevel()))
+				{
+					return false;
+				}
 				LevelUp(levels);
 				return true;
 			}

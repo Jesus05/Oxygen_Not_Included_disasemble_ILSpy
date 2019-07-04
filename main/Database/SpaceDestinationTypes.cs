@@ -27,6 +27,28 @@ namespace Database
 
 		public SpaceDestinationType IceGiant;
 
+		public SpaceDestinationType Wormhole;
+
+		public SpaceDestinationType SaltDwarf;
+
+		public SpaceDestinationType RustPlanet;
+
+		public SpaceDestinationType ForestPlanet;
+
+		public SpaceDestinationType RedDwarf;
+
+		public SpaceDestinationType GoldAsteroid;
+
+		public SpaceDestinationType HydrogenGiant;
+
+		public SpaceDestinationType OilyAsteroid;
+
+		public SpaceDestinationType ShinyPlanet;
+
+		public SpaceDestinationType ChlorinePlanet;
+
+		public SpaceDestinationType SaltDesertPlanet;
+
 		public static Dictionary<SimHashes, MathUtil.MinMax> extendedElementTable = new Dictionary<SimHashes, MathUtil.MinMax>
 		{
 			{
@@ -71,7 +93,7 @@ namespace Database
 				}
 			};
 			ArtifactDropRate bad = Db.Get().ArtifactDropRates.Bad;
-			Satellite = Add(new SpaceDestinationType(id, parent, name, description, iconSize, spriteName, elementTable, null, bad));
+			Satellite = Add(new SpaceDestinationType(id, parent, name, description, iconSize, spriteName, elementTable, null, bad, 64000000, 63994000, 18));
 			MetallicAsteroid = Add(new SpaceDestinationType("MetallicAsteroid", parent, UI.SPACEDESTINATIONS.ASTEROIDS.METALLICASTEROID.NAME, UI.SPACEDESTINATIONS.ASTEROIDS.METALLICASTEROID.DESCRIPTION, 32, "nebula", new Dictionary<SimHashes, MathUtil.MinMax>
 			{
 				{
@@ -92,13 +114,9 @@ namespace Database
 					"HatchMetal",
 					3
 				}
-			}, Db.Get().ArtifactDropRates.Mediocre));
-			RockyAsteroid = Add(new SpaceDestinationType("RockyAsteroid", parent, UI.SPACEDESTINATIONS.ASTEROIDS.ROCKYASTEROID.NAME, UI.SPACEDESTINATIONS.ASTEROIDS.ROCKYASTEROID.DESCRIPTION, 32, "asteroid", new Dictionary<SimHashes, MathUtil.MinMax>
+			}, Db.Get().ArtifactDropRates.Mediocre, 128000000, 127988000, 12));
+			RockyAsteroid = Add(new SpaceDestinationType("RockyAsteroid", parent, UI.SPACEDESTINATIONS.ASTEROIDS.ROCKYASTEROID.NAME, UI.SPACEDESTINATIONS.ASTEROIDS.ROCKYASTEROID.DESCRIPTION, 32, "new_12", new Dictionary<SimHashes, MathUtil.MinMax>
 			{
-				{
-					SimHashes.IronOre,
-					new MathUtil.MinMax(100f, 200f)
-				},
 				{
 					SimHashes.Cuprite,
 					new MathUtil.MinMax(100f, 200f)
@@ -117,12 +135,12 @@ namespace Database
 					"HatchHard",
 					3
 				}
-			}, Db.Get().ArtifactDropRates.Good));
+			}, Db.Get().ArtifactDropRates.Good, 128000000, 127988000, 18));
 			spriteName = "CarbonaceousAsteroid";
 			description = UI.SPACEDESTINATIONS.ASTEROIDS.CARBONACEOUSASTEROID.NAME;
 			name = UI.SPACEDESTINATIONS.ASTEROIDS.CARBONACEOUSASTEROID.DESCRIPTION;
 			iconSize = 32;
-			id = "asteroid";
+			id = "new_08";
 			elementTable = new Dictionary<SimHashes, MathUtil.MinMax>
 			{
 				{
@@ -139,7 +157,7 @@ namespace Database
 				}
 			};
 			bad = Db.Get().ArtifactDropRates.Mediocre;
-			CarbonaceousAsteroid = Add(new SpaceDestinationType(spriteName, parent, description, name, iconSize, id, elementTable, null, bad));
+			CarbonaceousAsteroid = Add(new SpaceDestinationType(spriteName, parent, description, name, iconSize, id, elementTable, null, bad, 128000000, 127988000, 6));
 			IcyDwarf = Add(new SpaceDestinationType("IcyDwarf", parent, UI.SPACEDESTINATIONS.DWARFPLANETS.ICYDWARF.NAME, UI.SPACEDESTINATIONS.DWARFPLANETS.ICYDWARF.DESCRIPTION, 64, "icyMoon", new Dictionary<SimHashes, MathUtil.MinMax>
 			{
 				{
@@ -153,10 +171,6 @@ namespace Database
 				{
 					SimHashes.SolidOxygen,
 					new MathUtil.MinMax(100f, 200f)
-				},
-				{
-					SimHashes.SolidMethane,
-					new MathUtil.MinMax(100f, 200f)
 				}
 			}, new Dictionary<string, int>
 			{
@@ -168,7 +182,7 @@ namespace Database
 					"ColdWheatSeed",
 					4
 				}
-			}, Db.Get().ArtifactDropRates.Great));
+			}, Db.Get().ArtifactDropRates.Great, 256000000, 255982000, 24));
 			OrganicDwarf = Add(new SpaceDestinationType("OrganicDwarf", parent, UI.SPACEDESTINATIONS.DWARFPLANETS.ORGANICDWARF.NAME, UI.SPACEDESTINATIONS.DWARFPLANETS.ORGANICDWARF.DESCRIPTION, 64, "organicAsteroid", new Dictionary<SimHashes, MathUtil.MinMax>
 			{
 				{
@@ -176,15 +190,7 @@ namespace Database
 					new MathUtil.MinMax(100f, 200f)
 				},
 				{
-					SimHashes.DirtyWater,
-					new MathUtil.MinMax(100f, 200f)
-				},
-				{
 					SimHashes.Algae,
-					new MathUtil.MinMax(100f, 200f)
-				},
-				{
-					SimHashes.CarbonDioxide,
 					new MathUtil.MinMax(100f, 200f)
 				},
 				{
@@ -201,12 +207,12 @@ namespace Database
 					"GasGrassSeed",
 					4
 				}
-			}, Db.Get().ArtifactDropRates.Great));
+			}, Db.Get().ArtifactDropRates.Great, 256000000, 255982000, 30));
 			id = "DustyMoon";
 			name = UI.SPACEDESTINATIONS.DWARFPLANETS.DUSTYDWARF.NAME;
 			description = UI.SPACEDESTINATIONS.DWARFPLANETS.DUSTYDWARF.DESCRIPTION;
 			iconSize = 64;
-			spriteName = "asteroid";
+			spriteName = "new_05";
 			elementTable = new Dictionary<SimHashes, MathUtil.MinMax>
 			{
 				{
@@ -223,7 +229,7 @@ namespace Database
 				}
 			};
 			bad = Db.Get().ArtifactDropRates.Amazing;
-			DustyMoon = Add(new SpaceDestinationType(id, parent, name, description, iconSize, spriteName, elementTable, null, bad));
+			DustyMoon = Add(new SpaceDestinationType(id, parent, name, description, iconSize, spriteName, elementTable, null, bad, 256000000, 255982000, 42));
 			TerraPlanet = Add(new SpaceDestinationType("TerraPlanet", parent, UI.SPACEDESTINATIONS.PLANETS.TERRAPLANET.NAME, UI.SPACEDESTINATIONS.PLANETS.TERRAPLANET.DESCRIPTION, 96, "terra", new Dictionary<SimHashes, MathUtil.MinMax>
 			{
 				{
@@ -252,7 +258,7 @@ namespace Database
 					"PacuEgg",
 					4
 				}
-			}, Db.Get().ArtifactDropRates.Amazing));
+			}, Db.Get().ArtifactDropRates.Amazing, 384000000, 383980000, 54));
 			spriteName = "VolcanoPlanet";
 			description = UI.SPACEDESTINATIONS.PLANETS.VOLCANOPLANET.NAME;
 			name = UI.SPACEDESTINATIONS.PLANETS.VOLCANOPLANET.DESCRIPTION;
@@ -269,16 +275,12 @@ namespace Database
 					new MathUtil.MinMax(100f, 200f)
 				},
 				{
-					SimHashes.Obsidian,
-					new MathUtil.MinMax(100f, 200f)
-				},
-				{
 					SimHashes.Katairite,
 					new MathUtil.MinMax(100f, 200f)
 				}
 			};
 			bad = Db.Get().ArtifactDropRates.Amazing;
-			VolcanoPlanet = Add(new SpaceDestinationType(spriteName, parent, description, name, iconSize, id, elementTable, null, bad));
+			VolcanoPlanet = Add(new SpaceDestinationType(spriteName, parent, description, name, iconSize, id, elementTable, null, bad, 384000000, 383980000, 54));
 			id = "GasGiant";
 			name = UI.SPACEDESTINATIONS.GIANTS.GASGIANT.NAME;
 			description = UI.SPACEDESTINATIONS.GIANTS.GASGIANT.DESCRIPTION;
@@ -296,7 +298,7 @@ namespace Database
 				}
 			};
 			bad = Db.Get().ArtifactDropRates.Perfect;
-			GasGiant = Add(new SpaceDestinationType(id, parent, name, description, iconSize, spriteName, elementTable, null, bad));
+			GasGiant = Add(new SpaceDestinationType(id, parent, name, description, iconSize, spriteName, elementTable, null, bad, 384000000, 383980000, 60));
 			spriteName = "IceGiant";
 			description = UI.SPACEDESTINATIONS.GIANTS.ICEGIANT.NAME;
 			name = UI.SPACEDESTINATIONS.GIANTS.ICEGIANT.DESCRIPTION;
@@ -322,7 +324,226 @@ namespace Database
 				}
 			};
 			bad = Db.Get().ArtifactDropRates.Perfect;
-			IceGiant = Add(new SpaceDestinationType(spriteName, parent, description, name, iconSize, id, elementTable, null, bad));
+			IceGiant = Add(new SpaceDestinationType(spriteName, parent, description, name, iconSize, id, elementTable, null, bad, 384000000, 383980000, 60));
+			SaltDwarf = Add(new SpaceDestinationType("SaltDwarf", parent, UI.SPACEDESTINATIONS.DWARFPLANETS.SALTDWARF.NAME, UI.SPACEDESTINATIONS.DWARFPLANETS.SALTDWARF.DESCRIPTION, 64, "new_01", new Dictionary<SimHashes, MathUtil.MinMax>
+			{
+				{
+					SimHashes.SaltWater,
+					new MathUtil.MinMax(100f, 200f)
+				},
+				{
+					SimHashes.SolidCarbonDioxide,
+					new MathUtil.MinMax(100f, 200f)
+				},
+				{
+					SimHashes.Brine,
+					new MathUtil.MinMax(100f, 200f)
+				}
+			}, new Dictionary<string, int>
+			{
+				{
+					"SaltPlantSeed",
+					3
+				}
+			}, Db.Get().ArtifactDropRates.Bad, 256000000, 255982000, 30));
+			id = "RustPlanet";
+			name = UI.SPACEDESTINATIONS.PLANETS.RUSTPLANET.NAME;
+			description = UI.SPACEDESTINATIONS.PLANETS.RUSTPLANET.DESCRIPTION;
+			iconSize = 96;
+			spriteName = "new_06";
+			elementTable = new Dictionary<SimHashes, MathUtil.MinMax>
+			{
+				{
+					SimHashes.Rust,
+					new MathUtil.MinMax(100f, 200f)
+				},
+				{
+					SimHashes.SolidCarbonDioxide,
+					new MathUtil.MinMax(100f, 200f)
+				}
+			};
+			bad = Db.Get().ArtifactDropRates.Perfect;
+			RustPlanet = Add(new SpaceDestinationType(id, parent, name, description, iconSize, spriteName, elementTable, null, bad, 384000000, 383980000, 60));
+			ForestPlanet = Add(new SpaceDestinationType("ForestPlanet", parent, UI.SPACEDESTINATIONS.PLANETS.FORESTPLANET.NAME, UI.SPACEDESTINATIONS.PLANETS.FORESTPLANET.DESCRIPTION, 96, "new_07", new Dictionary<SimHashes, MathUtil.MinMax>
+			{
+				{
+					SimHashes.AluminumOre,
+					new MathUtil.MinMax(100f, 200f)
+				},
+				{
+					SimHashes.SolidOxygen,
+					new MathUtil.MinMax(100f, 200f)
+				}
+			}, new Dictionary<string, int>
+			{
+				{
+					"Squirrel",
+					1
+				},
+				{
+					"ForestTreeSeed",
+					4
+				}
+			}, Db.Get().ArtifactDropRates.Mediocre, 384000000, 383980000, 24));
+			spriteName = "RedDwarf";
+			description = UI.SPACEDESTINATIONS.DWARFPLANETS.REDDWARF.NAME;
+			name = UI.SPACEDESTINATIONS.DWARFPLANETS.REDDWARF.DESCRIPTION;
+			iconSize = 64;
+			id = "sun";
+			elementTable = new Dictionary<SimHashes, MathUtil.MinMax>
+			{
+				{
+					SimHashes.Aluminum,
+					new MathUtil.MinMax(100f, 200f)
+				},
+				{
+					SimHashes.LiquidMethane,
+					new MathUtil.MinMax(100f, 200f)
+				},
+				{
+					SimHashes.Fossil,
+					new MathUtil.MinMax(100f, 200f)
+				}
+			};
+			bad = Db.Get().ArtifactDropRates.Amazing;
+			RedDwarf = Add(new SpaceDestinationType(spriteName, parent, description, name, iconSize, id, elementTable, null, bad, 256000000, 255982000, 42));
+			id = "GoldAsteroid";
+			name = UI.SPACEDESTINATIONS.ASTEROIDS.GOLDASTEROID.NAME;
+			description = UI.SPACEDESTINATIONS.ASTEROIDS.GOLDASTEROID.DESCRIPTION;
+			iconSize = 32;
+			spriteName = "new_02";
+			elementTable = new Dictionary<SimHashes, MathUtil.MinMax>
+			{
+				{
+					SimHashes.Gold,
+					new MathUtil.MinMax(100f, 200f)
+				},
+				{
+					SimHashes.Fullerene,
+					new MathUtil.MinMax(100f, 200f)
+				},
+				{
+					SimHashes.FoolsGold,
+					new MathUtil.MinMax(100f, 200f)
+				}
+			};
+			bad = Db.Get().ArtifactDropRates.Bad;
+			GoldAsteroid = Add(new SpaceDestinationType(id, parent, name, description, iconSize, spriteName, elementTable, null, bad, 128000000, 127988000, 90));
+			spriteName = "HeliumGiant";
+			description = UI.SPACEDESTINATIONS.GIANTS.HYDROGENGIANT.NAME;
+			name = UI.SPACEDESTINATIONS.GIANTS.HYDROGENGIANT.DESCRIPTION;
+			iconSize = 96;
+			id = "new_11";
+			elementTable = new Dictionary<SimHashes, MathUtil.MinMax>
+			{
+				{
+					SimHashes.LiquidHydrogen,
+					new MathUtil.MinMax(100f, 200f)
+				},
+				{
+					SimHashes.Water,
+					new MathUtil.MinMax(100f, 200f)
+				},
+				{
+					SimHashes.Niobium,
+					new MathUtil.MinMax(100f, 200f)
+				}
+			};
+			bad = Db.Get().ArtifactDropRates.Mediocre;
+			HydrogenGiant = Add(new SpaceDestinationType(spriteName, parent, description, name, iconSize, id, elementTable, null, bad, 384000000, 383980000, 78));
+			id = "OilyAsteriod";
+			name = UI.SPACEDESTINATIONS.ASTEROIDS.OILYASTEROID.NAME;
+			description = UI.SPACEDESTINATIONS.ASTEROIDS.OILYASTEROID.DESCRIPTION;
+			iconSize = 32;
+			spriteName = "new_09";
+			elementTable = new Dictionary<SimHashes, MathUtil.MinMax>
+			{
+				{
+					SimHashes.SolidMethane,
+					new MathUtil.MinMax(100f, 200f)
+				},
+				{
+					SimHashes.SolidCarbonDioxide,
+					new MathUtil.MinMax(100f, 200f)
+				},
+				{
+					SimHashes.CrudeOil,
+					new MathUtil.MinMax(100f, 200f)
+				},
+				{
+					SimHashes.Petroleum,
+					new MathUtil.MinMax(100f, 200f)
+				}
+			};
+			bad = Db.Get().ArtifactDropRates.Mediocre;
+			OilyAsteroid = Add(new SpaceDestinationType(id, parent, name, description, iconSize, spriteName, elementTable, null, bad, 128000000, 127988000, 12));
+			spriteName = "ShinyPlanet";
+			description = UI.SPACEDESTINATIONS.PLANETS.SHINYPLANET.NAME;
+			name = UI.SPACEDESTINATIONS.PLANETS.SHINYPLANET.DESCRIPTION;
+			iconSize = 96;
+			id = "new_04";
+			elementTable = new Dictionary<SimHashes, MathUtil.MinMax>
+			{
+				{
+					SimHashes.Tungsten,
+					new MathUtil.MinMax(100f, 200f)
+				},
+				{
+					SimHashes.Wolframite,
+					new MathUtil.MinMax(100f, 200f)
+				}
+			};
+			bad = Db.Get().ArtifactDropRates.Good;
+			ShinyPlanet = Add(new SpaceDestinationType(spriteName, parent, description, name, iconSize, id, elementTable, null, bad, 384000000, 383980000, 84));
+			id = "ChlorinePlanet";
+			name = UI.SPACEDESTINATIONS.PLANETS.CHLORINEPLANET.NAME;
+			description = UI.SPACEDESTINATIONS.PLANETS.CHLORINEPLANET.DESCRIPTION;
+			iconSize = 96;
+			spriteName = "new_10";
+			elementTable = new Dictionary<SimHashes, MathUtil.MinMax>
+			{
+				{
+					SimHashes.SolidChlorine,
+					new MathUtil.MinMax(100f, 200f)
+				},
+				{
+					SimHashes.BleachStone,
+					new MathUtil.MinMax(100f, 200f)
+				}
+			};
+			bad = Db.Get().ArtifactDropRates.Bad;
+			ChlorinePlanet = Add(new SpaceDestinationType(id, parent, name, description, iconSize, spriteName, elementTable, null, bad, 256000000, 255982000, 90));
+			SaltDesertPlanet = Add(new SpaceDestinationType("SaltDesertPlanet", parent, UI.SPACEDESTINATIONS.PLANETS.SALTDESERTPLANET.NAME, UI.SPACEDESTINATIONS.PLANETS.SALTDESERTPLANET.DESCRIPTION, 96, "new_10", new Dictionary<SimHashes, MathUtil.MinMax>
+			{
+				{
+					SimHashes.Salt,
+					new MathUtil.MinMax(100f, 200f)
+				},
+				{
+					SimHashes.CrushedRock,
+					new MathUtil.MinMax(100f, 200f)
+				}
+			}, new Dictionary<string, int>
+			{
+				{
+					"Crab",
+					1
+				}
+			}, Db.Get().ArtifactDropRates.Bad, 384000000, 383980000, 60));
+			spriteName = "Wormhole";
+			description = UI.SPACEDESTINATIONS.WORMHOLE.NAME;
+			name = UI.SPACEDESTINATIONS.WORMHOLE.DESCRIPTION;
+			iconSize = 96;
+			id = "new_03";
+			elementTable = new Dictionary<SimHashes, MathUtil.MinMax>
+			{
+				{
+					SimHashes.Vacuum,
+					new MathUtil.MinMax(100f, 200f)
+				}
+			};
+			bad = Db.Get().ArtifactDropRates.Perfect;
+			Wormhole = Add(new SpaceDestinationType(spriteName, parent, description, name, iconSize, id, elementTable, null, bad, 0, 0, 0));
 		}
 	}
 }

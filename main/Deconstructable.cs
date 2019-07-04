@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class Deconstructable : Workable
 {
-	private Chore chore;
+	private Chore chore = null;
 
 	public bool allowDeconstruction = true;
 
@@ -33,7 +33,7 @@ public class Deconstructable : Workable
 
 	private static readonly Vector2 INITIAL_VELOCITY_RANGE = new Vector2(0.5f, 4f);
 
-	private bool destroyed;
+	private bool destroyed = false;
 
 	protected override void OnPrefabInit()
 	{
@@ -148,8 +148,6 @@ public class Deconstructable : Workable
 				}
 				else
 				{
-					Vector3 position = gameObject.transform.GetPosition();
-					position.x += (UnityEngine.Random.value - 0.5f) * 0.5f;
 					float num3 = UnityEngine.Random.Range(-1f, 1f);
 					Vector2 iNITIAL_VELOCITY_RANGE = INITIAL_VELOCITY_RANGE;
 					float x = num3 * iNITIAL_VELOCITY_RANGE.x;
@@ -178,7 +176,7 @@ public class Deconstructable : Workable
 			else
 			{
 				Prioritizable.AddRef(base.gameObject);
-				chore = new WorkChore<Deconstructable>(Db.Get().ChoreTypes.Deconstruct, this, null, null, true, null, null, null, true, null, false, false, null, true, true, true, PriorityScreen.PriorityClass.basic, 5, true, true);
+				chore = new WorkChore<Deconstructable>(Db.Get().ChoreTypes.Deconstruct, this, null, true, null, null, null, true, null, false, false, null, true, true, true, PriorityScreen.PriorityClass.basic, 5, true, true);
 				GetComponent<KSelectable>().AddStatusItem(Db.Get().BuildingStatusItems.PendingDeconstruction, this);
 				isMarkedForDeconstruction = true;
 				Trigger(2108245096, "Deconstruct");

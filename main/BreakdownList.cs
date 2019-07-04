@@ -58,6 +58,7 @@ public class BreakdownList : KMonoBehaviour
 		{
 			unusedListRows.Add(listRow);
 			listRow.gameObject.SetActive(false);
+			listRow.ClearTooltip();
 		}
 		listRows.Clear();
 		foreach (GameObject customRow in customRows)

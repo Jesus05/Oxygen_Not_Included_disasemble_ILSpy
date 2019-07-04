@@ -17,9 +17,9 @@ namespace NodeEditorFramework
 		private TypeData _typeData;
 
 		[NonSerialized]
-		private object value;
+		private object value = null;
 
-		public bool calculationBlockade;
+		public bool calculationBlockade = false;
 
 		protected override NodeSide defaultSide => NodeSide.Right;
 
@@ -119,12 +119,12 @@ namespace NodeEditorFramework
 				throw new UnityException("Trying to get value of " + base.name + " with null type!");
 			}
 			CheckType();
-			if (type.IsAssignableFrom(typeData.Type))
+			if (!type.IsAssignableFrom(typeData.Type))
 			{
-				return value;
+				Debug.LogError("Trying to GetValue<" + type.FullName + "> for Output Type: " + typeData.Type.FullName);
+				return null;
 			}
-			Debug.LogError("Trying to GetValue<" + type.FullName + "> for Output Type: " + typeData.Type.FullName);
-			return null;
+			return value;
 		}
 
 		public void SetValue(object Value)
@@ -143,12 +143,12 @@ namespace NodeEditorFramework
 		public T GetValue<T>()
 		{
 			CheckType();
-			if (typeof(T).IsAssignableFrom(typeData.Type))
+			if (!typeof(T).IsAssignableFrom(typeData.Type))
 			{
-				return (T)(value ?? (value = GetDefault<T>()));
+				Debug.LogError("Trying to GetValue<" + typeof(T).FullName + "> for Output Type: " + typeData.Type.FullName);
+				return GetDefault<T>();
 			}
-			Debug.LogError("Trying to GetValue<" + typeof(T).FullName + "> for Output Type: " + typeData.Type.FullName);
-			return GetDefault<T>();
+			return (T)(value ?? (value = GetDefault<T>()));
 		}
 
 		public void SetValue<T>(T Value)
@@ -171,20 +171,20 @@ namespace NodeEditorFramework
 
 		public static T GetDefault<T>()
 		{
-			if (typeof(T).GetConstructor(Type.EmptyTypes) != null)
+			if (typeof(T).GetConstructor(Type.EmptyTypes) == null)
 			{
-				return Activator.CreateInstance<T>();
+				return default(T);
 			}
-			return default(T);
+			return Activator.CreateInstance<T>();
 		}
 
 		public static object GetDefault(Type type)
 		{
-			if (type.GetConstructor(Type.EmptyTypes) != null)
+			if (type.GetConstructor(Type.EmptyTypes) == null)
 			{
-				return Activator.CreateInstance(type);
+				return null;
 			}
-			return null;
+			return Activator.CreateInstance(type);
 		}
 
 		public override Node GetNodeAcrossConnection()

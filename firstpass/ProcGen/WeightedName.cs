@@ -1,5 +1,8 @@
+using System;
+
 namespace ProcGen
 {
+	[Serializable]
 	public class WeightedName : IWeighted
 	{
 		public string name

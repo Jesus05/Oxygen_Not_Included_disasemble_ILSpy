@@ -145,7 +145,7 @@ public class LiquidCooledFan : StateMachineComponent<LiquidCooledFan.StatesInsta
 
 		private Chore CreateUseChore(StatesInstance smi)
 		{
-			return new WorkChore<LiquidCooledFanWorkable>(Db.Get().ChoreTypes.LiquidCooledFan, smi.master.workable, null, null, true, null, null, null, true, null, false, true, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, false, true);
+			return new WorkChore<LiquidCooledFanWorkable>(Db.Get().ChoreTypes.LiquidCooledFan, smi.master.workable, null, true, null, null, null, true, null, false, true, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, false, true);
 		}
 	}
 
@@ -302,7 +302,7 @@ public class LiquidCooledFan : StateMachineComponent<LiquidCooledFan.StatesInsta
 				if (!((Object)component == (Object)null) && !(component.Mass < 0.1f) && !(component.Temperature < minCooledTemperature))
 				{
 					float num4 = Mathf.Min(num, 10f);
-					GameUtil.DeltaThermalEnergy(component, 0f - num4);
+					GameUtil.DeltaThermalEnergy(component, 0f - num4, minCooledTemperature);
 					num3 += num4;
 				}
 			}

@@ -41,15 +41,15 @@ public class ProfilerBase
 		}
 	}
 
-	private bool initialised;
+	private bool initialised = false;
 
-	private int idx;
+	private int idx = 0;
 
-	protected StreamWriter proFile;
+	protected StreamWriter proFile = null;
 
 	private string category = "GAME";
 
-	private string filePrefix;
+	private string filePrefix = null;
 
 	protected Dictionary<int, ThreadInfo> threadInfos;
 
@@ -195,7 +195,6 @@ public class ProfilerBase
 			lock (threadInfos)
 			{
 				threadInfos[value.id] = value;
-				return value;
 			}
 		}
 		return value;

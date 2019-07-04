@@ -49,7 +49,6 @@ public class SolidConduitBridgeConfig : IBuildingConfig
 	{
 		base.DoPostConfigureUnderConstruction(go);
 		Constructable component = go.GetComponent<Constructable>();
-		component.choreTags = GameTags.ChoreTypes.ConveyorChores;
 		component.requiredSkillPerk = Db.Get().SkillPerks.ConveyorBuild.Id;
 	}
 

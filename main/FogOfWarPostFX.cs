@@ -26,8 +26,12 @@ public class FogOfWarPostFX : MonoBehaviour
 	{
 		if (!((Object)Camera.main == (Object)null))
 		{
-			Camera main = Camera.main;
-			Ray ray = main.ViewportPointToRay(Vector3.zero);
+			Camera camera = Camera.main;
+			if (GameUtil.IsCapturingTimeLapse())
+			{
+				camera = Game.Instance.timelapser.captureCamera;
+			}
+			Ray ray = camera.ViewportPointToRay(Vector3.zero);
 			Vector3 origin = ray.origin;
 			float z = origin.z;
 			Vector3 direction = ray.direction;
@@ -36,7 +40,7 @@ public class FogOfWarPostFX : MonoBehaviour
 			Vector4 value = default(Vector4);
 			value.x = point.x / Grid.WidthInMeters;
 			value.y = point.y / Grid.HeightInMeters;
-			ray = main.ViewportPointToRay(Vector3.one);
+			ray = camera.ViewportPointToRay(Vector3.one);
 			Vector3 origin2 = ray.origin;
 			float z2 = origin2.z;
 			Vector3 direction2 = ray.direction;

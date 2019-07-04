@@ -55,7 +55,7 @@ public class Immigration : KMonoBehaviour, ISaveLoadable, ISim200ms, IPersonalPr
 
 	private void ConfigureCarePackages()
 	{
-		carePackages = new CarePackageInfo[44]
+		carePackages = new CarePackageInfo[54]
 		{
 			new CarePackageInfo(ElementLoader.FindElementByHash(SimHashes.SandStone).tag.ToString(), 1000f, null),
 			new CarePackageInfo(ElementLoader.FindElementByHash(SimHashes.Dirt).tag.ToString(), 500f, null),
@@ -66,6 +66,9 @@ public class Immigration : KMonoBehaviour, ISaveLoadable, ISim200ms, IPersonalPr
 			new CarePackageInfo(ElementLoader.FindElementByHash(SimHashes.Carbon).tag.ToString(), 3000f, null),
 			new CarePackageInfo(ElementLoader.FindElementByHash(SimHashes.Fertilizer).tag.ToString(), 3000f, null),
 			new CarePackageInfo(ElementLoader.FindElementByHash(SimHashes.Ice).tag.ToString(), 4000f, () => CycleCondition(12)),
+			new CarePackageInfo(ElementLoader.FindElementByHash(SimHashes.Brine).tag.ToString(), 2000f, null),
+			new CarePackageInfo(ElementLoader.FindElementByHash(SimHashes.SaltWater).tag.ToString(), 2000f, null),
+			new CarePackageInfo(ElementLoader.FindElementByHash(SimHashes.Rust).tag.ToString(), 1000f, null),
 			new CarePackageInfo(ElementLoader.FindElementByHash(SimHashes.Cuprite).tag.ToString(), 2000f, () => CycleCondition(12) && DiscoveredCondition(ElementLoader.FindElementByHash(SimHashes.Cuprite).tag)),
 			new CarePackageInfo(ElementLoader.FindElementByHash(SimHashes.GoldAmalgam).tag.ToString(), 2000f, () => CycleCondition(12) && DiscoveredCondition(ElementLoader.FindElementByHash(SimHashes.GoldAmalgam).tag)),
 			new CarePackageInfo(ElementLoader.FindElementByHash(SimHashes.Copper).tag.ToString(), 400f, () => CycleCondition(24) && DiscoveredCondition(ElementLoader.FindElementByHash(SimHashes.Copper).tag)),
@@ -74,18 +77,23 @@ public class Immigration : KMonoBehaviour, ISaveLoadable, ISim200ms, IPersonalPr
 			new CarePackageInfo(ElementLoader.FindElementByHash(SimHashes.Polypropylene).tag.ToString(), 500f, () => CycleCondition(48) && DiscoveredCondition(ElementLoader.FindElementByHash(SimHashes.Polypropylene).tag)),
 			new CarePackageInfo(ElementLoader.FindElementByHash(SimHashes.Glass).tag.ToString(), 200f, () => CycleCondition(48) && DiscoveredCondition(ElementLoader.FindElementByHash(SimHashes.Glass).tag)),
 			new CarePackageInfo(ElementLoader.FindElementByHash(SimHashes.Steel).tag.ToString(), 100f, () => CycleCondition(48) && DiscoveredCondition(ElementLoader.FindElementByHash(SimHashes.Steel).tag)),
+			new CarePackageInfo(ElementLoader.FindElementByHash(SimHashes.Ethanol).tag.ToString(), 100f, () => CycleCondition(48) && DiscoveredCondition(ElementLoader.FindElementByHash(SimHashes.Ethanol).tag)),
+			new CarePackageInfo(ElementLoader.FindElementByHash(SimHashes.AluminumOre).tag.ToString(), 100f, () => CycleCondition(48) && DiscoveredCondition(ElementLoader.FindElementByHash(SimHashes.AluminumOre).tag)),
 			new CarePackageInfo("PrickleGrassSeed", 3f, null),
 			new CarePackageInfo("LeafyPlantSeed", 3f, null),
 			new CarePackageInfo("CactusPlantSeed", 3f, null),
 			new CarePackageInfo("MushroomSeed", 1f, null),
 			new CarePackageInfo("PrickleFlowerSeed", 2f, null),
 			new CarePackageInfo("ColdBreatherSeed", 1f, () => CycleCondition(24)),
+			new CarePackageInfo("OxyfernSeed", 1f, null),
+			new CarePackageInfo("ForestTreeSeed", 1f, null),
 			new CarePackageInfo("FieldRation", 5f, null),
 			new CarePackageInfo("BasicForagePlant", 6f, null),
 			new CarePackageInfo("CookedEgg", 3f, () => CycleCondition(6)),
 			new CarePackageInfo(PrickleFruitConfig.ID, 3f, () => CycleCondition(12)),
 			new CarePackageInfo("FriedMushroom", 3f, () => CycleCondition(24)),
 			new CarePackageInfo("CookedMeat", 3f, () => CycleCondition(48)),
+			new CarePackageInfo("SpicyTofu", 3f, () => CycleCondition(48)),
 			new CarePackageInfo("LightBugBaby", 1f, null),
 			new CarePackageInfo("HatchBaby", 1f, null),
 			new CarePackageInfo("PuftBaby", 1f, null),
@@ -93,12 +101,14 @@ public class Immigration : KMonoBehaviour, ISaveLoadable, ISim200ms, IPersonalPr
 			new CarePackageInfo("Pacu", 8f, () => CycleCondition(24)),
 			new CarePackageInfo("MoleBaby", 1f, () => CycleCondition(48)),
 			new CarePackageInfo("OilfloaterBaby", 1f, () => CycleCondition(48)),
+			new CarePackageInfo("CrabBaby", 1f, null),
 			new CarePackageInfo("LightBugEgg", 3f, null),
 			new CarePackageInfo("HatchEgg", 3f, null),
 			new CarePackageInfo("PuftEgg", 3f, null),
 			new CarePackageInfo("OilfloaterEgg", 3f, () => CycleCondition(12)),
 			new CarePackageInfo("MoleEgg", 3f, () => CycleCondition(24)),
 			new CarePackageInfo("DreckoEgg", 3f, () => CycleCondition(24)),
+			new CarePackageInfo("SquirrelEgg", 2f, null),
 			new CarePackageInfo("BasicCure", 3f, null),
 			new CarePackageInfo("Funky_Vest", 1f, null)
 		};

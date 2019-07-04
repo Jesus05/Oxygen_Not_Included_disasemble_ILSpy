@@ -23,13 +23,13 @@ public class DigTool : DragTool
 			{
 				if (Grid.PosToCell(item.gameObject) == cell)
 				{
-					item.MarkForUproot();
+					item.MarkForUproot(true);
 					break;
 				}
 				OccupyArea area = item.area;
 				if ((Object)area != (Object)null && area.CheckIsOccupying(cell))
 				{
-					item.MarkForUproot();
+					item.MarkForUproot(true);
 				}
 			}
 		}
@@ -75,11 +75,11 @@ public class DigTool : DragTool
 			gameObject.GetComponentInChildren<EasingAnimations>().PlayAnimation("ScaleUp", Mathf.Max(0f, (float)animationDelay * 0.02f));
 			return gameObject;
 		}
-		if ((Object)Grid.Objects[cell, 7] != (Object)null)
+		if (!((Object)Grid.Objects[cell, 7] != (Object)null))
 		{
-			return Grid.Objects[cell, 7];
+			return null;
 		}
-		return null;
+		return Grid.Objects[cell, 7];
 	}
 
 	protected override void OnActivateTool()

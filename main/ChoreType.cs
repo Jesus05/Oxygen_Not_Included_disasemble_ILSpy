@@ -6,11 +6,11 @@ public class ChoreType : Resource
 {
 	public StatusItem statusItem;
 
-	public List<Tag> tags = new List<Tag>();
+	public HashSet<Tag> tags = new HashSet<Tag>();
 
-	public List<Tag> interruptExclusion;
+	public HashSet<Tag> interruptExclusion;
 
-	public string reportName;
+	public string reportName = null;
 
 	public Urge urge
 	{
@@ -42,13 +42,13 @@ public class ChoreType : Resource
 		private set;
 	}
 
-	public ChoreType(string id, ResourceSet parent, string[] chore_groups, string urge, string name, string status_message, string tooltip, Tag[] interrupt_exclusion, int implicit_priority, int explicit_priority)
+	public ChoreType(string id, ResourceSet parent, string[] chore_groups, string urge, string name, string status_message, string tooltip, IEnumerable<Tag> interrupt_exclusion, int implicit_priority, int explicit_priority)
 		: base(id, parent, name)
 	{
-		statusItem = new StatusItem(id, status_message, tooltip, string.Empty, StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, 63486);
+		statusItem = new StatusItem(id, status_message, tooltip, "", StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, 129022);
 		statusItem.resolveStringCallback = ResolveStringCallback;
 		tags.Add(TagManager.Create(id));
-		interruptExclusion = new List<Tag>(interrupt_exclusion);
+		interruptExclusion = new HashSet<Tag>(interrupt_exclusion);
 		Db.Get().DuplicantStatusItems.Add(statusItem);
 		groups = new ChoreGroup[chore_groups.Length];
 		for (int i = 0; i < groups.Length; i++)

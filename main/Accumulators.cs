@@ -4,7 +4,7 @@ public class Accumulators
 {
 	private const float TIME_WINDOW = 3f;
 
-	private float elapsedTime;
+	private float elapsedTime = 0f;
 
 	private KCompactedVector<float> accumulated;
 
@@ -26,12 +26,12 @@ public class Accumulators
 
 	public HandleVector<int>.Handle Remove(HandleVector<int>.Handle handle)
 	{
-		if (!handle.IsValid())
+		if (handle.IsValid())
 		{
+			accumulated.Free(handle);
+			average.Free(handle);
 			return HandleVector<int>.InvalidHandle;
 		}
-		accumulated.Free(handle);
-		average.Free(handle);
 		return HandleVector<int>.InvalidHandle;
 	}
 

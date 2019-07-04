@@ -2,6 +2,7 @@ using Database;
 using Klei.AI;
 using KSerialization;
 using STRINGS;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -11,6 +12,15 @@ using UnityEngine;
 [SerializationConfig(MemberSerialization.OptIn)]
 public class MinionResume : KMonoBehaviour, ISaveLoadable, ISim200ms
 {
+	public enum SkillMasteryConditions
+	{
+		SkillAptitude,
+		StressWarning,
+		UnableToLearn,
+		NeedsSkillPoints,
+		MissingPreviousSkill
+	}
+
 	[MyCmpReq]
 	private MinionIdentity identity;
 
@@ -41,31 +51,23 @@ public class MinionResume : KMonoBehaviour, ISaveLoadable, ISim200ms
 	private Dictionary<string, bool> ownedHats = new Dictionary<string, bool>();
 
 	[Serialize]
-	private float totalExperienceGained;
-
-	private KSelectable selectable;
+	private float totalExperienceGained = 0f;
 
 	private AttributeModifier skillsMoraleExpectationModifier;
 
-	public float DEBUG_PassiveExperienceGained;
+	private AttributeModifier skillsMoraleModifier;
 
-	public float DEBUG_ActiveExperienceGained;
+	public float DEBUG_PassiveExperienceGained = 0f;
 
-	public float DEBUG_SecondsAlive;
+	public float DEBUG_ActiveExperienceGained = 0f;
+
+	public float DEBUG_SecondsAlive = 0f;
 
 	public MinionIdentity GetIdentity => identity;
 
 	public float TotalExperienceGained => totalExperienceGained;
 
-	public int TotalSkillPointsGained
-	{
-		get
-		{
-			float f = TotalExperienceGained / (float)SKILLS.TARGET_SKILLS_CYCLE / 600f;
-			float num = Mathf.Pow(f, 1f / SKILLS.EXPERIENCE_LEVEL_POWER);
-			return Mathf.FloorToInt(num * (float)SKILLS.TARGET_SKILLS_EARNED);
-		}
-	}
+	public int TotalSkillPointsGained => CalculateTotalSkillPointsGained(TotalExperienceGained);
 
 	public int SkillsMastered
 	{
@@ -92,6 +94,13 @@ public class MinionResume : KMonoBehaviour, ISaveLoadable, ISim200ms
 	public string TargetHat => targetHat;
 
 	public string TargetRole => targetRole;
+
+	public static int CalculateTotalSkillPointsGained(float experience)
+	{
+		float f = experience / (float)SKILLS.TARGET_SKILLS_CYCLE / 600f;
+		float num = Mathf.Pow(f, 1f / SKILLS.EXPERIENCE_LEVEL_POWER);
+		return Mathf.FloorToInt(num * (float)SKILLS.TARGET_SKILLS_EARNED);
+	}
 
 	[OnDeserialized]
 	private void OnDeserializedMethod()
@@ -121,7 +130,6 @@ public class MinionResume : KMonoBehaviour, ISaveLoadable, ISim200ms
 	protected override void OnSpawn()
 	{
 		base.OnSpawn();
-		selectable = GetComponent<KSelectable>();
 		foreach (KeyValuePair<string, bool> item in MasteryBySkillID)
 		{
 			if (item.Value)
@@ -145,6 +153,7 @@ public class MinionResume : KMonoBehaviour, ISaveLoadable, ISim200ms
 			}
 		}
 		UpdateExpectations();
+		UpdateMorale();
 		KBatchedAnimController component = GetComponent<KBatchedAnimController>();
 		ApplyHat(currentHat, component);
 	}
@@ -227,7 +236,7 @@ public class MinionResume : KMonoBehaviour, ISaveLoadable, ISim200ms
 		}
 	}
 
-	public bool CheckSkillTraitDisabled(string skillId)
+	public bool IsAbleToLearnSkill(string skillId)
 	{
 		Skill skill = Db.Get().Skills.Get(skillId);
 		string choreGroupID = Db.Get().SkillGroups.Get(skill.skillGroup).choreGroupID;
@@ -243,26 +252,33 @@ public class MinionResume : KMonoBehaviour, ISaveLoadable, ISim200ms
 					{
 						if (choreGroup.Id == choreGroupID)
 						{
-							return true;
+							return false;
 						}
 					}
 				}
 			}
 		}
+		return true;
+	}
+
+	public bool BelowMoraleExpectation(Skill skill)
+	{
+		float num = Db.Get().Attributes.QualityOfLife.Lookup(this).GetTotalValue();
+		float totalValue = Db.Get().Attributes.QualityOfLifeExpectation.Lookup(this).GetTotalValue();
+		int moraleExpectation = skill.GetMoraleExpectation();
+		if (AptitudeBySkillGroup.ContainsKey(skill.skillGroup) && AptitudeBySkillGroup[skill.skillGroup] > 0f)
+		{
+			num += 1f;
+		}
+		if (!(totalValue + (float)moraleExpectation > num))
+		{
+			return true;
+		}
 		return false;
 	}
 
-	public bool CanMasterSkill(string skillId)
+	public bool HasMasteredDirectlyRequiredSkillsForSkill(Skill skill)
 	{
-		Skill skill = Db.Get().Skills.Get(skillId);
-		if (CheckSkillTraitDisabled(skillId))
-		{
-			return false;
-		}
-		if (AvailableSkillpoints < 1)
-		{
-			return false;
-		}
 		for (int i = 0; i < skill.priorSkills.Count; i++)
 		{
 			if (!HasMasteredSkill(skill.priorSkills[i]))
@@ -271,6 +287,60 @@ public class MinionResume : KMonoBehaviour, ISaveLoadable, ISim200ms
 			}
 		}
 		return true;
+	}
+
+	public bool HasSkillPointsRequiredForSkill(Skill skill)
+	{
+		if (AvailableSkillpoints >= 1)
+		{
+			return true;
+		}
+		return false;
+	}
+
+	public bool HasSkillAptitude(Skill skill)
+	{
+		if (AptitudeBySkillGroup.ContainsKey(skill.skillGroup) && AptitudeBySkillGroup[skill.skillGroup] > 0f)
+		{
+			return true;
+		}
+		return false;
+	}
+
+	public SkillMasteryConditions[] GetSkillMasteryConditions(string skillId)
+	{
+		List<SkillMasteryConditions> list = new List<SkillMasteryConditions>();
+		Skill skill = Db.Get().Skills.Get(skillId);
+		if (HasSkillAptitude(skill))
+		{
+			list.Add(SkillMasteryConditions.SkillAptitude);
+		}
+		if (!BelowMoraleExpectation(skill))
+		{
+			list.Add(SkillMasteryConditions.StressWarning);
+		}
+		if (!IsAbleToLearnSkill(skillId))
+		{
+			list.Add(SkillMasteryConditions.UnableToLearn);
+		}
+		if (!HasSkillPointsRequiredForSkill(skill))
+		{
+			list.Add(SkillMasteryConditions.NeedsSkillPoints);
+		}
+		if (!HasMasteredDirectlyRequiredSkillsForSkill(skill))
+		{
+			list.Add(SkillMasteryConditions.MissingPreviousSkill);
+		}
+		return list.ToArray();
+	}
+
+	public bool CanMasterSkill(SkillMasteryConditions[] masteryConditions)
+	{
+		if (!Array.Exists(masteryConditions, (SkillMasteryConditions element) => element == SkillMasteryConditions.UnableToLearn || element == SkillMasteryConditions.NeedsSkillPoints || element == SkillMasteryConditions.MissingPreviousSkill))
+		{
+			return true;
+		}
+		return false;
 	}
 
 	public bool OwnsHat(string hatId)
@@ -303,6 +373,7 @@ public class MinionResume : KMonoBehaviour, ISaveLoadable, ISim200ms
 		MasteryBySkillID[skillId] = true;
 		ApplySkillPerks(skillId);
 		UpdateExpectations();
+		UpdateMorale();
 		TriggerMasterSkillEvents();
 		if (!ownedHats.ContainsKey(Db.Get().Skills.Get(skillId).hat))
 		{
@@ -317,6 +388,7 @@ public class MinionResume : KMonoBehaviour, ISaveLoadable, ISim200ms
 			MasteryBySkillID.Remove(skillId);
 			RemoveSkillPerks(skillId);
 			UpdateExpectations();
+			UpdateMorale();
 			TriggerMasterSkillEvents();
 		}
 	}
@@ -355,11 +427,6 @@ public class MinionResume : KMonoBehaviour, ISaveLoadable, ISim200ms
 			{
 				Skill skill = Db.Get().Skills.Get(item.Key);
 				num += skill.tier + 1;
-				float value = 0f;
-				if (AptitudeBySkillGroup.TryGetValue(new HashedString(skill.skillGroup), out value))
-				{
-					num -= (int)value;
-				}
 			}
 		}
 		AttributeInstance attributeInstance = Db.Get().Attributes.QualityOfLifeExpectation.Lookup(this);
@@ -375,13 +442,40 @@ public class MinionResume : KMonoBehaviour, ISaveLoadable, ISim200ms
 		}
 	}
 
+	private void UpdateMorale()
+	{
+		int num = 0;
+		foreach (KeyValuePair<string, bool> item in MasteryBySkillID)
+		{
+			if (item.Value)
+			{
+				Skill skill = Db.Get().Skills.Get(item.Key);
+				float value = 0f;
+				if (AptitudeBySkillGroup.TryGetValue(new HashedString(skill.skillGroup), out value))
+				{
+					num += (int)value;
+				}
+			}
+		}
+		AttributeInstance attributeInstance = Db.Get().Attributes.QualityOfLife.Lookup(this);
+		if (skillsMoraleModifier != null)
+		{
+			attributeInstance.Remove(skillsMoraleModifier);
+			skillsMoraleModifier = null;
+		}
+		if (num > 0)
+		{
+			skillsMoraleModifier = new AttributeModifier(attributeInstance.Id, (float)num, DUPLICANTS.NEEDS.QUALITYOFLIFE.APTITUDE_SKILLS_MOD_NAME, false, false, true);
+			attributeInstance.Add(skillsMoraleModifier);
+		}
+	}
+
 	private void OnSkillPointGained()
 	{
 		Game.Instance.Trigger(1505456302, this);
 		SkillMasteredMessage message = new SkillMasteredMessage(this);
-		MusicManager.instance.PlaySong("Stinger_JobMastered", false);
 		Messenger.Instance.QueueMessage(message);
-		if ((Object)PopFXManager.Instance != (Object)null)
+		if ((UnityEngine.Object)PopFXManager.Instance != (UnityEngine.Object)null)
 		{
 			PopFXManager.Instance.SpawnFX(PopFXManager.Instance.sprite_Plus, MISC.NOTIFICATIONS.SKILL_POINT_EARNED.NAME, base.transform, new Vector3(0f, 0.5f, 0f), 1.5f, false, false);
 		}
@@ -453,7 +547,7 @@ public class MinionResume : KMonoBehaviour, ISaveLoadable, ISim200ms
 	{
 		AccessorySlot hat = Db.Get().AccessorySlots.Hat;
 		Accessorizer component = controller.GetComponent<Accessorizer>();
-		if ((Object)component != (Object)null)
+		if ((UnityEngine.Object)component != (UnityEngine.Object)null)
 		{
 			Accessory accessory = component.GetAccessory(hat);
 			if (accessory != null)
@@ -479,7 +573,7 @@ public class MinionResume : KMonoBehaviour, ISaveLoadable, ISim200ms
 			Debug.LogWarning("Missing hat: " + hat_id);
 		}
 		Accessorizer component = controller.GetComponent<Accessorizer>();
-		if ((Object)component != (Object)null)
+		if ((UnityEngine.Object)component != (UnityEngine.Object)null)
 		{
 			Accessory accessory2 = component.GetAccessory(Db.Get().AccessorySlots.Hat);
 			if (accessory2 != null)
@@ -529,7 +623,6 @@ public class MinionResume : KMonoBehaviour, ISaveLoadable, ISim200ms
 
 	public static bool AnyMinionHasPerk(string perk)
 	{
-		List<MinionResume> list = new List<MinionResume>();
 		foreach (MinionResume item in Components.MinionResumes.Items)
 		{
 			if (item.HasPerk(perk))
@@ -542,10 +635,9 @@ public class MinionResume : KMonoBehaviour, ISaveLoadable, ISim200ms
 
 	public static bool AnyOtherMinionHasPerk(string perk, MinionResume me)
 	{
-		List<MinionResume> list = new List<MinionResume>();
 		foreach (MinionResume item in Components.MinionResumes.Items)
 		{
-			if (!((Object)item == (Object)me) && item.HasPerk(perk))
+			if (!((UnityEngine.Object)item == (UnityEngine.Object)me) && item.HasPerk(perk))
 			{
 				return true;
 			}

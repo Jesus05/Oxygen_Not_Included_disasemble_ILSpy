@@ -57,7 +57,7 @@ namespace Klei.AI
 
 		public static string CreateTooltip(Effect effect, bool showDuration, string linePrefix = "\n")
 		{
-			string text = string.Empty;
+			string text = "";
 			foreach (AttributeModifier selfModifier in effect.SelfModifiers)
 			{
 				Attribute attribute = Db.Get().Attributes.TryGet(selfModifier.AttributeId);
@@ -86,7 +86,7 @@ namespace Klei.AI
 			Effect effect = Db.Get().effects.Get(effect_id);
 			foreach (AttributeModifier selfModifier in effect.SelfModifiers)
 			{
-				Descriptor item = new Descriptor(Strings.Get("STRINGS.DUPLICANTS.ATTRIBUTES." + selfModifier.AttributeId.ToUpper() + ".NAME") + ": " + selfModifier.GetFormattedString(parent), string.Empty, Descriptor.DescriptorType.Effect, false);
+				Descriptor item = new Descriptor(Strings.Get("STRINGS.DUPLICANTS.ATTRIBUTES." + selfModifier.AttributeId.ToUpper() + ".NAME") + ": " + selfModifier.GetFormattedString(parent), "", Descriptor.DescriptorType.Effect, false);
 				if (increase_indent)
 				{
 					item.IncreaseIndent();

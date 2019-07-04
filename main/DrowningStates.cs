@@ -1,6 +1,6 @@
-using UnityEngine;
+using STRINGS;
 
-internal class DrowningStates : GameStateMachine<DrowningStates, DrowningStates.Instance, IStateMachineTarget, DrowningStates.Def>
+public class DrowningStates : GameStateMachine<DrowningStates, DrowningStates.Instance, IStateMachineTarget, DrowningStates.Def>
 {
 	public class Def : BaseDef
 	{
@@ -8,6 +8,8 @@ internal class DrowningStates : GameStateMachine<DrowningStates, DrowningStates.
 
 	public new class Instance : GameInstance
 	{
+		public int safeCell = Grid.InvalidCell;
+
 		public Instance(Chore<Instance> chore, Def def)
 			: base((IStateMachineTarget)chore, def)
 		{
@@ -30,27 +32,32 @@ internal class DrowningStates : GameStateMachine<DrowningStates, DrowningStates.
 		}
 	}
 
-	public State drowning;
+	public State drown;
 
-	public State escape;
+	public State drown_pst;
+
+	public State move_to_safe;
 
 	public override void InitializeStates(out BaseState default_state)
 	{
-		default_state = drowning;
-		root.ToggleStatusItem(Db.Get().CreatureStatusItems.Drowning, (object)null).TagTransition(GameTags.Creatures.Drowning, null, true);
-		drowning.PlayAnim("harvest", KAnim.PlayMode.Loop).ToggleScheduleCallback("IdleMove", (Instance smi) => (float)Random.Range(1, 3), delegate(Instance smi)
-		{
-			smi.GoTo(escape);
-		});
-		escape.Enter(MoveToSafeCell).EventTransition(GameHashes.DestinationReached, drowning, null).EventTransition(GameHashes.NavigationFailed, drowning, null);
+		default_state = drown;
+		State root = base.root;
+		string name = CREATURES.STATUSITEMS.DROWNING.NAME;
+		string tooltip = CREATURES.STATUSITEMS.DROWNING.TOOLTIP;
+		StatusItemCategory main = Db.Get().StatusItemCategories.Main;
+		root.ToggleStatusItem(name, tooltip, "", StatusItem.IconType.Info, NotificationType.Neutral, false, default(HashedString), 129022, null, null, main).TagTransition(GameTags.Creatures.Drowning, null, true);
+		drown.PlayAnim("drown_pre").QueueAnim("drown_loop", true, null).Transition(drown_pst, UpdateSafeCell, UpdateRate.SIM_1000ms);
+		drown_pst.PlayAnim("drown_pst").OnAnimQueueComplete(move_to_safe);
+		move_to_safe.MoveTo((Instance smi) => smi.safeCell, null, null, false);
 	}
 
-	public void MoveToSafeCell(Instance smi)
+	public bool UpdateSafeCell(Instance smi)
 	{
 		Navigator component = smi.GetComponent<Navigator>();
 		DrowningMonitor component2 = smi.GetComponent<DrowningMonitor>();
 		EscapeCellQuery escapeCellQuery = new EscapeCellQuery(component2);
 		component.RunQuery(escapeCellQuery);
-		component.GoTo(escapeCellQuery.GetResultCell(), null);
+		smi.safeCell = escapeCellQuery.GetResultCell();
+		return smi.safeCell != Grid.InvalidCell;
 	}
 }

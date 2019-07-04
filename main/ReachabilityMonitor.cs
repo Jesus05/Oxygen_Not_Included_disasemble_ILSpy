@@ -26,13 +26,10 @@ public class ReachabilityMonitor : GameStateMachine<ReachabilityMonitor, Reachab
 
 		public void UpdateReachability()
 		{
-			if ((Object)base.master != (Object)null)
+			if (!((Object)base.master == (Object)null))
 			{
 				int cell = Grid.PosToCell(base.master);
-				CellOffset[] offsets = base.master.GetOffsets(cell);
-				MinionGroupProber minionGroupProber = MinionGroupProber.Get();
-				bool value = minionGroupProber.IsReachable(cell) || minionGroupProber.IsReachable(cell, offsets);
-				base.sm.isReachable.Set(value, base.smi);
+				base.sm.isReachable.Set(MinionGroupProber.Get().IsAllReachable(cell, base.master.GetOffsets(cell)), base.smi);
 			}
 		}
 	}

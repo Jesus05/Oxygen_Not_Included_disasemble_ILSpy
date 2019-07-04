@@ -18,13 +18,13 @@ public class ThreadedHttps<T> where T : class, new()
 		}
 	}
 
-	protected string serviceName;
+	protected string serviceName = null;
 
-	protected string CLIENT_KEY;
+	protected string CLIENT_KEY = null;
 
-	protected string LIVE_ENDPOINT;
+	protected string LIVE_ENDPOINT = null;
 
-	private bool certFail;
+	private bool certFail = false;
 
 	private const int retryCount = 3;
 
@@ -34,58 +34,58 @@ public class ThreadedHttps<T> where T : class, new()
 
 	private EventWaitHandle _waitHandle = new AutoResetEvent(false);
 
-	protected bool shouldQuit;
+	protected bool shouldQuit = false;
 
-	protected bool quitOnError;
+	protected bool quitOnError = false;
 
 	private object _quitLock = new object();
 
-	protected bool singleSend;
+	protected bool singleSend = false;
 
 	public static T Instance => Singleton.instance;
 
 	public bool RemoteCertificateValidationCallback(object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors)
 	{
-		if (certFail)
+		if (!certFail)
 		{
-			return false;
-		}
-		certFail = true;
-		string text = string.Empty;
-		switch (sslPolicyErrors)
-		{
-		case SslPolicyErrors.None:
-			certFail = false;
-			break;
-		case SslPolicyErrors.RemoteCertificateChainErrors:
-			certFail = false;
-			for (int i = 0; i < chain.ChainStatus.Length; i++)
+			certFail = true;
+			string text = "";
+			switch (sslPolicyErrors)
 			{
-				string text2 = text;
-				text = text2 + "[" + i + "] " + chain.ChainStatus[i].Status.ToString() + "\n";
-				if (chain.ChainStatus[i].Status != X509ChainStatusFlags.RevocationStatusUnknown)
+			case SslPolicyErrors.None:
+				certFail = false;
+				break;
+			case SslPolicyErrors.RemoteCertificateChainErrors:
+				certFail = false;
+				for (int i = 0; i < chain.ChainStatus.Length; i++)
 				{
-					chain.ChainPolicy.RevocationFlag = X509RevocationFlag.EntireChain;
-					chain.ChainPolicy.RevocationMode = X509RevocationMode.Online;
-					chain.ChainPolicy.UrlRetrievalTimeout = new TimeSpan(0, 1, 0);
-					chain.ChainPolicy.VerificationFlags = X509VerificationFlags.AllFlags;
-					if (!chain.Build((X509Certificate2)certificate))
+					string text2 = text;
+					text = text2 + "[" + i + "] " + chain.ChainStatus[i].Status.ToString() + "\n";
+					if (chain.ChainStatus[i].Status != X509ChainStatusFlags.RevocationStatusUnknown)
 					{
-						certFail = true;
+						chain.ChainPolicy.RevocationFlag = X509RevocationFlag.EntireChain;
+						chain.ChainPolicy.RevocationMode = X509RevocationMode.Online;
+						chain.ChainPolicy.UrlRetrievalTimeout = new TimeSpan(0, 1, 0);
+						chain.ChainPolicy.VerificationFlags = X509VerificationFlags.AllFlags;
+						if (!chain.Build((X509Certificate2)certificate))
+						{
+							certFail = true;
+						}
 					}
 				}
+				break;
+			default:
+				certFail = true;
+				break;
 			}
-			break;
-		default:
-			certFail = true;
-			break;
+			if (certFail)
+			{
+				X509Certificate2 x509Certificate = new X509Certificate2(certificate);
+				Debug.LogWarning(serviceName + ": " + sslPolicyErrors.ToString() + "\n" + text + "\n" + x509Certificate.ToString());
+			}
+			return !certFail;
 		}
-		if (certFail)
-		{
-			X509Certificate2 x509Certificate = new X509Certificate2(certificate);
-			Debug.LogWarning(serviceName + ": " + sslPolicyErrors.ToString() + "\n" + text + "\n" + x509Certificate.ToString());
-		}
-		return !certFail;
+		return false;
 	}
 
 	public void Start()
@@ -123,7 +123,7 @@ public class ThreadedHttps<T> where T : class, new()
 	protected string Send(byte[] byteArray, bool isForce = false)
 	{
 		ServicePointManager.ServerCertificateValidationCallback = (RemoteCertificateValidationCallback)Delegate.Combine(ServicePointManager.ServerCertificateValidationCallback, new RemoteCertificateValidationCallback(RemoteCertificateValidationCallback));
-		string text = string.Empty;
+		string text = "";
 		int num = 0;
 		while (true)
 		{
@@ -192,7 +192,7 @@ public class ThreadedHttps<T> where T : class, new()
 					string text2 = streamReader2.ReadToEnd();
 					streamReader2.Close();
 					stream.Close();
-					text = string.Empty + serviceName + ": Server Responded with Status: [" + text + "] Response: " + text2;
+					text = "" + serviceName + ": Server Responded with Status: [" + text + "] Response: " + text2;
 				}
 				else
 				{
@@ -258,11 +258,12 @@ public class ThreadedHttps<T> where T : class, new()
 
 	protected bool ShouldQuit()
 	{
-		bool flag = false;
+		bool result = false;
 		lock (_quitLock)
 		{
-			return (shouldQuit && packets.Count == 0) || quitOnError;
+			result = ((shouldQuit && packets.Count == 0) || quitOnError);
 		}
+		return result;
 	}
 
 	protected void QuitOnError()
@@ -287,14 +288,13 @@ public class ThreadedHttps<T> where T : class, new()
 		byte[] result = null;
 		lock (packets)
 		{
-			if (packets.Count <= 0)
+			if (packets.Count > 0)
 			{
-				return result;
+				result = packets[0];
+				packets.RemoveAt(0);
 			}
-			result = packets[0];
-			packets.RemoveAt(0);
-			return result;
 		}
+		return result;
 	}
 
 	protected void PutPacket(byte[] packet, bool infront = false)

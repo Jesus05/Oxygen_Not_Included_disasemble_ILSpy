@@ -81,7 +81,7 @@ public class RecoverBreathChore : Chore<RecoverBreathChore.StatesInstance>
 			}).Update("UpdateLocator", delegate(StatesInstance smi, float dt)
 			{
 				smi.UpdateLocator();
-			}, UpdateRate.SIM_200ms, false);
+			}, UpdateRate.SIM_200ms, true);
 			approach.InitializeStates(recoverer, locator, remove_suit, null, null, null);
 			remove_suit.GoTo(recover);
 			recover.ToggleAnims("anim_emotes_default_kanim", 0f).DefaultState(recover.pre).ToggleAttributeModifier("Recovering Breath", (StatesInstance smi) => smi.recoveringbreath, null)
@@ -95,7 +95,7 @@ public class RecoverBreathChore : Chore<RecoverBreathChore.StatesInstance>
 	}
 
 	public RecoverBreathChore(IStateMachineTarget target)
-		: base(Db.Get().ChoreTypes.RecoverBreath, target, target.GetComponent<ChoreProvider>(), false, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.compulsory, 5, false, true, 0, (Tag[])null, false, ReportManager.ReportType.WorkTime)
+		: base(Db.Get().ChoreTypes.RecoverBreath, target, target.GetComponent<ChoreProvider>(), false, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.compulsory, 5, false, true, 0, false, ReportManager.ReportType.WorkTime)
 	{
 		base.smi = new StatesInstance(this, target.gameObject);
 	}

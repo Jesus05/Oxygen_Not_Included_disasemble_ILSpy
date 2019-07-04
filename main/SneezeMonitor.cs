@@ -28,12 +28,12 @@ public class SneezeMonitor : GameStateMachine<SneezeMonitor, SneezeMonitor.Insta
 		public float NextSneezeInterval()
 		{
 			AttributeInstance attributeInstance = Db.Get().Attributes.Sneezyness.Lookup(base.master.gameObject);
-			if (attributeInstance.GetTotalValue() <= 0f)
+			if (!(attributeInstance.GetTotalValue() <= 0f))
 			{
-				return 70f;
+				float num = 70f / attributeInstance.GetTotalValue();
+				return UnityEngine.Random.Range(num * 0.7f, num * 1.3f);
 			}
-			float num = 70f / attributeInstance.GetTotalValue();
-			return UnityEngine.Random.Range(num * 0.7f, num * 1.3f);
+			return 70f;
 		}
 
 		private void OnSneezyChange()
@@ -71,12 +71,6 @@ public class SneezeMonitor : GameStateMachine<SneezeMonitor, SneezeMonitor.Insta
 			base.smi.GoTo(base.sm.idle);
 		}
 	}
-
-	private static readonly HashedString[] SneezeAnims = new HashedString[2]
-	{
-		"sneeze",
-		"sneeze_pst"
-	};
 
 	public BoolParameter isSneezy = new BoolParameter(false);
 

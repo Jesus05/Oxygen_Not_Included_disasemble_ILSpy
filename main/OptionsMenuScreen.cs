@@ -1,15 +1,11 @@
 using STRINGS;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class OptionsMenuScreen : KModalButtonMenu
 {
 	[SerializeField]
-	private UnitConfigurationScreen unitScreenPrefab;
-
-	[SerializeField]
-	private InputBindingsScreen inputBindingsScreenPrefab;
+	private GameOptionsScreen gameOptionsScreenPrefab;
 
 	[SerializeField]
 	private AudioOptionsScreen audioOptionsScreenPrefab;
@@ -40,16 +36,10 @@ public class OptionsMenuScreen : KModalButtonMenu
 		{
 			new ButtonInfo(UI.FRONTEND.OPTIONS_SCREEN.GRAPHICS, Action.NumActions, OnGraphicsOptions, null, null),
 			new ButtonInfo(UI.FRONTEND.OPTIONS_SCREEN.AUDIO, Action.NumActions, OnAudioOptions, null, null),
-			new ButtonInfo(UI.FRONTEND.OPTIONS_SCREEN.CONTROLS, Action.NumActions, OnKeyBindings, null, null),
-			new ButtonInfo(UI.FRONTEND.OPTIONS_SCREEN.UNITS, Action.NumActions, OnUnits, null, null),
+			new ButtonInfo(UI.FRONTEND.OPTIONS_SCREEN.GAME, Action.NumActions, OnGameOptions, null, null),
 			new ButtonInfo(UI.FRONTEND.OPTIONS_SCREEN.METRICS, Action.NumActions, OnMetrics, null, null),
-			new ButtonInfo(UI.FRONTEND.OPTIONS_SCREEN.CREDITS, Action.NumActions, OnCredits, null, null),
-			new ButtonInfo(UI.FRONTEND.OPTIONS_SCREEN.RESET_TUTORIAL, Action.NumActions, OnTutorialReset, null, null)
+			new ButtonInfo(UI.FRONTEND.OPTIONS_SCREEN.CREDITS, Action.NumActions, OnCredits, null, null)
 		};
-		if ((Object)SaveGame.Instance != (Object)null && !SaveGame.Instance.sandboxEnabled)
-		{
-			buttons.Add(new ButtonInfo(UI.FRONTEND.OPTIONS_SCREEN.UNLOCK_SANDBOX, Action.NumActions, OnUnlockSandboxMode, null, null));
-		}
 		closeButton.onClick += Deactivate;
 		backButton.onClick += Deactivate;
 	}
@@ -67,7 +57,6 @@ public class OptionsMenuScreen : KModalButtonMenu
 		GameObject[] buttonObjects = base.buttonObjects;
 		foreach (GameObject gameObject in buttonObjects)
 		{
-			gameObject.GetComponent<LayoutElement>().minWidth = 512f;
 		}
 	}
 
@@ -93,14 +82,9 @@ public class OptionsMenuScreen : KModalButtonMenu
 		ActivateChildScreen(audioOptionsScreenPrefab.gameObject);
 	}
 
-	private void OnKeyBindings()
+	private void OnGameOptions()
 	{
-		ActivateChildScreen(inputBindingsScreenPrefab.gameObject);
-	}
-
-	private void OnUnits()
-	{
-		ActivateChildScreen(unitScreenPrefab.gameObject);
+		ActivateChildScreen(gameOptionsScreenPrefab.gameObject);
 	}
 
 	private void OnMetrics()
@@ -111,41 +95,6 @@ public class OptionsMenuScreen : KModalButtonMenu
 	private void OnCredits()
 	{
 		ActivateChildScreen(creditsScreenPrefab.gameObject);
-	}
-
-	private void OnTutorialReset()
-	{
-		ConfirmDialogScreen component = ActivateChildScreen(ScreenPrefabs.Instance.ConfirmDialogScreen.gameObject).GetComponent<ConfirmDialogScreen>();
-		component.PopupConfirmDialog(UI.FRONTEND.OPTIONS_SCREEN.RESET_TUTORIAL_WARNING, delegate
-		{
-			Tutorial.ResetHiddenTutorialMessages();
-		}, delegate
-		{
-		}, null, null, null, null, null, null);
-		component.Activate();
-	}
-
-	private void OnUnlockSandboxMode()
-	{
-		ConfirmDialogScreen component = ActivateChildScreen(ScreenPrefabs.Instance.ConfirmDialogScreen.gameObject).GetComponent<ConfirmDialogScreen>();
-		component.PopupConfirmDialog(UI.FRONTEND.OPTIONS_SCREEN.TOGGLE_SANDBOX_SCREEN.UNLOCK_SANDBOX_WARNING, delegate
-		{
-			SaveGame.Instance.sandboxEnabled = true;
-			TopLeftControlScreen.Instance.UpdateSandboxToggleState();
-			Deactivate();
-		}, delegate
-		{
-			string savePrefixAndCreateFolder = SaveLoader.GetSavePrefixAndCreateFolder();
-			string text2 = savePrefixAndCreateFolder;
-			savePrefixAndCreateFolder = text2 + "\\" + SaveGame.Instance.BaseName + UI.FRONTEND.OPTIONS_SCREEN.TOGGLE_SANDBOX_SCREEN.BACKUP_SAVE_GAME_APPEND + ".sav";
-			SaveLoader.Instance.Save(savePrefixAndCreateFolder, false, false);
-			SaveGame.Instance.sandboxEnabled = true;
-			TopLeftControlScreen.Instance.UpdateSandboxToggleState();
-			Deactivate();
-		}, UI.FRONTEND.OPTIONS_SCREEN.TOGGLE_SANDBOX_SCREEN.CANCEL, delegate
-		{
-		}, cancel_text: UI.FRONTEND.OPTIONS_SCREEN.TOGGLE_SANDBOX_SCREEN.CONFIRM_SAVE_BACKUP, title_text: null, confirm_text: UI.FRONTEND.OPTIONS_SCREEN.TOGGLE_SANDBOX_SCREEN.CONFIRM, image_sprite: null);
-		component.Activate();
 	}
 
 	private void Update()

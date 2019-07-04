@@ -67,7 +67,7 @@ public class MicrobeMusherConfig : IBuildingConfig
 		ComplexRecipe complexRecipe = new ComplexRecipe(id, array, array2);
 		complexRecipe.time = 40f;
 		complexRecipe.description = ITEMS.FOOD.MUSHBAR.RECIPEDESC;
-		complexRecipe.useResultAsDescription = true;
+		complexRecipe.nameDisplay = ComplexRecipe.RecipeNameDisplay.Result;
 		complexRecipe.fabricators = new List<Tag>
 		{
 			"MicrobeMusher"
@@ -87,7 +87,7 @@ public class MicrobeMusherConfig : IBuildingConfig
 		complexRecipe = new ComplexRecipe(id2, array3, array4);
 		complexRecipe.time = FOOD.RECIPES.STANDARD_COOK_TIME;
 		complexRecipe.description = ITEMS.FOOD.BASICPLANTBAR.RECIPEDESC;
-		complexRecipe.useResultAsDescription = true;
+		complexRecipe.nameDisplay = ComplexRecipe.RecipeNameDisplay.Result;
 		complexRecipe.fabricators = new List<Tag>
 		{
 			"MicrobeMusher"
@@ -107,7 +107,7 @@ public class MicrobeMusherConfig : IBuildingConfig
 		complexRecipe = new ComplexRecipe(id3, array5, array6);
 		complexRecipe.time = FOOD.RECIPES.STANDARD_COOK_TIME;
 		complexRecipe.description = ITEMS.FOOD.FRUITCAKE.RECIPEDESC;
-		complexRecipe.useResultAsDescription = true;
+		complexRecipe.nameDisplay = ComplexRecipe.RecipeNameDisplay.Result;
 		complexRecipe.fabricators = new List<Tag>
 		{
 			"MicrobeMusher"

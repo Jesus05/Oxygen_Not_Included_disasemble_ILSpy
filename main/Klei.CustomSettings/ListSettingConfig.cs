@@ -11,8 +11,8 @@ namespace Klei.CustomSettings
 			private set;
 		}
 
-		public ListSettingConfig(string id, string label, string tooltip, List<SettingLevel> levels, string default_level_id, string nosweat_default_level_id, bool debug_only)
-			: base(id, label, tooltip, default_level_id, nosweat_default_level_id, debug_only)
+		public ListSettingConfig(string id, string label, string tooltip, List<SettingLevel> levels, string default_level_id, string nosweat_default_level_id, int coordinate_dimension = -1, int coordinate_dimension_width = -1, bool debug_only = false, bool triggers_custom_game = true)
+			: base(id, label, tooltip, default_level_id, nosweat_default_level_id, coordinate_dimension, coordinate_dimension_width, debug_only, triggers_custom_game)
 		{
 			this.levels = levels;
 		}
@@ -44,10 +44,15 @@ namespace Klei.CustomSettings
 			return null;
 		}
 
+		public override List<SettingLevel> GetLevels()
+		{
+			return levels;
+		}
+
 		public string CycleSettingLevelID(string current_id, int direction)
 		{
-			string result = string.Empty;
-			if (current_id == string.Empty)
+			string result = "";
+			if (current_id == "")
 			{
 				current_id = levels[0].id;
 			}

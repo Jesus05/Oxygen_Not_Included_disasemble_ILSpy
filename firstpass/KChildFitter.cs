@@ -7,9 +7,9 @@ public class KChildFitter : MonoBehaviour
 
 	public bool fitHeight;
 
-	public float HeightPadding;
+	public float HeightPadding = 0f;
 
-	public float WidthPadding;
+	public float WidthPadding = 0f;
 
 	public float WidthScale = 1f;
 

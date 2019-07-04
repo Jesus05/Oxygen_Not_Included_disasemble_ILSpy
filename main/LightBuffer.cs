@@ -95,10 +95,21 @@ public class LightBuffer : MonoBehaviour
 				if (!((UnityEngine.Object)item == (UnityEngine.Object)null) && item.enabled)
 				{
 					MaterialPropertyBlock materialPropertyBlock = item.materialPropertyBlock;
-					materialPropertyBlock.SetVector(ColorRangeTag, new Vector4(item.Color.r * item.IntensityAnimation, item.Color.g * item.IntensityAnimation, item.Color.b * item.IntensityAnimation, item.Range));
+					MaterialPropertyBlock materialPropertyBlock2 = materialPropertyBlock;
+					int colorRangeTag = ColorRangeTag;
+					Color color = item.Color;
+					float x = color.r * item.IntensityAnimation;
+					Color color2 = item.Color;
+					float y = color2.g * item.IntensityAnimation;
+					Color color3 = item.Color;
+					materialPropertyBlock2.SetVector(colorRangeTag, new Vector4(x, y, color3.b * item.IntensityAnimation, item.Range));
 					Vector3 position = item.transform.GetPosition();
-					position.x += item.Offset.x;
-					position.y += item.Offset.y;
+					float x2 = position.x;
+					Vector2 offset = item.Offset;
+					position.x = x2 + offset.x;
+					float y2 = position.y;
+					Vector2 offset2 = item.Offset;
+					position.y = y2 + offset2.y;
 					materialPropertyBlock.SetVector(LightPosTag, new Vector4(position.x, position.y, 0f, 0f));
 					Vector2 normalized = item.Direction.normalized;
 					materialPropertyBlock.SetVector(LightDirectionAngleTag, new Vector4(normalized.x, normalized.y, 0f, item.Angle));

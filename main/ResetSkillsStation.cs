@@ -11,6 +11,12 @@ public class ResetSkillsStation : Workable
 
 	private Chore chore;
 
+	protected override void OnPrefabInit()
+	{
+		base.OnPrefabInit();
+		lightEfficiencyBonus = false;
+	}
+
 	protected override void OnSpawn()
 	{
 		base.OnSpawn();
@@ -33,7 +39,7 @@ public class ResetSkillsStation : Workable
 
 	private void CreateChore()
 	{
-		chore = new WorkChore<ResetSkillsStation>(Db.Get().ChoreTypes.Train, this, null, null, true, null, null, null, false, null, false, true, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, false, true);
+		chore = new WorkChore<ResetSkillsStation>(Db.Get().ChoreTypes.Train, this, null, true, null, null, null, false, null, false, true, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, false, true);
 	}
 
 	protected override void OnStartWork(Worker worker)
@@ -53,7 +59,7 @@ public class ResetSkillsStation : Workable
 			component.SetHats(component.CurrentHat, null);
 			component.ApplyTargetHat();
 			notification = new Notification(MISC.NOTIFICATIONS.RESETSKILL.NAME, NotificationType.Good, HashedString.Invalid, (List<Notification> notificationList, object data) => MISC.NOTIFICATIONS.RESETSKILL.TOOLTIP + notificationList.ReduceMessages(false), null, true, 0f, null, null, null);
-			worker.GetComponent<Notifier>().Add(notification, string.Empty);
+			worker.GetComponent<Notifier>().Add(notification, "");
 		}
 	}
 

@@ -7,7 +7,7 @@ namespace KMod
 {
 	public class Local : IDistributionPlatform
 	{
-		private class Header : YamlIO<Header>
+		private class Header
 		{
 			public string title
 			{
@@ -52,13 +52,13 @@ namespace KMod
 
 		public string GetDirectory()
 		{
-			return FSUtil.Normalize(Path.Combine(Manager.GetDirectory(), folder));
+			return FileSystem.Normalize(Path.Combine(Manager.GetDirectory(), folder));
 		}
 
 		private void Subscribe(string id, long timestamp, IFileSource file_source)
 		{
 			string text = file_source.Read("mod.yaml");
-			Header header = (!string.IsNullOrEmpty(text)) ? YamlIO<Header>.Parse(text, null) : null;
+			Header header = (!string.IsNullOrEmpty(text)) ? YamlIO.Parse<Header>(text, file_source.GetRoot() + "\\mod.yaml", null, null) : null;
 			if (header == null)
 			{
 				Header header2 = new Header();
@@ -69,7 +69,7 @@ namespace KMod
 			Label label = default(Label);
 			label.id = id;
 			label.distribution_platform = distribution_platform;
-			label.version = (ulong)timestamp;
+			label.version = id.GetHashCode();
 			label.title = header.title;
 			Label label2 = label;
 			Mod mod = new Mod(label2, header.description, file_source, UI.FRONTEND.MODS.TOOLTIPS.MANAGE_LOCAL_MOD, delegate

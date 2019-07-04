@@ -25,11 +25,11 @@ namespace Klei.AI
 
 		public string GetTooltip()
 		{
-			if (TooltipCB != null)
+			if (TooltipCB == null)
 			{
-				return TooltipCB(Description);
+				return Description;
 			}
-			return Description;
+			return TooltipCB(Description);
 		}
 	}
 }

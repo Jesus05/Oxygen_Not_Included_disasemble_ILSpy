@@ -48,10 +48,6 @@ public class EspressoMachineConfig : IBuildingConfig
 		manualDeliveryKG.capacity = 10f;
 		manualDeliveryKG.refillMass = 5f;
 		manualDeliveryKG.minimumMass = 1f;
-		manualDeliveryKG.choreTags = new Tag[1]
-		{
-			GameTags.ChoreTypes.Cooking
-		};
 		manualDeliveryKG.choreTypeIDHash = Db.Get().ChoreTypes.MachineFetch.IdHash;
 		go.AddOrGet<EspressoMachineWorkable>();
 		go.AddOrGet<EspressoMachine>();

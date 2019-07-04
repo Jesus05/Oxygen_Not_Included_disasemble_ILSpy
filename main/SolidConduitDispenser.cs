@@ -6,13 +6,13 @@ using UnityEngine;
 public class SolidConduitDispenser : KMonoBehaviour, ISaveLoadable
 {
 	[SerializeField]
-	public SimHashes[] elementFilter;
+	public SimHashes[] elementFilter = null;
 
 	[SerializeField]
-	public bool invertElementFilter;
+	public bool invertElementFilter = false;
 
 	[SerializeField]
-	public bool alwaysDispense;
+	public bool alwaysDispense = false;
 
 	private static readonly Operational.Flag outputConduitFlag = new Operational.Flag("output_conduit", Operational.Flag.Type.Functional);
 
@@ -27,6 +27,8 @@ public class SolidConduitDispenser : KMonoBehaviour, ISaveLoadable
 	private int utilityCell = -1;
 
 	private bool dispensing;
+
+	private int round_robin_index;
 
 	private const float MaxMass = 20f;
 
@@ -99,13 +101,12 @@ public class SolidConduitDispenser : KMonoBehaviour, ISaveLoadable
 	private Pickupable FindSuitableItem()
 	{
 		List<GameObject> items = storage.items;
-		for (int i = 0; i < items.Count; i++)
+		if (items.Count >= 1)
 		{
-			Pickupable pickupable = (!(bool)items[i]) ? null : items[i].GetComponent<Pickupable>();
-			if ((bool)pickupable)
-			{
-				return pickupable;
-			}
+			round_robin_index %= items.Count;
+			GameObject gameObject = items[round_robin_index];
+			round_robin_index++;
+			return (!(bool)gameObject) ? null : gameObject.GetComponent<Pickupable>();
 		}
 		return null;
 	}

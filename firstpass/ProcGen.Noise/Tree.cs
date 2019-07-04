@@ -1,10 +1,9 @@
-using Klei;
 using LibNoiseDotNet.Graphics.Tools.Noise;
 using System.Collections.Generic;
 
 namespace ProcGen.Noise
 {
-	public class Tree : YamlIO<Tree>
+	public class Tree
 	{
 		private Dictionary<string, IModule3D> primitiveLookup = new Dictionary<string, IModule3D>();
 
@@ -134,58 +133,58 @@ namespace ProcGen.Noise
 
 		private IModule3D GetModuleFromLink(Link link)
 		{
-			if (link == null)
+			if (link != null)
 			{
+				switch (link.type)
+				{
+				case Link.Type.Primitive:
+					if (primitiveLookup.ContainsKey(link.name))
+					{
+						return primitiveLookup[link.name];
+					}
+					Debug.LogError("Couldnt find [" + link.name + "] in primitives");
+					break;
+				case Link.Type.Filter:
+					if (filterLookup.ContainsKey(link.name))
+					{
+						return filterLookup[link.name];
+					}
+					Debug.LogError("Couldnt find [" + link.name + "] in filters");
+					break;
+				case Link.Type.Modifier:
+					if (modifierLookup.ContainsKey(link.name))
+					{
+						return modifierLookup[link.name];
+					}
+					Debug.LogError("Couldnt find [" + link.name + "] in modifiers");
+					break;
+				case Link.Type.Selector:
+					if (selectorLookup.ContainsKey(link.name))
+					{
+						return selectorLookup[link.name];
+					}
+					Debug.LogError("Couldnt find [" + link.name + "] in selectors");
+					break;
+				case Link.Type.Transformer:
+					if (transformerLookup.ContainsKey(link.name))
+					{
+						return transformerLookup[link.name];
+					}
+					Debug.LogError("Couldnt find [" + link.name + "] in transformers");
+					break;
+				case Link.Type.Combiner:
+					if (combinerLookup.ContainsKey(link.name))
+					{
+						return combinerLookup[link.name];
+					}
+					Debug.LogError("Couldnt find [" + link.name + "] in combiners");
+					break;
+				case Link.Type.Terminator:
+					return null;
+				}
+				Debug.LogError("Couldnt find link [" + link.name + "] [" + link.type.ToString() + "]");
 				return null;
 			}
-			switch (link.type)
-			{
-			case Link.Type.Primitive:
-				if (primitiveLookup.ContainsKey(link.name))
-				{
-					return primitiveLookup[link.name];
-				}
-				Debug.LogError("Couldnt find [" + link.name + "] in primitives");
-				break;
-			case Link.Type.Filter:
-				if (filterLookup.ContainsKey(link.name))
-				{
-					return filterLookup[link.name];
-				}
-				Debug.LogError("Couldnt find [" + link.name + "] in filters");
-				break;
-			case Link.Type.Modifier:
-				if (modifierLookup.ContainsKey(link.name))
-				{
-					return modifierLookup[link.name];
-				}
-				Debug.LogError("Couldnt find [" + link.name + "] in modifiers");
-				break;
-			case Link.Type.Selector:
-				if (selectorLookup.ContainsKey(link.name))
-				{
-					return selectorLookup[link.name];
-				}
-				Debug.LogError("Couldnt find [" + link.name + "] in selectors");
-				break;
-			case Link.Type.Transformer:
-				if (transformerLookup.ContainsKey(link.name))
-				{
-					return transformerLookup[link.name];
-				}
-				Debug.LogError("Couldnt find [" + link.name + "] in transformers");
-				break;
-			case Link.Type.Combiner:
-				if (combinerLookup.ContainsKey(link.name))
-				{
-					return combinerLookup[link.name];
-				}
-				Debug.LogError("Couldnt find [" + link.name + "] in combiners");
-				break;
-			case Link.Type.Terminator:
-				return null;
-			}
-			Debug.LogError("Couldnt find link [" + link.name + "] [" + link.type.ToString() + "]");
 			return null;
 		}
 

@@ -22,7 +22,8 @@ public class SingleEntityReceptacle : Workable, IRender1000ms
 
 	protected FetchChore fetchChore;
 
-	protected bool autoReplaceEntity;
+	[Serialize]
+	public bool autoReplaceEntity;
 
 	[Serialize]
 	public Tag requestedEntityTag;
@@ -34,7 +35,7 @@ public class SingleEntityReceptacle : Workable, IRender1000ms
 	private List<Tag> possibleDepositTagsList = new List<Tag>();
 
 	[SerializeField]
-	protected bool destroyEntityOnDeposit;
+	protected bool destroyEntityOnDeposit = false;
 
 	[SerializeField]
 	protected ReceptacleDirection direction;
@@ -54,17 +55,15 @@ public class SingleEntityReceptacle : Workable, IRender1000ms
 
 	public FetchChore GetActiveRequest => fetchChore;
 
-	public bool AutoReplaceEntity => autoReplaceEntity;
-
 	protected GameObject occupyingObject
 	{
 		get
 		{
-			if ((Object)occupyObjectRef.Get() != (Object)null)
+			if (!((Object)occupyObjectRef.Get() != (Object)null))
 			{
-				return occupyObjectRef.Get().gameObject;
+				return null;
 			}
-			return null;
+			return occupyObjectRef.Get().gameObject;
 		}
 		set
 		{
@@ -84,11 +83,6 @@ public class SingleEntityReceptacle : Workable, IRender1000ms
 	public Tag[] possibleDepositObjectTags => possibleDepositTagsList.ToArray();
 
 	public ReceptacleDirection Direction => direction;
-
-	public void ToggleAutoReplace()
-	{
-		autoReplaceEntity = !autoReplaceEntity;
-	}
 
 	protected override void OnPrefabInit()
 	{
@@ -188,7 +182,7 @@ public class SingleEntityReceptacle : Workable, IRender1000ms
 			}, delegate
 			{
 				UpdateStatusItem();
-			}, FetchOrder2.OperationalRequirement.Functional, 0, GameTags.ChoreTypes.FarmingChores);
+			}, FetchOrder2.OperationalRequirement.Functional, 0);
 			MaterialNeeds.Instance.UpdateNeed(requestedEntityTag, 1f);
 			UpdateStatusItem();
 		}
@@ -251,15 +245,31 @@ public class SingleEntityReceptacle : Workable, IRender1000ms
 
 	private void OnFetchComplete(Chore chore)
 	{
+		if (fetchChore == null)
+		{
+			Debug.LogWarningFormat(base.gameObject, "{0} OnFetchComplete fetchChore null", base.gameObject);
+		}
+		else
+		{
+			OnDepositObject(fetchChore.fetchTarget.GetComponent<Pickupable>());
+		}
+	}
+
+	public void ForceDepositPickupable(Pickupable pickupable)
+	{
+		OnDepositObject(pickupable);
+	}
+
+	private void OnDepositObject(Pickupable pickupable)
+	{
 		SetPreview(Tag.Invalid, false);
-		Pickupable fetchTarget = fetchChore.fetchTarget;
 		MaterialNeeds.Instance.UpdateNeed(requestedEntityTag, -1f);
-		KBatchedAnimController component = fetchTarget.GetComponent<KBatchedAnimController>();
+		KBatchedAnimController component = pickupable.GetComponent<KBatchedAnimController>();
 		if ((Object)component != (Object)null)
 		{
 			component.GetBatchInstanceData().ClearOverrideTransformMatrix();
 		}
-		occupyingObject = SpawnOccupyingObject(fetchTarget.gameObject);
+		occupyingObject = SpawnOccupyingObject(pickupable.gameObject);
 		if ((Object)occupyingObject != (Object)null)
 		{
 			occupyingObject.SetActive(true);
@@ -270,7 +280,11 @@ public class SingleEntityReceptacle : Workable, IRender1000ms
 		{
 			Debug.LogWarning(base.gameObject.name + " EntityReceptacle did not spawn occupying entity.");
 		}
-		fetchChore = null;
+		if (fetchChore != null)
+		{
+			fetchChore.Cancel("receptacle filled");
+			fetchChore = null;
+		}
 		if (!autoReplaceEntity)
 		{
 			requestedEntityTag = Tag.Invalid;
@@ -279,7 +293,7 @@ public class SingleEntityReceptacle : Workable, IRender1000ms
 		UpdateStatusItem();
 		if (destroyEntityOnDeposit)
 		{
-			Util.KDestroyGameObject(fetchTarget.gameObject);
+			Util.KDestroyGameObject(pickupable.gameObject);
 		}
 		Trigger(-731304873, occupyingObject);
 	}

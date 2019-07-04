@@ -125,11 +125,22 @@ namespace KMod
 			}
 		}
 
-		public void Sanitize()
+		public void Sanitize(GameObject parent)
 		{
-			mods.RemoveAll((Mod mod) => mod.file_source == null);
-			dirty = true;
-			Update(this);
+			ListPool<Label, Manager>.PooledList pooledList = ListPool<Label, Manager>.Allocate();
+			foreach (Mod mod in mods)
+			{
+				if (!mod.is_subscribed)
+				{
+					pooledList.Add(mod.label);
+				}
+			}
+			foreach (Label item in pooledList)
+			{
+				Unsubscribe(item, this);
+			}
+			pooledList.Recycle();
+			Report(parent);
 		}
 
 		public bool HaveMods()
@@ -211,6 +222,7 @@ namespace KMod
 		{
 			Debug.LogFormat("Subscribe to mod {0}", mod.title);
 			Mod mod2 = mods.Find((Mod candidate) => mod.label.Match(candidate.label));
+			mod.is_subscribed = true;
 			if (mod2 == null)
 			{
 				mods.Add(mod);
@@ -243,7 +255,7 @@ namespace KMod
 				{
 					events.Add(new Event
 					{
-						event_type = EventType.ContentDeleted,
+						event_type = EventType.AvailableContentChanged,
 						mod = mod.label
 					});
 				}
@@ -253,11 +265,13 @@ namespace KMod
 				mods.Insert(index, mod);
 				if (flag3 || mod.status == Mod.Status.NotInstalled)
 				{
+					bool enabled = mod.enabled;
 					if (flag3)
 					{
 						Uninstall(mod);
 					}
 					Install(mod);
+					mod.enabled = enabled;
 					if (mod.enabled && (mod.available_content & (Content.Strings | Content.DLL | Content.Translation | Content.Animation)) != 0)
 					{
 						events.Add(new Event
@@ -276,21 +290,51 @@ namespace KMod
 			Update(caller);
 		}
 
+		public void Update(Mod mod, object caller)
+		{
+			Debug.LogFormat("Update mod {0}", mod.title);
+			Mod mod2 = mods.Find((Mod candidate) => mod.label.Match(candidate.label));
+			DebugUtil.DevAssert(string.IsNullOrEmpty(mod2.label.id), "Should be subscribed to a mod we are getting an Update notification for");
+			if (mod2.status != Mod.Status.UninstallPending)
+			{
+				events.Add(new Event
+				{
+					event_type = EventType.VersionUpdate,
+					mod = mod.label
+				});
+				mod2.CopyPersistentDataTo(mod);
+				int index = mods.IndexOf(mod2);
+				mods.RemoveAt(index);
+				mods.Insert(index, mod);
+				bool enabled = mod.enabled;
+				Uninstall(mod);
+				Install(mod);
+				mod.enabled = enabled;
+				if (mod.enabled && (mod.available_content & (Content.Strings | Content.DLL | Content.Translation | Content.Animation)) != 0)
+				{
+					events.Add(new Event
+					{
+						event_type = EventType.RestartRequested,
+						mod = mod.label
+					});
+				}
+				dirty = true;
+				Update(caller);
+			}
+		}
+
 		public void Unsubscribe(Label label, object caller)
 		{
 			Debug.LogFormat("Unsubscribe from mod {0}", label.ToString());
 			int num = 0;
-			if (mods.Count != 0)
+			foreach (Mod mod2 in mods)
 			{
-				foreach (Mod mod2 in mods)
+				if (mod2.label.Match(label))
 				{
-					if (mod2.label.Match(label))
-					{
-						Debug.LogFormat("\t...found it: {0}", mod2.title);
-						break;
-					}
-					num++;
+					Debug.LogFormat("\t...found it: {0}", mod2.title);
+					break;
 				}
+				num++;
 			}
 			if (num == mods.Count)
 			{
@@ -345,7 +389,7 @@ namespace KMod
 				}
 				load_user_mod_loader_dll = false;
 			}
-			Debug.LogFormat("Load mods:");
+			Debug.LogFormat("Load content ({0}) for mods:", content);
 			foreach (Mod mod in mods)
 			{
 				if (mod.enabled)
@@ -369,6 +413,11 @@ namespace KMod
 					if (!mod2.enabled)
 					{
 						flag = true;
+						events.Add(new Event
+						{
+							event_type = EventType.Deactivated,
+							mod = mod2.label
+						});
 					}
 					Debug.LogFormat("Failed to load mod {0}...disabling", mod2.title);
 					events.Add(new Event
@@ -407,99 +456,94 @@ namespace KMod
 
 		public bool MatchFootprint(List<Label> footprint, Content relevant_content)
 		{
-			if (footprint == null)
+			if (footprint != null)
 			{
-				return true;
-			}
-			bool flag = true;
-			bool flag2 = true;
-			bool flag3 = false;
-			int num = -1;
-			Func<Label, Mod, bool> is_match = (Label label, Mod mod) => mod.label.Match(label);
-			foreach (Label item in footprint)
-			{
-				bool flag4 = false;
-				for (int i = num + 1; i != mods.Count; i++)
+				bool flag = true;
+				bool flag2 = true;
+				bool flag3 = false;
+				int num = -1;
+				Func<Label, Mod, bool> is_match = (Label label, Mod mod) => mod.label.Match(label);
+				foreach (Label item in footprint)
 				{
-					Mod mod2 = mods[i];
-					num = i;
-					Content content = mod2.available_content & relevant_content;
-					bool flag5 = content != (Content)0;
-					if (is_match(item, mod2))
+					bool flag4 = false;
+					for (int i = num + 1; i != mods.Count; i++)
 					{
-						if (flag5)
+						Mod mod2 = mods[i];
+						num = i;
+						Content content = mod2.available_content & relevant_content;
+						bool flag5 = content != (Content)0;
+						if (is_match(item, mod2))
 						{
-							if (!mod2.enabled)
+							if (flag5)
 							{
-								events.Add(new Event
+								if (!mod2.enabled)
 								{
-									event_type = EventType.ExpectedActive,
-									mod = item
-								});
-								flag = false;
-							}
-							else if (!mod2.AllActive(content))
-							{
-								events.Add(new Event
+									events.Add(new Event
+									{
+										event_type = EventType.ExpectedActive,
+										mod = item
+									});
+									flag = false;
+								}
+								else if (!mod2.AllActive(content))
 								{
-									event_type = EventType.LoadError,
-									mod = item
-								});
+									events.Add(new Event
+									{
+										event_type = EventType.LoadError,
+										mod = item
+									});
+								}
 							}
+							flag4 = true;
+							break;
 						}
-						flag4 = true;
-						break;
+						if (flag5 && mod2.enabled)
+						{
+							events.Add(new Event
+							{
+								event_type = EventType.ExpectedInactive,
+								mod = mod2.label
+							});
+							flag3 = true;
+						}
 					}
-					if (flag5 && mod2.enabled)
+					if (!flag4)
+					{
+						events.Add(new Event
+						{
+							event_type = ((!mods.Exists((Mod candidate) => is_match(item, candidate))) ? EventType.NotFound : EventType.OutOfOrder),
+							mod = item
+						});
+						flag2 = false;
+					}
+				}
+				for (int j = num + 1; j != mods.Count; j++)
+				{
+					Mod mod3 = mods[j];
+					if ((mod3.available_content & relevant_content) != 0 && mod3.enabled)
 					{
 						events.Add(new Event
 						{
 							event_type = EventType.ExpectedInactive,
-							mod = mod2.label
+							mod = mod3.label
 						});
 						flag3 = true;
 					}
 				}
-				if (!flag4)
-				{
-					events.Add(new Event
-					{
-						event_type = ((!mods.Exists((Mod candidate) => is_match(item, candidate))) ? EventType.NotFound : EventType.OutOfOrder),
-						mod = item
-					});
-					flag2 = false;
-				}
+				return flag2 && flag && !flag3;
 			}
-			for (int j = num + 1; j != mods.Count; j++)
-			{
-				Mod mod3 = mods[j];
-				if ((mod3.available_content & relevant_content) != 0 && mod3.enabled)
-				{
-					events.Add(new Event
-					{
-						event_type = EventType.ExpectedInactive,
-						mod = mod3.label
-					});
-					flag3 = true;
-				}
-			}
-			return flag2 && flag && !flag3;
+			return true;
 		}
 
 		private string GetFilename()
 		{
-			return FSUtil.Normalize(Path.Combine(GetDirectory(), "mods.json"));
+			return FileSystem.Normalize(Path.Combine(GetDirectory(), "mods.json"));
 		}
 
-		private static void UserDialog(string title, string text, System.Action on_confirm, System.Action on_cancel, GameObject parent = null)
+		public static void Dialog(GameObject parent = null, string title = null, string text = null, string confirm_text = null, System.Action on_confirm = null, string cancel_text = null, System.Action on_cancel = null, string configurable_text = null, System.Action on_configurable_clicked = null, Sprite image_sprite = null, bool activateBlackBackground = true)
 		{
-			ConfirmDialogScreen confirmDialogScreen = (ConfirmDialogScreen)KScreenManager.Instance.StartScreen(ScreenPrefabs.Instance.ConfirmDialogScreen.gameObject, (!((UnityEngine.Object)parent == (UnityEngine.Object)null)) ? parent : Global.Instance.globalCanvas);
-			confirmDialogScreen.PopupConfirmDialog(text, on_confirm, on_cancel, null, null, title, null, null, null);
-		}
-
-		private static void ErrorDialog(string text, System.Action on_confirm = null, System.Action on_cancel = null)
-		{
-			UserDialog(UI.FRONTEND.MOD_ERRORS.TITLE, text, on_confirm, on_cancel, null);
+			ConfirmDialogScreen confirmDialogScreen = (ConfirmDialogScreen)KScreenManager.Instance.StartScreen(ScreenPrefabs.Instance.ConfirmDialogScreen.gameObject, parent ?? Global.Instance.globalCanvas);
+			confirmDialogScreen.PopupConfirmDialog(text, on_confirm, on_cancel, configurable_text, on_configurable_clicked, title, confirm_text, cancel_text, image_sprite, activateBlackBackground);
 		}
 
 		private static string MakeModList(List<Event> events, EventType event_type)
@@ -517,7 +561,7 @@ namespace KMod
 			return stringBuilder.ToString();
 		}
 
-		private static string MakeModList(List<Event> events)
+		private static string MakeEventList(List<Event> events)
 		{
 			StringBuilder stringBuilder = new StringBuilder();
 			stringBuilder.AppendLine();
@@ -527,12 +571,17 @@ namespace KMod
 			{
 				Event current = @event;
 				Event.GetUIStrings(current.event_type, out title, out title_tooltip);
-				stringBuilder.AppendFormat("{0}: {1}\n", title, current.mod.title);
+				stringBuilder.AppendFormat("{0}: {1}", title, current.mod.title);
+				if (!string.IsNullOrEmpty(current.details))
+				{
+					stringBuilder.AppendFormat(" ({0})", current.details);
+				}
+				stringBuilder.Append("\n");
 			}
 			return stringBuilder.ToString();
 		}
 
-		private static string MakeSimpleModList(List<Event> events)
+		private static string MakeModList(List<Event> events)
 		{
 			StringBuilder stringBuilder = new StringBuilder();
 			stringBuilder.AppendLine();
@@ -560,7 +609,7 @@ namespace KMod
 					{
 						foreach (Mod mod in mods)
 						{
-							if (mod.label.Match(current.mod))
+							if (mod.label.distribution_platform != 0 && mod.label.distribution_platform != Label.DistributionPlatform.Dev && mod.label.Match(current.mod))
 							{
 								mod.status = Mod.Status.ReinstallPending;
 							}
@@ -569,36 +618,53 @@ namespace KMod
 				}
 				dirty = true;
 				Update(this);
-				ConfirmDialogScreen confirmDialogScreen = (ConfirmDialogScreen)KScreenManager.Instance.StartScreen(ScreenPrefabs.Instance.ConfirmDialogScreen.gameObject, parent);
-				ConfirmDialogScreen confirmDialogScreen2 = confirmDialogScreen;
-				string title_text = UI.FRONTEND.MOD_DIALOGS.LOAD_FAILURE.TITLE;
+				string title = UI.FRONTEND.MOD_DIALOGS.LOAD_FAILURE.TITLE;
 				string text = string.Format(UI.FRONTEND.MOD_DIALOGS.LOAD_FAILURE.MESSAGE, MakeModList(events, EventType.LoadError));
-				string cancel_text = UI.FRONTEND.MOD_DIALOGS.LOAD_FAILURE.RESTART_LATER;
-				System.Action on_confirm = App.instance.Restart;
-				confirmDialogScreen2.PopupConfirmDialog(text, on_confirm, delegate
+				string confirm_text = UI.FRONTEND.MOD_DIALOGS.RESTART.OK;
+				string cancel_text = UI.FRONTEND.MOD_DIALOGS.RESTART.CANCEL;
+				Dialog(parent, title, text, confirm_text, App.instance.Restart, cancel_text, delegate
 				{
-				}, null, null, title_text, UI.FRONTEND.MOD_DIALOGS.LOAD_FAILURE.RESTART_NOW, cancel_text, null);
+				}, null, null, null, true);
 				events.Clear();
 			}
 		}
 
-		private void DevRestartDialog(GameObject parent)
+		private void DevRestartDialog(GameObject parent, bool is_crash)
 		{
 			if (events.Count != 0)
 			{
-				ConfirmDialogScreen confirmDialogScreen = (ConfirmDialogScreen)KScreenManager.Instance.StartScreen(ScreenPrefabs.Instance.ConfirmDialogScreen.gameObject, parent);
-				confirmDialogScreen.PopupConfirmDialog(title_text: UI.FRONTEND.MOD_DIALOGS.MOD_ERRORS_ON_BOOT.TITLE, text: string.Format(UI.FRONTEND.MOD_DIALOGS.MOD_ERRORS_ON_BOOT.DEV_MESSAGE, MakeSimpleModList(events)), cancel_text: UI.FRONTEND.MOD_DIALOGS.MOD_ERRORS_ON_BOOT.DEV_CONTINUE, on_confirm: delegate
+				if (is_crash)
 				{
-					foreach (Mod mod in mods)
+					string title = UI.FRONTEND.MOD_DIALOGS.MOD_ERRORS_ON_BOOT.TITLE;
+					string text = string.Format(UI.FRONTEND.MOD_DIALOGS.MOD_ERRORS_ON_BOOT.DEV_MESSAGE, MakeEventList(events));
+					string confirm_text = UI.FRONTEND.MOD_DIALOGS.RESTART.OK;
+					string cancel_text = UI.FRONTEND.MOD_DIALOGS.RESTART.CANCEL;
+					Dialog(parent, title, text, confirm_text, delegate
 					{
-						mod.enabled = false;
-					}
-					dirty = true;
-					Update(this);
-					App.instance.Restart();
-				}, on_cancel: delegate
+						foreach (Mod mod in mods)
+						{
+							mod.enabled = false;
+						}
+						dirty = true;
+						Update(this);
+						App.instance.Restart();
+					}, cancel_text, delegate
+					{
+					}, null, null, null, true);
+				}
+				else
 				{
-				}, configurable_text: null, on_configurable_clicked: null, confirm_text: UI.FRONTEND.MOD_DIALOGS.MOD_ERRORS_ON_BOOT.DEV_RESTART, image_sprite: null);
+					string cancel_text = UI.FRONTEND.MOD_DIALOGS.MOD_EVENTS.TITLE;
+					string confirm_text = string.Format(UI.FRONTEND.MOD_DIALOGS.RESTART.DEV_MESSAGE, MakeEventList(events));
+					string text = UI.FRONTEND.MOD_DIALOGS.RESTART.OK;
+					string title = UI.FRONTEND.MOD_DIALOGS.RESTART.CANCEL;
+					Dialog(parent, cancel_text, confirm_text, text, delegate
+					{
+						App.instance.Restart();
+					}, title, delegate
+					{
+					}, null, null, null, true);
+				}
 				events.Clear();
 			}
 		}
@@ -607,12 +673,10 @@ namespace KMod
 		{
 			if (events.Count != 0)
 			{
-				ConfirmDialogScreen confirmDialogScreen = (ConfirmDialogScreen)KScreenManager.Instance.StartScreen(ScreenPrefabs.Instance.ConfirmDialogScreen.gameObject, parent);
-				ConfirmDialogScreen confirmDialogScreen2 = confirmDialogScreen;
-				string text = string.Format(message_format, (!with_details) ? MakeSimpleModList(events) : MakeModList(events));
+				string text = string.Format(message_format, (!with_details) ? MakeModList(events) : MakeEventList(events));
+				string confirm_text = UI.FRONTEND.MOD_DIALOGS.RESTART.OK;
 				string cancel_text2 = cancel_text ?? ((string)UI.FRONTEND.MOD_DIALOGS.RESTART.CANCEL);
-				System.Action on_confirm = App.instance.Restart;
-				confirmDialogScreen2.PopupConfirmDialog(text, on_confirm, on_cancel, null, null, title, UI.FRONTEND.MOD_DIALOGS.RESTART.OK, cancel_text2, null);
+				Dialog(parent, title, text, confirm_text, App.instance.Restart, cancel_text2, on_cancel, null, null, null, true);
 				events.Clear();
 			}
 		}
@@ -621,14 +685,14 @@ namespace KMod
 		{
 			if (events.Count != 0)
 			{
-				UserDialog(title, string.Format(message_format, MakeModList(events)), null, null, parent);
+				Dialog(parent, title, string.Format(message_format, MakeEventList(events)), null, null, null, null, null, null, null, true);
 				events.Clear();
 			}
 		}
 
 		public void HandleCrash()
 		{
-			Debug.Log("Error occurred with mods active. Disabling all mods.");
+			Debug.Log("Error occurred with mods active. Disabling all mods (unless dev mods active).");
 			bool flag = IsInDevMode();
 			foreach (Mod mod in mods)
 			{
@@ -640,9 +704,61 @@ namespace KMod
 						mod = mod.label
 					});
 					mod.Crash(!flag);
+					if (!flag)
+					{
+						events.Add(new Event
+						{
+							event_type = EventType.Deactivated,
+							mod = mod.label
+						});
+					}
 				}
 			}
 			dirty = true;
+			Update(this);
+		}
+
+		public void HandleErrors(List<YamlIO.Error> world_gen_errors)
+		{
+			string value = FileSystem.Normalize(GetDirectory());
+			ListPool<Mod, Manager>.PooledList pooledList = ListPool<Mod, Manager>.Allocate();
+			foreach (YamlIO.Error world_gen_error in world_gen_errors)
+			{
+				YamlIO.Error current = world_gen_error;
+				string text = (current.file.source == null) ? string.Empty : FileSystem.Normalize(current.file.source.GetRoot());
+				YamlIO.LogError(current, text.Contains(value));
+				if (current.severity != YamlIO.Error.Severity.Recoverable && text.Contains(value))
+				{
+					foreach (Mod mod in mods)
+					{
+						if (mod.enabled && text.Contains(mod.label.install_path))
+						{
+							events.Add(new Event
+							{
+								event_type = EventType.BadWorldGen,
+								mod = mod.label,
+								details = Path.GetFileName(current.file.full_path)
+							});
+							break;
+						}
+					}
+				}
+			}
+			bool flag = IsInDevMode();
+			foreach (Mod item in pooledList)
+			{
+				item.Crash(!flag);
+				if (!flag)
+				{
+					events.Add(new Event
+					{
+						event_type = EventType.Deactivated,
+						mod = item.label
+					});
+				}
+				dirty = true;
+			}
+			pooledList.Recycle();
 			Update(this);
 		}
 
@@ -650,26 +766,60 @@ namespace KMod
 		{
 			if (events.Count != 0)
 			{
+				for (int i = 0; i < events.Count; i++)
+				{
+					Event @event = events[i];
+					for (int num = events.Count - 1; num != i; num--)
+					{
+						Event event2 = events[num];
+						if (event2.event_type == @event.event_type)
+						{
+							Event event3 = events[num];
+							if (event3.mod.Match(@event.mod))
+							{
+								Event event4 = events[num];
+								if (event4.details == @event.details)
+								{
+									events.RemoveAt(num);
+								}
+							}
+						}
+					}
+				}
 				bool flag = false;
-				bool flag2 = IsInDevMode();
+				bool flag2 = false;
 				bool flag3 = false;
-				foreach (Event @event in events)
+				foreach (Event event5 in events)
 				{
-					Event current = @event;
-					if (current.event_type == EventType.ActiveDuringCrash)
+					Event current = event5;
+					switch (current.event_type)
 					{
+					case EventType.ActiveDuringCrash:
 						flag = true;
-					}
-					if (current.event_type == EventType.LoadError)
-					{
+						break;
+					case EventType.LoadError:
+						flag2 = true;
+						break;
+					case EventType.VersionUpdate:
+					case EventType.AvailableContentChanged:
+					case EventType.RestartRequested:
 						flag3 = true;
+						break;
+					case EventType.Deactivated:
+						if ((FindMod(current.mod).available_content & (Content.Strings | Content.DLL | Content.Translation | Content.Animation)) != 0)
+						{
+							flag3 = true;
+						}
+						break;
 					}
 				}
-				if (flag2)
+				flag3 = (flag || flag2 || flag3);
+				bool flag4 = IsInDevMode();
+				if (flag3 && flag4)
 				{
-					DevRestartDialog(parent);
+					DevRestartDialog(parent, flag);
 				}
-				else if (flag3)
+				else if (flag2)
 				{
 					LoadFailureDialog(parent);
 				}
@@ -677,44 +827,48 @@ namespace KMod
 				{
 					RestartDialog(UI.FRONTEND.MOD_DIALOGS.MOD_ERRORS_ON_BOOT.TITLE, UI.FRONTEND.MOD_DIALOGS.MOD_ERRORS_ON_BOOT.MESSAGE, null, false, parent, null);
 				}
+				else if (flag3)
+				{
+					RestartDialog(UI.FRONTEND.MOD_DIALOGS.MOD_EVENTS.TITLE, UI.FRONTEND.MOD_DIALOGS.RESTART.MESSAGE, null, true, parent, null);
+				}
 				else
 				{
-					NotifyDialog(UI.FRONTEND.MOD_DIALOGS.MOD_EVENTS.TITLE, UI.FRONTEND.MOD_DIALOGS.MOD_EVENTS.MESSAGE, parent);
+					NotifyDialog(UI.FRONTEND.MOD_DIALOGS.MOD_EVENTS.TITLE, (!flag4) ? UI.FRONTEND.MOD_DIALOGS.MOD_EVENTS.MESSAGE : UI.FRONTEND.MOD_DIALOGS.MOD_EVENTS.DEV_MESSAGE, parent);
 				}
 			}
 		}
 
 		public bool Save()
 		{
-			if (!FileUtil.CreateDirectory(GetDirectory(), 5))
+			if (FileUtil.CreateDirectory(GetDirectory(), 5))
 			{
-				return false;
-			}
-			FileStream stream = FileUtil.Create(GetFilename(), 5);
-			try
-			{
-				if (stream == null)
+				FileStream stream = FileUtil.Create(GetFilename(), 5);
+				try
 				{
-					return false;
-				}
-				using (StreamWriter streamWriter = FileUtil.DoIODialog(() => new StreamWriter(stream), GetFilename(), null, 5))
-				{
-					if (streamWriter == null)
+					if (stream == null)
 					{
 						return false;
 					}
-					string value = JsonConvert.SerializeObject(new PersistentData(current_version, mods), Formatting.Indented);
-					streamWriter.Write(value);
+					using (StreamWriter streamWriter = FileUtil.DoIODialog(() => new StreamWriter(stream), GetFilename(), null, 5))
+					{
+						if (streamWriter == null)
+						{
+							return false;
+						}
+						string value = JsonConvert.SerializeObject(new PersistentData(current_version, mods), Formatting.Indented);
+						streamWriter.Write(value);
+					}
 				}
-			}
-			finally
-			{
-				if (stream != null)
+				finally
 				{
-					((IDisposable)stream).Dispose();
+					if (stream != null)
+					{
+						((IDisposable)stream).Dispose();
+					}
 				}
+				return true;
 			}
-			return true;
+			return false;
 		}
 
 		public Mod FindMod(Label label)
@@ -737,26 +891,26 @@ namespace KMod
 		public bool EnableMod(Label id, bool enabled, object caller)
 		{
 			Mod mod = FindMod(id);
-			if (mod == null)
+			if (mod != null)
 			{
+				if (mod.enabled != enabled)
+				{
+					mod.enabled = enabled;
+					if (enabled)
+					{
+						mod.Load(Content.LayerableFiles);
+					}
+					else
+					{
+						mod.Unload(Content.LayerableFiles);
+					}
+					dirty = true;
+					Update(caller);
+					return true;
+				}
 				return false;
 			}
-			if (mod.enabled == enabled)
-			{
-				return false;
-			}
-			mod.enabled = enabled;
-			if (enabled)
-			{
-				mod.Load(Content.LayerableFiles);
-			}
-			else
-			{
-				mod.Unload(Content.LayerableFiles);
-			}
-			dirty = true;
-			Update(caller);
-			return true;
+			return false;
 		}
 
 		public void Reinsert(int source_index, int target_index, object caller)

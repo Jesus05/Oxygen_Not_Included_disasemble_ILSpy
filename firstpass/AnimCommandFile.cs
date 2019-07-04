@@ -1,10 +1,9 @@
-using Klei;
 using KSerialization.Converters;
 using System;
 using System.Collections.Generic;
 using System.IO;
 
-public class AnimCommandFile : YamlIO<AnimCommandFile>
+public class AnimCommandFile
 {
 	public enum ConfigType
 	{
@@ -22,7 +21,7 @@ public class AnimCommandFile : YamlIO<AnimCommandFile>
 	}
 
 	[NonSerialized]
-	public string directory = string.Empty;
+	public string directory = "";
 
 	[NonSerialized]
 	private List<KAnimGroupFile.GroupFile> groupFiles = new List<KAnimGroupFile.GroupFile>();
@@ -87,19 +86,19 @@ public class AnimCommandFile : YamlIO<AnimCommandFile>
 
 	public bool IsSwap(KAnimFile file)
 	{
-		if (TagGroup != GroupBy.NamedGroup)
+		if (TagGroup == GroupBy.NamedGroup)
 		{
-			return false;
-		}
-		string fileName = Path.GetFileName(file.homedirectory);
-		foreach (KeyValuePair<string, List<string>> defaultBuild in DefaultBuilds)
-		{
-			if (defaultBuild.Value.Contains(fileName))
+			string fileName = Path.GetFileName(file.homedirectory);
+			foreach (KeyValuePair<string, List<string>> defaultBuild in DefaultBuilds)
 			{
-				return false;
+				if (defaultBuild.Value.Contains(fileName))
+				{
+					return false;
+				}
 			}
+			return true;
 		}
-		return true;
+		return false;
 	}
 
 	public void AddGroupFile(KAnimGroupFile.GroupFile gf)

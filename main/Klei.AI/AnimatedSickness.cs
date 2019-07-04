@@ -4,7 +4,7 @@ namespace Klei.AI
 {
 	public class AnimatedSickness : Sickness.SicknessComponent
 	{
-		private KAnimFile[] kanims;
+		private KAnimFile[] kanims = null;
 
 		private Expression expression;
 

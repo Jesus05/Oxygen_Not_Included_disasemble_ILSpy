@@ -59,7 +59,7 @@ public class ManualGenerator : Workable, ISingleSliderControl, ISliderControl
 	[MyCmpGet]
 	private BuildingEnabledButton buildingEnabledButton;
 
-	private Chore chore;
+	private Chore chore = null;
 
 	private int powerCell;
 
@@ -216,7 +216,7 @@ public class ManualGenerator : Workable, ISingleSliderControl, ISliderControl
 					{
 						if (chore == null && smi.GetCurrentState() == smi.sm.on)
 						{
-							chore = new WorkChore<ManualGenerator>(Db.Get().ChoreTypes.GeneratePower, this, null, null, true, null, null, null, true, null, false, true, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, false, true);
+							chore = new WorkChore<ManualGenerator>(Db.Get().ChoreTypes.GeneratePower, this, null, true, null, null, null, true, null, false, true, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, false, true);
 						}
 					}
 					else if (chore != null)

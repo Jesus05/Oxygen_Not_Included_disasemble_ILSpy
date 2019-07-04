@@ -2,6 +2,8 @@ using UnityEngine;
 
 public class SelectMarker : KMonoBehaviour
 {
+	public float animationOffset = 0.1f;
+
 	private Transform targetTransform;
 
 	public void SetTargetTransform(Transform target_transform)
@@ -33,7 +35,7 @@ public class SelectMarker : KMonoBehaviour
 			{
 				position.y += 2f;
 			}
-			Vector3 b = new Vector3(0f, (Mathf.Sin(Time.unscaledTime * 4f) + 1f) * 0.1f, 0f);
+			Vector3 b = new Vector3(0f, (Mathf.Sin(Time.unscaledTime * 4f) + 1f) * animationOffset, 0f);
 			base.transform.SetPosition(position + b);
 		}
 	}

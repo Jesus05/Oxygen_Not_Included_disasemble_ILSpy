@@ -34,11 +34,11 @@ public class Element : IComparable<Element>
 
 	public float strength;
 
-	public float flow;
+	public float flow = 0f;
 
-	public float maxCompression;
+	public float maxCompression = 0f;
 
-	public float viscosity;
+	public float viscosity = 0f;
 
 	public float minHorizontalFlow = float.PositiveInfinity;
 
@@ -54,7 +54,7 @@ public class Element : IComparable<Element>
 
 	public State state;
 
-	public byte hardness;
+	public byte hardness = 0;
 
 	public float lowTemp;
 
@@ -70,11 +70,11 @@ public class Element : IComparable<Element>
 
 	public SimHashes highTempTransitionOreID = SimHashes.Vacuum;
 
-	public float highTempTransitionOreMassConversion;
+	public float highTempTransitionOreMassConversion = 0f;
 
 	public SimHashes lowTempTransitionOreID = SimHashes.Vacuum;
 
-	public float lowTempTransitionOreMassConversion;
+	public float lowTempTransitionOreMassConversion = 0f;
 
 	public SimHashes sublimateId;
 
@@ -128,6 +128,12 @@ public class Element : IComparable<Element>
 		set;
 	}
 
+	public string description
+	{
+		get;
+		set;
+	}
+
 	public float PressureToMass(float pressure)
 	{
 		return pressure / defaultValues.pressure;
@@ -145,19 +151,19 @@ public class Element : IComparable<Element>
 
 	public static string GetStateString(State state)
 	{
-		if ((state & State.Solid) == State.Solid)
+		if ((state & State.Solid) != State.Solid)
 		{
-			return ELEMENTS.STATE.SOLID;
-		}
-		if ((state & State.Solid) == State.Liquid)
-		{
+			if ((state & State.Solid) != State.Liquid)
+			{
+				if ((state & State.Solid) != State.Gas)
+				{
+					return ELEMENTS.STATE.VACUUM;
+				}
+				return ELEMENTS.STATE.GAS;
+			}
 			return ELEMENTS.STATE.LIQUID;
 		}
-		if ((state & State.Solid) == State.Gas)
-		{
-			return ELEMENTS.STATE.GAS;
-		}
-		return ELEMENTS.STATE.VACUUM;
+		return ELEMENTS.STATE.SOLID;
 	}
 
 	public string FullDescription(bool addHardnessColor = true)
@@ -185,7 +191,7 @@ public class Element : IComparable<Element>
 		if (oreTags.Length > 0 && !IsVacuum)
 		{
 			str += "\n\n";
-			string text2 = string.Empty;
+			string text2 = "";
 			for (int i = 0; i < oreTags.Length; i++)
 			{
 				Tag tag = new Tag(oreTags[i]);
@@ -205,23 +211,22 @@ public class Element : IComparable<Element>
 				string formattedString = attributeModifier.GetFormattedString(null);
 				str = str + "\n" + string.Format(DUPLICANTS.MODIFIERS.MODIFIER_FORMAT, name, formattedString);
 			}
-			return str;
 		}
 		return str;
 	}
 
 	public string Description()
 	{
-		return Strings.Get("STRINGS.ELEMENTS." + id.ToString().ToUpper() + ".DESC");
+		return description;
 	}
 
 	public bool HasTag(Tag search_tag)
 	{
-		if (tag == search_tag)
+		if (!(tag == search_tag))
 		{
-			return true;
+			return Array.IndexOf(oreTags, search_tag) != -1;
 		}
-		return Array.IndexOf(oreTags, search_tag) != -1;
+		return true;
 	}
 
 	public Tag GetMaterialCategoryTag()

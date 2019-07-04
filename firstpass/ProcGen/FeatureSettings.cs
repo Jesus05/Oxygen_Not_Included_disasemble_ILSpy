@@ -1,10 +1,11 @@
-using Klei;
 using KSerialization.Converters;
+using System;
 using System.Collections.Generic;
 
 namespace ProcGen
 {
-	public class FeatureSettings : YamlIO<FeatureSettings>
+	[Serializable]
+	public class FeatureSettings
 	{
 		[StringEnumConverter]
 		public Room.Shape shape
@@ -25,7 +26,19 @@ namespace ProcGen
 			private set;
 		}
 
-		public List<string> excludeTags
+		public string forceBiome
+		{
+			get;
+			private set;
+		}
+
+		public List<MobReference> internalMobs
+		{
+			get;
+			private set;
+		}
+
+		public List<string> tags
 		{
 			get;
 			private set;
@@ -41,7 +54,8 @@ namespace ProcGen
 		{
 			ElementChoiceGroups = new Dictionary<string, ElementChoiceGroup<WeightedSimHash>>();
 			borders = new List<int>();
-			excludeTags = new List<string>();
+			tags = new List<string>();
+			internalMobs = new List<MobReference>();
 		}
 
 		public bool HasGroup(string item)
@@ -51,12 +65,12 @@ namespace ProcGen
 
 		public WeightedSimHash GetOneWeightedSimHash(string item, SeededRandom rnd)
 		{
-			if (ElementChoiceGroups.ContainsKey(item))
+			if (!ElementChoiceGroups.ContainsKey(item))
 			{
-				return WeightedRandom.Choose(ElementChoiceGroups[item].choices, rnd);
+				Debug.LogError("Couldnt get SimHash [" + item + "]");
+				return null;
 			}
-			Debug.LogError("Couldnt get SimHash [" + item + "]");
-			return null;
+			return WeightedRandom.Choose(ElementChoiceGroups[item].choices, rnd);
 		}
 	}
 }

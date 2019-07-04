@@ -15,17 +15,7 @@ public class MicrobeMusher : ComplexFabricator
 	{
 		base.OnPrefabInit();
 		choreType = Db.Get().ChoreTypes.Cook;
-		choreTags = GameTags.ChoreTypes.CookingChores;
-		workable.WorkerStatusItem = Db.Get().DuplicantStatusItems.Mushing;
-		workable.AttributeConverter = Db.Get().AttributeConverters.CookingSpeed;
-		workable.AttributeExperienceMultiplier = DUPLICANTSTATS.ATTRIBUTE_LEVELING.MOST_DAY_EXPERIENCE;
-		workable.SkillExperienceSkillGroup = Db.Get().SkillGroups.Cooking.Id;
-		workable.SkillExperienceMultiplier = SKILLS.MOST_DAY_EXPERIENCE;
 		fetchChoreTypeIdHash = Db.Get().ChoreTypes.CookFetch.IdHash;
-		workable.meter = new MeterController(GetComponent<KBatchedAnimController>(), "meter_target", "meter", Meter.Offset.Behind, Grid.SceneLayer.NoLayer, "meter_target", "meter_ration");
-		workable.meter.meterController.SetSymbolVisiblity(canHash, false);
-		workable.meter.meterController.SetSymbolVisiblity(meterRationHash, false);
-		workable.meter.meterController.GetComponent<KBatchedAnimTracker>().skipInitialDisable = true;
 	}
 
 	protected override void OnSpawn()
@@ -35,11 +25,20 @@ public class MicrobeMusher : ComplexFabricator
 		{
 			Tutorial.Instance.TutorialMessage(Tutorial.TutorialMessages.TM_FetchingWater);
 		}, null, null);
+		workable.WorkerStatusItem = Db.Get().DuplicantStatusItems.Mushing;
+		workable.AttributeConverter = Db.Get().AttributeConverters.CookingSpeed;
+		workable.AttributeExperienceMultiplier = DUPLICANTSTATS.ATTRIBUTE_LEVELING.MOST_DAY_EXPERIENCE;
+		workable.SkillExperienceSkillGroup = Db.Get().SkillGroups.Cooking.Id;
+		workable.SkillExperienceMultiplier = SKILLS.MOST_DAY_EXPERIENCE;
+		workable.meter = new MeterController(GetComponent<KBatchedAnimController>(), "meter_target", "meter", Meter.Offset.Behind, Grid.SceneLayer.NoLayer, "meter_target", "meter_ration");
+		workable.meter.meterController.SetSymbolVisiblity(canHash, false);
+		workable.meter.meterController.SetSymbolVisiblity(meterRationHash, false);
+		workable.meter.meterController.GetComponent<KBatchedAnimTracker>().skipInitialDisable = true;
 	}
 
-	protected override List<GameObject> SpawnOrderProduct(UserOrder completed_order)
+	protected override List<GameObject> SpawnOrderProduct(ComplexRecipe recipe)
 	{
-		List<GameObject> list = base.SpawnOrderProduct(completed_order);
+		List<GameObject> list = base.SpawnOrderProduct(recipe);
 		foreach (GameObject item in list)
 		{
 			PrimaryElement component = item.GetComponent<PrimaryElement>();

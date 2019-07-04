@@ -16,7 +16,7 @@ public class BarLayer : GraphLayer
 	public void NewBar(int[] values, float x_position, string ID = "")
 	{
 		GameObject gameObject = Util.KInstantiateUI(prefab_bar, bar_container, true);
-		if (ID == string.Empty)
+		if (ID == "")
 		{
 			ID = bars.Count.ToString();
 		}

@@ -68,8 +68,7 @@ public class RockCrusherConfig : IBuildingConfig
 			complexRecipe = new ComplexRecipe(text, array, array2);
 			complexRecipe.time = 40f;
 			complexRecipe.description = string.Format(STRINGS.BUILDINGS.PREFABS.ROCKCRUSHER.RECIPE_DESCRIPTION, item.name, tag.ProperName());
-			complexRecipe.useResultAsDescription = true;
-			complexRecipe.displayInputAndOutput = true;
+			complexRecipe.nameDisplay = ComplexRecipe.RecipeNameDisplay.IngredientToResult;
 			complexRecipe.fabricators = new List<Tag>
 			{
 				TagManager.Create("RockCrusher")
@@ -97,8 +96,7 @@ public class RockCrusherConfig : IBuildingConfig
 				complexRecipe = new ComplexRecipe(text2, array3, array4);
 				complexRecipe.time = 40f;
 				complexRecipe.description = string.Format(STRINGS.BUILDINGS.PREFABS.ROCKCRUSHER.METAL_RECIPE_DESCRIPTION, lowTempTransition.name, item2.name);
-				complexRecipe.useResultAsDescription = true;
-				complexRecipe.displayInputAndOutput = true;
+				complexRecipe.nameDisplay = ComplexRecipe.RecipeNameDisplay.IngredientToResult;
 				complexRecipe.fabricators = new List<Tag>
 				{
 					TagManager.Create("RockCrusher")
@@ -120,28 +118,79 @@ public class RockCrusherConfig : IBuildingConfig
 		complexRecipe = new ComplexRecipe(text3, array5, array6);
 		complexRecipe.time = 40f;
 		complexRecipe.description = string.Format(STRINGS.BUILDINGS.PREFABS.ROCKCRUSHER.LIME_RECIPE_DESCRIPTION, SimHashes.Lime.CreateTag().ProperName(), MISC.TAGS.EGGSHELL);
-		complexRecipe.useResultAsDescription = true;
-		complexRecipe.displayInputAndOutput = true;
+		complexRecipe.nameDisplay = ComplexRecipe.RecipeNameDisplay.IngredientToResult;
 		complexRecipe.fabricators = new List<Tag>
 		{
 			TagManager.Create("RockCrusher")
 		};
 		ComplexRecipeManager.Get().AddObsoleteIDMapping(obsolete_id3, text3);
+		Element element2 = ElementLoader.FindElementByHash(SimHashes.Lime);
 		ComplexRecipe.RecipeElement[] array7 = new ComplexRecipe.RecipeElement[1]
 		{
-			new ComplexRecipe.RecipeElement(ElementLoader.FindElementByHash(SimHashes.Fossil).tag, 100f)
+			new ComplexRecipe.RecipeElement("BabyCrabShell", 1f)
 		};
-		ComplexRecipe.RecipeElement[] array8 = new ComplexRecipe.RecipeElement[2]
+		ComplexRecipe.RecipeElement[] array8 = new ComplexRecipe.RecipeElement[1]
 		{
-			new ComplexRecipe.RecipeElement(ElementLoader.FindElementByHash(SimHashes.Lime).tag, 5f),
-			new ComplexRecipe.RecipeElement(ElementLoader.FindElementByHash(SimHashes.SedimentaryRock).tag, 95f)
+			new ComplexRecipe.RecipeElement(element2.tag, 5f)
 		};
 		string id = ComplexRecipeManager.MakeRecipeID("RockCrusher", array7, array8);
 		complexRecipe = new ComplexRecipe(id, array7, array8);
 		complexRecipe.time = 40f;
+		complexRecipe.description = string.Format(STRINGS.BUILDINGS.PREFABS.ROCKCRUSHER.LIME_RECIPE_DESCRIPTION, SimHashes.Lime.CreateTag().ProperName(), ITEMS.INDUSTRIAL_PRODUCTS.CRAB_SHELL.NAME);
+		complexRecipe.nameDisplay = ComplexRecipe.RecipeNameDisplay.IngredientToResult;
+		complexRecipe.fabricators = new List<Tag>
+		{
+			TagManager.Create("RockCrusher")
+		};
+		Element element3 = ElementLoader.FindElementByHash(SimHashes.Lime);
+		ComplexRecipe.RecipeElement[] array9 = new ComplexRecipe.RecipeElement[1]
+		{
+			new ComplexRecipe.RecipeElement("CrabShell", 1f)
+		};
+		ComplexRecipe.RecipeElement[] array10 = new ComplexRecipe.RecipeElement[1]
+		{
+			new ComplexRecipe.RecipeElement(element3.tag, 10f)
+		};
+		string id2 = ComplexRecipeManager.MakeRecipeID("RockCrusher", array9, array10);
+		complexRecipe = new ComplexRecipe(id2, array9, array10);
+		complexRecipe.time = 40f;
+		complexRecipe.description = string.Format(STRINGS.BUILDINGS.PREFABS.ROCKCRUSHER.LIME_RECIPE_DESCRIPTION, SimHashes.Lime.CreateTag().ProperName(), ITEMS.INDUSTRIAL_PRODUCTS.CRAB_SHELL.NAME);
+		complexRecipe.nameDisplay = ComplexRecipe.RecipeNameDisplay.IngredientToResult;
+		complexRecipe.fabricators = new List<Tag>
+		{
+			TagManager.Create("RockCrusher")
+		};
+		ComplexRecipe.RecipeElement[] array11 = new ComplexRecipe.RecipeElement[1]
+		{
+			new ComplexRecipe.RecipeElement(ElementLoader.FindElementByHash(SimHashes.Fossil).tag, 100f)
+		};
+		ComplexRecipe.RecipeElement[] array12 = new ComplexRecipe.RecipeElement[2]
+		{
+			new ComplexRecipe.RecipeElement(ElementLoader.FindElementByHash(SimHashes.Lime).tag, 5f),
+			new ComplexRecipe.RecipeElement(ElementLoader.FindElementByHash(SimHashes.SedimentaryRock).tag, 95f)
+		};
+		string id3 = ComplexRecipeManager.MakeRecipeID("RockCrusher", array11, array12);
+		complexRecipe = new ComplexRecipe(id3, array11, array12);
+		complexRecipe.time = 40f;
 		complexRecipe.description = string.Format(STRINGS.BUILDINGS.PREFABS.ROCKCRUSHER.LIME_FROM_LIMESTONE_RECIPE_DESCRIPTION, SimHashes.Fossil.CreateTag().ProperName(), SimHashes.SedimentaryRock.CreateTag().ProperName(), SimHashes.Lime.CreateTag().ProperName());
-		complexRecipe.useResultAsDescription = true;
-		complexRecipe.displayInputAndOutput = true;
+		complexRecipe.nameDisplay = ComplexRecipe.RecipeNameDisplay.IngredientToResult;
+		complexRecipe.fabricators = new List<Tag>
+		{
+			TagManager.Create("RockCrusher")
+		};
+		ComplexRecipe.RecipeElement[] array13 = new ComplexRecipe.RecipeElement[1]
+		{
+			new ComplexRecipe.RecipeElement(ElementLoader.FindElementByHash(SimHashes.Salt).tag, 100f)
+		};
+		ComplexRecipe.RecipeElement[] array14 = new ComplexRecipe.RecipeElement[1]
+		{
+			new ComplexRecipe.RecipeElement("TableSalt".ToTag(), 0.005f)
+		};
+		string id4 = ComplexRecipeManager.MakeRecipeID("RockCrusher", array13, array14);
+		complexRecipe = new ComplexRecipe(id4, array13, array14);
+		complexRecipe.time = 40f;
+		complexRecipe.description = string.Format(STRINGS.BUILDINGS.PREFABS.ROCKCRUSHER.RECIPE_DESCRIPTION, SimHashes.Salt.CreateTag().ProperName(), TableSaltConfig.ID.ToTag());
+		complexRecipe.nameDisplay = ComplexRecipe.RecipeNameDisplay.IngredientToResult;
 		complexRecipe.fabricators = new List<Tag>
 		{
 			TagManager.Create("RockCrusher")
@@ -152,7 +201,7 @@ public class RockCrusherConfig : IBuildingConfig
 	public override void DoPostConfigureComplete(GameObject go)
 	{
 		SymbolOverrideControllerUtil.AddToPrefab(go);
-		go.GetComponent<KPrefabID>().prefabInitFn += delegate(GameObject game_object)
+		go.GetComponent<KPrefabID>().prefabSpawnFn += delegate(GameObject game_object)
 		{
 			ComplexFabricatorWorkable component = game_object.GetComponent<ComplexFabricatorWorkable>();
 			component.AttributeConverter = Db.Get().AttributeConverters.MachinerySpeed;

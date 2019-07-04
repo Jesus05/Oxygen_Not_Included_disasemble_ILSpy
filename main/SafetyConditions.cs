@@ -44,17 +44,17 @@ public class SafetyConditions
 		{
 			int cell2 = Grid.CellLeft(cell);
 			int i = Grid.CellBelow(cell2);
-			if (Grid.Solid[i])
+			if (!Grid.Solid[i])
 			{
+				int cell3 = Grid.CellRight(cell);
+				int i2 = Grid.CellBelow(cell3);
+				if (Grid.Solid[i2])
+				{
+					return true;
+				}
 				return false;
 			}
-			int cell3 = Grid.CellRight(cell);
-			int i2 = Grid.CellBelow(cell3);
-			if (!Grid.Solid[i2])
-			{
-				return false;
-			}
-			return true;
+			return false;
 		});
 		IsNotLiquid = new SafetyChecker.Condition("IsNotLiquid", num *= 2, (int cell, int cost, SafetyChecker.Context context) => !Grid.Element[cell].IsLiquid);
 		IsNotLadder = new SafetyChecker.Condition("IsNotLadder", num *= 2, (int cell, int cost, SafetyChecker.Context context) => !context.navigator.NavGrid.NavTable.IsValid(cell, NavType.Ladder) && !context.navigator.NavGrid.NavTable.IsValid(cell, NavType.Pole));

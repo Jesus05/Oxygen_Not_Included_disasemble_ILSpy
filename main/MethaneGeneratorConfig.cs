@@ -5,7 +5,7 @@ public class MethaneGeneratorConfig : IBuildingConfig
 {
 	public const string ID = "MethaneGenerator";
 
-	public const float METHANE_CONSUMPTION_RATE = 0.09f;
+	public const float FUEL_CONSUMPTION_RATE = 0.09f;
 
 	private const float CO2_RATIO = 0.25f;
 
@@ -64,7 +64,7 @@ public class MethaneGeneratorConfig : IBuildingConfig
 		ConduitConsumer conduitConsumer = go.AddOrGet<ConduitConsumer>();
 		conduitConsumer.conduitType = ConduitType.Gas;
 		conduitConsumer.consumptionRate = 0.900000036f;
-		conduitConsumer.capacityTag = GameTagExtensions.Create(SimHashes.Methane);
+		conduitConsumer.capacityTag = GameTags.CombustibleGas;
 		conduitConsumer.capacityKG = 0.900000036f;
 		conduitConsumer.forceAlwaysSatisfied = true;
 		conduitConsumer.wrongElementResult = ConduitConsumer.WrongElementResult.Dump;
@@ -74,7 +74,7 @@ public class MethaneGeneratorConfig : IBuildingConfig
 		EnergyGenerator.Formula formula = default(EnergyGenerator.Formula);
 		formula.inputs = new EnergyGenerator.InputItem[1]
 		{
-			new EnergyGenerator.InputItem(GameTagExtensions.Create(SimHashes.Methane), 0.09f, 0.900000036f)
+			new EnergyGenerator.InputItem(GameTags.CombustibleGas, 0.09f, 0.900000036f)
 		};
 		formula.outputs = new EnergyGenerator.OutputItem[2]
 		{
@@ -85,9 +85,10 @@ public class MethaneGeneratorConfig : IBuildingConfig
 		ConduitDispenser conduitDispenser = go.AddOrGet<ConduitDispenser>();
 		conduitDispenser.conduitType = ConduitType.Gas;
 		conduitDispenser.invertElementFilter = true;
-		conduitDispenser.elementFilter = new SimHashes[1]
+		conduitDispenser.elementFilter = new SimHashes[2]
 		{
-			SimHashes.Methane
+			SimHashes.Methane,
+			SimHashes.Syngas
 		};
 		Tinkerable.MakePowerTinkerable(go);
 		go.AddOrGetDef<PoweredActiveController.Def>();

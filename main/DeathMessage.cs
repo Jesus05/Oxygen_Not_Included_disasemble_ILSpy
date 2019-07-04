@@ -19,7 +19,7 @@ public class DeathMessage : TargetMessage
 
 	public override string GetSound()
 	{
-		return string.Empty;
+		return "";
 	}
 
 	public override bool PlayNotificationSound()

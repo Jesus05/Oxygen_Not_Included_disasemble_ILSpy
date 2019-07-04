@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class PrioritizeToolHoverTextCard : HoverTextConfiguration
 {
-	private string lastUpdatedFilter;
-
 	public override void UpdateHoverElements(List<KSelectable> selected)
 	{
 		if (!((Object)ToolMenu.Instance.PriorityScreen == (Object)null))
@@ -43,6 +41,5 @@ public class PrioritizeToolHoverTextCard : HoverTextConfiguration
 		{
 			ToolName = Strings.Get(ToolNameStringKey).String.ToUpper() + string.Format(UI.TOOLS.FILTER_HOVERCARD_HEADER, Strings.Get("STRINGS.UI.TOOLS.FILTERLAYERS." + lastEnabledFilter).String.ToUpper());
 		}
-		lastUpdatedFilter = lastEnabledFilter;
 	}
 }

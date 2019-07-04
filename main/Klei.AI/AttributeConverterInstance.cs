@@ -20,16 +20,9 @@ namespace Klei.AI
 			return converter.multiplier * attributeInstance.GetTotalValue() + converter.baseValue;
 		}
 
-		public string DescriptionFromAttribute()
+		public string DescriptionFromAttribute(float value, GameObject go)
 		{
-			float num = Evaluate();
-			string text = (converter.formatter != null) ? converter.formatter.GetFormattedValue(num, converter.formatter.DeltaTimeSlice, base.gameObject) : ((attributeInstance.Attribute.formatter == null) ? GameUtil.GetFormattedSimple(num, GameUtil.TimeSlice.None, null) : attributeInstance.Attribute.formatter.GetFormattedValue(num, attributeInstance.Attribute.formatter.DeltaTimeSlice, base.gameObject));
-			if (text != null)
-			{
-				text = GameUtil.AddPositiveSign(text, num > 0f);
-				return string.Format(converter.description, text);
-			}
-			return null;
+			return converter.DescriptionFromAttribute(Evaluate(), go);
 		}
 	}
 }

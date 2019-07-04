@@ -29,11 +29,11 @@ public class DebugHandler : IInputHandler
 
 	public static bool DebugNextCall;
 
-	private bool superTestMode;
+	private bool superTestMode = false;
 
-	private bool ultraTestMode;
+	private bool ultraTestMode = false;
 
-	private bool slowTestMode;
+	private bool slowTestMode = false;
 
 	public static bool enabled
 	{
@@ -89,7 +89,7 @@ public class DebugHandler : IInputHandler
 				Vector3 position = Grid.CellToPosCBC(GetMouseCell(), Grid.SceneLayer.Move);
 				gameObject.transform.SetLocalPosition(position);
 				gameObject.SetActive(true);
-				MinionStartingStats minionStartingStats = new MinionStartingStats(false);
+				MinionStartingStats minionStartingStats = new MinionStartingStats(false, null);
 				minionStartingStats.Apply(gameObject);
 			}
 		}
@@ -243,11 +243,6 @@ public class DebugHandler : IInputHandler
 		}
 		else if (e.TryConsume(Action.DebugToggle))
 		{
-			PropertyTextures.FogOfWarScale = 1f - PropertyTextures.FogOfWarScale;
-			if ((UnityEngine.Object)CameraController.Instance != (UnityEngine.Object)null)
-			{
-				CameraController.Instance.FreeCameraEnabled = !CameraController.Instance.FreeCameraEnabled;
-			}
 			if ((UnityEngine.Object)Game.Instance != (UnityEngine.Object)null)
 			{
 				Game.Instance.UpdateGameActiveRegion(0, 0, Grid.WidthInCells, Grid.HeightInCells);
@@ -262,6 +257,11 @@ public class DebugHandler : IInputHandler
 					DebugElementMenu.Instance.root.SetActive(false);
 				}
 				DebugBaseTemplateButton.Instance.gameObject.SetActive(!activeSelf);
+				PropertyTextures.FogOfWarScale = (float)((!activeSelf) ? 1 : 0);
+				if ((UnityEngine.Object)CameraController.Instance != (UnityEngine.Object)null)
+				{
+					CameraController.Instance.EnableFreeCamera(!activeSelf);
+				}
 			}
 		}
 		else if (e.TryConsume(Action.DebugCollectGarbage))
@@ -415,7 +415,7 @@ public class DebugHandler : IInputHandler
 						string str = Guid.NewGuid().ToString();
 						StackTrace stackTrace = new StackTrace(1, true);
 						str = str + "\n" + stackTrace.ToString();
-						KCrashReporter.ReportError("Debug crash with random stack", str, null, ScreenPrefabs.Instance.ConfirmDialogScreen, string.Empty);
+						KCrashReporter.ReportError("Debug crash with random stack", str, null, ScreenPrefabs.Instance.ConfirmDialogScreen, "");
 					}
 				}
 				else if (e.TryConsume(Action.DebugTriggerError))
@@ -444,7 +444,7 @@ public class DebugHandler : IInputHandler
 				{
 					if (!GenericGameSettings.instance.developerDebugEnable)
 					{
-						goto IL_0b62;
+						goto IL_0c1b;
 					}
 				}
 				else if (e.TryConsume(Action.DebugCrashSim))
@@ -464,8 +464,8 @@ public class DebugHandler : IInputHandler
 				}
 			}
 		}
-		goto IL_0b62;
-		IL_0b62:
+		goto IL_0c1b;
+		IL_0c1b:
 		if (e.Consumed && (UnityEngine.Object)Game.Instance != (UnityEngine.Object)null)
 		{
 			Game.Instance.debugWasUsed = true;
@@ -482,7 +482,7 @@ public class DebugHandler : IInputHandler
 		SetHideUI(!HideUI);
 		if ((UnityEngine.Object)CameraController.Instance != (UnityEngine.Object)null)
 		{
-			CameraController.Instance.FreeCameraEnabled = !CameraController.Instance.FreeCameraEnabled;
+			CameraController.Instance.EnableFreeCamera(HideUI);
 		}
 		if ((UnityEngine.Object)KScreenManager.Instance != (UnityEngine.Object)null)
 		{
@@ -493,22 +493,11 @@ public class DebugHandler : IInputHandler
 	public static void SetHideUI(bool hide)
 	{
 		HideUI = hide;
-		Canvas[] array = Resources.FindObjectsOfTypeAll<Canvas>();
-		foreach (Canvas canvas in array)
-		{
-			CanvasGroup canvasGroup = canvas.GetComponent<CanvasGroup>();
-			if ((UnityEngine.Object)canvasGroup == (UnityEngine.Object)null)
-			{
-				canvasGroup = canvas.gameObject.AddComponent<CanvasGroup>();
-			}
-			if (HideUI)
-			{
-				canvasGroup.alpha = 0f;
-			}
-			else
-			{
-				canvasGroup.alpha = 1f;
-			}
-		}
+		float num = (!HideUI) ? 1f : 0f;
+		GameScreenManager.Instance.ssHoverTextCanvas.GetComponent<CanvasGroup>().alpha = num;
+		GameScreenManager.Instance.ssCameraCanvas.GetComponent<CanvasGroup>().alpha = num;
+		GameScreenManager.Instance.ssOverlayCanvas.GetComponent<CanvasGroup>().alpha = num;
+		GameScreenManager.Instance.worldSpaceCanvas.GetComponent<CanvasGroup>().alpha = num;
+		GameScreenManager.Instance.screenshotModeCanvas.GetComponent<CanvasGroup>().alpha = 1f - num;
 	}
 }

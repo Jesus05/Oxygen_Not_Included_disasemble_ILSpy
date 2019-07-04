@@ -1,4 +1,6 @@
+#define UNITY_ASSERTIONS
 using System.Collections.Generic;
+using UnityEngine.Assertions;
 
 public class TagManager
 {
@@ -12,7 +14,7 @@ public class TagManager
 		tag.Name = tag_string;
 		if (!ProperNames.ContainsKey(tag))
 		{
-			ProperNames[tag] = string.Empty;
+			ProperNames[tag] = "";
 		}
 		return tag;
 	}
@@ -30,6 +32,7 @@ public class TagManager
 
 	public static Tag[] Create(IList<string> strings)
 	{
+		Assert.IsTrue(strings != null && strings.Count > 0);
 		Tag[] array = new Tag[strings.Count];
 		for (int i = 0; i < strings.Count; i++)
 		{

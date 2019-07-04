@@ -81,7 +81,7 @@ public class GlassForgeConfig : IBuildingConfig
 		string text = ComplexRecipeManager.MakeRecipeID("GlassForge", array, array2);
 		ComplexRecipe complexRecipe = new ComplexRecipe(text, array, array2);
 		complexRecipe.time = 40f;
-		complexRecipe.useResultAsDescription = true;
+		complexRecipe.nameDisplay = ComplexRecipe.RecipeNameDisplay.Result;
 		complexRecipe.description = string.Format(STRINGS.BUILDINGS.PREFABS.GLASSFORGE.RECIPE_DESCRIPTION, ElementLoader.GetElement(array2[0].material).name, ElementLoader.GetElement(array[0].material).name);
 		complexRecipe.fabricators = new List<Tag>
 		{
@@ -95,7 +95,7 @@ public class GlassForgeConfig : IBuildingConfig
 	{
 		SymbolOverrideControllerUtil.AddToPrefab(go);
 		go.AddOrGetDef<PoweredActiveStoppableController.Def>();
-		go.GetComponent<KPrefabID>().prefabInitFn += delegate(GameObject game_object)
+		go.GetComponent<KPrefabID>().prefabSpawnFn += delegate(GameObject game_object)
 		{
 			ComplexFabricatorWorkable component = game_object.GetComponent<ComplexFabricatorWorkable>();
 			component.AttributeConverter = Db.Get().AttributeConverters.MachinerySpeed;

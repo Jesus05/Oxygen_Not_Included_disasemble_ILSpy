@@ -26,7 +26,7 @@ public class AdvancedCureConfig : IEntityConfig
 		ComplexRecipe complexRecipe = new ComplexRecipe(id, array, array2);
 		complexRecipe.time = 200f;
 		complexRecipe.description = ITEMS.PILLS.ADVANCEDCURE.RECIPEDESC;
-		complexRecipe.useResultAsDescription = true;
+		complexRecipe.nameDisplay = ComplexRecipe.RecipeNameDisplay.Result;
 		complexRecipe.fabricators = new List<Tag>
 		{
 			"Apothecary"

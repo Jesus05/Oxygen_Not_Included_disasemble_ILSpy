@@ -88,7 +88,7 @@ public class ReportScreenEntryRow : KMonoBehaviour
 				notes.Add(note);
 			}
 		});
-		string text = string.Empty;
+		string text = "";
 		float num = 0f;
 		num = ((entry.contextEntries.Count <= 0) ? ((float)notes.Count) : ((float)entry.contextEntries.Count));
 		num = Mathf.Max(num, 1f);
@@ -122,29 +122,29 @@ public class ReportScreenEntryRow : KMonoBehaviour
 
 	private string OnNetNoteTooltip()
 	{
-		if (entry.Net > 0f)
+		if (!(entry.Net > 0f))
 		{
-			return OnPositiveNoteTooltip();
+			return OnNegativeNoteTooltip();
 		}
-		return OnNegativeNoteTooltip();
+		return OnPositiveNoteTooltip();
 	}
 
 	private bool IsPositiveNote(ReportManager.ReportEntry.Note note)
 	{
-		if (note.value > 0f)
+		if (!(note.value > 0f))
 		{
-			return true;
+			return false;
 		}
-		return false;
+		return true;
 	}
 
 	private bool IsNegativeNote(ReportManager.ReportEntry.Note note)
 	{
-		if (note.value < 0f)
+		if (!(note.value < 0f))
 		{
-			return true;
+			return false;
 		}
-		return false;
+		return true;
 	}
 
 	public void SetLine(ReportManager.ReportEntry entry, ReportManager.ReportGroup reportGroup)

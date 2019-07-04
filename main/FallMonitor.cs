@@ -11,20 +11,22 @@ public class FallMonitor : GameStateMachine<FallMonitor, FallMonitor.Instance>
 
 	public new class Instance : GameInstance
 	{
-		private CellOffset[] entombedEscapeOffsets = new CellOffset[7]
+		private CellOffset[] entombedEscapeOffsets = new CellOffset[9]
 		{
 			new CellOffset(0, 1),
+			new CellOffset(0, -1),
 			new CellOffset(1, 0),
 			new CellOffset(-1, 0),
 			new CellOffset(1, 1),
 			new CellOffset(-1, 1),
 			new CellOffset(1, -1),
-			new CellOffset(-1, -1)
+			new CellOffset(-1, -1),
+			new CellOffset(0, 2)
 		};
 
 		private Navigator navigator;
 
-		private bool flipRecoverEmote;
+		private bool flipRecoverEmote = false;
 
 		public Instance(IStateMachineTarget master)
 			: base(master)
@@ -136,22 +138,22 @@ public class FallMonitor : GameStateMachine<FallMonitor, FallMonitor.Instance>
 
 		public bool IsFalling()
 		{
-			if (navigator.IsMoving())
+			if (!navigator.IsMoving())
 			{
+				int cell = Grid.PosToCell(base.master.transform.GetPosition());
+				if (Grid.IsValidCell(cell))
+				{
+					int cell2 = Grid.CellBelow(cell);
+					if (Grid.IsValidCell(cell2))
+					{
+						bool flag = navigator.NavGrid.NavTable.IsValid(cell, navigator.CurrentNavType);
+						return !flag;
+					}
+					return false;
+				}
 				return false;
 			}
-			int cell = Grid.PosToCell(base.master.transform.GetPosition());
-			if (!Grid.IsValidCell(cell))
-			{
-				return false;
-			}
-			int cell2 = Grid.CellBelow(cell);
-			if (!Grid.IsValidCell(cell2))
-			{
-				return false;
-			}
-			bool flag = navigator.NavGrid.NavTable.IsValid(cell, navigator.CurrentNavType);
-			return !flag;
+			return false;
 		}
 
 		public void UpdateFalling()
@@ -170,7 +172,7 @@ public class FallMonitor : GameStateMachine<FallMonitor, FallMonitor.Instance>
 			base.sm.isEntombed.Set(flag, base.smi);
 		}
 
-		public bool IsCellSafe(int cell)
+		private bool IsValidNavCell(int cell)
 		{
 			return navigator.NavGrid.NavTable.IsValid(cell, navigator.CurrentNavType);
 		}
@@ -181,30 +183,35 @@ public class FallMonitor : GameStateMachine<FallMonitor, FallMonitor.Instance>
 			CellOffset[] array = entombedEscapeOffsets;
 			foreach (CellOffset offset in array)
 			{
-				int cell2 = Grid.OffsetCell(cell, offset);
-				if (IsCellSafe(cell2))
+				if (Grid.IsCellOffsetValid(cell, offset))
 				{
-					base.transform.SetPosition(Grid.CellToPosCBC(cell2, Grid.SceneLayer.Move));
-					base.transform.GetComponent<Navigator>().Stop(false);
-					base.transform.GetComponent<Navigator>().SetCurrentNavType(NavType.Floor);
-					UpdateFalling();
-					GoTo(base.sm.standing);
-					return;
+					int cell2 = Grid.OffsetCell(cell, offset);
+					if (IsValidNavCell(cell2))
+					{
+						base.transform.SetPosition(Grid.CellToPosCBC(cell2, Grid.SceneLayer.Move));
+						base.transform.GetComponent<Navigator>().Stop(false);
+						UpdateFalling();
+						GoTo(base.sm.standing);
+						return;
+					}
 				}
 			}
 			CellOffset[] array2 = entombedEscapeOffsets;
 			foreach (CellOffset offset2 in array2)
 			{
-				int num = Grid.OffsetCell(cell, offset2);
-				int num2 = Grid.CellAbove(num);
-				if (Grid.IsValidCell(num) && Grid.IsValidCell(num2) && !Grid.Solid[num] && !Grid.Solid[num2])
+				if (Grid.IsCellOffsetValid(cell, offset2))
 				{
-					base.transform.SetPosition(Grid.CellToPosCBC(num, Grid.SceneLayer.Move));
-					base.transform.GetComponent<Navigator>().Stop(false);
-					base.transform.GetComponent<Navigator>().SetCurrentNavType(NavType.Floor);
-					UpdateFalling();
-					GoTo(base.sm.standing);
-					return;
+					int num = Grid.OffsetCell(cell, offset2);
+					int num2 = Grid.CellAbove(num);
+					if (Grid.IsValidCell(num2) && !Grid.Solid[num] && !Grid.Solid[num2])
+					{
+						base.transform.SetPosition(Grid.CellToPosCBC(num, Grid.SceneLayer.Move));
+						base.transform.GetComponent<Navigator>().Stop(false);
+						base.transform.GetComponent<Navigator>().SetCurrentNavType(NavType.Floor);
+						UpdateFalling();
+						GoTo(base.sm.standing);
+						return;
+					}
 				}
 			}
 			GoTo(base.sm.entombed.stuck);

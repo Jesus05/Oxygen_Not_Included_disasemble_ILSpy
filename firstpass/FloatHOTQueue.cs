@@ -28,11 +28,11 @@ public class FloatHOTQueue<TValue>
 
 		public KeyValuePair<float, TValue> Peek()
 		{
-			if (Count > 0)
+			if (Count <= 0)
 			{
-				return _baseHeap[0];
+				throw new InvalidOperationException("Priority queue is empty");
 			}
-			throw new InvalidOperationException("Priority queue is empty");
+			return _baseHeap[0];
 		}
 
 		private void ExchangeElements(int pos1, int pos2)
@@ -51,21 +51,21 @@ public class FloatHOTQueue<TValue>
 
 		private int HeapifyFromEndToBeginning(int pos)
 		{
-			if (pos >= _baseHeap.Count)
+			if (pos < _baseHeap.Count)
 			{
-				return -1;
-			}
-			while (pos > 0)
-			{
-				int num = (pos - 1) / 2;
-				if (!(_baseHeap[num].Key - _baseHeap[pos].Key > 0f))
+				while (pos > 0)
 				{
-					break;
+					int num = (pos - 1) / 2;
+					if (!(_baseHeap[num].Key - _baseHeap[pos].Key > 0f))
+					{
+						break;
+					}
+					ExchangeElements(num, pos);
+					pos = num;
 				}
-				ExchangeElements(num, pos);
-				pos = num;
+				return pos;
 			}
-			return pos;
+			return -1;
 		}
 
 		private void DeleteRoot()

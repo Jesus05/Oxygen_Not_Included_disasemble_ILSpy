@@ -1,6 +1,4 @@
-using Klei.AI;
 using STRINGS;
-using TUNING;
 using UnityEngine;
 
 public class EvilFlower : StateMachineComponent<EvilFlower.StatesInstance>
@@ -43,7 +41,11 @@ public class EvilFlower : StateMachineComponent<EvilFlower.StatesInstance>
 		{
 			default_state = grow;
 			base.serializable = true;
-			dead.ToggleStatusItem(STRINGS.CREATURES.STATUSITEMS.DEAD.NAME, STRINGS.CREATURES.STATUSITEMS.DEAD.TOOLTIP, category: Db.Get().StatusItemCategories.Main, icon: string.Empty, icon_type: StatusItem.IconType.Info, notification_type: (NotificationType)0, allow_multiples: false, render_overlay: default(HashedString), status_overlays: 0, resolve_string_callback: null, resolve_tooltip_callback: null).TriggerOnEnter(GameHashes.BurstEmitDisease, null).ToggleTag(GameTags.PreventEmittingDisease)
+			State state = dead;
+			string name = CREATURES.STATUSITEMS.DEAD.NAME;
+			string tooltip = CREATURES.STATUSITEMS.DEAD.TOOLTIP;
+			StatusItemCategory main = Db.Get().StatusItemCategories.Main;
+			state.ToggleStatusItem(name, tooltip, "", StatusItem.IconType.Info, (NotificationType)0, false, default(HashedString), 0, null, null, main).TriggerOnEnter(GameHashes.BurstEmitDisease, null).ToggleTag(GameTags.PreventEmittingDisease)
 				.Enter(delegate(StatesInstance smi)
 				{
 					GameUtil.KInstantiate(Assets.GetPrefab(EffectConfigs.PlantDeathId), smi.master.transform.GetPosition(), Grid.SceneLayer.FXFront, null, 0).SetActive(true);
@@ -62,12 +64,13 @@ public class EvilFlower : StateMachineComponent<EvilFlower.StatesInstance>
 					smi.GoTo(blocked_from_growing);
 				}
 			}).PlayAnim("grow_seed", KAnim.PlayMode.Once).EventTransition(GameHashes.AnimQueueComplete, alive, null);
-			alive.InitializeStates(masterTarget, dead).DefaultState(alive.idle).ToggleStatusItem(STRINGS.CREATURES.STATUSITEMS.IDLE.NAME, STRINGS.CREATURES.STATUSITEMS.IDLE.TOOLTIP, category: Db.Get().StatusItemCategories.Main, icon: string.Empty, icon_type: StatusItem.IconType.Info, notification_type: (NotificationType)0, allow_multiples: false, render_overlay: default(HashedString), status_overlays: 0, resolve_string_callback: null, resolve_tooltip_callback: null);
+			State state2 = alive.InitializeStates(masterTarget, dead).DefaultState(alive.idle);
+			tooltip = CREATURES.STATUSITEMS.IDLE.NAME;
+			name = CREATURES.STATUSITEMS.IDLE.TOOLTIP;
+			main = Db.Get().StatusItemCategories.Main;
+			state2.ToggleStatusItem(tooltip, name, "", StatusItem.IconType.Info, (NotificationType)0, false, default(HashedString), 0, null, null, main);
 			alive.idle.EventTransition(GameHashes.Wilt, alive.wilting, (StatesInstance smi) => smi.master.wiltCondition.IsWilting()).PlayAnim("idle", KAnim.PlayMode.Loop).Enter(delegate(StatesInstance smi)
 			{
-				smi.master.growth_bonus.Description = STRINGS.CREATURES.SPECIES.EVILFLOWER.GROWTH_BONUS;
-				smi.master.GetAttributes().Get(Db.Get().Attributes.Decor).Remove(smi.master.wilt_penalty);
-				smi.master.GetAttributes().Get(Db.Get().Attributes.Decor).Add(smi.master.growth_bonus);
 				smi.master.GetComponent<DecorProvider>().SetValues(smi.master.positive_decor_effect);
 				smi.master.GetComponent<DecorProvider>().Refresh();
 				smi.master.AddTag(GameTags.Decoration);
@@ -75,10 +78,7 @@ public class EvilFlower : StateMachineComponent<EvilFlower.StatesInstance>
 			alive.wilting.PlayAnim("wilt1", KAnim.PlayMode.Loop).EventTransition(GameHashes.WiltRecover, alive.idle, null).ToggleTag(GameTags.PreventEmittingDisease)
 				.Enter(delegate(StatesInstance smi)
 				{
-					smi.master.growth_bonus.Description = STRINGS.CREATURES.SPECIES.EVILFLOWER.WILT_PENALTY;
-					smi.master.GetAttributes().Get(Db.Get().Attributes.Decor).Remove(smi.master.growth_bonus);
-					smi.master.GetAttributes().Get(Db.Get().Attributes.Decor).Add(smi.master.wilt_penalty);
-					smi.master.GetComponent<DecorProvider>().SetValues(DECOR.PENALTY.TIER1);
+					smi.master.GetComponent<DecorProvider>().SetValues(smi.master.negative_decor_effect);
 					smi.master.GetComponent<DecorProvider>().Refresh();
 					smi.master.RemoveTag(GameTags.Decoration);
 				});
@@ -91,39 +91,29 @@ public class EvilFlower : StateMachineComponent<EvilFlower.StatesInstance>
 	[MyCmpReq]
 	private EntombVulnerable entombVulnerable;
 
-	public bool replanted;
+	public bool replanted = false;
 
-	private AttributeModifier growth_bonus;
+	public EffectorValues positive_decor_effect = new EffectorValues
+	{
+		amount = 1,
+		radius = 5
+	};
 
-	private AttributeModifier wilt_penalty;
-
-	public EffectorValues positive_decor_effect;
+	public EffectorValues negative_decor_effect = new EffectorValues
+	{
+		amount = -1,
+		radius = 5
+	};
 
 	private static readonly EventSystem.IntraObjectHandler<EvilFlower> SetReplantedTrueDelegate = new EventSystem.IntraObjectHandler<EvilFlower>(delegate(EvilFlower component, object data)
 	{
 		component.replanted = true;
 	});
 
-	public EvilFlower()
-	{
-		EffectorValues tIER = DECOR.BONUS.TIER3;
-		growth_bonus = new AttributeModifier("Effect", (float)tIER.amount, null, false, false, true);
-		EffectorValues tIER2 = DECOR.PENALTY.TIER1;
-		wilt_penalty = new AttributeModifier("Effect", (float)tIER2.amount, null, false, false, true);
-		positive_decor_effect = new EffectorValues
-		{
-			amount = 1,
-			radius = 5
-		};
-		base._002Ector();
-	}
-
 	protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		Subscribe(1309017699, SetReplantedTrueDelegate);
-		growth_bonus.Description = STRINGS.CREATURES.SPECIES.EVILFLOWER.GROWTH_BONUS;
-		wilt_penalty.Description = STRINGS.CREATURES.SPECIES.EVILFLOWER.WILT_PENALTY;
 	}
 
 	protected override void OnSpawn()

@@ -1,3 +1,4 @@
+using Klei.AI;
 using STRINGS;
 using System.Collections.Generic;
 
@@ -32,101 +33,105 @@ namespace Database
 		public SkillGroups(ResourceSet parent)
 			: base("SkillGroups", parent)
 		{
-			Mining = Add(new SkillGroup("Mining", Db.Get().ChoreGroups.Dig.Id, DUPLICANTS.CHOREGROUPS.DIG.NAME));
-			Mining.relevantAttributes = new List<string>
+			Mining = Add(new SkillGroup("Mining", Db.Get().ChoreGroups.Dig.Id, DUPLICANTS.CHOREGROUPS.DIG.NAME, "icon_errand_dig"));
+			Mining.relevantAttributes = new List<Attribute>
 			{
-				Db.Get().Attributes.Digging.Id
+				Db.Get().ChoreGroups.Dig.attribute
 			};
 			Mining.requiredChoreGroups = new List<string>
 			{
 				Db.Get().ChoreGroups.Dig.Id
 			};
-			Building = Add(new SkillGroup("Building", Db.Get().ChoreGroups.Build.Id, DUPLICANTS.CHOREGROUPS.BUILD.NAME));
-			Building.relevantAttributes = new List<string>
+			Building = Add(new SkillGroup("Building", Db.Get().ChoreGroups.Build.Id, DUPLICANTS.CHOREGROUPS.BUILD.NAME, "status_item_pending_repair"));
+			Building.relevantAttributes = new List<Attribute>
 			{
-				Db.Get().Attributes.Construction.Id
+				Db.Get().ChoreGroups.Build.attribute
 			};
 			Building.requiredChoreGroups = new List<string>
 			{
 				Db.Get().ChoreGroups.Build.Id
 			};
-			Farming = Add(new SkillGroup("Farming", Db.Get().ChoreGroups.Farming.Id, DUPLICANTS.CHOREGROUPS.FARMING.NAME));
-			Farming.relevantAttributes = new List<string>
+			Farming = Add(new SkillGroup("Farming", Db.Get().ChoreGroups.Farming.Id, DUPLICANTS.CHOREGROUPS.FARMING.NAME, "icon_errand_farm"));
+			Farming.relevantAttributes = new List<Attribute>
 			{
-				Db.Get().Attributes.Botanist.Id
+				Db.Get().ChoreGroups.Farming.attribute
 			};
 			Farming.requiredChoreGroups = new List<string>
 			{
 				Db.Get().ChoreGroups.Farming.Id
 			};
-			Ranching = Add(new SkillGroup("Ranching", Db.Get().ChoreGroups.Ranching.Id, DUPLICANTS.CHOREGROUPS.RANCHING.NAME));
-			Ranching.relevantAttributes = new List<string>
+			Ranching = Add(new SkillGroup("Ranching", Db.Get().ChoreGroups.Ranching.Id, DUPLICANTS.CHOREGROUPS.RANCHING.NAME, "icon_errand_ranch"));
+			Ranching.relevantAttributes = new List<Attribute>
 			{
-				Db.Get().Attributes.Ranching.Id
+				Db.Get().ChoreGroups.Ranching.attribute
 			};
 			Ranching.requiredChoreGroups = new List<string>
 			{
 				Db.Get().ChoreGroups.Ranching.Id
 			};
-			Cooking = Add(new SkillGroup("Cooking", Db.Get().ChoreGroups.Cook.Id, DUPLICANTS.CHOREGROUPS.COOK.NAME));
-			Cooking.relevantAttributes = new List<string>
+			Cooking = Add(new SkillGroup("Cooking", Db.Get().ChoreGroups.Cook.Id, DUPLICANTS.CHOREGROUPS.COOK.NAME, "icon_errand_cook"));
+			Cooking.relevantAttributes = new List<Attribute>
 			{
-				Db.Get().Attributes.Cooking.Id
+				Db.Get().ChoreGroups.Cook.attribute
 			};
 			Cooking.requiredChoreGroups = new List<string>
 			{
 				Db.Get().ChoreGroups.Cook.Id
 			};
-			Art = Add(new SkillGroup("Art", Db.Get().ChoreGroups.Art.Id, DUPLICANTS.CHOREGROUPS.ART.NAME));
-			Art.relevantAttributes = new List<string>
+			Art = Add(new SkillGroup("Art", Db.Get().ChoreGroups.Art.Id, DUPLICANTS.CHOREGROUPS.ART.NAME, "icon_errand_art"));
+			Art.relevantAttributes = new List<Attribute>
 			{
-				Db.Get().Attributes.Art.Id
+				Db.Get().ChoreGroups.Art.attribute
 			};
 			Art.requiredChoreGroups = new List<string>
 			{
 				Db.Get().ChoreGroups.Art.Id
 			};
-			Research = Add(new SkillGroup("Research", Db.Get().ChoreGroups.Research.Id, DUPLICANTS.CHOREGROUPS.RESEARCH.NAME));
-			Research.relevantAttributes = new List<string>
+			Research = Add(new SkillGroup("Research", Db.Get().ChoreGroups.Research.Id, DUPLICANTS.CHOREGROUPS.RESEARCH.NAME, "icon_errand_research"));
+			Research.relevantAttributes = new List<Attribute>
 			{
-				Db.Get().Attributes.Learning.Id
+				Db.Get().ChoreGroups.Research.attribute
 			};
 			Research.requiredChoreGroups = new List<string>
 			{
 				Db.Get().ChoreGroups.Research.Id
 			};
-			Suits = Add(new SkillGroup("Suits", string.Empty, DUPLICANTS.ROLES.GROUPS.SUITS));
-			Suits.relevantAttributes = new List<string>
+			Suits = Add(new SkillGroup("Suits", "", DUPLICANTS.ROLES.GROUPS.SUITS, "suit_overlay_icon"));
+			Suits.relevantAttributes = new List<Attribute>
 			{
-				Db.Get().Attributes.Athletics.Id
+				Db.Get().Attributes.Athletics
 			};
 			Suits.requiredChoreGroups = new List<string>
 			{
 				Db.Get().ChoreGroups.Hauling.Id
 			};
-			Hauling = Add(new SkillGroup("Hauling", Db.Get().ChoreGroups.Hauling.Id, DUPLICANTS.CHOREGROUPS.HAULING.NAME));
-			Hauling.relevantAttributes = new List<string>
+			Hauling = Add(new SkillGroup("Hauling", Db.Get().ChoreGroups.Hauling.Id, DUPLICANTS.CHOREGROUPS.HAULING.NAME, "icon_errand_supply"));
+			Hauling.relevantAttributes = new List<Attribute>
 			{
-				Db.Get().Attributes.Athletics.Id
+				Db.Get().ChoreGroups.Hauling.attribute
 			};
 			Hauling.requiredChoreGroups = new List<string>
 			{
 				Db.Get().ChoreGroups.Hauling.Id
 			};
-			Technicals = Add(new SkillGroup("Technicals", Db.Get().ChoreGroups.MachineOperating.Id, DUPLICANTS.CHOREGROUPS.MACHINEOPERATING.NAME));
-			Technicals.relevantAttributes = new List<string>
+			Technicals = Add(new SkillGroup("Technicals", Db.Get().ChoreGroups.MachineOperating.Id, DUPLICANTS.CHOREGROUPS.MACHINEOPERATING.NAME, "icon_errand_operate"));
+			Technicals.relevantAttributes = new List<Attribute>
 			{
-				Db.Get().Attributes.Machinery.Id
+				Db.Get().ChoreGroups.MachineOperating.attribute
 			};
 			Technicals.requiredChoreGroups = new List<string>
 			{
 				Db.Get().ChoreGroups.MachineOperating.Id
 			};
-			MedicalAid = Add(new SkillGroup("MedicalAid", Db.Get().ChoreGroups.MedicalAid.Id, DUPLICANTS.CHOREGROUPS.MEDICALAID.NAME));
-			Basekeeping = Add(new SkillGroup("Basekeeping", Db.Get().ChoreGroups.Basekeeping.Id, DUPLICANTS.CHOREGROUPS.BASEKEEPING.NAME));
-			Basekeeping.relevantAttributes = new List<string>
+			MedicalAid = Add(new SkillGroup("MedicalAid", Db.Get().ChoreGroups.MedicalAid.Id, DUPLICANTS.CHOREGROUPS.MEDICALAID.NAME, "icon_errand_care"));
+			MedicalAid.relevantAttributes = new List<Attribute>
 			{
-				Db.Get().Attributes.Athletics.Id
+				Db.Get().ChoreGroups.MedicalAid.attribute
+			};
+			Basekeeping = Add(new SkillGroup("Basekeeping", Db.Get().ChoreGroups.Basekeeping.Id, DUPLICANTS.CHOREGROUPS.BASEKEEPING.NAME, "icon_errand_tidy"));
+			Basekeeping.relevantAttributes = new List<Attribute>
+			{
+				Db.Get().ChoreGroups.Basekeeping.attribute
 			};
 			Basekeeping.requiredChoreGroups = new List<string>
 			{

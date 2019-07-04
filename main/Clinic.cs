@@ -38,7 +38,7 @@ public class Clinic : Workable, IEffectDescriptor, ISingleSliderControl, ISlider
 			{
 				if (base.master.IsValidEffect(base.master.doctoredHealthEffect) || base.master.IsValidEffect(base.master.doctoredDiseaseEffect))
 				{
-					doctorChore = new WorkChore<DoctorChoreWorkable>(Db.Get().ChoreTypes.Doctor, base.smi.master, null, null, true, null, null, null, true, null, false, true, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, true, true);
+					doctorChore = new WorkChore<DoctorChoreWorkable>(Db.Get().ChoreTypes.Doctor, base.smi.master, null, true, null, null, null, true, null, false, true, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, true, true);
 					WorkChore<DoctorChoreWorkable> workChore = doctorChore;
 					workChore.onComplete = (Action<Chore>)Delegate.Combine(workChore.onComplete, (Action<Chore>)delegate
 					{
@@ -337,12 +337,12 @@ public class Clinic : Workable, IEffectDescriptor, ISingleSliderControl, ISlider
 	protected override bool OnWorkTick(Worker worker, float dt)
 	{
 		KAnimFile[] appropriateOverrideAnims = GetAppropriateOverrideAnims(worker);
-		if (appropriateOverrideAnims == null || appropriateOverrideAnims != overrideAnims)
+		if (appropriateOverrideAnims != null && appropriateOverrideAnims == overrideAnims)
 		{
-			return true;
+			base.OnWorkTick(worker, dt);
+			return false;
 		}
-		base.OnWorkTick(worker, dt);
-		return false;
+		return true;
 	}
 
 	protected override void OnStopWork(Worker worker)
@@ -368,7 +368,7 @@ public class Clinic : Workable, IEffectDescriptor, ISingleSliderControl, ISlider
 		bool allow_prioritization2 = allow_prioritization;
 		bool allow_in_red_alert2 = allow_in_red_alert;
 		bool ignore_schedule_block2 = ignore_schedule_block;
-		return new WorkChore<Clinic>(chore_type, this, null, null, true, null, null, null, allow_in_red_alert2, null, ignore_schedule_block2, true, null, false, true, allow_prioritization2, priority_class, 5, false, false);
+		return new WorkChore<Clinic>(chore_type, this, null, true, null, null, null, allow_in_red_alert2, null, ignore_schedule_block2, true, null, false, true, allow_prioritization2, priority_class, 5, false, false);
 	}
 
 	private bool CanAutoAssignTo(MinionAssignablesProxy worker)
@@ -422,7 +422,7 @@ public class Clinic : Workable, IEffectDescriptor, ISingleSliderControl, ISlider
 
 	private bool IsValidEffect(string effect)
 	{
-		return effect != null && effect != string.Empty;
+		return effect != null && effect != "";
 	}
 
 	private bool AllowDoctoring()

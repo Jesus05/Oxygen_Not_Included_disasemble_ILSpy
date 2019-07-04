@@ -17,7 +17,7 @@ public class IncubatorSideScreen : ReceptacleSideScreen
 
 	protected override void SetResultDescriptions(GameObject go)
 	{
-		string text = string.Empty;
+		string text = "";
 		InfoDescription component = go.GetComponent<InfoDescription>();
 		if ((bool)component)
 		{
@@ -35,11 +35,12 @@ public class IncubatorSideScreen : ReceptacleSideScreen
 	public override void SetTarget(GameObject target)
 	{
 		base.SetTarget(target);
-		continuousToggle.ChangeState((!target.GetComponent<EggIncubator>().AutoReplaceEntity) ? 1 : 0);
+		EggIncubator incubator = target.GetComponent<EggIncubator>();
+		continuousToggle.ChangeState((!incubator.autoReplaceEntity) ? 1 : 0);
 		continuousToggle.onClick = delegate
 		{
-			target.GetComponent<EggIncubator>().ToggleAutoReplace();
-			continuousToggle.ChangeState((!target.GetComponent<EggIncubator>().AutoReplaceEntity) ? 1 : 0);
+			incubator.autoReplaceEntity = !incubator.autoReplaceEntity;
+			continuousToggle.ChangeState((!incubator.autoReplaceEntity) ? 1 : 0);
 		};
 	}
 }

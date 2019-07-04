@@ -31,6 +31,9 @@ public class ConfirmDialogScreen : KModalScreen
 	[SerializeField]
 	private Image image;
 
+	[SerializeField]
+	private GameObject fadeBG;
+
 	protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
@@ -54,8 +57,14 @@ public class ConfirmDialogScreen : KModalScreen
 		}
 	}
 
-	public void PopupConfirmDialog(string text, System.Action on_confirm, System.Action on_cancel, string configurable_text = null, System.Action on_configurable_clicked = null, string title_text = null, string confirm_text = null, string cancel_text = null, Sprite image_sprite = null)
+	public void PopupConfirmDialog(string text, System.Action on_confirm, System.Action on_cancel, string configurable_text = null, System.Action on_configurable_clicked = null, string title_text = null, string confirm_text = null, string cancel_text = null, Sprite image_sprite = null, bool activateBlackBackground = true)
 	{
+		while ((UnityEngine.Object)base.transform.parent.GetComponent<Canvas>() == (UnityEngine.Object)null && (UnityEngine.Object)base.transform.parent.parent != (UnityEngine.Object)null)
+		{
+			base.transform.SetParent(base.transform.parent.parent);
+		}
+		base.transform.SetAsLastSibling();
+		fadeBG.SetActive(activateBlackBackground);
 		confirmAction = on_confirm;
 		cancelAction = on_cancel;
 		configurableAction = on_configurable_clicked;

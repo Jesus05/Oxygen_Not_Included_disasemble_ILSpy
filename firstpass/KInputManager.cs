@@ -95,10 +95,10 @@ public class KInputManager
 
 	public static Vector3 GetMousePos()
 	{
-		if (isMousePosLocked)
+		if (!isMousePosLocked)
 		{
-			return lockedMousePos;
+			return Input.mousePosition;
 		}
-		return Input.mousePosition;
+		return lockedMousePos;
 	}
 }

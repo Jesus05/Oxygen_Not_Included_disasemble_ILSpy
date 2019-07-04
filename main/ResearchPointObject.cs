@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class ResearchPointObject : KMonoBehaviour, IGameObjectEffectDescriptor
 {
-	public string TypeID = string.Empty;
+	public string TypeID = "";
 
 	protected override void OnSpawn()
 	{

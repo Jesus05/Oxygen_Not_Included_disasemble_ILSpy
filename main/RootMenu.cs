@@ -23,9 +23,11 @@ public class RootMenu : KScreen
 
 	private List<KScreen> subMenus = new List<KScreen>();
 
-	private TileScreen tileScreenInst;
+	private TileScreen tileScreenInst = null;
 
-	public GameObject selectedGO;
+	public bool canTogglePauseScreen = true;
+
+	public GameObject selectedGO = null;
 
 	public static RootMenu Instance
 	{
@@ -145,6 +147,10 @@ public class RootMenu : KScreen
 	{
 		if (!e.Consumed && e.TryConsume(Action.Escape) && SelectTool.Instance.enabled)
 		{
+			if (!canTogglePauseScreen)
+			{
+				return;
+			}
 			if (AreSubMenusOpen())
 			{
 				KMonoBehaviour.PlaySound(GlobalAssets.GetSound("Back", false));

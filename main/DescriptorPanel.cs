@@ -3,7 +3,15 @@ using UnityEngine;
 
 public class DescriptorPanel : KMonoBehaviour
 {
-	public List<GameObject> labels = new List<GameObject>();
+	[SerializeField]
+	private GameObject customLabelPrefab;
+
+	private List<GameObject> labels = new List<GameObject>();
+
+	public bool HasDescriptors()
+	{
+		return labels.Count > 0;
+	}
 
 	public void SetDescriptors(IList<Descriptor> descriptors)
 	{
@@ -13,7 +21,8 @@ public class DescriptorPanel : KMonoBehaviour
 			GameObject gameObject = null;
 			if (i >= labels.Count)
 			{
-				gameObject = Util.KInstantiate(ScreenPrefabs.Instance.DescriptionLabel, base.gameObject, null);
+				GameObject original = (!((Object)customLabelPrefab != (Object)null)) ? ScreenPrefabs.Instance.DescriptionLabel : customLabelPrefab;
+				gameObject = Util.KInstantiate(original, base.gameObject, null);
 				gameObject.transform.localScale = new Vector3(1f, 1f, 1f);
 				labels.Add(gameObject);
 			}

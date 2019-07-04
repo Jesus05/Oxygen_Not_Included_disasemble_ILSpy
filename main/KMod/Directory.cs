@@ -10,14 +10,14 @@ namespace KMod
 {
 	internal struct Directory : IFileSource
 	{
-		private PrefixFileSystem file_system;
+		private AliasDirectory file_system;
 
 		private string root;
 
 		public Directory(string root)
 		{
 			this.root = root;
-			file_system = new PrefixFileSystem(root, root, Application.streamingAssetsPath);
+			file_system = new AliasDirectory(root, root, Application.streamingAssetsPath);
 		}
 
 		public string GetRoot()
@@ -44,7 +44,7 @@ namespace KMod
 			}
 		}
 
-		public IFileSystem GetFileSystem()
+		public IFileDirectory GetFileSystem()
 		{
 			return file_system;
 		}
@@ -89,50 +89,50 @@ namespace KMod
 		private static int CopyDirectory(string sourceDirName, string destDirName, List<string> extensions)
 		{
 			DirectoryInfo directoryInfo = new DirectoryInfo(sourceDirName);
-			if (!directoryInfo.Exists)
+			if (directoryInfo.Exists)
 			{
-				return 0;
-			}
-			if (!FileUtil.CreateDirectory(destDirName, 0))
-			{
-				return 0;
-			}
-			FileInfo[] files = directoryInfo.GetFiles();
-			int num = 0;
-			FileInfo[] array = files;
-			foreach (FileInfo fileInfo in array)
-			{
-				bool flag = extensions == null || extensions.Count == 0;
-				if (extensions != null)
+				if (FileUtil.CreateDirectory(destDirName, 0))
 				{
-					foreach (string extension in extensions)
+					FileInfo[] files = directoryInfo.GetFiles();
+					int num = 0;
+					FileInfo[] array = files;
+					foreach (FileInfo fileInfo in array)
 					{
-						if (extension == Path.GetExtension(fileInfo.Name).ToLower())
+						bool flag = extensions == null || extensions.Count == 0;
+						if (extensions != null)
 						{
-							flag = true;
-							break;
+							foreach (string extension in extensions)
+							{
+								if (extension == Path.GetExtension(fileInfo.Name).ToLower())
+								{
+									flag = true;
+									break;
+								}
+							}
+						}
+						if (flag)
+						{
+							string destFileName = Path.Combine(destDirName, fileInfo.Name);
+							fileInfo.CopyTo(destFileName, false);
+							num++;
 						}
 					}
+					DirectoryInfo[] directories = directoryInfo.GetDirectories();
+					DirectoryInfo[] array2 = directories;
+					foreach (DirectoryInfo directoryInfo2 in array2)
+					{
+						string destDirName2 = Path.Combine(destDirName, directoryInfo2.Name);
+						num += CopyDirectory(directoryInfo2.FullName, destDirName2, extensions);
+					}
+					if (num == 0)
+					{
+						FileUtil.DeleteDirectory(destDirName, 0);
+					}
+					return num;
 				}
-				if (flag)
-				{
-					string destFileName = Path.Combine(destDirName, fileInfo.Name);
-					fileInfo.CopyTo(destFileName, false);
-					num++;
-				}
+				return 0;
 			}
-			DirectoryInfo[] directories = directoryInfo.GetDirectories();
-			DirectoryInfo[] array2 = directories;
-			foreach (DirectoryInfo directoryInfo2 in array2)
-			{
-				string destDirName2 = Path.Combine(destDirName, directoryInfo2.Name);
-				num += CopyDirectory(directoryInfo2.FullName, destDirName2, extensions);
-			}
-			if (num == 0)
-			{
-				FileUtil.DeleteDirectory(destDirName, 0);
-			}
-			return num;
+			return 0;
 		}
 	}
 }

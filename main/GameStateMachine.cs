@@ -1,7 +1,6 @@
 using Klei.AI;
 using System;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using UnityEngine;
 
 public abstract class GameStateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType> : StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType> where StateMachineType : GameStateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType> where StateMachineInstanceType : GameStateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.GameInstance where MasterType : IStateMachineTarget
@@ -271,21 +270,21 @@ public abstract class GameStateMachine<StateMachineType, StateMachineInstanceTyp
 
 		private TargetParameter GetStateTarget()
 		{
-			if (stateTarget == null)
+			if (stateTarget != null)
 			{
-				if (parent != null)
-				{
-					State state = (State)parent;
-					return state.GetStateTarget();
-				}
-				TargetParameter targetParameter = sm.stateTarget;
-				if (targetParameter == null)
-				{
-					return sm.masterTarget;
-				}
-				return targetParameter;
+				return stateTarget;
 			}
-			return stateTarget;
+			if (parent == null)
+			{
+				TargetParameter targetParameter = sm.stateTarget;
+				if (targetParameter != null)
+				{
+					return targetParameter;
+				}
+				return sm.masterTarget;
+			}
+			State state = (State)parent;
+			return state.GetStateTarget();
 		}
 
 		public int CreateDataTableEntry()
@@ -332,6 +331,11 @@ public abstract class GameStateMachine<StateMachineType, StateMachineInstanceTyp
 			return Update(sm.name + "." + name, callback, update_rate, load_balance);
 		}
 
+		public State BatchUpdate(UpdateBucketWithUpdater<StateMachineInstanceType>.BatchUpdateDelegate batch_update, UpdateRate update_rate = UpdateRate.SIM_200ms)
+		{
+			return BatchUpdate(sm.name + "." + name, batch_update, update_rate);
+		}
+
 		public State Enter(Callback callback)
 		{
 			return Enter("Enter", callback);
@@ -342,7 +346,7 @@ public abstract class GameStateMachine<StateMachineType, StateMachineInstanceTyp
 			return Exit("Exit", callback);
 		}
 
-		private State InternalUpdate(string name, UpdateBucketWithUpdater<StateMachineInstanceType>.IUpdater bucket_updater, UpdateRate update_rate, bool load_balance)
+		private State InternalUpdate(string name, UpdateBucketWithUpdater<StateMachineInstanceType>.IUpdater bucket_updater, UpdateRate update_rate, bool load_balance, UpdateBucketWithUpdater<StateMachineInstanceType>.BatchUpdateDelegate batch_update = null)
 		{
 			int updateTableIdx = CreateUpdateTableEntry();
 			if (updateActions == null)
@@ -362,6 +366,7 @@ public abstract class GameStateMachine<StateMachineType, StateMachineInstanceTyp
 			for (int i = 0; i < num; i++)
 			{
 				UpdateBucketWithUpdater<StateMachineInstanceType> updateBucketWithUpdater = new UpdateBucketWithUpdater<StateMachineInstanceType>(name);
+				updateBucketWithUpdater.batch_update_delegate = batch_update;
 				Singleton<StateMachineUpdater>.Instance.AddBucket(update_rate, updateBucketWithUpdater);
 				item.buckets[i] = updateBucketWithUpdater;
 			}
@@ -371,12 +376,17 @@ public abstract class GameStateMachine<StateMachineType, StateMachineInstanceTyp
 
 		public State Update(string name, Action<StateMachineInstanceType, float> callback, UpdateRate update_rate = UpdateRate.SIM_200ms, bool load_balance = false)
 		{
-			return InternalUpdate(name, new BucketUpdater<StateMachineInstanceType>(callback), update_rate, load_balance);
+			return InternalUpdate(name, new BucketUpdater<StateMachineInstanceType>(callback), update_rate, load_balance, null);
+		}
+
+		public State BatchUpdate(string name, UpdateBucketWithUpdater<StateMachineInstanceType>.BatchUpdateDelegate batch_update, UpdateRate update_rate = UpdateRate.SIM_200ms)
+		{
+			return InternalUpdate(name, null, update_rate, false, batch_update);
 		}
 
 		public State FastUpdate(string name, UpdateBucketWithUpdater<StateMachineInstanceType>.IUpdater updater, UpdateRate update_rate = UpdateRate.SIM_200ms, bool load_balance = false)
 		{
-			return InternalUpdate(name, updater, update_rate, load_balance);
+			return InternalUpdate(name, updater, update_rate, load_balance, null);
 		}
 
 		public State Enter(string name, Callback callback)
@@ -954,10 +964,13 @@ public abstract class GameStateMachine<StateMachineType, StateMachineInstanceTyp
 			int data_idx = CreateDataTableEntry();
 			Enter("AddStatusItem(DynamicallyConstructed)", delegate(StateMachineInstanceType smi)
 			{
-				StatusItem status_item = status_item_cb(smi);
-				object data = (data_callback == null) ? null : data_callback(smi);
-				Guid guid2 = state_target.Get<KSelectable>(smi).AddStatusItem(status_item, data);
-				smi.dataTable[data_idx] = guid2;
+				StatusItem statusItem = status_item_cb(smi);
+				if (statusItem != null)
+				{
+					object data = (data_callback == null) ? null : data_callback(smi);
+					Guid guid2 = state_target.Get<KSelectable>(smi).AddStatusItem(statusItem, data);
+					smi.dataTable[data_idx] = guid2;
+				}
 			});
 			Exit("RemoveStatusItem(DynamicallyConstructed)", delegate(StateMachineInstanceType smi)
 			{
@@ -1496,7 +1509,7 @@ public abstract class GameStateMachine<StateMachineType, StateMachineInstanceTyp
 				Notification notification2 = callback(smi);
 				smi.dataTable[data_idx] = notification2;
 				Notifier notifier2 = EntityTemplateExtensions.AddOrGet<Notifier>(smi.master.gameObject);
-				notifier2.Add(notification2, string.Empty);
+				notifier2.Add(notification2, "");
 			});
 			Exit("DisableNotification()", delegate(StateMachineInstanceType smi)
 			{
@@ -1534,7 +1547,7 @@ public abstract class GameStateMachine<StateMachineType, StateMachineInstanceTyp
 			Enter("DoNotification()", delegate(StateMachineInstanceType smi)
 			{
 				Notification notification = callback(smi);
-				state_target.Get<Notifier>(smi).Add(notification, string.Empty);
+				state_target.Get<Notifier>(smi).Add(notification, "");
 			});
 			return this;
 		}
@@ -1855,7 +1868,7 @@ public abstract class GameStateMachine<StateMachineType, StateMachineInstanceTyp
 			return this;
 		}
 
-		public State ToggleStatusItem(string name, string tooltip, string icon = "", StatusItem.IconType icon_type = StatusItem.IconType.Info, NotificationType notification_type = NotificationType.Neutral, bool allow_multiples = false, HashedString render_overlay = default(HashedString), int status_overlays = 63486, Func<string, StateMachineInstanceType, string> resolve_string_callback = null, Func<string, StateMachineInstanceType, string> resolve_tooltip_callback = null, StatusItemCategory category = null)
+		public State ToggleStatusItem(string name, string tooltip, string icon = "", StatusItem.IconType icon_type = StatusItem.IconType.Info, NotificationType notification_type = NotificationType.Neutral, bool allow_multiples = false, HashedString render_overlay = default(HashedString), int status_overlays = 129022, Func<string, StateMachineInstanceType, string> resolve_string_callback = null, Func<string, StateMachineInstanceType, string> resolve_tooltip_callback = null, StatusItemCategory category = null)
 		{
 			StatusItem statusItem = new StatusItem(longName, name, tooltip, icon, icon_type, notification_type, allow_multiples, render_overlay, status_overlays);
 			if (resolve_string_callback != null)
@@ -1918,7 +1931,7 @@ public abstract class GameStateMachine<StateMachineType, StateMachineInstanceTyp
 			TargetParameter state_target = GetStateTarget();
 			Enter("PlayAnim(" + anim + ", " + mode.ToString() + ")", delegate(StateMachineInstanceType smi)
 			{
-				string str = string.Empty;
+				string str = "";
 				if (suffix_callback != null)
 				{
 					str = suffix_callback(smi);
@@ -1942,7 +1955,7 @@ public abstract class GameStateMachine<StateMachineType, StateMachineInstanceTyp
 			}
 			Enter("QueueAnim(" + anim + ", " + mode.ToString() + ")", delegate(StateMachineInstanceType smi)
 			{
-				string str = string.Empty;
+				string str = "";
 				if (suffix_callback != null)
 				{
 					str = suffix_callback(smi);
@@ -2146,14 +2159,11 @@ public abstract class GameStateMachine<StateMachineType, StateMachineInstanceTyp
 
 		public State hungry;
 
-		[CompilerGenerated]
-		private static Transition.ConditionCallback _003C_003Ef__mg_0024cache0;
-
 		public State InitializeStates(TargetParameter target, StatusItem status_item)
 		{
 			Target(target);
 			base.root.DefaultState(satisfied);
-			satisfied.EventTransition(GameHashes.AddUrge, hungry, IsHungry);
+			satisfied.EventTransition(GameHashes.AddUrge, hungry, (StateMachineInstanceType smi) => IsHungry(smi));
 			hungry.EventTransition(GameHashes.RemoveUrge, satisfied, (StateMachineInstanceType smi) => !IsHungry(smi)).ToggleStatusItem(status_item, (object)null);
 			return this;
 		}
@@ -2186,16 +2196,16 @@ public abstract class GameStateMachine<StateMachineType, StateMachineInstanceTyp
 		private static bool isLethalTemperature(GameObject plant)
 		{
 			TemperatureVulnerable component = plant.GetComponent<TemperatureVulnerable>();
-			if ((UnityEngine.Object)component == (UnityEngine.Object)null)
+			if (!((UnityEngine.Object)component == (UnityEngine.Object)null))
 			{
-				return false;
-			}
-			if (component.GetInternalTemperatureState == TemperatureVulnerable.TemperatureState.LethalCold)
-			{
-				return true;
-			}
-			if (component.GetInternalTemperatureState == TemperatureVulnerable.TemperatureState.LethalHot)
-			{
+				if (component.GetInternalTemperatureState != 0)
+				{
+					if (component.GetInternalTemperatureState != TemperatureVulnerable.TemperatureState.LethalHot)
+					{
+						return false;
+					}
+					return true;
+				}
 				return true;
 			}
 			return false;

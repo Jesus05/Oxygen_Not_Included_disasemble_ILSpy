@@ -16,15 +16,15 @@ public class CellVisibility
 	public bool IsVisible(int cell)
 	{
 		int num = Grid.CellColumn(cell);
-		if (num < MinX || num > MaxX)
+		if (num >= MinX && num <= MaxX)
 		{
+			int num2 = Grid.CellRow(cell);
+			if (num2 >= MinY && num2 <= MaxY)
+			{
+				return true;
+			}
 			return false;
 		}
-		int num2 = Grid.CellRow(cell);
-		if (num2 < MinY || num2 > MaxY)
-		{
-			return false;
-		}
-		return true;
+		return false;
 	}
 }

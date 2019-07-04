@@ -1,9 +1,12 @@
+#define DEBUG
 using Klei;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
+using System.Text;
 using UnityEngine;
 
 namespace KMod
@@ -33,6 +36,8 @@ namespace KMod
 		public int crash_count;
 
 		public IFileSource file_source;
+
+		public bool is_subscribed = false;
 
 		public const int MAX_CRASH_COUNT = 3;
 
@@ -181,7 +186,7 @@ namespace KMod
 			{
 				available_content |= Content.DLL;
 			}
-			if (file.EndsWith(".po") || file.EndsWith(".pot"))
+			if (file.EndsWith(".po"))
 			{
 				available_content |= Content.Translation;
 			}
@@ -196,7 +201,6 @@ namespace KMod
 			if ((content & (Content.Strings | Content.Translation)) != 0)
 			{
 				extensions.Add(".po");
-				extensions.Add(".pot");
 			}
 		}
 
@@ -217,6 +221,8 @@ namespace KMod
 		{
 			if (label.distribution_platform != 0 && label.distribution_platform != Label.DistributionPlatform.Dev)
 			{
+				Assert(status == Status.NotInstalled, $"not in a state such that it can be installed: {status.ToString()}");
+				Assert(loaded_content == (Content)0, $"still has loaded content: {loaded_content.ToString()}");
 				status = Status.ReinstallPending;
 				if (file_source != null && FileUtil.DeleteDirectory(label.install_path, 0) && FileUtil.CreateDirectory(label.install_path, 0))
 				{
@@ -229,110 +235,134 @@ namespace KMod
 
 		public bool Uninstall()
 		{
-			if (label.distribution_platform == Label.DistributionPlatform.Local || label.distribution_platform == Label.DistributionPlatform.Dev)
+			if (label.distribution_platform != 0 && label.distribution_platform != Label.DistributionPlatform.Dev)
 			{
-				return false;
-			}
-			enabled = false;
-			if (loaded_content != 0)
-			{
+				Assert(status != Status.NotInstalled, $"not in a state such that it can be uninstalled: {status.ToString()}");
+				enabled = false;
+				if (loaded_content == (Content)0)
+				{
+					if (FileUtil.DeleteDirectory(label.install_path, 0))
+					{
+						status = Status.NotInstalled;
+						return true;
+					}
+					Debug.Log($"Can't uninstall {label.ToString()}: directory deletion failed");
+					status = Status.UninstallPending;
+					return false;
+				}
 				Debug.Log($"Can't uninstall {label.ToString()}: still has loaded content: {loaded_content.ToString()}");
 				status = Status.UninstallPending;
 				return false;
 			}
-			if (!FileUtil.DeleteDirectory(label.install_path, 0))
-			{
-				Debug.Log($"Can't uninstall {label.ToString()}: directory deletion failed");
-				status = Status.UninstallPending;
-				return false;
-			}
-			status = Status.NotInstalled;
-			return true;
+			return false;
 		}
 
 		private bool LoadStrings()
 		{
-			string[] array = new string[2]
+			Assert((available_content & Content.Strings) != (Content)0, $"attempting to load content that this mod does not provide: {2.ToString()}");
+			string path = FileSystem.Normalize(Path.Combine(label.install_path, "strings"));
+			if (System.IO.Directory.Exists(path))
 			{
-				"strings.pot",
-				"strings.po"
-			};
-			string path = FSUtil.Normalize(Path.Combine(label.install_path, "strings"));
-			if (!System.IO.Directory.Exists(path))
-			{
-				return false;
-			}
-			int num = 0;
-			DirectoryInfo directoryInfo = new DirectoryInfo(path);
-			FileInfo[] files = directoryInfo.GetFiles();
-			foreach (FileInfo fileInfo in files)
-			{
-				bool flag = false;
-				string[] array2 = array;
-				foreach (string b in array2)
+				int num = 0;
+				DirectoryInfo directoryInfo = new DirectoryInfo(path);
+				FileInfo[] files = directoryInfo.GetFiles();
+				foreach (FileInfo fileInfo in files)
 				{
-					if (fileInfo.Name.ToLower() == b)
+					if (!(fileInfo.Extension.ToLower() != ".po"))
 					{
-						flag = true;
-						break;
+						num++;
+						Dictionary<string, string> translated_strings = Localization.LoadStringsFile(fileInfo.FullName, false);
+						Localization.OverloadStrings(translated_strings);
 					}
 				}
-				if (flag)
-				{
-					num++;
-					Dictionary<string, string> translated_strings = Localization.LoadStringsFile(fileInfo.FullName, Path.GetExtension(fileInfo.Name.ToLower()) == ".pot");
-					Localization.OverloadStrings(translated_strings);
-				}
+				return true;
 			}
-			return num > 0;
+			return false;
+		}
+
+		private bool LoadTranslations()
+		{
+			string path = FileSystem.Normalize(label.install_path);
+			if (System.IO.Directory.Exists(path))
+			{
+				DirectoryInfo directoryInfo = new DirectoryInfo(path);
+				HashSetPool<Localization.Locale, Mod>.PooledHashSet pooledHashSet = HashSetPool<Localization.Locale, Mod>.Allocate();
+				FileInfo[] files = directoryInfo.GetFiles();
+				foreach (FileInfo fileInfo in files)
+				{
+					if (!(fileInfo.Extension.ToLower() != ".po"))
+					{
+						string[] lines = File.ReadAllLines(fileInfo.FullName, Encoding.UTF8);
+						pooledHashSet.Add(Localization.GetLocale(lines));
+						Dictionary<string, string> translated_strings = Localization.ExtractTranslatedStrings(lines, false);
+						Localization.OverloadStrings(translated_strings);
+					}
+				}
+				if (pooledHashSet.Count != 0)
+				{
+					Localization.Locale new_locale = pooledHashSet.First();
+					if (pooledHashSet.All((Localization.Locale locale) => locale == new_locale))
+					{
+						Localization.SetLocale(new_locale);
+						Localization.SwapToLocalizedFont(new_locale.FontName);
+						KPlayerPrefs.SetString(Localization.SELECTED_LANGUAGE_TYPE_KEY, 2.ToString());
+						KPlayerPrefs.SetString(Localization.SELECTED_LANGUAGE_CODE_KEY, new_locale.Code);
+						return true;
+					}
+					return false;
+				}
+				return false;
+			}
+			return false;
 		}
 
 		private bool LoadAnimation()
 		{
-			string path = FSUtil.Normalize(Path.Combine(label.install_path, "anims"));
-			if (!System.IO.Directory.Exists(path))
+			Assert((available_content & Content.Animation) != (Content)0, $"attempting to load content that this mod does not provide: {16.ToString()}");
+			string path = FileSystem.Normalize(Path.Combine(label.install_path, "anims"));
+			if (System.IO.Directory.Exists(path))
 			{
-				return false;
-			}
-			int num = 0;
-			ListPool<Texture2D, Mod>.PooledList pooledList = ListPool<Texture2D, Mod>.Allocate();
-			DirectoryInfo directoryInfo = new DirectoryInfo(path);
-			FileInfo[] files = directoryInfo.GetFiles();
-			foreach (FileInfo fileInfo in files)
-			{
-				TextAsset anim_file = null;
-				TextAsset build_file = null;
-				pooledList.Clear();
-				AssetBundle assetBundle = AssetBundle.LoadFromFile(fileInfo.FullName);
-				UnityEngine.Object[] array = assetBundle.LoadAllAssets();
-				UnityEngine.Object[] array2 = array;
-				foreach (UnityEngine.Object @object in array2)
+				int num = 0;
+				ListPool<Texture2D, Mod>.PooledList pooledList = ListPool<Texture2D, Mod>.Allocate();
+				DirectoryInfo directoryInfo = new DirectoryInfo(path);
+				FileInfo[] files = directoryInfo.GetFiles();
+				foreach (FileInfo fileInfo in files)
 				{
-					Texture2D texture2D = @object as Texture2D;
-					if ((UnityEngine.Object)texture2D != (UnityEngine.Object)null)
+					TextAsset anim_file = null;
+					TextAsset build_file = null;
+					pooledList.Clear();
+					AssetBundle assetBundle = AssetBundle.LoadFromFile(fileInfo.FullName);
+					UnityEngine.Object[] array = assetBundle.LoadAllAssets();
+					UnityEngine.Object[] array2 = array;
+					foreach (UnityEngine.Object @object in array2)
 					{
-						pooledList.Add(texture2D);
+						Texture2D texture2D = @object as Texture2D;
+						if ((UnityEngine.Object)texture2D != (UnityEngine.Object)null)
+						{
+							pooledList.Add(texture2D);
+						}
+						else if (@object.name.EndsWith("_anim"))
+						{
+							anim_file = (@object as TextAsset);
+						}
+						else if (@object.name.EndsWith("_build"))
+						{
+							build_file = (@object as TextAsset);
+						}
+						else
+						{
+							DebugUtil.LogWarningArgs($"Unhandled asset ({@object.name}) in bundle ({fileInfo.FullName})...ignoring");
+						}
 					}
-					else if (@object.name.EndsWith("_anim"))
+					if ((UnityEngine.Object)ModUtil.AddKAnim(fileInfo.Name, anim_file, build_file, pooledList) != (UnityEngine.Object)null)
 					{
-						anim_file = (@object as TextAsset);
-					}
-					else if (@object.name.EndsWith("_build"))
-					{
-						build_file = (@object as TextAsset);
-					}
-					else
-					{
-						DebugUtil.LogWarningArgs($"Unhandled asset ({@object.name}) in bundle ({fileInfo.FullName})...ignoring");
+						num++;
 					}
 				}
-				if ((UnityEngine.Object)ModUtil.AddKAnim(fileInfo.Name, anim_file, build_file, pooledList) != (UnityEngine.Object)null)
-				{
-					num++;
-				}
+				pooledList.Recycle();
+				return true;
 			}
-			pooledList.Recycle();
-			return num != 0;
+			return false;
 		}
 
 		public void Load(Content content)
@@ -342,7 +372,7 @@ namespace KMod
 			{
 				loaded_content |= Content.Strings;
 			}
-			if ((content & Content.Translation) != 0)
+			if ((content & Content.Translation) != 0 && LoadTranslations())
 			{
 				loaded_content |= Content.Translation;
 			}
@@ -352,7 +382,7 @@ namespace KMod
 			}
 			if ((content & Content.LayerableFiles) != 0)
 			{
-				Global.Instance.layeredFileSystem.AddFileSystem(file_source.GetFileSystem());
+				FileSystem.file_sources.Insert(0, file_source.GetFileSystem());
 				loaded_content |= Content.LayerableFiles;
 			}
 			if ((content & Content.Animation) != 0 && LoadAnimation())
@@ -364,9 +394,10 @@ namespace KMod
 		public void Unload(Content content)
 		{
 			content &= loaded_content;
+			Assert((content & (Content.Strings | Content.DLL | Content.Translation | Content.Animation)) == (Content)0, $"attempting to unload boot content: {(content & (Content.Strings | Content.DLL | Content.Translation | Content.Animation)).ToString()}");
 			if ((content & Content.LayerableFiles) != 0)
 			{
-				Global.Instance.layeredFileSystem.RemoveFileSystem(file_source.GetFileSystem());
+				FileSystem.file_sources.Remove(file_source.GetFileSystem());
 				loaded_content &= ~Content.LayerableFiles;
 			}
 		}

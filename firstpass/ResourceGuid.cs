@@ -27,11 +27,11 @@ public class ResourceGuid : IEquatable<ResourceGuid>, ISaveLoadable
 	public override bool Equals(object obj)
 	{
 		ResourceGuid resourceGuid = (ResourceGuid)obj;
-		if (obj != null)
+		if (obj == null)
 		{
-			return Guid == resourceGuid.Guid;
+			return false;
 		}
-		return false;
+		return Guid == resourceGuid.Guid;
 	}
 
 	public bool Equals(ResourceGuid other)
@@ -41,36 +41,36 @@ public class ResourceGuid : IEquatable<ResourceGuid>, ISaveLoadable
 
 	public static bool operator ==(ResourceGuid a, ResourceGuid b)
 	{
-		if ((object)a == b)
+		if ((object)a != b)
 		{
-			return true;
-		}
-		if ((object)a == null)
-		{
+			if ((object)a != null)
+			{
+				if ((object)b != null)
+				{
+					return a.Guid == b.Guid;
+				}
+				return false;
+			}
 			return false;
 		}
-		if ((object)b == null)
-		{
-			return false;
-		}
-		return a.Guid == b.Guid;
+		return true;
 	}
 
 	public static bool operator !=(ResourceGuid a, ResourceGuid b)
 	{
-		if ((object)a == b)
+		if ((object)a != b)
 		{
-			return false;
-		}
-		if ((object)a == null)
-		{
+			if ((object)a != null)
+			{
+				if ((object)b != null)
+				{
+					return a.Guid != b.Guid;
+				}
+				return true;
+			}
 			return true;
 		}
-		if ((object)b == null)
-		{
-			return true;
-		}
-		return a.Guid != b.Guid;
+		return false;
 	}
 
 	public override string ToString()

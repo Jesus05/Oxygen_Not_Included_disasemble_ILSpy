@@ -26,7 +26,7 @@ public class SuitEquipper : KMonoBehaviour
 				Game.Instance.userMenu.AddButton(base.gameObject, new KIconButtonMenu.ButtonInfo("iconDown", text, delegate
 				{
 					equippable.Unassign();
-				}, Action.NumActions, null, null, null, string.Empty, true), 2f);
+				}, Action.NumActions, null, null, null, "", true), 2f);
 			}
 		}
 	}
@@ -41,7 +41,8 @@ public class SuitEquipper : KMonoBehaviour
 			Equippable equippable = slot.assignable as Equippable;
 			if ((bool)equippable && equippable.GetComponent<KPrefabID>().HasTag(GameTags.AirtightSuit))
 			{
-				return equippable;
+				result = equippable;
+				break;
 			}
 		}
 		return result;

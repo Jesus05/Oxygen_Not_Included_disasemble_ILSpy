@@ -21,6 +21,8 @@ namespace YamlDotNet.Serialization
 
 		private bool ignoreUnmatched;
 
+		private Action<string> unmatchedLogFn;
+
 		protected override DeserializerBuilder Self => this;
 
 		public DeserializerBuilder()
@@ -97,7 +99,7 @@ namespace YamlDotNet.Serialization
 				},
 				{
 					typeof(ObjectNodeDeserializer),
-					(Nothing _) => new ObjectNodeDeserializer(objectFactory, BuildTypeInspector(), ignoreUnmatched)
+					(Nothing _) => new ObjectNodeDeserializer(objectFactory, BuildTypeInspector(), ignoreUnmatched, unmatchedLogFn)
 				}
 			};
 			nodeTypeResolverFactories = new LazyComponentRegistrationList<Nothing, INodeTypeResolver>
@@ -278,9 +280,10 @@ namespace YamlDotNet.Serialization
 			return this;
 		}
 
-		public DeserializerBuilder IgnoreUnmatchedProperties()
+		public DeserializerBuilder IgnoreUnmatchedProperties(Action<string> unmatchedLogFn = null)
 		{
 			ignoreUnmatched = true;
+			this.unmatchedLogFn = unmatchedLogFn;
 			return this;
 		}
 

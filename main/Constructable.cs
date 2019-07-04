@@ -35,13 +35,13 @@ public class Constructable : Workable, ISaveLoadable
 
 	private Chore buildChore;
 
-	private bool materialNeedsCleared;
+	private bool materialNeedsCleared = false;
 
 	private bool hasUnreachableDigs;
 
-	private bool finished;
+	private bool finished = false;
 
-	private bool unmarked;
+	private bool unmarked = false;
 
 	public bool isDiggingRequired = true;
 
@@ -52,10 +52,7 @@ public class Constructable : Workable, ISaveLoadable
 	private Extents ladderDetectionExtents;
 
 	[Serialize]
-	public bool IsReplacementTile;
-
-	[Serialize]
-	public Tag[] choreTags;
+	public bool IsReplacementTile = false;
 
 	private HandleVector<int>.Handle solidPartitionerEntry;
 
@@ -283,16 +280,7 @@ public class Constructable : Workable, ISaveLoadable
 		{
 			MarkArea();
 		}
-		if (choreTags == null)
-		{
-			choreTags = GameTags.ChoreTypes.BuildingChores;
-		}
-		else if (Array.IndexOf(choreTags, GameTags.ChoreTypes.Building) < 0)
-		{
-			Array.Resize(ref choreTags, choreTags.Length + 1);
-			choreTags[choreTags.Length - 1] = GameTags.ChoreTypes.Building;
-		}
-		this.fetchList = new FetchList2(storage, Db.Get().ChoreTypes.BuildFetch, choreTags);
+		this.fetchList = new FetchList2(storage, Db.Get().ChoreTypes.BuildFetch);
 		PrimaryElement component = GetComponent<PrimaryElement>();
 		Element element = ElementLoader.GetElement(SelectedElementsTags[0]);
 		Debug.Assert(element != null, "Missing primary element for Constructable");
@@ -322,7 +310,6 @@ public class Constructable : Workable, ISaveLoadable
 				}
 			}
 		});
-		Diggable.UpdateBuildableDiggables(Grid.PosToCell(this));
 		if (IsReplacementTile)
 		{
 			GameObject gameObject = null;
@@ -505,8 +492,6 @@ public class Constructable : Workable, ISaveLoadable
 			fetchList.Cancel("Constructable destroyed");
 		}
 		UnmarkArea();
-		Queue<GameUtil.FloodFillInfo> floodFillNext = GameUtil.FloodFillNext;
-		floodFillNext.Clear();
 		int[] placementCells = building.PlacementCells;
 		foreach (int cell2 in placementCells)
 		{
@@ -515,28 +500,7 @@ public class Constructable : Workable, ISaveLoadable
 			{
 				diggable.gameObject.DeleteObject();
 			}
-			floodFillNext.Enqueue(new GameUtil.FloodFillInfo
-			{
-				cell = Grid.CellLeft(cell2),
-				depth = 0
-			});
-			floodFillNext.Enqueue(new GameUtil.FloodFillInfo
-			{
-				cell = Grid.CellRight(cell2),
-				depth = 0
-			});
-			floodFillNext.Enqueue(new GameUtil.FloodFillInfo
-			{
-				cell = Grid.CellAbove(cell2),
-				depth = 0
-			});
-			floodFillNext.Enqueue(new GameUtil.FloodFillInfo
-			{
-				cell = Grid.CellBelow(cell2),
-				depth = 0
-			});
 		}
-		Diggable.UpdateBuildableDiggables(floodFillNext);
 		base.OnCleanUp();
 	}
 
@@ -612,7 +576,6 @@ public class Constructable : Workable, ISaveLoadable
 							diggable.Subscribe(-1432940121, OnDiggableReachabilityChanged);
 						}
 						diggable.choreTypeIdHash = Db.Get().ChoreTypes.BuildDig.IdHash;
-						diggable.choreTags = choreTags;
 						diggable.GetComponent<Prioritizable>().SetMasterPriority(masterPriority);
 						RenderUtil.EnableRenderer(diggable.transform, false);
 						SaveLoadRoot component = diggable.GetComponent<SaveLoadRoot>();
@@ -631,15 +594,13 @@ public class Constructable : Workable, ISaveLoadable
 			}
 			else
 			{
-				notifier.Add(invalidLocation, string.Empty);
+				notifier.Add(invalidLocation, "");
 			}
 			GetComponent<KSelectable>().ToggleStatusItem(Db.Get().BuildingStatusItems.InvalidBuildingLocation, !flag, this);
 			bool flag2 = digs_complete && flag && fetchList == null;
 			if (flag2 && buildChore == null)
 			{
-				ChoreType build = Db.Get().ChoreTypes.Build;
-				Tag[] chore_tags = choreTags;
-				buildChore = new WorkChore<Constructable>(build, this, null, chore_tags, true, UpdateBuildState, UpdateBuildState, UpdateBuildState, true, null, false, true, null, true, true, true, PriorityScreen.PriorityClass.basic, 5, false, true);
+				buildChore = new WorkChore<Constructable>(Db.Get().ChoreTypes.Build, this, null, true, UpdateBuildState, UpdateBuildState, UpdateBuildState, true, null, false, true, null, true, true, true, PriorityScreen.PriorityClass.basic, 5, false, true);
 				UpdateBuildState(buildChore);
 			}
 			else if (!flag2 && buildChore != null)
@@ -746,7 +707,7 @@ public class Constructable : Workable, ISaveLoadable
 	{
 		UserMenu userMenu = Game.Instance.userMenu;
 		GameObject gameObject = base.gameObject;
-		string iconName = "icon_cancel";
+		string iconName = "action_cancel";
 		string text = UI.USERMENUACTIONS.CANCELCONSTRUCTION.NAME;
 		System.Action on_click = OnPressCancel;
 		string tooltipText = UI.USERMENUACTIONS.CANCELCONSTRUCTION.TOOLTIP;

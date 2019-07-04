@@ -44,7 +44,7 @@ public class CodexScreen : KScreen
 	[SerializeField]
 	private RectTransform scrollContentPane;
 
-	private bool editingSearch;
+	private bool editingSearch = false;
 
 	private List<string> history = new List<string>();
 
@@ -107,6 +107,9 @@ public class CodexScreen : KScreen
 	[SerializeField]
 	private GameObject prefabContentLocked;
 
+	[SerializeField]
+	private GameObject prefabVideoWidget;
+
 	[Header("Text Styles")]
 	[SerializeField]
 	private TextStyleSetting textStyleTitle;
@@ -133,7 +136,7 @@ public class CodexScreen : KScreen
 		};
 		clearSearchButton.onClick += delegate
 		{
-			searchInputField.text = string.Empty;
+			searchInputField.text = "";
 		};
 		if (string.IsNullOrEmpty(activeEntryID))
 		{
@@ -176,7 +179,7 @@ public class CodexScreen : KScreen
 		SetupPrefabs();
 		PopulatePools();
 		CategorizeEntries();
-		FilterSearch(string.Empty);
+		FilterSearch("");
 		Game.Instance.Subscribe(1594320620, delegate
 		{
 			FilterSearch(searchInputField.text);
@@ -198,6 +201,7 @@ public class CodexScreen : KScreen
 		ContentPrefabs[typeof(CodexLabelWithIcon)] = prefabLabelWithIcon;
 		ContentPrefabs[typeof(CodexContentLockedIndicator)] = prefabContentLocked;
 		ContentPrefabs[typeof(CodexLargeSpacer)] = prefabLargeSpacer;
+		ContentPrefabs[typeof(CodexVideo)] = prefabVideoWidget;
 	}
 
 	private List<CodexEntry> FilterSearch(string input)
@@ -206,7 +210,7 @@ public class CodexScreen : KScreen
 		input = input.ToLower();
 		foreach (KeyValuePair<string, CodexEntry> entry in CodexCache.entries)
 		{
-			if (input == string.Empty)
+			if (input == "")
 			{
 				if (!entry.Value.searchOnly)
 				{
@@ -228,7 +232,7 @@ public class CodexScreen : KScreen
 				}
 			}
 		}
-		FilterEntries(input != string.Empty);
+		FilterEntries(input != "");
 		return searchResults;
 	}
 
@@ -295,7 +299,7 @@ public class CodexScreen : KScreen
 
 	private GameObject NewCategoryHeader(KeyValuePair<string, CodexEntry> entryKVP, Dictionary<string, GameObject> categories)
 	{
-		if (entryKVP.Value.category == string.Empty)
+		if (entryKVP.Value.category == "")
 		{
 			entryKVP.Value.category = "Root";
 		}
@@ -323,21 +327,21 @@ public class CodexScreen : KScreen
 
 	private void CategorizeEntries()
 	{
-		string empty = string.Empty;
+		string text = "";
 		GameObject gameObject = navigatorContent.gameObject;
 		Dictionary<string, GameObject> dictionary = new Dictionary<string, GameObject>();
 		foreach (KeyValuePair<string, CodexEntry> entry in CodexCache.entries)
 		{
-			empty = entry.Value.category;
-			if (empty == string.Empty || empty == "Root")
+			text = entry.Value.category;
+			if (text == "" || text == "Root")
 			{
-				empty = "Root";
+				text = "Root";
 			}
-			if (!dictionary.ContainsKey(empty))
+			if (!dictionary.ContainsKey(text))
 			{
 				NewCategoryHeader(entry, dictionary);
 			}
-			GameObject gameObject2 = Util.KInstantiateUI(prefabNavigatorEntry, dictionary[empty], true);
+			GameObject gameObject2 = Util.KInstantiateUI(prefabNavigatorEntry, dictionary[text], true);
 			string id = entry.Key;
 			gameObject2.GetComponent<KButton>().onClick += delegate
 			{
@@ -426,7 +430,7 @@ public class CodexScreen : KScreen
 			id = "PAGENOTFOUND";
 		}
 		int num = 0;
-		string text = string.Empty;
+		string text = "";
 		while (contentContainers.transform.childCount > 0)
 		{
 			while (!string.IsNullOrEmpty(text) && CodexCache.entries[activeEntryID].contentContainers[num].lockID == text)
@@ -461,7 +465,7 @@ public class CodexScreen : KScreen
 			CodexCache.entries[id].contentContainers = new List<ContentContainer>();
 		}
 		bool flag2 = false;
-		string a = string.Empty;
+		string a = "";
 		for (int i = 0; i < CodexCache.entries[id].contentContainers.Count; i++)
 		{
 			ContentContainer contentContainer = CodexCache.entries[id].contentContainers[i];
@@ -494,7 +498,7 @@ public class CodexScreen : KScreen
 				}
 			}
 		}
-		string text2 = string.Empty;
+		string text2 = "";
 		string text3 = id;
 		int num3 = 0;
 		while (text3 != CodexCache.FormatLinkID("HOME") && num3 < 10)
@@ -511,7 +515,7 @@ public class CodexScreen : KScreen
 				text2 = text2.Insert(0, CodexCache.entries[text3].name + " > ");
 			}
 		}
-		currentLocationText.text = ((!(text2 == string.Empty)) ? text2 : CodexCache.entries["HOME"].name);
+		currentLocationText.text = ((!(text2 == "")) ? text2 : CodexCache.entries["HOME"].name);
 		if (history.Count == 0)
 		{
 			history.Add(activeEntryID);

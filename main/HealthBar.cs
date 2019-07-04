@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class HealthBar : ProgressBar
 {
-	private float showTimer;
+	private float showTimer = 0f;
 
 	private float maxShowTime = 10f;
 

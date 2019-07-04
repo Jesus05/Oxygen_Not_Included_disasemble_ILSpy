@@ -148,20 +148,17 @@ public class MinionEquipmentPanel : KMonoBehaviour
 
 	private string GetAssignedEffectsString(AssignableSlotInstance slot)
 	{
-		string empty = string.Empty;
+		string text = "";
 		List<Descriptor> list = new List<Descriptor>();
 		list.AddRange(GameUtil.GetGameObjectEffects(slot.assignable.gameObject, false));
 		if (list.Count > 0)
 		{
-			empty += "\n";
+			text += "\n";
+			foreach (Descriptor item in list)
 			{
-				foreach (Descriptor item in list)
-				{
-					empty = empty + "  • " + item.IndentedText() + "\n";
-				}
-				return empty;
+				text = text + "  • " + item.IndentedText() + "\n";
 			}
 		}
-		return empty;
+		return text;
 	}
 }

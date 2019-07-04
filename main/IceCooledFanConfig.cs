@@ -11,6 +11,14 @@ public class IceCooledFanConfig : IBuildingConfig
 
 	private float ICE_CAPACITY = 50f;
 
+	private static readonly CellOffset[] overrideOffsets = new CellOffset[4]
+	{
+		new CellOffset(-2, 1),
+		new CellOffset(2, 1),
+		new CellOffset(-1, 0),
+		new CellOffset(1, 0)
+	};
+
 	public override BuildingDef CreateBuildingDef()
 	{
 		string id = "IceCooledFan";
@@ -18,14 +26,15 @@ public class IceCooledFanConfig : IBuildingConfig
 		int height = 2;
 		string anim = "fanice_kanim";
 		int hitpoints = 30;
-		float construction_time = 10f;
-		float[] tIER = BUILDINGS.CONSTRUCTION_MASS_KG.TIER2;
+		float construction_time = 30f;
+		float[] tIER = BUILDINGS.CONSTRUCTION_MASS_KG.TIER4;
 		string[] aLL_METALS = MATERIALS.ALL_METALS;
 		float melting_point = 1600f;
 		BuildLocationRule build_location_rule = BuildLocationRule.OnFloor;
 		EffectorValues tIER2 = NOISE_POLLUTION.NOISY.TIER2;
 		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, tIER, aLL_METALS, melting_point, build_location_rule, BUILDINGS.DECOR.NONE, tIER2, 0.2f);
-		buildingDef.ExhaustKilowattsWhenActive = 0f - COOLING_RATE;
+		buildingDef.SelfHeatKilowattsWhenActive = (0f - COOLING_RATE) * 0.25f;
+		buildingDef.ExhaustKilowattsWhenActive = (0f - COOLING_RATE) * 0.75f;
 		buildingDef.Overheatable = false;
 		buildingDef.ViewMode = OverlayModes.Temperature.ID;
 		buildingDef.AudioCategory = "Metal";
@@ -71,5 +80,13 @@ public class IceCooledFanConfig : IBuildingConfig
 
 	public override void DoPostConfigureComplete(GameObject go)
 	{
+		go.GetComponent<KPrefabID>().prefabSpawnFn += delegate(GameObject game_object)
+		{
+			HandleVector<int>.Handle handle = GameComps.StructureTemperatures.GetHandle(game_object);
+			StructureTemperaturePayload new_data = GameComps.StructureTemperatures.GetPayload(handle);
+			int cell = Grid.PosToCell(game_object);
+			new_data.OverrideExtents(new Extents(cell, overrideOffsets));
+			GameComps.StructureTemperatures.SetPayload(handle, ref new_data);
+		};
 	}
 }

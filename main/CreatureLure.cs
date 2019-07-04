@@ -188,7 +188,7 @@ public class CreatureLure : StateMachineComponent<CreatureLure.StatesInstance>
 			fetchChore = new FetchChore(Db.Get().ChoreTypes.Transport, baitStorage, 100f, new Tag[1]
 			{
 				activeBaitSetting
-			}, null, null, null, true, null, null, null, FetchOrder2.OperationalRequirement.None, 0, null);
+			}, null, null, null, true, null, null, null, FetchOrder2.OperationalRequirement.None, 0);
 			GetComponent<KSelectable>().AddStatusItem(Db.Get().BuildingStatusItems.AwaitingBaitDelivery, null);
 		}
 	}

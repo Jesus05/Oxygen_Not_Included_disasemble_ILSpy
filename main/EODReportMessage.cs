@@ -29,7 +29,7 @@ public class EODReportMessage : Message
 
 	public override string GetMessageBody()
 	{
-		return string.Empty;
+		return "";
 	}
 
 	public override string GetTooltip()

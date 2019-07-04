@@ -1,6 +1,7 @@
 using Database;
 using Klei.AI;
 using STRINGS;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -97,10 +98,12 @@ public class SkillWidget : KMonoBehaviour, IPointerEnterHandler, IPointerExitHan
 			MinionIdentity minionIdentity = skillsScreen.CurrentlySelectedMinion as MinionIdentity;
 			StoredMinionIdentity storedMinionIdentity = skillsScreen.CurrentlySelectedMinion as StoredMinionIdentity;
 			MinionResume minionResume = null;
-			if ((Object)minionIdentity != (Object)null)
+			if ((UnityEngine.Object)minionIdentity != (UnityEngine.Object)null)
 			{
 				minionResume = minionIdentity.GetComponent<MinionResume>();
-				if (!((Object)minionResume == (Object)null) && (minionResume.HasMasteredSkill(skillID) || minionResume.CanMasterSkill(skillID)))
+				MinionResume.SkillMasteryConditions[] skillMasteryConditions = minionResume.GetSkillMasteryConditions(skillID);
+				bool flag = minionResume.CanMasterSkill(skillMasteryConditions);
+				if (!((UnityEngine.Object)minionResume == (UnityEngine.Object)null) && (minionResume.HasMasteredSkill(skillID) || flag))
 				{
 					TitleBarBG.color = ((!minionResume.HasMasteredSkill(skillID)) ? header_color_can_assign : header_color_has_skill);
 					hatImage.material = defaultMaterial;
@@ -111,7 +114,7 @@ public class SkillWidget : KMonoBehaviour, IPointerEnterHandler, IPointerExitHan
 					hatImage.material = desaturatedMaterial;
 				}
 			}
-			else if ((Object)storedMinionIdentity != (Object)null)
+			else if ((UnityEngine.Object)storedMinionIdentity != (UnityEngine.Object)null)
 			{
 				if (storedMinionIdentity.HasMasteredSkill(skillID))
 				{
@@ -124,21 +127,21 @@ public class SkillWidget : KMonoBehaviour, IPointerEnterHandler, IPointerExitHan
 					hatImage.material = desaturatedMaterial;
 				}
 			}
-			hatImage.sprite = Assets.GetSprite(skill.hat);
+			hatImage.sprite = Assets.GetSprite(skill.badge);
 			bool active = false;
-			if ((Object)minionResume != (Object)null)
+			if ((UnityEngine.Object)minionResume != (UnityEngine.Object)null)
 			{
 				minionResume.AptitudeBySkillGroup.TryGetValue(skill.skillGroup, out float value);
 				active = (value > 0f);
 			}
 			aptitudeBox.SetActive(active);
-			traitDisabledIcon.SetActive((Object)minionResume != (Object)null && minionResume.CheckSkillTraitDisabled(skill.Id));
-			string text = string.Empty;
+			traitDisabledIcon.SetActive((UnityEngine.Object)minionResume != (UnityEngine.Object)null && !minionResume.IsAbleToLearnSkill(skill.Id));
+			string text = "";
 			List<string> list = new List<string>();
 			foreach (MinionIdentity item in Components.LiveMinionIdentities.Items)
 			{
 				MinionResume component = item.GetComponent<MinionResume>();
-				if ((Object)component != (Object)null && component.HasMasteredSkill(skillID))
+				if ((UnityEngine.Object)component != (UnityEngine.Object)null && component.HasMasteredSkill(skillID))
 				{
 					list.Add(component.GetProperName());
 				}
@@ -151,7 +154,7 @@ public class SkillWidget : KMonoBehaviour, IPointerEnterHandler, IPointerExitHan
 					if (current3.serializedMinion != null)
 					{
 						StoredMinionIdentity storedMinionIdentity2 = current3.serializedMinion.Get<StoredMinionIdentity>();
-						if ((Object)storedMinionIdentity2 != (Object)null && storedMinionIdentity2.HasMasteredSkill(skillID))
+						if ((UnityEngine.Object)storedMinionIdentity2 != (UnityEngine.Object)null && storedMinionIdentity2.HasMasteredSkill(skillID))
 						{
 							list.Add(storedMinionIdentity2.GetProperName());
 						}
@@ -182,7 +185,7 @@ public class SkillWidget : KMonoBehaviour, IPointerEnterHandler, IPointerExitHan
 		{
 			for (int num = lines.Length - 1; num >= 0; num--)
 			{
-				Object.Destroy(lines[num].gameObject);
+				UnityEngine.Object.Destroy(lines[num].gameObject);
 			}
 		}
 		linePoints.Clear();
@@ -259,14 +262,14 @@ public class SkillWidget : KMonoBehaviour, IPointerEnterHandler, IPointerExitHan
 
 	public string SkillTooltip(Skill skill)
 	{
-		string empty = string.Empty;
-		empty += SkillPerksString(skill);
-		return empty + "\n" + DuplicantSkillString(skill);
+		string str = "";
+		str += SkillPerksString(skill);
+		return str + "\n" + DuplicantSkillString(skill);
 	}
 
 	public string SkillPerksString(Skill skill)
 	{
-		string text = string.Empty;
+		string text = "";
 		foreach (SkillPerk perk in skill.perks)
 		{
 			if (!string.IsNullOrEmpty(text))
@@ -281,17 +284,16 @@ public class SkillWidget : KMonoBehaviour, IPointerEnterHandler, IPointerExitHan
 	public string CriteriaString(Skill skill)
 	{
 		bool flag = false;
-		string empty = string.Empty;
-		empty = empty + "<b>" + UI.ROLES_SCREEN.ASSIGNMENT_REQUIREMENTS.TITLE + "</b>\n";
+		string str = "";
+		str = str + "<b>" + UI.ROLES_SCREEN.ASSIGNMENT_REQUIREMENTS.TITLE + "</b>\n";
 		SkillGroup skillGroup = Db.Get().SkillGroups.Get(skill.skillGroup);
 		if (skillGroup != null && skillGroup.relevantAttributes != null)
 		{
-			foreach (string relevantAttribute in skillGroup.relevantAttributes)
+			foreach (Klei.AI.Attribute relevantAttribute in skillGroup.relevantAttributes)
 			{
-				Attribute attribute = Db.Get().Attributes.Get(relevantAttribute);
-				if (attribute != null)
+				if (relevantAttribute != null)
 				{
-					empty = empty + "    • " + string.Format(UI.SKILLS_SCREEN.ASSIGNMENT_REQUIREMENTS.SKILLGROUP_ENABLED.DESCRIPTION, attribute.Name) + "\n";
+					str = str + "    • " + string.Format(UI.SKILLS_SCREEN.ASSIGNMENT_REQUIREMENTS.SKILLGROUP_ENABLED.DESCRIPTION, relevantAttribute.Name) + "\n";
 					flag = true;
 				}
 			}
@@ -301,38 +303,97 @@ public class SkillWidget : KMonoBehaviour, IPointerEnterHandler, IPointerExitHan
 			flag = true;
 			for (int i = 0; i < skill.priorSkills.Count; i++)
 			{
-				empty = empty + "    • " + $"{Db.Get().Skills.Get(skill.priorSkills[i]).Name}";
-				empty += "</color>";
+				str = str + "    • " + $"{Db.Get().Skills.Get(skill.priorSkills[i]).Name}";
+				str += "</color>";
 				if (i != skill.priorSkills.Count - 1)
 				{
-					empty += "\n";
+					str += "\n";
 				}
 			}
 		}
 		if (!flag)
 		{
-			empty = empty + "    • " + string.Format(UI.ROLES_SCREEN.ASSIGNMENT_REQUIREMENTS.NONE, skill.Name);
+			str = str + "    • " + string.Format(UI.ROLES_SCREEN.ASSIGNMENT_REQUIREMENTS.NONE, skill.Name);
 		}
-		return empty;
+		return str;
 	}
 
 	public string DuplicantSkillString(Skill skill)
 	{
-		string text = string.Empty;
+		string text = "";
 		MinionIdentity minionIdentity = skillsScreen.CurrentlySelectedMinion as MinionIdentity;
-		if ((Object)minionIdentity != (Object)null)
+		if ((UnityEngine.Object)minionIdentity != (UnityEngine.Object)null)
 		{
 			MinionResume component = minionIdentity.GetComponent<MinionResume>();
-			if ((Object)component == (Object)null)
+			if ((UnityEngine.Object)component == (UnityEngine.Object)null)
 			{
-				return string.Empty;
+				return "";
 			}
 			LocString cAN_MASTER = UI.SKILLS_SCREEN.ASSIGNMENT_REQUIREMENTS.MASTERY.CAN_MASTER;
-			if (!component.HasMasteredSkill(skill.Id) && !component.CanMasterSkill(skill.Id))
+			if (!component.HasMasteredSkill(skill.Id))
 			{
-				text += "\n";
-				cAN_MASTER = UI.SKILLS_SCREEN.ASSIGNMENT_REQUIREMENTS.MASTERY.CANNOT_MASTER;
-				text += string.Format(cAN_MASTER, minionIdentity.GetProperName(), skill.Name);
+				MinionResume.SkillMasteryConditions[] skillMasteryConditions = component.GetSkillMasteryConditions(skill.Id);
+				if (!component.CanMasterSkill(skillMasteryConditions))
+				{
+					bool flag = false;
+					text += "\n";
+					cAN_MASTER = UI.SKILLS_SCREEN.ASSIGNMENT_REQUIREMENTS.MASTERY.CANNOT_MASTER;
+					text += string.Format(cAN_MASTER, minionIdentity.GetProperName(), skill.Name);
+					if (Array.Exists(skillMasteryConditions, (MinionResume.SkillMasteryConditions element) => element == MinionResume.SkillMasteryConditions.UnableToLearn))
+					{
+						flag = true;
+						Trait trait = null;
+						string choreGroupID = Db.Get().SkillGroups.Get(skill.skillGroup).choreGroupID;
+						if (!string.IsNullOrEmpty(choreGroupID))
+						{
+							Traits component2 = minionIdentity.GetComponent<Traits>();
+							foreach (Trait trait2 in component2.TraitList)
+							{
+								if (trait2.disabledChoreGroups != null)
+								{
+									ChoreGroup[] disabledChoreGroups = trait2.disabledChoreGroups;
+									foreach (ChoreGroup choreGroup in disabledChoreGroups)
+									{
+										if (choreGroup.Id == choreGroupID && trait == null)
+										{
+											trait = trait2;
+										}
+									}
+								}
+							}
+						}
+						text += "\n";
+						cAN_MASTER = UI.SKILLS_SCREEN.ASSIGNMENT_REQUIREMENTS.MASTERY.PREVENTED_BY_TRAIT;
+						text += string.Format(cAN_MASTER, trait.Name);
+					}
+					if (!flag && Array.Exists(skillMasteryConditions, (MinionResume.SkillMasteryConditions element) => element == MinionResume.SkillMasteryConditions.MissingPreviousSkill))
+					{
+						text += "\n";
+						cAN_MASTER = UI.SKILLS_SCREEN.ASSIGNMENT_REQUIREMENTS.MASTERY.REQUIRES_PREVIOUS_SKILLS;
+						text += string.Format(cAN_MASTER);
+					}
+					if (!flag && Array.Exists(skillMasteryConditions, (MinionResume.SkillMasteryConditions element) => element == MinionResume.SkillMasteryConditions.NeedsSkillPoints))
+					{
+						text += "\n";
+						cAN_MASTER = UI.SKILLS_SCREEN.ASSIGNMENT_REQUIREMENTS.MASTERY.REQUIRES_MORE_SKILL_POINTS;
+						text += string.Format(cAN_MASTER);
+					}
+				}
+				else
+				{
+					if (Array.Exists(skillMasteryConditions, (MinionResume.SkillMasteryConditions element) => element == MinionResume.SkillMasteryConditions.StressWarning))
+					{
+						text += "\n";
+						cAN_MASTER = UI.SKILLS_SCREEN.ASSIGNMENT_REQUIREMENTS.MASTERY.STRESS_WARNING_MESSAGE;
+						text += string.Format(cAN_MASTER, skill.Name, minionIdentity.GetProperName());
+					}
+					if (Array.Exists(skillMasteryConditions, (MinionResume.SkillMasteryConditions element) => element == MinionResume.SkillMasteryConditions.SkillAptitude))
+					{
+						text += "\n";
+						cAN_MASTER = UI.SKILLS_SCREEN.ASSIGNMENT_REQUIREMENTS.MASTERY.SKILL_APTITUDE;
+						text += string.Format(cAN_MASTER, minionIdentity.GetProperName(), skill.Name);
+					}
+				}
 			}
 		}
 		return text;
@@ -353,14 +414,16 @@ public class SkillWidget : KMonoBehaviour, IPointerEnterHandler, IPointerExitHan
 	public void OnPointerClick(PointerEventData eventData)
 	{
 		MinionIdentity minionIdentity = skillsScreen.CurrentlySelectedMinion as MinionIdentity;
-		if ((Object)minionIdentity != (Object)null)
+		if ((UnityEngine.Object)minionIdentity != (UnityEngine.Object)null)
 		{
 			MinionResume component = minionIdentity.GetComponent<MinionResume>();
 			if (DebugHandler.InstantBuildMode && component.AvailableSkillpoints < 1)
 			{
 				component.ForceAddSkillPoint();
 			}
-			if ((Object)component != (Object)null && !component.HasMasteredSkill(skillID) && component.CanMasterSkill(skillID))
+			MinionResume.SkillMasteryConditions[] skillMasteryConditions = component.GetSkillMasteryConditions(skillID);
+			bool flag = component.CanMasterSkill(skillMasteryConditions);
+			if ((UnityEngine.Object)component != (UnityEngine.Object)null && !component.HasMasteredSkill(skillID) && flag)
 			{
 				component.MasterSkill(skillID);
 				skillsScreen.RefreshSkillWidgets();
@@ -370,6 +433,17 @@ public class SkillWidget : KMonoBehaviour, IPointerEnterHandler, IPointerExitHan
 
 	public void OnPointerDown(PointerEventData eventData)
 	{
-		KFMOD.PlayOneShot(GlobalAssets.GetSound("HUD_Click", false));
+		MinionIdentity minionIdentity = skillsScreen.CurrentlySelectedMinion as MinionIdentity;
+		MinionResume component = minionIdentity.GetComponent<MinionResume>();
+		MinionResume.SkillMasteryConditions[] skillMasteryConditions = component.GetSkillMasteryConditions(skillID);
+		bool flag = component.CanMasterSkill(skillMasteryConditions);
+		if ((UnityEngine.Object)component != (UnityEngine.Object)null && !component.HasMasteredSkill(skillID) && flag)
+		{
+			KFMOD.PlayOneShot(GlobalAssets.GetSound("HUD_Click", false));
+		}
+		else
+		{
+			KFMOD.PlayOneShot(GlobalAssets.GetSound("Negative", false));
+		}
 	}
 }

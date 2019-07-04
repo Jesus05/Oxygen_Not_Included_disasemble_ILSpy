@@ -8,7 +8,7 @@ public class CrewPortrait : KMonoBehaviour
 {
 	public Image targetImage;
 
-	public bool startTransparent;
+	public bool startTransparent = false;
 
 	public bool useLabels = true;
 
@@ -25,7 +25,7 @@ public class CrewPortrait : KMonoBehaviour
 
 	public bool useDefaultExpression = true;
 
-	private bool requiresRefresh;
+	private bool requiresRefresh = false;
 
 	private bool areEventsRegistered;
 
@@ -202,10 +202,10 @@ public class CrewPortrait : KMonoBehaviour
 		SetPortraitData(identityObject, controller, useDefaultExpression);
 		if (useLabels && (UnityEngine.Object)duplicantName != (UnityEngine.Object)null)
 		{
-			duplicantName.SetText((identityObject == null) ? string.Empty : identityObject.GetProperName());
+			duplicantName.SetText((identityObject == null) ? "" : identityObject.GetProperName());
 			if (identityObject is MinionIdentity && (UnityEngine.Object)duplicantJob != (UnityEngine.Object)null)
 			{
-				duplicantJob.SetText((identityObject == null) ? string.Empty : (identityObject as MinionIdentity).GetComponent<MinionResume>().GetSkillsSubtitle());
+				duplicantJob.SetText((identityObject == null) ? "" : (identityObject as MinionIdentity).GetComponent<MinionResume>().GetSkillsSubtitle());
 				duplicantJob.GetComponent<ToolTip>().toolTip = (identityObject as MinionIdentity).GetComponent<MinionResume>().GetSkillsSubtitle();
 			}
 		}
@@ -213,7 +213,7 @@ public class CrewPortrait : KMonoBehaviour
 
 	private static void RefreshHat(IAssignableIdentity identityObject, KBatchedAnimController controller)
 	{
-		string hat_id = string.Empty;
+		string hat_id = "";
 		MinionIdentity minionIdentity = identityObject as MinionIdentity;
 		if ((UnityEngine.Object)minionIdentity != (UnityEngine.Object)null)
 		{

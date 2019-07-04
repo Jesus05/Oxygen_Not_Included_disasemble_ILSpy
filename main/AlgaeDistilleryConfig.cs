@@ -60,7 +60,7 @@ public class AlgaeDistilleryConfig : IBuildingConfig
 		storage.capacityKg = 1000f;
 		storage.SetDefaultStoredItemModifiers(Storage.StandardSealedStorage);
 		storage.showInUI = true;
-		Tag tag = new Tag("SlimeMold");
+		Tag tag = SimHashes.SlimeMold.CreateTag();
 		ManualDeliveryKG manualDeliveryKG = go.AddOrGet<ManualDeliveryKG>();
 		manualDeliveryKG.SetStorage(storage);
 		manualDeliveryKG.requestedItemTag = tag;

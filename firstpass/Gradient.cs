@@ -1,3 +1,6 @@
+using System;
+
+[Serializable]
 public class Gradient<T>
 {
 	public T content

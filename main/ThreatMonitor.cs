@@ -39,13 +39,13 @@ public class ThreatMonitor : GameStateMachine<ThreatMonitor, ThreatMonitor.Insta
 
 		public bool Calm(float dt, FactionAlignment self)
 		{
-			if (grudgeTime <= 0f)
+			if (!(grudgeTime <= 0f))
 			{
-				return true;
-			}
-			grudgeTime = Mathf.Max(0f, grudgeTime - dt);
-			if (grudgeTime == 0f)
-			{
+				grudgeTime = Mathf.Max(0f, grudgeTime - dt);
+				if (grudgeTime != 0f)
+				{
+					return false;
+				}
 				if (FactionManager.Instance.GetDisposition(self.Alignment, target.Alignment) != FactionManager.Disposition.Attack)
 				{
 					PopFXManager.Instance.SpawnFX(PopFXManager.Instance.sprite_Plus, UI.GAMEOBJECTEFFECTS.FORGAVEATTACKER, self.transform, 2f, true);
@@ -53,7 +53,7 @@ public class ThreatMonitor : GameStateMachine<ThreatMonitor, ThreatMonitor.Insta
 				Clear();
 				return true;
 			}
-			return false;
+			return true;
 		}
 
 		public void Clear()
@@ -176,11 +176,13 @@ public class ThreatMonitor : GameStateMachine<ThreatMonitor, ThreatMonitor.Insta
 
 		private void GotoThreatResponse()
 		{
+			bool flag = base.smi.master.GetComponent<Navigator>().IsMoving();
+			Chore currentChore = base.smi.master.GetComponent<ChoreDriver>().GetCurrentChore();
 			if (WillFight() && mainThreat.GetComponent<FactionAlignment>().targeted)
 			{
 				base.smi.GoTo(base.smi.sm.threatened.duplicant.ShouldFight);
 			}
-			else
+			else if (!flag && (currentChore == null || currentChore.target == null || !((UnityEngine.Object)currentChore.target.GetComponent<Pickupable>() != (UnityEngine.Object)null)))
 			{
 				base.smi.GoTo(base.smi.sm.threatened.duplicant.ShoudFlee);
 			}
@@ -233,32 +235,32 @@ public class ThreatMonitor : GameStateMachine<ThreatMonitor, ThreatMonitor.Insta
 		public GameObject FindThreat()
 		{
 			threats.Clear();
-			if (base.isMasterNull)
+			if (!base.isMasterNull)
 			{
-				return null;
-			}
-			bool flag = WillFight();
-			if (IAmADuplicant && flag)
-			{
-				for (int i = 0; i < 6; i++)
+				bool flag = WillFight();
+				if (IAmADuplicant && flag)
 				{
-					if (i != 0)
+					for (int i = 0; i < 6; i++)
 					{
-						foreach (FactionAlignment member in FactionManager.Instance.GetFaction((FactionManager.FactionID)i).Members)
+						if (i != 0)
 						{
-							if (member.targeted && !member.health.IsDefeated() && !threats.Contains(member) && navigator.CanReach(member.attackable))
+							foreach (FactionAlignment member in FactionManager.Instance.GetFaction((FactionManager.FactionID)i).Members)
 							{
-								threats.Add(member);
+								if (member.targeted && !member.health.IsDefeated() && !threats.Contains(member) && navigator.CanReach(member.attackable))
+								{
+									threats.Add(member);
+								}
 							}
 						}
 					}
 				}
-			}
-			if (threats.Count == 0)
-			{
+				if (threats.Count != 0)
+				{
+					return PickBestTarget(threats);
+				}
 				return null;
 			}
-			return PickBestTarget(threats);
+			return null;
 		}
 
 		public GameObject PickBestTarget(List<FactionAlignment> threats)

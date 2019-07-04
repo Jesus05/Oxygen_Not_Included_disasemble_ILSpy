@@ -6,7 +6,7 @@ public abstract class ConduitThresholdSensor : ConduitSensor
 {
 	[SerializeField]
 	[Serialize]
-	protected float threshold;
+	protected float threshold = 0f;
 
 	[SerializeField]
 	[Serialize]

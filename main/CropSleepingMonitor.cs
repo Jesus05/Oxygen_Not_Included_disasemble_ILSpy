@@ -5,9 +5,9 @@ public class CropSleepingMonitor : GameStateMachine<CropSleepingMonitor, CropSle
 {
 	public class Def : BaseDef, IGameObjectEffectDescriptor
 	{
-		public float lightIntensityThreshold;
+		public float lightIntensityThreshold = 0f;
 
-		public bool prefersDarkness;
+		public bool prefersDarkness = false;
 
 		public List<Descriptor> GetDescriptors(GameObject obj)
 		{

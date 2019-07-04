@@ -33,6 +33,8 @@ public class ReceptacleMonitor : StateMachineComponent<ReceptacleMonitor.StatesI
 		}
 	}
 
+	private bool replanted = false;
+
 	WiltCondition.Condition[] IWiltCause.Conditions
 	{
 		get
@@ -44,11 +46,13 @@ public class ReceptacleMonitor : StateMachineComponent<ReceptacleMonitor.StatesI
 		}
 	}
 
+	public bool Replanted => replanted;
+
 	public string WiltStateString
 	{
 		get
 		{
-			string text = string.Empty;
+			string text = "";
 			if (base.smi.IsInsideState(base.smi.sm.inoperational))
 			{
 				text += CREATURES.STATUSITEMS.RECEPTACLEINOPERATIONAL.NAME;
@@ -61,6 +65,25 @@ public class ReceptacleMonitor : StateMachineComponent<ReceptacleMonitor.StatesI
 	{
 		base.OnSpawn();
 		base.smi.StartSM();
+	}
+
+	public PlantablePlot GetReceptacle()
+	{
+		return (PlantablePlot)base.smi.sm.receptacle.Get(base.smi);
+	}
+
+	public void SetReceptacle(PlantablePlot plot = null)
+	{
+		if ((Object)plot == (Object)null)
+		{
+			base.smi.sm.receptacle.Set(null, base.smi);
+			replanted = false;
+		}
+		else
+		{
+			base.smi.sm.receptacle.Set(plot, base.smi);
+			replanted = true;
+		}
 	}
 
 	public void Sim1000ms(float dt)

@@ -29,7 +29,7 @@ public class HarvestTool : DragTool
 	{
 		if (Grid.IsValidCell(cell))
 		{
-			foreach (Harvestable item in Components.Harvestables.Items)
+			foreach (HarvestDesignatable item in Components.HarvestDesignatables.Items)
 			{
 				OccupyArea area = item.area;
 				if (Grid.PosToCell(item) == cell || ((Object)area != (Object)null && area.CheckIsOccupying(cell)))

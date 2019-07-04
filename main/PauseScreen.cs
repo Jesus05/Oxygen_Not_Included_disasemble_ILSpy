@@ -47,13 +47,14 @@ public class PauseScreen : KModalButtonMenu
 		base.OnPrefabInit();
 		if (!GenericGameSettings.instance.demoMode)
 		{
-			buttons = new ButtonInfo[7]
+			buttons = new ButtonInfo[8]
 			{
 				new ButtonInfo(UI.FRONTEND.PAUSE_SCREEN.RESUME, Action.NumActions, OnResume, null, null),
 				new ButtonInfo(UI.FRONTEND.PAUSE_SCREEN.SAVE, Action.NumActions, OnSave, null, null),
 				new ButtonInfo(UI.FRONTEND.PAUSE_SCREEN.SAVEAS, Action.NumActions, OnSaveAs, null, null),
 				new ButtonInfo(UI.FRONTEND.PAUSE_SCREEN.LOAD, Action.NumActions, OnLoad, null, null),
 				new ButtonInfo(UI.FRONTEND.PAUSE_SCREEN.OPTIONS, Action.NumActions, OnOptions, null, null),
+				new ButtonInfo(UI.FRONTEND.PAUSE_SCREEN.COLONY_SUMMARY, Action.NumActions, OnColonySummary, null, null),
 				new ButtonInfo(UI.FRONTEND.PAUSE_SCREEN.QUIT, Action.NumActions, OnQuit, null, null),
 				new ButtonInfo(UI.FRONTEND.PAUSE_SCREEN.DESKTOPQUIT, Action.NumActions, OnDesktopQuit, null, null)
 			};
@@ -111,7 +112,7 @@ public class PauseScreen : KModalButtonMenu
 			{
 				DoSave(filename);
 				base.gameObject.SetActive(true);
-			}, OnCancelPopup, null, null, null, null, null, null);
+			}, OnCancelPopup, null, null, null, null, null, null, true);
 		}
 		else
 		{
@@ -136,8 +137,8 @@ public class PauseScreen : KModalButtonMenu
 				Deactivate();
 			}, null, UI.FRONTEND.SAVESCREEN.REPORT_BUG, delegate
 			{
-				KCrashReporter.ReportError(e.Message, e.StackTrace.ToString(), null, null, string.Empty);
-			}, null, null, null, null);
+				KCrashReporter.ReportError(e.Message, e.StackTrace.ToString(), null, null, "");
+			}, null, null, null, null, true);
 		}
 	}
 
@@ -145,12 +146,18 @@ public class PauseScreen : KModalButtonMenu
 	{
 		base.gameObject.SetActive(false);
 		ConfirmDialogScreen confirmDialogScreen = (ConfirmDialogScreen)GameScreenManager.Instance.StartScreen(ScreenPrefabs.Instance.ConfirmDialogScreen.gameObject, base.transform.parent.gameObject, GameScreenManager.UIRenderTarget.ScreenSpaceOverlay);
-		confirmDialogScreen.PopupConfirmDialog(text, onConfirm, OnCancelPopup, null, null, null, null, null, null);
+		confirmDialogScreen.PopupConfirmDialog(text, onConfirm, OnCancelPopup, null, null, null, null, null, null, true);
 	}
 
 	private void OnLoad()
 	{
 		ActivateChildScreen(loadScreenPrefab.gameObject);
+	}
+
+	private void OnColonySummary()
+	{
+		RetireColonyUtility.SaveColonySummaryData();
+		MainMenu.ActivateRetiredColoniesScreen(base.transform.parent.gameObject, SaveGame.Instance.BaseName, null);
 	}
 
 	private void OnQuit()
@@ -176,6 +183,11 @@ public class PauseScreen : KModalButtonMenu
 			Deactivate();
 			App.LoadScene("frontend");
 		});
+	}
+
+	private void OnRetireConfirm()
+	{
+		RetireColonyUtility.SaveColonySummaryData();
 	}
 
 	private void OnQuitConfirm()

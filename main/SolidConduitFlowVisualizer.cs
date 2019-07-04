@@ -121,11 +121,11 @@ public class SolidConduitFlowVisualizer
 
 	private string overlaySound;
 
-	private bool showContents;
+	private bool showContents = false;
 
 	private double animTime;
 
-	private int layer;
+	private int layer = 0;
 
 	private static Vector2 GRID_OFFSET = new Vector2(0.5f, 0.5f);
 
@@ -171,22 +171,22 @@ public class SolidConduitFlowVisualizer
 
 	private Color32 GetContentsColor(Element element, Color32 default_color)
 	{
-		if (element != null)
+		if (element == null)
 		{
-			Color c = element.substance.conduitColour;
-			c.a = 128f;
-			return c;
+			return default_color;
 		}
-		return default_color;
+		Color c = element.substance.conduitColour;
+		c.a = 128f;
+		return c;
 	}
 
 	private Color32 GetBackgroundColor(float insulation_lerp)
 	{
-		if (showContents)
+		if (!showContents)
 		{
-			return Color32.Lerp(visInfo.overlayTint, visInfo.overlayInsulatedTint, insulation_lerp);
+			return Color32.Lerp(visInfo.tint, visInfo.insulatedTint, insulation_lerp);
 		}
-		return Color32.Lerp(visInfo.tint, visInfo.insulatedTint, insulation_lerp);
+		return Color32.Lerp(visInfo.overlayTint, visInfo.overlayInsulatedTint, insulation_lerp);
 	}
 
 	public void Render(float z, int render_layer, float lerp_percent, bool trigger_audio = false)
@@ -248,7 +248,8 @@ public class SolidConduitFlowVisualizer
 					SolidConduitFlow.Conduit conduit = flowManager.GetSOAInfo().GetConduit(j);
 					SolidConduitFlow.ConduitFlowInfo lastFlowInfo = conduit.GetLastFlowInfo(flowManager);
 					SolidConduitFlow.ConduitContents initialContents = conduit.GetInitialContents(flowManager);
-					if (lastFlowInfo.contents.pickupableHandle.IsValid())
+					bool flag = lastFlowInfo.direction != SolidConduitFlow.FlowDirection.None;
+					if (flag)
 					{
 						int cell2 = conduit.GetCell(flowManager);
 						int cellFromDirection = SolidConduitFlow.GetCellFromDirection(cell2, lastFlowInfo.direction);
@@ -270,7 +271,7 @@ public class SolidConduitFlowVisualizer
 						float highlight = 0f;
 						if (showContents)
 						{
-							if (lastFlowInfo.contents.pickupableHandle.IsValid() != initialContents.pickupableHandle.IsValid())
+							if (flag != initialContents.pickupableHandle.IsValid())
 							{
 								movingBallMesh.AddQuad(pos, c, tuning.size, 0f, 0f, uvbl, uvtl, uvbr, uvtr);
 							}
@@ -292,7 +293,7 @@ public class SolidConduitFlowVisualizer
 							AddAudioSource(conduit, position);
 						}
 					}
-					if (initialContents.pickupableHandle.IsValid() && !lastFlowInfo.contents.pickupableHandle.IsValid())
+					if (initialContents.pickupableHandle.IsValid() && !flag)
 					{
 						int cell3 = conduit.GetCell(flowManager);
 						Vector2I v4 = Grid.CellToXY(cell3);

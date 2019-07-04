@@ -47,6 +47,10 @@ public static class RoomConstraints
 
 		public static Tag MachineShop = "MachineShop".ToTag();
 
+		public static Tag Park = "Park".ToTag();
+
+		public static Tag NatureReserve = "NatureReserve".ToTag();
+
 		public static Tag Decor20 = "Decor20".ToTag();
 	}
 
@@ -91,11 +95,11 @@ public static class RoomConstraints
 					}
 				}
 			}
-			if (num < times_required)
+			if (num >= times_required)
 			{
-				return false;
+				return true;
 			}
-			return true;
+			return false;
 		}
 	}
 
@@ -155,8 +159,8 @@ public static class RoomConstraints
 
 	public static Constraint BUILDING_DECOR_POSITIVE = new Constraint(delegate(KPrefabID bc)
 	{
-		DecorProvider component = bc.GetComponent<DecorProvider>();
-		if ((UnityEngine.Object)component != (UnityEngine.Object)null && component.baseDecor > 0f)
+		DecorProvider component3 = bc.GetComponent<DecorProvider>();
+		if ((UnityEngine.Object)component3 != (UnityEngine.Object)null && component3.baseDecor > 0f)
 		{
 			return true;
 		}
@@ -205,38 +209,54 @@ public static class RoomConstraints
 		MESS_STATION_SINGLE
 	});
 
+	public static Constraint PARK_BUILDING = new Constraint((KPrefabID bc) => bc.HasTag(ConstraintTags.Park), null, 1, ROOMS.CRITERIA.PARK_BUILDING.NAME, ROOMS.CRITERIA.PARK_BUILDING.DESCRIPTION, null);
+
+	public static Constraint ORIGINALTILES = new Constraint(null, (Room room) => 1 + room.cavity.maxY - room.cavity.minY >= 4, 1, "", "", null);
+
+	public static Constraint WILDANIMAL = new Constraint(null, delegate(Room room)
+	{
+		int num4 = room.cavity.creatures.Count + room.cavity.eggs.Count;
+		return num4 > 0;
+	}, 1, ROOMS.CRITERIA.WILDANIMAL.NAME, ROOMS.CRITERIA.WILDANIMAL.DESCRIPTION, null);
+
+	public static Constraint WILDANIMALS;
+
+	public static Constraint WILDPLANT;
+
+	public static Constraint WILDPLANTS;
+
 	public static string RoomCriteriaString(Room room)
 	{
-		string empty = string.Empty;
+		string str = "";
 		RoomType roomType = room.roomType;
 		if (roomType != Db.Get().RoomTypes.Neutral)
 		{
-			empty = empty + "<b>" + ROOMS.CRITERIA.HEADER + "</b>";
-			empty = empty + "\n    • " + roomType.primary_constraint.name;
+			str = str + "<b>" + ROOMS.CRITERIA.HEADER + "</b>";
+			str = str + "\n    • " + roomType.primary_constraint.name;
 			if (roomType.additional_constraints != null)
 			{
 				Constraint[] additional_constraints = roomType.additional_constraints;
 				foreach (Constraint constraint in additional_constraints)
 				{
-					empty = ((!constraint.isSatisfied(room)) ? (empty + "\n<color=#F44A47FF>    • " + constraint.name + "</color>") : (empty + "\n    • " + constraint.name));
+					str = ((!constraint.isSatisfied(room)) ? (str + "\n<color=#F44A47FF>    • " + constraint.name + "</color>") : (str + "\n    • " + constraint.name));
 				}
 			}
 		}
 		else
 		{
 			RoomType[] possibleRoomTypes = Db.Get().RoomTypes.GetPossibleRoomTypes(room);
-			empty += ((possibleRoomTypes.Length <= 1) ? string.Empty : ("<b>" + ROOMS.CRITERIA.POSSIBLE_TYPES_HEADER + "</b>"));
+			str += ((possibleRoomTypes.Length <= 1) ? "" : ("<b>" + ROOMS.CRITERIA.POSSIBLE_TYPES_HEADER + "</b>"));
 			RoomType[] array = possibleRoomTypes;
 			foreach (RoomType roomType2 in array)
 			{
 				if (roomType2 != Db.Get().RoomTypes.Neutral)
 				{
-					if (empty != string.Empty)
+					if (str != "")
 					{
-						empty += "\n";
+						str += "\n";
 					}
-					string text = empty;
-					empty = text + "<b><color=#BCBCBC>    • " + roomType2.Name + "</b> (" + roomType2.primary_constraint.name + ")</color>";
+					string text = str;
+					str = text + "<b><color=#BCBCBC>    • " + roomType2.Name + "</b> (" + roomType2.primary_constraint.name + ")</color>";
 					bool flag = false;
 					if (roomType2.additional_constraints != null)
 					{
@@ -246,7 +266,7 @@ public static class RoomConstraints
 							if (!constraint2.isSatisfied(room))
 							{
 								flag = true;
-								empty = ((constraint2.building_criteria == null) ? (empty + "\n<color=#F44A47FF>        • " + string.Format(ROOMS.CRITERIA.CRITERIA_FAILED.FAILED, constraint2.name) + "</color>") : (empty + "\n<color=#F44A47FF>        • " + string.Format(ROOMS.CRITERIA.CRITERIA_FAILED.MISSING_BUILDING, constraint2.name) + "</color>"));
+								str = ((constraint2.building_criteria == null) ? (str + "\n<color=#F44A47FF>        • " + string.Format(ROOMS.CRITERIA.CRITERIA_FAILED.FAILED, constraint2.name) + "</color>") : (str + "\n<color=#F44A47FF>        • " + string.Format(ROOMS.CRITERIA.CRITERIA_FAILED.MISSING_BUILDING, constraint2.name) + "</color>"));
 							}
 						}
 					}
@@ -263,12 +283,66 @@ public static class RoomConstraints
 						}
 						if (flag2)
 						{
-							empty = empty + "\n<color=#F44A47FF>        • " + ROOMS.CRITERIA.NO_TYPE_CONFLICTS + "</color>";
+							str = str + "\n<color=#F44A47FF>        • " + ROOMS.CRITERIA.NO_TYPE_CONFLICTS + "</color>";
 						}
 					}
 				}
 			}
 		}
-		return empty;
+		return str;
+	}
+
+	static RoomConstraints()
+	{
+		Func<KPrefabID, bool> building_criteria = null;
+		Func<Room, bool> room_criteria = delegate(Room room)
+		{
+			int num3 = 0;
+			foreach (KPrefabID creature in room.cavity.creatures)
+			{
+				if (creature.HasTag(GameTags.Creatures.Wild))
+				{
+					num3++;
+				}
+			}
+			return num3 >= 2;
+		};
+		string name = ROOMS.CRITERIA.WILDANIMALS.NAME;
+		WILDANIMALS = new Constraint(building_criteria, room_criteria, 1, name, ROOMS.CRITERIA.WILDANIMALS.DESCRIPTION, null);
+		building_criteria = null;
+		room_criteria = delegate(Room room)
+		{
+			int num2 = 0;
+			foreach (KPrefabID plant in room.cavity.plants)
+			{
+				if ((UnityEngine.Object)plant != (UnityEngine.Object)null && plant.HasTag(GameTags.Plant))
+				{
+					ReceptacleMonitor component2 = plant.GetComponent<ReceptacleMonitor>();
+					if ((UnityEngine.Object)component2 != (UnityEngine.Object)null && !component2.Replanted)
+					{
+						num2++;
+					}
+				}
+			}
+			return num2 >= 2;
+		};
+		name = ROOMS.CRITERIA.WILDPLANT.NAME;
+		WILDPLANT = new Constraint(building_criteria, room_criteria, 1, name, ROOMS.CRITERIA.WILDPLANT.DESCRIPTION, null);
+		WILDPLANTS = new Constraint(null, delegate(Room room)
+		{
+			int num = 0;
+			foreach (KPrefabID plant2 in room.cavity.plants)
+			{
+				if ((UnityEngine.Object)plant2 != (UnityEngine.Object)null && plant2.HasTag(GameTags.Plant))
+				{
+					ReceptacleMonitor component = plant2.GetComponent<ReceptacleMonitor>();
+					if ((UnityEngine.Object)component != (UnityEngine.Object)null && !component.Replanted)
+					{
+						num++;
+					}
+				}
+			}
+			return num >= 4;
+		}, 1, ROOMS.CRITERIA.WILDPLANTS.NAME, ROOMS.CRITERIA.WILDPLANTS.DESCRIPTION, null);
 	}
 }

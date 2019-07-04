@@ -26,7 +26,9 @@ public class KInputHandler
 
 	private string name;
 
-	private KButtonEvent lastConsumedEvent;
+	private KButtonEvent lastConsumedEventDown;
+
+	private KButtonEvent lastConsumedEventUp;
 
 	public KInputHandler(IInputHandler obj, KInputController controller)
 		: this(obj)
@@ -137,13 +139,13 @@ public class KInputHandler
 
 	public void HandleKeyDown(KButtonEvent e)
 	{
-		lastConsumedEvent = null;
+		lastConsumedEventDown = null;
 		foreach (Action<KButtonEvent> mOnKeyDownDelegate in mOnKeyDownDelegates)
 		{
 			mOnKeyDownDelegate(e);
 			if (e.Consumed)
 			{
-				lastConsumedEvent = e;
+				lastConsumedEventDown = e;
 			}
 		}
 		if (!e.Consumed && mChildren != null)
@@ -162,13 +164,13 @@ public class KInputHandler
 
 	public void HandleKeyUp(KButtonEvent e)
 	{
-		lastConsumedEvent = null;
+		lastConsumedEventUp = null;
 		foreach (Action<KButtonEvent> mOnKeyUpDelegate in mOnKeyUpDelegates)
 		{
 			mOnKeyUpDelegate(e);
 			if (e.Consumed)
 			{
-				lastConsumedEvent = e;
+				lastConsumedEventUp = e;
 			}
 		}
 		if (!e.Consumed && mChildren != null)
@@ -230,28 +232,28 @@ public class KInputHandler
 
 	public bool IsActive(Action action)
 	{
-		if (mController != null)
+		if (mController == null)
 		{
-			return mController.IsActive(action);
+			return false;
 		}
-		return false;
+		return mController.IsActive(action);
 	}
 
 	public float GetAxis(Axis axis)
 	{
-		if (mController != null)
+		if (mController == null)
 		{
-			return mController.GetAxis(axis);
+			return 0f;
 		}
-		return 0f;
+		return mController.GetAxis(axis);
 	}
 
 	public bool IsGamepad()
 	{
-		if (mController != null)
+		if (mController == null)
 		{
-			return mController.IsGamepad;
+			return false;
 		}
-		return false;
+		return mController.IsGamepad;
 	}
 }

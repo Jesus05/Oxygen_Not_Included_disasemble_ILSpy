@@ -20,7 +20,7 @@ public class PopFXManager : KScreen
 
 	public Sprite sprite_Research;
 
-	private bool ready;
+	private bool ready = false;
 
 	public static void DestroyInstance()
 	{
@@ -54,42 +54,42 @@ public class PopFXManager : KScreen
 
 	public PopFX SpawnFX(Sprite icon, string text, Transform target_transform, Vector3 offset, float lifetime = 1.5f, bool track_target = false, bool force_spawn = false)
 	{
-		if (GenericGameSettings.instance.disablePopFx)
+		if (!GenericGameSettings.instance.disablePopFx)
 		{
-			return null;
-		}
-		if (Game.IsQuitting())
-		{
-			return null;
-		}
-		Vector3 vector = offset;
-		if ((Object)target_transform != (Object)null)
-		{
-			vector += target_transform.GetPosition();
-		}
-		if (!force_spawn)
-		{
-			int cell = Grid.PosToCell(vector);
-			if (!Grid.IsValidCell(cell) || !Grid.IsVisible(cell))
+			if (!Game.IsQuitting())
 			{
-				return null;
+				Vector3 vector = offset;
+				if ((Object)target_transform != (Object)null)
+				{
+					vector += target_transform.GetPosition();
+				}
+				if (!force_spawn)
+				{
+					int cell = Grid.PosToCell(vector);
+					if (!Grid.IsValidCell(cell) || !Grid.IsVisible(cell))
+					{
+						return null;
+					}
+				}
+				PopFX popFX = null;
+				if (Pool.Count > 0)
+				{
+					popFX = Pool[0];
+					Pool[0].gameObject.SetActive(true);
+					Pool[0].Spawn(icon, text, target_transform, offset, lifetime, track_target);
+					Pool.RemoveAt(0);
+				}
+				else
+				{
+					popFX = CreatePopFX();
+					popFX.gameObject.SetActive(true);
+					popFX.Spawn(icon, text, target_transform, offset, lifetime, track_target);
+				}
+				return popFX;
 			}
+			return null;
 		}
-		PopFX popFX = null;
-		if (Pool.Count > 0)
-		{
-			popFX = Pool[0];
-			Pool[0].gameObject.SetActive(true);
-			Pool[0].Spawn(icon, text, target_transform, offset, lifetime, track_target);
-			Pool.RemoveAt(0);
-		}
-		else
-		{
-			popFX = CreatePopFX();
-			popFX.gameObject.SetActive(true);
-			popFX.Spawn(icon, text, target_transform, offset, lifetime, track_target);
-		}
-		return popFX;
+		return null;
 	}
 
 	public PopFX SpawnFX(Sprite icon, string text, Transform target_transform, float lifetime = 1.5f, bool track_target = false)

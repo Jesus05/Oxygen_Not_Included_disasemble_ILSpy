@@ -15,4 +15,6 @@ public static class PathFinderQueries
 	public static BreathableCellQuery breathableCellQuery = new BreathableCellQuery();
 
 	public static DrawNavGridQuery drawNavGridQuery = new DrawNavGridQuery();
+
+	public static PlantableCellQuery plantableCellQuery = new PlantableCellQuery();
 }

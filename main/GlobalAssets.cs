@@ -80,21 +80,22 @@ public class GlobalAssets : MonoBehaviour
 		LocString.CreateLocStringKeys(typeof(INPUT), "STRINGS.");
 		LocString.CreateLocStringKeys(typeof(INPUT_BINDINGS), "STRINGS.");
 		LocString.CreateLocStringKeys(typeof(BUILDING.STATUSITEMS), "STRINGS.BUILDING.");
-		LocString.CreateLocStringKeys(typeof(BUILDING.DETAILS), "STRINGS.");
+		LocString.CreateLocStringKeys(typeof(BUILDING.DETAILS), "STRINGS.BUILDING.");
 		LocString.CreateLocStringKeys(typeof(LORE), "STRINGS.");
 		LocString.CreateLocStringKeys(typeof(CODEX), "STRINGS.");
+		LocString.CreateLocStringKeys(typeof(WORLDS), "STRINGS.");
 	}
 
 	public static string GetSound(string name, bool force_no_warning = false)
 	{
-		if (name == null)
+		if (name != null)
 		{
-			return null;
+			name = name.ToLowerInvariant();
+			string value = null;
+			SoundTable.TryGetValue(name, out value);
+			return value;
 		}
-		name = name.ToLowerInvariant();
-		string value = null;
-		SoundTable.TryGetValue(name, out value);
-		return value;
+		return null;
 	}
 
 	public static bool IsLowPriority(string path)

@@ -10,11 +10,11 @@ namespace UnityStandardAssets.ImageEffects
 
 		private Material material;
 
-		public Texture3D converted3DLut;
+		public Texture3D converted3DLut = null;
 
-		public Texture3D converted3DLut2;
+		public Texture3D converted3DLut2 = null;
 
-		public string basedOnTempTex = string.Empty;
+		public string basedOnTempTex = "";
 
 		private bool supports3dTextures;
 
@@ -89,21 +89,21 @@ namespace UnityStandardAssets.ImageEffects
 			target = new Texture3D(num, num, num, TextureFormat.ARGB32, false);
 			target.SetPixels(array);
 			target.Apply();
-			basedOnTempTex = string.Empty;
+			basedOnTempTex = "";
 		}
 
 		public bool ValidDimensions(Texture2D tex2d)
 		{
-			if (!(bool)tex2d)
+			if ((bool)tex2d)
 			{
+				int height = tex2d.height;
+				if (height == Mathf.FloorToInt(Mathf.Sqrt((float)tex2d.width)))
+				{
+					return true;
+				}
 				return false;
 			}
-			int height = tex2d.height;
-			if (height != Mathf.FloorToInt(Mathf.Sqrt((float)tex2d.width)))
-			{
-				return false;
-			}
-			return true;
+			return false;
 		}
 
 		public void Convert(Texture2D temp2DTex, string path)
@@ -125,7 +125,7 @@ namespace UnityStandardAssets.ImageEffects
 				if (!ValidDimensions(temp2DTex))
 				{
 					Debug.LogWarning("The given 2D texture " + temp2DTex.name + " cannot be used as a 3D LUT.");
-					basedOnTempTex = string.Empty;
+					basedOnTempTex = "";
 				}
 				else
 				{

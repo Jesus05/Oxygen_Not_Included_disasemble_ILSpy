@@ -227,11 +227,11 @@ public abstract class OverlayModes
 	{
 		private struct UpdateCropInfo
 		{
-			public Harvestable harvestable;
+			public HarvestDesignatable harvestable;
 
 			public GameObject harvestableUI;
 
-			public UpdateCropInfo(Harvestable harvestable, GameObject harvestableUI)
+			public UpdateCropInfo(HarvestDesignatable harvestable, GameObject harvestableUI)
 			{
 				this.harvestable = harvestable;
 				this.harvestableUI = harvestableUI;
@@ -244,7 +244,7 @@ public abstract class OverlayModes
 
 		private List<UpdateCropInfo> updateCropInfo = new List<UpdateCropInfo>();
 
-		private int freeHarvestableNotificationIdx;
+		private int freeHarvestableNotificationIdx = 0;
 
 		private List<GameObject> harvestableNotificationList = new List<GameObject>();
 
@@ -257,8 +257,8 @@ public abstract class OverlayModes
 				WiltCondition component = h.GetComponent<WiltCondition>();
 				return (UnityEngine.Object)component != (UnityEngine.Object)null && component.IsWilting();
 			}),
-			new ColorHighlightCondition((KMonoBehaviour h) => new Color(0.9843137f, 0.6901961f, 0.23137255f, 0.75f), (KMonoBehaviour h) => !(h as Harvestable).CanBeHavested),
-			new ColorHighlightCondition((KMonoBehaviour h) => new Color(0.419607848f, 0.827451f, 0.5176471f, 0.75f), (KMonoBehaviour h) => (h as Harvestable).CanBeHavested)
+			new ColorHighlightCondition((KMonoBehaviour h) => new Color(0.9843137f, 0.6901961f, 0.23137255f, 0.75f), (KMonoBehaviour h) => !(h as HarvestDesignatable).CanBeHarvested()),
+			new ColorHighlightCondition((KMonoBehaviour h) => new Color(0.419607848f, 0.827451f, 0.5176471f, 0.75f), (KMonoBehaviour h) => (h as HarvestDesignatable).CanBeHarvested())
 		};
 
 		public Crop(Canvas ui_root, GameObject harvestable_notification_prefab)
@@ -290,7 +290,7 @@ public abstract class OverlayModes
 			{
 				while (enumerator.MoveNext())
 				{
-					Harvestable instance = (Harvestable)enumerator.Current;
+					HarvestDesignatable instance = (HarvestDesignatable)enumerator.Current;
 					AddTargetIfVisible(instance, min, max, layerTargets, targetLayer, null, null);
 				}
 			}
@@ -302,7 +302,7 @@ public abstract class OverlayModes
 					disposable.Dispose();
 				}
 			}
-			foreach (Harvestable layerTarget in layerTargets)
+			foreach (HarvestDesignatable layerTarget in layerTargets)
 			{
 				Vector2I vector2I = Grid.PosToXY(layerTarget.transform.GetPosition());
 				if (min <= vector2I && vector2I <= max)
@@ -363,7 +363,7 @@ public abstract class OverlayModes
 			return gameObject;
 		}
 
-		private void AddCropUI(Harvestable harvestable)
+		private void AddCropUI(HarvestDesignatable harvestable)
 		{
 			GameObject freeCropUI = GetFreeCropUI();
 			UpdateCropInfo item = new UpdateCropInfo(harvestable, freeCropUI);
@@ -407,7 +407,7 @@ public abstract class OverlayModes
 			{
 				while (enumerator.MoveNext())
 				{
-					Harvestable instance = (Harvestable)enumerator.Current;
+					HarvestDesignatable instance = (HarvestDesignatable)enumerator.Current;
 					AddTargetIfVisible(instance, min, max, layerTargets, targetLayer, null, null);
 				}
 			}
@@ -426,9 +426,9 @@ public abstract class OverlayModes
 
 	public abstract class BasePlantMode : Mode
 	{
-		protected UniformGrid<Harvestable> partition;
+		protected UniformGrid<HarvestDesignatable> partition;
 
-		protected HashSet<Harvestable> layerTargets = new HashSet<Harvestable>();
+		protected HashSet<HarvestDesignatable> layerTargets = new HashSet<HarvestDesignatable>();
 
 		protected ICollection<Tag> targetIDs;
 
@@ -449,7 +449,7 @@ public abstract class OverlayModes
 		public override void Enable()
 		{
 			RegisterSaveLoadListeners();
-			partition = Mode.PopulatePartition<Harvestable>(targetIDs);
+			partition = Mode.PopulatePartition<HarvestDesignatable>(targetIDs);
 			Camera.main.cullingMask |= cameraLayerMask;
 			SelectTool.Instance.SetLayerMask(selectionMask);
 			DragTool.SetLayerMask(selectionMask);
@@ -460,7 +460,7 @@ public abstract class OverlayModes
 			Tag saveLoadTag = item.GetComponent<KPrefabID>().GetSaveLoadTag();
 			if (targetIDs.Contains(saveLoadTag))
 			{
-				Harvestable component = item.GetComponent<Harvestable>();
+				HarvestDesignatable component = item.GetComponent<HarvestDesignatable>();
 				if (!((UnityEngine.Object)component == (UnityEngine.Object)null))
 				{
 					partition.Add(component);
@@ -472,7 +472,7 @@ public abstract class OverlayModes
 		{
 			if (!((UnityEngine.Object)item == (UnityEngine.Object)null) && !((UnityEngine.Object)item.gameObject == (UnityEngine.Object)null))
 			{
-				Harvestable component = item.GetComponent<Harvestable>();
+				HarvestDesignatable component = item.GetComponent<HarvestDesignatable>();
 				if (!((UnityEngine.Object)component == (UnityEngine.Object)null))
 				{
 					if (layerTargets.Contains(component))
@@ -666,7 +666,7 @@ public abstract class OverlayModes
 
 		private int cameraLayerMask;
 
-		private int freeDiseaseUI;
+		private int freeDiseaseUI = 0;
 
 		private List<GameObject> diseaseUIList = new List<GameObject>();
 
@@ -1547,6 +1547,21 @@ public abstract class OverlayModes
 		}
 	}
 
+	public class Radiation : Mode
+	{
+		public static readonly HashedString ID = "Radiation";
+
+		public override HashedString ViewMode()
+		{
+			return ID;
+		}
+
+		public override string GetSoundName()
+		{
+			return "Lights";
+		}
+	}
+
 	public class Priorities : Mode
 	{
 		public static readonly HashedString ID = "Priorities";
@@ -1615,7 +1630,7 @@ public abstract class OverlayModes
 				string text = roomType.GetCriteriaString();
 				if (roomType.effects != null && roomType.effects.Length > 0)
 				{
-					text += roomType.GetRoomEffectsString();
+					text = text + "\n\n" + roomType.GetRoomEffectsString();
 				}
 				list.Add(new LegendEntry(roomType.Name + "\n" + roomType.effect, text, roomType.category.color));
 			}
@@ -2071,9 +2086,9 @@ public abstract class OverlayModes
 
 		private Color32 circuitStrainingColour;
 
-		private int freePowerLabelIdx;
+		private int freePowerLabelIdx = 0;
 
-		private int freeBatteryUIIdx;
+		private int freeBatteryUIIdx = 0;
 
 		private List<LocText> powerLabels = new List<LocText>();
 
@@ -3125,7 +3140,7 @@ public abstract class OverlayModes
 
 		public override string GetSoundName()
 		{
-			return string.Empty;
+			return "";
 		}
 
 		public override void Enable()
@@ -3244,15 +3259,12 @@ public abstract class OverlayModes
 			if (InFilter(ToolParameterMenu.FILTERLAYERS.FARMABLE, legendFilters))
 			{
 				Game.Instance.tileOverlayFilters.Add(GameTags.Farmable);
+				Game.Instance.tileOverlayFilters.Add(GameTags.Agriculture);
 			}
 			if (InFilter(ToolParameterMenu.FILTERLAYERS.GAS, legendFilters))
 			{
 				Game.Instance.tileOverlayFilters.Add(GameTags.Breathable);
 				Game.Instance.tileOverlayFilters.Add(GameTags.Unbreathable);
-			}
-			if (InFilter(ToolParameterMenu.FILTERLAYERS.AGRICULTURE, legendFilters))
-			{
-				Game.Instance.tileOverlayFilters.Add(GameTags.Agriculture);
 			}
 			DisableHighlightTypeOverlay(layerTargets);
 			layerTargets.Clear();

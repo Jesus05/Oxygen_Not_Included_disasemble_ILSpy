@@ -5,7 +5,7 @@ using UnityEngine;
 [SerializationConfig(MemberSerialization.OptIn)]
 public class ConduitTemperatureSensor : ConduitThresholdSensor, IThresholdSwitch
 {
-	public float rangeMin;
+	public float rangeMin = 0f;
 
 	public float rangeMax = 373.15f;
 

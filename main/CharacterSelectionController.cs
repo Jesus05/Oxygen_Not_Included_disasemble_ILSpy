@@ -19,13 +19,13 @@ public class CharacterSelectionController : KModalScreen
 
 	protected int numberOfDuplicantOptions = 3;
 
-	protected int numberOfCarePackageOptions;
+	protected int numberOfCarePackageOptions = 0;
 
 	[SerializeField]
 	protected int selectableCount;
 
 	[SerializeField]
-	private bool allowsReplacing;
+	private bool allowsReplacing = false;
 
 	protected List<ITelepadDeliverable> selectedDeliverables;
 

@@ -8,7 +8,7 @@ namespace Database
 		public AttributeModifier modifier;
 
 		public SkillAttributePerk(string id, string attributeId, float modifierBonus, string modifierDesc)
-			: base(id, string.Empty, null, null, delegate
+			: base(id, "", null, null, delegate
 			{
 			}, false)
 		{

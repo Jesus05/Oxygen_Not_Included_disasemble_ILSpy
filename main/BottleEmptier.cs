@@ -48,7 +48,7 @@ public class BottleEmptier : StateMachineComponent<BottleEmptier.StatesInstance>
 				float amount = component2.Capacity();
 				Tag[] tags2 = GetComponent<TreeFilterable>().GetTags();
 				Tag[] forbidden_tags = array;
-				chore = new FetchChore(storageFetch, destination, amount, tags2, null, forbidden_tags, null, true, null, null, null, FetchOrder2.OperationalRequirement.Operational, 0, null);
+				chore = new FetchChore(storageFetch, destination, amount, tags2, null, forbidden_tags, null, true, null, null, null, FetchOrder2.OperationalRequirement.Operational, 0);
 			}
 		}
 
@@ -155,32 +155,32 @@ public class BottleEmptier : StateMachineComponent<BottleEmptier.StatesInstance>
 		public override void InitializeStates(out BaseState default_state)
 		{
 			default_state = waitingfordelivery;
-			statusItem = new StatusItem("BottleEmptier", string.Empty, string.Empty, string.Empty, StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, 63486);
+			statusItem = new StatusItem("BottleEmptier", "", "", "", StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, 129022);
 			statusItem.resolveStringCallback = delegate(string str, object data)
 			{
 				BottleEmptier bottleEmptier2 = (BottleEmptier)data;
-				if ((UnityEngine.Object)bottleEmptier2 == (UnityEngine.Object)null)
+				if (!((UnityEngine.Object)bottleEmptier2 == (UnityEngine.Object)null))
 				{
-					return str;
-				}
-				if (bottleEmptier2.allowManualPumpingStationFetching)
-				{
+					if (!bottleEmptier2.allowManualPumpingStationFetching)
+					{
+						return BUILDING.STATUSITEMS.BOTTLE_EMPTIER.DENIED.NAME;
+					}
 					return BUILDING.STATUSITEMS.BOTTLE_EMPTIER.ALLOWED.NAME;
 				}
-				return BUILDING.STATUSITEMS.BOTTLE_EMPTIER.DENIED.NAME;
+				return str;
 			};
 			statusItem.resolveTooltipCallback = delegate(string str, object data)
 			{
 				BottleEmptier bottleEmptier = (BottleEmptier)data;
-				if ((UnityEngine.Object)bottleEmptier == (UnityEngine.Object)null)
+				if (!((UnityEngine.Object)bottleEmptier == (UnityEngine.Object)null))
 				{
-					return str;
-				}
-				if (bottleEmptier.allowManualPumpingStationFetching)
-				{
+					if (!bottleEmptier.allowManualPumpingStationFetching)
+					{
+						return BUILDING.STATUSITEMS.BOTTLE_EMPTIER.DENIED.TOOLTIP;
+					}
 					return BUILDING.STATUSITEMS.BOTTLE_EMPTIER.ALLOWED.TOOLTIP;
 				}
-				return BUILDING.STATUSITEMS.BOTTLE_EMPTIER.DENIED.TOOLTIP;
+				return str;
 			};
 			root.ToggleStatusItem(statusItem, (StatesInstance smi) => smi.master);
 			unoperational.TagTransition(GameTags.Operational, waitingfordelivery, false).PlayAnim("off");
@@ -221,11 +221,17 @@ public class BottleEmptier : StateMachineComponent<BottleEmptier.StatesInstance>
 		component.OnRefreshUserMenu(data);
 	});
 
+	private static readonly EventSystem.IntraObjectHandler<BottleEmptier> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<BottleEmptier>(delegate(BottleEmptier component, object data)
+	{
+		component.OnCopySettings(data);
+	});
+
 	protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		base.smi.StartSM();
 		Subscribe(493375141, OnRefreshUserMenuDelegate);
+		Subscribe(-905833192, OnCopySettingsDelegate);
 	}
 
 	public List<Descriptor> GetDescriptors(BuildingDef def)
@@ -260,5 +266,12 @@ public class BottleEmptier : StateMachineComponent<BottleEmptier.StatesInstance>
 		}
 		KIconButtonMenu.ButtonInfo button = (KIconButtonMenu.ButtonInfo)buttonInfo;
 		Game.Instance.userMenu.AddButton(base.gameObject, button, 1f);
+	}
+
+	private void OnCopySettings(object data)
+	{
+		GameObject gameObject = (GameObject)data;
+		BottleEmptier component = gameObject.GetComponent<BottleEmptier>();
+		allowManualPumpingStationFetching = component.allowManualPumpingStationFetching;
 	}
 }

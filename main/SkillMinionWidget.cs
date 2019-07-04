@@ -94,7 +94,7 @@ public class SkillMinionWidget : KMonoBehaviour, IPointerEnterHandler, IPointerE
 		if (minion != null)
 		{
 			portrait.SetIdentityObject(minion, true);
-			string empty = string.Empty;
+			string text = "";
 			MinionIdentity minionIdentity = minion as MinionIdentity;
 			hatDropDown.gameObject.SetActive(true);
 			if ((Object)minionIdentity != (Object)null)
@@ -116,7 +116,7 @@ public class SkillMinionWidget : KMonoBehaviour, IPointerEnterHandler, IPointerE
 					}
 				}
 				hatDropDown.Initialize(list, OnHatDropEntryClick, hatDropDownSort, hatDropEntryRefreshAction, false, minion);
-				empty = ((!string.IsNullOrEmpty(component.TargetHat)) ? component.TargetHat : component.CurrentHat);
+				text = ((!string.IsNullOrEmpty(component.TargetHat)) ? component.TargetHat : component.CurrentHat);
 			}
 			else
 			{
@@ -124,13 +124,13 @@ public class SkillMinionWidget : KMonoBehaviour, IPointerEnterHandler, IPointerE
 				ToolTip component2 = GetComponent<ToolTip>();
 				component2.ClearMultiStringTooltip();
 				component2.AddMultiStringTooltip(string.Format(UI.TABLESCREENS.INFORMATION_NOT_AVAILABLE_TOOLTIP, storedMinionIdentity.GetStorageReason(), minion.GetProperName()), null);
-				empty = ((!string.IsNullOrEmpty(storedMinionIdentity.targetHat)) ? storedMinionIdentity.targetHat : storedMinionIdentity.currentHat);
+				text = ((!string.IsNullOrEmpty(storedMinionIdentity.targetHat)) ? storedMinionIdentity.targetHat : storedMinionIdentity.currentHat);
 				masteryPoints.text = UI.TABLESCREENS.NA;
 				morale.text = UI.TABLESCREENS.NA;
 			}
 			SetColor((skillsScreen.CurrentlySelectedMinion != minion) ? unselected_color : selected_color);
 			HierarchyReferences component3 = GetComponent<HierarchyReferences>();
-			RefreshHat(empty);
+			RefreshHat(text);
 			component3.GetReference("openButton").gameObject.SetActive((Object)minionIdentity != (Object)null);
 		}
 	}
@@ -203,7 +203,7 @@ public class SkillMinionWidget : KMonoBehaviour, IPointerEnterHandler, IPointerE
 			}
 			if (minion == skillsScreen.CurrentlySelectedMinion)
 			{
-				skillsScreen.selectedHat.sprite = Assets.GetSprite(component.TargetHat);
+				skillsScreen.selectedHat.sprite = Assets.GetSprite((!string.IsNullOrEmpty(component.TargetHat)) ? component.TargetHat : "hat_role_none");
 			}
 		}
 	}

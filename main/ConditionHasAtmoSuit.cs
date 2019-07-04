@@ -21,26 +21,26 @@ public class ConditionHasAtmoSuit : RocketLaunchCondition
 		return null;
 	}
 
-	public override bool EvaluateLaunchCondition()
+	public override LaunchStatus EvaluateLaunchCondition()
 	{
-		return module.storage.GetAmountAvailable(GameTags.AtmoSuit) >= 1f;
+		return (!(module.storage.GetAmountAvailable(GameTags.AtmoSuit) >= 1f)) ? LaunchStatus.Failure : LaunchStatus.Ready;
 	}
 
 	public override string GetLaunchStatusMessage(bool ready)
 	{
-		if (ready)
+		if (!ready)
 		{
-			return UI.STARMAP.HASSUIT.NAME;
+			return UI.STARMAP.NOSUIT.NAME;
 		}
-		return UI.STARMAP.NOSUIT.NAME;
+		return UI.STARMAP.HASSUIT.NAME;
 	}
 
 	public override string GetLaunchStatusTooltip(bool ready)
 	{
-		if (ready)
+		if (!ready)
 		{
-			return UI.STARMAP.HASSUIT.TOOLTIP;
+			return UI.STARMAP.NOSUIT.TOOLTIP;
 		}
-		return UI.STARMAP.NOSUIT.TOOLTIP;
+		return UI.STARMAP.HASSUIT.TOOLTIP;
 	}
 }

@@ -1,5 +1,6 @@
 using STRINGS;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
@@ -129,6 +130,8 @@ public class Navigator : StateMachineComponent<Navigator.StatesInstance>, ISaveL
 
 	private LoggerFS log;
 
+	public Dictionary<NavType, int> distanceTravelledByNavType;
+
 	public Grid.SceneLayer sceneLayer = Grid.SceneLayer.Move;
 
 	private PathFinderAbilities abilities;
@@ -171,7 +174,7 @@ public class Navigator : StateMachineComponent<Navigator.StatesInstance>, ISaveL
 		component.OnStore(data);
 	});
 
-	public bool executePathProbeTaskAsync;
+	public bool executePathProbeTaskAsync = false;
 
 	public KMonoBehaviour target
 	{
@@ -195,12 +198,33 @@ public class Navigator : StateMachineComponent<Navigator.StatesInstance>, ISaveL
 	{
 		byte currentNavType = (byte)CurrentNavType;
 		writer.Write(currentNavType);
+		writer.Write(distanceTravelledByNavType.Count);
+		foreach (KeyValuePair<NavType, int> item in distanceTravelledByNavType)
+		{
+			byte key = (byte)item.Key;
+			writer.Write(key);
+			writer.Write(item.Value);
+		}
 	}
 
 	public void Deserialize(IReader reader)
 	{
 		byte b = reader.ReadByte();
 		NavType navType = (NavType)b;
+		if (!SaveLoader.Instance.GameInfo.IsVersionOlderThan(7, 11))
+		{
+			int num = reader.ReadInt32();
+			for (int i = 0; i < num; i++)
+			{
+				byte b2 = reader.ReadByte();
+				NavType key = (NavType)b2;
+				int value = reader.ReadInt32();
+				if (distanceTravelledByNavType.ContainsKey(key))
+				{
+					distanceTravelledByNavType[key] = value;
+				}
+			}
+		}
 		bool flag = false;
 		NavType[] validNavTypes = NavGrid.ValidNavTypes;
 		foreach (NavType navType2 in validNavTypes)
@@ -228,6 +252,11 @@ public class Navigator : StateMachineComponent<Navigator.StatesInstance>, ISaveL
 		NavGrid = Pathfinding.Instance.GetNavGrid(NavGridName);
 		PathProber component = GetComponent<PathProber>();
 		component.SetValidNavTypes(NavGrid.ValidNavTypes, maxProbingRadius);
+		distanceTravelledByNavType = new Dictionary<NavType, int>();
+		for (int i = 0; i < 10; i++)
+		{
+			distanceTravelledByNavType.Add((NavType)i, 0);
+		}
 	}
 
 	protected override void OnSpawn()
@@ -351,7 +380,7 @@ public class Navigator : StateMachineComponent<Navigator.StatesInstance>, ISaveL
 						if (currentNavType == node2.navType)
 						{
 							flag = !ValidatePath(ref path);
-							goto IL_018c;
+							goto IL_01a4;
 						}
 					}
 					int num4 = num;
@@ -364,7 +393,7 @@ public class Navigator : StateMachineComponent<Navigator.StatesInstance>, ISaveL
 						{
 							path.nodes.RemoveAt(0);
 							flag = !ValidatePath(ref path);
-							goto IL_018c;
+							goto IL_01a4;
 						}
 					}
 					flag = true;
@@ -373,12 +402,12 @@ public class Navigator : StateMachineComponent<Navigator.StatesInstance>, ISaveL
 				{
 					flag = true;
 				}
-				goto IL_018c;
+				goto IL_01a4;
 			}
 			Stop(true);
 		}
-		goto IL_027b;
-		IL_018c:
+		goto IL_02dc;
+		IL_01a4:
 		if (flag)
 		{
 			int cellPreferences = tactic.GetCellPreferences(num2, targetOffsets, this);
@@ -397,6 +426,7 @@ public class Navigator : StateMachineComponent<Navigator.StatesInstance>, ISaveL
 			NavGrid.Transition[] transitions = NavGrid.transitions;
 			PathFinder.Path.Node node5 = path.nodes[1];
 			BeginTransition(transitions[node5.transitionId]);
+			distanceTravelledByNavType[CurrentNavType] = Mathf.Max(distanceTravelledByNavType[CurrentNavType] + 1, distanceTravelledByNavType[CurrentNavType]);
 		}
 		else if (path.HasArrived())
 		{
@@ -407,8 +437,8 @@ public class Navigator : StateMachineComponent<Navigator.StatesInstance>, ISaveL
 			ClearReservedCell();
 			Stop(false);
 		}
-		goto IL_027b;
-		IL_027b:
+		goto IL_02dc;
+		IL_02dc:
 		if (trigger_advance)
 		{
 			Trigger(1347184327, null);
@@ -638,11 +668,11 @@ public class Navigator : StateMachineComponent<Navigator.StatesInstance>, ISaveL
 
 	public int GetNavigationCost(int cell)
 	{
-		if (Grid.IsValidCell(cell))
+		if (!Grid.IsValidCell(cell))
 		{
-			return PathProber.GetCost(cell);
+			return -1;
 		}
-		return -1;
+		return PathProber.GetCost(cell);
 	}
 
 	public int GetNavigationCostIgnoreProberOffset(int cell, CellOffset[] offsets)

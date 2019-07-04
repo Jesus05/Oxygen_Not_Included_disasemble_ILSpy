@@ -112,6 +112,8 @@ public class SicknessMonitor : GameStateMachine<SicknessMonitor, SicknessMonitor
 			});
 		post_nocheer.Enter(delegate(Instance smi)
 		{
+			StateMachine.Instance instance = new SicknessCuredFX.Instance(smi.master, new Vector3(0f, 0f, -0.1f));
+			instance.StartSM();
 			if (smi.IsSleepingOrSleepSchedule())
 			{
 				smi.GoTo(healthy);

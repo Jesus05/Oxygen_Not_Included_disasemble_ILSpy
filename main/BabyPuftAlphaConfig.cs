@@ -8,7 +8,7 @@ public class BabyPuftAlphaConfig : IEntityConfig
 	public GameObject CreatePrefab()
 	{
 		GameObject gameObject = PuftAlphaConfig.CreatePuftAlpha("PuftAlphaBaby", CREATURES.SPECIES.PUFT.VARIANT_ALPHA.BABY.NAME, CREATURES.SPECIES.PUFT.VARIANT_ALPHA.BABY.DESC, "baby_puft_kanim", true);
-		EntityTemplates.ExtendEntityToBeingABaby(gameObject, "PuftAlpha");
+		EntityTemplates.ExtendEntityToBeingABaby(gameObject, "PuftAlpha", null);
 		return gameObject;
 	}
 

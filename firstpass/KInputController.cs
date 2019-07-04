@@ -44,7 +44,7 @@ public class KInputController : IInputHandler
 		{
 			mKeyCode = key_code;
 			mModifier = modifier;
-			mActionFlags = new bool[234];
+			mActionFlags = new bool[247];
 		}
 	}
 
@@ -58,15 +58,15 @@ public class KInputController : IInputHandler
 
 	private float[] mAxis;
 
-	private Modifier mActiveModifiers;
+	private Modifier mActiveModifiers = Modifier.None;
 
 	private bool[] mActionState;
 
 	private bool[] mScrollState;
 
-	private bool mIgnoreKeyboard;
+	private bool mIgnoreKeyboard = false;
 
-	private bool mIgnoreMouse;
+	private bool mIgnoreMouse = false;
 
 	private Dictionary<KeyDefEntry, KeyDef> mKeyDefLookup = new Dictionary<KeyDefEntry, KeyDef>();
 
@@ -115,7 +115,7 @@ public class KInputController : IInputHandler
 		IsGamepad = is_gamepad;
 		mAxis = new float[4];
 		mActiveModifiers = Modifier.None;
-		mActionState = new bool[234];
+		mActionState = new bool[247];
 		mScrollState = new bool[2];
 		inputHandler = new KInputHandler(this, this);
 	}

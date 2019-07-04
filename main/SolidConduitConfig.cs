@@ -52,7 +52,6 @@ public class SolidConduitConfig : IBuildingConfig
 		kAnimGraphTileVisualizer.connectionSource = KAnimGraphTileVisualizer.ConnectionSource.Solid;
 		kAnimGraphTileVisualizer.isPhysicalBuilding = false;
 		Constructable component = go.GetComponent<Constructable>();
-		component.choreTags = GameTags.ChoreTypes.ConveyorChores;
 		component.requiredSkillPerk = Db.Get().SkillPerks.ConveyorBuild.Id;
 	}
 

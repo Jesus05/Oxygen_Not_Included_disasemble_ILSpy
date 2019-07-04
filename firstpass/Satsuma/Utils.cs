@@ -20,11 +20,11 @@ namespace Satsuma
 
 		public static V MakeEntry<K, V>(Dictionary<K, V> dict, K key) where V : new()
 		{
-			if (dict.TryGetValue(key, out V value))
+			if (!dict.TryGetValue(key, out V value))
 			{
-				return value;
+				return dict[key] = new V();
 			}
-			return dict[key] = new V();
+			return value;
 		}
 
 		public static void RemoveAll<T>(HashSet<T> set, Func<T, bool> condition)

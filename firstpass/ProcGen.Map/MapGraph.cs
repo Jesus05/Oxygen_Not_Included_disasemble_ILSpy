@@ -35,48 +35,67 @@ namespace ProcGen.Map
 
 		public Edge GetEdge(Corner corner0, Corner corner1, bool createOK = true)
 		{
+			bool didCreate;
+			return GetEdge(corner0, corner1, createOK, out didCreate);
+		}
+
+		public Edge GetEdge(Corner corner0, Corner corner1, bool createOK, out bool didCreate)
+		{
 			Edge edge = null;
-			edge = edgeList.Find((Edge e) => (e.corner0 == corner0 || e.corner0 == corner1) && (e.corner1 == corner0 || e.corner1 == corner1));
-			if (edge != null)
+			didCreate = false;
+			edge = edgeList.Find((Edge e) => (e.corner0 == corner0 && e.corner1 == corner1) || (e.corner1 == corner0 && e.corner0 == corner1));
+			if (edge == null)
 			{
-				return edge;
-			}
-			if (!createOK)
-			{
+				if (createOK)
+				{
+					Satsuma.Arc arc = base.baseGraph.AddArc(corner0.node, corner1.node, Directedness.Undirected);
+					edge = new Edge(arc, corner0, corner1);
+					arcList.Add(edge);
+					edgeList.Add(edge);
+					didCreate = true;
+					return edge;
+				}
 				Debug.LogWarning("Cant create Edge but no edge found");
 				return null;
 			}
-			Satsuma.Arc arc = base.baseGraph.AddArc(corner0.node, corner1.node, Directedness.Undirected);
-			edge = new Edge(arc, corner0, corner1);
-			arcList.Add(edge);
-			edgeList.Add(edge);
 			return edge;
 		}
 
 		public Edge GetEdge(Corner corner0, Corner corner1, Cell site0, Cell site1, bool createOK = true)
 		{
+			bool didCreate;
+			return GetEdge(corner0, corner1, site0, site1, createOK, out didCreate);
+		}
+
+		public Edge GetEdge(Corner corner0, Corner corner1, Cell site0, Cell site1, bool createOK, out bool didCreate)
+		{
 			Edge edge = null;
-			edge = edgeList.Find((Edge e) => (e.corner0 == corner0 || e.corner0 == corner1) && (e.corner1 == corner0 || e.corner1 == corner1));
-			if (edge != null)
+			didCreate = false;
+			edge = edgeList.Find((Edge e) => (e.corner0 == corner0 && e.corner1 == corner1) || (e.corner1 == corner0 && e.corner0 == corner1));
+			if (edge == null)
 			{
-				return edge;
-			}
-			if (!createOK)
-			{
+				if (createOK)
+				{
+					Satsuma.Arc arc = base.baseGraph.AddArc(corner0.node, corner1.node, Directedness.Undirected);
+					edge = new Edge(arc, corner0, corner1, site0, site1);
+					arcList.Add(edge);
+					edgeList.Add(edge);
+					didCreate = true;
+					return edge;
+				}
 				Debug.LogWarning("Cant create Edge but no edge found");
 				return null;
 			}
-			Satsuma.Arc arc = base.baseGraph.AddArc(corner0.node, corner1.node, Directedness.Undirected);
-			edge = new Edge(arc, corner0, corner1, site0, site1);
-			arcList.Add(edge);
-			edgeList.Add(edge);
 			return edge;
 		}
 
 		public Corner GetCorner(Vector2 position, bool createOK = true)
 		{
-			position = new Vector2((float)(int)position.x, (float)(int)position.y);
-			Corner corner = cornerList.Find((Corner c) => c.position == position);
+			Corner corner = cornerList.Find(delegate(Corner c)
+			{
+				Vector2 vector = c.position - position;
+				return vector.x < 1f && vector.x > -1f && vector.y < 1f && vector.y > -1f;
+			});
 			if (corner == null)
 			{
 				if (!createOK)
@@ -99,14 +118,27 @@ namespace ProcGen.Map
 
 		public Cell GetCell(Vector2 position)
 		{
-			position = new Vector2((float)(int)position.x, (float)(int)position.y);
-			return cellList.Find((Cell c) => c.position == position);
+			return cellList.Find(delegate(Cell c)
+			{
+				Vector2 vector = c.position - position;
+				return vector.x < 1f && vector.x > -1f && vector.y < 1f && vector.y > -1f;
+			});
 		}
 
 		public Cell GetCell(Vector2 position, Satsuma.Node node, bool createOK = true)
 		{
-			position = new Vector2((float)(int)position.x, (float)(int)position.y);
-			Cell cell = cellList.Find((Cell c) => c.position == position);
+			bool didCreate;
+			return GetCell(position, node, createOK, out didCreate);
+		}
+
+		public Cell GetCell(Vector2 position, Satsuma.Node node, bool createOK, out bool didCreate)
+		{
+			Cell cell = cellList.Find(delegate(Cell c)
+			{
+				Vector2 vector = c.position - position;
+				return vector.x < 1f && vector.x > -1f && vector.y < 1f && vector.y > -1f;
+			});
+			didCreate = false;
 			if (cell == null)
 			{
 				if (!createOK)
@@ -118,6 +150,7 @@ namespace ProcGen.Map
 				if (cell == null)
 				{
 					cell = new Cell(node);
+					didCreate = true;
 					cell.SetPosition(position);
 					cellList.Add(cell);
 				}

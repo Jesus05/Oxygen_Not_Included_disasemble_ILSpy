@@ -33,7 +33,7 @@ public class SpiceVineConfig : IEntityConfig
 		float temperature_warning_high = 358.15f;
 		float temperature_lethal_high = 448.15f;
 		initialAnim = SpiceNutConfig.ID;
-		EntityTemplates.ExtendEntityToBasicPlant(template, mass, temperature_warning_low, temperature_warning_high, temperature_lethal_high, null, true, 0f, 0.15f, initialAnim, true, true);
+		EntityTemplates.ExtendEntityToBasicPlant(template, mass, temperature_warning_low, temperature_warning_high, temperature_lethal_high, null, true, 0f, 0.15f, initialAnim, true, true, true, true, 2400f);
 		Tag tag = ElementLoader.FindElementByHash(SimHashes.DirtyWater).tag;
 		EntityTemplates.ExtendPlantToIrrigated(gameObject, new PlantElementAbsorber.ConsumeInfo[1]
 		{
@@ -63,7 +63,7 @@ public class SpiceVineConfig : IEntityConfig
 		list = new List<Tag>();
 		list.Add(GameTags.CropSeed);
 		list = list;
-		GameObject seed = EntityTemplates.CreateAndRegisterSeedForPlant(template, productionType, initialAnim, desc, name, anim, "object", 1, list, SingleEntityReceptacle.ReceptacleDirection.Bottom, default(Tag), 4, STRINGS.CREATURES.SPECIES.SPICE_VINE.DOMESTICATEDDESC, EntityTemplates.CollisionShape.CIRCLE, 0.3f, 0.3f, null, string.Empty, false);
+		GameObject seed = EntityTemplates.CreateAndRegisterSeedForPlant(template, productionType, initialAnim, desc, name, anim, "object", 1, list, SingleEntityReceptacle.ReceptacleDirection.Bottom, default(Tag), 4, STRINGS.CREATURES.SPECIES.SPICE_VINE.DOMESTICATEDDESC, EntityTemplates.CollisionShape.CIRCLE, 0.3f, 0.3f, null, "", false);
 		GameObject template2 = EntityTemplates.CreateAndRegisterPreviewForPlant(seed, "SpiceVine_preview", Assets.GetAnim("vinespicenut_kanim"), "place", 1, 3);
 		EntityTemplates.MakeHangingOffsets(template2, 1, 3);
 		return gameObject;

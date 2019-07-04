@@ -1,9 +1,10 @@
-using Klei;
+using System;
 using System.Collections.Generic;
 
 namespace ProcGen
 {
-	public class DefaultSettings : YamlIO<DefaultSettings>
+	[Serializable]
+	public class DefaultSettings
 	{
 		public BaseLocation baseData
 		{
@@ -32,6 +33,8 @@ namespace ProcGen
 		public DefaultSettings()
 		{
 			data = new Dictionary<string, object>();
+			defaultMoveTags = new List<string>();
+			overworldAddTags = new List<string>();
 		}
 	}
 }

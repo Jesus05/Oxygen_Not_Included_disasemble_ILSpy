@@ -8,7 +8,7 @@ namespace STRINGS
 			{
 				public static LocString CONTAINER1 = "An advanced 3D printer developed by the Gravitas Facility.\n\nThe Printing Pod is notable for its ability to print living organic material from biological blueprints.\n\nIt is capable of synthesizing its own organic material for printing, and contains an almost unfathomable amount of stored energy, allowing it to autonomously print every 3 cycles.";
 
-				public static LocString CONTAINER2 = string.Empty;
+				public static LocString CONTAINER2 = "";
 			}
 
 			public static LocString TITLE = "Printing Pod";
@@ -79,7 +79,7 @@ namespace STRINGS
 
 			public static LocString SUBTITLE = "This database entry is under construction or unavailable";
 
-			public static LocString BODY = string.Empty;
+			public static LocString BODY = "";
 		}
 
 		public class DRECKO
@@ -246,6 +246,38 @@ namespace STRINGS
 			public static LocString TITLE = "Gulp Fish";
 
 			public static LocString SUBTITLE = "Critter Morph";
+		}
+
+		public class PIP
+		{
+			public class BODY
+			{
+				public static LocString CONTAINER1 = "Pips are a member of the Rodentia order with a strong caching instinct that causes them to find and bury small objects, most often seeds.";
+
+				public static LocString CONTAINER2 = "It is unknown whether their caching behavior is a compulsion or a form of entertainment, as the Pip relies primarily on bark and wood for its survival.";
+
+				public static LocString CONTAINER3 = "Although the Pip lacks truly opposable thumbs, it nonetheless has highly detexerous paws that allow it to rummage through most tight to reach spaces in search of seeds and other treasures.";
+			}
+
+			public static LocString TITLE = "Pip";
+
+			public static LocString SUBTITLE = "Domesticable Critter";
+		}
+
+		public class POKESHELL
+		{
+			public class BODY
+			{
+				public static LocString CONTAINER1 = "Pokeshells are peaceful bottom feeders that typically keep to themselves, happy to consume the waste and discarded food of other creatures.";
+
+				public static LocString CONTAINER2 = "As Pokeshells mature they must periodically shed portions of their exoskeletons to make room for new growth.";
+
+				public static LocString CONTAINER3 = "Although the most dramatic sheds occur early in a Pokeshell's adolescence, they will continue growing and shedding throughout their adult lives, until the day they eventually die.";
+			}
+
+			public static LocString TITLE = "Pokeshell";
+
+			public static LocString SUBTITLE = "Domesticable Critter";
 		}
 
 		public class PUFT
@@ -494,11 +526,11 @@ namespace STRINGS
 		{
 			public class BODY
 			{
-				public static LocString EMAILHEADER1 = "<smallcaps>To: <b>Director Stern</b><alpha=#AA><size=12> <jstern@gravitas.nova></size></color>\nFrom: <b>[REDACTED]</b></smallcaps>\n------------------\n";
+				public static LocString EMAILHEADER1 = "<smallcaps>To: <b>Director Stern</b><alpha=#AA><size=12> <jstern@gravitas.nova></size></color>\nFrom: <b>Mr. Lawson</b><alpha=#AA><size=12> <tlawson@gravitas.nova></smallcaps>\n------------------\n";
 
-				public static LocString CONTAINER2 = "<indent=5%>Director,\n\nEverything went well. McClintock was reluctant at first, but she has little alternative given the nature of her work.\n\nShe can begin at your convenience.</indent>";
+				public static LocString CONTAINER2 = "<indent=5%>Director,\n\nEverything went well. McClintock was reluctant at first, but she has little alternative given the nature of her work and the recent turn of events.\n\nShe can begin at your convenience.</indent>";
 
-				public static LocString SIGNATURE1 = "\n[REDACTED]\n<size=11>Personnel Coordinator\nThe Gravitas Facility</size>\n------------------\n";
+				public static LocString SIGNATURE1 = "\nMr. Lawson\n<size=11>Personnel Coordinator\nThe Gravitas Facility</size>\n------------------\n";
 			}
 
 			public static LocString TITLE = "Results from Atomicon";
@@ -514,9 +546,11 @@ namespace STRINGS
 
 				public static LocString EMAILHEADER2 = "<smallcaps>To: <b>Dr. Jones</b><alpha=#AA><size=12> <ejones@gravitas.nova></size></color>\nFrom: <b>Dr. Summers</b><alpha=#AA><size=12> <jsummers@gravitas.nova></size></color></smallcaps>\n------------------\n";
 
-				public static LocString CONTAINER2 = "<indent=5%>Oh my goddd I just found out Frankie's one of those people who takes pictures of all their food and uploads them to some dumb blog somewhere.\n\nYou HAVE to come to lunch with us and see, they spend so long taking pictures that the food gets cold and they have to ask the waiter to warm it up again, it's SO FUNNY.</indent>";
+				public static LocString CONTAINER1 = "<indent=5%>Oh my goddd I found out today that Frankie's one of those people who takes pictures of their food and uploads them to some boring blog somewhere.\n\nYou HAVE to come to lunch with us and see, they spend so long taking pictures that the food gets cold and they have to ask the waiter to reheat it, it's SO FUNNY.</indent>";
 
-				public static LocString CONTAINER3 = "<indent=5%>Sure, I'd be down to get lunch with you guys. See you in a bit! :)</indent>";
+				public static LocString CONTAINER2 = "<indent=5%>Oh cool, Frankie's writing a new post for <i>Toast of the Town</i>? I'd love to tag along and \"see how the sausage is made\" so to speak, haha.\n\nI'll see you guys in a bit! :)</indent>";
+
+				public static LocString CONTAINER3 = "<indent=5%>WAIT, Joshua, you read Frankie's blog??</indent>";
 
 				public static LocString SIGNATURE1 = "\nXOXO,\nDr. Jones\n<size=11>Information and Statistics Department\nThe Gravitas Facility</size>\n------------------\n";
 
@@ -626,7 +660,7 @@ namespace STRINGS
 			{
 				public static LocString EMAILHEADER1 = "<smallcaps>To: <b>[REDACTED]</b>\nFrom: <b>[REDACTED]</b></color></smallcaps>\n------------------\n";
 
-				public static LocString CONTAINER2 = "<indent=5%>So, the Facility is introducing a new security system that unlocks the doors when they scan your hand. My question is, what exactly are they scanning?\n\nThe folks in engineering say the door device doesn't look like a fingerprint scanner, but the duo working over in bioengineering won't comment at all.\n\nAll I know is, I've never willingly submitted my DNA or fingerprints to the company, and they've certainly never asked.</indent>";
+				public static LocString CONTAINER2 = "<indent=5%>So, the Facility is introducing this new security system that scans your hand to unlock the doors. My question is, what exactly are they scanning?\n\nThe folks in engineering say the door device doesn't look like a fingerprint scanner, and the duo working over in bioengineering won't comment at all.</indent>";
 
 				public static LocString SIGNATURE1 = "\n[REDACTED]\n<size=11>The Gravitas Facility</size>\n------------------\n";
 			}
@@ -658,7 +692,7 @@ namespace STRINGS
 			{
 				public static LocString EMAILHEADER = "<smallcaps>To: <b>All</b>\nFrom: <b>Admin</b> <alpha=#AA><admin@gravitas.nova></color></smallcaps>\n------------------\n";
 
-				public static LocString CONTAINER1 = "<indent=5%>To whoever is entering [REDACTED]'s office to move his science fair trophies one inch to the left, please desist as he finds it quite unnerving.</indent>";
+				public static LocString CONTAINER1 = "<indent=5%>To whoever is entering Mr. Lawson's office to move his science fair trophies one inch to the left, please desist as he finds it quite unnerving.</indent>";
 
 				public static LocString SIGNATURE = "\nThank-you,\n-Admin\n<size=11>The Gravitas Facility</size>\n------------------\n";
 			}
@@ -674,7 +708,7 @@ namespace STRINGS
 			{
 				public static LocString EMAILHEADER1 = "<smallcaps>To: <b>[REDACTED]</b>\nFrom: <b>[REDACTED]</b></color></smallcaps>\n------------------\n";
 
-				public static LocString CONTAINER2 = "<indent=5%>Director,\n\nEven with dramatic optimization we can't fit the massive volume of resources needed for a colony seed on board, even when calculating for a very small interplanetary travel duration.\n\nSome serious changes are gonna have to be made for this to work.</indent>";
+				public static LocString CONTAINER2 = "<indent=5%>Director,\n\nEven with dramatic optimization we can't fit the massive volume of resources needed for a colony seed aboard the craft, even when calculating for a very small interplanetary travel duration.\n\nSome serious changes are gonna have to be made for this to work.</indent>";
 
 				public static LocString SIGNATURE1 = "\nXOXO,\n[REDACTED]\n<size=11>Information and Statistics Department\nThe Gravitas Facility</size>\n------------------\n";
 			}
@@ -814,11 +848,29 @@ namespace STRINGS
 			public static LocString SUBTITLE = "UNENCRYPTED";
 		}
 
+		public class TIMEOFFAPPROVED
+		{
+			public class BODY
+			{
+				public static LocString EMAILHEADER = "<smallcaps>To: <b>Dr. Mason</b><size=12><alpha=#AA> <fmason@gravitas.nova></size></color>\nFrom: <b>Admin</b><size=12><alpha=#AA> <admin@gravitas.nova></color></size></smallcaps>\n------------------\n";
+
+				public static LocString CONTAINER = "<indent=5%><b>Vacation Request Granted</b>\nGood luck, Frankie!\n\n<alpha=#AA><smallcaps><indent=10%> Vacation Request [May 18th-20th]\nReason: Time off request for attendance of the Blogjam Awards (\"Toast of the Town\" nominated in the Freshest Food Blog category).</indent></smallcaps></color></indent>";
+
+				public static LocString SIGNATURE = "\n-Admin\n<size=11>The Gravitas Facility</size>\n------------------\n";
+			}
+
+			public static LocString TITLE = "Vacation Request Approved";
+
+			public static LocString TITLE2 = "SUBJECT: Vacation Request Approved";
+
+			public static LocString SUBTITLE = "ENCRYPTION LEVEL: NONE";
+		}
+
 		public class B5_ANTS
 		{
 			public class BODY
 			{
-				public static LocString CONTAINER1 = "[VOICE RECOGNITION INITIALIZED]\n[SUBJECTS IDENTIFIED: A001, A435]\n\n[LOG BEGINS]\n\nTechnician: <i>Atta cephalotes</i>. What sort of experiment are you doing with these?\n\nDirector: No experiment. I just find them fascinating. Don't you?\n\nTech: Not really?\n\nDirector: You ought to. Very efficient. They perfected farming millions of years before humans.\n\n(sound of tapping on glass)\n\nDirector: An entire colony led by and in service to its queen. Each organism knows its role. We could learn a thing or two from them.\n\nTech: I have the results from the power tests, director.\n\nDirector: And?\n\nTech: Negative, ma'am.\n\nDirector: I see. You know, another admirable quality of ants occurs to me. They can pull twenty times their own weight.\n\nTech: I'm not sure I follow, ma'am.\n\nDirector: Are you pulling your weight, doctor?\n\n[LOG ENDS]";
+				public static LocString CONTAINER1 = "<smallcaps>[VOICE RECOGNITION INITIALIZED]\n[SUBJECTS IDENTIFIED: A001, B556]</smallcaps>\n\n[LOG BEGINS]\n\nTechnician: <i>Atta cephalotes</i>. What sort of experiment are you doing with these?\n\nDirector: No experiment. I just find them interesting. Don't you?\n\nTech: Not really?\n\nDirector: You ought to. Very efficient. They perfected farming millions of years before humans.\n\n(sound of tapping on glass)\n\nDirector: An entire colony led by and in service to its queen. Each organism knows its role.\n\nTech: I have the results from the power tests, director.\n\nDirector: And?\n\nTech: Negative, ma'am.\n\nDirector: I see. You know, another admirable quality of ants occurs to me. They can pull twenty times their own weight.\n\nTech: I'm not sure I follow, ma'am.\n\nDirector: Are you pulling your weight, doctor?\n\n[LOG ENDS]";
 			}
 
 			public static LocString TITLE = "Ants";
@@ -830,7 +882,7 @@ namespace STRINGS
 		{
 			public class BODY
 			{
-				public static LocString CONTAINER1 = "I cleaned up a few messes in my time, but ain't nothing like the mess I seen today in that bio lab. Green goop all over the floor, all over the walls. Murky tubes with what look like human shapes floating in them.\n\nThey think old Mr. Gunderson ain't got smarts enough to put two and two together, but I got eyes, don't I?\n\nAin't nobody ever pay attention to the janitor.\n\n-Mr. Stinky Gunderson";
+				public static LocString CONTAINER1 = "I cleaned up a few messes in my time, but ain't nothing like the mess I seen today in that bio lab. Green goop all over the floor, all over the walls. Murky tubes with what look like human shapes floating in them.\n\nThey think old Mr. Gunderson ain't got smarts enough to put two and two together, but I got eyes, don't I?\n\nAin't nobody ever pay attention to the janitor.\n\nBut the janitor pays attention to everybody.\n\n-Mr. Stinky Gunderson";
 			}
 
 			public static LocString TITLE = "Cleaning Up The Mess";
@@ -842,7 +894,7 @@ namespace STRINGS
 		{
 			public class BODY
 			{
-				public static LocString CONTAINER1 = "[VOICE RECOGNITION INITIALIZED]\n[SUBJECTS IDENTIFIED: A001, B111]\n\n[LOG BEGINS]\n\nDirector: We're planning to send a crew into space and permanently colonize a distant planet.\n\nMcClintock: Alright.\n\nDirector: ...\"Alright\"? I was prepared to fight you on this. Allure you with resources and promises of unregulated research.\n\nMcClintock: I know better than to try and change your mind. Would you have preferred a fight?\n\nDirector: No.\n\nMcClintock: Then how does my genetics research come into play?\n\n[LOG ENDS]";
+				public static LocString CONTAINER1 = "<smallcaps>[VOICE RECOGNITION INITIALIZED]\n[SUBJECTS IDENTIFIED: A001, B111]</smallcaps>\n\n[LOG BEGINS]\n\nDirector: The Gravitas Facility is planning to send a live crew into space and permanently colonize a distant planet.\n\nMcClintock: Alright.\n\nDirector: ...\"Alright\"? I was prepared to fight to get you on board. Allure you with resources and promises of limitless research.\n\nMcClintock: Would you prefer to fight?\n\nDirector: No.\n\nMcClintock: Then let's stop wasting time. Now, how does my genetics research come into play?\n\n[LOG ENDS]";
 			}
 
 			public static LocString TITLE = "Debrief";
@@ -854,9 +906,9 @@ namespace STRINGS
 		{
 			public class BODY
 			{
-				public static LocString CONTAINER1 = "Joshua: Hey Max, I'm passing around the collection pan. Wanna pitch in a couple bucks to get a cake for Ellie?\n\nMax: Uh... I think I'll pass.\n\nJoshua: C'mon Max, it's her birthday.\n\nMax: Alright, fine. But this is all I got.\n\nMax: I don't get why you hang out with her at all. Isn't she kind of... you know, mean?\n\nJoshua: Even the meanest people have a little niceness in them somewhere.\n\nMax: Huh. Well, good luck finding it.\n\nJoshua: Thanks for the cake money, Max.\n------------------\n";
+				public static LocString CONTAINER1 = "Joshua: Hey Mr. Kraus, I'm passing around the collection pan. Wanna pitch in a couple bucks to get a cake for Ellie?\n\nMax: Uh... I think I'll pass.\n\nJoshua: C'mon Otto, it's her birthday.\n\nOtto: Alright, fine. But this is all I have on me.\n\nOtto: I don't get why you hang out with her. Isn't she kind of... you know, mean?\n\nJoshua: Even the meanest people have a little niceness in them somewhere.\n\nOtto: Huh. Good luck finding it.\n\nJoshua: Thanks for the cake money, Otto.\n------------------\n";
 
-				public static LocString CONTAINER2 = "Ellie: Nice cake. I bet it wasn't easy to like, strong arm everyone into buying it.\n\nJoshua: You know, if you were a little nicer to people they might want to spend more time with you.\n\nEllie: Pfft, please. Friends are about <i>quality</i>, not quantity, Josh.\n\nJoshua: Wow! Was that a roundabout compliment I just heard?\n\nEllie: What? Gross, ew. Stop that.\n\nJoshua: Oh, don't worry, I won't tell anyone. I'm not really much of a gossip.";
+				public static LocString CONTAINER2 = "Ellie: Nice cake. I bet it wasn't easy to like, strong arm everyone into buying it.\n\nJoshua: You know, if you were a little nicer to people they might want to spend more time with you.\n\nEllie: Pfft, please. Friends are about <i>quality</i>, not quantity, Josh.\n\nJoshua: Wow! Was that a roundabout compliment I just heard?\n\nEllie: What? Gross, ew. Stop that.\n\nJoshua: Oh, don't worry, I won't tell anyone. I'm not much of a gossip.";
 			}
 
 			public static LocString TITLE = "Office Cake";
@@ -868,7 +920,7 @@ namespace STRINGS
 		{
 			public class BODY
 			{
-				public static LocString CONTAINER1 = "[VOICE RECOGNITION INITIALIZED]\n[SUBJECTS IDENTIFIED: A001, A435, B111]\n\n[LOG BEGINS]\n\nTechnician: Thank-you for the fingerprints, doctor. We just need a quick voice sample, then you can be on your way.\n\nDr. McClintock: Wow Jackie, your security's no joke.\n\nDirector: Please address me as \"Director\" while on Facility grounds.\n\nDr. McClintock: ...Right.\n\n(clicking)\n\nTechnician: This should only take a moment. Speak clearly and the system will derive a vocal signature for you.\n\nTechnician: When you're ready.\n\n(throat clearing)\n\nDr. McClintock: Security code B111, Dr. Jodi McClintock. Gravitas Facility Bioengineering Department.\n\n(pause)\n\nTechnician: Great.\n\nDr. McClintock: What was that light just now?\n\nDirector: A basic security scan. No need for concern.\n\n(machine printing)\n\nTechnician: Here's your ID. You should have access to all doors in the facility now, Dr. McClintock.\n\nDr. McClintock: Thank-you.\n\nDirector: Come along, doctor.\n\n[LOG ENDS]";
+				public static LocString CONTAINER1 = "<smallcaps>[VOICE RECOGNITION INITIALIZED]\n[SUBJECTS IDENTIFIED: A001, A435, B111]</smallcaps>\n\n[LOG BEGINS]\n\nTechnician: Thank-you for the fingerprints, doctor. We just need a quick voice sample, then you can be on your way.\n\nDr. McClintock: Wow Jackie, your security's no joke.\n\nDirector: Please address me as \"Director\" while on Facility grounds.\n\nDr. McClintock: ...Right.\n\n(clicking)\n\nTechnician: This should only take a moment. Speak clearly and the system will derive a vocal signature for you.\n\nTechnician: When you're ready.\n\n(throat clearing)\n\nDr. McClintock: Security code B111, Dr. Jodi McClintock. Gravitas Facility Bioengineering Department.\n\n(pause)\n\nTechnician: Great.\n\nDr. McClintock: What was that light just now?\n\nDirector: A basic security scan. No need for concern.\n\n(machine printing)\n\nTechnician: Here's your ID. You should have access to all doors in the facility now, Dr. McClintock.\n\nDr. McClintock: Thank-you.\n\nDirector: Come along, doctor.\n\n[LOG ENDS]";
 			}
 
 			public static LocString TITLE = "Employee Processing";
@@ -882,7 +934,7 @@ namespace STRINGS
 			{
 				public static LocString CONTAINER1 = "<b>Incredible Technology From Independent Lab Harnesses Time into Energy</b>";
 
-				public static LocString CONTAINER2 = "Scientists from the recently founded Gravitas Facility have unveiled their first technology prototype, dubbed the \"Temporal Bow\", a device which manipulates the 4th dimension to generate infinite, clean and renewable energy.\n\nWhile it may sound like something from science fiction, facility founder Dr.Jacquelyn Stern confirms that it is very much real.\n\n\"It has already been demonstrated that Newton's Second Law of Motion can be violated by negative mass superfluids under the correct lab conditions,\" she says.\n\n\"If the Laws of Motion can be bent and altered, why not the Laws of Thermodynamics? That was the main intent behind this project.\"\n\nThe Temporal Bow works by rapidly vibrating sections of the 4th dimension to send small quantities of mass forward and backward in time, generating massive amounts of energy with virtually no waste.\n\n\"The fantastic thing about using the 4th dimension as fuel,\" says Stern, \"is that it is really, categorically infinite\".\n\nFor those eagerly awaiting the prospect of human time travel, don't get your hopes up just yet. The Facility says that although they have transported matter through time already, the technology was expressly developed for the purpose of energy generation and is ill-equipped for human transportation.";
+				public static LocString CONTAINER2 = "Scientists from the recently founded Gravitas Facility have unveiled their first technology prototype, dubbed the \"Temporal Bow\", a device which manipulates the 4th dimension to generate infinite, clean and renewable energy.\n\nWhile it may sound like something from science fiction, facility founder Dr. Jacquelyn Stern confirms that it is very much real.\n\n\"It has already been demonstrated that Newton's Second Law of Motion can be violated by negative mass superfluids under the correct lab conditions,\" she says.\n\n\"If the Laws of Motion can be bent and altered, why not the Laws of Thermodynamics? That was the main intent behind this project.\"\n\nThe Temporal Bow works by rapidly vibrating sections of the 4th dimension to send small quantities of mass forward and backward in time, generating massive amounts of energy with virtually no waste.\n\n\"The fantastic thing about using the 4th dimension as fuel,\" says Stern, \"is that it is really, categorically infinite\".\n\nFor those eagerly awaiting the prospect of human time travel, don't get your hopes up just yet. The Facility says that although they have transported matter through time already, the technology was expressly developed for the purpose of energy generation and is ill-equipped for human transportation.";
 			}
 
 			public static LocString TITLE = "Article Excerpt";
@@ -894,7 +946,7 @@ namespace STRINGS
 		{
 			public class BODY
 			{
-				public static LocString CONTAINER1 = "[VOICE RECOGNITION INITIALIZED]\n[SUBJECTS IDENTIFIED: A001, B111]\n\n[LOG BEGINS]\n\nMcClintock: Director, do you know where my rats have been moved to? I asked around the bioengineering division but I was referred back to you.\n\nDirector: Hm? Oh, yes, they've been removed.\n\nMcClintock: \"Removed\"?\n\nDirector: Discarded. I'm sorry, did you still need them? The reports showed your experiments with them were completed.\n\nMcClintock: No, I... I'd collected all the data I needed, I just --\n\nDirector: -- Doctor. You weren't making pets out of test subjects, were you?\n\nMcClintock: Don't be ridiculous, I --\n\nDirector: -- Good.They were horrible to look at anyway. All those bumps.\n\nMcClintock: In the future, please do not mess with my things. It... disturbs me.\n\nDirector: I will notify you beforehand next time, doctor.\n\n[LOG ENDS]";
+				public static LocString CONTAINER1 = "<smallcaps>[VOICE RECOGNITION INITIALIZED]\n[SUBJECTS IDENTIFIED: A001, B111]</smallcaps>\n\n[LOG BEGINS]\n\nMcClintock: Director, do you know where my rats have been moved to? I asked around the bioengineering division but I was referred back to you.\n\nDirector: Hm? Oh, yes, they've been removed.\n\nMcClintock: \"Removed\"?\n\nDirector: Discarded. I'm sorry, did you still need them? The reports showed your experiments with them were completed.\n\nMcClintock: No, I... I'd collected all the data I needed, I just --\n\nDirector: -- Doctor. You weren't making pets out of test subjects, were you?\n\nMcClintock: Don't be ridiculous, I --\n\nDirector: -- Good.They were horrible to look at anyway. All those bumps.\n\nMcClintock: In the future, please do not mess with my things. It... disturbs me.\n\nDirector: I will notify you beforehand next time, doctor.\n\n[LOG ENDS]";
 			}
 
 			public static LocString TITLE = "Moved Rats";
@@ -924,9 +976,9 @@ namespace STRINGS
 		{
 			public class BODY
 			{
-				public static LocString CONTAINER1 = "I'm starting my new job at Gravitas today. I'm... nervous.\n\nIt turns out they hired a bunch of new people - I guess they're expanding - and most of them are about my age, but I'm the only one that hasn't done my doctorate. They all call me \"Mister\" Kraus and it's the <i>worst</i>.\n\nI have no idea where I'll find the time to do my PhD while working a full time job.\n------------------\n";
+				public static LocString CONTAINER1 = "I'm starting my new job at Gravitas today. I'm... well, I'm nervous.\n\nIt turns out they hired a bunch of new people - I guess they're expanding - and most of them are about my age, but I'm the only one that hasn't done my doctorate. They all call me \"Mister\" Kraus and it's the <i>worst</i>.\n\nI have no idea where I'll find the time to do my PhD while working a full time job.\n------------------\n";
 
-				public static LocString CONTAINER2 = "<i>I screwed up so much today.</i>\n\nAt one point I spaced on the formula for calculating the volume of a cone, they must have thought I was completely useless.\n\nThe only time I knew what I was doing was when I helped an older coworker figure out her dumb old email.\n\nPeople say education isn't so important as long as you've got the skills, but there's things my colleagues know that I just <i>don't</i>. They're not mean about it or anything but it's so frustrating. I just feel dumb when I talk to them!\n\nI bet they're gonna realize soon that I don't belong here, and then I'll be fired for sure. Man... I'm still paying off my student loans (WITH international fees) and I <i>can't</i> lose this income.\n------------------\n";
+				public static LocString CONTAINER2 = "<i>I screwed up so much today.</i>\n\nAt one point I spaced on the formula for calculating the volume of a cone, they must have thought I was completely useless.\n\nThe only time I knew what I was doing was when I helped an older coworker figure out her dumb old email.\n\nPeople say education isn't so important as long as you've got the skills, but there's things my colleagues know that I just <i>don't</i>. They're not mean about it or anything, it's just so frustrating. I feel dumb when I talk to them!\n\nI bet they're gonna realize soon that I don't belong here, and then I'll be fired for sure. Man... I'm still paying off my student loans (WITH international fees), I <i>can't</i> lose this income.\n------------------\n";
 
 				public static LocString CONTAINER3 = "Dr. Sklodowska's been really nice and welcoming since I started working here. Sometimes she comes and sits with me in the cafeteria. The food she brings from home smells like old feet but she chats with me about what new research papers we're each reading and it's very kind.\n\nShe tells me the fact I got hired without a doctorate means I must be very smart, and management must see something in me.\n\nI'm not sure I believe her but it's nice to hear something that counters little voice in my head anyway.\n------------------\n";
 
@@ -942,13 +994,13 @@ namespace STRINGS
 		{
 			public class BODY
 			{
-				public static LocString CONTAINER1 = "I've been so tired lately. I've probably spent the last 3 nights sleeping at my desk, and I've used the lab's safety shower to bathe twice this month.\n\nThere isn't even an approaching deadline, but we're doing such amazing things here, I can't stop myself.\n\nI just feel... driven, I suppose.\n------------------\n";
+				public static LocString CONTAINER1 = "I've been so tired lately. I've probably spent the last 3 nights sleeping at my desk, and I've used the lab's safety shower to bathe twice already this month.\n\nWe're technically on schedule, but for some reason Director Stern has been breathing down my neck to get these new products ready for market.\n\nNormally I'd be mad about the added pressure on my work, but something in the Director's voice tells me that time is of the essence.\n------------------\n";
 
 				public static LocString CONTAINER2 = "I keep finding myself staring at my computer screen, totally unable to remember what it was I was doing.\n\nI try to force myself to type up some notes or analyze my data but it's like my brain is paralyzed, I can't get anything done.\n\nI'll have to stay late to make up for all this time I've wasted staying late.\n------------------\n";
 
 				public static LocString CONTAINER3 = "Dr. McClintock told me I looked half dead and sent me home today. I don't think she even has the authority to do that, but I did as I was told. She wasn't messing around if you know what I mean.\n\nI can probably get a head start on my paper from home today, anyway.\n\nI think I have an idea for a circuit configuration that will improve the battery life of all our technologies by a whole 2.3%.\n------------------\n";
 
-				public static LocString CONTAINER4 = "I got home yesterday fully intending to work on my paper after McClintock sent me home, but the second I walked in the door I hit the pillow and didn't get back up. I slept for <i>12 straight hours</i>.\n\nI had no idea I needed that. When I got into the lab this morning I looked over my work from the past few weeks, and it's completely useless.\n\nIt'll take me hours to correct all the mistakes I made these past few months. Is this what I was killing myself for? I'm such a rube, I owe McClintock a huge thanks.\n\nI'll start keeping more regular hours from now on... Also, I was considering maybe getting a dog.";
+				public static LocString CONTAINER4 = "I got home yesterday fully intending to work on my paper after McClintock sent me home, but the second I walked in the door I hit the pillow and didn't get back up. I slept for <i>12 straight hours</i>.\n\nI had no idea I needed that. When I got into the lab this morning I looked over my work from the past few weeks, and realized it's completely useless.\n\nIt'll take me hours to correct all the mistakes I made these past few months. Is this what I was killing myself for? I'm such a rube, I owe McClintock a huge thanks.\n\nI'll start keeping more regular hours from now on... Also, I was considering maybe getting a dog.";
 			}
 
 			public static LocString TITLE = "Personal Journal: B556";
@@ -962,15 +1014,13 @@ namespace STRINGS
 			{
 				public static LocString CONTAINER1 = "I started work at a new company called the \"Gravitas Facility\" today! I was nervous I wouldn't get the job at first because I was fresh out of school, and I was so so so pushy in the interview, but the Director apparently liked my thesis on the physiological thermal regulation of arctic lizards. I'll be working with some brilliant geneticists, bioengineering organisms for space travel in harsh environments! It's like a dream come true. I get to work on exciting new research in a place where no one knows me!\n------------------\n";
 
-				public static LocString CONTAINER2 = "No no no no no! It can't be! BANHI ANSARI is here, working on space shuttle thrusters in the robotics lab! As soon as she saw me she called me \"Bubbles\" and told everyone about the time I accidentally inhaled a bunch of fungal spores during lab, blew a big snot bubble out my nose and then sneezed all over Professor Avery! I can't believe that story followed me here! BANHI RUINS EVERYTHING!\n------------------\n";
+				public static LocString CONTAINER2 = "No no no no no! It can't be! BANHI ANSARI is here, working on space shuttle thrusters in the robotics lab! As soon as she saw me she called me \"Bubbles\" and told everyone about the time I accidentally inhaled a bunch of fungal spores during lab, blew a big snot bubble out my nose and then sneezed all over Professor Avery! Everyone's calling me \"Bubbles\" instead of \"Doctor\" at work now. Some of them don't even know it's a nickname, but I don't want to correct them and seem rude or anything. Ugh, I can't believe that story followed me here! BANHI RUINS EVERYTHING!\n------------------\n";
 
-				public static LocString CONTAINER3 = "Everyone's calling me \"Bubbles\" instead of \"Doctor\" at work now! Some of them don't even know it's a nickname, but I don't want to correct them and seem rude or anything. Ugh! Why couldn't that story have just stayed back at Atoma U?\n------------------\n";
+				public static LocString CONTAINER3 = "I've spent the last few days buried in my work, and I'm actually feeling a lot better. We finally perfected a gene manipulation that controls heat sensitivity in rats. Our test subjects barely even shiver in subzero temperatures now. We'll probably do a testrun tomorrow with Robotics to see how the rats fare in the prototype shuttles we're developing.\n------------------\n";
 
-				public static LocString CONTAINER4 = "I've spent the last few days buried in my work, and I'm actually feeling a lot better. We finally perfected a gene manipulation that controls heat sensitivity in rats. Our test subjects barely even shiver in subzero temperatures now. We'll probably do a testrun tomorrow with Robotics to see how the rats fare in the prototype shuttles we're developing.\n------------------\n";
+				public static LocString CONTAINER4 = "HAHAHAHAHA! Bioengineering and Robotics did the test run today and Banhi was securing the live cargo pods when one of the rats squeaked at her. She was so scared, she fell on her butt and TOOTED in front of EVERYONE! They're all calling her \"Pipsqueak\" - \"Bubbles\" doesn't seem quite so bad now. Pipsqueak's been a really good sport about it though, she even laughed it off at the time. I think we might actually be friends now? It's weird.\n------------------\n";
 
-				public static LocString CONTAINER5 = "HAHAHAHAHA! Bioengineering and Robotics did the test run today and Banhi was securing the live cargo pods when one of the rats squeaked at her. She was so scared, she fell on her butt and TOOTED in front of EVERYONE! They're all calling her \"Pipsqueak\" - \"Bubbles\" doesn't seem quite so bad now. Pipsqueak's been a really good sport about it though, she even laughed it off at the time. I think we might actually be friends now? It's weird.\n------------------\n";
-
-				public static LocString CONTAINER6 = "I lied. Me and Banhi aren't friends - we're BEST FRIENDS. She even showed me how she does her hair. We're gonna book the wind tunnel after work and run experiments together on thermo-rat rockets! Haha!\n------------------\n";
+				public static LocString CONTAINER5 = "I lied. Me and Banhi aren't friends - we're BEST FRIENDS. She even showed me how she does her hair. We're gonna book the wind tunnel after work and run experiments together on thermo-rat rockets! Haha!\n------------------\n";
 			}
 
 			public static LocString TITLE = "Personal Journal: B835";
@@ -994,7 +1044,7 @@ namespace STRINGS
 		{
 			public class BODY
 			{
-				public static LocString CONTAINER1 = "[VOICE RECOGNITION INITIALIZED]\n[SUBJECTS IDENTIFIED: A001, A435]\n\n[LOG BEGINS]\n\nDirector: Unacceptable.\n\nJones: I'm just telling you the numbers, Director, I'm not responsible for them.\n\nDirector: In your earlier e-mail you claimed the issue would be solved by the Pod.\n\nJones: Yeah, the weight issue. And it was solved. The problem now is the insane amount of power that big thing eats every time it prints a colonist.\n\nDirector: So how do you suppose we meet these target numbers? Fossil fuels are exhausted, nuclear is outlawed, solar is next to impossible with this smog.\n\nJones: I dunno. That's why you've got researchers, I just crunch numbers. Although you should avoid fossil fuels and nuclear energy anyway. If you have to load the rocket up with a couple tons of fuel then we're back to square one on the weight problem. It's gotta be something clever.\n\nDirector: Thank you, Dr. Jones. You may go.\n\n[LOG ENDS]";
+				public static LocString CONTAINER1 = "<smallcaps>[VOICE RECOGNITION INITIALIZED]\n[SUBJECTS IDENTIFIED: A001, A435]</smallcaps>\n\n[LOG BEGINS]\n\nDirector: Unacceptable.\n\nJones: I'm just telling you the numbers, Director, I'm not responsible for them.\n\nDirector: In your earlier e-mail you claimed the issue would be solved by the Pod.\n\nJones: Yeah, the weight issue. And it was solved. The problem now is the insane amount of power that big thing eats every time it prints a colonist.\n\nDirector: So how do you suppose we meet these target numbers? Fossil fuels are exhausted, nuclear is outlawed, solar is next to impossible with this smog.\n\nJones: I dunno. That's why you've got researchers, I just crunch numbers. Although you should avoid fossil fuels and nuclear energy anyway. If you have to load the rocket up with a couple tons of fuel then we're back to square one on the weight problem. It's gotta be something clever.\n\nDirector: Thank you, Dr. Jones. You may go.\n\n[LOG ENDS]";
 			}
 
 			public static LocString TITLE = "Revisited Numbers";
@@ -1002,23 +1052,11 @@ namespace STRINGS
 			public static LocString SUBTITLE = "ENCRYPTION LEVEL: ONE";
 		}
 
-		public class B1_SPITTINGIMAGE
-		{
-			public class BODY
-			{
-				public static LocString CONTAINER1 = "[VOICE RECOGNITION INITIALIZED]\n[SUBJECT IDENTIFIED: A030]\n\n[LOG BEGINS]\n\n\"Was in the bio lab moppin' the floors late last night and you'd never guess who I seen - 'was me!\n\nWell, was a fellow who'd looked like me, 'cept a bit smaller an' with no nose - he was floatin' around in a tube, dressed in some kinda jumpsuit.\n\nNow, I know no good comes of odd mirror men bobbin' around in secret tubes, so I did my janitorial duty and got out of there quick.\n\nNobody'd alive would believe me anyway.\"\n\n[LOG ENDS]";
-			}
-
-			public static LocString TITLE = "Spittin' Image";
-
-			public static LocString SUBTITLE = "ENCRYPTION LEVEL: NONE";
-		}
-
 		public class A5_SUNFLOWERSEEDS
 		{
 			public class BODY
 			{
-				public static LocString CONTAINER1 = "[VOICE RECOGNITION INITIALIZED]\n[SUBJECT IDENTIFIED: B111]\n\n[LOG BEGINS]\n\n\"How are you chaps today?\n\n(squeaking)\n\nI brought sunflower seeds. Look! Your favorite! Are you hungry?\n\n(excited squeaking)\n\nOh, one moment friends. I left the recorder on --\n\n(rustling)\"\n\n[LOG ENDS]";
+				public static LocString CONTAINER1 = "<smallcaps>[VOICE RECOGNITION INITIALIZED]\n[SUBJECT IDENTIFIED: B111]</smallcaps>\n\n[LOG BEGINS]\n\n\"And how are you furry little fellows today?\n\n(squeaking)\n\nLook! I brought sunflower seeds. Your favorite! Are you hungry?\n\n(excited squeaking)\n\nOh, one moment, one moment. I left the recorder on --\n\n(rustling)\"\n\n[LOG ENDS]";
 			}
 
 			public static LocString TITLE = "Sunflower Seeds";
@@ -1062,18 +1100,6 @@ namespace STRINGS
 			public static LocString SUBTITLE = "ENCRYPTION LEVEL: NONE";
 		}
 
-		public class HANDWRITTENNOTE
-		{
-			public class BODY
-			{
-				public static LocString CONTAINER1 = "\nFlip the Hourglass.\n\nSigned,\nA dear friend";
-			}
-
-			public static LocString TITLE = "Handwritten Note";
-
-			public static LocString SUBTITLE = "ENCRYPTION LEVEL: NONE";
-		}
-
 		public class LOCKS
 		{
 			public static LocString NEURALVACILLATOR = "Neural Vacillator";
@@ -1082,18 +1108,6 @@ namespace STRINGS
 		public class MYLOG
 		{
 			public static LocString SUBTITLE = "Boot Message";
-		}
-
-		public class NOTETOJODI
-		{
-			public class BODY
-			{
-				public static LocString CONTAINER1 = "Jodi,\n\nIf you read this... I'm sorry.\nIt was cruel, but it was the only way to save you.\n\nJackie";
-			}
-
-			public static LocString TITLE = "Strange Note";
-
-			public static LocString SUBTITLE = "ENCRYPTION LEVEL: NONE";
 		}
 
 		public class PLANETARYECHOES
@@ -1114,19 +1128,23 @@ namespace STRINGS
 
 				public static LocString TITLE7 = "Echo Seven";
 
-				public static LocString CONTAINER1 = "Jackie: So, Charles rejected my thesis proposal.\n\nJodi: He can do that? I thought he had to mentor you no matter what topic you chose.\n\nJackie: Well apparently he has veto power. He thought I should choose something more realistic.\n\nJodi: Pfft. Imagine if the Theory of Relativity had been vetoed for being \"unrealistic\".\n\nJackie: Heh heh. \"<i>Special</i> Relativity\"? I don't see what's so special about it.\n\nJodi: Haha! Right?\n------------------\n";
+				public static LocString TITLE8 = "Echo Eight";
 
-				public static LocString CONTAINER2 = "Jodi: We should start our own company after I graduate.\n\nJackie: That would be incredible.\n\nJodi: Wouldn't it!\n\nJackie: Okay, wait, you're being serious right?\n\nJodi: Yeah! Of course!\n------------------\n";
+				public static LocString CONTAINER1 = "Jodi: Hey, how'd it go?\n\nJackie: The school rejected my thesis proposal.\n\nJodi: Seriously? How come?\n\nJackie: They said they wanted me to study something more \"realistic\" than time manipulation.\n\nJodi: Pfft. The whole point of science is to be unrealistic. Heck, my thesis is on brain cloning. Imagine if the Theory of Relativity had been vetoed for being \"unrealistic\".\n\nJodi: Like, \"<i>Special</i> Relativity\"? I don't see what's so special about it. Haha! Right?\n\nJackie: Heh... Yeah...\n\nJodi: Hey.\n\nJodi: Don't worry, Jackie. I know you'll figure things out.\n------------------\n";
 
-				public static LocString CONTAINER3 = "Jackie: Hey, Jodi, c'mere, I got a present for you.\n\nJodi: What's thi--\n\nJodi: Is this a business card? With my name on it?!\n\nJackie: Heh! Hot off the presses! Look, I have one too.\n\nJodi: You got a logo done and everything. Wow, it feels so real all of the sudden!\n\nJackie: We're really doing it!\n------------------\n";
+				public static LocString CONTAINER2 = "Jodi: We should start our own company after I graduate.\n\nJackie: Yeah, totally.\n\nJodi: No one would be able to veto your research. We could just work on anything we wanted. I'm thinking we call it <i>\"Gravitas\"</i>. It's got an air of importances to it. Also it sort of sounds like \"gravity\"!\n\nJackie: ...Wait. Are you being serious?\n\nJodi: Of course I am. Why would I joke about that?\n------------------\n";
 
-				public static LocString CONTAINER4 = "Jackie: I think we should use your name when we apply for the research grant.\n\nJodi: But we're submitting your proposal.\n\nJackie: We won't get funding if we use my name. It'll be hard enough for you competing against tenured scientists, but without my PhD I don't stand a chance.\n\nJodi: Yeah...\n\nJodi: Okay, but the second we get famous I'm setting the record straight.\n------------------\n";
+				public static LocString CONTAINER3 = "Jackie: Hey, Jodi, I got a present for you.\n\nJodi: What's thi-- Is this a business card? With my <i>name</i> on it?!\n\nJackie: Hot off the presses! Look, I got one too.\n\nJodi: Wow, you had a logo made and everything. We're really doing it!\n\nJackie: It feels so real all of the sudden.\n------------------\n";
 
-				public static LocString CONTAINER5 = "Jodi: The grant office called again.\n\nJackie: ...\n\nJodi: We can't just keep ignoring them.\n------------------\n";
+				public static LocString CONTAINER4 = "Jackie: I think we should use your name when we apply for the research grant.\n\nJodi: But you wrote the proposal.\n\nJackie: We won't get funding if we use my name. It'll be hard enough for you to compete against tenured scientists, without my PhD I don't stand a chance.\n\nJodi: Yeah... Okay, but the second we get famous I'm setting the record straight. The world's got to know who invented this!\n------------------\n";
 
-				public static LocString CONTAINER6 = "Jodi: Jackie, do you have a second to chat?\n\nJackie: I'm a little busy right now.\n\nJodi: It's important.\n\nJodi: I got an offer at Atomicon.\n\nJackie: I'm sorry?\n\nJodi: Yeah, they're looking into some exciting new methods of gene splicing. It'd make better use of my bio degree, I think...\n\nJackie: You can't really be thinking about leaving.\n\nJodi: It's just, we're running out of money, and...\n\nJackie: We're a startup! Startups always run out of money in the beginning!\n\nJodi: I'm sorry, Jackie.\n------------------\n";
+				public static LocString CONTAINER5 = "Jodi: Jackie, do you have a second to chat? It's important.\n\nJackie: I'm a little busy right now.\n\nJodi: I got an offer at Atomicon.\n\nJackie: ...\n\nJodi: Yeah, they're looking into some exciting new methods of gene splicing. It'd make better use of my bio degree, and--\n\nJackie: You can't actually be thinking about leaving.\n\nJodi: It's just, we're running out of money and the grant office is planning to...\n\nJackie: Wait. How did you get a job at Atomicon? Are you still putting my proposal on your resume?\n\nJodi: I mean, I <i>was</i> the one who pitched it and secured the funding.\n\nJackie: You <i>said</i> you would tell people I wrote it.\n\nJodi: I tried, it's just the time never seemed right and they offered to... Look, it doesn't matter. I'm sorry, Jackie.\n------------------\n";
 
-				public static LocString CONTAINER7 = "Jodi: Hey, Jackie, it's been awhile since we had a chance to talk.\n\nJodi: I heard EUoST's presenting you with an honorary PhD. I just wanted to leave you a message and say \"congratulations\".\n\nJodi: So... Congratulations!\n\nJodi: Hope you're doing well. Err, this is Jodi, by the way.\n------------------\n";
+				public static LocString CONTAINER6 = "Jodi: Hey, Jackie, it's been awhile since we had a chance to talk.\n\nJodi: I heard EUoST's presenting you with an honorary PhD for your discovery. I just wanted to leave you a message to let your know I'm happy for you and say \"congratulations\".\n\nJodi: If there's anything else I can do to help you out, let me know.\n\nJodi: So, uh... Congratulations! Hope you're doing well.\n\nJodi: Bye.\n------------------\n";
+
+				public static LocString CONTAINER7 = "Dr. McClintock: Knock knock.\n\nDirector: Oh, doctor, come in. Do you need something? If it's lab equipment, I'd remind you that you can requisition whatever you'd like directly from admin.\n\nDr. McClintock: No, my lab is fully stocked, thanks. I wanted to talk, unrelated to work.\n\nDirector: I see.\n\nDirector: Dr. McClintock, I hope I haven't given you the impression that you were hired for personal reasons. I brought you on to this project because I respect your skills as a scientist.\n\nDr. McClintock: Now see, that's exactly what I wanted to talk about. \"Dr. McClintock\". You've been cold since I got here. I'd hoped this would be a chance to settle things.\n\nDirector: I'd rather not have this discussion.\n\nDr. McClintock: I just wanted to say, I'm sorry I left.\n\nDr. McClintock: It wasn't because I didn't believe in our work.\n\nDirector: But you returned after the company became successful.\n\nDr. McClintock: Is that how you see it? Jackie, I came back because you asked me.\n\n[KNOCKING]\n\nDr. Jones: Director Stern? The latest results are in from the engineering lab.\n\nDr. Jones: Err... have I interrupted?\n\nDirector: No, no. Leave them on my desk please.\n\n[SOUND OF A DOOR SHUTTING]";
+
+				public static LocString CONTAINER8 = "";
 			}
 
 			public static LocString TITLE = "Planetary Echoes";
@@ -1158,18 +1176,6 @@ namespace STRINGS
 			public static LocString TITLE = "Unattended Cultures";
 
 			public static LocString SUBTITLE = "ENCRYPTION LEVEL: TWO";
-		}
-
-		public class A5_BRINGYOURKIDTOWORK
-		{
-			public class BODY
-			{
-				public static LocString CONTAINER1 = "<smallcaps><b>Reminder to all Personnel</b>\nFrom: <b>Admin</b> <alpha=#AA><admin@gravitas.nova></color>\nTo: <b>All</b></smallcaps>\n------------------\n\n<indent=5%>Important reminder to all personnel;\n\nThe Gravitas Facility does not host a \"Bring Your Child To Work Day\" office event.\n\nWe ask that personnel please do not bring children into top secret research departments, and especially that they do not let said children play with the high velocity particle accelerators.\n\nWe thank you for your understanding.\n\n-Admin\nThe Gravitas Facility</indent>";
-			}
-
-			public static LocString TITLE = "Bring Your Child To Work";
-
-			public static LocString SUBTITLE = "ENCRYPTION LEVEL: NONE";
 		}
 
 		public class A4_CASUALFRIDAY
@@ -1252,7 +1258,7 @@ namespace STRINGS
 		{
 			public class BODY
 			{
-				public static LocString CONTAINER1 = string.Empty;
+				public static LocString CONTAINER1 = "";
 
 				public static LocString CONTAINER2 = "Brought to you by the Gravitas Facility.\n<smallcaps>Patent Pending</smallcaps>";
 			}
@@ -1304,7 +1310,7 @@ namespace STRINGS
 		{
 			public class BODY
 			{
-				public static LocString CONTAINER1 = string.Empty;
+				public static LocString CONTAINER1 = "";
 			}
 
 			public static LocString TITLE = "Buddy Bud";
@@ -1342,7 +1348,7 @@ namespace STRINGS
 		{
 			public class BODY
 			{
-				public static LocString CONTAINER1 = string.Empty;
+				public static LocString CONTAINER1 = "";
 			}
 
 			public static LocString TITLE = "Jumping Joya";
@@ -1354,9 +1360,9 @@ namespace STRINGS
 		{
 			public class BODY
 			{
-				public static LocString CONTAINER1 = string.Empty;
+				public static LocString CONTAINER1 = "";
 
-				public static LocString CONTAINER2 = string.Empty;
+				public static LocString CONTAINER2 = "";
 			}
 
 			public static LocString TITLE = "Mealwood";
@@ -1368,7 +1374,7 @@ namespace STRINGS
 		{
 			public class BODY
 			{
-				public static LocString CONTAINER1 = string.Empty;
+				public static LocString CONTAINER1 = "";
 			}
 
 			public static LocString TITLE = "Mirth Leaf";
@@ -1426,6 +1432,18 @@ namespace STRINGS
 			public static LocString SUBTITLE = "Textile Plant";
 		}
 
+		public class WATERWEED
+		{
+			public class BODY
+			{
+				public static LocString CONTAINER1 = "An inexperienced farmer may assume at first glance that the transluscent, fluid-containing bulb atop the Waterweed is the edible portion of the plant.\n\nIn fact, the bulb is extremely poisonous and should never be consumed under any circumstances.";
+			}
+
+			public static LocString TITLE = "Waterweed";
+
+			public static LocString SUBTITLE = "Edible Plant";
+		}
+
 		public class WHEEZEWORT
 		{
 			public class BODY
@@ -1470,7 +1488,7 @@ namespace STRINGS
 		{
 			public class BODY
 			{
-				public static LocString CONTAINER1 = "[LOG BEGINS]\n\n\"(throat clearing)\n\nWe are now reliably printing healthy, living subjects, though all have exhibited unusual qualities as a result of the cloning process.\n\n(squeaking sounds)\n\nUnusual vocalizations, benign growths, and missing appendages have been seen in all subjects thus far, to varying degrees of severity.It seems that bypassing or accelerating juvenility halts certain critical stages of development. Brain function, however, appears typical.\n\n(squeaking)\n\nThey also seem quite happy.\n\nDr. McClintock, signing off.\"\n\n[LOG ENDS]";
+				public static LocString CONTAINER1 = "[LOG BEGINS]\n\n(throat clearing)\n\nWe are now reliably printing healthy, living subjects, though all have exhibited unusual qualities as a result of the cloning process.\n\n(squeaking sounds)\n\nUnusual vocalizations, benign growths, and missing appendages have been seen in all subjects thus far, to varying degrees of severity. It seems that bypassing or accelerating juvenility halts certain critical stages of development. Brain function, however, appears typical.\n\n(squeaking)\n\nThey also seem quite happy.\n\nDr. McClintock, signing off.\n\n[LOG ENDS]";
 			}
 
 			public static LocString TITLE = "Initial Success";
@@ -1494,7 +1512,7 @@ namespace STRINGS
 		{
 			public class BODY
 			{
-				public static LocString CONTAINER1 = "[LOG BEGINS]\n\n\"The Printing Pod is primed by a synthesized bio-organic concoction the technicians have taken to calling \"Ooze\", a specialized mixture composed of water, carbon, and dozens upon dozens of the trace elements necessary for the creation of life.\n\nThe pod then reconstitutes these elements into a living organism using the blueprints we feed it, before finally administering a shock of life.\n\nIt is like any other 3D printer. We just use different ink.\n\nDr. McClintock, signing off.\"\n\n[LOG ENDS]";
+				public static LocString CONTAINER1 = "[LOG BEGINS]\n\nThe Printing Pod is primed by a synthesized bio-organic concoction the technicians have taken to calling \"Ooze\", a specialized mixture composed of water, carbon, and dozens upon dozens of the trace elements necessary for the creation of life.\n\nThe pod reconstitutes these elements into a living organism using the blueprints we feed it, before finally administering a shock of life.\n\nIt is like any other 3D printer. We just use different ink.\n\nDr. McClintock, signing off.\n\n[LOG ENDS]";
 			}
 
 			public static LocString TITLE = "Biofluid";
@@ -1528,11 +1546,11 @@ namespace STRINGS
 
 				public static LocString CONTAINER4 = "[LOG BEGINS]\n\n...Wheezeworts are an ideal selection due to their low nutrient requirements and natural terraforming capabilities.\n\nDesign of these creatures should focus on enhancing their natural influence on ambient temperatures...\n\n[LOG ENDS]\n------------------\n";
 
-				public static LocString CONTAINER5 = "[LOG BEGINS]\n\n...The introduction of Hatch genes was successful.\n\nThe prolific mucus excretions that are typical of the species are now producing hydrocarbons at an incredible pace.\n\nThe creature has essentially become a free source of burnable oil...\n\n[LOG ENDS]\n------------------\n";
+				public static LocString CONTAINER5 = "[LOG BEGINS]\n\n...The preliminary Hatch gene splices were successful.\n\nThe prolific mucus excretions that are typical of the species are now producing hydrocarbons at an incredible pace.\n\nThe creature has essentially become a free source of burnable oil...\n\n[LOG ENDS]\n------------------\n";
 
 				public static LocString CONTAINER6 = "[LOG BEGINS]\n\n...Bioluminescence is always a novelty, but little time should be spent on perfecting these insects from here on out.\n\nThe project has more pressing concerns than light sources, particularly now that the low light vegetation issue has been solved...\n\n[LOG ENDS]\n------------------\n";
 
-				public static LocString CONTAINER7 = "[VOICE RECOGNITION INITIALIZED]\n[SUBJECT IDENTIFIED: B363]\n\n[LOG BEGINS]\n\nGeneticist: The primary concern raised by this project is the variability of environments that colonies may be forced to deal with. The creatures we send with the settlement party will not have the time to evolve and adapt to a new environment, yet each creature has been chosen to play a vital role in colony sustainability and is thus too precious to risk loss.\n\nGeneticist: It follows that each organism we design must be equipped with the tools to survive in as many volatile environments as we are capable of planning for. We cannot rely on the Pod alone to replenish creature populations.\n\n[LOG ENDS]";
+				public static LocString CONTAINER7 = "[VOICE RECOGNITION INITIALIZED]\n[SUBJECT IDENTIFIED: B363]\n\n[LOG BEGINS]\n\nGeneticist: The primary concern raised by this project is the variability of environments that colonies may be forced to deal with. The creatures we send with the settlement party will not have the time to evolve and adapt to a new environment, yet each creature has been chosen to play a vital role in colony sustainability and is thus too precious to risk loss.\n\nGeneticist: It follows that each organism we design must be equipped with the tools to survive in as many volatile environments as we are capable of planning for. We should not rely on the Pod alone to replenish creature populations.\n\n[LOG ENDS]";
 			}
 
 			public static LocString TITLE = "Husbandry Notes";
@@ -1546,7 +1564,7 @@ namespace STRINGS
 			{
 				public static LocString CONTAINER1 = "[LOG BEGINS]\n\nTraditionally, cloning produces a subject that is genetically identical to the donor but develops independently, producing a being that is, in its own way, unique.\n\nThe pod, conversely, attempts to print an exact atomic copy. Theoretically all neural pathways should be intact and identical to the original subject.\n\nIt's fascinating, given this, that memories are not already inherent in our subjects; however, no cloned subjects as of yet have shown any signs of recognition when introduced to familiar stimuli, such as the donor subject's enclosure.\n\nRefer to Experiment 7D.\n\nRefer to Experiment 7F.";
 
-				public static LocString CONTAINER2 = "\nMemories <i>must</i> be embedded within the physical brainmaps of our subjects. The only questions remains how to activate them. Hormones? Chemical supplements? Situational triggers?\n\nThe Director seems eager to move past this problem, and I am concerned at her willingness to bypass essential stages of the research development process.\n\nWe cannot move on to the fine polish of printing systems until the core processes have been perfected - which they have not.\n\nDr. McClintock, signing off.\n\n[LOG ENDS]";
+				public static LocString CONTAINER2 = "\nMemories <i>must</i> be embedded within the physical brainmaps of our subjects. The only question remains how to activate them. Hormones? Chemical supplements? Situational triggers?\n\nThe Director seems eager to move past this problem, and I am concerned at her willingness to bypass essential stages of the research development process.\n\nWe cannot move on to the fine polish of printing systems until the core processes have been perfected - which they have not.\n\nDr. McClintock, signing off.\n\n[LOG ENDS]";
 			}
 
 			public static LocString TITLE = "Memory Dysfunction Log";

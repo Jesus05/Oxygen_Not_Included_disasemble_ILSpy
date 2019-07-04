@@ -34,11 +34,11 @@ public class AirConditioner : KMonoBehaviour, ISaveLoadable, IEffectDescriptor, 
 
 	private float lowTempLag;
 
-	private bool showingLowTemp;
+	private bool showingLowTemp = false;
 
 	public bool isLiquidConditioner;
 
-	private bool showingHotEnv;
+	private bool showingHotEnv = false;
 
 	private Guid statusHandle;
 
@@ -213,7 +213,7 @@ public class AirConditioner : KMonoBehaviour, ISaveLoadable, IEffectDescriptor, 
 	{
 		List<Descriptor> list = new List<Descriptor>();
 		string formattedTemperature = GameUtil.GetFormattedTemperature(temperatureDelta, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Relative, true, false);
-		Element element = (!isLiquidConditioner) ? ElementLoader.GetElement("Oxygen") : ElementLoader.GetElement("Water");
+		Element element = ElementLoader.FindElementByName((!isLiquidConditioner) ? "Oxygen" : "Water");
 		float num = Mathf.Abs(temperatureDelta * element.specificHeatCapacity);
 		float dtu_s = num * 1f;
 		Descriptor item = default(Descriptor);

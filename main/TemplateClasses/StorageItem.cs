@@ -1,10 +1,9 @@
-using Klei;
 using System;
 
 namespace TemplateClasses
 {
 	[Serializable]
-	public class StorageItem : YamlIO<StorageItem>, ICloneable
+	public class StorageItem : ICloneable
 	{
 		public string id
 		{

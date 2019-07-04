@@ -29,21 +29,12 @@ public class MinionGroupProber : KMonoBehaviour, IGroupProber
 		cells = new Dictionary<object, int>[Grid.CellCount];
 	}
 
-	public bool IsReachable(int cell)
+	private bool IsReachable_AssumeLock(int cell)
 	{
-		if (!Grid.IsValidCell(cell))
-		{
-			return false;
-		}
 		Dictionary<object, int> dictionary = cells[cell];
-		if (dictionary == null)
+		if (dictionary != null)
 		{
-			return false;
-		}
-		bool result = false;
-		lock (access)
-		{
-			pending_removals.Clear();
+			bool result = false;
 			foreach (KeyValuePair<object, int> item in dictionary)
 			{
 				object key = item.Key;
@@ -63,22 +54,71 @@ public class MinionGroupProber : KMonoBehaviour, IGroupProber
 					cells[cell] = null;
 				}
 			}
+			pending_removals.Clear();
 			return result;
 		}
+		return false;
+	}
+
+	public bool IsReachable(int cell)
+	{
+		if (Grid.IsValidCell(cell))
+		{
+			bool result = false;
+			lock (access)
+			{
+				result = IsReachable_AssumeLock(cell);
+			}
+			return result;
+		}
+		return false;
 	}
 
 	public bool IsReachable(int cell, CellOffset[] offsets)
 	{
-		if (!Grid.IsValidCell(cell))
+		if (Grid.IsValidCell(cell))
 		{
-			return false;
-		}
-		foreach (CellOffset offset in offsets)
-		{
-			if (IsReachable(Grid.OffsetCell(cell, offset)))
+			bool result = false;
+			lock (access)
 			{
-				return true;
+				foreach (CellOffset offset in offsets)
+				{
+					if (IsReachable_AssumeLock(Grid.OffsetCell(cell, offset)))
+					{
+						result = true;
+						break;
+					}
+				}
 			}
+			return result;
+		}
+		return false;
+	}
+
+	public bool IsAllReachable(int cell, CellOffset[] offsets)
+	{
+		if (Grid.IsValidCell(cell))
+		{
+			bool result = false;
+			lock (access)
+			{
+				if (IsReachable_AssumeLock(cell))
+				{
+					result = true;
+				}
+				else
+				{
+					foreach (CellOffset offset in offsets)
+					{
+						if (IsReachable_AssumeLock(Grid.OffsetCell(cell, offset)))
+						{
+							result = true;
+							break;
+						}
+					}
+				}
+			}
+			return result;
 		}
 		return false;
 	}
@@ -88,7 +128,7 @@ public class MinionGroupProber : KMonoBehaviour, IGroupProber
 		return IsReachable(Grid.PosToCell(workable), workable.GetOffsets());
 	}
 
-	public void Occupy(object prober, int serial_no, List<int> cells)
+	public void Occupy(object prober, int serial_no, IEnumerable<int> cells)
 	{
 		lock (access)
 		{

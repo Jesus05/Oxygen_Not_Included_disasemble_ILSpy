@@ -13,6 +13,8 @@ public class Room : IAssignableIdentity
 
 	public List<KPrefabID> buildings => cavity.buildings;
 
+	public List<KPrefabID> plants => cavity.plants;
+
 	public string GetProperName()
 	{
 		return roomType.Name;

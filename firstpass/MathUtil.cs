@@ -99,26 +99,26 @@ public static class MathUtil
 	public static float ApproachConstant(float target, float current, float speed)
 	{
 		float num = target - current;
-		if (num > speed)
+		if (!(num > speed))
 		{
-			return current + speed;
-		}
-		if (num < 0f - speed)
-		{
+			if (!(num < 0f - speed))
+			{
+				return target;
+			}
 			return current - speed;
 		}
-		return target;
+		return current + speed;
 	}
 
 	public static Vector3 ApproachConstant(Vector3 target, Vector3 current, float speed)
 	{
 		Vector3 vector = target - current;
 		float magnitude = vector.magnitude;
-		if (magnitude > speed)
+		if (!(magnitude > speed))
 		{
-			return current + vector.normalized * speed;
+			return target;
 		}
-		return target;
+		return current + vector.normalized * speed;
 	}
 
 	public static Vector3 Round(this Vector3 v)
@@ -143,25 +143,25 @@ public static class MathUtil
 		float num = Vector3.Dot(ray.direction, vector);
 		float num2 = Vector3.Dot(vector, vector);
 		float num3 = num * num - num2 + sphereRadius * sphereRadius;
-		if (num3 < 0f)
+		if (!(num3 < 0f))
 		{
-			return new Vector3[0];
-		}
-		if (num3 == 0f)
-		{
-			Vector3 vector2 = num * ray.direction + ray.origin;
+			if (num3 != 0f)
+			{
+				Vector3 vector2 = (num - Mathf.Sqrt(num3)) * ray.direction + ray.origin;
+				Vector3 vector3 = (num + Mathf.Sqrt(num3)) * ray.direction + ray.origin;
+				return new Vector3[2]
+				{
+					vector2,
+					vector3
+				};
+			}
+			Vector3 vector4 = num * ray.direction + ray.origin;
 			return new Vector3[1]
 			{
-				vector2
+				vector4
 			};
 		}
-		Vector3 vector3 = (num - Mathf.Sqrt(num3)) * ray.direction + ray.origin;
-		Vector3 vector4 = (num + Mathf.Sqrt(num3)) * ray.direction + ray.origin;
-		return new Vector3[2]
-		{
-			vector3,
-			vector4
-		};
+		return new Vector3[0];
 	}
 
 	public static float AngleSigned(Vector3 v1, Vector3 v2, Vector3 n)
@@ -187,27 +187,27 @@ public static class MathUtil
 		float y2 = second4.y;
 		Vector2 first4 = segment.First;
 		float num4 = num2 + num3 * (y2 - first4.y);
-		if (num4 <= 0f)
+		if (!(num4 <= 0f))
 		{
-			closest_point = 0f;
-			return Vector2.Distance(segment.First, point);
+			float x3 = point.x;
+			Vector2 first5 = segment.First;
+			float num5 = x3 - first5.x;
+			Vector2 second5 = segment.Second;
+			float x4 = second5.x;
+			Vector2 first6 = segment.First;
+			float num6 = num5 * (x4 - first6.x);
+			float y3 = point.y;
+			Vector2 first7 = segment.First;
+			float num7 = y3 - first7.y;
+			Vector2 second6 = segment.Second;
+			float y4 = second6.y;
+			Vector2 first8 = segment.First;
+			float num8 = num6 + num7 * (y4 - first8.y);
+			closest_point = Mathf.Max(0f, Mathf.Min(1f, num8 / num4));
+			Vector2 a = segment.First + (segment.Second - segment.First) * closest_point;
+			return Vector2.Distance(a, point);
 		}
-		float x3 = point.x;
-		Vector2 first5 = segment.First;
-		float num5 = x3 - first5.x;
-		Vector2 second5 = segment.Second;
-		float x4 = second5.x;
-		Vector2 first6 = segment.First;
-		float num6 = num5 * (x4 - first6.x);
-		float y3 = point.y;
-		Vector2 first7 = segment.First;
-		float num7 = y3 - first7.y;
-		Vector2 second6 = segment.Second;
-		float y4 = second6.y;
-		Vector2 first8 = segment.First;
-		float num8 = num6 + num7 * (y4 - first8.y);
-		closest_point = Mathf.Max(0f, Mathf.Min(1f, num8 / num4));
-		Vector2 a = segment.First + (segment.Second - segment.First) * closest_point;
-		return Vector2.Distance(a, point);
+		closest_point = 0f;
+		return Vector2.Distance(segment.First, point);
 	}
 }

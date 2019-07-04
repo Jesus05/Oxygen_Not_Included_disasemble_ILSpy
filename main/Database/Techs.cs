@@ -31,25 +31,34 @@ namespace Database
 				}
 			},
 			{
+				"FinerDining",
+				new string[1]
+				{
+					"GourmetCookingStation"
+				}
+			},
+			{
 				"Agriculture",
-				new string[4]
+				new string[5]
 				{
 					"FertilizerMaker",
 					"HydroponicFarm",
 					"Refrigerator",
-					"FarmStation"
+					"FarmStation",
+					"ParkSign"
 				}
 			},
 			{
 				"Ranching",
-				new string[6]
+				new string[7]
 				{
 					"CreatureDeliveryPoint",
 					"FishDeliveryPoint",
 					"CreatureFeeder",
 					"FishFeeder",
 					"RanchStation",
-					"ShearingStation"
+					"ShearingStation",
+					"FlyingCreatureBait"
 				}
 			},
 			{
@@ -65,9 +74,10 @@ namespace Database
 			},
 			{
 				"ImprovedOxygen",
-				new string[1]
+				new string[2]
 				{
-					"Electrolyzer"
+					"Electrolyzer",
+					"RustDeoxidizer"
 				}
 			},
 			{
@@ -104,12 +114,19 @@ namespace Database
 			},
 			{
 				"DirectedAirStreams",
-				new string[4]
+				new string[3]
 				{
 					"PressureDoor",
-					"OreScrubber",
 					"AirFilter",
 					"CO2Scrubber"
+				}
+			},
+			{
+				"LiquidFiltering",
+				new string[2]
+				{
+					"OreScrubber",
+					"Desalinator"
 				}
 			},
 			{
@@ -192,10 +209,11 @@ namespace Database
 			},
 			{
 				"Distillation",
-				new string[4]
+				new string[5]
 				{
 					"WaterPurifier",
 					"AlgaeDistillery",
+					"EthanolDistillery",
 					"GasBottler",
 					"BottleEmptierGas"
 				}
@@ -225,7 +243,7 @@ namespace Database
 					"HighWattageWire",
 					"WireBridgeHighWattage",
 					"PowerTransformerSmall",
-					"PowerControlStation"
+					LogicPowerRelayConfig.ID
 				}
 			},
 			{
@@ -250,9 +268,10 @@ namespace Database
 			},
 			{
 				"Combustion",
-				new string[1]
+				new string[2]
 				{
-					"Generator"
+					"Generator",
+					"WoodGasGenerator"
 				}
 			},
 			{
@@ -288,47 +307,63 @@ namespace Database
 			},
 			{
 				"Clothing",
-				new string[3]
+				new string[2]
 				{
-					"Canvas",
 					"ClothingFabricator",
 					"CarpetTile"
 				}
 			},
 			{
 				"Acoustics",
-				new string[1]
+				new string[3]
 				{
-					"Phonobox"
+					"Phonobox",
+					"BatterySmart",
+					"PowerControlStation"
 				}
 			},
 			{
 				"FineArt",
-				new string[3]
+				new string[2]
 				{
-					"CanvasWide",
-					"CanvasTall",
+					"Canvas",
 					"Sculpture"
 				}
 			},
 			{
 				"Luxury",
-				new string[4]
+				new string[3]
 				{
 					LuxuryBedConfig.ID,
 					"LadderFast",
-					"PlasticTile",
-					"ExteriorWall"
+					"PlasticTile"
 				}
 			},
 			{
 				"RefractiveDecor",
-				new string[4]
+				new string[2]
+				{
+					"MetalSculpture",
+					"CanvasWide"
+				}
+			},
+			{
+				"GlassFurnishings",
+				new string[2]
 				{
 					"GlassTile",
-					"FlowerVaseHangingFancy",
+					"FlowerVaseHangingFancy"
+				}
+			},
+			{
+				"RenaissanceArt",
+				new string[5]
+				{
 					"MarbleSculpture",
-					"MetalSculpture"
+					"CanvasTall",
+					"MonumentBottom",
+					"MonumentMiddle",
+					"MonumentTop"
 				}
 			},
 			{
@@ -349,8 +384,9 @@ namespace Database
 			},
 			{
 				"Suits",
-				new string[4]
+				new string[5]
 				{
+					"ExteriorWall",
 					"SuitMarker",
 					"SuitLocker",
 					"SuitFabricator",
@@ -445,11 +481,11 @@ namespace Database
 				"LogicControl",
 				new string[5]
 				{
-					"AutomationOverlay",
 					"LogicWire",
-					"LogicWireBridge",
+					"LogicDuplicantSensor",
 					LogicSwitchConfig.ID,
-					LogicPowerRelayConfig.ID
+					"LogicWireBridge",
+					"AutomationOverlay"
 				}
 			},
 			{
@@ -464,15 +500,14 @@ namespace Database
 			},
 			{
 				"LogicCircuits",
-				new string[7]
+				new string[6]
 				{
 					"LogicGateAND",
 					"LogicGateOR",
 					"LogicGateXOR",
 					"LogicGateNOT",
 					"LogicGateBUFFER",
-					"LogicGateFILTER",
-					"BatterySmart"
+					"LogicGateFILTER"
 				}
 			},
 			{
@@ -665,20 +700,24 @@ namespace Database
 			ResourceTreeLoader<ResourceTreeNode> resourceTreeLoader = new ResourceTreeLoader<ResourceTreeNode>(tree_file);
 			foreach (ResourceTreeNode item in resourceTreeLoader)
 			{
-				Tech tech = TryGet(item.Id);
-				if (tech == null)
+				string a = item.Id.Substring(0, 1);
+				if (!string.Equals(a, "_"))
 				{
-					tech = new Tech(item.Id, this, Strings.Get("STRINGS.RESEARCH.TECHS." + item.Id.ToUpper() + ".NAME"), Strings.Get("STRINGS.RESEARCH.TECHS." + item.Id.ToUpper() + ".DESC"), item);
-				}
-				foreach (ResourceTreeNode reference in item.references)
-				{
-					Tech tech2 = TryGet(reference.Id);
-					if (tech2 == null)
+					Tech tech = TryGet(item.Id);
+					if (tech == null)
 					{
-						tech2 = new Tech(reference.Id, this, Strings.Get("STRINGS.RESEARCH.TECHS." + reference.Id.ToUpper() + ".NAME"), Strings.Get("STRINGS.RESEARCH.TECHS." + reference.Id.ToUpper() + ".DESC"), reference);
+						tech = new Tech(item.Id, this, Strings.Get("STRINGS.RESEARCH.TECHS." + item.Id.ToUpper() + ".NAME"), Strings.Get("STRINGS.RESEARCH.TECHS." + item.Id.ToUpper() + ".DESC"), item);
 					}
-					tech2.requiredTech.Add(tech);
-					tech.unlockedTech.Add(tech2);
+					foreach (ResourceTreeNode reference in item.references)
+					{
+						Tech tech2 = TryGet(reference.Id);
+						if (tech2 == null)
+						{
+							tech2 = new Tech(reference.Id, this, Strings.Get("STRINGS.RESEARCH.TECHS." + reference.Id.ToUpper() + ".NAME"), Strings.Get("STRINGS.RESEARCH.TECHS." + reference.Id.ToUpper() + ".DESC"), reference);
+						}
+						tech2.requiredTech.Add(tech);
+						tech.unlockedTech.Add(tech2);
+					}
 				}
 			}
 			tierCount = 0;
@@ -696,16 +735,16 @@ namespace Database
 
 		private int GetTier(Tech tech)
 		{
-			if (tech.requiredTech.Count == 0)
+			if (tech.requiredTech.Count != 0)
 			{
-				return 0;
+				int num = 0;
+				foreach (Tech item in tech.requiredTech)
+				{
+					num = Math.Max(num, GetTier(item));
+				}
+				return num + 1;
 			}
-			int num = 0;
-			foreach (Tech item in tech.requiredTech)
-			{
-				num = Math.Max(num, GetTier(item));
-			}
-			return num + 1;
+			return 0;
 		}
 
 		private void AddPrerequisite(Tech tech, string prerequisite_name)

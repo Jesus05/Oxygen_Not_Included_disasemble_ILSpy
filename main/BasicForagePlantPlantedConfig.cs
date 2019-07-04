@@ -28,6 +28,7 @@ public class BasicForagePlantPlantedConfig : IEntityConfig
 		gameObject.AddOrGet<Uprootable>();
 		gameObject.AddOrGet<UprootedMonitor>();
 		gameObject.AddOrGet<Harvestable>();
+		gameObject.AddOrGet<HarvestDesignatable>();
 		SeedProducer seedProducer = gameObject.AddOrGet<SeedProducer>();
 		seedProducer.Configure("BasicForagePlant", SeedProducer.ProductionType.DigOnly, 1);
 		gameObject.AddOrGet<BasicForagePlantPlanted>();

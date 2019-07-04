@@ -41,7 +41,7 @@ public class EspressoMachine : StateMachineComponent<EspressoMachine.StatesInsta
 			ChoreType relax = Db.Get().ChoreTypes.Relax;
 			Workable target = component;
 			ScheduleBlockType recreation = Db.Get().ScheduleBlockTypes.Recreation;
-			Chore chore = new WorkChore<EspressoMachineWorkable>(relax, target, null, null, true, null, null, null, false, recreation, false, true, null, false, true, false, PriorityScreen.PriorityClass.high, 5, false, true);
+			Chore chore = new WorkChore<EspressoMachineWorkable>(relax, target, null, true, null, null, null, false, recreation, false, true, null, false, true, false, PriorityScreen.PriorityClass.high, 5, false, true);
 			chore.AddPrecondition(ChorePreconditions.instance.CanDoWorkerPrioritizable, component);
 			return chore;
 		}
@@ -49,20 +49,20 @@ public class EspressoMachine : StateMachineComponent<EspressoMachine.StatesInsta
 		private bool IsReady(StatesInstance smi)
 		{
 			PrimaryElement primaryElement = smi.GetComponent<Storage>().FindPrimaryElement(SimHashes.Water);
-			if ((Object)primaryElement == (Object)null)
+			if (!((Object)primaryElement == (Object)null))
 			{
+				if (!(primaryElement.Mass < WATER_MASS_PER_USE))
+				{
+					float amountAvailable = smi.GetComponent<Storage>().GetAmountAvailable(INGREDIENT_TAG);
+					if (!(amountAvailable < INGREDIENT_MASS_PER_USE))
+					{
+						return true;
+					}
+					return false;
+				}
 				return false;
 			}
-			if (primaryElement.Mass < WATER_MASS_PER_USE)
-			{
-				return false;
-			}
-			float amountAvailable = smi.GetComponent<Storage>().GetAmountAvailable(INGREDIENT_TAG);
-			if (amountAvailable < INGREDIENT_MASS_PER_USE)
-			{
-				return false;
-			}
-			return true;
+			return false;
 		}
 	}
 

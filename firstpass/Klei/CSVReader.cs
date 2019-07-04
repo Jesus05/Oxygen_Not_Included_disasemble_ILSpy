@@ -23,7 +23,7 @@ namespace Klei
 
 		public static void DebugOutputGrid(string[,] grid)
 		{
-			string text = string.Empty;
+			string text = "";
 			for (int i = 0; i < grid.GetUpperBound(1); i++)
 			{
 				for (int j = 0; j < grid.GetUpperBound(0); j++)

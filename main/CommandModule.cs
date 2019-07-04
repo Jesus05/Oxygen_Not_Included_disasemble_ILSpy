@@ -106,14 +106,14 @@ public class CommandModule : StateMachineComponent<CommandModule.StatesInstance>
 			});
 			grounded.waitingToRelease.ToggleStatusItem(Db.Get().BuildingStatusItems.DisembarkingDuplicant, (object)null).OnSignal(gantryChanged, grounded.awaitingAstronaut, delegate(StatesInstance smi)
 			{
-				if (HasValidGantry(smi.gameObject))
+				if (!HasValidGantry(smi.gameObject))
 				{
-					smi.master.ReleaseAstronaut(accumulatedPee.Get(smi));
-					accumulatedPee.Set(false, smi);
-					Game.Instance.userMenu.Refresh(smi.gameObject);
-					return true;
+					return false;
 				}
-				return false;
+				smi.master.ReleaseAstronaut(accumulatedPee.Get(smi));
+				accumulatedPee.Set(false, smi);
+				Game.Instance.userMenu.Refresh(smi.gameObject);
+				return true;
 			});
 			spaceborne.DefaultState(spaceborne.launch);
 			spaceborne.launch.Enter(delegate(StatesInstance smi)
@@ -134,7 +134,7 @@ public class CommandModule : StateMachineComponent<CommandModule.StatesInstance>
 
 	public RocketStats rocketStats;
 
-	private bool releasingAstronaut;
+	private bool releasingAstronaut = false;
 
 	private const Sim.Cell.Properties floorCellProperties = (Sim.Cell.Properties)39;
 
@@ -145,6 +145,8 @@ public class CommandModule : StateMachineComponent<CommandModule.StatesInstance>
 	public ConditionHasAtmoSuit hasSuit;
 
 	public CargoBayIsEmpty cargoEmpty;
+
+	public ConditionHasMinimumMass destHasResources;
 
 	public ConditionFlightPathIsClear flightPathIsClear;
 
@@ -208,20 +210,21 @@ public class CommandModule : StateMachineComponent<CommandModule.StatesInstance>
 		hasAstronaut = (ConditionHasAstronaut)component.AddLaunchCondition(new ConditionHasAstronaut(this));
 		hasSuit = (ConditionHasAtmoSuit)component.AddLaunchCondition(new ConditionHasAtmoSuit(this));
 		cargoEmpty = (CargoBayIsEmpty)component.AddLaunchCondition(new CargoBayIsEmpty(this));
+		destHasResources = (ConditionHasMinimumMass)component.AddLaunchCondition(new ConditionHasMinimumMass(this));
 		flightPathIsClear = (ConditionFlightPathIsClear)component.AddFlightCondition(new ConditionFlightPathIsClear(base.gameObject, 1));
 	}
 
 	private bool CanAssignTo(MinionAssignablesProxy worker)
 	{
-		if (worker.target is MinionIdentity)
+		if (!(worker.target is MinionIdentity))
 		{
-			return (worker.target as KMonoBehaviour).GetComponent<MinionResume>().HasPerk(Db.Get().SkillPerks.CanUseRockets);
-		}
-		if (worker.target is StoredMinionIdentity)
-		{
+			if (!(worker.target is StoredMinionIdentity))
+			{
+				return false;
+			}
 			return (worker.target as StoredMinionIdentity).HasPerk(Db.Get().SkillPerks.CanUseRockets);
 		}
-		return false;
+		return (worker.target as KMonoBehaviour).GetComponent<MinionResume>().HasPerk(Db.Get().SkillPerks.CanUseRockets);
 	}
 
 	private static bool HasValidGantry(GameObject go)
@@ -253,7 +256,7 @@ public class CommandModule : StateMachineComponent<CommandModule.StatesInstance>
 	{
 		ChoreType astronaut = Db.Get().ChoreTypes.Astronaut;
 		KAnimFile anim = Assets.GetAnim("anim_hat_kanim");
-		WorkChore<CommandModuleWorkable> workChore = new WorkChore<CommandModuleWorkable>(astronaut, this, null, null, true, null, null, null, false, null, false, true, anim, false, true, false, PriorityScreen.PriorityClass.personalNeeds, 5, false, true);
+		WorkChore<CommandModuleWorkable> workChore = new WorkChore<CommandModuleWorkable>(astronaut, this, null, true, null, null, null, false, null, false, true, anim, false, true, false, PriorityScreen.PriorityClass.personalNeeds, 5, false, true);
 		workChore.AddPrecondition(ChorePreconditions.instance.HasSkillPerk, Db.Get().SkillPerks.CanUseRockets);
 		workChore.AddPrecondition(ChorePreconditions.instance.IsAssignedtoMe, assignable);
 		return workChore;

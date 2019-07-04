@@ -24,7 +24,7 @@ public class InitializeCheck : MonoBehaviour
 
 	public Sprite sadDupe;
 
-	private SavePathIssue test_issue;
+	private SavePathIssue test_issue = SavePathIssue.Ok;
 
 	public static SavePathIssue savePathState
 	{
@@ -70,7 +70,7 @@ public class InitializeCheck : MonoBehaviour
 		System.Action on_confirm = Quit;
 		System.Action on_cancel = null;
 		Sprite image_sprite = sadDupe;
-		obj.PopupConfirmDialog(msg, on_confirm, on_cancel, null, null, null, null, null, image_sprite);
+		obj.PopupConfirmDialog(msg, on_confirm, on_cancel, null, null, null, null, null, image_sprite, true);
 	}
 
 	private void ShowFileErrorDialogs()
@@ -115,7 +115,7 @@ public class InitializeCheck : MonoBehaviour
 		catch
 		{
 			savePathState = SavePathIssue.WriteTestFail;
-			goto IL_0111;
+			goto IL_0128;
 		}
 		using (FileStream fileStream2 = File.Open(savePrefix + testSave, FileMode.Create, FileAccess.Write))
 		{
@@ -129,7 +129,7 @@ public class InitializeCheck : MonoBehaviour
 			{
 				fileStream2.Close();
 				savePathState = SavePathIssue.SpaceTestFail;
-				goto IL_0111;
+				goto IL_0128;
 			}
 		}
 		try
@@ -145,8 +145,8 @@ public class InitializeCheck : MonoBehaviour
 		{
 			savePathState = SavePathIssue.WorldGenFilesFail;
 		}
-		goto IL_0111;
-		IL_0111:
+		goto IL_0128;
+		IL_0128:
 		try
 		{
 			if (File.Exists(savePrefix + testFile))

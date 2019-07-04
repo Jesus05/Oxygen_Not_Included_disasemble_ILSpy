@@ -41,19 +41,19 @@ public class PrioritizeTool : FilteredDragTool
 		{
 			flag3 = true;
 		}
-		if (flag2)
+		if (!flag2)
 		{
-			return ToolParameterMenu.FILTERLAYERS.CONSTRUCTION;
-		}
-		if (flag)
-		{
+			if (!flag)
+			{
+				if (!flag3)
+				{
+					return ToolParameterMenu.FILTERLAYERS.OPERATE;
+				}
+				return ToolParameterMenu.FILTERLAYERS.CLEAN;
+			}
 			return ToolParameterMenu.FILTERLAYERS.DIG;
 		}
-		if (flag3)
-		{
-			return ToolParameterMenu.FILTERLAYERS.CLEAN;
-		}
-		return ToolParameterMenu.FILTERLAYERS.OPERATE;
+		return ToolParameterMenu.FILTERLAYERS.CONSTRUCTION;
 	}
 
 	protected override void GetDefaultFilters(Dictionary<string, ToolParameterMenu.ToggleState> filters)

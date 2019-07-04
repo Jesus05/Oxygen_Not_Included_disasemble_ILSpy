@@ -19,13 +19,10 @@ internal class GraphicsOptionsScreen : KModalScreen
 	private Dropdown resolutionDropdown;
 
 	[SerializeField]
-	private Toggle fullscreenToggle;
+	private MultiToggle fullscreenToggle;
 
 	[SerializeField]
 	private KButton applyButton;
-
-	[SerializeField]
-	private KButton revertButton;
 
 	[SerializeField]
 	private KButton doneButton;
@@ -71,9 +68,6 @@ internal class GraphicsOptionsScreen : KModalScreen
 		applyButton.isInteractable = false;
 		applyButton.onClick += OnApply;
 		applyButton.GetComponentInChildren<LocText>().SetText(UI.FRONTEND.GRAPHICS_OPTIONS_SCREEN.APPLYBUTTON);
-		revertButton.isInteractable = false;
-		revertButton.onClick += OnRevert;
-		revertButton.GetComponentInChildren<LocText>().SetText(UI.FRONTEND.GRAPHICS_OPTIONS_SCREEN.REVERTBUTTON);
 		doneButton.onClick += OnDone;
 		closeButton.onClick += OnDone;
 		doneButton.GetComponentInChildren<LocText>().SetText(UI.FRONTEND.GRAPHICS_OPTIONS_SCREEN.DONE_BUTTON);
@@ -81,11 +75,12 @@ internal class GraphicsOptionsScreen : KModalScreen
 		BuildOptions();
 		resolutionDropdown.options = options;
 		resolutionDropdown.onValueChanged.AddListener(OnResolutionChanged);
-		fullscreenToggle.isOn = Screen.fullScreen;
-		fullscreenToggle.onValueChanged.AddListener(OnFullscreenToggle);
+		fullscreenToggle.ChangeState(Screen.fullScreen ? 1 : 0);
+		MultiToggle multiToggle = fullscreenToggle;
+		multiToggle.onClick = (System.Action)Delegate.Combine(multiToggle.onClick, new System.Action(OnFullscreenToggle));
 		fullscreenToggle.GetComponentInChildren<LocText>().SetText(UI.FRONTEND.GRAPHICS_OPTIONS_SCREEN.FULLSCREEN);
 		resolutionDropdown.transform.parent.GetComponentInChildren<LocText>().SetText(UI.FRONTEND.GRAPHICS_OPTIONS_SCREEN.RESOLUTION);
-		if (fullscreenToggle.isOn)
+		if (fullscreenToggle.CurrentState == 1)
 		{
 			int resolutionIndex = GetResolutionIndex(originalSettings.resolution);
 			if (resolutionIndex != -1)
@@ -293,11 +288,10 @@ internal class GraphicsOptionsScreen : KModalScreen
 		{
 			Settings new_settings = default(Settings);
 			new_settings.resolution = resolutions[resolutionDropdown.value];
-			new_settings.fullscreen = fullscreenToggle.isOn;
+			new_settings.fullscreen = ((fullscreenToggle.CurrentState != 0) ? true : false);
 			ApplyConfirmSettings(new_settings, delegate
 			{
 				applyButton.isInteractable = false;
-				revertButton.isInteractable = true;
 				SaveResolutionToPrefs(new_settings);
 			});
 		}
@@ -310,20 +304,10 @@ internal class GraphicsOptionsScreen : KModalScreen
 				stringBuilder.Append("\t" + resolution.ToString() + "\n");
 			}
 			stringBuilder.Append("Selected Resolution Idx: " + resolutionDropdown.value.ToString());
-			stringBuilder.Append("FullScreen: " + fullscreenToggle.isOn.ToString());
+			stringBuilder.Append("FullScreen: " + fullscreenToggle.CurrentState.ToString());
 			Debug.LogError(stringBuilder.ToString());
 			throw ex;
 		}
-	}
-
-	private void OnRevert()
-	{
-		ApplyConfirmSettings(originalSettings, delegate
-		{
-			applyButton.isInteractable = false;
-			revertButton.isInteractable = false;
-			SaveResolutionToPrefs(originalSettings);
-		});
 	}
 
 	public void OnDone()
@@ -334,7 +318,11 @@ internal class GraphicsOptionsScreen : KModalScreen
 	private void RefreshApplyButton()
 	{
 		Settings settings = CaptureSettings();
-		if (fullscreenToggle.isOn != settings.fullscreen)
+		if (settings.fullscreen && fullscreenToggle.CurrentState == 0)
+		{
+			applyButton.isInteractable = true;
+		}
+		else if (!settings.fullscreen && fullscreenToggle.CurrentState == 1)
 		{
 			applyButton.isInteractable = true;
 		}
@@ -345,8 +333,9 @@ internal class GraphicsOptionsScreen : KModalScreen
 		}
 	}
 
-	private void OnFullscreenToggle(bool enabled)
+	private void OnFullscreenToggle()
 	{
+		fullscreenToggle.ChangeState((fullscreenToggle.CurrentState == 0) ? 1 : 0);
 		RefreshApplyButton();
 	}
 
@@ -369,7 +358,7 @@ internal class GraphicsOptionsScreen : KModalScreen
 		{
 			StopCoroutine(timer);
 		};
-		confirmDialog.PopupConfirmDialog(UI.FRONTEND.GRAPHICS_OPTIONS_SCREEN.ACCEPT_CHANGES.text, on_confirm, action, null, null, null, null, null, null);
+		confirmDialog.PopupConfirmDialog(UI.FRONTEND.GRAPHICS_OPTIONS_SCREEN.ACCEPT_CHANGES.text, on_confirm, action, null, null, null, null, null, null, true);
 		confirmDialog.gameObject.SetActive(true);
 	}
 

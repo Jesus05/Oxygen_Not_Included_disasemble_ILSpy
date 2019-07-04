@@ -19,7 +19,7 @@ public class BuildMenuCategoriesScreen : KIconToggleMenu
 	public Action<HashedString, int> onCategoryClicked;
 
 	[SerializeField]
-	public bool modalKeyInputBehaviour;
+	public bool modalKeyInputBehaviour = false;
 
 	[SerializeField]
 	private Image focusIndicator;
@@ -77,13 +77,13 @@ public class BuildMenuCategoriesScreen : KIconToggleMenu
 				BuildMenu.DisplayInfo current = item2;
 				string iconName = current.iconName;
 				string text = HashCache.Get().Get(current.category).ToUpper();
-				text = text.Replace(" ", string.Empty);
+				text = text.Replace(" ", "");
 				ToggleInfo item = new ToggleInfo(Strings.Get("STRINGS.UI.NEWBUILDCATEGORIES." + text + ".NAME"), iconName, new UserData
 				{
 					category = current.category,
 					depth = depth,
 					requirementsState = PlanScreen.RequirementsState.Tech
-				}, current.hotkey, Strings.Get("STRINGS.UI.NEWBUILDCATEGORIES." + text + ".TOOLTIP"), string.Empty);
+				}, current.hotkey, Strings.Get("STRINGS.UI.NEWBUILDCATEGORIES." + text + ".TOOLTIP"), "");
 				list.Add(item);
 				subcategories.Add(current.category);
 			}

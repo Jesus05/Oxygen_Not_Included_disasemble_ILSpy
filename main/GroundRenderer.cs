@@ -327,11 +327,11 @@ public class GroundRenderer : KMonoBehaviour
 
 		private static int GetBiomeIdx(int cell)
 		{
-			if (!Grid.IsValidCell(cell))
+			if (Grid.IsValidCell(cell))
 			{
-				return 0;
+				return (int)World.Instance.zoneRenderData.GetSubWorldZoneType(cell);
 			}
-			return (int)World.Instance.zoneRenderData.GetSubWorldZoneType(cell);
+			return 0;
 		}
 
 		private static float GetStaticRandom(int x, int y)
@@ -374,8 +374,6 @@ public class GroundRenderer : KMonoBehaviour
 
 	private Vector2I size;
 
-	private static bool forceVisibleRebuild;
-
 	protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
@@ -407,7 +405,7 @@ public class GroundRenderer : KMonoBehaviour
 		}
 	}
 
-	public void Render(Vector2I vis_min, Vector2I vis_max)
+	public void Render(Vector2I vis_min, Vector2I vis_max, bool forceVisibleRebuild = false)
 	{
 		if (base.enabled)
 		{
@@ -429,6 +427,11 @@ public class GroundRenderer : KMonoBehaviour
 			}
 			RebuildDirtyChunks();
 		}
+	}
+
+	public void RenderAll()
+	{
+		Render(new Vector2I(0, 0), new Vector2I(worldChunks.GetLength(0) * 16, worldChunks.GetLength(1) * 16), true);
 	}
 
 	private void RebuildDirtyChunks()
@@ -504,7 +507,8 @@ public class GroundRenderer : KMonoBehaviour
 			string key = biomeMask.Key;
 			if (a == key)
 			{
-				return biomeMask.Value;
+				result = biomeMask.Value;
+				break;
 			}
 		}
 		return result;

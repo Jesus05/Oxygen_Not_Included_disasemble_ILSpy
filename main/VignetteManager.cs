@@ -15,9 +15,9 @@ public class VignetteManager : GameStateMachine<VignetteManager, VignetteManager
 	{
 		private static Instance instance;
 
-		private bool isToggled;
+		private bool isToggled = false;
 
-		private bool hasTopPriorityChore;
+		private bool hasTopPriorityChore = false;
 
 		public Notification redAlertNotification = new Notification(MISC.NOTIFICATIONS.REDALERT.NAME, NotificationType.Bad, HashedString.Invalid, (List<Notification> notificationList, object data) => MISC.NOTIFICATIONS.REDALERT.TOOLTIP, null, false, 0f, null, null, null);
 

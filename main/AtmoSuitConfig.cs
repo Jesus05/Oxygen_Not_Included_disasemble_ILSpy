@@ -28,7 +28,7 @@ public class AtmoSuitConfig : IEquipmentConfig
 		SimHashes outputElement = SimHashes.Dirt;
 		float mass = (float)TUNING.EQUIPMENT.SUITS.ATMOSUIT_MASS;
 		string anim = "suit_oxygen_kanim";
-		string empty = string.Empty;
+		string snapOn = "";
 		string buildOverride = "body_oxygen_kanim";
 		int buildOverridePriority = 6;
 		List<AttributeModifier> attributeModifiers = list;
@@ -36,12 +36,11 @@ public class AtmoSuitConfig : IEquipmentConfig
 		{
 			GameTags.Suit
 		};
-		EquipmentDef equipmentDef = EquipmentTemplates.CreateEquipmentDef(id, sLOT, outputElement, mass, anim, empty, buildOverride, buildOverridePriority, attributeModifiers, null, true, EntityTemplates.CollisionShape.CIRCLE, 0.325f, 0.325f, additional_tags, null);
+		EquipmentDef equipmentDef = EquipmentTemplates.CreateEquipmentDef(id, sLOT, outputElement, mass, anim, snapOn, buildOverride, buildOverridePriority, attributeModifiers, null, true, EntityTemplates.CollisionShape.CIRCLE, 0.325f, 0.325f, additional_tags, null);
 		equipmentDef.RecipeDescription = STRINGS.EQUIPMENT.PREFABS.ATMO_SUIT.RECIPE_DESC;
 		equipmentDef.EffectImmunites.Add(Db.Get().effects.Get("SoakingWet"));
 		equipmentDef.EffectImmunites.Add(Db.Get().effects.Get("WetFeet"));
 		equipmentDef.EffectImmunites.Add(Db.Get().effects.Get("PoppedEarDrums"));
-		equipmentDef.EffectImmunites.Add(Db.Get().effects.Get("Unclean"));
 		equipmentDef.OnEquipCallBack = delegate(Equippable eq)
 		{
 			Ownables soleOwner2 = eq.assignee.GetSoleOwner();
@@ -104,7 +103,7 @@ public class AtmoSuitConfig : IEquipmentConfig
 		Storage storage = go.AddOrGet<Storage>();
 		storage.SetDefaultStoredItemModifiers(Storage.StandardInsulatedStorage);
 		storage.showInUI = true;
-		AtmoSuit atmoSuit = go.AddOrGet<AtmoSuit>();
+		go.AddOrGet<AtmoSuit>();
 		go.AddComponent<SuitDiseaseHandler>();
 	}
 }

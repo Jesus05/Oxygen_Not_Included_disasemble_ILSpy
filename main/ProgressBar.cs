@@ -106,7 +106,7 @@ public class ProgressBar : KMonoBehaviour
 		ProgressBar progressBar = Util.KInstantiateUI<ProgressBar>(ProgressBarsConfig.Instance.progressBarPrefab, null, false);
 		progressBar.SetUpdateFunc(updateFunc);
 		progressBar.transform.SetParent(GameScreenManager.Instance.worldSpaceCanvas.transform);
-		progressBar.name = ((!((UnityEngine.Object)entity != (UnityEngine.Object)null)) ? string.Empty : (entity.name + "_")) + " ProgressBar";
+		progressBar.name = ((!((UnityEngine.Object)entity != (UnityEngine.Object)null)) ? "" : (entity.name + "_")) + " ProgressBar";
 		progressBar.transform.Find("Bar").GetComponent<Image>().color = ProgressBarsConfig.Instance.GetBarColor("ProgressBar");
 		progressBar.Update();
 		Vector3 a = entity.transform.GetPosition() + Vector3.down * 0.5f;

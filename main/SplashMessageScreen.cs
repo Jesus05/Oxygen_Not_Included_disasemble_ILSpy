@@ -9,7 +9,7 @@ public class SplashMessageScreen : KMonoBehaviour
 
 	public LayoutElement bodyText;
 
-	public bool previewInEditor;
+	public bool previewInEditor = false;
 
 	protected override void OnPrefabInit()
 	{

@@ -7,6 +7,8 @@ using UnityEngine;
 [SerializationConfig(MemberSerialization.OptIn)]
 public class MinionModifiers : Modifiers, ISaveLoadable
 {
+	public bool addBaseTraits = true;
+
 	private static readonly EventSystem.IntraObjectHandler<MinionModifiers> OnDeathDelegate = new EventSystem.IntraObjectHandler<MinionModifiers>(delegate(MinionModifiers component, object data)
 	{
 		component.OnDeath(data);
@@ -30,27 +32,30 @@ public class MinionModifiers : Modifiers, ISaveLoadable
 	protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
-		foreach (Klei.AI.Attribute resource in Db.Get().Attributes.resources)
+		if (addBaseTraits)
 		{
-			if (attributes.Get(resource) == null)
+			foreach (Klei.AI.Attribute resource in Db.Get().Attributes.resources)
 			{
-				attributes.Add(resource);
+				if (attributes.Get(resource) == null)
+				{
+					attributes.Add(resource);
+				}
 			}
-		}
-		Traits component = GetComponent<Traits>();
-		Trait trait = Db.Get().traits.Get(MinionConfig.MINION_BASE_TRAIT_ID);
-		component.Add(trait);
-		foreach (Disease resource2 in Db.Get().Diseases.resources)
-		{
-			AmountInstance amountInstance = AddAmount(resource2.amount);
-			attributes.Add(resource2.cureSpeedBase);
-			amountInstance.SetValue(0f);
-		}
-		ChoreConsumer component2 = GetComponent<ChoreConsumer>();
-		if ((UnityEngine.Object)component2 != (UnityEngine.Object)null)
-		{
-			component2.AddProvider(GlobalChoreProvider.Instance);
-			base.gameObject.AddComponent<QualityOfLifeNeed>();
+			Traits component = GetComponent<Traits>();
+			Trait trait = Db.Get().traits.Get(MinionConfig.MINION_BASE_TRAIT_ID);
+			component.Add(trait);
+			foreach (Disease resource2 in Db.Get().Diseases.resources)
+			{
+				AmountInstance amountInstance = AddAmount(resource2.amount);
+				attributes.Add(resource2.cureSpeedBase);
+				amountInstance.SetValue(0f);
+			}
+			ChoreConsumer component2 = GetComponent<ChoreConsumer>();
+			if ((UnityEngine.Object)component2 != (UnityEngine.Object)null)
+			{
+				component2.AddProvider(GlobalChoreProvider.Instance);
+				base.gameObject.AddComponent<QualityOfLifeNeed>();
+			}
 		}
 	}
 

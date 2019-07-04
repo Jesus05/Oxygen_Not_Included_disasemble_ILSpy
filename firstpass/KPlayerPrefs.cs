@@ -3,13 +3,13 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-public class KPlayerPrefs : YamlIO<KPlayerPrefs>
+public class KPlayerPrefs
 {
-	private static KPlayerPrefs _instance;
+	private static KPlayerPrefs _instance = null;
 
 	public static readonly string FILENAME = "kplayerprefs.yaml";
 
-	private static string PATH;
+	private static string PATH = null;
 
 	public static KPlayerPrefs instance
 	{
@@ -21,7 +21,7 @@ public class KPlayerPrefs : YamlIO<KPlayerPrefs>
 				PATH = GetPath();
 				try
 				{
-					YamlIO<KPlayerPrefs>.LoadFile(PATH, null);
+					_instance = YamlIO.LoadFile<KPlayerPrefs>(PATH, null, null);
 				}
 				catch
 				{
@@ -80,7 +80,7 @@ public class KPlayerPrefs : YamlIO<KPlayerPrefs>
 	{
 		try
 		{
-			instance.Save(PATH, null);
+			YamlIO.Save(instance, PATH, null);
 		}
 		catch (Exception ex)
 		{
@@ -152,19 +152,19 @@ public class KPlayerPrefs : YamlIO<KPlayerPrefs>
 
 	public static bool HasKey(string key)
 	{
-		if (instance.strings.ContainsKey(key))
+		if (!instance.strings.ContainsKey(key))
 		{
+			if (!instance.ints.ContainsKey(key))
+			{
+				if (!instance.floats.ContainsKey(key))
+				{
+					return false;
+				}
+				return true;
+			}
 			return true;
 		}
-		if (instance.ints.ContainsKey(key))
-		{
-			return true;
-		}
-		if (instance.floats.ContainsKey(key))
-		{
-			return true;
-		}
-		return false;
+		return true;
 	}
 
 	public static void SetFloat(string key, float value)

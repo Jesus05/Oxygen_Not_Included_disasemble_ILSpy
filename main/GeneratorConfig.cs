@@ -50,10 +50,6 @@ public class GeneratorConfig : IBuildingConfig
 		manualDeliveryKG.requestedItemTag = new Tag("Coal");
 		manualDeliveryKG.capacity = storage.capacityKg;
 		manualDeliveryKG.refillMass = 100f;
-		manualDeliveryKG.choreTags = new Tag[1]
-		{
-			GameTags.ChoreTypes.Power
-		};
 		manualDeliveryKG.choreTypeIDHash = Db.Get().ChoreTypes.PowerFetch.IdHash;
 		BuildingElementEmitter buildingElementEmitter = go.AddOrGet<BuildingElementEmitter>();
 		buildingElementEmitter.emitRate = 0.02f;

@@ -6,7 +6,7 @@ using UnityEngine;
 [SerializationConfig(MemberSerialization.OptIn)]
 public class Equippable : Assignable, ISaveLoadable, IGameObjectEffectDescriptor, IQuality
 {
-	private QualityLevel quality;
+	private QualityLevel quality = QualityLevel.Poor;
 
 	[MyCmpAdd]
 	private EquippableWorkable equippableWorkable;
@@ -19,7 +19,7 @@ public class Equippable : Assignable, ISaveLoadable, IGameObjectEffectDescriptor
 	[Serialize]
 	public bool isEquipped;
 
-	private bool destroyed;
+	private bool destroyed = false;
 
 	private static readonly EventSystem.IntraObjectHandler<Equippable> SetDestroyedTrueDelegate = new EventSystem.IntraObjectHandler<Equippable>(delegate(Equippable component, object data)
 	{
@@ -190,19 +190,18 @@ public class Equippable : Assignable, ISaveLoadable, IGameObjectEffectDescriptor
 
 	public List<Descriptor> GetDescriptors(GameObject go)
 	{
-		if ((Object)def != (Object)null)
+		if (!((Object)def != (Object)null))
 		{
-			List<Descriptor> equipmentEffects = GameUtil.GetEquipmentEffects(def);
-			if (def.additionalDescriptors != null)
-			{
-				foreach (Descriptor additionalDescriptor in def.additionalDescriptors)
-				{
-					equipmentEffects.Add(additionalDescriptor);
-				}
-				return equipmentEffects;
-			}
-			return equipmentEffects;
+			return new List<Descriptor>();
 		}
-		return new List<Descriptor>();
+		List<Descriptor> equipmentEffects = GameUtil.GetEquipmentEffects(def);
+		if (def.additionalDescriptors != null)
+		{
+			foreach (Descriptor additionalDescriptor in def.additionalDescriptors)
+			{
+				equipmentEffects.Add(additionalDescriptor);
+			}
+		}
+		return equipmentEffects;
 	}
 }

@@ -64,6 +64,14 @@ namespace Klei.AI
 				{
 					PopFXManager.Instance.SpawnFX(PopFXManager.Instance.sprite_Plus, string.Format(DUPLICANTS.DISEASES.CURED_POPUP, modifier.Name), base.gameObject.transform, 1.5f, true);
 				}
+				if (!string.IsNullOrEmpty(modifier.recoveryEffect))
+				{
+					Effects component = base.gameObject.GetComponent<Effects>();
+					if ((bool)component)
+					{
+						component.Add(modifier.recoveryEffect, true);
+					}
+				}
 			}
 
 			public SicknessExposureInfo GetExposureInfo()
@@ -151,14 +159,14 @@ namespace Klei.AI
 		{
 			get
 			{
-				if ((UnityEngine.Object)base.gameObject == (UnityEngine.Object)null)
+				if (!((UnityEngine.Object)base.gameObject == (UnityEngine.Object)null))
 				{
+					AttributeInstance attributeInstance = Db.Get().Attributes.DoctoredLevel.Lookup(base.gameObject);
+					if (attributeInstance != null && attributeInstance.GetTotalValue() > 0f)
+					{
+						return true;
+					}
 					return false;
-				}
-				AttributeInstance attributeInstance = Db.Get().Attributes.DoctoredLevel.Lookup(base.gameObject);
-				if (attributeInstance != null && attributeInstance.GetTotalValue() > 0f)
-				{
-					return true;
 				}
 				return false;
 			}
@@ -193,7 +201,7 @@ namespace Klei.AI
 			Sickness disease = modifier;
 			Func<List<Notification>, object, string> tooltip = delegate(List<Notification> notificationList, object data)
 			{
-				string text = string.Empty;
+				string text = "";
 				for (int i = 0; i < notificationList.Count; i++)
 				{
 					Notification notification = notificationList[i];
@@ -212,7 +220,7 @@ namespace Klei.AI
 			HashedString invalid = HashedString.Invalid;
 			string sourceInfo = exposureInfo.sourceInfo;
 			notification = new Notification(title, type, invalid, tooltip, sourceInfo, true, 0f, null, null, null);
-			statusItem = new StatusItem(disease.Id, disease.Name, DUPLICANTS.DISEASES.STATUS_ITEM_TOOLTIP.TEMPLATE, string.Empty, (disease.severity > Sickness.Severity.Minor) ? StatusItem.IconType.Exclamation : StatusItem.IconType.Info, (disease.severity > Sickness.Severity.Minor) ? NotificationType.Bad : NotificationType.BadMinor, false, OverlayModes.None.ID, 63486);
+			statusItem = new StatusItem(disease.Id, disease.Name, DUPLICANTS.DISEASES.STATUS_ITEM_TOOLTIP.TEMPLATE, "", (disease.severity > Sickness.Severity.Minor) ? StatusItem.IconType.Exclamation : StatusItem.IconType.Info, (disease.severity > Sickness.Severity.Minor) ? NotificationType.Bad : NotificationType.BadMinor, false, OverlayModes.None.ID, 129022);
 			statusItem.resolveTooltipCallback = ResolveString;
 			if (smi != null)
 			{
@@ -224,50 +232,50 @@ namespace Klei.AI
 
 		private string ResolveString(string str, object data)
 		{
-			if (smi == null)
+			if (smi != null)
 			{
-				Debug.LogWarning("Attempting to resolve string when smi is null");
-				return str;
-			}
-			KSelectable component = base.gameObject.GetComponent<KSelectable>();
-			str = str.Replace("{Descriptor}", string.Format(DUPLICANTS.DISEASES.STATUS_ITEM_TOOLTIP.DESCRIPTOR, Strings.Get("STRINGS.DUPLICANTS.DISEASES.SEVERITY." + modifier.severity.ToString().ToUpper()), Strings.Get("STRINGS.DUPLICANTS.DISEASES.TYPE." + modifier.sicknessType.ToString().ToUpper())));
-			str = str.Replace("{Infectee}", component.GetProperName());
-			str = str.Replace("{InfectionSource}", string.Format(DUPLICANTS.DISEASES.STATUS_ITEM_TOOLTIP.INFECTION_SOURCE, exposureInfo.sourceInfo));
-			if (modifier.severity <= Sickness.Severity.Minor)
-			{
-				str = str.Replace("{Duration}", string.Format(DUPLICANTS.DISEASES.STATUS_ITEM_TOOLTIP.DURATION, GameUtil.GetFormattedCycles(GetInfectedTimeRemaining(), "F1")));
-			}
-			else if (modifier.severity == Sickness.Severity.Major)
-			{
-				str = str.Replace("{Duration}", string.Format(DUPLICANTS.DISEASES.STATUS_ITEM_TOOLTIP.DURATION, GameUtil.GetFormattedCycles(GetInfectedTimeRemaining(), "F1")));
-				str = (IsDoctored ? str.Replace("{Doctor}", DUPLICANTS.DISEASES.STATUS_ITEM_TOOLTIP.DOCTORED) : str.Replace("{Doctor}", DUPLICANTS.DISEASES.STATUS_ITEM_TOOLTIP.BEDREST));
-			}
-			else if (modifier.severity >= Sickness.Severity.Critical)
-			{
-				if (!IsDoctored)
-				{
-					str = str.Replace("{Duration}", string.Format(DUPLICANTS.DISEASES.STATUS_ITEM_TOOLTIP.FATALITY, GameUtil.GetFormattedCycles(GetFatalityTimeRemaining(), "F1")));
-					str = str.Replace("{Doctor}", DUPLICANTS.DISEASES.STATUS_ITEM_TOOLTIP.DOCTOR_REQUIRED);
-				}
-				else
+				KSelectable component = base.gameObject.GetComponent<KSelectable>();
+				str = str.Replace("{Descriptor}", string.Format(DUPLICANTS.DISEASES.STATUS_ITEM_TOOLTIP.DESCRIPTOR, Strings.Get("STRINGS.DUPLICANTS.DISEASES.SEVERITY." + modifier.severity.ToString().ToUpper()), Strings.Get("STRINGS.DUPLICANTS.DISEASES.TYPE." + modifier.sicknessType.ToString().ToUpper())));
+				str = str.Replace("{Infectee}", component.GetProperName());
+				str = str.Replace("{InfectionSource}", string.Format(DUPLICANTS.DISEASES.STATUS_ITEM_TOOLTIP.INFECTION_SOURCE, exposureInfo.sourceInfo));
+				if (modifier.severity <= Sickness.Severity.Minor)
 				{
 					str = str.Replace("{Duration}", string.Format(DUPLICANTS.DISEASES.STATUS_ITEM_TOOLTIP.DURATION, GameUtil.GetFormattedCycles(GetInfectedTimeRemaining(), "F1")));
-					str = str.Replace("{Doctor}", DUPLICANTS.DISEASES.STATUS_ITEM_TOOLTIP.DOCTORED);
 				}
-			}
-			List<Descriptor> symptoms = modifier.GetSymptoms();
-			string text = string.Empty;
-			foreach (Descriptor item in symptoms)
-			{
-				Descriptor current = item;
-				if (!string.IsNullOrEmpty(text))
+				else if (modifier.severity == Sickness.Severity.Major)
 				{
-					text += "\n";
+					str = str.Replace("{Duration}", string.Format(DUPLICANTS.DISEASES.STATUS_ITEM_TOOLTIP.DURATION, GameUtil.GetFormattedCycles(GetInfectedTimeRemaining(), "F1")));
+					str = (IsDoctored ? str.Replace("{Doctor}", DUPLICANTS.DISEASES.STATUS_ITEM_TOOLTIP.DOCTORED) : str.Replace("{Doctor}", DUPLICANTS.DISEASES.STATUS_ITEM_TOOLTIP.BEDREST));
 				}
-				text = text + "    • " + current.text;
+				else if (modifier.severity >= Sickness.Severity.Critical)
+				{
+					if (!IsDoctored)
+					{
+						str = str.Replace("{Duration}", string.Format(DUPLICANTS.DISEASES.STATUS_ITEM_TOOLTIP.FATALITY, GameUtil.GetFormattedCycles(GetFatalityTimeRemaining(), "F1")));
+						str = str.Replace("{Doctor}", DUPLICANTS.DISEASES.STATUS_ITEM_TOOLTIP.DOCTOR_REQUIRED);
+					}
+					else
+					{
+						str = str.Replace("{Duration}", string.Format(DUPLICANTS.DISEASES.STATUS_ITEM_TOOLTIP.DURATION, GameUtil.GetFormattedCycles(GetInfectedTimeRemaining(), "F1")));
+						str = str.Replace("{Doctor}", DUPLICANTS.DISEASES.STATUS_ITEM_TOOLTIP.DOCTORED);
+					}
+				}
+				List<Descriptor> symptoms = modifier.GetSymptoms();
+				string text = "";
+				foreach (Descriptor item in symptoms)
+				{
+					Descriptor current = item;
+					if (!string.IsNullOrEmpty(text))
+					{
+						text += "\n";
+					}
+					text = text + "    • " + current.text;
+				}
+				str = str.Replace("{Symptoms}", text);
+				str = Regex.Replace(str, "{[^}]*}", "");
+				return str;
 			}
-			str = str.Replace("{Symptoms}", text);
-			str = Regex.Replace(str, "{[^}]*}", string.Empty);
+			Debug.LogWarning("Attempting to resolve string when smi is null");
 			return str;
 		}
 

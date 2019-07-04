@@ -8,7 +8,7 @@ public class OxidizerTank : KMonoBehaviour, IUserControlledCapacity
 
 	private MeterController meter;
 
-	private bool isSuspended;
+	private bool isSuspended = false;
 
 	[Serialize]
 	public float targetFillMass = 2700f;

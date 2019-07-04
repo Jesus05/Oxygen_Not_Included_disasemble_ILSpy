@@ -1,16 +1,15 @@
-using Klei;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CodexEntry : YamlIO<CodexEntry>
+public class CodexEntry
 {
 	public List<SubEntry> subEntries = new List<SubEntry>();
 
 	public Color iconColor = Color.white;
 
-	public bool searchOnly;
+	public bool searchOnly = false;
 
-	public int customContentLength;
+	public int customContentLength = 0;
 
 	public List<ContentContainer> contentContainers
 	{

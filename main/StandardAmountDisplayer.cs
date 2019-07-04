@@ -34,14 +34,14 @@ public class StandardAmountDisplayer : IAmountDisplayer
 
 	public virtual string GetValueString(Amount master, AmountInstance instance)
 	{
-		if (!master.showMax)
+		if (master.showMax)
 		{
-			StandardAttributeFormatter standardAttributeFormatter = formatter;
-			float value = instance.value;
-			GameObject gameObject = instance.gameObject;
-			return standardAttributeFormatter.GetFormattedValue(value, GameUtil.TimeSlice.None, gameObject);
+			return $"{formatter.GetFormattedValue(instance.value, GameUtil.TimeSlice.None, null)} / {formatter.GetFormattedValue(instance.GetMax(), GameUtil.TimeSlice.None, null)}";
 		}
-		return $"{formatter.GetFormattedValue(instance.value, GameUtil.TimeSlice.None, null)} / {formatter.GetFormattedValue(instance.GetMax(), GameUtil.TimeSlice.None, null)}";
+		StandardAttributeFormatter standardAttributeFormatter = formatter;
+		float value = instance.value;
+		GameObject gameObject = instance.gameObject;
+		return standardAttributeFormatter.GetFormattedValue(value, GameUtil.TimeSlice.None, gameObject);
 	}
 
 	public virtual string GetDescription(Amount master, AmountInstance instance)
@@ -51,23 +51,23 @@ public class StandardAmountDisplayer : IAmountDisplayer
 
 	public virtual string GetTooltip(Amount master, AmountInstance instance)
 	{
-		string name = master.Name;
-		name = ((master.description.IndexOf("{1}") <= -1) ? (name + UI.HORIZONTAL_BR_RULE + string.Format(master.description, formatter.GetFormattedValue(instance.value, GameUtil.TimeSlice.None, null))) : (name + UI.HORIZONTAL_BR_RULE + string.Format(master.description, formatter.GetFormattedValue(instance.value, GameUtil.TimeSlice.None, null), GameUtil.GetIdentityDescriptor(instance.gameObject))));
-		name += "\n\n";
+		string str = "";
+		str = ((master.description.IndexOf("{1}") <= -1) ? (str + string.Format(master.description, formatter.GetFormattedValue(instance.value, GameUtil.TimeSlice.None, null))) : (str + string.Format(master.description, formatter.GetFormattedValue(instance.value, GameUtil.TimeSlice.None, null), GameUtil.GetIdentityDescriptor(instance.gameObject))));
+		str += "\n\n";
 		if (formatter.DeltaTimeSlice == GameUtil.TimeSlice.PerCycle)
 		{
-			name += string.Format(UI.CHANGEPERCYCLE, formatter.GetFormattedValue(instance.deltaAttribute.GetTotalDisplayValue(), GameUtil.TimeSlice.PerCycle, null));
+			str += string.Format(UI.CHANGEPERCYCLE, formatter.GetFormattedValue(instance.deltaAttribute.GetTotalDisplayValue(), GameUtil.TimeSlice.PerCycle, null));
 		}
 		else if (formatter.DeltaTimeSlice == GameUtil.TimeSlice.PerSecond)
 		{
-			name += string.Format(UI.CHANGEPERSECOND, formatter.GetFormattedValue(instance.deltaAttribute.GetTotalDisplayValue(), GameUtil.TimeSlice.PerSecond, null));
+			str += string.Format(UI.CHANGEPERSECOND, formatter.GetFormattedValue(instance.deltaAttribute.GetTotalDisplayValue(), GameUtil.TimeSlice.PerSecond, null));
 		}
 		for (int i = 0; i != instance.deltaAttribute.Modifiers.Count; i++)
 		{
 			AttributeModifier attributeModifier = instance.deltaAttribute.Modifiers[i];
-			name = name + "\n" + string.Format(UI.MODIFIER_ITEM_TEMPLATE, attributeModifier.GetDescription(), formatter.GetFormattedModifier(attributeModifier, instance.gameObject));
+			str = str + "\n" + string.Format(UI.MODIFIER_ITEM_TEMPLATE, attributeModifier.GetDescription(), formatter.GetFormattedModifier(attributeModifier, instance.gameObject));
 		}
-		return name;
+		return str;
 	}
 
 	public string GetFormattedAttribute(AttributeInstance instance)

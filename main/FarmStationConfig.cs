@@ -59,10 +59,6 @@ public class FarmStationConfig : IBuildingConfig
 		manualDeliveryKG.requestedItemTag = MATERIAL_FOR_TINKER;
 		manualDeliveryKG.refillMass = 5f;
 		manualDeliveryKG.capacity = 50f;
-		manualDeliveryKG.choreTags = new Tag[1]
-		{
-			GameTags.ChoreTypes.Farming
-		};
 		manualDeliveryKG.choreTypeIDHash = Db.Get().ChoreTypes.FarmFetch.IdHash;
 		TinkerStation tinkerStation = go.AddOrGet<TinkerStation>();
 		tinkerStation.overrideAnims = new KAnimFile[1]

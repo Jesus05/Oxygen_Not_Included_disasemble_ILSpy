@@ -1,4 +1,7 @@
+using KMod;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using TUNING;
 using UnityEngine;
 
@@ -74,5 +77,11 @@ public static class ModUtil
 		substance.material = material;
 		substance.renderedByWorld = ((state & Element.State.Solid) == Element.State.Solid);
 		return substance;
+	}
+
+	public static void RegisterForTranslation(Type locstring_tree_root)
+	{
+		Localization.RegisterForTranslation(locstring_tree_root);
+		Localization.GenerateStringsTemplate(locstring_tree_root, Path.Combine(Manager.GetDirectory(), "strings_templates"));
 	}
 }

@@ -76,7 +76,7 @@ namespace Database
 			Decor.SetDisplayer(new DecorDisplayer());
 			Maturity = CreateAmount("Maturity", 0f, 0f, true, Units.Flat, 0.0009166667f, true, "STRINGS.CREATURES.STATS", "ui_icon_maturity", null);
 			Maturity.SetDisplayer(new MaturityDisplayer());
-			OldAge = CreateAmount("OldAge", 0f, 2400f, false, Units.Flat, 0f, false, "STRINGS.CREATURES.STATS", null, null);
+			OldAge = CreateAmount("OldAge", 0f, 0f, false, Units.Flat, 0f, false, "STRINGS.CREATURES.STATS", null, null);
 			Fertilization = CreateAmount("Fertilization", 0f, 100f, true, Units.Flat, 0.1675f, true, "STRINGS.CREATURES.STATS", null, null);
 			Fertilization.SetDisplayer(new StandardAmountDisplayer(GameUtil.UnitClass.Percent, GameUtil.TimeSlice.PerSecond, null));
 			Fertility = CreateAmount("Fertility", 0f, 100f, true, Units.Flat, 0.008375f, true, "STRINGS.CREATURES.STATS", "ui_icon_fertility", null);
@@ -109,11 +109,12 @@ namespace Database
 		{
 			string text = Strings.Get(string.Format("{1}.{0}.NAME", id.ToUpper(), string_root.ToUpper()));
 			string description = Strings.Get(string.Format("{1}.{0}.TOOLTIP", id.ToUpper(), string_root.ToUpper()));
-			Attribute attribute = new Attribute(id + "Min", "Minimum" + text, string.Empty, string.Empty, min, Attribute.Display.Normal, false, null, null);
-			Attribute attribute2 = new Attribute(id + "Max", "Maximum" + text, string.Empty, string.Empty, max, Attribute.Display.Normal, false, null, null);
+			Attribute attribute = new Attribute(id + "Min", "Minimum" + text, "", "", min, Attribute.Display.Normal, false, null, null);
+			Attribute attribute2 = new Attribute(id + "Max", "Maximum" + text, "", "", max, Attribute.Display.Normal, false, null, null);
 			string text2 = id + "Delta";
 			string name = Strings.Get($"STRINGS.DUPLICANTS.ATTRIBUTES.{text2.ToUpper()}.NAME");
-			Attribute attribute3 = new Attribute(text2, name, string.Empty, string.Empty, 0f, Attribute.Display.Normal, false, null, null);
+			string attribute_description = Strings.Get($"STRINGS.DUPLICANTS.ATTRIBUTES.{text2.ToUpper()}.DESC");
+			Attribute attribute3 = new Attribute(text2, name, "", attribute_description, 0f, Attribute.Display.Normal, false, null, null);
 			Amount amount = new Amount(id, text, description, attribute, attribute2, attribute3, show_max, units, delta_threshold, show_in_ui, uiSprite, thoughtSprite);
 			Db.Get().Attributes.Add(attribute);
 			Db.Get().Attributes.Add(attribute2);

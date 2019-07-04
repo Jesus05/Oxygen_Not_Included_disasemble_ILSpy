@@ -16,8 +16,8 @@ public class IdleCellQuery : PathFinderQuery
 
 	public override bool IsMatch(int cell, int parent_cell, int cost)
 	{
-		SafeCellQuery.SafeFlags flags = SafeCellQuery.GetFlags(cell, brain);
-		if ((flags & SafeCellQuery.SafeFlags.IsClear) != 0 && (flags & SafeCellQuery.SafeFlags.IsNotLadder) != 0 && (flags & SafeCellQuery.SafeFlags.IsNotTube) != 0 && (flags & SafeCellQuery.SafeFlags.HasSomeOxygen) != 0 && (flags & SafeCellQuery.SafeFlags.IsNotLiquid) != 0)
+		SafeCellQuery.SafeFlags flags = SafeCellQuery.GetFlags(cell, brain, false);
+		if ((flags & SafeCellQuery.SafeFlags.IsClear) != 0 && (flags & SafeCellQuery.SafeFlags.IsNotLadder) != 0 && (flags & SafeCellQuery.SafeFlags.IsNotTube) != 0 && (flags & SafeCellQuery.SafeFlags.IsBreathable) != 0 && (flags & SafeCellQuery.SafeFlags.IsNotLiquid) != 0)
 		{
 			targetCell = cell;
 		}

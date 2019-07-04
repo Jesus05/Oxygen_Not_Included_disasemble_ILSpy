@@ -32,7 +32,7 @@ namespace Rendering
 				public string name;
 			}
 
-			private AtlasInfo[] atlasInfo;
+			private AtlasInfo[] atlasInfo = null;
 
 			private bool[,] dirtyChunks;
 
@@ -497,7 +497,7 @@ namespace Rendering
 		}
 
 		[SerializeField]
-		private bool forceRebuild;
+		private bool forceRebuild = false;
 
 		[SerializeField]
 		private Color highlightColour = new Color(1.25f, 1.25f, 1.25f, 1f);
@@ -659,15 +659,30 @@ namespace Rendering
 
 		public void LateUpdate()
 		{
-			GridArea visibleArea = GridVisibleArea.GetVisibleArea();
-			Vector2I min = visibleArea.Min;
-			int a = min.x / 16;
-			Vector2I min2 = visibleArea.Min;
-			Vector2I vector2I = new Vector2I(a, min2.y / 16);
-			Vector2I max = visibleArea.Max;
-			int a2 = (max.x + 16 - 1) / 16;
-			Vector2I max2 = visibleArea.Max;
-			Vector2I vector2I2 = new Vector2I(a2, (max2.y + 16 - 1) / 16);
+			Render();
+		}
+
+		private void Render()
+		{
+			Vector2I vector2I = default(Vector2I);
+			Vector2I vector2I2 = default(Vector2I);
+			if (GameUtil.IsCapturingTimeLapse())
+			{
+				vector2I = new Vector2I(0, 0);
+				vector2I2 = new Vector2I(Grid.WidthInCells / 16, Grid.HeightInCells / 16);
+			}
+			else
+			{
+				GridArea visibleArea = GridVisibleArea.GetVisibleArea();
+				Vector2I min = visibleArea.Min;
+				int a = min.x / 16;
+				Vector2I min2 = visibleArea.Min;
+				vector2I = new Vector2I(a, min2.y / 16);
+				Vector2I max = visibleArea.Max;
+				int a2 = (max.x + 16 - 1) / 16;
+				Vector2I max2 = visibleArea.Max;
+				vector2I2 = new Vector2I(a2, (max2.y + 16 - 1) / 16);
+			}
 			foreach (KeyValuePair<KeyValuePair<BuildingDef, bool>, RenderInfo> item in renderInfo)
 			{
 				RenderInfo value = item.Value;

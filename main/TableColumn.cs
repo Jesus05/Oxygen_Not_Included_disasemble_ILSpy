@@ -22,7 +22,7 @@ public class TableColumn : IRender1000ms
 
 	private Func<bool> revealed;
 
-	protected bool dirty;
+	protected bool dirty = false;
 
 	public bool isRevealed => revealed == null || revealed();
 
@@ -63,7 +63,7 @@ public class TableColumn : IRender1000ms
 		{
 			on_tooltip(tableRow.GetIdentity(), gameObject, tool_tip_instance);
 		}
-		return string.Empty;
+		return "";
 	}
 
 	protected string GetSortTooltip(ToolTip sort_tooltip_instance)
@@ -82,7 +82,7 @@ public class TableColumn : IRender1000ms
 		{
 			on_sort_tooltip(tableRow.GetIdentity(), gameObject, sort_tooltip_instance);
 		}
-		return string.Empty;
+		return "";
 	}
 
 	public bool ContainsWidget(GameObject widget)

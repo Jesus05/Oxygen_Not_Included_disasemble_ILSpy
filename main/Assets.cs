@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Video;
 
 public class Assets : KMonoBehaviour, ISerializationCallbackReceiver
 {
@@ -85,6 +86,10 @@ public class Assets : KMonoBehaviour, ISerializationCallbackReceiver
 
 	public static Dictionary<HashedString, Sprite> Sprites;
 
+	public List<string> videoClipNames;
+
+	private const string VIDEO_ASSET_PATH = "video";
+
 	public List<TintedSprite> TintedSpriteAssets;
 
 	public static List<TintedSprite> TintedSprites;
@@ -154,6 +159,8 @@ public class Assets : KMonoBehaviour, ISerializationCallbackReceiver
 	public DigPlacerConfig.DigPlacerAssets digPlacerAssets;
 
 	public MopPlacerConfig.MopPlacerAssets mopPlacerAssets;
+
+	public ComicData[] comics;
 
 	public static Assets instance;
 
@@ -330,6 +337,13 @@ public class Assets : KMonoBehaviour, ISerializationCallbackReceiver
 		return value;
 	}
 
+	public static VideoClip GetVideo(string name)
+	{
+		VideoClip videoClip = null;
+		string path = "video/" + name;
+		return Resources.Load<VideoClip>(path);
+	}
+
 	public static Texture2D GetTexture(string name)
 	{
 		Texture2D result = null;
@@ -345,6 +359,19 @@ public class Assets : KMonoBehaviour, ISerializationCallbackReceiver
 			}
 		}
 		return result;
+	}
+
+	public static ComicData GetComic(string id)
+	{
+		ComicData[] array = instance.comics;
+		foreach (ComicData comicData in array)
+		{
+			if (comicData.name == id)
+			{
+				return comicData;
+			}
+		}
+		return null;
 	}
 
 	public static void AddPrefab(KPrefabID prefab)
@@ -452,7 +479,7 @@ public class Assets : KMonoBehaviour, ISerializationCallbackReceiver
 	public static Assets GetInstanceEditorOnly()
 	{
 		Assets[] array = (Assets[])Resources.FindObjectsOfTypeAll(typeof(Assets));
-		if (array == null || array.Length == 0)
+		if (array != null && array.Length != 0)
 		{
 			return array[0];
 		}
@@ -498,18 +525,18 @@ public class Assets : KMonoBehaviour, ISerializationCallbackReceiver
 
 	public static KAnimFile GetAnim(HashedString name)
 	{
-		if (!name.IsValid)
+		if (name.IsValid)
 		{
-			Debug.LogWarning("Invalid hash name");
-			return null;
+			KAnimFile value = null;
+			AnimTable.TryGetValue(name, out value);
+			if ((UnityEngine.Object)value == (UnityEngine.Object)null)
+			{
+				Debug.LogWarning("Missing Anim: [" + name.ToString() + "]. You may have to run Collect Anim on the Assets prefab");
+			}
+			return value;
 		}
-		KAnimFile value = null;
-		AnimTable.TryGetValue(name, out value);
-		if ((UnityEngine.Object)value == (UnityEngine.Object)null)
-		{
-			Debug.LogWarning("Missing Anim: [" + name.ToString() + "]. You may have to run Collect Anim on the Assets prefab");
-		}
-		return value;
+		Debug.LogWarning("Invalid hash name");
+		return null;
 	}
 
 	public void OnAfterDeserialize()

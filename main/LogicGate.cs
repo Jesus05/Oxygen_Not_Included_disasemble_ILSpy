@@ -48,9 +48,9 @@ public class LogicGate : LogicGateBase, ILogicEventSender, ILogicNetworkConnecti
 
 	private const bool IS_CIRCUIT_ENDPOINT = true;
 
-	private bool connected;
+	private bool connected = false;
 
-	protected bool cleaningUp;
+	protected bool cleaningUp = false;
 
 	[Serialize]
 	protected int outputValue;

@@ -1,3 +1,4 @@
+#define UNITY_ASSERTIONS
 using System;
 using System.Diagnostics;
 using UnityEngine;
@@ -68,6 +69,7 @@ namespace Klei.AI
 
 		public void SetValue(float value)
 		{
+			UnityEngine.Debug.Assert(!IsReadonly);
 			Value = value;
 		}
 
@@ -95,13 +97,13 @@ namespace Klei.AI
 					}
 				}
 			}
-			string empty = string.Empty;
-			empty = ((attributeFormatter != null) ? attributeFormatter.GetFormattedModifier(this, parent_instance) : ((!IsMultiplier) ? (empty + GameUtil.GetFormattedSimple(Value, GameUtil.TimeSlice.None, null)) : (empty + GameUtil.GetFormattedPercent(Value * 100f, GameUtil.TimeSlice.None))));
-			if (empty != null && empty.Length > 0 && empty[0] != '-')
+			string str = "";
+			str = ((attributeFormatter != null) ? attributeFormatter.GetFormattedModifier(this, parent_instance) : ((!IsMultiplier) ? (str + GameUtil.GetFormattedSimple(Value, GameUtil.TimeSlice.None, null)) : (str + GameUtil.GetFormattedPercent(Value * 100f, GameUtil.TimeSlice.None))));
+			if (str != null && str.Length > 0 && str[0] != '-')
 			{
-				empty = GameUtil.AddPositiveSign(empty, Value > 0f);
+				str = GameUtil.AddPositiveSign(str, Value > 0f);
 			}
-			return empty;
+			return str;
 		}
 
 		public AttributeModifier Clone()

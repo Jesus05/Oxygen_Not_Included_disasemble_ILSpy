@@ -58,21 +58,19 @@ public class BuildMenu : KScreen
 			if (data != null && typeof(IList<DisplayInfo>).IsAssignableFrom(data.GetType()))
 			{
 				IList<DisplayInfo> list = (IList<DisplayInfo>)data;
+				foreach (DisplayInfo item in list)
 				{
-					foreach (DisplayInfo item in list)
+					DisplayInfo current = item;
+					result = current.GetInfo(category);
+					if (result.category == category)
 					{
-						DisplayInfo current = item;
-						result = current.GetInfo(category);
-						if (result.category == category)
-						{
-							return result;
-						}
-						if (current.category == category)
-						{
-							return current;
-						}
+						break;
 					}
-					return result;
+					if (current.category == category)
+					{
+						result = current;
+						break;
+					}
 				}
 			}
 			return result;
@@ -104,11 +102,11 @@ public class BuildMenu : KScreen
 
 	private Stack<KIconToggleMenu> submenuStack = new Stack<KIconToggleMenu>();
 
-	private bool selecting;
+	private bool selecting = false;
 
-	private bool updating;
+	private bool updating = false;
 
-	private bool deactivateToolQueued;
+	private bool deactivateToolQueued = false;
 
 	[SerializeField]
 	private Vector2 rootMenuOffset = Vector2.zero;
@@ -186,6 +184,7 @@ public class BuildMenu : KScreen
 			{
 				new BuildingInfo("MicrobeMusher", Action.BuildMenuKeyC),
 				new BuildingInfo("CookingStation", Action.BuildMenuKeyG),
+				new BuildingInfo("GourmetCookingStation", Action.BuildMenuKeyS),
 				new BuildingInfo("EggCracker", Action.BuildMenuKeyE)
 			}),
 			new DisplayInfo(CacheHashString("Ranching"), "icon_category_food", Action.BuildCategoryRanching, KKeyCode.R, new List<BuildingInfo>
@@ -199,7 +198,8 @@ public class BuildMenu : KScreen
 				new BuildingInfo("EggIncubator", Action.BuildMenuKeyI),
 				new BuildingInfo("CreatureTrap", Action.BuildMenuKeyT),
 				new BuildingInfo("FishTrap", Action.BuildMenuKeyA),
-				new BuildingInfo("AirborneCreatureLure", Action.BuildMenuKeyL)
+				new BuildingInfo("AirborneCreatureLure", Action.BuildMenuKeyL),
+				new BuildingInfo("FlyingCreatureBait", Action.BuildMenuKeyB)
 			})
 		}),
 		new DisplayInfo(CacheHashString("Health And Happiness"), "icon_category_medical", Action.Plan3, KKeyCode.None, new List<DisplayInfo>
@@ -247,7 +247,8 @@ public class BuildMenu : KScreen
 				new BuildingInfo("WaterCooler", Action.BuildMenuKeyC),
 				new BuildingInfo("ArcadeMachine", Action.BuildMenuKeyA),
 				new BuildingInfo("Phonobox", Action.BuildMenuKeyP),
-				new BuildingInfo("EspressoMachine", Action.BuildMenuKeyE)
+				new BuildingInfo("EspressoMachine", Action.BuildMenuKeyE),
+				new BuildingInfo("ParkSign", Action.BuildMenuKeyR)
 			})
 		}),
 		new DisplayInfo(CacheHashString("Infrastructure"), "icon_category_utilities", Action.Plan4, KKeyCode.None, new List<DisplayInfo>
@@ -267,6 +268,7 @@ public class BuildMenu : KScreen
 			{
 				new BuildingInfo("ManualGenerator", Action.BuildMenuKeyG),
 				new BuildingInfo("Generator", Action.BuildMenuKeyC),
+				new BuildingInfo("WoodGasGenerator", Action.BuildMenuKeyW),
 				new BuildingInfo("HydrogenGenerator", Action.BuildMenuKeyD),
 				new BuildingInfo("MethaneGenerator", Action.BuildMenuKeyA),
 				new BuildingInfo("PetroleumGenerator", Action.BuildMenuKeyR),
@@ -334,7 +336,8 @@ public class BuildMenu : KScreen
 				new BuildingInfo("AlgaeHabitat", Action.BuildMenuKeyA),
 				new BuildingInfo("AirFilter", Action.BuildMenuKeyD),
 				new BuildingInfo("CO2Scrubber", Action.BuildMenuKeyC),
-				new BuildingInfo("Electrolyzer", Action.BuildMenuKeyE)
+				new BuildingInfo("Electrolyzer", Action.BuildMenuKeyE),
+				new BuildingInfo("RustDeoxidizer", Action.BuildMenuKeyF)
 			}),
 			new DisplayInfo(CacheHashString("Utilities"), "icon_category_utilities", Action.BuildCategoryUtilities, KKeyCode.T, new List<BuildingInfo>
 			{
@@ -352,6 +355,7 @@ public class BuildMenu : KScreen
 			{
 				new BuildingInfo("WaterPurifier", Action.BuildMenuKeyW),
 				new BuildingInfo("AlgaeDistillery", Action.BuildMenuKeyA),
+				new BuildingInfo("EthanolDistillery", Action.BuildMenuKeyX),
 				new BuildingInfo("RockCrusher", Action.BuildMenuKeyG),
 				new BuildingInfo("Kiln", Action.BuildMenuKeyZ),
 				new BuildingInfo("OilWellCap", Action.BuildMenuKeyC),
@@ -439,7 +443,8 @@ public class BuildMenu : KScreen
 				new BuildingInfo(LogicElementSensorGasConfig.ID, Action.BuildMenuKeyE),
 				new BuildingInfo("FloorSwitch", Action.BuildMenuKeyW),
 				new BuildingInfo("Checkpoint", Action.BuildMenuKeyC),
-				new BuildingInfo(CometDetectorConfig.ID, Action.BuildMenuKeyR)
+				new BuildingInfo(CometDetectorConfig.ID, Action.BuildMenuKeyR),
+				new BuildingInfo("LogicDuplicantSensor", Action.BuildMenuKeyF)
 			}),
 			new DisplayInfo(CacheHashString("ConduitSensors"), "icon_category_automation", Action.BuildCategoryLogicConduits, KKeyCode.X, new List<BuildingInfo>
 			{
@@ -473,7 +478,7 @@ public class BuildMenu : KScreen
 
 	private float updateInterval = 1f;
 
-	private float elapsedTime;
+	private float elapsedTime = 0f;
 
 	public static BuildMenu Instance
 	{
@@ -687,10 +692,10 @@ public class BuildMenu : KScreen
 		}
 		if (mouseOver && ConsumeMouseScroll && !e.TryConsume(Action.ZoomIn) && !e.TryConsume(Action.ZoomOut))
 		{
-			goto IL_003a;
+			goto IL_0043;
 		}
-		goto IL_003a;
-		IL_003a:
+		goto IL_0043;
+		IL_0043:
 		if (!e.Consumed && selectedCategory.IsValid && e.TryConsume(Action.Escape))
 		{
 			OnUIClear(null);

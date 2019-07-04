@@ -55,12 +55,6 @@ public class FetchOrder2
 		protected set;
 	}
 
-	public Tag[] ChoreTags
-	{
-		get;
-		protected set;
-	}
-
 	public Storage Destination
 	{
 		get;
@@ -90,14 +84,15 @@ public class FetchOrder2
 			{
 				if (chore.InProgress())
 				{
-					return true;
+					result = true;
+					break;
 				}
 			}
 			return result;
 		}
 	}
 
-	public FetchOrder2(ChoreType chore_type, Tag[] tags, Tag[] required_tags, Tag[] forbidden_tags, Storage destination, float amount, OperationalRequirement operationalRequirementDEPRECATED = OperationalRequirement.None, int priorityMod = 0, Tag[] chore_tags = null)
+	public FetchOrder2(ChoreType chore_type, Tag[] tags, Tag[] required_tags, Tag[] forbidden_tags, Storage destination, float amount, OperationalRequirement operationalRequirementDEPRECATED = OperationalRequirement.None, int priorityMod = 0)
 	{
 		if (amount <= PICKUPABLETUNING.MINIMUM_PICKABLE_AMOUNT)
 		{
@@ -111,7 +106,6 @@ public class FetchOrder2
 		TotalAmount = amount;
 		UnfetchedAmount = amount;
 		PriorityMod = priorityMod;
-		ChoreTags = chore_tags;
 		operationalRequirement = operationalRequirementDEPRECATED;
 	}
 
@@ -135,7 +129,7 @@ public class FetchOrder2
 
 	private void SetFetchTask(float amount)
 	{
-		FetchChore item = new FetchChore(choreType, Destination, amount, Tags, RequiredTags, ForbiddenTags, null, true, OnFetchChoreComplete, OnFetchChoreBegin, OnFetchChoreEnd, operationalRequirement, PriorityMod, ChoreTags);
+		FetchChore item = new FetchChore(choreType, Destination, amount, Tags, RequiredTags, ForbiddenTags, null, true, OnFetchChoreComplete, OnFetchChoreBegin, OnFetchChoreEnd, operationalRequirement, PriorityMod);
 		Chores.Add(item);
 	}
 
@@ -247,17 +241,17 @@ public class FetchOrder2
 
 	public float AmountWaitingToFetch()
 	{
-		if (!checkStorageContents)
+		if (checkStorageContents)
 		{
-			float num = UnfetchedAmount;
-			for (int i = 0; i < Chores.Count; i++)
-			{
-				num += Chores[i].AmountWaitingToFetch();
-			}
-			return num;
+			Pickupable out_item;
+			return GetRemaining(out out_item);
 		}
-		Pickupable out_item;
-		return GetRemaining(out out_item);
+		float num = UnfetchedAmount;
+		for (int i = 0; i < Chores.Count; i++)
+		{
+			num += Chores[i].AmountWaitingToFetch();
+		}
+		return num;
 	}
 
 	public float GetRemaining(out Pickupable out_item)

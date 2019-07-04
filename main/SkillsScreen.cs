@@ -4,6 +4,7 @@ using STRINGS;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -42,7 +43,7 @@ public class SkillsScreen : KModalScreen
 
 	private MultiToggle activeSortToggle;
 
-	private bool sortReversed;
+	private bool sortReversed = false;
 
 	[Header("Duplicant Animation")]
 	[SerializeField]
@@ -115,7 +116,7 @@ public class SkillsScreen : KModalScreen
 
 	private List<SkillMinionWidget> minionWidgets = new List<SkillMinionWidget>();
 
-	private string hoveredSkillID = string.Empty;
+	private string hoveredSkillID = "";
 
 	private Dictionary<string, GameObject> skillWidgets = new Dictionary<string, GameObject>();
 
@@ -123,9 +124,9 @@ public class SkillsScreen : KModalScreen
 
 	private List<GameObject> skillColumns = new List<GameObject>();
 
-	private bool dirty;
+	private bool dirty = false;
 
-	private bool linesPending;
+	private bool linesPending = false;
 
 	private int layoutRowHeight = 80;
 
@@ -135,11 +136,11 @@ public class SkillsScreen : KModalScreen
 	{
 		get
 		{
-			if (currentlySelectedMinion == null || currentlySelectedMinion.IsNull())
+			if (currentlySelectedMinion != null && !currentlySelectedMinion.IsNull())
 			{
-				return null;
+				return currentlySelectedMinion;
 			}
-			return currentlySelectedMinion;
+			return null;
 		}
 		set
 		{
@@ -220,7 +221,7 @@ public class SkillsScreen : KModalScreen
 			{
 				expectationsTooltip.SetSimpleTooltip(string.Format(UI.TABLESCREENS.INFORMATION_NOT_AVAILABLE_TOOLTIP, (currentlySelectedMinion as StoredMinionIdentity).GetStorageReason(), currentlySelectedMinion.GetProperName()));
 				experienceBarTooltip.SetSimpleTooltip(string.Format(UI.TABLESCREENS.INFORMATION_NOT_AVAILABLE_TOOLTIP, (currentlySelectedMinion as StoredMinionIdentity).GetStorageReason(), currentlySelectedMinion.GetProperName()));
-				EXPCount.text = string.Empty;
+				EXPCount.text = "";
 				duplicantLevelIndicator.text = UI.TABLESCREENS.NA;
 			}
 			else
@@ -236,6 +237,7 @@ public class SkillsScreen : KModalScreen
 				AttributeInstance attributeInstance = Db.Get().Attributes.QualityOfLife.Lookup(component2);
 				AttributeInstance attributeInstance2 = Db.Get().Attributes.QualityOfLifeExpectation.Lookup(component2);
 				float num3 = 0f;
+				float num4 = 0f;
 				if (!string.IsNullOrEmpty(hoveredSkillID) && !component2.HasMasteredSkill(hoveredSkillID))
 				{
 					List<string> list = new List<string>();
@@ -243,16 +245,16 @@ public class SkillsScreen : KModalScreen
 					list.Add(hoveredSkillID);
 					while (list.Count > 0)
 					{
-						for (int num4 = list.Count - 1; num4 >= 0; num4--)
+						for (int num5 = list.Count - 1; num5 >= 0; num5--)
 						{
-							if (!component2.HasMasteredSkill(list[num4]))
+							if (!component2.HasMasteredSkill(list[num5]))
 							{
-								num3 += (float)(Db.Get().Skills.Get(list[num4]).tier + 1);
-								if (component2.AptitudeBySkillGroup.ContainsKey(Db.Get().Skills.Get(list[num4]).skillGroup) && component2.AptitudeBySkillGroup[Db.Get().Skills.Get(list[num4]).skillGroup] > 0f)
+								num3 += (float)(Db.Get().Skills.Get(list[num5]).tier + 1);
+								if (component2.AptitudeBySkillGroup.ContainsKey(Db.Get().Skills.Get(list[num5]).skillGroup) && component2.AptitudeBySkillGroup[Db.Get().Skills.Get(list[num5]).skillGroup] > 0f)
 								{
-									num3 -= 1f;
+									num4 += 1f;
 								}
-								foreach (string priorSkill in Db.Get().Skills.Get(list[num4]).priorSkills)
+								foreach (string priorSkill in Db.Get().Skills.Get(list[num5]).priorSkills)
 								{
 									list2.Add(priorSkill);
 								}
@@ -263,8 +265,8 @@ public class SkillsScreen : KModalScreen
 						list2.Clear();
 					}
 				}
-				float num5 = attributeInstance.GetTotalValue() / (attributeInstance2.GetTotalValue() + num3);
-				float f = Mathf.Max(attributeInstance.GetTotalValue(), attributeInstance2.GetTotalValue() + num3);
+				float num6 = attributeInstance.GetTotalValue() + num4 / (attributeInstance2.GetTotalValue() + num3);
+				float f = Mathf.Max(attributeInstance.GetTotalValue() + num4, attributeInstance2.GetTotalValue() + num3);
 				while (moraleNotches.Count < Mathf.RoundToInt(f))
 				{
 					GameObject gameObject = UnityEngine.Object.Instantiate(moraleNotch, moraleNotch.transform.parent);
@@ -279,7 +281,7 @@ public class SkillsScreen : KModalScreen
 				}
 				for (int i = 0; i < moraleNotches.Count; i++)
 				{
-					if ((float)i < attributeInstance.GetTotalValue())
+					if ((float)i < attributeInstance.GetTotalValue() + num4)
 					{
 						moraleNotches[i].GetComponentsInChildren<Image>()[1].color = moraleNotchColor;
 					}
@@ -289,6 +291,11 @@ public class SkillsScreen : KModalScreen
 					}
 				}
 				moraleProgressLabel.text = UI.SKILLS_SCREEN.MORALE + ": " + attributeInstance.GetTotalValue().ToString();
+				if (num4 > 0f)
+				{
+					LocText locText = moraleProgressLabel;
+					locText.text = locText.text + " + " + GameUtil.ApplyBoldString(GameUtil.ColourizeString(moraleNotchColor, num4.ToString()));
+				}
 				while (expectationNotches.Count < Mathf.RoundToInt(f))
 				{
 					GameObject gameObject3 = UnityEngine.Object.Instantiate(expectationNotch, expectationNotch.transform.parent);
@@ -322,10 +329,10 @@ public class SkillsScreen : KModalScreen
 				expectationsProgressLabel.text = UI.SKILLS_SCREEN.MORALE_EXPECTATION + ": " + attributeInstance2.GetTotalValue().ToString();
 				if (num3 > 0f)
 				{
-					LocText locText = expectationsProgressLabel;
-					locText.text = locText.text + " + " + GameUtil.ApplyBoldString(GameUtil.ColourizeString(new Color(1f, 0.5f, 0.5f, 1f), num3.ToString()));
+					LocText locText2 = expectationsProgressLabel;
+					locText2.text = locText2.text + " + " + GameUtil.ApplyBoldString(GameUtil.ColourizeString(expectationNotchColor, num3.ToString()));
 				}
-				if (num5 < 1f)
+				if (num6 < 1f)
 				{
 					expectationWarning.SetActive(true);
 					moraleWarning.SetActive(false);
@@ -335,23 +342,30 @@ public class SkillsScreen : KModalScreen
 					expectationWarning.SetActive(false);
 					moraleWarning.SetActive(true);
 				}
-				string empty = string.Empty;
-				string text = empty;
-				empty = text + GameUtil.ApplyBoldString(UI.SKILLS_SCREEN.MORALE) + ": " + attributeInstance.GetTotalValue() + "\n";
+				string text = "";
+				Dictionary<string, float> dictionary = new Dictionary<string, float>();
+				string text2 = text;
+				text = text2 + GameUtil.ApplyBoldString(UI.SKILLS_SCREEN.MORALE) + ": " + attributeInstance.GetTotalValue() + "\n";
 				for (int k = 0; k < attributeInstance.Modifiers.Count; k++)
 				{
-					text = empty;
-					empty = text + "    • " + attributeInstance.Modifiers[k].GetDescription() + ": " + ((!(attributeInstance.Modifiers[k].Value > 0f)) ? UIConstants.ColorPrefixRed : UIConstants.ColorPrefixGreen) + attributeInstance.Modifiers[k].GetFormattedString(component2.gameObject) + UIConstants.ColorSuffix + "\n";
+					dictionary.Add(attributeInstance.Modifiers[k].GetDescription(), attributeInstance.Modifiers[k].Value);
 				}
-				empty += "\n";
-				text = empty;
-				empty = text + GameUtil.ApplyBoldString(UI.SKILLS_SCREEN.MORALE_EXPECTATION) + ": " + attributeInstance2.GetTotalValue() + "\n";
+				List<KeyValuePair<string, float>> list3 = dictionary.ToList();
+				list3.Sort((KeyValuePair<string, float> pair1, KeyValuePair<string, float> pair2) => pair2.Value.CompareTo(pair1.Value));
+				foreach (KeyValuePair<string, float> item in list3)
+				{
+					text2 = text;
+					text = text2 + "    • " + item.Key + ": " + ((!(item.Value > 0f)) ? UIConstants.ColorPrefixRed : UIConstants.ColorPrefixGreen) + item.Value.ToString() + UIConstants.ColorSuffix + "\n";
+				}
+				text += "\n";
+				text2 = text;
+				text = text2 + GameUtil.ApplyBoldString(UI.SKILLS_SCREEN.MORALE_EXPECTATION) + ": " + attributeInstance2.GetTotalValue() + "\n";
 				for (int l = 0; l < attributeInstance2.Modifiers.Count; l++)
 				{
-					text = empty;
-					empty = text + "    • " + attributeInstance2.Modifiers[l].GetDescription() + ": " + ((!(attributeInstance2.Modifiers[l].Value > 0f)) ? UIConstants.ColorPrefixGreen : UIConstants.ColorPrefixRed) + attributeInstance2.Modifiers[l].GetFormattedString(component2.gameObject) + UIConstants.ColorSuffix + "\n";
+					text2 = text;
+					text = text2 + "    • " + attributeInstance2.Modifiers[l].GetDescription() + ": " + ((!(attributeInstance2.Modifiers[l].Value > 0f)) ? UIConstants.ColorPrefixGreen : UIConstants.ColorPrefixRed) + attributeInstance2.Modifiers[l].GetFormattedString(component2.gameObject) + UIConstants.ColorSuffix + "\n";
 				}
-				expectationsTooltip.SetSimpleTooltip(empty);
+				expectationsTooltip.SetSimpleTooltip(text);
 			}
 		}
 	}
@@ -361,12 +375,12 @@ public class SkillsScreen : KModalScreen
 		if (currentlySelectedMinion != null && !currentlySelectedMinion.IsNull())
 		{
 			List<IListableOption> list = new List<IListableOption>();
-			string empty = string.Empty;
+			string text = "";
 			MinionIdentity minionIdentity = currentlySelectedMinion as MinionIdentity;
 			if ((UnityEngine.Object)minionIdentity != (UnityEngine.Object)null)
 			{
 				MinionResume component = minionIdentity.GetComponent<MinionResume>();
-				empty = ((!string.IsNullOrEmpty(component.TargetHat)) ? component.TargetHat : component.CurrentHat);
+				text = ((!string.IsNullOrEmpty(component.TargetHat)) ? component.TargetHat : component.CurrentHat);
 				foreach (KeyValuePair<string, bool> item in component.MasteryBySkillID)
 				{
 					if (item.Value)
@@ -379,11 +393,11 @@ public class SkillsScreen : KModalScreen
 			else
 			{
 				StoredMinionIdentity storedMinionIdentity = currentlySelectedMinion as StoredMinionIdentity;
-				empty = ((!string.IsNullOrEmpty(storedMinionIdentity.targetHat)) ? storedMinionIdentity.targetHat : storedMinionIdentity.currentHat);
+				text = ((!string.IsNullOrEmpty(storedMinionIdentity.targetHat)) ? storedMinionIdentity.targetHat : storedMinionIdentity.currentHat);
 			}
 			hatDropDown.openButton.enabled = ((UnityEngine.Object)minionIdentity != (UnityEngine.Object)null);
 			selectedHat.transform.Find("Arrow").gameObject.SetActive((UnityEngine.Object)minionIdentity != (UnityEngine.Object)null);
-			selectedHat.sprite = Assets.GetSprite((!string.IsNullOrEmpty(empty)) ? empty : "hat_role_none");
+			selectedHat.sprite = Assets.GetSprite((!string.IsNullOrEmpty(text)) ? text : "hat_role_none");
 		}
 	}
 
@@ -577,6 +591,10 @@ public class SkillsScreen : KModalScreen
 
 	private void OnRemoveMinionIdentity(MinionIdentity remove)
 	{
+		if (CurrentlySelectedMinion == remove)
+		{
+			CurrentlySelectedMinion = null;
+		}
 		BuildMinions();
 		RefreshAll();
 	}
@@ -665,23 +683,23 @@ public class SkillsScreen : KModalScreen
 			{
 				return 0;
 			}
-			if ((UnityEngine.Object)minionIdentity == (UnityEngine.Object)null)
+			if (!((UnityEngine.Object)minionIdentity == (UnityEngine.Object)null))
 			{
-				return -1;
-			}
-			if ((UnityEngine.Object)minionIdentity2 == (UnityEngine.Object)null)
-			{
+				if (!((UnityEngine.Object)minionIdentity2 == (UnityEngine.Object)null))
+				{
+					MinionResume component = minionIdentity.GetComponent<MinionResume>();
+					MinionResume component2 = minionIdentity2.GetComponent<MinionResume>();
+					AttributeInstance attributeInstance = Db.Get().Attributes.QualityOfLife.Lookup(component);
+					AttributeInstance attributeInstance2 = Db.Get().Attributes.QualityOfLifeExpectation.Lookup(component);
+					AttributeInstance attributeInstance3 = Db.Get().Attributes.QualityOfLife.Lookup(component2);
+					AttributeInstance attributeInstance4 = Db.Get().Attributes.QualityOfLifeExpectation.Lookup(component2);
+					float num = attributeInstance.GetTotalValue() / attributeInstance2.GetTotalValue();
+					float value = attributeInstance3.GetTotalValue() / attributeInstance4.GetTotalValue();
+					return num.CompareTo(value);
+				}
 				return 1;
 			}
-			MinionResume component = minionIdentity.GetComponent<MinionResume>();
-			MinionResume component2 = minionIdentity2.GetComponent<MinionResume>();
-			AttributeInstance attributeInstance = Db.Get().Attributes.QualityOfLife.Lookup(component);
-			AttributeInstance attributeInstance2 = Db.Get().Attributes.QualityOfLifeExpectation.Lookup(component);
-			AttributeInstance attributeInstance3 = Db.Get().Attributes.QualityOfLife.Lookup(component2);
-			AttributeInstance attributeInstance4 = Db.Get().Attributes.QualityOfLifeExpectation.Lookup(component2);
-			float num = attributeInstance.GetTotalValue() / attributeInstance2.GetTotalValue();
-			float value = attributeInstance3.GetTotalValue() / attributeInstance4.GetTotalValue();
-			return num.CompareTo(value);
+			return -1;
 		});
 		ReorderEntries(list, sortReversed);
 	}
@@ -706,19 +724,19 @@ public class SkillsScreen : KModalScreen
 			{
 				return 0;
 			}
-			if ((UnityEngine.Object)minionIdentity == (UnityEngine.Object)null)
+			if (!((UnityEngine.Object)minionIdentity == (UnityEngine.Object)null))
 			{
-				return -1;
-			}
-			if ((UnityEngine.Object)minionIdentity2 == (UnityEngine.Object)null)
-			{
+				if (!((UnityEngine.Object)minionIdentity2 == (UnityEngine.Object)null))
+				{
+					MinionResume component = minionIdentity.GetComponent<MinionResume>();
+					MinionResume component2 = minionIdentity2.GetComponent<MinionResume>();
+					float num = (float)(component.AvailableSkillpoints / (component.TotalSkillPointsGained + 1));
+					float value = (float)(component2.AvailableSkillpoints / (component2.TotalSkillPointsGained + 1));
+					return num.CompareTo(value);
+				}
 				return 1;
 			}
-			MinionResume component = minionIdentity.GetComponent<MinionResume>();
-			MinionResume component2 = minionIdentity2.GetComponent<MinionResume>();
-			float num = (float)(component.AvailableSkillpoints / (component.TotalSkillPointsGained + 1));
-			float value = (float)(component2.AvailableSkillpoints / (component2.TotalSkillPointsGained + 1));
-			return num.CompareTo(value);
+			return -1;
 		});
 		ReorderEntries(list, sortReversed);
 	}
@@ -751,7 +769,7 @@ public class SkillsScreen : KModalScreen
 				ScreenResize instance = ScreenResize.Instance;
 				instance.OnResize = (System.Action)Delegate.Combine(instance.OnResize, new System.Action(OnResize));
 			}
-			string value = string.Empty;
+			string value = "";
 			Accessorizer component = animController.GetComponent<Accessorizer>();
 			for (int num = component.GetAccessories().Count - 1; num >= 0; num--)
 			{

@@ -12,5 +12,7 @@ public enum SolidAmbienceType
 	Ice,
 	Sand,
 	CrushedIce,
+	Salt,
+	Rust,
 	NumTypes
 }

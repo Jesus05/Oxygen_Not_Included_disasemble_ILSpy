@@ -37,35 +37,35 @@ namespace MIConvexHull
 			int[] vertices = face.Vertices;
 			double[] normal = face.Normal;
 			FindNormalVector(vertices, normal);
-			if (double.IsNaN(normal[0]))
+			if (!double.IsNaN(normal[0]))
 			{
-				return false;
-			}
-			double num = 0.0;
-			double num2 = 0.0;
-			int num3 = vertices[0] * Dimension;
-			for (int i = 0; i < Dimension; i++)
-			{
-				double num4 = normal[i];
-				num += num4 * PositionData[num3 + i];
-				num2 += num4 * center[i];
-			}
-			face.Offset = 0.0 - num;
-			num2 -= num;
-			if (num2 > 0.0)
-			{
-				for (int j = 0; j < Dimension; j++)
+				double num = 0.0;
+				double num2 = 0.0;
+				int num3 = vertices[0] * Dimension;
+				for (int i = 0; i < Dimension; i++)
 				{
-					normal[j] = 0.0 - normal[j];
+					double num4 = normal[i];
+					num += num4 * PositionData[num3 + i];
+					num2 += num4 * center[i];
 				}
-				face.Offset = num;
-				face.IsNormalFlipped = true;
+				face.Offset = 0.0 - num;
+				num2 -= num;
+				if (num2 > 0.0)
+				{
+					for (int j = 0; j < Dimension; j++)
+					{
+						normal[j] = 0.0 - normal[j];
+					}
+					face.Offset = num;
+					face.IsNormalFlipped = true;
+				}
+				else
+				{
+					face.IsNormalFlipped = false;
+				}
+				return true;
 			}
-			else
-			{
-				face.IsNormalFlipped = false;
-			}
-			return true;
+			return false;
 		}
 
 		internal double GetVertexDistance(int v, ConvexFaceInternal f)

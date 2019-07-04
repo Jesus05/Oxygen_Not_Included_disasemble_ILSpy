@@ -159,9 +159,9 @@ public class ElementConverter : StateMachineComponent<ElementConverter.StatesIns
 
 	private float outputMultiplier = 1f;
 
-	private static StatusItem ElementConverterInput;
+	private static StatusItem ElementConverterInput = null;
 
-	private static StatusItem ElementConverterOutput;
+	private static StatusItem ElementConverterOutput = null;
 
 	public float OutputMultiplier
 	{
@@ -440,7 +440,7 @@ public class ElementConverter : StateMachineComponent<ElementConverter.StatesIns
 		machinerySpeedAttribute = attributes.Add(Db.Get().Attributes.MachinerySpeed);
 		if (ElementConverterInput == null)
 		{
-			ElementConverterInput = new StatusItem("ElementConverterInput", "BUILDING", string.Empty, StatusItem.IconType.Info, NotificationType.Neutral, true, OverlayModes.None.ID, true, 63486).SetResolveStringCallback(delegate(string str, object data)
+			ElementConverterInput = new StatusItem("ElementConverterInput", "BUILDING", "", StatusItem.IconType.Info, NotificationType.Neutral, true, OverlayModes.None.ID, true, 129022).SetResolveStringCallback(delegate(string str, object data)
 			{
 				ConsumedElement consumedElement = (ConsumedElement)data;
 				str = str.Replace("{ElementTypes}", consumedElement.Name);
@@ -450,7 +450,7 @@ public class ElementConverter : StateMachineComponent<ElementConverter.StatesIns
 		}
 		if (ElementConverterOutput == null)
 		{
-			ElementConverterOutput = new StatusItem("ElementConverterOutput", "BUILDING", string.Empty, StatusItem.IconType.Info, NotificationType.Neutral, true, OverlayModes.None.ID, true, 63486).SetResolveStringCallback(delegate(string str, object data)
+			ElementConverterOutput = new StatusItem("ElementConverterOutput", "BUILDING", "", StatusItem.IconType.Info, NotificationType.Neutral, true, OverlayModes.None.ID, true, 129022).SetResolveStringCallback(delegate(string str, object data)
 			{
 				OutputElement outputElement = (OutputElement)data;
 				str = str.Replace("{ElementTypes}", outputElement.Name);
@@ -492,31 +492,31 @@ public class ElementConverter : StateMachineComponent<ElementConverter.StatesIns
 	public List<Descriptor> GetDescriptors(BuildingDef def)
 	{
 		List<Descriptor> list = new List<Descriptor>();
-		if (!showDescriptors)
+		if (showDescriptors)
 		{
+			if (consumedElements != null)
+			{
+				ConsumedElement[] array = consumedElements;
+				for (int i = 0; i < array.Length; i++)
+				{
+					ConsumedElement consumedElement = array[i];
+					Descriptor item = default(Descriptor);
+					item.SetupDescriptor(string.Format(UI.BUILDINGEFFECTS.ELEMENTCONSUMED, consumedElement.Name, GameUtil.GetFormattedMass(consumedElement.massConsumptionRate, GameUtil.TimeSlice.PerSecond, GameUtil.MetricMassFormat.UseThreshold, true, "{0:0.##}")), string.Format(UI.BUILDINGEFFECTS.TOOLTIPS.ELEMENTCONSUMED, consumedElement.Name, GameUtil.GetFormattedMass(consumedElement.massConsumptionRate, GameUtil.TimeSlice.PerSecond, GameUtil.MetricMassFormat.UseThreshold, true, "{0:0.##}")), Descriptor.DescriptorType.Requirement);
+					list.Add(item);
+				}
+			}
+			if (outputElements != null)
+			{
+				OutputElement[] array2 = outputElements;
+				for (int j = 0; j < array2.Length; j++)
+				{
+					OutputElement outputElement = array2[j];
+					Descriptor item2 = default(Descriptor);
+					item2.SetupDescriptor(string.Format(UI.BUILDINGEFFECTS.ELEMENTEMITTED, outputElement.Name, GameUtil.GetFormattedMass(outputElement.massGenerationRate, GameUtil.TimeSlice.PerSecond, GameUtil.MetricMassFormat.UseThreshold, true, "{0:0.##}")), string.Format(UI.BUILDINGEFFECTS.TOOLTIPS.ELEMENTEMITTED, outputElement.Name, GameUtil.GetFormattedMass(outputElement.massGenerationRate, GameUtil.TimeSlice.PerSecond, GameUtil.MetricMassFormat.UseThreshold, true, "{0:0.##}")), Descriptor.DescriptorType.Effect);
+					list.Add(item2);
+				}
+			}
 			return list;
-		}
-		if (consumedElements != null)
-		{
-			ConsumedElement[] array = consumedElements;
-			for (int i = 0; i < array.Length; i++)
-			{
-				ConsumedElement consumedElement = array[i];
-				Descriptor item = default(Descriptor);
-				item.SetupDescriptor(string.Format(UI.BUILDINGEFFECTS.ELEMENTCONSUMED, consumedElement.Name, GameUtil.GetFormattedMass(consumedElement.massConsumptionRate, GameUtil.TimeSlice.PerSecond, GameUtil.MetricMassFormat.UseThreshold, true, "{0:0.##}")), string.Format(UI.BUILDINGEFFECTS.TOOLTIPS.ELEMENTCONSUMED, consumedElement.Name, GameUtil.GetFormattedMass(consumedElement.massConsumptionRate, GameUtil.TimeSlice.PerSecond, GameUtil.MetricMassFormat.UseThreshold, true, "{0:0.##}")), Descriptor.DescriptorType.Requirement);
-				list.Add(item);
-			}
-		}
-		if (outputElements != null)
-		{
-			OutputElement[] array2 = outputElements;
-			for (int j = 0; j < array2.Length; j++)
-			{
-				OutputElement outputElement = array2[j];
-				Descriptor item2 = default(Descriptor);
-				item2.SetupDescriptor(string.Format(UI.BUILDINGEFFECTS.ELEMENTEMITTED, outputElement.Name, GameUtil.GetFormattedMass(outputElement.massGenerationRate, GameUtil.TimeSlice.PerSecond, GameUtil.MetricMassFormat.UseThreshold, true, "{0:0.##}")), string.Format(UI.BUILDINGEFFECTS.TOOLTIPS.ELEMENTEMITTED, outputElement.Name, GameUtil.GetFormattedMass(outputElement.massGenerationRate, GameUtil.TimeSlice.PerSecond, GameUtil.MetricMassFormat.UseThreshold, true, "{0:0.##}")), Descriptor.DescriptorType.Effect);
-				list.Add(item2);
-			}
 		}
 		return list;
 	}

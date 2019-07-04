@@ -16,7 +16,7 @@ public class ConduitConsumer : KMonoBehaviour
 	public ConduitType conduitType;
 
 	[SerializeField]
-	public bool ignoreMinMassCheck;
+	public bool ignoreMinMassCheck = false;
 
 	[SerializeField]
 	public Tag capacityTag = GameTags.Any;
@@ -25,16 +25,16 @@ public class ConduitConsumer : KMonoBehaviour
 	public float capacityKG = float.PositiveInfinity;
 
 	[SerializeField]
-	public bool forceAlwaysSatisfied;
+	public bool forceAlwaysSatisfied = false;
 
 	[SerializeField]
-	public bool alwaysConsume;
+	public bool alwaysConsume = false;
 
 	[SerializeField]
 	public bool keepZeroMassObject = true;
 
 	[SerializeField]
-	public bool useSecondaryInput;
+	public bool useSecondaryInput = false;
 
 	[NonSerialized]
 	public bool isConsuming = true;
@@ -52,13 +52,15 @@ public class ConduitConsumer : KMonoBehaviour
 
 	public float consumptionRate = float.PositiveInfinity;
 
+	public SimHashes lastConsumedElement = SimHashes.Vacuum;
+
 	public static readonly Operational.Flag elementRequirementFlag = new Operational.Flag("elementRequired", Operational.Flag.Type.Requirement);
 
 	private HandleVector<int>.Handle partitionerEntry;
 
-	private bool satisfied;
+	private bool satisfied = false;
 
-	public WrongElementResult wrongElementResult;
+	public WrongElementResult wrongElementResult = WrongElementResult.Destroy;
 
 	public bool IsConnected
 	{
@@ -135,12 +137,12 @@ public class ConduitConsumer : KMonoBehaviour
 
 	private int GetInputCell()
 	{
-		if (useSecondaryInput)
+		if (!useSecondaryInput)
 		{
-			ISecondaryInput component = GetComponent<ISecondaryInput>();
-			return Grid.OffsetCell(building.NaturalBuildingCell(), component.GetSecondaryConduitOffset());
+			return building.GetUtilityInputCell();
 		}
-		return building.GetUtilityInputCell();
+		ISecondaryInput component = GetComponent<ISecondaryInput>();
+		return Grid.OffsetCell(building.NaturalBuildingCell(), component.GetSecondaryConduitOffset());
 	}
 
 	protected override void OnSpawn()
@@ -197,6 +199,7 @@ public class ConduitConsumer : KMonoBehaviour
 					{
 						ConduitFlow.ConduitContents conduitContents = conduit_mgr.RemoveElement(utilityCell, a);
 						num2 = conduitContents.mass;
+						lastConsumedElement = conduitContents.element;
 					}
 					Element element = ElementLoader.FindElementByHash(contents.element);
 					bool flag = element.HasTag(capacityTag);

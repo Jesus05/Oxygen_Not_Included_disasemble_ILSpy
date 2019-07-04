@@ -4,7 +4,7 @@ public class NavTactic
 {
 	private int _overlapPenalty = 3;
 
-	private int _preferredRange;
+	private int _preferredRange = 0;
 
 	private int _rangePenalty = 2;
 

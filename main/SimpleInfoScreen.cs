@@ -36,15 +36,17 @@ public class SimpleInfoScreen : TargetScreen
 
 		private LocText text;
 
+		private KButton button;
+
 		public Color color;
 
 		public TextStyleSetting style;
 
 		private FadeStage fadeStage;
 
-		private float fade;
+		private float fade = 0f;
 
-		private float fadeInTime;
+		private float fadeInTime = 0f;
 
 		private float fadeOutTime = 1.8f;
 
@@ -66,6 +68,8 @@ public class SimpleInfoScreen : TargetScreen
 			item.SetIcon(image);
 			widget.SetActive(true);
 			toolTip.OnToolTip = OnToolTip;
+			button = widget.GetComponentInChildren<KButton>();
+			button.onClick += OnClick;
 			fadeStage = (skip_fade ? FadeStage.WAIT : FadeStage.IN);
 			SimAndRenderScheduler.instance.Add(this, false);
 			Refresh();
@@ -122,7 +126,12 @@ public class SimpleInfoScreen : TargetScreen
 		private string OnToolTip()
 		{
 			item.ShowToolTip(toolTip, tooltipStyle);
-			return string.Empty;
+			return "";
+		}
+
+		private void OnClick()
+		{
+			item.OnClick();
 		}
 
 		public void Refresh()
@@ -475,8 +484,8 @@ public class SimpleInfoScreen : TargetScreen
 		});
 		attributeLabels.Clear();
 		vitalsPanel.gameObject.SetActive(amounts != null);
-		string text = string.Empty;
-		string text2 = string.Empty;
+		string text = "";
+		string text2 = "";
 		if (amounts != null)
 		{
 			vitalsContainer.selectedEntity = selectedTarget;
@@ -485,7 +494,7 @@ public class SimpleInfoScreen : TargetScreen
 			{
 				vitalsPanel.gameObject.SetActive((UnityEngine.Object)component8.GetPlanterStorage != (UnityEngine.Object)null);
 			}
-			Growing component9 = selectedTarget.gameObject.GetComponent<Growing>();
+			WiltCondition component9 = selectedTarget.gameObject.GetComponent<WiltCondition>();
 			if ((UnityEngine.Object)component9 != (UnityEngine.Object)null)
 			{
 				vitalsPanel.gameObject.SetActive(true);
@@ -493,7 +502,7 @@ public class SimpleInfoScreen : TargetScreen
 		}
 		if ((bool)component)
 		{
-			text = string.Empty;
+			text = "";
 		}
 		else if ((bool)component6)
 		{
@@ -521,7 +530,7 @@ public class SimpleInfoScreen : TargetScreen
 		else if ((UnityEngine.Object)component2 != (UnityEngine.Object)null)
 		{
 			Element element = ElementLoader.FindElementByHash(component2.ElementID);
-			text = ((element == null) ? string.Empty : element.FullDescription(false));
+			text = ((element == null) ? "" : element.FullDescription(false));
 		}
 		List<Descriptor> gameObjectEffects = GameUtil.GetGameObjectEffects(target, true);
 		bool flag = gameObjectEffects.Count > 0;
@@ -535,7 +544,7 @@ public class SimpleInfoScreen : TargetScreen
 		descriptionContainer.flavour.text = text2;
 		infoPanel.gameObject.SetActive((UnityEngine.Object)component == (UnityEngine.Object)null);
 		descriptionContainer.gameObject.SetActive(infoPanel.activeSelf);
-		descriptionContainer.flavour.gameObject.SetActive(text2 != string.Empty && text2 != "\n");
+		descriptionContainer.flavour.gameObject.SetActive(text2 != "" && text2 != "\n");
 		if (vitalsPanel.gameObject.activeSelf && amounts.Count == 0)
 		{
 			vitalsPanel.gameObject.SetActive(false);
@@ -563,7 +572,7 @@ public class SimpleInfoScreen : TargetScreen
 					List<FertilityModifier> forTag = Db.Get().FertilityModifiers.GetForTag(breedingChance.egg);
 					if (forTag.Count > 0)
 					{
-						string text = string.Empty;
+						string text = "";
 						foreach (FertilityModifier item in forTag)
 						{
 							text += string.Format(UI.DETAILTABS.EGG_CHANCES.CHANCE_MOD_FORMAT, item.GetTooltip());
@@ -736,7 +745,7 @@ public class SimpleInfoScreen : TargetScreen
 					DetailsPanelDrawer detailsPanelDrawer = stressDrawer;
 					string[] obj = new string[6];
 					ReportManager.ReportEntry.Note note2 = stressNotes[i];
-					obj[0] = ((!(note2.value > 0f)) ? string.Empty : UIConstants.ColorPrefixRed);
+					obj[0] = ((!(note2.value > 0f)) ? "" : UIConstants.ColorPrefixRed);
 					ReportManager.ReportEntry.Note note3 = stressNotes[i];
 					obj[1] = note3.note;
 					obj[2] = ": ";
@@ -744,14 +753,14 @@ public class SimpleInfoScreen : TargetScreen
 					obj[3] = Util.FormatTwoDecimalPlace(note4.value);
 					obj[4] = "%";
 					ReportManager.ReportEntry.Note note5 = stressNotes[i];
-					obj[5] = ((!(note5.value > 0f)) ? string.Empty : UIConstants.ColorSuffix);
+					obj[5] = ((!(note5.value > 0f)) ? "" : UIConstants.ColorSuffix);
 					detailsPanelDrawer.NewLabel(string.Concat(obj));
 					float num3 = num;
 					ReportManager.ReportEntry.Note note6 = stressNotes[i];
 					num = num3 + note6.value;
 				}
 			}
-			stressDrawer.NewLabel(((!(num > 0f)) ? string.Empty : UIConstants.ColorPrefixRed) + string.Format(UI.DETAILTABS.DETAILS.NET_STRESS, Util.FormatTwoDecimalPlace(num)) + ((!(num > 0f)) ? string.Empty : UIConstants.ColorSuffix));
+			stressDrawer.NewLabel(((!(num > 0f)) ? "" : UIConstants.ColorPrefixRed) + string.Format(UI.DETAILTABS.DETAILS.NET_STRESS, Util.FormatTwoDecimalPlace(num)) + ((!(num > 0f)) ? "" : UIConstants.ColorSuffix));
 			stressDrawer.EndDrawing();
 		}
 	}

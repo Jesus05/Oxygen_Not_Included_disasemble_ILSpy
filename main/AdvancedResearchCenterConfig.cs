@@ -49,7 +49,6 @@ public class AdvancedResearchCenterConfig : IBuildingConfig
 		manualDeliveryKG.requestedItemTag = INPUT_MATERIAL;
 		manualDeliveryKG.refillMass = 150f;
 		manualDeliveryKG.capacity = 750f;
-		manualDeliveryKG.choreTags = GameTags.ChoreTypes.ResearchChores;
 		manualDeliveryKG.choreTypeIDHash = Db.Get().ChoreTypes.ResearchFetch.IdHash;
 		ResearchCenter researchCenter = go.AddOrGet<ResearchCenter>();
 		researchCenter.overrideAnims = new KAnimFile[1]

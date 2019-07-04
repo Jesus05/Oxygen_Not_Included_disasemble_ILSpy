@@ -22,11 +22,11 @@ public class Equipment : Assignables
 	{
 		IAssignableIdentity assignableIdentity = GetAssignableIdentity();
 		MinionAssignablesProxy minionAssignablesProxy = (MinionAssignablesProxy)assignableIdentity;
-		if ((bool)minionAssignablesProxy)
+		if (!(bool)minionAssignablesProxy)
 		{
-			return minionAssignablesProxy.GetTargetGameObject();
+			return null;
 		}
-		return null;
+		return minionAssignablesProxy.GetTargetGameObject();
 	}
 
 	protected override void OnPrefabInit()
@@ -89,6 +89,7 @@ public class Equipment : Assignables
 		}
 		equippable.transform.parent = slot.gameObject.transform;
 		equippable.transform.SetLocalPosition(Vector3.zero);
+		SetEquippableStoredModifiers(equippable, true);
 		equippable.OnEquip(slot);
 		if (refreshHandle.TimeRemaining > 0f)
 		{
@@ -150,6 +151,7 @@ public class Equipment : Assignables
 						component3.Drop(equippable.gameObject, true);
 					}
 				}
+				SetEquippableStoredModifiers(equippable, false);
 				equippable.transform.parent = null;
 				equippable.transform.SetPosition(targetGameObject.transform.GetPosition() + Vector3.up / 2f);
 				KBatchedAnimController component4 = equippable.GetComponent<KBatchedAnimController>();
@@ -201,5 +203,12 @@ public class Equipment : Assignables
 				slot.assignable.Unassign();
 			}
 		}
+	}
+
+	private void SetEquippableStoredModifiers(Equippable equippable, bool isStoring)
+	{
+		GameObject gameObject = equippable.gameObject;
+		Storage.MakeItemTemperatureInsulated(gameObject, isStoring, false);
+		Storage.MakeItemInvisible(gameObject, isStoring, false);
 	}
 }

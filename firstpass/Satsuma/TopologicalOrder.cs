@@ -48,12 +48,12 @@ namespace Satsuma
 			protected override bool BackArc(Node node, Arc arc)
 			{
 				Node item = base.Graph.Other(arc, node);
-				if (!exited.Contains(item))
+				if (exited.Contains(item))
 				{
-					Parent.Acyclic = false;
-					return false;
+					return true;
 				}
-				return true;
+				Parent.Acyclic = false;
+				return false;
 			}
 
 			protected override void StopSearch()

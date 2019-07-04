@@ -66,7 +66,7 @@ public class SupermaterialRefineryConfig : IBuildingConfig
 		ComplexRecipe complexRecipe = new ComplexRecipe(id, array, array2);
 		complexRecipe.time = 80f;
 		complexRecipe.description = STRINGS.BUILDINGS.PREFABS.SUPERMATERIALREFINERY.SUPERCOOLANT_RECIPE_DESCRIPTION;
-		complexRecipe.useResultAsDescription = true;
+		complexRecipe.nameDisplay = ComplexRecipe.RecipeNameDisplay.Result;
 		complexRecipe.fabricators = new List<Tag>
 		{
 			TagManager.Create("SupermaterialRefinery")
@@ -88,7 +88,7 @@ public class SupermaterialRefineryConfig : IBuildingConfig
 		complexRecipe = new ComplexRecipe(id2, array3, array4);
 		complexRecipe.time = 80f;
 		complexRecipe.description = STRINGS.BUILDINGS.PREFABS.SUPERMATERIALREFINERY.SUPERINSULATOR_RECIPE_DESCRIPTION;
-		complexRecipe.useResultAsDescription = true;
+		complexRecipe.nameDisplay = ComplexRecipe.RecipeNameDisplay.Result;
 		complexRecipe.fabricators = new List<Tag>
 		{
 			TagManager.Create("SupermaterialRefinery")
@@ -107,7 +107,7 @@ public class SupermaterialRefineryConfig : IBuildingConfig
 		complexRecipe = new ComplexRecipe(id3, array5, array6);
 		complexRecipe.time = 80f;
 		complexRecipe.description = STRINGS.BUILDINGS.PREFABS.SUPERMATERIALREFINERY.TEMPCONDUCTORSOLID_RECIPE_DESCRIPTION;
-		complexRecipe.useResultAsDescription = true;
+		complexRecipe.nameDisplay = ComplexRecipe.RecipeNameDisplay.Result;
 		complexRecipe.fabricators = new List<Tag>
 		{
 			TagManager.Create("SupermaterialRefinery")
@@ -126,7 +126,7 @@ public class SupermaterialRefineryConfig : IBuildingConfig
 		complexRecipe = new ComplexRecipe(id4, array7, array8);
 		complexRecipe.time = 80f;
 		complexRecipe.description = STRINGS.BUILDINGS.PREFABS.SUPERMATERIALREFINERY.VISCOGEL_RECIPE_DESCRIPTION;
-		complexRecipe.useResultAsDescription = true;
+		complexRecipe.nameDisplay = ComplexRecipe.RecipeNameDisplay.Result;
 		complexRecipe.fabricators = new List<Tag>
 		{
 			TagManager.Create("SupermaterialRefinery")
@@ -135,7 +135,7 @@ public class SupermaterialRefineryConfig : IBuildingConfig
 
 	public override void DoPostConfigureComplete(GameObject go)
 	{
-		go.GetComponent<KPrefabID>().prefabInitFn += delegate(GameObject game_object)
+		go.GetComponent<KPrefabID>().prefabSpawnFn += delegate(GameObject game_object)
 		{
 			ComplexFabricatorWorkable component = game_object.GetComponent<ComplexFabricatorWorkable>();
 			component.AttributeConverter = Db.Get().AttributeConverters.MachinerySpeed;

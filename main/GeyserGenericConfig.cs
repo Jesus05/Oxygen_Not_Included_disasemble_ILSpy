@@ -140,6 +140,8 @@ public class GeyserGenericConfig : IMultiEntityConfig
 
 	public const string FilthyWater = "filthy_water";
 
+	public const string SaltWater = "salt_water";
+
 	public const string SmallVolcano = "small_volcano";
 
 	public const string BigVolcano = "big_volcano";
@@ -247,6 +249,11 @@ public class GeyserGenericConfig : IMultiEntityConfig
 		list.Add(new GeyserPrefabParams("geyser_liquid_water_hot_kanim", 4, 2, new GeyserConfigurator.GeyserType("hot_water", SimHashes.Water, 368.15f, 500f, 5000f, 500f, 60f, 1140f, 0.1f, 0.9f, 15000f, 135000f, 0.4f, 0.8f)));
 		list.Add(new GeyserPrefabParams("geyser_liquid_water_slush_kanim", 4, 2, new GeyserConfigurator.GeyserType("slush_water", SimHashes.DirtyWater, 263.15f, 500f, 5000f, 500f, 60f, 1140f, 0.1f, 0.9f, 15000f, 135000f, 0.4f, 0.8f)));
 		list.Add(new GeyserPrefabParams("geyser_liquid_water_filthy_kanim", 4, 2, new GeyserConfigurator.GeyserType("filthy_water", SimHashes.DirtyWater, 303.15f, 500f, 5000f, 500f, 60f, 1140f, 0.1f, 0.9f, 15000f, 135000f, 0.4f, 0.8f).AddDisease(new SimUtil.DiseaseInfo
+		{
+			idx = Db.Get().Diseases.GetIndex("FoodPoisoning"),
+			count = 20000
+		})));
+		list.Add(new GeyserPrefabParams("geyser_liquid_water_filthy_kanim", 4, 2, new GeyserConfigurator.GeyserType("salt_water", SimHashes.SaltWater, 303.15f, 500f, 5000f, 500f, 60f, 1140f, 0.1f, 0.9f, 15000f, 135000f, 0.4f, 0.8f).AddDisease(new SimUtil.DiseaseInfo
 		{
 			idx = Db.Get().Diseases.GetIndex("FoodPoisoning"),
 			count = 20000

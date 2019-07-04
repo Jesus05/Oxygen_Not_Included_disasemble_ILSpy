@@ -120,15 +120,15 @@ namespace Klei.AI
 
 		private const int DISEASE_AMOUNT = 1000;
 
-		private const float DEATH_TIMER = 4800f;
-
 		public const string ID = "SlimeSickness";
+
+		public const string RECOVERY_ID = "SlimeSicknessRecovery";
 
 		public SlimeSickness()
 			: base("SlimeSickness", SicknessType.Pathogen, Severity.Minor, 0.00025f, new List<InfectionVector>
 			{
 				InfectionVector.Inhalation
-			}, 2220f)
+			}, 2220f, "SlimeSicknessRecovery")
 		{
 			AddSicknessComponent(new CommonSickEffectSickness());
 			AddSicknessComponent(new AttributeModifierSickness(new AttributeModifier[2]

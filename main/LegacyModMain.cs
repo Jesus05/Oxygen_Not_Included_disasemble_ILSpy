@@ -70,7 +70,7 @@ public class LegacyModMain
 			}
 		}
 		list.Sort((Entry x, Entry y) => y.count.CompareTo(x.count));
-		string text = string.Empty;
+		string text = "";
 		foreach (Entry item2 in list)
 		{
 			Entry current2 = item2;
@@ -157,7 +157,7 @@ public class LegacyModMain
 
 	private static void ConfigElements()
 	{
-		ElementInfo[] array = new ElementInfo[18]
+		ElementInfo[] array = new ElementInfo[19]
 		{
 			new ElementInfo
 			{
@@ -180,6 +180,11 @@ public class LegacyModMain
 				id = SimHashes.Gold,
 				decor = 0.5f,
 				overheatMod = 50f
+			},
+			new ElementInfo
+			{
+				id = SimHashes.Lead,
+				overheatMod = -20f
 			},
 			new ElementInfo
 			{

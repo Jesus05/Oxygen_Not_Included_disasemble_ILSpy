@@ -5,16 +5,16 @@ using UnityEngine;
 
 public static class TemplateCache
 {
-	private static string baseTemplatePath;
+	private static string baseTemplatePath = null;
 
-	private static Dictionary<string, TemplateContainer> templates;
+	private static Dictionary<string, TemplateContainer> templates = null;
 
-	private const string defaultAssetFolder = "bases/";
+	private const string defaultAssetFolder = "bases";
 
 	public static void Init()
 	{
 		templates = new Dictionary<string, TemplateContainer>();
-		baseTemplatePath = Application.streamingAssetsPath + "/templates";
+		baseTemplatePath = FileSystem.Normalize(Path.Combine(Application.streamingAssetsPath, "templates"));
 	}
 
 	public static void Clear()
@@ -28,14 +28,14 @@ public static class TemplateCache
 		return baseTemplatePath;
 	}
 
-	public static TemplateContainer GetBaseStartingTemplate()
+	public static TemplateContainer GetStartingBaseTemplate(string startingTemplateName)
 	{
+		DebugUtil.Assert(startingTemplateName != null, "Tried loading a starting template named ", startingTemplateName);
 		if (baseTemplatePath == null)
 		{
 			Init();
 		}
-		string filename = Path.Combine(baseTemplatePath, "bases/startingBase.yaml");
-		return YamlIO<TemplateContainer>.LoadFile(filename, null);
+		return GetTemplate(Path.Combine("bases", startingTemplateName));
 	}
 
 	public static TemplateContainer GetTemplate(string templatePath)
@@ -46,8 +46,8 @@ public static class TemplateCache
 		}
 		if (templates[templatePath] == null)
 		{
-			string text = Path.Combine(baseTemplatePath, templatePath);
-			TemplateContainer templateContainer = YamlIO<TemplateContainer>.LoadFile(text + ".yaml", null);
+			string text = FileSystem.Normalize(Path.Combine(baseTemplatePath, templatePath));
+			TemplateContainer templateContainer = YamlIO.LoadFile<TemplateContainer>(text + ".yaml", null, null);
 			if (templateContainer == null)
 			{
 				Debug.LogWarning("Missing template [" + text + ".yaml]");
@@ -57,42 +57,47 @@ public static class TemplateCache
 		return templates[templatePath];
 	}
 
-	public static List<string> CollectBaseTemplateNames(string folder = "bases/")
+	private static void GetAssetPaths(string folder, List<string> paths)
+	{
+		FileSystem.GetFiles(FileSystem.Normalize(Path.Combine(baseTemplatePath, folder)), "*.yaml", paths);
+	}
+
+	public static List<string> CollectBaseTemplateNames(string folder = "bases")
 	{
 		List<string> list = new List<string>();
-		string path = Path.Combine(baseTemplatePath, folder);
-		string[] files = Directory.GetFiles(path, "*.yaml");
-		string[] array = files;
-		foreach (string path2 in array)
+		ListPool<string, TemplateContainer>.PooledList pooledList = ListPool<string, TemplateContainer>.Allocate();
+		GetAssetPaths(folder, pooledList);
+		foreach (string item in pooledList)
 		{
-			string text = folder + Path.GetFileNameWithoutExtension(path2);
+			string text = FileSystem.Normalize(Path.Combine(folder, Path.GetFileNameWithoutExtension(item)));
 			list.Add(text);
 			if (!templates.ContainsKey(text))
 			{
 				templates.Add(text, null);
 			}
 		}
+		pooledList.Recycle();
 		list.Sort((string x, string y) => x.CompareTo(y));
 		return list;
 	}
 
-	public static List<TemplateContainer> CollectBaseTemplateAssets(string folder = "bases/")
+	public static List<TemplateContainer> CollectBaseTemplateAssets(string folder = "bases")
 	{
 		List<TemplateContainer> list = new List<TemplateContainer>();
-		string path = Path.Combine(baseTemplatePath, folder);
-		string[] files = Directory.GetFiles(path, "*.yaml");
-		string[] array = files;
-		foreach (string filename in array)
+		ListPool<string, TemplateContainer>.PooledList pooledList = ListPool<string, TemplateContainer>.Allocate();
+		GetAssetPaths(folder, pooledList);
+		foreach (string item in pooledList)
 		{
-			list.Add(YamlIO<TemplateContainer>.LoadFile(filename, null));
+			list.Add(YamlIO.LoadFile<TemplateContainer>(item, null, null));
 		}
+		pooledList.Recycle();
 		list.Sort(delegate(TemplateContainer x, TemplateContainer y)
 		{
-			if (y.priority - x.priority == 0)
+			if (y.priority - x.priority != 0)
 			{
-				return x.name.CompareTo(y.name);
+				return y.priority - x.priority;
 			}
-			return y.priority - x.priority;
+			return x.name.CompareTo(y.name);
 		});
 		return list;
 	}

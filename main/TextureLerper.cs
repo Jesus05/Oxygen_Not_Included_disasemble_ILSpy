@@ -4,7 +4,7 @@ using UnityEngine.Rendering;
 
 public class TextureLerper
 {
-	private static int offsetCounter;
+	private static int offsetCounter = 0;
 
 	public string name;
 
@@ -126,6 +126,10 @@ public class TextureLerper
 		}
 		float value = Mathf.Min(num / Mathf.Max(BlendDt - BlendTime, 0f), 1f);
 		BlendTime += num;
+		if (GameUtil.IsCapturingTimeLapse())
+		{
+			value = 1f;
+		}
 		source = BlendTextures[BlendIdx];
 		BlendIdx = (BlendIdx + 1) % 2;
 		dest = BlendTextures[BlendIdx];
@@ -140,9 +144,13 @@ public class TextureLerper
 
 	private Vector4 GetVisibleCellRange()
 	{
-		Camera main = Camera.main;
+		Camera camera = Camera.main;
+		if (GameUtil.IsCapturingTimeLapse())
+		{
+			camera = Game.Instance.timelapser.captureCamera;
+		}
 		float cellSizeInMeters = Grid.CellSizeInMeters;
-		Ray ray = main.ViewportPointToRay(Vector3.zero);
+		Ray ray = camera.ViewportPointToRay(Vector3.zero);
 		Vector3 origin = ray.origin;
 		float z = origin.z;
 		Vector3 direction = ray.direction;
@@ -153,7 +161,7 @@ public class TextureLerper
 		point = Grid.CellToPos(cell, num, num, num);
 		int num2 = Math.Max(0, (int)(point.x / cellSizeInMeters));
 		int num3 = Math.Max(0, (int)(point.y / cellSizeInMeters));
-		ray = main.ViewportPointToRay(Vector3.one);
+		ray = camera.ViewportPointToRay(Vector3.one);
 		Vector3 origin2 = ray.origin;
 		float z2 = origin2.z;
 		Vector3 direction2 = ray.direction;

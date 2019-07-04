@@ -10,7 +10,7 @@ public class UIDupeRandomizer : MonoBehaviour
 	{
 		public string anim_name;
 
-		public KBatchedAnimController minon;
+		public List<KBatchedAnimController> minions;
 
 		public float minSecondsBetweenAction;
 
@@ -19,10 +19,6 @@ public class UIDupeRandomizer : MonoBehaviour
 		public float lastWaitTime;
 
 		public KAnimFile curBody;
-
-		public KAnimFile target_minion_anim;
-
-		public bool overrideSet;
 	}
 
 	public KAnimFile head_default_anim;
@@ -37,7 +33,7 @@ public class UIDupeRandomizer : MonoBehaviour
 
 	public AnimChoice[] anims;
 
-	private AccessorySlots slots;
+	private AccessorySlots slots = null;
 
 	protected virtual void Start()
 	{
@@ -45,21 +41,23 @@ public class UIDupeRandomizer : MonoBehaviour
 		for (int i = 0; i < anims.Length; i++)
 		{
 			anims[i].curBody = null;
-			anims[i].overrideSet = false;
 			GetNewBody(i);
 		}
 	}
 
 	protected void GetNewBody(int minion_idx)
 	{
-		Apply(anims[minion_idx].minon, ref anims[minion_idx]);
+		int idx = UnityEngine.Random.Range(0, Db.Get().Personalities.Count);
+		Personality personality = Db.Get().Personalities[idx];
+		foreach (KBatchedAnimController minion in anims[minion_idx].minions)
+		{
+			Apply(minion, personality);
+		}
 	}
 
-	private void Apply(KBatchedAnimController dupe, ref AnimChoice anim)
+	private void Apply(KBatchedAnimController dupe, Personality personality)
 	{
-		int idx = UnityEngine.Random.Range(0, Db.Get().Personalities.Count);
-		Personality p = Db.Get().Personalities[idx];
-		KCompBuilder.BodyData bodyData = MinionStartingStats.CreateBodyData(p);
+		KCompBuilder.BodyData bodyData = MinionStartingStats.CreateBodyData(personality);
 		SymbolOverrideController component = dupe.GetComponent<SymbolOverrideController>();
 		component.RemoveAllSymbolOverrides(0);
 		AddAccessory(dupe, slots.Hair.Lookup(bodyData.hair));
@@ -97,25 +95,20 @@ public class UIDupeRandomizer : MonoBehaviour
 			dupe.SetSymbolVisiblity(Db.Get().AccessorySlots.HatHair.targetSymbolId, false);
 			dupe.SetSymbolVisiblity(Db.Get().AccessorySlots.Hat.targetSymbolId, false);
 		}
-		if (!anim.overrideSet)
-		{
-			dupe.AddAnimOverrides(anim.target_minion_anim, 0f);
-			anim.overrideSet = true;
-		}
 	}
 
 	public static KAnimHashedString AddAccessory(KBatchedAnimController minion, Accessory accessory)
 	{
-		if (accessory != null)
+		if (accessory == null)
 		{
-			SymbolOverrideController component = minion.GetComponent<SymbolOverrideController>();
-			DebugUtil.Assert((UnityEngine.Object)component != (UnityEngine.Object)null, minion.name + " is missing symbol override controller");
-			component.TryRemoveSymbolOverride(accessory.slot.targetSymbolId, 0);
-			component.AddSymbolOverride(accessory.slot.targetSymbolId, accessory.symbol, 0);
-			minion.SetSymbolVisiblity(accessory.slot.targetSymbolId, true);
-			return accessory.slot.targetSymbolId;
+			return HashedString.Invalid;
 		}
-		return HashedString.Invalid;
+		SymbolOverrideController component = minion.GetComponent<SymbolOverrideController>();
+		DebugUtil.Assert((UnityEngine.Object)component != (UnityEngine.Object)null, minion.name + " is missing symbol override controller");
+		component.TryRemoveSymbolOverride(accessory.slot.targetSymbolId, 0);
+		component.AddSymbolOverride(accessory.slot.targetSymbolId, accessory.symbol, 0);
+		minion.SetSymbolVisiblity(accessory.slot.targetSymbolId, true);
+		return accessory.slot.targetSymbolId;
 	}
 
 	public KAnimHashedString AddRandomAccessory(KBatchedAnimController minion, List<Accessory> choices)

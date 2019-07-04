@@ -14,7 +14,7 @@ public class ResourceCategoryScreen : KScreen
 
 	private Tag[] DisplayedCategoryKeys;
 
-	private int categoryUpdatePacer;
+	private int categoryUpdatePacer = 0;
 
 	public static void DestroyInstance()
 	{

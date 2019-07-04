@@ -63,7 +63,7 @@ namespace YamlDotNet.Serialization.EventEmitters
 				break;
 			case TypeCode.Empty:
 				eventInfo.Tag = "tag:yaml.org,2002:null";
-				eventInfo.RenderedValue = string.Empty;
+				eventInfo.RenderedValue = "";
 				break;
 			default:
 				if (eventInfo.Source.Type != typeof(TimeSpan))

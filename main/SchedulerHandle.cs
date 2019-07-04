@@ -8,11 +8,11 @@ public struct SchedulerHandle
 	{
 		get
 		{
-			if (!IsValid)
+			if (IsValid)
 			{
-				return -1f;
+				return entry.time - scheduler.GetTime();
 			}
-			return entry.time - scheduler.GetTime();
+			return -1f;
 		}
 	}
 

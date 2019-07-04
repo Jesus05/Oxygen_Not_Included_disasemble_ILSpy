@@ -11,7 +11,7 @@ public class Checkpoint : StateMachineComponent<Checkpoint.SMInstance>
 
 		private Navigator reactor_navigator;
 
-		private bool rotated;
+		private bool rotated = false;
 
 		public CheckpointReactable(Checkpoint checkpoint)
 			: base(checkpoint.gameObject, "CheckpointReactable", Db.Get().ChoreTypes.Checkpoint, 1, 1, false, 0f, 0f, float.PositiveInfinity)
@@ -23,24 +23,24 @@ public class Checkpoint : StateMachineComponent<Checkpoint.SMInstance>
 
 		public override bool InternalCanBegin(GameObject new_reactor, Navigator.ActiveTransition transition)
 		{
-			if ((UnityEngine.Object)reactor != (UnityEngine.Object)null)
+			if (!((UnityEngine.Object)reactor != (UnityEngine.Object)null))
 			{
-				return false;
-			}
-			if ((UnityEngine.Object)checkpoint == (UnityEngine.Object)null)
-			{
+				if (!((UnityEngine.Object)checkpoint == (UnityEngine.Object)null))
+				{
+					if (checkpoint.RedLight)
+					{
+						if (!rotated)
+						{
+							return transition.x > 0;
+						}
+						return transition.x < 0;
+					}
+					return false;
+				}
 				Cleanup();
 				return false;
 			}
-			if (!checkpoint.RedLight)
-			{
-				return false;
-			}
-			if (rotated)
-			{
-				return transition.x < 0;
-			}
-			return transition.x > 0;
+			return false;
 		}
 
 		protected override void InternalBegin()
@@ -164,7 +164,7 @@ public class Checkpoint : StateMachineComponent<Checkpoint.SMInstance>
 		base.smi.StartSM();
 		if (infoStatusItem_Logic == null)
 		{
-			infoStatusItem_Logic = new StatusItem("CheckpointLogic", "BUILDING", string.Empty, StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, true, 63486);
+			infoStatusItem_Logic = new StatusItem("CheckpointLogic", "BUILDING", "", StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, true, 129022);
 			infoStatusItem_Logic.resolveStringCallback = ResolveInfoStatusItem_Logic;
 		}
 		Refresh(redLight);

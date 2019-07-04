@@ -13,9 +13,9 @@ public class ResourceRemainingDisplayScreen : KScreen
 
 	private List<Tag> selected_elements = new List<Tag>();
 
-	private int numberOfPendingConstructions;
+	private int numberOfPendingConstructions = 0;
 
-	private int displayedConstructionCostMultiplier;
+	private int displayedConstructionCostMultiplier = 0;
 
 	private RectTransform rect;
 
@@ -73,7 +73,7 @@ public class ResourceRemainingDisplayScreen : KScreen
 			}
 			if (displayedConstructionCostMultiplier == numberOfPendingConstructions)
 			{
-				label.text = string.Empty;
+				label.text = "";
 			}
 			else
 			{
@@ -84,7 +84,7 @@ public class ResourceRemainingDisplayScreen : KScreen
 
 	public string GetString()
 	{
-		string text = string.Empty;
+		string text = "";
 		if (selected_elements != null && currentRecipe != null)
 		{
 			for (int i = 0; i < currentRecipe.Ingredients.Count; i++)

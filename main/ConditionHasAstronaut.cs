@@ -15,38 +15,36 @@ public class ConditionHasAstronaut : RocketLaunchCondition
 		return null;
 	}
 
-	public override bool EvaluateLaunchCondition()
+	public override LaunchStatus EvaluateLaunchCondition()
 	{
 		MinionStorage component = module.GetComponent<MinionStorage>();
 		List<MinionStorage.Info> storedMinionInfo = component.GetStoredMinionInfo();
-		int result;
 		if (storedMinionInfo.Count > 0)
 		{
 			MinionStorage.Info info = storedMinionInfo[0];
-			result = ((info.serializedMinion != null) ? 1 : 0);
+			if (info.serializedMinion != null)
+			{
+				return LaunchStatus.Ready;
+			}
 		}
-		else
-		{
-			result = 0;
-		}
-		return (byte)result != 0;
+		return LaunchStatus.Failure;
 	}
 
 	public override string GetLaunchStatusMessage(bool ready)
 	{
-		if (ready)
+		if (!ready)
 		{
-			return UI.STARMAP.LAUNCHCHECKLIST.ASTRONAUT_TITLE;
+			return UI.STARMAP.LAUNCHCHECKLIST.ASTRONAUGHT;
 		}
-		return UI.STARMAP.LAUNCHCHECKLIST.ASTRONAUGHT;
+		return UI.STARMAP.LAUNCHCHECKLIST.ASTRONAUT_TITLE;
 	}
 
 	public override string GetLaunchStatusTooltip(bool ready)
 	{
-		if (ready)
+		if (!ready)
 		{
-			return UI.STARMAP.LAUNCHCHECKLIST.HASASTRONAUT;
+			return UI.STARMAP.LAUNCHCHECKLIST.ASTRONAUGHT;
 		}
-		return UI.STARMAP.LAUNCHCHECKLIST.ASTRONAUGHT;
+		return UI.STARMAP.LAUNCHCHECKLIST.HASASTRONAUT;
 	}
 }

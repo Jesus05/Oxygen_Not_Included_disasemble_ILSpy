@@ -128,7 +128,7 @@ public class RoomType : Resource
 		{
 			str = str + "\n    • " + ROOMS.CRITERIA.NEUTRAL_TYPE;
 		}
-		str += ((primary_constraint != null) ? ("\n    • " + primary_constraint.name) : string.Empty);
+		str += ((primary_constraint != null) ? ("\n    • " + primary_constraint.name) : "");
 		if (this.additional_constraints != null)
 		{
 			RoomConstraints.Constraint[] additional_constraints = this.additional_constraints;

@@ -13,13 +13,13 @@ namespace KMod
 
 		private Ionic.Zip.ZipFile zipfile;
 
-		private ZipFileSystem file_system;
+		private ZipFileDirectory file_system;
 
 		public ZipFile(string filename)
 		{
 			this.filename = filename;
 			zipfile = Ionic.Zip.ZipFile.Read(filename);
-			file_system = new ZipFileSystem(zipfile.Name, zipfile, Application.streamingAssetsPath);
+			file_system = new ZipFileDirectory(zipfile.Name, zipfile, Application.streamingAssetsPath);
 		}
 
 		public string GetRoot()
@@ -37,7 +37,7 @@ namespace KMod
 			HashSetPool<string, ZipFile>.PooledHashSet pooledHashSet = HashSetPool<string, ZipFile>.Allocate();
 			foreach (ZipEntry item in zipfile)
 			{
-				string[] array = FSUtil.Normalize(item.FileName).Split('/');
+				string[] array = FileSystem.Normalize(item.FileName).Split('/');
 				string text = array[0];
 				if (pooledHashSet.Add(text))
 				{
@@ -51,7 +51,7 @@ namespace KMod
 			pooledHashSet.Recycle();
 		}
 
-		public IFileSystem GetFileSystem()
+		public IFileDirectory GetFileSystem()
 		{
 			return file_system;
 		}
@@ -74,7 +74,7 @@ namespace KMod
 				}
 				if (flag)
 				{
-					string path2 = FSUtil.Normalize(Path.Combine(path, entry.FileName));
+					string path2 = FileSystem.Normalize(Path.Combine(path, entry.FileName));
 					string directoryName = Path.GetDirectoryName(path2);
 					if (string.IsNullOrEmpty(directoryName) || FileUtil.CreateDirectory(directoryName, 0))
 					{
@@ -94,21 +94,21 @@ namespace KMod
 		public string Read(string relative_path)
 		{
 			ICollection<ZipEntry> collection = zipfile.SelectEntries(relative_path);
-			if (collection.Count == 0)
+			if (collection.Count != 0)
 			{
-				return string.Empty;
-			}
-			using (IEnumerator<ZipEntry> enumerator = collection.GetEnumerator())
-			{
-				if (enumerator.MoveNext())
+				using (IEnumerator<ZipEntry> enumerator = collection.GetEnumerator())
 				{
-					ZipEntry current = enumerator.Current;
-					using (MemoryStream memoryStream = new MemoryStream((int)current.UncompressedSize))
+					if (enumerator.MoveNext())
 					{
-						current.Extract(memoryStream);
-						return Encoding.UTF8.GetString(memoryStream.GetBuffer());
+						ZipEntry current = enumerator.Current;
+						using (MemoryStream memoryStream = new MemoryStream((int)current.UncompressedSize))
+						{
+							current.Extract(memoryStream);
+							return Encoding.UTF8.GetString(memoryStream.GetBuffer());
+						}
 					}
 				}
+				return string.Empty;
 			}
 			return string.Empty;
 		}

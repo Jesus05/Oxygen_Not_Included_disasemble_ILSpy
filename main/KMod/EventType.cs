@@ -13,7 +13,9 @@ namespace KMod
 		Installed,
 		Uninstalled,
 		VersionUpdate,
-		ContentDeleted,
-		RestartRequested
+		AvailableContentChanged,
+		RestartRequested,
+		BadWorldGen,
+		Deactivated
 	}
 }

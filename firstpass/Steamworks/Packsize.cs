@@ -22,11 +22,11 @@ namespace Steamworks
 		{
 			int num = Marshal.SizeOf(typeof(ValvePackingSentinel_t));
 			int num2 = Marshal.SizeOf(typeof(RemoteStorageEnumerateUserSubscribedFilesResult_t));
-			if (num != 32 || num2 != 616)
+			if (num == 32 && num2 == 616)
 			{
-				return false;
+				return true;
 			}
-			return true;
+			return false;
 		}
 	}
 }

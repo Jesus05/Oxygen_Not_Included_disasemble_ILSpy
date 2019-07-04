@@ -20,10 +20,8 @@ public class RocketModule : KMonoBehaviour
 
 	private string rocket_module_bg_anim = "on";
 
-	private string rocket_gantry_bg_prefab = "RocketGantryBG";
-
 	[SerializeField]
-	private KAnimFile bgAnimFile;
+	private KAnimFile bgAnimFile = null;
 
 	protected string parentRocketName = UI.STARMAP.DEFAULT_NAME;
 
@@ -87,32 +85,62 @@ public class RocketModule : KMonoBehaviour
 		Subscribe(-1056989049, OnLaunchDelegate);
 		Subscribe(238242047, OnLandDelegate);
 		Subscribe(1502190696, DEBUG_OnDestroyDelegate);
+		FixSorting();
+		AttachableBuilding component2 = GetComponent<AttachableBuilding>();
+		component2.onAttachmentNetworkChanged = (Action<AttachableBuilding>)Delegate.Combine(component2.onAttachmentNetworkChanged, new Action<AttachableBuilding>(OnAttachmentNetworkChanged));
 		if ((UnityEngine.Object)bgAnimFile != (UnityEngine.Object)null)
 		{
 			AddBGGantry();
 		}
 	}
 
+	public void FixSorting()
+	{
+		int num = 0;
+		AttachableBuilding component = GetComponent<AttachableBuilding>();
+		while ((UnityEngine.Object)component != (UnityEngine.Object)null)
+		{
+			BuildingAttachPoint attachedTo = component.GetAttachedTo();
+			if (!((UnityEngine.Object)attachedTo != (UnityEngine.Object)null))
+			{
+				break;
+			}
+			component = attachedTo.GetComponent<AttachableBuilding>();
+			num++;
+		}
+		Vector3 localPosition = base.transform.GetLocalPosition();
+		localPosition.z = Grid.GetLayerZ(Grid.SceneLayer.BuildingFront) - (float)num * 0.01f;
+		base.transform.SetLocalPosition(localPosition);
+		KBatchedAnimController component2 = GetComponent<KBatchedAnimController>();
+		component2.enabled = false;
+		component2.enabled = true;
+	}
+
+	private void OnAttachmentNetworkChanged(AttachableBuilding ab)
+	{
+		FixSorting();
+	}
+
 	private void AddBGGantry()
 	{
 		KAnimControllerBase component = GetComponent<KAnimControllerBase>();
-		GameObject gameObject = UnityEngine.Object.Instantiate(Assets.GetPrefab(rocket_gantry_bg_prefab));
+		GameObject gameObject = new GameObject();
 		gameObject.name = string.Format(rocket_module_bg_base_string, base.name, rocket_module_bg_affix);
 		gameObject.SetActive(false);
 		Vector3 position = component.transform.GetPosition();
 		position.z = Grid.GetLayerZ(Grid.SceneLayer.InteriorWall);
 		gameObject.transform.SetPosition(position);
 		gameObject.transform.parent = base.transform;
-		KBatchedAnimController component2 = gameObject.GetComponent<KBatchedAnimController>();
-		component2.AnimFiles = new KAnimFile[1]
+		KBatchedAnimController kBatchedAnimController = gameObject.AddOrGet<KBatchedAnimController>();
+		kBatchedAnimController.AnimFiles = new KAnimFile[1]
 		{
 			bgAnimFile
 		};
-		component2.initialAnim = rocket_module_bg_anim;
-		component2.fgLayer = Grid.SceneLayer.NoLayer;
-		component2.initialMode = KAnim.PlayMode.Paused;
-		component2.FlipX = component.FlipX;
-		component2.FlipY = component.FlipY;
+		kBatchedAnimController.initialAnim = rocket_module_bg_anim;
+		kBatchedAnimController.fgLayer = Grid.SceneLayer.NoLayer;
+		kBatchedAnimController.initialMode = KAnim.PlayMode.Paused;
+		kBatchedAnimController.FlipX = component.FlipX;
+		kBatchedAnimController.FlipY = component.FlipY;
 		gameObject.SetActive(true);
 	}
 

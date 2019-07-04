@@ -167,20 +167,20 @@ namespace HUSL
 
 		protected static double FromLinear(double c)
 		{
-			if (c <= 0.0031308)
+			if (!(c <= 0.0031308))
 			{
-				return 12.92 * c;
+				return 1.055 * Math.Pow(c, 0.41666666666666669) - 0.055;
 			}
-			return 1.055 * Math.Pow(c, 0.41666666666666669) - 0.055;
+			return 12.92 * c;
 		}
 
 		protected static double ToLinear(double c)
 		{
-			if (c > 0.04045)
+			if (!(c > 0.04045))
 			{
-				return Math.Pow((c + 0.055) / 1.055, 2.4);
+				return c / 12.92;
 			}
-			return c / 12.92;
+			return Math.Pow((c + 0.055) / 1.055, 2.4);
 		}
 
 		protected static IList<int> RGBPrepare(IList<double> tuple)
@@ -207,20 +207,20 @@ namespace HUSL
 
 		protected static double YToL(double Y)
 		{
-			if (Y <= Epsilon)
+			if (!(Y <= Epsilon))
 			{
-				return Y / RefY * Kappa;
+				return 116.0 * Math.Pow(Y / RefY, 0.33333333333333331) - 16.0;
 			}
-			return 116.0 * Math.Pow(Y / RefY, 0.33333333333333331) - 16.0;
+			return Y / RefY * Kappa;
 		}
 
 		protected static double LToY(double L)
 		{
-			if (L <= 8.0)
+			if (!(L <= 8.0))
 			{
-				return RefY * L / Kappa;
+				return RefY * Math.Pow((L + 16.0) / 116.0, 3.0);
 			}
-			return RefY * Math.Pow((L + 16.0) / 116.0, 3.0);
+			return RefY * L / Kappa;
 		}
 
 		public static IList<double> XYZToRGB(IList<double> tuple)
@@ -257,18 +257,18 @@ namespace HUSL
 			double num4 = 4.0 * num / (num + 15.0 * num2 + 3.0 * num3);
 			double num5 = 9.0 * num2 / (num + 15.0 * num2 + 3.0 * num3);
 			double num6 = YToL(num2);
-			if (num6 == 0.0)
+			if (num6 != 0.0)
 			{
-				return new double[3];
+				double num7 = 13.0 * num6 * (num4 - RefU);
+				double num8 = 13.0 * num6 * (num5 - RefV);
+				return new double[3]
+				{
+					num6,
+					num7,
+					num8
+				};
 			}
-			double num7 = 13.0 * num6 * (num4 - RefU);
-			double num8 = 13.0 * num6 * (num5 - RefV);
-			return new double[3]
-			{
-				num6,
-				num7,
-				num8
-			};
+			return new double[3];
 		}
 
 		public static IList<double> LUVToXYZ(IList<double> tuple)
@@ -276,21 +276,21 @@ namespace HUSL
 			double num = tuple[0];
 			double num2 = tuple[1];
 			double num3 = tuple[2];
-			if (num == 0.0)
+			if (num != 0.0)
 			{
-				return new double[3];
+				double num4 = num2 / (13.0 * num) + RefU;
+				double num5 = num3 / (13.0 * num) + RefV;
+				double num6 = LToY(num);
+				double num7 = 0.0 - 9.0 * num6 * num4 / ((num4 - 4.0) * num5 - num4 * num5);
+				double num8 = (9.0 * num6 - 15.0 * num5 * num6 - num5 * num7) / (3.0 * num5);
+				return new double[3]
+				{
+					num7,
+					num6,
+					num8
+				};
 			}
-			double num4 = num2 / (13.0 * num) + RefU;
-			double num5 = num3 / (13.0 * num) + RefV;
-			double num6 = LToY(num);
-			double num7 = 0.0 - 9.0 * num6 * num4 / ((num4 - 4.0) * num5 - num4 * num5);
-			double num8 = (9.0 * num6 - 15.0 * num5 * num6 - num5 * num7) / (3.0 * num5);
-			return new double[3]
-			{
-				num7,
-				num6,
-				num8
-			};
+			return new double[3];
 		}
 
 		public static IList<double> LUVToLCH(IList<double> tuple)
@@ -334,30 +334,30 @@ namespace HUSL
 			double num = tuple[0];
 			double num2 = tuple[1];
 			double num3 = tuple[2];
-			if (num3 > 99.9999999)
+			if (!(num3 > 99.9999999))
 			{
+				if (!(num3 < 1E-08))
+				{
+					double num4 = MaxChromaForLH(num3, num);
+					double num5 = num4 / 100.0 * num2;
+					return new double[3]
+					{
+						num3,
+						num5,
+						num
+					};
+				}
 				return new double[3]
 				{
-					100.0,
+					0.0,
 					0.0,
 					num
 				};
 			}
-			if (num3 < 1E-08)
-			{
-				return new double[3]
-				{
-					0.0,
-					0.0,
-					num
-				};
-			}
-			double num4 = MaxChromaForLH(num3, num);
-			double num5 = num4 / 100.0 * num2;
 			return new double[3]
 			{
-				num3,
-				num5,
+				100.0,
+				0.0,
 				num
 			};
 		}
@@ -367,17 +367,19 @@ namespace HUSL
 			double num = tuple[0];
 			double num2 = tuple[1];
 			double num3 = tuple[2];
-			if (num > 99.9999999)
+			if (!(num > 99.9999999))
 			{
-				return new double[3]
+				if (!(num < 1E-08))
 				{
-					num3,
-					0.0,
-					100.0
-				};
-			}
-			if (num < 1E-08)
-			{
+					double num4 = MaxChromaForLH(num, num3);
+					double num5 = num2 / num4 * 100.0;
+					return new double[3]
+					{
+						num3,
+						num5,
+						num
+					};
+				}
 				return new double[3]
 				{
 					num3,
@@ -385,13 +387,11 @@ namespace HUSL
 					0.0
 				};
 			}
-			double num4 = MaxChromaForLH(num, num3);
-			double num5 = num2 / num4 * 100.0;
 			return new double[3]
 			{
 				num3,
-				num5,
-				num
+				0.0,
+				100.0
 			};
 		}
 
@@ -400,30 +400,30 @@ namespace HUSL
 			double num = tuple[0];
 			double num2 = tuple[1];
 			double num3 = tuple[2];
-			if (num3 > 99.9999999)
+			if (!(num3 > 99.9999999))
 			{
+				if (!(num3 < 1E-08))
+				{
+					double num4 = MaxSafeChromaForL(num3);
+					double num5 = num4 / 100.0 * num2;
+					return new double[3]
+					{
+						num3,
+						num5,
+						num
+					};
+				}
 				return new double[3]
 				{
-					100.0,
+					0.0,
 					0.0,
 					num
 				};
 			}
-			if (num3 < 1E-08)
-			{
-				return new double[3]
-				{
-					0.0,
-					0.0,
-					num
-				};
-			}
-			double num4 = MaxSafeChromaForL(num3);
-			double num5 = num4 / 100.0 * num2;
 			return new double[3]
 			{
-				num3,
-				num5,
+				100.0,
+				0.0,
 				num
 			};
 		}
@@ -433,17 +433,19 @@ namespace HUSL
 			double num = tuple[0];
 			double num2 = tuple[1];
 			double num3 = tuple[2];
-			if (num > 99.9999999)
+			if (!(num > 99.9999999))
 			{
-				return new double[3]
+				if (!(num < 1E-08))
 				{
-					num3,
-					0.0,
-					100.0
-				};
-			}
-			if (num < 1E-08)
-			{
+					double num4 = MaxSafeChromaForL(num);
+					double num5 = num2 / num4 * 100.0;
+					return new double[3]
+					{
+						num3,
+						num5,
+						num
+					};
+				}
 				return new double[3]
 				{
 					num3,
@@ -451,13 +453,11 @@ namespace HUSL
 					0.0
 				};
 			}
-			double num4 = MaxSafeChromaForL(num);
-			double num5 = num2 / num4 * 100.0;
 			return new double[3]
 			{
 				num3,
-				num5,
-				num
+				0.0,
+				100.0
 			};
 		}
 

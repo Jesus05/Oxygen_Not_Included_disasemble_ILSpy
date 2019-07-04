@@ -12,7 +12,7 @@ namespace NodeEditorFramework.Standard
 
 		private NodeEditorState state;
 
-		public bool screenSize;
+		public bool screenSize = false;
 
 		private Rect canvasRect;
 
@@ -20,7 +20,7 @@ namespace NodeEditorFramework.Standard
 
 		public Rect specifiedCanvasRect;
 
-		private string sceneCanvasName = string.Empty;
+		private string sceneCanvasName = "";
 
 		private Vector2 loadScenePos;
 
@@ -47,7 +47,11 @@ namespace NodeEditorFramework.Standard
 					NewEditorState();
 				}
 				NodeEditor.checkInit(true);
-				if (!NodeEditor.InitiationError)
+				if (NodeEditor.InitiationError)
+				{
+					GUILayout.Label("Initiation failed! Check console for more information!");
+				}
+				else
 				{
 					try
 					{
@@ -76,10 +80,6 @@ namespace NodeEditorFramework.Standard
 						Debug.LogError("Unloaded Canvas due to exception in Draw!");
 						Debug.LogException(exception);
 					}
-				}
-				else
-				{
-					GUILayout.Label("Initiation failed! Check console for more information!");
 				}
 			}
 		}

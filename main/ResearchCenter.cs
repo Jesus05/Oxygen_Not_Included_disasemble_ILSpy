@@ -35,11 +35,6 @@ public class ResearchCenter : Workable, IEffectDescriptor, ISim200ms
 
 	public static readonly Operational.Flag ResearchSelectedFlag = new Operational.Flag("researchSelected", Operational.Flag.Type.Requirement);
 
-	private static readonly EventSystem.IntraObjectHandler<ResearchCenter> OnSelectObjectDelegate = new EventSystem.IntraObjectHandler<ResearchCenter>(delegate(ResearchCenter component, object data)
-	{
-		component.OnSelectObject(data);
-	});
-
 	private static readonly EventSystem.IntraObjectHandler<ResearchCenter> UpdateWorkingStateDelegate = new EventSystem.IntraObjectHandler<ResearchCenter>(delegate(ResearchCenter component, object data)
 	{
 		component.UpdateWorkingState(data);
@@ -68,7 +63,6 @@ public class ResearchCenter : Workable, IEffectDescriptor, ISim200ms
 	protected override void OnSpawn()
 	{
 		base.OnSpawn();
-		Subscribe(-1503271301, OnSelectObjectDelegate);
 		Research.Instance.Subscribe(-1914338957, UpdateWorkingState);
 		Research.Instance.Subscribe(-125623018, UpdateWorkingState);
 		Subscribe(187661686, UpdateWorkingStateDelegate);
@@ -105,9 +99,7 @@ public class ResearchCenter : Workable, IEffectDescriptor, ISim200ms
 
 	protected virtual Chore CreateChore()
 	{
-		ChoreType research = Db.Get().ChoreTypes.Research;
-		Tag[] researchChores = GameTags.ChoreTypes.ResearchChores;
-		WorkChore<ResearchCenter> workChore = new WorkChore<ResearchCenter>(research, this, null, researchChores, true, null, null, null, true, null, false, true, null, true, true, true, PriorityScreen.PriorityClass.basic, 5, false, true);
+		WorkChore<ResearchCenter> workChore = new WorkChore<ResearchCenter>(Db.Get().ChoreTypes.Research, this, null, true, null, null, null, true, null, false, true, null, true, true, true, PriorityScreen.PriorityClass.basic, 5, false, true);
 		workChore.preemption_cb = CanPreemptCB;
 		return workChore;
 	}
@@ -123,17 +115,17 @@ public class ResearchCenter : Workable, IEffectDescriptor, ISim200ms
 
 	public override float GetPercentComplete()
 	{
-		if (Research.Instance.GetActiveResearch() == null)
+		if (Research.Instance.GetActiveResearch() != null)
 		{
-			return 0f;
-		}
-		float num = Research.Instance.GetActiveResearch().progressInventory.PointsByTypeID[research_point_type_id];
-		float value = 0f;
-		if (!Research.Instance.GetActiveResearch().tech.costsByResearchTypeID.TryGetValue(research_point_type_id, out value))
-		{
+			float num = Research.Instance.GetActiveResearch().progressInventory.PointsByTypeID[research_point_type_id];
+			float value = 0f;
+			if (Research.Instance.GetActiveResearch().tech.costsByResearchTypeID.TryGetValue(research_point_type_id, out value))
+			{
+				return num / value;
+			}
 			return 1f;
 		}
-		return num / value;
+		return 0f;
 	}
 
 	protected override void OnStartWork(Worker worker)
@@ -236,11 +228,6 @@ public class ResearchCenter : Workable, IEffectDescriptor, ISim200ms
 		Game.Instance.Trigger(-1974454597, null);
 	}
 
-	private void OnSelectObject(object data)
-	{
-		ClearResearchScreen();
-	}
-
 	private void CheckHasMaterial(object o = null)
 	{
 		if (!HasMaterial() && chore != null)
@@ -267,10 +254,10 @@ public class ResearchCenter : Workable, IEffectDescriptor, ISim200ms
 
 	public string GetStatusString()
 	{
-		string result = RESEARCH.MESSAGING.NORESEARCHSELECTED;
+		string text = RESEARCH.MESSAGING.NORESEARCHSELECTED;
 		if (Research.Instance.GetActiveResearch() != null)
 		{
-			result = "<b>" + Research.Instance.GetActiveResearch().tech.Name + "</b>";
+			text = "<b>" + Research.Instance.GetActiveResearch().tech.Name + "</b>";
 			int num = 0;
 			foreach (KeyValuePair<string, float> item in Research.Instance.GetActiveResearch().progressInventory.PointsByTypeID)
 			{
@@ -283,23 +270,20 @@ public class ResearchCenter : Workable, IEffectDescriptor, ISim200ms
 			{
 				if (Research.Instance.GetActiveResearch().tech.costsByResearchTypeID[item2.Key] != 0f && item2.Key == research_point_type_id)
 				{
-					result = result + "\n   - " + Research.Instance.researchTypes.GetResearchType(item2.Key).name;
-					string text = result;
-					result = text + ": " + item2.Value + "/" + Research.Instance.GetActiveResearch().tech.costsByResearchTypeID[item2.Key];
+					text = text + "\n   - " + Research.Instance.researchTypes.GetResearchType(item2.Key).name;
+					string text2 = text;
+					text = text2 + ": " + item2.Value + "/" + Research.Instance.GetActiveResearch().tech.costsByResearchTypeID[item2.Key];
 				}
 			}
+			foreach (KeyValuePair<string, float> item3 in Research.Instance.GetActiveResearch().progressInventory.PointsByTypeID)
 			{
-				foreach (KeyValuePair<string, float> item3 in Research.Instance.GetActiveResearch().progressInventory.PointsByTypeID)
+				if (Research.Instance.GetActiveResearch().tech.costsByResearchTypeID[item3.Key] != 0f && !(item3.Key == research_point_type_id))
 				{
-					if (Research.Instance.GetActiveResearch().tech.costsByResearchTypeID[item3.Key] != 0f && !(item3.Key == research_point_type_id))
-					{
-						result = ((num <= 1) ? (result + "\n   - " + string.Format(RESEARCH.MESSAGING.RESEARCHTYPEREQUIRED, Research.Instance.researchTypes.GetResearchType(item3.Key).name)) : (result + "\n   - " + string.Format(RESEARCH.MESSAGING.RESEARCHTYPEALSOREQUIRED, Research.Instance.researchTypes.GetResearchType(item3.Key).name)));
-					}
+					text = ((num <= 1) ? (text + "\n   - " + string.Format(RESEARCH.MESSAGING.RESEARCHTYPEREQUIRED, Research.Instance.researchTypes.GetResearchType(item3.Key).name)) : (text + "\n   - " + string.Format(RESEARCH.MESSAGING.RESEARCHTYPEALSOREQUIRED, Research.Instance.researchTypes.GetResearchType(item3.Key).name)));
 				}
-				return result;
 			}
 		}
-		return result;
+		return text;
 	}
 
 	public List<Descriptor> GetDescriptors(BuildingDef def)

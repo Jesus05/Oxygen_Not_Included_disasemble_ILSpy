@@ -1,3 +1,4 @@
+#define UNITY_ASSERTIONS
 using Klei.AI;
 using STRINGS;
 using System;
@@ -39,7 +40,7 @@ public class ProductInfoScreen : KScreen
 
 	private bool expandedInfo = true;
 
-	private bool configuring;
+	private bool configuring = false;
 
 	private void RefreshScreen()
 	{
@@ -145,11 +146,11 @@ public class ProductInfoScreen : KScreen
 		}
 		if ((UnityEngine.Object)ProductRequirementsPane != (UnityEngine.Object)null)
 		{
-			ProductRequirementsPane.gameObject.SetActive(expandedInfo && ProductRequirementsPane.labels.Count > 0);
+			ProductRequirementsPane.gameObject.SetActive(expandedInfo && ProductRequirementsPane.HasDescriptors());
 		}
 		if ((UnityEngine.Object)ProductEffectsPane != (UnityEngine.Object)null)
 		{
-			ProductEffectsPane.gameObject.SetActive(expandedInfo && ProductEffectsPane.labels.Count > 0);
+			ProductEffectsPane.gameObject.SetActive(expandedInfo && ProductEffectsPane.HasDescriptors());
 		}
 		if ((UnityEngine.Object)ProductFlavourPane != (UnityEngine.Object)null)
 		{
@@ -184,7 +185,8 @@ public class ProductInfoScreen : KScreen
 
 	private void SetDescription(BuildingDef def)
 	{
-		if ((UnityEngine.Object)productFlavourText != (UnityEngine.Object)null)
+		UnityEngine.Debug.Assert((UnityEngine.Object)def != (UnityEngine.Object)null, "def is null");
+		if (!((UnityEngine.Object)def == (UnityEngine.Object)null) && !((UnityEngine.Object)productFlavourText == (UnityEngine.Object)null))
 		{
 			string text = def.Desc;
 			Dictionary<Klei.AI.Attribute, float> dictionary = new Dictionary<Klei.AI.Attribute, float>();
@@ -240,7 +242,7 @@ public class ProductInfoScreen : KScreen
 					float value4 = 0f;
 					dictionary.TryGetValue(item.Key, out value4);
 					float value5 = 0f;
-					string text2 = string.Empty;
+					string text2 = "";
 					if (dictionary2.TryGetValue(item.Key, out value5))
 					{
 						value5 = Mathf.Abs(value4 * value5);
@@ -321,17 +323,17 @@ public class ProductInfoScreen : KScreen
 
 	private bool BuildRequirementsMet(BuildingDef def)
 	{
-		if (DebugHandler.InstantBuildMode || Game.Instance.SandboxModeActive)
+		if (!DebugHandler.InstantBuildMode && !Game.Instance.SandboxModeActive)
 		{
-			return true;
-		}
-		Recipe craftRecipe = def.CraftRecipe;
-		if (!materialSelectionPanel.CanBuild(craftRecipe))
-		{
-			return false;
-		}
-		if (!Db.Get().TechItems.IsTechItemComplete(def.PrefabID))
-		{
+			Recipe craftRecipe = def.CraftRecipe;
+			if (materialSelectionPanel.CanBuild(craftRecipe))
+			{
+				if (Db.Get().TechItems.IsTechItemComplete(def.PrefabID))
+				{
+					return true;
+				}
+				return false;
+			}
 			return false;
 		}
 		return true;
@@ -372,25 +374,25 @@ public class ProductInfoScreen : KScreen
 
 	public static bool MaterialsMet(Recipe recipe)
 	{
-		if (recipe == null)
+		if (recipe != null)
 		{
-			Debug.LogError("Trying to verify the materials on a null recipe!");
-			return false;
-		}
-		if (recipe.Ingredients == null || recipe.Ingredients.Count == 0)
-		{
+			if (recipe.Ingredients != null && recipe.Ingredients.Count != 0)
+			{
+				for (int i = 0; i < recipe.Ingredients.Count; i++)
+				{
+					MaterialSelectionPanel.SelectedElemInfo selectedElemInfo = MaterialSelectionPanel.Filter(recipe.Ingredients[i].tag);
+					if (selectedElemInfo.kgAvailable < recipe.Ingredients[i].amount)
+					{
+						return false;
+					}
+				}
+				return true;
+			}
 			Debug.LogError("Trying to verify the materials on a recipe with no MaterialCategoryTags!");
 			return false;
 		}
-		for (int i = 0; i < recipe.Ingredients.Count; i++)
-		{
-			MaterialSelectionPanel.SelectedElemInfo selectedElemInfo = MaterialSelectionPanel.Filter(recipe.Ingredients[i].tag);
-			if (selectedElemInfo.kgAvailable < recipe.Ingredients[i].amount)
-			{
-				return false;
-			}
-		}
-		return true;
+		Debug.LogError("Trying to verify the materials on a null recipe!");
+		return false;
 	}
 
 	public void Close()

@@ -155,6 +155,7 @@ public class FertilityMonitor : GameStateMachine<FertilityMonitor, FertilityMoni
 			{
 				component.AddSymbolOverride(targetEggSymbol, symbol, 0);
 			}
+			Trigger(1193600993, egg);
 		}
 
 		public bool IsReadyToLayEgg()
@@ -211,14 +212,14 @@ public class FertilityMonitor : GameStateMachine<FertilityMonitor, FertilityMoni
 
 	public static bool IsFertile(Instance smi)
 	{
-		if (smi.HasTag(GameTags.Creatures.Confined))
+		if (!smi.HasTag(GameTags.Creatures.Confined))
 		{
+			if (!smi.HasTag(GameTags.Creatures.Expecting))
+			{
+				return true;
+			}
 			return false;
 		}
-		if (smi.HasTag(GameTags.Creatures.Expecting))
-		{
-			return false;
-		}
-		return true;
+		return false;
 	}
 }

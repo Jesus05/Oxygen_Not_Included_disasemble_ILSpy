@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class UserMenuScreen : KIconButtonMenu
 {
-	private GameObject selected;
+	private GameObject selected = null;
 
 	public MinMaxSlider sliderPrefab;
 

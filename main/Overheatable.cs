@@ -24,7 +24,8 @@ public class Overheatable : StateMachineComponent<Overheatable.StatesInstance>, 
 				{
 					damage = 1,
 					source = (string)BUILDINGS.DAMAGESOURCES.BUILDING_OVERHEATED,
-					popString = (string)UI.GAMEOBJECTEFFECTS.DAMAGE_POPS.OVERHEAT
+					popString = (string)UI.GAMEOBJECTEFFECTS.DAMAGE_POPS.OVERHEAT,
+					fullDamageEffectName = "smoke_damage_kanim"
 				});
 			}
 		}
@@ -129,7 +130,7 @@ public class Overheatable : StateMachineComponent<Overheatable.StatesInstance>, 
 
 	private static string ToolTipResolver(List<Notification> notificationList, object data)
 	{
-		string text = string.Empty;
+		string text = "";
 		for (int i = 0; i < notificationList.Count; i++)
 		{
 			Notification notification = notificationList[i];

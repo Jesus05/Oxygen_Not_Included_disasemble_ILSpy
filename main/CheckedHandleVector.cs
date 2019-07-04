@@ -1,4 +1,6 @@
+#define UNITY_ASSERTIONS
 using System.Collections.Generic;
+using UnityEngine;
 
 public class CheckedHandleVector<T> where T : new()
 {
@@ -20,6 +22,7 @@ public class CheckedHandleVector<T> where T : new()
 
 	public HandleVector<T>.Handle Add(T item, string debug_info)
 	{
+		UnityEngine.Debug.Assert(item != null);
 		HandleVector<T>.Handle result = handleVector.Add(item);
 		if (result.index >= isFree.Count)
 		{

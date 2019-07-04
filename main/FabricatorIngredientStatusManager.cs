@@ -44,8 +44,7 @@ public class FabricatorIngredientStatusManager : KMonoBehaviour, ISim1000ms
 	{
 		foreach (KeyValuePair<ComplexRecipe, Guid> statusItem in statusItems)
 		{
-			ComplexFabricator.UserOrder userOrder = fabricator.GetUserOrders().Find((ComplexFabricator.UserOrder match) => match.recipe == statusItem.Key);
-			if (userOrder == null)
+			if (!fabricator.IsRecipeQueued(statusItem.Key))
 			{
 				deadOrderKeys.Add(statusItem.Key);
 			}
@@ -62,39 +61,43 @@ public class FabricatorIngredientStatusManager : KMonoBehaviour, ISim1000ms
 			statusItems.Remove(deadOrderKey);
 		}
 		deadOrderKeys.Clear();
-		foreach (ComplexFabricator.UserOrder userOrder2 in fabricator.GetUserOrders())
+		ComplexRecipe[] recipes = fabricator.GetRecipes();
+		foreach (ComplexRecipe complexRecipe in recipes)
 		{
-			bool flag = false;
-			ComplexRecipe.RecipeElement[] ingredients2 = userOrder2.recipe.ingredients;
-			foreach (ComplexRecipe.RecipeElement recipeElement2 in ingredients2)
+			if (fabricator.IsRecipeQueued(complexRecipe))
 			{
-				float newBalance = fabricator.inStorage.GetAmountAvailable(recipeElement2.material) + fabricator.buildStorage.GetAmountAvailable(recipeElement2.material) + WorldInventory.Instance.GetAmount(recipeElement2.material) - recipeElement2.amount;
-				flag = (flag || ChangeRecipeRequiredResourceBalance(userOrder2.recipe, recipeElement2.material, newBalance) || (statusItems.ContainsKey(userOrder2.recipe) && fabricator.GetRecipeQueueCount(userOrder2.recipe) == 0));
-			}
-			if (flag)
-			{
-				if (statusItems.ContainsKey(userOrder2.recipe))
+				bool flag = false;
+				ComplexRecipe.RecipeElement[] ingredients2 = complexRecipe.ingredients;
+				foreach (ComplexRecipe.RecipeElement recipeElement2 in ingredients2)
 				{
-					selectable.RemoveStatusItem(statusItems[userOrder2.recipe], false);
-					statusItems.Remove(userOrder2.recipe);
+					float newBalance = fabricator.inStorage.GetAmountAvailable(recipeElement2.material) + fabricator.buildStorage.GetAmountAvailable(recipeElement2.material) + WorldInventory.Instance.GetTotalAmount(recipeElement2.material) - recipeElement2.amount;
+					flag = (flag || ChangeRecipeRequiredResourceBalance(complexRecipe, recipeElement2.material, newBalance) || (statusItems.ContainsKey(complexRecipe) && fabricator.GetRecipeQueueCount(complexRecipe) == 0));
 				}
-				if (fabricator.GetRecipeQueueCount(userOrder2.recipe) > 0 || fabricator.GetRecipeQueueCount(userOrder2.recipe) == ComplexFabricator.QUEUE_INFINITE)
+				if (flag)
 				{
-					foreach (float value2 in recipeRequiredResourceBalances[userOrder2.recipe].Values)
+					if (statusItems.ContainsKey(complexRecipe))
 					{
-						if (value2 < 0f)
+						selectable.RemoveStatusItem(statusItems[complexRecipe], false);
+						statusItems.Remove(complexRecipe);
+					}
+					if (fabricator.IsRecipeQueued(complexRecipe))
+					{
+						foreach (float value2 in recipeRequiredResourceBalances[complexRecipe].Values)
 						{
-							Dictionary<Tag, float> dictionary = new Dictionary<Tag, float>();
-							foreach (KeyValuePair<Tag, float> item in recipeRequiredResourceBalances[userOrder2.recipe])
+							if (value2 < 0f)
 							{
-								if (item.Value < 0f)
+								Dictionary<Tag, float> dictionary = new Dictionary<Tag, float>();
+								foreach (KeyValuePair<Tag, float> item in recipeRequiredResourceBalances[complexRecipe])
 								{
-									dictionary.Add(item.Key, 0f - item.Value);
+									if (item.Value < 0f)
+									{
+										dictionary.Add(item.Key, 0f - item.Value);
+									}
 								}
+								Guid value = selectable.AddStatusItem(Db.Get().BuildingStatusItems.MaterialsUnavailable, dictionary);
+								statusItems.Add(complexRecipe, value);
+								break;
 							}
-							Guid value = selectable.AddStatusItem(Db.Get().BuildingStatusItems.MaterialsUnavailable, dictionary);
-							statusItems.Add(userOrder2.recipe, value);
-							break;
 						}
 					}
 				}

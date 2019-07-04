@@ -8,7 +8,7 @@ public class PlayerController : KMonoBehaviour, IInputHandler
 
 	private InterfaceTool activeTool;
 
-	private bool DebugHidingCursor;
+	private bool DebugHidingCursor = false;
 
 	private Vector3 prevMousePos = new Vector3(float.PositiveInfinity, 0f, 0f);
 
@@ -16,11 +16,11 @@ public class PlayerController : KMonoBehaviour, IInputHandler
 
 	private const float MIN_DRAG_TIME = 0.3f;
 
-	private Action dragAction;
+	private Action dragAction = Action.Invalid;
 
-	private bool dragging;
+	private bool dragging = false;
 
-	private bool queueStopDrag;
+	private bool queueStopDrag = false;
 
 	private Vector3 startDragPos;
 
@@ -294,11 +294,11 @@ public class PlayerController : KMonoBehaviour, IInputHandler
 
 	public bool ConsumeIfNotDragging(KButtonEvent e, Action action)
 	{
-		if (dragAction != action || !dragging)
+		if (dragAction == action && dragging)
 		{
-			return e.TryConsume(action);
+			return false;
 		}
-		return false;
+		return e.TryConsume(action);
 	}
 
 	public bool IsDragging()

@@ -24,7 +24,7 @@ public class DropDown : KMonoBehaviour
 
 	public bool addEmptyRow = true;
 
-	public object targetData;
+	public object targetData = null;
 
 	private List<IListableOption> entries = new List<IListableOption>();
 
@@ -38,7 +38,11 @@ public class DropDown : KMonoBehaviour
 
 	private GameObject emptyRow;
 
-	private bool built;
+	private string emptyRowLabel;
+
+	private Sprite emptyRowSprite;
+
+	private bool built = false;
 
 	private bool displaySelectedValueWhenClosed = true;
 
@@ -66,6 +70,12 @@ public class DropDown : KMonoBehaviour
 			OnClick();
 		};
 		canvasScaler = GameScreenManager.Instance.ssOverlayCanvas.GetComponent<KCanvasScaler>();
+	}
+
+	public void CustomizeEmptyRow(string txt, Sprite icon)
+	{
+		emptyRowLabel = txt;
+		emptyRowSprite = icon;
 	}
 
 	public void OnClick()
@@ -144,7 +154,12 @@ public class DropDown : KMonoBehaviour
 				onEntrySelectedAction(null, targetData);
 				Close();
 			};
-			emptyRow.GetComponent<DropDownEntry>().label.text = UI.DROPDOWN.NONE;
+			string text = (emptyRowLabel == null) ? ((string)UI.DROPDOWN.NONE) : emptyRowLabel;
+			emptyRow.GetComponent<DropDownEntry>().label.text = text;
+			if ((UnityEngine.Object)emptyRowSprite != (UnityEngine.Object)null)
+			{
+				emptyRow.GetComponent<DropDownEntry>().image.sprite = emptyRowSprite;
+			}
 		}
 		for (int i = 0; i < contentKeys.Count; i++)
 		{

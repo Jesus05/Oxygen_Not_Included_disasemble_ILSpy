@@ -13,10 +13,16 @@ public static class BaseOilFloaterConfig
 		float defaultTemperature = (warnLowTemp + warnHighTemp) / 2f;
 		GameObject gameObject = EntityTemplates.CreatePlacedEntity(id, name, desc, mass, anim, initialAnim, Grid.SceneLayer.Creatures, 1, 1, tIER, default(EffectorValues), SimHashes.Creature, null, defaultTemperature);
 		gameObject.GetComponent<KPrefabID>().AddTag(GameTags.Creatures.Hoverer);
-		EntityTemplates.ExtendEntityToBasicCreature(gameObject, FactionManager.FactionID.Pest, traitId, "FloaterNavGrid", NavType.Hover, 32, 2f, "Meat", 2, false, false, warnLowTemp, warnHighTemp, warnLowTemp - 15f, warnHighTemp + 20f);
+		GameObject template = gameObject;
+		FactionManager.FactionID faction = FactionManager.FactionID.Pest;
+		string navGridName = "FloaterNavGrid";
+		NavType navType = NavType.Hover;
+		string onDeathDropID = "Meat";
+		int onDeathDropCount = 2;
+		EntityTemplates.ExtendEntityToBasicCreature(template, faction, traitId, navGridName, navType, 32, 2f, onDeathDropID, onDeathDropCount, true, false, warnLowTemp, warnHighTemp, warnLowTemp - 15f, warnHighTemp + 20f);
 		if (!string.IsNullOrEmpty(symbolOverridePrefix))
 		{
-			gameObject.AddOrGet<SymbolOverrideController>().ApplySymbolOverridesByPrefix(Assets.GetAnim(anim_file), symbolOverridePrefix, 0);
+			gameObject.AddOrGet<SymbolOverrideController>().ApplySymbolOverridesByAffix(Assets.GetAnim(anim_file), symbolOverridePrefix, null, 0);
 		}
 		gameObject.AddOrGet<Trappable>();
 		gameObject.AddOrGet<LoopingSounds>();
@@ -37,7 +43,7 @@ public static class BaseOilFloaterConfig
 			.Add(new BaggedStates.Def(), true)
 			.Add(new FallStates.Def(), true)
 			.Add(new StunnedStates.Def(), true)
-			.Add(new SubmergedStates.Def(), true)
+			.Add(new DrowningStates.Def(), true)
 			.Add(new DebugGoToStates.Def(), true)
 			.PushInterruptGroup()
 			.Add(new CreatureSleepStates.Def(), true)

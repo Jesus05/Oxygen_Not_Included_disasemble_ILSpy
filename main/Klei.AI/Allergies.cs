@@ -7,15 +7,15 @@ namespace Klei.AI
 	{
 		public const string ID = "Allergies";
 
-		public const float STRESS_OVER_ATTACK = 20f;
+		public const float STRESS_PER_CYCLE = 15f;
 
 		public Allergies()
 			: base("Allergies", SicknessType.Pathogen, Severity.Minor, 0.00025f, new List<InfectionVector>
 			{
 				InfectionVector.Inhalation
-			}, 60f)
+			}, 60f, null)
 		{
-			float value = 20f / base.SicknessDuration;
+			float value = 0.025f;
 			AddSicknessComponent(new CommonSickEffectSickness());
 			AddSicknessComponent(new AnimatedSickness(new HashedString[1]
 			{
@@ -23,8 +23,8 @@ namespace Klei.AI
 			}, Db.Get().Expressions.Uncomfortable));
 			AddSicknessComponent(new AttributeModifierSickness(new AttributeModifier[2]
 			{
-				new AttributeModifier(Db.Get().Amounts.Stress.deltaAttribute.Id, value, DUPLICANTS.DISEASES.ZOMBIESICKNESS.NAME, false, false, true),
-				new AttributeModifier(Db.Get().Attributes.Sneezyness.Id, 10f, DUPLICANTS.DISEASES.ZOMBIESICKNESS.NAME, false, false, true)
+				new AttributeModifier(Db.Get().Amounts.Stress.deltaAttribute.Id, value, DUPLICANTS.DISEASES.ALLERGIES.NAME, false, false, true),
+				new AttributeModifier(Db.Get().Attributes.Sneezyness.Id, 10f, DUPLICANTS.DISEASES.ALLERGIES.NAME, false, false, true)
 			}));
 		}
 	}

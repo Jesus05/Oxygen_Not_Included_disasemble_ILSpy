@@ -41,14 +41,14 @@ public class CommandModuleWorkable : Workable
 
 	protected override bool OnWorkTick(Worker worker, float dt)
 	{
-		if ((Object)worker != (Object)null)
+		if (!((Object)worker != (Object)null))
 		{
-			GameObject gameObject = worker.gameObject;
-			CompleteWork(worker);
-			GetComponent<MinionStorage>().SerializeMinion(gameObject);
-			return true;
+			return base.OnWorkTick(worker, dt);
 		}
-		return base.OnWorkTick(worker, dt);
+		GameObject gameObject = worker.gameObject;
+		CompleteWork(worker);
+		GetComponent<MinionStorage>().SerializeMinion(gameObject);
+		return true;
 	}
 
 	protected override void OnStopWork(Worker worker)

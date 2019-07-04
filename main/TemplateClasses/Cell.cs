@@ -1,10 +1,9 @@
-using Klei;
 using System;
 
 namespace TemplateClasses
 {
 	[Serializable]
-	public class Cell : YamlIO<Cell>, ICloneable
+	public class Cell : ICloneable
 	{
 		public SimHashes element
 		{

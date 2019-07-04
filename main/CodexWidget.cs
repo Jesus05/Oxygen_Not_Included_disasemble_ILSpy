@@ -1,9 +1,8 @@
-using Klei;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public abstract class CodexWidget<SubClass> : YamlIO<SubClass>, ICodexWidget
+public abstract class CodexWidget<SubClass> : ICodexWidget
 {
 	public int preferredWidth
 	{

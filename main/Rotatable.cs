@@ -12,7 +12,7 @@ public class Rotatable : KMonoBehaviour, ISaveLoadable
 
 	[Serialize]
 	[SerializeField]
-	private Orientation orientation;
+	private Orientation orientation = Orientation.Neutral;
 
 	[SerializeField]
 	private Vector3 pivot = Vector3.zero;
@@ -20,7 +20,7 @@ public class Rotatable : KMonoBehaviour, ISaveLoadable
 	[SerializeField]
 	private Vector3 visualizerOffset = Vector3.zero;
 
-	public PermittedRotations permittedRotations;
+	public PermittedRotations permittedRotations = PermittedRotations.Unrotatable;
 
 	[SerializeField]
 	private int width;
@@ -99,11 +99,11 @@ public class Rotatable : KMonoBehaviour, ISaveLoadable
 	public float GetVisualizerRotation()
 	{
 		PermittedRotations permittedRotations = this.permittedRotations;
-		if (permittedRotations == PermittedRotations.R360 || permittedRotations == PermittedRotations.R90)
+		if (permittedRotations != PermittedRotations.R360 && permittedRotations != PermittedRotations.R90)
 		{
-			return -90f * (float)orientation;
+			return 0f;
 		}
-		return 0f;
+		return -90f * (float)orientation;
 	}
 
 	public bool GetVisualizerFlipX()

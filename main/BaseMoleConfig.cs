@@ -30,8 +30,11 @@ public static class BaseMoleConfig
 		DiggerMonitor.Def def = gameObject.AddOrGetDef<DiggerMonitor.Def>();
 		def.depthToDig = MoleTuning.DEPTH_TO_HIDE;
 		EntityTemplates.CreateAndRegisterBaggedCreature(gameObject, true, true, false);
+		KPrefabID component = gameObject.GetComponent<KPrefabID>();
+		component.AddTag(GameTags.Creatures.Walker);
 		ChoreTable.Builder chore_table = new ChoreTable.Builder().Add(new DeathStates.Def(), true).Add(new AnimInterruptStates.Def(), true).Add(new FallStates.Def(), true)
 			.Add(new StunnedStates.Def(), true)
+			.Add(new DrowningStates.Def(), true)
 			.Add(new DiggerStates.Def(), true)
 			.Add(new GrowUpStates.Def(), true)
 			.Add(new TrappedStates.Def(), true)
@@ -73,15 +76,15 @@ public static class BaseMoleConfig
 	private static HashedString CustomIdleAnim(IdleStates.Instance smi, ref HashedString pre_anim)
 	{
 		Navigator component = smi.gameObject.GetComponent<Navigator>();
-		if (component.CurrentNavType == NavType.Solid)
+		if (component.CurrentNavType != NavType.Solid)
 		{
-			int num = Random.Range(0, SolidIdleAnims.Length);
-			return SolidIdleAnims[num];
+			if (smi.gameObject.GetDef<BabyMonitor.Def>() != null && Random.Range(0, 100) >= 90)
+			{
+				return "drill_fail";
+			}
+			return "idle_loop";
 		}
-		if (smi.gameObject.GetDef<BabyMonitor.Def>() != null && Random.Range(0, 100) >= 90)
-		{
-			return "drill_fail";
-		}
-		return "idle_loop";
+		int num = Random.Range(0, SolidIdleAnims.Length);
+		return SolidIdleAnims[num];
 	}
 }

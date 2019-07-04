@@ -49,13 +49,15 @@ namespace Klei.AI
 
 		private float sicknessDuration = 600f;
 
-		public float fatalityDuration;
+		public float fatalityDuration = 0f;
 
 		public HashedString id;
 
 		public SicknessType sicknessType;
 
 		public Severity severity;
+
+		public string recoveryEffect;
 
 		public List<InfectionVector> infectionVectors;
 
@@ -71,7 +73,9 @@ namespace Klei.AI
 
 		public float SicknessDuration => sicknessDuration;
 
-		public Sickness(string id, SicknessType type, Severity severity, float immune_attack_strength, List<InfectionVector> infection_vectors, float sickness_duration)
+		public StringKey DescriptiveSymptoms => descriptiveSymptoms;
+
+		public Sickness(string id, SicknessType type, Severity severity, float immune_attack_strength, List<InfectionVector> infection_vectors, float sickness_duration, string recovery_effect = null)
 			: base(id, null, null)
 		{
 			name = new StringKey("STRINGS.DUPLICANTS.DISEASES." + id.ToUpper() + ".NAME");
@@ -80,6 +84,7 @@ namespace Klei.AI
 			this.severity = severity;
 			infectionVectors = infection_vectors;
 			sicknessDuration = sickness_duration;
+			recoveryEffect = recovery_effect;
 			descriptiveSymptoms = new StringKey("STRINGS.DUPLICANTS.DISEASES." + id.ToUpper() + ".DESCRIPTIVE_SYMPTOMS");
 			cureSpeedBase = new Attribute(id + "CureSpeed", false, Attribute.Display.Normal, false, 0f, null, null);
 			cureSpeedBase.BaseValue = 1f;
@@ -169,7 +174,7 @@ namespace Klei.AI
 					}
 				}
 			}
-			list.Add(new Descriptor(Strings.Get(descriptiveSymptoms), string.Empty, Descriptor.DescriptorType.Information, false));
+			list.Add(new Descriptor(Strings.Get(descriptiveSymptoms), "", Descriptor.DescriptorType.Information, false));
 			return list;
 		}
 	}

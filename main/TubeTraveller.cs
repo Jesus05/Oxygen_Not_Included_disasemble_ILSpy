@@ -145,7 +145,6 @@ public class TubeTraveller : GameStateMachine<TubeTraveller, TubeTraveller.Insta
 		immunities.Add(Db.Get().effects.Get("SoakingWet"));
 		immunities.Add(Db.Get().effects.Get("WetFeet"));
 		immunities.Add(Db.Get().effects.Get("PoppedEarDrums"));
-		immunities.Add(Db.Get().effects.Get("Unclean"));
 	}
 
 	public override void InitializeStates(out BaseState default_state)

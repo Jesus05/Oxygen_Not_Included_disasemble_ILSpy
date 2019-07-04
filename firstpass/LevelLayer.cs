@@ -1,6 +1,7 @@
+using System;
 using System.Collections.Generic;
 
-public class LevelLayer : List<LayerGradient>
+public class LevelLayer : List<LayerGradient>, IMerge<LevelLayer>
 {
 	public LevelLayer()
 	{
@@ -18,6 +19,7 @@ public class LevelLayer : List<LayerGradient>
 
 	public void ConvertBandSizeToMaxSize()
 	{
+		Sort((LayerGradient a, LayerGradient b) => Math.Sign(a.bandSize - b.bandSize));
 		float num = 0f;
 		for (int i = 0; i < base.Count; i++)
 		{
@@ -31,5 +33,10 @@ public class LevelLayer : List<LayerGradient>
 			layerGradient2.maxValue = num2 + layerGradient2.bandSize / num;
 			num2 = layerGradient2.maxValue;
 		}
+	}
+
+	public void Merge(LevelLayer other)
+	{
+		AddRange(other);
 	}
 }

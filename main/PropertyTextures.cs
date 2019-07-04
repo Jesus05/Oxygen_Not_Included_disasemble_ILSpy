@@ -78,7 +78,7 @@ public class PropertyTextures : KMonoBehaviour, ISim200ms
 	}
 
 	[NonSerialized]
-	public bool ForceLightEverywhere;
+	public bool ForceLightEverywhere = false;
 
 	[SerializeField]
 	private Vector2 PressureRange = new Vector2(15f, 200f);
@@ -106,7 +106,7 @@ public class PropertyTextures : KMonoBehaviour, ISim200ms
 	[SerializeField]
 	private Vector2 hotRange;
 
-	public static float FogOfWarScale;
+	public static float FogOfWarScale = 0f;
 
 	private int WorldSizeID;
 
@@ -502,7 +502,7 @@ public class PropertyTextures : KMonoBehaviour, ISim200ms
 			for (int i = 0; i < allTextureProperties.Count; i++)
 			{
 				TextureProperties p = allTextureProperties[i];
-				if (num == i || p.updateEveryFrame)
+				if (num == i || p.updateEveryFrame || GameUtil.IsCapturingTimeLapse())
 				{
 					UpdateProperty(ref p, x, y, x2, y2);
 				}

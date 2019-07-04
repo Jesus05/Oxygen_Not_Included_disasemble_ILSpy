@@ -23,21 +23,21 @@ public class SelectedRecipeQueueScreen : KScreen
 
 	public GameObject InfiniteIcon;
 
-	private ComplexFabricator target;
+	private ComplexFabricator target = null;
 
-	private ComplexFabricatorSideScreen ownerScreen;
+	private ComplexFabricatorSideScreen ownerScreen = null;
 
 	private ComplexRecipe selectedRecipe;
 
-	private bool isEditing;
+	private bool isEditing = false;
 
 	public override float GetSortKey()
 	{
-		if (isEditing)
+		if (!isEditing)
 		{
-			return 100f;
+			return base.GetSortKey();
 		}
-		return base.GetSortKey();
+		return 100f;
 	}
 
 	protected override void OnSpawn()
@@ -88,7 +88,7 @@ public class SelectedRecipeQueueScreen : KScreen
 		this.target = target;
 		selectedRecipe = recipe;
 		recipeName.text = recipe.GetUIName();
-		Tuple<Sprite, Color> uISprite = Def.GetUISprite((!recipe.useResultAsDescription) ? recipe.ingredients[0].material : recipe.results[0].material, "ui", false);
+		Tuple<Sprite, Color> uISprite = Def.GetUISprite((recipe.nameDisplay != 0) ? recipe.results[0].material : recipe.ingredients[0].material, "ui", false);
 		recipeIcon.sprite = uISprite.first;
 		recipeIcon.color = uISprite.second;
 		RefreshIngredientDescriptors();
@@ -105,7 +105,7 @@ public class SelectedRecipeQueueScreen : KScreen
 		}
 		else
 		{
-			QueueCount.SetDisplayValue(string.Empty);
+			QueueCount.SetDisplayValue("");
 		}
 		InfiniteIcon.gameObject.SetActive(flag);
 	}

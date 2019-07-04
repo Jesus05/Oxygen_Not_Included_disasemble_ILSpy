@@ -21,29 +21,29 @@ public class KRectStretcher : KMonoBehaviour
 
 	private DrivenRectTransformTracker rectTracker;
 
-	public bool StretchX;
+	public bool StretchX = false;
 
-	public bool StretchY;
+	public bool StretchY = false;
 
 	public float XStretchFactor = 1f;
 
 	public float YStretchFactor = 1f;
 
-	public ParentSizeReferenceValue SizeReferenceMethod;
+	public ParentSizeReferenceValue SizeReferenceMethod = ParentSizeReferenceValue.SizeDelta;
 
 	public Vector2 Padding;
 
-	public bool lerpToSize;
+	public bool lerpToSize = false;
 
 	public float lerpTime = 1f;
 
 	public LayoutElement OverrideLayoutElement;
 
-	public bool PreserveAspectRatio;
+	public bool PreserveAspectRatio = false;
 
 	public float aspectRatioToPreserve = 1f;
 
-	public aspectFitOption AspectFitOption;
+	public aspectFitOption AspectFitOption = aspectFitOption.WidthDictatesHeight;
 
 	protected override void OnPrefabInit()
 	{

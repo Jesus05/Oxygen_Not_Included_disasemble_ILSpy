@@ -130,7 +130,7 @@ public class LoadScreen : KModalScreen
 					SaveGame.Header first = fileInfo.first;
 					SaveGame.GameInfo second = fileInfo.second;
 					System.DateTime lastWriteTime = File.GetLastWriteTime(allFiles[i]);
-					string path = (!(second.originalSaveName != string.Empty)) ? allFiles[i] : second.originalSaveName;
+					string path = (!(second.originalSaveName != "")) ? allFiles[i] : second.originalSaveName;
 					path = Path.GetFileNameWithoutExtension(path);
 					SaveGameFileDetails item = default(SaveGameFileDetails);
 					item.BaseName = second.baseName;
@@ -156,13 +156,12 @@ public class LoadScreen : KModalScreen
 			SaveGame.Header header;
 			SaveGame.GameInfo gameInfo = SaveLoader.LoadHeader(filename, out header);
 			result = (gameInfo.saveMajorVersion >= 7);
-			return result;
 		}
 		catch (Exception ex)
 		{
 			Debug.LogWarning("Corrupted save file: " + filename + "\n" + ex.ToString());
-			return result;
 		}
+		return result;
 	}
 
 	private Tuple<SaveGame.Header, SaveGame.GameInfo> GetFileInfo(string filename)
@@ -202,7 +201,7 @@ public class LoadScreen : KModalScreen
 				AddExistingSaveFile(saveFile.Key, saveFile.Value);
 			}
 		}
-		InfoText.text = string.Empty;
+		InfoText.text = "";
 		CyclesSurvivedValue.text = "-";
 		DuplicantsAliveValue.text = "-";
 		deleteButton.isInteractable = false;
@@ -319,7 +318,7 @@ public class LoadScreen : KModalScreen
 
 	private static bool IsSaveFileFromUnsupportedFutureBuild(SaveGame.Header header)
 	{
-		return header.buildVersion > 327401;
+		return header.buildVersion > 347957;
 	}
 
 	private void SetSelectedGame(string filename)
@@ -352,16 +351,16 @@ public class LoadScreen : KModalScreen
 				}
 				CyclesSurvivedValue.text = gameInfo.numberOfCycles.ToString();
 				DuplicantsAliveValue.text = gameInfo.numberOfDuplicants.ToString();
-				InfoText.text = string.Empty;
+				InfoText.text = "";
 				if (IsSaveFileFromUnsupportedFutureBuild(header))
 				{
-					InfoText.text = string.Format(UI.FRONTEND.LOADSCREEN.SAVE_TOO_NEW, filename, header.buildVersion, 327401u);
+					InfoText.text = string.Format(UI.FRONTEND.LOADSCREEN.SAVE_TOO_NEW, filename, header.buildVersion, 347957u);
 					loadButton.isInteractable = false;
 					loadButton.GetComponent<ImageToggleState>().SetState(ImageToggleState.State.Disabled);
 				}
 				else if (gameInfo.saveMajorVersion < 7)
 				{
-					InfoText.text = string.Format(UI.FRONTEND.LOADSCREEN.UNSUPPORTED_SAVE_VERSION, filename, gameInfo.saveMajorVersion, gameInfo.saveMinorVersion, 7, 8);
+					InfoText.text = string.Format(UI.FRONTEND.LOADSCREEN.UNSUPPORTED_SAVE_VERSION, filename, gameInfo.saveMajorVersion, gameInfo.saveMinorVersion, 7, 11);
 					loadButton.isInteractable = false;
 					loadButton.GetComponent<ImageToggleState>().SetState(ImageToggleState.State.Disabled);
 				}
@@ -370,7 +369,7 @@ public class LoadScreen : KModalScreen
 					loadButton.isInteractable = true;
 					loadButton.GetComponent<ImageToggleState>().SetState(ImageToggleState.State.Inactive);
 				}
-				if (InfoText.text == string.Empty && gameInfo.isAutoSave)
+				if (InfoText.text == "" && gameInfo.isAutoSave)
 				{
 					InfoText.text = UI.FRONTEND.LOADSCREEN.AUTOSAVEWARNING;
 				}
@@ -408,21 +407,21 @@ public class LoadScreen : KModalScreen
 		SaveGame.GameInfo gameInfo = SaveLoader.LoadHeader(filename, out header);
 		string arg = null;
 		string arg2 = null;
-		if (header.buildVersion > 327401)
+		if (header.buildVersion > 347957)
 		{
 			arg = header.buildVersion.ToString();
-			arg2 = 327401.ToString();
+			arg2 = 347957.ToString();
 		}
 		else if (gameInfo.saveMajorVersion < 7)
 		{
 			arg = $"v{gameInfo.saveMajorVersion}.{gameInfo.saveMinorVersion}";
-			arg2 = $"v{7}.{8}";
+			arg2 = $"v{7}.{11}";
 		}
 		if (!flag)
 		{
 			GameObject parent = (!((UnityEngine.Object)FrontEndManager.Instance == (UnityEngine.Object)null)) ? FrontEndManager.Instance.gameObject : GameScreenManager.Instance.ssOverlayCanvas;
 			ConfirmDialogScreen component = Util.KInstantiateUI(ScreenPrefabs.Instance.ConfirmDialogScreen.gameObject, parent, true).GetComponent<ConfirmDialogScreen>();
-			component.PopupConfirmDialog(string.Format(UI.CRASHSCREEN.LOADFAILED, "Version Mismatch", arg, arg2), null, null, null, null, null, null, null, null);
+			component.PopupConfirmDialog(string.Format(UI.CRASHSCREEN.LOADFAILED, "Version Mismatch", arg, arg2), null, null, null, null, null, null, null, null, true);
 		}
 		else
 		{
@@ -467,7 +466,7 @@ public class LoadScreen : KModalScreen
 			confirmScreen = Util.KInstantiateUI<ConfirmDialogScreen>(ScreenPrefabs.Instance.ConfirmDialogScreen.gameObject, base.gameObject, false);
 			confirmScreen.PopupConfirmDialog(message, action, delegate
 			{
-			}, null, null, null, null, null, null);
+			}, null, null, null, null, null, null, true);
 			confirmScreen.gameObject.SetActive(true);
 		}
 	}

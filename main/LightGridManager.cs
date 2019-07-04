@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -5,57 +6,95 @@ public static class LightGridManager
 {
 	public class LightGridEmitter
 	{
-		public int cell = -1;
-
-		public LightShape shape;
-
-		public float radius = 4f;
-
-		public int intensity = 1;
-
-		public Color colour = Color.white;
-
-		public float falloffRate = 0.5f;
-
-		private List<int> litCells;
-
-		public LightGridEmitter(int cell, List<int> lit_cells, int intensity, float radius, Color colour, LightShape shape, float falloffRate = 0.5f)
+		[Serializable]
+		public struct State : IEquatable<State>
 		{
-			this.cell = cell;
-			this.radius = radius;
-			this.intensity = intensity;
-			this.colour = colour;
-			this.shape = shape;
-			litCells = lit_cells;
-			this.falloffRate = falloffRate;
-		}
+			public int origin;
 
-		public void Add()
-		{
-			Remove();
-			DiscreteShadowCaster.GetVisibleCells(cell, litCells, (int)radius, shape);
-			for (int i = 0; i < litCells.Count; i++)
+			public LightShape shape;
+
+			public float radius;
+
+			public int intensity;
+
+			public float falloffRate;
+
+			public Color colour;
+
+			public static readonly State DEFAULT = new State
 			{
-				int num = litCells[i];
-				int num2 = Mathf.Max(1, Mathf.RoundToInt(falloffRate * (float)Mathf.Max(Grid.GetCellDistance(num, cell), 1)));
-				int num3 = Mathf.Max(0, Grid.LightCount[num] + intensity / num2);
-				Grid.LightCount[num] = num3;
-				previewLux[num] = num3;
+				origin = Grid.InvalidCell,
+				shape = LightShape.Circle,
+				radius = 4f,
+				intensity = 1,
+				falloffRate = 0.5f,
+				colour = Color.white
+			};
+
+			public bool Equals(State rhs)
+			{
+				return origin == rhs.origin && shape == rhs.shape && radius == rhs.radius && intensity == rhs.intensity && falloffRate == rhs.falloffRate && colour == rhs.colour;
 			}
 		}
 
-		public void Remove()
+		private State state = State.DEFAULT;
+
+		private List<int> litCells = new List<int>();
+
+		public void UpdateLitCells()
 		{
-			for (int i = 0; i < litCells.Count; i++)
+			DiscreteShadowCaster.GetVisibleCells(state.origin, litCells, (int)state.radius, state.shape);
+		}
+
+		public void AddToGrid(bool update_lit_cells)
+		{
+			DebugUtil.DevAssert(!update_lit_cells || litCells.Count == 0, "adding an already added emitter");
+			if (update_lit_cells)
 			{
-				int num = litCells[i];
-				int num2 = CalculateFalloff(falloffRate, num, cell);
-				Grid.LightCount[num] = Mathf.Max(0, Grid.LightCount[num] - intensity / num2);
-				previewLux[num] = 0;
+				UpdateLitCells();
+			}
+			foreach (int litCell in litCells)
+			{
+				int num = Mathf.Max(0, Grid.LightCount[litCell] + ComputeLux(litCell));
+				Grid.LightCount[litCell] = num;
+				previewLux[litCell] = num;
+			}
+		}
+
+		public void RemoveFromGrid()
+		{
+			foreach (int litCell in litCells)
+			{
+				Grid.LightCount[litCell] = Mathf.Max(0, Grid.LightCount[litCell] - ComputeLux(litCell));
+				previewLux[litCell] = 0;
 			}
 			litCells.Clear();
 		}
+
+		public bool Refresh(State state, bool force = false)
+		{
+			if (!force && EqualityComparer<State>.Default.Equals(this.state, state))
+			{
+				return false;
+			}
+			RemoveFromGrid();
+			this.state = state;
+			AddToGrid(true);
+			return true;
+		}
+
+		private int ComputeLux(int cell)
+		{
+			return state.intensity / ComputeFalloff(cell);
+		}
+
+		private int ComputeFalloff(int cell)
+		{
+			return CalculateFalloff(state.falloffRate, state.origin, cell);
+		}
 	}
+
+	public const float DEFAULT_FALLOFF_RATE = 0.5f;
 
 	public static List<Tuple<int, int>> previewLightCells = new List<Tuple<int, int>>();
 

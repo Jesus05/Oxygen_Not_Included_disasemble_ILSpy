@@ -23,5 +23,16 @@ namespace TUNING
 		public static float BARELY_EVER_EXPERIENCE = FULL_EXPERIENCE / 0.25f;
 
 		public static float APTITUDE_EXPERIENCE_MULTIPLIER = 0.5f;
+
+		public static int[] SKILL_TIER_MORALE_COST = new int[7]
+		{
+			1,
+			2,
+			3,
+			4,
+			5,
+			6,
+			7
+		};
 	}
 }

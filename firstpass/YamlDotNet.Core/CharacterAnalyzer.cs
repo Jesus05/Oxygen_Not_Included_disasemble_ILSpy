@@ -63,15 +63,15 @@ namespace YamlDotNet.Core
 		public int AsHex(int offset)
 		{
 			char c = buffer.Peek(offset);
-			if (c <= '9')
+			if (c > '9')
 			{
-				return c - 48;
-			}
-			if (c <= 'F')
-			{
+				if (c > 'F')
+				{
+					return c - 97 + 10;
+				}
 				return c - 65 + 10;
 			}
-			return c - 97 + 10;
+			return c - 48;
 		}
 
 		public bool IsSpace(int offset = 0)

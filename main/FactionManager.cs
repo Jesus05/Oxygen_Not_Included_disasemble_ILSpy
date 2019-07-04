@@ -71,10 +71,10 @@ public class FactionManager : KMonoBehaviour
 
 	public Disposition GetDisposition(FactionID of_faction, FactionID to_faction)
 	{
-		if (Instance.GetFaction(of_faction).Dispositions.ContainsKey(to_faction))
+		if (!Instance.GetFaction(of_faction).Dispositions.ContainsKey(to_faction))
 		{
-			return Instance.GetFaction(of_faction).Dispositions[to_faction];
+			return Disposition.Neutral;
 		}
-		return Disposition.Neutral;
+		return Instance.GetFaction(of_faction).Dispositions[to_faction];
 	}
 }

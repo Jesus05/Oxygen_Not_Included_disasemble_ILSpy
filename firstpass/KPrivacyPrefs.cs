@@ -2,7 +2,7 @@ using Klei;
 using System;
 using System.IO;
 
-public class KPrivacyPrefs : YamlIO<KPrivacyPrefs>
+public class KPrivacyPrefs
 {
 	private static KPrivacyPrefs _instance;
 
@@ -44,7 +44,7 @@ public class KPrivacyPrefs : YamlIO<KPrivacyPrefs>
 			{
 				Directory.CreateDirectory(GetDirectory());
 			}
-			instance.Save(GetPath(), null);
+			YamlIO.Save(instance, GetPath(), null);
 		}
 		catch (Exception ex)
 		{
@@ -64,7 +64,7 @@ public class KPrivacyPrefs : YamlIO<KPrivacyPrefs>
 			if (File.Exists(path))
 			{
 				string readText = File.ReadAllText(path);
-				_instance = YamlIO<KPrivacyPrefs>.Parse(readText, null);
+				_instance = YamlIO.Parse<KPrivacyPrefs>(readText, path, null, null);
 				if (_instance == null)
 				{
 					LogError("Exception while loading privacy prefs:" + path);

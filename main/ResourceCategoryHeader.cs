@@ -23,7 +23,7 @@ public class ResourceCategoryHeader : KMonoBehaviour, IPointerEnterHandler, IPoi
 
 	public GameUtil.MeasureUnit Measure;
 
-	public bool IsOpen;
+	public bool IsOpen = false;
 
 	public ImageToggleState expandArrow;
 
@@ -37,11 +37,11 @@ public class ResourceCategoryHeader : KMonoBehaviour, IPointerEnterHandler, IPoi
 
 	public Color TextColor_NonInteractable;
 
-	private string quantityString;
+	private string quantityString = null;
 
-	private float currentQuantity;
+	private float currentQuantity = 0f;
 
-	private bool anyDiscovered;
+	private bool anyDiscovered = false;
 
 	[MyCmpGet]
 	private ToolTip tooltip;
@@ -233,27 +233,36 @@ public class ResourceCategoryHeader : KMonoBehaviour, IPointerEnterHandler, IPoi
 		HashSet<Tag> resources = null;
 		if (WorldInventory.Instance.TryGetDiscoveredResourcesFromTag(ResourceCategoryTag, out resources))
 		{
+			ListPool<Tag, ResourceCategoryHeader>.PooledList pooledList = ListPool<Tag, ResourceCategoryHeader>.Allocate();
 			foreach (Tag item in resources)
 			{
-				anyDiscovered = true;
-				if (!ResourcesDiscovered.ContainsKey(item))
-				{
-					ResourcesDiscovered.Add(item, NewResourceEntry(item, Measure));
-				}
-				float num = WorldInventory.Instance.GetAmount(item);
-				float num2 = (!doExtras) ? 0f : WorldInventory.Instance.GetTotalAmount(item);
-				float num3 = (!doExtras) ? 0f : MaterialNeeds.Instance.GetAmount(item);
+				EdiblesManager.FoodInfo foodInfo = null;
 				if (Measure == GameUtil.MeasureUnit.kcal)
 				{
-					EdiblesManager.FoodInfo foodInfo = Game.Instance.ediblesManager.GetFoodInfo(item.Name);
-					num *= foodInfo.CaloriesPerUnit;
-					num2 *= foodInfo.CaloriesPerUnit;
-					num3 *= foodInfo.CaloriesPerUnit;
+					foodInfo = Game.Instance.ediblesManager.GetFoodInfo(item.Name);
+					if (foodInfo == null)
+					{
+						pooledList.Add(item);
+						continue;
+					}
 				}
-				available += num;
-				total += num2;
-				reserved += num3;
+				anyDiscovered = true;
+				ResourceEntry value = null;
+				if (!ResourcesDiscovered.TryGetValue(item, out value))
+				{
+					value = NewResourceEntry(item, Measure);
+					ResourcesDiscovered.Add(item, value);
+				}
+				value.GetAmounts(foodInfo, doExtras, out float available2, out float total2, out float reserved2);
+				available += available2;
+				total += total2;
+				reserved += reserved2;
 			}
+			foreach (Tag item2 in pooledList)
+			{
+				resources.Remove(item2);
+			}
+			pooledList.Recycle();
 		}
 	}
 

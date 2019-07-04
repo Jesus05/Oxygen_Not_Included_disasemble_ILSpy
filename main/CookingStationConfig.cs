@@ -52,61 +52,61 @@ public class CookingStationConfig : IBuildingConfig
 	{
 		ComplexRecipe.RecipeElement[] array = new ComplexRecipe.RecipeElement[1]
 		{
-			new ComplexRecipe.RecipeElement("MushBar", 1f)
+			new ComplexRecipe.RecipeElement("BasicPlantFood", 3f)
 		};
 		ComplexRecipe.RecipeElement[] array2 = new ComplexRecipe.RecipeElement[1]
 		{
-			new ComplexRecipe.RecipeElement("FriedMushBar".ToTag(), 1f)
+			new ComplexRecipe.RecipeElement("PickledMeal", 1f)
 		};
 		string id = ComplexRecipeManager.MakeRecipeID("CookingStation", array, array2);
 		ComplexRecipe complexRecipe = new ComplexRecipe(id, array, array2);
+		complexRecipe.time = FOOD.RECIPES.SMALL_COOK_TIME;
+		complexRecipe.description = ITEMS.FOOD.PICKLEDMEAL.RECIPEDESC;
+		complexRecipe.nameDisplay = ComplexRecipe.RecipeNameDisplay.Result;
+		complexRecipe.fabricators = new List<Tag>
+		{
+			"CookingStation"
+		};
+		complexRecipe.sortOrder = 21;
+		PickledMealConfig.recipe = complexRecipe;
+		ComplexRecipe.RecipeElement[] array3 = new ComplexRecipe.RecipeElement[1]
+		{
+			new ComplexRecipe.RecipeElement("MushBar", 1f)
+		};
+		ComplexRecipe.RecipeElement[] array4 = new ComplexRecipe.RecipeElement[1]
+		{
+			new ComplexRecipe.RecipeElement("FriedMushBar".ToTag(), 1f)
+		};
+		string id2 = ComplexRecipeManager.MakeRecipeID("CookingStation", array3, array4);
+		complexRecipe = new ComplexRecipe(id2, array3, array4);
 		complexRecipe.time = FOOD.RECIPES.STANDARD_COOK_TIME;
 		complexRecipe.description = ITEMS.FOOD.FRIEDMUSHBAR.RECIPEDESC;
-		complexRecipe.useResultAsDescription = true;
+		complexRecipe.nameDisplay = ComplexRecipe.RecipeNameDisplay.Result;
 		complexRecipe.fabricators = new List<Tag>
 		{
 			"CookingStation"
 		};
 		complexRecipe.sortOrder = 1;
 		FriedMushBarConfig.recipe = complexRecipe;
-		ComplexRecipe.RecipeElement[] array3 = new ComplexRecipe.RecipeElement[1]
-		{
-			new ComplexRecipe.RecipeElement("ColdWheatSeed", 3f)
-		};
-		ComplexRecipe.RecipeElement[] array4 = new ComplexRecipe.RecipeElement[1]
-		{
-			new ComplexRecipe.RecipeElement("ColdWheatBread", 1f)
-		};
-		string id2 = ComplexRecipeManager.MakeRecipeID("CookingStation", array3, array4);
-		complexRecipe = new ComplexRecipe(id2, array3, array4);
-		complexRecipe.time = FOOD.RECIPES.STANDARD_COOK_TIME;
-		complexRecipe.description = ITEMS.FOOD.COLDWHEATBREAD.RECIPEDESC;
-		complexRecipe.useResultAsDescription = true;
-		complexRecipe.fabricators = new List<Tag>
-		{
-			"CookingStation"
-		};
-		complexRecipe.sortOrder = 50;
-		ColdWheatBreadConfig.recipe = complexRecipe;
 		ComplexRecipe.RecipeElement[] array5 = new ComplexRecipe.RecipeElement[1]
 		{
-			new ComplexRecipe.RecipeElement("RawEgg", 1f)
+			new ComplexRecipe.RecipeElement(MushroomConfig.ID, 1f)
 		};
 		ComplexRecipe.RecipeElement[] array6 = new ComplexRecipe.RecipeElement[1]
 		{
-			new ComplexRecipe.RecipeElement("CookedEgg", 1f)
+			new ComplexRecipe.RecipeElement("FriedMushroom", 1f)
 		};
 		string id3 = ComplexRecipeManager.MakeRecipeID("CookingStation", array5, array6);
 		complexRecipe = new ComplexRecipe(id3, array5, array6);
 		complexRecipe.time = FOOD.RECIPES.STANDARD_COOK_TIME;
-		complexRecipe.description = ITEMS.FOOD.COOKEDEGG.RECIPEDESC;
-		complexRecipe.useResultAsDescription = true;
+		complexRecipe.description = ITEMS.FOOD.FRIEDMUSHROOM.RECIPEDESC;
+		complexRecipe.nameDisplay = ComplexRecipe.RecipeNameDisplay.Result;
 		complexRecipe.fabricators = new List<Tag>
 		{
 			"CookingStation"
 		};
-		complexRecipe.sortOrder = 1;
-		CookedEggConfig.recipe = complexRecipe;
+		complexRecipe.sortOrder = 20;
+		FriedMushroomConfig.recipe = complexRecipe;
 		ComplexRecipe.RecipeElement[] array7 = new ComplexRecipe.RecipeElement[1]
 		{
 			new ComplexRecipe.RecipeElement(PrickleFruitConfig.ID, 1f)
@@ -119,111 +119,51 @@ public class CookingStationConfig : IBuildingConfig
 		complexRecipe = new ComplexRecipe(id4, array7, array8);
 		complexRecipe.time = FOOD.RECIPES.STANDARD_COOK_TIME;
 		complexRecipe.description = ITEMS.FOOD.GRILLEDPRICKLEFRUIT.RECIPEDESC;
-		complexRecipe.useResultAsDescription = true;
+		complexRecipe.nameDisplay = ComplexRecipe.RecipeNameDisplay.Result;
 		complexRecipe.fabricators = new List<Tag>
 		{
 			"CookingStation"
 		};
 		complexRecipe.sortOrder = 20;
 		GrilledPrickleFruitConfig.recipe = complexRecipe;
-		ComplexRecipe.RecipeElement[] array9 = new ComplexRecipe.RecipeElement[2]
+		ComplexRecipe.RecipeElement[] array9 = new ComplexRecipe.RecipeElement[1]
 		{
-			new ComplexRecipe.RecipeElement(PrickleFruitConfig.ID, 2f),
-			new ComplexRecipe.RecipeElement(SpiceNutConfig.ID, 2f)
+			new ComplexRecipe.RecipeElement("ColdWheatSeed", 3f)
 		};
 		ComplexRecipe.RecipeElement[] array10 = new ComplexRecipe.RecipeElement[1]
 		{
-			new ComplexRecipe.RecipeElement("Salsa", 1f)
+			new ComplexRecipe.RecipeElement("ColdWheatBread", 1f)
 		};
 		string id5 = ComplexRecipeManager.MakeRecipeID("CookingStation", array9, array10);
 		complexRecipe = new ComplexRecipe(id5, array9, array10);
 		complexRecipe.time = FOOD.RECIPES.STANDARD_COOK_TIME;
-		complexRecipe.description = ITEMS.FOOD.SALSA.RECIPEDESC;
-		complexRecipe.useResultAsDescription = true;
+		complexRecipe.description = ITEMS.FOOD.COLDWHEATBREAD.RECIPEDESC;
+		complexRecipe.nameDisplay = ComplexRecipe.RecipeNameDisplay.Result;
 		complexRecipe.fabricators = new List<Tag>
 		{
 			"CookingStation"
 		};
-		complexRecipe.sortOrder = 101;
-		SalsaConfig.recipe = complexRecipe;
+		complexRecipe.sortOrder = 50;
+		ColdWheatBreadConfig.recipe = complexRecipe;
 		ComplexRecipe.RecipeElement[] array11 = new ComplexRecipe.RecipeElement[1]
 		{
-			new ComplexRecipe.RecipeElement("BasicPlantFood", 3f)
+			new ComplexRecipe.RecipeElement("RawEgg", 1f)
 		};
 		ComplexRecipe.RecipeElement[] array12 = new ComplexRecipe.RecipeElement[1]
 		{
-			new ComplexRecipe.RecipeElement("PickledMeal", 1f)
+			new ComplexRecipe.RecipeElement("CookedEgg", 1f)
 		};
 		string id6 = ComplexRecipeManager.MakeRecipeID("CookingStation", array11, array12);
 		complexRecipe = new ComplexRecipe(id6, array11, array12);
-		complexRecipe.time = FOOD.RECIPES.SMALL_COOK_TIME;
-		complexRecipe.description = ITEMS.FOOD.PICKLEDMEAL.RECIPEDESC;
-		complexRecipe.useResultAsDescription = true;
-		complexRecipe.fabricators = new List<Tag>
-		{
-			"CookingStation"
-		};
-		complexRecipe.sortOrder = 21;
-		PickledMealConfig.recipe = complexRecipe;
-		ComplexRecipe.RecipeElement[] array13 = new ComplexRecipe.RecipeElement[1]
-		{
-			new ComplexRecipe.RecipeElement(MushroomConfig.ID, 1f)
-		};
-		ComplexRecipe.RecipeElement[] array14 = new ComplexRecipe.RecipeElement[1]
-		{
-			new ComplexRecipe.RecipeElement("FriedMushroom", 1f)
-		};
-		string id7 = ComplexRecipeManager.MakeRecipeID("CookingStation", array13, array14);
-		complexRecipe = new ComplexRecipe(id7, array13, array14);
 		complexRecipe.time = FOOD.RECIPES.STANDARD_COOK_TIME;
-		complexRecipe.description = ITEMS.FOOD.FRIEDMUSHROOM.RECIPEDESC;
-		complexRecipe.useResultAsDescription = true;
+		complexRecipe.description = ITEMS.FOOD.COOKEDEGG.RECIPEDESC;
+		complexRecipe.nameDisplay = ComplexRecipe.RecipeNameDisplay.Result;
 		complexRecipe.fabricators = new List<Tag>
 		{
 			"CookingStation"
 		};
-		complexRecipe.sortOrder = 20;
-		FriedMushroomConfig.recipe = complexRecipe;
-		ComplexRecipe.RecipeElement[] array15 = new ComplexRecipe.RecipeElement[2]
-		{
-			new ComplexRecipe.RecipeElement("Meat", 2f),
-			new ComplexRecipe.RecipeElement(SpiceNutConfig.ID, 1f)
-		};
-		ComplexRecipe.RecipeElement[] array16 = new ComplexRecipe.RecipeElement[1]
-		{
-			new ComplexRecipe.RecipeElement("CookedMeat", 1f)
-		};
-		string id8 = ComplexRecipeManager.MakeRecipeID("CookingStation", array15, array16);
-		complexRecipe = new ComplexRecipe(id8, array15, array16);
-		complexRecipe.time = FOOD.RECIPES.STANDARD_COOK_TIME;
-		complexRecipe.description = ITEMS.FOOD.COOKEDMEAT.RECIPEDESC;
-		complexRecipe.useResultAsDescription = true;
-		complexRecipe.fabricators = new List<Tag>
-		{
-			"CookingStation"
-		};
-		complexRecipe.sortOrder = 21;
-		CookedMeatConfig.recipe = complexRecipe;
-		ComplexRecipe.RecipeElement[] array17 = new ComplexRecipe.RecipeElement[2]
-		{
-			new ComplexRecipe.RecipeElement("ColdWheatSeed", 10f),
-			new ComplexRecipe.RecipeElement(SpiceNutConfig.ID, 1f)
-		};
-		ComplexRecipe.RecipeElement[] array18 = new ComplexRecipe.RecipeElement[1]
-		{
-			new ComplexRecipe.RecipeElement("SpiceBread", 1f)
-		};
-		string id9 = ComplexRecipeManager.MakeRecipeID("CookingStation", array17, array18);
-		complexRecipe = new ComplexRecipe(id9, array17, array18);
-		complexRecipe.time = FOOD.RECIPES.STANDARD_COOK_TIME;
-		complexRecipe.description = ITEMS.FOOD.SPICEBREAD.RECIPEDESC;
-		complexRecipe.useResultAsDescription = true;
-		complexRecipe.fabricators = new List<Tag>
-		{
-			"CookingStation"
-		};
-		complexRecipe.sortOrder = 100;
-		SpiceBreadConfig.recipe = complexRecipe;
+		complexRecipe.sortOrder = 1;
+		CookedEggConfig.recipe = complexRecipe;
 	}
 
 	public override void DoPostConfigureComplete(GameObject go)

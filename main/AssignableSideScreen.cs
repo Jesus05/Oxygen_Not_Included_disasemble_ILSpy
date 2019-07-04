@@ -24,7 +24,7 @@ public class AssignableSideScreen : SideScreenContent
 
 	private Comparison<IAssignableIdentity> activeSortFunction;
 
-	private bool sortReversed;
+	private bool sortReversed = false;
 
 	private int targetAssignableSubscriptionHandle = -1;
 
@@ -42,11 +42,11 @@ public class AssignableSideScreen : SideScreenContent
 
 	public override string GetTitle()
 	{
-		if ((UnityEngine.Object)targetAssignable != (UnityEngine.Object)null)
+		if (!((UnityEngine.Object)targetAssignable != (UnityEngine.Object)null))
 		{
-			return string.Format(base.GetTitle(), targetAssignable.GetProperName());
+			return base.GetTitle();
 		}
-		return base.GetTitle();
+		return string.Format(base.GetTitle(), targetAssignable.GetProperName());
 	}
 
 	protected override void OnSpawn()
@@ -196,16 +196,16 @@ public class AssignableSideScreen : SideScreenContent
 		{
 			int num = 0;
 			num = targetAssignable.CanAssignTo(i1).CompareTo(targetAssignable.CanAssignTo(i2));
-			if (num != 0)
+			if (num == 0)
 			{
-				return num * -1;
-			}
-			num = identityRowMap[i1].currentState.CompareTo(identityRowMap[i2].currentState);
-			if (num != 0)
-			{
+				num = identityRowMap[i1].currentState.CompareTo(identityRowMap[i2].currentState);
+				if (num == 0)
+				{
+					return i1.GetProperName().CompareTo(i2.GetProperName());
+				}
 				return num * ((!sortReversed) ? 1 : (-1));
 			}
-			return i1.GetProperName().CompareTo(i2.GetProperName());
+			return num * -1;
 		};
 		ExecuteSort(sortFunction);
 	}

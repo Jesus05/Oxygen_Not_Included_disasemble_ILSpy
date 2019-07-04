@@ -73,11 +73,11 @@ public class SteamTurbine : Generator
 
 	public class Instance : GameStateMachine<States, Instance, SteamTurbine, object>.GameInstance
 	{
-		public bool insufficientMass;
+		public bool insufficientMass = false;
 
-		public bool insufficientTemperature;
+		public bool insufficientTemperature = false;
 
-		public bool buildingTooHot;
+		public bool buildingTooHot = false;
 
 		private Guid inputBlockedHandle = Guid.Empty;
 
@@ -224,16 +224,16 @@ public class SteamTurbine : Generator
 	private static readonly HashedString TINT_SYMBOL = new HashedString("meter_fill");
 
 	[Serialize]
-	private float storedMass;
+	private float storedMass = 0f;
 
 	[Serialize]
-	private float storedTemperature;
+	private float storedTemperature = 0f;
 
 	[Serialize]
 	private byte diseaseIdx = byte.MaxValue;
 
 	[Serialize]
-	private int diseaseCount;
+	private int diseaseCount = 0;
 
 	private static StatusItem inputBlockedStatusItem;
 
@@ -318,7 +318,6 @@ public class SteamTurbine : Generator
 		{
 			int x = i - (def.WidthInCells - 1) / 2;
 			srcCells[i] = Grid.OffsetCell(cell, new CellOffset(x, -2));
-			int num = Grid.OffsetCell(cell, new CellOffset(x, 0));
 		}
 		smi = new Instance(this);
 		smi.StartSM();
@@ -335,13 +334,6 @@ public class SteamTurbine : Generator
 		if (smi != null)
 		{
 			smi.StopSM("cleanup");
-		}
-		BuildingDef def = GetComponent<BuildingComplete>().Def;
-		int cell = Grid.PosToCell(this);
-		for (int i = 0; i < def.WidthInCells; i++)
-		{
-			int x = i - (def.WidthInCells - 1) / 2;
-			int num = Grid.OffsetCell(cell, new CellOffset(x, 0));
 		}
 		Game.Instance.massEmitCallbackManager.Release(simEmitCBHandle, "SteamTurbine");
 		simEmitCBHandle.Clear();
@@ -415,18 +407,18 @@ public class SteamTurbine : Generator
 
 	public static void InitializeStatusItems()
 	{
-		activeStatusItem = new StatusItem("TURBINE_ACTIVE", "BUILDING", string.Empty, StatusItem.IconType.Info, NotificationType.Good, false, OverlayModes.None.ID, true, 63486);
-		inputBlockedStatusItem = new StatusItem("TURBINE_BLOCKED_INPUT", "BUILDING", "status_item_vent_disabled", StatusItem.IconType.Custom, NotificationType.BadMinor, false, OverlayModes.None.ID, true, 63486);
-		inputPartiallyBlockedStatusItem = new StatusItem("TURBINE_PARTIALLY_BLOCKED_INPUT", "BUILDING", string.Empty, StatusItem.IconType.Info, NotificationType.BadMinor, false, OverlayModes.None.ID, true, 63486);
+		activeStatusItem = new StatusItem("TURBINE_ACTIVE", "BUILDING", "", StatusItem.IconType.Info, NotificationType.Good, false, OverlayModes.None.ID, true, 129022);
+		inputBlockedStatusItem = new StatusItem("TURBINE_BLOCKED_INPUT", "BUILDING", "status_item_vent_disabled", StatusItem.IconType.Custom, NotificationType.BadMinor, false, OverlayModes.None.ID, true, 129022);
+		inputPartiallyBlockedStatusItem = new StatusItem("TURBINE_PARTIALLY_BLOCKED_INPUT", "BUILDING", "", StatusItem.IconType.Info, NotificationType.BadMinor, false, OverlayModes.None.ID, true, 129022);
 		inputPartiallyBlockedStatusItem.resolveStringCallback = ResolvePartialBlockedStatus;
-		insufficientMassStatusItem = new StatusItem("TURBINE_INSUFFICIENT_MASS", "BUILDING", "status_item_resource_unavailable", StatusItem.IconType.Custom, NotificationType.BadMinor, false, OverlayModes.Power.ID, true, 63486);
+		insufficientMassStatusItem = new StatusItem("TURBINE_INSUFFICIENT_MASS", "BUILDING", "status_item_resource_unavailable", StatusItem.IconType.Custom, NotificationType.BadMinor, false, OverlayModes.Power.ID, true, 129022);
 		insufficientMassStatusItem.resolveStringCallback = ResolveStrings;
-		buildingTooHotItem = new StatusItem("TURBINE_TOO_HOT", "BUILDING", "status_item_plant_temperature", StatusItem.IconType.Custom, NotificationType.BadMinor, false, OverlayModes.None.ID, true, 63486);
+		buildingTooHotItem = new StatusItem("TURBINE_TOO_HOT", "BUILDING", "status_item_plant_temperature", StatusItem.IconType.Custom, NotificationType.BadMinor, false, OverlayModes.None.ID, true, 129022);
 		buildingTooHotItem.resolveTooltipCallback = ResolveStrings;
-		insufficientTemperatureStatusItem = new StatusItem("TURBINE_INSUFFICIENT_TEMPERATURE", "BUILDING", "status_item_plant_temperature", StatusItem.IconType.Custom, NotificationType.BadMinor, false, OverlayModes.Power.ID, true, 63486);
+		insufficientTemperatureStatusItem = new StatusItem("TURBINE_INSUFFICIENT_TEMPERATURE", "BUILDING", "status_item_plant_temperature", StatusItem.IconType.Custom, NotificationType.BadMinor, false, OverlayModes.Power.ID, true, 129022);
 		insufficientTemperatureStatusItem.resolveStringCallback = ResolveStrings;
 		insufficientTemperatureStatusItem.resolveTooltipCallback = ResolveStrings;
-		activeWattageStatusItem = new StatusItem("TURBINE_ACTIVE_WATTAGE", "BUILDING", string.Empty, StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.Power.ID, true, 63486);
+		activeWattageStatusItem = new StatusItem("TURBINE_ACTIVE_WATTAGE", "BUILDING", "", StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.Power.ID, true, 129022);
 		activeWattageStatusItem.resolveStringCallback = ResolveWattageStatus;
 	}
 
@@ -483,11 +475,14 @@ public class SteamTurbine : Generator
 						value = Mathf.Min(num2 * (num / pumpKGRate), maxWattage * dt);
 						float num3 = HeatFromCoolingSteam(component);
 						float num4 = num3 * (num / component.Mass);
+						float num5 = num / component.Mass;
+						int num6 = Mathf.RoundToInt((float)component.DiseaseCount * num5);
 						component.Mass -= num;
+						component.ModifyDiseaseCount(-num6, "SteamTurbine.EnergySim200ms");
 						float display_dt = (!(lastSampleTime > 0f)) ? 1f : (Time.time - lastSampleTime);
 						lastSampleTime = Time.time;
 						GameComps.StructureTemperatures.ProduceEnergy(structureTemperature, num4 * wasteHeatToTurbinePercent, BUILDINGS.PREFABS.STEAMTURBINE2.HEAT_SOURCE, display_dt);
-						liquidStorage.AddLiquid(destElem, num, outputElementTemperature, component.DiseaseIdx, Mathf.RoundToInt((float)component.DiseaseCount * (num / component.Mass)), false, true);
+						liquidStorage.AddLiquid(destElem, num, outputElementTemperature, component.DiseaseIdx, num6, false, true);
 					}
 				}
 			}

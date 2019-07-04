@@ -108,7 +108,7 @@ public class AttackChore : Chore<AttackChore.StatesInstance>
 	private MultitoolController.Instance multiTool;
 
 	public AttackChore(IStateMachineTarget target, GameObject enemy)
-		: base(Db.Get().ChoreTypes.Attack, target, target.GetComponent<ChoreProvider>(), false, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.basic, 5, false, true, 0, (Tag[])null, false, ReportManager.ReportType.WorkTime)
+		: base(Db.Get().ChoreTypes.Attack, target, target.GetComponent<ChoreProvider>(), false, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.basic, 5, false, true, 0, false, ReportManager.ReportType.WorkTime)
 	{
 		base.smi = new StatesInstance(this);
 		base.smi.sm.attackTarget.Set(enemy, base.smi);
@@ -123,12 +123,12 @@ public class AttackChore : Chore<AttackChore.StatesInstance>
 	public string GetHitAnim()
 	{
 		Workable component = base.smi.sm.attackTarget.Get(base.smi).gameObject.GetComponent<Workable>();
-		if ((bool)component)
+		if (!(bool)component)
 		{
-			string text = MultitoolController.GetAnimationStrings(component, gameObject.GetComponent<Worker>(), "hit")[1];
-			return text.Replace("_loop", string.Empty);
+			return "hit";
 		}
-		return "hit";
+		string text = MultitoolController.GetAnimationStrings(component, gameObject.GetComponent<Worker>(), "hit")[1];
+		return text.Replace("_loop", "");
 	}
 
 	public void OnTargetMoved(object data)

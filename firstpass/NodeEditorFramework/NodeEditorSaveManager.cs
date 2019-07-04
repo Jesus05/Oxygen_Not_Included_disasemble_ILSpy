@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using UnityEngine;
 
 namespace NodeEditorFramework
@@ -11,9 +10,6 @@ namespace NodeEditorFramework
 	public static class NodeEditorSaveManager
 	{
 		private static GameObject sceneSaveHolder;
-
-		[CompilerGenerated]
-		private static Func<ScriptableObject, ScriptableObject> _003C_003Ef__mg_0024cache0;
 
 		private static void FetchSceneSaveHolder()
 		{
@@ -67,24 +63,24 @@ namespace NodeEditorFramework
 
 		public static NodeCanvas LoadSceneNodeCanvas(string saveName, bool createWorkingCopy)
 		{
-			if (string.IsNullOrEmpty(saveName))
+			if (!string.IsNullOrEmpty(saveName))
 			{
-				Debug.LogError("Cannot load Canvas from scene: No save name specified!");
+				NodeCanvasSceneSave nodeCanvasSceneSave = FindSceneSave(saveName);
+				if (!((UnityEngine.Object)nodeCanvasSceneSave == (UnityEngine.Object)null))
+				{
+					NodeCanvas nodeCanvas = nodeCanvasSceneSave.savedNodeCanvas;
+					nodeCanvas.livesInScene = true;
+					if (createWorkingCopy)
+					{
+						nodeCanvas = CreateWorkingCopy(nodeCanvas, true);
+					}
+					Uncompress(ref nodeCanvas);
+					return nodeCanvas;
+				}
 				return null;
 			}
-			NodeCanvasSceneSave nodeCanvasSceneSave = FindSceneSave(saveName);
-			if ((UnityEngine.Object)nodeCanvasSceneSave == (UnityEngine.Object)null)
-			{
-				return null;
-			}
-			NodeCanvas nodeCanvas = nodeCanvasSceneSave.savedNodeCanvas;
-			nodeCanvas.livesInScene = true;
-			if (createWorkingCopy)
-			{
-				nodeCanvas = CreateWorkingCopy(nodeCanvas, true);
-			}
-			Uncompress(ref nodeCanvas);
-			return nodeCanvas;
+			Debug.LogError("Cannot load Canvas from scene: No save name specified!");
+			return null;
 		}
 
 		public static void SaveNodeCanvas(string path, NodeCanvas nodeCanvas, bool createWorkingCopy)
@@ -215,28 +211,28 @@ namespace NodeEditorFramework
 
 		private static NodeEditorState[] CreateWorkingCopy(NodeEditorState[] editorStates, NodeCanvas associatedNodeCanvas)
 		{
-			if (editorStates == null)
+			if (editorStates != null)
 			{
-				return new NodeEditorState[0];
-			}
-			editorStates = (NodeEditorState[])editorStates.Clone();
-			for (int i = 0; i < editorStates.Length; i++)
-			{
-				if (!((UnityEngine.Object)editorStates[i] == (UnityEngine.Object)null))
+				editorStates = (NodeEditorState[])editorStates.Clone();
+				for (int i = 0; i < editorStates.Length; i++)
 				{
-					NodeEditorState nodeEditorState = editorStates[i] = Clone(editorStates[i]);
-					if ((UnityEngine.Object)nodeEditorState == (UnityEngine.Object)null)
+					if (!((UnityEngine.Object)editorStates[i] == (UnityEngine.Object)null))
 					{
-						Debug.LogError("Failed to create a working copy for an NodeEditorState during the loading process of " + associatedNodeCanvas.name + "!");
-					}
-					else
-					{
-						nodeEditorState.canvas = associatedNodeCanvas;
+						NodeEditorState nodeEditorState = editorStates[i] = Clone(editorStates[i]);
+						if ((UnityEngine.Object)nodeEditorState == (UnityEngine.Object)null)
+						{
+							Debug.LogError("Failed to create a working copy for an NodeEditorState during the loading process of " + associatedNodeCanvas.name + "!");
+						}
+						else
+						{
+							nodeEditorState.canvas = associatedNodeCanvas;
+						}
 					}
 				}
+				associatedNodeCanvas.editorStates = editorStates;
+				return editorStates;
 			}
-			associatedNodeCanvas.editorStates = editorStates;
-			return editorStates;
+			return new NodeEditorState[0];
 		}
 
 		private static T Clone<T>(T SO) where T : ScriptableObject
@@ -250,33 +246,34 @@ namespace NodeEditorFramework
 		private static void AddClonedSOs(List<ScriptableObject> scriptableObjects, List<ScriptableObject> clonedScriptableObjects, ScriptableObject[] initialSOs)
 		{
 			scriptableObjects.AddRange(initialSOs);
-			clonedScriptableObjects.AddRange(initialSOs.Select(Clone));
+			clonedScriptableObjects.AddRange(from so in initialSOs
+			select Clone(so));
 		}
 
 		private static T AddClonedSO<T>(List<ScriptableObject> scriptableObjects, List<ScriptableObject> clonedScriptableObjects, T initialSO) where T : ScriptableObject
 		{
-			if ((UnityEngine.Object)initialSO == (UnityEngine.Object)null)
+			if (!((UnityEngine.Object)initialSO == (UnityEngine.Object)null))
 			{
-				return (T)null;
+				scriptableObjects.Add((ScriptableObject)initialSO);
+				T val = Clone(initialSO);
+				clonedScriptableObjects.Add((ScriptableObject)val);
+				return val;
 			}
-			scriptableObjects.Add((ScriptableObject)initialSO);
-			T val = Clone(initialSO);
-			clonedScriptableObjects.Add((ScriptableObject)val);
-			return val;
+			return (T)null;
 		}
 
 		private static T ReplaceSO<T>(List<ScriptableObject> scriptableObjects, List<ScriptableObject> clonedScriptableObjects, T initialSO) where T : ScriptableObject
 		{
-			if ((UnityEngine.Object)initialSO == (UnityEngine.Object)null)
+			if (!((UnityEngine.Object)initialSO == (UnityEngine.Object)null))
 			{
-				return (T)null;
+				int num = scriptableObjects.IndexOf((ScriptableObject)initialSO);
+				if (num == -1)
+				{
+					Debug.LogError("GetWorkingCopy: ScriptableObject " + initialSO.name + " was not copied before! It will be null!");
+				}
+				return (num != -1) ? ((T)clonedScriptableObjects[num]) : ((T)null);
 			}
-			int num = scriptableObjects.IndexOf((ScriptableObject)initialSO);
-			if (num == -1)
-			{
-				Debug.LogError("GetWorkingCopy: ScriptableObject " + initialSO.name + " was not copied before! It will be null!");
-			}
-			return (num != -1) ? ((T)clonedScriptableObjects[num]) : ((T)null);
+			return (T)null;
 		}
 
 		public static NodeEditorState ExtractEditorState(NodeCanvas canvas, string stateName)

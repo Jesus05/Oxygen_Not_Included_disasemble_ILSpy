@@ -7,6 +7,8 @@ namespace Klei.AI
 	{
 		public const string ID = "ZombieSickness";
 
+		public const string RECOVERY_ID = "ZombieSicknessRecovery";
+
 		public const int ATTRIBUTE_PENALTY = -10;
 
 		public ZombieSickness()
@@ -14,7 +16,7 @@ namespace Klei.AI
 			{
 				InfectionVector.Inhalation,
 				InfectionVector.Contact
-			}, 10800f)
+			}, 10800f, "ZombieSicknessRecovery")
 		{
 			AddSicknessComponent(new CustomSickEffectSickness("spore_fx_kanim", "working_loop"));
 			AddSicknessComponent(new AnimatedSickness(new HashedString[2]

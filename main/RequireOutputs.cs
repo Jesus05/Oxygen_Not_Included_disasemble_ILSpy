@@ -10,7 +10,7 @@ public class RequireOutputs : KMonoBehaviour
 	[MyCmpReq]
 	private Operational operational;
 
-	public bool ignoreFullPipe;
+	public bool ignoreFullPipe = false;
 
 	private int utilityCell;
 
@@ -24,7 +24,7 @@ public class RequireOutputs : KMonoBehaviour
 
 	private bool previouslyHadRoom = true;
 
-	private bool connected;
+	private bool connected = false;
 
 	private Guid hasPipeGuid;
 
@@ -96,17 +96,17 @@ public class RequireOutputs : KMonoBehaviour
 
 	private bool OutputPipeIsEmpty()
 	{
-		if (ignoreFullPipe)
+		if (!ignoreFullPipe)
 		{
-			return true;
+			bool result = true;
+			if (connected)
+			{
+				IConduitFlow conduitFlow = GetConduitFlow();
+				result = conduitFlow.IsConduitEmpty(utilityCell);
+			}
+			return result;
 		}
-		bool result = true;
-		if (connected)
-		{
-			IConduitFlow conduitFlow = GetConduitFlow();
-			result = conduitFlow.IsConduitEmpty(utilityCell);
-		}
-		return result;
+		return true;
 	}
 
 	private void UpdatePipeState(float dt)

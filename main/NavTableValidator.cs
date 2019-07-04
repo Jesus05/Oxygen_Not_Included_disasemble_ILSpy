@@ -25,19 +25,19 @@ public class NavTableValidator
 	protected static bool IsCellPassable(int cell, bool is_dupe)
 	{
 		Grid.BuildFlags buildFlags = Grid.BuildMasks[cell] & (Grid.BuildFlags.Solid | Grid.BuildFlags.DupePassable | Grid.BuildFlags.DupeImpassable | Grid.BuildFlags.CritterImpassable);
-		if (buildFlags == (Grid.BuildFlags)0)
+		if (buildFlags != 0)
 		{
-			return true;
-		}
-		if (is_dupe)
-		{
-			if ((buildFlags & Grid.BuildFlags.DupeImpassable) != 0)
+			if (!is_dupe)
 			{
-				return false;
+				return (buildFlags & (Grid.BuildFlags.Solid | Grid.BuildFlags.CritterImpassable)) == (Grid.BuildFlags)0;
 			}
-			return (buildFlags & Grid.BuildFlags.Solid) == (Grid.BuildFlags)0 || (buildFlags & Grid.BuildFlags.DupePassable) != (Grid.BuildFlags)0;
+			if ((buildFlags & Grid.BuildFlags.DupeImpassable) == (Grid.BuildFlags)0)
+			{
+				return (buildFlags & Grid.BuildFlags.Solid) == (Grid.BuildFlags)0 || (buildFlags & Grid.BuildFlags.DupePassable) != (Grid.BuildFlags)0;
+			}
+			return false;
 		}
-		return (buildFlags & (Grid.BuildFlags.Solid | Grid.BuildFlags.CritterImpassable)) == (Grid.BuildFlags)0;
+		return true;
 	}
 
 	public virtual void UpdateCell(int cell, NavTable nav_table, CellOffset[] bounding_offsets)

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <ProjectGuid>{6CF9BCE6-FE7E-4404-899F-FB335404086A}</ProjectGuid>
+    <ProjectGuid>{674AC16F-1A87-4D82-B47F-E796467FBB95}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <OutputType>Library</OutputType>
@@ -455,6 +455,7 @@
     <Compile Include="IInputHandler.cs" />
     <Compile Include="ImageToggleState.cs" />
     <Compile Include="ImageToggleStateThrobber.cs" />
+    <Compile Include="IMerge.cs" />
     <Compile Include="InputEventType.cs" />
     <Compile Include="IReader.cs" />
     <Compile Include="IRender1000ms.cs" />
@@ -517,17 +518,17 @@
     <Compile Include="KLayoutElement.cs" />
     <Compile Include="KleiAccount.cs" />
     <Compile Include="KleiMetrics.cs" />
+    <Compile Include="Klei\AliasDirectory.cs" />
     <Compile Include="Klei\CSVReader.cs" />
-    <Compile Include="Klei\FSUtil.cs" />
+    <Compile Include="Klei\FileHandle.cs" />
+    <Compile Include="Klei\FileSystem.cs" />
     <Compile Include="Klei\GenericGameSettings.cs" />
-    <Compile Include="Klei\IFileSystem.cs" />
-    <Compile Include="Klei\LayeredFileSystem.cs" />
-    <Compile Include="Klei\MemoryFileSystem.cs" />
+    <Compile Include="Klei\IFileDirectory.cs" />
+    <Compile Include="Klei\MemoryFileDirectory.cs" />
     <Compile Include="Klei\MeshCreator.cs" />
-    <Compile Include="Klei\PrefixFileSystem.cs" />
-    <Compile Include="Klei\StandardFileSystem.cs" />
+    <Compile Include="Klei\RootDirectory.cs" />
     <Compile Include="Klei\YamlIO.cs" />
-    <Compile Include="Klei\ZipFileSystem.cs" />
+    <Compile Include="Klei\ZipFileDirectory.cs" />
     <Compile Include="KMonoBehaviour.cs" />
     <Compile Include="KMonoBehaviourExtensions.cs" />
     <Compile Include="KNumberInputField.cs" />
@@ -751,6 +752,7 @@
     <Compile Include="NodeEditorFramework\NodeSide.cs" />
     <Compile Include="NodeEditorFramework\NodeTypes.cs" />
     <Compile Include="NodeEditorFramework\TypeData.cs" />
+    <Compile Include="ObjectCloner\SerializingCloner.cs" />
     <Compile Include="OneShotSoundParameterUpdater.cs" />
     <Compile Include="Pair.cs" />
     <Compile Include="PerformanceMonitor.cs" />
@@ -780,6 +782,7 @@
     <Compile Include="ProcGen\Arc.cs" />
     <Compile Include="ProcGen\BiomeSettings.cs" />
     <Compile Include="ProcGen\ChangeFloats.cs" />
+    <Compile Include="ProcGen\ComposableDictionary.cs" />
     <Compile Include="ProcGen\DefaultSettings.cs" />
     <Compile Include="ProcGen\ElementChoiceGroup.cs" />
     <Compile Include="ProcGen\Feature.cs" />
@@ -792,32 +795,30 @@
     <Compile Include="ProcGen\Mob.cs" />
     <Compile Include="ProcGen\MobReference.cs" />
     <Compile Include="ProcGen\MobSettings.cs" />
+    <Compile Include="ProcGen\MutatedWorldData.cs" />
     <Compile Include="ProcGen\Node.cs" />
     <Compile Include="ProcGen\Path.cs" />
     <Compile Include="ProcGen\River.cs" />
-    <Compile Include="ProcGen\Rivers.cs" />
     <Compile Include="ProcGen\Room.cs" />
-    <Compile Include="ProcGen\RoomDescriptions.cs" />
     <Compile Include="ProcGen\SampleDescriber.cs" />
     <Compile Include="ProcGen\Segment.cs" />
     <Compile Include="ProcGen\SettingsCache.cs" />
     <Compile Include="ProcGen\SubWorld.cs" />
-    <Compile Include="ProcGen\SubWorldFile.cs" />
     <Compile Include="ProcGen\Temperature.cs" />
-    <Compile Include="ProcGen\Temperatures.cs" />
     <Compile Include="ProcGen\TerrainElementBandSettings.cs" />
-    <Compile Include="ProcGen\TerrainFeature.cs" />
-    <Compile Include="ProcGen\TerrainFeatureSettings.cs" />
     <Compile Include="ProcGen\Util.cs" />
     <Compile Include="ProcGen\WeightedBiome.cs" />
     <Compile Include="ProcGen\WeightedMob.cs" />
     <Compile Include="ProcGen\WeightedName.cs" />
     <Compile Include="ProcGen\WeightedRandom.cs" />
     <Compile Include="ProcGen\WeightedSimHash.cs" />
+    <Compile Include="ProcGen\WeightedSubWorld.cs" />
     <Compile Include="ProcGen\World.cs" />
+    <Compile Include="ProcGen\WorldDisplayInfo.cs" />
     <Compile Include="ProcGen\WorldGenSettings.cs" />
     <Compile Include="ProcGen\WorldGenTags.cs" />
     <Compile Include="ProcGen\Worlds.cs" />
+    <Compile Include="ProcGen\WorldTrait.cs" />
     <Compile Include="ProfilerBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="QueuePool.cs" />

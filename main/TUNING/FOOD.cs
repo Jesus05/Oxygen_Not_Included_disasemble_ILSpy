@@ -27,6 +27,10 @@ namespace TUNING
 
 			public static readonly EdiblesManager.FoodInfo MUSHROOM = new EdiblesManager.FoodInfo(MushroomConfig.ID, 2400000f, 0, 255.15f, 277.15f, 2400f, true);
 
+			public static readonly EdiblesManager.FoodInfo LETTUCE = new EdiblesManager.FoodInfo("Lettuce", 300000f, 0, 255.15f, 277.15f, 1200f, true);
+
+			public static readonly EdiblesManager.FoodInfo FISH_MEAT = new EdiblesManager.FoodInfo("FishMeat", 800000f, 1, 255.15f, 277.15f, 2400f, true);
+
 			public static readonly EdiblesManager.FoodInfo MEAT = new EdiblesManager.FoodInfo("Meat", 1600000f, -1, 255.15f, 277.15f, 2400f, true);
 
 			public static readonly EdiblesManager.FoodInfo PRICKLEFRUIT = new EdiblesManager.FoodInfo(PrickleFruitConfig.ID, 1600000f, 0, 255.15f, 277.15f, 2400f, true);
@@ -47,7 +51,11 @@ namespace TUNING
 
 			public static readonly EdiblesManager.FoodInfo FRUITCAKE = new EdiblesManager.FoodInfo("FruitCake", 4000000f, 3, 255.15f, 277.15f, 9600f, false);
 
+			public static readonly EdiblesManager.FoodInfo MUSHROOM_WRAP = new EdiblesManager.FoodInfo("MushroomWrap", 4000000f, 3, 255.15f, 277.15f, 1200f, true);
+
 			public static readonly EdiblesManager.FoodInfo SALSA = new EdiblesManager.FoodInfo("Salsa", 4000000f, 4, 255.15f, 277.15f, 1200f, true);
+
+			public static readonly EdiblesManager.FoodInfo SUSHI = new EdiblesManager.FoodInfo("Sushi", 4000000f, 4, 255.15f, 277.15f, 1200f, true);
 
 			public static readonly EdiblesManager.FoodInfo SPICEBREAD = new EdiblesManager.FoodInfo("SpiceBread", 4000000f, 5, 255.15f, 277.15f, 2400f, true);
 
@@ -55,6 +63,10 @@ namespace TUNING
 			{
 				"GoodEats"
 			});
+
+			public static readonly EdiblesManager.FoodInfo SPICY_TOFU = new EdiblesManager.FoodInfo("SpicyTofu", 4000000f, 5, 255.15f, 277.15f, 2400f, true);
+
+			public static readonly EdiblesManager.FoodInfo BEAN = new EdiblesManager.FoodInfo("BeanPlantSeed", 0f, 3, 255.15f, 277.15f, 2400f, true);
 
 			public static readonly EdiblesManager.FoodInfo SPICENUT = new EdiblesManager.FoodInfo(SpiceNutConfig.ID, 0f, 0, 255.15f, 277.15f, 1200f, true);
 
@@ -110,7 +122,7 @@ namespace TUNING
 
 		public const int FOOD_QUALITY_TERRIBLE = 0;
 
-		public const int FOOD_QUALITY_POO = 1;
+		public const int FOOD_QUALITY_MEDIOCRE = 1;
 
 		public const int FOOD_QUALITY_GOOD = 2;
 

@@ -23,7 +23,7 @@ public class ResearchCompleteMessage : Message
 	public override string GetMessageBody()
 	{
 		Tech tech = this.tech.Get();
-		string text = string.Empty;
+		string text = "";
 		for (int i = 0; i < tech.unlockedItems.Count; i++)
 		{
 			if (i != 0)

@@ -1,4 +1,6 @@
+#define UNITY_ASSERTIONS
 using System.Collections.Generic;
+using UnityEngine.Assertions;
 
 public abstract class KSplitComponentManager<Header, Payload> : KSplitCompactedVector<Header, Payload>, IComponentManager where Header : new()where Payload : new()
 {
@@ -39,16 +41,16 @@ public abstract class KSplitComponentManager<Header, Payload> : KSplitCompactedV
 
 	public bool Has(object go)
 	{
-		if (cleanupList.Exists((CleanupInfo x) => x.instance == go))
+		if (!cleanupList.Exists((CleanupInfo x) => x.instance == go))
 		{
+			HandleVector<int>.Handle handle = GetHandle(go);
+			if (!(handle == HandleVector<int>.InvalidHandle))
+			{
+				return true;
+			}
 			return false;
 		}
-		HandleVector<int>.Handle handle = GetHandle(go);
-		if (handle == HandleVector<int>.InvalidHandle)
-		{
-			return false;
-		}
-		return true;
+		return false;
 	}
 
 	protected HandleVector<int>.Handle InternalAddComponent(object instance, Header header, ref Payload payload)
@@ -67,6 +69,7 @@ public abstract class KSplitComponentManager<Header, Payload> : KSplitCompactedV
 		spawnList.Remove(value);
 		OnPrefabInit(value);
 		spawnList.Add(value);
+		Assert.IsTrue(value.IsValid());
 		return value;
 	}
 

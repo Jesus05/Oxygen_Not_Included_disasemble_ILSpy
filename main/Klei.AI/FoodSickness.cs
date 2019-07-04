@@ -7,13 +7,15 @@ namespace Klei.AI
 	{
 		public const string ID = "FoodSickness";
 
+		public const string RECOVERY_ID = "FoodSicknessRecovery";
+
 		private const float VOMIT_FREQUENCY = 200f;
 
 		public FoodSickness()
 			: base("FoodSickness", SicknessType.Pathogen, Severity.Minor, 0.005f, new List<InfectionVector>
 			{
 				InfectionVector.Digestion
-			}, 1020f)
+			}, 1020f, "FoodSicknessRecovery")
 		{
 			AddSicknessComponent(new CommonSickEffectSickness());
 			AddSicknessComponent(new AttributeModifierSickness(new AttributeModifier[3]

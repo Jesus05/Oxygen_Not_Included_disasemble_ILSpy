@@ -123,7 +123,7 @@ public class IceCooledFan : StateMachineComponent<IceCooledFan.StatesInstance>
 
 		private Chore CreateUseChore(StatesInstance smi)
 		{
-			return new WorkChore<IceCooledFanWorkable>(Db.Get().ChoreTypes.IceCooledFan, smi.master.workable, null, null, true, null, null, null, true, null, false, true, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, false, true);
+			return new WorkChore<IceCooledFanWorkable>(Db.Get().ChoreTypes.IceCooledFan, smi.master.workable, null, true, null, null, null, true, null, false, true, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, false, true);
 		}
 	}
 
@@ -232,7 +232,7 @@ public class IceCooledFan : StateMachineComponent<IceCooledFan.StatesInstance>
 		foreach (GameObject item in iceStorage.items)
 		{
 			PrimaryElement component = item.GetComponent<PrimaryElement>();
-			GameUtil.DeltaThermalEnergy(component, kilowatts);
+			GameUtil.DeltaThermalEnergy(component, kilowatts, targetTemperature);
 		}
 		for (int num = iceStorage.items.Count; num > 0; num--)
 		{

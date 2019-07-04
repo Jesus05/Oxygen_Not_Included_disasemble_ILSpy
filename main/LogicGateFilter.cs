@@ -12,7 +12,7 @@ public class LogicGateFilter : LogicGate, ISingleSliderControl, ISliderControl
 	private float delayAmount = 5f;
 
 	[Serialize]
-	private int delayTicksRemaining;
+	private int delayTicksRemaining = 0;
 
 	private MeterController meter;
 

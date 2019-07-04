@@ -157,7 +157,7 @@ public class SimDebugView : KMonoBehaviour
 
 	public Material diseaseMaterial;
 
-	public bool hideFOW;
+	public bool hideFOW = false;
 
 	public const int colourSize = 4;
 
@@ -189,7 +189,7 @@ public class SimDebugView : KMonoBehaviour
 
 	public float maxPressureExpected = 201.3f;
 
-	public float minThermalConductivity;
+	public float minThermalConductivity = 0f;
 
 	public float maxThermalConductivity = 30f;
 
@@ -272,6 +272,10 @@ public class SimDebugView : KMonoBehaviour
 		{
 			global::OverlayModes.Light.ID,
 			GetLightColour
+		},
+		{
+			global::OverlayModes.Radiation.ID,
+			GetRadiationColour
 		},
 		{
 			global::OverlayModes.Rooms.ID,
@@ -516,6 +520,9 @@ public class SimDebugView : KMonoBehaviour
 	[CompilerGenerated]
 	private static Func<SimDebugView, int, Color> _003C_003Ef__mg_0024cache25;
 
+	[CompilerGenerated]
+	private static Func<SimDebugView, int, Color> _003C_003Ef__mg_0024cache26;
+
 	public static void DestroyInstance()
 	{
 		Instance = null;
@@ -617,7 +624,7 @@ public class SimDebugView : KMonoBehaviour
 		{
 			bool flag = mode != global::OverlayModes.None.ID;
 			plane.SetActive(flag);
-			SimDebugViewCompositor.Instance.Toggle(mode != global::OverlayModes.None.ID);
+			SimDebugViewCompositor.Instance.Toggle(mode != global::OverlayModes.None.ID && !GameUtil.IsCapturingTimeLapse());
 			SimDebugViewCompositor.Instance.material.SetVector("_Thresholds0", new Vector4(0.1f, 0.2f, 0.3f, 0.4f));
 			SimDebugViewCompositor.Instance.material.SetVector("_Thresholds1", new Vector4(0.5f, 0.6f, 0.7f, 0.8f));
 			float x = 0f;
@@ -838,6 +845,22 @@ public class SimDebugView : KMonoBehaviour
 		return result;
 	}
 
+	public static Color GetRadiationColour(SimDebugView instance, int cell)
+	{
+		Color result = new Color(0.2f, 0.9f, 0.3f, Mathf.Clamp(Mathf.Sqrt((float)(Grid.RadiationCount[cell] + RadiationGridManager.previewLux[cell])) / Mathf.Sqrt(80000f), 0f, 1f));
+		if (Grid.RadiationCount[cell] > 71999)
+		{
+			float num = ((float)Grid.RadiationCount[cell] + (float)LightGridManager.previewLux[cell] - 71999f) / 8001f;
+			num /= 10f;
+			float r = result.r;
+			Vector3 vector = Grid.CellToPos2D(cell);
+			float xin = vector.x / 8f;
+			Vector3 vector2 = Grid.CellToPos2D(cell);
+			result.r = r + Mathf.Min(0.1f, PerlinSimplexNoise.noise(xin, vector2.y / 8f + (float)instance.currentFrame / 32f) * num);
+		}
+		return result;
+	}
+
 	public static Color GetRoomsColour(SimDebugView instance, int cell)
 	{
 		Color result = Color.black;
@@ -889,17 +912,17 @@ public class SimDebugView : KMonoBehaviour
 		Element element = Grid.Element[cell];
 		float lowTemp = element.lowTemp;
 		float highTemp = element.highTemp;
-		if (element.IsGas)
+		if (!element.IsGas)
 		{
-			highTemp = Mathf.Min(lowTemp + 150f, highTemp);
-			return GasTemperatureToColor(temperature, lowTemp, highTemp);
-		}
-		if (element.IsSolid)
-		{
+			if (!element.IsSolid)
+			{
+				return TemperatureToColor(temperature, lowTemp, highTemp);
+			}
 			lowTemp = Mathf.Max(highTemp - 150f, lowTemp);
 			return SolidTemperatureToColor(temperature, lowTemp, highTemp);
 		}
-		return TemperatureToColor(temperature, lowTemp, highTemp);
+		highTemp = Mathf.Min(lowTemp + 150f, highTemp);
+		return GasTemperatureToColor(temperature, lowTemp, highTemp);
 	}
 
 	public static Color GetNormalizedTemperatureColour(SimDebugView instance, int cell)
@@ -1135,31 +1158,31 @@ public class SimDebugView : KMonoBehaviour
 		Element element = Grid.Element[cell];
 		float num = Grid.Mass[cell];
 		float num2 = Grid.Temperature[cell];
-		if (float.IsNaN(num) || float.IsNaN(num2) || num > 10000f || num2 > 10000f)
+		if (!float.IsNaN(num) && !float.IsNaN(num2) && !(num > 10000f) && !(num2 > 10000f))
 		{
-			return Color.red;
+			if (element.IsVacuum)
+			{
+				result = ((num2 != 0f) ? Color.yellow : ((num == 0f) ? Color.gray : Color.blue));
+			}
+			else if (num2 < 10f)
+			{
+				result = Color.red;
+			}
+			else if (Grid.Mass[cell] < 1f && Grid.Pressure[cell] < 1f)
+			{
+				result = Color.green;
+			}
+			else if (num2 > element.highTemp + 3f && element.highTempTransition != null)
+			{
+				result = Color.magenta;
+			}
+			else if (num2 < element.lowTemp + 3f && element.lowTempTransition != null)
+			{
+				result = Color.cyan;
+			}
+			return result;
 		}
-		if (element.IsVacuum)
-		{
-			result = ((num2 != 0f) ? Color.yellow : ((num == 0f) ? Color.gray : Color.blue));
-		}
-		else if (num2 < 10f)
-		{
-			result = Color.red;
-		}
-		else if (Grid.Mass[cell] < 1f && Grid.Pressure[cell] < 1f)
-		{
-			result = Color.green;
-		}
-		else if (num2 > element.highTemp + 3f && element.highTempTransition != null)
-		{
-			result = Color.magenta;
-		}
-		else if (num2 < element.lowTemp + 3f && element.lowTempTransition != null)
-		{
-			result = Color.cyan;
-		}
-		return result;
+		return Color.red;
 	}
 
 	private static Color GetFakeFloorColour(SimDebugView instance, int cell)

@@ -18,11 +18,11 @@ internal class ClearableManager
 			public int Compare(SortedClearable a, SortedClearable b)
 			{
 				int num = b.masterPriority.priority_value - a.masterPriority.priority_value;
-				if (num == 0)
+				if (num != 0)
 				{
-					return a.cost - b.cost;
+					return num;
 				}
-				return num;
+				return a.cost - b.cost;
 			}
 		}
 
@@ -108,10 +108,10 @@ internal class ClearableManager
 						break;
 					}
 				}
-				if (flag)
-				{
-					break;
-				}
+			}
+			if (flag)
+			{
+				break;
 			}
 		}
 	}

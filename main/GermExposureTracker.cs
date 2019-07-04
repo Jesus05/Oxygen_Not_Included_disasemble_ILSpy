@@ -42,7 +42,7 @@ public class GermExposureTracker : KMonoBehaviour
 		Instance = null;
 	}
 
-	public void AddExposure(GermExposureMonitor.ExposureType exposure_type, float amount)
+	public void AddExposure(ExposureType exposure_type, float amount)
 	{
 		accumulation.TryGetValue(exposure_type.germ_id, out float value);
 		float num = value + amount;

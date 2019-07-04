@@ -99,11 +99,11 @@ namespace FMODUnity
 		internal static string GetBankPath(string bankName)
 		{
 			string streamingAssetsPath = Application.streamingAssetsPath;
-			if (Path.GetExtension(bankName) != ".bank")
+			if (!(Path.GetExtension(bankName) != ".bank"))
 			{
-				return $"{streamingAssetsPath}/{bankName}.bank";
+				return $"{streamingAssetsPath}/{bankName}";
 			}
-			return $"{streamingAssetsPath}/{bankName}";
+			return $"{streamingAssetsPath}/{bankName}.bank";
 		}
 
 		internal static string GetPluginPath(string pluginName)
@@ -116,7 +116,7 @@ namespace FMODUnity
 		public static void EnforceLibraryOrder()
 		{
 			Memory.GetStats(out int _, out int _);
-			FMOD.Studio.Util.ParseID(string.Empty, out Guid _);
+			FMOD.Studio.Util.ParseID("", out Guid _);
 		}
 	}
 }

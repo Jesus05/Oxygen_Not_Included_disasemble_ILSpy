@@ -119,7 +119,7 @@ namespace Satsuma.IO
 			ArcMaps.Clear();
 			Attributes.Clear();
 			Regex regex = new Regex("\\s*(?:(\"(?:\\\"|.)*\")|(\\S+))\\s*", RegexOptions.None);
-			string text = string.Empty;
+			string text = "";
 			Directedness directedness2 = Directedness.Directed;
 			bool flag = false;
 			List<string> list = null;
@@ -132,18 +132,18 @@ namespace Satsuma.IO
 					break;
 				}
 				text2 = text2.Trim();
-				if (!(text2 == string.Empty) && text2[0] != '#')
+				if (!(text2 == "") && text2[0] != '#')
 				{
 					List<string> list2 = regex.Matches(text2).Cast<Match>().Select(delegate(Match m)
 					{
 						string text5 = m.Value;
-						if (text5 == string.Empty)
+						if (!(text5 == ""))
 						{
+							if (text5[0] == '"' && text5[text5.Length - 1] == '"')
+							{
+								text5 = Unescape(text5.Substring(1, text5.Length - 2));
+							}
 							return text5;
-						}
-						if (text5[0] == '"' && text5[text5.Length - 1] == '"')
-						{
-							text5 = Unescape(text5.Substring(1, text5.Length - 2));
 						}
 						return text5;
 					})
@@ -261,7 +261,7 @@ namespace Satsuma.IO
 					{
 						if (!nodeMap2.Value.TryGetValue(item2, out string value))
 						{
-							value = string.Empty;
+							value = "";
 						}
 						writer.Write(" \"" + Escape(value) + '"');
 					}
@@ -294,7 +294,7 @@ namespace Satsuma.IO
 					{
 						if (!arcMap2.Value.TryGetValue(item3, out string value2))
 						{
-							value2 = string.Empty;
+							value2 = "";
 						}
 						writer.Write(" \"" + Escape(value2) + '"');
 					}

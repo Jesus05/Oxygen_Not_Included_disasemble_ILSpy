@@ -47,7 +47,7 @@ public class SaveGame : KMonoBehaviour, ISaveLoadable
 			this.isAutoSave = isAutoSave;
 			this.originalSaveName = originalSaveName;
 			saveMajorVersion = 7;
-			saveMinorVersion = 8;
+			saveMinorVersion = 11;
 		}
 
 		public GameInfo(int numberOfCycles, int numberOfDuplicants, string baseName, bool sandboxEnabled = false)
@@ -56,9 +56,9 @@ public class SaveGame : KMonoBehaviour, ISaveLoadable
 			this.numberOfDuplicants = numberOfDuplicants;
 			this.baseName = baseName;
 			isAutoSave = false;
-			originalSaveName = string.Empty;
+			originalSaveName = "";
 			saveMajorVersion = 7;
-			saveMinorVersion = 8;
+			saveMinorVersion = 11;
 		}
 
 		public bool IsVersionOlderThan(int major, int minor)
@@ -85,7 +85,13 @@ public class SaveGame : KMonoBehaviour, ISaveLoadable
 	public bool enableAutoDisinfect = true;
 
 	[Serialize]
-	public bool sandboxEnabled;
+	public bool sandboxEnabled = false;
+
+	[Serialize]
+	public int autoSaveCycleInterval = 1;
+
+	[Serialize]
+	public Vector2I timelapseResolution = new Vector2I(640, 360);
 
 	private string baseName;
 
@@ -143,7 +149,7 @@ public class SaveGame : KMonoBehaviour, ISaveLoadable
 		text = ((!isAutoSave) ? JsonConvert.SerializeObject(new GameInfo(GameClock.Instance.GetCycle(), Components.LiveMinionIdentities.Count, baseName, false)) : JsonConvert.SerializeObject(new GameInfo(GameClock.Instance.GetCycle(), Components.LiveMinionIdentities.Count, baseName, true, SaveLoader.GetActiveSaveFilePath(), false)));
 		byte[] bytes = Encoding.UTF8.GetBytes(text);
 		header = default(Header);
-		header.buildVersion = 327401u;
+		header.buildVersion = 347957u;
 		header.headerSize = bytes.Length;
 		header.headerVersion = 1u;
 		header.compression = (isCompressed ? 1 : 0);

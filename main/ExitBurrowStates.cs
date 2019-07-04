@@ -1,7 +1,7 @@
 using STRINGS;
 using System.Runtime.CompilerServices;
 
-internal class ExitBurrowStates : GameStateMachine<ExitBurrowStates, ExitBurrowStates.Instance, IStateMachineTarget, ExitBurrowStates.Def>
+public class ExitBurrowStates : GameStateMachine<ExitBurrowStates, ExitBurrowStates.Instance, IStateMachineTarget, ExitBurrowStates.Def>
 {
 	public class Def : BaseDef
 	{
@@ -26,7 +26,11 @@ internal class ExitBurrowStates : GameStateMachine<ExitBurrowStates, ExitBurrowS
 	public override void InitializeStates(out BaseState default_state)
 	{
 		default_state = exiting;
-		root.ToggleStatusItem(CREATURES.STATUSITEMS.EMERGING.NAME, CREATURES.STATUSITEMS.EMERGING.TOOLTIP, category: Db.Get().StatusItemCategories.Main, icon: string.Empty, icon_type: StatusItem.IconType.Info, notification_type: NotificationType.Neutral, allow_multiples: false, render_overlay: default(HashedString), status_overlays: 63486, resolve_string_callback: null, resolve_tooltip_callback: null);
+		State root = base.root;
+		string name = CREATURES.STATUSITEMS.EMERGING.NAME;
+		string tooltip = CREATURES.STATUSITEMS.EMERGING.TOOLTIP;
+		StatusItemCategory main = Db.Get().StatusItemCategories.Main;
+		root.ToggleStatusItem(name, tooltip, "", StatusItem.IconType.Info, NotificationType.Neutral, false, default(HashedString), 129022, null, null, main);
 		exiting.PlayAnim("emerge").Enter(MoveToCellAbove).OnAnimQueueComplete(behaviourcomplete);
 		behaviourcomplete.BehaviourComplete(GameTags.Creatures.WantsToExitBurrow, false);
 	}

@@ -112,14 +112,14 @@ public class SituationalAnim : KMonoBehaviour
 				}
 			}
 		}
-		if (flag2)
+		if (!flag2)
 		{
-			return MustSatisfy.All;
-		}
-		if (flag)
-		{
+			if (!flag)
+			{
+				return MustSatisfy.None;
+			}
 			return MustSatisfy.Any;
 		}
-		return MustSatisfy.None;
+		return MustSatisfy.All;
 	}
 }

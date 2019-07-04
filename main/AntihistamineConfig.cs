@@ -20,13 +20,13 @@ public class AntihistamineConfig : IEntityConfig
 		};
 		ComplexRecipe.RecipeElement[] array2 = new ComplexRecipe.RecipeElement[1]
 		{
-			new ComplexRecipe.RecipeElement("Antihistamine", 1f)
+			new ComplexRecipe.RecipeElement("Antihistamine", 10f)
 		};
 		string id = ComplexRecipeManager.MakeRecipeID("Apothecary", array, array2);
 		ComplexRecipe complexRecipe = new ComplexRecipe(id, array, array2);
 		complexRecipe.time = 100f;
 		complexRecipe.description = ITEMS.PILLS.ANTIHISTAMINE.RECIPEDESC;
-		complexRecipe.useResultAsDescription = true;
+		complexRecipe.nameDisplay = ComplexRecipe.RecipeNameDisplay.Result;
 		complexRecipe.fabricators = new List<Tag>
 		{
 			"Apothecary"

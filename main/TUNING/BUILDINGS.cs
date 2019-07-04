@@ -223,6 +223,8 @@ namespace TUNING
 			public const float TIER7 = 32f;
 
 			public const float TIER8 = 64f;
+
+			public const float TIER_NUCLEAR = 16384f;
 		}
 
 		public class MELTING_POINT_KELVIN
@@ -553,12 +555,14 @@ namespace TUNING
 				"AlgaeHabitat",
 				"AirFilter",
 				"CO2Scrubber",
-				"Electrolyzer"
+				"Electrolyzer",
+				"RustDeoxidizer"
 			}),
 			new PlanScreen.PlanInfo(new HashedString("Power"), false, new List<string>
 			{
 				"ManualGenerator",
 				"Generator",
+				"WoodGasGenerator",
 				"HydrogenGenerator",
 				"MethaneGenerator",
 				"PetroleumGenerator",
@@ -588,6 +592,7 @@ namespace TUNING
 			{
 				"MicrobeMusher",
 				"CookingStation",
+				"GourmetCookingStation",
 				"PlanterBox",
 				"FarmTile",
 				"HydroponicFarm",
@@ -601,7 +606,8 @@ namespace TUNING
 				"EggCracker",
 				"CreatureTrap",
 				"FishTrap",
-				"AirborneCreatureLure"
+				"AirborneCreatureLure",
+				"FlyingCreatureBait"
 			}),
 			new PlanScreen.PlanInfo(new HashedString("Plumbing"), false, new List<string>
 			{
@@ -651,8 +657,10 @@ namespace TUNING
 			{
 				"Compost",
 				"WaterPurifier",
+				"Desalinator",
 				"FertilizerMaker",
 				"AlgaeDistillery",
+				"EthanolDistillery",
 				"RockCrusher",
 				"Kiln",
 				"MetalRefinery",
@@ -699,7 +707,11 @@ namespace TUNING
 				"Canvas",
 				"CanvasWide",
 				"CanvasTall",
-				"ItemPedestal"
+				"ItemPedestal",
+				"MonumentBottom",
+				"MonumentMiddle",
+				"MonumentTop",
+				"ParkSign"
 			}),
 			new PlanScreen.PlanInfo(new HashedString("Equipment"), false, new List<string>
 			{
@@ -747,6 +759,7 @@ namespace TUNING
 				"LogicGateFILTER",
 				LogicMemoryConfig.ID,
 				LogicSwitchConfig.ID,
+				"LogicDuplicantSensor",
 				LogicPressureSensorGasConfig.ID,
 				LogicPressureSensorLiquidConfig.ID,
 				LogicTemperatureSensorConfig.ID,
@@ -793,6 +806,7 @@ namespace TUNING
 		{
 			typeof(BottleEmptier),
 			typeof(CookingStation),
+			typeof(GourmetCookingStation),
 			typeof(RoleStation),
 			typeof(ResearchCenter),
 			typeof(LiquidCooledFan),
@@ -880,6 +894,9 @@ namespace TUNING
 			typeof(Capturable),
 			typeof(Trappable),
 			typeof(SpaceArtifact),
+			typeof(MessStation),
+			typeof(PlantElementEmitter),
+			typeof(Radiator),
 			typeof(DecorProvider)
 		};
 	}

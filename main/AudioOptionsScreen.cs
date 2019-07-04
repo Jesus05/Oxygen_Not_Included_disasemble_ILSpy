@@ -82,7 +82,7 @@ public class AudioOptionsScreen : KModalScreen
 			});
 			if (item.Key == "Master")
 			{
-				newSlider.transform.SetSiblingIndex(1);
+				newSlider.transform.SetSiblingIndex(2);
 				newSlider.slider.onValueChanged.AddListener(CheckMasterValue);
 				CheckMasterValue(item.Value.busLevel);
 			}

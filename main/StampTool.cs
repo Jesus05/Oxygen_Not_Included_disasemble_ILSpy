@@ -14,9 +14,9 @@ public class StampTool : InterfaceTool
 
 	private int placementCell = Grid.InvalidCell;
 
-	private bool selectAffected;
+	private bool selectAffected = false;
 
-	private bool deactivateOnStamp;
+	private bool deactivateOnStamp = false;
 
 	public static void DestroyInstance()
 	{

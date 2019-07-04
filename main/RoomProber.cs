@@ -235,9 +235,24 @@ public class RoomProber : ISim1000ms
 								break;
 							}
 						}
+						foreach (KPrefabID plant in data.plants)
+						{
+							if (component.InstanceID == plant.InstanceID)
+							{
+								flag = true;
+								break;
+							}
+						}
 						if (!flag)
 						{
-							data.AddBuilding(component);
+							if ((bool)component.GetComponent<Deconstructable>())
+							{
+								data.AddBuilding(component);
+							}
+							else if ((bool)component.GetComponent<Growing>())
+							{
+								data.AddPlants(component);
+							}
 						}
 					}
 				}
@@ -291,6 +306,10 @@ public class RoomProber : ISim1000ms
 					{
 						building.Trigger(144050788, data.room);
 					}
+					foreach (KPrefabID plant in data.plants)
+					{
+						plant.Trigger(144050788, data.room);
+					}
 				}
 				data.dirty = false;
 			}
@@ -337,27 +356,27 @@ public class RoomProber : ISim1000ms
 
 	public Room GetRoomOfGameObject(GameObject go)
 	{
-		if ((UnityEngine.Object)go == (UnityEngine.Object)null)
+		if (!((UnityEngine.Object)go == (UnityEngine.Object)null))
 		{
+			int cell = Grid.PosToCell(go);
+			if (Grid.IsValidCell(cell))
+			{
+				return GetCavityForCell(cell)?.room;
+			}
 			return null;
 		}
-		int cell = Grid.PosToCell(go);
-		if (!Grid.IsValidCell(cell))
-		{
-			return null;
-		}
-		return GetCavityForCell(cell)?.room;
+		return null;
 	}
 
 	public bool IsInRoomType(GameObject go, RoomType checkType)
 	{
 		Room roomOfGameObject = GetRoomOfGameObject(go);
-		if (roomOfGameObject != null)
+		if (roomOfGameObject == null)
 		{
-			RoomType roomType = roomOfGameObject.roomType;
-			return checkType == roomType;
+			return false;
 		}
-		return false;
+		RoomType roomType = roomOfGameObject.roomType;
+		return checkType == roomType;
 	}
 
 	private CavityInfo GetCavityInfo(HandleVector<int>.Handle id)
@@ -372,11 +391,11 @@ public class RoomProber : ISim1000ms
 
 	public CavityInfo GetCavityForCell(int cell)
 	{
-		if (!Grid.IsValidCell(cell))
+		if (Grid.IsValidCell(cell))
 		{
-			return null;
+			HandleVector<int>.Handle id = CellCavityID[cell];
+			return GetCavityInfo(id);
 		}
-		HandleVector<int>.Handle id = CellCavityID[cell];
-		return GetCavityInfo(id);
+		return null;
 	}
 }

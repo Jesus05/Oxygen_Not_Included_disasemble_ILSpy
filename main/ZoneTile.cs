@@ -1,6 +1,6 @@
 using ProcGen;
 
-internal class ZoneTile : KMonoBehaviour
+public class ZoneTile : KMonoBehaviour
 {
 	[MyCmpReq]
 	public Building building;

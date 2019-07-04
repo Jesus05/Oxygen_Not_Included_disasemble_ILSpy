@@ -197,9 +197,5 @@ public class Prioritizable : KMonoBehaviour
 		{
 			highPriorityStatusItem = GetComponent<KSelectable>().RemoveStatusItem(highPriorityStatusItem, false);
 		}
-		if ((UnityEngine.Object)GlobalChoreProvider.Instance != (UnityEngine.Object)null)
-		{
-			GlobalChoreProvider.Instance.RefreshTopPriorityChoreStatus();
-		}
 	}
 }

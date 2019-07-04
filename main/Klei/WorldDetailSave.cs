@@ -13,6 +13,8 @@ namespace Klei
 		{
 			public Polygon poly;
 
+			public TagSet tags;
+
 			public SubWorld.ZoneType zoneType;
 
 			public OverworldCell()
@@ -22,19 +24,20 @@ namespace Klei
 			public OverworldCell(SubWorld.ZoneType zoneType, TerrainCell tc)
 			{
 				poly = tc.poly;
+				tags = tc.node.tags;
 				this.zoneType = zoneType;
 			}
 		}
 
-		public List<OverworldCell> overworldCells;
+		public List<OverworldCell> overworldCells = null;
 
-		public int globalWorldSeed;
+		public int globalWorldSeed = 0;
 
-		public int globalWorldLayoutSeed;
+		public int globalWorldLayoutSeed = 0;
 
-		public int globalTerrainSeed;
+		public int globalTerrainSeed = 0;
 
-		public int globalNoiseSeed;
+		public int globalNoiseSeed = 0;
 
 		public WorldDetailSave()
 		{

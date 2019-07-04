@@ -4,9 +4,9 @@ using UnityEngine;
 
 namespace Klei
 {
-	public class GenericGameSettings : YamlIO<GenericGameSettings>
+	public class GenericGameSettings
 	{
-		public class PerformanceCapture : YamlIO<PerformanceCapture>
+		public class PerformanceCapture
 		{
 			public string saveGame
 			{
@@ -27,7 +27,7 @@ namespace Klei
 			}
 		}
 
-		private static GenericGameSettings _instance;
+		private static GenericGameSettings _instance = null;
 
 		public static GenericGameSettings instance
 		{
@@ -37,7 +37,7 @@ namespace Klei
 				{
 					try
 					{
-						YamlIO<GenericGameSettings>.LoadFile(Path, null);
+						_instance = YamlIO.LoadFile<GenericGameSettings>(Path, null, null);
 					}
 					catch
 					{
@@ -168,7 +168,7 @@ namespace Klei
 		{
 			try
 			{
-				Save(Path, null);
+				YamlIO.Save(this, Path, null);
 			}
 			catch (Exception ex)
 			{

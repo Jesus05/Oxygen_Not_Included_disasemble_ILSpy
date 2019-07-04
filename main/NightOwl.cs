@@ -15,11 +15,11 @@ public class NightOwl : StateMachineComponent<NightOwl.StatesInstance>
 
 		public bool IsNight()
 		{
-			if ((Object)GameClock.Instance == (Object)null || base.master.kPrefabID.PrefabTag == GameTags.MinionSelectPreview)
+			if (!((Object)GameClock.Instance == (Object)null) && !(base.master.kPrefabID.PrefabTag == GameTags.MinionSelectPreview))
 			{
-				return false;
+				return GameClock.Instance.IsNighttime();
 			}
-			return GameClock.Instance.IsNighttime();
+			return false;
 		}
 	}
 

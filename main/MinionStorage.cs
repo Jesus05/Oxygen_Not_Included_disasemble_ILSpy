@@ -92,6 +92,7 @@ public class MinionStorage : KMonoBehaviour
 		AttributeLevels component6 = src_id.GetComponent<AttributeLevels>();
 		component6.OnSerializing();
 		dest_id.attributeLevels = new List<AttributeLevels.LevelSaveLoad>(component6.SaveLoadLevels);
+		StoreModifiers(src_id, dest_id);
 		Schedulable component7 = src_id.GetComponent<Schedulable>();
 		Schedule schedule = component7.GetSchedule();
 		if (schedule != null)
@@ -99,6 +100,22 @@ public class MinionStorage : KMonoBehaviour
 			schedule.Unassign(component7);
 			Schedulable component8 = dest_id.GetComponent<Schedulable>();
 			schedule.Assign(component8);
+		}
+	}
+
+	private static void StoreModifiers(MinionIdentity src_id, StoredMinionIdentity dest_id)
+	{
+		MinionModifiers component = src_id.GetComponent<MinionModifiers>();
+		foreach (AttributeInstance attribute in component.attributes)
+		{
+			if (dest_id.minionModifiers.attributes.Get(attribute.Attribute.Id) == null)
+			{
+				dest_id.minionModifiers.attributes.Add(attribute.Attribute);
+			}
+			for (int i = 0; i < attribute.Modifiers.Count; i++)
+			{
+				dest_id.minionModifiers.attributes.Get(attribute.Id).Add(attribute.Modifiers[i]);
+			}
 		}
 	}
 
@@ -217,19 +234,19 @@ public class MinionStorage : KMonoBehaviour
 	public GameObject DeserializeMinion(Guid id, Vector3 pos)
 	{
 		int minionIndex = GetMinionIndex(id);
-		if (minionIndex < 0 || minionIndex >= serializedMinions.Count)
+		if (minionIndex >= 0 && minionIndex < serializedMinions.Count)
 		{
+			Info info = serializedMinions[minionIndex];
+			KPrefabID kPrefabID = info.serializedMinion.Get();
+			serializedMinions.RemoveAt(minionIndex);
+			if (!((UnityEngine.Object)kPrefabID == (UnityEngine.Object)null))
+			{
+				GameObject gameObject = kPrefabID.gameObject;
+				return DeserializeMinion(gameObject, pos);
+			}
 			return null;
 		}
-		Info info = serializedMinions[minionIndex];
-		KPrefabID kPrefabID = info.serializedMinion.Get();
-		serializedMinions.RemoveAt(minionIndex);
-		if ((UnityEngine.Object)kPrefabID == (UnityEngine.Object)null)
-		{
-			return null;
-		}
-		GameObject gameObject = kPrefabID.gameObject;
-		return DeserializeMinion(gameObject, pos);
+		return null;
 	}
 
 	public static GameObject DeserializeMinion(GameObject sourceMinion, Vector3 pos)

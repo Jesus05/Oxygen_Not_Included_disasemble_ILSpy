@@ -15,7 +15,7 @@ public class Conduit : KMonoBehaviour, IFirstFrameCallback, IHaveUtilityNetworkM
 
 	public ConduitType type;
 
-	private System.Action firstFrameCallback;
+	private System.Action firstFrameCallback = null;
 
 	private static readonly EventSystem.IntraObjectHandler<Conduit> OnHighlightedDelegate = new EventSystem.IntraObjectHandler<Conduit>(delegate(Conduit component, object data)
 	{
@@ -58,7 +58,7 @@ public class Conduit : KMonoBehaviour, IFirstFrameCallback, IHaveUtilityNetworkM
 
 	public Endpoint EndpointType => Endpoint.Conduit;
 
-	public ConduitType ConduitType => ConduitType;
+	public ConduitType ConduitType => type;
 
 	public GameObject GameObject => base.gameObject;
 
@@ -183,7 +183,9 @@ public class Conduit : KMonoBehaviour, IFirstFrameCallback, IHaveUtilityNetworkM
 		{
 			damage = 1,
 			source = (string)BUILDINGS.DAMAGESOURCES.CONDUIT_CONTENTS_FROZE,
-			popString = (string)UI.GAMEOBJECTEFFECTS.DAMAGE_POPS.CONDUIT_CONTENTS_FROZE
+			popString = (string)UI.GAMEOBJECTEFFECTS.DAMAGE_POPS.CONDUIT_CONTENTS_FROZE,
+			takeDamageEffect = ((ConduitType != ConduitType.Gas) ? SpawnFXHashes.BuildingFreeze : SpawnFXHashes.BuildingLeakLiquid),
+			fullDamageEffectName = ((ConduitType != ConduitType.Gas) ? "ice_damage_kanim" : "water_damage_kanim")
 		});
 		GetFlowManager().EmptyConduit(Grid.PosToCell(base.transform.GetPosition()));
 	}
@@ -194,7 +196,9 @@ public class Conduit : KMonoBehaviour, IFirstFrameCallback, IHaveUtilityNetworkM
 		{
 			damage = 1,
 			source = (string)BUILDINGS.DAMAGESOURCES.CONDUIT_CONTENTS_BOILED,
-			popString = (string)UI.GAMEOBJECTEFFECTS.DAMAGE_POPS.CONDUIT_CONTENTS_BOILED
+			popString = (string)UI.GAMEOBJECTEFFECTS.DAMAGE_POPS.CONDUIT_CONTENTS_BOILED,
+			takeDamageEffect = SpawnFXHashes.BuildingLeakGas,
+			fullDamageEffectName = "gas_damage_kanim"
 		});
 		GetFlowManager().EmptyConduit(Grid.PosToCell(base.transform.GetPosition()));
 	}

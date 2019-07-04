@@ -42,7 +42,7 @@ public class KBatchedAnimUpdater : Singleton<KBatchedAnimUpdater>
 
 	public static readonly Vector2I INVALID_CHUNK_ID = Vector2I.minusone;
 
-	private List<KBatchedAnimController>[,] controllerGrid;
+	private List<KBatchedAnimController>[,] controllerGrid = null;
 
 	private List<KBatchedAnimController> updateList = new List<KBatchedAnimController>();
 
@@ -68,7 +68,7 @@ public class KBatchedAnimUpdater : Singleton<KBatchedAnimUpdater>
 
 	private const int CHUNKS_TO_CLEAN_PER_TICK = 16;
 
-	private int cleanUpChunkIndex;
+	private int cleanUpChunkIndex = 0;
 
 	private static readonly Vector2 VISIBLE_RANGE_SCALE = new Vector2(1.5f, 1.5f);
 

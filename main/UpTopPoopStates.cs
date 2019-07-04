@@ -1,7 +1,7 @@
 using STRINGS;
 using UnityEngine;
 
-internal class UpTopPoopStates : GameStateMachine<UpTopPoopStates, UpTopPoopStates.Instance, IStateMachineTarget, UpTopPoopStates.Def>
+public class UpTopPoopStates : GameStateMachine<UpTopPoopStates, UpTopPoopStates.Instance, IStateMachineTarget, UpTopPoopStates.Def>
 {
 	public class Def : BaseDef
 	{
@@ -31,12 +31,12 @@ internal class UpTopPoopStates : GameStateMachine<UpTopPoopStates, UpTopPoopStat
 
 		public bool IsClosedDoor(int cellAbove)
 		{
-			if (Grid.HasDoor[cellAbove])
+			if (!Grid.HasDoor[cellAbove])
 			{
-				Door component = Grid.Objects[cellAbove, 1].GetComponent<Door>();
-				return (Object)component != (Object)null && component.CurrentState != Door.ControlState.Opened;
+				return false;
 			}
-			return false;
+			Door component = Grid.Objects[cellAbove, 1].GetComponent<Door>();
+			return (Object)component != (Object)null && component.CurrentState != Door.ControlState.Opened;
 		}
 	}
 
@@ -56,7 +56,11 @@ internal class UpTopPoopStates : GameStateMachine<UpTopPoopStates, UpTopPoopStat
 			targetCell.Set(smi.GetSMI<GasAndLiquidConsumerMonitor.Instance>().targetCell, smi);
 		});
 		goingtopoop.MoveTo((Instance smi) => smi.GetPoopCell(), pooping, pooping, false);
-		pooping.PlayAnim("poop").ToggleStatusItem(CREATURES.STATUSITEMS.EXPELLING_SOLID.NAME, CREATURES.STATUSITEMS.EXPELLING_SOLID.TOOLTIP, category: Db.Get().StatusItemCategories.Main, icon: string.Empty, icon_type: StatusItem.IconType.Info, notification_type: NotificationType.Neutral, allow_multiples: false, render_overlay: default(HashedString), status_overlays: 63486, resolve_string_callback: null, resolve_tooltip_callback: null).OnAnimQueueComplete(behaviourcomplete);
+		State state = pooping.PlayAnim("poop");
+		string name = CREATURES.STATUSITEMS.EXPELLING_SOLID.NAME;
+		string tooltip = CREATURES.STATUSITEMS.EXPELLING_SOLID.TOOLTIP;
+		StatusItemCategory main = Db.Get().StatusItemCategories.Main;
+		state.ToggleStatusItem(name, tooltip, "", StatusItem.IconType.Info, NotificationType.Neutral, false, default(HashedString), 129022, null, null, main).OnAnimQueueComplete(behaviourcomplete);
 		behaviourcomplete.PlayAnim("idle_loop", KAnim.PlayMode.Loop).BehaviourComplete(GameTags.Creatures.Poop, false);
 	}
 }

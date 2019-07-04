@@ -176,11 +176,11 @@ public class JetSuitLocker : StateMachineComponent<JetSuitLocker.StatesInstance>
 	public bool HasFuel()
 	{
 		GameObject fuel = GetFuel();
-		if ((UnityEngine.Object)fuel != (UnityEngine.Object)null)
+		if (!((UnityEngine.Object)fuel != (UnityEngine.Object)null))
 		{
-			return fuel.GetComponent<PrimaryElement>().Mass > 0f;
+			return false;
 		}
-		return false;
+		return fuel.GetComponent<PrimaryElement>().Mass > 0f;
 	}
 
 	private void RefreshMeter()
@@ -194,15 +194,15 @@ public class JetSuitLocker : StateMachineComponent<JetSuitLocker.StatesInstance>
 	public bool IsFuelTankFull()
 	{
 		KPrefabID storedOutfit = GetStoredOutfit();
-		if ((UnityEngine.Object)storedOutfit != (UnityEngine.Object)null)
+		if (!((UnityEngine.Object)storedOutfit != (UnityEngine.Object)null))
 		{
-			JetSuitTank component = storedOutfit.GetComponent<JetSuitTank>();
-			if ((UnityEngine.Object)component == (UnityEngine.Object)null)
-			{
-				return true;
-			}
+			return false;
+		}
+		JetSuitTank component = storedOutfit.GetComponent<JetSuitTank>();
+		if (!((UnityEngine.Object)component == (UnityEngine.Object)null))
+		{
 			return component.PercentFull() >= 1f;
 		}
-		return false;
+		return true;
 	}
 }

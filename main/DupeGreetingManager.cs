@@ -98,27 +98,27 @@ public class DupeGreetingManager : KMonoBehaviour, ISim200ms
 
 	private bool ValidNavigatingMinion(MinionIdentity minion)
 	{
-		if ((UnityEngine.Object)minion == (UnityEngine.Object)null)
+		if (!((UnityEngine.Object)minion == (UnityEngine.Object)null))
 		{
-			return false;
+			Navigator component = minion.GetComponent<Navigator>();
+			return (UnityEngine.Object)component != (UnityEngine.Object)null && component.IsMoving() && component.CurrentNavType == NavType.Floor;
 		}
-		Navigator component = minion.GetComponent<Navigator>();
-		return (UnityEngine.Object)component != (UnityEngine.Object)null && component.IsMoving() && component.CurrentNavType == NavType.Floor;
+		return false;
 	}
 
 	private bool ValidOppositionalMinion(MinionIdentity reference_minion, MinionIdentity minion)
 	{
-		if ((UnityEngine.Object)reference_minion == (UnityEngine.Object)null)
+		if (!((UnityEngine.Object)reference_minion == (UnityEngine.Object)null))
 		{
+			if (!((UnityEngine.Object)minion == (UnityEngine.Object)null))
+			{
+				Facing component = minion.GetComponent<Facing>();
+				Facing component2 = reference_minion.GetComponent<Facing>();
+				return ValidNavigatingMinion(minion) && (UnityEngine.Object)component != (UnityEngine.Object)null && (UnityEngine.Object)component2 != (UnityEngine.Object)null && component.GetFacing() != component2.GetFacing();
+			}
 			return false;
 		}
-		if ((UnityEngine.Object)minion == (UnityEngine.Object)null)
-		{
-			return false;
-		}
-		Facing component = minion.GetComponent<Facing>();
-		Facing component2 = reference_minion.GetComponent<Facing>();
-		return ValidNavigatingMinion(minion) && (UnityEngine.Object)component != (UnityEngine.Object)null && (UnityEngine.Object)component2 != (UnityEngine.Object)null && component.GetFacing() != component2.GetFacing();
+		return false;
 	}
 
 	private void BeginNewGreeting(MinionIdentity minion_a, MinionIdentity minion_b, int cell)

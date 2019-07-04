@@ -1,9 +1,10 @@
-using System.Collections.Generic;
 using UnityEngine;
 
 [SkipSaveFileSerialization]
 public class Exhaust : KMonoBehaviour, ISim200ms
 {
+	private delegate void EmitDelegate(int cell, PrimaryElement primary_element);
+
 	[MyCmpGet]
 	private Vent vent;
 
@@ -23,16 +24,26 @@ public class Exhaust : KMonoBehaviour, ISim200ms
 
 	private bool isAnimating;
 
-	private bool recentlyExhausted;
+	private bool recentlyExhausted = false;
 
 	private const float MinSwitchTime = 1f;
 
-	private float elapsedSwitchTime;
+	private float elapsedSwitchTime = 0f;
 
 	private static readonly EventSystem.IntraObjectHandler<Exhaust> OnConduitStateChangedDelegate = new EventSystem.IntraObjectHandler<Exhaust>(delegate(Exhaust component, object data)
 	{
 		component.OnConduitStateChanged(data);
 	});
+
+	private static EmitDelegate emit_element = delegate(int cell, PrimaryElement primary_element)
+	{
+		SimMessages.AddRemoveSubstance(cell, primary_element.ElementID, CellEventLogger.Instance.ExhaustSimUpdate, primary_element.Mass, primary_element.Temperature, primary_element.DiseaseIdx, primary_element.DiseaseCount, true, -1);
+	};
+
+	private static EmitDelegate emit_particle = delegate(int cell, PrimaryElement primary_element)
+	{
+		FallingWater.instance.AddParticle(cell, (byte)ElementLoader.elements.IndexOf(primary_element.Element), primary_element.Mass, primary_element.Temperature, primary_element.DiseaseIdx, primary_element.DiseaseCount, true, false, true, false);
+	};
 
 	protected override void OnPrefabInit()
 	{
@@ -72,69 +83,7 @@ public class Exhaust : KMonoBehaviour, ISim200ms
 		}
 		else
 		{
-			int num = Grid.PosToCell(base.transform.GetPosition());
-			if (!Grid.Solid[num] && consumer.ConsumptionRate != 0f)
-			{
-				List<GameObject> items = storage.items;
-				if (items.Count > 0)
-				{
-					switch (consumer.TypeOfConduit)
-					{
-					case ConduitType.Liquid:
-					{
-						int num2 = Grid.CellBelow(num);
-						bool flag = Grid.IsValidCell(num2) && !Grid.Solid[num2];
-						for (int j = 0; j < items.Count; j++)
-						{
-							PrimaryElement component2 = items[j].GetComponent<PrimaryElement>();
-							if (component2.Mass > 0f && component2.Element.IsLiquid)
-							{
-								CalculateDiseaseTransfer(exhaustPE, component2, 0.05f, out int disease_to_item3, out int disease_to_item4);
-								component2.ModifyDiseaseCount(-disease_to_item3, "Exhaust transfer");
-								component2.AddDisease(exhaustPE.DiseaseIdx, disease_to_item4, "Exhaust transfer");
-								exhaustPE.ModifyDiseaseCount(-disease_to_item4, "Exhaust transfer");
-								exhaustPE.AddDisease(component2.DiseaseIdx, disease_to_item3, "Exhaust transfer");
-								if (flag)
-								{
-									byte elementIdx = (byte)ElementLoader.elements.IndexOf(component2.Element);
-									FallingWater.instance.AddParticle(num, elementIdx, component2.Mass, component2.Temperature, component2.DiseaseIdx, component2.DiseaseCount, true, false, true, false);
-								}
-								else
-								{
-									SimMessages.AddRemoveSubstance(num, component2.ElementID, CellEventLogger.Instance.ExhaustSimUpdate, component2.Mass, component2.Temperature, component2.DiseaseIdx, component2.DiseaseCount, true, -1);
-								}
-								component2.KeepZeroMassObject = true;
-								component2.Mass = 0f;
-								component2.ModifyDiseaseCount(-2147483648, "Exhaust.SimUpdate");
-								recentlyExhausted = true;
-								break;
-							}
-						}
-						break;
-					}
-					case ConduitType.Gas:
-						for (int i = 0; i < items.Count; i++)
-						{
-							PrimaryElement component = items[i].GetComponent<PrimaryElement>();
-							if (component.Mass > 0f && component.Element.IsGas)
-							{
-								CalculateDiseaseTransfer(exhaustPE, component, 0.05f, out int disease_to_item, out int disease_to_item2);
-								component.ModifyDiseaseCount(-disease_to_item, "Exhaust transfer");
-								component.AddDisease(exhaustPE.DiseaseIdx, disease_to_item2, "Exhaust transfer");
-								exhaustPE.ModifyDiseaseCount(-disease_to_item2, "Exhaust transfer");
-								exhaustPE.AddDisease(component.DiseaseIdx, disease_to_item, "Exhaust transfer");
-								SimMessages.AddRemoveSubstance(num, component.ElementID, CellEventLogger.Instance.ExhaustSimUpdate, component.Mass, component.Temperature, component.DiseaseIdx, component.DiseaseCount, true, -1);
-								component.KeepZeroMassObject = true;
-								component.Mass = 0f;
-								component.ModifyDiseaseCount(-2147483648, "Exhaust.SimUpdate");
-								recentlyExhausted = true;
-								break;
-							}
-						}
-						break;
-					}
-				}
-			}
+			UpdateEmission();
 			elapsedSwitchTime -= dt;
 			if (elapsedSwitchTime <= 0f)
 			{
@@ -152,5 +101,70 @@ public class Exhaust : KMonoBehaviour, ISim200ms
 	public bool IsAnimating()
 	{
 		return isAnimating;
+	}
+
+	private void UpdateEmission()
+	{
+		if (consumer.ConsumptionRate != 0f && storage.items.Count != 0)
+		{
+			int num = Grid.PosToCell(base.transform.GetPosition());
+			if (!Grid.Solid[num])
+			{
+				switch (consumer.TypeOfConduit)
+				{
+				case ConduitType.Liquid:
+					EmitLiquid(num);
+					break;
+				case ConduitType.Gas:
+					EmitGas(num);
+					break;
+				}
+			}
+		}
+	}
+
+	private bool EmitCommon(int cell, PrimaryElement primary_element, EmitDelegate emit)
+	{
+		if (!(primary_element.Mass <= 0f))
+		{
+			CalculateDiseaseTransfer(exhaustPE, primary_element, 0.05f, out int disease_to_item, out int disease_to_item2);
+			primary_element.ModifyDiseaseCount(-disease_to_item, "Exhaust transfer");
+			primary_element.AddDisease(exhaustPE.DiseaseIdx, disease_to_item2, "Exhaust transfer");
+			exhaustPE.ModifyDiseaseCount(-disease_to_item2, "Exhaust transfer");
+			exhaustPE.AddDisease(primary_element.DiseaseIdx, disease_to_item, "Exhaust transfer");
+			emit(cell, primary_element);
+			primary_element.KeepZeroMassObject = true;
+			primary_element.Mass = 0f;
+			primary_element.ModifyDiseaseCount(-2147483648, "Exhaust.SimUpdate");
+			recentlyExhausted = true;
+			return true;
+		}
+		return false;
+	}
+
+	private void EmitLiquid(int cell)
+	{
+		int num = Grid.CellBelow(cell);
+		EmitDelegate emit = (!Grid.IsValidCell(num) || Grid.Solid[num]) ? emit_element : emit_particle;
+		foreach (GameObject item in storage.items)
+		{
+			PrimaryElement component = item.GetComponent<PrimaryElement>();
+			if (component.Element.IsLiquid && EmitCommon(cell, component, emit))
+			{
+				break;
+			}
+		}
+	}
+
+	private void EmitGas(int cell)
+	{
+		foreach (GameObject item in storage.items)
+		{
+			PrimaryElement component = item.GetComponent<PrimaryElement>();
+			if (component.Element.IsGas && EmitCommon(cell, component, emit_element))
+			{
+				break;
+			}
+		}
 	}
 }

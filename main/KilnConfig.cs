@@ -83,7 +83,7 @@ public class KilnConfig : IBuildingConfig
 		{
 			TagManager.Create("Kiln")
 		};
-		complexRecipe.useResultAsDescription = true;
+		complexRecipe.nameDisplay = ComplexRecipe.RecipeNameDisplay.Result;
 		ComplexRecipeManager.Get().AddObsoleteIDMapping(obsolete_id, text);
 		Tag tag2 = SimHashes.RefinedCarbon.CreateTag();
 		ComplexRecipe.RecipeElement[] array3 = new ComplexRecipe.RecipeElement[1]
@@ -103,7 +103,7 @@ public class KilnConfig : IBuildingConfig
 		{
 			TagManager.Create("Kiln")
 		};
-		complexRecipe.useResultAsDescription = true;
+		complexRecipe.nameDisplay = ComplexRecipe.RecipeNameDisplay.Result;
 		ComplexRecipeManager.Get().AddObsoleteIDMapping(obsolete_id2, text2);
 	}
 

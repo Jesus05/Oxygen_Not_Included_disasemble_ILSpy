@@ -26,7 +26,7 @@ public class AstronautTrainingCenter : Workable
 
 	private Chore CreateChore()
 	{
-		return new WorkChore<AstronautTrainingCenter>(Db.Get().ChoreTypes.Train, this, null, null, true, null, null, null, false, null, false, true, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, false, true);
+		return new WorkChore<AstronautTrainingCenter>(Db.Get().ChoreTypes.Train, this, null, true, null, null, null, false, null, false, true, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, false, true);
 	}
 
 	protected override void OnStartWork(Worker worker)
@@ -37,11 +37,10 @@ public class AstronautTrainingCenter : Workable
 
 	protected override bool OnWorkTick(Worker worker, float dt)
 	{
-		if ((Object)worker == (Object)null)
+		if (!((Object)worker == (Object)null))
 		{
 			return true;
 		}
-		MinionResume component = worker.GetComponent<MinionResume>();
 		return true;
 	}
 
@@ -63,7 +62,7 @@ public class AstronautTrainingCenter : Workable
 
 	public override float GetPercentComplete()
 	{
-		if ((Object)base.worker == (Object)null)
+		if (!((Object)base.worker == (Object)null))
 		{
 			return 0f;
 		}

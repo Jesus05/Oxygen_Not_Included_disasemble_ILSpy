@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 public class SimAndRenderScheduler
 {
@@ -31,7 +32,7 @@ public class SimAndRenderScheduler
 		public int nextBucketIdx;
 	}
 
-	public class UpdaterManager
+	public class BaseUpdaterManager
 	{
 		public UpdateRate updateRate
 		{
@@ -39,13 +40,13 @@ public class SimAndRenderScheduler
 			private set;
 		}
 
-		public UpdaterManager(UpdateRate update_rate)
+		protected BaseUpdaterManager(UpdateRate update_rate)
 		{
 			updateRate = update_rate;
 		}
 	}
 
-	public class UpdaterManager<UpdaterType> : UpdaterManager
+	public class UpdaterManager<UpdaterType> : BaseUpdaterManager
 	{
 		private Dictionary<UpdaterType, Handle> updaterHandles = new Dictionary<UpdaterType, Handle>();
 
@@ -60,10 +61,10 @@ public class SimAndRenderScheduler
 		{
 			if (!Contains(updater))
 			{
-				string value = string.Empty;
+				string value = "";
 				if (!bucketIds.TryGetValue(updater.GetType(), out value))
 				{
-					value = updater.GetType().Name + " " + base.updateRate.ToString();
+					value = MakeBucketId(updater.GetType(), base.updateRate);
 					bucketIds[updater.GetType()] = value;
 				}
 				Handle value2 = instance.Schedule<UpdaterType>(value, (UpdateBucketWithUpdater<UpdaterType>.IUpdater)this, base.updateRate, updater, load_balance);
@@ -197,8 +198,6 @@ public class SimAndRenderScheduler
 
 	private Dictionary<Type, UpdateRate[]> typeImplementedInterfaces = new Dictionary<Type, UpdateRate[]>();
 
-	private List<UpdateRate> interfaces = new List<UpdateRate>();
-
 	private Dictionary<Type, UpdateRate> availableInterfaces = new Dictionary<Type, UpdateRate>();
 
 	public static SimAndRenderScheduler instance
@@ -213,7 +212,7 @@ public class SimAndRenderScheduler
 		}
 	}
 
-	public SimAndRenderScheduler()
+	private SimAndRenderScheduler()
 	{
 		availableInterfaces[typeof(IRenderEveryTick)] = UpdateRate.RENDER_EVERY_TICK;
 		availableInterfaces[typeof(IRender200ms)] = UpdateRate.RENDER_200ms;
@@ -229,23 +228,66 @@ public class SimAndRenderScheduler
 		_instance = null;
 	}
 
+	private static string MakeBucketId(Type updater_type, UpdateRate update_rate)
+	{
+		return $"{updater_type.Name} {update_rate.ToString()}";
+	}
+
 	private UpdateRate[] GetImplementedInterfaces(Type type)
 	{
 		UpdateRate[] value = null;
 		if (!typeImplementedInterfaces.TryGetValue(type, out value))
 		{
-			interfaces.Clear();
+			ListPool<UpdateRate, SimAndRenderScheduler>.PooledList pooledList = ListPool<UpdateRate, SimAndRenderScheduler>.Allocate();
 			foreach (KeyValuePair<Type, UpdateRate> availableInterface in availableInterfaces)
 			{
 				if (availableInterface.Key.IsAssignableFrom(type))
 				{
-					interfaces.Add(availableInterface.Value);
+					pooledList.Add(availableInterface.Value);
 				}
 			}
-			value = interfaces.ToArray();
+			value = pooledList.ToArray();
+			pooledList.Recycle();
 			typeImplementedInterfaces[type] = value;
 		}
 		return value;
+	}
+
+	public static Type GetUpdateInterface(UpdateRate update_rate)
+	{
+		switch (update_rate)
+		{
+		case UpdateRate.RENDER_EVERY_TICK:
+			return typeof(IRenderEveryTick);
+		case UpdateRate.RENDER_200ms:
+			return typeof(IRender200ms);
+		case UpdateRate.RENDER_1000ms:
+			return typeof(IRender1000ms);
+		case UpdateRate.SIM_33ms:
+			return typeof(ISim33ms);
+		case UpdateRate.SIM_200ms:
+			return typeof(ISim200ms);
+		case UpdateRate.SIM_1000ms:
+			return typeof(ISim1000ms);
+		case UpdateRate.SIM_4000ms:
+			return typeof(ISim4000ms);
+		default:
+			return null;
+		}
+	}
+
+	public UpdateRate GetUpdateRate(Type updater)
+	{
+		if (!availableInterfaces.TryGetValue(updater, out UpdateRate value))
+		{
+			Debug.Assert(false, "only call this with an update interface type");
+		}
+		return value;
+	}
+
+	public UpdateRate GetUpdateRate<T>()
+	{
+		return GetUpdateRate(typeof(T));
 	}
 
 	public void Add(object obj, bool load_balance = false)
@@ -314,23 +356,28 @@ public class SimAndRenderScheduler
 		}
 	}
 
-	public Handle Schedule<SimUpdateType>(string name, UpdateBucketWithUpdater<SimUpdateType>.IUpdater bucket_updater, UpdateRate update_rate, SimUpdateType updater, bool load_balance = false)
+	private Entry ManifestEntry<UpdateInterface>(string name, bool load_balance)
 	{
 		if (!bucketTable.TryGetValue(name, out Entry value))
 		{
 			value = default(Entry);
-			int num = 1;
-			if (load_balance)
-			{
-				num = Singleton<StateMachineUpdater>.Instance.GetFrameCount(update_rate);
-			}
+			UpdateRate updateRate = GetUpdateRate<UpdateInterface>();
+			int num = (!load_balance) ? 1 : Singleton<StateMachineUpdater>.Instance.GetFrameCount(updateRate);
 			value.buckets = new StateMachineUpdater.BaseUpdateBucket[num];
 			for (int i = 0; i < num; i++)
 			{
-				value.buckets[i] = new UpdateBucketWithUpdater<SimUpdateType>(name);
-				Singleton<StateMachineUpdater>.Instance.AddBucket(update_rate, value.buckets[i]);
+				value.buckets[i] = new UpdateBucketWithUpdater<UpdateInterface>(name);
+				Singleton<StateMachineUpdater>.Instance.AddBucket(updateRate, value.buckets[i]);
 			}
+			return value;
 		}
+		DebugUtil.DevAssertArgs(value.buckets.Length == ((!load_balance) ? 1 : Singleton<StateMachineUpdater>.Instance.GetFrameCount(GetUpdateRate<UpdateInterface>())), "load_balance doesn't match previous registration...maybe load_balance erroneously on for a BatchUpdate type ", name, "?");
+		return value;
+	}
+
+	public Handle Schedule<SimUpdateType>(string name, UpdateBucketWithUpdater<SimUpdateType>.IUpdater bucket_updater, UpdateRate update_rate, SimUpdateType updater, bool load_balance = false)
+	{
+		Entry value = ManifestEntry<SimUpdateType>(name, load_balance);
 		UpdateBucketWithUpdater<SimUpdateType> updateBucketWithUpdater = (UpdateBucketWithUpdater<SimUpdateType>)value.buckets[value.nextBucketIdx];
 		Handle result = default(Handle);
 		result.handle = updateBucketWithUpdater.Add(updater, Singleton<StateMachineUpdater>.Instance.GetFrameTime(update_rate, updateBucketWithUpdater.frame), bucket_updater);
@@ -343,5 +390,15 @@ public class SimAndRenderScheduler
 	public void Reset()
 	{
 		_instance = null;
+	}
+
+	public void RegisterBatchUpdate<UpdateInterface, T>(UpdateBucketWithUpdater<UpdateInterface>.BatchUpdateDelegate batch_update)
+	{
+		string text = MakeBucketId(typeof(T), GetUpdateRate<UpdateInterface>());
+		Entry value = ManifestEntry<UpdateInterface>(text, false);
+		DebugUtil.DevAssert(GetImplementedInterfaces(typeof(T)).Contains(GetUpdateRate<UpdateInterface>()), "T does not implement the UpdateInterface it is registering for BatchUpdate under");
+		DebugUtil.DevAssert(value.buckets.Length == 1, "don't do a batch update with load balancing because load balancing will produce many small batches which is inefficient");
+		((UpdateBucketWithUpdater<UpdateInterface>)value.buckets[0]).batch_update_delegate = batch_update;
+		bucketTable[text] = value;
 	}
 }

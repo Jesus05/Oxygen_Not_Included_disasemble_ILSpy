@@ -10,7 +10,7 @@ public class FactionAlignment : KMonoBehaviour
 	public FactionManager.FactionID Alignment;
 
 	[Serialize]
-	public bool targeted;
+	public bool targeted = false;
 
 	[Serialize]
 	public bool targetable = true;

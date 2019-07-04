@@ -22,10 +22,10 @@ public class SoundEventVolumeCache : Singleton<SoundEventVolumeCache>
 	public EffectorValues GetVolume(string animFile, string eventName)
 	{
 		HashedString key = new HashedString(animFile + ":" + eventName);
-		if (!volumeCache.ContainsKey(key))
+		if (volumeCache.ContainsKey(key))
 		{
-			return default(EffectorValues);
+			return volumeCache[key];
 		}
-		return volumeCache[key];
+		return default(EffectorValues);
 	}
 }

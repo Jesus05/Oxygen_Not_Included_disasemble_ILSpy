@@ -8,7 +8,7 @@ public class BabyDreckoConfig : IEntityConfig
 	public GameObject CreatePrefab()
 	{
 		GameObject gameObject = DreckoConfig.CreateDrecko("DreckoBaby", CREATURES.SPECIES.DRECKO.BABY.NAME, CREATURES.SPECIES.DRECKO.BABY.DESC, "baby_drecko_kanim", true);
-		EntityTemplates.ExtendEntityToBeingABaby(gameObject, "Drecko");
+		EntityTemplates.ExtendEntityToBeingABaby(gameObject, "Drecko", null);
 		return gameObject;
 	}
 

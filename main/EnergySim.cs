@@ -10,6 +10,8 @@ public class EnergySim
 
 	private HashSet<EnergyConsumer> energyConsumers = new HashSet<EnergyConsumer>();
 
+	public HashSet<Generator> Generators => generators;
+
 	public void AddGenerator(Generator generator)
 	{
 		generators.Add(generator);

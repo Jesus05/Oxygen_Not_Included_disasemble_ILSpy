@@ -161,12 +161,12 @@ public class AmbienceManager : KMonoBehaviour
 
 			public bool ShouldPlay()
 			{
-				if (Time.unscaledTime > solidTargetTime)
+				if (!(Time.unscaledTime > solidTargetTime))
 				{
-					solidTargetTime = Time.unscaledTime + solidMinTime + UnityEngine.Random.value * (solidMaxTime - solidMinTime);
-					return true;
+					return false;
 				}
-				return false;
+				solidTargetTime = Time.unscaledTime + solidMinTime + UnityEngine.Random.value * (solidMaxTime - solidMinTime);
+				return true;
 			}
 		}
 
@@ -184,7 +184,7 @@ public class AmbienceManager : KMonoBehaviour
 
 		public Layer facilityLayer;
 
-		public Layer[] solidLayers = new Layer[11];
+		public Layer[] solidLayers = new Layer[13];
 
 		private List<Layer> allLayers = new List<Layer>();
 
@@ -368,7 +368,7 @@ public class AmbienceManager : KMonoBehaviour
 		}
 	}
 
-	private float emitterZPosition;
+	private float emitterZPosition = 0f;
 
 	public QuadrantDef[] quadrantDefs;
 

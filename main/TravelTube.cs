@@ -23,7 +23,7 @@ public class TravelTube : KMonoBehaviour, IFirstFrameCallback, ITravelTubePiece,
 
 	private Guid connectedStatus;
 
-	private System.Action firstFrameCallback;
+	private System.Action firstFrameCallback = null;
 
 	public Vector3 Position => base.transform.GetPosition();
 

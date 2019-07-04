@@ -87,49 +87,49 @@ namespace Satsuma
 
 		public bool Insert(TNode node)
 		{
-			if (!insertableNodes.Contains(node))
+			if (insertableNodes.Contains(node))
 			{
-				return false;
-			}
-			insertableNodes.Remove(node);
-			insertableNodeQueue.Remove(node);
-			LinkedListNode<TNode> node2 = null;
-			double num = double.PositiveInfinity;
-			for (LinkedListNode<TNode> linkedListNode = tour.First; linkedListNode != tour.Last; linkedListNode = linkedListNode.Next)
-			{
-				LinkedListNode<TNode> next = linkedListNode.Next;
-				double num2 = Cost(linkedListNode.Value, node) + Cost(node, next.Value);
-				if (linkedListNode != next)
+				insertableNodes.Remove(node);
+				insertableNodeQueue.Remove(node);
+				LinkedListNode<TNode> node2 = null;
+				double num = double.PositiveInfinity;
+				for (LinkedListNode<TNode> linkedListNode = tour.First; linkedListNode != tour.Last; linkedListNode = linkedListNode.Next)
 				{
-					num2 -= Cost(linkedListNode.Value, next.Value);
+					LinkedListNode<TNode> next = linkedListNode.Next;
+					double num2 = Cost(linkedListNode.Value, node) + Cost(node, next.Value);
+					if (linkedListNode != next)
+					{
+						num2 -= Cost(linkedListNode.Value, next.Value);
+					}
+					if (num2 < num)
+					{
+						num = num2;
+						node2 = linkedListNode;
+					}
 				}
-				if (num2 < num)
+				tourNodes[node] = tour.AddAfter(node2, node);
+				TourCost += num;
+				foreach (TNode insertableNode in insertableNodes)
 				{
-					num = num2;
-					node2 = linkedListNode;
+					double num3 = PriorityFromCost(Cost(node, insertableNode));
+					if (num3 < insertableNodeQueue[insertableNode])
+					{
+						insertableNodeQueue[insertableNode] = num3;
+					}
 				}
+				return true;
 			}
-			tourNodes[node] = tour.AddAfter(node2, node);
-			TourCost += num;
-			foreach (TNode insertableNode in insertableNodes)
-			{
-				double num3 = PriorityFromCost(Cost(node, insertableNode));
-				if (num3 < insertableNodeQueue[insertableNode])
-				{
-					insertableNodeQueue[insertableNode] = num3;
-				}
-			}
-			return true;
+			return false;
 		}
 
 		public bool Insert()
 		{
-			if (insertableNodes.Count == 0)
+			if (insertableNodes.Count != 0)
 			{
-				return false;
+				Insert(insertableNodeQueue.Peek());
+				return true;
 			}
-			Insert(insertableNodeQueue.Peek());
-			return true;
+			return false;
 		}
 
 		public void Run()

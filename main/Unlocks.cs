@@ -15,22 +15,23 @@ public class Unlocks : KMonoBehaviour
 	{
 		{
 			"emails",
-			new string[21]
+			new string[22]
 			{
-				"email_preliminarycalculations",
-				"email_researchgiant",
 				"email_thermodynamiclaws",
-				"email_frankiesblog",
-				"email_atomiconrecruitment",
-				"email_thejanitor",
 				"email_security2",
+				"email_pens",
+				"email_pens2",
+				"email_atomiconrecruitment",
+				"email_frankiesblog",
+				"email_researchgiant",
+				"email_thejanitor",
 				"email_newemployee",
+				"email_timeoffapproved",
 				"email_security3",
+				"email_preliminarycalculations",
 				"email_hollandsdog",
 				"email_temporalbowupdate",
 				"email_retemporalbowupdate",
-				"email_pens",
-				"email_pens2",
 				"email_memorychip",
 				"email_arthistoryrequest",
 				"email_AIcontrol",
@@ -42,46 +43,36 @@ public class Unlocks : KMonoBehaviour
 		},
 		{
 			"journals",
-			new string[38]
+			new string[28]
 			{
-				"journal_sunflowerseeds",
-				"journal_debrief",
-				"journal_employeeprocessing",
-				"journal_B835_1",
-				"journal_B835_2",
-				"journal_B835_3",
-				"journal_B835_4",
-				"journal_B835_5",
-				"journal_B835_6",
-				"journal_cleanup",
-				"journal_pipedream",
 				"journal_A046_1",
-				"journal_A046_2",
-				"journal_A046_3",
-				"journal_A046_4",
-				"journal_spittingimage",
-				"journal_elliesbirthday1",
-				"journal_movedrats",
+				"journal_B835_1",
+				"journal_debrief",
 				"journal_B327_1",
-				"journal_B327_2",
-				"journal_B327_3",
-				"journal_B327_4",
-				"journal_elliesbirthday2",
-				"journal_revisitednumbers",
-				"journal_ants",
+				"journal_sunflowerseeds",
 				"journal_B556_1",
+				"journal_employeeprocessing",
+				"journal_B327_2",
+				"journal_A046_2",
+				"journal_elliesbirthday1",
+				"journal_B835_2",
+				"journal_ants",
+				"journal_pipedream",
 				"journal_B556_2",
+				"journal_movedrats",
+				"journal_B835_3",
+				"journal_A046_3",
 				"journal_B556_3",
+				"journal_B327_3",
+				"journal_B835_4",
+				"journal_cleanup",
+				"journal_A046_4",
+				"journal_B327_4",
+				"journal_revisitednumbers",
 				"journal_B556_4",
-				"journal_timemusings",
-				"journal_timesarrowthoughts",
-				"journal_magazine",
-				"journal_planetaryechoes1",
-				"journal_planetaryechoes2",
-				"journal_planetaryechoes3",
-				"journal_planetaryechoes4",
-				"journal_planetaryechoes5",
-				"journal_notetojodi"
+				"journal_B835_5",
+				"journal_elliesbirthday2",
+				"journal_magazine"
 			}
 		},
 		{
@@ -107,14 +98,13 @@ public class Unlocks : KMonoBehaviour
 		},
 		{
 			"misc",
-			new string[7]
+			new string[6]
 			{
+				"misc_newsecurity",
 				"misc_mailroometiquette",
 				"misc_unattendedcultures",
-				"misc_newsecurity",
 				"misc_politerequest",
 				"misc_casualfriday",
-				"misc_bringyourkidtowork",
 				"misc_dishbot"
 			}
 		}
@@ -129,15 +119,15 @@ public class Unlocks : KMonoBehaviour
 
 	public bool IsUnlocked(string unlockID)
 	{
-		if (string.IsNullOrEmpty(unlockID))
+		if (!string.IsNullOrEmpty(unlockID))
 		{
-			return false;
-		}
-		if (DebugHandler.InstantBuildMode)
-		{
+			if (!DebugHandler.InstantBuildMode)
+			{
+				return unlocked.Contains(unlockID);
+			}
 			return true;
 		}
-		return unlocked.Contains(unlockID);
+		return false;
 	}
 
 	public void Unlock(string unlockID)
@@ -189,7 +179,7 @@ public class Unlocks : KMonoBehaviour
 		unlocked.Clear();
 		if (File.Exists(UnlocksFilename))
 		{
-			string text = string.Empty;
+			string text = "";
 			bool flag = false;
 			int num = 0;
 			while (!flag && num < 5)

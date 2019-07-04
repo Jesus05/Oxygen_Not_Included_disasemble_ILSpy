@@ -1,8 +1,7 @@
-using Klei;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SubEntry : YamlIO<SubEntry>
+public class SubEntry
 {
 	public ContentContainer lockedContentContainer;
 

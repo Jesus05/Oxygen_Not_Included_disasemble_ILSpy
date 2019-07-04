@@ -43,7 +43,7 @@ public class LiquidPumpingStationConfig : IBuildingConfig
 		storage.showInUI = false;
 		storage.allowItemRemoval = true;
 		storage.showDescriptor = true;
-		storage.SetDefaultStoredItemModifiers(Storage.StandardSealedStorage);
+		storage.SetDefaultStoredItemModifiers(Storage.StandardInsulatedStorage);
 	}
 
 	private static void AddGuide(GameObject go, bool occupy_tiles)

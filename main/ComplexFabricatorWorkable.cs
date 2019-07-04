@@ -71,9 +71,9 @@ public class ComplexFabricatorWorkable : Workable
 		}
 	}
 
-	protected override void OnSpawn()
+	protected override void OnPrefabInit()
 	{
-		base.OnSpawn();
+		base.OnPrefabInit();
 		workerStatusItem = Db.Get().DuplicantStatusItems.Processing;
 		attributeConverter = Db.Get().AttributeConverters.MachinerySpeed;
 		attributeExperienceMultiplier = DUPLICANTSTATS.ATTRIBUTE_LEVELING.PART_DAY_EXPERIENCE;
@@ -92,10 +92,10 @@ public class ComplexFabricatorWorkable : Workable
 		base.OnStartWork(worker);
 		if (operational.IsOperational)
 		{
-			operational.SetActive(true, false);
-			if (fabricator.CurrentMachineOrder != null)
+			fabricator.DuplicantStartWork();
+			if (fabricator.CurrentWorkingOrder != null)
 			{
-				InstantiateVisualizer(fabricator.CurrentMachineOrder);
+				InstantiateVisualizer(fabricator.CurrentWorkingOrder);
 			}
 			else
 			{
@@ -107,12 +107,7 @@ public class ComplexFabricatorWorkable : Workable
 	protected override void OnStopWork(Worker worker)
 	{
 		base.OnStopWork(worker);
-		operational.SetActive(false, false);
-	}
-
-	public void ResetWorkTime()
-	{
-		workTimeRemaining = GetWorkTime();
+		fabricator.DuplicantStopWork();
 	}
 
 	protected override bool OnWorkTick(Worker worker, float dt)
@@ -130,32 +125,30 @@ public class ComplexFabricatorWorkable : Workable
 
 	public override float GetWorkTime()
 	{
-		ComplexFabricator.MachineOrder currentMachineOrder = fabricator.CurrentMachineOrder;
-		if (currentMachineOrder != null)
+		ComplexRecipe currentWorkingOrder = fabricator.CurrentWorkingOrder;
+		if (currentWorkingOrder == null)
 		{
-			workTime = currentMachineOrder.parentOrder.recipe.time;
-			return workTime;
+			return -1f;
 		}
-		return -1f;
+		workTime = currentWorkingOrder.time;
+		return workTime;
 	}
 
-	public void CreateOrder(ComplexFabricator.MachineOrder buildable_order, ChoreType choreType, Tag[] choreTags)
+	public Chore CreateOrder(ChoreType choreType)
 	{
-		buildable_order.chore = new WorkChore<ComplexFabricatorWorkable>(choreType, this, null, choreTags, true, null, null, null, true, null, false, true, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, false, true);
-		if (workTimeRemaining <= 0f)
-		{
-			workTimeRemaining = GetWorkTime();
-		}
+		WorkChore<ComplexFabricatorWorkable> result = new WorkChore<ComplexFabricatorWorkable>(choreType, this, null, true, null, null, null, true, null, false, true, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, false, true);
+		workTimeRemaining = GetWorkTime();
+		return result;
 	}
 
 	protected override void OnCompleteWork(Worker worker)
 	{
 		base.OnCompleteWork(worker);
-		fabricator.OnCompleteMachineOrder();
+		fabricator.CompleteWorkingOrder();
 		DestroyVisualizer();
 	}
 
-	private void InstantiateVisualizer(ComplexFabricator.MachineOrder order)
+	private void InstantiateVisualizer(ComplexRecipe recipe)
 	{
 		if ((UnityEngine.Object)visualizer != (UnityEngine.Object)null)
 		{
@@ -166,9 +159,9 @@ public class ComplexFabricatorWorkable : Workable
 			visualizerLink.Unregister();
 			visualizerLink = null;
 		}
-		if (!((UnityEngine.Object)order.parentOrder.recipe.FabricationVisualizer == (UnityEngine.Object)null))
+		if (!((UnityEngine.Object)recipe.FabricationVisualizer == (UnityEngine.Object)null))
 		{
-			visualizer = Util.KInstantiate(order.parentOrder.recipe.FabricationVisualizer, null, null);
+			visualizer = Util.KInstantiate(recipe.FabricationVisualizer, null, null);
 			visualizer.transform.parent = meter.meterController.transform;
 			visualizer.transform.SetLocalPosition(new Vector3(0f, 0f, 1f));
 			visualizer.SetActive(true);

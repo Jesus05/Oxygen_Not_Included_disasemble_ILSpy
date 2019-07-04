@@ -10,7 +10,7 @@ public class SolidConduitConsumer : KMonoBehaviour
 	public float capacityKG = float.PositiveInfinity;
 
 	[SerializeField]
-	public bool alwaysConsume;
+	public bool alwaysConsume = false;
 
 	[MyCmpReq]
 	private Operational operational;

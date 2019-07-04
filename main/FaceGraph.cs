@@ -82,24 +82,24 @@ public class FaceGraph : KMonoBehaviour
 	private bool ShouldUseSidewaysSymbol(KBatchedAnimController controller)
 	{
 		KAnim.Anim currentAnim = controller.GetCurrentAnim();
-		if (currentAnim == null)
+		if (currentAnim != null)
 		{
-			return false;
-		}
-		int currentFrameIndex = controller.GetCurrentFrameIndex();
-		if (currentFrameIndex <= 0)
-		{
-			return false;
-		}
-		KBatchGroupData batchGroupData = KAnimBatchManager.Instance().GetBatchGroupData(currentAnim.animFile.animBatchTag);
-		KAnim.Anim.Frame frame = batchGroupData.GetFrame(currentFrameIndex);
-		for (int i = 0; i < frame.numElements; i++)
-		{
-			KAnim.Anim.FrameElement frameElement = batchGroupData.GetFrameElement(frame.firstElementIdx + i);
-			if (frameElement.symbol == HASH_SNAPTO_EYES && frameElement.frame >= FIRST_SIDEWAYS_FRAME)
+			int currentFrameIndex = controller.GetCurrentFrameIndex();
+			if (currentFrameIndex > 0)
 			{
-				return true;
+				KBatchGroupData batchGroupData = KAnimBatchManager.Instance().GetBatchGroupData(currentAnim.animFile.animBatchTag);
+				KAnim.Anim.Frame frame = batchGroupData.GetFrame(currentFrameIndex);
+				for (int i = 0; i < frame.numElements; i++)
+				{
+					KAnim.Anim.FrameElement frameElement = batchGroupData.GetFrameElement(frame.firstElementIdx + i);
+					if (frameElement.symbol == HASH_SNAPTO_EYES && frameElement.frame >= FIRST_SIDEWAYS_FRAME)
+					{
+						return true;
+					}
+				}
+				return false;
 			}
+			return false;
 		}
 		return false;
 	}

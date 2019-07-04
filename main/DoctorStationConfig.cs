@@ -42,8 +42,7 @@ public class DoctorStationConfig : IBuildingConfig
 		manualDeliveryKG.capacity = 10f;
 		manualDeliveryKG.refillMass = 5f;
 		manualDeliveryKG.minimumMass = 1f;
-		manualDeliveryKG.choreTags = GameTags.ChoreTypes.DoctoringChores;
-		manualDeliveryKG.choreTypeIDHash = Db.Get().ChoreTypes.MachineFetch.IdHash;
+		manualDeliveryKG.choreTypeIDHash = Db.Get().ChoreTypes.DoctorFetch.IdHash;
 		manualDeliveryKG.operationalRequirement = FetchOrder2.OperationalRequirement.Functional;
 		DoctorStation doctorStation = go.AddOrGet<DoctorStation>();
 		doctorStation.overrideAnims = new KAnimFile[1]

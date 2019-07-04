@@ -42,7 +42,7 @@ public class SpeedControlScreen : KScreen
 
 	private int speed;
 
-	private int pauseCount;
+	private int pauseCount = 0;
 
 	public static SpeedControlScreen Instance
 	{

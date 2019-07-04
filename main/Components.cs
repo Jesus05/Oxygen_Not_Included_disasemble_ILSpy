@@ -144,6 +144,8 @@ public class Components
 
 	public static Cmps<Light2D> Light2Ds = new Cmps<Light2D>();
 
+	public static Cmps<Radiator> Radiators = new Cmps<Radiator>();
+
 	public static Cmps<Edible> Edibles = new Cmps<Edible>();
 
 	public static Cmps<Diggable> Diggables = new Cmps<Diggable>();
@@ -151,6 +153,8 @@ public class Components
 	public static Cmps<ResearchCenter> ResearchCenters = new Cmps<ResearchCenter>();
 
 	public static Cmps<Harvestable> Harvestables = new Cmps<Harvestable>();
+
+	public static Cmps<HarvestDesignatable> HarvestDesignatables = new Cmps<HarvestDesignatable>();
 
 	public static Cmps<Uprootable> Uprootables = new Cmps<Uprootable>();
 
@@ -201,4 +205,6 @@ public class Components
 	public static Cmps<MinionAssignablesProxy> MinionAssignablesProxy = new Cmps<MinionAssignablesProxy>();
 
 	public static Cmps<ComplexFabricator> ComplexFabricators = new Cmps<ComplexFabricator>();
+
+	public static Cmps<MonumentPart> MonumentParts = new Cmps<MonumentPart>();
 }

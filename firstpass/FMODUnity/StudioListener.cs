@@ -9,7 +9,7 @@ namespace FMODUnity
 
 		private Rigidbody2D rigidBody2D;
 
-		public int ListenerNumber;
+		public int ListenerNumber = 0;
 
 		private void OnEnable()
 		{

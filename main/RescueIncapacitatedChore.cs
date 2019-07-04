@@ -115,13 +115,13 @@ public class RescueIncapacitatedChore : Chore<RescueIncapacitatedChore.StatesIns
 		fn = (PreconditionFn)delegate(ref Precondition.Context context, object data)
 		{
 			GameObject gameObject = (GameObject)data;
-			if ((UnityEngine.Object)gameObject == (UnityEngine.Object)null)
+			if (!((UnityEngine.Object)gameObject == (UnityEngine.Object)null))
 			{
-				return false;
-			}
-			int navigationCost = context.consumerState.navigator.GetNavigationCost(Grid.PosToCell(gameObject.transform.GetPosition()));
-			if (navigationCost != -1)
-			{
+				int navigationCost = context.consumerState.navigator.GetNavigationCost(Grid.PosToCell(gameObject.transform.GetPosition()));
+				if (navigationCost == -1)
+				{
+					return false;
+				}
 				context.cost += navigationCost;
 				return true;
 			}
@@ -130,7 +130,7 @@ public class RescueIncapacitatedChore : Chore<RescueIncapacitatedChore.StatesIns
 	};
 
 	public RescueIncapacitatedChore(IStateMachineTarget master, GameObject incapacitatedDuplicant)
-		: base(Db.Get().ChoreTypes.RescueIncapacitated, master, (ChoreProvider)null, false, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.personalNeeds, 5, false, true, 0, (Tag[])null, false, ReportManager.ReportType.WorkTime)
+		: base(Db.Get().ChoreTypes.RescueIncapacitated, master, (ChoreProvider)null, false, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.personalNeeds, 5, false, true, 0, false, ReportManager.ReportType.WorkTime)
 	{
 		base.smi = new StatesInstance(this);
 		base.runUntilComplete = true;

@@ -88,71 +88,71 @@ public class KFMOD
 		{
 			if (!((UnityEngine.Object)KFMODDebugger.instance != (UnityEngine.Object)null))
 			{
-				goto IL_004c;
+				goto IL_0056;
 			}
-			goto IL_004c;
+			goto IL_0056;
 		}
 		Vector3 pos = new Vector3(position.x, position.y, 0f);
 		if (!((UnityEngine.Object)KFMODDebugger.instance != (UnityEngine.Object)null))
 		{
-			goto IL_0078;
+			goto IL_0089;
 		}
-		goto IL_0078;
-		IL_0078:
+		goto IL_0089;
+		IL_0089:
 		ATTRIBUTES_3D attributes = pos.To3DAttributes();
 		result.set3DAttributes(attributes);
 		result.setVolume(1f);
 		return result;
-		IL_004c:
+		IL_0056:
 		return result;
 	}
 
 	public static bool EndOneShot(EventInstance instance)
 	{
-		if (!instance.isValid())
+		if (instance.isValid())
 		{
-			return false;
+			instance.start();
+			instance.release();
+			return true;
 		}
-		instance.start();
-		instance.release();
-		return true;
+		return false;
 	}
 
 	public static EventInstance CreateInstance(string path)
 	{
 		if (!((UnityEngine.Object)KFMODDebugger.instance != (UnityEngine.Object)null))
 		{
-			goto IL_0010;
+			goto IL_0013;
 		}
-		goto IL_0010;
-		IL_0010:
-		if (!RuntimeManager.IsInitialized)
+		goto IL_0013;
+		IL_0013:
+		if (RuntimeManager.IsInitialized)
 		{
-			return default(EventInstance);
+			EventInstance eventInstance;
+			try
+			{
+				eventInstance = RuntimeManager.CreateInstance(path);
+			}
+			catch (EventNotFoundException obj)
+			{
+				Debug.LogWarning(obj);
+				return default(EventInstance);
+			}
+			HashedString path2 = path;
+			SoundDescription soundEventDescription = GetSoundEventDescription(path2);
+			OneShotSoundParameterUpdater.Sound sound = default(OneShotSoundParameterUpdater.Sound);
+			sound.ev = eventInstance;
+			sound.path = path2;
+			sound.description = soundEventDescription;
+			OneShotSoundParameterUpdater.Sound sound2 = sound;
+			OneShotSoundParameterUpdater[] oneShotParameterUpdaters = soundEventDescription.oneShotParameterUpdaters;
+			foreach (OneShotSoundParameterUpdater oneShotSoundParameterUpdater in oneShotParameterUpdaters)
+			{
+				oneShotSoundParameterUpdater.Play(sound2);
+			}
+			return eventInstance;
 		}
-		EventInstance eventInstance;
-		try
-		{
-			eventInstance = RuntimeManager.CreateInstance(path);
-		}
-		catch (EventNotFoundException obj)
-		{
-			Debug.LogWarning(obj);
-			return default(EventInstance);
-		}
-		HashedString path2 = path;
-		SoundDescription soundEventDescription = GetSoundEventDescription(path2);
-		OneShotSoundParameterUpdater.Sound sound = default(OneShotSoundParameterUpdater.Sound);
-		sound.ev = eventInstance;
-		sound.path = path2;
-		sound.description = soundEventDescription;
-		OneShotSoundParameterUpdater.Sound sound2 = sound;
-		OneShotSoundParameterUpdater[] oneShotParameterUpdaters = soundEventDescription.oneShotParameterUpdaters;
-		foreach (OneShotSoundParameterUpdater oneShotSoundParameterUpdater in oneShotParameterUpdaters)
-		{
-			oneShotSoundParameterUpdater.Play(sound2);
-		}
-		return eventInstance;
+		return default(EventInstance);
 	}
 
 	private static void CollectSoundDescriptions()

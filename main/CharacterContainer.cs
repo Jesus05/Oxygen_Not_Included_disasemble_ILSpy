@@ -59,28 +59,48 @@ public class CharacterContainer : KScreen, ITelepadDeliverableContainer
 	private LocText badTrait;
 
 	[SerializeField]
-	private Transform aptitudeContainer;
+	private GameObject aptitudeEntry;
 
 	[SerializeField]
 	private Transform aptitudeLabel;
 
 	[SerializeField]
-	private LocText expectation;
+	private Transform attributeLabelAptitude;
+
+	[SerializeField]
+	private Transform attributeLabelTrait;
 
 	[SerializeField]
 	private LocText expectationRight;
 
 	private List<LocText> expectationLabels;
 
-	private List<LocText> aptitudeLabels;
+	[SerializeField]
+	private DropDown archetypeDropDown;
 
-	private List<LocText> traitLabels;
+	[SerializeField]
+	private Image selectedArchetypeIcon;
+
+	[SerializeField]
+	private Sprite noArchetypeIcon;
+
+	[SerializeField]
+	private Sprite dropdownArrowIcon;
+
+	private string guaranteedAptitudeID;
+
+	private List<GameObject> aptitudeEntries;
+
+	private List<GameObject> traitEntries;
 
 	[SerializeField]
 	private LocText description;
 
 	[SerializeField]
 	private KToggle selectButton;
+
+	[SerializeField]
+	private KBatchedAnimController fxAnim;
 
 	private MinionStartingStats stats;
 
@@ -131,6 +151,14 @@ public class CharacterContainer : KScreen, ITelepadDeliverableContainer
 		{
 			Reshuffle(true);
 		};
+		List<IListableOption> list = new List<IListableOption>();
+		List<SkillGroup> list2 = new List<SkillGroup>(Db.Get().SkillGroups.resources);
+		foreach (SkillGroup item in list2)
+		{
+			list.Add(item);
+		}
+		archetypeDropDown.Initialize(list, OnArchetypeEntryClick, archetypeDropDownSort, archetypeDropEntryRefreshAction, false, null);
+		archetypeDropDown.CustomizeEmptyRow(Strings.Get("STRINGS.UI.CHARACTERCONTAINER_NOARCHETYPESELECTED"), noArchetypeIcon);
 		StartCoroutine(DelayedGeneration());
 	}
 
@@ -189,9 +217,9 @@ public class CharacterContainer : KScreen, ITelepadDeliverableContainer
 			professionIconMap.Add(ic.professionName, ic.iconImg);
 		});
 		iconGroups = new List<GameObject>();
-		traitLabels = new List<LocText>();
+		traitEntries = new List<GameObject>();
 		expectationLabels = new List<LocText>();
-		aptitudeLabels = new List<LocText>();
+		aptitudeEntries = new List<GameObject>();
 		if (containers == null)
 		{
 			containers = new List<CharacterContainer>();
@@ -211,12 +239,12 @@ public class CharacterContainer : KScreen, ITelepadDeliverableContainer
 		KScreenManager.Instance.RefreshStack();
 	}
 
-	private void GenerateCharacter(bool is_starter)
+	private void GenerateCharacter(bool is_starter, string guaranteedAptitudeID = null)
 	{
 		int num = 0;
 		do
 		{
-			stats = new MinionStartingStats(is_starter);
+			stats = new MinionStartingStats(is_starter, guaranteedAptitudeID);
 			num++;
 		}
 		while (IsCharacterRedundant() && num < 20);
@@ -233,6 +261,7 @@ public class CharacterContainer : KScreen, ITelepadDeliverableContainer
 		selectButton.ClearOnClick();
 		if (!controller.IsStarterMinion)
 		{
+			selectButton.enabled = true;
 			selectButton.onClick += delegate
 			{
 				SelectDeliverable();
@@ -244,6 +273,12 @@ public class CharacterContainer : KScreen, ITelepadDeliverableContainer
 	{
 		KCanvasScaler kCanvasScaler = UnityEngine.Object.FindObjectOfType<KCanvasScaler>();
 		animController.animScale = baseCharacterScale * (1f / kCanvasScaler.GetCanvasScale());
+		Transform transform = animController.transform.parent.gameObject.transform.Find("BG");
+		KBatchedAnimController kBatchedAnimController = (!((UnityEngine.Object)transform != (UnityEngine.Object)null)) ? null : transform.gameObject.GetComponent<KBatchedAnimController>();
+		if ((UnityEngine.Object)kBatchedAnimController != (UnityEngine.Object)null)
+		{
+			kBatchedAnimController.animScale = baseCharacterScale * (1f / kCanvasScaler.GetCanvasScale());
+		}
 	}
 
 	private void SetAnimator()
@@ -256,6 +291,12 @@ public class CharacterContainer : KScreen, ITelepadDeliverableContainer
 			animController.animScale = baseCharacterScale * (1f / kCanvasScaler.GetCanvasScale());
 			ScreenResize instance = ScreenResize.Instance;
 			instance.OnResize = (System.Action)Delegate.Combine(instance.OnResize, new System.Action(OnResize));
+			Transform transform = animController.transform.parent.gameObject.transform.Find("BG");
+			KBatchedAnimController kBatchedAnimController = (!((UnityEngine.Object)transform != (UnityEngine.Object)null)) ? null : transform.gameObject.GetComponent<KBatchedAnimController>();
+			if ((UnityEngine.Object)kBatchedAnimController != (UnityEngine.Object)null)
+			{
+				kBatchedAnimController.animScale = baseCharacterScale * (1f / kCanvasScaler.GetCanvasScale());
+			}
 		}
 		stats.ApplyTraits(animController.gameObject);
 		stats.ApplyRace(animController.gameObject);
@@ -267,68 +308,165 @@ public class CharacterContainer : KScreen, ITelepadDeliverableContainer
 		{
 			animController.AddAnimOverrides(idle_anim, 0f);
 		}
+		HashedString name2 = new HashedString("crewSelect_fx_kanim");
+		KAnimFile anim = Assets.GetAnim(name2);
+		if ((UnityEngine.Object)anim != (UnityEngine.Object)null)
+		{
+			animController.AddAnimOverrides(anim, 0f);
+		}
 		animController.Queue("idle_default", KAnim.PlayMode.Loop, 1f, 0f);
 	}
 
 	private void SetInfoText()
 	{
-		traitLabels.ForEach(delegate(LocText tl)
+		traitEntries.ForEach(delegate(GameObject tl)
 		{
 			UnityEngine.Object.Destroy(tl.gameObject);
 		});
-		traitLabels.Clear();
+		traitEntries.Clear();
 		characterNameTitle.SetTitle(stats.Name);
 		for (int i = 1; i < stats.Traits.Count; i++)
 		{
 			Trait trait = stats.Traits[i];
 			LocText locText = (!trait.PositiveTrait) ? badTrait : goodTrait;
-			LocText locText2 = Util.KInstantiateUI<LocText>(locText.gameObject, goodTrait.transform.parent.gameObject, false);
+			LocText locText2 = Util.KInstantiateUI<LocText>(locText.gameObject, locText.transform.parent.gameObject, false);
 			locText2.gameObject.SetActive(true);
 			locText2.text = stats.Traits[i].Name;
 			locText2.color = ((!trait.PositiveTrait) ? Constants.NEGATIVE_COLOR : Constants.POSITIVE_COLOR);
-			locText2.GetComponent<ToolTip>().SetSimpleTooltip(trait.GetTooltip());
-			traitLabels.Add(locText2);
+			locText2.GetComponent<ToolTip>().SetSimpleTooltip(trait.description);
+			for (int num = 0; num < trait.SelfModifiers.Count; num++)
+			{
+				GameObject gameObject = Util.KInstantiateUI(attributeLabelTrait.gameObject, locText.transform.parent.gameObject, false);
+				gameObject.SetActive(true);
+				LocText componentInChildren = gameObject.GetComponentInChildren<LocText>();
+				string format = (!(trait.SelfModifiers[num].Value > 0f)) ? UI.CHARACTERCONTAINER_ATTRIBUTEMODIFIER_DECREASED : UI.CHARACTERCONTAINER_ATTRIBUTEMODIFIER_INCREASED;
+				componentInChildren.text = string.Format(format, Strings.Get("STRINGS.DUPLICANTS.ATTRIBUTES." + trait.SelfModifiers[num].AttributeId.ToUpper() + ".NAME"));
+				if (!(trait.SelfModifiers[num].AttributeId == "GermResistance"))
+				{
+					goto IL_01c2;
+				}
+				goto IL_01c2;
+				IL_01c2:
+				Klei.AI.Attribute attribute = Db.Get().Attributes.Get(trait.SelfModifiers[num].AttributeId);
+				string text = attribute.Description;
+				string text2 = text;
+				text = text2 + "\n\n" + Strings.Get("STRINGS.DUPLICANTS.ATTRIBUTES." + trait.SelfModifiers[num].AttributeId.ToUpper() + ".NAME") + ": " + trait.SelfModifiers[num].GetFormattedString(null);
+				List<AttributeConverter> convertersForAttribute = Db.Get().AttributeConverters.GetConvertersForAttribute(attribute);
+				for (int j = 0; j < convertersForAttribute.Count; j++)
+				{
+					string text3 = convertersForAttribute[j].DescriptionFromAttribute(convertersForAttribute[j].multiplier * trait.SelfModifiers[num].Value, null);
+					if (text3 != "")
+					{
+						text = text + "\n    • " + text3;
+					}
+				}
+				componentInChildren.GetComponent<ToolTip>().SetSimpleTooltip(text);
+				traitEntries.Add(gameObject);
+			}
+			if (trait.disabledChoreGroups != null)
+			{
+				GameObject gameObject2 = Util.KInstantiateUI(attributeLabelTrait.gameObject, locText.transform.parent.gameObject, false);
+				gameObject2.SetActive(true);
+				LocText componentInChildren2 = gameObject2.GetComponentInChildren<LocText>();
+				componentInChildren2.text = trait.GetDisabledChoresString(false);
+				string text4 = "";
+				string text5 = "";
+				for (int k = 0; k < trait.disabledChoreGroups.Length; k++)
+				{
+					if (k > 0)
+					{
+						text4 += ", ";
+						text5 += "\n";
+					}
+					text4 += trait.disabledChoreGroups[k].Name;
+					text5 += trait.disabledChoreGroups[k].description;
+				}
+				componentInChildren2.GetComponent<ToolTip>().SetSimpleTooltip(string.Format(DUPLICANTS.TRAITS.CANNOT_DO_TASK_TOOLTIP, text4, text5));
+				traitEntries.Add(gameObject2);
+			}
+			if (trait.ignoredEffects != null && trait.ignoredEffects.Length > 0)
+			{
+				GameObject gameObject3 = Util.KInstantiateUI(attributeLabelTrait.gameObject, locText.transform.parent.gameObject, false);
+				gameObject3.SetActive(true);
+				LocText componentInChildren3 = gameObject3.GetComponentInChildren<LocText>();
+				componentInChildren3.text = trait.GetIgnoredEffectsString(false);
+				string text6 = "";
+				string text7 = "";
+				for (int l = 0; l < trait.ignoredEffects.Length; l++)
+				{
+					if (l > 0)
+					{
+						text6 += ", ";
+						text7 += "\n";
+					}
+					text6 += Strings.Get("STRINGS.DUPLICANTS.MODIFIERS." + trait.ignoredEffects[l].ToUpper() + ".NAME");
+					text7 += Strings.Get("STRINGS.DUPLICANTS.MODIFIERS." + trait.ignoredEffects[l].ToUpper() + ".CAUSE");
+				}
+				componentInChildren3.GetComponent<ToolTip>().SetSimpleTooltip(string.Format(DUPLICANTS.TRAITS.IGNORED_EFFECTS_TOOLTIP, text6, text7));
+				traitEntries.Add(gameObject3);
+			}
+			if (Strings.TryGet("STRINGS.DUPLICANTS.TRAITS." + trait.Id.ToUpper() + ".SHORT_DESC", out StringEntry result))
+			{
+				GameObject gameObject4 = Util.KInstantiateUI(attributeLabelTrait.gameObject, locText.transform.parent.gameObject, false);
+				gameObject4.SetActive(true);
+				LocText componentInChildren4 = gameObject4.GetComponentInChildren<LocText>();
+				componentInChildren4.text = result.String;
+				componentInChildren4.GetComponent<ToolTip>().SetSimpleTooltip(Strings.Get("STRINGS.DUPLICANTS.TRAITS." + trait.Id.ToUpper() + ".SHORT_DESC_TOOLTIP"));
+				traitEntries.Add(gameObject4);
+			}
+			traitEntries.Add(locText2.gameObject);
 		}
-		aptitudeLabels.ForEach(delegate(LocText al)
+		aptitudeEntries.ForEach(delegate(GameObject al)
 		{
 			UnityEngine.Object.Destroy(al.gameObject);
 		});
-		aptitudeLabels.Clear();
+		aptitudeEntries.Clear();
 		expectationLabels.ForEach(delegate(LocText el)
 		{
 			UnityEngine.Object.Destroy(el.gameObject);
 		});
 		expectationLabels.Clear();
-		foreach (Klei.AI.Attribute resource in Db.Get().Attributes.resources)
-		{
-			if (resource.ShowInUI == Klei.AI.Attribute.Display.Expectation)
-			{
-				LocText locText3 = Util.KInstantiateUI<LocText>(expectation.gameObject, expectation.transform.parent.gameObject, false);
-				locText3.gameObject.SetActive(true);
-				AttributeInstance attributeInstance = resource.Lookup(animController);
-				locText3.text = string.Format(UI.CHARACTERCONTAINER_NEED, resource.Name, attributeInstance.GetFormattedValue());
-				expectationLabels.Add(locText3);
-				string tooltip = resource.GetTooltip(attributeInstance);
-				locText3.GetComponent<ToolTip>().SetSimpleTooltip(tooltip);
-			}
-		}
-		foreach (KeyValuePair<HashedString, float> skillAptitude in stats.skillAptitudes)
+		foreach (KeyValuePair<SkillGroup, float> skillAptitude in stats.skillAptitudes)
 		{
 			if (skillAptitude.Value != 0f)
 			{
-				SkillGroup skillGroup = Db.Get().SkillGroups.Get(skillAptitude.Key);
+				SkillGroup skillGroup = Db.Get().SkillGroups.Get(skillAptitude.Key.IdHash);
 				if (skillGroup == null)
 				{
 					Debug.LogWarningFormat("Role group not found for aptitude: {0}", skillAptitude.Key);
 				}
 				else
 				{
-					LocText locText4 = Util.KInstantiateUI<LocText>(aptitudeLabel.gameObject, aptitudeContainer.gameObject, false);
+					GameObject gameObject5 = Util.KInstantiateUI(aptitudeEntry.gameObject, aptitudeEntry.transform.parent.gameObject, false);
+					LocText locText3 = Util.KInstantiateUI<LocText>(aptitudeLabel.gameObject, gameObject5, false);
+					locText3.gameObject.SetActive(true);
+					locText3.text = skillGroup.Name;
+					string text8 = "";
+					if (skillGroup.choreGroupID != "")
+					{
+						ChoreGroup choreGroup = Db.Get().ChoreGroups.Get(skillGroup.choreGroupID);
+						text8 = string.Format(DUPLICANTS.ROLES.GROUPS.APTITUDE_DESCRIPTION_CHOREGROUP, skillGroup.Name, DUPLICANTSTATS.APTITUDE_BONUS, choreGroup.description);
+					}
+					else
+					{
+						text8 = string.Format(DUPLICANTS.ROLES.GROUPS.APTITUDE_DESCRIPTION, skillGroup.Name, DUPLICANTSTATS.APTITUDE_BONUS);
+					}
+					locText3.GetComponent<ToolTip>().SetSimpleTooltip(text8);
+					float num2 = (float)DUPLICANTSTATS.APTITUDE_ATTRIBUTE_BONUSES[stats.skillAptitudes.Count - 1];
+					LocText locText4 = Util.KInstantiateUI<LocText>(attributeLabelAptitude.gameObject, gameObject5, false);
 					locText4.gameObject.SetActive(true);
-					locText4.text = skillGroup.Name;
-					string simpleTooltip = string.Format(DUPLICANTS.ROLES.GROUPS.APTITUDE_DESCRIPTION, skillGroup.Name, DUPLICANTSTATS.APTITUDE_BONUS);
-					locText4.GetComponent<ToolTip>().SetSimpleTooltip(simpleTooltip);
-					aptitudeLabels.Add(locText4);
+					locText4.text = "+" + num2 + " " + skillAptitude.Key.relevantAttributes[0].Name;
+					string text9 = skillAptitude.Key.relevantAttributes[0].Description;
+					string text2 = text9;
+					text9 = text2 + "\n\n" + skillAptitude.Key.relevantAttributes[0].Name + ": +" + DUPLICANTSTATS.APTITUDE_ATTRIBUTE_BONUSES[stats.skillAptitudes.Count - 1];
+					List<AttributeConverter> convertersForAttribute2 = Db.Get().AttributeConverters.GetConvertersForAttribute(skillAptitude.Key.relevantAttributes[0]);
+					for (int m = 0; m < convertersForAttribute2.Count; m++)
+					{
+						text9 = text9 + "\n    • " + convertersForAttribute2[m].DescriptionFromAttribute(convertersForAttribute2[m].multiplier * num2, null);
+					}
+					locText4.GetComponent<ToolTip>().SetSimpleTooltip(text9);
+					gameObject5.gameObject.SetActive(true);
+					aptitudeEntries.Add(gameObject5);
 				}
 			}
 		}
@@ -455,6 +593,7 @@ public class CharacterContainer : KScreen, ITelepadDeliverableContainer
 	public void SetReshufflingState(bool enable)
 	{
 		reshuffleButton.gameObject.SetActive(enable);
+		archetypeDropDown.gameObject.SetActive(enable);
 	}
 
 	private void Reshuffle(bool is_starter)
@@ -463,7 +602,11 @@ public class CharacterContainer : KScreen, ITelepadDeliverableContainer
 		{
 			DeselectDeliverable();
 		}
-		GenerateCharacter(is_starter);
+		if ((UnityEngine.Object)fxAnim != (UnityEngine.Object)null)
+		{
+			fxAnim.Play("loop", KAnim.PlayMode.Once, 1f, 0f);
+		}
+		GenerateCharacter(is_starter, guaranteedAptitudeID);
 	}
 
 	public void SetController(CharacterSelectionController csc)
@@ -527,5 +670,40 @@ public class CharacterContainer : KScreen, ITelepadDeliverableContainer
 	{
 		base.OnShow(show);
 		characterNameTitle.ForceStopEditing();
+	}
+
+	private void OnArchetypeEntryClick(IListableOption skill, object data)
+	{
+		if (skill != null)
+		{
+			SkillGroup skillGroup = skill as SkillGroup;
+			guaranteedAptitudeID = skillGroup.Id;
+			selectedArchetypeIcon.sprite = Assets.GetSprite(skillGroup.choreGroupIcon);
+			Reshuffle(true);
+		}
+		else
+		{
+			guaranteedAptitudeID = null;
+			selectedArchetypeIcon.sprite = dropdownArrowIcon;
+			Reshuffle(true);
+		}
+	}
+
+	private int archetypeDropDownSort(IListableOption a, IListableOption b, object targetData)
+	{
+		if (!b.Equals("Random"))
+		{
+			return b.GetProperName().CompareTo(a.GetProperName());
+		}
+		return -1;
+	}
+
+	private void archetypeDropEntryRefreshAction(DropDownEntry entry, object targetData)
+	{
+		if (entry.entryData != null)
+		{
+			SkillGroup skillGroup = entry.entryData as SkillGroup;
+			entry.image.sprite = Assets.GetSprite(skillGroup.choreGroupIcon);
+		}
 	}
 }

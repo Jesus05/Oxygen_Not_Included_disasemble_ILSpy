@@ -4,7 +4,7 @@ public class FrameDelayedHandleVector<T> : HandleVector<T>
 {
 	private List<Handle>[] frameDelayedFreeHandles = new List<Handle>[3];
 
-	private int curFrame;
+	private int curFrame = 0;
 
 	public FrameDelayedHandleVector(int initial_size)
 		: base(initial_size)

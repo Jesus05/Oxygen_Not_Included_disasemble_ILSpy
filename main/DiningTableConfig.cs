@@ -30,8 +30,6 @@ public class DiningTableConfig : IBuildingConfig
 		go.AddOrGet<LoopingSounds>();
 		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.MessTable);
 		go.AddOrGet<MessStation>();
-		Storage storage = BuildingTemplates.CreateDefaultStorage(go, false);
-		storage.showInUI = true;
 		go.AddOrGet<AnimTileable>();
 	}
 
@@ -40,5 +38,15 @@ public class DiningTableConfig : IBuildingConfig
 		go.GetComponent<KAnimControllerBase>().initialAnim = "off";
 		Ownable ownable = go.AddOrGet<Ownable>();
 		ownable.slotID = Db.Get().AssignableSlots.MessStation.Id;
+		Storage storage = BuildingTemplates.CreateDefaultStorage(go, false);
+		storage.showInUI = true;
+		storage.capacityKg = TableSaltTuning.SALTSHAKERSTORAGEMASS;
+		ManualDeliveryKG manualDeliveryKG = go.AddOrGet<ManualDeliveryKG>();
+		manualDeliveryKG.SetStorage(storage);
+		manualDeliveryKG.requestedItemTag = TableSaltConfig.ID.ToTag();
+		manualDeliveryKG.capacity = TableSaltTuning.SALTSHAKERSTORAGEMASS;
+		manualDeliveryKG.refillMass = TableSaltTuning.CONSUMABLE_RATE;
+		manualDeliveryKG.choreTypeIDHash = Db.Get().ChoreTypes.FoodFetch.IdHash;
+		manualDeliveryKG.ShowStatusItem = false;
 	}
 }

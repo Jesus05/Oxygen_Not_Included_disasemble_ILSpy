@@ -1,6 +1,7 @@
 using Database;
 using Klei.AI;
 using KSerialization;
+using STRINGS;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 using UnityEngine;
@@ -70,6 +71,11 @@ public class StoredMinionIdentity : KMonoBehaviour, ISaveLoadable, IAssignableId
 	public List<AttributeLevels.LevelSaveLoad> attributeLevels;
 
 	[Serialize]
+	public Dictionary<string, float> savedAttributeValues;
+
+	public MinionModifiers minionModifiers;
+
+	[Serialize]
 	public string genderStringKey
 	{
 		get;
@@ -102,6 +108,7 @@ public class StoredMinionIdentity : KMonoBehaviour, ISaveLoadable, IAssignableId
 				AptitudeBySkillGroup[item2.Key] = item2.Value;
 			}
 		}
+		OnDeserializeModifiers();
 	}
 
 	public bool HasPerk(SkillPerk perk)
@@ -124,12 +131,51 @@ public class StoredMinionIdentity : KMonoBehaviour, ISaveLoadable, IAssignableId
 	protected override void OnPrefabInit()
 	{
 		assignableProxy = new Ref<MinionAssignablesProxy>();
+		minionModifiers = GetComponent<MinionModifiers>();
+		savedAttributeValues = new Dictionary<string, float>();
+	}
+
+	[OnSerializing]
+	private void OnSerialize()
+	{
+		savedAttributeValues.Clear();
+		foreach (AttributeInstance attribute in minionModifiers.attributes)
+		{
+			savedAttributeValues.Add(attribute.Attribute.Id, attribute.GetTotalValue());
+		}
 	}
 
 	protected override void OnSpawn()
 	{
+		MinionConfig.AddMinionAmounts(minionModifiers);
+		MinionConfig.AddMinionTraits(DUPLICANTS.MODIFIERS.BASEDUPLICANT.NAME, minionModifiers);
 		ValidateProxy();
 		CleanupLimboMinions();
+	}
+
+	private void OnDeserializeModifiers()
+	{
+		foreach (KeyValuePair<string, float> savedAttributeValue in savedAttributeValues)
+		{
+			Attribute attribute = Db.Get().Attributes.TryGet(savedAttributeValue.Key);
+			if (attribute == null)
+			{
+				attribute = Db.Get().BuildingAttributes.TryGet(savedAttributeValue.Key);
+			}
+			if (attribute != null)
+			{
+				if (minionModifiers.attributes.Get(attribute.Id) != null)
+				{
+					minionModifiers.attributes.Get(attribute.Id).Modifiers.Clear();
+					minionModifiers.attributes.Get(attribute.Id).ClearModifiers();
+				}
+				else
+				{
+					minionModifiers.attributes.Add(attribute);
+				}
+				minionModifiers.attributes.Add(new AttributeModifier(attribute.Id, savedAttributeValue.Value, () => DUPLICANTS.ATTRIBUTES.STORED_VALUE, false, false));
+			}
+		}
 	}
 
 	public void ValidateProxy()
@@ -249,7 +295,7 @@ public class StoredMinionIdentity : KMonoBehaviour, ISaveLoadable, IAssignableId
 				}
 			}
 		}
-		return string.Empty;
+		return "";
 	}
 
 	public bool IsPermittedToConsume(string consumable)
@@ -289,11 +335,11 @@ public class StoredMinionIdentity : KMonoBehaviour, ISaveLoadable, IAssignableId
 
 	public int GetPersonalPriority(ChoreGroup chore_group)
 	{
-		if (choreGroupPriorities.TryGetValue(chore_group.IdHash, out ChoreConsumer.PriorityInfo value))
+		if (!choreGroupPriorities.TryGetValue(chore_group.IdHash, out ChoreConsumer.PriorityInfo value))
 		{
-			return value.priority;
+			return 0;
 		}
-		return 0;
+		return value.priority;
 	}
 
 	public int GetAssociatedSkillLevel(ChoreGroup group)

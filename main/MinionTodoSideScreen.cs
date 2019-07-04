@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class MinionTodoSideScreen : SideScreenContent
 {
-	private bool useOffscreenIndicators;
+	private bool useOffscreenIndicators = false;
 
 	public MinionTodoChoreEntry taskEntryPrefab;
 
@@ -36,7 +36,7 @@ public class MinionTodoSideScreen : SideScreenContent
 
 	private static List<JobsTableScreen.PriorityInfo> _priorityInfo;
 
-	private int activeChoreEntries;
+	private int activeChoreEntries = 0;
 
 	public static List<JobsTableScreen.PriorityInfo> priorityInfo
 	{
@@ -150,7 +150,7 @@ public class MinionTodoSideScreen : SideScreenContent
 		MinionTodoChoreEntry minionTodoChoreEntry = null;
 		int num = 0;
 		Schedulable component = DetailsScreen.Instance.target.GetComponent<Schedulable>();
-		string arg = string.Empty;
+		string arg = "";
 		Schedule schedule = component.GetSchedule();
 		if (schedule != null)
 		{

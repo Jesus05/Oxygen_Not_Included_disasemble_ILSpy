@@ -80,6 +80,27 @@ public class AudioMixerSnapshots : ScriptableObject
 	[EventRef]
 	public string FacilityVisibleSnapshot;
 
+	[EventRef]
+	public string TutorialVideoPlayingSnapshot;
+
+	[EventRef]
+	public string VictoryMessageSnapshot;
+
+	[EventRef]
+	public string VictoryNISGenericSnapshot;
+
+	[EventRef]
+	public string VictoryNISRocketSnapshot;
+
+	[EventRef]
+	public string VictoryCinematicSnapshot;
+
+	[EventRef]
+	public string VictoryFadeToBlackSnapshot;
+
+	[EventRef]
+	public string MuteDynamicMusicSnapshot;
+
 	[SerializeField]
 	[EventRef]
 	private string[] snapshots;
@@ -87,7 +108,7 @@ public class AudioMixerSnapshots : ScriptableObject
 	[NonSerialized]
 	public List<string> snapshotMap = new List<string>();
 
-	public static AudioMixerSnapshots instance;
+	private static AudioMixerSnapshots instance;
 
 	public static AudioMixerSnapshots Get()
 	{

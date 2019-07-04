@@ -19,17 +19,18 @@ public class WiltCondition : KMonoBehaviour
 		Darkness,
 		Receptacle,
 		Entombed,
+		UnhealthyRoot,
 		Count
 	}
 
 	[MyCmpGet]
-	private Growing growing;
+	private ReceptacleMonitor rm;
 
 	[Serialize]
-	private bool goingToWilt;
+	private bool goingToWilt = false;
 
 	[Serialize]
-	private bool wilting;
+	private bool wilting = false;
 
 	private Dictionary<int, bool> WiltConditions = new Dictionary<int, bool>();
 
@@ -136,6 +137,11 @@ public class WiltCondition : KMonoBehaviour
 		component.SetCondition(Condition.Entombed, !(bool)data);
 	});
 
+	private static readonly EventSystem.IntraObjectHandler<WiltCondition> SetRootHealthDelegate = new EventSystem.IntraObjectHandler<WiltCondition>(delegate(WiltCondition component, object data)
+	{
+		component.SetCondition(Condition.UnhealthyRoot, (bool)data);
+	});
+
 	[CompilerGenerated]
 	private static Action<object> _003C_003Ef__mg_0024cache0;
 
@@ -173,6 +179,7 @@ public class WiltCondition : KMonoBehaviour
 		WiltConditions.Add(7, true);
 		WiltConditions.Add(9, true);
 		WiltConditions.Add(10, true);
+		WiltConditions.Add(11, true);
 		Subscribe(-107174716, SetTemperatureFalseDelegate);
 		Subscribe(-1758196852, SetTemperatureFalseDelegate);
 		Subscribe(-1234705021, SetTemperatureFalseDelegate);
@@ -198,6 +205,7 @@ public class WiltCondition : KMonoBehaviour
 		Subscribe(1628751838, SetReceptacleTrueDelegate);
 		Subscribe(960378201, SetReceptacleFalseDelegate);
 		Subscribe(-1089732772, SetEntombedDelegate);
+		Subscribe(912965142, SetRootHealthDelegate);
 	}
 
 	protected override void OnSpawn()
@@ -305,15 +313,15 @@ public class WiltCondition : KMonoBehaviour
 			wilting = true;
 			Trigger(-724860998, null);
 		}
-		if ((UnityEngine.Object)growing != (UnityEngine.Object)null)
+		if ((UnityEngine.Object)rm != (UnityEngine.Object)null)
 		{
-			if (growing.Replanted)
+			if (rm.Replanted)
 			{
-				component.AddStatusItem(Db.Get().CreatureStatusItems.WiltingDomestic, GetComponent<Growing>());
+				component.AddStatusItem(Db.Get().CreatureStatusItems.WiltingDomestic, GetComponent<ReceptacleMonitor>());
 			}
 			else
 			{
-				component.AddStatusItem(Db.Get().CreatureStatusItems.Wilting, GetComponent<Growing>());
+				component.AddStatusItem(Db.Get().CreatureStatusItems.Wilting, GetComponent<ReceptacleMonitor>());
 			}
 		}
 		else
@@ -332,7 +340,7 @@ public class WiltCondition : KMonoBehaviour
 
 	public string WiltCausesString()
 	{
-		string text = string.Empty;
+		string text = "";
 		List<IWiltCause> allSMI = this.GetAllSMI<IWiltCause>();
 		allSMI.AddRange(GetComponents<IWiltCause>());
 		foreach (IWiltCause item in allSMI)

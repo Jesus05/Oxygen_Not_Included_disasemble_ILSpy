@@ -1,9 +1,8 @@
 using UnityEngine;
-using UnityEngine.UI;
 
 public class KModalButtonMenu : KButtonMenu
 {
-	private bool shown;
+	private bool shown = false;
 
 	[SerializeField]
 	private GameObject panelRoot;
@@ -71,8 +70,6 @@ public class KModalButtonMenu : KButtonMenu
 
 	public void SetBackgroundActive(bool active)
 	{
-		int num = active ? 70 : 0;
-		GetComponent<Image>().color = new Color32(0, 0, 0, (byte)num);
 	}
 
 	protected GameObject ActivateChildScreen(GameObject screenPrefab)

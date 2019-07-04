@@ -39,7 +39,13 @@ public class CarePackageContainer : KScreen, ITelepadDeliverableContainer
 	private KBatchedAnimController animController;
 
 	[SerializeField]
+	private LocText itemName;
+
+	[SerializeField]
 	private LocText quantity;
+
+	[SerializeField]
+	private LocText currentQuantity;
 
 	[SerializeField]
 	private LocText description;
@@ -62,6 +68,8 @@ public class CarePackageContainer : KScreen, ITelepadDeliverableContainer
 	private Dictionary<string, Sprite> professionIconMap;
 
 	public float baseCharacterScale = 0.38f;
+
+	private List<GameObject> entryIcons = new List<GameObject>();
 
 	public CarePackageInfo Info => info;
 
@@ -173,74 +181,154 @@ public class CarePackageContainer : KScreen, ITelepadDeliverableContainer
 
 	private void SetAnimator()
 	{
-		Image component = contentBody.GetComponent<Image>();
 		GameObject prefab = Assets.GetPrefab(info.id.ToTag());
+		EdiblesManager.FoodInfo foodInfo = Game.Instance.ediblesManager.GetFoodInfo(info.id);
+		int num = (ElementLoader.FindElementByName(info.id) != null) ? 1 : ((foodInfo == null) ? ((int)info.quantity) : ((int)(info.quantity % foodInfo.CaloriesPerUnit)));
 		if ((UnityEngine.Object)prefab != (UnityEngine.Object)null)
 		{
-			Tuple<Sprite, Color> uISprite = Def.GetUISprite(prefab, "ui", false);
-			component.sprite = uISprite.first;
-			component.color = uISprite.second;
+			for (int i = 0; i < num; i++)
+			{
+				GameObject gameObject = Util.KInstantiateUI(contentBody, contentBody.transform.parent.gameObject, false);
+				gameObject.SetActive(true);
+				Image component = gameObject.GetComponent<Image>();
+				Tuple<Sprite, Color> uISprite = Def.GetUISprite(prefab, "ui", false);
+				component.sprite = uISprite.first;
+				component.color = uISprite.second;
+				entryIcons.Add(gameObject);
+				if (num > 1)
+				{
+					int num2 = 0;
+					int num3 = 0;
+					int num4;
+					if (num % 2 == 1)
+					{
+						num4 = Mathf.CeilToInt((float)(num / 2));
+						num2 = num4 - i;
+						num3 = ((num2 > 0) ? 1 : (-1));
+						num2 = Mathf.Abs(num2);
+					}
+					else
+					{
+						num4 = num / 2 - 1;
+						if (i <= num4)
+						{
+							num2 = Mathf.Abs(num4 - i);
+							num3 = -1;
+						}
+						else
+						{
+							num2 = Mathf.Abs(num4 + 1 - i);
+							num3 = 1;
+						}
+					}
+					int num5 = 0;
+					if (num % 2 == 0)
+					{
+						num5 = ((i > num4) ? 6 : (-6));
+						gameObject.transform.SetPosition(gameObject.transform.position += new Vector3((float)num5, 0f, 0f));
+					}
+					gameObject.transform.localScale = new Vector3(1f - (float)num2 * 0.1f, 1f - (float)num2 * 0.1f, 1f);
+					gameObject.transform.Rotate(0f, 0f, 3f * (float)num2 * (float)num3);
+					gameObject.transform.SetPosition(gameObject.transform.position + new Vector3(25f * (float)num2 * (float)num3, 5f * (float)num2) + new Vector3((float)num5, 0f, 0f));
+					gameObject.GetComponent<Canvas>().sortingOrder = num - num2;
+				}
+			}
 		}
 		else
 		{
-			component.sprite = Def.GetUISpriteFromMultiObjectAnim(ElementLoader.GetElement(info.id.ToTag()).substance.anim, "ui", false);
-			component.color = ElementLoader.GetElement(info.id.ToTag()).substance.uiColour;
+			GameObject gameObject2 = Util.KInstantiateUI(contentBody, contentBody.transform.parent.gameObject, false);
+			gameObject2.SetActive(true);
+			Image component2 = gameObject2.GetComponent<Image>();
+			component2.sprite = Def.GetUISpriteFromMultiObjectAnim(ElementLoader.GetElement(info.id.ToTag()).substance.anim, "ui", false, "");
+			component2.color = ElementLoader.GetElement(info.id.ToTag()).substance.uiColour;
+			entryIcons.Add(gameObject2);
 		}
 	}
 
 	private string GetSpawnableName()
 	{
 		GameObject prefab = Assets.GetPrefab(info.id);
-		if ((UnityEngine.Object)prefab == (UnityEngine.Object)null)
+		if (!((UnityEngine.Object)prefab == (UnityEngine.Object)null))
 		{
-			Element element = ElementLoader.FindElementByName(info.id);
-			if (element != null)
-			{
-				return element.substance.name;
-			}
-			return string.Empty;
+			return prefab.GetProperName();
 		}
-		return prefab.GetProperName();
+		Element element = ElementLoader.FindElementByName(info.id);
+		if (element == null)
+		{
+			return "";
+		}
+		return element.substance.name;
+	}
+
+	private string GetSpawnableQuantityOnly()
+	{
+		if (ElementLoader.GetElement(info.id.ToTag()) == null)
+		{
+			if (Game.Instance.ediblesManager.GetFoodInfo(info.id) == null)
+			{
+				return string.Format(UI.IMMIGRANTSCREEN.CARE_PACKAGE_ELEMENT_COUNT_ONLY, info.quantity.ToString());
+			}
+			return string.Format(UI.IMMIGRANTSCREEN.CARE_PACKAGE_ELEMENT_COUNT_ONLY, GameUtil.GetFormattedCaloriesForItem(info.id, info.quantity, GameUtil.TimeSlice.None, true));
+		}
+		return string.Format(UI.IMMIGRANTSCREEN.CARE_PACKAGE_ELEMENT_COUNT_ONLY, GameUtil.GetFormattedMass(info.quantity, GameUtil.TimeSlice.None, GameUtil.MetricMassFormat.UseThreshold, true, "{0:0.#}"));
+	}
+
+	private string GetCurrentQuantity()
+	{
+		if (ElementLoader.GetElement(info.id.ToTag()) == null)
+		{
+			if (Game.Instance.ediblesManager.GetFoodInfo(info.id) == null)
+			{
+				float amount = WorldInventory.Instance.GetAmount(info.id.ToTag());
+				return string.Format(UI.IMMIGRANTSCREEN.CARE_PACKAGE_CURRENT_AMOUNT, amount.ToString());
+			}
+			float calories = RationTracker.Get().CountRationsByFoodType(info.id, true);
+			return string.Format(UI.IMMIGRANTSCREEN.CARE_PACKAGE_CURRENT_AMOUNT, GameUtil.GetFormattedCalories(calories, GameUtil.TimeSlice.None, true));
+		}
+		float amount2 = WorldInventory.Instance.GetAmount(info.id.ToTag());
+		return string.Format(UI.IMMIGRANTSCREEN.CARE_PACKAGE_CURRENT_AMOUNT, GameUtil.GetFormattedMass(amount2, GameUtil.TimeSlice.None, GameUtil.MetricMassFormat.UseThreshold, true, "{0:0.#}"));
 	}
 
 	private string GetSpawnableQuantity()
 	{
-		if (ElementLoader.GetElement(info.id.ToTag()) != null)
+		if (ElementLoader.GetElement(info.id.ToTag()) == null)
 		{
-			return string.Format(UI.IMMIGRANTSCREEN.CARE_PACKAGE_ELEMENT_QUANTITY, GameUtil.GetFormattedMass(info.quantity, GameUtil.TimeSlice.None, GameUtil.MetricMassFormat.UseThreshold, true, "{0:0.#}"), Assets.GetPrefab(info.id).GetProperName());
-		}
-		if (Game.Instance.ediblesManager.GetFoodInfo(info.id) != null)
-		{
+			if (Game.Instance.ediblesManager.GetFoodInfo(info.id) == null)
+			{
+				return string.Format(UI.IMMIGRANTSCREEN.CARE_PACKAGE_ELEMENT_COUNT, Assets.GetPrefab(info.id).GetProperName(), info.quantity.ToString());
+			}
 			return string.Format(UI.IMMIGRANTSCREEN.CARE_PACKAGE_ELEMENT_QUANTITY, GameUtil.GetFormattedCaloriesForItem(info.id, info.quantity, GameUtil.TimeSlice.None, true), Assets.GetPrefab(info.id).GetProperName());
 		}
-		return string.Format(UI.IMMIGRANTSCREEN.CARE_PACKAGE_ELEMENT_COUNT, Assets.GetPrefab(info.id).GetProperName(), info.quantity.ToString());
+		return string.Format(UI.IMMIGRANTSCREEN.CARE_PACKAGE_ELEMENT_QUANTITY, GameUtil.GetFormattedMass(info.quantity, GameUtil.TimeSlice.None, GameUtil.MetricMassFormat.UseThreshold, true, "{0:0.#}"), Assets.GetPrefab(info.id).GetProperName());
 	}
 
 	private string GetSpawnableDescription()
 	{
 		Element element = ElementLoader.GetElement(info.id.ToTag());
-		if (element != null)
+		if (element == null)
 		{
-			return element.Description();
+			GameObject prefab = Assets.GetPrefab(info.id);
+			if (!((UnityEngine.Object)prefab == (UnityEngine.Object)null))
+			{
+				InfoDescription component = prefab.GetComponent<InfoDescription>();
+				if (!((UnityEngine.Object)component != (UnityEngine.Object)null))
+				{
+					return prefab.GetProperName();
+				}
+				return component.description;
+			}
+			return "";
 		}
-		GameObject prefab = Assets.GetPrefab(info.id);
-		if ((UnityEngine.Object)prefab == (UnityEngine.Object)null)
-		{
-			return string.Empty;
-		}
-		InfoDescription component = prefab.GetComponent<InfoDescription>();
-		if ((UnityEngine.Object)component != (UnityEngine.Object)null)
-		{
-			return component.description;
-		}
-		return prefab.GetProperName();
+		return element.Description();
 	}
 
 	private void SetInfoText()
 	{
 		characterName.SetText(GetSpawnableName());
 		description.SetText(GetSpawnableDescription());
-		quantity.SetText(GetSpawnableQuantity());
+		itemName.SetText(GetSpawnableName());
+		quantity.SetText(GetSpawnableQuantityOnly());
+		currentQuantity.SetText(GetCurrentQuantity());
 	}
 
 	public void SelectDeliverable()
@@ -346,6 +434,7 @@ public class CarePackageContainer : KScreen, ITelepadDeliverableContainer
 		{
 			DeselectDeliverable();
 		}
+		ClearEntryIcons();
 		GenerateCharacter(is_starter);
 	}
 
@@ -412,8 +501,17 @@ public class CarePackageContainer : KScreen, ITelepadDeliverableContainer
 		base.OnActivate();
 		if (info != null)
 		{
+			ClearEntryIcons();
 			SetAnimator();
 			SetInfoText();
+		}
+	}
+
+	private void ClearEntryIcons()
+	{
+		for (int i = 0; i < entryIcons.Count; i++)
+		{
+			UnityEngine.Object.Destroy(entryIcons[i]);
 		}
 	}
 }

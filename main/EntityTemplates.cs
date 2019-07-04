@@ -172,7 +172,7 @@ public class EntityTemplates
 		return template;
 	}
 
-	public static GameObject ExtendEntityToBasicPlant(GameObject template, float temperature_lethal_low = 218.15f, float temperature_warning_low = 283.15f, float temperature_warning_high = 303.15f, float temperature_lethal_high = 398.15f, SimHashes[] safe_elements = null, bool pressure_sensitive = true, float pressure_lethal_low = 0f, float pressure_warning_low = 0.15f, string crop_id = null, bool can_drown = true, bool can_tinker = true)
+	public static GameObject ExtendEntityToBasicPlant(GameObject template, float temperature_lethal_low = 218.15f, float temperature_warning_low = 283.15f, float temperature_warning_high = 303.15f, float temperature_lethal_high = 398.15f, SimHashes[] safe_elements = null, bool pressure_sensitive = true, float pressure_lethal_low = 0f, float pressure_warning_low = 0.15f, string crop_id = null, bool can_drown = true, bool can_tinker = true, bool require_solid_tile = true, bool should_grow_old = true, float max_age = 2400f)
 	{
 		template.AddOrGet<EntombVulnerable>();
 		PressureVulnerable pressureVulnerable = template.AddOrGet<PressureVulnerable>();
@@ -189,7 +189,10 @@ public class EntityTemplates
 		template.AddOrGet<WiltCondition>();
 		template.AddOrGet<Prioritizable>();
 		template.AddOrGet<Uprootable>();
-		template.AddOrGet<UprootedMonitor>();
+		if (require_solid_tile)
+		{
+			template.AddOrGet<UprootedMonitor>();
+		}
 		template.AddOrGet<ReceptacleMonitor>();
 		template.AddOrGet<Notifier>();
 		if (can_drown)
@@ -210,8 +213,11 @@ public class EntityTemplates
 			Crop crop = template.AddOrGet<Crop>();
 			crop.Configure(cropval);
 			Growing growing = template.AddOrGet<Growing>();
-			growing.Configure(cropval.cropDuration);
+			growing.growthTime = cropval.cropDuration;
+			growing.shouldGrowOld = should_grow_old;
+			growing.maxAge = max_age;
 			template.AddOrGet<Harvestable>();
+			template.AddOrGet<HarvestDesignatable>();
 		}
 		component.prefabInitFn += delegate(GameObject inst)
 		{
@@ -270,7 +276,7 @@ public class EntityTemplates
 		string symbolPrefix = prefab.GetComponent<CreatureBrain>().symbolPrefix;
 		if (!string.IsNullOrEmpty(symbolPrefix))
 		{
-			symbol_override_controller.ApplySymbolOverridesByPrefix(Assets.GetAnim(egg_anim), symbolPrefix, 0);
+			symbol_override_controller.ApplySymbolOverridesByAffix(Assets.GetAnim(egg_anim), symbolPrefix, null, 0);
 		}
 		KPrefabID creature_prefab_id = prefab.GetComponent<KPrefabID>();
 		creature_prefab_id.prefabSpawnFn += delegate
@@ -293,9 +299,10 @@ public class EntityTemplates
 		return prefab;
 	}
 
-	public static GameObject ExtendEntityToBeingABaby(GameObject prefab, Tag adult_prefab_id)
+	public static GameObject ExtendEntityToBeingABaby(GameObject prefab, Tag adult_prefab_id, string on_grow_item_drop_id = null)
 	{
 		prefab.AddOrGetDef<BabyMonitor.Def>().adultPrefab = adult_prefab_id;
+		prefab.AddOrGetDef<BabyMonitor.Def>().onGrowDropID = on_grow_item_drop_id;
 		prefab.AddOrGetDef<IncubatorMonitor.Def>();
 		prefab.AddOrGetDef<CreatureSleepMonitor.Def>();
 		prefab.AddOrGetDef<CallAdultMonitor.Def>();
@@ -303,7 +310,7 @@ public class EntityTemplates
 		return prefab;
 	}
 
-	public static GameObject ExtendEntityToBasicCreature(GameObject template, FactionManager.FactionID faction = FactionManager.FactionID.Prey, string initialTraitID = null, string NavGridName = "HatchNavGrid", NavType navType = NavType.Floor, int max_probing_radius = 32, float moveSpeed = 2f, string onDeathDropID = "Meat", int onDeathDropCount = 1, bool drownVulnerable = true, bool entombVulnerable = true, float warningLowTemperature = 283.15f, float warningHighTemperature = 293.15f, float lethalLowTemperature = 243.15f, float lethalHighTemperature = 343.15f)
+	public static GameObject ExtendEntityToBasicCreature(GameObject template, FactionManager.FactionID faction = FactionManager.FactionID.Prey, string initialTraitID = null, string NavGridName = "WalkerNavGrid1x1", NavType navType = NavType.Floor, int max_probing_radius = 32, float moveSpeed = 2f, string onDeathDropID = "Meat", int onDeathDropCount = 1, bool drownVulnerable = true, bool entombVulnerable = true, float warningLowTemperature = 283.15f, float warningHighTemperature = 293.15f, float lethalLowTemperature = 243.15f, float lethalHighTemperature = 343.15f)
 	{
 		template.GetComponent<KBatchedAnimController>().isMovable = true;
 		KPrefabID kPrefabID = template.AddOrGet<KPrefabID>();
@@ -340,7 +347,7 @@ public class EntityTemplates
 		{
 			template.AddOrGet<EntombVulnerable>();
 		}
-		if (onDeathDropCount > 0 && onDeathDropID != string.Empty)
+		if (onDeathDropCount > 0 && onDeathDropID != "")
 		{
 			string[] array = new string[onDeathDropCount];
 			for (int i = 0; i < array.Length; i++)
@@ -569,10 +576,6 @@ public class EntityTemplates
 			manualDeliveryKG.refillMass = consumeInfo.massConsumptionRate * 600f * 0.5f;
 			manualDeliveryKG.minimumMass = consumeInfo.massConsumptionRate * 600f * 0.5f;
 			manualDeliveryKG.operationalRequirement = FetchOrder2.OperationalRequirement.Functional;
-			manualDeliveryKG.choreTags = new Tag[1]
-			{
-				GameTags.ChoreTypes.Farming
-			};
 			manualDeliveryKG.choreTypeIDHash = idHash;
 		}
 		KPrefabID component = template.GetComponent<KPrefabID>();
@@ -610,10 +613,6 @@ public class EntityTemplates
 			manualDeliveryKG.refillMass = consumeInfo.massConsumptionRate * 600f * 0.5f;
 			manualDeliveryKG.minimumMass = consumeInfo.massConsumptionRate * 600f * 0.5f;
 			manualDeliveryKG.operationalRequirement = FetchOrder2.OperationalRequirement.Functional;
-			manualDeliveryKG.choreTags = new Tag[1]
-			{
-				GameTags.ChoreTypes.Farming
-			};
 			manualDeliveryKG.choreTypeIDHash = idHash;
 		}
 		IrrigationMonitor.Def def = template.AddOrGetDef<IrrigationMonitor.Def>();
@@ -624,27 +623,27 @@ public class EntityTemplates
 
 	public static GameObject CreateAndRegisterCompostableFromPrefab(GameObject original)
 	{
-		if ((Object)original.GetComponent<Compostable>() != (Object)null)
+		if (!((Object)original.GetComponent<Compostable>() != (Object)null))
 		{
-			return null;
+			Compostable compostable = original.AddComponent<Compostable>();
+			compostable.isMarkedForCompost = false;
+			KPrefabID component = original.GetComponent<KPrefabID>();
+			GameObject gameObject = Object.Instantiate(original);
+			Object.DontDestroyOnLoad(gameObject);
+			string tag_string = "Compost" + component.PrefabTag.Name;
+			string text = MISC.TAGS.COMPOST_FORMAT.Replace("{Item}", component.PrefabTag.ProperName());
+			gameObject.GetComponent<KPrefabID>().PrefabTag = TagManager.Create(tag_string, text);
+			gameObject.name = text;
+			gameObject.GetComponent<Compostable>().isMarkedForCompost = true;
+			gameObject.GetComponent<KSelectable>().SetName(text);
+			gameObject.GetComponent<Compostable>().originalPrefab = original;
+			gameObject.GetComponent<Compostable>().compostPrefab = gameObject;
+			original.GetComponent<Compostable>().originalPrefab = original;
+			original.GetComponent<Compostable>().compostPrefab = gameObject;
+			Assets.AddPrefab(gameObject.GetComponent<KPrefabID>());
+			return gameObject;
 		}
-		Compostable compostable = original.AddComponent<Compostable>();
-		compostable.isMarkedForCompost = false;
-		KPrefabID component = original.GetComponent<KPrefabID>();
-		GameObject gameObject = Object.Instantiate(original);
-		Object.DontDestroyOnLoad(gameObject);
-		string tag_string = "Compost" + component.PrefabTag.Name;
-		string text = MISC.TAGS.COMPOST_FORMAT.Replace("{Item}", component.PrefabTag.ProperName());
-		gameObject.GetComponent<KPrefabID>().PrefabTag = TagManager.Create(tag_string, text);
-		gameObject.name = text;
-		gameObject.GetComponent<Compostable>().isMarkedForCompost = true;
-		gameObject.GetComponent<KSelectable>().SetName(text);
-		gameObject.GetComponent<Compostable>().originalPrefab = original;
-		gameObject.GetComponent<Compostable>().compostPrefab = gameObject;
-		original.GetComponent<Compostable>().originalPrefab = original;
-		original.GetComponent<Compostable>().compostPrefab = gameObject;
-		Assets.AddPrefab(gameObject.GetComponent<KPrefabID>());
-		return gameObject;
+		return null;
 	}
 
 	public static GameObject CreateAndRegisterSeedForPlant(GameObject plant, SeedProducer.ProductionType productionType, string id, string name, string desc, KAnimFile anim, string initialAnim = "object", int numberOfSeeds = 1, List<Tag> additionalTags = null, SingleEntityReceptacle.ReceptacleDirection planterDirection = SingleEntityReceptacle.ReceptacleDirection.Top, Tag replantGroundTag = default(Tag), int sortOrder = 0, string domesticatedDescription = "", CollisionShape collisionShape = CollisionShape.CIRCLE, float width = 0.25f, float height = 0.25f, Recipe.Ingredient[] recipe_ingredients = null, string recipe_description = "", bool ignoreDefaultSeedTag = false)

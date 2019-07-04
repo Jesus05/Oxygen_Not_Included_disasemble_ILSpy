@@ -6,7 +6,7 @@ public class BrainScheduler : KMonoBehaviour, IRenderEveryTick, ICPULoad
 {
 	private class Tuning : TuningData<Tuning>
 	{
-		public bool disableAsyncPathProbes;
+		public bool disableAsyncPathProbes = false;
 
 		public float frameTime = 5f;
 	}
@@ -21,9 +21,9 @@ public class BrainScheduler : KMonoBehaviour, IRenderEveryTick, ICPULoad
 
 		private WorkItemCollection<Navigator.PathProbeTask, object> pathProbeJob = new WorkItemCollection<Navigator.PathProbeTask, object>();
 
-		private int nextUpdateBrain;
+		private int nextUpdateBrain = 0;
 
-		private int nextPathProbeBrain;
+		private int nextPathProbeBrain = 0;
 
 		public Tag tag
 		{

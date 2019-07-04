@@ -52,8 +52,6 @@ public class ToolParameterMenu : KMonoBehaviour
 
 		public static string GAS = "GAS";
 
-		public static string AGRICULTURE = "AGRICULTURE";
-
 		public static string HEATFLOW = "HEATFLOW";
 
 		public static string ABSOLUTETEMPERATURE = "ABSOLUTETEMPERATURE";

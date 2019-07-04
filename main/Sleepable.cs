@@ -47,6 +47,7 @@ public class Sleepable : Workable
 		workerStatusItem = null;
 		synchronizeAnims = false;
 		triggerWorkReactions = false;
+		lightEfficiencyBonus = false;
 	}
 
 	protected override void OnSpawn()

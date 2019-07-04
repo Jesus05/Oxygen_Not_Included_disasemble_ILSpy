@@ -6,23 +6,23 @@ namespace UnityStandardAssets.ImageEffects
 	{
 		private static Mesh[] meshes;
 
-		private static int currentQuads;
+		private static int currentQuads = 0;
 
 		private static bool HasMeshes()
 		{
-			if (meshes == null)
+			if (meshes != null)
 			{
-				return false;
-			}
-			Mesh[] array = meshes;
-			foreach (Mesh y in array)
-			{
-				if ((Object)null == (Object)y)
+				Mesh[] array = meshes;
+				foreach (Mesh y in array)
 				{
-					return false;
+					if ((Object)null == (Object)y)
+					{
+						return false;
+					}
 				}
+				return true;
 			}
-			return true;
+			return false;
 		}
 
 		public static void Cleanup()

@@ -443,7 +443,7 @@ public class LaunchableRocket : StateMachineComponent<LaunchableRocket.StatesIns
 	private int takeOffLocation;
 
 	[Serialize]
-	private float flightAnimOffset;
+	private float flightAnimOffset = 0f;
 
 	private bool isLanding;
 

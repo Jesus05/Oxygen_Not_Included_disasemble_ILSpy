@@ -1,3 +1,6 @@
+using System;
+
+[Serializable]
 public class BaseLocation
 {
 	public int left

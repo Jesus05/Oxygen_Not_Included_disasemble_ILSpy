@@ -8,7 +8,7 @@ public class BabyMoleConfig : IEntityConfig
 	public GameObject CreatePrefab()
 	{
 		GameObject gameObject = MoleConfig.CreateMole("MoleBaby", CREATURES.SPECIES.MOLE.BABY.NAME, CREATURES.SPECIES.MOLE.BABY.DESC, "baby_driller_kanim", true);
-		EntityTemplates.ExtendEntityToBeingABaby(gameObject, "Mole");
+		EntityTemplates.ExtendEntityToBeingABaby(gameObject, "Mole", null);
 		return gameObject;
 	}
 

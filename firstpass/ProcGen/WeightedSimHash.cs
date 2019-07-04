@@ -1,5 +1,8 @@
+using System;
+
 namespace ProcGen
 {
+	[Serializable]
 	public class WeightedSimHash : IWeighted
 	{
 		public string element

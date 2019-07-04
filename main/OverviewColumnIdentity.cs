@@ -1,12 +1,12 @@
 public class OverviewColumnIdentity : KMonoBehaviour
 {
-	public string columnID = string.Empty;
+	public string columnID = "";
 
-	public string Column_DisplayName = string.Empty;
+	public string Column_DisplayName = "";
 
-	public bool Sortable;
+	public bool Sortable = false;
 
-	public float xPivot;
+	public float xPivot = 0f;
 
-	public bool StringLookup;
+	public bool StringLookup = false;
 }

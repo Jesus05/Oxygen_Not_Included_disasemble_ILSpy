@@ -52,6 +52,11 @@ public class StatusItemGroup
 		{
 			return id == other.id;
 		}
+
+		public void OnClick()
+		{
+			item.OnClick(data);
+		}
 	}
 
 	private List<Entry> items = new List<Entry>();
@@ -129,14 +134,14 @@ public class StatusItemGroup
 				RemoveStatusItem(entry6.id, false);
 			}
 		}
-		if (item != null)
+		if (item == null)
 		{
-			Guid guid = AddStatusItem(item, data, category);
-			Log("Set (new)", item, guid, category);
-			return guid;
+			Log("Set (failed)", item, Guid.Empty, category);
+			return Guid.Empty;
 		}
-		Log("Set (failed)", item, Guid.Empty, category);
-		return Guid.Empty;
+		Guid guid = AddStatusItem(item, data, category);
+		Log("Set (new)", item, guid, category);
+		return guid;
 	}
 
 	public void SetStatusItem(Guid guid, StatusItemCategory category, StatusItem new_item, object data = null)
@@ -176,38 +181,38 @@ public class StatusItemGroup
 
 	public Guid AddStatusItem(StatusItem item, object data = null, StatusItemCategory category = null)
 	{
-		if ((UnityEngine.Object)gameObject == (UnityEngine.Object)null || (!item.allowMultiples && HasStatusItem(item)))
+		if (!((UnityEngine.Object)gameObject == (UnityEngine.Object)null) && (item.allowMultiples || !HasStatusItem(item)))
 		{
-			return Guid.Empty;
-		}
-		if (!item.allowMultiples)
-		{
-			foreach (Entry item2 in items)
+			if (!item.allowMultiples)
 			{
-				Entry current = item2;
-				if (current.item.Id == item.Id)
+				foreach (Entry item2 in items)
 				{
-					throw new ArgumentException("Tried to add " + item.Id + " multiples times which is not permitted.");
+					Entry current = item2;
+					if (current.item.Id == item.Id)
+					{
+						throw new ArgumentException("Tried to add " + item.Id + " multiples times which is not permitted.");
+					}
 				}
 			}
+			Entry entry = new Entry(item, category, data);
+			if (item.shouldNotify)
+			{
+				entry.notification = new Notification(item.notificationText, item.notificationType, HashedString.Invalid, OnToolTip, expires: false, custom_click_callback: item.notificationClickCallback, tooltip_data: item, delay: item.notificationDelay, custom_click_data: data, click_focus: null);
+				gameObject.AddOrGet<Notifier>().Add(entry.notification, "");
+			}
+			if (item.ShouldShowIcon())
+			{
+				Game.Instance.AddStatusItem(gameObject.transform, item);
+				Game.Instance.SetStatusItemOffset(gameObject.transform, offset);
+			}
+			items.Add(entry);
+			if (OnAddStatusItem != null)
+			{
+				OnAddStatusItem(entry, category);
+			}
+			return entry.id;
 		}
-		Entry entry = new Entry(item, category, data);
-		if (item.shouldNotify)
-		{
-			entry.notification = new Notification(item.notificationText, item.notificationType, HashedString.Invalid, OnToolTip, expires: false, custom_click_callback: item.notificationClickCallback, tooltip_data: item, delay: item.notificationDelay, custom_click_data: data, click_focus: null);
-			gameObject.AddOrGet<Notifier>().Add(entry.notification, string.Empty);
-		}
-		if (item.ShouldShowIcon())
-		{
-			Game.Instance.AddStatusItem(gameObject.transform, item);
-			Game.Instance.SetStatusItemOffset(gameObject.transform, offset);
-		}
-		items.Add(entry);
-		if (OnAddStatusItem != null)
-		{
-			OnAddStatusItem(entry, category);
-		}
-		return entry.id;
+		return Guid.Empty;
 	}
 
 	public Guid RemoveStatusItem(StatusItem status_item, bool immediate = false)
@@ -230,33 +235,33 @@ public class StatusItemGroup
 
 	public Guid RemoveStatusItem(Guid guid, bool immediate = false)
 	{
-		if (guid == Guid.Empty)
+		if (!(guid == Guid.Empty))
 		{
-			return guid;
-		}
-		for (int i = 0; i < items.Count; i++)
-		{
-			Entry entry = items[i];
-			if (entry.id == guid)
+			for (int i = 0; i < items.Count; i++)
 			{
-				Entry arg = items[i];
-				items.RemoveAt(i);
-				if (arg.notification != null)
+				Entry entry = items[i];
+				if (entry.id == guid)
 				{
-					gameObject.GetComponent<Notifier>().Remove(arg.notification);
+					Entry arg = items[i];
+					items.RemoveAt(i);
+					if (arg.notification != null)
+					{
+						gameObject.GetComponent<Notifier>().Remove(arg.notification);
+					}
+					if (entry.item.ShouldShowIcon() && (UnityEngine.Object)Game.Instance != (UnityEngine.Object)null)
+					{
+						Game.Instance.RemoveStatusItem(gameObject.transform, arg.item);
+					}
+					if (OnRemoveStatusItem != null)
+					{
+						OnRemoveStatusItem(arg, immediate);
+					}
+					return guid;
 				}
-				if (entry.item.ShouldShowIcon() && (UnityEngine.Object)Game.Instance != (UnityEngine.Object)null)
-				{
-					Game.Instance.RemoveStatusItem(gameObject.transform, arg.item);
-				}
-				if (OnRemoveStatusItem != null)
-				{
-					OnRemoveStatusItem(arg, immediate);
-				}
-				return guid;
 			}
+			return Guid.Empty;
 		}
-		return Guid.Empty;
+		return guid;
 	}
 
 	private static string OnToolTip(List<Notification> notifications, object data)

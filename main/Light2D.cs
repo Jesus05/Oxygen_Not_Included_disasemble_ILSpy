@@ -1,50 +1,151 @@
+#define UNITY_ASSERTIONS
 using STRINGS;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Light2D : KMonoBehaviour, IGameObjectEffectDescriptor
 {
-	public Color Color = Color.white;
+	public enum RefreshResult
+	{
+		None,
+		Removed,
+		Updated
+	}
 
-	public float Range = 5f;
+	private bool dirty_shape;
+
+	private bool dirty_position;
+
+	[SerializeField]
+	private LightGridManager.LightGridEmitter.State pending_emitter_state = LightGridManager.LightGridEmitter.State.DEFAULT;
 
 	public float Angle;
 
-	public int Lux = 1000;
-
 	public Vector2 Direction;
 
-	public Vector2 Offset;
+	[SerializeField]
+	private Vector2 _offset;
 
 	public bool drawOverlay;
 
 	public Color overlayColour;
 
-	public LightShape shape;
-
-	private int cell = Grid.InvalidCell;
-
 	public MaterialPropertyBlock materialPropertyBlock;
 
-	private bool isRegistered;
+	private HandleVector<int>.Handle solidPartitionerEntry = HandleVector<int>.InvalidHandle;
 
-	private HandleVector<int>.Handle solidPartitionerEntry;
+	private HandleVector<int>.Handle liquidPartitionerEntry = HandleVector<int>.InvalidHandle;
 
-	private HandleVector<int>.Handle liquidPartitionerEntry;
-
-	private LightGridManager.LightGridEmitter emitter;
-
-	private List<int> litCells = new List<int>();
-
-	private static readonly EventSystem.IntraObjectHandler<Light2D> OnOperationalChangedDelegate = new EventSystem.IntraObjectHandler<Light2D>(delegate(Light2D component, object data)
+	private static readonly EventSystem.IntraObjectHandler<Light2D> OnOperationalChangedDelegate = new EventSystem.IntraObjectHandler<Light2D>(delegate(Light2D light, object data)
 	{
-		component.OnOperationalChanged(data);
+		light.enabled = (bool)data;
 	});
+
+	public LightShape shape
+	{
+		get
+		{
+			return pending_emitter_state.shape;
+		}
+		set
+		{
+			pending_emitter_state.shape = MaybeDirty(pending_emitter_state.shape, value, ref dirty_shape);
+		}
+	}
+
+	public LightGridManager.LightGridEmitter emitter
+	{
+		get;
+		private set;
+	}
+
+	public Color Color
+	{
+		get
+		{
+			return pending_emitter_state.colour;
+		}
+		set
+		{
+			pending_emitter_state.colour = value;
+		}
+	}
+
+	public int Lux
+	{
+		get
+		{
+			return pending_emitter_state.intensity;
+		}
+		set
+		{
+			pending_emitter_state.intensity = value;
+		}
+	}
+
+	public float Range
+	{
+		get
+		{
+			return pending_emitter_state.radius;
+		}
+		set
+		{
+			pending_emitter_state.radius = MaybeDirty(pending_emitter_state.radius, value, ref dirty_shape);
+		}
+	}
+
+	private int origin
+	{
+		get
+		{
+			return pending_emitter_state.origin;
+		}
+		set
+		{
+			pending_emitter_state.origin = MaybeDirty(pending_emitter_state.origin, value, ref dirty_position);
+		}
+	}
 
 	public float IntensityAnimation
 	{
 		get;
 		set;
+	}
+
+	public Vector2 Offset
+	{
+		get
+		{
+			return _offset;
+		}
+		set
+		{
+			if (_offset != value)
+			{
+				_offset = value;
+				origin = Grid.PosToCell(base.transform.GetPosition() + (Vector3)_offset);
+			}
+		}
+	}
+
+	private bool isRegistered => solidPartitionerEntry != HandleVector<int>.InvalidHandle;
+
+	public Light2D()
+	{
+		emitter = new LightGridManager.LightGridEmitter();
+		Range = 5f;
+		Lux = 1000;
+	}
+
+	private T MaybeDirty<T>(T old_value, T new_value, ref bool dirty)
+	{
+		if (EqualityComparer<T>.Default.Equals(old_value, new_value))
+		{
+			return old_value;
+		}
+		dirty = true;
+		return new_value;
 	}
 
 	protected override void OnPrefabInit()
@@ -60,95 +161,128 @@ public class Light2D : KMonoBehaviour, IGameObjectEffectDescriptor
 		Components.Light2Ds.Add(this);
 		if (base.isSpawned)
 		{
-			Refresh();
+			AddToScenePartitioner();
+			emitter.Refresh(pending_emitter_state, true);
 		}
-		Singleton<CellChangeMonitor>.Instance.RegisterCellChangedHandler(base.transform, OnCellChanged, "Light2D.OnCmpEnable");
+		Singleton<CellChangeMonitor>.Instance.RegisterCellChangedHandler(base.transform, OnMoved, "Light2D.OnMoved");
+	}
+
+	protected override void OnCmpDisable()
+	{
+		Singleton<CellChangeMonitor>.Instance.UnregisterCellChangedHandler(base.transform, OnMoved);
+		Components.Light2Ds.Remove(this);
+		base.OnCmpDisable();
+		FullRemove();
 	}
 
 	protected override void OnSpawn()
 	{
 		base.OnSpawn();
-		Refresh();
-	}
-
-	protected override void OnCmpDisable()
-	{
-		Singleton<CellChangeMonitor>.Instance.UnregisterCellChangedHandler(base.transform, OnCellChanged);
-		Components.Light2Ds.Remove(this);
-		base.OnCmpDisable();
-		Refresh();
+		origin = Grid.PosToCell(base.transform.GetPosition() + (Vector3)Offset);
+		if (base.isActiveAndEnabled)
+		{
+			AddToScenePartitioner();
+			emitter.Refresh(pending_emitter_state, true);
+		}
 	}
 
 	protected override void OnCleanUp()
 	{
-		UnregisterLight();
-		GameScenePartitioner.Instance.Free(ref solidPartitionerEntry);
-		GameScenePartitioner.Instance.Free(ref liquidPartitionerEntry);
+		FullRemove();
 	}
 
-	private void OnCellChanged()
+	private void OnMoved()
 	{
-		GetComponent<Light2D>().Refresh();
+		if (base.isSpawned)
+		{
+			FullRefresh();
+		}
 	}
 
-	private void UnregisterLight()
+	private HandleVector<int>.Handle AddToLayer(Vector2I xy_min, int width, int height, ScenePartitionerLayer layer)
 	{
-		if (isRegistered && Grid.IsValidCell(cell))
+		return GameScenePartitioner.Instance.Add("Light2D", base.gameObject, xy_min.x, xy_min.y, width, height, layer, OnWorldChanged);
+	}
+
+	private void AddToScenePartitioner()
+	{
+		Vector2I vector2I = Grid.CellToXY(origin);
+		int num = (int)Range;
+		Vector2I xy_min = new Vector2I(vector2I.x - num, vector2I.y - num);
+		UnityEngine.Debug.Assert(shape == LightShape.Circle || shape == LightShape.Cone);
+		int width = 2 * num;
+		int height = (shape != 0) ? num : (2 * num);
+		solidPartitionerEntry = AddToLayer(xy_min, width, height, GameScenePartitioner.Instance.solidChangedLayer);
+		liquidPartitionerEntry = AddToLayer(xy_min, width, height, GameScenePartitioner.Instance.liquidChangedLayer);
+	}
+
+	private void RemoveFromScenePartitioner()
+	{
+		if (isRegistered)
 		{
 			GameScenePartitioner.Instance.Free(ref solidPartitionerEntry);
 			GameScenePartitioner.Instance.Free(ref liquidPartitionerEntry);
-			isRegistered = false;
 		}
-		if (emitter != null)
-		{
-			emitter.Remove();
-		}
+	}
+
+	private void MoveInScenePartitioner()
+	{
+		GameScenePartitioner.Instance.UpdatePosition(solidPartitionerEntry, origin);
+		GameScenePartitioner.Instance.UpdatePosition(liquidPartitionerEntry, origin);
 	}
 
 	[ContextMenu("Refresh")]
-	public void Refresh()
+	public void FullRefresh()
 	{
-		UnregisterLight();
-		Operational component = GetComponent<Operational>();
-		if ((!((Object)component != (Object)null) || component.IsOperational) && base.isActiveAndEnabled)
+		if (base.isSpawned && base.isActiveAndEnabled)
 		{
-			Vector3 position = base.transform.GetPosition();
-			position = new Vector3(position.x + Offset.x, position.y + Offset.y, position.z);
-			int num = Grid.PosToCell(position);
-			if (Grid.IsValidCell(num))
-			{
-				Vector2I vector2I = Grid.CellToXY(num);
-				int num2 = (int)Range;
-				if (shape == LightShape.Circle)
-				{
-					Vector2I vector2I2 = new Vector2I(vector2I.x - num2, vector2I.y - num2);
-					solidPartitionerEntry = GameScenePartitioner.Instance.Add("Light2D", base.gameObject, vector2I2.x, vector2I2.y, 2 * num2, 2 * num2, GameScenePartitioner.Instance.solidChangedLayer, TriggerRefresh);
-					liquidPartitionerEntry = GameScenePartitioner.Instance.Add("Light2D", base.gameObject, vector2I2.x, vector2I2.y, 2 * num2, 2 * num2, GameScenePartitioner.Instance.liquidChangedLayer, TriggerRefresh);
-				}
-				else if (shape == LightShape.Cone)
-				{
-					Vector2I vector2I3 = new Vector2I(vector2I.x - num2, vector2I.y - num2);
-					solidPartitionerEntry = GameScenePartitioner.Instance.Add("Light2D", base.gameObject, vector2I3.x, vector2I3.y, 2 * num2, num2, GameScenePartitioner.Instance.solidChangedLayer, TriggerRefresh);
-					liquidPartitionerEntry = GameScenePartitioner.Instance.Add("Light2D", base.gameObject, vector2I3.x, vector2I3.y, 2 * num2, num2, GameScenePartitioner.Instance.liquidChangedLayer, TriggerRefresh);
-				}
-				cell = num;
-				litCells.Clear();
-				emitter = new LightGridManager.LightGridEmitter(cell, litCells, Lux, Range, Color, shape, 0.5f);
-				emitter.Add();
-				isRegistered = true;
-			}
+			DebugUtil.DevAssert(isRegistered, "shouldn't be refreshing if we aren't spawned and enabled");
+			RefreshShapeAndPosition();
+			emitter.Refresh(pending_emitter_state, true);
 		}
 	}
 
-	private void TriggerRefresh(object data)
+	public void FullRemove()
 	{
-		Refresh();
+		RemoveFromScenePartitioner();
+		emitter.RemoveFromGrid();
 	}
 
-	private void OnOperationalChanged(object data)
+	public RefreshResult RefreshShapeAndPosition()
 	{
-		base.enabled = GetComponent<Operational>().IsOperational;
-		Refresh();
+		if (base.isSpawned)
+		{
+			if (base.isActiveAndEnabled)
+			{
+				int num = Grid.PosToCell(base.transform.GetPosition() + (Vector3)Offset);
+				if (Grid.IsValidCell(num))
+				{
+					origin = num;
+					if (dirty_shape)
+					{
+						RemoveFromScenePartitioner();
+						AddToScenePartitioner();
+					}
+					else if (dirty_position)
+					{
+						MoveInScenePartitioner();
+					}
+					dirty_shape = false;
+					dirty_position = false;
+					return RefreshResult.Updated;
+				}
+				FullRemove();
+				return RefreshResult.Removed;
+			}
+			FullRemove();
+			return RefreshResult.Removed;
+		}
+		return RefreshResult.None;
+	}
+
+	private void OnWorldChanged(object data)
+	{
+		FullRefresh();
 	}
 
 	public List<Descriptor> GetDescriptors(GameObject go)

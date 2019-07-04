@@ -31,16 +31,14 @@ public class PetroleumGeneratorConfig : IBuildingConfig
 		string anim = "generatorpetrol_kanim";
 		int hitpoints = 100;
 		float construction_time = 480f;
-		string[] construction_materials = new string[2]
+		string[] construction_materials = new string[1]
 		{
-			"Metal",
-			"Plastic"
+			"Metal"
 		};
 		EffectorValues tIER = NOISE_POLLUTION.NOISY.TIER5;
-		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, new float[2]
+		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, new float[1]
 		{
-			BUILDINGS.CONSTRUCTION_MASS_KG.TIER5[0],
-			BUILDINGS.CONSTRUCTION_MASS_KG.TIER2[0]
+			BUILDINGS.CONSTRUCTION_MASS_KG.TIER5[0]
 		}, construction_materials, 2400f, BuildLocationRule.OnFloor, BUILDINGS.DECOR.PENALTY.TIER2, tIER, 0.2f);
 		buildingDef.GeneratorWattageRating = 2000f;
 		buildingDef.GeneratorBaseCapacity = 2000f;
@@ -77,7 +75,7 @@ public class PetroleumGeneratorConfig : IBuildingConfig
 		ConduitConsumer conduitConsumer = go.AddOrGet<ConduitConsumer>();
 		conduitConsumer.conduitType = def.InputConduitType;
 		conduitConsumer.consumptionRate = 10f;
-		conduitConsumer.capacityTag = SimHashes.Petroleum.CreateTag();
+		conduitConsumer.capacityTag = GameTags.CombustibleLiquid;
 		conduitConsumer.capacityKG = num;
 		conduitConsumer.forceAlwaysSatisfied = true;
 		conduitConsumer.wrongElementResult = ConduitConsumer.WrongElementResult.Dump;
@@ -88,7 +86,7 @@ public class PetroleumGeneratorConfig : IBuildingConfig
 		EnergyGenerator.Formula formula = default(EnergyGenerator.Formula);
 		formula.inputs = new EnergyGenerator.InputItem[1]
 		{
-			new EnergyGenerator.InputItem(SimHashes.Petroleum.CreateTag(), 2f, num)
+			new EnergyGenerator.InputItem(GameTags.CombustibleLiquid, 2f, num)
 		};
 		formula.outputs = new EnergyGenerator.OutputItem[2]
 		{

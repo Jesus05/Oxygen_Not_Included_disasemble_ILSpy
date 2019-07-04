@@ -94,7 +94,7 @@ public class OreScrubber : StateMachineComponent<OreScrubber.SMInstance>, IEffec
 
 	public class Work : Workable, IGameObjectEffectDescriptor
 	{
-		private int diseaseRemoved;
+		private int diseaseRemoved = 0;
 
 		protected override void OnPrefabInit()
 		{
@@ -156,7 +156,7 @@ public class OreScrubber : StateMachineComponent<OreScrubber.SMInstance>, IEffec
 	private MeterController cleanMeter;
 
 	[Serialize]
-	public int maxPossiblyRemoved;
+	public int maxPossiblyRemoved = 0;
 
 	private static readonly EventSystem.IntraObjectHandler<OreScrubber> OnStorageChangeDelegate = new EventSystem.IntraObjectHandler<OreScrubber>(delegate(OreScrubber component, object data)
 	{

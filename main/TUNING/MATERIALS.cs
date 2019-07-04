@@ -95,5 +95,10 @@ namespace TUNING
 		{
 			"BuildableAny"
 		};
+
+		public static readonly string[] FLYING_CRITTER_FOOD = new string[1]
+		{
+			"FlyingCritterEdible"
+		};
 	}
 }

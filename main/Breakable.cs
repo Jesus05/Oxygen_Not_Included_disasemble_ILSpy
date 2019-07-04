@@ -10,7 +10,7 @@ public class Breakable : Workable
 
 	private float secondsPerTenPercentDamage = float.PositiveInfinity;
 
-	private float elapsedDamageTime;
+	private float elapsedDamageTime = 0f;
 
 	private int tenPercentDamage = 2147483647;
 
@@ -36,11 +36,11 @@ public class Breakable : Workable
 
 	public bool isBroken()
 	{
-		if ((Object)hp == (Object)null)
+		if (!((Object)hp == (Object)null))
 		{
-			return true;
+			return hp.HitPoints <= 0;
 		}
-		return hp.HitPoints <= 0;
+		return true;
 	}
 
 	public Notification CreateDamageNotification()
@@ -51,7 +51,7 @@ public class Breakable : Workable
 
 	private static string ToolTipResolver(List<Notification> notificationList, object data)
 	{
-		string text = string.Empty;
+		string text = "";
 		for (int i = 0; i < notificationList.Count; i++)
 		{
 			Notification notification = notificationList[i];
@@ -71,7 +71,7 @@ public class Breakable : Workable
 		tenPercentDamage = Mathf.CeilToInt((float)hp.MaxHitPoints * 0.1f);
 		GetComponent<KSelectable>().AddStatusItem(Db.Get().BuildingStatusItems.AngerDamage, this);
 		notification = CreateDamageNotification();
-		base.gameObject.AddOrGet<Notifier>().Add(notification, string.Empty);
+		base.gameObject.AddOrGet<Notifier>().Add(notification, "");
 		elapsedDamageTime = 0f;
 	}
 

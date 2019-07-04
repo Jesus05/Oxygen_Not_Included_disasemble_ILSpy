@@ -35,12 +35,12 @@ namespace Satsuma
 				{
 					Path.Add(arc);
 				}
-				if (IsTarget(node))
+				if (!IsTarget(node))
 				{
-					EndNode = node;
-					return false;
+					return true;
 				}
-				return true;
+				EndNode = node;
+				return false;
 			}
 
 			protected override bool NodeExit(Node node, Arc arc)
@@ -60,17 +60,17 @@ namespace Satsuma
 			pathDfs.IsTarget = target;
 			PathDfs pathDfs2 = pathDfs;
 			pathDfs2.Run(graph, source);
-			if (pathDfs2.EndNode == Node.Invalid)
+			if (!(pathDfs2.EndNode == Node.Invalid))
 			{
-				return null;
+				Path path = new Path(graph);
+				path.Begin(pathDfs2.StartNode);
+				foreach (Arc item in pathDfs2.Path)
+				{
+					path.AddLast(item);
+				}
+				return path;
 			}
-			Path path = new Path(graph);
-			path.Begin(pathDfs2.StartNode);
-			foreach (Arc item in pathDfs2.Path)
-			{
-				path.AddLast(item);
-			}
-			return path;
+			return null;
 		}
 
 		public static IPath FindPath(this IGraph graph, Node source, Node target, Dfs.Direction direction)

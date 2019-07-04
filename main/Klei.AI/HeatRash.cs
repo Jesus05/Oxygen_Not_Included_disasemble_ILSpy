@@ -11,7 +11,7 @@ namespace Klei.AI
 			: base("HeatSickness", SicknessType.Ailment, Severity.Minor, 0.005f, new List<InfectionVector>
 			{
 				InfectionVector.Inhalation
-			}, 180f)
+			}, 180f, null)
 		{
 			AddSicknessComponent(new CommonSickEffectSickness());
 			AddSicknessComponent(new AttributeModifierSickness(new AttributeModifier[4]

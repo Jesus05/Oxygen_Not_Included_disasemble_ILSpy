@@ -25,8 +25,8 @@ public class BuildingChoresPanelDupeRow : KMonoBehaviour
 		choreConsumer = data.consumer;
 		if (data.context.IsPotentialSuccess())
 		{
-			string str = (!((Object)data.context.chore.driver == (Object)data.consumer.choreDriver)) ? ("#" + data.rank.ToString()) : "Current Errand";
-			label.text = data.consumer.name + " -- " + str;
+			string newValue = (!((Object)data.context.chore.driver == (Object)data.consumer.choreDriver)) ? string.Format(DUPLICANTS.CHORES.PRECONDITIONS.RANK_FORMAT.text, data.rank) : DUPLICANTS.CHORES.PRECONDITIONS.CURRENT_ERRAND.text;
+			label.text = DUPLICANTS.CHORES.PRECONDITIONS.SUCCESS_ROW.Replace("{Duplicant}", data.consumer.name).Replace("{Rank}", newValue);
 		}
 		else
 		{
@@ -39,8 +39,8 @@ public class BuildingChoresPanelDupeRow : KMonoBehaviour
 			{
 				text = text.Replace("{Assignee}", data.context.chore.driver.GetProperName());
 			}
-			text = text.Replace("{Selected}", this.GetProperName());
-			label.text = data.consumer.name + " -- " + text;
+			text = text.Replace("{Selected}", data.context.chore.gameObject.GetProperName());
+			label.text = DUPLICANTS.CHORES.PRECONDITIONS.FAILURE_ROW.Replace("{Duplicant}", data.consumer.name).Replace("{Reason}", text);
 		}
 		Image image = icon;
 		JobsTableScreen.PriorityInfo priorityInfo = JobsTableScreen.priorityInfo[data.personalPriority];
@@ -98,8 +98,6 @@ public class BuildingChoresPanelDupeRow : KMonoBehaviour
 		}
 		string text3 = text;
 		Chore.PreconditionInstance preconditionInstance = context.chore.GetPreconditions()[context.failedPreconditionId];
-		string id = preconditionInstance.id;
-		Chore.PreconditionInstance preconditionInstance2 = context.chore.GetPreconditions()[context.failedPreconditionId];
-		return text3.Replace("{FailedPrecondition}", id + "\n" + preconditionInstance2.description);
+		return text3.Replace("{FailedPrecondition}", preconditionInstance.description);
 	}
 }

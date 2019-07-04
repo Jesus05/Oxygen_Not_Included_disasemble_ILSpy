@@ -125,6 +125,8 @@ public static class CodexEntryGenerator
 		action(GameTags.Creatures.Species.DreckoSpecies, STRINGS.CREATURES.FAMILY.DRECKO);
 		action(GameTags.Creatures.Species.MooSpecies, STRINGS.CREATURES.FAMILY.MOO);
 		action(GameTags.Creatures.Species.MoleSpecies, STRINGS.CREATURES.FAMILY.MOLE);
+		action(GameTags.Creatures.Species.SquirrelSpecies, STRINGS.CREATURES.FAMILY.SQUIRREL);
+		action(GameTags.Creatures.Species.CrabSpecies, STRINGS.CREATURES.FAMILY.CRAB);
 		return results;
 	}
 
@@ -250,7 +252,6 @@ public static class CodexEntryGenerator
 					dictionary.Add(codexEntry.id, codexEntry);
 				}
 			}
-			return dictionary;
 		}
 		return dictionary;
 	}
@@ -296,7 +297,6 @@ public static class CodexEntryGenerator
 					dictionary.Add(codexEntry.id, codexEntry);
 				}
 			}
-			return dictionary;
 		}
 		return dictionary;
 	}
@@ -328,7 +328,7 @@ public static class CodexEntryGenerator
 				containers.Add(new ContentContainer(new List<ICodexWidget>
 				{
 					new CodexImage(32, 32, Def.GetUISprite(element.highTempTransition, "ui", false)),
-					new CodexText((element.highTempTransition == null) ? string.Empty : (element.highTempTransition.name + " (" + element.highTempTransition.GetStateString() + ")  (" + GameUtil.GetFormattedTemperature(element.highTemp, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false) + ")"), CodexTextStyle.Body)
+					new CodexText((element.highTempTransition == null) ? "" : (element.highTempTransition.name + " (" + element.highTempTransition.GetStateString() + ")  (" + GameUtil.GetFormattedTemperature(element.highTemp, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false) + ")"), CodexTextStyle.Body)
 				}, ContentContainer.ContentLayout.Horizontal));
 			}
 			if (element.lowTempTransition != null)
@@ -336,7 +336,7 @@ public static class CodexEntryGenerator
 				containers.Add(new ContentContainer(new List<ICodexWidget>
 				{
 					new CodexImage(32, 32, Def.GetUISprite(element.lowTempTransition, "ui", false)),
-					new CodexText((element.lowTempTransition == null) ? string.Empty : (element.lowTempTransition.name + " (" + element.lowTempTransition.GetStateString() + ")  (" + GameUtil.GetFormattedTemperature(element.lowTemp, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false) + ")"), CodexTextStyle.Body)
+					new CodexText((element.lowTempTransition == null) ? "" : (element.lowTempTransition.name + " (" + element.lowTempTransition.GetStateString() + ")  (" + GameUtil.GetFormattedTemperature(element.lowTemp, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false) + ")"), CodexTextStyle.Body)
 				}, ContentContainer.ContentLayout.Horizontal));
 			}
 			containers.Add(new ContentContainer(new List<ICodexWidget>
@@ -625,7 +625,7 @@ public static class CodexEntryGenerator
 						list.Add(new ContentContainer(new List<ICodexWidget>
 						{
 							new CodexImage(64, 64, Def.GetUISprite(prefab, "ui", false)),
-							new CodexText(string.Format(UI.CODEX.RECIPE_ITEM, Assets.GetPrefab(ingredient.tag).GetProperName(), ingredient.amount, (ElementLoader.GetElement(ingredient.tag) != null) ? UI.UNITSUFFIXES.MASS.KILOGRAM.text : string.Empty), CodexTextStyle.Body)
+							new CodexText(string.Format(UI.CODEX.RECIPE_ITEM, Assets.GetPrefab(ingredient.tag).GetProperName(), ingredient.amount, (ElementLoader.GetElement(ingredient.tag) != null) ? UI.UNITSUFFIXES.MASS.KILOGRAM.text : ""), CodexTextStyle.Body)
 						}, ContentContainer.ContentLayout.Horizontal));
 					}
 				}
@@ -642,7 +642,7 @@ public static class CodexEntryGenerator
 				}, ContentContainer.ContentLayout.Vertical));
 				containers.Add(new ContentContainer(new List<ICodexWidget>
 				{
-					new CodexImage(64, 64, Def.GetUISpriteFromMultiObjectAnim(gameObject.GetComponent<KBatchedAnimController>().AnimFiles[0], "ui", false)),
+					new CodexImage(64, 64, Def.GetUISpriteFromMultiObjectAnim(gameObject.GetComponent<KBatchedAnimController>().AnimFiles[0], "ui", false, "")),
 					new CodexText(string.Format(UI.CODEX.RECIPE_FABRICATOR, recipe.FabricationTime, gameObject.GetProperName()), CodexTextStyle.Body)
 				}, ContentContainer.ContentLayout.Horizontal));
 			}
@@ -685,17 +685,20 @@ public static class CodexEntryGenerator
 	private static void GeneratePlantDescriptionContainers(GameObject plant, List<ContentContainer> containers)
 	{
 		SeedProducer component = plant.GetComponent<SeedProducer>();
-		GameObject prefab = Assets.GetPrefab(component.seedInfo.seedId);
-		containers.Add(new ContentContainer(new List<ICodexWidget>
+		if ((UnityEngine.Object)component != (UnityEngine.Object)null)
 		{
-			new CodexText(CODEX.HEADERS.GROWNFROMSEED, CodexTextStyle.Subtitle),
-			new CodexDividerLine()
-		}, ContentContainer.ContentLayout.Vertical));
-		containers.Add(new ContentContainer(new List<ICodexWidget>
-		{
-			new CodexImage(48, 48, Def.GetUISprite(prefab, "ui", false)),
-			new CodexText(prefab.GetProperName(), CodexTextStyle.Body)
-		}, ContentContainer.ContentLayout.Horizontal));
+			GameObject prefab = Assets.GetPrefab(component.seedInfo.seedId);
+			containers.Add(new ContentContainer(new List<ICodexWidget>
+			{
+				new CodexText(CODEX.HEADERS.GROWNFROMSEED, CodexTextStyle.Subtitle),
+				new CodexDividerLine()
+			}, ContentContainer.ContentLayout.Vertical));
+			containers.Add(new ContentContainer(new List<ICodexWidget>
+			{
+				new CodexImage(48, 48, Def.GetUISprite(prefab, "ui", false)),
+				new CodexText(prefab.GetProperName(), CodexTextStyle.Body)
+			}, ContentContainer.ContentLayout.Horizontal));
+		}
 		List<ICodexWidget> list = new List<ICodexWidget>();
 		list.Add(new CodexSpacer());
 		list.Add(new CodexText(UI.CODEX.DETAILS, CodexTextStyle.Subtitle));
@@ -705,36 +708,36 @@ public static class CodexEntryGenerator
 		{
 			list.Add(new CodexText(component2.description, CodexTextStyle.Body));
 		}
-		string empty = string.Empty;
+		string text = "";
 		List<Descriptor> plantRequirementDescriptors = GameUtil.GetPlantRequirementDescriptors(plant);
 		if (plantRequirementDescriptors.Count > 0)
 		{
-			string str = empty;
+			string str = text;
 			Descriptor descriptor = plantRequirementDescriptors[0];
-			empty = str + descriptor.text;
+			text = str + descriptor.text;
 			for (int i = 1; i < plantRequirementDescriptors.Count; i++)
 			{
-				string str2 = empty;
+				string str2 = text;
 				Descriptor descriptor2 = plantRequirementDescriptors[i];
-				empty = str2 + "\n    • " + descriptor2.text;
+				text = str2 + "\n    • " + descriptor2.text;
 			}
-			list.Add(new CodexText(empty, CodexTextStyle.Body));
+			list.Add(new CodexText(text, CodexTextStyle.Body));
 			list.Add(new CodexSpacer());
 		}
-		empty = string.Empty;
+		text = "";
 		List<Descriptor> plantEffectDescriptors = GameUtil.GetPlantEffectDescriptors(plant);
 		if (plantEffectDescriptors.Count > 0)
 		{
-			string str3 = empty;
+			string str3 = text;
 			Descriptor descriptor3 = plantEffectDescriptors[0];
-			empty = str3 + descriptor3.text;
+			text = str3 + descriptor3.text;
 			for (int j = 1; j < plantEffectDescriptors.Count; j++)
 			{
-				string str4 = empty;
+				string str4 = text;
 				Descriptor descriptor4 = plantEffectDescriptors[j];
-				empty = str4 + "\n    • " + descriptor4.text;
+				text = str4 + "\n    • " + descriptor4.text;
 			}
-			CodexText item = new CodexText(empty, CodexTextStyle.Body);
+			CodexText item = new CodexText(text, CodexTextStyle.Body);
 			list.Add(item);
 			list.Add(new CodexSpacer());
 		}
@@ -881,7 +884,7 @@ public static class CodexEntryGenerator
 	{
 		containers.Add(new ContentContainer(new List<ICodexWidget>
 		{
-			new CodexText(Strings.Get("STRINGS.ITEMS.FOOD." + food.ConsumableId.ToUpper() + ".DESC"), CodexTextStyle.Body),
+			new CodexText(food.Description, CodexTextStyle.Body),
 			new CodexSpacer(),
 			new CodexText(string.Format(UI.CODEX.FOOD.QUALITY, GameUtil.GetFormattedFoodQuality(food.Quality)), CodexTextStyle.Body),
 			new CodexText(string.Format(UI.CODEX.FOOD.CALORIES, GameUtil.GetFormattedCalories(food.CaloriesPerUnit, GameUtil.TimeSlice.None, true)), CodexTextStyle.Body),

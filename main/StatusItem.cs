@@ -28,7 +28,8 @@ public class StatusItem : Resource
 		Rooms = 0x1000,
 		Suits = 0x2000,
 		Logic = 0x4000,
-		Conveyor = 0x8000
+		Conveyor = 0x8000,
+		Radiation = 0x10000
 	}
 
 	public string tooltipText;
@@ -65,11 +66,13 @@ public class StatusItem : Resource
 
 	public int status_overlays;
 
+	public Action<object> statusItemClickCallback;
+
 	private string composedPrefix;
 
 	private bool showShowWorldIcon = true;
 
-	public const int ALL_OVERLAYS = 63486;
+	public const int ALL_OVERLAYS = 129022;
 
 	private static Dictionary<HashedString, StatusItemOverlays> overlayBitfieldMap = new Dictionary<HashedString, StatusItemOverlays>
 	{
@@ -146,7 +149,7 @@ public class StatusItem : Resource
 		tooltipText = Strings.Get(composed_prefix + ".TOOLTIP");
 	}
 
-	public StatusItem(string id, string prefix, string icon, IconType icon_type, NotificationType notification_type, bool allow_multiples, HashedString render_overlay, bool showWorldIcon = true, int status_overlays = 63486)
+	public StatusItem(string id, string prefix, string icon, IconType icon_type, NotificationType notification_type, bool allow_multiples, HashedString render_overlay, bool showWorldIcon = true, int status_overlays = 129022)
 		: this(id, "STRINGS." + prefix + ".STATUSITEMS." + id.ToUpper())
 	{
 		switch (icon_type)
@@ -172,7 +175,7 @@ public class StatusItem : Resource
 		}
 	}
 
-	public StatusItem(string id, string name, string tooltip, string icon, IconType icon_type, NotificationType notification_type, bool allow_multiples, HashedString render_overlay, int status_overlays = 63486)
+	public StatusItem(string id, string name, string tooltip, string icon, IconType icon_type, NotificationType notification_type, bool allow_multiples, HashedString render_overlay, int status_overlays = 129022)
 		: base(id, name)
 	{
 		switch (icon_type)
@@ -303,6 +306,14 @@ public class StatusItem : Resource
 	{
 		resolveStringCallback = cb;
 		return this;
+	}
+
+	public void OnClick(object data)
+	{
+		if (statusItemClickCallback != null)
+		{
+			statusItemClickCallback(data);
+		}
 	}
 
 	public static StatusItemOverlays GetStatusItemOverlayBySimViewMode(HashedString mode)

@@ -264,7 +264,7 @@ public class ReportManager : KMonoBehaviour
 
 			public string GetStringByHash(int hash)
 			{
-				string value = string.Empty;
+				string value = "";
 				strings.TryGetValue(hash, out value);
 				return value;
 			}
@@ -312,19 +312,19 @@ public class ReportManager : KMonoBehaviour
 
 				public bool Matches(int report_entry_id, int note_hash, float value)
 				{
-					if (report_entry_id != reportEntryId)
+					if (report_entry_id == reportEntryId)
 					{
+						if (note_hash == noteHash)
+						{
+							if (value > 0f == this.value > 0f)
+							{
+								return true;
+							}
+							return false;
+						}
 						return false;
 					}
-					if (note_hash != noteHash)
-					{
-						return false;
-					}
-					if (value > 0f != this.value > 0f)
-					{
-						return false;
-					}
-					return true;
+					return false;
 				}
 			}
 
@@ -530,7 +530,7 @@ public class ReportManager : KMonoBehaviour
 	{
 		{
 			ReportType.DuplicantHeader,
-			new ReportGroup(null, true, 1, UI.ENDOFDAYREPORT.DUPLICANT_DETAILS_HEADER, string.Empty, string.Empty, ReportEntry.Order.Unordered, ReportEntry.Order.Unordered, true, null)
+			new ReportGroup(null, true, 1, UI.ENDOFDAYREPORT.DUPLICANT_DETAILS_HEADER, "", "", ReportEntry.Order.Unordered, ReportEntry.Order.Unordered, true, null)
 		},
 		{
 			ReportType.CaloriesCreated,
@@ -546,15 +546,15 @@ public class ReportManager : KMonoBehaviour
 		},
 		{
 			ReportType.DiseaseStatus,
-			new ReportGroup((float v) => GameUtil.GetFormattedDiseaseAmount((int)v), true, 1, UI.ENDOFDAYREPORT.DISEASE_STATUS.NAME, UI.ENDOFDAYREPORT.DISEASE_STATUS.TOOLTIP, string.Empty, ReportEntry.Order.Descending, ReportEntry.Order.Descending, false, null)
+			new ReportGroup((float v) => GameUtil.GetFormattedDiseaseAmount((int)v), true, 1, UI.ENDOFDAYREPORT.DISEASE_STATUS.NAME, UI.ENDOFDAYREPORT.DISEASE_STATUS.TOOLTIP, "", ReportEntry.Order.Descending, ReportEntry.Order.Descending, false, null)
 		},
 		{
 			ReportType.LevelUp,
-			new ReportGroup(null, false, 1, UI.ENDOFDAYREPORT.LEVEL_UP.NAME, UI.ENDOFDAYREPORT.LEVEL_UP.TOOLTIP, string.Empty, ReportEntry.Order.Descending, ReportEntry.Order.Descending, false, null)
+			new ReportGroup(null, false, 1, UI.ENDOFDAYREPORT.LEVEL_UP.NAME, UI.ENDOFDAYREPORT.LEVEL_UP.TOOLTIP, "", ReportEntry.Order.Descending, ReportEntry.Order.Descending, false, null)
 		},
 		{
 			ReportType.ToiletIncident,
-			new ReportGroup(null, false, 1, UI.ENDOFDAYREPORT.TOILET_INCIDENT.NAME, UI.ENDOFDAYREPORT.TOILET_INCIDENT.TOOLTIP, string.Empty, ReportEntry.Order.Descending, ReportEntry.Order.Descending, false, null)
+			new ReportGroup(null, false, 1, UI.ENDOFDAYREPORT.TOILET_INCIDENT.NAME, UI.ENDOFDAYREPORT.TOILET_INCIDENT.TOOLTIP, "", ReportEntry.Order.Descending, ReportEntry.Order.Descending, false, null)
 		},
 		{
 			ReportType.ChoreStatus,
@@ -562,27 +562,27 @@ public class ReportManager : KMonoBehaviour
 		},
 		{
 			ReportType.TimeSpentHeader,
-			new ReportGroup(null, true, 2, UI.ENDOFDAYREPORT.TIME_DETAILS_HEADER, string.Empty, string.Empty, ReportEntry.Order.Unordered, ReportEntry.Order.Unordered, true, null)
+			new ReportGroup(null, true, 2, UI.ENDOFDAYREPORT.TIME_DETAILS_HEADER, "", "", ReportEntry.Order.Unordered, ReportEntry.Order.Unordered, true, null)
 		},
 		{
 			ReportType.WorkTime,
-			new ReportGroup((float v) => GameUtil.GetFormattedPercent(v / 600f * 100f, GameUtil.TimeSlice.None), true, 2, UI.ENDOFDAYREPORT.WORK_TIME.NAME, UI.ENDOFDAYREPORT.WORK_TIME.POSITIVE_TOOLTIP, string.Empty, ReportEntry.Order.Descending, ReportEntry.Order.Descending, false, (float v, float num_entries) => GameUtil.GetFormattedPercent(v / 600f * 100f / num_entries, GameUtil.TimeSlice.None))
+			new ReportGroup((float v) => GameUtil.GetFormattedPercent(v / 600f * 100f, GameUtil.TimeSlice.None), true, 2, UI.ENDOFDAYREPORT.WORK_TIME.NAME, UI.ENDOFDAYREPORT.WORK_TIME.POSITIVE_TOOLTIP, "", ReportEntry.Order.Descending, ReportEntry.Order.Descending, false, (float v, float num_entries) => GameUtil.GetFormattedPercent(v / 600f * 100f / num_entries, GameUtil.TimeSlice.None))
 		},
 		{
 			ReportType.TravelTime,
-			new ReportGroup((float v) => GameUtil.GetFormattedPercent(v / 600f * 100f, GameUtil.TimeSlice.None), true, 2, UI.ENDOFDAYREPORT.TRAVEL_TIME.NAME, UI.ENDOFDAYREPORT.TRAVEL_TIME.POSITIVE_TOOLTIP, string.Empty, ReportEntry.Order.Descending, ReportEntry.Order.Descending, false, (float v, float num_entries) => GameUtil.GetFormattedPercent(v / 600f * 100f / num_entries, GameUtil.TimeSlice.None))
+			new ReportGroup((float v) => GameUtil.GetFormattedPercent(v / 600f * 100f, GameUtil.TimeSlice.None), true, 2, UI.ENDOFDAYREPORT.TRAVEL_TIME.NAME, UI.ENDOFDAYREPORT.TRAVEL_TIME.POSITIVE_TOOLTIP, "", ReportEntry.Order.Descending, ReportEntry.Order.Descending, false, (float v, float num_entries) => GameUtil.GetFormattedPercent(v / 600f * 100f / num_entries, GameUtil.TimeSlice.None))
 		},
 		{
 			ReportType.PersonalTime,
-			new ReportGroup((float v) => GameUtil.GetFormattedPercent(v / 600f * 100f, GameUtil.TimeSlice.None), true, 2, UI.ENDOFDAYREPORT.PERSONAL_TIME.NAME, UI.ENDOFDAYREPORT.PERSONAL_TIME.POSITIVE_TOOLTIP, string.Empty, ReportEntry.Order.Descending, ReportEntry.Order.Descending, false, (float v, float num_entries) => GameUtil.GetFormattedPercent(v / 600f * 100f / num_entries, GameUtil.TimeSlice.None))
+			new ReportGroup((float v) => GameUtil.GetFormattedPercent(v / 600f * 100f, GameUtil.TimeSlice.None), true, 2, UI.ENDOFDAYREPORT.PERSONAL_TIME.NAME, UI.ENDOFDAYREPORT.PERSONAL_TIME.POSITIVE_TOOLTIP, "", ReportEntry.Order.Descending, ReportEntry.Order.Descending, false, (float v, float num_entries) => GameUtil.GetFormattedPercent(v / 600f * 100f / num_entries, GameUtil.TimeSlice.None))
 		},
 		{
 			ReportType.IdleTime,
-			new ReportGroup((float v) => GameUtil.GetFormattedPercent(v / 600f * 100f, GameUtil.TimeSlice.None), true, 2, UI.ENDOFDAYREPORT.IDLE_TIME.NAME, UI.ENDOFDAYREPORT.IDLE_TIME.POSITIVE_TOOLTIP, string.Empty, ReportEntry.Order.Descending, ReportEntry.Order.Descending, false, (float v, float num_entries) => GameUtil.GetFormattedPercent(v / 600f * 100f / num_entries, GameUtil.TimeSlice.None))
+			new ReportGroup((float v) => GameUtil.GetFormattedPercent(v / 600f * 100f, GameUtil.TimeSlice.None), true, 2, UI.ENDOFDAYREPORT.IDLE_TIME.NAME, UI.ENDOFDAYREPORT.IDLE_TIME.POSITIVE_TOOLTIP, "", ReportEntry.Order.Descending, ReportEntry.Order.Descending, false, (float v, float num_entries) => GameUtil.GetFormattedPercent(v / 600f * 100f / num_entries, GameUtil.TimeSlice.None))
 		},
 		{
 			ReportType.BaseHeader,
-			new ReportGroup(null, true, 3, UI.ENDOFDAYREPORT.BASE_DETAILS_HEADER, string.Empty, string.Empty, ReportEntry.Order.Unordered, ReportEntry.Order.Unordered, true, null)
+			new ReportGroup(null, true, 3, UI.ENDOFDAYREPORT.BASE_DETAILS_HEADER, "", "", ReportEntry.Order.Unordered, ReportEntry.Order.Unordered, true, null)
 		},
 		{
 			ReportType.OxygenCreated,
@@ -635,11 +635,11 @@ public class ReportManager : KMonoBehaviour
 	{
 		get
 		{
-			if (dailyReports.Count <= 1)
+			if (dailyReports.Count > 1)
 			{
-				return null;
+				return dailyReports[dailyReports.Count - 1];
 			}
-			return dailyReports[dailyReports.Count - 1];
+			return null;
 		}
 	}
 
@@ -714,7 +714,7 @@ public class ReportManager : KMonoBehaviour
 		}
 		else
 		{
-			notifier.Add(notification, string.Empty);
+			notifier.Add(notification, "");
 		}
 		todaysReport = new DailyReport(this);
 		todaysReport.day = GameUtil.GetCurrentCycle() + 1;
@@ -729,10 +729,10 @@ public class ReportManager : KMonoBehaviour
 				return dailyReport;
 			}
 		}
-		if (todaysReport.day == day)
+		if (todaysReport.day != day)
 		{
-			return todaysReport;
+			return null;
 		}
-		return null;
+		return todaysReport;
 	}
 }

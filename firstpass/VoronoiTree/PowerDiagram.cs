@@ -226,6 +226,8 @@ namespace VoronoiTree
 
 		private List<DualSite2d> dualSites = new List<DualSite2d>();
 
+		private ConvexHull<DualSite3d, ConvexFaceExt<DualSite3d>> debug_LastHull;
+
 		public VoronoiMesh<DualSite2d, Site, VoronoiEdge<DualSite2d, Site>> voronoiMesh
 		{
 			get;
@@ -304,8 +306,13 @@ namespace VoronoiTree
 				}
 				site.position = site.poly.Centroid();
 			}
-			for (int i = 0; i <= maxIterations; i++)
+			int num2 = 0;
+			while (true)
 			{
+				if (num2 > maxIterations)
+				{
+					return;
+				}
 				try
 				{
 					UpdateWeights(sites);
@@ -319,18 +326,18 @@ namespace VoronoiTree
 				num = 0f;
 				foreach (Site site2 in sites)
 				{
-					float num2 = (site2.poly != null) ? site2.poly.Area() : 0.1f;
-					float num3 = site2.weight / weightSum * bounds.Area();
-					num = Mathf.Max(Mathf.Abs(num2 - num3) / num3, num);
+					float num3 = (site2.poly != null) ? site2.poly.Area() : 0.1f;
+					float num4 = site2.weight / weightSum * bounds.Area();
+					num = Mathf.Max(Mathf.Abs(num3 - num4) / num4, num);
 				}
 				if (num < threashold)
 				{
-					completedIterations = i;
 					break;
 				}
 				completedIterations++;
+				num2++;
 			}
-			Debug.Log("error [" + num + "] iters " + completedIterations + "/" + maxIterations);
+			completedIterations = num2;
 		}
 
 		public void ComputeVD()
@@ -409,16 +416,16 @@ namespace VoronoiTree
 
 		private bool ContainsVert(Site face, DualSite2d target)
 		{
-			if (face == null || face.Vertices == null)
+			if (face != null && face.Vertices != null)
 			{
-				return false;
-			}
-			for (int i = 0; i < face.Vertices.Length; i++)
-			{
-				if (face.Vertices[i] == target)
+				for (int i = 0; i < face.Vertices.Length; i++)
 				{
-					return true;
+					if (face.Vertices[i] == target)
+					{
+						return true;
+					}
 				}
+				return false;
 			}
 			return false;
 		}
@@ -582,14 +589,16 @@ namespace VoronoiTree
 			while (stack.Count > 0)
 			{
 				ConvexFaceExt<DualSite3d> convexFaceExt = stack.Pop();
+				list2.Add(convexFaceExt);
 				for (int i = 0; i < convexFaceExt.Adjacency.Length; i++)
 				{
 					if (ContainsVert(convexFaceExt.Adjacency[i], dualSite) && !list2.Contains(convexFaceExt.Adjacency[i]))
 					{
 						Edge edge = GetEdge(convexFaceExt, convexFaceExt.Adjacency[i]);
 						DualSite3d dualSite3d = (edge.First != dualSite) ? edge.First : edge.Second;
+						Debug.Assert(dualSite3d != dualSite, "We're our own neighbour??");
+						Debug.Assert(dualSite3d.site.id == -1 || !list.Contains(dualSite3d.site), "Tried adding a site twice!");
 						list.Add(dualSite3d.site);
-						list2.Add(convexFaceExt.Adjacency[i]);
 						stack.Push(convexFaceExt.Adjacency[i]);
 					}
 				}
@@ -644,6 +653,7 @@ namespace VoronoiTree
 					}
 				}
 			}
+			debug_LastHull = convexHull;
 		}
 
 		private void UpdateWeights(List<Site> sites)

@@ -1,3 +1,4 @@
+using Klei.AI;
 using KSerialization;
 using STRINGS;
 using System;
@@ -6,6 +7,12 @@ using UnityEngine;
 
 public class DrowningMonitor : KMonoBehaviour, IWiltCause, ISim1000ms
 {
+	[MyCmpReq]
+	private KSelectable selectable;
+
+	[MyCmpGet]
+	private Effects effects;
+
 	private OccupyArea _occupyArea;
 
 	[Serialize]
@@ -15,7 +22,7 @@ public class DrowningMonitor : KMonoBehaviour, IWiltCause, ISim1000ms
 	[Serialize]
 	private bool drowned;
 
-	private bool drowning;
+	private bool drowning = false;
 
 	protected const float MaxDrownTime = 75f;
 
@@ -23,9 +30,13 @@ public class DrowningMonitor : KMonoBehaviour, IWiltCause, ISim1000ms
 
 	protected const float CellLiquidThreshold = 0.95f;
 
+	public bool canDrownToDeath = true;
+
 	private Extents extents;
 
 	private HandleVector<int>.Handle partitionerEntry;
+
+	public static Effect drowningEffect;
 
 	[CompilerGenerated]
 	private static Func<int, object, bool> _003C_003Ef__mg_0024cache0;
@@ -61,6 +72,11 @@ public class DrowningMonitor : KMonoBehaviour, IWiltCause, ISim1000ms
 	{
 		base.OnPrefabInit();
 		timeToDrown = 75f;
+		if (drowningEffect == null)
+		{
+			drowningEffect = new Effect("Drowning", CREATURES.STATUSITEMS.DROWNING.NAME, CREATURES.STATUSITEMS.DROWNING.TOOLTIP, 0f, false, false, true, null, 0f, null);
+			drowningEffect.Add(new AttributeModifier(Db.Get().CritterAttributes.Happiness.Id, -100f, CREATURES.STATUSITEMS.DROWNING.NAME, false, false, true));
+		}
 	}
 
 	protected override void OnSpawn()
@@ -105,7 +121,7 @@ public class DrowningMonitor : KMonoBehaviour, IWiltCause, ISim1000ms
 					Trigger(1949704522, null);
 					GetComponent<KPrefabID>().AddTag(GameTags.Creatures.Drowning);
 				}
-				if (timeToDrown <= 0f)
+				if (timeToDrown <= 0f && canDrownToDeath)
 				{
 					this.GetSMI<DeathMonitor.Instance>()?.Kill(Db.Get().Deaths.Drowned);
 					Trigger(-750750377, null);
@@ -118,32 +134,44 @@ public class DrowningMonitor : KMonoBehaviour, IWiltCause, ISim1000ms
 				GetComponent<KPrefabID>().RemoveTag(GameTags.Creatures.Drowning);
 				Trigger(99949694, null);
 			}
+			selectable.ToggleStatusItem(Db.Get().CreatureStatusItems.Drowning, drowning, this);
+			if ((UnityEngine.Object)effects != (UnityEngine.Object)null)
+			{
+				if (drowning)
+				{
+					effects.Add(drowningEffect, false);
+				}
+				else
+				{
+					effects.Remove(drowningEffect);
+				}
+			}
 		}
 	}
 
 	private static bool CellSafeTest(int testCell, object data)
 	{
 		int num = Grid.CellAbove(testCell);
-		if (!Grid.IsValidCell(testCell) || !Grid.IsValidCell(num))
+		if (Grid.IsValidCell(testCell) && Grid.IsValidCell(num))
 		{
+			if (!Grid.IsSubstantialLiquid(testCell, 0.95f))
+			{
+				if (Grid.IsLiquid(testCell))
+				{
+					if (Grid.Element[num].IsLiquid)
+					{
+						return false;
+					}
+					if (Grid.Element[num].IsSolid)
+					{
+						return false;
+					}
+				}
+				return true;
+			}
 			return false;
 		}
-		if (Grid.IsSubstantialLiquid(testCell, 0.95f))
-		{
-			return false;
-		}
-		if (Grid.IsLiquid(testCell))
-		{
-			if (Grid.Element[num].IsLiquid)
-			{
-				return false;
-			}
-			if (Grid.Element[num].IsSolid)
-			{
-				return false;
-			}
-		}
-		return true;
+		return false;
 	}
 
 	public bool IsCellSafe(int cell)

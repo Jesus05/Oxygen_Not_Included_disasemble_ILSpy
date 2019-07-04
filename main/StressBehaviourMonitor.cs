@@ -30,7 +30,7 @@ public class StressBehaviourMonitor : GameStateMachine<StressBehaviourMonitor, S
 
 		public Func<ChoreProvider, Chore> tierTwoStressChoreCreator;
 
-		public string tierOneLocoAnim = string.Empty;
+		public string tierOneLocoAnim = "";
 
 		public float tierTwoReprieveDuration;
 

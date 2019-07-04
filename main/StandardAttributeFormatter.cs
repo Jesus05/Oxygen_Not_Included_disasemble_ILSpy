@@ -1,5 +1,6 @@
 using Klei.AI;
 using STRINGS;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class StandardAttributeFormatter : IAttributeFormatter
@@ -53,27 +54,33 @@ public class StandardAttributeFormatter : IAttributeFormatter
 
 	public virtual string GetTooltipDescription(Attribute master, AttributeInstance instance)
 	{
-		return master.Name + UI.HORIZONTAL_BR_RULE + master.Description;
+		return master.Description;
 	}
 
 	public virtual string GetTooltip(Attribute master, AttributeInstance instance)
 	{
 		string tooltipDescription = GetTooltipDescription(master, instance);
-		tooltipDescription += string.Format(DUPLICANTS.ATTRIBUTES.TOTAL_VALUE, GetFormattedValue(instance.GetTotalDisplayValue(), GameUtil.TimeSlice.None, null));
+		tooltipDescription += string.Format(DUPLICANTS.ATTRIBUTES.TOTAL_VALUE, GetFormattedValue(instance.GetTotalDisplayValue(), GameUtil.TimeSlice.None, null), instance.Name);
 		if (instance.GetBaseValue() != 0f)
 		{
 			tooltipDescription += string.Format(DUPLICANTS.ATTRIBUTES.BASE_VALUE, instance.GetBaseValue());
 		}
-		for (int i = 0; i != instance.Modifiers.Count; i++)
+		List<AttributeModifier> list = new List<AttributeModifier>();
+		for (int i = 0; i < instance.Modifiers.Count; i++)
 		{
-			AttributeModifier attributeModifier = instance.Modifiers[i];
+			list.Add(instance.Modifiers[i]);
+		}
+		list.Sort((AttributeModifier p1, AttributeModifier p2) => p2.Value.CompareTo(p1.Value));
+		for (int j = 0; j != list.Count; j++)
+		{
+			AttributeModifier attributeModifier = list[j];
 			string formattedString = attributeModifier.GetFormattedString(instance.gameObject);
 			if (formattedString != null)
 			{
 				tooltipDescription += string.Format(DUPLICANTS.ATTRIBUTES.MODIFIER_ENTRY, attributeModifier.GetDescription(), formattedString);
 			}
 		}
-		string text = string.Empty;
+		string text = "";
 		AttributeConverters component = instance.gameObject.GetComponent<AttributeConverters>();
 		if ((Object)component != (Object)null && master.converters.Count > 0)
 		{
@@ -81,7 +88,7 @@ public class StandardAttributeFormatter : IAttributeFormatter
 			{
 				if (converter.converter.attribute == master)
 				{
-					string text2 = converter.DescriptionFromAttribute();
+					string text2 = converter.DescriptionFromAttribute(converter.Evaluate(), converter.gameObject);
 					if (text2 != null)
 					{
 						text = text + "\n" + text2;

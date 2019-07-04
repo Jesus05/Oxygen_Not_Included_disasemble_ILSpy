@@ -4,7 +4,7 @@ namespace Database
 {
 	public class Personalities : ResourceSet<Personality>
 	{
-		private class PersonalityLoader : AsyncCsvLoader<PersonalityLoader, PersonalityInfo>
+		public class PersonalityLoader : AsyncCsvLoader<PersonalityLoader, PersonalityInfo>
 		{
 			public PersonalityLoader()
 				: base(Assets.instance.personalitiesFile)

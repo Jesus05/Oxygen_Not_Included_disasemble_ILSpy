@@ -27,31 +27,31 @@ namespace Satsuma.IO.GraphML
 
 		private static StandardType ParseType(Type t)
 		{
-			if (t == typeof(bool))
+			if (t != typeof(bool))
 			{
-				return StandardType.Bool;
-			}
-			if (t == typeof(double))
-			{
+				if (t != typeof(double))
+				{
+					if (t != typeof(float))
+					{
+						if (t != typeof(int))
+						{
+							if (t != typeof(long))
+							{
+								if (t != typeof(string))
+								{
+									throw new ArgumentException("Invalid type for a standard GraphML property.");
+								}
+								return StandardType.String;
+							}
+							return StandardType.Long;
+						}
+						return StandardType.Int;
+					}
+					return StandardType.Float;
+				}
 				return StandardType.Double;
 			}
-			if (t == typeof(float))
-			{
-				return StandardType.Float;
-			}
-			if (t == typeof(int))
-			{
-				return StandardType.Int;
-			}
-			if (t == typeof(long))
-			{
-				return StandardType.Long;
-			}
-			if (t == typeof(string))
-			{
-				return StandardType.String;
-			}
-			throw new ArgumentException("Invalid type for a standard GraphML property.");
+			return StandardType.Bool;
 		}
 
 		private static string TypeToGraphML(StandardType type)

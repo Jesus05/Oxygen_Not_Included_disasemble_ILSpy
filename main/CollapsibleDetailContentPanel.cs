@@ -34,8 +34,6 @@ public class CollapsibleDetailContentPanel : KMonoBehaviour
 
 	public Transform Content;
 
-	public Image BGFrame;
-
 	public ScalerMask scalerMask;
 
 	[Space(10f)]

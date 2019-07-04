@@ -8,7 +8,7 @@ public class BabyPuftBleachstoneConfig : IEntityConfig
 	public GameObject CreatePrefab()
 	{
 		GameObject gameObject = PuftBleachstoneConfig.CreatePuftBleachstone("PuftBleachstoneBaby", CREATURES.SPECIES.PUFT.VARIANT_BLEACHSTONE.BABY.NAME, CREATURES.SPECIES.PUFT.VARIANT_BLEACHSTONE.BABY.DESC, "baby_puft_kanim", true);
-		EntityTemplates.ExtendEntityToBeingABaby(gameObject, "PuftBleachstone");
+		EntityTemplates.ExtendEntityToBeingABaby(gameObject, "PuftBleachstone", null);
 		return gameObject;
 	}
 

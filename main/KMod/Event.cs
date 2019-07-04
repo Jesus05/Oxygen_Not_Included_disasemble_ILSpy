@@ -9,6 +9,8 @@ namespace KMod
 
 		public Label mod;
 
+		public string details;
+
 		public static void GetUIStrings(EventType err_type, out string title, out string title_tooltip)
 		{
 			title = string.Empty;
@@ -47,9 +49,9 @@ namespace KMod
 				title = UI.FRONTEND.MOD_EVENTS.VERSION_UPDATE;
 				title_tooltip = UI.FRONTEND.MOD_EVENTS.TOOLTIPS.VERSION_UPDATE;
 				break;
-			case EventType.ContentDeleted:
-				title = UI.FRONTEND.MOD_EVENTS.CONTENT_DELETED;
-				title_tooltip = UI.FRONTEND.MOD_EVENTS.TOOLTIPS.CONTENT_DELETED;
+			case EventType.AvailableContentChanged:
+				title = UI.FRONTEND.MOD_EVENTS.AVAILABLE_CONTENT_CHANGED;
+				title_tooltip = UI.FRONTEND.MOD_EVENTS.TOOLTIPS.AVAILABLE_CONTENT_CHANGED;
 				break;
 			case EventType.InstallFailed:
 				title = UI.FRONTEND.MOD_EVENTS.INSTALL_FAILED;
@@ -66,6 +68,14 @@ namespace KMod
 			case EventType.RestartRequested:
 				title = UI.FRONTEND.MOD_EVENTS.REQUIRES_RESTART;
 				title_tooltip = UI.FRONTEND.MODS.REQUIRES_RESTART;
+				break;
+			case EventType.BadWorldGen:
+				title = UI.FRONTEND.MOD_EVENTS.BAD_WORLD_GEN;
+				title_tooltip = UI.FRONTEND.MOD_EVENTS.TOOLTIPS.BAD_WORLD_GEN;
+				break;
+			case EventType.Deactivated:
+				title = UI.FRONTEND.MOD_EVENTS.DEACTIVATED;
+				title_tooltip = UI.FRONTEND.MOD_EVENTS.TOOLTIPS.DEACTIVATED;
 				break;
 			default:
 				throw new ArgumentOutOfRangeException();

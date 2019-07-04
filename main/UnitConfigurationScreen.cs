@@ -1,19 +1,15 @@
 using STRINGS;
+using System;
 using UnityEngine;
 
-public class UnitConfigurationScreen : KModalScreen
+[Serializable]
+public class UnitConfigurationScreen
 {
 	[SerializeField]
 	private GameObject toggleUnitPrefab;
 
 	[SerializeField]
 	private GameObject toggleGroup;
-
-	[SerializeField]
-	private KButton closeButton;
-
-	[SerializeField]
-	private KButton doneButton;
 
 	private GameObject celsiusToggle;
 
@@ -25,9 +21,8 @@ public class UnitConfigurationScreen : KModalScreen
 
 	public static readonly string MassUnitKey = "MassUnit";
 
-	protected override void OnPrefabInit()
+	public void Init()
 	{
-		base.OnPrefabInit();
 		celsiusToggle = Util.KInstantiateUI(toggleUnitPrefab, toggleGroup, true);
 		celsiusToggle.GetComponentInChildren<ToolTip>().toolTip = UI.FRONTEND.UNIT_OPTIONS_SCREEN.CELSIUS_TOOLTIP;
 		celsiusToggle.GetComponentInChildren<KButton>().onClick += OnCelsiusClicked;
@@ -41,8 +36,6 @@ public class UnitConfigurationScreen : KModalScreen
 		fahrenheitToggle.GetComponentInChildren<KButton>().onClick += OnFahrenheitClicked;
 		fahrenheitToggle.GetComponentInChildren<LocText>().text = UI.FRONTEND.UNIT_OPTIONS_SCREEN.FAHRENHEIT;
 		DisplayCurrentUnit();
-		closeButton.onClick += Deactivate;
-		doneButton.onClick += Deactivate;
 	}
 
 	private void DisplayCurrentUnit()
@@ -64,18 +57,6 @@ public class UnitConfigurationScreen : KModalScreen
 			kelvinToggle.GetComponent<HierarchyReferences>().GetReference("Checkmark").gameObject.SetActive(false);
 			fahrenheitToggle.GetComponent<HierarchyReferences>().GetReference("Checkmark").gameObject.SetActive(true);
 			break;
-		}
-	}
-
-	public override void OnKeyDown(KButtonEvent e)
-	{
-		if (e.TryConsume(Action.Escape) || e.TryConsume(Action.MouseRight))
-		{
-			Deactivate();
-		}
-		else
-		{
-			base.OnKeyDown(e);
 		}
 	}
 

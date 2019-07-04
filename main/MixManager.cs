@@ -13,13 +13,16 @@ public class MixManager : MonoBehaviour
 
 	private void OnApplicationFocus(bool hasFocus)
 	{
-		if (!hasFocus && KPlayerPrefs.GetInt(AudioOptionsScreen.MuteOnFocusLost) == 1)
+		if (AudioMixer.instance != null && !((Object)AudioMixerSnapshots.Get() == (Object)null))
 		{
-			AudioMixer.instance.Start(AudioMixerSnapshots.Get().GameNotFocusedSnapshot);
-		}
-		else
-		{
-			AudioMixer.instance.Stop(AudioMixerSnapshots.Get().GameNotFocusedSnapshot, STOP_MODE.ALLOWFADEOUT);
+			if (!hasFocus && KPlayerPrefs.GetInt(AudioOptionsScreen.MuteOnFocusLost) == 1)
+			{
+				AudioMixer.instance.Start(AudioMixerSnapshots.Get().GameNotFocusedSnapshot);
+			}
+			else
+			{
+				AudioMixer.instance.Stop(AudioMixerSnapshots.Get().GameNotFocusedSnapshot, STOP_MODE.ALLOWFADEOUT);
+			}
 		}
 	}
 }

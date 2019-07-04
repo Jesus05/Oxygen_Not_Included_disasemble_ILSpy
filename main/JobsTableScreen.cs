@@ -241,16 +241,8 @@ public class JobsTableScreen : TableScreen
 					text = text.Replace("{Attribute}", choreGroup.attribute.Name);
 					AttributeInstance attributeInstance = minionIdentity.GetAttributes().Get(choreGroup.attribute);
 					float totalValue = attributeInstance.GetTotalValue();
-					TextStyleSetting textStyleSetting = TooltipTextStyle_Ability;
-					if (totalValue > 0f)
-					{
-						textStyleSetting = TooltipTextStyle_AbilityPositiveModifier;
-					}
-					else if (totalValue < 0f)
-					{
-						textStyleSetting = TooltipTextStyle_AbilityNegativeModifier;
-					}
-					text += GameUtil.ColourizeString(textStyleSetting.textColor, totalValue.ToString());
+					TextStyleSetting tooltipTextStyle_Ability = TooltipTextStyle_Ability;
+					text += GameUtil.ColourizeString(tooltipTextStyle_Ability.textColor, totalValue.ToString());
 					componentInChildren.AddMultiStringTooltip(text, null);
 				}
 				componentInChildren.AddMultiStringTooltip(UI.HORIZONTAL_RULE + "\n" + GetUsageString(), null);
@@ -260,7 +252,7 @@ public class JobsTableScreen : TableScreen
 		{
 			componentInChildren.AddMultiStringTooltip(string.Format(UI.JOBSSCREEN.CANNOT_ADJUST_PRIORITY, identity.GetProperName(), (identity as StoredMinionIdentity).GetStorageReason()), null);
 		}
-		return string.Empty;
+		return "";
 	}
 
 	private string HoverChangeColumnPriorityButton(object widget_go_obj)
@@ -336,19 +328,19 @@ public class JobsTableScreen : TableScreen
 			{
 				return 0;
 			}
-			if ((UnityEngine.Object)minionIdentity == (UnityEngine.Object)null)
+			if (!((UnityEngine.Object)minionIdentity == (UnityEngine.Object)null))
 			{
-				return -1;
-			}
-			if ((UnityEngine.Object)minionIdentity2 == (UnityEngine.Object)null)
-			{
+				if (!((UnityEngine.Object)minionIdentity2 == (UnityEngine.Object)null))
+				{
+					ChoreConsumer component = minionIdentity.GetComponent<ChoreConsumer>();
+					ChoreConsumer component2 = minionIdentity2.GetComponent<ChoreConsumer>();
+					int personalPriority = component.GetPersonalPriority(chore_group);
+					int personalPriority2 = component2.GetPersonalPriority(chore_group);
+					return personalPriority2 - personalPriority;
+				}
 				return 1;
 			}
-			ChoreConsumer component = minionIdentity.GetComponent<ChoreConsumer>();
-			ChoreConsumer component2 = minionIdentity2.GetComponent<ChoreConsumer>();
-			int personalPriority = component.GetPersonalPriority(chore_group);
-			int personalPriority2 = component2.GetPersonalPriority(chore_group);
-			return personalPriority2 - personalPriority;
+			return -1;
 		};
 		SortRows();
 	}
@@ -673,7 +665,7 @@ public class JobsTableScreen : TableScreen
 		num2 = 0f;
 		HorizontalLayoutGroup component3 = header_row.GetComponent<HorizontalLayoutGroup>();
 		component3.spacing = num2;
-		component3.childAlignment = TextAnchor.UpperLeft;
+		component3.childAlignment = TextAnchor.MiddleLeft;
 		foreach (TableRow row in rows)
 		{
 			row.transform.GetComponentInChildren<HorizontalLayoutGroup>().spacing = num2;
@@ -910,7 +902,7 @@ public class JobsTableScreen : TableScreen
 		on_load_name_label(identity, widget_go);
 		if (identity != null)
 		{
-			string result = string.Empty;
+			string result = "";
 			ToolTip component = widget_go.GetComponent<ToolTip>();
 			if ((UnityEngine.Object)component != (UnityEngine.Object)null)
 			{

@@ -1,5 +1,6 @@
 using FMOD.Studio;
 using FMODUnity;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -13,15 +14,20 @@ public class WattsonMessage : KScreen
 
 	private const float STARTTIME = 0.1f;
 
-	private const float ENDTIME = 4.6f;
+	private const float ENDTIME = 6.6f;
 
 	private const float ALPHA_SPEED = 0.01f;
 
-	[SerializeField]
-	private Image bg;
+	private const float expandedHeight = 300f;
 
 	[SerializeField]
 	private GameObject dialog;
+
+	[SerializeField]
+	private RectTransform content;
+
+	[SerializeField]
+	private Image bg;
 
 	[SerializeField]
 	private KButton button;
@@ -32,7 +38,7 @@ public class WattsonMessage : KScreen
 
 	private List<KScreen> hideScreensWhileActive = new List<KScreen>();
 
-	private bool startFade;
+	private bool startFade = false;
 
 	private List<SchedulerHandle> scheduleHandles = new List<SchedulerHandle>();
 
@@ -51,6 +57,30 @@ public class WattsonMessage : KScreen
 	{
 		base.OnPrefabInit();
 		Game.Instance.Subscribe(-122303817, OnNewBaseCreated);
+	}
+
+	private IEnumerator ExpandPanel()
+	{
+		yield return (object)new WaitForSecondsRealtime(5f);
+		/*Error: Unable to find new state assignment for yield return*/;
+	}
+
+	private IEnumerator CollapsePanel()
+	{
+		float height2 = 300f;
+		if (height2 > 1f)
+		{
+			Vector2 sizeDelta = dialog.rectTransform().sizeDelta;
+			height2 = Mathf.Lerp(sizeDelta.y, 0f, Time.unscaledDeltaTime * 15f);
+			RectTransform rectTransform = dialog.rectTransform();
+			Vector2 sizeDelta2 = dialog.rectTransform().sizeDelta;
+			rectTransform.sizeDelta = new Vector2(sizeDelta2.x, height2);
+			yield return (object)0;
+			/*Error: Unable to find new state assignment for yield return*/;
+		}
+		Deactivate();
+		yield return (object)null;
+		/*Error: Unable to find new state assignment for yield return*/;
 	}
 
 	protected override void OnSpawn()
@@ -102,7 +132,7 @@ public class WattsonMessage : KScreen
 		AudioMixer.instance.activeNIS = true;
 		button.onClick += delegate
 		{
-			Deactivate();
+			StartCoroutine(CollapsePanel());
 		};
 		dialog.GetComponent<KScreen>().Show(false);
 		startFade = false;
@@ -137,7 +167,7 @@ public class WattsonMessage : KScreen
 					}, null);
 				}, null, null);
 			}
-			UIScheduler.Instance.Schedule("Welcome", 4.6f, delegate
+			UIScheduler.Instance.Schedule("Welcome", 6.6f, delegate
 			{
 				kac.Play(new HashedString[2]
 				{
@@ -156,9 +186,10 @@ public class WattsonMessage : KScreen
 			CameraController.Instance.SetOrthographicsSize(TuningData<Tuning>.Get().initialOrthographicSize);
 			CameraController.Instance.CameraGoHome(1f);
 			startFade = true;
+			StartCoroutine(ExpandPanel());
 			MusicManager.instance.PlaySong("Music_WattsonMessage", false);
 		}, null, null));
-		scheduleHandles.Add(UIScheduler.Instance.Schedule("WelcomeDialog", 5.6f, delegate
+		scheduleHandles.Add(UIScheduler.Instance.Schedule("WelcomeDialog", 7.6f, delegate
 		{
 			SpeedControlScreen.Instance.Pause(false);
 			KFMOD.PlayOneShot(dialogSound);
@@ -199,6 +230,7 @@ public class WattsonMessage : KScreen
 				item.Show(true);
 			}
 			CameraController.Instance.SetMaxOrthographicSize(20f);
+			Game.Instance.timelapser.SaveScreenshot();
 		}, null, null);
 		Game.Instance.SetGameStarted();
 		if ((Object)TopLeftControlScreen.Instance != (Object)null)

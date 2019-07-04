@@ -30,7 +30,7 @@ public class EatChore : Chore<EatChore.StatesInstance>
 
 		public void CreateLocator()
 		{
-			int num = base.sm.eater.Get<Sensors>(base.smi).GetSensor<SafeCellSensor>().GetCell();
+			int num = base.sm.eater.Get<Sensors>(base.smi).GetSensor<SafeCellSensor>().GetCellQuery();
 			if (num == Grid.InvalidCell)
 			{
 				num = Grid.PosToCell(base.sm.eater.Get<Transform>(base.smi).GetPosition());
@@ -63,6 +63,18 @@ public class EatChore : Chore<EatChore.StatesInstance>
 			{
 				RoomType roomType = roomOfGameObject.roomType;
 				roomType.TriggerRoomEffects(base.sm.messstation.Get(base.smi).gameObject.GetComponent<KPrefabID>(), base.sm.eater.Get(base.smi).gameObject.GetComponent<Effects>());
+			}
+		}
+
+		public void ApplySaltEffect()
+		{
+			Storage component = base.sm.messstation.Get(base.smi).gameObject.GetComponent<Storage>();
+			if ((UnityEngine.Object)component != (UnityEngine.Object)null && (UnityEngine.Object)component != (UnityEngine.Object)null && component.Has(TableSaltConfig.ID.ToTag()))
+			{
+				component.ConsumeIgnoringDisease(TableSaltConfig.ID.ToTag(), TableSaltTuning.CONSUMABLE_RATE);
+				Worker component2 = base.sm.eater.Get(base.smi).gameObject.GetComponent<Worker>();
+				Effects component3 = component2.GetComponent<Effects>();
+				component3.Add("MessTableSalt", true);
 			}
 		}
 	}
@@ -121,6 +133,7 @@ public class EatChore : Chore<EatChore.StatesInstance>
 			{
 				smi.SetZ(eater.Get(smi), Grid.GetLayerZ(Grid.SceneLayer.BuildingFront));
 				smi.ApplyRoomEffects();
+				smi.ApplySaltEffect();
 			})
 				.Exit(delegate(StatesInstance smi)
 				{
@@ -149,7 +162,7 @@ public class EatChore : Chore<EatChore.StatesInstance>
 	};
 
 	public EatChore(IStateMachineTarget master)
-		: base(Db.Get().ChoreTypes.Eat, master, master.GetComponent<ChoreProvider>(), false, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.personalNeeds, 5, false, true, 0, (Tag[])null, false, ReportManager.ReportType.PersonalTime)
+		: base(Db.Get().ChoreTypes.Eat, master, master.GetComponent<ChoreProvider>(), false, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.personalNeeds, 5, false, true, 0, false, ReportManager.ReportType.PersonalTime)
 	{
 		base.smi = new StatesInstance(this);
 		showAvailabilityInHoverText = false;

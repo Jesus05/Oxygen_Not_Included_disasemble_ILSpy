@@ -21,24 +21,28 @@ public class GlobalChoreProvider : ChoreProvider, ISim200ms, IRender200ms
 			{
 				if (tagBitsHash == fetch.tagBitsHash)
 				{
-					if (chore.tagBits.AreEqual(ref fetch.chore.tagBits))
+					if (chore.choreType == fetch.chore.choreType)
 					{
-						if (priority.priority_class <= fetch.priority.priority_class)
+						if (chore.tagBits.AreEqual(ref fetch.chore.tagBits))
 						{
-							if (priority.priority_class == fetch.priority.priority_class)
+							if (priority.priority_class <= fetch.priority.priority_class)
 							{
-								if (priority.priority_value > fetch.priority.priority_value)
+								if (priority.priority_class == fetch.priority.priority_class)
 								{
-									return true;
+									if (priority.priority_value > fetch.priority.priority_value)
+									{
+										return true;
+									}
+									if (priority.priority_value == fetch.priority.priority_value)
+									{
+										return cost <= fetch.cost;
+									}
 								}
-								if (priority.priority_value == fetch.priority.priority_value)
-								{
-									return cost <= fetch.cost;
-								}
+								return false;
 							}
-							return false;
+							return true;
 						}
-						return true;
+						return false;
 					}
 					return false;
 				}

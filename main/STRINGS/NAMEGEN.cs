@@ -513,6 +513,16 @@ namespace STRINGS
 					public static LocString KERNLE = "Kernle";
 
 					public static LocString REDWARD = "Redward";
+
+					public static LocString LUCA = "Luca";
+
+					public static LocString CHRIS = "Chris";
+
+					public static LocString RAGNAR = "Ragnar";
+
+					public static LocString BROOK = "Brook";
+
+					public static LocString RICARDO = "Ricardo";
 				}
 
 				public class FEMALE
@@ -602,6 +612,24 @@ namespace STRINGS
 					public static LocString MAHA = "Maha";
 
 					public static LocString MOZZARELLA = "Mozzarella";
+
+					public static LocString NICOLE = "Nicole";
+
+					public static LocString ERICA = "Erica";
+
+					public static LocString MARGARET = "Margaret";
+
+					public static LocString ELAINE = "Elaine";
+
+					public static LocString ANDREA = "Andrea";
+
+					public static LocString ANNEMARIE = "Anne-Marie";
+
+					public static LocString SUN = "Sun";
+
+					public static LocString STEPH = "Steph";
+
+					public static LocString KENDRA = "Kendra";
 				}
 
 				public class NB

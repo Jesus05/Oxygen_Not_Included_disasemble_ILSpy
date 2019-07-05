@@ -372,13 +372,14 @@ public class RetiredColonyInfoScreen : KModalScreen
 
 	private IEnumerator ShowAchievementVeil()
 	{
+		float targetAlpha = 0.7f;
 		GameObject[] array = achievementVeils;
 		foreach (GameObject gameObject in array)
 		{
 			gameObject.SetActive(true);
 		}
 		float i = 0f;
-		if (i <= 0.7f)
+		if (i <= targetAlpha)
 		{
 			GameObject[] array2 = achievementVeils;
 			foreach (GameObject gameObject2 in array2)
@@ -387,6 +388,14 @@ public class RetiredColonyInfoScreen : KModalScreen
 			}
 			yield return (object)0;
 			/*Error: Unable to find new state assignment for yield return*/;
+		}
+		for (float num = 0f; num <= targetAlpha; num += Time.unscaledDeltaTime)
+		{
+			GameObject[] array3 = achievementVeils;
+			foreach (GameObject gameObject3 in array3)
+			{
+				gameObject3.GetComponent<Image>().color = new Color(0f, 0f, 0f, targetAlpha);
+			}
 		}
 	}
 

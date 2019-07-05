@@ -378,7 +378,6 @@ namespace ProcGen
 					}
 					else
 					{
-						DebugUtil.LogArgs("Adding a world trait:", text);
 						traits[text] = worldTrait;
 					}
 				}

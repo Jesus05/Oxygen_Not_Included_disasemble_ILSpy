@@ -45,7 +45,7 @@ namespace Database
 				new MinimumMorale(16),
 				new NumberOfDupes(12),
 				new MonumentBuilt()
-			}, COLONY_ACHIEVEMENTS.THRIVING.MESSAGE_TITLE, COLONY_ACHIEVEMENTS.THRIVING.MESSAGE_BODY, "VictoryStay", "Placeholder", delegate
+			}, COLONY_ACHIEVEMENTS.THRIVING.MESSAGE_TITLE, COLONY_ACHIEVEMENTS.THRIVING.MESSAGE_BODY, "Placeholder", "Placeholder_grey", delegate
 			{
 				IEnumerator enumerator2 = Components.MonumentParts.GetEnumerator();
 				try
@@ -72,7 +72,7 @@ namespace Database
 			ReachedDistantPlanet = Add(new ColonyAchievement("ReachedDistantPlanet", COLONY_ACHIEVEMENTS.DISTANT_PLANET_REACHED.NAME, COLONY_ACHIEVEMENTS.DISTANT_PLANET_REACHED.DESCRIPTION, true, new List<ColonyAchievementRequirement>
 			{
 				new ReachedSpace(Db.Get().SpaceDestinationTypes.Wormhole)
-			}, COLONY_ACHIEVEMENTS.DISTANT_PLANET_REACHED.MESSAGE_TITLE, COLONY_ACHIEVEMENTS.DISTANT_PLANET_REACHED.MESSAGE_BODY, "VictoryLeave", "Placeholder", delegate
+			}, COLONY_ACHIEVEMENTS.DISTANT_PLANET_REACHED.MESSAGE_TITLE, COLONY_ACHIEVEMENTS.DISTANT_PLANET_REACHED.MESSAGE_BODY, "Placeholder", "Placeholder_grey", delegate
 			{
 				foreach (Spacecraft item in SpacecraftManager.instance.GetSpacecraft())
 				{
@@ -86,34 +86,34 @@ namespace Database
 			SurvivedALongTime = Add(new ColonyAchievement("SurvivedALongTime", COLONY_ACHIEVEMENTS.SURVIVED.NAME, COLONY_ACHIEVEMENTS.SURVIVED.DESCRIPTION, false, new List<ColonyAchievementRequirement>
 			{
 				new CycleNumber(100)
-			}, "", "", null, "", null, ""));
+			}, "", "", "", "", null, ""));
 			ReachedSpace = Add(new ColonyAchievement("ReachedSpace", COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.REACH_SPACE_ANY_DESTINATION, COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.REACH_SPACE_ANY_DESTINATION_DESCRIPTION, false, new List<ColonyAchievementRequirement>
 			{
 				new ReachedSpace(null)
-			}, "", "", null, "", null, ""));
+			}, "", "", "", "", null, ""));
 			Clothe8Dupes = Add(new ColonyAchievement("Clothe8Dupes", COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.EQUIP_N_DUPES, string.Format(COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.EQUIP_N_DUPES_DESCRIPTION, 8), false, new List<ColonyAchievementRequirement>
 			{
 				new EquipNDupes(Db.Get().AssignableSlots.Outfit, 8)
-			}, "", "", null, "", null, ""));
+			}, "", "", "", "", null, ""));
 			Build4NatureReserves = Add(new ColonyAchievement("Build4NatureReserves", COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.BUILD_N_ROOM_TYPE, string.Format(COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.BUILD_N_ROOM_TYPE_DESCRIPTION, Db.Get().RoomTypes.NatureReserve.Name, 4), false, new List<ColonyAchievementRequirement>
 			{
 				new BuildNRoomTypes(Db.Get().RoomTypes.NatureReserve, 4)
-			}, "", "", null, "", null, ""));
+			}, "", "", "", "", null, ""));
 			Minimum20LivingDupes = Add(new ColonyAchievement("Minimum20LivingDupes", COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.TWENTY_DUPES, COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.TWENTY_DUPES_DESCRIPTION, false, new List<ColonyAchievementRequirement>
 			{
 				new NumberOfDupes(20)
-			}, "", "", null, "", null, ""));
+			}, "", "", "", "", null, ""));
 			TameAGassyMoo = Add(new ColonyAchievement("TameAGassyMoo", COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.TAME_GASSYMOO, COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.TAME_GASSYMOO_DESCRIPTION, false, new List<ColonyAchievementRequirement>
 			{
 				new CritterTypesWithTraits(new List<Tag>
 				{
 					"Moo"
 				}, GameTags.Creatures.Wild, false)
-			}, "", "", null, "", null, ""));
+			}, "", "", "", "", null, ""));
 			CoolBuildingTo6K = Add(new ColonyAchievement("CoolBuildingTo6K", COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.SIXKELVIN_BUILDING, COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.SIXKELVIN_BUILDING_DESCRIPTION, false, new List<ColonyAchievementRequirement>
 			{
 				new CoolBuildingToXKelvin(6)
-			}, "", "", null, "", null, ""));
+			}, "", "", "", "", null, ""));
 			EatkCalFromMeatByCycle100 = Add(new ColonyAchievement("EatkCalFromMeatByCycle100", COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.EAT_MEAT, COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.EAT_MEAT_DESCRIPTION, false, new List<ColonyAchievementRequirement>
 			{
 				new BeforeCycleNumber(100),
@@ -121,12 +121,12 @@ namespace Database
 				{
 					FOOD.FOOD_TYPES.MEAT.Id
 				})
-			}, "", "", null, "", null, ""));
+			}, "", "", "", "", null, ""));
 			NoFarmTilesAndKCal = Add(new ColonyAchievement("NoFarmTilesAndKCal", COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.NO_PLANTERBOX, COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.NO_PLANTERBOX_DESCRIPTION, false, new List<ColonyAchievementRequirement>
 			{
 				new NoFarmables(),
 				new EatXCalories(400000)
-			}, "", "", null, "", null, ""));
+			}, "", "", "", "", null, ""));
 			Generate240000kJClean = Add(new ColonyAchievement("Generate240000kJClean", COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.CLEAN_ENERGY, COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.CLEAN_ENERGY_DESCRIPTION, false, new List<ColonyAchievementRequirement>
 			{
 				new ProduceXEngeryWithoutUsingYList(240000f, new List<Tag>
@@ -136,15 +136,15 @@ namespace Database
 					"WoodGasGenerator",
 					"Generator"
 				})
-			}, "", "", null, "", null, ""));
+			}, "", "", "", "", null, ""));
 			BuildOutsideStartBiome = Add(new ColonyAchievement("BuildOutsideStartBiome", COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.BUILD_OUTSIDE_BIOME, COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.BUILD_OUTSIDE_BIOME_DESCRIPTION, false, new List<ColonyAchievementRequirement>
 			{
 				new BuildOutsideStartBiome()
-			}, "", "", null, "", null, ""));
+			}, "", "", "", "", null, ""));
 			Travel10000InTubes = Add(new ColonyAchievement("Travel10000InTubes", COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.TUBE_TRAVEL_DISTANCE, COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.TUBE_TRAVEL_DISTANCE_DESCRIPTION, false, new List<ColonyAchievementRequirement>
 			{
 				new TravelXUsingTransitTubes(NavType.Tube, 10000)
-			}, "", "", null, "", null, ""));
+			}, "", "", "", "", null, ""));
 		}
 	}
 }

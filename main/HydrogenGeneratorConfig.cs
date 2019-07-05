@@ -56,7 +56,7 @@ public class HydrogenGeneratorConfig : IBuildingConfig
 		conduitConsumer.forceAlwaysSatisfied = true;
 		conduitConsumer.wrongElementResult = ConduitConsumer.WrongElementResult.Dump;
 		EnergyGenerator energyGenerator = go.AddOrGet<EnergyGenerator>();
-		energyGenerator.formula = EnergyGenerator.CreateSimpleFormula(SimHashes.Hydrogen, 0.1f, 2f, SimHashes.Void, 0f, true);
+		energyGenerator.formula = EnergyGenerator.CreateSimpleFormula(SimHashes.Hydrogen.CreateTag(), 0.1f, 2f, SimHashes.Void, 0f, true, default(CellOffset));
 		energyGenerator.powerDistributionOrder = 8;
 		energyGenerator.ignoreBatteryRefillPercent = true;
 		energyGenerator.meterOffset = Meter.Offset.Behind;

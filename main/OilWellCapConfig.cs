@@ -66,7 +66,7 @@ public class OilWellCapConfig : IBuildingConfig
 		};
 		elementConverter.outputElements = new ElementConverter.OutputElement[1]
 		{
-			new ElementConverter.OutputElement(3.33333325f, SimHashes.CrudeOil, 363.15f, false, 2f, 1.5f, false, 0f, byte.MaxValue, 0)
+			new ElementConverter.OutputElement(3.33333325f, SimHashes.CrudeOil, 363.15f, false, false, 2f, 1.5f, 0f, byte.MaxValue, 0)
 		};
 		OilWellCap oilWellCap = go.AddOrGet<OilWellCap>();
 		oilWellCap.gasElement = SimHashes.Methane;

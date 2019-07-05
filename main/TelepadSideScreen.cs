@@ -22,6 +22,9 @@ public class TelepadSideScreen : SideScreenContent
 	private Image newAchievementsEarned;
 
 	[SerializeField]
+	private KButton openRolesScreenButton;
+
+	[SerializeField]
 	private GameObject victoryConditionsContainer;
 
 	[SerializeField]
@@ -45,6 +48,10 @@ public class TelepadSideScreen : SideScreenContent
 			newAchievementsEarned.gameObject.SetActive(false);
 			RetireColonyUtility.SaveColonySummaryData();
 			MainMenu.ActivateRetiredColoniesScreen(PauseScreen.Instance.transform.parent.gameObject, SaveGame.Instance.BaseName, null);
+		};
+		openRolesScreenButton.onClick += delegate
+		{
+			ManagementMenu.Instance.ToggleSkills();
 		};
 		BuildVictoryConditions();
 	}

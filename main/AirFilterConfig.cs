@@ -66,8 +66,8 @@ public class AirFilterConfig : IBuildingConfig
 		};
 		elementConverter.outputElements = new ElementConverter.OutputElement[2]
 		{
-			new ElementConverter.OutputElement(0.143333346f, SimHashes.Clay, 0f, true, 0f, 0.5f, false, 0.25f, byte.MaxValue, 0),
-			new ElementConverter.OutputElement(0.0899999961f, SimHashes.Oxygen, 0f, false, 0f, 0f, false, 0.75f, byte.MaxValue, 0)
+			new ElementConverter.OutputElement(0.143333346f, SimHashes.Clay, 0f, false, true, 0f, 0.5f, 0.25f, byte.MaxValue, 0),
+			new ElementConverter.OutputElement(0.0899999961f, SimHashes.Oxygen, 0f, false, false, 0f, 0f, 0.75f, byte.MaxValue, 0)
 		};
 		ManualDeliveryKG manualDeliveryKG = go.AddOrGet<ManualDeliveryKG>();
 		manualDeliveryKG.SetStorage(storage);

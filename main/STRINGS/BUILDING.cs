@@ -298,7 +298,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Damage: Overheating";
 
-				public static LocString TOOLTIP = "This building is taking damage and will meltdown if not cooled";
+				public static LocString TOOLTIP = "This building is taking damage and will break down if not cooled";
 			}
 
 			public class OVERLOADED
@@ -425,11 +425,11 @@ namespace STRINGS
 
 			public class MELTINGDOWN
 			{
-				public static LocString NAME = "Melting Down";
+				public static LocString NAME = "Breaking Down";
 
 				public static LocString TOOLTIP = "This building is collapsing";
 
-				public static LocString NOTIFICATION_NAME = "Building meltdown";
+				public static LocString NOTIFICATION_NAME = "Building break down";
 
 				public static LocString NOTIFICATION_TOOLTIP = "These buildings are collapsing:";
 			}
@@ -778,9 +778,9 @@ namespace STRINGS
 
 				public static LocString TOOLTIP = "These materials will be delivered once a Duplicant is available";
 
-				public static LocString LINE_ITEM_MASS = "• " + UI.PRE_KEYWORD + "{0}" + UI.PST_KEYWORD + ": <b>{1}</b>";
+				public static LocString LINE_ITEM_MASS = "• {0}: {1}";
 
-				public static LocString LINE_ITEM_UNITS = "• <b>{0}</b>";
+				public static LocString LINE_ITEM_UNITS = "• {0}";
 			}
 
 			public class WAITINGFORREPAIRMATERIALS
@@ -1397,7 +1397,7 @@ namespace STRINGS
 				{
 					public static LocString NAME = "Access Control Offline";
 
-					public static LocString TOOLTIP = "This door has granted Emergency " + UI.PRE_KEYWORD + "Access Permissions" + UI.PST_KEYWORD + UI.HORIZONTAL_BR_RULE + "All Duplicants are permitted to pass through it until power is restored";
+					public static LocString TOOLTIP = "This door has granted Emergency " + UI.PRE_KEYWORD + "Access Permissions" + UI.PST_KEYWORD + UI.HORIZONTAL_BR_RULE + "All Duplicants are permitted to pass through it until " + UI.PRE_KEYWORD + "Power" + UI.PST_KEYWORD + " is restored";
 				}
 			}
 
@@ -1419,7 +1419,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Colony Lacks {Skills} Skill";
 
-				public static LocString TOOLTIP = "Open the " + UI.PRE_KEYWORD + "Skills Panel" + UI.PST_KEYWORD + " " + UI.FormatAsHotkey("[L]") + " and assign a Duplicant the {Skills} " + UI.PRE_KEYWORD + "Skill" + UI.PST_KEYWORD + " to use this building";
+				public static LocString TOOLTIP = "Open the " + UI.FormatAsManagementMenu("Skills Panel") + " " + UI.FormatAsHotkey("[L]") + " and teach a Duplicant the {Skills} Skill to use this building";
 			}
 
 			public class SWITCHSTATUSACTIVE
@@ -1566,21 +1566,21 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Feedback Loop";
 
-				public static LocString TOOLTIP = "Feedback loops prevent automation grids from functioning\n\nFeedback loops occur when the Output of an automated building connects back to its own Input through the Automation grid";
+				public static LocString TOOLTIP = "Feedback loops prevent automation grids from functioning\n\nFeedback loops occur when the " + UI.PRE_KEYWORD + "Output" + UI.PST_KEYWORD + " of an automated building connects back to its own " + UI.PRE_KEYWORD + "Input" + UI.PST_KEYWORD + " through the Automation grid";
 			}
 
 			public class ENOUGH_COOLANT
 			{
 				public static LocString NAME = "Awaiting Coolant";
 
-				public static LocString TOOLTIP = "{1} of {0} must be present in storage to begin production";
+				public static LocString TOOLTIP = "<b>{1}</b> of {0} must be present in storage to begin production";
 			}
 
 			public class ENOUGH_FUEL
 			{
 				public static LocString NAME = "Awaiting Fuel";
 
-				public static LocString TOOLTIP = "{1} of {0} must be present in storage to begin production";
+				public static LocString TOOLTIP = "<b>{1}</b> of {0} must be present in storage to begin production";
 			}
 
 			public class LOGIC
@@ -1623,11 +1623,11 @@ namespace STRINGS
 			{
 				public class TOOLTIPS
 				{
-					public static LocString LOGIC_CONTROLLED_OPEN = "Automated Checkpoint is on Standby, preventing Duplicants from passing";
+					public static LocString LOGIC_CONTROLLED_OPEN = "Automated Checkpoint is on " + UI.FormatAsAutomationState("Standby", UI.AutomationState.Standby) + ", preventing Duplicants from passing";
 
-					public static LocString LOGIC_CONTROLLED_CLOSED = "Automated Checkpoint is Active, allowing Duplicants to pass";
+					public static LocString LOGIC_CONTROLLED_CLOSED = "Automated Checkpoint is " + UI.FormatAsAutomationState("Active", UI.AutomationState.Active) + ", allowing Duplicants to pass";
 
-					public static LocString LOGIC_CONTROLLED_DISCONNECTED = "This Checkpoint has not been connected to an automation grid";
+					public static LocString LOGIC_CONTROLLED_DISCONNECTED = "This Checkpoint has not been connected to an " + UI.PRE_KEYWORD + "Automation" + UI.PST_KEYWORD + " grid";
 				}
 
 				public static LocString LOGIC_CONTROLLED_OPEN = "Clearance: Permitted";
@@ -1641,77 +1641,77 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Awaiting Fuel: {0}";
 
-				public static LocString TOOLTIP = "This building requires {1} of {0} to operate";
+				public static LocString TOOLTIP = "This building requires <b>{1}</b> of {0} to operate";
 			}
 
 			public class NOLOGICWIRECONNECTED
 			{
 				public static LocString NAME = "No Automation Wire Connected";
 
-				public static LocString TOOLTIP = "This building has not been connected to an automation grid";
+				public static LocString TOOLTIP = "This building has not been connected to an " + UI.PRE_KEYWORD + "Automation" + UI.PST_KEYWORD + " grid";
 			}
 
 			public class NOTUBECONNECTED
 			{
 				public static LocString NAME = "No Tube Connected";
 
-				public static LocString TOOLTIP = "The first section of tube extending from an Access must connect directly upward";
+				public static LocString TOOLTIP = "The first section of tube extending from a " + BUILDINGS.PREFABS.TRAVELTUBEENTRANCE.NAME + " must connect directly upward";
 			}
 
 			public class NOTUBEEXITS
 			{
 				public static LocString NAME = "No Landing Available";
 
-				public static LocString TOOLTIP = "Duplicants can only exit a tube when there is somewhere for them to land within two tiles";
+				public static LocString TOOLTIP = "Duplicants can only exit a tube when there is somewhere for them to land within <b>two tiles</b>";
 			}
 
 			public class STOREDCHARGE
 			{
 				public static LocString NAME = "Charge Available: {0}/{1}";
 
-				public static LocString TOOLTIP = "This building has {0} of stored energy\n\nIt consumes {2} per use";
+				public static LocString TOOLTIP = "This building has <b>{0}</b> of stored " + UI.PRE_KEYWORD + "Power" + UI.PST_KEYWORD + "\n\nIt consumes " + UI.FormatAsNegativeRate("{2}") + " per use";
 			}
 
 			public class NEEDEGG
 			{
 				public static LocString NAME = "No Egg Selected";
 
-				public static LocString TOOLTIP = "Collect eggs from critters to incubate";
+				public static LocString TOOLTIP = "Collect " + UI.PRE_KEYWORD + "Eggs" + UI.PST_KEYWORD + " from " + UI.PRE_KEYWORD + "Critters" + UI.PST_KEYWORD + " to incubate";
 			}
 
 			public class NOAVAILABLEEGG
 			{
 				public static LocString NAME = "No Egg Available";
 
-				public static LocString TOOLTIP = "The selected egg is not currently available";
+				public static LocString TOOLTIP = "The selected " + UI.PRE_KEYWORD + "Egg" + UI.PST_KEYWORD + " is not currently available";
 			}
 
 			public class AWAITINGEGGDELIVERY
 			{
 				public static LocString NAME = "Awaiting Delivery";
 
-				public static LocString TOOLTIP = "Awaiting delivery of selected egg";
+				public static LocString TOOLTIP = "Awaiting delivery of selected " + UI.PRE_KEYWORD + "Egg" + UI.PST_KEYWORD;
 			}
 
 			public class INCUBATORPROGRESS
 			{
 				public static LocString NAME = "Incubating: {Percent}";
 
-				public static LocString TOOLTIP = "This egg incubating cozily" + UI.HORIZONTAL_BR_RULE + "It will hatch when Incubation reaches 100%";
+				public static LocString TOOLTIP = "This " + UI.PRE_KEYWORD + "Egg" + UI.PST_KEYWORD + " incubating cozily" + UI.HORIZONTAL_BR_RULE + "It will hatch when " + UI.PRE_KEYWORD + "Incubation" + UI.PST_KEYWORD + " reaches <b>100%</b>";
 			}
 
 			public class DETECTORQUALITY
 			{
 				public static LocString NAME = "Scan Quality: {Quality}";
 
-				public static LocString TOOLTIP = "This scanner dish is currently scanning at {Quality} effectiveness\n\nDecreased scan quality may be due to:\n    • Interference from nearby heavy machinery\n    • Rock or tile obstructing the dish's line of sight on space";
+				public static LocString TOOLTIP = "This scanner dish is currently scanning at <b>{Quality}</b> effectiveness\n\nDecreased scan quality may be due to:\n    • Interference from nearby heavy machinery\n    • Rock or tile obstructing the dish's line of sight on space";
 			}
 
 			public class NETWORKQUALITY
 			{
 				public static LocString NAME = "Scan Network Quality: {TotalQuality}";
 
-				public static LocString TOOLTIP = "Your scanner network is scanning at {TotalQuality} effectiveness\n\nIt will detect incoming objects {WorstTime} to {BestTime} before they arrive\n\nBuild multiple detectors and ensure they're each scanning effectively for the best detection results";
+				public static LocString TOOLTIP = "This scanner network is scanning at <b>{TotalQuality}</b> effectiveness\n\nIt will detect incoming objects <b>{WorstTime}</b> to <b>{BestTime}</b> before they arrive\n\nBuild multiple " + BUILDINGS.PREFABS.COMETDETECTOR.NAME + "s and ensure they're each scanning effectively for the best detection results";
 			}
 
 			public class DETECTORSCANNING
@@ -1732,14 +1732,14 @@ namespace STRINGS
 			{
 				public static LocString NAME = "No Line of Sight";
 
-				public static LocString TOOLTIP = "This building has no view of space\n\nEnsure an unblocked view of the sky is available to collect research data\nVisibility: {VISIBILITY}\nScan Radius: {RADIUS} cells";
+				public static LocString TOOLTIP = "This building has no view of space\n\nEnsure an unblocked view of the sky is available to collect " + UI.PRE_KEYWORD + "Starmap" + UI.PST_KEYWORD + " data\n    • Visibility: <b>{VISIBILITY}</b>\n    • Scan Radius: <b>{RADIUS}</b> cells";
 			}
 
 			public class SPACE_VISIBILITY_REDUCED
 			{
 				public static LocString NAME = "Reduced Visibility";
 
-				public static LocString TOOLTIP = "This building has an inadequate or obscured view of space\n\nEnsure an unblocked view of the sky is available to collect research data\nVisibility: {VISIBILITY}\nScan Radius: {RADIUS} cells";
+				public static LocString TOOLTIP = "This building has an inadequate or obscured view of space\n\nEnsure an unblocked view of the sky is available to collect " + UI.PRE_KEYWORD + "Starmap" + UI.PST_KEYWORD + " data\n    • Visibility: <b>{VISIBILITY}</b>\n    • Scan Radius: <b>{RADIUS}</b> cells";
 			}
 
 			public class PATH_NOT_CLEAR
@@ -1755,11 +1755,11 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Top Priority";
 
-				public static LocString TOOLTIP = "This errand has been set to Top Priority" + UI.HORIZONTAL_BR_RULE + "The colony will be in Yellow Alert until this task is completed";
+				public static LocString TOOLTIP = "This errand has been set to " + UI.PRE_KEYWORD + "Top Priority" + UI.PST_KEYWORD + UI.HORIZONTAL_BR_RULE + "The colony will be in " + UI.PRE_KEYWORD + "Yellow Alert" + UI.PST_KEYWORD + " until this task is completed";
 
 				public static LocString NOTIFICATION_NAME = "Yellow Alert";
 
-				public static LocString NOTIFICATION_TOOLTIP = "The following errands have been set to Top Priority:";
+				public static LocString NOTIFICATION_TOOLTIP = "The following errands have been set to " + UI.PRE_KEYWORD + "Top Priority" + UI.PST_KEYWORD + ":";
 			}
 		}
 

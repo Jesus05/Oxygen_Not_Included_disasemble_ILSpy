@@ -14,9 +14,9 @@ namespace Database
 
 		public string messageBody;
 
-		public string comicDataName;
+		public string shortVideoName;
 
-		public string videoDataName;
+		public string loopVideoName;
 
 		public List<ColonyAchievementRequirement> requirementChecklist = new List<ColonyAchievementRequirement>();
 
@@ -28,7 +28,7 @@ namespace Database
 			private set;
 		}
 
-		public ColonyAchievement(string Id, string Name, string description, bool isVictoryCondition, List<ColonyAchievementRequirement> requirementChecklist, string messageTitle = "", string messageBody = "", string comicDataName = null, string videoDataName = "", Func<GameObject> GetSuccessTargetEntity = null, string victorySnapshot = "")
+		public ColonyAchievement(string Id, string Name, string description, bool isVictoryCondition, List<ColonyAchievementRequirement> requirementChecklist, string messageTitle = "", string messageBody = "", string videoDataName = "", string victoryLoopVideo = "", Func<GameObject> GetSuccessTargetEntity = null, string victorySnapshot = "")
 			: base(Id, Name)
 		{
 			base.Id = Id;
@@ -38,8 +38,8 @@ namespace Database
 			this.requirementChecklist = requirementChecklist;
 			this.messageTitle = messageTitle;
 			this.messageBody = messageBody;
-			this.comicDataName = comicDataName;
-			this.videoDataName = videoDataName;
+			shortVideoName = videoDataName;
+			loopVideoName = victoryLoopVideo;
 			this.GetSuccessTargetEntity = GetSuccessTargetEntity;
 			victoryNISSnapshot = ((!string.IsNullOrEmpty(victorySnapshot)) ? victorySnapshot : AudioMixerSnapshots.Get().VictoryNISGenericSnapshot);
 		}

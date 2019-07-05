@@ -90,7 +90,6 @@ public abstract class ConduitThresholdSensor : ConduitSensor
 	{
 		int cell = Grid.PosToCell(this);
 		ConduitFlow flowManager = Conduit.GetFlowManager(conduitType);
-		ConduitFlow.ConduitContents contents = flowManager.GetContents(cell);
-		return contents.mass;
+		return flowManager.GetContents(cell).mass;
 	}
 }

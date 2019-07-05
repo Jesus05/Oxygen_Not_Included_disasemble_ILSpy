@@ -74,8 +74,8 @@ public class AlgaeDistilleryConfig : IBuildingConfig
 		};
 		elementConverter.outputElements = new ElementConverter.OutputElement[2]
 		{
-			new ElementConverter.OutputElement(0.2f, SimHashes.Algae, 303.15f, true, 0f, 1f, false, 1f, byte.MaxValue, 0),
-			new ElementConverter.OutputElement(0.400000036f, SimHashes.DirtyWater, 303.15f, true, 0f, 0.5f, false, 1f, byte.MaxValue, 0)
+			new ElementConverter.OutputElement(0.2f, SimHashes.Algae, 303.15f, false, true, 0f, 1f, 1f, byte.MaxValue, 0),
+			new ElementConverter.OutputElement(0.400000036f, SimHashes.DirtyWater, 303.15f, false, true, 0f, 0.5f, 1f, byte.MaxValue, 0)
 		};
 		Prioritizable.AddRef(go);
 	}

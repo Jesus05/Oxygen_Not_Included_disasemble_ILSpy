@@ -3,6 +3,7 @@ using STRINGS;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 public static class CodexCache
@@ -14,6 +15,12 @@ public static class CodexCache
 	private static Dictionary<string, List<string>> unlockedEntryLookup;
 
 	private static List<Tuple<string, Type>> widgetTagMappings;
+
+	[CompilerGenerated]
+	private static YamlIO.ErrorHandler _003C_003Ef__mg_0024cache0;
+
+	[CompilerGenerated]
+	private static YamlIO.ErrorHandler _003C_003Ef__mg_0024cache1;
 
 	public static string FormatLinkID(string linkID)
 	{
@@ -366,6 +373,12 @@ public static class CodexCache
 		return entries[templatePath];
 	}
 
+	private static void YamlParseErrorCB(YamlIO.Error error, bool force_log_as_warning)
+	{
+		string message = $"{error.severity} parse error in {error.file.full_path}\n{error.message}";
+		throw new Exception(message, error.inner_exception);
+	}
+
 	public static List<CodexEntry> CollectEntries(string folder)
 	{
 		List<CodexEntry> list = new List<CodexEntry>();
@@ -381,13 +394,20 @@ public static class CodexCache
 		}
 		string category = folder.ToUpper();
 		string[] array2 = array;
-		foreach (string filename in array2)
+		foreach (string text in array2)
 		{
-			CodexEntry codexEntry = YamlIO.LoadFile<CodexEntry>(filename, null, widgetTagMappings);
-			if (codexEntry != null)
+			try
 			{
-				codexEntry.category = category;
-				list.Add(codexEntry);
+				CodexEntry codexEntry = YamlIO.LoadFile<CodexEntry>(text, YamlParseErrorCB, widgetTagMappings);
+				if (codexEntry != null)
+				{
+					codexEntry.category = category;
+					list.Add(codexEntry);
+				}
+			}
+			catch (Exception ex)
+			{
+				DebugUtil.DevLogErrorFormat("CodexCache.CollectEntries failed to load [{0}]: {1}", text, ex.ToString());
 			}
 		}
 		list.Sort((CodexEntry x, CodexEntry y) => x.title.CompareTo(y.title));
@@ -408,12 +428,19 @@ public static class CodexCache
 			Debug.LogWarning(obj);
 		}
 		string[] array2 = array;
-		foreach (string filename in array2)
+		foreach (string text in array2)
 		{
-			SubEntry subEntry = YamlIO.LoadFile<SubEntry>(filename, null, widgetTagMappings);
-			if (subEntry != null)
+			try
 			{
-				list.Add(subEntry);
+				SubEntry subEntry = YamlIO.LoadFile<SubEntry>(text, YamlParseErrorCB, widgetTagMappings);
+				if (subEntry != null)
+				{
+					list.Add(subEntry);
+				}
+			}
+			catch (Exception ex)
+			{
+				DebugUtil.DevLogErrorFormat("CodexCache.CollectSubEntries failed to load [{0}]: {1}", text, ex.ToString());
 			}
 		}
 		list.Sort((SubEntry x, SubEntry y) => x.title.CompareTo(y.title));

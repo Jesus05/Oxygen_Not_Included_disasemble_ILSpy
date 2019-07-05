@@ -400,7 +400,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Micronutrient Fertilizer";
 
-				public static LocString DESC = "Specialized " + UI.FormatAsLink("Fertilizer", "FERTILIZER") + " mixed by a Duplicant with farming skills.\n\nIncreases the growth rate of one " + UI.FormatAsLink("Plant", "PLANTS") + ".";
+				public static LocString DESC = "Specialized " + UI.FormatAsLink("Fertilizer", "FERTILIZER") + " mixed by a Duplicant with farming skills.\n\nIncreases the " + UI.PRE_KEYWORD + "Growth Rate" + UI.PST_KEYWORD + " of one " + UI.FormatAsLink("Plant", "PLANTS") + ".";
 			}
 
 			public class MACHINE_PARTS

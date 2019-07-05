@@ -106,8 +106,7 @@ public class LiquidCooledRefinery : ComplexFabricator
 	private void OnConduitUpdate(float dt)
 	{
 		ConduitFlow liquidConduitFlow = Game.Instance.liquidConduitFlow;
-		ConduitFlow.ConduitContents contents = liquidConduitFlow.GetContents(outputCell);
-		bool flag = contents.mass > 0f;
+		bool flag = liquidConduitFlow.GetContents(outputCell).mass > 0f;
 		smi.sm.outputBlocked.Set(flag, smi);
 		operational.SetFlag(coolantOutputPipeEmpty, !flag);
 	}

@@ -101,6 +101,13 @@ public class GermExposureMonitor : GameStateMachine<GermExposureMonitor, GermExp
 		public override void StopSM(string reason)
 		{
 			GameClock.Instance.Unsubscribe(-722330267, OnNightTime);
+			ExposureType[] tYPES = GERM_EXPOSURE.TYPES;
+			foreach (ExposureType exposureType in tYPES)
+			{
+				statusItemHandles.TryGetValue(exposureType.germ_id, out Guid value);
+				KSelectable component = GetComponent<KSelectable>();
+				value = component.RemoveStatusItem(value, false);
+			}
 			base.StopSM(reason);
 		}
 

@@ -129,6 +129,8 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms, ISim1000ms
 
 	private bool HasWorkingOrder => workingOrderIdx > -1;
 
+	public List<FetchList2> DebugFetchLists => fetchListList;
+
 	[OnDeserialized]
 	protected virtual void OnDeserializedMethod()
 	{
@@ -271,20 +273,26 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms, ISim1000ms
 
 	public void CompleteWorkingOrder()
 	{
-		Debug.Assert(HasWorkingOrder, "machineOrderIdx not set");
-		ComplexRecipe recipe = recipe_list[workingOrderIdx];
-		SpawnOrderProduct(recipe);
-		float num = buildStorage.MassStored();
-		if (num != 0f)
+		if (!HasWorkingOrder)
 		{
-			Debug.LogWarningFormat(base.gameObject, "{0} build storage contains mass {1} after order completion. Dropping...", base.gameObject, num);
-			buildStorage.DropAll(false, false, default(Vector3), true);
+			Debug.LogWarning("CompleteWorkingOrder called with no working order.", base.gameObject);
 		}
-		DecrementRecipeQueueCountInternal(recipe, true);
-		workingOrderIdx = -1;
-		operational.SetActive(false, false);
-		ShowProgressBar(false);
-		UpdateChore();
+		else
+		{
+			ComplexRecipe recipe = recipe_list[workingOrderIdx];
+			SpawnOrderProduct(recipe);
+			float num = buildStorage.MassStored();
+			if (num != 0f)
+			{
+				Debug.LogWarningFormat(base.gameObject, "{0} build storage contains mass {1} after order completion. Dropping...", base.gameObject, num);
+				buildStorage.DropAll(false, false, default(Vector3), true);
+			}
+			DecrementRecipeQueueCountInternal(recipe, true);
+			workingOrderIdx = -1;
+			operational.SetActive(false, false);
+			ShowProgressBar(false);
+			UpdateChore();
+		}
 	}
 
 	private void ValidateWorkingOrder()

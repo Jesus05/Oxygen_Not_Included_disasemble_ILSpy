@@ -95,7 +95,13 @@ public class Geyser : StateMachineComponent<Geyser.StatesInstance>, IGameObjectE
 		}
 		emitter.emitRange = 2;
 		emitter.maxPressure = configuration.GetMaxPressure();
-		emitter.outputElement = new ElementConverter.OutputElement(configuration.GetEmitRate(), configuration.GetElement(), configuration.GetTemperature(), outputElementOffsetx: (float)outputOffset.x, addedDiseaseCount: Mathf.RoundToInt((float)configuration.GetDiseaseCount() * configuration.GetEmitRate()), storeOutput: false, outputElementOffsety: (float)outputOffset.y, apply_input_temperature: false, diseaseWeight: 1f, addedDiseaseIdx: configuration.GetDiseaseIdx());
+		ElementEmitter elementEmitter = emitter;
+		float emitRate = configuration.GetEmitRate();
+		SimHashes element = configuration.GetElement();
+		float temperature = configuration.GetTemperature();
+		float outputElementOffsetx = (float)outputOffset.x;
+		float outputElementOffsety = (float)outputOffset.y;
+		elementEmitter.outputElement = new ElementConverter.OutputElement(emitRate, element, temperature, false, false, outputElementOffsetx, outputElementOffsety, 1f, configuration.GetDiseaseIdx(), Mathf.RoundToInt((float)configuration.GetDiseaseCount() * configuration.GetEmitRate()));
 		base.smi.StartSM();
 		Workable component = GetComponent<Studyable>();
 		if ((Object)component != (Object)null)

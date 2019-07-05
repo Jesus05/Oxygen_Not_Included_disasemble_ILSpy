@@ -87,8 +87,11 @@ public class World : KMonoBehaviour
 				OnSolidChanged(cellIdx);
 			}
 		}
-		SaveGame.Instance.entombedItemManager.OnSolidChanged(changedCells);
-		GameScenePartitioner.Instance.TriggerEvent(changedCells, GameScenePartitioner.Instance.solidChangedLayer, null);
+		if (changedCells.Count != 0)
+		{
+			SaveGame.Instance.entombedItemManager.OnSolidChanged(changedCells);
+			GameScenePartitioner.Instance.TriggerEvent(changedCells, GameScenePartitioner.Instance.solidChangedLayer, null);
+		}
 		int count2 = callbackInfo.Count;
 		for (int j = 0; j < count2; j++)
 		{

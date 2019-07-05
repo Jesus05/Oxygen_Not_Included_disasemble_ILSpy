@@ -88,7 +88,7 @@ public class OxyliteRefineryConfig : IBuildingConfig
 		};
 		elementConverter.outputElements = new ElementConverter.OutputElement[1]
 		{
-			new ElementConverter.OutputElement(0.6f, SimHashes.OxyRock, 303.15f, true, 0f, 0.5f, false, 1f, byte.MaxValue, 0)
+			new ElementConverter.OutputElement(0.6f, SimHashes.OxyRock, 303.15f, false, true, 0f, 0.5f, 1f, byte.MaxValue, 0)
 		};
 		Prioritizable.AddRef(go);
 	}

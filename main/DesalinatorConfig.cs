@@ -62,8 +62,8 @@ public class DesalinatorConfig : IBuildingConfig
 		};
 		elementConverter.outputElements = new ElementConverter.OutputElement[2]
 		{
-			new ElementConverter.OutputElement(4.65f, SimHashes.Water, 313.15f, true, 0f, 0.5f, false, 0.75f, byte.MaxValue, 0),
-			new ElementConverter.OutputElement(0.35f, SimHashes.Salt, 313.15f, true, 0f, 0.5f, false, 0.25f, byte.MaxValue, 0)
+			new ElementConverter.OutputElement(4.65f, SimHashes.Water, 313.15f, false, true, 0f, 0.5f, 0.75f, byte.MaxValue, 0),
+			new ElementConverter.OutputElement(0.35f, SimHashes.Salt, 313.15f, false, true, 0f, 0.5f, 0.25f, byte.MaxValue, 0)
 		};
 		ElementConverter elementConverter2 = go.AddComponent<ElementConverter>();
 		elementConverter2.consumedElements = new ElementConverter.ConsumedElement[1]
@@ -72,8 +72,8 @@ public class DesalinatorConfig : IBuildingConfig
 		};
 		elementConverter2.outputElements = new ElementConverter.OutputElement[2]
 		{
-			new ElementConverter.OutputElement(3.5f, SimHashes.Water, 313.15f, true, 0f, 0.5f, false, 0.75f, byte.MaxValue, 0),
-			new ElementConverter.OutputElement(1.5f, SimHashes.Salt, 313.15f, true, 0f, 0.5f, false, 0.25f, byte.MaxValue, 0)
+			new ElementConverter.OutputElement(3.5f, SimHashes.Water, 313.15f, false, true, 0f, 0.5f, 0.75f, byte.MaxValue, 0),
+			new ElementConverter.OutputElement(1.5f, SimHashes.Salt, 313.15f, false, true, 0f, 0.5f, 0.25f, byte.MaxValue, 0)
 		};
 		KAnimFile[] overrideAnims = new KAnimFile[1]
 		{

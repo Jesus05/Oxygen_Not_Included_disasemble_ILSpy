@@ -705,9 +705,9 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Tutorial: Building Temperature";
 
-				public static LocString TOOLTIP = "Notes on preventing meltdowns";
+				public static LocString TOOLTIP = "Notes on preventing building from breaking";
 
-				public static LocString MESSAGEBODY = "When constructing buildings, I should always take note of their " + UI.FormatAsLink("Overheat Temperature", "HEAT") + " and plan their locations accordingly. Maintaining low ambient temperatures and good ventilation in the colony will also help keep building temperatures down.\n\nIf I allow buildings to exceed their Overheat Temperature they will begin to take damage, and if left unattended, they will meltdown be unusable until repaired.";
+				public static LocString MESSAGEBODY = "When constructing buildings, I should always take note of their " + UI.FormatAsLink("Overheat Temperature", "HEAT") + " and plan their locations accordingly. Maintaining low ambient temperatures and good ventilation in the colony will also help keep building temperatures down.\n\nIf I allow buildings to exceed their Overheat Temperature they will begin to take damage, and if left unattended, they will break down and be unusable until repaired.";
 			}
 
 			public class LOTS_OF_GERMS

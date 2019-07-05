@@ -42,7 +42,7 @@ namespace STRINGS
 
 			public static LocString CLEAN_ENERGY = "Sustainably Sustaining";
 
-			public static LocString CLEAN_ENERGY_DESCRIPTION = "Generate 240,000kJ of power without using coal, methane, petrol or gas.";
+			public static LocString CLEAN_ENERGY_DESCRIPTION = "Generate 240,000kJ of power without using coal, methane, petrol or wood generators.";
 
 			public static LocString BUILD_OUTSIDE_BIOME = "Outdoor Renovations";
 
@@ -144,24 +144,24 @@ namespace STRINGS
 			{
 				public static LocString BUILT_MONUMENT = "Build a Great Monument";
 
-				public static LocString BUILT_MONUMENT_DESCRIPTION = "Build all three sections of a Great Monument to mark the colony as your home";
+				public static LocString BUILT_MONUMENT_DESCRIPTION = "Build all three sections of a " + UI.PRE_KEYWORD + "Great Monument" + UI.PST_KEYWORD + " to mark the colony as your home";
 
 				public static LocString MINIMUM_DUPLICANTS = "Print {0} Duplicants";
 
-				public static LocString MINIMUM_DUPLICANTS_DESCRIPTION = "The colony must have {0} or more living Duplicants";
+				public static LocString MINIMUM_DUPLICANTS_DESCRIPTION = "The colony must have <b>{0}</b> or more living Duplicants";
 
 				public static LocString MINIMUM_MORALE = "Maintain {0} Morale";
 
-				public static LocString MINIMUM_MORALE_DESCRIPTION = "All Duplicants must have a Morale Rating of 16 or higher";
+				public static LocString MINIMUM_MORALE_DESCRIPTION = "All Duplicants must have " + UI.PRE_KEYWORD + "Morale" + UI.PST_KEYWORD + " of 16 or higher";
 
 				public static LocString MINIMUM_CYCLE = "Survive {0} Cycles";
 
-				public static LocString MINIMUM_CYCLE_DESCRIPTION = "The colony must survive a minimum of {0} cycles";
+				public static LocString MINIMUM_CYCLE_DESCRIPTION = "The colony must survive a minimum of <b>{0}</b> cycles";
 			}
 
 			public static LocString NAME = "COLONIZE ASTEROID";
 
-			public static LocString DESCRIPTION = "The Duplicants have overcome their unfortunate circumstances and carved out a life for themselves among the stars";
+			public static LocString DESCRIPTION = "";
 
 			public static LocString MESSAGE_TITLE = "THIS IS OUR HOME";
 
@@ -175,8 +175,6 @@ namespace STRINGS
 				public static LocString FIRST = "Though the Earth in this universe is gone, I hold out hope that others may still exist out there, tucked away in other timelines and dimensions.";
 
 				public static LocString SECOND = "My Duplicant travelled through the Temporal Tear carrying that hope on their shoulders... Perhaps one day they'll find a place to call home, and begin a thriving colony all their own.";
-
-				public static LocString THIRD = "Nothing would make me happier.";
 			}
 
 			public class REQUIREMENTS
@@ -188,7 +186,7 @@ namespace STRINGS
 
 			public static LocString NAME = "ESCAPE ASTEROID";
 
-			public static LocString DESCRIPTION = "One brave Duplicant was sent through the Temporal Tear to settle a new colony of their own";
+			public static LocString DESCRIPTION = "";
 
 			public static LocString MESSAGE_TITLE = "A COLONY'S HOPE";
 

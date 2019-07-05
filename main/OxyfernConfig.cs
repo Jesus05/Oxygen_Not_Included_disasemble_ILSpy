@@ -98,7 +98,7 @@ public class OxyfernConfig : IEntityConfig
 		};
 		elementConverter.outputElements = new ElementConverter.OutputElement[1]
 		{
-			new ElementConverter.OutputElement(0.0312500037f, SimHashes.Oxygen, 0f, false, 0f, 1f, true, 0.75f, byte.MaxValue, 0)
+			new ElementConverter.OutputElement(0.0312500037f, SimHashes.Oxygen, 0f, true, false, 0f, 1f, 0.75f, byte.MaxValue, 0)
 		};
 		GameObject plant = gameObject;
 		SeedProducer.ProductionType productionType = SeedProducer.ProductionType.Hidden;

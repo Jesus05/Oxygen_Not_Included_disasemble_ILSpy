@@ -12,7 +12,7 @@ namespace STRINGS
 
 			public static LocString NO_RESEARCHER_SKILL = "No Researchers assigned";
 
-			public static LocString NO_RESEARCHER_SKILL_TOOLTIP = "The selected research focus requires an advanced type of research to complete\n\nAssign a Duplicant to the Research Assistant job using the " + UI.PRE_KEYWORD + "Jobs Panel" + UI.PST_KEYWORD + " " + UI.FormatAsHotkey("[J]") + " to enable this errand";
+			public static LocString NO_RESEARCHER_SKILL_TOOLTIP = "The selected research focus requires an advanced type of " + UI.PRE_KEYWORD + "Research" + UI.PST_KEYWORD + " to complete\n\nAssign a Duplicant to the Research Assistant job using the " + UI.FormatAsManagementMenu("Jobs Panel") + " " + UI.FormatAsHotkey("[J]") + " to enable this errand";
 
 			public static LocString MISSING_RESEARCH_STATION = "Missing Research Station";
 
@@ -55,42 +55,42 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Automation Overlay";
 
-				public static LocString DESC = "Enables access to the Automation Overlay.";
+				public static LocString DESC = "Enables access to the " + UI.FormatAsOverlay("Automation Overlay") + ".";
 			}
 
 			public class SUITS_OVERLAY
 			{
 				public static LocString NAME = "Exosuit Overlay";
 
-				public static LocString DESC = "Enables access to the Exosuit Overlay.";
+				public static LocString DESC = "Enables access to the " + UI.FormatAsOverlay("Exosuit Overlay") + ".";
 			}
 
 			public class JET_SUIT
 			{
 				public static LocString NAME = "Jet Suit Pattern";
 
-				public static LocString DESC = "Enables fabrication of Jet Suits at the Exosuit Forge.";
+				public static LocString DESC = "Enables fabrication of " + UI.PRE_KEYWORD + "Jet Suits" + UI.PST_KEYWORD + " at the " + BUILDINGS.PREFABS.SUITFABRICATOR.NAME;
 			}
 
 			public class BETA_RESEARCH_POINT
 			{
 				public static LocString NAME = "Advanced Research Capability";
 
-				public static LocString DESC = "Allows Advanced Research Points to be accumulated, unlocking higher technology tiers.";
+				public static LocString DESC = "Allows " + UI.PRE_KEYWORD + "Advanced Research" + UI.PST_KEYWORD + " points to be accumulated, unlocking higher technology tiers.";
 			}
 
 			public class GAMMA_RESEARCH_POINT
 			{
 				public static LocString NAME = "Interstellar Research Capability";
 
-				public static LocString DESC = "Allows Interstellar Research Points to be accumulated, unlocking higher technology tiers.";
+				public static LocString DESC = "Allows " + UI.PRE_KEYWORD + "Interstellar Research" + UI.PST_KEYWORD + " points to be accumulated, unlocking higher technology tiers.";
 			}
 
 			public class CONVEYOR_OVERLAY
 			{
 				public static LocString NAME = "Conveyor Overlay";
 
-				public static LocString DESC = "Enables access to the Conveyor Overlay.";
+				public static LocString DESC = "Enables access to the " + UI.FormatAsOverlay("Conveyor Overlay") + ".";
 			}
 		}
 

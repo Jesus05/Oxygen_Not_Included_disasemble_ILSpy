@@ -72,34 +72,34 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Calories";
 
-				public static LocString TOOLTIP = "This {1} can burn {0} before starving";
+				public static LocString TOOLTIP = "This {1} can burn <b>{0}</b> before starving";
 			}
 
 			public class TEMPERATURE
 			{
 				public static LocString NAME = "Body Temperature";
 
-				public static LocString TOOLTIP = "A healthy Duplicant's " + UI.PRE_KEYWORD + "Body Temperature" + UI.PST_KEYWORD + " is {1}";
+				public static LocString TOOLTIP = "A healthy Duplicant's " + UI.PRE_KEYWORD + "Body Temperature" + UI.PST_KEYWORD + " is <b>{1}</b>";
 			}
 
 			public class EXTERNALTEMPERATURE
 			{
 				public static LocString NAME = "External Temperature";
 
-				public static LocString TOOLTIP = "This Duplicant's environment is {0}";
+				public static LocString TOOLTIP = "This Duplicant's environment is <b>{0}</b>";
 			}
 
 			public class DECOR
 			{
 				public static LocString NAME = "Decor";
 
-				public static LocString TOOLTIP = "Duplicants become stressed in areas with " + UI.PRE_KEYWORD + "Decor" + UI.PST_KEYWORD + " lower than their expectations\nOpen the <b>Decor Overlay</b> <color=#F44A47><b>[F8]</b></color> to view current " + UI.PRE_KEYWORD + "Decor" + UI.PST_KEYWORD + " values";
+				public static LocString TOOLTIP = "Duplicants become stressed in areas with " + UI.PRE_KEYWORD + "Decor" + UI.PST_KEYWORD + " lower than their expectations\nOpen the " + UI.FormatAsOverlay("Decor Overlay") + " " + UI.FormatAsHotkey("[F8]") + " to view current " + UI.PRE_KEYWORD + "Decor" + UI.PST_KEYWORD + " values";
 
-				public static LocString TOOLTIP_CURRENT = "\n\nCurrent Environmental Decor: {0}";
+				public static LocString TOOLTIP_CURRENT = "\n\nCurrent Environmental Decor: <b>{0}</b>";
 
-				public static LocString TOOLTIP_AVERAGE_TODAY = "\nAverage Decor This Cycle: {0}";
+				public static LocString TOOLTIP_AVERAGE_TODAY = "\nAverage Decor This Cycle: <b>{0}</b>";
 
-				public static LocString TOOLTIP_AVERAGE_YESTERDAY = "\nAverage Decor Last Cycle: {0}";
+				public static LocString TOOLTIP_AVERAGE_YESTERDAY = "\nAverage Decor Last Cycle: <b>{0}</b>";
 			}
 
 			public class STRESS
@@ -281,7 +281,7 @@ namespace STRINGS
 
 				public static LocString STATUS = "Going to disinfect";
 
-				public static LocString TOOLTIP = "Buildings can be disinfected to remove contagious Germs from their surface";
+				public static LocString TOOLTIP = "Buildings can be disinfected to remove contagious " + UI.PRE_KEYWORD + "Germs" + UI.PST_KEYWORD + " from their surface";
 			}
 
 			public class EQUIPPINGSUIT
@@ -335,7 +335,7 @@ namespace STRINGS
 
 				public static LocString STATUS = "Downtime: Going to use toilet";
 
-				public static LocString TOOLTIP = "This Duplicant has scheduled Downtime and is using their break to go to the toilet\n\nDuplicants have to use the toilet at least once per day";
+				public static LocString TOOLTIP = "This Duplicant has scheduled " + UI.PRE_KEYWORD + "Downtime" + UI.PST_KEYWORD + " and is using their break to go to the toilet\n\nDuplicants have to use the toilet at least once per day";
 			}
 
 			public class STRESSVOMIT
@@ -344,7 +344,7 @@ namespace STRINGS
 
 				public static LocString STATUS = "Stress vomiting";
 
-				public static LocString TOOLTIP = "Some people deal with stress better than others";
+				public static LocString TOOLTIP = "Some people deal with " + UI.PRE_KEYWORD + "Stress" + UI.PST_KEYWORD + " better than others";
 			}
 
 			public class UGLY_CRY
@@ -362,7 +362,7 @@ namespace STRINGS
 
 				public static LocString STATUS = "Binge eating";
 
-				public static LocString TOOLTIP = "This Duplicant is attempting to eat their emotions due to stress";
+				public static LocString TOOLTIP = "This Duplicant is attempting to eat their emotions due to " + UI.PRE_KEYWORD + "Stress" + UI.PST_KEYWORD;
 			}
 
 			public class EMOTEHIGHPRIORITY
@@ -425,7 +425,7 @@ namespace STRINGS
 
 				public static LocString STATUS = "Singing to egg";
 
-				public static LocString TOOLTIP = "A gentle lullaby from a supportive Duplicant encourages developing eggs\n\nIncreases Incubation Rate\n\nDuplicants must possess the Critter Ranching Skill to sing to an egg";
+				public static LocString TOOLTIP = "A gentle lullaby from a supportive Duplicant encourages developing " + UI.PRE_KEYWORD + "Eggs" + UI.PST_KEYWORD + "\n\nIncreases " + UI.PRE_KEYWORD + "Incubation Rate" + UI.PST_KEYWORD + "\n\nDuplicants must possess the " + ROLES.RANCHER.NAME + " Skill to sing to an egg";
 			}
 
 			public class USETOILET
@@ -443,7 +443,7 @@ namespace STRINGS
 
 				public static LocString STATUS = "Washing hands";
 
-				public static LocString TOOLTIP = "Good hygiene removes germs and prevents the spread of disease";
+				public static LocString TOOLTIP = "Good hygiene removes " + UI.PRE_KEYWORD + "Germs" + UI.PST_KEYWORD + " and prevents the spread of " + UI.PRE_KEYWORD + "Disease" + UI.PST_KEYWORD;
 			}
 
 			public class CHECKPOINT
@@ -470,7 +470,7 @@ namespace STRINGS
 
 				public static LocString STATUS = "Scrubbing ore";
 
-				public static LocString TOOLTIP = "Material ore can be scrubbed to remove Germs present on its surface";
+				public static LocString TOOLTIP = "Material ore can be scrubbed to remove " + UI.PRE_KEYWORD + "Germs" + UI.PST_KEYWORD + " present on its surface";
 			}
 
 			public class EAT
@@ -479,7 +479,7 @@ namespace STRINGS
 
 				public static LocString STATUS = "Going to eat";
 
-				public static LocString TOOLTIP = "Duplicants eat to replenish their calorie stores";
+				public static LocString TOOLTIP = "Duplicants eat to replenish their " + UI.PRE_KEYWORD + "Calorie" + UI.PST_KEYWORD + " stores";
 			}
 
 			public class VOMIT
@@ -488,7 +488,7 @@ namespace STRINGS
 
 				public static LocString STATUS = "Vomiting";
 
-				public static LocString TOOLTIP = "Vomiting produces Polluted Water and can spread disease";
+				public static LocString TOOLTIP = "Vomiting produces " + ELEMENTS.DIRTYWATER.NAME + " and can spread " + UI.PRE_KEYWORD + "Disease" + UI.PST_KEYWORD;
 			}
 
 			public class COUGH
@@ -497,7 +497,7 @@ namespace STRINGS
 
 				public static LocString STATUS = "Coughing";
 
-				public static LocString TOOLTIP = "Coughing is a symptom of illness and spreads airborne Germs";
+				public static LocString TOOLTIP = "Coughing is a symptom of illness and spreads airborne " + UI.PRE_KEYWORD + "Germs" + UI.PST_KEYWORD;
 			}
 
 			public class SLEEP
@@ -524,7 +524,7 @@ namespace STRINGS
 
 				public static LocString STATUS = "Sleeping on floor";
 
-				public static LocString TOOLTIP = "Zzzzzz...\n\nSleeping on the floor will give Duplicants a Sore Back";
+				public static LocString TOOLTIP = "Zzzzzz...\n\nSleeping on the floor will give Duplicants a " + MODIFIERS.SOREBACK.NAME;
 			}
 
 			public class TAKEMEDICINE
@@ -605,7 +605,7 @@ namespace STRINGS
 
 				public static LocString STATUS = "Lashing out";
 
-				public static LocString TOOLTIP = "This Duplicant is having a stress-induced tantrum";
+				public static LocString TOOLTIP = "This Duplicant is having a " + UI.PRE_KEYWORD + "Stress" + UI.PST_KEYWORD + "-induced tantrum";
 			}
 
 			public class RELAX
@@ -623,7 +623,7 @@ namespace STRINGS
 
 				public static LocString STATUS = "De-stressing";
 
-				public static LocString TOOLTIP = "This Duplicant taking some time to recover from their stress";
+				public static LocString TOOLTIP = "This Duplicant taking some time to recover from their " + UI.PRE_KEYWORD + "Stress" + UI.PST_KEYWORD;
 			}
 
 			public class EQUIP
@@ -641,7 +641,7 @@ namespace STRINGS
 
 				public static LocString STATUS = "Learning skill";
 
-				public static LocString TOOLTIP = "This Duplicant is learning a new skill";
+				public static LocString TOOLTIP = "This Duplicant is learning a new " + UI.PRE_KEYWORD + "Skill" + UI.PST_KEYWORD;
 			}
 
 			public class RECHARGE
@@ -713,7 +713,7 @@ namespace STRINGS
 
 				public static LocString STATUS = "Going to mop";
 
-				public static LocString TOOLTIP = "Mopping removes liquids from the floor and bottles them for transport";
+				public static LocString TOOLTIP = "Mopping removes " + UI.PRE_KEYWORD + "Liquid" + UI.PST_KEYWORD + " from the floor and bottles them for transport";
 			}
 
 			public class RELOCATE
@@ -767,7 +767,7 @@ namespace STRINGS
 
 				public static LocString STATUS = "Going to research";
 
-				public static LocString TOOLTIP = "This Duplicant is working on the current research focus";
+				public static LocString TOOLTIP = "This Duplicant is working on the current " + UI.PRE_KEYWORD + "Research" + UI.PST_KEYWORD + " focus";
 			}
 
 			public class RETURNSUIT
@@ -785,7 +785,7 @@ namespace STRINGS
 
 				public static LocString STATUS = "Going to generate power";
 
-				public static LocString TOOLTIP = "This Duplicant is producing electrical power";
+				public static LocString TOOLTIP = "This Duplicant is producing electrical " + UI.PRE_KEYWORD + "Power" + UI.PST_KEYWORD;
 			}
 
 			public class HARVEST
@@ -794,7 +794,7 @@ namespace STRINGS
 
 				public static LocString STATUS = "Going to harvest";
 
-				public static LocString TOOLTIP = "This Duplicant is harvesting usable materials from a mature plant";
+				public static LocString TOOLTIP = "This Duplicant is harvesting usable materials from a mature " + UI.PRE_KEYWORD + "Plant" + UI.PST_KEYWORD;
 			}
 
 			public class UPROOT
@@ -803,7 +803,7 @@ namespace STRINGS
 
 				public static LocString STATUS = "Going to uproot";
 
-				public static LocString TOOLTIP = "This Duplicant is uprooting a plant to retrieve a seed";
+				public static LocString TOOLTIP = "This Duplicant is uprooting a plant to retrieve a " + UI.PRE_KEYWORD + "Seed" + UI.PST_KEYWORD;
 			}
 
 			public class CLEANTOILET
@@ -812,7 +812,7 @@ namespace STRINGS
 
 				public static LocString STATUS = "Going to clean";
 
-				public static LocString TOOLTIP = "This Duplicant is cleaning out the Outhouse";
+				public static LocString TOOLTIP = "This Duplicant is cleaning out the " + BUILDINGS.PREFABS.OUTHOUSE.NAME;
 			}
 
 			public class EMPTYDESALINATOR
@@ -821,7 +821,7 @@ namespace STRINGS
 
 				public static LocString STATUS = "Going to clean";
 
-				public static LocString TOOLTIP = "This Duplicant is emptying out the Desalinator";
+				public static LocString TOOLTIP = "This Duplicant is emptying out the " + BUILDINGS.PREFABS.DESALINATOR.NAME;
 			}
 
 			public class LIQUIDCOOLEDFAN
@@ -848,7 +848,7 @@ namespace STRINGS
 
 				public static LocString STATUS = "Going to cook";
 
-				public static LocString TOOLTIP = "This Duplicant is cooking food";
+				public static LocString TOOLTIP = "This Duplicant is cooking " + UI.PRE_KEYWORD + "Food" + UI.PST_KEYWORD;
 			}
 
 			public class COMPOUND
@@ -857,7 +857,7 @@ namespace STRINGS
 
 				public static LocString STATUS = "Going to compound medicine";
 
-				public static LocString TOOLTIP = "This Duplicant is fabricating medicine";
+				public static LocString TOOLTIP = "This Duplicant is fabricating " + UI.PRE_KEYWORD + "Medicine" + UI.PST_KEYWORD;
 			}
 
 			public class TRAIN
@@ -875,7 +875,7 @@ namespace STRINGS
 
 				public static LocString STATUS = "Going to mush";
 
-				public static LocString TOOLTIP = "This Duplicant is producing food";
+				public static LocString TOOLTIP = "This Duplicant is producing " + UI.PRE_KEYWORD + "Food" + UI.PST_KEYWORD;
 			}
 
 			public class COMPOSTWORKABLE
@@ -884,7 +884,7 @@ namespace STRINGS
 
 				public static LocString STATUS = "Going to compost";
 
-				public static LocString TOOLTIP = "This Duplicant is dropping off organic material at the compost";
+				public static LocString TOOLTIP = "This Duplicant is dropping off organic material at the " + BUILDINGS.PREFABS.COMPOST.NAME;
 			}
 
 			public class FLIPCOMPOST
@@ -893,7 +893,7 @@ namespace STRINGS
 
 				public static LocString STATUS = "Going to flip compost";
 
-				public static LocString TOOLTIP = "Composts need to be flipped in order for their contents to compost";
+				public static LocString TOOLTIP = BUILDINGS.PREFABS.COMPOST.NAME + "s need to be flipped in order for their contents to compost";
 			}
 
 			public class DEPRESSURIZE
@@ -902,7 +902,7 @@ namespace STRINGS
 
 				public static LocString STATUS = "Going to depressurize well";
 
-				public static LocString TOOLTIP = "Oil Wells need to be periodically depressurized to function";
+				public static LocString TOOLTIP = BUILDINGS.PREFABS.OILWELLCAP.NAME + "s need to be periodically depressurized to function";
 			}
 
 			public class FABRICATE
@@ -978,7 +978,7 @@ namespace STRINGS
 
 				public static LocString STATUS = "Supplying research materials";
 
-				public static LocString TOOLTIP = "This Duplicant is delivering materials where they'll be needed to conduct research";
+				public static LocString TOOLTIP = "This Duplicant is delivering materials where they'll be needed to conduct " + UI.PRE_KEYWORD + "Research" + UI.PST_KEYWORD;
 			}
 
 			public class FARMFETCH
@@ -996,7 +996,7 @@ namespace STRINGS
 
 				public static LocString STATUS = "Supplying critical materials";
 
-				public static LocString TOOLTIP = "This Duplicant is delivering materials required to perform Life Support Errands";
+				public static LocString TOOLTIP = "This Duplicant is delivering materials required to perform " + UI.PRE_KEYWORD + "Life Support" + UI.PST_KEYWORD + " Errands";
 
 				public static LocString REPORT_NAME = "Life Support Supply to {0}";
 			}
@@ -1018,7 +1018,7 @@ namespace STRINGS
 
 				public static LocString STATUS = "Supplying cook ingredients";
 
-				public static LocString TOOLTIP = "This Duplicant is delivering materials required to cook food";
+				public static LocString TOOLTIP = "This Duplicant is delivering materials required to cook " + UI.PRE_KEYWORD + "Food" + UI.PST_KEYWORD;
 			}
 
 			public class DOCTORFETCH
@@ -1049,7 +1049,7 @@ namespace STRINGS
 
 				public static LocString STATUS = "Supplying power materials";
 
-				public static LocString TOOLTIP = "This Duplicant is delivering materials to where they'll be needed for power";
+				public static LocString TOOLTIP = "This Duplicant is delivering materials to where they'll be needed for " + UI.PRE_KEYWORD + "Power" + UI.PST_KEYWORD;
 
 				public static LocString REPORT_NAME = "Power Supply to {0}";
 			}
@@ -1080,7 +1080,7 @@ namespace STRINGS
 
 				public static LocString STATUS = "Relocating critter";
 
-				public static LocString TOOLTIP = "This Duplicant is moving a critter to a new location";
+				public static LocString TOOLTIP = "This Duplicant is moving a " + UI.PRE_KEYWORD + "Critter" + UI.PST_KEYWORD + " to a new location";
 			}
 
 			public class TRANSPORT
@@ -1089,7 +1089,7 @@ namespace STRINGS
 
 				public static LocString STATUS = "Going to sweep";
 
-				public static LocString TOOLTIP = "Moving debris off the ground and into storage improves colony decor";
+				public static LocString TOOLTIP = "Moving debris off the ground and into storage improves colony " + UI.PRE_KEYWORD + "Decor" + UI.PST_KEYWORD;
 			}
 
 			public class MOVETOSAFETY
@@ -1116,7 +1116,7 @@ namespace STRINGS
 
 				public static LocString STATUS = "Ranching";
 
-				public static LocString TOOLTIP = "This Duplicant is tending to a critter's wellbeing";
+				public static LocString TOOLTIP = "This Duplicant is tending to a " + UI.PRE_KEYWORD + "Critter" + UI.PST_KEYWORD + "'s wellbeing";
 
 				public static LocString REPORT_NAME = "Deliver to {0}";
 			}
@@ -1127,7 +1127,7 @@ namespace STRINGS
 
 				public static LocString STATUS = "Tending plant";
 
-				public static LocString TOOLTIP = "Tending to plants increases their growth rate";
+				public static LocString TOOLTIP = "Tending to plants increases their " + UI.PRE_KEYWORD + "Growth Rate" + UI.PST_KEYWORD;
 			}
 
 			public class IDLE
@@ -1848,7 +1848,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "No Job";
 
-				public static LocString TOOLTIP = "This Duplicant does not have a Job Assignment" + UI.HORIZONTAL_BR_RULE + "Enter the <b>Jobs Panel</b> <color=#F44A47><b>[J]</b></color> to view all available Jobs";
+				public static LocString TOOLTIP = "This Duplicant does not have a Job Assignment" + UI.HORIZONTAL_BR_RULE + "Enter the " + UI.FormatAsManagementMenu("Jobs Panel") + " " + UI.FormatAsHotkey("[J]") + " to view all available Jobs";
 			}
 
 			public class DROPPINGUNUSEDINVENTORY
@@ -4715,7 +4715,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Morale Requirements";
 
-				public static LocString EXPECTATION_TOOLTIP = "The more responsibilities and stressors a Duplicant has, the more they will desire additional leisure time and improved amenities.\n\nFailing to keep a Duplicant's Morale at or above their Morale Expectation means they will not be able to unwind, causing them " + UI.FormatAsLink("Stress", "STRESS") + " over time.";
+				public static LocString EXPECTATION_TOOLTIP = "The more responsibilities and stressors a Duplicant has, the more they will desire additional leisure time and improved amenities.\n\nFailing to keep a Duplicant's Morale at or above their Morale Need means they will not be able to unwind, causing them " + UI.FormatAsLink("Stress", "STRESS") + " over time.";
 
 				public static LocString EXPECTATION_MOD_NAME = "Skills Learned";
 
@@ -5122,14 +5122,14 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Overheat Temperature";
 
-				public static LocString DESC = "A building at Overheat " + UI.FormatAsLink("Temperature", "HEAT") + " will take damage and melt down if not cooled";
+				public static LocString DESC = "A building at Overheat " + UI.FormatAsLink("Temperature", "HEAT") + " will take damage and break down if not cooled";
 			}
 
 			public class FATALTEMPERATURE
 			{
-				public static LocString NAME = "Meltdown Temperature";
+				public static LocString NAME = "Break Down Temperature";
 
-				public static LocString DESC = "A building at Meltdown " + UI.FormatAsLink("Temperature", "HEAT") + " will lose functionality and take damage";
+				public static LocString DESC = "A building at break down " + UI.FormatAsLink("Temperature", "HEAT") + " will lose functionality and take damage";
 			}
 
 			public class HITPOINTSDELTA
@@ -5571,7 +5571,7 @@ namespace STRINGS
 
 		public static LocString ARRIVALTIME = "Age: ";
 
-		public static LocString ARRIVALTIME_TOOLTIP = "This {1} was printed on Cycle {0}";
+		public static LocString ARRIVALTIME_TOOLTIP = "This {1} was printed on <b>Cycle {0}</b>";
 
 		public static LocString DESC_TOOLTIP = "About {0}s";
 	}

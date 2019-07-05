@@ -65,7 +65,7 @@ public class CO2ScrubberConfig : IBuildingConfig
 		};
 		elementConverter.outputElements = new ElementConverter.OutputElement[1]
 		{
-			new ElementConverter.OutputElement(1f, SimHashes.DirtyWater, 313.15f, true, 0f, 0.5f, false, 1f, byte.MaxValue, 0)
+			new ElementConverter.OutputElement(1f, SimHashes.DirtyWater, 313.15f, false, true, 0f, 0.5f, 1f, byte.MaxValue, 0)
 		};
 		ConduitConsumer conduitConsumer = go.AddOrGet<ConduitConsumer>();
 		conduitConsumer.conduitType = ConduitType.Liquid;

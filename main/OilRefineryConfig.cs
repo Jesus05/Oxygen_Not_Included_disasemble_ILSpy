@@ -75,8 +75,8 @@ public class OilRefineryConfig : IBuildingConfig
 		};
 		elementConverter.outputElements = new ElementConverter.OutputElement[2]
 		{
-			new ElementConverter.OutputElement(5f, SimHashes.Petroleum, 348.15f, true, 0f, 1f, false, 1f, byte.MaxValue, 0),
-			new ElementConverter.OutputElement(0.09f, SimHashes.Methane, 348.15f, false, 0f, 3f, false, 1f, byte.MaxValue, 0)
+			new ElementConverter.OutputElement(5f, SimHashes.Petroleum, 348.15f, false, true, 0f, 1f, 1f, byte.MaxValue, 0),
+			new ElementConverter.OutputElement(0.09f, SimHashes.Methane, 348.15f, false, false, 0f, 3f, 1f, byte.MaxValue, 0)
 		};
 		Prioritizable.AddRef(go);
 	}

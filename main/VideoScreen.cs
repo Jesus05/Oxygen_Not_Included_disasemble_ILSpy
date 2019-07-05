@@ -1,5 +1,6 @@
 using FMOD.Studio;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -27,15 +28,23 @@ public class VideoScreen : KModalScreen
 	[SerializeField]
 	private KButton closeButton;
 
+	[SerializeField]
+	private KButton proceedButton;
+
 	private RawImage screen;
 
 	private RenderTexture renderTexture;
 
 	private string activeAudioSnapshot;
 
+	[SerializeField]
+	private Image fadeOverlay;
+
 	private bool victoryLoopQueued = false;
 
 	private string victoryLoopMessage = "";
+
+	private string victoryLoopClip = "";
 
 	private bool videoSkippable = true;
 
@@ -54,14 +63,18 @@ public class VideoScreen : KModalScreen
 		{
 			Stop();
 		};
+		proceedButton.onClick += delegate
+		{
+			Stop();
+		};
 		videoPlayer.isLooping = false;
 		videoPlayer.loopPointReached += delegate
 		{
 			if (victoryLoopQueued)
 			{
-				SwitchToVictoryLoop();
+				StartCoroutine(SwitchToVictoryLoop());
 			}
-			else
+			else if (!videoPlayer.isLooping)
 			{
 				Stop();
 			}
@@ -79,6 +92,7 @@ public class VideoScreen : KModalScreen
 
 	public void DisableAllMedia()
 	{
+		textOverlay.transform.parent.gameObject.SetActive(false);
 		videoPlayer.gameObject.SetActive(false);
 		slideshow.gameObject.SetActive(false);
 	}
@@ -101,6 +115,7 @@ public class VideoScreen : KModalScreen
 
 	public void PlayVideo(VideoClip clip, bool unskippable = false, string overrideAudioSnapshot = "")
 	{
+		textOverlay.transform.parent.gameObject.SetActive(false);
 		Show(true);
 		videoPlayer.isLooping = false;
 		activeAudioSnapshot = ((!string.IsNullOrEmpty(overrideAudioSnapshot)) ? overrideAudioSnapshot : AudioMixerSnapshots.Get().TutorialVideoPlayingSnapshot);
@@ -114,12 +129,14 @@ public class VideoScreen : KModalScreen
 		videoPlayer.Play();
 		videoSkippable = !unskippable;
 		closeButton.gameObject.SetActive(videoSkippable);
+		proceedButton.gameObject.SetActive(videoSkippable);
 	}
 
-	public void QueueVictoryVideoLoop(bool queue, string message = "", string victoryAchievement = "")
+	public void QueueVictoryVideoLoop(bool queue, string message = "", string victoryAchievement = "", string loopVideo = "")
 	{
 		victoryLoopQueued = queue;
 		victoryLoopMessage = message;
+		victoryLoopClip = loopVideo;
 		OnStop = (System.Action)Delegate.Combine(OnStop, (System.Action)delegate
 		{
 			RetireColonyUtility.SaveColonySummaryData();
@@ -144,6 +161,7 @@ public class VideoScreen : KModalScreen
 					TextQueue textQueue3 = textQueues[i];
 					if (time2 < (double)(time3 + textQueue3.duration))
 					{
+						textOverlay.transform.parent.gameObject.SetActive(true);
 						LocText locText = textOverlay;
 						TextQueue textQueue4 = textQueues[i];
 						locText.SetText(textQueue4.value);
@@ -154,6 +172,7 @@ public class VideoScreen : KModalScreen
 			if (!flag)
 			{
 				textOverlay.SetText("");
+				textOverlay.transform.parent.gameObject.SetActive(false);
 			}
 		}
 	}
@@ -172,16 +191,29 @@ public class VideoScreen : KModalScreen
 		textQueues.Clear();
 	}
 
-	private void SwitchToVictoryLoop()
+	private IEnumerator SwitchToVictoryLoop()
 	{
+		victoryLoopQueued = false;
+		Color color = fadeOverlay.color;
+		float i = 0f;
+		if (i < 1f)
+		{
+			fadeOverlay.color = new Color(color.r, color.g, color.b, i);
+			yield return (object)0;
+			/*Error: Unable to find new state assignment for yield return*/;
+		}
+		fadeOverlay.color = new Color(color.r, color.g, color.b, 1f);
 		MusicManager.instance.PlaySong("Music_Victory_03_StoryAndSummary", false);
 		MusicManager.instance.SetSongParameter("Music_Victory_03_StoryAndSummary", "songSection", 1f, true);
 		closeButton.gameObject.SetActive(true);
+		proceedButton.gameObject.SetActive(true);
 		ClearTextQueues();
 		AddTextQueue(victoryLoopMessage, 0f, 9999f);
-		videoPlayer.clip = Assets.GetVideo("Placeholder_grey");
+		videoPlayer.clip = Assets.GetVideo(victoryLoopClip);
 		videoPlayer.isLooping = true;
 		videoPlayer.Play();
+		yield return (object)new WaitForSecondsRealtime(1f);
+		/*Error: Unable to find new state assignment for yield return*/;
 	}
 
 	public void Stop()

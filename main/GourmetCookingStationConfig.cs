@@ -78,7 +78,7 @@ public class GourmetCookingStationConfig : IBuildingConfig
 		};
 		elementConverter.outputElements = new ElementConverter.OutputElement[1]
 		{
-			new ElementConverter.OutputElement(0.025f, SimHashes.CarbonDioxide, 0f, false, 0f, 3f, true, 1f, byte.MaxValue, 0)
+			new ElementConverter.OutputElement(0.025f, SimHashes.CarbonDioxide, 348.15f, false, false, 0f, 3f, 1f, byte.MaxValue, 0)
 		};
 		ConfigureRecipes();
 		Prioritizable.AddRef(go);

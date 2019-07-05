@@ -58,7 +58,7 @@ public class ElementEmitter : SimComponent
 		int game_cell = Grid.OffsetCell(cell, (int)outputElement.outputElementOffset.x, (int)outputElement.outputElementOffset.y);
 		if (outputElement.elementHash != 0 && outputElement.massGenerationRate > 0f && emissionFrequency > 0f)
 		{
-			float emit_temperature = (outputElement.outputTemperature != 0f) ? outputElement.outputTemperature : GetComponent<PrimaryElement>().Temperature;
+			float emit_temperature = (outputElement.minOutputTemperature != 0f) ? outputElement.minOutputTemperature : GetComponent<PrimaryElement>().Temperature;
 			SimMessages.ModifyElementEmitter(simHandle, game_cell, emitRange, outputElement.elementHash, emissionFrequency, outputElement.massGenerationRate, emit_temperature, maxPressure, outputElement.addedDiseaseIdx, outputElement.addedDiseaseCount);
 		}
 		if (showDescriptor)
@@ -82,7 +82,7 @@ public class ElementEmitter : SimComponent
 	{
 		if (!(mass <= 0f))
 		{
-			float temperature2 = (!(temperature > 0f)) ? outputElement.outputTemperature : temperature;
+			float temperature2 = (!(temperature > 0f)) ? outputElement.minOutputTemperature : temperature;
 			Element element = ElementLoader.FindElementByHash(outputElement.elementHash);
 			if (element.IsGas || element.IsLiquid)
 			{

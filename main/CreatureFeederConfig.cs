@@ -51,11 +51,13 @@ public class CreatureFeederConfig : IBuildingConfig
 	public override void ConfigurePost(BuildingDef def)
 	{
 		List<Tag> list = new List<Tag>();
-		Tag[] target_species = new Tag[3]
+		Tag[] target_species = new Tag[5]
 		{
 			GameTags.Creatures.Species.LightBugSpecies,
 			GameTags.Creatures.Species.HatchSpecies,
-			GameTags.Creatures.Species.MoleSpecies
+			GameTags.Creatures.Species.MoleSpecies,
+			GameTags.Creatures.Species.CrabSpecies,
+			GameTags.Creatures.Species.SquirrelSpecies
 		};
 		foreach (KeyValuePair<Tag, Diet> item in DietManager.CollectDiets(target_species))
 		{

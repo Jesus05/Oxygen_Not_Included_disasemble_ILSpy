@@ -876,7 +876,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = UI.FormatAsLink("Dasha Saltvine", "SALTPLANT");
 
-				public static LocString DESC = "Dasha Saltvines naturally collect sodium deposits as they grow, producing harvestable " + UI.FormatAsLink("Salt", "SALT") + ".";
+				public static LocString DESC = "Dasha Saltvines consume small amounts of " + UI.FormatAsLink("Chlorine Gas", "CHLORINE") + " and form sodium deposits as they grow, producing harvestable " + UI.FormatAsLink("Salt", "SALT") + ".";
 
 				public static LocString DOMESTICATEDDESC = "This plant produces unrefined " + UI.FormatAsLink("Salt", "SALT") + ".";
 			}
@@ -1071,7 +1071,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Sleeping";
 
-				public static LocString TOOLTIP = "This critter is replenishing its stamina";
+				public static LocString TOOLTIP = "This critter is replenishing its " + UI.PRE_KEYWORD + "Stamina" + UI.PST_KEYWORD;
 			}
 
 			public class CALL_ADULT
@@ -1085,21 +1085,21 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Toasty surroundings";
 
-				public static LocString TOOLTIP = "This critter cannot let off enough heat to keep cool in this environment\n\nIt prefers temperatures between {0} and {1}";
+				public static LocString TOOLTIP = "This critter cannot let off enough " + UI.PRE_KEYWORD + "Heat" + UI.PST_KEYWORD + " to keep cool in this environment\n\nIt prefers " + UI.PRE_KEYWORD + "Temperatures" + UI.PST_KEYWORD + " between <b>{0}</b> and <b>{1}</b>";
 			}
 
 			public class COLD
 			{
 				public static LocString NAME = "Chilly surroundings";
 
-				public static LocString TOOLTIP = "This critter cannot retain enough heat to stay warm in this environment\n\nIt prefers temperatures between {0} and {1}";
+				public static LocString TOOLTIP = "This critter cannot retain enough " + UI.PRE_KEYWORD + "Heat" + UI.PST_KEYWORD + " to stay warm in this environment\n\nIt prefers " + UI.PRE_KEYWORD + "Temperatures" + UI.PST_KEYWORD + " between <b>{0}</b> and <b>{1}</b>";
 			}
 
 			public class CROP_TOO_DARK
 			{
 				public static LocString NAME = "    • " + STATS.ILLUMINATION.NAME;
 
-				public static LocString TOOLTIP = "Growth will resume when light requirements are met";
+				public static LocString TOOLTIP = "Growth will resume when " + UI.PRE_KEYWORD + "Light" + UI.PST_KEYWORD + " requirements are met";
 			}
 
 			public class CROP_TOO_BRIGHT
@@ -1113,21 +1113,21 @@ namespace STRINGS
 			{
 				public static LocString NAME = "    • " + DUPLICANTS.STATS.TEMPERATURE.NAME;
 
-				public static LocString TOOLTIP = "Growth will resume when ambient temperature is between {low_temperature} and {high_temperature}";
+				public static LocString TOOLTIP = "Growth will resume when ambient " + UI.PRE_KEYWORD + "Temperature" + UI.PST_KEYWORD + " is between <b>{low_temperature}</b> and <b>{high_temperature}</b>";
 			}
 
 			public class COLD_CROP
 			{
 				public static LocString NAME = "    • " + DUPLICANTS.STATS.TEMPERATURE.NAME;
 
-				public static LocString TOOLTIP = "Growth will resume when ambient temperature is between {low_temperature} and {high_temperature}";
+				public static LocString TOOLTIP = "Growth will resume when ambient " + UI.PRE_KEYWORD + "Temperature" + UI.PST_KEYWORD + " is between <b.{low_temperature}</b> and <b>{high_temperature}</b>";
 			}
 
 			public class PERFECTTEMPERATURE
 			{
 				public static LocString NAME = "Ideal Temperature";
 
-				public static LocString TOOLTIP = "This critter finds the current ambient temperature comfortable\n\nIdeal Range: {0} - {1}";
+				public static LocString TOOLTIP = "This critter finds the current ambient " + UI.PRE_KEYWORD + "Temperature" + UI.PST_KEYWORD + " comfortable\n\nIdeal Range: <b>{0}</b> - <b>{1}</b>";
 			}
 
 			public class EATING
@@ -1155,7 +1155,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Foraging";
 
-				public static LocString TOOLTIP = "This critter is hungry and looking for food";
+				public static LocString TOOLTIP = "This critter is hungry and looking for " + UI.PRE_KEYWORD + "Food" + UI.PST_KEYWORD;
 			}
 
 			public class IDLE
@@ -1211,25 +1211,25 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Freezing";
 
-				public static LocString TOOLTIP = "Internal temperature is dangerously low";
+				public static LocString TOOLTIP = "Internal " + UI.PRE_KEYWORD + "Temperature" + UI.PST_KEYWORD + " is dangerously low";
 			}
 
 			public class SCALDING
 			{
 				public static LocString NAME = "Scalding";
 
-				public static LocString TOOLTIP = "Current external temperature is perilously high [{ExternalTemperature} / {TargetTemperature}]";
+				public static LocString TOOLTIP = "Current external " + UI.PRE_KEYWORD + "Temperature" + UI.PST_KEYWORD + " is perilously high [<b>{ExternalTemperature}</b> / <b>{TargetTemperature}</b>]";
 
 				public static LocString NOTIFICATION_NAME = "Scalding";
 
-				public static LocString NOTIFICATION_TOOLTIP = "Scalding temperatures are hurting these Duplicants:";
+				public static LocString NOTIFICATION_TOOLTIP = "Scalding " + UI.PRE_KEYWORD + "Temperatures" + UI.PST_KEYWORD + " are hurting these Duplicants:";
 			}
 
 			public class HYPERTHERMIA
 			{
 				public static LocString NAME = "Overheating";
 
-				public static LocString TOOLTIP = "Internal temperature is dangerously high [{InternalTemperature} / {TargetTemperature}]";
+				public static LocString TOOLTIP = "Internal " + UI.PRE_KEYWORD + "Temperature" + UI.PST_KEYWORD + " is dangerously high [<b>{InternalTemperature}</b> / <b>{TargetTemperature}</b>]";
 			}
 
 			public class TIRED
@@ -1296,14 +1296,14 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Planting Seed";
 
-				public static LocString TOOLTIP = "This critter is burying a seed for later";
+				public static LocString TOOLTIP = "This critter is burying a " + UI.PRE_KEYWORD + "Seed" + UI.PST_KEYWORD + " for later";
 			}
 
 			public class RUMMAGINGSEED
 			{
 				public static LocString NAME = "Rummaging for seeds";
 
-				public static LocString TOOLTIP = "This critter is searching for tasty seeds";
+				public static LocString TOOLTIP = "This critter is searching for tasty " + UI.PRE_KEYWORD + "Seeds" + UI.PST_KEYWORD;
 			}
 
 			public class EXPELLING_SOLID
@@ -1317,7 +1317,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Passing Gas";
 
-				public static LocString TOOLTIP = "This critter is emitting gas\n\nYuck!";
+				public static LocString TOOLTIP = "This critter is emitting " + UI.PRE_KEYWORD + "Gas" + UI.PST_KEYWORD + "\n\nYuck!";
 			}
 
 			public class EXPELLING_LIQUID
@@ -1394,7 +1394,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Piqued";
 
-				public static LocString TOOLTIP = "This critter is tempted to bite a nearby lure";
+				public static LocString TOOLTIP = "This critter is tempted to bite a nearby " + UI.PRE_KEYWORD + "Lure" + UI.PST_KEYWORD;
 			}
 
 			public class FALLING
@@ -1415,14 +1415,14 @@ namespace STRINGS
 			{
 				public static LocString NAME = "    • Beached";
 
-				public static LocString TOOLTIP = "This plant must be submerged in liquid to grow";
+				public static LocString TOOLTIP = "This plant must be submerged in " + UI.PRE_KEYWORD + "Liquid" + UI.PST_KEYWORD + " to grow";
 			}
 
 			public class GROWING
 			{
 				public static LocString NAME = "Growing [{PercentGrow}%]";
 
-				public static LocString TOOLTIP = "Next harvest: {TimeUntilNextHarvest}";
+				public static LocString TOOLTIP = "Next harvest: <b>{TimeUntilNextHarvest}</b>";
 			}
 
 			public class CROP_SLEEPING
@@ -1431,7 +1431,7 @@ namespace STRINGS
 
 				public static LocString TOOLTIP = "Requires: {REQUIREMENTS}";
 
-				public static LocString REQUIREMENT_LUMINANCE = "{0} Lux";
+				public static LocString REQUIREMENT_LUMINANCE = "<b>{0}</b> Lux";
 
 				public static LocString REASON_TOO_DARK = "Too Dark";
 
@@ -1449,7 +1449,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "    • " + STATS.FERTILIZATION.NAME;
 
-				public static LocString TOOLTIP = "Growth will resume when fertilization requirements are met";
+				public static LocString TOOLTIP = "Growth will resume when " + UI.PRE_KEYWORD + "Fertilization" + UI.PST_KEYWORD + " requirements are met";
 
 				public static LocString LINE_ITEM = "\n            • {Resource}: {Amount}";
 			}
@@ -1458,7 +1458,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "    • " + STATS.IRRIGATION.NAME;
 
-				public static LocString TOOLTIP = "Growth will resume when liquid requirements are met";
+				public static LocString TOOLTIP = "Growth will resume when " + UI.PRE_KEYWORD + "Liquid" + UI.PST_KEYWORD + " requirements are met";
 
 				public static LocString LINE_ITEM = "\n            • {Resource}: {Amount}";
 			}
@@ -1467,7 +1467,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "    • " + STATS.FERTILIZATION.NAME;
 
-				public static LocString TOOLTIP = "This farm is storing materials that are not suitable for this plant" + UI.HORIZONTAL_BR_RULE + "Empty this building's storage to remove the unusable materials";
+				public static LocString TOOLTIP = "This farm is storing materials that are not suitable for this plant" + UI.HORIZONTAL_BR_RULE + "Empty this building's " + UI.PRE_KEYWORD + "Storage" + UI.PST_KEYWORD + " to remove the unusable materials";
 
 				public static LocString LINE_ITEM = "            • {0}: {1}\n";
 			}
@@ -1485,7 +1485,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "    • " + STATS.FERTILIZATION.NAME;
 
-				public static LocString TOOLTIP = "This farm is storing materials that are not suitable for this plant" + UI.HORIZONTAL_BR_RULE + "Empty this building's storage to remove the unusable materials";
+				public static LocString TOOLTIP = "This farm is storing materials that are not suitable for this plant" + UI.HORIZONTAL_BR_RULE + UI.PRE_KEYWORD + "Empty Storage" + UI.PST_KEYWORD + " on this building to remove the unusable materials";
 
 				public static LocString LINE_ITEM = "        " + WRONGFERTILIZER.LINE_ITEM;
 			}
@@ -1494,7 +1494,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "    • " + STATS.IRRIGATION.NAME;
 
-				public static LocString TOOLTIP = "This farm is storing materials that are not suitable for this plant" + UI.HORIZONTAL_BR_RULE + "Empty this building's storage to remove the incorrect materials";
+				public static LocString TOOLTIP = "This farm is storing materials that are not suitable for this plant" + UI.HORIZONTAL_BR_RULE + UI.PRE_KEYWORD + "Empty Storage" + UI.PST_KEYWORD + " on this building to remove the incorrect materials";
 
 				public static LocString LINE_ITEM = "        " + WRONGIRRIGATION.LINE_ITEM;
 			}
@@ -1503,14 +1503,14 @@ namespace STRINGS
 			{
 				public static LocString NAME = "    • " + STATS.FERTILIZATION.NAME;
 
-				public static LocString TOOLTIP = "This farm plot does not accept fertilizer\n\nMove the selected plant to a fertilization capable plot for optimal growth";
+				public static LocString TOOLTIP = "This farm plot does not accept " + UI.PRE_KEYWORD + "Fertilizer" + UI.PST_KEYWORD + "\n\nMove the selected plant to a fertilization capable plot for optimal growth";
 			}
 
 			public class CANTACCEPTIRRIGATION
 			{
 				public static LocString NAME = "    • " + STATS.IRRIGATION.NAME;
 
-				public static LocString TOOLTIP = "This farm plot does not accept irrigation\n\nMove the selected plant to an irrigation capable plot for optimal growth";
+				public static LocString TOOLTIP = "This farm plot does not accept " + UI.PRE_KEYWORD + "Irrigation" + UI.PST_KEYWORD + "\n\nMove the selected plant to an irrigation capable plot for optimal growth";
 			}
 
 			public class READYFORHARVEST
@@ -1558,7 +1558,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Drowning";
 
-				public static LocString TOOLTIP = "This critter can't breathe in liquid!";
+				public static LocString TOOLTIP = "This critter can't breathe in " + UI.PRE_KEYWORD + "Liquid" + UI.PST_KEYWORD + "!";
 			}
 
 			public class WILTING
@@ -1586,35 +1586,35 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Barren";
 
-				public static LocString TOOLTIP = "This plant will produce no more seeds";
+				public static LocString TOOLTIP = "This plant will produce no more " + UI.PRE_KEYWORD + "Seeds" + UI.PST_KEYWORD;
 			}
 
 			public class ATMOSPHERICPRESSURETOOLOW
 			{
 				public static LocString NAME = "    • Pressure";
 
-				public static LocString TOOLTIP = "Growth will resume when air pressure is between {low_mass} and {high_mass}";
+				public static LocString TOOLTIP = "Growth will resume when air pressure is between <b>{low_mass}</b> and <b>{high_mass}</b>";
 			}
 
 			public class WRONGATMOSPHERE
 			{
 				public static LocString NAME = "    • Atmosphere";
 
-				public static LocString TOOLTIP = "Growth will resume when submersed in one of the following gases: {elements}";
+				public static LocString TOOLTIP = "Growth will resume when submersed in one of the following " + UI.PRE_KEYWORD + "Gases" + UI.PST_KEYWORD + ": {elements}";
 			}
 
 			public class ATMOSPHERICPRESSURETOOHIGH
 			{
 				public static LocString NAME = "    • Pressure";
 
-				public static LocString TOOLTIP = "Growth will resume when air pressure is between {low_mass} and {high_mass}";
+				public static LocString TOOLTIP = "Growth will resume when air pressure is between <b>{low_mass}</b> and <b>{high_mass}</b>";
 			}
 
 			public class PERFECTATMOSPHERICPRESSURE
 			{
 				public static LocString NAME = "Ideal Air Pressure";
 
-				public static LocString TOOLTIP = "This critter is comfortable in the current atmospheric pressure\n\nIdeal Range: {0} - {1}";
+				public static LocString TOOLTIP = "This critter is comfortable in the current atmospheric pressure\n\nIdeal Range: <b>{0}</b> - <b>{1}</b>";
 			}
 
 			public class HEALTHSTATUS
@@ -1635,7 +1635,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Unrefrigerated";
 
-				public static LocString TOOLTIP = "Temperatures above {RotTemperature} spoil food more quickly";
+				public static LocString TOOLTIP = UI.PRE_KEYWORD + "Temperatures" + UI.PST_KEYWORD + " above <b>{RotTemperature}</b> spoil food more quickly";
 			}
 
 			public class CONTAMINATEDATMOSPHERE
@@ -1656,14 +1656,14 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Consuming {ConsumeElement} at {ConsumeRate}";
 
-				public static LocString TOOLTIP = "{ConsumeElement} is being used at a rate of {ConsumeRate}";
+				public static LocString TOOLTIP = "{ConsumeElement} is being used at a rate of " + UI.FormatAsNegativeRate("{ConsumeRate}");
 			}
 
 			public class EXCHANGINGELEMENTOUTPUT
 			{
 				public static LocString NAME = "Outputting {OutputElement} at {OutputRate}";
 
-				public static LocString TOOLTIP = "{OutputElement} is being expelled at a rate of {OutputRate}";
+				public static LocString TOOLTIP = "{OutputElement} is being expelled at a rate of " + UI.FormatAsPositiveRate("{OutputRate}");
 			}
 
 			public class FRESH
@@ -1677,14 +1677,14 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Stale {RotPercentage}";
 
-				public static LocString TOOLTIP = "This food is still edible but will soon expire\n{RotTooltip}";
+				public static LocString TOOLTIP = "This " + UI.PRE_KEYWORD + "Food" + UI.PST_KEYWORD + " is still edible but will soon expire\n{RotTooltip}";
 			}
 
 			public class SPOILED
 			{
 				public static LocString NAME = "Rotten";
 
-				public static LocString TOOLTIP = "This food has putrefied and should not be consumed";
+				public static LocString TOOLTIP = "This " + UI.PRE_KEYWORD + "Food" + UI.PST_KEYWORD + " has putrefied and should not be consumed";
 			}
 
 			public class STUNTED_SCALE_GROWTH
@@ -1698,7 +1698,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Refrigerated";
 
-				public static LocString TOOLTIP = "Ideal temperature storage is slowing this food's decay rate";
+				public static LocString TOOLTIP = "Ideal " + UI.PRE_KEYWORD + "Temperature" + UI.PST_KEYWORD + " storage is slowing this food's decay rate";
 			}
 
 			public class RECEPTACLEINOPERATIONAL
@@ -1719,7 +1719,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Exhaling";
 
-				public static LocString TOOLTIP = "This critter is expelling gas from its lungsacs";
+				public static LocString TOOLTIP = "This critter is expelling " + UI.PRE_KEYWORD + "Gas" + UI.PST_KEYWORD + " from its lungsacs";
 			}
 
 			public class INHALING
@@ -1772,7 +1772,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Elderly";
 
-				public static LocString TOOLTIP = "This sweet ol'critter is over the hill and will pass on in {TimeUntilDeath}";
+				public static LocString TOOLTIP = "This sweet ol'critter is over the hill and will pass on in <b>{TimeUntilDeath}</b>";
 			}
 
 			public static LocString NAME_NON_GROWING_PLANT = "Wilted";
@@ -1789,7 +1789,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Age";
 
-				public static LocString TOOLTIP = "This critter will die when its Age reaches its species' maximum lifespan";
+				public static LocString TOOLTIP = "This critter will die when its " + UI.PRE_KEYWORD + "Age" + UI.PST_KEYWORD + " reaches its species' maximum lifespan";
 			}
 
 			public class MATURITY
@@ -1798,19 +1798,19 @@ namespace STRINGS
 
 				public static LocString TOOLTIP = "Growth Progress" + UI.HORIZONTAL_BR_RULE;
 
-				public static LocString TOOLTIP_GROWING = "Predicted Maturation: {0}";
+				public static LocString TOOLTIP_GROWING = "Predicted Maturation: <b>{0}</b>";
 
-				public static LocString TOOLTIP_GROWING_CROP = "Predicted Maturation Time: {0}\nNext harvest occurs in approximately {1}";
+				public static LocString TOOLTIP_GROWING_CROP = "Predicted Maturation Time: <b>{0}</b>\nNext harvest occurs in approximately <b>{1}</b>";
 
 				public static LocString TOOLTIP_GROWN = "Growth paused while plant awaits harvest";
 
 				public static LocString TOOLTIP_STALLED = "Poor conditions have halted this plant's growth";
 
-				public static LocString AMOUNT_DESC_FMT = "{0}: {1}\nNext harvest in {2}";
+				public static LocString AMOUNT_DESC_FMT = "{0}: {1}\nNext harvest in <b>{2}</b>";
 
-				public static LocString GROWING = "Domestic growth rate";
+				public static LocString GROWING = "Domestic Growth Rate";
 
-				public static LocString GROWINGWILD = "Wild growth rate";
+				public static LocString GROWINGWILD = "Wild Growth Rate";
 			}
 
 			public class FERTILIZATION
@@ -1826,42 +1826,42 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Domestication";
 
-				public static LocString TOOLTIP = "Fully domesticated critters produce more materials than wild ones, and may even provide psychological benefits to my colony\n\nThis critter is {0} domesticated";
+				public static LocString TOOLTIP = "Fully " + UI.PRE_KEYWORD + "Tame" + UI.PST_KEYWORD + " critters produce more materials than wild ones, and may even provide psychological benefits to my colony\n\nThis critter is <b>{0}</b> domesticated";
 			}
 
 			public class HAPPINESS
 			{
 				public static LocString NAME = "Happiness";
 
-				public static LocString TOOLTIP = "High Happiness increases a critter's productivity and indirectly improves their egg laying rates\n\nIt also provides the satisfaction in knowing they're living a good little critter life";
+				public static LocString TOOLTIP = "High " + UI.PRE_KEYWORD + "Happiness" + UI.PST_KEYWORD + " increases a critter's productivity and indirectly improves their " + UI.PRE_KEYWORD + "Egg" + UI.PST_KEYWORD + " laying rates\n\nIt also provides the satisfaction in knowing they're living a good little critter life";
 			}
 
 			public class WILDNESS
 			{
 				public static LocString NAME = "Wildness";
 
-				public static LocString TOOLTIP = "At 0% Wildness a critter becomes Tame, increasing its metabolism and requiring regular care from Duplicants\n\nDuplicants must possess the Critter Ranching Skill to care for critters";
+				public static LocString TOOLTIP = "At 0% " + UI.PRE_KEYWORD + "Wildness" + UI.PST_KEYWORD + " a critter becomes " + UI.PRE_KEYWORD + "Tame" + UI.PST_KEYWORD + ", increasing its " + UI.PRE_KEYWORD + "Metabolism" + UI.PST_KEYWORD + " and requiring regular care from Duplicants\n\nDuplicants must possess the " + UI.PRE_KEYWORD + "Critter Ranching" + UI.PST_KEYWORD + " Skill to care for critters";
 			}
 
 			public class FERTILITY
 			{
 				public static LocString NAME = "Reproduction";
 
-				public static LocString TOOLTIP = "At 100% Reproduction, critters will reach the end of their reproduction cycle and lay a new egg\n\nAfter an egg is laid, Reproduction is rolled back to 0%";
+				public static LocString TOOLTIP = "At 100% " + UI.PRE_KEYWORD + "Reproduction" + UI.PST_KEYWORD + ", critters will reach the end of their reproduction cycle and lay a new " + UI.PRE_KEYWORD + "Egg" + UI.PST_KEYWORD + "\n\nAfter an " + UI.PRE_KEYWORD + "Egg" + UI.PST_KEYWORD + " is laid, " + UI.PRE_KEYWORD + "Reproduction" + UI.PST_KEYWORD + " is rolled back to 0%";
 			}
 
 			public class INCUBATION
 			{
 				public static LocString NAME = "Incubation";
 
-				public static LocString TOOLTIP = "Eggs hatch into brand new critters at the end of their incubation period";
+				public static LocString TOOLTIP = "Eggs hatch into brand new " + UI.PRE_KEYWORD + "Critters" + UI.PST_KEYWORD + " at the end of their incubation period";
 			}
 
 			public class VIABILITY
 			{
 				public static LocString NAME = "Viability";
 
-				public static LocString TOOLTIP = "Eggs will lose viability over time when exposed to poor environmental conditions\n\nAt 0% Viability a critter egg will become \"Cracked\" and be unable to hatch";
+				public static LocString TOOLTIP = "Eggs will lose viability over time when exposed to poor environmental conditions\n\nAt 0% " + UI.PRE_KEYWORD + "Viability" + UI.PST_KEYWORD + " a critter egg will become \"Cracked\" and be unable to hatch";
 			}
 
 			public class IRRIGATION
@@ -1882,14 +1882,14 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Thermal Conductivity Barrier";
 
-				public static LocString TOOLTIP = "Thick conductivity barriers increase the time it takes an object to heat up or cool down";
+				public static LocString TOOLTIP = "Thick " + UI.PRE_KEYWORD + "Conductivity Barriers" + UI.PST_KEYWORD + " increase the time it takes an object to heat up or cool down";
 			}
 
 			public class ROT
 			{
-				public static LocString NAME = "Freshness Percent";
+				public static LocString NAME = "Freshness";
 
-				public static LocString TOOLTIP = "Food items become stale at fifty percent freshness, and rot at zero percent";
+				public static LocString TOOLTIP = "Food items become stale at fifty percent " + UI.PRE_KEYWORD + "Freshness" + UI.PST_KEYWORD + ", and rot at zero percent";
 			}
 
 			public class SCALEGROWTH
@@ -1903,7 +1903,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Air Pressure";
 
-				public static LocString TOOLTIP = "The average gas density of the air surrounding this plant";
+				public static LocString TOOLTIP = "The average " + UI.PRE_KEYWORD + "Gas" + UI.PST_KEYWORD + " density of the air surrounding this plant";
 			}
 		}
 
@@ -1927,7 +1927,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Base Reproduction";
 
-				public static LocString TOOLTIP = "This is the base speed with which critters produce new eggs";
+				public static LocString TOOLTIP = "This is the base speed with which critters produce new " + UI.PRE_KEYWORD + "Eggs" + UI.PST_KEYWORD;
 			}
 
 			public class BASE_INCUBATION_RATE
@@ -1944,7 +1944,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Lullabied";
 
-				public static LocString TOOLTIP = "This egg was recently sung to by a kind Duplicant" + UI.HORIZONTAL_BR_RULE + "Increased incubation rate\n\nDuplicants must possess the Critter Ranching Skill to sing to eggs";
+				public static LocString TOOLTIP = "This egg was recently sung to by a kind Duplicant" + UI.HORIZONTAL_BR_RULE + "Increased " + UI.PRE_KEYWORD + "Incubation Rate" + UI.PST_KEYWORD + "\n\nDuplicants must possess the " + UI.PRE_KEYWORD + "Critter Ranching" + UI.PST_KEYWORD + " Skill to sing to eggs";
 			}
 
 			public class INCUBATING
@@ -1965,7 +1965,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Groomed";
 
-				public static LocString TOOLTIP = "This critter has recently been attended to by a kind Duplicant\n\nDuplicants must possess the Critter Ranching Skill to care for critters";
+				public static LocString TOOLTIP = "This critter has recently been attended to by a kind Duplicant\n\nDuplicants must possess the " + UI.PRE_KEYWORD + "Critter Ranching" + UI.PST_KEYWORD + " Skill to care for critters";
 			}
 
 			public class HAPPY
@@ -1986,7 +1986,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Ate From Feeder";
 
-				public static LocString TOOLTIP = "This critter is getting tamer because it ate from a feeder.";
+				public static LocString TOOLTIP = "This critter is getting more " + UI.PRE_KEYWORD + "Tame" + UI.PST_KEYWORD + " because it ate from a feeder.";
 			}
 
 			public class WILD
@@ -2014,7 +2014,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Tame";
 
-				public static LocString TOOLTIP = "This critter is tame";
+				public static LocString TOOLTIP = "This critter is " + UI.PRE_KEYWORD + "Tame" + UI.PST_KEYWORD;
 			}
 
 			public class OUT_OF_CALORIES
@@ -2028,14 +2028,14 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Cramped";
 
-				public static LocString TOOLTIP = "This room will become overcrowded once all nearby eggs hatch\n\nThe selected critter has slowed its egg production to prevent further overpopulation";
+				public static LocString TOOLTIP = "This " + UI.PRE_KEYWORD + "Room" + UI.PST_KEYWORD + " will become overcrowded once all nearby " + UI.PRE_KEYWORD + "Eggs" + UI.PST_KEYWORD + " hatch\n\nThe selected critter has slowed its egg production to prevent further overpopulation";
 			}
 
 			public class OVERCROWDED
 			{
 				public static LocString NAME = "Overcrowded";
 
-				public static LocString TOOLTIP = "This critter isn't comfortable with so many other critters in a room of this size";
+				public static LocString TOOLTIP = "This critter isn't comfortable with so many other critters in a " + UI.PRE_KEYWORD + "Room" + UI.PST_KEYWORD + " of this size";
 			}
 
 			public class CONFINED

@@ -63,7 +63,7 @@ public class WoodGasGeneratorConfig : IBuildingConfig
 		Storage storage = go.AddOrGet<Storage>();
 		storage.SetDefaultStoredItemModifiers(Storage.StandardSealedStorage);
 		storage.showInUI = true;
-		float max_stored_mass = 1028.57141f;
+		float max_stored_input_mass = 1028.57141f;
 		go.AddOrGet<LoopingSounds>();
 		ManualDeliveryKG manualDeliveryKG = go.AddOrGet<ManualDeliveryKG>();
 		manualDeliveryKG.SetStorage(storage);
@@ -75,16 +75,7 @@ public class WoodGasGeneratorConfig : IBuildingConfig
 		energyGenerator.powerDistributionOrder = 8;
 		energyGenerator.ignoreBatteryRefillPercent = true;
 		energyGenerator.hasMeter = true;
-		EnergyGenerator.Formula formula = default(EnergyGenerator.Formula);
-		formula.inputs = new EnergyGenerator.InputItem[1]
-		{
-			new EnergyGenerator.InputItem(WoodLogConfig.TAG, 1.71428573f, max_stored_mass)
-		};
-		formula.outputs = new EnergyGenerator.OutputItem[1]
-		{
-			new EnergyGenerator.OutputItem(SimHashes.CarbonDioxide, 0.171428576f, false, new CellOffset(0, 1), 0f)
-		};
-		energyGenerator.formula = formula;
+		energyGenerator.formula = EnergyGenerator.CreateSimpleFormula(WoodLogConfig.TAG, 1.71428573f, max_stored_input_mass, SimHashes.CarbonDioxide, 0.171428576f, false, new CellOffset(0, 1));
 		Tinkerable.MakePowerTinkerable(go);
 		go.AddOrGetDef<PoweredActiveController.Def>();
 	}

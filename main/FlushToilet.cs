@@ -323,8 +323,7 @@ public class FlushToilet : StateMachineComponent<FlushToilet.SMInstance>, IUsabl
 		if (GetSMI() != null)
 		{
 			ConduitFlow liquidConduitFlow = Game.Instance.liquidConduitFlow;
-			ConduitFlow.ConduitContents contents = liquidConduitFlow.GetContents(outputCell);
-			bool value = contents.mass > 0f && base.smi.HasContaminatedMass();
+			bool value = liquidConduitFlow.GetContents(outputCell).mass > 0f && base.smi.HasContaminatedMass();
 			base.smi.sm.outputBlocked.Set(value, base.smi);
 		}
 	}

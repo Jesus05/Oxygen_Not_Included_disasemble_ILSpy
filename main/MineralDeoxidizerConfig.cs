@@ -53,7 +53,7 @@ public class MineralDeoxidizerConfig : IBuildingConfig
 		};
 		elementConverter.outputElements = new ElementConverter.OutputElement[1]
 		{
-			new ElementConverter.OutputElement(0.5f, SimHashes.Oxygen, 303.15f, false, 0f, 1f, false, 1f, byte.MaxValue, 0)
+			new ElementConverter.OutputElement(0.5f, SimHashes.Oxygen, 303.15f, false, false, 0f, 1f, 1f, byte.MaxValue, 0)
 		};
 		ManualDeliveryKG manualDeliveryKG = go.AddOrGet<ManualDeliveryKG>();
 		manualDeliveryKG.SetStorage(storage);

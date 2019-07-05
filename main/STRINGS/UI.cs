@@ -10,6 +10,12 @@ namespace STRINGS
 			Generic
 		}
 
+		public enum AutomationState
+		{
+			Active,
+			Standby
+		}
+
 		public class MATH_PICTURES
 		{
 			public class AXIS_LABELS
@@ -802,7 +808,7 @@ namespace STRINGS
 							{
 								public static LocString NAME = "Default";
 
-								public static LocString TOOLTIP = "Default morale expectations";
+								public static LocString TOOLTIP = "Default morale needs";
 							}
 
 							public static class EASY
@@ -1725,7 +1731,7 @@ namespace STRINGS
 				public static LocString EXPECTATION_ALERT_DESC_EXPECTATION = "This Duplicant's Morale is too low to handle the rigors of this position, which will cause them Stress over time.";
 			}
 
-			public static LocString CURRENT_MORALE = "Current Morale: {0}\nMorale Expectation: {1}";
+			public static LocString CURRENT_MORALE = "Current Morale: {0}\nMorale Need: {1}";
 
 			public static LocString SORT_BY_DUPLICANT = "Duplicants";
 
@@ -1743,7 +1749,7 @@ namespace STRINGS
 
 			public static LocString MORALE = "<b>Morale</b>";
 
-			public static LocString MORALE_EXPECTATION = "<b>Morale Expectation</b>";
+			public static LocString MORALE_EXPECTATION = "<b>Morale Need</b>";
 
 			public static LocString EXPERIENCE = "EXPERIENCE TO NEXT LEVEL";
 
@@ -4890,6 +4896,10 @@ namespace STRINGS
 				public static LocString GAMEOVER = "Colony Lost";
 
 				public static LocString VICTORY_CONDITIONS = "Hardwired Imperatives";
+
+				public static LocString SUMMARY_TITLE = "Colony Data";
+
+				public static LocString SKILLS_BUTTON = "Skills";
 			}
 
 			public class VALVESIDESCREEN
@@ -6453,7 +6463,7 @@ namespace STRINGS
 
 					public static LocString MASTERED_SKILLS = "<b><size=13>Learned Skills:</size></b>";
 
-					public static LocString MASTERED_SKILLS_TOOLTIP = "All traits and Morale Expectations become permanent once a Duplicant has learned a new skill" + HORIZONTAL_BR_RULE + "Skill Scrubbers can be built from the Stations Tab <color=#F44A47><b>[0]</b></color> to completely reset a Duplicant's learned skills, refunding all Skill Points";
+					public static LocString MASTERED_SKILLS_TOOLTIP = "All Traits and Morale Needs become permanent once a Duplicant has learned a new skill" + HORIZONTAL_BR_RULE + "Skill Scrubbers can be built from the Stations Tab <color=#F44A47><b>[0]</b></color> to completely reset a Duplicant's learned skills, refunding all Skill Points";
 
 					public static LocString JOBTRAINING_TOOLTIP = "{0} learned this skill while working as a {1}";
 				}
@@ -6728,7 +6738,7 @@ namespace STRINGS
 			{
 				public static LocString OPERATIONREQUIREMENTS = "All requirements must be met in order for this building to operate";
 
-				public static LocString REQUIRESPOWER = "Must be connected to a power grid with at least <b>{0}</b> of available " + PRE_KEYWORD + "Power" + PST_KEYWORD;
+				public static LocString REQUIRESPOWER = "Must be connected to a power grid with at least " + FormatAsNegativeRate("{0}") + " of available " + PRE_KEYWORD + "Power" + PST_KEYWORD;
 
 				public static LocString REQUIRESELEMENT = "Must receive deliveries of " + PRE_KEYWORD + "{0}" + PST_KEYWORD + " to function";
 
@@ -6772,7 +6782,13 @@ namespace STRINGS
 
 				public static LocString STORAGECAPACITY = "Holds up to <b>{0}</b> of material";
 
-				public static LocString ELEMENTEMITTED = "Produces " + FormatAsPositiveRate("{1}") + " of " + PRE_KEYWORD + "{0}" + PST_KEYWORD + " when in use";
+				public static LocString ELEMENTEMITTED_INPUTTEMP = "Produces " + FormatAsPositiveRate("{1}") + " of " + PRE_KEYWORD + "{0}" + PST_KEYWORD + " when in use\n\nIt will be the combined temperature of the input materials.";
+
+				public static LocString ELEMENTEMITTED_ENTITYTEMP = "Produces " + FormatAsPositiveRate("{1}") + " of " + PRE_KEYWORD + "{0}" + PST_KEYWORD + " when in use\n\nIt will be the temperature of the building at the time of production";
+
+				public static LocString ELEMENTEMITTED_MINTEMP = "Produces " + FormatAsPositiveRate("{1}") + " of " + PRE_KEYWORD + "{0}" + PST_KEYWORD + " when in use\n\nIt will be at least {2}, or hotter if the input materials are hotter.";
+
+				public static LocString ELEMENTEMITTED_FIXEDTEMP = "Produces " + FormatAsPositiveRate("{1}") + " of " + PRE_KEYWORD + "{0}" + PST_KEYWORD + " when in use\n\nIt will be produced at {2}.";
 
 				public static LocString ELEMENTCONSUMED = "Consumes " + FormatAsNegativeRate("{1}") + " of " + PRE_KEYWORD + "{0}" + PST_KEYWORD + " when in use";
 
@@ -6943,7 +6959,13 @@ namespace STRINGS
 
 			public static LocString STORAGECAPACITY = "Storage capacity: {0}";
 
-			public static LocString ELEMENTEMITTED = "{0}: {1}";
+			public static LocString ELEMENTEMITTED_INPUTTEMP = "{0}: {1}";
+
+			public static LocString ELEMENTEMITTED_ENTITYTEMP = "{0}: {1}";
+
+			public static LocString ELEMENTEMITTED_MINTEMP = "{0}: {1}";
+
+			public static LocString ELEMENTEMITTED_FIXEDTEMP = "{0}: {1}";
 
 			public static LocString ELEMENTCONSUMED = "{0}: {1}";
 
@@ -7755,6 +7777,12 @@ namespace STRINGS
 
 		public static string PST_RATE = "</style>";
 
+		public static string PRE_AUTOMATION_ACTIVE = "<b>";
+
+		public static string PRE_AUTOMATION_STANDBY = "<b>";
+
+		public static string PST_AUTOMATION = "</b>";
+
 		public static string HORIZONTAL_RULE = "------------------";
 
 		public static string HORIZONTAL_BR_RULE = "\n" + HORIZONTAL_RULE + "\n";
@@ -7959,7 +7987,17 @@ namespace STRINGS
 
 		public static string FormatAsBuildMenuTab(string text)
 		{
-			return PRE_KEYWORD + text + PST_KEYWORD;
+			return "<b>" + text + "</b>";
+		}
+
+		public static string FormatAsOverlay(string text)
+		{
+			return "<b>" + text + "</b>";
+		}
+
+		public static string FormatAsManagementMenu(string text)
+		{
+			return "<b>" + text + "</b>";
 		}
 
 		public static string FormatAsKeyWord(string text)
@@ -7997,6 +8035,15 @@ namespace STRINGS
 		public static string FormatAsNegativeRate(string text)
 		{
 			return PRE_RATE_NEGATIVE + text + PST_RATE;
+		}
+
+		public static string FormatAsAutomationState(string text, AutomationState state)
+		{
+			if (state != 0)
+			{
+				return PRE_AUTOMATION_STANDBY + text + PST_AUTOMATION;
+			}
+			return PRE_AUTOMATION_ACTIVE + text + PST_AUTOMATION;
 		}
 
 		public static string ExtractLinkID(string text)

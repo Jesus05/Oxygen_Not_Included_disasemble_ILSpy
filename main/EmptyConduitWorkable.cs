@@ -153,8 +153,7 @@ public class EmptyConduitWorkable : Workable
 			else if (elapsedTime > 2f)
 			{
 				int cell = Grid.PosToCell(base.transform.GetPosition());
-				ConduitFlow.ConduitContents contents = GetFlowManager().GetContents(cell);
-				if (contents.mass > 0f)
+				if (GetFlowManager().GetContents(cell).mass > 0f)
 				{
 					elapsedTime = 0f;
 					emptiedPipe = false;

@@ -79,7 +79,7 @@ public class FertilizerMakerConfig : IBuildingConfig
 		};
 		elementConverter.outputElements = new ElementConverter.OutputElement[1]
 		{
-			new ElementConverter.OutputElement(0.12f, SimHashes.Fertilizer, 323.15f, true, 0f, 0.5f, false, 1f, byte.MaxValue, 0)
+			new ElementConverter.OutputElement(0.12f, SimHashes.Fertilizer, 323.15f, false, true, 0f, 0.5f, 1f, byte.MaxValue, 0)
 		};
 		BuildingElementEmitter buildingElementEmitter = go.AddOrGet<BuildingElementEmitter>();
 		buildingElementEmitter.emitRate = 0.01f;

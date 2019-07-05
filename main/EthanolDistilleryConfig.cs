@@ -74,9 +74,9 @@ public class EthanolDistilleryConfig : IBuildingConfig
 		};
 		elementConverter.outputElements = new ElementConverter.OutputElement[3]
 		{
-			new ElementConverter.OutputElement(0.5f, SimHashes.Ethanol, 346.5f, true, 0f, 0.5f, false, 1f, byte.MaxValue, 0),
-			new ElementConverter.OutputElement(0.166666672f, SimHashes.ToxicSand, 366.5f, false, 0f, 0.5f, false, 1f, byte.MaxValue, 0),
-			new ElementConverter.OutputElement(0.0833333358f, SimHashes.CarbonDioxide, 366.5f, false, 0f, 0.5f, false, 1f, byte.MaxValue, 0)
+			new ElementConverter.OutputElement(0.5f, SimHashes.Ethanol, 346.5f, false, true, 0f, 0.5f, 1f, byte.MaxValue, 0),
+			new ElementConverter.OutputElement(0.166666672f, SimHashes.ToxicSand, 366.5f, false, false, 0f, 0.5f, 1f, byte.MaxValue, 0),
+			new ElementConverter.OutputElement(0.0833333358f, SimHashes.CarbonDioxide, 366.5f, false, false, 0f, 0.5f, 1f, byte.MaxValue, 0)
 		};
 		AlgaeDistillery algaeDistillery = go.AddOrGet<AlgaeDistillery>();
 		algaeDistillery.emitMass = 10f;

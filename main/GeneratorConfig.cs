@@ -37,7 +37,7 @@ public class GeneratorConfig : IBuildingConfig
 	{
 		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.IndustrialMachinery);
 		EnergyGenerator energyGenerator = go.AddOrGet<EnergyGenerator>();
-		energyGenerator.formula = EnergyGenerator.CreateSimpleFormula(SimHashes.Carbon, 1f, 600f, SimHashes.Void, 0f, true);
+		energyGenerator.formula = EnergyGenerator.CreateSimpleFormula(SimHashes.Carbon.CreateTag(), 1f, 600f, SimHashes.CarbonDioxide, 0.02f, false, new CellOffset(1, 2));
 		energyGenerator.meterOffset = Meter.Offset.Behind;
 		energyGenerator.SetSliderValue(50f, 0);
 		energyGenerator.powerDistributionOrder = 9;
@@ -51,11 +51,6 @@ public class GeneratorConfig : IBuildingConfig
 		manualDeliveryKG.capacity = storage.capacityKg;
 		manualDeliveryKG.refillMass = 100f;
 		manualDeliveryKG.choreTypeIDHash = Db.Get().ChoreTypes.PowerFetch.IdHash;
-		BuildingElementEmitter buildingElementEmitter = go.AddOrGet<BuildingElementEmitter>();
-		buildingElementEmitter.emitRate = 0.02f;
-		buildingElementEmitter.temperature = 310f;
-		buildingElementEmitter.element = SimHashes.CarbonDioxide;
-		buildingElementEmitter.modifierOffset = new Vector2(1f, 2f);
 		Tinkerable.MakePowerTinkerable(go);
 	}
 

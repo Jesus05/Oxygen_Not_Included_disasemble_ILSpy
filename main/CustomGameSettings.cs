@@ -51,7 +51,10 @@ public class CustomGameSettings : KMonoBehaviour
 		}
 		if (CurrentQualityLevelsBySetting.ContainsKey("CarePackages "))
 		{
-			CurrentQualityLevelsBySetting.Add(CustomGameSettingConfigs.CarePackages.id, CurrentQualityLevelsBySetting["CarePackages "]);
+			if (!CurrentQualityLevelsBySetting.ContainsKey(CustomGameSettingConfigs.CarePackages.id))
+			{
+				CurrentQualityLevelsBySetting.Add(CustomGameSettingConfigs.CarePackages.id, CurrentQualityLevelsBySetting["CarePackages "]);
+			}
 			CurrentQualityLevelsBySetting.Remove("CarePackages ");
 		}
 	}

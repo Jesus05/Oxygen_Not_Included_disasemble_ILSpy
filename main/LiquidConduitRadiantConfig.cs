@@ -64,7 +64,7 @@ public class LiquidConduitRadiantConfig : IBuildingConfig
 		KAnimGraphTileVisualizer kAnimGraphTileVisualizer = go.AddComponent<KAnimGraphTileVisualizer>();
 		kAnimGraphTileVisualizer.connectionSource = KAnimGraphTileVisualizer.ConnectionSource.Liquid;
 		kAnimGraphTileVisualizer.isPhysicalBuilding = true;
-		go.GetComponent<KPrefabID>().AddTag(GameTags.Pipes);
+		go.GetComponent<KPrefabID>().AddTag(GameTags.Pipes, false);
 		LiquidConduitConfig.CommonConduitPostConfigureComplete(go);
 	}
 }

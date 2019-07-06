@@ -30,6 +30,9 @@ public class KPrefabID : KMonoBehaviour, ISaveLoadable
 
 	public List<Descriptor> AdditionalEffects;
 
+	[Serialize]
+	private HashSet<Tag> serializedTags = new HashSet<Tag>();
+
 	private HashSet<Tag> tags = new HashSet<Tag>();
 
 	private static readonly EventSystem.IntraObjectHandler<KPrefabID> OnObjectDestroyedDelegate = new EventSystem.IntraObjectHandler<KPrefabID>(delegate(KPrefabID component, object data)
@@ -107,6 +110,13 @@ public class KPrefabID : KMonoBehaviour, ISaveLoadable
 		{
 			dirtyTagBits = true;
 		}
+		foreach (Tag serializedTag in serializedTags)
+		{
+			if (tags.Add(serializedTag))
+			{
+				dirtyTagBits = true;
+			}
+		}
 	}
 
 	public void UpdateSaveLoadTag()
@@ -167,13 +177,17 @@ public class KPrefabID : KMonoBehaviour, ISaveLoadable
 		}
 	}
 
-	public void AddTag(Tag tag)
+	public void AddTag(Tag tag, bool serialize = false)
 	{
 		DebugUtil.Assert(tag.IsValid);
 		if (Tags.Add(tag))
 		{
 			dirtyTagBits = true;
 			Trigger(-1582839653, null);
+		}
+		if (serialize)
+		{
+			serializedTags.Add(tag);
 		}
 	}
 
@@ -184,13 +198,14 @@ public class KPrefabID : KMonoBehaviour, ISaveLoadable
 			dirtyTagBits = true;
 			Trigger(-1582839653, null);
 		}
+		serializedTags.Remove(tag);
 	}
 
 	public void SetTag(Tag tag, bool set)
 	{
 		if (set)
 		{
-			AddTag(tag);
+			AddTag(tag, false);
 		}
 		else
 		{

@@ -27,7 +27,7 @@ public class WaterCoolerConfig : IBuildingConfig
 
 	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
-		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.RecBuilding);
+		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.RecBuilding, false);
 		Prioritizable.AddRef(go);
 		Storage storage = go.AddOrGet<Storage>();
 		storage.capacityKg = 10f;

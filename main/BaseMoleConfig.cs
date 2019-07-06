@@ -31,7 +31,7 @@ public static class BaseMoleConfig
 		def.depthToDig = MoleTuning.DEPTH_TO_HIDE;
 		EntityTemplates.CreateAndRegisterBaggedCreature(gameObject, true, true, false);
 		KPrefabID component = gameObject.GetComponent<KPrefabID>();
-		component.AddTag(GameTags.Creatures.Walker);
+		component.AddTag(GameTags.Creatures.Walker, false);
 		ChoreTable.Builder chore_table = new ChoreTable.Builder().Add(new DeathStates.Def(), true).Add(new AnimInterruptStates.Def(), true).Add(new FallStates.Def(), true)
 			.Add(new StunnedStates.Def(), true)
 			.Add(new DrowningStates.Def(), true)

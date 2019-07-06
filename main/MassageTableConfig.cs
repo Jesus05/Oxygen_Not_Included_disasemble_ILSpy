@@ -32,7 +32,7 @@ public class MassageTableConfig : IBuildingConfig
 	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.AddOrGet<LoopingSounds>();
-		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.MassageTable);
+		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.MassageTable, false);
 		MassageTable massageTable = go.AddOrGet<MassageTable>();
 		massageTable.overrideAnims = new KAnimFile[1]
 		{

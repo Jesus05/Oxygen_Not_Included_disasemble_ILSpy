@@ -417,7 +417,7 @@ public class PrimaryElement : KMonoBehaviour, ISaveLoadable
 				}
 				foreach (Tag item2 in list)
 				{
-					component.AddTag(item2);
+					component.AddTag(item2, false);
 				}
 			}
 		}

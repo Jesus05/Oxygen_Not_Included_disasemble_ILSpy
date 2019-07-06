@@ -60,13 +60,13 @@ public class GlassTileConfig : IBuildingConfig
 		BuildingHP buildingHP = go.AddOrGet<BuildingHP>();
 		buildingHP.destroyOnDamaged = true;
 		KPrefabID component = go.GetComponent<KPrefabID>();
-		component.AddTag(GameTags.Window);
+		component.AddTag(GameTags.Window, false);
 	}
 
 	public override void DoPostConfigureComplete(GameObject go)
 	{
 		GeneratedBuildings.RemoveLoopingSounds(go);
-		go.GetComponent<KPrefabID>().AddTag(GameTags.FloorTiles);
+		go.GetComponent<KPrefabID>().AddTag(GameTags.FloorTiles, false);
 	}
 
 	public override void DoPostConfigureUnderConstruction(GameObject go)

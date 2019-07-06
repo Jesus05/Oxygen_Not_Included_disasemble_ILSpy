@@ -152,7 +152,7 @@ public class Wire : KMonoBehaviour, IDisconnectable, IFirstFrameCallback, IWatta
 	protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
-		GetComponent<KPrefabID>().AddTag(GameTags.Wires);
+		GetComponent<KPrefabID>().AddTag(GameTags.Wires, false);
 		if (WireCircuitStatus == null)
 		{
 			WireCircuitStatus = new StatusItem("WireCircuitStatus", "BUILDING", "", StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, true, 129022).SetResolveStringCallback(delegate(string str, object data)

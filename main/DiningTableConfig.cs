@@ -28,7 +28,7 @@ public class DiningTableConfig : IBuildingConfig
 	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.AddOrGet<LoopingSounds>();
-		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.MessTable);
+		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.MessTable, false);
 		go.AddOrGet<MessStation>();
 		go.AddOrGet<AnimTileable>();
 	}

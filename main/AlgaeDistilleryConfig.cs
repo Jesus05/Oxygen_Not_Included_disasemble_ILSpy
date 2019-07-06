@@ -46,7 +46,7 @@ public class AlgaeDistilleryConfig : IBuildingConfig
 
 	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
-		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.IndustrialMachinery);
+		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.IndustrialMachinery, false);
 		AlgaeDistillery algaeDistillery = go.AddOrGet<AlgaeDistillery>();
 		algaeDistillery.emitTag = new Tag("Algae");
 		algaeDistillery.emitMass = 30f;

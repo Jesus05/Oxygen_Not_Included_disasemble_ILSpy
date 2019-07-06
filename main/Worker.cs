@@ -204,7 +204,7 @@ public class Worker : KMonoBehaviour
 		{
 			workable.ShowProgressBar(false);
 		}
-		GetComponent<KPrefabID>().AddTag(GameTags.PreventChoreInterruption);
+		GetComponent<KPrefabID>().AddTag(GameTags.PreventChoreInterruption, false);
 		state = State.PendingCompletion;
 		workPendingCompletionTime = Time.time;
 		KAnimControllerBase component = GetComponent<KAnimControllerBase>();

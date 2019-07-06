@@ -119,7 +119,7 @@ public class ConduitFlowVisualizer
 
 	private struct RenderMeshContext
 	{
-		public ListPool<int, ConduitFlowVisualizer>.PooledList visible_conduits;
+		public ListPool<int, ConduitFlowVisualizer>.PooledList visible_cells;
 
 		public ConduitFlowVisualizer outer;
 
@@ -129,21 +129,21 @@ public class ConduitFlowVisualizer
 		{
 			this.outer = outer;
 			this.lerp_percent = lerp_percent;
-			visible_conduits = ListPool<int, ConduitFlowVisualizer>.Allocate();
-			visible_conduits.Capacity = outer.flowManager.soaInfo.NumEntries;
+			visible_cells = ListPool<int, ConduitFlowVisualizer>.Allocate();
+			visible_cells.Capacity = outer.flowManager.soaInfo.NumEntries;
 			for (int i = 0; i != outer.flowManager.soaInfo.NumEntries; i++)
 			{
 				Vector2I vector2I = Grid.CellToXY(outer.flowManager.soaInfo.GetCell(i));
 				if (min <= vector2I && vector2I <= max)
 				{
-					visible_conduits.Add(i);
+					visible_cells.Add(i);
 				}
 			}
 		}
 
 		public void Finish()
 		{
-			visible_conduits.Recycle();
+			visible_cells.Recycle();
 		}
 	}
 
@@ -168,15 +168,15 @@ public class ConduitFlowVisualizer
 
 			private Color32 color;
 
-			private ConduitFlow.FlowDirections direction;
+			private ConduitFlow.FlowDirection direction;
 
 			private bool foreground;
 
 			private bool highlight;
 
-			private static Dictionary<ConduitFlow.FlowDirections, UVPack> uv_packs = new Dictionary<ConduitFlow.FlowDirections, UVPack>();
+			private static Dictionary<ConduitFlow.FlowDirection, UVPack> uv_packs = new Dictionary<ConduitFlow.FlowDirection, UVPack>();
 
-			public Ball(ConduitFlow.FlowDirections direction, Vector2 pos, Color32 color, float size, bool foreground, bool highlight)
+			public Ball(ConduitFlow.FlowDirection direction, Vector2 pos, Color32 color, float size, bool foreground, bool highlight)
 			{
 				this.pos = pos;
 				this.size = size;
@@ -188,32 +188,32 @@ public class ConduitFlowVisualizer
 
 			public static void InitializeResources()
 			{
-				uv_packs[ConduitFlow.FlowDirections.None] = new UVPack
+				uv_packs[ConduitFlow.FlowDirection.Blocked] = new UVPack
 				{
 					bl = new Vector2I(0, 0),
 					tl = new Vector2I(0, 1),
 					br = new Vector2I(1, 0),
 					tr = new Vector2I(1, 1)
 				};
-				uv_packs[ConduitFlow.FlowDirections.Left] = new UVPack
+				uv_packs[ConduitFlow.FlowDirection.Left] = new UVPack
 				{
 					bl = new Vector2I(0, 0),
 					tl = new Vector2I(0, 1),
 					br = new Vector2I(1, 0),
 					tr = new Vector2I(1, 1)
 				};
-				uv_packs[ConduitFlow.FlowDirections.Right] = uv_packs[ConduitFlow.FlowDirections.Left];
-				uv_packs[ConduitFlow.FlowDirections.Up] = new UVPack
+				uv_packs[ConduitFlow.FlowDirection.Right] = uv_packs[ConduitFlow.FlowDirection.Left];
+				uv_packs[ConduitFlow.FlowDirection.Up] = new UVPack
 				{
 					bl = new Vector2I(1, 0),
 					tl = new Vector2I(0, 0),
 					br = new Vector2I(1, 1),
 					tr = new Vector2I(0, 1)
 				};
-				uv_packs[ConduitFlow.FlowDirections.Down] = uv_packs[ConduitFlow.FlowDirections.Up];
+				uv_packs[ConduitFlow.FlowDirection.Down] = uv_packs[ConduitFlow.FlowDirection.Up];
 			}
 
-			private static UVPack GetUVPack(ConduitFlow.FlowDirections direction)
+			private static UVPack GetUVPack(ConduitFlow.FlowDirection direction)
 			{
 				return uv_packs[direction];
 			}
@@ -253,7 +253,8 @@ public class ConduitFlowVisualizer
 			Element element = null;
 			for (int i = start; i != end; i++)
 			{
-				ConduitFlow.Conduit conduit = context.outer.flowManager.soaInfo.GetConduit(context.visible_conduits[i]);
+				int idx = context.visible_cells[i];
+				ConduitFlow.Conduit conduit = context.outer.flowManager.soaInfo.GetConduit(idx);
 				ConduitFlow.ConduitFlowInfo lastFlowInfo = conduit.GetLastFlowInfo(context.outer.flowManager);
 				ConduitFlow.ConduitContents initialContents = conduit.GetInitialContents(context.outer.flowManager);
 				if (lastFlowInfo.contents.mass > 0f)
@@ -304,7 +305,7 @@ public class ConduitFlowVisualizer
 					float num3 = context.outer.CalculateMassScale(mass);
 					if (context.outer.showContents)
 					{
-						static_balls.Add(new Ball(ConduitFlow.FlowDirections.None, pos2, cellTintColour3, context.outer.tuning.size * num3, false, false));
+						static_balls.Add(new Ball(ConduitFlow.FlowDirection.Blocked, pos2, cellTintColour3, context.outer.tuning.size * num3, false, false));
 						if (element == null || initialContents.element != element.id)
 						{
 							element = ElementLoader.FindElementByHash(initialContents.element);
@@ -316,7 +317,7 @@ public class ConduitFlowVisualizer
 						highlight2 = (cell2 == context.outer.highlightedCell);
 					}
 					Color32 contentsColor2 = context.outer.GetContentsColor(element, cellTintColour3);
-					static_balls.Add(new Ball(ConduitFlow.FlowDirections.None, pos2, contentsColor2, context.outer.tuning.size * num3, true, highlight2));
+					static_balls.Add(new Ball(ConduitFlow.FlowDirection.Blocked, pos2, contentsColor2, context.outer.tuning.size * num3, true, highlight2));
 				}
 			}
 		}
@@ -480,19 +481,19 @@ public class ConduitFlowVisualizer
 		Vector2I max2 = visibleArea.Max;
 		Vector2I max3 = new Vector2I(a3, Mathf.Min(a4, max2.y + 1));
 		RenderMeshContext shared_data = new RenderMeshContext(this, lerp_percent, min3, max3);
-		if (shared_data.visible_conduits.Count == 0)
+		if (shared_data.visible_cells.Count == 0)
 		{
 			shared_data.Finish();
 		}
 		else
 		{
 			render_mesh_job.Reset(shared_data);
-			int num = Mathf.Max(1, (int)((float)(shared_data.visible_conduits.Count / CPUBudget.coreCount) / 1.5f));
-			int num2 = Mathf.Max(1, shared_data.visible_conduits.Count / num);
+			int num = Mathf.Max(1, (int)((float)(shared_data.visible_cells.Count / CPUBudget.coreCount) / 1.5f));
+			int num2 = Mathf.Max(1, shared_data.visible_cells.Count / num);
 			for (int i = 0; i != num2; i++)
 			{
 				int num3 = i * num;
-				int end = (i != num2 - 1) ? (num3 + num) : shared_data.visible_conduits.Count;
+				int end = (i != num2 - 1) ? (num3 + num) : shared_data.visible_cells.Count;
 				render_mesh_job.Add(new RenderMeshTask(num3, end));
 			}
 			GlobalJobManager.Run(render_mesh_job);

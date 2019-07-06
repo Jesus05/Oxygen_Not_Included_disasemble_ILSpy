@@ -1120,7 +1120,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "    • " + DUPLICANTS.STATS.TEMPERATURE.NAME;
 
-				public static LocString TOOLTIP = "Growth will resume when ambient " + UI.PRE_KEYWORD + "Temperature" + UI.PST_KEYWORD + " is between <b.{low_temperature}</b> and <b>{high_temperature}</b>";
+				public static LocString TOOLTIP = "Growth will resume when ambient " + UI.PRE_KEYWORD + "Temperature" + UI.PST_KEYWORD + " is between <b>{low_temperature}</b> and <b>{high_temperature}</b>";
 			}
 
 			public class PERFECTTEMPERATURE

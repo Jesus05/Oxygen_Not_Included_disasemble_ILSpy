@@ -103,8 +103,8 @@ public class JetSuitConfig : IEquipmentConfig
 		HelmetController helmetController = go.AddComponent<HelmetController>();
 		helmetController.has_jets = true;
 		KPrefabID component = go.GetComponent<KPrefabID>();
-		component.AddTag(GameTags.Clothes);
-		component.AddTag(GameTags.PedestalDisplayable);
+		component.AddTag(GameTags.Clothes, false);
+		component.AddTag(GameTags.PedestalDisplayable, false);
 		go.AddComponent<SuitDiseaseHandler>();
 	}
 }

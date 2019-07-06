@@ -193,7 +193,7 @@ public class DecorProvider : KMonoBehaviour, IEffectDescriptor, IGameObjectEffec
 		{
 			if (flag2)
 			{
-				component.AddTag(RoomConstraints.ConstraintTags.Decor20);
+				component.AddTag(RoomConstraints.ConstraintTags.Decor20, false);
 			}
 			else
 			{

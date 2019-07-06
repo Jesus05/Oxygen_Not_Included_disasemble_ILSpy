@@ -37,7 +37,7 @@ public class SmallSculptureConfig : IBuildingConfig
 	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.AddOrGet<BuildingComplete>().isArtable = true;
-		go.GetComponent<KPrefabID>().AddTag(GameTags.Decoration);
+		go.GetComponent<KPrefabID>().AddTag(GameTags.Decoration, false);
 	}
 
 	public override void DoPostConfigureComplete(GameObject go)

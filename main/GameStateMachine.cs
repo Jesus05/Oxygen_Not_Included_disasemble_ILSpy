@@ -905,7 +905,7 @@ public abstract class GameStateMachine<StateMachineType, StateMachineInstanceTyp
 			TargetParameter state_target = GetStateTarget();
 			Enter("AddTag(" + tag.Name + ")", delegate(StateMachineInstanceType smi)
 			{
-				state_target.Get<KPrefabID>(smi).AddTag(tag);
+				state_target.Get<KPrefabID>(smi).AddTag(tag, false);
 			});
 			Exit("RemoveTag(" + tag.Name + ")", delegate(StateMachineInstanceType smi)
 			{

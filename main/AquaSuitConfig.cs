@@ -40,6 +40,6 @@ public class AquaSuitConfig : IEquipmentConfig
 		suitTank.underwaterSupport = true;
 		suitTank.element = "Oxygen";
 		suitTank.amount = 11f;
-		go.GetComponent<KPrefabID>().AddTag(GameTags.Clothes);
+		go.GetComponent<KPrefabID>().AddTag(GameTags.Clothes, false);
 	}
 }

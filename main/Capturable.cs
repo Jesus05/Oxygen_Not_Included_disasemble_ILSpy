@@ -192,7 +192,7 @@ public class Capturable : Workable, IGameObjectEffectDescriptor
 	protected override void OnStartWork(Worker worker)
 	{
 		KPrefabID component = GetComponent<KPrefabID>();
-		component.AddTag(GameTags.Creatures.Stunned);
+		component.AddTag(GameTags.Creatures.Stunned, false);
 	}
 
 	protected override void OnStopWork(Worker worker)

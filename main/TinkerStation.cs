@@ -29,6 +29,8 @@ public class TinkerStation : Workable, IEffectDescriptor, ISim1000ms
 
 	public Tag outputPrefab;
 
+	public float outputTemperature;
+
 	private static readonly EventSystem.IntraObjectHandler<TinkerStation> OnOperationalChangedDelegate = new EventSystem.IntraObjectHandler<TinkerStation>(delegate(TinkerStation component, object data)
 	{
 		component.OnOperationalChanged(data);
@@ -136,6 +138,7 @@ public class TinkerStation : Workable, IEffectDescriptor, ISim1000ms
 		base.OnCompleteWork(worker);
 		storage.ConsumeAndGetDisease(inputMaterial, massPerTinker, out SimUtil.DiseaseInfo _, out float _);
 		GameObject gameObject = GameUtil.KInstantiate(Assets.GetPrefab(outputPrefab), base.transform.GetPosition(), Grid.SceneLayer.Ore, null, 0);
+		gameObject.GetComponent<PrimaryElement>().Temperature = outputTemperature;
 		gameObject.SetActive(true);
 		chore = null;
 	}

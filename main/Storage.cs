@@ -1141,7 +1141,7 @@ public class Storage : Workable, ISaveLoadableDetails, IEffectDescriptor
 		{
 			if (is_stored)
 			{
-				go.GetComponent<KPrefabID>().AddTag(GameTags.Sealed);
+				go.GetComponent<KPrefabID>().AddTag(GameTags.Sealed, false);
 			}
 			else
 			{
@@ -1156,7 +1156,7 @@ public class Storage : Workable, ISaveLoadableDetails, IEffectDescriptor
 		{
 			if (is_stored)
 			{
-				go.GetComponent<KPrefabID>().AddTag(GameTags.Preserved);
+				go.GetComponent<KPrefabID>().AddTag(GameTags.Preserved, false);
 			}
 			else
 			{

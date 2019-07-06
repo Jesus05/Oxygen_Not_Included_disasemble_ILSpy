@@ -57,7 +57,7 @@ public class DeathMonitor : GameStateMachine<DeathMonitor, DeathMonitor.Instance
 					component.RegisterListeners();
 				}
 			}
-			GetComponent<KPrefabID>().AddTag(GameTags.Corpse);
+			GetComponent<KPrefabID>().AddTag(GameTags.Corpse, false);
 		}
 	}
 

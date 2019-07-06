@@ -81,7 +81,7 @@ public class EntityTemplates
 		{
 			foreach (Tag additionalTag in additionalTags)
 			{
-				kPrefabID.AddTag(additionalTag);
+				kPrefabID.AddTag(additionalTag, false);
 			}
 		}
 		KBatchedAnimController kBatchedAnimController = template.AddOrGet<KBatchedAnimController>();
@@ -314,7 +314,7 @@ public class EntityTemplates
 	{
 		template.GetComponent<KBatchedAnimController>().isMovable = true;
 		KPrefabID kPrefabID = template.AddOrGet<KPrefabID>();
-		kPrefabID.AddTag(GameTags.Creature);
+		kPrefabID.AddTag(GameTags.Creature, false);
 		Modifiers modifiers = template.AddOrGet<Modifiers>();
 		if (initialTraitID != null)
 		{
@@ -374,7 +374,7 @@ public class EntityTemplates
 		ChoreConsumer chore_consumer = prefab.AddOrGet<ChoreConsumer>();
 		chore_consumer.choreTable = chore_table.CreateTable();
 		KPrefabID kPrefabID = prefab.AddOrGet<KPrefabID>();
-		kPrefabID.AddTag(GameTags.CreatureBrain);
+		kPrefabID.AddTag(GameTags.CreatureBrain, false);
 		kPrefabID.instantiateFn += delegate(GameObject go)
 		{
 			go.GetComponent<ChoreConsumer>().choreTable = chore_consumer.choreTable;
@@ -399,7 +399,7 @@ public class EntityTemplates
 	public static GameObject CreateAndRegisterBaggedCreature(GameObject creature, bool must_stand_on_top_for_pickup, bool allow_mark_for_capture, bool use_gun_for_pickup = false)
 	{
 		KPrefabID creature_prefab_id = creature.GetComponent<KPrefabID>();
-		creature_prefab_id.AddTag(GameTags.BagableCreature);
+		creature_prefab_id.AddTag(GameTags.BagableCreature, false);
 		Baggable baggable = creature.AddOrGet<Baggable>();
 		baggable.mustStandOntopOfTrapForPickup = must_stand_on_top_for_pickup;
 		baggable.useGunForPickup = use_gun_for_pickup;
@@ -473,12 +473,12 @@ public class EntityTemplates
 		{
 			foreach (Tag additionalTag in additionalTags)
 			{
-				kPrefabID.AddTag(additionalTag);
+				kPrefabID.AddTag(additionalTag, false);
 			}
 		}
 		if (element.lowTemp < 296.15f && element.highTemp > 296.15f)
 		{
-			kPrefabID.AddTag(GameTags.PedestalDisplayable);
+			kPrefabID.AddTag(GameTags.PedestalDisplayable, false);
 		}
 		PrimaryElement primaryElement = gameObject.AddOrGet<PrimaryElement>();
 		primaryElement.SetElement(elementID);
@@ -535,7 +535,7 @@ public class EntityTemplates
 			CreateAndRegisterCompostableFromPrefab(template);
 		}
 		KPrefabID component = template.GetComponent<KPrefabID>();
-		component.AddTag(GameTags.PedestalDisplayable);
+		component.AddTag(GameTags.PedestalDisplayable, false);
 		if (foodInfo.CaloriesPerUnit > 0f)
 		{
 			Edible edible = template.AddOrGet<Edible>();
@@ -548,7 +548,7 @@ public class EntityTemplates
 		}
 		else
 		{
-			component.AddTag(GameTags.CookingIngredient);
+			component.AddTag(GameTags.CookingIngredient, false);
 			template.AddOrGet<HasSortOrder>();
 		}
 		return template;
@@ -558,7 +558,7 @@ public class EntityTemplates
 	{
 		template.AddOrGet<EntitySplitter>();
 		KPrefabID component = template.GetComponent<KPrefabID>();
-		component.AddTag(GameTags.Medicine);
+		component.AddTag(GameTags.Medicine, false);
 		MedicinalPill medicinalPill = template.AddOrGet<MedicinalPill>();
 		medicinalPill.info = medicineInfo;
 		return template;
@@ -659,13 +659,13 @@ public class EntityTemplates
 		KPrefabID component = gameObject.GetComponent<KPrefabID>();
 		foreach (Tag additionalTag in additionalTags)
 		{
-			component.AddTag(additionalTag);
+			component.AddTag(additionalTag, false);
 		}
 		if (!ignoreDefaultSeedTag)
 		{
-			component.AddTag(GameTags.Seed);
+			component.AddTag(GameTags.Seed, false);
 		}
-		component.AddTag(GameTags.PedestalDisplayable);
+		component.AddTag(GameTags.PedestalDisplayable, false);
 		KPrefabID component2 = gameObject.GetComponent<KPrefabID>();
 		Assets.AddPrefab(component2);
 		SeedProducer seedProducer = plant.AddOrGet<SeedProducer>();

@@ -12,7 +12,7 @@ public class IntermediateCureConfig : IEntityConfig
 	{
 		GameObject gameObject = EntityTemplates.CreateLooseEntity("IntermediateCure", ITEMS.PILLS.INTERMEDIATECURE.NAME, ITEMS.PILLS.INTERMEDIATECURE.DESC, 1f, true, Assets.GetAnim("iv_slimelung_kanim"), "object", Grid.SceneLayer.Front, EntityTemplates.CollisionShape.RECTANGLE, 0.8f, 0.4f, true, 0, SimHashes.Creature, null);
 		KPrefabID component = gameObject.GetComponent<KPrefabID>();
-		component.AddTag(GameTags.MedicalSupplies);
+		component.AddTag(GameTags.MedicalSupplies, false);
 		ComplexRecipe.RecipeElement[] array = new ComplexRecipe.RecipeElement[2]
 		{
 			new ComplexRecipe.RecipeElement(SwampLilyFlowerConfig.ID, 1f),

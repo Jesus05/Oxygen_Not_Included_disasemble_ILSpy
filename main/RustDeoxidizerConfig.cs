@@ -47,7 +47,7 @@ public class RustDeoxidizerConfig : IBuildingConfig
 
 	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
-		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.IndustrialMachinery);
+		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.IndustrialMachinery, false);
 		RustDeoxidizer rustDeoxidizer = go.AddOrGet<RustDeoxidizer>();
 		rustDeoxidizer.maxMass = 1.8f;
 		Storage storage = go.AddOrGet<Storage>();

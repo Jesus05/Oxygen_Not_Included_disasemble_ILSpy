@@ -34,7 +34,7 @@ public class Placeable : KMonoBehaviour
 	protected override void OnSpawn()
 	{
 		base.OnSpawn();
-		prefabId.AddTag(new Tag(prefabId.InstanceID.ToString()));
+		prefabId.AddTag(new Tag(prefabId.InstanceID.ToString()), false);
 		if (targetCell != -1)
 		{
 			QueuePlacement(targetCell);

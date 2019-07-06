@@ -34,6 +34,8 @@ public class CookingStationConfig : IBuildingConfig
 	{
 		go.AddOrGet<BuildingComplete>().isManuallyOperated = true;
 		CookingStation cookingStation = go.AddOrGet<CookingStation>();
+		cookingStation.resultState = ComplexFabricator.ResultState.Heated;
+		cookingStation.heatedTemperature = 368.15f;
 		go.AddOrGet<FabricatorIngredientStatusManager>();
 		go.AddOrGet<CopyBuildingSettings>();
 		go.AddOrGet<ComplexFabricatorWorkable>().overrideAnims = new KAnimFile[1]

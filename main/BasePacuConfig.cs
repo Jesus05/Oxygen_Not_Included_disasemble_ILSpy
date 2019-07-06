@@ -26,8 +26,8 @@ public static class BasePacuConfig
 		float defaultTemperature = (warnLowTemp + warnHighTemp) / 2f;
 		GameObject gameObject = EntityTemplates.CreatePlacedEntity(id, name, description, mass, anim, initialAnim, Grid.SceneLayer.Creatures, 1, 1, tIER, default(EffectorValues), SimHashes.Creature, null, defaultTemperature);
 		KPrefabID component = gameObject.GetComponent<KPrefabID>();
-		component.AddTag(GameTags.SwimmingCreature);
-		component.AddTag(GameTags.Creatures.Swimmer);
+		component.AddTag(GameTags.SwimmingCreature, false);
+		component.AddTag(GameTags.Creatures.Swimmer, false);
 		Trait trait = Db.Get().CreateTrait(base_trait_id, name, name, null, false, null, true, true);
 		trait.Add(new AttributeModifier(Db.Get().Amounts.Calories.maxAttribute.Id, PacuTuning.STANDARD_STOMACH_SIZE, name, false, false, true));
 		trait.Add(new AttributeModifier(Db.Get().Amounts.Calories.deltaAttribute.Id, (0f - PacuTuning.STANDARD_CALORIES_PER_CYCLE) / 600f, name, false, false, true));

@@ -105,8 +105,8 @@ public class ArtifactConfig : IMultiEntityConfig
 		gameObject.GetComponent<KBatchedAnimController>().initialMode = KAnim.PlayMode.Loop;
 		postInitFn?.Invoke(gameObject);
 		KPrefabID component = gameObject.GetComponent<KPrefabID>();
-		component.AddTag(GameTags.PedestalDisplayable);
-		component.AddTag(GameTags.Artifact);
+		component.AddTag(GameTags.PedestalDisplayable, false);
+		component.AddTag(GameTags.Artifact, false);
 		return gameObject;
 	}
 

@@ -13,7 +13,7 @@ public class KilnConfig : IBuildingConfig
 
 	public const float CO2_RATIO = 0.1f;
 
-	public const float OUTPUT_TEMP = 303.15f;
+	public const float OUTPUT_TEMP = 353.15f;
 
 	public const float REFILL_RATE = 2400f;
 
@@ -45,10 +45,12 @@ public class KilnConfig : IBuildingConfig
 
 	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
-		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.IndustrialMachinery);
+		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.IndustrialMachinery, false);
 		go.AddOrGet<DropAllWorkable>();
 		go.AddOrGet<BuildingComplete>().isManuallyOperated = false;
 		ComplexFabricator complexFabricator = go.AddOrGet<ComplexFabricator>();
+		complexFabricator.resultState = ComplexFabricator.ResultState.Heated;
+		complexFabricator.heatedTemperature = 353.15f;
 		complexFabricator.duplicantOperated = false;
 		complexFabricator.sideScreenStyle = ComplexFabricatorSideScreen.StyleSetting.ListQueueHybrid;
 		go.AddOrGet<FabricatorIngredientStatusManager>();

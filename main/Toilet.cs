@@ -226,6 +226,9 @@ public class Toilet : StateMachineComponent<Toilet.StatesInstance>, ISaveLoadabl
 	public SpawnInfo solidWastePerUse;
 
 	[SerializeField]
+	public float solidWasteTemperature;
+
+	[SerializeField]
 	public SpawnInfo gasWasteWhenFull;
 
 	[SerializeField]
@@ -292,10 +295,9 @@ public class Toilet : StateMachineComponent<Toilet.StatesInstance>, ISaveLoadabl
 
 	public void Flush(Worker worker)
 	{
-		float temperature = GetComponent<PrimaryElement>().Temperature;
 		Element element = ElementLoader.FindElementByHash(solidWastePerUse.elementID);
 		byte index = Db.Get().Diseases.GetIndex(diseaseId);
-		GameObject go = element.substance.SpawnResource(base.transform.GetPosition(), base.smi.MassPerFlush(), temperature, index, diseasePerFlush, true, false, false);
+		GameObject go = element.substance.SpawnResource(base.transform.GetPosition(), base.smi.MassPerFlush(), solidWasteTemperature, index, diseasePerFlush, true, false, false);
 		storage.Store(go, false, false, true, false);
 		PrimaryElement component = worker.GetComponent<PrimaryElement>();
 		component.AddDisease(index, diseaseOnDupePerFlush, "Toilet.Flush");
@@ -344,7 +346,7 @@ public class Toilet : StateMachineComponent<Toilet.StatesInstance>, ISaveLoadabl
 		List<Descriptor> list = new List<Descriptor>();
 		Element element = ElementLoader.FindElementByHash(solidWastePerUse.elementID);
 		string arg = element.tag.ProperName();
-		list.Add(new Descriptor(string.Format(UI.BUILDINGEFFECTS.ELEMENTEMITTEDPERUSE, arg, GameUtil.GetFormattedMass(base.smi.MassPerFlush(), GameUtil.TimeSlice.None, GameUtil.MetricMassFormat.UseThreshold, true, "{0:0.##}")), string.Format(UI.BUILDINGEFFECTS.TOOLTIPS.ELEMENTEMITTEDPERUSE, arg, GameUtil.GetFormattedMass(base.smi.MassPerFlush(), GameUtil.TimeSlice.None, GameUtil.MetricMassFormat.UseThreshold, true, "{0:0.##}")), Descriptor.DescriptorType.Effect, false));
+		list.Add(new Descriptor(string.Format(UI.BUILDINGEFFECTS.ELEMENTEMITTED_TOILET, arg, GameUtil.GetFormattedMass(base.smi.MassPerFlush(), GameUtil.TimeSlice.None, GameUtil.MetricMassFormat.UseThreshold, true, "{0:0.##}"), GameUtil.GetFormattedTemperature(solidWasteTemperature, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false)), string.Format(UI.BUILDINGEFFECTS.TOOLTIPS.ELEMENTEMITTED_TOILET, arg, GameUtil.GetFormattedMass(base.smi.MassPerFlush(), GameUtil.TimeSlice.None, GameUtil.MetricMassFormat.UseThreshold, true, "{0:0.##}"), GameUtil.GetFormattedTemperature(solidWasteTemperature, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false)), Descriptor.DescriptorType.Effect, false));
 		Disease disease = Db.Get().Diseases.Get(diseaseId);
 		int units = diseasePerFlush + diseaseOnDupePerFlush;
 		list.Add(new Descriptor(string.Format(UI.BUILDINGEFFECTS.DISEASEEMITTEDPERUSE, disease.Name, GameUtil.GetFormattedDiseaseAmount(units)), string.Format(UI.BUILDINGEFFECTS.TOOLTIPS.DISEASEEMITTEDPERUSE, disease.Name, GameUtil.GetFormattedDiseaseAmount(units)), Descriptor.DescriptorType.DiseaseSource, false));

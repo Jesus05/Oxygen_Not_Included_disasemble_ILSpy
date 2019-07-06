@@ -43,7 +43,7 @@ public class ItemPedestalConfig : IBuildingConfig
 		singleEntityReceptacle.occupyingObjectRelativePosition = new Vector3(0f, 1.2f, -1f);
 		go.AddOrGet<DecorProvider>();
 		go.AddOrGet<ItemPedestal>();
-		go.GetComponent<KPrefabID>().AddTag(GameTags.Decoration);
+		go.GetComponent<KPrefabID>().AddTag(GameTags.Decoration, false);
 	}
 
 	public override void DoPostConfigureComplete(GameObject go)

@@ -35,10 +35,11 @@ public class OuthouseConfig : IBuildingConfig
 	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.AddOrGet<LoopingSounds>();
-		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.Toilet);
+		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.Toilet, false);
 		Toilet toilet = go.AddOrGet<Toilet>();
 		toilet.maxFlushes = 15;
 		toilet.solidWastePerUse = new Toilet.SpawnInfo(SimHashes.ToxicSand, 6.7f, 0f);
+		toilet.solidWasteTemperature = 310.15f;
 		toilet.gasWasteWhenFull = new Toilet.SpawnInfo(SimHashes.ContaminatedOxygen, 0.1f, 15f);
 		toilet.diseaseId = "FoodPoisoning";
 		toilet.diseasePerFlush = 100000;

@@ -54,7 +54,7 @@ public class RelaxationPoint : Workable, IEffectDescriptor
 	{
 		base.OnPrefabInit();
 		lightEfficiencyBonus = false;
-		GetComponent<KPrefabID>().AddTag(TagManager.Create("RelaxationPoint", MISC.TAGS.RELAXATION_POINT));
+		GetComponent<KPrefabID>().AddTag(TagManager.Create("RelaxationPoint", MISC.TAGS.RELAXATION_POINT), false);
 		if (stressReductionEffect == null)
 		{
 			stressReductionEffect = CreateEffect();

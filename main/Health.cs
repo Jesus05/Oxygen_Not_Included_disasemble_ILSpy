@@ -261,7 +261,7 @@ public class Health : KMonoBehaviour, ISaveLoadable
 	public void Incapacitate(Death source_of_death)
 	{
 		State = HealthState.Incapacitated;
-		GetComponent<KPrefabID>().AddTag(GameTags.HitPointsDepleted);
+		GetComponent<KPrefabID>().AddTag(GameTags.HitPointsDepleted, false);
 	}
 
 	private void Kill()

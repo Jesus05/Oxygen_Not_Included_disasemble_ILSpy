@@ -307,7 +307,7 @@ public class WiltCondition : KMonoBehaviour
 	{
 		wiltSchedulerHandler.ClearScheduler();
 		KSelectable component = GetComponent<KSelectable>();
-		component.GetComponent<KPrefabID>().AddTag(GameTags.Wilting);
+		component.GetComponent<KPrefabID>().AddTag(GameTags.Wilting, false);
 		if (!wilting)
 		{
 			wilting = true;

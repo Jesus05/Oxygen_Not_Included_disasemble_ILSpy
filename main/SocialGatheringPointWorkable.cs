@@ -61,7 +61,7 @@ public class SocialGatheringPointWorkable : Workable, IWorkerPrioritizable
 	{
 		base.OnStartWork(worker);
 		KPrefabID component = worker.GetComponent<KPrefabID>();
-		component.AddTag(GameTags.AlwaysConverse);
+		component.AddTag(GameTags.AlwaysConverse, false);
 		worker.Subscribe(-594200555, OnStartedTalking);
 		worker.Subscribe(25860745, OnStoppedTalking);
 	}

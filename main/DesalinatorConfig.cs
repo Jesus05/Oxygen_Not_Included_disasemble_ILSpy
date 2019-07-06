@@ -17,8 +17,6 @@ public class DesalinatorConfig : IBuildingConfig
 
 	private const float BRINE_TO_CLEAN_WATER_OUTPUT_RATE = 3.5f;
 
-	private const float OUTPUT_TEMPERATURE = 353.15f;
-
 	public override BuildingDef CreateBuildingDef()
 	{
 		string id = "Desalinator";
@@ -35,7 +33,7 @@ public class DesalinatorConfig : IBuildingConfig
 		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, tIER, rAW_METALS, melting_point, build_location_rule, BUILDINGS.DECOR.PENALTY.TIER0, tIER2, 0.2f);
 		buildingDef.RequiresPowerInput = true;
 		buildingDef.EnergyConsumptionWhenActive = 480f;
-		buildingDef.SelfHeatKilowattsWhenActive = 4f;
+		buildingDef.SelfHeatKilowattsWhenActive = 8f;
 		buildingDef.ExhaustKilowattsWhenActive = 0f;
 		buildingDef.InputConduitType = ConduitType.Liquid;
 		buildingDef.OutputConduitType = ConduitType.Liquid;
@@ -50,7 +48,7 @@ public class DesalinatorConfig : IBuildingConfig
 
 	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
-		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.IndustrialMachinery);
+		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.IndustrialMachinery, false);
 		Storage storage = go.AddOrGet<Storage>();
 		storage.SetDefaultStoredItemModifiers(Storage.StandardSealedStorage);
 		storage.showInUI = true;
@@ -62,8 +60,8 @@ public class DesalinatorConfig : IBuildingConfig
 		};
 		elementConverter.outputElements = new ElementConverter.OutputElement[2]
 		{
-			new ElementConverter.OutputElement(4.65f, SimHashes.Water, 313.15f, false, true, 0f, 0.5f, 0.75f, byte.MaxValue, 0),
-			new ElementConverter.OutputElement(0.35f, SimHashes.Salt, 313.15f, false, true, 0f, 0.5f, 0.25f, byte.MaxValue, 0)
+			new ElementConverter.OutputElement(4.65f, SimHashes.Water, 0f, false, true, 0f, 0.5f, 0.75f, byte.MaxValue, 0),
+			new ElementConverter.OutputElement(0.35f, SimHashes.Salt, 0f, false, true, 0f, 0.5f, 0.25f, byte.MaxValue, 0)
 		};
 		ElementConverter elementConverter2 = go.AddComponent<ElementConverter>();
 		elementConverter2.consumedElements = new ElementConverter.ConsumedElement[1]

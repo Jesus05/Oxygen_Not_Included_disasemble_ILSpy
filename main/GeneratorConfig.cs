@@ -9,6 +9,8 @@ public class GeneratorConfig : IBuildingConfig
 
 	private const float COAL_CAPACITY = 600f;
 
+	public const float CO2_OUTPUT_TEMPERATURE = 383.15f;
+
 	public override BuildingDef CreateBuildingDef()
 	{
 		string id = "Generator";
@@ -35,9 +37,9 @@ public class GeneratorConfig : IBuildingConfig
 
 	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
-		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.IndustrialMachinery);
+		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.IndustrialMachinery, false);
 		EnergyGenerator energyGenerator = go.AddOrGet<EnergyGenerator>();
-		energyGenerator.formula = EnergyGenerator.CreateSimpleFormula(SimHashes.Carbon.CreateTag(), 1f, 600f, SimHashes.CarbonDioxide, 0.02f, false, new CellOffset(1, 2));
+		energyGenerator.formula = EnergyGenerator.CreateSimpleFormula(SimHashes.Carbon.CreateTag(), 1f, 600f, SimHashes.CarbonDioxide, 0.02f, false, new CellOffset(1, 2), 1f);
 		energyGenerator.meterOffset = Meter.Offset.Behind;
 		energyGenerator.SetSliderValue(50f, 0);
 		energyGenerator.powerDistributionOrder = 9;

@@ -35,8 +35,8 @@ public class Compostable : KMonoBehaviour
 	private void MarkForCompost(bool force = false)
 	{
 		RefreshStatusItem();
-		GetComponent<KPrefabID>().AddTag(GameTags.MarkedForCompost);
-		GetComponent<KPrefabID>().AddTag(GameTags.Compostable);
+		GetComponent<KPrefabID>().AddTag(GameTags.MarkedForCompost, false);
+		GetComponent<KPrefabID>().AddTag(GameTags.Compostable, false);
 		Storage storage = GetComponent<Pickupable>().storage;
 		if ((UnityEngine.Object)storage != (UnityEngine.Object)null)
 		{

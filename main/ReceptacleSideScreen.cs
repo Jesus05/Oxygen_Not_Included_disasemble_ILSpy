@@ -445,7 +445,7 @@ public class ReceptacleSideScreen : SideScreenContent, IRender1000ms
 
 	private void CheckAmountsAndUpdate(object data)
 	{
-		if (UpdateAvailableAmounts(null))
+		if (!((Object)targetReceptacle == (Object)null) && UpdateAvailableAmounts(null))
 		{
 			UpdateState(null);
 		}

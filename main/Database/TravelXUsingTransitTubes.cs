@@ -42,8 +42,7 @@ namespace Database
 
 		public override void Deserialize(IReader reader)
 		{
-			byte b = reader.ReadByte();
-			NavType navType = (NavType)b;
+			byte b = (byte)(navType = (NavType)reader.ReadByte());
 			distanceToTravel = reader.ReadInt32();
 		}
 

@@ -6792,7 +6792,9 @@ namespace STRINGS
 
 				public static LocString ELEMENTCONSUMED = "Consumes " + FormatAsNegativeRate("{1}") + " of " + PRE_KEYWORD + "{0}" + PST_KEYWORD + " when in use";
 
-				public static LocString ELEMENTEMITTEDPERUSE = "Produces " + FormatAsPositiveRate("{1}") + " of " + PRE_KEYWORD + "{0}" + PST_KEYWORD + " per use";
+				public static LocString ELEMENTEMITTED_TOILET = "Produces " + FormatAsPositiveRate("{1}") + " of " + PRE_KEYWORD + "{0}" + PST_KEYWORD + " per use\n\nDuplicant waste is emitted at {2}.";
+
+				public static LocString ELEMENTEMITTEDPERUSE = "Produces " + FormatAsPositiveRate("{1}") + " of " + PRE_KEYWORD + "{0}" + PST_KEYWORD + " per use\n\nIt will be the temperature of the input materials.";
 
 				public static LocString DISEASEEMITTEDPERUSE = "Produces " + FormatAsPositiveRate("{1}") + " of " + PRE_KEYWORD + "{0}" + PST_KEYWORD + " per use";
 
@@ -6968,6 +6970,8 @@ namespace STRINGS
 			public static LocString ELEMENTEMITTED_FIXEDTEMP = "{0}: {1}";
 
 			public static LocString ELEMENTCONSUMED = "{0}: {1}";
+
+			public static LocString ELEMENTEMITTED_TOILET = "{0}: {1} per use";
 
 			public static LocString ELEMENTEMITTEDPERUSE = "{0}: {1} per use";
 

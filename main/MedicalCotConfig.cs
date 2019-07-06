@@ -27,13 +27,13 @@ public class MedicalCotConfig : IBuildingConfig
 	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.AddOrGet<LoopingSounds>();
-		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.Clinic);
+		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.Clinic, false);
 	}
 
 	public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.GetComponent<KAnimControllerBase>().initialAnim = "off";
-		go.GetComponent<KPrefabID>().AddTag(TagManager.Create("Bed"));
+		go.GetComponent<KPrefabID>().AddTag(TagManager.Create("Bed"), false);
 		Clinic clinic = go.AddOrGet<Clinic>();
 		clinic.doctorVisitInterval = 300f;
 		clinic.workerInjuredAnims = new KAnimFile[1]

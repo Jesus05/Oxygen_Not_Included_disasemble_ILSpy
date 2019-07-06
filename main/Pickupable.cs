@@ -209,7 +209,7 @@ public class Pickupable : Workable, IHasSortOrder
 				isEntombed = value;
 				if (isEntombed)
 				{
-					GetComponent<KPrefabID>().AddTag(GameTags.Entombed);
+					GetComponent<KPrefabID>().AddTag(GameTags.Entombed, false);
 				}
 				else
 				{
@@ -373,7 +373,7 @@ public class Pickupable : Workable, IHasSortOrder
 		Subscribe(1807976145, OnOreSizeChangedDelegate);
 		Subscribe(-1432940121, OnReachableChangedDelegate);
 		Subscribe(-778359855, RefreshStorageTagsDelegate);
-		KPrefabID.AddTag(GameTags.Pickupable);
+		KPrefabID.AddTag(GameTags.Pickupable, false);
 		Components.Pickupables.Add(this);
 	}
 
@@ -688,10 +688,10 @@ public class Pickupable : Workable, IHasSortOrder
 	{
 		if (data is Storage || (data != null && (bool)data))
 		{
-			KPrefabID.AddTag(GameTags.Stored);
+			KPrefabID.AddTag(GameTags.Stored, false);
 			if ((object)storage == null || !storage.allowItemRemoval)
 			{
-				KPrefabID.AddTag(GameTags.StoredPrivate);
+				KPrefabID.AddTag(GameTags.StoredPrivate, false);
 			}
 			else
 			{

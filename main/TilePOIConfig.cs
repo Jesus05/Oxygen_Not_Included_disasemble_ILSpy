@@ -57,7 +57,7 @@ public class TilePOIConfig : IBuildingConfig
 	public override void DoPostConfigureComplete(GameObject go)
 	{
 		KPrefabID component = go.GetComponent<KPrefabID>();
-		component.AddTag(GameTags.Bunker);
+		component.AddTag(GameTags.Bunker, false);
 		go.AddComponent<SimTemperatureTransfer>();
 		go.GetComponent<Deconstructable>().allowDeconstruction = true;
 	}

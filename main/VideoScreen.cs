@@ -105,12 +105,26 @@ public class VideoScreen : KModalScreen
 		slideshow.SetSprites(sprites);
 	}
 
+	public override float GetSortKey()
+	{
+		return 100000f;
+	}
+
 	public override void OnKeyDown(KButtonEvent e)
 	{
-		if (!e.IsAction(Action.Escape) || videoSkippable)
+		if (e.IsAction(Action.Escape))
 		{
-			base.OnKeyDown(e);
+			if (slideshow.gameObject.activeSelf && e.TryConsume(Action.Escape))
+			{
+				Stop();
+				return;
+			}
+			if (!videoSkippable)
+			{
+				return;
+			}
 		}
+		base.OnKeyDown(e);
 	}
 
 	public void PlayVideo(VideoClip clip, bool unskippable = false, string overrideAudioSnapshot = "")

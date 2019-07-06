@@ -58,7 +58,7 @@ public class WoodGasGeneratorConfig : IBuildingConfig
 	{
 		GeneratedBuildings.RegisterLogicPorts(go, LogicOperationalController.INPUT_PORTS_1_1);
 		go.AddOrGet<LogicOperationalController>();
-		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.IndustrialMachinery);
+		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.IndustrialMachinery, false);
 		go.AddOrGet<LoopingSounds>();
 		Storage storage = go.AddOrGet<Storage>();
 		storage.SetDefaultStoredItemModifiers(Storage.StandardSealedStorage);
@@ -75,7 +75,7 @@ public class WoodGasGeneratorConfig : IBuildingConfig
 		energyGenerator.powerDistributionOrder = 8;
 		energyGenerator.ignoreBatteryRefillPercent = true;
 		energyGenerator.hasMeter = true;
-		energyGenerator.formula = EnergyGenerator.CreateSimpleFormula(WoodLogConfig.TAG, 1.71428573f, max_stored_input_mass, SimHashes.CarbonDioxide, 0.171428576f, false, new CellOffset(0, 1));
+		energyGenerator.formula = EnergyGenerator.CreateSimpleFormula(WoodLogConfig.TAG, 1.71428573f, max_stored_input_mass, SimHashes.CarbonDioxide, 0.171428576f, false, new CellOffset(0, 1), 383.15f);
 		Tinkerable.MakePowerTinkerable(go);
 		go.AddOrGetDef<PoweredActiveController.Def>();
 	}

@@ -9,7 +9,7 @@ public class MethaneGeneratorConfig : IBuildingConfig
 
 	private const float CO2_RATIO = 0.25f;
 
-	public const float EXHAUST_ELEMENT_TEMP = 383.15f;
+	public const float WATER_OUTPUT_TEMPERATURE = 313.15f;
 
 	private const int WIDTH = 4;
 
@@ -57,7 +57,7 @@ public class MethaneGeneratorConfig : IBuildingConfig
 	{
 		GeneratedBuildings.RegisterLogicPorts(go, LogicOperationalController.INPUT_PORTS_0_0);
 		go.AddOrGet<LogicOperationalController>();
-		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.IndustrialMachinery);
+		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.IndustrialMachinery, false);
 		go.AddOrGet<LoopingSounds>();
 		Storage storage = go.AddOrGet<Storage>();
 		storage.capacityKg = 50f;
@@ -78,7 +78,7 @@ public class MethaneGeneratorConfig : IBuildingConfig
 		};
 		formula.outputs = new EnergyGenerator.OutputItem[2]
 		{
-			new EnergyGenerator.OutputItem(SimHashes.DirtyWater, 0.0675f, false, new CellOffset(1, 1), 0f),
+			new EnergyGenerator.OutputItem(SimHashes.DirtyWater, 0.0675f, false, new CellOffset(1, 1), 313.15f),
 			new EnergyGenerator.OutputItem(SimHashes.CarbonDioxide, 0.0225f, true, new CellOffset(0, 2), 383.15f)
 		};
 		energyGenerator.formula = formula;

@@ -71,7 +71,7 @@ public class HydroponicFarmConfig : IBuildingConfig
 	public override void DoPostConfigureComplete(GameObject go)
 	{
 		FarmTileConfig.SetUpFarmPlotTags(go);
-		go.GetComponent<KPrefabID>().AddTag(GameTags.FarmTiles);
+		go.GetComponent<KPrefabID>().AddTag(GameTags.FarmTiles, false);
 		go.GetComponent<RequireInputs>().requireConduitHasMass = false;
 	}
 }

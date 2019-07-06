@@ -43,7 +43,7 @@ public class MinionConfig : IEntityConfig
 		AddMinionAmounts(modifiers);
 		AddMinionTraits(name, modifiers);
 		gameObject.AddOrGet<MinionBrain>();
-		gameObject.AddOrGet<KPrefabID>().AddTag(GameTags.DupeBrain);
+		gameObject.AddOrGet<KPrefabID>().AddTag(GameTags.DupeBrain, false);
 		gameObject.AddOrGet<Worker>();
 		gameObject.AddOrGet<ChoreConsumer>();
 		Storage storage = gameObject.AddOrGet<Storage>();

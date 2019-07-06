@@ -56,7 +56,7 @@ public class Equippable : Assignable, ISaveLoadable, IGameObjectEffectDescriptor
 			Tag[] additionalTags = def.AdditionalTags;
 			foreach (Tag tag in additionalTags)
 			{
-				GetComponent<KPrefabID>().AddTag(tag);
+				GetComponent<KPrefabID>().AddTag(tag, false);
 			}
 		}
 	}
@@ -151,7 +151,7 @@ public class Equippable : Assignable, ISaveLoadable, IGameObjectEffectDescriptor
 		{
 			def.OnEquipCallBack(this);
 		}
-		GetComponent<KPrefabID>().AddTag(GameTags.Equipped);
+		GetComponent<KPrefabID>().AddTag(GameTags.Equipped, false);
 	}
 
 	public void OnUnequip()

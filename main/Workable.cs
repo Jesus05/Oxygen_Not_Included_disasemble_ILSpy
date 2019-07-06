@@ -224,7 +224,7 @@ public class Workable : KMonoBehaviour, ISaveLoadable, IApproachable
 			skillsUpdateHandle = Game.Instance.Subscribe(-1523247426, UpdateStatusItem);
 		}
 		KPrefabID component = GetComponent<KPrefabID>();
-		component.AddTag(GameTags.HasChores);
+		component.AddTag(GameTags.HasChores, false);
 		lightEfficiencyBonusStatusItem = Db.Get().DuplicantStatusItems.LightWorkEfficiencyBonus;
 		ShowProgressBar(alwaysShowProgressBar && workTimeRemaining < GetWorkTime());
 		UpdateStatusItem(null);

@@ -31,7 +31,7 @@ public class ResetSkillsStationConfig : IBuildingConfig
 
 	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
-		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.IndustrialMachinery);
+		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.IndustrialMachinery, false);
 		go.AddTag(GameTags.NotRoomAssignable);
 		go.AddOrGet<BuildingComplete>().isManuallyOperated = true;
 		Prioritizable.AddRef(go);

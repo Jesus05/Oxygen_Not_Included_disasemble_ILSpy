@@ -55,7 +55,7 @@ public class HeadquartersConfig : IBuildingConfig
 		light2D.overlayColour = LIGHT2D.HEADQUARTERS_OVERLAYCOLOR;
 		light2D.shape = LightShape.Circle;
 		light2D.drawOverlay = true;
-		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.LightSource);
+		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.LightSource, false);
 		RoleStation roleStation = go.AddOrGet<RoleStation>();
 		roleStation.overrideAnims = new KAnimFile[1]
 		{

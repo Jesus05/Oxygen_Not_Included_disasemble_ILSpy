@@ -66,7 +66,7 @@ public class BuildingConfigManager : KMonoBehaviour
 		gameObject.GetComponent<OccupyArea>().OccupiedCellsOffsets = buildingDef.PlacementOffsets;
 		if (buildingDef.Deprecated)
 		{
-			gameObject.GetComponent<KPrefabID>().AddTag(GameTags.DeprecatedContent);
+			gameObject.GetComponent<KPrefabID>().AddTag(GameTags.DeprecatedContent, false);
 		}
 		config.ConfigureBuildingTemplate(gameObject, buildingDef.Tag);
 		buildingDef.BuildingComplete = BuildingLoader.Instance.CreateBuildingComplete(gameObject, buildingDef);

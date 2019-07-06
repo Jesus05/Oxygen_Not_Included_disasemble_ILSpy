@@ -11,6 +11,8 @@ public class SupermaterialRefineryConfig : IBuildingConfig
 
 	private const float OUTPUT_KG = 100f;
 
+	private const float OUTPUT_TEMPERATURE = 313.15f;
+
 	public override BuildingDef CreateBuildingDef()
 	{
 		string id = "SupermaterialRefinery";
@@ -39,6 +41,8 @@ public class SupermaterialRefineryConfig : IBuildingConfig
 		go.AddOrGet<DropAllWorkable>();
 		go.AddOrGet<BuildingComplete>().isManuallyOperated = true;
 		ComplexFabricator complexFabricator = go.AddOrGet<ComplexFabricator>();
+		complexFabricator.resultState = ComplexFabricator.ResultState.Heated;
+		complexFabricator.heatedTemperature = 313.15f;
 		complexFabricator.sideScreenStyle = ComplexFabricatorSideScreen.StyleSetting.ListQueueHybrid;
 		complexFabricator.duplicantOperated = true;
 		go.AddOrGet<FabricatorIngredientStatusManager>();

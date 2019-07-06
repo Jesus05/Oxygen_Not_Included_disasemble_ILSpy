@@ -737,6 +737,8 @@ namespace STRINGS
 					public static LocString SCRUNGO = "Scrungo";
 
 					public static LocString BRUMPO = "Brumpo";
+
+					public static LocString AZPAF = "Azpaf";
 				}
 			}
 		}

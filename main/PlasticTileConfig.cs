@@ -63,7 +63,7 @@ public class PlasticTileConfig : IBuildingConfig
 	public override void DoPostConfigureComplete(GameObject go)
 	{
 		GeneratedBuildings.RemoveLoopingSounds(go);
-		go.GetComponent<KPrefabID>().AddTag(GameTags.FloorTiles);
+		go.GetComponent<KPrefabID>().AddTag(GameTags.FloorTiles, false);
 	}
 
 	public override void DoPostConfigureUnderConstruction(GameObject go)

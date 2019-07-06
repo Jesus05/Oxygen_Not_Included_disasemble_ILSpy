@@ -74,7 +74,7 @@ public class CoolVestConfig : IEquipmentConfig
 
 	public static void SetupVest(GameObject go)
 	{
-		go.GetComponent<KPrefabID>().AddTag(GameTags.Clothes);
+		go.GetComponent<KPrefabID>().AddTag(GameTags.Clothes, false);
 		Equippable equippable = go.GetComponent<Equippable>();
 		if ((UnityEngine.Object)equippable == (UnityEngine.Object)null)
 		{
@@ -88,6 +88,6 @@ public class CoolVestConfig : IEquipmentConfig
 	{
 		SetupVest(go);
 		KPrefabID component = go.GetComponent<KPrefabID>();
-		component.AddTag(GameTags.PedestalDisplayable);
+		component.AddTag(GameTags.PedestalDisplayable, false);
 	}
 }

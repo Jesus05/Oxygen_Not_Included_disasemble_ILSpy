@@ -12,7 +12,7 @@ public class AdvancedCureConfig : IEntityConfig
 	{
 		GameObject gameObject = EntityTemplates.CreateLooseEntity("AdvancedCure", ITEMS.PILLS.ADVANCEDCURE.NAME, ITEMS.PILLS.ADVANCEDCURE.DESC, 1f, true, Assets.GetAnim("vial_spore_kanim"), "object", Grid.SceneLayer.Front, EntityTemplates.CollisionShape.RECTANGLE, 0.8f, 0.4f, true, 0, SimHashes.Creature, null);
 		KPrefabID component = gameObject.GetComponent<KPrefabID>();
-		component.AddTag(GameTags.MedicalSupplies);
+		component.AddTag(GameTags.MedicalSupplies, false);
 		ComplexRecipe.RecipeElement[] array = new ComplexRecipe.RecipeElement[2]
 		{
 			new ComplexRecipe.RecipeElement(SimHashes.Tungsten.CreateTag(), 1f),

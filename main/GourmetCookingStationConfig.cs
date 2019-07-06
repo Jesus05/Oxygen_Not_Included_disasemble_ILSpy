@@ -54,6 +54,8 @@ public class GourmetCookingStationConfig : IBuildingConfig
 		go.AddOrGet<DropAllWorkable>();
 		go.AddOrGet<BuildingComplete>().isManuallyOperated = true;
 		GourmetCookingStation gourmetCookingStation = go.AddOrGet<GourmetCookingStation>();
+		gourmetCookingStation.resultState = ComplexFabricator.ResultState.Heated;
+		gourmetCookingStation.heatedTemperature = 368.15f;
 		gourmetCookingStation.duplicantOperated = true;
 		gourmetCookingStation.sideScreenStyle = ComplexFabricatorSideScreen.StyleSetting.ListQueueHybrid;
 		go.AddOrGet<FabricatorIngredientStatusManager>();

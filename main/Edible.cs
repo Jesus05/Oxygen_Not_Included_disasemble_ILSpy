@@ -147,7 +147,7 @@ public class Edible : Workable, IGameObjectEffectDescriptor
 			}
 			foodInfo = Game.Instance.ediblesManager.GetFoodInfo(FoodID);
 		}
-		GetComponent<KPrefabID>().AddTag(GameTags.Edible);
+		GetComponent<KPrefabID>().AddTag(GameTags.Edible, false);
 		Subscribe(748399584, OnCraftDelegate);
 		Subscribe(1272413801, OnCraftDelegate);
 		workerStatusItem = Db.Get().DuplicantStatusItems.Eating;
@@ -205,7 +205,7 @@ public class Edible : Workable, IGameObjectEffectDescriptor
 		SetWorkTime(GetFeedingTime(worker));
 		worker.GetAttributes().Add(caloriesModifier);
 		KPrefabID component = worker.GetComponent<KPrefabID>();
-		component.AddTag(GameTags.AlwaysConverse);
+		component.AddTag(GameTags.AlwaysConverse, false);
 		StartConsuming();
 	}
 

@@ -139,7 +139,7 @@ public class Telescope : Workable, OxygenBreather.IGasProvider, IEffectDescripto
 				workerGasProvider = component.GetGasProvider();
 				component.SetGasProvider(this);
 				component.GetComponent<CreatureSimTemperatureTransfer>().enabled = false;
-				component2.AddTag(GameTags.Shaded);
+				component2.AddTag(GameTags.Shaded, false);
 				break;
 			case WorkableEvent.WorkStopped:
 				component.SetGasProvider(workerGasProvider);

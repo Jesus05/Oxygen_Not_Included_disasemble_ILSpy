@@ -97,8 +97,14 @@ public class EatStates : GameStateMachine<EatStates, EatStates.Instance, IStateM
 		GameObject gameObject = smi.sm.target.Get(smi);
 		if ((UnityEngine.Object)gameObject != (UnityEngine.Object)null)
 		{
-			DebugUtil.Assert(gameObject.HasTag(GameTags.Creatures.ReservedByCreature));
-			gameObject.RemoveTag(GameTags.Creatures.ReservedByCreature);
+			if (gameObject.HasTag(GameTags.Creatures.ReservedByCreature))
+			{
+				gameObject.RemoveTag(GameTags.Creatures.ReservedByCreature);
+			}
+			else
+			{
+				Debug.LogWarningFormat(smi.gameObject, "{0} UnreserveEdible but it wasn't reserved: {1}", smi.gameObject, gameObject);
+			}
 		}
 	}
 

@@ -334,7 +334,7 @@ public class EnergyGenerator : Generator, IEffectDescriptor, ISingleSliderContro
 		}
 	}
 
-	public static Formula CreateSimpleFormula(Tag input_element, float input_mass_rate, float max_stored_input_mass, SimHashes output_element = SimHashes.Void, float output_mass_rate = 0f, bool store_output_mass = true, CellOffset output_offset = default(CellOffset))
+	public static Formula CreateSimpleFormula(Tag input_element, float input_mass_rate, float max_stored_input_mass, SimHashes output_element = SimHashes.Void, float output_mass_rate = 0f, bool store_output_mass = true, CellOffset output_offset = default(CellOffset), float min_output_temperature = 0f)
 	{
 		Formula result = default(Formula);
 		result.inputs = new InputItem[1]
@@ -345,7 +345,7 @@ public class EnergyGenerator : Generator, IEffectDescriptor, ISingleSliderContro
 		{
 			result.outputs = new OutputItem[1]
 			{
-				new OutputItem(output_element, output_mass_rate, store_output_mass, output_offset, 0f)
+				new OutputItem(output_element, output_mass_rate, store_output_mass, output_offset, min_output_temperature)
 			};
 		}
 		else

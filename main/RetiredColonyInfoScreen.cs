@@ -172,11 +172,6 @@ public class RetiredColonyInfoScreen : KModalScreen
 		explorerRoot.transform.parent.localScale = Vector3.one * (2f - KPlayerPrefs.GetFloat(KCanvasScaler.UIScalePrefKey) / 100f);
 	}
 
-	public override float GetSortKey()
-	{
-		return 100000f;
-	}
-
 	private void ConfigButtons()
 	{
 		closeButton.ClearOnClick();

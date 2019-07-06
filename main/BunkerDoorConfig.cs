@@ -71,6 +71,6 @@ public class BunkerDoorConfig : IBuildingConfig
 		Prioritizable.AddRef(go);
 		Object.DestroyImmediate(go.GetComponent<BuildingEnabledButton>());
 		KPrefabID component2 = go.GetComponent<KPrefabID>();
-		component2.AddTag(GameTags.Bunker);
+		component2.AddTag(GameTags.Bunker, false);
 	}
 }

@@ -12,8 +12,8 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms, ISim1000ms
 {
 	public enum ResultState
 	{
-		Normal,
-		Hot,
+		PassTemperature,
+		Heated,
 		Melted
 	}
 
@@ -27,7 +27,10 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms, ISim1000ms
 	public HashedString fetchChoreTypeIdHash = Db.Get().ChoreTypes.FabricateFetch.IdHash;
 
 	[SerializeField]
-	public ResultState resultState = ResultState.Normal;
+	public ResultState resultState = ResultState.PassTemperature;
+
+	[SerializeField]
+	public float heatedTemperature = 0f;
 
 	[SerializeField]
 	public bool storeProduced = false;
@@ -121,7 +124,7 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms, ISim1000ms
 
 	public ComplexRecipe NextOrder => (!nextOrderIsWorkable) ? null : recipe_list[nextOrderIdx];
 
-	public bool HasOpenOrder => hasOpenOrders;
+	public bool HasAnyOrder => HasWorkingOrder || hasOpenOrders;
 
 	public bool HasWorker => !duplicantOperated || (UnityEngine.Object)workable.worker != (UnityEngine.Object)null;
 
@@ -854,8 +857,8 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms, ISim1000ms
 			}
 			switch (resultState)
 			{
-			case ResultState.Normal:
-			case ResultState.Hot:
+			case ResultState.PassTemperature:
+			case ResultState.Heated:
 			{
 				GameObject prefab = Assets.GetPrefab(recipeElement3.material);
 				GameObject gameObject2 = GameUtil.KInstantiate(prefab, Grid.SceneLayer.Ore, null, 0);
@@ -863,7 +866,7 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms, ISim1000ms
 				gameObject2.transform.SetPosition(Grid.CellToPosCCC(cell, Grid.SceneLayer.Ore) + outputOffset);
 				PrimaryElement component2 = gameObject2.GetComponent<PrimaryElement>();
 				component2.Units = recipeElement3.amount;
-				component2.Temperature = num;
+				component2.Temperature = ((resultState != 0) ? heatedTemperature : num);
 				gameObject2.SetActive(true);
 				float num4 = recipeElement3.amount / recipe.TotalResultUnits();
 				component2.AddDisease(diseaseInfo.idx, Mathf.RoundToInt((float)diseaseInfo.count * num4), "ComplexFabricator.CompleteOrder");

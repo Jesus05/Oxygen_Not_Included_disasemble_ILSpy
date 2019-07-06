@@ -36,7 +36,7 @@ public class FishFeederConfig : IBuildingConfig
 	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		Prioritizable.AddRef(go);
-		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.CreatureFeeder);
+		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.CreatureFeeder, false);
 		Storage storage = go.AddOrGet<Storage>();
 		storage.capacityKg = 200f;
 		storage.showInUI = true;

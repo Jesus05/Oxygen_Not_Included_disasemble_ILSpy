@@ -14,9 +14,9 @@ public class EggConfig
 		pickupable.sortOrder = SORTORDER.EGGS + egg_sort_order;
 		gameObject.AddOrGet<Effects>();
 		KPrefabID kPrefabID = gameObject.AddOrGet<KPrefabID>();
-		kPrefabID.AddTag(GameTags.Egg);
-		kPrefabID.AddTag(GameTags.IncubatableEgg);
-		kPrefabID.AddTag(GameTags.PedestalDisplayable);
+		kPrefabID.AddTag(GameTags.Egg, false);
+		kPrefabID.AddTag(GameTags.IncubatableEgg, false);
+		kPrefabID.AddTag(GameTags.PedestalDisplayable, false);
 		IncubationMonitor.Def def = gameObject.AddOrGetDef<IncubationMonitor.Def>();
 		def.spawnedCreature = creature_id;
 		def.baseIncubationRate = base_incubation_rate;

@@ -66,7 +66,7 @@ public class PetroleumGeneratorConfig : IBuildingConfig
 	{
 		GeneratedBuildings.RegisterLogicPorts(go, LogicOperationalController.INPUT_PORTS_0_0);
 		go.AddOrGet<LogicOperationalController>();
-		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.IndustrialMachinery);
+		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.IndustrialMachinery, false);
 		go.AddOrGet<LoopingSounds>();
 		go.AddOrGet<Storage>();
 		BuildingDef def = go.GetComponent<Building>().Def;
@@ -90,8 +90,8 @@ public class PetroleumGeneratorConfig : IBuildingConfig
 		};
 		formula.outputs = new EnergyGenerator.OutputItem[2]
 		{
-			new EnergyGenerator.OutputItem(SimHashes.CarbonDioxide, 0.5f, false, new CellOffset(0, 3), 0f),
-			new EnergyGenerator.OutputItem(SimHashes.DirtyWater, 0.75f, false, new CellOffset(1, 1), 0f)
+			new EnergyGenerator.OutputItem(SimHashes.CarbonDioxide, 0.5f, false, new CellOffset(0, 3), 383.15f),
+			new EnergyGenerator.OutputItem(SimHashes.DirtyWater, 0.75f, false, new CellOffset(1, 1), 313.15f)
 		};
 		energyGenerator.formula = formula;
 		Tinkerable.MakePowerTinkerable(go);

@@ -203,6 +203,9 @@ public class FlushToilet : StateMachineComponent<FlushToilet.SMInstance>, IUsabl
 	public float massEmittedPerUse = 5f;
 
 	[SerializeField]
+	public float newPeeTemperature;
+
+	[SerializeField]
 	public string diseaseId;
 
 	[SerializeField]
@@ -273,7 +276,9 @@ public class FlushToilet : StateMachineComponent<FlushToilet.SMInstance>, IUsabl
 			num += num3 * component.Temperature;
 		}
 		pooledList.Recycle();
-		float temperature = num / massConsumedPerUse;
+		float num4 = massEmittedPerUse - massConsumedPerUse;
+		num += num4 * newPeeTemperature;
+		float temperature = num / massEmittedPerUse;
 		byte index = Db.Get().Diseases.GetIndex(diseaseId);
 		storage.AddLiquid(SimHashes.DirtyWater, massEmittedPerUse, temperature, index, diseasePerFlush, false, true);
 		if ((UnityEngine.Object)worker != (UnityEngine.Object)null)
@@ -303,7 +308,7 @@ public class FlushToilet : StateMachineComponent<FlushToilet.SMInstance>, IUsabl
 		List<Descriptor> list = new List<Descriptor>();
 		Element element = ElementLoader.FindElementByHash(SimHashes.DirtyWater);
 		string arg = element.tag.ProperName();
-		list.Add(new Descriptor(string.Format(UI.BUILDINGEFFECTS.ELEMENTEMITTEDPERUSE, arg, GameUtil.GetFormattedMass(massEmittedPerUse, GameUtil.TimeSlice.None, GameUtil.MetricMassFormat.UseThreshold, true, "{0:0.##}")), string.Format(UI.BUILDINGEFFECTS.TOOLTIPS.ELEMENTEMITTEDPERUSE, arg, GameUtil.GetFormattedMass(massEmittedPerUse, GameUtil.TimeSlice.None, GameUtil.MetricMassFormat.UseThreshold, true, "{0:0.##}")), Descriptor.DescriptorType.Effect, false));
+		list.Add(new Descriptor(string.Format(UI.BUILDINGEFFECTS.ELEMENTEMITTED_TOILET, arg, GameUtil.GetFormattedMass(massEmittedPerUse, GameUtil.TimeSlice.None, GameUtil.MetricMassFormat.UseThreshold, true, "{0:0.##}"), GameUtil.GetFormattedTemperature(newPeeTemperature, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false)), string.Format(UI.BUILDINGEFFECTS.TOOLTIPS.ELEMENTEMITTED_TOILET, arg, GameUtil.GetFormattedMass(massEmittedPerUse, GameUtil.TimeSlice.None, GameUtil.MetricMassFormat.UseThreshold, true, "{0:0.##}"), GameUtil.GetFormattedTemperature(newPeeTemperature, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false)), Descriptor.DescriptorType.Effect, false));
 		Disease disease = Db.Get().Diseases.Get(diseaseId);
 		int units = diseasePerFlush + diseaseOnDupePerFlush;
 		list.Add(new Descriptor(string.Format(UI.BUILDINGEFFECTS.DISEASEEMITTEDPERUSE, disease.Name, GameUtil.GetFormattedDiseaseAmount(units)), string.Format(UI.BUILDINGEFFECTS.TOOLTIPS.DISEASEEMITTEDPERUSE, disease.Name, GameUtil.GetFormattedDiseaseAmount(units)), Descriptor.DescriptorType.DiseaseSource, false));
@@ -323,7 +328,8 @@ public class FlushToilet : StateMachineComponent<FlushToilet.SMInstance>, IUsabl
 		if (GetSMI() != null)
 		{
 			ConduitFlow liquidConduitFlow = Game.Instance.liquidConduitFlow;
-			bool value = liquidConduitFlow.GetContents(outputCell).mass > 0f && base.smi.HasContaminatedMass();
+			ConduitFlow.ConduitContents contents = liquidConduitFlow.GetContents(outputCell);
+			bool value = contents.mass > 0f && base.smi.HasContaminatedMass();
 			base.smi.sm.outputBlocked.Set(value, base.smi);
 		}
 	}

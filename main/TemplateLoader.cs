@@ -87,7 +87,7 @@ public static class TemplateLoader
 					{
 						BuildingComplete component = gameObject.GetComponent<BuildingComplete>();
 						KPrefabID component2 = gameObject.GetComponent<KPrefabID>();
-						component2.AddTag(GameTags.TemplateBuilding);
+						component2.AddTag(GameTags.TemplateBuilding, true);
 						Rotatable component3 = gameObject.GetComponent<Rotatable>();
 						if ((UnityEngine.Object)component3 != (UnityEngine.Object)null)
 						{

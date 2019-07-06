@@ -110,7 +110,7 @@ public class Clearable : Workable, ISaveLoadable, IRender200ms
 		if (isClearable && (!isMarkedForClear || force) && !pickupable.IsEntombed && !clearHandle.IsValid() && !this.HasTag(GameTags.Stored))
 		{
 			Prioritizable.AddRef(base.gameObject);
-			GetComponent<KPrefabID>().AddTag(GameTags.Garbage);
+			GetComponent<KPrefabID>().AddTag(GameTags.Garbage, false);
 			isMarkedForClear = true;
 			clearHandle = GlobalChoreProvider.Instance.RegisterClearable(this);
 			RefreshClearableStatus();

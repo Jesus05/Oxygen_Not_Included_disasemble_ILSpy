@@ -113,7 +113,6 @@ public class TreeBud : KMonoBehaviour, IWiltCause
 	protected override void OnSpawn()
 	{
 		base.OnSpawn();
-		Subscribe(1272413801, OnHarvested);
 		Subscribe(-216549700, OnUprooted);
 		if (buddingTrunk != null && (Object)buddingTrunk.Get() != (Object)null)
 		{
@@ -132,14 +131,6 @@ public class TreeBud : KMonoBehaviour, IWiltCause
 		UnsubscribeToTrunk();
 		SetOccupyGridSpace(false);
 		base.OnCleanUp();
-	}
-
-	private void OnHarvested(object data = null)
-	{
-		if (Random.Range(0f, 1f) > 0.75f)
-		{
-			Util.KDestroyGameObject(base.gameObject);
-		}
 	}
 
 	private void OnUprooted(object data = null)

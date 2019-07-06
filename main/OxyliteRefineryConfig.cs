@@ -58,7 +58,7 @@ public class OxyliteRefineryConfig : IBuildingConfig
 	{
 		Tag tag = SimHashes.Oxygen.CreateTag();
 		Tag tag2 = SimHashes.Gold.CreateTag();
-		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.IndustrialMachinery);
+		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.IndustrialMachinery, false);
 		OxyliteRefinery oxyliteRefinery = go.AddOrGet<OxyliteRefinery>();
 		oxyliteRefinery.emitTag = SimHashes.OxyRock.CreateTag();
 		oxyliteRefinery.emitMass = 10f;

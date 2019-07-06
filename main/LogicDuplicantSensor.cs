@@ -119,7 +119,6 @@ public class LogicDuplicantSensor : Switch, ISim1000ms, ISim200ms
 	{
 		if (pickupablesDirty)
 		{
-			Debug.Log("RefreshPickupables");
 			duplicants.Clear();
 			ListPool<ScenePartitionerEntry, LogicDuplicantSensor>.PooledList pooledList = ListPool<ScenePartitionerEntry, LogicDuplicantSensor>.Allocate();
 			GameScenePartitioner.Instance.GatherEntries(pickupableExtents.x, pickupableExtents.y, pickupableExtents.width, pickupableExtents.height, GameScenePartitioner.Instance.pickupablesLayer, pooledList);
@@ -179,7 +178,6 @@ public class LogicDuplicantSensor : Switch, ISim1000ms, ISim200ms
 
 	private void OnSwitchToggled(bool toggled_on)
 	{
-		Debug.Log("OnSwitchToggled: " + toggled_on);
 		UpdateLogicCircuit();
 		UpdateVisualState(false);
 	}
@@ -194,7 +192,6 @@ public class LogicDuplicantSensor : Switch, ISim1000ms, ISim200ms
 	{
 		if (wasOn != switchedOn || force)
 		{
-			Debug.Log("UpdateVisualState: " + switchedOn);
 			wasOn = switchedOn;
 			KBatchedAnimController component = GetComponent<KBatchedAnimController>();
 			component.Play((!switchedOn) ? "on_pst" : "on_pre", KAnim.PlayMode.Once, 1f, 0f);

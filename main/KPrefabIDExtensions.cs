@@ -24,7 +24,7 @@ public static class KPrefabIDExtensions
 
 	public static void AddTag(this GameObject go, Tag tag)
 	{
-		go.GetComponent<KPrefabID>().AddTag(tag);
+		go.GetComponent<KPrefabID>().AddTag(tag, false);
 	}
 
 	public static void AddTag(this Component cmp, Tag tag)

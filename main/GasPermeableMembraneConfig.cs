@@ -59,7 +59,7 @@ public class GasPermeableMembraneConfig : IBuildingConfig
 	public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.AddComponent<ZoneTile>();
-		go.GetComponent<KPrefabID>().AddTag(GameTags.FloorTiles);
+		go.GetComponent<KPrefabID>().AddTag(GameTags.FloorTiles, false);
 	}
 
 	public override void DoPostConfigureUnderConstruction(GameObject go)

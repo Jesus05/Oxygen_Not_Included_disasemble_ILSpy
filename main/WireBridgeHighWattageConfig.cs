@@ -79,7 +79,7 @@ public class WireBridgeHighWattageConfig : IBuildingConfig
 	{
 		WireUtilityNetworkLink wireUtilityNetworkLink = AddNetworkLink(go);
 		wireUtilityNetworkLink.visualizeOnly = false;
-		go.GetComponent<KPrefabID>().AddTag(GameTags.WireBridges);
+		go.GetComponent<KPrefabID>().AddTag(GameTags.WireBridges, false);
 		go.AddOrGet<BuildingCellVisualizer>();
 	}
 

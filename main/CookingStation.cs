@@ -49,7 +49,6 @@ public class CookingStation : ComplexFabricator, IEffectDescriptor
 		{
 			PrimaryElement component = item.GetComponent<PrimaryElement>();
 			component.ModifyDiseaseCount(-component.DiseaseCount, "CookingStation.CompleteOrder");
-			component.Temperature = 368.15f;
 		}
 		GetComponent<Operational>().SetActive(false, false);
 		return list;

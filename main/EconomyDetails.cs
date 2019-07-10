@@ -268,6 +268,7 @@ public class EconomyDetails
 
 		public void AddDelta(Delta delta)
 		{
+			Debug.Assert(delta.resource != null);
 			deltas.Add(delta);
 		}
 
@@ -358,6 +359,16 @@ public class EconomyDetails
 		foreach (Element element in ElementLoader.elements)
 		{
 			CreateResource(element);
+		}
+		List<Tag> list = new List<Tag>
+		{
+			GameTags.CombustibleLiquid,
+			GameTags.CombustibleGas,
+			GameTags.CombustibleSolid
+		};
+		foreach (Tag item in list)
+		{
+			CreateResource(item, massResourceType);
 		}
 		GatherStartingBiomeAmounts();
 		foreach (KPrefabID prefab in Assets.Prefabs)
@@ -943,6 +954,7 @@ public class EconomyDetails
 				return resource;
 			}
 		}
+		DebugUtil.LogErrorArgs("Found a tag without a matching resource!", tag);
 		return null;
 	}
 

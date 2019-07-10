@@ -26,7 +26,7 @@ public class EthanolDistilleryConfig : IBuildingConfig
 		string id = "EthanolDistillery";
 		int width = 3;
 		int height = 4;
-		string anim = "algae_distillery_kanim";
+		string anim = "ethanoldistillery_kanim";
 		int hitpoints = 100;
 		float construction_time = 30f;
 		float[] tIER = BUILDINGS.CONSTRUCTION_MASS_KG.TIER3;

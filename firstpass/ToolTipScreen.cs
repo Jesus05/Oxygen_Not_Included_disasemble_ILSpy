@@ -267,6 +267,7 @@ public class ToolTipScreen : KScreen
 					anchorRoot.GetComponentInChildren<Image>(true).enabled = false;
 				}
 				multiTooltipContainer.transform.localScale = Vector3.zero;
+				toolTipIsBlank = true;
 				for (int i = 0; i < multiTooltipContainer.transform.childCount; i++)
 				{
 					if (multiTooltipContainer.transform.GetChild(i).transform.localScale != Vector3.one)
@@ -275,7 +276,7 @@ public class ToolTipScreen : KScreen
 					}
 					LayoutElement component = multiTooltipContainer.transform.GetChild(i).GetComponent<LayoutElement>();
 					TextMeshProUGUI component2 = component.GetComponent<TextMeshProUGUI>();
-					toolTipIsBlank = ((component2.text == "") ? true : false);
+					toolTipIsBlank = (component2.text == "" && toolTipIsBlank);
 					if (component.minHeight != component2.preferredHeight)
 					{
 						component.minHeight = component2.preferredHeight;

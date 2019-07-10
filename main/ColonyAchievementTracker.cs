@@ -1,9 +1,7 @@
 using Database;
-using FMOD.Studio;
 using KSerialization;
 using STRINGS;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
@@ -79,7 +77,7 @@ public class ColonyAchievementTracker : KMonoBehaviour, ISaveLoadableDetails
 		achievements[id].success = true;
 	}
 
-	private void BeginVictorySequence(GameObject cameraTaget, string achievementID)
+	private void BeginVictorySequence(string achievementID)
 	{
 		RootMenu.Instance.canTogglePauseScreen = false;
 		CameraController.Instance.DisableUserCameraControl = true;
@@ -105,21 +103,8 @@ public class ColonyAchievementTracker : KMonoBehaviour, ISaveLoadableDetails
 				SpeedControlScreen.Instance.Pause(false);
 			}
 			CameraController.Instance.SetWorldInteractive(true);
-			StartCoroutine(VictoryNIS(cameraTaget, achievementID));
+			Db.Get().ColonyAchievements.Get(achievementID).victorySequence(this);
 		});
-	}
-
-	public IEnumerator VictoryNIS(GameObject cameraTaget, string achievementID)
-	{
-		if (!SpeedControlScreen.Instance.IsPaused)
-		{
-			SpeedControlScreen.Instance.Pause(false);
-		}
-		CameraController.Instance.SetWorldInteractive(false);
-		AudioMixer.instance.Stop(AudioMixerSnapshots.Get().VictoryMessageSnapshot, STOP_MODE.ALLOWFADEOUT);
-		CameraController.Instance.FadeOut(1f);
-		yield return (object)new WaitForSecondsRealtime(3f);
-		/*Error: Unable to find new state assignment for yield return*/;
 	}
 
 	protected override void OnCleanUp()
@@ -138,8 +123,7 @@ public class ColonyAchievementTracker : KMonoBehaviour, ISaveLoadableDetails
 			if (Db.Get().ColonyAchievements.Get(newlyCompletedAchievements[i]).isVictoryCondition)
 			{
 				flag = true;
-				GameObject cameraTaget = Db.Get().ColonyAchievements.Get(newlyCompletedAchievements[i]).GetSuccessTargetEntity();
-				BeginVictorySequence(cameraTaget, newlyCompletedAchievements[i]);
+				BeginVictorySequence(newlyCompletedAchievements[i]);
 				break;
 			}
 		}

@@ -31,11 +31,18 @@ public class VideoWidget : KMonoBehaviour
 
 	public void SetClip(VideoClip clip)
 	{
-		this.clip = clip;
-		renderTexture = new RenderTexture(Convert.ToInt32(clip.width), Convert.ToInt32(clip.height), 16);
-		thumbnailPlayer.targetTexture = renderTexture;
-		rawImage.texture = renderTexture;
-		StartCoroutine(ConfigureThumbnail());
+		if ((UnityEngine.Object)clip == (UnityEngine.Object)null)
+		{
+			Debug.LogWarning("Tried to assign null video clip to VideoWidget");
+		}
+		else
+		{
+			this.clip = clip;
+			renderTexture = new RenderTexture(Convert.ToInt32(clip.width), Convert.ToInt32(clip.height), 16);
+			thumbnailPlayer.targetTexture = renderTexture;
+			rawImage.texture = renderTexture;
+			StartCoroutine(ConfigureThumbnail());
+		}
 	}
 
 	private IEnumerator ConfigureThumbnail()

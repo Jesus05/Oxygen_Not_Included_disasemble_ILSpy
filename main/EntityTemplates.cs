@@ -253,6 +253,7 @@ public class EntityTemplates
 		def.tameEffect.Add(new AttributeModifier(Db.Get().CritterAttributes.Metabolism.Id, 100f, STRINGS.CREATURES.MODIFIERS.TAME.NAME, false, false, true));
 		OvercrowdingMonitor.Def def2 = prefab.AddOrGetDef<OvercrowdingMonitor.Def>();
 		def2.spaceRequiredPerCreature = space_required_per_creature;
+		prefab.AddTag(GameTags.Plant);
 		return prefab;
 	}
 

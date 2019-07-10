@@ -77,7 +77,7 @@ public class SolidConsumerMonitor : GameStateMachine<SolidConsumerMonitor, Solid
 
 	private State lookingforfood;
 
-	private static TagBits plantMask = new TagBits(GameTags.Plant);
+	private static TagBits plantMask = new TagBits(GameTags.GrowingPlant);
 
 	private static TagBits creatureMask = new TagBits(new Tag[2]
 	{

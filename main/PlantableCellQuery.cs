@@ -58,9 +58,16 @@ public class PlantableCellQuery : PathFinderQuery
 									return false;
 								}
 							}
-							else if (Grid.Element[num] != plantElement)
+							else
 							{
-								return false;
+								if (Grid.Element[num] != plantElement)
+								{
+									return false;
+								}
+								if (CountNearbyPlants(num, 6) > 2)
+								{
+									return false;
+								}
 							}
 							return true;
 						}
@@ -73,5 +80,28 @@ public class PlantableCellQuery : PathFinderQuery
 			return false;
 		}
 		return false;
+	}
+
+	private static int CountNearbyPlants(int cell, int radius)
+	{
+		int x = 0;
+		int y = 0;
+		Grid.PosToXY(Grid.CellToPos(cell), out x, out y);
+		int num = radius * 2;
+		x -= radius;
+		y -= radius;
+		ListPool<ScenePartitionerEntry, GameScenePartitioner>.PooledList pooledList = ListPool<ScenePartitionerEntry, GameScenePartitioner>.Allocate();
+		GameScenePartitioner.Instance.GatherEntries(x, y, num, num, GameScenePartitioner.Instance.plants, pooledList);
+		int num2 = 0;
+		foreach (ScenePartitionerEntry item in pooledList)
+		{
+			KPrefabID kPrefabID = (KPrefabID)item.obj;
+			if (!(bool)kPrefabID.GetComponent<TreeBud>())
+			{
+				num2++;
+			}
+		}
+		pooledList.Recycle();
+		return num2;
 	}
 }

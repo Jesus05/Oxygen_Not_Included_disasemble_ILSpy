@@ -43,6 +43,7 @@ public class GameOptionsScreen : KModalButtonMenu
 		{
 			saveConfiguration.ToggleDisabledContent(true);
 			saveConfiguration.Init();
+			SetSandboxModeActive(SaveGame.Instance.sandboxEnabled);
 		}
 		else
 		{
@@ -62,6 +63,7 @@ public class GameOptionsScreen : KModalButtonMenu
 		{
 			savePanel.SetActive(true);
 			saveConfiguration.Show(show);
+			SetSandboxModeActive(SaveGame.Instance.sandboxEnabled);
 		}
 		else
 		{
@@ -99,6 +101,7 @@ public class GameOptionsScreen : KModalButtonMenu
 		component.PopupConfirmDialog(UI.FRONTEND.OPTIONS_SCREEN.TOGGLE_SANDBOX_SCREEN.UNLOCK_SANDBOX_WARNING, delegate
 		{
 			SaveGame.Instance.sandboxEnabled = true;
+			SetSandboxModeActive(SaveGame.Instance.sandboxEnabled);
 			TopLeftControlScreen.Instance.UpdateSandboxToggleState();
 			Deactivate();
 		}, delegate
@@ -107,7 +110,7 @@ public class GameOptionsScreen : KModalButtonMenu
 			string text2 = savePrefixAndCreateFolder;
 			savePrefixAndCreateFolder = text2 + "\\" + SaveGame.Instance.BaseName + UI.FRONTEND.OPTIONS_SCREEN.TOGGLE_SANDBOX_SCREEN.BACKUP_SAVE_GAME_APPEND + ".sav";
 			SaveLoader.Instance.Save(savePrefixAndCreateFolder, false, false);
-			SaveGame.Instance.sandboxEnabled = true;
+			SetSandboxModeActive(SaveGame.Instance.sandboxEnabled);
 			TopLeftControlScreen.Instance.UpdateSandboxToggleState();
 			Deactivate();
 		}, UI.FRONTEND.OPTIONS_SCREEN.TOGGLE_SANDBOX_SCREEN.CANCEL, delegate
@@ -119,5 +122,12 @@ public class GameOptionsScreen : KModalButtonMenu
 	private void OnKeyBindings()
 	{
 		ActivateChildScreen(inputBindingsScreenPrefab.gameObject);
+	}
+
+	private void SetSandboxModeActive(bool active)
+	{
+		sandboxButton.GetComponent<HierarchyReferences>().GetReference("Checkmark").gameObject.SetActive(active);
+		sandboxButton.isInteractable = !active;
+		sandboxButton.gameObject.GetComponentInParent<CanvasGroup>().alpha = ((!active) ? 1f : 0.5f);
 	}
 }

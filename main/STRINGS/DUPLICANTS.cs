@@ -93,7 +93,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Decor";
 
-				public static LocString TOOLTIP = "Duplicants become stressed in areas with " + UI.PRE_KEYWORD + "Decor" + UI.PST_KEYWORD + " lower than their expectations\nOpen the " + UI.FormatAsOverlay("Decor Overlay") + " " + UI.FormatAsHotkey("[F8]") + " to view current " + UI.PRE_KEYWORD + "Decor" + UI.PST_KEYWORD + " values";
+				public static LocString TOOLTIP = "Duplicants become stressed in areas with " + UI.PRE_KEYWORD + "Decor" + UI.PST_KEYWORD + " lower than their expectations\nOpen the " + UI.FormatAsOverlay("Decor Overlay", "[F8]") + " to view current " + UI.PRE_KEYWORD + "Decor" + UI.PST_KEYWORD + " values";
 
 				public static LocString TOOLTIP_CURRENT = "\n\nCurrent Environmental Decor: <b>{0}</b>";
 
@@ -1913,7 +1913,7 @@ namespace STRINGS
 
 				public static LocString NOTIFICATION_NAME = "Made a mess";
 
-				public static LocString NOTIFICATION_TOOLTIP = "The " + UI.PRE_KEYWORD + "Mop Tool" + UI.PST_KEYWORD + " " + UI.FormatAsHotkey("[M]") + " can be used to clean up Duplicant-related \"spills\"" + UI.HORIZONTAL_BR_RULE + "These Duplicants made messes that require cleaning up:\n";
+				public static LocString NOTIFICATION_TOOLTIP = "The " + UI.FormatAsTool("Mop Tool", "[M]") + " can be used to clean up Duplicant-related \"spills\"" + UI.HORIZONTAL_BR_RULE + "These Duplicants made messes that require cleaning up:\n";
 			}
 
 			public class WASHINGHANDS
@@ -1945,7 +1945,7 @@ namespace STRINGS
 
 				public static LocString NOTIFICATION_NAME = "Throwing up";
 
-				public static LocString NOTIFICATION_TOOLTIP = "The " + UI.PRE_KEYWORD + "Mop Tool" + UI.PST_KEYWORD + " " + UI.FormatAsHotkey("[M]") + " can be used to clean up Duplicant-related \"spills\"" + UI.HORIZONTAL_BR_RULE + "A " + UI.FormatAsLink("Disease", "DISEASE") + " has caused these Duplicants to throw up:";
+				public static LocString NOTIFICATION_TOOLTIP = "The " + UI.FormatAsTool("Mop Tool", "[M]") + " can be used to clean up Duplicant-related \"spills\"" + UI.HORIZONTAL_BR_RULE + "A " + UI.PRE_KEYWORD + "Disease" + UI.PST_KEYWORD + " has caused these Duplicants to throw up:";
 			}
 
 			public class STRESSVOMITING
@@ -1956,7 +1956,7 @@ namespace STRINGS
 
 				public static LocString NOTIFICATION_NAME = "Stress vomiting";
 
-				public static LocString NOTIFICATION_TOOLTIP = "The " + UI.PRE_KEYWORD + "Mop Tool" + UI.PST_KEYWORD + " " + UI.FormatAsHotkey("[M]") + " can used to clean up Duplicant-related \"spills\"" + UI.HORIZONTAL_BR_RULE + "These Duplicants became so " + UI.FormatAsLink("Stressed", "STRESS") + " they threw up:";
+				public static LocString NOTIFICATION_TOOLTIP = "The " + UI.FormatAsTool("Mop Tool", "[M]") + " can used to clean up Duplicant-related \"spills\"" + UI.HORIZONTAL_BR_RULE + "These Duplicants became so " + UI.PRE_KEYWORD + "Stressed" + UI.PST_KEYWORD + " they threw up:";
 			}
 
 			public class HASDISEASE
@@ -2983,7 +2983,7 @@ namespace STRINGS
 
 			public class BURNINGCALORIES
 			{
-				public static LocString NAME = "Burning Calories";
+				public static LocString NAME = "Homeostasis";
 			}
 
 			public class EATINGCALORIES
@@ -4869,14 +4869,14 @@ namespace STRINGS
 
 			public class HAPPINESSDELTA
 			{
-				public static LocString NAME = "Happiness Change";
+				public static LocString NAME = "Happiness";
 
 				public static LocString DESC = "Contented " + UI.PRE_KEYWORD + "Critters" + UI.PST_KEYWORD + " produce usable materials with increased frequency.";
 			}
 
 			public class WILDNESSDELTA
 			{
-				public static LocString NAME = "Wildness Change";
+				public static LocString NAME = "Wildness";
 
 				public static LocString DESC = "Wild creatures can survive on fewer " + UI.PRE_KEYWORD + "Calories" + UI.PST_KEYWORD + " than domesticated ones.";
 			}
@@ -5041,49 +5041,49 @@ namespace STRINGS
 
 			public class STRESSDELTA
 			{
-				public static LocString NAME = "Stress Change";
+				public static LocString NAME = "Stress";
 
 				public static LocString DESC = "Determines how quickly a Duplicant gains or reduces " + UI.PRE_KEYWORD + "Stress" + UI.PST_KEYWORD;
 			}
 
 			public class BREATHDELTA
 			{
-				public static LocString NAME = "Breath Change";
+				public static LocString NAME = "Breath";
 
 				public static LocString DESC = "Determines how quickly a Duplicant gains or reduces " + UI.PRE_KEYWORD + "Breath" + UI.PST_KEYWORD + ".";
 			}
 
 			public class BLADDERDELTA
 			{
-				public static LocString NAME = "Bladder Change";
+				public static LocString NAME = "Bladder";
 
 				public static LocString DESC = "Determines how quickly a Duplicant's " + UI.PRE_KEYWORD + "Bladder" + UI.PST_KEYWORD + " fills or depletes.";
 			}
 
 			public class CALORIESDELTA
 			{
-				public static LocString NAME = "Duplicant Metabolism";
+				public static LocString NAME = "Calories";
 
 				public static LocString DESC = "Determines how quickly a Duplicant burns or stores " + UI.PRE_KEYWORD + "Calories" + UI.PST_KEYWORD + ".";
 			}
 
 			public class STAMINADELTA
 			{
-				public static LocString NAME = "Stamina Change";
+				public static LocString NAME = "Stamina";
 
 				public static LocString DESC = "";
 			}
 
 			public class TOXICITYDELTA
 			{
-				public static LocString NAME = "Toxicity Change";
+				public static LocString NAME = "Toxicity";
 
 				public static LocString DESC = "";
 			}
 
 			public class IMMUNELEVELDELTA
 			{
-				public static LocString NAME = "Immunity Regen";
+				public static LocString NAME = "Immunity";
 
 				public static LocString DESC = "";
 			}
@@ -5400,7 +5400,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = UI.FormatAsLink("Electrical Engineering", "POWER_TECHNICIAN");
 
-				public static LocString DESCRIPTION = "Enables generator tune-ups, which will temporarily provide improved " + UI.PRE_KEYWORD + "Power" + UI.PST_KEYWORD + " output.";
+				public static LocString DESCRIPTION = "Enables generator " + UI.PRE_KEYWORD + "Tune-Up" + UI.PST_KEYWORD + ", which will temporarily provide improved " + UI.PRE_KEYWORD + "Power" + UI.PST_KEYWORD + " output.";
 			}
 
 			public class MECHATRONIC_ENGINEER

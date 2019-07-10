@@ -142,6 +142,7 @@ namespace ProcGenGame
 										}
 										num3 = 1f;
 									}
+									tc.LogInfo("\t\tdensity:", "", num3);
 									int num4 = Mathf.RoundToInt((float)mobPossibleSpawnPoints.Count * num3);
 									tc.LogInfo("\t\tcount", list[i].ToString(), (float)num4);
 									Tag mobPrefab = (mob.prefabName != null) ? new Tag(mob.prefabName) : list[i];

@@ -272,7 +272,7 @@ namespace ProcGenGame
 			}
 			mobs.Add(mob);
 			bool flag = RemoveFromAvailableSpawnCells(mob.Key);
-			LogInfo("\t\tRemoveFromAvailableCells", mob.Value.Name + ": " + ((!flag) ? "failed" : "success"), (float)mob.Key);
+			LogInfo("\t\t\tRemoveFromAvailableCells", mob.Value.Name + ": " + ((!flag) ? "failed" : "success"), (float)mob.Key);
 			if (!flag)
 			{
 				if (!allCells.Contains(mob.Key))

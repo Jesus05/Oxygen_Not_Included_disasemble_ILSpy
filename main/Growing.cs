@@ -1,7 +1,6 @@
 using Klei.AI;
 using STRINGS;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using UnityEngine;
 
 public class Growing : StateMachineComponent<Growing.StatesInstance>, IGameObjectEffectDescriptor
@@ -13,8 +12,6 @@ public class Growing : StateMachineComponent<Growing.StatesInstance>, IGameObjec
 		public AttributeModifier wildGrowingRate;
 
 		public AttributeModifier getOldRate;
-
-		public HandleVector<int>.Handle partitionerEntry;
 
 		public StatesInstance(Growing master)
 			: base(master)
@@ -77,17 +74,10 @@ public class Growing : StateMachineComponent<Growing.StatesInstance>, IGameObjec
 
 		public GrownStates grown;
 
-		[CompilerGenerated]
-		private static StateMachine<States, StatesInstance, Growing, object>.State.Callback _003C_003Ef__mg_0024cache0;
-
-		[CompilerGenerated]
-		private static StateMachine<States, StatesInstance, Growing, object>.State.Callback _003C_003Ef__mg_0024cache1;
-
 		public override void InitializeStates(out BaseState default_state)
 		{
 			default_state = growing;
 			base.serializable = true;
-			root.Enter(AddToScenePartitioner).Exit(RemoveFromScenePartitioner);
 			growing.EventTransition(GameHashes.Wilt, stalled, (StatesInstance smi) => smi.IsWilting()).EventTransition(GameHashes.CropSleep, stalled, (StatesInstance smi) => smi.IsSleeping()).EventTransition(GameHashes.PlanterStorage, growing.planted, (StatesInstance smi) => smi.master.rm.Replanted)
 				.EventTransition(GameHashes.PlanterStorage, growing.wild, (StatesInstance smi) => !smi.master.rm.Replanted)
 				.TriggerOnEnter(GameHashes.Grow, null)
@@ -197,17 +187,6 @@ public class Growing : StateMachineComponent<Growing.StatesInstance>, IGameObjec
 		}
 	}
 
-	private static void AddToScenePartitioner(StatesInstance smi)
-	{
-		Extents extents = new Extents(Grid.PosToCell(smi), smi.Get<OccupyArea>().OccupiedCellsOffsets);
-		smi.partitionerEntry = GameScenePartitioner.Instance.Add(smi.gameObject.name, smi.GetComponent<KPrefabID>(), extents, GameScenePartitioner.Instance.plants, null);
-	}
-
-	private static void RemoveFromScenePartitioner(StatesInstance smi)
-	{
-		GameScenePartitioner.Instance.Free(ref smi.partitionerEntry);
-	}
-
 	protected override void OnPrefabInit()
 	{
 		Amounts amounts = base.gameObject.GetAmounts();
@@ -226,7 +205,7 @@ public class Growing : StateMachineComponent<Growing.StatesInstance>, IGameObjec
 	{
 		base.OnSpawn();
 		base.smi.StartSM();
-		base.gameObject.AddTag(GameTags.Plant);
+		base.gameObject.AddTag(GameTags.GrowingPlant);
 	}
 
 	private void OnNewGameSpawn(object data)

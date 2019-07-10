@@ -746,7 +746,7 @@ namespace STRINGS
 
 			public class SKILL_POINTS_AVAILABLE
 			{
-				public static LocString NAME = "Skill points available";
+				public static LocString NAME = "Skill Points available";
 
 				public static LocString TOOLTIP = "A Duplicant has " + UI.PRE_KEYWORD + "Skill Points" + UI.PST_KEYWORD + " available";
 			}
@@ -958,7 +958,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Emitting Light";
 
-				public static LocString TOOLTIP = "Open the " + UI.PRE_KEYWORD + "Light Overlay" + UI.PST_KEYWORD + " " + UI.FormatAsHotkey("[{LightGridOverlay}]") + " to view this light's visibility radius";
+				public static LocString TOOLTIP = "Open the " + UI.FormatAsOverlay("Light Overlay", "[{LightGridOverlay}]") + " to view this light's visibility radius";
 			}
 
 			public class RATIONBOXCONTENTS
@@ -1538,21 +1538,21 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Outside of room";
 
-				public static LocString TOOLTIP = "This building must be built inside a " + UI.PRE_KEYWORD + "Room" + UI.PST_KEYWORD + " for full functionality\n\nOpen the " + UI.PRE_KEYWORD + "Room Overlay" + UI.PST_KEYWORD + " " + UI.FormatAsHotkey("[F11]") + " to view full " + UI.PRE_KEYWORD + "Room" + UI.PST_KEYWORD + " status";
+				public static LocString TOOLTIP = "This building must be built inside a " + UI.PRE_KEYWORD + "Room" + UI.PST_KEYWORD + " for full functionality\n\nOpen the " + UI.FormatAsOverlay("Room Overlay", "[F11]") + " to view full " + UI.PRE_KEYWORD + "Room" + UI.PST_KEYWORD + " status";
 			}
 
 			public class NOTINREQUIREDROOM
 			{
 				public static LocString NAME = "Outside of {0}";
 
-				public static LocString TOOLTIP = "This building must be built inside a {0} for full functionality\n\nOpen the " + UI.PRE_KEYWORD + "Room Overlay" + UI.PST_KEYWORD + " " + UI.FormatAsHotkey("[F11]") + " to view full " + UI.PRE_KEYWORD + "Room" + UI.PST_KEYWORD + " status";
+				public static LocString TOOLTIP = "This building must be built inside a {0} for full functionality\n\nOpen the " + UI.FormatAsOverlay("Room Overlay", "[F11]") + " to view full " + UI.PRE_KEYWORD + "Room" + UI.PST_KEYWORD + " status";
 			}
 
 			public class NOTINRECOMMENDEDROOM
 			{
 				public static LocString NAME = "Outside of {0}";
 
-				public static LocString TOOLTIP = "It is recommended to build this building inside a {0}\n\nOpen the " + UI.PRE_KEYWORD + "Room Overlay" + UI.PST_KEYWORD + " " + UI.FormatAsHotkey("[F11]") + " to view full " + UI.PRE_KEYWORD + "Room" + UI.PST_KEYWORD + " status";
+				public static LocString TOOLTIP = "It is recommended to build this building inside a {0}\n\nOpen the " + UI.FormatAsOverlay("Room Overlay", "[F11]") + " to view full " + UI.PRE_KEYWORD + "Room" + UI.PST_KEYWORD + " status";
 			}
 
 			public class RELEASING_PRESSURE

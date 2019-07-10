@@ -312,22 +312,22 @@ public class CameraController : KMonoBehaviour, IInputHandler
 		Restore();
 	}
 
-	public void FadeOut(float targetPercentage = 1f)
+	public void FadeOut(float targetPercentage = 1f, float speed = 1f)
 	{
 		if (activeFadeRoutine != null)
 		{
 			StopCoroutine(activeFadeRoutine);
 		}
-		activeFadeRoutine = StartCoroutine(FadeToBlack(targetPercentage));
+		activeFadeRoutine = StartCoroutine(FadeToBlack(targetPercentage, speed));
 	}
 
-	public void FadeIn(float targetPercentage = 0f)
+	public void FadeIn(float targetPercentage = 0f, float speed = 1f)
 	{
 		if (activeFadeRoutine != null)
 		{
 			StopCoroutine(activeFadeRoutine);
 		}
-		activeFadeRoutine = StartCoroutine(FadeInFromBlack(targetPercentage));
+		activeFadeRoutine = StartCoroutine(FadeInFromBlack(targetPercentage, speed));
 	}
 
 	public void SetWorldInteractive(bool state)
@@ -335,7 +335,7 @@ public class CameraController : KMonoBehaviour, IInputHandler
 		GameScreenManager.Instance.fadePlane.raycastTarget = !state;
 	}
 
-	private IEnumerator FadeToBlack(float targetBlackPercent = 1f)
+	private IEnumerator FadeToBlack(float targetBlackPercent = 1f, float speed = 1f)
 	{
 		Color color = GameScreenManager.Instance.fadePlane.color;
 		Mathf.Max(0f, color.a);
@@ -356,7 +356,7 @@ public class CameraController : KMonoBehaviour, IInputHandler
 		/*Error: Unable to find new state assignment for yield return*/;
 	}
 
-	private IEnumerator FadeInFromBlack(float targetBlackPercent = 0f)
+	private IEnumerator FadeInFromBlack(float targetBlackPercent = 0f, float speed = 1f)
 	{
 		Color color = GameScreenManager.Instance.fadePlane.color;
 		Mathf.Min(1f, color.a);

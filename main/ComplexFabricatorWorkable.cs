@@ -92,7 +92,6 @@ public class ComplexFabricatorWorkable : Workable
 		base.OnStartWork(worker);
 		if (operational.IsOperational)
 		{
-			fabricator.DuplicantStartWork();
 			if (fabricator.CurrentWorkingOrder != null)
 			{
 				InstantiateVisualizer(fabricator.CurrentWorkingOrder);
@@ -104,22 +103,13 @@ public class ComplexFabricatorWorkable : Workable
 		}
 	}
 
-	protected override void OnStopWork(Worker worker)
-	{
-		base.OnStopWork(worker);
-		fabricator.DuplicantStopWork();
-	}
-
 	protected override bool OnWorkTick(Worker worker, float dt)
 	{
 		if (OnWorkTickActions != null)
 		{
 			OnWorkTickActions(worker, dt);
 		}
-		if (meter != null)
-		{
-			UpdateMeter(worker, dt);
-		}
+		UpdateOrderProgress(worker, dt);
 		return base.OnWorkTick(worker, dt);
 	}
 
@@ -134,10 +124,10 @@ public class ComplexFabricatorWorkable : Workable
 		return workTime;
 	}
 
-	public Chore CreateOrder(ChoreType choreType)
+	public Chore CreateWorkChore(ChoreType choreType, float order_progress)
 	{
 		WorkChore<ComplexFabricatorWorkable> result = new WorkChore<ComplexFabricatorWorkable>(choreType, this, null, true, null, null, null, true, null, false, true, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, false, true);
-		workTimeRemaining = GetWorkTime();
+		workTimeRemaining = GetWorkTime() * (1f - order_progress);
 		return result;
 	}
 
@@ -171,11 +161,18 @@ public class ComplexFabricatorWorkable : Workable
 		}
 	}
 
-	private void UpdateMeter(Worker worker, float dt)
+	private void UpdateOrderProgress(Worker worker, float dt)
 	{
 		float workTime = GetWorkTime();
-		float positionPercent = (workTime - base.WorkTimeRemaining) / workTime;
-		meter.SetPositionPercent(positionPercent);
+		float num = Mathf.Clamp01((workTime - base.WorkTimeRemaining) / workTime);
+		if ((bool)fabricator)
+		{
+			fabricator.OrderProgress = num;
+		}
+		if (meter != null)
+		{
+			meter.SetPositionPercent(num);
+		}
 	}
 
 	private void DestroyVisualizer()

@@ -956,6 +956,10 @@ namespace ProcGen
 					tagSet.Add(feature2.forceBiome);
 					flag = true;
 				}
+				if (feature2.biomeTags != null)
+				{
+					tagSet.Union(new TagSet(feature2.biomeTags));
+				}
 			}
 			if (!flag && sw.biomes.Count > 0)
 			{

@@ -1485,7 +1485,7 @@ namespace STRINGS
 
 				public static LocString AUTOMATION_SOUNDS_ALWAYS = "Always play automation sounds";
 
-				public static LocString AUTOMATION_SOUNDS_ALWAYS_TOOLTIP = "If enabled, automation sound effects will play even when outside of the Automation Overlay";
+				public static LocString AUTOMATION_SOUNDS_ALWAYS_TOOLTIP = "If enabled, automation sound effects will play even when outside of the " + FormatAsOverlay("Automation Overlay");
 
 				public static LocString MUTE_ON_FOCUS_LOST = "Mute when unfocused";
 
@@ -1512,7 +1512,7 @@ namespace STRINGS
 
 				public static LocString RESET_TUTORIAL_DESCRIPTION = "Mark all tutorial messages \"unread\"";
 
-				public static LocString SANDBOX_DESCRIPTION = "Activate special sandbox tools";
+				public static LocString SANDBOX_DESCRIPTION = "Enable sandbox tools";
 
 				public static LocString CONTROLS_DESCRIPTION = "Change key bindings";
 
@@ -2520,7 +2520,7 @@ namespace STRINGS
 
 		public class TOOLTIPS
 		{
-			public static LocString MANAGEMENTMENU_JOBS = "Manage my Duplicant Priorities {Hotkey}" + HORIZONTAL_BR_RULE + PRE_KEYWORD + "Duplicant Priorities" + PST_KEYWORD + " are calculated <i>before</i> the " + PRE_KEYWORD + "Building Priorities" + PST_KEYWORD + " set by the " + FormatAsLink("Priority Tool", "PRIORITIES") + " " + FormatAsHotkey("[P]");
+			public static LocString MANAGEMENTMENU_JOBS = "Manage my Duplicant Priorities {Hotkey}" + HORIZONTAL_BR_RULE + PRE_KEYWORD + "Duplicant Priorities" + PST_KEYWORD + " are calculated <i>before</i> the " + PRE_KEYWORD + "Building Priorities" + PST_KEYWORD + " set by the " + FormatAsTool("Priority Tool", "[P]");
 
 			public static LocString MANAGEMENTMENU_CONSUMABLES = "Manage colony diets {Hotkey}";
 
@@ -2746,9 +2746,9 @@ namespace STRINGS
 
 			public static LocString MATIERIAL_MOD = "Made out of {0}";
 
-			public static LocString VITALS_CHECKBOX_TEMPERATURE = "This plant's internal temperature is {temperature}";
+			public static LocString VITALS_CHECKBOX_TEMPERATURE = "This plant's internal " + PRE_KEYWORD + "Temperature" + PST_KEYWORD + " is <b>{temperature}</b>";
 
-			public static LocString VITALS_CHECKBOX_PRESSURE = "The current air pressure is {pressure}";
+			public static LocString VITALS_CHECKBOX_PRESSURE = "The current " + PRE_KEYWORD + "Gas" + PST_KEYWORD + " pressure is <b>{pressure}</b>";
 
 			public static LocString VITALS_CHECKBOX_ATMOSPHERE = "This plant is immersed in {element}";
 
@@ -2756,9 +2756,9 @@ namespace STRINGS
 
 			public static LocString VITALS_CHECKBOX_ILLUMINATION_LIGHT = "This plant is currently lit";
 
-			public static LocString VITALS_CHECKBOX_FERTILIZER = "<b>{mass}</b> of fertilizer is currently available";
+			public static LocString VITALS_CHECKBOX_FERTILIZER = "<b>{mass}</b> of " + PRE_KEYWORD + "Fertilizer" + PST_KEYWORD + " is currently available";
 
-			public static LocString VITALS_CHECKBOX_IRRIGATION = "<b>{mass}</b> of liquid is currently available";
+			public static LocString VITALS_CHECKBOX_IRRIGATION = "<b>{mass}</b> of " + PRE_KEYWORD + "Liquid" + PST_KEYWORD + " is currently available";
 
 			public static LocString VITALS_CHECKBOX_SUBMERGED_TRUE = "This plant is fully submerged in " + PRE_KEYWORD + "Liquid" + PRE_KEYWORD;
 
@@ -4021,7 +4021,7 @@ namespace STRINGS
 
 			public static LocString FOOD_QUALITY = "" + PRE_KEYWORD + "Morale" + PST_KEYWORD + ": {0}";
 
-			public static LocString FOOD_QUALITY_VS_EXPECTATION = "\nThis food will give <b>{0}</b> " + PRE_KEYWORD + "Morale" + PST_KEYWORD + " if {1} eats it";
+			public static LocString FOOD_QUALITY_VS_EXPECTATION = "\nThis food will give " + PRE_KEYWORD + "Morale" + PST_KEYWORD + " <b>{0}</b> if {1} eats it";
 
 			public static LocString CANNOT_ADJUST_PERMISSIONS = "Cannot adjust consumable permissions because they're in {0}";
 		}
@@ -6458,14 +6458,14 @@ namespace STRINGS
 					{
 						public static LocString NAME = "None";
 
-						public static LocString TOOLTIP = "{0} has not learned any skills yet";
+						public static LocString TOOLTIP = "{0} has not learned any " + PRE_KEYWORD + "Skills" + PST_KEYWORD + " yet";
 					}
 
 					public static LocString MASTERED_SKILLS = "<b><size=13>Learned Skills:</size></b>";
 
-					public static LocString MASTERED_SKILLS_TOOLTIP = "All Traits and Morale Needs become permanent once a Duplicant has learned a new skill" + HORIZONTAL_BR_RULE + "Skill Scrubbers can be built from the Stations Tab <color=#F44A47><b>[0]</b></color> to completely reset a Duplicant's learned skills, refunding all Skill Points";
+					public static LocString MASTERED_SKILLS_TOOLTIP = "All " + PRE_KEYWORD + "Traits" + PST_KEYWORD + " and " + PRE_KEYWORD + "Morale Needs" + PST_KEYWORD + " become permanent once a Duplicant has learned a new " + PRE_KEYWORD + "Skill" + PST_KEYWORD + HORIZONTAL_BR_RULE + BUILDINGS.PREFABS.RESETSKILLSSTATION.NAME + "s can be built from the " + FormatAsBuildMenuTab("Stations Tab") + " " + FormatAsHotkey("[0]") + " to completely reset a Duplicant's learned " + PRE_KEYWORD + "Skills" + PST_KEYWORD + ", refunding all " + PRE_KEYWORD + "Skill Points" + PST_KEYWORD;
 
-					public static LocString JOBTRAINING_TOOLTIP = "{0} learned this skill while working as a {1}";
+					public static LocString JOBTRAINING_TOOLTIP = "{0} learned this " + PRE_KEYWORD + "Skill" + PST_KEYWORD + " while working as a {1}";
 				}
 
 				public class EQUIPMENT
@@ -6778,27 +6778,29 @@ namespace STRINGS
 
 				public static LocString BATTERYCAPACITY = "Can hold {0} of " + PRE_KEYWORD + "Power" + PST_KEYWORD + " when connected to a " + PRE_KEYWORD + "Generator" + PST_KEYWORD;
 
-				public static LocString BATTERYLEAK = "Imperfect buildings materials mean " + FormatAsNegativeRate("{0}") + " battery charge will be lost as heat";
+				public static LocString BATTERYLEAK = "Imperfect buildings materials mean " + FormatAsNegativeRate("{0}") + " battery charge will be lost as " + PRE_KEYWORD + "Heat" + PST_KEYWORD + "";
 
 				public static LocString STORAGECAPACITY = "Holds up to <b>{0}</b> of material";
 
-				public static LocString ELEMENTEMITTED_INPUTTEMP = "Produces " + FormatAsPositiveRate("{1}") + " of " + PRE_KEYWORD + "{0}" + PST_KEYWORD + " when in use\n\nIt will be the combined temperature of the input materials.";
+				public static LocString ELEMENTEMITTED_INPUTTEMP = "Produces " + FormatAsPositiveRate("{1}") + " of " + PRE_KEYWORD + "{0}" + PST_KEYWORD + " when in use\n\nIt will be the combined " + PRE_KEYWORD + "Temperature" + PST_KEYWORD + " of the input materials.";
 
-				public static LocString ELEMENTEMITTED_ENTITYTEMP = "Produces " + FormatAsPositiveRate("{1}") + " of " + PRE_KEYWORD + "{0}" + PST_KEYWORD + " when in use\n\nIt will be the temperature of the building at the time of production";
+				public static LocString ELEMENTEMITTED_ENTITYTEMP = "Produces " + FormatAsPositiveRate("{1}") + " of " + PRE_KEYWORD + "{0}" + PST_KEYWORD + " when in use\n\nIt will be the " + PRE_KEYWORD + "Temperature" + PST_KEYWORD + " of the building at the time of production";
 
-				public static LocString ELEMENTEMITTED_MINTEMP = "Produces " + FormatAsPositiveRate("{1}") + " of " + PRE_KEYWORD + "{0}" + PST_KEYWORD + " when in use\n\nIt will be at least {2}, or hotter if the input materials are hotter.";
+				public static LocString ELEMENTEMITTED_MINORENTITYTEMP = "Produces " + FormatAsPositiveRate("{1}") + " of " + PRE_KEYWORD + "{0}" + PST_KEYWORD + " when in use\n\nIt will be at least <b>{2}</b>, or hotter if the building is hotter.";
 
-				public static LocString ELEMENTEMITTED_FIXEDTEMP = "Produces " + FormatAsPositiveRate("{1}") + " of " + PRE_KEYWORD + "{0}" + PST_KEYWORD + " when in use\n\nIt will be produced at {2}.";
+				public static LocString ELEMENTEMITTED_MINTEMP = "Produces " + FormatAsPositiveRate("{1}") + " of " + PRE_KEYWORD + "{0}" + PST_KEYWORD + " when in use\n\nIt will be at least <b>{2}</b>, or hotter if the input materials are hotter.";
+
+				public static LocString ELEMENTEMITTED_FIXEDTEMP = "Produces " + FormatAsPositiveRate("{1}") + " of " + PRE_KEYWORD + "{0}" + PST_KEYWORD + " when in use\n\nIt will be produced at <b>{2}</b>.";
 
 				public static LocString ELEMENTCONSUMED = "Consumes " + FormatAsNegativeRate("{1}") + " of " + PRE_KEYWORD + "{0}" + PST_KEYWORD + " when in use";
 
-				public static LocString ELEMENTEMITTED_TOILET = "Produces " + FormatAsPositiveRate("{1}") + " of " + PRE_KEYWORD + "{0}" + PST_KEYWORD + " per use\n\nDuplicant waste is emitted at {2}.";
+				public static LocString ELEMENTEMITTED_TOILET = "Produces " + FormatAsPositiveRate("{1}") + " of " + PRE_KEYWORD + "{0}" + PST_KEYWORD + " per use\n\nDuplicant waste is emitted at <b>{2}</b>.";
 
-				public static LocString ELEMENTEMITTEDPERUSE = "Produces " + FormatAsPositiveRate("{1}") + " of " + PRE_KEYWORD + "{0}" + PST_KEYWORD + " per use\n\nIt will be the temperature of the input materials.";
+				public static LocString ELEMENTEMITTEDPERUSE = "Produces " + FormatAsPositiveRate("{1}") + " of " + PRE_KEYWORD + "{0}" + PST_KEYWORD + " per use\n\nIt will be the " + PRE_KEYWORD + "Temperature" + PST_KEYWORD + " of the input materials.";
 
 				public static LocString DISEASEEMITTEDPERUSE = "Produces " + FormatAsPositiveRate("{1}") + " of " + PRE_KEYWORD + "{0}" + PST_KEYWORD + " per use";
 
-				public static LocString DISEASECONSUMEDPERUSE = "Removes " + FormatAsNegativeRate("{0}") + " of any " + PRE_KEYWORD + "Disease" + PST_KEYWORD + " per use";
+				public static LocString DISEASECONSUMEDPERUSE = "Removes " + FormatAsNegativeRate("{0}") + " of any " + PRE_KEYWORD + "Germs" + PST_KEYWORD + " per use";
 
 				public static LocString ELEMENTCONSUMEDPERUSE = "Consumes " + FormatAsNegativeRate("{1}") + " of " + PRE_KEYWORD + "{0}" + PST_KEYWORD + " per use";
 
@@ -6806,7 +6808,7 @@ namespace STRINGS
 
 				public static LocString ENERGYGENERATED = "Produces " + FormatAsPositiveRate("{0}") + " for the " + PRE_KEYWORD + "Power Grid" + PST_KEYWORD + " it's connected to";
 
-				public static LocString ENABLESDOMESTICGROWTH = "Accelerates plant growth and maturation";
+				public static LocString ENABLESDOMESTICGROWTH = "Accelerates " + PRE_KEYWORD + "Plant" + PST_KEYWORD + " growth and maturation";
 
 				public static LocString HEATGENERATED = "Generates " + FormatAsPositiveRate("{0}") + " per second\n\nSum " + PRE_KEYWORD + "Temperature" + PST_KEYWORD + " change is affected by the material attributes of the heated substance:\n    • mass\n    • specific heat capacity\n    • surface area\n    • insulation thickness\n    • thermal conductivity";
 
@@ -6858,9 +6860,9 @@ namespace STRINGS
 
 				public static LocString RECREATION = "Improves Duplicant " + PRE_KEYWORD + "Morale" + PST_KEYWORD + " during scheduled " + PRE_KEYWORD + "Downtime" + PST_KEYWORD;
 
-				public static LocString HEATGENERATED_AIRCONDITIONER = "Generates " + PRE_KEYWORD + "Heat" + PST_KEYWORD + " based on the volume, temperature, and specific heat capacity of the pumped gas" + HORIZONTAL_BR_RULE + "Cooling 1 Kg of room temperature " + ELEMENTS.OXYGEN.NAME + " will output " + FormatAsPositiveModifier("{0}") + " per second";
+				public static LocString HEATGENERATED_AIRCONDITIONER = "Generates " + PRE_KEYWORD + "Heat" + PST_KEYWORD + " based on the " + PRE_KEYWORD + "Volume" + PST_KEYWORD + ", " + PRE_KEYWORD + "Temperature" + PST_KEYWORD + ", and " + PRE_KEYWORD + "Specific Heat Capacity" + PST_KEYWORD + " of the pumped " + PRE_KEYWORD + "Gas" + PST_KEYWORD + HORIZONTAL_BR_RULE + "Cooling 1 Kg of room temperature " + ELEMENTS.OXYGEN.NAME + " will output " + FormatAsPositiveModifier("{0}") + " per second";
 
-				public static LocString HEATGENERATED_LIQUIDCONDITIONER = "Generates " + PRE_KEYWORD + "Heat" + PST_KEYWORD + " based on the volume, temperature, and specific heat capacity of the pumped liquid" + HORIZONTAL_BR_RULE + "Cooling 1 Kg of room temperature " + ELEMENTS.WATER.NAME + " will output " + FormatAsNegativeRate("{0}") + " per second";
+				public static LocString HEATGENERATED_LIQUIDCONDITIONER = "Generates " + PRE_KEYWORD + "Heat" + PST_KEYWORD + " based on the " + PRE_KEYWORD + "Volume" + PST_KEYWORD + ", " + PRE_KEYWORD + "Temperature" + PST_KEYWORD + ", and " + PRE_KEYWORD + "Specific Heat Capacity" + PST_KEYWORD + " of the pumped " + PRE_KEYWORD + "Liquid" + PST_KEYWORD + HORIZONTAL_BR_RULE + "Cooling 1 Kg of room temperature " + ELEMENTS.WATER.NAME + " will output " + FormatAsNegativeRate("{0}") + " per second";
 
 				public static LocString MOVEMENT_BONUS = "Increases the Runspeed of Duplicants";
 
@@ -6888,7 +6890,7 @@ namespace STRINGS
 
 				public static LocString GEYSER_YEAR_NEXT_DORMANT = "This geyser will become dormant in <b>{0}</b>";
 
-				public static LocString CAPTURE_METHOD_WRANGLE = "This critter can be captured" + HORIZONTAL_BR_RULE + "Mark critters for capture using the " + PRE_KEYWORD + "Wrangle Tool" + PST_KEYWORD + " " + FormatAsHotkey("[N]") + "\n\nDuplicants must possess the " + PRE_KEYWORD + "Critter Ranching" + PST_KEYWORD + " Skill in order to wrangle critters";
+				public static LocString CAPTURE_METHOD_WRANGLE = "This critter can be captured" + HORIZONTAL_BR_RULE + "Mark critters for capture using the " + FormatAsTool("Wrangle Tool", "[N]") + "\n\nDuplicants must possess the " + PRE_KEYWORD + "Critter Ranching" + PST_KEYWORD + " Skill in order to wrangle critters";
 
 				public static LocString CAPTURE_METHOD_LURE = "This critter can be moved using an" + BUILDINGS.PREFABS.AIRBORNECREATURELURE.NAME;
 
@@ -6964,6 +6966,8 @@ namespace STRINGS
 			public static LocString ELEMENTEMITTED_INPUTTEMP = "{0}: {1}";
 
 			public static LocString ELEMENTEMITTED_ENTITYTEMP = "{0}: {1}";
+
+			public static LocString ELEMENTEMITTED_MINORENTITYTEMP = "{0}: {1}";
 
 			public static LocString ELEMENTEMITTED_MINTEMP = "{0}: {1}";
 
@@ -7999,6 +8003,11 @@ namespace STRINGS
 			return "<b>" + text + "</b>";
 		}
 
+		public static string FormatAsOverlay(string text, string hotkey)
+		{
+			return "<b>" + text + "</b> " + FormatAsHotkey(hotkey);
+		}
+
 		public static string FormatAsManagementMenu(string text)
 		{
 			return "<b>" + text + "</b>";
@@ -8012,6 +8021,11 @@ namespace STRINGS
 		public static string FormatAsHotkey(string text)
 		{
 			return "<b><color=#F44A4A>" + text + "</b></color>";
+		}
+
+		public static string FormatAsTool(string text, string hotkey)
+		{
+			return "<b>" + text + "</b> " + FormatAsHotkey(hotkey);
 		}
 
 		public static string FormatAsLink(string text, string linkID)

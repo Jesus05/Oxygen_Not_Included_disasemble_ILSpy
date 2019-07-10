@@ -212,7 +212,7 @@ namespace STRINGS
 				{
 					public static LocString NAME = "Inert";
 
-					public static LocString TOOLTIP = "Environmental air pressure is too high for this " + UI.FormatAsLink("Oxylite", "OXYROCK") + " deposit to emit " + UI.FormatAsLink("Oxygen", "OXYGEN");
+					public static LocString TOOLTIP = "Environmental " + UI.PRE_KEYWORD + "Gas Pressure" + UI.PST_KEYWORD + " is too high for this " + UI.FormatAsLink("Oxylite", "OXYROCK") + " deposit to emit " + UI.FormatAsLink("Oxygen", "OXYGEN");
 				}
 			}
 
@@ -234,14 +234,14 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Space exposure";
 
-				public static LocString TOOLTIP = "This region is exposed to the vacuum of space and will result in the loss of gas and liquid resources";
+				public static LocString TOOLTIP = "This region is exposed to the vacuum of space and will result in the loss of " + UI.PRE_KEYWORD + "Gas" + UI.PST_KEYWORD + " and " + UI.PRE_KEYWORD + "Liquid" + UI.PST_KEYWORD + " resources";
 			}
 
 			public class OXYROCKINACTIVE
 			{
 				public static LocString NAME = "Inert";
 
-				public static LocString TOOLTIP = "Environmental air pressure is too high for this " + UI.FormatAsLink("Oxylite", "OXYROCK") + " deposit to emit " + ELEMENTS.OXYGEN.NAME;
+				public static LocString TOOLTIP = "Environmental " + UI.PRE_KEYWORD + "Gas Pressure" + UI.PST_KEYWORD + " is too high for this " + UI.FormatAsLink("Oxylite", "OXYROCK") + " deposit to emit " + ELEMENTS.OXYGEN.NAME;
 			}
 
 			public class BLEACHSTONE
@@ -257,7 +257,7 @@ namespace STRINGS
 				{
 					public static LocString NAME = "Inert";
 
-					public static LocString TOOLTIP = "Environmental air pressure is too high for this " + UI.FormatAsLink("Bleachstone", "BLEACHSTONE") + " deposit to emit " + UI.FormatAsLink("Chlorine", "CHLORINE");
+					public static LocString TOOLTIP = "Environmental " + UI.PRE_KEYWORD + "Gas Pressure" + UI.PST_KEYWORD + " is too high for this " + UI.FormatAsLink("Bleachstone", "BLEACHSTONE") + " deposit to emit " + UI.FormatAsLink("Chlorine", "CHLORINE");
 				}
 			}
 
@@ -279,7 +279,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Inert";
 
-				public static LocString TOOLTIP = "Environmental air pressure is too high for this " + UI.FormatAsLink("Bleachstone", "BLEACHSTONE") + " deposit to emit " + UI.FormatAsLink("Chlorine", "CHLORINE");
+				public static LocString TOOLTIP = "Environmental " + UI.PRE_KEYWORD + "Gas Pressure" + UI.PST_KEYWORD + " is too high for this " + UI.FormatAsLink("Bleachstone", "BLEACHSTONE") + " deposit to emit " + UI.FormatAsLink("Chlorine", "CHLORINE");
 			}
 
 			public class EDIBLE
@@ -314,7 +314,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Compost Errand";
 
-				public static LocString TOOLTIP = "Object is marked and will be moved to compost once a Duplicant is available";
+				public static LocString TOOLTIP = "Object is marked and will be moved to " + BUILDINGS.PREFABS.COMPOST.NAME + " once a Duplicant is available";
 			}
 
 			public class NOCLEARLOCATIONSAVAILABLE
@@ -356,7 +356,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "No Harvest Pending";
 
-				public static LocString TOOLTIP = "Use the Harvest Tool to mark this plant for harvest";
+				public static LocString TOOLTIP = "Use the " + UI.FormatAsTool("Harvest Tool", "[Y]") + " to mark this plant for harvest";
 			}
 
 			public class GROWINGBRANCHES
@@ -370,14 +370,14 @@ namespace STRINGS
 			{
 				public static LocString NAME = "{Category}";
 
-				public static LocString TOOLTIP = "The selected object belongs to the {Category} resource category";
+				public static LocString TOOLTIP = "The selected object belongs to the <b>{Category}</b> resource category";
 			}
 
 			public class ELEMENTALMASS
 			{
 				public static LocString NAME = "{Mass}";
 
-				public static LocString TOOLTIP = "The selected object has a mass of {Mass}";
+				public static LocString TOOLTIP = "The selected object has a mass of <b>{Mass}</b>";
 			}
 
 			public class ELEMENTALDISEASE
@@ -391,7 +391,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "{Temp}";
 
-				public static LocString TOOLTIP = "The selected object is currently {Temp}";
+				public static LocString TOOLTIP = "The selected object is currently <b>{Temp}</b>";
 			}
 
 			public class MARKEDFORCOMPOSTINSTORAGE
@@ -496,7 +496,7 @@ namespace STRINGS
 
 				public static LocString TOOLTIP = "Spout cannot vent due to high environmental pressure";
 
-				public static LocString STUDIED = "(idle in {Time})";
+				public static LocString STUDIED = "(idle in <b>{Time}</b>)";
 			}
 
 			public class SPOUTEMITTING
@@ -505,7 +505,7 @@ namespace STRINGS
 
 				public static LocString TOOLTIP = "This geyser is erupting";
 
-				public static LocString STUDIED = "(idle in {Time})";
+				public static LocString STUDIED = "(idle in <b>{Time}</b>)";
 			}
 
 			public class SPOUTPRESSUREBUILDING
@@ -514,7 +514,7 @@ namespace STRINGS
 
 				public static LocString TOOLTIP = "This geyser's internal pressure is steadily building";
 
-				public static LocString STUDIED = "(erupts in {Time})";
+				public static LocString STUDIED = "(erupts in <b>{Time}</b>)";
 			}
 
 			public class SPOUTIDLE
@@ -523,7 +523,7 @@ namespace STRINGS
 
 				public static LocString TOOLTIP = "This geyser is not currently erupting";
 
-				public static LocString STUDIED = "(erupts in {Time})";
+				public static LocString STUDIED = "(erupts in <b>{Time}</b>)";
 			}
 
 			public class SPOUTDORMANT
@@ -544,7 +544,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "High Priority";
 
-				public static LocString TOOLTIP = "This errand has been mark as important and will be preferred over other pending errands";
+				public static LocString TOOLTIP = "This " + UI.PRE_KEYWORD + "Errand" + UI.PST_KEYWORD + " has been marked as important and will be preferred over other pending " + UI.PRE_KEYWORD + "Errands" + UI.PST_KEYWORD;
 			}
 
 			public class USING
@@ -558,14 +558,14 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Pending Attack";
 
-				public static LocString TOOLTIP = "Waiting for a Duplicant to murderize this defenseless critter";
+				public static LocString TOOLTIP = "Waiting for a Duplicant to murderize this defenseless " + UI.PRE_KEYWORD + "Critter" + UI.PST_KEYWORD;
 			}
 
 			public class ORDERCAPTURE
 			{
 				public static LocString NAME = "Pending Wrangle";
 
-				public static LocString TOOLTIP = "Waiting for a Duplicant to capture this critter" + UI.HORIZONTAL_BR_RULE + "Only Duplicants with Ranching skills can catch critters without traps";
+				public static LocString TOOLTIP = "Waiting for a Duplicant to capture this " + UI.PRE_KEYWORD + "Critter" + UI.PST_KEYWORD + UI.HORIZONTAL_BR_RULE + "Only Duplicants with Ranching skills can catch critters without traps";
 			}
 
 			public class OPERATING
@@ -624,7 +624,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Tutorial: Colony Management";
 
-				public static LocString MESSAGEBODY = "I can use the " + UI.FormatAsLink("DIG TOOL", "TOOLS") + " <color=#F44A47><b>[G]</b></color> and the " + UI.FormatAsLink("Build Menu", "MISC") + " in the lower left of the screen to begin planning my first construction tasks.\n\nOnce I've placed a few errands my Duplicants will automatically get to work, without me needing to direct them individually.";
+				public static LocString MESSAGEBODY = "I can use the " + UI.FormatAsLink("DIG TOOL", "TOOLS") + " " + UI.FormatAsHotkey("[G]") + " and the " + UI.FormatAsLink("Build Menu", "MISC") + " in the lower left of the screen to begin planning my first construction tasks.\n\nOnce I've placed a few errands my Duplicants will automatically get to work, without me needing to direct them individually.";
 
 				public static LocString TOOLTIP = "Notes on getting Duplicants to do my bidding";
 			}
@@ -992,21 +992,21 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Vent overpressurized";
 
-				public static LocString TOOLTIP = "These pipe systems have exited the ideal pressure range:";
+				public static LocString TOOLTIP = "These " + UI.PRE_KEYWORD + "Pipe" + UI.PST_KEYWORD + " systems have exited the ideal " + UI.PRE_KEYWORD + "Pressure" + UI.PST_KEYWORD + " range:";
 			}
 
 			public class VENTBLOCKED
 			{
 				public static LocString NAME = "Vent blocked";
 
-				public static LocString TOOLTIP = "Blocked pipes have stopped these systems from functioning:";
+				public static LocString TOOLTIP = "Blocked " + UI.PRE_KEYWORD + "Pipes" + UI.PST_KEYWORD + " have stopped these systems from functioning:";
 			}
 
 			public class OUTPUTBLOCKED
 			{
 				public static LocString NAME = "Output blocked";
 
-				public static LocString TOOLTIP = "Blocked pipes have stopped these systems from functioning:";
+				public static LocString TOOLTIP = "Blocked " + UI.PRE_KEYWORD + "Pipes" + UI.PST_KEYWORD + " have stopped these systems from functioning:";
 			}
 
 			public class BROKENMACHINE
@@ -1034,7 +1034,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "A gas cloud approaches";
 
-				public static LocString TOOLTIP = "A toxic gas cloud will soon envelop the colony";
+				public static LocString TOOLTIP = "A toxic " + UI.PRE_KEYWORD + "Gas" + UI.PST_KEYWORD + " cloud will soon envelop the colony";
 			}
 
 			public class GASCLOUDARRIVING
@@ -1104,7 +1104,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Attribute increase";
 
-				public static LocString TOOLTIP = "These Duplicants' attributes have improved:";
+				public static LocString TOOLTIP = "These Duplicants' " + UI.PRE_KEYWORD + "Attributes" + UI.PST_KEYWORD + " have improved:";
 
 				public static LocString SUFFIX = " - {0} raised to {1}";
 			}
@@ -1113,14 +1113,14 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Reset skills";
 
-				public static LocString TOOLTIP = "Duplicants skills have been reset to defaults.";
+				public static LocString TOOLTIP = "Duplicants " + UI.PRE_KEYWORD + "Skills" + UI.PST_KEYWORD + " have been reset to defaults.";
 			}
 
 			public class SCHEDULE_CHANGED
 			{
 				public static LocString NAME = "{0}: {1}!";
 
-				public static LocString TOOLTIP = "Duplicants assigned to '{0}' have started their {1} block.\n\n{2}\n\nOpen the Schedule Screen to change blocks or assignments.";
+				public static LocString TOOLTIP = "Duplicants assigned to " + UI.PRE_KEYWORD + "{0}" + UI.PST_KEYWORD + " have started their <b>{1}</b> block.\n\n{2}\n\nOpen the " + UI.PRE_KEYWORD + "Schedule Screen" + UI.PST_KEYWORD + " " + UI.FormatAsHotkey("[PERIOD KEY]") + "to change blocks or assignments.";
 			}
 
 			public class GENESHUFFLER
@@ -1129,16 +1129,16 @@ namespace STRINGS
 
 				public static LocString TOOLTIP = "These Duplicants had their genetic makeup modified:";
 
-				public static LocString SUFFIX = " has developed {0}";
+				public static LocString SUFFIX = " has developed " + UI.PRE_KEYWORD + "{0}" + UI.PST_KEYWORD + "";
 			}
 
 			public class HEALINGTRAITGAIN
 			{
 				public static LocString NAME = "New trait";
 
-				public static LocString TOOLTIP = "These Duplicants' injuries weren't set and healed improperly. They developed traits as a result:";
+				public static LocString TOOLTIP = "These Duplicants' injuries weren't set and healed improperly. They developed " + UI.PRE_KEYWORD + "Traits" + UI.PST_KEYWORD + " as a result:";
 
-				public static LocString SUFFIX = " has developed {0}";
+				public static LocString SUFFIX = " has developed " + UI.PRE_KEYWORD + "{0}" + UI.PST_KEYWORD + "";
 			}
 
 			public class COLONYLOST
@@ -1173,21 +1173,21 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Duplicants have frozen";
 
-				public static LocString TOOLTIP = "These Duplicants died from extremely low " + UI.FormatAsLink("Temperatures", "HEAT") + ":";
+				public static LocString TOOLTIP = "These Duplicants died from extremely low " + UI.PRE_KEYWORD + "Temperatures" + UI.PST_KEYWORD + ":";
 			}
 
 			public class DEATH_OVERHEATING
 			{
 				public static LocString NAME = "Duplicants have overheated";
 
-				public static LocString TOOLTIP = "These Duplicants died from extreme " + UI.FormatAsLink("Heat", "HEAT") + ":";
+				public static LocString TOOLTIP = "These Duplicants died from extreme " + UI.PRE_KEYWORD + "Heat" + UI.PST_KEYWORD + ":";
 			}
 
 			public class DEATH_STARVATION
 			{
 				public static LocString NAME = "Duplicants have starved";
 
-				public static LocString TOOLTIP = "These Duplicants died from a lack of " + UI.FormatAsLink("Food", "FOOD") + ":";
+				public static LocString TOOLTIP = "These Duplicants died from a lack of " + UI.PRE_KEYWORD + "Food" + UI.PST_KEYWORD + ":";
 			}
 
 			public class DEATH_FELL
@@ -1208,14 +1208,14 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Duplicants have suffocated";
 
-				public static LocString TOOLTIP = "These Duplicants were unable to reach " + UI.FormatAsLink("oxygen", "OXYGEN") + " and died:";
+				public static LocString TOOLTIP = "These Duplicants were unable to reach " + UI.FormatAsLink("Oxygen", "OXYGEN") + " and died:";
 			}
 
 			public class DEATH_SUFFOCATEDAIRTOOHOT
 			{
 				public static LocString NAME = "Duplicants have suffocated";
 
-				public static LocString TOOLTIP = "These Duplicants have asphyxiated in " + UI.FormatAsLink("heat", "HEAT") + " air:";
+				public static LocString TOOLTIP = "These Duplicants have asphyxiated in " + UI.PRE_KEYWORD + "Heat" + UI.PST_KEYWORD + " air:";
 			}
 
 			public class DEATH_SUFFOCATEDAIRTOOCOLD
@@ -1262,7 +1262,7 @@ namespace STRINGS
 
 			public class DEATH_DISEASE
 			{
-				public static LocString NAME = "Duplicants have succumb to disease";
+				public static LocString NAME = "Duplicants have succumbed to disease";
 
 				public static LocString TOOLTIP = "These Duplicants died from an untreated " + UI.FormatAsLink("Disease", "DISEASE") + ":";
 			}
@@ -1271,7 +1271,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Circuit Overloaded";
 
-				public static LocString TOOLTIP = "These wires melted due to excessive current demands on their circuits";
+				public static LocString TOOLTIP = "These " + BUILDINGS.PREFABS.WIRE.NAME + "s melted due to excessive current demands on their circuits";
 			}
 
 			public class DISCOVERED_SPACE

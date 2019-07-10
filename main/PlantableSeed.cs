@@ -3,7 +3,7 @@ using STRINGS;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlantableSeed : KMonoBehaviour, IReceptacleDirection, IGameObjectEffectDescriptor, ISim4000ms
+public class PlantableSeed : KMonoBehaviour, IReceptacleDirection, IGameObjectEffectDescriptor
 {
 	public Tag PlantID;
 
@@ -44,15 +44,6 @@ public class PlantableSeed : KMonoBehaviour, IReceptacleDirection, IGameObjectEf
 
 	private void OnSplit(object data)
 	{
-	}
-
-	public void Sim4000ms(float dt)
-	{
-		timeUntilSelfPlant -= dt;
-		if (timeUntilSelfPlant <= 0f)
-		{
-			TryPlant(false);
-		}
 	}
 
 	[ContextMenu("Try Plant")]

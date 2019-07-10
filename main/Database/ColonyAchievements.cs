@@ -1,7 +1,7 @@
 using STRINGS;
 using System;
-using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using TUNING;
 
 namespace Database
@@ -36,6 +36,12 @@ namespace Database
 
 		public ColonyAchievement Travel10000InTubes;
 
+		[CompilerGenerated]
+		private static Action<KMonoBehaviour> _003C_003Ef__mg_0024cache0;
+
+		[CompilerGenerated]
+		private static Action<KMonoBehaviour> _003C_003Ef__mg_0024cache1;
+
 		public ColonyAchievements(ResourceSet parent)
 			: base("ColonyAchievements", parent)
 		{
@@ -45,44 +51,11 @@ namespace Database
 				new MinimumMorale(16),
 				new NumberOfDupes(12),
 				new MonumentBuilt()
-			}, COLONY_ACHIEVEMENTS.THRIVING.MESSAGE_TITLE, COLONY_ACHIEVEMENTS.THRIVING.MESSAGE_BODY, "Placeholder", "Placeholder_grey", delegate
-			{
-				IEnumerator enumerator2 = Components.MonumentParts.GetEnumerator();
-				try
-				{
-					while (enumerator2.MoveNext())
-					{
-						MonumentPart monumentPart = (MonumentPart)enumerator2.Current;
-						if (monumentPart.IsMonumentCompleted())
-						{
-							return monumentPart.gameObject;
-						}
-					}
-				}
-				finally
-				{
-					IDisposable disposable;
-					if ((disposable = (enumerator2 as IDisposable)) != null)
-					{
-						disposable.Dispose();
-					}
-				}
-				return null;
-			}, ""));
+			}, COLONY_ACHIEVEMENTS.THRIVING.MESSAGE_TITLE, COLONY_ACHIEVEMENTS.THRIVING.MESSAGE_BODY, "Placeholder", "Placeholder_grey", ThrivingSequence.Start, ""));
 			ReachedDistantPlanet = Add(new ColonyAchievement("ReachedDistantPlanet", COLONY_ACHIEVEMENTS.DISTANT_PLANET_REACHED.NAME, COLONY_ACHIEVEMENTS.DISTANT_PLANET_REACHED.DESCRIPTION, true, new List<ColonyAchievementRequirement>
 			{
 				new ReachedSpace(Db.Get().SpaceDestinationTypes.Wormhole)
-			}, COLONY_ACHIEVEMENTS.DISTANT_PLANET_REACHED.MESSAGE_TITLE, COLONY_ACHIEVEMENTS.DISTANT_PLANET_REACHED.MESSAGE_BODY, "Placeholder", "Placeholder_grey", delegate
-			{
-				foreach (Spacecraft item in SpacecraftManager.instance.GetSpacecraft())
-				{
-					if (item.state != 0 && SpacecraftManager.instance.GetSpacecraftDestination(item.id).GetDestinationType().Id == Db.Get().SpaceDestinationTypes.Wormhole.Id)
-					{
-						return item.launchConditions.rocketModules[item.launchConditions.rocketModules.Count / 2].gameObject;
-					}
-				}
-				return null;
-			}, AudioMixerSnapshots.Get().VictoryNISRocketSnapshot));
+			}, COLONY_ACHIEVEMENTS.DISTANT_PLANET_REACHED.MESSAGE_TITLE, COLONY_ACHIEVEMENTS.DISTANT_PLANET_REACHED.MESSAGE_BODY, "Placeholder", "Placeholder_grey", ReachedDistantPlanetSequence.Start, AudioMixerSnapshots.Get().VictoryNISRocketSnapshot));
 			SurvivedALongTime = Add(new ColonyAchievement("SurvivedALongTime", COLONY_ACHIEVEMENTS.SURVIVED.NAME, COLONY_ACHIEVEMENTS.SURVIVED.DESCRIPTION, false, new List<ColonyAchievementRequirement>
 			{
 				new CycleNumber(100)

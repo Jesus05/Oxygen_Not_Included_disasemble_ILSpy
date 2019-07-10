@@ -202,7 +202,10 @@ public class BuddingTrunk : KMonoBehaviour, ISim4000ms
 		if (hasExtraSeedAvailable)
 		{
 			hasExtraSeedAvailable = false;
-			Util.KInstantiate(Assets.GetPrefab("ForestTreeSeed"), base.transform.position).SetActive(true);
+			Vector3 position = base.transform.position;
+			position.z = Grid.GetLayerZ(Grid.SceneLayer.Ore);
+			GameObject gameObject = Util.KInstantiate(Assets.GetPrefab("ForestTreeSeed"), position);
+			gameObject.SetActive(true);
 		}
 	}
 

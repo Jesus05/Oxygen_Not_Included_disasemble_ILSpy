@@ -19,17 +19,17 @@ namespace STRINGS
 			{
 				public static LocString EFFECTS_HEADER = "Buildings constructed from this material will have these properties";
 
-				public static LocString DECOR = "This material will add {0} to the finished building's Decor";
+				public static LocString DECOR = "This material will add <b>{0}</b> to the finished building's " + UI.PRE_KEYWORD + "Decor" + UI.PST_KEYWORD;
 
-				public static LocString OVERHEATTEMPERATURE = "This material will add {0} to the finished building's Overheat Temperature";
+				public static LocString OVERHEATTEMPERATURE = "This material will add <b>{0}</b> to the finished building's " + UI.PRE_KEYWORD + "Overheat Temperature" + UI.PST_KEYWORD + "";
 
-				public static LocString HIGH_THERMAL_CONDUCTIVITY = "This material disperses heat because energy transfers quickly through materials with high thermal conductivity\n\nBetween two objects, the rate of heat transfer will be determined by the object with the lowest Thermal Conductivity\n\nThermal Conductivity: {1} W per degree K difference (Oxygen: 0.024 W)";
+				public static LocString HIGH_THERMAL_CONDUCTIVITY = "This material disperses " + UI.PRE_KEYWORD + "Heat" + UI.PST_KEYWORD + " because energy transfers quickly through materials with high " + UI.PRE_KEYWORD + "Thermal Conductivity" + UI.PST_KEYWORD + "\n\nBetween two objects, the rate of " + UI.PRE_KEYWORD + "Heat" + UI.PST_KEYWORD + " transfer will be determined by the object with the <i>lowest</i> " + UI.PRE_KEYWORD + "Thermal Conductivity" + UI.PST_KEYWORD + "\n\nThermal Conductivity: {1} W per degree K difference (Oxygen: 0.024 W)";
 
-				public static LocString LOW_THERMAL_CONDUCTIVITY = "This material retains heat because energy transfers slowly through materials with low thermal conductivity\n\nBetween two objects, the rate of heat transfer will be determined by the object with the lowest Thermal Conductivity\n\nThermal Conductivity: {1} W per degree K difference (Oxygen: 0.024 W)";
+				public static LocString LOW_THERMAL_CONDUCTIVITY = "This material retains " + UI.PRE_KEYWORD + "Heat" + UI.PST_KEYWORD + " because energy transfers slowly through materials with low " + UI.PRE_KEYWORD + "Thermal Conductivity" + UI.PST_KEYWORD + "\n\nBetween two objects, the rate of " + UI.PRE_KEYWORD + "Heat" + UI.PST_KEYWORD + " transfer will be determined by the object with the <i>lowest</i> " + UI.PRE_KEYWORD + "Thermal Conductivity" + UI.PST_KEYWORD + "\n\nThermal Conductivity: {1} W per degree K difference (Oxygen: 0.024 W)";
 
-				public static LocString LOW_SPECIFIC_HEAT_CAPACITY = "Thermally Reactive materials require little energy to raise in temperature, and therefore heat and cool quickly\n\nSpecific Heat Capacity: {1} DTU to raise 1g by 1K";
+				public static LocString LOW_SPECIFIC_HEAT_CAPACITY = UI.PRE_KEYWORD + "Thermally Reactive" + UI.PST_KEYWORD + " materials require little energy to raise in " + UI.PRE_KEYWORD + "Temperature" + UI.PST_KEYWORD + ", and therefore heat and cool quickly\n\nSpecific Heat Capacity: {1} DTU to raise 1g by 1K";
 
-				public static LocString HIGH_SPECIFIC_HEAT_CAPACITY = "Slow Heating materials require a large amount of energy to raise in temperature, and therefore heat and cool slowly\n\nSpecific Heat Capacity: {1} DTU to raise 1g by 1K";
+				public static LocString HIGH_SPECIFIC_HEAT_CAPACITY = UI.PRE_KEYWORD + "Slow Heating" + UI.PST_KEYWORD + " materials require a large amount of energy to raise in " + UI.PRE_KEYWORD + "Temperature" + UI.PST_KEYWORD + ", and therefore heat and cool slowly\n\nSpecific Heat Capacity: {1} DTU to raise 1g by 1K";
 			}
 
 			public static LocString EFFECTS_HEADER = "<b>Resource Effects:</b>";
@@ -506,7 +506,7 @@ namespace STRINGS
 		{
 			public static LocString NAME = UI.FormatAsLink("Lead Gas", "LEADGAS");
 
-			public static LocString DESC = "(Pb) Lead is a soft yet extremely dense " + UI.FormatAsLink("Refined Metal", "REFINEDMETAL") + ".\n\nIt has a low Overheat Temperature and is suitable for building " + UI.FormatAsLink("Power", "POWER") + " systems.";
+			public static LocString DESC = "(Pb) Lead is a soft yet extremely dense " + UI.FormatAsLink("Refined Metal", "REFINEDMETAL") + ".\n\nIt has a low " + UI.PRE_KEYWORD + "Overheat Temperature" + UI.PST_KEYWORD + " and is suitable for building " + UI.FormatAsLink("Power", "POWER") + " systems.";
 		}
 
 		public class LEAD
@@ -709,7 +709,7 @@ namespace STRINGS
 		{
 			public static LocString NAME = UI.FormatAsLink("Oxylite", "OXYROCK");
 
-			public static LocString DESC = "(Ir<sub>3</sub>O<sub>2</sub>) Oxylite is a chemical compound that slowly emits breathable " + UI.FormatAsLink("Oxygen", "OXYGEN") + ".\n\nExcavating Oxylite increases its emission rate, but depletes the ore more rapidly.";
+			public static LocString DESC = "(Ir<sub>3</sub>O<sub>2</sub>) Oxylite is a chemical compound that slowly emits breathable " + UI.FormatAsLink("Oxygen", "OXYGEN") + ".\n\nExcavating " + NAME + " increases its emission rate, but depletes the ore more rapidly.";
 		}
 
 		public class PHOSPHATENODULES
@@ -772,7 +772,7 @@ namespace STRINGS
 		{
 			public static LocString NAME = UI.FormatAsLink("Regolith", "REGOLITH");
 
-			public static LocString DESC = "Regolith is a sandy substance composed of the various particles that collect atop terrestrial objects.\n\nIt is useful as a Filtration Medium.";
+			public static LocString DESC = "Regolith is a sandy substance composed of the various particles that collect atop terrestrial objects.\n\nIt is useful as a " + UI.PRE_KEYWORD + "Filtration Medium" + UI.PST_KEYWORD + ".";
 		}
 
 		public class SALTGAS
@@ -807,7 +807,7 @@ namespace STRINGS
 		{
 			public static LocString NAME = UI.FormatAsLink("Sand", "SAND");
 
-			public static LocString DESC = "Sand is a composite of granular rock.\n\nIt is useful as a Filtration Medium.";
+			public static LocString DESC = "Sand is a composite of granular rock.\n\nIt is useful as a " + UI.PRE_KEYWORD + "Filtration Medium" + UI.PST_KEYWORD + ".";
 		}
 
 		public class SANDCEMENT
@@ -933,7 +933,7 @@ namespace STRINGS
 		{
 			public static LocString NAME = UI.FormatAsLink("Steam", "STEAM");
 
-			public static LocString DESC = "(H<sub>2</sub>0) Steam is water that has been heated into a scalding " + UI.FormatAsLink("Gas", "ELEMENTS_GAS") + ".";
+			public static LocString DESC = "(H<sub>2</sub>0) Steam is " + WATER.NAME + " that has been heated into a scalding " + UI.FormatAsLink("Gas", "ELEMENTS_GAS") + ".";
 		}
 
 		public class STEEL

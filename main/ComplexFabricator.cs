@@ -60,9 +60,13 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms, ISim1000ms
 
 	private int workingOrderIdx = -1;
 
-	private List<int> openOrderCounts = new List<int>();
+	[Serialize]
+	private string lastWorkingRecipe;
 
+	[Serialize]
 	private float orderProgress = 0f;
+
+	private List<int> openOrderCounts = new List<int>();
 
 	private bool queueDirty = true;
 
@@ -124,6 +128,18 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms, ISim1000ms
 
 	public ComplexRecipe NextOrder => (!nextOrderIsWorkable) ? null : recipe_list[nextOrderIdx];
 
+	public float OrderProgress
+	{
+		get
+		{
+			return orderProgress;
+		}
+		set
+		{
+			orderProgress = value;
+		}
+	}
+
 	public bool HasAnyOrder => HasWorkingOrder || hasOpenOrders;
 
 	public bool HasWorker => !duplicantOperated || (UnityEngine.Object)workable.worker != (UnityEngine.Object)null;
@@ -180,6 +196,11 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms, ISim1000ms
 		}
 		buildStorage.Transfer(inStorage, true, true);
 		DropExcessIngredients(inStorage);
+		int num = FindRecipeIndex(lastWorkingRecipe);
+		if (num > -1)
+		{
+			nextOrderIdx = num;
+		}
 	}
 
 	protected override void OnCleanUp()
@@ -220,10 +241,10 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms, ISim1000ms
 
 	public void Sim200ms(float dt)
 	{
-		if (operational.IsOperational && !duplicantOperated)
+		if (operational.IsOperational)
 		{
-			operational.SetActive(HasWorkingOrder, false);
-			if (HasWorkingOrder)
+			operational.SetActive(HasWorkingOrder && HasWorker, false);
+			if (!duplicantOperated && HasWorkingOrder)
 			{
 				ComplexRecipe complexRecipe = recipe_list[workingOrderIdx];
 				orderProgress += dt / complexRecipe.time;
@@ -254,7 +275,11 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms, ISim1000ms
 	{
 		Debug.Assert(!HasWorkingOrder, "machineOrderIdx already set");
 		workingOrderIdx = index;
-		orderProgress = 0f;
+		if (recipe_list[workingOrderIdx].id != lastWorkingRecipe)
+		{
+			orderProgress = 0f;
+			lastWorkingRecipe = recipe_list[workingOrderIdx].id;
+		}
 		TransferCurrentRecipeIngredientsForBuild();
 		Debug.Assert(openOrderCounts[workingOrderIdx] > 0, "openOrderCount invalid");
 		List<int> list;
@@ -268,9 +293,8 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms, ISim1000ms
 	{
 		Debug.Assert(HasWorkingOrder, "machineOrderIdx not set");
 		buildStorage.Transfer(inStorage, true, true);
-		operational.SetActive(false, false);
-		ShowProgressBar(false);
 		workingOrderIdx = -1;
+		orderProgress = 0f;
 		UpdateChore();
 	}
 
@@ -292,8 +316,7 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms, ISim1000ms
 			}
 			DecrementRecipeQueueCountInternal(recipe, true);
 			workingOrderIdx = -1;
-			operational.SetActive(false, false);
-			ShowProgressBar(false);
+			orderProgress = 0f;
 			UpdateChore();
 		}
 	}
@@ -308,18 +331,6 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms, ISim1000ms
 				CancelWorkingOrder();
 			}
 		}
-	}
-
-	public void DuplicantStartWork()
-	{
-		operational.SetActive(true, false);
-		ShowProgressBar(true);
-	}
-
-	public void DuplicantStopWork()
-	{
-		operational.SetActive(false, false);
-		ShowProgressBar(false);
 	}
 
 	private void UpdateChore()
@@ -640,6 +651,18 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms, ISim1000ms
 		}
 	}
 
+	private int FindRecipeIndex(string id)
+	{
+		for (int i = 0; i < recipe_list.Length; i++)
+		{
+			if (recipe_list[i].id == id)
+			{
+				return i;
+			}
+		}
+		return -1;
+	}
+
 	public int GetRecipeQueueCount(ComplexRecipe recipe)
 	{
 		return recipeQueueCounts[recipe.id];
@@ -747,7 +770,7 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms, ISim1000ms
 	private void CreateChore()
 	{
 		Debug.Assert(chore == null, "chore should be null");
-		chore = workable.CreateOrder(choreType);
+		chore = workable.CreateWorkChore(choreType, orderProgress);
 	}
 
 	private void CancelChore()
@@ -907,19 +930,6 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms, ISim1000ms
 			}
 		}
 		return list;
-	}
-
-	public void ShowProgressBar(bool show)
-	{
-		if (show)
-		{
-			progressBar = ProgressBar.CreateProgressBar(GetComponent<Building>(), () => orderProgress);
-		}
-		else if ((UnityEngine.Object)progressBar != (UnityEngine.Object)null)
-		{
-			progressBar.gameObject.DeleteObject();
-			progressBar = null;
-		}
 	}
 
 	public virtual List<Descriptor> GetDescriptors(BuildingDef def)

@@ -315,7 +315,7 @@ public static class RoomConstraints
 			int num2 = 0;
 			foreach (KPrefabID plant in room.cavity.plants)
 			{
-				if ((UnityEngine.Object)plant != (UnityEngine.Object)null && plant.HasTag(GameTags.Plant))
+				if ((UnityEngine.Object)plant != (UnityEngine.Object)null)
 				{
 					ReceptacleMonitor component2 = plant.GetComponent<ReceptacleMonitor>();
 					if ((UnityEngine.Object)component2 != (UnityEngine.Object)null && !component2.Replanted)
@@ -333,7 +333,7 @@ public static class RoomConstraints
 			int num = 0;
 			foreach (KPrefabID plant2 in room.cavity.plants)
 			{
-				if ((UnityEngine.Object)plant2 != (UnityEngine.Object)null && plant2.HasTag(GameTags.Plant))
+				if ((UnityEngine.Object)plant2 != (UnityEngine.Object)null)
 				{
 					ReceptacleMonitor component = plant2.GetComponent<ReceptacleMonitor>();
 					if ((UnityEngine.Object)component != (UnityEngine.Object)null && !component.Replanted)

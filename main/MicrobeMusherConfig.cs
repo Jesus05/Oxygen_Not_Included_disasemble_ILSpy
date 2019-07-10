@@ -96,15 +96,35 @@ public class MicrobeMusherConfig : IBuildingConfig
 		BasicPlantBarConfig.recipe = complexRecipe;
 		ComplexRecipe.RecipeElement[] array5 = new ComplexRecipe.RecipeElement[2]
 		{
-			new ComplexRecipe.RecipeElement("ColdWheatSeed", 5f),
-			new ComplexRecipe.RecipeElement(PrickleFruitConfig.ID, 1f)
+			new ComplexRecipe.RecipeElement("BeanPlantSeed", 6f),
+			new ComplexRecipe.RecipeElement("Water".ToTag(), 50f)
 		};
 		ComplexRecipe.RecipeElement[] array6 = new ComplexRecipe.RecipeElement[1]
 		{
-			new ComplexRecipe.RecipeElement("FruitCake".ToTag(), 1f)
+			new ComplexRecipe.RecipeElement("Tofu".ToTag(), 1f)
 		};
 		string id3 = ComplexRecipeManager.MakeRecipeID("MicrobeMusher", array5, array6);
 		complexRecipe = new ComplexRecipe(id3, array5, array6);
+		complexRecipe.time = FOOD.RECIPES.STANDARD_COOK_TIME;
+		complexRecipe.description = ITEMS.FOOD.TOFU.RECIPEDESC;
+		complexRecipe.nameDisplay = ComplexRecipe.RecipeNameDisplay.Result;
+		complexRecipe.fabricators = new List<Tag>
+		{
+			"MicrobeMusher"
+		};
+		complexRecipe.sortOrder = 3;
+		TofuConfig.recipe = complexRecipe;
+		ComplexRecipe.RecipeElement[] array7 = new ComplexRecipe.RecipeElement[2]
+		{
+			new ComplexRecipe.RecipeElement("ColdWheatSeed", 5f),
+			new ComplexRecipe.RecipeElement(PrickleFruitConfig.ID, 1f)
+		};
+		ComplexRecipe.RecipeElement[] array8 = new ComplexRecipe.RecipeElement[1]
+		{
+			new ComplexRecipe.RecipeElement("FruitCake".ToTag(), 1f)
+		};
+		string id4 = ComplexRecipeManager.MakeRecipeID("MicrobeMusher", array7, array8);
+		complexRecipe = new ComplexRecipe(id4, array7, array8);
 		complexRecipe.time = FOOD.RECIPES.STANDARD_COOK_TIME;
 		complexRecipe.description = ITEMS.FOOD.FRUITCAKE.RECIPEDESC;
 		complexRecipe.nameDisplay = ComplexRecipe.RecipeNameDisplay.Result;

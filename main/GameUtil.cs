@@ -1289,20 +1289,17 @@ public static class GameUtil
 
 	public static string AppendHotkeyString(string template, Action action)
 	{
-		Color c = new Color(0.956862748f, 0.2901961f, 0.2784314f);
-		return template + "<color=#" + c.ToHexString() + ">(" + GetActionString(action) + ")</color>";
+		return template + UI.FormatAsHotkey("[" + GetActionString(action) + "]");
 	}
 
 	public static string ReplaceHotkeyString(string template, Action action)
 	{
-		Color c = new Color(0.956862748f, 0.2901961f, 0.2784314f);
-		return template.Replace("{Hotkey}", "<color=#" + c.ToHexString() + ">(" + GetActionString(action) + ")</color>");
+		return template.Replace("{Hotkey}", UI.FormatAsHotkey("[" + GetActionString(action) + "]"));
 	}
 
 	public static string ReplaceHotkeyString(string template, Action action1, Action action2)
 	{
-		Color c = new Color(0.956862748f, 0.2901961f, 0.2784314f);
-		return template.Replace("{Hotkey}", "<color=#" + c.ToHexString() + ">(" + GetActionString(action2) + ") + (" + GetActionString(action2) + ")</color>");
+		return template.Replace("{Hotkey}", UI.FormatAsHotkey("[" + GetActionString(action1) + "]") + UI.FormatAsHotkey("[" + GetActionString(action2) + "]"));
 	}
 
 	public static string GetKeycodeLocalized(KKeyCode key_code)

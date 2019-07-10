@@ -11,10 +11,59 @@ public class TreeClimbStates : GameStateMachine<TreeClimbStates, TreeClimbStates
 
 	public new class Instance : GameInstance
 	{
+		private Storage storage;
+
+		private static readonly Vector2 VEL_MIN = new Vector2(-1f, 2f);
+
+		private static readonly Vector2 VEL_MAX = new Vector2(1f, 4f);
+
 		public Instance(Chore<Instance> chore, Def def)
 			: base((IStateMachineTarget)chore, def)
 		{
 			chore.AddPrecondition(ChorePreconditions.instance.CheckBehaviourPrecondition, GameTags.Creatures.WantsToClimbTree);
+			storage = GetComponent<Storage>();
+		}
+
+		public void Toss(Pickupable pu)
+		{
+			Pickupable pickupable = pu.Take(Mathf.Min(1f, pu.UnreservedAmount));
+			if ((UnityEngine.Object)pickupable != (UnityEngine.Object)null)
+			{
+				storage.Store(pickupable.gameObject, true, false, true, false);
+				storage.Drop(pickupable.gameObject, true);
+				Throw(pickupable.gameObject);
+			}
+		}
+
+		private void Throw(GameObject ore_go)
+		{
+			Vector3 position = base.transform.GetPosition();
+			position.z = Grid.GetLayerZ(Grid.SceneLayer.Ore);
+			int num = Grid.PosToCell(position);
+			int num2 = Grid.CellAbove(num);
+			Vector2 initial_velocity = default(Vector2);
+			if ((Grid.IsValidCell(num) && Grid.Solid[num]) || (Grid.IsValidCell(num2) && Grid.Solid[num2]))
+			{
+				initial_velocity = Vector2.zero;
+			}
+			else
+			{
+				position.y += 0.5f;
+				Vector2 vEL_MIN = VEL_MIN;
+				float x = vEL_MIN.x;
+				Vector2 vEL_MAX = VEL_MAX;
+				float x2 = UnityEngine.Random.Range(x, vEL_MAX.x);
+				Vector2 vEL_MIN2 = VEL_MIN;
+				float y = vEL_MIN2.y;
+				Vector2 vEL_MAX2 = VEL_MAX;
+				initial_velocity = new Vector2(x2, UnityEngine.Random.Range(y, vEL_MAX2.y));
+			}
+			ore_go.transform.SetPosition(position);
+			if (GameComps.Fallers.Has(ore_go))
+			{
+				GameComps.Fallers.Remove(ore_go);
+			}
+			GameComps.Fallers.Add(ore_go, initial_velocity);
 		}
 	}
 
@@ -34,10 +83,6 @@ public class TreeClimbStates : GameStateMachine<TreeClimbStates, TreeClimbStates
 	public State behaviourcomplete;
 
 	public TargetParameter target;
-
-	private static readonly Vector2 VEL_MIN = new Vector2(-1f, 2f);
-
-	private static readonly Vector2 VEL_MAX = new Vector2(1f, 4f);
 
 	[CompilerGenerated]
 	private static StateMachine<TreeClimbStates, Instance, IStateMachineTarget, Def>.State.Callback _003C_003Ef__mg_0024cache0;
@@ -116,47 +161,13 @@ public class TreeClimbStates : GameStateMachine<TreeClimbStates, TreeClimbStates
 					int index = UnityEngine.Random.Range(0, component2.items.Count - 1);
 					GameObject gameObject2 = component2.items[index];
 					Pickupable pickupable = (!(bool)gameObject2) ? null : gameObject2.GetComponent<Pickupable>();
-					if ((bool)pickupable && pickupable.UnreservedAmount > 0f)
+					if ((bool)pickupable && pickupable.UnreservedAmount > 0.01f)
 					{
-						Pickupable pickupable2 = pickupable.Take(Mathf.Min(1f, pickupable.UnreservedAmount));
-						if ((UnityEngine.Object)pickupable2 != (UnityEngine.Object)null)
-						{
-							Toss(pickupable2.gameObject);
-						}
+						smi.Toss(pickupable);
 					}
 				}
 			}
 		}
-	}
-
-	private static void Toss(GameObject ore_go)
-	{
-		int num = Grid.PosToCell(ore_go.transform.GetPosition());
-		int num2 = Grid.CellAbove(num);
-		Vector2 initial_velocity = default(Vector2);
-		if ((Grid.IsValidCell(num) && Grid.Solid[num]) || (Grid.IsValidCell(num2) && Grid.Solid[num2]))
-		{
-			initial_velocity = Vector2.zero;
-		}
-		else
-		{
-			Vector3 position = ore_go.transform.GetPosition();
-			position.y += 0.5f;
-			ore_go.transform.SetPosition(position);
-			Vector2 vEL_MIN = VEL_MIN;
-			float x = vEL_MIN.x;
-			Vector2 vEL_MAX = VEL_MAX;
-			float x2 = UnityEngine.Random.Range(x, vEL_MAX.x);
-			Vector2 vEL_MIN2 = VEL_MIN;
-			float y = vEL_MIN2.y;
-			Vector2 vEL_MAX2 = VEL_MAX;
-			initial_velocity = new Vector2(x2, UnityEngine.Random.Range(y, vEL_MAX2.y));
-		}
-		if (GameComps.Fallers.Has(ore_go))
-		{
-			GameComps.Fallers.Remove(ore_go);
-		}
-		GameComps.Fallers.Add(ore_go, initial_velocity);
 	}
 
 	private static int GetClimbableCell(Instance smi)

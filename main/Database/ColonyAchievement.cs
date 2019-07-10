@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using UnityEngine;
 
 namespace Database
 {
@@ -20,7 +19,7 @@ namespace Database
 
 		public List<ColonyAchievementRequirement> requirementChecklist = new List<ColonyAchievementRequirement>();
 
-		public Func<GameObject> GetSuccessTargetEntity;
+		public Action<KMonoBehaviour> victorySequence;
 
 		public string victoryNISSnapshot
 		{
@@ -28,7 +27,7 @@ namespace Database
 			private set;
 		}
 
-		public ColonyAchievement(string Id, string Name, string description, bool isVictoryCondition, List<ColonyAchievementRequirement> requirementChecklist, string messageTitle = "", string messageBody = "", string videoDataName = "", string victoryLoopVideo = "", Func<GameObject> GetSuccessTargetEntity = null, string victorySnapshot = "")
+		public ColonyAchievement(string Id, string Name, string description, bool isVictoryCondition, List<ColonyAchievementRequirement> requirementChecklist, string messageTitle = "", string messageBody = "", string videoDataName = "", string victoryLoopVideo = "", Action<KMonoBehaviour> VictorySequence = null, string victorySnapshot = "")
 			: base(Id, Name)
 		{
 			base.Id = Id;
@@ -40,7 +39,7 @@ namespace Database
 			this.messageBody = messageBody;
 			shortVideoName = videoDataName;
 			loopVideoName = victoryLoopVideo;
-			this.GetSuccessTargetEntity = GetSuccessTargetEntity;
+			victorySequence = VictorySequence;
 			victoryNISSnapshot = ((!string.IsNullOrEmpty(victorySnapshot)) ? victorySnapshot : AudioMixerSnapshots.Get().VictoryNISGenericSnapshot);
 		}
 	}

@@ -241,7 +241,7 @@ namespace STRINGS
 
 				public static LocString NAME = UI.FormatAsLink("Pip", "SQUIRREL");
 
-				public static LocString DESC = "Pips are pesky, nonhostile critters that subsist on " + UI.FormatAsLink("Lumber", "WOOD") + " and enjoy foraging for " + UI.FormatAsLink("Seeds", "PLANTS") + ".";
+				public static LocString DESC = "Pips are pesky, nonhostile critters that subsist on " + UI.FormatAsLink("Lumber", "WOOD") + " and enjoy foraging for " + UI.FormatAsLink("Seeds", "PLANTS") + ".\n\nPips tend to the flora of the asteroid, and will plant " + UI.FormatAsLink("Seeds", "PLANTS") + " if they can find a suitable area with enough space.";
 
 				public static LocString EGG_NAME = UI.FormatAsLink("Pip Egg", "SQUIRREL");
 			}
@@ -852,6 +852,13 @@ namespace STRINGS
 				public static LocString NAME = UI.FormatAsLink("Buried Muckroot", "BASICFORAGEPLANTPLANTED");
 
 				public static LocString DESC = "Muckroots are incapable of propagating but can be harvested for a single " + UI.FormatAsLink("Food", "FOOD") + " serving.";
+			}
+
+			public class FORESTFORAGEPLANTPLANTED
+			{
+				public static LocString NAME = UI.FormatAsLink("Forest Muckroot", "FORESTFORAGEPLANTPLANTED");
+
+				public static LocString DESC = "Muckroots are incapable of propagating but can be harvested for a single " + UI.FormatAsLink("Food", "FOOD") + " serving.\n\nForest Muckroots are much more calorie dense than the basic variety.";
 			}
 
 			public class COLDBREATHER

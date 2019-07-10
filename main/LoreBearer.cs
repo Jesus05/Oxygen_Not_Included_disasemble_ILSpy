@@ -118,12 +118,6 @@ public class LoreBearer : KMonoBehaviour
 				infoDialogScreen.AddPlainText(UI.USERMENUACTIONS.READLORE.SEARCH_DISPLAY);
 				infoDialogScreen.AddOption(UI.USERMENUACTIONS.READLORE.GOTODATABASE, OpenCodex("display_prop3"));
 			}
-			else if (base.gameObject.name == "PropFacilityDesk")
-			{
-				Game.Instance.unlocks.Unlock("journal_handwrittennote");
-				infoDialogScreen.AddPlainText(Strings.Get("STRINGS.UI.USERMENUACTIONS.READLORE.SEARCH_STERNSDESK"));
-				infoDialogScreen.AddOption(UI.USERMENUACTIONS.READLORE.GOTODATABASE, OpenCodex("journal_handwrittennote"));
-			}
 			else if (base.gameObject.name == "PropFacilityGlobeDroors")
 			{
 				Game.Instance.unlocks.Unlock("journal_newspaper");

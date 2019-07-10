@@ -59,6 +59,7 @@ public class IceMachineConfig : IBuildingConfig
 		storage2.capacityKg = 150f;
 		storage2.allowItemRemoval = true;
 		storage2.ignoreSourcePriority = true;
+		storage2.allowUIItemRemoval = true;
 		go.AddOrGet<LoopingSounds>();
 		Prioritizable.AddRef(go);
 		IceMachine iceMachine = go.AddOrGet<IceMachine>();

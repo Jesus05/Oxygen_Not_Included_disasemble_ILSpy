@@ -249,7 +249,7 @@ public class RoomProber : ISim1000ms
 							{
 								data.AddBuilding(component);
 							}
-							else if ((bool)component.GetComponent<Growing>())
+							else if (component.HasTag(GameTags.Plant) && !component.HasTag("ForestTreeBranch".ToTag()))
 							{
 								data.AddPlants(component);
 							}

@@ -46,7 +46,8 @@ public class ComplexFabricatorSM : StateMachineComponent<ComplexFabricatorSM.Sta
 			idle.waitingForMaterial.ToggleStatusItem(Db.Get().BuildingStatusItems.FabricatorEmpty, (object)null).EventTransition(GameHashes.FabricatorOrdersUpdated, idle.idleQueue, (StatesInstance smi) => !smi.master.fabricator.HasAnyOrder).EventTransition(GameHashes.FabricatorOrdersUpdated, idle.waitingForWorker, (StatesInstance smi) => smi.master.fabricator.WaitingForWorker);
 			idle.waitingForWorker.ToggleStatusItem(Db.Get().BuildingStatusItems.PendingWork, (object)null).EventTransition(GameHashes.FabricatorOrdersUpdated, idle.idleQueue, (StatesInstance smi) => !smi.master.fabricator.WaitingForWorker).EnterTransition(operating, (StatesInstance smi) => !smi.master.fabricator.duplicantOperated);
 			operating.DefaultState(operating.working_pre);
-			operating.working_pre.PlayAnim("working_pre").OnAnimQueueComplete(operating.working_loop);
+			operating.working_pre.PlayAnim("working_pre").OnAnimQueueComplete(operating.working_loop).EventTransition(GameHashes.OperationalChanged, operating.working_pst, (StatesInstance smi) => !smi.GetComponent<Operational>().IsOperational)
+				.EventTransition(GameHashes.ActiveChanged, operating.working_pst, (StatesInstance smi) => !smi.GetComponent<Operational>().IsActive);
 			operating.working_loop.PlayAnim("working_loop", KAnim.PlayMode.Loop).EventTransition(GameHashes.OperationalChanged, operating.working_pst, (StatesInstance smi) => !smi.GetComponent<Operational>().IsOperational).EventTransition(GameHashes.ActiveChanged, operating.working_pst, (StatesInstance smi) => !smi.GetComponent<Operational>().IsActive);
 			operating.working_pst.PlayAnim("working_pst").WorkableCompleteTransition((StatesInstance smi) => smi.master.fabricator.Workable, operating.working_pst_complete).OnAnimQueueComplete(idle);
 			operating.working_pst_complete.PlayAnim("working_pst_complete").OnAnimQueueComplete(idle);

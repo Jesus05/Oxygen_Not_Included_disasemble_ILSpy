@@ -203,7 +203,7 @@ public class GourmetCookingStationConfig : IBuildingConfig
 		SpiceBreadConfig.recipe = complexRecipe;
 		ComplexRecipe.RecipeElement[] array11 = new ComplexRecipe.RecipeElement[2]
 		{
-			new ComplexRecipe.RecipeElement("BeanPlantSeed", 12f),
+			new ComplexRecipe.RecipeElement("Tofu", 1f),
 			new ComplexRecipe.RecipeElement(SpiceNutConfig.ID, 1f)
 		};
 		ComplexRecipe.RecipeElement[] array12 = new ComplexRecipe.RecipeElement[1]
@@ -220,6 +220,6 @@ public class GourmetCookingStationConfig : IBuildingConfig
 			"GourmetCookingStation"
 		};
 		complexRecipe.sortOrder = 100;
-		SpiceBreadConfig.recipe = complexRecipe;
+		SpicyTofuConfig.recipe = complexRecipe;
 	}
 }

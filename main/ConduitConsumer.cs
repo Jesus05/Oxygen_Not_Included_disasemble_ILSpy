@@ -79,8 +79,7 @@ public class ConduitConsumer : KMonoBehaviour
 			if (IsConnected)
 			{
 				ConduitFlow conduitManager = GetConduitManager();
-				ConduitFlow.ConduitContents contents = conduitManager.GetContents(utilityCell);
-				result = (contents.mass > 0f);
+				result = (conduitManager.GetContents(utilityCell).mass > 0f);
 			}
 			return result;
 		}
@@ -123,8 +122,7 @@ public class ConduitConsumer : KMonoBehaviour
 		{
 			int inputCell = GetInputCell();
 			ConduitFlow conduitManager = GetConduitManager();
-			ConduitFlow.ConduitContents contents = conduitManager.GetContents(inputCell);
-			return contents.mass;
+			return conduitManager.GetContents(inputCell).mass;
 		}
 	}
 

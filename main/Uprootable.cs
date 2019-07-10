@@ -37,6 +37,8 @@ public class Uprootable : Workable
 
 	public bool showUserMenuButtons = true;
 
+	public HandleVector<int>.Handle partitionerEntry;
+
 	private static readonly EventSystem.IntraObjectHandler<Uprootable> OnPlanterStorageDelegate = new EventSystem.IntraObjectHandler<Uprootable>(delegate(Uprootable component, object data)
 	{
 		component.OnPlanterStorage(data);
@@ -97,6 +99,9 @@ public class Uprootable : Workable
 		Components.Uprootables.Add(this);
 		area = GetComponent<OccupyArea>();
 		Prioritizable.AddRef(base.gameObject);
+		base.gameObject.AddTag(GameTags.Plant);
+		Extents extents = new Extents(Grid.PosToCell(base.gameObject), base.gameObject.GetComponent<OccupyArea>().OccupiedCellsOffsets);
+		partitionerEntry = GameScenePartitioner.Instance.Add(base.gameObject.name, base.gameObject.GetComponent<KPrefabID>(), extents, GameScenePartitioner.Instance.plants, null);
 		if (isMarkedForUproot)
 		{
 			MarkForUproot(true);
@@ -245,6 +250,7 @@ public class Uprootable : Workable
 	protected override void OnCleanUp()
 	{
 		base.OnCleanUp();
+		GameScenePartitioner.Instance.Free(ref partitionerEntry);
 		Components.Uprootables.Remove(this);
 	}
 

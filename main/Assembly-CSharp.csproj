@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <ProjectGuid>{D40BC8E7-9DBC-46AF-A328-8A8D7C9CBDB3}</ProjectGuid>
+    <ProjectGuid>{F6A16B6A-CB57-499F-90BB-6682A2A09F7A}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <OutputType>Library</OutputType>
@@ -904,6 +904,8 @@
     <Compile Include="FogOfWarMask.cs" />
     <Compile Include="FogOfWarPostFX.cs" />
     <Compile Include="FoodQualityAttributeFormatter.cs" />
+    <Compile Include="ForestForagePlantConfig.cs" />
+    <Compile Include="ForestForagePlantPlantedConfig.cs" />
     <Compile Include="ForestTreeBranchConfig.cs" />
     <Compile Include="ForestTreeConfig.cs" />
     <Compile Include="FriedMushBarConfig.cs" />
@@ -1826,6 +1828,7 @@
     <Compile Include="RationTracker.cs" />
     <Compile Include="RawEggConfig.cs" />
     <Compile Include="ReachabilityMonitor.cs" />
+    <Compile Include="ReachedDistantPlanetSequence.cs" />
     <Compile Include="Reactable.cs" />
     <Compile Include="ReactableTransitionLayer.cs" />
     <Compile Include="ReactEmoteChore.cs" />
@@ -2287,6 +2290,7 @@
     <Compile Include="ThreatMonitor.cs" />
     <Compile Include="ThresholdScreenLayoutType.cs" />
     <Compile Include="ThresholdSwitchSideScreen.cs" />
+    <Compile Include="ThrivingSequence.cs" />
     <Compile Include="TileConfig.cs" />
     <Compile Include="TilePOIConfig.cs" />
     <Compile Include="TileScreen.cs" />
@@ -2302,6 +2306,7 @@
     <Compile Include="TiredMonitor.cs" />
     <Compile Include="TitleBar.cs" />
     <Compile Include="TitleBarPortrait.cs" />
+    <Compile Include="TofuConfig.cs" />
     <Compile Include="Toggleable.cs" />
     <Compile Include="ToggleState.cs" />
     <Compile Include="Toilet.cs" />

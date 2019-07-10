@@ -64,7 +64,7 @@ public class StoryMessageScreen : KScreen
 	{
 		base.OnSpawn();
 		HideInterface(true);
-		CameraController.Instance.FadeOut(0.5f);
+		CameraController.Instance.FadeOut(0.5f, 1f);
 	}
 
 	private IEnumerator ExpandPanel()
@@ -166,7 +166,7 @@ public class StoryMessageScreen : KScreen
 		if (restoreInterfaceOnClose)
 		{
 			CameraController.Instance.DisableUserCameraControl = false;
-			CameraController.Instance.FadeIn(0f);
+			CameraController.Instance.FadeIn(0f, 1f);
 			HideInterface(false);
 		}
 	}

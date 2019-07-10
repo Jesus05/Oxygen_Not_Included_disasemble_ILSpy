@@ -178,6 +178,8 @@ public class GameTags
 
 	public static readonly Tag Plant = TagManager.Create("Plant");
 
+	public static readonly Tag GrowingPlant = TagManager.Create("GrowingPlant");
+
 	public static readonly Tag Pickupable = TagManager.Create("Pickupable");
 
 	public static readonly Tag Liquifiable = TagManager.Create("Liquifiable");

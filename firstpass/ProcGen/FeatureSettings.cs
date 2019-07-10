@@ -32,6 +32,12 @@ namespace ProcGen
 			private set;
 		}
 
+		public List<string> biomeTags
+		{
+			get;
+			private set;
+		}
+
 		public List<MobReference> internalMobs
 		{
 			get;

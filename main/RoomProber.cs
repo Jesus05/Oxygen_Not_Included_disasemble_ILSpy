@@ -325,7 +325,7 @@ public class RoomProber : ISim1000ms
 		{
 			foreach (KPrefabID building in room.buildings)
 			{
-				if (!building.HasTag(GameTags.NotRoomAssignable))
+				if (!((UnityEngine.Object)building == (UnityEngine.Object)null) && !building.HasTag(GameTags.NotRoomAssignable))
 				{
 					Assignable component = building.GetComponent<Assignable>();
 					if ((UnityEngine.Object)component != (UnityEngine.Object)null && (roomType.primary_constraint == null || !roomType.primary_constraint.building_criteria(building.GetComponent<KPrefabID>())))
@@ -352,6 +352,16 @@ public class RoomProber : ISim1000ms
 				}
 			}
 		}
+	}
+
+	public void UpdateRoom(CavityInfo cavity)
+	{
+		if (cavity.room != null)
+		{
+			ClearRoom(cavity.room);
+			cavity.room = null;
+		}
+		CreateRoom(cavity);
 	}
 
 	public Room GetRoomOfGameObject(GameObject go)

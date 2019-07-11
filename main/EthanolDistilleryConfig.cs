@@ -24,8 +24,8 @@ public class EthanolDistilleryConfig : IBuildingConfig
 	public override BuildingDef CreateBuildingDef()
 	{
 		string id = "EthanolDistillery";
-		int width = 3;
-		int height = 4;
+		int width = 4;
+		int height = 3;
 		string anim = "ethanoldistillery_kanim";
 		int hitpoints = 100;
 		float construction_time = 30f;
@@ -37,14 +37,14 @@ public class EthanolDistilleryConfig : IBuildingConfig
 		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, tIER, aLL_METALS, melting_point, build_location_rule, BUILDINGS.DECOR.PENALTY.TIER1, tIER2, 0.2f);
 		buildingDef.Overheatable = false;
 		buildingDef.RequiresPowerInput = true;
-		buildingDef.PowerInputOffset = new CellOffset(1, 0);
 		buildingDef.EnergyConsumptionWhenActive = 240f;
 		buildingDef.ExhaustKilowattsWhenActive = 0.5f;
 		buildingDef.SelfHeatKilowattsWhenActive = 4f;
 		buildingDef.AudioCategory = "HollowMetal";
 		buildingDef.ViewMode = OverlayModes.LiquidConduits.ID;
 		buildingDef.OutputConduitType = ConduitType.Liquid;
-		buildingDef.UtilityInputOffset = new CellOffset(0, 0);
+		buildingDef.PowerInputOffset = new CellOffset(2, 0);
+		buildingDef.UtilityOutputOffset = new CellOffset(-1, 0);
 		return buildingDef;
 	}
 
@@ -75,12 +75,13 @@ public class EthanolDistilleryConfig : IBuildingConfig
 		elementConverter.outputElements = new ElementConverter.OutputElement[3]
 		{
 			new ElementConverter.OutputElement(0.5f, SimHashes.Ethanol, 346.5f, false, true, 0f, 0.5f, 1f, byte.MaxValue, 0),
-			new ElementConverter.OutputElement(0.166666672f, SimHashes.ToxicSand, 366.5f, false, false, 0f, 0.5f, 1f, byte.MaxValue, 0),
+			new ElementConverter.OutputElement(0.166666672f, SimHashes.ToxicSand, 366.5f, false, true, 0f, 0.5f, 1f, byte.MaxValue, 0),
 			new ElementConverter.OutputElement(0.0833333358f, SimHashes.CarbonDioxide, 366.5f, false, false, 0f, 0.5f, 1f, byte.MaxValue, 0)
 		};
 		AlgaeDistillery algaeDistillery = go.AddOrGet<AlgaeDistillery>();
 		algaeDistillery.emitMass = 10f;
 		algaeDistillery.emitTag = new Tag("ToxicSand");
+		algaeDistillery.emitOffset = new Vector3(2f, 1f);
 		Prioritizable.AddRef(go);
 	}
 

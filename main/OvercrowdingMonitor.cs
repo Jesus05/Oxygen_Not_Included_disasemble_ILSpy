@@ -169,11 +169,13 @@ public class OvercrowdingMonitor : GameStateMachine<OvercrowdingMonitor, Overcro
 			if (smi.cavity != null)
 			{
 				GetCreatureCollection(smi, smi.cavity).Remove(component);
+				Game.Instance.roomProber.UpdateRoom(smi.cavity);
 			}
 			smi.cavity = cavityForCell;
 			if (smi.cavity != null)
 			{
 				GetCreatureCollection(smi, smi.cavity).Add(component);
+				Game.Instance.roomProber.UpdateRoom(smi.cavity);
 			}
 		}
 	}

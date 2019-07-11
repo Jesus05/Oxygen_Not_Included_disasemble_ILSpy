@@ -20,11 +20,21 @@ public class SaltPlant : StateMachineComponent<SaltPlant.StatesInstance>
 		}
 	}
 
+	private static readonly EventSystem.IntraObjectHandler<SaltPlant> OnWiltDelegate = new EventSystem.IntraObjectHandler<SaltPlant>(delegate(SaltPlant component, object data)
+	{
+		component.OnWilt(data);
+	});
+
+	private static readonly EventSystem.IntraObjectHandler<SaltPlant> OnWiltRecoverDelegate = new EventSystem.IntraObjectHandler<SaltPlant>(delegate(SaltPlant component, object data)
+	{
+		component.OnWiltRecover(data);
+	});
+
 	protected override void OnSpawn()
 	{
 		base.OnSpawn();
-		Subscribe(-724860998, OnWilt);
-		Subscribe(712767498, OnWiltRecover);
+		Subscribe(-724860998, OnWiltDelegate);
+		Subscribe(712767498, OnWiltRecoverDelegate);
 	}
 
 	private void OnWilt(object data = null)

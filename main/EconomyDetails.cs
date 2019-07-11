@@ -303,6 +303,8 @@ public class EconomyDetails
 
 	public Resource.Type massResourceType;
 
+	public Resource.Type heatResourceType;
+
 	public Resource.Type energyResourceType;
 
 	public Resource.Type timeResourceType;
@@ -338,6 +340,7 @@ public class EconomyDetails
 	public EconomyDetails()
 	{
 		massResourceType = new Resource.Type("Mass", "kg");
+		energyResourceType = new Resource.Type("Heat Energy", "kdtu");
 		energyResourceType = new Resource.Type("Energy", "joules");
 		timeResourceType = new Resource.Type("Time", "seconds");
 		attributeResourceType = new Resource.Type("Attribute", "units");
@@ -353,7 +356,7 @@ public class EconomyDetails
 		geyserActivePeriodTransformationType = new Transformation.Type("GeyserActivePeriod");
 		geyserLifetimeTransformationType = new Transformation.Type("GeyserLifetime");
 		energyResource = CreateResource(TagManager.Create("Energy"), energyResourceType);
-		heatResource = CreateResource(TagManager.Create("Heat"), energyResourceType);
+		heatResource = CreateResource(TagManager.Create("Heat"), heatResourceType);
 		duplicantTimeResource = CreateResource(TagManager.Create("DupeTime"), timeResourceType);
 		caloriesResource = CreateResource(new Tag(Db.Get().Amounts.Calories.deltaAttribute.Id), amountResourceType);
 		foreach (Element element in ElementLoader.elements)
@@ -602,44 +605,45 @@ public class EconomyDetails
 			int num = 0;
 			num++;
 		}
-		ElementConverter component = prefab_id.GetComponent<ElementConverter>();
-		EnergyConsumer component2 = prefab_id.GetComponent<EnergyConsumer>();
-		ElementConsumer component3 = prefab_id.GetComponent<ElementConsumer>();
-		BuildingElementEmitter component4 = prefab_id.GetComponent<BuildingElementEmitter>();
-		Generator component5 = prefab_id.GetComponent<Generator>();
-		EnergyGenerator component6 = prefab_id.GetComponent<EnergyGenerator>();
-		ManualGenerator component7 = prefab_id.GetComponent<ManualGenerator>();
+		Building component = prefab_id.GetComponent<Building>();
+		ElementConverter component2 = prefab_id.GetComponent<ElementConverter>();
+		EnergyConsumer component3 = prefab_id.GetComponent<EnergyConsumer>();
+		ElementConsumer component4 = prefab_id.GetComponent<ElementConsumer>();
+		BuildingElementEmitter component5 = prefab_id.GetComponent<BuildingElementEmitter>();
+		Generator component6 = prefab_id.GetComponent<Generator>();
+		EnergyGenerator component7 = prefab_id.GetComponent<EnergyGenerator>();
+		ManualGenerator component8 = prefab_id.GetComponent<ManualGenerator>();
 		ManualDeliveryKG[] components = prefab_id.GetComponents<ManualDeliveryKG>();
-		StateMachineController component8 = prefab_id.GetComponent<StateMachineController>();
-		Edible component9 = prefab_id.GetComponent<Edible>();
-		Crop component10 = prefab_id.GetComponent<Crop>();
-		Uprootable component11 = prefab_id.GetComponent<Uprootable>();
+		StateMachineController component9 = prefab_id.GetComponent<StateMachineController>();
+		Edible component10 = prefab_id.GetComponent<Edible>();
+		Crop component11 = prefab_id.GetComponent<Crop>();
+		Uprootable component12 = prefab_id.GetComponent<Uprootable>();
 		Recipe recipe = RecipeManager.Get().recipes.Find((Recipe r) => r.Result == prefab_id.PrefabTag);
 		List<FertilizationMonitor.Def> list = null;
 		List<IrrigationMonitor.Def> list2 = null;
-		GeyserConfigurator component12 = prefab_id.GetComponent<GeyserConfigurator>();
-		Toilet component13 = prefab_id.GetComponent<Toilet>();
-		FlushToilet component14 = prefab_id.GetComponent<FlushToilet>();
-		RelaxationPoint component15 = prefab_id.GetComponent<RelaxationPoint>();
+		GeyserConfigurator component13 = prefab_id.GetComponent<GeyserConfigurator>();
+		Toilet component14 = prefab_id.GetComponent<Toilet>();
+		FlushToilet component15 = prefab_id.GetComponent<FlushToilet>();
+		RelaxationPoint component16 = prefab_id.GetComponent<RelaxationPoint>();
 		CreatureCalorieMonitor.Def def = prefab_id.gameObject.GetDef<CreatureCalorieMonitor.Def>();
-		if ((UnityEngine.Object)component8 != (UnityEngine.Object)null)
+		if ((UnityEngine.Object)component9 != (UnityEngine.Object)null)
 		{
-			list = component8.GetDefs<FertilizationMonitor.Def>();
-			list2 = component8.GetDefs<IrrigationMonitor.Def>();
+			list = component9.GetDefs<FertilizationMonitor.Def>();
+			list2 = component9.GetDefs<IrrigationMonitor.Def>();
 		}
 		Transformation transformation = null;
 		float time_in_seconds = 1f;
-		if ((UnityEngine.Object)component9 != (UnityEngine.Object)null)
+		if ((UnityEngine.Object)component10 != (UnityEngine.Object)null)
 		{
 			transformation = new Transformation(tag, foodTransformationType, time_in_seconds);
 		}
-		else if ((UnityEngine.Object)component != (UnityEngine.Object)null || (UnityEngine.Object)component2 != (UnityEngine.Object)null || (UnityEngine.Object)component3 != (UnityEngine.Object)null || (UnityEngine.Object)component4 != (UnityEngine.Object)null || (UnityEngine.Object)component5 != (UnityEngine.Object)null || (UnityEngine.Object)component6 != (UnityEngine.Object)null || (UnityEngine.Object)component11 != (UnityEngine.Object)null || (UnityEngine.Object)component12 != (UnityEngine.Object)null || (UnityEngine.Object)component13 != (UnityEngine.Object)null || (UnityEngine.Object)component14 != (UnityEngine.Object)null || (UnityEngine.Object)component15 != (UnityEngine.Object)null || def != null)
+		else if ((UnityEngine.Object)component2 != (UnityEngine.Object)null || (UnityEngine.Object)component3 != (UnityEngine.Object)null || (UnityEngine.Object)component4 != (UnityEngine.Object)null || (UnityEngine.Object)component5 != (UnityEngine.Object)null || (UnityEngine.Object)component6 != (UnityEngine.Object)null || (UnityEngine.Object)component7 != (UnityEngine.Object)null || (UnityEngine.Object)component12 != (UnityEngine.Object)null || (UnityEngine.Object)component13 != (UnityEngine.Object)null || (UnityEngine.Object)component14 != (UnityEngine.Object)null || (UnityEngine.Object)component15 != (UnityEngine.Object)null || (UnityEngine.Object)component16 != (UnityEngine.Object)null || def != null)
 		{
-			if ((UnityEngine.Object)component11 != (UnityEngine.Object)null || (UnityEngine.Object)component10 != (UnityEngine.Object)null)
+			if ((UnityEngine.Object)component12 != (UnityEngine.Object)null || (UnityEngine.Object)component11 != (UnityEngine.Object)null)
 			{
-				if ((UnityEngine.Object)component10 != (UnityEngine.Object)null)
+				if ((UnityEngine.Object)component11 != (UnityEngine.Object)null)
 				{
-					time_in_seconds = component10.cropVal.cropDuration;
+					time_in_seconds = component11.cropVal.cropDuration;
 				}
 				transformation = new Transformation(tag, plantTransformationType, time_in_seconds);
 			}
@@ -647,10 +651,10 @@ public class EconomyDetails
 			{
 				transformation = new Transformation(tag, creatureTransformationType, time_in_seconds);
 			}
-			else if ((UnityEngine.Object)component12 != (UnityEngine.Object)null)
+			else if ((UnityEngine.Object)component13 != (UnityEngine.Object)null)
 			{
 				GeyserConfigurator.GeyserInstanceConfiguration geyserInstanceConfiguration = new GeyserConfigurator.GeyserInstanceConfiguration();
-				geyserInstanceConfiguration.typeId = component12.presetType;
+				geyserInstanceConfiguration.typeId = component13.presetType;
 				geyserInstanceConfiguration.rateRoll = 0.5f;
 				geyserInstanceConfiguration.iterationLengthRoll = 0.5f;
 				geyserInstanceConfiguration.iterationPercentRoll = 0.5f;
@@ -670,7 +674,7 @@ public class EconomyDetails
 			}
 			else
 			{
-				if ((UnityEngine.Object)component13 != (UnityEngine.Object)null || (UnityEngine.Object)component14 != (UnityEngine.Object)null)
+				if ((UnityEngine.Object)component14 != (UnityEngine.Object)null || (UnityEngine.Object)component15 != (UnityEngine.Object)null)
 				{
 					time_in_seconds = 600f;
 				}
@@ -679,18 +683,18 @@ public class EconomyDetails
 		}
 		if (transformation != null)
 		{
-			if ((UnityEngine.Object)component != (UnityEngine.Object)null && component.consumedElements != null)
+			if ((UnityEngine.Object)component2 != (UnityEngine.Object)null && component2.consumedElements != null)
 			{
-				ElementConverter.ConsumedElement[] consumedElements = component.consumedElements;
+				ElementConverter.ConsumedElement[] consumedElements = component2.consumedElements;
 				for (int i = 0; i < consumedElements.Length; i++)
 				{
 					ElementConverter.ConsumedElement consumedElement = consumedElements[i];
 					Resource resource = CreateResource(consumedElement.tag, massResourceType);
 					transformation.AddDelta(new Transformation.Delta(resource, 0f - consumedElement.massConsumptionRate));
 				}
-				if (component.outputElements != null)
+				if (component2.outputElements != null)
 				{
-					ElementConverter.OutputElement[] outputElements = component.outputElements;
+					ElementConverter.OutputElement[] outputElements = component2.outputElements;
 					for (int j = 0; j < outputElements.Length; j++)
 					{
 						ElementConverter.OutputElement outputElement = outputElements[j];
@@ -700,37 +704,37 @@ public class EconomyDetails
 					}
 				}
 			}
-			if ((UnityEngine.Object)component3 != (UnityEngine.Object)null && (UnityEngine.Object)component6 == (UnityEngine.Object)null && ((UnityEngine.Object)component == (UnityEngine.Object)null || (UnityEngine.Object)prefab_id.GetComponent<AlgaeHabitat>() != (UnityEngine.Object)null))
+			if ((UnityEngine.Object)component4 != (UnityEngine.Object)null && (UnityEngine.Object)component7 == (UnityEngine.Object)null && ((UnityEngine.Object)component2 == (UnityEngine.Object)null || (UnityEngine.Object)prefab_id.GetComponent<AlgaeHabitat>() != (UnityEngine.Object)null))
 			{
-				Resource resource3 = GetResource(ElementLoader.FindElementByHash(component3.elementToConsume).tag);
-				transformation.AddDelta(new Transformation.Delta(resource3, 0f - component3.consumptionRate));
+				Resource resource3 = GetResource(ElementLoader.FindElementByHash(component4.elementToConsume).tag);
+				transformation.AddDelta(new Transformation.Delta(resource3, 0f - component4.consumptionRate));
 			}
-			if ((UnityEngine.Object)component2 != (UnityEngine.Object)null)
+			if ((UnityEngine.Object)component3 != (UnityEngine.Object)null)
 			{
-				transformation.AddDelta(new Transformation.Delta(energyResource, 0f - component2.WattsNeededWhenActive));
-			}
-			if ((UnityEngine.Object)component4 != (UnityEngine.Object)null)
-			{
-				transformation.AddDelta(new Transformation.Delta(GetResource(component4.element), component4.emitRate));
+				transformation.AddDelta(new Transformation.Delta(energyResource, 0f - component3.WattsNeededWhenActive));
 			}
 			if ((UnityEngine.Object)component5 != (UnityEngine.Object)null)
 			{
-				transformation.AddDelta(new Transformation.Delta(energyResource, component5.GetComponent<Building>().Def.GeneratorWattageRating));
+				transformation.AddDelta(new Transformation.Delta(GetResource(component5.element), component5.emitRate));
 			}
 			if ((UnityEngine.Object)component6 != (UnityEngine.Object)null)
 			{
-				if (component6.formula.inputs != null)
+				transformation.AddDelta(new Transformation.Delta(energyResource, component6.GetComponent<Building>().Def.GeneratorWattageRating));
+			}
+			if ((UnityEngine.Object)component7 != (UnityEngine.Object)null)
+			{
+				if (component7.formula.inputs != null)
 				{
-					EnergyGenerator.InputItem[] inputs = component6.formula.inputs;
+					EnergyGenerator.InputItem[] inputs = component7.formula.inputs;
 					for (int k = 0; k < inputs.Length; k++)
 					{
 						EnergyGenerator.InputItem inputItem = inputs[k];
 						transformation.AddDelta(new Transformation.Delta(GetResource(inputItem.tag), 0f - inputItem.consumptionRate));
 					}
 				}
-				if (component6.formula.outputs != null)
+				if (component7.formula.outputs != null)
 				{
-					EnergyGenerator.OutputItem[] outputs = component6.formula.outputs;
+					EnergyGenerator.OutputItem[] outputs = component7.formula.outputs;
 					for (int l = 0; l < outputs.Length; l++)
 					{
 						EnergyGenerator.OutputItem outputItem = outputs[l];
@@ -738,32 +742,32 @@ public class EconomyDetails
 					}
 				}
 			}
-			if (GameComps.StructureTemperatures.Has(prefab_id.gameObject))
+			if ((bool)component)
 			{
-				BuildingDef def2 = prefab_id.GetComponent<BuildingComplete>().Def;
+				BuildingDef def2 = component.Def;
 				transformation.AddDelta(new Transformation.Delta(heatResource, def2.SelfHeatKilowattsWhenActive + def2.ExhaustKilowattsWhenActive));
 			}
-			if ((bool)component7)
+			if ((bool)component8)
 			{
 				transformation.AddDelta(new Transformation.Delta(duplicantTimeResource, -1f));
 			}
-			if ((bool)component9)
+			if ((bool)component10)
 			{
-				EdiblesManager.FoodInfo foodInfo = component9.FoodInfo;
+				EdiblesManager.FoodInfo foodInfo = component10.FoodInfo;
 				transformation.AddDelta(new Transformation.Delta(caloriesResource, foodInfo.CaloriesPerUnit));
 			}
-			if ((UnityEngine.Object)component10 != (UnityEngine.Object)null)
+			if ((UnityEngine.Object)component11 != (UnityEngine.Object)null)
 			{
-				Resource resource4 = CreateResource(TagManager.Create(component10.cropVal.cropId), amountResourceType);
-				float num2 = (float)component10.cropVal.numProduced;
+				Resource resource4 = CreateResource(TagManager.Create(component11.cropVal.cropId), amountResourceType);
+				float num2 = (float)component11.cropVal.numProduced;
 				transformation.AddDelta(new Transformation.Delta(resource4, num2));
-				GameObject prefab = Assets.GetPrefab(new Tag(component10.cropVal.cropId));
+				GameObject prefab = Assets.GetPrefab(new Tag(component11.cropVal.cropId));
 				if ((UnityEngine.Object)prefab != (UnityEngine.Object)null)
 				{
-					Edible component16 = prefab.GetComponent<Edible>();
-					if ((UnityEngine.Object)component16 != (UnityEngine.Object)null)
+					Edible component17 = prefab.GetComponent<Edible>();
+					if ((UnityEngine.Object)component17 != (UnityEngine.Object)null)
 					{
-						transformation.AddDelta(new Transformation.Delta(caloriesResource, component16.FoodInfo.CaloriesPerUnit * num2));
+						transformation.AddDelta(new Transformation.Delta(caloriesResource, component17.FoodInfo.CaloriesPerUnit * num2));
 					}
 				}
 			}
@@ -811,10 +815,10 @@ public class EconomyDetails
 					}
 				}
 			}
-			if ((UnityEngine.Object)component12 != (UnityEngine.Object)null)
+			if ((UnityEngine.Object)component13 != (UnityEngine.Object)null)
 			{
 				GeyserConfigurator.GeyserInstanceConfiguration geyserInstanceConfiguration = new GeyserConfigurator.GeyserInstanceConfiguration();
-				geyserInstanceConfiguration.typeId = component12.presetType;
+				geyserInstanceConfiguration.typeId = component13.presetType;
 				geyserInstanceConfiguration.rateRoll = 0.5f;
 				geyserInstanceConfiguration.iterationLengthRoll = 0.5f;
 				geyserInstanceConfiguration.iterationPercentRoll = 0.5f;
@@ -832,21 +836,21 @@ public class EconomyDetails
 					transformation.AddDelta(new Transformation.Delta(CreateResource(geyserInstanceConfiguration3.GetElement().CreateTag(), massResourceType), amount2));
 				}
 			}
-			if ((UnityEngine.Object)component13 != (UnityEngine.Object)null)
-			{
-				transformation.AddDelta(new Transformation.Delta(CreateResource(new Tag(Db.Get().Amounts.Bladder.deltaAttribute.Id), amountResourceType), -0.166666672f));
-				transformation.AddDelta(new Transformation.Delta(GetResource(SimHashes.Dirt), 0f - component13.solidWastePerUse.mass));
-				transformation.AddDelta(new Transformation.Delta(GetResource(component13.solidWastePerUse.elementID), component13.solidWastePerUse.mass));
-			}
 			if ((UnityEngine.Object)component14 != (UnityEngine.Object)null)
 			{
 				transformation.AddDelta(new Transformation.Delta(CreateResource(new Tag(Db.Get().Amounts.Bladder.deltaAttribute.Id), amountResourceType), -0.166666672f));
-				transformation.AddDelta(new Transformation.Delta(GetResource(SimHashes.Water), 0f - component14.massConsumedPerUse));
-				transformation.AddDelta(new Transformation.Delta(GetResource(SimHashes.DirtyWater), component14.massEmittedPerUse));
+				transformation.AddDelta(new Transformation.Delta(GetResource(SimHashes.Dirt), 0f - component14.solidWastePerUse.mass));
+				transformation.AddDelta(new Transformation.Delta(GetResource(component14.solidWastePerUse.elementID), component14.solidWastePerUse.mass));
 			}
 			if ((UnityEngine.Object)component15 != (UnityEngine.Object)null)
 			{
-				Effect effect = component15.CreateEffect();
+				transformation.AddDelta(new Transformation.Delta(CreateResource(new Tag(Db.Get().Amounts.Bladder.deltaAttribute.Id), amountResourceType), -0.166666672f));
+				transformation.AddDelta(new Transformation.Delta(GetResource(SimHashes.Water), 0f - component15.massConsumedPerUse));
+				transformation.AddDelta(new Transformation.Delta(GetResource(SimHashes.DirtyWater), component15.massEmittedPerUse));
+			}
+			if ((UnityEngine.Object)component16 != (UnityEngine.Object)null)
+			{
+				Effect effect = component16.CreateEffect();
 				foreach (AttributeModifier selfModifier in effect.SelfModifiers)
 				{
 					Resource resource8 = CreateResource(new Tag(selfModifier.AttributeId), attributeResourceType);

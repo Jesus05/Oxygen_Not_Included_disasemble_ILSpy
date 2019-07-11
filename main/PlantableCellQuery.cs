@@ -11,6 +11,10 @@ public class PlantableCellQuery : PathFinderQuery
 
 	private int max_results;
 
+	private int plantDetectionRadius = 6;
+
+	private int maxPlantsInRadius = 2;
+
 	public PlantableCellQuery Reset(PlantableSeed seed, int max_results)
 	{
 		this.seed = seed;
@@ -28,18 +32,18 @@ public class PlantableCellQuery : PathFinderQuery
 		return result_cells.Count >= max_results;
 	}
 
-	private bool CheckValidPlotCell(PlantableSeed seed, int cell)
+	private bool CheckValidPlotCell(PlantableSeed seed, int plant_cell)
 	{
-		if (Grid.IsValidCell(cell))
+		if (Grid.IsValidCell(plant_cell))
 		{
-			int num = (seed.Direction != SingleEntityReceptacle.ReceptacleDirection.Bottom) ? Grid.CellBelow(cell) : Grid.CellAbove(cell);
+			int num = (seed.Direction != SingleEntityReceptacle.ReceptacleDirection.Bottom) ? Grid.CellBelow(plant_cell) : Grid.CellAbove(plant_cell);
 			if (Grid.IsValidCell(num))
 			{
 				if (Grid.Solid[num])
 				{
-					if (!(bool)Grid.Objects[cell, 5])
+					if (!(bool)Grid.Objects[plant_cell, 5])
 					{
-						if (!(bool)Grid.Objects[cell, 1])
+						if (!(bool)Grid.Objects[plant_cell, 1])
 						{
 							GameObject gameObject = Grid.Objects[num, 1];
 							if ((bool)gameObject)
@@ -60,11 +64,11 @@ public class PlantableCellQuery : PathFinderQuery
 							}
 							else
 							{
-								if (Grid.Element[num] != plantElement)
+								if (!seed.TestSuitableGround(plant_cell))
 								{
 									return false;
 								}
-								if (CountNearbyPlants(num, 6) > 2)
+								if (CountNearbyPlants(num, plantDetectionRadius) > maxPlantsInRadius)
 								{
 									return false;
 								}

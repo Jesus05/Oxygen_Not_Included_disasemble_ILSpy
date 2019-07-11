@@ -197,14 +197,14 @@ public class KMonoBehaviour : MonoBehaviour, IStateMachineTarget, ISaveLoadable,
 		return obj.GetEventSystem().Subscribe(hash, handler);
 	}
 
-	public void Subscribe(GameObject target, int hash, Action<object> handler)
+	public int Subscribe(GameObject target, int hash, Action<object> handler)
 	{
-		obj.GetEventSystem().Subscribe(target, hash, handler);
+		return obj.GetEventSystem().Subscribe(target, hash, handler);
 	}
 
-	public void Subscribe<ComponentType>(int hash, EventSystem.IntraObjectHandler<ComponentType> handler)
+	public int Subscribe<ComponentType>(int hash, EventSystem.IntraObjectHandler<ComponentType> handler)
 	{
-		obj.GetEventSystem().Subscribe(hash, handler);
+		return obj.GetEventSystem().Subscribe(hash, handler);
 	}
 
 	public void Unsubscribe(int hash, Action<object> handler)

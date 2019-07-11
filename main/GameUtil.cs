@@ -73,8 +73,7 @@ public static class GameUtil
 	{
 		DTU_S,
 		KDTU_S,
-		Automatic,
-		None
+		Automatic
 	}
 
 	public struct FloodFillInfo
@@ -520,29 +519,34 @@ public static class GameUtil
 
 	public static string GetFormattedHeatEnergy(float dtu, HeatEnergyFormatterUnit unit = HeatEnergyFormatterUnit.Automatic)
 	{
-		LocString loc_string = "";
+		LocString locString = "";
+		string format;
 		switch (unit)
 		{
-		case HeatEnergyFormatterUnit.Automatic:
+		default:
 			if (Mathf.Abs(dtu) > 1000f)
 			{
 				dtu /= 1000f;
-				loc_string = UI.UNITSUFFIXES.HEAT.KDTU;
+				locString = UI.UNITSUFFIXES.HEAT.KDTU;
+				format = "###0.##";
 			}
 			else
 			{
-				loc_string = UI.UNITSUFFIXES.HEAT.DTU;
+				locString = UI.UNITSUFFIXES.HEAT.DTU;
+				format = "###0.";
 			}
 			break;
 		case HeatEnergyFormatterUnit.KDTU_S:
 			dtu /= 1000f;
-			loc_string = UI.UNITSUFFIXES.HEAT.KDTU;
+			locString = UI.UNITSUFFIXES.HEAT.KDTU;
+			format = "###0.##";
 			break;
 		case HeatEnergyFormatterUnit.DTU_S:
-			loc_string = UI.UNITSUFFIXES.HEAT.DTU;
+			locString = UI.UNITSUFFIXES.HEAT.DTU;
+			format = "###0.";
 			break;
 		}
-		return FloatToString(dtu, "###0.##") + loc_string;
+		return FloatToString(dtu, format) + locString;
 	}
 
 	public static string GetFormattedHeatEnergyRate(float dtu_s, HeatEnergyFormatterUnit unit = HeatEnergyFormatterUnit.Automatic)

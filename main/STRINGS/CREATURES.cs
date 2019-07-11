@@ -1568,6 +1568,13 @@ namespace STRINGS
 				public static LocString TOOLTIP = "This critter can't breathe in " + UI.PRE_KEYWORD + "Liquid" + UI.PST_KEYWORD + "!";
 			}
 
+			public class SATURATED
+			{
+				public static LocString NAME = "Saturated";
+
+				public static LocString TOOLTIP = "This critter likes " + UI.PRE_KEYWORD + "Liquid" + UI.PST_KEYWORD + ", but not <i>THAT</i> much.";
+			}
+
 			public class WILTING
 			{
 				public static LocString NAME = "Growth Halted{Reasons}";

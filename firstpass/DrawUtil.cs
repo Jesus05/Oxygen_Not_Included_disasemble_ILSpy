@@ -79,9 +79,9 @@ public static class DrawUtil
 		Sphere(pos, radius, Color.white, 0f);
 	}
 
-	public static void Box(Vector3 pos, Color color, float offset = 1f, float time = 1f)
+	public static void Box(Vector3 pos, Color color, float size = 1f, float time = 1f)
 	{
-		float num = offset * 0.5f;
+		float num = size * 0.5f;
 	}
 
 	public static void Sphere(Vector3 pos, float radius, Color color, float time = 0f)

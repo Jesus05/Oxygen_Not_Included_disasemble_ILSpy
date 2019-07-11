@@ -36,6 +36,8 @@ namespace Database
 
 		public StatusItem Drowning;
 
+		public StatusItem Saturated;
+
 		public StatusItem DryingOut;
 
 		public StatusItem Growing;
@@ -181,6 +183,8 @@ namespace Database
 			Incubating = new StatusItem("Incubating", "CREATURES", "", StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, true, 129022);
 			Drowning = new StatusItem("Drowning", "CREATURES", "status_item_flooded", StatusItem.IconType.Custom, NotificationType.BadMinor, false, OverlayModes.None.ID, true, 129022);
 			Drowning.resolveStringCallback = ((string str, object data) => str);
+			Saturated = new StatusItem("Saturated", "CREATURES", "status_item_flooded", StatusItem.IconType.Custom, NotificationType.BadMinor, false, OverlayModes.None.ID, true, 129022);
+			Saturated.resolveStringCallback = ((string str, object data) => str);
 			DryingOut = new StatusItem("DryingOut", "CREATURES", "", StatusItem.IconType.Info, NotificationType.BadMinor, false, OverlayModes.None.ID, true, 1026);
 			DryingOut.resolveStringCallback = ((string str, object data) => str);
 			ReadyForHarvest = new StatusItem("ReadyForHarvest", "CREATURES", "", StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, true, 1026);

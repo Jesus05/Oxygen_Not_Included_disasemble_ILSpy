@@ -164,6 +164,11 @@ public class Light2D : KMonoBehaviour, IGameObjectEffectDescriptor
 			AddToScenePartitioner();
 			emitter.Refresh(pending_emitter_state, true);
 		}
+		Room roomOfGameObject = Game.Instance.roomProber.GetRoomOfGameObject(base.gameObject);
+		if (roomOfGameObject != null)
+		{
+			Game.Instance.roomProber.UpdateRoom(roomOfGameObject.cavity);
+		}
 		Singleton<CellChangeMonitor>.Instance.RegisterCellChangedHandler(base.transform, OnMoved, "Light2D.OnMoved");
 	}
 
@@ -172,6 +177,11 @@ public class Light2D : KMonoBehaviour, IGameObjectEffectDescriptor
 		Singleton<CellChangeMonitor>.Instance.UnregisterCellChangedHandler(base.transform, OnMoved);
 		Components.Light2Ds.Remove(this);
 		base.OnCmpDisable();
+		Room roomOfGameObject = Game.Instance.roomProber.GetRoomOfGameObject(base.gameObject);
+		if (roomOfGameObject != null)
+		{
+			Game.Instance.roomProber.UpdateRoom(roomOfGameObject.cavity);
+		}
 		FullRemove();
 	}
 

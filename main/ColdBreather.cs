@@ -109,6 +109,11 @@ public class ColdBreather : StateMachineComponent<ColdBreather.StatesInstance>, 
 
 	private HandleVector<Game.ComplexCallbackInfo<Sim.MassEmittedCallback>>.Handle simEmitCBHandle = HandleVector<Game.ComplexCallbackInfo<Sim.MassEmittedCallback>>.InvalidHandle;
 
+	private static readonly EventSystem.IntraObjectHandler<ColdBreather> OnReplantedDelegate = new EventSystem.IntraObjectHandler<ColdBreather>(delegate(ColdBreather component, object data)
+	{
+		component.OnReplanted(data);
+	});
+
 	[CompilerGenerated]
 	private static Action<Sim.MassEmittedCallback, object> _003C_003Ef__mg_0024cache0;
 
@@ -117,7 +122,7 @@ public class ColdBreather : StateMachineComponent<ColdBreather.StatesInstance>, 
 		base.OnSpawn();
 		simEmitCBHandle = Game.Instance.massEmitCallbackManager.Add(OnSimEmittedCallback, this, "ColdBreather");
 		elementConsumer.EnableConsumption(false);
-		Subscribe(1309017699, OnReplanted);
+		Subscribe(1309017699, OnReplantedDelegate);
 		base.smi.StartSM();
 	}
 

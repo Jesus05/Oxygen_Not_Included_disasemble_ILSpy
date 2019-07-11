@@ -40,7 +40,7 @@ public class ConduitConsumer : KMonoBehaviour
 	public bool isConsuming = true;
 
 	[MyCmpReq]
-	private Operational operational;
+	public Operational operational;
 
 	[MyCmpReq]
 	private Building building;

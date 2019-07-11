@@ -159,8 +159,8 @@ public static class RoomConstraints
 
 	public static Constraint BUILDING_DECOR_POSITIVE = new Constraint(delegate(KPrefabID bc)
 	{
-		DecorProvider component3 = bc.GetComponent<DecorProvider>();
-		if ((UnityEngine.Object)component3 != (UnityEngine.Object)null && component3.baseDecor > 0f)
+		DecorProvider component5 = bc.GetComponent<DecorProvider>();
+		if ((UnityEngine.Object)component5 != (UnityEngine.Object)null && component5.baseDecor > 0f)
 		{
 			return true;
 		}
@@ -183,7 +183,29 @@ public static class RoomConstraints
 
 	public static Constraint FOOD_BOX = new Constraint((KPrefabID bc) => bc.HasTag(ConstraintTags.FoodStorage), null, 1, ROOMS.CRITERIA.FOOD_BOX.NAME, ROOMS.CRITERIA.FOOD_BOX.DESCRIPTION, null);
 
-	public static Constraint LIGHT = new Constraint((KPrefabID bc) => bc.HasTag(ConstraintTags.LightSource), null, 1, ROOMS.CRITERIA.LIGHT.NAME, ROOMS.CRITERIA.LIGHT.DESCRIPTION, null);
+	public static Constraint LIGHT = new Constraint(null, delegate(Room room)
+	{
+		foreach (KPrefabID creature in room.cavity.creatures)
+		{
+			if ((UnityEngine.Object)creature != (UnityEngine.Object)null && (UnityEngine.Object)creature.GetComponent<Light2D>() != (UnityEngine.Object)null)
+			{
+				return true;
+			}
+		}
+		foreach (KPrefabID building4 in room.buildings)
+		{
+			if (!((UnityEngine.Object)building4 == (UnityEngine.Object)null))
+			{
+				Light2D component3 = building4.GetComponent<Light2D>();
+				if ((UnityEngine.Object)component3 != (UnityEngine.Object)null)
+				{
+					RequireInputs component4 = building4.GetComponent<RequireInputs>();
+					return component3.enabled || ((UnityEngine.Object)component4 != (UnityEngine.Object)null && component4.RequirementsMet);
+				}
+			}
+		}
+		return false;
+	}, 1, ROOMS.CRITERIA.LIGHT.NAME, ROOMS.CRITERIA.LIGHT.DESCRIPTION, null);
 
 	public static Constraint MASSAGE_TABLE = new Constraint((KPrefabID bc) => bc.HasTag(ConstraintTags.MassageTable), null, 1, ROOMS.CRITERIA.MASSAGE_TABLE.NAME, ROOMS.CRITERIA.MASSAGE_TABLE.DESCRIPTION, null);
 
@@ -298,9 +320,9 @@ public static class RoomConstraints
 		Func<Room, bool> room_criteria = delegate(Room room)
 		{
 			int num3 = 0;
-			foreach (KPrefabID creature in room.cavity.creatures)
+			foreach (KPrefabID creature2 in room.cavity.creatures)
 			{
-				if (creature.HasTag(GameTags.Creatures.Wild))
+				if (creature2.HasTag(GameTags.Creatures.Wild))
 				{
 					num3++;
 				}

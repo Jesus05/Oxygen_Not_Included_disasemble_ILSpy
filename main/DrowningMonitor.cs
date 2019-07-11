@@ -32,11 +32,15 @@ public class DrowningMonitor : KMonoBehaviour, IWiltCause, ISim1000ms
 
 	public bool canDrownToDeath = true;
 
+	public bool livesUnderWater = false;
+
 	private Extents extents;
 
 	private HandleVector<int>.Handle partitionerEntry;
 
 	public static Effect drowningEffect;
+
+	public static Effect saturatedEffect;
 
 	[CompilerGenerated]
 	private static Func<int, object, bool> _003C_003Ef__mg_0024cache0;
@@ -66,7 +70,17 @@ public class DrowningMonitor : KMonoBehaviour, IWiltCause, ISim1000ms
 
 	public bool Drowning => drowning;
 
-	public string WiltStateString => CREATURES.STATUSITEMS.DROWNING.NAME;
+	public string WiltStateString
+	{
+		get
+		{
+			if (!livesUnderWater)
+			{
+				return CREATURES.STATUSITEMS.DROWNING.NAME;
+			}
+			return CREATURES.STATUSITEMS.SATURATED.NAME;
+		}
+	}
 
 	protected override void OnPrefabInit()
 	{
@@ -76,6 +90,11 @@ public class DrowningMonitor : KMonoBehaviour, IWiltCause, ISim1000ms
 		{
 			drowningEffect = new Effect("Drowning", CREATURES.STATUSITEMS.DROWNING.NAME, CREATURES.STATUSITEMS.DROWNING.TOOLTIP, 0f, false, false, true, null, 0f, null);
 			drowningEffect.Add(new AttributeModifier(Db.Get().CritterAttributes.Happiness.Id, -100f, CREATURES.STATUSITEMS.DROWNING.NAME, false, false, true));
+		}
+		if (saturatedEffect == null)
+		{
+			saturatedEffect = new Effect("Saturated", CREATURES.STATUSITEMS.SATURATED.NAME, CREATURES.STATUSITEMS.SATURATED.TOOLTIP, 0f, false, false, true, null, 0f, null);
+			saturatedEffect.Add(new AttributeModifier(Db.Get().CritterAttributes.Happiness.Id, -100f, CREATURES.STATUSITEMS.SATURATED.NAME, false, false, true));
 		}
 	}
 
@@ -134,12 +153,30 @@ public class DrowningMonitor : KMonoBehaviour, IWiltCause, ISim1000ms
 				GetComponent<KPrefabID>().RemoveTag(GameTags.Creatures.Drowning);
 				Trigger(99949694, null);
 			}
-			selectable.ToggleStatusItem(Db.Get().CreatureStatusItems.Drowning, drowning, this);
+			if (livesUnderWater)
+			{
+				selectable.ToggleStatusItem(Db.Get().CreatureStatusItems.Saturated, drowning, this);
+			}
+			else
+			{
+				selectable.ToggleStatusItem(Db.Get().CreatureStatusItems.Drowning, drowning, this);
+			}
 			if ((UnityEngine.Object)effects != (UnityEngine.Object)null)
 			{
 				if (drowning)
 				{
-					effects.Add(drowningEffect, false);
+					if (livesUnderWater)
+					{
+						effects.Add(saturatedEffect, false);
+					}
+					else
+					{
+						effects.Add(drowningEffect, false);
+					}
+				}
+				else if (livesUnderWater)
+				{
+					effects.Remove(saturatedEffect);
 				}
 				else
 				{

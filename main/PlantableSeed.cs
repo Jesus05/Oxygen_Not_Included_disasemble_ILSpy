@@ -83,7 +83,7 @@ public class PlantableSeed : KMonoBehaviour, IReceptacleDirection, IGameObjectEf
 	{
 		if (Grid.IsValidCell(cell))
 		{
-			int num = Grid.CellBelow(cell);
+			int num = (Direction != SingleEntityReceptacle.ReceptacleDirection.Bottom) ? Grid.CellBelow(cell) : Grid.CellAbove(cell);
 			if (Grid.IsValidCell(num))
 			{
 				if (!Grid.Foundation[num])

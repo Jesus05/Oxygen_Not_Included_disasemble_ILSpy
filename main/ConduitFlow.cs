@@ -1585,7 +1585,7 @@ public class ConduitFlow : IConduitFlow
 		public Sink(FlowUtilityNetwork.IItem sink)
 		{
 			consumer = ((!((UnityEngine.Object)sink.GameObject != (UnityEngine.Object)null)) ? null : sink.GameObject.GetComponent<ConduitConsumer>());
-			space_remaining = ((!((UnityEngine.Object)consumer != (UnityEngine.Object)null)) ? 0f : consumer.space_remaining_kg);
+			space_remaining = ((!((UnityEngine.Object)consumer != (UnityEngine.Object)null) || !consumer.operational.IsOperational) ? 0f : consumer.space_remaining_kg);
 		}
 	}
 
@@ -2040,7 +2040,7 @@ public class ConduitFlow : IConduitFlow
 						{
 							soaInfo.SetPullDirection(conduitFromDirection2.idx, flowDirections);
 						}
-						if (!(num <= 0f))
+						if (!(num <= 0f) && flag3)
 						{
 							soaInfo.SetTargetFlowDirection(conduit.idx, flowDirections);
 							Debug.Assert(gridNode.contents.temperature > 0f);

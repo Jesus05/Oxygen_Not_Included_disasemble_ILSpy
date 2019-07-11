@@ -312,7 +312,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Heat Production: {0}/s";
 
-				public static LocString TOOLTIP = "This building is producing <b>{0}</b> DTU per second\n\nSources:\n{1}";
+				public static LocString TOOLTIP = "This building is producing <b>{0}</b> per second\n\nSources:\n{1}";
 
 				public static LocString LINEITEM = "    • {0}: {1}\n";
 

@@ -118,7 +118,7 @@ public class KleiMetrics : ThreadedHttps<KleiMetrics>
 
 	public KleiMetrics()
 	{
-		LIVE_ENDPOINT = "metric.kleientertainment.com/write";
+		LIVE_ENDPOINT = "oni.metrics.klei.com/write";
 		serviceName = "KleiMetrics";
 		CLIENT_KEY = DistributionPlatform.Inst.MetricsClientKey;
 		PlatformUserIDFieldName = DistributionPlatform.Inst.MetricsUserIDField;

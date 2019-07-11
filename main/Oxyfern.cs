@@ -81,6 +81,16 @@ public class Oxyfern : StateMachineComponent<Oxyfern.StatesInstance>
 	[MyCmpReq]
 	private ReceptacleMonitor receptacleMonitor;
 
+	private static readonly EventSystem.IntraObjectHandler<Oxyfern> OnUprootedDelegate = new EventSystem.IntraObjectHandler<Oxyfern>(delegate(Oxyfern component, object data)
+	{
+		component.OnUprooted(data);
+	});
+
+	private static readonly EventSystem.IntraObjectHandler<Oxyfern> OnReplantedDelegate = new EventSystem.IntraObjectHandler<Oxyfern>(delegate(Oxyfern component, object data)
+	{
+		component.OnReplanted(data);
+	});
+
 	protected void DestroySelf(object callbackParam)
 	{
 		CreatureHelpers.DeselectCreature(base.gameObject);
@@ -90,8 +100,8 @@ public class Oxyfern : StateMachineComponent<Oxyfern.StatesInstance>
 	protected override void OnSpawn()
 	{
 		base.OnSpawn();
-		Subscribe(-216549700, OnUprooted);
-		Subscribe(1309017699, OnReplanted);
+		Subscribe(-216549700, OnUprootedDelegate);
+		Subscribe(1309017699, OnReplantedDelegate);
 		base.smi.StartSM();
 	}
 

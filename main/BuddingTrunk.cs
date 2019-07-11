@@ -29,6 +29,21 @@ public class BuddingTrunk : KMonoBehaviour, ISim4000ms
 
 	private Coroutine newGameSpawnRoutine;
 
+	private static readonly EventSystem.IntraObjectHandler<BuddingTrunk> OnUprootedDelegate = new EventSystem.IntraObjectHandler<BuddingTrunk>(delegate(BuddingTrunk component, object data)
+	{
+		component.OnUprooted(data);
+	});
+
+	private static readonly EventSystem.IntraObjectHandler<BuddingTrunk> OnDrownedDelegate = new EventSystem.IntraObjectHandler<BuddingTrunk>(delegate(BuddingTrunk component, object data)
+	{
+		component.OnUprooted(data);
+	});
+
+	private static readonly EventSystem.IntraObjectHandler<BuddingTrunk> OnHarvestDesignationChangedDelegate = new EventSystem.IntraObjectHandler<BuddingTrunk>(delegate(BuddingTrunk component, object data)
+	{
+		component.UpdateAllBudsHarvestStatus(data);
+	});
+
 	private static List<int> spawn_choices = new List<int>();
 
 	public bool ExtraSeedAvailable => hasExtraSeedAvailable;
@@ -44,9 +59,9 @@ public class BuddingTrunk : KMonoBehaviour, ISim4000ms
 	protected override void OnSpawn()
 	{
 		base.OnSpawn();
-		Subscribe(-216549700, OnUprooted);
-		Subscribe(-750750377, OnUprooted);
-		Subscribe(-266953818, UpdateAllBudsHarvestStatus);
+		Subscribe(-216549700, OnUprootedDelegate);
+		Subscribe(-750750377, OnDrownedDelegate);
+		Subscribe(-266953818, OnHarvestDesignationChangedDelegate);
 	}
 
 	protected override void OnCleanUp()

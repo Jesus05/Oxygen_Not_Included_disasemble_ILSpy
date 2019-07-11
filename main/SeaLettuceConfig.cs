@@ -51,6 +51,7 @@ public class SeaLettuceConfig : IEntityConfig
 			}
 		});
 		gameObject.GetComponent<DrowningMonitor>().canDrownToDeath = false;
+		gameObject.GetComponent<DrowningMonitor>().livesUnderWater = true;
 		gameObject.AddOrGet<StandardCropPlant>();
 		gameObject.AddOrGet<KAnimControllerBase>().randomiseLoopedOffset = true;
 		gameObject.AddOrGet<LoopingSounds>();

@@ -20,7 +20,8 @@ public class AlgaeDistillery : StateMachineComponent<AlgaeDistillery.StatesInsta
 				PrimaryElement component = gameObject.GetComponent<PrimaryElement>();
 				if (component.Mass >= base.master.emitMass)
 				{
-					storage.Drop(gameObject, true);
+					GameObject gameObject2 = storage.Drop(gameObject, true);
+					gameObject2.transform.SetPosition(base.transform.GetPosition() + base.master.emitOffset);
 				}
 			}
 		}
@@ -60,6 +61,9 @@ public class AlgaeDistillery : StateMachineComponent<AlgaeDistillery.StatesInsta
 
 	[SerializeField]
 	public float emitMass;
+
+	[SerializeField]
+	public Vector3 emitOffset;
 
 	[MyCmpAdd]
 	private Storage storage;

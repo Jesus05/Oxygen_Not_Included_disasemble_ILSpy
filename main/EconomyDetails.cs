@@ -340,7 +340,7 @@ public class EconomyDetails
 	public EconomyDetails()
 	{
 		massResourceType = new Resource.Type("Mass", "kg");
-		energyResourceType = new Resource.Type("Heat Energy", "kdtu");
+		heatResourceType = new Resource.Type("Heat Energy", "kdtu");
 		energyResourceType = new Resource.Type("Energy", "joules");
 		timeResourceType = new Resource.Type("Time", "seconds");
 		attributeResourceType = new Resource.Type("Attribute", "units");

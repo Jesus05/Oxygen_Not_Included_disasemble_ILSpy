@@ -20,6 +20,56 @@ public class EggProtectionMonitor : GameStateMachine<EggProtectionMonitor, EggPr
 
 	public new class Instance : GameInstance
 	{
+		private struct Egg
+		{
+			public GameObject game_object;
+
+			public int cell;
+		}
+
+		private struct FindEggsTask : IWorkItem<List<KPrefabID>>
+		{
+			private static readonly Tag EGG_TAG = "CrabEgg".ToTag();
+
+			private ListPool<int, EggProtectionMonitor>.PooledList eggs;
+
+			private int start;
+
+			private int end;
+
+			public FindEggsTask(int start, int end)
+			{
+				this.start = start;
+				this.end = end;
+				eggs = ListPool<int, EggProtectionMonitor>.Allocate();
+			}
+
+			public void Run(List<KPrefabID> prefab_ids)
+			{
+				for (int i = start; i != end; i++)
+				{
+					if (prefab_ids[i].HasTag(EGG_TAG))
+					{
+						eggs.Add(i);
+					}
+				}
+			}
+
+			public void Finish(List<KPrefabID> prefab_ids, List<Egg> eggs)
+			{
+				foreach (int egg in this.eggs)
+				{
+					GameObject gameObject = prefab_ids[egg].gameObject;
+					eggs.Add(new Egg
+					{
+						game_object = gameObject,
+						cell = Grid.PosToCell(gameObject)
+					});
+				}
+				this.eggs.Recycle();
+			}
+		}
+
 		public GameObject eggToProtect;
 
 		public FactionAlignment alignment;
@@ -33,6 +83,8 @@ public class EggProtectionMonitor : GameStateMachine<EggProtectionMonitor, EggPr
 		private int maxThreatDistance = 12;
 
 		private Action<object> refreshThreatDelegate;
+
+		private static WorkItemCollection<FindEggsTask, List<KPrefabID>> find_eggs_job = new WorkItemCollection<FindEggsTask, List<KPrefabID>>();
 
 		public GameObject MainThreat => mainThreat;
 
@@ -66,25 +118,17 @@ public class EggProtectionMonitor : GameStateMachine<EggProtectionMonitor, EggPr
 			}
 		}
 
-		public void FindEggToGuard()
+		public static void FindEggToGuard(List<UpdateBucketWithUpdater<Instance>.Entry> instances, float time_delta)
 		{
-			GameObject eggToGuard = null;
-			int num = 100;
+			ListPool<KPrefabID, EggProtectionMonitor>.PooledList pooledList = ListPool<KPrefabID, EggProtectionMonitor>.Allocate();
+			pooledList.Capacity = Mathf.Max(pooledList.Capacity, Components.Pickupables.Count);
 			IEnumerator enumerator = Components.Pickupables.GetEnumerator();
 			try
 			{
 				while (enumerator.MoveNext())
 				{
 					Pickupable pickupable = (Pickupable)enumerator.Current;
-					if (pickupable.HasTag("CrabEgg".ToTag()) && !(Vector2.Distance(base.smi.transform.position, pickupable.transform.position) > 25f))
-					{
-						int navigationCost = navigator.GetNavigationCost(Grid.PosToCell(pickupable));
-						if (navigationCost != -1 && navigationCost < num)
-						{
-							eggToGuard = pickupable.gameObject;
-							num = navigationCost;
-						}
-					}
+					pooledList.Add(pickupable.gameObject.GetComponent<KPrefabID>());
 				}
 			}
 			finally
@@ -95,7 +139,36 @@ public class EggProtectionMonitor : GameStateMachine<EggProtectionMonitor, EggPr
 					disposable.Dispose();
 				}
 			}
-			SetEggToGuard(eggToGuard);
+			ListPool<Egg, EggProtectionMonitor>.PooledList pooledList2 = ListPool<Egg, EggProtectionMonitor>.Allocate();
+			find_eggs_job.Reset(pooledList);
+			for (int i = 0; i < pooledList.Count; i += 256)
+			{
+				find_eggs_job.Add(new FindEggsTask(i, Mathf.Min(i + 256, pooledList.Count)));
+			}
+			GlobalJobManager.Run(find_eggs_job);
+			for (int j = 0; j != find_eggs_job.Count; j++)
+			{
+				find_eggs_job.GetWorkItem(j).Finish(pooledList, pooledList2);
+			}
+			pooledList.Recycle();
+			foreach (UpdateBucketWithUpdater<Instance>.Entry instance in instances)
+			{
+				UpdateBucketWithUpdater<Instance>.Entry current = instance;
+				GameObject eggToGuard = null;
+				int num = 100;
+				foreach (Egg item in pooledList2)
+				{
+					Egg current2 = item;
+					int navigationCost = current.data.navigator.GetNavigationCost(current2.cell);
+					if (navigationCost != -1 && navigationCost < num)
+					{
+						eggToGuard = current2.game_object;
+						num = navigationCost;
+					}
+				}
+				current.data.SetEggToGuard(eggToGuard);
+			}
+			pooledList2.Recycle();
 		}
 
 		public void SetEggToGuard(GameObject egg)
@@ -230,7 +303,10 @@ public class EggProtectionMonitor : GameStateMachine<EggProtectionMonitor, EggPr
 	public GuardEggStates guard;
 
 	[CompilerGenerated]
-	private static Action<Instance, float> _003C_003Ef__mg_0024cache0;
+	private static UpdateBucketWithUpdater<Instance>.BatchUpdateDelegate _003C_003Ef__mg_0024cache0;
+
+	[CompilerGenerated]
+	private static Action<Instance, float> _003C_003Ef__mg_0024cache1;
 
 	public override void InitializeStates(out BaseState default_state)
 	{
@@ -239,13 +315,7 @@ public class EggProtectionMonitor : GameStateMachine<EggProtectionMonitor, EggPr
 		{
 			smi.Cleanup(d);
 		});
-		find_egg.Enter(delegate(Instance smi)
-		{
-			smi.FindEggToGuard();
-		}).Update("find_egg", delegate(Instance smi, float dt)
-		{
-			smi.FindEggToGuard();
-		}, UpdateRate.SIM_1000ms, true).ParamTransition(hasEggToGuard, guard.safe, GameStateMachine<EggProtectionMonitor, Instance, IStateMachineTarget, Def>.IsTrue);
+		find_egg.BatchUpdate(Instance.FindEggToGuard, UpdateRate.SIM_200ms).ParamTransition(hasEggToGuard, guard.safe, GameStateMachine<EggProtectionMonitor, Instance, IStateMachineTarget, Def>.IsTrue);
 		guard.Enter(delegate(Instance smi)
 		{
 			smi.gameObject.AddOrGet<SymbolOverrideController>().ApplySymbolOverridesByAffix(Assets.GetAnim("pincher_kanim"), null, "_heat", 0);

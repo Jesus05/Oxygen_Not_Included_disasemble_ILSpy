@@ -22,7 +22,7 @@ namespace Database
 
 		string IListableOption.GetProperName()
 		{
-			return Strings.Get("STRINGS.DUPLICANTS.CHOREGROUPS." + choreGroupID.ToUpper() + ".ARCHETYPE_NAME");
+			return Strings.Get("STRINGS.DUPLICANTS.SKILLGROUPS." + Id.ToUpper() + ".NAME");
 		}
 	}
 }

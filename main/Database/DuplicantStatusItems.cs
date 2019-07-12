@@ -300,9 +300,9 @@ namespace Database
 					string stateChangeNoiseSource = statesInstance2.stateChangeNoiseSource;
 					if (!string.IsNullOrEmpty(stateChangeNoiseSource))
 					{
-						string text = DUPLICANTS.STATUSITEMS.SLEEPING.TOOLTIP;
-						text = text.Replace("{Disturber}", stateChangeNoiseSource);
-						str += text;
+						string text5 = DUPLICANTS.STATUSITEMS.SLEEPING.TOOLTIP;
+						text5 = text5.Replace("{Disturber}", stateChangeNoiseSource);
+						str += text5;
 					}
 				}
 				return str;
@@ -401,15 +401,15 @@ namespace Database
 				float dtu_s2 = ((ExternalTemperatureMonitor.Instance)data).temperatureTransferer.average_kilowatts_exchanged.GetWeightedAverage * 1000f;
 				str = str.Replace("{currentTransferWattage}", GameUtil.GetFormattedHeatEnergyRate(dtu_s2, GameUtil.HeatEnergyFormatterUnit.Automatic));
 				AttributeInstance attributeInstance3 = ((ExternalTemperatureMonitor.Instance)data).attributes.Get("ThermalConductivityBarrier");
-				string formattedValue2 = attributeInstance3.GetFormattedValue();
-				formattedValue2 += UI.HORIZONTAL_BR_RULE;
+				string text3 = "<b>" + attributeInstance3.GetFormattedValue() + "</b>";
 				for (int j = 0; j != attributeInstance3.Modifiers.Count; j++)
 				{
 					AttributeModifier attributeModifier2 = attributeInstance3.Modifiers[j];
-					formattedValue2 = formattedValue2 + attributeModifier2.GetDescription() + " " + attributeModifier2.GetFormattedString(attributeInstance3.gameObject);
-					formattedValue2 += "\n";
+					text3 += "\n";
+					string text4 = text3;
+					text3 = text4 + "    • " + attributeModifier2.GetDescription() + " <b>" + attributeModifier2.GetFormattedString(attributeInstance3.gameObject) + "</b>";
 				}
-				str = str.Replace("{conductivityBarrier}", formattedValue2);
+				str = str.Replace("{conductivityBarrier}", text3);
 				return str;
 			};
 			Hot = CreateStatusItem("Hot", "DUPLICANTS", "", StatusItem.IconType.Exclamation, NotificationType.BadMinor, false, OverlayModes.None.ID, true, 2);
@@ -419,15 +419,15 @@ namespace Database
 				float dtu_s = ((ExternalTemperatureMonitor.Instance)data).temperatureTransferer.average_kilowatts_exchanged.GetWeightedAverage * 1000f;
 				str = str.Replace("{currentTransferWattage}", GameUtil.GetFormattedHeatEnergyRate(dtu_s, GameUtil.HeatEnergyFormatterUnit.Automatic));
 				AttributeInstance attributeInstance2 = ((ExternalTemperatureMonitor.Instance)data).attributes.Get("ThermalConductivityBarrier");
-				string formattedValue = attributeInstance2.GetFormattedValue();
-				formattedValue += UI.HORIZONTAL_BR_RULE;
+				string text = "<b>" + attributeInstance2.GetFormattedValue() + "</b>";
 				for (int i = 0; i != attributeInstance2.Modifiers.Count; i++)
 				{
 					AttributeModifier attributeModifier = attributeInstance2.Modifiers[i];
-					formattedValue = formattedValue + attributeModifier.GetDescription() + " " + attributeModifier.GetFormattedString(attributeInstance2.gameObject);
-					formattedValue += "\n";
+					text += "\n";
+					string text2 = text;
+					text = text2 + "    • " + attributeModifier.GetDescription() + " <b>" + attributeModifier.GetFormattedString(attributeInstance2.gameObject) + "</b>";
 				}
-				str = str.Replace("{conductivityBarrier}", formattedValue);
+				str = str.Replace("{conductivityBarrier}", text);
 				return str;
 			};
 			BodyRegulatingHeating = CreateStatusItem("BodyRegulatingHeating", "DUPLICANTS", "", StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, true, 2);

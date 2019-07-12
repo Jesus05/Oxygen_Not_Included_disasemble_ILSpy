@@ -72,6 +72,14 @@ public class ResearchScreen : KModalScreen
 
 	private float keyboardScrollSpeed = 1500f;
 
+	private bool panUp;
+
+	private bool panDown;
+
+	private bool panLeft;
+
+	private bool panRight;
+
 	public float contentPositionLerpSpeed = 10f;
 
 	private bool zoomingOut = false;
@@ -151,19 +159,19 @@ public class ResearchScreen : KModalScreen
 		if (!zoomingIn && !zoomingOut)
 		{
 			scaleOffsetAnchor.SetPosition(Input.mousePosition);
-			if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow))
+			if (panUp)
 			{
 				contentPositionDummy.transform.position -= Vector3.up * Time.unscaledDeltaTime * keyboardScrollSpeed;
 			}
-			else if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow))
+			else if (panDown)
 			{
 				contentPositionDummy.transform.position += Vector3.up * Time.unscaledDeltaTime * keyboardScrollSpeed;
 			}
-			if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
+			if (panLeft)
 			{
 				contentPositionDummy.transform.position += Vector3.right * Time.unscaledDeltaTime * keyboardScrollSpeed;
 			}
-			else if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
+			else if (panRight)
 			{
 				contentPositionDummy.transform.position -= Vector3.right * Time.unscaledDeltaTime * keyboardScrollSpeed;
 			}
@@ -571,17 +579,40 @@ public class ResearchScreen : KModalScreen
 
 	public override void OnKeyUp(KButtonEvent e)
 	{
-		if (!e.Consumed && e.IsAction(Action.MouseRight))
+		if (!e.Consumed)
 		{
-			if (!isDragging && e.TryConsume(Action.MouseRight))
+			if (e.IsAction(Action.MouseRight))
 			{
+				if (!isDragging && e.TryConsume(Action.MouseRight))
+				{
+					isDragging = false;
+					rightMouseDown = false;
+					ManagementMenu.Instance.CloseAll();
+					return;
+				}
 				isDragging = false;
 				rightMouseDown = false;
-				ManagementMenu.Instance.CloseAll();
+			}
+			if (panUp && e.TryConsume(Action.PanUp))
+			{
+				panUp = false;
 				return;
 			}
-			isDragging = false;
-			rightMouseDown = false;
+			if (panDown && e.TryConsume(Action.PanDown))
+			{
+				panDown = false;
+				return;
+			}
+			if (panRight && e.TryConsume(Action.PanRight))
+			{
+				panRight = false;
+				return;
+			}
+			if (panLeft && e.TryConsume(Action.PanLeft))
+			{
+				panLeft = false;
+				return;
+			}
 		}
 		base.OnKeyUp(e);
 	}
@@ -609,6 +640,26 @@ public class ResearchScreen : KModalScreen
 			if (e.TryConsume(Action.Escape))
 			{
 				ManagementMenu.Instance.CloseAll();
+				return;
+			}
+			if (e.TryConsume(Action.PanLeft))
+			{
+				panLeft = true;
+				return;
+			}
+			if (e.TryConsume(Action.PanRight))
+			{
+				panRight = true;
+				return;
+			}
+			if (e.TryConsume(Action.PanUp))
+			{
+				panUp = true;
+				return;
+			}
+			if (e.TryConsume(Action.PanDown))
+			{
+				panDown = true;
 				return;
 			}
 		}

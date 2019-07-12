@@ -565,7 +565,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Pending Wrangle";
 
-				public static LocString TOOLTIP = "Waiting for a Duplicant to capture this " + UI.PRE_KEYWORD + "Critter" + UI.PST_KEYWORD + UI.HORIZONTAL_BR_RULE + "Only Duplicants with Ranching skills can catch critters without traps";
+				public static LocString TOOLTIP = "Waiting for a Duplicant to capture this " + UI.PRE_KEYWORD + "Critter" + UI.PST_KEYWORD + UI.HORIZONTAL_BR_RULE + "Only Duplicants with the " + DUPLICANTS.ROLES.RANCHER.NAME + " Skill can catch critters without traps";
 			}
 
 			public class OPERATING

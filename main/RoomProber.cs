@@ -356,12 +356,23 @@ public class RoomProber : ISim1000ms
 
 	public void UpdateRoom(CavityInfo cavity)
 	{
-		if (cavity.room != null)
+		if (cavity != null)
 		{
-			ClearRoom(cavity.room);
-			cavity.room = null;
+			if (cavity.room != null)
+			{
+				ClearRoom(cavity.room);
+				cavity.room = null;
+			}
+			CreateRoom(cavity);
+			foreach (KPrefabID building in cavity.buildings)
+			{
+				building.Trigger(144050788, cavity.room);
+			}
+			foreach (KPrefabID plant in cavity.plants)
+			{
+				plant.Trigger(144050788, cavity.room);
+			}
 		}
-		CreateRoom(cavity);
 	}
 
 	public Room GetRoomOfGameObject(GameObject go)

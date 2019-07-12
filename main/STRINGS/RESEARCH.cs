@@ -12,7 +12,7 @@ namespace STRINGS
 
 			public static LocString NO_RESEARCHER_SKILL = "No Researchers assigned";
 
-			public static LocString NO_RESEARCHER_SKILL_TOOLTIP = "The selected research focus requires an advanced type of " + UI.PRE_KEYWORD + "Research" + UI.PST_KEYWORD + " to complete\n\nAssign a Duplicant to the Research Assistant job using the " + UI.FormatAsManagementMenu("Jobs Panel") + " " + UI.FormatAsHotkey("[J]") + " to enable this errand";
+			public static LocString NO_RESEARCHER_SKILL_TOOLTIP = "The selected research focus requires " + UI.PRE_KEYWORD + "Advanced Research" + UI.PST_KEYWORD + " to complete\n\nOpen the " + UI.FormatAsManagementMenu("Skills Panel", "[L]") + " and teach a Duplicant the " + TECHS.ADVANCEDRESEARCH.NAME + " Skill to use this building";
 
 			public static LocString MISSING_RESEARCH_STATION = "Missing Research Station";
 

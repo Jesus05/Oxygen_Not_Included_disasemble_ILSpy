@@ -3612,7 +3612,7 @@ namespace STRINGS
 
 					public static LocString GROWING = "<b>Growing</b>\nThese plants are thriving in their current conditions";
 
-					public static LocString FULLY_GROWN = "<b>Fully Grown</b>\nThese plants have reached maturation" + HORIZONTAL_BR_RULE + "Select the " + FormatAsLink("HARVEST TOOL", "TOOLS") + " <color=#F44A47><b>[Y]</b></color> to batch harvest";
+					public static LocString FULLY_GROWN = "<b>Fully Grown</b>\nThese plants have reached maturation" + HORIZONTAL_BR_RULE + "Select the " + FormatAsTool("Harvest Tool", "[Y]") + " to batch harvest";
 				}
 
 				public static LocString NAME = "FARMING OVERLAY";
@@ -6766,7 +6766,7 @@ namespace STRINGS
 
 				public static LocString REQUIRESROOM = "Must be built within a dedicated " + PRE_KEYWORD + "Room" + PST_KEYWORD + HORIZONTAL_BR_RULE + "" + PRE_KEYWORD + "Room" + PST_KEYWORD + " will become a " + PRE_KEYWORD + "{0}" + PST_KEYWORD + " after construction";
 
-				public static LocString ALLOWS_FERTILIZER = "Allows fertilizer to be delivered to plants";
+				public static LocString ALLOWS_FERTILIZER = "Allows " + PRE_KEYWORD + "Fertilizer" + PST_KEYWORD + " to be delivered to plants";
 
 				public static LocString ALLOWS_IRRIGATION = "Allows " + PRE_KEYWORD + "Liquid" + PST_KEYWORD + " to be delivered to plants";
 
@@ -6856,7 +6856,7 @@ namespace STRINGS
 
 				public static LocString REMOVES_DISEASE = "Cooking will pasteurize ingredients and remove their " + PRE_KEYWORD + "Disease" + PST_KEYWORD + " risk";
 
-				public static LocString DOCTORING = "Doctoring increases existing health benefits and can allow the treatment of otherwise stubborn diseases";
+				public static LocString DOCTORING = "Doctoring increases existing health benefits and can allow the treatment of otherwise stubborn " + PRE_KEYWORD + "Diseases" + PST_KEYWORD;
 
 				public static LocString RECREATION = "Improves Duplicant " + PRE_KEYWORD + "Morale" + PST_KEYWORD + " during scheduled " + PRE_KEYWORD + "Downtime" + PST_KEYWORD;
 
@@ -7998,6 +7998,11 @@ namespace STRINGS
 			return "<b>" + text + "</b>";
 		}
 
+		public static string FormatAsBuildMenuTab(string text, string hotkey)
+		{
+			return "<b>" + text + "</b>";
+		}
+
 		public static string FormatAsOverlay(string text)
 		{
 			return "<b>" + text + "</b>";
@@ -8011,6 +8016,11 @@ namespace STRINGS
 		public static string FormatAsManagementMenu(string text)
 		{
 			return "<b>" + text + "</b>";
+		}
+
+		public static string FormatAsManagementMenu(string text, string hotkey)
+		{
+			return "<b>" + text + "</b> " + FormatAsHotkey(hotkey);
 		}
 
 		public static string FormatAsKeyWord(string text)

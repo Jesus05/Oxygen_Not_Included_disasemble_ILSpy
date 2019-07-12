@@ -497,7 +497,7 @@ namespace STRINGS
 
 				public static LocString STATUS = "Coughing";
 
-				public static LocString TOOLTIP = "Coughing is a symptom of illness and spreads airborne " + UI.PRE_KEYWORD + "Germs" + UI.PST_KEYWORD;
+				public static LocString TOOLTIP = "Coughing is a symptom of " + DISEASES.SLIMESICKNESS.NAME + " and spreads airborne " + UI.PRE_KEYWORD + "Germs" + UI.PST_KEYWORD;
 			}
 
 			public class SLEEP
@@ -533,7 +533,7 @@ namespace STRINGS
 
 				public static LocString STATUS = "Taking medicine";
 
-				public static LocString TOOLTIP = "This Duplicant is taking a dose of medicine to ward off illness";
+				public static LocString TOOLTIP = "This Duplicant is taking a dose of medicine to ward off " + UI.PRE_KEYWORD + "Disease" + UI.PST_KEYWORD;
 			}
 
 			public class GETDOCTORED
@@ -776,7 +776,7 @@ namespace STRINGS
 
 				public static LocString STATUS = "Docking exosuit";
 
-				public static LocString TOOLTIP = "This Duplicant is plugging an exosuit in for refilling";
+				public static LocString TOOLTIP = "This Duplicant is plugging an " + UI.PRE_KEYWORD + "Exosuit" + UI.PST_KEYWORD + " in for refilling";
 			}
 
 			public class GENERATEPOWER
@@ -987,7 +987,7 @@ namespace STRINGS
 
 				public static LocString STATUS = "Supplying farming materials";
 
-				public static LocString TOOLTIP = "This Duplicant is delivering farming materials where they're needed to tend crops";
+				public static LocString TOOLTIP = "This Duplicant is delivering farming materials where they're needed to tend " + UI.PRE_KEYWORD + "Crops" + UI.PST_KEYWORD;
 			}
 
 			public class FETCHCRITICAL
@@ -1098,7 +1098,7 @@ namespace STRINGS
 
 				public static LocString STATUS = "Finding safer area";
 
-				public static LocString TOOLTIP = "This Duplicant is idle and looking for somewhere safe and comfy to chill";
+				public static LocString TOOLTIP = "This Duplicant is " + UI.PRE_KEYWORD + "Idle" + UI.PST_KEYWORD + " and looking for somewhere safe and comfy to chill";
 			}
 
 			public class POWER_TINKER
@@ -1136,7 +1136,7 @@ namespace STRINGS
 
 				public static LocString STATUS = "Idle";
 
-				public static LocString TOOLTIP = "This Duplicant cannot reach any pending errands";
+				public static LocString TOOLTIP = "This Duplicant cannot reach any pending " + UI.PRE_KEYWORD + "Errands" + UI.PST_KEYWORD;
 			}
 
 			public class PRECONDITIONS
@@ -1269,6 +1269,69 @@ namespace STRINGS
 			public static LocString NOT_EXISTING_TASK = "Not Existing";
 
 			public static LocString IS_DEAD_TASK = "Dead";
+		}
+
+		public class SKILLGROUPS
+		{
+			public class MINING
+			{
+				public static LocString NAME = "Digger";
+			}
+
+			public class BUILDING
+			{
+				public static LocString NAME = "Builder";
+			}
+
+			public class FARMING
+			{
+				public static LocString NAME = "Farmer";
+			}
+
+			public class RANCHING
+			{
+				public static LocString NAME = "Rancher";
+			}
+
+			public class COOKING
+			{
+				public static LocString NAME = "Cooker";
+			}
+
+			public class ART
+			{
+				public static LocString NAME = "Decorator";
+			}
+
+			public class RESEARCH
+			{
+				public static LocString NAME = "Researcher";
+			}
+
+			public class SUITS
+			{
+				public static LocString NAME = "Suit Wearer";
+			}
+
+			public class HAULING
+			{
+				public static LocString NAME = "Supplier";
+			}
+
+			public class TECHNICALS
+			{
+				public static LocString NAME = "Operator";
+			}
+
+			public class MEDICALAID
+			{
+				public static LocString NAME = "Doctor";
+			}
+
+			public class BASEKEEPING
+			{
+				public static LocString NAME = "Tidier";
+			}
 		}
 
 		public class CHOREGROUPS
@@ -1547,7 +1610,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Chilly surroundings";
 
-				public static LocString TOOLTIP = "This Duplicant cannot retain enough heat to stay warm and may be under insulated for this area\nStress Modification: <b>{StressModification}</b>\n\nCurrent Environmental Exchange: <b>{currentTransferWattage}</b>\n\nInsulation Thickness: <b>{conductivityBarrier}</b>";
+				public static LocString TOOLTIP = "This Duplicant cannot retain enough heat to stay warm and may be under insulated for this area\n\nStress: <b>{StressModification}</b>\n\nCurrent Environmental Exchange: <b>{currentTransferWattage}</b>\n\nInsulation Thickness: {conductivityBarrier}";
 			}
 
 			public class DAILYRATIONLIMITREACHED
@@ -1586,7 +1649,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Toasty surroundings";
 
-				public static LocString TOOLTIP = "This Duplicant cannot let off enough " + UI.PRE_KEYWORD + "Heat" + UI.PST_KEYWORD + " to stay cool and may be over insulated for this area\nStress Modification: <b>{StressModification}</b>\n\nCurrent Environmental Exchange: <b>{currentTransferWattage}</b>\n\nInsulation Thickness: <b>{conductivityBarrier}</b>";
+				public static LocString TOOLTIP = "This Duplicant cannot let off enough " + UI.PRE_KEYWORD + "Heat" + UI.PST_KEYWORD + " to stay cool and may be over insulated for this area\n\nStress Modification: <b>{StressModification}</b>\n\nCurrent Environmental Exchange: <b>{currentTransferWattage}</b>\n\nInsulation Thickness: {conductivityBarrier}";
 			}
 
 			public class HUNGRY
@@ -1758,14 +1821,14 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Early Bird";
 
-				public static LocString TOOLTIP = "This Duplicant is jazzed to start the day\n• <b>+2</b> to all " + UI.PRE_KEYWORD + "Attributes" + UI.PST_KEYWORD + " in morning";
+				public static LocString TOOLTIP = "This Duplicant is jazzed to start the day\n• All " + UI.PRE_KEYWORD + "Attributes" + UI.PST_KEYWORD + " <b>+2</b> in the morning";
 			}
 
 			public class NIGHTTIME
 			{
 				public static LocString NAME = "Night Owl";
 
-				public static LocString TOOLTIP = "This Duplicant is more efficient on a nighttime " + UI.PRE_KEYWORD + "Schedule" + UI.PST_KEYWORD + "\n• <b>+3</b> to all " + UI.PRE_KEYWORD + "Attributes" + UI.PST_KEYWORD + " at night";
+				public static LocString TOOLTIP = "This Duplicant is more efficient on a nighttime " + UI.PRE_KEYWORD + "Schedule" + UI.PST_KEYWORD + "\n• All " + UI.PRE_KEYWORD + "Attributes" + UI.PST_KEYWORD + " <b>+3</b> at night";
 			}
 
 			public class SUFFOCATING
@@ -1794,7 +1857,7 @@ namespace STRINGS
 
 				public static LocString NOTIFICATION_NAME = "Idle";
 
-				public static LocString NOTIFICATION_TOOLTIP = "These Duplicants cannot reach any pending errands:";
+				public static LocString NOTIFICATION_TOOLTIP = "These Duplicants cannot reach any pending " + UI.PRE_KEYWORD + "Errands" + UI.PST_KEYWORD + ":";
 			}
 
 			public class FIGHTING
@@ -1830,16 +1893,16 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Lashing out";
 
-				public static LocString TOOLTIP = "This Duplicant is breaking buildings to relieve their " + UI.FormatAsLink("Stress", "STRESS");
+				public static LocString TOOLTIP = "This Duplicant is breaking buildings to relieve their " + UI.PRE_KEYWORD + "Stress" + UI.PST_KEYWORD;
 
 				public static LocString NOTIFICATION_NAME = "Lashing out";
 
-				public static LocString NOTIFICATION_TOOLTIP = "These Duplicants broke buildings to relieve their " + UI.FormatAsLink("Stress", "STRESS") + ":";
+				public static LocString NOTIFICATION_TOOLTIP = "These Duplicants broke buildings to relieve their " + UI.PRE_KEYWORD + "Stress" + UI.PST_KEYWORD + ":";
 			}
 
 			public class MOVETOSUITNOTREQUIRED
 			{
-				public static LocString NAME = "Exiting " + UI.FormatAsLink("Exosuit", "EXOSUIT") + " area";
+				public static LocString NAME = "Exiting Exosuit area";
 
 				public static LocString TOOLTIP = "This Duplicant is leaving an area where a " + UI.PRE_KEYWORD + "Suit" + UI.PST_KEYWORD + " was required";
 			}
@@ -1848,7 +1911,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "No Job";
 
-				public static LocString TOOLTIP = "This Duplicant does not have a Job Assignment" + UI.HORIZONTAL_BR_RULE + "Enter the " + UI.FormatAsManagementMenu("Jobs Panel") + " " + UI.FormatAsHotkey("[J]") + " to view all available Jobs";
+				public static LocString TOOLTIP = "This Duplicant does not have a Job Assignment" + UI.HORIZONTAL_BR_RULE + "Enter the " + UI.FormatAsManagementMenu("Jobs Panel", "[J]") + " to view all available Jobs";
 			}
 
 			public class DROPPINGUNUSEDINVENTORY
@@ -2474,7 +2537,7 @@ namespace STRINGS
 
 				public static LocString NAME = "{Severity}Exposure to {Sickness} Germs";
 
-				public static LocString TOOLTIP = "This Duplicant has been exposed to a concentration of {Sickness} Germs and is at risk of waking up sick on their next shift\n\nExposed {Source}\n\nRate of Contracting {Sickness}: {Chance}\n\nResistance Rating: {Total}\n    • Base {Sickness} Resistance: {Base}\n    • " + ATTRIBUTES.GERMRESISTANCE.NAME + ": {Dupe}\n    • {Severity} Exposure: {ExposureLevelBonus}\n\n<i>Click to jump to last exposure location</i>";
+				public static LocString TOOLTIP = "This Duplicant has been exposed to a concentration of {Sickness} Germs and is at risk of waking up sick on their next shift\n\nExposed {Source}\n\nRate of Contracting {Sickness}: {Chance}\n\nResistance Rating: {Total}\n    • Base {Sickness} Resistance: {Base}\n    • " + ATTRIBUTES.GERMRESISTANCE.NAME + ": {Dupe}\n    • {Severity}Exposure: {ExposureLevelBonus}\n\n<i>Click to jump to last exposure location</i>";
 			}
 		}
 
@@ -2509,7 +2572,7 @@ namespace STRINGS
 			{
 				public static LocString CURES_ANY = "Alleviates " + UI.FormatAsLink("All Diseases", "DISEASE");
 
-				public static LocString CURES_ANY_TOOLTIP = "This is a nonspecific disease treatment that can be taken by any sick Duplicant";
+				public static LocString CURES_ANY_TOOLTIP = "This is a nonspecific " + UI.PRE_KEYWORD + "Disease" + UI.PST_KEYWORD + " treatment that can be taken by any sick Duplicant";
 
 				public static LocString CURES = "Alleviates {0}";
 
@@ -2571,15 +2634,15 @@ namespace STRINGS
 				{
 					public static LocString FOODBORNE = "Contracted via ingestion\n" + UI.HORIZONTAL_RULE;
 
-					public static LocString FOODBORNE_TOOLTIP = "Duplicants may contract this " + UI.PRE_KEYWORD + "Disease" + UI.PST_KEYWORD + " by ingesting " + UI.PRE_KEYWORD + "Food" + UI.PST_KEYWORD + " contaminated with these germs";
+					public static LocString FOODBORNE_TOOLTIP = "Duplicants may contract this " + UI.PRE_KEYWORD + "Disease" + UI.PST_KEYWORD + " by ingesting " + UI.PRE_KEYWORD + "Food" + UI.PST_KEYWORD + " contaminated with these " + UI.PRE_KEYWORD + "Germs" + UI.PST_KEYWORD;
 
 					public static LocString AIRBORNE = "Contracted via inhalation\n" + UI.HORIZONTAL_RULE;
 
-					public static LocString AIRBORNE_TOOLTIP = "Duplicants may contract this " + UI.PRE_KEYWORD + "Disease" + UI.PST_KEYWORD + " by breathing " + ELEMENTS.OXYGEN.NAME + " containing these germs";
+					public static LocString AIRBORNE_TOOLTIP = "Duplicants may contract this " + UI.PRE_KEYWORD + "Disease" + UI.PST_KEYWORD + " by breathing " + ELEMENTS.OXYGEN.NAME + " containing these " + UI.PRE_KEYWORD + "Germs" + UI.PST_KEYWORD;
 
 					public static LocString SKINBORNE = "Contracted via physical contact\n" + UI.HORIZONTAL_RULE;
 
-					public static LocString SKINBORNE_TOOLTIP = "Duplicants may contract this " + UI.PRE_KEYWORD + "Disease" + UI.PST_KEYWORD + " by touching objects contaminated with these germs";
+					public static LocString SKINBORNE_TOOLTIP = "Duplicants may contract this " + UI.PRE_KEYWORD + "Disease" + UI.PST_KEYWORD + " by touching objects contaminated with these " + UI.PRE_KEYWORD + "Germs" + UI.PST_KEYWORD;
 
 					public static LocString SUNBORNE = "Contracted via environmental exposure\n" + UI.HORIZONTAL_RULE;
 
@@ -2735,7 +2798,7 @@ namespace STRINGS
 
 				public static LocString DESCRIPTIVE_SYMPTOMS = "Nonlethal. Duplicants experience extreme body heat loss causing chills and discomfort.";
 
-				public static LocString DESCRIPTION = "This Duplicant's thought processes have been slowed to a crawl from extreme Cold exposure";
+				public static LocString DESCRIPTION = "This Duplicant's thought processes have been slowed to a crawl from extreme cold exposure";
 
 				public static LocString LEGEND_HOVERTEXT = "Area Causes Hypothermia\n";
 			}
@@ -3894,7 +3957,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Smelled Flowers";
 
-				public static LocString TOOLTIP = "A pleasant floral scent wafted over this Duplicant and brightened their day";
+				public static LocString TOOLTIP = "A pleasant " + DISEASES.POLLENGERMS.NAME + " wafted over this Duplicant and brightened their day";
 			}
 
 			public class HISTAMINESUPPRESSION
@@ -4894,7 +4957,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Strength";
 
-				public static LocString DESC = "Determines a Duplicant's carrying capacity and cleaning speed.";
+				public static LocString DESC = "Determines a Duplicant's " + UI.PRE_KEYWORD + "Carrying Capacity" + UI.PST_KEYWORD + " and cleaning speed.";
 
 				public static LocString CARRYMODIFIER = "{0} " + CARRYAMOUNT.NAME;
 

@@ -55,7 +55,7 @@ namespace STRINGS
 
 				public static LocString DESC = "A doctor-administered cure for moderate ailments.";
 
-				public static LocString RECIPEDESC = "A doctor-administered cure for moderate " + UI.FormatAsLink("Diseases", "DISEASE") + ". " + NAME + "s are very effective against " + UI.FormatAsLink("Slimelung", "SLIMESICKNESS") + ".\n\nMust be administered by a Duplicant with doctoring skills.";
+				public static LocString RECIPEDESC = "A doctor-administered cure for moderate " + UI.FormatAsLink("Diseases", "DISEASE") + ". " + NAME + "s are very effective against " + UI.FormatAsLink("Slimelung", "SLIMESICKNESS") + ".\n\nMust be administered by a Duplicant with the " + DUPLICANTS.ROLES.MEDIC.NAME + " Skill.";
 			}
 
 			public class ADVANCEDCURE
@@ -64,7 +64,7 @@ namespace STRINGS
 
 				public static LocString DESC = "A doctor-administered cure for severe ailments.";
 
-				public static LocString RECIPEDESC = "An extremely powerful medication created to treat severe " + UI.FormatAsLink("Diseases", "DISEASE") + ". " + NAME + " is very effective against " + UI.FormatAsLink("Slimelung", "SLIMESICKNESS") + ".\n\nMust be administered by a Duplicant with doctoring skills.";
+				public static LocString RECIPEDESC = "An extremely powerful medication created to treat severe " + UI.FormatAsLink("Diseases", "DISEASE") + ". " + NAME + " is very effective against " + UI.FormatAsLink("Slimelung", "SLIMESICKNESS") + ".\n\nMust be administered by a Duplicant with the " + DUPLICANTS.ROLES.SENIOR_MEDIC.NAME + " Skill.";
 			}
 		}
 
@@ -416,7 +416,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Micronutrient Fertilizer";
 
-				public static LocString DESC = "Specialized " + UI.FormatAsLink("Fertilizer", "FERTILIZER") + " mixed by a Duplicant with farming skills.\n\nIncreases the " + UI.PRE_KEYWORD + "Growth Rate" + UI.PST_KEYWORD + " of one " + UI.FormatAsLink("Plant", "PLANTS") + ".";
+				public static LocString DESC = "Specialized " + UI.FormatAsLink("Fertilizer", "FERTILIZER") + " mixed by a Duplicant with the " + DUPLICANTS.ROLES.FARMER.NAME + " Skill.\n\nIncreases the " + UI.PRE_KEYWORD + "Growth Rate" + UI.PST_KEYWORD + " of one " + UI.FormatAsLink("Plant", "PLANTS") + ".";
 			}
 
 			public class MACHINE_PARTS

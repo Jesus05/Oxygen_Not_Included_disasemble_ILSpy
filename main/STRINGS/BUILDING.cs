@@ -113,7 +113,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Broken";
 
-				public static LocString TOOLTIP = "This building received damage from {DamageInfo}\n\nIt will not function until it receives repairs";
+				public static LocString TOOLTIP = "This building received damage from <b>{DamageInfo}</b>\n\nIt will not function until it receives repairs";
 			}
 
 			public class CHANGEDOORCONTROLSTATE
@@ -129,14 +129,14 @@ namespace STRINGS
 				{
 					public static LocString NAME = "Current Status: Needs Configuration";
 
-					public static LocString TOOLTIP = "Set this dock to store a suit or remain on Standby";
+					public static LocString TOOLTIP = "Set this dock to store a suit or leave it empty";
 				}
 
 				public class READY
 				{
-					public static LocString NAME = "Current Status: On Standby";
+					public static LocString NAME = "Current Status: Empty";
 
-					public static LocString TOOLTIP = "This dock is ready to receive a " + UI.PRE_KEYWORD + "Suit" + UI.PST_KEYWORD;
+					public static LocString TOOLTIP = "This dock is ready to receive a " + UI.PRE_KEYWORD + "Suit" + UI.PST_KEYWORD + " either from manual delivery or a Duplicant returning the suit they're wearing";
 				}
 
 				public class SUIT_REQUESTED
@@ -164,7 +164,7 @@ namespace STRINGS
 				{
 					public static LocString NAME = "Current Status: No Fuel";
 
-					public static LocString TOOLTIP = "This dock does not contain enough fuel to refill a suit";
+					public static LocString TOOLTIP = "This dock does not contain enough " + ELEMENTS.PETROLEUM.NAME + " to refill a " + UI.PRE_KEYWORD + "Suit" + UI.PST_KEYWORD;
 				}
 
 				public class NOT_OPERATIONAL
@@ -186,14 +186,14 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Clearance: Vacancy Only";
 
-				public static LocString TOOLTIP = "Suited Duplicants may pass only if there is room in a dock to store their suit";
+				public static LocString TOOLTIP = "Suited Duplicants may pass only if there is room in a " + UI.PRE_KEYWORD + "Dock" + UI.PST_KEYWORD + " to store their " + UI.PRE_KEYWORD + "Suit" + UI.PST_KEYWORD;
 			}
 
 			public class SUITMARKERTRAVERSALANYTIME
 			{
 				public static LocString NAME = "Clearance: Always Permitted";
 
-				public static LocString TOOLTIP = "Suited Duplicants may pass even if there is no room to store their suits" + UI.HORIZONTAL_BR_RULE + "When all available docks are full, Duplicants will unequip their suits and drop them on the floor";
+				public static LocString TOOLTIP = "Suited Duplicants may pass even if there is no room to store their " + UI.PRE_KEYWORD + "Suits" + UI.PST_KEYWORD + UI.HORIZONTAL_BR_RULE + "When all available docks are full, Duplicants will unequip their " + UI.PRE_KEYWORD + "Suits" + UI.PST_KEYWORD + " and drop them on the floor";
 			}
 
 			public class SUIT_LOCKER_NEEDS_CONFIGURATION
@@ -305,7 +305,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Damage: Overloading";
 
-				public static LocString TOOLTIP = "This wire is taking damage because there are too many buildings pulling " + UI.PRE_KEYWORD + "Power" + UI.PST_KEYWORD + " from this circuit\n\nSplit this " + UI.PRE_KEYWORD + "Power" + UI.PST_KEYWORD + " circuit into multiple circuits, or use higher quality " + UI.PRE_KEYWORD + "Wires" + UI.PST_KEYWORD + " to prevent overloading";
+				public static LocString TOOLTIP = "This " + UI.PRE_KEYWORD + "Wire" + UI.PST_KEYWORD + " is taking damage because there are too many buildings pulling " + UI.PRE_KEYWORD + "Power" + UI.PST_KEYWORD + " from this circuit\n\nSplit this " + UI.PRE_KEYWORD + "Power" + UI.PST_KEYWORD + " circuit into multiple circuits, or use higher quality " + UI.PRE_KEYWORD + "Wires" + UI.PST_KEYWORD + " to prevent overloading";
 			}
 
 			public class OPERATINGENERGY
@@ -345,7 +345,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Gas Vent Overpressure";
 
-				public static LocString TOOLTIP = "High air or liquid pressure in this area is preventing further liquid emission\nReduce pressure by pumping gas away or clearing more space";
+				public static LocString TOOLTIP = "High " + UI.PRE_KEYWORD + "Gas" + UI.PST_KEYWORD + " or " + UI.PRE_KEYWORD + "Liquid" + UI.PST_KEYWORD + " pressure in this area is preventing further " + UI.PRE_KEYWORD + "Gas" + UI.PST_KEYWORD + " emission\nReduce pressure by pumping " + UI.PRE_KEYWORD + "Gas" + UI.PST_KEYWORD + " away or clearing more space";
 			}
 
 			public class DIRECTION_CONTROL
@@ -389,7 +389,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Liquid Vent Overpressure";
 
-				public static LocString TOOLTIP = "High air or liquid pressure in this area is preventing further liquid emission\nReduce pressure by pumping liquid away or clearing more space";
+				public static LocString TOOLTIP = "High " + UI.PRE_KEYWORD + "Gas" + UI.PST_KEYWORD + " or " + UI.PRE_KEYWORD + "Liquid" + UI.PST_KEYWORD + " pressure in this area is preventing further " + UI.PRE_KEYWORD + "Liquid" + UI.PST_KEYWORD + " emission\nReduce pressure by pumping " + UI.PRE_KEYWORD + "Liquid" + UI.PST_KEYWORD + " away or clearing more space";
 			}
 
 			public class MANUALLYCONTROLLED
@@ -554,7 +554,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Insufficient Power";
 
-				public static LocString TOOLTIP = "This building does not have enough stored charge to run";
+				public static LocString TOOLTIP = "This building does not have enough stored " + UI.PRE_KEYWORD + "Power" + UI.PST_KEYWORD + " to run";
 			}
 
 			public class NEEDRESOURCE
@@ -590,7 +590,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "No Analysis Focus Selected";
 
-				public static LocString TOOLTIP = "Select an unknown destination from the Starmap " + UI.FormatAsHotkey("[R]") + " to begin analysis";
+				public static LocString TOOLTIP = "Select an unknown destination from the " + UI.FormatAsManagementMenu("Starmap", "[R]") + " to begin analysis";
 
 				public static LocString NOTIFICATION_NAME = UI.FormatAsLink("Telescope", "TELESCOPE") + " idle";
 
@@ -650,7 +650,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "No Power Consumers";
 
-				public static LocString TOOLTIP = "No buildings are connected to this power source";
+				public static LocString TOOLTIP = "No buildings are connected to this " + UI.PRE_KEYWORD + "Power" + UI.PST_KEYWORD + " source";
 			}
 
 			public class NOWIRECONNECTED
@@ -1373,7 +1373,7 @@ namespace STRINGS
 				{
 					public static LocString NAME = "Set";
 
-					public static LocString TOOLTIP = "This trap has been set and is ready to catch a critter";
+					public static LocString TOOLTIP = "This trap has been set and is ready to catch a " + UI.PRE_KEYWORD + "Critter" + UI.PST_KEYWORD;
 				}
 
 				public class SPRUNG
@@ -1419,7 +1419,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Colony Lacks {Skills} Skill";
 
-				public static LocString TOOLTIP = "Open the " + UI.FormatAsManagementMenu("Skills Panel") + " " + UI.FormatAsHotkey("[L]") + " and teach a Duplicant the {Skills} Skill to use this building";
+				public static LocString TOOLTIP = "Open the " + UI.FormatAsManagementMenu("Skills Panel", "[L]") + " and teach a Duplicant the {Skills} Skill to use this building";
 			}
 
 			public class SWITCHSTATUSACTIVE

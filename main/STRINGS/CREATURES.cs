@@ -1113,7 +1113,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "    • " + STATS.ILLUMINATION.NAME;
 
-				public static LocString TOOLTIP = "Growth will resume when darkness requirements are met";
+				public static LocString TOOLTIP = "Growth will resume when " + UI.PRE_KEYWORD + "Light" + UI.PST_KEYWORD + " requirements are met";
 			}
 
 			public class HOT_CROP
@@ -1656,14 +1656,14 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Pollution Exposure";
 
-				public static LocString TOOLTIP = "Exposure to contaminants is accelerating this food's decay rate";
+				public static LocString TOOLTIP = "Exposure to contaminants is accelerating this food's " + UI.PRE_KEYWORD + "Decay Rate" + UI.PST_KEYWORD;
 			}
 
 			public class STERILIZINGATMOSPHERE
 			{
 				public static LocString NAME = "Sterile Atmosphere";
 
-				public static LocString TOOLTIP = "Microbe destroying conditions are preventing this food from decaying";
+				public static LocString TOOLTIP = "Microbe destroying conditions have decreased this food's " + UI.PRE_KEYWORD + "Decay Rate" + UI.PST_KEYWORD + "";
 			}
 
 			public class EXCHANGINGELEMENTCONSUME
@@ -1705,21 +1705,21 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Stunted Scales";
 
-				public static LocString TOOLTIP = "This critter's scale growth is being stunted by an unfavorable environment";
+				public static LocString TOOLTIP = "This critter's " + UI.PRE_KEYWORD + "Scale Growth" + UI.PST_KEYWORD + " is being stunted by an unfavorable environment";
 			}
 
 			public class REFRIGERATED
 			{
 				public static LocString NAME = "Refrigerated";
 
-				public static LocString TOOLTIP = "Ideal " + UI.PRE_KEYWORD + "Temperature" + UI.PST_KEYWORD + " storage is slowing this food's decay rate";
+				public static LocString TOOLTIP = "Ideal " + UI.PRE_KEYWORD + "Temperature" + UI.PST_KEYWORD + " storage is slowing this food's " + UI.PRE_KEYWORD + "Decay Rate" + UI.PST_KEYWORD;
 			}
 
 			public class RECEPTACLEINOPERATIONAL
 			{
 				public static LocString NAME = "    • Farm plot inoperable";
 
-				public static LocString TOOLTIP = "This farm plot cannot grow plants in its current state";
+				public static LocString TOOLTIP = "This farm plot cannot grow " + UI.PRE_KEYWORD + "Plants" + UI.PST_KEYWORD + " in its current state";
 			}
 
 			public class TRAPPED
@@ -1875,7 +1875,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Viability";
 
-				public static LocString TOOLTIP = "Eggs will lose viability over time when exposed to poor environmental conditions\n\nAt 0% " + UI.PRE_KEYWORD + "Viability" + UI.PST_KEYWORD + " a critter egg will become \"Cracked\" and be unable to hatch";
+				public static LocString TOOLTIP = "Eggs will lose " + UI.PRE_KEYWORD + "Viability" + UI.PST_KEYWORD + " over time when exposed to poor environmental conditions\n\nAt 0% " + UI.PRE_KEYWORD + "Viability" + UI.PST_KEYWORD + " a critter egg will crack and produce a " + ITEMS.FOOD.RAWEGG.NAME + " and " + ITEMS.INDUSTRIAL_PRODUCTS.EGG_SHELL.NAME;
 			}
 
 			public class IRRIGATION
@@ -2042,7 +2042,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Cramped";
 
-				public static LocString TOOLTIP = "This " + UI.PRE_KEYWORD + "Room" + UI.PST_KEYWORD + " will become overcrowded once all nearby " + UI.PRE_KEYWORD + "Eggs" + UI.PST_KEYWORD + " hatch\n\nThe selected critter has slowed its egg production to prevent further overpopulation";
+				public static LocString TOOLTIP = "This " + UI.PRE_KEYWORD + "Room" + UI.PST_KEYWORD + " will become overcrowded once all nearby " + UI.PRE_KEYWORD + "Eggs" + UI.PST_KEYWORD + " hatch\n\nThe selected critter has slowed its " + UI.PRE_KEYWORD + "Reproduction" + UI.PST_KEYWORD + " to prevent further overpopulation";
 			}
 
 			public class OVERCROWDED

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <ProjectGuid>{22B6FDEB-C2C8-453A-BC48-1E1D4AFE31C3}</ProjectGuid>
+    <ProjectGuid>{2E305770-D3FE-48BB-B6E2-CAA0B2C1F8F1}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <OutputType>Library</OutputType>
@@ -2045,6 +2045,7 @@
     <Compile Include="SimMessages.cs" />
     <Compile Include="SimpleInfoScreen.cs" />
     <Compile Include="SimpleMassStatusItem.cs" />
+    <Compile Include="SimpleUIShowHide.cs" />
     <Compile Include="SimpleVent.cs" />
     <Compile Include="SimTemperatureTransfer.cs" />
     <Compile Include="SimulatedTemperatureAdjuster.cs" />

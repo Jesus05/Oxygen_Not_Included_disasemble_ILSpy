@@ -15,12 +15,27 @@ public class CreatureBait : StateMachineComponent<CreatureBait.StatesInstance>
 	{
 		public State idle;
 
+		public State destroy;
+
 		public override void InitializeStates(out BaseState default_state)
 		{
 			default_state = idle;
-			idle.DoNothing();
+			idle.Enter(delegate(StatesInstance smi)
+			{
+				Element element = ElementLoader.FindElementByName(smi.master.baitElement.ToString());
+				KAnim.Build build = element.substance.anim.GetData().build;
+				KAnim.Build.Symbol symbol = build.GetSymbol(new KAnimHashedString(build.name));
+				HashedString target_symbol = "snapTo_bait";
+				SymbolOverrideController component = smi.GetComponent<SymbolOverrideController>();
+				component.TryRemoveSymbolOverride(target_symbol, 0);
+				component.AddSymbolOverride(target_symbol, symbol, 0);
+			});
+			destroy.DoNothing();
 		}
 	}
+
+	[Serialize]
+	public Tag baitElement;
 
 	protected override void OnPrefabInit()
 	{
@@ -30,13 +45,13 @@ public class CreatureBait : StateMachineComponent<CreatureBait.StatesInstance>
 	protected override void OnSpawn()
 	{
 		base.OnSpawn();
-		base.smi.StartSM();
 		Tag[] constructionElements = GetComponent<Deconstructable>().constructionElements;
-		Tag tag = constructionElements[1];
+		baitElement = constructionElements[1];
 		Lure.Instance sMI = base.gameObject.GetSMI<Lure.Instance>();
 		sMI.SetActiveLures(new Tag[1]
 		{
-			tag
+			baitElement
 		});
+		base.smi.StartSM();
 	}
 }

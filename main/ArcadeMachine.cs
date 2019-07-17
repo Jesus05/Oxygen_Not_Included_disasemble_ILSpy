@@ -136,7 +136,7 @@ public class ArcadeMachine : StateMachineComponent<ArcadeMachine.StatesInstance>
 		base.OnSpawn();
 		GameScheduler.Instance.Schedule("Scheduling Tutorial", 2f, delegate
 		{
-			Tutorial.Instance.TutorialMessage(Tutorial.TutorialMessages.TM_Schedule);
+			Tutorial.Instance.TutorialMessage(Tutorial.TutorialMessages.TM_Schedule, true);
 		}, null, null);
 		workables = new ArcadeMachineWorkable[choreOffsets.Length];
 		chores = new Chore[choreOffsets.Length];

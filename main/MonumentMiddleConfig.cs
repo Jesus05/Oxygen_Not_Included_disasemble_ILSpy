@@ -52,6 +52,8 @@ public class MonumentMiddleConfig : IBuildingConfig
 		{
 			new BuildingAttachPoint.HardPoint(new CellOffset(0, 5), "MonumentTop", null)
 		};
+		MonumentPart monumentPart = go.AddOrGet<MonumentPart>();
+		monumentPart.part = MonumentPart.Part.Middle;
 	}
 
 	public override void DoPostConfigurePreview(BuildingDef def, GameObject go)

@@ -1556,7 +1556,7 @@ public abstract class GameStateMachine<StateMachineType, StateMachineInstanceTyp
 		{
 			Enter("DoTutorial()", delegate
 			{
-				Tutorial.Instance.TutorialMessage(msg);
+				Tutorial.Instance.TutorialMessage(msg, true);
 			});
 			return this;
 		}
@@ -2178,7 +2178,7 @@ public abstract class GameStateMachine<StateMachineType, StateMachineInstanceTyp
 	{
 		public State InitializeStates(TargetParameter plant, State death_state = null)
 		{
-			base.root.Target(plant).EventTransition(GameHashes.Uprooted, death_state, (StateMachineInstanceType smi) => UprootedMonitor.IsObjectUprooted(plant.Get(smi))).EventTransition(GameHashes.TooColdFatal, death_state, (StateMachineInstanceType smi) => isLethalTemperature(plant.Get(smi)))
+			base.root.Target(plant).TagTransition(GameTags.Uprooted, death_state, false).EventTransition(GameHashes.TooColdFatal, death_state, (StateMachineInstanceType smi) => isLethalTemperature(plant.Get(smi)))
 				.EventTransition(GameHashes.TooHotFatal, death_state, (StateMachineInstanceType smi) => isLethalTemperature(plant.Get(smi)))
 				.EventTransition(GameHashes.Drowned, death_state, null);
 			return this;
@@ -2188,9 +2188,8 @@ public abstract class GameStateMachine<StateMachineType, StateMachineInstanceTyp
 		{
 			TemperatureVulnerable component = plant.GetComponent<TemperatureVulnerable>();
 			EntombVulnerable component2 = plant.GetComponent<EntombVulnerable>();
-			UprootedMonitor component3 = plant.GetComponent<UprootedMonitor>();
-			PressureVulnerable component4 = plant.GetComponent<PressureVulnerable>();
-			return ((UnityEngine.Object)component == (UnityEngine.Object)null || !component.IsLethal) && ((UnityEngine.Object)component2 == (UnityEngine.Object)null || !component2.GetEntombed) && ((UnityEngine.Object)component3 == (UnityEngine.Object)null || !component3.IsUprooted) && ((UnityEngine.Object)component4 == (UnityEngine.Object)null || !component4.IsLethal);
+			PressureVulnerable component3 = plant.GetComponent<PressureVulnerable>();
+			return ((UnityEngine.Object)component == (UnityEngine.Object)null || !component.IsLethal) && ((UnityEngine.Object)component2 == (UnityEngine.Object)null || !component2.GetEntombed) && ((UnityEngine.Object)component3 == (UnityEngine.Object)null || !component3.IsLethal);
 		}
 
 		private static bool isLethalTemperature(GameObject plant)

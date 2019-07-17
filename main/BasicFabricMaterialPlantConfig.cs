@@ -7,6 +7,8 @@ public class BasicFabricMaterialPlantConfig : IEntityConfig
 {
 	public static string ID = "BasicFabricPlant";
 
+	public static string SEED_ID = "BasicFabricMaterialPlantSeed";
+
 	public const float WATER_RATE = 0.266666681f;
 
 	public GameObject CreatePrefab()
@@ -43,7 +45,7 @@ public class BasicFabricMaterialPlantConfig : IEntityConfig
 		gameObject.AddOrGet<LoopingSounds>();
 		template = gameObject;
 		SeedProducer.ProductionType productionType = SeedProducer.ProductionType.Harvest;
-		initialAnim = "BasicFabricMaterialPlantSeed";
+		initialAnim = SEED_ID;
 		desc = STRINGS.CREATURES.SPECIES.SEEDS.BASICFABRICMATERIALPLANT.NAME;
 		name = STRINGS.CREATURES.SPECIES.SEEDS.BASICFABRICMATERIALPLANT.DESC;
 		anim = Assets.GetAnim("seed_swampreed_kanim");

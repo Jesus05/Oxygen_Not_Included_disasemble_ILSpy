@@ -1419,7 +1419,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Colony Lacks {Skills} Skill";
 
-				public static LocString TOOLTIP = "Open the " + UI.FormatAsManagementMenu("Skills Panel", "[L]") + " and teach a Duplicant the {Skills} Skill to use this building";
+				public static LocString TOOLTIP = "Open the " + UI.FormatAsManagementMenu("Skills Panel", "[L]") + " and teach a Duplicant the {Skills} Skill to use this";
 			}
 
 			public class SWITCHSTATUSACTIVE

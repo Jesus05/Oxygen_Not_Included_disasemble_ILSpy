@@ -1,3 +1,5 @@
+using STRINGS;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Video;
 
@@ -27,18 +29,22 @@ public class TutorialMessageDialog : MessageDialog
 		if (!string.IsNullOrEmpty(message.videoClipId))
 		{
 			VideoClip video = Assets.GetVideo(message.videoClipId);
-			SetVideo(video);
+			SetVideo(video, message.videoOverlayName, message.videoTitleText);
 		}
 	}
 
-	public void SetVideo(VideoClip clip)
+	public void SetVideo(VideoClip clip, string overlayName, string titleText)
 	{
 		if ((Object)videoWidget == (Object)null)
 		{
 			videoWidget = Util.KInstantiateUI(videoWidgetPrefab, base.transform.gameObject, true).GetComponent<VideoWidget>();
 			videoWidget.transform.SetAsFirstSibling();
 		}
-		videoWidget.SetClip(clip);
+		videoWidget.SetClip(clip, overlayName, new List<string>
+		{
+			titleText,
+			VIDEOS.TUTORIAL_HEADER
+		});
 	}
 
 	public override void OnClickAction()

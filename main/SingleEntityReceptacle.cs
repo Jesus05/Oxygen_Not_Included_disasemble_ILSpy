@@ -305,14 +305,13 @@ public class SingleEntityReceptacle : Workable, IRender1000ms
 
 	protected virtual void PositionOccupyingObject()
 	{
-		occupyingObject.transform.SetParent(base.gameObject.transform, false);
 		if ((Object)rotatable != (Object)null)
 		{
-			occupyingObject.transform.SetLocalPosition(rotatable.GetRotatedOffset(occupyingObjectRelativePosition));
+			occupyingObject.transform.SetPosition(base.gameObject.transform.GetPosition() + rotatable.GetRotatedOffset(occupyingObjectRelativePosition));
 		}
 		else
 		{
-			occupyingObject.transform.SetLocalPosition(occupyingObjectRelativePosition);
+			occupyingObject.transform.SetPosition(base.gameObject.transform.GetPosition() + occupyingObjectRelativePosition);
 		}
 	}
 

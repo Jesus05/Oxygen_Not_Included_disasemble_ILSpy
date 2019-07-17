@@ -55,7 +55,7 @@ public class Immigration : KMonoBehaviour, ISaveLoadable, ISim200ms, IPersonalPr
 
 	private void ConfigureCarePackages()
 	{
-		carePackages = new CarePackageInfo[54]
+		carePackages = new CarePackageInfo[57]
 		{
 			new CarePackageInfo(ElementLoader.FindElementByHash(SimHashes.SandStone).tag.ToString(), 1000f, null),
 			new CarePackageInfo(ElementLoader.FindElementByHash(SimHashes.Dirt).tag.ToString(), 500f, null),
@@ -84,9 +84,11 @@ public class Immigration : KMonoBehaviour, ISaveLoadable, ISim200ms, IPersonalPr
 			new CarePackageInfo("CactusPlantSeed", 3f, null),
 			new CarePackageInfo("MushroomSeed", 1f, null),
 			new CarePackageInfo("PrickleFlowerSeed", 2f, null),
-			new CarePackageInfo("ColdBreatherSeed", 1f, () => CycleCondition(24)),
 			new CarePackageInfo("OxyfernSeed", 1f, null),
 			new CarePackageInfo("ForestTreeSeed", 1f, null),
+			new CarePackageInfo(BasicFabricMaterialPlantConfig.SEED_ID, 3f, null),
+			new CarePackageInfo("ColdBreatherSeed", 1f, () => CycleCondition(24)),
+			new CarePackageInfo("SpiceVineSeed", 1f, () => CycleCondition(24)),
 			new CarePackageInfo("FieldRation", 5f, null),
 			new CarePackageInfo("BasicForagePlant", 6f, null),
 			new CarePackageInfo("CookedEgg", 3f, () => CycleCondition(6)),
@@ -97,11 +99,12 @@ public class Immigration : KMonoBehaviour, ISaveLoadable, ISim200ms, IPersonalPr
 			new CarePackageInfo("LightBugBaby", 1f, null),
 			new CarePackageInfo("HatchBaby", 1f, null),
 			new CarePackageInfo("PuftBaby", 1f, null),
+			new CarePackageInfo("SquirrelBaby", 1f, null),
+			new CarePackageInfo("CrabBaby", 1f, null),
 			new CarePackageInfo("DreckoBaby", 1f, () => CycleCondition(24)),
 			new CarePackageInfo("Pacu", 8f, () => CycleCondition(24)),
 			new CarePackageInfo("MoleBaby", 1f, () => CycleCondition(48)),
 			new CarePackageInfo("OilfloaterBaby", 1f, () => CycleCondition(48)),
-			new CarePackageInfo("CrabBaby", 1f, null),
 			new CarePackageInfo("LightBugEgg", 3f, null),
 			new CarePackageInfo("HatchEgg", 3f, null),
 			new CarePackageInfo("PuftEgg", 3f, null),

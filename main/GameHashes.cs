@@ -260,6 +260,7 @@ public enum GameHashes
 	ReceptacleInoperational = 960378201,
 	PathAdvanced = 1347184327,
 	UpdateRoom = 144050788,
+	ChangeRoom = -832141045,
 	EquipmentChanged = -2146166042,
 	LogicEvent = -801688580,
 	BeginBreathRecovery = 961737054,

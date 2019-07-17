@@ -782,6 +782,15 @@ namespace STRINGS
 				public static LocString MESSAGEBODY = "<<PLACEHOLDER>>";
 			}
 
+			public class PLUMBING
+			{
+				public static LocString NAME = "Tutorial: Plumbing and Ventilation";
+
+				public static LocString TOOLTIP = "Notes on connecting buildings with pipes";
+
+				public static LocString MESSAGEBODY = "<<PLACEHOLDER>>";
+			}
+
 			public class DTU
 			{
 				public static LocString NAME = "Tutorial: Duplicant Thermal Units";

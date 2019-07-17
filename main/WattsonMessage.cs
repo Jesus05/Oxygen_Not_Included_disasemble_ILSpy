@@ -218,11 +218,11 @@ public class WattsonMessage : KScreen
 		{
 			GameScheduler.Instance.Schedule("BasicTutorial", 1.5f, delegate
 			{
-				Tutorial.Instance.TutorialMessage(Tutorial.TutorialMessages.TM_Basics);
+				Tutorial.Instance.TutorialMessage(Tutorial.TutorialMessages.TM_Basics, true);
 			}, null, null);
 			GameScheduler.Instance.Schedule("WelcomeTutorial", 2f, delegate
 			{
-				Tutorial.Instance.TutorialMessage(Tutorial.TutorialMessages.TM_Welcome);
+				Tutorial.Instance.TutorialMessage(Tutorial.TutorialMessages.TM_Welcome, true);
 			}, null, null);
 			foreach (KScreen item in hideScreensWhileActive)
 			{

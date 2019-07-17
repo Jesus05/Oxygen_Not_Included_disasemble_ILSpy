@@ -208,7 +208,7 @@ public class ExternalTemperatureMonitor : GameStateMachine<ExternalTemperatureMo
 			.ToggleEffect("WarmAir")
 			.Enter(delegate
 			{
-				Tutorial.Instance.TutorialMessage(Tutorial.TutorialMessages.TM_ThermalComfort);
+				Tutorial.Instance.TutorialMessage(Tutorial.TutorialMessages.TM_ThermalComfort, true);
 			});
 		scalding.Transition(tooWarm, (Instance smi) => !smi.IsScalding() && smi.timeinstate > 6f, UpdateRate.SIM_200ms).ToggleExpression(Db.Get().Expressions.Hot, null).ToggleThought(Db.Get().Thoughts.Hot, null)
 			.ToggleStatusItem(Db.Get().CreatureStatusItems.Scalding, (Instance smi) => smi)
@@ -221,7 +221,7 @@ public class ExternalTemperatureMonitor : GameStateMachine<ExternalTemperatureMo
 			.ToggleEffect("ColdAir")
 			.Enter(delegate
 			{
-				Tutorial.Instance.TutorialMessage(Tutorial.TutorialMessages.TM_ThermalComfort);
+				Tutorial.Instance.TutorialMessage(Tutorial.TutorialMessages.TM_ThermalComfort, true);
 			});
 	}
 }

@@ -31,11 +31,6 @@ public class PauseScreen : KModalButtonMenu
 
 	public static PauseScreen Instance => instance;
 
-	public override bool IsModal()
-	{
-		return true;
-	}
-
 	public static void DestroyInstance()
 	{
 		instance = null;
@@ -84,11 +79,25 @@ public class PauseScreen : KModalButtonMenu
 
 	private void OnResume()
 	{
-		ToolTipScreen.Instance.ClearToolTip(closeButton.GetComponent<ToolTip>());
 		Show(false);
-		AudioMixer.instance.Stop(AudioMixerSnapshots.Get().ESCPauseSnapshot, STOP_MODE.ALLOWFADEOUT);
-		MusicManager.instance.OnEscapeMenu(false);
-		MusicManager.instance.StopSong("Music_ESC_Menu", true, STOP_MODE.ALLOWFADEOUT);
+	}
+
+	protected override void OnShow(bool show)
+	{
+		base.OnShow(show);
+		if (show)
+		{
+			AudioMixer.instance.Start(AudioMixerSnapshots.Get().ESCPauseSnapshot);
+			MusicManager.instance.OnEscapeMenu(true);
+			MusicManager.instance.PlaySong("Music_ESC_Menu", false);
+		}
+		else
+		{
+			ToolTipScreen.Instance.ClearToolTip(closeButton.GetComponent<ToolTip>());
+			AudioMixer.instance.Stop(AudioMixerSnapshots.Get().ESCPauseSnapshot, STOP_MODE.ALLOWFADEOUT);
+			MusicManager.instance.OnEscapeMenu(false);
+			MusicManager.instance.StopSong("Music_ESC_Menu", true, STOP_MODE.ALLOWFADEOUT);
+		}
 	}
 
 	private void OnOptions()

@@ -20,6 +20,8 @@ public class AchievementWidget : KMonoBehaviour
 
 	public AnimationCurve flourish_sheenPositionCurve;
 
+	public KBatchedAnimController[] sparks;
+
 	protected override void OnSpawn()
 	{
 		base.OnSpawn();
@@ -37,6 +39,12 @@ public class AchievementWidget : KMonoBehaviour
 	private IEnumerator Flourish(float startDelay)
 	{
 		SetNeverAchieved();
+		if ((Object)GetComponent<Canvas>() == (Object)null)
+		{
+			Canvas canvas = base.gameObject.AddComponent<Canvas>();
+			canvas.sortingOrder = 1;
+		}
+		GetComponent<Canvas>().overrideSorting = true;
 		yield return (object)new WaitForSecondsRealtime(startDelay);
 		/*Error: Unable to find new state assignment for yield return*/;
 	}

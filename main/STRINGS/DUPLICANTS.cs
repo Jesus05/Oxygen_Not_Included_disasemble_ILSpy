@@ -2886,6 +2886,20 @@ namespace STRINGS
 				public static LocString NAME = "Skill Level";
 			}
 
+			public class ROOMPARK
+			{
+				public static LocString NAME = "Park";
+
+				public static LocString TOOLTIP = "This Duplicant has recently passed through a Park";
+			}
+
+			public class ROOMNATURERESERVE
+			{
+				public static LocString NAME = "Nature Reserve";
+
+				public static LocString TOOLTIP = "This Duplicant has recently passed through a Nature Reserve";
+			}
+
 			public class ROOMLATRINE
 			{
 				public static LocString NAME = "Latrine";

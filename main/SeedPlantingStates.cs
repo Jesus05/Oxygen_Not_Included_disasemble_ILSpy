@@ -287,7 +287,7 @@ public class SeedPlantingStates : GameStateMachine<SeedPlantingStates, SeedPlant
 			while (enumerator.MoveNext())
 			{
 				Pickupable pickupable = (Pickupable)enumerator.Current;
-				if (pickupable.HasTag(GameTags.Seed) && !pickupable.HasTag(GameTags.Creatures.ReservedByCreature) && !(Vector2.Distance(smi.transform.position, pickupable.transform.position) > 25f))
+				if ((pickupable.HasTag(GameTags.Seed) || pickupable.HasTag(GameTags.CropSeed)) && !pickupable.HasTag(GameTags.Creatures.ReservedByCreature) && !(Vector2.Distance(smi.transform.position, pickupable.transform.position) > 25f))
 				{
 					int navigationCost = component.GetNavigationCost(Grid.PosToCell(pickupable));
 					if (navigationCost != -1 && navigationCost < num)

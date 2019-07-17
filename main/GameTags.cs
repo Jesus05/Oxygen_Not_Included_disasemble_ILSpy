@@ -454,6 +454,8 @@ public class GameTags
 
 	public static readonly Tag Entombed = TagManager.Create("Entombed");
 
+	public static readonly Tag Uprooted = TagManager.Create("Uprooted");
+
 	public static readonly Tag Preserved = TagManager.Create("Preserved");
 
 	public static readonly Tag Compostable = TagManager.Create("Compostable");

@@ -178,13 +178,15 @@ public class RockCrusherConfig : IBuildingConfig
 		{
 			TagManager.Create("RockCrusher")
 		};
+		float num = 5E-05f;
 		ComplexRecipe.RecipeElement[] array13 = new ComplexRecipe.RecipeElement[1]
 		{
-			new ComplexRecipe.RecipeElement(ElementLoader.FindElementByHash(SimHashes.Salt).tag, 100f)
+			new ComplexRecipe.RecipeElement(SimHashes.Salt.CreateTag(), 100f)
 		};
-		ComplexRecipe.RecipeElement[] array14 = new ComplexRecipe.RecipeElement[1]
+		ComplexRecipe.RecipeElement[] array14 = new ComplexRecipe.RecipeElement[2]
 		{
-			new ComplexRecipe.RecipeElement("TableSalt".ToTag(), 0.005f)
+			new ComplexRecipe.RecipeElement(TableSaltConfig.ID.ToTag(), 100f * num),
+			new ComplexRecipe.RecipeElement(SimHashes.Sand.CreateTag(), 100f * (1f - num))
 		};
 		string id4 = ComplexRecipeManager.MakeRecipeID("RockCrusher", array13, array14);
 		complexRecipe = new ComplexRecipe(id4, array13, array14);

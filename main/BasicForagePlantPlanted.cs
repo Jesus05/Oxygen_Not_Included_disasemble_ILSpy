@@ -31,11 +31,10 @@ public class BasicForagePlantPlanted : StateMachineComponent<BasicForagePlantPla
 			base.serializable = true;
 			seed_grow.PlayAnim("idle", KAnim.PlayMode.Once).EventTransition(GameHashes.AnimQueueComplete, alive.idle, null);
 			alive.InitializeStates(masterTarget, dead);
-			alive.idle.PlayAnim("idle").EventTransition(GameHashes.Uprooted, alive.harvest, null).EventTransition(GameHashes.Harvest, alive.harvest, null)
-				.Enter(delegate(StatesInstance smi)
-				{
-					smi.master.harvestable.SetCanBeHarvested(true);
-				});
+			alive.idle.PlayAnim("idle").EventTransition(GameHashes.Harvest, alive.harvest, null).Enter(delegate(StatesInstance smi)
+			{
+				smi.master.harvestable.SetCanBeHarvested(true);
+			});
 			alive.harvest.Enter(delegate(StatesInstance smi)
 			{
 				smi.master.seedProducer.DropSeed(null);

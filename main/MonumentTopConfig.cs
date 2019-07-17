@@ -47,6 +47,8 @@ public class MonumentTopConfig : IBuildingConfig
 	{
 		BuildingConfigManager.Instance.IgnoreDefaultKComponent(typeof(RequiresFoundation), prefab_tag);
 		go.AddOrGet<LoopingSounds>();
+		MonumentPart monumentPart = go.AddOrGet<MonumentPart>();
+		monumentPart.part = MonumentPart.Part.Top;
 	}
 
 	public override void DoPostConfigurePreview(BuildingDef def, GameObject go)

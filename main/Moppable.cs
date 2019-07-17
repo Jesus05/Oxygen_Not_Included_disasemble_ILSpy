@@ -250,7 +250,7 @@ public class Moppable : Workable, ISim1000ms, ISim200ms
 					component.AddStatusItem(Db.Get().BuildingStatusItems.MopUnreachable, this);
 					GameScheduler.Instance.Schedule("Locomotion Tutorial", 2f, delegate
 					{
-						Tutorial.Instance.TutorialMessage(Tutorial.TutorialMessages.TM_Locomotion);
+						Tutorial.Instance.TutorialMessage(Tutorial.TutorialMessages.TM_Locomotion, true);
 					}, null, null);
 					Material material3 = material;
 					Game.LocationColours dig3 = Game.Instance.uiColours.Dig;

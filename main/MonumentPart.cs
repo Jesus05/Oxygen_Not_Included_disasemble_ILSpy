@@ -1,3 +1,4 @@
+using KSerialization;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -16,10 +17,17 @@ public class MonumentPart : KMonoBehaviour
 
 	public string stateUISymbol;
 
+	[Serialize]
+	private string chosenState;
+
 	protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		Components.MonumentParts.Add(this);
+		if (!string.IsNullOrEmpty(chosenState))
+		{
+			SetState(chosenState);
+		}
 	}
 
 	protected override void OnCleanUp()
@@ -28,9 +36,10 @@ public class MonumentPart : KMonoBehaviour
 		base.OnCleanUp();
 	}
 
-	public void SetState(HashedString state)
+	public void SetState(string state)
 	{
 		GetComponent<KBatchedAnimController>().Play(state, KAnim.PlayMode.Once, 1f, 0f);
+		chosenState = state;
 	}
 
 	public bool IsMonumentCompleted()

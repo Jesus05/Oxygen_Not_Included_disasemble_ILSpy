@@ -29,6 +29,7 @@ public class Tutorial : KMonoBehaviour, IRender1000ms
 		TM_Digging,
 		TM_Power,
 		TM_Insulation,
+		TM_Plumbing,
 		TM_COUNT
 	}
 
@@ -168,7 +169,7 @@ public class Tutorial : KMonoBehaviour, IRender1000ms
 	{
 		if (tutorialMessagesRemaining.Count == 0)
 		{
-			for (int i = 0; i <= 19; i++)
+			for (int i = 0; i <= 20; i++)
 			{
 				tutorialMessagesRemaining.Add((TutorialMessages)i);
 			}
@@ -276,75 +277,87 @@ public class Tutorial : KMonoBehaviour, IRender1000ms
 		});
 	}
 
-	public void TutorialMessage(TutorialMessages tm)
+	public Message TutorialMessage(TutorialMessages tm, bool queueMessage = true)
 	{
-		if (tutorialMessagesRemaining.Contains(tm) && (!hiddenTutorialMessages.ContainsKey(tm) || !hiddenTutorialMessages[tm]))
+		Message message = null;
+		switch (tm)
 		{
-			Message message = null;
-			switch (tm)
+		case TutorialMessages.TM_Basics:
+			message = new TutorialMessage(TutorialMessages.TM_Basics, MISC.NOTIFICATIONS.BASICCONTROLS.NAME, MISC.NOTIFICATIONS.BASICCONTROLS.MESSAGEBODY, MISC.NOTIFICATIONS.BASICCONTROLS.TOOLTIP, null, null, null);
+			break;
+		case TutorialMessages.TM_Welcome:
+			message = new TutorialMessage(TutorialMessages.TM_Welcome, MISC.NOTIFICATIONS.WELCOMEMESSAGE.NAME, MISC.NOTIFICATIONS.WELCOMEMESSAGE.MESSAGEBODY, MISC.NOTIFICATIONS.WELCOMEMESSAGE.TOOLTIP, null, null, null);
+			break;
+		case TutorialMessages.TM_StressManagement:
+			message = new TutorialMessage(TutorialMessages.TM_StressManagement, MISC.NOTIFICATIONS.STRESSMANAGEMENTMESSAGE.NAME, MISC.NOTIFICATIONS.STRESSMANAGEMENTMESSAGE.MESSAGEBODY, MISC.NOTIFICATIONS.STRESSMANAGEMENTMESSAGE.TOOLTIP, null, null, null);
+			break;
+		case TutorialMessages.TM_Scheduling:
+			message = new TutorialMessage(TutorialMessages.TM_Scheduling, MISC.NOTIFICATIONS.SCHEDULEMESSAGE.NAME, MISC.NOTIFICATIONS.SCHEDULEMESSAGE.MESSAGEBODY, MISC.NOTIFICATIONS.SCHEDULEMESSAGE.TOOLTIP, null, null, null);
+			break;
+		case TutorialMessages.TM_Mopping:
+			message = new TutorialMessage(TutorialMessages.TM_Mopping, MISC.NOTIFICATIONS.MOPPINGMESSAGE.NAME, MISC.NOTIFICATIONS.MOPPINGMESSAGE.MESSAGEBODY, MISC.NOTIFICATIONS.MOPPINGMESSAGE.TOOLTIP, null, null, null);
+			break;
+		case TutorialMessages.TM_Locomotion:
+			message = new TutorialMessage(TutorialMessages.TM_Locomotion, MISC.NOTIFICATIONS.LOCOMOTIONMESSAGE.NAME, MISC.NOTIFICATIONS.LOCOMOTIONMESSAGE.MESSAGEBODY, MISC.NOTIFICATIONS.LOCOMOTIONMESSAGE.TOOLTIP, "tutorials\\Locomotion_tutorial", "Tute_Locomotion", VIDEOS.LOCOMOTION);
+			break;
+		case TutorialMessages.TM_Priorities:
+			message = new TutorialMessage(TutorialMessages.TM_Priorities, MISC.NOTIFICATIONS.PRIORITIESMESSAGE.NAME, MISC.NOTIFICATIONS.PRIORITIESMESSAGE.MESSAGEBODY, MISC.NOTIFICATIONS.PRIORITIESMESSAGE.TOOLTIP, null, null, null);
+			break;
+		case TutorialMessages.TM_FetchingWater:
+			message = new TutorialMessage(TutorialMessages.TM_FetchingWater, MISC.NOTIFICATIONS.FETCHINGWATERMESSAGE.NAME, MISC.NOTIFICATIONS.FETCHINGWATERMESSAGE.MESSAGEBODY, MISC.NOTIFICATIONS.FETCHINGWATERMESSAGE.TOOLTIP, null, null, null);
+			break;
+		case TutorialMessages.TM_ThermalComfort:
+			message = new TutorialMessage(TutorialMessages.TM_ThermalComfort, MISC.NOTIFICATIONS.THERMALCOMFORT.NAME, MISC.NOTIFICATIONS.THERMALCOMFORT.MESSAGEBODY, MISC.NOTIFICATIONS.THERMALCOMFORT.TOOLTIP, null, null, null);
+			break;
+		case TutorialMessages.TM_OverheatingBuildings:
+			message = new TutorialMessage(TutorialMessages.TM_OverheatingBuildings, MISC.NOTIFICATIONS.TUTORIAL_OVERHEATING.NAME, MISC.NOTIFICATIONS.TUTORIAL_OVERHEATING.MESSAGEBODY, MISC.NOTIFICATIONS.TUTORIAL_OVERHEATING.TOOLTIP, null, null, null);
+			break;
+		case TutorialMessages.TM_LotsOfGerms:
+			message = new TutorialMessage(TutorialMessages.TM_LotsOfGerms, MISC.NOTIFICATIONS.LOTS_OF_GERMS.NAME, MISC.NOTIFICATIONS.LOTS_OF_GERMS.MESSAGEBODY, MISC.NOTIFICATIONS.LOTS_OF_GERMS.TOOLTIP, null, null, null);
+			break;
+		case TutorialMessages.TM_BeingInfected:
+			message = new TutorialMessage(TutorialMessages.TM_BeingInfected, MISC.NOTIFICATIONS.BEING_INFECTED.NAME, MISC.NOTIFICATIONS.BEING_INFECTED.MESSAGEBODY, MISC.NOTIFICATIONS.BEING_INFECTED.TOOLTIP, null, null, null);
+			break;
+		case TutorialMessages.TM_DiseaseCooking:
+			message = new TutorialMessage(TutorialMessages.TM_DiseaseCooking, MISC.NOTIFICATIONS.DISEASE_COOKING.NAME, MISC.NOTIFICATIONS.DISEASE_COOKING.MESSAGEBODY, MISC.NOTIFICATIONS.DISEASE_COOKING.TOOLTIP, null, null, null);
+			break;
+		case TutorialMessages.TM_Suits:
+			message = new TutorialMessage(TutorialMessages.TM_Suits, MISC.NOTIFICATIONS.SUITS.NAME, MISC.NOTIFICATIONS.SUITS.MESSAGEBODY, MISC.NOTIFICATIONS.SUITS.TOOLTIP, null, null, null);
+			break;
+		case TutorialMessages.TM_Morale:
+			message = new TutorialMessage(TutorialMessages.TM_Morale, MISC.NOTIFICATIONS.MORALE.NAME, MISC.NOTIFICATIONS.MORALE.MESSAGEBODY, MISC.NOTIFICATIONS.MORALE.TOOLTIP, "tutorials\\Morale_tutorial", "Tute_Morale", VIDEOS.MORALE);
+			break;
+		case TutorialMessages.TM_Schedule:
+			message = new TutorialMessage(TutorialMessages.TM_Schedule, MISC.NOTIFICATIONS.SCHEDULEMESSAGE.NAME, MISC.NOTIFICATIONS.SCHEDULEMESSAGE.MESSAGEBODY, MISC.NOTIFICATIONS.SCHEDULEMESSAGE.TOOLTIP, null, null, null);
+			break;
+		case TutorialMessages.TM_Power:
+			message = new TutorialMessage(TutorialMessages.TM_Power, MISC.NOTIFICATIONS.POWER.NAME, MISC.NOTIFICATIONS.POWER.MESSAGEBODY, MISC.NOTIFICATIONS.POWER.TOOLTIP, "tutorials\\Power_tutorial", "Tute_Power", VIDEOS.POWER);
+			break;
+		case TutorialMessages.TM_Digging:
+			message = new TutorialMessage(TutorialMessages.TM_Digging, MISC.NOTIFICATIONS.DIGGING.NAME, MISC.NOTIFICATIONS.DIGGING.MESSAGEBODY, MISC.NOTIFICATIONS.DIGGING.TOOLTIP, "tutorials\\Digging_tutorial", "Tute_Digging", VIDEOS.DIGGING);
+			break;
+		case TutorialMessages.TM_Insulation:
+			message = new TutorialMessage(TutorialMessages.TM_Insulation, MISC.NOTIFICATIONS.INSULATION.NAME, MISC.NOTIFICATIONS.INSULATION.MESSAGEBODY, MISC.NOTIFICATIONS.INSULATION.TOOLTIP, "tutorials\\Insulation_tutorial", "Tute_Insulation", VIDEOS.INSULATION);
+			break;
+		case TutorialMessages.TM_Plumbing:
+			message = new TutorialMessage(TutorialMessages.TM_Plumbing, MISC.NOTIFICATIONS.PLUMBING.NAME, MISC.NOTIFICATIONS.PLUMBING.MESSAGEBODY, MISC.NOTIFICATIONS.PLUMBING.TOOLTIP, "tutorials\\Piping_tutorial", "Tute_Plumbing", VIDEOS.PLUMBING);
+			break;
+		}
+		Debug.Assert(message != null, $"No Tutorial message: {tm.ToString()}");
+		if (queueMessage)
+		{
+			if (!tutorialMessagesRemaining.Contains(tm))
 			{
-			case TutorialMessages.TM_Basics:
-				message = new TutorialMessage(TutorialMessages.TM_Basics, MISC.NOTIFICATIONS.BASICCONTROLS.NAME, MISC.NOTIFICATIONS.BASICCONTROLS.MESSAGEBODY, MISC.NOTIFICATIONS.BASICCONTROLS.TOOLTIP, null);
-				break;
-			case TutorialMessages.TM_Welcome:
-				message = new TutorialMessage(TutorialMessages.TM_Welcome, MISC.NOTIFICATIONS.WELCOMEMESSAGE.NAME, MISC.NOTIFICATIONS.WELCOMEMESSAGE.MESSAGEBODY, MISC.NOTIFICATIONS.WELCOMEMESSAGE.TOOLTIP, null);
-				break;
-			case TutorialMessages.TM_StressManagement:
-				message = new TutorialMessage(TutorialMessages.TM_StressManagement, MISC.NOTIFICATIONS.STRESSMANAGEMENTMESSAGE.NAME, MISC.NOTIFICATIONS.STRESSMANAGEMENTMESSAGE.MESSAGEBODY, MISC.NOTIFICATIONS.STRESSMANAGEMENTMESSAGE.TOOLTIP, null);
-				break;
-			case TutorialMessages.TM_Scheduling:
-				message = new TutorialMessage(TutorialMessages.TM_Scheduling, MISC.NOTIFICATIONS.SCHEDULEMESSAGE.NAME, MISC.NOTIFICATIONS.SCHEDULEMESSAGE.MESSAGEBODY, MISC.NOTIFICATIONS.SCHEDULEMESSAGE.TOOLTIP, null);
-				break;
-			case TutorialMessages.TM_Mopping:
-				message = new TutorialMessage(TutorialMessages.TM_Mopping, MISC.NOTIFICATIONS.MOPPINGMESSAGE.NAME, MISC.NOTIFICATIONS.MOPPINGMESSAGE.MESSAGEBODY, MISC.NOTIFICATIONS.MOPPINGMESSAGE.TOOLTIP, null);
-				break;
-			case TutorialMessages.TM_Locomotion:
-				message = new TutorialMessage(TutorialMessages.TM_Locomotion, MISC.NOTIFICATIONS.LOCOMOTIONMESSAGE.NAME, MISC.NOTIFICATIONS.LOCOMOTIONMESSAGE.MESSAGEBODY, MISC.NOTIFICATIONS.LOCOMOTIONMESSAGE.TOOLTIP, "Placeholder");
-				break;
-			case TutorialMessages.TM_Priorities:
-				message = new TutorialMessage(TutorialMessages.TM_Priorities, MISC.NOTIFICATIONS.PRIORITIESMESSAGE.NAME, MISC.NOTIFICATIONS.PRIORITIESMESSAGE.MESSAGEBODY, MISC.NOTIFICATIONS.PRIORITIESMESSAGE.TOOLTIP, null);
-				break;
-			case TutorialMessages.TM_FetchingWater:
-				message = new TutorialMessage(TutorialMessages.TM_FetchingWater, MISC.NOTIFICATIONS.FETCHINGWATERMESSAGE.NAME, MISC.NOTIFICATIONS.FETCHINGWATERMESSAGE.MESSAGEBODY, MISC.NOTIFICATIONS.FETCHINGWATERMESSAGE.TOOLTIP, null);
-				break;
-			case TutorialMessages.TM_ThermalComfort:
-				message = new TutorialMessage(TutorialMessages.TM_ThermalComfort, MISC.NOTIFICATIONS.THERMALCOMFORT.NAME, MISC.NOTIFICATIONS.THERMALCOMFORT.MESSAGEBODY, MISC.NOTIFICATIONS.THERMALCOMFORT.TOOLTIP, null);
-				break;
-			case TutorialMessages.TM_OverheatingBuildings:
-				message = new TutorialMessage(TutorialMessages.TM_OverheatingBuildings, MISC.NOTIFICATIONS.TUTORIAL_OVERHEATING.NAME, MISC.NOTIFICATIONS.TUTORIAL_OVERHEATING.MESSAGEBODY, MISC.NOTIFICATIONS.TUTORIAL_OVERHEATING.TOOLTIP, null);
-				break;
-			case TutorialMessages.TM_LotsOfGerms:
-				message = new TutorialMessage(TutorialMessages.TM_LotsOfGerms, MISC.NOTIFICATIONS.LOTS_OF_GERMS.NAME, MISC.NOTIFICATIONS.LOTS_OF_GERMS.MESSAGEBODY, MISC.NOTIFICATIONS.LOTS_OF_GERMS.TOOLTIP, null);
-				break;
-			case TutorialMessages.TM_BeingInfected:
-				message = new TutorialMessage(TutorialMessages.TM_BeingInfected, MISC.NOTIFICATIONS.BEING_INFECTED.NAME, MISC.NOTIFICATIONS.BEING_INFECTED.MESSAGEBODY, MISC.NOTIFICATIONS.BEING_INFECTED.TOOLTIP, null);
-				break;
-			case TutorialMessages.TM_DiseaseCooking:
-				message = new TutorialMessage(TutorialMessages.TM_DiseaseCooking, MISC.NOTIFICATIONS.DISEASE_COOKING.NAME, MISC.NOTIFICATIONS.DISEASE_COOKING.MESSAGEBODY, MISC.NOTIFICATIONS.DISEASE_COOKING.TOOLTIP, null);
-				break;
-			case TutorialMessages.TM_Suits:
-				message = new TutorialMessage(TutorialMessages.TM_Suits, MISC.NOTIFICATIONS.SUITS.NAME, MISC.NOTIFICATIONS.SUITS.MESSAGEBODY, MISC.NOTIFICATIONS.SUITS.TOOLTIP, null);
-				break;
-			case TutorialMessages.TM_Morale:
-				message = new TutorialMessage(TutorialMessages.TM_Morale, MISC.NOTIFICATIONS.MORALE.NAME, MISC.NOTIFICATIONS.MORALE.MESSAGEBODY, MISC.NOTIFICATIONS.MORALE.TOOLTIP, "Placeholder");
-				break;
-			case TutorialMessages.TM_Schedule:
-				message = new TutorialMessage(TutorialMessages.TM_Schedule, MISC.NOTIFICATIONS.SCHEDULEMESSAGE.NAME, MISC.NOTIFICATIONS.SCHEDULEMESSAGE.MESSAGEBODY, MISC.NOTIFICATIONS.SCHEDULEMESSAGE.TOOLTIP, null);
-				break;
-			case TutorialMessages.TM_Power:
-				message = new TutorialMessage(TutorialMessages.TM_Power, MISC.NOTIFICATIONS.POWER.NAME, MISC.NOTIFICATIONS.POWER.MESSAGEBODY, MISC.NOTIFICATIONS.POWER.TOOLTIP, "Placeholder");
-				break;
-			case TutorialMessages.TM_Digging:
-				message = new TutorialMessage(TutorialMessages.TM_Digging, MISC.NOTIFICATIONS.DIGGING.NAME, MISC.NOTIFICATIONS.DIGGING.MESSAGEBODY, MISC.NOTIFICATIONS.DIGGING.TOOLTIP, "Placeholder");
-				break;
-			case TutorialMessages.TM_Insulation:
-				message = new TutorialMessage(TutorialMessages.TM_Insulation, MISC.NOTIFICATIONS.INSULATION.NAME, MISC.NOTIFICATIONS.INSULATION.MESSAGEBODY, MISC.NOTIFICATIONS.INSULATION.TOOLTIP, "Placeholder");
-				break;
+				return null;
 			}
-			Debug.Assert(message != null, $"No Tutorial message: {tm.ToString()}");
+			if (hiddenTutorialMessages.ContainsKey(tm) && hiddenTutorialMessages[tm])
+			{
+				return null;
+			}
 			tutorialMessagesRemaining.Remove(tm);
 			Messenger.Instance.QueueMessage(message);
 		}
+		return message;
 	}
 
 	private string OnOxygenTooltip(List<Notification> notifications, object data)
@@ -465,7 +478,7 @@ public class Tutorial : KMonoBehaviour, IRender1000ms
 				queuedPrioritiesMessage = true;
 				GameScheduler.Instance.Schedule("PrioritiesTutorial", 2f, delegate
 				{
-					Instance.TutorialMessage(TutorialMessages.TM_Priorities);
+					Instance.TutorialMessage(TutorialMessages.TM_Priorities, true);
 				}, null, null);
 			}
 		}

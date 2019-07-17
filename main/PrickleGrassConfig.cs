@@ -9,9 +9,9 @@ public class PrickleGrassConfig : IEntityConfig
 
 	public const string SEED_ID = "PrickleGrassSeed";
 
-	public readonly EffectorValues POSITIVE_DECOR_EFFECT = DECOR.BONUS.TIER3;
+	public static readonly EffectorValues POSITIVE_DECOR_EFFECT = DECOR.BONUS.TIER3;
 
-	public readonly EffectorValues NEGATIVE_DECOR_EFFECT = DECOR.PENALTY.TIER3;
+	public static readonly EffectorValues NEGATIVE_DECOR_EFFECT = DECOR.PENALTY.TIER3;
 
 	public GameObject CreatePrefab()
 	{

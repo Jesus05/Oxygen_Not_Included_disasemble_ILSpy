@@ -122,7 +122,7 @@ public class Phonobox : StateMachineComponent<Phonobox.StatesInstance>, IEffectD
 		base.smi.StartSM();
 		GameScheduler.Instance.Schedule("Scheduling Tutorial", 2f, delegate
 		{
-			Tutorial.Instance.TutorialMessage(Tutorial.TutorialMessages.TM_Schedule);
+			Tutorial.Instance.TutorialMessage(Tutorial.TutorialMessages.TM_Schedule, true);
 		}, null, null);
 		workables = new PhonoboxWorkable[choreOffsets.Length];
 		chores = new Chore[choreOffsets.Length];

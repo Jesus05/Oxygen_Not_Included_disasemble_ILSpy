@@ -137,7 +137,7 @@ public class HandSanitizer : StateMachineComponent<HandSanitizer.SMInstance>, IE
 			shouldTransferDiseaseWithWorker = false;
 			GameScheduler.Instance.Schedule("WaterFetchingTutorial", 2f, delegate
 			{
-				Tutorial.Instance.TutorialMessage(Tutorial.TutorialMessages.TM_FetchingWater);
+				Tutorial.Instance.TutorialMessage(Tutorial.TutorialMessages.TM_FetchingWater, true);
 			}, null, null);
 		}
 

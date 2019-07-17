@@ -96,6 +96,7 @@ public class Crop : KMonoBehaviour, IGameObjectEffectDescriptor
 					gameObject.SetActive(true);
 					PrimaryElement component = gameObject.GetComponent<PrimaryElement>();
 					component.Units = (float)cropVal.numProduced;
+					component.Temperature = base.gameObject.GetComponent<PrimaryElement>().Temperature;
 					Edible component2 = gameObject.GetComponent<Edible>();
 					if ((bool)component2)
 					{

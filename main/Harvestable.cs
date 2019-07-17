@@ -21,6 +21,11 @@ public class Harvestable : Workable
 		component.OnCancel(data);
 	});
 
+	private static readonly EventSystem.IntraObjectHandler<Harvestable> OnUprootedDelegate = new EventSystem.IntraObjectHandler<Harvestable>(delegate(Harvestable component, object data)
+	{
+		component.OnUprooted(data);
+	});
+
 	public Worker completed_by
 	{
 		get;
@@ -54,6 +59,14 @@ public class Harvestable : Workable
 		attributeExperienceMultiplier = DUPLICANTSTATS.ATTRIBUTE_LEVELING.PART_DAY_EXPERIENCE;
 		skillExperienceSkillGroup = Db.Get().SkillGroups.Farming.Id;
 		skillExperienceMultiplier = SKILLS.PART_DAY_EXPERIENCE;
+	}
+
+	public void OnUprooted(object data)
+	{
+		if (canBeHarvested)
+		{
+			Harvest();
+		}
 	}
 
 	public void Harvest()

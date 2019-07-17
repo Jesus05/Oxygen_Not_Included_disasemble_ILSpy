@@ -70,6 +70,15 @@ namespace STRINGS
 
 		public class FOOD
 		{
+			public class BURGER
+			{
+				public static LocString NAME = UI.FormatAsLink("Frost Burger", "BURGER");
+
+				public static LocString DESC = "It's the best food.";
+
+				public static LocString RECIPEDESC = "Meat, Lettuce, Bun";
+			}
+
 			public class FIELDRATION
 			{
 				public static LocString NAME = UI.FormatAsLink("Nutrient Bar", "FIELDRATION");
@@ -188,6 +197,15 @@ namespace STRINGS
 				public static LocString DESC = "An edible, flavorless fungus that grew in the dark.";
 			}
 
+			public class COOKEDFISH
+			{
+				public static LocString NAME = UI.FormatAsLink("Cooked Fish", "COOKEDFISH");
+
+				public static LocString DESC = "The cooked meat of a defeated critter.\n\nIt has a delightful smoky aftertaste.";
+
+				public static LocString RECIPEDESC = "The cooked meat of a defeated " + UI.PRE_KEYWORD + "Critter" + UI.PST_KEYWORD + ".";
+			}
+
 			public class COOKEDMEAT
 			{
 				public static LocString NAME = UI.FormatAsLink("Barbeque", "COOKEDMEAT");
@@ -288,6 +306,15 @@ namespace STRINGS
 				public static LocString DESC = "A loaf of bread, lightly spiced with " + UI.FormatAsLink("Pincha Peppernut", "SPICENUT") + " for a mild bite.\n\nThere's a simple joy to be had in pulling it apart in one's fingers.";
 
 				public static LocString RECIPEDESC = "A loaf of bread, lightly spiced with " + UI.FormatAsLink("Pincha Peppernut", "SPICENUT") + " for a mild bite.";
+			}
+
+			public class SURFANDTURF
+			{
+				public static LocString NAME = UI.FormatAsLink("Surf n' Turf", "SURFANDTURF");
+
+				public static LocString DESC = "Meat and fish";
+
+				public static LocString RECIPEDESC = "Meat and fish";
 			}
 
 			public class TOFU
@@ -473,7 +500,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Table Salt";
 
-				public static LocString DESC = "A seasoning that Duplicants can add to their " + UI.FormatAsLink("Food", "FOOD") + " to boost " + UI.FormatAsLink("Morale", "MORALE") + ".\n\nDuplicants will automatically use Table Salt while sitting at a " + BUILDINGS.PREFABS.DININGTABLE.NAME + " during mealtime.";
+				public static LocString DESC = "A seasoning that Duplicants can add to their " + UI.FormatAsLink("Food", "FOOD") + " to boost " + UI.FormatAsLink("Morale", "MORALE") + ".\n\nDuplicants will automatically use Table Salt while sitting at a " + BUILDINGS.PREFABS.DININGTABLE.NAME + " during mealtime.\n\n<i>Only the finest grains are chosen.</i>";
 			}
 		}
 

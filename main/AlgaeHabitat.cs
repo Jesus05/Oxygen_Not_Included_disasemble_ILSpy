@@ -137,7 +137,7 @@ public class AlgaeHabitat : StateMachineComponent<AlgaeHabitat.SMInstance>
 		base.smi.StartSM();
 		GameScheduler.Instance.Schedule("WaterFetchingTutorial", 2f, delegate
 		{
-			Tutorial.Instance.TutorialMessage(Tutorial.TutorialMessages.TM_FetchingWater);
+			Tutorial.Instance.TutorialMessage(Tutorial.TutorialMessages.TM_FetchingWater, true);
 		}, null, null);
 		ConfigurePollutedWaterOutput();
 		Tutorial.Instance.oxygenGenerators.Add(base.gameObject);

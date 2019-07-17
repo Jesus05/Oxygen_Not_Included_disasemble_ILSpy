@@ -15,11 +15,10 @@ public class Unlocks : KMonoBehaviour
 	{
 		{
 			"emails",
-			new string[22]
+			new string[21]
 			{
 				"email_thermodynamiclaws",
 				"email_security2",
-				"email_pens",
 				"email_pens2",
 				"email_atomiconrecruitment",
 				"email_frankiesblog",
@@ -45,11 +44,11 @@ public class Unlocks : KMonoBehaviour
 			"journals",
 			new string[28]
 			{
+				"journal_timesarrowthoughts",
 				"journal_A046_1",
 				"journal_B835_1",
-				"journal_debrief",
-				"journal_B327_1",
 				"journal_sunflowerseeds",
+				"journal_B327_1",
 				"journal_B556_1",
 				"journal_employeeprocessing",
 				"journal_B327_2",
@@ -72,7 +71,7 @@ public class Unlocks : KMonoBehaviour
 				"journal_B556_4",
 				"journal_B835_5",
 				"journal_elliesbirthday2",
-				"journal_magazine"
+				"journal_timemusings"
 			}
 		},
 		{

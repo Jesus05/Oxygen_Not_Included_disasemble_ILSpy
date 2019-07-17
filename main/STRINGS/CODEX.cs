@@ -268,11 +268,13 @@ namespace STRINGS
 		{
 			public class BODY
 			{
-				public static LocString CONTAINER1 = "Pokeshells are peaceful bottom feeders that typically keep to themselves, happy to consume the waste and discarded food of other creatures.";
+				public static LocString CONTAINER1 = "Pokeshells are bottom-feeding invertebrates that consume the waste and discarded food left behind by other creatures.";
 
-				public static LocString CONTAINER2 = "As Pokeshells mature they must periodically shed portions of their exoskeletons to make room for new growth.";
+				public static LocString CONTAINER2 = "They have formidably sized claws that fold safely into their shells for protection when not in use.";
 
-				public static LocString CONTAINER3 = "Although the most dramatic sheds occur early in a Pokeshell's adolescence, they will continue growing and shedding throughout their adult lives, until the day they eventually die.";
+				public static LocString CONTAINER3 = "As Pokeshells mature they must periodically shed portions of their exoskeletons to make room for new growth.";
+
+				public static LocString CONTAINER4 = "Although the most dramatic sheds occur early in a Pokeshell's adolescence, they will continue growing and shedding throughout their adult lives, until the day they eventually die.";
 			}
 
 			public static LocString TITLE = "Pokeshell";
@@ -890,18 +892,6 @@ namespace STRINGS
 			public static LocString SUBTITLE = "ENCRYPTION LEVEL: NONE";
 		}
 
-		public class A6_DEBRIEF
-		{
-			public class BODY
-			{
-				public static LocString CONTAINER1 = "<smallcaps>[VOICE RECOGNITION INITIALIZED]\n[SUBJECTS IDENTIFIED: A001, B111]</smallcaps>\n\n[LOG BEGINS]\n\nDirector: The Gravitas Facility is planning to send a live crew into space and permanently colonize a distant planet.\n\nMcClintock: Alright.\n\nDirector: ...\"Alright\"? I was prepared to fight to get you on board. Allure you with resources and promises of limitless research.\n\nMcClintock: Would you prefer to fight?\n\nDirector: No.\n\nMcClintock: Then let's stop wasting time. Now, how does my genetics research come into play?\n\n[LOG ENDS]";
-			}
-
-			public static LocString TITLE = "Debrief";
-
-			public static LocString SUBTITLE = "ENCRYPTION LEVEL: ONE";
-		}
-
 		public class B2_ELLIESBIRTHDAY
 		{
 			public class BODY
@@ -926,20 +916,6 @@ namespace STRINGS
 			public static LocString TITLE = "Employee Processing";
 
 			public static LocString SUBTITLE = "ENCRYPTION LEVEL: ONE";
-		}
-
-		public class B8_MAGAZINEARTICLE
-		{
-			public class BODY
-			{
-				public static LocString CONTAINER1 = "<b>Incredible Technology From Independent Lab Harnesses Time into Energy</b>";
-
-				public static LocString CONTAINER2 = "Scientists from the recently founded Gravitas Facility have unveiled their first technology prototype, dubbed the \"Temporal Bow\", a device which manipulates the 4th dimension to generate infinite, clean and renewable energy.\n\nWhile it may sound like something from science fiction, facility founder Dr. Jacquelyn Stern confirms that it is very much real.\n\n\"It has already been demonstrated that Newton's Second Law of Motion can be violated by negative mass superfluids under the correct lab conditions,\" she says.\n\n\"If the Laws of Motion can be bent and altered, why not the Laws of Thermodynamics? That was the main intent behind this project.\"\n\nThe Temporal Bow works by rapidly vibrating sections of the 4th dimension to send small quantities of mass forward and backward in time, generating massive amounts of energy with virtually no waste.\n\n\"The fantastic thing about using the 4th dimension as fuel,\" says Stern, \"is that it is really, categorically infinite\".\n\nFor those eagerly awaiting the prospect of human time travel, don't get your hopes up just yet. The Facility says that although they have transported matter through time already, the technology was expressly developed for the purpose of energy generation and is ill-equipped for human transportation.";
-			}
-
-			public static LocString TITLE = "Article Excerpt";
-
-			public static LocString SUBTITLE = "ENCRYPTION LEVEL: THREE";
 		}
 
 		public class B3_MOVEDRATS
@@ -1100,6 +1076,20 @@ namespace STRINGS
 			public static LocString SUBTITLE = "ENCRYPTION LEVEL: NONE";
 		}
 
+		public class B8_MAGAZINEARTICLE
+		{
+			public class BODY
+			{
+				public static LocString CONTAINER1 = "<b>Incredible Technology From Independent Lab Harnesses Time into Energy</b>";
+
+				public static LocString CONTAINER2 = "Scientists from the recently founded Gravitas Facility have unveiled their first technology prototype, dubbed the \"Temporal Bow\", a device which manipulates the 4th dimension to generate infinite, clean and renewable energy.\n\nWhile it may sound like something from science fiction, facility founder Dr. Jacquelyn Stern confirms that it is very much real.\n\n\"It has already been demonstrated that Newton's Second Law of Motion can be violated by negative mass superfluids under the correct lab conditions,\" she says.\n\n\"If the Laws of Motion can be bent and altered, why not the Laws of Thermodynamics? That was the main intent behind this project.\"\n\nThe Temporal Bow works by rapidly vibrating sections of the 4th dimension to send small quantities of mass forward and backward in time, generating massive amounts of energy with virtually no waste.\n\n\"The fantastic thing about using the 4th dimension as fuel,\" says Stern, \"is that it is really, categorically infinite\".\n\nFor those eagerly awaiting the prospect of human time travel, don't get your hopes up just yet. The Facility says that although they have transported matter through time already, the technology was expressly developed for the purpose of energy generation and is ill-equipped for human transportation.";
+			}
+
+			public static LocString TITLE = "Nuceloid Article";
+
+			public static LocString SUBTITLE = "ENCRYPTION LEVEL: THREE";
+		}
+
 		public class LOCKS
 		{
 			public static LocString NEURALVACILLATOR = "Neural Vacillator";
@@ -1122,29 +1112,13 @@ namespace STRINGS
 
 				public static LocString TITLE4 = "Echo Four";
 
-				public static LocString TITLE5 = "Echo Five";
+				public static LocString CONTAINER1 = "Jodi: We've double checked our observational equipment and the computer's warm up is almost finished. We have precautionary personnel in place ready to start a shutdown in the event of a failure.\n\nJodi: It's time.\n\nJackie: Right.\n\nJackie: Spin the machine up slowly so we can monitor for any abnormal power fluctuations. We start on \"3\".\n\nJackie: \"1\"... \"2\"...\n\nJackie: \"3\".\n\n[There's a metallic clunk. The baritone whirr of machinery can be heard.]\n\nJackie: Something's not right.\n\nJodi: It's the container... the atom is vibrating too fast and causing it to destabilize.\n\n[The whir of the machinery peels up an octave into a mechanical screech.]\n\nJodi: We have to abort!\n\nJackie: No, not yet. Drop power from the coolant system and use it to bolster the container. It'll stabilize.\n\nJodi: But without coolant--\n\nJackie: It will stabilize!\n\n[There's a sharp crackle of electricity.]\n\nJodi: Drop 40% power from the coolant systems, reroute everything we have to the atomic container! \n\n[The whirring reaches a crescendo, then calms into a steady hum.]\n\nJodi: That did it. The container is stabilizing.\n\n[Jackie sighs in relief.]\n\nJodi: But... Look at these numbers.\n\nJackie: My god. Are these real?\n\nJodi: Yes, I'm certain of it. Jackie, I think we did it.\n\nJodi: I think we created an infinite energy source.\n------------------\n";
 
-				public static LocString TITLE6 = "Echo Six";
+				public static LocString CONTAINER2 = "Jodi: What on earth is this?\n\n[An open palm slams papers down on a desk.]\n\nJodi: These readings show that dozens of pounds of Neutronium are building up by the end of every shift. When were you going to tell me?\n\nJackie: I'm managing it.\n\nJodi: Jackie, this is hazardous material we're working with. We don't have the luxury of taking shortcuts, not when safety is on the line.\n\nJackie: I think I'm capable of overseeing my own safety.\n\nJodi: It's not just about <i>your</i> safety! We don't understand the longterm implications of what we're developing here... the manipulations we conduct in this facility could have rippling effects throughout the world, maybe even the universe.\n\nJackie: Don't be such a fearmonger, it's not befitting of a scientist. I'll remind you whose theories got us this far in the first place. Don't forget that this research has the potential to stop the energy wars and the end suffering of thousands. Every month we spend on trials here delays that.\n\nJodi: It's dangerous.\n\nJackie: Your concern is noted.\n------------------\n";
 
-				public static LocString TITLE7 = "Echo Seven";
+				public static LocString CONTAINER3 = "Jodi: Jackie, do you have a second to chat? It's important.\n\nJackie: I'm a little busy right now.\n\nJodi: I got an offer at Atomicon.\n\nJackie: ...\n\nJodi: Yeah, they're looking into some exciting new methods of gene splicing. It'd make better use of my bio degree, and--\n\nJackie: You can't actually be thinking about leaving.\n\nJodi: It's just, we're running out of money and the grant office is planning to...\n\nJackie: Wait. How did you get a job at Atomicon? Are you still putting my proposal on your resume?\n\nJodi: I mean, I <i>was</i> the one who pitched it and secured the funding.\n\nJackie: You <i>said</i> you would tell people I wrote it.\n\nJodi: I tried, it's just the time never seemed right and they offered to... Look, it doesn't matter. I'm sorry, Jackie.\n------------------\n";
 
-				public static LocString TITLE8 = "Echo Eight";
-
-				public static LocString CONTAINER1 = "Jodi: Hey, how'd it go?\n\nJackie: The school rejected my thesis proposal.\n\nJodi: Seriously? How come?\n\nJackie: They said they wanted me to study something more \"realistic\" than time manipulation.\n\nJodi: Pfft. The whole point of science is to be unrealistic. Heck, my thesis is on brain cloning. Imagine if the Theory of Relativity had been vetoed for being \"unrealistic\".\n\nJodi: Like, \"<i>Special</i> Relativity\"? I don't see what's so special about it. Haha! Right?\n\nJackie: Heh... Yeah...\n\nJodi: Hey.\n\nJodi: Don't worry, Jackie. I know you'll figure things out.\n------------------\n";
-
-				public static LocString CONTAINER2 = "Jodi: We should start our own company after I graduate.\n\nJackie: Yeah, totally.\n\nJodi: No one would be able to veto your research. We could just work on anything we wanted. I'm thinking we call it <i>\"Gravitas\"</i>. It's got an air of importances to it. Also it sort of sounds like \"gravity\"!\n\nJackie: ...Wait. Are you being serious?\n\nJodi: Of course I am. Why would I joke about that?\n------------------\n";
-
-				public static LocString CONTAINER3 = "Jackie: Hey, Jodi, I got a present for you.\n\nJodi: What's thi-- Is this a business card? With my <i>name</i> on it?!\n\nJackie: Hot off the presses! Look, I got one too.\n\nJodi: Wow, you had a logo made and everything. We're really doing it!\n\nJackie: It feels so real all of the sudden.\n------------------\n";
-
-				public static LocString CONTAINER4 = "Jackie: I think we should use your name when we apply for the research grant.\n\nJodi: But you wrote the proposal.\n\nJackie: We won't get funding if we use my name. It'll be hard enough for you to compete against tenured scientists, without my PhD I don't stand a chance.\n\nJodi: Yeah... Okay, but the second we get famous I'm setting the record straight. The world's got to know who invented this!\n------------------\n";
-
-				public static LocString CONTAINER5 = "Jodi: Jackie, do you have a second to chat? It's important.\n\nJackie: I'm a little busy right now.\n\nJodi: I got an offer at Atomicon.\n\nJackie: ...\n\nJodi: Yeah, they're looking into some exciting new methods of gene splicing. It'd make better use of my bio degree, and--\n\nJackie: You can't actually be thinking about leaving.\n\nJodi: It's just, we're running out of money and the grant office is planning to...\n\nJackie: Wait. How did you get a job at Atomicon? Are you still putting my proposal on your resume?\n\nJodi: I mean, I <i>was</i> the one who pitched it and secured the funding.\n\nJackie: You <i>said</i> you would tell people I wrote it.\n\nJodi: I tried, it's just the time never seemed right and they offered to... Look, it doesn't matter. I'm sorry, Jackie.\n------------------\n";
-
-				public static LocString CONTAINER6 = "Jodi: Hey, Jackie, it's been awhile since we had a chance to talk.\n\nJodi: I heard EUoST's presenting you with an honorary PhD for your discovery. I just wanted to leave you a message to let your know I'm happy for you and say \"congratulations\".\n\nJodi: If there's anything else I can do to help you out, let me know.\n\nJodi: So, uh... Congratulations! Hope you're doing well.\n\nJodi: Bye.\n------------------\n";
-
-				public static LocString CONTAINER7 = "Dr. McClintock: Knock knock.\n\nDirector: Oh, doctor, come in. Do you need something? If it's lab equipment, I'd remind you that you can requisition whatever you'd like directly from admin.\n\nDr. McClintock: No, my lab is fully stocked, thanks. I wanted to talk, unrelated to work.\n\nDirector: I see.\n\nDirector: Dr. McClintock, I hope I haven't given you the impression that you were hired for personal reasons. I brought you on to this project because I respect your skills as a scientist.\n\nDr. McClintock: Now see, that's exactly what I wanted to talk about. \"Dr. McClintock\". You've been cold since I got here. I'd hoped this would be a chance to settle things.\n\nDirector: I'd rather not have this discussion.\n\nDr. McClintock: I just wanted to say, I'm sorry I left.\n\nDr. McClintock: It wasn't because I didn't believe in our work.\n\nDirector: But you returned after the company became successful.\n\nDr. McClintock: Is that how you see it? Jackie, I came back because you asked me.\n\n[KNOCKING]\n\nDr. Jones: Director Stern? The latest results are in from the engineering lab.\n\nDr. Jones: Err... have I interrupted?\n\nDirector: No, no. Leave them on my desk please.\n\n[SOUND OF A DOOR SHUTTING]";
-
-				public static LocString CONTAINER8 = "";
+				public static LocString CONTAINER4 = "[The beep and click of an answering machine can be heard.]\n\nJodi: Hey, Jackie. I know it's been awhile since we had the chance to talk.\n\nJodi: I was reading the Nucleoid today and saw the article about the Bow. I justed wanted to call and say \"congratulations\".\n\nJodi: Maybe if you're free we can grab a coffee sometime and catch up.\n\n[pause]\n\nJodi: This is Jodi, by the way.\n\n[The machine clicks off.]\n------------------\n";
 			}
 
 			public static LocString TITLE = "Planetary Echoes";
@@ -1161,7 +1135,7 @@ namespace STRINGS
 				public static LocString CONTAINER2 = "Students at the Elion University of Science and Technology have held an unconventional party this weekend.\n\nWhile their peers may have been out until the wee hours wearing lampshades or drawing eyebrows on sleeping colleagues, students Jackie Stern and Jodie McClintock spent the weekend in their dorm, refreshments and decorations ready, waiting for their honored guests: themselves.\n\nThe two prospective STEM students, who study theoretical physics with a focus on the workings of space time, conducted the experiment under the assumption that, were their theories about the malleability of space time to ever come to fruition, their future selves could travel back in time to greet them at the party, proving the existence of time travel.\n\nThey weren't inconsiderate of their future selves' busy schedules though; should the guests of honor be unable to attend, they were encouraged to send back a message using the codeword \"Hourglass\" to communicate that, while they certainly wanted to come, they were simply unable.\n\nSadly no one RSVP'd or arrived to the party, but that did not dishearten Jodie or Jackie.\n\nAs Jodie put it, \"It just meant more snacks for us!\"";
 			}
 
-			public static LocString TITLE = "Newspaper Article";
+			public static LocString TITLE = "Campus Newspaper Article";
 
 			public static LocString SUBTITLE = "ENCRYPTION LEVEL: THREE";
 		}
@@ -1464,19 +1438,19 @@ namespace STRINGS
 		{
 			public class BODY
 			{
-				public static LocString CONTAINER1 = "<smallcaps>[Log fragmentation detected]\n[Voice Recognition unavailable]</smallcaps>\n\n[LOG BEGINS]\n\n...The Mealwood's hardiness will make it a potential contingency crop should Bristle Blossoms be unable to sustain sizable populations.\n\nIf pursued, design should focus on longterm viability and solving the psychological repercussions of prolonged Mealwood grain ingestion...\n\n[LOG ENDS]\n------------------\n";
+				public static LocString CONTAINER1 = "<smallcaps>[Voice Recognition Initialized]\n[Subject Identified: B577]</smallcaps>\n\n[LOG BEGINS]\n\nGeneticist: We've engineered crops to be rotated as needed depending on environmental situation. While a variety of plants would be ideal to supplement any remaining nutritional needs, any one of our designs would be enough to sustain a colony indefinitely without adverse effects on physical health.\n\nGeneticist: Some environmental survival issues still remain. Differing temperatures, light availability and last pass changes to nutrient levels take top priority, particularly for food and oxygen producing plants.\n\n[LOG ENDS]";
 
-				public static LocString CONTAINER2 = "[LOG BEGINS]\n\n...Selected in response to concerns about colony psychological well-being.\n\nWhile design should focus on attributing mood-enhancing effects to natural Briar pheromone emissions, the project has been moved to the lowest priority level beneath more life-sustaining designs...\n\n[LOG ENDS]\n------------------\n";
+				public static LocString CONTAINER2 = "<smallcaps>[Log fragmentation detected]\n[Voice Recognition unavailable]</smallcaps>\n\n[LOG BEGINS]\n\n...Selected in response to concerns about colony psychological well-being.\n\nWhile design should focus on attributing mood-enhancing effects to natural Briar pheromone emissions, the project has been moved to the lowest priority level beneath more life-sustaining designs...\n\n[LOG ENDS]\n------------------\n";
 
-				public static LocString CONTAINER3 = "[LOG BEGINS]\n\n...It is yet unknown if we can surmount the obstacles that stand in the way of engineering a root capable of reproduction in the more uninhabitable situations we anticipate for our colonies, or whether it is even worth the effort...\n\n[LOG ENDS]\n------------------\n";
+				public static LocString CONTAINER3 = "<smallcaps>[Log fragmentation detected]\n[Voice Recognition unavailable]</smallcaps>\n\n[LOG BEGINS]\n\n...It is yet unknown if we can surmount the obstacles that stand in the way of engineering a root capable of reproduction in the more uninhabitable situations we anticipate for our colonies, or whether it is even worth the effort...\n\n[LOG ENDS]\n------------------\n";
 
-				public static LocString CONTAINER4 = "[LOG BEGINS]\n\n...The gene sequences within the common Dusk Cap allow it to grow in low light environments.\n\nThese genes should be sampled, with the hope that we can splice them into other plant designs....\n\n[LOG ENDS]\n------------------\n";
+				public static LocString CONTAINER4 = "<smallcaps>[Log fragmentation detected]\n[Voice Recognition unavailable]</smallcaps>\n\n[LOG BEGINS]\n\n...The Mealwood's hardiness will make it a potential contingency crop should Bristle Blossoms be unable to sustain sizable populations.\n\nIf pursued, design should focus on longterm viability and solving the psychological repercussions of prolonged Mealwood grain ingestion...\n\n[LOG ENDS]\n------------------\n";
 
-				public static LocString CONTAINER5 = "[LOG BEGINS]\n\n...The Thimble Reed will be used as a contingency for textile production in the event that printed materials not be sufficient.\n\nDesign should focus on the yield frequency of the plant, as well as... erm... softness.\n\n[LOG ENDS]\n------------------\n";
+				public static LocString CONTAINER5 = "<smallcaps>[Log fragmentation detected]\n[Voice Recognition unavailable]</smallcaps>\n\n[LOG BEGINS]\n\n...The Thimble Reed will be used as a contingency for textile production in the event that printed materials not be sufficient.\n\nDesign should focus on the yield frequency of the plant, as well as... erm... softness.\n\n[LOG ENDS]\n------------------\n";
 
-				public static LocString CONTAINER6 = "[LOG BEGINS]\n\n...Balm Lily is a reliable all-purpose medicinal plant.\n\nVery little need be altered, save for assurances that it will survive wherever it may be planted...\n\n[LOG ENDS]\n------------------\n";
+				public static LocString CONTAINER6 = "<smallcaps>[Log fragmentation detected]\n[Voice Recognition unavailable]</smallcaps>\n\n[LOG BEGINS]\n\n...Balm Lily is a reliable all-purpose medicinal plant.\n\nVery little need be altered, save for assurances that it will survive wherever it may be planted...\n\n[LOG ENDS]\n------------------\n";
 
-				public static LocString CONTAINER7 = "[VOICE RECOGNITION INITIALIZED]\n[SUBJECT IDENTIFIED: B577]\n\n[LOG BEGINS]\n\nGeneticist: We've engineered crops to be rotated as needed depending on environmental situation. While a variety of plants would be ideal to supplement any remaining nutritional needs, any one of our designs would be enough to sustain a colony indefinitely without adverse effects on physical health.\n\nGeneticist: Some environmental survival issues still remain. Differing temperatures, light availability and last pass changes to nutrient levels take top priority, particularly for food and oxygen producing plants.\n\n[LOG ENDS]";
+				public static LocString CONTAINER7 = "<smallcaps>[Log fragmentation detected]\n[Voice Recognition unavailable]</smallcaps>\n\n[LOG BEGINS]\n\n...The gene sequences within the common Dusk Cap allow it to grow in low light environments.\n\nThese genes should be sampled, with the hope that we can splice them into other plant designs....\n\n[LOG ENDS]\n------------------\n";
 			}
 
 			public static LocString TITLE = "Agricultural Notes";
@@ -1488,7 +1462,7 @@ namespace STRINGS
 		{
 			public class BODY
 			{
-				public static LocString CONTAINER1 = "[LOG BEGINS]\n\n(throat clearing)\n\nWe are now reliably printing healthy, living subjects, though all have exhibited unusual qualities as a result of the cloning process.\n\n(squeaking sounds)\n\nUnusual vocalizations, benign growths, and missing appendages have been seen in all subjects thus far, to varying degrees of severity. It seems that bypassing or accelerating juvenility halts certain critical stages of development. Brain function, however, appears typical.\n\n(squeaking)\n\nThey also seem quite happy.\n\nDr. McClintock, signing off.\n\n[LOG ENDS]";
+				public static LocString CONTAINER1 = "<smallcaps>[Voice Recognition Initialized]\n[Subject Identified: B111]</smallcaps>\n\n[LOG BEGINS]\n\n[A throat clears.]\n\nB111: We are now reliably printing healthy, living subjects, though all have exhibited unusual qualities as a result of the cloning process.\n\n[Squeaking sounds can be heard.]\n\nB111: Unusual vocalizations, benign growths, and missing appendages have been seen in all subjects thus far, to varying degrees of severity. It seems that bypassing or accelerating juvenility halts certain critical stages of development. Brain function, however, appears typical.\n\n[Squeaking.]\n\nB111: They also seem quite happy.\n\nB111: Dr. McClintock, signing off.\n\n[LOG ENDS]";
 			}
 
 			public static LocString TITLE = "Initial Success";
@@ -1594,6 +1568,96 @@ namespace STRINGS
 			public static LocString TITLE = "Possible Applications";
 
 			public static LocString SUBTITLE = "ENCRYPTION LEVEL: THREE";
+		}
+
+		public class AUTOMATION
+		{
+			public static LocString TITLE = "Automation";
+
+			public static LocString PARAGRAPH_1 = "Automation is a tool for controlling the operation of buildings based on what sensors in the colony are detecting. A light bulb could be configured to automatically turn on when a sensor detects a Duplicant in the room. A water pump might activate only when a sensor detects water. An air conditioner might activate only when the sensor detects too much heat. ";
+
+			public static LocString PARAGRAPH_2 = "In addition to an electrical wire, most powered buildings can also have an automation wire connected to them. This wire can signal the building to turn on or off. If the other end of an automation wire is connected to a sensor, the building will turn on and off as the sensor outputs signals. ";
+
+			public static LocString PARAGRAPH_3 = "There are two signals that an automation wire can send: Active and Standby. The active signal will cause buildings to turn on, and the standby signal will cause buildings to turn off. Sensors can often be configured to send their active signal only under certain conditions. ex.A Temperature sensor may only send an active signal if detecting temperatures greater than a chosen value. ";
+
+			public static LocString PARAGRAPH_4 = "The signals of sensor wires can be combined using special buildings called \"Gates\" in order to create complex activation conditions. \n\nThe \"AND\" gate can have two automation wires connected to its input slots, and one connected to its output slots. It will send a \"Active\" signal to its output slot only if it is recieving an Active signal from both its input slots. This could be used to activate a building only when multiple sensors are detecting something. ";
+		}
+
+		public class DECORSYSTEM
+		{
+			public static LocString TITLE = "Decor";
+
+			public static LocString PARAGRAPH_1 = "Pretty things tend to increase the Decor value of an area. Low Decor can increase Duplicant streses. Each Duplicant has a different idea of what is a high enough Decor value. If the average Decor that a Duplicant experiences in a cycle is below their expectations they will suffer a stress pentalty. ";
+
+			public static LocString PARAGRAPH_2 = "Many things have an effect on the Decor of an area. The effect is expressed as a strength value and a radius. Often that effect is postive, but some things can lower the decor value of an area too. Plants, critters, and furniture often increase decor while industrial buildings and rot often decrease it. ";
+
+			public static LocString PARAGRAPH_3;
+
+			static DECORSYSTEM()
+			{
+				string[] obj = new string[8]
+				{
+					"The ",
+					CREATURES.SPECIES.PRICKLEGRASS.NAME,
+					" has a decor value of ",
+					null,
+					null,
+					null,
+					null,
+					null
+				};
+				EffectorValues pOSITIVE_DECOR_EFFECT = PrickleGrassConfig.POSITIVE_DECOR_EFFECT;
+				object arg = pOSITIVE_DECOR_EFFECT.amount;
+				EffectorValues pOSITIVE_DECOR_EFFECT2 = PrickleGrassConfig.POSITIVE_DECOR_EFFECT;
+				obj[3] = $"{arg} and a radius of {pOSITIVE_DECOR_EFFECT2.radius} tiles. ";
+				obj[4] = "\nThe ";
+				obj[5] = BUILDINGS.PREFABS.MICROBEMUSHER.NAME;
+				obj[6] = " has a decor value of ";
+				obj[7] = $"{MicrobeMusherConfig.DECOR.amount} and a radius of {MicrobeMusherConfig.DECOR.radius} tiles. ";
+				PARAGRAPH_3 = string.Concat(obj);
+			}
+		}
+
+		public class HEAT
+		{
+			public static LocString TITLE = "Heat";
+
+			public static LocString BODY = "Everything on the asteroid has a temperature. Extreme temperatures can cause all sorts of problems for a base. Buildings can stop functioning, crops can wilt, and things can even melt, boil, and freeze when they really ought not to.\n\nTemperature increase when the thermal energy of a substance increases. The value of temperature is equal to the total Thermal Energy divided by the Specific Heat Capacity of the substance.\nBecause Specific Heat Capacity varies between substances so significantly, it is often the case a substance can have a higher temperature than another despite a lower overall thermal energy. \nThis quality makes Water require nearly four times the amount of thermal energy to increase in temperature compared to Oxygen. \n\nThermal energy can be transfered between Buildings, Creatures, World tiles, and other world entities through Conduction. Conduction occurs when two things of different Temperatures are touching. The rate the energy transfer is the product of the Combined Conductivity and Temperature difference. Thermal energy will flow slowly between substances with low Thermal conductivity values. For this reason, substances with low conductivity are considered to be good Insulators. ";
+		}
+
+		public class LIGHT
+		{
+			public static LocString TITLE = "Light";
+
+			public static LocString BODY = "Most of the asteroid is dark. Light sources like Lamps or Shinebugs can gives Duplicants a much appreciated boost to Morale and productivity. \nMany plants are also sensitive to the amount of light they recieve. \n\nThe amount of light on a cell is measured in Lux.";
+		}
+
+		public class MORALE
+		{
+			public static LocString TITLE = "Morale";
+
+			public static LocString BODY = "Duplicant morale describes the relationship between their Skills and Lifestyle. Duplicants with poor morale will experience an increase in Stress.Poor morale is caused by a duplicant having many skills, but few comforts. Comforts such as quality food, nice rooms, and recreation will increase morale.As a colony grows, it can safely increase its duplicants skills with its comforts.";
+		}
+
+		public class POWER
+		{
+			public static LocString TITLE = "Power";
+
+			public static LocString BODY = "Electrical power is required to run many of the buildings in a base. Power can be transfered between buildings using wires.\nSeveral buildings can generate power.Once generated, power can be stored in batteries to prevent waste.\n\nPower is measure in Joules when stored in batteries.Power production and consumption  is measure in Watts, which is equal to Joules consumed or produced per second.\n\nA network on wires can be overloaded if it is consuming too many watts. If the wattage of a wire netword exceeds its limits it may break and require repair.Regular wires have a 1000 Watt limit (or 1kW).";
+		}
+
+		public class RESEARCH
+		{
+			public static LocString TITLE = "Research";
+
+			public static LocString BODY = " Doing research unlocks new types of buildings for the colony.\nA selected research task is completed once enough research points have been generated at the colonies Research Stations.\nResearch point are generated at Research stations by Duplicants performing the Research chore.The higher a Duplicants 'Science' attribute score is the quicker they generate research points.\n\nAdvanced research tasks require special research stations to generate the proper kind of research point.These research stations often consume more advanced resources.\nUsing higher level research stations also requires Duplicants to have learned higher level research skills.";
+		}
+
+		public class STRESS
+		{
+			public static LocString TITLE = "Stress";
+
+			public static LocString BODY = "A Duplicants experiences in the colony affect their stress level.Stress increases when they have negative experiences or unmet expectations.Stress descreses with time and recreation.\nIf stress levels get too high, Duplicant behavior changes for the worse. If a Duplicant has very high stress values they will experience a Stress Behaviour episode.\n\nEach Duplicant has a different Stress Behaviour - but all stress responses are bad.\n\nAfter the stress behaviour episode is done, the Duplicants stress will reduce to a lower value.If the stress factors are not corrected though they are bound to have another stress behavior episode.";
 		}
 	}
 }

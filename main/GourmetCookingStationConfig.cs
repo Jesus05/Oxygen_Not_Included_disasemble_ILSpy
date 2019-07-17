@@ -103,35 +103,15 @@ public class GourmetCookingStationConfig : IBuildingConfig
 	{
 		ComplexRecipe.RecipeElement[] array = new ComplexRecipe.RecipeElement[2]
 		{
-			new ComplexRecipe.RecipeElement(MushroomConfig.ID, 1f),
-			new ComplexRecipe.RecipeElement("Lettuce", 4f)
+			new ComplexRecipe.RecipeElement("GrilledPrickleFruit", 2f),
+			new ComplexRecipe.RecipeElement(SpiceNutConfig.ID, 2f)
 		};
 		ComplexRecipe.RecipeElement[] array2 = new ComplexRecipe.RecipeElement[1]
 		{
-			new ComplexRecipe.RecipeElement("MushroomWrap", 1f)
+			new ComplexRecipe.RecipeElement("Salsa", 1f)
 		};
 		string id = ComplexRecipeManager.MakeRecipeID("GourmetCookingStation", array, array2);
 		ComplexRecipe complexRecipe = new ComplexRecipe(id, array, array2);
-		complexRecipe.time = FOOD.RECIPES.STANDARD_COOK_TIME;
-		complexRecipe.description = ITEMS.FOOD.MUSHROOMWRAP.RECIPEDESC;
-		complexRecipe.nameDisplay = ComplexRecipe.RecipeNameDisplay.Result;
-		complexRecipe.fabricators = new List<Tag>
-		{
-			"GourmetCookingStation"
-		};
-		complexRecipe.sortOrder = 20;
-		MushroomWrapConfig.recipe = complexRecipe;
-		ComplexRecipe.RecipeElement[] array3 = new ComplexRecipe.RecipeElement[2]
-		{
-			new ComplexRecipe.RecipeElement(PrickleFruitConfig.ID, 2f),
-			new ComplexRecipe.RecipeElement(SpiceNutConfig.ID, 2f)
-		};
-		ComplexRecipe.RecipeElement[] array4 = new ComplexRecipe.RecipeElement[1]
-		{
-			new ComplexRecipe.RecipeElement("Salsa", 1f)
-		};
-		string id2 = ComplexRecipeManager.MakeRecipeID("GourmetCookingStation", array3, array4);
-		complexRecipe = new ComplexRecipe(id2, array3, array4);
 		complexRecipe.time = FOOD.RECIPES.STANDARD_COOK_TIME;
 		complexRecipe.description = ITEMS.FOOD.SALSA.RECIPEDESC;
 		complexRecipe.nameDisplay = ComplexRecipe.RecipeNameDisplay.Result;
@@ -139,59 +119,59 @@ public class GourmetCookingStationConfig : IBuildingConfig
 		{
 			"GourmetCookingStation"
 		};
-		complexRecipe.sortOrder = 101;
+		complexRecipe.sortOrder = 300;
 		SalsaConfig.recipe = complexRecipe;
+		ComplexRecipe.RecipeElement[] array3 = new ComplexRecipe.RecipeElement[2]
+		{
+			new ComplexRecipe.RecipeElement("FriedMushroom", 1f),
+			new ComplexRecipe.RecipeElement("Lettuce", 4f)
+		};
+		ComplexRecipe.RecipeElement[] array4 = new ComplexRecipe.RecipeElement[1]
+		{
+			new ComplexRecipe.RecipeElement("MushroomWrap", 1f)
+		};
+		string id2 = ComplexRecipeManager.MakeRecipeID("GourmetCookingStation", array3, array4);
+		complexRecipe = new ComplexRecipe(id2, array3, array4);
+		complexRecipe.time = FOOD.RECIPES.STANDARD_COOK_TIME;
+		complexRecipe.description = ITEMS.FOOD.MUSHROOMWRAP.RECIPEDESC;
+		complexRecipe.nameDisplay = ComplexRecipe.RecipeNameDisplay.Result;
+		complexRecipe.fabricators = new List<Tag>
+		{
+			"GourmetCookingStation"
+		};
+		complexRecipe.sortOrder = 400;
+		MushroomWrapConfig.recipe = complexRecipe;
 		ComplexRecipe.RecipeElement[] array5 = new ComplexRecipe.RecipeElement[2]
 		{
-			new ComplexRecipe.RecipeElement("FishMeat", 2f),
-			new ComplexRecipe.RecipeElement("Lettuce", 1f)
+			new ComplexRecipe.RecipeElement("CookedMeat", 1f),
+			new ComplexRecipe.RecipeElement("CookedFish", 1f)
 		};
 		ComplexRecipe.RecipeElement[] array6 = new ComplexRecipe.RecipeElement[1]
 		{
-			new ComplexRecipe.RecipeElement("Sushi", 1f)
+			new ComplexRecipe.RecipeElement("SurfAndTurf", 1f)
 		};
 		string id3 = ComplexRecipeManager.MakeRecipeID("GourmetCookingStation", array5, array6);
 		complexRecipe = new ComplexRecipe(id3, array5, array6);
 		complexRecipe.time = FOOD.RECIPES.STANDARD_COOK_TIME;
-		complexRecipe.description = ITEMS.FOOD.SUSHI.RECIPEDESC;
+		complexRecipe.description = ITEMS.FOOD.SURFANDTURF.RECIPEDESC;
 		complexRecipe.nameDisplay = ComplexRecipe.RecipeNameDisplay.Result;
 		complexRecipe.fabricators = new List<Tag>
 		{
 			"GourmetCookingStation"
 		};
-		complexRecipe.sortOrder = 21;
-		SushiConfig.recipe = complexRecipe;
+		complexRecipe.sortOrder = 500;
+		SurfAndTurfConfig.recipe = complexRecipe;
 		ComplexRecipe.RecipeElement[] array7 = new ComplexRecipe.RecipeElement[2]
-		{
-			new ComplexRecipe.RecipeElement("Meat", 2f),
-			new ComplexRecipe.RecipeElement(SpiceNutConfig.ID, 1f)
-		};
-		ComplexRecipe.RecipeElement[] array8 = new ComplexRecipe.RecipeElement[1]
-		{
-			new ComplexRecipe.RecipeElement("CookedMeat", 1f)
-		};
-		string id4 = ComplexRecipeManager.MakeRecipeID("GourmetCookingStation", array7, array8);
-		complexRecipe = new ComplexRecipe(id4, array7, array8);
-		complexRecipe.time = FOOD.RECIPES.STANDARD_COOK_TIME;
-		complexRecipe.description = ITEMS.FOOD.COOKEDMEAT.RECIPEDESC;
-		complexRecipe.nameDisplay = ComplexRecipe.RecipeNameDisplay.Result;
-		complexRecipe.fabricators = new List<Tag>
-		{
-			"GourmetCookingStation"
-		};
-		complexRecipe.sortOrder = 21;
-		CookedMeatConfig.recipe = complexRecipe;
-		ComplexRecipe.RecipeElement[] array9 = new ComplexRecipe.RecipeElement[2]
 		{
 			new ComplexRecipe.RecipeElement("ColdWheatSeed", 10f),
 			new ComplexRecipe.RecipeElement(SpiceNutConfig.ID, 1f)
 		};
-		ComplexRecipe.RecipeElement[] array10 = new ComplexRecipe.RecipeElement[1]
+		ComplexRecipe.RecipeElement[] array8 = new ComplexRecipe.RecipeElement[1]
 		{
 			new ComplexRecipe.RecipeElement("SpiceBread", 1f)
 		};
-		string id5 = ComplexRecipeManager.MakeRecipeID("GourmetCookingStation", array9, array10);
-		complexRecipe = new ComplexRecipe(id5, array9, array10);
+		string id4 = ComplexRecipeManager.MakeRecipeID("GourmetCookingStation", array7, array8);
+		complexRecipe = new ComplexRecipe(id4, array7, array8);
 		complexRecipe.time = FOOD.RECIPES.STANDARD_COOK_TIME;
 		complexRecipe.description = ITEMS.FOOD.SPICEBREAD.RECIPEDESC;
 		complexRecipe.nameDisplay = ComplexRecipe.RecipeNameDisplay.Result;
@@ -199,19 +179,19 @@ public class GourmetCookingStationConfig : IBuildingConfig
 		{
 			"GourmetCookingStation"
 		};
-		complexRecipe.sortOrder = 100;
+		complexRecipe.sortOrder = 600;
 		SpiceBreadConfig.recipe = complexRecipe;
-		ComplexRecipe.RecipeElement[] array11 = new ComplexRecipe.RecipeElement[2]
+		ComplexRecipe.RecipeElement[] array9 = new ComplexRecipe.RecipeElement[2]
 		{
 			new ComplexRecipe.RecipeElement("Tofu", 1f),
 			new ComplexRecipe.RecipeElement(SpiceNutConfig.ID, 1f)
 		};
-		ComplexRecipe.RecipeElement[] array12 = new ComplexRecipe.RecipeElement[1]
+		ComplexRecipe.RecipeElement[] array10 = new ComplexRecipe.RecipeElement[1]
 		{
 			new ComplexRecipe.RecipeElement("SpicyTofu", 1f)
 		};
-		string id6 = ComplexRecipeManager.MakeRecipeID("GourmetCookingStation", array11, array12);
-		complexRecipe = new ComplexRecipe(id6, array11, array12);
+		string id5 = ComplexRecipeManager.MakeRecipeID("GourmetCookingStation", array9, array10);
+		complexRecipe = new ComplexRecipe(id5, array9, array10);
 		complexRecipe.time = FOOD.RECIPES.STANDARD_COOK_TIME;
 		complexRecipe.description = ITEMS.FOOD.SPICYTOFU.RECIPEDESC;
 		complexRecipe.nameDisplay = ComplexRecipe.RecipeNameDisplay.Result;
@@ -219,7 +199,28 @@ public class GourmetCookingStationConfig : IBuildingConfig
 		{
 			"GourmetCookingStation"
 		};
-		complexRecipe.sortOrder = 100;
+		complexRecipe.sortOrder = 800;
 		SpicyTofuConfig.recipe = complexRecipe;
+		ComplexRecipe.RecipeElement[] array11 = new ComplexRecipe.RecipeElement[3]
+		{
+			new ComplexRecipe.RecipeElement("ColdWheatBread", 1f),
+			new ComplexRecipe.RecipeElement("Lettuce", 1f),
+			new ComplexRecipe.RecipeElement("CookedMeat", 1f)
+		};
+		ComplexRecipe.RecipeElement[] array12 = new ComplexRecipe.RecipeElement[1]
+		{
+			new ComplexRecipe.RecipeElement("Burger", 1f)
+		};
+		string id6 = ComplexRecipeManager.MakeRecipeID("GourmetCookingStation", array11, array12);
+		complexRecipe = new ComplexRecipe(id6, array11, array12);
+		complexRecipe.time = FOOD.RECIPES.STANDARD_COOK_TIME;
+		complexRecipe.description = ITEMS.FOOD.BURGER.RECIPEDESC;
+		complexRecipe.nameDisplay = ComplexRecipe.RecipeNameDisplay.Result;
+		complexRecipe.fabricators = new List<Tag>
+		{
+			"GourmetCookingStation"
+		};
+		complexRecipe.sortOrder = 900;
+		BurgerConfig.recipe = complexRecipe;
 	}
 }

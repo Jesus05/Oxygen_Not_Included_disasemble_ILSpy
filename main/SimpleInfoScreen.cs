@@ -643,7 +643,7 @@ public class SimpleInfoScreen : TargetScreen
 										selected_storage = storage;
 										component.onClick += delegate
 										{
-											selected_storage.Remove(select_item, true);
+											selected_storage.Drop(select_item, true);
 										};
 									}
 								}

@@ -64,7 +64,7 @@ public class LoreBearer : KMonoBehaviour
 			{
 				Game.Instance.unlocks.Unlock("neuralvacillator");
 			}
-			if (base.gameObject.name == "PropDesk" || base.gameObject.name == "PropReceptionDesk")
+			if (base.gameObject.name == "PropDesk")
 			{
 				string text = Game.Instance.unlocks.UnlockNext("emails");
 				if (text != null)
@@ -93,6 +93,18 @@ public class LoreBearer : KMonoBehaviour
 					string str4 = "SEARCH1";
 					infoDialogScreen.AddPlainText(Strings.Get("STRINGS.UI.USERMENUACTIONS.READLORE.SEARCH_OBJECT_FAIL." + str4));
 				}
+			}
+			else if (base.gameObject.name == "PropReceptionDesk")
+			{
+				Game.Instance.unlocks.Unlock("email_pens");
+				infoDialogScreen.AddPlainText(UI.USERMENUACTIONS.READLORE.SEARCH_ELLIESDESK);
+				infoDialogScreen.AddOption(UI.USERMENUACTIONS.READLORE.GOTODATABASE, OpenCodex("email_pens"));
+			}
+			else if (base.gameObject.name == "PropFacilityDesk")
+			{
+				Game.Instance.unlocks.Unlock("journal_magazine");
+				infoDialogScreen.AddPlainText(UI.USERMENUACTIONS.READLORE.SEARCH_STERNSDESK);
+				infoDialogScreen.AddOption(UI.USERMENUACTIONS.READLORE.GOTODATABASE, OpenCodex("journal_magazine"));
 			}
 			else if (base.gameObject.name == "HeadquartersComplete")
 			{

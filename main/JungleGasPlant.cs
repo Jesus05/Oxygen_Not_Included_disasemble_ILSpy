@@ -77,7 +77,7 @@ public class JungleGasPlant : StateMachineComponent<JungleGasPlant.StatesInstanc
 			});
 			blocked_from_growing.ToggleStatusItem(Db.Get().MiscStatusItems.RegionIsBlocked, (object)null).TagTransition(GameTags.Entombed, alive.seed_grow, true).EventTransition(GameHashes.TooColdWarning, alive.seed_grow, null)
 				.EventTransition(GameHashes.TooHotWarning, alive.seed_grow, null)
-				.EventTransition(GameHashes.Uprooted, dead, (StatesInstance smi) => UprootedMonitor.IsObjectUprooted(smi.master.gameObject));
+				.TagTransition(GameTags.Uprooted, dead, false);
 			alive.InitializeStates(masterTarget, dead);
 			alive.seed_grow.QueueAnim("seed_grow", false, null).EventTransition(GameHashes.AnimQueueComplete, alive.idle, null).EventTransition(GameHashes.Wilt, alive.wilting, (StatesInstance smi) => smi.master.wiltCondition.IsWilting());
 			alive.idle.EventTransition(GameHashes.Wilt, alive.wilting, (StatesInstance smi) => smi.master.wiltCondition.IsWilting()).EventTransition(GameHashes.Grow, alive.grown, (StatesInstance smi) => smi.master.growing.IsGrown()).PlayAnim("idle_loop", KAnim.PlayMode.Loop);

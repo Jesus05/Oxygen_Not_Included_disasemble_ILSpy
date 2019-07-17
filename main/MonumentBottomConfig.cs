@@ -68,6 +68,7 @@ public class MonumentBottomConfig : IBuildingConfig
 		go.GetComponent<KPrefabID>().prefabSpawnFn += delegate(GameObject game_object)
 		{
 			MonumentPart monumentPart = game_object.AddOrGet<MonumentPart>();
+			monumentPart.part = MonumentPart.Part.Bottom;
 			monumentPart.selectableStatesAndSymbols = new List<Tuple<string, string>>();
 			monumentPart.stateUISymbol = "base";
 			monumentPart.selectableStatesAndSymbols.Add(new Tuple<string, string>("option_a", "straight_legs"));
@@ -80,6 +81,7 @@ public class MonumentBottomConfig : IBuildingConfig
 			monumentPart.selectableStatesAndSymbols.Add(new Tuple<string, string>("option_h", "step_on_hatches"));
 			monumentPart.selectableStatesAndSymbols.Add(new Tuple<string, string>("option_i", "sit_on_tools"));
 			monumentPart.selectableStatesAndSymbols.Add(new Tuple<string, string>("option_j", "water_pacu"));
+			monumentPart.selectableStatesAndSymbols.Add(new Tuple<string, string>("option_k", "sit_on_eggs"));
 		};
 	}
 }

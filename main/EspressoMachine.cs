@@ -90,7 +90,7 @@ public class EspressoMachine : StateMachineComponent<EspressoMachine.StatesInsta
 		base.smi.StartSM();
 		GameScheduler.Instance.Schedule("Scheduling Tutorial", 2f, delegate
 		{
-			Tutorial.Instance.TutorialMessage(Tutorial.TutorialMessages.TM_Schedule);
+			Tutorial.Instance.TutorialMessage(Tutorial.TutorialMessages.TM_Schedule, true);
 		}, null, null);
 	}
 

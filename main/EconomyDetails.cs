@@ -997,7 +997,7 @@ public class EconomyDetails
 		list.Add(item6);
 		Scenario item7 = new Scenario("geysers/geysers_active_period_only", 1, (Transformation t) => t.type == details.geyserActivePeriodTransformationType);
 		list.Add(item7);
-		Scenario item8 = new Scenario("geyser/geysers_whole_lifetime", 1, (Transformation t) => t.type == details.geyserLifetimeTransformationType);
+		Scenario item8 = new Scenario("geysers/geysers_whole_lifetime", 1, (Transformation t) => t.type == details.geyserLifetimeTransformationType);
 		list.Add(item8);
 		Scenario scenario = new Scenario("oxygen/algae_distillery", 0, null);
 		scenario.AddEntry(new Scenario.Entry(TagManager.Create("AlgaeDistillery"), 3));

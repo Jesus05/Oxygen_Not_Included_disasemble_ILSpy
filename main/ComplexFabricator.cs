@@ -318,6 +318,11 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms, ISim1000ms
 			workingOrderIdx = -1;
 			orderProgress = 0f;
 			UpdateChore();
+			ValidateNextOrder();
+			if (nextOrderIsWorkable)
+			{
+				StartWorkingOrder(nextOrderIdx);
+			}
 		}
 	}
 

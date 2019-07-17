@@ -12,6 +12,9 @@ public class BuddingTrunk : KMonoBehaviour, ISim4000ms
 	[MyCmpReq]
 	private WiltCondition wilting;
 
+	[MyCmpReq]
+	private UprootedMonitor uprooted;
+
 	public string budPrefabID;
 
 	[Serialize]
@@ -126,10 +129,6 @@ public class BuddingTrunk : KMonoBehaviour, ISim4000ms
 			HarvestDesignatable harvestDesignatable = array[i]?.Get();
 			if ((Object)harvestDesignatable != (Object)null)
 			{
-				if (harvestDesignatable.CanBeHarvested())
-				{
-					harvestDesignatable.GetComponent<Harvestable>().Harvest();
-				}
 				harvestDesignatable.Trigger(-216549700, null);
 			}
 		}
@@ -183,33 +182,37 @@ public class BuddingTrunk : KMonoBehaviour, ISim4000ms
 
 	public void TrySpawnRandomBud(object data = null, float growth_percentage = 0f)
 	{
-		for (int i = 0; i < buds.Length; i++)
+		if (!uprooted.IsUprooted)
 		{
-			Vector3 budPosition = GetBudPosition(i);
-			int cell = Grid.PosToCell(budPosition);
-			if ((buds[i] == null || (Object)buds[i].Get() == (Object)null) && CanGrowInto(cell))
+			for (int i = 0; i < buds.Length; i++)
 			{
-				spawn_choices.Add(i);
+				Vector3 budPosition = GetBudPosition(i);
+				int cell = Grid.PosToCell(budPosition);
+				if ((buds[i] == null || (Object)buds[i].Get() == (Object)null) && CanGrowInto(cell))
+				{
+					spawn_choices.Add(i);
+				}
 			}
-		}
-		if (spawn_choices.Count > 0)
-		{
-			int index = Random.Range(0, spawn_choices.Count);
-			int num = spawn_choices[index];
-			Vector3 budPosition2 = GetBudPosition(num);
-			GameObject gameObject = Util.KInstantiate(Assets.GetPrefab(budPrefabID), budPosition2);
-			gameObject.SetActive(true);
-			gameObject.GetComponent<Growing>().OverrideMaturityLevel(growth_percentage);
-			gameObject.GetComponent<TreeBud>().SetTrunkPosition(this, num);
-			HarvestDesignatable component = gameObject.GetComponent<HarvestDesignatable>();
-			buds[num] = new Ref<HarvestDesignatable>(component);
-			UpdateBudHarvestState(component);
-			if (!hasExtraSeedAvailable && Random.Range(0, 100) < 5)
+			if (spawn_choices.Count > 0)
 			{
-				hasExtraSeedAvailable = true;
+				int index = Random.Range(0, spawn_choices.Count);
+				int num = spawn_choices[index];
+				Vector3 budPosition2 = GetBudPosition(num);
+				GameObject gameObject = Util.KInstantiate(Assets.GetPrefab(budPrefabID), budPosition2);
+				gameObject.SetActive(true);
+				gameObject.GetComponent<Growing>().OverrideMaturityLevel(growth_percentage);
+				gameObject.GetComponent<TreeBud>().SetTrunkPosition(this, num);
+				gameObject.GetComponent<BudUprootedMonitor>().SetParentObject(GetComponent<KPrefabID>());
+				HarvestDesignatable component = gameObject.GetComponent<HarvestDesignatable>();
+				buds[num] = new Ref<HarvestDesignatable>(component);
+				UpdateBudHarvestState(component);
+				if (!hasExtraSeedAvailable && Random.Range(0, 100) < 5)
+				{
+					hasExtraSeedAvailable = true;
+				}
 			}
+			spawn_choices.Clear();
 		}
-		spawn_choices.Clear();
 	}
 
 	public void ExtractExtraSeed()

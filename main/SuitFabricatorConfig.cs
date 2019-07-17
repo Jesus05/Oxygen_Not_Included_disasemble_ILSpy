@@ -137,7 +137,7 @@ public class SuitFabricatorConfig : IBuildingConfig
 	{
 		go.GetComponent<KPrefabID>().prefabInitFn += delegate
 		{
-			Tutorial.Instance.TutorialMessage(Tutorial.TutorialMessages.TM_Suits);
+			Tutorial.Instance.TutorialMessage(Tutorial.TutorialMessages.TM_Suits, true);
 		};
 		go.GetComponent<KPrefabID>().prefabSpawnFn += delegate(GameObject game_object)
 		{

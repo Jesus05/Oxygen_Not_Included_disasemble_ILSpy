@@ -375,7 +375,7 @@ public class Diggable : Workable
 				component.AddStatusItem(Db.Get().BuildingStatusItems.DigUnreachable, this);
 				GameScheduler.Instance.Schedule("Locomotion Tutorial", 2f, delegate
 				{
-					Tutorial.Instance.TutorialMessage(Tutorial.TutorialMessages.TM_Locomotion);
+					Tutorial.Instance.TutorialMessage(Tutorial.TutorialMessages.TM_Locomotion, true);
 				}, null, null);
 			}
 		}

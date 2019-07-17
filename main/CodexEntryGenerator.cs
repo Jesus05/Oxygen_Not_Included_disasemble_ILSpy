@@ -453,6 +453,40 @@ public static class CodexEntryGenerator
 		return categoryEntry;
 	}
 
+	public static Dictionary<string, CodexEntry> GenerateTutorialNotificationEntries()
+	{
+		Dictionary<string, CodexEntry> dictionary = new Dictionary<string, CodexEntry>();
+		for (int i = 0; i < 20; i++)
+		{
+			TutorialMessage tutorialMessage = (TutorialMessage)Tutorial.Instance.TutorialMessage((Tutorial.TutorialMessages)i, false);
+			List<ContentContainer> list = new List<ContentContainer>();
+			GenerateTitleContainers(tutorialMessage.GetTitle(), list);
+			if (!string.IsNullOrEmpty(tutorialMessage.videoClipId))
+			{
+				CodexVideo codexVideo = new CodexVideo();
+				codexVideo.videoName = tutorialMessage.videoClipId;
+				codexVideo.overlayName = tutorialMessage.videoOverlayName;
+				codexVideo.overlayTexts = new List<string>
+				{
+					tutorialMessage.videoTitleText,
+					VIDEOS.TUTORIAL_HEADER
+				};
+				list.Add(new ContentContainer(new List<ICodexWidget>
+				{
+					codexVideo
+				}, ContentContainer.ContentLayout.Vertical));
+			}
+			list.Add(new ContentContainer(new List<ICodexWidget>
+			{
+				new CodexText(tutorialMessage.GetMessageBody(), CodexTextStyle.Body)
+			}, ContentContainer.ContentLayout.Vertical));
+			CodexEntry codexEntry = new CodexEntry("Tips", list, UI.FormatAsLink(tutorialMessage.GetTitle(), "tutorial_tips_" + i));
+			CodexCache.AddEntry("tutorial_tips_" + i, codexEntry, null);
+			dictionary.Add(codexEntry.id, codexEntry);
+		}
+		return dictionary;
+	}
+
 	public static void PopulateCategoryEntries(Dictionary<string, CodexEntry> categoryEntries)
 	{
 		List<CategoryEntry> list = new List<CategoryEntry>();

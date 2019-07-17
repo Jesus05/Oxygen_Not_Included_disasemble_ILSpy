@@ -23,7 +23,7 @@ public class MicrobeMusher : ComplexFabricator
 		base.OnSpawn();
 		GameScheduler.Instance.Schedule("WaterFetchingTutorial", 2f, delegate
 		{
-			Tutorial.Instance.TutorialMessage(Tutorial.TutorialMessages.TM_FetchingWater);
+			Tutorial.Instance.TutorialMessage(Tutorial.TutorialMessages.TM_FetchingWater, true);
 		}, null, null);
 		workable.WorkerStatusItem = Db.Get().DuplicantStatusItems.Mushing;
 		workable.AttributeConverter = Db.Get().AttributeConverters.CookingSpeed;
@@ -51,7 +51,7 @@ public class MicrobeMusher : ComplexFabricator
 				}
 				if (item.GetComponent<PrimaryElement>().DiseaseCount > 0)
 				{
-					Tutorial.Instance.TutorialMessage(Tutorial.TutorialMessages.TM_DiseaseCooking);
+					Tutorial.Instance.TutorialMessage(Tutorial.TutorialMessages.TM_DiseaseCooking, true);
 				}
 			}
 		}

@@ -199,9 +199,6 @@ public class RootMenu : KScreen
 	public void TogglePauseScreen()
 	{
 		PauseScreen.Instance.Show(true);
-		AudioMixer.instance.Start(AudioMixerSnapshots.Get().ESCPauseSnapshot);
-		MusicManager.instance.OnEscapeMenu(true);
-		MusicManager.instance.PlaySong("Music_ESC_Menu", false);
 	}
 
 	public void ExternalClose()

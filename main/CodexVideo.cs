@@ -21,14 +21,26 @@ public class CodexVideo : CodexWidget<CodexVideo>
 		}
 	}
 
-	public void ConfigureVideo(VideoWidget videoWidget, string clipName)
+	public string overlayName
 	{
-		videoWidget.SetClip(Assets.GetVideo(clipName));
+		get;
+		set;
+	}
+
+	public List<string> overlayTexts
+	{
+		get;
+		set;
+	}
+
+	public void ConfigureVideo(VideoWidget videoWidget, string clipName, string overlayName = null, List<string> overlayTexts = null)
+	{
+		videoWidget.SetClip(Assets.GetVideo(clipName), overlayName, overlayTexts);
 	}
 
 	public override void Configure(GameObject contentGameObject, Transform displayPane, Dictionary<CodexTextStyle, TextStyleSetting> textStyles)
 	{
-		ConfigureVideo(contentGameObject.GetComponent<VideoWidget>(), name);
+		ConfigureVideo(contentGameObject.GetComponent<VideoWidget>(), name, overlayName, overlayTexts);
 		ConfigurePreferredLayout(contentGameObject);
 	}
 }

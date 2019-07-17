@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Video;
@@ -15,6 +16,12 @@ public class VideoWidget : KMonoBehaviour
 	[SerializeField]
 	private KButton button;
 
+	[SerializeField]
+	private string overlayName;
+
+	[SerializeField]
+	private List<string> texts;
+
 	private RenderTexture renderTexture;
 
 	private RawImage rawImage;
@@ -22,14 +29,20 @@ public class VideoWidget : KMonoBehaviour
 	protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
-		button.onClick += delegate
-		{
-			VideoScreen.Instance.PlayVideo(clip, false, "");
-		};
+		button.onClick += Clicked;
 		rawImage = thumbnailPlayer.GetComponent<RawImage>();
 	}
 
-	public void SetClip(VideoClip clip)
+	private void Clicked()
+	{
+		VideoScreen.Instance.PlayVideo(clip, false, "", false);
+		if (!string.IsNullOrEmpty(overlayName))
+		{
+			VideoScreen.Instance.SetOverlayText(overlayName, texts);
+		}
+	}
+
+	public void SetClip(VideoClip clip, string overlayName = null, List<string> texts = null)
 	{
 		if ((UnityEngine.Object)clip == (UnityEngine.Object)null)
 		{
@@ -38,6 +51,8 @@ public class VideoWidget : KMonoBehaviour
 		else
 		{
 			this.clip = clip;
+			this.overlayName = overlayName;
+			this.texts = texts;
 			renderTexture = new RenderTexture(Convert.ToInt32(clip.width), Convert.ToInt32(clip.height), 16);
 			thumbnailPlayer.targetTexture = renderTexture;
 			rawImage.texture = renderTexture;

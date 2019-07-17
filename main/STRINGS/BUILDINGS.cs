@@ -407,7 +407,7 @@ namespace STRINGS
 
 				public static LocString DESC = "Light reduces Duplicant stress and is required to grow certain plants.";
 
-				public static LocString EFFECT = "Provides " + UI.FormatAsLink("Light", "LIGHT") + " when " + UI.FormatAsLink("Powered", "POWER") + ".";
+				public static LocString EFFECT = "Provides " + UI.FormatAsLink("Light", "LIGHT") + " when " + UI.FormatAsLink("Powered", "POWER") + ".\n\nDuplicants can operate buildings more quickly the building is lit.";
 			}
 
 			public class AIRFILTER
@@ -611,7 +611,7 @@ namespace STRINGS
 
 				public static LocString DESC = "Any building's light emitting radius can be viewed in the light overlay.";
 
-				public static LocString EFFECT = "Provides " + UI.FormatAsLink("Light", "LIGHT") + " when " + UI.FormatAsLink("Powered", "POWER") + ".";
+				public static LocString EFFECT = "Provides " + UI.FormatAsLink("Light", "LIGHT") + " when " + UI.FormatAsLink("Powered", "POWER") + ".\n\nDuplicants can operate buildings more quickly when the building is lit.";
 			}
 
 			public class FLOWERVASE

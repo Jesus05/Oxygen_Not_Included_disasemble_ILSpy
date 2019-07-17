@@ -7,6 +7,8 @@ public class MicrobeMusherConfig : IBuildingConfig
 {
 	public const string ID = "MicrobeMusher";
 
+	public static EffectorValues DECOR = TUNING.BUILDINGS.DECOR.PENALTY.TIER2;
+
 	public override BuildingDef CreateBuildingDef()
 	{
 		string id = "MicrobeMusher";
@@ -20,7 +22,7 @@ public class MicrobeMusherConfig : IBuildingConfig
 		float melting_point = 800f;
 		BuildLocationRule build_location_rule = BuildLocationRule.OnFloor;
 		EffectorValues tIER2 = NOISE_POLLUTION.NOISY.TIER3;
-		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, tIER, aLL_METALS, melting_point, build_location_rule, TUNING.BUILDINGS.DECOR.PENALTY.TIER2, tIER2, 0.2f);
+		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, tIER, aLL_METALS, melting_point, build_location_rule, DECOR, tIER2, 0.2f);
 		buildingDef.RequiresPowerInput = true;
 		buildingDef.EnergyConsumptionWhenActive = 240f;
 		buildingDef.ExhaustKilowattsWhenActive = 0.5f;

@@ -21,12 +21,13 @@ public class UprootedMonitor : KMonoBehaviour
 	{
 		if (!component.uprooted)
 		{
+			component.GetComponent<KPrefabID>().AddTag(GameTags.Uprooted, false);
 			component.uprooted = true;
 			component.Trigger(-216549700, null);
 		}
 	});
 
-	public bool IsUprooted => uprooted;
+	public bool IsUprooted => uprooted || GetComponent<KPrefabID>().HasTag(GameTags.Uprooted);
 
 	protected override void OnSpawn()
 	{
@@ -78,6 +79,7 @@ public class UprootedMonitor : KMonoBehaviour
 	{
 		if (!CheckTileGrowable())
 		{
+			GetComponent<KPrefabID>().AddTag(GameTags.Uprooted, false);
 			uprooted = true;
 			Trigger(-216549700, null);
 		}

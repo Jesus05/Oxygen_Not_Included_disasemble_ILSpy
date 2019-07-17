@@ -139,7 +139,7 @@ namespace TUNING
 
 			public const int LUX_PLEASANT_LIGHT = 40000;
 
-			public static float LIGHT_WORK_EFFICIENCY_BONUS = 0.02f;
+			public static float LIGHT_WORK_EFFICIENCY_BONUS = 0.15f;
 
 			public const int NO_LIGHT = 0;
 

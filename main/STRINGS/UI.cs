@@ -1331,6 +1331,8 @@ namespace STRINGS
 				public static LocString DESKTOPQUIT = "Quit to Desktop";
 
 				public static LocString WORLD_SEED = "World Seed: {0}";
+
+				public static LocString MANAGEMENT_BUTTON = "Pause Menu";
 			}
 
 			public class OPTIONS_SCREEN
@@ -2543,6 +2545,8 @@ namespace STRINGS
 			public static LocString MANAGEMENTMENU_SKILLS = "Manage Duplicants' Skill assignments {Hotkey}";
 
 			public static LocString MANAGEMENTMENU_REQUIRES_SKILL_STATION = "Build a Skills Board to unlock this menu" + HORIZONTAL_BR_RULE + "The " + BUILDINGS.PREFABS.ROLESTATION.NAME + " can be found in the " + FormatAsBuildMenuTab("Stations Tab") + " " + FormatAsHotkey("[0]") + " of the Build Menu";
+
+			public static LocString MANAGEMENTMENU_PAUSEMENU = "Open the game menu {Hotkey}";
 
 			public static LocString OPEN_CODEX_ENTRY = "View full entry in database";
 
@@ -5447,13 +5451,15 @@ namespace STRINGS
 
 				public static LocString SEARCH_DISPLAY = "The display is still functional. I copy its message into my database.\n\nNew Database Entry discovered.";
 
+				public static LocString SEARCH_ELLIESDESK = "All I find on the machine is a curt e-mail from a disgruntled employee.";
+
 				public static LocString SEARCH_POD = "I search my incoming message history and find a single entry. I move the odd message into my database.\n\nNew Database Entry discovered.";
 
 				public static LocString ALREADY_SEARCHED = "I already took everything of interest from this. I can check the Database to re-read what I found.";
 
 				public static LocString SEARCH_CABINET = "One intact document remains - an old yellowing newspaper clipping. It won't be of much use, but I add it to my database nonetheless.";
 
-				public static LocString SEARCH_STERNSDESK = "There's a handwritten note tucked in the back of the top drawer. I add it to my database.";
+				public static LocString SEARCH_STERNSDESK = "There's an old magazine article from a publication called the \"Nucleoid\" tucked in the top drawer. I add it to my database.";
 
 				public static LocString ALREADY_SEARCHED_STERNSDESK = "The desk is eerily empty inside.";
 			}
@@ -7188,7 +7194,7 @@ namespace STRINGS
 
 				public static LocString REQUIRES_RECEPTACLE = "This plant must be housed in a " + FormatAsLink("Planter Box", "PLANTERBOX") + ", " + FormatAsLink("Farm Tile", "FARMTILE") + ", or " + FormatAsLink("Hydroponic Farm", "HYDROPONICFARM") + " farm to grow domestically";
 
-				public static LocString EMITS_LIGHT = "Emits " + PRE_KEYWORD + "Light" + PST_KEYWORD;
+				public static LocString EMITS_LIGHT = "Emits " + PRE_KEYWORD + "Light" + PST_KEYWORD + "\n\nDuplicants can operate buildings more quickly when the building is lit.";
 
 				public static LocString SEED_PRODUCTION_DIG_ONLY = "May be replanted, but will produce no further " + PRE_KEYWORD + "Seeds" + PST_KEYWORD;
 
@@ -7957,7 +7963,7 @@ namespace STRINGS
 
 		public static LocString WELCOMEMESSAGETITLE = "- ALERT -";
 
-		public static LocString WELCOMEMESSAGEBODY = "I've awoken at the target location, but my colonization efforts have already hit a hitch. My Printing Pod was meant to land on the planet's surface, but became trapped many miles underground instead.\n\nAlthough the conditions are not ideal, it's imperative that I establish a colony here and begin mounting efforts to escape.";
+		public static LocString WELCOMEMESSAGEBODY = "I've awoken at the location, but my colonization efforts have already hit a hitch. My Printing Pod was meant to land on the planet's surface, but became trapped many miles underground instead.\n\nAlthough the conditions are not ideal, it's imperative that I establish a colony here and begin mounting efforts to escape.";
 
 		public static LocString WELCOMEMESSAGEBEGIN = "BEGIN";
 

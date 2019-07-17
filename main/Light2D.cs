@@ -3,7 +3,7 @@ using STRINGS;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Light2D : KMonoBehaviour, IGameObjectEffectDescriptor
+public class Light2D : KMonoBehaviour, IGameObjectEffectDescriptor, IEffectDescriptor
 {
 	public enum RefreshResult
 	{
@@ -164,11 +164,6 @@ public class Light2D : KMonoBehaviour, IGameObjectEffectDescriptor
 			AddToScenePartitioner();
 			emitter.Refresh(pending_emitter_state, true);
 		}
-		Room roomOfGameObject = Game.Instance.roomProber.GetRoomOfGameObject(base.gameObject);
-		if (roomOfGameObject != null)
-		{
-			Game.Instance.roomProber.UpdateRoom(roomOfGameObject.cavity);
-		}
 		Singleton<CellChangeMonitor>.Instance.RegisterCellChangedHandler(base.transform, OnMoved, "Light2D.OnMoved");
 	}
 
@@ -177,11 +172,6 @@ public class Light2D : KMonoBehaviour, IGameObjectEffectDescriptor
 		Singleton<CellChangeMonitor>.Instance.UnregisterCellChangedHandler(base.transform, OnMoved);
 		Components.Light2Ds.Remove(this);
 		base.OnCmpDisable();
-		Room roomOfGameObject = Game.Instance.roomProber.GetRoomOfGameObject(base.gameObject);
-		if (roomOfGameObject != null)
-		{
-			Game.Instance.roomProber.UpdateRoom(roomOfGameObject.cavity);
-		}
 		FullRemove();
 	}
 
@@ -300,5 +290,10 @@ public class Light2D : KMonoBehaviour, IGameObjectEffectDescriptor
 		List<Descriptor> list = new List<Descriptor>();
 		list.Add(new Descriptor(string.Format(UI.GAMEOBJECTEFFECTS.EMITS_LIGHT, Range), UI.GAMEOBJECTEFFECTS.TOOLTIPS.EMITS_LIGHT, Descriptor.DescriptorType.Effect, false));
 		return list;
+	}
+
+	public List<Descriptor> GetDescriptors(BuildingDef def)
+	{
+		return GetDescriptors(def.BuildingComplete);
 	}
 }

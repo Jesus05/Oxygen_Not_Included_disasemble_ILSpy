@@ -7,7 +7,7 @@ public class FlyingCreatureBaitConfig : IBuildingConfig
 
 	public override BuildingDef CreateBuildingDef()
 	{
-		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef("FlyingCreatureBait", 1, 1, "flowervase_hanging_basic_kanim", 10, 10f, new float[2]
+		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef("FlyingCreatureBait", 1, 2, "airborne_critter_bait_kanim", 10, 10f, new float[2]
 		{
 			50f,
 			10f

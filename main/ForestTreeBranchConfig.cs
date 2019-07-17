@@ -23,6 +23,7 @@ public class ForestTreeBranchConfig : IEntityConfig
 		EntityTemplates.ExtendEntityToBasicPlant(gameObject, 258.15f, 288.15f, 313.15f, 448.15f, null, true, 0f, 0.15f, "WoodLog", true, true, false, true, 12000f);
 		gameObject.AddOrGet<TreeBud>();
 		gameObject.AddOrGet<StandardCropPlant>();
+		gameObject.AddOrGet<BudUprootedMonitor>();
 		return gameObject;
 	}
 

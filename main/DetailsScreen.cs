@@ -130,6 +130,15 @@ public class DetailsScreen : KTabMenu
 		UIRegistry.detailsScreen = this;
 		DeactivateSideContent();
 		Show(false);
+		Subscribe(Game.Instance.gameObject, -1503271301, OnSelectObject);
+	}
+
+	private void OnSelectObject(object data)
+	{
+		if (data == null)
+		{
+			previouslyActiveTab = -1;
+		}
 	}
 
 	protected override void OnSpawn()
@@ -307,9 +316,9 @@ public class DetailsScreen : KTabMenu
 								num = j;
 							}
 						}
-						else
+						else if (flag3 && previouslyActiveTab >= 0 && previouslyActiveTab < screens.Length && screens[j].name == screens[previouslyActiveTab].name)
 						{
-							num = j;
+							num = screens[j].tabIdx;
 						}
 					}
 				}

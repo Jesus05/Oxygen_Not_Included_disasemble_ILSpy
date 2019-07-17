@@ -43,4 +43,12 @@ public class CavityInfo
 		plants.Add(plant);
 		dirty = true;
 	}
+
+	public void OnEnter(object data)
+	{
+		foreach (KPrefabID building in buildings)
+		{
+			building.Trigger(-832141045, data);
+		}
+	}
 }

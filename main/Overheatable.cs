@@ -50,7 +50,7 @@ public class Overheatable : StateMachineComponent<Overheatable.StatesInstance>, 
 			safeTemperature.TriggerOnEnter(GameHashes.OptimalTemperatureAchieved, null).EventTransition(GameHashes.BuildingOverheated, overheated, null);
 			overheated.Enter(delegate
 			{
-				Tutorial.Instance.TutorialMessage(Tutorial.TutorialMessages.TM_OverheatingBuildings);
+				Tutorial.Instance.TutorialMessage(Tutorial.TutorialMessages.TM_OverheatingBuildings, true);
 			}).EventTransition(GameHashes.BuildingNoLongerOverheated, safeTemperature, null).ToggleStatusItem(Db.Get().BuildingStatusItems.Overheated, (object)null)
 				.ToggleNotification((StatesInstance smi) => smi.master.CreateOverheatedNotification())
 				.TriggerOnEnter(GameHashes.TooHotWarning, null)

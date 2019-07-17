@@ -16,6 +16,7 @@ public class ParkSignConfig : IBuildingConfig
 	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.Park, false);
+		go.AddOrGet<ParkSign>();
 	}
 
 	public override void DoPostConfigureComplete(GameObject go)

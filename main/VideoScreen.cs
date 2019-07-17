@@ -8,15 +8,6 @@ using UnityEngine.Video;
 
 public class VideoScreen : KModalScreen
 {
-	private struct TextQueue
-	{
-		public string value;
-
-		public float time;
-
-		public float duration;
-	}
-
 	public static VideoScreen Instance;
 
 	[SerializeField]
@@ -30,6 +21,12 @@ public class VideoScreen : KModalScreen
 
 	[SerializeField]
 	private KButton proceedButton;
+
+	[SerializeField]
+	private RectTransform overlayContainer;
+
+	[SerializeField]
+	private List<VideoOverlay> overlayPrefabs;
 
 	private RawImage screen;
 
@@ -49,11 +46,6 @@ public class VideoScreen : KModalScreen
 	private bool videoSkippable = true;
 
 	public System.Action OnStop;
-
-	[SerializeField]
-	private LocText textOverlay;
-
-	private List<TextQueue> textQueues = new List<TextQueue>();
 
 	protected override void OnPrefabInit()
 	{
@@ -92,7 +84,7 @@ public class VideoScreen : KModalScreen
 
 	public void DisableAllMedia()
 	{
-		textOverlay.transform.parent.gameObject.SetActive(false);
+		overlayContainer.gameObject.SetActive(false);
 		videoPlayer.gameObject.SetActive(false);
 		slideshow.gameObject.SetActive(false);
 	}
@@ -127,9 +119,12 @@ public class VideoScreen : KModalScreen
 		base.OnKeyDown(e);
 	}
 
-	public void PlayVideo(VideoClip clip, bool unskippable = false, string overrideAudioSnapshot = "")
+	public void PlayVideo(VideoClip clip, bool unskippable = false, string overrideAudioSnapshot = "", bool showProceedButton = false)
 	{
-		textOverlay.transform.parent.gameObject.SetActive(false);
+		for (int i = 0; i < overlayContainer.childCount; i++)
+		{
+			UnityEngine.Object.Destroy(overlayContainer.GetChild(i).gameObject);
+		}
 		Show(true);
 		videoPlayer.isLooping = false;
 		activeAudioSnapshot = ((!string.IsNullOrEmpty(overrideAudioSnapshot)) ? overrideAudioSnapshot : AudioMixerSnapshots.Get().TutorialVideoPlayingSnapshot);
@@ -143,7 +138,7 @@ public class VideoScreen : KModalScreen
 		videoPlayer.Play();
 		videoSkippable = !unskippable;
 		closeButton.gameObject.SetActive(videoSkippable);
-		proceedButton.gameObject.SetActive(videoSkippable);
+		proceedButton.gameObject.SetActive(showProceedButton && videoSkippable);
 	}
 
 	public void QueueVictoryVideoLoop(bool queue, string message = "", string victoryAchievement = "", string loopVideo = "")
@@ -158,51 +153,21 @@ public class VideoScreen : KModalScreen
 		});
 	}
 
-	private void Update()
+	public void SetOverlayText(string overlayTemplate, List<string> strings)
 	{
-		if (videoPlayer.isPlaying)
+		VideoOverlay videoOverlay = null;
+		foreach (VideoOverlay overlayPrefab in overlayPrefabs)
 		{
-			bool flag = false;
-			for (int i = 0; i < textQueues.Count; i++)
+			if (overlayPrefab.name == overlayTemplate)
 			{
-				double time = videoPlayer.time;
-				TextQueue textQueue = textQueues[i];
-				if (time >= (double)textQueue.time)
-				{
-					double time2 = videoPlayer.time;
-					TextQueue textQueue2 = textQueues[i];
-					float time3 = textQueue2.time;
-					TextQueue textQueue3 = textQueues[i];
-					if (time2 < (double)(time3 + textQueue3.duration))
-					{
-						textOverlay.transform.parent.gameObject.SetActive(true);
-						LocText locText = textOverlay;
-						TextQueue textQueue4 = textQueues[i];
-						locText.SetText(textQueue4.value);
-						flag = true;
-					}
-				}
-			}
-			if (!flag)
-			{
-				textOverlay.SetText("");
-				textOverlay.transform.parent.gameObject.SetActive(false);
+				videoOverlay = overlayPrefab;
+				break;
 			}
 		}
-	}
-
-	public void AddTextQueue(string value, float time, float duration)
-	{
-		TextQueue item = default(TextQueue);
-		item.value = value;
-		item.time = time;
-		item.duration = duration;
-		textQueues.Add(item);
-	}
-
-	public void ClearTextQueues()
-	{
-		textQueues.Clear();
+		DebugUtil.Assert((UnityEngine.Object)videoOverlay != (UnityEngine.Object)null, "Could not find a template named ", overlayTemplate);
+		VideoOverlay videoOverlay2 = Util.KInstantiateUI<VideoOverlay>(videoOverlay.gameObject, overlayContainer.gameObject, true);
+		videoOverlay2.SetText(strings);
+		overlayContainer.gameObject.SetActive(true);
 	}
 
 	private IEnumerator SwitchToVictoryLoop()
@@ -221,11 +186,14 @@ public class VideoScreen : KModalScreen
 		MusicManager.instance.SetSongParameter("Music_Victory_03_StoryAndSummary", "songSection", 1f, true);
 		closeButton.gameObject.SetActive(true);
 		proceedButton.gameObject.SetActive(true);
-		ClearTextQueues();
-		AddTextQueue(victoryLoopMessage, 0f, 9999f);
+		SetOverlayText("VictoryEnd", new List<string>
+		{
+			victoryLoopMessage
+		});
 		videoPlayer.clip = Assets.GetVideo(victoryLoopClip);
 		videoPlayer.isLooping = true;
 		videoPlayer.Play();
+		proceedButton.gameObject.SetActive(true);
 		yield return (object)new WaitForSecondsRealtime(1f);
 		/*Error: Unable to find new state assignment for yield return*/;
 	}

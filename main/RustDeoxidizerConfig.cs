@@ -5,19 +5,21 @@ public class RustDeoxidizerConfig : IBuildingConfig
 {
 	public const string ID = "RustDeoxidizer";
 
-	private const float RUST_KG_PER_REFILL = 90f;
+	private const float RUST_KG_CONSUMPTION_RATE = 0.75f;
 
-	private const float SALT_KG_PER_REFILL = 30f;
+	private const float SALT_KG_CONSUMPTION_RATE = 0.25f;
 
-	private const float RUST_KG_CONSUMPTION_RATE = 0.45f;
+	private const float RUST_KG_PER_REFILL = 585f;
 
-	private const float SALT_KG_CONSUMPTION_RATE = 0.15f;
+	private const float SALT_KG_PER_REFILL = 195f;
 
-	private const float TOTAL_CONSUMPTION_RATE = 0.6f;
+	private const float TOTAL_CONSUMPTION_RATE = 1f;
 
-	private const float OXYGEN_CONVERSION_RATIO = 0.95f;
+	private const float IRON_CONVERSION_RATIO = 0.4f;
 
-	private const float CHLORINE_CONVERSION_RATIO = 0.0500000119f;
+	private const float OXYGEN_CONVERSION_RATIO = 0.57f;
+
+	private const float CHLORINE_CONVERSION_RATIO = 0.0300000012f;
 
 	public const float OXYGEN_TEMPERATURE = 348.15f;
 
@@ -56,27 +58,32 @@ public class RustDeoxidizerConfig : IBuildingConfig
 		ManualDeliveryKG manualDeliveryKG = go.AddOrGet<ManualDeliveryKG>();
 		manualDeliveryKG.SetStorage(storage);
 		manualDeliveryKG.requestedItemTag = new Tag("Rust");
-		manualDeliveryKG.capacity = 90f;
-		manualDeliveryKG.refillMass = 29.7f;
+		manualDeliveryKG.capacity = 585f;
+		manualDeliveryKG.refillMass = 193.05f;
 		manualDeliveryKG.choreTypeIDHash = Db.Get().ChoreTypes.FetchCritical.IdHash;
 		ManualDeliveryKG manualDeliveryKG2 = go.AddComponent<ManualDeliveryKG>();
 		manualDeliveryKG2.SetStorage(storage);
 		manualDeliveryKG2.requestedItemTag = new Tag("Salt");
-		manualDeliveryKG2.capacity = 30f;
-		manualDeliveryKG2.refillMass = 9.900001f;
+		manualDeliveryKG2.capacity = 195f;
+		manualDeliveryKG2.refillMass = 64.3500061f;
 		manualDeliveryKG2.allowPause = true;
 		manualDeliveryKG2.choreTypeIDHash = Db.Get().ChoreTypes.FetchCritical.IdHash;
 		ElementConverter elementConverter = go.AddOrGet<ElementConverter>();
 		elementConverter.consumedElements = new ElementConverter.ConsumedElement[2]
 		{
-			new ElementConverter.ConsumedElement(new Tag("Rust"), 0.45f),
-			new ElementConverter.ConsumedElement(new Tag("Salt"), 0.15f)
+			new ElementConverter.ConsumedElement(new Tag("Rust"), 0.75f),
+			new ElementConverter.ConsumedElement(new Tag("Salt"), 0.25f)
 		};
-		elementConverter.outputElements = new ElementConverter.OutputElement[2]
+		elementConverter.outputElements = new ElementConverter.OutputElement[3]
 		{
 			new ElementConverter.OutputElement(0.57f, SimHashes.Oxygen, 348.15f, false, false, 0f, 1f, 1f, byte.MaxValue, 0),
-			new ElementConverter.OutputElement(0.0300000086f, SimHashes.Chlorine, 348.15f, false, false, 0f, 1f, 1f, byte.MaxValue, 0)
+			new ElementConverter.OutputElement(0.0300000012f, SimHashes.Chlorine, 348.15f, false, false, 0f, 1f, 1f, byte.MaxValue, 0),
+			new ElementConverter.OutputElement(0.4f, SimHashes.IronOre, 348.15f, false, true, 0f, 1f, 1f, byte.MaxValue, 0)
 		};
+		ElementDropper elementDropper = go.AddComponent<ElementDropper>();
+		elementDropper.emitMass = 24f;
+		elementDropper.emitTag = SimHashes.IronOre.CreateTag();
+		elementDropper.emitOffset = new Vector3(0f, 1f, 0f);
 		Prioritizable.AddRef(go);
 	}
 

@@ -78,13 +78,18 @@ public class StandardCropPlant : StateMachineComponent<StandardCropPlant.StatesI
 			StatusItemCategory main = Db.Get().StatusItemCategories.Main;
 			state.ToggleStatusItem(name, tooltip, "", StatusItem.IconType.Info, (NotificationType)0, false, default(HashedString), 0, null, null, main).Enter(delegate(StatesInstance smi)
 			{
-				if (smi.master.rm.Replanted && !UprootedMonitor.IsObjectUprooted(masterTarget.Get(smi)))
+				if (smi.master.rm.Replanted && !smi.master.GetComponent<KPrefabID>().HasTag(GameTags.Uprooted))
 				{
 					Notifier notifier = smi.master.gameObject.AddOrGet<Notifier>();
 					Notification notification = smi.master.CreateDeathNotification();
 					notifier.Add(notification, "");
 				}
 				GameUtil.KInstantiate(Assets.GetPrefab(EffectConfigs.PlantDeathId), smi.master.transform.GetPosition(), Grid.SceneLayer.FXFront, null, 0).SetActive(true);
+				Harvestable component = smi.master.GetComponent<Harvestable>();
+				if ((UnityEngine.Object)component != (UnityEngine.Object)null && component.CanBeHarvested && (UnityEngine.Object)GameScheduler.Instance != (UnityEngine.Object)null)
+				{
+					GameScheduler.Instance.Schedule("SpawnFruit", 0.2f, smi.master.crop.SpawnFruit, null, null);
+				}
 				smi.master.Trigger(1623392196, null);
 				smi.master.GetComponent<KBatchedAnimController>().StopAndClear();
 				UnityEngine.Object.Destroy(smi.master.GetComponent<KBatchedAnimController>());

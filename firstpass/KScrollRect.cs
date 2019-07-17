@@ -60,6 +60,10 @@ public class KScrollRect : ScrollRect
 
 	private bool stopDrag = false;
 
+	private bool autoScrolling = false;
+
+	private float autoScrollTargetVerticalPos;
+
 	public bool isDragging
 	{
 		get;
@@ -138,6 +142,12 @@ public class KScrollRect : ScrollRect
 			return num6;
 		}
 		return 0f;
+	}
+
+	public void SetSmoothAutoScrollTarget(float normalizedVerticalPos)
+	{
+		autoScrollTargetVerticalPos = normalizedVerticalPos;
+		autoScrolling = true;
 	}
 
 	private void PlaySound(SoundType soundType)
@@ -223,6 +233,19 @@ public class KScrollRect : ScrollRect
 		{
 			stopDrag = false;
 			isDragging = false;
+		}
+		if (autoScrolling)
+		{
+			Vector2 normalizedPosition3 = base.normalizedPosition;
+			float x2 = normalizedPosition3.x;
+			Vector2 normalizedPosition4 = base.normalizedPosition;
+			base.normalizedPosition = new Vector2(x2, Mathf.Lerp(normalizedPosition4.y, autoScrollTargetVerticalPos, Time.unscaledDeltaTime * 3f));
+			float num = autoScrollTargetVerticalPos;
+			Vector2 normalizedPosition5 = base.normalizedPosition;
+			if (Mathf.Abs(num - normalizedPosition5.y) < 0.01f)
+			{
+				autoScrolling = false;
+			}
 		}
 		base.LateUpdate();
 	}

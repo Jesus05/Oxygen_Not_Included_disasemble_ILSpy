@@ -239,7 +239,7 @@ public class SuitMarker : KMonoBehaviour
 		cell = Grid.PosToCell(this);
 		Grid.RegisterSuitMarker(cell);
 		GetComponent<KAnimControllerBase>().Play("no_suit", KAnim.PlayMode.Once, 1f, 0f);
-		Tutorial.Instance.TutorialMessage(Tutorial.TutorialMessages.TM_Suits);
+		Tutorial.Instance.TutorialMessage(Tutorial.TutorialMessages.TM_Suits, true);
 		RefreshTraverseIfUnequipStatusItem();
 		SuitLocker.UpdateSuitMarkerStates(Grid.PosToCell(base.transform.position), base.gameObject);
 	}

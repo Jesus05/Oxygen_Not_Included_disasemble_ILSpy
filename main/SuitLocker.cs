@@ -393,7 +393,7 @@ public class SuitLocker : StateMachineComponent<SuitLocker.StatesInstance>
 		meter = new MeterController(GetComponent<KBatchedAnimController>(), "meter_target", "meter", Meter.Offset.Infront, Grid.SceneLayer.NoLayer, "meter_target", "meter_arrow", "meter_scale");
 		UpdateSuitMarkerStates(Grid.PosToCell(base.transform.position), base.gameObject);
 		base.smi.StartSM();
-		Tutorial.Instance.TutorialMessage(Tutorial.TutorialMessages.TM_Suits);
+		Tutorial.Instance.TutorialMessage(Tutorial.TutorialMessages.TM_Suits, true);
 	}
 
 	public KPrefabID GetStoredOutfit()

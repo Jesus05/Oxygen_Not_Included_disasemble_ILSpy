@@ -135,7 +135,6 @@ public class TreeBud : KMonoBehaviour, IWiltCause
 
 	private void OnUprooted(object data = null)
 	{
-		Util.KDestroyGameObject(base.gameObject);
 	}
 
 	private void SetOccupyGridSpace(bool active)

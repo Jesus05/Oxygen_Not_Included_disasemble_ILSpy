@@ -244,4 +244,13 @@ public class RootMenu : KScreen
 		}
 		return list.ToArray();
 	}
+
+	public bool IsBuildingChorePanelActive()
+	{
+		if (!((Object)detailsScreen != (Object)null))
+		{
+			return false;
+		}
+		return detailsScreen.GetActiveTab() is BuildingChoresPanel;
+	}
 }

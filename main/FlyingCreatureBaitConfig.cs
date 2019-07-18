@@ -23,26 +23,21 @@ public class FlyingCreatureBaitConfig : IBuildingConfig
 	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.AddOrGet<CreatureBait>();
-		go.AddOrGet<Operational>();
 		go.AddTag(GameTags.OneTimeUseLure);
 	}
 
 	public override void DoPostConfigurePreview(BuildingDef def, GameObject go)
 	{
-		GeneratedBuildings.RegisterLogicPorts(go, LogicOperationalController.INPUT_PORTS_0_0);
 	}
 
 	public override void DoPostConfigureUnderConstruction(GameObject go)
 	{
-		GeneratedBuildings.RegisterLogicPorts(go, LogicOperationalController.INPUT_PORTS_0_0);
 	}
 
 	public override void DoPostConfigureComplete(GameObject go)
 	{
 		BuildingTemplates.DoPostConfigure(go);
 		SymbolOverrideControllerUtil.AddToPrefab(go);
-		GeneratedBuildings.RegisterLogicPorts(go, LogicOperationalController.INPUT_PORTS_0_0);
-		go.AddOrGet<LogicOperationalController>();
 		Lure.Def def = go.AddOrGetDef<Lure.Def>();
 		def.lurePoints = new CellOffset[1]
 		{

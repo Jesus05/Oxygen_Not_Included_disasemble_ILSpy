@@ -27,10 +27,12 @@ public class CreatureBait : StateMachineComponent<CreatureBait.StatesInstance>
 				KAnim.Build.Symbol symbol = build.GetSymbol(new KAnimHashedString(build.name));
 				HashedString target_symbol = "snapTo_bait";
 				SymbolOverrideController component = smi.GetComponent<SymbolOverrideController>();
-				component.TryRemoveSymbolOverride(target_symbol, 0);
 				component.AddSymbolOverride(target_symbol, symbol, 0);
+			}).TagTransition(GameTags.LureUsed, destroy, false);
+			destroy.PlayAnim("use").EventHandler(GameHashes.AnimQueueComplete, delegate(StatesInstance smi)
+			{
+				Util.KDestroyGameObject(smi.master.gameObject);
 			});
-			destroy.DoNothing();
 		}
 	}
 

@@ -205,26 +205,30 @@ public class ChorePreconditions
 		{
 			if (!context.isAttemptingOverride)
 			{
-				if (!context.consumerState.selectable.IsSelected)
+				if (!context.skipMoreSatisfyingEarlyPrecondition)
 				{
-					Chore currentChore3 = context.consumerState.choreDriver.GetCurrentChore();
-					if (currentChore3 == null)
+					if (!context.consumerState.selectable.IsSelected)
 					{
-						return true;
-					}
-					if (context.masterPriority.priority_class == currentChore3.masterPriority.priority_class)
-					{
-						if ((Object)context.consumerState.consumer != (Object)null && context.personalPriority != context.consumerState.consumer.GetPersonalPriority(currentChore3.choreType))
+						Chore currentChore3 = context.consumerState.choreDriver.GetCurrentChore();
+						if (currentChore3 == null)
 						{
-							return context.personalPriority > context.consumerState.consumer.GetPersonalPriority(currentChore3.choreType);
+							return true;
 						}
-						if (context.masterPriority.priority_value == currentChore3.masterPriority.priority_value)
+						if (context.masterPriority.priority_class == currentChore3.masterPriority.priority_class)
 						{
-							return context.priority > currentChore3.choreType.priority;
+							if ((Object)context.consumerState.consumer != (Object)null && context.personalPriority != context.consumerState.consumer.GetPersonalPriority(currentChore3.choreType))
+							{
+								return context.personalPriority > context.consumerState.consumer.GetPersonalPriority(currentChore3.choreType);
+							}
+							if (context.masterPriority.priority_value == currentChore3.masterPriority.priority_value)
+							{
+								return context.priority > currentChore3.choreType.priority;
+							}
+							return context.masterPriority.priority_value > currentChore3.masterPriority.priority_value;
 						}
-						return context.masterPriority.priority_value > currentChore3.masterPriority.priority_value;
+						return context.masterPriority.priority_class > currentChore3.masterPriority.priority_class;
 					}
-					return context.masterPriority.priority_class > currentChore3.masterPriority.priority_class;
+					return true;
 				}
 				return true;
 			}

@@ -44,7 +44,7 @@ public class MoveToLureStates : GameStateMachine<MoveToLureStates, MoveToLureSta
 			Lure.Instance targetLure = GetTargetLure(smi);
 			if (targetLure != null && targetLure.HasTag(GameTags.OneTimeUseLure))
 			{
-				Util.KDestroyGameObject(targetLure.gameObject);
+				targetLure.GetComponent<KPrefabID>().AddTag(GameTags.LureUsed, false);
 			}
 		}).GoTo(behaviourcomplete);
 		behaviourcomplete.BehaviourComplete(GameTags.Creatures.MoveToLure, false);

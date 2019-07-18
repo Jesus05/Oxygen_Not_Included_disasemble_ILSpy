@@ -9,7 +9,7 @@ public class ColdBreatherConfig : IEntityConfig
 
 	public static readonly Tag TAG = TagManager.Create("ColdBreather");
 
-	public const float FERTILIZATION_RATE = 0.0333333351f;
+	public const float FERTILIZATION_RATE = 0.006666667f;
 
 	public const SimHashes FERTILIZER = SimHashes.Phosphorite;
 
@@ -36,7 +36,7 @@ public class ColdBreatherConfig : IEntityConfig
 			new PlantElementAbsorber.ConsumeInfo
 			{
 				tag = SimHashes.Phosphorite.CreateTag(),
-				massConsumptionRate = 0.0333333351f
+				massConsumptionRate = 0.006666667f
 			}
 		});
 		TemperatureVulnerable temperatureVulnerable = gameObject.AddOrGet<TemperatureVulnerable>();

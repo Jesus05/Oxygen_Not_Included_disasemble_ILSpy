@@ -586,4 +586,13 @@ public class DetailsScreen : KTabMenu
 	{
 		TabTitle.SetTitle(title);
 	}
+
+	public TargetScreen GetActiveTab()
+	{
+		if (previouslyActiveTab >= 0 && previouslyActiveTab < screens.Length)
+		{
+			return screens[previouslyActiveTab].screen;
+		}
+		return null;
+	}
 }

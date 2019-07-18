@@ -51,6 +51,8 @@ public abstract class Chore
 
 			public ChoreType choreTypeForPermission;
 
+			public bool skipMoreSatisfyingEarlyPrecondition;
+
 			public Context(Chore chore, ChoreConsumerState consumer_state, bool is_attempting_override, object data = null)
 			{
 				masterPriority = chore.masterPriority;
@@ -66,6 +68,7 @@ public abstract class Chore
 				isAttemptingOverride = is_attempting_override;
 				this.data = data;
 				choreTypeForPermission = chore.choreType;
+				skipMoreSatisfyingEarlyPrecondition = ((UnityEngine.Object)RootMenu.Instance != (UnityEngine.Object)null && RootMenu.Instance.IsBuildingChorePanelActive());
 				SetPriority(chore);
 			}
 

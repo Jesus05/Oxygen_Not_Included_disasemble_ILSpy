@@ -38,7 +38,7 @@ namespace TUNING
 			new Crop.CropVal("Lettuce", 7200f, 12, true),
 			new Crop.CropVal("BeanPlantSeed", 12600f, 12, true),
 			new Crop.CropVal("OxyfernSeed", 7200f, 1, true),
-			new Crop.CropVal(381665462.ToString(), 3600f, 50, true)
+			new Crop.CropVal(381665462.ToString(), 3600f, 65, true)
 		};
 	}
 }

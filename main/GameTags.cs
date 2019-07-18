@@ -506,6 +506,8 @@ public class GameTags
 
 	public static readonly Tag OneTimeUseLure = TagManager.Create("OneTimeUseLure");
 
+	public static readonly Tag LureUsed = TagManager.Create("LureUsed");
+
 	public static readonly Tag TemplateBuilding = TagManager.Create("TemplateBuilding");
 
 	public static readonly Tag Rocket = TagManager.Create("Rocket");

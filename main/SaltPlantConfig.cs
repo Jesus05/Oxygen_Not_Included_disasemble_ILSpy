@@ -9,9 +9,9 @@ public class SaltPlantConfig : IEntityConfig
 
 	public const string SEED_ID = "SaltPlantSeed";
 
-	public const float FERTILIZATION_RATE = 0.006666667f;
+	public const float FERTILIZATION_RATE = 0.0116666667f;
 
-	public const float CHLORINE_CONSUMPTION_RATE = 0.0166666675f;
+	public const float CHLORINE_CONSUMPTION_RATE = 0.006f;
 
 	public GameObject CreatePrefab()
 	{
@@ -40,7 +40,7 @@ public class SaltPlantConfig : IEntityConfig
 			new PlantElementAbsorber.ConsumeInfo
 			{
 				tag = SimHashes.Sand.CreateTag(),
-				massConsumptionRate = 0.006666667f
+				massConsumptionRate = 0.0116666667f
 			}
 		});
 		PressureVulnerable pressureVulnerable = gameObject.AddOrGet<PressureVulnerable>();
@@ -69,7 +69,7 @@ public class SaltPlantConfig : IEntityConfig
 		elementConsumer.configuration = ElementConsumer.Configuration.Element;
 		elementConsumer.consumptionRadius = 4;
 		elementConsumer.sampleCellOffset = new Vector3(0f, -1f);
-		elementConsumer.consumptionRate = 0.0166666675f;
+		elementConsumer.consumptionRate = 0.006f;
 		UprootedMonitor component2 = gameObject.GetComponent<UprootedMonitor>();
 		component2.monitorCell = new CellOffset(0, 1);
 		gameObject.AddOrGet<StandardCropPlant>();

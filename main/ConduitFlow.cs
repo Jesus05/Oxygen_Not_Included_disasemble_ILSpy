@@ -139,7 +139,7 @@ public class ConduitFlow : IConduitFlow
 				for (int i = start; i != end; i++)
 				{
 					int num = soaInfo.cells[i];
-					ConduitContents conduitContents = manager.grid[num].contents;
+					ConduitContents conduitContents = soaInfo.conduits[i].GetContents(manager);
 					if (conduitContents.mass <= 0f)
 					{
 						conduitContents = ConduitContents.Empty;

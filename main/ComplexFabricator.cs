@@ -76,6 +76,8 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms, ISim1000ms
 
 	private Chore chore;
 
+	private bool cancelling;
+
 	private ComplexRecipe[] recipe_list;
 
 	private Dictionary<Tag, float> materialNeedCache = new Dictionary<Tag, float>();
@@ -226,17 +228,7 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms, ISim1000ms
 
 	public void Sim1000ms(float dt)
 	{
-		if (operational.IsOperational)
-		{
-			if (queueDirty)
-			{
-				RefreshQueue();
-			}
-			if (!HasWorkingOrder && nextOrderIsWorkable)
-			{
-				StartWorkingOrder(nextOrderIdx);
-			}
-		}
+		RefreshAndStartNextOrder();
 	}
 
 	public void Sim200ms(float dt)
@@ -252,6 +244,21 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms, ISim1000ms
 				{
 					CompleteWorkingOrder();
 				}
+			}
+		}
+	}
+
+	private void RefreshAndStartNextOrder()
+	{
+		if (operational.IsOperational)
+		{
+			if (queueDirty)
+			{
+				RefreshQueue();
+			}
+			if (!HasWorkingOrder && nextOrderIsWorkable)
+			{
+				StartWorkingOrder(nextOrderIdx);
 			}
 		}
 	}
@@ -317,11 +324,10 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms, ISim1000ms
 			DecrementRecipeQueueCountInternal(recipe, true);
 			workingOrderIdx = -1;
 			orderProgress = 0f;
-			UpdateChore();
-			ValidateNextOrder();
-			if (nextOrderIsWorkable)
+			CancelChore();
+			if (!cancelling)
 			{
-				StartWorkingOrder(nextOrderIdx);
+				RefreshAndStartNextOrder();
 			}
 		}
 	}
@@ -780,10 +786,15 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms, ISim1000ms
 
 	private void CancelChore()
 	{
-		if (chore != null)
+		if (!cancelling)
 		{
-			chore.Cancel("order cancelled");
-			chore = null;
+			cancelling = true;
+			if (chore != null)
+			{
+				chore.Cancel("order cancelled");
+				chore = null;
+			}
+			cancelling = false;
 		}
 	}
 

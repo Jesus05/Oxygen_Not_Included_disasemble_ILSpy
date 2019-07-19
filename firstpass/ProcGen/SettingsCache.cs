@@ -418,6 +418,7 @@ namespace ProcGen
 			System.Random random = new System.Random(seed);
 			int num = random.Next(2, 5);
 			List<string> list = new List<string>(traits.Keys);
+			list.Sort();
 			List<string> list2 = new List<string>();
 			while (list2.Count < num && list.Count > 0)
 			{

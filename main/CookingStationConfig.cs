@@ -109,10 +109,9 @@ public class CookingStationConfig : IBuildingConfig
 		};
 		complexRecipe.sortOrder = 20;
 		FriedMushroomConfig.recipe = complexRecipe;
-		ComplexRecipe.RecipeElement[] array7 = new ComplexRecipe.RecipeElement[2]
+		ComplexRecipe.RecipeElement[] array7 = new ComplexRecipe.RecipeElement[1]
 		{
-			new ComplexRecipe.RecipeElement("Meat", 2f),
-			new ComplexRecipe.RecipeElement(SpiceNutConfig.ID, 1f)
+			new ComplexRecipe.RecipeElement("Meat", 2f)
 		};
 		ComplexRecipe.RecipeElement[] array8 = new ComplexRecipe.RecipeElement[1]
 		{

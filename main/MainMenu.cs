@@ -265,7 +265,7 @@ public class MainMenu : KScreen
 					header = value.header;
 					gameInfo = value.headerData;
 				}
-				if (header.buildVersion > 352881 || gameInfo.saveMajorVersion < 7)
+				if (header.buildVersion > 353289 || gameInfo.saveMajorVersion < 7)
 				{
 					flag = false;
 				}

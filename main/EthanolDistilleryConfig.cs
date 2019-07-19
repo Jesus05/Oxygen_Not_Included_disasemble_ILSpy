@@ -5,17 +5,15 @@ public class EthanolDistilleryConfig : IBuildingConfig
 {
 	public const string ID = "EthanolDistillery";
 
-	public const float ORGANICS_CONSUME_PER_SECOND = 0.75f;
+	public const float ORGANICS_CONSUME_PER_SECOND = 1f;
 
-	public const float ORGANICS_STORAGE_AMOUNT = 450f;
-
-	public const float WASTE_RATE = 0.333333343f;
-
-	public const float SOLID_WASTE_RATE = 0.166666672f;
-
-	public const float CO2_WASTE_RATE = 0.0833333358f;
+	public const float ORGANICS_STORAGE_AMOUNT = 600f;
 
 	public const float ETHANOL_RATE = 0.5f;
+
+	public const float SOLID_WASTE_RATE = 0.333333343f;
+
+	public const float CO2_WASTE_RATE = 0.166666672f;
 
 	public const float OUTPUT_TEMPERATURE = 346.5f;
 
@@ -64,22 +62,22 @@ public class EthanolDistilleryConfig : IBuildingConfig
 		ManualDeliveryKG manualDeliveryKG = go.AddOrGet<ManualDeliveryKG>();
 		manualDeliveryKG.SetStorage(storage);
 		manualDeliveryKG.requestedItemTag = WoodLogConfig.TAG;
-		manualDeliveryKG.capacity = 450f;
-		manualDeliveryKG.refillMass = 112.5f;
+		manualDeliveryKG.capacity = 600f;
+		manualDeliveryKG.refillMass = 150f;
 		manualDeliveryKG.choreTypeIDHash = Db.Get().ChoreTypes.MachineFetch.IdHash;
 		ElementConverter elementConverter = go.AddOrGet<ElementConverter>();
 		elementConverter.consumedElements = new ElementConverter.ConsumedElement[1]
 		{
-			new ElementConverter.ConsumedElement(WoodLogConfig.TAG, 0.75f)
+			new ElementConverter.ConsumedElement(WoodLogConfig.TAG, 1f)
 		};
 		elementConverter.outputElements = new ElementConverter.OutputElement[3]
 		{
 			new ElementConverter.OutputElement(0.5f, SimHashes.Ethanol, 346.5f, false, true, 0f, 0.5f, 1f, byte.MaxValue, 0),
-			new ElementConverter.OutputElement(0.166666672f, SimHashes.ToxicSand, 366.5f, false, true, 0f, 0.5f, 1f, byte.MaxValue, 0),
-			new ElementConverter.OutputElement(0.0833333358f, SimHashes.CarbonDioxide, 366.5f, false, false, 0f, 0.5f, 1f, byte.MaxValue, 0)
+			new ElementConverter.OutputElement(0.333333343f, SimHashes.ToxicSand, 366.5f, false, true, 0f, 0.5f, 1f, byte.MaxValue, 0),
+			new ElementConverter.OutputElement(0.166666672f, SimHashes.CarbonDioxide, 366.5f, false, false, 0f, 0.5f, 1f, byte.MaxValue, 0)
 		};
 		AlgaeDistillery algaeDistillery = go.AddOrGet<AlgaeDistillery>();
-		algaeDistillery.emitMass = 10f;
+		algaeDistillery.emitMass = 20f;
 		algaeDistillery.emitTag = new Tag("ToxicSand");
 		algaeDistillery.emitOffset = new Vector3(2f, 1f);
 		Prioritizable.AddRef(go);

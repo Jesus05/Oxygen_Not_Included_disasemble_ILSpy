@@ -12,10 +12,10 @@ public class ForestForagePlantPlantedConfig : IEntityConfig
 		string name = STRINGS.CREATURES.SPECIES.FORESTFORAGEPLANTPLANTED.NAME;
 		string desc = STRINGS.CREATURES.SPECIES.FORESTFORAGEPLANTPLANTED.DESC;
 		float mass = 100f;
-		KAnimFile anim = Assets.GetAnim("muckroot_kanim");
+		KAnimFile anim = Assets.GetAnim("podmelon_kanim");
 		string initialAnim = "idle";
 		EffectorValues tIER = DECOR.BONUS.TIER1;
-		GameObject gameObject = EntityTemplates.CreatePlacedEntity(id, name, desc, mass, anim, initialAnim, Grid.SceneLayer.BuildingBack, 1, 1, tIER, default(EffectorValues), SimHashes.Creature, null, 293f);
+		GameObject gameObject = EntityTemplates.CreatePlacedEntity(id, name, desc, mass, anim, initialAnim, Grid.SceneLayer.BuildingBack, 1, 2, tIER, default(EffectorValues), SimHashes.Creature, null, 293f);
 		gameObject.AddOrGet<SimTemperatureTransfer>();
 		OccupyArea occupyArea = gameObject.AddOrGet<OccupyArea>();
 		occupyArea.objectLayers = new ObjectLayer[1]

@@ -121,6 +121,10 @@ public class ColonyDestinationSelectScreen : NewGameFlowScreen
 		{
 			destinationMapPanel.ScrollRight();
 		}
+		else if (customSettings.activeSelf && !e.Consumed && e.TryConsume(Action.Escape))
+		{
+			CustomizeClose();
+		}
 		base.OnKeyDown(e);
 	}
 }

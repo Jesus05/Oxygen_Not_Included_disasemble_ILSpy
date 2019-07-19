@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <ProjectGuid>{89D52DC0-3A81-4BB7-91C7-E08F1F2A7166}</ProjectGuid>
+    <ProjectGuid>{47D15296-1EAB-42BB-A730-1A09DD09BEDA}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <OutputType>Library</OutputType>
@@ -404,6 +404,7 @@
     <Compile Include="CodexEntryGenerator.cs" />
     <Compile Include="CodexImage.cs" />
     <Compile Include="CodexLabelWithIcon.cs" />
+    <Compile Include="CodexLabelWithLargeIcon.cs" />
     <Compile Include="CodexLargeSpacer.cs" />
     <Compile Include="CodexMessageDialog.cs" />
     <Compile Include="CodexScreen.cs" />

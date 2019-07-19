@@ -494,10 +494,10 @@ public static class CodexEntryGenerator
 		{
 			list.Add(categoryEntry.Value as CategoryEntry);
 		}
-		PopulateCategoryEntries(list);
+		PopulateCategoryEntries(list, null);
 	}
 
-	public static void PopulateCategoryEntries(List<CategoryEntry> categoryEntries)
+	public static void PopulateCategoryEntries(List<CategoryEntry> categoryEntries, Comparison<CodexEntry> comparison = null)
 	{
 		foreach (CategoryEntry categoryEntry in categoryEntries)
 		{
@@ -507,17 +507,20 @@ public static class CodexEntryGenerator
 			{
 				list.Add(item);
 			}
-			list.Sort((CodexEntry a, CodexEntry b) => UI.StripLinkFormatting(a.name).CompareTo(UI.StripLinkFormatting(b.name)));
+			if (comparison == null)
+			{
+				list.Sort((CodexEntry a, CodexEntry b) => UI.StripLinkFormatting(a.name).CompareTo(UI.StripLinkFormatting(b.name)));
+			}
+			else
+			{
+				list.Sort(comparison);
+			}
+			ContentContainer contentContainer = new ContentContainer(new List<ICodexWidget>(), ContentContainer.ContentLayout.Grid);
 			foreach (CodexEntry item2 in list)
 			{
-				ContentContainer contentContainer = new ContentContainer(new List<ICodexWidget>(), ContentContainer.ContentLayout.Horizontal);
-				if ((UnityEngine.Object)item2.icon != (UnityEngine.Object)null)
-				{
-					contentContainer.content.Add(new CodexImage(48, 48, item2.icon, item2.iconColor));
-				}
-				contentContainer.content.Add(new CodexText(item2.name, CodexTextStyle.Body));
-				contentContainers.Add(contentContainer);
+				contentContainer.content.Add(new CodexLabelWithLargeIcon(item2.name, CodexTextStyle.BodyWhite, new Tuple<Sprite, Color>((!((UnityEngine.Object)item2.icon != (UnityEngine.Object)null)) ? Assets.GetSprite("unknown") : item2.icon, item2.iconColor), item2.id));
 			}
+			contentContainers.Add(contentContainer);
 		}
 	}
 
@@ -827,7 +830,7 @@ public static class CodexEntryGenerator
 					}, ContentContainer.ContentLayout.Vertical));
 				}
 				ContentContainer contentContainer = new ContentContainer();
-				contentContainer.contentLayout = ContentContainer.ContentLayout.Grid;
+				contentContainer.contentLayout = ContentContainer.ContentLayout.Vertical;
 				contentContainer.content = new List<ICodexWidget>();
 				Diet.Info[] infos = def.diet.infos;
 				foreach (Diet.Info info in infos)
@@ -879,7 +882,7 @@ public static class CodexEntryGenerator
 				if (flag)
 				{
 					ContentContainer contentContainer2 = new ContentContainer();
-					contentContainer2.contentLayout = ContentContainer.ContentLayout.Grid;
+					contentContainer2.contentLayout = ContentContainer.ContentLayout.Vertical;
 					contentContainer2.content = new List<ICodexWidget>();
 					List<ICodexWidget> list2 = new List<ICodexWidget>();
 					list2.Add(new CodexText(CODEX.HEADERS.PRODUCES, CodexTextStyle.Subtitle));

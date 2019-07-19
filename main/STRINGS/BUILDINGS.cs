@@ -2342,7 +2342,7 @@ namespace STRINGS
 
 				public static LocString EFFECT = "Becomes " + UI.FormatAsLink("Active", "LOGIC") + " when the chosen " + UI.FormatAsLink("Gas", "ELEMENTS_GAS") + " is detected.\n\nRemains on " + UI.FormatAsLink("Standby", "LOGIC") + " when the selected " + UI.FormatAsLink("Gas", "ELEMENTS_GAS") + " is not present.";
 
-				public static LocString LOGIC_PORT = "Specific" + UI.FormatAsLink("Gas", "ELEMENTS_GAS") + " Presence";
+				public static LocString LOGIC_PORT = "Specific " + UI.FormatAsLink("Gas", "ELEMENTS_GAS") + " Presence";
 
 				public static LocString LOGIC_PORT_ACTIVE = "Sends an " + UI.FormatAsLink("Active", "LOGIC") + " signal while the configured " + UI.FormatAsLink("Gas", "ELEMENTS_GAS") + " element is detected";
 

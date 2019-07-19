@@ -26,6 +26,7 @@ public static class BaseCrabConfig
 			gameObject.AddOrGet<SymbolOverrideController>().ApplySymbolOverridesByAffix(Assets.GetAnim(anim_file), symbolOverridePrefix, null, 0);
 		}
 		gameObject.AddOrGet<Trappable>();
+		gameObject.AddOrGet<LoopingSounds>();
 		gameObject.AddOrGetDef<CreatureFallMonitor.Def>();
 		ThreatMonitor.Def def = gameObject.AddOrGetDef<ThreatMonitor.Def>();
 		def.fleethresholdState = Health.HealthState.Dead;

@@ -101,8 +101,13 @@ public class Oxyfern : StateMachineComponent<Oxyfern.StatesInstance>
 	{
 		base.OnSpawn();
 		Subscribe(-216549700, OnUprootedDelegate);
-		Subscribe(1309017699, OnReplantedDelegate);
 		base.smi.StartSM();
+	}
+
+	protected override void OnPrefabInit()
+	{
+		Subscribe(1309017699, OnReplantedDelegate);
+		base.OnPrefabInit();
 	}
 
 	private void OnUprooted(object data = null)

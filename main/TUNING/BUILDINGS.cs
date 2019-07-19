@@ -353,6 +353,12 @@ namespace TUNING
 					amount = 30,
 					radius = 6
 				};
+
+				public static readonly EffectorValues MONUMENT = new EffectorValues
+				{
+					amount = 20,
+					radius = 10
+				};
 			}
 
 			public class PENALTY

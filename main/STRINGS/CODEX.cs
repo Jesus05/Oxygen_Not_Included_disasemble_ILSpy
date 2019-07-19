@@ -528,11 +528,11 @@ namespace STRINGS
 		{
 			public class BODY
 			{
-				public static LocString EMAILHEADER1 = "<smallcaps>To: <b>Director Stern</b><alpha=#AA><size=12> <jstern@gravitas.nova></size></color>\nFrom: <b>Mr. Lawson</b><alpha=#AA><size=12> <tlawson@gravitas.nova></smallcaps>\n------------------\n";
+				public static LocString EMAILHEADER1 = "<smallcaps>To: <b>Director Stern</b><alpha=#AA><size=12> <jstern@gravitas.nova></size></color>\nFrom: <b>Dr. Jones</b><alpha=#AA><size=12> <ejones@gravitas.nova></smallcaps>\n------------------\n";
 
 				public static LocString CONTAINER2 = "<indent=5%>Director,\n\nEverything went well. McClintock was reluctant at first, but she has little alternative given the nature of her work and the recent turn of events.\n\nShe can begin at your convenience.</indent>";
 
-				public static LocString SIGNATURE1 = "\nMr. Lawson\n<size=11>Personnel Coordinator\nThe Gravitas Facility</size>\n------------------\n";
+				public static LocString SIGNATURE1 = "\nDr. Jonesn\n<size=11>Information and Statistics Department\nThe Gravitas Facility</size>\n------------------\n";
 			}
 
 			public static LocString TITLE = "Results from Atomicon";
@@ -694,7 +694,7 @@ namespace STRINGS
 			{
 				public static LocString EMAILHEADER = "<smallcaps>To: <b>All</b>\nFrom: <b>Admin</b> <alpha=#AA><admin@gravitas.nova></color></smallcaps>\n------------------\n";
 
-				public static LocString CONTAINER1 = "<indent=5%>To whoever is entering Mr. Lawson's office to move his science fair trophies one inch to the left, please desist as he finds it quite unnerving.</indent>";
+				public static LocString CONTAINER1 = "<indent=5%>To whoever is entering Director Stern's office to move objects on her desk one inch to the left, please desist as she finds it quite unnerving.</indent>";
 
 				public static LocString SIGNATURE = "\nThank-you,\n-Admin\n<size=11>The Gravitas Facility</size>\n------------------\n";
 			}
@@ -910,7 +910,7 @@ namespace STRINGS
 		{
 			public class BODY
 			{
-				public static LocString CONTAINER1 = "<smallcaps>[VOICE RECOGNITION INITIALIZED]\n[SUBJECTS IDENTIFIED: A001, A435, B111]</smallcaps>\n\n[LOG BEGINS]\n\nTechnician: Thank-you for the fingerprints, doctor. We just need a quick voice sample, then you can be on your way.\n\nDr. McClintock: Wow Jackie, your security's no joke.\n\nDirector: Please address me as \"Director\" while on Facility grounds.\n\nDr. McClintock: ...Right.\n\n(clicking)\n\nTechnician: This should only take a moment. Speak clearly and the system will derive a vocal signature for you.\n\nTechnician: When you're ready.\n\n(throat clearing)\n\nDr. McClintock: Security code B111, Dr. Jodi McClintock. Gravitas Facility Bioengineering Department.\n\n(pause)\n\nTechnician: Great.\n\nDr. McClintock: What was that light just now?\n\nDirector: A basic security scan. No need for concern.\n\n(machine printing)\n\nTechnician: Here's your ID. You should have access to all doors in the facility now, Dr. McClintock.\n\nDr. McClintock: Thank-you.\n\nDirector: Come along, doctor.\n\n[LOG ENDS]";
+				public static LocString CONTAINER1 = "<smallcaps>[VOICE RECOGNITION INITIALIZED]\n[SUBJECTS IDENTIFIED: A001, A435, B111]</smallcaps>\n\n[LOG BEGINS]\n\nTechnician: Thank-you for the fingerprints, doctor. We just need a quick voice sample, then you can be on your way.\n\nDr. McClintock: Wow Jackie, your new security's no joke.\n\nDirector: Please address me as \"Director\" while on Facility grounds.\n\nDr. McClintock: ...Right.\n\n(clicking)\n\nTechnician: This should only take a moment. Speak clearly and the system will derive a vocal signature for you.\n\nTechnician: When you're ready.\n\n(throat clearing)\n\nDr. McClintock: Security code B111, Dr. Jodi McClintock. Gravitas Facility Bioengineering Department.\n\n(pause)\n\nTechnician: Great.\n\nDr. McClintock: What was that light just now?\n\nDirector: A basic security scan. No need for concern.\n\n(machine printing)\n\nTechnician: Here's your ID. You should have access to all doors in the facility now, Dr. McClintock.\n\nDr. McClintock: Thank-you.\n\nDirector: Come along, doctor.\n\n[LOG ENDS]";
 			}
 
 			public static LocString TITLE = "Employee Processing";
@@ -1040,40 +1040,28 @@ namespace STRINGS
 			public static LocString SUBTITLE = "ENCRYPTION LEVEL: ZERO";
 		}
 
-		public class B6_TIMEMUSINGS
-		{
-			public class BODY
-			{
-				public static LocString CONTAINER1 = "When we discuss Time as a concrete aspect of the universe, not seconds on a clock or perceptions of the mind, it is important first of all to establish that we are talking about a unique dimension that layers into the three physical dimensions of space; width, length, depth.\n\nWe conceive of Real Time as a straight line, one dimensional, uncurved and stretching forward infinitely. This is referred to as the \"Arrow of Time\".\n\nLogically this Arrow can move only forward and can never be reversed, as such a reversal would break the natural laws of the universe. Effect would precede cause and universal entropy would be undone in a blatant violation of the Second Law.\n\nStill, one can't help but be curious; what if the Arrow's trajectory could be curved? What if it could be redirected, guided, or loosed? What if we could create Time's Bow?";
-			}
-
-			public static LocString TITLE = "Director's Notes";
-
-			public static LocString SUBTITLE = "ENCRYPTION LEVEL: THREE";
-		}
-
-		public class B7_TIMESARROWTHOUGHTS
-		{
-			public class BODY
-			{
-				public static LocString CONTAINER1 = "I've been unable to shake the notion of the Bow.\n\nThe thought of its mechanics are intriguing to me, and I can only dream of the mark such a device would make upon the world -- imagine, a source of inexhaustible energy!\n\nSo many of humanity's problems could be solved with this one invention - domestic energy, environmental pollution, <i>the fuel wars</i>.\n\nI have to pursue this dream, no matter what.";
-			}
-
-			public static LocString TITLE = "Time's Arrow Thoughts";
-
-			public static LocString SUBTITLE = "ENCRYPTION LEVEL: THREE";
-		}
-
 		public class EVACUATION
 		{
 			public class BODY
 			{
-				public static LocString CONTAINER1 = "ATTENTION ALL GRAVITAS PERSONNEL\n\nEVACUATION PROTOCOL IN EFFECT\n\nREACTOR MELTDOWN IN BIOENGINEERING IMMINENT\n\nREMAIN CALM AND PROCEED TO EMERGENCY EXITS\n\nDO NOT ATTEMPT TO USE ELEVATORS";
+				public static LocString CONTAINER1 = "<smallcaps>Attention all Gravitas personnel\n\nEvacuation protocol in effect\n\nReactor meltdown in bioengineering imminent\n\nRemain calm and proceed to emergency exits\n\nDo not attempt to use elevators</smallcaps>";
 			}
 
 			public static LocString TITLE = "! EVACUATION NOTICE !";
 
 			public static LocString SUBTITLE = "ENCRYPTION LEVEL: NONE";
+		}
+
+		public class A8_FIRSTSUCCESS
+		{
+			public class BODY
+			{
+				public static LocString CONTAINER1 = "We've succeeded compressing and expanding small portions of time under .03 milliseconds. This proves that time is something that can be physically acted upon, suggesting that our vision is attainable.\n\nAn unintentional consequence of both the expansion and condensation of time is the \"vacuum\" that is created in the space between the affected portion of time and the much more expansive unaffected portions.\n\nSo far we are seeing that the unaffected time on either side of the portion we act upon will expand or contract to fill the vacuum, although we are unsure how far reaching this consequence is or what effect it has on the laws of the natural universe. At the end of all compression and expansion experiments, alterations to time are undone and leave no lasting change.";
+			}
+
+			public static LocString TITLE = "Encouraging Results";
+
+			public static LocString SUBTITLE = "ENCRYPTION LEVEL: THREE";
 		}
 
 		public class B8_MAGAZINEARTICLE
@@ -1100,6 +1088,30 @@ namespace STRINGS
 			public static LocString SUBTITLE = "Boot Message";
 		}
 
+		public class A7_NEUTRONIUM
+		{
+			public class BODY
+			{
+				public static LocString CONTAINER1 = "[LOG BEGINS]\n\nDirector: I've determined the substance to be metallic in nature. The exact cause of its formation is still unknown, though I believe it to be something of an autoimmune reaction of the natural universe, a quarantining of foreign material to prevent temporal contamination.\n\nDirector: A method has yet to be found that can successfully remove the substance from an affected object, and the larger implication that two molecularly, temporally identical objects cannot coexist at one point in time has dire implications for all time manipulation technology research, not just the Bow.\n\nDirector: For the moment I have dubbed the substance \"Neutronium\", and assigned it a theoretical place on the table of elements. Research continues.\n\n[LOG ENDS]";
+			}
+
+			public static LocString TITLE = "Byproduct Notes";
+
+			public static LocString SUBTITLE = "ENCRYPTION LEVEL: THREE";
+		}
+
+		public class A9_NEUTRONIUMAPPLICATIONS
+		{
+			public class BODY
+			{
+				public static LocString CONTAINER1 = "[LOG BEGINS]\n\nDirector: Temporal energy can be reconfigured to vibrate the matter constituting Neutronium at just the right frequency to break it down and disperse it.\n\nDirector: However, it is difficult to stabilize and maintain this reconfigured energy long enough to effectively remove practical amounts of Neutronium in real life scenarios.\n\nDirector: I am looking into making this technology more reliable and compact - this data could potentially have uses in the development of some sort of all-purpose disintegration ray.\n\n[END LOG]";
+			}
+
+			public static LocString TITLE = "Possible Applications";
+
+			public static LocString SUBTITLE = "ENCRYPTION LEVEL: THREE";
+		}
+
 		public class PLANETARYECHOES
 		{
 			public class BODY
@@ -1112,13 +1124,9 @@ namespace STRINGS
 
 				public static LocString TITLE4 = "Echo Four";
 
-				public static LocString CONTAINER1 = "Jodi: We've double checked our observational equipment and the computer's warm up is almost finished. We have precautionary personnel in place ready to start a shutdown in the event of a failure.\n\nJodi: It's time.\n\nJackie: Right.\n\nJackie: Spin the machine up slowly so we can monitor for any abnormal power fluctuations. We start on \"3\".\n\nJackie: \"1\"... \"2\"...\n\nJackie: \"3\".\n\n[There's a metallic clunk. The baritone whirr of machinery can be heard.]\n\nJackie: Something's not right.\n\nJodi: It's the container... the atom is vibrating too fast and causing it to destabilize.\n\n[The whir of the machinery peels up an octave into a mechanical screech.]\n\nJodi: We have to abort!\n\nJackie: No, not yet. Drop power from the coolant system and use it to bolster the container. It'll stabilize.\n\nJodi: But without coolant--\n\nJackie: It will stabilize!\n\n[There's a sharp crackle of electricity.]\n\nJodi: Drop 40% power from the coolant systems, reroute everything we have to the atomic container! \n\n[The whirring reaches a crescendo, then calms into a steady hum.]\n\nJodi: That did it. The container is stabilizing.\n\n[Jackie sighs in relief.]\n\nJodi: But... Look at these numbers.\n\nJackie: My god. Are these real?\n\nJodi: Yes, I'm certain of it. Jackie, I think we did it.\n\nJodi: I think we created an infinite energy source.\n------------------\n";
+				public static LocString CONTAINER1 = "Jodi: We've double checked our observational equipment and the computer's warm up is almost finished. We have precautionary personnel in place ready to start a shutdown in the event of a failure.\n\nJodi: It's time.\n\nJackie: Right.\n\nJackie: Spin the machine up slowly so we can monitor for any abnormal power fluctuations. We start on \"3\".\n\nJackie: \"1\"... \"2\"...\n\nJackie: \"3\".\n\n[There's a metallic clunk. The baritone whirr of machinery can be heard.]\n\nJackie: Something's not right.\n\nJodi: It's the container... the atom is vibrating too fast.\n\n[The whir of the machinery peels up an octave into a mechanical screech.]\n\nJodi: We have to abort!\n\nJackie: No, not yet. Drop power from the coolant system and use it to bolster the container. It'll stabilize.\n\nJodi: But without coolant--\n\nJackie: It will stabilize!\n\n[There's a sharp crackle of electricity.]\n\nJodi: Drop 40% power from the coolant systems, reroute everything we have to the atomic container! \n\n[The whirring reaches a crescendo, then calms into a steady hum.]\n\nJodi: That did it. The container is stabilizing.\n\n[Jackie sighs in relief.]\n\nJodi: But... Look at these numbers.\n\nJackie: My god. Are these real?\n\nJodi: Yes, I'm certain of it. Jackie, I think we did it.\n\nJodi: I think we created an infinite energy source.\n------------------\n";
 
-				public static LocString CONTAINER2 = "Jodi: What on earth is this?\n\n[An open palm slams papers down on a desk.]\n\nJodi: These readings show that dozens of pounds of Neutronium are building up by the end of every shift. When were you going to tell me?\n\nJackie: I'm managing it.\n\nJodi: Jackie, this is hazardous material we're working with. We don't have the luxury of taking shortcuts, not when safety is on the line.\n\nJackie: I think I'm capable of overseeing my own safety.\n\nJodi: It's not just about <i>your</i> safety! We don't understand the longterm implications of what we're developing here... the manipulations we conduct in this facility could have rippling effects throughout the world, maybe even the universe.\n\nJackie: Don't be such a fearmonger, it's not befitting of a scientist. I'll remind you whose theories got us this far in the first place. Don't forget that this research has the potential to stop the energy wars and the end suffering of thousands. Every month we spend on trials here delays that.\n\nJodi: It's dangerous.\n\nJackie: Your concern is noted.\n------------------\n";
-
-				public static LocString CONTAINER3 = "Jodi: Jackie, do you have a second to chat? It's important.\n\nJackie: I'm a little busy right now.\n\nJodi: I got an offer at Atomicon.\n\nJackie: ...\n\nJodi: Yeah, they're looking into some exciting new methods of gene splicing. It'd make better use of my bio degree, and--\n\nJackie: You can't actually be thinking about leaving.\n\nJodi: It's just, we're running out of money and the grant office is planning to...\n\nJackie: Wait. How did you get a job at Atomicon? Are you still putting my proposal on your resume?\n\nJodi: I mean, I <i>was</i> the one who pitched it and secured the funding.\n\nJackie: You <i>said</i> you would tell people I wrote it.\n\nJodi: I tried, it's just the time never seemed right and they offered to... Look, it doesn't matter. I'm sorry, Jackie.\n------------------\n";
-
-				public static LocString CONTAINER4 = "[The beep and click of an answering machine can be heard.]\n\nJodi: Hey, Jackie. I know it's been awhile since we had the chance to talk.\n\nJodi: I was reading the Nucleoid today and saw the article about the Bow. I justed wanted to call and say \"congratulations\".\n\nJodi: Maybe if you're free we can grab a coffee sometime and catch up.\n\n[pause]\n\nJodi: This is Jodi, by the way.\n\n[The machine clicks off.]\n------------------\n";
+				public static LocString CONTAINER2 = "Jodi: What on earth is this?\n\n[An open palm slams papers down on a desk.]\n\nJodi: These readings show that hundreds of pounds of Neutronium are building up in the machine every shift. When were you going to tell me?\n\nJackie: I'm managing it.\n\nJodi: Jackie, we don't have the luxury of taking shortcuts, not when safety is on the line.\n\nJackie: I think I'm capable of overseeing my own safety.\n\nJodi: I'm not just concerned about <i>your</i> safety! We don't understand the longterm implications of what we're developing here... the manipulations we conduct in this facility could have rippling effects throughout the world, maybe even the universe.\n\nJackie: Don't be such a fearmonger. It's not befitting of a scientist. Besides, I'll remind you this research has the potential to stop the fuel wars in their tracks and the end suffering of thousands. Every month we spend on trials here delays that.\n\nJodi: I can't be a part of this, Jackie.\n------------------\n";
 			}
 
 			public static LocString TITLE = "Planetary Echoes";
@@ -1136,6 +1144,30 @@ namespace STRINGS
 			}
 
 			public static LocString TITLE = "Campus Newspaper Article";
+
+			public static LocString SUBTITLE = "ENCRYPTION LEVEL: THREE";
+		}
+
+		public class B6_TIMEMUSINGS
+		{
+			public class BODY
+			{
+				public static LocString CONTAINER1 = "When we discuss Time as a concrete aspect of the universe, not seconds on a clock or perceptions of the mind, it is important first of all to establish that we are talking about a unique dimension that layers into the three physical dimensions of space; width, length, depth.\n\nWe conceive of Real Time as a straight line, one dimensional, uncurved and stretching forward infinitely. This is referred to as the \"Arrow of Time\".\n\nLogically this Arrow can move only forward and can never be reversed, as such a reversal would break the natural laws of the universe. Effect would precede cause and universal entropy would be undone in a blatant violation of the Second Law.\n\nStill, one can't help but be curious; what if the Arrow's trajectory could be curved? What if it could be redirected, guided, or loosed? What if we could create Time's Bow?";
+			}
+
+			public static LocString TITLE = "Director's Notes";
+
+			public static LocString SUBTITLE = "ENCRYPTION LEVEL: THREE";
+		}
+
+		public class B7_TIMESARROWTHOUGHTS
+		{
+			public class BODY
+			{
+				public static LocString CONTAINER1 = "I've been unable to shake the notion of the Bow.\n\nThe thought of its mechanics are intriguing to me, and I can only dream of the mark such a device would make upon the world -- imagine, a source of inexhaustible energy!\n\nSo many of humanity's problems could be solved with this one invention - domestic energy, environmental pollution, <i>the fuel wars</i>.\n\nI have to pursue this dream, no matter what.";
+			}
+
+			public static LocString TITLE = "Time's Arrow Thoughts";
 
 			public static LocString SUBTITLE = "ENCRYPTION LEVEL: THREE";
 		}
@@ -1470,18 +1502,6 @@ namespace STRINGS
 			public static LocString SUBTITLE = "ENCRYPTION LEVEL: TWO";
 		}
 
-		public class A8_FIRSTSUCCESS
-		{
-			public class BODY
-			{
-				public static LocString CONTAINER1 = "We've succeeded compressing and expanding small portions of time under .03 milliseconds. This proves that time is something that can be physically acted upon, suggesting that our vision is attainable.\n\nAn unintentional consequence of both the expansion and condensation of time is the \"vacuum\" that is created in the space between the affected portion of time and the much more expansive unaffected portions.\n\nSo far we are seeing that the unaffected time on either side of the affected portion will expand or contract to fill the vacuum, although we are unsure how far reaching this consequence is or what effect it has on the laws of the natural universe. At the end of all compression and expansion experiments, alterations to time are undone and leave no lasting change.";
-			}
-
-			public static LocString TITLE = "Encouraging Results";
-
-			public static LocString SUBTITLE = "ENCRYPTION LEVEL: THREE";
-		}
-
 		public class A5_GENETICOOZE
 		{
 			public class BODY
@@ -1546,60 +1566,58 @@ namespace STRINGS
 			public static LocString SUBTITLE = "ENCRYPTION LEVEL: TWO";
 		}
 
-		public class A7_NEUTRONIUM
-		{
-			public class BODY
-			{
-				public static LocString CONTAINER1 = "[LOG BEGINS]\n\nDirector: I've determined the substance to be metallic in nature. The exact cause of its formation is still unknown, though I believe it to be something of an autoimmune reaction of the natural universe, a quarantining of foreign material to prevent temporal contamination.\n\nDirector: A method has yet to be found that can successfully remove the substance from an affected object, and the larger implication that two molecularly, temporally identical objects cannot coexist at one point in time has dire implications for all time manipulation technology research, not just the Bow.\n\nDirector: For the moment I have dubbed the substance \"Neutronium\", and assigned it a theoretical place on the table of elements. Research continues.\n\n[LOG ENDS]";
-			}
-
-			public static LocString TITLE = "Byproduct Notes";
-
-			public static LocString SUBTITLE = "ENCRYPTION LEVEL: THREE";
-		}
-
-		public class A9_NEUTRONIUMAPPLICATIONS
-		{
-			public class BODY
-			{
-				public static LocString CONTAINER1 = "[LOG BEGINS]\n\nDirector: Temporal energy can be reconfigured to vibrate the matter constituting Neutronium at just the right frequency to break it down and disperse it.\n\nDirector: However, it is difficult to stabilize and maintain this reconfigured energy long enough to effectively remove practical amounts of Neutronium in real life scenarios.\n\nDirector: I am looking into making this technology more reliable and compact - this data could potentially have uses in the development of some sort of all-purpose disintegration ray.\n\n[END LOG]";
-			}
-
-			public static LocString TITLE = "Possible Applications";
-
-			public static LocString SUBTITLE = "ENCRYPTION LEVEL: THREE";
-		}
-
 		public class AUTOMATION
 		{
 			public static LocString TITLE = "Automation";
 
-			public static LocString PARAGRAPH_1 = "Automation is a tool for controlling the operation of buildings based on what sensors in the colony are detecting. A light bulb could be configured to automatically turn on when a sensor detects a Duplicant in the room. A water pump might activate only when a sensor detects water. An air conditioner might activate only when the sensor detects too much heat. ";
+			public static LocString HEADER_1 = "Automation";
 
-			public static LocString PARAGRAPH_2 = "In addition to an electrical wire, most powered buildings can also have an automation wire connected to them. This wire can signal the building to turn on or off. If the other end of an automation wire is connected to a sensor, the building will turn on and off as the sensor outputs signals. ";
+			public static LocString PARAGRAPH_1 = "Automation is a tool for controlling the operation of buildings based on what sensors in the colony are detecting.\n\nA " + BUILDINGS.PREFABS.CEILINGLIGHT.NAME + " could be configured to automatically turn on when a " + BUILDINGS.PREFABS.LOGICDUPLICANTSENSOR.NAME + "  detects a Duplicant in the room.\n\nA " + BUILDINGS.PREFABS.LIQUIDPUMP.NAME + " might activate only when a " + BUILDINGS.PREFABS.LOGICELEMENTSENSORLIQUID.NAME + " detects water.\n\nA " + BUILDINGS.PREFABS.AIRCONDITIONER.NAME + " might activate only when the " + BUILDINGS.PREFABS.LOGICTEMPERATURESENSOR.NAME + " detects too much heat.\n\n";
 
-			public static LocString PARAGRAPH_3 = "There are two signals that an automation wire can send: Active and Standby. The active signal will cause buildings to turn on, and the standby signal will cause buildings to turn off. Sensors can often be configured to send their active signal only under certain conditions. ex.A Temperature sensor may only send an active signal if detecting temperatures greater than a chosen value. ";
+			public static LocString HEADER_2 = "Automation Wires";
 
-			public static LocString PARAGRAPH_4 = "The signals of sensor wires can be combined using special buildings called \"Gates\" in order to create complex activation conditions. \n\nThe \"AND\" gate can have two automation wires connected to its input slots, and one connected to its output slots. It will send a \"Active\" signal to its output slot only if it is recieving an Active signal from both its input slots. This could be used to activate a building only when multiple sensors are detecting something. ";
+			public static LocString PARAGRAPH_2 = "In addition to an " + UI.FormatAsLink("electrical wire", "WIRE") + ", most powered buildings can also have an " + BUILDINGS.PREFABS.LOGICWIRE.NAME + " connected to them. This wire can signal the building to turn on or off. If the other end of a " + BUILDINGS.PREFABS.LOGICWIRE.NAME + " is connected to a sensor, the building will turn on and off as the sensor outputs signals.\n\n";
+
+			public static LocString HEADER_3 = "Signals";
+
+			public static LocString PARAGRAPH_3 = "There are two signals that an " + BUILDINGS.PREFABS.LOGICWIRE.NAME + " can send: Green and Red. The green signal will usually cause buildings to turn on, and the red signal will usually cause buildings to turn off. Sensors can often be configured to send their green signal only under certain conditions. A " + BUILDINGS.PREFABS.LOGICTEMPERATURESENSOR.NAME + " could be configured to only send a green signal if detecting temperatures greater than a chosen value.\n\n";
+
+			public static LocString HEADER_4 = "Gates";
+
+			public static LocString PARAGRAPH_4 = "The signals of sensor wires can be combined using special buildings called \"Gates\" in order to create complex activation conditions.\nThe " + BUILDINGS.PREFABS.LOGICGATEAND.NAME + " can have two automation wires connected to its input slots, and one connected to its output slots. It will send a \"Green\" signal to its output slot only if it is recieving an \"Green\" signal from both its input slots. This could be used to activate a building only when multiple sensors are detecting something.\n\n";
 		}
 
 		public class DECORSYSTEM
 		{
 			public static LocString TITLE = "Decor";
 
-			public static LocString PARAGRAPH_1 = "Pretty things tend to increase the Decor value of an area. Low Decor can increase Duplicant streses. Each Duplicant has a different idea of what is a high enough Decor value. If the average Decor that a Duplicant experiences in a cycle is below their expectations they will suffer a stress pentalty. ";
+			public static LocString HEADER_1 = "Decor";
 
-			public static LocString PARAGRAPH_2 = "Many things have an effect on the Decor of an area. The effect is expressed as a strength value and a radius. Often that effect is postive, but some things can lower the decor value of an area too. Plants, critters, and furniture often increase decor while industrial buildings and rot often decrease it. ";
+			public static LocString PARAGRAPH_1 = "Low Decor can increase Duplicant " + UI.FormatAsLink("Stress", "STRESS") + ". Thankfully, pretty things tend to increase the Decor value of an area. Each Duplicant has a different idea of what is a high enough Decor value. If the average Decor that a Duplicant experiences in a cycle is below their expectations they will suffer a stress pentalty.\n\n";
 
-			public static LocString PARAGRAPH_3;
+			public static LocString HEADER_2 = "Calculating Decor";
+
+			public static LocString PARAGRAPH_2;
 
 			static DECORSYSTEM()
 			{
-				string[] obj = new string[8]
+				object[] obj = new object[20]
 				{
-					"The ",
-					CREATURES.SPECIES.PRICKLEGRASS.NAME,
+					"Many things have an effect on the Decor value of a tile. A building's effect is expressed as a strength value and a radius. Often that effect is postive, but many buildings also lower the decor value of an area too. ",
+					UI.FormatAsLink("Plants", "PLANTS"),
+					", ",
+					UI.FormatAsLink("Critters", "CREATURES"),
+					", and ",
+					UI.FormatAsLink("Furniture", "BUILDCATEGORYFURNITURE"),
+					" often increase decor while industrial buildings and rot often decrease it. Duplicants experience the combined decor of all objects affecting a tile.\n\nThe ",
+					(string)CREATURES.SPECIES.PRICKLEGRASS.NAME,
 					" has a decor value of ",
+					null,
+					null,
+					null,
+					null,
+					null,
+					null,
 					null,
 					null,
 					null,
@@ -1609,12 +1627,20 @@ namespace STRINGS
 				EffectorValues pOSITIVE_DECOR_EFFECT = PrickleGrassConfig.POSITIVE_DECOR_EFFECT;
 				object arg = pOSITIVE_DECOR_EFFECT.amount;
 				EffectorValues pOSITIVE_DECOR_EFFECT2 = PrickleGrassConfig.POSITIVE_DECOR_EFFECT;
-				obj[3] = $"{arg} and a radius of {pOSITIVE_DECOR_EFFECT2.radius} tiles. ";
-				obj[4] = "\nThe ";
-				obj[5] = BUILDINGS.PREFABS.MICROBEMUSHER.NAME;
-				obj[6] = " has a decor value of ";
-				obj[7] = $"{MicrobeMusherConfig.DECOR.amount} and a radius of {MicrobeMusherConfig.DECOR.radius} tiles. ";
-				PARAGRAPH_3 = string.Concat(obj);
+				obj[9] = $"{arg} and a radius of {pOSITIVE_DECOR_EFFECT2.radius} tiles. ";
+				obj[10] = "\nThe ";
+				obj[11] = (string)BUILDINGS.PREFABS.MICROBEMUSHER.NAME;
+				obj[12] = " has a decor value of ";
+				obj[13] = $"{MicrobeMusherConfig.DECOR.amount} and a radius of {MicrobeMusherConfig.DECOR.radius} tiles. ";
+				obj[14] = "\nThe result of placing a ";
+				obj[15] = (string)BUILDINGS.PREFABS.MICROBEMUSHER.NAME;
+				obj[16] = " next to a ";
+				obj[17] = (string)CREATURES.SPECIES.PRICKLEGRASS.NAME;
+				obj[18] = " would be a combined decor value of ";
+				int amount = MicrobeMusherConfig.DECOR.amount;
+				EffectorValues pOSITIVE_DECOR_EFFECT3 = PrickleGrassConfig.POSITIVE_DECOR_EFFECT;
+				obj[19] = amount + pOSITIVE_DECOR_EFFECT3.amount;
+				PARAGRAPH_2 = string.Concat(obj);
 			}
 		}
 
@@ -1622,42 +1648,106 @@ namespace STRINGS
 		{
 			public static LocString TITLE = "Heat";
 
-			public static LocString BODY = "Everything on the asteroid has a temperature. Extreme temperatures can cause all sorts of problems for a base. Buildings can stop functioning, crops can wilt, and things can even melt, boil, and freeze when they really ought not to.\n\nTemperature increase when the thermal energy of a substance increases. The value of temperature is equal to the total Thermal Energy divided by the Specific Heat Capacity of the substance.\nBecause Specific Heat Capacity varies between substances so significantly, it is often the case a substance can have a higher temperature than another despite a lower overall thermal energy. \nThis quality makes Water require nearly four times the amount of thermal energy to increase in temperature compared to Oxygen. \n\nThermal energy can be transfered between Buildings, Creatures, World tiles, and other world entities through Conduction. Conduction occurs when two things of different Temperatures are touching. The rate the energy transfer is the product of the Combined Conductivity and Temperature difference. Thermal energy will flow slowly between substances with low Thermal conductivity values. For this reason, substances with low conductivity are considered to be good Insulators. ";
+			public static LocString HEADER_1 = "Temperature";
+
+			public static LocString PARAGRAPH_1 = "Just about everything on the asteroid has a temperature. It's normal for temperature to rise and fall a bit, but extreme temperatures can cause all sorts of problems for a base. Buildings can stop functioning, crops can wilt, and things can even melt, boil, and freeze when they really ought not to.\n\n";
+
+			public static LocString HEADER_2 = "Wilting, Overheating, and Melting";
+
+			public static LocString PARAGRAPH_2 = "Most crops require their body temperatures to be within a certain range in order to grow. Values outside of this range are not fatal, but will pause growth. If a building's temperature exceeds its overheat temperature it will take damage and require repair.\nAt very extreme temperatures buildings may melt or boil away.\n\n";
+
+			public static LocString HEADER_3 = "Thermal Energy";
+
+			public static LocString PARAGRAPH_3 = "Temperature increase when the thermal energy of a substance increases. The value of temperature is equal to the total Thermal Energy divided by the Specific Heat Capacity of the substance. Because Specific Heat Capacity varies between substances so significantly, it is often the case a substance can have a higher temperature than another despite a lower overall thermal energy. This quality makes Water require nearly four times the amount of thermal energy to increase in temperature compared to Oxygen.\n\n";
+
+			public static LocString HEADER_4 = "Conduction and Insulation";
+
+			public static LocString PARAGRAPH_4 = "Thermal energy can be transfered between Buildings, Creatures, World tiles, and other world entities through Conduction. Conduction occurs when two things of different Temperatures are touching. The rate the energy transfer is the product of the averaged Conductivity values and Temperature difference. Thermal energy will flow slowly between substances with low conductivity values (insulators), and quickly between substances with high conductivity (conductors).\n\n";
+
+			public static LocString HEADER_5 = "State Changes";
+
+			public static LocString PARAGRAPH_5 = "Water ice melts into liquid water when its temperature crosses above its melting point. Liquid water boils in to steam when its temperature crosses above its boiling point. Similar transitions in state occur for most elements, but each element has its own threshold temperatures. Sometimes the transitions are not reversable - crude oil will boiled to sour gas will not condense back to crude oil when cooled. Instead, the substance might condense into a totally different element with a different utility. \n\n";
 		}
 
 		public class LIGHT
 		{
 			public static LocString TITLE = "Light";
 
-			public static LocString BODY = "Most of the asteroid is dark. Light sources like Lamps or Shinebugs can gives Duplicants a much appreciated boost to Morale and productivity. \nMany plants are also sensitive to the amount of light they recieve. \n\nThe amount of light on a cell is measured in Lux.";
+			public static LocString HEADER_1 = "Light";
+
+			public static LocString PARAGRAPH_1 = "Most of the asteroid is dark. Light sources such as the " + BUILDINGS.PREFABS.CEILINGLIGHT.NAME + " or " + CREATURES.SPECIES.LIGHTBUG.NAME + " can gives Duplicants a much appreciated boost to Morale and productivity. Many plants are also sensitive to the amount of light they recieve.\n\n";
+
+			public static LocString HEADER_2 = "Light Sources";
+
+			public static LocString PARAGRAPH_2 = "The " + BUILDINGS.PREFABS.FLOORLAMP.NAME + " and " + BUILDINGS.PREFABS.CEILINGLIGHT.NAME + " produce a decent amount of light when powered. The " + CREATURES.SPECIES.LIGHTBUG.NAME + " naturally emits a halo of light. Strong solar light is available on the surface during daytime.\n\n";
+
+			public static LocString HEADER_3 = "Measuring Light";
+
+			public static LocString PARAGRAPH_3 = "The amount of light on a cell is measured in Lux. Lux has a dramatic range - A simple " + (string)BUILDINGS.PREFABS.CEILINGLIGHT.NAME + " produces " + 1800 + " Lux, while the sun will regularly produce values as high as " + 80000 + " Lux. The " + (string)BUILDINGS.PREFABS.SOLARPANEL.NAME + " generates power proportional to how many Lux it is exposed to.\n\n";
 		}
 
 		public class MORALE
 		{
 			public static LocString TITLE = "Morale";
 
-			public static LocString BODY = "Duplicant morale describes the relationship between their Skills and Lifestyle. Duplicants with poor morale will experience an increase in Stress.Poor morale is caused by a duplicant having many skills, but few comforts. Comforts such as quality food, nice rooms, and recreation will increase morale.As a colony grows, it can safely increase its duplicants skills with its comforts.";
+			public static LocString HEADER_1 = "Morale";
+
+			public static LocString PARAGRAPH_1 = "Morale describes the relationship between a Duplicant's " + UI.FormatAsLink("Skills", "SKILLS") + " and their Lifestyle. The more skills a Duplicant has, the higher their morale expectation will be. Duplicants with morale below their expectation will experience a " + UI.FormatAsLink("Stress", "STRESS") + " penalty. Comforts such as " + UI.FormatAsLink("Quality Food", "FOOD") + ", nice rooms, and recreation will increase morale.\n\n";
+
+			public static LocString HEADER_2 = "Recreation";
+
+			public static LocString PARAGRAPH_2 = "Recreation buildings such as the " + BUILDINGS.PREFABS.WATERCOOLER.NAME + " and " + BUILDINGS.PREFABS.ESPRESSOMACHINE.NAME + " improve a Duplicants morale when used. Duplicants need recreation time in their schedules to use these buildings.\n\n";
 		}
 
 		public class POWER
 		{
 			public static LocString TITLE = "Power";
 
-			public static LocString BODY = "Electrical power is required to run many of the buildings in a base. Power can be transfered between buildings using wires.\nSeveral buildings can generate power.Once generated, power can be stored in batteries to prevent waste.\n\nPower is measure in Joules when stored in batteries.Power production and consumption  is measure in Watts, which is equal to Joules consumed or produced per second.\n\nA network on wires can be overloaded if it is consuming too many watts. If the wattage of a wire netword exceeds its limits it may break and require repair.Regular wires have a 1000 Watt limit (or 1kW).";
+			public static LocString HEADER_1 = "Electricity";
+
+			public static LocString PARAGRAPH_1 = "Electrical power is required to run many of the buildings in a base. Different buildings requires different amounts of power to run. Power can be transfered to buildings that require it using " + UI.FormatAsLink("Wires", "WIRE") + "\n\n";
+
+			public static LocString HEADER_2 = "Generators and Batteries";
+
+			public static LocString PARAGRAPH_2 = "Several buildings can generate power. Duplicants can run on the " + BUILDINGS.PREFABS.MANUALGENERATOR.NAME + " to generate clean power. Once generated, power can be consumed by buildings or stored in a " + BUILDINGS.PREFABS.BATTERY.NAME + " to prevent waste. Any generated power that is not consumed or stored will be wasted. Batteries and Generators tend to produce a signifcant amount of " + UI.FormatAsLink("Heat", "HEAT") + " while active.\n\n";
+
+			public static LocString HEADER_3 = "Measuring Power";
+
+			public static LocString PARAGRAPH_3 = "Power is measure in Joules when stored in a " + BUILDINGS.PREFABS.BATTERY.NAME + ". Power produced and consumed by buildings is measured in Watts, which are equal to Joules (consumed or produced) per second.\n\nA Battery that stored 5000 Joules could power a building that consumed 240 Watts for about 20 seconds. A generator which produces 480 Watts could power two buildings which consume 240 Watts for as long as it was running.\n\n";
+
+			public static LocString HEADER_4 = "Overloading";
+
+			public static LocString PARAGRAPH_4 = "A network of " + UI.FormatAsLink("Wires", "WIRE") + " can be overloaded if it is consuming too many watts. If the wattage of a wire network exceeds its limits it may break and require repair.\n\n" + UI.FormatAsLink("Standard wires", "WIRE") + " have a " + 1000 + " Watt limit.\n\n";
 		}
 
 		public class RESEARCH
 		{
 			public static LocString TITLE = "Research";
 
-			public static LocString BODY = " Doing research unlocks new types of buildings for the colony.\nA selected research task is completed once enough research points have been generated at the colonies Research Stations.\nResearch point are generated at Research stations by Duplicants performing the Research chore.The higher a Duplicants 'Science' attribute score is the quicker they generate research points.\n\nAdvanced research tasks require special research stations to generate the proper kind of research point.These research stations often consume more advanced resources.\nUsing higher level research stations also requires Duplicants to have learned higher level research skills.";
+			public static LocString HEADER_1 = "Research";
+
+			public static LocString PARAGRAPH_1 = "Doing research unlocks new types of buildings for the colony. Duplicants can perform research at the " + BUILDINGS.PREFABS.RESEARCHCENTER.NAME + "\n\n";
+
+			public static LocString HEADER_2 = "Research Tasks";
+
+			public static LocString PARAGRAPH_2 = "A selected research task is completed once enough research points have been generated at the colonies research stations. Duplicants with high 'Science' attribute scores will generate research points faster than Duplicants with lower scores.\n\n";
+
+			public static LocString HEADER_3 = "Research Types";
+
+			public static LocString PARAGRAPH_3 = "Advanced research tasks require special research stations to generate the proper kind of research points. These research stations often consume more advanced resources.\n\nUsing higher level research stations also requires Duplicants to have learned higher level research " + UI.FormatAsLink("skills", "ROLES") + "\n\n" + STRINGS.RESEARCH.TYPES.ALPHA.NAME + " is performed at the " + BUILDINGS.PREFABS.RESEARCHCENTER.NAME + "\n" + STRINGS.RESEARCH.TYPES.BETA.NAME + " is performed at the " + BUILDINGS.PREFABS.ADVANCEDRESEARCHCENTER.NAME + "\n" + STRINGS.RESEARCH.TYPES.GAMMA.NAME + " is performed at the " + BUILDINGS.PREFABS.COSMICRESEARCHCENTER.NAME + "\n\n";
 		}
 
 		public class STRESS
 		{
 			public static LocString TITLE = "Stress";
 
-			public static LocString BODY = "A Duplicants experiences in the colony affect their stress level.Stress increases when they have negative experiences or unmet expectations.Stress descreses with time and recreation.\nIf stress levels get too high, Duplicant behavior changes for the worse. If a Duplicant has very high stress values they will experience a Stress Behaviour episode.\n\nEach Duplicant has a different Stress Behaviour - but all stress responses are bad.\n\nAfter the stress behaviour episode is done, the Duplicants stress will reduce to a lower value.If the stress factors are not corrected though they are bound to have another stress behavior episode.";
+			public static LocString HEADER_1 = "Stress";
+
+			public static LocString PARAGRAPH_1 = "A Duplicant's experiences in the colony affect their stress level. Stress increases when they have negative experiences or unmet expectations. Stress descreses with time if " + UI.FormatAsLink("Morale", "MORALE") + " is satisfied. Duplicant behavior starts to change for the worse when stress levels get too high .\n\n";
+
+			public static LocString HEADER_2 = "Stress Responses";
+
+			public static LocString PARAGRAPH_2 = "If a Duplicant has very high stress values they will experience a Stress Response episode. Each Duplicant has a different Stress Behaviour - but all stress responses are bad. After the stress behaviour episode is done, the Duplicants stress will reset to a lower value. Though, if the factors causing the Duplicant's high stress are not corrected they are bound to have another stress response episode.\n\n";
 		}
 	}
 }

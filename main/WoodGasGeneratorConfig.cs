@@ -5,19 +5,17 @@ public class WoodGasGeneratorConfig : IBuildingConfig
 {
 	public const string ID = "WoodGasGenerator";
 
-	private const float BRANCHES_PER_GENERATOR = 12f;
+	private const float BRANCHES_PER_GENERATOR = 8f;
 
-	public const float CONSUMPTION_RATE = 1.71428573f;
+	public const float CONSUMPTION_RATE = 1.2f;
 
-	private const float WOOD_PER_REFILL = 514.2857f;
+	private const float WOOD_PER_REFILL = 360f;
 
 	private const SimHashes EXHAUST_ELEMENT_GAS = SimHashes.CarbonDioxide;
 
 	private const SimHashes EXHAUST_ELEMENT_GAS2 = SimHashes.Syngas;
 
-	public const float WASTE_RATE = 0.1f;
-
-	public const float CO2_EXHAUST_RATE = 0.171428576f;
+	public const float CO2_EXHAUST_RATE = 0.17f;
 
 	private const int WIDTH = 2;
 
@@ -63,19 +61,19 @@ public class WoodGasGeneratorConfig : IBuildingConfig
 		Storage storage = go.AddOrGet<Storage>();
 		storage.SetDefaultStoredItemModifiers(Storage.StandardSealedStorage);
 		storage.showInUI = true;
-		float max_stored_input_mass = 1028.57141f;
+		float max_stored_input_mass = 720f;
 		go.AddOrGet<LoopingSounds>();
 		ManualDeliveryKG manualDeliveryKG = go.AddOrGet<ManualDeliveryKG>();
 		manualDeliveryKG.SetStorage(storage);
 		manualDeliveryKG.requestedItemTag = WoodLogConfig.TAG;
-		manualDeliveryKG.capacity = 514.2857f;
-		manualDeliveryKG.refillMass = 257.142853f;
+		manualDeliveryKG.capacity = 360f;
+		manualDeliveryKG.refillMass = 180f;
 		manualDeliveryKG.choreTypeIDHash = Db.Get().ChoreTypes.FetchCritical.IdHash;
 		EnergyGenerator energyGenerator = go.AddOrGet<EnergyGenerator>();
 		energyGenerator.powerDistributionOrder = 8;
 		energyGenerator.ignoreBatteryRefillPercent = true;
 		energyGenerator.hasMeter = true;
-		energyGenerator.formula = EnergyGenerator.CreateSimpleFormula(WoodLogConfig.TAG, 1.71428573f, max_stored_input_mass, SimHashes.CarbonDioxide, 0.171428576f, false, new CellOffset(0, 1), 383.15f);
+		energyGenerator.formula = EnergyGenerator.CreateSimpleFormula(WoodLogConfig.TAG, 1.2f, max_stored_input_mass, SimHashes.CarbonDioxide, 0.17f, false, new CellOffset(0, 1), 383.15f);
 		Tinkerable.MakePowerTinkerable(go);
 		go.AddOrGetDef<PoweredActiveController.Def>();
 	}

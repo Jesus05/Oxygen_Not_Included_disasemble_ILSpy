@@ -121,9 +121,14 @@ public class ColdBreather : StateMachineComponent<ColdBreather.StatesInstance>, 
 	{
 		base.OnSpawn();
 		simEmitCBHandle = Game.Instance.massEmitCallbackManager.Add(OnSimEmittedCallback, this, "ColdBreather");
+		base.smi.StartSM();
+	}
+
+	protected override void OnPrefabInit()
+	{
 		elementConsumer.EnableConsumption(false);
 		Subscribe(1309017699, OnReplantedDelegate);
-		base.smi.StartSM();
+		base.OnPrefabInit();
 	}
 
 	private void OnReplanted(object data = null)

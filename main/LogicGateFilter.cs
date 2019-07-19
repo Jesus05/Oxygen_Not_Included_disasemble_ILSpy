@@ -43,7 +43,7 @@ public class LogicGateFilter : LogicGate, ISingleSliderControl, ISliderControl
 
 	private int DelayAmountTicks => Mathf.RoundToInt(delayAmount / LogicCircuitManager.ClockTickInterval);
 
-	public string SliderTitleKey => "STRINGS.UI.UISIDESCREENS.LOGIC_DELAY_SIDE_SCREEN.TITLE";
+	public string SliderTitleKey => "STRINGS.UI.UISIDESCREENS.LOGIC_FILTER_SIDE_SCREEN.TITLE";
 
 	public string SliderUnits => UI.UNITSUFFIXES.SECOND;
 
@@ -74,7 +74,7 @@ public class LogicGateFilter : LogicGate, ISingleSliderControl, ISliderControl
 
 	public string GetSliderTooltipKey(int index)
 	{
-		return "STRINGS.UI.UISIDESCREENS.LOGIC_DELAY_SIDE_SCREEN.TOOLTIP";
+		return "STRINGS.UI.UISIDESCREENS.LOGIC_FILTER_SIDE_SCREEN.TOOLTIP";
 	}
 
 	protected override void OnPrefabInit()

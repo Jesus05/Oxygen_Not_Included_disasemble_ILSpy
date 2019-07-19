@@ -71,6 +71,8 @@ public class KCanvasScaler : KMonoBehaviour
 
 	private float ScreenRelativeScale()
 	{
+		float dpi = Screen.dpi;
+		DebugUtil.LogArgs("SCREEN DPI:", dpi);
 		if (!((float)Screen.height <= scaleSteps[0].maxRes_y) && !((float)Screen.width / (float)Screen.height < 1.67777777f))
 		{
 			if (!((float)Screen.height > scaleSteps[scaleSteps.Length - 1].maxRes_y))

@@ -6,7 +6,7 @@ public struct TagBits
 
 	private static List<Tag> inverseTagTable = new List<Tag>();
 
-	private const int Capacity = 320;
+	private const int Capacity = 384;
 
 	private ulong bits0;
 
@@ -18,6 +18,8 @@ public struct TagBits
 
 	private ulong bits4;
 
+	private ulong bits5;
+
 	public static TagBits None = default(TagBits);
 
 	public TagBits(ref TagBits other)
@@ -27,6 +29,7 @@ public struct TagBits
 		bits2 = other.bits2;
 		bits3 = other.bits3;
 		bits4 = other.bits4;
+		bits5 = other.bits5;
 	}
 
 	public TagBits(Tag tag)
@@ -36,6 +39,7 @@ public struct TagBits
 		bits2 = 0uL;
 		bits3 = 0uL;
 		bits4 = 0uL;
+		bits5 = 0uL;
 		SetTag(tag);
 	}
 
@@ -46,6 +50,7 @@ public struct TagBits
 		bits2 = 0uL;
 		bits3 = 0uL;
 		bits4 = 0uL;
+		bits5 = 0uL;
 		if (tags != null)
 		{
 			foreach (Tag tag in tags)
@@ -63,6 +68,7 @@ public struct TagBits
 		GetTagsVerySlow(2, bits2, list);
 		GetTagsVerySlow(3, bits3, list);
 		GetTagsVerySlow(4, bits4, list);
+		GetTagsVerySlow(5, bits5, list);
 		return list;
 	}
 
@@ -86,12 +92,18 @@ public struct TagBits
 			tagTable.Add(tag, value);
 			inverseTagTable.Add(tag);
 			DebugUtil.Assert(inverseTagTable.Count == value + 1);
-			if (tagTable.Count >= 320)
+			if (tagTable.Count >= 384)
 			{
-				string text = "Out of tag bits:";
+				string text = "Out of tag bits:\n";
+				int num = 0;
 				foreach (KeyValuePair<Tag, int> item in tagTable)
 				{
-					text = text + "\n" + item.Key.ToString();
+					text = text + item.Key.ToString() + ", ";
+					num++;
+					if (num % 64 == 0)
+					{
+						text += "\n";
+					}
 				}
 				Debug.LogError(text);
 			}
@@ -123,6 +135,10 @@ public struct TagBits
 		{
 			bits4 |= (ulong)(1L << num);
 		}
+		else if (num < 384)
+		{
+			bits5 |= (ulong)(1L << num);
+		}
 		else
 		{
 			Debug.LogError("Out of bits!");
@@ -152,6 +168,10 @@ public struct TagBits
 		{
 			bits4 &= (ulong)(~(1L << num));
 		}
+		else if (num < 384)
+		{
+			bits5 &= (ulong)(~(1L << num));
+		}
 		else
 		{
 			Debug.LogError("Out of bits!");
@@ -165,21 +185,22 @@ public struct TagBits
 		bits2 = 0uL;
 		bits3 = 0uL;
 		bits4 = 0uL;
+		bits5 = 0uL;
 	}
 
 	public bool HasAll(ref TagBits tag_bits)
 	{
-		return (bits0 & tag_bits.bits0) == tag_bits.bits0 && (bits1 & tag_bits.bits1) == tag_bits.bits1 && (bits2 & tag_bits.bits2) == tag_bits.bits2 && (bits3 & tag_bits.bits3) == tag_bits.bits3 && (bits4 & tag_bits.bits4) == tag_bits.bits4;
+		return (bits0 & tag_bits.bits0) == tag_bits.bits0 && (bits1 & tag_bits.bits1) == tag_bits.bits1 && (bits2 & tag_bits.bits2) == tag_bits.bits2 && (bits3 & tag_bits.bits3) == tag_bits.bits3 && (bits4 & tag_bits.bits4) == tag_bits.bits4 && (bits5 & tag_bits.bits5) == tag_bits.bits5;
 	}
 
 	public bool HasAny(ref TagBits tag_bits)
 	{
-		return ((bits0 & tag_bits.bits0) | (bits1 & tag_bits.bits1) | (bits2 & tag_bits.bits2) | (bits3 & tag_bits.bits3) | (bits4 & tag_bits.bits4)) != 0;
+		return ((bits0 & tag_bits.bits0) | (bits1 & tag_bits.bits1) | (bits2 & tag_bits.bits2) | (bits3 & tag_bits.bits3) | (bits4 & tag_bits.bits4) | (bits5 & tag_bits.bits5)) != 0;
 	}
 
 	public bool AreEqual(ref TagBits tag_bits)
 	{
-		return tag_bits.bits0 == bits0 && tag_bits.bits1 == bits1 && tag_bits.bits2 == bits2 && tag_bits.bits3 == bits3 && tag_bits.bits4 == bits4;
+		return tag_bits.bits0 == bits0 && tag_bits.bits1 == bits1 && tag_bits.bits2 == bits2 && tag_bits.bits3 == bits3 && tag_bits.bits4 == bits4 && tag_bits.bits5 == bits5;
 	}
 
 	public void And(ref TagBits rhs)
@@ -189,6 +210,7 @@ public struct TagBits
 		bits2 &= rhs.bits2;
 		bits3 &= rhs.bits3;
 		bits4 &= rhs.bits4;
+		bits5 &= rhs.bits5;
 	}
 
 	public void Or(ref TagBits rhs)
@@ -198,6 +220,7 @@ public struct TagBits
 		bits2 |= rhs.bits2;
 		bits3 |= rhs.bits3;
 		bits4 |= rhs.bits4;
+		bits5 |= rhs.bits5;
 	}
 
 	public void Xor(ref TagBits rhs)
@@ -207,6 +230,7 @@ public struct TagBits
 		bits2 ^= rhs.bits2;
 		bits3 ^= rhs.bits3;
 		bits4 ^= rhs.bits4;
+		bits5 ^= rhs.bits5;
 	}
 
 	public void Complement()
@@ -216,6 +240,7 @@ public struct TagBits
 		bits2 = ~bits2;
 		bits3 = ~bits3;
 		bits4 = ~bits4;
+		bits5 = ~bits5;
 	}
 
 	public static TagBits MakeComplement(ref TagBits rhs)

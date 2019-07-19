@@ -139,7 +139,6 @@ public class ElementConsumer : SimComponent, ISaveLoadable, IEffectDescriptor
 		if (Sim.IsValidHandle(simHandle) && enabled != flag)
 		{
 			UpdateSimData();
-			UpdateStatusItem();
 		}
 	}
 
@@ -167,6 +166,7 @@ public class ElementConsumer : SimComponent, ISaveLoadable, IEffectDescriptor
 		int sampleCell = GetSampleCell();
 		float num = (!consumptionEnabled || !hasAvailableCapacity) ? 0f : consumptionRate;
 		SimMessages.SetElementConsumerData(simHandle, sampleCell, num);
+		UpdateStatusItem();
 	}
 
 	public static void AddMass(Sim.ConsumedMassInfo consumed_info)

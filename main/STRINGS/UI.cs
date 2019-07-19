@@ -1098,6 +1098,16 @@ namespace STRINGS
 				public static LocString UNSUPPORTED_SAVE_VERSION = "<b><color=#ff0000>This save file is from a previous version of the game and is no longer supported.</color></b>";
 
 				public static LocString MORE_INFO = "More Info";
+
+				public static LocString NEWEST_SAVE = "Newest Save";
+
+				public static LocString BASE_NAME = "Base Name";
+
+				public static LocString CYCLES_SURVIVED = "Cycles Survived";
+
+				public static LocString DUPLICANTS_ALIVE = "Duplicants Alive";
+
+				public static LocString NO_FILE_SELECTED = "No file selected";
 			}
 
 			public class SAVESCREEN
@@ -4949,11 +4959,18 @@ namespace STRINGS
 				public static LocString TOOLTIP = "Duplicants will release gas buildup in this well when it exceeds the selected percentage";
 			}
 
-			public class LOGIC_DELAY_SIDE_SCREEN
+			public class LOGIC_BUFFER_SIDE_SCREEN
 			{
 				public static LocString TITLE = "Active Buffer Time";
 
 				public static LocString TOOLTIP = "This gate will continue to send an Active signal for {0} seconds after entering Standby";
+			}
+
+			public class LOGIC_FILTER_SIDE_SCREEN
+			{
+				public static LocString TITLE = "Active Filter Time";
+
+				public static LocString TOOLTIP = "This gate will continue to send a Standby signal for {0} seconds after entering Active";
 			}
 
 			public class TIME_RANGE_SIDE_SCREEN

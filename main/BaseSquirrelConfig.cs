@@ -30,6 +30,7 @@ public static class BaseSquirrelConfig
 			gameObject.AddOrGetDef<ClimbableTreeMonitor.Def>();
 		}
 		gameObject.AddOrGet<Trappable>();
+		gameObject.AddOrGet<LoopingSounds>();
 		gameObject.AddOrGetDef<CreatureFallMonitor.Def>();
 		ThreatMonitor.Def def = gameObject.AddOrGetDef<ThreatMonitor.Def>();
 		def.fleethresholdState = Health.HealthState.Dead;

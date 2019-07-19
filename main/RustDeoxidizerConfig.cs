@@ -27,7 +27,7 @@ public class RustDeoxidizerConfig : IBuildingConfig
 	{
 		string id = "RustDeoxidizer";
 		int width = 2;
-		int height = 2;
+		int height = 3;
 		string anim = "rust_deoxidizer_kanim";
 		int hitpoints = 30;
 		float construction_time = 30f;

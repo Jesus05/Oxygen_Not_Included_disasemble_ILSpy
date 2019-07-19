@@ -26,7 +26,7 @@ public class CodexScreen : KScreen
 		Elements
 	}
 
-	private string activeEntryID;
+	private string _activeEntryID;
 
 	private Dictionary<Type, UIGameObjectPool> ContentUIPools = new Dictionary<Type, UIGameObjectPool>();
 
@@ -105,6 +105,9 @@ public class CodexScreen : KScreen
 	private GameObject prefabLabelWithIcon;
 
 	[SerializeField]
+	private GameObject prefabLabelWithLargeIcon;
+
+	[SerializeField]
 	private GameObject prefabContentLocked;
 
 	[SerializeField]
@@ -120,11 +123,26 @@ public class CodexScreen : KScreen
 	[SerializeField]
 	private TextStyleSetting textStyleBody;
 
+	[SerializeField]
+	private TextStyleSetting textStyleBodyWhite;
+
 	private Dictionary<CodexTextStyle, TextStyleSetting> textStyles = new Dictionary<CodexTextStyle, TextStyleSetting>();
 
 	private List<CodexEntry> searchResults = new List<CodexEntry>();
 
 	private Coroutine scrollToTargetRoutine;
+
+	private string activeEntryID
+	{
+		get
+		{
+			return _activeEntryID;
+		}
+		set
+		{
+			_activeEntryID = value;
+		}
+	}
 
 	protected override void OnActivate()
 	{
@@ -176,6 +194,7 @@ public class CodexScreen : KScreen
 		textStyles[CodexTextStyle.Title] = textStyleTitle;
 		textStyles[CodexTextStyle.Subtitle] = textStyleSubtitle;
 		textStyles[CodexTextStyle.Body] = textStyleBody;
+		textStyles[CodexTextStyle.BodyWhite] = textStyleBodyWhite;
 		SetupPrefabs();
 		PopulatePools();
 		CategorizeEntries();
@@ -199,6 +218,7 @@ public class CodexScreen : KScreen
 		ContentPrefabs[typeof(CodexDividerLine)] = prefabDividerLineWidget;
 		ContentPrefabs[typeof(CodexSpacer)] = prefabSpacer;
 		ContentPrefabs[typeof(CodexLabelWithIcon)] = prefabLabelWithIcon;
+		ContentPrefabs[typeof(CodexLabelWithLargeIcon)] = prefabLabelWithLargeIcon;
 		ContentPrefabs[typeof(CodexContentLockedIndicator)] = prefabContentLocked;
 		ContentPrefabs[typeof(CodexLargeSpacer)] = prefabLargeSpacer;
 		ContentPrefabs[typeof(CodexVideo)] = prefabVideoWidget;
@@ -566,7 +586,7 @@ public class CodexScreen : KScreen
 		{
 			UnityEngine.Object.DestroyImmediate(component);
 		}
-		if (Game.Instance.unlocks.IsUnlocked(container.lockID))
+		if (Game.Instance.unlocks.IsUnlocked(container.lockID) || string.IsNullOrEmpty(container.lockID))
 		{
 			switch (container.contentLayout)
 			{
@@ -592,8 +612,9 @@ public class CodexScreen : KScreen
 			case ContentContainer.ContentLayout.Grid:
 				component = containerGameObject.AddComponent<GridLayoutGroup>();
 				(component as GridLayoutGroup).constraint = GridLayoutGroup.Constraint.FixedColumnCount;
-				(component as GridLayoutGroup).constraintCount = 3;
-				(component as GridLayoutGroup).cellSize = new Vector2(170f, 32f);
+				(component as GridLayoutGroup).constraintCount = 4;
+				(component as GridLayoutGroup).cellSize = new Vector2(128f, 160f);
+				(component as GridLayoutGroup).spacing = new Vector2(6f, 6f);
 				break;
 			}
 		}

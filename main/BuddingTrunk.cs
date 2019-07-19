@@ -17,6 +17,8 @@ public class BuddingTrunk : KMonoBehaviour, ISim4000ms
 
 	public string budPrefabID;
 
+	public int maxBuds = 5;
+
 	[Serialize]
 	private Ref<HarvestDesignatable>[] buds = new Ref<HarvestDesignatable>[7];
 
@@ -184,6 +186,7 @@ public class BuddingTrunk : KMonoBehaviour, ISim4000ms
 	{
 		if (!uprooted.IsUprooted)
 		{
+			int num = 0;
 			for (int i = 0; i < buds.Length; i++)
 			{
 				Vector3 budPosition = GetBudPosition(i);
@@ -192,26 +195,33 @@ public class BuddingTrunk : KMonoBehaviour, ISim4000ms
 				{
 					spawn_choices.Add(i);
 				}
-			}
-			if (spawn_choices.Count > 0)
-			{
-				int index = Random.Range(0, spawn_choices.Count);
-				int num = spawn_choices[index];
-				Vector3 budPosition2 = GetBudPosition(num);
-				GameObject gameObject = Util.KInstantiate(Assets.GetPrefab(budPrefabID), budPosition2);
-				gameObject.SetActive(true);
-				gameObject.GetComponent<Growing>().OverrideMaturityLevel(growth_percentage);
-				gameObject.GetComponent<TreeBud>().SetTrunkPosition(this, num);
-				gameObject.GetComponent<BudUprootedMonitor>().SetParentObject(GetComponent<KPrefabID>());
-				HarvestDesignatable component = gameObject.GetComponent<HarvestDesignatable>();
-				buds[num] = new Ref<HarvestDesignatable>(component);
-				UpdateBudHarvestState(component);
-				if (!hasExtraSeedAvailable && Random.Range(0, 100) < 5)
+				else if (buds[i] != null && (Object)buds[i].Get() != (Object)null)
 				{
-					hasExtraSeedAvailable = true;
+					num++;
 				}
 			}
-			spawn_choices.Clear();
+			if (num < maxBuds)
+			{
+				spawn_choices.Shuffle();
+				if (spawn_choices.Count > 0)
+				{
+					int num2 = spawn_choices[0];
+					Vector3 budPosition2 = GetBudPosition(num2);
+					GameObject gameObject = Util.KInstantiate(Assets.GetPrefab(budPrefabID), budPosition2);
+					gameObject.SetActive(true);
+					gameObject.GetComponent<Growing>().OverrideMaturityLevel(growth_percentage);
+					gameObject.GetComponent<TreeBud>().SetTrunkPosition(this, num2);
+					gameObject.GetComponent<BudUprootedMonitor>().SetParentObject(GetComponent<KPrefabID>());
+					HarvestDesignatable component = gameObject.GetComponent<HarvestDesignatable>();
+					buds[num2] = new Ref<HarvestDesignatable>(component);
+					UpdateBudHarvestState(component);
+					if (!hasExtraSeedAvailable && Random.Range(0, 100) < 5)
+					{
+						hasExtraSeedAvailable = true;
+					}
+				}
+				spawn_choices.Clear();
+			}
 		}
 	}
 

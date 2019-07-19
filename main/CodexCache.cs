@@ -42,12 +42,15 @@ public static class CodexCache
 			list.Add(new Tuple<string, Type>("!CodexDividerLine", typeof(CodexDividerLine)));
 			list.Add(new Tuple<string, Type>("!CodexSpacer", typeof(CodexSpacer)));
 			list.Add(new Tuple<string, Type>("!CodexLabelWithIcon", typeof(CodexLabelWithIcon)));
+			list.Add(new Tuple<string, Type>("!CodexLabelWithLargeIcon", typeof(CodexLabelWithLargeIcon)));
 			list.Add(new Tuple<string, Type>("!CodexContentLockedIndicator", typeof(CodexContentLockedIndicator)));
 			list.Add(new Tuple<string, Type>("!CodexLargeSpacer", typeof(CodexLargeSpacer)));
 			list.Add(new Tuple<string, Type>("!CodexVideo", typeof(CodexVideo)));
 			widgetTagMappings = list;
 		}
-		string text = FormatLinkID("creatures");
+		string text = FormatLinkID("tips");
+		dictionary.Add(text, CodexEntryGenerator.GenerateCategoryEntry(text, UI.CODEX.CATEGORYNAMES.TIPS, CodexEntryGenerator.GenerateTutorialNotificationEntries(), Assets.GetSprite("unknown")));
+		text = FormatLinkID("creatures");
 		dictionary.Add(text, CodexEntryGenerator.GenerateCategoryEntry(text, UI.CODEX.CATEGORYNAMES.CREATURES, CodexEntryGenerator.GenerateCreatureEntries(), Def.GetUISpriteFromMultiObjectAnim(Assets.GetPrefab("Hatch").GetComponent<KBatchedAnimController>().AnimFiles[0], "ui", false, "")));
 		text = FormatLinkID("plants");
 		dictionary.Add(text, CodexEntryGenerator.GenerateCategoryEntry(text, UI.CODEX.CATEGORYNAMES.PLANTS, CodexEntryGenerator.GeneratePlantEntries(), Def.GetUISpriteFromMultiObjectAnim(Assets.GetPrefab("PrickleFlower").GetComponent<KBatchedAnimController>().AnimFiles[0], "ui", false, "")));
@@ -67,8 +70,6 @@ public static class CodexCache
 		dictionary.Add(text, CodexEntryGenerator.GenerateCategoryEntry(text, UI.CODEX.CATEGORYNAMES.GEYSERS, CodexEntryGenerator.GenerateGeyserEntries(), null));
 		text = FormatLinkID("equipment");
 		dictionary.Add(text, CodexEntryGenerator.GenerateCategoryEntry(text, UI.CODEX.CATEGORYNAMES.EQUIPMENT, CodexEntryGenerator.GenerateEquipmentEntries(), null));
-		text = FormatLinkID("tips");
-		dictionary.Add(text, CodexEntryGenerator.GenerateCategoryEntry(text, UI.CODEX.CATEGORYNAMES.TIPS, CodexEntryGenerator.GenerateTutorialNotificationEntries(), null));
 		CategoryEntry item = CodexEntryGenerator.GenerateCategoryEntry(FormatLinkID("HOME"), UI.CODEX.CATEGORYNAMES.ROOT, dictionary, null);
 		CodexEntryGenerator.GeneratePageNotFound();
 		List<CategoryEntry> list2 = new List<CategoryEntry>();
@@ -120,7 +121,33 @@ public static class CodexCache
 				entry.Value.contentContainers.AddRange(entry.Value.subEntries[i].contentContainers);
 			}
 		}
-		CodexEntryGenerator.PopulateCategoryEntries(list2);
+		CodexEntryGenerator.PopulateCategoryEntries(list2, delegate(CodexEntry a, CodexEntry b)
+		{
+			if (!(a.name == (string)UI.CODEX.CATEGORYNAMES.TIPS))
+			{
+				if (!(b.name == (string)UI.CODEX.CATEGORYNAMES.TIPS))
+				{
+					return UI.StripLinkFormatting(a.name).CompareTo(UI.StripLinkFormatting(b.name));
+				}
+				return 1;
+			}
+			return -1;
+		});
+	}
+
+	public static CodexEntry FindEntry(string id)
+	{
+		if (entries != null)
+		{
+			if (!entries.ContainsKey(id))
+			{
+				Debug.LogWarning("Could not find codex entry with id: " + id);
+				return null;
+			}
+			return entries[id];
+		}
+		Debug.LogWarning("Can't search Codex cache while it's stil null");
+		return null;
 	}
 
 	public static SubEntry FindSubEntry(string id)

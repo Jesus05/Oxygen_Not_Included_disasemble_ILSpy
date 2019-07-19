@@ -9,9 +9,9 @@ public class ForestTreeConfig : IEntityConfig
 
 	public const string SEED_ID = "ForestTreeSeed";
 
-	public const float FERTILIZATION_RATE = 0.00166666671f;
+	public const float FERTILIZATION_RATE = 0.0166666675f;
 
-	public const float WATER_RATE = 0.0583333336f;
+	public const float WATER_RATE = 0.116666667f;
 
 	public const float BRANCH_GROWTH_TIME = 2100f;
 
@@ -37,15 +37,15 @@ public class ForestTreeConfig : IEntityConfig
 			new PlantElementAbsorber.ConsumeInfo
 			{
 				tag = tag,
-				massConsumptionRate = 0.0583333336f
+				massConsumptionRate = 0.116666667f
 			}
 		});
 		EntityTemplates.ExtendPlantToFertilizable(gameObject, new PlantElementAbsorber.ConsumeInfo[1]
 		{
 			new PlantElementAbsorber.ConsumeInfo
 			{
-				tag = GameTags.Phosphorite,
-				massConsumptionRate = 0.00166666671f
+				tag = GameTags.Dirt,
+				massConsumptionRate = 0.0166666675f
 			}
 		});
 		gameObject.AddComponent<StandardCropPlant>();

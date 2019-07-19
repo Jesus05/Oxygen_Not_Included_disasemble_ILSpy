@@ -55,7 +55,7 @@ public class Immigration : KMonoBehaviour, ISaveLoadable, ISim200ms, IPersonalPr
 
 	private void ConfigureCarePackages()
 	{
-		carePackages = new CarePackageInfo[57]
+		carePackages = new CarePackageInfo[58]
 		{
 			new CarePackageInfo(ElementLoader.FindElementByHash(SimHashes.SandStone).tag.ToString(), 1000f, null),
 			new CarePackageInfo(ElementLoader.FindElementByHash(SimHashes.Dirt).tag.ToString(), 500f, null),
@@ -86,7 +86,8 @@ public class Immigration : KMonoBehaviour, ISaveLoadable, ISim200ms, IPersonalPr
 			new CarePackageInfo("PrickleFlowerSeed", 2f, null),
 			new CarePackageInfo("OxyfernSeed", 1f, null),
 			new CarePackageInfo("ForestTreeSeed", 1f, null),
-			new CarePackageInfo(BasicFabricMaterialPlantConfig.SEED_ID, 3f, null),
+			new CarePackageInfo(BasicFabricMaterialPlantConfig.SEED_ID, 3f, () => CycleCondition(24)),
+			new CarePackageInfo("SwampLilySeed", 1f, () => CycleCondition(24)),
 			new CarePackageInfo("ColdBreatherSeed", 1f, () => CycleCondition(24)),
 			new CarePackageInfo("SpiceVineSeed", 1f, () => CycleCondition(24)),
 			new CarePackageInfo("FieldRation", 5f, null),

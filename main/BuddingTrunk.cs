@@ -186,6 +186,7 @@ public class BuddingTrunk : KMonoBehaviour, ISim4000ms
 	{
 		if (!uprooted.IsUprooted)
 		{
+			spawn_choices.Clear();
 			int num = 0;
 			for (int i = 0; i < buds.Length; i++)
 			{
@@ -220,9 +221,18 @@ public class BuddingTrunk : KMonoBehaviour, ISim4000ms
 						hasExtraSeedAvailable = true;
 					}
 				}
-				spawn_choices.Clear();
 			}
 		}
+	}
+
+	public TreeBud GetBranchAtPosition(int idx)
+	{
+		if (buds[idx] == null)
+		{
+			return null;
+		}
+		HarvestDesignatable harvestDesignatable = buds[idx].Get();
+		return (!((Object)harvestDesignatable != (Object)null)) ? null : harvestDesignatable.GetComponent<TreeBud>();
 	}
 
 	public void ExtractExtraSeed()

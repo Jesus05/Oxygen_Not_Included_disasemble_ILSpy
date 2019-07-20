@@ -20,9 +20,13 @@ public class SelectToolHoverTextCard : HoverTextConfiguration
 
 	private Sprite iconHighlighted;
 
+	private Sprite iconActiveAutomationPort;
+
 	public TextStylePair Styles_LogicActive;
 
 	public TextStylePair Styles_LogicStandby;
+
+	public TextStyleSetting Styles_LogicSignalInactive;
 
 	public static List<GameObject> highlightedObjects = new List<GameObject>();
 
@@ -177,6 +181,7 @@ public class SelectToolHoverTextCard : HoverTextConfiguration
 		iconWarning = instance.GetSprite("iconWarning");
 		iconDash = instance.GetSprite("dash");
 		iconHighlighted = instance.GetSprite("dash_arrow");
+		iconActiveAutomationPort = instance.GetSprite("current_automation_state_arrow");
 		maskOverlay = LayerMask.GetMask("MaskedOverlay", "MaskedOverlayBG");
 	}
 
@@ -456,21 +461,23 @@ public class SelectToolHoverTextCard : HoverTextConfiguration
 						int num3;
 						if (isInput)
 						{
+							string replacement = (!port.displayCustomName) ? UI.LOGIC_PORTS.PORT_INPUT_DEFAULT_NAME.text : port.description;
 							num3 = component2.GetInputValue(port.id);
-							hoverTextDrawer.DrawText(UI.TOOLS.GENERIC.LOGIC_INPUT_HOVER_FMT.Replace("{Port}", port.description).Replace("{Name}", hoverObject2.GetProperName().ToUpper()), Styles_Title.Standard);
+							hoverTextDrawer.DrawText(UI.TOOLS.GENERIC.LOGIC_INPUT_HOVER_FMT.Replace("{Port}", replacement).Replace("{Name}", hoverObject2.GetProperName().ToUpper()), Styles_Title.Standard);
 						}
 						else
 						{
+							string replacement2 = (!port.displayCustomName) ? UI.LOGIC_PORTS.PORT_OUTPUT_DEFAULT_NAME.text : port.description;
 							num3 = component2.GetOutputValue(port.id);
-							hoverTextDrawer.DrawText(UI.TOOLS.GENERIC.LOGIC_OUTPUT_HOVER_FMT.Replace("{Port}", port.description).Replace("{Name}", hoverObject2.GetProperName().ToUpper()), Styles_Title.Standard);
+							hoverTextDrawer.DrawText(UI.TOOLS.GENERIC.LOGIC_OUTPUT_HOVER_FMT.Replace("{Port}", replacement2).Replace("{Name}", hoverObject2.GetProperName().ToUpper()), Styles_Title.Standard);
 						}
 						hoverTextDrawer.NewLine(26);
-						TextStyleSetting textStyleSetting = (num3 != 1 || !flag5) ? Styles_LogicActive.Standard : Styles_LogicActive.Selected;
-						hoverTextDrawer.DrawIcon((num3 != 1 || !flag5) ? iconDash : iconHighlighted, textStyleSetting.textColor, 18, 2);
+						TextStyleSetting textStyleSetting = (!flag5) ? Styles_LogicActive.Standard : ((num3 != 1) ? Styles_LogicSignalInactive : Styles_LogicActive.Selected);
+						hoverTextDrawer.DrawIcon((num3 != 1 || !flag5) ? iconDash : iconActiveAutomationPort, textStyleSetting.textColor, 18, 2);
 						hoverTextDrawer.DrawText(port.activeDescription, textStyleSetting);
 						hoverTextDrawer.NewLine(26);
-						TextStyleSetting textStyleSetting2 = (num3 != 0 || !flag5) ? Styles_LogicStandby.Standard : Styles_LogicStandby.Selected;
-						hoverTextDrawer.DrawIcon((num3 != 0 || !flag5) ? iconDash : iconHighlighted, textStyleSetting2.textColor, 18, 2);
+						TextStyleSetting textStyleSetting2 = (!flag5) ? Styles_LogicStandby.Standard : ((num3 != 0) ? Styles_LogicSignalInactive : Styles_LogicStandby.Selected);
+						hoverTextDrawer.DrawIcon((num3 != 0 || !flag5) ? iconDash : iconActiveAutomationPort, textStyleSetting2.textColor, 18, 2);
 						hoverTextDrawer.DrawText(port.inactiveDescription, textStyleSetting2);
 						hoverTextDrawer.EndShadowBar();
 					}
@@ -483,19 +490,19 @@ public class SelectToolHoverTextCard : HoverTextConfiguration
 						hoverTextDrawer.BeginShadowBar(false);
 						if (port2 == LogicGateBase.PortId.Output)
 						{
-							hoverTextDrawer.DrawText(UI.TOOLS.GENERIC.LOGIC_OUTPUT_HOVER_FMT.Replace("{Port}", portDescription.name).Replace("{Name}", hoverObject2.GetProperName().ToUpper()), Styles_Title.Standard);
+							hoverTextDrawer.DrawText(UI.TOOLS.GENERIC.LOGIC_MULTI_OUTPUT_HOVER_FMT.Replace("{Port}", portDescription.name).Replace("{Name}", hoverObject2.GetProperName().ToUpper()), Styles_Title.Standard);
 						}
 						else
 						{
-							hoverTextDrawer.DrawText(UI.TOOLS.GENERIC.LOGIC_INPUT_HOVER_FMT.Replace("{Port}", portDescription.name).Replace("{Name}", hoverObject2.GetProperName().ToUpper()), Styles_Title.Standard);
+							hoverTextDrawer.DrawText(UI.TOOLS.GENERIC.LOGIC_MULTI_INPUT_HOVER_FMT.Replace("{Port}", portDescription.name).Replace("{Name}", hoverObject2.GetProperName().ToUpper()), Styles_Title.Standard);
 						}
 						hoverTextDrawer.NewLine(26);
-						TextStyleSetting textStyleSetting3 = (portValue != 1 || !portConnected) ? Styles_LogicActive.Standard : Styles_LogicActive.Selected;
-						hoverTextDrawer.DrawIcon((portValue != 1 || !portConnected) ? iconDash : iconHighlighted, textStyleSetting3.textColor, 18, 2);
+						TextStyleSetting textStyleSetting3 = (!portConnected) ? Styles_LogicActive.Standard : ((portValue != 1) ? Styles_LogicSignalInactive : Styles_LogicActive.Selected);
+						hoverTextDrawer.DrawIcon((portValue != 1 || !portConnected) ? iconDash : iconActiveAutomationPort, textStyleSetting3.textColor, 18, 2);
 						hoverTextDrawer.DrawText(portDescription.active, textStyleSetting3);
 						hoverTextDrawer.NewLine(26);
-						TextStyleSetting textStyleSetting4 = (portValue != 0 || !portConnected) ? Styles_LogicStandby.Standard : Styles_LogicStandby.Selected;
-						hoverTextDrawer.DrawIcon((portValue != 0 || !portConnected) ? iconDash : iconHighlighted, textStyleSetting4.textColor, 18, 2);
+						TextStyleSetting textStyleSetting4 = (!portConnected) ? Styles_LogicStandby.Standard : ((portValue != 0) ? Styles_LogicSignalInactive : Styles_LogicStandby.Selected);
+						hoverTextDrawer.DrawIcon((portValue != 0 || !portConnected) ? iconDash : iconActiveAutomationPort, textStyleSetting4.textColor, 18, 2);
 						hoverTextDrawer.DrawText(portDescription.inactive, textStyleSetting4);
 						hoverTextDrawer.EndShadowBar();
 					}

@@ -757,13 +757,6 @@ namespace TUNING
 			{
 				"LogicWire",
 				"LogicWireBridge",
-				"LogicGateAND",
-				"LogicGateOR",
-				"LogicGateXOR",
-				"LogicGateNOT",
-				"LogicGateBUFFER",
-				"LogicGateFILTER",
-				LogicMemoryConfig.ID,
 				LogicSwitchConfig.ID,
 				"LogicDuplicantSensor",
 				LogicPressureSensorGasConfig.ID,
@@ -775,7 +768,14 @@ namespace TUNING
 				LogicCritterCountSensorConfig.ID,
 				"FloorSwitch",
 				"Checkpoint",
-				CometDetectorConfig.ID
+				CometDetectorConfig.ID,
+				"LogicGateNOT",
+				"LogicGateAND",
+				"LogicGateOR",
+				"LogicGateBUFFER",
+				"LogicGateFILTER",
+				"LogicGateXOR",
+				LogicMemoryConfig.ID
 			}),
 			new PlanScreen.PlanInfo(new HashedString("Conveyance"), true, new List<string>
 			{

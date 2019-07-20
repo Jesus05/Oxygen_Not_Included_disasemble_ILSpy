@@ -49,9 +49,25 @@ public class Edible : Workable, IGameObjectEffectDescriptor
 		"working_loop"
 	};
 
+	private static readonly HashedString[] saltWorkAnims = new HashedString[2]
+	{
+		"salt_pre",
+		"salt_loop"
+	};
+
+	private static readonly HashedString[] saltHatWorkAnims = new HashedString[2]
+	{
+		"salt_hat_pre",
+		"salt_hat_loop"
+	};
+
 	private static readonly HashedString normalWorkPstAnim = "working_pst";
 
 	private static readonly HashedString hatWorkPstAnim = "hat_pst";
+
+	private static readonly HashedString saltWorkPstAnim = "salt_pst";
+
+	private static readonly HashedString saltHatWorkPstAnim = "salt_hat_pst";
 
 	private static Dictionary<int, string> qualityEffects = new Dictionary<int, string>
 	{
@@ -163,22 +179,24 @@ public class Edible : Workable, IGameObjectEffectDescriptor
 
 	public override HashedString[] GetWorkAnims(Worker worker)
 	{
+		bool flag = worker.GetSMI<EatChore.StatesInstance>()?.UseSalt() ?? false;
 		MinionResume component = worker.GetComponent<MinionResume>();
 		if ((Object)component != (Object)null && component.CurrentHat != null)
 		{
-			return hatWorkAnims;
+			return (!flag) ? hatWorkAnims : saltHatWorkAnims;
 		}
-		return normalWorkAnims;
+		return (!flag) ? normalWorkAnims : saltWorkAnims;
 	}
 
 	public override HashedString GetWorkPstAnim(Worker worker, bool successfully_completed)
 	{
+		bool flag = worker.GetSMI<EatChore.StatesInstance>()?.UseSalt() ?? false;
 		MinionResume component = worker.GetComponent<MinionResume>();
 		if ((Object)component != (Object)null && component.CurrentHat != null)
 		{
-			return hatWorkPstAnim;
+			return (!flag) ? hatWorkPstAnim : saltHatWorkPstAnim;
 		}
-		return normalWorkPstAnim;
+		return (!flag) ? normalWorkPstAnim : saltWorkPstAnim;
 	}
 
 	private void OnCraft(object data)

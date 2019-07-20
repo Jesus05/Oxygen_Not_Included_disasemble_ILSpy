@@ -22,6 +22,8 @@ namespace Database
 
 		public ArtifactDropRate artifactDropTable;
 
+		public bool visitable;
+
 		public int cyclesToRecover;
 
 		public int maxiumMass
@@ -40,7 +42,7 @@ namespace Database
 
 		public float replishmentPerSim1000ms => 1000f / ((float)cyclesToRecover * 600f);
 
-		public SpaceDestinationType(string id, ResourceSet parent, string name, string description, int iconSize, string spriteName, Dictionary<SimHashes, MathUtil.MinMax> elementTable, Dictionary<string, int> recoverableEntities = null, ArtifactDropRate artifactDropRate = null, int max = 64000000, int min = 63994000, int cycles = 6)
+		public SpaceDestinationType(string id, ResourceSet parent, string name, string description, int iconSize, string spriteName, Dictionary<SimHashes, MathUtil.MinMax> elementTable, Dictionary<string, int> recoverableEntities = null, ArtifactDropRate artifactDropRate = null, int max = 64000000, int min = 63994000, int cycles = 6, bool visitable = true)
 			: base(id, parent, name)
 		{
 			typeName = name;
@@ -53,6 +55,7 @@ namespace Database
 			maxiumMass = max;
 			minimumMass = min;
 			cyclesToRecover = cycles;
+			this.visitable = visitable;
 		}
 	}
 }

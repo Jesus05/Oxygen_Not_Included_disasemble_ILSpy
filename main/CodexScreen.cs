@@ -613,7 +613,7 @@ public class CodexScreen : KScreen
 				component = containerGameObject.AddComponent<GridLayoutGroup>();
 				(component as GridLayoutGroup).constraint = GridLayoutGroup.Constraint.FixedColumnCount;
 				(component as GridLayoutGroup).constraintCount = 4;
-				(component as GridLayoutGroup).cellSize = new Vector2(128f, 160f);
+				(component as GridLayoutGroup).cellSize = new Vector2(128f, 180f);
 				(component as GridLayoutGroup).spacing = new Vector2(6f, 6f);
 				break;
 			}

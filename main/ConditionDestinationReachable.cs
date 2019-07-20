@@ -18,7 +18,7 @@ public class ConditionDestinationReachable : RocketLaunchCondition
 	{
 		int id = SpacecraftManager.instance.GetSpacecraftFromLaunchConditionManager(commandModule.GetComponent<LaunchConditionManager>()).id;
 		SpaceDestination spacecraftDestination = SpacecraftManager.instance.GetSpacecraftDestination(id);
-		if (spacecraftDestination != null && CanReachDestination(spacecraftDestination))
+		if (spacecraftDestination != null && CanReachDestination(spacecraftDestination) && spacecraftDestination.GetDestinationType().visitable)
 		{
 			return LaunchStatus.Ready;
 		}

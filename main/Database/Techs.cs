@@ -490,34 +490,34 @@ namespace Database
 			},
 			{
 				"GenericSensors",
-				new string[4]
+				new string[5]
 				{
 					LogicTimeOfDaySensorConfig.ID,
 					"FloorSwitch",
 					LogicElementSensorGasConfig.ID,
-					"BatterySmart"
+					"BatterySmart",
+					"LogicGateNOT"
 				}
 			},
 			{
 				"LogicCircuits",
-				new string[6]
+				new string[4]
 				{
 					"LogicGateAND",
 					"LogicGateOR",
-					"LogicGateXOR",
-					"LogicGateNOT",
 					"LogicGateBUFFER",
 					"LogicGateFILTER"
 				}
 			},
 			{
 				"DupeTrafficControl",
-				new string[4]
+				new string[5]
 				{
 					"Checkpoint",
 					LogicMemoryConfig.ID,
 					"ArcadeMachine",
-					"CosmicResearchCenter"
+					"CosmicResearchCenter",
+					"LogicGateXOR"
 				}
 			},
 			{

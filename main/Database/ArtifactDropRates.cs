@@ -4,6 +4,8 @@ namespace Database
 {
 	public class ArtifactDropRates : ResourceSet<ArtifactDropRate>
 	{
+		public ArtifactDropRate None;
+
 		public ArtifactDropRate Bad;
 
 		public ArtifactDropRate Mediocre;
@@ -24,6 +26,9 @@ namespace Database
 
 		private void CreateDropRates()
 		{
+			None = new ArtifactDropRate();
+			None.AddItem(DECOR.SPACEARTIFACT.TIER_NONE, 1f);
+			Add(None);
 			Bad = new ArtifactDropRate();
 			Bad.AddItem(DECOR.SPACEARTIFACT.TIER_NONE, 10f);
 			Bad.AddItem(DECOR.SPACEARTIFACT.TIER0, 5f);

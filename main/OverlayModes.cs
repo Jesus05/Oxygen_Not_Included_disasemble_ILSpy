@@ -3140,7 +3140,7 @@ public abstract class OverlayModes
 
 		public override string GetSoundName()
 		{
-			return "";
+			return "SuitRequired";
 		}
 
 		public override void Enable()

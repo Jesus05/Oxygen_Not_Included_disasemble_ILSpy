@@ -33,7 +33,7 @@ public class MinionStartingStats : ITelepadDeliverable
 	{
 		if (is_starter_minion)
 		{
-			int idx = UnityEngine.Random.Range(0, 31);
+			int idx = UnityEngine.Random.Range(0, 29);
 			personality = Db.Get().Personalities[idx];
 		}
 		else

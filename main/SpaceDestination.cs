@@ -114,14 +114,11 @@ public class SpaceDestination
 	public List<SpaceMission> missions = new List<SpaceMission>();
 
 	[Serialize]
-	private float currentMass;
-
-	[Serialize]
 	private float availableMass;
 
 	public int OneBasedDistance => distance + 1;
 
-	public float CurrentMass => currentMass;
+	public float CurrentMass => (float)GetDestinationType().minimumMass + availableMass;
 
 	public float AvailableMass => availableMass;
 
@@ -131,7 +128,6 @@ public class SpaceDestination
 		this.type = type;
 		this.distance = distance;
 		SpaceDestinationType destinationType = GetDestinationType();
-		currentMass = (float)destinationType.maxiumMass;
 		availableMass = (float)(destinationType.maxiumMass - destinationType.minimumMass);
 		GenerateSurfaceElements();
 		GenerateMissions();
@@ -153,10 +149,9 @@ public class SpaceDestination
 	[OnDeserialized]
 	private void OnDeserialized()
 	{
-		if (!SaveLoader.Instance.GameInfo.IsVersionOlderThan(7, 9))
+		if (SaveLoader.Instance.GameInfo.IsVersionOlderThan(7, 9))
 		{
 			SpaceDestinationType destinationType = GetDestinationType();
-			currentMass = (float)destinationType.maxiumMass;
 			availableMass = (float)(destinationType.maxiumMass - destinationType.minimumMass);
 		}
 	}
@@ -272,18 +267,15 @@ public class SpaceDestination
 				num += GetResourceValue(recoverableElement.Key, recoverableElement.Value);
 			}
 		}
-		float num2 = Mathf.Min(currentMass - (float)GetDestinationType().minimumMass, totalCargoSpace);
-		float num3 = 0f;
+		float num2 = Mathf.Min(CurrentMass - (float)GetDestinationType().minimumMass, totalCargoSpace);
 		foreach (KeyValuePair<SimHashes, float> recoverableElement2 in recoverableElements)
 		{
 			if ((ElementLoader.FindElementByHash(recoverableElement2.Key).IsSolid && solids) || (ElementLoader.FindElementByHash(recoverableElement2.Key).IsLiquid && liquids) || (ElementLoader.FindElementByHash(recoverableElement2.Key).IsGas && gasses))
 			{
-				float num4 = num2 * (GetResourceValue(recoverableElement2.Key, recoverableElement2.Value) / num);
-				dictionary.Add(recoverableElement2.Key, num4);
-				num3 += num4;
+				float value = num2 * (GetResourceValue(recoverableElement2.Key, recoverableElement2.Value) / num);
+				dictionary.Add(recoverableElement2.Key, value);
 			}
 		}
-		currentMass = Mathf.Max(0f, currentMass - num3);
 		return dictionary;
 	}
 
@@ -337,9 +329,8 @@ public class SpaceDestination
 	public void Replenish(float dt)
 	{
 		SpaceDestinationType destinationType = GetDestinationType();
-		if (currentMass < (float)destinationType.maxiumMass)
+		if (CurrentMass < (float)destinationType.maxiumMass)
 		{
-			currentMass += destinationType.replishmentPerSim1000ms;
 			availableMass += destinationType.replishmentPerSim1000ms;
 		}
 	}

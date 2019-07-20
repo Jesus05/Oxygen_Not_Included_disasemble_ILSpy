@@ -103,7 +103,9 @@ public class LogicGateBuffer : LogicGate, ISingleSliderControl, ISliderControl
 
 	private void Update()
 	{
-		meter.SetPositionPercent((float)delayTicksRemaining / (float)DelayAmountTicks);
+		float num = 0f;
+		num = (input_was_previously_positive ? 0f : ((delayTicksRemaining <= 0) ? 1f : ((float)(DelayAmountTicks - delayTicksRemaining) / (float)DelayAmountTicks)));
+		meter.SetPositionPercent(num);
 	}
 
 	public override void LogicTick()

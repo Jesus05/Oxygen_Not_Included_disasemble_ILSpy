@@ -1052,15 +1052,21 @@ public static class SimMessages
 		}
 		else
 		{
-			if (temperature < 0f || 10000f < temperature)
+			Element element = ElementLoader.elements[elementIdx];
+			if (mass > element.maxMass)
 			{
-				Debug.LogWarningFormat("Invalid cell modification (temp out of bounds): Cell={0}, EIdx={1}, T={2}, M={3}", gameCell, elementIdx, temperature, mass);
-				temperature = ElementLoader.elements[elementIdx].defaultValues.temperature;
+				Debug.LogWarningFormat("Invalid cell modification (mass greater than element maximum): Cell={0}, EIdx={1}, T={2}, M={3}, {4} max mass = {5}", gameCell, elementIdx, temperature, mass, element.id, element.maxMass);
+				mass = element.maxMass;
 			}
-			if (temperature == 0f && mass > 0f && elementIdx >= 0)
+			if (temperature < 0f || temperature > 10000f)
 			{
-				Debug.LogWarningFormat("Invalid cell modification (zero temp with non-zero mass): Cell={0}, EIdx={1}, T={2}, M={3}", gameCell, elementIdx, temperature, mass);
-				temperature = ElementLoader.elements[elementIdx].defaultValues.temperature;
+				Debug.LogWarningFormat("Invalid cell modification (temp out of bounds): Cell={0}, EIdx={1}, T={2}, M={3}, {4} default temp = {5}", gameCell, elementIdx, temperature, mass, element.id, element.defaultValues.temperature);
+				temperature = element.defaultValues.temperature;
+			}
+			if (temperature == 0f && mass > 0f)
+			{
+				Debug.LogWarningFormat("Invalid cell modification (zero temp with non-zero mass): Cell={0}, EIdx={1}, T={2}, M={3}, {4} default temp = {5}", gameCell, elementIdx, temperature, mass, element.id, element.defaultValues.temperature);
+				temperature = element.defaultValues.temperature;
 			}
 			ModifyCellMessage* ptr = stackalloc ModifyCellMessage[1];
 			ptr->cellIdx = gameCell;

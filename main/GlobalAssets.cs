@@ -84,6 +84,7 @@ public class GlobalAssets : MonoBehaviour
 		LocString.CreateLocStringKeys(typeof(LORE), "STRINGS.");
 		LocString.CreateLocStringKeys(typeof(CODEX), "STRINGS.");
 		LocString.CreateLocStringKeys(typeof(WORLDS), "STRINGS.");
+		LocString.CreateLocStringKeys(typeof(WORLD_TRAITS), "STRINGS.");
 	}
 
 	public static string GetSound(string name, bool force_no_warning = false)

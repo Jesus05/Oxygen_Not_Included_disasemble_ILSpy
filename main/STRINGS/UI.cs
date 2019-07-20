@@ -33,6 +33,13 @@ namespace STRINGS
 				public static LocString DESCRIPTION = "The source of our misfortune, though it may also be our shot at freedom. Traces of Neutronium are detectable in my readings.";
 			}
 
+			public class EARTH
+			{
+				public static LocString NAME = "Earth";
+
+				public static LocString DESCRIPTION = "A faintly familiar place";
+			}
+
 			public class DEBRIS
 			{
 				public class SATELLITE
@@ -3735,11 +3742,11 @@ namespace STRINGS
 
 					public static LocString OUTPUT = "<b>Output Port</b>\nSends a signal out to an automation grid";
 
-					public static LocString RESET_UPDATE = "<b>Refresh Port</b>\nResets or updates a building when activated";
+					public static LocString RESET_UPDATE = "<b>Reset Port</b>\nCan reset a Memory Toggle's internal Memory";
 
-					public static LocString ONE = "<b>Active</b>\nThis port is currently active";
+					public static LocString ONE = "<b>Green</b>\nThis port is currently " + FormatAsAutomationState("Green", AutomationState.Active);
 
-					public static LocString ZERO = "<b>Standby</b>This port is currently on standby";
+					public static LocString ZERO = "<b>Red</b>This port is currently " + FormatAsAutomationState("Red", AutomationState.Standby);
 
 					public static LocString DISCONNECTED = "<b>Disconnected</b>\nThis port is not connected to an automation grid";
 				}
@@ -3752,13 +3759,13 @@ namespace STRINGS
 
 				public static LocString OUTPUT = "Output Port";
 
-				public static LocString RESET_UPDATE = "Refresh Port";
+				public static LocString RESET_UPDATE = "Reset Port";
 
 				public static LocString CIRCUIT_STATUS_HEADER = "GRID STATUS";
 
-				public static LocString ONE = "Active";
+				public static LocString ONE = "Green";
 
-				public static LocString ZERO = "Standby";
+				public static LocString ZERO = "Red";
 
 				public static LocString DISCONNECTED = "DISCONNECTED";
 			}
@@ -4934,7 +4941,7 @@ namespace STRINGS
 			{
 				public static LocString TITLE = "Time-of-Day Sensor";
 
-				public static LocString TOOLTIP = "This sensor will send an " + FormatAsLink("Active", "LOGIC") + " signal after the selected Turn On time, and a " + FormatAsLink("Standby", "LOGIC") + " signal after the selected Turn Off time";
+				public static LocString TOOLTIP = "This sensor will send a " + FormatAsAutomationState("Green Signal", AutomationState.Active) + " after the selected Turn On time, and a " + FormatAsAutomationState("Standby", AutomationState.Standby) + " after the selected Turn Off time";
 
 				public static LocString START = "Turn On";
 
@@ -4945,7 +4952,7 @@ namespace STRINGS
 			{
 				public static LocString TITLE = "Critter Count";
 
-				public static LocString TOOLTIP = "This sensor will send an " + FormatAsLink("Active", "LOGIC") + " signal if the number of critters and eggs in the room reaches the specified amount";
+				public static LocString TOOLTIP = "This sensor will send an " + FormatAsAutomationState("Green Signal", AutomationState.Active) + " if the number of " + PRE_KEYWORD + "Critters" + PST_KEYWORD + " and " + PRE_KEYWORD + "Eggs" + PST_KEYWORD + " in the room reaches the specified amount";
 
 				public static LocString START = "Turn On";
 
@@ -5026,7 +5033,7 @@ namespace STRINGS
 
 				public static LocString CURRENT_TEMPERATURE = "Current Temperature:\n{0}";
 
-				public static LocString ACTIVATE_IF = "Activate if:";
+				public static LocString ACTIVATE_IF = "Send " + FormatAsAutomationState("Green Signal", AutomationState.Active) + " if:";
 
 				public static LocString COLDER_BUTTON = "Below";
 
@@ -5039,7 +5046,7 @@ namespace STRINGS
 
 				public static LocString CURRENT_VALUE = "Current {0}:\n{1}";
 
-				public static LocString ACTIVATE_IF = "Activate if:";
+				public static LocString ACTIVATE_IF = "Send " + FormatAsAutomationState("Green Signal", AutomationState.Active) + " if:";
 
 				public static LocString ABOVE_BUTTON = "Above";
 
@@ -5051,23 +5058,23 @@ namespace STRINGS
 
 				public static LocString PRESSURE = "Pressure";
 
-				public static LocString PRESSURE_TOOLTIP_ABOVE = "Switch will be on if the pressure is above {0}";
+				public static LocString PRESSURE_TOOLTIP_ABOVE = "Will send a " + FormatAsAutomationState("Green Signal", AutomationState.Active) + " if the " + PRE_KEYWORD + "Pressure" + PST_KEYWORD + " is above <b>{0}</b>";
 
-				public static LocString PRESSURE_TOOLTIP_BELOW = "Switch will be off if the pressure is below {0}";
+				public static LocString PRESSURE_TOOLTIP_BELOW = "Will send a " + FormatAsAutomationState("Green Signal", AutomationState.Active) + " if the " + PRE_KEYWORD + "Pressure" + PST_KEYWORD + " is below <b>{0}</b>";
 
 				public static LocString TEMPERATURE = "Temperature";
 
-				public static LocString TEMPERATURE_TOOLTIP_ABOVE = "Switch will be on if the ambient temperature is above {0}";
+				public static LocString TEMPERATURE_TOOLTIP_ABOVE = "Will send a " + FormatAsAutomationState("Green Signal", AutomationState.Active) + " if the ambient " + PRE_KEYWORD + "Temperature" + PST_KEYWORD + " is above <b>{0}</b>";
 
-				public static LocString TEMPERATURE_TOOLTIP_BELOW = "Switch will be off if the ambient temperature is below {0}";
+				public static LocString TEMPERATURE_TOOLTIP_BELOW = "Will send a " + FormatAsAutomationState("Green Signal", AutomationState.Active) + " if the ambient " + PRE_KEYWORD + "Temperature" + PST_KEYWORD + " is below <b>{0}</b>";
 
 				public static LocString DISEASE_TITLE = "Germ Threshold";
 
-				public static LocString DISEASE = "Disease";
+				public static LocString DISEASE = "Germs";
 
-				public static LocString DISEASE_TOOLTIP_ABOVE = "Switch will be on if the number of germs is above {0}";
+				public static LocString DISEASE_TOOLTIP_ABOVE = "Will send a " + FormatAsAutomationState("Green Signal", AutomationState.Active) + " if the number of " + PRE_KEYWORD + "Germs" + PST_KEYWORD + " is above <b>{0}</b>";
 
-				public static LocString DISEASE_TOOLTIP_BELOW = "Switch will be off if the number of germs is below {0}";
+				public static LocString DISEASE_TOOLTIP_BELOW = "Will send a " + FormatAsAutomationState("Green Signal", AutomationState.Active) + " if the number of " + PRE_KEYWORD + "Germs" + PST_KEYWORD + " is below <b>{0}</b>";
 
 				public static LocString DISEASE_UNITS = "germs";
 			}
@@ -5751,7 +5758,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = FormatAsLink("Automation", "BUILDCATEGORYAUTOMATION");
 
-				public static LocString TOOLTIP = "Automate my base with logic circuits and sensors. {Hotkey}";
+				public static LocString TOOLTIP = "Automate my base with a wide range of sensors. {Hotkey}";
 			}
 		}
 
@@ -6143,9 +6150,13 @@ namespace STRINGS
 
 				public static LocString BUILDING_HOVER_NAME_FMT = "{Name}    <style=\"hovercard_element\">({Element})</style>";
 
-				public static LocString LOGIC_INPUT_HOVER_FMT = "INPUT: {Port}    <style=\"hovercard_element\">({Name})</style>";
+				public static LocString LOGIC_INPUT_HOVER_FMT = "{Port}    <style=\"hovercard_element\">({Name})</style>";
 
-				public static LocString LOGIC_OUTPUT_HOVER_FMT = "OUTPUT: {Port}    <style=\"hovercard_element\">({Name})</style>";
+				public static LocString LOGIC_OUTPUT_HOVER_FMT = "{Port}    <style=\"hovercard_element\">({Name})</style>";
+
+				public static LocString LOGIC_MULTI_INPUT_HOVER_FMT = "{Port}    <style=\"hovercard_element\">({Name})</style>";
+
+				public static LocString LOGIC_MULTI_OUTPUT_HOVER_FMT = "{Port}    <style=\"hovercard_element\">({Name})</style>";
 			}
 
 			public class ATTACK
@@ -7129,33 +7140,37 @@ namespace STRINGS
 
 			public static LocString OUTPUT_PORTS_TOOLTIP = "Output ports send a signal when this building changes state";
 
-			public static LocString INPUT_PORT_TOOLTIP = "Input Behavior:" + HORIZONTAL_BR_RULE + "{0}\n\n{1}";
+			public static LocString INPUT_PORT_TOOLTIP = "Input Behavior:\n• {0}\n• {1}";
 
-			public static LocString OUTPUT_PORT_TOOLTIP = "Output Behavior:" + HORIZONTAL_BR_RULE + "{0}\n\n{1}";
+			public static LocString OUTPUT_PORT_TOOLTIP = "Output Behavior:\n• {0}\n• {1}";
 
 			public static LocString CONTROL_OPERATIONAL = "Enable/Disable";
 
-			public static LocString CONTROL_OPERATIONAL_ACTIVE = "Building turns on when Active signal received";
+			public static LocString CONTROL_OPERATIONAL_ACTIVE = FormatAsAutomationState("Green Signal", AutomationState.Active) + ": Enable building";
 
-			public static LocString CONTROL_OPERATIONAL_INACTIVE = "Building turns off when Standby signal received";
+			public static LocString CONTROL_OPERATIONAL_INACTIVE = FormatAsAutomationState("Red Signal", AutomationState.Standby) + ": Disable building";
 
-			public static LocString GATE_DOUBLE_INPUT_ONE_NAME = "Input A";
+			public static LocString PORT_INPUT_DEFAULT_NAME = "INPUT";
 
-			public static LocString GATE_DOUBLE_INPUT_ONE_ACTIVE = "Active";
+			public static LocString PORT_OUTPUT_DEFAULT_NAME = "OUTPUT";
 
-			public static LocString GATE_DOUBLE_INPUT_ONE_INACTIVE = "Standby";
+			public static LocString GATE_DOUBLE_INPUT_ONE_NAME = "INPUT A";
 
-			public static LocString GATE_DOUBLE_INPUT_TWO_NAME = "Input B";
+			public static LocString GATE_DOUBLE_INPUT_ONE_ACTIVE = "Green Signal";
 
-			public static LocString GATE_DOUBLE_INPUT_TWO_ACTIVE = "Active";
+			public static LocString GATE_DOUBLE_INPUT_ONE_INACTIVE = "Red Signal";
 
-			public static LocString GATE_DOUBLE_INPUT_TWO_INACTIVE = "Standby";
+			public static LocString GATE_DOUBLE_INPUT_TWO_NAME = "INPUT B";
 
-			public static LocString GATE_SINGLE_INPUT_ONE_NAME = "The Input";
+			public static LocString GATE_DOUBLE_INPUT_TWO_ACTIVE = "Green Signal";
 
-			public static LocString GATE_SINGLE_INPUT_ONE_ACTIVE = "Active";
+			public static LocString GATE_DOUBLE_INPUT_TWO_INACTIVE = "Red Signal";
 
-			public static LocString GATE_SINGLE_INPUT_ONE_INACTIVE = "Standby";
+			public static LocString GATE_SINGLE_INPUT_ONE_NAME = "INPUT";
+
+			public static LocString GATE_SINGLE_INPUT_ONE_ACTIVE = "Green Signal";
+
+			public static LocString GATE_SINGLE_INPUT_ONE_INACTIVE = "Red Signal";
 		}
 
 		public class GAMEOBJECTEFFECTS
@@ -7808,11 +7823,11 @@ namespace STRINGS
 
 		public static string PST_RATE = "</style>";
 
-		public static string PRE_AUTOMATION_ACTIVE = "<b>";
+		public static string PRE_AUTOMATION_ACTIVE = "<b><color=#57b95e>";
 
-		public static string PRE_AUTOMATION_STANDBY = "<b>";
+		public static string PRE_AUTOMATION_STANDBY = "<b><color=#f44a47>";
 
-		public static string PST_AUTOMATION = "</b>";
+		public static string PST_AUTOMATION = "</b></color>";
 
 		public static string HORIZONTAL_RULE = "------------------";
 

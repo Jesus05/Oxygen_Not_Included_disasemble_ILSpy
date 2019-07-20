@@ -924,7 +924,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "No " + UI.FormatAsLink("Oxygen Diffuser", "MINERALDEOXIDIZER") + " built";
 
-				public static LocString TOOLTIP = "My colony is not producing any new " + UI.FormatAsLink("Oxygen", "OXYGEN") + UI.HORIZONTAL_BR_RULE + UI.FormatAsLink("Oxygen Diffusers", "MINERALDEOXIDIZER") + " can be built from the " + UI.FormatAsLink("OXYGEN TAB", "MISC") + " " + UI.FormatAsHotkey("[2]") + " of the Build Menu";
+				public static LocString TOOLTIP = "My colony is not producing any new " + UI.FormatAsLink("Oxygen", "OXYGEN") + UI.HORIZONTAL_BR_RULE + UI.FormatAsLink("Oxygen Diffusers", "MINERALDEOXIDIZER") + " can be built from the " + UI.FormatAsBuildMenuTab("Oxygen Tab", "[2]");
 			}
 
 			public class INSUFFICIENTOXYGENLASTCYCLE
@@ -945,49 +945,49 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Food shortage";
 
-				public static LocString TOOLTIP = "The colony's " + UI.FormatAsLink("Food", "FOOD") + " reserves are low:" + UI.HORIZONTAL_BR_RULE + "    • {0} are currently available\n    • {1} is being consumed per cycle\n\n" + UI.FormatAsLink("Microbe Mushers", "MICROBEMUSHER") + " can be built from the " + UI.FormatAsLink("FOOD TAB", "MISC") + " <color=#F44A47><b>[4]</b></color>";
+				public static LocString TOOLTIP = "The colony's " + UI.FormatAsLink("Food", "FOOD") + " reserves are low:" + UI.HORIZONTAL_BR_RULE + "    • {0} are currently available\n    • {1} is being consumed per cycle\n\n" + UI.FormatAsLink("Microbe Mushers", "MICROBEMUSHER") + " can be built from the " + UI.FormatAsBuildMenuTab("Food Tab", "[4]");
 			}
 
 			public class NO_MEDICAL_COTS
 			{
 				public static LocString NAME = "No " + UI.FormatAsLink("Sick Bay", "DOCTORSTATION") + " built";
 
-				public static LocString TOOLTIP = "There is nowhere for sick Duplicants receive medical care" + UI.HORIZONTAL_BR_RULE + UI.FormatAsLink("Sick Bays", "DOCTORSTATION") + " can be built from the " + UI.FormatAsLink("MEDICINE TAB", "MISC") + " <color=#F44A47><b>[8]</b></color>";
+				public static LocString TOOLTIP = "There is nowhere for sick Duplicants receive medical care" + UI.HORIZONTAL_BR_RULE + UI.FormatAsLink("Sick Bays", "DOCTORSTATION") + " can be built from the " + UI.FormatAsBuildMenuTab("Medicine Tab", "[8]");
 			}
 
 			public class NEEDTOILET
 			{
 				public static LocString NAME = "No " + UI.FormatAsLink("Outhouse", "OUTHOUSE") + " built";
 
-				public static LocString TOOLTIP = "My Duplicants have nowhere to relieve themselves" + UI.HORIZONTAL_BR_RULE + UI.FormatAsLink("Outhouses", "OUTHOUSE") + " can be built from the " + UI.FormatAsLink("PLUMBING TAB", "MISC") + " <color=#F44A47><b>[5]</b></color>";
+				public static LocString TOOLTIP = "My Duplicants have nowhere to relieve themselves" + UI.HORIZONTAL_BR_RULE + UI.FormatAsLink("Outhouses", "OUTHOUSE") + " can be built from the " + UI.FormatAsBuildMenuTab("Plumbing Tab", "[5]");
 			}
 
 			public class NEEDFOOD
 			{
 				public static LocString NAME = "Colony requires a food source";
 
-				public static LocString TOOLTIP = "The colony will exhaust their supplies without a new " + UI.FormatAsLink("Food", "FOOD") + " source" + UI.HORIZONTAL_BR_RULE + UI.FormatAsLink("Microbe Mushers", "MICROBEMUSHER") + " can be built from the " + UI.FormatAsLink("FOOD TAB", "MISC") + " <color=#F44A47><b>[4]</b></color>";
+				public static LocString TOOLTIP = "The colony will exhaust their supplies without a new " + UI.FormatAsLink("Food", "FOOD") + " source" + UI.HORIZONTAL_BR_RULE + UI.FormatAsLink("Microbe Mushers", "MICROBEMUSHER") + " can be built from the " + UI.FormatAsBuildMenuTab("Food Tab", "[4]");
 			}
 
 			public class HYGENE_NEEDED
 			{
 				public static LocString NAME = "No " + UI.FormatAsLink("Wash Basin", "WASHBASIN") + " built";
 
-				public static LocString TOOLTIP = UI.FormatAsLink("Germs", "DISEASE") + " are spreading in the colony because my Duplicants have nowhere to clean up" + UI.HORIZONTAL_BR_RULE + UI.FormatAsLink("Wash Basins", "WASHBASIN") + " can be built from the " + UI.FormatAsLink("MEDICINE TAB", "MISC") + " <color=#F44A47><b>[8]</b></color>";
+				public static LocString TOOLTIP = UI.FormatAsLink("Germs", "DISEASE") + " are spreading in the colony because my Duplicants have nowhere to clean up" + UI.HORIZONTAL_BR_RULE + UI.FormatAsLink("Wash Basins", "WASHBASIN") + " can be built from the " + UI.FormatAsBuildMenuTab("Medicine Tab", "[8]");
 			}
 
 			public class NEEDSLEEP
 			{
 				public static LocString NAME = "No " + UI.FormatAsLink("Cots", "COT") + " built";
 
-				public static LocString TOOLTIP = "My Duplicants would appreciate a place to sleep" + UI.HORIZONTAL_BR_RULE + UI.FormatAsLink("Cots", "COTS") + " can be built from the " + UI.FormatAsLink("FURNITURE TAB", "MISC") + " <color=#F44A47><b>[9]</b></color>";
+				public static LocString TOOLTIP = "My Duplicants would appreciate a place to sleep" + UI.HORIZONTAL_BR_RULE + UI.FormatAsLink("Cots", "COTS") + " can be built from the " + UI.FormatAsBuildMenuTab("Furniture Tab", "[9]");
 			}
 
 			public class NEEDENERGYSOURCE
 			{
 				public static LocString NAME = "Colony requires a " + UI.FormatAsLink("Power", "POWER") + " source";
 
-				public static LocString TOOLTIP = UI.FormatAsLink("Power", "POWER") + " is required to operate electrical buildings" + UI.HORIZONTAL_BR_RULE + UI.FormatAsLink("Manual Generators", "MANUALGENERATOR") + " and " + UI.FormatAsLink("Wire", "WIRE") + " can be built from the " + UI.FormatAsLink("POWER TAB", "MISC") + " <color=#F44A47><b>[3]</b></color>";
+				public static LocString TOOLTIP = UI.FormatAsLink("Power", "POWER") + " is required to operate electrical buildings" + UI.HORIZONTAL_BR_RULE + UI.FormatAsLink("Manual Generators", "MANUALGENERATOR") + " and " + UI.FormatAsLink("Wire", "WIRE") + " can be built from the " + UI.FormatAsLink("Power Tab", "[3]");
 			}
 
 			public class RESOURCEMELTED
@@ -1129,7 +1129,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "{0}: {1}!";
 
-				public static LocString TOOLTIP = "Duplicants assigned to " + UI.PRE_KEYWORD + "{0}" + UI.PST_KEYWORD + " have started their <b>{1}</b> block.\n\n{2}\n\nOpen the " + UI.PRE_KEYWORD + "Schedule Screen" + UI.PST_KEYWORD + " " + UI.FormatAsHotkey("[PERIOD KEY]") + "to change blocks or assignments.";
+				public static LocString TOOLTIP = "Duplicants assigned to " + UI.PRE_KEYWORD + "{0}" + UI.PST_KEYWORD + " have started their <b>{1}</b> block.\n\n{2}\n\nOpen the " + UI.PRE_KEYWORD + "Schedule Screen" + UI.PST_KEYWORD + " " + UI.FormatAsHotkey("[PERIOD KEY]") + " to change blocks or assignments.";
 			}
 
 			public class GENESHUFFLER

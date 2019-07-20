@@ -261,7 +261,7 @@ public class Building : KMonoBehaviour, IEffectDescriptor, IUniformGridObject, I
 		else if (def.OutputConduitType == ConduitType.Gas)
 		{
 			Descriptor item5 = default(Descriptor);
-			item5.SetupDescriptor(UI.BUILDINGEFFECTS.REQUIRESGASOUTPUT, UI.BUILDINGEFFECTS.REQUIRESGASOUTPUT, Descriptor.DescriptorType.Requirement);
+			item5.SetupDescriptor(UI.BUILDINGEFFECTS.REQUIRESGASOUTPUT, UI.BUILDINGEFFECTS.TOOLTIPS.REQUIRESGASOUTPUT, Descriptor.DescriptorType.Requirement);
 			list.Add(item5);
 		}
 		if (component.isManuallyOperated)

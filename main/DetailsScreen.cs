@@ -438,6 +438,7 @@ public class DetailsScreen : KTabMenu
 		BuildingUnderConstruction component2 = SelectTool.Instance.selected.GetComponent<BuildingUnderConstruction>();
 		CreatureBrain component3 = SelectTool.Instance.selected.GetComponent<CreatureBrain>();
 		PlantableSeed component4 = SelectTool.Instance.selected.GetComponent<PlantableSeed>();
+		BudUprootedMonitor component5 = SelectTool.Instance.selected.GetComponent<BudUprootedMonitor>();
 		if ((UnityEngine.Object)component != (UnityEngine.Object)null)
 		{
 			text = CodexCache.FormatLinkID(component.element.id.ToString());
@@ -455,6 +456,17 @@ public class DetailsScreen : KTabMenu
 		{
 			text = CodexCache.FormatLinkID(SelectTool.Instance.selected.PrefabID().ToString());
 			text = text.Replace("SEED", "");
+		}
+		else if ((UnityEngine.Object)component5 != (UnityEngine.Object)null)
+		{
+			if ((UnityEngine.Object)component5.parentObject.Get() != (UnityEngine.Object)null)
+			{
+				text = CodexCache.FormatLinkID(component5.parentObject.Get().PrefabID().ToString());
+			}
+			else if ((UnityEngine.Object)component5.GetComponent<TreeBud>() != (UnityEngine.Object)null)
+			{
+				text = CodexCache.FormatLinkID(component5.GetComponent<TreeBud>().buddingTrunk.Get().PrefabID().ToString());
+			}
 		}
 		else
 		{

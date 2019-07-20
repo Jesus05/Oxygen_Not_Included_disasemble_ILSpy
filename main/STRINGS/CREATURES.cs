@@ -908,7 +908,7 @@ namespace STRINGS
 
 			public class WOOD_TREE
 			{
-				public static LocString NAME = UI.FormatAsLink("Arbor Tree", "WOOD_TREE");
+				public static LocString NAME = UI.FormatAsLink("Arbor Tree", "FOREST_TREE");
 
 				public static LocString DESC = "Arbor Trees grow branches that can be harvested for " + UI.FormatAsLink("Lumber", "WOOD") + ".";
 

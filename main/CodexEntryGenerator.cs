@@ -33,7 +33,7 @@ public static class CodexEntryGenerator
 				CodexCache.AddEntry((current.data as IList<string>)[i], codexEntry, null);
 				dictionary2.Add(codexEntry.id, codexEntry);
 			}
-			CategoryEntry categoryEntry = GenerateCategoryEntry(CodexCache.FormatLinkID(text2), Strings.Get("STRINGS.UI.BUILDCATEGORIES." + text.ToUpper() + ".NAME"), dictionary2, null);
+			CategoryEntry categoryEntry = GenerateCategoryEntry(CodexCache.FormatLinkID(text2), Strings.Get("STRINGS.UI.BUILDCATEGORIES." + text.ToUpper() + ".NAME"), dictionary2, null, true, true);
 			categoryEntry.parentId = "BUILDINGS";
 			categoryEntry.category = "BUILDINGS";
 			categoryEntry.icon = Assets.GetSprite(PlanScreen.IconNameMap[text]);
@@ -137,7 +137,7 @@ public static class CodexEntryGenerator
 		prefabsWithComponent.AddRange(Assets.GetPrefabsWithComponent<WiltCondition>());
 		foreach (GameObject item in prefabsWithComponent)
 		{
-			if (!dictionary.ContainsKey(item.PrefabID().ToString()))
+			if (!dictionary.ContainsKey(item.PrefabID().ToString()) && !((UnityEngine.Object)item.GetComponent<BudUprootedMonitor>() != (UnityEngine.Object)null))
 			{
 				List<ContentContainer> list = new List<ContentContainer>();
 				Sprite first = Def.GetUISprite(item, "ui", false).first;
@@ -392,22 +392,22 @@ public static class CodexEntryGenerator
 			}
 		}
 		text6 = text2;
-		CodexEntry codexEntry2 = GenerateCategoryEntry(text6, UI.CODEX.CATEGORYNAMES.ELEMENTSSOLID, dictionary2, null);
+		CodexEntry codexEntry2 = GenerateCategoryEntry(text6, UI.CODEX.CATEGORYNAMES.ELEMENTSSOLID, dictionary2, null, true, true);
 		codexEntry2.parentId = text;
 		codexEntry2.category = text;
 		dictionary.Add(text6, codexEntry2);
 		text6 = text3;
-		codexEntry2 = GenerateCategoryEntry(text6, UI.CODEX.CATEGORYNAMES.ELEMENTSLIQUID, dictionary3, null);
+		codexEntry2 = GenerateCategoryEntry(text6, UI.CODEX.CATEGORYNAMES.ELEMENTSLIQUID, dictionary3, null, true, true);
 		codexEntry2.parentId = text;
 		codexEntry2.category = text;
 		dictionary.Add(text6, codexEntry2);
 		text6 = text4;
-		codexEntry2 = GenerateCategoryEntry(text6, UI.CODEX.CATEGORYNAMES.ELEMENTSGAS, dictionary4, null);
+		codexEntry2 = GenerateCategoryEntry(text6, UI.CODEX.CATEGORYNAMES.ELEMENTSGAS, dictionary4, null, true, true);
 		codexEntry2.parentId = text;
 		codexEntry2.category = text;
 		dictionary.Add(text6, codexEntry2);
 		text6 = text5;
-		codexEntry2 = GenerateCategoryEntry(text6, UI.CODEX.CATEGORYNAMES.ELEMENTSOTHER, dictionary5, Assets.GetSprite("overlay_heatflow"));
+		codexEntry2 = GenerateCategoryEntry(text6, UI.CODEX.CATEGORYNAMES.ELEMENTSOTHER, dictionary5, Assets.GetSprite("overlay_heatflow"), true, true);
 		codexEntry2.parentId = text;
 		codexEntry2.category = text;
 		dictionary.Add(text6, codexEntry2);
@@ -428,13 +428,14 @@ public static class CodexEntryGenerator
 				CodexEntry codexEntry = new CodexEntry("DISEASE", list, resource.Name);
 				codexEntry.parentId = "DISEASE";
 				dictionary.Add(resource.Id, codexEntry);
+				codexEntry.icon = Assets.GetSprite("overlay_disease");
 				CodexCache.AddEntry(resource.Id, codexEntry, null);
 			}
 		}
 		return dictionary;
 	}
 
-	public static CategoryEntry GenerateCategoryEntry(string id, string name, Dictionary<string, CodexEntry> entries, Sprite icon = null)
+	public static CategoryEntry GenerateCategoryEntry(string id, string name, Dictionary<string, CodexEntry> entries, Sprite icon = null, bool largeFormat = true, bool sort = true)
 	{
 		List<ContentContainer> list = new List<ContentContainer>();
 		GenerateTitleContainers(name, list);
@@ -447,7 +448,7 @@ public static class CodexEntryGenerator
 				icon = entry.Value.icon;
 			}
 		}
-		CategoryEntry categoryEntry = new CategoryEntry("Root", list, name, list2);
+		CategoryEntry categoryEntry = new CategoryEntry("Root", list, name, list2, largeFormat, sort);
 		categoryEntry.icon = icon;
 		CodexCache.AddEntry(id, categoryEntry, null);
 		return categoryEntry;
@@ -482,6 +483,10 @@ public static class CodexEntryGenerator
 			}, ContentContainer.ContentLayout.Vertical));
 			CodexEntry codexEntry = new CodexEntry("Tips", list, UI.FormatAsLink(tutorialMessage.GetTitle(), "tutorial_tips_" + i));
 			CodexCache.AddEntry("tutorial_tips_" + i, codexEntry, null);
+			if (!string.IsNullOrEmpty(tutorialMessage.icon))
+			{
+				codexEntry.icon = Assets.GetSprite(tutorialMessage.icon);
+			}
 			dictionary.Add(codexEntry.id, codexEntry);
 		}
 		return dictionary;
@@ -507,20 +512,35 @@ public static class CodexEntryGenerator
 			{
 				list.Add(item);
 			}
-			if (comparison == null)
+			if (categoryEntry.sort)
 			{
-				list.Sort((CodexEntry a, CodexEntry b) => UI.StripLinkFormatting(a.name).CompareTo(UI.StripLinkFormatting(b.name)));
+				if (comparison == null)
+				{
+					list.Sort((CodexEntry a, CodexEntry b) => UI.StripLinkFormatting(a.name).CompareTo(UI.StripLinkFormatting(b.name)));
+				}
+				else
+				{
+					list.Sort(comparison);
+				}
+			}
+			if (categoryEntry.largeFormat)
+			{
+				ContentContainer contentContainer = new ContentContainer(new List<ICodexWidget>(), ContentContainer.ContentLayout.Grid);
+				foreach (CodexEntry item2 in list)
+				{
+					contentContainer.content.Add(new CodexLabelWithLargeIcon(item2.name, CodexTextStyle.BodyWhite, new Tuple<Sprite, Color>((!((UnityEngine.Object)item2.icon != (UnityEngine.Object)null)) ? Assets.GetSprite("unknown") : item2.icon, item2.iconColor), item2.id));
+				}
+				contentContainers.Add(contentContainer);
 			}
 			else
 			{
-				list.Sort(comparison);
+				ContentContainer contentContainer2 = new ContentContainer(new List<ICodexWidget>(), ContentContainer.ContentLayout.Vertical);
+				foreach (CodexEntry item3 in list)
+				{
+					contentContainer2.content.Add(new CodexLabelWithIcon(item3.name, CodexTextStyle.Body, new Tuple<Sprite, Color>((!((UnityEngine.Object)item3.icon != (UnityEngine.Object)null)) ? Assets.GetSprite("unknown") : item3.icon, item3.iconColor), 64, 48));
+				}
+				contentContainers.Add(contentContainer2);
 			}
-			ContentContainer contentContainer = new ContentContainer(new List<ICodexWidget>(), ContentContainer.ContentLayout.Grid);
-			foreach (CodexEntry item2 in list)
-			{
-				contentContainer.content.Add(new CodexLabelWithLargeIcon(item2.name, CodexTextStyle.BodyWhite, new Tuple<Sprite, Color>((!((UnityEngine.Object)item2.icon != (UnityEngine.Object)null)) ? Assets.GetSprite("unknown") : item2.icon, item2.iconColor), item2.id));
-			}
-			contentContainers.Add(contentContainer);
 		}
 	}
 

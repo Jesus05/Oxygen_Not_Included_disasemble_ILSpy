@@ -19,8 +19,6 @@ public class TreeBud : KMonoBehaviour, IWiltCause
 	[Serialize]
 	public int growingPos = 0;
 
-	private int trunkUprootedHandle = -1;
-
 	private int trunkWiltHandle = -1;
 
 	private int trunkWiltRecoverHandle = -1;
@@ -107,13 +105,21 @@ public class TreeBud : KMonoBehaviour, IWiltCause
 	{
 		base.OnPrefabInit();
 		simRenderLoadBalance = true;
-		SetOccupyGridSpace(true);
+		int cell = Grid.PosToCell(base.gameObject);
+		GameObject x = Grid.Objects[cell, 5];
+		if ((Object)x != (Object)null && (Object)x != (Object)base.gameObject)
+		{
+			Util.KDestroyGameObject(base.gameObject);
+		}
+		else
+		{
+			SetOccupyGridSpace(true);
+		}
 	}
 
 	protected override void OnSpawn()
 	{
 		base.OnSpawn();
-		Subscribe(-216549700, OnUprooted);
 		if (buddingTrunk != null && (Object)buddingTrunk.Get() != (Object)null)
 		{
 			SubscribeToTrunk();
@@ -131,10 +137,6 @@ public class TreeBud : KMonoBehaviour, IWiltCause
 		UnsubscribeToTrunk();
 		SetOccupyGridSpace(false);
 		base.OnCleanUp();
-	}
-
-	private void OnUprooted(object data = null)
-	{
 	}
 
 	private void SetOccupyGridSpace(bool active)
@@ -157,12 +159,11 @@ public class TreeBud : KMonoBehaviour, IWiltCause
 
 	private void SubscribeToTrunk()
 	{
-		if (trunkUprootedHandle == -1 && trunkWiltHandle == -1 && trunkWiltRecoverHandle == -1)
+		if (trunkWiltHandle == -1 && trunkWiltRecoverHandle == -1)
 		{
 			Debug.Assert(this.buddingTrunk != null, "buddingTrunk null");
 			BuddingTrunk buddingTrunk = this.buddingTrunk.Get();
 			Debug.Assert((Object)buddingTrunk != (Object)null, "tree_trunk null");
-			trunkUprootedHandle = buddingTrunk.Subscribe(-216549700, OnUprooted);
 			trunkWiltHandle = buddingTrunk.Subscribe(-724860998, OnTrunkWilt);
 			trunkWiltRecoverHandle = buddingTrunk.Subscribe(712767498, OnTrunkRecover);
 			Trigger(912965142, !buddingTrunk.GetComponent<WiltCondition>().IsWilting());
@@ -191,7 +192,6 @@ public class TreeBud : KMonoBehaviour, IWiltCause
 			}
 			else
 			{
-				buddingTrunk.Unsubscribe(trunkUprootedHandle);
 				buddingTrunk.Unsubscribe(trunkWiltHandle);
 				buddingTrunk.Unsubscribe(trunkWiltRecoverHandle);
 				buddingTrunk.OnBranchRemoved(trunkPosition, this);

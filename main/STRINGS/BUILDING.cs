@@ -1623,9 +1623,9 @@ namespace STRINGS
 			{
 				public class TOOLTIPS
 				{
-					public static LocString LOGIC_CONTROLLED_OPEN = "Automated Checkpoint is on " + UI.FormatAsAutomationState("Standby", UI.AutomationState.Standby) + ", preventing Duplicants from passing";
+					public static LocString LOGIC_CONTROLLED_OPEN = "Automated Checkpoint is receiving a " + UI.FormatAsAutomationState("Red Signal", UI.AutomationState.Standby) + ", preventing Duplicants from passing";
 
-					public static LocString LOGIC_CONTROLLED_CLOSED = "Automated Checkpoint is " + UI.FormatAsAutomationState("Active", UI.AutomationState.Active) + ", allowing Duplicants to pass";
+					public static LocString LOGIC_CONTROLLED_CLOSED = "Automated Checkpoint is receiving a " + UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active) + ", allowing Duplicants to pass";
 
 					public static LocString LOGIC_CONTROLLED_DISCONNECTED = "This Checkpoint has not been connected to an " + UI.PRE_KEYWORD + "Automation" + UI.PST_KEYWORD + " grid";
 				}

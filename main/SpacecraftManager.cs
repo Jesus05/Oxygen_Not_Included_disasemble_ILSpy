@@ -110,14 +110,8 @@ public class SpacecraftManager : KMonoBehaviour, ISim1000ms
 			spaceDestinationTypes.IcyDwarf.Id,
 			spaceDestinationTypes.OrganicDwarf.Id,
 			spaceDestinationTypes.DustyMoon.Id,
+			spaceDestinationTypes.ChlorinePlanet.Id,
 			spaceDestinationTypes.RedDwarf.Id
-		});
-		list.Add(new List<string>
-		{
-			spaceDestinationTypes.IcyDwarf.Id,
-			spaceDestinationTypes.OrganicDwarf.Id,
-			spaceDestinationTypes.DustyMoon.Id,
-			spaceDestinationTypes.ChlorinePlanet.Id
 		});
 		list.Add(new List<string>
 		{
@@ -135,19 +129,15 @@ public class SpacecraftManager : KMonoBehaviour, ISim1000ms
 		list.Add(new List<string>
 		{
 			spaceDestinationTypes.GasGiant.Id,
-			spaceDestinationTypes.IceGiant.Id
+			spaceDestinationTypes.IceGiant.Id,
+			spaceDestinationTypes.HydrogenGiant.Id
 		});
 		list.Add(new List<string>
 		{
 			spaceDestinationTypes.RustPlanet.Id,
 			spaceDestinationTypes.VolcanoPlanet.Id,
 			spaceDestinationTypes.RockyAsteroid.Id,
-			spaceDestinationTypes.TerraPlanet.Id
-		});
-		list.Add(new List<string>
-		{
-			spaceDestinationTypes.HydrogenGiant.Id,
-			spaceDestinationTypes.DustyMoon.Id,
+			spaceDestinationTypes.TerraPlanet.Id,
 			spaceDestinationTypes.MetallicAsteroid.Id
 		});
 		list.Add(new List<string>
@@ -194,8 +184,8 @@ public class SpacecraftManager : KMonoBehaviour, ISim1000ms
 		List<List<string>> list2 = list;
 		List<int> list3 = new List<int>();
 		int num = 3;
-		int minValue = 10;
-		int maxValue = 20;
+		int minValue = 15;
+		int maxValue = 25;
 		for (int i = 0; i < list2.Count; i++)
 		{
 			if (list2[i].Count != 0)
@@ -217,6 +207,7 @@ public class SpacecraftManager : KMonoBehaviour, ISim1000ms
 			SpaceDestination item = new SpaceDestination(destinations.Count, type, num3);
 			destinations.Add(item);
 		}
+		destinations.Add(new SpaceDestination(destinations.Count, Db.Get().SpaceDestinationTypes.Earth.Id, 4));
 		destinations.Add(new SpaceDestination(destinations.Count, Db.Get().SpaceDestinationTypes.Wormhole.Id, list2.Count));
 	}
 
@@ -441,6 +432,10 @@ public class SpacecraftManager : KMonoBehaviour, ISim1000ms
 			{
 				if (destinationAnalysisState2 == DestinationAnalysisState.Complete)
 				{
+					if (instance.GetDestination(starmapAnalysisDestinationID).type == Db.Get().SpaceDestinationTypes.Earth.Id)
+					{
+						Game.Instance.unlocks.Unlock("earth");
+					}
 					instance.SetStarmapAnalysisDestinationID(-1);
 				}
 				Trigger(532901469, null);

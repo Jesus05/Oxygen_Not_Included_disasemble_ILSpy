@@ -1958,7 +1958,7 @@ namespace STRINGS
 
 				public static LocString NOTIFICATION_NAME = "No Outhouses built";
 
-				public static LocString NOTIFICATION_TOOLTIP = UI.FormatAsLink("Outhouses", "OUTHOUSE") + " can be built from the " + UI.FormatAsLink("PLUMBING TAB", "MISC") + " <color=#F44A47><b>[5]</b></color>." + UI.HORIZONTAL_BR_RULE + "These Duplicants are in need of an " + UI.FormatAsLink("Outhouse", "OUTHOUSE") + ":";
+				public static LocString NOTIFICATION_TOOLTIP = UI.FormatAsLink("Outhouses", "OUTHOUSE") + " can be built from the " + UI.FormatAsBuildMenuTab("Plumbing Tab", "[5]") + "." + UI.HORIZONTAL_BR_RULE + "These Duplicants are in need of an " + UI.FormatAsLink("Outhouse", "OUTHOUSE") + ":";
 			}
 
 			public class FULLBLADDER
@@ -1972,7 +1972,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Making a mess";
 
-				public static LocString TOOLTIP = "This poor Duplicant couldn't find an " + UI.FormatAsLink("Outhouse", "OUTHOUSE") + " in time and is super embarrassed" + UI.HORIZONTAL_BR_RULE + UI.FormatAsLink("Outhouses", "OUTHOUSE") + " can be built from the " + UI.FormatAsLink("PLUMBING TAB", "MISC") + " <color=#F44A47><b>[5]</b></color>";
+				public static LocString TOOLTIP = "This poor Duplicant couldn't find an " + UI.FormatAsLink("Outhouse", "OUTHOUSE") + " in time and is super embarrassed" + UI.HORIZONTAL_BR_RULE + UI.FormatAsLink("Outhouses", "OUTHOUSE") + " can be built from the " + UI.FormatAsBuildMenuTab("Plumbing Tab", "[5]");
 
 				public static LocString NOTIFICATION_NAME = "Made a mess";
 
@@ -2522,11 +2522,11 @@ namespace STRINGS
 
 			public class EXPOSEDTOGERMS
 			{
-				public static LocString TIER1 = "Mild ";
+				public static LocString TIER1 = "Mild Exposure";
 
-				public static LocString TIER2 = "Medium ";
+				public static LocString TIER2 = "Medium Exposure";
 
-				public static LocString TIER3 = "";
+				public static LocString TIER3 = "Exposure";
 
 				public static readonly LocString[] EXPOSURE_TIERS = new LocString[3]
 				{
@@ -2535,7 +2535,7 @@ namespace STRINGS
 					TIER3
 				};
 
-				public static LocString NAME = "{Severity}Exposure to {Sickness} Germs";
+				public static LocString NAME = "{Severity} to {Sickness} Germs";
 
 				public static LocString TOOLTIP = "This Duplicant has been exposed to a concentration of {Sickness} Germs and is at risk of waking up sick on their next shift\n\nExposed {Source}\n\nRate of Contracting {Sickness}: {Chance}\n\nResistance Rating: {Total}\n    • Base {Sickness} Resistance: {Base}\n    • " + ATTRIBUTES.GERMRESISTANCE.NAME + ": {Dupe}\n    • {Severity}Exposure: {ExposureLevelBonus}\n\n<i>Click to jump to last exposure location</i>";
 			}

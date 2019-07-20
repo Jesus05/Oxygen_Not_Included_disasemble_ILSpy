@@ -39,7 +39,7 @@ public class BudUprootedMonitor : KMonoBehaviour
 
 	private void OnLoseParent(object obj)
 	{
-		if (!uprooted)
+		if (!uprooted && !base.isNull)
 		{
 			GetComponent<KPrefabID>().AddTag(GameTags.Uprooted, false);
 			uprooted = true;

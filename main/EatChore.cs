@@ -28,6 +28,16 @@ public class EatChore : Chore<EatChore.StatesInstance>
 			base.smi.sm.messstation.Set(value, base.smi);
 		}
 
+		public bool UseSalt()
+		{
+			if (base.smi.sm.messstation != null && (UnityEngine.Object)base.smi.sm.messstation.Get(base.smi) != (UnityEngine.Object)null)
+			{
+				MessStation component = base.smi.sm.messstation.Get(base.smi).GetComponent<MessStation>();
+				return (UnityEngine.Object)component != (UnityEngine.Object)null && component.HasSalt;
+			}
+			return false;
+		}
+
 		public void CreateLocator()
 		{
 			int num = base.sm.eater.Get<Sensors>(base.smi).GetSensor<SafeCellSensor>().GetCellQuery();
@@ -69,12 +79,13 @@ public class EatChore : Chore<EatChore.StatesInstance>
 		public void ApplySaltEffect()
 		{
 			Storage component = base.sm.messstation.Get(base.smi).gameObject.GetComponent<Storage>();
-			if ((UnityEngine.Object)component != (UnityEngine.Object)null && (UnityEngine.Object)component != (UnityEngine.Object)null && component.Has(TableSaltConfig.ID.ToTag()))
+			if ((UnityEngine.Object)component != (UnityEngine.Object)null && component.Has(TableSaltConfig.ID.ToTag()))
 			{
 				component.ConsumeIgnoringDisease(TableSaltConfig.ID.ToTag(), TableSaltTuning.CONSUMABLE_RATE);
 				Worker component2 = base.sm.eater.Get(base.smi).gameObject.GetComponent<Worker>();
 				Effects component3 = component2.GetComponent<Effects>();
 				component3.Add("MessTableSalt", true);
+				base.sm.messstation.Get(base.smi).gameObject.Trigger(1356255274, null);
 			}
 		}
 	}

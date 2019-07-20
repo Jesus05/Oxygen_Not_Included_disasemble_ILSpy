@@ -109,23 +109,23 @@ namespace STRINGS
 
 				public static LocString DESC = "Smart batteries send an active automation signal when they require charging.";
 
-				public static LocString EFFECT = "Stores most runoff " + UI.FormatAsLink("Power", "POWER") + " from generators, but loses charge over time.\n\nSends an " + UI.FormatAsLink("Active", "LOGIC") + " or " + UI.FormatAsLink("Standby", "LOGIC") + " signal based on the configuration of the Logic Activation Parameters.";
+				public static LocString EFFECT = "Stores most runoff " + UI.FormatAsLink("Power", "POWER") + " from generators, but loses charge over time.\n\nSends a " + UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active) + " or " + UI.FormatAsAutomationState("Red Signal", UI.AutomationState.Standby) + " based on the configuration of the Logic Activation Parameters.";
 
 				public static LocString LOGIC_PORT = "Charge Parameters";
 
-				public static LocString LOGIC_PORT_ACTIVE = "Sends an " + UI.FormatAsLink("Active", "LOGIC") + " signal when the charge falls below the configured Active Parameter";
+				public static LocString LOGIC_PORT_ACTIVE = "Sends a " + UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active) + " when battery is less than <b>Low Threshold</b> charged";
 
-				public static LocString LOGIC_PORT_INACTIVE = "Sends a " + UI.FormatAsLink("Standby", "LOGIC") + " signal when the charge rises above the configured Standby Parameter";
+				public static LocString LOGIC_PORT_INACTIVE = "Sends a " + UI.FormatAsAutomationState("Red Signal", UI.AutomationState.Standby) + " when the battery is more than <b>High Threshold</b> charged";
 
-				public static LocString ACTIVATE_TOOLTIP = "Logic output will become " + UI.FormatAsLink("Active", "LOGIC") + " when battery is less than {0}% charged";
+				public static LocString ACTIVATE_TOOLTIP = "Sends a " + UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active) + " when battery is less than <b>{0}%</b> charged";
 
-				public static LocString DEACTIVATE_TOOLTIP = "Logic output will go on " + UI.FormatAsLink("Standby", "LOGIC") + " when battery is more than {0}% charged";
+				public static LocString DEACTIVATE_TOOLTIP = "Sends a " + UI.FormatAsAutomationState("Red Signal", UI.AutomationState.Standby) + " when battery is more than <b>{0}%</b> charged";
 
 				public static LocString SIDESCREEN_TITLE = "Logic Activation Parameters";
 
-				public static LocString SIDESCREEN_ACTIVATE = "Active:";
+				public static LocString SIDESCREEN_ACTIVATE = "Low Threshold:";
 
-				public static LocString SIDESCREEN_DEACTIVATE = "Standby:";
+				public static LocString SIDESCREEN_DEACTIVATE = "High Threshold:";
 			}
 
 			public class BED
@@ -183,15 +183,15 @@ namespace STRINGS
 
 				public static LocString LOGIC_PORT_READY = "Rocket Checklist";
 
-				public static LocString LOGIC_PORT_READY_ACTIVE = "Becomes " + UI.FormatAsLink("Active", "LOGIC") + " when its rocket launch checklist is complete";
+				public static LocString LOGIC_PORT_READY_ACTIVE = "Sends a " + UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active) + " when its rocket launch checklist is complete";
 
-				public static LocString LOGIC_PORT_READY_INACTIVE = "Goes on " + UI.FormatAsLink("Standby", "LOGIC") + " when its rocket launch checklist has unchecked items";
+				public static LocString LOGIC_PORT_READY_INACTIVE = "Otherwise, sends a " + UI.FormatAsAutomationState("Red Signal", UI.AutomationState.Standby);
 
 				public static LocString LOGIC_PORT_LAUNCH = "Launch Rocket";
 
-				public static LocString LOGIC_PORT_LAUNCH_ACTIVE = "Launches rockets when receiving an " + UI.FormatAsLink("Active", "LOGIC") + " signal";
+				public static LocString LOGIC_PORT_LAUNCH_ACTIVE = UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active) + ": Launch rocket";
 
-				public static LocString LOGIC_PORT_LAUNCH_INACTIVE = "Awaits an Active signal when receiving a " + UI.FormatAsLink("Standby", "LOGIC") + " signal";
+				public static LocString LOGIC_PORT_LAUNCH_INACTIVE = UI.FormatAsAutomationState("Red Signal", UI.AutomationState.Standby) + ": Awaits launch command";
 			}
 
 			public class RESEARCHMODULE
@@ -222,9 +222,9 @@ namespace STRINGS
 
 				public static LocString LOGIC_PORT = "Extend/Retract";
 
-				public static LocString LOGIC_PORT_ACTIVE = "Extends gantry when an " + UI.FormatAsLink("Active", "LOGIC") + " signal is received";
+				public static LocString LOGIC_PORT_ACTIVE = "<b>Extends gantry</b> when an " + UI.FormatAsLink("Active", "LOGIC") + " signal is received";
 
-				public static LocString LOGIC_PORT_INACTIVE = "Retracts gantry when a " + UI.FormatAsLink("Standby", "LOGIC") + " signal is received";
+				public static LocString LOGIC_PORT_INACTIVE = "<b>Retracts gantry</b> when a " + UI.FormatAsLink("Standby", "LOGIC") + " signal is received";
 			}
 
 			public class WATERCOOLER
@@ -269,13 +269,13 @@ namespace STRINGS
 
 				public static LocString DESC = "Checkpoints can be connected to automated sensors to determine when it's safe to enter.";
 
-				public static LocString EFFECT = "Allows Duplicants to pass when " + UI.FormatAsLink("Active", "LOGIC") + ".\n\nPrevents Duplicants from passing when on " + UI.FormatAsLink("Standby", "LOGIC") + ".";
+				public static LocString EFFECT = "Allows Duplicants to pass when receiving a " + UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active) + ".\n\nPrevents Duplicants from passing when receiving a " + UI.FormatAsAutomationState("Red Signal", UI.AutomationState.Standby) + ".";
 
 				public static LocString LOGIC_PORT = "Duplicant Stop/Go";
 
-				public static LocString LOGIC_PORT_ACTIVE = "Allows Duplicant passage while an " + UI.FormatAsLink("Active", "LOGIC") + " signal is being received";
+				public static LocString LOGIC_PORT_ACTIVE = UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active) + ": Allow Duplicant passage";
 
-				public static LocString LOGIC_PORT_INACTIVE = "Prevents Duplicant passage while a " + UI.FormatAsLink("Standby", "LOGIC") + " signal is being received";
+				public static LocString LOGIC_PORT_INACTIVE = UI.FormatAsAutomationState("Red Signal", UI.AutomationState.Standby) + ": Prevent Duplicant passage";
 			}
 
 			public class FIREPOLE
@@ -293,7 +293,7 @@ namespace STRINGS
 
 				public static LocString DESC = "Weight plates can be used to turn on amenities only when Duplicants pass by.";
 
-				public static LocString EFFECT = "Becomes " + UI.FormatAsLink("Active", "LOGIC") + " when an object or Duplicant is placed atop of it.\n\nCannot be triggered by " + UI.FormatAsLink("Gas", "ELEMENTS_GAS") + " or " + UI.FormatAsLink("Liquids", "ELEMENTS_LIQUID") + ".";
+				public static LocString EFFECT = "Sends a " + UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active) + " when an object or Duplicant is placed atop of it.\n\nCannot be triggered by " + UI.FormatAsLink("Gas", "ELEMENTS_GAS") + " or " + UI.FormatAsLink("Liquids", "ELEMENTS_LIQUID") + ".";
 
 				public static LocString LOGIC_PORT_DESC = UI.FormatAsLink("Active", "LOGIC") + "/" + UI.FormatAsLink("Inactive", "LOGIC");
 			}
@@ -555,9 +555,9 @@ namespace STRINGS
 
 				public static LocString LOGIC_OPEN = "Open/Close";
 
-				public static LocString LOGIC_OPEN_ACTIVE = "Opens with Duplicant proximity while an " + UI.FormatAsLink("Active", "LOGIC") + " signal is being received";
+				public static LocString LOGIC_OPEN_ACTIVE = UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active) + ": Open";
 
-				public static LocString LOGIC_OPEN_INACTIVE = "Closes and locks while a " + UI.FormatAsLink("Standby", "LOGIC") + " signal is being received";
+				public static LocString LOGIC_OPEN_INACTIVE = UI.FormatAsAutomationState("Red Signal", UI.AutomationState.Standby) + ": Close and lock";
 			}
 
 			public class ELECTROLYZER
@@ -800,9 +800,9 @@ namespace STRINGS
 
 				public static LocString LOGIC_PORT = "Open/Close";
 
-				public static LocString LOGIC_PORT_ACTIVE = "Allows gas flow when receiving an " + UI.FormatAsLink("Active", "LOGIC") + " signal";
+				public static LocString LOGIC_PORT_ACTIVE = UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active) + ": Allow gas flow";
 
-				public static LocString LOGIC_PORT_INACTIVE = "Prevents gas flow when receiving a " + UI.FormatAsLink("Standby", "LOGIC") + " signal";
+				public static LocString LOGIC_PORT_INACTIVE = UI.FormatAsAutomationState("Red Signal", UI.AutomationState.Standby) + ": Prevent gas flow";
 			}
 
 			public class GASVENT
@@ -1159,9 +1159,9 @@ namespace STRINGS
 
 				public static LocString LOGIC_PORT = "Open/Close";
 
-				public static LocString LOGIC_PORT_ACTIVE = "Allows liquid flow while receiving an " + UI.FormatAsLink("Active", "LOGIC") + " signal";
+				public static LocString LOGIC_PORT_ACTIVE = UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active) + ": Allow Liquid flow";
 
-				public static LocString LOGIC_PORT_INACTIVE = "Prevents liquid flow while receiving a " + UI.FormatAsLink("Standby", "LOGIC") + " signal";
+				public static LocString LOGIC_PORT_INACTIVE = UI.FormatAsAutomationState("Red Signal", UI.AutomationState.Standby) + ": Prevent Liquid flow";
 			}
 
 			public class LIQUIDVENT
@@ -1381,9 +1381,9 @@ namespace STRINGS
 
 				public static LocString LOGIC_PORT = "Full/Not Full";
 
-				public static LocString LOGIC_PORT_ACTIVE = "Sends an " + UI.FormatAsLink("Active", "LOGIC") + " signal when full";
+				public static LocString LOGIC_PORT_ACTIVE = "Sends a " + UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active) + " when full";
 
-				public static LocString LOGIC_PORT_INACTIVE = "Sends a " + UI.FormatAsLink("Standby", "LOGIC") + " signal when not full";
+				public static LocString LOGIC_PORT_INACTIVE = "Otherwise, sends a " + UI.FormatAsAutomationState("Red Signal", UI.AutomationState.Standby);
 			}
 
 			public class ROLESTATION
@@ -1613,13 +1613,13 @@ namespace STRINGS
 
 				public static LocString DESC = "Smart storage bins allow for the automation of resource organization based on type and mass.";
 
-				public static LocString EFFECT = "Stores the resources of your choosing.\n\nLogic input becomes " + UI.FormatAsLink("Active", "LOGIC") + " when bin is filled above the set threshold.";
+				public static LocString EFFECT = "Stores the resources of your choosing.\n\nSends a " + UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active) + " when bin is full.";
 
 				public static LocString LOGIC_PORT = "Full/Not Full";
 
-				public static LocString LOGIC_PORT_ACTIVE = "Sends an " + UI.FormatAsLink("Active", "LOGIC") + " signal when full";
+				public static LocString LOGIC_PORT_ACTIVE = "Sends a " + UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active) + " when full";
 
-				public static LocString LOGIC_PORT_INACTIVE = "Sends a " + UI.FormatAsLink("Standby", "LOGIC") + " signal when not full";
+				public static LocString LOGIC_PORT_INACTIVE = "Otherwise, sends a " + UI.FormatAsAutomationState("Red Signal", UI.AutomationState.Standby);
 			}
 
 			public class OBJECTDISPENSER
@@ -1628,13 +1628,13 @@ namespace STRINGS
 
 				public static LocString DESC = "Automatic dispensers will store and drop resources in small quantities.";
 
-				public static LocString EFFECT = "Stores any " + UI.FormatAsLink("Solid Materials", "ELEMENTS_SOLID") + " delivered to it by Duplicants.\n\nDumps stored materials back into the world when it receives an " + UI.FormatAsLink("Active", "LOGIC") + " logic signal.";
+				public static LocString EFFECT = "Stores any " + UI.FormatAsLink("Solid Materials", "ELEMENTS_SOLID") + " delivered to it by Duplicants.\n\nDumps stored materials back into the world when it receives a " + UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active) + ".";
 
 				public static LocString LOGIC_PORT = "Dump Trigger";
 
-				public static LocString LOGIC_PORT_ACTIVE = "Dumps all stored materials when it receives an " + UI.FormatAsLink("Active", "LOGIC") + " signal";
+				public static LocString LOGIC_PORT_ACTIVE = UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active) + ": Dump all stored materials";
 
-				public static LocString LOGIC_PORT_INACTIVE = "Holds materials while receiving a " + UI.FormatAsLink("Standby", "LOGIC") + " signal";
+				public static LocString LOGIC_PORT_INACTIVE = UI.FormatAsAutomationState("Red Signal", UI.AutomationState.Standby) + ": Store materials";
 			}
 
 			public class LIQUIDRESERVOIR
@@ -1691,9 +1691,9 @@ namespace STRINGS
 
 				public static LocString LOGIC_PORT = "Kill Power";
 
-				public static LocString LOGIC_PORT_ACTIVE = "Allows power through connected circuits while receiving an " + UI.FormatAsLink("Active", "LOGIC") + " signal";
+				public static LocString LOGIC_PORT_ACTIVE = UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active) + ": Allow " + UI.PRE_KEYWORD + "Power" + UI.PST_KEYWORD + " through connected circuits";
 
-				public static LocString LOGIC_PORT_INACTIVE = "Prevents power from flowing through connected circuits while receiving a " + UI.FormatAsLink("Standby", "LOGIC") + " signal";
+				public static LocString LOGIC_PORT_INACTIVE = UI.FormatAsAutomationState("Red Signal", UI.AutomationState.Standby) + ": Prevent " + UI.PRE_KEYWORD + "Power" + UI.PST_KEYWORD + " from flowing through connected circuits";
 			}
 
 			public class TEMPERATURECONTROLLEDSWITCH
@@ -1920,7 +1920,7 @@ namespace STRINGS
 
 				public static LocString DESC = "Networks of many scanners will scan more efficiently than one on its own.";
 
-				public static LocString EFFECT = "Sends an " + UI.FormatAsLink("Active Signal", "LOGIC") + " to its logic circuit when it detects incoming objects from space.\n\nCan be configured to detect incoming meteor showers or returning space rockets.";
+				public static LocString EFFECT = "Sends a " + UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active) + " to its automation circuit when it detects incoming objects from space.\n\nCan be configured to detect incoming meteor showers or returning space rockets.";
 			}
 
 			public class OILREFINERY
@@ -2090,128 +2090,128 @@ namespace STRINGS
 
 				public static LocString LOGIC_PORT = "Transmit Signal";
 
-				public static LocString LOGIC_PORT_ACTIVE = "Transmits an " + UI.FormatAsLink("Active", "LOGIC") + " signal when receiving an Active signal";
+				public static LocString LOGIC_PORT_ACTIVE = UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active) + ": Pass through the " + UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active);
 
-				public static LocString LOGIC_PORT_INACTIVE = "Transmits a " + UI.FormatAsLink("Standby", "LOGIC") + " signal when receiving a Standby signal";
+				public static LocString LOGIC_PORT_INACTIVE = UI.FormatAsAutomationState("Red Signal", UI.AutomationState.Standby) + ": Pass through the " + UI.FormatAsAutomationState("Red Signal", UI.AutomationState.Standby);
 			}
 
 			public class LOGICGATEAND
 			{
 				public static LocString NAME = UI.FormatAsLink("AND Gate", "LOGICGATEAND");
 
-				public static LocString DESC = "This gate only turns buildings on when both its inputs are active at the same time.";
+				public static LocString DESC = "This gate outputs a Green Signal when both its inputs are receiving Green Signals at the same time.";
 
-				public static LocString EFFECT = "Becomes " + UI.FormatAsLink("Active", "LOGIC") + " when both the systems connected to its Inputs are " + UI.FormatAsLink("Active", "LOGIC") + ".\n\nGoes into " + UI.FormatAsLink("Standby", "LOGIC") + " when one or both Inputs are on " + UI.FormatAsLink("Standby", "LOGIC") + ".";
+				public static LocString EFFECT = "Outputs a " + UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active) + " when both Input A <b>AND</b> Input B are receiving " + UI.FormatAsAutomationState("Green", UI.AutomationState.Active) + ".\n\nOutputs a " + UI.FormatAsAutomationState("Red Signal", UI.AutomationState.Standby) + " when even one Input is receiving " + UI.FormatAsAutomationState("Red", UI.AutomationState.Standby) + ".";
 
-				public static LocString OUTPUT_NAME = "AND Gate";
+				public static LocString OUTPUT_NAME = "OUTPUT";
 
-				public static LocString OUTPUT_ACTIVE = "Becomes " + UI.FormatAsLink("Active", "LOGIC") + " when both the A Input and B Input are Active";
+				public static LocString OUTPUT_ACTIVE = "Sends a " + UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active) + " if both Inputs are receiving " + UI.FormatAsAutomationState("Green", UI.AutomationState.Active);
 
-				public static LocString OUTPUT_INACTIVE = "Goes on " + UI.FormatAsLink("Standby", "LOGIC") + " when either or both Inputs are on Standby";
+				public static LocString OUTPUT_INACTIVE = "Sends a " + UI.FormatAsAutomationState("Red Signal", UI.AutomationState.Standby) + " if any Input is receiving " + UI.FormatAsAutomationState("Red", UI.AutomationState.Standby);
 			}
 
 			public class LOGICGATEOR
 			{
 				public static LocString NAME = UI.FormatAsLink("OR Gate", "LOGICGATEOR");
 
-				public static LocString DESC = "This gate can only turn buildings on if it has one or more active inputs connected to it.";
+				public static LocString DESC = "This gate outputs a Green Signal if receiving one or more Green Signals.";
 
-				public static LocString EFFECT = "Becomes " + UI.FormatAsLink("Active", "LOGIC") + " if one or both of the systems connected to its Inputs are " + UI.FormatAsLink("Active", "LOGIC") + ".\n\nGoes into " + UI.FormatAsLink("Standby", "LOGIC") + " when neither Inputs are " + UI.FormatAsLink("Active", "LOGIC") + ".";
+				public static LocString EFFECT = "Outputs a " + UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active) + " if at least one of Input A <b>OR</b> Input B is receiving " + UI.FormatAsAutomationState("Green", UI.AutomationState.Active) + ".\n\nOutputs a " + UI.FormatAsAutomationState("Red Signal", UI.AutomationState.Standby) + " when neither Input A or Input B are receiving " + UI.FormatAsAutomationState("Green", UI.AutomationState.Active) + ".";
 
-				public static LocString OUTPUT_NAME = "OR Gate";
+				public static LocString OUTPUT_NAME = "OUTPUT";
 
-				public static LocString OUTPUT_ACTIVE = "Becomes " + UI.FormatAsLink("Active", "LOGIC") + " when either the A Input or B Input is Active";
+				public static LocString OUTPUT_ACTIVE = "Sends a " + UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active) + " if any Input is receiving " + UI.FormatAsAutomationState("Green", UI.AutomationState.Active);
 
-				public static LocString OUTPUT_INACTIVE = "Goes on " + UI.FormatAsLink("Standby", "LOGIC") + " when both Inputs are on Standby";
+				public static LocString OUTPUT_INACTIVE = "Sends a " + UI.FormatAsAutomationState("Red Signal", UI.AutomationState.Standby) + " if both Inputs are receiving " + UI.FormatAsAutomationState("Red", UI.AutomationState.Standby);
 			}
 
 			public class LOGICGATENOT
 			{
 				public static LocString NAME = UI.FormatAsLink("NOT Gate", "LOGICGATENOT");
 
-				public static LocString DESC = "This gate reverses logic, turning buildings on when it receives off values and vice versa.";
+				public static LocString DESC = "This gate reverses automation signals, turning a Green Signal into a Red Signal and vice versa.";
 
-				public static LocString EFFECT = "Becomes " + UI.FormatAsLink("Active", "LOGIC") + " if the system connected to its Input is on " + UI.FormatAsLink("Standby", "LOGIC") + ".\n\nGoes into " + UI.FormatAsLink("Standby", "LOGIC") + " when its Input is " + UI.FormatAsLink("Active", "LOGIC") + ".";
+				public static LocString EFFECT = "Outputs a " + UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active) + " if the Input is receiving a " + UI.FormatAsAutomationState("Red Signal", UI.AutomationState.Standby) + ".\n\nOutputs a " + UI.FormatAsAutomationState("Red Signal", UI.AutomationState.Standby) + " when its Input is receiving a " + UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active) + ".";
 
-				public static LocString OUTPUT_NAME = "NOT Gate";
+				public static LocString OUTPUT_NAME = "OUTPUT";
 
-				public static LocString OUTPUT_ACTIVE = "Becomes " + UI.FormatAsLink("Active", "LOGIC") + " when its Input is on Standby";
+				public static LocString OUTPUT_ACTIVE = "Sends a " + UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active) + " if receiving " + UI.FormatAsAutomationState("Red", UI.AutomationState.Standby);
 
-				public static LocString OUTPUT_INACTIVE = "Goes on " + UI.FormatAsLink("Standby", "LOGIC") + " when its Input is Active";
+				public static LocString OUTPUT_INACTIVE = "Sends a " + UI.FormatAsAutomationState("Red Signal", UI.AutomationState.Standby) + " if receiving " + UI.FormatAsAutomationState("Green", UI.AutomationState.Active);
 			}
 
 			public class LOGICGATEXOR
 			{
 				public static LocString NAME = UI.FormatAsLink("XOR Gate", "LOGICGATEXOR");
 
-				public static LocString DESC = "This gate needs exactly one of its inputs to be active to turn on buildings.";
+				public static LocString DESC = "This gate outputs a Green Signal if exactly one of its Inputs is receiving a Green Signal.";
 
-				public static LocString EFFECT = "Becomes " + UI.FormatAsLink("Active", "LOGIC") + " if one of the systems connected to its Inputs is " + UI.FormatAsLink("Active", "LOGIC") + ".\n\nGoes into " + UI.FormatAsLink("Standby", "LOGIC") + " if both or neither Inputs are " + UI.FormatAsLink("Active", "LOGIC") + ".";
+				public static LocString EFFECT = "Outputs a " + UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active) + " if exactly one of its Inputs is receiving " + UI.FormatAsAutomationState("Green", UI.AutomationState.Active) + ".\n\nOutputs a " + UI.FormatAsAutomationState("Red Signal", UI.AutomationState.Standby) + " if both or neither Inputs are receiving a " + UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active) + ".";
 
-				public static LocString OUTPUT_NAME = "XOR Gate";
+				public static LocString OUTPUT_NAME = "OUTPUT";
 
-				public static LocString OUTPUT_ACTIVE = "Becomes " + UI.FormatAsLink("Active", "LOGIC") + " when one of its Inputs is Active, but not both";
+				public static LocString OUTPUT_ACTIVE = "Sends a " + UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active) + " if exactly one of its Inputs is receiving " + UI.FormatAsAutomationState("Green", UI.AutomationState.Active);
 
-				public static LocString OUTPUT_INACTIVE = "Goes on " + UI.FormatAsLink("Standby", "LOGIC") + " when both Input signals match (either Active or Standby)";
+				public static LocString OUTPUT_INACTIVE = "Sends a " + UI.FormatAsAutomationState("Red Signal", UI.AutomationState.Standby) + " if both Input signals match (any color)";
 			}
 
 			public class LOGICGATEBUFFER
 			{
 				public static LocString NAME = UI.FormatAsLink("BUFFER Gate", "LOGICGATEBUFFER");
 
-				public static LocString DESC = "This gate keeps buildings running for a short time after the input building is deactivated.";
+				public static LocString DESC = "This gate continues outputting a Green Signal for a short time after the gate stops receiving a Green Signal.";
 
-				public static LocString EFFECT = "Becomes " + UI.FormatAsLink("Active", "LOGIC") + " if the system connected to its Input is " + UI.FormatAsLink("Active", "LOGIC") + ".\n\nStays " + UI.FormatAsLink("Active", "LOGIC") + " for a short time after its Input enters " + UI.FormatAsLink("Standby", "LOGIC") + ".";
+				public static LocString EFFECT = "Outputs a " + UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active) + " if the Input is receiving a " + UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active) + ".\n\nContinues sending a " + UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active) + " for an amount of buffer time after the Input receives a " + UI.FormatAsAutomationState("Red Signal", UI.AutomationState.Standby) + ".";
 
-				public static LocString OUTPUT_NAME = "Buffered Signal";
+				public static LocString OUTPUT_NAME = "OUTPUT";
 
-				public static LocString OUTPUT_ACTIVE = "Becomes " + UI.FormatAsLink("Active", "LOGIC") + " when its Input is Active, or while its timer is ticking down";
+				public static LocString OUTPUT_ACTIVE = "Sends a " + UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active) + " while receiving " + UI.FormatAsAutomationState("Green", UI.AutomationState.Active) + ". After receiving " + UI.FormatAsAutomationState("Red", UI.AutomationState.Standby) + ", will continue sending " + UI.FormatAsAutomationState("Green", UI.AutomationState.Active) + " until the timer has expired";
 
-				public static LocString OUTPUT_INACTIVE = "Goes on " + UI.FormatAsLink("Standby", "LOGIC") + " when both its Input is on Standby and its timer has expired";
+				public static LocString OUTPUT_INACTIVE = "Otherwise, sends a " + UI.FormatAsAutomationState("Red Signal", UI.AutomationState.Standby) + ".";
 			}
 
 			public class LOGICGATEFILTER
 			{
 				public static LocString NAME = UI.FormatAsLink("FILTER Gate", "LOGICGATEFILTER");
 
-				public static LocString DESC = "This gate keeps buildings off for a short time after the input building is activated.";
+				public static LocString DESC = "This gate only lets a Green Signal through if its Input has received a Green Signal that lasted longer than the selected filter time.";
 
-				public static LocString EFFECT = "Enters " + UI.FormatAsLink("Standby", "LOGIC") + " if the system connected to its Input is also on " + UI.FormatAsLink("Standby", "LOGIC") + ".\n\nStays in " + UI.FormatAsLink("Standby", "LOGIC") + " for a short time after its Input becomes " + UI.FormatAsLink("Active", "LOGIC") + ".";
+				public static LocString EFFECT = "Only lets a " + UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active) + " through if the Input has received a " + UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active) + " for longer than the selected filter time.\n\nWill continue outputting a " + UI.FormatAsAutomationState("Red Signal", UI.AutomationState.Standby) + " if the " + UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active) + " did not last long enough.";
 
-				public static LocString OUTPUT_NAME = "Filtered Signal";
+				public static LocString OUTPUT_NAME = "OUTPUT";
 
-				public static LocString OUTPUT_ACTIVE = "Becomes " + UI.FormatAsLink("Active", "LOGIC") + " when both its Input is Active and its timer has expired";
+				public static LocString OUTPUT_ACTIVE = "Sends a " + UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active) + " after receiving " + UI.FormatAsAutomationState("Green", UI.AutomationState.Active) + " for longer than the selected filter timer";
 
-				public static LocString OUTPUT_INACTIVE = "Goes on " + UI.FormatAsLink("Standby", "LOGIC") + " when its Input is on Standby or when its timer is ticking down";
+				public static LocString OUTPUT_INACTIVE = "Otherwise, sends a " + UI.FormatAsAutomationState("Red Signal", UI.AutomationState.Standby) + ".";
 			}
 
 			public class LOGICMEMORY
 			{
 				public static LocString NAME = UI.FormatAsLink("Memory Toggle", "LOGICMEMORY");
 
-				public static LocString DESC = "A memory toggle keeps buildings on until the refresh port receives an active signal.";
+				public static LocString DESC = "A Memory stores a Green Signal received in the Set Port (S) until the Reset Port (R) receives a Green Signal.";
 
-				public static LocString EFFECT = "Becomes " + UI.FormatAsLink("Active", "LOGIC") + " when the Set Port (S) is " + UI.FormatAsLink("Active", "LOGIC") + ".\n\nGoes on " + UI.FormatAsLink("Standby", "LOGIC") + " if the Refresh Port (R) becomes " + UI.FormatAsLink("Active", "LOGIC") + ".";
+				public static LocString EFFECT = "Contains an internal Memory, and will output whatever signal is stored in that Memory. Signals sent to the Inputs <i>only</i> affect the Memory, and do not pass through to the Output. \n\nSending a " + UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active) + " to the Set Port (S) will set the memory to " + UI.FormatAsAutomationState("Green", UI.AutomationState.Active) + ". \n\nSending a " + UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active) + " to the Reset Port (S) will reset the memory back to " + UI.FormatAsAutomationState("Red", UI.AutomationState.Standby) + ".";
 
 				public static LocString STATUS_ITEM_VALUE = "Current Value: {0}";
 
-				public static LocString READ_PORT = "Current Value";
+				public static LocString READ_PORT = "MEMORY OUTPUT";
 
-				public static LocString READ_PORT_ACTIVE = "Becomes " + UI.FormatAsLink("Active", "LOGIC") + " when Refresh Port is Set";
+				public static LocString READ_PORT_ACTIVE = "Outputs a " + UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active) + " if the internal Memory is set to " + UI.FormatAsAutomationState("Green", UI.AutomationState.Active);
 
-				public static LocString READ_PORT_INACTIVE = "Goes on " + UI.FormatAsLink("Standby", "LOGIC") + " when Refresh Port is Cleared";
+				public static LocString READ_PORT_INACTIVE = "Outputs a " + UI.FormatAsAutomationState("Red Signal", UI.AutomationState.Standby) + " if the internal Memory is set to " + UI.FormatAsAutomationState("Red", UI.AutomationState.Standby);
 
-				public static LocString SET_PORT = "Set Active";
+				public static LocString SET_PORT = "SET PORT (S)";
 
-				public static LocString SET_PORT_ACTIVE = "Sets the Refresh Port when an " + UI.FormatAsLink("Active", "LOGIC") + " signal is received";
+				public static LocString SET_PORT_ACTIVE = UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active) + ": Set the internal Memory to " + UI.FormatAsAutomationState("Green", UI.AutomationState.Active);
 
-				public static LocString SET_PORT_INACTIVE = "";
+				public static LocString SET_PORT_INACTIVE = UI.FormatAsAutomationState("Red Signal", UI.AutomationState.Standby) + ": No effect";
 
-				public static LocString RESET_PORT = "Clear Active";
+				public static LocString RESET_PORT = "RESET PORT (R)";
 
-				public static LocString RESET_PORT_ACTIVE = "Clears the Refresh Port when an " + UI.FormatAsLink("Active", "LOGIC") + " signal is received";
+				public static LocString RESET_PORT_ACTIVE = UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active) + ": Reset the internal Memory to " + UI.FormatAsAutomationState("Red", UI.AutomationState.Standby);
 
-				public static LocString RESET_PORT_INACTIVE = "";
+				public static LocString RESET_PORT_INACTIVE = UI.FormatAsAutomationState("Red Signal", UI.AutomationState.Standby) + ": No effect";
 			}
 
 			public class LOGICSWITCH
@@ -2220,13 +2220,13 @@ namespace STRINGS
 
 				public static LocString DESC = "Signal switches don't turn grids on and off like power switches, but add an extra signal.";
 
-				public static LocString EFFECT = "Can be made " + UI.FormatAsLink("Active", "LOGIC") + " or " + UI.FormatAsLink("Standby", "LOGIC") + " on an " + UI.FormatAsLink("Automation", "LOGIC") + " grid.\n\nMust be manually toggled by a Duplicant.";
+				public static LocString EFFECT = "Sends a " + UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active) + " or a " + UI.FormatAsAutomationState("Red Signal", UI.AutomationState.Standby) + " on an " + UI.FormatAsLink("Automation", "LOGIC") + " grid.\n\nMust be manually toggled by a Duplicant.";
 
 				public static LocString LOGIC_PORT = "Signal Toggle";
 
-				public static LocString LOGIC_PORT_ACTIVE = "Sends an " + UI.FormatAsLink("Active", "LOGIC") + " signal while toggled on";
+				public static LocString LOGIC_PORT_ACTIVE = "Sends a " + UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active) + " if toggled ON";
 
-				public static LocString LOGIC_PORT_INACTIVE = "Sends a " + UI.FormatAsLink("Standby", "LOGIC") + " signal while toggled off";
+				public static LocString LOGIC_PORT_INACTIVE = "Sends a " + UI.FormatAsAutomationState("Red Signal", UI.AutomationState.Standby) + " if toggled OFF";
 			}
 
 			public class LOGICPRESSURESENSORGAS
@@ -2235,13 +2235,13 @@ namespace STRINGS
 
 				public static LocString DESC = "Atmo sensors can be used to prevent excess oxygen production and overpressurization.";
 
-				public static LocString EFFECT = "Becomes " + UI.FormatAsLink("Active", "LOGIC") + " or goes on " + UI.FormatAsLink("Standby", "LOGIC") + " when " + UI.FormatAsLink("Gas", "ELEMENTS_GAS") + " pressure enters the chosen range.";
+				public static LocString EFFECT = "Sends a " + UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active) + " or a " + UI.FormatAsAutomationState("Red Signal", UI.AutomationState.Standby) + " when " + UI.FormatAsLink("Gas", "ELEMENTS_GAS") + " pressure enters the chosen range.";
 
 				public static LocString LOGIC_PORT = UI.FormatAsLink("Gas", "ELEMENTS_GAS") + " Pressure";
 
-				public static LocString LOGIC_PORT_ACTIVE = "Sends an " + UI.FormatAsLink("Active", "LOGIC") + " signal when " + UI.FormatAsLink("Gas", "ELEMENTS_GAS") + " pressure is within its configured Pressure Threshold range";
+				public static LocString LOGIC_PORT_ACTIVE = "Sends a " + UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active) + " if Gas pressure is within the selected range";
 
-				public static LocString LOGIC_PORT_INACTIVE = "Sends a " + UI.FormatAsLink("Standby", "LOGIC") + " signal when " + UI.FormatAsLink("Gas", "ELEMENTS_GAS") + " pressure is outside its configured Pressure Threshold range";
+				public static LocString LOGIC_PORT_INACTIVE = "Otherwise, sends a " + UI.FormatAsAutomationState("Red Signal", UI.AutomationState.Standby);
 			}
 
 			public class LOGICPRESSURESENSORLIQUID
@@ -2250,13 +2250,13 @@ namespace STRINGS
 
 				public static LocString DESC = "A hydro sensor can tell a pump to refill its basin as soon as it contains too little liquid.";
 
-				public static LocString EFFECT = "Becomes " + UI.FormatAsLink("Active", "LOGIC") + " or goes on " + UI.FormatAsLink("Standby", "LOGIC") + " when " + UI.FormatAsLink("Liquid", "ELEMENTS_LIQUID") + " pressure enters the chosen range.\n\nMust be submerged in " + UI.FormatAsLink("Liquid", "ELEMENTS_LIQUID") + ".";
+				public static LocString EFFECT = "Sends a " + UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active) + " or a " + UI.FormatAsAutomationState("Red Signal", UI.AutomationState.Standby) + " when " + UI.FormatAsLink("Liquid", "ELEMENTS_LIQUID") + " pressure enters the chosen range.\n\nMust be submerged in " + UI.FormatAsLink("Liquid", "ELEMENTS_LIQUID") + ".";
 
 				public static LocString LOGIC_PORT = UI.FormatAsLink("Liquid", "ELEMENTS_LIQUID") + " Pressure";
 
-				public static LocString LOGIC_PORT_ACTIVE = "Sends an " + UI.FormatAsLink("Active", "LOGIC") + " signal while " + UI.FormatAsLink("Liquid", "ELEMENTS_LIQUID") + " pressure is within its configured Pressure Threshold range";
+				public static LocString LOGIC_PORT_ACTIVE = "Sends a " + UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active) + " if Liquid pressure is within the selected range";
 
-				public static LocString LOGIC_PORT_INACTIVE = "Sends a " + UI.FormatAsLink("Standby", "LOGIC") + " signal while " + UI.FormatAsLink("Liquid", "ELEMENTS_LIQUID") + " pressure is outside its configured Pressure Threshold range";
+				public static LocString LOGIC_PORT_INACTIVE = "Otherwise, sends a " + UI.FormatAsAutomationState("Red Signal", UI.AutomationState.Standby);
 			}
 
 			public class LOGICTEMPERATURESENSOR
@@ -2265,13 +2265,13 @@ namespace STRINGS
 
 				public static LocString DESC = "Thermo sensors can disable buildings when they approach dangerous temperatures.";
 
-				public static LocString EFFECT = "Becomes " + UI.FormatAsLink("Active", "LOGIC") + " or goes on " + UI.FormatAsLink("Standby", "LOGIC") + " when ambient " + UI.FormatAsLink("Temperature", "HEAT") + " enters the chosen range.";
+				public static LocString EFFECT = "Sends a " + UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active) + " or a " + UI.FormatAsAutomationState("Red Signal", UI.AutomationState.Standby) + " when ambient " + UI.FormatAsLink("Temperature", "HEAT") + " enters the chosen range.";
 
 				public static LocString LOGIC_PORT = "Ambient " + UI.FormatAsLink("Temperature", "HEAT");
 
-				public static LocString LOGIC_PORT_ACTIVE = "Sends an " + UI.FormatAsLink("Active", "LOGIC") + " signal while ambient " + UI.FormatAsLink("Temperature", "HEAT") + " is within its configured Temperature Threshold range";
+				public static LocString LOGIC_PORT_ACTIVE = "Sends a " + UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active) + " if ambient " + UI.FormatAsLink("Temperature", "HEAT") + " is within the selected range";
 
-				public static LocString LOGIC_PORT_INACTIVE = "Sends a " + UI.FormatAsLink("Standby", "LOGIC") + " signal while ambient " + UI.FormatAsLink("Temperature", "HEAT") + " is outside its configured Temperature Threshold range";
+				public static LocString LOGIC_PORT_INACTIVE = "Otherwise, sends a " + UI.FormatAsAutomationState("Red Signal", UI.AutomationState.Standby);
 			}
 
 			public class LOGICTIMEOFDAYSENSOR
@@ -2280,13 +2280,13 @@ namespace STRINGS
 
 				public static LocString DESC = "Clock sensors ensure systems always turn on at the same time, day or night, every cycle.";
 
-				public static LocString EFFECT = "Sets an automatic " + UI.FormatAsLink("Active", "LOGIC") + " and " + UI.FormatAsLink("Standby", "LOGIC") + " schedule using a timer.";
+				public static LocString EFFECT = "Sets an automatic " + UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active) + " and " + UI.FormatAsAutomationState("Red Signal", UI.AutomationState.Standby) + " schedule using a timer.";
 
 				public static LocString LOGIC_PORT = "Cycle Time";
 
-				public static LocString LOGIC_PORT_ACTIVE = "Sends an " + UI.FormatAsLink("Active", "LOGIC") + " signal when the current time enters its configured Time Schedule range";
+				public static LocString LOGIC_PORT_ACTIVE = "Sends a " + UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active) + " if current time is within the selected " + UI.FormatAsAutomationState("Green", UI.AutomationState.Active) + " range";
 
-				public static LocString LOGIC_PORT_INACTIVE = "Sends a " + UI.FormatAsLink("Standby", "LOGIC") + " signal when current time is not within its configured Time Schedule range";
+				public static LocString LOGIC_PORT_INACTIVE = "Otherwise, sends a " + UI.FormatAsAutomationState("Red Signal", UI.AutomationState.Standby);
 			}
 
 			public class LOGICCRITTERCOUNTSENSOR
@@ -2295,13 +2295,13 @@ namespace STRINGS
 
 				public static LocString DESC = "Detecting critter populations can help adjust their automated feeding and care regiments.";
 
-				public static LocString EFFECT = "Becomes " + UI.FormatAsLink("Active", "LOGIC") + " or goes on " + UI.FormatAsLink("Standby", "LOGIC") + " based on the number of eggs and critters in a room.";
+				public static LocString EFFECT = "Sends a " + UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active) + " or a " + UI.FormatAsAutomationState("Red Signal", UI.AutomationState.Standby) + " based on the number of eggs and critters in a room.";
 
 				public static LocString LOGIC_PORT = "Critter Count";
 
-				public static LocString LOGIC_PORT_ACTIVE = "Sends an " + UI.FormatAsLink("Active", "LOGIC") + " signal while the number of critters in the room is within the configured Critter Count range";
+				public static LocString LOGIC_PORT_ACTIVE = "Sends a " + UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active) + " while the number of critters in the room is within the selected range";
 
-				public static LocString LOGIC_PORT_INACTIVE = "Sends a " + UI.FormatAsLink("Standby", "LOGIC") + " signal while the number of critters in the room is outside the configured Critter Count range";
+				public static LocString LOGIC_PORT_INACTIVE = "Otherwise, sends a " + UI.FormatAsAutomationState("Red Signal", UI.AutomationState.Standby);
 			}
 
 			public class LOGICDUPLICANTSENSOR
@@ -2310,13 +2310,13 @@ namespace STRINGS
 
 				public static LocString DESC = "Motion sensors save power by only enabling buildings when Duplicants are nearby.";
 
-				public static LocString EFFECT = "Becomes " + UI.FormatAsLink("Active", "LOGIC") + " or goes on " + UI.FormatAsLink("Standby", "LOGIC") + " based on the proximity of the nearest Duplicant.";
+				public static LocString EFFECT = "Sends a " + UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active) + " or a " + UI.FormatAsAutomationState("Red Signal", UI.AutomationState.Standby) + " based on whether a Duplicant is in the sensor's range.";
 
 				public static LocString LOGIC_PORT = "Duplicant Motion Sensor";
 
-				public static LocString LOGIC_PORT_ACTIVE = "Sends an " + UI.FormatAsLink("Active", "LOGIC") + " signal while a Duplicant is nearby";
+				public static LocString LOGIC_PORT_ACTIVE = "Sends a " + UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active) + " while a Duplicant is in the sensor's tile range";
 
-				public static LocString LOGIC_PORT_INACTIVE = "Sends a " + UI.FormatAsLink("Standby", "LOGIC") + " signal if no Duplicant is nearby";
+				public static LocString LOGIC_PORT_INACTIVE = "Otherwise, sends a " + UI.FormatAsAutomationState("Red Signal", UI.AutomationState.Standby);
 			}
 
 			public class LOGICDISEASESENSOR
@@ -2325,13 +2325,13 @@ namespace STRINGS
 
 				public static LocString DESC = "Detecting germ populations can help block off or clean up dangerous areas.";
 
-				public static LocString EFFECT = "Becomes " + UI.FormatAsLink("Active", "LOGIC") + " or goes on " + UI.FormatAsLink("Standby", "LOGIC") + " based on quantity of surrounding " + UI.FormatAsLink("Germs", "DISEASE") + ".";
+				public static LocString EFFECT = "Sends a " + UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active) + " or a " + UI.FormatAsAutomationState("Red Signal", UI.AutomationState.Standby) + " based on quantity of surrounding " + UI.FormatAsLink("Germs", "DISEASE") + ".";
 
 				public static LocString LOGIC_PORT = UI.FormatAsLink("Germ", "DISEASE") + " Count";
 
-				public static LocString LOGIC_PORT_ACTIVE = "Sends an " + UI.FormatAsLink("Active", "LOGIC") + " signal when the number of " + UI.FormatAsLink("Germ", "DISEASE") + " enters the configured Germ Threshold range";
+				public static LocString LOGIC_PORT_ACTIVE = "Sends a " + UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active) + " if the number of Germs is within the selected range";
 
-				public static LocString LOGIC_PORT_INACTIVE = "Sends a " + UI.FormatAsLink("Standby", "LOGIC") + " signal when the number of " + UI.FormatAsLink("Germ", "DISEASE") + " is outside the configured Germ Threshold range";
+				public static LocString LOGIC_PORT_INACTIVE = "Otherwise, sends a " + UI.FormatAsAutomationState("Red Signal", UI.AutomationState.Standby);
 			}
 
 			public class LOGICELEMENTSENSORGAS
@@ -2340,13 +2340,13 @@ namespace STRINGS
 
 				public static LocString DESC = "These sensors can detect the presence of a specific gas and alter systems accordingly.";
 
-				public static LocString EFFECT = "Becomes " + UI.FormatAsLink("Active", "LOGIC") + " when the chosen " + UI.FormatAsLink("Gas", "ELEMENTS_GAS") + " is detected.\n\nRemains on " + UI.FormatAsLink("Standby", "LOGIC") + " when the selected " + UI.FormatAsLink("Gas", "ELEMENTS_GAS") + " is not present.";
+				public static LocString EFFECT = "Sends a " + UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active) + " when the selected " + UI.FormatAsLink("Gas", "ELEMENTS_GAS") + " is detected.\n\nSends a " + UI.FormatAsAutomationState("Red Signal", UI.AutomationState.Standby) + " when the selected " + UI.FormatAsLink("Gas", "ELEMENTS_GAS") + " is not present.";
 
 				public static LocString LOGIC_PORT = "Specific " + UI.FormatAsLink("Gas", "ELEMENTS_GAS") + " Presence";
 
-				public static LocString LOGIC_PORT_ACTIVE = "Sends an " + UI.FormatAsLink("Active", "LOGIC") + " signal while the configured " + UI.FormatAsLink("Gas", "ELEMENTS_GAS") + " element is detected";
+				public static LocString LOGIC_PORT_ACTIVE = "Sends a " + UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active) + " if the selected Gas is detected";
 
-				public static LocString LOGIC_PORT_INACTIVE = "Sends a " + UI.FormatAsLink("Standby", "LOGIC") + " signal while the configured " + UI.FormatAsLink("Gas", "ELEMENTS_GAS") + " element is not detected";
+				public static LocString LOGIC_PORT_INACTIVE = "Otherwise, sends a " + UI.FormatAsAutomationState("Red Signal", UI.AutomationState.Standby);
 			}
 
 			public class LOGICELEMENTSENSORLIQUID
@@ -2355,13 +2355,13 @@ namespace STRINGS
 
 				public static LocString DESC = "These sensors can detect the presence of a specific liquid and alter systems accordingly.";
 
-				public static LocString EFFECT = "Becomes " + UI.FormatAsLink("Active", "LOGIC") + " when the chosen " + UI.FormatAsLink("Liquid", "ELEMENTS_LIQUID") + " is detected.\n\nRemains on " + UI.FormatAsLink("Standby", "LOGIC") + " when the " + UI.FormatAsLink("Liquid", "ELEMENTS_LIQUID") + " is not present.";
+				public static LocString EFFECT = "Sends a " + UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active) + " when the chosen " + UI.FormatAsLink("Liquid", "ELEMENTS_LIQUID") + " is detected.\n\nSends a " + UI.FormatAsAutomationState("Red Signal", UI.AutomationState.Standby) + " when the " + UI.FormatAsLink("Liquid", "ELEMENTS_LIQUID") + " is not present.";
 
 				public static LocString LOGIC_PORT = "Specific" + UI.FormatAsLink("Liquid", "ELEMENTS_LIQUID") + " Presence";
 
-				public static LocString LOGIC_PORT_ACTIVE = "Sends an " + UI.FormatAsLink("Active", "LOGIC") + " signal while the configured " + UI.FormatAsLink("Liquid", "ELEMENTS_LIQUID") + " element is detected";
+				public static LocString LOGIC_PORT_ACTIVE = "Sends a " + UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active) + " if the selected Liquid is detected";
 
-				public static LocString LOGIC_PORT_INACTIVE = "Sends a " + UI.FormatAsLink("Standby", "LOGIC") + " signal while the configured " + UI.FormatAsLink("Liquid", "ELEMENTS_LIQUID") + " element is not detected";
+				public static LocString LOGIC_PORT_INACTIVE = "Otherwise, sends a " + UI.FormatAsAutomationState("Red Signal", UI.AutomationState.Standby);
 			}
 
 			public class GASCONDUITDISEASESENSOR
@@ -2370,13 +2370,13 @@ namespace STRINGS
 
 				public static LocString DESC = "Germ sensors can help control automation behavior in the presence of germs.";
 
-				public static LocString EFFECT = "Becomes " + UI.FormatAsLink("Active", "LOGIC") + " or goes on " + UI.FormatAsLink("Standby", "LOGIC") + " based on the internal " + UI.FormatAsLink("Germ", "DISEASE") + " count of the pipe.";
+				public static LocString EFFECT = "Sends a " + UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active) + " or a " + UI.FormatAsAutomationState("Red Signal", UI.AutomationState.Standby) + " based on the internal " + UI.FormatAsLink("Germ", "DISEASE") + " count of the pipe.";
 
 				public static LocString LOGIC_PORT = "Internal " + UI.FormatAsLink("Germ", "DISEASE") + " Count";
 
-				public static LocString LOGIC_PORT_ACTIVE = "Sends an " + UI.FormatAsLink("Active", "LOGIC") + " signal when the number of " + UI.FormatAsLink("Germs", "DISEASE") + " in the pipe enters the configured Germ Threshold range";
+				public static LocString LOGIC_PORT_ACTIVE = "Sends a " + UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active) + " if the number of Germs in the pipe is within the selected range";
 
-				public static LocString LOGIC_PORT_INACTIVE = "Sends a " + UI.FormatAsLink("Standby", "LOGIC") + " signal when the number of " + UI.FormatAsLink("Germs", "DISEASE") + " in the pipe is outside the configured Germ Threshold range";
+				public static LocString LOGIC_PORT_INACTIVE = "Otherwise, sends a " + UI.FormatAsAutomationState("Red Signal", UI.AutomationState.Standby);
 			}
 
 			public class LIQUIDCONDUITDISEASESENSOR
@@ -2385,13 +2385,13 @@ namespace STRINGS
 
 				public static LocString DESC = "Germ sensors can help control automation behavior in the presence of germs.";
 
-				public static LocString EFFECT = "Becomes " + UI.FormatAsLink("Active", "LOGIC") + " or goes on " + UI.FormatAsLink("Standby", "LOGIC") + " based on the internal " + UI.FormatAsLink("Germ", "DISEASE") + " count of the pipe.";
+				public static LocString EFFECT = "Sends a " + UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active) + " or a " + UI.FormatAsAutomationState("Red Signal", UI.AutomationState.Standby) + " based on the internal " + UI.FormatAsLink("Germ", "DISEASE") + " count of the pipe.";
 
 				public static LocString LOGIC_PORT = "Internal " + UI.FormatAsLink("Germ", "DISEASE") + " Count";
 
-				public static LocString LOGIC_PORT_ACTIVE = "Sends an " + UI.FormatAsLink("Active", "LOGIC") + " signal when the number of " + UI.FormatAsLink("Germs", "DISEASE") + " in the pipe enters the configured Germ Threshold range";
+				public static LocString LOGIC_PORT_ACTIVE = "Sends a " + UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active) + " if the number of Germs in the pipe is within the selected range";
 
-				public static LocString LOGIC_PORT_INACTIVE = "Sends a " + UI.FormatAsLink("Standby", "LOGIC") + " signal when the number of " + UI.FormatAsLink("Germs", "DISEASE") + " in the pipe is outside the configured Germ Threshold range";
+				public static LocString LOGIC_PORT_INACTIVE = "Otherwise, sends a " + UI.FormatAsAutomationState("Red Signal", UI.AutomationState.Standby);
 			}
 
 			public class GASCONDUITELEMENTSENSOR
@@ -2400,13 +2400,13 @@ namespace STRINGS
 
 				public static LocString DESC = "Element sensors can be used to detect the presence of a specific gas in a pipe.";
 
-				public static LocString EFFECT = "Becomes " + UI.FormatAsLink("Active", "LOGIC") + " when the chosen " + UI.FormatAsLink("Gas", "ELEMENTS_GAS") + " is detected.";
+				public static LocString EFFECT = "Sends a " + UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active) + " when the chosen " + UI.FormatAsLink("Gas", "ELEMENTS_GAS") + " is detected.";
 
 				public static LocString LOGIC_PORT = "Internal " + UI.FormatAsLink("Gas", "ELEMENTS_GAS") + " Presence";
 
-				public static LocString LOGIC_PORT_ACTIVE = "Sends an " + UI.FormatAsLink("Active", "LOGIC") + " signal while the configured " + UI.FormatAsLink("Gas", "ELEMENTS_GAS") + " is detected";
+				public static LocString LOGIC_PORT_ACTIVE = "Sends a " + UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active) + " if the configured Gas is detected";
 
-				public static LocString LOGIC_PORT_INACTIVE = "Sends a " + UI.FormatAsLink("Standby", "LOGIC") + " signal while the configured " + UI.FormatAsLink("Gas", "ELEMENTS_GAS") + " is not detected";
+				public static LocString LOGIC_PORT_INACTIVE = "Otherwise, sends a " + UI.FormatAsAutomationState("Red Signal", UI.AutomationState.Standby);
 			}
 
 			public class LIQUIDCONDUITELEMENTSENSOR
@@ -2415,13 +2415,13 @@ namespace STRINGS
 
 				public static LocString DESC = "Element sensors can be used to detect the presence of a specific liquid in a pipe.";
 
-				public static LocString EFFECT = "Becomes " + UI.FormatAsLink("Active", "LOGIC") + " when the chosen " + UI.FormatAsLink("Liquid", "ELEMENTS_LIQUID") + " is detected.";
+				public static LocString EFFECT = "Sends a " + UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active) + " when the chosen " + UI.FormatAsLink("Liquid", "ELEMENTS_LIQUID") + " is detected.";
 
 				public static LocString LOGIC_PORT = "Internal " + UI.FormatAsLink("Liquid", "ELEMENTS_LIQUID") + " Presence";
 
-				public static LocString LOGIC_PORT_ACTIVE = "Sends an " + UI.FormatAsLink("Active", "LOGIC") + " signal while the configured " + UI.FormatAsLink("Liquid", "ELEMENTS_LIQUID") + " is detected within the pipe";
+				public static LocString LOGIC_PORT_ACTIVE = "Sends a " + UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active) + " if the configured Liquid is detected within the pipe";
 
-				public static LocString LOGIC_PORT_INACTIVE = "Sends a " + UI.FormatAsLink("Standby", "LOGIC") + " signal while the configured " + UI.FormatAsLink("Liquid", "ELEMENTS_LIQUID") + " is not detected within the pipe";
+				public static LocString LOGIC_PORT_INACTIVE = "Otherwise, sends a " + UI.FormatAsAutomationState("Red Signal", UI.AutomationState.Standby);
 			}
 
 			public class GASCONDUITTEMPERATURESENSOR
@@ -2430,13 +2430,13 @@ namespace STRINGS
 
 				public static LocString DESC = "Thermo sensors disable buildings when their pipe contents reach a certain temperature.";
 
-				public static LocString EFFECT = "Becomes " + UI.FormatAsLink("Active", "LOGIC") + " or goes on " + UI.FormatAsLink("Standby", "LOGIC") + " when contents enter the chosen " + UI.FormatAsLink("Temperature", "HEAT") + " range.";
+				public static LocString EFFECT = "Sends a " + UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active) + " or a " + UI.FormatAsAutomationState("Red Signal", UI.AutomationState.Standby) + " when contents enter the chosen " + UI.FormatAsLink("Temperature", "HEAT") + " range.";
 
 				public static LocString LOGIC_PORT = "Internal " + UI.FormatAsLink("Gas", "ELEMENTS_GAS") + " " + UI.FormatAsLink("Temperature", "HEAT");
 
-				public static LocString LOGIC_PORT_ACTIVE = "Sends an " + UI.FormatAsLink("Active", "LOGIC") + " signal when the contained " + UI.FormatAsLink("Gas", "ELEMENTS_GAS") + " enters the configured " + UI.FormatAsLink("Temperature", "HEAT") + " range";
+				public static LocString LOGIC_PORT_ACTIVE = "Sends a " + UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active) + " if the contained Gas is within the selected Temperature range";
 
-				public static LocString LOGIC_PORT_INACTIVE = "Sends a " + UI.FormatAsLink("Standby", "LOGIC") + " signal when the contained " + UI.FormatAsLink("Gas", "ELEMENTS_GAS") + " is outside the configured " + UI.FormatAsLink("Temperature", "HEAT") + " range";
+				public static LocString LOGIC_PORT_INACTIVE = "Otherwise, sends a " + UI.FormatAsAutomationState("Red Signal", UI.AutomationState.Standby);
 			}
 
 			public class LIQUIDCONDUITTEMPERATURESENSOR
@@ -2445,13 +2445,13 @@ namespace STRINGS
 
 				public static LocString DESC = "Thermo sensors disable buildings when their pipe contents reach a certain temperature.";
 
-				public static LocString EFFECT = "Becomes " + UI.FormatAsLink("Active", "LOGIC") + " or goes on " + UI.FormatAsLink("Standby", "LOGIC") + " when contents enter the chosen " + UI.FormatAsLink("Temperature", "HEAT") + " range.";
+				public static LocString EFFECT = "Sends a " + UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active) + " or a " + UI.FormatAsAutomationState("Red Signal", UI.AutomationState.Standby) + " when contents enter the chosen " + UI.FormatAsLink("Temperature", "HEAT") + " range.";
 
 				public static LocString LOGIC_PORT = "Internal " + UI.FormatAsLink("Liquid", "ELEMENTS_LIQUID") + " " + UI.FormatAsLink("Temperature", "HEAT");
 
-				public static LocString LOGIC_PORT_ACTIVE = "Sends an " + UI.FormatAsLink("Active", "LOGIC") + " signal when the contained " + UI.FormatAsLink("Liquid", "ELEMENTS_LIQUID") + " enters the configured " + UI.FormatAsLink("Temperature", "HEAT") + " range";
+				public static LocString LOGIC_PORT_ACTIVE = "Sends a " + UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active) + " if the contained Liquid is within the selected Temperature range";
 
-				public static LocString LOGIC_PORT_INACTIVE = "Sends a " + UI.FormatAsLink("Standby", "LOGIC") + " signal when the contained " + UI.FormatAsLink("Liquid", "ELEMENTS_LIQUID") + " is outside the configured " + UI.FormatAsLink("Temperature", "HEAT") + " range";
+				public static LocString LOGIC_PORT_INACTIVE = "Otherwise, sends a " + UI.FormatAsAutomationState("Red Signal", UI.AutomationState.Standby);
 			}
 
 			public class TRAVELTUBEENTRANCE
@@ -2545,9 +2545,9 @@ namespace STRINGS
 
 				public static LocString LOGIC_PORT = "Open/Close";
 
-				public static LocString LOGIC_PORT_ACTIVE = "Allows material transport while an " + UI.FormatAsLink("Active", "LOGIC") + " signal is being received";
+				public static LocString LOGIC_PORT_ACTIVE = UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active) + ": Allow material transport";
 
-				public static LocString LOGIC_PORT_INACTIVE = "Prevents material transport while a " + UI.FormatAsLink("Standby", "LOGIC") + " signal is being received";
+				public static LocString LOGIC_PORT_INACTIVE = UI.FormatAsAutomationState("Red Signal", UI.AutomationState.Standby) + ": Prevent material transport";
 			}
 
 			public class AUTOMINER

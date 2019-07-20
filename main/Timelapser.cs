@@ -203,39 +203,46 @@ public class Timelapser : KMonoBehaviour
 	{
 		int a = 0;
 		GameObject telepad = GameUtil.GetTelepad();
-		int cell_b = Grid.PosToCell(telepad);
-		for (int i = 0; i < Grid.CellCount; i++)
+		if (!((UnityEngine.Object)telepad == (UnityEngine.Object)null))
 		{
-			if (Grid.Revealed[i])
+			int cell_b = Grid.PosToCell(telepad);
+			for (int i = 0; i < Grid.CellCount; i++)
 			{
-				a = Mathf.Max(a, Grid.GetCellDistance(i, cell_b));
+				if (Grid.Revealed[i])
+				{
+					a = Mathf.Max(a, Grid.GetCellDistance(i, cell_b));
+				}
 			}
+			a = Mathf.Max(a, 18);
+			Camera overlayCamera = CameraController.Instance.overlayCamera;
+			camSize = overlayCamera.orthographicSize;
+			CameraController.Instance.SetOrthographicsSize((float)a);
+			camPosition = CameraController.Instance.transform.position;
+			CameraController.Instance.SetPosition(telepad.transform.position);
+			CameraController.Instance.SetTargetPos(telepad.transform.position, camSize, false);
+			captureCamera.aspect = 1.777f;
+			captureCamera.orthographicSize = (float)a;
+			captureCamera.transform.SetPosition(telepad.transform.position);
 		}
-		a = Mathf.Max(a, 18);
-		Camera overlayCamera = CameraController.Instance.overlayCamera;
-		camSize = overlayCamera.orthographicSize;
-		CameraController.Instance.SetOrthographicsSize((float)a);
-		camPosition = CameraController.Instance.transform.position;
-		CameraController.Instance.SetPosition(telepad.transform.position);
-		CameraController.Instance.SetTargetPos(telepad.transform.position, camSize, false);
-		captureCamera.aspect = 1.777f;
-		captureCamera.orthographicSize = (float)a;
-		captureCamera.transform.SetPosition(telepad.transform.position);
 	}
 
 	private void RenderAndPrint()
 	{
-		RenderTexture active = RenderTexture.active;
-		RenderTexture.active = bufferRenderTexture;
-		CameraController.Instance.SetPosition(GameUtil.GetTelepad().transform.position);
-		CameraController.Instance.RenderForTimelapser(ref bufferRenderTexture);
-		WriteToPng(bufferRenderTexture);
-		CameraController.Instance.SetOrthographicsSize(camSize);
-		CameraController.Instance.SetPosition(camPosition);
-		CameraController.Instance.SetTargetPos(camPosition, camSize, false);
-		RenderTexture.active = active;
-		screenshotActive = false;
-		debugScreenShot = false;
+		GameObject telepad = GameUtil.GetTelepad();
+		if (!((UnityEngine.Object)telepad == (UnityEngine.Object)null))
+		{
+			RenderTexture active = RenderTexture.active;
+			RenderTexture.active = bufferRenderTexture;
+			CameraController.Instance.SetPosition(telepad.transform.position);
+			CameraController.Instance.RenderForTimelapser(ref bufferRenderTexture);
+			WriteToPng(bufferRenderTexture);
+			CameraController.Instance.SetOrthographicsSize(camSize);
+			CameraController.Instance.SetPosition(camPosition);
+			CameraController.Instance.SetTargetPos(camPosition, camSize, false);
+			RenderTexture.active = active;
+			screenshotActive = false;
+			debugScreenShot = false;
+		}
 	}
 
 	public void WriteToPng(RenderTexture renderTex)

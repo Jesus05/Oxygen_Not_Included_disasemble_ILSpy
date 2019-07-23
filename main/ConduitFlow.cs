@@ -784,7 +784,7 @@ public class ConduitFlow : IConduitFlow
 		public float GetEffectiveCapacity(float maximum_capacity)
 		{
 			float mass = this.mass;
-			Debug.Assert(mass <= maximum_capacity);
+			DebugUtil.DevAssert(mass <= maximum_capacity, "Effective mass cannot be greater than capacity!");
 			return Mathf.Max(0f, maximum_capacity - mass);
 		}
 
@@ -1327,25 +1327,28 @@ public class ConduitFlow : IConduitFlow
 						});
 						vertexIterator2.Next();
 					}
-					int num = 0;
-					int num2 = cycle_vertices.Count - 1;
-					FlowDirections direction = current.vertices[0].direction;
-					while (num <= num2)
+					if (cycle_vertices.Count != 0)
 					{
-						Vertex vertex = cycle_vertices[num];
-						conduit_flow.soaInfo.AddPermittedFlowDirections(conduit_flow.grid[vertex.cell].conduitIdx, Opposite(direction));
-						direction = vertex.direction;
-						num++;
-						Vertex vertex2 = cycle_vertices[num2];
-						conduit_flow.soaInfo.AddPermittedFlowDirections(conduit_flow.grid[vertex2.cell].conduitIdx, vertex2.direction);
-						num2--;
+						int num = 0;
+						int num2 = cycle_vertices.Count - 1;
+						FlowDirections direction = current.vertices[0].direction;
+						while (num <= num2)
+						{
+							Vertex vertex = cycle_vertices[num];
+							conduit_flow.soaInfo.AddPermittedFlowDirections(conduit_flow.grid[vertex.cell].conduitIdx, Opposite(direction));
+							direction = vertex.direction;
+							num++;
+							Vertex vertex2 = cycle_vertices[num2];
+							conduit_flow.soaInfo.AddPermittedFlowDirections(conduit_flow.grid[vertex2.cell].conduitIdx, vertex2.direction);
+							num2--;
+						}
+						HashSetPool<int, ConduitFlow>.PooledHashSet pooledHashSet = dead_ends;
+						Vertex vertex3 = cycle_vertices[num];
+						pooledHashSet.Add(vertex3.cell);
+						HashSetPool<int, ConduitFlow>.PooledHashSet pooledHashSet2 = dead_ends;
+						Vertex vertex4 = cycle_vertices[num2];
+						pooledHashSet2.Add(vertex4.cell);
 					}
-					HashSetPool<int, ConduitFlow>.PooledHashSet pooledHashSet = dead_ends;
-					Vertex vertex3 = cycle_vertices[num];
-					pooledHashSet.Add(vertex3.cell);
-					HashSetPool<int, ConduitFlow>.PooledHashSet pooledHashSet2 = dead_ends;
-					Vertex vertex4 = cycle_vertices[num2];
-					pooledHashSet2.Add(vertex4.cell);
 				}
 			}
 		}

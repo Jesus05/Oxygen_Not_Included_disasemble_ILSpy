@@ -53,42 +53,42 @@ namespace STRINGS
 		{
 			public class AUTOMATION_OVERLAY
 			{
-				public static LocString NAME = "Automation Overlay";
+				public static LocString NAME = UI.FormatAsOverlay("Automation Overlay");
 
 				public static LocString DESC = "Enables access to the " + UI.FormatAsOverlay("Automation Overlay") + ".";
 			}
 
 			public class SUITS_OVERLAY
 			{
-				public static LocString NAME = "Exosuit Overlay";
+				public static LocString NAME = UI.FormatAsOverlay("Exosuit Overlay");
 
 				public static LocString DESC = "Enables access to the " + UI.FormatAsOverlay("Exosuit Overlay") + ".";
 			}
 
 			public class JET_SUIT
 			{
-				public static LocString NAME = "Jet Suit Pattern";
+				public static LocString NAME = UI.PRE_KEYWORD + "Jet Suit" + UI.PST_KEYWORD + " Pattern";
 
 				public static LocString DESC = "Enables fabrication of " + UI.PRE_KEYWORD + "Jet Suits" + UI.PST_KEYWORD + " at the " + BUILDINGS.PREFABS.SUITFABRICATOR.NAME;
 			}
 
 			public class BETA_RESEARCH_POINT
 			{
-				public static LocString NAME = "Advanced Research Capability";
+				public static LocString NAME = UI.PRE_KEYWORD + "Advanced Research" + UI.PST_KEYWORD + " Capability";
 
 				public static LocString DESC = "Allows " + UI.PRE_KEYWORD + "Advanced Research" + UI.PST_KEYWORD + " points to be accumulated, unlocking higher technology tiers.";
 			}
 
 			public class GAMMA_RESEARCH_POINT
 			{
-				public static LocString NAME = "Interstellar Research Capability";
+				public static LocString NAME = UI.PRE_KEYWORD + "Interstellar Research" + UI.PST_KEYWORD + " Capability";
 
 				public static LocString DESC = "Allows " + UI.PRE_KEYWORD + "Interstellar Research" + UI.PST_KEYWORD + " points to be accumulated, unlocking higher technology tiers.";
 			}
 
 			public class CONVEYOR_OVERLAY
 			{
-				public static LocString NAME = "Conveyor Overlay";
+				public static LocString NAME = UI.FormatAsOverlay("Conveyor Overlay");
 
 				public static LocString DESC = "Enables access to the " + UI.FormatAsOverlay("Conveyor Overlay") + ".";
 			}
@@ -478,13 +478,6 @@ namespace STRINGS
 				public static LocString DESC = "Low-tech refinement methods for producing clay and renewable sources of sand.";
 			}
 
-			public class METALREFINEMENT
-			{
-				public static LocString NAME = UI.FormatAsLink("", "METALREFINEMENT");
-
-				public static LocString DESC = "";
-			}
-
 			public class REFINEDOBJECTS
 			{
 				public static LocString NAME = UI.FormatAsLink("Refined Renovations", "REFINEDOBJECTS");
@@ -594,21 +587,14 @@ namespace STRINGS
 			{
 				public static LocString NAME = UI.FormatAsLink("Liquid and Gas Cargo", "CARGOII");
 
-				public static LocString DESC = "Mine precious liquids and gases from the far reaches of space, and return with them to the colony.";
+				public static LocString DESC = "Extract precious liquids and gases from the far reaches of space, and return with them to the colony.";
 			}
 
 			public class CARGOIII
 			{
 				public static LocString NAME = UI.FormatAsLink("Unique Cargo", "CARGOIII");
 
-				public static LocString DESC = "Allow Duplicants to bring mementos from space back to their friends, or take them to the see the stars firsthand.";
-			}
-
-			public class INDUSTRIALSTORAGE
-			{
-				public static LocString NAME = UI.FormatAsLink("", "INDUSTRIALSTORAGE");
-
-				public static LocString DESC = "";
+				public static LocString DESC = "Allow Duplicants to take their friends to see the stars... or simply bring souvenirs back from their travels.";
 			}
 		}
 	}

@@ -136,7 +136,7 @@ namespace STRINGS
 				{
 					public static LocString NAME = "Current Status: Empty";
 
-					public static LocString TOOLTIP = "This dock is ready to receive a " + UI.PRE_KEYWORD + "Suit" + UI.PST_KEYWORD + " either from manual delivery or a Duplicant returning the suit they're wearing";
+					public static LocString TOOLTIP = "This dock is ready to receive a " + UI.PRE_KEYWORD + "Suit" + UI.PST_KEYWORD + ", either by manual delivery or from a Duplicant returning the suit they're wearing";
 				}
 
 				public class SUIT_REQUESTED

@@ -4,7 +4,7 @@ namespace STRINGS
 	{
 		public static class SURVIVAL_CHANCE
 		{
-			public static LocString TITLE = "Chance of Survival: <color=#{1}>{0}</color></b>";
+			public static LocString TITLE = "Survival Chance: <color=#{1}>{0}</color></b>";
 
 			public static LocString PLANETNAME = "Name: {0}";
 

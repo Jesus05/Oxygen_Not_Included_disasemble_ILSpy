@@ -106,7 +106,10 @@ public class DecorProvider : KMonoBehaviour, IEffectDescriptor, IGameObjectEffec
 						if (Grid.IsValidCell(num))
 						{
 							Grid.Decor[num] += decor;
-							provider.cells[provider.cellCount++] = num;
+							if (provider.cellCount >= 0 && provider.cellCount < provider.cells.Length)
+							{
+								provider.cells[provider.cellCount++] = num;
+							}
 						}
 					}
 				}

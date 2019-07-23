@@ -51,11 +51,12 @@ public class BreakdownListRow : KMonoBehaviour
 
 	public void ShowData(string name, string value)
 	{
-		base.gameObject.transform.localScale = Vector2.one;
+		base.gameObject.transform.localScale = Vector3.one;
 		nameLabel.text = name;
 		valueLabel.text = value;
 		dotOutlineImage.gameObject.SetActive(true);
-		dotOutlineImage.rectTransform.localScale = Vector2.one * 0.6f;
+		Vector2 vector = Vector2.one * 0.6f;
+		dotOutlineImage.rectTransform.localScale.Set(vector.x, vector.y, 1f);
 		dotInsideImage.gameObject.SetActive(true);
 		dotInsideImage.color = statusColour[0];
 		iconImage.gameObject.SetActive(false);
@@ -96,7 +97,7 @@ public class BreakdownListRow : KMonoBehaviour
 	{
 		ShowData(name, value);
 		dotOutlineImage.gameObject.SetActive(true);
-		dotOutlineImage.rectTransform.localScale = Vector2.one;
+		dotOutlineImage.rectTransform.localScale = Vector3.one;
 		dotInsideImage.gameObject.SetActive(true);
 		iconImage.gameObject.SetActive(false);
 		SetStatusColor(status);
@@ -122,7 +123,8 @@ public class BreakdownListRow : KMonoBehaviour
 	public void SetHighlighted(bool highlighted)
 	{
 		isHighlighted = highlighted;
-		dotOutlineImage.rectTransform.localScale = Vector2.one * 0.8f;
+		Vector2 vector = Vector2.one * 0.8f;
+		dotOutlineImage.rectTransform.localScale.Set(vector.x, vector.y, 1f);
 		nameLabel.alpha = ((!isHighlighted) ? 0.5f : 0.9f);
 		valueLabel.alpha = ((!isHighlighted) ? 0.5f : 0.9f);
 	}
@@ -137,7 +139,7 @@ public class BreakdownListRow : KMonoBehaviour
 	public void SetImportant(bool important)
 	{
 		isImportant = important;
-		dotOutlineImage.rectTransform.localScale = Vector2.one;
+		dotOutlineImage.rectTransform.localScale = Vector3.one;
 		nameLabel.alpha = ((!isImportant) ? 0.5f : 1f);
 		valueLabel.alpha = ((!isImportant) ? 0.5f : 1f);
 		nameLabel.fontStyle = (isImportant ? FontStyles.Bold : FontStyles.Normal);

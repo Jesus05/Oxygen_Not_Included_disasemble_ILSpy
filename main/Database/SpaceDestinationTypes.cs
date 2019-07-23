@@ -547,8 +547,8 @@ namespace Database
 			bad = Db.Get().ArtifactDropRates.Perfect;
 			Wormhole = Add(new SpaceDestinationType(spriteName, parent, description, name, iconSize, id, elementTable, null, bad, 0, 0, 0, true));
 			id = "Earth";
-			name = UI.SPACEDESTINATIONS.EARTH.NAME;
-			description = UI.SPACEDESTINATIONS.EARTH.DESCRIPTION;
+			name = UI.SPACEDESTINATIONS.PLANETS.SHATTEREDPLANET.NAME;
+			description = UI.SPACEDESTINATIONS.PLANETS.SHATTEREDPLANET.DESCRIPTION;
 			iconSize = 96;
 			spriteName = "earth";
 			elementTable = new Dictionary<SimHashes, MathUtil.MinMax>();

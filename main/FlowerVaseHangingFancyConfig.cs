@@ -7,18 +7,33 @@ public class FlowerVaseHangingFancyConfig : IBuildingConfig
 
 	public override BuildingDef CreateBuildingDef()
 	{
-		string id = "FlowerVaseHangingFancy";
-		int width = 1;
-		int height = 2;
-		string anim = "flowervase_hanging_kanim";
-		int hitpoints = 10;
-		float construction_time = 10f;
+		string text = "FlowerVaseHangingFancy";
+		int num = 1;
+		int num2 = 2;
+		string text2 = "flowervase_hanging_kanim";
+		int num3 = 10;
+		float num4 = 10f;
 		float[] tIER = BUILDINGS.CONSTRUCTION_MASS_KG.TIER1;
 		string[] tRANSPARENTS = MATERIALS.TRANSPARENTS;
-		float melting_point = 800f;
-		BuildLocationRule build_location_rule = BuildLocationRule.OnCeiling;
+		float num5 = 800f;
+		BuildLocationRule buildLocationRule = BuildLocationRule.OnCeiling;
 		EffectorValues nONE = NOISE_POLLUTION.NONE;
-		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, tIER, tRANSPARENTS, melting_point, build_location_rule, BUILDINGS.DECOR.NONE, nONE, 0.2f);
+		string id = text;
+		int width = num;
+		int height = num2;
+		string anim = text2;
+		int hitpoints = num3;
+		float construction_time = num4;
+		float[] construction_mass = tIER;
+		string[] construction_materials = tRANSPARENTS;
+		float melting_point = num5;
+		BuildLocationRule build_location_rule = buildLocationRule;
+		EffectorValues decor = default(EffectorValues);
+		EffectorValues tIER2 = BUILDINGS.DECOR.BONUS.TIER1;
+		decor.amount = tIER2.amount;
+		EffectorValues tIER3 = BUILDINGS.DECOR.BONUS.TIER3;
+		decor.radius = tIER3.radius;
+		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, construction_mass, construction_materials, melting_point, build_location_rule, decor, nONE, 0.2f);
 		buildingDef.Floodable = false;
 		buildingDef.Overheatable = false;
 		buildingDef.ViewMode = OverlayModes.Decor.ID;

@@ -151,7 +151,7 @@ namespace STRINGS
 
 			public class LETTUCE
 			{
-				public static LocString NAME = "Lettuce";
+				public static LocString NAME = UI.FormatAsLink("Lettuce", "LETTUCE");
 
 				public static LocString DESC = "Crunchy, slightly salty leaves from a " + UI.FormatAsLink("Waterweed", "SEALETTUCE") + " plant.";
 
@@ -369,9 +369,9 @@ namespace STRINGS
 
 			public class FORESTFORAGEPLANT
 			{
-				public static LocString NAME = UI.FormatAsLink("Forest Muckroot", "FORESTFORAGEPLANT");
+				public static LocString NAME = UI.FormatAsLink("Hexalent Fruit", "FORESTFORAGEPLANT");
 
-				public static LocString DESC = "A seedless fruit with an upsettingly bland aftertaste.\n\nIt cannot be replanted.\n\nForest Muckroots are much more calorie dense than the basic variety.";
+				public static LocString DESC = "A seedless fruit with an unusual rubbery texture.\n\nIt cannot be replanted.\n\nHexalent fruit is much more calorie dense than Muckroot fruit.";
 			}
 
 			public class ROTPILE
@@ -386,6 +386,13 @@ namespace STRINGS
 				public static LocString NAME = UI.FormatAsLink("Sleet Wheat Grain", "COLDWHEATSEED");
 
 				public static LocString DESC = "An edible grain that leaves a cool taste on the tongue.";
+			}
+
+			public class BEANPLANTSEED
+			{
+				public static LocString NAME = UI.FormatAsLink("Nosh Bean", "BEANPLANTSEED");
+
+				public static LocString DESC = "An inedible bean that can be processed into delicious foods.";
 			}
 
 			public static LocString COMPOST = "Compost";

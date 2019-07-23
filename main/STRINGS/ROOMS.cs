@@ -136,7 +136,7 @@ namespace STRINGS
 
 				public static LocString EFFECT = "- Morale bonus";
 
-				public static LocString TOOLTIP = "Seeing natural spaces regularly thoughout the day will improve the Morale of Duplicants.";
+				public static LocString TOOLTIP = "Passing through natural spaces throughout the day will raise the Morale of Duplicants.";
 			}
 
 			public class NATURERESERVE
@@ -145,7 +145,7 @@ namespace STRINGS
 
 				public static LocString EFFECT = "- Morale bonus";
 
-				public static LocString TOOLTIP = "Seeing natural spaces regularly thoughout the day will improve the Morale of Duplicants.";
+				public static LocString TOOLTIP = "A Nature Reserve will grant higher Morale bonuses to Duplicants than a Park.";
 			}
 
 			public class PRIVATE_BEDROOM
@@ -243,7 +243,7 @@ namespace STRINGS
 
 			public class DECORATIVE_ITEM_N
 			{
-				public static LocString NAME = "Decor item: {0}+ Decor";
+				public static LocString NAME = "Decor item: +{0} Decor";
 
 				public static LocString DESCRIPTION = "Requires a decorative item with a minimum Decor value of {0}";
 			}
@@ -299,9 +299,9 @@ namespace STRINGS
 
 			public class PARK_BUILDING
 			{
-				public static LocString NAME = "Park building";
+				public static LocString NAME = "Park Sign";
 
-				public static LocString DESCRIPTION = "Requires one or more park buildings";
+				public static LocString DESCRIPTION = "Requires one or more Park Signs";
 			}
 
 			public class MACHINE_SHOP

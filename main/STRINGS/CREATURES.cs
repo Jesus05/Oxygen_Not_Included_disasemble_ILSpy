@@ -47,7 +47,7 @@ namespace STRINGS
 
 			public static LocString MOLESPECIES = UI.FormatAsLink("Shove Voles", "MOLESPECIES");
 
-			public static LocString CRABSPECIES = UI.FormatAsLink("Pokeshells", "MOLESPECIES");
+			public static LocString CRABSPECIES = UI.FormatAsLink("Pokeshells", "CRABSPECIES");
 
 			public static LocString SQUIRRELSPECIES = UI.FormatAsLink("Pips", "SQUIRRELSPECIES");
 		}
@@ -241,7 +241,7 @@ namespace STRINGS
 
 				public static LocString NAME = UI.FormatAsLink("Pip", "SQUIRREL");
 
-				public static LocString DESC = "Pips are pesky, nonhostile critters that subsist on " + UI.FormatAsLink("Lumber", "WOOD") + " and enjoy foraging for " + UI.FormatAsLink("Seeds", "PLANTS") + ".\n\nPips tend to the flora of the asteroid, and will plant " + UI.FormatAsLink("Seeds", "PLANTS") + " if they can find a suitable area with enough space.";
+				public static LocString DESC = "Pips are pesky, nonhostile critters that subsist on raw " + UI.FormatAsLink("Lumber", "WOOD") + ".\n\nThey are known to bury " + UI.FormatAsLink("Seeds", "PLANTS") + " in the ground whenever they can find a suitable area with enough space.";
 
 				public static LocString EGG_NAME = UI.FormatAsLink("Pip Egg", "SQUIRREL");
 			}
@@ -856,9 +856,9 @@ namespace STRINGS
 
 			public class FORESTFORAGEPLANTPLANTED
 			{
-				public static LocString NAME = UI.FormatAsLink("Forest Muckroot", "FORESTFORAGEPLANTPLANTED");
+				public static LocString NAME = UI.FormatAsLink("Hexalent", "FORESTFORAGEPLANTPLANTED");
 
-				public static LocString DESC = "Muckroots are incapable of propagating but can be harvested for a single " + UI.FormatAsLink("Food", "FOOD") + " serving.\n\nForest Muckroots are much more calorie dense than the basic variety.";
+				public static LocString DESC = "Hexalents are incapable of propagating but can be harvested for a single, calorie dense " + UI.FormatAsLink("Food", "FOOD") + " serving.";
 			}
 
 			public class COLDBREATHER
@@ -1023,9 +1023,9 @@ namespace STRINGS
 
 				public class SALTPLANT
 				{
-					public static LocString NAME = UI.FormatAsLink("Salt Plant Seed", "SALTPLANT");
+					public static LocString NAME = UI.FormatAsLink("Dasha Saltvine Seed", "SALTPLANT");
 
-					public static LocString DESC = "The " + UI.FormatAsLink("Seed", "PLANTS") + " of a " + SPECIES.SALTPLANT.NAME + ".\n\nDigging up Buried Objects may uncover a Salt Plant Seed.";
+					public static LocString DESC = "The " + UI.FormatAsLink("Seed", "PLANTS") + " of a " + SPECIES.SALTPLANT.NAME + ".\n\nDigging up Buried Objects may uncover a Dasha Saltvine Seed.";
 				}
 
 				public class SPICE_VINE
@@ -1570,9 +1570,9 @@ namespace STRINGS
 
 			public class SATURATED
 			{
-				public static LocString NAME = "Saturated";
+				public static LocString NAME = "Too Wet!";
 
-				public static LocString TOOLTIP = "This critter likes " + UI.PRE_KEYWORD + "Liquid" + UI.PST_KEYWORD + ", but not <i>THAT</i> much.";
+				public static LocString TOOLTIP = "This critter likes " + UI.PRE_KEYWORD + "Liquid" + UI.PST_KEYWORD + ", but not that much!";
 			}
 
 			public class WILTING

@@ -222,9 +222,9 @@ namespace STRINGS
 
 				public static LocString LOGIC_PORT = "Extend/Retract";
 
-				public static LocString LOGIC_PORT_ACTIVE = "<b>Extends gantry</b> when an " + UI.FormatAsLink("Active", "LOGIC") + " signal is received";
+				public static LocString LOGIC_PORT_ACTIVE = "<b>Extends gantry</b> when a " + UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active) + " signal is received";
 
-				public static LocString LOGIC_PORT_INACTIVE = "<b>Retracts gantry</b> when a " + UI.FormatAsLink("Standby", "LOGIC") + " signal is received";
+				public static LocString LOGIC_PORT_INACTIVE = "<b>Retracts gantry</b> when a " + UI.FormatAsAutomationState("Red Signal", UI.AutomationState.Standby) + " signal is received";
 			}
 
 			public class WATERCOOLER
@@ -376,7 +376,7 @@ namespace STRINGS
 
 				public static LocString DESC = "Sick bays can be placed in hospital rooms to decrease the likelihood of disease spreading.";
 
-				public static LocString EFFECT = "Allows Duplicants to administer basic treatments to sick Duplicants.\n\nDuplicants must possess the Medicine Compounding " + UI.FormatAsLink("Skill", "MASSAGETABLE") + " to treat peers.";
+				public static LocString EFFECT = "Allows Duplicants to administer basic treatments to sick Duplicants.\n\nDuplicants must possess the Medicine Compounding " + UI.FormatAsLink("Skill", "SKILLS") + " to treat peers.";
 			}
 
 			public class ADVANCEDDOCTORSTATION
@@ -495,7 +495,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = UI.FormatAsLink("Gas Range", "GOURMETCOOKINGSTATION");
 
-				public static LocString DESC = "Luxury meals increase Duplicant morale and prevent them from becoming stressed.";
+				public static LocString DESC = "Luxury meals increase Duplicants morale and prevents them from becoming stressed.";
 
 				public static LocString EFFECT = "Cooks a wide variety of quality " + UI.FormatAsLink("Foods", "FOOD") + ".\n\nDuplicants will not fabricate items unless recipes are queued.";
 			}
@@ -883,7 +883,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = UI.FormatAsLink("Printing Pod", "HEADQUARTERS");
 
-				public static LocString DESC = "New Duplicants will come out here, but thank goodness, they'll never go back in.";
+				public static LocString DESC = "New Duplicants come out here, but thank goodness, they never go back in.";
 
 				public static LocString EFFECT = "An exceptionally advanced bioprinter of unknown origin.\n\nIt periodically produces new Duplicants or care packages containing resources.";
 			}
@@ -928,7 +928,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = UI.FormatAsLink("Ethanol Generator", "ETHANOLGENERATOR");
 
-				public static LocString DESC = "Ethanol generators require less Duplicant operation, but produce significant of waste.";
+				public static LocString DESC = "Ethanol generators require less Duplicant operation, but produce significant waste.";
 
 				public static LocString EFFECT = "Converts " + UI.FormatAsLink("Ethanol", "ETHANOL") + " into electrical " + UI.FormatAsLink("Power", "POWER") + ".\n\nProduces " + UI.FormatAsLink("Carbon Dioxide", "CARBONDIOXIDE") + " and " + UI.FormatAsLink("Polluted Water", "DIRTYWATER") + ".";
 			}
@@ -1260,7 +1260,7 @@ namespace STRINGS
 
 				public static LocString DESC = "The base of a monument must be constructed first.";
 
-				public static LocString EFFECT = "Builds the bottom section of a Great Monument.\n\nCan be customized.\n\nA Great Monument must be built to achieve the Colonize Imperiative.";
+				public static LocString EFFECT = "Builds the bottom section of a Great Monument.\n\nCan be customized.\n\nA Great Monument must be built to achieve the Colonize Imperative.";
 			}
 
 			public class MONUMENTMIDDLE
@@ -1269,7 +1269,7 @@ namespace STRINGS
 
 				public static LocString DESC = "Customized sections of a Great Monument can be mixed and matched.";
 
-				public static LocString EFFECT = "Builds the middle section of a Great Monument.\n\nCan be customized.\n\nA Great Monument must be built to achieve the Colonize Imperiative.";
+				public static LocString EFFECT = "Builds the middle section of a Great Monument.\n\nCan be customized.\n\nA Great Monument must be built to achieve the Colonize Imperative.";
 			}
 
 			public class MONUMENTTOP
@@ -1278,7 +1278,7 @@ namespace STRINGS
 
 				public static LocString DESC = "Building a Great Monument will declare to the universe that this hunk of rock is your own.";
 
-				public static LocString EFFECT = "Builds the top section of a Great Monument.\n\nCan be customized.\n\nA Great Monument must be built to achieve the Colonize Imperiative.";
+				public static LocString EFFECT = "Builds the top section of a Great Monument.\n\nCan be customized.\n\nA Great Monument must be built to achieve the Colonize Imperative.";
 			}
 
 			public class MICROBEMUSHER
@@ -1781,7 +1781,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = UI.FormatAsLink("Heavi-Watt Joint Plate", "WIREBRIDGEHIGHWATTAGE");
 
-				public static LocString DESC = "Joint plates can run Heavi wires through walls without leaking gas or liquid.";
+				public static LocString DESC = "Joint plates can run Heavi-Watt wires through walls without leaking gas or liquid.";
 
 				public static LocString EFFECT = "Allows " + UI.FormatAsLink("Heavi-Watt Wire", "HIGHWATTAGEWIRE") + " to be run through wall and floor tile.\n\nFunctions as regular tile.";
 			}
@@ -1806,7 +1806,7 @@ namespace STRINGS
 
 			public class WIREREFINEDHIGHWATTAGE
 			{
-				public static LocString NAME = UI.FormatAsLink("Heavi Conductive Wire", "WIREREFINEDHIGHWATTAGE");
+				public static LocString NAME = UI.FormatAsLink("Heavi-Watt Conductive Wire", "WIREREFINEDHIGHWATTAGE");
 
 				public static LocString DESC = "Higher wattage wire is used to avoid power overloads, particularly for strong generators.";
 
@@ -1815,9 +1815,9 @@ namespace STRINGS
 
 			public class WIREREFINEDBRIDGEHIGHWATTAGE
 			{
-				public static LocString NAME = UI.FormatAsLink("Heavi Conductive Joint Plate", "WIREREFINEDBRIDGEHIGHWATTAGE");
+				public static LocString NAME = UI.FormatAsLink("Heavi-Watt Conductive Joint Plate", "WIREREFINEDBRIDGEHIGHWATTAGE");
 
-				public static LocString DESC = "Joint plates can run Heavi wires through walls without leaking gas or liquid.";
+				public static LocString DESC = "Joint plates can run Heavi-Watt wires through walls without leaking gas or liquid.";
 
 				public static LocString EFFECT = "Carries more " + UI.FormatAsLink("Wattage", "POWER") + " than a regular " + UI.FormatAsLink("Heavi-Watt Joint Plate", "WIREBRIDGEHIGHWATTAGE") + " without overloading.\n\nAllows " + UI.FormatAsLink("Heavi-Watt Wire", "HIGHWATTAGEWIRE") + " to be run through wall and floor tile.";
 			}
@@ -1965,11 +1965,11 @@ namespace STRINGS
 
 			public class ROCKCRUSHER
 			{
-				public static LocString NAME = UI.FormatAsLink("Rock Granulator", "ROCKCRUSHER");
+				public static LocString NAME = UI.FormatAsLink("Amalgamator", "ROCKCRUSHER");
 
-				public static LocString DESC = "Sand is used in an array of liquid and air filtering processes.";
+				public static LocString DESC = "Amalgamators can convert a wide array of different materials.";
 
-				public static LocString EFFECT = "Produces " + UI.FormatAsLink("Sand", "SAND") + " from " + UI.FormatAsLink("Raw Mineral", "RAWMINERAL") + ".\n\nInefficiently produces " + UI.FormatAsLink("Refined Metals", "REFINEDMETAL") + " from raw " + UI.FormatAsLink("Metal Ore", "RAWMETAL") + ".\n\nDuplicants will not fabricate items unless recipes are queued.";
+				public static LocString EFFECT = "Inefficiently produces refined materials from raw resources.\n\nDuplicants will not fabricate items unless recipes are queued.";
 
 				public static LocString RECIPE_DESCRIPTION = "Crushes {0} into {1}.";
 
@@ -2191,7 +2191,7 @@ namespace STRINGS
 
 				public static LocString DESC = "A Memory stores a Green Signal received in the Set Port (S) until the Reset Port (R) receives a Green Signal.";
 
-				public static LocString EFFECT = "Contains an internal Memory, and will output whatever signal is stored in that Memory. Signals sent to the Inputs <i>only</i> affect the Memory, and do not pass through to the Output. \n\nSending a " + UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active) + " to the Set Port (S) will set the memory to " + UI.FormatAsAutomationState("Green", UI.AutomationState.Active) + ". \n\nSending a " + UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active) + " to the Reset Port (S) will reset the memory back to " + UI.FormatAsAutomationState("Red", UI.AutomationState.Standby) + ".";
+				public static LocString EFFECT = "Contains an internal Memory, and will output whatever signal is stored in that Memory. Signals sent to the Inputs <i>only</i> affect the Memory, and do not pass through to the Output. \n\nSending a " + UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active) + " to the Set Port (S) will set the memory to " + UI.FormatAsAutomationState("Green", UI.AutomationState.Active) + ". \n\nSending a " + UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active) + " to the Reset Port (R) will reset the memory back to " + UI.FormatAsAutomationState("Red", UI.AutomationState.Standby) + ".";
 
 				public static LocString STATUS_ITEM_VALUE = "Current Value: {0}";
 

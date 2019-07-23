@@ -78,7 +78,7 @@ public class AchievementWidget : KMonoBehaviour
 		{
 			locText.color = Color.white;
 		}
-		GetComponent<ToolTip>().SetSimpleTooltip(COLONY_ACHIEVEMENTS.ACHIEVED_OTHER_CONOLOY_TOOLTIP);
+		GetComponent<ToolTip>().SetSimpleTooltip(COLONY_ACHIEVEMENTS.ACHIEVED_OTHER_COLONY_TOOLTIP);
 	}
 
 	public void SetNeverAchieved()

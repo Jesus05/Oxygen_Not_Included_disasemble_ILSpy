@@ -1624,15 +1624,16 @@ public abstract class OverlayModes
 		public override List<LegendEntry> GetCustomLegendData()
 		{
 			List<LegendEntry> list = new List<LegendEntry>();
-			for (int i = 0; i < Db.Get().RoomTypes.Count; i++)
+			List<RoomType> list2 = new List<RoomType>(Db.Get().RoomTypes.resources);
+			list2.Sort((RoomType a, RoomType b) => a.sortKey.CompareTo(b.sortKey));
+			foreach (RoomType item in list2)
 			{
-				RoomType roomType = Db.Get().RoomTypes[i];
-				string text = roomType.GetCriteriaString();
-				if (roomType.effects != null && roomType.effects.Length > 0)
+				string text = item.GetCriteriaString();
+				if (item.effects != null && item.effects.Length > 0)
 				{
-					text = text + "\n\n" + roomType.GetRoomEffectsString();
+					text = text + "\n\n" + item.GetRoomEffectsString();
 				}
-				list.Add(new LegendEntry(roomType.Name + "\n" + roomType.effect, text, roomType.category.color));
+				list.Add(new LegendEntry(item.Name + "\n" + item.effect, text, item.category.color));
 			}
 			return list;
 		}

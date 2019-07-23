@@ -12,9 +12,13 @@ namespace Database
 
 		public ColonyAchievement ReachedDistantPlanet;
 
-		public ColonyAchievement SurvivedALongTime;
+		public ColonyAchievement Survived100Cycles;
 
 		public ColonyAchievement ReachedSpace;
+
+		public ColonyAchievement CompleteSkillBranch;
+
+		public ColonyAchievement CompleteResearchTree;
 
 		public ColonyAchievement Clothe8Dupes;
 
@@ -56,13 +60,36 @@ namespace Database
 			{
 				new ReachedSpace(Db.Get().SpaceDestinationTypes.Wormhole)
 			}, COLONY_ACHIEVEMENTS.DISTANT_PLANET_REACHED.MESSAGE_TITLE, COLONY_ACHIEVEMENTS.DISTANT_PLANET_REACHED.MESSAGE_BODY, "Placeholder", "Placeholder_grey", ReachedDistantPlanetSequence.Start, AudioMixerSnapshots.Get().VictoryNISRocketSnapshot));
-			SurvivedALongTime = Add(new ColonyAchievement("SurvivedALongTime", COLONY_ACHIEVEMENTS.SURVIVED.NAME, COLONY_ACHIEVEMENTS.SURVIVED.DESCRIPTION, false, new List<ColonyAchievementRequirement>
+			Survived100Cycles = Add(new ColonyAchievement("Survived100Cycles", COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.SURVIVE_HUNDRED_CYCLES, COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.SURVIVE_HUNDRED_CYCLES_DESCRIPTION, false, new List<ColonyAchievementRequirement>
 			{
 				new CycleNumber(100)
 			}, "", "", "", "", null, ""));
 			ReachedSpace = Add(new ColonyAchievement("ReachedSpace", COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.REACH_SPACE_ANY_DESTINATION, COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.REACH_SPACE_ANY_DESTINATION_DESCRIPTION, false, new List<ColonyAchievementRequirement>
 			{
 				new ReachedSpace(null)
+			}, "", "", "", "", null, ""));
+			CompleteSkillBranch = Add(new ColonyAchievement("CompleteSkillBranch", COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.COMPLETED_SKILL_BRANCH, COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.COMPLETED_SKILL_BRANCH_DESCRIPTION, false, new List<ColonyAchievementRequirement>
+			{
+				new SkillBranchComplete(new List<Skill>
+				{
+					Db.Get().Skills.Mining3,
+					Db.Get().Skills.Building3,
+					Db.Get().Skills.Farming3,
+					Db.Get().Skills.Ranching2,
+					Db.Get().Skills.Researching3,
+					Db.Get().Skills.Cooking2,
+					Db.Get().Skills.Arting3,
+					Db.Get().Skills.Hauling2,
+					Db.Get().Skills.Technicals2,
+					Db.Get().Skills.Engineering1,
+					Db.Get().Skills.Basekeeping2,
+					Db.Get().Skills.Astronauting2,
+					Db.Get().Skills.Medicine3
+				})
+			}, "", "", "", "", null, ""));
+			CompleteResearchTree = Add(new ColonyAchievement("CompleteResearchTree", COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.COMPLETED_RESEARCH, COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.COMPLETED_RESEARCH_DESCRIPTION, false, new List<ColonyAchievementRequirement>
+			{
+				new ResearchComplete()
 			}, "", "", "", "", null, ""));
 			Clothe8Dupes = Add(new ColonyAchievement("Clothe8Dupes", COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.EQUIP_N_DUPES, string.Format(COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.EQUIP_N_DUPES_DESCRIPTION, 8), false, new List<ColonyAchievementRequirement>
 			{

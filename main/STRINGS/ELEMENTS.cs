@@ -96,14 +96,14 @@ namespace STRINGS
 		{
 			public static LocString NAME = UI.FormatAsLink("Molten Aluminum", "MOLTENALUMINUM");
 
-			public static LocString DESC = "(Al) Aluminum is a low density " + UI.FormatAsLink("Metal", "REFINEDMETAL") + ".\n\nIt has high Thermal Conductivity and is suitable for building " + UI.FormatAsLink("Power", "POWER") + " systems.";
+			public static LocString DESC = "(Al) Aluminum is a low density " + UI.FormatAsLink("Metal", "REFINEDMETAL") + " heated into a molten, " + UI.FormatAsLink("Liquid", "ELEMENTS_LIQUID") + " state.";
 		}
 
 		public class ALUMINUMGAS
 		{
-			public static LocString NAME = UI.FormatAsLink("Aluminum Gas", "ALUMINUMGAS");
+			public static LocString NAME = UI.FormatAsLink("Aluminum", "ALUMINUMGAS");
 
-			public static LocString DESC = "(Al) Aluminum is a low density " + UI.FormatAsLink("Metal", "REFINEDMETAL") + ".\n\nIt has high Thermal Conductivity and is suitable for building " + UI.FormatAsLink("Power", "POWER") + " systems.";
+			public static LocString DESC = "(Al) Aluminum is a low density " + UI.FormatAsLink("Metal", "REFINEDMETAL") + " heated into a " + UI.FormatAsLink("Gaseous", "ELEMENTS_GAS") + " state.";
 		}
 
 		public class BLEACHSTONE
@@ -157,9 +157,9 @@ namespace STRINGS
 
 		public class ETHANOLGAS
 		{
-			public static LocString NAME = UI.FormatAsLink("Ethanol Gas", "ETHANOLGAS");
+			public static LocString NAME = UI.FormatAsLink("Ethanol", "ETHANOLGAS");
 
-			public static LocString DESC = "(C<sub>2</sub>H<sub>6</sub>O) Ethanol is a high toxic chemical compound.\n\nIt can be used as a highly effective fuel source when burned.";
+			public static LocString DESC = "(C<sub>2</sub>H<sub>6</sub>O) Ethanol is a high toxic chemical compound heated into a " + UI.FormatAsLink("Gaseous", "ELEMENTS_GAS") + " state.";
 		}
 
 		public class ETHANOL
@@ -201,14 +201,14 @@ namespace STRINGS
 		{
 			public static LocString NAME = UI.FormatAsLink("Chlorine", "CHLORINE");
 
-			public static LocString DESC = "(Cl) Chlorine is an extremely toxic element in a " + UI.FormatAsLink("Liquid", "ELEMENTS_LIQUID") + " state.";
+			public static LocString DESC = "(Cl) Chlorine is a natural " + UI.FormatAsLink("Germ", "DISEASE") + "-killing element in a " + UI.FormatAsLink("Liquid", "ELEMENTS_LIQUID") + " state.";
 		}
 
 		public class CHLORINEGAS
 		{
 			public static LocString NAME = UI.FormatAsLink("Chlorine", "CHLORINEGAS");
 
-			public static LocString DESC = "(Cl) Chlorine is an extremely toxic chemical in a " + UI.FormatAsLink("Gaseous", "ELEMENTS_GAS") + " state.";
+			public static LocString DESC = "(Cl) Chlorine is a natural " + UI.FormatAsLink("Germ", "DISEASE") + "-killing element in a " + UI.FormatAsLink("Gaseous", "ELEMENTS_GAS") + " state.";
 		}
 
 		public class CLAY
@@ -504,9 +504,9 @@ namespace STRINGS
 
 		public class LEADGAS
 		{
-			public static LocString NAME = UI.FormatAsLink("Lead Gas", "LEADGAS");
+			public static LocString NAME = UI.FormatAsLink("Lead", "LEADGAS");
 
-			public static LocString DESC = "(Pb) Lead is a soft yet extremely dense " + UI.FormatAsLink("Refined Metal", "REFINEDMETAL") + ".\n\nIt has a low " + UI.PRE_KEYWORD + "Overheat Temperature" + UI.PST_KEYWORD + " and is suitable for building " + UI.FormatAsLink("Power", "POWER") + " systems.";
+			public static LocString DESC = "(Pb) Lead is a soft yet extremely dense " + UI.FormatAsLink("Refined Metal", "REFINEDMETAL") + " heated into a " + UI.FormatAsLink("Gaseous", "ELEMENTS_GAS") + ".";
 		}
 
 		public class LEAD
@@ -800,7 +800,7 @@ namespace STRINGS
 		{
 			public static LocString NAME = UI.FormatAsLink("Salt Water", "SALTWATER");
 
-			public static LocString DESC = "Salt is a natural, lightly concentrated solution of " + UI.FormatAsLink("Salt", "SALT") + " dissolved in " + UI.FormatAsLink("Water", "WATER") + ".\n\nIt can be used in desalination processes, separating out useable salt.";
+			public static LocString DESC = "Salt Water is a natural, lightly concentrated solution of " + UI.FormatAsLink("Salt", "SALT") + " dissolved in " + UI.FormatAsLink("Water", "WATER") + ".\n\nIt can be used in desalination processes, separating out useable salt.";
 		}
 
 		public class SAND
@@ -849,14 +849,14 @@ namespace STRINGS
 		{
 			public static LocString NAME = UI.FormatAsLink("Carbon Dioxide", "SOLIDCARBONDIOXIDE");
 
-			public static LocString DESC = "(CO<sub>2</sub>) Carbon Dioxide is a toxic compound in a " + UI.FormatAsLink("Solid", "ELEMENTS_SOLID") + " state.";
+			public static LocString DESC = "(CO<sub>2</sub>) Carbon Dioxide is an unbreathable compound in a " + UI.FormatAsLink("Solid", "ELEMENTS_SOLID") + " state.";
 		}
 
 		public class SOLIDCHLORINE
 		{
 			public static LocString NAME = UI.FormatAsLink("Chlorine", "SOLIDCHLORINE");
 
-			public static LocString DESC = "(Cl) Chlorine is a toxic chemical element in a " + UI.FormatAsLink("Solid", "ELEMENTS_SOLID") + " state.";
+			public static LocString DESC = "(Cl) Chlorine is a natural " + UI.FormatAsLink("Germ", "DISEASE") + "-killing element in a " + UI.FormatAsLink("Solid", "ELEMENTS_SOLID") + " state.";
 		}
 
 		public class SOLIDCRUDEOIL
@@ -877,7 +877,7 @@ namespace STRINGS
 		{
 			public static LocString NAME = UI.FormatAsLink("Mercury", "SOLIDMERCURY");
 
-			public static LocString DESC = "(Hg) Mercury is a toxic " + UI.FormatAsLink("Metal", "RAWMETAL") + " in a " + UI.FormatAsLink("Solid", "ELEMENTS_SOLID") + " state.";
+			public static LocString DESC = "(Hg) Mercury is a rare " + UI.FormatAsLink("Metal", "RAWMETAL") + " in a " + UI.FormatAsLink("Solid", "ELEMENTS_SOLID") + " state.";
 		}
 
 		public class SOLIDOXYGEN

@@ -33,7 +33,7 @@ public static class CodexEntryGenerator
 				CodexCache.AddEntry((current.data as IList<string>)[i], codexEntry, null);
 				dictionary2.Add(codexEntry.id, codexEntry);
 			}
-			CategoryEntry categoryEntry = GenerateCategoryEntry(CodexCache.FormatLinkID(text2), Strings.Get("STRINGS.UI.BUILDCATEGORIES." + text.ToUpper() + ".NAME"), dictionary2, null, true, true);
+			CategoryEntry categoryEntry = GenerateCategoryEntry(CodexCache.FormatLinkID(text2), Strings.Get("STRINGS.UI.BUILDCATEGORIES." + text.ToUpper() + ".NAME"), dictionary2, null, true, true, null);
 			categoryEntry.parentId = "BUILDINGS";
 			categoryEntry.category = "BUILDINGS";
 			categoryEntry.icon = Assets.GetSprite(PlanScreen.IconNameMap[text]);
@@ -392,22 +392,22 @@ public static class CodexEntryGenerator
 			}
 		}
 		text6 = text2;
-		CodexEntry codexEntry2 = GenerateCategoryEntry(text6, UI.CODEX.CATEGORYNAMES.ELEMENTSSOLID, dictionary2, null, true, true);
+		CodexEntry codexEntry2 = GenerateCategoryEntry(text6, UI.CODEX.CATEGORYNAMES.ELEMENTSSOLID, dictionary2, null, true, true, null);
 		codexEntry2.parentId = text;
 		codexEntry2.category = text;
 		dictionary.Add(text6, codexEntry2);
 		text6 = text3;
-		codexEntry2 = GenerateCategoryEntry(text6, UI.CODEX.CATEGORYNAMES.ELEMENTSLIQUID, dictionary3, null, true, true);
+		codexEntry2 = GenerateCategoryEntry(text6, UI.CODEX.CATEGORYNAMES.ELEMENTSLIQUID, dictionary3, null, true, true, null);
 		codexEntry2.parentId = text;
 		codexEntry2.category = text;
 		dictionary.Add(text6, codexEntry2);
 		text6 = text4;
-		codexEntry2 = GenerateCategoryEntry(text6, UI.CODEX.CATEGORYNAMES.ELEMENTSGAS, dictionary4, null, true, true);
+		codexEntry2 = GenerateCategoryEntry(text6, UI.CODEX.CATEGORYNAMES.ELEMENTSGAS, dictionary4, null, true, true, null);
 		codexEntry2.parentId = text;
 		codexEntry2.category = text;
 		dictionary.Add(text6, codexEntry2);
 		text6 = text5;
-		codexEntry2 = GenerateCategoryEntry(text6, UI.CODEX.CATEGORYNAMES.ELEMENTSOTHER, dictionary5, Assets.GetSprite("overlay_heatflow"), true, true);
+		codexEntry2 = GenerateCategoryEntry(text6, UI.CODEX.CATEGORYNAMES.ELEMENTSOTHER, dictionary5, Assets.GetSprite("overlay_heatflow"), true, true, null);
 		codexEntry2.parentId = text;
 		codexEntry2.category = text;
 		dictionary.Add(text6, codexEntry2);
@@ -435,10 +435,10 @@ public static class CodexEntryGenerator
 		return dictionary;
 	}
 
-	public static CategoryEntry GenerateCategoryEntry(string id, string name, Dictionary<string, CodexEntry> entries, Sprite icon = null, bool largeFormat = true, bool sort = true)
+	public static CategoryEntry GenerateCategoryEntry(string id, string name, Dictionary<string, CodexEntry> entries, Sprite icon = null, bool largeFormat = true, bool sort = true, string overrideHeader = null)
 	{
 		List<ContentContainer> list = new List<ContentContainer>();
-		GenerateTitleContainers(name, list);
+		GenerateTitleContainers((overrideHeader != null) ? overrideHeader : name, list);
 		List<CodexEntry> list2 = new List<CodexEntry>();
 		foreach (KeyValuePair<string, CodexEntry> entry in entries)
 		{
@@ -483,10 +483,6 @@ public static class CodexEntryGenerator
 			}, ContentContainer.ContentLayout.Vertical));
 			CodexEntry codexEntry = new CodexEntry("Tips", list, UI.FormatAsLink(tutorialMessage.GetTitle(), "tutorial_tips_" + i));
 			CodexCache.AddEntry("tutorial_tips_" + i, codexEntry, null);
-			if (!string.IsNullOrEmpty(tutorialMessage.icon))
-			{
-				codexEntry.icon = Assets.GetSprite(tutorialMessage.icon);
-			}
 			dictionary.Add(codexEntry.id, codexEntry);
 		}
 		return dictionary;
@@ -537,7 +533,14 @@ public static class CodexEntryGenerator
 				ContentContainer contentContainer2 = new ContentContainer(new List<ICodexWidget>(), ContentContainer.ContentLayout.Vertical);
 				foreach (CodexEntry item3 in list)
 				{
-					contentContainer2.content.Add(new CodexLabelWithIcon(item3.name, CodexTextStyle.Body, new Tuple<Sprite, Color>((!((UnityEngine.Object)item3.icon != (UnityEngine.Object)null)) ? Assets.GetSprite("unknown") : item3.icon, item3.iconColor), 64, 48));
+					if ((UnityEngine.Object)item3.icon == (UnityEngine.Object)null)
+					{
+						contentContainer2.content.Add(new CodexText(item3.name, CodexTextStyle.Body));
+					}
+					else
+					{
+						contentContainer2.content.Add(new CodexLabelWithIcon(item3.name, CodexTextStyle.Body, new Tuple<Sprite, Color>(item3.icon, item3.iconColor), 64, 48));
+					}
 				}
 				contentContainers.Add(contentContainer2);
 			}

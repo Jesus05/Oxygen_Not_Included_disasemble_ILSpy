@@ -201,7 +201,7 @@ public class ElementConverter : StateMachineComponent<ElementConverter.StatesIns
 				for (int j = 0; j < items.Count; j++)
 				{
 					GameObject gameObject = items[j];
-					if (gameObject.HasTag(tag))
+					if (!((UnityEngine.Object)gameObject == (UnityEngine.Object)null) && gameObject.HasTag(tag))
 					{
 						num += gameObject.GetComponent<PrimaryElement>().Mass;
 					}
@@ -229,7 +229,7 @@ public class ElementConverter : StateMachineComponent<ElementConverter.StatesIns
 			for (int j = 0; j < items.Count; j++)
 			{
 				GameObject gameObject = items[j];
-				if (gameObject.HasTag(consumedElement.tag) && gameObject.GetComponent<PrimaryElement>().Mass > 0f)
+				if (!((UnityEngine.Object)gameObject == (UnityEngine.Object)null) && gameObject.HasTag(consumedElement.tag) && gameObject.GetComponent<PrimaryElement>().Mass > 0f)
 				{
 					flag = true;
 					break;
@@ -262,7 +262,7 @@ public class ElementConverter : StateMachineComponent<ElementConverter.StatesIns
 			for (int j = 0; j < items.Count; j++)
 			{
 				GameObject gameObject = items[j];
-				if (gameObject.HasTag(consumedElement.tag))
+				if (!((UnityEngine.Object)gameObject == (UnityEngine.Object)null) && gameObject.HasTag(consumedElement.tag))
 				{
 					num2 += gameObject.GetComponent<PrimaryElement>().Mass;
 				}
@@ -319,29 +319,32 @@ public class ElementConverter : StateMachineComponent<ElementConverter.StatesIns
 				for (int l = 0; l < storage.items.Count; l++)
 				{
 					GameObject gameObject2 = storage.items[l];
-					if (gameObject2.HasTag(consumedElement2.tag))
+					if (!((UnityEngine.Object)gameObject2 == (UnityEngine.Object)null))
 					{
-						PrimaryElement component2 = gameObject2.GetComponent<PrimaryElement>();
-						component2.KeepZeroMassObject = true;
-						float num10 = Mathf.Min(num9, component2.Mass);
-						float num11 = num10 / component2.Mass;
-						int num12 = (int)(num11 * (float)component2.DiseaseCount);
-						float num13 = num10 * component2.Element.specificHeatCapacity;
-						num8 += num13;
-						num7 += num13 * component2.Temperature;
-						component2.Mass -= num10;
-						component2.ModifyDiseaseCount(-num12, "ElementConverter.ConvertMass");
-						num6 += num10;
-						diseaseInfo = SimUtil.CalculateFinalDiseaseInfo(diseaseInfo.idx, diseaseInfo.count, component2.DiseaseIdx, num12);
-						num9 -= num10;
+						if (gameObject2.HasTag(consumedElement2.tag))
+						{
+							PrimaryElement component2 = gameObject2.GetComponent<PrimaryElement>();
+							component2.KeepZeroMassObject = true;
+							float num10 = Mathf.Min(num9, component2.Mass);
+							float num11 = num10 / component2.Mass;
+							int num12 = (int)(num11 * (float)component2.DiseaseCount);
+							float num13 = num10 * component2.Element.specificHeatCapacity;
+							num8 += num13;
+							num7 += num13 * component2.Temperature;
+							component2.Mass -= num10;
+							component2.ModifyDiseaseCount(-num12, "ElementConverter.ConvertMass");
+							num6 += num10;
+							diseaseInfo = SimUtil.CalculateFinalDiseaseInfo(diseaseInfo.idx, diseaseInfo.count, component2.DiseaseIdx, num12);
+							num9 -= num10;
+							if (num9 <= 0f)
+							{
+								break;
+							}
+						}
 						if (num9 <= 0f)
 						{
-							break;
+							Debug.Assert(num9 <= 0f);
 						}
-					}
-					if (num9 <= 0f)
-					{
-						Debug.Assert(num9 <= 0f);
 					}
 				}
 			}

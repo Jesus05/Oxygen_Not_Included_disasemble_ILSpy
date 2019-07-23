@@ -363,7 +363,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Growing Branches";
 
-				public static LocString TOOLTIP = "This plant is currently growing branches";
+				public static LocString TOOLTIP = "This tree is working hard to grow new branches right now";
 			}
 
 			public class ELEMENTALCATEGORY
@@ -615,7 +615,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Tutorial: Basic Controls";
 
-				public static LocString MESSAGEBODY = "• The <color=#F44A47><b>" + UI.FormatAsLink("[WASD]", "CONTROLS") + "</b></color> keys pan my view and the <color=#F44A47><b>" + UI.FormatAsLink("[MOUSE WHEEL]", "CONTROLS") + "</b></color> zooms it in and out.\n\n• <color=#F44A47><b>[H]</b></color> returns my view to the Printing Pod.\n\n• I can speed or slow my perception of time using the top left corner buttons, or by pressing <color=#F44A47><b>[TAB]</b></color>. <color=#F44A47><b>[SPACE]</b></color> will pause the flow of time entirely.\n\n• I'll keep records of everything I discover in my personal DATABASE <color=#F44A47><b>[U]</b></color> to refer back to if I forget anything important.";
+				public static LocString MESSAGEBODY = "• The " + UI.FormatAsHotkey("[WASD]") + " keys pan my view and the " + UI.FormatAsHotkey("[MOUSE WHEEL]") + " zooms it in and out.\n\n• " + UI.FormatAsHotkey("[H]") + " returns my view to the Printing Pod.\n\n• I can speed or slow my perception of time using the top left corner buttons, or by pressing " + UI.FormatAsHotkey("[TAB]") + ", while pressing " + UI.FormatAsHotkey("[SPACE]") + " will pause the flow of time entirely.\n\n• I'll keep records of everything I discover in my personal DATABASE " + UI.FormatAsHotkey("[U]") + " to refer back to if I forget anything important.";
 
 				public static LocString TOOLTIP = "Notes on using my HUD";
 			}
@@ -642,7 +642,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Tutorial: Priority";
 
-				public static LocString MESSAGEBODY = "Duplicants always perform errands in order of highest to lowest priority. They will harvest " + UI.FormatAsLink("Food", "FOOD") + " before they build, for example, or always build new structures before they mine materials.\n\nI can open the " + UI.FormatAsLink("PRIORITIES SCREEN", "PRIORITIES") + " <color=#F44A47><b>[L]</b></color> to set which Errand Types Duplicants may or may not perform, or to specialize skilled Duplicants for particular Errand Types.";
+				public static LocString MESSAGEBODY = "Duplicants always perform errands in order of highest to lowest priority. They will harvest " + UI.FormatAsLink("Food", "FOOD") + " before they build, for example, or always build new structures before they mine materials.\n\nI can open the " + UI.FormatAsManagementMenu("PRIORITIES SCREEN", "L") + " to set which Errand Types Duplicants may or may not perform, or to specialize skilled Duplicants for particular Errand Types.";
 
 				public static LocString TOOLTIP = "Notes on managing Duplicants' errands";
 			}
@@ -651,7 +651,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Tutorial: Polluted Water";
 
-				public static LocString MESSAGEBODY = UI.FormatAsLink("Polluted Water", "DIRTYWATER") + " slowly emits " + UI.FormatAsLink("Polluted Oxygen", "CONTAMINATEDOXYGEN") + " which accelerates the spread of " + UI.FormatAsLink("Disease", "DISEASE") + ".\n\nDuplicants will also be " + UI.FormatAsLink("Stressed", "STRESS") + " by walking through Polluted Water, so I should have my Duplicants clean up spills by clicking and dragging the " + UI.FormatAsLink("MOP TOOL", "MISC") + " <color=#F44A47><b>[M]</b></color>.";
+				public static LocString MESSAGEBODY = UI.FormatAsLink("Polluted Water", "DIRTYWATER") + " slowly emits " + UI.FormatAsLink("Polluted Oxygen", "CONTAMINATEDOXYGEN") + " which accelerates the spread of " + UI.FormatAsLink("Disease", "DISEASE") + ".\n\nDuplicants will also be " + UI.FormatAsLink("Stressed", "STRESS") + " by walking through Polluted Water, so I should have my Duplicants clean up spills by clicking and dragging the " + UI.FormatAsTool("MOP TOOL", "[M]");
 
 				public static LocString TOOLTIP = "Notes on handling polluted materials";
 			}
@@ -660,7 +660,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Tutorial: Duplicant Movement";
 
-				public static LocString MESSAGEBODY = "Duplicants can only climb two tiles high and cannot fit into spaces smaller that two tiles, which I should keep in mind while placing errands.\n\nTo check if an errand I've placed is accessible, I can select a Duplicant and click <color=#F44A47><b>SHOW NAVIGATION</b></color> to view all areas within their reach.";
+				public static LocString MESSAGEBODY = "Duplicants can only climb two tiles high and cannot fit into spaces smaller than two tiles, which I should keep in mind while placing errands.\n\nTo check if an errand I've placed is accessible, I can select a Duplicant and click <b>SHOW NAVIGATION</b> to view all areas within their reach.";
 
 				public static LocString TOOLTIP = "Notes on my Duplicants' maneuverability";
 			}
@@ -669,7 +669,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Tutorial: Errand Priorities";
 
-				public static LocString MESSAGEBODY = "Duplicants will choose where to work based on the priority of the errands that I give them. I can open the " + UI.FormatAsLink("PRIORITIES SCREEN", "PRIORITIES") + " <color=#F44A47><b>[L]</b></color> to set their " + UI.PRE_KEYWORD + "Duplicant Priorities" + UI.PST_KEYWORD + ", and the " + UI.FormatAsLink("PRIORITY TOOL", "PRIORITIES") + " " + UI.FormatAsHotkey("[P]") + " to fine tune " + UI.PRE_KEYWORD + "Building Priority" + UI.PST_KEYWORD + ". Many buildings will also let me change their Priority level when I select them.";
+				public static LocString MESSAGEBODY = "Duplicants will choose where to work based on the priority of the errands that I give them. I can open the " + UI.FormatAsManagementMenu("PRIORITIES SCREEN") + " <color=#F44A47><b>[L]</b></color> to set their " + UI.PRE_KEYWORD + "Duplicant Priorities" + UI.PST_KEYWORD + ", and the " + UI.FormatAsLink("PRIORITY TOOL", "PRIORITIES") + " " + UI.FormatAsHotkey("[P]") + " to fine tune " + UI.PRE_KEYWORD + "Building Priority" + UI.PST_KEYWORD + ". Many buildings will also let me change their Priority level when I select them.";
 
 				public static LocString TOOLTIP = "Notes on my Duplicants' priorities";
 			}
@@ -678,7 +678,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Tutorial: Fetching Water";
 
-				public static LocString MESSAGEBODY = "By building a " + UI.FormatAsLink("Pitcher Pump", "LIQUIDPUMPINGSTATION") + " from the " + UI.FormatAsLink("PLUMBING TAB", "MISC") + " <color=#F44A47><b>[5]</b></color> over a pool of liquid, my Duplicants will be able to bottle it up and manually deliver it wherever it needs to go.";
+				public static LocString MESSAGEBODY = "By building a " + UI.FormatAsLink("Pitcher Pump", "LIQUIDPUMPINGSTATION") + " from the " + UI.FormatAsBuildMenuTab("PLUMBING TAB", "[5]") + " <color=#F44A47><b>[5]</b></color> over a pool of liquid, my Duplicants will be able to bottle it up and manually deliver it wherever it needs to go.";
 
 				public static LocString TOOLTIP = "Notes on liquid resource gathering";
 			}

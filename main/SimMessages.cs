@@ -1053,7 +1053,7 @@ public static class SimMessages
 		else
 		{
 			Element element = ElementLoader.elements[elementIdx];
-			if (mass > element.maxMass)
+			if (element.maxMass == 0f && mass > element.maxMass)
 			{
 				Debug.LogWarningFormat("Invalid cell modification (mass greater than element maximum): Cell={0}, EIdx={1}, T={2}, M={3}, {4} max mass = {5}", gameCell, elementIdx, temperature, mass, element.id, element.maxMass);
 				mass = element.maxMass;

@@ -77,7 +77,13 @@ public class RoomType : Resource
 		private set;
 	}
 
-	public RoomType(string id, string name, string tooltip, string effect, RoomTypeCategory category, RoomConstraints.Constraint primary_constraint, RoomConstraints.Constraint[] additional_constraints, RoomDetails.Detail[] display_details, int priority = 0, RoomType[] upgrade_paths = null, bool single_assignee = false, bool priority_building_use = false, string[] effects = null)
+	public int sortKey
+	{
+		get;
+		private set;
+	}
+
+	public RoomType(string id, string name, string tooltip, string effect, RoomTypeCategory category, RoomConstraints.Constraint primary_constraint, RoomConstraints.Constraint[] additional_constraints, RoomDetails.Detail[] display_details, int priority = 0, RoomType[] upgrade_paths = null, bool single_assignee = false, bool priority_building_use = false, string[] effects = null, int sortKey = 0)
 		: base(id, name)
 	{
 		this.tooltip = tooltip;
@@ -91,6 +97,7 @@ public class RoomType : Resource
 		this.single_assignee = single_assignee;
 		this.priority_building_use = priority_building_use;
 		this.effects = effects;
+		this.sortKey = sortKey;
 		if (this.upgrade_paths != null)
 		{
 			RoomType[] upgrade_paths2 = this.upgrade_paths;

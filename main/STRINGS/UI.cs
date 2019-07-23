@@ -33,13 +33,6 @@ namespace STRINGS
 				public static LocString DESCRIPTION = "The source of our misfortune, though it may also be our shot at freedom. Traces of Neutronium are detectable in my readings.";
 			}
 
-			public class EARTH
-			{
-				public static LocString NAME = "Earth";
-
-				public static LocString DESCRIPTION = "A faintly familiar place";
-			}
-
 			public class DEBRIS
 			{
 				public class SATELLITE
@@ -164,7 +157,7 @@ namespace STRINGS
 				{
 					public static LocString NAME = "Shattered Planet";
 
-					public static LocString DESCRIPTION = "A largely damaged but theoretically habitable planet. An active energy field prevents regular travel to this destination.";
+					public static LocString DESCRIPTION = "A once-habitable planet that has sustained massive damage.\n\nA powerful containment field prevents our rockets from travelling to its surface.";
 				}
 
 				public class RUSTPLANET
@@ -653,6 +646,10 @@ namespace STRINGS
 				public static LocString CALORIES_CREATED = "Calorie Generation";
 			}
 
+			public static LocString SECONDS = "Seconds";
+
+			public static LocString CYCLES = "Cycles";
+
 			public static LocString CYCLE_COUNT = "Cycle Count: {0}";
 
 			public static LocString DUPLICANT_AGE = "Age: {0} cycles";
@@ -1041,11 +1038,11 @@ namespace STRINGS
 
 				public static LocString GENTLE_ZONE = "Habitable Zone";
 
-				public static LocString DETAILS = "Asteroid Details";
+				public static LocString DETAILS = "Location Details";
 
 				public static LocString START_SITE = "Immediate Surroundings";
 
-				public static LocString COORDINATE = "Coordinate:";
+				public static LocString COORDINATE = "Coordinates:";
 
 				public static LocString CANCEL = "Back";
 
@@ -1055,7 +1052,7 @@ namespace STRINGS
 
 				public static LocString SHUFFLE = "Shuffle";
 
-				public static LocString SHUFFLETOOLTIP = "Pick a new world seed, giving a randomized world layout and traits.";
+				public static LocString SHUFFLETOOLTIP = "Reroll World Seed\n\nThis will shuffle the layout of your world and the geographical traits listed below";
 			}
 
 			public class MODESELECTSCREEN
@@ -1721,7 +1718,7 @@ namespace STRINGS
 				{
 					public static LocString NAME = "Can perform {0}";
 
-					public static LocString DESCRIPTION = "Capable of performing <b>{0}</b> jobs";
+					public static LocString DESCRIPTION = "Capable of performing <b>{0}</b> skills";
 				}
 
 				public class MASTERY
@@ -1732,15 +1729,15 @@ namespace STRINGS
 
 					public static LocString CANNOT_MASTER = "{0} <b>cannot learn</b> {1}";
 
-					public static LocString STRESS_WARNING_MESSAGE = "Learning {0} will put {1} into a " + PRE_KEYWORD + "Morale" + PST_KEYWORD + " deficit and cause unneeded " + PRE_KEYWORD + "Stress" + PST_KEYWORD + "!";
+					public static LocString STRESS_WARNING_MESSAGE = "Learning {0} will put {1} into a " + PRE_KEYWORD + "Morale" + PST_KEYWORD + " deficit and cause unnecessary " + PRE_KEYWORD + "Stress" + PST_KEYWORD + "!";
 
 					public static LocString REQUIRES_MORE_SKILL_POINTS = "    • Not enough " + PRE_KEYWORD + "Skill Points" + PST_KEYWORD;
 
 					public static LocString REQUIRES_PREVIOUS_SKILLS = "    • Missing prerequisite " + PRE_KEYWORD + "Skill" + PST_KEYWORD;
 
-					public static LocString PREVENTED_BY_TRAIT = "    • Possesses the " + PRE_KEYWORD + "{0}" + PST_KEYWORD + " Trait";
+					public static LocString PREVENTED_BY_TRAIT = "    • This Duplicant possesses the " + PRE_KEYWORD + "{0}" + PST_KEYWORD + " Trait and cannot learn this Skill";
 
-					public static LocString SKILL_APTITUDE = "{0} is interested in {1} and will recieve a " + PRE_KEYWORD + "Morale" + PST_KEYWORD + " bonus for learning it!";
+					public static LocString SKILL_APTITUDE = "{0} is interested in {1} and will receive a " + PRE_KEYWORD + "Morale" + PST_KEYWORD + " bonus for learning it!";
 				}
 
 				public static LocString EXPECTATION_TARGET_SKILL = "Current Morale: {0}\nSkill Morale Needs: {1}";
@@ -2541,7 +2538,7 @@ namespace STRINGS
 		{
 			public static LocString MANAGEMENTMENU_JOBS = "Manage my Duplicant Priorities {Hotkey}" + HORIZONTAL_BR_RULE + PRE_KEYWORD + "Duplicant Priorities" + PST_KEYWORD + " are calculated <i>before</i> the " + PRE_KEYWORD + "Building Priorities" + PST_KEYWORD + " set by the " + FormatAsTool("Priority Tool", "[P]");
 
-			public static LocString MANAGEMENTMENU_CONSUMABLES = "Manage colony diets {Hotkey}";
+			public static LocString MANAGEMENTMENU_CONSUMABLES = "Manage my Duplicants' diets and medications {Hotkey}";
 
 			public static LocString MANAGEMENTMENU_VITALS = "View my Duplicants' vitals {Hotkey}";
 
@@ -2956,7 +2953,7 @@ namespace STRINGS
 
 				public static LocString MINIMUM_MASS = "Resources available {0}";
 
-				public static LocString RESOURCE_MASS_TOOLTIP = "{0} has {1} resources available. \nRocket has capacity for {2}. ";
+				public static LocString RESOURCE_MASS_TOOLTIP = "{0} has {1} resources available.\nRocket has capacity for {2}.";
 
 				public static LocString INSUFFICENT_MASS_TOOLTIP = "Launching to this destination will not return a full cargo load.";
 			}
@@ -3100,7 +3097,7 @@ namespace STRINGS
 
 			public static LocString MINIMUM_MASS = "Minimum Mass";
 
-			public static LocString MINIMUM_MASS_TOOLTIP = "This destination must retain at least this much mass in order to prevent depletion and allow the future regenration of resources.\n\nDuplicants will always maintain a destination's minimum mass requirements, potentially returning with less cargo than their rocket can hold.";
+			public static LocString MINIMUM_MASS_TOOLTIP = "This destination must retain at least this much mass in order to prevent depletion and allow the future regeneration of resources.\n\nDuplicants will always maintain a destination's minimum mass requirements, potentially returning with less cargo than their rocket can hold.";
 
 			public static LocString REPLENISH_RATE = "Replenished/Cycle:";
 
@@ -3185,7 +3182,7 @@ namespace STRINGS
 
 				public static LocString TECH = FormatAsLink("Research", "TECH");
 
-				public static LocString TIPS = FormatAsLink("Tutorials", "TIPS");
+				public static LocString TIPS = FormatAsLink("Tips and Information", "TIPS");
 
 				public static LocString EQUIPMENT = FormatAsLink("Equipment", "EQUIPMENT");
 
@@ -3214,7 +3211,9 @@ namespace STRINGS
 
 			public static LocString BACK_BUTTON = "Back ({0})";
 
-			public static LocString TIPS = "Tutorials";
+			public static LocString TIPS = "Tips";
+
+			public static LocString GAME_SYSTEMS = "Systems";
 
 			public static LocString DETAILS = "Details";
 
@@ -3746,7 +3745,7 @@ namespace STRINGS
 
 					public static LocString ONE = "<b>Green</b>\nThis port is currently " + FormatAsAutomationState("Green", AutomationState.Active);
 
-					public static LocString ZERO = "<b>Red</b>This port is currently " + FormatAsAutomationState("Red", AutomationState.Standby);
+					public static LocString ZERO = "<b>Red</b>\nThis port is currently " + FormatAsAutomationState("Red", AutomationState.Standby);
 
 					public static LocString DISCONNECTED = "<b>Disconnected</b>\nThis port is not connected to an automation grid";
 				}
@@ -4022,9 +4021,9 @@ namespace STRINGS
 
 			public static LocString TOOLTIP_TOGGLE_COLUMN = "Toggle colonywide <b>{0}</b> permission";
 
-			public static LocString TOOLTIP_TOGGLE_ROW = "Toggle <b>all permissions</b> for <b>{0}</b>";
+			public static LocString TOOLTIP_TOGGLE_ROW = "Toggle <b>all consumable permissions</b> for <b>{0}</b>";
 
-			public static LocString NEW_MINIONS_TOOLTIP_TOGGLE_ROW = "Toggle <b>all permissions</b> for <b>New Duplicants</b>";
+			public static LocString NEW_MINIONS_TOOLTIP_TOGGLE_ROW = "Toggle <b>all consumable permissions</b> for <b>New Duplicants</b>";
 
 			public static LocString NEW_MINIONS_FOOD_PERMISSION_ON = "<b>New Duplicants</b> are <b>allowed</b> to eat \n" + PRE_KEYWORD + "{0}" + PST_KEYWORD + "</b> by default";
 
@@ -4593,7 +4592,7 @@ namespace STRINGS
 			{
 				public static LocString TITLE = "Great Monument";
 
-				public static LocString FLIP_FACING_BUTTON = "FLIP FACING";
+				public static LocString FLIP_FACING_BUTTON = "CLICK TO ROTATE";
 			}
 
 			public class PLANTERSIDESCREEN
@@ -4843,7 +4842,7 @@ namespace STRINGS
 
 				public static LocString UNASSIGN_TOOLTIP = "Assigned to {0}";
 
-				public static LocString DISABLED_TOOLTIP = "{0} is ineligible for this job assignment";
+				public static LocString DISABLED_TOOLTIP = "{0} is ineligible for this skill assignment";
 
 				public static LocString PUBLIC = "Public";
 			}
@@ -4918,9 +4917,9 @@ namespace STRINGS
 
 				public static LocString VICTORY_CONDITIONS = "Hardwired Imperatives";
 
-				public static LocString SUMMARY_TITLE = "Colony Data";
+				public static LocString SUMMARY_TITLE = "COLONY SUMMARY";
 
-				public static LocString SKILLS_BUTTON = "Skills";
+				public static LocString SKILLS_BUTTON = "DUPLICANT SKILLS";
 			}
 
 			public class VALVESIDESCREEN
@@ -4941,7 +4940,7 @@ namespace STRINGS
 			{
 				public static LocString TITLE = "Time-of-Day Sensor";
 
-				public static LocString TOOLTIP = "This sensor will send a " + FormatAsAutomationState("Green Signal", AutomationState.Active) + " after the selected Turn On time, and a " + FormatAsAutomationState("Standby", AutomationState.Standby) + " after the selected Turn Off time";
+				public static LocString TOOLTIP = "This sensor will send a " + FormatAsAutomationState("Green Signal", AutomationState.Active) + " after the selected Turn On time, and a " + FormatAsAutomationState("Green Signal", AutomationState.Active) + " after the selected Turn Off time";
 
 				public static LocString START = "Turn On";
 
@@ -4968,16 +4967,16 @@ namespace STRINGS
 
 			public class LOGIC_BUFFER_SIDE_SCREEN
 			{
-				public static LocString TITLE = "Active Buffer Time";
+				public static LocString TITLE = "Green Buffer Time";
 
-				public static LocString TOOLTIP = "This gate will continue to send an Active signal for {0} seconds after entering Standby";
+				public static LocString TOOLTIP = "This gate will continue to send a " + FormatAsAutomationState("Green Signal", AutomationState.Active) + " for {0} seconds after receiving a " + FormatAsAutomationState("Red Signal", AutomationState.Standby);
 			}
 
 			public class LOGIC_FILTER_SIDE_SCREEN
 			{
-				public static LocString TITLE = "Active Filter Time";
+				public static LocString TITLE = "Green Filter Time";
 
-				public static LocString TOOLTIP = "This gate will continue to send a Standby signal for {0} seconds after entering Active";
+				public static LocString TOOLTIP = "This gate will continue to send a " + FormatAsAutomationState("Red Signal", AutomationState.Standby) + " for {0} seconds after receiving a " + FormatAsAutomationState("Green Signal", AutomationState.Active);
 			}
 
 			public class TIME_RANGE_SIDE_SCREEN
@@ -4986,11 +4985,11 @@ namespace STRINGS
 
 				public static LocString ON = "Activation Time";
 
-				public static LocString ON_TOOLTIP = "Activation time determines the time of day this sensor should enter its active duration" + HORIZONTAL_BR_RULE + "This sensor becomes active {0} through the day";
+				public static LocString ON_TOOLTIP = "Activation time determines the time of day this sensor should beging sending a " + FormatAsAutomationState("Green Signal", AutomationState.Active) + HORIZONTAL_BR_RULE + "This sensor sends a " + FormatAsAutomationState("Green Signal", AutomationState.Active) + " {0} through the day";
 
 				public static LocString DURATION = "Active Duration";
 
-				public static LocString DURATION_TOOLTIP = "Active duration determines what percentage of the day this sensor will spend in an Active state" + HORIZONTAL_BR_RULE + "This sensor will be active for {0} of the day";
+				public static LocString DURATION_TOOLTIP = "Active duration determines what percentage of the day this sensor will spend sending a " + FormatAsAutomationState("Green Signal", AutomationState.Active) + HORIZONTAL_BR_RULE + "This sensor will send a " + FormatAsAutomationState("Green Signal", AutomationState.Active) + " for {0} of the day";
 			}
 
 			public class TIMEDSWITCHSIDESCREEN
@@ -5475,15 +5474,15 @@ namespace STRINGS
 
 				public static LocString SEARCH_DISPLAY = "The display is still functional. I copy its message into my database.\n\nNew Database Entry discovered.";
 
-				public static LocString SEARCH_ELLIESDESK = "All I find on the machine is a curt e-mail from a disgruntled employee.";
+				public static LocString SEARCH_ELLIESDESK = "All I find on the machine is a curt e-mail from a disgruntled employee.\n\nNew Database Entry discovered.";
 
 				public static LocString SEARCH_POD = "I search my incoming message history and find a single entry. I move the odd message into my database.\n\nNew Database Entry discovered.";
 
 				public static LocString ALREADY_SEARCHED = "I already took everything of interest from this. I can check the Database to re-read what I found.";
 
-				public static LocString SEARCH_CABINET = "One intact document remains - an old yellowing newspaper clipping. It won't be of much use, but I add it to my database nonetheless.";
+				public static LocString SEARCH_CABINET = "One intact document remains - an old yellowing newspaper clipping. It won't be of much use, but I add it to my database nonetheless.\n\nNew Database Entry discovered.";
 
-				public static LocString SEARCH_STERNSDESK = "There's an old magazine article from a publication called the \"Nucleoid\" tucked in the top drawer. I add it to my database.";
+				public static LocString SEARCH_STERNSDESK = "There's an old magazine article from a publication called the \"Nucleoid\" tucked in the top drawer. I add it to my database.\n\nNew Database Entry discovered.";
 
 				public static LocString ALREADY_SEARCHED_STERNSDESK = "The desk is eerily empty inside.";
 			}
@@ -5782,7 +5781,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = FormatAsLink("Food", "BUILD_CATEGORY_FOODANDAGRICULTURE");
 
-				public static LocString TOOLTIP = "Keep your Duplicants' spirits high and their bellies full. {Hotkey}";
+				public static LocString TOOLTIP = "Keep my Duplicants' spirits high and their bellies full. {Hotkey}";
 			}
 
 			public static class LOGISTICS
@@ -5983,7 +5982,7 @@ namespace STRINGS
 
 				public static LocString BUILDMENUTITLE = "Hygiene";
 
-				public static LocString TOOLTIP = "Keep your Duplicants clean.";
+				public static LocString TOOLTIP = "Keep my Duplicants clean.";
 			}
 
 			public static class MEDICAL
@@ -6010,7 +6009,7 @@ namespace STRINGS
 
 				public static LocString BUILDMENUTITLE = "Furniture";
 
-				public static LocString TOOLTIP = "Amenities to keep your Duplicants happy, comfy and efficient. {Hotkey}";
+				public static LocString TOOLTIP = "Amenities to keep my Duplicants happy, comfy and efficient. {Hotkey}";
 			}
 
 			public static class DECOR
@@ -6089,16 +6088,22 @@ namespace STRINGS
 				public class BRUSH
 				{
 					public static LocString NAME = "Brush";
+
+					public static LocString HOVERACTION = "PAINT SIM";
 				}
 
 				public class SPRINKLE
 				{
 					public static LocString NAME = "Sprinkle";
+
+					public static LocString HOVERACTION = "SPRINKLE SIM";
 				}
 
 				public class FLOOD
 				{
 					public static LocString NAME = "Fill";
+
+					public static LocString HOVERACTION = "PAINT SECTION";
 				}
 
 				public class MARQUEE
@@ -6109,26 +6114,36 @@ namespace STRINGS
 				public class SAMPLE
 				{
 					public static LocString NAME = "Sample";
+
+					public static LocString HOVERACTION = "COPY SELECTION";
 				}
 
 				public class HEATGUN
 				{
 					public static LocString NAME = "Heat Gun";
+
+					public static LocString HOVERACTION = "PAINT HEAT";
 				}
 
 				public class SPAWNER
 				{
 					public static LocString NAME = "Spawner";
+
+					public static LocString HOVERACTION = "SPAWN";
 				}
 
 				public class CLEAR_FLOOR
 				{
 					public static LocString NAME = "Clear Floor";
+
+					public static LocString HOVERACTION = "DELETE DEBRIS";
 				}
 
 				public class DESTROY
 				{
 					public static LocString NAME = "Destroy";
+
+					public static LocString HOVERACTION = "DELETE";
 				}
 
 				public class SPAWN_ENTITY
@@ -6139,6 +6154,8 @@ namespace STRINGS
 				public class FOW
 				{
 					public static LocString NAME = "Reveal";
+
+					public static LocString HOVERACTION = "DE-FOG";
 				}
 			}
 
@@ -6474,9 +6491,9 @@ namespace STRINGS
 
 					public class PERKS
 					{
-						public static LocString NAME = "<b><size=13>Job Training:</size></b>";
+						public static LocString NAME = "<b><size=13>Skill Training:</size></b>";
 
-						public static LocString TOOLTIP = "These are permanent skills {0} gained from previous jobs";
+						public static LocString TOOLTIP = "These are permanent skills {0} gained from learned skills";
 					}
 
 					public class CURRENT_ROLE
@@ -6834,7 +6851,7 @@ namespace STRINGS
 
 				public static LocString DISEASEEMITTEDPERUSE = "Produces " + FormatAsPositiveRate("{1}") + " of " + PRE_KEYWORD + "{0}" + PST_KEYWORD + " per use";
 
-				public static LocString DISEASECONSUMEDPERUSE = "Removes " + FormatAsNegativeRate("{0}") + " of any " + PRE_KEYWORD + "Germs" + PST_KEYWORD + " per use";
+				public static LocString DISEASECONSUMEDPERUSE = "Removes " + FormatAsNegativeRate("{0}") + " per use";
 
 				public static LocString ELEMENTCONSUMEDPERUSE = "Consumes " + FormatAsNegativeRate("{1}") + " of " + PRE_KEYWORD + "{0}" + PST_KEYWORD + " per use";
 
@@ -7051,7 +7068,7 @@ namespace STRINGS
 
 			public static LocString REFILLOXYGENTANK = "Refills Exosuit " + EQUIPMENT.PREFABS.OXYGEN_TANK.NAME;
 
-			public static LocString DUPLICANTMOVEMENTBOOST = "Runspeed: +{0}";
+			public static LocString DUPLICANTMOVEMENTBOOST = "Runspeed: {0}";
 
 			public static LocString STRESSREDUCEDPERMINUTE = FormatAsLink("Stress", "STRESS") + ": {0} per minute";
 
@@ -7216,7 +7233,7 @@ namespace STRINGS
 
 				public static LocString IDEAL_PRESSURE = "This plant requires " + PRE_KEYWORD + "Gas" + PST_KEYWORD + " pressures above <b>{0}</b> for basic growth";
 
-				public static LocString REQUIRES_TEMPERATURE = "Internal " + PRE_KEYWORD + "Temperature" + PST_KEYWORD + " must be between <b>>{0}</b> and <b>{1}</b> for basic growth";
+				public static LocString REQUIRES_TEMPERATURE = "Internal " + PRE_KEYWORD + "Temperature" + PST_KEYWORD + " must be between <b>{0}</b> and <b>{1}</b> for basic growth";
 
 				public static LocString IDEAL_TEMPERATURE = "This plant requires internal " + PRE_KEYWORD + "Temperature" + PST_KEYWORD + " between <b>{0}</b> and <b>{1}</b> for basic growth";
 
@@ -7226,7 +7243,7 @@ namespace STRINGS
 
 				public static LocString REQUIRES_RECEPTACLE = "This plant must be housed in a " + FormatAsLink("Planter Box", "PLANTERBOX") + ", " + FormatAsLink("Farm Tile", "FARMTILE") + ", or " + FormatAsLink("Hydroponic Farm", "HYDROPONICFARM") + " farm to grow domestically";
 
-				public static LocString EMITS_LIGHT = "Emits " + PRE_KEYWORD + "Light" + PST_KEYWORD + "\n\nDuplicants can operate buildings more quickly when the building is lit.";
+				public static LocString EMITS_LIGHT = "Emits " + PRE_KEYWORD + "Light" + PST_KEYWORD + "\n\nDuplicants can operate buildings more quickly when they're well lit";
 
 				public static LocString SEED_PRODUCTION_DIG_ONLY = "May be replanted, but will produce no further " + PRE_KEYWORD + "Seeds" + PST_KEYWORD;
 
@@ -7379,7 +7396,7 @@ namespace STRINGS
 			{
 				public static LocString WARNING_TITLE = "Long Commutes";
 
-				public static LocString WARNING_MESSAGE = "Your Duplicants are spending a significant amount of time traveling between their errands (> {0})";
+				public static LocString WARNING_MESSAGE = "My Duplicants are spending a significant amount of time traveling between their errands (> {0})";
 			}
 
 			public class TRAVEL_TIME
@@ -7995,7 +8012,7 @@ namespace STRINGS
 
 		public static LocString WELCOMEMESSAGETITLE = "- ALERT -";
 
-		public static LocString WELCOMEMESSAGEBODY = "I've awoken at the location, but my colonization efforts have already hit a hitch. My Printing Pod was meant to land on the planet's surface, but became trapped many miles underground instead.\n\nAlthough the conditions are not ideal, it's imperative that I establish a colony here and begin mounting efforts to escape.";
+		public static LocString WELCOMEMESSAGEBODY = "I've awoken at the location, but my colonization efforts have already hit a hitch. I was supposed to land on the planet's surface, but became trapped many miles underground instead.\n\nAlthough the conditions are not ideal, it's imperative that I establish a colony here and begin mounting efforts to escape.";
 
 		public static LocString WELCOMEMESSAGEBEGIN = "BEGIN";
 

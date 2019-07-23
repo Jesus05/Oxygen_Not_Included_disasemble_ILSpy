@@ -472,9 +472,9 @@ namespace STRINGS
 		{
 			public class BODY
 			{
-				public static LocString EMAILHEADER1 = "<smallcaps>To: <b>Director Stern</b><size=12><alpha=#AA> <jstern@gravitas.nova></size></color>\nFrom: <b>Dr. McClintock</b><size=12><alpha=#AA> <jmcclintock@gravitas.nova></color></size></smallcaps>\n------------------\n";
+				public static LocString EMAILHEADER1 = "<smallcaps>To: <b>Director Stern</b><size=12><alpha=#AA> <jstern@gravitas.nova></size></color>\nFrom: <b>Dr. Broussard</b><size=12><alpha=#AA> <obroussard@gravitas.nova></color></size></smallcaps>\n------------------\n";
 
-				public static LocString EMAILHEADER2 = "<smallcaps>To: <b>Dr. McClintock</b><size=12><alpha=#AA> <jmcclintock@gravitas.nova></size></color>\nFrom: <b>Director Stern</b><alpha=#AA><size=12> <jstern@gravitas.nova></size></color></smallcaps>\n------------------\n";
+				public static LocString EMAILHEADER2 = "<smallcaps>To: <b>Dr. Broussard</b><size=12><alpha=#AA> <obroussard@gravitas.nova></size></color>\nFrom: <b>Director Stern</b><alpha=#AA><size=12> <jstern@gravitas.nova></size></color></smallcaps>\n------------------\n";
 
 				public static LocString CONTAINER2 = "<indent=5%>Director,\n\nEngineering has requested the brainmaps of all blueprint subjects for the development of a podlinked software and I am reluctant to oblige.\n\nI believe they are seeking a way to exert temporary control over implanted subjects, and I fear this avenue of research may be ethically unsound.</indent>";
 
@@ -482,11 +482,11 @@ namespace STRINGS
 
 				public static LocString CONTAINER4 = "<indent=5%>You can't be serious, Jacquelyn?</indent>";
 
-				public static LocString CONTAINER5 = "<indent=5%>You signed off on cranial chip implantation, why would this be where you draw the line?\n\nIt would be an invaluable safety measure and protect your printing subjects.</indent>";
+				public static LocString CONTAINER5 = "<indent=5%>You signed off on cranial chip implantation. Why would this be where you draw the line?\n\nIt would be an invaluable safety measure and protect your printing subjects.</indent>";
 
-				public static LocString CONTAINER6 = "<indent=5%>It just gives me a bad feeling.\n\nIf you insist on going forward on this I can't stop you, but I'd ask that you move me off the project.</indent>";
+				public static LocString CONTAINER6 = "<indent=5%>It just gives me a bad feeling.\n\nI can't stop you if you insist on going forward with this, but I'd ask that you remove me from the project.</indent>";
 
-				public static LocString SIGNATURE1 = "\n-Dr. McClintock\n<size=11>Bioengineering Department\nThe Gravitas Facility</size>\n------------------\n";
+				public static LocString SIGNATURE1 = "\n-Dr. Broussard\n<size=11>Bioengineering Department\nThe Gravitas Facility</size>\n------------------\n";
 
 				public static LocString SIGNATURE2 = "\n-Director Stern\n<size=11>The Gravitas Facility</size>\n------------------\n";
 			}
@@ -504,15 +504,15 @@ namespace STRINGS
 		{
 			public class BODY
 			{
-				public static LocString EMAILHEADER1 = "<smallcaps>To: <b>Director Stern</b><size=12><alpha=#AA> <jstern@gravitas.nova></color></size>\nFrom: <b>Dr. McClintock</b><size=12><alpha=#AA> <jmcclintock@gravitas.nova></color></size></smallcaps>\n------------------\n";
+				public static LocString EMAILHEADER1 = "<smallcaps>To: <b>Director Stern</b><size=12><alpha=#AA> <jstern@gravitas.nova></color></size>\nFrom: <b>Dr. Broussard</b><size=12><alpha=#AA> <obroussard@gravitas.nova></color></size></smallcaps>\n------------------\n";
 
-				public static LocString EMAILHEADER2 = "<smallcaps>To: <b>Dr. McClintock</b><alpha=#AA><size=12> <jmcclintock@gravitas.nova></size></color>\nFrom: <b>Director Stern</b><alpha=#AA><size=12> <jstern@gravitas.nova></color></smallcaps></size>\n------------------\n";
+				public static LocString EMAILHEADER2 = "<smallcaps>To: <b>Dr. Broussard</b><alpha=#AA><size=12> <obroussard@gravitas.nova></size></color>\nFrom: <b>Director Stern</b><alpha=#AA><size=12> <jstern@gravitas.nova></color></smallcaps></size>\n------------------\n";
 
 				public static LocString CONTAINER2 = "<indent=5%>Director,\n\nI have been thinking, and it occurs to me that our subjects will likely travel outside our range of radio contact when establishing new colonies.\n\nColonies travel into the cosmos as representatives of humanity, and I believe it is our duty to preserve the planet's non-scientific knowledge in addition to practical information.\n\nI would like to make a formal request that comprehensive arts and cultural histories make their way onto the microchip databases.</indent>";
 
 				public static LocString CONTAINER3 = "<indent=5%>Doctor,\n\nIf there is room available after the necessary scientific and survival knowledge has been uploaded, I will see what I can do.</indent>";
 
-				public static LocString SIGNATURE1 = "\n-Dr. McClintock\n<size=11>Bioengineering Department\nThe Gravitas Facility</size>\n------------------\n";
+				public static LocString SIGNATURE1 = "\n-Dr. Broussard\n<size=11>Bioengineering Department\nThe Gravitas Facility</size>\n------------------\n";
 
 				public static LocString SIGNATURE2 = "\n-Director Stern\n<size=11>The Gravitas Facility</size>\n------------------\n";
 			}
@@ -530,9 +530,9 @@ namespace STRINGS
 			{
 				public static LocString EMAILHEADER1 = "<smallcaps>To: <b>Director Stern</b><alpha=#AA><size=12> <jstern@gravitas.nova></size></color>\nFrom: <b>Dr. Jones</b><alpha=#AA><size=12> <ejones@gravitas.nova></smallcaps>\n------------------\n";
 
-				public static LocString CONTAINER2 = "<indent=5%>Director,\n\nEverything went well. McClintock was reluctant at first, but she has little alternative given the nature of her work and the recent turn of events.\n\nShe can begin at your convenience.</indent>";
+				public static LocString CONTAINER2 = "<indent=5%>Director,\n\nEverything went well. Broussard was reluctant at first, but she has little alternative given the nature of her work and the recent turn of events.\n\nShe can begin at your convenience.</indent>";
 
-				public static LocString SIGNATURE1 = "\nDr. Jonesn\n<size=11>Information and Statistics Department\nThe Gravitas Facility</size>\n------------------\n";
+				public static LocString SIGNATURE1 = "\nXOXO,\nDr. Jonesn\n<size=11>Information and Statistics Department\nThe Gravitas Facility</size>\n------------------\n";
 			}
 
 			public static LocString TITLE = "Results from Atomicon";
@@ -548,7 +548,7 @@ namespace STRINGS
 
 				public static LocString EMAILHEADER2 = "<smallcaps>To: <b>Dr. Jones</b><alpha=#AA><size=12> <ejones@gravitas.nova></size></color>\nFrom: <b>Dr. Summers</b><alpha=#AA><size=12> <jsummers@gravitas.nova></size></color></smallcaps>\n------------------\n";
 
-				public static LocString CONTAINER1 = "<indent=5%>Oh my goddd I found out today that Frankie's one of those people who takes pictures of their food and uploads them to some boring blog somewhere.\n\nYou HAVE to come to lunch with us and see, they spend so long taking pictures that the food gets cold and they have to ask the waiter to reheat it, it's SO FUNNY.</indent>";
+				public static LocString CONTAINER1 = "<indent=5%>Oh my goddd I found out today that Frankie's one of those people who takes pictures of their food and uploads them to some boring blog somewhere.\n\nYou HAVE to come to lunch with us and see, they spend so long taking pictures that the food gets cold and they have to ask the waiter to reheat it. It's SO FUNNY.</indent>";
 
 				public static LocString CONTAINER2 = "<indent=5%>Oh cool, Frankie's writing a new post for <i>Toast of the Town</i>? I'd love to tag along and \"see how the sausage is made\" so to speak, haha.\n\nI'll see you guys in a bit! :)</indent>";
 
@@ -572,7 +572,7 @@ namespace STRINGS
 			{
 				public static LocString EMAILHEADER1 = "<smallcaps>To: <b>Dr. Techna</b><alpha=#AA><size=12> <ntechna@gravitas.nova></size></color>\nFrom: <b>Dr. Jones</b><alpha=#AA><size=12> <ejones@gravitas.nova></size></color></smallcaps>\n------------------\n";
 
-				public static LocString CONTAINER1 = "<indent=5%>Omg, <i>hi</i> Nikola!\n\nHave you heard about the super weird thing that's been happening in the kitchen lately? Joshua's lunch has disappeared from the fridge like, every day for the past week!\n\nThere's a <i>ton</i> of cameras in that room too but all anyone can see is this like, spiky blond hair behind the fridge door.\n\nSo weird right? ;)\n\nAnyway, totally unrelated, but Gravitas' computer system has been having this inexplicable glitch where datasets going back six months get <i>totally</i> wiped for any employee with the initials \"N.T.\"\n\nDon't worry though! I'm sure I'll have it fixed before it affects any of <i>your</i> work.\n\nByeee!</indent>";
+				public static LocString CONTAINER1 = "<indent=5%>Omg, <i>hi</i> Nikola!\n\nHave you heard about the super weird thing that's been happening in the kitchen lately? Joshua's lunch has disappeared from the fridge like, every day for the past week!\n\nThere's a <i>ton</i> of cameras in that room too but all anyone can see is like this spiky blond hair behind the fridge door.\n\nSo <i>weird</i> right? ;)\n\nAnyway, totally unrelated, but our computer system's been having this <i>glitch</i> where datasets going back for like half a year get <i>totally</i> wiped for all employees with the initials \"N.T.\"\n\nIsn't it weird how specific that is? Don't worry though! I'm sure I'll have it fixed before it affects any of <i>your</i> work.\n\nByeee!</indent>";
 
 				public static LocString SIGNATURE1 = "\nXOXO,\nDr. Jones\n<size=11>Information and Statistics Department\nThe Gravitas Facility</size>\n------------------\n";
 			}
@@ -646,7 +646,7 @@ namespace STRINGS
 			{
 				public static LocString EMAILHEADER1 = "<smallcaps>To: <b>All</b>\nFrom: <b>[REDACTED]</b></smallcaps>\n------------------\n";
 
-				public static LocString CONTAINER2 = "<indent=5%>Attention Gravitas Facility personnel;\n\nPlease welcome our newest staff member, Jodi McClintock, PhD.\n\nDr. McClintock will be leading our upcoming genetics project and has been installed in our bioengineering department.\n\nBe sure to offer her our warmest welcome.</indent>";
+				public static LocString CONTAINER2 = "<indent=5%>Attention Gravitas Facility personnel;\n\nPlease welcome our newest staff member, Olivia Broussard, PhD.\n\nDr. Broussard will be leading our upcoming genetics project and has been installed in our bioengineering department.\n\nBe sure to offer her our warmest welcome.</indent>";
 
 				public static LocString SIGNATURE1 = "\n[REDACTED]\n<size=11>Personnel Coordinator\nThe Gravitas Facility</indent>\n------------------\n";
 			}
@@ -678,7 +678,7 @@ namespace STRINGS
 			{
 				public static LocString EMAILHEADER1 = "<smallcaps>To: <b>[REDACTED]</b>\nFrom: <b>[REDACTED]</b></smallcaps>\n------------------\n";
 
-				public static LocString CONTAINER2 = "<indent=5%>I'm almost certain now that the Facility's stolen our genetic information.\n\nForty-odd employees would make for mighty convenient lab rats, and even if we discovered what Gravitas did, we wouldn't have a lot of legal options. We can't exactly go to the public given the nature of our work.\n\nI shudder to think about what sort of experiments they might be conducting on my DNA, but I have to keep my mouth shut.\n\nI can't risk losing my job.</indent>";
+				public static LocString CONTAINER2 = "<indent=5%>I'm almost certain now that the Facility's stolen our genetic information.\n\nForty-odd employees would make for mighty convenient lab rats, and even if we discovered what Gravitas did, we wouldn't have a lot of legal options. We can't exactly go to the public given the nature of our work.\n\nI can't stop thinking about what sort of experiments they might be conducting on my DNA, but I have to keep my mouth shut.\n\nI can't risk losing my job.</indent>";
 
 				public static LocString SIGNATURE1 = "\n[REDACTED]\n<size=11>The Gravitas Facility</size>\n------------------\n";
 			}
@@ -896,7 +896,7 @@ namespace STRINGS
 		{
 			public class BODY
 			{
-				public static LocString CONTAINER1 = "Joshua: Hey Mr. Kraus, I'm passing around the collection pan. Wanna pitch in a couple bucks to get a cake for Ellie?\n\nMax: Uh... I think I'll pass.\n\nJoshua: C'mon Otto, it's her birthday.\n\nOtto: Alright, fine. But this is all I have on me.\n\nOtto: I don't get why you hang out with her. Isn't she kind of... you know, mean?\n\nJoshua: Even the meanest people have a little niceness in them somewhere.\n\nOtto: Huh. Good luck finding it.\n\nJoshua: Thanks for the cake money, Otto.\n------------------\n";
+				public static LocString CONTAINER1 = "Joshua: Hey Mr. Kraus, I'm passing around the collection pan. Wanna pitch in a couple bucks to get a cake for Ellie?\n\nOtto: Uh... I think I'll pass.\n\nJoshua: C'mon Otto, it's her birthday.\n\nOtto: Alright, fine. But this is all I have on me.\n\nOtto: I don't get why you hang out with her. Isn't she kind of... you know, mean?\n\nJoshua: Even the meanest people have a little niceness in them somewhere.\n\nOtto: Huh. Good luck finding it.\n\nJoshua: Thanks for the cake money, Otto.\n------------------\n";
 
 				public static LocString CONTAINER2 = "Ellie: Nice cake. I bet it wasn't easy to like, strong arm everyone into buying it.\n\nJoshua: You know, if you were a little nicer to people they might want to spend more time with you.\n\nEllie: Pfft, please. Friends are about <i>quality</i>, not quantity, Josh.\n\nJoshua: Wow! Was that a roundabout compliment I just heard?\n\nEllie: What? Gross, ew. Stop that.\n\nJoshua: Oh, don't worry, I won't tell anyone. I'm not much of a gossip.";
 			}
@@ -910,7 +910,7 @@ namespace STRINGS
 		{
 			public class BODY
 			{
-				public static LocString CONTAINER1 = "<smallcaps>[VOICE RECOGNITION INITIALIZED]\n[SUBJECTS IDENTIFIED: A001, A435, B111]</smallcaps>\n\n[LOG BEGINS]\n\nTechnician: Thank-you for the fingerprints, doctor. We just need a quick voice sample, then you can be on your way.\n\nDr. McClintock: Wow Jackie, your new security's no joke.\n\nDirector: Please address me as \"Director\" while on Facility grounds.\n\nDr. McClintock: ...Right.\n\n(clicking)\n\nTechnician: This should only take a moment. Speak clearly and the system will derive a vocal signature for you.\n\nTechnician: When you're ready.\n\n(throat clearing)\n\nDr. McClintock: Security code B111, Dr. Jodi McClintock. Gravitas Facility Bioengineering Department.\n\n(pause)\n\nTechnician: Great.\n\nDr. McClintock: What was that light just now?\n\nDirector: A basic security scan. No need for concern.\n\n(machine printing)\n\nTechnician: Here's your ID. You should have access to all doors in the facility now, Dr. McClintock.\n\nDr. McClintock: Thank-you.\n\nDirector: Come along, doctor.\n\n[LOG ENDS]";
+				public static LocString CONTAINER1 = "<smallcaps>[VOICE RECOGNITION INITIALIZED]\n[SUBJECTS IDENTIFIED: A001, A435, B111]</smallcaps>\n\n[LOG BEGINS]\n\nTechnician: Thank-you for the fingerprints, doctor. We just need a quick voice sample, then you can be on your way.\n\nDr. Broussard: Wow Jackie, your new security's no joke.\n\nDirector: Please address me as \"Director\" while on Facility grounds.\n\nDr. Broussard: ...Right.\n\n(clicking)\n\nTechnician: This should only take a moment. Speak clearly and the system will derive a vocal signature for you.\n\nTechnician: When you're ready.\n\n(throat clearing)\n\nDr. Broussard: Security code B111, Dr. Olivia Broussard. Gravitas Facility Bioengineering Department.\n\n(pause)\n\nTechnician: Great.\n\nDr. Broussard: What was that light just now?\n\nDirector: A basic security scan. No need for concern.\n\n(machine printing)\n\nTechnician: Here's your ID. You should have access to all doors in the facility now, Dr. Broussard.\n\nDr. Broussard: Thank-you.\n\nDirector: Come along, doctor.\n\n[LOG ENDS]";
 			}
 
 			public static LocString TITLE = "Employee Processing";
@@ -922,7 +922,7 @@ namespace STRINGS
 		{
 			public class BODY
 			{
-				public static LocString CONTAINER1 = "<smallcaps>[VOICE RECOGNITION INITIALIZED]\n[SUBJECTS IDENTIFIED: A001, B111]</smallcaps>\n\n[LOG BEGINS]\n\nMcClintock: Director, do you know where my rats have been moved to? I asked around the bioengineering division but I was referred back to you.\n\nDirector: Hm? Oh, yes, they've been removed.\n\nMcClintock: \"Removed\"?\n\nDirector: Discarded. I'm sorry, did you still need them? The reports showed your experiments with them were completed.\n\nMcClintock: No, I... I'd collected all the data I needed, I just --\n\nDirector: -- Doctor. You weren't making pets out of test subjects, were you?\n\nMcClintock: Don't be ridiculous, I --\n\nDirector: -- Good.They were horrible to look at anyway. All those bumps.\n\nMcClintock: In the future, please do not mess with my things. It... disturbs me.\n\nDirector: I will notify you beforehand next time, doctor.\n\n[LOG ENDS]";
+				public static LocString CONTAINER1 = "<smallcaps>[VOICE RECOGNITION INITIALIZED]\n[SUBJECTS IDENTIFIED: A001, B111]</smallcaps>\n\n[LOG BEGINS]\n\nBroussard: Director, do you know where my rats have been moved to? I asked around the bioengineering division but I was referred back to you.\n\nDirector: Hm? Oh, yes, they've been removed.\n\nBroussard: \"Removed\"?\n\nDirector: Discarded. I'm sorry, did you still need them? The reports showed your experiments with them were completed.\n\nBroussard: No, I... I'd collected all the data I needed, I just --\n\nDirector: -- Doctor. You weren't making pets out of test subjects, were you?\n\nBroussard: Don't be ridiculous, I --\n\nDirector: -- Good.They were horrible to look at anyway. All those bumps.\n\nBroussard: In the future, please do not mess with my things. It... disturbs me.\n\nDirector: I will notify you beforehand next time, doctor.\n\n[LOG ENDS]";
 			}
 
 			public static LocString TITLE = "Moved Rats";
@@ -974,9 +974,9 @@ namespace STRINGS
 
 				public static LocString CONTAINER2 = "I keep finding myself staring at my computer screen, totally unable to remember what it was I was doing.\n\nI try to force myself to type up some notes or analyze my data but it's like my brain is paralyzed, I can't get anything done.\n\nI'll have to stay late to make up for all this time I've wasted staying late.\n------------------\n";
 
-				public static LocString CONTAINER3 = "Dr. McClintock told me I looked half dead and sent me home today. I don't think she even has the authority to do that, but I did as I was told. She wasn't messing around if you know what I mean.\n\nI can probably get a head start on my paper from home today, anyway.\n\nI think I have an idea for a circuit configuration that will improve the battery life of all our technologies by a whole 2.3%.\n------------------\n";
+				public static LocString CONTAINER3 = "Dr. Broussard told me I looked half dead and sent me home today. I don't think she even has the authority to do that, but I did as I was told. She wasn't messing around if you know what I mean.\n\nI can probably get a head start on my paper from home today, anyway.\n\nI think I have an idea for a circuit configuration that will improve the battery life of all our technologies by a whole 2.3%.\n------------------\n";
 
-				public static LocString CONTAINER4 = "I got home yesterday fully intending to work on my paper after McClintock sent me home, but the second I walked in the door I hit the pillow and didn't get back up. I slept for <i>12 straight hours</i>.\n\nI had no idea I needed that. When I got into the lab this morning I looked over my work from the past few weeks, and realized it's completely useless.\n\nIt'll take me hours to correct all the mistakes I made these past few months. Is this what I was killing myself for? I'm such a rube, I owe McClintock a huge thanks.\n\nI'll start keeping more regular hours from now on... Also, I was considering maybe getting a dog.";
+				public static LocString CONTAINER4 = "I got home yesterday fully intending to work on my paper after Broussard sent me home, but the second I walked in the door I hit the pillow and didn't get back up. I slept for <i>12 straight hours</i>.\n\nI had no idea I needed that. When I got into the lab this morning I looked over my work from the past few weeks, and realized it's completely useless.\n\nIt'll take me hours to correct all the mistakes I made these past few months. Is this what I was killing myself for? I'm such a rube, I owe Broussard a huge thanks.\n\nI'll start keeping more regular hours from now on... Also, I was considering maybe getting a dog.";
 			}
 
 			public static LocString TITLE = "Personal Journal: B556";
@@ -1008,7 +1008,7 @@ namespace STRINGS
 		{
 			public class BODY
 			{
-				public static LocString CONTAINER1 = "[LOG BEGINS]\n\nThe Director has suggested implanting artificial memories during print, but despite the great strides made in our research under her direction, such a thing can barely be considered more than a pipedream.\n\nFor the moment we remain focused on eliminating the remaining glitches in the system, as well as developing effective education and training routines for printed subjects.\n\nSuggest: Omega 3 supplements and mentally stimulating enclosure apparatuses to accompany tutelage.\n\nDr. McClintock signing off.\n\n[LOG ENDS]";
+				public static LocString CONTAINER1 = "[LOG BEGINS]\n\nThe Director has suggested implanting artificial memories during print, but despite the great strides made in our research under her direction, such a thing can barely be considered more than a pipedream.\n\nFor the moment we remain focused on eliminating the remaining glitches in the system, as well as developing effective education and training routines for printed subjects.\n\nSuggest: Omega 3 supplements and mentally stimulating enclosure apparatuses to accompany tutelage.\n\nDr. Broussard signing off.\n\n[LOG ENDS]";
 			}
 
 			public static LocString TITLE = "Pipedream";
@@ -1022,7 +1022,7 @@ namespace STRINGS
 			{
 				public static LocString CONTAINER1 = "<smallcaps>[VOICE RECOGNITION INITIALIZED]\n[SUBJECTS IDENTIFIED: A001, A435]</smallcaps>\n\n[LOG BEGINS]\n\nDirector: Unacceptable.\n\nJones: I'm just telling you the numbers, Director, I'm not responsible for them.\n\nDirector: In your earlier e-mail you claimed the issue would be solved by the Pod.\n\nJones: Yeah, the weight issue. And it was solved. The problem now is the insane amount of power that big thing eats every time it prints a colonist.\n\nDirector: So how do you suppose we meet these target numbers? Fossil fuels are exhausted, nuclear is outlawed, solar is next to impossible with this smog.\n\nJones: I dunno. That's why you've got researchers, I just crunch numbers. Although you should avoid fossil fuels and nuclear energy anyway. If you have to load the rocket up with a couple tons of fuel then we're back to square one on the weight problem. It's gotta be something clever.\n\nDirector: Thank you, Dr. Jones. You may go.\n\n[LOG ENDS]\n------------------\n";
 
-				public static LocString CONTAINER2 = "<smallcaps>[VOICE RECOGNITION INITIALIZED]\n[SUBJECTS IDENTIFIED: A001, B111]</smallcaps>\n\n[LOG BEGINS]\n\nJackie: Dr. Jones projects that traditional fuel will be insufficient for the Pod to make the flight.\n\nJodi: Then we need to change its specs. Use lighter materials, cut weight wherever possible, do widespread optimizations across the whole project.\n\nJackie: We have another option.\n\nJodi: No. Absolutely not. You needed me and I came back, but if you plan to revive our research--\n\nJackie: The world's doomed regardless, Jodi. We need to use any advantage we've got... And just think about it! If we built [REDACTED] technology into the Pod it wouldn't just fix the flight problem, we'd know for a fact it would run uninterrupted for thousands of years, maybe more.";
+				public static LocString CONTAINER2 = "<smallcaps>[VOICE RECOGNITION INITIALIZED]\n[SUBJECTS IDENTIFIED: A001, B111]</smallcaps>\n\n[LOG BEGINS]\n\nJackie: Dr. Jones projects that traditional fuel will be insufficient for the Pod to make the flight.\n\nOlivia: Then we need to change its specs. Use lighter materials, cut weight wherever possible, do widespread optimizations across the whole project.\n\nJackie: We have another option.\n\nOlivia: No. Absolutely not. You needed me and I came back, but if you plan to revive our research--\n\nJackie: The world's doomed regardless, Olivia. We need to use any advantage we've got... And just think about it! If we built [REDACTED] technology into the Pod it wouldn't just fix the flight problem, we'd know for a fact it would run uninterrupted for thousands of years, maybe more.";
 			}
 
 			public static LocString TITLE = "Revisited Numbers";
@@ -1058,7 +1058,7 @@ namespace STRINGS
 		{
 			public class BODY
 			{
-				public static LocString CONTAINER1 = "We've succeeded compressing and expanding small portions of time under .03 milliseconds. This proves that time is something that can be physically acted upon, suggesting that our vision is attainable.\n\nAn unintentional consequence of both the expansion and contraction of time is the \"vacuum\" that is created in the space between the affected portion of time and the much more expansive unaffected portions.\n\nSo far we are seeing that the unaffected time on either side of the portion we act upon will expand or contract to fill the vacuum, although we are unsure how far reaching this consequence is or what effect it has on the laws of the natural universe. At the end of all compression and expansion experiments, alterations to time are undone and leave no lasting change.";
+				public static LocString CONTAINER1 = "We've succeeded compressing and expanding small portions of time under .03 milliseconds. This proves that time is something that can be physically acted upon, suggesting that our vision is attainable.\n\nAn unintentional consequence of both the expansion and contraction of time is the creation of a \"vacuum\" in the space between the affected portion of time and the much more expansive unaffected portions.\n\nSo far, we are seeing that the unaffected time on either side of the manipulated portion will expand or contract to fill the vacuum, although we are unsure how far reaching this consequence is or what effect it has on the laws of the natural universe. At the end of all compression and expansion experiments, alterations to time are undone and leave no lasting change.";
 			}
 
 			public static LocString TITLE = "Encouraging Results";
@@ -1072,10 +1072,10 @@ namespace STRINGS
 			{
 				public static LocString CONTAINER1 = "<b>Incredible Technology From Independent Lab Harnesses Time into Energy</b>";
 
-				public static LocString CONTAINER2 = "Scientists from the recently founded Gravitas Facility have unveiled their first technology prototype, dubbed the \"Temporal Bow\", a device which manipulates the 4th dimension to generate infinite, clean and renewable energy.\n\nWhile it may sound like something from science fiction, facility founder Dr. Jacquelyn Stern confirms that it is very much real.\n\n\"It has already been demonstrated that Newton's Second Law of Motion can be violated by negative mass superfluids under the correct lab conditions,\" she says.\n\n\"If the Laws of Motion can be bent and altered, why not the Laws of Thermodynamics? That was the main intent behind this project.\"\n\nThe Temporal Bow works by rapidly vibrating sections of the 4th dimension to send small quantities of mass forward and backward in time, generating massive amounts of energy with virtually no waste.\n\n\"The fantastic thing about using the 4th dimension as fuel,\" says Stern, \"is that it is really, categorically infinite\".\n\nFor those eagerly awaiting the prospect of human time travel, don't get your hopes up just yet. The Facility says that although they have transported matter through time already, the technology was expressly developed for the purpose of energy generation and is ill-equipped for human transportation.";
+				public static LocString CONTAINER2 = "Scientists from the recently founded Gravitas Facility have unveiled their first technology prototype, dubbed the \"Temporal Bow\", a device which manipulates the 4th dimension to generate infinite, clean and renewable energy.\n\nWhile it may sound like something from science fiction, facility founder Dr. Jacquelyn Stern confirms that it is very much real.\n\n\"It has already been demonstrated that Newton's Second Law of Motion can be violated by negative mass superfluids under the correct lab conditions,\" she says.\n\n\"If the Laws of Motion can be bent and altered, why not the Laws of Thermodynamics? That was the main intent behind this project.\"\n\nThe Temporal Bow works by rapidly vibrating sections of the 4th dimension to send small quantities of mass forward and backward in time, generating massive amounts of energy with virtually no waste.\n\n\"The fantastic thing about using the 4th dimension as fuel,\" says Stern, \"is that it is really, categorically infinite\".\n\nFor those eagerly awaiting the prospect of human time travel, don't get your hopes up just yet. The Facility says that although they have successfully transported matter through time, the technology was expressly developed for the purpose of energy generation and is ill-equipped for human transportation.";
 			}
 
-			public static LocString TITLE = "Nuceloid Article";
+			public static LocString TITLE = "Nucleoid Article";
 
 			public static LocString SUBTITLE = "ENCRYPTION LEVEL: THREE";
 		}
@@ -1106,7 +1106,7 @@ namespace STRINGS
 		{
 			public class BODY
 			{
-				public static LocString CONTAINER1 = "[LOG BEGINS]\n\nDirector: Temporal energy can be reconfigured to vibrate the matter constituting Neutronium at just the right frequency to break it down and disperse it.\n\nDirector: However, it is difficult to stabilize and maintain this reconfigured energy long enough to effectively remove practical amounts of Neutronium in real life scenarios.\n\nDirector: I am looking into making this technology more reliable and compact - this data could potentially have uses in the development of some sort of all-purpose disintegration ray.\n\n[END LOG]";
+				public static LocString CONTAINER1 = "[LOG BEGINS]\n\nDirector: Temporal energy can be reconfigured to vibrate the matter constituting Neutronium at just the right frequency to break it down and disperse it.\n\nDirector: However, it is difficult to stabilize and maintain this reconfigured energy long enough to effectively remove practical amounts of Neutronium in real life scenarios.\n\nDirector: I am looking into making this technology more reliable and compact - this data could potentially have uses in the development of some sort of all purpose disintegration ray.\n\n[END LOG]";
 			}
 
 			public static LocString TITLE = "Possible Applications";
@@ -1122,13 +1122,9 @@ namespace STRINGS
 
 				public static LocString TITLE2 = "Echo Two";
 
-				public static LocString TITLE3 = "Echo Three";
+				public static LocString CONTAINER1 = "Olivia: We've double checked our observational equipment and the computer's warm up is almost finished. We have precautionary personnel in place ready to start a shutdown in the event of a failure.\n\nOlivia: It's time.\n\nJackie: Right.\n\nJackie: Spin the machine up slowly so we can monitor for any abnormal power fluctuations. We start on \"3\".\n\nJackie: \"1\"... \"2\"...\n\nJackie: \"3\".\n\n[There's a metallic clunk. The baritone whirr of machinery can be heard.]\n\nJackie: Something's not right.\n\nOlivia: It's the container... the atom is vibrating too fast.\n\n[The whir of the machinery peels up an octave into a mechanical screech.]\n\nOlivia: We have to abort!\n\nJackie: No, not yet. Drop power from the coolant system and use it to bolster the container. It'll stabilize.\n\nOlivia: But without coolant--\n\nJackie: It will stabilize!\n\n[There's a sharp crackle of electricity.]\n\nOlivia: Drop 40% power from the coolant systems, reroute everything we have to the atomic container! \n\n[The whirring reaches a crescendo, then calms into a steady hum.]\n\nOlivia: That did it. The container is stabilizing.\n\n[Jackie sighs in relief.]\n\nOlivia: But... Look at these numbers.\n\nJackie: My god. Are these real?\n\nOlivia: Yes, I'm certain of it. Jackie, I think we did it.\n\nOlivia: I think we created an infinite energy source.\n------------------\n";
 
-				public static LocString TITLE4 = "Echo Four";
-
-				public static LocString CONTAINER1 = "Jodi: We've double checked our observational equipment and the computer's warm up is almost finished. We have precautionary personnel in place ready to start a shutdown in the event of a failure.\n\nJodi: It's time.\n\nJackie: Right.\n\nJackie: Spin the machine up slowly so we can monitor for any abnormal power fluctuations. We start on \"3\".\n\nJackie: \"1\"... \"2\"...\n\nJackie: \"3\".\n\n[There's a metallic clunk. The baritone whirr of machinery can be heard.]\n\nJackie: Something's not right.\n\nJodi: It's the container... the atom is vibrating too fast.\n\n[The whir of the machinery peels up an octave into a mechanical screech.]\n\nJodi: We have to abort!\n\nJackie: No, not yet. Drop power from the coolant system and use it to bolster the container. It'll stabilize.\n\nJodi: But without coolant--\n\nJackie: It will stabilize!\n\n[There's a sharp crackle of electricity.]\n\nJodi: Drop 40% power from the coolant systems, reroute everything we have to the atomic container! \n\n[The whirring reaches a crescendo, then calms into a steady hum.]\n\nJodi: That did it. The container is stabilizing.\n\n[Jackie sighs in relief.]\n\nJodi: But... Look at these numbers.\n\nJackie: My god. Are these real?\n\nJodi: Yes, I'm certain of it. Jackie, I think we did it.\n\nJodi: I think we created an infinite energy source.\n------------------\n";
-
-				public static LocString CONTAINER2 = "Jodi: What on earth is this?\n\n[An open palm slams papers down on a desk.]\n\nJodi: These readings show that hundreds of pounds of Neutronium are building up in the machine every shift. When were you going to tell me?\n\nJackie: I'm managing it.\n\nJodi: Jackie, we don't have the luxury of taking shortcuts, not when safety is on the line.\n\nJackie: I think I'm capable of overseeing my own safety.\n\nJodi: I'm not just concerned about <i>your</i> safety! We don't understand the longterm implications of what we're developing here... the manipulations we conduct in this facility could have rippling effects throughout the world, maybe even the universe.\n\nJackie: Don't be such a fearmonger. It's not befitting of a scientist. Besides, I'll remind you this research has the potential to stop the fuel wars in their tracks and the end suffering of thousands. Every month we spend on trials here delays that.\n\nJodi: I can't be a part of this, Jackie.\n------------------\n";
+				public static LocString CONTAINER2 = "Olivia: What on earth is this?\n\n[An open palm slams papers down on a desk.]\n\nOlivia: These readings show that hundreds of pounds of Neutronium are building up in the machine every shift. When were you going to tell me?\n\nJackie: I'm handling it.\n\nOlivia: We don't have the luxury of taking shortcuts. Not when safety is on the line.\n\nJackie: I think I'm capable of overseeing my own safety.\n\nOlivia: I'm not just concerned about <i>your</i> safety! We don't understand the longterm implications of what we're developing here... the manipulations we conduct in this facility could have rippling effects throughout the world, maybe even the universe.\n\nJackie: Don't be such a fearmonger. It's not befitting of a scientist. Besides, I'll remind you this research has the potential to stop the fuel wars in their tracks and end the suffering of thousands. Every day we spend on trials here delays that.\n\nOlivia: It's dangerous.\n\nJackie: Your concern is noted.\n------------------\n";
 			}
 
 			public static LocString TITLE = "Planetary Echoes";
@@ -1142,7 +1138,7 @@ namespace STRINGS
 			{
 				public static LocString CONTAINER1 = "<b>Party Time for Local Students</b>";
 
-				public static LocString CONTAINER2 = "Students at the Elion University of Science and Technology have held an unconventional party this weekend.\n\nWhile their peers may have been out until the wee hours wearing lampshades on their heads and drawing eyebrows on sleeping colleagues, students Jackie Stern and Jodi McClintock spent the weekend in their dorm, refreshments and decorations ready, waiting for the arrival of the guests of honor: themselves.\n\nThe two prospective STEM students, who study theoretical physics with a focus on the workings of space time, conducted the experiment under the assumption that, were their theories about the malleability of space time to ever come to fruition, their future selves could travel back in time to greet them at the party, proving the existence of time travel.\n\nThey weren't inconsiderate of their future selves' busy schedules though; should the guests of honor be unable to attend, they were encouraged to send back a message using the codeword \"Hourglass\" to communicate that, while they certainly wanted to come, they were simply unable.\n\nSadly no one RSVP'd or arrived to the party, but that did not dishearten Jodi or Jackie.\n\nAs Jodi put it, \"It just meant more snacks for us!\"";
+				public static LocString CONTAINER2 = "Students at the Elion University of Science and Technology have held an unconventional party this weekend.\n\nWhile their peers may have been out until the wee hours wearing lampshades on their heads and drawing eyebrows on sleeping colleagues, students Jackie Stern and Olivia Broussard spent the weekend in their dorm, refreshments and decorations ready, waiting for the arrival of the guests of honor: themselves.\n\nThe two prospective STEM students, who study theoretical physics with a focus on the workings of space time, conducted the experiment under the assumption that, were their theories about the malleability of space time to ever come to fruition, their future selves could travel back in time to greet them at the party, proving the existence of time travel.\n\nThey weren't inconsiderate of their future selves' busy schedules though; should the guests of honor be unable to attend, they were encouraged to send back a message using the codeword \"Hourglass\" to communicate that, while they certainly wanted to come, they were simply unable.\n\nSadly no one RSVP'd or arrived to the party, but that did not dishearten Olivia or Jackie.\n\nAs Olivia put it, \"It just meant more snacks for us!\"";
 			}
 
 			public static LocString TITLE = "Campus Newspaper Article";
@@ -1154,7 +1150,7 @@ namespace STRINGS
 		{
 			public class BODY
 			{
-				public static LocString CONTAINER1 = "When we discuss Time as a concrete aspect of the universe, not seconds on a clock or perceptions of the mind, it is important first of all to establish that we are talking about a unique dimension that layers into the three physical dimensions of space; width, length, depth.\n\nWe conceive of Real Time as a straight line, one dimensional, uncurved and stretching forward infinitely. This is referred to as the \"Arrow of Time\".\n\nLogically this Arrow can move only forward and can never be reversed, as such a reversal would break the natural laws of the universe. Effect would precede cause and universal entropy would be undone in a blatant violation of the Second Law.\n\nStill, one can't help but be curious; what if the Arrow's trajectory could be curved? What if it could be redirected, guided, or loosed? What if we could create Time's Bow?";
+				public static LocString CONTAINER1 = "When we discuss Time as a concrete aspect of the universe, not seconds on a clock or perceptions of the mind, it is important first of all to establish that we are talking about a unique dimension that layers into the three physical dimensions of space: length, width, depth.\n\nWe conceive of Real Time as a straight line, one dimensional, uncurved and stretching forward infinitely. This is referred to as the \"Arrow of Time\".\n\nLogically this Arrow can move only forward and can never be reversed, as such a reversal would break the natural laws of the universe. Effect would precede cause and universal entropy would be undone in a blatant violation of the Second Law.\n\nStill, one can't help but wonder; what if the Arrow's trajectory could be curved? What if it could be redirected, guided, or loosed? What if we could create Time's Bow?";
 			}
 
 			public static LocString TITLE = "Director's Notes";
@@ -1166,7 +1162,7 @@ namespace STRINGS
 		{
 			public class BODY
 			{
-				public static LocString CONTAINER1 = "I've been unable to shake the notion of the Bow.\n\nThe thought of its mechanics are intriguing to me, and I can only dream of the mark such a device would make upon the world -- imagine, a source of inexhaustible energy!\n\nSo many of humanity's problems could be solved with this one invention - domestic energy, environmental pollution, <i>the fuel wars</i>.\n\nI have to pursue this dream, no matter what.";
+				public static LocString CONTAINER1 = "I've been unable to shake the notion of the Bow.\n\nThe thought of its mechanics are too intriguing, and I can only dream of the mark such a device would make upon the world -- imagine, a source of inexhaustible energy!\n\nSo many of humanity's problems could be solved with this one invention - domestic energy, environmental pollution, <i>the fuel wars</i>.\n\nI have to pursue this dream, no matter what.";
 			}
 
 			public static LocString TITLE = "Time's Arrow Thoughts";
@@ -1217,7 +1213,7 @@ namespace STRINGS
 				public static LocString CONTAINER1 = "<smallcaps><b>Reminder: Mailroom Etiquette</b>\nFrom: <b>Admin</b> <alpha=#AA><admin@gravitas.nova></color>\nTo: <b>All</b></smallcaps>\n------------------\n\n<indent=5%>Please do not have live bees delivered to the office mail room. Requests and orders for experimental test subjects may be processed through admin.\n\n<i>Please request all test subjects through admin.</i>\n\nThank-you.\n\n-Admin\nThe Gravitas Facility</indent>";
 			}
 
-			public static LocString TITLE = "Reminder: Mailroom Etiquette";
+			public static LocString TITLE = "Mailroom Etiquette";
 
 			public static LocString SUBTITLE = "ENCRYPTION LEVEL: NONE";
 		}
@@ -1496,7 +1492,7 @@ namespace STRINGS
 		{
 			public class BODY
 			{
-				public static LocString CONTAINER1 = "<smallcaps>[Voice Recognition Initialized]\n[Subject Identified: B111]</smallcaps>\n\n[LOG BEGINS]\n\n[A throat clears.]\n\nB111: We are now reliably printing healthy, living subjects, though all have exhibited unusual qualities as a result of the cloning process.\n\n[Squeaking sounds can be heard.]\n\nB111: Unusual vocalizations, benign growths, and missing appendages have been seen in all subjects thus far, to varying degrees of severity. It seems that bypassing or accelerating juvenility halts certain critical stages of development. Brain function, however, appears typical.\n\n[Squeaking.]\n\nB111: They also seem quite happy.\n\nB111: Dr. McClintock, signing off.\n\n[LOG ENDS]";
+				public static LocString CONTAINER1 = "<smallcaps>[Voice Recognition Initialized]\n[Subject Identified: B111]</smallcaps>\n\n[LOG BEGINS]\n\n[A throat clears.]\n\nB111: We are now reliably printing healthy, living subjects, though all have exhibited unusual qualities as a result of the cloning process.\n\n[Squeaking sounds can be heard.]\n\nB111: Unusual vocalizations, benign growths, and missing appendages have been seen in all subjects thus far, to varying degrees of severity. It seems that bypassing or accelerating juvenility halts certain critical stages of development. Brain function, however, appears typical.\n\n[Squeaking.]\n\nB111: They also seem quite happy.\n\nB111: Dr. Broussard, signing off.\n\n[LOG ENDS]";
 			}
 
 			public static LocString TITLE = "Initial Success";
@@ -1508,7 +1504,7 @@ namespace STRINGS
 		{
 			public class BODY
 			{
-				public static LocString CONTAINER1 = "[LOG BEGINS]\n\nThe Printing Pod is primed by a synthesized bio-organic concoction the technicians have taken to calling \"Ooze\", a specialized mixture composed of water, carbon, and dozens upon dozens of the trace elements necessary for the creation of life.\n\nThe pod reconstitutes these elements into a living organism using the blueprints we feed it, before finally administering a shock of life.\n\nIt is like any other 3D printer. We just use different ink.\n\nDr. McClintock, signing off.\n\n[LOG ENDS]";
+				public static LocString CONTAINER1 = "[LOG BEGINS]\n\nThe Printing Pod is primed by a synthesized bio-organic concoction the technicians have taken to calling \"Ooze\", a specialized mixture composed of water, carbon, and dozens upon dozens of the trace elements necessary for the creation of life.\n\nThe pod reconstitutes these elements into a living organism using the blueprints we feed it, before finally administering a shock of life.\n\nIt is like any other 3D printer. We just use different ink.\n\nDr. Broussard, signing off.\n\n[LOG ENDS]";
 			}
 
 			public static LocString TITLE = "Biofluid";
@@ -1560,7 +1556,7 @@ namespace STRINGS
 			{
 				public static LocString CONTAINER1 = "[LOG BEGINS]\n\nTraditionally, cloning produces a subject that is genetically identical to the donor but develops independently, producing a being that is, in its own way, unique.\n\nThe pod, conversely, attempts to print an exact atomic copy. Theoretically all neural pathways should be intact and identical to the original subject.\n\nIt's fascinating, given this, that memories are not already inherent in our subjects; however, no cloned subjects as of yet have shown any signs of recognition when introduced to familiar stimuli, such as the donor subject's enclosure.\n\nRefer to Experiment 7D.\n\nRefer to Experiment 7F.";
 
-				public static LocString CONTAINER2 = "\nMemories <i>must</i> be embedded within the physical brainmaps of our subjects. The only question remains how to activate them. Hormones? Chemical supplements? Situational triggers?\n\nThe Director seems eager to move past this problem, and I am concerned at her willingness to bypass essential stages of the research development process.\n\nWe cannot move on to the fine polish of printing systems until the core processes have been perfected - which they have not.\n\nDr. McClintock, signing off.\n\n[LOG ENDS]";
+				public static LocString CONTAINER2 = "\nMemories <i>must</i> be embedded within the physical brainmaps of our subjects. The only question remains how to activate them. Hormones? Chemical supplements? Situational triggers?\n\nThe Director seems eager to move past this problem, and I am concerned at her willingness to bypass essential stages of the research development process.\n\nWe cannot move on to the fine polish of printing systems until the core processes have been perfected - which they have not.\n\nDr. Broussard, signing off.\n\n[LOG ENDS]";
 			}
 
 			public static LocString TITLE = "Memory Dysfunction Log";
@@ -1570,7 +1566,7 @@ namespace STRINGS
 
 		public class AUTOMATION
 		{
-			public static LocString TITLE = "Automation";
+			public static LocString TITLE = UI.FormatAsLink("Automation", "LOGIC");
 
 			public static LocString HEADER_1 = "Automation";
 
@@ -1586,16 +1582,16 @@ namespace STRINGS
 
 			public static LocString HEADER_4 = "Gates";
 
-			public static LocString PARAGRAPH_4 = "The signals of sensor wires can be combined using special buildings called \"Gates\" in order to create complex activation conditions.\nThe " + BUILDINGS.PREFABS.LOGICGATEAND.NAME + " can have two automation wires connected to its input slots, and one connected to its output slots. It will send a \"Green\" signal to its output slot only if it is recieving an \"Green\" signal from both its input slots. This could be used to activate a building only when multiple sensors are detecting something.\n\n";
+			public static LocString PARAGRAPH_4 = "The signals of sensor wires can be combined using special buildings called \"Gates\" in order to create complex activation conditions.\nThe " + BUILDINGS.PREFABS.LOGICGATEAND.NAME + " can have two automation wires connected to its input slots, and one connected to its output slots. It will send a \"Green\" signal to its output slot only if it is receiving a \"Green\" signal from both its input slots. This could be used to activate a building only when multiple sensors are detecting something.\n\n";
 		}
 
 		public class DECORSYSTEM
 		{
-			public static LocString TITLE = "Decor";
+			public static LocString TITLE = UI.FormatAsLink("Decor", "DECOR");
 
 			public static LocString HEADER_1 = "Decor";
 
-			public static LocString PARAGRAPH_1 = "Low Decor can increase Duplicant " + UI.FormatAsLink("Stress", "STRESS") + ". Thankfully, pretty things tend to increase the Decor value of an area. Each Duplicant has a different idea of what is a high enough Decor value. If the average Decor that a Duplicant experiences in a cycle is below their expectations they will suffer a stress pentalty.\n\n";
+			public static LocString PARAGRAPH_1 = "Low Decor can increase Duplicant " + UI.FormatAsLink("Stress", "STRESS") + ". Thankfully, pretty things tend to increase the Decor value of an area. Each Duplicant has a different idea of what is a high enough Decor value. If the average Decor that a Duplicant experiences in a cycle is below their expectations, they will suffer a stress penalty.\n\n";
 
 			public static LocString HEADER_2 = "Calculating Decor";
 
@@ -1605,7 +1601,7 @@ namespace STRINGS
 			{
 				object[] obj = new object[20]
 				{
-					"Many things have an effect on the Decor value of a tile. A building's effect is expressed as a strength value and a radius. Often that effect is postive, but many buildings also lower the decor value of an area too. ",
+					"Many things have an effect on the Decor value of a tile. A building's effect is expressed as a strength value and a radius. Often that effect is positive, but many buildings also lower the decor value of an area too. ",
 					UI.FormatAsLink("Plants", "PLANTS"),
 					", ",
 					UI.FormatAsLink("Critters", "CREATURES"),
@@ -1648,7 +1644,7 @@ namespace STRINGS
 
 		public class HEAT
 		{
-			public static LocString TITLE = "Heat";
+			public static LocString TITLE = UI.FormatAsLink("Heat", "HEAT");
 
 			public static LocString HEADER_1 = "Temperature";
 
@@ -1664,7 +1660,7 @@ namespace STRINGS
 
 			public static LocString HEADER_4 = "Conduction and Insulation";
 
-			public static LocString PARAGRAPH_4 = "Thermal energy can be transfered between Buildings, Creatures, World tiles, and other world entities through Conduction. Conduction occurs when two things of different Temperatures are touching. The rate the energy transfer is the product of the averaged Conductivity values and Temperature difference. Thermal energy will flow slowly between substances with low conductivity values (insulators), and quickly between substances with high conductivity (conductors).\n\n";
+			public static LocString PARAGRAPH_4 = "Thermal energy can be transferred between Buildings, Creatures, World tiles, and other world entities through Conduction. Conduction occurs when two things of different Temperatures are touching. The rate the energy transfer is the product of the averaged Conductivity values and Temperature difference. Thermal energy will flow slowly between substances with low conductivity values (insulators), and quickly between substances with high conductivity (conductors).\n\n";
 
 			public static LocString HEADER_5 = "State Changes";
 
@@ -1673,11 +1669,11 @@ namespace STRINGS
 
 		public class LIGHT
 		{
-			public static LocString TITLE = "Light";
+			public static LocString TITLE = UI.FormatAsLink("Light", "LIGHT");
 
 			public static LocString HEADER_1 = "Light";
 
-			public static LocString PARAGRAPH_1 = "Most of the asteroid is dark. Light sources such as the " + BUILDINGS.PREFABS.CEILINGLIGHT.NAME + " or " + CREATURES.SPECIES.LIGHTBUG.NAME + " can gives Duplicants a much appreciated boost to Morale and productivity. Many plants are also sensitive to the amount of light they recieve.\n\n";
+			public static LocString PARAGRAPH_1 = "Most of the asteroid is dark. Light sources such as the " + BUILDINGS.PREFABS.CEILINGLIGHT.NAME + " or " + CREATURES.SPECIES.LIGHTBUG.NAME + " can gives Duplicants a much appreciated boost to Morale and productivity. Many plants are also sensitive to the amount of light they receive.\n\n";
 
 			public static LocString HEADER_2 = "Light Sources";
 
@@ -1690,7 +1686,7 @@ namespace STRINGS
 
 		public class MORALE
 		{
-			public static LocString TITLE = "Morale";
+			public static LocString TITLE = UI.FormatAsLink("Morale", "MORALE");
 
 			public static LocString HEADER_1 = "Morale";
 
@@ -1703,7 +1699,7 @@ namespace STRINGS
 
 		public class POWER
 		{
-			public static LocString TITLE = "Power";
+			public static LocString TITLE = UI.FormatAsLink("Power", "POWER");
 
 			public static LocString HEADER_1 = "Electricity";
 
@@ -1722,9 +1718,26 @@ namespace STRINGS
 			public static LocString PARAGRAPH_4 = "A network of " + UI.FormatAsLink("Wires", "WIRE") + " can be overloaded if it is consuming too many watts. If the wattage of a wire network exceeds its limits it may break and require repair.\n\n" + UI.FormatAsLink("Standard wires", "WIRE") + " have a " + 1000 + " Watt limit.\n\n";
 		}
 
+		public class PRIORITY
+		{
+			public static LocString TITLE = UI.FormatAsLink("Priorities", "PRIORITY");
+
+			public static LocString HEADER_1 = "Errand Priority";
+
+			public static LocString PARAGRAPH_1 = "Duplicants prioritize their tasks based on several factors. Some of these can be adjusted to affect task choice, but some tasks (such as seeking breathable " + UI.FormatAsLink("oxygen", "OXYGEN") + " are so important that they cannot be delayed. Task priority can primarily be controlled by Errand Type, and then can be further fine tuned by the Priotity Tool.\n\n";
+
+			public static LocString HEADER_2 = "Errand Types";
+
+			public static LocString PARAGRAPH_2 = "Each task a Duplicant can perform falls into an Errand Category. There categories can be prioritized on a per Duplicant basis in the " + UI.FormatAsManagementMenu("Priorities Screen") + ". Errand categories can also be prohibited if a Duplicant is meant to never perform errands of that variety.\n\n";
+
+			public static LocString HEADER_3 = "Priority Setting";
+
+			public static LocString PARAGRAPH_3 = "The priority of specific chores can be modified using the Priority tool. The values applied by this tool are always less influencial than the Errand Type priorities described above. If two tasks with equal Errand Type Priority are available to a Duplicant, they will choose the task with a higher Priority Setting as applied by the tool.\n\n";
+		}
+
 		public class RESEARCH
 		{
-			public static LocString TITLE = "Research";
+			public static LocString TITLE = UI.FormatAsLink("Research", "RESEARCH");
 
 			public static LocString HEADER_1 = "Research";
 
@@ -1741,15 +1754,15 @@ namespace STRINGS
 
 		public class STRESS
 		{
-			public static LocString TITLE = "Stress";
+			public static LocString TITLE = UI.FormatAsLink("Stress", "STRESS");
 
 			public static LocString HEADER_1 = "Stress";
 
-			public static LocString PARAGRAPH_1 = "A Duplicant's experiences in the colony affect their stress level. Stress increases when they have negative experiences or unmet expectations. Stress descreses with time if " + UI.FormatAsLink("Morale", "MORALE") + " is satisfied. Duplicant behavior starts to change for the worse when stress levels get too high .\n\n";
+			public static LocString PARAGRAPH_1 = "A Duplicant's experiences in the colony affect their stress level. Stress increases when they have negative experiences or unmet expectations. Stress decreases with time if " + UI.FormatAsLink("Morale", "MORALE") + " is satisfied. Duplicant behavior starts to change for the worse when stress levels get too high .\n\n";
 
 			public static LocString HEADER_2 = "Stress Responses";
 
-			public static LocString PARAGRAPH_2 = "If a Duplicant has very high stress values they will experience a Stress Response episode. Each Duplicant has a different Stress Behaviour - but all stress responses are bad. After the stress behaviour episode is done, the Duplicants stress will reset to a lower value. Though, if the factors causing the Duplicant's high stress are not corrected they are bound to have another stress response episode.\n\n";
+			public static LocString PARAGRAPH_2 = "If a Duplicant has very high stress values they will experience a Stress Response episode. Each Duplicant has a different Stress Behavior - but all stress responses are bad. After the stress behavior episode is done, the Duplicants stress will reset to a lower value. Though, if the factors causing the Duplicant's high stress are not corrected they are bound to have another stress response episode.\n\n";
 		}
 	}
 }

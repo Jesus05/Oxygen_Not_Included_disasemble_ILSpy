@@ -104,6 +104,15 @@ public class Oxyfern : StateMachineComponent<Oxyfern.StatesInstance>
 		base.smi.StartSM();
 	}
 
+	protected override void OnCleanUp()
+	{
+		base.OnCleanUp();
+		if (Tutorial.Instance.oxygenGenerators.Contains(base.gameObject))
+		{
+			Tutorial.Instance.oxygenGenerators.Remove(base.gameObject);
+		}
+	}
+
 	protected override void OnPrefabInit()
 	{
 		Subscribe(1309017699, OnReplantedDelegate);

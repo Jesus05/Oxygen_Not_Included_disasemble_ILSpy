@@ -46,7 +46,6 @@ public class PlantableSeed : KMonoBehaviour, IReceptacleDirection, IGameObjectEf
 	{
 	}
 
-	[ContextMenu("Try Plant")]
 	public void TryPlant(bool allow_plant_from_storage = false)
 	{
 		timeUntilSelfPlant = Util.RandomVariance(2400f, 600f);

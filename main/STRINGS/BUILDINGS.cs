@@ -22,9 +22,9 @@ namespace STRINGS
 			{
 				public static LocString NAME = UI.FormatAsLink("Ethanol Distiller", "ETHANOLDISTILLERY");
 
-				public static LocString DESC = "Ethanol distillers convert organic materials into burnable ethanol fuel.";
+				public static LocString DESC = "Ethanol distillers convert " + ITEMS.INDUSTRIAL_PRODUCTS.WOOD.NAME + " into burnable " + ELEMENTS.ETHANOL.NAME + " fuel.";
 
-				public static LocString EFFECT = "Refines " + UI.FormatAsLink("Organics", "ORGANICS") + " into " + UI.FormatAsLink("Ethanol", "ETHANOL") + ".";
+				public static LocString EFFECT = "Refines " + ITEMS.INDUSTRIAL_PRODUCTS.WOOD.NAME + " into " + UI.FormatAsLink("Ethanol", "ETHANOL") + ".";
 			}
 
 			public class ALGAEDISTILLERY
@@ -376,7 +376,7 @@ namespace STRINGS
 
 				public static LocString DESC = "Sick bays can be placed in hospital rooms to decrease the likelihood of disease spreading.";
 
-				public static LocString EFFECT = "Allows Duplicants to administer basic treatments to sick Duplicants.\n\nDuplicants must possess the Medicine Compounding " + UI.FormatAsLink("Skill", "SKILLS") + " to treat peers.";
+				public static LocString EFFECT = "Allows Duplicants to administer basic treatments to sick Duplicants.\n\nDuplicants must possess the Medicine Compounding " + UI.FormatAsLink("Skill", "ROLES") + " to treat peers.";
 			}
 
 			public class ADVANCEDDOCTORSTATION
@@ -385,7 +385,7 @@ namespace STRINGS
 
 				public static LocString DESC = "Disease clinics require power, but treat more serious illnesses than sick bays alone.";
 
-				public static LocString EFFECT = "Allows Duplicants to administer powerful treatments to sick Duplicants.\n\nDuplicants must possess the Duplicant Care " + UI.FormatAsLink("Skill", "SKILLS") + " to treat peers.";
+				public static LocString EFFECT = "Allows Duplicants to administer powerful treatments to sick Duplicants.\n\nDuplicants must possess the Duplicant Care " + UI.FormatAsLink("Skill", "ROLES") + " to treat peers.";
 			}
 
 			public class MASSAGETABLE
@@ -769,7 +769,7 @@ namespace STRINGS
 
 				public static LocString DESC = "Piping a pump's output to a building's intake will send gas to that building.";
 
-				public static LocString EFFECT = "Draws in " + UI.FormatAsLink("Gas", "ELEMENTS_GAS") + " runs it through " + UI.FormatAsLink("Pipes", "GASPIPING") + ".\n\nMust be immersed in " + UI.FormatAsLink("Gas", "ELEMENTS_GAS") + ".";
+				public static LocString EFFECT = "Draws in " + UI.FormatAsLink("Gas", "ELEMENTS_GAS") + " and runs it through " + UI.FormatAsLink("Pipes", "GASPIPING") + ".\n\nMust be immersed in " + UI.FormatAsLink("Gas", "ELEMENTS_GAS") + ".";
 			}
 
 			public class GASMINIPUMP
@@ -778,7 +778,7 @@ namespace STRINGS
 
 				public static LocString DESC = "Mini pumps are useful for moving small quantities of gas with minimum power.";
 
-				public static LocString EFFECT = "Draws in a small amount of " + UI.FormatAsLink("Gas", "ELEMENTS_GAS") + " runs it through " + UI.FormatAsLink("Pipes", "GASPIPING") + ".\n\nMust be immersed in " + UI.FormatAsLink("Gas", "ELEMENTS_GAS") + ".";
+				public static LocString EFFECT = "Draws in a small amount of " + UI.FormatAsLink("Gas", "ELEMENTS_GAS") + " and runs it through " + UI.FormatAsLink("Pipes", "GASPIPING") + ".\n\nMust be immersed in " + UI.FormatAsLink("Gas", "ELEMENTS_GAS") + ".";
 			}
 
 			public class GASVALVE
@@ -1965,9 +1965,9 @@ namespace STRINGS
 
 			public class ROCKCRUSHER
 			{
-				public static LocString NAME = UI.FormatAsLink("Amalgamator", "ROCKCRUSHER");
+				public static LocString NAME = UI.FormatAsLink("Rock Crusher", "ROCKCRUSHER");
 
-				public static LocString DESC = "Amalgamators can convert a wide array of different materials.";
+				public static LocString DESC = "Rock Crushers loosen nuggets from raw ore and can process many different resources.";
 
 				public static LocString EFFECT = "Inefficiently produces refined materials from raw resources.\n\nDuplicants will not fabricate items unless recipes are queued.";
 

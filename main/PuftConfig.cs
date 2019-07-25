@@ -19,11 +19,11 @@ public class PuftConfig : IEntityConfig
 
 	public const float EMIT_DISEASE_PER_KG = 1000f;
 
-	private static float KG_ORE_EATEN_PER_CYCLE = 30f;
+	private static float KG_ORE_EATEN_PER_CYCLE = 50f;
 
 	private static float CALORIES_PER_KG_OF_ORE = PuftTuning.STANDARD_CALORIES_PER_CYCLE / KG_ORE_EATEN_PER_CYCLE;
 
-	private static float MIN_POOP_SIZE_IN_KG = 5f;
+	private static float MIN_POOP_SIZE_IN_KG = 15f;
 
 	public static int EGG_SORT_ORDER = 300;
 
@@ -36,7 +36,7 @@ public class PuftConfig : IEntityConfig
 		trait.Add(new AttributeModifier(Db.Get().Amounts.Calories.deltaAttribute.Id, (0f - PuftTuning.STANDARD_CALORIES_PER_CYCLE) / 600f, name, false, false, true));
 		trait.Add(new AttributeModifier(Db.Get().Amounts.HitPoints.maxAttribute.Id, 25f, name, false, false, true));
 		trait.Add(new AttributeModifier(Db.Get().Amounts.Age.maxAttribute.Id, 75f, name, false, false, true));
-		prefab = BasePuftConfig.SetupDiet(prefab, SimHashes.ContaminatedOxygen.CreateTag(), SimHashes.SlimeMold.CreateTag(), CALORIES_PER_KG_OF_ORE, TUNING.CREATURES.CONVERSION_EFFICIENCY.NORMAL, "SlimeLung", 1000f, MIN_POOP_SIZE_IN_KG);
+		prefab = BasePuftConfig.SetupDiet(prefab, SimHashes.ContaminatedOxygen.CreateTag(), SimHashes.SlimeMold.CreateTag(), CALORIES_PER_KG_OF_ORE, TUNING.CREATURES.CONVERSION_EFFICIENCY.GOOD_2, "SlimeLung", 1000f, MIN_POOP_SIZE_IN_KG);
 		DiseaseSourceVisualizer diseaseSourceVisualizer = prefab.AddOrGet<DiseaseSourceVisualizer>();
 		diseaseSourceVisualizer.alwaysShowDisease = "SlimeLung";
 		return prefab;

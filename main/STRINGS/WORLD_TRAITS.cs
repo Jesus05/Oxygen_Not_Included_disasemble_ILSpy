@@ -2,6 +2,13 @@ namespace STRINGS
 {
 	public static class WORLD_TRAITS
 	{
+		public static class NO_TRAITS
+		{
+			public static LocString NAME = "<i>This world is stable and has no unusual features.</i>";
+
+			public static LocString DESCRIPTION = "This world exists in a particularly stable configuration each time it is encountered.";
+		}
+
 		public static class BOULDERS_LARGE
 		{
 			public static LocString NAME = "Large Boulders";

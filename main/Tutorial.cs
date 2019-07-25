@@ -261,7 +261,7 @@ public class Tutorial : KMonoBehaviour, IRender1000ms
 			{
 				PlanScreen.Instance.OpenCategoryByName("Medicine");
 			}, null, null),
-			requirementSatisfied = new RequirementSatisfiedDelegate(EnoughMedicalCots),
+			requirementSatisfied = new RequirementSatisfiedDelegate(CanTreatSickDuplicant),
 			minTimeToNotify = 10f,
 			lastNotifyTime = 0f
 		});
@@ -557,10 +557,10 @@ public class Tutorial : KMonoBehaviour, IRender1000ms
 		return num / num2 > 1f;
 	}
 
-	private bool EnoughMedicalCots()
+	private bool CanTreatSickDuplicant()
 	{
-		int count = Components.Clinics.Count;
-		int num = 0;
+		bool result = Components.Clinics.Count >= 1;
+		bool flag = false;
 		for (int i = 0; i < Components.LiveMinionIdentities.Count; i++)
 		{
 			Sicknesses sicknesses = Components.LiveMinionIdentities[i].GetSicknesses();
@@ -568,12 +568,20 @@ public class Tutorial : KMonoBehaviour, IRender1000ms
 			{
 				if (item.Sickness.severity >= Sickness.Severity.Major)
 				{
-					num++;
+					flag = true;
 					break;
 				}
 			}
+			if (flag)
+			{
+				break;
+			}
 		}
-		return count >= num;
+		if (flag)
+		{
+			return result;
+		}
+		return true;
 	}
 
 	private bool LongTravelTimes()
@@ -622,8 +630,16 @@ public class Tutorial : KMonoBehaviour, IRender1000ms
 		if (oxygenGenerators.Count != 0)
 		{
 			focusedOxygenGenerator %= oxygenGenerators.Count;
-			Vector3 position = oxygenGenerators[focusedOxygenGenerator].transform.position;
-			CameraController.Instance.SetTargetPos(position, 8f, true);
+			GameObject gameObject = oxygenGenerators[focusedOxygenGenerator];
+			if ((UnityEngine.Object)gameObject != (UnityEngine.Object)null)
+			{
+				Vector3 position = gameObject.transform.position;
+				CameraController.Instance.SetTargetPos(position, 8f, true);
+			}
+			else
+			{
+				DebugUtil.DevLogErrorFormat("ZoomToNextOxygenGenerator generator was null: {0}", gameObject);
+			}
 			focusedOxygenGenerator++;
 		}
 	}

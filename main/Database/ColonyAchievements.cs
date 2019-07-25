@@ -40,6 +40,10 @@ namespace Database
 
 		public ColonyAchievement Travel10000InTubes;
 
+		public ColonyAchievement VarietyOfRooms;
+
+		public ColonyAchievement TameAllBasicCritters;
+
 		[CompilerGenerated]
 		private static Action<KMonoBehaviour> _003C_003Ef__mg_0024cache0;
 
@@ -95,6 +99,22 @@ namespace Database
 			{
 				new EquipNDupes(Db.Get().AssignableSlots.Outfit, 8)
 			}, "", "", "", "", null, ""));
+			TameAllBasicCritters = Add(new ColonyAchievement("TameAllBasicCritters", COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.TAME_BASIC_CRITTERS, COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.TAME_BASIC_CRITTERS_DESCRIPTION, false, new List<ColonyAchievementRequirement>
+			{
+				new CritterTypesWithTraits(new List<Tag>
+				{
+					"Drecko",
+					"Hatch",
+					"LightBug",
+					"Mole",
+					"Oilfloater",
+					"Pacu",
+					"Puft",
+					"Moo",
+					"Crab",
+					"Squirrel"
+				}, false)
+			}, "", "", "", "", null, ""));
 			Build4NatureReserves = Add(new ColonyAchievement("Build4NatureReserves", COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.BUILD_N_ROOM_TYPE, string.Format(COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.BUILD_N_ROOM_TYPE_DESCRIPTION, Db.Get().RoomTypes.NatureReserve.Name, 4), false, new List<ColonyAchievementRequirement>
 			{
 				new BuildNRoomTypes(Db.Get().RoomTypes.NatureReserve, 4)
@@ -108,7 +128,7 @@ namespace Database
 				new CritterTypesWithTraits(new List<Tag>
 				{
 					"Moo"
-				}, GameTags.Creatures.Wild, false)
+				}, false)
 			}, "", "", "", "", null, ""));
 			CoolBuildingTo6K = Add(new ColonyAchievement("CoolBuildingTo6K", COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.SIXKELVIN_BUILDING, COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.SIXKELVIN_BUILDING_DESCRIPTION, false, new List<ColonyAchievementRequirement>
 			{
@@ -144,6 +164,16 @@ namespace Database
 			Travel10000InTubes = Add(new ColonyAchievement("Travel10000InTubes", COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.TUBE_TRAVEL_DISTANCE, COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.TUBE_TRAVEL_DISTANCE_DESCRIPTION, false, new List<ColonyAchievementRequirement>
 			{
 				new TravelXUsingTransitTubes(NavType.Tube, 10000)
+			}, "", "", "", "", null, ""));
+			VarietyOfRooms = Add(new ColonyAchievement("VarietyOfRooms", COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.VARIETY_OF_ROOMS, COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.VARIETY_OF_ROOMS_DESCRIPTION, false, new List<ColonyAchievementRequirement>
+			{
+				new BuildRoomType(Db.Get().RoomTypes.NatureReserve),
+				new BuildRoomType(Db.Get().RoomTypes.Hospital),
+				new BuildRoomType(Db.Get().RoomTypes.GreatHall),
+				new BuildRoomType(Db.Get().RoomTypes.Bedroom),
+				new BuildRoomType(Db.Get().RoomTypes.PlumbedBathroom),
+				new BuildRoomType(Db.Get().RoomTypes.Farm),
+				new BuildRoomType(Db.Get().RoomTypes.CreaturePen)
 			}, "", "", "", "", null, ""));
 		}
 	}

@@ -20,7 +20,7 @@ public class Filterable : KMonoBehaviour
 	public ElementState filterElementState = ElementState.None;
 
 	[Serialize]
-	private Tag selectedTag;
+	private Tag selectedTag = GameTags.Void;
 
 	private static readonly Operational.Flag filterSelected = new Operational.Flag("filterSelected", Operational.Flag.Type.Requirement);
 
@@ -47,28 +47,32 @@ public class Filterable : KMonoBehaviour
 	public virtual IList<Tag> GetTagOptions()
 	{
 		List<Tag> list = new List<Tag>();
+		list.Add(GameTags.Void);
 		foreach (Element element in ElementLoader.elements)
 		{
-			bool flag = true;
-			if (filterElementState != 0)
+			if (!element.disabled)
 			{
-				switch (filterElementState)
+				bool flag = true;
+				if (filterElementState != 0)
 				{
-				case ElementState.Gas:
-					flag = element.IsGas;
-					break;
-				case ElementState.Liquid:
-					flag = element.IsLiquid;
-					break;
-				case ElementState.Solid:
-					flag = element.IsSolid;
-					break;
+					switch (filterElementState)
+					{
+					case ElementState.Gas:
+						flag = element.IsGas;
+						break;
+					case ElementState.Liquid:
+						flag = element.IsLiquid;
+						break;
+					case ElementState.Solid:
+						flag = element.IsSolid;
+						break;
+					}
 				}
-			}
-			if (flag)
-			{
-				Tag item = GameTagExtensions.Create(element.id);
-				list.Add(item);
+				if (flag)
+				{
+					Tag item = GameTagExtensions.Create(element.id);
+					list.Add(item);
+				}
 			}
 		}
 		return list;

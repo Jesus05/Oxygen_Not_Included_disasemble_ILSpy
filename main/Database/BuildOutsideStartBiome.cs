@@ -10,12 +10,12 @@ namespace Database
 	{
 		public override string Name()
 		{
-			return COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.NO_PLANTERBOX;
+			return COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.BUILD_OUTSIDE_BIOME;
 		}
 
 		public override string Description()
 		{
-			return COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.NO_PLANTERBOX_DESCRIPTION;
+			return COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.BUILD_OUTSIDE_BIOME_DESCRIPTION;
 		}
 
 		public override bool Success()
@@ -32,6 +32,7 @@ namespace Database
 						KPrefabID component = item.GetComponent<KPrefabID>();
 						if (!component.HasTag(GameTags.TemplateBuilding) && poly.PointInPolygon(item.transform.GetPosition()))
 						{
+							Game.Instance.unlocks.Unlock("buildoutsidestartingbiome");
 							return true;
 						}
 					}

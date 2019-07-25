@@ -69,7 +69,14 @@ public class SimpleInfoScreen : TargetScreen
 			widget.SetActive(true);
 			toolTip.OnToolTip = OnToolTip;
 			button = widget.GetComponentInChildren<KButton>();
-			button.onClick += OnClick;
+			if (item.item.statusItemClickCallback != null)
+			{
+				button.onClick += OnClick;
+			}
+			else
+			{
+				button.enabled = false;
+			}
 			fadeStage = (skip_fade ? FadeStage.WAIT : FadeStage.IN);
 			SimAndRenderScheduler.instance.Add(this, false);
 			Refresh();

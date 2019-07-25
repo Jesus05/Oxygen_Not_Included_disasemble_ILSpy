@@ -26,6 +26,7 @@ public class SwampLilyFlowerConfig : IEntityConfig
 		list.Add(GameTags.IndustrialIngredient);
 		list = list;
 		GameObject gameObject = EntityTemplates.CreateLooseEntity(iD, name, desc, mass, unitMass, anim, initialAnim, sceneLayer, collisionShape, width, height, isPickupable, 0, SimHashes.Creature, list);
+		EntityTemplates.CreateAndRegisterCompostableFromPrefab(gameObject);
 		gameObject.AddOrGet<EntitySplitter>();
 		return gameObject;
 	}

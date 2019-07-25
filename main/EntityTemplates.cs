@@ -634,6 +634,7 @@ public class EntityTemplates
 			string tag_string = "Compost" + component.PrefabTag.Name;
 			string text = MISC.TAGS.COMPOST_FORMAT.Replace("{Item}", component.PrefabTag.ProperName());
 			gameObject.GetComponent<KPrefabID>().PrefabTag = TagManager.Create(tag_string, text);
+			gameObject.GetComponent<KPrefabID>().AddTag(GameTags.Compostable, false);
 			gameObject.name = text;
 			gameObject.GetComponent<Compostable>().isMarkedForCompost = true;
 			gameObject.GetComponent<KSelectable>().SetName(text);

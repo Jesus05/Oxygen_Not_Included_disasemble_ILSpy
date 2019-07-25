@@ -75,7 +75,7 @@ namespace STRINGS
 		{
 			public static LocString NAME = UI.FormatAsLink("Algae", "ALGAE");
 
-			public static LocString DESC = "Algae is a cluster of non-motile, single-celled lifeforms.\n\nIt can be used to produce " + OXYGEN.NAME + " when used in " + UI.FormatAsLink("Oxygen Diffusers", "MINERALOXIDIZER") + ".";
+			public static LocString DESC = "Algae is a cluster of non-motile, single-celled lifeforms.\n\nIt can be used to produce " + OXYGEN.NAME + " when used in a " + BUILDINGS.PREFABS.MINERALDEOXIDIZER.NAME;
 		}
 
 		public class ALUMINUMORE
@@ -492,7 +492,7 @@ namespace STRINGS
 		{
 			public static LocString NAME = UI.FormatAsLink("Lime", "LIME");
 
-			public static LocString DESC = "(CaCO<sub>3</sub>) Lime is a mineral commonly found in " + UI.FormatAsLink("Critter", "CRITTERS") + " egg shells.\n\nIt is useful as a <b>Construction Material</b>.";
+			public static LocString DESC = "(CaCO<sub>3</sub>) Lime is a mineral commonly found in " + UI.FormatAsLink("Critter", "CREATURES") + " egg shells.\n\nIt is useful as a <b>Construction Material</b>.";
 		}
 
 		public class FOSSIL

@@ -78,11 +78,16 @@ public static class BasePuftConfig
 	{
 		HashSet<Tag> hashSet = new HashSet<Tag>();
 		hashSet.Add(consumed_tag);
-		Diet.Info[] infos = new Diet.Info[1]
+		Diet.Info[] diet_infos = new Diet.Info[1]
 		{
 			new Diet.Info(hashSet, producedTag, caloriesPerKg, producedConversionRate, diseaseId, diseasePerKgProduced, false)
 		};
-		Diet diet = new Diet(infos);
+		return SetupDiet(prefab, diet_infos, caloriesPerKg, minPoopSizeInKg);
+	}
+
+	public static GameObject SetupDiet(GameObject prefab, Diet.Info[] diet_infos, float caloriesPerKg, float minPoopSizeInKg)
+	{
+		Diet diet = new Diet(diet_infos);
 		CreatureCalorieMonitor.Def def = prefab.AddOrGetDef<CreatureCalorieMonitor.Def>();
 		def.diet = diet;
 		def.minPoopSizeInCalories = minPoopSizeInKg * caloriesPerKg;

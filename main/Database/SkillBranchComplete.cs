@@ -7,7 +7,7 @@ namespace Database
 {
 	public class SkillBranchComplete : ColonyAchievementRequirement
 	{
-		private List<Skill> skillsToMaster = new List<Skill>();
+		private List<Skill> skillsToMaster;
 
 		public SkillBranchComplete(List<Skill> skillsToMaster)
 		{

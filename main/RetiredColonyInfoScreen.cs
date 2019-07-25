@@ -89,6 +89,9 @@ public class RetiredColonyInfoScreen : KModalScreen
 
 	[Header("Explorer References")]
 	[SerializeField]
+	private GameObject colonyScroll;
+
+	[SerializeField]
 	private GameObject explorerRoot;
 
 	[SerializeField]
@@ -169,7 +172,27 @@ public class RetiredColonyInfoScreen : KModalScreen
 
 	private void RefreshUIScale(object data = null)
 	{
-		explorerRoot.transform.parent.localScale = Vector3.one * (2f - KPlayerPrefs.GetFloat(KCanvasScaler.UIScalePrefKey) / 100f);
+		StartCoroutine(DelayedRefreshScale());
+	}
+
+	private IEnumerator DelayedRefreshScale()
+	{
+		int i = 0;
+		if (i < 3)
+		{
+			yield return (object)0;
+			/*Error: Unable to find new state assignment for yield return*/;
+		}
+		float spacingBuffer = 36f;
+		GameObject parent = GameObject.Find("ScreenSpaceOverlayCanvas");
+		if ((UnityEngine.Object)parent != (UnityEngine.Object)null)
+		{
+			explorerRoot.transform.parent.localScale = Vector3.one * ((colonyScroll.rectTransform().rect.width - spacingBuffer) / explorerRoot.transform.parent.rectTransform().rect.width);
+		}
+		else
+		{
+			explorerRoot.transform.parent.localScale = Vector3.one * ((colonyScroll.rectTransform().rect.width - spacingBuffer) / explorerRoot.transform.parent.rectTransform().rect.width);
+		}
 	}
 
 	private void ConfigButtons()
@@ -272,6 +295,10 @@ public class RetiredColonyInfoScreen : KModalScreen
 	protected override void OnShow(bool show)
 	{
 		base.OnShow(show);
+		if (show)
+		{
+			RefreshUIScale(null);
+		}
 		if ((UnityEngine.Object)Game.Instance != (UnityEngine.Object)null)
 		{
 			if (!show)
@@ -667,7 +694,15 @@ public class RetiredColonyInfoScreen : KModalScreen
 			string text = RetireColonyUtility.StripInvalidCharacters(data.colonyName);
 			Sprite sprite = RetireColonyUtility.LoadColonyPreview(text);
 			Image reference = component.GetReference<Image>("ColonyImage");
-			reference.sprite = sprite;
+			if ((UnityEngine.Object)sprite != (UnityEngine.Object)null)
+			{
+				reference.enabled = true;
+				reference.sprite = sprite;
+			}
+			else
+			{
+				reference.enabled = false;
+			}
 			component.GetReference<LocText>("ColonyNameLabel").SetText(retiredColonyData.colonyName);
 			component.GetReference<LocText>("CycleCountLabel").SetText(string.Format(UI.RETIRED_COLONY_INFO_SCREEN.CYCLE_COUNT, retiredColonyData.cycleCount.ToString()));
 			component.GetReference<LocText>("DateLabel").SetText(retiredColonyData.date);

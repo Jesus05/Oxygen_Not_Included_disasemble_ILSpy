@@ -1,3 +1,4 @@
+using STRINGS;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -64,7 +65,7 @@ public class FilterSideScreenRow : KMonoBehaviour
 	public void SetElement(Element elem)
 	{
 		element = elem;
-		SetText(elem.name);
+		SetText((elem.id != SimHashes.Void) ? elem.name : UI.UISIDESCREENS.FILTERSIDESCREEN.NO_SELECTION.text);
 	}
 
 	private void SetText(string assignmentStr)

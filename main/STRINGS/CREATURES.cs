@@ -1868,7 +1868,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Incubation";
 
-				public static LocString TOOLTIP = "Eggs hatch into brand new " + UI.PRE_KEYWORD + "Critters" + UI.PST_KEYWORD + " at the end of their incubation period";
+				public static LocString TOOLTIP = "Eggs hatch into brand new " + UI.FormatAsLink("Critters", "CREATURES") + " at the end of their incubation period";
 			}
 
 			public class VIABILITY

@@ -33,13 +33,17 @@ namespace ProcGen
 			}
 			World worldData = SettingsCache.worlds.GetWorldData(worldName);
 			List<WorldTrait> list = new List<WorldTrait>();
-			if (traits != null)
+			if (!worldData.disableWorldTraits && traits != null)
 			{
 				DebugUtil.LogArgs("Generating a world with the traits:", string.Join(", ", traits.ToArray()));
 				foreach (string trait in traits)
 				{
 					list.Add(SettingsCache.GetCachedTrait(trait));
 				}
+			}
+			else
+			{
+				Debug.Log("Generating a world without traits. Either this world has traits disabled or none were specified.");
 			}
 			mutatedWorldData = new MutatedWorldData(worldData, list);
 			Debug.Log("Set world to [" + worldName + "] " + SettingsCache.GetPath());

@@ -1676,7 +1676,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "No Egg Selected";
 
-				public static LocString TOOLTIP = "Collect " + UI.PRE_KEYWORD + "Eggs" + UI.PST_KEYWORD + " from " + UI.PRE_KEYWORD + "Critters" + UI.PST_KEYWORD + " to incubate";
+				public static LocString TOOLTIP = "Collect " + UI.PRE_KEYWORD + "Eggs" + UI.PST_KEYWORD + " from " + UI.FormatAsLink("Critters", "CREATURES") + " to incubate";
 			}
 
 			public class NOAVAILABLEEGG

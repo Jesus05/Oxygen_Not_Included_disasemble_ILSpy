@@ -49,7 +49,8 @@ public class FixedCaptureChore : Chore<FixedCaptureChore.FixedCaptureChoreStates
 			});
 			movetopoint.MoveTo((Instance smi) => Grid.PosToCell(smi.transform.GetPosition()), waitforcreature_pre, null, false).Target(masterTarget).EventTransition(GameHashes.CreatureAbandonedCapturePoint, failed, null);
 			waitforcreature_pre.EnterTransition(null, (Instance smi) => smi.fixedCapturePoint.IsNullOrStopped()).EnterTransition(failed, HasCreatureLeft).EnterTransition(waitforcreature, (Instance smi) => true);
-			waitforcreature.ToggleAnims("anim_interacts_rancherstation_kanim", 0f).PlayAnim("calling_loop", KAnim.PlayMode.Loop).Face(creature, 0f)
+			waitforcreature.ToggleAnims("anim_interacts_rancherstation_kanim", 0f).PlayAnim("calling_loop", KAnim.PlayMode.Loop).Transition(failed, HasCreatureLeft, UpdateRate.SIM_200ms)
+				.Face(creature, 0f)
 				.Enter("SetRancherIsAvailableForCapturing", delegate(Instance smi)
 				{
 					smi.fixedCapturePoint.SetRancherIsAvailableForCapturing();
@@ -58,7 +59,6 @@ public class FixedCaptureChore : Chore<FixedCaptureChore.FixedCaptureChoreStates
 				{
 					smi.fixedCapturePoint.ClearRancherIsAvailableForCapturing();
 				})
-				.Transition(failed, HasCreatureLeft, UpdateRate.SIM_200ms)
 				.Target(masterTarget)
 				.EventTransition(GameHashes.CreatureArrivedAtCapturePoint, capturecreature, null);
 			capturecreature.EventTransition(GameHashes.CreatureAbandonedCapturePoint, failed, null).EnterTransition(failed, (Instance smi) => smi.fixedCapturePoint.targetCapturable.IsNullOrStopped()).ToggleWork<Capturable>(creature, success, failed, null);

@@ -1349,7 +1349,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Attacking";
 
-				public static LocString DESC = "Fight wild " + UI.PRE_KEYWORD + "Critters" + UI.PST_KEYWORD + ".";
+				public static LocString DESC = "Fight wild " + UI.FormatAsLink("Critters", "CREATURES") + ".";
 
 				public static LocString ARCHETYPE_NAME = "Attacker";
 			}
@@ -1412,7 +1412,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Ranching";
 
-				public static LocString DESC = "Tend to domesticated " + UI.PRE_KEYWORD + "Critters" + UI.PST_KEYWORD + ".";
+				public static LocString DESC = "Tend to domesticated " + UI.FormatAsLink("Critters", "CREATURES") + ".";
 
 				public static LocString ARCHETYPE_NAME = "Rancher";
 			}
@@ -2517,7 +2517,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Contact with {Sickness} Germs";
 
-				public static LocString TOOLTIP = "This Duplicant has encountered {Sickness} Germs and is at risk of dangerous exposure if contact continues";
+				public static LocString TOOLTIP = "This Duplicant has encountered {Sickness} Germs and is at risk of dangerous exposure if contact continues\n\n<i>Click to jump to last contact location</i>";
 			}
 
 			public class EXPOSEDTOGERMS
@@ -4948,7 +4948,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Happiness";
 
-				public static LocString DESC = "Contented " + UI.PRE_KEYWORD + "Critters" + UI.PST_KEYWORD + " produce usable materials with increased frequency.";
+				public static LocString DESC = "Contented " + UI.FormatAsLink("Critters", "CREATURES") + " produce usable materials with increased frequency.";
 			}
 
 			public class WILDNESSDELTA
@@ -5017,7 +5017,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Husbandry";
 
-				public static LocString DESC = "Determines how efficiently a Duplicant tends " + UI.PRE_KEYWORD + "Critters" + UI.PST_KEYWORD + ".";
+				public static LocString DESC = "Determines how efficiently a Duplicant tends " + UI.FormatAsLink("Critters", "CREATURES") + ".";
 
 				public static LocString EFFECTMODIFIER = "{0} Groom Effect Duration";
 			}
@@ -5505,7 +5505,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = UI.FormatAsLink("Critter Ranching", "RANCHER");
 
-				public static LocString DESCRIPTION = "Allows a Duplicant to handle and care for " + UI.PRE_KEYWORD + "Critters" + UI.PST_KEYWORD;
+				public static LocString DESCRIPTION = "Allows a Duplicant to handle and care for " + UI.FormatAsLink("Critters", "CREATURES") + ".";
 			}
 
 			public class SENIOR_RANCHER

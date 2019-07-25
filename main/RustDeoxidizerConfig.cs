@@ -77,7 +77,7 @@ public class RustDeoxidizerConfig : IBuildingConfig
 		elementConverter.outputElements = new ElementConverter.OutputElement[3]
 		{
 			new ElementConverter.OutputElement(0.57f, SimHashes.Oxygen, 348.15f, false, false, 0f, 1f, 1f, byte.MaxValue, 0),
-			new ElementConverter.OutputElement(0.0300000012f, SimHashes.Chlorine, 348.15f, false, false, 0f, 1f, 1f, byte.MaxValue, 0),
+			new ElementConverter.OutputElement(0.0300000012f, SimHashes.ChlorineGas, 348.15f, false, false, 0f, 1f, 1f, byte.MaxValue, 0),
 			new ElementConverter.OutputElement(0.4f, SimHashes.IronOre, 348.15f, false, true, 0f, 1f, 1f, byte.MaxValue, 0)
 		};
 		ElementDropper elementDropper = go.AddComponent<ElementDropper>();

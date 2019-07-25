@@ -436,6 +436,10 @@ public class SpacecraftManager : KMonoBehaviour, ISim1000ms
 					{
 						Game.Instance.unlocks.Unlock("earth");
 					}
+					if (instance.GetDestination(starmapAnalysisDestinationID).type == Db.Get().SpaceDestinationTypes.Wormhole.Id)
+					{
+						Game.Instance.unlocks.Unlock("wormhole");
+					}
 					instance.SetStarmapAnalysisDestinationID(-1);
 				}
 				Trigger(532901469, null);

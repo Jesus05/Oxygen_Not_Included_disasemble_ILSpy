@@ -1,5 +1,6 @@
 using KSerialization;
 using System.Collections.Generic;
+using TUNING;
 using UnityEngine;
 
 public class MonumentPart : KMonoBehaviour
@@ -28,11 +29,13 @@ public class MonumentPart : KMonoBehaviour
 		{
 			SetState(chosenState);
 		}
+		UpdateMonumentDecor();
 	}
 
 	protected override void OnCleanUp()
 	{
 		Components.MonumentParts.Remove(this);
+		RemoveMonumentPiece();
 		base.OnCleanUp();
 	}
 
@@ -44,29 +47,58 @@ public class MonumentPart : KMonoBehaviour
 
 	public bool IsMonumentCompleted()
 	{
-		if (part == Part.Top)
+		bool flag = (Object)GetMonumentPart(Part.Top) != (Object)null;
+		bool flag2 = (Object)GetMonumentPart(Part.Middle) != (Object)null;
+		bool flag3 = (Object)GetMonumentPart(Part.Bottom) != (Object)null;
+		return flag && flag3 && flag2;
+	}
+
+	public void UpdateMonumentDecor()
+	{
+		GameObject monumentPart = GetMonumentPart(Part.Middle);
+		if (IsMonumentCompleted())
 		{
-			bool flag = true;
-			bool flag2 = false;
-			bool flag3 = false;
+			DecorProvider component = monumentPart.GetComponent<DecorProvider>();
+			component.SetValues(BUILDINGS.DECOR.BONUS.MONUMENT.COMPLETE);
 			List<GameObject> attachedNetwork = AttachableBuilding.GetAttachedNetwork(GetComponent<AttachableBuilding>());
 			foreach (GameObject item in attachedNetwork)
 			{
-				MonumentPart component = item.GetComponent<MonumentPart>();
-				if (!((Object)component == (Object)null))
+				if ((Object)item != (Object)monumentPart)
 				{
-					if (component.part == Part.Middle)
-					{
-						flag2 = true;
-					}
-					if (component.part == Part.Bottom)
-					{
-						flag3 = true;
-					}
+					DecorProvider component2 = item.GetComponent<DecorProvider>();
+					component2.SetValues(BUILDINGS.DECOR.NONE);
 				}
 			}
-			return flag3 && flag2 && flag;
 		}
-		return false;
+	}
+
+	public void RemoveMonumentPiece()
+	{
+		if (IsMonumentCompleted())
+		{
+			List<GameObject> attachedNetwork = AttachableBuilding.GetAttachedNetwork(GetComponent<AttachableBuilding>());
+			foreach (GameObject item in attachedNetwork)
+			{
+				if ((Object)item.GetComponent<MonumentPart>() != (Object)this)
+				{
+					DecorProvider component = item.GetComponent<DecorProvider>();
+					component.SetValues(BUILDINGS.DECOR.BONUS.MONUMENT.INCOMPLETE);
+				}
+			}
+		}
+	}
+
+	private GameObject GetMonumentPart(Part requestPart)
+	{
+		List<GameObject> attachedNetwork = AttachableBuilding.GetAttachedNetwork(GetComponent<AttachableBuilding>());
+		foreach (GameObject item in attachedNetwork)
+		{
+			MonumentPart component = item.GetComponent<MonumentPart>();
+			if (!((Object)component == (Object)null) && component.part == requestPart)
+			{
+				return item;
+			}
+		}
+		return null;
 	}
 }

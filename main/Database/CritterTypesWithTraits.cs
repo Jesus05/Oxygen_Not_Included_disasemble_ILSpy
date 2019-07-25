@@ -13,7 +13,7 @@ namespace Database
 
 		private bool hasTrait;
 
-		public CritterTypesWithTraits(List<Tag> critterTypes, Tag trait, bool hasTrait = true)
+		public CritterTypesWithTraits(List<Tag> critterTypes, bool hasTrait = true)
 		{
 			foreach (Tag critterType in critterTypes)
 			{
@@ -22,8 +22,9 @@ namespace Database
 					critterTypesToCheck.Add(critterType, false);
 				}
 			}
-			this.trait = trait;
+			trait = trait;
 			this.hasTrait = hasTrait;
+			trait = GameTags.Creatures.Wild;
 		}
 
 		public override string Name()
@@ -91,6 +92,7 @@ namespace Database
 				critterTypesToCheck.Add(new Tag(name), value);
 			}
 			hasTrait = (reader.ReadByte() != 0);
+			trait = GameTags.Creatures.Wild;
 		}
 	}
 }

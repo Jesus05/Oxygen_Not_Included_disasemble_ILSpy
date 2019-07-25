@@ -1315,5 +1315,12 @@ namespace STRINGS
 				public static LocString NAME = "Mop";
 			}
 		}
+
+		public class MONUMENT_COMPLETE
+		{
+			public static LocString NAME = "Completed Monument";
+
+			public static LocString DESC = "Monument has head, midsection and bottom.";
+		}
 	}
 }

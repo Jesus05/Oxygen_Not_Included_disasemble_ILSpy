@@ -64,7 +64,7 @@ namespace STRINGS
 
 			public static LocString BUILD_N_ROOM_TYPE_DESCRIPTION = "Improve Duplicant Morale by designating {1} areas as {0}.";
 
-			public static LocString EXOSUIT_CYCLES = "Suited for the Job";
+			public static LocString EXOSUIT_CYCLES = "Job Suitability";
 
 			public static LocString EXOSUIT_CYCLES_DESCRIPTION = "For {0} cycles in a row, have every Duplicant in the colony complete at least one chore while wearing an Exosuit.";
 
@@ -84,69 +84,69 @@ namespace STRINGS
 
 			public static LocString SURVIVE_ONE_YEAR_DESCRIPTION = "Reach cycle 365.25 with a single colony.";
 
-			public static LocString INSPECT_POI = "<PLACEHOLDER>";
+			public static LocString INSPECT_POI = "Ghosts of Gravitas";
 
-			public static LocString INSPECT_POI_DESCRIPTION = "<PLACEHOLDER>";
+			public static LocString INSPECT_POI_DESCRIPTION = "Recover a Database entry by inspecting facility ruins.";
 
-			public static LocString CLEAR_FOW = "<PLACEHOLDER>";
+			public static LocString CLEAR_FOW = "Pulling Back The Veil";
 
-			public static LocString CLEAR_FOW_DESCRIPTION = "<PLACEHOLDER>";
+			public static LocString CLEAR_FOW_DESCRIPTION = "Reveal 80% of map by exploring outside the starting biome.";
 
 			public static LocString EXPLORE_OIL_BIOME = "Slick";
 
 			public static LocString EXPLORE_OIL_BIOME_DESCRIPTION = "Enter an oil biome for the first time.";
 
-			public static LocString TAME_BASIC_CRITTERS = "Animal Friends";
+			public static LocString TAME_BASIC_CRITTERS = "Critter Whisperer";
 
-			public static LocString TAME_BASIC_CRITTERS_DESCRIPTION = "Enter an oil biome for the first time.";
+			public static LocString TAME_BASIC_CRITTERS_DESCRIPTION = "Find and tame one of every critter species in the world. Default morphs only.";
 
-			public static LocString HATCH_A_CRITTER = "<PLACEHOLDER>";
+			public static LocString HATCH_A_CRITTER = "Good Egg";
 
-			public static LocString HATCH_A_CRITTER_DESCRIPTION = "<PLACEHOLDER>";
+			public static LocString HATCH_A_CRITTER_DESCRIPTION = "Hatch a new critter morph from an egg.";
 
 			public static LocString BUNKER_DOOR_DEFENSE = "Immovable Object";
 
 			public static LocString BUNKER_DOOR_DEFENSE_DESCRIPTION = "Block a meteor from hitting your base using a Bunker Door.";
 
-			public static LocString AUTOMATE_A_BUILDING = "<PLACEHOLDER>";
+			public static LocString AUTOMATE_A_BUILDING = "Red Light, Green Light";
 
-			public static LocString AUTOMATE_A_BUILDING_DESCRIPTION = "<PLACEHOLDER>";
+			public static LocString AUTOMATE_A_BUILDING_DESCRIPTION = "Automate a building using sensors or switches from the Automation tab in the Build Menu.";
 
 			public static LocString COMPLETED_SKILL_BRANCH = "To Pay the Bills";
 
 			public static LocString COMPLETED_SKILL_BRANCH_DESCRIPTION = "Use a Duplicant's Skill Points to buy out an entire branch of the Skill Tree.";
 
-			public static LocString GENERATOR_TUNEUP = "<PLACEHOLDER>";
+			public static LocString GENERATOR_TUNEUP = "Tune Up For What?";
 
-			public static LocString GENERATOR_TUNEUP_DESCRIPTION = "<PLACEHOLDER> {0}";
+			public static LocString GENERATOR_TUNEUP_DESCRIPTION = "Perform {0} Tune Ups on power generators.";
 
-			public static LocString COMPLETED_RESEARCH = "Know-It-All";
+			public static LocString COMPLETED_RESEARCH = "Honorary Doctorate";
 
 			public static LocString COMPLETED_RESEARCH_DESCRIPTION = "Unlock every item in the Research Tree.";
 
-			public static LocString IDLE_DUPLICANTS = "<PLACEHOLDER>";
+			public static LocString IDLE_DUPLICANTS = "Easy Livin'";
 
-			public static LocString IDLE_DUPLICANTS_DESCRIPTION = "<PLACEHOLDER> {0} {1}";
+			public static LocString IDLE_DUPLICANTS_DESCRIPTION = "Go {0} cycles with Duplicants performing a single errand while still maintaining {1} Morale.";
 
-			public static LocString COOKED_FOOD = "<PLACEHOLDER>";
+			public static LocString COOKED_FOOD = "It's Not Raw";
 
-			public static LocString COOKED_FOOD_DESCRIPTION = "<PLACEHOLDER>";
+			public static LocString COOKED_FOOD_DESCRIPTION = "Have a Duplicant eat any cooked meal prepared at an Electrical Grill or Gas Range.";
 
-			public static LocString PLUMBED_WASHROOMS = "Indoor Plumbing";
+			public static LocString PLUMBED_WASHROOMS = "Royal Flush";
 
 			public static LocString PLUMBED_WASHROOMS_DESCRIPTION = "Replace all the Outhouses and Wash Basins in your colony with Lavatories and Sinks.";
 
-			public static LocString BASIC_COMFORTS = "<PLACEHOLDER>";
+			public static LocString BASIC_COMFORTS = "One Bed One Bath";
 
-			public static LocString BASIC_COMFORTS_DESCRIPTION = "<PLACEHOLDER>";
+			public static LocString BASIC_COMFORTS_DESCRIPTION = "Have at least one bed and one bathroom for each Duplicant in the colony.";
 
-			public static LocString BASIC_PUMPING = "<PLACEHOLDER>";
+			public static LocString BASIC_PUMPING = "Oxygen Not Occluded";
 
-			public static LocString BASIC_PUMPING_DESCRIPTION = "<PLACEHOLDER> {0} {1}";
+			public static LocString BASIC_PUMPING_DESCRIPTION = "Move 1000kg of Oxygen using pumps or vents.";
 
-			public static LocString MASTERPIECE_PAINTING = "Duplicant Renaissance";
+			public static LocString MASTERPIECE_PAINTING = "Art Underground";
 
-			public static LocString MASTERPIECE_PAINTING_DESCRIPTION = "Have a Duplicant paint a Masterpiece quality painting.";
+			public static LocString MASTERPIECE_PAINTING_DESCRIPTION = "Have a Duplicant with the Masterworks skill paint a Masterpiece quality painting.";
 
 			public static LocString ALL_DUPLICANTS_HAVE_TRAIT = "Desirable Trait";
 
@@ -209,11 +209,11 @@ namespace STRINGS
 		{
 			public class VIDEO_TEXT
 			{
-				public static LocString FIRST = "I may have never solved how we came to be here, but few civilizations throughout time have had the privilege of knowing their origins.";
+				public static LocString FIRST = "Few civilizations throughout time have had the privilege of understading their origins.";
 
-				public static LocString SECOND = "What matters now is that we are here, and my Duplicants are safe.";
+				public static LocString SECOND = "The only thing that matters is that we are here now, and we make the best of the world we've been given. I am truly proud to say...";
 
-				public static LocString THIRD = "This is our home.";
+				public static LocString THIRD = "This asteroid is our home.";
 			}
 
 			public class REQUIREMENTS
@@ -237,20 +237,22 @@ namespace STRINGS
 
 			public static LocString NAME = "COLONIZE ASTEROID";
 
+			public static LocString MYLOGNAME = "This Is Our Home";
+
 			public static LocString DESCRIPTION = "";
 
 			public static LocString MESSAGE_TITLE = "THIS IS OUR HOME";
 
-			public static LocString MESSAGE_BODY = "I may have never solved how we came to be here, but few civilizations throughout time have had the privilege of knowing their origins. What matters now is that we are here, and my Duplicants are safe.\n\nThis is our home.";
+			public static LocString MESSAGE_BODY = "Few civilizations throughout time have had the privilege of understanding their origins. The one thing that matters is that we are here now, and we make the best of the world we've been given. I am truly proud to say...\n\nThis asteroid is our home.";
 		}
 
 		public class DISTANT_PLANET_REACHED
 		{
 			public class VIDEO_TEXT
 			{
-				public static LocString FIRST = "Though the Earth in this universe is gone, I hold out hope that others may still exist out there, tucked away in other timelines and dimensions.";
+				public static LocString FIRST = "Our homeworld in this universe is gone, replaced by the skeleton of a planet and a wound in the sky... But I hold out hope that other worlds exist out there, tucked away in other dimensions.";
 
-				public static LocString SECOND = "My Duplicant travelled through the Temporal Tear carrying that hope on their shoulders... Perhaps one day they'll find a place to call home, and begin a thriving colony all their own.";
+				public static LocString SECOND = "I sent my Duplicant through the Temporal Tear carrying that hope on their shoulders... Perhaps one day they'll find a place to call home, and begin a thriving colony all their own.";
 			}
 
 			public class REQUIREMENTS
@@ -262,11 +264,13 @@ namespace STRINGS
 
 			public static LocString NAME = "ESCAPE ASTEROID";
 
+			public static LocString MYLOGNAME = "A Colony's Hope";
+
 			public static LocString DESCRIPTION = "";
 
 			public static LocString MESSAGE_TITLE = "A COLONY'S HOPE";
 
-			public static LocString MESSAGE_BODY = "Though the Earth in this universe is gone, I hold out hope that others may still exist out there, tucked away in other timelines and dimensions.\n\nMy Duplicant travelled through the Temporal Tear carrying that hope on their shoulders... Perhaps one day they'll find a place to call home, and begin a thriving colony all their own.\n\nNothing would make me happier.";
+			public static LocString MESSAGE_BODY = "Our homeworld in this universe is gone, replaced by the skeleton of a planet and a wound in the sky... But I hold out hope that other worlds exist out there, tucked away in other dimensions. I sent my Duplicant through the Temporal Tear carrying that hope on their shoulders... Perhaps one day they'll find a place to call home, and begin a thriving colony all their own.";
 		}
 
 		public static LocString ACHIEVED_THIS_COLONY_TOOLTIP = "The current colony fulfilled this Initiative";

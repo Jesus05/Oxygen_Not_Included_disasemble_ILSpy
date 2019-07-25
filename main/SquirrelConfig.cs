@@ -1,7 +1,5 @@
 using Klei.AI;
 using STRINGS;
-using System.Collections.Generic;
-using TUNING;
 using UnityEngine;
 
 public class SquirrelConfig : IEntityConfig
@@ -18,11 +16,15 @@ public class SquirrelConfig : IEntityConfig
 
 	private const SimHashes EMIT_ELEMENT = SimHashes.Dirt;
 
-	private static float KG_ORE_EATEN_PER_CYCLE = 0.33f;
+	private static float DAYS_PLANT_GROWTH_EATEN_PER_CYCLE = 0.4f;
 
-	private static float CALORIES_PER_KG_OF_ORE = SquirrelTuning.STANDARD_CALORIES_PER_CYCLE / KG_ORE_EATEN_PER_CYCLE;
+	private static float CALORIES_PER_DAY_OF_PLANT_EATEN = SquirrelTuning.STANDARD_CALORIES_PER_CYCLE / DAYS_PLANT_GROWTH_EATEN_PER_CYCLE;
 
-	private static float MIN_POOP_SIZE_IN_KG = 25f;
+	private static float KG_POOP_PER_DAY_OF_PLANT = 50f;
+
+	private static float MIN_POOP_SIZE_KG = 40f;
+
+	private static float MIN_POOP_SIZE_CALORIES = CALORIES_PER_DAY_OF_PLANT_EATEN * MIN_POOP_SIZE_KG / KG_POOP_PER_DAY_OF_PLANT;
 
 	public static int EGG_SORT_ORDER = 0;
 
@@ -36,14 +38,14 @@ public class SquirrelConfig : IEntityConfig
 		trait.Add(new AttributeModifier(Db.Get().Amounts.Calories.deltaAttribute.Id, (0f - SquirrelTuning.STANDARD_CALORIES_PER_CYCLE) / 600f, name, false, false, true));
 		trait.Add(new AttributeModifier(Db.Get().Amounts.HitPoints.maxAttribute.Id, 25f, name, false, false, true));
 		trait.Add(new AttributeModifier(Db.Get().Amounts.Age.maxAttribute.Id, 100f, name, false, false, true));
-		List<Diet.Info> diet_infos = BaseSquirrelConfig.BasicWoodDiet(SimHashes.Dirt.CreateTag(), CALORIES_PER_KG_OF_ORE, TUNING.CREATURES.CONVERSION_EFFICIENCY.GOOD_1, null, 0f);
-		return BaseSquirrelConfig.SetupDiet(prefab, diet_infos, CALORIES_PER_KG_OF_ORE, MIN_POOP_SIZE_IN_KG);
+		Diet.Info[] diet_infos = BaseSquirrelConfig.BasicWoodDiet(SimHashes.Dirt.CreateTag(), CALORIES_PER_DAY_OF_PLANT_EATEN, KG_POOP_PER_DAY_OF_PLANT, null, 0f);
+		return BaseSquirrelConfig.SetupDiet(prefab, diet_infos, MIN_POOP_SIZE_KG);
 	}
 
 	public GameObject CreatePrefab()
 	{
-		GameObject prefab = CreateSquirrel("Squirrel", STRINGS.CREATURES.SPECIES.SQUIRREL.NAME, STRINGS.CREATURES.SPECIES.SQUIRREL.DESC, "squirrel_kanim", false);
-		return EntityTemplates.ExtendEntityToFertileCreature(prefab, "SquirrelEgg", STRINGS.CREATURES.SPECIES.SQUIRREL.EGG_NAME, STRINGS.CREATURES.SPECIES.SQUIRREL.DESC, "egg_squirrel_kanim", SquirrelTuning.EGG_MASS, "SquirrelBaby", 60.0000038f, 20f, SquirrelTuning.EGG_CHANCES_BASE, EGG_SORT_ORDER, true, false, true, 1f);
+		GameObject prefab = CreateSquirrel("Squirrel", CREATURES.SPECIES.SQUIRREL.NAME, CREATURES.SPECIES.SQUIRREL.DESC, "squirrel_kanim", false);
+		return EntityTemplates.ExtendEntityToFertileCreature(prefab, "SquirrelEgg", CREATURES.SPECIES.SQUIRREL.EGG_NAME, CREATURES.SPECIES.SQUIRREL.DESC, "egg_squirrel_kanim", SquirrelTuning.EGG_MASS, "SquirrelBaby", 60.0000038f, 20f, SquirrelTuning.EGG_CHANCES_BASE, EGG_SORT_ORDER, true, false, true, 1f);
 	}
 
 	public void OnPrefabInit(GameObject prefab)

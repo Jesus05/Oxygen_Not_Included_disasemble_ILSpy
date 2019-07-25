@@ -1813,11 +1813,17 @@ public abstract class GameStateMachine<StateMachineType, StateMachineInstanceTyp
 			TargetParameter state_target = GetStateTarget();
 			Enter("Face", delegate(StateMachineInstanceType smi)
 			{
-				Facing facing = state_target.Get<Facing>(smi);
-				IApproachable approachable = face_target.Get<IApproachable>(smi);
-				Vector3 position = approachable.transform.GetPosition();
-				float target_x = position.x + x_offset;
-				facing.Face(target_x);
+				if (face_target != null)
+				{
+					IApproachable approachable = face_target.Get<IApproachable>(smi);
+					if (approachable != null)
+					{
+						Vector3 position = approachable.transform.GetPosition();
+						float target_x = position.x + x_offset;
+						Facing facing = state_target.Get<Facing>(smi);
+						facing.Face(target_x);
+					}
+				}
 			});
 			return this;
 		}

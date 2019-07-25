@@ -135,6 +135,12 @@ namespace ProcGen
 			private set;
 		}
 
+		public bool disableWorldTraits
+		{
+			get;
+			private set;
+		}
+
 		public bool skip
 		{
 			get;

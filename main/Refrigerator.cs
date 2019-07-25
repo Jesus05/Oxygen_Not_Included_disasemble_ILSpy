@@ -72,7 +72,7 @@ public class Refrigerator : KMonoBehaviour, IUserControlledCapacity, IEffectDesc
 	{
 		filteredStorage = new FilteredStorage(this, null, new Tag[1]
 		{
-			GameTags.MarkedForCompost
+			GameTags.Compostable
 		}, this, true, Db.Get().ChoreTypes.FoodFetch);
 	}
 

@@ -460,8 +460,6 @@ public class GameTags
 
 	public static readonly Tag Compostable = TagManager.Create("Compostable");
 
-	public static readonly Tag MarkedForCompost = TagManager.Create("MarkedForCompost");
-
 	public static readonly Tag Pickled = TagManager.Create("Pickled");
 
 	public static readonly Tag Dying = TagManager.Create("Dying");
@@ -563,7 +561,7 @@ public class GameTags
 		Egg,
 		Clothes,
 		IndustrialIngredient,
-		MarkedForCompost
+		Compostable
 	};
 
 	public static TagSet IgnoredMaterialCategories = new TagSet

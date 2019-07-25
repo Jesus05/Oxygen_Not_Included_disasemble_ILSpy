@@ -530,6 +530,24 @@ public abstract class OverlayModes
 					{
 						b = new Color(1f, 0f, 0f, 0.4f);
 					}
+					else if ((UnityEngine.Object)dp.GetComponent<MonumentPart>() != (UnityEngine.Object)null && dp.GetComponent<MonumentPart>().IsMonumentCompleted())
+					{
+						List<GameObject> attachedNetwork = AttachableBuilding.GetAttachedNetwork(dp.GetComponent<AttachableBuilding>());
+						foreach (GameObject item in attachedNetwork)
+						{
+							decorForCell = item.GetComponent<DecorProvider>().GetDecorForCell(cell);
+							if (decorForCell > 0f)
+							{
+								b = new Color(0f, 0.8f, 0f, 0.8f);
+								break;
+							}
+							if (decorForCell < 0f)
+							{
+								b = new Color(1f, 0f, 0f, 0.4f);
+								break;
+							}
+						}
+					}
 				}
 				return Color.Lerp(black, b, 0.85f);
 			}, (KMonoBehaviour dp) => SelectToolHoverTextCard.highlightedObjects.Contains(dp.gameObject))

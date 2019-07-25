@@ -48,7 +48,7 @@ public class RationBox : KMonoBehaviour, IUserControlledCapacity, IRender1000ms
 	{
 		filteredStorage = new FilteredStorage(this, null, new Tag[1]
 		{
-			GameTags.MarkedForCompost
+			GameTags.Compostable
 		}, this, false, Db.Get().ChoreTypes.FoodFetch);
 		Subscribe(-592767678, OnOperationalChangedDelegate);
 		Subscribe(-905833192, OnCopySettingsDelegate);

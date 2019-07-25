@@ -176,7 +176,7 @@ public class Tinkerable : Workable
 			RoomTracker component2 = GetComponent<RoomTracker>();
 			if (!string.IsNullOrEmpty(component2.requiredRoomType))
 			{
-				chore.AddPrecondition(ChorePreconditions.instance.IsInMyRoom, component2.room);
+				chore.AddPrecondition(ChorePreconditions.instance.IsInMyRoom, Grid.PosToCell(base.transform.GetPosition()));
 			}
 		}
 		else if (chore != null && !flag2)

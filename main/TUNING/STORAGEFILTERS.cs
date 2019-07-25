@@ -30,7 +30,7 @@ namespace TUNING
 			GameTags.BuildableProcessed,
 			GameTags.Farmable,
 			GameTags.Organics,
-			GameTags.MarkedForCompost,
+			GameTags.Compostable,
 			GameTags.Seed,
 			GameTags.Agriculture,
 			GameTags.Filter,

@@ -1046,7 +1046,7 @@ namespace STRINGS
 
 				public static LocString CANCEL = "Back";
 
-				public static LocString CUSTOMIZE = "Customize";
+				public static LocString CUSTOMIZE = "Game Settings";
 
 				public static LocString START_GAME = "Start Game";
 
@@ -4450,9 +4450,15 @@ namespace STRINGS
 
 				public static LocString TITLE = "Filter Outputs";
 
+				public static LocString NO_SELECTION = "None";
+
 				public static LocString OUTPUTELEMENTHEADER = "Output 1";
 
 				public static LocString SELECTELEMENTHEADER = "Output 2";
+
+				public static LocString OUTPUTRED = "Output Red";
+
+				public static LocString OUTPUTGREEN = "Output Green";
 
 				public static LocString NOELEMENTSELECTED = "No element selected";
 			}
@@ -4940,7 +4946,7 @@ namespace STRINGS
 			{
 				public static LocString TITLE = "Time-of-Day Sensor";
 
-				public static LocString TOOLTIP = "This sensor will send a " + FormatAsAutomationState("Green Signal", AutomationState.Active) + " after the selected Turn On time, and a " + FormatAsAutomationState("Green Signal", AutomationState.Active) + " after the selected Turn Off time";
+				public static LocString TOOLTIP = "This sensor will send a " + FormatAsAutomationState("Green Signal", AutomationState.Active) + " after the selected Turn On time, and a " + FormatAsAutomationState("Red Signal", AutomationState.Standby) + " after the selected Turn Off time";
 
 				public static LocString START = "Turn On";
 
@@ -4951,7 +4957,7 @@ namespace STRINGS
 			{
 				public static LocString TITLE = "Critter Count";
 
-				public static LocString TOOLTIP = "This sensor will send an " + FormatAsAutomationState("Green Signal", AutomationState.Active) + " if the number of " + PRE_KEYWORD + "Critters" + PST_KEYWORD + " and " + PRE_KEYWORD + "Eggs" + PST_KEYWORD + " in the room reaches the specified amount";
+				public static LocString TOOLTIP = "This sensor will send a " + FormatAsAutomationState("Green Signal", AutomationState.Active) + " until the number of " + FormatAsLink("Critters", "CREATURES") + " and " + PRE_KEYWORD + "Eggs" + PST_KEYWORD + " in the room reaches the specified amount";
 
 				public static LocString START = "Turn On";
 
@@ -4985,7 +4991,7 @@ namespace STRINGS
 
 				public static LocString ON = "Activation Time";
 
-				public static LocString ON_TOOLTIP = "Activation time determines the time of day this sensor should beging sending a " + FormatAsAutomationState("Green Signal", AutomationState.Active) + HORIZONTAL_BR_RULE + "This sensor sends a " + FormatAsAutomationState("Green Signal", AutomationState.Active) + " {0} through the day";
+				public static LocString ON_TOOLTIP = "Activation time determines the time of day this sensor should begin sending a " + FormatAsAutomationState("Green Signal", AutomationState.Active) + HORIZONTAL_BR_RULE + "This sensor sends a " + FormatAsAutomationState("Green Signal", AutomationState.Active) + " {0} through the day";
 
 				public static LocString DURATION = "Active Duration";
 

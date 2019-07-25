@@ -1,7 +1,6 @@
 using KSerialization;
 using STRINGS;
 using System;
-using System.Runtime.Serialization;
 using UnityEngine;
 
 [SerializationConfig(MemberSerialization.OptIn)]
@@ -9,9 +8,6 @@ public class ElementFilter : KMonoBehaviour, ISaveLoadable, ISecondaryOutput
 {
 	[SerializeField]
 	public ConduitPortInfo portInfo;
-
-	[Serialize]
-	private Tag filteredTag = GameTags.Water;
 
 	private SimHashes filteredElem = SimHashes.Void;
 
@@ -42,17 +38,10 @@ public class ElementFilter : KMonoBehaviour, ISaveLoadable, ISecondaryOutput
 
 	private static StatusItem filterStatusItem = null;
 
-	public SimHashes FilteredElement => filteredElem;
-
 	protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		filterable = GetComponent<Filterable>();
-		ConduitType conduitType = portInfo.conduitType;
-		if (conduitType == ConduitType.Gas && filteredTag == GameTags.Water)
-		{
-			filteredTag = GameTags.Oxygen;
-		}
 		InitializeStatusItems();
 	}
 
@@ -68,7 +57,7 @@ public class ElementFilter : KMonoBehaviour, ISaveLoadable, ISecondaryOutput
 		itemFilter = new FlowUtilityNetwork.NetworkItem(portInfo.conduitType, Endpoint.Source, filteredCell, base.gameObject);
 		networkManager.AddToNetworks(filteredCell, itemFilter, true);
 		GetComponent<ConduitConsumer>().isConsuming = false;
-		OnFilterChanged(ElementLoader.FindElementByHash(filteredElem).tag);
+		OnFilterChanged(filterable.SelectedTag);
 		filterable.onFilterChanged += OnFilterChanged;
 		ConduitFlow flowManager = Conduit.GetFlowManager(portInfo.conduitType);
 		flowManager.AddConduitUpdater(OnConduitTick, ConduitFlowPriority.Default);
@@ -173,24 +162,13 @@ public class ElementFilter : KMonoBehaviour, ISaveLoadable, ISecondaryOutput
 	private void OnFilterChanged(Tag tag)
 	{
 		bool on = true;
-		filteredTag = tag;
-		Element element = ElementLoader.GetElement(filteredTag);
+		Element element = ElementLoader.GetElement(tag);
 		if (element != null)
 		{
 			filteredElem = element.id;
 			on = (filteredElem == SimHashes.Void || filteredElem == SimHashes.Vacuum);
 		}
 		GetComponent<KSelectable>().ToggleStatusItem(Db.Get().BuildingStatusItems.NoFilterElementSelected, on, null);
-	}
-
-	[OnDeserialized]
-	private void OnDeserialized()
-	{
-		Element element = ElementLoader.GetElement(filteredTag);
-		if (element != null)
-		{
-			filterable.SelectedTag = filteredTag;
-		}
 	}
 
 	private void InitializeStatusItems()

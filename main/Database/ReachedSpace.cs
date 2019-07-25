@@ -42,6 +42,7 @@ namespace Database
 					{
 						return true;
 					}
+					Game.Instance.unlocks.Unlock("temporaltear");
 				}
 			}
 			return false;

@@ -78,7 +78,13 @@ public class ChorePreconditions
 		description = (string)DUPLICANTS.CHORES.PRECONDITIONS.IS_IN_MY_ROOM,
 		fn = (Chore.PreconditionFn)delegate(ref Chore.Precondition.Context context, object data)
 		{
-			Room room = (Room)data;
+			int cell = (int)data;
+			CavityInfo cavityForCell = Game.Instance.roomProber.GetCavityForCell(cell);
+			Room room = null;
+			if (cavityForCell != null)
+			{
+				room = cavityForCell.room;
+			}
 			if (room != null)
 			{
 				if (!((Object)context.consumerState.ownable != (Object)null))
@@ -87,10 +93,10 @@ public class ChorePreconditions
 					FetchChore fetchChore = context.chore as FetchChore;
 					if (fetchChore != null && (Object)fetchChore.destination != (Object)null)
 					{
-						CavityInfo cavityForCell = Game.Instance.roomProber.GetCavityForCell(Grid.PosToCell(fetchChore.destination));
-						if (cavityForCell != null)
+						CavityInfo cavityForCell2 = Game.Instance.roomProber.GetCavityForCell(Grid.PosToCell(fetchChore.destination));
+						if (cavityForCell2 != null)
 						{
-							room2 = cavityForCell.room;
+							room2 = cavityForCell2.room;
 						}
 						if (room2 == null)
 						{
@@ -102,10 +108,10 @@ public class ChorePreconditions
 					{
 						return false;
 					}
-					CavityInfo cavityForCell2 = Game.Instance.roomProber.GetCavityForCell(Grid.PosToCell((context.chore as WorkChore<Tinkerable>).gameObject));
-					if (cavityForCell2 != null)
+					CavityInfo cavityForCell3 = Game.Instance.roomProber.GetCavityForCell(Grid.PosToCell((context.chore as WorkChore<Tinkerable>).gameObject));
+					if (cavityForCell3 != null)
 					{
-						room2 = cavityForCell2.room;
+						room2 = cavityForCell3.room;
 					}
 					if (room2 == null)
 					{

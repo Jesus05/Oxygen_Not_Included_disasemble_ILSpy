@@ -101,11 +101,18 @@ public class ColonyDestinationAsteroidData
 	private List<AsteroidDescriptor> GenerateTraitDescriptors()
 	{
 		List<AsteroidDescriptor> list = new List<AsteroidDescriptor>();
-		List<string> randomTraits = SettingsCache.GetRandomTraits(seed);
-		foreach (string item in randomTraits)
+		if (world.disableWorldTraits)
 		{
-			WorldTrait cachedTrait = SettingsCache.GetCachedTrait(item);
-			list.Add(new AsteroidDescriptor(string.Format("<color=#{1}>{0}</color>", Strings.Get(cachedTrait.name), cachedTrait.colorHex), Strings.Get(cachedTrait.description), null));
+			list.Add(new AsteroidDescriptor(WORLD_TRAITS.NO_TRAITS.NAME, WORLD_TRAITS.NO_TRAITS.DESCRIPTION, null));
+		}
+		else
+		{
+			List<string> randomTraits = SettingsCache.GetRandomTraits(seed);
+			foreach (string item in randomTraits)
+			{
+				WorldTrait cachedTrait = SettingsCache.GetCachedTrait(item);
+				list.Add(new AsteroidDescriptor(string.Format("<color=#{1}>{0}</color>", Strings.Get(cachedTrait.name), cachedTrait.colorHex), Strings.Get(cachedTrait.description), null));
+			}
 		}
 		return list;
 	}

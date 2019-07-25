@@ -212,7 +212,6 @@ public class BuddingTrunk : KMonoBehaviour, ISim4000ms
 					gameObject.SetActive(true);
 					gameObject.GetComponent<Growing>().OverrideMaturityLevel(growth_percentage);
 					gameObject.GetComponent<TreeBud>().SetTrunkPosition(this, num2);
-					gameObject.GetComponent<BudUprootedMonitor>().SetParentObject(GetComponent<KPrefabID>());
 					HarvestDesignatable component = gameObject.GetComponent<HarvestDesignatable>();
 					buds[num2] = new Ref<HarvestDesignatable>(component);
 					UpdateBudHarvestState(component);

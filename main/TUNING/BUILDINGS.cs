@@ -318,6 +318,21 @@ namespace TUNING
 		{
 			public class BONUS
 			{
+				public class MONUMENT
+				{
+					public static readonly EffectorValues COMPLETE = new EffectorValues
+					{
+						amount = 40,
+						radius = 10
+					};
+
+					public static readonly EffectorValues INCOMPLETE = new EffectorValues
+					{
+						amount = 10,
+						radius = 5
+					};
+				}
+
 				public static readonly EffectorValues TIER0 = new EffectorValues
 				{
 					amount = 5,
@@ -352,12 +367,6 @@ namespace TUNING
 				{
 					amount = 30,
 					radius = 6
-				};
-
-				public static readonly EffectorValues MONUMENT = new EffectorValues
-				{
-					amount = 20,
-					radius = 10
 				};
 			}
 

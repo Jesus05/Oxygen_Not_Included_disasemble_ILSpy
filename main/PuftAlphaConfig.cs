@@ -1,5 +1,6 @@
 using Klei.AI;
 using STRINGS;
+using System.Collections.Generic;
 using TUNING;
 using UnityEngine;
 
@@ -37,7 +38,20 @@ public class PuftAlphaConfig : IEntityConfig
 		trait.Add(new AttributeModifier(Db.Get().Amounts.Calories.deltaAttribute.Id, (0f - PuftTuning.STANDARD_CALORIES_PER_CYCLE) / 600f, name, false, false, true));
 		trait.Add(new AttributeModifier(Db.Get().Amounts.HitPoints.maxAttribute.Id, 25f, name, false, false, true));
 		trait.Add(new AttributeModifier(Db.Get().Amounts.Age.maxAttribute.Id, 75f, name, false, false, true));
-		prefab = BasePuftConfig.SetupDiet(prefab, SimHashes.ContaminatedOxygen.CreateTag(), SimHashes.SlimeMold.CreateTag(), CALORIES_PER_KG_OF_ORE, TUNING.CREATURES.CONVERSION_EFFICIENCY.BAD_2, "SlimeLung", 1000f, MIN_POOP_SIZE_IN_KG);
+		List<Diet.Info> list = new List<Diet.Info>();
+		list.Add(new Diet.Info(new HashSet<Tag>(new Tag[1]
+		{
+			SimHashes.ContaminatedOxygen.CreateTag()
+		}), SimHashes.SlimeMold.CreateTag(), CALORIES_PER_KG_OF_ORE, TUNING.CREATURES.CONVERSION_EFFICIENCY.BAD_2, "SlimeLung", 1000f, false));
+		list.Add(new Diet.Info(new HashSet<Tag>(new Tag[1]
+		{
+			SimHashes.ChlorineGas.CreateTag()
+		}), SimHashes.BleachStone.CreateTag(), CALORIES_PER_KG_OF_ORE, TUNING.CREATURES.CONVERSION_EFFICIENCY.BAD_2, "SlimeLung", 1000f, false));
+		list.Add(new Diet.Info(new HashSet<Tag>(new Tag[1]
+		{
+			SimHashes.Oxygen.CreateTag()
+		}), SimHashes.OxyRock.CreateTag(), CALORIES_PER_KG_OF_ORE, TUNING.CREATURES.CONVERSION_EFFICIENCY.BAD_2, "SlimeLung", 1000f, false));
+		prefab = BasePuftConfig.SetupDiet(prefab, list.ToArray(), CALORIES_PER_KG_OF_ORE, MIN_POOP_SIZE_IN_KG);
 		DiseaseSourceVisualizer diseaseSourceVisualizer = prefab.AddOrGet<DiseaseSourceVisualizer>();
 		diseaseSourceVisualizer.alwaysShowDisease = "SlimeLung";
 		return prefab;

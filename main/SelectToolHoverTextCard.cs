@@ -289,11 +289,20 @@ public class SelectToolHoverTextCard : HoverTextConfiguration
 						float decorForCell = item2.GetDecorForCell(num);
 						if (decorForCell != 0f)
 						{
-							string name = item2.GetName();
+							string text3 = item2.GetName();
 							KMonoBehaviour component = item2.GetComponent<KMonoBehaviour>();
 							if ((UnityEngine.Object)component != (UnityEngine.Object)null && (UnityEngine.Object)component.gameObject != (UnityEngine.Object)null)
 							{
 								highlightedObjects.Add(component.gameObject);
+								if ((UnityEngine.Object)component.GetComponent<MonumentPart>() != (UnityEngine.Object)null && component.GetComponent<MonumentPart>().IsMonumentCompleted())
+								{
+									text3 = MISC.MONUMENT_COMPLETE.NAME;
+									List<GameObject> attachedNetwork = AttachableBuilding.GetAttachedNetwork(component.GetComponent<AttachableBuilding>());
+									foreach (GameObject item3 in attachedNetwork)
+									{
+										highlightedObjects.Add(item3);
+									}
+								}
 							}
 							bool flag4 = false;
 							if (decorForCell > 0f)
@@ -301,7 +310,7 @@ public class SelectToolHoverTextCard : HoverTextConfiguration
 								for (int i = 0; i < list2.Count; i++)
 								{
 									EffectorEntry effectorEntry = list2[i];
-									if (effectorEntry.name == name)
+									if (effectorEntry.name == text3)
 									{
 										EffectorEntry value = list2[i];
 										value.count++;
@@ -313,7 +322,7 @@ public class SelectToolHoverTextCard : HoverTextConfiguration
 								}
 								if (!flag4)
 								{
-									list2.Add(new EffectorEntry(name, decorForCell));
+									list2.Add(new EffectorEntry(text3, decorForCell));
 								}
 							}
 							else
@@ -321,7 +330,7 @@ public class SelectToolHoverTextCard : HoverTextConfiguration
 								for (int j = 0; j < list3.Count; j++)
 								{
 									EffectorEntry effectorEntry2 = list3[j];
-									if (effectorEntry2.name == name)
+									if (effectorEntry2.name == text3)
 									{
 										EffectorEntry value2 = list3[j];
 										value2.count++;
@@ -333,7 +342,7 @@ public class SelectToolHoverTextCard : HoverTextConfiguration
 								}
 								if (!flag4)
 								{
-									list3.Add(new EffectorEntry(name, decorForCell));
+									list3.Add(new EffectorEntry(text3, decorForCell));
 								}
 							}
 						}
@@ -349,11 +358,11 @@ public class SelectToolHoverTextCard : HoverTextConfiguration
 						hoverTextDrawer.NewLine(26);
 						hoverTextDrawer.DrawText(UI.OVERLAYS.DECOR.HEADER_POSITIVE, Styles_BodyText.Standard);
 					}
-					foreach (EffectorEntry item3 in list2)
+					foreach (EffectorEntry item4 in list2)
 					{
 						hoverTextDrawer.NewLine(18);
 						hoverTextDrawer.DrawIcon(iconDash, 18);
-						hoverTextDrawer.DrawText(item3.ToString(), Styles_BodyText.Standard);
+						hoverTextDrawer.DrawText(item4.ToString(), Styles_BodyText.Standard);
 					}
 					list3.Sort((EffectorEntry x, EffectorEntry y) => Mathf.Abs(y.value).CompareTo(Mathf.Abs(x.value)));
 					if (list3.Count > 0)
@@ -361,11 +370,11 @@ public class SelectToolHoverTextCard : HoverTextConfiguration
 						hoverTextDrawer.NewLine(26);
 						hoverTextDrawer.DrawText(UI.OVERLAYS.DECOR.HEADER_NEGATIVE, Styles_BodyText.Standard);
 					}
-					foreach (EffectorEntry item4 in list3)
+					foreach (EffectorEntry item5 in list3)
 					{
 						hoverTextDrawer.NewLine(18);
 						hoverTextDrawer.DrawIcon(iconDash, 18);
-						hoverTextDrawer.DrawText(item4.ToString(), Styles_BodyText.Standard);
+						hoverTextDrawer.DrawText(item5.ToString(), Styles_BodyText.Standard);
 					}
 				}
 				hoverTextDrawer.EndShadowBar();
@@ -391,47 +400,47 @@ public class SelectToolHoverTextCard : HoverTextConfiguration
 					text = "";
 					if (room != null)
 					{
-						string text3 = "";
-						text3 = RoomDetails.EFFECT.resolve_string_function(room);
 						string text4 = "";
-						text4 = RoomDetails.ASSIGNED_TO.resolve_string_function(room);
+						text4 = RoomDetails.EFFECT.resolve_string_function(room);
 						string text5 = "";
-						text5 = RoomConstraints.RoomCriteriaString(room);
+						text5 = RoomDetails.ASSIGNED_TO.resolve_string_function(room);
 						string text6 = "";
-						text6 = RoomDetails.EFFECTS.resolve_string_function(room);
-						if (text3 != "")
-						{
-							hoverTextDrawer.NewLine(26);
-							hoverTextDrawer.DrawText(text3, Styles_BodyText.Standard);
-						}
-						if (text4 != "" && roomType != Db.Get().RoomTypes.Neutral)
+						text6 = RoomConstraints.RoomCriteriaString(room);
+						string text7 = "";
+						text7 = RoomDetails.EFFECTS.resolve_string_function(room);
+						if (text4 != "")
 						{
 							hoverTextDrawer.NewLine(26);
 							hoverTextDrawer.DrawText(text4, Styles_BodyText.Standard);
 						}
-						hoverTextDrawer.NewLine(22);
-						hoverTextDrawer.DrawText(RoomDetails.RoomDetailString(room), Styles_BodyText.Standard);
-						if (text5 != "")
+						if (text5 != "" && roomType != Db.Get().RoomTypes.Neutral)
 						{
 							hoverTextDrawer.NewLine(26);
 							hoverTextDrawer.DrawText(text5, Styles_BodyText.Standard);
 						}
+						hoverTextDrawer.NewLine(22);
+						hoverTextDrawer.DrawText(RoomDetails.RoomDetailString(room), Styles_BodyText.Standard);
 						if (text6 != "")
 						{
 							hoverTextDrawer.NewLine(26);
 							hoverTextDrawer.DrawText(text6, Styles_BodyText.Standard);
 						}
+						if (text7 != "")
+						{
+							hoverTextDrawer.NewLine(26);
+							hoverTextDrawer.DrawText(text7, Styles_BodyText.Standard);
+						}
 					}
 					else
 					{
-						string text7 = UI.OVERLAYS.ROOMS.NOROOM.DESC;
+						string text8 = UI.OVERLAYS.ROOMS.NOROOM.DESC;
 						int maxRoomSize = TuningData<RoomProber.Tuning>.Get().maxRoomSize;
 						if (cavityForCell.numCells > maxRoomSize)
 						{
-							text7 = text7 + "\n" + string.Format(UI.OVERLAYS.ROOMS.NOROOM.TOO_BIG, cavityForCell.numCells, maxRoomSize);
+							text8 = text8 + "\n" + string.Format(UI.OVERLAYS.ROOMS.NOROOM.TOO_BIG, cavityForCell.numCells, maxRoomSize);
 						}
 						hoverTextDrawer.NewLine(26);
-						hoverTextDrawer.DrawText(text7, Styles_BodyText.Standard);
+						hoverTextDrawer.DrawText(text8, Styles_BodyText.Standard);
 					}
 					hoverTextDrawer.EndShadowBar();
 				}
@@ -440,8 +449,8 @@ public class SelectToolHoverTextCard : HoverTextConfiguration
 			{
 				if (flag3)
 				{
-					string text8 = text;
-					text = text8 + string.Format(UI.OVERLAYS.LIGHTING.DESC, Grid.LightIntensity[num]) + " (" + GameUtil.GetLightDescription(Grid.LightIntensity[num]) + ")";
+					string text9 = text;
+					text = text9 + string.Format(UI.OVERLAYS.LIGHTING.DESC, Grid.LightIntensity[num]) + " (" + GameUtil.GetLightDescription(Grid.LightIntensity[num]) + ")";
 					hoverTextDrawer.BeginShadowBar(false);
 					hoverTextDrawer.DrawText(UI.OVERLAYS.LIGHTING.HOVERTITLE, Styles_Title.Standard);
 					hoverTextDrawer.NewLine(26);
@@ -461,15 +470,15 @@ public class SelectToolHoverTextCard : HoverTextConfiguration
 						int num3;
 						if (isInput)
 						{
-							string text9 = (!port.displayCustomName) ? UI.LOGIC_PORTS.PORT_INPUT_DEFAULT_NAME.text : port.description;
+							string text10 = (!port.displayCustomName) ? UI.LOGIC_PORTS.PORT_INPUT_DEFAULT_NAME.text : port.description;
 							num3 = component2.GetInputValue(port.id);
-							hoverTextDrawer.DrawText(UI.TOOLS.GENERIC.LOGIC_INPUT_HOVER_FMT.Replace("{Port}", text9.ToUpper()).Replace("{Name}", hoverObject2.GetProperName().ToUpper()), Styles_Title.Standard);
+							hoverTextDrawer.DrawText(UI.TOOLS.GENERIC.LOGIC_INPUT_HOVER_FMT.Replace("{Port}", text10.ToUpper()).Replace("{Name}", hoverObject2.GetProperName().ToUpper()), Styles_Title.Standard);
 						}
 						else
 						{
-							string text10 = (!port.displayCustomName) ? UI.LOGIC_PORTS.PORT_OUTPUT_DEFAULT_NAME.text : port.description;
+							string text11 = (!port.displayCustomName) ? UI.LOGIC_PORTS.PORT_OUTPUT_DEFAULT_NAME.text : port.description;
 							num3 = component2.GetOutputValue(port.id);
-							hoverTextDrawer.DrawText(UI.TOOLS.GENERIC.LOGIC_OUTPUT_HOVER_FMT.Replace("{Port}", text10.ToUpper()).Replace("{Name}", hoverObject2.GetProperName().ToUpper()), Styles_Title.Standard);
+							hoverTextDrawer.DrawText(UI.TOOLS.GENERIC.LOGIC_OUTPUT_HOVER_FMT.Replace("{Port}", text11.ToUpper()).Replace("{Name}", hoverObject2.GetProperName().ToUpper()), Styles_Title.Standard);
 						}
 						hoverTextDrawer.NewLine(26);
 						TextStyleSetting textStyleSetting = (!flag5) ? Styles_LogicActive.Standard : ((num3 != 1) ? Styles_LogicSignalInactive : Styles_LogicActive.Selected);
@@ -529,19 +538,19 @@ public class SelectToolHoverTextCard : HoverTextConfiguration
 						}
 						num4++;
 						hoverTextDrawer.BeginShadowBar(flag6);
-						string text11 = GameUtil.GetUnitFormattedName(overlayValidHoverObjects[k].gameObject, true);
+						string text12 = GameUtil.GetUnitFormattedName(overlayValidHoverObjects[k].gameObject, true);
 						if ((UnityEngine.Object)component4 != (UnityEngine.Object)null && (UnityEngine.Object)kSelectable.GetComponent<Building>() != (UnityEngine.Object)null)
 						{
-							text11 = StringFormatter.Replace(StringFormatter.Replace(UI.TOOLS.GENERIC.BUILDING_HOVER_NAME_FMT, "{Name}", text11), "{Element}", component4.Element.nameUpperCase);
+							text12 = StringFormatter.Replace(StringFormatter.Replace(UI.TOOLS.GENERIC.BUILDING_HOVER_NAME_FMT, "{Name}", text12), "{Element}", component4.Element.nameUpperCase);
 						}
-						hoverTextDrawer.DrawText(text11, Styles_Title.Standard);
+						hoverTextDrawer.DrawText(text12, Styles_Title.Standard);
 						bool flag7 = false;
-						string text12 = UI.OVERLAYS.DISEASE.NO_DISEASE;
+						string text13 = UI.OVERLAYS.DISEASE.NO_DISEASE;
 						if (flag)
 						{
 							if ((UnityEngine.Object)component4 != (UnityEngine.Object)null && component4.DiseaseIdx != 255)
 							{
-								text12 = GameUtil.GetFormattedDisease(component4.DiseaseIdx, component4.DiseaseCount, true);
+								text13 = GameUtil.GetFormattedDisease(component4.DiseaseIdx, component4.DiseaseCount, true);
 							}
 							flag7 = true;
 							Storage component5 = kSelectable.GetComponent<Storage>();
@@ -556,7 +565,7 @@ public class SelectToolHoverTextCard : HoverTextConfiguration
 										PrimaryElement component6 = gameObject.GetComponent<PrimaryElement>();
 										if (component6.DiseaseIdx != 255)
 										{
-											text12 += string.Format(UI.OVERLAYS.DISEASE.CONTAINER_FORMAT, gameObject.GetComponent<KSelectable>().GetProperName(), GameUtil.GetFormattedDisease(component6.DiseaseIdx, component6.DiseaseCount, true));
+											text13 += string.Format(UI.OVERLAYS.DISEASE.CONTAINER_FORMAT, gameObject.GetComponent<KSelectable>().GetProperName(), GameUtil.GetFormattedDisease(component6.DiseaseIdx, component6.DiseaseCount, true));
 										}
 									}
 								}
@@ -566,30 +575,9 @@ public class SelectToolHoverTextCard : HoverTextConfiguration
 						{
 							hoverTextDrawer.NewLine(26);
 							hoverTextDrawer.DrawIcon(iconDash, 18);
-							hoverTextDrawer.DrawText(text12, Styles_Values.Property.Standard);
+							hoverTextDrawer.DrawText(text13, Styles_Values.Property.Standard);
 						}
 						int num5 = 0;
-						foreach (StatusItemGroup.Entry item5 in overlayValidHoverObjects[k].GetStatusItemGroup())
-						{
-							StatusItemGroup.Entry current7 = item5;
-							if (ShowStatusItemInCurrentOverlay(current7.item))
-							{
-								if (num5 >= maxNumberOfDisplayedSelectableWarnings)
-								{
-									break;
-								}
-								if (current7.category != null && current7.category.Id == "Main" && num5 < maxNumberOfDisplayedSelectableWarnings)
-								{
-									TextStyleSetting style = (!IsStatusItemWarning(current7)) ? Styles_BodyText.Standard : HoverTextStyleSettings[1];
-									Sprite icon = (current7.item.sprite == null) ? iconWarning : current7.item.sprite.sprite;
-									Color color = (!IsStatusItemWarning(current7)) ? Styles_BodyText.Standard.textColor : HoverTextStyleSettings[1].textColor;
-									hoverTextDrawer.NewLine(26);
-									hoverTextDrawer.DrawIcon(icon, color, 18, 2);
-									hoverTextDrawer.DrawText(current7.GetName(), style);
-									num5++;
-								}
-							}
-						}
 						foreach (StatusItemGroup.Entry item6 in overlayValidHoverObjects[k].GetStatusItemGroup())
 						{
 							StatusItemGroup.Entry current8 = item6;
@@ -599,14 +587,35 @@ public class SelectToolHoverTextCard : HoverTextConfiguration
 								{
 									break;
 								}
-								if ((current8.category == null || current8.category.Id != "Main") && num5 < maxNumberOfDisplayedSelectableWarnings)
+								if (current8.category != null && current8.category.Id == "Main" && num5 < maxNumberOfDisplayedSelectableWarnings)
 								{
-									TextStyleSetting style2 = (!IsStatusItemWarning(current8)) ? Styles_BodyText.Standard : HoverTextStyleSettings[1];
-									Sprite icon2 = (current8.item.sprite == null) ? iconWarning : current8.item.sprite.sprite;
-									Color color2 = (!IsStatusItemWarning(current8)) ? Styles_BodyText.Standard.textColor : HoverTextStyleSettings[1].textColor;
+									TextStyleSetting style = (!IsStatusItemWarning(current8)) ? Styles_BodyText.Standard : HoverTextStyleSettings[1];
+									Sprite icon = (current8.item.sprite == null) ? iconWarning : current8.item.sprite.sprite;
+									Color color = (!IsStatusItemWarning(current8)) ? Styles_BodyText.Standard.textColor : HoverTextStyleSettings[1].textColor;
+									hoverTextDrawer.NewLine(26);
+									hoverTextDrawer.DrawIcon(icon, color, 18, 2);
+									hoverTextDrawer.DrawText(current8.GetName(), style);
+									num5++;
+								}
+							}
+						}
+						foreach (StatusItemGroup.Entry item7 in overlayValidHoverObjects[k].GetStatusItemGroup())
+						{
+							StatusItemGroup.Entry current9 = item7;
+							if (ShowStatusItemInCurrentOverlay(current9.item))
+							{
+								if (num5 >= maxNumberOfDisplayedSelectableWarnings)
+								{
+									break;
+								}
+								if ((current9.category == null || current9.category.Id != "Main") && num5 < maxNumberOfDisplayedSelectableWarnings)
+								{
+									TextStyleSetting style2 = (!IsStatusItemWarning(current9)) ? Styles_BodyText.Standard : HoverTextStyleSettings[1];
+									Sprite icon2 = (current9.item.sprite == null) ? iconWarning : current9.item.sprite.sprite;
+									Color color2 = (!IsStatusItemWarning(current9)) ? Styles_BodyText.Standard.textColor : HoverTextStyleSettings[1].textColor;
 									hoverTextDrawer.NewLine(26);
 									hoverTextDrawer.DrawIcon(icon2, color2, 18, 2);
-									hoverTextDrawer.DrawText(current8.GetName(), style2);
+									hoverTextDrawer.DrawText(current9.GetName(), style2);
 									num5++;
 								}
 							}
@@ -711,15 +720,15 @@ public class SelectToolHoverTextCard : HoverTextConfiguration
 					hoverTextDrawer.NewLine(26);
 					hoverTextDrawer.DrawIcon(iconDash, 18);
 					Element element2 = Grid.Element[num];
-					string text13 = cachedTemperatureString;
+					string text14 = cachedTemperatureString;
 					float num6 = Grid.Temperature[num];
 					if (num6 != cachedTemperature)
 					{
 						cachedTemperature = num6;
-						text13 = (cachedTemperatureString = GameUtil.GetFormattedTemperature(Grid.Temperature[num], GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false));
+						text14 = (cachedTemperatureString = GameUtil.GetFormattedTemperature(Grid.Temperature[num], GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false));
 					}
-					string text14 = (element2.specificHeatCapacity != 0f) ? text13 : "N/A";
-					hoverTextDrawer.DrawText(text14, Styles_BodyText.Standard);
+					string text15 = (element2.specificHeatCapacity != 0f) ? text14 : "N/A";
+					hoverTextDrawer.DrawText(text15, Styles_BodyText.Standard);
 				}
 				if (CellSelectionObject.IsExposedToSpace(num))
 				{
@@ -736,28 +745,28 @@ public class SelectToolHoverTextCard : HoverTextConfiguration
 				if (element.id == SimHashes.OxyRock)
 				{
 					float num7 = Grid.AccumulatedFlow[num] / 3f;
-					string text15 = BUILDING.STATUSITEMS.EMITTINGOXYGENAVG.NAME;
-					text15 = text15.Replace("{FlowRate}", GameUtil.GetFormattedMass(num7, GameUtil.TimeSlice.PerSecond, GameUtil.MetricMassFormat.UseThreshold, true, "{0:0.#}"));
+					string text16 = BUILDING.STATUSITEMS.EMITTINGOXYGENAVG.NAME;
+					text16 = text16.Replace("{FlowRate}", GameUtil.GetFormattedMass(num7, GameUtil.TimeSlice.PerSecond, GameUtil.MetricMassFormat.UseThreshold, true, "{0:0.#}"));
 					hoverTextDrawer.NewLine(26);
 					hoverTextDrawer.DrawIcon(iconDash, 18);
-					hoverTextDrawer.DrawText(text15, Styles_BodyText.Standard);
+					hoverTextDrawer.DrawText(text16, Styles_BodyText.Standard);
 					if (num7 <= 0f)
 					{
 						GameUtil.IsEmissionBlocked(num, out bool all_not_gaseous, out bool all_over_pressure);
-						string text16 = null;
+						string text17 = null;
 						if (all_not_gaseous)
 						{
-							text16 = MISC.STATUSITEMS.OXYROCK.NEIGHBORSBLOCKED.NAME;
+							text17 = MISC.STATUSITEMS.OXYROCK.NEIGHBORSBLOCKED.NAME;
 						}
 						else if (all_over_pressure)
 						{
-							text16 = MISC.STATUSITEMS.OXYROCK.OVERPRESSURE.NAME;
+							text17 = MISC.STATUSITEMS.OXYROCK.OVERPRESSURE.NAME;
 						}
-						if (text16 != null)
+						if (text17 != null)
 						{
 							hoverTextDrawer.NewLine(26);
 							hoverTextDrawer.DrawIcon(iconDash, 18);
-							hoverTextDrawer.DrawText(text16, Styles_BodyText.Standard);
+							hoverTextDrawer.DrawText(text17, Styles_BodyText.Standard);
 						}
 					}
 				}

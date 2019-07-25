@@ -76,21 +76,22 @@ public static class BaseSquirrelConfig
 		return gameObject;
 	}
 
-	public static List<Diet.Info> BasicWoodDiet(Tag poopTag, float caloriesPerKg, float producedConversionRate, string diseaseId, float diseasePerKgProduced)
+	public static Diet.Info[] BasicWoodDiet(Tag poopTag, float caloriesPerKg, float producedConversionRate, string diseaseId, float diseasePerKgProduced)
 	{
 		HashSet<Tag> hashSet = new HashSet<Tag>();
 		hashSet.Add("ForestTree");
-		List<Diet.Info> list = new List<Diet.Info>();
-		list.Add(new Diet.Info(hashSet, poopTag, caloriesPerKg, producedConversionRate, diseaseId, diseasePerKgProduced, false));
-		return list;
+		return new Diet.Info[1]
+		{
+			new Diet.Info(hashSet, poopTag, caloriesPerKg, producedConversionRate, diseaseId, diseasePerKgProduced, false)
+		};
 	}
 
-	public static GameObject SetupDiet(GameObject prefab, List<Diet.Info> diet_infos, float referenceCaloriesPerKg, float minPoopSizeInKg)
+	public static GameObject SetupDiet(GameObject prefab, Diet.Info[] diet_infos, float minPoopSizeInKg)
 	{
-		Diet diet = new Diet(diet_infos.ToArray());
+		Diet diet = new Diet(diet_infos);
 		CreatureCalorieMonitor.Def def = prefab.AddOrGetDef<CreatureCalorieMonitor.Def>();
 		def.diet = diet;
-		def.minPoopSizeInCalories = referenceCaloriesPerKg * minPoopSizeInKg;
+		def.minPoopSizeInCalories = minPoopSizeInKg;
 		SolidConsumerMonitor.Def def2 = prefab.AddOrGetDef<SolidConsumerMonitor.Def>();
 		def2.diet = diet;
 		return prefab;

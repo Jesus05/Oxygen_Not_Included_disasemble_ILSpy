@@ -1,9 +1,11 @@
 using Newtonsoft.Json;
+using ProcGen;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Threading;
+using UnityEngine;
 
 public class Unlocks : KMonoBehaviour
 {
@@ -110,11 +112,70 @@ public class Unlocks : KMonoBehaviour
 		}
 	};
 
-	private static string UnlocksFilename => Path.Combine(Util.RootFolder(), "unlocks.json");
+	public Dictionary<int, string> cycleLocked = new Dictionary<int, string>
+	{
+		{
+			0,
+			"log1"
+		},
+		{
+			3,
+			"log2"
+		},
+		{
+			15,
+			"log3"
+		},
+		{
+			1000,
+			"log4"
+		},
+		{
+			1500,
+			"log4b"
+		},
+		{
+			2000,
+			"log5"
+		},
+		{
+			2500,
+			"log5b"
+		},
+		{
+			3000,
+			"log6"
+		},
+		{
+			3500,
+			"log6b"
+		},
+		{
+			4000,
+			"log7"
+		},
+		{
+			4001,
+			"log8"
+		}
+	};
+
+	private static string UnlocksFilename => System.IO.Path.Combine(Util.RootFolder(), "unlocks.json");
 
 	protected override void OnPrefabInit()
 	{
 		LoadUnlocks();
+	}
+
+	protected override void OnSpawn()
+	{
+		base.OnSpawn();
+		UnlockCycleCodexes();
+		GameClock.Instance.Subscribe(631075836, OnNewDay);
+		Game.Instance.Subscribe(-1056989049, OnLaunchRocket);
+		Game.Instance.Subscribe(282337316, OnDuplicantDied);
+		Game.Instance.Subscribe(-818188514, OnDiscoveredSpace);
+		Components.LiveMinionIdentities.OnAdd += OnNewDupe;
 	}
 
 	public bool IsUnlocked(string unlockID)
@@ -242,5 +303,122 @@ public class Unlocks : KMonoBehaviour
 			}
 		}
 		return null;
+	}
+
+	private void UnlockCycleCodexes()
+	{
+		foreach (KeyValuePair<int, string> item in cycleLocked)
+		{
+			if (GameClock.Instance.GetCycle() + 1 >= item.Key)
+			{
+				Unlock(item.Value);
+			}
+		}
+	}
+
+	private void OnNewDay(object data)
+	{
+		UnlockCycleCodexes();
+	}
+
+	private void OnLaunchRocket(object data)
+	{
+		Unlock("surfacebreach");
+		Unlock("firstrocketlaunch");
+	}
+
+	private void OnDuplicantDied(object data)
+	{
+		Unlock("duplicantdeath");
+		if (Components.LiveMinionIdentities.Count == 1)
+		{
+			Unlock("onedupeleft");
+		}
+	}
+
+	private void OnNewDupe(MinionIdentity minion_identity)
+	{
+		if (Components.LiveMinionIdentities.Count >= 35)
+		{
+			Unlock("fulldupecolony");
+		}
+	}
+
+	private void OnDiscoveredSpace(object data)
+	{
+		Unlock("surfacebreach");
+	}
+
+	public void Sim4000ms(float dt)
+	{
+		int x = -2147483648;
+		int num = -2147483648;
+		int x2 = 2147483647;
+		int num2 = 2147483647;
+		foreach (MinionIdentity item in Components.MinionIdentities.Items)
+		{
+			if (!((UnityEngine.Object)item == (UnityEngine.Object)null))
+			{
+				int cell = Grid.PosToCell(item);
+				if (Grid.IsValidCell(cell))
+				{
+					Grid.CellToXY(cell, out int x3, out int y);
+					if (y > num)
+					{
+						num = y;
+						x = x3;
+					}
+					if (y < num2)
+					{
+						x2 = x3;
+						num2 = y;
+					}
+				}
+			}
+		}
+		if (num != -2147483648)
+		{
+			int num3 = num;
+			for (int i = 0; i < 30; i++)
+			{
+				num3++;
+				int cell2 = Grid.XYToCell(x, num3);
+				if (!Grid.IsValidCell(cell2))
+				{
+					break;
+				}
+				SubWorld.ZoneType subWorldZoneType = World.Instance.zoneRenderData.GetSubWorldZoneType(cell2);
+				if (subWorldZoneType == SubWorld.ZoneType.Space)
+				{
+					Unlock("nearingsurface");
+					break;
+				}
+			}
+		}
+		if (num2 != 2147483647)
+		{
+			int num4 = num2;
+			int num5 = 0;
+			while (true)
+			{
+				if (num5 >= 30)
+				{
+					return;
+				}
+				num4--;
+				int num6 = Grid.XYToCell(x2, num4);
+				if (!Grid.IsValidCell(num6))
+				{
+					return;
+				}
+				SubWorld.ZoneType subWorldZoneType2 = World.Instance.zoneRenderData.GetSubWorldZoneType(num6);
+				if (subWorldZoneType2 == SubWorld.ZoneType.ToxicJungle && Grid.Element[num6].id == SimHashes.Magma)
+				{
+					break;
+				}
+				num5++;
+			}
+			Unlock("nearingmagma");
+		}
 	}
 }

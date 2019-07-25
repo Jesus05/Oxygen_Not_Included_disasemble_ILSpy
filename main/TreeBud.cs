@@ -174,6 +174,7 @@ public class TreeBud : KMonoBehaviour, IWiltCause
 			Vector3 position = base.gameObject.transform.position;
 			position.z = Grid.GetLayerZ(Grid.SceneLayer.BuildingFront) - 0.1f * (float)trunkPosition;
 			base.gameObject.transform.SetPosition(position);
+			GetComponent<BudUprootedMonitor>().SetParentObject(buddingTrunk.GetComponent<KPrefabID>());
 		}
 	}
 

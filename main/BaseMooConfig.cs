@@ -32,7 +32,7 @@ public static class BaseMooConfig
 		LureableMonitor.Def def = gameObject.AddOrGetDef<LureableMonitor.Def>();
 		def.lures = new Tag[1]
 		{
-			GameTags.SlimeMold
+			SimHashes.BleachStone.CreateTag()
 		};
 		gameObject.AddOrGetDef<ThreatMonitor.Def>();
 		gameObject.AddOrGetDef<SubmergedMonitor.Def>();
@@ -65,7 +65,7 @@ public static class BaseMooConfig
 		hashSet.Add(consumed_tag);
 		Diet.Info[] infos = new Diet.Info[1]
 		{
-			new Diet.Info(hashSet, producedTag, caloriesPerKg, producedConversionRate, diseaseId, diseasePerKgProduced, false)
+			new Diet.Info(hashSet, producedTag, caloriesPerKg, producedConversionRate, diseaseId, diseasePerKgProduced, false, false)
 		};
 		Diet diet = new Diet(infos);
 		CreatureCalorieMonitor.Def def = prefab.AddOrGetDef<CreatureCalorieMonitor.Def>();

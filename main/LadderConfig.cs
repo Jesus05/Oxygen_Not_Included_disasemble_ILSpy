@@ -27,10 +27,11 @@ public class LadderConfig : IBuildingConfig
 		buildingDef.AudioSize = "small";
 		buildingDef.BaseTimeUntilRepair = -1f;
 		buildingDef.DragBuild = true;
-		buildingDef.TileLayer = ObjectLayer.LadderTile;
-		buildingDef.ReplacementLayer = ObjectLayer.ReplacementLadder;
+		buildingDef.TileLayer = ObjectLayer.FoundationTile;
+		buildingDef.ReplacementLayer = ObjectLayer.ReplacementTile;
 		buildingDef.ReplacementTags = new List<Tag>();
 		buildingDef.ReplacementTags.Add(GameTags.Ladders);
+		buildingDef.ReplacementTags.Add(GameTags.FloorTiles);
 		return buildingDef;
 	}
 

@@ -6,6 +6,13 @@ namespace Rendering
 {
 	public class BlockTileRenderer : MonoBehaviour
 	{
+		public enum RenderInfoLayer
+		{
+			Built,
+			UnderConstruction,
+			Replacement
+		}
+
 		[Flags]
 		public enum Bits
 		{
@@ -514,7 +521,7 @@ namespace Rendering
 
 		private const int chunkEdgeSize = 16;
 
-		protected Dictionary<KeyValuePair<BuildingDef, bool>, RenderInfo> renderInfo = new Dictionary<KeyValuePair<BuildingDef, bool>, RenderInfo>();
+		protected Dictionary<KeyValuePair<BuildingDef, RenderInfoLayer>, RenderInfo> renderInfo = new Dictionary<KeyValuePair<BuildingDef, RenderInfoLayer>, RenderInfo>();
 
 		private int selectedCell = -1;
 
@@ -529,9 +536,14 @@ namespace Rendering
 			forceRebuild = false;
 		}
 
+		public static RenderInfoLayer GetRenderInfoLayer(bool isReplacement, SimHashes element)
+		{
+			return isReplacement ? RenderInfoLayer.Replacement : ((element == SimHashes.Void) ? RenderInfoLayer.UnderConstruction : RenderInfoLayer.Built);
+		}
+
 		public void FreeResources()
 		{
-			foreach (KeyValuePair<KeyValuePair<BuildingDef, bool>, RenderInfo> item in renderInfo)
+			foreach (KeyValuePair<KeyValuePair<BuildingDef, RenderInfoLayer>, RenderInfo> item in renderInfo)
 			{
 				if (item.Value != null)
 				{
@@ -683,7 +695,7 @@ namespace Rendering
 				Vector2I max2 = visibleArea.Max;
 				vector2I2 = new Vector2I(a2, (max2.y + 16 - 1) / 16);
 			}
-			foreach (KeyValuePair<KeyValuePair<BuildingDef, bool>, RenderInfo> item in renderInfo)
+			foreach (KeyValuePair<KeyValuePair<BuildingDef, RenderInfoLayer>, RenderInfo> item in renderInfo)
 			{
 				RenderInfo value = item.Value;
 				for (int i = vector2I.y; i < vector2I2.y; i++)
@@ -720,20 +732,21 @@ namespace Rendering
 			return new Vector2I(vector2I.x / 16, vector2I.y / 16);
 		}
 
-		public void AddBlock(int renderLayer, BuildingDef def, SimHashes element, int cell)
+		public void AddBlock(int renderLayer, BuildingDef def, bool isReplacement, SimHashes element, int cell)
 		{
-			KeyValuePair<BuildingDef, bool> key = new KeyValuePair<BuildingDef, bool>(def, element != SimHashes.Void);
+			KeyValuePair<BuildingDef, RenderInfoLayer> key = new KeyValuePair<BuildingDef, RenderInfoLayer>(def, GetRenderInfoLayer(isReplacement, element));
 			if (!renderInfo.TryGetValue(key, out RenderInfo value))
 			{
-				value = new RenderInfo(this, (int)def.TileLayer, renderLayer, def, element);
+				int queryLayer = (int)((!isReplacement) ? def.TileLayer : def.ReplacementLayer);
+				value = new RenderInfo(this, queryLayer, renderLayer, def, element);
 				renderInfo[key] = value;
 			}
 			value.AddCell(cell);
 		}
 
-		public void RemoveBlock(BuildingDef def, SimHashes element, int cell)
+		public void RemoveBlock(BuildingDef def, bool isReplacement, SimHashes element, int cell)
 		{
-			KeyValuePair<BuildingDef, bool> key = new KeyValuePair<BuildingDef, bool>(def, element != SimHashes.Void);
+			KeyValuePair<BuildingDef, RenderInfoLayer> key = new KeyValuePair<BuildingDef, RenderInfoLayer>(def, GetRenderInfoLayer(isReplacement, element));
 			if (renderInfo.TryGetValue(key, out RenderInfo value))
 			{
 				value.RemoveCell(cell);
@@ -742,7 +755,7 @@ namespace Rendering
 
 		public void Rebuild(ObjectLayer layer, int cell)
 		{
-			foreach (KeyValuePair<KeyValuePair<BuildingDef, bool>, RenderInfo> item in renderInfo)
+			foreach (KeyValuePair<KeyValuePair<BuildingDef, RenderInfoLayer>, RenderInfo> item in renderInfo)
 			{
 				if (item.Key.Key.TileLayer == layer)
 				{
@@ -774,13 +787,13 @@ namespace Rendering
 				{
 					if (cell_status != -1)
 					{
-						foreach (KeyValuePair<KeyValuePair<BuildingDef, bool>, RenderInfo> item in renderInfo)
+						foreach (KeyValuePair<KeyValuePair<BuildingDef, RenderInfoLayer>, RenderInfo> item in renderInfo)
 						{
 							item.Value.MarkDirtyIfOccupied(cell_status);
 						}
 					}
 					cell_status = cell;
-					foreach (KeyValuePair<KeyValuePair<BuildingDef, bool>, RenderInfo> item2 in renderInfo)
+					foreach (KeyValuePair<KeyValuePair<BuildingDef, RenderInfoLayer>, RenderInfo> item2 in renderInfo)
 					{
 						item2.Value.MarkDirtyIfOccupied(cell_status);
 					}
@@ -788,7 +801,7 @@ namespace Rendering
 			}
 			else if (cell_status == cell)
 			{
-				foreach (KeyValuePair<KeyValuePair<BuildingDef, bool>, RenderInfo> item3 in renderInfo)
+				foreach (KeyValuePair<KeyValuePair<BuildingDef, RenderInfoLayer>, RenderInfo> item3 in renderInfo)
 				{
 					item3.Value.MarkDirty(cell_status);
 				}

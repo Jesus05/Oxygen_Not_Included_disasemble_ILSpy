@@ -38,9 +38,12 @@ public class ColonyAchievementStatus
 		{
 			string typeName = reader.ReadKleiString();
 			Type type = Type.GetType(typeName);
-			ColonyAchievementRequirement colonyAchievementRequirement = (ColonyAchievementRequirement)FormatterServices.GetUninitializedObject(type);
-			colonyAchievementRequirement.Deserialize(reader);
-			requirements.Add(colonyAchievementRequirement);
+			if (type != null)
+			{
+				ColonyAchievementRequirement colonyAchievementRequirement = (ColonyAchievementRequirement)FormatterServices.GetUninitializedObject(type);
+				colonyAchievementRequirement.Deserialize(reader);
+				requirements.Add(colonyAchievementRequirement);
+			}
 		}
 	}
 

@@ -7,6 +7,8 @@ public class MinionTodoChoreEntry : KMonoBehaviour
 {
 	public Image icon;
 
+	public Image priorityIcon;
+
 	public LocText priorityLabel;
 
 	public LocText label;
@@ -51,7 +53,7 @@ public class MinionTodoChoreEntry : KMonoBehaviour
 			lastPrioritySetting = context.chore.masterPriority;
 			string choreName = GameUtil.GetChoreName(context.chore, context.data);
 			string text = GameUtil.ChoreGroupsForChoreType(context.chore.choreType);
-			string text2 = (text == null) ? UI.UISIDESCREENS.MINIONTODOSIDESCREEN.CHORE_TARGET : UI.UISIDESCREENS.MINIONTODOSIDESCREEN.CHORE_TARGET_AND_GROUP;
+			string text2 = UI.UISIDESCREENS.MINIONTODOSIDESCREEN.CHORE_TARGET;
 			text2 = text2.Replace("{Target}", (!((Object)context.chore.target.gameObject == (Object)consumer.gameObject)) ? context.chore.target.gameObject.GetProperName() : UI.UISIDESCREENS.MINIONTODOSIDESCREEN.SELF_LABEL.text);
 			if (text != null)
 			{
@@ -59,10 +61,12 @@ public class MinionTodoChoreEntry : KMonoBehaviour
 			}
 			string text3 = (context.chore.masterPriority.priority_class != 0) ? "" : context.chore.masterPriority.priority_value.ToString();
 			Sprite sprite = (context.chore.masterPriority.priority_class != 0) ? null : prioritySprites[context.chore.masterPriority.priority_value - 1];
+			ChoreGroup choreGroup = BestPriorityGroup(context, consumer);
+			icon.sprite = ((choreGroup == null) ? null : Assets.GetSprite(choreGroup.sprite));
 			label.SetText(choreName);
 			subLabel.SetText(text2);
 			priorityLabel.SetText(text3);
-			icon.sprite = sprite;
+			priorityIcon.sprite = sprite;
 			moreLabel.text = "";
 			GetComponent<ToolTip>().SetSimpleTooltip(TooltipForChore(context, consumer));
 			KButton componentInChildren = GetComponentInChildren<KButton>();
@@ -88,6 +92,23 @@ public class MinionTodoChoreEntry : KMonoBehaviour
 				}
 			};
 		}
+	}
+
+	private static ChoreGroup BestPriorityGroup(Chore.Precondition.Context context, ChoreConsumer choreConsumer)
+	{
+		ChoreGroup choreGroup = null;
+		if (context.chore.choreType.groups.Length > 0)
+		{
+			choreGroup = context.chore.choreType.groups[0];
+			for (int i = 1; i < context.chore.choreType.groups.Length; i++)
+			{
+				if (choreConsumer.GetPersonalPriority(choreGroup) < choreConsumer.GetPersonalPriority(context.chore.choreType.groups[i]))
+				{
+					choreGroup = context.chore.choreType.groups[i];
+				}
+			}
+		}
+		return choreGroup;
 	}
 
 	private static string TooltipForChore(Chore.Precondition.Context context, ChoreConsumer choreConsumer)
@@ -124,23 +145,11 @@ public class MinionTodoChoreEntry : KMonoBehaviour
 		text = text.Replace("{Description}", (!((Object)context.chore.driver == (Object)choreConsumer.choreDriver)) ? UI.UISIDESCREENS.MINIONTODOSIDESCREEN.TOOLTIP_DESC_INACTIVE : UI.UISIDESCREENS.MINIONTODOSIDESCREEN.TOOLTIP_DESC_ACTIVE);
 		text = text.Replace("{IdleDescription}", (!((Object)context.chore.driver == (Object)choreConsumer.choreDriver)) ? UI.UISIDESCREENS.MINIONTODOSIDESCREEN.TOOLTIP_IDLEDESC_INACTIVE : UI.UISIDESCREENS.MINIONTODOSIDESCREEN.TOOLTIP_IDLEDESC_ACTIVE);
 		string newValue = GameUtil.ChoreGroupsForChoreType(context.chore.choreType);
-		string name = context.chore.choreType.Name;
-		if (context.chore.choreType.groups.Length > 0)
-		{
-			ChoreGroup choreGroup = context.chore.choreType.groups[0];
-			for (int i = 1; i < context.chore.choreType.groups.Length; i++)
-			{
-				if (choreConsumer.GetPersonalPriority(choreGroup) < choreConsumer.GetPersonalPriority(context.chore.choreType.groups[i]))
-				{
-					choreGroup = context.chore.choreType.groups[i];
-				}
-			}
-			name = choreGroup.Name;
-		}
+		ChoreGroup choreGroup = BestPriorityGroup(context, choreConsumer);
 		text = text.Replace("{Name}", choreConsumer.name);
 		text = text.Replace("{Errand}", GameUtil.GetChoreName(context.chore, context.data));
 		text = text.Replace("{Groups}", newValue);
-		text = text.Replace("{BestGroup}", name);
+		text = text.Replace("{BestGroup}", (choreGroup == null) ? context.chore.choreType.Name : choreGroup.Name);
 		text = text.Replace("{ClassPriority}", num2.ToString());
 		string text2 = text;
 		JobsTableScreen.PriorityInfo priorityInfo = JobsTableScreen.priorityInfo[num3];

@@ -30,7 +30,13 @@ public class LightBugCrystalConfig : IEntityConfig
 		HashSet<Tag> hashSet = new HashSet<Tag>();
 		hashSet.Add(TagManager.Create("CookedMeat"));
 		hashSet.Add(SimHashes.Diamond.CreateTag());
-		return BaseLightBugConfig.SetupDiet(prefab, hashSet, Tag.Invalid, CALORIES_PER_KG_OF_ORE);
+		prefab = BaseLightBugConfig.SetupDiet(prefab, hashSet, Tag.Invalid, CALORIES_PER_KG_OF_ORE);
+		LureableMonitor.Def def = prefab.AddOrGetDef<LureableMonitor.Def>();
+		def.lures = new Tag[1]
+		{
+			SimHashes.Diamond.CreateTag()
+		};
+		return prefab;
 	}
 
 	public GameObject CreatePrefab()

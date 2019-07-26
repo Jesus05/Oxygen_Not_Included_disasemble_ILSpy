@@ -5,7 +5,7 @@ using System.IO;
 
 namespace Database
 {
-	public class MonumentBuilt : ColonyAchievementRequirement
+	public class MonumentBuilt : VictoryColonyAchievementRequirement
 	{
 		public override string Name()
 		{
@@ -27,9 +27,9 @@ namespace Database
 					MonumentPart monumentPart = (MonumentPart)enumerator.Current;
 					if (monumentPart.IsMonumentCompleted())
 					{
+						Game.Instance.unlocks.Unlock("thriving");
 						return true;
 					}
-					Game.Instance.unlocks.Unlock("thriving");
 				}
 			}
 			finally

@@ -13,11 +13,14 @@ namespace Database
 
 		public string choreGroupIcon;
 
-		public SkillGroup(string id, string choreGroupID, string name, string icon)
+		public string archetypeIcon;
+
+		public SkillGroup(string id, string choreGroupID, string name, string icon, string archetype_icon)
 			: base(id, name)
 		{
 			this.choreGroupID = choreGroupID;
 			choreGroupIcon = icon;
+			archetypeIcon = archetype_icon;
 		}
 
 		string IListableOption.GetProperName()

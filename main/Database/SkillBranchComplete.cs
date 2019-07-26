@@ -1,5 +1,4 @@
 using KSerialization;
-using STRINGS;
 using System.Collections.Generic;
 using System.IO;
 
@@ -12,16 +11,6 @@ namespace Database
 		public SkillBranchComplete(List<Skill> skillsToMaster)
 		{
 			this.skillsToMaster = skillsToMaster;
-		}
-
-		public override string Name()
-		{
-			return COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.COMPLETED_SKILL_BRANCH;
-		}
-
-		public override string Description()
-		{
-			return COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.COMPLETED_SKILL_BRANCH_DESCRIPTION;
 		}
 
 		public override bool Success()

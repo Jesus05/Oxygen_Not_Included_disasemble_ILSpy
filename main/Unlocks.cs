@@ -23,7 +23,7 @@ public class Unlocks : KMonoBehaviour
 				"email_security2",
 				"email_pens2",
 				"email_atomiconrecruitment",
-				"email_frankiesblog",
+				"email_devonsblog",
 				"email_researchgiant",
 				"email_thejanitor",
 				"email_newemployee",

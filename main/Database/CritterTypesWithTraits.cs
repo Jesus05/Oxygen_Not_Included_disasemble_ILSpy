@@ -1,5 +1,4 @@
 using KSerialization;
-using STRINGS;
 using System.Collections.Generic;
 using System.IO;
 
@@ -25,26 +24,6 @@ namespace Database
 			trait = trait;
 			this.hasTrait = hasTrait;
 			trait = GameTags.Creatures.Wild;
-		}
-
-		public override string Name()
-		{
-			string text = "";
-			foreach (KeyValuePair<Tag, bool> item in critterTypesToCheck)
-			{
-				text = text + TagManager.GetProperName(item.Key) + " ";
-			}
-			return string.Format(COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.TAME_CLASSIC_CRITTERS, text);
-		}
-
-		public override string Description()
-		{
-			string text = "";
-			foreach (KeyValuePair<Tag, bool> item in critterTypesToCheck)
-			{
-				text = text + TagManager.GetProperName(item.Key) + " ";
-			}
-			return string.Format(COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.TAME_CLASSIC_CRITTERS_DESCRIPTION, text);
 		}
 
 		public override void Update()

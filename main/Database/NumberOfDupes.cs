@@ -3,7 +3,7 @@ using System.IO;
 
 namespace Database
 {
-	public class NumberOfDupes : ColonyAchievementRequirement
+	public class NumberOfDupes : VictoryColonyAchievementRequirement
 	{
 		private int numDupes = 0;
 

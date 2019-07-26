@@ -1,23 +1,12 @@
 using Delaunay.Geo;
 using Klei;
 using ProcGen;
-using STRINGS;
 using System.IO;
 
 namespace Database
 {
 	public class BuildOutsideStartBiome : ColonyAchievementRequirement
 	{
-		public override string Name()
-		{
-			return COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.BUILD_OUTSIDE_BIOME;
-		}
-
-		public override string Description()
-		{
-			return COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.BUILD_OUTSIDE_BIOME_DESCRIPTION;
-		}
-
 		public override bool Success()
 		{
 			WorldDetailSave worldDetailSave = SaveLoader.Instance.worldDetailSave;

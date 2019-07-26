@@ -68,7 +68,7 @@ public static class BaseMoleConfig
 			list.Add(new Diet.Info(new HashSet<Tag>
 			{
 				elementTag
-			}, elementTag, caloriesPerKg, producedConversionRate, null, 0f, true));
+			}, elementTag, caloriesPerKg, producedConversionRate, null, 0f, true, false));
 		}
 		return list;
 	}

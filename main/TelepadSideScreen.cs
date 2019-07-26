@@ -132,10 +132,18 @@ public class TelepadSideScreen : SideScreenContent
 				gameObject.GetComponent<HierarchyReferences>().GetReference<LocText>("Label").SetText(resource.Name);
 				foreach (ColonyAchievementRequirement item in resource.requirementChecklist)
 				{
-					GameObject gameObject2 = Util.KInstantiateUI(checkboxLinePrefab, gameObject, true);
-					gameObject2.GetComponent<HierarchyReferences>().GetReference<LocText>("Label").SetText(item.Name());
-					gameObject2.GetComponent<ToolTip>().SetSimpleTooltip(item.Description());
-					dictionary.Add(item, gameObject2);
+					VictoryColonyAchievementRequirement victoryColonyAchievementRequirement = item as VictoryColonyAchievementRequirement;
+					if (victoryColonyAchievementRequirement != null)
+					{
+						GameObject gameObject2 = Util.KInstantiateUI(checkboxLinePrefab, gameObject, true);
+						gameObject2.GetComponent<HierarchyReferences>().GetReference<LocText>("Label").SetText(victoryColonyAchievementRequirement.Name());
+						gameObject2.GetComponent<ToolTip>().SetSimpleTooltip(victoryColonyAchievementRequirement.Description());
+						dictionary.Add(item, gameObject2);
+					}
+					else
+					{
+						Debug.LogWarning($"Colony achievement {item.GetType().ToString()} is not a victory requirement but it is attached to a victory achievement {resource.Name}.");
+					}
 				}
 				entries.Add(resource.Id, dictionary);
 			}

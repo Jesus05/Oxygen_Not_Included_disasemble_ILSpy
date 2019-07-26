@@ -74,7 +74,7 @@ public static class BaseCrabConfig
 		hashSet.Add(SimHashes.ToxicSand.CreateTag());
 		hashSet.Add(RotPileConfig.ID.ToTag());
 		List<Diet.Info> list = new List<Diet.Info>();
-		list.Add(new Diet.Info(hashSet, poopTag, caloriesPerKg, producedConversionRate, diseaseId, diseasePerKgProduced, false));
+		list.Add(new Diet.Info(hashSet, poopTag, caloriesPerKg, producedConversionRate, diseaseId, diseasePerKgProduced, false, false));
 		return list;
 	}
 

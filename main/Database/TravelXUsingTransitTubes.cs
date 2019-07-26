@@ -1,4 +1,3 @@
-using STRINGS;
 using System.IO;
 using UnityEngine;
 
@@ -14,16 +13,6 @@ namespace Database
 		{
 			this.navType = navType;
 			this.distanceToTravel = distanceToTravel;
-		}
-
-		public override string Name()
-		{
-			return COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.NO_PLANTERBOX;
-		}
-
-		public override string Description()
-		{
-			return COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.NO_PLANTERBOX_DESCRIPTION;
 		}
 
 		public override bool Success()

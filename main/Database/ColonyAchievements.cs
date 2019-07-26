@@ -44,6 +44,10 @@ namespace Database
 
 		public ColonyAchievement TameAllBasicCritters;
 
+		public ColonyAchievement SurviveOneYear;
+
+		public ColonyAchievement ExploreOilBiome;
+
 		[CompilerGenerated]
 		private static Action<KMonoBehaviour> _003C_003Ef__mg_0024cache0;
 
@@ -169,11 +173,20 @@ namespace Database
 			{
 				new BuildRoomType(Db.Get().RoomTypes.NatureReserve),
 				new BuildRoomType(Db.Get().RoomTypes.Hospital),
+				new BuildRoomType(Db.Get().RoomTypes.RecRoom),
 				new BuildRoomType(Db.Get().RoomTypes.GreatHall),
 				new BuildRoomType(Db.Get().RoomTypes.Bedroom),
 				new BuildRoomType(Db.Get().RoomTypes.PlumbedBathroom),
 				new BuildRoomType(Db.Get().RoomTypes.Farm),
 				new BuildRoomType(Db.Get().RoomTypes.CreaturePen)
+			}, "", "", "", "", null, ""));
+			SurviveOneYear = Add(new ColonyAchievement("SurviveOneYear", COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.SURVIVE_ONE_YEAR, COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.SURVIVE_ONE_YEAR_DESCRIPTION, false, new List<ColonyAchievementRequirement>
+			{
+				new FractionalCycleNumber(365.25f)
+			}, "", "", "", "", null, ""));
+			ExploreOilBiome = Add(new ColonyAchievement("ExploreOilBiome", COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.EXPLORE_OIL_BIOME, COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.EXPLORE_OIL_BIOME_DESCRIPTION, false, new List<ColonyAchievementRequirement>
+			{
+				new ExploreOilFieldSubZone()
 			}, "", "", "", "", null, ""));
 		}
 	}

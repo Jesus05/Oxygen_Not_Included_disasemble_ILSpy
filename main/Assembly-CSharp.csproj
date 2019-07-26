@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <ProjectGuid>{C913AD47-59A4-41E2-9D56-6CBCC37BE619}</ProjectGuid>
+    <ProjectGuid>{D760CDB1-05DC-4999-B71F-B8FFB0E968F1}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <OutputType>Library</OutputType>
@@ -574,9 +574,11 @@
     <Compile Include="Database\EatXCaloriesFromY.cs" />
     <Compile Include="Database\EquipAllDupes.cs" />
     <Compile Include="Database\EquipNDupes.cs" />
+    <Compile Include="Database\ExploreOilFieldSubZone.cs" />
     <Compile Include="Database\Expressions.cs" />
     <Compile Include="Database\Faces.cs" />
     <Compile Include="Database\FertilityModifiers.cs" />
+    <Compile Include="Database\FractionalCycleNumber.cs" />
     <Compile Include="Database\MinimumMorale.cs" />
     <Compile Include="Database\MiscStatusItems.cs" />
     <Compile Include="Database\MonumentBuilt.cs" />
@@ -614,6 +616,7 @@
     <Compile Include="Database\Thoughts.cs" />
     <Compile Include="Database\TravelXUsingTransitTubes.cs" />
     <Compile Include="Database\Urges.cs" />
+    <Compile Include="Database\VictoryColonyAchievementRequirement.cs" />
     <Compile Include="DateTime.cs" />
     <Compile Include="Db.cs" />
     <Compile Include="Death.cs" />

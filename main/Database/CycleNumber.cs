@@ -3,7 +3,7 @@ using System.IO;
 
 namespace Database
 {
-	public class CycleNumber : ColonyAchievementRequirement
+	public class CycleNumber : VictoryColonyAchievementRequirement
 	{
 		private int cycleNumber;
 

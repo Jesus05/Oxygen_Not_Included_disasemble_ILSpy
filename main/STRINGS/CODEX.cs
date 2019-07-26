@@ -540,7 +540,7 @@ namespace STRINGS
 			public static LocString SUBTITLE = "UNENCRYPTED";
 		}
 
-		public class A3_FRANKIESBLOG
+		public class A3_DEVONSBLOG
 		{
 			public class BODY
 			{
@@ -548,20 +548,20 @@ namespace STRINGS
 
 				public static LocString EMAILHEADER2 = "<smallcaps>To: <b>Dr. Jones</b><alpha=#AA><size=12> <ejones@gravitas.nova></size></color>\nFrom: <b>Dr. Summers</b><alpha=#AA><size=12> <jsummers@gravitas.nova></size></color></smallcaps>\n------------------\n";
 
-				public static LocString CONTAINER1 = "<indent=5%>Oh my goddd I found out today that Frankie's one of those people who takes pictures of their food and uploads them to some boring blog somewhere.\n\nYou HAVE to come to lunch with us and see, they spend so long taking pictures that the food gets cold and they have to ask the waiter to reheat it. It's SO FUNNY.</indent>";
+				public static LocString CONTAINER1 = "<indent=5%>Oh my goddd I found out today that Devon's one of those people who takes pictures of their food and uploads them to some boring blog somewhere.\n\nYou HAVE to come to lunch with us and see, they spend so long taking pictures that the food gets cold and they have to ask the waiter to reheat it. It's SO FUNNY.</indent>";
 
-				public static LocString CONTAINER2 = "<indent=5%>Oh cool, Frankie's writing a new post for <i>Toast of the Town</i>? I'd love to tag along and \"see how the sausage is made\" so to speak, haha.\n\nI'll see you guys in a bit! :)</indent>";
+				public static LocString CONTAINER2 = "<indent=5%>Oh cool, Devon's writing a new post for <i>Toast of the Town</i>? I'd love to tag along and \"see how the sausage is made\" so to speak, haha.\n\nI'll see you guys in a bit! :)</indent>";
 
-				public static LocString CONTAINER3 = "<indent=5%>WAIT, Joshua, you read Frankie's blog??</indent>";
+				public static LocString CONTAINER3 = "<indent=5%>WAIT, Joshua, you read Devon's blog??</indent>";
 
 				public static LocString SIGNATURE1 = "\nXOXO,\nDr. Jones\n<size=11>Information and Statistics Department\nThe Gravitas Facility</size>\n------------------\n";
 
 				public static LocString SIGNATURE2 = "\n-Dr. Summers\n<size=11>Information and Statistics Department\nThe Gravitas Facility</size>\n------------------\n";
 			}
 
-			public static LocString TITLE = "Re: frankie's bloggg";
+			public static LocString TITLE = "Re: devon's bloggg";
 
-			public static LocString TITLE2 = "SUBJECT: frankie's bloggg";
+			public static LocString TITLE2 = "SUBJECT: devon's bloggg";
 
 			public static LocString SUBTITLE = "UNENCRYPTED";
 		}
@@ -854,9 +854,9 @@ namespace STRINGS
 		{
 			public class BODY
 			{
-				public static LocString EMAILHEADER = "<smallcaps>To: <b>Dr. Mason</b><size=12><alpha=#AA> <fmason@gravitas.nova></size></color>\nFrom: <b>Admin</b><size=12><alpha=#AA> <admin@gravitas.nova></color></size></smallcaps>\n------------------\n";
+				public static LocString EMAILHEADER = "<smallcaps>To: <b>Dr. Mason</b><size=12><alpha=#AA> <dross@gravitas.nova></size></color>\nFrom: <b>Admin</b><size=12><alpha=#AA> <admin@gravitas.nova></color></size></smallcaps>\n------------------\n";
 
-				public static LocString CONTAINER = "<indent=5%><b>Vacation Request Granted</b>\nGood luck, Frankie!\n\n<alpha=#AA><smallcaps><indent=10%> Vacation Request [May 18th-20th]\nReason: Time off request for attendance of the Blogjam Awards (\"Toast of the Town\" nominated in the Freshest Food Blog category).</indent></smallcaps></color></indent>";
+				public static LocString CONTAINER = "<indent=5%><b>Vacation Request Granted</b>\nGood luck, Devon!\n\n<alpha=#AA><smallcaps><indent=10%> Vacation Request [May 18th-20th]\nReason: Time off request for attendance of the Blogjam Awards (\"Toast of the Town\" nominated in the Freshest Food Blog category).</indent></smallcaps></color></indent>";
 
 				public static LocString SIGNATURE = "\n-Admin\n<size=11>The Gravitas Facility</size>\n------------------\n";
 			}

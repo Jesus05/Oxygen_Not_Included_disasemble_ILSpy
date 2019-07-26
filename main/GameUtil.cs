@@ -465,6 +465,15 @@ public static class GameUtil
 		return AddTimeSliceText(text, timeSlice);
 	}
 
+	public static string GetFormattedPlantGrowth(float percent, TimeSlice timeSlice = TimeSlice.None)
+	{
+		percent = ApplyTimeSlice(percent, timeSlice);
+		string text = "";
+		text = ((Mathf.Abs(percent) == 0f) ? "0" : ((Mathf.Abs(percent) < 0.1f) ? "##0.##" : ((!(Mathf.Abs(percent) < 1f)) ? "##0" : "##0.#")));
+		string text2 = FloatToString(percent, text) + UI.UNITSUFFIXES.PERCENT + " " + UI.UNITSUFFIXES.GROWTH;
+		return AddTimeSliceText(text2, timeSlice);
+	}
+
 	public static string GetFormattedPercent(float percent, TimeSlice timeSlice = TimeSlice.None)
 	{
 		percent = ApplyTimeSlice(percent, timeSlice);

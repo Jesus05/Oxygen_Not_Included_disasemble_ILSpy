@@ -1072,11 +1072,11 @@ namespace STRINGS
 
 			public class PATCHNOTESSCREEN
 			{
-				public static LocString TITLE = "QUALITY OF LIFE UPGRADE MK III";
+				public static LocString TITLE = "LAUNCH UPGRADE";
 
-				public static LocString BODY = "<b>Welcome to the Quality of Life Upgrade Mk III!!</b>\n\n{0}";
+				public static LocString BODY = "<b>Welcome to the Launch Upgrade! ONI Has Launched!</b>\n\n{0}";
 
-				public static LocString PATCHNOTES = "<b>Update Features:</b>\n\n• Major disease rebalance focused on more regular and manageable sickness\n• Skills system replaces the Jobs system\n• New buildings, overlays, diseases, a new plant, and a Steam Turbine rebuild\n• Many, many bug fixes, optimizations, polish passes, updated animations and more!\n\nPlease view the full patch notes for further details!";
+				public static LocString PATCHNOTES = "<b>Update Features:</b>\n\n• New asteroid selections with 3 new biomes to explore and exploit\n• Pips, Pokeshells, Dasha Saltvines, Waterweed, and Nosh Sprouts to tend and grow\n• New buildings to process new resources and improve your colony\n• Colony Initiatives and Imperatives keep track of your colony's progress\n• The squashing of many long-standing bugs and issues!\n\nPlease view the full patch notes for further details!";
 
 				public static LocString OK_BUTTON = "OK";
 			}
@@ -3384,6 +3384,8 @@ namespace STRINGS
 			public static LocString PERCENT = "%";
 
 			public static LocString CRITTERS = " critters";
+
+			public static LocString GROWTH = "growth";
 		}
 
 		public class OVERLAYS
@@ -6777,6 +6779,8 @@ namespace STRINGS
 
 				public static LocString TOOLTIP = "See what errands this building can perform and view its current queue";
 
+				public static LocString CHORE_TYPE_TOOLTIP = "Errand Type: {0}";
+
 				public static LocString AVAILABLE_CHORES = "AVAILABLE ERRANDS";
 
 				public static LocString DUPE_TOOLTIP_FAILED = "{Name} cannot currently {Errand}\n\nReason:\n{FailedPrecondition}";
@@ -7141,6 +7145,8 @@ namespace STRINGS
 			public static LocString DIET_PRODUCED = "    • Excretion: {Items}";
 
 			public static LocString DIET_PRODUCED_ITEM = "{Item}: {Percent} of consumed mass";
+
+			public static LocString DIET_PRODUCED_ITEM_FROM_PLANT = "{Item}: {Amount} when properly fed";
 
 			public static LocString SCALE_GROWTH = "Shearable {Item}: {Amount} per {Time}";
 

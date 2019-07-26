@@ -1,6 +1,5 @@
 using Klei.AI;
 using KSerialization;
-using STRINGS;
 using System.IO;
 
 namespace Database
@@ -14,16 +13,6 @@ namespace Database
 		public DupesWithTrait(string traitId, bool hasTrait = true)
 		{
 			this.traitId = traitId;
-		}
-
-		public override string Name()
-		{
-			return string.Format(COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.NO_DUPLICANTS_HAVE_TRAIT, Db.Get().traits.Get(traitId).Name);
-		}
-
-		public override string Description()
-		{
-			return string.Format(COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.NO_DUPLICANTS_HAVE_TRAIT_DESCRIPTION, Db.Get().traits.Get(traitId).Name);
 		}
 
 		public override bool Success()

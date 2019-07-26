@@ -1,4 +1,3 @@
-using STRINGS;
 using System.IO;
 using UnityEngine;
 
@@ -6,16 +5,6 @@ namespace Database
 {
 	public class NoFarmables : ColonyAchievementRequirement
 	{
-		public override string Name()
-		{
-			return COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.NO_PLANTERBOX;
-		}
-
-		public override string Description()
-		{
-			return COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.NO_PLANTERBOX_DESCRIPTION;
-		}
-
 		public override bool Success()
 		{
 			foreach (PlantablePlot item in Components.PlantablePlots.Items)

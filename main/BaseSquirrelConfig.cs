@@ -82,7 +82,7 @@ public static class BaseSquirrelConfig
 		hashSet.Add("ForestTree");
 		return new Diet.Info[1]
 		{
-			new Diet.Info(hashSet, poopTag, caloriesPerKg, producedConversionRate, diseaseId, diseasePerKgProduced, false)
+			new Diet.Info(hashSet, poopTag, caloriesPerKg, producedConversionRate, diseaseId, diseasePerKgProduced, false, true)
 		};
 	}
 

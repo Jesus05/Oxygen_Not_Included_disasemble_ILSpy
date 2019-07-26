@@ -1,4 +1,3 @@
-using STRINGS;
 using System.IO;
 
 namespace Database
@@ -10,16 +9,6 @@ namespace Database
 		public BeforeCycleNumber(int cycleNumber = 100)
 		{
 			this.cycleNumber = cycleNumber;
-		}
-
-		public override string Name()
-		{
-			return string.Format(COLONY_ACHIEVEMENTS.THRIVING.REQUIREMENTS.MINIMUM_CYCLE, cycleNumber);
-		}
-
-		public override string Description()
-		{
-			return string.Format(COLONY_ACHIEVEMENTS.THRIVING.REQUIREMENTS.MINIMUM_CYCLE_DESCRIPTION, cycleNumber);
 		}
 
 		public override bool Success()

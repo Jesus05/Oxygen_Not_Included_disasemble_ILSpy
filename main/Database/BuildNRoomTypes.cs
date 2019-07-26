@@ -1,5 +1,4 @@
 using KSerialization;
-using STRINGS;
 using System.IO;
 
 namespace Database
@@ -14,16 +13,6 @@ namespace Database
 		{
 			this.roomType = roomType;
 			this.numToCreate = numToCreate;
-		}
-
-		public override string Name()
-		{
-			return string.Format(COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.BUILD_N_ROOM_TYPE, roomType.Name, numToCreate);
-		}
-
-		public override string Description()
-		{
-			return string.Format(COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.BUILD_N_ROOM_TYPE_DESCRIPTION, roomType.Name, numToCreate);
 		}
 
 		public override bool Success()

@@ -1,4 +1,3 @@
-using STRINGS;
 using System.IO;
 
 namespace Database
@@ -17,16 +16,6 @@ namespace Database
 		{
 			this.averageDecor = averageDecor;
 			this.numCycles = numCycles;
-		}
-
-		public override string Name()
-		{
-			return string.Format(COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.MAINTAIN_DECOR_OVER_CYCLES, averageDecor, numCycles);
-		}
-
-		public override string Description()
-		{
-			return string.Format(COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.MAINTAIN_DECOR_OVER_CYCLES_DESCRIPTION, averageDecor, numCycles);
 		}
 
 		public override bool Success()

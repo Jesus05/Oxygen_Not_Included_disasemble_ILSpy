@@ -116,11 +116,6 @@ public class CharacterContainer : KScreen, ITelepadDeliverableContainer
 	[SerializeField]
 	private Sprite enabledSpr;
 
-	[SerializeField]
-	private List<ProfessionIcon> professionIcons;
-
-	private Dictionary<string, Sprite> professionIconMap;
-
 	private static readonly HashedString[] idleAnims = new HashedString[7]
 	{
 		"anim_idle_healthy_kanim",
@@ -211,11 +206,6 @@ public class CharacterContainer : KScreen, ITelepadDeliverableContainer
 
 	private void Initialize()
 	{
-		professionIconMap = new Dictionary<string, Sprite>();
-		professionIcons.ForEach(delegate(ProfessionIcon ic)
-		{
-			professionIconMap.Add(ic.professionName, ic.iconImg);
-		});
 		iconGroups = new List<GameObject>();
 		traitEntries = new List<GameObject>();
 		expectationLabels = new List<LocText>();
@@ -678,7 +668,7 @@ public class CharacterContainer : KScreen, ITelepadDeliverableContainer
 		{
 			SkillGroup skillGroup = skill as SkillGroup;
 			guaranteedAptitudeID = skillGroup.Id;
-			selectedArchetypeIcon.sprite = Assets.GetSprite(skillGroup.choreGroupIcon);
+			selectedArchetypeIcon.sprite = Assets.GetSprite(skillGroup.archetypeIcon);
 			Reshuffle(true);
 		}
 		else
@@ -703,7 +693,7 @@ public class CharacterContainer : KScreen, ITelepadDeliverableContainer
 		if (entry.entryData != null)
 		{
 			SkillGroup skillGroup = entry.entryData as SkillGroup;
-			entry.image.sprite = Assets.GetSprite(skillGroup.choreGroupIcon);
+			entry.image.sprite = Assets.GetSprite(skillGroup.archetypeIcon);
 		}
 	}
 }

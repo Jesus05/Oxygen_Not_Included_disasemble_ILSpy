@@ -43,6 +43,7 @@ public class MeshTileConfig : IBuildingConfig
 		buildingDef.DecorPlaceBlockTileInfo = Assets.GetBlockTileDecorInfo("tiles_mesh_tops_decor_place_info");
 		buildingDef.ReplacementTags = new List<Tag>();
 		buildingDef.ReplacementTags.Add(GameTags.FloorTiles);
+		buildingDef.ReplacementTags.Add(GameTags.Ladders);
 		return buildingDef;
 	}
 

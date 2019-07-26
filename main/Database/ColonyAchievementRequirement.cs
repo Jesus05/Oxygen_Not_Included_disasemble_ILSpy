@@ -4,10 +4,6 @@ namespace Database
 {
 	public abstract class ColonyAchievementRequirement
 	{
-		public abstract string Name();
-
-		public abstract string Description();
-
 		public virtual void Update()
 		{
 		}

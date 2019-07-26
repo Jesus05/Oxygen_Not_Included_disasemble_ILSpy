@@ -1,6 +1,8 @@
+using STRINGS;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class BuildingChoresPanel : TargetScreen
 {
@@ -112,7 +114,7 @@ public class BuildingChoresPanel : TargetScreen
 
 	private void AddChoreEntry(Chore chore)
 	{
-		HierarchyReferences choreEntry = GetChoreEntry(GameUtil.GetChoreName(chore, null), GameUtil.ChoreGroupsForChoreType(chore.choreType), choreGroup.GetReference<RectTransform>("EntriesContainer"));
+		HierarchyReferences choreEntry = GetChoreEntry(GameUtil.GetChoreName(chore, null), chore.choreType, choreGroup.GetReference<RectTransform>("EntriesContainer"));
 		FetchChore fetchChore = chore as FetchChore;
 		ListPool<Chore.Precondition.Context, BuildingChoresPanel>.PooledList pooledList = ListPool<Chore.Precondition.Context, BuildingChoresPanel>.Allocate();
 		foreach (MinionIdentity item in Components.LiveMinionIdentities.Items)
@@ -176,7 +178,7 @@ public class BuildingChoresPanel : TargetScreen
 		DupeEntryDatas.Clear();
 	}
 
-	private HierarchyReferences GetChoreEntry(string label, string subLabel, RectTransform parent)
+	private HierarchyReferences GetChoreEntry(string label, ChoreType choreType, RectTransform parent)
 	{
 		HierarchyReferences hierarchyReferences;
 		if (activeChoreEntries >= choreEntries.Count)
@@ -192,7 +194,29 @@ public class BuildingChoresPanel : TargetScreen
 		}
 		activeChoreEntries++;
 		hierarchyReferences.GetReference<LocText>("ChoreLabel").text = label;
-		hierarchyReferences.GetReference<LocText>("ChoreSubLabel").text = subLabel;
+		hierarchyReferences.GetReference<LocText>("ChoreSubLabel").text = GameUtil.ChoreGroupsForChoreType(choreType);
+		Image reference = hierarchyReferences.GetReference<Image>("Icon");
+		if (choreType.groups.Length > 0)
+		{
+			Sprite sprite2 = reference.sprite = Assets.GetSprite(choreType.groups[0].sprite);
+			reference.gameObject.SetActive(true);
+			reference.GetComponent<ToolTip>().toolTip = string.Format(UI.DETAILTABS.BUILDING_CHORES.CHORE_TYPE_TOOLTIP, choreType.groups[0].Name);
+		}
+		else
+		{
+			reference.gameObject.SetActive(false);
+		}
+		Image reference2 = hierarchyReferences.GetReference<Image>("Icon2");
+		if (choreType.groups.Length > 1)
+		{
+			Sprite sprite4 = reference2.sprite = Assets.GetSprite(choreType.groups[1].sprite);
+			reference2.gameObject.SetActive(true);
+			reference2.GetComponent<ToolTip>().toolTip = string.Format(UI.DETAILTABS.BUILDING_CHORES.CHORE_TYPE_TOOLTIP, choreType.groups[1].Name);
+		}
+		else
+		{
+			reference2.gameObject.SetActive(false);
+		}
 		hierarchyReferences.gameObject.SetActive(true);
 		return hierarchyReferences;
 	}

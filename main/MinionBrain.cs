@@ -90,17 +90,29 @@ public class MinionBrain : Brain
 	public override void UpdateBrain()
 	{
 		base.UpdateBrain();
-		if (!((Object)Game.Instance == (Object)null) && !Game.Instance.savedInfo.discoveredSurface)
+		if (!((Object)Game.Instance == (Object)null))
 		{
-			int cell = Grid.PosToCell(base.gameObject);
-			SubWorld.ZoneType subWorldZoneType = World.Instance.zoneRenderData.GetSubWorldZoneType(cell);
-			if (subWorldZoneType == SubWorld.ZoneType.Space)
+			if (!Game.Instance.savedInfo.discoveredSurface)
 			{
-				Game.Instance.savedInfo.discoveredSurface = true;
-				Vector3 position = base.gameObject.transform.GetPosition();
-				DiscoveredSpaceMessage message = new DiscoveredSpaceMessage(position);
-				Messenger.Instance.QueueMessage(message);
-				Game.Instance.Trigger(-818188514, base.gameObject);
+				int cell = Grid.PosToCell(base.gameObject);
+				SubWorld.ZoneType subWorldZoneType = World.Instance.zoneRenderData.GetSubWorldZoneType(cell);
+				if (subWorldZoneType == SubWorld.ZoneType.Space)
+				{
+					Game.Instance.savedInfo.discoveredSurface = true;
+					Vector3 position = base.gameObject.transform.GetPosition();
+					DiscoveredSpaceMessage message = new DiscoveredSpaceMessage(position);
+					Messenger.Instance.QueueMessage(message);
+					Game.Instance.Trigger(-818188514, base.gameObject);
+				}
+			}
+			if (!Game.Instance.savedInfo.discoveredOilField)
+			{
+				int cell2 = Grid.PosToCell(base.gameObject);
+				SubWorld.ZoneType subWorldZoneType2 = World.Instance.zoneRenderData.GetSubWorldZoneType(cell2);
+				if (subWorldZoneType2 == SubWorld.ZoneType.OilField)
+				{
+					Game.Instance.savedInfo.discoveredOilField = true;
+				}
 			}
 		}
 	}

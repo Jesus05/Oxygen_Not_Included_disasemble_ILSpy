@@ -43,6 +43,7 @@ public class MetalTileConfig : IBuildingConfig
 		buildingDef.DecorPlaceBlockTileInfo = Assets.GetBlockTileDecorInfo("tiles_metal_tops_decor_place_info");
 		buildingDef.ReplacementTags = new List<Tag>();
 		buildingDef.ReplacementTags.Add(GameTags.FloorTiles);
+		buildingDef.ReplacementTags.Add(GameTags.Ladders);
 		buildingDef.ConstructionOffsetFilter = BuildingDef.ConstructionOffsetFilter_OneDown;
 		return buildingDef;
 	}

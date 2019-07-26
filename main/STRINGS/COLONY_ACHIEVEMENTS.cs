@@ -147,62 +147,6 @@ namespace STRINGS
 			public static LocString MASTERPIECE_PAINTING = "Art Underground";
 
 			public static LocString MASTERPIECE_PAINTING_DESCRIPTION = "Have a Duplicant with the Masterworks skill paint a Masterpiece quality painting.";
-
-			public static LocString ALL_DUPLICANTS_HAVE_TRAIT = "Desirable Trait";
-
-			public static LocString ALL_DUPLICANTS_HAVE_TRAIT_DESCRIPTION = "Ensure all Duplicants in the colony have the {0} trait.";
-
-			public static LocString NO_DUPLICANTS_HAVE_TRAIT = "Traitorless";
-
-			public static LocString NO_DUPLICANTS_HAVE_TRAIT_DESCRIPTION = "Ensure no Duplicants in the colony possess the {0} trait.";
-
-			public static LocString BUILD_ROOM_TYPE = "Get a Room";
-
-			public static LocString BUILD_ROOM_TYPE_DESCRIPTION = "Construct a {0}.";
-
-			public static LocString CALORIE_SURPLUS = "All You Can Eat";
-
-			public static LocString CALORIE_SURPLUS_DESCRIPTION = "Produce more calories than your Duplicants can eat in a single day.";
-
-			public static LocString DISCOVER_TAG = "Discovered {0}";
-
-			public static LocString DISCOVER_TAG_DESCRIPTION = "Discovered {0}";
-
-			public static LocString CRITTER_WITH_TRAIT = "{1} Critters are {0}";
-
-			public static LocString CRITTER_WITH_TRAIT_DESCRIPTION = "Have {1} {0} Critters.";
-
-			public static LocString DISCOVERED_NUM = "Discovered {0} things";
-
-			public static LocString DISCOVERED_NUM_DESCRIPTION = "Discovered {0} things";
-
-			public static LocString PUMP_X_DISTANCE_Y = "Pumped Up";
-
-			public static LocString PUMP_X_DISTANCE_Y_DESCRIPTION = "Pump {0} over {1}.";
-
-			public static LocString EQUIP_ALL_DUPES = "Switching Gear";
-
-			public static LocString EQUIP_ALL_DUPES_DESCRIPTION = "Equip all the Duplicants in your colony with a {0}.";
-
-			public static LocString TAME_CLASSIC_CRITTERS = "{0} Tamer";
-
-			public static LocString TAME_CLASSIC_CRITTERS_DESCRIPTION = "Tame a wild {0}.";
-
-			public static LocString GENERATE_X_WITHOUT_USING_Y = "Crown Joules";
-
-			public static LocString GENERATE_X_WITHOUT_USING_Y_DESCRIPTION = "Generate {0} kJ of power without using a {1}.";
-
-			public static LocString MAINTAIN_DECOR_OVER_CYCLES = "Eye of the Beholder";
-
-			public static LocString MAINTAIN_DECOR_OVER_CYCLES_DESCRIPTION = "Maintain an average Duplicant Decor perception of {0} over {1} cycles.";
-
-			public static LocString EAT_X_CALORIES = "Eat {0} kCal";
-
-			public static LocString EAT_X_CALORIES_DESCRIPTION = "Eat {0} kCal";
-
-			public static LocString EAT_X_CALORIES_FROM_FOOD_TYPE = "Eat {0} kCal from {1}";
-
-			public static LocString EAT_X_CALORIES_FROM_FOOD_TYPE_DESCRIPTION = "Eat {0} kCal from {1}";
 		}
 
 		public class THRIVING

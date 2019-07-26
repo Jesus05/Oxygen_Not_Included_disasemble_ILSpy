@@ -1,4 +1,3 @@
-using STRINGS;
 using System.IO;
 
 namespace Database
@@ -10,16 +9,6 @@ namespace Database
 		public EatXCalories(int numCalories)
 		{
 			this.numCalories = numCalories;
-		}
-
-		public override string Name()
-		{
-			return string.Format(COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.EAT_X_CALORIES, numCalories);
-		}
-
-		public override string Description()
-		{
-			return string.Format(COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.EAT_X_CALORIES_DESCRIPTION, numCalories);
 		}
 
 		public override bool Success()

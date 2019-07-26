@@ -1,5 +1,4 @@
 using KSerialization;
-using STRINGS;
 using System.IO;
 using UnityEngine;
 
@@ -15,16 +14,6 @@ namespace Database
 		{
 			this.equipmentSlot = equipmentSlot;
 			this.numToEquip = numToEquip;
-		}
-
-		public override string Name()
-		{
-			return string.Format(COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.EQUIP_N_DUPES, equipmentSlot.Name);
-		}
-
-		public override string Description()
-		{
-			return string.Format(COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.EQUIP_N_DUPES_DESCRIPTION, equipmentSlot.Name, numToEquip);
 		}
 
 		public override bool Success()

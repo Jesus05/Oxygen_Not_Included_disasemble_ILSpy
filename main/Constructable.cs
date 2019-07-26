@@ -323,7 +323,7 @@ public class Constructable : Workable, ISaveLoadable
 					if ((UnityEngine.Object)base.gameObject.GetComponent<SimCellOccupier>() != (UnityEngine.Object)null)
 					{
 						int renderLayer = LayerMask.NameToLayer("Overlay");
-						World.Instance.blockTileRenderer.AddBlock(renderLayer, building.Def, SimHashes.Void, cell);
+						World.Instance.blockTileRenderer.AddBlock(renderLayer, building.Def, IsReplacementTile, SimHashes.Void, cell);
 					}
 					TileVisualizer.RefreshCell(cell, building.Def.TileLayer, building.Def.ReplacementLayer);
 				}
@@ -476,7 +476,7 @@ public class Constructable : Workable, ISaveLoadable
 			GameObject gameObject = Grid.Objects[cell, (int)building.Def.ReplacementLayer];
 			if ((UnityEngine.Object)gameObject == (UnityEngine.Object)base.gameObject && (UnityEngine.Object)gameObject.GetComponent<SimCellOccupier>() != (UnityEngine.Object)null)
 			{
-				World.Instance.blockTileRenderer.RemoveBlock(building.Def, SimHashes.Void, cell);
+				World.Instance.blockTileRenderer.RemoveBlock(building.Def, IsReplacementTile, SimHashes.Void, cell);
 			}
 		}
 		GameScenePartitioner.Instance.Free(ref solidPartitionerEntry);

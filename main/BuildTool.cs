@@ -147,7 +147,8 @@ public class BuildTool : DragTool
 				}
 				if (((Object)gameObject == (Object)null || (Object)gameObject.GetComponent<Constructable>() == (Object)null) && ((Object)x == (Object)null || (Object)x == (Object)visualizer))
 				{
-					World.Instance.blockTileRenderer.RemoveBlock(def, SimHashes.Void, lastCell);
+					World.Instance.blockTileRenderer.RemoveBlock(def, false, SimHashes.Void, lastCell);
+					World.Instance.blockTileRenderer.RemoveBlock(def, true, SimHashes.Void, lastCell);
 					TileVisualizer.RefreshCell(lastCell, def.TileLayer, def.ReplacementLayer);
 				}
 			}
@@ -212,7 +213,7 @@ public class BuildTool : DragTool
 								{
 									blockTileRenderer.SetInvalidPlaceCell(lastCell, false);
 								}
-								blockTileRenderer.AddBlock(renderLayer, def, SimHashes.Void, num);
+								blockTileRenderer.AddBlock(renderLayer, def, flag2, SimHashes.Void, num);
 							}
 						}
 					}

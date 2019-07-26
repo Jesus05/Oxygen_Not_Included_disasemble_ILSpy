@@ -324,6 +324,7 @@ public class RetiredColonyInfoScreen : KModalScreen
 		colonyName.text = data.colonyName.ToUpper();
 		cycleCount.text = string.Format(UI.RETIRED_COLONY_INFO_SCREEN.CYCLE_COUNT, data.cycleCount.ToString());
 		ToggleExplorer(false);
+		RefreshUIScale(null);
 		if ((UnityEngine.Object)Game.Instance == (UnityEngine.Object)null)
 		{
 			viewOtherColoniesButton.gameObject.SetActive(true);

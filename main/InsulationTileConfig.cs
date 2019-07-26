@@ -40,6 +40,7 @@ public class InsulationTileConfig : IBuildingConfig
 		buildingDef.DecorPlaceBlockTileInfo = Assets.GetBlockTileDecorInfo("tiles_solid_tops_place_info");
 		buildingDef.ReplacementTags = new List<Tag>();
 		buildingDef.ReplacementTags.Add(GameTags.FloorTiles);
+		buildingDef.ReplacementTags.Add(GameTags.Ladders);
 		return buildingDef;
 	}
 

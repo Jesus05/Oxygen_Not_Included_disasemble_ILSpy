@@ -70,7 +70,7 @@ public static class BasePacuConfig
 		hashSet.Add(SimHashes.Algae.CreateTag());
 		Diet.Info[] infos = new Diet.Info[1]
 		{
-			new Diet.Info(hashSet, SimHashes.ToxicSand.CreateTag(), CALORIES_PER_KG_OF_ORE, TUNING.CREATURES.CONVERSION_EFFICIENCY.NORMAL, null, 0f, false)
+			new Diet.Info(hashSet, SimHashes.ToxicSand.CreateTag(), CALORIES_PER_KG_OF_ORE, TUNING.CREATURES.CONVERSION_EFFICIENCY.NORMAL, null, 0f, false, false)
 		};
 		Diet diet = new Diet(infos);
 		CreatureCalorieMonitor.Def def2 = gameObject.AddOrGetDef<CreatureCalorieMonitor.Def>();

@@ -4,6 +4,13 @@ namespace STRINGS
 	{
 		public class STATUSITEMS
 		{
+			public class BAITED
+			{
+				public static LocString NAME = "{0} Bait";
+
+				public static LocString TOOLTIP = "This lure is baited with {0}";
+			}
+
 			public class ANGERDAMAGE
 			{
 				public static LocString NAME = "Damage: Duplicant Tantrum";

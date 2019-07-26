@@ -1,5 +1,4 @@
 using KSerialization;
-using STRINGS;
 using System.IO;
 
 namespace Database
@@ -11,16 +10,6 @@ namespace Database
 		public DiscoverTag(Tag tagToDiscover)
 		{
 			this.tagToDiscover = tagToDiscover;
-		}
-
-		public override string Name()
-		{
-			return string.Format(COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.DISCOVER_TAG, tagToDiscover.ProperName());
-		}
-
-		public override string Description()
-		{
-			return string.Format(COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.DISCOVER_TAG_DESCRIPTION, tagToDiscover.ProperName());
 		}
 
 		public override bool Success()

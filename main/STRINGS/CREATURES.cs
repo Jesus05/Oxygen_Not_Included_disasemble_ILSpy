@@ -910,9 +910,16 @@ namespace STRINGS
 			{
 				public static LocString NAME = UI.FormatAsLink("Arbor Tree", "FOREST_TREE");
 
-				public static LocString DESC = "Arbor Trees grow branches that can be harvested for " + UI.FormatAsLink("Lumber", "WOOD") + ".";
+				public static LocString DESC = "Arbor Trees grow " + UI.FormatAsLink("Arbor Tree Branches", "FOREST_TREE") + " that can be harvested for " + UI.FormatAsLink("Lumber", "WOOD") + ".";
 
-				public static LocString DOMESTICATEDDESC = "This plant produces " + UI.FormatAsLink("Lumber", "WOOD") + ".";
+				public static LocString DOMESTICATEDDESC = "This plant produces " + UI.FormatAsLink("Arbor Tree Branches", "FOREST_TREE") + " that can be harvested for " + UI.FormatAsLink("Lumber", "WOOD") + ".";
+			}
+
+			public class WOOD_TREE_BRANCH
+			{
+				public static LocString NAME = UI.FormatAsLink("Arbor Tree Branch", "FOREST_TREE");
+
+				public static LocString DESC = "Arbor Trees Branches can be harvested for " + UI.FormatAsLink("Lumber", "WOOD") + ".";
 			}
 
 			public class SEALETTUCE

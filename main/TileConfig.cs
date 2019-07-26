@@ -43,6 +43,7 @@ public class TileConfig : IBuildingConfig
 		buildingDef.ConstructionOffsetFilter = BuildingDef.ConstructionOffsetFilter_OneDown;
 		buildingDef.ReplacementTags = new List<Tag>();
 		buildingDef.ReplacementTags.Add(GameTags.FloorTiles);
+		buildingDef.ReplacementTags.Add(GameTags.Ladders);
 		buildingDef.DragBuild = true;
 		return buildingDef;
 	}

@@ -1,4 +1,3 @@
-using STRINGS;
 using System.IO;
 
 namespace Database
@@ -10,16 +9,6 @@ namespace Database
 		public DiscoverNum(int numToDiscover)
 		{
 			this.numToDiscover = numToDiscover;
-		}
-
-		public override string Name()
-		{
-			return string.Format(COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.DISCOVERED_NUM, numToDiscover);
-		}
-
-		public override string Description()
-		{
-			return string.Format(COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.DISCOVERED_NUM_DESCRIPTION, numToDiscover);
 		}
 
 		public override bool Success()

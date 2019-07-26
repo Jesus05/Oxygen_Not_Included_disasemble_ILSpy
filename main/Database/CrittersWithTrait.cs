@@ -1,5 +1,4 @@
 using KSerialization;
-using STRINGS;
 using System.IO;
 
 namespace Database
@@ -17,16 +16,6 @@ namespace Database
 			this.numCritters = numCritters;
 			this.trait = trait;
 			this.hasTrait = hasTrait;
-		}
-
-		public override string Name()
-		{
-			return string.Format(COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.CRITTER_WITH_TRAIT, numCritters, trait.ProperName());
-		}
-
-		public override string Description()
-		{
-			return string.Format(COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.CRITTER_WITH_TRAIT_DESCRIPTION, numCritters, trait.ProperName());
 		}
 
 		public override bool Success()

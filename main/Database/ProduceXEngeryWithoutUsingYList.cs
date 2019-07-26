@@ -1,5 +1,4 @@
 using KSerialization;
-using STRINGS;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
@@ -21,16 +20,6 @@ namespace Database
 			this.disallowedBuildings = disallowedBuildings;
 			this.amountToProduce = amountToProduce;
 			usedDisallowedBuilding = false;
-		}
-
-		public override string Name()
-		{
-			return COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.CLEAN_ENERGY;
-		}
-
-		public override string Description()
-		{
-			return COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.CLEAN_ENERGY_DESCRIPTION;
 		}
 
 		public override bool Success()

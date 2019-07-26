@@ -80,7 +80,7 @@ public static class BasePuftConfig
 		hashSet.Add(consumed_tag);
 		Diet.Info[] diet_infos = new Diet.Info[1]
 		{
-			new Diet.Info(hashSet, producedTag, caloriesPerKg, producedConversionRate, diseaseId, diseasePerKgProduced, false)
+			new Diet.Info(hashSet, producedTag, caloriesPerKg, producedConversionRate, diseaseId, diseasePerKgProduced, false, false)
 		};
 		return SetupDiet(prefab, diet_infos, caloriesPerKg, minPoopSizeInKg);
 	}

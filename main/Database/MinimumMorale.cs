@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace Database
 {
-	public class MinimumMorale : ColonyAchievementRequirement
+	public class MinimumMorale : VictoryColonyAchievementRequirement
 	{
 		private int minimumMorale;
 

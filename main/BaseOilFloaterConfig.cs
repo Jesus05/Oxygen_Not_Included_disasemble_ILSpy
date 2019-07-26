@@ -74,7 +74,7 @@ public static class BaseOilFloaterConfig
 		hashSet.Add(consumed_tag);
 		Diet.Info[] infos = new Diet.Info[1]
 		{
-			new Diet.Info(hashSet, producedTag, caloriesPerKg, producedConversionRate, diseaseId, diseasePerKgProduced, false)
+			new Diet.Info(hashSet, producedTag, caloriesPerKg, producedConversionRate, diseaseId, diseasePerKgProduced, false, false)
 		};
 		Diet diet = new Diet(infos);
 		CreatureCalorieMonitor.Def def = prefab.AddOrGetDef<CreatureCalorieMonitor.Def>();

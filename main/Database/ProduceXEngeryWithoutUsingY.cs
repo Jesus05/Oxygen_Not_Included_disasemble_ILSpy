@@ -1,5 +1,4 @@
 using KSerialization;
-using STRINGS;
 using System.IO;
 using UnityEngine;
 
@@ -20,16 +19,6 @@ namespace Database
 			this.disallowedBuilding = disallowedBuilding;
 			this.amountToProduce = amountToProduce;
 			usedDisallowedBuilding = false;
-		}
-
-		public override string Name()
-		{
-			return string.Format(COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.GENERATE_X_WITHOUT_USING_Y, amountToProduce, disallowedBuilding.Name);
-		}
-
-		public override string Description()
-		{
-			return string.Format(COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.GENERATE_X_WITHOUT_USING_Y_DESCRIPTION, amountToProduce, disallowedBuilding.Name);
 		}
 
 		public override bool Success()

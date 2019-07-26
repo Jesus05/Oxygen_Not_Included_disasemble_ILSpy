@@ -334,6 +334,8 @@ namespace Database
 
 		public StatusItem SkillPointsAvailable;
 
+		public StatusItem Baited;
+
 		[CompilerGenerated]
 		private static Func<HashedString, object, bool> _003C_003Ef__mg_0024cache0;
 
@@ -685,8 +687,8 @@ namespace Database
 				string text3 = BUILDING.STATUSITEMS.PIPECONTENTS.EMPTY;
 				if (contents2.mass > 0f)
 				{
-					Element element2 = ElementLoader.FindElementByHash(contents2.element);
-					text3 = string.Format(BUILDING.STATUSITEMS.PIPECONTENTS.CONTENTS, GameUtil.GetFormattedMass(contents2.mass, GameUtil.TimeSlice.None, GameUtil.MetricMassFormat.UseThreshold, true, "{0:0.#}"), element2.name, GameUtil.GetFormattedTemperature(contents2.temperature, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false));
+					Element element4 = ElementLoader.FindElementByHash(contents2.element);
+					text3 = string.Format(BUILDING.STATUSITEMS.PIPECONTENTS.CONTENTS, GameUtil.GetFormattedMass(contents2.mass, GameUtil.TimeSlice.None, GameUtil.MetricMassFormat.UseThreshold, true, "{0:0.#}"), element4.name, GameUtil.GetFormattedTemperature(contents2.temperature, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false));
 					if ((UnityEngine.Object)OverlayScreen.Instance != (UnityEngine.Object)null && OverlayScreen.Instance.mode == OverlayModes.Disease.ID && contents2.diseaseIdx != 255)
 					{
 						text3 += string.Format(BUILDING.STATUSITEMS.PIPECONTENTS.CONTENTS_WITH_DISEASE, GameUtil.GetFormattedDisease(contents2.diseaseIdx, contents2.diseaseCount, true));
@@ -712,8 +714,8 @@ namespace Database
 						float mass = component3.Mass;
 						if (mass > 0f)
 						{
-							Element element = ElementLoader.FindElementByHash(component3.ElementID);
-							text2 = string.Format(BUILDING.STATUSITEMS.CONVEYOR_CONTENTS.CONTENTS, GameUtil.GetFormattedMass(mass, GameUtil.TimeSlice.None, GameUtil.MetricMassFormat.UseThreshold, true, "{0:0.#}"), element.name, GameUtil.GetFormattedTemperature(component3.Temperature, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false));
+							Element element3 = ElementLoader.FindElementByHash(component3.ElementID);
+							text2 = string.Format(BUILDING.STATUSITEMS.CONVEYOR_CONTENTS.CONTENTS, GameUtil.GetFormattedMass(mass, GameUtil.TimeSlice.None, GameUtil.MetricMassFormat.UseThreshold, true, "{0:0.#}"), element3.name, GameUtil.GetFormattedTemperature(component3.Temperature, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false));
 							if ((UnityEngine.Object)OverlayScreen.Instance != (UnityEngine.Object)null && OverlayScreen.Instance.mode == OverlayModes.Disease.ID && component3.DiseaseIdx != 255)
 							{
 								text2 += string.Format(BUILDING.STATUSITEMS.CONVEYOR_CONTENTS.CONTENTS_WITH_DISEASE, GameUtil.GetFormattedDisease(component3.DiseaseIdx, component3.DiseaseCount, true));
@@ -729,10 +731,10 @@ namespace Database
 			Toilet = CreateStatusItem("Toilet", "BUILDING", "", StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, true, 129022);
 			Toilet.resolveStringCallback = delegate(string str, object data)
 			{
-				Toilet.StatesInstance statesInstance3 = (Toilet.StatesInstance)data;
-				if (statesInstance3 != null)
+				Toilet.StatesInstance statesInstance5 = (Toilet.StatesInstance)data;
+				if (statesInstance5 != null)
 				{
-					str = str.Replace("{FlushesRemaining}", statesInstance3.GetFlushesRemaining().ToString());
+					str = str.Replace("{FlushesRemaining}", statesInstance5.GetFlushesRemaining().ToString());
 				}
 				return str;
 			};
@@ -935,10 +937,10 @@ namespace Database
 			Grave = CreateStatusItem("Grave", "BUILDING", "", StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, true, 129022);
 			Grave.resolveStringCallback = delegate(string str, object data)
 			{
-				Grave.StatesInstance statesInstance2 = (Grave.StatesInstance)data;
-				string text = str.Replace("{DeadDupe}", statesInstance2.master.graveName);
+				Grave.StatesInstance statesInstance4 = (Grave.StatesInstance)data;
+				string text = str.Replace("{DeadDupe}", statesInstance4.master.graveName);
 				string[] strings = LocString.GetStrings(typeof(NAMEGEN.GRAVE.EPITAPHS));
-				int num = statesInstance2.master.epitaphIdx % strings.Length;
+				int num = statesInstance4.master.epitaphIdx % strings.Length;
 				return text.Replace("{Epitaph}", strings[num]);
 			};
 			GraveEmpty = CreateStatusItem("GraveEmpty", "BUILDING", "", StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, true, 129022);
@@ -959,12 +961,12 @@ namespace Database
 			WellPressurizing = CreateStatusItem("WellPressurizing", BUILDING.STATUSITEMS.WELL_PRESSURIZING.NAME, BUILDING.STATUSITEMS.WELL_PRESSURIZING.TOOLTIP, "", StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, 129022);
 			WellPressurizing.resolveStringCallback = delegate(string str, object data)
 			{
-				OilWellCap.StatesInstance statesInstance = (OilWellCap.StatesInstance)data;
-				if (statesInstance == null)
+				OilWellCap.StatesInstance statesInstance3 = (OilWellCap.StatesInstance)data;
+				if (statesInstance3 == null)
 				{
 					return str;
 				}
-				return string.Format(str, GameUtil.GetFormattedPercent(100f * statesInstance.GetPressurePercent(), GameUtil.TimeSlice.None));
+				return string.Format(str, GameUtil.GetFormattedPercent(100f * statesInstance3.GetPressurePercent(), GameUtil.TimeSlice.None));
 			};
 			WellOverpressure = CreateStatusItem("WellOverpressure", BUILDING.STATUSITEMS.WELL_OVERPRESSURE.NAME, BUILDING.STATUSITEMS.WELL_OVERPRESSURE.TOOLTIP, "", StatusItem.IconType.Exclamation, NotificationType.BadMinor, false, OverlayModes.None.ID, 129022);
 			ReleasingPressure = CreateStatusItem("ReleasingPressure", BUILDING.STATUSITEMS.RELEASING_PRESSURE.NAME, BUILDING.STATUSITEMS.RELEASING_PRESSURE.TOOLTIP, "", StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, 129022);
@@ -1018,6 +1020,21 @@ namespace Database
 			string notification_text = BUILDING.STATUSITEMS.TOP_PRIORITY_CHORE.NOTIFICATION_NAME;
 			emergencyPriority.AddNotification(null, notification_text, BUILDING.STATUSITEMS.TOP_PRIORITY_CHORE.NOTIFICATION_TOOLTIP, 0f);
 			SkillPointsAvailable = CreateStatusItem("SkillPointsAvailable", BUILDING.STATUSITEMS.SKILL_POINTS_AVAILABLE.NAME, BUILDING.STATUSITEMS.SKILL_POINTS_AVAILABLE.TOOLTIP, "status_item_jobs", StatusItem.IconType.Custom, NotificationType.Neutral, false, OverlayModes.None.ID, 129022);
+			Baited = CreateStatusItem("Baited", "BUILDING", "", StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, false, 129022);
+			Baited.resolveStringCallback = delegate(string str, object data)
+			{
+				CreatureBait.StatesInstance statesInstance2 = (CreatureBait.StatesInstance)data;
+				Element element2 = ElementLoader.FindElementByName(statesInstance2.master.baitElement.ToString());
+				str = str.Replace("{0}", element2.name);
+				return str;
+			};
+			Baited.resolveTooltipCallback = delegate(string str, object data)
+			{
+				CreatureBait.StatesInstance statesInstance = (CreatureBait.StatesInstance)data;
+				Element element = ElementLoader.FindElementByName(statesInstance.master.baitElement.ToString());
+				str = str.Replace("{0}", element.name);
+				return str;
+			};
 		}
 
 		private static bool ShowInUtilityOverlay(HashedString mode, object data)

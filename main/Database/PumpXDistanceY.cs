@@ -1,4 +1,3 @@
-using STRINGS;
 using System.IO;
 using UnityEngine;
 
@@ -17,18 +16,6 @@ namespace Database
 			this.element = element;
 			conduitType = ((!ElementLoader.GetElement(element.CreateTag()).IsLiquid) ? ConduitType.Gas : ConduitType.Liquid);
 			this.distance = (double)distance;
-		}
-
-		public override string Name()
-		{
-			Element element = ElementLoader.GetElement(this.element.CreateTag());
-			return string.Format(COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.PUMP_X_DISTANCE_Y, element.name, GameUtil.GetFormattedDistance((float)distance));
-		}
-
-		public override string Description()
-		{
-			Element element = ElementLoader.GetElement(this.element.CreateTag());
-			return string.Format(COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.PUMP_X_DISTANCE_Y_DESCRIPTION, element.name, GameUtil.GetFormattedDistance((float)distance));
 		}
 
 		public override bool Success()

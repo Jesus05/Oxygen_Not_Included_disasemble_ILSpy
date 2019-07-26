@@ -4,7 +4,7 @@ using System.IO;
 
 namespace Database
 {
-	public class ReachedSpace : ColonyAchievementRequirement
+	public class ReachedSpace : VictoryColonyAchievementRequirement
 	{
 		private SpaceDestinationType destinationType;
 
@@ -40,9 +40,12 @@ namespace Database
 					SpaceDestination destination = SpacecraftManager.instance.GetDestination(SpacecraftManager.instance.savedSpacecraftDestinations[item.id]);
 					if (destinationType == null || destination.GetDestinationType() == destinationType)
 					{
+						if (destinationType == Db.Get().SpaceDestinationTypes.Wormhole)
+						{
+							Game.Instance.unlocks.Unlock("temporaltear");
+						}
 						return true;
 					}
-					Game.Instance.unlocks.Unlock("temporaltear");
 				}
 			}
 			return false;

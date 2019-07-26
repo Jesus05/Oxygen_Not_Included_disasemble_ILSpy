@@ -1,5 +1,4 @@
 using KSerialization;
-using STRINGS;
 using System.Collections.Generic;
 using System.IO;
 
@@ -15,28 +14,6 @@ namespace Database
 		{
 			this.numCalories = numCalories;
 			this.fromFoodType = fromFoodType;
-		}
-
-		public override string Name()
-		{
-			string text = "";
-			foreach (string item in fromFoodType)
-			{
-				EdiblesManager.FoodInfo foodInfo = Game.Instance.ediblesManager.GetFoodInfo(item);
-				text = text + foodInfo.Name + " ";
-			}
-			return string.Format(COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.EAT_X_CALORIES_FROM_FOOD_TYPE, numCalories, text);
-		}
-
-		public override string Description()
-		{
-			string text = "";
-			foreach (string item in fromFoodType)
-			{
-				EdiblesManager.FoodInfo foodInfo = Game.Instance.ediblesManager.GetFoodInfo(item);
-				text = text + foodInfo.Name + " ";
-			}
-			return string.Format(COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.EAT_X_CALORIES_FROM_FOOD_TYPE_DESCRIPTION, numCalories, text);
 		}
 
 		public override bool Success()

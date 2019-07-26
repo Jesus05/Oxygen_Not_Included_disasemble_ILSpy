@@ -153,7 +153,10 @@ public class Building : KMonoBehaviour, IEffectDescriptor, IUniformGridObject, I
 			if ((UnityEngine.Object)component != (UnityEngine.Object)null)
 			{
 				SimHashes visualizationElementID = GetVisualizationElementID(component);
-				World.Instance.blockTileRenderer.AddBlock(base.gameObject.layer, Def, visualizationElementID, Grid.PosToCell(base.transform.GetPosition()));
+				int cell = Grid.PosToCell(base.transform.GetPosition());
+				Constructable component2 = GetComponent<Constructable>();
+				bool isReplacement = (UnityEngine.Object)component2 != (UnityEngine.Object)null && component2.IsReplacementTile;
+				World.Instance.blockTileRenderer.AddBlock(base.gameObject.layer, Def, isReplacement, visualizationElementID, cell);
 			}
 		}
 	}
@@ -211,7 +214,10 @@ public class Building : KMonoBehaviour, IEffectDescriptor, IUniformGridObject, I
 			if ((UnityEngine.Object)component != (UnityEngine.Object)null)
 			{
 				SimHashes visualizationElementID = GetVisualizationElementID(component);
-				World.Instance.blockTileRenderer.RemoveBlock(Def, visualizationElementID, Grid.PosToCell(base.transform.GetPosition()));
+				int cell = Grid.PosToCell(base.transform.GetPosition());
+				Constructable component2 = GetComponent<Constructable>();
+				bool isReplacement = (UnityEngine.Object)component2 != (UnityEngine.Object)null && component2.IsReplacementTile;
+				World.Instance.blockTileRenderer.RemoveBlock(Def, isReplacement, visualizationElementID, cell);
 			}
 		}
 	}

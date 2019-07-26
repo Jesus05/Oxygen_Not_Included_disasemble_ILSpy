@@ -1,4 +1,3 @@
-using STRINGS;
 using System.IO;
 
 namespace Database
@@ -10,16 +9,6 @@ namespace Database
 		public CoolBuildingToXKelvin(int kelvinToCoolTo)
 		{
 			this.kelvinToCoolTo = kelvinToCoolTo;
-		}
-
-		public override string Name()
-		{
-			return COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.SIXKELVIN_BUILDING;
-		}
-
-		public override string Description()
-		{
-			return COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.SIXKELVIN_BUILDING_DESCRIPTION;
 		}
 
 		public override bool Success()

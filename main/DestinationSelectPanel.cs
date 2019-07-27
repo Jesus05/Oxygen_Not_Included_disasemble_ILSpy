@@ -13,6 +13,12 @@ public class DestinationSelectPanel : KMonoBehaviour
 	private KButtonDrag dragTarget;
 
 	[SerializeField]
+	private MultiToggle leftArrowButton;
+
+	[SerializeField]
+	private MultiToggle rightArrowButton;
+
+	[SerializeField]
 	private RectTransform asteroidContainer;
 
 	[SerializeField]
@@ -57,6 +63,10 @@ public class DestinationSelectPanel : KMonoBehaviour
 		dragTarget.onBeginDrag += BeginDrag;
 		dragTarget.onDrag += Drag;
 		dragTarget.onEndDrag += EndDrag;
+		MultiToggle multiToggle = leftArrowButton;
+		multiToggle.onClick = (System.Action)Delegate.Combine(multiToggle.onClick, new System.Action(ClickLeft));
+		MultiToggle multiToggle2 = rightArrowButton;
+		multiToggle2.onClick = (System.Action)Delegate.Combine(multiToggle2.onClick, new System.Action(ClickRight));
 	}
 
 	private void BeginDrag()
@@ -88,6 +98,18 @@ public class DestinationSelectPanel : KMonoBehaviour
 		Drag();
 		isDragging = false;
 		KFMOD.PlayOneShot(GlobalAssets.GetSound("DestinationSelect_Scroll_Stop", false));
+	}
+
+	private void ClickLeft()
+	{
+		selectedIndex = Mathf.Clamp(selectedIndex - 1, 0, worldNames.Count - 1);
+		this.OnAsteroidClicked(asteroidData[worldNames[selectedIndex]]);
+	}
+
+	private void ClickRight()
+	{
+		selectedIndex = Mathf.Clamp(selectedIndex + 1, 0, worldNames.Count - 1);
+		this.OnAsteroidClicked(asteroidData[worldNames[selectedIndex]]);
 	}
 
 	protected override void OnSpawn()

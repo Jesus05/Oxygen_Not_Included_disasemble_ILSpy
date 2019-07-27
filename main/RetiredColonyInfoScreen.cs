@@ -601,12 +601,12 @@ public class RetiredColonyInfoScreen : KModalScreen
 		activeColonyWidgetContainers.Add(gameObject2);
 		activeColonyWidgets.Add("duplicants", gameObject2);
 		gameObject2.GetComponent<HierarchyReferences>().GetReference<LocText>("Title").SetText(UI.RETIRED_COLONY_INFO_SCREEN.TITLES.DUPLICANTS);
-		DisplayDuplicants(data, gameObject2.GetComponentInChildren<KScrollRect>().content.gameObject);
+		DisplayDuplicants(data, gameObject2.GetComponent<HierarchyReferences>().GetReference("Content").gameObject);
 		GameObject gameObject3 = Util.KInstantiateUI(tallFeatureBlock, statsContainer, true);
 		activeColonyWidgetContainers.Add(gameObject3);
 		activeColonyWidgets.Add("buildings", gameObject3);
 		gameObject3.GetComponent<HierarchyReferences>().GetReference<LocText>("Title").SetText(UI.RETIRED_COLONY_INFO_SCREEN.TITLES.BUILDINGS);
-		DisplayBuildings(data, gameObject3.GetComponentInChildren<KScrollRect>().content.gameObject);
+		DisplayBuildings(data, gameObject3.GetComponent<HierarchyReferences>().GetReference("Content").gameObject);
 		int num = 2;
 		for (int i = 0; i < data.Stats.Length; i += num)
 		{

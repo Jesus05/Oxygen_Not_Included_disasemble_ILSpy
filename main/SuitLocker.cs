@@ -1,6 +1,7 @@
 using STRINGS;
 using System;
 using System.Collections.Generic;
+using TUNING;
 using UnityEngine;
 
 public class SuitLocker : StateMachineComponent<SuitLocker.StatesInstance>
@@ -408,6 +409,41 @@ public class SuitLocker : StateMachineComponent<SuitLocker.StatesInstance>
 					return component;
 				}
 			}
+		}
+		return null;
+	}
+
+	public float GetSuitScore()
+	{
+		float num = -1f;
+		KPrefabID partiallyChargedOutfit = GetPartiallyChargedOutfit();
+		if ((bool)partiallyChargedOutfit)
+		{
+			num = partiallyChargedOutfit.GetComponent<SuitTank>().PercentFull();
+			JetSuitTank component = partiallyChargedOutfit.GetComponent<JetSuitTank>();
+			if ((bool)component && component.PercentFull() < num)
+			{
+				num = component.PercentFull();
+			}
+		}
+		return num;
+	}
+
+	public KPrefabID GetPartiallyChargedOutfit()
+	{
+		KPrefabID storedOutfit = GetStoredOutfit();
+		if (!(bool)storedOutfit)
+		{
+			return null;
+		}
+		if (!(storedOutfit.GetComponent<SuitTank>().PercentFull() < TUNING.EQUIPMENT.SUITS.MINIMUM_USABLE_SUIT_CHARGE))
+		{
+			JetSuitTank component = storedOutfit.GetComponent<JetSuitTank>();
+			if ((bool)component && component.PercentFull() < TUNING.EQUIPMENT.SUITS.MINIMUM_USABLE_SUIT_CHARGE)
+			{
+				return null;
+			}
+			return storedOutfit;
 		}
 		return null;
 	}

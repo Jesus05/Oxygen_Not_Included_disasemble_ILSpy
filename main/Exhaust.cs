@@ -133,6 +133,10 @@ public class Exhaust : KMonoBehaviour, ISim200ms
 			exhaustPE.ModifyDiseaseCount(-disease_to_item2, "Exhaust transfer");
 			exhaustPE.AddDisease(primary_element.DiseaseIdx, disease_to_item, "Exhaust transfer");
 			emit(cell, primary_element);
+			if ((Object)vent != (Object)null)
+			{
+				vent.UpdateVentedMass(primary_element.ElementID, primary_element.Mass);
+			}
 			primary_element.KeepZeroMassObject = true;
 			primary_element.Mass = 0f;
 			primary_element.ModifyDiseaseCount(-2147483648, "Exhaust.SimUpdate");

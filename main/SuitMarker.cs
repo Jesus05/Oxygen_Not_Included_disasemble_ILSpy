@@ -125,6 +125,24 @@ public class SuitMarker : KMonoBehaviour
 							break;
 						}
 					}
+					if (flag && !flag2)
+					{
+						SuitLocker suitLocker = null;
+						float num = 0f;
+						foreach (SuitLocker item2 in pooledList)
+						{
+							if (item2.GetSuitScore() > num)
+							{
+								suitLocker = item2;
+								num = item2.GetSuitScore();
+							}
+						}
+						if ((UnityEngine.Object)suitLocker != (UnityEngine.Object)null)
+						{
+							suitLocker.EquipTo(equipment);
+							flag2 = true;
+						}
+					}
 					pooledList.Recycle();
 				}
 				if (!flag2 && !flag)
@@ -306,7 +324,7 @@ public class SuitMarker : KMonoBehaviour
 			{
 				num++;
 			}
-			if ((UnityEngine.Object)item.GetFullyChargedOutfit() != (UnityEngine.Object)null)
+			if ((UnityEngine.Object)item.GetPartiallyChargedOutfit() != (UnityEngine.Object)null)
 			{
 				num2++;
 			}

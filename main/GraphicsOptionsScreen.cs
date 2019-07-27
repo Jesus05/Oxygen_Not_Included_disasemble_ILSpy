@@ -90,7 +90,14 @@ internal class GraphicsOptionsScreen : KModalScreen
 		}
 		CanvasScalers = UnityEngine.Object.FindObjectsOfType<KCanvasScaler>();
 		UpdateSliderLabel();
-		uiScaleSlider.onValueChanged.AddListener(UpdateUIScale);
+		uiScaleSlider.onValueChanged.AddListener(delegate
+		{
+			sliderLabel.text = uiScaleSlider.value + "%";
+		});
+		uiScaleSlider.onReleaseHandle += delegate
+		{
+			UpdateUIScale(uiScaleSlider.value);
+		};
 	}
 
 	public static void SetResolutionFromPrefs()

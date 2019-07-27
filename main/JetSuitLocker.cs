@@ -1,5 +1,6 @@
 using STRINGS;
 using System;
+using TUNING;
 using UnityEngine;
 
 public class JetSuitLocker : StateMachineComponent<JetSuitLocker.StatesInstance>, ISecondaryInput
@@ -187,11 +188,26 @@ public class JetSuitLocker : StateMachineComponent<JetSuitLocker.StatesInstance>
 	{
 		o2_meter.SetPositionPercent(suit_locker.OxygenAvailable);
 		fuel_meter.SetPositionPercent(FuelAvailable);
-		anim_controller.SetSymbolVisiblity("oxygen_yes_bloom", suit_locker.IsOxygenTankFull());
-		anim_controller.SetSymbolVisiblity("petrol_yes_bloom", IsFuelTankFull());
+		anim_controller.SetSymbolVisiblity("oxygen_yes_bloom", IsOxygenTankAboveMinimumLevel());
+		anim_controller.SetSymbolVisiblity("petrol_yes_bloom", IsFuelTankAboveMinimumLevel());
 	}
 
-	public bool IsFuelTankFull()
+	public bool IsOxygenTankAboveMinimumLevel()
+	{
+		KPrefabID storedOutfit = GetStoredOutfit();
+		if (!((UnityEngine.Object)storedOutfit != (UnityEngine.Object)null))
+		{
+			return false;
+		}
+		SuitTank component = storedOutfit.GetComponent<SuitTank>();
+		if (!((UnityEngine.Object)component == (UnityEngine.Object)null))
+		{
+			return component.PercentFull() >= TUNING.EQUIPMENT.SUITS.MINIMUM_USABLE_SUIT_CHARGE;
+		}
+		return true;
+	}
+
+	public bool IsFuelTankAboveMinimumLevel()
 	{
 		KPrefabID storedOutfit = GetStoredOutfit();
 		if (!((UnityEngine.Object)storedOutfit != (UnityEngine.Object)null))
@@ -201,7 +217,7 @@ public class JetSuitLocker : StateMachineComponent<JetSuitLocker.StatesInstance>
 		JetSuitTank component = storedOutfit.GetComponent<JetSuitTank>();
 		if (!((UnityEngine.Object)component == (UnityEngine.Object)null))
 		{
-			return component.PercentFull() >= 1f;
+			return component.PercentFull() >= TUNING.EQUIPMENT.SUITS.MINIMUM_USABLE_SUIT_CHARGE;
 		}
 		return true;
 	}

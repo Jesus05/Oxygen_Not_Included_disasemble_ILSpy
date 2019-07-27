@@ -62,6 +62,13 @@ public class Room : IAssignableIdentity
 					primary_buildings.Add(building);
 				}
 			}
+			foreach (KPrefabID plant in plants)
+			{
+				if ((Object)plant != (Object)null && roomType.primary_constraint.building_criteria(plant))
+				{
+					primary_buildings.Add(plant);
+				}
+			}
 		}
 		return primary_buildings;
 	}
@@ -73,6 +80,13 @@ public class Room : IAssignableIdentity
 			if (!((Object)building == (Object)null))
 			{
 				building.Trigger(144050788, this);
+			}
+		}
+		foreach (KPrefabID plant in plants)
+		{
+			if (!((Object)plant == (Object)null))
+			{
+				plant.Trigger(144050788, this);
 			}
 		}
 	}

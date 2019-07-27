@@ -643,7 +643,19 @@ namespace STRINGS
 
 				public static LocString WORK_TIME = "Work Time";
 
+				public static LocString AVERAGE_TRAVEL_TIME = "Average Travel Time";
+
+				public static LocString AVERAGE_WORK_TIME = "Average Work Time";
+
 				public static LocString CALORIES_CREATED = "Calorie Generation";
+
+				public static LocString LIVE_DUPLICANTS = "Duplicants";
+
+				public static LocString AVERAGE_STRESS_CREATED = "Average Stress Created";
+
+				public static LocString AVERAGE_STRESS_REMOVED = "Average Stress Removed";
+
+				public static LocString AVERAGE_GERMS = "Average Germs";
 			}
 
 			public static LocString SECONDS = "Seconds";
@@ -3386,6 +3398,12 @@ namespace STRINGS
 			public static LocString CRITTERS = " critters";
 
 			public static LocString GROWTH = "growth";
+
+			public static LocString SECONDS = "Seconds";
+
+			public static LocString DUPLICANTS = "Duplicants";
+
+			public static LocString GERMS = "Germs";
 		}
 
 		public class OVERLAYS
@@ -7583,6 +7601,8 @@ namespace STRINGS
 			public static LocString TIME_DETAILS_HEADER = "Time Details:";
 
 			public static LocString BASE_DETAILS_HEADER = "Base Details:";
+
+			public static LocString AVERAGE_TIME_DETAILS_HEADER = "Average Time Details:";
 		}
 
 		public static class SCHEDULEBLOCKTYPES

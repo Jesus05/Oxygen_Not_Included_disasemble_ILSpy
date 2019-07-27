@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <ProjectGuid>{D760CDB1-05DC-4999-B71F-B8FFB0E968F1}</ProjectGuid>
+    <ProjectGuid>{2E0B6B93-6EC3-4E6B-90A3-9CC8017A96B4}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <OutputType>Library</OutputType>
@@ -543,6 +543,7 @@
     <Compile Include="Database\ArtifactDropRate.cs" />
     <Compile Include="Database\ArtifactDropRates.cs" />
     <Compile Include="Database\AssignableSlots.cs" />
+    <Compile Include="Database\AtLeastOneBuildingForEachDupe.cs" />
     <Compile Include="Database\AttributeConverters.cs" />
     <Compile Include="Database\Attributes.cs" />
     <Compile Include="Database\AverageDupeDecorOverCycles.cs" />
@@ -572,6 +573,7 @@
     <Compile Include="Database\DuplicantStatusItems.cs" />
     <Compile Include="Database\EatXCalories.cs" />
     <Compile Include="Database\EatXCaloriesFromY.cs" />
+    <Compile Include="Database\EatXKCalProducedByY.cs" />
     <Compile Include="Database\EquipAllDupes.cs" />
     <Compile Include="Database\EquipNDupes.cs" />
     <Compile Include="Database\ExploreOilFieldSubZone.cs" />
@@ -615,7 +617,9 @@
     <Compile Include="Database\TechTreeTitles.cs" />
     <Compile Include="Database\Thoughts.cs" />
     <Compile Include="Database\TravelXUsingTransitTubes.cs" />
+    <Compile Include="Database\UpgradeAllBasicBuildings.cs" />
     <Compile Include="Database\Urges.cs" />
+    <Compile Include="Database\VentXKG.cs" />
     <Compile Include="Database\VictoryColonyAchievementRequirement.cs" />
     <Compile Include="DateTime.cs" />
     <Compile Include="Db.cs" />
@@ -1676,6 +1680,7 @@
     <Compile Include="PacuFilletConfig.cs" />
     <Compile Include="PacuTropicalConfig.cs" />
     <Compile Include="PacuTuning.cs" />
+    <Compile Include="PageView.cs" />
     <Compile Include="Painting.cs" />
     <Compile Include="ParkSign.cs" />
     <Compile Include="ParkSignConfig.cs" />

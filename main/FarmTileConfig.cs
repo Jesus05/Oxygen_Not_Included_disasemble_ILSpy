@@ -37,7 +37,6 @@ public class FarmTileConfig : IBuildingConfig
 		buildingDef.DragBuild = true;
 		buildingDef.ReplacementTags = new List<Tag>();
 		buildingDef.ReplacementTags.Add(GameTags.FloorTiles);
-		buildingDef.ReplacementTags.Add(GameTags.Ladders);
 		return buildingDef;
 	}
 

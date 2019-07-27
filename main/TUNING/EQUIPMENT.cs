@@ -76,6 +76,8 @@ namespace TUNING
 			public static int TEMPERATURESUIT_ATHLETICS = ATMOSUIT_ATHLETICS;
 
 			public static int TEMPERATURESUIT_MASS = ATMOSUIT_MASS;
+
+			public static float MINIMUM_USABLE_SUIT_CHARGE = 0.95f;
 		}
 
 		public class VESTS

@@ -138,11 +138,11 @@ namespace STRINGS
 
 			public static LocString BASIC_COMFORTS = "One Bed One Bath";
 
-			public static LocString BASIC_COMFORTS_DESCRIPTION = "Have at least one bed and one bathroom for each Duplicant in the colony.";
+			public static LocString BASIC_COMFORTS_DESCRIPTION = "Have at least one bed and one toilet for each Duplicant in the colony.";
 
 			public static LocString BASIC_PUMPING = "Oxygen Not Occluded";
 
-			public static LocString BASIC_PUMPING_DESCRIPTION = "Move 1000kg of Oxygen using pumps or vents.";
+			public static LocString BASIC_PUMPING_DESCRIPTION = "Distribute 1000kg of Oxygen using gas vents.";
 
 			public static LocString MASTERPIECE_PAINTING = "Art Underground";
 

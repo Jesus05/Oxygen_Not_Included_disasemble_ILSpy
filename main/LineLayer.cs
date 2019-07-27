@@ -12,6 +12,13 @@ public class LineLayer : GraphLayer
 		public int thickness;
 	}
 
+	public enum DataScalingType
+	{
+		Average,
+		Max,
+		DropValues
+	}
+
 	[Header("Lines")]
 	public LineFormat[] line_formatting;
 
@@ -33,10 +40,10 @@ public class LineLayer : GraphLayer
 		{
 			array[i] = new Vector2(points[i].first, points[i].second);
 		}
-		NewLine(array, ID, 256, true);
+		NewLine(array, ID, 128, DataScalingType.DropValues);
 	}
 
-	public void NewLine(Vector2[] points, string ID = "", int compressDataToPointCount = 256, bool useMaxValueOnCompress = true)
+	public void NewLine(Vector2[] points, string ID = "", int compressDataToPointCount = 128, DataScalingType compressType = DataScalingType.DropValues)
 	{
 		GameObject gameObject = Util.KInstantiateUI(prefab_line, line_container, true);
 		if (ID == "")
@@ -47,29 +54,53 @@ public class LineLayer : GraphLayer
 		GraphedLine component = gameObject.GetComponent<GraphedLine>();
 		if (points.Length > compressDataToPointCount)
 		{
-			int num = points.Length / compressDataToPointCount;
 			Vector2[] array = new Vector2[compressDataToPointCount];
-			for (int i = 0; i < compressDataToPointCount; i++)
+			if (compressType == DataScalingType.DropValues)
 			{
-				if (i > 0)
+				float num = (float)(points.Length - compressDataToPointCount);
+				float num2 = (float)points.Length / num;
+				int num3 = 0;
+				float num4 = 0f;
+				for (int i = 0; i < points.Length; i++)
 				{
-					float num2 = 0f;
-					if (useMaxValueOnCompress)
+					num4 += 1f;
+					if (num4 >= num2)
 					{
-						for (int j = 0; j < num; j++)
-						{
-							num2 = Mathf.Max(num2, points[i * num - j].y);
-						}
+						num4 -= num2;
 					}
 					else
 					{
-						for (int k = 0; k < num; k++)
-						{
-							num2 += points[i * num - k].y;
-						}
-						num2 /= (float)num;
+						array[num3] = points[i];
+						num3++;
 					}
-					array[i] = new Vector2(points[i * num].x, num2);
+				}
+			}
+			else
+			{
+				int num5 = points.Length / compressDataToPointCount;
+				for (int j = 0; j < compressDataToPointCount; j++)
+				{
+					if (j > 0)
+					{
+						float num6 = 0f;
+						switch (compressType)
+						{
+						case DataScalingType.Max:
+							for (int l = 0; l < num5; l++)
+							{
+								num6 = Mathf.Max(num6, points[j * num5 - l].y);
+							}
+							break;
+						case DataScalingType.Average:
+							for (int k = 0; k < num5; k++)
+							{
+								num6 += points[j * num5 - k].y;
+							}
+							num6 /= (float)num5;
+							break;
+						}
+						array[j] = new Vector2(points[j * num5].x, num6);
+					}
 				}
 			}
 			points = array;

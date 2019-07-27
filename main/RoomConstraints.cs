@@ -94,6 +94,13 @@ public static class RoomConstraints
 						num++;
 					}
 				}
+				foreach (KPrefabID plant in room.plants)
+				{
+					if (!((UnityEngine.Object)plant == (UnityEngine.Object)null) && building_criteria(plant))
+					{
+						num++;
+					}
+				}
 			}
 			if (num >= times_required)
 			{
@@ -159,8 +166,8 @@ public static class RoomConstraints
 
 	public static Constraint BUILDING_DECOR_POSITIVE = new Constraint(delegate(KPrefabID bc)
 	{
-		DecorProvider component5 = bc.GetComponent<DecorProvider>();
-		if ((UnityEngine.Object)component5 != (UnityEngine.Object)null && component5.baseDecor > 0f)
+		DecorProvider component7 = bc.GetComponent<DecorProvider>();
+		if ((UnityEngine.Object)component7 != (UnityEngine.Object)null && component7.baseDecor > 0f)
 		{
 			return true;
 		}
@@ -196,11 +203,11 @@ public static class RoomConstraints
 		{
 			if (!((UnityEngine.Object)building4 == (UnityEngine.Object)null))
 			{
-				Light2D component3 = building4.GetComponent<Light2D>();
-				if ((UnityEngine.Object)component3 != (UnityEngine.Object)null)
+				Light2D component5 = building4.GetComponent<Light2D>();
+				if ((UnityEngine.Object)component5 != (UnityEngine.Object)null)
 				{
-					RequireInputs component4 = building4.GetComponent<RequireInputs>();
-					return component3.enabled || ((UnityEngine.Object)component4 != (UnityEngine.Object)null && component4.RequirementsMet);
+					RequireInputs component6 = building4.GetComponent<RequireInputs>();
+					return component5.enabled || ((UnityEngine.Object)component6 != (UnityEngine.Object)null && component6.RequirementsMet);
 				}
 			}
 		}
@@ -339,8 +346,13 @@ public static class RoomConstraints
 			{
 				if ((UnityEngine.Object)plant != (UnityEngine.Object)null)
 				{
-					ReceptacleMonitor component2 = plant.GetComponent<ReceptacleMonitor>();
-					if ((UnityEngine.Object)component2 != (UnityEngine.Object)null && !component2.Replanted)
+					BasicForagePlantPlanted component3 = plant.GetComponent<BasicForagePlantPlanted>();
+					ReceptacleMonitor component4 = plant.GetComponent<ReceptacleMonitor>();
+					if ((UnityEngine.Object)component4 != (UnityEngine.Object)null && !component4.Replanted)
+					{
+						num2++;
+					}
+					else if ((UnityEngine.Object)component3 != (UnityEngine.Object)null)
 					{
 						num2++;
 					}
@@ -357,8 +369,13 @@ public static class RoomConstraints
 			{
 				if ((UnityEngine.Object)plant2 != (UnityEngine.Object)null)
 				{
-					ReceptacleMonitor component = plant2.GetComponent<ReceptacleMonitor>();
-					if ((UnityEngine.Object)component != (UnityEngine.Object)null && !component.Replanted)
+					BasicForagePlantPlanted component = plant2.GetComponent<BasicForagePlantPlanted>();
+					ReceptacleMonitor component2 = plant2.GetComponent<ReceptacleMonitor>();
+					if ((UnityEngine.Object)component2 != (UnityEngine.Object)null && !component2.Replanted)
+					{
+						num++;
+					}
+					else if ((UnityEngine.Object)component != (UnityEngine.Object)null)
 					{
 						num++;
 					}

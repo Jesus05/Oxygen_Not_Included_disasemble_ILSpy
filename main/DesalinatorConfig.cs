@@ -42,7 +42,7 @@ public class DesalinatorConfig : IBuildingConfig
 		buildingDef.AudioCategory = "Metal";
 		buildingDef.UtilityInputOffset = new CellOffset(-1, 0);
 		buildingDef.UtilityOutputOffset = new CellOffset(0, 0);
-		buildingDef.PermittedRotations = PermittedRotations.R360;
+		buildingDef.PermittedRotations = PermittedRotations.FlipH;
 		return buildingDef;
 	}
 

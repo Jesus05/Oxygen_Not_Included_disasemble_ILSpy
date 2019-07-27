@@ -48,6 +48,14 @@ namespace Database
 
 		public ColonyAchievement ExploreOilBiome;
 
+		public ColonyAchievement EatCookedFood;
+
+		public ColonyAchievement BasicPumping;
+
+		public ColonyAchievement BasicComforts;
+
+		public ColonyAchievement PlumbedWashrooms;
+
 		[CompilerGenerated]
 		private static Action<KMonoBehaviour> _003C_003Ef__mg_0024cache0;
 
@@ -143,7 +151,12 @@ namespace Database
 				new BeforeCycleNumber(100),
 				new EatXCaloriesFromY(400000, new List<string>
 				{
-					FOOD.FOOD_TYPES.MEAT.Id
+					FOOD.FOOD_TYPES.MEAT.Id,
+					FOOD.FOOD_TYPES.FISH_MEAT.Id,
+					FOOD.FOOD_TYPES.COOKED_MEAT.Id,
+					FOOD.FOOD_TYPES.COOKED_FISH.Id,
+					FOOD.FOOD_TYPES.SURF_AND_TURF.Id,
+					FOOD.FOOD_TYPES.BURGER.Id
 				})
 			}, "", "", "", "", null, ""));
 			NoFarmTilesAndKCal = Add(new ColonyAchievement("NoFarmTilesAndKCal", COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.NO_PLANTERBOX, COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.NO_PLANTERBOX_DESCRIPTION, false, new List<ColonyAchievementRequirement>
@@ -187,6 +200,36 @@ namespace Database
 			ExploreOilBiome = Add(new ColonyAchievement("ExploreOilBiome", COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.EXPLORE_OIL_BIOME, COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.EXPLORE_OIL_BIOME_DESCRIPTION, false, new List<ColonyAchievementRequirement>
 			{
 				new ExploreOilFieldSubZone()
+			}, "", "", "", "", null, ""));
+			EatCookedFood = Add(new ColonyAchievement("EatCookedFood", COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.COOKED_FOOD, COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.COOKED_FOOD_DESCRIPTION, false, new List<ColonyAchievementRequirement>
+			{
+				new EatXKCalProducedByY(1, new List<Tag>
+				{
+					"GourmetCookingStation",
+					"CookingStation"
+				})
+			}, "", "", "", "", null, ""));
+			BasicPumping = Add(new ColonyAchievement("BasicPumping", COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.BASIC_PUMPING, COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.BASIC_PUMPING_DESCRIPTION, false, new List<ColonyAchievementRequirement>
+			{
+				new VentXKG(SimHashes.Oxygen, 1000f)
+			}, "", "", "", "", null, ""));
+			BasicComforts = Add(new ColonyAchievement("BasicComforts", COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.BASIC_COMFORTS, COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.BASIC_COMFORTS_DESCRIPTION, false, new List<ColonyAchievementRequirement>
+			{
+				new AtLeastOneBuildingForEachDupe(new List<Tag>
+				{
+					"FlushToilet",
+					"Outhouse"
+				}),
+				new AtLeastOneBuildingForEachDupe(new List<Tag>
+				{
+					BedConfig.ID,
+					LuxuryBedConfig.ID
+				})
+			}, "", "", "", "", null, ""));
+			PlumbedWashrooms = Add(new ColonyAchievement("PlumbedWashrooms", COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.PLUMBED_WASHROOMS, COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.PLUMBED_WASHROOMS_DESCRIPTION, false, new List<ColonyAchievementRequirement>
+			{
+				new UpgradeAllBasicBuildings("Outhouse", "FlushToilet"),
+				new UpgradeAllBasicBuildings("WashBasin", "WashSink")
 			}, "", "", "", "", null, ""));
 		}
 	}

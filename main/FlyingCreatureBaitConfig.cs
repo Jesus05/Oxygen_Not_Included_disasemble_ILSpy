@@ -38,6 +38,7 @@ public class FlyingCreatureBaitConfig : IBuildingConfig
 	{
 		BuildingTemplates.DoPostConfigure(go);
 		SymbolOverrideControllerUtil.AddToPrefab(go);
+		go.AddOrGet<SymbolOverrideController>().applySymbolOverridesEveryFrame = true;
 		Lure.Def def = go.AddOrGetDef<Lure.Def>();
 		def.lurePoints = new CellOffset[1]
 		{

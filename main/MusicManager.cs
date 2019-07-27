@@ -563,7 +563,7 @@ public class MusicManager : KMonoBehaviour, ISerializationCallbackReceiver
 						text = text + activeSong.Key + ", ";
 						Debug.Log(text);
 					}
-					KCrashReporter.Assert(false, "Song failed to play: " + nextDynamicSong);
+					DebugUtil.DevAssert(false, "Song failed to play: " + nextDynamicSong);
 				}
 			}
 		}

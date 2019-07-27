@@ -337,21 +337,27 @@ public class RoomProber : ISim1000ms
 		}
 	}
 
-	private void UnassignBuildingsToRoom(Room room)
+	private void UnassignKPrefabIDs(Room room, List<KPrefabID> list)
 	{
-		Debug.Assert(room != null);
-		foreach (KPrefabID building in room.buildings)
+		foreach (KPrefabID item in list)
 		{
-			if (!((UnityEngine.Object)building == (UnityEngine.Object)null))
+			if (!((UnityEngine.Object)item == (UnityEngine.Object)null))
 			{
-				building.Trigger(144050788, null);
-				Assignable component = building.GetComponent<Assignable>();
+				item.Trigger(144050788, null);
+				Assignable component = item.GetComponent<Assignable>();
 				if ((UnityEngine.Object)component != (UnityEngine.Object)null && component.assignee == room)
 				{
 					component.Unassign();
 				}
 			}
 		}
+	}
+
+	private void UnassignBuildingsToRoom(Room room)
+	{
+		Debug.Assert(room != null);
+		UnassignKPrefabIDs(room, room.buildings);
+		UnassignKPrefabIDs(room, room.plants);
 	}
 
 	public void UpdateRoom(CavityInfo cavity)

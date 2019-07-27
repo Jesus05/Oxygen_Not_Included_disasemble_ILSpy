@@ -21,7 +21,6 @@ namespace Database
 					critterTypesToCheck.Add(critterType, false);
 				}
 			}
-			trait = trait;
 			this.hasTrait = hasTrait;
 			trait = GameTags.Creatures.Wild;
 		}

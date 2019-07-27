@@ -76,7 +76,7 @@ public class GraphedLine : KMonoBehaviour
 		ToolTip toolTip = component;
 		Vector3 localPosition = highlightPoint.rectTransform().localPosition;
 		toolTip.tooltipPositionOffset = new Vector2(localPosition.x, layer.graph.rectTransform().rect.height / 2f - 12f);
-		component.SetSimpleTooltip(layer.graph.axis_x.name + " " + point.x + ", " + point.y + " " + layer.graph.axis_y.name);
+		component.SetSimpleTooltip(layer.graph.axis_x.name + " " + point.x + ", " + Mathf.RoundToInt(point.y) + " " + layer.graph.axis_y.name);
 		ToolTipScreen.Instance.SetToolTip(component);
 	}
 }

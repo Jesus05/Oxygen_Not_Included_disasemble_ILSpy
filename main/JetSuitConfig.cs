@@ -24,7 +24,6 @@ public class JetSuitConfig : IEquipmentConfig
 		list.Add(new AttributeModifier(TUNING.EQUIPMENT.ATTRIBUTE_MOD_IDS.ATHLETICS, (float)TUNING.EQUIPMENT.SUITS.ATMOSUIT_ATHLETICS, STRINGS.EQUIPMENT.PREFABS.ATMO_SUIT.NAME, false, false, true));
 		list.Add(new AttributeModifier(TUNING.EQUIPMENT.ATTRIBUTE_MOD_IDS.THERMAL_CONDUCTIVITY_BARRIER, TUNING.EQUIPMENT.SUITS.ATMOSUIT_THERMAL_CONDUCTIVITY_BARRIER, STRINGS.EQUIPMENT.PREFABS.ATMO_SUIT.NAME, false, false, true));
 		list.Add(new AttributeModifier(Db.Get().Attributes.Digging.Id, (float)TUNING.EQUIPMENT.SUITS.ATMOSUIT_DIGGING, STRINGS.EQUIPMENT.PREFABS.ATMO_SUIT.NAME, false, false, true));
-		list.Add(new AttributeModifier(Db.Get().Amounts.Bladder.deltaAttribute.Id, TUNING.EQUIPMENT.SUITS.ATMOSUIT_BLADDER, STRINGS.EQUIPMENT.PREFABS.ATMO_SUIT.NAME, false, false, true));
 		list.Add(new AttributeModifier(Db.Get().Attributes.ScaldingThreshold.Id, (float)TUNING.EQUIPMENT.SUITS.ATMOSUIT_SCALDING, STRINGS.EQUIPMENT.PREFABS.ATMO_SUIT.NAME, false, false, true));
 		expertAthleticsModifier = new AttributeModifier(TUNING.EQUIPMENT.ATTRIBUTE_MOD_IDS.ATHLETICS, (float)(-TUNING.EQUIPMENT.SUITS.ATMOSUIT_ATHLETICS), Db.Get().Skills.Suits1.Name, false, false, true);
 		string id = "Jet_Suit";
@@ -47,20 +46,20 @@ public class JetSuitConfig : IEquipmentConfig
 			if ((Object)soleOwner2 != (Object)null)
 			{
 				GameObject targetGameObject2 = soleOwner2.GetComponent<MinionAssignablesProxy>().GetTargetGameObject();
-				Navigator component3 = targetGameObject2.GetComponent<Navigator>();
-				if ((Object)component3 != (Object)null)
+				Navigator component4 = targetGameObject2.GetComponent<Navigator>();
+				if ((Object)component4 != (Object)null)
 				{
-					component3.SetFlags(PathFinder.PotentialPath.Flags.HasJetPack);
+					component4.SetFlags(PathFinder.PotentialPath.Flags.HasJetPack);
 				}
-				MinionResume component4 = targetGameObject2.GetComponent<MinionResume>();
-				if ((Object)component4 != (Object)null && component4.HasPerk(Db.Get().SkillPerks.ExosuitExpertise.Id))
+				MinionResume component5 = targetGameObject2.GetComponent<MinionResume>();
+				if ((Object)component5 != (Object)null && component5.HasPerk(Db.Get().SkillPerks.ExosuitExpertise.Id))
 				{
 					targetGameObject2.GetAttributes().Get(Db.Get().Attributes.Athletics).Add(expertAthleticsModifier);
 				}
-				KAnimControllerBase component5 = targetGameObject2.GetComponent<KAnimControllerBase>();
-				if ((bool)component5)
+				KAnimControllerBase component6 = targetGameObject2.GetComponent<KAnimControllerBase>();
+				if ((bool)component6)
 				{
-					component5.AddAnimOverrides(Assets.GetAnim("anim_loco_hover_kanim"), 0f);
+					component6.AddAnimOverrides(Assets.GetAnim("anim_loco_hover_kanim"), 0f);
 				}
 			}
 		};
@@ -85,7 +84,13 @@ public class JetSuitConfig : IEquipmentConfig
 						{
 							component2.RemoveAnimOverrides(Assets.GetAnim("anim_loco_hover_kanim"));
 						}
+						Effects component3 = targetGameObject.GetComponent<Effects>();
+						if (component3.HasEffect("SoiledSuit"))
+						{
+							component3.Remove("SoiledSuit");
+						}
 					}
+					eq.GetComponent<Storage>().DropAll(eq.transform.GetPosition(), true, true, default(Vector3), false);
 				}
 			}
 		};
@@ -105,6 +110,11 @@ public class JetSuitConfig : IEquipmentConfig
 		KPrefabID component = go.GetComponent<KPrefabID>();
 		component.AddTag(GameTags.Clothes, false);
 		component.AddTag(GameTags.PedestalDisplayable, false);
+		component.AddTag(GameTags.AirtightSuit, false);
+		Storage storage = go.AddOrGet<Storage>();
+		storage.SetDefaultStoredItemModifiers(Storage.StandardInsulatedStorage);
+		storage.showInUI = true;
+		go.AddOrGet<AtmoSuit>();
 		go.AddComponent<SuitDiseaseHandler>();
 	}
 }

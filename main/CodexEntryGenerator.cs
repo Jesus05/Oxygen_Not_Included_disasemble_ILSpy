@@ -252,6 +252,7 @@ public static class CodexEntryGenerator
 					dictionary.Add(codexEntry.id, codexEntry);
 				}
 			}
+			return dictionary;
 		}
 		return dictionary;
 	}
@@ -297,6 +298,7 @@ public static class CodexEntryGenerator
 					dictionary.Add(codexEntry.id, codexEntry);
 				}
 			}
+			return dictionary;
 		}
 		return dictionary;
 	}
@@ -328,7 +330,7 @@ public static class CodexEntryGenerator
 				containers.Add(new ContentContainer(new List<ICodexWidget>
 				{
 					new CodexImage(32, 32, Def.GetUISprite(element.highTempTransition, "ui", false)),
-					new CodexText((element.highTempTransition == null) ? "" : (element.highTempTransition.name + " (" + element.highTempTransition.GetStateString() + ")  (" + GameUtil.GetFormattedTemperature(element.highTemp, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false) + ")"), CodexTextStyle.Body)
+					new CodexText((element.highTempTransition == null) ? string.Empty : (element.highTempTransition.name + " (" + element.highTempTransition.GetStateString() + ")  (" + GameUtil.GetFormattedTemperature(element.highTemp, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false) + ")"), CodexTextStyle.Body)
 				}, ContentContainer.ContentLayout.Horizontal));
 			}
 			if (element.lowTempTransition != null)
@@ -336,7 +338,7 @@ public static class CodexEntryGenerator
 				containers.Add(new ContentContainer(new List<ICodexWidget>
 				{
 					new CodexImage(32, 32, Def.GetUISprite(element.lowTempTransition, "ui", false)),
-					new CodexText((element.lowTempTransition == null) ? "" : (element.lowTempTransition.name + " (" + element.lowTempTransition.GetStateString() + ")  (" + GameUtil.GetFormattedTemperature(element.lowTemp, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false) + ")"), CodexTextStyle.Body)
+					new CodexText((element.lowTempTransition == null) ? string.Empty : (element.lowTempTransition.name + " (" + element.lowTempTransition.GetStateString() + ")  (" + GameUtil.GetFormattedTemperature(element.lowTemp, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false) + ")"), CodexTextStyle.Body)
 				}, ContentContainer.ContentLayout.Horizontal));
 			}
 			containers.Add(new ContentContainer(new List<ICodexWidget>
@@ -685,7 +687,7 @@ public static class CodexEntryGenerator
 						list.Add(new ContentContainer(new List<ICodexWidget>
 						{
 							new CodexImage(64, 64, Def.GetUISprite(prefab, "ui", false)),
-							new CodexText(string.Format(UI.CODEX.RECIPE_ITEM, Assets.GetPrefab(ingredient.tag).GetProperName(), ingredient.amount, (ElementLoader.GetElement(ingredient.tag) != null) ? UI.UNITSUFFIXES.MASS.KILOGRAM.text : ""), CodexTextStyle.Body)
+							new CodexText(string.Format(UI.CODEX.RECIPE_ITEM, Assets.GetPrefab(ingredient.tag).GetProperName(), ingredient.amount, (ElementLoader.GetElement(ingredient.tag) != null) ? UI.UNITSUFFIXES.MASS.KILOGRAM.text : string.Empty), CodexTextStyle.Body)
 						}, ContentContainer.ContentLayout.Horizontal));
 					}
 				}
@@ -702,7 +704,7 @@ public static class CodexEntryGenerator
 				}, ContentContainer.ContentLayout.Vertical));
 				containers.Add(new ContentContainer(new List<ICodexWidget>
 				{
-					new CodexImage(64, 64, Def.GetUISpriteFromMultiObjectAnim(gameObject.GetComponent<KBatchedAnimController>().AnimFiles[0], "ui", false, "")),
+					new CodexImage(64, 64, Def.GetUISpriteFromMultiObjectAnim(gameObject.GetComponent<KBatchedAnimController>().AnimFiles[0], "ui", false, string.Empty)),
 					new CodexText(string.Format(UI.CODEX.RECIPE_FABRICATOR, recipe.FabricationTime, gameObject.GetProperName()), CodexTextStyle.Body)
 				}, ContentContainer.ContentLayout.Horizontal));
 			}
@@ -768,36 +770,36 @@ public static class CodexEntryGenerator
 		{
 			list.Add(new CodexText(component2.description, CodexTextStyle.Body));
 		}
-		string text = "";
+		string empty = string.Empty;
 		List<Descriptor> plantRequirementDescriptors = GameUtil.GetPlantRequirementDescriptors(plant);
 		if (plantRequirementDescriptors.Count > 0)
 		{
-			string str = text;
+			string str = empty;
 			Descriptor descriptor = plantRequirementDescriptors[0];
-			text = str + descriptor.text;
+			empty = str + descriptor.text;
 			for (int i = 1; i < plantRequirementDescriptors.Count; i++)
 			{
-				string str2 = text;
+				string str2 = empty;
 				Descriptor descriptor2 = plantRequirementDescriptors[i];
-				text = str2 + "\n    • " + descriptor2.text;
+				empty = str2 + "\n    • " + descriptor2.text;
 			}
-			list.Add(new CodexText(text, CodexTextStyle.Body));
+			list.Add(new CodexText(empty, CodexTextStyle.Body));
 			list.Add(new CodexSpacer());
 		}
-		text = "";
+		empty = string.Empty;
 		List<Descriptor> plantEffectDescriptors = GameUtil.GetPlantEffectDescriptors(plant);
 		if (plantEffectDescriptors.Count > 0)
 		{
-			string str3 = text;
+			string str3 = empty;
 			Descriptor descriptor3 = plantEffectDescriptors[0];
-			text = str3 + descriptor3.text;
+			empty = str3 + descriptor3.text;
 			for (int j = 1; j < plantEffectDescriptors.Count; j++)
 			{
-				string str4 = text;
+				string str4 = empty;
 				Descriptor descriptor4 = plantEffectDescriptors[j];
-				text = str4 + "\n    • " + descriptor4.text;
+				empty = str4 + "\n    • " + descriptor4.text;
 			}
-			CodexText item = new CodexText(text, CodexTextStyle.Body);
+			CodexText item = new CodexText(empty, CodexTextStyle.Body);
 			list.Add(item);
 			list.Add(new CodexSpacer());
 		}

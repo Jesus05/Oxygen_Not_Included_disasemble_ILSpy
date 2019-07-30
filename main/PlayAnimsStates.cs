@@ -83,7 +83,7 @@ public class PlayAnimsStates : GameStateMachine<PlayAnimsStates, PlayAnimsStates
 	public override void InitializeStates(out BaseState default_state)
 	{
 		default_state = animating;
-		root.ToggleStatusItem("Unused", "Unused", category: Db.Get().StatusItemCategories.Main, icon: "", icon_type: StatusItem.IconType.Info, notification_type: NotificationType.Neutral, allow_multiples: false, render_overlay: default(HashedString), status_overlays: 129022, resolve_string_callback: (string str, Instance smi) => smi.def.statusItemName, resolve_tooltip_callback: (string str, Instance smi) => smi.def.statusItemTooltip);
+		root.ToggleStatusItem("Unused", "Unused", category: Db.Get().StatusItemCategories.Main, icon: string.Empty, icon_type: StatusItem.IconType.Info, notification_type: NotificationType.Neutral, allow_multiples: false, render_overlay: default(HashedString), status_overlays: 129022, resolve_string_callback: (string str, Instance smi) => smi.def.statusItemName, resolve_tooltip_callback: (string str, Instance smi) => smi.def.statusItemTooltip);
 		animating.Enter("PlayAnims", delegate(Instance smi)
 		{
 			smi.PlayAnims();

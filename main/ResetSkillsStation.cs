@@ -59,7 +59,7 @@ public class ResetSkillsStation : Workable
 			component.SetHats(component.CurrentHat, null);
 			component.ApplyTargetHat();
 			notification = new Notification(MISC.NOTIFICATIONS.RESETSKILL.NAME, NotificationType.Good, HashedString.Invalid, (List<Notification> notificationList, object data) => MISC.NOTIFICATIONS.RESETSKILL.TOOLTIP + notificationList.ReduceMessages(false), null, true, 0f, null, null, null);
-			worker.GetComponent<Notifier>().Add(notification, "");
+			worker.GetComponent<Notifier>().Add(notification, string.Empty);
 		}
 	}
 

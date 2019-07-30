@@ -46,7 +46,7 @@ public class LineLayer : GraphLayer
 	public void NewLine(Vector2[] points, string ID = "", int compressDataToPointCount = 128, DataScalingType compressType = DataScalingType.DropValues)
 	{
 		GameObject gameObject = Util.KInstantiateUI(prefab_line, line_container, true);
-		if (ID == "")
+		if (ID == string.Empty)
 		{
 			ID = lines.Count.ToString();
 		}
@@ -57,7 +57,7 @@ public class LineLayer : GraphLayer
 			Vector2[] array = new Vector2[compressDataToPointCount];
 			if (compressType == DataScalingType.DropValues)
 			{
-				float num = (float)(points.Length - compressDataToPointCount);
+				float num = (float)(points.Length - compressDataToPointCount + 1);
 				float num2 = (float)points.Length / num;
 				int num3 = 0;
 				float num4 = 0f;

@@ -82,7 +82,7 @@ public class SaltPlantConfig : IEntityConfig
 		list = new List<Tag>();
 		list.Add(GameTags.CropSeed);
 		list = list;
-		GameObject seed = EntityTemplates.CreateAndRegisterSeedForPlant(template, productionType, initialAnim, desc, name, anim, "object", 1, list, SingleEntityReceptacle.ReceptacleDirection.Bottom, default(Tag), 4, STRINGS.CREATURES.SPECIES.SALTPLANT.DOMESTICATEDDESC, EntityTemplates.CollisionShape.CIRCLE, 0.35f, 0.35f, null, "", false);
+		GameObject seed = EntityTemplates.CreateAndRegisterSeedForPlant(template, productionType, initialAnim, desc, name, anim, "object", 1, list, SingleEntityReceptacle.ReceptacleDirection.Bottom, default(Tag), 4, STRINGS.CREATURES.SPECIES.SALTPLANT.DOMESTICATEDDESC, EntityTemplates.CollisionShape.CIRCLE, 0.35f, 0.35f, null, string.Empty, false);
 		GameObject template2 = EntityTemplates.CreateAndRegisterPreviewForPlant(seed, "SaltPlant_preview", Assets.GetAnim("saltplant_kanim"), "place", 1, 2);
 		EntityTemplates.MakeHangingOffsets(template2, 1, 2);
 		return gameObject;

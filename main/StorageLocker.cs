@@ -9,7 +9,7 @@ public class StorageLocker : KMonoBehaviour, IUserControlledCapacity
 	private float userMaxCapacity = float.PositiveInfinity;
 
 	[Serialize]
-	public string lockerName = "";
+	public string lockerName = string.Empty;
 
 	protected FilteredStorage filteredStorage;
 

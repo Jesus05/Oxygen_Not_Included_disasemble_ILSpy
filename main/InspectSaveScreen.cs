@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -29,7 +30,10 @@ public class InspectSaveScreen : KModalScreen
 
 	private ConfirmDialogScreen confirmScreen;
 
-	private string currentPath = "";
+	private string currentPath = string.Empty;
+
+	[CompilerGenerated]
+	private static Func<string, System.DateTime> _003C_003Ef__mg_0024cache0;
 
 	protected override void OnSpawn()
 	{
@@ -75,8 +79,7 @@ public class InspectSaveScreen : KModalScreen
 			currentPath = path;
 			List<string> list = (from filename in Directory.GetFiles(path)
 			where Path.GetExtension(filename).ToLower() == ".sav"
-			orderby File.GetLastWriteTime(filename) descending
-			select filename).ToList();
+			select filename).OrderByDescending(File.GetLastWriteTime).ToList();
 			string text = list[0];
 			if (File.Exists(text))
 			{

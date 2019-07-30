@@ -23,7 +23,7 @@ public class ValveSideScreen : SideScreenContent
 	[SerializeField]
 	private LocText unitsLabel;
 
-	private bool isEditing = false;
+	private bool isEditing;
 
 	private float targetFlow;
 

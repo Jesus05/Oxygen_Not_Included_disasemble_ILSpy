@@ -23,11 +23,11 @@ public class RootMenu : KScreen
 
 	private List<KScreen> subMenus = new List<KScreen>();
 
-	private TileScreen tileScreenInst = null;
+	private TileScreen tileScreenInst;
 
 	public bool canTogglePauseScreen = true;
 
-	public GameObject selectedGO = null;
+	public GameObject selectedGO;
 
 	public static RootMenu Instance
 	{
@@ -247,10 +247,10 @@ public class RootMenu : KScreen
 
 	public bool IsBuildingChorePanelActive()
 	{
-		if (!((Object)detailsScreen != (Object)null))
+		if ((Object)detailsScreen != (Object)null)
 		{
-			return false;
+			return detailsScreen.GetActiveTab() is BuildingChoresPanel;
 		}
-		return detailsScreen.GetActiveTab() is BuildingChoresPanel;
+		return false;
 	}
 }

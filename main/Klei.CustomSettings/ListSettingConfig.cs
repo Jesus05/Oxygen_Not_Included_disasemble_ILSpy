@@ -51,8 +51,8 @@ namespace Klei.CustomSettings
 
 		public string CycleSettingLevelID(string current_id, int direction)
 		{
-			string result = "";
-			if (current_id == "")
+			string result = string.Empty;
+			if (current_id == string.Empty)
 			{
 				current_id = levels[0].id;
 			}

@@ -18,7 +18,7 @@ public static class ThrivingSequence
 		}
 		CameraController.Instance.SetWorldInteractive(false);
 		AudioMixer.instance.Stop(AudioMixerSnapshots.Get().VictoryMessageSnapshot, STOP_MODE.ALLOWFADEOUT);
-		AudioMixer.instance.Start(Db.Get().ColonyAchievements.ReachedDistantPlanet.victoryNISSnapshot);
+		AudioMixer.instance.Start(Db.Get().ColonyAchievements.Thriving.victoryNISSnapshot);
 		MusicManager.instance.PlaySong("Music_Victory_02_NIS", false);
 		Vector3 vector = Vector3.up * 5f;
 		IEnumerator enumerator = Components.Telepads.GetEnumerator();

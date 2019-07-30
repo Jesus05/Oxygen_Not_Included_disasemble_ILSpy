@@ -15,7 +15,7 @@ public class KMonoBehaviour : MonoBehaviour, IStateMachineTarget, ISaveLoadable,
 
 	private KObject obj;
 
-	private bool isInitialized = false;
+	private bool isInitialized;
 
 	protected bool autoRegisterSimRender = true;
 

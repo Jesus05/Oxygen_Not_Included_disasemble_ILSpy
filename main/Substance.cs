@@ -149,26 +149,26 @@ public class Substance
 
 	internal string GetMiningSound()
 	{
-		return (audioConfig == null) ? "" : audioConfig.miningSound;
+		return (audioConfig == null) ? string.Empty : audioConfig.miningSound;
 	}
 
 	internal string GetMiningBreakSound()
 	{
-		return (audioConfig == null) ? "" : audioConfig.miningBreakSound;
+		return (audioConfig == null) ? string.Empty : audioConfig.miningBreakSound;
 	}
 
 	internal string GetOreBumpSound()
 	{
-		return (audioConfig == null) ? "" : audioConfig.oreBumpSound;
+		return (audioConfig == null) ? string.Empty : audioConfig.oreBumpSound;
 	}
 
 	internal string GetFloorEventAudioCategory()
 	{
-		return (audioConfig == null) ? "" : audioConfig.floorEventAudioCategory;
+		return (audioConfig == null) ? string.Empty : audioConfig.floorEventAudioCategory;
 	}
 
 	internal string GetCreatureChewSound()
 	{
-		return (audioConfig == null) ? "" : audioConfig.creatureChewSound;
+		return (audioConfig == null) ? string.Empty : audioConfig.creatureChewSound;
 	}
 }

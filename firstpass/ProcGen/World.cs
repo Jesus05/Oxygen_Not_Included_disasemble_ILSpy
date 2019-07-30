@@ -227,7 +227,7 @@ namespace ProcGen
 		{
 			if (string.IsNullOrEmpty(coordinatePrefix))
 			{
-				string text = "";
+				string text = string.Empty;
 				string[] array = Strings.Get(name).String.Split(' ');
 				int a = 5 - array.Length;
 				bool flag = true;
@@ -238,7 +238,7 @@ namespace ProcGen
 					{
 						text += "-";
 					}
-					string text2 = Regex.Replace(input, "(a|e|i|o|u)", "");
+					string text2 = Regex.Replace(input, "(a|e|i|o|u)", string.Empty);
 					text += text2.Substring(0, Mathf.Min(a, text2.Length)).ToUpper();
 					flag = false;
 				}

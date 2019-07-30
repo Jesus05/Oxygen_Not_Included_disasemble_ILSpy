@@ -34,56 +34,56 @@ public class PlantableCellQuery : PathFinderQuery
 
 	private bool CheckValidPlotCell(PlantableSeed seed, int plant_cell)
 	{
-		if (Grid.IsValidCell(plant_cell))
+		if (!Grid.IsValidCell(plant_cell))
 		{
-			int num = (seed.Direction != SingleEntityReceptacle.ReceptacleDirection.Bottom) ? Grid.CellBelow(plant_cell) : Grid.CellAbove(plant_cell);
-			if (Grid.IsValidCell(num))
-			{
-				if (Grid.Solid[num])
-				{
-					if (!(bool)Grid.Objects[plant_cell, 5])
-					{
-						if (!(bool)Grid.Objects[plant_cell, 1])
-						{
-							GameObject gameObject = Grid.Objects[num, 1];
-							if ((bool)gameObject)
-							{
-								PlantablePlot component = gameObject.GetComponent<PlantablePlot>();
-								if ((Object)component == (Object)null)
-								{
-									return false;
-								}
-								if (component.Direction != seed.Direction)
-								{
-									return false;
-								}
-								if ((Object)component.Occupant != (Object)null)
-								{
-									return false;
-								}
-							}
-							else
-							{
-								if (!seed.TestSuitableGround(plant_cell))
-								{
-									return false;
-								}
-								if (CountNearbyPlants(num, plantDetectionRadius) > maxPlantsInRadius)
-								{
-									return false;
-								}
-							}
-							return true;
-						}
-						return false;
-					}
-					return false;
-				}
-				return false;
-			}
 			return false;
 		}
-		return false;
+		int num = (seed.Direction != SingleEntityReceptacle.ReceptacleDirection.Bottom) ? Grid.CellBelow(plant_cell) : Grid.CellAbove(plant_cell);
+		if (!Grid.IsValidCell(num))
+		{
+			return false;
+		}
+		if (!Grid.Solid[num])
+		{
+			return false;
+		}
+		if ((bool)Grid.Objects[plant_cell, 5])
+		{
+			return false;
+		}
+		if ((bool)Grid.Objects[plant_cell, 1])
+		{
+			return false;
+		}
+		GameObject gameObject = Grid.Objects[num, 1];
+		if ((bool)gameObject)
+		{
+			PlantablePlot component = gameObject.GetComponent<PlantablePlot>();
+			if ((Object)component == (Object)null)
+			{
+				return false;
+			}
+			if (component.Direction != seed.Direction)
+			{
+				return false;
+			}
+			if ((Object)component.Occupant != (Object)null)
+			{
+				return false;
+			}
+		}
+		else
+		{
+			if (!seed.TestSuitableGround(plant_cell))
+			{
+				return false;
+			}
+			if (CountNearbyPlants(num, plantDetectionRadius) > maxPlantsInRadius)
+			{
+				return false;
+			}
+		}
+		return true;
 	}
 
 	private static int CountNearbyPlants(int cell, int radius)

@@ -6,13 +6,13 @@ using UnityEngine;
 public class SolidConduitDispenser : KMonoBehaviour, ISaveLoadable
 {
 	[SerializeField]
-	public SimHashes[] elementFilter = null;
+	public SimHashes[] elementFilter;
 
 	[SerializeField]
-	public bool invertElementFilter = false;
+	public bool invertElementFilter;
 
 	[SerializeField]
-	public bool alwaysDispense = false;
+	public bool alwaysDispense;
 
 	private static readonly Operational.Flag outputConduitFlag = new Operational.Flag("output_conduit", Operational.Flag.Type.Functional);
 
@@ -101,14 +101,14 @@ public class SolidConduitDispenser : KMonoBehaviour, ISaveLoadable
 	private Pickupable FindSuitableItem()
 	{
 		List<GameObject> items = storage.items;
-		if (items.Count >= 1)
+		if (items.Count < 1)
 		{
-			round_robin_index %= items.Count;
-			GameObject gameObject = items[round_robin_index];
-			round_robin_index++;
-			return (!(bool)gameObject) ? null : gameObject.GetComponent<Pickupable>();
+			return null;
 		}
-		return null;
+		round_robin_index %= items.Count;
+		GameObject gameObject = items[round_robin_index];
+		round_robin_index++;
+		return (!(bool)gameObject) ? null : gameObject.GetComponent<Pickupable>();
 	}
 
 	private int GetConnectedNetworkID()

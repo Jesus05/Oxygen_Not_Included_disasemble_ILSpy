@@ -91,7 +91,7 @@ public class Vent : KMonoBehaviour, IEffectDescriptor
 
 	private int cell = -1;
 
-	private int sortKey = 0;
+	private int sortKey;
 
 	[Serialize]
 	public Dictionary<SimHashes, float> lifeTimeVentMass = new Dictionary<SimHashes, float>();
@@ -102,7 +102,7 @@ public class Vent : KMonoBehaviour, IEffectDescriptor
 	public ConduitType conduitType = ConduitType.Gas;
 
 	[SerializeField]
-	public Endpoint endpointType = Endpoint.Source;
+	public Endpoint endpointType;
 
 	[SerializeField]
 	public float overpressureMass = 1f;
@@ -144,11 +144,11 @@ public class Vent : KMonoBehaviour, IEffectDescriptor
 
 	public float GetVentedMass(SimHashes element)
 	{
-		if (!lifeTimeVentMass.ContainsKey(element))
+		if (lifeTimeVentMass.ContainsKey(element))
 		{
-			return 0f;
+			return lifeTimeVentMass[element];
 		}
-		return lifeTimeVentMass[element];
+		return 0f;
 	}
 
 	protected override void OnSpawn()
@@ -185,11 +185,11 @@ public class Vent : KMonoBehaviour, IEffectDescriptor
 	{
 		IUtilityNetworkMgr networkManager = Conduit.GetNetworkManager(conduitType);
 		UtilityNetwork networkForCell = networkManager.GetNetworkForCell(cell);
-		if (networkForCell == null)
+		if (networkForCell != null)
 		{
-			return false;
+			return (networkForCell as FlowUtilityNetwork).HasSinks;
 		}
-		return (networkForCell as FlowUtilityNetwork).HasSinks;
+		return false;
 	}
 
 	private bool IsValidOutputCell(int output_cell)

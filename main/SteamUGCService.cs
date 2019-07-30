@@ -413,18 +413,20 @@ public class SteamUGCService : MonoBehaviour
 							break;
 						}
 					}
-					if (zipEntry != null)
+					if (zipEntry == null)
 					{
-						zipEntry.Extract(memoryStream);
-						memoryStream.Flush();
-						result = memoryStream.ToArray();
+						return result;
 					}
+					zipEntry.Extract(memoryStream);
+					memoryStream.Flush();
+					result = memoryStream.ToArray();
+					return result;
 				}
 			}
 		}
 		catch (Exception)
 		{
+			return result;
 		}
-		return result;
 	}
 }

@@ -52,24 +52,24 @@ public class Shower : Workable, IEffectDescriptor, IGameObjectEffectDescriptor
 			public bool OutputFull()
 			{
 				PrimaryElement primaryElement = GetComponent<Storage>().FindPrimaryElement(SimHashes.DirtyWater);
-				if (!((Object)primaryElement != (Object)null))
+				if ((Object)primaryElement != (Object)null)
 				{
-					return false;
+					return primaryElement.Mass >= 5f;
 				}
-				return primaryElement.Mass >= 5f;
+				return false;
 			}
 
 			public bool IsReady()
 			{
-				if (HasSufficientMass())
+				if (!HasSufficientMass())
 				{
-					if (!OutputFull())
-					{
-						return true;
-					}
 					return false;
 				}
-				return false;
+				if (OutputFull())
+				{
+					return false;
+				}
+				return true;
 			}
 		}
 

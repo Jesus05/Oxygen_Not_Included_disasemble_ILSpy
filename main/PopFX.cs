@@ -23,18 +23,18 @@ public class PopFX : KMonoBehaviour
 
 	private float lifetime;
 
-	private float lifeElapsed = 0f;
+	private float lifeElapsed;
 
-	private bool trackTarget = false;
+	private bool trackTarget;
 
 	private Vector3 startPos;
 
-	private bool isLive = false;
+	private bool isLive;
 
 	public void Recycle()
 	{
 		icon = null;
-		text = "";
+		text = string.Empty;
 		targetTransform = null;
 		lifeElapsed = 0f;
 		trackTarget = false;

@@ -76,15 +76,15 @@ public static class BaseMoleConfig
 	private static HashedString CustomIdleAnim(IdleStates.Instance smi, ref HashedString pre_anim)
 	{
 		Navigator component = smi.gameObject.GetComponent<Navigator>();
-		if (component.CurrentNavType != NavType.Solid)
+		if (component.CurrentNavType == NavType.Solid)
 		{
-			if (smi.gameObject.GetDef<BabyMonitor.Def>() != null && Random.Range(0, 100) >= 90)
-			{
-				return "drill_fail";
-			}
-			return "idle_loop";
+			int num = Random.Range(0, SolidIdleAnims.Length);
+			return SolidIdleAnims[num];
 		}
-		int num = Random.Range(0, SolidIdleAnims.Length);
-		return SolidIdleAnims[num];
+		if (smi.gameObject.GetDef<BabyMonitor.Def>() != null && Random.Range(0, 100) >= 90)
+		{
+			return "drill_fail";
+		}
+		return "idle_loop";
 	}
 }

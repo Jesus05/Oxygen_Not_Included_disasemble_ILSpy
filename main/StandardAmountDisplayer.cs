@@ -34,14 +34,14 @@ public class StandardAmountDisplayer : IAmountDisplayer
 
 	public virtual string GetValueString(Amount master, AmountInstance instance)
 	{
-		if (master.showMax)
+		if (!master.showMax)
 		{
-			return $"{formatter.GetFormattedValue(instance.value, GameUtil.TimeSlice.None, null)} / {formatter.GetFormattedValue(instance.GetMax(), GameUtil.TimeSlice.None, null)}";
+			StandardAttributeFormatter standardAttributeFormatter = formatter;
+			float value = instance.value;
+			GameObject gameObject = instance.gameObject;
+			return standardAttributeFormatter.GetFormattedValue(value, GameUtil.TimeSlice.None, gameObject);
 		}
-		StandardAttributeFormatter standardAttributeFormatter = formatter;
-		float value = instance.value;
-		GameObject gameObject = instance.gameObject;
-		return standardAttributeFormatter.GetFormattedValue(value, GameUtil.TimeSlice.None, gameObject);
+		return $"{formatter.GetFormattedValue(instance.value, GameUtil.TimeSlice.None, null)} / {formatter.GetFormattedValue(instance.GetMax(), GameUtil.TimeSlice.None, null)}";
 	}
 
 	public virtual string GetDescription(Amount master, AmountInstance instance)
@@ -51,23 +51,23 @@ public class StandardAmountDisplayer : IAmountDisplayer
 
 	public virtual string GetTooltip(Amount master, AmountInstance instance)
 	{
-		string str = "";
-		str = ((master.description.IndexOf("{1}") <= -1) ? (str + string.Format(master.description, formatter.GetFormattedValue(instance.value, GameUtil.TimeSlice.None, null))) : (str + string.Format(master.description, formatter.GetFormattedValue(instance.value, GameUtil.TimeSlice.None, null), GameUtil.GetIdentityDescriptor(instance.gameObject))));
-		str += "\n\n";
+		string empty = string.Empty;
+		empty = ((master.description.IndexOf("{1}") <= -1) ? (empty + string.Format(master.description, formatter.GetFormattedValue(instance.value, GameUtil.TimeSlice.None, null))) : (empty + string.Format(master.description, formatter.GetFormattedValue(instance.value, GameUtil.TimeSlice.None, null), GameUtil.GetIdentityDescriptor(instance.gameObject))));
+		empty += "\n\n";
 		if (formatter.DeltaTimeSlice == GameUtil.TimeSlice.PerCycle)
 		{
-			str += string.Format(UI.CHANGEPERCYCLE, formatter.GetFormattedValue(instance.deltaAttribute.GetTotalDisplayValue(), GameUtil.TimeSlice.PerCycle, null));
+			empty += string.Format(UI.CHANGEPERCYCLE, formatter.GetFormattedValue(instance.deltaAttribute.GetTotalDisplayValue(), GameUtil.TimeSlice.PerCycle, null));
 		}
 		else if (formatter.DeltaTimeSlice == GameUtil.TimeSlice.PerSecond)
 		{
-			str += string.Format(UI.CHANGEPERSECOND, formatter.GetFormattedValue(instance.deltaAttribute.GetTotalDisplayValue(), GameUtil.TimeSlice.PerSecond, null));
+			empty += string.Format(UI.CHANGEPERSECOND, formatter.GetFormattedValue(instance.deltaAttribute.GetTotalDisplayValue(), GameUtil.TimeSlice.PerSecond, null));
 		}
 		for (int i = 0; i != instance.deltaAttribute.Modifiers.Count; i++)
 		{
 			AttributeModifier attributeModifier = instance.deltaAttribute.Modifiers[i];
-			str = str + "\n" + string.Format(UI.MODIFIER_ITEM_TEMPLATE, attributeModifier.GetDescription(), formatter.GetFormattedModifier(attributeModifier, instance.gameObject));
+			empty = empty + "\n" + string.Format(UI.MODIFIER_ITEM_TEMPLATE, attributeModifier.GetDescription(), formatter.GetFormattedModifier(attributeModifier, instance.gameObject));
 		}
-		return str;
+		return empty;
 	}
 
 	public string GetFormattedAttribute(AttributeInstance instance)

@@ -41,20 +41,20 @@ public class NextUpdateTimer : KMonoBehaviour
 		TimeSpan timeSpan = nextReleaseDate - currentReleaseDate;
 		TimeSpan timeSpan2 = nextReleaseDate - System.DateTime.UtcNow;
 		TimeSpan timeSpan3 = System.DateTime.UtcNow - currentReleaseDate;
-		string text = "";
-		string s = "1";
+		string empty = string.Empty;
+		string s = "4";
 		if (useSpecificDate)
 		{
-			text = UI.DEVELOPMENTBUILDS.UPDATES.SPECIFIC_DATE;
+			empty = UI.DEVELOPMENTBUILDS.UPDATES.SPECIFIC_DATE;
 		}
 		else if (timeSpan2.TotalHours < 8.0)
 		{
-			text = UI.DEVELOPMENTBUILDS.UPDATES.TWENTY_FOUR_HOURS;
+			empty = UI.DEVELOPMENTBUILDS.UPDATES.TWENTY_FOUR_HOURS;
 			s = "4";
 		}
 		else if (timeSpan2.TotalDays < 1.0)
 		{
-			text = string.Format(UI.DEVELOPMENTBUILDS.UPDATES.FINAL_WEEK, 1);
+			empty = string.Format(UI.DEVELOPMENTBUILDS.UPDATES.FINAL_WEEK, 1);
 			s = "3";
 		}
 		else
@@ -63,20 +63,22 @@ public class NextUpdateTimer : KMonoBehaviour
 			int num2 = (timeSpan2.Days - num) / 7;
 			if (num2 <= 0)
 			{
-				text = string.Format(UI.DEVELOPMENTBUILDS.UPDATES.FINAL_WEEK, num);
+				empty = string.Format(UI.DEVELOPMENTBUILDS.UPDATES.FINAL_WEEK, num);
 				s = "2";
 			}
 			else
 			{
-				text = string.Format(UI.DEVELOPMENTBUILDS.UPDATES.BIGGER_TIMES, num, num2);
+				empty = string.Format(UI.DEVELOPMENTBUILDS.UPDATES.BIGGER_TIMES, num, num2);
 				s = "1";
 			}
 		}
-		TimerText.text = text;
+		TimerText.text = empty;
 		UpdateAnimController.Play(s, KAnim.PlayMode.Loop, 1f, 0f);
 		double num3 = timeSpan3.TotalSeconds / timeSpan.TotalSeconds;
-		float positionPercent = Mathf.Clamp01((float)num3);
-		UpdateAnimMeterController.SetPositionPercent(positionPercent);
+		DebugUtil.LogArgs("ANIM PERCENT", num3);
+		float num4 = Mathf.Clamp01((float)num3);
+		DebugUtil.LogArgs("ANIM PERCENT FLOAT", num4);
+		UpdateAnimMeterController.SetPositionPercent(num4);
 	}
 
 	private void RefreshScale()

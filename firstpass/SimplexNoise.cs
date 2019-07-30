@@ -62,62 +62,62 @@ public class SimplexNoise
 		float num4 = 0.6f - num * num - num2 * num2 - num3 * num3;
 		int num5 = shuffle(i + A[0], j + A[1], k + A[2]);
 		A[a]++;
-		if (!(num4 < 0f))
+		if (num4 < 0f)
 		{
-			int num6 = (num5 >> 5) & 1;
-			int num7 = (num5 >> 4) & 1;
-			int num8 = (num5 >> 3) & 1;
-			int num9 = (num5 >> 2) & 1;
-			int num10 = num5 & 3;
-			float num11;
-			switch (num10)
-			{
-			case 1:
-				num11 = num;
-				break;
-			case 2:
-				num11 = num2;
-				break;
-			default:
-				num11 = num3;
-				break;
-			}
-			float num12 = num11;
-			float num13;
-			switch (num10)
-			{
-			case 1:
-				num13 = num2;
-				break;
-			case 2:
-				num13 = num3;
-				break;
-			default:
-				num13 = num;
-				break;
-			}
-			float num14 = num13;
-			float num15;
-			switch (num10)
-			{
-			case 1:
-				num15 = num3;
-				break;
-			case 2:
-				num15 = num;
-				break;
-			default:
-				num15 = num2;
-				break;
-			}
-			float num16 = num15;
-			num12 = ((num6 != num8) ? num12 : (0f - num12));
-			num14 = ((num6 != num7) ? num14 : (0f - num14));
-			num16 = ((num6 == (num7 ^ num8)) ? num16 : (0f - num16));
-			num4 *= num4;
-			return 8f * num4 * num4 * (num12 + ((num10 == 0) ? (num14 + num16) : ((num9 != 0) ? num16 : num14)));
+			return 0f;
 		}
-		return 0f;
+		int num6 = (num5 >> 5) & 1;
+		int num7 = (num5 >> 4) & 1;
+		int num8 = (num5 >> 3) & 1;
+		int num9 = (num5 >> 2) & 1;
+		int num10 = num5 & 3;
+		float num11;
+		switch (num10)
+		{
+		case 1:
+			num11 = num;
+			break;
+		case 2:
+			num11 = num2;
+			break;
+		default:
+			num11 = num3;
+			break;
+		}
+		float num12 = num11;
+		float num13;
+		switch (num10)
+		{
+		case 1:
+			num13 = num2;
+			break;
+		case 2:
+			num13 = num3;
+			break;
+		default:
+			num13 = num;
+			break;
+		}
+		float num14 = num13;
+		float num15;
+		switch (num10)
+		{
+		case 1:
+			num15 = num3;
+			break;
+		case 2:
+			num15 = num;
+			break;
+		default:
+			num15 = num2;
+			break;
+		}
+		float num16 = num15;
+		num12 = ((num6 != num8) ? num12 : (0f - num12));
+		num14 = ((num6 != num7) ? num14 : (0f - num14));
+		num16 = ((num6 == (num7 ^ num8)) ? num16 : (0f - num16));
+		num4 *= num4;
+		return 8f * num4 * num4 * (num12 + ((num10 == 0) ? (num14 + num16) : ((num9 != 0) ? num16 : num14)));
 	}
 
 	private static int shuffle(int i, int j, int k)

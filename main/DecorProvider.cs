@@ -287,11 +287,11 @@ public class DecorProvider : KMonoBehaviour, IEffectDescriptor, IGameObjectEffec
 
 	public string GetName()
 	{
-		if (!string.IsNullOrEmpty(overrideName))
+		if (string.IsNullOrEmpty(overrideName))
 		{
-			return overrideName;
+			return GetComponent<KSelectable>().GetName();
 		}
-		return GetComponent<KSelectable>().GetName();
+		return overrideName;
 	}
 
 	protected override void OnCleanUp()
@@ -335,11 +335,11 @@ public class DecorProvider : KMonoBehaviour, IEffectDescriptor, IGameObjectEffec
 
 	public static int GetLightDecorBonus(int cell)
 	{
-		if (Grid.LightIntensity[cell] <= 0)
+		if (Grid.LightIntensity[cell] > 0)
 		{
-			return 0;
+			return DECOR.LIT_BONUS;
 		}
-		return DECOR.LIT_BONUS;
+		return 0;
 	}
 
 	public List<Descriptor> GetDescriptors(BuildingDef def)

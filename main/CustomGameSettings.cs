@@ -28,10 +28,10 @@ public class CustomGameSettings : KMonoBehaviour
 	private static CustomGameSettings instance;
 
 	[Serialize]
-	public bool is_custom_game = false;
+	public bool is_custom_game;
 
 	[Serialize]
-	public CustomGameMode customGameMode = CustomGameMode.Survival;
+	public CustomGameMode customGameMode;
 
 	[Serialize]
 	private Dictionary<string, string> CurrentQualityLevelsBySetting = new Dictionary<string, string>();
@@ -149,20 +149,20 @@ public class CustomGameSettings : KMonoBehaviour
 	public SettingLevel GetCurrentQualitySetting(string setting_id)
 	{
 		SettingConfig settingConfig = QualitySettings[setting_id];
-		if (customGameMode != 0)
+		if (customGameMode == CustomGameMode.Survival)
 		{
-			if (customGameMode != CustomGameMode.Nosweat)
-			{
-				if (!CurrentQualityLevelsBySetting.ContainsKey(setting_id))
-				{
-					CurrentQualityLevelsBySetting[setting_id] = QualitySettings[setting_id].default_level_id;
-				}
-				string level_id = CurrentQualityLevelsBySetting[setting_id];
-				return QualitySettings[setting_id].GetLevel(level_id);
-			}
+			return (!settingConfig.triggers_custom_game) ? settingConfig.GetLevel(CurrentQualityLevelsBySetting[setting_id]) : settingConfig.GetLevel(settingConfig.default_level_id);
+		}
+		if (customGameMode == CustomGameMode.Nosweat)
+		{
 			return (!settingConfig.triggers_custom_game) ? settingConfig.GetLevel(CurrentQualityLevelsBySetting[setting_id]) : settingConfig.GetLevel(settingConfig.nosweat_default_level_id);
 		}
-		return (!settingConfig.triggers_custom_game) ? settingConfig.GetLevel(CurrentQualityLevelsBySetting[setting_id]) : settingConfig.GetLevel(settingConfig.default_level_id);
+		if (!CurrentQualityLevelsBySetting.ContainsKey(setting_id))
+		{
+			CurrentQualityLevelsBySetting[setting_id] = QualitySettings[setting_id].default_level_id;
+		}
+		string level_id = CurrentQualityLevelsBySetting[setting_id];
+		return QualitySettings[setting_id].GetLevel(level_id);
 	}
 
 	public string GetCurrentQualitySettingLevelId(SettingConfig config)
@@ -182,7 +182,7 @@ public class CustomGameSettings : KMonoBehaviour
 			}
 		}
 		Debug.LogWarning("No label string for setting: " + setting_id + " level: " + level_id);
-		return "";
+		return string.Empty;
 	}
 
 	public string GetSettingLevelTooltip(string setting_id, string level_id)
@@ -197,7 +197,7 @@ public class CustomGameSettings : KMonoBehaviour
 			}
 		}
 		Debug.LogWarning("No tooltip string for setting: " + setting_id + " level: " + level_id);
-		return "";
+		return string.Empty;
 	}
 
 	public void AddSettingConfig(SettingConfig config)
@@ -270,8 +270,7 @@ public class CustomGameSettings : KMonoBehaviour
 				}
 				if (data.ContainsKey(qualitySetting.Key) && data[qualitySetting.Key] != b)
 				{
-					result = false;
-					break;
+					return false;
 				}
 			}
 		}
@@ -415,18 +414,18 @@ public class CustomGameSettings : KMonoBehaviour
 
 	private string Base10toBase36(int input)
 	{
-		if (input != 0)
+		if (input == 0)
 		{
-			int num = input;
-			string text = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-			string text2 = "";
-			while (num > 0)
-			{
-				text2 += text[num % 36];
-				num /= 36;
-			}
-			return text2;
+			return "0";
 		}
-		return "0";
+		int num = input;
+		string text = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+		string text2 = string.Empty;
+		while (num > 0)
+		{
+			text2 += text[num % 36];
+			num /= 36;
+		}
+		return text2;
 	}
 }

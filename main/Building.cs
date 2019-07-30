@@ -16,7 +16,7 @@ public class Building : KMonoBehaviour, IEffectDescriptor, IUniformGridObject, I
 	[MyCmpAdd]
 	private StateMachineController stateMachineController;
 
-	private int[] placementCells = null;
+	private int[] placementCells;
 
 	private Extents extents;
 
@@ -134,7 +134,7 @@ public class Building : KMonoBehaviour, IEffectDescriptor, IUniformGridObject, I
 		if (Def.Deprecated && (UnityEngine.Object)GetComponent<KSelectable>() != (UnityEngine.Object)null)
 		{
 			KSelectable component4 = GetComponent<KSelectable>();
-			deprecatedBuildingStatusItem = new StatusItem("BUILDING_DEPRECATED", "BUILDING", "", StatusItem.IconType.Info, NotificationType.BadMinor, false, OverlayModes.None.ID, true, 129022);
+			deprecatedBuildingStatusItem = new StatusItem("BUILDING_DEPRECATED", "BUILDING", string.Empty, StatusItem.IconType.Info, NotificationType.BadMinor, false, OverlayModes.None.ID, true, 129022);
 			component4.AddStatusItem(deprecatedBuildingStatusItem, null);
 		}
 	}

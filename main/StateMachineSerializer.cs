@@ -64,11 +64,11 @@ public class StateMachineSerializer
 			string typeName = reader.ReadKleiString();
 			string current_state = reader.ReadKleiString();
 			Type type = Type.GetType(typeName);
-			if (type != null)
+			if (type == null)
 			{
-				return new Entry(num, data_pos, type, current_state);
+				return null;
 			}
-			return null;
+			return new Entry(num, data_pos, type, current_state);
 		}
 	}
 
@@ -161,13 +161,13 @@ public class StateMachineSerializer
 	{
 		int num = reader.ReadInt32();
 		int length = reader.ReadInt32();
-		if (num == serializerVersion)
+		if (num != serializerVersion)
 		{
-			return true;
+			Debug.LogWarning("State machine serializer version mismatch: " + num + "!=" + serializerVersion + "\nDiscarding data.");
+			reader.SkipBytes(length);
+			return false;
 		}
-		Debug.LogWarning("State machine serializer version mismatch: " + num + "!=" + serializerVersion + "\nDiscarding data.");
-		reader.SkipBytes(length);
-		return false;
+		return true;
 	}
 
 	private void WriteEntries(List<Entry> serialized_entries, BinaryWriter writer)
@@ -197,72 +197,72 @@ public class StateMachineSerializer
 	private static string TrimAssemblyInfo(string type_name)
 	{
 		int num = type_name.IndexOf("[[");
-		if (num == -1)
+		if (num != -1)
 		{
-			return type_name;
+			return type_name.Substring(0, num);
 		}
-		return type_name.Substring(0, num);
+		return type_name;
 	}
 
 	private bool Restore(Entry entry, StateMachine.Instance smi)
 	{
-		if (entry.version == smi.GetStateMachine().version)
+		if (entry.version != smi.GetStateMachine().version)
 		{
-			entryData.Position = entry.dataPos;
-			if (Manager.HasDeserializationMapping(smi.GetType()))
-			{
-				Deserializer.DeserializeTypeless(smi, entryData);
-			}
-			if (smi.GetStateMachine().serializable)
-			{
-				StateMachine.BaseState state = smi.GetStateMachine().GetState(entry.currentState);
-				if (state != null)
-				{
-					StateMachine.Parameter.Context[] parameterContexts = smi.GetParameterContexts();
-					int num = entryData.ReadInt32();
-					for (int i = 0; i < num; i++)
-					{
-						int num2 = entryData.ReadInt32();
-						int position = entryData.Position;
-						string text = entryData.ReadKleiString();
-						text = text.Replace("Version=4.0.0.0", "Version=2.0.0.0");
-						string b = entryData.ReadKleiString();
-						StateMachine.Parameter.Context[] array = parameterContexts;
-						foreach (StateMachine.Parameter.Context context in array)
-						{
-							if (context.parameter.name == b && context.GetType().FullName == text)
-							{
-								context.Deserialize(entryData);
-								break;
-							}
-						}
-						entryData.SkipBytes(num2 - (entryData.Position - position));
-					}
-					smi.GoTo(state);
-					return true;
-				}
-				return false;
-			}
 			return false;
 		}
-		return false;
+		entryData.Position = entry.dataPos;
+		if (Manager.HasDeserializationMapping(smi.GetType()))
+		{
+			Deserializer.DeserializeTypeless(smi, entryData);
+		}
+		if (!smi.GetStateMachine().serializable)
+		{
+			return false;
+		}
+		StateMachine.BaseState state = smi.GetStateMachine().GetState(entry.currentState);
+		if (state == null)
+		{
+			return false;
+		}
+		StateMachine.Parameter.Context[] parameterContexts = smi.GetParameterContexts();
+		int num = entryData.ReadInt32();
+		for (int i = 0; i < num; i++)
+		{
+			int num2 = entryData.ReadInt32();
+			int position = entryData.Position;
+			string text = entryData.ReadKleiString();
+			text = text.Replace("Version=4.0.0.0", "Version=2.0.0.0");
+			string b = entryData.ReadKleiString();
+			StateMachine.Parameter.Context[] array = parameterContexts;
+			foreach (StateMachine.Parameter.Context context in array)
+			{
+				if (context.parameter.name == b && context.GetType().FullName == text)
+				{
+					context.Deserialize(entryData);
+					break;
+				}
+			}
+			entryData.SkipBytes(num2 - (entryData.Position - position));
+		}
+		smi.GoTo(state);
+		return true;
 	}
 
 	public bool Restore(StateMachine.Instance instance)
 	{
-		if (entryData != null)
+		if (entryData == null)
 		{
-			Type type = instance.GetType();
-			for (int i = 0; i < entries.Count; i++)
-			{
-				Entry entry = entries[i];
-				if (entry.type == type)
-				{
-					entries.RemoveAt(i);
-					return Restore(entry, instance);
-				}
-			}
 			return false;
+		}
+		Type type = instance.GetType();
+		for (int i = 0; i < entries.Count; i++)
+		{
+			Entry entry = entries[i];
+			if (entry.type == type)
+			{
+				entries.RemoveAt(i);
+				return Restore(entry, instance);
+			}
 		}
 		return false;
 	}

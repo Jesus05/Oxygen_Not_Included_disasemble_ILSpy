@@ -99,17 +99,14 @@ public class TreeClimbStates : GameStateMachine<TreeClimbStates, TreeClimbStates
 	public override void InitializeStates(out BaseState default_state)
 	{
 		default_state = moving;
-		State state = root.Enter(SetTarget).Enter(delegate(Instance smi)
+		root.Enter(SetTarget).Enter(delegate(Instance smi)
 		{
 			if (!ReserveClimbable(smi))
 			{
 				smi.GoTo(behaviourcomplete);
 			}
-		}).Exit(UnreserveClimbable);
-		string name = CREATURES.STATUSITEMS.RUMMAGINGSEED.NAME;
-		string tooltip = CREATURES.STATUSITEMS.RUMMAGINGSEED.TOOLTIP;
-		StatusItemCategory main = Db.Get().StatusItemCategories.Main;
-		state.ToggleStatusItem(name, tooltip, "", StatusItem.IconType.Info, (NotificationType)0, false, default(HashedString), 0, null, null, main);
+		}).Exit(UnreserveClimbable)
+			.ToggleStatusItem(CREATURES.STATUSITEMS.RUMMAGINGSEED.NAME, CREATURES.STATUSITEMS.RUMMAGINGSEED.TOOLTIP, category: Db.Get().StatusItemCategories.Main, icon: string.Empty, icon_type: StatusItem.IconType.Info, notification_type: (NotificationType)0, allow_multiples: false, render_overlay: default(HashedString), status_overlays: 0, resolve_string_callback: null, resolve_tooltip_callback: null);
 		moving.MoveTo(GetClimbableCell, climbing, null, false);
 		climbing.DefaultState(climbing.pre);
 		climbing.pre.PlayAnim("rummage_pre").OnAnimQueueComplete(climbing.loop);

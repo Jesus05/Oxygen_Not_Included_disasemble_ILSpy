@@ -136,7 +136,7 @@ public class SkillWidget : KMonoBehaviour, IPointerEnterHandler, IPointerExitHan
 			}
 			aptitudeBox.SetActive(active);
 			traitDisabledIcon.SetActive((UnityEngine.Object)minionResume != (UnityEngine.Object)null && !minionResume.IsAbleToLearnSkill(skill.Id));
-			string text = "";
+			string text = string.Empty;
 			List<string> list = new List<string>();
 			foreach (MinionIdentity item in Components.LiveMinionIdentities.Items)
 			{
@@ -262,14 +262,14 @@ public class SkillWidget : KMonoBehaviour, IPointerEnterHandler, IPointerExitHan
 
 	public string SkillTooltip(Skill skill)
 	{
-		string str = "";
-		str += SkillPerksString(skill);
-		return str + "\n" + DuplicantSkillString(skill);
+		string empty = string.Empty;
+		empty += SkillPerksString(skill);
+		return empty + "\n" + DuplicantSkillString(skill);
 	}
 
 	public string SkillPerksString(Skill skill)
 	{
-		string text = "";
+		string text = string.Empty;
 		foreach (SkillPerk perk in skill.perks)
 		{
 			if (!string.IsNullOrEmpty(text))
@@ -284,8 +284,8 @@ public class SkillWidget : KMonoBehaviour, IPointerEnterHandler, IPointerExitHan
 	public string CriteriaString(Skill skill)
 	{
 		bool flag = false;
-		string str = "";
-		str = str + "<b>" + UI.ROLES_SCREEN.ASSIGNMENT_REQUIREMENTS.TITLE + "</b>\n";
+		string empty = string.Empty;
+		empty = empty + "<b>" + UI.ROLES_SCREEN.ASSIGNMENT_REQUIREMENTS.TITLE + "</b>\n";
 		SkillGroup skillGroup = Db.Get().SkillGroups.Get(skill.skillGroup);
 		if (skillGroup != null && skillGroup.relevantAttributes != null)
 		{
@@ -293,7 +293,7 @@ public class SkillWidget : KMonoBehaviour, IPointerEnterHandler, IPointerExitHan
 			{
 				if (relevantAttribute != null)
 				{
-					str = str + "    • " + string.Format(UI.SKILLS_SCREEN.ASSIGNMENT_REQUIREMENTS.SKILLGROUP_ENABLED.DESCRIPTION, relevantAttribute.Name) + "\n";
+					empty = empty + "    • " + string.Format(UI.SKILLS_SCREEN.ASSIGNMENT_REQUIREMENTS.SKILLGROUP_ENABLED.DESCRIPTION, relevantAttribute.Name) + "\n";
 					flag = true;
 				}
 			}
@@ -303,31 +303,31 @@ public class SkillWidget : KMonoBehaviour, IPointerEnterHandler, IPointerExitHan
 			flag = true;
 			for (int i = 0; i < skill.priorSkills.Count; i++)
 			{
-				str = str + "    • " + $"{Db.Get().Skills.Get(skill.priorSkills[i]).Name}";
-				str += "</color>";
+				empty = empty + "    • " + $"{Db.Get().Skills.Get(skill.priorSkills[i]).Name}";
+				empty += "</color>";
 				if (i != skill.priorSkills.Count - 1)
 				{
-					str += "\n";
+					empty += "\n";
 				}
 			}
 		}
 		if (!flag)
 		{
-			str = str + "    • " + string.Format(UI.ROLES_SCREEN.ASSIGNMENT_REQUIREMENTS.NONE, skill.Name);
+			empty = empty + "    • " + string.Format(UI.ROLES_SCREEN.ASSIGNMENT_REQUIREMENTS.NONE, skill.Name);
 		}
-		return str;
+		return empty;
 	}
 
 	public string DuplicantSkillString(Skill skill)
 	{
-		string text = "";
+		string text = string.Empty;
 		MinionIdentity minionIdentity = skillsScreen.CurrentlySelectedMinion as MinionIdentity;
 		if ((UnityEngine.Object)minionIdentity != (UnityEngine.Object)null)
 		{
 			MinionResume component = minionIdentity.GetComponent<MinionResume>();
 			if ((UnityEngine.Object)component == (UnityEngine.Object)null)
 			{
-				return "";
+				return string.Empty;
 			}
 			LocString cAN_MASTER = UI.SKILLS_SCREEN.ASSIGNMENT_REQUIREMENTS.MASTERY.CAN_MASTER;
 			if (!component.HasMasteredSkill(skill.Id))

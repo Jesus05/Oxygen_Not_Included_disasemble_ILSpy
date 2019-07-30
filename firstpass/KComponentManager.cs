@@ -1,6 +1,4 @@
-#define UNITY_ASSERTIONS
 using System.Collections.Generic;
-using UnityEngine.Assertions;
 
 public abstract class KComponentManager<T> : KCompactedVector<T>, IComponentManager where T : new()
 {
@@ -41,16 +39,16 @@ public abstract class KComponentManager<T> : KCompactedVector<T>, IComponentMana
 
 	public bool Has(object go)
 	{
-		if (!cleanupList.Exists((CleanupInfo x) => x.instance == go))
+		if (cleanupList.Exists((CleanupInfo x) => x.instance == go))
 		{
-			HandleVector<int>.Handle handle = GetHandle(go);
-			if (!(handle == HandleVector<int>.InvalidHandle))
-			{
-				return true;
-			}
 			return false;
 		}
-		return false;
+		HandleVector<int>.Handle handle = GetHandle(go);
+		if (handle == HandleVector<int>.InvalidHandle)
+		{
+			return false;
+		}
+		return true;
 	}
 
 	protected HandleVector<int>.Handle InternalAddComponent(object instance, T cmp_values)
@@ -69,7 +67,6 @@ public abstract class KComponentManager<T> : KCompactedVector<T>, IComponentMana
 		spawnList.Remove(value);
 		OnPrefabInit(value);
 		spawnList.Add(value);
-		Assert.IsTrue(value.IsValid());
 		return value;
 	}
 

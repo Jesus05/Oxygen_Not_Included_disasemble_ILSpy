@@ -27,13 +27,13 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms, ISim1000ms
 	public HashedString fetchChoreTypeIdHash = Db.Get().ChoreTypes.FabricateFetch.IdHash;
 
 	[SerializeField]
-	public ResultState resultState = ResultState.PassTemperature;
+	public ResultState resultState;
 
 	[SerializeField]
-	public float heatedTemperature = 0f;
+	public float heatedTemperature;
 
 	[SerializeField]
-	public bool storeProduced = false;
+	public bool storeProduced;
 
 	public ComplexFabricatorSideScreen.StyleSetting sideScreenStyle = ComplexFabricatorSideScreen.StyleSetting.ListQueueHybrid;
 
@@ -64,7 +64,7 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms, ISim1000ms
 	private string lastWorkingRecipe;
 
 	[Serialize]
-	private float orderProgress = 0f;
+	private float orderProgress;
 
 	private List<int> openOrderCounts = new List<int>();
 
@@ -609,11 +609,11 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms, ISim1000ms
 
 	private int CompareRecipe(ComplexRecipe a, ComplexRecipe b)
 	{
-		if (a.sortOrder == b.sortOrder)
+		if (a.sortOrder != b.sortOrder)
 		{
-			return StringComparer.InvariantCulture.Compare(a.id, b.id);
+			return a.sortOrder - b.sortOrder;
 		}
-		return a.sortOrder - b.sortOrder;
+		return StringComparer.InvariantCulture.Compare(a.id, b.id);
 	}
 
 	public ComplexRecipe[] GetRecipes()
@@ -697,28 +697,28 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms, ISim1000ms
 	{
 		int num = recipeQueueCounts[recipe.id];
 		Debug.Assert(num >= 0 || num == QUEUE_INFINITE);
-		if (num != QUEUE_INFINITE)
+		if (num == QUEUE_INFINITE)
 		{
-			if (num <= 0)
-			{
-				return 0;
-			}
+			return MAX_QUEUE_SIZE;
+		}
+		if (num > 0)
+		{
 			if (IsCurrentRecipe(recipe))
 			{
 				num--;
 			}
 			return num;
 		}
-		return MAX_QUEUE_SIZE;
+		return 0;
 	}
 
 	private bool IsCurrentRecipe(ComplexRecipe recipe)
 	{
-		if (workingOrderIdx >= 0)
+		if (workingOrderIdx < 0)
 		{
-			return recipe_list[workingOrderIdx].id == recipe.id;
+			return false;
 		}
-		return false;
+		return recipe_list[workingOrderIdx].id == recipe.id;
 	}
 
 	public void SetRecipeQueueCount(ComplexRecipe recipe, int count)
@@ -961,12 +961,12 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms, ISim1000ms
 		ComplexRecipe[] array = recipes;
 		foreach (ComplexRecipe complexRecipe in array)
 		{
-			string text = "";
-			string text2 = "";
+			string text = string.Empty;
+			string text2 = string.Empty;
 			ComplexRecipe.RecipeElement[] ingredients = complexRecipe.ingredients;
 			foreach (ComplexRecipe.RecipeElement recipeElement in ingredients)
 			{
-				text = text + "• " + string.Format(UI.BUILDINGEFFECTS.PROCESSEDITEM, "", recipeElement.material.ProperName());
+				text = text + "• " + string.Format(UI.BUILDINGEFFECTS.PROCESSEDITEM, string.Empty, recipeElement.material.ProperName());
 				text2 += string.Format(UI.BUILDINGEFFECTS.TOOLTIPS.PROCESSEDITEM, string.Join(", ", (from r in complexRecipe.results
 				select r.material.ProperName()).ToArray()));
 			}

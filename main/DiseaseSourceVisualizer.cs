@@ -10,9 +10,9 @@ public class DiseaseSourceVisualizer : KMonoBehaviour
 
 	private GameObject visualizer;
 
-	private bool visible = false;
+	private bool visible;
 
-	public string alwaysShowDisease = null;
+	public string alwaysShowDisease;
 
 	protected override void OnSpawn()
 	{

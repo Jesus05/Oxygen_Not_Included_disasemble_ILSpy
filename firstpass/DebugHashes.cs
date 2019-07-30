@@ -12,10 +12,10 @@ public static class DebugHashes
 
 	public static string GetName(int hash)
 	{
-		if (!hashMap.ContainsKey(hash))
+		if (hashMap.ContainsKey(hash))
 		{
-			return "Unknown HASH [0x" + hash.ToString("X") + "]";
+			return hashMap[hash];
 		}
-		return hashMap[hash];
+		return "Unknown HASH [0x" + hash.ToString("X") + "]";
 	}
 }

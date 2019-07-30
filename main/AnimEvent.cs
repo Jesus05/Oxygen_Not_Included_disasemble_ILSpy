@@ -36,7 +36,7 @@ public class AnimEvent
 
 	public AnimEvent(string file, string name, int frame)
 	{
-		this.file = ((!(file == "")) ? file : null);
+		this.file = ((!(file == string.Empty)) ? file : null);
 		if (this.file != null)
 		{
 			fileHash = new KAnimHashedString(this.file);

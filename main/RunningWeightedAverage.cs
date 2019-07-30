@@ -6,9 +6,9 @@ public class RunningWeightedAverage
 
 	private float max;
 
-	private bool ignoreZero = false;
+	private bool ignoreZero;
 
-	private int validValues = 0;
+	private int validValues;
 
 	public float GetWeightedAverage => WeightedAverage();
 
@@ -57,11 +57,11 @@ public class RunningWeightedAverage
 			num2 += num4;
 		}
 		num /= num2;
-		if (!float.IsNaN(num))
+		if (float.IsNaN(num))
 		{
-			return num;
+			return 0f;
 		}
-		return 0f;
+		return num;
 	}
 
 	private float UnweightedAverage()
@@ -72,10 +72,10 @@ public class RunningWeightedAverage
 			num += samples[num2];
 		}
 		num /= (float)samples.Length;
-		if (!float.IsNaN(num))
+		if (float.IsNaN(num))
 		{
-			return num;
+			return 0f;
 		}
-		return 0f;
+		return num;
 	}
 }

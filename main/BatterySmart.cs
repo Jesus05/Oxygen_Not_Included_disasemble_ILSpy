@@ -10,13 +10,13 @@ public class BatterySmart : Battery, IActivationRangeTarget
 	public static readonly HashedString PORT_ID = "BatterySmartLogicPort";
 
 	[Serialize]
-	private int activateValue = 0;
+	private int activateValue;
 
 	[Serialize]
 	private int deactivateValue = 100;
 
 	[Serialize]
-	private bool activated = false;
+	private bool activated;
 
 	[MyCmpGet]
 	private LogicPorts logicPorts;

@@ -8,7 +8,7 @@ public class YellowAlertManager : GameStateMachine<YellowAlertManager, YellowAle
 	{
 		private static Instance instance;
 
-		private bool hasTopPriorityChore = false;
+		private bool hasTopPriorityChore;
 
 		public Notification notification = new Notification(MISC.NOTIFICATIONS.YELLOWALERT.NAME, NotificationType.Bad, HashedString.Invalid, (List<Notification> notificationList, object data) => MISC.NOTIFICATIONS.YELLOWALERT.TOOLTIP, null, false, 0f, null, null, null);
 

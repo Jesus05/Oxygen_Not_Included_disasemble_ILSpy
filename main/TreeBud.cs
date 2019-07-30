@@ -14,10 +14,10 @@ public class TreeBud : KMonoBehaviour, IWiltCause
 	public Ref<BuddingTrunk> buddingTrunk;
 
 	[Serialize]
-	private int trunkPosition = 0;
+	private int trunkPosition;
 
 	[Serialize]
-	public int growingPos = 0;
+	public int growingPos;
 
 	private int trunkWiltHandle = -1;
 

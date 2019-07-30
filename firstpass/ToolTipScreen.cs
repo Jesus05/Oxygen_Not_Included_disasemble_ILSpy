@@ -22,7 +22,7 @@ public class ToolTipScreen : KScreen
 
 	private Vector2 ScreenEdgePadding = new Vector2(8f, 8f);
 
-	private ToolTip dirtyHoverTooltip = null;
+	private ToolTip dirtyHoverTooltip;
 
 	private bool tooltipIncubating = true;
 
@@ -276,7 +276,7 @@ public class ToolTipScreen : KScreen
 					}
 					LayoutElement component = multiTooltipContainer.transform.GetChild(i).GetComponent<LayoutElement>();
 					TextMeshProUGUI component2 = component.GetComponent<TextMeshProUGUI>();
-					toolTipIsBlank = (component2.text == "" && toolTipIsBlank);
+					toolTipIsBlank = (component2.text == string.Empty && toolTipIsBlank);
 					if (component.minHeight != component2.preferredHeight)
 					{
 						component.minHeight = component2.preferredHeight;

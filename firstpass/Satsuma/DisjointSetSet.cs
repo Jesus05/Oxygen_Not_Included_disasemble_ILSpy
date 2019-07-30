@@ -23,11 +23,11 @@ namespace Satsuma
 
 		public override bool Equals(object obj)
 		{
-			if (!(obj is DisjointSetSet<T>))
+			if (obj is DisjointSetSet<T>)
 			{
-				return false;
+				return Equals((DisjointSetSet<T>)obj);
 			}
-			return Equals((DisjointSetSet<T>)obj);
+			return false;
 		}
 
 		public static bool operator ==(DisjointSetSet<T> a, DisjointSetSet<T> b)

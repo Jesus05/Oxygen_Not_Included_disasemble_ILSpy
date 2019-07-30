@@ -21,7 +21,7 @@ namespace STRINGS
 
 				public static LocString DECOR = "This material will add <b>{0}</b> to the finished building's " + UI.PRE_KEYWORD + "Decor" + UI.PST_KEYWORD;
 
-				public static LocString OVERHEATTEMPERATURE = "This material will add <b>{0}</b> to the finished building's " + UI.PRE_KEYWORD + "Overheat Temperature" + UI.PST_KEYWORD + "";
+				public static LocString OVERHEATTEMPERATURE = "This material will add <b>{0}</b> to the finished building's " + UI.PRE_KEYWORD + "Overheat Temperature" + UI.PST_KEYWORD + string.Empty;
 
 				public static LocString HIGH_THERMAL_CONDUCTIVITY = "This material disperses " + UI.PRE_KEYWORD + "Heat" + UI.PST_KEYWORD + " because energy transfers quickly through materials with high " + UI.PRE_KEYWORD + "Thermal Conductivity" + UI.PST_KEYWORD + "\n\nBetween two objects, the rate of " + UI.PRE_KEYWORD + "Heat" + UI.PST_KEYWORD + " transfer will be determined by the object with the <i>lowest</i> " + UI.PRE_KEYWORD + "Thermal Conductivity" + UI.PST_KEYWORD + "\n\nThermal Conductivity: {1} W per degree K difference (Oxygen: 0.024 W)";
 
@@ -68,7 +68,7 @@ namespace STRINGS
 		{
 			public static LocString NAME = UI.FormatAsLink("Aerogel", "AEROGEL");
 
-			public static LocString DESC = "";
+			public static LocString DESC = string.Empty;
 		}
 
 		public class ALGAE
@@ -814,7 +814,7 @@ namespace STRINGS
 		{
 			public static LocString NAME = UI.FormatAsLink("Sand Cement", "SANDCEMENT");
 
-			public static LocString DESC = "";
+			public static LocString DESC = string.Empty;
 		}
 
 		public class SANDSTONE
@@ -863,7 +863,7 @@ namespace STRINGS
 		{
 			public static LocString NAME = UI.FormatAsLink("Crude Oil", "SOLIDCRUDEOIL");
 
-			public static LocString DESC = "";
+			public static LocString DESC = string.Empty;
 		}
 
 		public class SOLIDHYDROGEN

@@ -13,7 +13,7 @@ public class BaggedStates : GameStateMachine<BaggedStates, BaggedStates.Instance
 	public new class Instance : GameInstance
 	{
 		[Serialize]
-		public float baggedTime = 0f;
+		public float baggedTime;
 
 		public static readonly Chore.Precondition IsBagged = new Chore.Precondition
 		{
@@ -71,11 +71,7 @@ public class BaggedStates : GameStateMachine<BaggedStates, BaggedStates.Instance
 	{
 		default_state = bagged;
 		base.serializable = true;
-		State root = base.root;
-		string name = CREATURES.STATUSITEMS.BAGGED.NAME;
-		string tooltip = CREATURES.STATUSITEMS.BAGGED.TOOLTIP;
-		StatusItemCategory main = Db.Get().StatusItemCategories.Main;
-		root.ToggleStatusItem(name, tooltip, "", StatusItem.IconType.Info, NotificationType.Neutral, false, default(HashedString), 129022, null, null, main);
+		root.ToggleStatusItem(CREATURES.STATUSITEMS.BAGGED.NAME, CREATURES.STATUSITEMS.BAGGED.TOOLTIP, category: Db.Get().StatusItemCategories.Main, icon: string.Empty, icon_type: StatusItem.IconType.Info, notification_type: NotificationType.Neutral, allow_multiples: false, render_overlay: default(HashedString), status_overlays: 129022, resolve_string_callback: null, resolve_tooltip_callback: null);
 		bagged.Enter(BagStart).ToggleTag(GameTags.Creatures.Deliverable).PlayAnim("trussed", KAnim.PlayMode.Loop)
 			.TagTransition(GameTags.Creatures.Bagged, null, true)
 			.Transition(escape, ShouldEscape, UpdateRate.SIM_4000ms)
@@ -115,15 +111,15 @@ public class BaggedStates : GameStateMachine<BaggedStates, BaggedStates.Instance
 
 	private static bool ShouldEscape(Instance smi)
 	{
-		if (!smi.gameObject.HasTag(GameTags.Stored))
+		if (smi.gameObject.HasTag(GameTags.Stored))
 		{
-			float num = GameClock.Instance.GetTime() - smi.baggedTime;
-			if (!(num < smi.def.escapeTime))
-			{
-				return true;
-			}
 			return false;
 		}
-		return false;
+		float num = GameClock.Instance.GetTime() - smi.baggedTime;
+		if (num < smi.def.escapeTime)
+		{
+			return false;
+		}
+		return true;
 	}
 }

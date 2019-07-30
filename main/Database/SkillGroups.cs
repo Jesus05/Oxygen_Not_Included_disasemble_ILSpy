@@ -96,7 +96,7 @@ namespace Database
 			{
 				Db.Get().ChoreGroups.Research.Id
 			};
-			Suits = Add(new SkillGroup("Suits", "", DUPLICANTS.ROLES.GROUPS.SUITS, "suit_overlay_icon", "icon_archetype_astronaut"));
+			Suits = Add(new SkillGroup("Suits", string.Empty, DUPLICANTS.ROLES.GROUPS.SUITS, "suit_overlay_icon", "icon_archetype_astronaut"));
 			Suits.relevantAttributes = new List<Attribute>
 			{
 				Db.Get().Attributes.Athletics

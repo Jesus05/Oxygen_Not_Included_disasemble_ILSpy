@@ -38,11 +38,11 @@ public class CommandModuleSideScreen : SideScreenContent
 	private bool CheckHydrogenRocket()
 	{
 		RocketModule rocketModule = target.rocketModules.Find((RocketModule match) => match.GetComponent<RocketEngine>());
-		if (!((UnityEngine.Object)rocketModule != (UnityEngine.Object)null))
+		if ((UnityEngine.Object)rocketModule != (UnityEngine.Object)null)
 		{
-			return false;
+			return rocketModule.GetComponent<RocketEngine>().fuelTag == ElementLoader.FindElementByHash(SimHashes.LiquidHydrogen).tag;
 		}
-		return rocketModule.GetComponent<RocketEngine>().fuelTag == ElementLoader.FindElementByHash(SimHashes.LiquidHydrogen).tag;
+		return false;
 	}
 
 	private void ScheduleUpdate()

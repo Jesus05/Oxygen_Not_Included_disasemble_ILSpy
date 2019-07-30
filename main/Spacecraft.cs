@@ -25,7 +25,7 @@ public class Spacecraft
 	public string rocketName = UI.STARMAP.DEFAULT_NAME;
 
 	[Serialize]
-	public int moduleCount = 0;
+	public int moduleCount;
 
 	[Serialize]
 	public Ref<LaunchConditionManager> refLaunchConditions = new Ref<LaunchConditionManager>();
@@ -34,10 +34,10 @@ public class Spacecraft
 	public MissionState state;
 
 	[Serialize]
-	private float missionElapsed = 0f;
+	private float missionElapsed;
 
 	[Serialize]
-	private float missionDuration = 0f;
+	private float missionDuration;
 
 	public LaunchConditionManager launchConditions
 	{
@@ -105,26 +105,26 @@ public class Spacecraft
 	{
 		MinionStorage component = launchConditions.GetComponent<MinionStorage>();
 		List<MinionStorage.Info> storedMinionInfo = component.GetStoredMinionInfo();
-		if (storedMinionInfo.Count >= 1)
+		if (storedMinionInfo.Count < 1)
 		{
-			MinionStorage.Info info = storedMinionInfo[0];
-			StoredMinionIdentity component2 = info.serializedMinion.Get().GetComponent<StoredMinionIdentity>();
-			string b = Db.Get().Attributes.SpaceNavigation.Id;
-			float num = 1f;
-			foreach (KeyValuePair<string, bool> item in component2.MasteryBySkillID)
+			return 1f;
+		}
+		MinionStorage.Info info = storedMinionInfo[0];
+		StoredMinionIdentity component2 = info.serializedMinion.Get().GetComponent<StoredMinionIdentity>();
+		string b = Db.Get().Attributes.SpaceNavigation.Id;
+		float num = 1f;
+		foreach (KeyValuePair<string, bool> item in component2.MasteryBySkillID)
+		{
+			foreach (SkillPerk perk in Db.Get().Skills.Get(item.Key).perks)
 			{
-				foreach (SkillPerk perk in Db.Get().Skills.Get(item.Key).perks)
+				SkillAttributePerk skillAttributePerk = perk as SkillAttributePerk;
+				if (skillAttributePerk != null && skillAttributePerk.modifier.AttributeId == b)
 				{
-					SkillAttributePerk skillAttributePerk = perk as SkillAttributePerk;
-					if (skillAttributePerk != null && skillAttributePerk.modifier.AttributeId == b)
-					{
-						num += skillAttributePerk.modifier.Value;
-					}
+					num += skillAttributePerk.modifier.Value;
 				}
 			}
-			return num;
 		}
-		return 1f;
+		return num;
 	}
 
 	public void ForceComplete()

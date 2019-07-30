@@ -49,37 +49,37 @@ public struct PrioritySetting : IComparable<PrioritySetting>
 
 	public override bool Equals(object obj)
 	{
-		if (obj is PrioritySetting)
+		if (!(obj is PrioritySetting))
 		{
-			PrioritySetting prioritySetting = (PrioritySetting)obj;
-			if (prioritySetting.priority_class == priority_class)
-			{
-				PrioritySetting prioritySetting2 = (PrioritySetting)obj;
-				return prioritySetting2.priority_value == priority_value;
-			}
 			return false;
 		}
-		return false;
+		PrioritySetting prioritySetting = (PrioritySetting)obj;
+		if (prioritySetting.priority_class != priority_class)
+		{
+			return false;
+		}
+		PrioritySetting prioritySetting2 = (PrioritySetting)obj;
+		return prioritySetting2.priority_value == priority_value;
 	}
 
 	public int CompareTo(PrioritySetting other)
 	{
-		if (priority_class <= other.priority_class)
+		if (priority_class > other.priority_class)
 		{
-			if (priority_class >= other.priority_class)
-			{
-				if (priority_value <= other.priority_value)
-				{
-					if (priority_value >= other.priority_value)
-					{
-						return 0;
-					}
-					return -1;
-				}
-				return 1;
-			}
+			return 1;
+		}
+		if (priority_class < other.priority_class)
+		{
 			return -1;
 		}
-		return 1;
+		if (priority_value > other.priority_value)
+		{
+			return 1;
+		}
+		if (priority_value < other.priority_value)
+		{
+			return -1;
+		}
+		return 0;
 	}
 }

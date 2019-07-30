@@ -54,14 +54,14 @@ namespace Klei.AI
 					}
 				}
 			}
-			if (sicknessInstance == null)
+			if (sicknessInstance != null)
 			{
-				return false;
+				Remove(sicknessInstance);
+				Trigger(GameHashes.SicknessCured, sicknessInstance);
+				ReportManager.Instance.ReportValue(ReportManager.ReportType.DiseaseAdded, -1f, base.gameObject.GetProperName(), null);
+				return true;
 			}
-			Remove(sicknessInstance);
-			Trigger(GameHashes.SicknessCured, sicknessInstance);
-			ReportManager.Instance.ReportValue(ReportManager.ReportType.DiseaseAdded, -1f, base.gameObject.GetProperName(), null);
-			return true;
+			return false;
 		}
 	}
 }

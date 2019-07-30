@@ -17,7 +17,7 @@ public class BuildTool : DragTool
 
 	private BuildingDef def;
 
-	private Orientation buildingOrientation = Orientation.Neutral;
+	private Orientation buildingOrientation;
 
 	private GameObject source;
 
@@ -25,7 +25,7 @@ public class BuildTool : DragTool
 
 	public static BuildTool Instance;
 
-	private bool active = false;
+	private bool active;
 
 	private int buildingCount;
 

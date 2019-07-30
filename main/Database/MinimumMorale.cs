@@ -42,6 +42,7 @@ namespace Database
 						flag = (attributeInstance != null && attributeInstance.GetTotalValue() >= (float)minimumMorale && flag);
 					}
 				}
+				return flag;
 			}
 			finally
 			{
@@ -51,7 +52,6 @@ namespace Database
 					disposable.Dispose();
 				}
 			}
-			return flag;
 		}
 
 		public override void Serialize(BinaryWriter writer)

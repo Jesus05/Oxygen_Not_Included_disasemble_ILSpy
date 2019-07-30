@@ -54,10 +54,10 @@ public class StressEmoteChore : Chore<StressEmoteChore.StatesInstance>
 
 	public override string ToString()
 	{
-		if (!base.smi.emoteKAnim.IsValid)
+		if (base.smi.emoteKAnim.IsValid)
 		{
-			return "StressEmoteChore<" + base.smi.emoteAnims[0] + ">";
+			return "StressEmoteChore<" + base.smi.emoteKAnim + ">";
 		}
-		return "StressEmoteChore<" + base.smi.emoteKAnim + ">";
+		return "StressEmoteChore<" + base.smi.emoteAnims[0] + ">";
 	}
 }

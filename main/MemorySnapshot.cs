@@ -62,23 +62,23 @@ public class MemorySnapshot
 
 		public override string ToString()
 		{
-			if (parent4 == null)
+			if (parent4 != null)
 			{
-				if (parent3 == null)
-				{
-					if (parent2 == null)
-					{
-						if (parent1 == null)
-						{
-							return parent0.ToString();
-						}
-						return parent1.ToString() + "--" + parent0.ToString();
-					}
-					return parent2.ToString() + "--" + parent1.ToString() + "--" + parent0.ToString();
-				}
+				return parent4.ToString() + "--" + parent3.ToString() + "--" + parent2.ToString() + "--" + parent1.ToString() + "--" + parent0.ToString();
+			}
+			if (parent3 != null)
+			{
 				return parent3.ToString() + "--" + parent2.ToString() + "--" + parent1.ToString() + "--" + parent0.ToString();
 			}
-			return parent4.ToString() + "--" + parent3.ToString() + "--" + parent2.ToString() + "--" + parent1.ToString() + "--" + parent0.ToString();
+			if (parent2 != null)
+			{
+				return parent2.ToString() + "--" + parent1.ToString() + "--" + parent0.ToString();
+			}
+			if (parent1 != null)
+			{
+				return parent1.ToString() + "--" + parent0.ToString();
+			}
+			return parent0.ToString();
 		}
 	}
 

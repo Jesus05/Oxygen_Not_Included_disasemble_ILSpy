@@ -75,13 +75,13 @@ public class EnergyGenerator : Generator, IEffectDescriptor, ISingleSliderContro
 	[Serialize]
 	private float batteryRefillPercent = 0.5f;
 
-	public bool ignoreBatteryRefillPercent = false;
+	public bool ignoreBatteryRefillPercent;
 
 	public bool hasMeter = true;
 
 	private static StatusItem batteriesSufficientlyFull;
 
-	public Meter.Offset meterOffset = Meter.Offset.Infront;
+	public Meter.Offset meterOffset;
 
 	[SerializeField]
 	public Formula formula;
@@ -278,17 +278,17 @@ public class EnergyGenerator : Generator, IEffectDescriptor, ISingleSliderContro
 	public List<Descriptor> RequirementDescriptors(BuildingDef def)
 	{
 		List<Descriptor> list = new List<Descriptor>();
-		if (formula.inputs != null && formula.inputs.Length != 0)
+		if (formula.inputs == null || formula.inputs.Length == 0)
 		{
-			for (int i = 0; i < formula.inputs.Length; i++)
-			{
-				InputItem inputItem = formula.inputs[i];
-				string arg = inputItem.tag.ProperName();
-				Descriptor item = default(Descriptor);
-				item.SetupDescriptor(string.Format(UI.BUILDINGEFFECTS.ELEMENTCONSUMED, arg, GameUtil.GetFormattedMass(inputItem.consumptionRate, GameUtil.TimeSlice.PerSecond, GameUtil.MetricMassFormat.UseThreshold, true, "{0:0.##}")), string.Format(UI.BUILDINGEFFECTS.TOOLTIPS.ELEMENTCONSUMED, arg, GameUtil.GetFormattedMass(inputItem.consumptionRate, GameUtil.TimeSlice.PerSecond, GameUtil.MetricMassFormat.UseThreshold, true, "{0:0.##}")), Descriptor.DescriptorType.Requirement);
-				list.Add(item);
-			}
 			return list;
+		}
+		for (int i = 0; i < formula.inputs.Length; i++)
+		{
+			InputItem inputItem = formula.inputs[i];
+			string arg = inputItem.tag.ProperName();
+			Descriptor item = default(Descriptor);
+			item.SetupDescriptor(string.Format(UI.BUILDINGEFFECTS.ELEMENTCONSUMED, arg, GameUtil.GetFormattedMass(inputItem.consumptionRate, GameUtil.TimeSlice.PerSecond, GameUtil.MetricMassFormat.UseThreshold, true, "{0:0.##}")), string.Format(UI.BUILDINGEFFECTS.TOOLTIPS.ELEMENTCONSUMED, arg, GameUtil.GetFormattedMass(inputItem.consumptionRate, GameUtil.TimeSlice.PerSecond, GameUtil.MetricMassFormat.UseThreshold, true, "{0:0.##}")), Descriptor.DescriptorType.Requirement);
+			list.Add(item);
 		}
 		return list;
 	}
@@ -296,25 +296,25 @@ public class EnergyGenerator : Generator, IEffectDescriptor, ISingleSliderContro
 	public List<Descriptor> EffectDescriptors(BuildingDef def)
 	{
 		List<Descriptor> list = new List<Descriptor>();
-		if (formula.outputs != null && formula.outputs.Length != 0)
+		if (formula.outputs == null || formula.outputs.Length == 0)
 		{
-			for (int i = 0; i < formula.outputs.Length; i++)
-			{
-				OutputItem outputItem = formula.outputs[i];
-				Element element = ElementLoader.FindElementByHash(outputItem.element);
-				string arg = element.tag.ProperName();
-				Descriptor item = default(Descriptor);
-				if (outputItem.minTemperature > 0f)
-				{
-					item.SetupDescriptor(string.Format(UI.BUILDINGEFFECTS.ELEMENTEMITTED_MINORENTITYTEMP, arg, GameUtil.GetFormattedMass(outputItem.creationRate, GameUtil.TimeSlice.PerSecond, GameUtil.MetricMassFormat.UseThreshold, true, "{0:0.#}"), GameUtil.GetFormattedTemperature(outputItem.minTemperature, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false)), string.Format(UI.BUILDINGEFFECTS.TOOLTIPS.ELEMENTEMITTED_MINORENTITYTEMP, arg, GameUtil.GetFormattedMass(outputItem.creationRate, GameUtil.TimeSlice.PerSecond, GameUtil.MetricMassFormat.UseThreshold, true, "{0:0.#}"), GameUtil.GetFormattedTemperature(outputItem.minTemperature, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false)), Descriptor.DescriptorType.Effect);
-				}
-				else
-				{
-					item.SetupDescriptor(string.Format(UI.BUILDINGEFFECTS.ELEMENTEMITTED_ENTITYTEMP, arg, GameUtil.GetFormattedMass(outputItem.creationRate, GameUtil.TimeSlice.PerSecond, GameUtil.MetricMassFormat.UseThreshold, true, "{0:0.#}")), string.Format(UI.BUILDINGEFFECTS.TOOLTIPS.ELEMENTEMITTED_ENTITYTEMP, arg, GameUtil.GetFormattedMass(outputItem.creationRate, GameUtil.TimeSlice.PerSecond, GameUtil.MetricMassFormat.UseThreshold, true, "{0:0.#}")), Descriptor.DescriptorType.Effect);
-				}
-				list.Add(item);
-			}
 			return list;
+		}
+		for (int i = 0; i < formula.outputs.Length; i++)
+		{
+			OutputItem outputItem = formula.outputs[i];
+			Element element = ElementLoader.FindElementByHash(outputItem.element);
+			string arg = element.tag.ProperName();
+			Descriptor item = default(Descriptor);
+			if (outputItem.minTemperature > 0f)
+			{
+				item.SetupDescriptor(string.Format(UI.BUILDINGEFFECTS.ELEMENTEMITTED_MINORENTITYTEMP, arg, GameUtil.GetFormattedMass(outputItem.creationRate, GameUtil.TimeSlice.PerSecond, GameUtil.MetricMassFormat.UseThreshold, true, "{0:0.#}"), GameUtil.GetFormattedTemperature(outputItem.minTemperature, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false)), string.Format(UI.BUILDINGEFFECTS.TOOLTIPS.ELEMENTEMITTED_MINORENTITYTEMP, arg, GameUtil.GetFormattedMass(outputItem.creationRate, GameUtil.TimeSlice.PerSecond, GameUtil.MetricMassFormat.UseThreshold, true, "{0:0.#}"), GameUtil.GetFormattedTemperature(outputItem.minTemperature, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false)), Descriptor.DescriptorType.Effect);
+			}
+			else
+			{
+				item.SetupDescriptor(string.Format(UI.BUILDINGEFFECTS.ELEMENTEMITTED_ENTITYTEMP, arg, GameUtil.GetFormattedMass(outputItem.creationRate, GameUtil.TimeSlice.PerSecond, GameUtil.MetricMassFormat.UseThreshold, true, "{0:0.#}")), string.Format(UI.BUILDINGEFFECTS.TOOLTIPS.ELEMENTEMITTED_ENTITYTEMP, arg, GameUtil.GetFormattedMass(outputItem.creationRate, GameUtil.TimeSlice.PerSecond, GameUtil.MetricMassFormat.UseThreshold, true, "{0:0.#}")), Descriptor.DescriptorType.Effect);
+			}
+			list.Add(item);
 		}
 		return list;
 	}
@@ -337,7 +337,7 @@ public class EnergyGenerator : Generator, IEffectDescriptor, ISingleSliderContro
 	{
 		if (batteriesSufficientlyFull == null)
 		{
-			batteriesSufficientlyFull = new StatusItem("BatteriesSufficientlyFull", "BUILDING", "", StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, true, 129022);
+			batteriesSufficientlyFull = new StatusItem("BatteriesSufficientlyFull", "BUILDING", string.Empty, StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, true, 129022);
 		}
 	}
 

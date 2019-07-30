@@ -76,11 +76,7 @@ public class SeedPlantingStates : GameStateMachine<SeedPlantingStates, SeedPlant
 	public override void InitializeStates(out BaseState default_state)
 	{
 		default_state = findSeed;
-		State root = base.root;
-		string name = CREATURES.STATUSITEMS.PLANTINGSEED.NAME;
-		string tooltip = CREATURES.STATUSITEMS.PLANTINGSEED.TOOLTIP;
-		StatusItemCategory main = Db.Get().StatusItemCategories.Main;
-		root.ToggleStatusItem(name, tooltip, "", StatusItem.IconType.Info, NotificationType.Neutral, false, default(HashedString), 129022, null, null, main).Exit(UnreserveSeed).Exit(DropAll)
+		root.ToggleStatusItem(CREATURES.STATUSITEMS.PLANTINGSEED.NAME, CREATURES.STATUSITEMS.PLANTINGSEED.TOOLTIP, category: Db.Get().StatusItemCategories.Main, icon: string.Empty, icon_type: StatusItem.IconType.Info, notification_type: NotificationType.Neutral, allow_multiples: false, render_overlay: default(HashedString), status_overlays: 129022, resolve_string_callback: null, resolve_tooltip_callback: null).Exit(UnreserveSeed).Exit(DropAll)
 			.Exit(RemoveMouthOverride);
 		findSeed.Enter(delegate(Instance smi)
 		{
@@ -224,11 +220,11 @@ public class SeedPlantingStates : GameStateMachine<SeedPlantingStates, SeedPlant
 	private static int GetPlantableCell(Instance smi)
 	{
 		int num = Grid.PosToCell(smi.targetPlot);
-		if (!Grid.IsValidCell(num))
+		if (Grid.IsValidCell(num))
 		{
-			return num;
+			return Grid.CellAbove(num);
 		}
-		return Grid.CellAbove(num);
+		return num;
 	}
 
 	private static void FindDirtPlot(Instance smi)
@@ -247,26 +243,26 @@ public class SeedPlantingStates : GameStateMachine<SeedPlantingStates, SeedPlant
 	private static bool CheckValidPlotCell(Instance smi, PlantableSeed seed, int cell, out PlantablePlot plot)
 	{
 		plot = null;
-		if (Grid.IsValidCell(cell))
+		if (!Grid.IsValidCell(cell))
 		{
-			int num = (seed.Direction != SingleEntityReceptacle.ReceptacleDirection.Bottom) ? Grid.CellBelow(cell) : Grid.CellAbove(cell);
-			if (Grid.IsValidCell(num))
-			{
-				if (Grid.Solid[num])
-				{
-					GameObject gameObject = Grid.Objects[num, 1];
-					if (!(bool)gameObject)
-					{
-						return seed.TestSuitableGround(cell);
-					}
-					plot = gameObject.GetComponent<PlantablePlot>();
-					return (UnityEngine.Object)plot != (UnityEngine.Object)null;
-				}
-				return false;
-			}
 			return false;
 		}
-		return false;
+		int num = (seed.Direction != SingleEntityReceptacle.ReceptacleDirection.Bottom) ? Grid.CellBelow(cell) : Grid.CellAbove(cell);
+		if (!Grid.IsValidCell(num))
+		{
+			return false;
+		}
+		if (!Grid.Solid[num])
+		{
+			return false;
+		}
+		GameObject gameObject = Grid.Objects[num, 1];
+		if ((bool)gameObject)
+		{
+			plot = gameObject.GetComponent<PlantablePlot>();
+			return (UnityEngine.Object)plot != (UnityEngine.Object)null;
+		}
+		return seed.TestSuitableGround(cell);
 	}
 
 	private static int GetSeedCell(Instance smi)

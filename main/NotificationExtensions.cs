@@ -14,7 +14,7 @@ public static class NotificationExtensions
 			}
 			dictionary[notification.NotifierName] = value + 1;
 		}
-		string text = "";
+		string text = string.Empty;
 		foreach (KeyValuePair<string, int> item in dictionary)
 		{
 			if (countNames)

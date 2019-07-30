@@ -15,7 +15,7 @@ namespace Klei.AI
 
 		public bool ValidStarterTrait;
 
-		public Action<GameObject> OnAddTrait = null;
+		public Action<GameObject> OnAddTrait;
 
 		public Func<string> ExtendedTooltip;
 
@@ -54,7 +54,7 @@ namespace Klei.AI
 
 		public string GetAttributeModifiersString(bool list_entry)
 		{
-			string text = "";
+			string text = string.Empty;
 			foreach (AttributeModifier selfModifier in SelfModifiers)
 			{
 				Attribute attribute = Db.Get().Attributes.Get(selfModifier.AttributeId);
@@ -69,7 +69,7 @@ namespace Klei.AI
 
 		public string GetDisabledChoresString(bool list_entry)
 		{
-			string text = "";
+			string text = string.Empty;
 			if (disabledChoreGroups != null)
 			{
 				string format = DUPLICANTS.TRAITS.CANNOT_DO_TASK;
@@ -92,7 +92,7 @@ namespace Klei.AI
 
 		public string GetIgnoredEffectsString(bool list_entry)
 		{
-			string text = "";
+			string text = string.Empty;
 			if (ignoredEffects != null && ignoredEffects.Length > 0)
 			{
 				string[] array = ignoredEffects;
@@ -111,7 +111,7 @@ namespace Klei.AI
 
 		public string GetExtendedTooltipStr()
 		{
-			string text = "";
+			string text = string.Empty;
 			if (ExtendedTooltip != null)
 			{
 				Delegate[] invocationList = ExtendedTooltip.GetInvocationList();

@@ -82,13 +82,13 @@ public class ResearchScreen : KModalScreen
 
 	public float contentPositionLerpSpeed = 10f;
 
-	private bool zoomingOut = false;
+	private bool zoomingOut;
 
-	private bool zoomingIn = false;
+	private bool zoomingIn;
 
-	private bool rightMouseDown = false;
+	private bool rightMouseDown;
 
-	private bool isDragging = false;
+	private bool isDragging;
 
 	private Vector3 dragStartPosition;
 
@@ -272,8 +272,8 @@ public class ResearchScreen : KModalScreen
 		filterField.onValueChanged.AddListener(OnFilterChanged);
 		filterClearButton.onClick += delegate
 		{
-			filterField.text = "";
-			OnFilterChanged("");
+			filterField.text = string.Empty;
+			OnFilterChanged(string.Empty);
 		};
 		pointDisplayMap = new Dictionary<string, LocText>();
 		foreach (ResearchType type in Research.Instance.researchTypes.Types)
@@ -423,26 +423,26 @@ public class ResearchScreen : KModalScreen
 
 	public Vector3 GetEntryPosition(Tech tech)
 	{
-		if (entryMap.ContainsKey(tech))
+		if (!entryMap.ContainsKey(tech))
 		{
-			return entryMap[tech].transform.GetPosition();
+			Debug.LogError("The Tech provided was not present in the dictionary");
+			return Vector3.zero;
 		}
-		Debug.LogError("The Tech provided was not present in the dictionary");
-		return Vector3.zero;
+		return entryMap[tech].transform.GetPosition();
 	}
 
 	public ResearchEntry GetEntry(Tech tech)
 	{
-		if (entryMap != null)
+		if (entryMap == null)
 		{
-			if (entryMap.ContainsKey(tech))
-			{
-				return entryMap[tech];
-			}
+			return null;
+		}
+		if (!entryMap.ContainsKey(tech))
+		{
 			Debug.LogError("The Tech provided was not present in the dictionary");
 			return null;
 		}
-		return null;
+		return entryMap[tech];
 	}
 
 	public void SetEntryPercentage(Tech tech, float percent)
@@ -569,8 +569,8 @@ public class ResearchScreen : KModalScreen
 			DetailsScreen.Instance.gameObject.SetActive(true);
 			DetailsScreen.Instance.Refresh(SelectTool.Instance.selected.gameObject);
 		}
-		filterField.text = "";
-		OnFilterChanged("");
+		filterField.text = string.Empty;
+		OnFilterChanged(string.Empty);
 		UpdateProgressBars();
 		UpdatePointDisplay();
 		zoomingIn = false;

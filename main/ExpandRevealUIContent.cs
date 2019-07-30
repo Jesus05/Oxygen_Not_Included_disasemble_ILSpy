@@ -22,9 +22,9 @@ public class ExpandRevealUIContent : MonoBehaviour
 
 	public float speedScale = 1f;
 
-	public bool Collapsing = false;
+	public bool Collapsing;
 
-	public bool Expanding = false;
+	public bool Expanding;
 
 	private void OnDisable()
 	{

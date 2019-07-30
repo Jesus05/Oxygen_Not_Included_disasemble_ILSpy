@@ -239,7 +239,7 @@ public class CarePackageContainer : KScreen, ITelepadDeliverableContainer
 			GameObject gameObject2 = Util.KInstantiateUI(contentBody, contentBody.transform.parent.gameObject, false);
 			gameObject2.SetActive(true);
 			Image component2 = gameObject2.GetComponent<Image>();
-			component2.sprite = Def.GetUISpriteFromMultiObjectAnim(ElementLoader.GetElement(info.id.ToTag()).substance.anim, "ui", false, "");
+			component2.sprite = Def.GetUISpriteFromMultiObjectAnim(ElementLoader.GetElement(info.id.ToTag()).substance.anim, "ui", false, string.Empty);
 			component2.color = ElementLoader.GetElement(info.id.ToTag()).substance.uiColour;
 			entryIcons.Add(gameObject2);
 		}
@@ -248,78 +248,78 @@ public class CarePackageContainer : KScreen, ITelepadDeliverableContainer
 	private string GetSpawnableName()
 	{
 		GameObject prefab = Assets.GetPrefab(info.id);
-		if (!((UnityEngine.Object)prefab == (UnityEngine.Object)null))
+		if ((UnityEngine.Object)prefab == (UnityEngine.Object)null)
 		{
-			return prefab.GetProperName();
+			Element element = ElementLoader.FindElementByName(info.id);
+			if (element != null)
+			{
+				return element.substance.name;
+			}
+			return string.Empty;
 		}
-		Element element = ElementLoader.FindElementByName(info.id);
-		if (element == null)
-		{
-			return "";
-		}
-		return element.substance.name;
+		return prefab.GetProperName();
 	}
 
 	private string GetSpawnableQuantityOnly()
 	{
-		if (ElementLoader.GetElement(info.id.ToTag()) == null)
+		if (ElementLoader.GetElement(info.id.ToTag()) != null)
 		{
-			if (Game.Instance.ediblesManager.GetFoodInfo(info.id) == null)
-			{
-				return string.Format(UI.IMMIGRANTSCREEN.CARE_PACKAGE_ELEMENT_COUNT_ONLY, info.quantity.ToString());
-			}
+			return string.Format(UI.IMMIGRANTSCREEN.CARE_PACKAGE_ELEMENT_COUNT_ONLY, GameUtil.GetFormattedMass(info.quantity, GameUtil.TimeSlice.None, GameUtil.MetricMassFormat.UseThreshold, true, "{0:0.#}"));
+		}
+		if (Game.Instance.ediblesManager.GetFoodInfo(info.id) != null)
+		{
 			return string.Format(UI.IMMIGRANTSCREEN.CARE_PACKAGE_ELEMENT_COUNT_ONLY, GameUtil.GetFormattedCaloriesForItem(info.id, info.quantity, GameUtil.TimeSlice.None, true));
 		}
-		return string.Format(UI.IMMIGRANTSCREEN.CARE_PACKAGE_ELEMENT_COUNT_ONLY, GameUtil.GetFormattedMass(info.quantity, GameUtil.TimeSlice.None, GameUtil.MetricMassFormat.UseThreshold, true, "{0:0.#}"));
+		return string.Format(UI.IMMIGRANTSCREEN.CARE_PACKAGE_ELEMENT_COUNT_ONLY, info.quantity.ToString());
 	}
 
 	private string GetCurrentQuantity()
 	{
-		if (ElementLoader.GetElement(info.id.ToTag()) == null)
+		if (ElementLoader.GetElement(info.id.ToTag()) != null)
 		{
-			if (Game.Instance.ediblesManager.GetFoodInfo(info.id) == null)
-			{
-				float amount = WorldInventory.Instance.GetAmount(info.id.ToTag());
-				return string.Format(UI.IMMIGRANTSCREEN.CARE_PACKAGE_CURRENT_AMOUNT, amount.ToString());
-			}
+			float amount = WorldInventory.Instance.GetAmount(info.id.ToTag());
+			return string.Format(UI.IMMIGRANTSCREEN.CARE_PACKAGE_CURRENT_AMOUNT, GameUtil.GetFormattedMass(amount, GameUtil.TimeSlice.None, GameUtil.MetricMassFormat.UseThreshold, true, "{0:0.#}"));
+		}
+		if (Game.Instance.ediblesManager.GetFoodInfo(info.id) != null)
+		{
 			float calories = RationTracker.Get().CountRationsByFoodType(info.id, true);
 			return string.Format(UI.IMMIGRANTSCREEN.CARE_PACKAGE_CURRENT_AMOUNT, GameUtil.GetFormattedCalories(calories, GameUtil.TimeSlice.None, true));
 		}
 		float amount2 = WorldInventory.Instance.GetAmount(info.id.ToTag());
-		return string.Format(UI.IMMIGRANTSCREEN.CARE_PACKAGE_CURRENT_AMOUNT, GameUtil.GetFormattedMass(amount2, GameUtil.TimeSlice.None, GameUtil.MetricMassFormat.UseThreshold, true, "{0:0.#}"));
+		return string.Format(UI.IMMIGRANTSCREEN.CARE_PACKAGE_CURRENT_AMOUNT, amount2.ToString());
 	}
 
 	private string GetSpawnableQuantity()
 	{
-		if (ElementLoader.GetElement(info.id.ToTag()) == null)
+		if (ElementLoader.GetElement(info.id.ToTag()) != null)
 		{
-			if (Game.Instance.ediblesManager.GetFoodInfo(info.id) == null)
-			{
-				return string.Format(UI.IMMIGRANTSCREEN.CARE_PACKAGE_ELEMENT_COUNT, Assets.GetPrefab(info.id).GetProperName(), info.quantity.ToString());
-			}
+			return string.Format(UI.IMMIGRANTSCREEN.CARE_PACKAGE_ELEMENT_QUANTITY, GameUtil.GetFormattedMass(info.quantity, GameUtil.TimeSlice.None, GameUtil.MetricMassFormat.UseThreshold, true, "{0:0.#}"), Assets.GetPrefab(info.id).GetProperName());
+		}
+		if (Game.Instance.ediblesManager.GetFoodInfo(info.id) != null)
+		{
 			return string.Format(UI.IMMIGRANTSCREEN.CARE_PACKAGE_ELEMENT_QUANTITY, GameUtil.GetFormattedCaloriesForItem(info.id, info.quantity, GameUtil.TimeSlice.None, true), Assets.GetPrefab(info.id).GetProperName());
 		}
-		return string.Format(UI.IMMIGRANTSCREEN.CARE_PACKAGE_ELEMENT_QUANTITY, GameUtil.GetFormattedMass(info.quantity, GameUtil.TimeSlice.None, GameUtil.MetricMassFormat.UseThreshold, true, "{0:0.#}"), Assets.GetPrefab(info.id).GetProperName());
+		return string.Format(UI.IMMIGRANTSCREEN.CARE_PACKAGE_ELEMENT_COUNT, Assets.GetPrefab(info.id).GetProperName(), info.quantity.ToString());
 	}
 
 	private string GetSpawnableDescription()
 	{
 		Element element = ElementLoader.GetElement(info.id.ToTag());
-		if (element == null)
+		if (element != null)
 		{
-			GameObject prefab = Assets.GetPrefab(info.id);
-			if (!((UnityEngine.Object)prefab == (UnityEngine.Object)null))
-			{
-				InfoDescription component = prefab.GetComponent<InfoDescription>();
-				if (!((UnityEngine.Object)component != (UnityEngine.Object)null))
-				{
-					return prefab.GetProperName();
-				}
-				return component.description;
-			}
-			return "";
+			return element.Description();
 		}
-		return element.Description();
+		GameObject prefab = Assets.GetPrefab(info.id);
+		if ((UnityEngine.Object)prefab == (UnityEngine.Object)null)
+		{
+			return string.Empty;
+		}
+		InfoDescription component = prefab.GetComponent<InfoDescription>();
+		if ((UnityEngine.Object)component != (UnityEngine.Object)null)
+		{
+			return component.description;
+		}
+		return prefab.GetProperName();
 	}
 
 	private void SetInfoText()

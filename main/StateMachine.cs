@@ -57,7 +57,7 @@ public abstract class StateMachine
 
 		protected LoggerFSSSS log;
 
-		protected Status status = Status.Initialized;
+		protected Status status;
 
 		protected StateMachine stateMachine;
 
@@ -195,7 +195,7 @@ public abstract class StateMachine
 
 		public override string ToString()
 		{
-			string str = "";
+			string str = string.Empty;
 			if (GetCurrentState() != null)
 			{
 				str = GetCurrentState().name;
@@ -228,16 +228,16 @@ public abstract class StateMachine
 		public bool IsInsideState(BaseState state)
 		{
 			BaseState currentState = GetCurrentState();
-			if (currentState != null)
+			if (currentState == null)
 			{
-				for (int i = 0; i < currentState.branch.Length; i++)
-				{
-					if (state == currentState.branch[i])
-					{
-						return true;
-					}
-				}
 				return false;
+			}
+			for (int i = 0; i < currentState.branch.Length; i++)
+			{
+				if (state == currentState.branch[i])
+				{
+					return true;
+				}
 			}
 			return false;
 		}
@@ -797,7 +797,7 @@ public class StateMachine<StateMachineType, StateMachineInstanceType, MasterType
 			if (num == gotoId)
 			{
 				ExecuteActions((State)state, state.enterActions);
-				if (num == gotoId)
+				if (num != gotoId)
 				{
 					return;
 				}
@@ -1046,11 +1046,11 @@ public class StateMachine<StateMachineType, StateMachineInstanceType, MasterType
 
 		public override BaseState GetCurrentState()
 		{
-			if (stackSize <= 0)
+			if (stackSize > 0)
 			{
-				return null;
+				return stateStack[stackSize - 1].state;
 			}
-			return stateStack[stackSize - 1].state;
+			return null;
 		}
 	}
 
@@ -1180,11 +1180,11 @@ public class StateMachine<StateMachineType, StateMachineInstanceType, MasterType
 
 			public override string ToString()
 			{
-				if (state == null)
+				if (state != null)
 				{
-					return parameter.name + "->(Stop)";
+					return parameter.name + "->" + state.name;
 				}
-				return parameter.name + "->" + state.name;
+				return parameter.name + "->(Stop)";
 			}
 		}
 
@@ -1471,7 +1471,7 @@ public class StateMachine<StateMachineType, StateMachineInstanceType, MasterType
 
 			public override void Serialize(BinaryWriter writer)
 			{
-				string str = "";
+				string str = string.Empty;
 				if (value != null)
 				{
 					if (value.Guid == (ResourceGuid)null)
@@ -1489,7 +1489,7 @@ public class StateMachine<StateMachineType, StateMachineInstanceType, MasterType
 			public override void Deserialize(IReader reader)
 			{
 				string text = reader.ReadKleiString();
-				if (text != "")
+				if (text != string.Empty)
 				{
 					ResourceGuid guid = new ResourceGuid(text, null);
 					value = Db.Get().GetResource<ResourceType>(guid);

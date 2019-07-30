@@ -18,7 +18,7 @@ public class Switch : KMonoBehaviour, ISaveLoadable, IToggleHandler
 	[MyCmpAdd]
 	private Toggleable openSwitch;
 
-	private int openToggleIndex = 0;
+	private int openToggleIndex;
 
 	private static readonly EventSystem.IntraObjectHandler<Switch> OnRefreshUserMenuDelegate = new EventSystem.IntraObjectHandler<Switch>(delegate(Switch component, object data)
 	{

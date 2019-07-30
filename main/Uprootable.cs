@@ -9,7 +9,7 @@ public class Uprootable : Workable
 	[Serialize]
 	protected bool isMarkedForUproot;
 
-	protected bool uprootComplete = false;
+	protected bool uprootComplete;
 
 	[MyCmpReq]
 	private Prioritizable prioritizable;
@@ -185,11 +185,11 @@ public class Uprootable : Workable
 
 	public bool HasChore()
 	{
-		if (chore != null)
+		if (chore == null)
 		{
-			return true;
+			return false;
 		}
-		return false;
+		return true;
 	}
 
 	private void OnClickUproot()

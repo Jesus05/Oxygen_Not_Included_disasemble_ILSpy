@@ -73,11 +73,11 @@ public class SteamTurbine : Generator
 
 	public class Instance : GameStateMachine<States, Instance, SteamTurbine, object>.GameInstance
 	{
-		public bool insufficientMass = false;
+		public bool insufficientMass;
 
-		public bool insufficientTemperature = false;
+		public bool insufficientTemperature;
 
-		public bool buildingTooHot = false;
+		public bool buildingTooHot;
 
 		private Guid inputBlockedHandle = Guid.Empty;
 
@@ -224,16 +224,16 @@ public class SteamTurbine : Generator
 	private static readonly HashedString TINT_SYMBOL = new HashedString("meter_fill");
 
 	[Serialize]
-	private float storedMass = 0f;
+	private float storedMass;
 
 	[Serialize]
-	private float storedTemperature = 0f;
+	private float storedTemperature;
 
 	[Serialize]
 	private byte diseaseIdx = byte.MaxValue;
 
 	[Serialize]
-	private int diseaseCount = 0;
+	private int diseaseCount;
 
 	private static StatusItem inputBlockedStatusItem;
 
@@ -407,9 +407,9 @@ public class SteamTurbine : Generator
 
 	public static void InitializeStatusItems()
 	{
-		activeStatusItem = new StatusItem("TURBINE_ACTIVE", "BUILDING", "", StatusItem.IconType.Info, NotificationType.Good, false, OverlayModes.None.ID, true, 129022);
+		activeStatusItem = new StatusItem("TURBINE_ACTIVE", "BUILDING", string.Empty, StatusItem.IconType.Info, NotificationType.Good, false, OverlayModes.None.ID, true, 129022);
 		inputBlockedStatusItem = new StatusItem("TURBINE_BLOCKED_INPUT", "BUILDING", "status_item_vent_disabled", StatusItem.IconType.Custom, NotificationType.BadMinor, false, OverlayModes.None.ID, true, 129022);
-		inputPartiallyBlockedStatusItem = new StatusItem("TURBINE_PARTIALLY_BLOCKED_INPUT", "BUILDING", "", StatusItem.IconType.Info, NotificationType.BadMinor, false, OverlayModes.None.ID, true, 129022);
+		inputPartiallyBlockedStatusItem = new StatusItem("TURBINE_PARTIALLY_BLOCKED_INPUT", "BUILDING", string.Empty, StatusItem.IconType.Info, NotificationType.BadMinor, false, OverlayModes.None.ID, true, 129022);
 		inputPartiallyBlockedStatusItem.resolveStringCallback = ResolvePartialBlockedStatus;
 		insufficientMassStatusItem = new StatusItem("TURBINE_INSUFFICIENT_MASS", "BUILDING", "status_item_resource_unavailable", StatusItem.IconType.Custom, NotificationType.BadMinor, false, OverlayModes.Power.ID, true, 129022);
 		insufficientMassStatusItem.resolveStringCallback = ResolveStrings;
@@ -418,7 +418,7 @@ public class SteamTurbine : Generator
 		insufficientTemperatureStatusItem = new StatusItem("TURBINE_INSUFFICIENT_TEMPERATURE", "BUILDING", "status_item_plant_temperature", StatusItem.IconType.Custom, NotificationType.BadMinor, false, OverlayModes.Power.ID, true, 129022);
 		insufficientTemperatureStatusItem.resolveStringCallback = ResolveStrings;
 		insufficientTemperatureStatusItem.resolveTooltipCallback = ResolveStrings;
-		activeWattageStatusItem = new StatusItem("TURBINE_ACTIVE_WATTAGE", "BUILDING", "", StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.Power.ID, true, 129022);
+		activeWattageStatusItem = new StatusItem("TURBINE_ACTIVE_WATTAGE", "BUILDING", string.Empty, StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.Power.ID, true, 129022);
 		activeWattageStatusItem.resolveStringCallback = ResolveWattageStatus;
 	}
 

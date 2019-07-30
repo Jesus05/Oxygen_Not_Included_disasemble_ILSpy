@@ -7,7 +7,7 @@ public class LogicTemperatureSensor : Switch, ISaveLoadable, IThresholdSwitch, I
 {
 	private HandleVector<int>.Handle structureTemperature;
 
-	private int simUpdateCounter = 0;
+	private int simUpdateCounter;
 
 	[Serialize]
 	public float thresholdTemperature = 280f;
@@ -15,7 +15,7 @@ public class LogicTemperatureSensor : Switch, ISaveLoadable, IThresholdSwitch, I
 	[Serialize]
 	public bool activateOnWarmerThan;
 
-	public float minTemp = 0f;
+	public float minTemp;
 
 	public float maxTemp = 373.15f;
 
@@ -25,7 +25,7 @@ public class LogicTemperatureSensor : Switch, ISaveLoadable, IThresholdSwitch, I
 
 	private float averageTemp;
 
-	private bool wasOn = false;
+	private bool wasOn;
 
 	[MyCmpAdd]
 	private CopyBuildingSettings copyBuildingSettings;

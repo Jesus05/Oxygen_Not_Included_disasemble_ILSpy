@@ -33,7 +33,7 @@ public class MeterScreen : KScreen, IRender1000ms
 
 	public TextStyleSetting ToolTipStyle_Property;
 
-	private bool startValuesSet = false;
+	private bool startValuesSet;
 
 	[SerializeField]
 	private KToggle RedAlertButton;
@@ -175,7 +175,7 @@ public class MeterScreen : KScreen, IRender1000ms
 			AmountInstance amount = stress.Lookup(minionIdentity);
 			AddToolTipAmountPercentLine(StressTooltip, amount, minionIdentity, i == stressDisplayInfo.selectedIndex);
 		}
-		return "";
+		return string.Empty;
 	}
 
 	private string OnSickTooltip()
@@ -194,7 +194,7 @@ public class MeterScreen : KScreen, IRender1000ms
 				int num2 = 0;
 				foreach (SicknessInstance item in sicknesses)
 				{
-					text = text + ((num2 <= 0) ? "" : ", ") + item.modifier.Name;
+					text = text + ((num2 <= 0) ? string.Empty : ", ") + item.modifier.Name;
 					num2++;
 				}
 				text += ")";
@@ -202,7 +202,7 @@ public class MeterScreen : KScreen, IRender1000ms
 			bool selected = i == immunityDisplayInfo.selectedIndex;
 			AddToolTipLine(SickTooltip, text, selected);
 		}
-		return "";
+		return string.Empty;
 	}
 
 	private static int CountSickDupes()
@@ -245,7 +245,7 @@ public class MeterScreen : KScreen, IRender1000ms
 		RationsText.text = GameUtil.GetFormattedCalories(calories, GameUtil.TimeSlice.None, true);
 		RationsTooltip.ClearMultiStringTooltip();
 		RationsTooltip.AddMultiStringTooltip(string.Format(UI.TOOLTIPS.METERSCREEN_MEALHISTORY, GameUtil.GetFormattedCalories(calories, GameUtil.TimeSlice.None, true)), ToolTipStyle_Header);
-		RationsTooltip.AddMultiStringTooltip("", ToolTipStyle_Property);
+		RationsTooltip.AddMultiStringTooltip(string.Empty, ToolTipStyle_Property);
 		IOrderedEnumerable<KeyValuePair<string, float>> source = rationsDict.OrderByDescending(delegate(KeyValuePair<string, float> x)
 		{
 			EdiblesManager.FoodInfo foodInfo2 = Game.Instance.ediblesManager.GetFoodInfo(x.Key);
@@ -257,7 +257,7 @@ public class MeterScreen : KScreen, IRender1000ms
 			EdiblesManager.FoodInfo foodInfo = Game.Instance.ediblesManager.GetFoodInfo(item.Key);
 			RationsTooltip.AddMultiStringTooltip((foodInfo == null) ? string.Format(UI.TOOLTIPS.METERSCREEN_INVALID_FOOD_TYPE, item.Key) : $"{foodInfo.Name}: {GameUtil.GetFormattedCalories(item.Value * foodInfo.CaloriesPerUnit, GameUtil.TimeSlice.None, true)}", ToolTipStyle_Property);
 		}
-		return "";
+		return string.Empty;
 	}
 
 	private string OnRedAlertTooltip()
@@ -265,7 +265,7 @@ public class MeterScreen : KScreen, IRender1000ms
 		RedAlertTooltip.ClearMultiStringTooltip();
 		RedAlertTooltip.AddMultiStringTooltip(UI.TOOLTIPS.RED_ALERT_TITLE, ToolTipStyle_Header);
 		RedAlertTooltip.AddMultiStringTooltip(UI.TOOLTIPS.RED_ALERT_CONTENT, ToolTipStyle_Property);
-		return "";
+		return string.Empty;
 	}
 
 	private void RefreshStress()

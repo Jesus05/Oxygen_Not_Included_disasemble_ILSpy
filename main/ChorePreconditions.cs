@@ -25,18 +25,18 @@ public class ChorePreconditions
 		description = (string)DUPLICANTS.CHORES.PRECONDITIONS.HAS_URGE,
 		fn = (Chore.PreconditionFn)delegate(ref Chore.Precondition.Context context, object data)
 		{
-			if (context.chore.choreType.urge != null)
+			if (context.chore.choreType.urge == null)
 			{
-				foreach (Urge urge in context.consumerState.consumer.GetUrges())
-				{
-					if (context.chore.SatisfiesUrge(urge))
-					{
-						return true;
-					}
-				}
-				return false;
+				return true;
 			}
-			return true;
+			foreach (Urge urge in context.consumerState.consumer.GetUrges())
+			{
+				if (context.chore.SatisfiesUrge(urge))
+				{
+					return true;
+				}
+			}
+			return false;
 		}
 	};
 
@@ -98,26 +98,26 @@ public class ChorePreconditions
 						{
 							room2 = cavityForCell2.room;
 						}
-						if (room2 == null)
+						if (room2 != null)
 						{
-							return false;
+							return room2 == room;
 						}
-						return room2 == room;
-					}
-					if (!(context.chore is WorkChore<Tinkerable>))
-					{
 						return false;
 					}
-					CavityInfo cavityForCell3 = Game.Instance.roomProber.GetCavityForCell(Grid.PosToCell((context.chore as WorkChore<Tinkerable>).gameObject));
-					if (cavityForCell3 != null)
+					if (context.chore is WorkChore<Tinkerable>)
 					{
-						room2 = cavityForCell3.room;
-					}
-					if (room2 == null)
-					{
+						CavityInfo cavityForCell3 = Game.Instance.roomProber.GetCavityForCell(Grid.PosToCell((context.chore as WorkChore<Tinkerable>).gameObject));
+						if (cavityForCell3 != null)
+						{
+							room2 = cavityForCell3.room;
+						}
+						if (room2 != null)
+						{
+							return room2 == room;
+						}
 						return false;
 					}
-					return room2 == room;
+					return false;
 				}
 				foreach (Ownables owner in room.GetOwners())
 				{
@@ -138,11 +138,11 @@ public class ChorePreconditions
 		fn = (Chore.PreconditionFn)delegate(ref Chore.Precondition.Context context, object data)
 		{
 			Assignable assignable2 = (Assignable)data;
-			if (!Game.Instance.assignmentManager.GetPreferredAssignables(context.consumerState.assignables, assignable2.slot).Contains(assignable2))
+			if (Game.Instance.assignmentManager.GetPreferredAssignables(context.consumerState.assignables, assignable2.slot).Contains(assignable2))
 			{
-				return false;
+				return true;
 			}
-			return true;
+			return false;
 		}
 	};
 
@@ -153,19 +153,19 @@ public class ChorePreconditions
 		fn = (Chore.PreconditionFn)delegate(ref Chore.Precondition.Context context, object data)
 		{
 			Assignable assignable = (Assignable)data;
-			if (!Game.Instance.assignmentManager.GetPreferredAssignables(context.consumerState.assignables, assignable.slot).Contains(assignable))
+			if (Game.Instance.assignmentManager.GetPreferredAssignables(context.consumerState.assignables, assignable.slot).Contains(assignable))
 			{
-				PeeChoreMonitor.Instance sMI4 = context.consumerState.gameObject.GetSMI<PeeChoreMonitor.Instance>();
-				return sMI4?.IsInsideState(sMI4.sm.critical) ?? false;
+				return true;
 			}
-			return true;
+			PeeChoreMonitor.Instance sMI4 = context.consumerState.gameObject.GetSMI<PeeChoreMonitor.Instance>();
+			return sMI4?.IsInsideState(sMI4.sm.critical) ?? false;
 		}
 	};
 
 	public Chore.Precondition IsNotTransferArm = new Chore.Precondition
 	{
 		id = "IsNotTransferArm",
-		description = "",
+		description = string.Empty,
 		fn = (Chore.PreconditionFn)delegate(ref Chore.Precondition.Context context, object data)
 		{
 			return !context.consumerState.hasSolidTransferArm;
@@ -179,24 +179,24 @@ public class ChorePreconditions
 		fn = (Chore.PreconditionFn)delegate(ref Chore.Precondition.Context context, object data)
 		{
 			MinionResume resume = context.consumerState.resume;
-			if ((bool)resume)
+			if (!(bool)resume)
 			{
-				if (!(data is SkillPerk))
-				{
-					if (!(data is HashedString))
-					{
-						if (!(data is string))
-						{
-							return false;
-						}
-						HashedString perkId = (string)data;
-						return resume.HasPerk(perkId);
-					}
-					HashedString perkId2 = (HashedString)data;
-					return resume.HasPerk(perkId2);
-				}
+				return false;
+			}
+			if (data is SkillPerk)
+			{
 				SkillPerk perk = data as SkillPerk;
 				return resume.HasPerk(perk);
+			}
+			if (data is HashedString)
+			{
+				HashedString perkId = (HashedString)data;
+				return resume.HasPerk(perkId);
+			}
+			if (data is string)
+			{
+				HashedString perkId2 = (string)data;
+				return resume.HasPerk(perkId2);
 			}
 			return false;
 		}
@@ -209,34 +209,34 @@ public class ChorePreconditions
 		sortOrder = -1,
 		fn = (Chore.PreconditionFn)delegate(ref Chore.Precondition.Context context, object data)
 		{
-			if (!context.isAttemptingOverride)
+			if (context.isAttemptingOverride)
 			{
-				if (!context.skipMoreSatisfyingEarlyPrecondition)
-				{
-					if (!context.consumerState.selectable.IsSelected)
-					{
-						Chore currentChore3 = context.consumerState.choreDriver.GetCurrentChore();
-						if (currentChore3 == null)
-						{
-							return true;
-						}
-						if (context.masterPriority.priority_class == currentChore3.masterPriority.priority_class)
-						{
-							if ((Object)context.consumerState.consumer != (Object)null && context.personalPriority != context.consumerState.consumer.GetPersonalPriority(currentChore3.choreType))
-							{
-								return context.personalPriority > context.consumerState.consumer.GetPersonalPriority(currentChore3.choreType);
-							}
-							if (context.masterPriority.priority_value == currentChore3.masterPriority.priority_value)
-							{
-								return context.priority > currentChore3.choreType.priority;
-							}
-							return context.masterPriority.priority_value > currentChore3.masterPriority.priority_value;
-						}
-						return context.masterPriority.priority_class > currentChore3.masterPriority.priority_class;
-					}
-					return true;
-				}
 				return true;
+			}
+			if (context.skipMoreSatisfyingEarlyPrecondition)
+			{
+				return true;
+			}
+			if (context.consumerState.selectable.IsSelected)
+			{
+				return true;
+			}
+			Chore currentChore3 = context.consumerState.choreDriver.GetCurrentChore();
+			if (currentChore3 != null)
+			{
+				if (context.masterPriority.priority_class != currentChore3.masterPriority.priority_class)
+				{
+					return context.masterPriority.priority_class > currentChore3.masterPriority.priority_class;
+				}
+				if ((Object)context.consumerState.consumer != (Object)null && context.personalPriority != context.consumerState.consumer.GetPersonalPriority(currentChore3.choreType))
+				{
+					return context.personalPriority > context.consumerState.consumer.GetPersonalPriority(currentChore3.choreType);
+				}
+				if (context.masterPriority.priority_value != currentChore3.masterPriority.priority_value)
+				{
+					return context.masterPriority.priority_value > currentChore3.masterPriority.priority_value;
+				}
+				return context.priority > currentChore3.choreType.priority;
 			}
 			return true;
 		}
@@ -249,30 +249,30 @@ public class ChorePreconditions
 		sortOrder = 10000,
 		fn = (Chore.PreconditionFn)delegate(ref Chore.Precondition.Context context, object data)
 		{
-			if (!context.isAttemptingOverride)
+			if (context.isAttemptingOverride)
 			{
-				if (context.consumerState.selectable.IsSelected)
+				return true;
+			}
+			if (!context.consumerState.selectable.IsSelected)
+			{
+				return true;
+			}
+			Chore currentChore2 = context.consumerState.choreDriver.GetCurrentChore();
+			if (currentChore2 != null)
+			{
+				if (context.masterPriority.priority_class != currentChore2.masterPriority.priority_class)
 				{
-					Chore currentChore2 = context.consumerState.choreDriver.GetCurrentChore();
-					if (currentChore2 == null)
-					{
-						return true;
-					}
-					if (context.masterPriority.priority_class == currentChore2.masterPriority.priority_class)
-					{
-						if ((Object)context.consumerState.consumer != (Object)null && context.personalPriority != context.consumerState.consumer.GetPersonalPriority(currentChore2.choreType))
-						{
-							return context.personalPriority > context.consumerState.consumer.GetPersonalPriority(currentChore2.choreType);
-						}
-						if (context.masterPriority.priority_value == currentChore2.masterPriority.priority_value)
-						{
-							return context.priority > currentChore2.choreType.priority;
-						}
-						return context.masterPriority.priority_value > currentChore2.masterPriority.priority_value;
-					}
 					return context.masterPriority.priority_class > currentChore2.masterPriority.priority_class;
 				}
-				return true;
+				if ((Object)context.consumerState.consumer != (Object)null && context.personalPriority != context.consumerState.consumer.GetPersonalPriority(currentChore2.choreType))
+				{
+					return context.personalPriority > context.consumerState.consumer.GetPersonalPriority(currentChore2.choreType);
+				}
+				if (context.masterPriority.priority_value != currentChore2.masterPriority.priority_value)
+				{
+					return context.masterPriority.priority_value > currentChore2.masterPriority.priority_value;
+				}
+				return context.priority > currentChore2.choreType.priority;
 			}
 			return true;
 		}
@@ -285,19 +285,19 @@ public class ChorePreconditions
 		fn = (Chore.PreconditionFn)delegate(ref Chore.Precondition.Context context, object data)
 		{
 			KMonoBehaviour kMonoBehaviour2 = (KMonoBehaviour)data;
-			if (!((Object)context.consumerState.consumer == (Object)null))
+			if ((Object)context.consumerState.consumer == (Object)null)
 			{
-				if (!((Object)context.consumerState.navigator == (Object)null))
-				{
-					if (!((Object)kMonoBehaviour2 == (Object)null))
-					{
-						return context.consumerState.navigator.CanReach(kMonoBehaviour2.GetComponent<Chattable>());
-					}
-					return false;
-				}
 				return false;
 			}
-			return false;
+			if ((Object)context.consumerState.navigator == (Object)null)
+			{
+				return false;
+			}
+			if ((Object)kMonoBehaviour2 == (Object)null)
+			{
+				return false;
+			}
+			return context.consumerState.navigator.CanReach(kMonoBehaviour2.GetComponent<Chattable>());
 		}
 	};
 
@@ -307,11 +307,11 @@ public class ChorePreconditions
 		description = (string)DUPLICANTS.CHORES.PRECONDITIONS.IS_NOT_RED_ALERT,
 		fn = (Chore.PreconditionFn)delegate(ref Chore.Precondition.Context context, object data)
 		{
-			if (context.chore.masterPriority.priority_class != PriorityScreen.PriorityClass.topPriority)
+			if (context.chore.masterPriority.priority_class == PriorityScreen.PriorityClass.topPriority)
 			{
-				return !VignetteManager.Instance.Get().IsRedAlert();
+				return true;
 			}
-			return true;
+			return !VignetteManager.Instance.Get().IsRedAlert();
 		}
 	};
 
@@ -321,12 +321,12 @@ public class ChorePreconditions
 		description = (string)DUPLICANTS.CHORES.PRECONDITIONS.IS_SCHEDULED_TIME,
 		fn = (Chore.PreconditionFn)delegate(ref Chore.Precondition.Context context, object data)
 		{
-			if (!VignetteManager.Instance.Get().IsRedAlert())
+			if (VignetteManager.Instance.Get().IsRedAlert())
 			{
-				ScheduleBlockType type = (ScheduleBlockType)data;
-				return context.consumerState.scheduleBlock?.IsAllowed(type) ?? true;
+				return true;
 			}
-			return true;
+			ScheduleBlockType type = (ScheduleBlockType)data;
+			return context.consumerState.scheduleBlock?.IsAllowed(type) ?? true;
 		}
 	};
 
@@ -336,20 +336,20 @@ public class ChorePreconditions
 		description = (string)DUPLICANTS.CHORES.PRECONDITIONS.CAN_MOVE_TO,
 		fn = (Chore.PreconditionFn)delegate(ref Chore.Precondition.Context context, object data)
 		{
-			if (!((Object)context.consumerState.consumer == (Object)null))
+			if ((Object)context.consumerState.consumer == (Object)null)
 			{
-				KMonoBehaviour kMonoBehaviour = (KMonoBehaviour)data;
-				if (!((Object)kMonoBehaviour == (Object)null))
-				{
-					IApproachable approachable = (IApproachable)kMonoBehaviour;
-					if (!context.consumerState.consumer.GetNavigationCost(approachable, out int cost))
-					{
-						return false;
-					}
-					context.cost += cost;
-					return true;
-				}
 				return false;
+			}
+			KMonoBehaviour kMonoBehaviour = (KMonoBehaviour)data;
+			if ((Object)kMonoBehaviour == (Object)null)
+			{
+				return false;
+			}
+			IApproachable approachable = (IApproachable)kMonoBehaviour;
+			if (context.consumerState.consumer.GetNavigationCost(approachable, out int cost))
+			{
+				context.cost += cost;
+				return true;
 			}
 			return false;
 		}
@@ -362,23 +362,23 @@ public class ChorePreconditions
 		fn = (Chore.PreconditionFn)delegate(ref Chore.Precondition.Context context, object data)
 		{
 			Pickupable pickupable = (Pickupable)data;
-			if (!((Object)pickupable == (Object)null))
+			if ((Object)pickupable == (Object)null)
 			{
-				if (!((Object)context.consumerState.consumer == (Object)null))
-				{
-					if (!pickupable.HasTag(GameTags.StoredPrivate))
-					{
-						if (pickupable.CouldBePickedUpByMinion(context.consumerState.gameObject))
-						{
-							return context.consumerState.consumer.CanReach(pickupable);
-						}
-						return false;
-					}
-					return false;
-				}
 				return false;
 			}
-			return false;
+			if ((Object)context.consumerState.consumer == (Object)null)
+			{
+				return false;
+			}
+			if (pickupable.HasTag(GameTags.StoredPrivate))
+			{
+				return false;
+			}
+			if (!pickupable.CouldBePickedUpByMinion(context.consumerState.gameObject))
+			{
+				return false;
+			}
+			return context.consumerState.consumer.CanReach(pickupable);
 		}
 	};
 
@@ -388,12 +388,12 @@ public class ChorePreconditions
 		description = (string)DUPLICANTS.CHORES.PRECONDITIONS.IS_AWAKE,
 		fn = (Chore.PreconditionFn)delegate(ref Chore.Precondition.Context context, object data)
 		{
-			if (!((Object)context.consumerState.consumer == (Object)null))
+			if ((Object)context.consumerState.consumer == (Object)null)
 			{
-				StaminaMonitor.Instance sMI3 = context.consumerState.consumer.GetSMI<StaminaMonitor.Instance>();
-				return !sMI3.IsInsideState(sMI3.sm.sleepy.sleeping);
+				return false;
 			}
-			return false;
+			StaminaMonitor.Instance sMI3 = context.consumerState.consumer.GetSMI<StaminaMonitor.Instance>();
+			return !sMI3.IsInsideState(sMI3.sm.sleepy.sleeping);
 		}
 	};
 
@@ -403,15 +403,15 @@ public class ChorePreconditions
 		description = (string)DUPLICANTS.CHORES.PRECONDITIONS.IS_STANDING,
 		fn = (Chore.PreconditionFn)delegate(ref Chore.Precondition.Context context, object data)
 		{
-			if (!((Object)context.consumerState.consumer == (Object)null))
+			if ((Object)context.consumerState.consumer == (Object)null)
 			{
-				if (!((Object)context.consumerState.navigator == (Object)null))
-				{
-					return context.consumerState.navigator.CurrentNavType == NavType.Floor;
-				}
 				return false;
 			}
-			return false;
+			if ((Object)context.consumerState.navigator == (Object)null)
+			{
+				return false;
+			}
+			return context.consumerState.navigator.CurrentNavType == NavType.Floor;
 		}
 	};
 
@@ -421,15 +421,15 @@ public class ChorePreconditions
 		description = (string)DUPLICANTS.CHORES.PRECONDITIONS.IS_MOVING,
 		fn = (Chore.PreconditionFn)delegate(ref Chore.Precondition.Context context, object data)
 		{
-			if (!((Object)context.consumerState.consumer == (Object)null))
+			if ((Object)context.consumerState.consumer == (Object)null)
 			{
-				if (!((Object)context.consumerState.navigator == (Object)null))
-				{
-					return context.consumerState.navigator.IsMoving();
-				}
 				return false;
 			}
-			return false;
+			if ((Object)context.consumerState.navigator == (Object)null)
+			{
+				return false;
+			}
+			return context.consumerState.navigator.IsMoving();
 		}
 	};
 
@@ -439,15 +439,15 @@ public class ChorePreconditions
 		description = (string)DUPLICANTS.CHORES.PRECONDITIONS.IS_OFF_LADDER,
 		fn = (Chore.PreconditionFn)delegate(ref Chore.Precondition.Context context, object data)
 		{
-			if (!((Object)context.consumerState.consumer == (Object)null))
+			if ((Object)context.consumerState.consumer == (Object)null)
 			{
-				if (!((Object)context.consumerState.navigator == (Object)null))
-				{
-					return context.consumerState.navigator.CurrentNavType != NavType.Ladder && context.consumerState.navigator.CurrentNavType != NavType.Pole;
-				}
 				return false;
 			}
-			return false;
+			if ((Object)context.consumerState.navigator == (Object)null)
+			{
+				return false;
+			}
+			return context.consumerState.navigator.CurrentNavType != NavType.Ladder && context.consumerState.navigator.CurrentNavType != NavType.Pole;
 		}
 	};
 
@@ -457,15 +457,15 @@ public class ChorePreconditions
 		description = (string)DUPLICANTS.CHORES.PRECONDITIONS.NOT_IN_TUBE,
 		fn = (Chore.PreconditionFn)delegate(ref Chore.Precondition.Context context, object data)
 		{
-			if (!((Object)context.consumerState.consumer == (Object)null))
+			if ((Object)context.consumerState.consumer == (Object)null)
 			{
-				if (!((Object)context.consumerState.navigator == (Object)null))
-				{
-					return context.consumerState.navigator.CurrentNavType != NavType.Tube;
-				}
 				return false;
 			}
-			return false;
+			if ((Object)context.consumerState.navigator == (Object)null)
+			{
+				return false;
+			}
+			return context.consumerState.navigator.CurrentNavType != NavType.Tube;
 		}
 	};
 
@@ -542,15 +542,15 @@ public class ChorePreconditions
 		fn = (Chore.PreconditionFn)delegate(ref Chore.Precondition.Context context, object data)
 		{
 			GameObject y = (GameObject)data;
-			if (!((Object)context.consumerState.consumer == (Object)null))
+			if ((Object)context.consumerState.consumer == (Object)null)
 			{
-				if (!((Object)context.consumerState.gameObject == (Object)y))
-				{
-					return true;
-				}
 				return false;
 			}
-			return false;
+			if ((Object)context.consumerState.gameObject == (Object)y)
+			{
+				return false;
+			}
+			return true;
 		}
 	};
 
@@ -602,20 +602,20 @@ public class ChorePreconditions
 		description = (string)DUPLICANTS.CHORES.PRECONDITIONS.CAN_DO_RECREATION,
 		fn = (Chore.PreconditionFn)delegate(ref Chore.Precondition.Context context, object data)
 		{
-			if (!((Object)context.consumerState.consumer == (Object)null))
+			if ((Object)context.consumerState.consumer == (Object)null)
 			{
-				IWorkerPrioritizable workerPrioritizable = data as IWorkerPrioritizable;
-				if (workerPrioritizable != null)
-				{
-					int priority = 0;
-					if (!workerPrioritizable.GetWorkerPriority(context.consumerState.worker, out priority))
-					{
-						return false;
-					}
-					context.consumerPriority += priority;
-					return true;
-				}
 				return false;
+			}
+			IWorkerPrioritizable workerPrioritizable = data as IWorkerPrioritizable;
+			if (workerPrioritizable == null)
+			{
+				return false;
+			}
+			int priority = 0;
+			if (workerPrioritizable.GetWorkerPriority(context.consumerState.worker, out priority))
+			{
+				context.consumerPriority += priority;
+				return true;
 			}
 			return false;
 		}

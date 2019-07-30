@@ -137,39 +137,39 @@ public class EmptyConduitWorkable : Workable
 
 	protected override bool OnWorkTick(Worker worker, float dt)
 	{
-		if (elapsedTime != -1f)
+		if (elapsedTime == -1f)
 		{
-			bool result = false;
-			elapsedTime += dt;
-			if (!emptiedPipe)
-			{
-				if (elapsedTime > 4f)
-				{
-					EmptyPipeContents();
-					emptiedPipe = true;
-					elapsedTime = 0f;
-				}
-			}
-			else if (elapsedTime > 2f)
-			{
-				int cell = Grid.PosToCell(base.transform.GetPosition());
-				if (GetFlowManager().GetContents(cell).mass > 0f)
-				{
-					elapsedTime = 0f;
-					emptiedPipe = false;
-				}
-				else
-				{
-					CleanUpVisualization();
-					chore = null;
-					result = true;
-					shouldShowSkillPerkStatusItem = false;
-					UpdateStatusItem(null);
-				}
-			}
-			return result;
+			return true;
 		}
-		return true;
+		bool result = false;
+		elapsedTime += dt;
+		if (!emptiedPipe)
+		{
+			if (elapsedTime > 4f)
+			{
+				EmptyPipeContents();
+				emptiedPipe = true;
+				elapsedTime = 0f;
+			}
+		}
+		else if (elapsedTime > 2f)
+		{
+			int cell = Grid.PosToCell(base.transform.GetPosition());
+			if (GetFlowManager().GetContents(cell).mass > 0f)
+			{
+				elapsedTime = 0f;
+				emptiedPipe = false;
+			}
+			else
+			{
+				CleanUpVisualization();
+				chore = null;
+				result = true;
+				shouldShowSkillPerkStatusItem = false;
+				UpdateStatusItem(null);
+			}
+		}
+		return result;
 	}
 
 	public void EmptyPipeContents()

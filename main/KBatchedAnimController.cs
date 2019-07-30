@@ -8,13 +8,13 @@ using UnityEngine.UI;
 public class KBatchedAnimController : KAnimControllerBase, KAnimConverter.IAnimConverter
 {
 	[NonSerialized]
-	protected bool _forceRebuild = false;
+	protected bool _forceRebuild;
 
 	private Vector3 lastPos = Vector3.zero;
 
 	private Vector2I lastChunkXY = KBatchedAnimUpdater.INVALID_CHUNK_ID;
 
-	private KAnimBatch batch = null;
+	private KAnimBatch batch;
 
 	public float animScale = 0.005f;
 
@@ -33,21 +33,21 @@ public class KBatchedAnimController : KAnimControllerBase, KAnimConverter.IAnimC
 
 	public Grid.SceneLayer sceneLayer;
 
-	private RectTransform rt = null;
+	private RectTransform rt;
 
 	private Vector3 screenOffset = new Vector3(0f, 0f, 0f);
 
 	public Matrix2x3 navMatrix = Matrix2x3.identity;
 
-	private CanvasScaler scaler = null;
+	private CanvasScaler scaler;
 
 	public bool setScaleFromAnim = true;
 
 	public Vector2 animOverrideSize = Vector2.one;
 
-	private Canvas rootCanvas = null;
+	private Canvas rootCanvas;
 
-	public bool isMovable = false;
+	public bool isMovable;
 
 	[CompilerGenerated]
 	private static Action<Transform, bool> _003C_003Ef__mg_0024cache0;
@@ -123,11 +123,11 @@ public class KBatchedAnimController : KAnimControllerBase, KAnimConverter.IAnimC
 	public Vector2I GetCellXY()
 	{
 		Vector3 positionIncludingOffset = base.PositionIncludingOffset;
-		if (Grid.CellSizeInMeters != 0f)
+		if (Grid.CellSizeInMeters == 0f)
 		{
-			return Grid.PosToXY(positionIncludingOffset);
+			return new Vector2I((int)positionIncludingOffset.x, (int)positionIncludingOffset.y);
 		}
-		return new Vector2I((int)positionIncludingOffset.x, (int)positionIncludingOffset.y);
+		return Grid.PosToXY(positionIncludingOffset);
 	}
 
 	public float GetZ()
@@ -401,19 +401,19 @@ public class KBatchedAnimController : KAnimControllerBase, KAnimConverter.IAnimC
 	private Canvas GetRootCanvas()
 	{
 		Canvas canvas = null;
-		if (!((UnityEngine.Object)rt == (UnityEngine.Object)null))
+		if ((UnityEngine.Object)rt == (UnityEngine.Object)null)
 		{
-			RectTransform component = rt.parent.GetComponent<RectTransform>();
-			while ((UnityEngine.Object)component != (UnityEngine.Object)null)
-			{
-				canvas = component.GetComponent<Canvas>();
-				if ((UnityEngine.Object)canvas != (UnityEngine.Object)null && canvas.isRootCanvas)
-				{
-					return canvas;
-				}
-				component = component.parent.GetComponent<RectTransform>();
-			}
 			return null;
+		}
+		RectTransform component = rt.parent.GetComponent<RectTransform>();
+		while ((UnityEngine.Object)component != (UnityEngine.Object)null)
+		{
+			canvas = component.GetComponent<Canvas>();
+			if ((UnityEngine.Object)canvas != (UnityEngine.Object)null && canvas.isRootCanvas)
+			{
+				return canvas;
+			}
+			component = component.parent.GetComponent<RectTransform>();
 		}
 		return null;
 	}
@@ -666,17 +666,17 @@ public class KBatchedAnimController : KAnimControllerBase, KAnimConverter.IAnimC
 
 	public bool ApplySymbolOverrides()
 	{
-		if (!((UnityEngine.Object)symbolOverrideController != (UnityEngine.Object)null))
+		if ((UnityEngine.Object)symbolOverrideController != (UnityEngine.Object)null)
 		{
-			return false;
+			if (symbolOverrideControllerVersion != symbolOverrideController.version || symbolOverrideController.applySymbolOverridesEveryFrame)
+			{
+				symbolOverrideControllerVersion = symbolOverrideController.version;
+				symbolOverrideController.ApplyOverrides();
+			}
+			symbolOverrideController.ApplyAtlases();
+			return true;
 		}
-		if (symbolOverrideControllerVersion != symbolOverrideController.version || symbolOverrideController.applySymbolOverridesEveryFrame)
-		{
-			symbolOverrideControllerVersion = symbolOverrideController.version;
-			symbolOverrideController.ApplyOverrides();
-		}
-		symbolOverrideController.ApplyAtlases();
-		return true;
+		return false;
 	}
 
 	public void SetSymbolOverride(int symbol_idx, KAnim.Build.SymbolFrameInstance symbol_frame_instance)

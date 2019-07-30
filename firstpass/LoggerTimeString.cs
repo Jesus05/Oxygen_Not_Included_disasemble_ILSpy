@@ -10,7 +10,7 @@ public struct LoggerTimeString
 
 	public string GetName()
 	{
-		return "";
+		return string.Empty;
 	}
 
 	public void SetName(string name)

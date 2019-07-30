@@ -19,15 +19,15 @@ namespace KMod
 
 		public static bool ShowErrors(List<Event> events)
 		{
-			if (Global.Instance.modManager.events.Count != 0)
+			if (Global.Instance.modManager.events.Count == 0)
 			{
-				GameObject parent = GameObject.Find("Canvas");
-				ModErrorsScreen modErrorsScreen = Util.KInstantiateUI<ModErrorsScreen>(Global.Instance.modErrorsPrefab, parent, false);
-				modErrorsScreen.Initialize(events);
-				modErrorsScreen.gameObject.SetActive(true);
-				return true;
+				return false;
 			}
-			return false;
+			GameObject parent = GameObject.Find("Canvas");
+			ModErrorsScreen modErrorsScreen = Util.KInstantiateUI<ModErrorsScreen>(Global.Instance.modErrorsPrefab, parent, false);
+			modErrorsScreen.Initialize(events);
+			modErrorsScreen.gameObject.SetActive(true);
+			return true;
 		}
 
 		private void Initialize(List<Event> events)

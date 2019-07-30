@@ -15,7 +15,7 @@ public class Conduit : KMonoBehaviour, IFirstFrameCallback, IHaveUtilityNetworkM
 
 	public ConduitType type;
 
-	private System.Action firstFrameCallback = null;
+	private System.Action firstFrameCallback;
 
 	private static readonly EventSystem.IntraObjectHandler<Conduit> OnHighlightedDelegate = new EventSystem.IntraObjectHandler<Conduit>(delegate(Conduit component, object data)
 	{

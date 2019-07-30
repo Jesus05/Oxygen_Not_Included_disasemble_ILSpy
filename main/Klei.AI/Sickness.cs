@@ -49,7 +49,7 @@ namespace Klei.AI
 
 		private float sicknessDuration = 600f;
 
-		public float fatalityDuration = 0f;
+		public float fatalityDuration;
 
 		public HashedString id;
 
@@ -174,7 +174,7 @@ namespace Klei.AI
 					}
 				}
 			}
-			list.Add(new Descriptor(Strings.Get(descriptiveSymptoms), "", Descriptor.DescriptorType.Information, false));
+			list.Add(new Descriptor(Strings.Get(descriptiveSymptoms), string.Empty, Descriptor.DescriptorType.Information, false));
 			return list;
 		}
 	}

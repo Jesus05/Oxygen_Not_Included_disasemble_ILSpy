@@ -40,7 +40,7 @@ public class Wire : KMonoBehaviour, IDisconnectable, IFirstFrameCallback, IWatta
 
 	private static StatusItem WireMaxWattageStatus = null;
 
-	private System.Action firstFrameCallback = null;
+	private System.Action firstFrameCallback;
 
 	public bool IsConnected
 	{
@@ -155,7 +155,7 @@ public class Wire : KMonoBehaviour, IDisconnectable, IFirstFrameCallback, IWatta
 		GetComponent<KPrefabID>().AddTag(GameTags.Wires, false);
 		if (WireCircuitStatus == null)
 		{
-			WireCircuitStatus = new StatusItem("WireCircuitStatus", "BUILDING", "", StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, true, 129022).SetResolveStringCallback(delegate(string str, object data)
+			WireCircuitStatus = new StatusItem("WireCircuitStatus", "BUILDING", string.Empty, StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, true, 129022).SetResolveStringCallback(delegate(string str, object data)
 			{
 				Wire wire2 = (Wire)data;
 				int cell = Grid.PosToCell(wire2.transform.GetPosition());
@@ -175,7 +175,7 @@ public class Wire : KMonoBehaviour, IDisconnectable, IFirstFrameCallback, IWatta
 		}
 		if (WireMaxWattageStatus == null)
 		{
-			WireMaxWattageStatus = new StatusItem("WireMaxWattageStatus", "BUILDING", "", StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, true, 129022).SetResolveStringCallback(delegate(string str, object data)
+			WireMaxWattageStatus = new StatusItem("WireMaxWattageStatus", "BUILDING", string.Empty, StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, true, 129022).SetResolveStringCallback(delegate(string str, object data)
 			{
 				Wire wire = (Wire)data;
 				GameUtil.WattageFormatterUnit unit = GameUtil.WattageFormatterUnit.Watts;

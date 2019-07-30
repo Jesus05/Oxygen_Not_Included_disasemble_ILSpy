@@ -16,21 +16,21 @@ namespace YamlDotNet.Serialization.ObjectGraphVisitors
 		bool IObjectGraphVisitor<Nothing>.Enter(IObjectDescriptor value, Nothing context)
 		{
 			IYamlTypeConverter yamlTypeConverter = typeConverters.FirstOrDefault((IYamlTypeConverter t) => t.Accepts(value.Type));
-			if (yamlTypeConverter == null)
+			if (yamlTypeConverter != null)
 			{
-				IYamlConvertible yamlConvertible = value.Value as IYamlConvertible;
-				if (yamlConvertible == null)
-				{
-					IYamlSerializable yamlSerializable = value.Value as IYamlSerializable;
-					if (yamlSerializable == null)
-					{
-						return Enter(value);
-					}
-					return false;
-				}
 				return false;
 			}
-			return false;
+			IYamlConvertible yamlConvertible = value.Value as IYamlConvertible;
+			if (yamlConvertible != null)
+			{
+				return false;
+			}
+			IYamlSerializable yamlSerializable = value.Value as IYamlSerializable;
+			if (yamlSerializable != null)
+			{
+				return false;
+			}
+			return Enter(value);
 		}
 
 		bool IObjectGraphVisitor<Nothing>.EnterMapping(IPropertyDescriptor key, IObjectDescriptor value, Nothing context)

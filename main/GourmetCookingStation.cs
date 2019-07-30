@@ -48,7 +48,7 @@ public class GourmetCookingStation : ComplexFabricator, IEffectDescriptor
 
 	private static readonly Operational.Flag gourmetCookingStationFlag = new Operational.Flag("gourmet_cooking_station", Operational.Flag.Type.Requirement);
 
-	public float GAS_CONSUMPTION_RATE = 0f;
+	public float GAS_CONSUMPTION_RATE;
 
 	public float GAS_CONVERSION_RATIO = 0.1f;
 

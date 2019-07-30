@@ -252,7 +252,7 @@ public class JobsTableScreen : TableScreen
 		{
 			componentInChildren.AddMultiStringTooltip(string.Format(UI.JOBSSCREEN.CANNOT_ADJUST_PRIORITY, identity.GetProperName(), (identity as StoredMinionIdentity).GetStorageReason()), null);
 		}
-		return "";
+		return string.Empty;
 	}
 
 	private string HoverChangeColumnPriorityButton(object widget_go_obj)
@@ -328,19 +328,19 @@ public class JobsTableScreen : TableScreen
 			{
 				return 0;
 			}
-			if (!((UnityEngine.Object)minionIdentity == (UnityEngine.Object)null))
+			if ((UnityEngine.Object)minionIdentity == (UnityEngine.Object)null)
 			{
-				if (!((UnityEngine.Object)minionIdentity2 == (UnityEngine.Object)null))
-				{
-					ChoreConsumer component = minionIdentity.GetComponent<ChoreConsumer>();
-					ChoreConsumer component2 = minionIdentity2.GetComponent<ChoreConsumer>();
-					int personalPriority = component.GetPersonalPriority(chore_group);
-					int personalPriority2 = component2.GetPersonalPriority(chore_group);
-					return personalPriority2 - personalPriority;
-				}
+				return -1;
+			}
+			if ((UnityEngine.Object)minionIdentity2 == (UnityEngine.Object)null)
+			{
 				return 1;
 			}
-			return -1;
+			ChoreConsumer component = minionIdentity.GetComponent<ChoreConsumer>();
+			ChoreConsumer component2 = minionIdentity2.GetComponent<ChoreConsumer>();
+			int personalPriority = component.GetPersonalPriority(chore_group);
+			int personalPriority2 = component2.GetPersonalPriority(chore_group);
+			return personalPriority2 - personalPriority;
 		};
 		SortRows();
 	}
@@ -902,7 +902,7 @@ public class JobsTableScreen : TableScreen
 		on_load_name_label(identity, widget_go);
 		if (identity != null)
 		{
-			string result = "";
+			string result = string.Empty;
 			ToolTip component = widget_go.GetComponent<ToolTip>();
 			if ((UnityEngine.Object)component != (UnityEngine.Object)null)
 			{

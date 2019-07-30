@@ -146,7 +146,7 @@ public class KIconToggleMenu : KScreen
 				ToolTip component2 = kToggle.GetComponent<ToolTip>();
 				if ((bool)component2)
 				{
-					if (toggleInfo.tooltipHeader != "")
+					if (toggleInfo.tooltipHeader != string.Empty)
 					{
 						component2.AddMultiStringTooltip(toggleInfo.tooltipHeader, (!((UnityEngine.Object)ToggleToolTipHeaderTextStyleSetting != (UnityEngine.Object)null)) ? ToggleToolTipTextStyleSetting : ToggleToolTipHeaderTextStyleSetting);
 						if ((UnityEngine.Object)ToggleToolTipHeaderTextStyleSetting == (UnityEngine.Object)null)

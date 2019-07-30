@@ -195,7 +195,7 @@ public class SolidTransferArm : StateMachineComponent<SolidTransferArm.SMInstanc
 
 	private bool rotation_complete;
 
-	private ArmAnim arm_anim = ArmAnim.Idle;
+	private ArmAnim arm_anim;
 
 	private HashSet<int> reachableCells = new HashSet<int>();
 
@@ -213,7 +213,7 @@ public class SolidTransferArm : StateMachineComponent<SolidTransferArm.SMInstanc
 
 	private static WorkItemCollection<BatchUpdateTask, BatchUpdateContext> batch_update_job = new WorkItemCollection<BatchUpdateTask, BatchUpdateContext>();
 
-	private int serial_no = 0;
+	private int serial_no;
 
 	private static HashedString HASH_ROTATION = "rotation";
 

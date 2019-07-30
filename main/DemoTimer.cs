@@ -17,13 +17,13 @@ public class DemoTimer : MonoBehaviour
 
 	private float duration;
 
-	private float elapsed = 0f;
+	private float elapsed;
 
-	private bool demoOver = false;
+	private bool demoOver;
 
 	private float beginTime = -1f;
 
-	public bool CountdownActive = false;
+	public bool CountdownActive;
 
 	private GameObject fadeOutScreen;
 

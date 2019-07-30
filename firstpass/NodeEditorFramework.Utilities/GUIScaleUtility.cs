@@ -58,7 +58,7 @@ namespace NodeEditorFramework.Utilities
 			if (type == null || property == null || method == null || method2 == null)
 			{
 				Debug.LogWarning("GUIScaleUtility cannot run on this system! Compability mode enabled. For you that means you're not able to use the Node Editor inside more than one group:( Please PM me (Seneral @UnityForums) so I can figure out what causes this! Thanks!");
-				Debug.LogWarning(((type != null) ? "" : "GUIClipType is Null, ") + ((property != null) ? "" : "topmostRect is Null, ") + ((method != null) ? "" : "GetTopRect is Null, ") + ((method2 != null) ? "" : "ClipRect is Null, "));
+				Debug.LogWarning(((type != null) ? string.Empty : "GUIClipType is Null, ") + ((property != null) ? string.Empty : "topmostRect is Null, ") + ((method != null) ? string.Empty : "GetTopRect is Null, ") + ((method2 != null) ? string.Empty : "ClipRect is Null, "));
 				compabilityMode = true;
 				initiated = true;
 			}
@@ -69,7 +69,7 @@ namespace NodeEditorFramework.Utilities
 				if (GetTopRectDelegate == null || topmostRectDelegate == null)
 				{
 					Debug.LogWarning("GUIScaleUtility cannot run on this system! Compability mode enabled. For you that means you're not able to use the Node Editor inside more than one group:( Please PM me (Seneral @UnityForums) so I can figure out what causes this! Thanks!");
-					Debug.LogWarning(((type != null) ? "" : "GUIClipType is Null, ") + ((property != null) ? "" : "topmostRect is Null, ") + ((method != null) ? "" : "GetTopRect is Null, ") + ((method2 != null) ? "" : "ClipRect is Null, "));
+					Debug.LogWarning(((type != null) ? string.Empty : "GUIClipType is Null, ") + ((property != null) ? string.Empty : "topmostRect is Null, ") + ((method != null) ? string.Empty : "GetTopRect is Null, ") + ((method2 != null) ? string.Empty : "ClipRect is Null, "));
 					compabilityMode = true;
 					initiated = true;
 				}
@@ -255,49 +255,49 @@ namespace NodeEditorFramework.Utilities
 
 		public static Vector2 ScaledToGUISpace(Vector2 scaledPosition)
 		{
-			if (rectStackGroups != null && rectStackGroups.Count != 0)
+			if (rectStackGroups == null || rectStackGroups.Count == 0)
 			{
-				List<Rect> list = rectStackGroups[rectStackGroups.Count - 1];
-				for (int i = 0; i < list.Count; i++)
-				{
-					scaledPosition -= list[i].position;
-				}
 				return scaledPosition;
+			}
+			List<Rect> list = rectStackGroups[rectStackGroups.Count - 1];
+			for (int i = 0; i < list.Count; i++)
+			{
+				scaledPosition -= list[i].position;
 			}
 			return scaledPosition;
 		}
 
 		public static Rect ScaledToGUISpace(Rect scaledRect)
 		{
-			if (rectStackGroups != null && rectStackGroups.Count != 0)
+			if (rectStackGroups == null || rectStackGroups.Count == 0)
 			{
-				scaledRect.position = ScaledToGUISpace(scaledRect.position);
 				return scaledRect;
 			}
+			scaledRect.position = ScaledToGUISpace(scaledRect.position);
 			return scaledRect;
 		}
 
 		public static Vector2 GUIToScaledSpace(Vector2 guiPosition)
 		{
-			if (rectStackGroups != null && rectStackGroups.Count != 0)
+			if (rectStackGroups == null || rectStackGroups.Count == 0)
 			{
-				List<Rect> list = rectStackGroups[rectStackGroups.Count - 1];
-				for (int i = 0; i < list.Count; i++)
-				{
-					guiPosition += list[i].position;
-				}
 				return guiPosition;
+			}
+			List<Rect> list = rectStackGroups[rectStackGroups.Count - 1];
+			for (int i = 0; i < list.Count; i++)
+			{
+				guiPosition += list[i].position;
 			}
 			return guiPosition;
 		}
 
 		public static Rect GUIToScaledSpace(Rect guiRect)
 		{
-			if (rectStackGroups != null && rectStackGroups.Count != 0)
+			if (rectStackGroups == null || rectStackGroups.Count == 0)
 			{
-				guiRect.position = GUIToScaledSpace(guiRect.position);
 				return guiRect;
 			}
+			guiRect.position = GUIToScaledSpace(guiRect.position);
 			return guiRect;
 		}
 

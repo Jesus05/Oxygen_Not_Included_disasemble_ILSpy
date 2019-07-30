@@ -106,37 +106,37 @@ public static class Util
 	public static Component RequireComponent(this GameObject go, string name)
 	{
 		Component component = go.GetComponent(name);
-		if (!((UnityEngine.Object)component == (UnityEngine.Object)null))
+		if ((UnityEngine.Object)component == (UnityEngine.Object)null)
 		{
-			InitializeComponent(component);
-			return component;
+			Debug.LogErrorFormat(go, "{0} '{1}' requires a component of type {2}!", go.GetType().ToString(), go.name, name);
+			return null;
 		}
-		Debug.LogErrorFormat(go, "{0} '{1}' requires a component of type {2}!", go.GetType().ToString(), go.name, name);
-		return null;
+		InitializeComponent(component);
+		return component;
 	}
 
 	public static T RequireComponent<T>(this Component cmp) where T : Component
 	{
 		T component = cmp.gameObject.GetComponent<T>();
-		if (!((UnityEngine.Object)component == (UnityEngine.Object)null))
+		if ((UnityEngine.Object)component == (UnityEngine.Object)null)
 		{
-			InitializeComponent(component);
-			return component;
+			Debug.LogErrorFormat(cmp.gameObject, "{0} '{1}' requires a component of type {2} as requested by {3}!", cmp.gameObject.GetType().ToString(), cmp.gameObject.name, typeof(T).ToString(), cmp.GetType().ToString());
+			return (T)null;
 		}
-		Debug.LogErrorFormat(cmp.gameObject, "{0} '{1}' requires a component of type {2} as requested by {3}!", cmp.gameObject.GetType().ToString(), cmp.gameObject.name, typeof(T).ToString(), cmp.GetType().ToString());
-		return (T)null;
+		InitializeComponent(component);
+		return component;
 	}
 
 	public static T RequireComponent<T>(this GameObject gameObject) where T : Component
 	{
 		T component = gameObject.GetComponent<T>();
-		if (!((UnityEngine.Object)component == (UnityEngine.Object)null))
+		if ((UnityEngine.Object)component == (UnityEngine.Object)null)
 		{
-			InitializeComponent(component);
-			return component;
+			Debug.LogErrorFormat(gameObject, "{0} '{1}' requires a component of type {2}!", gameObject.GetType().ToString(), gameObject.name, typeof(T).ToString());
+			return (T)null;
 		}
-		Debug.LogErrorFormat(gameObject, "{0} '{1}' requires a component of type {2}!", gameObject.GetType().ToString(), gameObject.name, typeof(T).ToString());
-		return (T)null;
+		InitializeComponent(component);
+		return component;
 	}
 
 	public static void SetLayerRecursively(this GameObject go, int layer)
@@ -215,58 +215,58 @@ public static class Util
 
 	public static GameObject KInstantiate(GameObject original, Vector3 position, Quaternion rotation, GameObject parent = null, string name = null, bool initialize_id = true, int gameLayer = 0)
 	{
-		if (!App.IsExiting)
+		if (App.IsExiting)
 		{
-			GameObject gameObject = null;
-			if ((UnityEngine.Object)original == (UnityEngine.Object)null)
+			return null;
+		}
+		GameObject gameObject = null;
+		if ((UnityEngine.Object)original == (UnityEngine.Object)null)
+		{
+			DebugUtil.LogWarningArgs("Missing prefab");
+		}
+		if ((UnityEngine.Object)gameObject == (UnityEngine.Object)null)
+		{
+			if ((UnityEngine.Object)original.GetComponent<RectTransform>() != (UnityEngine.Object)null && (UnityEngine.Object)parent != (UnityEngine.Object)null)
 			{
-				DebugUtil.LogWarningArgs("Missing prefab");
-			}
-			if ((UnityEngine.Object)gameObject == (UnityEngine.Object)null)
-			{
-				if ((UnityEngine.Object)original.GetComponent<RectTransform>() != (UnityEngine.Object)null && (UnityEngine.Object)parent != (UnityEngine.Object)null)
-				{
-					gameObject = UnityEngine.Object.Instantiate(original, position, rotation);
-					gameObject.transform.SetParent(parent.transform, true);
-				}
-				else
-				{
-					Transform parent2 = null;
-					if ((UnityEngine.Object)parent != (UnityEngine.Object)null)
-					{
-						parent2 = parent.transform;
-					}
-					gameObject = UnityEngine.Object.Instantiate(original, position, rotation, parent2);
-				}
-				if (gameLayer != 0)
-				{
-					gameObject.SetLayerRecursively(gameLayer);
-				}
-			}
-			if (name != null)
-			{
-				gameObject.name = name;
+				gameObject = UnityEngine.Object.Instantiate(original, position, rotation);
+				gameObject.transform.SetParent(parent.transform, true);
 			}
 			else
 			{
-				gameObject.name = original.name;
-			}
-			KPrefabID component = gameObject.GetComponent<KPrefabID>();
-			if ((UnityEngine.Object)component != (UnityEngine.Object)null)
-			{
-				if (initialize_id)
+				Transform parent2 = null;
+				if ((UnityEngine.Object)parent != (UnityEngine.Object)null)
 				{
-					component.InstanceID = KPrefabID.GetUniqueID();
-					KPrefabIDTracker.Get().Register(component);
+					parent2 = parent.transform;
 				}
-				KPrefabID component2 = original.GetComponent<KPrefabID>();
-				component.CopyTags(component2);
-				component.CopyInitFunctions(component2);
-				component.RunInstantiateFn();
+				gameObject = UnityEngine.Object.Instantiate(original, position, rotation, parent2);
 			}
-			return gameObject;
+			if (gameLayer != 0)
+			{
+				gameObject.SetLayerRecursively(gameLayer);
+			}
 		}
-		return null;
+		if (name != null)
+		{
+			gameObject.name = name;
+		}
+		else
+		{
+			gameObject.name = original.name;
+		}
+		KPrefabID component = gameObject.GetComponent<KPrefabID>();
+		if ((UnityEngine.Object)component != (UnityEngine.Object)null)
+		{
+			if (initialize_id)
+			{
+				component.InstanceID = KPrefabID.GetUniqueID();
+				KPrefabIDTracker.Get().Register(component);
+			}
+			KPrefabID component2 = original.GetComponent<KPrefabID>();
+			component.CopyTags(component2);
+			component.CopyInitFunctions(component2);
+			component.RunInstantiateFn();
+		}
+		return gameObject;
 	}
 
 	public static T KInstantiateUI<T>(GameObject original, GameObject parent = null, bool force_active = false) where T : Component
@@ -277,25 +277,25 @@ public static class Util
 
 	public static GameObject KInstantiateUI(GameObject original, GameObject parent = null, bool force_active = false)
 	{
-		if (!App.IsExiting)
+		if (App.IsExiting)
 		{
-			GameObject gameObject = null;
-			if ((UnityEngine.Object)original == (UnityEngine.Object)null)
-			{
-				DebugUtil.LogWarningArgs("Missing prefab");
-			}
-			if ((UnityEngine.Object)gameObject == (UnityEngine.Object)null)
-			{
-				gameObject = UnityEngine.Object.Instantiate(original, (!((UnityEngine.Object)parent != (UnityEngine.Object)null)) ? null : parent.transform, false);
-			}
-			gameObject.name = original.name;
-			if (force_active)
-			{
-				gameObject.SetActive(true);
-			}
-			return gameObject;
+			return null;
 		}
-		return null;
+		GameObject gameObject = null;
+		if ((UnityEngine.Object)original == (UnityEngine.Object)null)
+		{
+			DebugUtil.LogWarningArgs("Missing prefab");
+		}
+		if ((UnityEngine.Object)gameObject == (UnityEngine.Object)null)
+		{
+			gameObject = UnityEngine.Object.Instantiate(original, (!((UnityEngine.Object)parent != (UnityEngine.Object)null)) ? null : parent.transform, false);
+		}
+		gameObject.name = original.name;
+		if (force_active)
+		{
+			gameObject.SetActive(true);
+		}
+		return gameObject;
 	}
 
 	public static GameObject NewGameObject(GameObject parent, string name)
@@ -344,15 +344,15 @@ public static class Util
 
 	public static bool IsInputCharacterValid(char _char, bool isPath = false)
 	{
-		if (!defaultInvalidUserInputChars.Contains(_char))
+		if (defaultInvalidUserInputChars.Contains(_char))
 		{
-			if (!isPath && additionalInvalidUserInputChars.Contains(_char))
-			{
-				return false;
-			}
-			return true;
+			return false;
 		}
-		return false;
+		if (!isPath && additionalInvalidUserInputChars.Contains(_char))
+		{
+			return false;
+		}
+		return true;
 	}
 
 	public static void ScrubInputField(TMP_InputField inputField, bool isPath = false)
@@ -546,12 +546,12 @@ public static class Util
 
 	public static string GetKleiRootPath()
 	{
-		if (Application.platform != RuntimePlatform.WindowsPlayer && Application.platform != RuntimePlatform.WindowsEditor)
+		if (Application.platform == RuntimePlatform.WindowsPlayer || Application.platform == RuntimePlatform.WindowsEditor)
 		{
-			return defaultRootFolder;
+			string folderPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+			return Path.Combine(folderPath, "Klei");
 		}
-		string folderPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-		return Path.Combine(folderPath, "Klei");
+		return defaultRootFolder;
 	}
 
 	public static string GetTitleFolderName()
@@ -566,28 +566,28 @@ public static class Util
 
 	public static string RootFolder()
 	{
-		if (Application.platform != RuntimePlatform.WindowsPlayer && Application.platform != RuntimePlatform.WindowsEditor)
+		if (Application.platform == RuntimePlatform.WindowsPlayer || Application.platform == RuntimePlatform.WindowsEditor)
 		{
-			return GetKleiRootPath();
+			return Path.Combine(GetKleiRootPath(), GetTitleFolderName());
 		}
-		return Path.Combine(GetKleiRootPath(), GetTitleFolderName());
+		return GetKleiRootPath();
 	}
 
 	public static Transform FindTransformRecursive(Transform node, string name)
 	{
-		if (!(node.name == name))
+		if (node.name == name)
 		{
-			for (int i = 0; i < node.childCount; i++)
-			{
-				Transform transform = FindTransformRecursive(node.GetChild(i), name);
-				if ((UnityEngine.Object)transform != (UnityEngine.Object)null)
-				{
-					return transform;
-				}
-			}
-			return null;
+			return node;
 		}
-		return node;
+		for (int i = 0; i < node.childCount; i++)
+		{
+			Transform transform = FindTransformRecursive(node.GetChild(i), name);
+			if ((UnityEngine.Object)transform != (UnityEngine.Object)null)
+			{
+				return transform;
+			}
+		}
+		return null;
 	}
 
 	public static Vector3 ReadVector3(this IReader reader)

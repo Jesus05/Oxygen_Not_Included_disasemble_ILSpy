@@ -34,7 +34,7 @@ public class SkillMasteredMessage : Message
 
 	public override string GetTooltip()
 	{
-		return string.Format(MISC.NOTIFICATIONS.SKILL_POINT_EARNED.TOOLTIP, "");
+		return string.Format(MISC.NOTIFICATIONS.SKILL_POINT_EARNED.TOOLTIP, string.Empty);
 	}
 
 	public override bool IsValid()

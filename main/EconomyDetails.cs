@@ -79,11 +79,11 @@ public class EconomyDetails
 
 		public float Transform(Element element, float amount)
 		{
-			if (!(resource.tag == element.tag))
+			if (resource.tag == element.tag)
 			{
-				return 0f;
+				return ratio * amount;
 			}
-			return ratio * amount;
+			return 0f;
 		}
 	}
 
@@ -791,13 +791,13 @@ public class EconomyDetails
 				ComplexRecipe complexRecipe2 = ComplexRecipeManager.Get().recipes.Find((ComplexRecipe a) => a.FirstResult == tag);
 				if (complexRecipe2 == null)
 				{
-					goto IL_074a;
+					goto IL_0708;
 				}
 			}
-			goto IL_074a;
+			goto IL_0708;
 		}
-		goto IL_0d4a;
-		IL_074a:
+		goto IL_0cd4;
+		IL_0708:
 		if ((UnityEngine.Object)component11 != (UnityEngine.Object)null)
 		{
 			Resource resource4 = CreateResource(TagManager.Create(component11.cropVal.cropId), amountResourceType);
@@ -908,8 +908,8 @@ public class EconomyDetails
 			CollectDietTransformations(prefab_id);
 		}
 		transformations.Add(transformation);
-		goto IL_0d4a;
-		IL_0d4a:
+		goto IL_0cd4;
+		IL_0cd4:
 		return transformation;
 	}
 

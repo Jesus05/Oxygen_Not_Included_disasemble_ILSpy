@@ -102,17 +102,17 @@ namespace Satsuma
 
 		public IEnumerable<Arc> Arcs(ArcFilter filter = ArcFilter.All)
 		{
-			if (filter != 0)
+			if (filter == ArcFilter.All)
 			{
-				if (edgeCount != 0)
-				{
-					return from arc in arcs
-					where IsEdge(arc)
-					select arc;
-				}
+				return arcs;
+			}
+			if (edgeCount == 0)
+			{
 				return Enumerable.Empty<Arc>();
 			}
-			return arcs;
+			return from arc in arcs
+			where IsEdge(arc)
+			select arc;
 		}
 
 		private bool YieldArc(Node u, ArcFilter filter, Arc arc)
@@ -161,12 +161,12 @@ namespace Satsuma
 
 		public int ArcCount(Node u, Node v, ArcFilter filter = ArcFilter.All)
 		{
-			if (!(u != v))
+			if (u != v)
 			{
-				return 0;
+				Arc arc = MatchedArc(u);
+				return (arc != Arc.Invalid && arc == MatchedArc(v) && YieldArc(u, filter, arc)) ? 1 : 0;
 			}
-			Arc arc = MatchedArc(u);
-			return (arc != Arc.Invalid && arc == MatchedArc(v) && YieldArc(u, filter, arc)) ? 1 : 0;
+			return 0;
 		}
 
 		public bool HasNode(Node node)

@@ -159,7 +159,7 @@ public class Desalinator : StateMachineComponent<Desalinator.StatesInstance>
 	[Serialize]
 	public float _storageLeft = 1000f;
 
-	private ElementConverter[] converters = null;
+	private ElementConverter[] converters;
 
 	private static readonly EventSystem.IntraObjectHandler<Desalinator> OnConduitConnectionChangedDelegate = new EventSystem.IntraObjectHandler<Desalinator>(delegate(Desalinator component, object data)
 	{

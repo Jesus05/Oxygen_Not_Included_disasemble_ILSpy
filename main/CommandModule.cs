@@ -106,14 +106,14 @@ public class CommandModule : StateMachineComponent<CommandModule.StatesInstance>
 			});
 			grounded.waitingToRelease.ToggleStatusItem(Db.Get().BuildingStatusItems.DisembarkingDuplicant, (object)null).OnSignal(gantryChanged, grounded.awaitingAstronaut, delegate(StatesInstance smi)
 			{
-				if (!HasValidGantry(smi.gameObject))
+				if (HasValidGantry(smi.gameObject))
 				{
-					return false;
+					smi.master.ReleaseAstronaut(accumulatedPee.Get(smi));
+					accumulatedPee.Set(false, smi);
+					Game.Instance.userMenu.Refresh(smi.gameObject);
+					return true;
 				}
-				smi.master.ReleaseAstronaut(accumulatedPee.Get(smi));
-				accumulatedPee.Set(false, smi);
-				Game.Instance.userMenu.Refresh(smi.gameObject);
-				return true;
+				return false;
 			});
 			spaceborne.DefaultState(spaceborne.launch);
 			spaceborne.launch.Enter(delegate(StatesInstance smi)
@@ -134,7 +134,7 @@ public class CommandModule : StateMachineComponent<CommandModule.StatesInstance>
 
 	public RocketStats rocketStats;
 
-	private bool releasingAstronaut = false;
+	private bool releasingAstronaut;
 
 	private const Sim.Cell.Properties floorCellProperties = (Sim.Cell.Properties)39;
 
@@ -216,15 +216,15 @@ public class CommandModule : StateMachineComponent<CommandModule.StatesInstance>
 
 	private bool CanAssignTo(MinionAssignablesProxy worker)
 	{
-		if (!(worker.target is MinionIdentity))
+		if (worker.target is MinionIdentity)
 		{
-			if (!(worker.target is StoredMinionIdentity))
-			{
-				return false;
-			}
+			return (worker.target as KMonoBehaviour).GetComponent<MinionResume>().HasPerk(Db.Get().SkillPerks.CanUseRockets);
+		}
+		if (worker.target is StoredMinionIdentity)
+		{
 			return (worker.target as StoredMinionIdentity).HasPerk(Db.Get().SkillPerks.CanUseRockets);
 		}
-		return (worker.target as KMonoBehaviour).GetComponent<MinionResume>().HasPerk(Db.Get().SkillPerks.CanUseRockets);
+		return false;
 	}
 
 	private static bool HasValidGantry(GameObject go)

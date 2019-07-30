@@ -181,16 +181,15 @@ public class SaveLoadRoot : KMonoBehaviour
 				try
 				{
 					LoadInternal(gameObject, reader);
+					return saveLoadRoot;
 				}
 				catch (ArgumentException ex)
 				{
 					DebugUtil.LogErrorArgs(gameObject, "Failed to load SaveLoadRoot ", ex.Message, "\n", ex.StackTrace);
+					return saveLoadRoot;
 				}
 			}
-			else
-			{
-				Debug.Log("missing SaveLoadRoot", gameObject);
-			}
+			Debug.Log("missing SaveLoadRoot", gameObject);
 		}
 		else
 		{

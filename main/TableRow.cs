@@ -22,7 +22,7 @@ public class TableRow : KMonoBehaviour
 
 	private Dictionary<string, GameObject> scrollerBorders = new Dictionary<string, GameObject>();
 
-	public bool isDefault = false;
+	public bool isDefault;
 
 	public KButton selectMinionButton;
 
@@ -97,7 +97,7 @@ public class TableRow : KMonoBehaviour
 			{
 				gameObject.GetComponentInChildren<LayoutElement>().minWidth += 3f;
 			}
-			if (column.Value.scrollerID != "")
+			if (column.Value.scrollerID != string.Empty)
 			{
 				foreach (string column_scroller in column.Value.screen.column_scrollers)
 				{

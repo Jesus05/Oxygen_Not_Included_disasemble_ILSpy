@@ -31,7 +31,7 @@ public class BuildingHP : Workable
 
 	public class SMInstance : GameStateMachine<States, SMInstance, BuildingHP, object>.GameInstance
 	{
-		private ProgressBar progressBar = null;
+		private ProgressBar progressBar;
 
 		public SMInstance(BuildingHP master)
 			: base(master)
@@ -99,7 +99,7 @@ public class BuildingHP : Workable
 
 		private static string ToolTipResolver(List<Notification> notificationList, object data)
 		{
-			string text = "";
+			string text = string.Empty;
 			for (int i = 0; i < notificationList.Count; i++)
 			{
 				Notification notification = notificationList[i];
@@ -125,13 +125,13 @@ public class BuildingHP : Workable
 
 		public FXAnim.Instance InstantiateDamageFX()
 		{
-			if (base.master.damageSourceInfo.fullDamageEffectName != null)
+			if (base.master.damageSourceInfo.fullDamageEffectName == null)
 			{
-				BuildingDef def = base.master.GetComponent<BuildingComplete>().Def;
-				Vector3 zero = Vector3.zero;
-				return new FXAnim.Instance(offset: (def.HeightInCells > 1) ? new Vector3(0f, (float)(def.HeightInCells - 1), 0f) : new Vector3(0f, 0.5f, 0f), master: base.smi.master, kanim_file: base.master.damageSourceInfo.fullDamageEffectName, anim: "idle", mode: KAnim.PlayMode.Loop, tint_colour: Color.white);
+				return null;
 			}
-			return null;
+			BuildingDef def = base.master.GetComponent<BuildingComplete>().Def;
+			Vector3 zero = Vector3.zero;
+			return new FXAnim.Instance(offset: (def.HeightInCells > 1) ? new Vector3(0f, (float)(def.HeightInCells - 1), 0f) : new Vector3(0f, 0.5f, 0f), master: base.smi.master, kanim_file: base.master.damageSourceInfo.fullDamageEffectName, anim: "idle", mode: KAnim.PlayMode.Loop, tint_colour: Color.white);
 		}
 
 		public void SetCrackOverlayValue(float value)
@@ -249,9 +249,9 @@ public class BuildingHP : Workable
 
 	public static List<Meter> kbacQueryList = new List<Meter>();
 
-	public bool destroyOnDamaged = false;
+	public bool destroyOnDamaged;
 
-	public bool invincible = false;
+	public bool invincible;
 
 	[MyCmpGet]
 	private Building building;
@@ -260,7 +260,7 @@ public class BuildingHP : Workable
 
 	private float minDamagePopInterval = 4f;
 
-	private float lastPopTime = 0f;
+	private float lastPopTime;
 
 	public int HitPoints => hitpoints;
 

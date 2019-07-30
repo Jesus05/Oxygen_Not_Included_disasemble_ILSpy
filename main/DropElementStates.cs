@@ -22,11 +22,7 @@ public class DropElementStates : GameStateMachine<DropElementStates, DropElement
 	public override void InitializeStates(out BaseState default_state)
 	{
 		default_state = dropping;
-		State root = base.root;
-		string name = CREATURES.STATUSITEMS.EXPELLING_GAS.NAME;
-		string tooltip = CREATURES.STATUSITEMS.EXPELLING_GAS.TOOLTIP;
-		StatusItemCategory main = Db.Get().StatusItemCategories.Main;
-		root.ToggleStatusItem(name, tooltip, "", StatusItem.IconType.Info, NotificationType.Neutral, false, default(HashedString), 129022, null, null, main);
+		root.ToggleStatusItem(CREATURES.STATUSITEMS.EXPELLING_GAS.NAME, CREATURES.STATUSITEMS.EXPELLING_GAS.TOOLTIP, category: Db.Get().StatusItemCategories.Main, icon: string.Empty, icon_type: StatusItem.IconType.Info, notification_type: NotificationType.Neutral, allow_multiples: false, render_overlay: default(HashedString), status_overlays: 129022, resolve_string_callback: null, resolve_tooltip_callback: null);
 		dropping.PlayAnim("dirty").OnAnimQueueComplete(behaviourcomplete);
 		behaviourcomplete.Enter("DropElement", delegate(Instance smi)
 		{

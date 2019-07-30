@@ -107,11 +107,11 @@ public class OverlayLegend : KScreen
 		foreach (OverlayInfo overlayInfo in overlayInfoList)
 		{
 			string name = overlayInfo.name;
-			name = name.Replace("NAME", "");
+			name = name.Replace("NAME", string.Empty);
 			for (int i = 0; i < overlayInfo.infoUnits.Count; i++)
 			{
 				string description = overlayInfo.infoUnits[i].description;
-				description = description.Replace(name, "");
+				description = description.Replace(name, string.Empty);
 				description = name + "TOOLTIPS." + description;
 				overlayInfo.infoUnits[i].tooltip = description;
 			}

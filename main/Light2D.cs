@@ -1,4 +1,3 @@
-#define UNITY_ASSERTIONS
 using STRINGS;
 using System.Collections.Generic;
 using UnityEngine;
@@ -140,12 +139,12 @@ public class Light2D : KMonoBehaviour, IGameObjectEffectDescriptor, IEffectDescr
 
 	private T MaybeDirty<T>(T old_value, T new_value, ref bool dirty)
 	{
-		if (EqualityComparer<T>.Default.Equals(old_value, new_value))
+		if (!EqualityComparer<T>.Default.Equals(old_value, new_value))
 		{
-			return old_value;
+			dirty = true;
+			return new_value;
 		}
-		dirty = true;
-		return new_value;
+		return old_value;
 	}
 
 	protected override void OnPrefabInit()
@@ -209,7 +208,6 @@ public class Light2D : KMonoBehaviour, IGameObjectEffectDescriptor, IEffectDescr
 		Vector2I vector2I = Grid.CellToXY(origin);
 		int num = (int)Range;
 		Vector2I xy_min = new Vector2I(vector2I.x - num, vector2I.y - num);
-		UnityEngine.Debug.Assert(shape == LightShape.Circle || shape == LightShape.Cone);
 		int width = 2 * num;
 		int height = (shape != 0) ? num : (2 * num);
 		solidPartitionerEntry = AddToLayer(xy_min, width, height, GameScenePartitioner.Instance.solidChangedLayer);
@@ -250,34 +248,34 @@ public class Light2D : KMonoBehaviour, IGameObjectEffectDescriptor, IEffectDescr
 
 	public RefreshResult RefreshShapeAndPosition()
 	{
-		if (base.isSpawned)
+		if (!base.isSpawned)
 		{
-			if (base.isActiveAndEnabled)
-			{
-				int num = Grid.PosToCell(base.transform.GetPosition() + (Vector3)Offset);
-				if (Grid.IsValidCell(num))
-				{
-					origin = num;
-					if (dirty_shape)
-					{
-						RemoveFromScenePartitioner();
-						AddToScenePartitioner();
-					}
-					else if (dirty_position)
-					{
-						MoveInScenePartitioner();
-					}
-					dirty_shape = false;
-					dirty_position = false;
-					return RefreshResult.Updated;
-				}
-				FullRemove();
-				return RefreshResult.Removed;
-			}
+			return RefreshResult.None;
+		}
+		if (!base.isActiveAndEnabled)
+		{
 			FullRemove();
 			return RefreshResult.Removed;
 		}
-		return RefreshResult.None;
+		int num = Grid.PosToCell(base.transform.GetPosition() + (Vector3)Offset);
+		if (!Grid.IsValidCell(num))
+		{
+			FullRemove();
+			return RefreshResult.Removed;
+		}
+		origin = num;
+		if (dirty_shape)
+		{
+			RemoveFromScenePartitioner();
+			AddToScenePartitioner();
+		}
+		else if (dirty_position)
+		{
+			MoveInScenePartitioner();
+		}
+		dirty_shape = false;
+		dirty_position = false;
+		return RefreshResult.Updated;
 	}
 
 	private void OnWorldChanged(object data)

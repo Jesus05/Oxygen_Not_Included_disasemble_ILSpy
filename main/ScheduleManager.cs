@@ -24,10 +24,10 @@ public class ScheduleManager : KMonoBehaviour, ISim33ms
 	private List<Schedule> schedules;
 
 	[Serialize]
-	private int lastIdx = 0;
+	private int lastIdx;
 
 	[Serialize]
-	private int scheduleNameIncrementor = 0;
+	private int scheduleNameIncrementor;
 
 	public static ScheduleManager Instance;
 
@@ -168,7 +168,7 @@ public class ScheduleManager : KMonoBehaviour, ISim33ms
 	public void PlayScheduleAlarm(Schedule schedule, ScheduleBlock block, bool forwards)
 	{
 		Notification notification = new Notification(string.Format(MISC.NOTIFICATIONS.SCHEDULE_CHANGED.NAME, schedule.name, block.name), NotificationType.Good, HashedString.Invalid, (List<Notification> notificationList, object data) => string.Format(MISC.NOTIFICATIONS.SCHEDULE_CHANGED.TOOLTIP, schedule.name, block.name, Db.Get().ScheduleGroups.Get(block.GroupId).notificationTooltip), null, true, 0f, null, null, null);
-		GetComponent<Notifier>().Add(notification, "");
+		GetComponent<Notifier>().Add(notification, string.Empty);
 		StartCoroutine(PlayScheduleTone(schedule, forwards));
 	}
 

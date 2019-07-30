@@ -13,7 +13,7 @@ namespace NodeEditorFramework
 
 		public NodeEditorState[] editorStates = new NodeEditorState[0];
 
-		public bool livesInScene = false;
+		public bool livesInScene;
 
 		public void Validate()
 		{

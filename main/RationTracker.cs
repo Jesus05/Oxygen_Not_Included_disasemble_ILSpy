@@ -77,6 +77,7 @@ public class RationTracker : KMonoBehaviour, ISaveLoadable
 					}
 				}
 			}
+			return num;
 		}
 		return num;
 	}
@@ -98,6 +99,7 @@ public class RationTracker : KMonoBehaviour, ISaveLoadable
 					}
 				}
 			}
+			return num;
 		}
 		return num;
 	}

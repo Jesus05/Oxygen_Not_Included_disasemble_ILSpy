@@ -78,32 +78,32 @@ public class CurrentJobConversation : ConversationType
 
 	public override Conversation.Topic GetNextTopic(MinionIdentity speaker, Conversation.Topic lastTopic)
 	{
-		if (lastTopic != null)
+		if (lastTopic == null)
 		{
-			List<Conversation.ModeType> list = transitions[lastTopic.mode];
-			Conversation.ModeType modeType = list[Random.Range(0, list.Count)];
-			if (modeType != Conversation.ModeType.Statement)
-			{
-				return new Conversation.Topic(target, modeType);
-			}
+			return new Conversation.Topic(target, Conversation.ModeType.Query);
+		}
+		List<Conversation.ModeType> list = transitions[lastTopic.mode];
+		Conversation.ModeType modeType = list[Random.Range(0, list.Count)];
+		if (modeType == Conversation.ModeType.Statement)
+		{
 			target = GetRoleForSpeaker(speaker);
 			Conversation.ModeType modeForRole = GetModeForRole(speaker, target);
 			return new Conversation.Topic(target, modeForRole);
 		}
-		return new Conversation.Topic(target, Conversation.ModeType.Query);
+		return new Conversation.Topic(target, modeType);
 	}
 
 	public override Sprite GetSprite(string topic)
 	{
-		if (!(topic == "hows_role"))
+		if (topic == "hows_role")
 		{
-			if (Db.Get().Skills.TryGet(topic) == null)
-			{
-				return null;
-			}
+			return Assets.GetSprite("crew_state_role");
+		}
+		if (Db.Get().Skills.TryGet(topic) != null)
+		{
 			return Assets.GetSprite(Db.Get().Skills.Get(topic).hat);
 		}
-		return Assets.GetSprite("crew_state_role");
+		return null;
 	}
 
 	private Conversation.ModeType GetModeForRole(MinionIdentity speaker, string roleId)

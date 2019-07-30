@@ -30,19 +30,15 @@ public class AttackStates : GameStateMachine<AttackStates, AttackStates.Instance
 		{
 			target.Set(smi.GetSMI<ThreatMonitor.Instance>().MainThreat, smi);
 		});
-		State state = approach.InitializeStates(masterTarget, target, attack, null, new CellOffset[5]
+		approach.InitializeStates(masterTarget, target, attack, null, new CellOffset[5]
 		{
 			new CellOffset(0, 0),
 			new CellOffset(1, 0),
 			new CellOffset(-1, 0),
 			new CellOffset(1, 1),
 			new CellOffset(-1, 1)
-		}, null);
-		string name = CREATURES.STATUSITEMS.ATTACK_APPROACH.NAME;
-		string tooltip = CREATURES.STATUSITEMS.ATTACK_APPROACH.TOOLTIP;
-		StatusItemCategory main = Db.Get().StatusItemCategories.Main;
-		state.ToggleStatusItem(name, tooltip, "", StatusItem.IconType.Info, NotificationType.Neutral, false, default(HashedString), 129022, null, null, main);
-		State state2 = attack.Enter(delegate(Instance smi)
+		}, null).ToggleStatusItem(CREATURES.STATUSITEMS.ATTACK_APPROACH.NAME, CREATURES.STATUSITEMS.ATTACK_APPROACH.TOOLTIP, category: Db.Get().StatusItemCategories.Main, icon: string.Empty, icon_type: StatusItem.IconType.Info, notification_type: NotificationType.Neutral, allow_multiples: false, render_overlay: default(HashedString), status_overlays: 129022, resolve_string_callback: null, resolve_tooltip_callback: null);
+		attack.Enter(delegate(Instance smi)
 		{
 			AttackStates attackStates = this;
 			smi.Play("eat_pre", KAnim.PlayMode.Once);
@@ -51,11 +47,7 @@ public class AttackStates : GameStateMachine<AttackStates, AttackStates.Instance
 			{
 				smi.GetComponent<Weapon>().AttackTarget(attackStates.target.Get(smi));
 			}, null);
-		});
-		tooltip = CREATURES.STATUSITEMS.ATTACK.NAME;
-		name = CREATURES.STATUSITEMS.ATTACK.TOOLTIP;
-		main = Db.Get().StatusItemCategories.Main;
-		state2.ToggleStatusItem(tooltip, name, "", StatusItem.IconType.Info, NotificationType.Neutral, false, default(HashedString), 129022, null, null, main).OnAnimQueueComplete(behaviourcomplete);
+		}).ToggleStatusItem(CREATURES.STATUSITEMS.ATTACK.NAME, CREATURES.STATUSITEMS.ATTACK.TOOLTIP, category: Db.Get().StatusItemCategories.Main, icon: string.Empty, icon_type: StatusItem.IconType.Info, notification_type: NotificationType.Neutral, allow_multiples: false, render_overlay: default(HashedString), status_overlays: 129022, resolve_string_callback: null, resolve_tooltip_callback: null).OnAnimQueueComplete(behaviourcomplete);
 		behaviourcomplete.BehaviourComplete(GameTags.Creatures.Attack, false);
 	}
 }

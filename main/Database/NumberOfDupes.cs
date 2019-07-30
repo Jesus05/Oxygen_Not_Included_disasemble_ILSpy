@@ -5,7 +5,7 @@ namespace Database
 {
 	public class NumberOfDupes : VictoryColonyAchievementRequirement
 	{
-		private int numDupes = 0;
+		private int numDupes;
 
 		public NumberOfDupes(int num)
 		{

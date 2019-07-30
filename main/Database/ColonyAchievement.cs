@@ -17,6 +17,10 @@ namespace Database
 
 		public string loopVideoName;
 
+		public string steamAchievementId;
+
+		public string icon;
+
 		public List<ColonyAchievementRequirement> requirementChecklist = new List<ColonyAchievementRequirement>();
 
 		public Action<KMonoBehaviour> victorySequence;
@@ -27,10 +31,11 @@ namespace Database
 			private set;
 		}
 
-		public ColonyAchievement(string Id, string Name, string description, bool isVictoryCondition, List<ColonyAchievementRequirement> requirementChecklist, string messageTitle = "", string messageBody = "", string videoDataName = "", string victoryLoopVideo = "", Action<KMonoBehaviour> VictorySequence = null, string victorySnapshot = "")
+		public ColonyAchievement(string Id, string steamAchievementId, string Name, string description, bool isVictoryCondition, List<ColonyAchievementRequirement> requirementChecklist, string messageTitle = "", string messageBody = "", string videoDataName = "", string victoryLoopVideo = "", Action<KMonoBehaviour> VictorySequence = null, string victorySnapshot = "", string icon = "")
 			: base(Id, Name)
 		{
 			base.Id = Id;
+			this.steamAchievementId = steamAchievementId;
 			base.Name = Name;
 			this.description = description;
 			this.isVictoryCondition = isVictoryCondition;
@@ -41,6 +46,7 @@ namespace Database
 			loopVideoName = victoryLoopVideo;
 			victorySequence = VictorySequence;
 			victoryNISSnapshot = ((!string.IsNullOrEmpty(victorySnapshot)) ? victorySnapshot : AudioMixerSnapshots.Get().VictoryNISGenericSnapshot);
+			this.icon = icon;
 		}
 	}
 }

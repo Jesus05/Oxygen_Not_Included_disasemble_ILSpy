@@ -67,11 +67,11 @@ namespace Satsuma
 					{
 						break;
 					}
-					goto IL_00d4;
+					goto IL_00ce;
 				}
 			}
-			goto IL_00d4;
-			IL_00d4:
+			goto IL_00ce;
+			IL_00ce:
 			foreach (Node item2 in list)
 			{
 				unmatchedRedNodes.Remove(item2);

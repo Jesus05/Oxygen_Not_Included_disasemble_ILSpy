@@ -93,7 +93,7 @@ public class JobManager
 
 	private ManualResetEvent manualResetEvent = new ManualResetEvent(false);
 
-	private static bool runSingleThreaded = false;
+	private static bool runSingleThreaded;
 
 	public bool isShuttingDown
 	{
@@ -113,12 +113,12 @@ public class JobManager
 	public bool DoNextWorkItem()
 	{
 		int num = Interlocked.Increment(ref nextWorkIndex);
-		if (num >= workItems.Count)
+		if (num < workItems.Count)
 		{
-			return false;
+			workItems.InternalDoWorkItem(num);
+			return true;
 		}
-		workItems.InternalDoWorkItem(num);
-		return true;
+		return false;
 	}
 
 	public void Cleanup()

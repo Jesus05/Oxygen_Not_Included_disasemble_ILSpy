@@ -283,29 +283,29 @@ public class KBatchGroupData
 
 	public Texture2D GetTexure(int index)
 	{
-		if (index >= 0 && textures != null && index < textures.Count)
+		if (index < 0 || textures == null || index >= textures.Count)
 		{
-			return textures[index];
+			return null;
 		}
-		return null;
+		return textures[index];
 	}
 
 	public KAnim.Build.Symbol GetBuildSymbol(int idx)
 	{
-		if (frameElementSymbols != null && idx >= 0 && idx < frameElementSymbols.Count)
+		if (frameElementSymbols == null || idx < 0 || idx >= frameElementSymbols.Count)
 		{
-			return frameElementSymbols[idx];
+			return null;
 		}
-		return null;
+		return frameElementSymbols[idx];
 	}
 
 	public KAnim.Anim.Frame GetFrame(int index)
 	{
-		if (index >= 0 && index < animFrames.Count)
+		if (index < 0 || index >= animFrames.Count)
 		{
-			return animFrames[index];
+			return KAnim.Anim.Frame.InvalidFrame;
 		}
-		return KAnim.Anim.Frame.InvalidFrame;
+		return animFrames[index];
 	}
 
 	public KAnim.Anim.FrameElement GetFrameElement(int index)
@@ -391,11 +391,11 @@ public class KBatchGroupData
 	public int GetSymbolIndex(KAnimHashedString symbol)
 	{
 		int value = 0;
-		if (frameElementSymbolIndices.TryGetValue(symbol, out value))
+		if (!frameElementSymbolIndices.TryGetValue(symbol, out value))
 		{
-			return value;
+			return -1;
 		}
-		return -1;
+		return value;
 	}
 
 	public int WriteBuildData(List<KAnim.Build.SymbolFrameInstance> symbol_frame_instances, float[] data)

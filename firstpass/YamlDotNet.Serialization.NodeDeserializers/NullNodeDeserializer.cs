@@ -20,30 +20,17 @@ namespace YamlDotNet.Serialization.NodeDeserializers
 
 		private bool NodeIsNull(NodeEvent nodeEvent)
 		{
-			if (!(nodeEvent.Tag == "tag:yaml.org,2002:null"))
+			if (nodeEvent.Tag == "tag:yaml.org,2002:null")
 			{
-				Scalar scalar = nodeEvent as Scalar;
-				if (scalar != null && scalar.Style == ScalarStyle.Plain)
-				{
-					string value = scalar.Value;
-					int result;
-					switch (value)
-					{
-					default:
-						result = ((value == "NULL") ? 1 : 0);
-						break;
-					case "":
-					case "~":
-					case "null":
-					case "Null":
-						result = 1;
-						break;
-					}
-					return (byte)result != 0;
-				}
+				return true;
+			}
+			Scalar scalar = nodeEvent as Scalar;
+			if (scalar == null || scalar.Style != ScalarStyle.Plain)
+			{
 				return false;
 			}
-			return true;
+			string value = scalar.Value;
+			return value == string.Empty || value == "~" || value == "null" || value == "Null" || value == "NULL";
 		}
 	}
 }

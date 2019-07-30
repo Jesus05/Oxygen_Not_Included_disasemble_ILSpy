@@ -389,7 +389,7 @@ namespace STRINGS
 
 				public static LocString STATUS = "Recovering breath";
 
-				public static LocString TOOLTIP = "";
+				public static LocString TOOLTIP = string.Empty;
 			}
 
 			public class MOVETOQUARANTINE
@@ -3197,7 +3197,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Metabolism";
 
-				public static LocString TOOLTIP = "" + UI.PRE_KEYWORD + "Metabolism" + UI.PST_KEYWORD + " determines how quickly a critter burns " + UI.PRE_KEYWORD + "Calories" + UI.PST_KEYWORD;
+				public static LocString TOOLTIP = string.Empty + UI.PRE_KEYWORD + "Metabolism" + UI.PST_KEYWORD + " determines how quickly a critter burns " + UI.PRE_KEYWORD + "Calories" + UI.PST_KEYWORD;
 			}
 
 			public class WORKING
@@ -4048,9 +4048,9 @@ namespace STRINGS
 
 			public class BANHI
 			{
-				public static LocString NAME = "";
+				public static LocString NAME = string.Empty;
 
-				public static LocString DESC = "";
+				public static LocString DESC = string.Empty;
 			}
 
 			public class STINKY
@@ -5148,21 +5148,21 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Stamina";
 
-				public static LocString DESC = "";
+				public static LocString DESC = string.Empty;
 			}
 
 			public class TOXICITYDELTA
 			{
 				public static LocString NAME = "Toxicity";
 
-				public static LocString DESC = "";
+				public static LocString DESC = string.Empty;
 			}
 
 			public class IMMUNELEVELDELTA
 			{
 				public static LocString NAME = "Immunity";
 
-				public static LocString DESC = "";
+				public static LocString DESC = string.Empty;
 			}
 
 			public class TOILETEFFICIENCY
@@ -5192,7 +5192,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Underwater Movement";
 
-				public static LocString DESC = "Determines a Duplicant's runspeed when submerged in " + UI.PRE_KEYWORD + "Liquid" + UI.PST_KEYWORD + "";
+				public static LocString DESC = "Determines a Duplicant's runspeed when submerged in " + UI.PRE_KEYWORD + "Liquid" + UI.PST_KEYWORD + string.Empty;
 			}
 
 			public class OVERHEATTEMPERATURE
@@ -5239,14 +5239,14 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Incubation Rate";
 
-				public static LocString DESC = "";
+				public static LocString DESC = string.Empty;
 			}
 
 			public class HAPPINESS
 			{
 				public static LocString NAME = "Happiness";
 
-				public static LocString DESC = "";
+				public static LocString DESC = string.Empty;
 			}
 
 			public class SCALEGROWTHDELTA
@@ -5260,7 +5260,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Viability Loss Rate";
 
-				public static LocString DESC = "";
+				public static LocString DESC = string.Empty;
 			}
 
 			public static LocString VALUE = "{0}: {1}";

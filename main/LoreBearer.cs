@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class LoreBearer : KMonoBehaviour
 {
-	private bool BeenClicked = false;
+	private bool BeenClicked;
 
 	public string BeenSearched = UI.USERMENUACTIONS.READLORE.ALREADY_SEARCHED;
 

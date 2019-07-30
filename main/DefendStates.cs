@@ -31,14 +31,10 @@ public class DefendStates : GameStateMachine<DefendStates, DefendStates.Instance
 	public override void InitializeStates(out BaseState default_state)
 	{
 		default_state = protectEntity.moveToThreat;
-		State state = root.Enter("SetTarget", delegate(Instance smi)
+		root.Enter("SetTarget", delegate(Instance smi)
 		{
 			target.Set(smi.GetSMI<EggProtectionMonitor.Instance>().MainThreat, smi);
-		});
-		string name = CREATURES.STATUSITEMS.PROTECTINGENTITY.NAME;
-		string tooltip = CREATURES.STATUSITEMS.PROTECTINGENTITY.TOOLTIP;
-		StatusItemCategory main = Db.Get().StatusItemCategories.Main;
-		state.ToggleStatusItem(name, tooltip, "", StatusItem.IconType.Info, (NotificationType)0, false, default(HashedString), 0, null, null, main);
+		}).ToggleStatusItem(CREATURES.STATUSITEMS.PROTECTINGENTITY.NAME, CREATURES.STATUSITEMS.PROTECTINGENTITY.TOOLTIP, category: Db.Get().StatusItemCategories.Main, icon: string.Empty, icon_type: StatusItem.IconType.Info, notification_type: (NotificationType)0, allow_multiples: false, render_overlay: default(HashedString), status_overlays: 0, resolve_string_callback: null, resolve_tooltip_callback: null);
 		protectEntity.moveToThreat.InitializeStates(masterTarget, target, protectEntity.attackThreat, null, new CellOffset[5]
 		{
 			new CellOffset(0, 0),

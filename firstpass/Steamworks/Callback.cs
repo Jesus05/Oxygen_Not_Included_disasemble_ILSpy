@@ -19,7 +19,7 @@ namespace Steamworks
 
 		private readonly int m_size = Marshal.SizeOf(typeof(T));
 
-		private bool m_bDisposed = false;
+		private bool m_bDisposed;
 
 		private event DispatchDelegate m_Func;
 

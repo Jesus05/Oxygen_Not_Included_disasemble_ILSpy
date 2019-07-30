@@ -38,15 +38,15 @@ public class TileScreen : KScreen
 
 	private bool SetSliderColour(float temperature, float transition_temperature)
 	{
-		if (!(Mathf.Abs(temperature - transition_temperature) < 5f))
+		if (Mathf.Abs(temperature - transition_temperature) < 5f)
 		{
-			temperatureSliderText.color = temperatureDefaultColour;
-			temperatureSliderIcon.color = temperatureDefaultColour;
-			return false;
+			temperatureSliderText.color = temperatureTransitionColour;
+			temperatureSliderIcon.color = temperatureTransitionColour;
+			return true;
 		}
-		temperatureSliderText.color = temperatureTransitionColour;
-		temperatureSliderIcon.color = temperatureTransitionColour;
-		return true;
+		temperatureSliderText.color = temperatureDefaultColour;
+		temperatureSliderIcon.color = temperatureDefaultColour;
+		return false;
 	}
 
 	private void DisplayTileInfo()
@@ -87,7 +87,7 @@ public class TileScreen : KScreen
 				gasIcon.gameObject.transform.parent.gameObject.SetActive(false);
 				massIcon.sprite = solidIcon.sprite;
 				solidText.text = ((int)element.highTemp).ToString();
-				gasText.text = "";
+				gasText.text = string.Empty;
 				liquidIcon.rectTransform.SetParent(solidIcon.transform.parent, true);
 				liquidIcon.rectTransform.SetLocalPosition(new Vector3(0f, 64f));
 				SetSliderColour(num3, element.highTemp);
@@ -110,7 +110,7 @@ public class TileScreen : KScreen
 			}
 			else if (element.IsGas)
 			{
-				solidText.text = "";
+				solidText.text = string.Empty;
 				gasText.text = ((int)element.lowTemp).ToString();
 				solidIcon.gameObject.transform.parent.gameObject.SetActive(false);
 				gasIcon.gameObject.transform.parent.gameObject.SetActive(true);
@@ -183,7 +183,7 @@ public class TileScreen : KScreen
 			}
 			else if (element2.IsGas)
 			{
-				solidText.text = "";
+				solidText.text = string.Empty;
 				gasText.text = ((int)element2.lowTemp).ToString();
 				solidIcon.gameObject.transform.parent.gameObject.SetActive(false);
 				gasIcon.gameObject.transform.parent.gameObject.SetActive(true);
@@ -199,9 +199,9 @@ public class TileScreen : KScreen
 		else
 		{
 			nameLabel.text = "No Conduit";
-			symbolLabel.text = "";
-			massAmtLabel.text = "";
-			massTitleLabel.text = "";
+			symbolLabel.text = string.Empty;
+			massAmtLabel.text = string.Empty;
+			massTitleLabel.text = string.Empty;
 		}
 	}
 

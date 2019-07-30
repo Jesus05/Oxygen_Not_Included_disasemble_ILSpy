@@ -10,7 +10,7 @@ public class MinionAssignablesProxy : KMonoBehaviour, IAssignableIdentity
 	[Serialize]
 	private int target_instance_id = -1;
 
-	private bool slotsConfigured = false;
+	private bool slotsConfigured;
 
 	private static readonly EventSystem.IntraObjectHandler<MinionAssignablesProxy> OnAssignablesChangedDelegate = new EventSystem.IntraObjectHandler<MinionAssignablesProxy>(delegate(MinionAssignablesProxy component, object data)
 	{
@@ -34,39 +34,39 @@ public class MinionAssignablesProxy : KMonoBehaviour, IAssignableIdentity
 			RestoreTargetFromInstanceID();
 		}
 		KMonoBehaviour kMonoBehaviour = (KMonoBehaviour)target;
-		if (!((Object)kMonoBehaviour != (Object)null))
+		if ((Object)kMonoBehaviour != (Object)null)
 		{
-			return null;
+			return kMonoBehaviour.gameObject;
 		}
-		return kMonoBehaviour.gameObject;
+		return null;
 	}
 
 	public float GetArrivalTime()
 	{
-		if (!((Object)GetTargetGameObject().GetComponent<MinionIdentity>() != (Object)null))
+		if ((Object)GetTargetGameObject().GetComponent<MinionIdentity>() != (Object)null)
 		{
-			if (!((Object)GetTargetGameObject().GetComponent<StoredMinionIdentity>() != (Object)null))
-			{
-				Debug.LogError("Could not get minion arrival time");
-				return -1f;
-			}
+			return GetTargetGameObject().GetComponent<MinionIdentity>().arrivalTime;
+		}
+		if ((Object)GetTargetGameObject().GetComponent<StoredMinionIdentity>() != (Object)null)
+		{
 			return GetTargetGameObject().GetComponent<StoredMinionIdentity>().arrivalTime;
 		}
-		return GetTargetGameObject().GetComponent<MinionIdentity>().arrivalTime;
+		Debug.LogError("Could not get minion arrival time");
+		return -1f;
 	}
 
 	public int GetTotalSkillpoints()
 	{
-		if (!((Object)GetTargetGameObject().GetComponent<MinionIdentity>() != (Object)null))
+		if ((Object)GetTargetGameObject().GetComponent<MinionIdentity>() != (Object)null)
 		{
-			if (!((Object)GetTargetGameObject().GetComponent<StoredMinionIdentity>() != (Object)null))
-			{
-				Debug.LogError("Could not get minion skill points time");
-				return -1;
-			}
+			return GetTargetGameObject().GetComponent<MinionResume>().TotalSkillPointsGained;
+		}
+		if ((Object)GetTargetGameObject().GetComponent<StoredMinionIdentity>() != (Object)null)
+		{
 			return MinionResume.CalculateTotalSkillPointsGained(GetTargetGameObject().GetComponent<StoredMinionIdentity>().TotalExperienceGained);
 		}
-		return GetTargetGameObject().GetComponent<MinionResume>().TotalSkillPointsGained;
+		Debug.LogError("Could not get minion skill points time");
+		return -1;
 	}
 
 	public void SetTarget(IAssignableIdentity target, GameObject targetGO)

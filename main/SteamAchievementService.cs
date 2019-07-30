@@ -70,15 +70,6 @@ public class SteamAchievementService : MonoBehaviour
 		{
 			DebugUtil.LogWarningArgs("OnUserStatsReceived", data.m_eResult, data.m_steamIDUser);
 		}
-		else
-		{
-			string[] aCHIEVEMENT_IDS = Achievements.ACHIEVEMENT_IDS;
-			foreach (string pchName in aCHIEVEMENT_IDS)
-			{
-				bool pbAchieved;
-				bool userAchievement = SteamUserStats.GetUserAchievement(data.m_steamIDUser, pchName, out pbAchieved);
-			}
-		}
 	}
 
 	private void OnUserStatsStored(UserStatsStored_t data)
@@ -110,17 +101,6 @@ public class SteamAchievementService : MonoBehaviour
 		if (flag)
 		{
 			RefreshStats();
-		}
-	}
-
-	[Conditional("UNITY_EDITOR")]
-	[ContextMenu("Unlock Test Achievement")]
-	private void UnlockTestAchievement()
-	{
-		if (Achievements.ACHIEVEMENT_IDS.Length > 0)
-		{
-			string achievement_id = Achievements.ACHIEVEMENT_IDS[0];
-			Unlock(achievement_id);
 		}
 	}
 }

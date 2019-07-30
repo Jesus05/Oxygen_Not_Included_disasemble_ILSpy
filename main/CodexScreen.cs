@@ -44,7 +44,7 @@ public class CodexScreen : KScreen
 	[SerializeField]
 	private RectTransform scrollContentPane;
 
-	private bool editingSearch = false;
+	private bool editingSearch;
 
 	private List<string> history = new List<string>();
 
@@ -154,7 +154,7 @@ public class CodexScreen : KScreen
 		};
 		clearSearchButton.onClick += delegate
 		{
-			searchInputField.text = "";
+			searchInputField.text = string.Empty;
 		};
 		if (string.IsNullOrEmpty(activeEntryID))
 		{
@@ -198,13 +198,16 @@ public class CodexScreen : KScreen
 		SetupPrefabs();
 		PopulatePools();
 		CategorizeEntries();
-		FilterSearch("");
+		FilterSearch(string.Empty);
 		Game.Instance.Subscribe(1594320620, delegate
 		{
-			FilterSearch(searchInputField.text);
-			if (!string.IsNullOrEmpty(activeEntryID))
+			if (base.gameObject.activeSelf)
 			{
-				ChangeArticle(activeEntryID, false);
+				FilterSearch(searchInputField.text);
+				if (!string.IsNullOrEmpty(activeEntryID))
+				{
+					ChangeArticle(activeEntryID, false);
+				}
 			}
 		});
 	}
@@ -230,7 +233,7 @@ public class CodexScreen : KScreen
 		input = input.ToLower();
 		foreach (KeyValuePair<string, CodexEntry> entry in CodexCache.entries)
 		{
-			if (input == "")
+			if (input == string.Empty)
 			{
 				if (!entry.Value.searchOnly)
 				{
@@ -252,7 +255,7 @@ public class CodexScreen : KScreen
 				}
 			}
 		}
-		FilterEntries(input != "");
+		FilterEntries(input != string.Empty);
 		return searchResults;
 	}
 
@@ -319,7 +322,7 @@ public class CodexScreen : KScreen
 
 	private GameObject NewCategoryHeader(KeyValuePair<string, CodexEntry> entryKVP, Dictionary<string, GameObject> categories)
 	{
-		if (entryKVP.Value.category == "")
+		if (entryKVP.Value.category == string.Empty)
 		{
 			entryKVP.Value.category = "Root";
 		}
@@ -347,21 +350,21 @@ public class CodexScreen : KScreen
 
 	private void CategorizeEntries()
 	{
-		string text = "";
+		string empty = string.Empty;
 		GameObject gameObject = navigatorContent.gameObject;
 		Dictionary<string, GameObject> dictionary = new Dictionary<string, GameObject>();
 		foreach (KeyValuePair<string, CodexEntry> entry in CodexCache.entries)
 		{
-			text = entry.Value.category;
-			if (text == "" || text == "Root")
+			empty = entry.Value.category;
+			if (empty == string.Empty || empty == "Root")
 			{
-				text = "Root";
+				empty = "Root";
 			}
-			if (!dictionary.ContainsKey(text))
+			if (!dictionary.ContainsKey(empty))
 			{
 				NewCategoryHeader(entry, dictionary);
 			}
-			GameObject gameObject2 = Util.KInstantiateUI(prefabNavigatorEntry, dictionary[text], true);
+			GameObject gameObject2 = Util.KInstantiateUI(prefabNavigatorEntry, dictionary[empty], true);
 			string id = entry.Key;
 			gameObject2.GetComponent<KButton>().onClick += delegate
 			{
@@ -450,7 +453,7 @@ public class CodexScreen : KScreen
 			id = "PAGENOTFOUND";
 		}
 		int num = 0;
-		string text = "";
+		string text = string.Empty;
 		while (contentContainers.transform.childCount > 0)
 		{
 			while (!string.IsNullOrEmpty(text) && CodexCache.entries[activeEntryID].contentContainers[num].lockID == text)
@@ -485,7 +488,7 @@ public class CodexScreen : KScreen
 			CodexCache.entries[id].contentContainers = new List<ContentContainer>();
 		}
 		bool flag2 = false;
-		string a = "";
+		string a = string.Empty;
 		for (int i = 0; i < CodexCache.entries[id].contentContainers.Count; i++)
 		{
 			ContentContainer contentContainer = CodexCache.entries[id].contentContainers[i];
@@ -518,7 +521,7 @@ public class CodexScreen : KScreen
 				}
 			}
 		}
-		string text2 = "";
+		string text2 = string.Empty;
 		string text3 = id;
 		int num3 = 0;
 		while (text3 != CodexCache.FormatLinkID("HOME") && num3 < 10)
@@ -535,7 +538,7 @@ public class CodexScreen : KScreen
 				text2 = text2.Insert(0, CodexCache.entries[text3].name + " > ");
 			}
 		}
-		currentLocationText.text = ((!(text2 == "")) ? text2 : CodexCache.entries["HOME"].name);
+		currentLocationText.text = ((!(text2 == string.Empty)) ? text2 : CodexCache.entries["HOME"].name);
 		if (history.Count == 0)
 		{
 			history.Add(activeEntryID);

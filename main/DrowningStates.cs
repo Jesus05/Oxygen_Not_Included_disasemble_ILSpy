@@ -41,11 +41,7 @@ public class DrowningStates : GameStateMachine<DrowningStates, DrowningStates.In
 	public override void InitializeStates(out BaseState default_state)
 	{
 		default_state = drown;
-		State root = base.root;
-		string name = CREATURES.STATUSITEMS.DROWNING.NAME;
-		string tooltip = CREATURES.STATUSITEMS.DROWNING.TOOLTIP;
-		StatusItemCategory main = Db.Get().StatusItemCategories.Main;
-		root.ToggleStatusItem(name, tooltip, "", StatusItem.IconType.Info, NotificationType.Neutral, false, default(HashedString), 129022, null, null, main).TagTransition(GameTags.Creatures.Drowning, null, true);
+		root.ToggleStatusItem(CREATURES.STATUSITEMS.DROWNING.NAME, CREATURES.STATUSITEMS.DROWNING.TOOLTIP, category: Db.Get().StatusItemCategories.Main, icon: string.Empty, icon_type: StatusItem.IconType.Info, notification_type: NotificationType.Neutral, allow_multiples: false, render_overlay: default(HashedString), status_overlays: 129022, resolve_string_callback: null, resolve_tooltip_callback: null).TagTransition(GameTags.Creatures.Drowning, null, true);
 		drown.PlayAnim("drown_pre").QueueAnim("drown_loop", true, null).Transition(drown_pst, UpdateSafeCell, UpdateRate.SIM_1000ms);
 		drown_pst.PlayAnim("drown_pst").OnAnimQueueComplete(move_to_safe);
 		move_to_safe.MoveTo((Instance smi) => smi.safeCell, null, null, false);

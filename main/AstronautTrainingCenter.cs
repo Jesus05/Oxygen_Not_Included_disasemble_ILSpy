@@ -37,7 +37,7 @@ public class AstronautTrainingCenter : Workable
 
 	protected override bool OnWorkTick(Worker worker, float dt)
 	{
-		if (!((Object)worker == (Object)null))
+		if ((Object)worker == (Object)null)
 		{
 			return true;
 		}
@@ -62,7 +62,7 @@ public class AstronautTrainingCenter : Workable
 
 	public override float GetPercentComplete()
 	{
-		if (!((Object)base.worker == (Object)null))
+		if ((Object)base.worker == (Object)null)
 		{
 			return 0f;
 		}

@@ -7,13 +7,13 @@ public class SleepChore : Chore<SleepChore.StatesInstance>
 {
 	public class StatesInstance : GameStateMachine<States, StatesInstance, SleepChore, object>.GameInstance
 	{
-		public bool hadPeacefulSleep = false;
+		public bool hadPeacefulSleep;
 
-		public bool hadNormalSleep = false;
+		public bool hadNormalSleep;
 
-		public bool hadBadSleep = false;
+		public bool hadBadSleep;
 
-		public bool hadTerribleSleep = false;
+		public bool hadTerribleSleep;
 
 		public int lastEvaluatedDay = -1;
 
@@ -21,7 +21,7 @@ public class SleepChore : Chore<SleepChore.StatesInstance>
 
 		public string stateChangeNoiseSource;
 
-		private GameObject locator = null;
+		private GameObject locator;
 
 		public StatesInstance(SleepChore master, GameObject sleeper, GameObject bed, bool bedIsLocator, bool isInterruptable)
 			: base(master)
@@ -51,11 +51,11 @@ public class SleepChore : Chore<SleepChore.StatesInstance>
 		public bool IsLoudSleeper()
 		{
 			GameObject gameObject = base.sm.sleeper.Get(base.smi);
-			if (!((UnityEngine.Object)gameObject.GetComponent<Snorer>() != (UnityEngine.Object)null))
+			if ((UnityEngine.Object)gameObject.GetComponent<Snorer>() != (UnityEngine.Object)null)
 			{
-				return false;
+				return true;
 			}
-			return true;
+			return false;
 		}
 
 		public void EvaluateSleepQuality()

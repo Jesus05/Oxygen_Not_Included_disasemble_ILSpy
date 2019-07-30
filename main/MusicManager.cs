@@ -25,10 +25,10 @@ public class MusicManager : KMonoBehaviour, ISerializationCallbackReceiver
 		public bool dynamic;
 
 		[NonSerialized]
-		public bool useTimeOfDay = false;
+		public bool useTimeOfDay;
 
 		[NonSerialized]
-		public int numberOfVariations = 0;
+		public int numberOfVariations;
 
 		[NonSerialized]
 		public FMOD.Studio.EventInstance ev;
@@ -55,11 +55,11 @@ public class MusicManager : KMonoBehaviour, ISerializationCallbackReceiver
 
 		[Tooltip("Some songs are set up to have Morning, Daytime, Hook, and Intro sections. Toggle this ON if this song has those sections.")]
 		[SerializeField]
-		public bool useTimeOfDay = false;
+		public bool useTimeOfDay;
 
 		[Tooltip("Some songs have different possible start locations. Enter how many start locations this song is set up to support.")]
 		[SerializeField]
-		public int numberOfVariations = 0;
+		public int numberOfVariations;
 	}
 
 	[Serializable]
@@ -84,7 +84,7 @@ public class MusicManager : KMonoBehaviour, ISerializationCallbackReceiver
 
 		public List<string> unplayedSongs = new List<string>();
 
-		private string lastSongPlayed = "";
+		private string lastSongPlayed = string.Empty;
 
 		public string GetNextSong()
 		{
@@ -174,14 +174,14 @@ public class MusicManager : KMonoBehaviour, ISerializationCallbackReceiver
 	private DynamicSongPlaylist miniSongPlaylist = new DynamicSongPlaylist();
 
 	[NonSerialized]
-	public SongInfo activeDynamicSong = null;
+	public SongInfo activeDynamicSong;
 
 	[NonSerialized]
-	public DynamicSongPlaylist activePlaylist = null;
+	public DynamicSongPlaylist activePlaylist;
 
-	private TypeOfMusic nextMusicType = TypeOfMusic.DynamicSong;
+	private TypeOfMusic nextMusicType;
 
-	private int musicTypeIterator = 0;
+	private int musicTypeIterator;
 
 	[Space]
 	[Header("Tuning Values")]
@@ -199,19 +199,19 @@ public class MusicManager : KMonoBehaviour, ISerializationCallbackReceiver
 
 	[Tooltip("When mini songs are active, we play a snapshot which attenuates the ambience and SFX. What intensity should that snapshot be applied?")]
 	[SerializeField]
-	private float miniSongSFXAttenuationPercentage = 0f;
+	private float miniSongSFXAttenuationPercentage;
 
 	[SerializeField]
 	private TypeOfMusic[] musicStyleOrder;
 
 	[NonSerialized]
-	public bool alwaysPlayMusic = false;
+	public bool alwaysPlayMusic;
 
 	private float time;
 
 	private float timeOfDayUpdateRate = 2f;
 
-	private static MusicManager _instance = null;
+	private static MusicManager _instance;
 
 	public Dictionary<string, SongInfo> SongMap => songMap;
 
@@ -557,7 +557,7 @@ public class MusicManager : KMonoBehaviour, ISerializationCallbackReceiver
 				else
 				{
 					Log("DynamicMusic song " + nextDynamicSong + " did not start.");
-					string text = "";
+					string text = string.Empty;
 					foreach (KeyValuePair<string, SongInfo> activeSong in activeSongs)
 					{
 						text = text + activeSong.Key + ", ";
@@ -583,7 +583,7 @@ public class MusicManager : KMonoBehaviour, ISerializationCallbackReceiver
 
 	public string GetNextDynamicSong()
 	{
-		string result = "";
+		string result = string.Empty;
 		if (alwaysPlayMusic && nextMusicType == TypeOfMusic.None)
 		{
 			while (nextMusicType == TypeOfMusic.None)
@@ -689,11 +689,11 @@ public class MusicManager : KMonoBehaviour, ISerializationCallbackReceiver
 
 	public bool ShouldPlayDynamicMusicLoadedGame()
 	{
-		if (!(GameClock.Instance.GetCurrentCycleAsPercentage() <= loadGameCutoffPercentage / 100f))
+		if (GameClock.Instance.GetCurrentCycleAsPercentage() <= loadGameCutoffPercentage / 100f)
 		{
-			return false;
+			return true;
 		}
-		return true;
+		return false;
 	}
 
 	protected override void OnPrefabInit()

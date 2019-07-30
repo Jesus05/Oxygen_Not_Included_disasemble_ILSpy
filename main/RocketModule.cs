@@ -21,7 +21,7 @@ public class RocketModule : KMonoBehaviour
 	private string rocket_module_bg_anim = "on";
 
 	[SerializeField]
-	private KAnimFile bgAnimFile = null;
+	private KAnimFile bgAnimFile;
 
 	protected string parentRocketName = UI.STARMAP.DEFAULT_NAME;
 

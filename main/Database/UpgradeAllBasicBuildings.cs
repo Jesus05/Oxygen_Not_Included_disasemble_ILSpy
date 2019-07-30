@@ -17,24 +17,26 @@ namespace Database
 
 		public override bool Success()
 		{
-			if (!Db.Get().TechItems.IsTechItemComplete(upgradeBuilding.Name))
+			if (Db.Get().TechItems.IsTechItemComplete(upgradeBuilding.Name))
 			{
-				return false;
-			}
-			bool result = false;
-			foreach (BuildingComplete item in Components.BuildingCompletes.Items)
-			{
-				KPrefabID component = item.GetComponent<KPrefabID>();
-				if (component.HasTag(basicBuilding))
+				bool result = false;
 				{
-					return false;
-				}
-				if (component.HasTag(upgradeBuilding))
-				{
-					result = true;
+					foreach (BuildingComplete item in Components.BuildingCompletes.Items)
+					{
+						KPrefabID component = item.GetComponent<KPrefabID>();
+						if (component.HasTag(basicBuilding))
+						{
+							return false;
+						}
+						if (component.HasTag(upgradeBuilding))
+						{
+							result = true;
+						}
+					}
+					return result;
 				}
 			}
-			return result;
+			return false;
 		}
 
 		public override void Deserialize(IReader reader)

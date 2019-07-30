@@ -16,7 +16,7 @@ public class ConduitConsumer : KMonoBehaviour
 	public ConduitType conduitType;
 
 	[SerializeField]
-	public bool ignoreMinMassCheck = false;
+	public bool ignoreMinMassCheck;
 
 	[SerializeField]
 	public Tag capacityTag = GameTags.Any;
@@ -25,16 +25,16 @@ public class ConduitConsumer : KMonoBehaviour
 	public float capacityKG = float.PositiveInfinity;
 
 	[SerializeField]
-	public bool forceAlwaysSatisfied = false;
+	public bool forceAlwaysSatisfied;
 
 	[SerializeField]
-	public bool alwaysConsume = false;
+	public bool alwaysConsume;
 
 	[SerializeField]
 	public bool keepZeroMassObject = true;
 
 	[SerializeField]
-	public bool useSecondaryInput = false;
+	public bool useSecondaryInput;
 
 	[NonSerialized]
 	public bool isConsuming = true;
@@ -58,9 +58,9 @@ public class ConduitConsumer : KMonoBehaviour
 
 	private HandleVector<int>.Handle partitionerEntry;
 
-	private bool satisfied = false;
+	private bool satisfied;
 
-	public WrongElementResult wrongElementResult = WrongElementResult.Destroy;
+	public WrongElementResult wrongElementResult;
 
 	public bool IsConnected
 	{
@@ -146,12 +146,12 @@ public class ConduitConsumer : KMonoBehaviour
 
 	private int GetInputCell()
 	{
-		if (!useSecondaryInput)
+		if (useSecondaryInput)
 		{
-			return building.GetUtilityInputCell();
+			ISecondaryInput component = GetComponent<ISecondaryInput>();
+			return Grid.OffsetCell(building.NaturalBuildingCell(), component.GetSecondaryConduitOffset());
 		}
-		ISecondaryInput component = GetComponent<ISecondaryInput>();
-		return Grid.OffsetCell(building.NaturalBuildingCell(), component.GetSecondaryConduitOffset());
+		return building.GetUtilityInputCell();
 	}
 
 	protected override void OnSpawn()

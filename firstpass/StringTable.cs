@@ -45,7 +45,7 @@ public class StringTable
 			Debug.Log(parent_path + "." + KeyNames[entry.Key] + "." + entry.Value.String);
 		}
 		string text = parent_path;
-		if (text != "")
+		if (text != string.Empty)
 		{
 			text += ".";
 		}

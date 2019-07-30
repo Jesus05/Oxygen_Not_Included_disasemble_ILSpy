@@ -86,28 +86,28 @@ public struct TagBits
 
 	private static int ManifestFlagIndex(Tag tag)
 	{
-		if (!tagTable.TryGetValue(tag, out int value))
+		if (tagTable.TryGetValue(tag, out int value))
 		{
-			value = tagTable.Count;
-			tagTable.Add(tag, value);
-			inverseTagTable.Add(tag);
-			DebugUtil.Assert(inverseTagTable.Count == value + 1);
-			if (tagTable.Count >= 384)
-			{
-				string text = "Out of tag bits:\n";
-				int num = 0;
-				foreach (KeyValuePair<Tag, int> item in tagTable)
-				{
-					text = text + item.Key.ToString() + ", ";
-					num++;
-					if (num % 64 == 0)
-					{
-						text += "\n";
-					}
-				}
-				Debug.LogError(text);
-			}
 			return value;
+		}
+		value = tagTable.Count;
+		tagTable.Add(tag, value);
+		inverseTagTable.Add(tag);
+		DebugUtil.Assert(inverseTagTable.Count == value + 1);
+		if (tagTable.Count >= 384)
+		{
+			string text = "Out of tag bits:\n";
+			int num = 0;
+			foreach (KeyValuePair<Tag, int> item in tagTable)
+			{
+				text = text + item.Key.ToString() + ", ";
+				num++;
+				if (num % 64 == 0)
+				{
+					text += "\n";
+				}
+			}
+			Debug.LogError(text);
 		}
 		return value;
 	}

@@ -17,7 +17,7 @@ public class PrioritizationGroupTableColumn : TableColumn
 	private Func<object, string> onSortHovered;
 
 	public PrioritizationGroupTableColumn(object user_data, Action<IAssignableIdentity, GameObject> on_load_action, Action<object, int> on_change_priority, Func<object, string> on_hover_widget, Action<object, int> on_change_header_priority, Func<object, string> on_hover_header_option_selector, Action<object> on_sort_clicked, Func<object, string> on_sort_hovered)
-		: base(on_load_action, null, null, null, null, false, "")
+		: base(on_load_action, null, null, null, null, false, string.Empty)
 	{
 		userData = user_data;
 		onChangePriority = on_change_priority;

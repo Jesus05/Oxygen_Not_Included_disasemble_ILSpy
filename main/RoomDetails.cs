@@ -17,11 +17,11 @@ public class RoomDetails
 	public static readonly Detail AVERAGE_TEMPERATURE = new Detail(delegate
 	{
 		float num3 = 0f;
-		if (num3 != 0f)
+		if (num3 == 0f)
 		{
-			return string.Format(ROOMS.DETAILS.AVERAGE_TEMPERATURE.NAME, GameUtil.GetFormattedTemperature(num3, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false));
+			return string.Format(ROOMS.DETAILS.AVERAGE_TEMPERATURE.NAME, UI.OVERLAYS.TEMPERATURE.EXTREMECOLD);
 		}
-		return string.Format(ROOMS.DETAILS.AVERAGE_TEMPERATURE.NAME, UI.OVERLAYS.TEMPERATURE.EXTREMECOLD);
+		return string.Format(ROOMS.DETAILS.AVERAGE_TEMPERATURE.NAME, GameUtil.GetFormattedTemperature(num3, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false));
 	});
 
 	public static readonly Detail AVERAGE_ATMO_MASS = new Detail(delegate
@@ -34,7 +34,7 @@ public class RoomDetails
 
 	public static readonly Detail ASSIGNED_TO = new Detail(delegate(Room room)
 	{
-		string text = "";
+		string text = string.Empty;
 		foreach (KPrefabID primaryEntity in room.GetPrimaryEntities())
 		{
 			if (!((UnityEngine.Object)primaryEntity == (UnityEngine.Object)null))
@@ -45,17 +45,17 @@ public class RoomDetails
 					IAssignableIdentity assignee = component.assignee;
 					if (assignee == null)
 					{
-						text += ((!(text == "")) ? ("\n<color=#BCBCBC>    • " + primaryEntity.GetProperName() + ": " + ROOMS.DETAILS.ASSIGNED_TO.UNASSIGNED) : ("<color=#BCBCBC>    • " + primaryEntity.GetProperName() + ": " + ROOMS.DETAILS.ASSIGNED_TO.UNASSIGNED));
+						text += ((!(text == string.Empty)) ? ("\n<color=#BCBCBC>    • " + primaryEntity.GetProperName() + ": " + ROOMS.DETAILS.ASSIGNED_TO.UNASSIGNED) : ("<color=#BCBCBC>    • " + primaryEntity.GetProperName() + ": " + ROOMS.DETAILS.ASSIGNED_TO.UNASSIGNED));
 						text += "</color>";
 					}
 					else
 					{
-						text += ((!(text == "")) ? ("\n    • " + primaryEntity.GetProperName() + ": " + assignee.GetProperName()) : ("    • " + primaryEntity.GetProperName() + ": " + assignee.GetProperName()));
+						text += ((!(text == string.Empty)) ? ("\n    • " + primaryEntity.GetProperName() + ": " + assignee.GetProperName()) : ("    • " + primaryEntity.GetProperName() + ": " + assignee.GetProperName()));
 					}
 				}
 			}
 		}
-		if (text == "")
+		if (text == string.Empty)
 		{
 			text = ROOMS.DETAILS.ASSIGNED_TO.UNASSIGNED;
 		}
@@ -76,14 +76,14 @@ public class RoomDetails
 
 	public static string RoomDetailString(Room room)
 	{
-		string str = "";
-		str = str + "<b>" + ROOMS.DETAILS.HEADER + "</b>";
+		string empty = string.Empty;
+		empty = empty + "<b>" + ROOMS.DETAILS.HEADER + "</b>";
 		RoomType roomType = room.roomType;
 		Detail[] display_details = roomType.display_details;
 		foreach (Detail detail in display_details)
 		{
-			str = str + "\n    • " + detail.resolve_string_function(room);
+			empty = empty + "\n    • " + detail.resolve_string_function(room);
 		}
-		return str;
+		return empty;
 	}
 }

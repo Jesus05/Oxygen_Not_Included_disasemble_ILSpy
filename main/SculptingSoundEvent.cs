@@ -34,11 +34,11 @@ public class SculptingSoundEvent : SoundEvent
 	private static string BaseSoundName(string sound_name)
 	{
 		int num = sound_name.IndexOf(":");
-		if (num <= 0)
+		if (num > 0)
 		{
-			return sound_name;
+			return sound_name.Substring(0, num);
 		}
-		return sound_name.Substring(0, num);
+		return sound_name;
 	}
 
 	public override void OnPlay(AnimEventManager.EventPlayerData behaviour)

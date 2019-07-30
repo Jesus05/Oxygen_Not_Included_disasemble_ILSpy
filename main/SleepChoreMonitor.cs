@@ -7,7 +7,7 @@ public class SleepChoreMonitor : GameStateMachine<SleepChoreMonitor, SleepChoreM
 	{
 		private int locatorCell;
 
-		public GameObject locator = null;
+		public GameObject locator;
 
 		public Instance(IStateMachineTarget master)
 			: base(master)

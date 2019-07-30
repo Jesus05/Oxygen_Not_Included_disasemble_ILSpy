@@ -8,7 +8,7 @@ public class CircuitSwitch : Switch
 	[SerializeField]
 	public ObjectLayer objectLayer;
 
-	private Wire attachedWire = null;
+	private Wire attachedWire;
 
 	private Guid wireConnectedGUID;
 

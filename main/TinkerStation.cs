@@ -19,7 +19,7 @@ public class TinkerStation : Workable, IEffectDescriptor, ISim1000ms
 	[MyCmpAdd]
 	private Storage storage;
 
-	public bool useFilteredStorage = false;
+	public bool useFilteredStorage;
 
 	protected FilteredStorage filteredStorage;
 
@@ -196,11 +196,14 @@ public class TinkerStation : Workable, IEffectDescriptor, ISim1000ms
 			Effect effect = Db.Get().effects.Get(list2[0].addedEffect);
 			list.Add(new Descriptor(string.Format(UI.BUILDINGEFFECTS.ADDED_EFFECT, effect.Name), string.Format(UI.BUILDINGEFFECTS.TOOLTIPS.ADDED_EFFECT, effect.Name, Effect.CreateTooltip(effect, true, "\n")), Descriptor.DescriptorType.Effect, false));
 			list.Add(new Descriptor(UI.BUILDINGEFFECTS.IMPROVED_BUILDINGS, UI.BUILDINGEFFECTS.TOOLTIPS.IMPROVED_BUILDINGS, Descriptor.DescriptorType.Effect, false));
-			foreach (Tinkerable item3 in list2)
 			{
-				Descriptor item = new Descriptor(string.Format(UI.BUILDINGEFFECTS.IMPROVED_BUILDINGS_ITEM, item3.GetProperName()), string.Format(UI.BUILDINGEFFECTS.TOOLTIPS.IMPROVED_BUILDINGS_ITEM, item3.GetProperName()), Descriptor.DescriptorType.Effect, false);
-				item.IncreaseIndent();
-				list.Add(item);
+				foreach (Tinkerable item3 in list2)
+				{
+					Descriptor item = new Descriptor(string.Format(UI.BUILDINGEFFECTS.IMPROVED_BUILDINGS_ITEM, item3.GetProperName()), string.Format(UI.BUILDINGEFFECTS.TOOLTIPS.IMPROVED_BUILDINGS_ITEM, item3.GetProperName()), Descriptor.DescriptorType.Effect, false);
+					item.IncreaseIndent();
+					list.Add(item);
+				}
+				return list;
 			}
 		}
 		return list;

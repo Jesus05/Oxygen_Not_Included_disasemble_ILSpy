@@ -30,15 +30,15 @@ public class ConditionHasMinimumMass : RocketLaunchCondition
 	{
 		int id = SpacecraftManager.instance.GetSpacecraftFromLaunchConditionManager(commandModule.GetComponent<LaunchConditionManager>()).id;
 		SpaceDestination spacecraftDestination = SpacecraftManager.instance.GetSpacecraftDestination(id);
-		if (spacecraftDestination == null)
+		if (spacecraftDestination != null)
 		{
-			return UI.STARMAP.LAUNCHCHECKLIST.NO_DESTINATION;
-		}
-		if (SpacecraftManager.instance.GetDestinationAnalysisState(spacecraftDestination) != SpacecraftManager.DestinationAnalysisState.Complete)
-		{
+			if (SpacecraftManager.instance.GetDestinationAnalysisState(spacecraftDestination) == SpacecraftManager.DestinationAnalysisState.Complete)
+			{
+				return string.Format(UI.STARMAP.LAUNCHCHECKLIST.MINIMUM_MASS, GameUtil.GetFormattedMass(spacecraftDestination.AvailableMass, GameUtil.TimeSlice.None, GameUtil.MetricMassFormat.Kilogram, true, "{0:0.#}"));
+			}
 			return string.Format(UI.STARMAP.LAUNCHCHECKLIST.MINIMUM_MASS, UI.STARMAP.COMPOSITION_UNDISCOVERED_AMOUNT);
 		}
-		return string.Format(UI.STARMAP.LAUNCHCHECKLIST.MINIMUM_MASS, GameUtil.GetFormattedMass(spacecraftDestination.AvailableMass, GameUtil.TimeSlice.None, GameUtil.MetricMassFormat.Kilogram, true, "{0:0.#}"));
+		return UI.STARMAP.LAUNCHCHECKLIST.NO_DESTINATION;
 	}
 
 	public override string GetLaunchStatusTooltip(bool ready)
@@ -46,7 +46,7 @@ public class ConditionHasMinimumMass : RocketLaunchCondition
 		int id = SpacecraftManager.instance.GetSpacecraftFromLaunchConditionManager(commandModule.GetComponent<LaunchConditionManager>()).id;
 		SpaceDestination spacecraftDestination = SpacecraftManager.instance.GetSpacecraftDestination(id);
 		bool flag = spacecraftDestination != null && SpacecraftManager.instance.GetDestinationAnalysisState(spacecraftDestination) == SpacecraftManager.DestinationAnalysisState.Complete;
-		string text = "";
+		string text = string.Empty;
 		if (flag)
 		{
 			if (spacecraftDestination.AvailableMass <= CargoCapacity(spacecraftDestination, commandModule))
@@ -81,20 +81,20 @@ public class ConditionHasMinimumMass : RocketLaunchCondition
 
 	public static float CargoCapacity(SpaceDestination destination, CommandModule module)
 	{
-		if (!((Object)module == (Object)null))
+		if ((Object)module == (Object)null)
 		{
-			float num = 0f;
-			foreach (GameObject item in AttachableBuilding.GetAttachedNetwork(module.GetComponent<AttachableBuilding>()))
-			{
-				CargoBay component = item.GetComponent<CargoBay>();
-				if ((Object)component != (Object)null && destination.HasElementType(component.storageType))
-				{
-					Storage component2 = component.GetComponent<Storage>();
-					num += component2.capacityKg;
-				}
-			}
-			return num;
+			return 0f;
 		}
-		return 0f;
+		float num = 0f;
+		foreach (GameObject item in AttachableBuilding.GetAttachedNetwork(module.GetComponent<AttachableBuilding>()))
+		{
+			CargoBay component = item.GetComponent<CargoBay>();
+			if ((Object)component != (Object)null && destination.HasElementType(component.storageType))
+			{
+				Storage component2 = component.GetComponent<Storage>();
+				num += component2.capacityKg;
+			}
+		}
+		return num;
 	}
 }

@@ -43,7 +43,7 @@ public class SkillsScreen : KModalScreen
 
 	private MultiToggle activeSortToggle;
 
-	private bool sortReversed = false;
+	private bool sortReversed;
 
 	[Header("Duplicant Animation")]
 	[SerializeField]
@@ -116,7 +116,7 @@ public class SkillsScreen : KModalScreen
 
 	private List<SkillMinionWidget> minionWidgets = new List<SkillMinionWidget>();
 
-	private string hoveredSkillID = "";
+	private string hoveredSkillID = string.Empty;
 
 	private Dictionary<string, GameObject> skillWidgets = new Dictionary<string, GameObject>();
 
@@ -124,9 +124,9 @@ public class SkillsScreen : KModalScreen
 
 	private List<GameObject> skillColumns = new List<GameObject>();
 
-	private bool dirty = false;
+	private bool dirty;
 
-	private bool linesPending = false;
+	private bool linesPending;
 
 	private int layoutRowHeight = 80;
 
@@ -136,11 +136,11 @@ public class SkillsScreen : KModalScreen
 	{
 		get
 		{
-			if (currentlySelectedMinion != null && !currentlySelectedMinion.IsNull())
+			if (currentlySelectedMinion == null || currentlySelectedMinion.IsNull())
 			{
-				return currentlySelectedMinion;
+				return null;
 			}
-			return null;
+			return currentlySelectedMinion;
 		}
 		set
 		{
@@ -221,7 +221,7 @@ public class SkillsScreen : KModalScreen
 			{
 				expectationsTooltip.SetSimpleTooltip(string.Format(UI.TABLESCREENS.INFORMATION_NOT_AVAILABLE_TOOLTIP, (currentlySelectedMinion as StoredMinionIdentity).GetStorageReason(), currentlySelectedMinion.GetProperName()));
 				experienceBarTooltip.SetSimpleTooltip(string.Format(UI.TABLESCREENS.INFORMATION_NOT_AVAILABLE_TOOLTIP, (currentlySelectedMinion as StoredMinionIdentity).GetStorageReason(), currentlySelectedMinion.GetProperName()));
-				EXPCount.text = "";
+				EXPCount.text = string.Empty;
 				duplicantLevelIndicator.text = UI.TABLESCREENS.NA;
 			}
 			else
@@ -342,10 +342,10 @@ public class SkillsScreen : KModalScreen
 					expectationWarning.SetActive(false);
 					moraleWarning.SetActive(true);
 				}
-				string text = "";
+				string empty = string.Empty;
 				Dictionary<string, float> dictionary = new Dictionary<string, float>();
-				string text2 = text;
-				text = text2 + GameUtil.ApplyBoldString(UI.SKILLS_SCREEN.MORALE) + ": " + attributeInstance.GetTotalValue() + "\n";
+				string text = empty;
+				empty = text + GameUtil.ApplyBoldString(UI.SKILLS_SCREEN.MORALE) + ": " + attributeInstance.GetTotalValue() + "\n";
 				for (int k = 0; k < attributeInstance.Modifiers.Count; k++)
 				{
 					dictionary.Add(attributeInstance.Modifiers[k].GetDescription(), attributeInstance.Modifiers[k].Value);
@@ -354,18 +354,18 @@ public class SkillsScreen : KModalScreen
 				list3.Sort((KeyValuePair<string, float> pair1, KeyValuePair<string, float> pair2) => pair2.Value.CompareTo(pair1.Value));
 				foreach (KeyValuePair<string, float> item in list3)
 				{
-					text2 = text;
-					text = text2 + "    • " + item.Key + ": " + ((!(item.Value > 0f)) ? UIConstants.ColorPrefixRed : UIConstants.ColorPrefixGreen) + item.Value.ToString() + UIConstants.ColorSuffix + "\n";
+					text = empty;
+					empty = text + "    • " + item.Key + ": " + ((!(item.Value > 0f)) ? UIConstants.ColorPrefixRed : UIConstants.ColorPrefixGreen) + item.Value.ToString() + UIConstants.ColorSuffix + "\n";
 				}
-				text += "\n";
-				text2 = text;
-				text = text2 + GameUtil.ApplyBoldString(UI.SKILLS_SCREEN.MORALE_EXPECTATION) + ": " + attributeInstance2.GetTotalValue() + "\n";
+				empty += "\n";
+				text = empty;
+				empty = text + GameUtil.ApplyBoldString(UI.SKILLS_SCREEN.MORALE_EXPECTATION) + ": " + attributeInstance2.GetTotalValue() + "\n";
 				for (int l = 0; l < attributeInstance2.Modifiers.Count; l++)
 				{
-					text2 = text;
-					text = text2 + "    • " + attributeInstance2.Modifiers[l].GetDescription() + ": " + ((!(attributeInstance2.Modifiers[l].Value > 0f)) ? UIConstants.ColorPrefixGreen : UIConstants.ColorPrefixRed) + attributeInstance2.Modifiers[l].GetFormattedString(component2.gameObject) + UIConstants.ColorSuffix + "\n";
+					text = empty;
+					empty = text + "    • " + attributeInstance2.Modifiers[l].GetDescription() + ": " + ((!(attributeInstance2.Modifiers[l].Value > 0f)) ? UIConstants.ColorPrefixGreen : UIConstants.ColorPrefixRed) + attributeInstance2.Modifiers[l].GetFormattedString(component2.gameObject) + UIConstants.ColorSuffix + "\n";
 				}
-				expectationsTooltip.SetSimpleTooltip(text);
+				expectationsTooltip.SetSimpleTooltip(empty);
 			}
 		}
 	}
@@ -375,12 +375,12 @@ public class SkillsScreen : KModalScreen
 		if (currentlySelectedMinion != null && !currentlySelectedMinion.IsNull())
 		{
 			List<IListableOption> list = new List<IListableOption>();
-			string text = "";
+			string empty = string.Empty;
 			MinionIdentity minionIdentity = currentlySelectedMinion as MinionIdentity;
 			if ((UnityEngine.Object)minionIdentity != (UnityEngine.Object)null)
 			{
 				MinionResume component = minionIdentity.GetComponent<MinionResume>();
-				text = ((!string.IsNullOrEmpty(component.TargetHat)) ? component.TargetHat : component.CurrentHat);
+				empty = ((!string.IsNullOrEmpty(component.TargetHat)) ? component.TargetHat : component.CurrentHat);
 				foreach (KeyValuePair<string, bool> item in component.MasteryBySkillID)
 				{
 					if (item.Value)
@@ -393,11 +393,11 @@ public class SkillsScreen : KModalScreen
 			else
 			{
 				StoredMinionIdentity storedMinionIdentity = currentlySelectedMinion as StoredMinionIdentity;
-				text = ((!string.IsNullOrEmpty(storedMinionIdentity.targetHat)) ? storedMinionIdentity.targetHat : storedMinionIdentity.currentHat);
+				empty = ((!string.IsNullOrEmpty(storedMinionIdentity.targetHat)) ? storedMinionIdentity.targetHat : storedMinionIdentity.currentHat);
 			}
 			hatDropDown.openButton.enabled = ((UnityEngine.Object)minionIdentity != (UnityEngine.Object)null);
 			selectedHat.transform.Find("Arrow").gameObject.SetActive((UnityEngine.Object)minionIdentity != (UnityEngine.Object)null);
-			selectedHat.sprite = Assets.GetSprite((!string.IsNullOrEmpty(text)) ? text : "hat_role_none");
+			selectedHat.sprite = Assets.GetSprite((!string.IsNullOrEmpty(empty)) ? empty : "hat_role_none");
 		}
 	}
 
@@ -683,23 +683,23 @@ public class SkillsScreen : KModalScreen
 			{
 				return 0;
 			}
-			if (!((UnityEngine.Object)minionIdentity == (UnityEngine.Object)null))
+			if ((UnityEngine.Object)minionIdentity == (UnityEngine.Object)null)
 			{
-				if (!((UnityEngine.Object)minionIdentity2 == (UnityEngine.Object)null))
-				{
-					MinionResume component = minionIdentity.GetComponent<MinionResume>();
-					MinionResume component2 = minionIdentity2.GetComponent<MinionResume>();
-					AttributeInstance attributeInstance = Db.Get().Attributes.QualityOfLife.Lookup(component);
-					AttributeInstance attributeInstance2 = Db.Get().Attributes.QualityOfLifeExpectation.Lookup(component);
-					AttributeInstance attributeInstance3 = Db.Get().Attributes.QualityOfLife.Lookup(component2);
-					AttributeInstance attributeInstance4 = Db.Get().Attributes.QualityOfLifeExpectation.Lookup(component2);
-					float num = attributeInstance.GetTotalValue() / attributeInstance2.GetTotalValue();
-					float value = attributeInstance3.GetTotalValue() / attributeInstance4.GetTotalValue();
-					return num.CompareTo(value);
-				}
+				return -1;
+			}
+			if ((UnityEngine.Object)minionIdentity2 == (UnityEngine.Object)null)
+			{
 				return 1;
 			}
-			return -1;
+			MinionResume component = minionIdentity.GetComponent<MinionResume>();
+			MinionResume component2 = minionIdentity2.GetComponent<MinionResume>();
+			AttributeInstance attributeInstance = Db.Get().Attributes.QualityOfLife.Lookup(component);
+			AttributeInstance attributeInstance2 = Db.Get().Attributes.QualityOfLifeExpectation.Lookup(component);
+			AttributeInstance attributeInstance3 = Db.Get().Attributes.QualityOfLife.Lookup(component2);
+			AttributeInstance attributeInstance4 = Db.Get().Attributes.QualityOfLifeExpectation.Lookup(component2);
+			float num = attributeInstance.GetTotalValue() / attributeInstance2.GetTotalValue();
+			float value = attributeInstance3.GetTotalValue() / attributeInstance4.GetTotalValue();
+			return num.CompareTo(value);
 		});
 		ReorderEntries(list, sortReversed);
 	}
@@ -724,19 +724,19 @@ public class SkillsScreen : KModalScreen
 			{
 				return 0;
 			}
-			if (!((UnityEngine.Object)minionIdentity == (UnityEngine.Object)null))
+			if ((UnityEngine.Object)minionIdentity == (UnityEngine.Object)null)
 			{
-				if (!((UnityEngine.Object)minionIdentity2 == (UnityEngine.Object)null))
-				{
-					MinionResume component = minionIdentity.GetComponent<MinionResume>();
-					MinionResume component2 = minionIdentity2.GetComponent<MinionResume>();
-					float num = (float)(component.AvailableSkillpoints / (component.TotalSkillPointsGained + 1));
-					float value = (float)(component2.AvailableSkillpoints / (component2.TotalSkillPointsGained + 1));
-					return num.CompareTo(value);
-				}
+				return -1;
+			}
+			if ((UnityEngine.Object)minionIdentity2 == (UnityEngine.Object)null)
+			{
 				return 1;
 			}
-			return -1;
+			MinionResume component = minionIdentity.GetComponent<MinionResume>();
+			MinionResume component2 = minionIdentity2.GetComponent<MinionResume>();
+			float num = (float)(component.AvailableSkillpoints / (component.TotalSkillPointsGained + 1));
+			float value = (float)(component2.AvailableSkillpoints / (component2.TotalSkillPointsGained + 1));
+			return num.CompareTo(value);
 		});
 		ReorderEntries(list, sortReversed);
 	}
@@ -769,7 +769,7 @@ public class SkillsScreen : KModalScreen
 				ScreenResize instance = ScreenResize.Instance;
 				instance.OnResize = (System.Action)Delegate.Combine(instance.OnResize, new System.Action(OnResize));
 			}
-			string value = "";
+			string value = string.Empty;
 			Accessorizer component = animController.GetComponent<Accessorizer>();
 			for (int num = component.GetAccessories().Count - 1; num >= 0; num--)
 			{

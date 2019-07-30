@@ -48,11 +48,11 @@ public class Toilet : StateMachineComponent<Toilet.StatesInstance>, ISaveLoadabl
 
 		public bool HasDirt()
 		{
-			if (!base.master.storage.IsEmpty())
+			if (base.master.storage.IsEmpty())
 			{
-				return base.master.storage.Has(ElementLoader.FindElementByHash(SimHashes.Dirt).tag);
+				return false;
 			}
-			return false;
+			return base.master.storage.Has(ElementLoader.FindElementByHash(SimHashes.Dirt).tag);
 		}
 
 		public float MassPerFlush()
@@ -244,7 +244,7 @@ public class Toilet : StateMachineComponent<Toilet.StatesInstance>, ISaveLoadabl
 	public int diseaseOnDupePerFlush;
 
 	[Serialize]
-	public int _flushesUsed = 0;
+	public int _flushesUsed;
 
 	private MeterController meter;
 

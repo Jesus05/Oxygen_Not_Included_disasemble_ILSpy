@@ -7,9 +7,9 @@ using System.Runtime.Serialization;
 
 public class ColonyAchievementStatus
 {
-	public bool success = false;
+	public bool success;
 
-	public bool failed = false;
+	public bool failed;
 
 	private List<ColonyAchievementRequirement> requirements = new List<ColonyAchievementRequirement>();
 

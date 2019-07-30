@@ -35,7 +35,7 @@ public class VideoWidget : KMonoBehaviour
 
 	private void Clicked()
 	{
-		VideoScreen.Instance.PlayVideo(clip, false, "", false);
+		VideoScreen.Instance.PlayVideo(clip, false, string.Empty, false);
 		if (!string.IsNullOrEmpty(overlayName))
 		{
 			VideoScreen.Instance.SetOverlayText(overlayName, texts);

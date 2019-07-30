@@ -14,15 +14,15 @@ namespace YamlDotNet.Serialization.NodeDeserializers
 
 		public bool Deserialize(IParser parser, Type expectedType, Func<IParser, Type, object> nestedObjectDeserializer, out object value)
 		{
-			if (!typeof(IYamlSerializable).IsAssignableFrom(expectedType))
+			if (typeof(IYamlSerializable).IsAssignableFrom(expectedType))
 			{
-				value = null;
-				return false;
+				IYamlSerializable yamlSerializable = (IYamlSerializable)objectFactory.Create(expectedType);
+				yamlSerializable.ReadYaml(parser);
+				value = yamlSerializable;
+				return true;
 			}
-			IYamlSerializable yamlSerializable = (IYamlSerializable)objectFactory.Create(expectedType);
-			yamlSerializable.ReadYaml(parser);
-			value = yamlSerializable;
-			return true;
+			value = null;
+			return false;
 		}
 	}
 }

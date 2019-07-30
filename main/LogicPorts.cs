@@ -67,7 +67,7 @@ public class LogicPorts : KMonoBehaviour, IEffectDescriptor, IRenderEveryTick
 	[Serialize]
 	private int[] serializedOutputValues;
 
-	private bool isPhysical = false;
+	private bool isPhysical;
 
 	protected override void OnPrefabInit()
 	{

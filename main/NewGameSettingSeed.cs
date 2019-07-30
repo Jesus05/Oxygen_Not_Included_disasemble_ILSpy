@@ -89,7 +89,7 @@ public class NewGameSettingSeed : NewGameSettingWidget
 			}
 			else
 			{
-				Input.text = "";
+				Input.text = string.Empty;
 			}
 		}
 		if (num > 2147483647)

@@ -46,16 +46,16 @@ namespace YamlDotNet.RepresentationModel
 
 			private bool VisitNodeAndFindDuplicates(YamlNode node)
 			{
-				if (!visitedNodes.TryGetValue(node, out bool value))
+				if (visitedNodes.TryGetValue(node, out bool value))
 				{
-					visitedNodes.Add(node, false);
-					return false;
+					if (!value)
+					{
+						visitedNodes[node] = true;
+					}
+					return !value;
 				}
-				if (!value)
-				{
-					visitedNodes[node] = true;
-				}
-				return !value;
+				visitedNodes.Add(node, false);
+				return false;
 			}
 
 			public override void Visit(YamlScalarNode scalar)

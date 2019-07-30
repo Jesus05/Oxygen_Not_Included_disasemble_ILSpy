@@ -32,95 +32,89 @@ public class MinionGroupProber : KMonoBehaviour, IGroupProber
 	private bool IsReachable_AssumeLock(int cell)
 	{
 		Dictionary<object, int> dictionary = cells[cell];
-		if (dictionary != null)
+		if (dictionary == null)
 		{
-			bool result = false;
-			foreach (KeyValuePair<object, int> item in dictionary)
-			{
-				object key = item.Key;
-				int value = item.Value;
-				if (valid_serial_nos.TryGetValue(key, out KeyValuePair<int, int> value2) && (value == value2.Key || value == value2.Value))
-				{
-					result = true;
-					break;
-				}
-				pending_removals.Add(key);
-			}
-			foreach (object pending_removal in pending_removals)
-			{
-				dictionary.Remove(pending_removal);
-				if (dictionary.Count == 0)
-				{
-					cells[cell] = null;
-				}
-			}
-			pending_removals.Clear();
-			return result;
+			return false;
 		}
-		return false;
+		bool result = false;
+		foreach (KeyValuePair<object, int> item in dictionary)
+		{
+			object key = item.Key;
+			int value = item.Value;
+			if (valid_serial_nos.TryGetValue(key, out KeyValuePair<int, int> value2) && (value == value2.Key || value == value2.Value))
+			{
+				result = true;
+				break;
+			}
+			pending_removals.Add(key);
+		}
+		foreach (object pending_removal in pending_removals)
+		{
+			dictionary.Remove(pending_removal);
+			if (dictionary.Count == 0)
+			{
+				cells[cell] = null;
+			}
+		}
+		pending_removals.Clear();
+		return result;
 	}
 
 	public bool IsReachable(int cell)
 	{
-		if (Grid.IsValidCell(cell))
+		if (!Grid.IsValidCell(cell))
 		{
-			bool result = false;
-			lock (access)
-			{
-				result = IsReachable_AssumeLock(cell);
-			}
-			return result;
+			return false;
 		}
-		return false;
+		bool flag = false;
+		lock (access)
+		{
+			return IsReachable_AssumeLock(cell);
+		}
 	}
 
 	public bool IsReachable(int cell, CellOffset[] offsets)
 	{
-		if (Grid.IsValidCell(cell))
+		if (!Grid.IsValidCell(cell))
 		{
-			bool result = false;
-			lock (access)
+			return false;
+		}
+		bool result = false;
+		lock (access)
+		{
+			foreach (CellOffset offset in offsets)
+			{
+				if (IsReachable_AssumeLock(Grid.OffsetCell(cell, offset)))
+				{
+					return true;
+				}
+			}
+			return result;
+		}
+	}
+
+	public bool IsAllReachable(int cell, CellOffset[] offsets)
+	{
+		if (!Grid.IsValidCell(cell))
+		{
+			return false;
+		}
+		bool result = false;
+		lock (access)
+		{
+			if (!IsReachable_AssumeLock(cell))
 			{
 				foreach (CellOffset offset in offsets)
 				{
 					if (IsReachable_AssumeLock(Grid.OffsetCell(cell, offset)))
 					{
-						result = true;
-						break;
+						return true;
 					}
 				}
+				return result;
 			}
-			return result;
+			return true;
 		}
-		return false;
-	}
-
-	public bool IsAllReachable(int cell, CellOffset[] offsets)
-	{
-		if (Grid.IsValidCell(cell))
-		{
-			bool result = false;
-			lock (access)
-			{
-				if (IsReachable_AssumeLock(cell))
-				{
-					result = true;
-				}
-				else
-				{
-					foreach (CellOffset offset in offsets)
-					{
-						if (IsReachable_AssumeLock(Grid.OffsetCell(cell, offset)))
-						{
-							result = true;
-							break;
-						}
-					}
-				}
-			}
-			return result;
-		}
-		return false;
 	}
 
 	public bool IsReachable(Workable workable)

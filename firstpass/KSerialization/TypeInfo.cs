@@ -43,28 +43,28 @@ namespace KSerialization
 
 		public bool Equals(TypeInfo other)
 		{
-			if (info != other.info)
+			if (info == other.info)
 			{
-				return false;
-			}
-			if (subTypes != null && other.subTypes != null)
-			{
-				if (subTypes.Length != other.subTypes.Length)
+				if (subTypes != null && other.subTypes != null)
 				{
+					if (subTypes.Length == other.subTypes.Length)
+					{
+						for (int i = 0; i < subTypes.Length; i++)
+						{
+							if (!subTypes[i].Equals(other.subTypes[i]))
+							{
+								return false;
+							}
+						}
+						return true;
+					}
 					return false;
 				}
-				for (int i = 0; i < subTypes.Length; i++)
+				if (subTypes == null && other.subTypes == null)
 				{
-					if (!subTypes[i].Equals(other.subTypes[i]))
-					{
-						return false;
-					}
+					return type == other.type;
 				}
-				return true;
-			}
-			if (subTypes == null && other.subTypes == null)
-			{
-				return type == other.type;
+				return false;
 			}
 			return false;
 		}

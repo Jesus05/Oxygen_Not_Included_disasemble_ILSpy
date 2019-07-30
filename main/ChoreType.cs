@@ -10,7 +10,7 @@ public class ChoreType : Resource
 
 	public HashSet<Tag> interruptExclusion;
 
-	public string reportName = null;
+	public string reportName;
 
 	public Urge urge
 	{
@@ -45,7 +45,7 @@ public class ChoreType : Resource
 	public ChoreType(string id, ResourceSet parent, string[] chore_groups, string urge, string name, string status_message, string tooltip, IEnumerable<Tag> interrupt_exclusion, int implicit_priority, int explicit_priority)
 		: base(id, parent, name)
 	{
-		statusItem = new StatusItem(id, status_message, tooltip, "", StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, 129022);
+		statusItem = new StatusItem(id, status_message, tooltip, string.Empty, StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, 129022);
 		statusItem.resolveStringCallback = ResolveStringCallback;
 		tags.Add(TagManager.Create(id));
 		interruptExclusion = new HashSet<Tag>(interrupt_exclusion);

@@ -24,11 +24,11 @@ public class Global : MonoBehaviour
 
 	public KMod.Manager modManager;
 
-	private bool gotKleiUserID = false;
+	private bool gotKleiUserID;
 
 	public Thread mainThread;
 
-	private bool updated_with_initialized_distribution_platform = false;
+	private bool updated_with_initialized_distribution_platform;
 
 	public static readonly string LanguagePackKey = "LanguagePack";
 
@@ -364,11 +364,11 @@ public class Global : MonoBehaviour
 
 	public AnimEventManager GetAnimEventManager()
 	{
-		if (!App.IsExiting)
+		if (App.IsExiting)
 		{
-			return mAnimEventManager;
+			return null;
 		}
-		return null;
+		return mAnimEventManager;
 	}
 
 	private void OnApplicationFocus(bool focus)
@@ -412,8 +412,8 @@ public class Global : MonoBehaviour
 
 	private void SetONIStaticSessionVariables()
 	{
-		ThreadedHttps<KleiMetrics>.Instance.SetStaticSessionVariable("Branch", "preview");
-		ThreadedHttps<KleiMetrics>.Instance.SetStaticSessionVariable("Build", 355817u);
+		ThreadedHttps<KleiMetrics>.Instance.SetStaticSessionVariable("Branch", "release");
+		ThreadedHttps<KleiMetrics>.Instance.SetStaticSessionVariable("Build", 356355u);
 		if (KPlayerPrefs.HasKey(UnitConfigurationScreen.MassUnitKey))
 		{
 			ThreadedHttps<KleiMetrics>.Instance.SetStaticSessionVariable(UnitConfigurationScreen.MassUnitKey, KPlayerPrefs.GetInt(UnitConfigurationScreen.MassUnitKey).ToString());

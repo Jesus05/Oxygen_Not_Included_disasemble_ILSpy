@@ -20,46 +20,46 @@ public class SuitMarker : KMonoBehaviour
 
 		public override bool InternalCanBegin(GameObject new_reactor, Navigator.ActiveTransition transition)
 		{
-			if (!((UnityEngine.Object)reactor != (UnityEngine.Object)null))
+			if ((UnityEngine.Object)reactor != (UnityEngine.Object)null)
 			{
-				if (!((UnityEngine.Object)suitMarker == (UnityEngine.Object)null))
-				{
-					if (suitMarker.isOperational)
-					{
-						int num = transition.navGridTransition.x;
-						if (num != 0)
-						{
-							MinionIdentity component = new_reactor.GetComponent<MinionIdentity>();
-							if (!component.GetEquipment().IsSlotOccupied(Db.Get().AssignableSlots.Suit))
-							{
-								if (num > 0 && suitMarker.isRotated)
-								{
-									return false;
-								}
-								if (num < 0 && !suitMarker.isRotated)
-								{
-									return false;
-								}
-								return Grid.HasSuit(Grid.PosToCell(suitMarker), new_reactor.GetComponent<KPrefabID>().InstanceID);
-							}
-							if (num < 0 && suitMarker.isRotated)
-							{
-								return false;
-							}
-							if (num > 0 && !suitMarker.isRotated)
-							{
-								return false;
-							}
-							return true;
-						}
-						return false;
-					}
-					return false;
-				}
+				return false;
+			}
+			if ((UnityEngine.Object)suitMarker == (UnityEngine.Object)null)
+			{
 				Cleanup();
 				return false;
 			}
-			return false;
+			if (!suitMarker.isOperational)
+			{
+				return false;
+			}
+			int num = transition.navGridTransition.x;
+			if (num == 0)
+			{
+				return false;
+			}
+			MinionIdentity component = new_reactor.GetComponent<MinionIdentity>();
+			if (component.GetEquipment().IsSlotOccupied(Db.Get().AssignableSlots.Suit))
+			{
+				if (num < 0 && suitMarker.isRotated)
+				{
+					return false;
+				}
+				if (num > 0 && !suitMarker.isRotated)
+				{
+					return false;
+				}
+				return true;
+			}
+			if (num > 0 && suitMarker.isRotated)
+			{
+				return false;
+			}
+			if (num < 0 && !suitMarker.isRotated)
+			{
+				return false;
+			}
+			return Grid.HasSuit(Grid.PosToCell(suitMarker), new_reactor.GetComponent<KPrefabID>().InstanceID);
 		}
 
 		protected override void InternalBegin()
@@ -150,7 +150,7 @@ public class SuitMarker : KMonoBehaviour
 					Assignable assignable = equipment.GetAssignable(Db.Get().AssignableSlots.Suit);
 					assignable.Unassign();
 					Notification notification = new Notification(MISC.NOTIFICATIONS.SUIT_DROPPED.NAME, NotificationType.BadMinor, HashedString.Invalid, (List<Notification> notificationList, object data) => MISC.NOTIFICATIONS.SUIT_DROPPED.TOOLTIP, null, true, 0f, null, null, null);
-					assignable.GetComponent<Notifier>().Add(notification, "");
+					assignable.GetComponent<Notifier>().Add(notification, string.Empty);
 				}
 			}
 		}

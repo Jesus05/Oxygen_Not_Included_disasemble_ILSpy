@@ -12,7 +12,7 @@ public class MaterialSelector : KScreen
 
 	public Dictionary<Tag, KToggle> ElementToggles = new Dictionary<Tag, KToggle>();
 
-	public int selectorIndex = 0;
+	public int selectorIndex;
 
 	public SelectMaterialActions selectMaterialActions;
 
@@ -205,7 +205,7 @@ public class MaterialSelector : KScreen
 			if ((Object)gameObject2 != (Object)null)
 			{
 				KBatchedAnimController component = gameObject2.GetComponent<KBatchedAnimController>();
-				image.sprite = Def.GetUISpriteFromMultiObjectAnim(component.AnimFiles[0], "ui", false, "");
+				image.sprite = Def.GetUISpriteFromMultiObjectAnim(component.AnimFiles[0], "ui", false, string.Empty);
 			}
 			gameObject.SetActive(WorldInventory.Instance.IsDiscovered(elem) || DebugHandler.InstantBuildMode || Game.Instance.SandboxModeActive);
 			SetToggleBGImage(elementToggle.Value, elementToggle.Key);
@@ -231,45 +231,45 @@ public class MaterialSelector : KScreen
 
 	public bool AutoSelectAvailableMaterial()
 	{
-		if (activeRecipe != null && ElementToggles.Count != 0)
+		if (activeRecipe == null || ElementToggles.Count == 0)
 		{
-			Tag previousElement = SaveGame.Instance.materialSelectorSerializer.GetPreviousElement(selectorIndex, activeRecipe.Result);
-			if (previousElement != (Tag)null)
+			return false;
+		}
+		Tag previousElement = SaveGame.Instance.materialSelectorSerializer.GetPreviousElement(selectorIndex, activeRecipe.Result);
+		if (previousElement != (Tag)null)
+		{
+			ElementToggles.TryGetValue(previousElement, out KToggle value);
+			if ((Object)value != (Object)null && (DebugHandler.InstantBuildMode || Game.Instance.SandboxModeActive || WorldInventory.Instance.GetAmount(previousElement) >= activeMass))
 			{
-				ElementToggles.TryGetValue(previousElement, out KToggle value);
-				if ((Object)value != (Object)null && (DebugHandler.InstantBuildMode || Game.Instance.SandboxModeActive || WorldInventory.Instance.GetAmount(previousElement) >= activeMass))
-				{
-					OnSelectMaterial(previousElement, activeRecipe, true);
-					return true;
-				}
-			}
-			float num = -1f;
-			List<Tag> list = new List<Tag>();
-			foreach (KeyValuePair<Tag, KToggle> elementToggle in ElementToggles)
-			{
-				list.Add(elementToggle.Key);
-			}
-			list.Sort(ElementSorter);
-			if (!DebugHandler.InstantBuildMode && !Game.Instance.SandboxModeActive)
-			{
-				Tag tag = null;
-				foreach (Tag item in list)
-				{
-					float amount = WorldInventory.Instance.GetAmount(item);
-					if (amount >= activeMass && amount > num)
-					{
-						num = amount;
-						tag = item;
-					}
-				}
-				if (!(tag != (Tag)null))
-				{
-					return false;
-				}
-				OnSelectMaterial(tag, activeRecipe, true);
+				OnSelectMaterial(previousElement, activeRecipe, true);
 				return true;
 			}
+		}
+		float num = -1f;
+		List<Tag> list = new List<Tag>();
+		foreach (KeyValuePair<Tag, KToggle> elementToggle in ElementToggles)
+		{
+			list.Add(elementToggle.Key);
+		}
+		list.Sort(ElementSorter);
+		if (DebugHandler.InstantBuildMode || Game.Instance.SandboxModeActive)
+		{
 			OnSelectMaterial(list[0], activeRecipe, true);
+			return true;
+		}
+		Tag tag = null;
+		foreach (Tag item in list)
+		{
+			float amount = WorldInventory.Instance.GetAmount(item);
+			if (amount >= activeMass && amount > num)
+			{
+				num = amount;
+				tag = item;
+			}
+		}
+		if (tag != (Tag)null)
+		{
+			OnSelectMaterial(tag, activeRecipe, true);
 			return true;
 		}
 		return false;
@@ -398,16 +398,16 @@ public class MaterialSelector : KScreen
 		IHasSortOrder hasSortOrder = (!((Object)gameObject != (Object)null)) ? null : gameObject.GetComponent<IHasSortOrder>();
 		GameObject gameObject2 = Assets.TryGetPrefab(bt);
 		IHasSortOrder hasSortOrder2 = (!((Object)gameObject2 != (Object)null)) ? null : gameObject2.GetComponent<IHasSortOrder>();
-		if (hasSortOrder != null && hasSortOrder2 != null)
+		if (hasSortOrder == null || hasSortOrder2 == null)
 		{
-			Element element = ElementLoader.GetElement(at);
-			Element element2 = ElementLoader.GetElement(bt);
-			if (element != null && element2 != null && element.buildMenuSort == element2.buildMenuSort)
-			{
-				return element.idx.CompareTo(element2.idx);
-			}
-			return hasSortOrder.sortOrder.CompareTo(hasSortOrder2.sortOrder);
+			return 0;
 		}
-		return 0;
+		Element element = ElementLoader.GetElement(at);
+		Element element2 = ElementLoader.GetElement(bt);
+		if (element != null && element2 != null && element.buildMenuSort == element2.buildMenuSort)
+		{
+			return element.idx.CompareTo(element2.idx);
+		}
+		return hasSortOrder.sortOrder.CompareTo(hasSortOrder2.sortOrder);
 	}
 }

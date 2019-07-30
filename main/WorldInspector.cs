@@ -69,10 +69,10 @@ public class WorldInspector : MonoBehaviour
 
 	private static readonly string[] invalidCellMassStrings = new string[4]
 	{
-		"",
-		"",
-		"",
-		""
+		string.Empty,
+		string.Empty,
+		string.Empty,
+		string.Empty
 	};
 
 	private static float cachedMass = -1f;
@@ -135,17 +135,17 @@ public class WorldInspector : MonoBehaviour
 	private void UpdateAsElementChunk(ElementChunk _chunkObject)
 	{
 		PrimaryElement component = _chunkObject.GetComponent<PrimaryElement>();
-		string text = "";
+		string empty = string.Empty;
 		PropertyLeftText.text = $"{component.Mass:0.00}" + " kg";
 		PropertyIcon_Left.sprite = propertySprites.Mass;
 		PropertyRightText.text = ElementLoader.FindElementByHash(component.ElementID).GetMaterialCategoryTag().ProperName();
 		PropertyIcon_Right.sprite = propertySprites.Resource;
 		TemperatureTextDisplay.text = GameUtil.GetFormattedTemperature((float)Mathf.RoundToInt(component.Temperature), GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false);
-		text = "Current Temperature: " + GameUtil.GetFormattedTemperature((float)Mathf.RoundToInt(component.Temperature), GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false);
+		empty = "Current Temperature: " + GameUtil.GetFormattedTemperature((float)Mathf.RoundToInt(component.Temperature), GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false);
 		SetStateColorScheme(0);
-		text += SetCurrentTemperatureTooltip(ElementLoader.FindElementByHash(component.ElementID), 0);
-		text = text + "\nMelts at: <color=yellow>" + GameUtil.GetFormattedTemperature((float)Mathf.RoundToInt(ElementLoader.FindElementByHash(component.ElementID).highTemp), GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false) + "</color>";
-		Tooltip_CurrentTemperature.toolTip = text;
+		empty += SetCurrentTemperatureTooltip(ElementLoader.FindElementByHash(component.ElementID), 0);
+		empty = empty + "\nMelts at: <color=yellow>" + GameUtil.GetFormattedTemperature((float)Mathf.RoundToInt(ElementLoader.FindElementByHash(component.ElementID).highTemp), GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false) + "</color>";
+		Tooltip_CurrentTemperature.toolTip = empty;
 		TemperatureNotch.SetActive(true);
 		RectTransform rectTransform = TemperatureNotch.rectTransform();
 		float temperaturePosition = GetTemperaturePosition(component);
@@ -155,17 +155,17 @@ public class WorldInspector : MonoBehaviour
 
 	private void UpdateAsEdible(Edible edibleObject)
 	{
-		string text = "";
+		string empty = string.Empty;
 		PropertyLeftText.text = edibleObject.Units.ToString() + " Rations";
 		PropertyIcon_Left.sprite = propertySprites.Rations;
 		PropertyRightText.text = edibleObject.GetQuality().ToString();
 		PropertyIcon_Right.sprite = propertySprites.Quality;
 		float f = Grid.Temperature[Grid.PosToCell(edibleObject)];
 		TemperatureTextDisplay.text = GameUtil.GetFormattedTemperature((float)Mathf.RoundToInt(f), GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false);
-		text = "Current Temperature: " + GameUtil.GetFormattedTemperature((float)Mathf.RoundToInt(f), GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false);
+		empty = "Current Temperature: " + GameUtil.GetFormattedTemperature((float)Mathf.RoundToInt(f), GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false);
 		SetStateColorScheme(0);
-		text = text + "\nRots at temperatures above: <color=yellow>" + GameUtil.GetFormattedTemperature((float)Mathf.RoundToInt(edibleObject.FoodInfo.RotTemperature), GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false) + "</color>";
-		Tooltip_CurrentTemperature.toolTip = text;
+		empty = empty + "\nRots at temperatures above: <color=yellow>" + GameUtil.GetFormattedTemperature((float)Mathf.RoundToInt(edibleObject.FoodInfo.RotTemperature), GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false) + "</color>";
+		Tooltip_CurrentTemperature.toolTip = empty;
 		TemperatureNotch.SetActive(true);
 		RectTransform rectTransform = TemperatureNotch.rectTransform();
 		float temperaturePosition = GetTemperaturePosition(edibleObject);
@@ -230,7 +230,7 @@ public class WorldInspector : MonoBehaviour
 
 	private string SetCurrentTemperatureTooltip(Element element, int state)
 	{
-		string text = "";
+		string text = string.Empty;
 		switch (state)
 		{
 		case 0:
@@ -304,55 +304,55 @@ public class WorldInspector : MonoBehaviour
 
 	public static string[] MassStringsReadOnly(int cell)
 	{
-		if (Grid.IsValidCell(cell))
+		if (!Grid.IsValidCell(cell))
 		{
-			Element element = Grid.Element[cell];
-			float num = Grid.Mass[cell];
-			if (element == cachedElement && num == cachedMass)
-			{
-				return massStrings;
-			}
-			cachedElement = element;
-			cachedMass = num;
-			massStrings[3] = " " + GameUtil.GetBreathableString(element, num);
-			if (element.id == SimHashes.Vacuum)
-			{
-				massStrings[0] = "N/A";
-				massStrings[1] = "";
-				massStrings[2] = "";
-			}
-			else if (element.id == SimHashes.Unobtanium)
-			{
-				massStrings[0] = UI.NEUTRONIUMMASS;
-				massStrings[1] = "";
-				massStrings[2] = "";
-			}
-			else
-			{
-				massStrings[2] = UI.UNITSUFFIXES.MASS.KILOGRAM;
-				if (num < 5f)
-				{
-					num *= 1000f;
-					massStrings[2] = UI.UNITSUFFIXES.MASS.GRAM;
-				}
-				if (num < 5f)
-				{
-					num *= 1000f;
-					massStrings[2] = UI.UNITSUFFIXES.MASS.MILLIGRAM;
-				}
-				if (num < 5f)
-				{
-					num *= 1000f;
-					massStrings[2] = UI.UNITSUFFIXES.MASS.MICROGRAM;
-					num = Mathf.Floor(num);
-				}
-				int num2 = Mathf.FloorToInt(num);
-				massStrings[0] = num2.ToString();
-				float num3 = (float)Mathf.FloorToInt(10f * (num - (float)num2));
-				massStrings[1] = "." + num3.ToString();
-			}
+			return invalidCellMassStrings;
+		}
+		Element element = Grid.Element[cell];
+		float num = Grid.Mass[cell];
+		if (element == cachedElement && num == cachedMass)
+		{
 			return massStrings;
 		}
-		return invalidCellMassStrings;
+		cachedElement = element;
+		cachedMass = num;
+		massStrings[3] = " " + GameUtil.GetBreathableString(element, num);
+		if (element.id == SimHashes.Vacuum)
+		{
+			massStrings[0] = "N/A";
+			massStrings[1] = string.Empty;
+			massStrings[2] = string.Empty;
+		}
+		else if (element.id == SimHashes.Unobtanium)
+		{
+			massStrings[0] = UI.NEUTRONIUMMASS;
+			massStrings[1] = string.Empty;
+			massStrings[2] = string.Empty;
+		}
+		else
+		{
+			massStrings[2] = UI.UNITSUFFIXES.MASS.KILOGRAM;
+			if (num < 5f)
+			{
+				num *= 1000f;
+				massStrings[2] = UI.UNITSUFFIXES.MASS.GRAM;
+			}
+			if (num < 5f)
+			{
+				num *= 1000f;
+				massStrings[2] = UI.UNITSUFFIXES.MASS.MILLIGRAM;
+			}
+			if (num < 5f)
+			{
+				num *= 1000f;
+				massStrings[2] = UI.UNITSUFFIXES.MASS.MICROGRAM;
+				num = Mathf.Floor(num);
+			}
+			int num2 = Mathf.FloorToInt(num);
+			massStrings[0] = num2.ToString();
+			float num3 = (float)Mathf.FloorToInt(10f * (num - (float)num2));
+			massStrings[1] = "." + num3.ToString();
+		}
+		return massStrings;
 	}
 }

@@ -15,7 +15,7 @@ public class KScrollRect : ScrollRect
 
 	private Dictionary<SoundType, string> currentSounds = new Dictionary<SoundType, string>();
 
-	private float scrollVelocity = 0f;
+	private float scrollVelocity;
 
 	private bool default_intertia = true;
 
@@ -30,10 +30,10 @@ public class KScrollRect : ScrollRect
 	private float scrollDeceleration = 0.25f;
 
 	[SerializeField]
-	public bool forceContentMatchWidth = false;
+	public bool forceContentMatchWidth;
 
 	[SerializeField]
-	public bool forceContentMatchHeight = false;
+	public bool forceContentMatchHeight;
 
 	[SerializeField]
 	public bool allowHorizontalScrollWheel = true;
@@ -44,23 +44,23 @@ public class KScrollRect : ScrollRect
 	[SerializeField]
 	public bool allowRightMouseScroll;
 
-	private bool panUp = false;
+	private bool panUp;
 
-	private bool panDown = false;
+	private bool panDown;
 
-	private bool panRight = false;
+	private bool panRight;
 
-	private bool panLeft = false;
+	private bool panLeft;
 
 	private Vector3 keyboardScrollDelta = default(Vector3);
 
 	private float keyboardScrollSpeed = 1f;
 
-	private bool startDrag = false;
+	private bool startDrag;
 
-	private bool stopDrag = false;
+	private bool stopDrag;
 
-	private bool autoScrolling = false;
+	private bool autoScrolling;
 
 	private float autoScrollTargetVerticalPos;
 

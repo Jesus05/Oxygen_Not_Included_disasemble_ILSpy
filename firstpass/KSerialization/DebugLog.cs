@@ -23,10 +23,10 @@ namespace KSerialization
 				break;
 			}
 			return;
-			IL_0026:
+			IL_0021:
 			Debug.Log(msg);
 			return;
-			IL_0031:
+			IL_002c:
 			Debug.LogWarning(msg);
 		}
 	}

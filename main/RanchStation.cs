@@ -59,13 +59,13 @@ public class RanchStation : GameStateMachine<RanchStation, RanchStation.Instance
 
 		public bool IsCreatureAvailableForRanching()
 		{
-			if (targetRanchable == null)
+			if (targetRanchable != null)
 			{
-				return false;
+				int targetRanchCell = GetTargetRanchCell();
+				CavityInfo cavityForCell = Game.Instance.roomProber.GetCavityForCell(targetRanchCell);
+				return CanRanchableBeRanchedAtRanchStation(targetRanchable, this, cavityForCell, targetRanchCell);
 			}
-			int targetRanchCell = GetTargetRanchCell();
-			CavityInfo cavityForCell = Game.Instance.roomProber.GetCavityForCell(targetRanchCell);
-			return CanRanchableBeRanchedAtRanchStation(targetRanchable, this, cavityForCell, targetRanchCell);
+			return false;
 		}
 
 		public void SetRancherIsAvailableForRanching()
@@ -80,34 +80,34 @@ public class RanchStation : GameStateMachine<RanchStation, RanchStation.Instance
 
 		private static bool CanRanchableBeRanchedAtRanchStation(RanchableMonitor.Instance ranchable, Instance ranch_station, CavityInfo ranch_cavity_info, int ranch_cell)
 		{
-			if (ranchable.IsRunning())
+			if (!ranchable.IsRunning())
 			{
-				if (ranchable.targetRanchStation != ranch_station && ranchable.targetRanchStation != null && ranchable.targetRanchStation.IsRunning())
-				{
-					return false;
-				}
-				if (ranch_station.def.isCreatureEligibleToBeRanchedCb(ranchable.gameObject, ranch_station))
-				{
-					if (ranchable.GetComponent<ChoreConsumer>().IsChoreEqualOrAboveCurrentChorePriority<RanchedStates>())
-					{
-						int cell = Grid.PosToCell(ranchable.transform.GetPosition());
-						CavityInfo cavityForCell = Game.Instance.roomProber.GetCavityForCell(cell);
-						if (cavityForCell != null && cavityForCell == ranch_cavity_info)
-						{
-							int navigationCost = ranchable.GetComponent<Navigator>().GetNavigationCost(ranch_cell);
-							if (navigationCost != -1)
-							{
-								return true;
-							}
-							return false;
-						}
-						return false;
-					}
-					return false;
-				}
 				return false;
 			}
-			return false;
+			if (ranchable.targetRanchStation != ranch_station && ranchable.targetRanchStation != null && ranchable.targetRanchStation.IsRunning())
+			{
+				return false;
+			}
+			if (!ranch_station.def.isCreatureEligibleToBeRanchedCb(ranchable.gameObject, ranch_station))
+			{
+				return false;
+			}
+			if (!ranchable.GetComponent<ChoreConsumer>().IsChoreEqualOrAboveCurrentChorePriority<RanchedStates>())
+			{
+				return false;
+			}
+			int cell = Grid.PosToCell(ranchable.transform.GetPosition());
+			CavityInfo cavityForCell = Game.Instance.roomProber.GetCavityForCell(cell);
+			if (cavityForCell == null || cavityForCell != ranch_cavity_info)
+			{
+				return false;
+			}
+			int navigationCost = ranchable.GetComponent<Navigator>().GetNavigationCost(ranch_cell);
+			if (navigationCost == -1)
+			{
+				return false;
+			}
+			return true;
 		}
 
 		public void FindRanchable()

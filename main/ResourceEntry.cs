@@ -217,7 +217,7 @@ public class ResourceEntry : KMonoBehaviour, IPointerEnterHandler, IPointerExitH
 		Element element = ElementLoader.FindElementByName(Resource.Name);
 		if (element != null)
 		{
-			Sprite uISpriteFromMultiObjectAnim = Def.GetUISpriteFromMultiObjectAnim(element.substance.anim, "ui", false, "");
+			Sprite uISpriteFromMultiObjectAnim = Def.GetUISpriteFromMultiObjectAnim(element.substance.anim, "ui", false, string.Empty);
 			if ((Object)uISpriteFromMultiObjectAnim != (Object)null)
 			{
 				image.sprite = uISpriteFromMultiObjectAnim;

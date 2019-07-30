@@ -37,9 +37,9 @@ public static class GarbageProfiler
 
 	private static string ROOT_MEMORY_DUMP_PATH = "./memory/";
 
-	private static string filename_suffix = null;
+	private static string filename_suffix;
 
-	private static Type DEBUG_STATIC_TYPE = null;
+	private static Type DEBUG_STATIC_TYPE;
 
 	private static void UnloadUnusedAssets()
 	{

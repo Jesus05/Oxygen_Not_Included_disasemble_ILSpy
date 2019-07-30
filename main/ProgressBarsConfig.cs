@@ -55,7 +55,7 @@ public class ProgressBarsConfig : ScriptableObject
 
 	public string GetBarDescription(string barName)
 	{
-		string result = "";
+		string result = string.Empty;
 		if (IsBarNameValid(barName))
 		{
 			BarData barData = barColorMap[barName];
@@ -77,16 +77,16 @@ public class ProgressBarsConfig : ScriptableObject
 
 	public bool IsBarNameValid(string barName)
 	{
-		if (!string.IsNullOrEmpty(barName))
+		if (string.IsNullOrEmpty(barName))
 		{
-			if (barColorMap.ContainsKey(barName))
-			{
-				return true;
-			}
+			Debug.LogError("The barName provided was null or empty. Don't do that.");
+			return false;
+		}
+		if (!barColorMap.ContainsKey(barName))
+		{
 			Debug.LogError($"No BarData found for the entry [ {barName} ]");
 			return false;
 		}
-		Debug.LogError("The barName provided was null or empty. Don't do that.");
-		return false;
+		return true;
 	}
 }

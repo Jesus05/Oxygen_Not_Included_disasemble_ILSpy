@@ -94,21 +94,21 @@ namespace KMod
 		public string Read(string relative_path)
 		{
 			ICollection<ZipEntry> collection = zipfile.SelectEntries(relative_path);
-			if (collection.Count != 0)
+			if (collection.Count == 0)
 			{
-				using (IEnumerator<ZipEntry> enumerator = collection.GetEnumerator())
+				return string.Empty;
+			}
+			using (IEnumerator<ZipEntry> enumerator = collection.GetEnumerator())
+			{
+				if (enumerator.MoveNext())
 				{
-					if (enumerator.MoveNext())
+					ZipEntry current = enumerator.Current;
+					using (MemoryStream memoryStream = new MemoryStream((int)current.UncompressedSize))
 					{
-						ZipEntry current = enumerator.Current;
-						using (MemoryStream memoryStream = new MemoryStream((int)current.UncompressedSize))
-						{
-							current.Extract(memoryStream);
-							return Encoding.UTF8.GetString(memoryStream.GetBuffer());
-						}
+						current.Extract(memoryStream);
+						return Encoding.UTF8.GetString(memoryStream.GetBuffer());
 					}
 				}
-				return string.Empty;
 			}
 			return string.Empty;
 		}

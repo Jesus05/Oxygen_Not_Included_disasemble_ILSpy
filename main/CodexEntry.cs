@@ -7,9 +7,9 @@ public class CodexEntry
 
 	public Color iconColor = Color.white;
 
-	public bool searchOnly = false;
+	public bool searchOnly;
 
-	public int customContentLength = 0;
+	public int customContentLength;
 
 	public List<ContentContainer> contentContainers
 	{

@@ -64,31 +64,31 @@ public class LogicGateBase : KMonoBehaviour
 
 	public bool TryGetPortAtCell(int cell, out PortId port)
 	{
-		if (cell != InputCellOne)
+		if (cell == InputCellOne)
 		{
-			if (cell == InputCellTwo && RequiresTwoInputs)
-			{
-				port = PortId.InputTwo;
-				return true;
-			}
-			if (cell != OutputCell)
-			{
-				port = PortId.InputOne;
-				return false;
-			}
+			port = PortId.InputOne;
+			return true;
+		}
+		if (cell == InputCellTwo && RequiresTwoInputs)
+		{
+			port = PortId.InputTwo;
+			return true;
+		}
+		if (cell == OutputCell)
+		{
 			port = PortId.Output;
 			return true;
 		}
 		port = PortId.InputOne;
-		return true;
+		return false;
 	}
 
 	public static bool OpRequiresTwoInputs(Op op)
 	{
-		if (op != Op.Not && op != Op.CustomSingle)
+		if (op == Op.Not || op == Op.CustomSingle)
 		{
-			return true;
+			return false;
 		}
-		return false;
+		return true;
 	}
 }

@@ -255,18 +255,18 @@ public class StatusItemRenderer
 
 		private bool Intersects(Vector2 pos, float scale)
 		{
-			if (!((Object)transform == (Object)null))
+			if ((Object)transform == (Object)null)
 			{
-				Bounds bounds = mesh.bounds;
-				Vector3 vector = transform.GetPosition() + offset + bounds.center;
-				Vector2 a = new Vector2(vector.x, vector.y);
-				Vector3 size = bounds.size;
-				Vector2 b = new Vector2(size.x * scale * 0.5f, size.y * scale * 0.5f);
-				Vector2 vector2 = a - b;
-				Vector2 vector3 = a + b;
-				return pos.x >= vector2.x && pos.x <= vector3.x && pos.y >= vector2.y && pos.y <= vector3.y;
+				return false;
 			}
-			return false;
+			Bounds bounds = mesh.bounds;
+			Vector3 vector = transform.GetPosition() + offset + bounds.center;
+			Vector2 a = new Vector2(vector.x, vector.y);
+			Vector3 size = bounds.size;
+			Vector2 b = new Vector2(size.x * scale * 0.5f, size.y * scale * 0.5f);
+			Vector2 vector2 = a - b;
+			Vector2 vector3 = a + b;
+			return pos.x >= vector2.x && pos.x <= vector3.x && pos.y >= vector2.y && pos.y <= vector3.y;
 		}
 
 		public void GetIntersection(Vector2 pos, List<SelectTool.Intersection> intersections, float scale)
@@ -482,11 +482,11 @@ public class StatusItemRenderer
 
 	private HashedString GetMode()
 	{
-		if (!((Object)OverlayScreen.Instance != (Object)null))
+		if ((Object)OverlayScreen.Instance != (Object)null)
 		{
-			return OverlayModes.None.ID;
+			return OverlayScreen.Instance.mode;
 		}
-		return OverlayScreen.Instance.mode;
+		return OverlayModes.None.ID;
 	}
 
 	public void MarkAllDirty()

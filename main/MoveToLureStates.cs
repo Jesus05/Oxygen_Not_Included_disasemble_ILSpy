@@ -33,11 +33,7 @@ public class MoveToLureStates : GameStateMachine<MoveToLureStates, MoveToLureSta
 	public override void InitializeStates(out BaseState default_state)
 	{
 		default_state = move;
-		State root = base.root;
-		string name = CREATURES.STATUSITEMS.CONSIDERINGLURE.NAME;
-		string tooltip = CREATURES.STATUSITEMS.CONSIDERINGLURE.TOOLTIP;
-		StatusItemCategory main = Db.Get().StatusItemCategories.Main;
-		root.ToggleStatusItem(name, tooltip, "", StatusItem.IconType.Info, NotificationType.Neutral, false, default(HashedString), 129022, null, null, main);
+		root.ToggleStatusItem(CREATURES.STATUSITEMS.CONSIDERINGLURE.NAME, CREATURES.STATUSITEMS.CONSIDERINGLURE.TOOLTIP, category: Db.Get().StatusItemCategories.Main, icon: string.Empty, icon_type: StatusItem.IconType.Info, notification_type: NotificationType.Neutral, allow_multiples: false, render_overlay: default(HashedString), status_overlays: 129022, resolve_string_callback: null, resolve_tooltip_callback: null);
 		move.MoveTo(GetLureCell, GetLureOffsets, arrive_at_lure, behaviourcomplete, false);
 		arrive_at_lure.Enter(delegate(Instance smi)
 		{
@@ -54,30 +50,30 @@ public class MoveToLureStates : GameStateMachine<MoveToLureStates, MoveToLureSta
 	{
 		LureableMonitor.Instance sMI = smi.GetSMI<LureableMonitor.Instance>();
 		GameObject targetLure = sMI.GetTargetLure();
-		if (!((UnityEngine.Object)targetLure == (UnityEngine.Object)null))
+		if ((UnityEngine.Object)targetLure == (UnityEngine.Object)null)
 		{
-			return targetLure.GetSMI<Lure.Instance>();
+			return null;
 		}
-		return null;
+		return targetLure.GetSMI<Lure.Instance>();
 	}
 
 	private static int GetLureCell(Instance smi)
 	{
 		Lure.Instance targetLure = GetTargetLure(smi);
-		if (targetLure != null)
+		if (targetLure == null)
 		{
-			return Grid.PosToCell(targetLure);
+			return Grid.InvalidCell;
 		}
-		return Grid.InvalidCell;
+		return Grid.PosToCell(targetLure);
 	}
 
 	private static CellOffset[] GetLureOffsets(Instance smi)
 	{
 		Lure.Instance targetLure = GetTargetLure(smi);
-		if (targetLure != null)
+		if (targetLure == null)
 		{
-			return targetLure.def.lurePoints;
+			return null;
 		}
-		return null;
+		return targetLure.def.lurePoints;
 	}
 }

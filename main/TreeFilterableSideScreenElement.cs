@@ -18,7 +18,7 @@ public class TreeFilterableSideScreenElement : KMonoBehaviour
 
 	private TreeFilterableSideScreen parent;
 
-	private bool initialized = false;
+	private bool initialized;
 
 	public bool IsSelected => checkBox.isOn;
 
@@ -71,7 +71,7 @@ public class TreeFilterableSideScreenElement : KMonoBehaviour
 			KBatchedAnimController component = prefab.GetComponent<KBatchedAnimController>();
 			if ((UnityEngine.Object)component != (UnityEngine.Object)null)
 			{
-				result = Def.GetUISpriteFromMultiObjectAnim(component.AnimFiles[0], "ui", false, "");
+				result = Def.GetUISpriteFromMultiObjectAnim(component.AnimFiles[0], "ui", false, string.Empty);
 			}
 		}
 		return result;
@@ -80,7 +80,7 @@ public class TreeFilterableSideScreenElement : KMonoBehaviour
 	public void SetSprite(Tag t)
 	{
 		Element element = ElementLoader.GetElement(t);
-		Sprite sprite = (element == null) ? GetStorageObjectSprite(t) : Def.GetUISpriteFromMultiObjectAnim(element.substance.anim, "ui", false, "");
+		Sprite sprite = (element == null) ? GetStorageObjectSprite(t) : Def.GetUISpriteFromMultiObjectAnim(element.substance.anim, "ui", false, string.Empty);
 		elementImg.sprite = sprite;
 		elementImg.enabled = ((UnityEngine.Object)sprite != (UnityEngine.Object)null);
 	}

@@ -46,11 +46,7 @@ public class LayEggStates : GameStateMachine<LayEggStates, LayEggStates.Instance
 	public override void InitializeStates(out BaseState default_state)
 	{
 		default_state = layeggpre;
-		State root = base.root;
-		string name = CREATURES.STATUSITEMS.LAYINGANEGG.NAME;
-		string tooltip = CREATURES.STATUSITEMS.LAYINGANEGG.TOOLTIP;
-		StatusItemCategory main = Db.Get().StatusItemCategories.Main;
-		root.ToggleStatusItem(name, tooltip, "", StatusItem.IconType.Info, NotificationType.Neutral, false, default(HashedString), 129022, null, null, main);
+		root.ToggleStatusItem(CREATURES.STATUSITEMS.LAYINGANEGG.NAME, CREATURES.STATUSITEMS.LAYINGANEGG.TOOLTIP, category: Db.Get().StatusItemCategories.Main, icon: string.Empty, icon_type: StatusItem.IconType.Info, notification_type: NotificationType.Neutral, allow_multiples: false, render_overlay: default(HashedString), status_overlays: 129022, resolve_string_callback: null, resolve_tooltip_callback: null);
 		layeggpre.Enter(LayEgg).Exit(ShowEgg).PlayAnim("lay_egg_pre")
 			.OnAnimQueueComplete(layeggpst);
 		layeggpst.PlayAnim("lay_egg_pst").OnAnimQueueComplete(moveaside);

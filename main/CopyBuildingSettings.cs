@@ -47,47 +47,47 @@ public class CopyBuildingSettings : KMonoBehaviour
 			layer = component.Def.ObjectLayer;
 		}
 		GameObject gameObject = Grid.Objects[targetCell, (int)layer];
-		if (!((UnityEngine.Object)gameObject == (UnityEngine.Object)null))
+		if ((UnityEngine.Object)gameObject == (UnityEngine.Object)null)
 		{
-			if (!((UnityEngine.Object)gameObject == (UnityEngine.Object)sourceGameObject))
-			{
-				KPrefabID component2 = sourceGameObject.GetComponent<KPrefabID>();
-				if (!((UnityEngine.Object)component2 == (UnityEngine.Object)null))
-				{
-					KPrefabID component3 = gameObject.GetComponent<KPrefabID>();
-					if (!((UnityEngine.Object)component3 == (UnityEngine.Object)null))
-					{
-						CopyBuildingSettings component4 = sourceGameObject.GetComponent<CopyBuildingSettings>();
-						if (!((UnityEngine.Object)component4 == (UnityEngine.Object)null))
-						{
-							CopyBuildingSettings component5 = gameObject.GetComponent<CopyBuildingSettings>();
-							if (!((UnityEngine.Object)component5 == (UnityEngine.Object)null))
-							{
-								if (component4.copyGroupTag != Tag.Invalid)
-								{
-									if (component4.copyGroupTag != component5.copyGroupTag)
-									{
-										return false;
-									}
-								}
-								else if (component3.PrefabID() != component2.PrefabID())
-								{
-									return false;
-								}
-								component3.Trigger(-905833192, sourceGameObject);
-								PopFXManager.Instance.SpawnFX(PopFXManager.Instance.sprite_Plus, UI.COPIED_SETTINGS, gameObject.transform, new Vector3(0f, 0.5f, 0f), 1.5f, false, false);
-								return true;
-							}
-							return false;
-						}
-						return false;
-					}
-					return false;
-				}
-				return false;
-			}
 			return false;
 		}
-		return false;
+		if ((UnityEngine.Object)gameObject == (UnityEngine.Object)sourceGameObject)
+		{
+			return false;
+		}
+		KPrefabID component2 = sourceGameObject.GetComponent<KPrefabID>();
+		if ((UnityEngine.Object)component2 == (UnityEngine.Object)null)
+		{
+			return false;
+		}
+		KPrefabID component3 = gameObject.GetComponent<KPrefabID>();
+		if ((UnityEngine.Object)component3 == (UnityEngine.Object)null)
+		{
+			return false;
+		}
+		CopyBuildingSettings component4 = sourceGameObject.GetComponent<CopyBuildingSettings>();
+		if ((UnityEngine.Object)component4 == (UnityEngine.Object)null)
+		{
+			return false;
+		}
+		CopyBuildingSettings component5 = gameObject.GetComponent<CopyBuildingSettings>();
+		if ((UnityEngine.Object)component5 == (UnityEngine.Object)null)
+		{
+			return false;
+		}
+		if (component4.copyGroupTag != Tag.Invalid)
+		{
+			if (component4.copyGroupTag != component5.copyGroupTag)
+			{
+				return false;
+			}
+		}
+		else if (component3.PrefabID() != component2.PrefabID())
+		{
+			return false;
+		}
+		component3.Trigger(-905833192, sourceGameObject);
+		PopFXManager.Instance.SpawnFX(PopFXManager.Instance.sprite_Plus, UI.COPIED_SETTINGS, gameObject.transform, new Vector3(0f, 0.5f, 0f), 1.5f, false, false);
+		return true;
 	}
 }

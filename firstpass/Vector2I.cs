@@ -181,10 +181,10 @@ public struct Vector2I : IComparable<Vector2I>, IEquatable<Vector2I>
 	public int CompareTo(Vector2I other)
 	{
 		int result = y - other.y;
-		if (other.y != 0)
+		if (other.y == 0)
 		{
-			return result;
+			return x - other.x;
 		}
-		return x - other.x;
+		return result;
 	}
 }

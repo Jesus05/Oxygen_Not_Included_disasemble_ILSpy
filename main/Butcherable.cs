@@ -9,9 +9,9 @@ public class Butcherable : Workable, ISaveLoadable
 	[MyCmpGet]
 	private Harvestable harvestable;
 
-	private bool readyToButcher = false;
+	private bool readyToButcher;
 
-	private bool butchered = false;
+	private bool butchered;
 
 	public string[] Drops;
 
@@ -91,7 +91,7 @@ public class Butcherable : Workable, ISaveLoadable
 	{
 		if (readyToButcher)
 		{
-			KIconButtonMenu.ButtonInfo button = (chore == null) ? new KIconButtonMenu.ButtonInfo("action_harvest", "Meatify", OnClickButcher, Action.NumActions, null, null, null, "", true) : new KIconButtonMenu.ButtonInfo("action_harvest", "Cancel Meatify", OnClickCancel, Action.NumActions, null, null, null, "", true);
+			KIconButtonMenu.ButtonInfo button = (chore == null) ? new KIconButtonMenu.ButtonInfo("action_harvest", "Meatify", OnClickButcher, Action.NumActions, null, null, null, string.Empty, true) : new KIconButtonMenu.ButtonInfo("action_harvest", "Cancel Meatify", OnClickCancel, Action.NumActions, null, null, null, string.Empty, true);
 			Game.Instance.userMenu.AddButton(base.gameObject, button, 1f);
 		}
 	}

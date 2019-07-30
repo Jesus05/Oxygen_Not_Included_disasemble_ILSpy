@@ -21,7 +21,7 @@ public class LogicWire : KMonoBehaviour, IFirstFrameCallback, IHaveUtilityNetwor
 		component.OnBuildingFullyRepaired(data);
 	});
 
-	private System.Action firstFrameCallback = null;
+	private System.Action firstFrameCallback;
 
 	public bool IsConnected
 	{

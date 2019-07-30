@@ -172,11 +172,11 @@ namespace YamlDotNet.Core
 		{
 			get
 			{
-				if (_iterator.Current == null)
+				if (_iterator.Current != null)
 				{
-					return null;
+					return _iterator.Current.Value;
 				}
-				return _iterator.Current.Value;
+				return null;
 			}
 		}
 
@@ -221,63 +221,63 @@ namespace YamlDotNet.Core
 
 		private bool HandleMerge(LinkedListNode<ParsingEvent> node)
 		{
-			if (node != null)
+			if (node == null)
 			{
-				if (!(node.Value is AnchorAlias))
-				{
-					if (!(node.Value is SequenceStart))
-					{
-						return false;
-					}
-					return HandleSequence(node);
-				}
+				return false;
+			}
+			if (node.Value is AnchorAlias)
+			{
 				return HandleAnchorAlias(node);
+			}
+			if (node.Value is SequenceStart)
+			{
+				return HandleSequence(node);
 			}
 			return false;
 		}
 
 		private bool IsMergeToken(LinkedListNode<ParsingEvent> node)
 		{
-			if (!(node.Value is Scalar))
+			if (node.Value is Scalar)
 			{
-				return false;
+				Scalar scalar = node.Value as Scalar;
+				return scalar.Value == "<<";
 			}
-			Scalar scalar = node.Value as Scalar;
-			return scalar.Value == "<<";
+			return false;
 		}
 
 		private bool HandleAnchorAlias(LinkedListNode<ParsingEvent> node)
 		{
-			if (node != null && node.Value is AnchorAlias)
+			if (node == null || !(node.Value is AnchorAlias))
 			{
-				AnchorAlias anchorAlias = (AnchorAlias)node.Value;
-				IEnumerable<ParsingEvent> mappingEvents = GetMappingEvents(anchorAlias.Value);
-				_events.AddAfter(node, mappingEvents);
-				_events.MarkDeleted(node);
-				return true;
+				return false;
 			}
-			return false;
+			AnchorAlias anchorAlias = (AnchorAlias)node.Value;
+			IEnumerable<ParsingEvent> mappingEvents = GetMappingEvents(anchorAlias.Value);
+			_events.AddAfter(node, mappingEvents);
+			_events.MarkDeleted(node);
+			return true;
 		}
 
 		private bool HandleSequence(LinkedListNode<ParsingEvent> node)
 		{
-			if (node != null && node.Value is SequenceStart)
+			if (node == null || !(node.Value is SequenceStart))
 			{
-				_events.MarkDeleted(node);
-				while (node != null)
-				{
-					if (node.Value is SequenceEnd)
-					{
-						_events.MarkDeleted(node);
-						return true;
-					}
-					LinkedListNode<ParsingEvent> next = node.Next;
-					HandleMerge(next);
-					node = next;
-				}
-				return true;
+				return false;
 			}
-			return false;
+			_events.MarkDeleted(node);
+			while (node != null)
+			{
+				if (node.Value is SequenceEnd)
+				{
+					_events.MarkDeleted(node);
+					return true;
+				}
+				LinkedListNode<ParsingEvent> next = node.Next;
+				HandleMerge(next);
+				node = next;
+			}
+			return true;
 		}
 
 		private IEnumerable<ParsingEvent> GetMappingEvents(string anchor)

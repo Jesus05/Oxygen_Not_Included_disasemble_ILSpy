@@ -36,15 +36,15 @@ namespace VoronoiTree
 
 			public delegate string NodeTypeOverride(Vector2 position);
 
-			public SplitType splitType = (SplitType)0;
+			public SplitType splitType;
 
-			public TagSet dontCopyTags = null;
+			public TagSet dontCopyTags;
 
-			public TagSet moveTags = null;
+			public TagSet moveTags;
 
 			public int minChildCount = 2;
 
-			public NodeTypeOverride typeOverride = null;
+			public NodeTypeOverride typeOverride;
 
 			public Action<Tree, SplitCommand> SplitFunction;
 		}
@@ -56,7 +56,7 @@ namespace VoronoiTree
 		[Serialize]
 		public NodeType type;
 
-		public VisitedType visited = VisitedType.NotVisited;
+		public VisitedType visited;
 
 		public LoggerSSF log;
 
@@ -228,112 +228,112 @@ namespace VoronoiTree
 
 		public bool ComputeNode(List<Diagram.Site> diagramSites)
 		{
-			if (site.poly != null && diagramSites != null && diagramSites.Count != 0)
+			if (site.poly == null || diagramSites == null || diagramSites.Count == 0)
 			{
-				visited = VisitedType.VisitedSuccess;
-				if (diagramSites.Count != 1)
-				{
-					HashSet<Diagram.Site> hashSet = new HashSet<Diagram.Site>();
-					for (int i = 0; i < diagramSites.Count; i++)
-					{
-						hashSet.Add(new Diagram.Site(diagramSites[i].id, diagramSites[i].position, diagramSites[i].weight));
-					}
-					hashSet.Add(new Diagram.Site(maxIndex + 1, new Vector2(site.poly.bounds.xMin - 500f, site.poly.bounds.yMin + site.poly.bounds.height / 2f), 1f));
-					hashSet.Add(new Diagram.Site(maxIndex + 2, new Vector2(site.poly.bounds.xMax + 500f, site.poly.bounds.yMin + site.poly.bounds.height / 2f), 1f));
-					hashSet.Add(new Diagram.Site(maxIndex + 3, new Vector2(site.poly.bounds.xMin + site.poly.bounds.width / 2f, site.poly.bounds.yMin - 500f), 1f));
-					hashSet.Add(new Diagram.Site(maxIndex + 4, new Vector2(site.poly.bounds.xMin + site.poly.bounds.width / 2f, site.poly.bounds.yMax + 500f), 1f));
-					Rect bounds = new Rect(site.poly.bounds.xMin - 500f, site.poly.bounds.yMin - 500f, site.poly.bounds.width + 500f, site.poly.bounds.height + 500f);
-					Diagram diagram = new Diagram(bounds, hashSet);
-					for (int j = 0; j < diagramSites.Count; j++)
-					{
-						if (diagramSites[j].id <= maxIndex)
-						{
-							List<Vector2> list = diagram.diagram.Region(diagramSites[j].position);
-							if (list == null)
-							{
-								if (type != NodeType.Leaf)
-								{
-									visited = VisitedType.Error;
-									return false;
-								}
-							}
-							else
-							{
-								Polygon polygon = new Polygon(list).Clip(site.poly, ClipType.ctIntersection);
-								if (polygon == null || polygon.Vertices.Count < 3)
-								{
-									if (type != NodeType.Leaf)
-									{
-										visited = VisitedType.Error;
-										return false;
-									}
-								}
-								else
-								{
-									diagramSites[j].poly = polygon;
-								}
-							}
-						}
-					}
-					for (int k = 0; k < diagramSites.Count; k++)
-					{
-						if (diagramSites[k].id <= maxIndex)
-						{
-							HashSet<uint> neighbours = diagram.diagram.NeighborSitesIDsForSite(diagramSites[k].position);
-							FilterNeighbours(diagramSites[k], neighbours, diagramSites);
-							diagramSites[k].position = diagramSites[k].poly.Centroid();
-						}
-					}
-					return true;
-				}
+				visited = VisitedType.MissingData;
+				return false;
+			}
+			visited = VisitedType.VisitedSuccess;
+			if (diagramSites.Count == 1)
+			{
 				diagramSites[0].poly = site.poly;
 				diagramSites[0].position = diagramSites[0].poly.Centroid();
 				return true;
 			}
-			visited = VisitedType.MissingData;
-			return false;
+			HashSet<Diagram.Site> hashSet = new HashSet<Diagram.Site>();
+			for (int i = 0; i < diagramSites.Count; i++)
+			{
+				hashSet.Add(new Diagram.Site(diagramSites[i].id, diagramSites[i].position, diagramSites[i].weight));
+			}
+			hashSet.Add(new Diagram.Site(maxIndex + 1, new Vector2(site.poly.bounds.xMin - 500f, site.poly.bounds.yMin + site.poly.bounds.height / 2f), 1f));
+			hashSet.Add(new Diagram.Site(maxIndex + 2, new Vector2(site.poly.bounds.xMax + 500f, site.poly.bounds.yMin + site.poly.bounds.height / 2f), 1f));
+			hashSet.Add(new Diagram.Site(maxIndex + 3, new Vector2(site.poly.bounds.xMin + site.poly.bounds.width / 2f, site.poly.bounds.yMin - 500f), 1f));
+			hashSet.Add(new Diagram.Site(maxIndex + 4, new Vector2(site.poly.bounds.xMin + site.poly.bounds.width / 2f, site.poly.bounds.yMax + 500f), 1f));
+			Rect bounds = new Rect(site.poly.bounds.xMin - 500f, site.poly.bounds.yMin - 500f, site.poly.bounds.width + 500f, site.poly.bounds.height + 500f);
+			Diagram diagram = new Diagram(bounds, hashSet);
+			for (int j = 0; j < diagramSites.Count; j++)
+			{
+				if (diagramSites[j].id <= maxIndex)
+				{
+					List<Vector2> list = diagram.diagram.Region(diagramSites[j].position);
+					if (list == null)
+					{
+						if (type != NodeType.Leaf)
+						{
+							visited = VisitedType.Error;
+							return false;
+						}
+					}
+					else
+					{
+						Polygon polygon = new Polygon(list).Clip(site.poly, ClipType.ctIntersection);
+						if (polygon == null || polygon.Vertices.Count < 3)
+						{
+							if (type != NodeType.Leaf)
+							{
+								visited = VisitedType.Error;
+								return false;
+							}
+						}
+						else
+						{
+							diagramSites[j].poly = polygon;
+						}
+					}
+				}
+			}
+			for (int k = 0; k < diagramSites.Count; k++)
+			{
+				if (diagramSites[k].id <= maxIndex)
+				{
+					HashSet<uint> neighbours = diagram.diagram.NeighborSitesIDsForSite(diagramSites[k].position);
+					FilterNeighbours(diagramSites[k], neighbours, diagramSites);
+					diagramSites[k].position = diagramSites[k].poly.Centroid();
+				}
+			}
+			return true;
 		}
 
 		public bool ComputeNodePD(List<Diagram.Site> diagramSites, int maxIters = 500, float threshold = 0.2f)
 		{
-			if (site.poly != null && diagramSites != null && diagramSites.Count != 0)
+			if (site.poly == null || diagramSites == null || diagramSites.Count == 0)
 			{
-				visited = VisitedType.VisitedSuccess;
-				List<Site> list = new List<Site>();
-				for (int i = 0; i < diagramSites.Count; i++)
-				{
-					Site item = new Site(diagramSites[i].id, diagramSites[i].position, diagramSites[i].weight);
-					list.Add(item);
-				}
-				PowerDiagram powerDiagram = new PowerDiagram(site.poly, list);
-				powerDiagram.ComputeVD();
-				powerDiagram.ComputePowerDiagram(maxIters, threshold);
-				for (int j = 0; j < diagramSites.Count; j++)
-				{
-					diagramSites[j].poly = list[j].poly;
-					if (diagramSites[j].poly == null)
-					{
-						Debug.LogErrorFormat("Site [{0}] at index [{1}]: Poly shouldnt be null here ever", diagramSites[j].id, j);
-					}
-				}
-				for (int k = 0; k < diagramSites.Count; k++)
-				{
-					HashSet<uint> hashSet = new HashSet<uint>();
-					for (int l = 0; l < list[k].neighbours.Count; l++)
-					{
-						if (!list[k].neighbours[l].dummy)
-						{
-							hashSet.Add((uint)list[k].neighbours[l].id);
-						}
-					}
-					FilterNeighbours(diagramSites[k], hashSet, diagramSites);
-					diagramSites[k].position = diagramSites[k].poly.Centroid();
-				}
-				debug_LastPD = powerDiagram;
-				return true;
+				visited = VisitedType.MissingData;
+				return false;
 			}
-			visited = VisitedType.MissingData;
-			return false;
+			visited = VisitedType.VisitedSuccess;
+			List<Site> list = new List<Site>();
+			for (int i = 0; i < diagramSites.Count; i++)
+			{
+				Site item = new Site(diagramSites[i].id, diagramSites[i].position, diagramSites[i].weight);
+				list.Add(item);
+			}
+			PowerDiagram powerDiagram = new PowerDiagram(site.poly, list);
+			powerDiagram.ComputeVD();
+			powerDiagram.ComputePowerDiagram(maxIters, threshold);
+			for (int j = 0; j < diagramSites.Count; j++)
+			{
+				diagramSites[j].poly = list[j].poly;
+				if (diagramSites[j].poly == null)
+				{
+					Debug.LogErrorFormat("Site [{0}] at index [{1}]: Poly shouldnt be null here ever", diagramSites[j].id, j);
+				}
+			}
+			for (int k = 0; k < diagramSites.Count; k++)
+			{
+				HashSet<uint> hashSet = new HashSet<uint>();
+				for (int l = 0; l < list[k].neighbours.Count; l++)
+				{
+					if (!list[k].neighbours[l].dummy)
+					{
+						hashSet.Add((uint)list[k].neighbours[l].id);
+					}
+				}
+				FilterNeighbours(diagramSites[k], hashSet, diagramSites);
+				diagramSites[k].position = diagramSites[k].poly.Centroid();
+			}
+			debug_LastPD = powerDiagram;
+			return true;
 		}
 
 		private static void FilterNeighbours(Diagram.Site home, HashSet<uint> neighbours, List<Diagram.Site> sites)

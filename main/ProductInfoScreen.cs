@@ -1,4 +1,3 @@
-#define UNITY_ASSERTIONS
 using Klei.AI;
 using STRINGS;
 using System;
@@ -40,7 +39,7 @@ public class ProductInfoScreen : KScreen
 
 	private bool expandedInfo = true;
 
-	private bool configuring = false;
+	private bool configuring;
 
 	private void RefreshScreen()
 	{
@@ -185,7 +184,6 @@ public class ProductInfoScreen : KScreen
 
 	private void SetDescription(BuildingDef def)
 	{
-		UnityEngine.Debug.Assert((UnityEngine.Object)def != (UnityEngine.Object)null, "def is null");
 		if (!((UnityEngine.Object)def == (UnityEngine.Object)null) && !((UnityEngine.Object)productFlavourText == (UnityEngine.Object)null))
 		{
 			string text = def.Desc;
@@ -242,7 +240,7 @@ public class ProductInfoScreen : KScreen
 					float value4 = 0f;
 					dictionary.TryGetValue(item.Key, out value4);
 					float value5 = 0f;
-					string text2 = "";
+					string text2 = string.Empty;
 					if (dictionary2.TryGetValue(item.Key, out value5))
 					{
 						value5 = Mathf.Abs(value4 * value5);
@@ -323,17 +321,17 @@ public class ProductInfoScreen : KScreen
 
 	private bool BuildRequirementsMet(BuildingDef def)
 	{
-		if (!DebugHandler.InstantBuildMode && !Game.Instance.SandboxModeActive)
+		if (DebugHandler.InstantBuildMode || Game.Instance.SandboxModeActive)
 		{
-			Recipe craftRecipe = def.CraftRecipe;
-			if (materialSelectionPanel.CanBuild(craftRecipe))
-			{
-				if (Db.Get().TechItems.IsTechItemComplete(def.PrefabID))
-				{
-					return true;
-				}
-				return false;
-			}
+			return true;
+		}
+		Recipe craftRecipe = def.CraftRecipe;
+		if (!materialSelectionPanel.CanBuild(craftRecipe))
+		{
+			return false;
+		}
+		if (!Db.Get().TechItems.IsTechItemComplete(def.PrefabID))
+		{
 			return false;
 		}
 		return true;
@@ -374,25 +372,25 @@ public class ProductInfoScreen : KScreen
 
 	public static bool MaterialsMet(Recipe recipe)
 	{
-		if (recipe != null)
+		if (recipe == null)
 		{
-			if (recipe.Ingredients != null && recipe.Ingredients.Count != 0)
-			{
-				for (int i = 0; i < recipe.Ingredients.Count; i++)
-				{
-					MaterialSelectionPanel.SelectedElemInfo selectedElemInfo = MaterialSelectionPanel.Filter(recipe.Ingredients[i].tag);
-					if (selectedElemInfo.kgAvailable < recipe.Ingredients[i].amount)
-					{
-						return false;
-					}
-				}
-				return true;
-			}
+			Debug.LogError("Trying to verify the materials on a null recipe!");
+			return false;
+		}
+		if (recipe.Ingredients == null || recipe.Ingredients.Count == 0)
+		{
 			Debug.LogError("Trying to verify the materials on a recipe with no MaterialCategoryTags!");
 			return false;
 		}
-		Debug.LogError("Trying to verify the materials on a null recipe!");
-		return false;
+		for (int i = 0; i < recipe.Ingredients.Count; i++)
+		{
+			MaterialSelectionPanel.SelectedElemInfo selectedElemInfo = MaterialSelectionPanel.Filter(recipe.Ingredients[i].tag);
+			if (selectedElemInfo.kgAvailable < recipe.Ingredients[i].amount)
+			{
+				return false;
+			}
+		}
+		return true;
 	}
 
 	public void Close()

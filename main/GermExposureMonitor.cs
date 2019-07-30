@@ -198,13 +198,13 @@ public class GermExposureMonitor : GameStateMachine<GermExposureMonitor, GermExp
 				value = new InhaleTickInfo();
 				inhaleExposureTick[exposure_type.germ_id] = value;
 			}
-			if (value.inhaled)
+			if (!value.inhaled)
 			{
-				return false;
+				float exposureTier = GetExposureTier(exposure_type.germ_id);
+				value.inhaled = true;
+				return value.ticks >= GERM_EXPOSURE.INHALE_TICK_THRESHOLD[(int)exposureTier];
 			}
-			float exposureTier = GetExposureTier(exposure_type.germ_id);
-			value.inhaled = true;
-			return value.ticks >= GERM_EXPOSURE.INHALE_TICK_THRESHOLD[(int)exposureTier];
+			return false;
 		}
 
 		public void InjectDisease(Disease disease, int count, Tag source, Sickness.InfectionVector vector)
@@ -407,12 +407,12 @@ public class GermExposureMonitor : GameStateMachine<GermExposureMonitor, GermExp
 		private bool HasMinExposurePeriodElapsed(string germ_id)
 		{
 			lastExposureTime.TryGetValue(germ_id, out float value);
-			if (value != 0f)
+			if (value == 0f)
 			{
-				float num = GameClock.Instance.GetTime() - value;
-				return num > 540f;
+				return true;
 			}
-			return true;
+			float num = GameClock.Instance.GetTime() - value;
+			return num > 540f;
 		}
 
 		private void RefreshStatusItems()
@@ -526,21 +526,21 @@ public class GermExposureMonitor : GameStateMachine<GermExposureMonitor, GermExp
 
 		public Vector3 GetLastExposurePosition(string germ_id)
 		{
-			if (!lastDiseaseSources.TryGetValue(germ_id, out DiseaseSourceInfo value))
+			if (lastDiseaseSources.TryGetValue(germ_id, out DiseaseSourceInfo value))
 			{
-				return base.transform.GetPosition();
+				return value.position;
 			}
-			return value.position;
+			return base.transform.GetPosition();
 		}
 
 		public float GetExposureWeight(string id)
 		{
 			float exposureTier = GetExposureTier(id);
-			if (!lastDiseaseSources.TryGetValue(id, out DiseaseSourceInfo value))
+			if (lastDiseaseSources.TryGetValue(id, out DiseaseSourceInfo value))
 			{
-				return 0f;
+				return value.factor * exposureTier;
 			}
-			return value.factor * exposureTier;
+			return 0f;
 		}
 	}
 

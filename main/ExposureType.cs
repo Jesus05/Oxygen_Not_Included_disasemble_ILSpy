@@ -10,7 +10,7 @@ public class ExposureType
 
 	public int exposure_threshold;
 
-	public bool infect_immediately = false;
+	public bool infect_immediately;
 
 	public List<string> required_traits;
 

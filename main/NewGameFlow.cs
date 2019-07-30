@@ -7,7 +7,7 @@ public class NewGameFlow : KMonoBehaviour
 
 	private int currentScreenIndex = -1;
 
-	private NewGameFlowScreen currentScreen = null;
+	private NewGameFlowScreen currentScreen;
 
 	public void BeginFlow()
 	{

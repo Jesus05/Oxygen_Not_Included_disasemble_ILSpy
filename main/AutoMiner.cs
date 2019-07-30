@@ -218,11 +218,11 @@ public class AutoMiner : StateMachineComponent<AutoMiner.Instance>, ISim1000ms
 
 	private Element GetTargetElement()
 	{
-		if (!HasDigCell)
+		if (HasDigCell)
 		{
-			return null;
+			return Grid.Element[dig_cell];
 		}
-		return Grid.Element[dig_cell];
+		return null;
 	}
 
 	public void StartDig()
@@ -342,32 +342,32 @@ public class AutoMiner : StateMachineComponent<AutoMiner.Instance>, ISim1000ms
 
 	private static bool ValidDigCell(int cell)
 	{
-		if (Grid.Solid[cell])
+		if (!Grid.Solid[cell])
 		{
-			if (!Grid.Foundation[cell])
-			{
-				if (Grid.Element[cell].hardness < 150)
-				{
-					return true;
-				}
-				return false;
-			}
 			return false;
 		}
-		return false;
+		if (Grid.Foundation[cell])
+		{
+			return false;
+		}
+		if (Grid.Element[cell].hardness >= 150)
+		{
+			return false;
+		}
+		return true;
 	}
 
 	public static bool DigBlockingCB(int cell)
 	{
-		if (!Grid.Foundation[cell])
+		if (Grid.Foundation[cell])
 		{
-			if (Grid.Element[cell].hardness < 150)
-			{
-				return false;
-			}
 			return true;
 		}
-		return true;
+		if (Grid.Element[cell].hardness >= 150)
+		{
+			return true;
+		}
+		return false;
 	}
 
 	private void RotateArm(Vector3 target_dir, bool warp, float dt)

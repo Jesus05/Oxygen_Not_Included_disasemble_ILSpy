@@ -8,7 +8,7 @@ public class KScreen : KMonoBehaviour, IInputHandler, IPointerEnterHandler, IPoi
 	public delegate void PointerExitActions(PointerEventData eventData);
 
 	[SerializeField]
-	public bool activateOnSpawn = false;
+	public bool activateOnSpawn;
 
 	private Canvas _canvas;
 
@@ -16,13 +16,13 @@ public class KScreen : KMonoBehaviour, IInputHandler, IPointerEnterHandler, IPoi
 
 	private bool isActive;
 
-	protected bool mouseOver = false;
+	protected bool mouseOver;
 
-	protected bool ConsumeMouseScroll = false;
+	protected bool ConsumeMouseScroll;
 
-	public WidgetTransition.TransitionType transitionType = WidgetTransition.TransitionType.SlideFromRight;
+	public WidgetTransition.TransitionType transitionType;
 
-	public bool fadeIn = false;
+	public bool fadeIn;
 
 	public string displayName;
 
@@ -30,7 +30,7 @@ public class KScreen : KMonoBehaviour, IInputHandler, IPointerEnterHandler, IPoi
 
 	public PointerExitActions pointerExitActions;
 
-	private bool hasFocus = false;
+	private bool hasFocus;
 
 	public string handlerName => base.gameObject.name;
 
@@ -55,7 +55,7 @@ public class KScreen : KMonoBehaviour, IInputHandler, IPointerEnterHandler, IPoi
 	public KScreen()
 	{
 		screenName = GetType().ToString();
-		if (displayName == null || displayName == "")
+		if (displayName == null || displayName == string.Empty)
 		{
 			displayName = screenName;
 		}
@@ -186,20 +186,20 @@ public class KScreen : KMonoBehaviour, IInputHandler, IPointerEnterHandler, IPoi
 
 	public Vector3 WorldToScreen(Vector3 pos)
 	{
-		if (!((Object)_rectTransform == (Object)null))
+		if ((Object)_rectTransform == (Object)null)
 		{
-			Camera main = Camera.main;
-			Vector3 vector = main.WorldToViewportPoint(pos);
-			vector.y = vector.y * main.rect.height + main.rect.y;
-			float num = vector.x - 0.5f;
-			Vector2 sizeDelta = _rectTransform.sizeDelta;
-			float x = num * sizeDelta.x;
-			float num2 = vector.y - 0.5f;
-			Vector2 sizeDelta2 = _rectTransform.sizeDelta;
-			return new Vector2(x, num2 * sizeDelta2.y);
+			Debug.LogWarning("Hey you are calling this function too early!");
+			return Vector3.zero;
 		}
-		Debug.LogWarning("Hey you are calling this function too early!");
-		return Vector3.zero;
+		Camera main = Camera.main;
+		Vector3 vector = main.WorldToViewportPoint(pos);
+		vector.y = vector.y * main.rect.height + main.rect.y;
+		float num = vector.x - 0.5f;
+		Vector2 sizeDelta = _rectTransform.sizeDelta;
+		float x = num * sizeDelta.x;
+		float num2 = vector.y - 0.5f;
+		Vector2 sizeDelta2 = _rectTransform.sizeDelta;
+		return new Vector2(x, num2 * sizeDelta2.y);
 	}
 
 	protected virtual void OnShow(bool show)

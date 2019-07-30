@@ -137,23 +137,23 @@ namespace Satsuma
 			{
 				throw new InvalidOperationException("A negative cycle was found.");
 			}
-			if (Reached(node))
+			if (!Reached(node))
 			{
-				Path path = new Path(Graph);
-				path.Begin(node);
-				while (true)
-				{
-					Arc arc = GetParentArc(node);
-					if (arc == Arc.Invalid)
-					{
-						break;
-					}
-					path.AddFirst(arc);
-					node = Graph.Other(arc, node);
-				}
-				return path;
+				return null;
 			}
-			return null;
+			Path path = new Path(Graph);
+			path.Begin(node);
+			while (true)
+			{
+				Arc arc = GetParentArc(node);
+				if (arc == Arc.Invalid)
+				{
+					break;
+				}
+				path.AddFirst(arc);
+				node = Graph.Other(arc, node);
+			}
+			return path;
 		}
 	}
 }

@@ -130,20 +130,20 @@ public class HandleVector<T>
 
 	public virtual T Release(Handle handle)
 	{
-		if (handle.IsValid())
+		if (!handle.IsValid())
 		{
-			UnpackHandle(handle, out byte version, out int index);
-			version = (byte)(version + 1);
-			versions[index] = version;
-			Debug.Assert(index >= 0);
-			Debug.Assert(index < 16777216);
-			handle = PackHandle(index);
-			freeHandles.Push(handle);
-			T result = items[index];
-			items[index] = default(T);
-			return result;
+			return default(T);
 		}
-		return default(T);
+		UnpackHandle(handle, out byte version, out int index);
+		version = (byte)(version + 1);
+		versions[index] = version;
+		Debug.Assert(index >= 0);
+		Debug.Assert(index < 16777216);
+		handle = PackHandle(index);
+		freeHandles.Push(handle);
+		T result = items[index];
+		items[index] = default(T);
+		return result;
 	}
 
 	public T GetItem(Handle handle)

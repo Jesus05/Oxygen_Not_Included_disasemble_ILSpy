@@ -337,12 +337,12 @@ public class Clinic : Workable, IEffectDescriptor, ISingleSliderControl, ISlider
 	protected override bool OnWorkTick(Worker worker, float dt)
 	{
 		KAnimFile[] appropriateOverrideAnims = GetAppropriateOverrideAnims(worker);
-		if (appropriateOverrideAnims != null && appropriateOverrideAnims == overrideAnims)
+		if (appropriateOverrideAnims == null || appropriateOverrideAnims != overrideAnims)
 		{
-			base.OnWorkTick(worker, dt);
-			return false;
+			return true;
 		}
-		return true;
+		base.OnWorkTick(worker, dt);
+		return false;
 	}
 
 	protected override void OnStopWork(Worker worker)
@@ -422,7 +422,7 @@ public class Clinic : Workable, IEffectDescriptor, ISingleSliderControl, ISlider
 
 	private bool IsValidEffect(string effect)
 	{
-		return effect != null && effect != "";
+		return effect != null && effect != string.Empty;
 	}
 
 	private bool AllowDoctoring()

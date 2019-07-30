@@ -1,4 +1,3 @@
-#define UNITY_ASSERTIONS
 using Klei;
 using ProcGenGame;
 using STRINGS;
@@ -21,7 +20,7 @@ public class ElementLoader
 
 	public class ElementEntry
 	{
-		private string description_backing = null;
+		private string description_backing;
 
 		public string elementId
 		{
@@ -335,7 +334,6 @@ public class ElementLoader
 	private static void CopyEntryToElement(ElementEntry entry, Element elem)
 	{
 		int num = Hash.SDBMLower(entry.elementId);
-		UnityEngine.Debug.Assert(num == (int)elem.id);
 		elem.tag = TagManager.Create(entry.elementId.ToString());
 		elem.specificHeatCapacity = entry.specificHeatCapacity;
 		elem.thermalConductivity = entry.thermalConductivity;
@@ -395,42 +393,42 @@ public class ElementLoader
 	private static bool ManifestSubstanceForElement(Element elem, ref Hashtable substanceList, SubstanceTable substanceTable)
 	{
 		elem.substance = null;
-		if (!substanceList.ContainsKey(elem.id))
+		if (substanceList.ContainsKey(elem.id))
 		{
-			if ((UnityEngine.Object)substanceTable != (UnityEngine.Object)null)
-			{
-				elem.substance = substanceTable.GetSubstance(elem.id);
-			}
-			if (elem.substance == null)
-			{
-				elem.substance = new Substance();
-				substanceTable.GetList().Add(elem.substance);
-			}
-			elem.substance.elementID = elem.id;
-			elem.substance.renderedByWorld = elem.IsSolid;
-			elem.substance.idx = substanceList.Count;
-			if ((Color)elem.substance.uiColour == noColour)
-			{
-				int count = elements.Count;
-				int idx = elem.substance.idx;
-				elem.substance.uiColour = Color.HSVToRGB((float)idx / (float)count, 1f, 1f);
-			}
-			string text = UI.StripLinkFormatting(elem.name);
-			elem.substance.name = text;
-			if (Array.IndexOf((SimHashes[])Enum.GetValues(typeof(SimHashes)), elem.id) >= 0)
-			{
-				elem.substance.nameTag = GameTagExtensions.Create(elem.id);
-			}
-			else
-			{
-				elem.substance.nameTag = ((text == null) ? Tag.Invalid : TagManager.Create(text));
-			}
-			elem.substance.audioConfig = ElementsAudio.Instance.GetConfigForElement(elem.id);
-			substanceList.Add(elem.id, elem.substance);
-			return true;
+			elem.substance = (substanceList[elem.id] as Substance);
+			return false;
 		}
-		elem.substance = (substanceList[elem.id] as Substance);
-		return false;
+		if ((UnityEngine.Object)substanceTable != (UnityEngine.Object)null)
+		{
+			elem.substance = substanceTable.GetSubstance(elem.id);
+		}
+		if (elem.substance == null)
+		{
+			elem.substance = new Substance();
+			substanceTable.GetList().Add(elem.substance);
+		}
+		elem.substance.elementID = elem.id;
+		elem.substance.renderedByWorld = elem.IsSolid;
+		elem.substance.idx = substanceList.Count;
+		if ((Color)elem.substance.uiColour == noColour)
+		{
+			int count = elements.Count;
+			int idx = elem.substance.idx;
+			elem.substance.uiColour = Color.HSVToRGB((float)idx / (float)count, 1f, 1f);
+		}
+		string text = UI.StripLinkFormatting(elem.name);
+		elem.substance.name = text;
+		if (Array.IndexOf((SimHashes[])Enum.GetValues(typeof(SimHashes)), elem.id) >= 0)
+		{
+			elem.substance.nameTag = GameTagExtensions.Create(elem.id);
+		}
+		else
+		{
+			elem.substance.nameTag = ((text == null) ? Tag.Invalid : TagManager.Create(text));
+		}
+		elem.substance.audioConfig = ElementsAudio.Instance.GetConfigForElement(elem.id);
+		substanceList.Add(elem.id, elem.substance);
+		return true;
 	}
 
 	public static Element FindElementByName(string name)
@@ -507,66 +505,66 @@ public class ElementLoader
 
 	private static SimHashes GetID(int column, int row, string[,] grid, SimHashes defaultValue = SimHashes.Vacuum)
 	{
-		if (column < grid.GetLength(0) && row <= grid.GetLength(1))
+		if (column >= grid.GetLength(0) || row > grid.GetLength(1))
 		{
-			string text = grid[column, row];
-			if (text != null && !(text == ""))
-			{
-				object obj = null;
-				try
-				{
-					obj = Enum.Parse(typeof(SimHashes), text);
-				}
-				catch (Exception ex)
-				{
-					Debug.LogError($"Could not find element {text}: {ex.ToString()}");
-					return defaultValue;
-				}
-				return (SimHashes)obj;
-			}
+			Debug.LogError($"Could not find element at loc [{column},{row}] grid is only [{grid.GetLength(0)},{grid.GetLength(1)}]");
 			return defaultValue;
 		}
-		Debug.LogError($"Could not find element at loc [{column},{row}] grid is only [{grid.GetLength(0)},{grid.GetLength(1)}]");
-		return defaultValue;
+		string text = grid[column, row];
+		if (text == null || text == string.Empty)
+		{
+			return defaultValue;
+		}
+		object obj = null;
+		try
+		{
+			obj = Enum.Parse(typeof(SimHashes), text);
+		}
+		catch (Exception ex)
+		{
+			Debug.LogError($"Could not find element {text}: {ex.ToString()}");
+			return defaultValue;
+		}
+		return (SimHashes)obj;
 	}
 
 	private static SpawnFXHashes GetSpawnFX(int column, int row, string[,] grid)
 	{
-		if (column < grid.GetLength(0) && row <= grid.GetLength(1))
+		if (column >= grid.GetLength(0) || row > grid.GetLength(1))
 		{
-			string text = grid[column, row];
-			if (text != null && !(text == ""))
-			{
-				object obj = null;
-				try
-				{
-					obj = Enum.Parse(typeof(SpawnFXHashes), text);
-				}
-				catch (Exception ex)
-				{
-					Debug.LogError($"Could not find FX {text}: {ex.ToString()}");
-					return SpawnFXHashes.None;
-				}
-				return (SpawnFXHashes)obj;
-			}
+			Debug.LogError($"Could not find SpawnFXHashes at loc [{column},{row}] grid is only [{grid.GetLength(0)},{grid.GetLength(1)}]");
 			return SpawnFXHashes.None;
 		}
-		Debug.LogError($"Could not find SpawnFXHashes at loc [{column},{row}] grid is only [{grid.GetLength(0)},{grid.GetLength(1)}]");
-		return SpawnFXHashes.None;
+		string text = grid[column, row];
+		if (text == null || text == string.Empty)
+		{
+			return SpawnFXHashes.None;
+		}
+		object obj = null;
+		try
+		{
+			obj = Enum.Parse(typeof(SpawnFXHashes), text);
+		}
+		catch (Exception ex)
+		{
+			Debug.LogError($"Could not find FX {text}: {ex.ToString()}");
+			return SpawnFXHashes.None;
+		}
+		return (SpawnFXHashes)obj;
 	}
 
 	private static Tag CreateMaterialCategoryTag(SimHashes element_id, Tag phaseTag, string materialCategoryField)
 	{
-		if (string.IsNullOrEmpty(materialCategoryField))
+		if (!string.IsNullOrEmpty(materialCategoryField))
 		{
-			return phaseTag;
+			Tag tag = TagManager.Create(materialCategoryField);
+			if (!GameTags.MaterialCategories.Contains(tag) && !GameTags.IgnoredMaterialCategories.Contains(tag))
+			{
+				Debug.LogWarningFormat("Element {0} has category {1}, but that isn't in GameTags.MaterialCategores!", element_id, materialCategoryField);
+			}
+			return tag;
 		}
-		Tag tag = TagManager.Create(materialCategoryField);
-		if (!GameTags.MaterialCategories.Contains(tag) && !GameTags.IgnoredMaterialCategories.Contains(tag))
-		{
-			Debug.LogWarningFormat("Element {0} has category {1}, but that isn't in GameTags.MaterialCategores!", element_id, materialCategoryField);
-		}
-		return tag;
+		return phaseTag;
 	}
 
 	private static Tag[] CreateOreTags(Tag materialCategory, Tag phaseTag, string[] ore_tags_split)

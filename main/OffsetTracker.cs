@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class OffsetTracker
 {
-	public static bool isExecutingWithinJob = false;
+	public static bool isExecutingWithinJob;
 
 	protected CellOffset[] offsets;
 

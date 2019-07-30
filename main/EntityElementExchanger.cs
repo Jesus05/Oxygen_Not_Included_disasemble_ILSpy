@@ -45,7 +45,7 @@ public class EntityElementExchanger : StateMachineComponent<EntityElementExchang
 
 	public Vector3 outputOffset = Vector3.zero;
 
-	public bool reportExchange = false;
+	public bool reportExchange;
 
 	[MyCmpReq]
 	private KSelectable selectable;

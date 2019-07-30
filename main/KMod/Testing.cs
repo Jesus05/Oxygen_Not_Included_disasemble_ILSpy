@@ -30,7 +30,7 @@ namespace KMod
 			Crash
 		}
 
-		public static DLLLoading dll_loading = DLLLoading.NoTesting;
+		public static DLLLoading dll_loading;
 
 		public const SaveLoad SAVE_LOAD = SaveLoad.NoTesting;
 

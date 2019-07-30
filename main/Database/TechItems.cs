@@ -49,20 +49,20 @@ namespace Database
 
 		public TechItem AddTechItem(string id, string name, string description, Func<string, bool, Sprite> getUISprite)
 		{
-			if (TryGet(id) == null)
+			if (TryGet(id) != null)
 			{
-				Tech tech = LookupGroupForID(id);
-				if (tech != null)
-				{
-					TechItem techItem = new TechItem(id, this, name, description, getUISprite, tech);
-					Add(techItem);
-					tech.unlockedItems.Add(techItem);
-					return techItem;
-				}
+				DebugUtil.LogWarningArgs("Tried adding a tech item called", id, name, "but it was already added!");
+				return Get(id);
+			}
+			Tech tech = LookupGroupForID(id);
+			if (tech == null)
+			{
 				return null;
 			}
-			DebugUtil.LogWarningArgs("Tried adding a tech item called", id, name, "but it was already added!");
-			return Get(id);
+			TechItem techItem = new TechItem(id, this, name, description, getUISprite, tech);
+			Add(techItem);
+			tech.unlockedItems.Add(techItem);
+			return techItem;
 		}
 
 		public bool IsTechItemComplete(string id)

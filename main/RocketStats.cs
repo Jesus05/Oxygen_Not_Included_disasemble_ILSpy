@@ -85,11 +85,11 @@ public class RocketStats
 	public Tag GetEngineFuelTag()
 	{
 		RocketEngine mainEngine = GetMainEngine();
-		if (!((Object)mainEngine != (Object)null))
+		if ((Object)mainEngine != (Object)null)
 		{
-			return null;
+			return mainEngine.fuelTag;
 		}
-		return mainEngine.fuelTag;
+		return null;
 	}
 
 	public float GetTotalFuel(bool includeBoosters = false)
@@ -166,12 +166,12 @@ public class RocketStats
 			num += item3.Value * oxidizerEfficiencies[item3.Key];
 			num2 += item3.Value;
 		}
-		if (num2 != 0f)
+		if (num2 == 0f)
 		{
-			float num3 = num / num2;
-			return num3 * 100f;
+			return 0f;
 		}
-		return 0f;
+		float num3 = num / num2;
+		return num3 * 100f;
 	}
 
 	public float GetTotalThrust()
@@ -181,12 +181,12 @@ public class RocketStats
 		float totalOxidizer = GetTotalOxidizer(false);
 		float averageOxidizerEfficiency = GetAverageOxidizerEfficiency();
 		RocketEngine mainEngine = GetMainEngine();
-		if (!((Object)mainEngine == (Object)null))
+		if ((Object)mainEngine == (Object)null)
 		{
-			num = ((!mainEngine.requireOxidizer) ? (totalFuel * mainEngine.efficiency) : (Mathf.Min(totalFuel, totalOxidizer) * (mainEngine.efficiency * (averageOxidizerEfficiency / 100f))));
-			return num + GetBoosterThrust();
+			return 0f;
 		}
-		return 0f;
+		num = ((!mainEngine.requireOxidizer) ? (totalFuel * mainEngine.efficiency) : (Mathf.Min(totalFuel, totalOxidizer) * (mainEngine.efficiency * (averageOxidizerEfficiency / 100f))));
+		return num + GetBoosterThrust();
 	}
 
 	public float GetBoosterThrust()
@@ -208,11 +208,11 @@ public class RocketStats
 	public float GetEngineEfficiency()
 	{
 		RocketEngine mainEngine = GetMainEngine();
-		if (!((Object)mainEngine != (Object)null))
+		if ((Object)mainEngine != (Object)null)
 		{
-			return 0f;
+			return mainEngine.efficiency;
 		}
-		return mainEngine.efficiency;
+		return 0f;
 	}
 
 	public RocketEngine GetMainEngine()
@@ -223,7 +223,7 @@ public class RocketStats
 			rocketEngine = item.GetComponent<RocketEngine>();
 			if ((Object)rocketEngine != (Object)null && rocketEngine.mainEngine)
 			{
-				break;
+				return rocketEngine;
 			}
 		}
 		return rocketEngine;

@@ -15,11 +15,11 @@ public class EnergyConsumerSelfSustaining : EnergyConsumer
 	{
 		get
 		{
-			if (!isSustained)
+			if (isSustained)
 			{
-				return connectionStatus == CircuitManager.ConnectionStatus.Powered;
+				return true;
 			}
-			return true;
+			return connectionStatus == CircuitManager.ConnectionStatus.Powered;
 		}
 	}
 

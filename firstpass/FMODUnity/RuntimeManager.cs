@@ -67,11 +67,11 @@ namespace FMODUnity
 
 		private List<AttachedInstance> attachedInstances = new List<AttachedInstance>(128);
 
-		private bool listenerWarningIssued = false;
+		private bool listenerWarningIssued;
 
 		private string lastDebugText;
 
-		private float lastDebugUpdate = 0f;
+		private float lastDebugUpdate;
 
 		public static bool[] HasListener = new bool[8];
 

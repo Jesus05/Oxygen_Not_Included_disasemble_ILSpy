@@ -51,7 +51,7 @@ public class Recipe : IHasSortOrder
 
 	public GameObject FabricationVisualizer;
 
-	public SimHashes ResultElementOverride = (SimHashes)0;
+	public SimHashes ResultElementOverride;
 
 	public Sprite Icon;
 
@@ -280,11 +280,11 @@ public class Recipe : IHasSortOrder
 	{
 		GameObject prefab = Assets.GetPrefab(Result);
 		BuildingComplete component = prefab.GetComponent<BuildingComplete>();
-		if (!((UnityEngine.Object)component != (UnityEngine.Object)null))
+		if ((UnityEngine.Object)component != (UnityEngine.Object)null)
 		{
-			return null;
+			return component.Def;
 		}
-		return component.Def;
+		return null;
 	}
 
 	public Sprite GetUIIcon()
@@ -300,7 +300,7 @@ public class Recipe : IHasSortOrder
 			KBatchedAnimController component = prefab.GetComponent<KBatchedAnimController>();
 			if ((UnityEngine.Object)component != (UnityEngine.Object)null)
 			{
-				result = Def.GetUISpriteFromMultiObjectAnim(component.AnimFiles[0], "ui", false, "");
+				result = Def.GetUISpriteFromMultiObjectAnim(component.AnimFiles[0], "ui", false, string.Empty);
 			}
 		}
 		return result;

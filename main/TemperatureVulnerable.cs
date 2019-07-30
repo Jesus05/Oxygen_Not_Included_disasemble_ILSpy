@@ -10,7 +10,7 @@ public class TemperatureVulnerable : StateMachineComponent<TemperatureVulnerable
 {
 	public class StatesInstance : GameStateMachine<States, StatesInstance, TemperatureVulnerable, object>.GameInstance
 	{
-		public bool hasMaturity = false;
+		public bool hasMaturity;
 
 		public StatesInstance(TemperatureVulnerable master)
 			: base(master)
@@ -153,15 +153,15 @@ public class TemperatureVulnerable : StateMachineComponent<TemperatureVulnerable
 	{
 		get
 		{
-			if (!base.smi.IsInsideState(base.smi.sm.warningCold))
+			if (base.smi.IsInsideState(base.smi.sm.warningCold))
 			{
-				if (!base.smi.IsInsideState(base.smi.sm.warningHot))
-				{
-					return "";
-				}
+				return Db.Get().CreatureStatusItems.Cold_Crop.resolveStringCallback(CREATURES.STATUSITEMS.COLD_CROP.NAME, this);
+			}
+			if (base.smi.IsInsideState(base.smi.sm.warningHot))
+			{
 				return Db.Get().CreatureStatusItems.Hot_Crop.resolveStringCallback(CREATURES.STATUSITEMS.HOT_CROP.NAME, this);
 			}
-			return Db.Get().CreatureStatusItems.Cold_Crop.resolveStringCallback(CREATURES.STATUSITEMS.COLD_CROP.NAME, this);
+			return string.Empty;
 		}
 	}
 
@@ -225,11 +225,11 @@ public class TemperatureVulnerable : StateMachineComponent<TemperatureVulnerable
 		averageTemp = 0f;
 		cellCount = 0;
 		occupyArea.TestArea(cell, this, GetAverageTemperatureCb);
-		if (cellCount <= 0)
+		if (cellCount > 0)
 		{
-			return -1f;
+			return averageTemp / (float)cellCount;
 		}
-		return averageTemp / (float)cellCount;
+		return -1f;
 	}
 
 	public List<Descriptor> GetDescriptors(GameObject go)

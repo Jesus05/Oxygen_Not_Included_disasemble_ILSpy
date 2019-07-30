@@ -79,19 +79,19 @@ public class OccupyArea : KMonoBehaviour
 	public bool CheckIsOccupying(int checkCell)
 	{
 		int num = Grid.PosToCell(base.gameObject);
-		if (checkCell != num)
+		if (checkCell == num)
 		{
-			CellOffset[] occupiedCellsOffsets = OccupiedCellsOffsets;
-			foreach (CellOffset offset in occupiedCellsOffsets)
-			{
-				if (Grid.OffsetCell(num, offset) == checkCell)
-				{
-					return true;
-				}
-			}
-			return false;
+			return true;
 		}
-		return true;
+		CellOffset[] occupiedCellsOffsets = OccupiedCellsOffsets;
+		foreach (CellOffset offset in occupiedCellsOffsets)
+		{
+			if (Grid.OffsetCell(num, offset) == checkCell)
+			{
+				return true;
+			}
+		}
+		return false;
 	}
 
 	protected override void OnCleanUp()

@@ -152,44 +152,44 @@ public class WorkChore<WorkableType> : Chore<WorkChore<WorkableType>.StatesInsta
 
 	public override bool CanPreempt(Precondition.Context context)
 	{
-		if (base.CanPreempt(context))
+		if (!base.CanPreempt(context))
 		{
-			if (!((UnityEngine.Object)context.chore.driver == (UnityEngine.Object)null))
-			{
-				if (!((UnityEngine.Object)context.chore.driver == (UnityEngine.Object)context.consumerState.choreDriver))
-				{
-					Workable workable = base.smi.sm.workable.Get<WorkableType>(base.smi);
-					if (!((UnityEngine.Object)workable == (UnityEngine.Object)null))
-					{
-						if (preemption_cb != null)
-						{
-							if (!preemption_cb(context))
-							{
-								return false;
-							}
-						}
-						else
-						{
-							int num = 4;
-							int navigationCost = ((Component)context.chore.driver).GetComponent<Navigator>().GetNavigationCost(workable);
-							if (navigationCost == -1 || navigationCost < num)
-							{
-								return false;
-							}
-							int navigationCost2 = context.consumerState.navigator.GetNavigationCost(workable);
-							if (navigationCost2 * 2 > navigationCost)
-							{
-								return false;
-							}
-						}
-						return true;
-					}
-					return false;
-				}
-				return false;
-			}
 			return false;
 		}
-		return false;
+		if ((UnityEngine.Object)context.chore.driver == (UnityEngine.Object)null)
+		{
+			return false;
+		}
+		if ((UnityEngine.Object)context.chore.driver == (UnityEngine.Object)context.consumerState.choreDriver)
+		{
+			return false;
+		}
+		Workable workable = base.smi.sm.workable.Get<WorkableType>(base.smi);
+		if ((UnityEngine.Object)workable == (UnityEngine.Object)null)
+		{
+			return false;
+		}
+		if (preemption_cb != null)
+		{
+			if (!preemption_cb(context))
+			{
+				return false;
+			}
+		}
+		else
+		{
+			int num = 4;
+			int navigationCost = ((Component)context.chore.driver).GetComponent<Navigator>().GetNavigationCost(workable);
+			if (navigationCost == -1 || navigationCost < num)
+			{
+				return false;
+			}
+			int navigationCost2 = context.consumerState.navigator.GetNavigationCost(workable);
+			if (navigationCost2 * 2 > navigationCost)
+			{
+				return false;
+			}
+		}
+		return true;
 	}
 }

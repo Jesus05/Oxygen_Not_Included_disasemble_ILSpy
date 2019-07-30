@@ -24,10 +24,10 @@ namespace VoronoiTree
 		public Vector2 position;
 
 		[Serialize]
-		public Polygon poly = null;
+		public Polygon poly;
 
 		[Serialize]
-		public List<Site> neighbours = null;
+		public List<Site> neighbours;
 
 		private Vector2? circumCenter;
 
@@ -53,13 +53,13 @@ namespace VoronoiTree
 		{
 			get
 			{
-				if (poly == null)
+				if (poly != null)
 				{
-					Vector2? nullable = centroid;
-					centroid = ((!nullable.HasValue) ? GetCentroid() : nullable.Value);
-					return centroid.Value;
+					return poly.Centroid();
 				}
-				return poly.Centroid();
+				Vector2? nullable = centroid;
+				centroid = ((!nullable.HasValue) ? GetCentroid() : nullable.Value);
+				return centroid.Value;
 			}
 		}
 

@@ -161,26 +161,26 @@ namespace NodeEditorFramework
 		public static Node NodeAtPosition(NodeEditorState editorState, Vector2 canvasPos, out NodeKnob focusedKnob)
 		{
 			focusedKnob = null;
-			if (!NodeEditorInputSystem.shouldIgnoreInput(editorState))
+			if (NodeEditorInputSystem.shouldIgnoreInput(editorState))
 			{
-				NodeCanvas canvas = editorState.canvas;
-				for (int num = canvas.nodes.Count - 1; num >= 0; num--)
+				return null;
+			}
+			NodeCanvas canvas = editorState.canvas;
+			for (int num = canvas.nodes.Count - 1; num >= 0; num--)
+			{
+				Node node = canvas.nodes[num];
+				if (node.rect.Contains(canvasPos))
 				{
-					Node node = canvas.nodes[num];
-					if (node.rect.Contains(canvasPos))
+					return node;
+				}
+				for (int i = 0; i < node.nodeKnobs.Count; i++)
+				{
+					if (node.nodeKnobs[i].GetCanvasSpaceKnob().Contains(canvasPos))
 					{
+						focusedKnob = node.nodeKnobs[i];
 						return node;
 					}
-					for (int i = 0; i < node.nodeKnobs.Count; i++)
-					{
-						if (node.nodeKnobs[i].GetCanvasSpaceKnob().Contains(canvasPos))
-						{
-							focusedKnob = node.nodeKnobs[i];
-							return node;
-						}
-					}
 				}
-				return null;
 			}
 			return null;
 		}
@@ -243,38 +243,38 @@ namespace NodeEditorFramework
 
 		private static bool ContinueCalculation(Node node)
 		{
-			if (!node.calculated)
+			if (node.calculated)
 			{
-				if ((node.descendantsCalculated() || node.isInLoop()) && node.Calculate())
+				return false;
+			}
+			if ((node.descendantsCalculated() || node.isInLoop()) && node.Calculate())
+			{
+				node.calculated = true;
+				calculationCount++;
+				workList.Remove(node);
+				if (node.ContinueCalculation && calculationCount < 1000)
 				{
-					node.calculated = true;
-					calculationCount++;
-					workList.Remove(node);
-					if (node.ContinueCalculation && calculationCount < 1000)
+					for (int i = 0; i < node.Outputs.Count; i++)
 					{
-						for (int i = 0; i < node.Outputs.Count; i++)
+						NodeOutput nodeOutput = node.Outputs[i];
+						if (!nodeOutput.calculationBlockade)
 						{
-							NodeOutput nodeOutput = node.Outputs[i];
-							if (!nodeOutput.calculationBlockade)
+							for (int j = 0; j < nodeOutput.connections.Count; j++)
 							{
-								for (int j = 0; j < nodeOutput.connections.Count; j++)
-								{
-									ContinueCalculation(nodeOutput.connections[j].body);
-								}
+								ContinueCalculation(nodeOutput.connections[j].body);
 							}
 						}
 					}
-					else if (calculationCount >= 1000)
-					{
-						Debug.LogError("Stopped calculation because of suspected Recursion. Maximum calculation iteration is currently at 1000!");
-					}
-					return true;
 				}
-				if (!workList.Contains(node))
+				else if (calculationCount >= 1000)
 				{
-					workList.Add(node);
+					Debug.LogError("Stopped calculation because of suspected Recursion. Maximum calculation iteration is currently at 1000!");
 				}
-				return false;
+				return true;
+			}
+			if (!workList.Contains(node))
+			{
+				workList.Add(node);
 			}
 			return false;
 		}

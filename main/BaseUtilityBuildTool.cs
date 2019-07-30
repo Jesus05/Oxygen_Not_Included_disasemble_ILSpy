@@ -31,11 +31,11 @@ public class BaseUtilityBuildTool : DragTool
 
 	private Coroutine visUpdater;
 
-	private int buildingCount = 0;
+	private int buildingCount;
 
 	private int lastCell = -1;
 
-	private BuildingCellVisualizer previousCellConnection = null;
+	private BuildingCellVisualizer previousCellConnection;
 
 	private int previousCell;
 
@@ -123,7 +123,7 @@ public class BaseUtilityBuildTool : DragTool
 					previousCellConnection = null;
 				}
 				previousCell = cell;
-				CheckForConnection(cell, def.PrefabID, "", ref previousCellConnection, false);
+				CheckForConnection(cell, def.PrefabID, string.Empty, ref previousCellConnection, false);
 				PathNode pathNode3 = path[path.Count - 1];
 				Object.Destroy(pathNode3.visualizer);
 				PathNode pathNode4 = path[path.Count - 1];
@@ -132,7 +132,7 @@ public class BaseUtilityBuildTool : DragTool
 				buildingCount = ((buildingCount != 1) ? (buildingCount - 1) : (buildingCount = 14));
 				instance.setParameterValue("tileCount", (float)buildingCount);
 				SoundEvent.EndOneShot(instance);
-				goto IL_02a7;
+				goto IL_029c;
 			}
 		}
 		if (!path.Exists((PathNode n) => n.cell == cell))
@@ -149,8 +149,8 @@ public class BaseUtilityBuildTool : DragTool
 			instance.setParameterValue("tileCount", (float)buildingCount);
 			SoundEvent.EndOneShot(instance);
 		}
-		goto IL_02a7;
-		IL_02a7:
+		goto IL_029c;
+		IL_029c:
 		visualizer.SetActive(path.Count < 2);
 		ResourceRemainingDisplayScreen.instance.SetNumberOfPendingConstructions(path.Count);
 	}
@@ -191,119 +191,119 @@ public class BaseUtilityBuildTool : DragTool
 		outBcv = null;
 		DebugUtil.Assert(defName != null, "defName was null");
 		Building building = GetBuilding(cell);
-		if ((bool)building)
+		if (!(bool)building)
 		{
-			DebugUtil.Assert(building.gameObject, "targetBuilding.gameObject was null");
-			int num = -1;
-			int num2 = -1;
-			int num3 = -1;
-			if (defName.Contains("LogicWire"))
-			{
-				LogicPorts component = building.gameObject.GetComponent<LogicPorts>();
-				if ((Object)component != (Object)null)
-				{
-					if (component.inputPorts != null)
-					{
-						foreach (ILogicUIElement inputPort in component.inputPorts)
-						{
-							DebugUtil.Assert(inputPort != null, "input port was null");
-							if (inputPort.GetLogicUICell() == cell)
-							{
-								num = cell;
-								break;
-							}
-						}
-					}
-					if (num == -1 && component.outputPorts != null)
-					{
-						foreach (ILogicUIElement outputPort in component.outputPorts)
-						{
-							DebugUtil.Assert(outputPort != null, "output port was null");
-							if (outputPort.GetLogicUICell() == cell)
-							{
-								num2 = cell;
-								break;
-							}
-						}
-					}
-				}
-			}
-			else if (defName.Contains("Wire"))
-			{
-				num = building.GetPowerInputCell();
-				num2 = building.GetPowerOutputCell();
-			}
-			else if (defName.Contains("Liquid"))
-			{
-				if (building.Def.InputConduitType == ConduitType.Liquid)
-				{
-					num = building.GetUtilityInputCell();
-				}
-				if (building.Def.OutputConduitType == ConduitType.Liquid)
-				{
-					num2 = building.GetUtilityOutputCell();
-				}
-				ElementFilter component2 = building.GetComponent<ElementFilter>();
-				if ((Object)component2 != (Object)null)
-				{
-					DebugUtil.Assert(component2.portInfo != null, "elementFilter.portInfo was null A");
-					if (component2.portInfo.conduitType == ConduitType.Liquid)
-					{
-						num3 = component2.GetFilteredCell();
-					}
-				}
-			}
-			else if (defName.Contains("Gas"))
-			{
-				if (building.Def.InputConduitType == ConduitType.Gas)
-				{
-					num = building.GetUtilityInputCell();
-				}
-				if (building.Def.OutputConduitType == ConduitType.Gas)
-				{
-					num2 = building.GetUtilityOutputCell();
-				}
-				ElementFilter component3 = building.GetComponent<ElementFilter>();
-				if ((Object)component3 != (Object)null)
-				{
-					DebugUtil.Assert(component3.portInfo != null, "elementFilter.portInfo was null B");
-					if (component3.portInfo.conduitType == ConduitType.Gas)
-					{
-						num3 = component3.GetFilteredCell();
-					}
-				}
-			}
-			if (cell == num || cell == num2 || cell == num3)
-			{
-				BuildingCellVisualizer buildingCellVisualizer = outBcv = building.gameObject.GetComponent<BuildingCellVisualizer>();
-				if (((Object)buildingCellVisualizer != (Object)null) ? true : false)
-				{
-					if (fireEvents)
-					{
-						buildingCellVisualizer.ConnectedEvent(cell);
-						string sound = GlobalAssets.GetSound(soundName, false);
-						if (sound != null)
-						{
-							KMonoBehaviour.PlaySound(sound);
-						}
-					}
-					return true;
-				}
-			}
-			outBcv = null;
 			return false;
 		}
+		DebugUtil.Assert(building.gameObject, "targetBuilding.gameObject was null");
+		int num = -1;
+		int num2 = -1;
+		int num3 = -1;
+		if (defName.Contains("LogicWire"))
+		{
+			LogicPorts component = building.gameObject.GetComponent<LogicPorts>();
+			if ((Object)component != (Object)null)
+			{
+				if (component.inputPorts != null)
+				{
+					foreach (ILogicUIElement inputPort in component.inputPorts)
+					{
+						DebugUtil.Assert(inputPort != null, "input port was null");
+						if (inputPort.GetLogicUICell() == cell)
+						{
+							num = cell;
+							break;
+						}
+					}
+				}
+				if (num == -1 && component.outputPorts != null)
+				{
+					foreach (ILogicUIElement outputPort in component.outputPorts)
+					{
+						DebugUtil.Assert(outputPort != null, "output port was null");
+						if (outputPort.GetLogicUICell() == cell)
+						{
+							num2 = cell;
+							break;
+						}
+					}
+				}
+			}
+		}
+		else if (defName.Contains("Wire"))
+		{
+			num = building.GetPowerInputCell();
+			num2 = building.GetPowerOutputCell();
+		}
+		else if (defName.Contains("Liquid"))
+		{
+			if (building.Def.InputConduitType == ConduitType.Liquid)
+			{
+				num = building.GetUtilityInputCell();
+			}
+			if (building.Def.OutputConduitType == ConduitType.Liquid)
+			{
+				num2 = building.GetUtilityOutputCell();
+			}
+			ElementFilter component2 = building.GetComponent<ElementFilter>();
+			if ((Object)component2 != (Object)null)
+			{
+				DebugUtil.Assert(component2.portInfo != null, "elementFilter.portInfo was null A");
+				if (component2.portInfo.conduitType == ConduitType.Liquid)
+				{
+					num3 = component2.GetFilteredCell();
+				}
+			}
+		}
+		else if (defName.Contains("Gas"))
+		{
+			if (building.Def.InputConduitType == ConduitType.Gas)
+			{
+				num = building.GetUtilityInputCell();
+			}
+			if (building.Def.OutputConduitType == ConduitType.Gas)
+			{
+				num2 = building.GetUtilityOutputCell();
+			}
+			ElementFilter component3 = building.GetComponent<ElementFilter>();
+			if ((Object)component3 != (Object)null)
+			{
+				DebugUtil.Assert(component3.portInfo != null, "elementFilter.portInfo was null B");
+				if (component3.portInfo.conduitType == ConduitType.Gas)
+				{
+					num3 = component3.GetFilteredCell();
+				}
+			}
+		}
+		if (cell == num || cell == num2 || cell == num3)
+		{
+			BuildingCellVisualizer buildingCellVisualizer = outBcv = building.gameObject.GetComponent<BuildingCellVisualizer>();
+			if (((Object)buildingCellVisualizer != (Object)null) ? true : false)
+			{
+				if (fireEvents)
+				{
+					buildingCellVisualizer.ConnectedEvent(cell);
+					string sound = GlobalAssets.GetSound(soundName, false);
+					if (sound != null)
+					{
+						KMonoBehaviour.PlaySound(sound);
+					}
+				}
+				return true;
+			}
+		}
+		outBcv = null;
 		return false;
 	}
 
 	private Building GetBuilding(int cell)
 	{
 		GameObject gameObject = Grid.Objects[cell, 1];
-		if (!((Object)gameObject != (Object)null))
+		if ((Object)gameObject != (Object)null)
 		{
-			return null;
+			return gameObject.GetComponent<Building>();
 		}
-		return gameObject.GetComponent<Building>();
+		return null;
 	}
 
 	protected override Mode GetMode()

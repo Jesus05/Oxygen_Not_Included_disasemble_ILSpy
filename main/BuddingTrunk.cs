@@ -25,7 +25,7 @@ public class BuddingTrunk : KMonoBehaviour, ISim4000ms
 	private StatusItem growingBranchesStatusItem;
 
 	[Serialize]
-	private bool hasExtraSeedAvailable = false;
+	private bool hasExtraSeedAvailable;
 
 	private static readonly EventSystem.IntraObjectHandler<BuddingTrunk> OnNewGameSpawnDelegate = new EventSystem.IntraObjectHandler<BuddingTrunk>(delegate(BuddingTrunk component, object data)
 	{
@@ -57,7 +57,7 @@ public class BuddingTrunk : KMonoBehaviour, ISim4000ms
 	{
 		base.OnPrefabInit();
 		simRenderLoadBalance = true;
-		growingBranchesStatusItem = new StatusItem("GROWINGBRANCHES", "MISC", "", StatusItem.IconType.Info, NotificationType.Good, false, OverlayModes.None.ID, true, 129022);
+		growingBranchesStatusItem = new StatusItem("GROWINGBRANCHES", "MISC", string.Empty, StatusItem.IconType.Info, NotificationType.Good, false, OverlayModes.None.ID, true, 129022);
 		Subscribe(1119167081, OnNewGameSpawnDelegate);
 	}
 
@@ -226,12 +226,12 @@ public class BuddingTrunk : KMonoBehaviour, ISim4000ms
 
 	public TreeBud GetBranchAtPosition(int idx)
 	{
-		if (buds[idx] == null)
+		if (buds[idx] != null)
 		{
-			return null;
+			HarvestDesignatable harvestDesignatable = buds[idx].Get();
+			return (!((Object)harvestDesignatable != (Object)null)) ? null : harvestDesignatable.GetComponent<TreeBud>();
 		}
-		HarvestDesignatable harvestDesignatable = buds[idx].Get();
-		return (!((Object)harvestDesignatable != (Object)null)) ? null : harvestDesignatable.GetComponent<TreeBud>();
+		return null;
 	}
 
 	public void ExtractExtraSeed()
@@ -289,36 +289,36 @@ public class BuddingTrunk : KMonoBehaviour, ISim4000ms
 
 	public bool CanGrowInto(int cell)
 	{
-		if (Grid.IsValidCell(cell))
+		if (!Grid.IsValidCell(cell))
 		{
-			if (!Grid.Solid[cell])
-			{
-				int cell2 = Grid.CellAbove(cell);
-				if (Grid.IsValidCell(cell2))
-				{
-					if (!Grid.IsSubstantialLiquid(cell2, 0.35f))
-					{
-						if (!((Object)Grid.Objects[cell, 1] != (Object)null))
-						{
-							if (!((Object)Grid.Objects[cell, 5] != (Object)null))
-							{
-								if (!Grid.Foundation[cell])
-								{
-									return true;
-								}
-								return false;
-							}
-							return false;
-						}
-						return false;
-					}
-					return false;
-				}
-				return false;
-			}
 			return false;
 		}
-		return false;
+		if (Grid.Solid[cell])
+		{
+			return false;
+		}
+		int cell2 = Grid.CellAbove(cell);
+		if (!Grid.IsValidCell(cell2))
+		{
+			return false;
+		}
+		if (Grid.IsSubstantialLiquid(cell2, 0.35f))
+		{
+			return false;
+		}
+		if ((Object)Grid.Objects[cell, 1] != (Object)null)
+		{
+			return false;
+		}
+		if ((Object)Grid.Objects[cell, 5] != (Object)null)
+		{
+			return false;
+		}
+		if (Grid.Foundation[cell])
+		{
+			return false;
+		}
+		return true;
 	}
 
 	private Vector3 GetBudPosition(int idx)

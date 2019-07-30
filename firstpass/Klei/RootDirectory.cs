@@ -16,7 +16,7 @@ namespace Klei
 
 		public string GetRoot()
 		{
-			return "";
+			return string.Empty;
 		}
 
 		public byte[] ReadBytes(string filename)

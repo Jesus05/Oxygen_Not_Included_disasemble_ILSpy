@@ -10,7 +10,7 @@ public class FilteredDragTool : DragTool
 
 	private Dictionary<string, ToolParameterMenu.ToggleState> currentFilterTargets;
 
-	private bool active = false;
+	private bool active;
 
 	public bool IsActiveLayer(string layer)
 	{
@@ -31,8 +31,7 @@ public class FilteredDragTool : DragTool
 				ObjectLayer objectLayerFromFilterLayer = GetObjectLayerFromFilterLayer(currentFilterTarget.Key);
 				if (objectLayerFromFilterLayer == layer)
 				{
-					result = true;
-					break;
+					return true;
 				}
 			}
 		}
@@ -101,23 +100,23 @@ public class FilteredDragTool : DragTool
 	{
 		BuildingComplete component = input.GetComponent<BuildingComplete>();
 		BuildingUnderConstruction component2 = input.GetComponent<BuildingUnderConstruction>();
-		if (!(bool)component)
+		if ((bool)component)
 		{
-			if (!(bool)component2)
-			{
-				if (!((UnityEngine.Object)input.GetComponent<Clearable>() != (UnityEngine.Object)null) && !((UnityEngine.Object)input.GetComponent<Moppable>() != (UnityEngine.Object)null))
-				{
-					if (!((UnityEngine.Object)input.GetComponent<Diggable>() != (UnityEngine.Object)null))
-					{
-						return "Default";
-					}
-					return "DigPlacer";
-				}
-				return "CleanAndClear";
-			}
+			return GetFilterLayerFromObjectLayer(component.Def.ObjectLayer);
+		}
+		if ((bool)component2)
+		{
 			return GetFilterLayerFromObjectLayer(component2.Def.ObjectLayer);
 		}
-		return GetFilterLayerFromObjectLayer(component.Def.ObjectLayer);
+		if ((UnityEngine.Object)input.GetComponent<Clearable>() != (UnityEngine.Object)null || (UnityEngine.Object)input.GetComponent<Moppable>() != (UnityEngine.Object)null)
+		{
+			return "CleanAndClear";
+		}
+		if ((UnityEngine.Object)input.GetComponent<Diggable>() != (UnityEngine.Object)null)
+		{
+			return "DigPlacer";
+		}
+		return "Default";
 	}
 
 	public string GetFilterLayerFromObjectLayer(ObjectLayer gamer_layer)

@@ -75,12 +75,12 @@ public class ArtifactFinder : KMonoBehaviour
 	public string SearchForArtifact(StoredMinionIdentity minionID, SpaceDestination destination)
 	{
 		ArtifactTier artifactDropTier = GetArtifactDropTier(minionID, destination);
-		if (artifactDropTier != DECOR.SPACEARTIFACT.TIER_NONE)
+		if (artifactDropTier == DECOR.SPACEARTIFACT.TIER_NONE)
 		{
-			List<string> artifactsOfTier = GetArtifactsOfTier(artifactDropTier);
-			return artifactsOfTier[Random.Range(0, artifactsOfTier.Count - 1)];
+			return null;
 		}
-		return null;
+		List<string> artifactsOfTier = GetArtifactsOfTier(artifactDropTier);
+		return artifactsOfTier[Random.Range(0, artifactsOfTier.Count - 1)];
 	}
 
 	public void OnLand(object data)

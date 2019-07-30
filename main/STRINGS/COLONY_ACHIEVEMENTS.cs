@@ -22,7 +22,7 @@ namespace STRINGS
 
 			public static LocString BUILD_NATURE_RESERVES = "Some Reservations";
 
-			public static LocString BUILD_NATURE_RESERVES_DESCRIPTION = "Improve Duplicant Morale by designating 4 areas as Nature Reserves.";
+			public static LocString BUILD_NATURE_RESERVES_DESCRIPTION = "Improve Duplicant Morale by designating {1} areas as {0}.";
 
 			public static LocString TWENTY_DUPES = "No Place Like Clone";
 
@@ -59,10 +59,6 @@ namespace STRINGS
 			public static LocString EQUIP_N_DUPES = "And Nowhere to Go";
 
 			public static LocString EQUIP_N_DUPES_DESCRIPTION = "Have {0} Duplicants wear non-default clothing simultaneously.";
-
-			public static LocString BUILD_N_ROOM_TYPE = "Some Reservations";
-
-			public static LocString BUILD_N_ROOM_TYPE_DESCRIPTION = "Improve Duplicant Morale by designating {1} areas as {0}.";
 
 			public static LocString EXOSUIT_CYCLES = "Job Suitability";
 
@@ -136,9 +132,9 @@ namespace STRINGS
 
 			public static LocString PLUMBED_WASHROOMS_DESCRIPTION = "Replace all the Outhouses and Wash Basins in your colony with Lavatories and Sinks.";
 
-			public static LocString BASIC_COMFORTS = "One Bed One Bath";
+			public static LocString BASIC_COMFORTS = "Bed and Bath";
 
-			public static LocString BASIC_COMFORTS_DESCRIPTION = "Have at least one bed and one toilet for each Duplicant in the colony.";
+			public static LocString BASIC_COMFORTS_DESCRIPTION = "Have at least one toilet in the colony and a bed for every Duplicant.";
 
 			public static LocString BASIC_PUMPING = "Oxygen Not Occluded";
 
@@ -179,11 +175,11 @@ namespace STRINGS
 				public static LocString MINIMUM_CYCLE_DESCRIPTION = "The colony must survive a minimum of <b>{0}</b> cycles";
 			}
 
-			public static LocString NAME = "COLONIZE ASTEROID";
+			public static LocString NAME = "Home Sweet Home";
 
 			public static LocString MYLOGNAME = "This Is Our Home";
 
-			public static LocString DESCRIPTION = "";
+			public static LocString DESCRIPTION = string.Empty;
 
 			public static LocString MESSAGE_TITLE = "THIS IS OUR HOME";
 
@@ -206,11 +202,11 @@ namespace STRINGS
 				public static LocString REACHED_SPACE_DESTINATION_DESCRIPTION = "Send a Duplicant on a one-way mission to the furthest Starmap destination";
 			}
 
-			public static LocString NAME = "ESCAPE ASTEROID";
+			public static LocString NAME = "The Great Escape";
 
 			public static LocString MYLOGNAME = "A Colony's Hope";
 
-			public static LocString DESCRIPTION = "";
+			public static LocString DESCRIPTION = string.Empty;
 
 			public static LocString MESSAGE_TITLE = "A COLONY'S HOPE";
 

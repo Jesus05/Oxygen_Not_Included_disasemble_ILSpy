@@ -28,19 +28,19 @@ public class ConditionHasAtmoSuit : RocketLaunchCondition
 
 	public override string GetLaunchStatusMessage(bool ready)
 	{
-		if (!ready)
+		if (ready)
 		{
-			return UI.STARMAP.NOSUIT.NAME;
+			return UI.STARMAP.HASSUIT.NAME;
 		}
-		return UI.STARMAP.HASSUIT.NAME;
+		return UI.STARMAP.NOSUIT.NAME;
 	}
 
 	public override string GetLaunchStatusTooltip(bool ready)
 	{
-		if (!ready)
+		if (ready)
 		{
-			return UI.STARMAP.NOSUIT.TOOLTIP;
+			return UI.STARMAP.HASSUIT.TOOLTIP;
 		}
-		return UI.STARMAP.HASSUIT.TOOLTIP;
+		return UI.STARMAP.NOSUIT.TOOLTIP;
 	}
 }

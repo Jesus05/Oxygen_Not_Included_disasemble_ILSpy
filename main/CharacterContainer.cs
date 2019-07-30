@@ -333,10 +333,10 @@ public class CharacterContainer : KScreen, ITelepadDeliverableContainer
 				componentInChildren.text = string.Format(format, Strings.Get("STRINGS.DUPLICANTS.ATTRIBUTES." + trait.SelfModifiers[num].AttributeId.ToUpper() + ".NAME"));
 				if (!(trait.SelfModifiers[num].AttributeId == "GermResistance"))
 				{
-					goto IL_01c2;
+					goto IL_01bd;
 				}
-				goto IL_01c2;
-				IL_01c2:
+				goto IL_01bd;
+				IL_01bd:
 				Klei.AI.Attribute attribute = Db.Get().Attributes.Get(trait.SelfModifiers[num].AttributeId);
 				string text = attribute.Description;
 				string text2 = text;
@@ -345,7 +345,7 @@ public class CharacterContainer : KScreen, ITelepadDeliverableContainer
 				for (int j = 0; j < convertersForAttribute.Count; j++)
 				{
 					string text3 = convertersForAttribute[j].DescriptionFromAttribute(convertersForAttribute[j].multiplier * trait.SelfModifiers[num].Value, null);
-					if (text3 != "")
+					if (text3 != string.Empty)
 					{
 						text = text + "\n    • " + text3;
 					}
@@ -359,8 +359,8 @@ public class CharacterContainer : KScreen, ITelepadDeliverableContainer
 				gameObject2.SetActive(true);
 				LocText componentInChildren2 = gameObject2.GetComponentInChildren<LocText>();
 				componentInChildren2.text = trait.GetDisabledChoresString(false);
-				string text4 = "";
-				string text5 = "";
+				string text4 = string.Empty;
+				string text5 = string.Empty;
 				for (int k = 0; k < trait.disabledChoreGroups.Length; k++)
 				{
 					if (k > 0)
@@ -380,8 +380,8 @@ public class CharacterContainer : KScreen, ITelepadDeliverableContainer
 				gameObject3.SetActive(true);
 				LocText componentInChildren3 = gameObject3.GetComponentInChildren<LocText>();
 				componentInChildren3.text = trait.GetIgnoredEffectsString(false);
-				string text6 = "";
-				string text7 = "";
+				string text6 = string.Empty;
+				string text7 = string.Empty;
 				for (int l = 0; l < trait.ignoredEffects.Length; l++)
 				{
 					if (l > 0)
@@ -431,30 +431,30 @@ public class CharacterContainer : KScreen, ITelepadDeliverableContainer
 					LocText locText3 = Util.KInstantiateUI<LocText>(aptitudeLabel.gameObject, gameObject5, false);
 					locText3.gameObject.SetActive(true);
 					locText3.text = skillGroup.Name;
-					string text8 = "";
-					if (skillGroup.choreGroupID != "")
+					string empty = string.Empty;
+					if (skillGroup.choreGroupID != string.Empty)
 					{
 						ChoreGroup choreGroup = Db.Get().ChoreGroups.Get(skillGroup.choreGroupID);
-						text8 = string.Format(DUPLICANTS.ROLES.GROUPS.APTITUDE_DESCRIPTION_CHOREGROUP, skillGroup.Name, DUPLICANTSTATS.APTITUDE_BONUS, choreGroup.description);
+						empty = string.Format(DUPLICANTS.ROLES.GROUPS.APTITUDE_DESCRIPTION_CHOREGROUP, skillGroup.Name, DUPLICANTSTATS.APTITUDE_BONUS, choreGroup.description);
 					}
 					else
 					{
-						text8 = string.Format(DUPLICANTS.ROLES.GROUPS.APTITUDE_DESCRIPTION, skillGroup.Name, DUPLICANTSTATS.APTITUDE_BONUS);
+						empty = string.Format(DUPLICANTS.ROLES.GROUPS.APTITUDE_DESCRIPTION, skillGroup.Name, DUPLICANTSTATS.APTITUDE_BONUS);
 					}
-					locText3.GetComponent<ToolTip>().SetSimpleTooltip(text8);
+					locText3.GetComponent<ToolTip>().SetSimpleTooltip(empty);
 					float num2 = (float)DUPLICANTSTATS.APTITUDE_ATTRIBUTE_BONUSES[stats.skillAptitudes.Count - 1];
 					LocText locText4 = Util.KInstantiateUI<LocText>(attributeLabelAptitude.gameObject, gameObject5, false);
 					locText4.gameObject.SetActive(true);
 					locText4.text = "+" + num2 + " " + skillAptitude.Key.relevantAttributes[0].Name;
-					string text9 = skillAptitude.Key.relevantAttributes[0].Description;
-					string text2 = text9;
-					text9 = text2 + "\n\n" + skillAptitude.Key.relevantAttributes[0].Name + ": +" + DUPLICANTSTATS.APTITUDE_ATTRIBUTE_BONUSES[stats.skillAptitudes.Count - 1];
+					string text8 = skillAptitude.Key.relevantAttributes[0].Description;
+					string text2 = text8;
+					text8 = text2 + "\n\n" + skillAptitude.Key.relevantAttributes[0].Name + ": +" + DUPLICANTSTATS.APTITUDE_ATTRIBUTE_BONUSES[stats.skillAptitudes.Count - 1];
 					List<AttributeConverter> convertersForAttribute2 = Db.Get().AttributeConverters.GetConvertersForAttribute(skillAptitude.Key.relevantAttributes[0]);
 					for (int m = 0; m < convertersForAttribute2.Count; m++)
 					{
-						text9 = text9 + "\n    • " + convertersForAttribute2[m].DescriptionFromAttribute(convertersForAttribute2[m].multiplier * num2, null);
+						text8 = text8 + "\n    • " + convertersForAttribute2[m].DescriptionFromAttribute(convertersForAttribute2[m].multiplier * num2, null);
 					}
-					locText4.GetComponent<ToolTip>().SetSimpleTooltip(text9);
+					locText4.GetComponent<ToolTip>().SetSimpleTooltip(text8);
 					gameObject5.gameObject.SetActive(true);
 					aptitudeEntries.Add(gameObject5);
 				}
@@ -681,11 +681,11 @@ public class CharacterContainer : KScreen, ITelepadDeliverableContainer
 
 	private int archetypeDropDownSort(IListableOption a, IListableOption b, object targetData)
 	{
-		if (!b.Equals("Random"))
+		if (b.Equals("Random"))
 		{
-			return b.GetProperName().CompareTo(a.GetProperName());
+			return -1;
 		}
-		return -1;
+		return b.GetProperName().CompareTo(a.GetProperName());
 	}
 
 	private void archetypeDropEntryRefreshAction(DropDownEntry entry, object targetData)

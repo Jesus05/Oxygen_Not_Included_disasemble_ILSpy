@@ -65,13 +65,13 @@ public class Turbine : KMonoBehaviour
 
 	public class Instance : GameStateMachine<States, Instance, Turbine, object>.GameInstance
 	{
-		public bool isInputBlocked = false;
+		public bool isInputBlocked;
 
-		public bool isOutputBlocked = false;
+		public bool isOutputBlocked;
 
-		public bool insufficientMass = false;
+		public bool insufficientMass;
 
-		public bool insufficientTemperature = false;
+		public bool insufficientTemperature;
 
 		private Guid inputBlockedHandle = Guid.Empty;
 
@@ -219,16 +219,16 @@ public class Turbine : KMonoBehaviour
 	private static readonly HashedString TINT_SYMBOL = new HashedString("meter_fill");
 
 	[Serialize]
-	private float storedMass = 0f;
+	private float storedMass;
 
 	[Serialize]
-	private float storedTemperature = 0f;
+	private float storedTemperature;
 
 	[Serialize]
 	private byte diseaseIdx = byte.MaxValue;
 
 	[Serialize]
-	private int diseaseCount = 0;
+	private int diseaseCount;
 
 	[MyCmpGet]
 	private Generator generator;
@@ -403,8 +403,8 @@ public class Turbine : KMonoBehaviour
 	{
 		inputBlockedStatusItem = new StatusItem("TURBINE_BLOCKED_INPUT", "BUILDING", "status_item_vent_disabled", StatusItem.IconType.Custom, NotificationType.BadMinor, false, OverlayModes.None.ID, true, 129022);
 		outputBlockedStatusItem = new StatusItem("TURBINE_BLOCKED_OUTPUT", "BUILDING", "status_item_vent_disabled", StatusItem.IconType.Custom, NotificationType.BadMinor, false, OverlayModes.None.ID, true, 129022);
-		spinningUpStatusItem = new StatusItem("TURBINE_SPINNING_UP", "BUILDING", "", StatusItem.IconType.Info, NotificationType.Good, false, OverlayModes.None.ID, true, 129022);
-		activeStatusItem = new StatusItem("TURBINE_ACTIVE", "BUILDING", "", StatusItem.IconType.Info, NotificationType.Good, false, OverlayModes.None.ID, true, 129022);
+		spinningUpStatusItem = new StatusItem("TURBINE_SPINNING_UP", "BUILDING", string.Empty, StatusItem.IconType.Info, NotificationType.Good, false, OverlayModes.None.ID, true, 129022);
+		activeStatusItem = new StatusItem("TURBINE_ACTIVE", "BUILDING", string.Empty, StatusItem.IconType.Info, NotificationType.Good, false, OverlayModes.None.ID, true, 129022);
 		activeStatusItem.resolveStringCallback = delegate(string str, object data)
 		{
 			Turbine turbine2 = (Turbine)data;

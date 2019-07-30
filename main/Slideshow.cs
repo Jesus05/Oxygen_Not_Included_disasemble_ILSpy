@@ -9,14 +9,14 @@ public class Slideshow : KMonoBehaviour
 
 	public float timePerSlide = 1f;
 
-	private int currentSlide = 0;
+	private int currentSlide;
 
-	private float timeUntilNextSlide = 0f;
+	private float timeUntilNextSlide;
 
-	public bool playInThumbnail = false;
+	public bool playInThumbnail;
 
 	[SerializeField]
-	private bool isExpandable = false;
+	private bool isExpandable;
 
 	[SerializeField]
 	private KButton button;

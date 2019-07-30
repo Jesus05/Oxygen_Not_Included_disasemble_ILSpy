@@ -80,13 +80,13 @@ namespace UnityEngine.UI.Extensions
 
 		public bool relativeSize;
 
-		public bool LineList = false;
+		public bool LineList;
 
-		public bool LineCaps = false;
+		public bool LineCaps;
 
-		public JoinType LineJoins = JoinType.Bevel;
+		public JoinType LineJoins;
 
-		public BezierType BezierMode = BezierType.None;
+		public BezierType BezierMode;
 
 		public int BezierSegmentsPerCurve = 10;
 

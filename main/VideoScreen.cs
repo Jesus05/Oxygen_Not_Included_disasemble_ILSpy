@@ -37,11 +37,13 @@ public class VideoScreen : KModalScreen
 	[SerializeField]
 	private Image fadeOverlay;
 
-	private bool victoryLoopQueued = false;
+	private EventInstance audioHandle;
 
-	private string victoryLoopMessage = "";
+	private bool victoryLoopQueued;
 
-	private string victoryLoopClip = "";
+	private string victoryLoopMessage = string.Empty;
+
+	private string victoryLoopClip = string.Empty;
 
 	private bool videoSkippable = true;
 
@@ -111,8 +113,12 @@ public class VideoScreen : KModalScreen
 				Stop();
 				return;
 			}
-			if (!videoSkippable)
+			if (e.TryConsume(Action.Escape))
 			{
+				if (videoSkippable)
+				{
+					Stop();
+				}
 				return;
 			}
 		}
@@ -136,6 +142,13 @@ public class VideoScreen : KModalScreen
 		videoPlayer.targetTexture = renderTexture;
 		videoPlayer.clip = clip;
 		videoPlayer.Play();
+		if (audioHandle.isValid())
+		{
+			KFMOD.EndOneShot(audioHandle);
+			audioHandle.clearHandle();
+		}
+		audioHandle = KFMOD.BeginOneShot(GlobalAssets.GetSound("vid_" + clip.name, false), Vector3.zero);
+		KFMOD.EndOneShot(audioHandle);
 		videoSkippable = !unskippable;
 		closeButton.gameObject.SetActive(videoSkippable);
 		proceedButton.gameObject.SetActive(showProceedButton && videoSkippable);
@@ -204,6 +217,7 @@ public class VideoScreen : KModalScreen
 		screen.texture = null;
 		videoPlayer.targetTexture = null;
 		AudioMixer.instance.Stop(activeAudioSnapshot, STOP_MODE.ALLOWFADEOUT);
+		audioHandle.stop(STOP_MODE.IMMEDIATE);
 		if (OnStop != null)
 		{
 			OnStop();

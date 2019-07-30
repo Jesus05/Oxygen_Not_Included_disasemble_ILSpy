@@ -9,7 +9,7 @@ namespace FMODUnity
 	{
 		private const string SettingsAssetName = "FMODStudioSettings";
 
-		private static Settings instance = null;
+		private static Settings instance;
 
 		[SerializeField]
 		public bool HasSourceProject = true;
@@ -149,7 +149,7 @@ namespace FMODUnity
 			ImportType = ImportType.StreamingAssets;
 			AutomaticEventLoading = true;
 			AutomaticSampleLoading = false;
-			TargetAssetPath = "";
+			TargetAssetPath = string.Empty;
 		}
 
 		public static FMODPlatform GetParent(FMODPlatform platform)
@@ -191,16 +191,16 @@ namespace FMODUnity
 		public static U GetSetting<T, U>(List<T> list, FMODPlatform platform, U def) where T : PlatformSetting<U>
 		{
 			T val = list.Find((Predicate<T>)((T x) => x.Platform == platform));
-			if (val != null)
+			if (val == null)
 			{
-				return ((PlatformSetting<U>)val).Value;
-			}
-			FMODPlatform parent = GetParent(platform);
-			if (parent == FMODPlatform.None)
-			{
+				FMODPlatform parent = GetParent(platform);
+				if (parent != 0)
+				{
+					return GetSetting(list, parent, def);
+				}
 				return def;
 			}
-			return GetSetting(list, parent, def);
+			return ((PlatformSetting<U>)val).Value;
 		}
 
 		public static void SetSetting<T, U>(List<T> list, FMODPlatform platform, U value) where T : PlatformSetting<U>, new()
@@ -222,12 +222,12 @@ namespace FMODUnity
 
 		public bool IsLiveUpdateEnabled(FMODPlatform platform)
 		{
-			return GetSetting(LiveUpdateSettings, platform, TriStateBool.Disabled) != TriStateBool.Disabled;
+			return GetSetting(LiveUpdateSettings, platform, TriStateBool.Disabled) == TriStateBool.Enabled;
 		}
 
 		public bool IsOverlayEnabled(FMODPlatform platform)
 		{
-			return GetSetting(OverlaySettings, platform, TriStateBool.Disabled) != TriStateBool.Disabled;
+			return GetSetting(OverlaySettings, platform, TriStateBool.Disabled) == TriStateBool.Enabled;
 		}
 
 		public int GetRealChannels(FMODPlatform platform)
@@ -252,24 +252,24 @@ namespace FMODUnity
 
 		public string GetBankPlatform(FMODPlatform platform)
 		{
-			if (HasPlatforms)
+			if (!HasPlatforms)
 			{
-				return GetSetting(BankDirectorySettings, platform, "Desktop");
+				return string.Empty;
 			}
-			return "";
+			return GetSetting(BankDirectorySettings, platform, "Desktop");
 		}
 
 		private string GetPlatformSpecificPath(string path)
 		{
-			if (!string.IsNullOrEmpty(path))
+			if (string.IsNullOrEmpty(path))
 			{
-				if (Path.DirectorySeparatorChar != '/')
-				{
-					return path.Replace('/', '\\');
-				}
+				return path;
+			}
+			if (Path.DirectorySeparatorChar == '/')
+			{
 				return path.Replace('\\', '/');
 			}
-			return path;
+			return path.Replace('/', '\\');
 		}
 	}
 }

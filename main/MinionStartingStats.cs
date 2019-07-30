@@ -129,81 +129,81 @@ public class MinionStartingStats : ITelepadDeliverable
 		}
 		Func<List<DUPLICANTSTATS.TraitVal>, bool> func = delegate(List<DUPLICANTSTATS.TraitVal> traitPossibilities)
 		{
-			if (Traits.Count <= DUPLICANTSTATS.MAX_TRAITS)
+			if (Traits.Count > DUPLICANTSTATS.MAX_TRAITS)
 			{
-				float num2 = Util.GaussianRandom(0f, 1f);
-				List<DUPLICANTSTATS.TraitVal> list = new List<DUPLICANTSTATS.TraitVal>(traitPossibilities);
-				list.ShuffleSeeded(randSeed);
-				list.Sort((DUPLICANTSTATS.TraitVal t1, DUPLICANTSTATS.TraitVal t2) => -t1.probability.CompareTo(t2.probability));
-				foreach (DUPLICANTSTATS.TraitVal item in list)
+				return false;
+			}
+			float num2 = Util.GaussianRandom(0f, 1f);
+			List<DUPLICANTSTATS.TraitVal> list = new List<DUPLICANTSTATS.TraitVal>(traitPossibilities);
+			list.ShuffleSeeded(randSeed);
+			list.Sort((DUPLICANTSTATS.TraitVal t1, DUPLICANTSTATS.TraitVal t2) => -t1.probability.CompareTo(t2.probability));
+			foreach (DUPLICANTSTATS.TraitVal item in list)
+			{
+				DUPLICANTSTATS.TraitVal current = item;
+				if (!selectedTraits.Contains(current.id))
 				{
-					DUPLICANTSTATS.TraitVal current = item;
-					if (!selectedTraits.Contains(current.id))
+					if (current.requiredNonPositiveAptitudes != null)
 					{
-						if (current.requiredNonPositiveAptitudes != null)
+						bool flag2 = false;
+						foreach (KeyValuePair<SkillGroup, float> skillAptitude in skillAptitudes)
 						{
-							bool flag2 = false;
-							foreach (KeyValuePair<SkillGroup, float> skillAptitude in skillAptitudes)
-							{
-								if (flag2)
-								{
-									break;
-								}
-								foreach (HashedString requiredNonPositiveAptitude in current.requiredNonPositiveAptitudes)
-								{
-									if (requiredNonPositiveAptitude == skillAptitude.Key.IdHash && skillAptitude.Value > 0f)
-									{
-										flag2 = true;
-										break;
-									}
-								}
-							}
 							if (flag2)
 							{
-								continue;
+								break;
 							}
-						}
-						if (current.mutuallyExclusiveTraits != null)
-						{
-							bool flag3 = false;
-							foreach (string item2 in selectedTraits)
+							foreach (HashedString requiredNonPositiveAptitude in current.requiredNonPositiveAptitudes)
 							{
-								flag3 = current.mutuallyExclusiveTraits.Contains(item2);
-								if (flag3)
+								if (requiredNonPositiveAptitude == skillAptitude.Key.IdHash && skillAptitude.Value > 0f)
 								{
+									flag2 = true;
 									break;
 								}
 							}
+						}
+						if (flag2)
+						{
+							continue;
+						}
+					}
+					if (current.mutuallyExclusiveTraits != null)
+					{
+						bool flag3 = false;
+						foreach (string item2 in selectedTraits)
+						{
+							flag3 = current.mutuallyExclusiveTraits.Contains(item2);
 							if (flag3)
 							{
-								continue;
+								break;
 							}
 						}
-						if (num2 > current.probability)
+						if (flag3)
 						{
-							Trait trait3 = Db.Get().traits.TryGet(current.id);
-							if (trait3 == null)
+							continue;
+						}
+					}
+					if (num2 > current.probability)
+					{
+						Trait trait3 = Db.Get().traits.TryGet(current.id);
+						if (trait3 == null)
+						{
+							Debug.LogWarning("Trying to add nonexistent trait: " + current.id);
+						}
+						else if (!is_starter_minion || trait3.ValidStarterTrait)
+						{
+							selectedTraits.Add(current.id);
+							statDelta += current.statBonus;
+							Traits.Add(trait3);
+							if (trait3.disabledChoreGroups != null)
 							{
-								Debug.LogWarning("Trying to add nonexistent trait: " + current.id);
-							}
-							else if (!is_starter_minion || trait3.ValidStarterTrait)
-							{
-								selectedTraits.Add(current.id);
-								statDelta += current.statBonus;
-								Traits.Add(trait3);
-								if (trait3.disabledChoreGroups != null)
+								for (int k = 0; k < trait3.disabledChoreGroups.Length; k++)
 								{
-									for (int k = 0; k < trait3.disabledChoreGroups.Length; k++)
-									{
-										disabled_chore_groups.Add(trait3.disabledChoreGroups[k]);
-									}
+									disabled_chore_groups.Add(trait3.disabledChoreGroups[k]);
 								}
-								return true;
 							}
+							return true;
 						}
 					}
 				}
-				return false;
 			}
 			return false;
 		};

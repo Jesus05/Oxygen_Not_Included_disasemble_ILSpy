@@ -18,11 +18,11 @@ public class SteamManager : MonoBehaviour
 	{
 		get
 		{
-			if (!((UnityEngine.Object)s_instance == (UnityEngine.Object)null))
+			if ((UnityEngine.Object)s_instance == (UnityEngine.Object)null)
 			{
-				return s_instance;
+				return new GameObject("SteamManager").AddComponent<SteamManager>();
 			}
-			return new GameObject("SteamManager").AddComponent<SteamManager>();
+			return s_instance;
 		}
 	}
 

@@ -14,7 +14,7 @@ public class CheckboxTableColumn : TableColumn
 	public Func<IAssignableIdentity, GameObject, TableScreen.ResultValues> get_value_action;
 
 	public CheckboxTableColumn(Action<IAssignableIdentity, GameObject> on_load_action, Func<IAssignableIdentity, GameObject, TableScreen.ResultValues> get_value_action, Action<GameObject> on_press_action, Action<GameObject, TableScreen.ResultValues> set_value_action, Comparison<IAssignableIdentity> sort_comparer, Action<IAssignableIdentity, GameObject, ToolTip> on_tooltip, Action<IAssignableIdentity, GameObject, ToolTip> on_sort_tooltip, Func<bool> revealed = null)
-		: base(on_load_action, sort_comparer, on_tooltip, on_sort_tooltip, revealed, false, "")
+		: base(on_load_action, sort_comparer, on_tooltip, on_sort_tooltip, revealed, false, string.Empty)
 	{
 		this.get_value_action = get_value_action;
 		this.on_press_action = on_press_action;

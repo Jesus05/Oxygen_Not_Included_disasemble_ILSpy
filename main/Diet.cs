@@ -77,20 +77,20 @@ public class Diet
 
 		public bool IsMatch(HashSet<Tag> tags)
 		{
-			if (tags.Count >= consumedTags.Count)
+			if (tags.Count < consumedTags.Count)
 			{
-				foreach (Tag consumedTag in consumedTags)
+				foreach (Tag tag in tags)
 				{
-					if (tags.Contains(consumedTag))
+					if (consumedTags.Contains(tag))
 					{
 						return true;
 					}
 				}
 				return false;
 			}
-			foreach (Tag tag in tags)
+			foreach (Tag consumedTag in consumedTags)
 			{
-				if (consumedTags.Contains(tag))
+				if (tags.Contains(consumedTag))
 				{
 					return true;
 				}
@@ -118,7 +118,7 @@ public class Diet
 
 	public List<KeyValuePair<Tag, float>> producedTags;
 
-	public bool eatsPlantsDirectly = false;
+	public bool eatsPlantsDirectly;
 
 	private Dictionary<Tag, Info> consumedTagToInfo = new Dictionary<Tag, Info>();
 

@@ -10,35 +10,35 @@ namespace KMod
 	{
 		private Mod MakeMod(SteamUGCService.Mod subscribed)
 		{
-			if (subscribed != null)
+			if (subscribed == null)
 			{
-				if ((SteamUGC.GetItemState(subscribed.fileId) & 4) != 0)
-				{
-					PublishedFileId_t fileId = subscribed.fileId;
-					string id = fileId.m_PublishedFileId.ToString();
-					Label label = default(Label);
-					label.id = id;
-					label.distribution_platform = Label.DistributionPlatform.Steam;
-					label.version = (long)subscribed.lastUpdateTime;
-					label.title = subscribed.title;
-					Label label2 = label;
-					if (SteamUGC.GetItemInstallInfo(subscribed.fileId, out ulong _, out string pchFolder, 1024u, out uint _))
-					{
-						return new Mod(label2, subscribed.description, new ZipFile(pchFolder), UI.FRONTEND.MODS.TOOLTIPS.MANAGE_STEAM_SUBSCRIPTION, delegate
-						{
-							Application.OpenURL("https://steamcommunity.com/sharedfiles/filedetails/?id=" + id);
-						});
-					}
-					Global.Instance.modManager.events.Add(new Event
-					{
-						event_type = EventType.InstallInfoInaccessible,
-						mod = label2
-					});
-					return null;
-				}
 				return null;
 			}
-			return null;
+			if ((SteamUGC.GetItemState(subscribed.fileId) & 4) == 0)
+			{
+				return null;
+			}
+			PublishedFileId_t fileId = subscribed.fileId;
+			string id = fileId.m_PublishedFileId.ToString();
+			Label label = default(Label);
+			label.id = id;
+			label.distribution_platform = Label.DistributionPlatform.Steam;
+			label.version = (long)subscribed.lastUpdateTime;
+			label.title = subscribed.title;
+			Label label2 = label;
+			if (!SteamUGC.GetItemInstallInfo(subscribed.fileId, out ulong _, out string pchFolder, 1024u, out uint _))
+			{
+				Global.Instance.modManager.events.Add(new Event
+				{
+					event_type = EventType.InstallInfoInaccessible,
+					mod = label2
+				});
+				return null;
+			}
+			return new Mod(label2, subscribed.description, new ZipFile(pchFolder), UI.FRONTEND.MODS.TOOLTIPS.MANAGE_STEAM_SUBSCRIPTION, delegate
+			{
+				Application.OpenURL("https://steamcommunity.com/sharedfiles/filedetails/?id=" + id);
+			});
 		}
 
 		public void UpdateMods(IEnumerable<PublishedFileId_t> added, IEnumerable<PublishedFileId_t> updated, IEnumerable<PublishedFileId_t> removed, IEnumerable<SteamUGCService.Mod> loaded_previews)

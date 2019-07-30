@@ -456,83 +456,83 @@ namespace KMod
 
 		public bool MatchFootprint(List<Label> footprint, Content relevant_content)
 		{
-			if (footprint != null)
+			if (footprint == null)
 			{
-				bool flag = true;
-				bool flag2 = true;
-				bool flag3 = false;
-				int num = -1;
-				Func<Label, Mod, bool> is_match = (Label label, Mod mod) => mod.label.Match(label);
-				foreach (Label item in footprint)
+				return true;
+			}
+			bool flag = true;
+			bool flag2 = true;
+			bool flag3 = false;
+			int num = -1;
+			Func<Label, Mod, bool> is_match = (Label label, Mod mod) => mod.label.Match(label);
+			foreach (Label item in footprint)
+			{
+				bool flag4 = false;
+				for (int i = num + 1; i != mods.Count; i++)
 				{
-					bool flag4 = false;
-					for (int i = num + 1; i != mods.Count; i++)
+					Mod mod2 = mods[i];
+					num = i;
+					Content content = mod2.available_content & relevant_content;
+					bool flag5 = content != (Content)0;
+					if (is_match(item, mod2))
 					{
-						Mod mod2 = mods[i];
-						num = i;
-						Content content = mod2.available_content & relevant_content;
-						bool flag5 = content != (Content)0;
-						if (is_match(item, mod2))
+						if (flag5)
 						{
-							if (flag5)
+							if (!mod2.enabled)
 							{
-								if (!mod2.enabled)
+								events.Add(new Event
 								{
-									events.Add(new Event
-									{
-										event_type = EventType.ExpectedActive,
-										mod = item
-									});
-									flag = false;
-								}
-								else if (!mod2.AllActive(content))
-								{
-									events.Add(new Event
-									{
-										event_type = EventType.LoadError,
-										mod = item
-									});
-								}
+									event_type = EventType.ExpectedActive,
+									mod = item
+								});
+								flag = false;
 							}
-							flag4 = true;
-							break;
-						}
-						if (flag5 && mod2.enabled)
-						{
-							events.Add(new Event
+							else if (!mod2.AllActive(content))
 							{
-								event_type = EventType.ExpectedInactive,
-								mod = mod2.label
-							});
-							flag3 = true;
+								events.Add(new Event
+								{
+									event_type = EventType.LoadError,
+									mod = item
+								});
+							}
 						}
+						flag4 = true;
+						break;
 					}
-					if (!flag4)
-					{
-						events.Add(new Event
-						{
-							event_type = ((!mods.Exists((Mod candidate) => is_match(item, candidate))) ? EventType.NotFound : EventType.OutOfOrder),
-							mod = item
-						});
-						flag2 = false;
-					}
-				}
-				for (int j = num + 1; j != mods.Count; j++)
-				{
-					Mod mod3 = mods[j];
-					if ((mod3.available_content & relevant_content) != 0 && mod3.enabled)
+					if (flag5 && mod2.enabled)
 					{
 						events.Add(new Event
 						{
 							event_type = EventType.ExpectedInactive,
-							mod = mod3.label
+							mod = mod2.label
 						});
 						flag3 = true;
 					}
 				}
-				return flag2 && flag && !flag3;
+				if (!flag4)
+				{
+					events.Add(new Event
+					{
+						event_type = ((!mods.Exists((Mod candidate) => is_match(item, candidate))) ? EventType.NotFound : EventType.OutOfOrder),
+						mod = item
+					});
+					flag2 = false;
+				}
 			}
-			return true;
+			for (int j = num + 1; j != mods.Count; j++)
+			{
+				Mod mod3 = mods[j];
+				if ((mod3.available_content & relevant_content) != 0 && mod3.enabled)
+				{
+					events.Add(new Event
+					{
+						event_type = EventType.ExpectedInactive,
+						mod = mod3.label
+					});
+					flag3 = true;
+				}
+			}
+			return flag2 && flag && !flag3;
 		}
 
 		private string GetFilename()
@@ -840,35 +840,35 @@ namespace KMod
 
 		public bool Save()
 		{
-			if (FileUtil.CreateDirectory(GetDirectory(), 5))
+			if (!FileUtil.CreateDirectory(GetDirectory(), 5))
 			{
-				FileStream stream = FileUtil.Create(GetFilename(), 5);
-				try
+				return false;
+			}
+			FileStream stream = FileUtil.Create(GetFilename(), 5);
+			try
+			{
+				if (stream == null)
 				{
-					if (stream == null)
+					return false;
+				}
+				using (StreamWriter streamWriter = FileUtil.DoIODialog(() => new StreamWriter(stream), GetFilename(), null, 5))
+				{
+					if (streamWriter == null)
 					{
 						return false;
 					}
-					using (StreamWriter streamWriter = FileUtil.DoIODialog(() => new StreamWriter(stream), GetFilename(), null, 5))
-					{
-						if (streamWriter == null)
-						{
-							return false;
-						}
-						string value = JsonConvert.SerializeObject(new PersistentData(current_version, mods), Formatting.Indented);
-						streamWriter.Write(value);
-					}
+					string value = JsonConvert.SerializeObject(new PersistentData(current_version, mods), Formatting.Indented);
+					streamWriter.Write(value);
 				}
-				finally
-				{
-					if (stream != null)
-					{
-						((IDisposable)stream).Dispose();
-					}
-				}
-				return true;
 			}
-			return false;
+			finally
+			{
+				if (stream != null)
+				{
+					((IDisposable)stream).Dispose();
+				}
+			}
+			return true;
 		}
 
 		public Mod FindMod(Label label)
@@ -891,26 +891,26 @@ namespace KMod
 		public bool EnableMod(Label id, bool enabled, object caller)
 		{
 			Mod mod = FindMod(id);
-			if (mod != null)
+			if (mod == null)
 			{
-				if (mod.enabled != enabled)
-				{
-					mod.enabled = enabled;
-					if (enabled)
-					{
-						mod.Load(Content.LayerableFiles);
-					}
-					else
-					{
-						mod.Unload(Content.LayerableFiles);
-					}
-					dirty = true;
-					Update(caller);
-					return true;
-				}
 				return false;
 			}
-			return false;
+			if (mod.enabled == enabled)
+			{
+				return false;
+			}
+			mod.enabled = enabled;
+			if (enabled)
+			{
+				mod.Load(Content.LayerableFiles);
+			}
+			else
+			{
+				mod.Unload(Content.LayerableFiles);
+			}
+			dirty = true;
+			Update(caller);
+			return true;
 		}
 
 		public void Reinsert(int source_index, int target_index, object caller)

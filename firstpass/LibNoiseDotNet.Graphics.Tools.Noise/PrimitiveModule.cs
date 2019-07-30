@@ -6,7 +6,7 @@ namespace LibNoiseDotNet.Graphics.Tools.Noise
 
 		public const NoiseQuality DEFAULT_QUALITY = NoiseQuality.Standard;
 
-		protected int _seed = 0;
+		protected int _seed;
 
 		protected NoiseQuality _quality = NoiseQuality.Standard;
 

@@ -20,19 +20,19 @@ public class TableScreen : KScreen
 
 	protected bool has_default_duplicant_row = true;
 
-	private bool rows_dirty = false;
+	private bool rows_dirty;
 
 	protected Comparison<IAssignableIdentity> active_sort_method;
 
 	protected TableColumn active_sort_column;
 
-	protected bool sort_is_reversed = false;
+	protected bool sort_is_reversed;
 
-	private int active_cascade_coroutine_count = 0;
+	private int active_cascade_coroutine_count;
 
 	private HandleVector<int>.Handle current_looping_sound = HandleVector<int>.InvalidHandle;
 
-	private bool incubating = false;
+	private bool incubating;
 
 	protected Dictionary<string, TableColumn> columns = new Dictionary<string, TableColumn>();
 
@@ -269,15 +269,15 @@ public class TableScreen : KScreen
 		{
 			return 0;
 		}
-		if (a != null)
+		if (a == null)
 		{
-			if (b != null)
-			{
-				return a.GetProperName().CompareTo(b.GetProperName());
-			}
+			return -1;
+		}
+		if (b == null)
+		{
 			return 1;
 		}
-		return -1;
+		return a.GetProperName().CompareTo(b.GetProperName());
 	}
 
 	protected int default_sort(TableRow a, TableRow b)
@@ -324,24 +324,24 @@ public class TableScreen : KScreen
 
 	protected TableRow GetWidgetRow(GameObject widget_go)
 	{
-		if (!((UnityEngine.Object)widget_go == (UnityEngine.Object)null))
+		if ((UnityEngine.Object)widget_go == (UnityEngine.Object)null)
 		{
-			if (!known_widget_rows.ContainsKey(widget_go))
-			{
-				foreach (TableRow row in rows)
-				{
-					if (row.ContainsWidget(widget_go))
-					{
-						known_widget_rows.Add(widget_go, row);
-						return row;
-					}
-				}
-				Debug.LogWarning("Row is null for widget: " + widget_go.name + " parent is " + widget_go.transform.parent.name);
-				return null;
-			}
+			Debug.LogWarning("Widget is null");
+			return null;
+		}
+		if (known_widget_rows.ContainsKey(widget_go))
+		{
 			return known_widget_rows[widget_go];
 		}
-		Debug.LogWarning("Widget is null");
+		foreach (TableRow row in rows)
+		{
+			if (row.ContainsWidget(widget_go))
+			{
+				known_widget_rows.Add(widget_go, row);
+				return row;
+			}
+		}
+		Debug.LogWarning("Row is null for widget: " + widget_go.name + " parent is " + widget_go.transform.parent.name);
 		return null;
 	}
 
@@ -349,7 +349,7 @@ public class TableScreen : KScreen
 	{
 		if (!column_scrollers.Contains(scrollablePanelID))
 		{
-			DividerColumn new_column = new DividerColumn(() => true, "");
+			DividerColumn new_column = new DividerColumn(() => true, string.Empty);
 			RegisterColumn("scroller_spacer_" + scrollablePanelID, new_column);
 			column_scrollers.Add(scrollablePanelID);
 		}
@@ -358,99 +358,99 @@ public class TableScreen : KScreen
 	protected PortraitTableColumn AddPortraitColumn(string id, Action<IAssignableIdentity, GameObject> on_load_action, Comparison<IAssignableIdentity> sort_comparison, bool double_click_to_target = true)
 	{
 		PortraitTableColumn portraitTableColumn = new PortraitTableColumn(on_load_action, sort_comparison, double_click_to_target);
-		if (!RegisterColumn(id, portraitTableColumn))
+		if (RegisterColumn(id, portraitTableColumn))
 		{
-			return null;
+			return portraitTableColumn;
 		}
-		return portraitTableColumn;
+		return null;
 	}
 
 	protected ButtonLabelColumn AddButtonLabelColumn(string id, Action<IAssignableIdentity, GameObject> on_load_action, Func<IAssignableIdentity, GameObject, string> get_value_action, Action<GameObject> on_click_action, Action<GameObject> on_double_click_action, Comparison<IAssignableIdentity> sort_comparison, Action<IAssignableIdentity, GameObject, ToolTip> on_tooltip, Action<IAssignableIdentity, GameObject, ToolTip> on_sort_tooltip, bool whiteText = false)
 	{
 		ButtonLabelColumn buttonLabelColumn = new ButtonLabelColumn(on_load_action, get_value_action, on_click_action, on_double_click_action, sort_comparison, on_tooltip, on_sort_tooltip, whiteText);
-		if (!RegisterColumn(id, buttonLabelColumn))
+		if (RegisterColumn(id, buttonLabelColumn))
 		{
-			return null;
+			return buttonLabelColumn;
 		}
-		return buttonLabelColumn;
+		return null;
 	}
 
 	protected LabelTableColumn AddLabelColumn(string id, Action<IAssignableIdentity, GameObject> on_load_action, Func<IAssignableIdentity, GameObject, string> get_value_action, Comparison<IAssignableIdentity> sort_comparison, Action<IAssignableIdentity, GameObject, ToolTip> on_tooltip, Action<IAssignableIdentity, GameObject, ToolTip> on_sort_tooltip, int widget_width = 128, bool should_refresh_columns = false)
 	{
 		LabelTableColumn labelTableColumn = new LabelTableColumn(on_load_action, get_value_action, sort_comparison, on_tooltip, on_sort_tooltip, widget_width, should_refresh_columns);
-		if (!RegisterColumn(id, labelTableColumn))
+		if (RegisterColumn(id, labelTableColumn))
 		{
-			return null;
+			return labelTableColumn;
 		}
-		return labelTableColumn;
+		return null;
 	}
 
 	protected CheckboxTableColumn AddCheckboxColumn(string id, Action<IAssignableIdentity, GameObject> on_load_action, Func<IAssignableIdentity, GameObject, ResultValues> get_value_action, Action<GameObject> on_press_action, Action<GameObject, ResultValues> set_value_function, Comparison<IAssignableIdentity> sort_comparison, Action<IAssignableIdentity, GameObject, ToolTip> on_tooltip, Action<IAssignableIdentity, GameObject, ToolTip> on_sort_tooltip)
 	{
 		CheckboxTableColumn checkboxTableColumn = new CheckboxTableColumn(on_load_action, get_value_action, on_press_action, set_value_function, sort_comparison, on_tooltip, on_sort_tooltip, null);
-		if (!RegisterColumn(id, checkboxTableColumn))
+		if (RegisterColumn(id, checkboxTableColumn))
 		{
-			return null;
+			return checkboxTableColumn;
 		}
-		return checkboxTableColumn;
+		return null;
 	}
 
 	protected SuperCheckboxTableColumn AddSuperCheckboxColumn(string id, CheckboxTableColumn[] columns_affected, Action<IAssignableIdentity, GameObject> on_load_action, Func<IAssignableIdentity, GameObject, ResultValues> get_value_action, Action<GameObject> on_press_action, Action<GameObject, ResultValues> set_value_action, Comparison<IAssignableIdentity> sort_comparison, Action<IAssignableIdentity, GameObject, ToolTip> on_tooltip)
 	{
 		SuperCheckboxTableColumn superCheckboxTableColumn = new SuperCheckboxTableColumn(columns_affected, on_load_action, get_value_action, on_press_action, set_value_action, sort_comparison, on_tooltip);
-		if (!RegisterColumn(id, superCheckboxTableColumn))
+		if (RegisterColumn(id, superCheckboxTableColumn))
 		{
-			Debug.LogWarning("SuperCheckbox column registration failed");
-			return null;
+			foreach (CheckboxTableColumn checkboxTableColumn in columns_affected)
+			{
+				CheckboxTableColumn checkboxTableColumn2 = checkboxTableColumn;
+				checkboxTableColumn2.on_set_action = (Action<GameObject, ResultValues>)Delegate.Combine(checkboxTableColumn2.on_set_action, new Action<GameObject, ResultValues>(superCheckboxTableColumn.MarkDirty));
+			}
+			superCheckboxTableColumn.MarkDirty(null, ResultValues.False);
+			return superCheckboxTableColumn;
 		}
-		foreach (CheckboxTableColumn checkboxTableColumn in columns_affected)
-		{
-			CheckboxTableColumn checkboxTableColumn2 = checkboxTableColumn;
-			checkboxTableColumn2.on_set_action = (Action<GameObject, ResultValues>)Delegate.Combine(checkboxTableColumn2.on_set_action, new Action<GameObject, ResultValues>(superCheckboxTableColumn.MarkDirty));
-		}
-		superCheckboxTableColumn.MarkDirty(null, ResultValues.False);
-		return superCheckboxTableColumn;
+		Debug.LogWarning("SuperCheckbox column registration failed");
+		return null;
 	}
 
 	protected NumericDropDownTableColumn AddNumericDropDownColumn(string id, object user_data, List<TMP_Dropdown.OptionData> options, Action<IAssignableIdentity, GameObject> on_load_action, Action<GameObject, int> set_value_action, Comparison<IAssignableIdentity> sort_comparison, NumericDropDownTableColumn.ToolTipCallbacks tooltip_callbacks)
 	{
 		NumericDropDownTableColumn numericDropDownTableColumn = new NumericDropDownTableColumn(user_data, options, on_load_action, set_value_action, sort_comparison, tooltip_callbacks, null);
-		if (!RegisterColumn(id, numericDropDownTableColumn))
+		if (RegisterColumn(id, numericDropDownTableColumn))
 		{
-			return null;
+			return numericDropDownTableColumn;
 		}
-		return numericDropDownTableColumn;
+		return null;
 	}
 
 	protected bool RegisterColumn(string id, TableColumn new_column)
 	{
-		if (!columns.ContainsKey(id))
+		if (columns.ContainsKey(id))
 		{
-			new_column.screen = this;
-			columns.Add(id, new_column);
-			MarkRowsDirty();
-			return true;
+			Debug.LogWarning($"Column with id {id} already in dictionary");
+			return false;
 		}
-		Debug.LogWarning($"Column with id {id} already in dictionary");
-		return false;
+		new_column.screen = this;
+		columns.Add(id, new_column);
+		MarkRowsDirty();
+		return true;
 	}
 
 	protected TableColumn GetWidgetColumn(GameObject widget_go)
 	{
-		if (!known_widget_columns.ContainsKey(widget_go))
+		if (known_widget_columns.ContainsKey(widget_go))
 		{
-			foreach (KeyValuePair<string, TableColumn> column in columns)
-			{
-				if (column.Value.ContainsWidget(widget_go))
-				{
-					known_widget_columns.Add(widget_go, column.Value);
-					return column.Value;
-				}
-			}
-			Debug.LogWarning("No column found for widget gameobject " + widget_go.name);
-			return null;
+			return known_widget_columns[widget_go];
 		}
-		return known_widget_columns[widget_go];
+		foreach (KeyValuePair<string, TableColumn> column in columns)
+		{
+			if (column.Value.ContainsWidget(widget_go))
+			{
+				known_widget_columns.Add(widget_go, column.Value);
+				return column.Value;
+			}
+		}
+		Debug.LogWarning("No column found for widget gameobject " + widget_go.name);
+		return null;
 	}
 
 	protected void on_load_portrait(IAssignableIdentity minion, GameObject widget_go)
@@ -490,7 +490,7 @@ public class TableScreen : KScreen
 				}
 				else
 				{
-					locText2.text = "";
+					locText2.text = string.Empty;
 				}
 				locText2.enableWordWrapping = false;
 			}
@@ -511,7 +511,7 @@ public class TableScreen : KScreen
 			}
 			if ((UnityEngine.Object)locText2 != (UnityEngine.Object)null)
 			{
-				locText2.text = "";
+				locText2.text = string.Empty;
 			}
 		}
 	}

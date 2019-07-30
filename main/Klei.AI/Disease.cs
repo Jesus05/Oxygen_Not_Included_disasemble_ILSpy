@@ -126,9 +126,9 @@ namespace Klei.AI
 			ApplyRules();
 			string str = Strings.Get("STRINGS.DUPLICANTS.DISEASES." + id.ToUpper() + ".LEGEND_HOVERTEXT").ToString();
 			overlayLegendHovertext = str + DUPLICANTS.DISEASES.LEGEND_POSTAMBLE;
-			Attribute attribute = new Attribute(id + "Min", "Minimum" + id.ToString(), "", "", 0f, Attribute.Display.Normal, false, null, null);
-			Attribute attribute2 = new Attribute(id + "Max", "Maximum" + id.ToString(), "", "", 1E+07f, Attribute.Display.Normal, false, null, null);
-			amountDeltaAttribute = new Attribute(id + "Delta", id.ToString(), "", "", 0f, Attribute.Display.Normal, false, null, null);
+			Attribute attribute = new Attribute(id + "Min", "Minimum" + id.ToString(), string.Empty, string.Empty, 0f, Attribute.Display.Normal, false, null, null);
+			Attribute attribute2 = new Attribute(id + "Max", "Maximum" + id.ToString(), string.Empty, string.Empty, 1E+07f, Attribute.Display.Normal, false, null, null);
+			amountDeltaAttribute = new Attribute(id + "Delta", id.ToString(), string.Empty, string.Empty, 0f, Attribute.Display.Normal, false, null, null);
 			amount = new Amount(id, id + " " + DUPLICANTS.DISEASES.GERMS, id + " " + DUPLICANTS.DISEASES.GERMS, attribute, attribute2, amountDeltaAttribute, false, Units.Flat, 0.01f, true, null, null);
 			Db.Get().Attributes.Add(attribute);
 			Db.Get().Attributes.Add(attribute2);
@@ -387,19 +387,19 @@ namespace Klei.AI
 			{
 				return float.PositiveInfinity;
 			}
-			if (!float.IsInfinity(value) && !float.IsInfinity(value2))
+			if (float.IsInfinity(value) || float.IsInfinity(value2))
 			{
-				float value3 = range.GetValue(num);
-				float value4 = range.GetValue(num2);
-				float t = 0f;
-				float num3 = value4 - value3;
-				if (num3 > 0f)
-				{
-					t = (range_value - value3) / num3;
-				}
-				return Mathf.Lerp(value, value2, t);
+				return float.PositiveInfinity;
 			}
-			return float.PositiveInfinity;
+			float value3 = range.GetValue(num);
+			float value4 = range.GetValue(num2);
+			float t = 0f;
+			float num3 = value4 - value3;
+			if (num3 > 0f)
+			{
+				t = (range_value - value3) / num3;
+			}
+			return Mathf.Lerp(value, value2, t);
 		}
 
 		public List<Descriptor> GetQuantitativeDescriptors()

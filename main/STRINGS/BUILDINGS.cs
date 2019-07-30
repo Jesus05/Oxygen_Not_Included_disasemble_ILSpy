@@ -1366,9 +1366,9 @@ namespace STRINGS
 			{
 				public static LocString NAME = UI.FormatAsLink("Park Sign", "PARKSIGN");
 
-				public static LocString DESC = "Typically found in parks.";
+				public static LocString DESC = "Passing through parks will increase Duplicant Morale.";
 
-				public static LocString EFFECT = "Classifies this area as a park.";
+				public static LocString EFFECT = "Classifies an area as a Park or Nature Reserve.";
 			}
 
 			public class REFRIGERATOR
@@ -1853,7 +1853,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = UI.FormatAsLink("Tile", "TILEPOI");
 
-				public static LocString DESC = "";
+				public static LocString DESC = string.Empty;
 
 				public static LocString EFFECT = "Used to build the walls and floor of rooms.";
 			}
@@ -2641,7 +2641,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = UI.FormatAsLink("Anti Entropy Thermo-Nullifier", "MASSIVEHEATSINK");
 
-				public static LocString DESC = "";
+				public static LocString DESC = string.Empty;
 
 				public static LocString EFFECT = "A self-sustaining machine powered by what appears to be refined " + UI.FormatAsLink("Neutronium", "UNOBTANIUM") + ".\n\nAbsorbs and neutralizes " + UI.FormatAsLink("Heat", "HEAT") + " energy when submersed in " + UI.FormatAsLink("Hydrogen", "HYDROGEN") + ".";
 			}
@@ -2650,7 +2650,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = UI.FormatAsLink("Window", "FACILITYBACKWALLWINDOW");
 
-				public static LocString DESC = "";
+				public static LocString DESC = string.Empty;
 
 				public static LocString EFFECT = "A tall, thin window.";
 			}
@@ -2661,7 +2661,7 @@ namespace STRINGS
 
 				public static LocString EFFECT = "A strong door with a sophisticated genetic lock.";
 
-				public static LocString DESC = "";
+				public static LocString DESC = string.Empty;
 			}
 
 			public class POIDOORINTERNAL
@@ -2670,7 +2670,7 @@ namespace STRINGS
 
 				public static LocString EFFECT = "A strong door with a sophisticated genetic lock.";
 
-				public static LocString DESC = "";
+				public static LocString DESC = string.Empty;
 			}
 
 			public class POIFACILITYDOOR
@@ -2679,7 +2679,7 @@ namespace STRINGS
 
 				public static LocString EFFECT = "Large double doors that were once the main entrance to a large facility.";
 
-				public static LocString DESC = "";
+				public static LocString DESC = string.Empty;
 			}
 
 			public class VENDINGMACHINE

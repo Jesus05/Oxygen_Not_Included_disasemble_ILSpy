@@ -155,32 +155,32 @@ public class BottleEmptier : StateMachineComponent<BottleEmptier.StatesInstance>
 		public override void InitializeStates(out BaseState default_state)
 		{
 			default_state = waitingfordelivery;
-			statusItem = new StatusItem("BottleEmptier", "", "", "", StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, 129022);
+			statusItem = new StatusItem("BottleEmptier", string.Empty, string.Empty, string.Empty, StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, 129022);
 			statusItem.resolveStringCallback = delegate(string str, object data)
 			{
 				BottleEmptier bottleEmptier2 = (BottleEmptier)data;
-				if (!((UnityEngine.Object)bottleEmptier2 == (UnityEngine.Object)null))
+				if ((UnityEngine.Object)bottleEmptier2 == (UnityEngine.Object)null)
 				{
-					if (!bottleEmptier2.allowManualPumpingStationFetching)
-					{
-						return BUILDING.STATUSITEMS.BOTTLE_EMPTIER.DENIED.NAME;
-					}
+					return str;
+				}
+				if (bottleEmptier2.allowManualPumpingStationFetching)
+				{
 					return BUILDING.STATUSITEMS.BOTTLE_EMPTIER.ALLOWED.NAME;
 				}
-				return str;
+				return BUILDING.STATUSITEMS.BOTTLE_EMPTIER.DENIED.NAME;
 			};
 			statusItem.resolveTooltipCallback = delegate(string str, object data)
 			{
 				BottleEmptier bottleEmptier = (BottleEmptier)data;
-				if (!((UnityEngine.Object)bottleEmptier == (UnityEngine.Object)null))
+				if ((UnityEngine.Object)bottleEmptier == (UnityEngine.Object)null)
 				{
-					if (!bottleEmptier.allowManualPumpingStationFetching)
-					{
-						return BUILDING.STATUSITEMS.BOTTLE_EMPTIER.DENIED.TOOLTIP;
-					}
+					return str;
+				}
+				if (bottleEmptier.allowManualPumpingStationFetching)
+				{
 					return BUILDING.STATUSITEMS.BOTTLE_EMPTIER.ALLOWED.TOOLTIP;
 				}
-				return str;
+				return BUILDING.STATUSITEMS.BOTTLE_EMPTIER.DENIED.TOOLTIP;
 			};
 			root.ToggleStatusItem(statusItem, (StatesInstance smi) => smi.master);
 			unoperational.TagTransition(GameTags.Operational, waitingfordelivery, false).PlayAnim("off");

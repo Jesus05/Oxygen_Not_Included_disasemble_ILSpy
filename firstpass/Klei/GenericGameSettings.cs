@@ -27,7 +27,7 @@ namespace Klei
 			}
 		}
 
-		private static GenericGameSettings _instance = null;
+		private static GenericGameSettings _instance;
 
 		public static GenericGameSettings instance
 		{

@@ -38,12 +38,12 @@ namespace ClipperLib
 
 		public override bool Equals(object obj)
 		{
-			if (obj != null)
+			if (obj == null)
 			{
-				if (!(obj is IntPoint))
-				{
-					return false;
-				}
+				return false;
+			}
+			if (obj is IntPoint)
+			{
 				IntPoint intPoint = (IntPoint)obj;
 				return X == intPoint.X && Y == intPoint.Y;
 			}

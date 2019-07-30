@@ -4,7 +4,7 @@ using UnityEngine.Rendering;
 
 public class TextureLerper
 {
-	private static int offsetCounter = 0;
+	private static int offsetCounter;
 
 	public string name;
 

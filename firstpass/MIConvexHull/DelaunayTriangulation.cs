@@ -21,17 +21,17 @@ namespace MIConvexHull
 			{
 				throw new ArgumentNullException("data");
 			}
-			DelaunayTriangulation<TVertex, TCell> delaunayTriangulation2;
-			if (data.Count != 0)
+			DelaunayTriangulation<TVertex, TCell> delaunayTriangulation;
+			if (data.Count == 0)
 			{
-				TCell[] delaunayTriangulation = ConvexHullAlgorithm.GetDelaunayTriangulation<TVertex, TCell>(data);
-				delaunayTriangulation2 = new DelaunayTriangulation<TVertex, TCell>();
-				delaunayTriangulation2.Cells = delaunayTriangulation;
-				return delaunayTriangulation2;
+				delaunayTriangulation = new DelaunayTriangulation<TVertex, TCell>();
+				delaunayTriangulation.Cells = new TCell[0];
+				return delaunayTriangulation;
 			}
-			delaunayTriangulation2 = new DelaunayTriangulation<TVertex, TCell>();
-			delaunayTriangulation2.Cells = new TCell[0];
-			return delaunayTriangulation2;
+			TCell[] delaunayTriangulation2 = ConvexHullAlgorithm.GetDelaunayTriangulation<TVertex, TCell>(data);
+			delaunayTriangulation = new DelaunayTriangulation<TVertex, TCell>();
+			delaunayTriangulation.Cells = delaunayTriangulation2;
+			return delaunayTriangulation;
 		}
 	}
 }

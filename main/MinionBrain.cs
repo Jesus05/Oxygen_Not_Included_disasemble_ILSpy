@@ -23,16 +23,16 @@ public class MinionBrain : Brain
 
 	public bool IsCellClear(int cell)
 	{
-		if (!Grid.Reserved[cell])
+		if (Grid.Reserved[cell])
 		{
-			GameObject gameObject = Grid.Objects[cell, 0];
-			if (!((Object)gameObject != (Object)null) || !((Object)base.gameObject != (Object)gameObject) || gameObject.GetComponent<Navigator>().IsMoving())
-			{
-				return true;
-			}
 			return false;
 		}
-		return false;
+		GameObject gameObject = Grid.Objects[cell, 0];
+		if ((Object)gameObject != (Object)null && (Object)base.gameObject != (Object)gameObject && !gameObject.GetComponent<Navigator>().IsMoving())
+		{
+			return false;
+		}
+		return true;
 	}
 
 	protected override void OnPrefabInit()

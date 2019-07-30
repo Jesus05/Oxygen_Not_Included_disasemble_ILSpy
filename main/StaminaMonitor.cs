@@ -61,20 +61,20 @@ public class StaminaMonitor : GameStateMachine<StaminaMonitor, StaminaMonitor.In
 
 		public bool ShouldExitSleep()
 		{
-			if (!schedulable.IsAllowed(Db.Get().ScheduleBlockTypes.Sleep))
+			if (schedulable.IsAllowed(Db.Get().ScheduleBlockTypes.Sleep))
 			{
-				Narcolepsy component = GetComponent<Narcolepsy>();
-				if ((Object)component != (Object)null && component.IsNarcolepsing())
-				{
-					return false;
-				}
-				if (!(stamina.value < stamina.GetMax()))
-				{
-					return true;
-				}
 				return false;
 			}
-			return false;
+			Narcolepsy component = GetComponent<Narcolepsy>();
+			if ((Object)component != (Object)null && component.IsNarcolepsing())
+			{
+				return false;
+			}
+			if (stamina.value < stamina.GetMax())
+			{
+				return false;
+			}
+			return true;
 		}
 	}
 

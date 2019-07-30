@@ -232,45 +232,45 @@ public class MaterialSelectionPanel : KScreen
 		SelectedElemInfo result = default(SelectedElemInfo);
 		result.element = null;
 		result.kgAvailable = 0f;
-		if (!((UnityEngine.Object)WorldInventory.Instance == (UnityEngine.Object)null) && ElementLoader.elements != null && ElementLoader.elements.Count != 0)
+		if ((UnityEngine.Object)WorldInventory.Instance == (UnityEngine.Object)null || ElementLoader.elements == null || ElementLoader.elements.Count == 0)
 		{
-			List<Tag> value = null;
-			if (!elementsWithTag.TryGetValue(materialCategoryTag, out value))
+			return result;
+		}
+		List<Tag> value = null;
+		if (!elementsWithTag.TryGetValue(materialCategoryTag, out value))
+		{
+			value = new List<Tag>();
+			foreach (Element element in ElementLoader.elements)
 			{
-				value = new List<Tag>();
-				foreach (Element element in ElementLoader.elements)
+				if (element.tag == materialCategoryTag || element.HasTag(materialCategoryTag))
 				{
-					if (element.tag == materialCategoryTag || element.HasTag(materialCategoryTag))
-					{
-						value.Add(element.tag);
-					}
+					value.Add(element.tag);
 				}
-				foreach (Tag materialBuildingElement in GameTags.MaterialBuildingElements)
+			}
+			foreach (Tag materialBuildingElement in GameTags.MaterialBuildingElements)
+			{
+				if (materialBuildingElement == materialCategoryTag)
 				{
-					if (materialBuildingElement == materialCategoryTag)
+					foreach (GameObject item in Assets.GetPrefabsWithTag(materialBuildingElement))
 					{
-						foreach (GameObject item in Assets.GetPrefabsWithTag(materialBuildingElement))
+						KPrefabID component = item.GetComponent<KPrefabID>();
+						if ((UnityEngine.Object)component != (UnityEngine.Object)null && !value.Contains(component.PrefabTag))
 						{
-							KPrefabID component = item.GetComponent<KPrefabID>();
-							if ((UnityEngine.Object)component != (UnityEngine.Object)null && !value.Contains(component.PrefabTag))
-							{
-								value.Add(component.PrefabTag);
-							}
+							value.Add(component.PrefabTag);
 						}
 					}
 				}
-				elementsWithTag[materialCategoryTag] = value;
 			}
-			foreach (Tag item2 in value)
+			elementsWithTag[materialCategoryTag] = value;
+		}
+		foreach (Tag item2 in value)
+		{
+			float amount = WorldInventory.Instance.GetAmount(item2);
+			if (amount > result.kgAvailable)
 			{
-				float amount = WorldInventory.Instance.GetAmount(item2);
-				if (amount > result.kgAvailable)
-				{
-					result.kgAvailable = amount;
-					result.element = item2;
-				}
+				result.kgAvailable = amount;
+				result.element = item2;
 			}
-			return result;
 		}
 		return result;
 	}

@@ -54,10 +54,10 @@ public class Fashionable : StateMachineComponent<Fashionable.StatesInstance>
 	protected bool IsUncomfortable()
 	{
 		ClothingWearer component = GetComponent<ClothingWearer>();
-		if (!((Object)component != (Object)null))
+		if ((Object)component != (Object)null)
 		{
-			return false;
+			return component.currentClothing.decorMod <= 0;
 		}
-		return component.currentClothing.decorMod <= 0;
+		return false;
 	}
 }

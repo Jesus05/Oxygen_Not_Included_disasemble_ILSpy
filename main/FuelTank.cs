@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class FuelTank : Storage, IUserControlledCapacity
 {
-	private bool isSuspended = false;
+	private bool isSuspended;
 
 	private MeterController meter;
 

@@ -213,40 +213,40 @@ public class ChoreConsumer : KMonoBehaviour, IPersonalPriorityManager
 
 	private bool ChooseChore(ref Chore.Precondition.Context out_context, List<Chore.Precondition.Context> succeeded_contexts)
 	{
-		if (succeeded_contexts.Count != 0)
+		if (succeeded_contexts.Count == 0)
 		{
-			Chore currentChore = choreDriver.GetCurrentChore();
-			if (currentChore == null)
+			return false;
+		}
+		Chore currentChore = choreDriver.GetCurrentChore();
+		if (currentChore == null)
+		{
+			for (int num = succeeded_contexts.Count - 1; num >= 0; num--)
 			{
-				for (int num = succeeded_contexts.Count - 1; num >= 0; num--)
+				Chore.Precondition.Context context = succeeded_contexts[num];
+				if (context.IsSuccess())
 				{
-					Chore.Precondition.Context context = succeeded_contexts[num];
-					if (context.IsSuccess())
+					out_context = context;
+					return true;
+				}
+			}
+		}
+		else
+		{
+			int interruptPriority = Db.Get().ChoreTypes.TopPriority.interruptPriority;
+			int num2 = (currentChore.masterPriority.priority_class != PriorityScreen.PriorityClass.topPriority) ? currentChore.choreType.interruptPriority : interruptPriority;
+			for (int num3 = succeeded_contexts.Count - 1; num3 >= 0; num3--)
+			{
+				Chore.Precondition.Context context2 = succeeded_contexts[num3];
+				if (context2.IsSuccess())
+				{
+					int num4 = (context2.masterPriority.priority_class != PriorityScreen.PriorityClass.topPriority) ? context2.interruptPriority : interruptPriority;
+					if (num4 > num2 && !currentChore.choreType.interruptExclusion.Overlaps(context2.chore.choreType.tags))
 					{
-						out_context = context;
+						out_context = context2;
 						return true;
 					}
 				}
 			}
-			else
-			{
-				int interruptPriority = Db.Get().ChoreTypes.TopPriority.interruptPriority;
-				int num2 = (currentChore.masterPriority.priority_class != PriorityScreen.PriorityClass.topPriority) ? currentChore.choreType.interruptPriority : interruptPriority;
-				for (int num3 = succeeded_contexts.Count - 1; num3 >= 0; num3--)
-				{
-					Chore.Precondition.Context context2 = succeeded_contexts[num3];
-					if (context2.IsSuccess())
-					{
-						int num4 = (context2.masterPriority.priority_class != PriorityScreen.PriorityClass.topPriority) ? context2.interruptPriority : interruptPriority;
-						if (num4 > num2 && !currentChore.choreType.interruptExclusion.Overlaps(context2.chore.choreType.tags))
-						{
-							out_context = context2;
-							return true;
-						}
-					}
-				}
-			}
-			return false;
 		}
 		return false;
 	}
@@ -359,19 +359,19 @@ public class ChoreConsumer : KMonoBehaviour, IPersonalPriorityManager
 
 	public bool IsPermittedOrEnabled(ChoreType chore_type, Chore chore)
 	{
-		if (chore_type.groups.Length != 0)
+		if (chore_type.groups.Length == 0)
 		{
-			for (int i = 0; i < chore_type.groups.Length; i++)
-			{
-				ChoreGroup chore_group = chore_type.groups[i];
-				if (IsPermittedByTraits(chore_group) && IsPermittedByUser(chore_group))
-				{
-					return true;
-				}
-			}
-			return false;
+			return true;
 		}
-		return true;
+		for (int i = 0; i < chore_type.groups.Length; i++)
+		{
+			ChoreGroup chore_group = chore_type.groups[i];
+			if (IsPermittedByTraits(chore_group) && IsPermittedByUser(chore_group))
+			{
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public void SetReach(int reach)
@@ -404,31 +404,31 @@ public class ChoreConsumer : KMonoBehaviour, IPersonalPriorityManager
 
 	public bool CanReach(IApproachable approachable)
 	{
-		if (!(bool)navigator)
+		if ((bool)navigator)
 		{
-			if (!consumerState.hasSolidTransferArm)
-			{
-				return false;
-			}
+			return navigator.CanReach(approachable);
+		}
+		if (consumerState.hasSolidTransferArm)
+		{
 			int cell = approachable.GetCell();
 			return consumerState.solidTransferArm.IsCellReachable(cell);
 		}
-		return navigator.CanReach(approachable);
+		return false;
 	}
 
 	public bool IsWithinReach(IApproachable approachable)
 	{
-		if (!(bool)navigator)
+		if ((bool)navigator)
 		{
-			if (!consumerState.hasSolidTransferArm)
+			if ((UnityEngine.Object)this == (UnityEngine.Object)null || (UnityEngine.Object)base.gameObject == (UnityEngine.Object)null)
 			{
 				return false;
 			}
-			return consumerState.solidTransferArm.IsCellReachable(approachable.GetCell());
-		}
-		if (!((UnityEngine.Object)this == (UnityEngine.Object)null) && !((UnityEngine.Object)base.gameObject == (UnityEngine.Object)null))
-		{
 			return Grid.IsCellOffsetOf(Grid.PosToCell(this), approachable.GetCell(), approachable.GetOffsets());
+		}
+		if (consumerState.hasSolidTransferArm)
+		{
+			return consumerState.solidTransferArm.IsCellReachable(approachable.GetCell());
 		}
 		return false;
 	}
@@ -567,11 +567,11 @@ public class ChoreConsumer : KMonoBehaviour, IPersonalPriorityManager
 	public bool RunBehaviourPrecondition(Tag tag)
 	{
 		BehaviourPrecondition value = default(BehaviourPrecondition);
-		if (behaviourPreconditions.TryGetValue(tag, out value))
+		if (!behaviourPreconditions.TryGetValue(tag, out value))
 		{
-			return value.cb(value.arg);
+			return false;
 		}
-		return false;
+		return value.cb(value.arg);
 	}
 
 	public void AddBehaviourPrecondition(Tag tag, Func<object, bool> precondition, object arg)
@@ -592,11 +592,11 @@ public class ChoreConsumer : KMonoBehaviour, IPersonalPriorityManager
 	public bool IsChoreEqualOrAboveCurrentChorePriority<StateMachineType>()
 	{
 		Chore currentChore = choreDriver.GetCurrentChore();
-		if (currentChore != null)
+		if (currentChore == null)
 		{
-			return currentChore.choreType.priority <= choreTable.GetChorePriority<StateMachineType>(this);
+			return true;
 		}
-		return true;
+		return currentChore.choreType.priority <= choreTable.GetChorePriority<StateMachineType>(this);
 	}
 
 	public bool IsChoreGroupDisabled(ChoreGroup chore_group)

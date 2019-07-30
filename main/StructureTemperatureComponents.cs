@@ -1,4 +1,3 @@
-#define UNITY_ASSERTIONS
 using STRINGS;
 using System;
 using System.Collections.Generic;
@@ -50,7 +49,7 @@ public class StructureTemperatureComponents : KGameObjectSplitComponentManager<S
 	{
 		if (operatingEnergyStatusItem == null)
 		{
-			operatingEnergyStatusItem = new StatusItem("OperatingEnergy", "BUILDING", "", StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, true, 129022);
+			operatingEnergyStatusItem = new StatusItem("OperatingEnergy", "BUILDING", string.Empty, StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, true, 129022);
 			operatingEnergyStatusItem.resolveStringCallback = delegate(string str, object ev_data)
 			{
 				int key = (int)ev_data;
@@ -61,23 +60,22 @@ public class StructureTemperatureComponents : KGameObjectSplitComponentManager<S
 					try
 					{
 						str = string.Format(str, GameUtil.GetFormattedHeatEnergy(payload.TotalEnergyProducedKW * 1000f, GameUtil.HeatEnergyFormatterUnit.Automatic));
+						return str;
 					}
 					catch (Exception obj)
 					{
 						Debug.LogWarning(obj);
 						Debug.LogWarning(BUILDING.STATUSITEMS.OPERATINGENERGY.TOOLTIP);
 						Debug.LogWarning(str);
+						return str;
 					}
 				}
-				else
+				string text = string.Empty;
+				foreach (StructureTemperaturePayload.EnergySource item in payload.energySourcesKW)
 				{
-					string text = "";
-					foreach (StructureTemperaturePayload.EnergySource item in payload.energySourcesKW)
-					{
-						text += string.Format(BUILDING.STATUSITEMS.OPERATINGENERGY.LINEITEM, item.source, GameUtil.GetFormattedHeatEnergy(item.value * 1000f, GameUtil.HeatEnergyFormatterUnit.DTU_S));
-					}
-					str = string.Format(str, GameUtil.GetFormattedHeatEnergy(payload.TotalEnergyProducedKW * 1000f, GameUtil.HeatEnergyFormatterUnit.DTU_S), text);
+					text += string.Format(BUILDING.STATUSITEMS.OPERATINGENERGY.LINEITEM, item.source, GameUtil.GetFormattedHeatEnergy(item.value * 1000f, GameUtil.HeatEnergyFormatterUnit.DTU_S));
 				}
+				str = string.Format(str, GameUtil.GetFormattedHeatEnergy(payload.TotalEnergyProducedKW * 1000f, GameUtil.HeatEnergyFormatterUnit.DTU_S), text);
 				return str;
 			};
 		}
@@ -215,18 +213,16 @@ public class StructureTemperatureComponents : KGameObjectSplitComponentManager<S
 		DebugUtil.Assert(Sim.IsValidHandle(payload.simHandleCopy));
 		float internalTemperature = payload.primaryElement.InternalTemperature;
 		BuildingDef def = payload.building.Def;
-		float num = def.MassForTemperatureModification;
+		float mass = def.MassForTemperatureModification;
 		float operatingKilowatts = payload.OperatingKilowatts;
 		float overheat_temperature = (!((UnityEngine.Object)payload.overheatable != (UnityEngine.Object)null)) ? 10000f : payload.overheatable.OverheatTemperature;
-		UnityEngine.Debug.Assert(internalTemperature > 0f, "Invalid temperature");
-		UnityEngine.Debug.Assert(num > 0f);
 		if (!payload.enabled || payload.bypass)
 		{
-			num = 0f;
+			mass = 0f;
 		}
 		Extents extents = payload.GetExtents();
 		byte idx = payload.primaryElement.Element.idx;
-		SimMessages.ModifyBuildingHeatExchange(payload.simHandleCopy, extents, num, internalTemperature, def.ThermalConductivity, overheat_temperature, operatingKilowatts, idx);
+		SimMessages.ModifyBuildingHeatExchange(payload.simHandleCopy, extents, mass, internalTemperature, def.ThermalConductivity, overheat_temperature, operatingKilowatts, idx);
 	}
 
 	private unsafe static float OnGetTemperature(PrimaryElement primary_element)
@@ -412,9 +408,6 @@ public class StructureTemperatureComponents : KGameObjectSplitComponentManager<S
 					float internalTemperature = primaryElement.InternalTemperature;
 					float massForTemperatureModification = def.MassForTemperatureModification;
 					float operatingKilowatts = payload.OperatingKilowatts;
-					UnityEngine.Debug.Assert(0f < internalTemperature && internalTemperature < 10000f, "Invalid temperature");
-					UnityEngine.Debug.Assert(primaryElement.Mass > 0f);
-					UnityEngine.Debug.Assert(massForTemperatureModification > 0f);
 					Extents extents = payload.GetExtents();
 					byte elem_idx = (byte)ElementLoader.elements.IndexOf(primaryElement.Element);
 					SimMessages.AddBuildingHeatExchange(extents, massForTemperatureModification, internalTemperature, def.ThermalConductivity, operatingKilowatts, elem_idx, handle2.index);

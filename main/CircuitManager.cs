@@ -45,7 +45,7 @@ public class CircuitManager
 
 	private HashSet<WireUtilityNetworkLink> bridges = new HashSet<WireUtilityNetworkLink>();
 
-	private float elapsedTime = 0f;
+	private float elapsedTime;
 
 	private List<CircuitInfo> circuitInfo = new List<CircuitInfo>();
 
@@ -519,13 +519,13 @@ public class CircuitManager
 				}
 			}
 		}
-		if (!(num2 > 0f))
+		if (num2 > 0f)
 		{
-			return false;
+			source_generator.ApplyDeltaJoules(0f - num2, false);
+			joules_used += num2;
+			return true;
 		}
-		source_generator.ApplyDeltaJoules(0f - num2, false);
-		joules_used += num2;
-		return true;
+		return false;
 	}
 
 	private void UpdateBatteryConnectionStatus(List<Battery> batteries, bool is_connected_to_something_useful, int circuit_id)
@@ -602,101 +602,101 @@ public class CircuitManager
 
 	public float GetWattsUsedByCircuit(ushort circuitID)
 	{
-		if (circuitID != 65535)
+		if (circuitID == 65535)
 		{
-			float num = 0f;
-			CircuitInfo circuitInfo = this.circuitInfo[circuitID];
-			foreach (IEnergyConsumer consumer in circuitInfo.consumers)
-			{
-				num += consumer.WattsUsed;
-			}
-			CircuitInfo circuitInfo2 = this.circuitInfo[circuitID];
-			foreach (Battery inputTransformer in circuitInfo2.inputTransformers)
-			{
-				num += inputTransformer.WattsUsed;
-			}
-			return num;
+			return -1f;
 		}
-		return -1f;
+		float num = 0f;
+		CircuitInfo circuitInfo = this.circuitInfo[circuitID];
+		foreach (IEnergyConsumer consumer in circuitInfo.consumers)
+		{
+			num += consumer.WattsUsed;
+		}
+		CircuitInfo circuitInfo2 = this.circuitInfo[circuitID];
+		foreach (Battery inputTransformer in circuitInfo2.inputTransformers)
+		{
+			num += inputTransformer.WattsUsed;
+		}
+		return num;
 	}
 
 	public float GetWattsNeededWhenActive(ushort circuitID)
 	{
-		if (circuitID != 65535)
+		if (circuitID == 65535)
 		{
-			float num = 0f;
-			CircuitInfo circuitInfo = this.circuitInfo[circuitID];
-			foreach (IEnergyConsumer consumer in circuitInfo.consumers)
-			{
-				num += consumer.WattsNeededWhenActive;
-			}
-			CircuitInfo circuitInfo2 = this.circuitInfo[circuitID];
-			foreach (Battery inputTransformer in circuitInfo2.inputTransformers)
-			{
-				num += inputTransformer.WattsNeededWhenActive;
-			}
-			return num;
+			return -1f;
 		}
-		return -1f;
+		float num = 0f;
+		CircuitInfo circuitInfo = this.circuitInfo[circuitID];
+		foreach (IEnergyConsumer consumer in circuitInfo.consumers)
+		{
+			num += consumer.WattsNeededWhenActive;
+		}
+		CircuitInfo circuitInfo2 = this.circuitInfo[circuitID];
+		foreach (Battery inputTransformer in circuitInfo2.inputTransformers)
+		{
+			num += inputTransformer.WattsNeededWhenActive;
+		}
+		return num;
 	}
 
 	public float GetWattsGeneratedByCircuit(ushort circuitID)
 	{
-		if (circuitID != 65535)
+		if (circuitID == 65535)
 		{
-			float num = 0f;
-			CircuitInfo circuitInfo = this.circuitInfo[circuitID];
-			List<Generator> list = circuitInfo.generators;
-			foreach (Generator item in list)
-			{
-				if (!((Object)item == (Object)null) && item.GetComponent<Operational>().IsActive)
-				{
-					num += item.WattageRating;
-				}
-			}
-			return num;
+			return -1f;
 		}
-		return -1f;
+		float num = 0f;
+		CircuitInfo circuitInfo = this.circuitInfo[circuitID];
+		List<Generator> list = circuitInfo.generators;
+		foreach (Generator item in list)
+		{
+			if (!((Object)item == (Object)null) && item.GetComponent<Operational>().IsActive)
+			{
+				num += item.WattageRating;
+			}
+		}
+		return num;
 	}
 
 	public float GetPotentialWattsGeneratedByCircuit(ushort circuitID)
 	{
-		if (circuitID != 65535)
+		if (circuitID == 65535)
 		{
-			float num = 0f;
-			CircuitInfo circuitInfo = this.circuitInfo[circuitID];
-			List<Generator> list = circuitInfo.generators;
-			foreach (Generator item in list)
-			{
-				num += item.WattageRating;
-			}
-			return num;
+			return -1f;
 		}
-		return -1f;
+		float num = 0f;
+		CircuitInfo circuitInfo = this.circuitInfo[circuitID];
+		List<Generator> list = circuitInfo.generators;
+		foreach (Generator item in list)
+		{
+			num += item.WattageRating;
+		}
+		return num;
 	}
 
 	public bool HasPowerSource(ushort circuitID)
 	{
-		if (circuitID != 65535)
+		if (circuitID == 65535)
 		{
-			CircuitInfo circuitInfo = this.circuitInfo[circuitID];
-			List<Generator> list = circuitInfo.generators;
-			CircuitInfo circuitInfo2 = this.circuitInfo[circuitID];
-			List<Battery> batteries = circuitInfo2.batteries;
-			return (list.Count > 0 && (Object)list.Find(FindActiveGenerator) != (Object)null) || (batteries.Count > 0 && (Object)batteries.Find(FindActiveBattery) != (Object)null);
+			return false;
 		}
-		return false;
+		CircuitInfo circuitInfo = this.circuitInfo[circuitID];
+		List<Generator> list = circuitInfo.generators;
+		CircuitInfo circuitInfo2 = this.circuitInfo[circuitID];
+		List<Battery> batteries = circuitInfo2.batteries;
+		return (list.Count > 0 && (Object)list.Find(FindActiveGenerator) != (Object)null) || (batteries.Count > 0 && (Object)batteries.Find(FindActiveBattery) != (Object)null);
 	}
 
 	private bool FindActiveGenerator(Generator g)
 	{
 		Operational component = g.GetComponent<Operational>();
 		ManualGenerator component2 = g.GetComponent<ManualGenerator>();
-		if (!((Object)component2 == (Object)null))
+		if ((Object)component2 == (Object)null)
 		{
-			return component.IsOperational && component2.IsPowered;
+			return component.IsActive;
 		}
-		return component.IsActive;
+		return component.IsOperational && component2.IsPowered;
 	}
 
 	private bool FindActiveBattery(Battery b)
@@ -713,76 +713,76 @@ public class CircuitManager
 
 	public ReadOnlyCollection<Generator> GetGeneratorsOnCircuit(ushort circuitID)
 	{
-		if (circuitID != 65535)
+		if (circuitID == 65535)
 		{
-			CircuitInfo circuitInfo = this.circuitInfo[circuitID];
-			return circuitInfo.generators.AsReadOnly();
+			return null;
 		}
-		return null;
+		CircuitInfo circuitInfo = this.circuitInfo[circuitID];
+		return circuitInfo.generators.AsReadOnly();
 	}
 
 	public ReadOnlyCollection<IEnergyConsumer> GetConsumersOnCircuit(ushort circuitID)
 	{
-		if (circuitID != 65535)
+		if (circuitID == 65535)
 		{
-			CircuitInfo circuitInfo = this.circuitInfo[circuitID];
-			return circuitInfo.consumers.AsReadOnly();
+			return null;
 		}
-		return null;
+		CircuitInfo circuitInfo = this.circuitInfo[circuitID];
+		return circuitInfo.consumers.AsReadOnly();
 	}
 
 	public ReadOnlyCollection<Battery> GetTransformersOnCircuit(ushort circuitID)
 	{
-		if (circuitID != 65535)
+		if (circuitID == 65535)
 		{
-			CircuitInfo circuitInfo = this.circuitInfo[circuitID];
-			return circuitInfo.inputTransformers.AsReadOnly();
+			return null;
 		}
-		return null;
+		CircuitInfo circuitInfo = this.circuitInfo[circuitID];
+		return circuitInfo.inputTransformers.AsReadOnly();
 	}
 
 	public List<Battery> GetBatteriesOnCircuit(ushort circuitID)
 	{
-		if (circuitID != 65535)
+		if (circuitID == 65535)
 		{
-			CircuitInfo circuitInfo = this.circuitInfo[circuitID];
-			return circuitInfo.batteries;
+			return null;
 		}
-		return null;
+		CircuitInfo circuitInfo = this.circuitInfo[circuitID];
+		return circuitInfo.batteries;
 	}
 
 	public float GetMinBatteryPercentFullOnCircuit(ushort circuitID)
 	{
-		if (circuitID != 65535)
+		if (circuitID == 65535)
 		{
-			CircuitInfo circuitInfo = this.circuitInfo[circuitID];
-			return circuitInfo.minBatteryPercentFull;
+			return 0f;
 		}
-		return 0f;
+		CircuitInfo circuitInfo = this.circuitInfo[circuitID];
+		return circuitInfo.minBatteryPercentFull;
 	}
 
 	public bool HasBatteries(ushort circuitID)
 	{
-		if (circuitID != 65535)
+		if (circuitID == 65535)
 		{
-			CircuitInfo circuitInfo = this.circuitInfo[circuitID];
-			int count = circuitInfo.batteries.Count;
-			CircuitInfo circuitInfo2 = this.circuitInfo[circuitID];
-			return count + circuitInfo2.inputTransformers.Count > 0;
+			return false;
 		}
-		return false;
+		CircuitInfo circuitInfo = this.circuitInfo[circuitID];
+		int count = circuitInfo.batteries.Count;
+		CircuitInfo circuitInfo2 = this.circuitInfo[circuitID];
+		return count + circuitInfo2.inputTransformers.Count > 0;
 	}
 
 	public bool HasGenerators(ushort circuitID)
 	{
-		if (circuitID != 65535)
+		if (circuitID == 65535)
 		{
-			CircuitInfo circuitInfo = this.circuitInfo[circuitID];
-			int count = circuitInfo.generators.Count;
-			CircuitInfo circuitInfo2 = this.circuitInfo[circuitID];
-			return count + circuitInfo2.outputTransformers.Count > 0;
+			return false;
 		}
-		return false;
+		CircuitInfo circuitInfo = this.circuitInfo[circuitID];
+		int count = circuitInfo.generators.Count;
+		CircuitInfo circuitInfo2 = this.circuitInfo[circuitID];
+		return count + circuitInfo2.outputTransformers.Count > 0;
 	}
 
 	public bool HasGenerators()
@@ -792,20 +792,20 @@ public class CircuitManager
 
 	public bool HasConsumers(ushort circuitID)
 	{
-		if (circuitID != 65535)
+		if (circuitID == 65535)
 		{
-			CircuitInfo circuitInfo = this.circuitInfo[circuitID];
-			return circuitInfo.consumers.Count > 0;
+			return false;
 		}
-		return false;
+		CircuitInfo circuitInfo = this.circuitInfo[circuitID];
+		return circuitInfo.consumers.Count > 0;
 	}
 
 	public float GetMaxSafeWattageForCircuit(ushort circuitID)
 	{
-		if (circuitID != 65535)
+		if (circuitID == 65535)
 		{
-			return (Game.Instance.electricalConduitSystem.GetNetworkByID(circuitID) as ElectricalUtilityNetwork)?.GetMaxSafeWattage() ?? 0f;
+			return 0f;
 		}
-		return 0f;
+		return (Game.Instance.electricalConduitSystem.GetNetworkByID(circuitID) as ElectricalUtilityNetwork)?.GetMaxSafeWattage() ?? 0f;
 	}
 }

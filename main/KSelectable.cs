@@ -12,7 +12,7 @@ public class KSelectable : KMonoBehaviour
 
 	public string entityGender;
 
-	private bool selected = false;
+	private bool selected;
 
 	[SerializeField]
 	private bool selectable = true;
@@ -45,10 +45,10 @@ public class KSelectable : KMonoBehaviour
 		KPrefabID component = GetComponent<KPrefabID>();
 		if (!((UnityEngine.Object)component != (UnityEngine.Object)null))
 		{
-			goto IL_002d;
+			goto IL_002a;
 		}
-		goto IL_002d;
-		IL_002d:
+		goto IL_002a;
+		IL_002a:
 		if (entityName == null || entityName.Length <= 0)
 		{
 			SetName(base.name);
@@ -61,12 +61,12 @@ public class KSelectable : KMonoBehaviour
 
 	public virtual string GetName()
 	{
-		if (entityName != null && !(entityName == "") && entityName.Length > 0)
+		if (entityName == null || entityName == string.Empty || entityName.Length <= 0)
 		{
-			return entityName;
+			Debug.Log("Warning Item has blank name!", base.gameObject);
+			return base.name;
 		}
-		Debug.Log("Warning Item has blank name!", base.gameObject);
-		return base.name;
+		return entityName;
 	}
 
 	public void SetStatusIndicatorOffset(Vector3 offset)
@@ -172,88 +172,88 @@ public class KSelectable : KMonoBehaviour
 
 	public Guid ToggleStatusItem(StatusItem status_item, bool on, object data = null)
 	{
-		if (!on)
+		if (on)
 		{
-			return RemoveStatusItem(status_item, false);
+			return AddStatusItem(status_item, data);
 		}
-		return AddStatusItem(status_item, data);
+		return RemoveStatusItem(status_item, false);
 	}
 
 	public Guid ToggleStatusItem(StatusItem status_item, Guid guid, bool show, object data = null)
 	{
-		if (!show)
+		if (show)
 		{
-			if (!(guid != Guid.Empty))
+			if (guid != Guid.Empty)
 			{
 				return guid;
 			}
-			return RemoveStatusItem(guid, false);
-		}
-		if (!(guid != Guid.Empty))
-		{
 			return AddStatusItem(status_item, data);
+		}
+		if (guid != Guid.Empty)
+		{
+			return RemoveStatusItem(guid, false);
 		}
 		return guid;
 	}
 
 	public Guid SetStatusItem(StatusItemCategory category, StatusItem status_item, object data = null)
 	{
-		if (statusItemGroup != null)
+		if (statusItemGroup == null)
 		{
-			return statusItemGroup.SetStatusItem(category, status_item, data);
+			return Guid.Empty;
 		}
-		return Guid.Empty;
+		return statusItemGroup.SetStatusItem(category, status_item, data);
 	}
 
 	public Guid ReplaceStatusItem(Guid guid, StatusItem status_item, object data = null)
 	{
-		if (statusItemGroup != null)
+		if (statusItemGroup == null)
 		{
-			if (guid != Guid.Empty)
-			{
-				statusItemGroup.RemoveStatusItem(guid, false);
-			}
-			return AddStatusItem(status_item, data);
+			return Guid.Empty;
 		}
-		return Guid.Empty;
+		if (guid != Guid.Empty)
+		{
+			statusItemGroup.RemoveStatusItem(guid, false);
+		}
+		return AddStatusItem(status_item, data);
 	}
 
 	public Guid AddStatusItem(StatusItem status_item, object data = null)
 	{
-		if (statusItemGroup != null)
+		if (statusItemGroup == null)
 		{
-			return statusItemGroup.AddStatusItem(status_item, data, null);
+			return Guid.Empty;
 		}
-		return Guid.Empty;
+		return statusItemGroup.AddStatusItem(status_item, data, null);
 	}
 
 	public Guid RemoveStatusItem(StatusItem status_item, bool immediate = false)
 	{
-		if (statusItemGroup != null)
+		if (statusItemGroup == null)
 		{
-			statusItemGroup.RemoveStatusItem(status_item, immediate);
 			return Guid.Empty;
 		}
+		statusItemGroup.RemoveStatusItem(status_item, immediate);
 		return Guid.Empty;
 	}
 
 	public Guid RemoveStatusItem(Guid guid, bool immediate = false)
 	{
-		if (statusItemGroup != null)
+		if (statusItemGroup == null)
 		{
-			statusItemGroup.RemoveStatusItem(guid, immediate);
 			return Guid.Empty;
 		}
+		statusItemGroup.RemoveStatusItem(guid, immediate);
 		return Guid.Empty;
 	}
 
 	public bool HasStatusItem(StatusItem status_item)
 	{
-		if (statusItemGroup != null)
+		if (statusItemGroup == null)
 		{
-			return statusItemGroup.HasStatusItem(status_item);
+			return false;
 		}
-		return false;
+		return statusItemGroup.HasStatusItem(status_item);
 	}
 
 	public StatusItemGroup.Entry GetStatusItem(StatusItemCategory category)

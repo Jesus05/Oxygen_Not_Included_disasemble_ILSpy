@@ -12,11 +12,11 @@ public class PlantElementEmitter : StateMachineComponent<PlantElementEmitter.Sta
 
 		public bool IsWilting()
 		{
-			if (!((Object)base.master.wiltCondition == (Object)null))
+			if ((Object)base.master.wiltCondition == (Object)null)
 			{
-				return (Object)base.master.wiltCondition != (Object)null && base.master.wiltCondition.IsWilting();
+				return false;
 			}
-			return false;
+			return (Object)base.master.wiltCondition != (Object)null && base.master.wiltCondition.IsWilting();
 		}
 	}
 

@@ -15,7 +15,7 @@ public abstract class AudioSheets : ScriptableObject
 			foreach (AudioSheet.SoundInfo soundInfo in soundInfos)
 			{
 				string text = soundInfo.Type;
-				if (text == null || text == "")
+				if (text == null || text == string.Empty)
 				{
 					text = sheet.defaultType;
 				}

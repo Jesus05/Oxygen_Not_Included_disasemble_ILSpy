@@ -6,13 +6,13 @@ public class LogicTimeOfDaySensor : Switch, ISaveLoadable, ISim200ms
 {
 	[SerializeField]
 	[Serialize]
-	public float startTime = 0f;
+	public float startTime;
 
 	[SerializeField]
 	[Serialize]
 	public float duration = 1f;
 
-	private bool wasOn = false;
+	private bool wasOn;
 
 	[MyCmpAdd]
 	private CopyBuildingSettings copyBuildingSettings;

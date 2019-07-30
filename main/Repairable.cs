@@ -188,7 +188,7 @@ public class Repairable : Workable
 	[Serialize]
 	private byte[] storedData;
 
-	private float timeSpentRepairing = 0f;
+	private float timeSpentRepairing;
 
 	private static readonly Operational.Flag repairedFlag = new Operational.Flag("repaired", Operational.Flag.Type.Functional);
 

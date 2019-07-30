@@ -69,11 +69,11 @@ namespace YamlDotNet.Serialization
 						return num;
 					}
 				}
-				if (!matchType.GetInterfaces().Contains(RegisteredType))
+				if (matchType.GetInterfaces().Contains(RegisteredType))
 				{
-					return 0;
+					return num;
 				}
-				return num;
+				return 0;
 			}
 		}
 

@@ -49,19 +49,19 @@ public class RequireAttachedComponent : RocketLaunchCondition
 
 	public override string GetLaunchStatusMessage(bool ready)
 	{
-		if (!ready)
+		if (ready)
 		{
-			return typeNameString + " " + UI.STARMAP.LAUNCHCHECKLIST.INSTALLED;
+			return typeNameString + " " + UI.STARMAP.LAUNCHCHECKLIST.REQUIRED;
 		}
-		return typeNameString + " " + UI.STARMAP.LAUNCHCHECKLIST.REQUIRED;
+		return typeNameString + " " + UI.STARMAP.LAUNCHCHECKLIST.INSTALLED;
 	}
 
 	public override string GetLaunchStatusTooltip(bool ready)
 	{
-		if (!ready)
+		if (ready)
 		{
-			return string.Format(UI.STARMAP.LAUNCHCHECKLIST.REQUIRED_TOOLTIP, typeNameString);
+			return string.Format(UI.STARMAP.LAUNCHCHECKLIST.INSTALLED_TOOLTIP, typeNameString);
 		}
-		return string.Format(UI.STARMAP.LAUNCHCHECKLIST.INSTALLED_TOOLTIP, typeNameString);
+		return string.Format(UI.STARMAP.LAUNCHCHECKLIST.REQUIRED_TOOLTIP, typeNameString);
 	}
 }

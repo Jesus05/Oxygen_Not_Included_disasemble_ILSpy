@@ -57,7 +57,7 @@ namespace YamlDotNet.Serialization.ValueDeserializers
 			{
 				if (typeResolver.Resolve(nodeEvent, ref currentType))
 				{
-					break;
+					return currentType;
 				}
 			}
 			return currentType;

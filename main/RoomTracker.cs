@@ -60,19 +60,19 @@ public class RoomTracker : KMonoBehaviour, IEffectDescriptor
 
 	public bool SufficientBuildLocation(int cell)
 	{
-		if (Grid.IsValidCell(cell))
+		if (!Grid.IsValidCell(cell))
 		{
-			if (requirement == Requirement.Required || requirement == Requirement.CustomRequired)
-			{
-				Room room = Game.Instance.roomProber.GetCavityForCell(cell)?.room;
-				if (room == null)
-				{
-					return false;
-				}
-			}
-			return true;
+			return false;
 		}
-		return false;
+		if (requirement == Requirement.Required || requirement == Requirement.CustomRequired)
+		{
+			Room room = Game.Instance.roomProber.GetCavityForCell(cell)?.room;
+			if (room == null)
+			{
+				return false;
+			}
+		}
+		return true;
 	}
 
 	private void OnUpdateRoom(object data)

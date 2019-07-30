@@ -58,15 +58,15 @@ public class KInputController : IInputHandler
 
 	private float[] mAxis;
 
-	private Modifier mActiveModifiers = Modifier.None;
+	private Modifier mActiveModifiers;
 
 	private bool[] mActionState;
 
 	private bool[] mScrollState;
 
-	private bool mIgnoreKeyboard = false;
+	private bool mIgnoreKeyboard;
 
-	private bool mIgnoreMouse = false;
+	private bool mIgnoreMouse;
 
 	private Dictionary<KeyDefEntry, KeyDef> mKeyDefLookup = new Dictionary<KeyDefEntry, KeyDef>();
 

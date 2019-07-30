@@ -150,17 +150,17 @@ public class Db : EntityModifierSet
 	public ResourceType GetResource<ResourceType>(ResourceGuid guid) where ResourceType : Resource
 	{
 		Resource resource = ResourceTable.FirstOrDefault((Resource s) => s.Guid == guid);
-		if (resource != null)
+		if (resource == null)
 		{
-			ResourceType val = (ResourceType)resource;
-			if (val != null)
-			{
-				return val;
-			}
+			Debug.LogWarning("Could not find resource: " + guid);
+			return (ResourceType)null;
+		}
+		ResourceType val = (ResourceType)resource;
+		if (val == null)
+		{
 			Debug.LogError("Resource type mismatch for resource: " + resource.Id + "\nExpecting Type: " + typeof(ResourceType).Name + "\nGot Type: " + resource.GetType().Name);
 			return (ResourceType)null;
 		}
-		Debug.LogWarning("Could not find resource: " + guid);
-		return (ResourceType)null;
+		return val;
 	}
 }

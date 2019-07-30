@@ -141,7 +141,7 @@ public class MinionStatsPanel : TargetScreen
 			{
 				foreach (Skill item3 in list)
 				{
-					string text = "";
+					string text = string.Empty;
 					foreach (SkillPerk perk in item3.perks)
 					{
 						text = text + "  • " + perk.Name + "\n";

@@ -295,7 +295,7 @@ public class StoredMinionIdentity : KMonoBehaviour, ISaveLoadable, IAssignableId
 				}
 			}
 		}
-		return "";
+		return string.Empty;
 	}
 
 	public bool IsPermittedToConsume(string consumable)
@@ -335,11 +335,11 @@ public class StoredMinionIdentity : KMonoBehaviour, ISaveLoadable, IAssignableId
 
 	public int GetPersonalPriority(ChoreGroup chore_group)
 	{
-		if (!choreGroupPriorities.TryGetValue(chore_group.IdHash, out ChoreConsumer.PriorityInfo value))
+		if (choreGroupPriorities.TryGetValue(chore_group.IdHash, out ChoreConsumer.PriorityInfo value))
 		{
-			return 0;
+			return value.priority;
 		}
-		return value.priority;
+		return 0;
 	}
 
 	public int GetAssociatedSkillLevel(ChoreGroup group)

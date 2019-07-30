@@ -46,7 +46,7 @@ namespace ProcGen
 			}
 		}
 
-		private Tree voronoiTree = null;
+		private Tree voronoiTree;
 
 		[Serialize]
 		public MapGraph localGraph;
@@ -65,12 +65,12 @@ namespace ProcGen
 
 		private LineSegment rightEdge;
 
-		private SeededRandom myRandom = null;
+		private SeededRandom myRandom;
 
 		private WorldGen worldGen;
 
 		[Serialize]
-		private ExtraIO extra = null;
+		private ExtraIO extra;
 
 		[Serialize]
 		public int mapWidth
@@ -275,15 +275,15 @@ namespace ProcGen
 
 		private char ConvertSignToCmp(int val)
 		{
-			if (val <= 0)
+			if (val > 0)
 			{
-				if (val >= 0)
-				{
-					return '=';
-				}
+				return '>';
+			}
+			if (val < 0)
+			{
 				return '<';
 			}
-			return '>';
+			return '=';
 		}
 
 		private HashSet<WeightedSubWorld> GetNameFilterSet(VoronoiTree.Node vn, World.AllowedCellsFilter filter, List<WeightedSubWorld> subworlds)
@@ -420,7 +420,7 @@ namespace ProcGen
 		{
 			HashSet<WeightedSubWorld> hashSet = new HashSet<WeightedSubWorld>();
 			World world = worldGen.Settings.world;
-			string text = "";
+			string text = string.Empty;
 			foreach (KeyValuePair<Tag, int> item in vn.minDistanceToTag)
 			{
 				string text2 = text;
@@ -528,7 +528,7 @@ namespace ProcGen
 				}
 				else
 				{
-					string text = "";
+					string text = string.Empty;
 					foreach (KeyValuePair<Tag, int> item2 in item.minDistanceToTag)
 					{
 						string text2 = text;
@@ -686,11 +686,11 @@ namespace ProcGen
 					}
 				}
 			}
-			if (flag && flag2)
+			if (!flag || !flag2)
 			{
-				return true;
+				return false;
 			}
-			return false;
+			return true;
 		}
 
 		public bool IsNodeBorderOpen(VoronoiTree.Node n1, VoronoiTree.Node n2, TagSet edgeOpenTags)
@@ -834,11 +834,11 @@ namespace ProcGen
 					density *= 0.8f;
 					if (!worldGen.isRunningDebugGen)
 					{
-						goto IL_0048;
+						goto IL_0042;
 					}
 				}
-				goto IL_0048;
-				IL_0048:
+				goto IL_0042;
+				IL_0042:
 				num++;
 			}
 			while (list.Count < minPointCount && num < 10);
@@ -892,7 +892,7 @@ namespace ProcGen
 			}
 			if (points.Count < num)
 			{
-				string arg = "";
+				string arg = string.Empty;
 				for (int l = 0; l < node.site.poly.Vertices.Count; l++)
 				{
 					arg = arg + node.site.poly.Vertices[l] + ", ";
@@ -905,10 +905,10 @@ namespace ProcGen
 			}
 			if (sw.features.Count <= points.Count)
 			{
-				goto IL_0363;
+				goto IL_0349;
 			}
-			goto IL_0363;
-			IL_0363:
+			goto IL_0349;
+			IL_0349:
 			for (int m = 0; m < points.Count; m++)
 			{
 				Feature feature = null;
@@ -1183,12 +1183,12 @@ namespace ProcGen
 
 		private bool StartAreaTooLarge(VoronoiTree.Node node)
 		{
-			if (!node.tags.Contains(WorldGenTags.AtStart))
+			if (node.tags.Contains(WorldGenTags.AtStart))
 			{
-				return false;
+				float num = node.site.poly.Area();
+				return num > 2000f;
 			}
-			float num = node.site.poly.Area();
-			return num > 2000f;
+			return false;
 		}
 
 		private void SplitLargeStartingSites()
@@ -1275,15 +1275,15 @@ namespace ProcGen
 				node2 = localGraph.FindNode((Node node) => (uint)node.node.Id == nodes[0].site.id);
 				node2.tags.Add(WorldGenTags.StartLocation);
 			}
-			if (node2 != null)
+			if (node2 == null)
 			{
-				Vector2 position = node2.position;
-				int a = (int)position.x;
-				Vector2 position2 = node2.position;
-				return new Vector2I(a, (int)position2.y);
+				Debug.LogWarning("Couldnt find start node");
+				return new Vector2I(mapWidth / 2, mapHeight / 2);
 			}
-			Debug.LogWarning("Couldnt find start node");
-			return new Vector2I(mapWidth / 2, mapHeight / 2);
+			Vector2 position = node2.position;
+			int a = (int)position.x;
+			Vector2 position2 = node2.position;
+			return new Vector2I(a, (int)position2.y);
 		}
 
 		public List<River> GetRivers()

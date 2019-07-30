@@ -30,11 +30,7 @@ public class CreatureSleepStates : GameStateMachine<CreatureSleepStates, Creatur
 	public override void InitializeStates(out BaseState default_state)
 	{
 		default_state = pre;
-		State root = base.root;
-		string name = CREATURES.STATUSITEMS.SLEEPING.NAME;
-		string tooltip = CREATURES.STATUSITEMS.SLEEPING.TOOLTIP;
-		StatusItemCategory main = Db.Get().StatusItemCategories.Main;
-		root.ToggleStatusItem(name, tooltip, "", StatusItem.IconType.Info, NotificationType.Neutral, false, default(HashedString), 129022, null, null, main);
+		root.ToggleStatusItem(CREATURES.STATUSITEMS.SLEEPING.NAME, CREATURES.STATUSITEMS.SLEEPING.TOOLTIP, category: Db.Get().StatusItemCategories.Main, icon: string.Empty, icon_type: StatusItem.IconType.Info, notification_type: NotificationType.Neutral, allow_multiples: false, render_overlay: default(HashedString), status_overlays: 129022, resolve_string_callback: null, resolve_tooltip_callback: null);
 		pre.QueueAnim("sleep_pre", false, null).OnAnimQueueComplete(loop);
 		loop.QueueAnim("sleep_loop", true, null).Transition(pst, ShouldWakeUp, UpdateRate.SIM_1000ms);
 		pst.QueueAnim("sleep_pst", false, null).OnAnimQueueComplete(behaviourcomplete);

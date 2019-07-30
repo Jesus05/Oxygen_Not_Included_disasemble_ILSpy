@@ -45,7 +45,7 @@ public class Tinkerable : Workable
 		component.OnOperationalChanged(data);
 	});
 
-	private bool hasReservedMaterial = false;
+	private bool hasReservedMaterial;
 
 	public static Tinkerable MakePowerTinkerable(GameObject prefab)
 	{
@@ -189,28 +189,28 @@ public class Tinkerable : Workable
 
 	private bool RoomHasActiveTinkerstation()
 	{
-		if (roomTracker.IsInCorrectRoom())
+		if (!roomTracker.IsInCorrectRoom())
 		{
-			if (roomTracker.room != null)
+			return false;
+		}
+		if (roomTracker.room == null)
+		{
+			return false;
+		}
+		foreach (KPrefabID building in roomTracker.room.buildings)
+		{
+			if (!((Object)building == (Object)null))
 			{
-				foreach (KPrefabID building in roomTracker.room.buildings)
+				TinkerStation component = building.GetComponent<TinkerStation>();
+				if ((Object)component != (Object)null && component.outputPrefab == tinkerMaterialTag)
 				{
-					if (!((Object)building == (Object)null))
+					Operational component2 = building.GetComponent<Operational>();
+					if (component2.IsOperational)
 					{
-						TinkerStation component = building.GetComponent<TinkerStation>();
-						if ((Object)component != (Object)null && component.outputPrefab == tinkerMaterialTag)
-						{
-							Operational component2 = building.GetComponent<Operational>();
-							if (component2.IsOperational)
-							{
-								return true;
-							}
-						}
+						return true;
 					}
 				}
-				return false;
 			}
-			return false;
 		}
 		return false;
 	}

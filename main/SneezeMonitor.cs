@@ -28,12 +28,12 @@ public class SneezeMonitor : GameStateMachine<SneezeMonitor, SneezeMonitor.Insta
 		public float NextSneezeInterval()
 		{
 			AttributeInstance attributeInstance = Db.Get().Attributes.Sneezyness.Lookup(base.master.gameObject);
-			if (!(attributeInstance.GetTotalValue() <= 0f))
+			if (attributeInstance.GetTotalValue() <= 0f)
 			{
-				float num = 70f / attributeInstance.GetTotalValue();
-				return UnityEngine.Random.Range(num * 0.7f, num * 1.3f);
+				return 70f;
 			}
-			return 70f;
+			float num = 70f / attributeInstance.GetTotalValue();
+			return UnityEngine.Random.Range(num * 0.7f, num * 1.3f);
 		}
 
 		private void OnSneezyChange()

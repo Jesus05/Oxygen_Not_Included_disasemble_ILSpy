@@ -639,9 +639,9 @@ namespace STRINGS
 
 				public static LocString POWER_WASTED = "Average Power Wasted";
 
-				public static LocString TRAVEL_TIME = "Travel Time";
+				public static LocString TRAVEL_TIME = "Total Travel Time";
 
-				public static LocString WORK_TIME = "Work Time";
+				public static LocString WORK_TIME = "Total Work Time";
 
 				public static LocString AVERAGE_TRAVEL_TIME = "Average Travel Time";
 
@@ -1895,17 +1895,17 @@ namespace STRINGS
 
 				public class CAN_ART_UGLY
 				{
-					public static LocString DESCRIPTION = "" + PRE_KEYWORD + "Crude" + PST_KEYWORD + " artwork quality";
+					public static LocString DESCRIPTION = string.Empty + PRE_KEYWORD + "Crude" + PST_KEYWORD + " artwork quality";
 				}
 
 				public class CAN_ART_OKAY
 				{
-					public static LocString DESCRIPTION = "" + PRE_KEYWORD + "Mediocre" + PST_KEYWORD + " artwork quality";
+					public static LocString DESCRIPTION = string.Empty + PRE_KEYWORD + "Mediocre" + PST_KEYWORD + " artwork quality";
 				}
 
 				public class CAN_ART_GREAT
 				{
-					public static LocString DESCRIPTION = "" + PRE_KEYWORD + "Master" + PST_KEYWORD + " artwork quality";
+					public static LocString DESCRIPTION = string.Empty + PRE_KEYWORD + "Master" + PST_KEYWORD + " artwork quality";
 				}
 
 				public class CAN_FARM_TINKER
@@ -2338,14 +2338,14 @@ namespace STRINGS
 				public static LocString MORE = "More";
 			}
 
-			public static LocString ENTER_TEXT = "";
+			public static LocString ENTER_TEXT = string.Empty;
 
 			public static LocString INVALID_LOCATION = "Invalid Location";
 		}
 
 		public class WORLDGEN
 		{
-			public static LocString NOHEADERS = "";
+			public static LocString NOHEADERS = string.Empty;
 
 			public static LocString COMPLETE = "Success! Space adventure awaits.";
 
@@ -2624,7 +2624,7 @@ namespace STRINGS
 
 			public static LocString HARVESTBUTTON = "Harvest plants {Hotkey}";
 
-			public static LocString PRIORITIZEMAINBUTTON = "";
+			public static LocString PRIORITIZEMAINBUTTON = string.Empty;
 
 			public static LocString PRIORITIZEBUTTON = "Set Building Priority {Hotkey}" + HORIZONTAL_BR_RULE + PRE_KEYWORD + "Duplicant Priorities" + PST_KEYWORD + " " + FormatAsHotkey("[L]") + " are calculated <i>before</i> the " + PRE_KEYWORD + "Building Priorities" + PST_KEYWORD + " set by this tool";
 
@@ -3246,17 +3246,17 @@ namespace STRINGS
 			{
 				public class MESSAGES
 				{
-					public static LocString HEADER = "DEVELOPMENT BUILD";
+					public static LocString HEADER = "JOIN THE DISCUSSION";
 
 					public static LocString BODY = "Stay up to date by joining our mailing list, or head on over to the forums and join the discussion.";
 
 					public static LocString FORUMBUTTON = "FORUMS";
 
-					public static LocString MAILINGLIST = "NOTIFY ME!";
+					public static LocString MAILINGLIST = "MAILING LIST";
 
 					public static LocString PATCHNOTES = "PATCH NOTES";
 
-					public static LocString ANIMATION_HEADER = "LAUNCH DATE MK. 2!";
+					public static LocString ANIMATION_HEADER = "LAUNCH TRAILER!";
 				}
 
 				public class LOADING
@@ -3286,7 +3286,7 @@ namespace STRINGS
 
 				public static LocString BIGGER_TIMES = "{1} weeks {0} days";
 
-				public static LocString SPECIFIC_DATE = "JULY";
+				public static LocString SPECIFIC_DATE = "LAUNCHED!";
 			}
 
 			public static LocString WATERMARK = "BUILD: {0}";
@@ -4059,7 +4059,7 @@ namespace STRINGS
 
 			public static LocString FOOD_AVAILABLE = "Available: {0}";
 
-			public static LocString FOOD_QUALITY = "" + PRE_KEYWORD + "Morale" + PST_KEYWORD + ": {0}";
+			public static LocString FOOD_QUALITY = string.Empty + PRE_KEYWORD + "Morale" + PST_KEYWORD + ": {0}";
 
 			public static LocString FOOD_QUALITY_VS_EXPECTATION = "\nThis food will give " + PRE_KEYWORD + "Morale" + PST_KEYWORD + " <b>{0}</b> if {1} eats it";
 
@@ -4350,7 +4350,7 @@ namespace STRINGS
 
 			public static LocString DESCRIPTION = "Thank you for playing <color=#F44A47>Oxygen Not Included</color>!";
 
-			public static LocString DESCRIPTION_2 = "";
+			public static LocString DESCRIPTION_2 = string.Empty;
 
 			public static LocString QUITBUTTON = "RESET";
 		}
@@ -4373,11 +4373,11 @@ namespace STRINGS
 		{
 			public static LocString BASIC = "Set the order in which specific pending errands should be done" + HORIZONTAL_BR_RULE + "1: Least Urgent\n9: Most Urgent";
 
-			public static LocString HIGH = "";
+			public static LocString HIGH = string.Empty;
 
 			public static LocString TOP_PRIORITY = "Top Priority" + HORIZONTAL_BR_RULE + "This priority will override all other priorities and set the colony on Yellow Alert until the errand is completed";
 
-			public static LocString HIGH_TOGGLE = "";
+			public static LocString HIGH_TOGGLE = string.Empty;
 
 			public static LocString OPEN_JOBS_SCREEN = "Click to open the Priorities Screen" + HORIZONTAL_BR_RULE + "Duplicants will first decide what to work on based on their " + PRE_KEYWORD + "Duplicant Priorities" + PST_KEYWORD + ", and then decide where to work based on " + PRE_KEYWORD + "Building Priorities" + PST_KEYWORD;
 
@@ -5837,7 +5837,7 @@ namespace STRINGS
 
 				public static LocString BUILDMENUTITLE = "Ladders";
 
-				public static LocString TOOLTIP = "";
+				public static LocString TOOLTIP = string.Empty;
 			}
 
 			public static class TILES
@@ -5846,7 +5846,7 @@ namespace STRINGS
 
 				public static LocString BUILDMENUTITLE = "Tiles";
 
-				public static LocString TOOLTIP = "";
+				public static LocString TOOLTIP = string.Empty;
 			}
 
 			public static class DOORS
@@ -5855,7 +5855,7 @@ namespace STRINGS
 
 				public static LocString BUILDMENUTITLE = "Doors";
 
-				public static LocString TOOLTIP = "";
+				public static LocString TOOLTIP = string.Empty;
 			}
 
 			public static class TRAVELTUBES
@@ -5864,7 +5864,7 @@ namespace STRINGS
 
 				public static LocString BUILDMENUTITLE = "Transit Tubes";
 
-				public static LocString TOOLTIP = "";
+				public static LocString TOOLTIP = string.Empty;
 			}
 
 			public static class STORAGE
@@ -5873,7 +5873,7 @@ namespace STRINGS
 
 				public static LocString BUILDMENUTITLE = "Storage";
 
-				public static LocString TOOLTIP = "";
+				public static LocString TOOLTIP = string.Empty;
 			}
 
 			public static class RESEARCH
@@ -5882,7 +5882,7 @@ namespace STRINGS
 
 				public static LocString BUILDMENUTITLE = "Research";
 
-				public static LocString TOOLTIP = "";
+				public static LocString TOOLTIP = string.Empty;
 			}
 
 			public static class GENERATORS
@@ -5891,7 +5891,7 @@ namespace STRINGS
 
 				public static LocString BUILDMENUTITLE = "Generators";
 
-				public static LocString TOOLTIP = "";
+				public static LocString TOOLTIP = string.Empty;
 			}
 
 			public static class WIRES
@@ -5900,7 +5900,7 @@ namespace STRINGS
 
 				public static LocString BUILDMENUTITLE = "Wires";
 
-				public static LocString TOOLTIP = "";
+				public static LocString TOOLTIP = string.Empty;
 			}
 
 			public static class POWERCONTROL
@@ -5909,7 +5909,7 @@ namespace STRINGS
 
 				public static LocString BUILDMENUTITLE = "Power Regulation";
 
-				public static LocString TOOLTIP = "";
+				public static LocString TOOLTIP = string.Empty;
 			}
 
 			public static class PLUMBINGSTRUCTURES
@@ -5927,7 +5927,7 @@ namespace STRINGS
 
 				public static LocString BUILDMENUTITLE = "Pipes";
 
-				public static LocString TOOLTIP = "";
+				public static LocString TOOLTIP = string.Empty;
 			}
 
 			public static class VENTILATIONSTRUCTURES
@@ -5954,7 +5954,7 @@ namespace STRINGS
 
 				public static LocString BUILDMENUTITLE = "Logic Wiring";
 
-				public static LocString TOOLTIP = "";
+				public static LocString TOOLTIP = string.Empty;
 			}
 
 			public static class LOGICGATES
@@ -5963,7 +5963,7 @@ namespace STRINGS
 
 				public static LocString BUILDMENUTITLE = "Logic Gates";
 
-				public static LocString TOOLTIP = "";
+				public static LocString TOOLTIP = string.Empty;
 			}
 
 			public static class LOGICSWITCHES
@@ -5972,7 +5972,7 @@ namespace STRINGS
 
 				public static LocString BUILDMENUTITLE = "Logic Switches";
 
-				public static LocString TOOLTIP = "";
+				public static LocString TOOLTIP = string.Empty;
 			}
 
 			public static class COOKING
@@ -5981,7 +5981,7 @@ namespace STRINGS
 
 				public static LocString BUILDMENUTITLE = "Cooking";
 
-				public static LocString TOOLTIP = "";
+				public static LocString TOOLTIP = string.Empty;
 			}
 
 			public static class FARMING
@@ -5990,7 +5990,7 @@ namespace STRINGS
 
 				public static LocString BUILDMENUTITLE = "Farming";
 
-				public static LocString TOOLTIP = "";
+				public static LocString TOOLTIP = string.Empty;
 			}
 
 			public static class RANCHING
@@ -5999,7 +5999,7 @@ namespace STRINGS
 
 				public static LocString BUILDMENUTITLE = "Ranching";
 
-				public static LocString TOOLTIP = "";
+				public static LocString TOOLTIP = string.Empty;
 			}
 
 			public static class HYGIENE
@@ -6062,7 +6062,7 @@ namespace STRINGS
 
 				public static LocString BUILDMENUTITLE = "Temperature Control";
 
-				public static LocString TOOLTIP = "";
+				public static LocString TOOLTIP = string.Empty;
 			}
 
 			public static class REFINING
@@ -6089,7 +6089,7 @@ namespace STRINGS
 
 				public static LocString BUILDMENUTITLE = "Pipe Sensors";
 
-				public static LocString TOOLTIP = "";
+				public static LocString TOOLTIP = string.Empty;
 			}
 
 			public static class ROCKETRY
@@ -6843,7 +6843,7 @@ namespace STRINGS
 
 				public static LocString PREFERS_ROOM = "This building gains additional effects or functionality when built inside a " + PRE_KEYWORD + "{0}" + PST_KEYWORD;
 
-				public static LocString REQUIRESROOM = "Must be built within a dedicated " + PRE_KEYWORD + "Room" + PST_KEYWORD + HORIZONTAL_BR_RULE + "" + PRE_KEYWORD + "Room" + PST_KEYWORD + " will become a " + PRE_KEYWORD + "{0}" + PST_KEYWORD + " after construction";
+				public static LocString REQUIRESROOM = "Must be built within a dedicated " + PRE_KEYWORD + "Room" + PST_KEYWORD + HORIZONTAL_BR_RULE + string.Empty + PRE_KEYWORD + "Room" + PST_KEYWORD + " will become a " + PRE_KEYWORD + "{0}" + PST_KEYWORD + " after construction";
 
 				public static LocString ALLOWS_FERTILIZER = "Allows " + PRE_KEYWORD + "Fertilizer" + PST_KEYWORD + " to be delivered to plants";
 
@@ -6857,7 +6857,7 @@ namespace STRINGS
 
 				public static LocString BATTERYCAPACITY = "Can hold {0} of " + PRE_KEYWORD + "Power" + PST_KEYWORD + " when connected to a " + PRE_KEYWORD + "Generator" + PST_KEYWORD;
 
-				public static LocString BATTERYLEAK = "Imperfect buildings materials mean " + FormatAsNegativeRate("{0}") + " battery charge will be lost as " + PRE_KEYWORD + "Heat" + PST_KEYWORD + "";
+				public static LocString BATTERYLEAK = "Imperfect buildings materials mean " + FormatAsNegativeRate("{0}") + " battery charge will be lost as " + PRE_KEYWORD + "Heat" + PST_KEYWORD + string.Empty;
 
 				public static LocString STORAGECAPACITY = "Holds up to <b>{0}</b> of material";
 
@@ -7470,7 +7470,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = FormatAsLink("Power", "POWER") + " Wasted:";
 
-				public static LocString POSITIVE_TOOLTIP = "";
+				public static LocString POSITIVE_TOOLTIP = string.Empty;
 
 				public static LocString NEGATIVE_TOOLTIP = "My colony lost {0} of " + FormatAsLink("Power", "POWER") + " today due to overproduction and battery runoff";
 			}
@@ -8154,11 +8154,11 @@ namespace STRINGS
 
 		public static string FormatAsAutomationState(string text, AutomationState state)
 		{
-			if (state != 0)
+			if (state == AutomationState.Active)
 			{
-				return PRE_AUTOMATION_STANDBY + text + PST_AUTOMATION;
+				return PRE_AUTOMATION_ACTIVE + text + PST_AUTOMATION;
 			}
-			return PRE_AUTOMATION_ACTIVE + text + PST_AUTOMATION;
+			return PRE_AUTOMATION_STANDBY + text + PST_AUTOMATION;
 		}
 
 		public static string ExtractLinkID(string text)
@@ -8203,13 +8203,13 @@ namespace STRINGS
 						Debug.LogWarningFormat("String has no open link tag: {0}");
 					}
 				}
+				return text2;
 			}
 			catch
 			{
 				Debug.Log("STRIP LINK FORMATTING FAILED ON: " + text);
-				text2 = text;
+				return text;
 			}
-			return text2;
 		}
 	}
 }

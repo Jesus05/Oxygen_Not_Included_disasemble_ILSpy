@@ -63,7 +63,7 @@ public class SetLocker : StateMachineComponent<SetLocker.StatesInstance>
 	public Vector2I dropOffset = Vector2I.zero;
 
 	[Serialize]
-	private string contents = "";
+	private string contents = string.Empty;
 
 	private static readonly EventSystem.IntraObjectHandler<SetLocker> OnRefreshUserMenuDelegate = new EventSystem.IntraObjectHandler<SetLocker>(delegate(SetLocker component, object data)
 	{
@@ -71,7 +71,7 @@ public class SetLocker : StateMachineComponent<SetLocker.StatesInstance>
 	});
 
 	[Serialize]
-	private bool used = false;
+	private bool used;
 
 	private Chore chore;
 

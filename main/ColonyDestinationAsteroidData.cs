@@ -12,13 +12,13 @@ public class ColonyDestinationAsteroidData
 
 	private static List<Tuple<string, string, string>> survivalOptions = new List<Tuple<string, string, string>>
 	{
-		new Tuple<string, string, string>(WORLDS.SURVIVAL_CHANCE.MOSTHOSPITABLE, "", "D2F40C"),
-		new Tuple<string, string, string>(WORLDS.SURVIVAL_CHANCE.VERYHIGH, "", "7DE419"),
-		new Tuple<string, string, string>(WORLDS.SURVIVAL_CHANCE.HIGH, "", "36D246"),
-		new Tuple<string, string, string>(WORLDS.SURVIVAL_CHANCE.NEUTRAL, "", "63C2B7"),
-		new Tuple<string, string, string>(WORLDS.SURVIVAL_CHANCE.LOW, "", "6A8EB1"),
-		new Tuple<string, string, string>(WORLDS.SURVIVAL_CHANCE.VERYLOW, "", "937890"),
-		new Tuple<string, string, string>(WORLDS.SURVIVAL_CHANCE.LEASTHOSPITABLE, "", "9636DF")
+		new Tuple<string, string, string>(WORLDS.SURVIVAL_CHANCE.MOSTHOSPITABLE, string.Empty, "D2F40C"),
+		new Tuple<string, string, string>(WORLDS.SURVIVAL_CHANCE.VERYHIGH, string.Empty, "7DE419"),
+		new Tuple<string, string, string>(WORLDS.SURVIVAL_CHANCE.HIGH, string.Empty, "36D246"),
+		new Tuple<string, string, string>(WORLDS.SURVIVAL_CHANCE.NEUTRAL, string.Empty, "63C2B7"),
+		new Tuple<string, string, string>(WORLDS.SURVIVAL_CHANCE.LOW, string.Empty, "6A8EB1"),
+		new Tuple<string, string, string>(WORLDS.SURVIVAL_CHANCE.VERYLOW, string.Empty, "937890"),
+		new Tuple<string, string, string>(WORLDS.SURVIVAL_CHANCE.LEASTHOSPITABLE, string.Empty, "9636DF")
 	};
 
 	public float TargetScale
@@ -101,19 +101,19 @@ public class ColonyDestinationAsteroidData
 	private List<AsteroidDescriptor> GenerateTraitDescriptors()
 	{
 		List<AsteroidDescriptor> list = new List<AsteroidDescriptor>();
-		if (world.disableWorldTraits)
-		{
-			list.Add(new AsteroidDescriptor(WORLD_TRAITS.NO_TRAITS.NAME, WORLD_TRAITS.NO_TRAITS.DESCRIPTION, null));
-		}
-		else
+		if (!world.disableWorldTraits)
 		{
 			List<string> randomTraits = SettingsCache.GetRandomTraits(seed);
-			foreach (string item in randomTraits)
 			{
-				WorldTrait cachedTrait = SettingsCache.GetCachedTrait(item);
-				list.Add(new AsteroidDescriptor(string.Format("<color=#{1}>{0}</color>", Strings.Get(cachedTrait.name), cachedTrait.colorHex), Strings.Get(cachedTrait.description), null));
+				foreach (string item in randomTraits)
+				{
+					WorldTrait cachedTrait = SettingsCache.GetCachedTrait(item);
+					list.Add(new AsteroidDescriptor(string.Format("<color=#{1}>{0}</color>", Strings.Get(cachedTrait.name), cachedTrait.colorHex), Strings.Get(cachedTrait.description), null));
+				}
+				return list;
 			}
 		}
+		list.Add(new AsteroidDescriptor(WORLD_TRAITS.NO_TRAITS.NAME, WORLD_TRAITS.NO_TRAITS.DESCRIPTION, null));
 		return list;
 	}
 }

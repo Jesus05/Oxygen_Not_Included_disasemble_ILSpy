@@ -23,7 +23,7 @@ public class FilterSideScreen : SideScreenContent
 
 	public Dictionary<Element, FilterSideScreenRow> filterRowMap = new Dictionary<Element, FilterSideScreenRow>();
 
-	public bool isLogicFilter = false;
+	public bool isLogicFilter;
 
 	protected override void OnPrefabInit()
 	{
@@ -57,15 +57,15 @@ public class FilterSideScreen : SideScreenContent
 		List<Element> list = new List<Element>(ElementLoader.elements);
 		list.Sort(delegate(Element a, Element b)
 		{
-			if (a.id != SimHashes.Void)
+			if (a.id == SimHashes.Void)
 			{
-				if (b.id != SimHashes.Void)
-				{
-					return a.name.CompareTo(b.name);
-				}
+				return -1;
+			}
+			if (b.id == SimHashes.Void)
+			{
 				return 1;
 			}
-			return -1;
+			return a.name.CompareTo(b.name);
 		});
 		foreach (Element item in list)
 		{

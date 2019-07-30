@@ -5,11 +5,11 @@ using UnityEngine;
 
 public class Timelapser : KMonoBehaviour
 {
-	private bool screenshotActive = false;
+	private bool screenshotActive;
 
-	private bool screenshotPending = false;
+	private bool screenshotPending;
 
-	private bool screenshotToday = false;
+	private bool screenshotToday;
 
 	public Camera captureCamera;
 

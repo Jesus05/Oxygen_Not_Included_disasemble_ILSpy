@@ -51,7 +51,7 @@ public class MainMenu : KScreen
 	[SerializeField]
 	private GameObject buttonParent;
 
-	private static bool HasAutoresumedOnce = false;
+	private static bool HasAutoresumedOnce;
 
 	private bool refreshResumeButton = true;
 
@@ -76,7 +76,7 @@ public class MainMenu : KScreen
 		MakeButton(new ButtonInfo(UI.FRONTEND.MAINMENU.LOADGAME, LoadGame, 14));
 		MakeButton(new ButtonInfo(UI.FRONTEND.MAINMENU.RETIREDCOLONIES, delegate
 		{
-			ActivateRetiredColoniesScreen(base.transform.gameObject, "", null);
+			ActivateRetiredColoniesScreen(base.transform.gameObject, string.Empty, null);
 		}, 14));
 		if (DistributionPlatform.Initialized)
 		{
@@ -265,7 +265,7 @@ public class MainMenu : KScreen
 					header = value.header;
 					gameInfo = value.headerData;
 				}
-				if (header.buildVersion > 355817 || gameInfo.saveMajorVersion < 7)
+				if (header.buildVersion > 356355 || gameInfo.saveMajorVersion < 7)
 				{
 					flag = false;
 				}
@@ -353,7 +353,7 @@ public class MainMenu : KScreen
 
 	private void CheckDoubleBoundKeys()
 	{
-		string text = "";
+		string text = string.Empty;
 		HashSet<BindingEntry> hashSet = new HashSet<BindingEntry>();
 		for (int i = 0; i < GameInputMapping.KeyBindings.Length; i++)
 		{
@@ -391,7 +391,7 @@ public class MainMenu : KScreen
 				hashSet.Add(GameInputMapping.KeyBindings[i]);
 			}
 		}
-		if (text != "")
+		if (text != string.Empty)
 		{
 			ConfirmDialogScreen confirmDialogScreen = Util.KInstantiateUI<ConfirmDialogScreen>(ScreenPrefabs.Instance.ConfirmDialogScreen.gameObject, base.gameObject, true);
 			ConfirmDialogScreen confirmDialogScreen2 = confirmDialogScreen;

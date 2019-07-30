@@ -13,12 +13,12 @@ public class HarvestDesignatable : KMonoBehaviour
 	protected bool isMarkedForHarvest;
 
 	[Serialize]
-	private bool isInPlanterBox = false;
+	private bool isInPlanterBox;
 
 	public bool showUserMenuButtons = true;
 
 	[Serialize]
-	protected bool harvestWhenReady = false;
+	protected bool harvestWhenReady;
 
 	public RectTransform HarvestWhenReadyOverlayIcon;
 
@@ -163,11 +163,11 @@ public class HarvestDesignatable : KMonoBehaviour
 	public bool CanBeHarvested()
 	{
 		Harvestable component = GetComponent<Harvestable>();
-		if (!((UnityEngine.Object)component != (UnityEngine.Object)null))
+		if ((UnityEngine.Object)component != (UnityEngine.Object)null)
 		{
-			return true;
+			return component.CanBeHarvested;
 		}
-		return component.CanBeHarvested;
+		return true;
 	}
 
 	public void SetInPlanterBox(bool state)

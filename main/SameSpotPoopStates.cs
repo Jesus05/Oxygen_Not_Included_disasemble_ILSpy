@@ -51,11 +51,7 @@ public class SameSpotPoopStates : GameStateMachine<SameSpotPoopStates, SameSpotP
 			targetCell.Set(smi.GetSMI<GasAndLiquidConsumerMonitor.Instance>().targetCell, smi);
 		});
 		goingtopoop.MoveTo((Instance smi) => smi.GetLastPoopCell(), pooping, updatepoopcell, false);
-		State state = pooping.PlayAnim("poop");
-		string name = CREATURES.STATUSITEMS.EXPELLING_SOLID.NAME;
-		string tooltip = CREATURES.STATUSITEMS.EXPELLING_SOLID.TOOLTIP;
-		StatusItemCategory main = Db.Get().StatusItemCategories.Main;
-		state.ToggleStatusItem(name, tooltip, "", StatusItem.IconType.Info, NotificationType.Neutral, false, default(HashedString), 129022, null, null, main).OnAnimQueueComplete(behaviourcomplete);
+		pooping.PlayAnim("poop").ToggleStatusItem(CREATURES.STATUSITEMS.EXPELLING_SOLID.NAME, CREATURES.STATUSITEMS.EXPELLING_SOLID.TOOLTIP, category: Db.Get().StatusItemCategories.Main, icon: string.Empty, icon_type: StatusItem.IconType.Info, notification_type: NotificationType.Neutral, allow_multiples: false, render_overlay: default(HashedString), status_overlays: 129022, resolve_string_callback: null, resolve_tooltip_callback: null).OnAnimQueueComplete(behaviourcomplete);
 		updatepoopcell.Enter(delegate(Instance smi)
 		{
 			smi.SetLastPoopCell();

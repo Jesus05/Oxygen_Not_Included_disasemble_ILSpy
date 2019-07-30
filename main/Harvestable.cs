@@ -7,7 +7,7 @@ public class Harvestable : Workable
 	public HarvestDesignatable harvestDesignatable;
 
 	[Serialize]
-	protected bool canBeHarvested = false;
+	protected bool canBeHarvested;
 
 	protected Chore chore;
 
@@ -136,11 +136,11 @@ public class Harvestable : Workable
 
 	public bool HasChore()
 	{
-		if (chore != null)
+		if (chore == null)
 		{
-			return true;
+			return false;
 		}
-		return false;
+		return true;
 	}
 
 	public virtual void ForceCancelHarvest(object data = null)

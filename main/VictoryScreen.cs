@@ -40,7 +40,7 @@ public class VictoryScreen : KModalScreen
 
 	public void SetAchievements(string[] achievementIDs)
 	{
-		string text = "";
+		string text = string.Empty;
 		for (int i = 0; i < achievementIDs.Length; i++)
 		{
 			if (i > 0)

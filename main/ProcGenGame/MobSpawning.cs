@@ -25,59 +25,59 @@ namespace ProcGenGame
 					break;
 				}
 			}
-			if (featureSettings != null)
+			if (featureSettings == null)
 			{
-				if (featureSettings.internalMobs != null && featureSettings.internalMobs.Count != 0)
-				{
-					List<int> availableSpawnCellsFeature = tc.GetAvailableSpawnCellsFeature();
-					tc.LogInfo("PlaceFeatureAmbientMobs", "possibleSpawnPoints", (float)availableSpawnCellsFeature.Count);
-					for (int num = availableSpawnCellsFeature.Count - 1; num > 0; num--)
-					{
-						int num2 = availableSpawnCellsFeature[num];
-						if (ElementLoader.elements[cells[num2].elementIdx].id == SimHashes.Katairite || ElementLoader.elements[cells[num2].elementIdx].id == SimHashes.Unobtanium || avoidCells.Contains(num2))
-						{
-							availableSpawnCellsFeature.RemoveAt(num);
-						}
-					}
-					tc.LogInfo("mob spawns", "Id:" + node.node.Id + " possible cells", (float)availableSpawnCellsFeature.Count);
-					if (availableSpawnCellsFeature.Count != 0)
-					{
-						foreach (MobReference internalMob in featureSettings.internalMobs)
-						{
-							Mob mob = settings.GetMob(internalMob.type);
-							if (mob == null)
-							{
-								Debug.LogError("Missing mob description for internal mob [" + internalMob.type + "]");
-							}
-							else
-							{
-								List<int> mobPossibleSpawnPoints = GetMobPossibleSpawnPoints(mob, availableSpawnCellsFeature, cells, alreadyOccupiedCells, rnd);
-								if (mobPossibleSpawnPoints.Count == 0)
-								{
-									if (!isDebug)
-									{
-										continue;
-									}
-								}
-								else
-								{
-									tc.LogInfo("\t\tpossible", internalMob.type + " mps: " + mobPossibleSpawnPoints.Count + " ps:", (float)availableSpawnCellsFeature.Count);
-									int num3 = Mathf.RoundToInt(internalMob.count.GetRandomValueWithinRange(rnd));
-									tc.LogInfo("\t\tcount", internalMob.type, (float)num3);
-									Tag mobPrefab = (mob.prefabName != null) ? new Tag(mob.prefabName) : new Tag(internalMob.type);
-									SpawnCountMobs(mob, mobPrefab, num3, mobPossibleSpawnPoints, tc, ref spawnedMobs, ref alreadyOccupiedCells);
-								}
-							}
-						}
-						return spawnedMobs;
-					}
-					if (isDebug)
-					{
-						Debug.LogWarning("No where to put mobs possibleSpawnPoints [" + tc.node.node.Id + "]");
-					}
-					return null;
-				}
 				return spawnedMobs;
+			}
+			if (featureSettings.internalMobs == null || featureSettings.internalMobs.Count == 0)
+			{
+				return spawnedMobs;
+			}
+			List<int> availableSpawnCellsFeature = tc.GetAvailableSpawnCellsFeature();
+			tc.LogInfo("PlaceFeatureAmbientMobs", "possibleSpawnPoints", (float)availableSpawnCellsFeature.Count);
+			for (int num = availableSpawnCellsFeature.Count - 1; num > 0; num--)
+			{
+				int num2 = availableSpawnCellsFeature[num];
+				if (ElementLoader.elements[cells[num2].elementIdx].id == SimHashes.Katairite || ElementLoader.elements[cells[num2].elementIdx].id == SimHashes.Unobtanium || avoidCells.Contains(num2))
+				{
+					availableSpawnCellsFeature.RemoveAt(num);
+				}
+			}
+			tc.LogInfo("mob spawns", "Id:" + node.node.Id + " possible cells", (float)availableSpawnCellsFeature.Count);
+			if (availableSpawnCellsFeature.Count == 0)
+			{
+				if (isDebug)
+				{
+					Debug.LogWarning("No where to put mobs possibleSpawnPoints [" + tc.node.node.Id + "]");
+				}
+				return null;
+			}
+			foreach (MobReference internalMob in featureSettings.internalMobs)
+			{
+				Mob mob = settings.GetMob(internalMob.type);
+				if (mob == null)
+				{
+					Debug.LogError("Missing mob description for internal mob [" + internalMob.type + "]");
+				}
+				else
+				{
+					List<int> mobPossibleSpawnPoints = GetMobPossibleSpawnPoints(mob, availableSpawnCellsFeature, cells, alreadyOccupiedCells, rnd);
+					if (mobPossibleSpawnPoints.Count == 0)
+					{
+						if (!isDebug)
+						{
+							continue;
+						}
+					}
+					else
+					{
+						tc.LogInfo("\t\tpossible", internalMob.type + " mps: " + mobPossibleSpawnPoints.Count + " ps:", (float)availableSpawnCellsFeature.Count);
+						int num3 = Mathf.RoundToInt(internalMob.count.GetRandomValueWithinRange(rnd));
+						tc.LogInfo("\t\tcount", internalMob.type, (float)num3);
+						Tag mobPrefab = (mob.prefabName != null) ? new Tag(mob.prefabName) : new Tag(internalMob.type);
+						SpawnCountMobs(mob, mobPrefab, num3, mobPossibleSpawnPoints, tc, ref spawnedMobs, ref alreadyOccupiedCells);
+					}
+				}
 			}
 			return spawnedMobs;
 		}
@@ -88,81 +88,81 @@ namespace ProcGenGame
 			Node node = tc.node;
 			HashSet<int> alreadyOccupiedCells = new HashSet<int>();
 			List<Tag> list = new List<Tag>();
-			if (node.biomeSpecificTags != null)
+			if (node.biomeSpecificTags == null)
 			{
-				foreach (Tag biomeSpecificTag in node.biomeSpecificTags)
+				tc.LogInfo("PlaceBiomeAmbientMobs", "No tags", (float)node.node.Id);
+				return null;
+			}
+			foreach (Tag biomeSpecificTag in node.biomeSpecificTags)
+			{
+				if (settings.HasMob(biomeSpecificTag.Name) && settings.GetMob(biomeSpecificTag.Name) != null)
 				{
-					if (settings.HasMob(biomeSpecificTag.Name) && settings.GetMob(biomeSpecificTag.Name) != null)
-					{
-						list.Add(biomeSpecificTag);
-					}
+					list.Add(biomeSpecificTag);
 				}
-				if (list.Count > 0)
-				{
-					List<int> list2 = (!node.tags.Contains(WorldGenTags.PreventAmbientMobsInFeature)) ? tc.GetAvailableSpawnCellsAll() : tc.GetAvailableSpawnCellsBiome();
-					tc.LogInfo("PlaceBiomAmbientMobs", "possibleSpawnPoints", (float)list2.Count);
-					for (int num = list2.Count - 1; num > 0; num--)
-					{
-						int num2 = list2[num];
-						if (ElementLoader.elements[cells[num2].elementIdx].id == SimHashes.Katairite || ElementLoader.elements[cells[num2].elementIdx].id == SimHashes.Unobtanium || avoidCells.Contains(num2))
-						{
-							list2.RemoveAt(num);
-						}
-					}
-					tc.LogInfo("mob spawns", "Id:" + node.node.Id + " possible cells", (float)list2.Count);
-					if (list2.Count != 0)
-					{
-						list.ShuffleSeeded(rnd.RandomSource());
-						for (int i = 0; i < list.Count; i++)
-						{
-							Mob mob = settings.GetMob(list[i].Name);
-							if (mob == null)
-							{
-								Debug.LogError("Missing sample description for tag [" + list[i].Name + "]");
-							}
-							else
-							{
-								List<int> mobPossibleSpawnPoints = GetMobPossibleSpawnPoints(mob, list2, cells, alreadyOccupiedCells, rnd);
-								if (mobPossibleSpawnPoints.Count == 0)
-								{
-									if (!isDebug)
-									{
-										continue;
-									}
-								}
-								else
-								{
-									tc.LogInfo("\t\tpossible", list[i].ToString() + " mps: " + mobPossibleSpawnPoints.Count + " ps:", (float)list2.Count);
-									float num3 = mob.density.GetRandomValueWithinRange(rnd) * MobSettings.AmbientMobDensity;
-									if (num3 > 1f)
-									{
-										if (isDebug)
-										{
-											Debug.LogWarning("Got a mob density greater than 1.0 for " + list[i].Name + ". Probably using density as spacing!");
-										}
-										num3 = 1f;
-									}
-									tc.LogInfo("\t\tdensity:", "", num3);
-									int num4 = Mathf.RoundToInt((float)mobPossibleSpawnPoints.Count * num3);
-									tc.LogInfo("\t\tcount", list[i].ToString(), (float)num4);
-									Tag mobPrefab = (mob.prefabName != null) ? new Tag(mob.prefabName) : list[i];
-									SpawnCountMobs(mob, mobPrefab, num4, mobPossibleSpawnPoints, tc, ref spawnedMobs, ref alreadyOccupiedCells);
-								}
-							}
-						}
-						return spawnedMobs;
-					}
-					if (isDebug)
-					{
-						Debug.LogWarning("No where to put mobs possibleSpawnPoints [" + tc.node.node.Id + "]");
-					}
-					return null;
-				}
+			}
+			if (list.Count <= 0)
+			{
 				tc.LogInfo("PlaceBiomeAmbientMobs", "No biome MOBS", (float)node.node.Id);
 				return null;
 			}
-			tc.LogInfo("PlaceBiomeAmbientMobs", "No tags", (float)node.node.Id);
-			return null;
+			List<int> list2 = (!node.tags.Contains(WorldGenTags.PreventAmbientMobsInFeature)) ? tc.GetAvailableSpawnCellsAll() : tc.GetAvailableSpawnCellsBiome();
+			tc.LogInfo("PlaceBiomAmbientMobs", "possibleSpawnPoints", (float)list2.Count);
+			for (int num = list2.Count - 1; num > 0; num--)
+			{
+				int num2 = list2[num];
+				if (ElementLoader.elements[cells[num2].elementIdx].id == SimHashes.Katairite || ElementLoader.elements[cells[num2].elementIdx].id == SimHashes.Unobtanium || avoidCells.Contains(num2))
+				{
+					list2.RemoveAt(num);
+				}
+			}
+			tc.LogInfo("mob spawns", "Id:" + node.node.Id + " possible cells", (float)list2.Count);
+			if (list2.Count == 0)
+			{
+				if (isDebug)
+				{
+					Debug.LogWarning("No where to put mobs possibleSpawnPoints [" + tc.node.node.Id + "]");
+				}
+				return null;
+			}
+			list.ShuffleSeeded(rnd.RandomSource());
+			for (int i = 0; i < list.Count; i++)
+			{
+				Mob mob = settings.GetMob(list[i].Name);
+				if (mob == null)
+				{
+					Debug.LogError("Missing sample description for tag [" + list[i].Name + "]");
+				}
+				else
+				{
+					List<int> mobPossibleSpawnPoints = GetMobPossibleSpawnPoints(mob, list2, cells, alreadyOccupiedCells, rnd);
+					if (mobPossibleSpawnPoints.Count == 0)
+					{
+						if (!isDebug)
+						{
+							continue;
+						}
+					}
+					else
+					{
+						tc.LogInfo("\t\tpossible", list[i].ToString() + " mps: " + mobPossibleSpawnPoints.Count + " ps:", (float)list2.Count);
+						float num3 = mob.density.GetRandomValueWithinRange(rnd) * MobSettings.AmbientMobDensity;
+						if (num3 > 1f)
+						{
+							if (isDebug)
+							{
+								Debug.LogWarning("Got a mob density greater than 1.0 for " + list[i].Name + ". Probably using density as spacing!");
+							}
+							num3 = 1f;
+						}
+						tc.LogInfo("\t\tdensity:", string.Empty, num3);
+						int num4 = Mathf.RoundToInt((float)mobPossibleSpawnPoints.Count * num3);
+						tc.LogInfo("\t\tcount", list[i].ToString(), (float)num4);
+						Tag mobPrefab = (mob.prefabName != null) ? new Tag(mob.prefabName) : list[i];
+						SpawnCountMobs(mob, mobPrefab, num4, mobPossibleSpawnPoints, tc, ref spawnedMobs, ref alreadyOccupiedCells);
+					}
+				}
+			}
+			return spawnedMobs;
 		}
 
 		private static List<int> GetMobPossibleSpawnPoints(Mob mob, List<int> possibleSpawnPoints, Sim.Cell[] cells, HashSet<int> alreadyOccupiedCells, SeededRandom rnd)
@@ -245,12 +245,12 @@ namespace ProcGenGame
 
 		public static bool isNaturalCavity(int cell)
 		{
-			if (NaturalCavities != null)
+			if (NaturalCavities == null)
 			{
-				if (!allNaturalCavityCells.Contains(cell))
-				{
-					return false;
-				}
+				return false;
+			}
+			if (allNaturalCavityCells.Contains(cell))
+			{
 				return true;
 			}
 			return false;

@@ -99,13 +99,13 @@ public class EntityThreatMonitor : GameStateMachine<EntityThreatMonitor, EntityT
 
 		public bool CheckForThreats()
 		{
-			if (!((UnityEngine.Object)entityToProtect == (UnityEngine.Object)null))
+			if ((UnityEngine.Object)entityToProtect == (UnityEngine.Object)null)
 			{
-				GameObject x = FindThreat();
-				SetMainThreat(x);
-				return (UnityEngine.Object)x != (UnityEngine.Object)null;
+				return false;
 			}
-			return false;
+			GameObject x = FindThreat();
+			SetMainThreat(x);
+			return (UnityEngine.Object)x != (UnityEngine.Object)null;
 		}
 
 		public GameObject FindThreat()

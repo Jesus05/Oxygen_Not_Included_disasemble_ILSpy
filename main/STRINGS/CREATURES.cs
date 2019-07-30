@@ -1670,7 +1670,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Sterile Atmosphere";
 
-				public static LocString TOOLTIP = "Microbe destroying conditions have decreased this food's " + UI.PRE_KEYWORD + "Decay Rate" + UI.PST_KEYWORD + "";
+				public static LocString TOOLTIP = "Microbe destroying conditions have decreased this food's " + UI.PRE_KEYWORD + "Decay Rate" + UI.PST_KEYWORD + string.Empty;
 			}
 
 			public class EXCHANGINGELEMENTCONSUME

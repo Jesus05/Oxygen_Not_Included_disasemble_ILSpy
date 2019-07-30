@@ -48,7 +48,7 @@ namespace STRINGS
 		{
 			public static LocString NAME = "Frozen Core";
 
-			public static LocString DESCRIPTION = "The core of this world is a block of " + ELEMENTS.ICE.NAME + "";
+			public static LocString DESCRIPTION = "The core of this world is a block of " + ELEMENTS.ICE.NAME + string.Empty;
 		}
 
 		public static class GEOACTIVE

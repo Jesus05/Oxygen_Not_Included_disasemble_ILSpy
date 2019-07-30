@@ -223,12 +223,12 @@ public class OxygenBreather : KMonoBehaviour, ISim200ms
 			offsets = breathableCells;
 		}
 		int mouthCellAtCell = GetMouthCellAtCell(cell, offsets);
-		if (Grid.IsValidCell(mouthCellAtCell))
+		if (!Grid.IsValidCell(mouthCellAtCell))
 		{
-			Element element = Grid.Element[mouthCellAtCell];
-			return (!element.IsGas || !element.HasTag(GameTags.Breathable) || !(Grid.Mass[mouthCellAtCell] > noOxygenThreshold)) ? SimHashes.Vacuum : element.id;
+			return SimHashes.Vacuum;
 		}
-		return SimHashes.Vacuum;
+		Element element = Grid.Element[mouthCellAtCell];
+		return (!element.IsGas || !element.HasTag(GameTags.Breathable) || !(Grid.Mass[mouthCellAtCell] > noOxygenThreshold)) ? SimHashes.Vacuum : element.id;
 	}
 
 	private float GetOxygenPressure(int cell)

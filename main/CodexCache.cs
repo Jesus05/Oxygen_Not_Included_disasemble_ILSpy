@@ -8,9 +8,9 @@ using UnityEngine;
 
 public static class CodexCache
 {
-	private static string baseEntryPath = null;
+	private static string baseEntryPath;
 
-	public static Dictionary<string, CodexEntry> entries = null;
+	public static Dictionary<string, CodexEntry> entries;
 
 	private static Dictionary<string, List<string>> unlockedEntryLookup;
 
@@ -25,7 +25,7 @@ public static class CodexCache
 	public static string FormatLinkID(string linkID)
 	{
 		linkID = linkID.ToUpper();
-		linkID = linkID.Replace("_", "");
+		linkID = linkID.Replace("_", string.Empty);
 		return linkID;
 	}
 
@@ -51,13 +51,13 @@ public static class CodexCache
 		string text = FormatLinkID("tips");
 		dictionary.Add(text, CodexEntryGenerator.GenerateCategoryEntry(text, UI.CODEX.CATEGORYNAMES.TIPS, CodexEntryGenerator.GenerateTutorialNotificationEntries(), Assets.GetSprite("unknown"), false, false, UI.CODEX.TIPS));
 		text = FormatLinkID("creatures");
-		dictionary.Add(text, CodexEntryGenerator.GenerateCategoryEntry(text, UI.CODEX.CATEGORYNAMES.CREATURES, CodexEntryGenerator.GenerateCreatureEntries(), Def.GetUISpriteFromMultiObjectAnim(Assets.GetPrefab("Hatch").GetComponent<KBatchedAnimController>().AnimFiles[0], "ui", false, ""), true, true, null));
+		dictionary.Add(text, CodexEntryGenerator.GenerateCategoryEntry(text, UI.CODEX.CATEGORYNAMES.CREATURES, CodexEntryGenerator.GenerateCreatureEntries(), Def.GetUISpriteFromMultiObjectAnim(Assets.GetPrefab("Hatch").GetComponent<KBatchedAnimController>().AnimFiles[0], "ui", false, string.Empty), true, true, null));
 		text = FormatLinkID("plants");
-		dictionary.Add(text, CodexEntryGenerator.GenerateCategoryEntry(text, UI.CODEX.CATEGORYNAMES.PLANTS, CodexEntryGenerator.GeneratePlantEntries(), Def.GetUISpriteFromMultiObjectAnim(Assets.GetPrefab("PrickleFlower").GetComponent<KBatchedAnimController>().AnimFiles[0], "ui", false, ""), true, true, null));
+		dictionary.Add(text, CodexEntryGenerator.GenerateCategoryEntry(text, UI.CODEX.CATEGORYNAMES.PLANTS, CodexEntryGenerator.GeneratePlantEntries(), Def.GetUISpriteFromMultiObjectAnim(Assets.GetPrefab("PrickleFlower").GetComponent<KBatchedAnimController>().AnimFiles[0], "ui", false, string.Empty), true, true, null));
 		text = FormatLinkID("food");
-		dictionary.Add(text, CodexEntryGenerator.GenerateCategoryEntry(text, UI.CODEX.CATEGORYNAMES.FOOD, CodexEntryGenerator.GenerateFoodEntries(), Def.GetUISpriteFromMultiObjectAnim(Assets.GetPrefab("CookedMeat").GetComponent<KBatchedAnimController>().AnimFiles[0], "ui", false, ""), true, true, null));
+		dictionary.Add(text, CodexEntryGenerator.GenerateCategoryEntry(text, UI.CODEX.CATEGORYNAMES.FOOD, CodexEntryGenerator.GenerateFoodEntries(), Def.GetUISpriteFromMultiObjectAnim(Assets.GetPrefab("CookedMeat").GetComponent<KBatchedAnimController>().AnimFiles[0], "ui", false, string.Empty), true, true, null));
 		text = FormatLinkID("buildings");
-		dictionary.Add(text, CodexEntryGenerator.GenerateCategoryEntry(text, UI.CODEX.CATEGORYNAMES.BUILDINGS, CodexEntryGenerator.GenerateBuildingEntries(), Def.GetUISpriteFromMultiObjectAnim(Assets.GetPrefab("Generator").GetComponent<KBatchedAnimController>().AnimFiles[0], "ui", false, ""), true, true, null));
+		dictionary.Add(text, CodexEntryGenerator.GenerateCategoryEntry(text, UI.CODEX.CATEGORYNAMES.BUILDINGS, CodexEntryGenerator.GenerateBuildingEntries(), Def.GetUISpriteFromMultiObjectAnim(Assets.GetPrefab("Generator").GetComponent<KBatchedAnimController>().AnimFiles[0], "ui", false, string.Empty), true, true, null));
 		text = FormatLinkID("tech");
 		dictionary.Add(text, CodexEntryGenerator.GenerateCategoryEntry(text, UI.CODEX.CATEGORYNAMES.TECH, CodexEntryGenerator.GenerateTechEntries(), Assets.GetSprite("hud_research"), true, true, null));
 		text = FormatLinkID("roles");
@@ -123,30 +123,30 @@ public static class CodexCache
 		}
 		CodexEntryGenerator.PopulateCategoryEntries(list2, delegate(CodexEntry a, CodexEntry b)
 		{
-			if (!(a.name == (string)UI.CODEX.CATEGORYNAMES.TIPS))
+			if (a.name == (string)UI.CODEX.CATEGORYNAMES.TIPS)
 			{
-				if (!(b.name == (string)UI.CODEX.CATEGORYNAMES.TIPS))
-				{
-					return UI.StripLinkFormatting(a.name).CompareTo(UI.StripLinkFormatting(b.name));
-				}
+				return -1;
+			}
+			if (b.name == (string)UI.CODEX.CATEGORYNAMES.TIPS)
+			{
 				return 1;
 			}
-			return -1;
+			return UI.StripLinkFormatting(a.name).CompareTo(UI.StripLinkFormatting(b.name));
 		});
 	}
 
 	public static CodexEntry FindEntry(string id)
 	{
-		if (entries != null)
+		if (entries == null)
 		{
-			if (!entries.ContainsKey(id))
-			{
-				Debug.LogWarning("Could not find codex entry with id: " + id);
-				return null;
-			}
+			Debug.LogWarning("Can't search Codex cache while it's stil null");
+			return null;
+		}
+		if (entries.ContainsKey(id))
+		{
 			return entries[id];
 		}
-		Debug.LogWarning("Can't search Codex cache while it's stil null");
+		Debug.LogWarning("Could not find codex entry with id: " + id);
 		return null;
 	}
 
@@ -183,7 +183,7 @@ public static class CodexCache
 	private static void CollectYAMLEntries(List<CategoryEntry> categories)
 	{
 		baseEntryPath = Application.streamingAssetsPath + "/codex";
-		List<CodexEntry> list = CollectEntries("");
+		List<CodexEntry> list = CollectEntries(string.Empty);
 		foreach (CodexEntry item in list)
 		{
 			if (item != null && item.id != null && item.contentContainers != null)
@@ -222,7 +222,7 @@ public static class CodexCache
 	private static void CollectYAMLSubEntries(List<CategoryEntry> categories)
 	{
 		baseEntryPath = Application.streamingAssetsPath + "/codex";
-		List<SubEntry> list = CollectSubEntries("");
+		List<SubEntry> list = CollectSubEntries(string.Empty);
 		foreach (SubEntry item in list)
 		{
 			if (item.parentEntryID != null && item.id != null)
@@ -317,7 +317,7 @@ public static class CodexCache
 		{
 			try
 			{
-				entry.icon = Def.GetUISpriteFromMultiObjectAnim(Assets.GetPrefab(entry.iconPrefabID).GetComponent<KBatchedAnimController>().AnimFiles[0], "ui", false, "");
+				entry.icon = Def.GetUISpriteFromMultiObjectAnim(Assets.GetPrefab(entry.iconPrefabID).GetComponent<KBatchedAnimController>().AnimFiles[0], "ui", false, string.Empty);
 			}
 			catch
 			{
@@ -411,7 +411,7 @@ public static class CodexCache
 	public static List<CodexEntry> CollectEntries(string folder)
 	{
 		List<CodexEntry> list = new List<CodexEntry>();
-		string path = (!(folder == "")) ? Path.Combine(baseEntryPath, folder) : baseEntryPath;
+		string path = (!(folder == string.Empty)) ? Path.Combine(baseEntryPath, folder) : baseEntryPath;
 		string[] array = new string[0];
 		try
 		{
@@ -446,7 +446,7 @@ public static class CodexCache
 	public static List<SubEntry> CollectSubEntries(string folder)
 	{
 		List<SubEntry> list = new List<SubEntry>();
-		string path = (!(folder == "")) ? Path.Combine(baseEntryPath, folder) : baseEntryPath;
+		string path = (!(folder == string.Empty)) ? Path.Combine(baseEntryPath, folder) : baseEntryPath;
 		string[] array = new string[0];
 		try
 		{

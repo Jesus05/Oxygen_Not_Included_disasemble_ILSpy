@@ -34,12 +34,12 @@ public struct SoundCuller
 
 	public bool IsAudible(Vector2 pos, string sound_path)
 	{
-		if (!string.IsNullOrEmpty(sound_path))
+		if (string.IsNullOrEmpty(sound_path))
 		{
-			SoundDescription soundEventDescription = KFMOD.GetSoundEventDescription(sound_path);
-			return IsAudible(pos, soundEventDescription.falloffDistanceSq);
+			return false;
 		}
-		return false;
+		SoundDescription soundEventDescription = KFMOD.GetSoundEventDescription(sound_path);
+		return IsAudible(pos, soundEventDescription.falloffDistanceSq);
 	}
 
 	public Vector3 GetVerticallyScaledPosition(Vector2 pos)

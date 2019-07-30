@@ -93,7 +93,7 @@ public class GeneShuffler : Workable
 		component.OnStorageChange(data);
 	});
 
-	private bool storage_recursion_guard = false;
+	private bool storage_recursion_guard;
 
 	public bool WorkComplete => geneShufflerSMI.IsInsideState(geneShufflerSMI.sm.working.complete);
 
@@ -171,7 +171,7 @@ public class GeneShuffler : Workable
 	{
 		base.OnStartWork(worker);
 		notification = new Notification(MISC.NOTIFICATIONS.GENESHUFFLER.NAME, NotificationType.Good, HashedString.Invalid, (List<Notification> notificationList, object data) => MISC.NOTIFICATIONS.GENESHUFFLER.TOOLTIP + notificationList.ReduceMessages(false), null, false, 0f, null, null, null);
-		notifier.Add(notification, "");
+		notifier.Add(notification, string.Empty);
 		DeSelectBuilding();
 	}
 

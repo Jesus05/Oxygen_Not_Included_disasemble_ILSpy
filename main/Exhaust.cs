@@ -24,11 +24,11 @@ public class Exhaust : KMonoBehaviour, ISim200ms
 
 	private bool isAnimating;
 
-	private bool recentlyExhausted = false;
+	private bool recentlyExhausted;
 
 	private const float MinSwitchTime = 1f;
 
-	private float elapsedSwitchTime = 0f;
+	private float elapsedSwitchTime;
 
 	private static readonly EventSystem.IntraObjectHandler<Exhaust> OnConduitStateChangedDelegate = new EventSystem.IntraObjectHandler<Exhaust>(delegate(Exhaust component, object data)
 	{
@@ -125,25 +125,25 @@ public class Exhaust : KMonoBehaviour, ISim200ms
 
 	private bool EmitCommon(int cell, PrimaryElement primary_element, EmitDelegate emit)
 	{
-		if (!(primary_element.Mass <= 0f))
+		if (primary_element.Mass <= 0f)
 		{
-			CalculateDiseaseTransfer(exhaustPE, primary_element, 0.05f, out int disease_to_item, out int disease_to_item2);
-			primary_element.ModifyDiseaseCount(-disease_to_item, "Exhaust transfer");
-			primary_element.AddDisease(exhaustPE.DiseaseIdx, disease_to_item2, "Exhaust transfer");
-			exhaustPE.ModifyDiseaseCount(-disease_to_item2, "Exhaust transfer");
-			exhaustPE.AddDisease(primary_element.DiseaseIdx, disease_to_item, "Exhaust transfer");
-			emit(cell, primary_element);
-			if ((Object)vent != (Object)null)
-			{
-				vent.UpdateVentedMass(primary_element.ElementID, primary_element.Mass);
-			}
-			primary_element.KeepZeroMassObject = true;
-			primary_element.Mass = 0f;
-			primary_element.ModifyDiseaseCount(-2147483648, "Exhaust.SimUpdate");
-			recentlyExhausted = true;
-			return true;
+			return false;
 		}
-		return false;
+		CalculateDiseaseTransfer(exhaustPE, primary_element, 0.05f, out int disease_to_item, out int disease_to_item2);
+		primary_element.ModifyDiseaseCount(-disease_to_item, "Exhaust transfer");
+		primary_element.AddDisease(exhaustPE.DiseaseIdx, disease_to_item2, "Exhaust transfer");
+		exhaustPE.ModifyDiseaseCount(-disease_to_item2, "Exhaust transfer");
+		exhaustPE.AddDisease(primary_element.DiseaseIdx, disease_to_item, "Exhaust transfer");
+		emit(cell, primary_element);
+		if ((Object)vent != (Object)null)
+		{
+			vent.UpdateVentedMass(primary_element.ElementID, primary_element.Mass);
+		}
+		primary_element.KeepZeroMassObject = true;
+		primary_element.Mass = 0f;
+		primary_element.ModifyDiseaseCount(-2147483648, "Exhaust.SimUpdate");
+		recentlyExhausted = true;
+		return true;
 	}
 
 	private void EmitLiquid(int cell)

@@ -1,4 +1,3 @@
-#define UNITY_ASSERTIONS
 using Database;
 using Klei.AI;
 using Klei.AI.DiseaseGrowthRules;
@@ -7,7 +6,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
-using UnityEngine;
 
 public static class SimMessages
 {
@@ -624,23 +622,19 @@ public static class SimMessages
 	public unsafe static void AddElementChunk(int gameCell, SimHashes element, float mass, float temperature, float surface_area, float thickness, float ground_transfer_scale, int cb_handle)
 	{
 		Debug.Assert(Grid.IsValidCell(gameCell));
-		if (Grid.IsValidCell(gameCell))
+		if (Grid.IsValidCell(gameCell) && mass * temperature > 0f)
 		{
-			UnityEngine.Debug.Assert(mass * temperature > 0f, "Tried to add an SimTemperatureTransfer component with 0 mass or temperature. Unsupported! Your game is now in a bad state.");
-			if (mass * temperature > 0f)
-			{
-				int elementIndex = ElementLoader.GetElementIndex(element);
-				AddElementChunkMessage* ptr = stackalloc AddElementChunkMessage[1];
-				ptr->gameCell = gameCell;
-				ptr->callbackIdx = cb_handle;
-				ptr->mass = mass;
-				ptr->temperature = temperature;
-				ptr->surfaceArea = surface_area;
-				ptr->thickness = thickness;
-				ptr->groundTransferScale = ground_transfer_scale;
-				ptr->elementIdx = (byte)elementIndex;
-				Sim.SIM_HandleMessage(1445724082, sizeof(AddElementChunkMessage), (byte*)ptr);
-			}
+			int elementIndex = ElementLoader.GetElementIndex(element);
+			AddElementChunkMessage* ptr = stackalloc AddElementChunkMessage[1];
+			ptr->gameCell = gameCell;
+			ptr->callbackIdx = cb_handle;
+			ptr->mass = mass;
+			ptr->temperature = temperature;
+			ptr->surfaceArea = surface_area;
+			ptr->thickness = thickness;
+			ptr->groundTransferScale = ground_transfer_scale;
+			ptr->elementIdx = (byte)elementIndex;
+			Sim.SIM_HandleMessage(1445724082, sizeof(AddElementChunkMessage), (byte*)ptr);
 		}
 	}
 
@@ -852,7 +846,7 @@ public static class SimMessages
 
 	public unsafe static void CreateSimElementsTable(List<Element> elements)
 	{
-		//IL_00c7: Incompatible stack types: I vs Ref
+		//IL_00c2: Incompatible stack types: I vs Ref
 		MemoryStream memoryStream = new MemoryStream(Marshal.SizeOf(typeof(int)) + Marshal.SizeOf(typeof(Sim.Element)) * elements.Count);
 		BinaryWriter binaryWriter = new BinaryWriter(memoryStream);
 		binaryWriter.Write(elements.Count);
@@ -873,7 +867,7 @@ public static class SimMessages
 
 	public unsafe static void CreateWorldGenHACKDiseaseTable(List<string> diseaseIds)
 	{
-		//IL_0154: Incompatible stack types: I vs Ref
+		//IL_014f: Incompatible stack types: I vs Ref
 		MemoryStream memoryStream = new MemoryStream(1024);
 		BinaryWriter binaryWriter = new BinaryWriter(memoryStream);
 		binaryWriter.Write(diseaseIds.Count);
@@ -891,7 +885,7 @@ public static class SimMessages
 		rangeInfo2.maxViable = float.PositiveInfinity;
 		for (int i = 0; i < diseaseIds.Count; i++)
 		{
-			binaryWriter.WriteKleiString("");
+			binaryWriter.WriteKleiString(string.Empty);
 			binaryWriter.Write(new HashedString(diseaseIds[i]).GetHashCode());
 			binaryWriter.Write(0f);
 			rangeInfo.Write(binaryWriter);
@@ -912,7 +906,7 @@ public static class SimMessages
 
 	public unsafe static void CreateDiseaseTable()
 	{
-		//IL_012a: Incompatible stack types: I vs Ref
+		//IL_0125: Incompatible stack types: I vs Ref
 		Diseases diseases = Db.Get().Diseases;
 		MemoryStream memoryStream = new MemoryStream(1024);
 		BinaryWriter binaryWriter = new BinaryWriter(memoryStream);
@@ -967,11 +961,7 @@ public static class SimMessages
 
 	public unsafe static void Dig(int gameCell, int callbackIdx = -1)
 	{
-		if (!Grid.IsValidCell(gameCell))
-		{
-			UnityEngine.Debug.AssertFormat(false, "Invalid cell: {0}", gameCell);
-		}
-		else
+		if (Grid.IsValidCell(gameCell))
 		{
 			DigMessage* ptr = stackalloc DigMessage[1];
 			ptr->cellIdx = gameCell;
@@ -982,11 +972,7 @@ public static class SimMessages
 
 	public unsafe static void SetInsulation(int gameCell, float value)
 	{
-		if (!Grid.IsValidCell(gameCell))
-		{
-			UnityEngine.Debug.AssertFormat(false, "Invalid cell: {0}", gameCell);
-		}
-		else
+		if (Grid.IsValidCell(gameCell))
 		{
 			SetCellFloatValueMessage* ptr = stackalloc SetCellFloatValueMessage[1];
 			ptr->cellIdx = gameCell;
@@ -997,11 +983,7 @@ public static class SimMessages
 
 	public unsafe static void SetStrength(int gameCell, int weight, float strengthMultiplier)
 	{
-		if (!Grid.IsValidCell(gameCell))
-		{
-			UnityEngine.Debug.AssertFormat(false, "Invalid cell: {0}", gameCell);
-		}
-		else
+		if (Grid.IsValidCell(gameCell))
 		{
 			SetCellFloatValueMessage* ptr = stackalloc SetCellFloatValueMessage[1];
 			ptr->cellIdx = gameCell;
@@ -1014,11 +996,7 @@ public static class SimMessages
 
 	public unsafe static void SetCellProperties(int gameCell, byte properties)
 	{
-		if (!Grid.IsValidCell(gameCell))
-		{
-			UnityEngine.Debug.AssertFormat(false, "Invalid cell: {0}", gameCell);
-		}
-		else
+		if (Grid.IsValidCell(gameCell))
 		{
 			CellPropertiesMessage* ptr = stackalloc CellPropertiesMessage[1];
 			ptr->cellIdx = gameCell;
@@ -1030,11 +1008,7 @@ public static class SimMessages
 
 	public unsafe static void ClearCellProperties(int gameCell, byte properties)
 	{
-		if (!Grid.IsValidCell(gameCell))
-		{
-			UnityEngine.Debug.AssertFormat(false, "Invalid cell: {0}", gameCell);
-		}
-		else
+		if (Grid.IsValidCell(gameCell))
 		{
 			CellPropertiesMessage* ptr = stackalloc CellPropertiesMessage[1];
 			ptr->cellIdx = gameCell;
@@ -1046,11 +1020,7 @@ public static class SimMessages
 
 	public unsafe static void ModifyCell(int gameCell, int elementIdx, float temperature, float mass, byte disease_idx, int disease_count, ReplaceType replace_type = ReplaceType.None, bool do_vertical_solid_displacement = false, int callbackIdx = -1)
 	{
-		if (!Grid.IsValidCell(gameCell))
-		{
-			UnityEngine.Debug.AssertFormat(false, "Invalid cell: {0}", gameCell);
-		}
-		else
+		if (Grid.IsValidCell(gameCell))
 		{
 			Element element = ElementLoader.elements[elementIdx];
 			if (element.maxMass == 0f && mass > element.maxMass)
@@ -1108,11 +1078,7 @@ public static class SimMessages
 
 	public unsafe static void ConsumeMass(int gameCell, SimHashes element, float mass, byte radius, int callbackIdx = -1)
 	{
-		if (!Grid.IsValidCell(gameCell))
-		{
-			UnityEngine.Debug.AssertFormat(false, "Invalid cell: {0}", gameCell);
-		}
-		else
+		if (Grid.IsValidCell(gameCell))
 		{
 			int elementIndex = ElementLoader.GetElementIndex(element);
 			MassConsumptionMessage* ptr = stackalloc MassConsumptionMessage[1];
@@ -1127,11 +1093,7 @@ public static class SimMessages
 
 	public unsafe static void EmitMass(int gameCell, byte element_idx, float mass, float temperature, byte disease_idx, int disease_count, int callbackIdx = -1)
 	{
-		if (!Grid.IsValidCell(gameCell))
-		{
-			UnityEngine.Debug.AssertFormat(false, "Invalid cell: {0}", gameCell);
-		}
-		else
+		if (Grid.IsValidCell(gameCell))
 		{
 			MassEmissionMessage* ptr = stackalloc MassEmissionMessage[1];
 			ptr->cellIdx = gameCell;
@@ -1210,22 +1172,21 @@ public static class SimMessages
 
 	public unsafe static void ModifyEnergy(int gameCell, float kilojoules, float max_temperature, EnergySourceID id)
 	{
-		if (!Grid.IsValidCell(gameCell))
+		if (Grid.IsValidCell(gameCell))
 		{
-			UnityEngine.Debug.AssertFormat(false, "Invalid cell: {0}", gameCell);
-		}
-		else if (max_temperature <= 0f)
-		{
-			Debug.LogError("invalid max temperature for cell energy modification");
-		}
-		else
-		{
-			ModifyCellEnergyMessage* ptr = stackalloc ModifyCellEnergyMessage[1];
-			ptr->cellIdx = gameCell;
-			ptr->kilojoules = kilojoules;
-			ptr->maxTemperature = max_temperature;
-			ptr->id = (int)id;
-			Sim.SIM_HandleMessage(818320644, sizeof(ModifyCellEnergyMessage), (byte*)ptr);
+			if (max_temperature <= 0f)
+			{
+				Debug.LogError("invalid max temperature for cell energy modification");
+			}
+			else
+			{
+				ModifyCellEnergyMessage* ptr = stackalloc ModifyCellEnergyMessage[1];
+				ptr->cellIdx = gameCell;
+				ptr->kilojoules = kilojoules;
+				ptr->maxTemperature = max_temperature;
+				ptr->id = (int)id;
+				Sim.SIM_HandleMessage(818320644, sizeof(ModifyCellEnergyMessage), (byte*)ptr);
+			}
 		}
 	}
 
@@ -1245,14 +1206,13 @@ public static class SimMessages
 		}
 		else
 		{
-			UnityEngine.Debug.Assert(mass < 0f, "Mass less than zero");
 			ModifyCell(gameCell, 0, temperature, mass, disease_idx, disease_count, ReplaceType.None, false, -1);
 		}
 	}
 
 	public unsafe static void CreateElementInteractions(ElementInteraction[] interactions)
 	{
-		//IL_0018: Incompatible stack types: I vs Ref
+		//IL_0017: Incompatible stack types: I vs Ref
 		fixed (ElementInteraction* interactions2 = &((interactions != null && interactions.Length != 0) ? ref interactions[0] : ref *(ElementInteraction*)null))
 		{
 			CreateElementInteractionsMsg* ptr = stackalloc CreateElementInteractionsMsg[1];

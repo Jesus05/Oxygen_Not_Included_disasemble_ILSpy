@@ -61,7 +61,7 @@ public class SimAndRenderScheduler
 		{
 			if (!Contains(updater))
 			{
-				string value = "";
+				string value = string.Empty;
 				if (!bucketIds.TryGetValue(updater.GetType(), out value))
 				{
 					value = MakeBucketId(updater.GetType(), base.updateRate);
@@ -358,20 +358,20 @@ public class SimAndRenderScheduler
 
 	private Entry ManifestEntry<UpdateInterface>(string name, bool load_balance)
 	{
-		if (!bucketTable.TryGetValue(name, out Entry value))
+		if (bucketTable.TryGetValue(name, out Entry value))
 		{
-			value = default(Entry);
-			UpdateRate updateRate = GetUpdateRate<UpdateInterface>();
-			int num = (!load_balance) ? 1 : Singleton<StateMachineUpdater>.Instance.GetFrameCount(updateRate);
-			value.buckets = new StateMachineUpdater.BaseUpdateBucket[num];
-			for (int i = 0; i < num; i++)
-			{
-				value.buckets[i] = new UpdateBucketWithUpdater<UpdateInterface>(name);
-				Singleton<StateMachineUpdater>.Instance.AddBucket(updateRate, value.buckets[i]);
-			}
+			DebugUtil.DevAssertArgs(value.buckets.Length == ((!load_balance) ? 1 : Singleton<StateMachineUpdater>.Instance.GetFrameCount(GetUpdateRate<UpdateInterface>())), "load_balance doesn't match previous registration...maybe load_balance erroneously on for a BatchUpdate type ", name, "?");
 			return value;
 		}
-		DebugUtil.DevAssertArgs(value.buckets.Length == ((!load_balance) ? 1 : Singleton<StateMachineUpdater>.Instance.GetFrameCount(GetUpdateRate<UpdateInterface>())), "load_balance doesn't match previous registration...maybe load_balance erroneously on for a BatchUpdate type ", name, "?");
+		value = default(Entry);
+		UpdateRate updateRate = GetUpdateRate<UpdateInterface>();
+		int num = (!load_balance) ? 1 : Singleton<StateMachineUpdater>.Instance.GetFrameCount(updateRate);
+		value.buckets = new StateMachineUpdater.BaseUpdateBucket[num];
+		for (int i = 0; i < num; i++)
+		{
+			value.buckets[i] = new UpdateBucketWithUpdater<UpdateInterface>(name);
+			Singleton<StateMachineUpdater>.Instance.AddBucket(updateRate, value.buckets[i]);
+		}
 		return value;
 	}
 

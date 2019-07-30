@@ -137,23 +137,23 @@ public class KAnim
 
 		public int GetFrameIdx(PlayMode mode, float t)
 		{
-			if (numFrames > 0)
+			if (numFrames <= 0)
 			{
-				int result = 0;
-				switch (mode)
-				{
-				case PlayMode.Loop:
-					t %= totalTime;
-					break;
-				}
-				if (t > 0f)
-				{
-					float num = t * frameRate + 0.49999997f;
-					result = Math.Min(numFrames - 1, (int)num);
-				}
-				return result;
+				return -1;
 			}
-			return -1;
+			int result = 0;
+			switch (mode)
+			{
+			case PlayMode.Loop:
+				t %= totalTime;
+				break;
+			}
+			if (t > 0f)
+			{
+				float num = t * frameRate + 0.49999997f;
+				result = Math.Min(numFrames - 1, (int)num);
+			}
+			return result;
 		}
 
 		private static KBatchGroupData GetAnimBatchGroupData(KAnimFileData animFile)
@@ -289,22 +289,22 @@ public class KAnim
 				{
 					Debug.LogErrorFormat("Cant get frame [{2}] because Symbol [{0}] for build [{1}] batch [{3}] has no frameLookup", hash.ToString(), build.name, frame, build.batchTag.ToString());
 				}
-				if (frameLookup.Length != 0 && frame < frameLookup.Length)
+				if (frameLookup.Length == 0 || frame >= frameLookup.Length)
 				{
-					frame = Math.Min(frame, frameLookup.Length - 1);
-					return frameLookup[frame];
+					return -1;
 				}
-				return -1;
+				frame = Math.Min(frame, frameLookup.Length - 1);
+				return frameLookup[frame];
 			}
 
 			public bool HasFrame(int frame)
 			{
 				int frameIdx = GetFrameIdx(frame);
-				if (frameIdx < 0)
+				if (frameIdx >= 0)
 				{
-					return false;
+					return true;
 				}
-				return true;
+				return false;
 			}
 
 			public SymbolFrameInstance GetFrame(int frame)
@@ -316,17 +316,17 @@ public class KAnim
 
 			public int CompareTo(object obj)
 			{
-				if (obj != null)
+				if (obj == null)
 				{
-					if (obj.GetType() != typeof(HashedString))
-					{
-						Symbol symbol = (Symbol)obj;
-						return hash.HashValue.CompareTo(symbol.hash.HashValue);
-					}
+					return 1;
+				}
+				if (obj.GetType() == typeof(HashedString))
+				{
 					HashedString hashedString = (HashedString)obj;
 					return hash.HashValue.CompareTo(hashedString.HashValue);
 				}
-				return 1;
+				Symbol symbol = (Symbol)obj;
+				return hash.HashValue.CompareTo(symbol.hash.HashValue);
 			}
 
 			public bool HasFlag(SymbolFlags flag)
@@ -385,11 +385,11 @@ public class KAnim
 
 		public Symbol GetSymbolByIndex(uint index)
 		{
-			if (index < symbols.Length)
+			if (index >= symbols.Length)
 			{
-				return symbols[index];
+				return null;
 			}
-			return null;
+			return symbols[index];
 		}
 
 		public Texture2D GetTexture(int index)

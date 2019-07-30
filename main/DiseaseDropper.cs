@@ -4,16 +4,16 @@ public class DiseaseDropper : GameStateMachine<DiseaseDropper, DiseaseDropper.In
 	{
 		public byte diseaseIdx = byte.MaxValue;
 
-		public int singleEmitQuantity = 0;
+		public int singleEmitQuantity;
 
-		public int averageEmitPerSecond = 0;
+		public int averageEmitPerSecond;
 
 		public float emitFrequency = 1f;
 	}
 
 	public new class Instance : GameInstance
 	{
-		private float timeSinceLastDrop = 0f;
+		private float timeSinceLastDrop;
 
 		public Instance(IStateMachineTarget master, Def def)
 			: base(master, def)
@@ -58,19 +58,19 @@ public class DiseaseDropper : GameStateMachine<DiseaseDropper, DiseaseDropper.In
 		public bool IsValidDropCell()
 		{
 			int num = Grid.PosToCell(base.transform.GetPosition());
-			if (Grid.IsValidCell(num))
+			if (!Grid.IsValidCell(num))
 			{
-				if (Grid.IsGas(num))
-				{
-					if (!(Grid.Mass[num] > 1f))
-					{
-						return true;
-					}
-					return false;
-				}
 				return false;
 			}
-			return false;
+			if (!Grid.IsGas(num))
+			{
+				return false;
+			}
+			if (Grid.Mass[num] > 1f)
+			{
+				return false;
+			}
+			return true;
 		}
 	}
 

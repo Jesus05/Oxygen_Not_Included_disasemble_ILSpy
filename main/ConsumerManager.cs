@@ -81,31 +81,31 @@ public class ConsumerManager : KMonoBehaviour, ISaveLoadable
 
 	private bool ShouldBeDiscovered(Tag food_id)
 	{
-		if (!WorldInventory.Instance.IsDiscovered(food_id))
+		if (WorldInventory.Instance.IsDiscovered(food_id))
 		{
-			foreach (Recipe recipe in RecipeManager.Get().recipes)
+			return true;
+		}
+		foreach (Recipe recipe in RecipeManager.Get().recipes)
+		{
+			if (recipe.Result == food_id)
 			{
-				if (recipe.Result == food_id)
+				string[] fabricators = recipe.fabricators;
+				foreach (string id in fabricators)
 				{
-					string[] fabricators = recipe.fabricators;
-					foreach (string id in fabricators)
+					if (Db.Get().TechItems.IsTechItemComplete(id))
 					{
-						if (Db.Get().TechItems.IsTechItemComplete(id))
-						{
-							return true;
-						}
+						return true;
 					}
 				}
 			}
-			foreach (Crop item in Components.Crops.Items)
-			{
-				if (Grid.IsVisible(Grid.PosToCell(item.gameObject)) && item.cropId == food_id.Name)
-				{
-					return true;
-				}
-			}
-			return false;
 		}
-		return true;
+		foreach (Crop item in Components.Crops.Items)
+		{
+			if (Grid.IsVisible(Grid.PosToCell(item.gameObject)) && item.cropId == food_id.Name)
+			{
+				return true;
+			}
+		}
+		return false;
 	}
 }

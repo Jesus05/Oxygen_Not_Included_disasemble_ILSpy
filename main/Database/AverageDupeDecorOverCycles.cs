@@ -20,34 +20,34 @@ namespace Database
 
 		public override bool Success()
 		{
-			if (Components.LiveMinionIdentities.Count > 0)
+			if (Components.LiveMinionIdentities.Count <= 0)
 			{
-				float num = 0f;
-				foreach (MinionIdentity item in Components.LiveMinionIdentities.Items)
-				{
-					DecorMonitor.Instance sMI = item.GetSMI<DecorMonitor.Instance>();
-					if (sMI != null)
-					{
-						num = sMI.GetTodaysAverageDecor();
-					}
-				}
-				float num2 = num / (float)Components.LiveMinionIdentities.Count;
-				if (num2 > (float)averageDecor)
-				{
-					if (!trackingCycles)
-					{
-						trackingCycles = true;
-						startCycle = 0;
-					}
-					startCycle++;
-				}
-				else
-				{
-					trackingCycles = false;
-				}
-				return num2 > (float)averageDecor && startCycle >= numCycles;
+				return false;
 			}
-			return false;
+			float num = 0f;
+			foreach (MinionIdentity item in Components.LiveMinionIdentities.Items)
+			{
+				DecorMonitor.Instance sMI = item.GetSMI<DecorMonitor.Instance>();
+				if (sMI != null)
+				{
+					num = sMI.GetTodaysAverageDecor();
+				}
+			}
+			float num2 = num / (float)Components.LiveMinionIdentities.Count;
+			if (num2 > (float)averageDecor)
+			{
+				if (!trackingCycles)
+				{
+					trackingCycles = true;
+					startCycle = 0;
+				}
+				startCycle++;
+			}
+			else
+			{
+				trackingCycles = false;
+			}
+			return num2 > (float)averageDecor && startCycle >= numCycles;
 		}
 
 		public override void Deserialize(IReader reader)

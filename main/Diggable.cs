@@ -293,20 +293,20 @@ public class Diggable : Workable
 	public static Diggable GetDiggable(int cell)
 	{
 		GameObject gameObject = Grid.Objects[cell, 7];
-		if (!((UnityEngine.Object)gameObject != (UnityEngine.Object)null))
+		if ((UnityEngine.Object)gameObject != (UnityEngine.Object)null)
 		{
-			return null;
+			return gameObject.GetComponent<Diggable>();
 		}
-		return gameObject.GetComponent<Diggable>();
+		return null;
 	}
 
 	public static bool IsDiggable(int cell)
 	{
-		if (!Grid.Solid[cell])
+		if (Grid.Solid[cell])
 		{
-			return GetUnstableCellAbove(cell) != Grid.InvalidCell;
+			return !Grid.Foundation[cell];
 		}
-		return !Grid.Foundation[cell];
+		return GetUnstableCellAbove(cell) != Grid.InvalidCell;
 	}
 
 	private static int GetUnstableCellAbove(int cell)
@@ -314,32 +314,32 @@ public class Diggable : Workable
 		Vector2I cellXY = Grid.CellToXY(cell);
 		UnstableGroundManager component = World.Instance.GetComponent<UnstableGroundManager>();
 		List<int> cellsContainingFallingAbove = component.GetCellsContainingFallingAbove(cellXY);
-		if (!cellsContainingFallingAbove.Contains(cell))
+		if (cellsContainingFallingAbove.Contains(cell))
 		{
-			int num = Grid.CellAbove(cell);
-			while (Grid.IsValidCell(num))
-			{
-				if (Grid.Foundation[num])
-				{
-					return Grid.InvalidCell;
-				}
-				if (Grid.Solid[num])
-				{
-					if (!Grid.Element[num].IsUnstable)
-					{
-						return Grid.InvalidCell;
-					}
-					return num;
-				}
-				if (cellsContainingFallingAbove.Contains(num))
-				{
-					return num;
-				}
-				num = Grid.CellAbove(num);
-			}
-			return Grid.InvalidCell;
+			return cell;
 		}
-		return cell;
+		int num = Grid.CellAbove(cell);
+		while (Grid.IsValidCell(num))
+		{
+			if (Grid.Foundation[num])
+			{
+				return Grid.InvalidCell;
+			}
+			if (Grid.Solid[num])
+			{
+				if (Grid.Element[num].IsUnstable)
+				{
+					return num;
+				}
+				return Grid.InvalidCell;
+			}
+			if (cellsContainingFallingAbove.Contains(num))
+			{
+				return num;
+			}
+			num = Grid.CellAbove(num);
+		}
+		return Grid.InvalidCell;
 	}
 
 	public static bool RequiresTool(Element e)

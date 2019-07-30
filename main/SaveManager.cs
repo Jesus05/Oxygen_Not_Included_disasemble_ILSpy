@@ -78,17 +78,17 @@ public class SaveManager : KMonoBehaviour
 	private List<SaveLoadRoot> GetSaveLoadRootList(SaveLoadRoot saver)
 	{
 		KPrefabID component = saver.GetComponent<KPrefabID>();
-		if (!((UnityEngine.Object)component == (UnityEngine.Object)null))
+		if ((UnityEngine.Object)component == (UnityEngine.Object)null)
 		{
-			if (!sceneObjects.TryGetValue(component.GetSaveLoadTag(), out List<SaveLoadRoot> value))
-			{
-				value = new List<SaveLoadRoot>();
-				sceneObjects[component.GetSaveLoadTag()] = value;
-			}
-			return value;
+			DebugUtil.LogErrorArgs(saver.gameObject, "All savers must also have a KPrefabID on them but", saver.gameObject.name, "does not have one.");
+			return null;
 		}
-		DebugUtil.LogErrorArgs(saver.gameObject, "All savers must also have a KPrefabID on them but", saver.gameObject.name, "does not have one.");
-		return null;
+		if (!sceneObjects.TryGetValue(component.GetSaveLoadTag(), out List<SaveLoadRoot> value))
+		{
+			value = new List<SaveLoadRoot>();
+			sceneObjects[component.GetSaveLoadTag()] = value;
+		}
+		return value;
 	}
 
 	public void Register(SaveLoadRoot root)
@@ -116,12 +116,12 @@ public class SaveManager : KMonoBehaviour
 	public GameObject GetPrefab(Tag tag)
 	{
 		GameObject value = null;
-		if (!prefabMap.TryGetValue(tag, out value))
+		if (prefabMap.TryGetValue(tag, out value))
 		{
-			DebugUtil.LogArgs("Item not found in prefabMap", "[" + tag.Name + "]");
-			return null;
+			return value;
 		}
-		return value;
+		DebugUtil.LogArgs("Item not found in prefabMap", "[" + tag.Name + "]");
+		return null;
 	}
 
 	public void Save(BinaryWriter writer)
@@ -213,62 +213,62 @@ public class SaveManager : KMonoBehaviour
 	public bool Load(IReader reader)
 	{
 		char[] array = reader.ReadChars(SAVE_HEADER.Length);
-		if (array != null && array.Length == SAVE_HEADER.Length)
+		if (array == null || array.Length != SAVE_HEADER.Length)
 		{
-			for (int i = 0; i < SAVE_HEADER.Length; i++)
+			return false;
+		}
+		for (int i = 0; i < SAVE_HEADER.Length; i++)
+		{
+			if (array[i] != SAVE_HEADER[i])
 			{
-				if (array[i] != SAVE_HEADER[i])
-				{
-					return false;
-				}
+				return false;
 			}
-			int num = reader.ReadInt32();
-			int num2 = reader.ReadInt32();
-			if (num == 7 && num2 <= 11)
-			{
-				ClearScene();
-				try
-				{
-					int num3 = reader.ReadInt32();
-					for (int j = 0; j < num3; j++)
-					{
-						string text = reader.ReadKleiString();
-						int num4 = reader.ReadInt32();
-						int num5 = 0;
-						num5 = reader.ReadInt32();
-						Tag key = TagManager.Create(text);
-						if (!prefabMap.TryGetValue(key, out GameObject value))
-						{
-							DebugUtil.LogWarningArgs("Could not find prefab '" + text + "'");
-							reader.SkipBytes(num5);
-						}
-						else
-						{
-							List<SaveLoadRoot> value2 = new List<SaveLoadRoot>(num4);
-							sceneObjects[key] = value2;
-							for (int k = 0; k < num4; k++)
-							{
-								SaveLoadRoot x = SaveLoadRoot.Load(value, reader);
-								if ((UnityEngine.Object)x == (UnityEngine.Object)null)
-								{
-									Debug.LogError("Error loading data [" + text + "]");
-									return false;
-								}
-							}
-						}
-					}
-				}
-				catch (Exception ex)
-				{
-					DebugUtil.LogErrorArgs("Error deserializing prefabs\n\n", ex.ToString());
-					throw ex;
-				}
-				return true;
-			}
+		}
+		int num = reader.ReadInt32();
+		int num2 = reader.ReadInt32();
+		if (num != 7 || num2 > 11)
+		{
 			DebugUtil.LogWarningArgs($"SAVE FILE VERSION MISMATCH! Expected {7}.{11} but got {num}.{num2}");
 			return false;
 		}
-		return false;
+		ClearScene();
+		try
+		{
+			int num3 = reader.ReadInt32();
+			for (int j = 0; j < num3; j++)
+			{
+				string text = reader.ReadKleiString();
+				int num4 = reader.ReadInt32();
+				int num5 = 0;
+				num5 = reader.ReadInt32();
+				Tag key = TagManager.Create(text);
+				if (!prefabMap.TryGetValue(key, out GameObject value))
+				{
+					DebugUtil.LogWarningArgs("Could not find prefab '" + text + "'");
+					reader.SkipBytes(num5);
+				}
+				else
+				{
+					List<SaveLoadRoot> value2 = new List<SaveLoadRoot>(num4);
+					sceneObjects[key] = value2;
+					for (int k = 0; k < num4; k++)
+					{
+						SaveLoadRoot x = SaveLoadRoot.Load(value, reader);
+						if ((UnityEngine.Object)x == (UnityEngine.Object)null)
+						{
+							Debug.LogError("Error loading data [" + text + "]");
+							return false;
+						}
+					}
+				}
+			}
+		}
+		catch (Exception ex)
+		{
+			DebugUtil.LogErrorArgs("Error deserializing prefabs\n\n", ex.ToString());
+			throw ex;
+		}
+		return true;
 	}
 
 	private void ClearScene()

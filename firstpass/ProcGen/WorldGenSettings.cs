@@ -81,23 +81,23 @@ namespace ProcGen
 
 		private bool GetSetting<T>(DefaultSettings set, string target, ParserFn<T> parser, out T res)
 		{
-			if (set != null && set.data != null && set.data.ContainsKey(target))
+			if (set == null || set.data == null || !set.data.ContainsKey(target))
 			{
-				object obj = set.data[target];
-				if (obj.GetType() != typeof(T))
-				{
-					bool flag = parser(obj as string, out res);
-					if (flag)
-					{
-						set.data[target] = res;
-					}
-					return flag;
-				}
+				res = default(T);
+				return false;
+			}
+			object obj = set.data[target];
+			if (obj.GetType() == typeof(T))
+			{
 				res = (T)obj;
 				return true;
 			}
-			res = default(T);
-			return false;
+			bool flag = parser(obj as string, out res);
+			if (flag)
+			{
+				set.data[target] = res;
+			}
+			return flag;
 		}
 
 		private T GetSetting<T>(string target, ParserFn<T> parser)
@@ -173,11 +173,11 @@ namespace ProcGen
 
 		public FeatureSettings GetFeature(string name)
 		{
-			if (!mutatedWorldData.features.ContainsKey(name))
+			if (mutatedWorldData.features.ContainsKey(name))
 			{
-				throw new Exception("Couldnt get feature from active world data [" + name + "]");
+				return mutatedWorldData.features[name];
 			}
-			return mutatedWorldData.features[name];
+			throw new Exception("Couldnt get feature from active world data [" + name + "]");
 		}
 
 		public FeatureSettings TryGetFeature(string name)
@@ -193,11 +193,11 @@ namespace ProcGen
 
 		public SubWorld GetSubWorld(string name)
 		{
-			if (!mutatedWorldData.subworlds.ContainsKey(name))
+			if (mutatedWorldData.subworlds.ContainsKey(name))
 			{
-				throw new Exception("Couldnt get subworld from active world data [" + name + "]");
+				return mutatedWorldData.subworlds[name];
 			}
-			return mutatedWorldData.subworlds[name];
+			throw new Exception("Couldnt get subworld from active world data [" + name + "]");
 		}
 
 		public SubWorld TryGetSubWorld(string name)
@@ -234,11 +234,11 @@ namespace ProcGen
 
 		public ElementBandConfiguration GetElementBandForBiome(string name)
 		{
-			if (!mutatedWorldData.biomes.BiomeBackgroundElementBandConfigurations.TryGetValue(name, out ElementBandConfiguration value))
+			if (mutatedWorldData.biomes.BiomeBackgroundElementBandConfigurations.TryGetValue(name, out ElementBandConfiguration value))
 			{
-				return null;
+				return value;
 			}
-			return value;
+			return null;
 		}
 	}
 }

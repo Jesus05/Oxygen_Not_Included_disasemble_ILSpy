@@ -28,7 +28,7 @@ public class FishFeeder : GameStateMachine<FishFeeder, FishFeeder.Instance, ISta
 	{
 		private Instance smi;
 
-		private float mass = 0f;
+		private float mass;
 
 		private float targetMass;
 

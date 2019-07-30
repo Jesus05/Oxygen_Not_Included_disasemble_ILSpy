@@ -62,9 +62,9 @@ public class Tutorial : KMonoBehaviour, IRender1000ms
 
 	private Dictionary<TutorialMessages, bool> hiddenTutorialMessages = new Dictionary<TutorialMessages, bool>();
 
-	private int debugMessageCount = 0;
+	private int debugMessageCount;
 
-	private bool queuedPrioritiesMessage = false;
+	private bool queuedPrioritiesMessage;
 
 	private const float LOW_RATION_AMOUNT = 1f;
 
@@ -76,7 +76,7 @@ public class Tutorial : KMonoBehaviour, IRender1000ms
 
 	public List<GameObject> oxygenGenerators = new List<GameObject>();
 
-	private int focusedOxygenGenerator = 0;
+	private int focusedOxygenGenerator;
 
 	public static Tutorial Instance
 	{
@@ -283,10 +283,10 @@ public class Tutorial : KMonoBehaviour, IRender1000ms
 		switch (tm)
 		{
 		case TutorialMessages.TM_Basics:
-			message = new TutorialMessage(TutorialMessages.TM_Basics, MISC.NOTIFICATIONS.BASICCONTROLS.NAME, MISC.NOTIFICATIONS.BASICCONTROLS.MESSAGEBODY, MISC.NOTIFICATIONS.BASICCONTROLS.TOOLTIP, null, null, null, "");
+			message = new TutorialMessage(TutorialMessages.TM_Basics, MISC.NOTIFICATIONS.BASICCONTROLS.NAME, MISC.NOTIFICATIONS.BASICCONTROLS.MESSAGEBODY, MISC.NOTIFICATIONS.BASICCONTROLS.TOOLTIP, null, null, null, string.Empty);
 			break;
 		case TutorialMessages.TM_Welcome:
-			message = new TutorialMessage(TutorialMessages.TM_Welcome, MISC.NOTIFICATIONS.WELCOMEMESSAGE.NAME, MISC.NOTIFICATIONS.WELCOMEMESSAGE.MESSAGEBODY, MISC.NOTIFICATIONS.WELCOMEMESSAGE.TOOLTIP, null, null, null, "");
+			message = new TutorialMessage(TutorialMessages.TM_Welcome, MISC.NOTIFICATIONS.WELCOMEMESSAGE.NAME, MISC.NOTIFICATIONS.WELCOMEMESSAGE.MESSAGEBODY, MISC.NOTIFICATIONS.WELCOMEMESSAGE.TOOLTIP, null, null, null, string.Empty);
 			break;
 		case TutorialMessages.TM_StressManagement:
 			message = new TutorialMessage(TutorialMessages.TM_StressManagement, MISC.NOTIFICATIONS.STRESSMANAGEMENTMESSAGE.NAME, MISC.NOTIFICATIONS.STRESSMANAGEMENTMESSAGE.MESSAGEBODY, MISC.NOTIFICATIONS.STRESSMANAGEMENTMESSAGE.TOOLTIP, null, null, null, "hud_stress");
@@ -298,7 +298,7 @@ public class Tutorial : KMonoBehaviour, IRender1000ms
 			message = new TutorialMessage(TutorialMessages.TM_Mopping, MISC.NOTIFICATIONS.MOPPINGMESSAGE.NAME, MISC.NOTIFICATIONS.MOPPINGMESSAGE.MESSAGEBODY, MISC.NOTIFICATIONS.MOPPINGMESSAGE.TOOLTIP, null, null, null, "icon_action_mop");
 			break;
 		case TutorialMessages.TM_Locomotion:
-			message = new TutorialMessage(TutorialMessages.TM_Locomotion, MISC.NOTIFICATIONS.LOCOMOTIONMESSAGE.NAME, MISC.NOTIFICATIONS.LOCOMOTIONMESSAGE.MESSAGEBODY, MISC.NOTIFICATIONS.LOCOMOTIONMESSAGE.TOOLTIP, "tutorials\\Locomotion_tutorial", "Tute_Locomotion", VIDEOS.LOCOMOTION, "action_navigable_regions");
+			message = new TutorialMessage(TutorialMessages.TM_Locomotion, MISC.NOTIFICATIONS.LOCOMOTIONMESSAGE.NAME, MISC.NOTIFICATIONS.LOCOMOTIONMESSAGE.MESSAGEBODY, MISC.NOTIFICATIONS.LOCOMOTIONMESSAGE.TOOLTIP, "tutorials\\Locomotion", "Tute_Locomotion", VIDEOS.LOCOMOTION, "action_navigable_regions");
 			break;
 		case TutorialMessages.TM_Priorities:
 			message = new TutorialMessage(TutorialMessages.TM_Priorities, MISC.NOTIFICATIONS.PRIORITIESMESSAGE.NAME, MISC.NOTIFICATIONS.PRIORITIESMESSAGE.MESSAGEBODY, MISC.NOTIFICATIONS.PRIORITIESMESSAGE.TOOLTIP, null, null, null, "icon_action_prioritize");
@@ -325,22 +325,22 @@ public class Tutorial : KMonoBehaviour, IRender1000ms
 			message = new TutorialMessage(TutorialMessages.TM_Suits, MISC.NOTIFICATIONS.SUITS.NAME, MISC.NOTIFICATIONS.SUITS.MESSAGEBODY, MISC.NOTIFICATIONS.SUITS.TOOLTIP, null, null, null, "overlay_suit");
 			break;
 		case TutorialMessages.TM_Morale:
-			message = new TutorialMessage(TutorialMessages.TM_Morale, MISC.NOTIFICATIONS.MORALE.NAME, MISC.NOTIFICATIONS.MORALE.MESSAGEBODY, MISC.NOTIFICATIONS.MORALE.TOOLTIP, "tutorials\\Morale_tutorial", "Tute_Morale", VIDEOS.MORALE, "icon_category_morale");
+			message = new TutorialMessage(TutorialMessages.TM_Morale, MISC.NOTIFICATIONS.MORALE.NAME, MISC.NOTIFICATIONS.MORALE.MESSAGEBODY, MISC.NOTIFICATIONS.MORALE.TOOLTIP, "tutorials\\Morale", "Tute_Morale", VIDEOS.MORALE, "icon_category_morale");
 			break;
 		case TutorialMessages.TM_Schedule:
 			message = new TutorialMessage(TutorialMessages.TM_Schedule, MISC.NOTIFICATIONS.SCHEDULEMESSAGE.NAME, MISC.NOTIFICATIONS.SCHEDULEMESSAGE.MESSAGEBODY, MISC.NOTIFICATIONS.SCHEDULEMESSAGE.TOOLTIP, null, null, null, "OverviewUI_schedule2_icon");
 			break;
 		case TutorialMessages.TM_Power:
-			message = new TutorialMessage(TutorialMessages.TM_Power, MISC.NOTIFICATIONS.POWER.NAME, MISC.NOTIFICATIONS.POWER.MESSAGEBODY, MISC.NOTIFICATIONS.POWER.TOOLTIP, "tutorials\\Power_tutorial", "Tute_Power", VIDEOS.POWER, "overlay_power");
+			message = new TutorialMessage(TutorialMessages.TM_Power, MISC.NOTIFICATIONS.POWER.NAME, MISC.NOTIFICATIONS.POWER.MESSAGEBODY, MISC.NOTIFICATIONS.POWER.TOOLTIP, "tutorials\\Power", "Tute_Power", VIDEOS.POWER, "overlay_power");
 			break;
 		case TutorialMessages.TM_Digging:
-			message = new TutorialMessage(TutorialMessages.TM_Digging, MISC.NOTIFICATIONS.DIGGING.NAME, MISC.NOTIFICATIONS.DIGGING.MESSAGEBODY, MISC.NOTIFICATIONS.DIGGING.TOOLTIP, "tutorials\\Digging_tutorial", "Tute_Digging", VIDEOS.DIGGING, "icon_action_dig");
+			message = new TutorialMessage(TutorialMessages.TM_Digging, MISC.NOTIFICATIONS.DIGGING.NAME, MISC.NOTIFICATIONS.DIGGING.MESSAGEBODY, MISC.NOTIFICATIONS.DIGGING.TOOLTIP, "tutorials\\Digging", "Tute_Digging", VIDEOS.DIGGING, "icon_action_dig");
 			break;
 		case TutorialMessages.TM_Insulation:
-			message = new TutorialMessage(TutorialMessages.TM_Insulation, MISC.NOTIFICATIONS.INSULATION.NAME, MISC.NOTIFICATIONS.INSULATION.MESSAGEBODY, MISC.NOTIFICATIONS.INSULATION.TOOLTIP, "tutorials\\Insulation_tutorial", "Tute_Insulation", VIDEOS.INSULATION, "");
+			message = new TutorialMessage(TutorialMessages.TM_Insulation, MISC.NOTIFICATIONS.INSULATION.NAME, MISC.NOTIFICATIONS.INSULATION.MESSAGEBODY, MISC.NOTIFICATIONS.INSULATION.TOOLTIP, null, null, null, string.Empty);
 			break;
 		case TutorialMessages.TM_Plumbing:
-			message = new TutorialMessage(TutorialMessages.TM_Plumbing, MISC.NOTIFICATIONS.PLUMBING.NAME, MISC.NOTIFICATIONS.PLUMBING.MESSAGEBODY, MISC.NOTIFICATIONS.PLUMBING.TOOLTIP, "tutorials\\Piping_tutorial", "Tute_Plumbing", VIDEOS.PLUMBING, "icon_category_plumbing");
+			message = new TutorialMessage(TutorialMessages.TM_Plumbing, MISC.NOTIFICATIONS.PLUMBING.NAME, MISC.NOTIFICATIONS.PLUMBING.MESSAGEBODY, MISC.NOTIFICATIONS.PLUMBING.TOOLTIP, "tutorials\\Piping", "Tute_Plumbing", VIDEOS.PLUMBING, "icon_category_plumbing");
 			break;
 		}
 		Debug.Assert(message != null, $"No Tutorial message: {tm.ToString()}");
@@ -389,28 +389,28 @@ public class Tutorial : KMonoBehaviour, IRender1000ms
 
 	public void DebugNotification()
 	{
-		string text = "";
+		string empty = string.Empty;
 		NotificationType type;
 		if (debugMessageCount % 3 == 0)
 		{
 			type = NotificationType.Tutorial;
-			text = "Warning message e.g. \"not enough oxygen\" uses Warning Color";
+			empty = "Warning message e.g. \"not enough oxygen\" uses Warning Color";
 		}
 		else if (debugMessageCount % 3 == 1)
 		{
 			type = NotificationType.BadMinor;
-			text = "Normal message e.g. Idle. Uses Normal Color BG";
+			empty = "Normal message e.g. Idle. Uses Normal Color BG";
 		}
 		else
 		{
 			type = NotificationType.Bad;
-			text = "Urgent important message. Uses Bad Color BG";
+			empty = "Urgent important message. Uses Bad Color BG";
 		}
-		string arg = text;
+		string arg = empty;
 		int num = debugMessageCount++;
 		num = num;
 		Notification notification = new Notification($"{arg} ({num.ToString()})", type, HashedString.Invalid, (List<Notification> n, object d) => MISC.NOTIFICATIONS.NEEDTOILET.TOOLTIP.text, null, true, 0f, null, null, null);
-		notifier.Add(notification, "");
+		notifier.Add(notification, string.Empty);
 	}
 
 	public void DebugNotificationMessage()
@@ -446,7 +446,7 @@ public class Tutorial : KMonoBehaviour, IRender1000ms
 						else
 						{
 							UpdateNotifierPosition();
-							notifier.Add(item.notification, "");
+							notifier.Add(item.notification, string.Empty);
 						}
 					}
 				}
@@ -469,7 +469,7 @@ public class Tutorial : KMonoBehaviour, IRender1000ms
 				}
 				else if (warningItem.lastNotifyTime == 0f || Time.time - warningItem.lastNotifyTime > warningItem.minTimeToNotify)
 				{
-					notifier.Add(warningItem.notification, "");
+					notifier.Add(warningItem.notification, string.Empty);
 					warningItem.lastNotifyTime = Time.time;
 				}
 			}
@@ -496,22 +496,22 @@ public class Tutorial : KMonoBehaviour, IRender1000ms
 
 	private bool SufficientOxygenLastCycleAndThisCycle()
 	{
-		if (ReportManager.Instance.YesterdaysReport != null)
+		if (ReportManager.Instance.YesterdaysReport == null)
 		{
-			ReportManager.ReportEntry entry = ReportManager.Instance.YesterdaysReport.GetEntry(ReportManager.ReportType.OxygenCreated);
-			ReportManager.ReportEntry entry2 = ReportManager.Instance.TodaysReport.GetEntry(ReportManager.ReportType.OxygenCreated);
-			return entry2.Net > 0.0001f || entry.Net > 0.0001f || (GameClock.Instance.GetCycle() < 1 && !GameClock.Instance.IsNighttime());
+			return true;
 		}
-		return true;
+		ReportManager.ReportEntry entry = ReportManager.Instance.YesterdaysReport.GetEntry(ReportManager.ReportType.OxygenCreated);
+		ReportManager.ReportEntry entry2 = ReportManager.Instance.TodaysReport.GetEntry(ReportManager.ReportType.OxygenCreated);
+		return entry2.Net > 0.0001f || entry.Net > 0.0001f || (GameClock.Instance.GetCycle() < 1 && !GameClock.Instance.IsNighttime());
 	}
 
 	private bool FoodIsRefrigerated()
 	{
-		if (GetUnrefrigeratedFood(null) <= 0)
+		if (GetUnrefrigeratedFood(null) > 0)
 		{
-			return true;
+			return false;
 		}
-		return false;
+		return true;
 	}
 
 	private int GetUnrefrigeratedFood(List<string> foods)
@@ -577,30 +577,30 @@ public class Tutorial : KMonoBehaviour, IRender1000ms
 				break;
 			}
 		}
-		if (flag)
+		if (!flag)
 		{
-			return result;
+			return true;
 		}
-		return true;
+		return result;
 	}
 
 	private bool LongTravelTimes()
 	{
 		int num = 3;
-		if (ReportManager.Instance.reports.Count >= num)
+		if (ReportManager.Instance.reports.Count < num)
 		{
-			float num2 = 0f;
-			float num3 = 0f;
-			for (int num4 = ReportManager.Instance.reports.Count - 1; num4 >= ReportManager.Instance.reports.Count - num; num4--)
-			{
-				ReportManager.ReportEntry entry = ReportManager.Instance.reports[num4].GetEntry(ReportManager.ReportType.TravelTime);
-				num2 += entry.Net;
-				num3 += 600f * (float)entry.contextEntries.Count;
-			}
-			float num5 = num2 / num3;
-			return num5 <= 0.4f;
+			return true;
 		}
-		return true;
+		float num2 = 0f;
+		float num3 = 0f;
+		for (int num4 = ReportManager.Instance.reports.Count - 1; num4 >= ReportManager.Instance.reports.Count - num; num4--)
+		{
+			ReportManager.ReportEntry entry = ReportManager.Instance.reports[num4].GetEntry(ReportManager.ReportType.TravelTime);
+			num2 += entry.Net;
+			num3 += 600f * (float)entry.contextEntries.Count;
+		}
+		float num5 = num2 / num3;
+		return num5 <= 0.4f;
 	}
 
 	private bool FoodSourceExists()

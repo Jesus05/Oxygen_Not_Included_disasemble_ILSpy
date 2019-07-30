@@ -22,7 +22,7 @@ public class EffectConfigs : IMultiEntityConfig
 			{
 				id = EffectTemplateId,
 				animFiles = new string[0],
-				initialAnim = "",
+				initialAnim = string.Empty,
 				initialMode = KAnim.PlayMode.Once,
 				destroyOnAnimComplete = false
 			},

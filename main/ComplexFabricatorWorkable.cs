@@ -116,12 +116,12 @@ public class ComplexFabricatorWorkable : Workable
 	public override float GetWorkTime()
 	{
 		ComplexRecipe currentWorkingOrder = fabricator.CurrentWorkingOrder;
-		if (currentWorkingOrder == null)
+		if (currentWorkingOrder != null)
 		{
-			return -1f;
+			workTime = currentWorkingOrder.time;
+			return workTime;
 		}
-		workTime = currentWorkingOrder.time;
-		return workTime;
+		return -1f;
 	}
 
 	public Chore CreateWorkChore(ChoreType choreType, float order_progress)

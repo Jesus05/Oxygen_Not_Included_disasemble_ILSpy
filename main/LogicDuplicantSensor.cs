@@ -12,7 +12,7 @@ public class LogicDuplicantSensor : Switch, ISim1000ms, ISim200ms
 
 	public int pickupRange = 4;
 
-	private bool wasOn = false;
+	private bool wasOn;
 
 	private List<Pickupable> duplicants = new List<Pickupable>();
 
@@ -150,25 +150,25 @@ public class LogicDuplicantSensor : Switch, ISim1000ms, ISim200ms
 	private bool IsPickupableRelevantToMyInterests(Pickupable pickupable)
 	{
 		KPrefabID kPrefabID = pickupable.KPrefabID;
-		if (kPrefabID.HasAnyTags(ref tagBits))
+		if (!kPrefabID.HasAnyTags(ref tagBits))
 		{
-			return true;
+			return false;
 		}
-		return false;
+		return true;
 	}
 
 	private bool IsPickupableRelevantToMyInterestsAndReachable(Pickupable pickupable)
 	{
-		if (IsPickupableRelevantToMyInterests(pickupable))
+		if (!IsPickupableRelevantToMyInterests(pickupable))
 		{
-			int pickupableCell = GetPickupableCell(pickupable);
-			if (IsCellReachable(pickupableCell))
-			{
-				return true;
-			}
 			return false;
 		}
-		return false;
+		int pickupableCell = GetPickupableCell(pickupable);
+		if (!IsCellReachable(pickupableCell))
+		{
+			return false;
+		}
+		return true;
 	}
 
 	private int GetPickupableCell(Pickupable pickupable)

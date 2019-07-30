@@ -37,51 +37,51 @@ public class CreatureFallMonitor : GameStateMachine<CreatureFallMonitor, Creatur
 
 		public bool ShouldFall()
 		{
-			if (!base.gameObject.HasTag(GameTags.Stored))
+			if (base.gameObject.HasTag(GameTags.Stored))
 			{
-				Vector3 position = base.smi.transform.GetPosition();
-				int num = Grid.PosToCell(position);
-				if (!Grid.IsValidCell(num) || !Grid.Solid[num])
-				{
-					if (!navigator.IsMoving())
-					{
-						if (!CanSwimAtCurrentLocation(false))
-						{
-							if (navigator.CurrentNavType != NavType.Swim)
-							{
-								if (navigator.NavGrid.NavTable.IsValid(num, navigator.CurrentNavType))
-								{
-									return false;
-								}
-								if (navigator.CurrentNavType == NavType.Ceiling)
-								{
-									return true;
-								}
-								if (navigator.CurrentNavType == NavType.LeftWall)
-								{
-									return true;
-								}
-								if (navigator.CurrentNavType == NavType.RightWall)
-								{
-									return true;
-								}
-							}
-							Vector3 pos = position;
-							pos.y += FLOOR_DISTANCE;
-							int num2 = Grid.PosToCell(pos);
-							if (!Grid.IsValidCell(num2) || !Grid.Solid[num2])
-							{
-								return true;
-							}
-							return false;
-						}
-						return false;
-					}
-					return false;
-				}
 				return false;
 			}
-			return false;
+			Vector3 position = base.smi.transform.GetPosition();
+			int num = Grid.PosToCell(position);
+			if (Grid.IsValidCell(num) && Grid.Solid[num])
+			{
+				return false;
+			}
+			if (navigator.IsMoving())
+			{
+				return false;
+			}
+			if (CanSwimAtCurrentLocation(false))
+			{
+				return false;
+			}
+			if (navigator.CurrentNavType != NavType.Swim)
+			{
+				if (navigator.NavGrid.NavTable.IsValid(num, navigator.CurrentNavType))
+				{
+					return false;
+				}
+				if (navigator.CurrentNavType == NavType.Ceiling)
+				{
+					return true;
+				}
+				if (navigator.CurrentNavType == NavType.LeftWall)
+				{
+					return true;
+				}
+				if (navigator.CurrentNavType == NavType.RightWall)
+				{
+					return true;
+				}
+			}
+			Vector3 pos = position;
+			pos.y += FLOOR_DISTANCE;
+			int num2 = Grid.PosToCell(pos);
+			if (Grid.IsValidCell(num2) && Grid.Solid[num2])
+			{
+				return false;
+			}
+			return true;
 		}
 
 		public bool CanSwimAtCurrentLocation(bool check_head)

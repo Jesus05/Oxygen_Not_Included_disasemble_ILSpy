@@ -479,7 +479,7 @@ public class Assets : KMonoBehaviour, ISerializationCallbackReceiver
 	public static Assets GetInstanceEditorOnly()
 	{
 		Assets[] array = (Assets[])Resources.FindObjectsOfTypeAll(typeof(Assets));
-		if (array != null && array.Length != 0)
+		if (array == null || array.Length == 0)
 		{
 			return array[0];
 		}
@@ -525,18 +525,18 @@ public class Assets : KMonoBehaviour, ISerializationCallbackReceiver
 
 	public static KAnimFile GetAnim(HashedString name)
 	{
-		if (name.IsValid)
+		if (!name.IsValid)
 		{
-			KAnimFile value = null;
-			AnimTable.TryGetValue(name, out value);
-			if ((UnityEngine.Object)value == (UnityEngine.Object)null)
-			{
-				Debug.LogWarning("Missing Anim: [" + name.ToString() + "]. You may have to run Collect Anim on the Assets prefab");
-			}
-			return value;
+			Debug.LogWarning("Invalid hash name");
+			return null;
 		}
-		Debug.LogWarning("Invalid hash name");
-		return null;
+		KAnimFile value = null;
+		AnimTable.TryGetValue(name, out value);
+		if ((UnityEngine.Object)value == (UnityEngine.Object)null)
+		{
+			Debug.LogWarning("Missing Anim: [" + name.ToString() + "]. You may have to run Collect Anim on the Assets prefab");
+		}
+		return value;
 	}
 
 	public void OnAfterDeserialize()

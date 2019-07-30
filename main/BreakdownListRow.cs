@@ -32,11 +32,11 @@ public class BreakdownListRow : KMonoBehaviour
 
 	public LocText valueLabel;
 
-	private bool isHighlighted = false;
+	private bool isHighlighted;
 
-	private bool isDisabled = false;
+	private bool isDisabled;
 
-	private bool isImportant = false;
+	private bool isImportant;
 
 	private ToolTip tooltip;
 

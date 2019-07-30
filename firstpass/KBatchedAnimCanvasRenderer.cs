@@ -17,13 +17,13 @@ public class KBatchedAnimCanvasRenderer : MonoBehaviour, IMaskable
 
 	public Material uiMat;
 
-	private KAnimConverter.IAnimConverter converter = null;
+	private KAnimConverter.IAnimConverter converter;
 
 	private CompareFunction _cmp = CompareFunction.Never;
 
 	private StencilOp _op = StencilOp.Zero;
 
-	private static TextureToCopyEntry[] texturesToCopy = null;
+	private static TextureToCopyEntry[] texturesToCopy;
 
 	private Vector4 _ClipRect = new Vector4(0f, 0f, 0f, 1f);
 

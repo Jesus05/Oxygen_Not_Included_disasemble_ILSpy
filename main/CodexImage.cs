@@ -39,7 +39,7 @@ public class CodexImage : CodexWidget<CodexImage>
 			GameObject prefab = Assets.GetPrefab(value);
 			KBatchedAnimController kBatchedAnimController = (!((Object)prefab != (Object)null)) ? null : prefab.GetComponent<KBatchedAnimController>();
 			KAnimFile kAnimFile = (!((Object)kBatchedAnimController != (Object)null)) ? null : kBatchedAnimController.AnimFiles[0];
-			sprite = ((!((Object)kAnimFile != (Object)null)) ? null : Def.GetUISpriteFromMultiObjectAnim(kAnimFile, "ui", false, ""));
+			sprite = ((!((Object)kAnimFile != (Object)null)) ? null : Def.GetUISpriteFromMultiObjectAnim(kAnimFile, "ui", false, string.Empty));
 		}
 	}
 

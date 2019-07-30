@@ -235,12 +235,12 @@ public class BuildingCellVisualizer : KMonoBehaviour
 	private Color GetWireColor(int cell)
 	{
 		GameObject gameObject = Grid.Objects[cell, 26];
-		if (!((UnityEngine.Object)gameObject == (UnityEngine.Object)null))
+		if ((UnityEngine.Object)gameObject == (UnityEngine.Object)null)
 		{
-			KBatchedAnimController component = gameObject.GetComponent<KBatchedAnimController>();
-			return (!((UnityEngine.Object)component != (UnityEngine.Object)null)) ? Color.white : ((Color)component.TintColour);
+			return Color.white;
 		}
-		return Color.white;
+		KBatchedAnimController component = gameObject.GetComponent<KBatchedAnimController>();
+		return (!((UnityEngine.Object)component != (UnityEngine.Object)null)) ? Color.white : ((Color)component.TintColour);
 	}
 
 	protected override void OnCmpEnable()

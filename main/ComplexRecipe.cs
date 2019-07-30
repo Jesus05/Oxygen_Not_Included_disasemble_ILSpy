@@ -39,13 +39,13 @@ public class ComplexRecipe
 
 	public GameObject FabricationVisualizer;
 
-	public RecipeNameDisplay nameDisplay = RecipeNameDisplay.Ingredient;
+	public RecipeNameDisplay nameDisplay;
 
 	public string description;
 
 	public List<Tag> fabricators;
 
-	public int sortOrder = 0;
+	public int sortOrder;
 
 	public string requiredTech;
 
@@ -77,12 +77,12 @@ public class ComplexRecipe
 
 	public bool IsRequiredTechUnlocked()
 	{
-		if (!string.IsNullOrEmpty(requiredTech))
+		if (string.IsNullOrEmpty(requiredTech))
 		{
-			Tech tech = Db.Get().Techs.Get(requiredTech);
-			return tech.IsComplete();
+			return true;
 		}
-		return true;
+		Tech tech = Db.Get().Techs.Get(requiredTech);
+		return tech.IsComplete();
 	}
 
 	public Sprite GetUIIcon()
@@ -93,7 +93,7 @@ public class ComplexRecipe
 		KBatchedAnimController component = prefab.GetComponent<KBatchedAnimController>();
 		if ((Object)component != (Object)null)
 		{
-			result = Def.GetUISpriteFromMultiObjectAnim(component.AnimFiles[0], "ui", false, "");
+			result = Def.GetUISpriteFromMultiObjectAnim(component.AnimFiles[0], "ui", false, string.Empty);
 		}
 		return result;
 	}

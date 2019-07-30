@@ -1,9 +1,9 @@
 [SkipSaveFileSerialization]
 public class InfoDescription : KMonoBehaviour
 {
-	public string nameLocString = "";
+	public string nameLocString = string.Empty;
 
-	public string descriptionLocString = "";
+	public string descriptionLocString = string.Empty;
 
 	public string description;
 

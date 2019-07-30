@@ -113,11 +113,11 @@ namespace ProcGen
 
 		public static FeatureSettings GetCachedFeature(string name)
 		{
-			if (!featuresettings.ContainsKey(name))
+			if (featuresettings.ContainsKey(name))
 			{
-				throw new Exception("Couldnt get feature from cache [" + name + "]");
+				return featuresettings[name];
 			}
-			return featuresettings[name];
+			throw new Exception("Couldnt get feature from cache [" + name + "]");
 		}
 
 		public static List<string> GetCachedTraitNames()
@@ -127,46 +127,46 @@ namespace ProcGen
 
 		public static WorldTrait GetCachedTrait(string name)
 		{
-			if (!traits.ContainsKey(name))
+			if (traits.ContainsKey(name))
 			{
-				throw new Exception("Couldnt get trait [" + name + "]");
+				return traits[name];
 			}
-			return traits[name];
+			throw new Exception("Couldnt get trait [" + name + "]");
 		}
 
 		public static SubWorld GetCachedSubWorld(string name)
 		{
-			if (!subworlds.ContainsKey(name))
+			if (subworlds.ContainsKey(name))
 			{
-				throw new Exception("Couldnt get subworld [" + name + "]");
+				return subworlds[name];
 			}
-			return subworlds[name];
+			throw new Exception("Couldnt get subworld [" + name + "]");
 		}
 
 		private static bool GetPathAndName(string srcPath, string srcName, out string name)
 		{
-			if (!FileSystem.FileExists(srcPath + srcName + ".yaml"))
+			if (FileSystem.FileExists(srcPath + srcName + ".yaml"))
 			{
-				string[] array = srcName.Split('/');
-				name = array[0];
-				for (int i = 1; i < array.Length - 1; i++)
-				{
-					name = name + "/" + array[i];
-				}
-				if (!FileSystem.FileExists(srcPath + name + ".yaml"))
-				{
-					name = srcName;
-					return false;
-				}
+				name = srcName;
+				return true;
+			}
+			string[] array = srcName.Split('/');
+			name = array[0];
+			for (int i = 1; i < array.Length - 1; i++)
+			{
+				name = name + "/" + array[i];
+			}
+			if (FileSystem.FileExists(srcPath + name + ".yaml"))
+			{
 				return true;
 			}
 			name = srcName;
-			return true;
+			return false;
 		}
 
 		private static void LoadBiome(string longName, List<YamlIO.Error> errors)
 		{
-			string name = "";
+			string name = string.Empty;
 			if (GetPathAndName(GetPath(), longName, out name) && !biomeSettingsCache.ContainsKey(name))
 			{
 				BiomeSettings biomeSettings = MergeLoad<BiomeSettings>(GetPath() + name + ".yaml", errors);
@@ -192,30 +192,30 @@ namespace ProcGen
 
 		private static string LoadFeature(string longName, List<YamlIO.Error> errors)
 		{
-			string name = "";
-			if (GetPathAndName(GetPath(), longName, out name))
+			string name = string.Empty;
+			if (!GetPathAndName(GetPath(), longName, out name))
 			{
-				if (!featuresettings.ContainsKey(name))
+				Debug.LogWarning("LoadFeature GetPathAndName: Attempting to load feature: " + name + " failed");
+				return longName;
+			}
+			if (!featuresettings.ContainsKey(name))
+			{
+				FeatureSettings featureSettings = YamlIO.LoadFile<FeatureSettings>(GetPath() + name + ".yaml", null, null);
+				if (featureSettings != null)
 				{
-					FeatureSettings featureSettings = YamlIO.LoadFile<FeatureSettings>(GetPath() + name + ".yaml", null, null);
-					if (featureSettings != null)
+					featuresettings.Add(name, featureSettings);
+					if (featureSettings.forceBiome != null)
 					{
-						featuresettings.Add(name, featureSettings);
-						if (featureSettings.forceBiome != null)
-						{
-							LoadBiome(featureSettings.forceBiome, errors);
-							DebugUtil.Assert(biomes.BiomeBackgroundElementBandConfigurations.ContainsKey(featureSettings.forceBiome), longName, "(feature) referenced a missing biome named", featureSettings.forceBiome);
-						}
-					}
-					else
-					{
-						Debug.LogWarning("WorldGen: Attempting to load feature: " + name + " failed");
+						LoadBiome(featureSettings.forceBiome, errors);
+						DebugUtil.Assert(biomes.BiomeBackgroundElementBandConfigurations.ContainsKey(featureSettings.forceBiome), longName, "(feature) referenced a missing biome named", featureSettings.forceBiome);
 					}
 				}
-				return name;
+				else
+				{
+					Debug.LogWarning("WorldGen: Attempting to load feature: " + name + " failed");
+				}
 			}
-			Debug.LogWarning("LoadFeature GetPathAndName: Attempting to load feature: " + name + " failed");
-			return longName;
+			return name;
 		}
 
 		public static void LoadFeatures(Dictionary<string, int> features, List<YamlIO.Error> errors)
@@ -356,61 +356,61 @@ namespace ProcGen
 
 		public static bool LoadFiles(List<YamlIO.Error> errors)
 		{
-			if (worlds.worldCache.Count <= 0)
+			if (worlds.worldCache.Count > 0)
 			{
-				worlds.LoadFiles(GetPath(), errors);
-				List<FileHandle> list = new List<FileHandle>();
-				FileSystem.GetFiles(FileSystem.Normalize(System.IO.Path.Combine(path, "traits")), "*.yaml", list);
-				foreach (FileHandle item in list)
-				{
-					FileHandle trait_file = item;
-					WorldTrait worldTrait = YamlIO.LoadFile<WorldTrait>(trait_file.full_path, delegate(YamlIO.Error error, bool force_log_as_warning)
-					{
-						error.file = trait_file;
-						errors.Add(error);
-					}, null);
-					int num = FirstUncommonCharacter(path, trait_file.full_path);
-					string text = (num <= -1) ? trait_file.full_path : trait_file.full_path.Substring(num);
-					text = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(text), System.IO.Path.GetFileNameWithoutExtension(text));
-					if (worldTrait == null)
-					{
-						DebugUtil.LogWarningArgs("Failed to load trait: ", text);
-					}
-					else
-					{
-						traits[text] = worldTrait;
-					}
-				}
-				foreach (KeyValuePair<string, World> item2 in worlds.worldCache)
-				{
-					LoadFeatures(item2.Value.globalFeatures, errors);
-					LoadSubworlds(item2.Value.subworldFiles, errors);
-				}
-				foreach (KeyValuePair<string, WorldTrait> trait in traits)
-				{
-					LoadFeatures(trait.Value.globalFeatureMods, errors);
-					LoadSubworlds(trait.Value.additionalSubworldFiles, errors);
-				}
-				layers = MergeLoad<LevelLayerSettings>(GetPath() + "layers.yaml", errors);
-				layers.LevelLayers.ConvertBandSizeToMaxSize();
-				rivers = MergeLoad<ComposableDictionary<string, River>>(GetPath() + "rivers.yaml", errors);
-				rooms = MergeLoad<ComposableDictionary<string, Room>>(path + "rooms.yaml", errors);
-				foreach (KeyValuePair<string, Room> room in rooms)
-				{
-					room.Value.name = room.Key;
-				}
-				temperatures = MergeLoad<ComposableDictionary<Temperature.Range, Temperature>>(GetPath() + "temperatures.yaml", errors);
-				borders = MergeLoad<ComposableDictionary<string, List<WeightedSimHash>>>(GetPath() + "borders.yaml", errors);
-				defaults = YamlIO.LoadFile<DefaultSettings>(GetPath() + "defaults.yaml", null, null);
-				mobs = MergeLoad<MobSettings>(GetPath() + "mobs.yaml", errors);
-				foreach (KeyValuePair<string, Mob> item3 in mobs.MobLookupTable)
-				{
-					item3.Value.name = item3.Key;
-				}
-				DebugUtil.LogArgs("World settings reload complete!");
-				return true;
+				return false;
 			}
-			return false;
+			worlds.LoadFiles(GetPath(), errors);
+			List<FileHandle> list = new List<FileHandle>();
+			FileSystem.GetFiles(FileSystem.Normalize(System.IO.Path.Combine(path, "traits")), "*.yaml", list);
+			foreach (FileHandle item in list)
+			{
+				FileHandle trait_file = item;
+				WorldTrait worldTrait = YamlIO.LoadFile<WorldTrait>(trait_file.full_path, delegate(YamlIO.Error error, bool force_log_as_warning)
+				{
+					error.file = trait_file;
+					errors.Add(error);
+				}, null);
+				int num = FirstUncommonCharacter(path, trait_file.full_path);
+				string text = (num <= -1) ? trait_file.full_path : trait_file.full_path.Substring(num);
+				text = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(text), System.IO.Path.GetFileNameWithoutExtension(text));
+				if (worldTrait == null)
+				{
+					DebugUtil.LogWarningArgs("Failed to load trait: ", text);
+				}
+				else
+				{
+					traits[text] = worldTrait;
+				}
+			}
+			foreach (KeyValuePair<string, World> item2 in worlds.worldCache)
+			{
+				LoadFeatures(item2.Value.globalFeatures, errors);
+				LoadSubworlds(item2.Value.subworldFiles, errors);
+			}
+			foreach (KeyValuePair<string, WorldTrait> trait in traits)
+			{
+				LoadFeatures(trait.Value.globalFeatureMods, errors);
+				LoadSubworlds(trait.Value.additionalSubworldFiles, errors);
+			}
+			layers = MergeLoad<LevelLayerSettings>(GetPath() + "layers.yaml", errors);
+			layers.LevelLayers.ConvertBandSizeToMaxSize();
+			rivers = MergeLoad<ComposableDictionary<string, River>>(GetPath() + "rivers.yaml", errors);
+			rooms = MergeLoad<ComposableDictionary<string, Room>>(path + "rooms.yaml", errors);
+			foreach (KeyValuePair<string, Room> room in rooms)
+			{
+				room.Value.name = room.Key;
+			}
+			temperatures = MergeLoad<ComposableDictionary<Temperature.Range, Temperature>>(GetPath() + "temperatures.yaml", errors);
+			borders = MergeLoad<ComposableDictionary<string, List<WeightedSimHash>>>(GetPath() + "borders.yaml", errors);
+			defaults = YamlIO.LoadFile<DefaultSettings>(GetPath() + "defaults.yaml", null, null);
+			mobs = MergeLoad<MobSettings>(GetPath() + "mobs.yaml", errors);
+			foreach (KeyValuePair<string, Mob> item3 in mobs.MobLookupTable)
+			{
+				item3.Value.name = item3.Key;
+			}
+			DebugUtil.LogArgs("World settings reload complete!");
+			return true;
 		}
 
 		public static List<string> GetRandomTraits(int seed)

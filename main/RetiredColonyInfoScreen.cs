@@ -119,7 +119,7 @@ public class RetiredColonyInfoScreen : KModalScreen
 	[SerializeField]
 	private KButton quitToMainMenuButton;
 
-	private bool explorerGridConfigured = false;
+	private bool explorerGridConfigured;
 
 	private Dictionary<string, GameObject> achievementEntries = new Dictionary<string, GameObject>();
 
@@ -141,7 +141,7 @@ public class RetiredColonyInfoScreen : KModalScreen
 		LoadExplorer();
 		PopulateAchievements();
 		ConsumeMouseScroll = true;
-		explorerSearch.text = "";
+		explorerSearch.text = string.Empty;
 		explorerSearch.onValueChanged.AddListener(delegate
 		{
 			if (colonyDataRoot.activeSelf)
@@ -155,16 +155,16 @@ public class RetiredColonyInfoScreen : KModalScreen
 		});
 		clearExplorerSearchButton.onClick += delegate
 		{
-			explorerSearch.text = "";
+			explorerSearch.text = string.Empty;
 		};
-		achievementSearch.text = "";
+		achievementSearch.text = string.Empty;
 		achievementSearch.onValueChanged.AddListener(delegate
 		{
 			FilterAchievements(achievementSearch.text);
 		});
 		clearAchievementSearchButton.onClick += delegate
 		{
-			achievementSearch.text = "";
+			achievementSearch.text = string.Empty;
 		};
 		RefreshUIScale(null);
 		Subscribe(-810220474, RefreshUIScale);
@@ -377,6 +377,14 @@ public class RetiredColonyInfoScreen : KModalScreen
 			HierarchyReferences component = gameObject.GetComponent<HierarchyReferences>();
 			component.GetReference<LocText>("nameLabel").SetText(resource.Name);
 			component.GetReference<LocText>("descriptionLabel").SetText(resource.description);
+			if (string.IsNullOrEmpty(resource.icon) || (UnityEngine.Object)Assets.GetSprite(resource.icon) == (UnityEngine.Object)null)
+			{
+				component.GetReference<Image>("icon").sprite = Assets.GetSprite("check");
+			}
+			else
+			{
+				component.GetReference<Image>("icon").sprite = Assets.GetSprite(resource.icon);
+			}
 			if (resource.isVictoryCondition)
 			{
 				gameObject.transform.SetAsFirstSibling();
@@ -555,15 +563,15 @@ public class RetiredColonyInfoScreen : KModalScreen
 		}
 		data.buildings.Sort(delegate(Tuple<string, int> a, Tuple<string, int> b)
 		{
-			if (a.second <= b.second)
+			if (a.second > b.second)
 			{
-				if (a.second != b.second)
-				{
-					return -1;
-				}
+				return 1;
+			}
+			if (a.second == b.second)
+			{
 				return 0;
 			}
-			return 1;
+			return -1;
 		});
 		data.buildings.Reverse();
 		foreach (Tuple<string, int> building in data.buildings)
@@ -679,7 +687,7 @@ public class RetiredColonyInfoScreen : KModalScreen
 			transform.SetPosition(new Vector3(position.x, 0f, 0f));
 		}
 		UpdateAchievementData(null, null);
-		explorerSearch.text = "";
+		explorerSearch.text = string.Empty;
 	}
 
 	private void LoadExplorer()

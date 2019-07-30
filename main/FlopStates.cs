@@ -44,11 +44,7 @@ public class FlopStates : GameStateMachine<FlopStates, FlopStates.Instance, ISta
 	public override void InitializeStates(out BaseState default_state)
 	{
 		default_state = flop_pre;
-		State root = base.root;
-		string name = CREATURES.STATUSITEMS.FLOPPING.NAME;
-		string tooltip = CREATURES.STATUSITEMS.FLOPPING.TOOLTIP;
-		StatusItemCategory main = Db.Get().StatusItemCategories.Main;
-		root.ToggleStatusItem(name, tooltip, "", StatusItem.IconType.Info, NotificationType.Neutral, false, default(HashedString), 129022, null, null, main);
+		root.ToggleStatusItem(CREATURES.STATUSITEMS.FLOPPING.NAME, CREATURES.STATUSITEMS.FLOPPING.TOOLTIP, category: Db.Get().StatusItemCategories.Main, icon: string.Empty, icon_type: StatusItem.IconType.Info, notification_type: NotificationType.Neutral, allow_multiples: false, render_overlay: default(HashedString), status_overlays: 129022, resolve_string_callback: null, resolve_tooltip_callback: null);
 		flop_pre.Enter(ChooseDirection).Transition(flop_cycle, ShouldFlop, UpdateRate.SIM_200ms).Transition(pst, GameStateMachine<FlopStates, Instance, IStateMachineTarget, Def>.Not(ShouldFlop), UpdateRate.SIM_200ms);
 		flop_cycle.PlayAnim("flop_loop", KAnim.PlayMode.Once).Transition(pst, IsSubstantialLiquid, UpdateRate.SIM_200ms).Update("Flop", FlopForward, UpdateRate.SIM_33ms, false)
 			.OnAnimQueueComplete(flop_pre);

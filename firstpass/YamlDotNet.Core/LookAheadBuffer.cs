@@ -49,11 +49,11 @@ namespace YamlDotNet.Core
 				throw new ArgumentOutOfRangeException("offset", "The offset must be betwwen zero and the capacity of the buffer.");
 			}
 			Cache(offset);
-			if (offset >= count)
+			if (offset < count)
 			{
-				return '\0';
+				return buffer[GetIndexForOffset(offset)];
 			}
-			return buffer[GetIndexForOffset(offset)];
+			return '\0';
 		}
 
 		public void Cache(int length)

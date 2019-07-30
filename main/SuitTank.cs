@@ -16,7 +16,7 @@ public class SuitTank : KMonoBehaviour, IGameObjectEffectDescriptor, OxygenBreat
 
 	public const float REFILL_PERCENT = 0.25f;
 
-	public bool underwaterSupport = false;
+	public bool underwaterSupport;
 
 	private SuitSuffocationMonitor.Instance suitSuffocationMonitor;
 
@@ -108,15 +108,15 @@ public class SuitTank : KMonoBehaviour, IGameObjectEffectDescriptor, OxygenBreat
 
 	public bool ConsumeGas(OxygenBreather oxygen_breather, float gas_consumed)
 	{
-		if (!IsEmpty())
+		if (IsEmpty())
 		{
-			gas_consumed = Mathf.Min(gas_consumed, amount);
-			amount -= gas_consumed;
-			Game.Instance.accumulators.Accumulate(oxygen_breather.O2Accumulator, gas_consumed);
-			ReportManager.Instance.ReportValue(ReportManager.ReportType.OxygenCreated, 0f - gas_consumed, oxygen_breather.GetProperName(), null);
-			return true;
+			return false;
 		}
-		return false;
+		gas_consumed = Mathf.Min(gas_consumed, amount);
+		amount -= gas_consumed;
+		Game.Instance.accumulators.Accumulate(oxygen_breather.O2Accumulator, gas_consumed);
+		ReportManager.Instance.ReportValue(ReportManager.ReportType.OxygenCreated, 0f - gas_consumed, oxygen_breather.GetProperName(), null);
+		return true;
 	}
 
 	public bool ShouldEmitCO2()

@@ -150,49 +150,49 @@ namespace YamlDotNet.Core
 
 		private bool NeedMoreEvents()
 		{
-			if (events.Count != 0)
+			if (events.Count == 0)
 			{
-				int num;
-				switch (events.Peek().Type)
+				return true;
+			}
+			int num;
+			switch (events.Peek().Type)
+			{
+			case EventType.DocumentStart:
+				num = 1;
+				break;
+			case EventType.SequenceStart:
+				num = 2;
+				break;
+			case EventType.MappingStart:
+				num = 3;
+				break;
+			default:
+				return false;
+			}
+			if (events.Count > num)
+			{
+				return false;
+			}
+			int num2 = 0;
+			foreach (ParsingEvent @event in events)
+			{
+				switch (@event.Type)
 				{
 				case EventType.DocumentStart:
-					num = 1;
-					break;
 				case EventType.SequenceStart:
-					num = 2;
-					break;
 				case EventType.MappingStart:
-					num = 3;
+					num2++;
 					break;
-				default:
+				case EventType.DocumentEnd:
+				case EventType.SequenceEnd:
+				case EventType.MappingEnd:
+					num2--;
+					break;
+				}
+				if (num2 == 0)
+				{
 					return false;
 				}
-				if (events.Count <= num)
-				{
-					int num2 = 0;
-					foreach (ParsingEvent @event in events)
-					{
-						switch (@event.Type)
-						{
-						case EventType.DocumentStart:
-						case EventType.SequenceStart:
-						case EventType.MappingStart:
-							num2++;
-							break;
-						case EventType.DocumentEnd:
-						case EventType.SequenceEnd:
-						case EventType.MappingEnd:
-							num2--;
-							break;
-						}
-						if (num2 == 0)
-						{
-							return false;
-						}
-					}
-					return true;
-				}
-				return false;
 			}
 			return true;
 		}
@@ -469,11 +469,7 @@ namespace YamlDotNet.Core
 		private void StateMachine(ParsingEvent evt)
 		{
 			YamlDotNet.Core.Events.Comment comment = evt as YamlDotNet.Core.Events.Comment;
-			if (comment != null)
-			{
-				EmitComment(comment);
-			}
-			else
+			if (comment == null)
 			{
 				switch (state)
 				{
@@ -533,6 +529,10 @@ namespace YamlDotNet.Core
 				default:
 					throw new InvalidOperationException();
 				}
+			}
+			else
+			{
+				EmitComment(comment);
 			}
 		}
 
@@ -644,18 +644,18 @@ namespace YamlDotNet.Core
 		private TagDirectiveCollection NonDefaultTagsAmong(IEnumerable<TagDirective> tagCollection)
 		{
 			TagDirectiveCollection tagDirectiveCollection = new TagDirectiveCollection();
-			if (tagCollection != null)
+			if (tagCollection == null)
 			{
-				foreach (TagDirective item2 in tagCollection)
-				{
-					AppendTagDirectiveTo(item2, false, tagDirectiveCollection);
-				}
-				TagDirective[] defaultTagDirectives = Constants.DefaultTagDirectives;
-				foreach (TagDirective item in defaultTagDirectives)
-				{
-					tagDirectiveCollection.Remove(item);
-				}
 				return tagDirectiveCollection;
+			}
+			foreach (TagDirective item2 in tagCollection)
+			{
+				AppendTagDirectiveTo(item2, false, tagDirectiveCollection);
+			}
+			TagDirective[] defaultTagDirectives = Constants.DefaultTagDirectives;
+			foreach (TagDirective item in defaultTagDirectives)
+			{
+				tagDirectiveCollection.Remove(item);
 			}
 			return tagDirectiveCollection;
 		}
@@ -922,9 +922,9 @@ namespace YamlDotNet.Core
 					case '\\':
 						break;
 					case ' ':
-						goto IL_026d;
+						goto IL_0260;
 					default:
-						goto IL_02d8;
+						goto IL_02c3;
 					}
 				}
 				Write('\\');
@@ -1003,11 +1003,11 @@ namespace YamlDotNet.Core
 				}
 				flag = false;
 				continue;
-				IL_02d8:
+				IL_02c3:
 				Write(c);
 				flag = false;
 				continue;
-				IL_026d:
+				IL_0260:
 				if (allowBreaks && !flag && column > bestWidth && i > 0 && i + 1 < value.Length)
 				{
 					WriteIndent();
@@ -1427,41 +1427,41 @@ namespace YamlDotNet.Core
 
 		private bool CheckSimpleKey()
 		{
-			if (events.Count >= 1)
+			if (events.Count < 1)
 			{
-				int num;
-				switch (events.Peek().Type)
+				return false;
+			}
+			int num;
+			switch (events.Peek().Type)
+			{
+			case EventType.Alias:
+				num = SafeStringLength(anchorData.anchor);
+				break;
+			case EventType.Scalar:
+				if (scalarData.isMultiline)
 				{
-				case EventType.Alias:
-					num = SafeStringLength(anchorData.anchor);
-					break;
-				case EventType.Scalar:
-					if (scalarData.isMultiline)
-					{
-						return false;
-					}
-					num = SafeStringLength(anchorData.anchor) + SafeStringLength(tagData.handle) + SafeStringLength(tagData.suffix) + SafeStringLength(scalarData.value);
-					break;
-				case EventType.SequenceStart:
-					if (!CheckEmptySequence())
-					{
-						return false;
-					}
-					num = SafeStringLength(anchorData.anchor) + SafeStringLength(tagData.handle) + SafeStringLength(tagData.suffix);
-					break;
-				case EventType.MappingStart:
-					if (!CheckEmptySequence())
-					{
-						return false;
-					}
-					num = SafeStringLength(anchorData.anchor) + SafeStringLength(tagData.handle) + SafeStringLength(tagData.suffix);
-					break;
-				default:
 					return false;
 				}
-				return num <= 128;
+				num = SafeStringLength(anchorData.anchor) + SafeStringLength(tagData.handle) + SafeStringLength(tagData.suffix) + SafeStringLength(scalarData.value);
+				break;
+			case EventType.SequenceStart:
+				if (!CheckEmptySequence())
+				{
+					return false;
+				}
+				num = SafeStringLength(anchorData.anchor) + SafeStringLength(tagData.handle) + SafeStringLength(tagData.suffix);
+				break;
+			case EventType.MappingStart:
+				if (!CheckEmptySequence())
+				{
+					return false;
+				}
+				num = SafeStringLength(anchorData.anchor) + SafeStringLength(tagData.handle) + SafeStringLength(tagData.suffix);
+				break;
+			default:
+				return false;
 			}
-			return false;
+			return num <= 128;
 		}
 
 		private int SafeStringLength(string value)
@@ -1471,22 +1471,22 @@ namespace YamlDotNet.Core
 
 		private bool CheckEmptySequence()
 		{
-			if (events.Count >= 2)
+			if (events.Count < 2)
 			{
-				FakeList<ParsingEvent> fakeList = new FakeList<ParsingEvent>(events);
-				return fakeList[0] is SequenceStart && fakeList[1] is SequenceEnd;
+				return false;
 			}
-			return false;
+			FakeList<ParsingEvent> fakeList = new FakeList<ParsingEvent>(events);
+			return fakeList[0] is SequenceStart && fakeList[1] is SequenceEnd;
 		}
 
 		private bool CheckEmptyMapping()
 		{
-			if (events.Count >= 2)
+			if (events.Count < 2)
 			{
-				FakeList<ParsingEvent> fakeList = new FakeList<ParsingEvent>(events);
-				return fakeList[0] is MappingStart && fakeList[1] is MappingEnd;
+				return false;
 			}
-			return false;
+			FakeList<ParsingEvent> fakeList = new FakeList<ParsingEvent>(events);
+			return fakeList[0] is MappingStart && fakeList[1] is MappingEnd;
 		}
 
 		private void WriteBlockScalarHints(string value)

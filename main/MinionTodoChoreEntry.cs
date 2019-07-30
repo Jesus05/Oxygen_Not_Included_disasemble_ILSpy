@@ -59,7 +59,7 @@ public class MinionTodoChoreEntry : KMonoBehaviour
 			{
 				text2 = text2.Replace("{Groups}", text);
 			}
-			string text3 = (context.chore.masterPriority.priority_class != 0) ? "" : context.chore.masterPriority.priority_value.ToString();
+			string text3 = (context.chore.masterPriority.priority_class != 0) ? string.Empty : context.chore.masterPriority.priority_value.ToString();
 			Sprite sprite = (context.chore.masterPriority.priority_class != 0) ? null : prioritySprites[context.chore.masterPriority.priority_value - 1];
 			ChoreGroup choreGroup = BestPriorityGroup(context, consumer);
 			icon.sprite = ((choreGroup == null) ? null : Assets.GetSprite(choreGroup.sprite));
@@ -67,7 +67,7 @@ public class MinionTodoChoreEntry : KMonoBehaviour
 			subLabel.SetText(text2);
 			priorityLabel.SetText(text3);
 			priorityIcon.sprite = sprite;
-			moreLabel.text = "";
+			moreLabel.text = string.Empty;
 			GetComponent<ToolTip>().SetSimpleTooltip(TooltipForChore(context, consumer));
 			KButton componentInChildren = GetComponentInChildren<KButton>();
 			componentInChildren.ClearOnClick();

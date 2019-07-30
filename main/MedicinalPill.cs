@@ -65,23 +65,23 @@ public class MedicinalPill : Workable, IGameObjectEffectDescriptor, IConsumableU
 				return false;
 			}
 		}
-		if (info.medicineType != 0)
+		if (info.medicineType == MedicineInfo.MedicineType.Booster)
 		{
-			Sicknesses sicknesses = consumer.GetSicknesses();
-			if (info.medicineType == MedicineInfo.MedicineType.CureAny && sicknesses.Count > 0)
+			return true;
+		}
+		Sicknesses sicknesses = consumer.GetSicknesses();
+		if (info.medicineType == MedicineInfo.MedicineType.CureAny && sicknesses.Count > 0)
+		{
+			return true;
+		}
+		foreach (SicknessInstance item in sicknesses)
+		{
+			if (info.curedSicknesses.Contains(item.modifier.Id))
 			{
 				return true;
 			}
-			foreach (SicknessInstance item in sicknesses)
-			{
-				if (info.curedSicknesses.Contains(item.modifier.Id))
-				{
-					return true;
-				}
-			}
-			return false;
 		}
-		return true;
+		return false;
 	}
 
 	public List<Descriptor> EffectDescriptors(GameObject go)

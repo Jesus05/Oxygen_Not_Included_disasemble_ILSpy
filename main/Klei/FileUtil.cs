@@ -119,16 +119,17 @@ namespace Klei
 			catch (UnauthorizedAccessException)
 			{
 				ErrorDialog(string.Format(UI.FRONTEND.SUPPORTWARNINGS.IO_UNAUTHORIZED, io_subject));
+				return fail_result;
 			}
 			catch (IOException)
 			{
 				ErrorDialog(string.Format(UI.FRONTEND.SUPPORTWARNINGS.IO_SUFFICIENT_SPACE, io_subject));
+				return fail_result;
 			}
 			catch
 			{
 				throw;
 			}
-			return fail_result;
 		}
 
 		public static FileStream Create(string filename, int retry_count = 0)
@@ -152,11 +153,11 @@ namespace Klei
 		{
 			return DoIODialog(delegate
 			{
-				if (Directory.Exists(path))
+				if (!Directory.Exists(path))
 				{
-					Directory.Delete(path, true);
 					return true;
 				}
+				Directory.Delete(path, true);
 				return true;
 			}, path, false, retry_count);
 		}

@@ -9,7 +9,7 @@ public class TextLinkHandler : MonoBehaviour, IPointerClickHandler, IPointerEnte
 	[MyCmpGet]
 	private LocText text;
 
-	private bool hoverLink = false;
+	private bool hoverLink;
 
 	public void OnPointerClick(PointerEventData eventData)
 	{

@@ -61,6 +61,7 @@ public class ColonyAchievementTracker : KMonoBehaviour, ISaveLoadableDetails
 		{
 			foreach (string newlyCompletedAchievement in newlyCompletedAchievements)
 			{
+				UnlockPlatformAchievement(newlyCompletedAchievement);
 				completedAchievementsToDisplay.Add(newlyCompletedAchievement);
 			}
 			TriggerNewAchievementCompleted(null);
@@ -68,6 +69,37 @@ public class ColonyAchievementTracker : KMonoBehaviour, ISaveLoadableDetails
 		}
 		newlyCompletedAchievements.Clear();
 		checkAchievementsHandle = GameScheduler.Instance.Schedule("CheckColonyAchievements", 12f, CheckAchievements, null, null);
+	}
+
+	private static void UnlockPlatformAchievement(string achievement_id)
+	{
+		if (DebugHandler.InstantBuildMode)
+		{
+			Debug.LogWarningFormat("UnlockPlatformAchievement {0} skipping: instant build mode", achievement_id);
+		}
+		else if (Game.Instance.SandboxModeActive)
+		{
+			Debug.LogWarningFormat("UnlockPlatformAchievement {0} skipping: sandbox mode", achievement_id);
+		}
+		else if (Game.Instance.debugWasUsed)
+		{
+			Debug.LogWarningFormat("UnlockPlatformAchievement {0} skipping: debug was used.", achievement_id);
+		}
+		else
+		{
+			ColonyAchievement colonyAchievement = Db.Get().ColonyAchievements.Get(achievement_id);
+			if (colonyAchievement != null && !string.IsNullOrEmpty(colonyAchievement.steamAchievementId))
+			{
+				if ((bool)SteamAchievementService.Instance)
+				{
+					SteamAchievementService.Instance.Unlock(colonyAchievement.steamAchievementId);
+				}
+				else
+				{
+					Debug.LogWarningFormat("Steam achievement [{0}] was achieved, but achievement service was null", colonyAchievement.steamAchievementId);
+				}
+			}
+		}
 	}
 
 	public void DebugTriggerAchievement(string id)

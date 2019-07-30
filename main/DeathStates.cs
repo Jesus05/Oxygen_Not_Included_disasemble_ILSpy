@@ -39,11 +39,7 @@ public class DeathStates : GameStateMachine<DeathStates, DeathStates.Instance, I
 	public override void InitializeStates(out BaseState default_state)
 	{
 		default_state = loop;
-		State state = loop;
-		string name = CREATURES.STATUSITEMS.DEAD.NAME;
-		string tooltip = CREATURES.STATUSITEMS.DEAD.TOOLTIP;
-		StatusItemCategory main = Db.Get().StatusItemCategories.Main;
-		state.ToggleStatusItem(name, tooltip, "", StatusItem.IconType.Info, NotificationType.Neutral, false, default(HashedString), 129022, null, null, main).Enter("EnableGravity", delegate(Instance smi)
+		loop.ToggleStatusItem(CREATURES.STATUSITEMS.DEAD.NAME, CREATURES.STATUSITEMS.DEAD.TOOLTIP, category: Db.Get().StatusItemCategories.Main, icon: string.Empty, icon_type: StatusItem.IconType.Info, notification_type: NotificationType.Neutral, allow_multiples: false, render_overlay: default(HashedString), status_overlays: 129022, resolve_string_callback: null, resolve_tooltip_callback: null).Enter("EnableGravity", delegate(Instance smi)
 		{
 			smi.EnableGravityIfNecessary();
 		}).PlayAnim("Death")

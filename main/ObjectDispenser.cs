@@ -185,7 +185,7 @@ public class ObjectDispenser : Switch, IUserControlledCapacity
 		smi.StartSM();
 		if (infoStatusItem == null)
 		{
-			infoStatusItem = new StatusItem("ObjectDispenserAutomationInfo", "BUILDING", "", StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, true, 129022);
+			infoStatusItem = new StatusItem("ObjectDispenserAutomationInfo", "BUILDING", string.Empty, StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, true, 129022);
 			infoStatusItem.resolveStringCallback = ResolveInfoStatusItemString;
 		}
 		filteredStorage.FilterChanged();

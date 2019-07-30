@@ -16,11 +16,11 @@ public class UICurvePath : KMonoBehaviour
 
 	public bool loop = true;
 
-	public bool animateScale = false;
+	public bool animateScale;
 
 	public Vector3 initialScale;
 
-	private float startDelay = 0f;
+	private float startDelay;
 
 	public float initialAlpha = 0.5f;
 

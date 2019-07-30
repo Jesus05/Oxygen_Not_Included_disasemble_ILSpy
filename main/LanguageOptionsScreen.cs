@@ -415,7 +415,7 @@ public class LanguageOptionsScreen : KModalScreen, SteamUGCService.IClient
 
 	public static string GetInstalledLanguageCode(out PublishedFileId_t installed)
 	{
-		string result = "";
+		string result = string.Empty;
 		System.DateTime lastModified;
 		string languageFilename = GetLanguageFilename(out installed, out lastModified);
 		if (languageFilename != null && File.Exists(languageFilename))
@@ -504,50 +504,50 @@ public class LanguageOptionsScreen : KModalScreen, SteamUGCService.IClient
 	private static string GetLanguageFile(PublishedFileId_t item, out System.DateTime lastModified)
 	{
 		lastModified = System.DateTime.MinValue;
-		if (!((UnityEngine.Object)Global.Instance == (UnityEngine.Object)null) && Global.Instance.modManager != null)
+		if ((UnityEngine.Object)Global.Instance == (UnityEngine.Object)null || Global.Instance.modManager == null)
 		{
-			string language_id = item.ToString();
-			Mod mod = Global.Instance.modManager.mods.Find((Mod candidate) => candidate.label.id == language_id);
-			if (!string.IsNullOrEmpty(mod.label.id))
-			{
-				lastModified = mod.label.time_stamp;
-				string text = Path.Combine(Application.streamingAssetsPath, "strings.po");
-				byte[] array = mod.file_source.GetFileSystem().ReadBytes(text);
-				if (array != null)
-				{
-					return FileSystem.ConvertToText(array);
-				}
-				Debug.LogFormat("Failed to load language file from local mod installation...couldn't find {0}", text);
-				return GetLanguageFileFromSteam(item, out lastModified);
-			}
+			Debug.LogFormat("Failed to load language file from local mod installation...too early in initialization flow.");
+			return GetLanguageFileFromSteam(item, out lastModified);
+		}
+		string language_id = item.ToString();
+		Mod mod = Global.Instance.modManager.mods.Find((Mod candidate) => candidate.label.id == language_id);
+		if (string.IsNullOrEmpty(mod.label.id))
+		{
 			Debug.LogFormat("Failed to load language file from local mod installation...mod not found.");
 			return GetLanguageFileFromSteam(item, out lastModified);
 		}
-		Debug.LogFormat("Failed to load language file from local mod installation...too early in initialization flow.");
-		return GetLanguageFileFromSteam(item, out lastModified);
+		lastModified = mod.label.time_stamp;
+		string text = Path.Combine(Application.streamingAssetsPath, "strings.po");
+		byte[] array = mod.file_source.GetFileSystem().ReadBytes(text);
+		if (array == null)
+		{
+			Debug.LogFormat("Failed to load language file from local mod installation...couldn't find {0}", text);
+			return GetLanguageFileFromSteam(item, out lastModified);
+		}
+		return FileSystem.ConvertToText(array);
 	}
 
 	private static string GetLanguageFileFromSteam(PublishedFileId_t item, out System.DateTime lastModified)
 	{
 		lastModified = System.DateTime.MinValue;
-		if (!(item == PublishedFileId_t.Invalid))
+		if (item == PublishedFileId_t.Invalid)
 		{
-			SteamUGCService.Mod mod = SteamUGCService.Instance.FindMod(item);
-			if (mod != null)
-			{
-				byte[] bytesFromZip = SteamUGCService.GetBytesFromZip(item, poFile, out lastModified, false);
-				if (bytesFromZip != null && bytesFromZip.Length != 0)
-				{
-					return Encoding.UTF8.GetString(bytesFromZip);
-				}
-				Debug.LogWarning("Failed to read from Steam mod installation");
-				return null;
-			}
+			Debug.LogWarning("Cant get INVALID file id from Steam");
+			return null;
+		}
+		SteamUGCService.Mod mod = SteamUGCService.Instance.FindMod(item);
+		if (mod == null)
+		{
 			Debug.LogWarning("Mod is not in published list");
 			return null;
 		}
-		Debug.LogWarning("Cant get INVALID file id from Steam");
-		return null;
+		byte[] bytesFromZip = SteamUGCService.GetBytesFromZip(item, poFile, out lastModified, false);
+		if (bytesFromZip == null || bytesFromZip.Length == 0)
+		{
+			Debug.LogWarning("Failed to read from Steam mod installation");
+			return null;
+		}
+		return Encoding.UTF8.GetString(bytesFromZip);
 	}
 
 	private static PublishedFileId_t GetInstalledFileID(out System.DateTime lastModified)

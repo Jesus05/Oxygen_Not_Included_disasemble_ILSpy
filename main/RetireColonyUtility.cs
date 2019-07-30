@@ -124,11 +124,11 @@ public static class RetireColonyUtility
 							catch (Exception ex)
 							{
 								Debug.LogWarningFormat("LoadRetiredColonies failed load {0} [{1}]: {2}", encoding, text, ex.ToString());
-								goto IL_0121;
+								goto IL_010f;
 							}
 						}
 						break;
-						IL_0121:
+						IL_010f:
 						num++;
 					}
 				}
@@ -183,13 +183,13 @@ public static class RetireColonyUtility
 		{
 			Debug.LogWarningFormat("LoadColonyPreview path does not exist or is not directory [{0}]", text);
 		}
-		if (list.Count <= 0)
+		if (list.Count > 0)
 		{
-			return null;
+			Texture2D texture2D = new Texture2D(640, 360);
+			texture2D.LoadImage(File.ReadAllBytes(list[list.Count - 1]));
+			return Sprite.Create(texture2D, new Rect(Vector2.zero, new Vector2(640f, 360f)), new Vector2(0.5f, 0.5f));
 		}
-		Texture2D texture2D = new Texture2D(640, 360);
-		texture2D.LoadImage(File.ReadAllBytes(list[list.Count - 1]));
-		return Sprite.Create(texture2D, new Rect(Vector2.zero, new Vector2(640f, 360f)), new Vector2(0.5f, 0.5f));
+		return null;
 	}
 
 	public static string StripInvalidCharacters(string source)

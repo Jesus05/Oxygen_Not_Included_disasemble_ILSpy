@@ -54,44 +54,44 @@ public class RetiredColonyData
 
 		public Tuple<float, float> GetByMaxValue()
 		{
-			if (value.Length != 0)
+			if (value.Length == 0)
 			{
-				int num = -1;
-				float num2 = -1f;
-				for (int i = 0; i < value.Length; i++)
-				{
-					if (value[i].second > num2)
-					{
-						num2 = value[i].second;
-						num = i;
-					}
-				}
-				if (num == -1)
-				{
-					num = 0;
-				}
-				return value[num];
+				return new Tuple<float, float>(0f, 0f);
 			}
-			return new Tuple<float, float>(0f, 0f);
+			int num = -1;
+			float num2 = -1f;
+			for (int i = 0; i < value.Length; i++)
+			{
+				if (value[i].second > num2)
+				{
+					num2 = value[i].second;
+					num = i;
+				}
+			}
+			if (num == -1)
+			{
+				num = 0;
+			}
+			return value[num];
 		}
 
 		public Tuple<float, float> GetByMaxKey()
 		{
-			if (value.Length != 0)
+			if (value.Length == 0)
 			{
-				int num = -1;
-				float num2 = -1f;
-				for (int i = 0; i < value.Length; i++)
-				{
-					if (value[i].first > num2)
-					{
-						num2 = value[i].first;
-						num = i;
-					}
-				}
-				return value[num];
+				return new Tuple<float, float>(0f, 0f);
 			}
-			return new Tuple<float, float>(0f, 0f);
+			int num = -1;
+			float num2 = -1f;
+			for (int i = 0; i < value.Length; i++)
+			{
+				if (value[i].first > num2)
+				{
+					num2 = value[i].first;
+					num = i;
+				}
+			}
+			return value[num];
 		}
 	}
 
@@ -245,11 +245,11 @@ public class RetiredColonyData
 			{
 				int num4 = 0;
 				float num5 = 0f;
-				ArrayRef<ReportManager.ReportEntry> contextEntries = ReportManager.Instance.reports[num3].GetEntry(ReportManager.ReportType.WorkTime).contextEntries;
-				for (int num6 = 0; num6 < contextEntries.Count; num6++)
+				ReportManager.ReportEntry entry = ReportManager.Instance.reports[num3].GetEntry(ReportManager.ReportType.WorkTime);
+				for (int num6 = 0; num6 < entry.contextEntries.Count; num6++)
 				{
 					num4++;
-					num5 += contextEntries[num6].accPositive;
+					num5 += entry.contextEntries[num6].accPositive;
 				}
 				num5 /= (float)num4;
 				num5 /= 600f;
@@ -265,11 +265,11 @@ public class RetiredColonyData
 			{
 				int num9 = 0;
 				float num10 = 0f;
-				ArrayRef<ReportManager.ReportEntry> contextEntries2 = ReportManager.Instance.reports[num8].GetEntry(ReportManager.ReportType.TravelTime).contextEntries;
-				for (int num11 = 0; num11 < contextEntries2.Count; num11++)
+				ReportManager.ReportEntry entry2 = ReportManager.Instance.reports[num8].GetEntry(ReportManager.ReportType.TravelTime);
+				for (int num11 = 0; num11 < entry2.contextEntries.Count; num11++)
 				{
 					num9++;
-					num10 += contextEntries2[num11].accPositive;
+					num10 += entry2.contextEntries[num11].accPositive;
 				}
 				num10 /= (float)num9;
 				array8[num8] = new Tuple<float, float>((float)ReportManager.Instance.reports[num8].day, num10);
@@ -284,11 +284,11 @@ public class RetiredColonyData
 			{
 				int num14 = 0;
 				float num15 = 0f;
-				ArrayRef<ReportManager.ReportEntry> contextEntries3 = ReportManager.Instance.reports[num13].GetEntry(ReportManager.ReportType.StressDelta).contextEntries;
-				for (int num16 = 0; num16 < contextEntries3.Count; num16++)
+				ReportManager.ReportEntry entry3 = ReportManager.Instance.reports[num13].GetEntry(ReportManager.ReportType.StressDelta);
+				for (int num16 = 0; num16 < entry3.contextEntries.Count; num16++)
 				{
 					num14++;
-					num15 += contextEntries3[num16].accPositive;
+					num15 += entry3.contextEntries[num16].accPositive;
 				}
 				array10[num13] = new Tuple<float, float>((float)ReportManager.Instance.reports[num13].day, num15 / (float)num14);
 			}
@@ -297,11 +297,11 @@ public class RetiredColonyData
 			{
 				int num18 = 0;
 				float num19 = 0f;
-				ArrayRef<ReportManager.ReportEntry> contextEntries4 = ReportManager.Instance.reports[num17].GetEntry(ReportManager.ReportType.StressDelta).contextEntries;
-				for (int num20 = 0; num20 < contextEntries4.Count; num20++)
+				ReportManager.ReportEntry entry4 = ReportManager.Instance.reports[num17].GetEntry(ReportManager.ReportType.StressDelta);
+				for (int num20 = 0; num20 < entry4.contextEntries.Count; num20++)
 				{
 					num18++;
-					num19 += contextEntries4[num20].accNegative;
+					num19 += entry4.contextEntries[num20].accNegative;
 				}
 				num19 *= -1f;
 				array11[num17] = new Tuple<float, float>((float)ReportManager.Instance.reports[num17].day, num19 / (float)num18);

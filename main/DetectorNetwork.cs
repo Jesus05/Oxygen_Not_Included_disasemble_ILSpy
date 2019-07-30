@@ -31,8 +31,8 @@ public class DetectorNetwork : GameStateMachine<DetectorNetwork, DetectorNetwork
 		public NetworkStates InitializeStates(DetectorNetwork parent)
 		{
 			DefaultState(poor);
-			poor.ToggleStatusItem(BUILDING.STATUSITEMS.NETWORKQUALITY.NAME, BUILDING.STATUSITEMS.NETWORKQUALITY.TOOLTIP, "", StatusItem.IconType.Exclamation, NotificationType.BadMinor, false, default(HashedString), 0, StringCallback, null, null).ParamTransition(parent.networkQuality, good, (Instance smi, float p) => (double)p >= 0.8);
-			good.ToggleStatusItem(BUILDING.STATUSITEMS.NETWORKQUALITY.NAME, BUILDING.STATUSITEMS.NETWORKQUALITY.TOOLTIP, "", StatusItem.IconType.Info, NotificationType.Neutral, false, default(HashedString), 0, StringCallback, null, null).ParamTransition(parent.networkQuality, good, (Instance smi, float p) => (double)p < 0.8);
+			poor.ToggleStatusItem(BUILDING.STATUSITEMS.NETWORKQUALITY.NAME, BUILDING.STATUSITEMS.NETWORKQUALITY.TOOLTIP, string.Empty, StatusItem.IconType.Exclamation, NotificationType.BadMinor, false, default(HashedString), 0, StringCallback, null, null).ParamTransition(parent.networkQuality, good, (Instance smi, float p) => (double)p >= 0.8);
+			good.ToggleStatusItem(BUILDING.STATUSITEMS.NETWORKQUALITY.NAME, BUILDING.STATUSITEMS.NETWORKQUALITY.TOOLTIP, string.Empty, StatusItem.IconType.Info, NotificationType.Neutral, false, default(HashedString), 0, StringCallback, null, null).ParamTransition(parent.networkQuality, good, (Instance smi, float p) => (double)p < 0.8);
 			return this;
 		}
 
@@ -47,7 +47,7 @@ public class DetectorNetwork : GameStateMachine<DetectorNetwork, DetectorNetwork
 	{
 		private float closestMachinery = 3.40282347E+38f;
 
-		private int visibleSkyCells = 0;
+		private int visibleSkyCells;
 
 		public Instance(IStateMachineTarget master, Def def)
 			: base(master, def)
@@ -120,11 +120,11 @@ public class DetectorNetwork : GameStateMachine<DetectorNetwork, DetectorNetwork
 
 		public float GetDishQuality()
 		{
-			if (GetComponent<Operational>().IsOperational)
+			if (!GetComponent<Operational>().IsOperational)
 			{
-				return Mathf.Clamp01(closestMachinery / (float)base.def.interferenceRadius) * Mathf.Clamp01((float)visibleSkyCells / ((float)base.def.interferenceRadius * 2f));
+				return 0f;
 			}
-			return 0f;
+			return Mathf.Clamp01(closestMachinery / (float)base.def.interferenceRadius) * Mathf.Clamp01((float)visibleSkyCells / ((float)base.def.interferenceRadius * 2f));
 		}
 
 		public float ComputeTotalDishQuality()
@@ -162,6 +162,6 @@ public class DetectorNetwork : GameStateMachine<DetectorNetwork, DetectorNetwork
 			smi.Update(dt);
 		}, UpdateRate.SIM_1000ms, false).EventTransition(GameHashes.OperationalChanged, inoperational, (Instance smi) => !smi.GetComponent<Operational>().IsOperational);
 		operational.self_poor.InitializeStates(this).ToggleStatusItem(BUILDING.STATUSITEMS.DETECTORQUALITY.NAME, BUILDING.STATUSITEMS.DETECTORQUALITY.TOOLTIP, "status_item_interference", StatusItem.IconType.Custom, NotificationType.BadMinor, false, default(HashedString), 0, (string str, Instance smi) => str.Replace("{Quality}", GameUtil.GetFormattedPercent(smi.GetDishQuality() * 100f, GameUtil.TimeSlice.None)), null, null).ParamTransition(selfQuality, operational.self_good, (Instance smi, float p) => (double)p >= 0.8);
-		operational.self_good.InitializeStates(this).ToggleStatusItem(BUILDING.STATUSITEMS.DETECTORQUALITY.NAME, BUILDING.STATUSITEMS.DETECTORQUALITY.TOOLTIP, "", StatusItem.IconType.Info, NotificationType.Neutral, false, default(HashedString), 0, (string str, Instance smi) => str.Replace("{Quality}", GameUtil.GetFormattedPercent(smi.GetDishQuality() * 100f, GameUtil.TimeSlice.None)), null, null).ParamTransition(selfQuality, operational.self_poor, (Instance smi, float p) => (double)p < 0.8);
+		operational.self_good.InitializeStates(this).ToggleStatusItem(BUILDING.STATUSITEMS.DETECTORQUALITY.NAME, BUILDING.STATUSITEMS.DETECTORQUALITY.TOOLTIP, string.Empty, StatusItem.IconType.Info, NotificationType.Neutral, false, default(HashedString), 0, (string str, Instance smi) => str.Replace("{Quality}", GameUtil.GetFormattedPercent(smi.GetDishQuality() * 100f, GameUtil.TimeSlice.None)), null, null).ParamTransition(selfQuality, operational.self_poor, (Instance smi, float p) => (double)p < 0.8);
 	}
 }

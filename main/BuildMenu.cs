@@ -58,19 +58,21 @@ public class BuildMenu : KScreen
 			if (data != null && typeof(IList<DisplayInfo>).IsAssignableFrom(data.GetType()))
 			{
 				IList<DisplayInfo> list = (IList<DisplayInfo>)data;
-				foreach (DisplayInfo item in list)
 				{
-					DisplayInfo current = item;
-					result = current.GetInfo(category);
-					if (result.category == category)
+					foreach (DisplayInfo item in list)
 					{
-						break;
+						DisplayInfo current = item;
+						result = current.GetInfo(category);
+						if (result.category == category)
+						{
+							return result;
+						}
+						if (current.category == category)
+						{
+							return current;
+						}
 					}
-					if (current.category == category)
-					{
-						result = current;
-						break;
-					}
+					return result;
 				}
 			}
 			return result;
@@ -102,11 +104,11 @@ public class BuildMenu : KScreen
 
 	private Stack<KIconToggleMenu> submenuStack = new Stack<KIconToggleMenu>();
 
-	private bool selecting = false;
+	private bool selecting;
 
-	private bool updating = false;
+	private bool updating;
 
-	private bool deactivateToolQueued = false;
+	private bool deactivateToolQueued;
 
 	[SerializeField]
 	private Vector2 rootMenuOffset = Vector2.zero;
@@ -478,7 +480,7 @@ public class BuildMenu : KScreen
 
 	private float updateInterval = 1f;
 
-	private float elapsedTime = 0f;
+	private float elapsedTime;
 
 	public static BuildMenu Instance
 	{
@@ -692,10 +694,10 @@ public class BuildMenu : KScreen
 		}
 		if (mouseOver && ConsumeMouseScroll && !e.TryConsume(Action.ZoomIn) && !e.TryConsume(Action.ZoomOut))
 		{
-			goto IL_0043;
+			goto IL_003a;
 		}
-		goto IL_0043;
-		IL_0043:
+		goto IL_003a;
+		IL_003a:
 		if (!e.Consumed && selectedCategory.IsValid && e.TryConsume(Action.Escape))
 		{
 			OnUIClear(null);

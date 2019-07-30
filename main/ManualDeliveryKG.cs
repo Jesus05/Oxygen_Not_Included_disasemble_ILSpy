@@ -25,13 +25,13 @@ public class ManualDeliveryKG : KMonoBehaviour, ISim1000ms
 	public float minimumMass = 10f;
 
 	[SerializeField]
-	public FetchOrder2.OperationalRequirement operationalRequirement = FetchOrder2.OperationalRequirement.Operational;
+	public FetchOrder2.OperationalRequirement operationalRequirement;
 
 	[SerializeField]
-	public bool allowPause = false;
+	public bool allowPause;
 
 	[SerializeField]
-	private bool paused = false;
+	private bool paused;
 
 	[SerializeField]
 	public HashedString choreTypeIDHash;

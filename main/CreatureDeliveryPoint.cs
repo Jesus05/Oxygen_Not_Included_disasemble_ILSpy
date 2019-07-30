@@ -72,7 +72,7 @@ public class CreatureDeliveryPoint : StateMachineComponent<CreatureDeliveryPoint
 	[Serialize]
 	private int creatureLimit = 20;
 
-	private int storedCreatureCount = 0;
+	private int storedCreatureCount;
 
 	public CellOffset[] deliveryOffsets = new CellOffset[1]
 	{
@@ -165,7 +165,7 @@ public class CreatureDeliveryPoint : StateMachineComponent<CreatureDeliveryPoint
 		Prioritizable.AddRef(base.gameObject);
 		if (capacityStatusItem == null)
 		{
-			capacityStatusItem = new StatusItem("StorageLocker", "BUILDING", "", StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, true, 129022);
+			capacityStatusItem = new StatusItem("StorageLocker", "BUILDING", string.Empty, StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, true, 129022);
 			capacityStatusItem.resolveStringCallback = delegate(string str, object data)
 			{
 				IUserControlledCapacity userControlledCapacity = (IUserControlledCapacity)data;

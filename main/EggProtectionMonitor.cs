@@ -236,13 +236,13 @@ public class EggProtectionMonitor : GameStateMachine<EggProtectionMonitor, EggPr
 
 		public bool CheckForThreats()
 		{
-			if (!((UnityEngine.Object)eggToProtect == (UnityEngine.Object)null))
+			if ((UnityEngine.Object)eggToProtect == (UnityEngine.Object)null)
 			{
-				GameObject x = FindThreat();
-				SetMainThreat(x);
-				return (UnityEngine.Object)x != (UnityEngine.Object)null;
+				return false;
 			}
-			return false;
+			GameObject x = FindThreat();
+			SetMainThreat(x);
+			return (UnityEngine.Object)x != (UnityEngine.Object)null;
 		}
 
 		public GameObject FindThreat()

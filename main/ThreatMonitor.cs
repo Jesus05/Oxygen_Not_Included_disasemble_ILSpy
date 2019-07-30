@@ -39,13 +39,13 @@ public class ThreatMonitor : GameStateMachine<ThreatMonitor, ThreatMonitor.Insta
 
 		public bool Calm(float dt, FactionAlignment self)
 		{
-			if (!(grudgeTime <= 0f))
+			if (grudgeTime <= 0f)
 			{
-				grudgeTime = Mathf.Max(0f, grudgeTime - dt);
-				if (grudgeTime != 0f)
-				{
-					return false;
-				}
+				return true;
+			}
+			grudgeTime = Mathf.Max(0f, grudgeTime - dt);
+			if (grudgeTime == 0f)
+			{
 				if (FactionManager.Instance.GetDisposition(self.Alignment, target.Alignment) != FactionManager.Disposition.Attack)
 				{
 					PopFXManager.Instance.SpawnFX(PopFXManager.Instance.sprite_Plus, UI.GAMEOBJECTEFFECTS.FORGAVEATTACKER, self.transform, 2f, true);
@@ -53,7 +53,7 @@ public class ThreatMonitor : GameStateMachine<ThreatMonitor, ThreatMonitor.Insta
 				Clear();
 				return true;
 			}
-			return true;
+			return false;
 		}
 
 		public void Clear()
@@ -235,32 +235,32 @@ public class ThreatMonitor : GameStateMachine<ThreatMonitor, ThreatMonitor.Insta
 		public GameObject FindThreat()
 		{
 			threats.Clear();
-			if (!base.isMasterNull)
+			if (base.isMasterNull)
 			{
-				bool flag = WillFight();
-				if (IAmADuplicant && flag)
+				return null;
+			}
+			bool flag = WillFight();
+			if (IAmADuplicant && flag)
+			{
+				for (int i = 0; i < 6; i++)
 				{
-					for (int i = 0; i < 6; i++)
+					if (i != 0)
 					{
-						if (i != 0)
+						foreach (FactionAlignment member in FactionManager.Instance.GetFaction((FactionManager.FactionID)i).Members)
 						{
-							foreach (FactionAlignment member in FactionManager.Instance.GetFaction((FactionManager.FactionID)i).Members)
+							if (member.targeted && !member.health.IsDefeated() && !threats.Contains(member) && navigator.CanReach(member.attackable))
 							{
-								if (member.targeted && !member.health.IsDefeated() && !threats.Contains(member) && navigator.CanReach(member.attackable))
-								{
-									threats.Add(member);
-								}
+								threats.Add(member);
 							}
 						}
 					}
 				}
-				if (threats.Count != 0)
-				{
-					return PickBestTarget(threats);
-				}
+			}
+			if (threats.Count == 0)
+			{
 				return null;
 			}
-			return null;
+			return PickBestTarget(threats);
 		}
 
 		public GameObject PickBestTarget(List<FactionAlignment> threats)

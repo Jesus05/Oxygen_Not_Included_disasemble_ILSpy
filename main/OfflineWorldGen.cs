@@ -60,17 +60,17 @@ public class OfflineWorldGen : KMonoBehaviour
 
 	public string mainGameLevel = "backend";
 
-	private bool shouldStop = false;
+	private bool shouldStop;
 
 	private StringKey currentConvertedCurrentStage;
 
-	private float currentPercent = 0f;
+	private float currentPercent;
 
-	public bool debug = false;
+	public bool debug;
 
 	private bool trackProgress = true;
 
-	private bool doWorldGen = false;
+	private bool doWorldGen;
 
 	[SerializeField]
 	private LocText titleText;
@@ -95,7 +95,7 @@ public class OfflineWorldGen : KMonoBehaviour
 
 	private WorldGen worldGen;
 
-	private List<VoronoiTree.Node> startNodes = null;
+	private List<VoronoiTree.Node> startNodes;
 
 	private StringKey currentStringKeyRoot;
 
@@ -111,23 +111,23 @@ public class OfflineWorldGen : KMonoBehaviour
 		UI.WORLDGEN.GENERATESOLARSYSTEM
 	};
 
-	private WorldGenProgressStages.Stages currentStage = WorldGenProgressStages.Stages.Failure;
+	private WorldGenProgressStages.Stages currentStage;
 
-	private bool loadTriggered = false;
+	private bool loadTriggered;
 
-	private bool shownStartingLocations = false;
+	private bool shownStartingLocations;
 
-	private bool startedExitFlow = false;
+	private bool startedExitFlow;
 
-	private bool generateThreadComplete = false;
+	private bool generateThreadComplete;
 
-	private bool renderThreadComplete = false;
+	private bool renderThreadComplete;
 
-	private bool firstPassGeneration = false;
+	private bool firstPassGeneration;
 
-	private bool secondPassGeneration = false;
+	private bool secondPassGeneration;
 
-	private int seed = 0;
+	private int seed;
 
 	private void TrackProgress(string text)
 	{
@@ -372,7 +372,7 @@ public class OfflineWorldGen : KMonoBehaviour
 					{
 						if (!KCrashReporter.terminateOnError || !ReportErrorDialog.hasCrash)
 						{
-							percentText.text = "";
+							percentText.text = string.Empty;
 							loadTriggered = true;
 							App.LoadScene(mainGameLevel);
 						}

@@ -169,7 +169,7 @@ public class StarmapScreen : KModalScreen
 
 	private int selectionUpdateHandle = -1;
 
-	private SpaceDestination selectedDestination = null;
+	private SpaceDestination selectedDestination;
 
 	private KSelectable currentSelectable;
 
@@ -177,13 +177,13 @@ public class StarmapScreen : KModalScreen
 
 	private LaunchConditionManager currentLaunchConditionManager;
 
-	private bool currentRocketHasGasContainer = false;
+	private bool currentRocketHasGasContainer;
 
-	private bool currentRocketHasLiquidContainer = false;
+	private bool currentRocketHasLiquidContainer;
 
-	private bool currentRocketHasSolidContainer = false;
+	private bool currentRocketHasSolidContainer;
 
-	private bool currentRocketHasEntitiesContainer = false;
+	private bool currentRocketHasEntitiesContainer;
 
 	private bool forceScrollDown = true;
 
@@ -440,7 +440,7 @@ public class StarmapScreen : KModalScreen
 
 	private string StorageCapacityTooltip(CommandModule command, SpaceDestination dest)
 	{
-		string text = "";
+		string text = string.Empty;
 		bool flag = dest != null && SpacecraftManager.instance.GetDestinationAnalysisState(dest) == SpacecraftManager.DestinationAnalysisState.Complete;
 		if (dest != null && flag)
 		{
@@ -800,7 +800,7 @@ public class StarmapScreen : KModalScreen
 			}
 			if (item.state == Spacecraft.MissionState.Grounded)
 			{
-				string text = "";
+				string text = string.Empty;
 				List<GameObject> attachedNetwork = AttachableBuilding.GetAttachedNetwork(launchConditionManager.GetComponent<AttachableBuilding>());
 				foreach (GameObject item2 in attachedNetwork)
 				{
@@ -830,7 +830,7 @@ public class StarmapScreen : KModalScreen
 				}
 				else
 				{
-					breakdownListRow6.ShowStatusData(UI.STARMAP.DESTINATIONSELECTION.NOTSELECTED, "", BreakdownListRow.Status.Red);
+					breakdownListRow6.ShowStatusData(UI.STARMAP.DESTINATIONSELECTION.NOTSELECTED, string.Empty, BreakdownListRow.Status.Red);
 					breakdownListRow6.AddTooltip(UI.STARMAP.DESTINATIONSELECTION_TOOLTIP.NOTSELECTED);
 				}
 				component4.GetComponent<RectTransform>().SetAsLastSibling();
@@ -884,7 +884,7 @@ public class StarmapScreen : KModalScreen
 				status = BreakdownListRow.Status.Yellow;
 				break;
 			}
-			breakdownListRow.ShowCheckmarkData(launchStatusMessage, "", status);
+			breakdownListRow.ShowCheckmarkData(launchStatusMessage, string.Empty, status);
 			if (launchStatus != 0)
 			{
 				breakdownListRow.SetHighlighted(true);
@@ -1319,7 +1319,7 @@ public class StarmapScreen : KModalScreen
 						BreakdownListRow breakdownListRow8 = destinationDetailsResources.AddRow();
 						GameObject prefab = Assets.GetPrefab(recoverableEntity.Key);
 						Tuple<Sprite, Color> uISprite2 = Def.GetUISprite(prefab, "ui", false);
-						breakdownListRow8.ShowIconData(prefab.GetProperName(), "", uISprite2.first, uISprite2.second);
+						breakdownListRow8.ShowIconData(prefab.GetProperName(), string.Empty, uISprite2.first, uISprite2.second);
 						string properName4 = Assets.GetPrefab("SpecialCargoBay".ToTag()).GetProperName();
 						if (currentRocketHasEntitiesContainer)
 						{

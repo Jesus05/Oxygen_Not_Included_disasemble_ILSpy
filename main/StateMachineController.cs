@@ -144,17 +144,17 @@ public class StateMachineController : KMonoBehaviour, ISaveLoadableDetails, ISta
 
 	public DefType GetDef<DefType>() where DefType : StateMachine.BaseDef
 	{
-		if (defHandle.IsValid())
+		if (!defHandle.IsValid())
 		{
-			foreach (StateMachine.BaseDef def in cmpdef.defs)
-			{
-				DefType val = def as DefType;
-				if (val != null)
-				{
-					return val;
-				}
-			}
 			return (DefType)null;
+		}
+		foreach (StateMachine.BaseDef def in cmpdef.defs)
+		{
+			DefType val = def as DefType;
+			if (val != null)
+			{
+				return val;
+			}
 		}
 		return (DefType)null;
 	}
@@ -162,17 +162,17 @@ public class StateMachineController : KMonoBehaviour, ISaveLoadableDetails, ISta
 	public List<DefType> GetDefs<DefType>() where DefType : StateMachine.BaseDef
 	{
 		List<DefType> list = new List<DefType>();
-		if (defHandle.IsValid())
+		if (!defHandle.IsValid())
 		{
-			foreach (StateMachine.BaseDef def in cmpdef.defs)
-			{
-				DefType val = def as DefType;
-				if (val != null)
-				{
-					list.Add(val);
-				}
-			}
 			return list;
+		}
+		foreach (StateMachine.BaseDef def in cmpdef.defs)
+		{
+			DefType val = def as DefType;
+			if (val != null)
+			{
+				list.Add(val);
+			}
 		}
 		return list;
 	}
@@ -212,16 +212,16 @@ public class StateMachineController : KMonoBehaviour, ISaveLoadableDetails, ISta
 	public List<IGameObjectEffectDescriptor> GetDescriptors()
 	{
 		List<IGameObjectEffectDescriptor> list = new List<IGameObjectEffectDescriptor>();
-		if (defHandle.IsValid())
+		if (!defHandle.IsValid())
 		{
-			foreach (StateMachine.BaseDef def in cmpdef.defs)
-			{
-				if (def is IGameObjectEffectDescriptor)
-				{
-					list.Add(def as IGameObjectEffectDescriptor);
-				}
-			}
 			return list;
+		}
+		foreach (StateMachine.BaseDef def in cmpdef.defs)
+		{
+			if (def is IGameObjectEffectDescriptor)
+			{
+				list.Add(def as IGameObjectEffectDescriptor);
+			}
 		}
 		return list;
 	}

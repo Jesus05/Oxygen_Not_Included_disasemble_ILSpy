@@ -77,7 +77,7 @@ namespace KSerialization
 
 		public static SerializationTemplate GetSerializationTemplate(string type_name)
 		{
-			if (type_name == null || type_name == "")
+			if (type_name == null || type_name == string.Empty)
 			{
 				throw new InvalidOperationException("Invalid type name encountered when serializing");
 			}

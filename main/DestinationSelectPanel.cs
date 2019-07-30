@@ -33,7 +33,7 @@ public class DestinationSelectPanel : KMonoBehaviour
 	[SerializeField]
 	private float centeringSpeed = 0.5f;
 
-	private float offset = 0f;
+	private float offset;
 
 	private int selectedIndex = -1;
 
@@ -49,7 +49,7 @@ public class DestinationSelectPanel : KMonoBehaviour
 
 	private Vector2 dragLastPos;
 
-	private bool isDragging = false;
+	private bool isDragging;
 
 	private float min => asteroidContainer.rect.x + offset;
 

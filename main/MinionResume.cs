@@ -51,17 +51,17 @@ public class MinionResume : KMonoBehaviour, ISaveLoadable, ISim200ms
 	private Dictionary<string, bool> ownedHats = new Dictionary<string, bool>();
 
 	[Serialize]
-	private float totalExperienceGained = 0f;
+	private float totalExperienceGained;
 
 	private AttributeModifier skillsMoraleExpectationModifier;
 
 	private AttributeModifier skillsMoraleModifier;
 
-	public float DEBUG_PassiveExperienceGained = 0f;
+	public float DEBUG_PassiveExperienceGained;
 
-	public float DEBUG_ActiveExperienceGained = 0f;
+	public float DEBUG_ActiveExperienceGained;
 
-	public float DEBUG_SecondsAlive = 0f;
+	public float DEBUG_SecondsAlive;
 
 	public MinionIdentity GetIdentity => identity;
 
@@ -270,11 +270,11 @@ public class MinionResume : KMonoBehaviour, ISaveLoadable, ISim200ms
 		{
 			num += 1f;
 		}
-		if (!(totalValue + (float)moraleExpectation > num))
+		if (totalValue + (float)moraleExpectation > num)
 		{
-			return true;
+			return false;
 		}
-		return false;
+		return true;
 	}
 
 	public bool HasMasteredDirectlyRequiredSkillsForSkill(Skill skill)
@@ -291,11 +291,11 @@ public class MinionResume : KMonoBehaviour, ISaveLoadable, ISim200ms
 
 	public bool HasSkillPointsRequiredForSkill(Skill skill)
 	{
-		if (AvailableSkillpoints >= 1)
+		if (AvailableSkillpoints < 1)
 		{
-			return true;
+			return false;
 		}
-		return false;
+		return true;
 	}
 
 	public bool HasSkillAptitude(Skill skill)
@@ -336,11 +336,11 @@ public class MinionResume : KMonoBehaviour, ISaveLoadable, ISim200ms
 
 	public bool CanMasterSkill(SkillMasteryConditions[] masteryConditions)
 	{
-		if (!Array.Exists(masteryConditions, (SkillMasteryConditions element) => element == SkillMasteryConditions.UnableToLearn || element == SkillMasteryConditions.NeedsSkillPoints || element == SkillMasteryConditions.MissingPreviousSkill))
+		if (Array.Exists(masteryConditions, (SkillMasteryConditions element) => element == SkillMasteryConditions.UnableToLearn || element == SkillMasteryConditions.NeedsSkillPoints || element == SkillMasteryConditions.MissingPreviousSkill))
 		{
-			return true;
+			return false;
 		}
-		return false;
+		return true;
 	}
 
 	public bool OwnsHat(string hatId)

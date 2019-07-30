@@ -63,11 +63,7 @@ public class JungleGasPlant : StateMachineComponent<JungleGasPlant.StatesInstanc
 					smi.GoTo(alive.seed_grow);
 				}
 			});
-			State state = dead;
-			string name = CREATURES.STATUSITEMS.DEAD.NAME;
-			string tooltip = CREATURES.STATUSITEMS.DEAD.TOOLTIP;
-			StatusItemCategory main = Db.Get().StatusItemCategories.Main;
-			state.ToggleStatusItem(name, tooltip, "", StatusItem.IconType.Info, (NotificationType)0, false, default(HashedString), 0, null, null, main).Enter(delegate(StatesInstance smi)
+			dead.ToggleStatusItem(CREATURES.STATUSITEMS.DEAD.NAME, CREATURES.STATUSITEMS.DEAD.TOOLTIP, category: Db.Get().StatusItemCategories.Main, icon: string.Empty, icon_type: StatusItem.IconType.Info, notification_type: (NotificationType)0, allow_multiples: false, render_overlay: default(HashedString), status_overlays: 0, resolve_string_callback: null, resolve_tooltip_callback: null).Enter(delegate(StatesInstance smi)
 			{
 				GameUtil.KInstantiate(Assets.GetPrefab(EffectConfigs.PlantDeathId), smi.master.transform.GetPosition(), Grid.SceneLayer.FXFront, null, 0).SetActive(true);
 				smi.master.Trigger(1623392196, null);

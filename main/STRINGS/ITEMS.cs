@@ -74,9 +74,9 @@ namespace STRINGS
 			{
 				public static LocString NAME = UI.FormatAsLink("Frost Burger", "BURGER");
 
-				public static LocString DESC = "It's the best food.";
+				public static LocString DESC = UI.FormatAsLink("Meat", "MEAT") + " and " + UI.FormatAsLink("Lettuce", "LETTUCE") + " on a chilled " + UI.FormatAsLink("Frost Bun", "COLDWHEATBREAD") + ".\n\nIt's the only burger ever to be served cold.";
 
-				public static LocString RECIPEDESC = "Meat, Lettuce, Bun";
+				public static LocString RECIPEDESC = UI.FormatAsLink("Meat", "MEAT") + " and " + UI.FormatAsLink("Lettuce", "LETTUCE") + " on a chilled " + UI.FormatAsLink("Frost Bun", "COLDWHEATBREAD") + ".";
 			}
 
 			public class FIELDRATION
@@ -201,9 +201,9 @@ namespace STRINGS
 			{
 				public static LocString NAME = UI.FormatAsLink("Cooked Fish", "COOKEDFISH");
 
-				public static LocString DESC = "The cooked meat of a defeated critter.\n\nIt has a delightful smoky aftertaste.";
+				public static LocString DESC = "The cooked " + UI.FormatAsLink("Fillet", "FISHMEAT") + " of a freshly caught " + UI.PRE_KEYWORD + "Pacu" + UI.PST_KEYWORD + ".\n\nUnsurprisingly, it tastes a bit fishy.";
 
-				public static LocString RECIPEDESC = "The cooked meat of a defeated " + UI.PRE_KEYWORD + "Critter" + UI.PST_KEYWORD + ".";
+				public static LocString RECIPEDESC = "The cooked " + UI.FormatAsLink("Fillet", "FISHMEAT") + " of a freshly caught " + UI.PRE_KEYWORD + "Pacu" + UI.PST_KEYWORD + ".";
 			}
 
 			public class COOKEDMEAT
@@ -310,29 +310,29 @@ namespace STRINGS
 
 			public class SURFANDTURF
 			{
-				public static LocString NAME = UI.FormatAsLink("Surf n' Turf", "SURFANDTURF");
+				public static LocString NAME = UI.FormatAsLink("Surf'n'Turf", "SURFANDTURF");
 
-				public static LocString DESC = "Meat and fish";
+				public static LocString DESC = "A bit of " + UI.FormatAsLink("Meat", "MEAT") + " from the land and " + UI.FormatAsLink("Fish", "FISHMEAT") + " from the sea.\n\nIt hearty and satisfying.";
 
-				public static LocString RECIPEDESC = "Meat and fish";
+				public static LocString RECIPEDESC = "A bit of " + UI.FormatAsLink("Meat", "MEAT") + " from the land and " + UI.FormatAsLink("Fish", "FISHMEAT") + " from the sea.";
 			}
 
 			public class TOFU
 			{
 				public static LocString NAME = UI.FormatAsLink("Tofu", "TOFU");
 
-				public static LocString DESC = "Plain bean curd.";
+				public static LocString DESC = "A bland curd made from " + UI.FormatAsLink("Nosh Beans", "BEAN") + ".\n\nIt has an unusual but pleasant consistency.";
 
-				public static LocString RECIPEDESC = UI.FormatAsLink("Nosh Bean", "BEAN") + " curd.";
+				public static LocString RECIPEDESC = "A bland curd made from " + UI.FormatAsLink("Nosh Beans", "BEAN") + ".";
 			}
 
 			public class SPICYTOFU
 			{
 				public static LocString NAME = UI.FormatAsLink("Spicy Tofu", "SPICYTOFU");
 
-				public static LocString DESC = TOFU.NAME + " marinated in " + UI.FormatAsLink("Pincha Pepperplant", "SPICE_VINE") + " sauce.\n\nIt has an unusual but pleasant consistency.";
+				public static LocString DESC = TOFU.NAME + " marinated in a flavorful " + UI.FormatAsLink("Pincha Pepperplant", "SPICE_VINE") + " sauce.\n\nIt packs a delightful punch.";
 
-				public static LocString RECIPEDESC = TOFU.NAME + " marinated in " + UI.FormatAsLink("Pincha Peppernut", "SPICENUT") + " sauce.";
+				public static LocString RECIPEDESC = TOFU.NAME + " marinated in a flavorful" + UI.FormatAsLink("Pincha Peppernut", "SPICENUT") + " sauce.";
 			}
 
 			public class SALSA

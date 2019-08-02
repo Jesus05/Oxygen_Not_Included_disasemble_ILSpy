@@ -48,7 +48,7 @@ public class IncapacitationMonitor : GameStateMachine<IncapacitationMonitor, Inc
 
 	public State start_recovery;
 
-	public State Incapacitated;
+	public State incapacitated;
 
 	public State die;
 
@@ -64,7 +64,7 @@ public class IncapacitationMonitor : GameStateMachine<IncapacitationMonitor, Inc
 	{
 		default_state = healthy;
 		base.serializable = true;
-		healthy.TagTransition(GameTags.CaloriesDepleted, Incapacitated, false).TagTransition(GameTags.HitPointsDepleted, Incapacitated, false).Update(delegate(Instance smi, float dt)
+		healthy.TagTransition(GameTags.CaloriesDepleted, incapacitated, false).TagTransition(GameTags.HitPointsDepleted, incapacitated, false).Update(delegate(Instance smi, float dt)
 		{
 			smi.RecoverStamina(dt, smi);
 		}, UpdateRate.SIM_200ms, false);
@@ -73,8 +73,8 @@ public class IncapacitationMonitor : GameStateMachine<IncapacitationMonitor, Inc
 			GameTags.CaloriesDepleted,
 			GameTags.HitPointsDepleted
 		}, healthy, true);
-		Incapacitated.EventTransition(GameHashes.IncapacitationRecovery, start_recovery, null).ToggleTag(GameTags.Incapacitated).ToggleRecurringChore((Instance smi) => new BeIncapacitatedChore(smi.master), null)
-			.ParamTransition(bleedOutStamina, die, (Instance smi, float parameter) => parameter <= 0f)
+		incapacitated.EventTransition(GameHashes.IncapacitationRecovery, start_recovery, null).ToggleTag(GameTags.Incapacitated).ToggleRecurringChore((Instance smi) => new BeIncapacitatedChore(smi.master), null)
+			.ParamTransition(bleedOutStamina, die, GameStateMachine<IncapacitationMonitor, Instance, IStateMachineTarget, object>.IsLTEZero)
 			.ToggleUrge(Db.Get().Urges.BeIncapacitated)
 			.Enter(delegate(Instance smi)
 			{

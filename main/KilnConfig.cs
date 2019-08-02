@@ -13,18 +13,13 @@ public class KilnConfig : IBuildingConfig
 
 	public const float CO2_RATIO = 0.1f;
 
-	public const float OUTPUT_TEMP = 303.15f;
+	public const float OUTPUT_TEMP = 353.15f;
 
 	public const float REFILL_RATE = 2400f;
 
 	public const float CERAMIC_STORAGE_AMOUNT = 2400f;
 
 	public const float COAL_RATE = 0.1f;
-
-	private static readonly LogicPorts.Port[] INPUT_PORTS = new LogicPorts.Port[1]
-	{
-		LogicPorts.Port.InputPort(LogicOperationalController.PORT_ID, new CellOffset(0, 1), UI.LOGIC_PORTS.CONTROL_OPERATIONAL, false)
-	};
 
 	public override BuildingDef CreateBuildingDef()
 	{
@@ -50,13 +45,23 @@ public class KilnConfig : IBuildingConfig
 
 	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
-		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.IndustrialMachinery);
+		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.IndustrialMachinery, false);
 		go.AddOrGet<DropAllWorkable>();
 		go.AddOrGet<BuildingComplete>().isManuallyOperated = false;
-		Refinery refinery = go.AddOrGet<Refinery>();
-		refinery.duplicantOperated = false;
-		refinery.sideScreenStyle = RefinerySideScreen.StyleSetting.ListInputOutput;
-		BuildingTemplates.CreateRefineryStorage(go, refinery);
+		ComplexFabricator complexFabricator = go.AddOrGet<ComplexFabricator>();
+		complexFabricator.resultState = ComplexFabricator.ResultState.Heated;
+		complexFabricator.heatedTemperature = 353.15f;
+		complexFabricator.duplicantOperated = false;
+		complexFabricator.sideScreenStyle = ComplexFabricatorSideScreen.StyleSetting.ListQueueHybrid;
+		go.AddOrGet<FabricatorIngredientStatusManager>();
+		go.AddOrGet<CopyBuildingSettings>();
+		BuildingTemplates.CreateComplexFabricatorStorage(go, complexFabricator);
+		ConfgiureRecipes();
+		Prioritizable.AddRef(go);
+	}
+
+	private void ConfgiureRecipes()
+	{
 		Tag tag = SimHashes.Ceramic.CreateTag();
 		Tag material = SimHashes.Clay.CreateTag();
 		Tag material2 = SimHashes.Carbon.CreateTag();
@@ -80,6 +85,7 @@ public class KilnConfig : IBuildingConfig
 		{
 			TagManager.Create("Kiln")
 		};
+		complexRecipe.nameDisplay = ComplexRecipe.RecipeNameDisplay.Result;
 		ComplexRecipeManager.Get().AddObsoleteIDMapping(obsolete_id, text);
 		Tag tag2 = SimHashes.RefinedCarbon.CreateTag();
 		ComplexRecipe.RecipeElement[] array3 = new ComplexRecipe.RecipeElement[1]
@@ -99,23 +105,23 @@ public class KilnConfig : IBuildingConfig
 		{
 			TagManager.Create("Kiln")
 		};
+		complexRecipe.nameDisplay = ComplexRecipe.RecipeNameDisplay.Result;
 		ComplexRecipeManager.Get().AddObsoleteIDMapping(obsolete_id2, text2);
-		Prioritizable.AddRef(go);
 	}
 
 	public override void DoPostConfigurePreview(BuildingDef def, GameObject go)
 	{
-		GeneratedBuildings.RegisterLogicPorts(go, INPUT_PORTS);
+		GeneratedBuildings.RegisterLogicPorts(go, LogicOperationalController.INPUT_PORTS_0_1);
 	}
 
 	public override void DoPostConfigureUnderConstruction(GameObject go)
 	{
-		GeneratedBuildings.RegisterLogicPorts(go, INPUT_PORTS);
+		GeneratedBuildings.RegisterLogicPorts(go, LogicOperationalController.INPUT_PORTS_0_1);
 	}
 
 	public override void DoPostConfigureComplete(GameObject go)
 	{
-		GeneratedBuildings.RegisterLogicPorts(go, INPUT_PORTS);
+		GeneratedBuildings.RegisterLogicPorts(go, LogicOperationalController.INPUT_PORTS_0_1);
 		go.AddOrGet<LogicOperationalController>();
 		go.AddOrGetDef<PoweredActiveController.Def>();
 		SymbolOverrideControllerUtil.AddToPrefab(go);

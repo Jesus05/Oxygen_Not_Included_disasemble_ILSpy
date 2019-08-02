@@ -27,7 +27,7 @@ public class GeneShufflerRechargeConfig : IEntityConfig
 		List<Tag> list = new List<Tag>();
 		list.Add(GameTags.IndustrialIngredient);
 		list = list;
-		return EntityTemplates.CreateLooseEntity(id, name, desc, mass, unitMass, anim, initialAnim, sceneLayer, collisionShape, width, height, isPickupable, SimHashes.Creature, list);
+		return EntityTemplates.CreateLooseEntity(id, name, desc, mass, unitMass, anim, initialAnim, sceneLayer, collisionShape, width, height, isPickupable, 0, SimHashes.Creature, list);
 	}
 
 	public void OnPrefabInit(GameObject inst)

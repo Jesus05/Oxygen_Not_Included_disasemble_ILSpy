@@ -102,8 +102,7 @@ public class Pump : KMonoBehaviour, ISim1000ms
 
 	private void OnConduitUpdate(float dt)
 	{
-		ConduitFlow.ConduitContents conduitContents = dispenser.ConduitContents;
-		bool on = conduitContents.mass > 0f;
+		bool on = dispenser.ConduitContents.mass > 0f;
 		selectable.ToggleStatusItem(Db.Get().BuildingStatusItems.ConduitBlocked, on, null);
 	}
 }

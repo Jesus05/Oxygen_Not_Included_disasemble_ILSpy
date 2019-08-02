@@ -22,5 +22,5 @@ public static class MoleTuning
 
 	public static float EGG_MASS = 2f;
 
-	public static int DEPTH_TO_HIDE = -2;
+	public static int DEPTH_TO_HIDE = 2;
 }

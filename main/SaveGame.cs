@@ -1,5 +1,6 @@
 using KSerialization;
 using Newtonsoft.Json;
+using ProcGenGame;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization;
@@ -46,7 +47,7 @@ public class SaveGame : KMonoBehaviour, ISaveLoadable
 			this.isAutoSave = isAutoSave;
 			this.originalSaveName = originalSaveName;
 			saveMajorVersion = 7;
-			saveMinorVersion = 6;
+			saveMinorVersion = 11;
 		}
 
 		public GameInfo(int numberOfCycles, int numberOfDuplicants, string baseName, bool sandboxEnabled = false)
@@ -57,7 +58,7 @@ public class SaveGame : KMonoBehaviour, ISaveLoadable
 			isAutoSave = false;
 			originalSaveName = string.Empty;
 			saveMajorVersion = 7;
-			saveMinorVersion = 6;
+			saveMinorVersion = 11;
 		}
 
 		public bool IsVersionOlderThan(int major, int minor)
@@ -86,6 +87,12 @@ public class SaveGame : KMonoBehaviour, ISaveLoadable
 	[Serialize]
 	public bool sandboxEnabled;
 
+	[Serialize]
+	public int autoSaveCycleInterval = 1;
+
+	[Serialize]
+	public Vector2I timelapseResolution = new Vector2I(640, 360);
+
 	private string baseName;
 
 	public static SaveGame Instance;
@@ -93,6 +100,11 @@ public class SaveGame : KMonoBehaviour, ISaveLoadable
 	public EntombedItemManager entombedItemManager;
 
 	public WorldGenSpawner worldGenSpawner;
+
+	[MyCmpReq]
+	public MaterialSelectorSerializer materialSelectorSerializer;
+
+	public WorldGen worldGen;
 
 	public string BaseName => baseName;
 
@@ -106,9 +118,10 @@ public class SaveGame : KMonoBehaviour, ISaveLoadable
 		Instance = this;
 		ColonyRationMonitor.Instance instance = new ColonyRationMonitor.Instance(this);
 		instance.StartSM();
-		RedAlertManager.Instance instance2 = new RedAlertManager.Instance(this);
+		VignetteManager.Instance instance2 = new VignetteManager.Instance(this);
 		instance2.StartSM();
 		entombedItemManager = base.gameObject.AddComponent<EntombedItemManager>();
+		worldGen = SaveLoader.Instance.worldGen;
 		worldGenSpawner = base.gameObject.AddComponent<WorldGenSpawner>();
 	}
 
@@ -136,7 +149,7 @@ public class SaveGame : KMonoBehaviour, ISaveLoadable
 		text = ((!isAutoSave) ? JsonConvert.SerializeObject(new GameInfo(GameClock.Instance.GetCycle(), Components.LiveMinionIdentities.Count, baseName, false)) : JsonConvert.SerializeObject(new GameInfo(GameClock.Instance.GetCycle(), Components.LiveMinionIdentities.Count, baseName, true, SaveLoader.GetActiveSaveFilePath(), false)));
 		byte[] bytes = Encoding.UTF8.GetBytes(text);
 		header = default(Header);
-		header.buildVersion = 291640u;
+		header.buildVersion = 356355u;
 		header.headerSize = bytes.Length;
 		header.headerVersion = 1u;
 		header.compression = (isCompressed ? 1 : 0);

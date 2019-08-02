@@ -7,169 +7,107 @@ using System.Text;
 using System.Threading;
 using UnityEngine;
 
-public class Unlocks : KMonoBehaviour, ISim4000ms
+public class Unlocks : KMonoBehaviour
 {
 	private const int FILE_IO_RETRY_ATTEMPTS = 5;
 
-	public Dictionary<string, bool> locked = new Dictionary<string, bool>();
-
-	public Dictionary<string, bool> defaultLocked = new Dictionary<string, bool>
-	{
-		{
-			"poi_surface_facillity_1",
-			true
-		},
-		{
-			"poi_surface_facillity_2",
-			true
-		},
-		{
-			"poi_surface_facillity_3",
-			true
-		},
-		{
-			"poi_surface_facillity_4",
-			true
-		},
-		{
-			"firstrocketlaunch",
-			true
-		},
-		{
-			"duplicantdeath",
-			true
-		},
-		{
-			"onedupeleft",
-			true
-		},
-		{
-			"twentydupecolony",
-			true
-		},
-		{
-			"fulldupecolony",
-			true
-		},
-		{
-			"firstresearch",
-			true
-		},
-		{
-			"rocketryresearch",
-			true
-		},
-		{
-			"surfacebreach",
-			true
-		},
-		{
-			"nearingsurface",
-			true
-		},
-		{
-			"nearingmagma",
-			true
-		},
-		{
-			"neuralvacillator",
-			true
-		}
-	};
+	private List<string> unlocked = new List<string>();
 
 	public Dictionary<string, string[]> lockCollections = new Dictionary<string, string[]>
 	{
 		{
-			"critters",
-			new string[1]
-			{
-				"critter_Hatch_studied"
-			}
-		},
-		{
 			"emails",
-			new string[17]
+			new string[21]
 			{
-				"email_preliminarycalculations",
-				"email_researchgiant",
-				"email_frankiesblog",
-				"email_atomiconrecruitment",
-				"email_thejanitor",
+				"email_thermodynamiclaws",
 				"email_security2",
-				"email_newemployee",
-				"email_security3",
-				"email_hollandsdog",
-				"email_pens",
 				"email_pens2",
+				"email_atomiconrecruitment",
+				"email_devonsblog",
+				"email_researchgiant",
+				"email_thejanitor",
+				"email_newemployee",
+				"email_timeoffapproved",
+				"email_security3",
+				"email_preliminarycalculations",
+				"email_hollandsdog",
+				"email_temporalbowupdate",
+				"email_retemporalbowupdate",
 				"email_memorychip",
 				"email_arthistoryrequest",
 				"email_AIcontrol",
 				"email_AIcontrol2",
+				"email_friendlyemail",
 				"email_AIcontrol3",
 				"email_AIcontrol4"
 			}
 		},
 		{
 			"journals",
-			new string[23]
+			new string[29]
 			{
-				"journal_cleanup",
-				"journal_employeeprocessing",
-				"journal_sunflowerseeds",
-				"journal_B835_1",
-				"journal_B835_2",
-				"journal_B835_3",
-				"journal_B835_4",
-				"journal_B835_5",
-				"journal_B835_6",
-				"journal_pipedream",
-				"journal_spittingimage",
+				"journal_timesarrowthoughts",
 				"journal_A046_1",
-				"journal_A046_2",
-				"journal_A046_3",
-				"journal_A046_4",
-				"journal_ants",
-				"journal_debrief",
+				"journal_B835_1",
+				"journal_sunflowerseeds",
 				"journal_B327_1",
+				"journal_B556_1",
+				"journal_employeeprocessing",
 				"journal_B327_2",
-				"journal_B327_3",
-				"journal_B327_4",
+				"journal_A046_2",
+				"journal_elliesbirthday1",
+				"journal_B835_2",
+				"journal_ants",
+				"journal_pipedream",
+				"journal_B556_2",
 				"journal_movedrats",
-				"journal_revisitednumbers"
+				"journal_B835_3",
+				"journal_A046_3",
+				"journal_B556_3",
+				"journal_B327_3",
+				"journal_B835_4",
+				"journal_cleanup",
+				"journal_A046_4",
+				"journal_B327_4",
+				"journal_revisitednumbers",
+				"journal_B556_4",
+				"journal_B835_5",
+				"journal_elliesbirthday2",
+				"journal_revisitednumbers2",
+				"journal_timemusings"
 			}
 		},
 		{
 			"researchnotes",
-			new string[4]
+			new string[15]
 			{
 				"notes_clonedrats",
+				"notes_agriculture1",
+				"notes_husbandry1",
 				"notes_hibiscus3",
+				"notes_husbandry2",
+				"notes_agriculture2",
 				"notes_geneticooze",
-				"notes_memoryimplantation"
+				"notes_agriculture3",
+				"notes_husbandry3",
+				"notes_memoryimplantation",
+				"notes_husbandry4",
+				"notes_agriculture4",
+				"notes_neutronium",
+				"notes_firstsuccess",
+				"notes_neutroniumapplications"
 			}
 		},
 		{
 			"misc",
-			new string[7]
+			new string[6]
 			{
+				"misc_newsecurity",
 				"misc_mailroometiquette",
 				"misc_unattendedcultures",
-				"misc_newsecurity",
 				"misc_politerequest",
 				"misc_casualfriday",
-				"misc_bringyourkidtowork",
 				"misc_dishbot"
-			}
-		},
-		{
-			"special_set_items",
-			new string[5]
-			{
-				"display_prop1",
-				"display_prop2",
-				"display_prop3",
-				"pod_evacuation",
-				"printingpod"
 			}
 		}
 	};
@@ -177,28 +115,48 @@ public class Unlocks : KMonoBehaviour, ISim4000ms
 	public Dictionary<int, string> cycleLocked = new Dictionary<int, string>
 	{
 		{
+			0,
+			"log1"
+		},
+		{
 			3,
 			"log2"
 		},
 		{
-			10,
+			15,
 			"log3"
 		},
 		{
-			15,
+			1000,
 			"log4"
 		},
 		{
-			20,
+			1500,
+			"log4b"
+		},
+		{
+			2000,
 			"log5"
 		},
 		{
-			30,
+			2500,
+			"log5b"
+		},
+		{
+			3000,
 			"log6"
 		},
 		{
-			35,
+			3500,
+			"log6b"
+		},
+		{
+			4000,
 			"log7"
+		},
+		{
+			4001,
+			"log8"
 		}
 	};
 
@@ -206,84 +164,54 @@ public class Unlocks : KMonoBehaviour, ISim4000ms
 
 	protected override void OnPrefabInit()
 	{
-		foreach (KeyValuePair<string, string[]> lockCollection in lockCollections)
-		{
-			string[] value = lockCollection.Value;
-			foreach (string key in value)
-			{
-				defaultLocked.Add(key, true);
-			}
-		}
-		foreach (KeyValuePair<int, string> item in cycleLocked)
-		{
-			defaultLocked.Add(item.Value, true);
-		}
-		LoadLocks();
+		LoadUnlocks();
 	}
 
 	protected override void OnSpawn()
 	{
 		base.OnSpawn();
+		UnlockCycleCodexes();
 		GameClock.Instance.Subscribe(631075836, OnNewDay);
 		Game.Instance.Subscribe(-1056989049, OnLaunchRocket);
 		Game.Instance.Subscribe(282337316, OnDuplicantDied);
-		Game.Instance.Subscribe(-107300940, OnResearchComplete);
 		Game.Instance.Subscribe(-818188514, OnDiscoveredSpace);
-		UnlockCycleCodexes();
 		Components.LiveMinionIdentities.OnAdd += OnNewDupe;
 	}
 
-	public bool IsLocked(string lockID)
+	public bool IsUnlocked(string unlockID)
 	{
-		if (string.IsNullOrEmpty(lockID))
+		if (string.IsNullOrEmpty(unlockID))
 		{
 			return false;
 		}
-		if (locked.ContainsKey(lockID))
+		if (DebugHandler.InstantBuildMode)
 		{
-			return locked[lockID];
+			return true;
 		}
-		return false;
+		return unlocked.Contains(unlockID);
 	}
 
-	public void Unlock(string lockID)
+	public void Unlock(string unlockID)
 	{
-		if (locked.ContainsKey(lockID) && locked[lockID])
+		if (string.IsNullOrEmpty(unlockID))
 		{
-			locked[lockID] = false;
-			SaveUnlocks(locked);
-			Game.Instance.Trigger(1594320620, lockID);
+			DebugUtil.DevAssert(false, "Unlock called with null or empty string");
+		}
+		else if (!unlocked.Contains(unlockID))
+		{
+			unlocked.Add(unlockID);
+			SaveUnlocks();
+			Game.Instance.Trigger(1594320620, unlockID);
 		}
 	}
 
-	public void UnlockOne(string[] lockIDs)
-	{
-		List<string> list = new List<string>();
-		foreach (string text in lockIDs)
-		{
-			if (IsLocked(text))
-			{
-				list.Add(text);
-			}
-		}
-		Unlock(list.GetRandom());
-	}
-
-	public static void SaveUnlocks(Dictionary<string, bool> locks)
+	private void SaveUnlocks()
 	{
 		if (!Directory.Exists(Util.RootFolder()))
 		{
 			Directory.CreateDirectory(Util.RootFolder());
 		}
-		List<string> list = new List<string>();
-		foreach (KeyValuePair<string, bool> @lock in locks)
-		{
-			if (!@lock.Value)
-			{
-				list.Add(@lock.Key);
-			}
-		}
-		string s = JsonConvert.SerializeObject(list);
+		string s = JsonConvert.SerializeObject(unlocked);
 		bool flag = false;
 		int num = 0;
 		while (!flag && num < 5)
@@ -307,18 +235,9 @@ public class Unlocks : KMonoBehaviour, ISim4000ms
 		}
 	}
 
-	private void SetToDefaultLocks()
+	public void LoadUnlocks()
 	{
-		locked.Clear();
-		foreach (KeyValuePair<string, bool> item in defaultLocked)
-		{
-			locked.Add(item.Key, item.Value);
-		}
-	}
-
-	public void LoadLocks()
-	{
-		SetToDefaultLocks();
+		unlocked.Clear();
 		if (File.Exists(UnlocksFilename))
 		{
 			string text = string.Empty;
@@ -352,25 +271,17 @@ public class Unlocks : KMonoBehaviour, ISim4000ms
 				{
 					string[] array2 = JsonConvert.DeserializeObject<string[]>(text);
 					string[] array3 = array2;
-					foreach (string key in array3)
+					foreach (string text2 in array3)
 					{
-						if (locked.ContainsKey(key))
+						if (!string.IsNullOrEmpty(text2) && !unlocked.Contains(text2))
 						{
-							locked[key] = false;
-						}
-						else
-						{
-							locked.Add(key, false);
+							unlocked.Add(text2);
 						}
 					}
 				}
-				catch
+				catch (Exception ex2)
 				{
-					Output.LogError("Error parsing", UnlocksFilename);
-				}
-				if (locked != null && locked.Count == 0)
-				{
-					return;
+					Debug.LogErrorFormat("Error parsing unlocks file [{0}]: {1}", UnlocksFilename, ex2.ToString());
 				}
 			}
 		}
@@ -381,7 +292,11 @@ public class Unlocks : KMonoBehaviour, ISim4000ms
 		string[] array = lockCollections[collectionID];
 		foreach (string text in array)
 		{
-			if (locked[text])
+			if (string.IsNullOrEmpty(text))
+			{
+				DebugUtil.DevAssertArgs(false, "Found null/empty string in Unlocks collection: ", collectionID);
+			}
+			else if (!IsUnlocked(text))
 			{
 				Unlock(text);
 				return text;
@@ -408,6 +323,7 @@ public class Unlocks : KMonoBehaviour, ISim4000ms
 
 	private void OnLaunchRocket(object data)
 	{
+		Unlock("surfacebreach");
 		Unlock("firstrocketlaunch");
 	}
 
@@ -422,23 +338,9 @@ public class Unlocks : KMonoBehaviour, ISim4000ms
 
 	private void OnNewDupe(MinionIdentity minion_identity)
 	{
-		if (Components.LiveMinionIdentities.Count >= 20)
-		{
-			Unlock("twentydupecolony");
-		}
-		else if (Components.LiveMinionIdentities.Count >= 35)
+		if (Components.LiveMinionIdentities.Count >= 35)
 		{
 			Unlock("fulldupecolony");
-		}
-	}
-
-	private void OnResearchComplete(object data)
-	{
-		Tech tech = (Tech)data;
-		Unlock("firstresearch");
-		if (tech.Id == "BasicRocketry")
-		{
-			Unlock("rocketryresearch");
 		}
 	}
 

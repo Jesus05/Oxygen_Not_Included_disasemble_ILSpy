@@ -62,6 +62,10 @@ internal class LogicEventSender : ILogicEventSender, ILogicUIElement, ILogicNetw
 		onValueChanged(value);
 	}
 
+	public void LogicTick()
+	{
+	}
+
 	public void OnLogicNetworkConnectionChanged(bool connected)
 	{
 		if (onConnectionChanged != null)

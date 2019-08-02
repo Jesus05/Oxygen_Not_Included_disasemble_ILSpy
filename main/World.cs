@@ -36,6 +36,7 @@ public class World : KMonoBehaviour
 
 	protected override void OnPrefabInit()
 	{
+		Debug.Assert((UnityEngine.Object)Instance == (UnityEngine.Object)null);
 		Instance = this;
 		blockTileRenderer = GetComponent<BlockTileRenderer>();
 	}
@@ -85,8 +86,11 @@ public class World : KMonoBehaviour
 				OnSolidChanged(cellIdx);
 			}
 		}
-		SaveGame.Instance.entombedItemManager.OnSolidChanged(changedCells);
-		GameScenePartitioner.Instance.TriggerEvent(changedCells, GameScenePartitioner.Instance.solidChangedLayer, null);
+		if (changedCells.Count != 0)
+		{
+			SaveGame.Instance.entombedItemManager.OnSolidChanged(changedCells);
+			GameScenePartitioner.Instance.TriggerEvent(changedCells, GameScenePartitioner.Instance.solidChangedLayer, null);
+		}
 		int count2 = callbackInfo.Count;
 		for (int j = 0; j < count2; j++)
 		{
@@ -97,7 +101,7 @@ public class World : KMonoBehaviour
 			int cellIdx2 = solid_substance_change_info[k].cellIdx;
 			if (!Grid.IsValidCell(cellIdx2))
 			{
-				Debug.LogError(cellIdx2, null);
+				Debug.LogError(cellIdx2);
 			}
 			else
 			{
@@ -128,12 +132,23 @@ public class World : KMonoBehaviour
 	{
 		if (!Game.IsQuitting())
 		{
-			GridArea visibleArea = GridVisibleArea.GetVisibleArea();
-			groundRenderer.Render(visibleArea.Min, visibleArea.Max);
-			Singleton<KBatchedAnimUpdater>.Instance.GetVisibleArea(out Vector2I vis_chunk_min, out Vector2I vis_chunk_max);
-			KAnimBatchManager.Instance().UpdateActiveArea(vis_chunk_min, vis_chunk_max);
-			KAnimBatchManager.Instance().UpdateDirty(Time.frameCount);
-			KAnimBatchManager.Instance().Render();
+			if (GameUtil.IsCapturingTimeLapse())
+			{
+				Game.Instance.UpdateGameActiveRegion(0, 0, Grid.WidthInCells, Grid.HeightInCells);
+				groundRenderer.RenderAll();
+				KAnimBatchManager.Instance().UpdateActiveArea(new Vector2I(0, 0), new Vector2I(9999, 9999));
+				KAnimBatchManager.Instance().UpdateDirty(Time.frameCount);
+				KAnimBatchManager.Instance().Render();
+			}
+			else
+			{
+				GridArea visibleArea = GridVisibleArea.GetVisibleArea();
+				groundRenderer.Render(visibleArea.Min, visibleArea.Max, false);
+				Singleton<KBatchedAnimUpdater>.Instance.GetVisibleArea(out Vector2I vis_chunk_min, out Vector2I vis_chunk_max);
+				KAnimBatchManager.Instance().UpdateActiveArea(vis_chunk_min, vis_chunk_max);
+				KAnimBatchManager.Instance().UpdateDirty(Time.frameCount);
+				KAnimBatchManager.Instance().Render();
+			}
 			if ((UnityEngine.Object)Camera.main != (UnityEngine.Object)null)
 			{
 				Camera main = Camera.main;

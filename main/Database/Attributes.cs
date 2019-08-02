@@ -34,7 +34,11 @@ namespace Database
 
 		public Attribute FarmTinker;
 
+		public Attribute SpaceNavigation;
+
 		public Attribute Immunity;
+
+		public Attribute GermResistance;
 
 		public Attribute Insulation;
 
@@ -103,6 +107,8 @@ namespace Database
 			PowerTinker.SetFormatter(new StandardAttributeFormatter(GameUtil.UnitClass.SimpleInteger, GameUtil.TimeSlice.None));
 			FarmTinker = Add(new Attribute("FarmTinker", true, Attribute.Display.Normal, true, 0f, null, null));
 			FarmTinker.SetFormatter(new StandardAttributeFormatter(GameUtil.UnitClass.SimpleInteger, GameUtil.TimeSlice.None));
+			SpaceNavigation = Add(new Attribute("SpaceNavigation", true, Attribute.Display.Normal, true, 0f, null, null));
+			SpaceNavigation.SetFormatter(new PercentAttributeFormatter());
 			Immunity = Add(new Attribute("Immunity", true, Attribute.Display.Details, false, 0f, null, null));
 			Immunity.SetFormatter(new StandardAttributeFormatter(GameUtil.UnitClass.SimpleInteger, GameUtil.TimeSlice.None));
 			ThermalConductivityBarrier = Add(new Attribute("ThermalConductivityBarrier", false, Attribute.Display.Details, false, 0f, null, null));
@@ -140,6 +146,8 @@ namespace Database
 			CarryAmount.SetFormatter(new StandardAttributeFormatter(GameUtil.UnitClass.Mass, GameUtil.TimeSlice.None));
 			QualityOfLife = Add(new Attribute("QualityOfLife", false, Attribute.Display.Details, false, 0f, "ui_icon_qualityoflife", "attribute_qualityoflife"));
 			QualityOfLife.SetFormatter(new QualityOfLifeAttributeFormatter());
+			GermResistance = Add(new Attribute("GermResistance", false, Attribute.Display.Details, false, 0f, "ui_icon_immunelevel", "attribute_immunelevel"));
+			GermResistance.SetFormatter(new GermResistanceAttributeFormatter());
 			LifeSupport = Add(new Attribute("LifeSupport", true, Attribute.Display.Never, false, 0f, null, null));
 			LifeSupport.SetFormatter(new StandardAttributeFormatter(GameUtil.UnitClass.SimpleInteger, GameUtil.TimeSlice.None));
 			Toggle = Add(new Attribute("Toggle", true, Attribute.Display.Never, false, 0f, null, null));

@@ -10,7 +10,7 @@ public abstract class BaseBatteryConfig : IBuildingConfig
 		buildingDef.ExhaustKilowattsWhenActive = exhaust_temperature_active;
 		buildingDef.SelfHeatKilowattsWhenActive = self_heat_kilowatts_active;
 		buildingDef.Entombable = false;
-		buildingDef.ViewMode = SimViewMode.PowerMap;
+		buildingDef.ViewMode = OverlayModes.Power.ID;
 		buildingDef.AudioCategory = "Metal";
 		buildingDef.RequiresPowerOutput = true;
 		buildingDef.UseWhitePowerOutputConnectorColour = true;

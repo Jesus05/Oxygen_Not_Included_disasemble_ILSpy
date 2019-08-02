@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Video;
 
 public class Assets : KMonoBehaviour, ISerializationCallbackReceiver
 {
@@ -69,9 +70,11 @@ public class Assets : KMonoBehaviour, ISerializationCallbackReceiver
 		public GameObject PrioritizeRowHeaderWidget;
 	}
 
+	public static List<KAnimFile> ModLoadedKAnims = new List<KAnimFile>();
+
 	private static Action<KPrefabID> OnAddPrefab;
 
-	public static BuildingDef[] BuildingDefs;
+	public static List<BuildingDef> BuildingDefs;
 
 	public List<KPrefabID> PrefabAssets = new List<KPrefabID>();
 
@@ -79,33 +82,37 @@ public class Assets : KMonoBehaviour, ISerializationCallbackReceiver
 
 	private static HashSet<Tag> CountableTags = new HashSet<Tag>();
 
-	public Sprite[] SpriteAssets;
+	public List<Sprite> SpriteAssets;
 
 	public static Dictionary<HashedString, Sprite> Sprites;
 
-	public TintedSprite[] TintedSpriteAssets;
+	public List<string> videoClipNames;
 
-	public static TintedSprite[] TintedSprites;
+	private const string VIDEO_ASSET_PATH = "video";
 
-	public Texture2D[] TextureAssets;
+	public List<TintedSprite> TintedSpriteAssets;
 
-	public static Texture2D[] Textures;
+	public static List<TintedSprite> TintedSprites;
 
-	public static TextureAtlas[] TextureAtlases;
+	public List<Texture2D> TextureAssets;
 
-	public TextureAtlas[] TextureAtlasAssets;
+	public static List<Texture2D> Textures;
 
-	public static Material[] Materials;
+	public static List<TextureAtlas> TextureAtlases;
 
-	public Material[] MaterialAssets;
+	public List<TextureAtlas> TextureAtlasAssets;
 
-	public static Shader[] Shaders;
+	public static List<Material> Materials;
 
-	public Shader[] ShaderAssets;
+	public List<Material> MaterialAssets;
 
-	public static BlockTileDecorInfo[] BlockTileDecorInfos;
+	public static List<Shader> Shaders;
 
-	public BlockTileDecorInfo[] BlockTileDecorInfoAssets;
+	public List<Shader> ShaderAssets;
+
+	public static List<BlockTileDecorInfo> BlockTileDecorInfos;
+
+	public List<BlockTileDecorInfo> BlockTileDecorInfoAssets;
 
 	public Material AnimMaterialAsset;
 
@@ -127,9 +134,9 @@ public class Assets : KMonoBehaviour, ISerializationCallbackReceiver
 
 	private static Dictionary<HashedString, KAnimFile> AnimTable = new Dictionary<HashedString, KAnimFile>();
 
-	public KAnimFile[] AnimAssets;
+	public List<KAnimFile> AnimAssets;
 
-	public static KAnimFile[] Anims;
+	public static List<KAnimFile> Anims;
 
 	public Font DebugFontAsset;
 
@@ -138,9 +145,6 @@ public class Assets : KMonoBehaviour, ISerializationCallbackReceiver
 	public SubstanceTable substanceTable;
 
 	public static SubstanceTable SubstanceTable;
-
-	[SerializeField]
-	public TextAsset elementsFile;
 
 	[SerializeField]
 	public TextAsset elementAudio;
@@ -155,6 +159,8 @@ public class Assets : KMonoBehaviour, ISerializationCallbackReceiver
 	public DigPlacerConfig.DigPlacerAssets digPlacerAssets;
 
 	public MopPlacerConfig.MopPlacerAssets mopPlacerAssets;
+
+	public ComicData[] comics;
 
 	public static Assets instance;
 
@@ -181,39 +187,39 @@ public class Assets : KMonoBehaviour, ISerializationCallbackReceiver
 		PrefabsByAdditionalTags.Clear();
 		CountableTags.Clear();
 		Sprites = new Dictionary<HashedString, Sprite>();
-		Sprite[] spriteAssets = SpriteAssets;
-		foreach (Sprite sprite in spriteAssets)
+		foreach (Sprite spriteAsset in SpriteAssets)
 		{
-			if (!((UnityEngine.Object)sprite == (UnityEngine.Object)null))
+			if (!((UnityEngine.Object)spriteAsset == (UnityEngine.Object)null))
 			{
-				HashedString key = new HashedString(sprite.name);
-				Sprites.Add(key, sprite);
+				HashedString key = new HashedString(spriteAsset.name);
+				Sprites.Add(key, spriteAsset);
 			}
 		}
 		TintedSprites = (from x in TintedSpriteAssets
 		where x != null && (UnityEngine.Object)x.sprite != (UnityEngine.Object)null
-		select x).ToArray();
+		select x).ToList();
 		Materials = (from x in MaterialAssets
 		where (UnityEngine.Object)x != (UnityEngine.Object)null
-		select x).ToArray();
+		select x).ToList();
 		Textures = (from x in TextureAssets
 		where (UnityEngine.Object)x != (UnityEngine.Object)null
-		select x).ToArray();
+		select x).ToList();
 		TextureAtlases = (from x in TextureAtlasAssets
 		where (UnityEngine.Object)x != (UnityEngine.Object)null
-		select x).ToArray();
+		select x).ToList();
 		BlockTileDecorInfos = (from x in BlockTileDecorInfoAssets
 		where (UnityEngine.Object)x != (UnityEngine.Object)null
-		select x).ToArray();
+		select x).ToList();
 		Anims = (from x in AnimAssets
 		where (UnityEngine.Object)x != (UnityEngine.Object)null
-		select x).ToArray();
+		select x).ToList();
+		Anims.AddRange(ModLoadedKAnims);
 		UIPrefabs = UIPrefabAssets;
 		DebugFont = DebugFontAsset;
 		AsyncLoadManager<IGlobalAsyncLoader>.Run();
 		GameAudioSheets.Get().Initialize();
 		SubstanceListHookup();
-		BuildingDefs = new BuildingDef[0];
+		BuildingDefs = new List<BuildingDef>();
 		foreach (KPrefabID prefabAsset in PrefabAssets)
 		{
 			if (!((UnityEngine.Object)prefabAsset == (UnityEngine.Object)null))
@@ -222,15 +228,19 @@ public class Assets : KMonoBehaviour, ISerializationCallbackReceiver
 			}
 		}
 		AnimTable.Clear();
-		KAnimFile[] anims = Anims;
-		foreach (KAnimFile kAnimFile in anims)
+		foreach (KAnimFile anim in Anims)
 		{
-			if ((UnityEngine.Object)kAnimFile != (UnityEngine.Object)null)
+			if ((UnityEngine.Object)anim != (UnityEngine.Object)null)
 			{
-				HashedString key2 = kAnimFile.name;
-				AnimTable[key2] = kAnimFile;
+				HashedString key2 = anim.name;
+				AnimTable[key2] = anim;
 			}
 		}
+		CreatePrefabs();
+	}
+
+	private void CreatePrefabs()
+	{
 		LegacyModMain.Load();
 	}
 
@@ -242,9 +252,9 @@ public class Assets : KMonoBehaviour, ISerializationCallbackReceiver
 
 	private static void TryAddCountableTag(KPrefabID prefab)
 	{
-		foreach (Tag unitCategory in GameTags.UnitCategories)
+		foreach (Tag displayAsUnit in GameTags.DisplayAsUnits)
 		{
-			if (prefab.HasTag(unitCategory))
+			if (prefab.HasTag(displayAsUnit))
 			{
 				AddCountableTag(prefab.PrefabTag);
 				break;
@@ -266,7 +276,7 @@ public class Assets : KMonoBehaviour, ISerializationCallbackReceiver
 	{
 		Hashtable substanceList = new Hashtable();
 		ElementsAudio.Instance.LoadData(AsyncLoadManager<IGlobalAsyncLoader>.AsyncLoader<ElementAudioFileLoader>.Get().entries);
-		ElementLoader.Load(ref substanceList, elementsFile.text, substanceTable);
+		ElementLoader.Load(ref substanceList, substanceTable);
 		SubstanceTable = substanceTable;
 	}
 
@@ -282,10 +292,10 @@ public class Assets : KMonoBehaviour, ISerializationCallbackReceiver
 		return value;
 	}
 
-	private static Def GetDef(Def[] defs, string prefab_id)
+	private static BuildingDef GetDef(IList<BuildingDef> defs, string prefab_id)
 	{
-		int num = defs.Length;
-		for (int i = 0; i < num; i++)
+		int count = defs.Count;
+		for (int i = 0; i < count; i++)
 		{
 			if (defs[i].PrefabID == prefab_id)
 			{
@@ -297,7 +307,7 @@ public class Assets : KMonoBehaviour, ISerializationCallbackReceiver
 
 	public static BuildingDef GetBuildingDef(string prefab_id)
 	{
-		return (BuildingDef)GetDef(BuildingDefs, prefab_id);
+		return GetDef(BuildingDefs, prefab_id);
 	}
 
 	public static TintedSprite GetTintedSprite(string name)
@@ -305,7 +315,7 @@ public class Assets : KMonoBehaviour, ISerializationCallbackReceiver
 		TintedSprite result = null;
 		if (TintedSprites != null)
 		{
-			for (int i = 0; i < TintedSprites.Length; i++)
+			for (int i = 0; i < TintedSprites.Count; i++)
 			{
 				if (TintedSprites[i].sprite.name == name)
 				{
@@ -320,8 +330,18 @@ public class Assets : KMonoBehaviour, ISerializationCallbackReceiver
 	public static Sprite GetSprite(HashedString name)
 	{
 		Sprite value = null;
-		Sprites.TryGetValue(name, out value);
+		if (Sprites != null)
+		{
+			Sprites.TryGetValue(name, out value);
+		}
 		return value;
+	}
+
+	public static VideoClip GetVideo(string name)
+	{
+		VideoClip videoClip = null;
+		string path = "video/" + name;
+		return Resources.Load<VideoClip>(path);
 	}
 
 	public static Texture2D GetTexture(string name)
@@ -329,7 +349,7 @@ public class Assets : KMonoBehaviour, ISerializationCallbackReceiver
 		Texture2D result = null;
 		if (Textures != null)
 		{
-			for (int i = 0; i < Textures.Length; i++)
+			for (int i = 0; i < Textures.Count; i++)
 			{
 				if (Textures[i].name == name)
 				{
@@ -341,6 +361,19 @@ public class Assets : KMonoBehaviour, ISerializationCallbackReceiver
 		return result;
 	}
 
+	public static ComicData GetComic(string id)
+	{
+		ComicData[] array = instance.comics;
+		foreach (ComicData comicData in array)
+		{
+			if (comicData.name == id)
+			{
+				return comicData;
+			}
+		}
+		return null;
+	}
+
 	public static void AddPrefab(KPrefabID prefab)
 	{
 		if (!((UnityEngine.Object)prefab == (UnityEngine.Object)null))
@@ -348,7 +381,7 @@ public class Assets : KMonoBehaviour, ISerializationCallbackReceiver
 			prefab.UpdateSaveLoadTag();
 			if (PrefabsByTag.ContainsKey(prefab.PrefabTag))
 			{
-				Debug.LogWarning("Tried loading prefab with duplicate tag, ignoring: " + prefab.PrefabTag, null);
+				Debug.LogWarning("Tried loading prefab with duplicate tag, ignoring: " + prefab.PrefabTag);
 			}
 			PrefabsByTag[prefab.PrefabTag] = prefab;
 			foreach (Tag tag in prefab.Tags)
@@ -392,7 +425,7 @@ public class Assets : KMonoBehaviour, ISerializationCallbackReceiver
 		GameObject gameObject = TryGetPrefab(tag);
 		if ((UnityEngine.Object)gameObject == (UnityEngine.Object)null)
 		{
-			Debug.LogWarning("Missing prefab: " + tag, null);
+			Debug.LogWarning("Missing prefab: " + tag);
 		}
 		return gameObject;
 	}
@@ -455,12 +488,11 @@ public class Assets : KMonoBehaviour, ISerializationCallbackReceiver
 
 	public static TextureAtlas GetTextureAtlas(string name)
 	{
-		TextureAtlas[] textureAtlases = TextureAtlases;
-		foreach (TextureAtlas textureAtlas in textureAtlases)
+		foreach (TextureAtlas textureAtlase in TextureAtlases)
 		{
-			if (textureAtlas.name == name)
+			if (textureAtlase.name == name)
 			{
-				return textureAtlas;
+				return textureAtlase;
 			}
 		}
 		return null;
@@ -468,8 +500,7 @@ public class Assets : KMonoBehaviour, ISerializationCallbackReceiver
 
 	public static Material GetMaterial(string name)
 	{
-		Material[] materials = Materials;
-		foreach (Material material in materials)
+		foreach (Material material in Materials)
 		{
 			if (material.name == name)
 			{
@@ -481,15 +512,14 @@ public class Assets : KMonoBehaviour, ISerializationCallbackReceiver
 
 	public static BlockTileDecorInfo GetBlockTileDecorInfo(string name)
 	{
-		BlockTileDecorInfo[] blockTileDecorInfos = BlockTileDecorInfos;
-		foreach (BlockTileDecorInfo blockTileDecorInfo in blockTileDecorInfos)
+		foreach (BlockTileDecorInfo blockTileDecorInfo in BlockTileDecorInfos)
 		{
 			if (blockTileDecorInfo.name == name)
 			{
 				return blockTileDecorInfo;
 			}
 		}
-		Output.LogError("Could not find BlockTileDecorInfo named [" + name + "]");
+		Debug.LogError("Could not find BlockTileDecorInfo named [" + name + "]");
 		return null;
 	}
 
@@ -497,14 +527,14 @@ public class Assets : KMonoBehaviour, ISerializationCallbackReceiver
 	{
 		if (!name.IsValid)
 		{
-			Debug.LogWarning("Invalid hash name", null);
+			Debug.LogWarning("Invalid hash name");
 			return null;
 		}
 		KAnimFile value = null;
 		AnimTable.TryGetValue(name, out value);
 		if ((UnityEngine.Object)value == (UnityEngine.Object)null)
 		{
-			Debug.LogWarning("Missing Anim: [" + name.ToString() + "]. You may have to run Collect Anim on the Assets prefab", null);
+			Debug.LogWarning("Missing Anim: [" + name.ToString() + "]. You may have to run Collect Anim on the Assets prefab");
 		}
 		return value;
 	}
@@ -513,8 +543,8 @@ public class Assets : KMonoBehaviour, ISerializationCallbackReceiver
 	{
 		TintedSpriteAssets = (from x in TintedSpriteAssets
 		where x != null && (UnityEngine.Object)x.sprite != (UnityEngine.Object)null
-		select x).ToArray();
-		Array.Sort(TintedSpriteAssets, (TintedSprite a, TintedSprite b) => a.name.CompareTo(b.name));
+		select x).ToList();
+		TintedSpriteAssets.Sort((TintedSprite a, TintedSprite b) => a.name.CompareTo(b.name));
 	}
 
 	public void OnBeforeSerialize()
@@ -525,7 +555,7 @@ public class Assets : KMonoBehaviour, ISerializationCallbackReceiver
 	{
 		BuildingDefs = (from x in BuildingDefs
 		where x.PrefabID != def.PrefabID
-		select x).ToArray();
-		BuildingDefs = BuildingDefs.Append(def);
+		select x).ToList();
+		BuildingDefs.Add(def);
 	}
 }

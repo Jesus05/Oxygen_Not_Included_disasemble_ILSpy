@@ -23,15 +23,12 @@ public class BuildingComplete : Building
 
 	public List<AttributeModifier> regionModifiers = new List<AttributeModifier>();
 
-	private static readonly EventSystem.IntraObjectHandler<BuildingComplete> OnSelectObjectDelegate = new EventSystem.IntraObjectHandler<BuildingComplete>(delegate(BuildingComplete component, object data)
-	{
-		component.OnSelectObject(data);
-	});
-
 	private static readonly EventSystem.IntraObjectHandler<BuildingComplete> OnObjectReplacedDelegate = new EventSystem.IntraObjectHandler<BuildingComplete>(delegate(BuildingComplete component, object data)
 	{
 		component.OnObjectReplaced(data);
 	});
+
+	private HandleVector<int>.Handle scenePartitionerEntry;
 
 	protected override void OnPrefabInit()
 	{
@@ -63,17 +60,7 @@ public class BuildingComplete : Building
 		{
 			GameComps.StructureTemperatures.Add(base.gameObject);
 		}
-		Subscribe(-1503271301, OnSelectObjectDelegate);
 		Subscribe(1606648047, OnObjectReplacedDelegate);
-	}
-
-	private void OnSelectObject(object data)
-	{
-		if (Def.SelectMode != 0)
-		{
-			GameHashes hash = (!(bool)data) ? GameHashes.DisableOverlay : GameHashes.EnableOverlay;
-			Game.Instance.gameObject.Trigger((int)hash, Def.SelectMode);
-		}
 	}
 
 	private void OnObjectReplaced(object data)
@@ -138,6 +125,42 @@ public class BuildingComplete : Building
 		Components.BuildingCompletes.Add(this);
 		BuildingConfigManager.Instance.AddBuildingCompleteKComponents(base.gameObject, Def.Tag);
 		hasSpawnedKComponents = true;
+		scenePartitionerEntry = GameScenePartitioner.Instance.Add(base.name, this, GetExtents(), GameScenePartitioner.Instance.completeBuildings, null);
+		Attributes attributes = this.GetAttributes();
+		if (attributes != null)
+		{
+			Deconstructable component6 = GetComponent<Deconstructable>();
+			if ((Object)component6 != (Object)null)
+			{
+				for (int k = 1; k < component6.constructionElements.Length; k++)
+				{
+					Tag tag = component6.constructionElements[k];
+					Element element = ElementLoader.GetElement(tag);
+					if (element != null)
+					{
+						foreach (AttributeModifier attributeModifier in element.attributeModifiers)
+						{
+							attributes.Add(attributeModifier);
+						}
+					}
+					else
+					{
+						GameObject gameObject = Assets.TryGetPrefab(tag);
+						if ((Object)gameObject != (Object)null)
+						{
+							PrefabAttributeModifiers component7 = gameObject.GetComponent<PrefabAttributeModifiers>();
+							if ((Object)component7 != (Object)null)
+							{
+								foreach (AttributeModifier descriptor in component7.descriptors)
+								{
+									attributes.Add(descriptor);
+								}
+							}
+						}
+					}
+				}
+			}
+		}
 	}
 
 	private string GetInspectSound()
@@ -150,6 +173,7 @@ public class BuildingComplete : Building
 	{
 		if (!Game.quitting)
 		{
+			GameScenePartitioner.Instance.Free(ref scenePartitionerEntry);
 			if (hasSpawnedKComponents)
 			{
 				BuildingConfigManager.Instance.DestroyBuildingCompleteKComponents(base.gameObject, Def.Tag);

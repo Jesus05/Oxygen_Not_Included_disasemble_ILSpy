@@ -73,7 +73,7 @@ namespace NodeEditorFramework.Standard
 					{
 						NewNodeCanvas();
 						NodeEditor.ReInit(true);
-						Debug.LogError("Unloaded Canvas due to exception in Draw!", null);
+						Debug.LogError("Unloaded Canvas due to exception in Draw!");
 						Debug.LogException(exception);
 					}
 				}

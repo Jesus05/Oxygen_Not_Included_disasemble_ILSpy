@@ -1,8 +1,15 @@
 public class SolidConduitBridge : KMonoBehaviour
 {
+	[MyCmpGet]
+	private Operational operational;
+
 	private int inputCell;
 
 	private int outputCell;
+
+	private bool dispensing;
+
+	public bool IsDispensing => dispensing;
 
 	protected override void OnSpawn()
 	{
@@ -21,13 +28,18 @@ public class SolidConduitBridge : KMonoBehaviour
 
 	private void ConduitUpdate(float dt)
 	{
-		SolidConduitFlow flowManager = SolidConduit.GetFlowManager();
-		if (flowManager.HasConduit(inputCell) && flowManager.HasConduit(outputCell) && flowManager.IsConduitFull(inputCell) && flowManager.IsConduitEmpty(outputCell))
+		dispensing = false;
+		if (!(bool)operational || operational.IsOperational)
 		{
-			Pickupable pickupable = flowManager.RemovePickupable(inputCell);
-			if ((bool)pickupable)
+			SolidConduitFlow flowManager = SolidConduit.GetFlowManager();
+			if (flowManager.HasConduit(inputCell) && flowManager.HasConduit(outputCell) && flowManager.IsConduitFull(inputCell) && flowManager.IsConduitEmpty(outputCell))
 			{
-				flowManager.AddPickupable(outputCell, pickupable);
+				Pickupable pickupable = flowManager.RemovePickupable(inputCell);
+				if ((bool)pickupable)
+				{
+					flowManager.AddPickupable(outputCell, pickupable);
+					dispensing = true;
+				}
 			}
 		}
 	}

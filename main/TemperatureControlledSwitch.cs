@@ -25,7 +25,7 @@ public class TemperatureControlledSwitch : CircuitSwitch, ISaveLoadable, IThresh
 
 	private float averageTemp;
 
-	public float StructureTemperature => GameComps.StructureTemperatures.GetData(structureTemperature).Temperature;
+	public float StructureTemperature => GameComps.StructureTemperatures.GetPayload(structureTemperature).Temperature;
 
 	public float Threshold
 	{
@@ -64,6 +64,12 @@ public class TemperatureControlledSwitch : CircuitSwitch, ISaveLoadable, IThresh
 	public string AboveToolTip => UI.UISIDESCREENS.THRESHOLD_SWITCH_SIDESCREEN.TEMPERATURE_TOOLTIP_ABOVE;
 
 	public string BelowToolTip => UI.UISIDESCREENS.THRESHOLD_SWITCH_SIDESCREEN.TEMPERATURE_TOOLTIP_BELOW;
+
+	public ThresholdScreenLayoutType LayoutType => ThresholdScreenLayoutType.InputField;
+
+	public int IncrementScale => 1;
+
+	public NonLinearSlider.Range[] GetRanges => NonLinearSlider.GetDefaultRange(RangeMax);
 
 	protected override void OnSpawn()
 	{
@@ -108,18 +114,18 @@ public class TemperatureControlledSwitch : CircuitSwitch, ISaveLoadable, IThresh
 
 	public float GetRangeMinInputField()
 	{
-		return GameUtil.GetConvertedTemperature(RangeMin);
+		return GameUtil.GetConvertedTemperature(RangeMin, false);
 	}
 
 	public float GetRangeMaxInputField()
 	{
-		return GameUtil.GetConvertedTemperature(RangeMax);
+		return GameUtil.GetConvertedTemperature(RangeMax, false);
 	}
 
 	public string Format(float value, bool units)
 	{
 		bool displayUnits = units;
-		return GameUtil.GetFormattedTemperature(value, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, displayUnits);
+		return GameUtil.GetFormattedTemperature(value, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, displayUnits, false);
 	}
 
 	public float ProcessedSliderValue(float input)

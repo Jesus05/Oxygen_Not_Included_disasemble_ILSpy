@@ -24,7 +24,7 @@ public class DiseaseSourceVisualizer : KMonoBehaviour
 	protected override void OnCleanUp()
 	{
 		OverlayScreen instance = OverlayScreen.Instance;
-		instance.OnOverlayChanged = (Action<SimViewMode>)Delegate.Remove(instance.OnOverlayChanged, new Action<SimViewMode>(OnViewModeChanged));
+		instance.OnOverlayChanged = (Action<HashedString>)Delegate.Remove(instance.OnOverlayChanged, new Action<HashedString>(OnViewModeChanged));
 		base.OnCleanUp();
 		Components.DiseaseSourceVisualizers.Remove(this);
 		if ((UnityEngine.Object)visualizer != (UnityEngine.Object)null)
@@ -48,14 +48,6 @@ public class DiseaseSourceVisualizer : KMonoBehaviour
 		if (string.IsNullOrEmpty(alwaysShowDisease))
 		{
 			visible = false;
-			MinionModifiers component = base.gameObject.GetComponent<MinionModifiers>();
-			Diseases diseases = component.diseases;
-			if (diseases.Count > 0)
-			{
-				DiseaseInstance diseaseInstance = diseases[0];
-				Disease modifier = diseaseInstance.modifier;
-				SetVisibleDisease(modifier);
-			}
 		}
 		else
 		{
@@ -90,14 +82,14 @@ public class DiseaseSourceVisualizer : KMonoBehaviour
 		}
 	}
 
-	private void OnViewModeChanged(SimViewMode mode)
+	private void OnViewModeChanged(HashedString mode)
 	{
 		Show(mode);
 	}
 
-	public void Show(SimViewMode mode)
+	public void Show(HashedString mode)
 	{
-		base.enabled = (visible && mode == SimViewMode.Disease);
+		base.enabled = (visible && mode == OverlayModes.Disease.ID);
 		if ((UnityEngine.Object)visualizer != (UnityEngine.Object)null)
 		{
 			visualizer.SetActive(base.enabled);

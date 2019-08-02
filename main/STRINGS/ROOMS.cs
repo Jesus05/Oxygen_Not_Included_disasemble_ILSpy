@@ -10,7 +10,7 @@ namespace STRINGS
 
 				public static LocString EFFECT = "- No effect";
 
-				public static LocString TOOLTIP = "This area qualifies as a room but has no dedicated use.";
+				public static LocString TOOLTIP = "This area has walls and doors but no dedicated use.";
 			}
 
 			public class LATRINE
@@ -69,18 +69,18 @@ namespace STRINGS
 
 			public class HOSPITAL
 			{
-				public static LocString NAME = "Med Bay";
+				public static LocString NAME = "Hospital";
 
 				public static LocString EFFECT = "- Quarantine sick Duplicants";
 
-				public static LocString TOOLTIP = "Sick Duplicants assigned to medical beds located within a Med Bay are less likely to spread Disease.";
+				public static LocString TOOLTIP = "Sick Duplicants assigned to medical buildings located within a Hospital are less likely to spread Disease.";
 			}
 
 			public class MASSAGE_CLINIC
 			{
 				public static LocString NAME = "Massage Clinic";
 
-				public static LocString EFFECT = "- Stress relief bonus";
+				public static LocString EFFECT = "- Massage stress relief bonus";
 
 				public static LocString TOOLTIP = "Receiving massages at a Massage Clinic will significantly improve Stress reduction.";
 			}
@@ -89,9 +89,9 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Power Plant";
 
-				public static LocString EFFECT = "- Power production increase";
+				public static LocString EFFECT = "- Enables Power Control Station use";
 
-				public static LocString TOOLTIP = "Electrical Engineers can tune-up generators built within a Power Plant and improve their power production.";
+				public static LocString TOOLTIP = "Generators built within a Power Plant can be tuned up using Power Control Stations to improve their power production.";
 			}
 
 			public class MACHINE_SHOP
@@ -100,25 +100,25 @@ namespace STRINGS
 
 				public static LocString EFFECT = "- Increased fabrication efficiency";
 
-				public static LocString TOOLTIP = "Engineers working in a Machine Shop can maintain buildings and increase their production speed.";
+				public static LocString TOOLTIP = "Duplicants working in a Machine Shop can maintain buildings and increase their production speed.";
 			}
 
 			public class FARM
 			{
 				public static LocString NAME = "Greenhouse";
 
-				public static LocString EFFECT = "- Accelerated plant growth";
+				public static LocString EFFECT = "- Enables Farm Station use";
 
-				public static LocString TOOLTIP = "Crops grown within a Greenhouse can be tended by Farmers to increase their growth speed.";
+				public static LocString TOOLTIP = "Crops grown within a Greenhouse can be tended with Farm Station fertilizer to increase their growth speed.";
 			}
 
 			public class CREATUREPEN
 			{
 				public static LocString NAME = "Stable";
 
-				public static LocString EFFECT = "- Hastens critter domestication";
+				public static LocString EFFECT = "- Enables Grooming Station use";
 
-				public static LocString TOOLTIP = "Stabled critters will become more productive and less hostile.";
+				public static LocString TOOLTIP = "Stabled critters can be tended at a Grooming Station to hasten their domestication and increase their production.";
 			}
 
 			public class REC_ROOM
@@ -127,7 +127,25 @@ namespace STRINGS
 
 				public static LocString EFFECT = "- Morale bonus";
 
-				public static LocString TOOLTIP = "Downtime shifts will further improve Morale for Duplicants visiting a Recreation Room.";
+				public static LocString TOOLTIP = "Scheduled Downtime will further improve Morale for Duplicants visiting a Recreation Room.";
+			}
+
+			public class PARK
+			{
+				public static LocString NAME = "Park";
+
+				public static LocString EFFECT = "- Morale bonus";
+
+				public static LocString TOOLTIP = "Passing through natural spaces throughout the day will raise the Morale of Duplicants.";
+			}
+
+			public class NATURERESERVE
+			{
+				public static LocString NAME = "Nature Reserve";
+
+				public static LocString EFFECT = "- Morale bonus";
+
+				public static LocString TOOLTIP = "A Nature Reserve will grant higher Morale bonuses to Duplicants than a Park.";
 			}
 
 			public class PRIVATE_BEDROOM
@@ -225,16 +243,16 @@ namespace STRINGS
 
 			public class DECORATIVE_ITEM_N
 			{
-				public static LocString NAME = "Decor item: {0}+ Decor";
+				public static LocString NAME = "Decor item: +{0} Decor";
 
 				public static LocString DESCRIPTION = "Requires a decorative item with a minimum Decor value of {0}";
 			}
 
 			public class CLINIC
 			{
-				public static LocString NAME = "Medical bed";
+				public static LocString NAME = "Medical equipment";
 
-				public static LocString DESCRIPTION = "Requires one or more Med-Beds or Pharma Chambers";
+				public static LocString DESCRIPTION = "Requires one or more Sick Bays or Disease Clinics";
 			}
 
 			public class POWER_STATION
@@ -277,6 +295,13 @@ namespace STRINGS
 				public static LocString NAME = "Recreational building";
 
 				public static LocString DESCRIPTION = "Requires one or more recreational buildings";
+			}
+
+			public class PARK_BUILDING
+			{
+				public static LocString NAME = "Park Sign";
+
+				public static LocString DESCRIPTION = "Requires one or more Park Signs";
 			}
 
 			public class MACHINE_SHOP
@@ -367,12 +392,40 @@ namespace STRINGS
 			{
 				public static LocString NAME = "No industrial machinery";
 
-				public static LocString DESCRIPTION = "Cannot contain any building labelled Industrial Machinery";
+				public static LocString DESCRIPTION = "Cannot contain any building labeled Industrial Machinery";
 			}
 
-			public static LocString HEADER = "Room Criteria";
+			public class WILDANIMAL
+			{
+				public static LocString NAME = "Wildlife";
 
-			public static LocString NEUTRAL_TYPE = "Enclosed by wall tiles";
+				public static LocString DESCRIPTION = "At least one wild creature.";
+			}
+
+			public class WILDANIMALS
+			{
+				public static LocString NAME = "More Wildlife";
+
+				public static LocString DESCRIPTION = "At least two wild creatures.";
+			}
+
+			public class WILDPLANT
+			{
+				public static LocString NAME = "At least two Wild Plants";
+
+				public static LocString DESCRIPTION = "At least two wild plants.";
+			}
+
+			public class WILDPLANTS
+			{
+				public static LocString NAME = "At least four Wild Plants";
+
+				public static LocString DESCRIPTION = "At least two wild plants.";
+			}
+
+			public static LocString HEADER = "<b>Requirements:</b>";
+
+			public static LocString NEUTRAL_TYPE = "Enclosed by wall tile";
 
 			public static LocString POSSIBLE_TYPES_HEADER = "Possible Room Types";
 
@@ -413,12 +466,17 @@ namespace STRINGS
 				public static LocString NAME = "Critters: {0}";
 			}
 
+			public class PLANT_COUNT
+			{
+				public static LocString NAME = "Plants: {0}";
+			}
+
 			public static LocString HEADER = "Room Details";
 		}
 
 		public class EFFECTS
 		{
-			public static LocString HEADER = "Room Effects";
+			public static LocString HEADER = "<b>Effects:</b>";
 		}
 	}
 }

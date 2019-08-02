@@ -8,55 +8,415 @@ using UnityEngine;
 public class Grid
 {
 	[Flags]
-	public enum BitField : ushort
+	public enum BuildFlags : byte
 	{
-		Unused = 0x1,
-		FakeFloor = 0x2,
-		ForceField = 0x4,
-		SuitRequired = 0x8,
-		Foundation = 0x10,
-		Solid = 0x20,
-		PreviousSolid = 0x40,
-		RenderedByWorld = 0x80,
-		Impassable = 0x100,
-		LiquidPumpFloor = 0x200
+		Solid = 0x1,
+		Foundation = 0x2,
+		Door = 0x4,
+		FakeFloor = 0x8,
+		DupePassable = 0x10,
+		DupeImpassable = 0x20,
+		CritterImpassable = 0x40
 	}
 
-	public enum SceneLayer
+	[StructLayout(LayoutKind.Sequential, Size = 1)]
+	public struct BuildFlagsFoundationIndexer
 	{
-		NoLayer = -2,
-		Background = -1,
-		TempShiftPlate = 1,
-		GasConduits = 2,
-		GasConduitBridges = 3,
-		LiquidConduits = 4,
-		LiquidConduitBridges = 5,
-		SolidConduits = 6,
-		SolidConduitContents = 7,
-		SolidConduitBridges = 8,
-		Wires = 9,
-		WireBridges = 10,
-		WireBridgesFront = 11,
-		LogicWires = 12,
-		LogicWireBridges = 13,
-		LogicWireBridgesFront = 14,
-		Paintings = 0xF,
-		BuildingBack = 0x10,
-		Building = 17,
-		BuildingUse = 18,
-		BuildingFront = 19,
-		TransferArm = 20,
-		Ore = 21,
-		Creatures = 22,
-		Move = 23,
-		Front = 24,
-		Liquid = 25,
-		Ground = 26,
-		TileMain = 27,
-		TileFront = 28,
-		FXFront = 29,
-		FXFront2 = 30,
-		SceneMAX = 0x1F
+		public bool this[int i]
+		{
+			get
+			{
+				return (BuildMasks[i] & BuildFlags.Foundation) != (BuildFlags)0;
+			}
+			set
+			{
+				UpdateBuildMask(i, BuildFlags.Foundation, value);
+			}
+		}
+	}
+
+	[StructLayout(LayoutKind.Sequential, Size = 1)]
+	public struct BuildFlagsSolidIndexer
+	{
+		public bool this[int i]
+		{
+			get
+			{
+				return (BuildMasks[i] & BuildFlags.Solid) != (BuildFlags)0;
+			}
+		}
+	}
+
+	[StructLayout(LayoutKind.Sequential, Size = 1)]
+	public struct BuildFlagsDupeImpassableIndexer
+	{
+		public bool this[int i]
+		{
+			get
+			{
+				return (BuildMasks[i] & BuildFlags.DupeImpassable) != (BuildFlags)0;
+			}
+			set
+			{
+				UpdateBuildMask(i, BuildFlags.DupeImpassable, value);
+			}
+		}
+	}
+
+	[StructLayout(LayoutKind.Sequential, Size = 1)]
+	public struct BuildFlagsFakeFloorIndexer
+	{
+		public bool this[int i]
+		{
+			get
+			{
+				return (BuildMasks[i] & BuildFlags.FakeFloor) != (BuildFlags)0;
+			}
+			set
+			{
+				UpdateBuildMask(i, BuildFlags.FakeFloor, value);
+			}
+		}
+	}
+
+	[StructLayout(LayoutKind.Sequential, Size = 1)]
+	public struct BuildFlagsDupePassableIndexer
+	{
+		public bool this[int i]
+		{
+			get
+			{
+				return (BuildMasks[i] & BuildFlags.DupePassable) != (BuildFlags)0;
+			}
+			set
+			{
+				UpdateBuildMask(i, BuildFlags.DupePassable, value);
+			}
+		}
+	}
+
+	[StructLayout(LayoutKind.Sequential, Size = 1)]
+	public struct BuildFlagsImpassableIndexer
+	{
+		public bool this[int i]
+		{
+			get
+			{
+				return (BuildMasks[i] & BuildFlags.CritterImpassable) != (BuildFlags)0;
+			}
+			set
+			{
+				UpdateBuildMask(i, BuildFlags.CritterImpassable, value);
+			}
+		}
+	}
+
+	[StructLayout(LayoutKind.Sequential, Size = 1)]
+	public struct BuildFlagsDoorIndexer
+	{
+		public bool this[int i]
+		{
+			get
+			{
+				return (BuildMasks[i] & BuildFlags.Door) != (BuildFlags)0;
+			}
+			set
+			{
+				UpdateBuildMask(i, BuildFlags.Door, value);
+			}
+		}
+	}
+
+	[Flags]
+	public enum VisFlags : byte
+	{
+		Revealed = 0x1,
+		PreventFogOfWarReveal = 0x2,
+		RenderedByWorld = 0x4,
+		AllowPathfinding = 0x8
+	}
+
+	[StructLayout(LayoutKind.Sequential, Size = 1)]
+	public struct VisFlagsRevealedIndexer
+	{
+		public bool this[int i]
+		{
+			get
+			{
+				return (VisMasks[i] & VisFlags.Revealed) != (VisFlags)0;
+			}
+			set
+			{
+				UpdateVisMask(i, VisFlags.Revealed, value);
+			}
+		}
+	}
+
+	[StructLayout(LayoutKind.Sequential, Size = 1)]
+	public struct VisFlagsPreventFogOfWarRevealIndexer
+	{
+		public bool this[int i]
+		{
+			get
+			{
+				return (VisMasks[i] & VisFlags.PreventFogOfWarReveal) != (VisFlags)0;
+			}
+			set
+			{
+				UpdateVisMask(i, VisFlags.PreventFogOfWarReveal, value);
+			}
+		}
+	}
+
+	[StructLayout(LayoutKind.Sequential, Size = 1)]
+	public struct VisFlagsRenderedByWorldIndexer
+	{
+		public bool this[int i]
+		{
+			get
+			{
+				return (VisMasks[i] & VisFlags.RenderedByWorld) != (VisFlags)0;
+			}
+			set
+			{
+				UpdateVisMask(i, VisFlags.RenderedByWorld, value);
+			}
+		}
+	}
+
+	[StructLayout(LayoutKind.Sequential, Size = 1)]
+	public struct VisFlagsAllowPathfindingIndexer
+	{
+		public bool this[int i]
+		{
+			get
+			{
+				return (VisMasks[i] & VisFlags.AllowPathfinding) != (VisFlags)0;
+			}
+			set
+			{
+				UpdateVisMask(i, VisFlags.AllowPathfinding, value);
+			}
+		}
+	}
+
+	[Flags]
+	public enum NavValidatorFlags : byte
+	{
+		Ladder = 0x1,
+		Pole = 0x2,
+		Tube = 0x4,
+		UnderConstruction = 0x8
+	}
+
+	[StructLayout(LayoutKind.Sequential, Size = 1)]
+	public struct NavValidatorFlagsLadderIndexer
+	{
+		public bool this[int i]
+		{
+			get
+			{
+				return (NavValidatorMasks[i] & NavValidatorFlags.Ladder) != (NavValidatorFlags)0;
+			}
+			set
+			{
+				UpdateNavValidatorMask(i, NavValidatorFlags.Ladder, value);
+			}
+		}
+	}
+
+	[StructLayout(LayoutKind.Sequential, Size = 1)]
+	public struct NavValidatorFlagsPoleIndexer
+	{
+		public bool this[int i]
+		{
+			get
+			{
+				return (NavValidatorMasks[i] & NavValidatorFlags.Pole) != (NavValidatorFlags)0;
+			}
+			set
+			{
+				UpdateNavValidatorMask(i, NavValidatorFlags.Pole, value);
+			}
+		}
+	}
+
+	[StructLayout(LayoutKind.Sequential, Size = 1)]
+	public struct NavValidatorFlagsTubeIndexer
+	{
+		public bool this[int i]
+		{
+			get
+			{
+				return (NavValidatorMasks[i] & NavValidatorFlags.Tube) != (NavValidatorFlags)0;
+			}
+			set
+			{
+				UpdateNavValidatorMask(i, NavValidatorFlags.Tube, value);
+			}
+		}
+	}
+
+	[StructLayout(LayoutKind.Sequential, Size = 1)]
+	public struct NavValidatorFlagsUnderConstructionIndexer
+	{
+		public bool this[int i]
+		{
+			get
+			{
+				return (NavValidatorMasks[i] & NavValidatorFlags.UnderConstruction) != (NavValidatorFlags)0;
+			}
+			set
+			{
+				UpdateNavValidatorMask(i, NavValidatorFlags.UnderConstruction, value);
+			}
+		}
+	}
+
+	[Flags]
+	public enum NavFlags : byte
+	{
+		AccessDoor = 0x1,
+		TubeEntrance = 0x2,
+		PreventIdleTraversal = 0x4,
+		Reserved = 0x8,
+		SuitMarker = 0x10
+	}
+
+	[StructLayout(LayoutKind.Sequential, Size = 1)]
+	public struct NavFlagsAccessDoorIndexer
+	{
+		public bool this[int i]
+		{
+			get
+			{
+				return (NavMasks[i] & NavFlags.AccessDoor) != (NavFlags)0;
+			}
+			set
+			{
+				UpdateNavMask(i, NavFlags.AccessDoor, value);
+			}
+		}
+	}
+
+	[StructLayout(LayoutKind.Sequential, Size = 1)]
+	public struct NavFlagsTubeEntranceIndexer
+	{
+		public bool this[int i]
+		{
+			get
+			{
+				return (NavMasks[i] & NavFlags.TubeEntrance) != (NavFlags)0;
+			}
+			set
+			{
+				UpdateNavMask(i, NavFlags.TubeEntrance, value);
+			}
+		}
+	}
+
+	[StructLayout(LayoutKind.Sequential, Size = 1)]
+	public struct NavFlagsPreventIdleTraversalIndexer
+	{
+		public bool this[int i]
+		{
+			get
+			{
+				return (NavMasks[i] & NavFlags.PreventIdleTraversal) != (NavFlags)0;
+			}
+			set
+			{
+				UpdateNavMask(i, NavFlags.PreventIdleTraversal, value);
+			}
+		}
+	}
+
+	[StructLayout(LayoutKind.Sequential, Size = 1)]
+	public struct NavFlagsReservedIndexer
+	{
+		public bool this[int i]
+		{
+			get
+			{
+				return (NavMasks[i] & NavFlags.Reserved) != (NavFlags)0;
+			}
+			set
+			{
+				UpdateNavMask(i, NavFlags.Reserved, value);
+			}
+		}
+	}
+
+	[StructLayout(LayoutKind.Sequential, Size = 1)]
+	public struct NavFlagsSuitMarkerIndexer
+	{
+		public bool this[int i]
+		{
+			get
+			{
+				return (NavMasks[i] & NavFlags.SuitMarker) != (NavFlags)0;
+			}
+			set
+			{
+				UpdateNavMask(i, NavFlags.SuitMarker, value);
+			}
+		}
+	}
+
+	public struct Restriction
+	{
+		[Flags]
+		public enum Directions : byte
+		{
+			Left = 0x1,
+			Right = 0x2
+		}
+
+		public enum Orientation : byte
+		{
+			Vertical,
+			Horizontal
+		}
+
+		public const int DefaultID = -1;
+
+		public Dictionary<int, Directions> directionMasks;
+
+		public Orientation orientation;
+	}
+
+	private struct TubeEntrance
+	{
+		public bool operational;
+
+		public int reservationCapacity;
+
+		public HashSet<int> reservations;
+	}
+
+	public struct SuitMarker
+	{
+		[Flags]
+		public enum Flags : byte
+		{
+			OnlyTraverseIfUnequipAvailable = 0x1,
+			Operational = 0x2,
+			Rotated = 0x4
+		}
+
+		public int suitCount;
+
+		public int lockerCount;
+
+		public Flags flags;
+
+		public PathFinder.PotentialPath.Flags pathFlags;
+
+		public HashSet<int> suitReservations;
+
+		public HashSet<int> emptyLockerReservations;
+
+		public int emptyLockerCount => lockerCount - suitCount;
 	}
 
 	[StructLayout(LayoutKind.Sequential, Size = 1)]
@@ -243,135 +603,44 @@ public class Grid
 		}
 	}
 
-	[StructLayout(LayoutKind.Sequential, Size = 1)]
-	public struct FoundationIndexer
+	public enum SceneLayer
 	{
-		public bool this[int i]
-		{
-			get
-			{
-				return (BitFields[i] & 0x10) != 0;
-			}
-			set
-			{
-				BitFields[i] = (ushort)(BitFields[i] & 0xFFEF);
-				BitFields[i] |= (ushort)(value ? 16 : 0);
-			}
-		}
-	}
-
-	[StructLayout(LayoutKind.Sequential, Size = 1)]
-	public struct SolidIndexer
-	{
-		public bool this[int i]
-		{
-			get
-			{
-				return (BitFields[i] & 0x20) != 0;
-			}
-		}
-	}
-
-	[StructLayout(LayoutKind.Sequential, Size = 1)]
-	public struct PreviousSolidIndexer
-	{
-		public bool this[int i]
-		{
-			get
-			{
-				return (BitFields[i] & 0x40) != 0;
-			}
-			set
-			{
-				BitFields[i] = (ushort)(BitFields[i] & 0xFFBF);
-				BitFields[i] |= (ushort)(value ? 64 : 0);
-			}
-		}
-	}
-
-	[StructLayout(LayoutKind.Sequential, Size = 1)]
-	public struct RenderedByWorldIndexer
-	{
-		public bool this[int i]
-		{
-			get
-			{
-				return (BitFields[i] & 0x80) != 0;
-			}
-			set
-			{
-				BitFields[i] = (ushort)(BitFields[i] & 0xFF7F);
-				BitFields[i] |= (ushort)(value ? 128 : 0);
-			}
-		}
-	}
-
-	[StructLayout(LayoutKind.Sequential, Size = 1)]
-	public struct FakeFloorIndexer
-	{
-		public bool this[int i]
-		{
-			get
-			{
-				return (BitFields[i] & 2) != 0;
-			}
-			set
-			{
-				BitFields[i] = (ushort)(BitFields[i] & 0xFFFD);
-				BitFields[i] |= (ushort)(value ? 2 : 0);
-			}
-		}
-	}
-
-	[StructLayout(LayoutKind.Sequential, Size = 1)]
-	public struct LiquidPumpFloorIndexer
-	{
-		public bool this[int i]
-		{
-			get
-			{
-				return (BitFields[i] & 0x200) != 0;
-			}
-			set
-			{
-				BitFields[i] = (ushort)(BitFields[i] & 0xFDFF);
-				BitFields[i] |= (ushort)(value ? 512 : 0);
-			}
-		}
-	}
-
-	[StructLayout(LayoutKind.Sequential, Size = 1)]
-	public struct ForceFieldIndexer
-	{
-		public bool this[int i]
-		{
-			get
-			{
-				return (BitFields[i] & 4) != 0;
-			}
-			set
-			{
-				BitFields[i] = (ushort)(BitFields[i] & 0xFFFB);
-				BitFields[i] |= (ushort)(value ? 4 : 0);
-			}
-		}
-	}
-
-	[StructLayout(LayoutKind.Sequential, Size = 1)]
-	public struct ImpassableIndexer
-	{
-		public bool this[int i]
-		{
-			get
-			{
-				return (BitFields[i] & 0x100) != 0;
-			}
-			set
-			{
-				BitFields[i] = (ushort)(BitFields[i] & 0xFEFF);
-				BitFields[i] |= (ushort)(value ? 256 : 0);
-			}
-		}
+		NoLayer = -2,
+		Background = -1,
+		Backwall = 1,
+		Gas = 2,
+		GasConduits = 3,
+		GasConduitBridges = 4,
+		LiquidConduits = 5,
+		LiquidConduitBridges = 6,
+		SolidConduits = 7,
+		SolidConduitContents = 8,
+		SolidConduitBridges = 9,
+		Wires = 10,
+		WireBridges = 11,
+		WireBridgesFront = 12,
+		LogicWires = 13,
+		LogicGates = 14,
+		LogicGatesFront = 0xF,
+		InteriorWall = 0x10,
+		GasFront = 17,
+		BuildingBack = 18,
+		Building = 19,
+		BuildingUse = 20,
+		BuildingFront = 21,
+		TransferArm = 22,
+		Ore = 23,
+		Creatures = 24,
+		Move = 25,
+		Front = 26,
+		GlassTile = 27,
+		Liquid = 28,
+		Ground = 29,
+		TileMain = 30,
+		TileFront = 0x1F,
+		FXFront = 0x20,
+		FXFront2 = 33,
+		SceneMAX = 34
 	}
 
 	public static readonly CellOffset[] DefaultOffset = new CellOffset[1]
@@ -399,6 +668,64 @@ public class Grid
 
 	public static int TopBorderHeight = 2;
 
+	public static Dictionary<int, GameObject>[] ObjectLayers;
+
+	public static Action<int> OnReveal;
+
+	public static BuildFlags[] BuildMasks;
+
+	public static BuildFlagsFoundationIndexer Foundation;
+
+	public static BuildFlagsSolidIndexer Solid;
+
+	public static BuildFlagsDupeImpassableIndexer DupeImpassable;
+
+	public static BuildFlagsFakeFloorIndexer FakeFloor;
+
+	public static BuildFlagsDupePassableIndexer DupePassable;
+
+	public static BuildFlagsImpassableIndexer CritterImpassable;
+
+	public static BuildFlagsDoorIndexer HasDoor;
+
+	public static VisFlags[] VisMasks;
+
+	public static VisFlagsRevealedIndexer Revealed;
+
+	public static VisFlagsPreventFogOfWarRevealIndexer PreventFogOfWarReveal;
+
+	public static VisFlagsRenderedByWorldIndexer RenderedByWorld;
+
+	public static VisFlagsAllowPathfindingIndexer AllowPathfinding;
+
+	public static NavValidatorFlags[] NavValidatorMasks;
+
+	public static NavValidatorFlagsLadderIndexer HasLadder;
+
+	public static NavValidatorFlagsPoleIndexer HasPole;
+
+	public static NavValidatorFlagsTubeIndexer HasTube;
+
+	public static NavValidatorFlagsUnderConstructionIndexer IsTileUnderConstruction;
+
+	public static NavFlags[] NavMasks;
+
+	public static NavFlagsAccessDoorIndexer HasAccessDoor;
+
+	public static NavFlagsTubeEntranceIndexer HasTubeEntrance;
+
+	public static NavFlagsPreventIdleTraversalIndexer PreventIdleTraversal;
+
+	public static NavFlagsReservedIndexer Reserved;
+
+	public static NavFlagsSuitMarkerIndexer HasSuitMarker;
+
+	private static Dictionary<int, Restriction> restrictions = new Dictionary<int, Restriction>();
+
+	private static Dictionary<int, TubeEntrance> tubeEntrances = new Dictionary<int, TubeEntrance>();
+
+	private static Dictionary<int, SuitMarker> suitMarkers = new Dictionary<int, SuitMarker>();
+
 	public unsafe static byte* elementIdx;
 
 	public unsafe static float* temperature;
@@ -419,41 +746,23 @@ public class Grid
 
 	public unsafe static float* AccumulatedFlowValues = null;
 
-	public static bool[] Revealed;
-
-	public static bool[] Reserved;
-
 	public static byte[] Visible;
 
 	public static byte[] Spawnable;
 
 	public static float[] Damage;
 
-	public static bool[] HasDoor;
-
-	public static bool[] HasAccessDoor;
-
-	public static bool[] HasLadder;
-
-	public static bool[] HasPole;
-
-	public static bool[] HasTube;
-
-	public static bool[] AllowPathfinding;
-
-	public static bool[] HasTubeEntrance;
-
-	public static bool[] IsTileUnderConstruction;
-
-	public static bool[] PreventFogOfWarReveal;
-
-	public static bool[] PreventIdleTraversal;
-
 	public static float[] Decor;
 
 	public static bool[] GravitasFacility;
 
 	public static float[] Loudness;
+
+	public static Element[] Element;
+
+	public static int[] LightCount;
+
+	public static int[] RadiationCount;
 
 	public static PressureIndexer Pressure;
 
@@ -481,33 +790,7 @@ public class Grid
 
 	public static AccumulatedFlowIndexer AccumulatedFlow;
 
-	public static FoundationIndexer Foundation;
-
-	public static SolidIndexer Solid;
-
-	public static PreviousSolidIndexer PreviousSolid;
-
-	public static RenderedByWorldIndexer RenderedByWorld;
-
-	public static FakeFloorIndexer FakeFloor;
-
-	public static LiquidPumpFloorIndexer LiquidPumpFloor;
-
-	public static ForceFieldIndexer ForceField;
-
-	public static ImpassableIndexer Impassable;
-
-	public static ushort[] BitFields;
-
-	public static Element[] Element;
-
-	public static int[] LightCount;
-
 	public static ObjectLayerIndexer Objects;
-
-	public static Dictionary<int, GameObject>[] ObjectLayers;
-
-	public static Action<int> OnReveal;
 
 	public static float LayerMultiplier = 1f;
 
@@ -516,6 +799,355 @@ public class Grid
 
 	[CompilerGenerated]
 	private static Func<int, bool> _003C_003Ef__mg_0024cache1;
+
+	private static void UpdateBuildMask(int i, BuildFlags flag, bool state)
+	{
+		if (state)
+		{
+			BuildFlags[] buildMasks;
+			int num;
+			(buildMasks = BuildMasks)[num = i] = (buildMasks[num] | flag);
+		}
+		else
+		{
+			BuildFlags[] buildMasks;
+			int num2;
+			(buildMasks = BuildMasks)[num2 = i] = (BuildFlags)((int)buildMasks[num2] & (int)(byte)(~(uint)flag));
+		}
+	}
+
+	public static void SetSolid(int cell, bool solid, CellSolidEvent ev)
+	{
+		UpdateBuildMask(cell, BuildFlags.Solid, solid);
+	}
+
+	private static void UpdateVisMask(int i, VisFlags flag, bool state)
+	{
+		if (state)
+		{
+			VisFlags[] visMasks;
+			int num;
+			(visMasks = VisMasks)[num = i] = (visMasks[num] | flag);
+		}
+		else
+		{
+			VisFlags[] visMasks;
+			int num2;
+			(visMasks = VisMasks)[num2 = i] = (VisFlags)((int)visMasks[num2] & (int)(byte)(~(uint)flag));
+		}
+	}
+
+	private static void UpdateNavValidatorMask(int i, NavValidatorFlags flag, bool state)
+	{
+		if (state)
+		{
+			NavValidatorFlags[] navValidatorMasks;
+			int num;
+			(navValidatorMasks = NavValidatorMasks)[num = i] = (navValidatorMasks[num] | flag);
+		}
+		else
+		{
+			NavValidatorFlags[] navValidatorMasks;
+			int num2;
+			(navValidatorMasks = NavValidatorMasks)[num2 = i] = (NavValidatorFlags)((int)navValidatorMasks[num2] & (int)(byte)(~(uint)flag));
+		}
+	}
+
+	private static void UpdateNavMask(int i, NavFlags flag, bool state)
+	{
+		if (state)
+		{
+			NavFlags[] navMasks;
+			int num;
+			(navMasks = NavMasks)[num = i] = (navMasks[num] | flag);
+		}
+		else
+		{
+			NavFlags[] navMasks;
+			int num2;
+			(navMasks = NavMasks)[num2 = i] = (NavFlags)((int)navMasks[num2] & (int)(byte)(~(uint)flag));
+		}
+	}
+
+	public static void ResetNavMasksAndDetails()
+	{
+		NavMasks = null;
+		tubeEntrances.Clear();
+		restrictions.Clear();
+		suitMarkers.Clear();
+	}
+
+	public static void RegisterRestriction(int cell, Restriction.Orientation orientation)
+	{
+		restrictions[cell] = new Restriction
+		{
+			directionMasks = new Dictionary<int, Restriction.Directions>(),
+			orientation = orientation
+		};
+	}
+
+	public static void UnregisterRestriction(int cell)
+	{
+		restrictions.Remove(cell);
+	}
+
+	public static void SetRestriction(int cell, int minion, Restriction.Directions directions)
+	{
+		Restriction restriction = restrictions[cell];
+		restriction.directionMasks[minion] = directions;
+	}
+
+	public static void ClearRestriction(int cell, int minion)
+	{
+		Restriction restriction = restrictions[cell];
+		restriction.directionMasks.Remove(minion);
+	}
+
+	public static bool HasPermission(int cell, int minion, int fromCell)
+	{
+		DebugUtil.Assert(HasAccessDoor[cell]);
+		Restriction restriction = restrictions[cell];
+		Vector2I vector2I = CellToXY(cell);
+		Vector2I vector2I2 = CellToXY(fromCell);
+		Restriction.Directions directions = (Restriction.Directions)0;
+		switch (restriction.orientation)
+		{
+		case Restriction.Orientation.Vertical:
+		{
+			int num2 = vector2I.x - vector2I2.x;
+			if (num2 < 0)
+			{
+				directions |= Restriction.Directions.Left;
+			}
+			if (num2 > 0)
+			{
+				directions |= Restriction.Directions.Right;
+			}
+			break;
+		}
+		case Restriction.Orientation.Horizontal:
+		{
+			int num = vector2I.y - vector2I2.y;
+			if (num > 0)
+			{
+				directions |= Restriction.Directions.Left;
+			}
+			if (num < 0)
+			{
+				directions |= Restriction.Directions.Right;
+			}
+			break;
+		}
+		}
+		Restriction.Directions value = (Restriction.Directions)0;
+		if (restriction.directionMasks.TryGetValue(minion, out value) || restriction.directionMasks.TryGetValue(-1, out value))
+		{
+			return (value & directions) == (Restriction.Directions)0;
+		}
+		return true;
+	}
+
+	public static void RegisterTubeEntrance(int cell, int reservationCapacity)
+	{
+		DebugUtil.Assert(!tubeEntrances.ContainsKey(cell));
+		HasTubeEntrance[cell] = true;
+		tubeEntrances[cell] = new TubeEntrance
+		{
+			reservationCapacity = reservationCapacity,
+			reservations = new HashSet<int>()
+		};
+	}
+
+	public static void UnregisterTubeEntrance(int cell)
+	{
+		DebugUtil.Assert(tubeEntrances.ContainsKey(cell));
+		HasTubeEntrance[cell] = false;
+		tubeEntrances.Remove(cell);
+	}
+
+	public static bool ReserveTubeEntrance(int cell, int minion, bool reserve)
+	{
+		TubeEntrance tubeEntrance = tubeEntrances[cell];
+		HashSet<int> reservations = tubeEntrance.reservations;
+		if (reserve)
+		{
+			DebugUtil.Assert(HasTubeEntrance[cell]);
+			if (reservations.Count == tubeEntrance.reservationCapacity)
+			{
+				return false;
+			}
+			bool test = reservations.Add(minion);
+			DebugUtil.Assert(test);
+			return true;
+		}
+		return reservations.Remove(minion);
+	}
+
+	public static void SetTubeEntranceReservationCapacity(int cell, int newReservationCapacity)
+	{
+		DebugUtil.Assert(HasTubeEntrance[cell]);
+		TubeEntrance value = tubeEntrances[cell];
+		value.reservationCapacity = newReservationCapacity;
+		tubeEntrances[cell] = value;
+	}
+
+	public static bool HasUsableTubeEntrance(int cell, int minion)
+	{
+		if (!HasTubeEntrance[cell])
+		{
+			return false;
+		}
+		TubeEntrance tubeEntrance = tubeEntrances[cell];
+		if (!tubeEntrance.operational)
+		{
+			return false;
+		}
+		HashSet<int> reservations = tubeEntrance.reservations;
+		return reservations.Count < tubeEntrance.reservationCapacity || reservations.Contains(minion);
+	}
+
+	public static bool HasReservedTubeEntrance(int cell, int minion)
+	{
+		DebugUtil.Assert(HasTubeEntrance[cell]);
+		TubeEntrance tubeEntrance = tubeEntrances[cell];
+		return tubeEntrance.reservations.Contains(minion);
+	}
+
+	public static void SetTubeEntranceOperational(int cell, bool operational)
+	{
+		DebugUtil.Assert(HasTubeEntrance[cell]);
+		TubeEntrance value = tubeEntrances[cell];
+		value.operational = operational;
+		tubeEntrances[cell] = value;
+	}
+
+	public static void RegisterSuitMarker(int cell)
+	{
+		DebugUtil.Assert(!HasSuitMarker[cell]);
+		HasSuitMarker[cell] = true;
+		suitMarkers[cell] = new SuitMarker
+		{
+			suitCount = 0,
+			lockerCount = 0,
+			flags = SuitMarker.Flags.Operational,
+			suitReservations = new HashSet<int>(),
+			emptyLockerReservations = new HashSet<int>()
+		};
+	}
+
+	public static void UnregisterSuitMarker(int cell)
+	{
+		DebugUtil.Assert(HasSuitMarker[cell]);
+		HasSuitMarker[cell] = false;
+		suitMarkers.Remove(cell);
+	}
+
+	public static bool ReserveSuit(int cell, int minion, bool reserve)
+	{
+		DebugUtil.Assert(HasSuitMarker[cell]);
+		SuitMarker suitMarker = suitMarkers[cell];
+		HashSet<int> suitReservations = suitMarker.suitReservations;
+		if (reserve)
+		{
+			if (suitReservations.Count == suitMarker.suitCount)
+			{
+				return false;
+			}
+			bool test = suitReservations.Add(minion);
+			DebugUtil.Assert(test);
+			return true;
+		}
+		return suitReservations.Remove(minion);
+	}
+
+	public static bool ReserveEmptyLocker(int cell, int minion, bool reserve)
+	{
+		DebugUtil.Assert(HasSuitMarker[cell]);
+		SuitMarker suitMarker = suitMarkers[cell];
+		HashSet<int> emptyLockerReservations = suitMarker.emptyLockerReservations;
+		if (reserve)
+		{
+			if (emptyLockerReservations.Count == suitMarker.emptyLockerCount)
+			{
+				return false;
+			}
+			bool test = emptyLockerReservations.Add(minion);
+			DebugUtil.Assert(test);
+			return true;
+		}
+		return emptyLockerReservations.Remove(minion);
+	}
+
+	public static void UpdateSuitMarker(int cell, int fullLockerCount, int emptyLockerCount, SuitMarker.Flags flags, PathFinder.PotentialPath.Flags pathFlags)
+	{
+		DebugUtil.Assert(HasSuitMarker[cell]);
+		SuitMarker value = suitMarkers[cell];
+		value.suitCount = fullLockerCount;
+		value.lockerCount = fullLockerCount + emptyLockerCount;
+		value.flags = flags;
+		value.pathFlags = pathFlags;
+		suitMarkers[cell] = value;
+	}
+
+	public static bool TryGetSuitMarkerFlags(int cell, out SuitMarker.Flags flags, out PathFinder.PotentialPath.Flags pathFlags)
+	{
+		if (HasSuitMarker[cell])
+		{
+			SuitMarker suitMarker = suitMarkers[cell];
+			flags = suitMarker.flags;
+			SuitMarker suitMarker2 = suitMarkers[cell];
+			pathFlags = suitMarker2.pathFlags;
+			return true;
+		}
+		flags = (SuitMarker.Flags)0;
+		pathFlags = PathFinder.PotentialPath.Flags.None;
+		return false;
+	}
+
+	public static bool HasSuit(int cell, int minion)
+	{
+		if (!HasSuitMarker[cell])
+		{
+			return false;
+		}
+		SuitMarker suitMarker = suitMarkers[cell];
+		HashSet<int> suitReservations = suitMarker.suitReservations;
+		return suitReservations.Count < suitMarker.suitCount || suitReservations.Contains(minion);
+	}
+
+	public static bool HasEmptyLocker(int cell, int minion)
+	{
+		if (!HasSuitMarker[cell])
+		{
+			return false;
+		}
+		SuitMarker suitMarker = suitMarkers[cell];
+		HashSet<int> emptyLockerReservations = suitMarker.emptyLockerReservations;
+		return emptyLockerReservations.Count < suitMarker.emptyLockerCount || emptyLockerReservations.Contains(minion);
+	}
+
+	public unsafe static void InitializeCells()
+	{
+		for (int i = 0; i != WidthInCells * HeightInCells; i++)
+		{
+			byte index = elementIdx[i];
+			Element element = ElementLoader.elements[index];
+			Element[i] = element;
+			if (element.IsSolid)
+			{
+				BuildFlags[] buildMasks;
+				int num;
+				(buildMasks = BuildMasks)[num = i] = (buildMasks[num] | BuildFlags.Solid);
+			}
+			else
+			{
+				BuildFlags[] buildMasks;
+				int num2;
+				(buildMasks = BuildMasks)[num2 = i] = (buildMasks[num2] & ~BuildFlags.Solid);
+			}
+			RenderedByWorld[i] = (element.substance != null && element.substance.renderedByWorld && (UnityEngine.Object)Objects[i, 9] == (UnityEngine.Object)null);
+		}
+	}
 
 	public unsafe static bool IsInitialized()
 	{
@@ -527,13 +1159,13 @@ public class Grid
 		switch (d)
 		{
 		case Direction.Up:
-			return cell + WidthInCells;
+			return CellAbove(cell);
 		case Direction.Down:
-			return cell - WidthInCells;
+			return CellBelow(cell);
 		case Direction.Left:
-			return cell - 1;
+			return CellLeft(cell);
 		case Direction.Right:
-			return cell + 1;
+			return CellRight(cell);
 		case Direction.None:
 			return cell;
 		default:
@@ -660,6 +1292,17 @@ public class Grid
 	public static int OffsetCell(int cell, int x, int y)
 	{
 		return cell + x + y * WidthInCells;
+	}
+
+	public static bool IsCellOffsetValid(int cell, int x, int y)
+	{
+		CellToXY(cell, out int x2, out int y2);
+		return x2 + x >= 0 && x2 + x < WidthInCells && y2 + y >= 0 && y2 + y < HeightInCells;
+	}
+
+	public static bool IsCellOffsetValid(int cell, CellOffset offset)
+	{
+		return IsCellOffsetValid(cell, offset.x, offset.y);
 	}
 
 	public static int PosToCell(StateMachine.Instance smi)
@@ -878,12 +1521,6 @@ public class Grid
 		return CellToPos(cell, HalfCellSizeInMeters, CellSizeInMeters - 0.01f, GetLayerZ(layer));
 	}
 
-	public static void SetSolid(int cell, bool solid, CellSolidEvent ev)
-	{
-		BitFields[cell] = (ushort)(BitFields[cell] & 0xFFDF);
-		BitFields[cell] |= (ushort)(solid ? 32 : 0);
-	}
-
 	public static bool IsSolidCell(int cell)
 	{
 		return IsValidCell(cell) && Solid[cell];
@@ -948,12 +1585,26 @@ public class Grid
 
 	public static void GetVisibleExtents(out int min_x, out int min_y, out int max_x, out int max_y)
 	{
-		Camera main = Camera.main;
-		Vector3 position = Camera.main.transform.GetPosition();
-		Vector3 vector = main.ViewportToWorldPoint(new Vector3(1f, 1f, position.z));
-		Camera main2 = Camera.main;
-		Vector3 position2 = Camera.main.transform.GetPosition();
-		Vector3 vector2 = main2.ViewportToWorldPoint(new Vector3(0f, 0f, position2.z));
+		Vector3 vector;
+		Vector3 vector2;
+		if (GameUtil.IsCapturingTimeLapse())
+		{
+			Camera captureCamera = Game.Instance.timelapser.captureCamera;
+			Vector3 position = Game.Instance.timelapser.captureCamera.transform.GetPosition();
+			vector = captureCamera.ViewportToWorldPoint(new Vector3(1f, 1f, position.z));
+			Camera captureCamera2 = Game.Instance.timelapser.captureCamera;
+			Vector3 position2 = Game.Instance.timelapser.captureCamera.transform.GetPosition();
+			vector2 = captureCamera2.ViewportToWorldPoint(new Vector3(0f, 0f, position2.z));
+		}
+		else
+		{
+			Camera main = Camera.main;
+			Vector3 position3 = Camera.main.transform.GetPosition();
+			vector = main.ViewportToWorldPoint(new Vector3(1f, 1f, position3.z));
+			Camera main2 = Camera.main;
+			Vector3 position4 = Camera.main.transform.GetPosition();
+			vector2 = main2.ViewportToWorldPoint(new Vector3(0f, 0f, position4.z));
+		}
 		min_y = (int)vector2.y;
 		max_y = (int)(vector.y + 0.5f);
 		min_x = (int)vector2.x;
@@ -965,28 +1616,6 @@ public class Grid
 		GetVisibleExtents(out min.x, out min.y, out max.x, out max.y);
 	}
 
-	public unsafe static void InitializeCells()
-	{
-		int widthInCells = WidthInCells;
-		int heightInCells = HeightInCells;
-		List<Element> elements = ElementLoader.elements;
-		for (int i = 0; i < heightInCells; i++)
-		{
-			for (int j = 0; j < widthInCells; j++)
-			{
-				int num = i * widthInCells + j;
-				byte index = elementIdx[num];
-				Element element = elements[index];
-				Element[num] = element;
-				int num2 = BitFields[num];
-				num2 &= 0xFF17;
-				num2 |= (element.IsSolid ? 96 : 0);
-				num2 |= ((element.substance != null && element.substance.renderedByWorld && (UnityEngine.Object)Objects[num, 9] == (UnityEngine.Object)null) ? 128 : 0);
-				BitFields[num] = (ushort)num2;
-			}
-		}
-	}
-
 	public static bool IsVisible(int cell)
 	{
 		return Visible[cell] > 0 || !PropertyTextures.IsFogOfWarEnabled;
@@ -994,7 +1623,7 @@ public class Grid
 
 	public static bool VisibleBlockingCB(int cell)
 	{
-		return !Transparent[cell] && Element[cell].IsSolid;
+		return !Transparent[cell] && IsSolidCell(cell);
 	}
 
 	public static bool VisibilityTest(int x, int y, int x2, int y2, bool blocking_tile_visible = false)

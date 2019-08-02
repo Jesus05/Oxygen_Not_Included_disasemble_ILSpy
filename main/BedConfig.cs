@@ -27,7 +27,7 @@ public class BedConfig : IBuildingConfig
 	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.AddOrGet<LoopingSounds>();
-		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.Bed);
+		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.Bed, false);
 	}
 
 	public override void DoPostConfigureComplete(GameObject go)

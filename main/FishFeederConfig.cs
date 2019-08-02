@@ -25,7 +25,7 @@ public class FishFeederConfig : IBuildingConfig
 		buildingDef.AudioCategory = "Metal";
 		buildingDef.Entombable = true;
 		buildingDef.Floodable = true;
-		buildingDef.ForegroundLayer = Grid.SceneLayer.TileFront;
+		buildingDef.ForegroundLayer = Grid.SceneLayer.TileMain;
 		return buildingDef;
 	}
 
@@ -36,7 +36,7 @@ public class FishFeederConfig : IBuildingConfig
 	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		Prioritizable.AddRef(go);
-		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.CreatureFeeder);
+		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.CreatureFeeder, false);
 		Storage storage = go.AddOrGet<Storage>();
 		storage.capacityKg = 200f;
 		storage.showInUI = true;

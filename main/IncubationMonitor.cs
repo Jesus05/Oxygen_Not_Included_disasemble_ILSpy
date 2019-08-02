@@ -126,13 +126,13 @@ public class IncubationMonitor : GameStateMachine<IncubationMonitor, IncubationM
 	private static Transition.ConditionCallback _003C_003Ef__mg_0024cache0;
 
 	[CompilerGenerated]
-	private static Parameter<bool>.Callback _003C_003Ef__mg_0024cache1;
+	private static Transition.ConditionCallback _003C_003Ef__mg_0024cache1;
 
 	[CompilerGenerated]
-	private static Parameter<bool>.Callback _003C_003Ef__mg_0024cache2;
+	private static StateMachine<IncubationMonitor, Instance, IStateMachineTarget, Def>.State.Callback _003C_003Ef__mg_0024cache2;
 
 	[CompilerGenerated]
-	private static Transition.ConditionCallback _003C_003Ef__mg_0024cache3;
+	private static StateMachine<IncubationMonitor, Instance, IStateMachineTarget, Def>.State.Callback _003C_003Ef__mg_0024cache3;
 
 	[CompilerGenerated]
 	private static StateMachine<IncubationMonitor, Instance, IStateMachineTarget, Def>.State.Callback _003C_003Ef__mg_0024cache4;
@@ -142,12 +142,6 @@ public class IncubationMonitor : GameStateMachine<IncubationMonitor, IncubationM
 
 	[CompilerGenerated]
 	private static StateMachine<IncubationMonitor, Instance, IStateMachineTarget, Def>.State.Callback _003C_003Ef__mg_0024cache6;
-
-	[CompilerGenerated]
-	private static StateMachine<IncubationMonitor, Instance, IStateMachineTarget, Def>.State.Callback _003C_003Ef__mg_0024cache7;
-
-	[CompilerGenerated]
-	private static StateMachine<IncubationMonitor, Instance, IStateMachineTarget, Def>.State.Callback _003C_003Ef__mg_0024cache8;
 
 	public override void InitializeStates(out BaseState default_state)
 	{
@@ -254,7 +248,7 @@ public class IncubationMonitor : GameStateMachine<IncubationMonitor, IncubationM
 			Storage storage = smi.GetStorage();
 			if ((bool)storage)
 			{
-				storage.Drop(smi.gameObject);
+				storage.Drop(smi.gameObject, true);
 			}
 			smi.gameObject.AddTag(GameTags.StoredPrivate);
 		}

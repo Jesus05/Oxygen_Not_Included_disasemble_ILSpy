@@ -99,7 +99,7 @@ public class LoopingSoundManager : KMonoBehaviour, IRenderEveryTick
 				if (flag)
 				{
 					LoopingSoundParameterUpdater loopingSoundParameterUpdater = (LoopingSoundParameterUpdater)Activator.CreateInstance(currentDomainType);
-					DebugUtil.Assert(!parameterUpdaters.ContainsKey(loopingSoundParameterUpdater.parameter), "Assert!", string.Empty, string.Empty);
+					DebugUtil.Assert(!parameterUpdaters.ContainsKey(loopingSoundParameterUpdater.parameter));
 					parameterUpdaters[loopingSoundParameterUpdater.parameter] = loopingSoundParameterUpdater;
 				}
 			}
@@ -326,7 +326,7 @@ public class LoopingSoundManager : KMonoBehaviour, IRenderEveryTick
 	{
 		if (string.IsNullOrEmpty(path))
 		{
-			Debug.LogWarning("Missing sound", null);
+			Debug.LogWarning("Missing sound");
 			return HandleVector<int>.InvalidHandle;
 		}
 		return Get().Add(path, pos, null, pause_on_game_pause, enable_culling, true);

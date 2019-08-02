@@ -14,9 +14,9 @@ public class ConditionSufficientFood : RocketLaunchCondition
 		return null;
 	}
 
-	public override bool EvaluateLaunchCondition()
+	public override LaunchStatus EvaluateLaunchCondition()
 	{
-		return module.storage.GetAmountAvailable(GameTags.Edible) > 1f;
+		return (!(module.storage.GetAmountAvailable(GameTags.Edible) > 1f)) ? LaunchStatus.Failure : LaunchStatus.Ready;
 	}
 
 	public override string GetLaunchStatusMessage(bool ready)

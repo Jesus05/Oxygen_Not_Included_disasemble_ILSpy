@@ -332,6 +332,11 @@ public abstract class GameStateMachine<StateMachineType, StateMachineInstanceTyp
 			return Update(sm.name + "." + name, callback, update_rate, load_balance);
 		}
 
+		public State BatchUpdate(UpdateBucketWithUpdater<StateMachineInstanceType>.BatchUpdateDelegate batch_update, UpdateRate update_rate = UpdateRate.SIM_200ms)
+		{
+			return BatchUpdate(sm.name + "." + name, batch_update, update_rate);
+		}
+
 		public State Enter(Callback callback)
 		{
 			return Enter("Enter", callback);
@@ -342,7 +347,7 @@ public abstract class GameStateMachine<StateMachineType, StateMachineInstanceTyp
 			return Exit("Exit", callback);
 		}
 
-		private State InternalUpdate(string name, UpdateBucketWithUpdater<StateMachineInstanceType>.IUpdater bucket_updater, UpdateRate update_rate, bool load_balance)
+		private State InternalUpdate(string name, UpdateBucketWithUpdater<StateMachineInstanceType>.IUpdater bucket_updater, UpdateRate update_rate, bool load_balance, UpdateBucketWithUpdater<StateMachineInstanceType>.BatchUpdateDelegate batch_update = null)
 		{
 			int updateTableIdx = CreateUpdateTableEntry();
 			if (updateActions == null)
@@ -362,6 +367,7 @@ public abstract class GameStateMachine<StateMachineType, StateMachineInstanceTyp
 			for (int i = 0; i < num; i++)
 			{
 				UpdateBucketWithUpdater<StateMachineInstanceType> updateBucketWithUpdater = new UpdateBucketWithUpdater<StateMachineInstanceType>(name);
+				updateBucketWithUpdater.batch_update_delegate = batch_update;
 				Singleton<StateMachineUpdater>.Instance.AddBucket(update_rate, updateBucketWithUpdater);
 				item.buckets[i] = updateBucketWithUpdater;
 			}
@@ -371,12 +377,17 @@ public abstract class GameStateMachine<StateMachineType, StateMachineInstanceTyp
 
 		public State Update(string name, Action<StateMachineInstanceType, float> callback, UpdateRate update_rate = UpdateRate.SIM_200ms, bool load_balance = false)
 		{
-			return InternalUpdate(name, new BucketUpdater<StateMachineInstanceType>(callback), update_rate, load_balance);
+			return InternalUpdate(name, new BucketUpdater<StateMachineInstanceType>(callback), update_rate, load_balance, null);
+		}
+
+		public State BatchUpdate(string name, UpdateBucketWithUpdater<StateMachineInstanceType>.BatchUpdateDelegate batch_update, UpdateRate update_rate = UpdateRate.SIM_200ms)
+		{
+			return InternalUpdate(name, null, update_rate, false, batch_update);
 		}
 
 		public State FastUpdate(string name, UpdateBucketWithUpdater<StateMachineInstanceType>.IUpdater updater, UpdateRate update_rate = UpdateRate.SIM_200ms, bool load_balance = false)
 		{
-			return InternalUpdate(name, updater, update_rate, load_balance);
+			return InternalUpdate(name, updater, update_rate, load_balance, null);
 		}
 
 		public State Enter(string name, Callback callback)
@@ -451,7 +462,7 @@ public abstract class GameStateMachine<StateMachineType, StateMachineInstanceTyp
 					KAnimFile anim2 = Assets.GetAnim(hashedString);
 					if ((UnityEngine.Object)anim2 == (UnityEngine.Object)null)
 					{
-						Debug.LogWarning("Missing anims: " + hashedString, null);
+						Debug.LogWarning("Missing anims: " + hashedString);
 					}
 					else
 					{
@@ -482,7 +493,7 @@ public abstract class GameStateMachine<StateMachineType, StateMachineInstanceTyp
 				KAnimFile anim2 = Assets.GetAnim(anim_file);
 				if ((UnityEngine.Object)anim2 == (UnityEngine.Object)null)
 				{
-					Debug.LogError("Trying to add missing override anims:" + anim_file, null);
+					Debug.LogError("Trying to add missing override anims:" + anim_file);
 				}
 				KAnimControllerBase kAnimControllerBase = state_target.Get<KAnimControllerBase>(smi);
 				kAnimControllerBase.AddAnimOverrides(anim2, priority);
@@ -503,7 +514,7 @@ public abstract class GameStateMachine<StateMachineType, StateMachineInstanceTyp
 				if (condition == null || condition(smi))
 				{
 					AttributeModifier attributeModifier = callback(smi);
-					DebugUtil.Assert(smi.dataTable[data_idx] == null, "Assert!", string.Empty, string.Empty);
+					DebugUtil.Assert(smi.dataTable[data_idx] == null);
 					smi.dataTable[data_idx] = attributeModifier;
 					state_target.Get(smi).GetAttributes().Add(attributeModifier);
 				}
@@ -524,7 +535,7 @@ public abstract class GameStateMachine<StateMachineType, StateMachineInstanceTyp
 			return this;
 		}
 
-		public State ToggleLoopingSound(string event_name, Func<StateMachineInstanceType, bool> condition = null)
+		public State ToggleLoopingSound(string event_name, Func<StateMachineInstanceType, bool> condition = null, bool pause_on_game_pause = true, bool enable_culling = true, bool enable_camera_scaled_position = true)
 		{
 			TargetParameter state_target = GetStateTarget();
 			Enter("StartLoopingSound( " + event_name + " )", delegate(StateMachineInstanceType smi)
@@ -532,7 +543,7 @@ public abstract class GameStateMachine<StateMachineType, StateMachineInstanceTyp
 				if (condition == null || condition(smi))
 				{
 					LoopingSounds component2 = state_target.Get(smi).GetComponent<LoopingSounds>();
-					component2.StartSound(event_name);
+					component2.StartSound(event_name, pause_on_game_pause, enable_culling, enable_camera_scaled_position);
 				}
 			});
 			Exit("StopLoopingSound( " + event_name + " )", delegate(StateMachineInstanceType smi)
@@ -709,25 +720,6 @@ public abstract class GameStateMachine<StateMachineType, StateMachineInstanceTyp
 			}, delegate(StateMachineInstanceType smi)
 			{
 				GameComps.Gravities.Remove(state_target.Get(smi));
-			});
-			return this;
-		}
-
-		public State ToggleFaller()
-		{
-			TargetParameter state_target = GetStateTarget();
-			int data_idx = CreateDataTableEntry();
-			Enter("AddComponent<Faller>()", delegate(StateMachineInstanceType smi)
-			{
-				GameObject gameObject = state_target.Get(smi);
-				smi.dataTable[data_idx] = gameObject;
-				GameComps.Fallers.Add(gameObject, Vector2.zero);
-			});
-			Exit("RemoveComponent<Faller>()", delegate(StateMachineInstanceType smi)
-			{
-				GameObject go = (GameObject)smi.dataTable[data_idx];
-				smi.dataTable[data_idx] = null;
-				GameComps.Fallers.Remove(go);
 			});
 			return this;
 		}
@@ -914,7 +906,7 @@ public abstract class GameStateMachine<StateMachineType, StateMachineInstanceTyp
 			TargetParameter state_target = GetStateTarget();
 			Enter("AddTag(" + tag.Name + ")", delegate(StateMachineInstanceType smi)
 			{
-				state_target.Get<KPrefabID>(smi).AddTag(tag);
+				state_target.Get<KPrefabID>(smi).AddTag(tag, false);
 			});
 			Exit("RemoveTag(" + tag.Name + ")", delegate(StateMachineInstanceType smi)
 			{
@@ -973,10 +965,13 @@ public abstract class GameStateMachine<StateMachineType, StateMachineInstanceTyp
 			int data_idx = CreateDataTableEntry();
 			Enter("AddStatusItem(DynamicallyConstructed)", delegate(StateMachineInstanceType smi)
 			{
-				StatusItem status_item = status_item_cb(smi);
-				object data = (data_callback == null) ? null : data_callback(smi);
-				Guid guid2 = state_target.Get<KSelectable>(smi).AddStatusItem(status_item, data);
-				smi.dataTable[data_idx] = guid2;
+				StatusItem statusItem = status_item_cb(smi);
+				if (statusItem != null)
+				{
+					object data = (data_callback == null) ? null : data_callback(smi);
+					Guid guid2 = state_target.Get<KSelectable>(smi).AddStatusItem(statusItem, data);
+					smi.dataTable[data_idx] = guid2;
+				}
 			});
 			Exit("RemoveStatusItem(DynamicallyConstructed)", delegate(StateMachineInstanceType smi)
 			{
@@ -1382,7 +1377,7 @@ public abstract class GameStateMachine<StateMachineType, StateMachineInstanceTyp
 				if (val <= 0f)
 				{
 					pickupable2.PrintReservations();
-					Debug.LogError(num2 + ", " + num + ", " + pickupable2.UnreservedAmount + ", " + val, null);
+					Debug.LogError(num2 + ", " + num + ", " + pickupable2.UnreservedAmount + ", " + val);
 				}
 				actual_amount.Set(val, smi);
 				int num3 = pickupable2.Reserve("ToggleReserve", gameObject, val);
@@ -1562,7 +1557,7 @@ public abstract class GameStateMachine<StateMachineType, StateMachineInstanceTyp
 		{
 			Enter("DoTutorial()", delegate
 			{
-				Tutorial.Instance.TutorialMessage(msg);
+				Tutorial.Instance.TutorialMessage(msg, true);
 			});
 			return this;
 		}
@@ -1576,7 +1571,7 @@ public abstract class GameStateMachine<StateMachineType, StateMachineInstanceTyp
 				{
 					callback((StateMachineInstanceType)smi_data);
 				}, smi, null);
-				DebugUtil.Assert(smi.dataTable[data_idx] == null, "Assert!", string.Empty, string.Empty);
+				DebugUtil.Assert(smi.dataTable[data_idx] == null);
 				smi.dataTable[data_idx] = schedulerHandle2;
 			});
 			Exit("RemoveScheduledCallback(" + name + ")", delegate(StateMachineInstanceType smi)
@@ -1819,11 +1814,17 @@ public abstract class GameStateMachine<StateMachineType, StateMachineInstanceTyp
 			TargetParameter state_target = GetStateTarget();
 			Enter("Face", delegate(StateMachineInstanceType smi)
 			{
-				Facing facing = state_target.Get<Facing>(smi);
-				IApproachable approachable = face_target.Get<IApproachable>(smi);
-				Vector3 position = approachable.transform.GetPosition();
-				float target_x = position.x + x_offset;
-				facing.Face(target_x);
+				if (face_target != null)
+				{
+					IApproachable approachable = face_target.Get<IApproachable>(smi);
+					if (approachable != null)
+					{
+						Vector3 position = approachable.transform.GetPosition();
+						float target_x = position.x + x_offset;
+						Facing facing = state_target.Get<Facing>(smi);
+						facing.Face(target_x);
+					}
+				}
 			});
 			return this;
 		}
@@ -1874,7 +1875,7 @@ public abstract class GameStateMachine<StateMachineType, StateMachineInstanceTyp
 			return this;
 		}
 
-		public State ToggleStatusItem(string name, string tooltip, string icon = "", StatusItem.IconType icon_type = StatusItem.IconType.Info, NotificationType notification_type = NotificationType.Neutral, bool allow_multiples = false, SimViewMode render_overlay = SimViewMode.None, int status_overlays = 63486, Func<string, StateMachineInstanceType, string> resolve_string_callback = null, Func<string, StateMachineInstanceType, string> resolve_tooltip_callback = null, StatusItemCategory category = null)
+		public State ToggleStatusItem(string name, string tooltip, string icon = "", StatusItem.IconType icon_type = StatusItem.IconType.Info, NotificationType notification_type = NotificationType.Neutral, bool allow_multiples = false, HashedString render_overlay = default(HashedString), int status_overlays = 129022, Func<string, StateMachineInstanceType, string> resolve_string_callback = null, Func<string, StateMachineInstanceType, string> resolve_tooltip_callback = null, StatusItemCategory category = null)
 		{
 			StatusItem statusItem = new StatusItem(longName, name, tooltip, icon, icon_type, notification_type, allow_multiples, render_overlay, status_overlays);
 			if (resolve_string_callback != null)
@@ -2127,7 +2128,7 @@ public abstract class GameStateMachine<StateMachineType, StateMachineInstanceTyp
 			{
 				Storage storage = carrier.Get<Storage>(smi);
 				GameObject gameObject = item.Get(smi);
-				storage.Drop(gameObject);
+				storage.Drop(gameObject, true);
 				Transform transform = drop_target.Get<Transform>(smi);
 				int cell = Grid.PosToCell(transform.GetPosition());
 				int cell2 = Grid.CellAbove(cell);
@@ -2187,7 +2188,7 @@ public abstract class GameStateMachine<StateMachineType, StateMachineInstanceTyp
 	{
 		public State InitializeStates(TargetParameter plant, State death_state = null)
 		{
-			base.root.Target(plant).EventTransition(GameHashes.Uprooted, death_state, (StateMachineInstanceType smi) => UprootedMonitor.IsObjectUprooted(plant.Get(smi))).EventTransition(GameHashes.TooColdFatal, death_state, (StateMachineInstanceType smi) => isLethalTemperature(plant.Get(smi)))
+			base.root.Target(plant).TagTransition(GameTags.Uprooted, death_state, false).EventTransition(GameHashes.TooColdFatal, death_state, (StateMachineInstanceType smi) => isLethalTemperature(plant.Get(smi)))
 				.EventTransition(GameHashes.TooHotFatal, death_state, (StateMachineInstanceType smi) => isLethalTemperature(plant.Get(smi)))
 				.EventTransition(GameHashes.Drowned, death_state, null);
 			return this;
@@ -2197,9 +2198,8 @@ public abstract class GameStateMachine<StateMachineType, StateMachineInstanceTyp
 		{
 			TemperatureVulnerable component = plant.GetComponent<TemperatureVulnerable>();
 			EntombVulnerable component2 = plant.GetComponent<EntombVulnerable>();
-			UprootedMonitor component3 = plant.GetComponent<UprootedMonitor>();
-			PressureVulnerable component4 = plant.GetComponent<PressureVulnerable>();
-			return ((UnityEngine.Object)component == (UnityEngine.Object)null || !component.IsLethal) && ((UnityEngine.Object)component2 == (UnityEngine.Object)null || !component2.GetEntombed) && ((UnityEngine.Object)component3 == (UnityEngine.Object)null || !component3.IsUprooted) && ((UnityEngine.Object)component4 == (UnityEngine.Object)null || !component4.IsLethal);
+			PressureVulnerable component3 = plant.GetComponent<PressureVulnerable>();
+			return ((UnityEngine.Object)component == (UnityEngine.Object)null || !component.IsLethal) && ((UnityEngine.Object)component2 == (UnityEngine.Object)null || !component2.GetEntombed) && ((UnityEngine.Object)component3 == (UnityEngine.Object)null || !component3.IsLethal);
 		}
 
 		private static bool isLethalTemperature(GameObject plant)
@@ -2223,6 +2223,30 @@ public abstract class GameStateMachine<StateMachineType, StateMachineInstanceTyp
 
 	public State root = new State();
 
+	protected static Parameter<bool>.Callback IsFalse = (StateMachineInstanceType smi, bool p) => !p;
+
+	protected static Parameter<bool>.Callback IsTrue = (StateMachineInstanceType smi, bool p) => p;
+
+	protected static Parameter<float>.Callback IsZero = (StateMachineInstanceType smi, float p) => p == 0f;
+
+	protected static Parameter<float>.Callback IsLTZero = (StateMachineInstanceType smi, float p) => p < 0f;
+
+	protected static Parameter<float>.Callback IsLTEZero = (StateMachineInstanceType smi, float p) => p <= 0f;
+
+	protected static Parameter<float>.Callback IsGTZero = (StateMachineInstanceType smi, float p) => p > 0f;
+
+	protected static Parameter<float>.Callback IsGTEZero = (StateMachineInstanceType smi, float p) => p >= 0f;
+
+	protected static Parameter<float>.Callback IsOne = (StateMachineInstanceType smi, float p) => p == 1f;
+
+	protected static Parameter<float>.Callback IsLTOne = (StateMachineInstanceType smi, float p) => p < 1f;
+
+	protected static Parameter<float>.Callback IsLTEOne = (StateMachineInstanceType smi, float p) => p <= 1f;
+
+	protected static Parameter<float>.Callback IsGTOne = (StateMachineInstanceType smi, float p) => p > 1f;
+
+	protected static Parameter<float>.Callback IsGTEOne = (StateMachineInstanceType smi, float p) => p >= 1f;
+
 	public override void InitializeStates(out BaseState default_state)
 	{
 		base.InitializeStates(out default_state);
@@ -2231,16 +2255,6 @@ public abstract class GameStateMachine<StateMachineType, StateMachineInstanceTyp
 	public static Transition.ConditionCallback Not(Transition.ConditionCallback transition_cb)
 	{
 		return (StateMachineInstanceType smi) => !transition_cb(smi);
-	}
-
-	public static bool IsTrue(Instance smi, bool b)
-	{
-		return b;
-	}
-
-	public static bool IsFalse(Instance smi, bool b)
-	{
-		return !b;
 	}
 
 	public override void BindStates()

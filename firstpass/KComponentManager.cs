@@ -76,7 +76,7 @@ public abstract class KComponentManager<T> : KCompactedVector<T>, IComponentMana
 		{
 			if (!instanceHandleMap.ContainsKey(info.instance))
 			{
-				Output.LogError("Tried to remove component of type", typeof(T).ToString(), "on instance", info.instance.ToString(), "but instance has not been registered yet. Handle:", info.handle);
+				DebugUtil.LogErrorArgs("Tried to remove component of type", typeof(T).ToString(), "on instance", info.instance.ToString(), "but instance has not been registered yet. Handle:", info.handle);
 				return;
 			}
 			instanceHandleMap.Remove(info.instance);

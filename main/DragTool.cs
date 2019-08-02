@@ -1,4 +1,6 @@
 using FMOD.Studio;
+using STRINGS;
+using System;
 using UnityEngine;
 
 public class DragTool : InterfaceTool
@@ -24,9 +26,14 @@ public class DragTool : InterfaceTool
 	private GameObject areaVisualizer;
 
 	[SerializeField]
+	private GameObject areaVisualizerTextPrefab;
+
+	[SerializeField]
 	private Color32 areaColour = new Color(1f, 1f, 1f, 0.5f);
 
 	protected SpriteRenderer areaVisualizerSpriteRenderer;
+
+	protected Guid areaVisualizerText;
 
 	protected Vector3 placementPivot;
 
@@ -75,6 +82,11 @@ public class DragTool : InterfaceTool
 	protected override void OnDeactivateTool(InterfaceTool new_tool)
 	{
 		KScreenManager.Instance.SetEventSystemEnabled(true);
+		if (areaVisualizerText != Guid.Empty)
+		{
+			NameDisplayScreen.Instance.RemoveWorldText(areaVisualizerText);
+			areaVisualizerText = Guid.Empty;
+		}
 		base.OnDeactivateTool(new_tool);
 	}
 
@@ -84,11 +96,11 @@ public class DragTool : InterfaceTool
 		defaultLayerMask = (1 | LayerMask.GetMask("World", "Pickupable", "Place", "PlaceWithDepth", "BlockSelection", "Construction"));
 		layerMask = defaultLayerMask;
 		base.OnPrefabInit();
-		if ((Object)visualizer != (Object)null)
+		if ((UnityEngine.Object)visualizer != (UnityEngine.Object)null)
 		{
 			visualizer = Util.KInstantiate(visualizer, null, null);
 		}
-		if ((Object)areaVisualizer != (Object)null)
+		if ((UnityEngine.Object)areaVisualizer != (UnityEngine.Object)null)
 		{
 			areaVisualizer = Util.KInstantiate(areaVisualizer, null, null);
 			areaVisualizer.SetActive(false);
@@ -106,11 +118,11 @@ public class DragTool : InterfaceTool
 
 	protected override void OnCmpDisable()
 	{
-		if ((Object)visualizer != (Object)null)
+		if ((UnityEngine.Object)visualizer != (UnityEngine.Object)null)
 		{
 			visualizer.SetActive(false);
 		}
-		if ((Object)areaVisualizer != (Object)null)
+		if ((UnityEngine.Object)areaVisualizer != (UnityEngine.Object)null)
 		{
 			areaVisualizer.SetActive(false);
 		}
@@ -123,20 +135,27 @@ public class DragTool : InterfaceTool
 		downPos = cursor_pos;
 		previousCursorPos = cursor_pos;
 		KScreenManager.Instance.SetEventSystemEnabled(false);
+		if ((UnityEngine.Object)areaVisualizerTextPrefab != (UnityEngine.Object)null)
+		{
+			areaVisualizerText = NameDisplayScreen.Instance.AddWorldText(string.Empty, areaVisualizerTextPrefab);
+			GameObject worldText = NameDisplayScreen.Instance.GetWorldText(areaVisualizerText);
+			LocText component = worldText.GetComponent<LocText>();
+			component.color = areaColour;
+		}
 		switch (GetMode())
 		{
 		case Mode.Brush:
-			if ((Object)visualizer != (Object)null)
+			if ((UnityEngine.Object)visualizer != (UnityEngine.Object)null)
 			{
 				AddDragPoint(cursor_pos);
 			}
 			break;
 		case Mode.Box:
-			if ((Object)visualizer != (Object)null)
+			if ((UnityEngine.Object)visualizer != (UnityEngine.Object)null)
 			{
 				visualizer.SetActive(false);
 			}
-			if ((Object)areaVisualizer != (Object)null)
+			if ((UnityEngine.Object)areaVisualizer != (UnityEngine.Object)null)
 			{
 				areaVisualizer.SetActive(true);
 				areaVisualizer.transform.SetPosition(cursor_pos);
@@ -155,7 +174,12 @@ public class DragTool : InterfaceTool
 		{
 			dragging = false;
 			Mode mode = GetMode();
-			if (mode == Mode.Box && (Object)areaVisualizer != (Object)null)
+			if (areaVisualizerText != Guid.Empty)
+			{
+				NameDisplayScreen.Instance.RemoveWorldText(areaVisualizerText);
+				areaVisualizerText = Guid.Empty;
+			}
+			if (mode == Mode.Box && (UnityEngine.Object)areaVisualizer != (UnityEngine.Object)null)
 			{
 				areaVisualizer.SetActive(false);
 				Grid.PosToXY(downPos, out int x, out int y);
@@ -247,6 +271,16 @@ public class DragTool : InterfaceTool
 			{
 			case Mode.Brush:
 				AddDragPoints(cursorPos, previousCursorPos);
+				if (areaVisualizerText != Guid.Empty)
+				{
+					int dragLength = GetDragLength();
+					GameObject worldText2 = NameDisplayScreen.Instance.GetWorldText(areaVisualizerText);
+					LocText component2 = worldText2.GetComponent<LocText>();
+					component2.text = string.Format(UI.TOOLS.TOOL_LENGTH_FMT, dragLength);
+					Vector3 a = Grid.CellToPos(Grid.PosToCell(cursorPos));
+					a += new Vector3(0f, 1f, 0f);
+					component2.transform.SetPosition(a);
+				}
 				break;
 			case Mode.Box:
 			{
@@ -257,18 +291,27 @@ public class DragTool : InterfaceTool
 				Vector2 vector2 = input - input2;
 				Vector2 vector3 = (input + input2) * 0.5f;
 				areaVisualizer.transform.SetPosition(new Vector2(vector3.x, vector3.y));
+				int num = (int)(input.x - input2.x + (input.y - input2.y) - 1f);
 				if (areaVisualizerSpriteRenderer.size != vector2)
 				{
 					string sound = GlobalAssets.GetSound(GetDragSound(), false);
 					if (sound != null)
 					{
-						int num = (int)(input.x - input2.x + (input.y - input2.y) - 1f);
 						EventInstance instance = SoundEvent.BeginOneShot(sound, areaVisualizer.transform.GetPosition());
 						instance.setParameterValue("tileCount", (float)num);
 						SoundEvent.EndOneShot(instance);
 					}
 				}
 				areaVisualizerSpriteRenderer.size = vector2;
+				if (areaVisualizerText != Guid.Empty)
+				{
+					Vector2I vector2I = new Vector2I(Mathf.RoundToInt(vector2.x), Mathf.RoundToInt(vector2.y));
+					GameObject worldText = NameDisplayScreen.Instance.GetWorldText(areaVisualizerText);
+					LocText component = worldText.GetComponent<LocText>();
+					component.text = string.Format(UI.TOOLS.TOOL_AREA_FMT, vector2I.x, vector2I.y);
+					Vector2 v = vector3;
+					component.transform.SetPosition(v);
+				}
 				break;
 			}
 			}
@@ -282,6 +325,11 @@ public class DragTool : InterfaceTool
 
 	protected virtual void OnDragComplete(Vector3 cursorDown, Vector3 cursorUp)
 	{
+	}
+
+	protected virtual int GetDragLength()
+	{
+		return 0;
 	}
 
 	private void AddDragPoint(Vector3 cursorPos)
@@ -334,18 +382,17 @@ public class DragTool : InterfaceTool
 	private void HandlePriortyKeysDown(KButtonEvent e)
 	{
 		Action action = e.GetAction();
-		if (Action.Plan1 <= action && action <= Action.Plan9 && e.TryConsume(action))
+		if (Action.Plan1 <= action && action <= Action.Plan10 && e.TryConsume(action))
 		{
 			int num = (int)(action - 36 + 1);
 			if (num <= 9)
 			{
 				ToolMenu.Instance.PriorityScreen.SetScreenPriority(new PrioritySetting(PriorityScreen.PriorityClass.basic, num), true);
-				return;
 			}
-		}
-		if (!e.Consumed)
-		{
-			e.TryConsume(Action.Plan10);
+			else
+			{
+				ToolMenu.Instance.PriorityScreen.SetScreenPriority(new PrioritySetting(PriorityScreen.PriorityClass.topPriority, 1), true);
+			}
 		}
 	}
 
@@ -364,18 +411,18 @@ public class DragTool : InterfaceTool
 		switch (mode)
 		{
 		case Mode.Brush:
-			if ((Object)areaVisualizer != (Object)null)
+			if ((UnityEngine.Object)areaVisualizer != (UnityEngine.Object)null)
 			{
 				areaVisualizer.SetActive(false);
 			}
-			if ((Object)visualizer != (Object)null)
+			if ((UnityEngine.Object)visualizer != (UnityEngine.Object)null)
 			{
 				visualizer.SetActive(true);
 			}
 			SetCursor(cursor, cursorOffset, CursorMode.Auto);
 			break;
 		case Mode.Box:
-			if ((Object)visualizer != (Object)null)
+			if ((UnityEngine.Object)visualizer != (UnityEngine.Object)null)
 			{
 				visualizer.SetActive(true);
 			}
@@ -390,14 +437,14 @@ public class DragTool : InterfaceTool
 		switch (GetMode())
 		{
 		case Mode.Brush:
-			if ((Object)visualizer != (Object)null)
+			if ((UnityEngine.Object)visualizer != (UnityEngine.Object)null)
 			{
 				visualizer.SetActive(focus);
 			}
 			hasFocus = focus;
 			break;
 		case Mode.Box:
-			if ((Object)visualizer != (Object)null && !dragging)
+			if ((UnityEngine.Object)visualizer != (UnityEngine.Object)null && !dragging)
 			{
 				visualizer.SetActive(focus);
 			}

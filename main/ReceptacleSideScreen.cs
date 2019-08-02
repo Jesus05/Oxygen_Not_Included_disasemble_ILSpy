@@ -120,7 +120,7 @@ public class ReceptacleSideScreen : SideScreenContent, IRender1000ms
 	{
 		if ((Object)target == (Object)null)
 		{
-			Debug.LogError("SingleObjectReceptacle provided was null.", null);
+			Debug.LogError("SingleObjectReceptacle provided was null.");
 		}
 		else
 		{
@@ -154,6 +154,7 @@ public class ReceptacleSideScreen : SideScreenContent, IRender1000ms
 						list.Add(component);
 					}
 				}
+				Debug.Assert(list.Count == prefabsWithTag.Count, "Not all entities in this receptacle implement IHasSortOrder!");
 				list.Sort((IHasSortOrder a, IHasSortOrder b) => a.sortOrder - b.sortOrder);
 				foreach (IHasSortOrder item2 in list)
 				{
@@ -369,8 +370,8 @@ public class ReceptacleSideScreen : SideScreenContent, IRender1000ms
 	protected virtual Sprite GetEntityIcon(Tag prefabTag)
 	{
 		GameObject prefab = Assets.GetPrefab(prefabTag);
-		KBatchedAnimController component = prefab.GetComponent<KBatchedAnimController>();
-		return Def.GetUISpriteFromMultiObjectAnim(component.AnimFiles[0], "ui", false);
+		Tuple<Sprite, Color> uISprite = Def.GetUISprite(prefab, "ui", false);
+		return uISprite.first;
 	}
 
 	public override bool IsValidForTarget(GameObject target)
@@ -383,7 +384,7 @@ public class ReceptacleSideScreen : SideScreenContent, IRender1000ms
 		SingleEntityReceptacle component = target.GetComponent<SingleEntityReceptacle>();
 		if ((Object)component == (Object)null)
 		{
-			Debug.LogError("The object selected doesn't have a SingleObjectReceptacle!", null);
+			Debug.LogError("The object selected doesn't have a SingleObjectReceptacle!");
 		}
 		else
 		{
@@ -444,7 +445,7 @@ public class ReceptacleSideScreen : SideScreenContent, IRender1000ms
 
 	private void CheckAmountsAndUpdate(object data)
 	{
-		if (UpdateAvailableAmounts(null))
+		if (!((Object)targetReceptacle == (Object)null) && UpdateAvailableAmounts(null))
 		{
 			UpdateState(null);
 		}
@@ -507,7 +508,7 @@ public class ReceptacleSideScreen : SideScreenContent, IRender1000ms
 	{
 		if (!depositObjectMap.ContainsKey(toggle))
 		{
-			Debug.LogError("Recipe not found on recipe list.", null);
+			Debug.LogError("Recipe not found on recipe list.");
 		}
 		else
 		{

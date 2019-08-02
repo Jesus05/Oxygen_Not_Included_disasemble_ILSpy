@@ -22,7 +22,15 @@ public class UglyCryChore : Chore<UglyCryChore.StatesInstance>
 			if (!(dt <= 0f))
 			{
 				int gameCell = Grid.PosToCell(base.smi.master.gameObject);
-				SimMessages.AddRemoveSubstance(gameCell, SimHashes.Water, CellEventLogger.Instance.Tears, 1f * STRESS.TEARS_RATE * dt, bodyTemperature.value, byte.MaxValue, 0, true, -1);
+				Equippable equippable = GetComponent<SuitEquipper>().IsWearingAirtightSuit();
+				if ((UnityEngine.Object)equippable != (UnityEngine.Object)null)
+				{
+					equippable.GetComponent<Storage>().AddLiquid(SimHashes.Water, 1f * STRESS.TEARS_RATE * dt, bodyTemperature.value, byte.MaxValue, 0, false, true);
+				}
+				else
+				{
+					SimMessages.AddRemoveSubstance(gameCell, SimHashes.Water, CellEventLogger.Instance.Tears, 1f * STRESS.TEARS_RATE * dt, bodyTemperature.value, byte.MaxValue, 0, true, -1);
+				}
 			}
 		}
 	}
@@ -73,8 +81,8 @@ public class UglyCryChore : Chore<UglyCryChore.StatesInstance>
 	}
 
 	public UglyCryChore(ChoreType chore_type, IStateMachineTarget target, Action<Chore> on_complete = null)
-		: base(Db.Get().ChoreTypes.UglyCry, target, target.GetComponent<ChoreProvider>(), false, on_complete, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.emergency, 0, false, true, 0, (Tag[])null)
+		: base(Db.Get().ChoreTypes.UglyCry, target, target.GetComponent<ChoreProvider>(), false, on_complete, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.compulsory, 5, false, true, 0, false, ReportManager.ReportType.WorkTime)
 	{
-		smi = new StatesInstance(this, target.gameObject);
+		base.smi = new StatesInstance(this, target.gameObject);
 	}
 }

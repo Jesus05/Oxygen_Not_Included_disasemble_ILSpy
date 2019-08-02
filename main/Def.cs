@@ -29,15 +29,15 @@ public class Def : ScriptableObject
 		{
 			if ((item as Element).IsSolid)
 			{
-				return new Tuple<Sprite, Color>(GetUISpriteFromMultiObjectAnim((item as Element).substance.anim, animName, centered), Color.white);
+				return new Tuple<Sprite, Color>(GetUISpriteFromMultiObjectAnim((item as Element).substance.anim, animName, centered, string.Empty), Color.white);
 			}
 			if ((item as Element).IsLiquid)
 			{
-				return new Tuple<Sprite, Color>(Assets.GetSprite("element_liquid"), (item as Element).substance.debugColour);
+				return new Tuple<Sprite, Color>(Assets.GetSprite("element_liquid"), (item as Element).substance.uiColour);
 			}
 			if ((item as Element).IsGas)
 			{
-				return new Tuple<Sprite, Color>(Assets.GetSprite("element_gas"), (item as Element).substance.debugColour);
+				return new Tuple<Sprite, Color>(Assets.GetSprite("element_gas"), (item as Element).substance.uiColour);
 			}
 			return new Tuple<Sprite, Color>(null, Color.clear);
 		}
@@ -53,10 +53,31 @@ public class Def : ScriptableObject
 			{
 				animName = component.symbolPrefix + "ui";
 			}
-			KBatchedAnimController component2 = gameObject.GetComponent<KBatchedAnimController>();
-			if ((bool)component2)
+			SpaceArtifact component2 = gameObject.GetComponent<SpaceArtifact>();
+			if ((UnityEngine.Object)component2 != (UnityEngine.Object)null)
 			{
-				Sprite uISpriteFromMultiObjectAnim = GetUISpriteFromMultiObjectAnim(component2.AnimFiles[0], animName, centered);
+				animName = component2.GetUIAnim();
+			}
+			if (gameObject.HasTag(GameTags.Egg))
+			{
+				IncubationMonitor.Def def = gameObject.GetDef<IncubationMonitor.Def>();
+				if (def != null)
+				{
+					GameObject prefab = Assets.GetPrefab(def.spawnedCreature);
+					if ((bool)prefab)
+					{
+						component = prefab.GetComponent<CreatureBrain>();
+						if ((bool)component && !string.IsNullOrEmpty(component.symbolPrefix))
+						{
+							animName = component.symbolPrefix + animName;
+						}
+					}
+				}
+			}
+			KBatchedAnimController component3 = gameObject.GetComponent<KBatchedAnimController>();
+			if ((bool)component3)
+			{
+				Sprite uISpriteFromMultiObjectAnim = GetUISpriteFromMultiObjectAnim(component3.AnimFiles[0], animName, centered, string.Empty);
 				return new Tuple<Sprite, Color>(uISpriteFromMultiObjectAnim, (!((UnityEngine.Object)uISpriteFromMultiObjectAnim != (UnityEngine.Object)null)) ? Color.clear : Color.white);
 			}
 			if ((UnityEngine.Object)gameObject.GetComponent<Building>() != (UnityEngine.Object)null)
@@ -96,11 +117,11 @@ public class Def : ScriptableObject
 				return new Tuple<Sprite, Color>(Assets.GetSprite(((Tag)item).Name), Color.white);
 			}
 		}
-		Debug.LogErrorFormat("Can't get sprite for type {0}", item.ToString());
+		DebugUtil.DevAssertArgs(false, "Can't get sprite for type ", item.ToString());
 		return null;
 	}
 
-	public static Sprite GetUISpriteFromMultiObjectAnim(KAnimFile animFile, string animName = "ui", bool centered = false)
+	public static Sprite GetUISpriteFromMultiObjectAnim(KAnimFile animFile, string animName = "ui", bool centered = false, string symbolName = "")
 	{
 		Tuple<KAnimFile, string, bool> key = new Tuple<KAnimFile, string, bool>(animFile, animName, centered);
 		if (knownUISprites.ContainsKey(key))
@@ -109,13 +130,13 @@ public class Def : ScriptableObject
 		}
 		if ((UnityEngine.Object)animFile == (UnityEngine.Object)null)
 		{
-			Output.LogWarning(animName, "missing Anim File");
+			DebugUtil.LogWarningArgs(animName, "missing Anim File");
 			return null;
 		}
 		KAnimFileData data = animFile.GetData();
 		if (data == null)
 		{
-			Output.LogWarning(animName, "KAnimFileData is null");
+			DebugUtil.LogWarningArgs(animName, "KAnimFileData is null");
 			return null;
 		}
 		if (data.build == null)
@@ -133,7 +154,7 @@ public class Def : ScriptableObject
 		}
 		if (!frame.IsValid())
 		{
-			Output.LogWarning($"missing '{animName}' anim in '{animFile}'");
+			DebugUtil.LogWarningArgs($"missing '{animName}' anim in '{animFile}'");
 			return null;
 		}
 		if (data.elementCount == 0)
@@ -141,19 +162,24 @@ public class Def : ScriptableObject
 			return null;
 		}
 		KAnim.Anim.FrameElement frameElement = default(KAnim.Anim.FrameElement);
-		KAnimHashedString symbolName = new KAnimHashedString(animName);
+		KAnimHashedString kAnimHashedString = new KAnimHashedString(animName);
+		if (string.IsNullOrEmpty(symbolName))
+		{
+			symbolName = animName;
+		}
 		frameElement = data.FindAnimFrameElement(symbolName);
 		KAnim.Build.Symbol symbol = data.build.GetSymbol(frameElement.symbol);
 		if (symbol == null)
 		{
-			Output.LogWarning(animFile.name, animName, "placeSymbol [", frameElement.symbol, "] is missing");
+			DebugUtil.LogWarningArgs(animFile.name, animName, "placeSymbol [", frameElement.symbol, "] is missing");
 			return null;
 		}
-		KAnim.Build.SymbolFrameInstance frame2 = symbol.GetFrame(frameElement.frame);
-		KAnim.Build.SymbolFrame symbolFrame = frame2.symbolFrame;
+		int frame2 = frameElement.frame;
+		KAnim.Build.SymbolFrameInstance frame3 = symbol.GetFrame(frame2);
+		KAnim.Build.SymbolFrame symbolFrame = frame3.symbolFrame;
 		if (symbolFrame == null)
 		{
-			Output.LogWarning(animName, "SymbolFrame [", frameElement.frame, "] is missing");
+			DebugUtil.LogWarningArgs(animName, "SymbolFrame [", frameElement.frame, "] is missing");
 			return null;
 		}
 		Texture2D texture = data.build.GetTexture(0);

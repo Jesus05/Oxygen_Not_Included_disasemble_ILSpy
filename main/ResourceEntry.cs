@@ -99,18 +99,23 @@ public class ResourceEntry : KMonoBehaviour, IPointerEnterHandler, IPointerExitH
 		}
 	}
 
-	private void GetAmounts(bool doExtras, out float available, out float total, out float reserved)
+	public void GetAmounts(EdiblesManager.FoodInfo food_info, bool doExtras, out float available, out float total, out float reserved)
 	{
 		available = WorldInventory.Instance.GetAmount(Resource);
 		total = ((!doExtras) ? 0f : WorldInventory.Instance.GetTotalAmount(Resource));
 		reserved = ((!doExtras) ? 0f : MaterialNeeds.Instance.GetAmount(Resource));
-		if (Measure == GameUtil.MeasureUnit.kcal)
+		if (food_info != null)
 		{
-			EdiblesManager.FoodInfo foodInfo = Game.Instance.ediblesManager.GetFoodInfo(Resource.Name);
-			available *= foodInfo.CaloriesPerUnit;
-			total *= foodInfo.CaloriesPerUnit;
-			reserved *= foodInfo.CaloriesPerUnit;
+			available *= food_info.CaloriesPerUnit;
+			total *= food_info.CaloriesPerUnit;
+			reserved *= food_info.CaloriesPerUnit;
 		}
+	}
+
+	private void GetAmounts(bool doExtras, out float available, out float total, out float reserved)
+	{
+		EdiblesManager.FoodInfo food_info = (Measure != GameUtil.MeasureUnit.kcal) ? null : Game.Instance.ediblesManager.GetFoodInfo(Resource.Name);
+		GetAmounts(food_info, doExtras, out available, out total, out reserved);
 	}
 
 	public void UpdateValue()
@@ -209,10 +214,10 @@ public class ResourceEntry : KMonoBehaviour, IPointerEnterHandler, IPointerExitH
 
 	public void SetSprite(Tag t)
 	{
-		Element element = ElementLoader.GetElement(Resource.Name);
+		Element element = ElementLoader.FindElementByName(Resource.Name);
 		if (element != null)
 		{
-			Sprite uISpriteFromMultiObjectAnim = Def.GetUISpriteFromMultiObjectAnim(element.substance.anim, "ui", false);
+			Sprite uISpriteFromMultiObjectAnim = Def.GetUISpriteFromMultiObjectAnim(element.substance.anim, "ui", false, string.Empty);
 			if ((Object)uISpriteFromMultiObjectAnim != (Object)null)
 			{
 				image.sprite = uISpriteFromMultiObjectAnim;

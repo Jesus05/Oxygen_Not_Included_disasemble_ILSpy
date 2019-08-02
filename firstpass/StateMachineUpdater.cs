@@ -162,7 +162,10 @@ public class StateMachineUpdater : Singleton<StateMachineUpdater>
 
 	public void Render(float dt)
 	{
-		AdvanceBucketGroups("StateMachineUpdater.Render", renderBucketGroups, dt);
+		foreach (BucketGroup renderBucketGroup in renderBucketGroups)
+		{
+			renderBucketGroup.Advance(dt);
+		}
 	}
 
 	public void RenderEveryTick(float dt)
@@ -170,14 +173,6 @@ public class StateMachineUpdater : Singleton<StateMachineUpdater>
 		foreach (BucketGroup renderEveryTickBucketGroup in renderEveryTickBucketGroups)
 		{
 			renderEveryTickBucketGroup.AdvanceOneSubTick(dt);
-		}
-	}
-
-	private void AdvanceBucketGroups(string name, List<BucketGroup> bucket_groups, float dt)
-	{
-		foreach (BucketGroup bucket_group in bucket_groups)
-		{
-			bucket_group.Advance(dt);
 		}
 	}
 

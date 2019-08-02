@@ -25,7 +25,7 @@ namespace Klei.AI
 		public AttributeInstance(GameObject game_object, Attribute attribute)
 			: base(game_object, attribute)
 		{
-			DebugUtil.Assert(attribute != null, "Assert!", string.Empty, string.Empty);
+			DebugUtil.Assert(attribute != null);
 			Attribute = attribute;
 		}
 

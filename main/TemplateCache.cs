@@ -5,26 +5,16 @@ using UnityEngine;
 
 public static class TemplateCache
 {
-	private struct ParseTemplateWorkItem : IWorkItem<object>
-	{
-		public string path;
-
-		public TemplateContainer template;
-
-		public void Run(object shared_data)
-		{
-			template = YamlIO<TemplateContainer>.LoadFile(path);
-		}
-	}
-
 	private static string baseTemplatePath;
 
 	private static Dictionary<string, TemplateContainer> templates;
 
+	private const string defaultAssetFolder = "bases";
+
 	public static void Init()
 	{
 		templates = new Dictionary<string, TemplateContainer>();
-		baseTemplatePath = Application.streamingAssetsPath + "/templates";
+		baseTemplatePath = FileSystem.Normalize(Path.Combine(Application.streamingAssetsPath, "templates"));
 	}
 
 	public static void Clear()
@@ -38,14 +28,14 @@ public static class TemplateCache
 		return baseTemplatePath;
 	}
 
-	public static TemplateContainer GetBaseStartingTemplate()
+	public static TemplateContainer GetStartingBaseTemplate(string startingTemplateName)
 	{
+		DebugUtil.Assert(startingTemplateName != null, "Tried loading a starting template named ", startingTemplateName);
 		if (baseTemplatePath == null)
 		{
 			Init();
 		}
-		string filename = Path.Combine(baseTemplatePath, "bases/startingBase.yaml");
-		return YamlIO<TemplateContainer>.LoadFile(filename);
+		return GetTemplate(Path.Combine("bases", startingTemplateName));
 	}
 
 	public static TemplateContainer GetTemplate(string templatePath)
@@ -56,62 +46,51 @@ public static class TemplateCache
 		}
 		if (templates[templatePath] == null)
 		{
-			string text = Path.Combine(baseTemplatePath, templatePath);
-			TemplateContainer templateContainer = YamlIO<TemplateContainer>.LoadFile(text + ".yaml");
+			string text = FileSystem.Normalize(Path.Combine(baseTemplatePath, templatePath));
+			TemplateContainer templateContainer = YamlIO.LoadFile<TemplateContainer>(text + ".yaml", null, null);
 			if (templateContainer == null)
 			{
-				Debug.LogWarning("Missing template [" + text + ".yaml]", null);
+				Debug.LogWarning("Missing template [" + text + ".yaml]");
 			}
 			templates[templatePath] = templateContainer;
 		}
 		return templates[templatePath];
 	}
 
-	public static List<string> CollectBaseTemplateNames(string folder = "bases/")
+	private static void GetAssetPaths(string folder, List<string> paths)
+	{
+		FileSystem.GetFiles(FileSystem.Normalize(Path.Combine(baseTemplatePath, folder)), "*.yaml", paths);
+	}
+
+	public static List<string> CollectBaseTemplateNames(string folder = "bases")
 	{
 		List<string> list = new List<string>();
-		string path = Path.Combine(baseTemplatePath, folder);
-		string[] files = Directory.GetFiles(path, "*.yaml");
-		string[] array = files;
-		foreach (string path2 in array)
+		ListPool<string, TemplateContainer>.PooledList pooledList = ListPool<string, TemplateContainer>.Allocate();
+		GetAssetPaths(folder, pooledList);
+		foreach (string item in pooledList)
 		{
-			string text = folder + Path.GetFileNameWithoutExtension(path2);
+			string text = FileSystem.Normalize(Path.Combine(folder, Path.GetFileNameWithoutExtension(item)));
 			list.Add(text);
 			if (!templates.ContainsKey(text))
 			{
 				templates.Add(text, null);
 			}
 		}
+		pooledList.Recycle();
 		list.Sort((string x, string y) => x.CompareTo(y));
 		return list;
 	}
 
-	public static List<TemplateContainer> CollectBaseTemplateAssets(string folder = "bases/")
+	public static List<TemplateContainer> CollectBaseTemplateAssets(string folder = "bases")
 	{
 		List<TemplateContainer> list = new List<TemplateContainer>();
-		string path = Path.Combine(baseTemplatePath, folder);
-		string[] files = Directory.GetFiles(path, "*.yaml");
-		WorkItemCollection<ParseTemplateWorkItem, object> workItemCollection = new WorkItemCollection<ParseTemplateWorkItem, object>();
-		workItemCollection.Reset(null);
-		string[] array = files;
-		foreach (string path2 in array)
+		ListPool<string, TemplateContainer>.PooledList pooledList = ListPool<string, TemplateContainer>.Allocate();
+		GetAssetPaths(folder, pooledList);
+		foreach (string item in pooledList)
 		{
-			workItemCollection.Add(new ParseTemplateWorkItem
-			{
-				path = path2
-			});
+			list.Add(YamlIO.LoadFile<TemplateContainer>(item, null, null));
 		}
-		GlobalJobManager.Run(workItemCollection);
-		for (int j = 0; j < workItemCollection.Count; j++)
-		{
-			ParseTemplateWorkItem workItem = workItemCollection.GetWorkItem(j);
-			if (workItem.template != null)
-			{
-				List<TemplateContainer> list2 = list;
-				ParseTemplateWorkItem workItem2 = workItemCollection.GetWorkItem(j);
-				list2.Add(workItem2.template);
-			}
-		}
+		pooledList.Recycle();
 		list.Sort(delegate(TemplateContainer x, TemplateContainer y)
 		{
 			if (y.priority - x.priority == 0)

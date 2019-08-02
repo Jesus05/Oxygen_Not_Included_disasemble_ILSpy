@@ -32,6 +32,13 @@ public class NameDisplayScreen : KScreen
 		public HierarchyReferences refs;
 	}
 
+	public class TextEntry
+	{
+		public Guid guid;
+
+		public GameObject display_go;
+	}
+
 	[SerializeField]
 	private float HideDistance;
 
@@ -59,6 +66,8 @@ public class NameDisplayScreen : KScreen
 
 	public List<Entry> entries = new List<Entry>();
 
+	public List<TextEntry> textEntries = new List<TextEntry>();
+
 	public bool worldSpace = true;
 
 	private List<KCollider2D> workingList = new List<KCollider2D>();
@@ -68,24 +77,37 @@ public class NameDisplayScreen : KScreen
 		Instance = null;
 	}
 
-	protected override void OnSpawn()
-	{
-		base.OnSpawn();
-		UIRegistry.nameDisplayScreen = this;
-		Components.Health.Register(delegate(Health health)
-		{
-			RegisterComponent(health.gameObject, health, false);
-		}, null);
-		Components.Equipment.Register(delegate(Equipment equipment)
-		{
-			RegisterComponent(equipment.gameObject, equipment, false);
-		}, null);
-	}
-
 	protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		Instance = this;
+	}
+
+	protected override void OnSpawn()
+	{
+		base.OnSpawn();
+		UIRegistry.nameDisplayScreen = this;
+		Components.Health.Register(OnHealthAdded, null);
+		Components.Equipment.Register(OnEquipmentAdded, null);
+	}
+
+	private void OnHealthAdded(Health health)
+	{
+		RegisterComponent(health.gameObject, health, false);
+	}
+
+	private void OnEquipmentAdded(Equipment equipment)
+	{
+		MinionAssignablesProxy component = equipment.GetComponent<MinionAssignablesProxy>();
+		GameObject targetGameObject = component.GetTargetGameObject();
+		if ((bool)targetGameObject)
+		{
+			RegisterComponent(targetGameObject, equipment, false);
+		}
+		else
+		{
+			Debug.LogWarningFormat("OnEquipmentAdded proxy target {0} was null.", component.TargetInstanceID);
+		}
 	}
 
 	private bool ShouldShowName(GameObject representedObject)
@@ -93,6 +115,47 @@ public class NameDisplayScreen : KScreen
 		bool flag = (UnityEngine.Object)representedObject.GetComponent<MinionBrain>() != (UnityEngine.Object)null;
 		bool flag2 = (UnityEngine.Object)representedObject.GetComponent<CommandModule>() != (UnityEngine.Object)null;
 		return flag || flag2;
+	}
+
+	public Guid AddWorldText(string initialText, GameObject prefab)
+	{
+		TextEntry textEntry = new TextEntry();
+		textEntry.guid = Guid.NewGuid();
+		textEntry.display_go = Util.KInstantiateUI(prefab, base.gameObject, true);
+		textEntry.display_go.GetComponentInChildren<LocText>().text = initialText;
+		textEntries.Add(textEntry);
+		return textEntry.guid;
+	}
+
+	public GameObject GetWorldText(Guid guid)
+	{
+		GameObject result = null;
+		foreach (TextEntry textEntry in textEntries)
+		{
+			if (textEntry.guid == guid)
+			{
+				return textEntry.display_go;
+			}
+		}
+		return result;
+	}
+
+	public void RemoveWorldText(Guid guid)
+	{
+		int num = -1;
+		for (int i = 0; i < textEntries.Count; i++)
+		{
+			if (textEntries[i].guid == guid)
+			{
+				num = i;
+				break;
+			}
+		}
+		if (num >= 0)
+		{
+			UnityEngine.Object.Destroy(textEntries[num].display_go);
+			textEntries.RemoveAt(num);
+		}
 	}
 
 	public void AddNewEntry(GameObject representedObject)
@@ -231,12 +294,12 @@ public class NameDisplayScreen : KScreen
 	{
 		if (!App.isLoading && !App.IsExiting)
 		{
-			SimViewMode simViewMode = SimViewMode.None;
+			HashedString x = OverlayModes.None.ID;
 			if ((UnityEngine.Object)OverlayScreen.Instance != (UnityEngine.Object)null)
 			{
-				simViewMode = OverlayScreen.Instance.GetMode();
+				x = OverlayScreen.Instance.GetMode();
 			}
-			bool flag = !((UnityEngine.Object)Camera.main == (UnityEngine.Object)null) && Camera.main.orthographicSize < HideDistance && simViewMode == SimViewMode.None;
+			bool flag = !((UnityEngine.Object)Camera.main == (UnityEngine.Object)null) && Camera.main.orthographicSize < HideDistance && x == OverlayModes.None.ID;
 			int num = entries.Count;
 			int num2 = 0;
 			while (num2 < num)

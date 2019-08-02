@@ -19,17 +19,11 @@ public class DetailsScreen : KTabMenu
 
 		public TargetScreen screen;
 
-		public string requiredComponentType;
-
-		public string[] excludeComponentType;
-
-		public Tag[] excludedPrefabTags;
-
 		public int displayOrderPriority;
 
 		public bool hideWhenDead;
 
-		public SimViewMode focusInViewMode;
+		public HashedString focusInViewMode;
 
 		[HideInInspector]
 		public int tabIdx;
@@ -83,6 +77,18 @@ public class DetailsScreen : KTabMenu
 	[SerializeField]
 	private List<SideScreenRef> sideScreens;
 
+	[Header("Secondary Side Screens")]
+	[SerializeField]
+	private GameObject sideScreen2ContentBody;
+
+	[SerializeField]
+	private GameObject sideScreen2;
+
+	[SerializeField]
+	private LocText sideScreen2Title;
+
+	private KScreen activeSideScreen2;
+
 	private bool HasActivated;
 
 	private bool isEditing;
@@ -119,10 +125,20 @@ public class DetailsScreen : KTabMenu
 		base.OnPrefabInit();
 		SortScreenOrder();
 		ConsumeMouseScroll = true;
+		Debug.Assert((UnityEngine.Object)Instance == (UnityEngine.Object)null);
 		Instance = this;
 		UIRegistry.detailsScreen = this;
 		DeactivateSideContent();
 		Show(false);
+		Subscribe(Game.Instance.gameObject, -1503271301, OnSelectObject);
+	}
+
+	private void OnSelectObject(object data)
+	{
+		if (data == null)
+		{
+			previouslyActiveTab = -1;
+		}
 	}
 
 	protected override void OnSpawn()
@@ -132,6 +148,7 @@ public class DetailsScreen : KTabMenu
 		CloseButton.onClick += DeselectAndClose;
 		TabTitle.OnNameChanged += OnNameChanged;
 		TabTitle.OnStartedEditing += OnStartedEditing;
+		sideScreen2.SetActive(false);
 		Subscribe(-1514841199, OnRefreshDataDelegate);
 	}
 
@@ -147,9 +164,14 @@ public class DetailsScreen : KTabMenu
 		if (!string.IsNullOrEmpty(newName))
 		{
 			MinionIdentity component = target.GetComponent<MinionIdentity>();
-			if (!((UnityEngine.Object)component == (UnityEngine.Object)null))
+			StorageLocker component2 = target.GetComponent<StorageLocker>();
+			if ((UnityEngine.Object)component != (UnityEngine.Object)null)
 			{
 				component.SetName(newName);
+			}
+			else if ((UnityEngine.Object)component2 != (UnityEngine.Object)null)
+			{
+				component2.SetName(newName);
 			}
 		}
 	}
@@ -278,39 +300,25 @@ public class DetailsScreen : KTabMenu
 			int num2 = 0;
 			for (int j = 0; j < screens.Length; j++)
 			{
-				string requiredComponentType = screens[j].requiredComponentType;
-				bool flag = requiredComponentType == null || requiredComponentType == string.Empty || (UnityEngine.Object)GetComponent(go, requiredComponentType) != (UnityEngine.Object)null;
-				if (flag && requiredComponentType == "Storage")
-				{
-					flag = go.GetComponent<Storage>().showInUI;
-				}
-				bool flag2 = false;
-				for (int k = 0; k < screens[j].excludeComponentType.Length; k++)
-				{
-					string text = screens[j].excludeComponentType[k];
-					if (text != null && (UnityEngine.Object)GetComponent(go, text) != (UnityEngine.Object)null)
-					{
-						flag2 = true;
-						break;
-					}
-				}
-				bool flag3 = screens[j].hideWhenDead && base.gameObject.HasTag(GameTags.Dead);
-				SetTabEnabled(screens[j].tabIdx, flag && !flag2 && !flag3);
-				if (flag)
+				bool flag = screens[j].screen.IsValidForTarget(go);
+				bool flag2 = screens[j].hideWhenDead && base.gameObject.HasTag(GameTags.Dead);
+				bool flag3 = flag && !flag2;
+				SetTabEnabled(screens[j].tabIdx, flag3);
+				if (flag3)
 				{
 					num2++;
 					if (num == -1)
 					{
-						if (SimDebugView.Instance.GetMode() != 0)
+						if (SimDebugView.Instance.GetMode() != OverlayModes.None.ID)
 						{
 							if (SimDebugView.Instance.GetMode() == screens[j].focusInViewMode)
 							{
 								num = j;
 							}
 						}
-						else
+						else if (flag3 && previouslyActiveTab >= 0 && previouslyActiveTab < screens.Length && screens[j].name == screens[previouslyActiveTab].name)
 						{
-							num = j;
+							num = screens[j].tabIdx;
 						}
 					}
 				}
@@ -370,6 +378,26 @@ public class DetailsScreen : KTabMenu
 		}
 	}
 
+	public KScreen SetSecondarySideScreen(KScreen secondaryPrefab, string title)
+	{
+		ClearSecondarySideScreen();
+		activeSideScreen2 = KScreenManager.Instance.InstantiateScreen(secondaryPrefab.gameObject, sideScreen2ContentBody);
+		activeSideScreen2.Activate();
+		sideScreen2Title.text = title;
+		sideScreen2.SetActive(true);
+		return activeSideScreen2;
+	}
+
+	public void ClearSecondarySideScreen()
+	{
+		if ((UnityEngine.Object)activeSideScreen2 != (UnityEngine.Object)null)
+		{
+			activeSideScreen2.Deactivate();
+			activeSideScreen2 = null;
+		}
+		sideScreen2.SetActive(false);
+	}
+
 	public void DeactivateSideContent()
 	{
 		if ((UnityEngine.Object)SideDetailsScreen.Instance != (UnityEngine.Object)null && SideDetailsScreen.Instance.gameObject.activeInHierarchy)
@@ -405,36 +433,48 @@ public class DetailsScreen : KTabMenu
 
 	private string GetSelectedObjectCodexID()
 	{
-		string empty = string.Empty;
+		string text = string.Empty;
 		CellSelectionObject component = SelectTool.Instance.selected.GetComponent<CellSelectionObject>();
 		BuildingUnderConstruction component2 = SelectTool.Instance.selected.GetComponent<BuildingUnderConstruction>();
 		CreatureBrain component3 = SelectTool.Instance.selected.GetComponent<CreatureBrain>();
 		PlantableSeed component4 = SelectTool.Instance.selected.GetComponent<PlantableSeed>();
+		BudUprootedMonitor component5 = SelectTool.Instance.selected.GetComponent<BudUprootedMonitor>();
 		if ((UnityEngine.Object)component != (UnityEngine.Object)null)
 		{
-			empty = CodexCache.FormatLinkID(component.element.id.ToString());
+			text = CodexCache.FormatLinkID(component.element.id.ToString());
 		}
 		else if ((UnityEngine.Object)component2 != (UnityEngine.Object)null)
 		{
-			empty = CodexCache.FormatLinkID(component2.Def.PrefabID);
+			text = CodexCache.FormatLinkID(component2.Def.PrefabID);
 		}
 		else if ((UnityEngine.Object)component3 != (UnityEngine.Object)null)
 		{
-			empty = CodexCache.FormatLinkID(SelectTool.Instance.selected.PrefabID().ToString());
-			empty = empty.Replace("BABY", string.Empty);
+			text = CodexCache.FormatLinkID(SelectTool.Instance.selected.PrefabID().ToString());
+			text = text.Replace("BABY", string.Empty);
 		}
 		else if ((UnityEngine.Object)component4 != (UnityEngine.Object)null)
 		{
-			empty = CodexCache.FormatLinkID(SelectTool.Instance.selected.PrefabID().ToString());
-			empty = empty.Replace("SEED", string.Empty);
+			text = CodexCache.FormatLinkID(SelectTool.Instance.selected.PrefabID().ToString());
+			text = text.Replace("SEED", string.Empty);
+		}
+		else if ((UnityEngine.Object)component5 != (UnityEngine.Object)null)
+		{
+			if ((UnityEngine.Object)component5.parentObject.Get() != (UnityEngine.Object)null)
+			{
+				text = CodexCache.FormatLinkID(component5.parentObject.Get().PrefabID().ToString());
+			}
+			else if ((UnityEngine.Object)component5.GetComponent<TreeBud>() != (UnityEngine.Object)null)
+			{
+				text = CodexCache.FormatLinkID(component5.GetComponent<TreeBud>().buddingTrunk.Get().PrefabID().ToString());
+			}
 		}
 		else
 		{
-			empty = CodexCache.FormatLinkID(SelectTool.Instance.selected.PrefabID().ToString());
+			text = CodexCache.FormatLinkID(SelectTool.Instance.selected.PrefabID().ToString());
 		}
-		if (CodexCache.entries.ContainsKey(empty) || CodexCache.FindSubEntry(empty) != null)
+		if (CodexCache.entries.ContainsKey(text) || CodexCache.FindSubEntry(text) != null)
 		{
-			return empty;
+			return text;
 		}
 		return string.Empty;
 	}
@@ -493,7 +533,7 @@ public class DetailsScreen : KTabMenu
 				if ((UnityEngine.Object)component4 != (UnityEngine.Object)null)
 				{
 					KBatchedAnimController component5 = component4.GetComponent<KBatchedAnimController>();
-					Sprite uISpriteFromMultiObjectAnim = Def.GetUISpriteFromMultiObjectAnim(component5.AnimFiles[0], "ui", false);
+					Sprite uISpriteFromMultiObjectAnim = Def.GetUISpriteFromMultiObjectAnim(component5.AnimFiles[0], "ui", false, string.Empty);
 					TabTitle.portrait.SetPortrait(uISpriteFromMultiObjectAnim);
 				}
 				else
@@ -501,7 +541,7 @@ public class DetailsScreen : KTabMenu
 					PrimaryElement component6 = target.GetComponent<PrimaryElement>();
 					if ((UnityEngine.Object)component6 != (UnityEngine.Object)null)
 					{
-						TabTitle.portrait.SetPortrait(Def.GetUISpriteFromMultiObjectAnim(ElementLoader.FindElementByHash(component6.ElementID).substance.anim, "ui", false));
+						TabTitle.portrait.SetPortrait(Def.GetUISpriteFromMultiObjectAnim(ElementLoader.FindElementByHash(component6.ElementID).substance.anim, "ui", false, string.Empty));
 					}
 					else
 					{
@@ -509,7 +549,7 @@ public class DetailsScreen : KTabMenu
 						if ((UnityEngine.Object)component7 != (UnityEngine.Object)null)
 						{
 							string animName = (!component7.element.IsSolid) ? component7.element.substance.name : "ui";
-							Sprite uISpriteFromMultiObjectAnim2 = Def.GetUISpriteFromMultiObjectAnim(component7.element.substance.anim, animName, false);
+							Sprite uISpriteFromMultiObjectAnim2 = Def.GetUISpriteFromMultiObjectAnim(component7.element.substance.anim, animName, false, string.Empty);
 							TabTitle.portrait.SetPortrait(uISpriteFromMultiObjectAnim2);
 						}
 					}
@@ -530,13 +570,20 @@ public class DetailsScreen : KTabMenu
 		{
 			TabTitle.SetTitle(target.GetProperName());
 			MinionIdentity minionIdentity = null;
+			StorageLocker x = null;
 			if ((UnityEngine.Object)target != (UnityEngine.Object)null)
 			{
 				minionIdentity = target.gameObject.GetComponent<MinionIdentity>();
+				x = target.gameObject.GetComponent<StorageLocker>();
 			}
 			if ((UnityEngine.Object)minionIdentity != (UnityEngine.Object)null)
 			{
-				TabTitle.SetSubText(minionIdentity.GetComponent<MinionResume>().GetCurrentRoleString(), minionIdentity.GetComponent<MinionResume>().GetCurrentRoleDescription());
+				TabTitle.SetSubText(minionIdentity.GetComponent<MinionResume>().GetSkillsSubtitle(), string.Empty);
+				TabTitle.SetUserEditable(true);
+			}
+			else if ((UnityEngine.Object)x != (UnityEngine.Object)null)
+			{
+				TabTitle.SetSubText(string.Empty, string.Empty);
 				TabTitle.SetUserEditable(true);
 			}
 			else
@@ -550,5 +597,14 @@ public class DetailsScreen : KTabMenu
 	public void SetTitle(string title)
 	{
 		TabTitle.SetTitle(title);
+	}
+
+	public TargetScreen GetActiveTab()
+	{
+		if (previouslyActiveTab >= 0 && previouslyActiveTab < screens.Length)
+		{
+			return screens[previouslyActiveTab].screen;
+		}
+		return null;
 	}
 }

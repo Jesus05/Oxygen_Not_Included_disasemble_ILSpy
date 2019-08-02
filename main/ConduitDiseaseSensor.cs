@@ -35,6 +35,12 @@ public class ConduitDiseaseSensor : ConduitThresholdSensor, IThresholdSwitch
 
 	public string BelowToolTip => UI.UISIDESCREENS.THRESHOLD_SWITCH_SIDESCREEN.DISEASE_TOOLTIP_BELOW;
 
+	public ThresholdScreenLayoutType LayoutType => ThresholdScreenLayoutType.SliderBar;
+
+	public int IncrementScale => 1;
+
+	public NonLinearSlider.Range[] GetRanges => NonLinearSlider.GetDefaultRange(RangeMax);
+
 	protected override void UpdateVisualState(bool force = false)
 	{
 		if (wasOn != switchedOn || force)

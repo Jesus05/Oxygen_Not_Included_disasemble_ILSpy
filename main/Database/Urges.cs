@@ -52,7 +52,7 @@ namespace Database
 
 		public Urge CoolDown;
 
-		public Urge SwitchRole;
+		public Urge LearnSkill;
 
 		public Urge EmoteIdle;
 
@@ -82,7 +82,7 @@ namespace Database
 			MoveToSafety = Add(new Urge("MoveToSafety"));
 			WarmUp = Add(new Urge("WarmUp"));
 			CoolDown = Add(new Urge("CoolDown"));
-			SwitchRole = Add(new Urge("SwitchRole"));
+			LearnSkill = Add(new Urge("LearnSkill"));
 			EmoteIdle = Add(new Urge("EmoteIdle"));
 		}
 	}

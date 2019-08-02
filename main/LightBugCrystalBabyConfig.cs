@@ -8,7 +8,7 @@ public class LightBugCrystalBabyConfig : IEntityConfig
 	public GameObject CreatePrefab()
 	{
 		GameObject gameObject = LightBugCrystalConfig.CreateLightBug("LightBugCrystalBaby", CREATURES.SPECIES.LIGHTBUG.VARIANT_CRYSTAL.BABY.NAME, CREATURES.SPECIES.LIGHTBUG.VARIANT_CRYSTAL.BABY.DESC, "baby_lightbug_kanim", true);
-		EntityTemplates.ExtendEntityToBeingABaby(gameObject, "LightBugCrystal");
+		EntityTemplates.ExtendEntityToBeingABaby(gameObject, "LightBugCrystal", null);
 		return gameObject;
 	}
 

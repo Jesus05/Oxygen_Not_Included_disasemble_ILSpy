@@ -10,7 +10,9 @@ public class VendingMachineConfig : IEntityConfig
 		PrimaryElement component = gameObject.GetComponent<PrimaryElement>();
 		component.SetElement(SimHashes.Unobtanium);
 		component.Temperature = 294.15f;
-		gameObject.AddOrGet<Workable>();
+		Workable workable = gameObject.AddOrGet<Workable>();
+		workable.synchronizeAnims = false;
+		workable.resetProgressOnStop = true;
 		SetLocker setLocker = gameObject.AddOrGet<SetLocker>();
 		setLocker.machineSound = "VendingMachine_LP";
 		setLocker.overrideAnim = "anim_break_kanim";

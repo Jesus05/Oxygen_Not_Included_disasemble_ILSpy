@@ -7,6 +7,7 @@ public class GeneShufflerConfig : IEntityConfig
 	public GameObject CreatePrefab()
 	{
 		GameObject gameObject = EntityTemplates.CreatePlacedEntity("GeneShuffler", STRINGS.BUILDINGS.PREFABS.GENESHUFFLER.NAME, STRINGS.BUILDINGS.PREFABS.GENESHUFFLER.DESC, 2000f, Assets.GetAnim("geneshuffler_kanim"), "on", Grid.SceneLayer.Building, 4, 3, TUNING.BUILDINGS.DECOR.BONUS.TIER0, NOISE_POLLUTION.NOISY.TIER0, SimHashes.Creature, null, 293f);
+		gameObject.AddTag(GameTags.NotRoomAssignable);
 		PrimaryElement component = gameObject.GetComponent<PrimaryElement>();
 		component.SetElement(SimHashes.Unobtanium);
 		component.Temperature = 294.15f;
@@ -16,10 +17,12 @@ public class GeneShufflerConfig : IEntityConfig
 		gameObject.AddOrGet<LoreBearer>();
 		gameObject.AddOrGet<LoopingSounds>();
 		gameObject.AddOrGet<Ownable>();
+		gameObject.AddOrGet<Prioritizable>();
 		Storage storage = gameObject.AddOrGet<Storage>();
 		storage.dropOnLoad = true;
 		ManualDeliveryKG manualDeliveryKG = gameObject.AddOrGet<ManualDeliveryKG>();
 		manualDeliveryKG.SetStorage(storage);
+		manualDeliveryKG.choreTypeIDHash = Db.Get().ChoreTypes.MachineFetch.IdHash;
 		manualDeliveryKG.requestedItemTag = new Tag("GeneShufflerRecharge");
 		manualDeliveryKG.refillMass = 1f;
 		manualDeliveryKG.minimumMass = 1f;

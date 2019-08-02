@@ -60,8 +60,7 @@ public class SolidConduitFlow : IConduitFlow
 			initialContents.Add(contents);
 			lastFlowInfo.Add(new ConduitFlowInfo
 			{
-				direction = FlowDirection.None,
-				contents = ConduitContents.EmptyContents()
+				direction = FlowDirection.None
 			});
 			cells.Add(cell);
 			updated.Add(false);
@@ -164,8 +163,7 @@ public class SolidConduitFlow : IConduitFlow
 				initialContents[i] = contents;
 				lastFlowInfo[i] = new ConduitFlowInfo
 				{
-					direction = FlowDirection.None,
-					contents = ConduitContents.EmptyContents()
+					direction = FlowDirection.None
 				};
 				int num = cells[i];
 				manager.grid[num].contents = contents;
@@ -206,8 +204,7 @@ public class SolidConduitFlow : IConduitFlow
 			{
 				lastFlowInfo[idx] = new ConduitFlowInfo
 				{
-					direction = FlowDirection.None,
-					contents = ConduitContents.EmptyContents()
+					direction = FlowDirection.None
 				};
 				Conduit conduit = conduits[idx];
 				targetFlowDirections[idx] = conduit.GetNextFlowTarget(manager);
@@ -216,12 +213,11 @@ public class SolidConduitFlow : IConduitFlow
 			}
 		}
 
-		public void SetLastFlowInfo(int idx, FlowDirection direction, ref ConduitContents contents)
+		public void SetLastFlowInfo(int idx, FlowDirection direction)
 		{
 			lastFlowInfo[idx] = new ConduitFlowInfo
 			{
-				direction = direction,
-				contents = contents
+				direction = direction
 			};
 		}
 
@@ -336,8 +332,6 @@ public class SolidConduitFlow : IConduitFlow
 	public struct ConduitFlowInfo
 	{
 		public FlowDirection direction;
-
-		public ConduitContents contents;
 	}
 
 	[Serializable]
@@ -1084,17 +1078,21 @@ public class SolidConduitFlow : IConduitFlow
 			{
 				Conduit conduit = GetSOAInfo().GetConduit(i);
 				ConduitFlowInfo lastFlowInfo = conduit.GetLastFlowInfo(this);
-				if (lastFlowInfo.contents.pickupableHandle.IsValid())
+				if (lastFlowInfo.direction != 0)
 				{
 					int cell2 = conduit.GetCell(this);
 					int cellFromDirection = GetCellFromDirection(cell2, lastFlowInfo.direction);
-					Vector3 a5 = Grid.CellToPosCCC(cell2, Grid.SceneLayer.SolidConduitContents);
-					Vector3 b = Grid.CellToPosCCC(cellFromDirection, Grid.SceneLayer.SolidConduitContents);
-					Vector3 position = Vector3.Lerp(a5, b, ContinuousLerpPercent);
-					Pickupable pickupable = GetPickupable(lastFlowInfo.contents.pickupableHandle);
-					if ((UnityEngine.Object)pickupable != (UnityEngine.Object)null)
+					ConduitContents contents = GetContents(cellFromDirection);
+					if (contents.pickupableHandle.IsValid())
 					{
-						pickupable.transform.SetPosition(position);
+						Vector3 a5 = Grid.CellToPosCCC(cell2, Grid.SceneLayer.SolidConduitContents);
+						Vector3 b = Grid.CellToPosCCC(cellFromDirection, Grid.SceneLayer.SolidConduitContents);
+						Vector3 position = Vector3.Lerp(a5, b, ContinuousLerpPercent);
+						Pickupable pickupable = GetPickupable(contents.pickupableHandle);
+						if ((UnityEngine.Object)pickupable != (UnityEngine.Object)null)
+						{
+							pickupable.transform.SetPosition(position);
+						}
 					}
 				}
 			}
@@ -1156,7 +1154,7 @@ public class SolidConduitFlow : IConduitFlow
 							{
 								ConduitContents contents4 = RemoveFromGrid(conduit);
 								AddToGrid(cell2, contents4);
-								soaInfo.SetLastFlowInfo(conduit.idx, soaInfo.GetTargetFlowDirection(conduit.idx), ref contents4);
+								soaInfo.SetLastFlowInfo(conduit.idx, soaInfo.GetTargetFlowDirection(conduit.idx));
 								soaInfo.SetUpdated(conduitFromDirection.idx, true);
 								soaInfo.SetSrcFlowDirection(conduitFromDirection.idx, conduitFromDirection.GetNextFlowSource(this));
 							}
@@ -1186,7 +1184,7 @@ public class SolidConduitFlow : IConduitFlow
 	{
 		if (grid[cell_idx].conduitIdx == -1)
 		{
-			Debug.LogWarning("No conduit in cell: " + cell_idx, null);
+			Debug.LogWarning("No conduit in cell: " + cell_idx);
 			DumpPickupable(pickupable);
 		}
 		else
@@ -1194,7 +1192,7 @@ public class SolidConduitFlow : IConduitFlow
 			ConduitContents contents = GetConduit(cell_idx).GetContents(this);
 			if (contents.pickupableHandle.IsValid())
 			{
-				Debug.LogWarning("Conduit already full: " + cell_idx, null);
+				Debug.LogWarning("Conduit already full: " + cell_idx);
 				DumpPickupable(pickupable);
 			}
 			else
@@ -1211,7 +1209,7 @@ public class SolidConduitFlow : IConduitFlow
 				}
 				if ((bool)pickupable.storage)
 				{
-					pickupable.storage.Remove(pickupable.gameObject);
+					pickupable.storage.Remove(pickupable.gameObject, true);
 				}
 				pickupable.Trigger(856640610, true);
 				SetContents(cell_idx, contents);
@@ -1327,15 +1325,15 @@ public class SolidConduitFlow : IConduitFlow
 		if ((UnityEngine.Object)OverlayScreen.Instance != (UnityEngine.Object)null)
 		{
 			OverlayScreen instance = OverlayScreen.Instance;
-			instance.OnOverlayChanged = (Action<SimViewMode>)Delegate.Remove(instance.OnOverlayChanged, new Action<SimViewMode>(OnOverlayChanged));
+			instance.OnOverlayChanged = (Action<HashedString>)Delegate.Remove(instance.OnOverlayChanged, new Action<HashedString>(OnOverlayChanged));
 			OverlayScreen instance2 = OverlayScreen.Instance;
-			instance2.OnOverlayChanged = (Action<SimViewMode>)Delegate.Combine(instance2.OnOverlayChanged, new Action<SimViewMode>(OnOverlayChanged));
+			instance2.OnOverlayChanged = (Action<HashedString>)Delegate.Combine(instance2.OnOverlayChanged, new Action<HashedString>(OnOverlayChanged));
 		}
 	}
 
-	private void OnOverlayChanged(SimViewMode mode)
+	private void OnOverlayChanged(HashedString mode)
 	{
-		bool flag = mode == SimViewMode.SolidConveyorMap;
+		bool flag = mode == OverlayModes.SolidConveyor.ID;
 		if (flag != viewingConduits)
 		{
 			viewingConduits = flag;

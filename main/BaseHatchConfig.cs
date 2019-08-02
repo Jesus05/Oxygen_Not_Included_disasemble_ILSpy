@@ -18,15 +18,15 @@ public static class BaseHatchConfig
 		string initialAnim = "idle_loop";
 		EffectorValues tIER = DECOR.BONUS.TIER0;
 		GameObject gameObject = EntityTemplates.CreatePlacedEntity(id, name, desc, mass, anim, initialAnim, Grid.SceneLayer.Creatures, 1, 1, tIER, default(EffectorValues), SimHashes.Creature, null, 293f);
-		string navGridName = "HatchNavGrid";
+		string navGridName = "WalkerNavGrid1x1";
 		if (is_baby)
 		{
-			navGridName = "HatchBabyNavGrid";
+			navGridName = "WalkerBabyNavGrid";
 		}
 		EntityTemplates.ExtendEntityToBasicCreature(gameObject, FactionManager.FactionID.Pest, traitId, navGridName, NavType.Floor, 32, 2f, "Meat", 2, true, false, 283.15f, 293.15f, 243.15f, 343.15f);
 		if (symbolOverridePrefix != null)
 		{
-			gameObject.AddOrGet<SymbolOverrideController>().ApplySymbolOverridesByPrefix(Assets.GetAnim(anim_file), symbolOverridePrefix, 0);
+			gameObject.AddOrGet<SymbolOverrideController>().ApplySymbolOverridesByAffix(Assets.GetAnim(anim_file), symbolOverridePrefix, null, 0);
 		}
 		gameObject.AddOrGet<Trappable>();
 		gameObject.AddOrGetDef<CreatureFallMonitor.Def>();
@@ -44,9 +44,9 @@ public static class BaseHatchConfig
 		SoundEventVolumeCache.instance.AddVolume("hatch_kanim", "Hatch_voice_die", NOISE_POLLUTION.CREATURES.TIER5);
 		SoundEventVolumeCache.instance.AddVolume("hatch_kanim", "Hatch_drill_emerge", NOISE_POLLUTION.CREATURES.TIER6);
 		SoundEventVolumeCache.instance.AddVolume("hatch_kanim", "Hatch_drill_hide", NOISE_POLLUTION.CREATURES.TIER6);
-		EntityTemplates.CreateAndRegisterBaggedCreature(gameObject, true, true);
+		EntityTemplates.CreateAndRegisterBaggedCreature(gameObject, true, true, false);
 		KPrefabID component = gameObject.GetComponent<KPrefabID>();
-		component.AddTag(GameTags.Creatures.GroundBased);
+		component.AddTag(GameTags.Creatures.Walker, false);
 		component.prefabInitFn += delegate(GameObject inst)
 		{
 			inst.GetAttributes().Add(Db.Get().Attributes.MaxUnderwaterTravelCost);
@@ -89,7 +89,7 @@ public static class BaseHatchConfig
 		hashSet.Add(SimHashes.Dirt.CreateTag());
 		hashSet.Add(SimHashes.SedimentaryRock.CreateTag());
 		List<Diet.Info> list = new List<Diet.Info>();
-		list.Add(new Diet.Info(hashSet, poopTag, caloriesPerKg, producedConversionRate, diseaseId, diseasePerKgProduced, false));
+		list.Add(new Diet.Info(hashSet, poopTag, caloriesPerKg, producedConversionRate, diseaseId, diseasePerKgProduced, false, false));
 		return list;
 	}
 
@@ -101,7 +101,7 @@ public static class BaseHatchConfig
 		hashSet.Add(SimHashes.Obsidian.CreateTag());
 		hashSet.Add(SimHashes.Granite.CreateTag());
 		List<Diet.Info> list = new List<Diet.Info>();
-		list.Add(new Diet.Info(hashSet, poopTag, caloriesPerKg, producedConversionRate, diseaseId, diseasePerKgProduced, false));
+		list.Add(new Diet.Info(hashSet, poopTag, caloriesPerKg, producedConversionRate, diseaseId, diseasePerKgProduced, false, false));
 		return list;
 	}
 
@@ -111,19 +111,19 @@ public static class BaseHatchConfig
 		list.Add(new Diet.Info(new HashSet<Tag>(new Tag[1]
 		{
 			SimHashes.Cuprite.CreateTag()
-		}), (!(poopTag == GameTags.Metal)) ? poopTag : SimHashes.Copper.CreateTag(), caloriesPerKg, producedConversionRate, diseaseId, diseasePerKgProduced, false));
+		}), (!(poopTag == GameTags.Metal)) ? poopTag : SimHashes.Copper.CreateTag(), caloriesPerKg, producedConversionRate, diseaseId, diseasePerKgProduced, false, false));
 		list.Add(new Diet.Info(new HashSet<Tag>(new Tag[1]
 		{
 			SimHashes.GoldAmalgam.CreateTag()
-		}), (!(poopTag == GameTags.Metal)) ? poopTag : SimHashes.Gold.CreateTag(), caloriesPerKg, producedConversionRate, diseaseId, diseasePerKgProduced, false));
+		}), (!(poopTag == GameTags.Metal)) ? poopTag : SimHashes.Gold.CreateTag(), caloriesPerKg, producedConversionRate, diseaseId, diseasePerKgProduced, false, false));
 		list.Add(new Diet.Info(new HashSet<Tag>(new Tag[1]
 		{
 			SimHashes.IronOre.CreateTag()
-		}), (!(poopTag == GameTags.Metal)) ? poopTag : SimHashes.Iron.CreateTag(), caloriesPerKg, producedConversionRate, diseaseId, diseasePerKgProduced, false));
+		}), (!(poopTag == GameTags.Metal)) ? poopTag : SimHashes.Iron.CreateTag(), caloriesPerKg, producedConversionRate, diseaseId, diseasePerKgProduced, false, false));
 		list.Add(new Diet.Info(new HashSet<Tag>(new Tag[1]
 		{
 			SimHashes.Wolframite.CreateTag()
-		}), (!(poopTag == GameTags.Metal)) ? poopTag : SimHashes.Tungsten.CreateTag(), caloriesPerKg, producedConversionRate, diseaseId, diseasePerKgProduced, false));
+		}), (!(poopTag == GameTags.Metal)) ? poopTag : SimHashes.Tungsten.CreateTag(), caloriesPerKg, producedConversionRate, diseaseId, diseasePerKgProduced, false, false));
 		return list;
 	}
 
@@ -136,7 +136,7 @@ public static class BaseHatchConfig
 		hashSet.Add(SimHashes.Fertilizer.CreateTag());
 		hashSet.Add(SimHashes.ToxicSand.CreateTag());
 		List<Diet.Info> list = new List<Diet.Info>();
-		list.Add(new Diet.Info(hashSet, poopTag, caloriesPerKg, producedConversionRate, diseaseId, diseasePerKgProduced, false));
+		list.Add(new Diet.Info(hashSet, poopTag, caloriesPerKg, producedConversionRate, diseaseId, diseasePerKgProduced, false, false));
 		return list;
 	}
 
@@ -149,7 +149,7 @@ public static class BaseHatchConfig
 			{
 				HashSet<Tag> hashSet = new HashSet<Tag>();
 				hashSet.Add(new Tag(item.Id));
-				list.Add(new Diet.Info(hashSet, poopTag, item.CaloriesPerUnit, producedConversionRate, diseaseId, diseasePerKgProduced, false));
+				list.Add(new Diet.Info(hashSet, poopTag, item.CaloriesPerUnit, producedConversionRate, diseaseId, diseasePerKgProduced, false, false));
 			}
 		}
 		return list;

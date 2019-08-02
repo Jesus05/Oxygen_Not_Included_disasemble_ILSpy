@@ -4,8 +4,29 @@ using UnityEngine;
 
 namespace Klei
 {
-	public class GenericGameSettings : YamlIO<GenericGameSettings>
+	public class GenericGameSettings
 	{
+		public class PerformanceCapture
+		{
+			public string saveGame
+			{
+				get;
+				set;
+			}
+
+			public float waitTime
+			{
+				get;
+				set;
+			}
+
+			public bool gcStats
+			{
+				get;
+				set;
+			}
+		}
+
 		private static GenericGameSettings _instance;
 
 		public static GenericGameSettings instance
@@ -16,7 +37,7 @@ namespace Klei
 				{
 					try
 					{
-						YamlIO<GenericGameSettings>.LoadFile(Path);
+						_instance = YamlIO.LoadFile<GenericGameSettings>(Path, null, null);
 					}
 					catch
 					{
@@ -61,12 +82,6 @@ namespace Klei
 		{
 			get;
 			private set;
-		}
-
-		public float developerCaptureGCStatsTime
-		{
-			get;
-			set;
 		}
 
 		public bool disableGameOver
@@ -129,6 +144,12 @@ namespace Klei
 			private set;
 		}
 
+		public PerformanceCapture performanceCapture
+		{
+			get;
+			set;
+		}
+
 		private static string Path => System.IO.Path.GetDirectoryName(Application.dataPath) + "/settings.yml";
 
 		public GenericGameSettings()
@@ -139,6 +160,7 @@ namespace Klei
 			sleepWhenOutOfFocus = true;
 			debugEnable = false;
 			developerDebugEnable = false;
+			performanceCapture = new PerformanceCapture();
 			_instance = this;
 		}
 
@@ -146,11 +168,11 @@ namespace Klei
 		{
 			try
 			{
-				Save(Path);
+				YamlIO.Save(this, Path, null);
 			}
 			catch (Exception ex)
 			{
-				Debug.LogWarning("Failed to save settings.yml: " + ex.ToString(), null);
+				Debug.LogWarning("Failed to save settings.yml: " + ex.ToString());
 			}
 		}
 	}

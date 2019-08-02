@@ -25,9 +25,9 @@ public class MeterScreen : KScreen, IRender1000ms
 
 	public ToolTip RationsTooltip;
 
-	public LocText ImmunityText;
+	public LocText SickText;
 
-	public ToolTip ImmunityTooltip;
+	public ToolTip SickTooltip;
 
 	public TextStyleSetting ToolTipStyle_Header;
 
@@ -39,8 +39,6 @@ public class MeterScreen : KScreen, IRender1000ms
 	private KToggle RedAlertButton;
 
 	public ToolTip RedAlertTooltip;
-
-	private HandleVector<int>.Handle loopInstance = HandleVector<int>.InvalidHandle;
 
 	private DisplayInfo stressDisplayInfo = new DisplayInfo
 	{
@@ -79,7 +77,7 @@ public class MeterScreen : KScreen, IRender1000ms
 	protected override void OnSpawn()
 	{
 		StressTooltip.OnToolTip = OnStressTooltip;
-		ImmunityTooltip.OnToolTip = OnImmunityTooltip;
+		SickTooltip.OnToolTip = OnSickTooltip;
 		RationsTooltip.OnToolTip = OnRationsTooltip;
 		RedAlertTooltip.OnToolTip = OnRedAlertTooltip;
 		RedAlertButton.onClick += delegate
@@ -90,26 +88,15 @@ public class MeterScreen : KScreen, IRender1000ms
 
 	private void OnRedAlertClick()
 	{
-		bool flag = !RedAlertManager.Instance.Get().IsOn();
-		RedAlertManager.Instance.Get().Toggle(flag);
+		bool flag = !VignetteManager.Instance.Get().IsRedAlertToggledOn();
+		VignetteManager.Instance.Get().ToggleRedAlert(flag);
 		if (flag)
 		{
 			KMonoBehaviour.PlaySound(GlobalAssets.GetSound("HUD_Click_Open", false));
-			KMonoBehaviour.PlaySound(GlobalAssets.GetSound("RedAlert_ON", false));
-			if (!loopInstance.IsValid())
-			{
-				loopInstance = LoopingSoundManager.StartSound(GlobalAssets.GetSound("RedAlert_LP", false), Vector3.zero, true, false);
-			}
 		}
 		else
 		{
 			KMonoBehaviour.PlaySound(GlobalAssets.GetSound("HUD_Click_Close", false));
-			KMonoBehaviour.PlaySound(GlobalAssets.GetSound("RedAlert_OFF", false));
-			if (loopInstance.IsValid())
-			{
-				LoopingSoundManager.StopSound(loopInstance);
-				loopInstance.Clear();
-			}
 		}
 	}
 
@@ -132,7 +119,7 @@ public class MeterScreen : KScreen, IRender1000ms
 		RefreshMinions();
 		RefreshRations();
 		RefreshStress();
-		RefreshImmunity();
+		RefreshSick();
 	}
 
 	private void RefreshMinions()
@@ -147,25 +134,10 @@ public class MeterScreen : KScreen, IRender1000ms
 		}
 	}
 
-	private void RefreshImmunity()
+	private void RefreshSick()
 	{
-		float worstImmunity = GetWorstImmunity();
-		ImmunityText.text = Mathf.Round(worstImmunity).ToString();
-	}
-
-	private float GetWorstImmunity()
-	{
-		if (Components.LiveMinionIdentities.Count <= 0)
-		{
-			return 100f;
-		}
-		Components.Cmps<MinionIdentity> liveMinionIdentities = Components.LiveMinionIdentities;
-		float num = Db.Get().Amounts.ImmuneLevel.Lookup(liveMinionIdentities[0]).value;
-		for (int i = 1; i < liveMinionIdentities.Count; i++)
-		{
-			num = Mathf.Min(Db.Get().Amounts.ImmuneLevel.Lookup(liveMinionIdentities[i]).value, num);
-		}
-		return num;
+		int num = CountSickDupes();
+		SickText.text = num.ToString();
 	}
 
 	private void RefreshRations()
@@ -201,48 +173,69 @@ public class MeterScreen : KScreen, IRender1000ms
 		{
 			MinionIdentity minionIdentity = stressedMinions[i];
 			AmountInstance amount = stress.Lookup(minionIdentity);
-			AddToolTipAmountLine(StressTooltip, amount, minionIdentity, i == stressDisplayInfo.selectedIndex);
+			AddToolTipAmountPercentLine(StressTooltip, amount, minionIdentity, i == stressDisplayInfo.selectedIndex);
 		}
 		return string.Empty;
 	}
 
-	private IList<MinionIdentity> GetImmunityLevels()
+	private string OnSickTooltip()
 	{
-		Amount amounts = Db.Get().Amounts.ImmuneLevel;
-		List<MinionIdentity> source = new List<MinionIdentity>(Components.LiveMinionIdentities.Items);
-		return new List<MinionIdentity>(from x in source
-		orderby amounts.Lookup(x).value
-		select x);
-	}
-
-	private string OnImmunityTooltip()
-	{
-		float worstImmunity = GetWorstImmunity();
-		ImmunityTooltip.ClearMultiStringTooltip();
-		ImmunityTooltip.AddMultiStringTooltip(string.Format(UI.TOOLTIPS.METERSCREEN_IMMUNITY_LEVELS, Mathf.Round(worstImmunity).ToString() + "%"), ToolTipStyle_Header);
-		Amount immuneLevel = Db.Get().Amounts.ImmuneLevel;
-		IList<MinionIdentity> immunityLevels = GetImmunityLevels();
-		for (int i = 0; i < immunityLevels.Count; i++)
+		int num = CountSickDupes();
+		SickTooltip.ClearMultiStringTooltip();
+		SickTooltip.AddMultiStringTooltip(string.Format(UI.TOOLTIPS.METERSCREEN_SICK_DUPES, num.ToString()), ToolTipStyle_Header);
+		for (int i = 0; i < Components.LiveMinionIdentities.Count; i++)
 		{
-			MinionIdentity minionIdentity = immunityLevels[i];
-			AmountInstance amount = immuneLevel.Lookup(minionIdentity);
-			AddToolTipAmountLine(ImmunityTooltip, amount, minionIdentity, i == immunityDisplayInfo.selectedIndex);
+			MinionIdentity minionIdentity = Components.LiveMinionIdentities[i];
+			string text = minionIdentity.GetComponent<KSelectable>().GetName();
+			Sicknesses sicknesses = minionIdentity.GetComponent<MinionModifiers>().sicknesses;
+			if (sicknesses.IsInfected())
+			{
+				text += " (";
+				int num2 = 0;
+				foreach (SicknessInstance item in sicknesses)
+				{
+					text = text + ((num2 <= 0) ? string.Empty : ", ") + item.modifier.Name;
+					num2++;
+				}
+				text += ")";
+			}
+			bool selected = i == immunityDisplayInfo.selectedIndex;
+			AddToolTipLine(SickTooltip, text, selected);
 		}
 		return string.Empty;
 	}
 
-	private void AddToolTipAmountLine(ToolTip tooltip, AmountInstance amount, MinionIdentity id, bool selected)
+	private static int CountSickDupes()
 	{
-		string name = id.GetComponent<KSelectable>().GetName();
-		string text = name + ":  " + Mathf.Round(amount.value).ToString() + "%";
+		int num = 0;
+		foreach (MinionIdentity item in Components.LiveMinionIdentities.Items)
+		{
+			Sicknesses sicknesses = item.GetComponent<MinionModifiers>().sicknesses;
+			if (sicknesses.IsInfected())
+			{
+				num++;
+			}
+		}
+		return num;
+	}
+
+	private void AddToolTipLine(ToolTip tooltip, string str, bool selected)
+	{
 		if (selected)
 		{
-			tooltip.AddMultiStringTooltip("<color=#F0B310FF>" + text + "</color>", ToolTipStyle_Property);
+			tooltip.AddMultiStringTooltip("<color=#F0B310FF>" + str + "</color>", ToolTipStyle_Property);
 		}
 		else
 		{
-			tooltip.AddMultiStringTooltip(text, ToolTipStyle_Property);
+			tooltip.AddMultiStringTooltip(str, ToolTipStyle_Property);
 		}
+	}
+
+	private void AddToolTipAmountPercentLine(ToolTip tooltip, AmountInstance amount, MinionIdentity id, bool selected)
+	{
+		string name = id.GetComponent<KSelectable>().GetName();
+		string str = name + ":  " + Mathf.Round(amount.value).ToString() + "%";
+		AddToolTipLine(tooltip, str, selected);
 	}
 
 	private string OnRationsTooltip()
@@ -253,10 +246,16 @@ public class MeterScreen : KScreen, IRender1000ms
 		RationsTooltip.ClearMultiStringTooltip();
 		RationsTooltip.AddMultiStringTooltip(string.Format(UI.TOOLTIPS.METERSCREEN_MEALHISTORY, GameUtil.GetFormattedCalories(calories, GameUtil.TimeSlice.None, true)), ToolTipStyle_Header);
 		RationsTooltip.AddMultiStringTooltip(string.Empty, ToolTipStyle_Property);
-		foreach (KeyValuePair<string, float> item in rationsDict)
+		IOrderedEnumerable<KeyValuePair<string, float>> source = rationsDict.OrderByDescending(delegate(KeyValuePair<string, float> x)
+		{
+			EdiblesManager.FoodInfo foodInfo2 = Game.Instance.ediblesManager.GetFoodInfo(x.Key);
+			return x.Value * (foodInfo2?.CaloriesPerUnit ?? (-1f));
+		});
+		Dictionary<string, float> dictionary = source.ToDictionary((KeyValuePair<string, float> t) => t.Key, (KeyValuePair<string, float> t) => t.Value);
+		foreach (KeyValuePair<string, float> item in dictionary)
 		{
 			EdiblesManager.FoodInfo foodInfo = Game.Instance.ediblesManager.GetFoodInfo(item.Key);
-			RationsTooltip.AddMultiStringTooltip($"{foodInfo.Name}: {item.Value}", ToolTipStyle_Property);
+			RationsTooltip.AddMultiStringTooltip((foodInfo == null) ? string.Format(UI.TOOLTIPS.METERSCREEN_INVALID_FOOD_TYPE, item.Key) : $"{foodInfo.Name}: {GameUtil.GetFormattedCalories(item.Value * foodInfo.CaloriesPerUnit, GameUtil.TimeSlice.None, true)}", ToolTipStyle_Property);
 		}
 		return string.Empty;
 	}
@@ -283,12 +282,17 @@ public class MeterScreen : KScreen, IRender1000ms
 		StressTooltip.forceRefresh = true;
 	}
 
+	private IList<MinionIdentity> GetSickMinions()
+	{
+		return Components.LiveMinionIdentities.Items;
+	}
+
 	public void OnClickImmunity(BaseEventData base_ev_data)
 	{
-		IList<MinionIdentity> immunityLevels = GetImmunityLevels();
-		UpdateDisplayInfo(base_ev_data, ref immunityDisplayInfo, immunityLevels);
-		OnImmunityTooltip();
-		ImmunityTooltip.forceRefresh = true;
+		IList<MinionIdentity> sickMinions = GetSickMinions();
+		UpdateDisplayInfo(base_ev_data, ref immunityDisplayInfo, sickMinions);
+		OnSickTooltip();
+		SickTooltip.forceRefresh = true;
 	}
 
 	private void UpdateDisplayInfo(BaseEventData base_ev_data, ref DisplayInfo display_info, IList<MinionIdentity> minions)

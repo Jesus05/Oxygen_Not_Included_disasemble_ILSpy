@@ -32,8 +32,8 @@ public class KAnimBatch
 
 		public int Add(Texture2D atlas)
 		{
-			DebugUtil.Assert((Object)atlas != (Object)null, "Assert!", string.Empty, string.Empty);
-			DebugUtil.Assert(atlases.Count < KAnimBatchManager.instance.atlasNames.Length, "Assert!", string.Empty, string.Empty);
+			DebugUtil.Assert((Object)atlas != (Object)null);
+			DebugUtil.Assert(atlases.Count < KAnimBatchManager.instance.atlasNames.Length);
 			int num = atlases.IndexOf(atlas);
 			if (num == -1)
 			{
@@ -65,7 +65,7 @@ public class KAnimBatch
 				{
 					text = text + atlase.name + "\n";
 				}
-				Debug.LogError(text, null);
+				Debug.LogError(text);
 			}
 		}
 
@@ -246,7 +246,7 @@ public class KAnimBatch
 		int width = dataTex.width;
 		if (width == 0)
 		{
-			Debug.LogWarning("Empty group [" + group.batchID + "] " + batchset.idx + " (probably just anims)", null);
+			Debug.LogWarning("Empty group [" + group.batchID + "] " + batchset.idx + " (probably just anims)");
 		}
 		else
 		{
@@ -334,7 +334,7 @@ public class KAnimBatch
 			{
 				if (!controllers.Remove(controller))
 				{
-					Debug.LogError("Failed to remove controller [" + controller.GetName() + "]", null);
+					Debug.LogError("Failed to remove controller [" + controller.GetName() + "]");
 				}
 				controller.SetBatch(null);
 				currentOffset -= 28;
@@ -352,7 +352,7 @@ public class KAnimBatch
 			}
 			else
 			{
-				Debug.LogError("Deregister called for [" + controller.GetName() + "] but its not in this batch ", null);
+				Debug.LogError("Deregister called for [" + controller.GetName() + "] but its not in this batch ");
 			}
 			if (controllers.Count == 0)
 			{
@@ -392,7 +392,7 @@ public class KAnimBatch
 		int num = controllers.IndexOf(controller);
 		if (num < 0)
 		{
-			Debug.LogError("Setting controller [" + controller.GetName() + "] to dirty but its not in this batch", null);
+			Debug.LogError("Setting controller [" + controller.GetName() + "] to dirty but its not in this batch");
 		}
 		else
 		{
@@ -479,7 +479,7 @@ public class KAnimBatch
 			}
 			else
 			{
-				Debug.LogError("dirtySet not written", null);
+				Debug.LogError("dirtySet not written");
 			}
 		}
 		dataTex.LoadRawTextureData();

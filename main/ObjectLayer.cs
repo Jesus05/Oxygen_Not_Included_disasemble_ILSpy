@@ -24,6 +24,8 @@ public enum ObjectLayer
 	SolidConduitTile,
 	ReplacementSolidConduit,
 	SolidConduitConnection,
+	LadderTile,
+	ReplacementLadder,
 	Wire,
 	WireTile,
 	ReplacementWire,

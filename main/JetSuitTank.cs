@@ -73,12 +73,12 @@ public class JetSuitTank : KMonoBehaviour, IGameObjectEffectDescriptor
 	private void OnEquipped(object data)
 	{
 		Equipment equipment = (Equipment)data;
-		NameDisplayScreen.Instance.SetSuitFuelDisplay(equipment.gameObject, PercentFull, true);
-		jetSuitMonitor = new JetSuitMonitor.Instance(this, equipment.gameObject);
+		NameDisplayScreen.Instance.SetSuitFuelDisplay(equipment.GetComponent<MinionAssignablesProxy>().GetTargetGameObject(), PercentFull, true);
+		jetSuitMonitor = new JetSuitMonitor.Instance(this, equipment.GetComponent<MinionAssignablesProxy>().GetTargetGameObject());
 		jetSuitMonitor.StartSM();
 		if (IsEmpty())
 		{
-			equipment.AddTag(GameTags.JetSuitOutOfFuel);
+			equipment.GetComponent<MinionAssignablesProxy>().GetTargetGameObject().AddTag(GameTags.JetSuitOutOfFuel);
 		}
 	}
 
@@ -87,9 +87,9 @@ public class JetSuitTank : KMonoBehaviour, IGameObjectEffectDescriptor
 		Equipment equipment = (Equipment)data;
 		if (!equipment.destroyed)
 		{
-			equipment.RemoveTag(GameTags.JetSuitOutOfFuel);
-			NameDisplayScreen.Instance.SetSuitFuelDisplay(equipment.gameObject, null, false);
-			Navigator component = equipment.GetComponent<Navigator>();
+			equipment.GetComponent<MinionAssignablesProxy>().GetTargetGameObject().RemoveTag(GameTags.JetSuitOutOfFuel);
+			NameDisplayScreen.Instance.SetSuitFuelDisplay(equipment.GetComponent<MinionAssignablesProxy>().GetTargetGameObject(), null, false);
+			Navigator component = equipment.GetComponent<MinionAssignablesProxy>().GetTargetGameObject().GetComponent<Navigator>();
 			if ((bool)component && component.CurrentNavType == NavType.Hover)
 			{
 				component.SetCurrentNavType(NavType.Floor);

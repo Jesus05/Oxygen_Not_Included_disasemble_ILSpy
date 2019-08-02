@@ -1,28 +1,31 @@
 using System;
+using TUNING;
 using UnityEngine;
 
 public class EggCracker : KMonoBehaviour
 {
 	[MyCmpReq]
-	private Refinery refinery;
+	private ComplexFabricator refinery;
 
 	[MyCmpReq]
-	private RefineryWorkable workable;
+	private ComplexFabricatorWorkable workable;
 
 	private KBatchedAnimTracker tracker;
 
 	private GameObject display_egg;
 
-	protected override void OnPrefabInit()
-	{
-		base.OnPrefabInit();
-	}
-
 	protected override void OnSpawn()
 	{
 		base.OnSpawn();
-		RefineryWorkable refineryWorkable = workable;
-		refineryWorkable.OnWorkableEventCB = (Action<Workable.WorkableEvent>)Delegate.Combine(refineryWorkable.OnWorkableEventCB, new Action<Workable.WorkableEvent>(OnWorkableEvent));
+		refinery.choreType = Db.Get().ChoreTypes.Cook;
+		refinery.fetchChoreTypeIdHash = Db.Get().ChoreTypes.CookFetch.IdHash;
+		workable.WorkerStatusItem = Db.Get().DuplicantStatusItems.Mushing;
+		workable.AttributeConverter = Db.Get().AttributeConverters.CookingSpeed;
+		workable.AttributeExperienceMultiplier = DUPLICANTSTATS.ATTRIBUTE_LEVELING.MOST_DAY_EXPERIENCE;
+		workable.SkillExperienceSkillGroup = Db.Get().SkillGroups.Cooking.Id;
+		workable.SkillExperienceMultiplier = SKILLS.MOST_DAY_EXPERIENCE;
+		ComplexFabricatorWorkable complexFabricatorWorkable = workable;
+		complexFabricatorWorkable.OnWorkableEventCB = (Action<Workable.WorkableEvent>)Delegate.Combine(complexFabricatorWorkable.OnWorkableEventCB, new Action<Workable.WorkableEvent>(OnWorkableEvent));
 	}
 
 	protected override void OnCleanUp()
@@ -38,10 +41,10 @@ public class EggCracker : KMonoBehaviour
 		{
 		case Workable.WorkableEvent.WorkStarted:
 		{
-			Refinery.MachineOrder currentMachineOrder = refinery.CurrentMachineOrder;
-			if (currentMachineOrder != null)
+			ComplexRecipe currentWorkingOrder = refinery.CurrentWorkingOrder;
+			if (currentWorkingOrder != null)
 			{
-				ComplexRecipe.RecipeElement[] ingredients = currentMachineOrder.parentOrder.recipe.ingredients;
+				ComplexRecipe.RecipeElement[] ingredients = currentWorkingOrder.ingredients;
 				if (ingredients.Length > 0)
 				{
 					ComplexRecipe.RecipeElement recipeElement = ingredients[0];

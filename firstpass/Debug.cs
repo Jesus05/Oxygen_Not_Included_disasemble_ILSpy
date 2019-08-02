@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+using System.Threading;
 using UnityEngine;
 
 public static class Debug
@@ -20,12 +21,17 @@ public static class Debug
 
 	private static string TimeStamp()
 	{
-		return string.Empty;
+		return DateTime.UtcNow.ToString("[HH:mm:ss.fff] [") + Thread.CurrentThread.ManagedThreadId + "] ";
+	}
+
+	private static void WriteTimeStamped(params object[] objs)
+	{
+		string value = TimeStamp() + DebugUtil.BuildString(objs);
+		Console.WriteLine(value);
 	}
 
 	public static void Break()
 	{
-		UnityEngine.Debug.Break();
 	}
 
 	public static void LogException(Exception exception)
@@ -33,56 +39,95 @@ public static class Debug
 		UnityEngine.Debug.LogException(exception);
 	}
 
-	public static void Log(object obj, UnityEngine.Object context = null)
+	public static void Log(object obj)
 	{
-		Console.Out.Write(TimeStamp() + "[ INFO  ] " + obj + "\n");
+		WriteTimeStamped("[INFO]", obj);
+	}
+
+	public static void Log(object obj, UnityEngine.Object context)
+	{
+		WriteTimeStamped("[INFO]", (!(context != (UnityEngine.Object)null)) ? "null" : context.name, obj);
 	}
 
 	public static void LogFormat(string format, params object[] args)
 	{
-		Console.Out.Write(TimeStamp() + "[ INFO  ] " + string.Format(format, args) + "\n");
+		WriteTimeStamped("[INFO]", string.Format(format, args));
 	}
 
-	public static void LogWarning(object obj, UnityEngine.Object context = null)
+	public static void LogFormat(UnityEngine.Object context, string format, params object[] args)
 	{
-		Console.Out.Write(TimeStamp() + "[WARNING] " + obj + "\n");
+		WriteTimeStamped("[INFO]", (!(context != (UnityEngine.Object)null)) ? "null" : context.name, string.Format(format, args));
+	}
+
+	public static void LogWarning(object obj)
+	{
+		WriteTimeStamped("[WARNING]", obj);
+	}
+
+	public static void LogWarning(object obj, UnityEngine.Object context)
+	{
+		WriteTimeStamped("[WARNING]", (!(context != (UnityEngine.Object)null)) ? "null" : context.name, obj);
 	}
 
 	public static void LogWarningFormat(string format, params object[] args)
 	{
-		Console.Out.Write(TimeStamp() + "[WARNING] " + string.Format(format, args) + "\n");
+		WriteTimeStamped("[WARNING]", string.Format(format, args));
 	}
 
-	public static void LogError(object obj, UnityEngine.Object context = null)
+	public static void LogWarningFormat(UnityEngine.Object context, string format, params object[] args)
 	{
-		if (context == (UnityEngine.Object)null)
-		{
-			UnityEngine.Debug.LogError(TimeStamp() + obj);
-		}
-		else
-		{
-			UnityEngine.Debug.LogError(TimeStamp() + obj, context);
-		}
+		WriteTimeStamped("[WARNING]", (!(context != (UnityEngine.Object)null)) ? "null" : context.name, string.Format(format, args));
+	}
+
+	public static void LogError(object obj)
+	{
+		WriteTimeStamped("[ERROR]", obj);
+		UnityEngine.Debug.LogError(obj);
+	}
+
+	public static void LogError(object obj, UnityEngine.Object context)
+	{
+		WriteTimeStamped("[ERROR]", (!(context != (UnityEngine.Object)null)) ? "null" : context.name, obj);
+		UnityEngine.Debug.LogError(obj, context);
 	}
 
 	public static void LogErrorFormat(string format, params object[] args)
 	{
-		UnityEngine.Debug.LogErrorFormat(TimeStamp() + format, args);
+		WriteTimeStamped("[ERROR]", string.Format(format, args));
+		UnityEngine.Debug.LogErrorFormat(format, args);
 	}
 
-	[Conditional("UNITY_EDITOR")]
+	public static void LogErrorFormat(UnityEngine.Object context, string format, params object[] args)
+	{
+		WriteTimeStamped("[ERROR]", (!(context != (UnityEngine.Object)null)) ? "null" : context.name, string.Format(format, args));
+		UnityEngine.Debug.LogErrorFormat(context, format, args);
+	}
+
 	public static void Assert(bool condition)
 	{
+		if (!condition)
+		{
+			LogError("Assert failed");
+			Break();
+		}
 	}
 
-	[Conditional("UNITY_EDITOR")]
 	public static void Assert(bool condition, object message)
 	{
+		if (!condition)
+		{
+			LogError("Assert failed: " + message);
+			Break();
+		}
 	}
 
-	[Conditional("UNITY_EDITOR")]
 	public static void Assert(bool condition, object message, UnityEngine.Object context)
 	{
+		if (!condition)
+		{
+			LogError("Assert failed: " + message, context);
+			Break();
+		}
 	}
 
 	[Conditional("UNITY_EDITOR")]

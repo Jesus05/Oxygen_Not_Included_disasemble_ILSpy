@@ -10,7 +10,7 @@ public class UIDupeRandomizer : MonoBehaviour
 	{
 		public string anim_name;
 
-		public KBatchedAnimController minon;
+		public List<KBatchedAnimController> minions;
 
 		public float minSecondsBetweenAction;
 
@@ -19,10 +19,6 @@ public class UIDupeRandomizer : MonoBehaviour
 		public float lastWaitTime;
 
 		public KAnimFile curBody;
-
-		public KAnimFile target_minion_anim;
-
-		public bool overrideSet;
 	}
 
 	public KAnimFile head_default_anim;
@@ -32,6 +28,8 @@ public class UIDupeRandomizer : MonoBehaviour
 	public KAnimFile body_swap_anim;
 
 	public bool applyHat = true;
+
+	public bool applySuit = true;
 
 	public AnimChoice[] anims;
 
@@ -43,21 +41,23 @@ public class UIDupeRandomizer : MonoBehaviour
 		for (int i = 0; i < anims.Length; i++)
 		{
 			anims[i].curBody = null;
-			anims[i].overrideSet = false;
 			GetNewBody(i);
 		}
 	}
 
 	protected void GetNewBody(int minion_idx)
 	{
-		Apply(anims[minion_idx].minon, ref anims[minion_idx]);
+		int idx = UnityEngine.Random.Range(0, Db.Get().Personalities.Count);
+		Personality personality = Db.Get().Personalities[idx];
+		foreach (KBatchedAnimController minion in anims[minion_idx].minions)
+		{
+			Apply(minion, personality);
+		}
 	}
 
-	private void Apply(KBatchedAnimController dupe, ref AnimChoice anim)
+	private void Apply(KBatchedAnimController dupe, Personality personality)
 	{
-		int idx = UnityEngine.Random.Range(0, Db.Get().Personalities.Count);
-		Personality p = Db.Get().Personalities[idx];
-		KCompBuilder.BodyData bodyData = MinionStartingStats.CreateBodyData(p);
+		KCompBuilder.BodyData bodyData = MinionStartingStats.CreateBodyData(personality);
 		SymbolOverrideController component = dupe.GetComponent<SymbolOverrideController>();
 		component.RemoveAllSymbolOverrides(0);
 		AddAccessory(dupe, slots.Hair.Lookup(bodyData.hair));
@@ -67,7 +67,7 @@ public class UIDupeRandomizer : MonoBehaviour
 		AddAccessory(dupe, slots.Mouth.Lookup(bodyData.mouth));
 		AddAccessory(dupe, slots.Body.Lookup(bodyData.body));
 		AddAccessory(dupe, slots.Arm.Lookup(bodyData.arms));
-		if (UnityEngine.Random.value < 0.15f)
+		if (applySuit && UnityEngine.Random.value < 0.15f)
 		{
 			component.AddBuildOverride(Assets.GetAnim("body_oxygen_kanim").GetData(), 6);
 			component.AddBuildOverride(Assets.GetAnim("helm_oxygen_kanim").GetData(), 6);
@@ -80,9 +80,9 @@ public class UIDupeRandomizer : MonoBehaviour
 		if (applyHat && UnityEngine.Random.value < 0.5f)
 		{
 			List<string> list = new List<string>();
-			foreach (KeyValuePair<string, string> item in RoleManager.roleHatIndex)
+			foreach (Skill resource in Db.Get().Skills.resources)
 			{
-				list.Add(item.Value);
+				list.Add(resource.hat);
 			}
 			string id = list[UnityEngine.Random.Range(0, list.Count)];
 			AddAccessory(dupe, slots.Hat.Lookup(id));
@@ -95,11 +95,6 @@ public class UIDupeRandomizer : MonoBehaviour
 			dupe.SetSymbolVisiblity(Db.Get().AccessorySlots.HatHair.targetSymbolId, false);
 			dupe.SetSymbolVisiblity(Db.Get().AccessorySlots.Hat.targetSymbolId, false);
 		}
-		if (!anim.overrideSet)
-		{
-			dupe.AddAnimOverrides(anim.target_minion_anim, 0f);
-			anim.overrideSet = true;
-		}
 	}
 
 	public static KAnimHashedString AddAccessory(KBatchedAnimController minion, Accessory accessory)
@@ -107,7 +102,7 @@ public class UIDupeRandomizer : MonoBehaviour
 		if (accessory != null)
 		{
 			SymbolOverrideController component = minion.GetComponent<SymbolOverrideController>();
-			DebugUtil.Assert((UnityEngine.Object)component != (UnityEngine.Object)null, minion.name + " is missing symbol override controller", string.Empty, string.Empty);
+			DebugUtil.Assert((UnityEngine.Object)component != (UnityEngine.Object)null, minion.name + " is missing symbol override controller");
 			component.TryRemoveSymbolOverride(accessory.slot.targetSymbolId, 0);
 			component.AddSymbolOverride(accessory.slot.targetSymbolId, accessory.symbol, 0);
 			minion.SetSymbolVisiblity(accessory.slot.targetSymbolId, true);

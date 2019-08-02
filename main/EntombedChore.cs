@@ -37,14 +37,14 @@ public class EntombedChore : Chore<EntombedChore.StatesInstance>
 			{
 				smi.UpdateFaceEntombed();
 			}, UpdateRate.SIM_200ms, false).ToggleStatusItem(Db.Get().DuplicantStatusItems.EntombedChore, (object)null);
-			entombedface.PlayAnim("entombed_ceiling", KAnim.PlayMode.Loop).ParamTransition(isFaceEntombed, entombedbody, (StatesInstance smi, bool p) => !p);
-			entombedbody.PlayAnim("entombed_floor", KAnim.PlayMode.Loop).StopMoving().ParamTransition(isFaceEntombed, entombedface, (StatesInstance smi, bool p) => p);
+			entombedface.PlayAnim("entombed_ceiling", KAnim.PlayMode.Loop).ParamTransition(isFaceEntombed, entombedbody, GameStateMachine<States, StatesInstance, EntombedChore, object>.IsFalse);
+			entombedbody.PlayAnim("entombed_floor", KAnim.PlayMode.Loop).StopMoving().ParamTransition(isFaceEntombed, entombedface, GameStateMachine<States, StatesInstance, EntombedChore, object>.IsTrue);
 		}
 	}
 
 	public EntombedChore(IStateMachineTarget target)
-		: base(Db.Get().ChoreTypes.Entombed, target, target.GetComponent<ChoreProvider>(), false, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.emergency, 0, false, true, 0, (Tag[])null)
+		: base(Db.Get().ChoreTypes.Entombed, target, target.GetComponent<ChoreProvider>(), false, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.compulsory, 5, false, true, 0, false, ReportManager.ReportType.WorkTime)
 	{
-		smi = new StatesInstance(this, target.gameObject);
+		base.smi = new StatesInstance(this, target.gameObject);
 	}
 }

@@ -1,5 +1,4 @@
 using Klei.AI;
-using UnityEngine;
 
 public class BladderMonitor : GameStateMachine<BladderMonitor, BladderMonitor.Instance>
 {
@@ -33,17 +32,10 @@ public class BladderMonitor : GameStateMachine<BladderMonitor, BladderMonitor.In
 
 		public bool NeedsToPee()
 		{
-			if (base.smi == null)
-			{
-				Debug.LogWarning("How can my state machine instance be null?", null);
-				return false;
-			}
-			if ((Object)base.smi.master.gameObject == (Object)null)
-			{
-				Debug.LogWarning("How is my gameObject null?", null);
-				return false;
-			}
+			DebugUtil.DevAssert(base.master != null, "master ref null");
+			DebugUtil.DevAssert(!base.master.isNull, "master isNull");
 			KPrefabID component = base.master.GetComponent<KPrefabID>();
+			DebugUtil.DevAssert(component, "kpid was null");
 			if (component.HasTag(GameTags.Asleep))
 			{
 				return false;

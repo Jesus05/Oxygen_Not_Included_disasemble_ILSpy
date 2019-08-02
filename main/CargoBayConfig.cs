@@ -26,7 +26,6 @@ public class CargoBayConfig : IBuildingConfig
 		}, construction_materials, 9999f, BuildLocationRule.BuildingAttachPoint, BUILDINGS.DECOR.NONE, tIER, 0.2f);
 		BuildingTemplates.CreateRocketBuildingDef(buildingDef);
 		buildingDef.SceneLayer = Grid.SceneLayer.BuildingFront;
-		buildingDef.ViewMode = SimViewMode.None;
 		buildingDef.Invincible = true;
 		buildingDef.OverheatTemperature = 2273.15f;
 		buildingDef.Floodable = false;
@@ -44,7 +43,7 @@ public class CargoBayConfig : IBuildingConfig
 	{
 		BuildingConfigManager.Instance.IgnoreDefaultKComponent(typeof(RequiresFoundation), prefab_tag);
 		go.AddOrGet<LoopingSounds>();
-		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.IndustrialMachinery);
+		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.IndustrialMachinery, false);
 		BuildingAttachPoint buildingAttachPoint = go.AddOrGet<BuildingAttachPoint>();
 		buildingAttachPoint.points = new BuildingAttachPoint.HardPoint[1]
 		{
@@ -67,7 +66,8 @@ public class CargoBayConfig : IBuildingConfig
 		cargoBay.storageType = CargoBay.CargoType.solids;
 		cargoBay.storage.capacityKg = 1000f;
 		cargoBay.storage.SetDefaultStoredItemModifiers(Storage.StandardSealedStorage);
-		go.AddOrGet<RocketModule>();
+		RocketModule rocketModule = go.AddOrGet<RocketModule>();
+		rocketModule.SetBGKAnim(Assets.GetAnim("rocket_storage_solid_bg_kanim"));
 		EntityTemplates.ExtendBuildingToRocketModule(go);
 		go.AddOrGet<SolidConduitDispenser>();
 	}

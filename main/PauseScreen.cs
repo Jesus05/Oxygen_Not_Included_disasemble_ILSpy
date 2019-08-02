@@ -1,6 +1,5 @@
 using FMOD.Studio;
 using Klei;
-using ProcGenGame;
 using STRINGS;
 using System;
 using System.IO;
@@ -32,11 +31,6 @@ public class PauseScreen : KModalButtonMenu
 
 	public static PauseScreen Instance => instance;
 
-	public override bool IsModal()
-	{
-		return true;
-	}
-
 	public static void DestroyInstance()
 	{
 		instance = null;
@@ -48,13 +42,14 @@ public class PauseScreen : KModalButtonMenu
 		base.OnPrefabInit();
 		if (!GenericGameSettings.instance.demoMode)
 		{
-			buttons = new ButtonInfo[7]
+			buttons = new ButtonInfo[8]
 			{
 				new ButtonInfo(UI.FRONTEND.PAUSE_SCREEN.RESUME, Action.NumActions, OnResume, null, null),
 				new ButtonInfo(UI.FRONTEND.PAUSE_SCREEN.SAVE, Action.NumActions, OnSave, null, null),
 				new ButtonInfo(UI.FRONTEND.PAUSE_SCREEN.SAVEAS, Action.NumActions, OnSaveAs, null, null),
 				new ButtonInfo(UI.FRONTEND.PAUSE_SCREEN.LOAD, Action.NumActions, OnLoad, null, null),
 				new ButtonInfo(UI.FRONTEND.PAUSE_SCREEN.OPTIONS, Action.NumActions, OnOptions, null, null),
+				new ButtonInfo(UI.FRONTEND.PAUSE_SCREEN.COLONY_SUMMARY, Action.NumActions, OnColonySummary, null, null),
 				new ButtonInfo(UI.FRONTEND.PAUSE_SCREEN.QUIT, Action.NumActions, OnQuit, null, null),
 				new ButtonInfo(UI.FRONTEND.PAUSE_SCREEN.DESKTOPQUIT, Action.NumActions, OnDesktopQuit, null, null)
 			};
@@ -84,11 +79,25 @@ public class PauseScreen : KModalButtonMenu
 
 	private void OnResume()
 	{
-		ToolTipScreen.Instance.ClearToolTip(closeButton.GetComponent<ToolTip>());
 		Show(false);
-		AudioMixer.instance.Stop(AudioMixerSnapshots.Get().ESCPauseSnapshot, STOP_MODE.ALLOWFADEOUT);
-		MusicManager.instance.OnEscapeMenu(false);
-		MusicManager.instance.StopSong("Music_ESC_Menu", true, STOP_MODE.ALLOWFADEOUT);
+	}
+
+	protected override void OnShow(bool show)
+	{
+		base.OnShow(show);
+		if (show)
+		{
+			AudioMixer.instance.Start(AudioMixerSnapshots.Get().ESCPauseSnapshot);
+			MusicManager.instance.OnEscapeMenu(true);
+			MusicManager.instance.PlaySong("Music_ESC_Menu", false);
+		}
+		else
+		{
+			ToolTipScreen.Instance.ClearToolTip(closeButton.GetComponent<ToolTip>());
+			AudioMixer.instance.Stop(AudioMixerSnapshots.Get().ESCPauseSnapshot, STOP_MODE.ALLOWFADEOUT);
+			MusicManager.instance.OnEscapeMenu(false);
+			MusicManager.instance.StopSong("Music_ESC_Menu", true, STOP_MODE.ALLOWFADEOUT);
+		}
 	}
 
 	private void OnOptions()
@@ -112,7 +121,7 @@ public class PauseScreen : KModalButtonMenu
 			{
 				DoSave(filename);
 				base.gameObject.SetActive(true);
-			}, OnCancelPopup, null, null, null, null, null, null);
+			}, OnCancelPopup, null, null, null, null, null, null, true);
 		}
 		else
 		{
@@ -138,7 +147,7 @@ public class PauseScreen : KModalButtonMenu
 			}, null, UI.FRONTEND.SAVESCREEN.REPORT_BUG, delegate
 			{
 				KCrashReporter.ReportError(e.Message, e.StackTrace.ToString(), null, null, string.Empty);
-			}, null, null, null, null);
+			}, null, null, null, null, true);
 		}
 	}
 
@@ -146,12 +155,18 @@ public class PauseScreen : KModalButtonMenu
 	{
 		base.gameObject.SetActive(false);
 		ConfirmDialogScreen confirmDialogScreen = (ConfirmDialogScreen)GameScreenManager.Instance.StartScreen(ScreenPrefabs.Instance.ConfirmDialogScreen.gameObject, base.transform.parent.gameObject, GameScreenManager.UIRenderTarget.ScreenSpaceOverlay);
-		confirmDialogScreen.PopupConfirmDialog(text, onConfirm, OnCancelPopup, null, null, null, null, null, null);
+		confirmDialogScreen.PopupConfirmDialog(text, onConfirm, OnCancelPopup, null, null, null, null, null, null, true);
 	}
 
 	private void OnLoad()
 	{
 		ActivateChildScreen(loadScreenPrefab.gameObject);
+	}
+
+	private void OnColonySummary()
+	{
+		RetireColonyUtility.SaveColonySummaryData();
+		MainMenu.ActivateRetiredColoniesScreen(base.transform.parent.gameObject, SaveGame.Instance.BaseName, null);
 	}
 
 	private void OnQuit()
@@ -179,6 +194,11 @@ public class PauseScreen : KModalButtonMenu
 		});
 	}
 
+	private void OnRetireConfirm()
+	{
+		RetireColonyUtility.SaveColonySummaryData();
+	}
+
 	private void OnQuitConfirm()
 	{
 		LoadingOverlay.Load(delegate
@@ -190,10 +210,7 @@ public class PauseScreen : KModalButtonMenu
 
 	private void OnDesktopQuitConfirm()
 	{
-		if (!Application.isEditor)
-		{
-			Application.Quit();
-		}
+		App.Quit();
 	}
 
 	public override void OnKeyDown(KButtonEvent e)
@@ -213,7 +230,7 @@ public class PauseScreen : KModalButtonMenu
 
 	public static void TriggerQuitGame()
 	{
-		WorldGen.Reset();
+		SaveGame.Instance.worldGen.Reset();
 		ThreadedHttps<KleiMetrics>.Instance.EndGame();
 		LoadScreen.ForceStopGame();
 		App.LoadScene("frontend");

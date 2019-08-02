@@ -1,10 +1,11 @@
+using Database;
 using Klei.AI;
 using System;
 using System.Collections.Generic;
 using TUNING;
 using UnityEngine;
 
-public class MinionStartingStats
+public class MinionStartingStats : ITelepadDeliverable
 {
 	public string Name;
 
@@ -26,13 +27,13 @@ public class MinionStartingStats
 
 	public List<Accessory> accessories = new List<Accessory>();
 
-	public Dictionary<HashedString, float> roleAptitudes = new Dictionary<HashedString, float>();
+	public Dictionary<SkillGroup, float> skillAptitudes = new Dictionary<SkillGroup, float>();
 
-	public MinionStartingStats(bool is_starter_minion)
+	public MinionStartingStats(bool is_starter_minion, string guaranteedAptitudeID = null)
 	{
 		if (is_starter_minion)
 		{
-			int idx = UnityEngine.Random.Range(0, 31);
+			int idx = UnityEngine.Random.Range(0, 29);
 			personality = Db.Get().Personalities[idx];
 		}
 		else
@@ -46,7 +47,7 @@ public class MinionStartingStats
 		GenderStringKey = personality.genderStringKey;
 		Traits.Add(Db.Get().traits.Get(MinionConfig.MINION_BASE_TRAIT_ID));
 		List<ChoreGroup> disabled_chore_groups = new List<ChoreGroup>();
-		GenerateAptitudes();
+		GenerateAptitudes(guaranteedAptitudeID);
 		int pointsDelta = GenerateTraits(is_starter_minion, disabled_chore_groups);
 		GenerateAttributes(pointsDelta, disabled_chore_groups);
 		KCompBuilder.BodyData bodyData = CreateBodyData(personality);
@@ -144,7 +145,7 @@ public class MinionStartingStats
 					if (current.requiredNonPositiveAptitudes != null)
 					{
 						bool flag2 = false;
-						foreach (KeyValuePair<HashedString, float> roleAptitude in roleAptitudes)
+						foreach (KeyValuePair<SkillGroup, float> skillAptitude in skillAptitudes)
 						{
 							if (flag2)
 							{
@@ -152,7 +153,7 @@ public class MinionStartingStats
 							}
 							foreach (HashedString requiredNonPositiveAptitude in current.requiredNonPositiveAptitudes)
 							{
-								if (requiredNonPositiveAptitude == roleAptitude.Key && roleAptitude.Value > 0f)
+								if (requiredNonPositiveAptitude == skillAptitude.Key.IdHash && skillAptitude.Value > 0f)
 								{
 									flag2 = true;
 									break;
@@ -185,7 +186,7 @@ public class MinionStartingStats
 						Trait trait3 = Db.Get().traits.TryGet(current.id);
 						if (trait3 == null)
 						{
-							Debug.LogWarning("Trying to add nonexistent trait: " + current.id, null);
+							Debug.LogWarning("Trying to add nonexistent trait: " + current.id);
 						}
 						else if (!is_starter_minion || trait3.ValidStarterTrait)
 						{
@@ -226,50 +227,62 @@ public class MinionStartingStats
 		return statDelta;
 	}
 
-	private void GenerateAptitudes()
+	private void GenerateAptitudes(string guaranteedAptitudeID = null)
 	{
 		int num = UnityEngine.Random.Range(1, 4);
+		List<SkillGroup> list = new List<SkillGroup>(Db.Get().SkillGroups.resources);
+		list.Shuffle();
+		if (guaranteedAptitudeID != null)
+		{
+			skillAptitudes.Add(Db.Get().SkillGroups.Get(guaranteedAptitudeID), (float)DUPLICANTSTATS.APTITUDE_BONUS);
+			list.Remove(Db.Get().SkillGroups.Get(guaranteedAptitudeID));
+			num--;
+		}
 		for (int i = 0; i < num; i++)
 		{
-			RoleConfig random = Game.Instance.roleManager.RolesConfigs.GetRandom();
-			if (random.id != "NoRole" && !roleAptitudes.ContainsKey(random.roleGroup))
-			{
-				roleAptitudes.Add(random.roleGroup, 1f);
-			}
-			else if (num < roleAptitudes.Count)
-			{
-				i--;
-			}
+			skillAptitudes.Add(list[i], (float)DUPLICANTSTATS.APTITUDE_BONUS);
 		}
 	}
 
 	private void GenerateAttributes(int pointsDelta, List<ChoreGroup> disabled_chore_groups)
 	{
 		float f = Util.GaussianRandom(0f, 1f) * ((float)DUPLICANTSTATS.MAX_STAT_POINTS - (float)DUPLICANTSTATS.MIN_STAT_POINTS) / 2f + (float)DUPLICANTSTATS.MIN_STAT_POINTS;
-		int num = pointsDelta + Mathf.RoundToInt(f);
-		List<string> list = new List<string>(DUPLICANTSTATS.DISTRIBUTED_ATTRIBUTES);
+		int num = Mathf.RoundToInt(f);
+		List<string> list = new List<string>(DUPLICANTSTATS.ALL_ATTRIBUTES);
 		int[] randomDistribution = DUPLICANTSTATS.DISTRIBUTIONS.GetRandomDistribution();
-		while (num > 0)
+		for (int i = 0; i < list.Count; i++)
 		{
-			list.Shuffle();
-			for (int i = 0; i < list.Count; i++)
+			if (!StartingLevels.ContainsKey(list[i]))
 			{
-				if (num <= 0)
-				{
-					break;
-				}
-				string text = list[i];
-				int b = randomDistribution[Mathf.Min(i, randomDistribution.Length - 1)];
-				int num2 = Mathf.Min(num, b);
-				if (!StartingLevels.ContainsKey(text))
-				{
-					StartingLevels[text] = 0;
-				}
-				Dictionary<string, int> startingLevels;
-				string key;
-				(startingLevels = StartingLevels)[key = text] = startingLevels[key] + num2;
-				num -= num2;
+				StartingLevels[list[i]] = 0;
 			}
+		}
+		foreach (KeyValuePair<SkillGroup, float> skillAptitude in skillAptitudes)
+		{
+			if (skillAptitude.Key.relevantAttributes.Count > 0)
+			{
+				for (int j = 0; j < skillAptitude.Key.relevantAttributes.Count; j++)
+				{
+					Dictionary<string, int> startingLevels;
+					string id;
+					(startingLevels = StartingLevels)[id = skillAptitude.Key.relevantAttributes[j].Id] = startingLevels[id] + DUPLICANTSTATS.APTITUDE_ATTRIBUTE_BONUSES[skillAptitudes.Count - 1];
+				}
+			}
+		}
+		list.Shuffle();
+		for (int k = 0; k < list.Count; k++)
+		{
+			string text = list[k];
+			int b = randomDistribution[Mathf.Min(k, randomDistribution.Length - 1)];
+			int num2 = Mathf.Min(num, b);
+			if (!StartingLevels.ContainsKey(text))
+			{
+				StartingLevels[text] = 0;
+			}
+			Dictionary<string, int> startingLevels;
+			string key;
+			(startingLevels = StartingLevels)[key = text] = startingLevels[key] + num2;
+			num -= num2;
 		}
 		if (disabled_chore_groups.Count > 0)
 		{
@@ -305,11 +318,6 @@ public class MinionStartingStats
 					}
 				}
 			}
-		}
-		string[] rOLLED_ATTRIBUTES = DUPLICANTSTATS.ROLLED_ATTRIBUTES;
-		foreach (string key2 in rOLLED_ATTRIBUTES)
-		{
-			StartingLevels[key2] = Mathf.RoundToInt(Mathf.Pow(UnityEngine.Random.value, DUPLICANTSTATS.ROLLED_ATTRIBUTE_POWER) * (float)DUPLICANTSTATS.ROLLED_ATTRIBUTE_MAX);
 		}
 	}
 
@@ -366,9 +374,9 @@ public class MinionStartingStats
 	public void ApplyAptitudes(GameObject go)
 	{
 		MinionResume component = go.GetComponent<MinionResume>();
-		foreach (KeyValuePair<HashedString, float> roleAptitude in roleAptitudes)
+		foreach (KeyValuePair<SkillGroup, float> skillAptitude in skillAptitudes)
 		{
-			component.AddAptitude(roleAptitude.Key, roleAptitude.Value);
+			component.SetAptitude(skillAptitude.Key.Id, skillAptitude.Value);
 		}
 	}
 
@@ -387,5 +395,17 @@ public class MinionStartingStats
 		}
 		go.GetComponent<MinionIdentity>().SetName(Name);
 		go.GetComponent<MinionIdentity>().SetGender(GenderStringKey);
+	}
+
+	public GameObject Deliver(Vector3 location)
+	{
+		GameObject gameObject = Util.KInstantiate(Assets.GetPrefab(MinionConfig.ID), null, null);
+		gameObject.SetActive(true);
+		gameObject.transform.SetLocalPosition(location);
+		Apply(gameObject);
+		Immigration.Instance.ApplyDefaultPersonalPriorities(gameObject);
+		ChoreProvider component = gameObject.GetComponent<ChoreProvider>();
+		new EmoteChore(component, Db.Get().ChoreTypes.EmoteHighPriority, "anim_interacts_portal_kanim", Telepad.PortalBirthAnim, null);
+		return gameObject;
 	}
 }

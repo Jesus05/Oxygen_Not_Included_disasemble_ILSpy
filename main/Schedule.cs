@@ -63,6 +63,7 @@ public class Schedule : ISaveLoadable, IListableOption
 				num++;
 			}
 		}
+		Debug.Assert(num == 24);
 		Changed();
 	}
 

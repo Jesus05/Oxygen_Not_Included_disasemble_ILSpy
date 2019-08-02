@@ -64,11 +64,11 @@ public class SideDetailsScreen : KScreen
 	{
 		if (!screenMap.ContainsKey(screenName))
 		{
-			Debug.LogError("Tried to open a screen that does exist on the manager!", null);
+			Debug.LogError("Tried to open a screen that does exist on the manager!");
 		}
 		else if (content == null)
 		{
-			Debug.LogError("Tried to set " + screenName + " with null content!", null);
+			Debug.LogError("Tried to set " + screenName + " with null content!");
 		}
 		else
 		{

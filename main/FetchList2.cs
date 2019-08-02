@@ -8,8 +8,6 @@ public class FetchList2 : IFetchList
 
 	private ChoreType choreType;
 
-	private Tag[] choreTags;
-
 	public Guid waitingForMaterialsHandle = Guid.Empty;
 
 	public Guid materialsUnavailableForRefillHandle = Guid.Empty;
@@ -70,11 +68,10 @@ public class FetchList2 : IFetchList
 		private set;
 	}
 
-	public FetchList2(Storage destination, ChoreType chore_type, Tag[] chore_tags)
+	public FetchList2(Storage destination, ChoreType chore_type)
 	{
 		Destination = destination;
 		choreType = chore_type;
-		choreTags = chore_tags;
 	}
 
 	public void SetPriorityMod(int priorityMod)
@@ -86,12 +83,8 @@ public class FetchList2 : IFetchList
 		}
 	}
 
-	public void Add(Tag[] tags, Tag[] required_tags = null, Tag[] forbidden_tags = null, float amount = 1f, FetchOrder2.OperationalRequirement operationalRequirement = FetchOrder2.OperationalRequirement.None)
+	public void Add(Tag[] tags, Tag[] required_tags = null, Tag[] forbidden_tags = null, float amount = 1f, FetchOrder2.OperationalRequirement operationalRequirementDEPRECATED = FetchOrder2.OperationalRequirement.None)
 	{
-		if (amount <= 0f)
-		{
-			Output.LogError("Requesting an invalid FetchList2 amount");
-		}
 		foreach (Tag key in tags)
 		{
 			if (!MinimumAmount.ContainsKey(key))
@@ -99,16 +92,16 @@ public class FetchList2 : IFetchList
 				MinimumAmount[key] = amount;
 			}
 		}
-		FetchOrder2 item = new FetchOrder2(choreType, tags, required_tags, forbidden_tags, Destination, amount, operationalRequirement, PriorityMod, choreTags);
+		FetchOrder2 item = new FetchOrder2(choreType, tags, required_tags, forbidden_tags, Destination, amount, operationalRequirementDEPRECATED, PriorityMod);
 		FetchOrders.Add(item);
 	}
 
-	public void Add(Tag tag, Tag[] required_tags = null, Tag[] forbidden_tags = null, float amount = 1f, FetchOrder2.OperationalRequirement operationalRequirement = FetchOrder2.OperationalRequirement.None)
+	public void Add(Tag tag, Tag[] required_tags = null, Tag[] forbidden_tags = null, float amount = 1f, FetchOrder2.OperationalRequirement operationalRequirementDEPRECATED = FetchOrder2.OperationalRequirement.None)
 	{
 		Add(new Tag[1]
 		{
 			tag
-		}, required_tags, forbidden_tags, amount, operationalRequirement);
+		}, required_tags, forbidden_tags, amount, operationalRequirementDEPRECATED);
 	}
 
 	public float GetMinimumAmount(Tag tag)

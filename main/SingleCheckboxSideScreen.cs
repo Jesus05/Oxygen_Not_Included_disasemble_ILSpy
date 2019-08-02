@@ -31,7 +31,7 @@ public class SingleCheckboxSideScreen : SideScreenContent
 		base.SetTarget(target);
 		if ((Object)target == (Object)null)
 		{
-			Debug.LogError("The target object provided was null", null);
+			Debug.LogError("The target object provided was null");
 		}
 		else
 		{
@@ -42,7 +42,7 @@ public class SingleCheckboxSideScreen : SideScreenContent
 			}
 			if (this.target == null)
 			{
-				Debug.LogError("The target provided does not have an ICheckboxControl component", null);
+				Debug.LogError("The target provided does not have an ICheckboxControl component");
 			}
 			else
 			{

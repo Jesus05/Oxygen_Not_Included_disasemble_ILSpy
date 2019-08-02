@@ -1,8 +1,7 @@
-using Klei;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CodexEntry : YamlIO<CodexEntry>
+public class CodexEntry
 {
 	public List<SubEntry> subEntries = new List<SubEntry>();
 
@@ -90,7 +89,7 @@ public class CodexEntry : YamlIO<CodexEntry>
 		this.contentContainers = contentContainers;
 	}
 
-	public CodexWidget GetFirstWidget()
+	public ICodexWidget GetFirstWidget()
 	{
 		for (int i = 0; i < contentContainers.Count; i++)
 		{

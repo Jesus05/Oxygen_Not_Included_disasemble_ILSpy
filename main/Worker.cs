@@ -8,7 +8,8 @@ public class Worker : KMonoBehaviour
 	{
 		Idle,
 		Working,
-		PendingCompletion
+		PendingCompletion,
+		Completing
 	}
 
 	public class StartWorkInfo
@@ -142,11 +143,20 @@ public class Worker : KMonoBehaviour
 					CompleteWork();
 					return WorkResult.Success;
 				}
-				state = State.Working;
 				StopWork();
 				return WorkResult.Failed;
 			}
 			return WorkResult.InProgress;
+		}
+		if (state == State.Completing)
+		{
+			if (successFullyCompleted)
+			{
+				CompleteWork();
+				return WorkResult.Success;
+			}
+			StopWork();
+			return WorkResult.Failed;
 		}
 		if ((UnityEngine.Object)workable != (UnityEngine.Object)null)
 		{
@@ -171,13 +181,15 @@ public class Worker : KMonoBehaviour
 				float attributeExperienceMultiplier = workable.GetAttributeExperienceMultiplier();
 				GetComponent<AttributeLevels>().AddExperience(workAttribute.Id, dt, attributeExperienceMultiplier);
 			}
-			float efficiencyMultiplier = workable.GetEfficiencyMultiplier(this);
-			float num = dt * efficiencyMultiplier * 1f;
-			if ((UnityEngine.Object)resume != (UnityEngine.Object)null)
+			string skillExperienceSkillGroup = workable.GetSkillExperienceSkillGroup();
+			if ((UnityEngine.Object)resume != (UnityEngine.Object)null && skillExperienceSkillGroup != null)
 			{
-				workable.AwardExperience(num, resume);
+				float skillExperienceMultiplier = workable.GetSkillExperienceMultiplier();
+				resume.AddExperienceWithAptitude(skillExperienceSkillGroup, dt, skillExperienceMultiplier);
 			}
-			if (workable.WorkTick(this, num) && state == State.Working)
+			float efficiencyMultiplier = workable.GetEfficiencyMultiplier(this);
+			float dt2 = dt * efficiencyMultiplier * 1f;
+			if (workable.WorkTick(this, dt2) && state == State.Working)
 			{
 				successFullyCompleted = true;
 				StartPlayingPostAnim();
@@ -188,11 +200,11 @@ public class Worker : KMonoBehaviour
 
 	private void StartPlayingPostAnim()
 	{
-		if ((UnityEngine.Object)workable != (UnityEngine.Object)null)
+		if ((UnityEngine.Object)workable != (UnityEngine.Object)null && !workable.alwaysShowProgressBar)
 		{
 			workable.ShowProgressBar(false);
 		}
-		GetComponent<KPrefabID>().AddTag(GameTags.PreventChoreInterruption);
+		GetComponent<KPrefabID>().AddTag(GameTags.PreventChoreInterruption, false);
 		state = State.PendingCompletion;
 		workPendingCompletionTime = Time.time;
 		KAnimControllerBase component = GetComponent<KAnimControllerBase>();
@@ -211,6 +223,10 @@ public class Worker : KMonoBehaviour
 			{
 				component.Play(workPstAnim, KAnim.PlayMode.Once, 1f, 0f);
 			}
+		}
+		else
+		{
+			state = State.Completing;
 		}
 		Trigger(-1142962013, this);
 	}
@@ -272,7 +288,7 @@ public class Worker : KMonoBehaviour
 
 	public void StopWork()
 	{
-		if (state == State.PendingCompletion)
+		if (state == State.PendingCompletion || state == State.Completing)
 		{
 			state = State.Idle;
 			if (successFullyCompleted)
@@ -314,7 +330,7 @@ public class Worker : KMonoBehaviour
 			{
 				text = workable.name;
 			}
-			Debug.LogError(base.name + "." + text + ".state should be idle but instead it's:" + state.ToString(), null);
+			Debug.LogError(base.name + "." + text + ".state should be idle but instead it's:" + state.ToString());
 		}
 		string name = workable.GetType().Name;
 		try
@@ -365,7 +381,7 @@ public class Worker : KMonoBehaviour
 			workable.StartWork(this);
 			if ((UnityEngine.Object)workable == (UnityEngine.Object)null)
 			{
-				Debug.LogWarning("Stopped work as soon as I started. This is usually a sign that a chore is open when it shouldn't be or that it's preconditions are wrong.", null);
+				Debug.LogWarning("Stopped work as soon as I started. This is usually a sign that a chore is open when it shouldn't be or that it's preconditions are wrong.");
 			}
 			else
 			{
@@ -382,7 +398,7 @@ public class Worker : KMonoBehaviour
 		catch (Exception ex)
 		{
 			string str = "Exception in: Worker.StartWork(" + name + ")";
-			Output.LogErrorWithObj(this, str + "\n" + ex.ToString());
+			DebugUtil.LogErrorArgs(this, str + "\n" + ex.ToString());
 			throw;
 		}
 	}

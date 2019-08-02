@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class ResearchScreen : KModalScreen
@@ -21,9 +22,13 @@ public class ResearchScreen : KModalScreen
 
 	public ResearchEntry entryPrefab;
 
+	public ResearchTreeTitle researchTreeTitlePrefab;
+
 	public GameObject foreground;
 
 	public GameObject scrollContent;
+
+	public GameObject treeTitles;
 
 	public GameObject pointDisplayCountPrefab;
 
@@ -39,9 +44,53 @@ public class ResearchScreen : KModalScreen
 	[SerializeField]
 	private KButton filterClearButton;
 
+	[SerializeField]
+	private RectTransform scaleOffsetAnchor;
+
+	[SerializeField]
+	private RectTransform contentPositionDummy;
+
+	[SerializeField]
+	private KButton zoomOutButton;
+
+	[SerializeField]
+	private KButton zoomInButton;
+
 	private Tech currentResearch;
 
 	public KButton CloseButton;
+
+	private float targetContentScale = 1f;
+
+	private GraphicRaycaster m_Raycaster;
+
+	private PointerEventData m_PointerEventData;
+
+	private UnityEngine.EventSystems.EventSystem m_EventSystem;
+
+	private Vector3 currentScrollPosition;
+
+	private float keyboardScrollSpeed = 1500f;
+
+	private bool panUp;
+
+	private bool panDown;
+
+	private bool panLeft;
+
+	private bool panRight;
+
+	public float contentPositionLerpSpeed = 10f;
+
+	private bool zoomingOut;
+
+	private bool zoomingIn;
+
+	private bool rightMouseDown;
+
+	private bool isDragging;
+
+	private Vector3 dragStartPosition;
 
 	public bool IsBeingResearched(Tech tech)
 	{
@@ -52,6 +101,163 @@ public class ResearchScreen : KModalScreen
 	{
 		base.OnPrefabInit();
 		ConsumeMouseScroll = true;
+		Transform transform = base.transform;
+		while ((Object)m_Raycaster == (Object)null)
+		{
+			m_Raycaster = transform.GetComponent<GraphicRaycaster>();
+			if ((Object)m_Raycaster == (Object)null)
+			{
+				transform = transform.parent;
+			}
+		}
+		m_EventSystem = GetComponent<UnityEngine.EventSystems.EventSystem>();
+		contentPositionDummy.SetLocalPosition(new Vector3(1000f, -2500f, 0f));
+	}
+
+	private IEnumerator ZoomOut()
+	{
+		KCanvasScaler kCanvasScaler = Object.FindObjectOfType<KCanvasScaler>();
+		zoomingOut = true;
+		contentPositionDummy.transform.SetParent(scaleOffsetAnchor.transform);
+		float zoomAmount = Mathf.Clamp(0.45f * kCanvasScaler.GetCanvasScale(), 0.1f, 1f);
+		Vector3 localScale = scaleOffsetAnchor.transform.localScale;
+		if (localScale.x > zoomAmount)
+		{
+			scaleOffsetAnchor.transform.localScale *= 1f - Mathf.Clamp(Time.unscaledDeltaTime * 10f, 0f, 1f);
+			yield return (object)0;
+			/*Error: Unable to find new state assignment for yield return*/;
+		}
+		scaleOffsetAnchor.transform.localScale = Vector3.one * zoomAmount;
+		contentPositionDummy.transform.SetParent(scaleOffsetAnchor.transform.parent);
+		zoomingOut = false;
+	}
+
+	private IEnumerator ZoomIn()
+	{
+		KCanvasScaler kCanvasScaler = Object.FindObjectOfType<KCanvasScaler>();
+		zoomingIn = true;
+		contentPositionDummy.transform.SetParent(scaleOffsetAnchor.transform);
+		float zoomAmount = Mathf.Clamp(1f * kCanvasScaler.GetCanvasScale(), 1f, 1.6f);
+		Vector3 localScale = scaleOffsetAnchor.transform.localScale;
+		if (localScale.x < zoomAmount)
+		{
+			scaleOffsetAnchor.transform.localScale *= 1f + Mathf.Clamp(Time.unscaledDeltaTime * 10f, 0f, 1f);
+			yield return (object)0;
+			/*Error: Unable to find new state assignment for yield return*/;
+		}
+		scaleOffsetAnchor.transform.localScale = Vector3.one * zoomAmount;
+		contentPositionDummy.transform.SetParent(scaleOffsetAnchor.transform.parent);
+		zoomingIn = false;
+	}
+
+	private void Update()
+	{
+		if (!isDragging && rightMouseDown && Vector3.Distance(dragStartPosition, Input.mousePosition) > 1f)
+		{
+			isDragging = true;
+		}
+		if (!zoomingIn && !zoomingOut)
+		{
+			scaleOffsetAnchor.SetPosition(Input.mousePosition);
+			if (panUp)
+			{
+				contentPositionDummy.transform.position -= Vector3.up * Time.unscaledDeltaTime * keyboardScrollSpeed;
+			}
+			else if (panDown)
+			{
+				contentPositionDummy.transform.position += Vector3.up * Time.unscaledDeltaTime * keyboardScrollSpeed;
+			}
+			if (panLeft)
+			{
+				contentPositionDummy.transform.position += Vector3.right * Time.unscaledDeltaTime * keyboardScrollSpeed;
+			}
+			else if (panRight)
+			{
+				contentPositionDummy.transform.position -= Vector3.right * Time.unscaledDeltaTime * keyboardScrollSpeed;
+			}
+			Vector2 mouseScrollDelta = Input.mouseScrollDelta;
+			if (mouseScrollDelta.y > 0f)
+			{
+				StartCoroutine(ZoomIn());
+			}
+			else
+			{
+				Vector2 mouseScrollDelta2 = Input.mouseScrollDelta;
+				if (mouseScrollDelta2.y < 0f)
+				{
+					StartCoroutine(ZoomOut());
+				}
+				else if (Input.GetMouseButton(0) || Input.GetMouseButton(1))
+				{
+					if ((Object)contentPositionDummy.transform.parent != (Object)scaleOffsetAnchor.transform)
+					{
+						contentPositionDummy.transform.SetParent(scaleOffsetAnchor.transform);
+					}
+				}
+				else if ((Object)contentPositionDummy.transform.parent != (Object)scaleOffsetAnchor.transform.parent)
+				{
+					contentPositionDummy.transform.SetParent(scaleOffsetAnchor.transform.parent);
+				}
+			}
+		}
+		contentPositionDummy.position = ClampScrollToContent();
+		Vector3 position = Vector3.Lerp(scrollContent.transform.position, contentPositionDummy.transform.position, Time.unscaledDeltaTime * contentPositionLerpSpeed);
+		scrollContent.transform.SetPosition(position);
+		scrollContent.transform.localScale = Vector3.Lerp(scrollContent.transform.localScale, contentPositionDummy.lossyScale, Time.unscaledDeltaTime * contentPositionLerpSpeed);
+	}
+
+	private Vector3 ClampScrollToContent()
+	{
+		Vector3 position = contentPositionDummy.position;
+		if (!zoomingIn && !zoomingOut)
+		{
+			Vector3 vector = foreground.rectTransform().InverseTransformPoint(scrollContent.rectTransform().position);
+			float num = 512f;
+			Vector2 sizeDelta = scrollContent.rectTransform().sizeDelta;
+			float num2 = sizeDelta.x / 2f;
+			Vector3 localScale = scrollContent.transform.localScale;
+			float num3 = num2 * localScale.x - foreground.rectTransform().rect.width / 2f + num;
+			if (vector.x > num3)
+			{
+				position.x -= vector.x - num3;
+			}
+			Vector2 sizeDelta2 = scrollContent.rectTransform().sizeDelta;
+			float num4 = sizeDelta2.x / 2f;
+			Vector3 localScale2 = scrollContent.transform.localScale;
+			float num5 = 0f - (num4 * localScale2.x - foreground.rectTransform().rect.width / 2f + num);
+			if (vector.x < num5)
+			{
+				position.x -= vector.x - num5;
+			}
+			Vector2 sizeDelta3 = scrollContent.rectTransform().sizeDelta;
+			float num6 = sizeDelta3.y / 2f;
+			Vector3 localScale3 = scrollContent.transform.localScale;
+			float num7 = num6 * localScale3.y - foreground.rectTransform().rect.height / 2f + num;
+			if (vector.y > num7)
+			{
+				position.y -= vector.y - num7;
+			}
+			Vector2 sizeDelta4 = scrollContent.rectTransform().sizeDelta;
+			float num8 = sizeDelta4.y / 2f;
+			Vector3 localScale4 = scrollContent.transform.localScale;
+			float num9 = 0f - (num8 * localScale4.y - foreground.rectTransform().rect.height / 2f + num);
+			if (vector.y < num9)
+			{
+				position.y -= vector.y - num9;
+			}
+			Vector3 localScale5 = scrollContent.transform.localScale;
+			if (localScale5.x < 0.7f)
+			{
+				float width = foreground.rectTransform().rect.width;
+				float width2 = scrollContent.rectTransform().rect.width;
+				Vector3 localScale6 = scrollContent.transform.localScale;
+				if (width > width2 * localScale6.x)
+				{
+					position.x = foreground.rectTransform().rect.width / 2f;
+				}
+			}
+		}
+		return position;
 	}
 
 	protected override void OnSpawn()
@@ -82,29 +288,62 @@ public class ResearchScreen : KModalScreen
 		List<Tech> resources = Db.Get().Techs.resources;
 		resources.Sort(delegate(Tech x, Tech y)
 		{
-			Vector2 center = y.center;
-			ref float y3 = ref center.y;
-			Vector2 center2 = x.center;
-			return y3.CompareTo(center2.y);
+			Vector2 center3 = y.center;
+			ref float y5 = ref center3.y;
+			Vector2 center4 = x.center;
+			return y5.CompareTo(center4.y);
 		});
-		List<Vector2> list = new List<Vector2>();
+		List<TechTreeTitle> resources2 = Db.Get().TechTreeTitles.resources;
+		resources2.Sort(delegate(TechTreeTitle x, TechTreeTitle y)
+		{
+			Vector2 center = y.center;
+			ref float y4 = ref center.y;
+			Vector2 center2 = x.center;
+			return y4.CompareTo(center2.y);
+		});
 		float x2 = 0f;
-		float y2 = 0f;
+		float y2 = 125f;
 		Vector2 b = new Vector2(x2, y2);
-		for (int i = 0; i < resources.Count; i++)
+		for (int i = 0; i < resources2.Count; i++)
+		{
+			ResearchTreeTitle researchTreeTitle = Util.KInstantiateUI<ResearchTreeTitle>(researchTreeTitlePrefab.gameObject, treeTitles, false);
+			TechTreeTitle techTreeTitle = resources2[i];
+			researchTreeTitle.name = techTreeTitle.Name + " Title";
+			Vector3 v = techTreeTitle.center + b;
+			researchTreeTitle.transform.rectTransform().anchoredPosition = v;
+			float height = techTreeTitle.height;
+			if (i + 1 < resources2.Count)
+			{
+				TechTreeTitle techTreeTitle2 = resources2[i + 1];
+				Vector3 vector = techTreeTitle2.center + b;
+				height += v.y - (vector.y + techTreeTitle2.height);
+			}
+			else
+			{
+				height += 600f;
+			}
+			researchTreeTitle.transform.rectTransform().sizeDelta = new Vector2(techTreeTitle.width, height);
+			researchTreeTitle.SetLabel(techTreeTitle.Name);
+			researchTreeTitle.SetColor(i);
+		}
+		List<Vector2> list = new List<Vector2>();
+		float x3 = 0f;
+		float y3 = 0f;
+		Vector2 b2 = new Vector2(x3, y3);
+		for (int j = 0; j < resources.Count; j++)
 		{
 			ResearchEntry researchEntry = Util.KInstantiateUI<ResearchEntry>(entryPrefab.gameObject, scrollContent, false);
-			Tech tech = resources[i];
+			Tech tech = resources[j];
 			researchEntry.name = tech.Name + " Panel";
-			Vector3 v = tech.center + b;
-			researchEntry.transform.rectTransform().anchoredPosition = v;
+			Vector3 v2 = tech.center + b2;
+			researchEntry.transform.rectTransform().anchoredPosition = v2;
 			researchEntry.transform.rectTransform().sizeDelta = new Vector2(tech.width, tech.height);
 			entryMap.Add(tech, researchEntry);
 			if (tech.edges.Count > 0)
 			{
-				for (int j = 0; j < tech.edges.Count; j++)
+				for (int k = 0; k < tech.edges.Count; k++)
 				{
-					ResourceTreeNode.Edge edge = tech.edges[j];
+					ResourceTreeNode.Edge edge = tech.edges[k];
 					if (edge.path == null)
 					{
 						list.AddRange(edge.SrcTarget);
@@ -119,10 +358,10 @@ public class ResearchScreen : KModalScreen
 						case ResourceTreeNode.Edge.EdgeType.GenericEdge:
 							list.Add(edge.SrcTarget[0]);
 							list.Add(edge.path[0]);
-							for (int k = 1; k < edge.path.Count; k++)
+							for (int l = 1; l < edge.path.Count; l++)
 							{
-								list.Add(edge.path[k - 1]);
-								list.Add(edge.path[k]);
+								list.Add(edge.path[l - 1]);
+								list.Add(edge.path[l]);
 							}
 							list.Add(edge.path[edge.path.Count - 1]);
 							list.Add(edge.SrcTarget[1]);
@@ -135,14 +374,14 @@ public class ResearchScreen : KModalScreen
 				}
 			}
 		}
-		for (int l = 0; l < list.Count; l++)
+		for (int m = 0; m < list.Count; m++)
 		{
 			List<Vector2> list2 = list;
-			int index = l;
-			Vector2 vector = list[l];
-			float x3 = vector.x;
-			Vector2 vector2 = list[l];
-			list2[index] = new Vector2(x3, vector2.y + foreground.transform.rectTransform().rect.height);
+			int index = m;
+			Vector2 vector2 = list[m];
+			float x4 = vector2.x;
+			Vector2 vector3 = list[m];
+			list2[index] = new Vector2(x4, vector3.y + foreground.transform.rectTransform().rect.height);
 		}
 		foreach (KeyValuePair<Tech, ResearchEntry> item in entryMap)
 		{
@@ -155,9 +394,16 @@ public class ResearchScreen : KModalScreen
 		};
 		StartCoroutine(WaitAndSetActiveResearch());
 		ManagementMenu.Instance.AddResearchScreen(this);
-		foreground.GetComponent<KScrollRect>().allowHorizontalScrollWheel = false;
 		base.OnSpawn();
 		Show(false);
+		zoomOutButton.onClick += delegate
+		{
+			StartCoroutine(ZoomOut());
+		};
+		zoomInButton.onClick += delegate
+		{
+			StartCoroutine(ZoomIn());
+		};
 	}
 
 	protected override void OnCleanUp()
@@ -179,7 +425,7 @@ public class ResearchScreen : KModalScreen
 	{
 		if (!entryMap.ContainsKey(tech))
 		{
-			Debug.LogError("The Tech provided was not present in the dictionary", null);
+			Debug.LogError("The Tech provided was not present in the dictionary");
 			return Vector3.zero;
 		}
 		return entryMap[tech].transform.GetPosition();
@@ -193,7 +439,7 @@ public class ResearchScreen : KModalScreen
 		}
 		if (!entryMap.ContainsKey(tech))
 		{
-			Debug.LogError("The Tech provided was not present in the dictionary", null);
+			Debug.LogError("The Tech provided was not present in the dictionary");
 			return null;
 		}
 		return entryMap[tech];
@@ -314,22 +560,110 @@ public class ResearchScreen : KModalScreen
 	protected override void OnShow(bool show)
 	{
 		base.OnShow(show);
+		if (show)
+		{
+			DetailsScreen.Instance.gameObject.SetActive(false);
+		}
+		else if ((Object)SelectTool.Instance.selected != (Object)null)
+		{
+			DetailsScreen.Instance.gameObject.SetActive(true);
+			DetailsScreen.Instance.Refresh(SelectTool.Instance.selected.gameObject);
+		}
 		filterField.text = string.Empty;
 		OnFilterChanged(string.Empty);
 		UpdateProgressBars();
 		UpdatePointDisplay();
+		zoomingIn = false;
+		zoomingOut = false;
+	}
+
+	public override void OnKeyUp(KButtonEvent e)
+	{
+		if (!e.Consumed)
+		{
+			if (e.IsAction(Action.MouseRight))
+			{
+				if (!isDragging && e.TryConsume(Action.MouseRight))
+				{
+					isDragging = false;
+					rightMouseDown = false;
+					ManagementMenu.Instance.CloseAll();
+					return;
+				}
+				isDragging = false;
+				rightMouseDown = false;
+			}
+			if (panUp && e.TryConsume(Action.PanUp))
+			{
+				panUp = false;
+				return;
+			}
+			if (panDown && e.TryConsume(Action.PanDown))
+			{
+				panDown = false;
+				return;
+			}
+			if (panRight && e.TryConsume(Action.PanRight))
+			{
+				panRight = false;
+				return;
+			}
+			if (panLeft && e.TryConsume(Action.PanLeft))
+			{
+				panLeft = false;
+				return;
+			}
+		}
+		base.OnKeyUp(e);
 	}
 
 	public override void OnKeyDown(KButtonEvent e)
 	{
-		if (!e.Consumed && (e.TryConsume(Action.MouseRight) || e.TryConsume(Action.Escape)))
+		if (!e.Consumed)
 		{
-			ManagementMenu.Instance.CloseAll();
+			if (e.TryConsume(Action.MouseRight))
+			{
+				dragStartPosition = Input.mousePosition;
+				rightMouseDown = true;
+				return;
+			}
+			if (e.TryConsume(Action.ZoomIn))
+			{
+				targetContentScale = Mathf.Clamp(targetContentScale * (1f + Time.unscaledDeltaTime * 2.5f), 0.5f, 1f);
+				return;
+			}
+			if (e.TryConsume(Action.ZoomOut))
+			{
+				targetContentScale = Mathf.Clamp(targetContentScale * (1f - Time.unscaledDeltaTime * 2.5f), 0.5f, 1f);
+				return;
+			}
+			if (e.TryConsume(Action.Escape))
+			{
+				ManagementMenu.Instance.CloseAll();
+				return;
+			}
+			if (e.TryConsume(Action.PanLeft))
+			{
+				panLeft = true;
+				return;
+			}
+			if (e.TryConsume(Action.PanRight))
+			{
+				panRight = true;
+				return;
+			}
+			if (e.TryConsume(Action.PanUp))
+			{
+				panUp = true;
+				return;
+			}
+			if (e.TryConsume(Action.PanDown))
+			{
+				panDown = true;
+				return;
+			}
 		}
-		else
-		{
-			base.OnKeyDown(e);
-		}
+		base.OnKeyDown(e);
 	}
 
 	private void OnFilterChanged(string filter_text)

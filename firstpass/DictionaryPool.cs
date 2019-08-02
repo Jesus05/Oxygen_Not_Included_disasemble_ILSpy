@@ -1,7 +1,9 @@
 using System.Collections.Generic;
+using System.Diagnostics;
 
 public static class DictionaryPool<KeyType, ObjectType, PoolIdentifier>
 {
+	[DebuggerDisplay("Count={Count}")]
 	public class PooledDictionary : Dictionary<KeyType, ObjectType>
 	{
 		public void Recycle()

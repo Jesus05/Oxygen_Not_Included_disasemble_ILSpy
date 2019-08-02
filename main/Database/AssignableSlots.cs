@@ -21,6 +21,8 @@ namespace Database
 
 		public AssignableSlot RocketCommandModule;
 
+		public AssignableSlot ResetSkillsStation;
+
 		public AssignableSlot Suit;
 
 		public AssignableSlot Tool;
@@ -39,6 +41,7 @@ namespace Database
 			Toilet = Add(new OwnableSlot("Toilet", MISC.TAGS.TOILET));
 			MassageTable = Add(new OwnableSlot("MassageTable", MISC.TAGS.MASSAGE_TABLE));
 			RocketCommandModule = Add(new OwnableSlot("RocketCommandModule", MISC.TAGS.COMMAND_MODULE));
+			ResetSkillsStation = Add(new OwnableSlot("ResetSkillsStation", "ResetSkillsStation"));
 			Suit = Add(new EquipmentSlot(TUNING.EQUIPMENT.SUITS.SLOT, MISC.TAGS.SUIT, true));
 			Tool = Add(new EquipmentSlot(TUNING.EQUIPMENT.TOOLS.TOOLSLOT, MISC.TAGS.MULTITOOL, false));
 			Outfit = Add(new EquipmentSlot(TUNING.EQUIPMENT.CLOTHING.SLOT, MISC.TAGS.CLOTHES, true));

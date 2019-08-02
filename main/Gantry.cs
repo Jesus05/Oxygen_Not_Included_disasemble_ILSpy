@@ -16,12 +16,6 @@ public class Gantry : Switch
 
 		public BoolParameter should_extend;
 
-		[CompilerGenerated]
-		private static Parameter<bool>.Callback _003C_003Ef__mg_0024cache0;
-
-		[CompilerGenerated]
-		private static Parameter<bool>.Callback _003C_003Ef__mg_0024cache1;
-
 		public override void InitializeStates(out BaseState default_state)
 		{
 			default_state = extended;
@@ -45,10 +39,10 @@ public class Gantry : Switch
 				.OnAnimQueueComplete(extended);
 			extended.Enter(delegate(Gantry.Instance smi)
 			{
-				smi.master.SetForceField(true);
+				smi.master.SetWalkable(true);
 			}).Exit(delegate(Gantry.Instance smi)
 			{
-				smi.master.SetForceField(false);
+				smi.master.SetWalkable(false);
 			}).PlayAnim("on")
 				.ParamTransition(should_extend, retracted_pre, GameStateMachine<States, Gantry.Instance, Gantry, object>.IsFalse);
 		}
@@ -138,7 +132,7 @@ public class Gantry : Switch
 		new CellOffset(-1, 1)
 	};
 
-	public static CellOffset[] ForcefieldOffsets = new CellOffset[4]
+	public static CellOffset[] RetractableOffsets = new CellOffset[4]
 	{
 		new CellOffset(0, 1),
 		new CellOffset(1, 1),
@@ -158,7 +152,7 @@ public class Gantry : Switch
 		base.OnSpawn();
 		if (infoStatusItem == null)
 		{
-			infoStatusItem = new StatusItem("GantryAutomationInfo", "BUILDING", string.Empty, StatusItem.IconType.Info, NotificationType.Neutral, false, SimViewMode.None, true, 63486);
+			infoStatusItem = new StatusItem("GantryAutomationInfo", "BUILDING", string.Empty, StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, true, 129022);
 			infoStatusItem.resolveStringCallback = ResolveInfoStatusItemString;
 		}
 		GetComponent<KAnimControllerBase>().PlaySpeedMultiplier = 0.5f;
@@ -203,30 +197,26 @@ public class Gantry : Switch
 			World.Instance.OnSolidChanged(num);
 			GameScenePartitioner.Instance.TriggerEvent(num, GameScenePartitioner.Instance.solidChangedLayer, null);
 		}
-		CellOffset[] forcefieldOffsets = ForcefieldOffsets;
-		foreach (CellOffset offset2 in forcefieldOffsets)
+		CellOffset[] retractableOffsets = RetractableOffsets;
+		foreach (CellOffset offset2 in retractableOffsets)
 		{
 			CellOffset rotatedOffset2 = building.GetRotatedOffset(offset2);
 			int num2 = Grid.OffsetCell(cell, rotatedOffset2);
 			Grid.FakeFloor[num2] = false;
-			Grid.Impassable[num2] = false;
-			Game.Instance.SetForceField(num2, false, Grid.Solid[num2]);
 			Pathfinding.Instance.AddDirtyNavGridCell(num2);
 		}
 		base.OnCleanUp();
 	}
 
-	public void SetForceField(bool active)
+	public void SetWalkable(bool active)
 	{
 		int cell = Grid.PosToCell(this);
-		CellOffset[] forcefieldOffsets = ForcefieldOffsets;
-		foreach (CellOffset offset in forcefieldOffsets)
+		CellOffset[] retractableOffsets = RetractableOffsets;
+		foreach (CellOffset offset in retractableOffsets)
 		{
 			CellOffset rotatedOffset = building.GetRotatedOffset(offset);
 			int num = Grid.OffsetCell(cell, rotatedOffset);
 			Grid.FakeFloor[num] = active;
-			Grid.Impassable[num] = active;
-			Game.Instance.SetForceField(num, active, false);
 			Pathfinding.Instance.AddDirtyNavGridCell(num);
 		}
 	}

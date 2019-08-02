@@ -36,8 +36,6 @@ namespace Database
 
 		public StatusItemCategory Yield;
 
-		public StatusItemCategory Sleep;
-
 		public StatusItemCategory Heat;
 
 		public StatusItemCategories(ResourceSet parent)
@@ -60,7 +58,6 @@ namespace Database
 			AccessControl = new StatusItemCategory("AccessControl", this, "AccessControl");
 			RequiredRoom = new StatusItemCategory("RequiredRoom", this, "RequiredRoom");
 			Yield = new StatusItemCategory("Yield", this, "Yield");
-			Sleep = new StatusItemCategory("Sleep", this, "Sleep");
 			Heat = new StatusItemCategory("Heat", this, "Heat");
 		}
 	}

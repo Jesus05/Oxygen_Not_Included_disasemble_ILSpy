@@ -81,7 +81,7 @@ namespace KSerialization
 				obj[6] = "\n";
 				text = string.Concat(obj);
 			}
-			Output.Log(text);
+			DebugUtil.LogArgs(text);
 		}
 	}
 }

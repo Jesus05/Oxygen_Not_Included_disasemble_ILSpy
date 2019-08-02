@@ -24,7 +24,6 @@ public class SpecialCargoBayConfig : IBuildingConfig
 		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, cARGO_MASS, construction_materials, melting_point, build_location_rule, BUILDINGS.DECOR.NONE, tIER, 0.2f);
 		BuildingTemplates.CreateRocketBuildingDef(buildingDef);
 		buildingDef.SceneLayer = Grid.SceneLayer.BuildingFront;
-		buildingDef.ViewMode = SimViewMode.None;
 		buildingDef.OverheatTemperature = 2273.15f;
 		buildingDef.Floodable = false;
 		buildingDef.AttachmentSlotTag = GameTags.Rocket;
@@ -39,7 +38,7 @@ public class SpecialCargoBayConfig : IBuildingConfig
 	{
 		BuildingConfigManager.Instance.IgnoreDefaultKComponent(typeof(RequiresFoundation), prefab_tag);
 		go.AddOrGet<LoopingSounds>();
-		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.IndustrialMachinery);
+		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.IndustrialMachinery, false);
 		BuildingAttachPoint buildingAttachPoint = go.AddOrGet<BuildingAttachPoint>();
 		buildingAttachPoint.points = new BuildingAttachPoint.HardPoint[1]
 		{
@@ -61,7 +60,8 @@ public class SpecialCargoBayConfig : IBuildingConfig
 		cargoBay.storage = go.AddOrGet<Storage>();
 		cargoBay.storageType = CargoBay.CargoType.entities;
 		cargoBay.storage.capacityKg = 100f;
-		go.AddOrGet<RocketModule>();
+		RocketModule rocketModule = go.AddOrGet<RocketModule>();
+		rocketModule.SetBGKAnim(Assets.GetAnim("rocket_storage_live_bg_kanim"));
 		EntityTemplates.ExtendBuildingToRocketModule(go);
 	}
 }

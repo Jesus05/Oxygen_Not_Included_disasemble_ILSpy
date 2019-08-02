@@ -31,6 +31,8 @@ public class ChoreConsumerState
 
 	public ConsumableConsumer consumableConsumer;
 
+	public KSelectable selectable;
+
 	public Worker worker;
 
 	public SolidTransferArm solidTransferArm;
@@ -46,7 +48,6 @@ public class ChoreConsumerState
 		prefabid = consumer.GetComponent<KPrefabID>();
 		ownable = consumer.GetComponent<Ownable>();
 		gameObject = consumer.gameObject;
-		assignables = consumer.GetComponent<Assignables>();
 		solidTransferArm = consumer.GetComponent<SolidTransferArm>();
 		hasSolidTransferArm = ((Object)solidTransferArm != (Object)null);
 		resume = consumer.GetComponent<MinionResume>();
@@ -54,10 +55,25 @@ public class ChoreConsumerState
 		schedulable = consumer.GetComponent<Schedulable>();
 		traits = consumer.GetComponent<Traits>();
 		choreProvider = consumer.GetComponent<ChoreProvider>();
-		equipment = consumer.GetComponent<Equipment>();
+		MinionIdentity component = consumer.GetComponent<MinionIdentity>();
+		if ((Object)component != (Object)null)
+		{
+			if (component.assignableProxy == null)
+			{
+				component.assignableProxy = MinionAssignablesProxy.InitAssignableProxy(component.assignableProxy, component);
+			}
+			assignables = component.GetSoleOwner();
+			equipment = component.GetEquipment();
+		}
+		else
+		{
+			assignables = consumer.GetComponent<Assignables>();
+			equipment = consumer.GetComponent<Equipment>();
+		}
 		storage = consumer.GetComponent<Storage>();
 		consumableConsumer = consumer.GetComponent<ConsumableConsumer>();
 		worker = consumer.GetComponent<Worker>();
+		selectable = consumer.GetComponent<KSelectable>();
 		if ((Object)schedulable != (Object)null)
 		{
 			int blockIdx = Schedule.GetBlockIdx();

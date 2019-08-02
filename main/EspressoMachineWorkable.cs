@@ -13,6 +13,11 @@ public class EspressoMachineWorkable : Workable, IGameObjectEffectDescriptor, IW
 
 	private static string trackingEffect = "RecentlyEspresso";
 
+	private EspressoMachineWorkable()
+	{
+		SetReportType(ReportManager.ReportType.PersonalTime);
+	}
+
 	protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
@@ -36,11 +41,11 @@ public class EspressoMachineWorkable : Workable, IGameObjectEffectDescriptor, IW
 		Storage component = GetComponent<Storage>();
 		component.ConsumeAndGetDisease(GameTags.Water, EspressoMachine.WATER_MASS_PER_USE, out SimUtil.DiseaseInfo disease_info, out float aggregate_temperature);
 		component.ConsumeAndGetDisease(EspressoMachine.INGREDIENT_TAG, EspressoMachine.INGREDIENT_MASS_PER_USE, out SimUtil.DiseaseInfo disease_info2, out aggregate_temperature);
-		ImmuneSystemMonitor.Instance sMI = worker.GetSMI<ImmuneSystemMonitor.Instance>();
+		GermExposureMonitor.Instance sMI = worker.GetSMI<GermExposureMonitor.Instance>();
 		if (sMI != null)
 		{
-			sMI.TryInjectDisease(disease_info.idx, disease_info.count, GameTags.Water, Disease.InfectionVector.Digestion);
-			sMI.TryInjectDisease(disease_info2.idx, disease_info2.count, EspressoMachine.INGREDIENT_TAG, Disease.InfectionVector.Digestion);
+			sMI.TryInjectDisease(disease_info.idx, disease_info.count, GameTags.Water, Sickness.InfectionVector.Digestion);
+			sMI.TryInjectDisease(disease_info2.idx, disease_info2.count, EspressoMachine.INGREDIENT_TAG, Sickness.InfectionVector.Digestion);
 		}
 		Effects component2 = worker.GetComponent<Effects>();
 		if (!string.IsNullOrEmpty(specificEffect))

@@ -2,13 +2,11 @@ namespace TUNING
 {
 	public class ROLES
 	{
-		public static int FAVORED_PRIORITY_BONUS = 3;
-
 		public static float PASSIVE_EXPERIENCE_SCALE = 0.0416666679f;
 
 		public static float BASIC_ROLE_MASTERY_EXPERIENCE_REQUIRED = 250f;
 
-		public static float APTITUDE_EXPERIENCE_SCALE = 50f;
+		public static float APTITUDE_EXPERIENCE_SCALE = 0.5f;
 
 		public static float ACTIVE_EXPERIENCE_VERY_SLOW = 0.025f;
 

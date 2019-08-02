@@ -26,7 +26,7 @@ public class MachineShopConfig : IBuildingConfig
 		EffectorValues tIER2 = NOISE_POLLUTION.NOISY.TIER1;
 		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, tIER, rEFINED_METALS, melting_point, build_location_rule, BUILDINGS.DECOR.NONE, tIER2, 0.2f);
 		buildingDef.Deprecated = true;
-		buildingDef.ViewMode = SimViewMode.Rooms;
+		buildingDef.ViewMode = OverlayModes.Rooms.ID;
 		buildingDef.Overheatable = false;
 		buildingDef.AudioCategory = "Metal";
 		buildingDef.AudioSize = "large";
@@ -36,7 +36,7 @@ public class MachineShopConfig : IBuildingConfig
 	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.AddOrGet<LoopingSounds>();
-		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.MachineShop);
+		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.MachineShop, false);
 	}
 
 	public override void DoPostConfigureComplete(GameObject go)

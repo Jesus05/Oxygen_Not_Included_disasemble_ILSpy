@@ -37,14 +37,14 @@ public class StressEmoteChore : Chore<StressEmoteChore.StatesInstance>
 	private Func<StatusItem> getStatusItem;
 
 	public StressEmoteChore(IStateMachineTarget target, ChoreType chore_type, HashedString emote_kanim, HashedString[] emote_anims, KAnim.PlayMode play_mode, Func<StatusItem> get_status_item)
-		: base(chore_type, target, target.GetComponent<ChoreProvider>(), false, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.emergency, 0, false, true, 0, (Tag[])null)
+		: base(chore_type, target, target.GetComponent<ChoreProvider>(), false, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.compulsory, 5, false, true, 0, false, ReportManager.ReportType.WorkTime)
 	{
 		AddPrecondition(ChorePreconditions.instance.IsMoving, null);
 		AddPrecondition(ChorePreconditions.instance.IsOffLadder, null);
 		AddPrecondition(ChorePreconditions.instance.NotInTube, null);
 		AddPrecondition(ChorePreconditions.instance.IsAwake, null);
 		getStatusItem = get_status_item;
-		smi = new StatesInstance(this, target.gameObject, emote_kanim, emote_anims, play_mode);
+		base.smi = new StatesInstance(this, target.gameObject, emote_kanim, emote_anims, play_mode);
 	}
 
 	protected override StatusItem GetStatusItem()
@@ -54,10 +54,10 @@ public class StressEmoteChore : Chore<StressEmoteChore.StatesInstance>
 
 	public override string ToString()
 	{
-		if (smi.emoteKAnim.IsValid)
+		if (base.smi.emoteKAnim.IsValid)
 		{
-			return "StressEmoteChore<" + smi.emoteKAnim + ">";
+			return "StressEmoteChore<" + base.smi.emoteKAnim + ">";
 		}
-		return "StressEmoteChore<" + smi.emoteAnims[0] + ">";
+		return "StressEmoteChore<" + base.smi.emoteAnims[0] + ">";
 	}
 }

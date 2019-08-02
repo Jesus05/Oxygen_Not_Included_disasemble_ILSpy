@@ -1,3 +1,6 @@
+using System;
+
+[Serializable]
 public struct EffectorValues
 {
 	public int amount;

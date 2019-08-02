@@ -80,7 +80,7 @@ internal class NestingPoopState : GameStateMachine<NestingPoopState, NestingPoop
 			}
 			if (!Grid.IsValidCell(Grid.PosToCell(this)))
 			{
-				Debug.LogWarning("This is bad, how is Mole occupying an invalid cell?", null);
+				Debug.LogWarning("This is bad, how is Mole occupying an invalid cell?");
 			}
 			return Grid.PosToCell(this);
 		}
@@ -126,19 +126,25 @@ internal class NestingPoopState : GameStateMachine<NestingPoopState, NestingPoop
 
 	public State behaviourcomplete;
 
+	public State failedtonest;
+
 	public override void InitializeStates(out BaseState default_state)
 	{
 		default_state = goingtopoop;
-		goingtopoop.MoveTo((Instance smi) => smi.GetPoopPosition(), pooping, pooping, false);
+		goingtopoop.MoveTo((Instance smi) => smi.GetPoopPosition(), pooping, failedtonest, false);
+		failedtonest.Enter(delegate(Instance smi)
+		{
+			smi.SetLastPoopCell();
+		}).GoTo(pooping);
 		pooping.Enter(delegate(Instance smi)
 		{
 			Facing component = smi.master.GetComponent<Facing>();
 			component.SetFacing(Grid.PosToCell(smi.master.gameObject) > smi.targetPoopCell);
-		}).ToggleStatusItem(CREATURES.STATUSITEMS.EXPELLING_SOLID.NAME, CREATURES.STATUSITEMS.EXPELLING_SOLID.TOOLTIP, category: Db.Get().StatusItemCategories.Main, icon: string.Empty, icon_type: StatusItem.IconType.Info, notification_type: NotificationType.Neutral, allow_multiples: false, render_overlay: SimViewMode.None, status_overlays: 63486, resolve_string_callback: null, resolve_tooltip_callback: null).PlayAnim("poop")
+		}).ToggleStatusItem(CREATURES.STATUSITEMS.EXPELLING_SOLID.NAME, CREATURES.STATUSITEMS.EXPELLING_SOLID.TOOLTIP, category: Db.Get().StatusItemCategories.Main, icon: string.Empty, icon_type: StatusItem.IconType.Info, notification_type: NotificationType.Neutral, allow_multiples: false, render_overlay: default(HashedString), status_overlays: 129022, resolve_string_callback: null, resolve_tooltip_callback: null).PlayAnim("poop")
 			.OnAnimQueueComplete(behaviourcomplete);
 		behaviourcomplete.Enter(delegate(Instance smi)
 		{
 			smi.SetLastPoopCell();
-		}).BehaviourComplete(GameTags.Creatures.Poop, false);
+		}).PlayAnim("idle_loop", KAnim.PlayMode.Loop).BehaviourComplete(GameTags.Creatures.Poop, false);
 	}
 }

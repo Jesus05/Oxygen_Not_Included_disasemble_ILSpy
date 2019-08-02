@@ -74,6 +74,12 @@ public class PressureSwitch : CircuitSwitch, ISaveLoadable, IThresholdSwitch, IS
 
 	public string BelowToolTip => UI.UISIDESCREENS.THRESHOLD_SWITCH_SIDESCREEN.PRESSURE_TOOLTIP_BELOW;
 
+	public ThresholdScreenLayoutType LayoutType => ThresholdScreenLayoutType.SliderBar;
+
+	public int IncrementScale => 1;
+
+	public NonLinearSlider.Range[] GetRanges => NonLinearSlider.GetDefaultRange(RangeMax);
+
 	public void Sim200ms(float dt)
 	{
 		int num = Grid.PosToCell(this);
@@ -135,16 +141,6 @@ public class PressureSwitch : CircuitSwitch, ISaveLoadable, IThresholdSwitch, IS
 
 	public LocString ThresholdValueUnits()
 	{
-		LocString result = null;
-		switch (GameUtil.massUnit)
-		{
-		case GameUtil.MassUnit.Kilograms:
-			result = ((desiredState != Element.State.Gas) ? UI.UNITSUFFIXES.MASS.KILOGRAM : UI.UNITSUFFIXES.MASS.GRAM);
-			break;
-		case GameUtil.MassUnit.Pounds:
-			result = UI.UNITSUFFIXES.MASS.POUND;
-			break;
-		}
-		return result;
+		return GameUtil.GetCurrentMassUnit(desiredState == Element.State.Gas);
 	}
 }

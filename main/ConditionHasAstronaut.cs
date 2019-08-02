@@ -1,4 +1,5 @@
 using STRINGS;
+using System.Collections.Generic;
 
 public class ConditionHasAstronaut : RocketLaunchCondition
 {
@@ -14,19 +15,19 @@ public class ConditionHasAstronaut : RocketLaunchCondition
 		return null;
 	}
 
-	public override bool EvaluateLaunchCondition()
+	public override LaunchStatus EvaluateLaunchCondition()
 	{
-		int result;
-		if (module.GetComponent<MinionStorage>().GetStoredMinionInfo().Count > 0)
+		MinionStorage component = module.GetComponent<MinionStorage>();
+		List<MinionStorage.Info> storedMinionInfo = component.GetStoredMinionInfo();
+		if (storedMinionInfo.Count > 0)
 		{
-			MinionStorage.Info info = module.GetComponent<MinionStorage>().GetStoredMinionInfo()[0];
-			result = ((info.serializedMinion != null) ? 1 : 0);
+			MinionStorage.Info info = storedMinionInfo[0];
+			if (info.serializedMinion != null)
+			{
+				return LaunchStatus.Ready;
+			}
 		}
-		else
-		{
-			result = 0;
-		}
-		return (byte)result != 0;
+		return LaunchStatus.Failure;
 	}
 
 	public override string GetLaunchStatusMessage(bool ready)

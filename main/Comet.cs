@@ -131,7 +131,7 @@ public class Comet : KMonoBehaviour, ISim33ms
 		foreach (ScenePartitionerEntry item in pooledList)
 		{
 			GameObject gameObject = (item.obj as Pickupable).gameObject;
-			if (!((Object)gameObject.GetComponent<MinionIdentity>() != (Object)null))
+			if (!((Object)gameObject.GetComponent<MinionIdentity>() != (Object)null) && gameObject.GetDef<CreatureFallMonitor.Def>() == null)
 			{
 				Vector2 vector = gameObject.transform.GetPosition() - pos;
 				vector = vector.normalized;
@@ -174,7 +174,7 @@ public class Comet : KMonoBehaviour, ISim33ms
 			Vector3 a3 = normalized.normalized * 0.75f;
 			a3 += new Vector3(0f, 0.55f, 0f);
 			a3 += pos;
-			GameObject go = substance.SpawnResource(a3, mass, temperature, byte.MaxValue, 0, false, false);
+			GameObject go = substance.SpawnResource(a3, mass, temperature, byte.MaxValue, 0, false, false, false);
 			if (GameComps.Fallers.Has(go))
 			{
 				GameComps.Fallers.Remove(go);
@@ -210,11 +210,7 @@ public class Comet : KMonoBehaviour, ISim33ms
 				depth = 0
 			});
 			GameUtil.FloodFillConditional(pooledQueue, SpawnTilesCellTest, pooledHashSet2, pooledHashSet, 10);
-			if (addTiles > 0)
-			{
-				Output.Log($"Comet at height: addtiles {addTiles}, height {depthOfElement}, height ratio {num5}, total added {num6}");
-			}
-			float mass2 = (num6 <= 0) ? 1f : (addTileMass / (float)num6);
+			float mass2 = (num6 <= 0) ? 1f : (addTileMass / (float)addTiles);
 			UnstableGroundManager component = World.Instance.GetComponent<UnstableGroundManager>();
 			foreach (int item2 in pooledHashSet)
 			{

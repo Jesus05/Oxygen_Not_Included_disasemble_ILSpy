@@ -30,7 +30,7 @@ public class AirFilterConfig : IBuildingConfig
 		EffectorValues tIER2 = NOISE_POLLUTION.NOISY.TIER0;
 		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, tIER, rAW_MINERALS, melting_point, build_location_rule, BUILDINGS.DECOR.NONE, tIER2, 0.2f);
 		buildingDef.Overheatable = false;
-		buildingDef.ViewMode = SimViewMode.OxygenMap;
+		buildingDef.ViewMode = OverlayModes.Oxygen.ID;
 		buildingDef.AudioCategory = "Metal";
 		buildingDef.UtilityInputOffset = new CellOffset(0, 0);
 		buildingDef.UtilityOutputOffset = new CellOffset(0, 0);
@@ -66,15 +66,15 @@ public class AirFilterConfig : IBuildingConfig
 		};
 		elementConverter.outputElements = new ElementConverter.OutputElement[2]
 		{
-			new ElementConverter.OutputElement(0.143333346f, SimHashes.Clay, 0f, true, 0f, 0.5f, false, 0.25f, byte.MaxValue, 0),
-			new ElementConverter.OutputElement(0.0899999961f, SimHashes.Oxygen, 0f, false, 0f, 0f, false, 0.75f, byte.MaxValue, 0)
+			new ElementConverter.OutputElement(0.143333346f, SimHashes.Clay, 0f, false, true, 0f, 0.5f, 0.25f, byte.MaxValue, 0),
+			new ElementConverter.OutputElement(0.0899999961f, SimHashes.Oxygen, 0f, false, false, 0f, 0f, 0.75f, byte.MaxValue, 0)
 		};
 		ManualDeliveryKG manualDeliveryKG = go.AddOrGet<ManualDeliveryKG>();
 		manualDeliveryKG.SetStorage(storage);
 		manualDeliveryKG.requestedItemTag = new Tag("Filter");
 		manualDeliveryKG.capacity = 320.000031f;
 		manualDeliveryKG.refillMass = 32.0000038f;
-		manualDeliveryKG.choreTypeIDHash = Db.Get().ChoreTypes.OperateFetch.IdHash;
+		manualDeliveryKG.choreTypeIDHash = Db.Get().ChoreTypes.FetchCritical.IdHash;
 		AirFilter airFilter = go.AddOrGet<AirFilter>();
 		airFilter.filterTag = new Tag("Filter");
 		go.AddOrGet<KBatchedAnimController>().randomiseLoopedOffset = true;

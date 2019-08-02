@@ -121,6 +121,7 @@ namespace YamlDotNet.Core
 
 		public bool Check(string expectedCharacters, int offset = 0)
 		{
+			Debug.Assert(expectedCharacters.Length > 1, "Use Check(char, int) instead.");
 			char value = buffer.Peek(offset);
 			return expectedCharacters.IndexOf(value) != -1;
 		}

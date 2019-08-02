@@ -96,6 +96,7 @@ public class Crop : KMonoBehaviour, IGameObjectEffectDescriptor
 					gameObject.SetActive(true);
 					PrimaryElement component = gameObject.GetComponent<PrimaryElement>();
 					component.Units = (float)cropVal.numProduced;
+					component.Temperature = base.gameObject.GetComponent<PrimaryElement>().Temperature;
 					Edible component2 = gameObject.GetComponent<Edible>();
 					if ((bool)component2)
 					{
@@ -104,7 +105,7 @@ public class Crop : KMonoBehaviour, IGameObjectEffectDescriptor
 				}
 				else
 				{
-					Output.LogErrorWithObj(base.gameObject, "tried to spawn an invalid crop prefab:", cropVal.cropId);
+					DebugUtil.LogErrorArgs(base.gameObject, "tried to spawn an invalid crop prefab:", cropVal.cropId);
 				}
 				Trigger(-1072826864, null);
 			}

@@ -33,7 +33,7 @@ public class LogicMemory : KMonoBehaviour
 	{
 		if (infoStatusItem == null)
 		{
-			infoStatusItem = new StatusItem("StoredValue", "BUILDING", string.Empty, StatusItem.IconType.Info, NotificationType.Neutral, false, SimViewMode.None, true, 63486);
+			infoStatusItem = new StatusItem("StoredValue", "BUILDING", string.Empty, StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, true, 129022);
 			infoStatusItem.resolveStringCallback = ResolveInfoStatusItemString;
 		}
 		Subscribe(-801688580, OnLogicValueChangedDelegate);

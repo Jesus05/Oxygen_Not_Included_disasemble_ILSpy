@@ -16,21 +16,18 @@ public class Artable : Workable
 
 		public string anim;
 
-		public int minimumSkill;
-
 		public int decor;
 
 		public bool cheerOnComplete;
 
 		public Status statusItem;
 
-		public Stage(string id, string name, string anim, int minimum_skill, int decor_value, bool cheer_on_complete, Status status_item)
+		public Stage(string id, string name, string anim, int decor_value, bool cheer_on_complete, Status status_item)
 		{
 			this.id = id;
 			this.name = name;
 			this.anim = anim;
 			decor = decor_value;
-			minimumSkill = minimum_skill;
 			cheerOnComplete = cheer_on_complete;
 			statusItem = status_item;
 		}
@@ -54,7 +51,7 @@ public class Artable : Workable
 
 	private WorkChore<Artable> chore;
 
-	protected string CurrentStage => currentStage;
+	public string CurrentStage => currentStage;
 
 	protected Artable()
 	{
@@ -65,13 +62,16 @@ public class Artable : Workable
 	protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
-		statuses[Status.Ready] = new StatusItem("AwaitingArting", "BUILDING", string.Empty, StatusItem.IconType.Info, NotificationType.Neutral, false, SimViewMode.None, true, 63486);
-		statuses[Status.Ugly] = new StatusItem("LookingUgly", "BUILDING", string.Empty, StatusItem.IconType.Info, NotificationType.Neutral, false, SimViewMode.None, true, 63486);
-		statuses[Status.Okay] = new StatusItem("LookingOkay", "BUILDING", string.Empty, StatusItem.IconType.Info, NotificationType.Neutral, false, SimViewMode.None, true, 63486);
-		statuses[Status.Great] = new StatusItem("LookingGreat", "BUILDING", string.Empty, StatusItem.IconType.Info, NotificationType.Neutral, false, SimViewMode.None, true, 63486);
+		statuses[Status.Ready] = new StatusItem("AwaitingArting", "BUILDING", string.Empty, StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, true, 129022);
+		statuses[Status.Ugly] = new StatusItem("LookingUgly", "BUILDING", string.Empty, StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, true, 129022);
+		statuses[Status.Okay] = new StatusItem("LookingOkay", "BUILDING", string.Empty, StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, true, 129022);
+		statuses[Status.Great] = new StatusItem("LookingGreat", "BUILDING", string.Empty, StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, true, 129022);
 		workerStatusItem = Db.Get().DuplicantStatusItems.Arting;
 		attributeConverter = Db.Get().AttributeConverters.ArtSpeed;
 		attributeExperienceMultiplier = DUPLICANTSTATS.ATTRIBUTE_LEVELING.MOST_DAY_EXPERIENCE;
+		skillExperienceSkillGroup = Db.Get().SkillGroups.Art.Id;
+		skillExperienceMultiplier = SKILLS.MOST_DAY_EXPERIENCE;
+		requiredSkillPerk = Db.Get().SkillPerks.CanArt.Id;
 		SetWorkTime(80f);
 	}
 
@@ -82,32 +82,41 @@ public class Artable : Workable
 			currentStage = "Default";
 		}
 		SetStage(currentStage, true);
-		shouldShowRolePerkStatusItem = false;
+		shouldShowSkillPerkStatusItem = false;
 		if (currentStage == "Default")
 		{
-			shouldShowRolePerkStatusItem = true;
+			shouldShowSkillPerkStatusItem = true;
 			Prioritizable.AddRef(base.gameObject);
-			ChoreType art = Db.Get().ChoreTypes.Art;
-			Tag[] artChores = GameTags.ChoreTypes.ArtChores;
-			chore = new WorkChore<Artable>(art, this, null, artChores, true, null, null, null, true, null, false, true, null, false, true, true, PriorityScreen.PriorityClass.basic, 0, false);
-			chore.AddPrecondition(ChorePreconditions.instance.HasRolePerk, RoleManager.rolePerks.CanArt.id);
+			chore = new WorkChore<Artable>(Db.Get().ChoreTypes.Art, this, null, true, null, null, null, true, null, false, true, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, false, true);
+			chore.AddPrecondition(ChorePreconditions.instance.HasSkillPerk, requiredSkillPerk);
 		}
 		base.OnSpawn();
 	}
 
 	protected override void OnCompleteWork(Worker worker)
 	{
-		AttributeInstance attributeInstance = Db.Get().Attributes.Art.Lookup(worker);
-		int art_skill = (int)attributeInstance.GetTotalValue();
+		Status artist_skill = Status.Ugly;
+		MinionResume component = worker.GetComponent<MinionResume>();
+		if ((UnityEngine.Object)component != (UnityEngine.Object)null)
+		{
+			if (component.HasPerk(Db.Get().SkillPerks.CanArtGreat.Id))
+			{
+				artist_skill = Status.Great;
+			}
+			else if (component.HasPerk(Db.Get().SkillPerks.CanArtOkay.Id))
+			{
+				artist_skill = Status.Okay;
+			}
+		}
 		List<Stage> potential_stages = new List<Stage>();
 		stages.ForEach(delegate(Stage item)
 		{
 			potential_stages.Add(item);
 		});
-		potential_stages.RemoveAll((Stage x) => x.minimumSkill > art_skill || x.id == "Default");
-		potential_stages.Sort((Stage x, Stage y) => y.minimumSkill.CompareTo(x.minimumSkill));
-		int highest_skill = potential_stages[0].minimumSkill;
-		potential_stages.RemoveAll((Stage x) => x.minimumSkill < highest_skill);
+		potential_stages.RemoveAll((Stage x) => x.statusItem > artist_skill || x.id == "Default");
+		potential_stages.Sort((Stage x, Stage y) => y.statusItem.CompareTo(x.statusItem));
+		Status highest_status = potential_stages[0].statusItem;
+		potential_stages.RemoveAll((Stage x) => x.statusItem < highest_status);
 		potential_stages.Shuffle();
 		SetStage(potential_stages[0].id, false);
 		if (potential_stages[0].cheerOnComplete)
@@ -128,7 +137,7 @@ public class Artable : Workable
 				"disappointed_pst"
 			}, null);
 		}
-		shouldShowRolePerkStatusItem = false;
+		shouldShowSkillPerkStatusItem = false;
 		UpdateStatusItem(null);
 		Prioritizable.RemoveRef(base.gameObject);
 	}
@@ -146,7 +155,7 @@ public class Artable : Workable
 		}
 		if (stage == null)
 		{
-			Debug.LogError("Missing stage: " + stage_id, null);
+			Debug.LogError("Missing stage: " + stage_id);
 		}
 		else
 		{
@@ -160,13 +169,8 @@ public class Artable : Workable
 			KSelectable component = GetComponent<KSelectable>();
 			component.SetName(stage.name);
 			component.SetStatusItem(Db.Get().StatusItemCategories.Main, statuses[stage.statusItem], this);
-			shouldShowRolePerkStatusItem = false;
+			shouldShowSkillPerkStatusItem = false;
 			UpdateStatusItem(null);
 		}
-	}
-
-	public override void AwardExperience(float work_dt, MinionResume resume)
-	{
-		resume.AddExperienceIfRole(Artist.ID, work_dt * ROLES.ACTIVE_EXPERIENCE_QUICK);
 	}
 }

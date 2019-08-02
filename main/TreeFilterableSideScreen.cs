@@ -193,14 +193,14 @@ public class TreeFilterableSideScreen : SideScreenContent
 		this.target = target;
 		if ((UnityEngine.Object)target == (UnityEngine.Object)null)
 		{
-			Debug.LogError("The target object provided was null", null);
+			Debug.LogError("The target object provided was null");
 		}
 		else
 		{
 			targetFilterable = target.GetComponent<TreeFilterable>();
 			if ((UnityEngine.Object)targetFilterable == (UnityEngine.Object)null)
 			{
-				Debug.LogError("The target provided does not have a Tree Filterable component", null);
+				Debug.LogError("The target provided does not have a Tree Filterable component");
 			}
 			else if (!targetFilterable.showUserMenu)
 			{
@@ -315,7 +315,7 @@ public class TreeFilterableSideScreen : SideScreenContent
 		}
 		else
 		{
-			Output.LogError("If you're filtering, your storage filter should have the filters set on it");
+			Debug.LogError("If you're filtering, your storage filter should have the filters set on it");
 		}
 	}
 

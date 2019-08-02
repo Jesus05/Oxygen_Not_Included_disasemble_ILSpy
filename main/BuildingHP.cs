@@ -17,6 +17,12 @@ public class BuildingHP : Workable
 
 		public string popString;
 
+		public SpawnFXHashes takeDamageEffect;
+
+		public string fullDamageEffectName;
+
+		public string statusItemID;
+
 		public override string ToString()
 		{
 			return source;
@@ -34,7 +40,7 @@ public class BuildingHP : Workable
 
 		public Notification CreateBrokenMachineNotification()
 		{
-			return new Notification(MISC.NOTIFICATIONS.BROKENMACHINE.NAME, NotificationType.BadMinor, HashedString.Invalid, (List<Notification> notificationList, object data) => MISC.NOTIFICATIONS.BROKENMACHINE.TOOLTIP + notificationList.ReduceMessages(false), "/t• " + base.master.damageSourceInfo.source, false, 0f, null, null);
+			return new Notification(MISC.NOTIFICATIONS.BROKENMACHINE.NAME, NotificationType.BadMinor, HashedString.Invalid, (List<Notification> notificationList, object data) => MISC.NOTIFICATIONS.BROKENMACHINE.TOOLTIP + notificationList.ReduceMessages(false), "/t• " + base.master.damageSourceInfo.source, false, 0f, null, null, null);
 		}
 
 		public void ShowProgressBar(bool show)
@@ -56,7 +62,10 @@ public class BuildingHP : Workable
 			{
 				ShowProgressBar(true);
 			}
-			progressBar.Update();
+			if ((bool)progressBar)
+			{
+				progressBar.Update();
+			}
 		}
 
 		private float HealthPercent()
@@ -82,7 +91,7 @@ public class BuildingHP : Workable
 				Vector3 vector = base.gameObject.transform.GetPosition() + Vector3.down * d;
 				vector.z += 0.05f;
 				Rotatable component2 = GetComponent<Rotatable>();
-				vector = ((!((UnityEngine.Object)component2 == (UnityEngine.Object)null) && component2.GetOrientation() != 0) ? (vector + Vector3.left * (1f + 0.5f * (float)(base.smi.master.building.Def.WidthInCells % 2))) : (vector - Vector3.right * 0.5f * (float)(base.smi.master.building.Def.WidthInCells % 2)));
+				vector = ((!((UnityEngine.Object)component2 == (UnityEngine.Object)null) && component2.GetOrientation() != 0 && base.smi.master.building.Def.WidthInCells >= 2 && base.smi.master.building.Def.HeightInCells >= 2) ? (vector + Vector3.left * (1f + 0.5f * (float)(base.smi.master.building.Def.WidthInCells % 2))) : (vector - Vector3.right * 0.5f * (float)(base.smi.master.building.Def.WidthInCells % 2)));
 				progressBar.transform.SetPosition(vector);
 				progressBar.gameObject.SetActive(true);
 			}
@@ -105,19 +114,24 @@ public class BuildingHP : Workable
 
 		public void ShowDamagedEffect()
 		{
-			BuildingDef def = base.master.building.Def;
-			if (def.RequiresPowerInput || def.RequiresPowerOutput || def.GeneratorWattageRating > 0f)
+			if (base.master.damageSourceInfo.takeDamageEffect != 0)
 			{
+				BuildingDef def = base.master.GetComponent<BuildingComplete>().Def;
 				int cell = Grid.PosToCell(base.master);
-				int cell2 = Grid.OffsetCell(cell, def.WidthInCells - 1, def.HeightInCells - 1);
-				Game.Instance.SpawnFX(SpawnFXHashes.BuildingSpark, cell2, 0f);
+				int cell2 = Grid.OffsetCell(cell, 0, def.HeightInCells - 1);
+				Game.Instance.SpawnFX(base.master.damageSourceInfo.takeDamageEffect, cell2, 0f);
 			}
 		}
 
-		public FXAnim.Instance InstantiateSmokeDamageFX()
+		public FXAnim.Instance InstantiateDamageFX()
 		{
+			if (base.master.damageSourceInfo.fullDamageEffectName == null)
+			{
+				return null;
+			}
 			BuildingDef def = base.master.GetComponent<BuildingComplete>().Def;
-			return new FXAnim.Instance(offset: new Vector3((float)(def.WidthInCells - 1), (float)(def.HeightInCells - 1), 0f), master: base.smi.master, kanim_file: "smoke_damage_kanim", anim: "idle", mode: KAnim.PlayMode.Loop, tint_colour: Lighting.Instance.Settings.SmokeDamageTint);
+			Vector3 zero = Vector3.zero;
+			return new FXAnim.Instance(offset: (def.HeightInCells > 1) ? new Vector3(0f, (float)(def.HeightInCells - 1), 0f) : new Vector3(0f, 0.5f, 0f), master: base.smi.master, kanim_file: base.master.damageSourceInfo.fullDamageEffectName, anim: "idle", mode: KAnim.PlayMode.Loop, tint_colour: Color.white);
 		}
 
 		public void SetCrackOverlayValue(float value)
@@ -173,6 +187,7 @@ public class BuildingHP : Workable
 				{
 					smi.UpdateMeter();
 				})
+				.ToggleStatusItem((SMInstance smi) => (smi.master.damageSourceInfo.statusItemID == null) ? null : Db.Get().BuildingStatusItems.Get(smi.master.damageSourceInfo.statusItemID), null)
 				.Exit(delegate(SMInstance smi)
 				{
 					smi.ShowProgressBar(false);
@@ -191,6 +206,7 @@ public class BuildingHP : Workable
 				smi.master.Trigger(774203113, smi.master);
 				smi.SetCrackOverlayValue(1f);
 			}).ToggleNotification((SMInstance smi) => smi.CreateBrokenMachineNotification()).ToggleStatusItem(Db.Get().BuildingStatusItems.Broken, (object)null)
+				.ToggleFX((SMInstance smi) => smi.InstantiateDamageFX())
 				.EventTransition(GameHashes.BuildingPartiallyRepaired, healthy.perfect, (SMInstance smi) => smi.master.HitPoints == smi.master.building.Def.HitPoints)
 				.EventHandler(GameHashes.BuildingPartiallyRepaired, delegate(SMInstance smi)
 				{
@@ -210,7 +226,7 @@ public class BuildingHP : Workable
 
 		private Chore CreateRepairChore(SMInstance smi)
 		{
-			return new WorkChore<BuildingHP>(Db.Get().ChoreTypes.Repair, smi.master, null, null, true, null, null, null, true, null, false, false, null, false, true, true, PriorityScreen.PriorityClass.basic, 0, false);
+			return new WorkChore<BuildingHP>(Db.Get().ChoreTypes.Repair, smi.master, null, true, null, null, null, true, null, false, false, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, false, true);
 		}
 	}
 
@@ -341,6 +357,18 @@ public class BuildingHP : Workable
 			damageSourceInfo = (DamageSourceInfo)data;
 			DoDamage(damageSourceInfo.damage);
 			DoDamagePopFX(damageSourceInfo);
+			DoTakeDamageFX(damageSourceInfo);
+		}
+	}
+
+	private void DoTakeDamageFX(DamageSourceInfo info)
+	{
+		if (info.takeDamageEffect != 0)
+		{
+			BuildingDef def = GetComponent<BuildingComplete>().Def;
+			int cell = Grid.PosToCell(this);
+			int cell2 = Grid.OffsetCell(cell, 0, def.HeightInCells - 1);
+			Game.Instance.SpawnFX(info.takeDamageEffect, cell2, 0f);
 		}
 	}
 

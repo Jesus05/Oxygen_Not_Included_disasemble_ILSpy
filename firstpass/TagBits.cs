@@ -2,9 +2,11 @@ using System.Collections.Generic;
 
 public struct TagBits
 {
-	private static Dictionary<Tag, TagBits> tagTable = new Dictionary<Tag, TagBits>();
+	private static Dictionary<Tag, int> tagTable = new Dictionary<Tag, int>();
 
-	private static Dictionary<int, Tag> inverseTagTable = new Dictionary<int, Tag>();
+	private static List<Tag> inverseTagTable = new List<Tag>();
+
+	private const int Capacity = 384;
 
 	private ulong bits0;
 
@@ -16,6 +18,20 @@ public struct TagBits
 
 	private ulong bits4;
 
+	private ulong bits5;
+
+	public static TagBits None = default(TagBits);
+
+	public TagBits(ref TagBits other)
+	{
+		bits0 = other.bits0;
+		bits1 = other.bits1;
+		bits2 = other.bits2;
+		bits3 = other.bits3;
+		bits4 = other.bits4;
+		bits5 = other.bits5;
+	}
+
 	public TagBits(Tag tag)
 	{
 		bits0 = 0uL;
@@ -23,6 +39,7 @@ public struct TagBits
 		bits2 = 0uL;
 		bits3 = 0uL;
 		bits4 = 0uL;
+		bits5 = 0uL;
 		SetTag(tag);
 	}
 
@@ -33,11 +50,12 @@ public struct TagBits
 		bits2 = 0uL;
 		bits3 = 0uL;
 		bits4 = 0uL;
+		bits5 = 0uL;
 		if (tags != null)
 		{
-			for (int i = 0; i < tags.Length; i++)
+			foreach (Tag tag in tags)
 			{
-				SetTag(tags[i]);
+				SetTag(tag);
 			}
 		}
 	}
@@ -50,134 +68,185 @@ public struct TagBits
 		GetTagsVerySlow(2, bits2, list);
 		GetTagsVerySlow(3, bits3, list);
 		GetTagsVerySlow(4, bits4, list);
+		GetTagsVerySlow(5, bits5, list);
 		return list;
 	}
 
-	public void GetTagsVerySlow(int bits_idx, ulong bits, List<Tag> tags)
+	private void GetTagsVerySlow(int bits_idx, ulong bits, List<Tag> tags)
 	{
 		for (int i = 0; i < 64; i++)
 		{
 			if (((long)bits & (1L << i)) != 0)
 			{
-				int key = 64 * bits_idx + i;
-				tags.Add(inverseTagTable[key]);
+				int index = 64 * bits_idx + i;
+				tags.Add(inverseTagTable[index]);
 			}
 		}
 	}
 
-	private static TagBits GetTagBits(Tag tag)
+	private static int ManifestFlagIndex(Tag tag)
 	{
-		if (!tagTable.TryGetValue(tag, out TagBits value))
+		if (tagTable.TryGetValue(tag, out int value))
 		{
-			int count = tagTable.Count;
-			value.SetFlag(count);
-			tagTable.Add(tag, value);
-			inverseTagTable[count] = tag;
-			if (tagTable.Count >= 320)
+			return value;
+		}
+		value = tagTable.Count;
+		tagTable.Add(tag, value);
+		inverseTagTable.Add(tag);
+		DebugUtil.Assert(inverseTagTable.Count == value + 1);
+		if (tagTable.Count >= 384)
+		{
+			string text = "Out of tag bits:\n";
+			int num = 0;
+			foreach (KeyValuePair<Tag, int> item in tagTable)
 			{
-				string text = "Out of tag bits:";
-				foreach (KeyValuePair<Tag, TagBits> item in tagTable)
+				text = text + item.Key.ToString() + ", ";
+				num++;
+				if (num % 64 == 0)
 				{
-					text = text + "\n" + item.Key.ToString();
+					text += "\n";
 				}
-				Debug.LogError(text, null);
 			}
+			Debug.LogError(text);
 		}
 		return value;
 	}
 
-	private void SetFlag(int flag_idx)
+	public void SetTag(Tag tag)
 	{
-		if (flag_idx < 64)
+		int num = ManifestFlagIndex(tag);
+		if (num < 64)
 		{
-			bits0 |= (ulong)(1L << flag_idx);
+			bits0 |= (ulong)(1L << num);
 		}
-		else if (flag_idx < 128)
+		else if (num < 128)
 		{
-			bits1 |= (ulong)(1L << flag_idx);
+			bits1 |= (ulong)(1L << num);
 		}
-		else if (flag_idx < 192)
+		else if (num < 192)
 		{
-			bits2 |= (ulong)(1L << flag_idx);
+			bits2 |= (ulong)(1L << num);
 		}
-		else if (flag_idx < 256)
+		else if (num < 256)
 		{
-			bits3 |= (ulong)(1L << flag_idx);
+			bits3 |= (ulong)(1L << num);
 		}
-		else if (flag_idx < 320)
+		else if (num < 320)
 		{
-			bits4 |= (ulong)(1L << flag_idx);
+			bits4 |= (ulong)(1L << num);
+		}
+		else if (num < 384)
+		{
+			bits5 |= (ulong)(1L << num);
 		}
 		else
 		{
-			Debug.LogError("Out of bits!", null);
+			Debug.LogError("Out of bits!");
 		}
-	}
-
-	public void SetTag(Tag tag)
-	{
-		TagBits tagBits = GetTagBits(tag);
-		bits0 |= tagBits.bits0;
-		bits1 |= tagBits.bits1;
-		bits2 |= tagBits.bits2;
-		bits3 |= tagBits.bits3;
-		bits4 |= tagBits.bits4;
 	}
 
 	public void Clear(Tag tag)
 	{
-		TagBits tagBits = GetTagBits(tag);
-		bits0 &= ~tagBits.bits0;
-		bits1 &= ~tagBits.bits1;
-		bits2 &= ~tagBits.bits2;
-		bits3 &= ~tagBits.bits3;
-		bits4 &= ~tagBits.bits4;
+		int num = ManifestFlagIndex(tag);
+		if (num < 64)
+		{
+			bits0 &= (ulong)(~(1L << num));
+		}
+		else if (num < 128)
+		{
+			bits1 &= (ulong)(~(1L << num));
+		}
+		else if (num < 192)
+		{
+			bits2 &= (ulong)(~(1L << num));
+		}
+		else if (num < 256)
+		{
+			bits3 &= (ulong)(~(1L << num));
+		}
+		else if (num < 320)
+		{
+			bits4 &= (ulong)(~(1L << num));
+		}
+		else if (num < 384)
+		{
+			bits5 &= (ulong)(~(1L << num));
+		}
+		else
+		{
+			Debug.LogError("Out of bits!");
+		}
 	}
 
-	public bool HasAll(TagBits tag_bits)
+	public void ClearAll()
 	{
-		return (bits0 & tag_bits.bits0) == tag_bits.bits0 && (bits1 & tag_bits.bits1) == tag_bits.bits1 && (bits2 & tag_bits.bits2) == tag_bits.bits2 && (bits3 & tag_bits.bits3) == tag_bits.bits3 && (bits4 & tag_bits.bits4) == tag_bits.bits4;
+		bits0 = 0uL;
+		bits1 = 0uL;
+		bits2 = 0uL;
+		bits3 = 0uL;
+		bits4 = 0uL;
+		bits5 = 0uL;
 	}
 
-	public bool HasAny(TagBits tag_bits)
+	public bool HasAll(ref TagBits tag_bits)
 	{
-		return ((bits0 & tag_bits.bits0) | (bits1 & tag_bits.bits1) | (bits2 & tag_bits.bits2) | (bits3 & tag_bits.bits3) | (bits4 & tag_bits.bits4)) != 0;
+		return (bits0 & tag_bits.bits0) == tag_bits.bits0 && (bits1 & tag_bits.bits1) == tag_bits.bits1 && (bits2 & tag_bits.bits2) == tag_bits.bits2 && (bits3 & tag_bits.bits3) == tag_bits.bits3 && (bits4 & tag_bits.bits4) == tag_bits.bits4 && (bits5 & tag_bits.bits5) == tag_bits.bits5;
 	}
 
-	public bool AreEqual(TagBits tag_bits)
+	public bool HasAny(ref TagBits tag_bits)
 	{
-		return tag_bits.bits0 == bits0 && tag_bits.bits1 == bits1 && tag_bits.bits2 == bits2 && tag_bits.bits3 == bits3 && tag_bits.bits4 == bits4;
+		return ((bits0 & tag_bits.bits0) | (bits1 & tag_bits.bits1) | (bits2 & tag_bits.bits2) | (bits3 & tag_bits.bits3) | (bits4 & tag_bits.bits4) | (bits5 & tag_bits.bits5)) != 0;
 	}
 
-	public static implicit operator TagBits(Tag tag)
+	public bool AreEqual(ref TagBits tag_bits)
 	{
-		return new TagBits(tag);
+		return tag_bits.bits0 == bits0 && tag_bits.bits1 == bits1 && tag_bits.bits2 == bits2 && tag_bits.bits3 == bits3 && tag_bits.bits4 == bits4 && tag_bits.bits5 == bits5;
 	}
 
-	public static implicit operator TagBits(string tag)
+	public void And(ref TagBits rhs)
 	{
-		return new TagBits(new Tag(tag));
+		bits0 &= rhs.bits0;
+		bits1 &= rhs.bits1;
+		bits2 &= rhs.bits2;
+		bits3 &= rhs.bits3;
+		bits4 &= rhs.bits4;
+		bits5 &= rhs.bits5;
 	}
 
-	public static TagBits operator &(TagBits a, TagBits b)
+	public void Or(ref TagBits rhs)
 	{
-		TagBits result = default(TagBits);
-		result.bits0 = (a.bits0 & b.bits0);
-		result.bits1 = (a.bits1 & b.bits1);
-		result.bits2 = (a.bits2 & b.bits2);
-		result.bits3 = (a.bits3 & b.bits3);
-		result.bits4 = (a.bits4 & b.bits4);
-		return result;
+		bits0 |= rhs.bits0;
+		bits1 |= rhs.bits1;
+		bits2 |= rhs.bits2;
+		bits3 |= rhs.bits3;
+		bits4 |= rhs.bits4;
+		bits5 |= rhs.bits5;
 	}
 
-	public static TagBits operator ~(TagBits tag_bits)
+	public void Xor(ref TagBits rhs)
 	{
-		TagBits result = default(TagBits);
-		result.bits0 = ~tag_bits.bits0;
-		result.bits1 = ~tag_bits.bits1;
-		result.bits2 = ~tag_bits.bits2;
-		result.bits3 = ~tag_bits.bits3;
-		result.bits4 = ~tag_bits.bits4;
+		bits0 ^= rhs.bits0;
+		bits1 ^= rhs.bits1;
+		bits2 ^= rhs.bits2;
+		bits3 ^= rhs.bits3;
+		bits4 ^= rhs.bits4;
+		bits5 ^= rhs.bits5;
+	}
+
+	public void Complement()
+	{
+		bits0 = ~bits0;
+		bits1 = ~bits1;
+		bits2 = ~bits2;
+		bits3 = ~bits3;
+		bits4 = ~bits4;
+		bits5 = ~bits5;
+	}
+
+	public static TagBits MakeComplement(ref TagBits rhs)
+	{
+		TagBits result = new TagBits(ref rhs);
+		result.Complement();
 		return result;
 	}
 }

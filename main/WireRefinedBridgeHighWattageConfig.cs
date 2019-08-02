@@ -20,7 +20,7 @@ public class WireRefinedBridgeHighWattageConfig : WireBridgeHighWattageConfig
 		buildingDef.Mass = BUILDINGS.CONSTRUCTION_MASS_KG.TIER2;
 		buildingDef.MaterialCategory = MATERIALS.REFINED_METALS;
 		buildingDef.SceneLayer = Grid.SceneLayer.WireBridges;
-		buildingDef.ForegroundLayer = Grid.SceneLayer.TileFront;
+		buildingDef.ForegroundLayer = Grid.SceneLayer.TileMain;
 		GeneratedBuildings.RegisterWithOverlay(OverlayScreen.WireIDs, "WireRefinedBridgeHighWattage");
 		return buildingDef;
 	}
@@ -36,6 +36,6 @@ public class WireRefinedBridgeHighWattageConfig : WireBridgeHighWattageConfig
 	{
 		base.DoPostConfigureUnderConstruction(go);
 		Constructable component = go.GetComponent<Constructable>();
-		component.requiredRolePerk = RoleManager.rolePerks.CanPowerTinker.id;
+		component.requiredSkillPerk = Db.Get().SkillPerks.CanPowerTinker.Id;
 	}
 }

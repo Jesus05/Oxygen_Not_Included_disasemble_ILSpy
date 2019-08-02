@@ -1,5 +1,4 @@
 using KSerialization;
-using STRINGS;
 using UnityEngine;
 
 public class RationBox : KMonoBehaviour, IUserControlledCapacity, IRender1000ms
@@ -43,26 +42,13 @@ public class RationBox : KMonoBehaviour, IUserControlledCapacity, IRender1000ms
 
 	public bool WholeValues => false;
 
-	public LocString CapacityUnits
-	{
-		get
-		{
-			LocString locString = null;
-			switch (GameUtil.massUnit)
-			{
-			case GameUtil.MassUnit.Pounds:
-				return UI.UNITSUFFIXES.MASS.POUND;
-			default:
-				return UI.UNITSUFFIXES.MASS.KILOGRAM;
-			}
-		}
-	}
+	public LocString CapacityUnits => GameUtil.GetCurrentMassUnit(false);
 
 	protected override void OnPrefabInit()
 	{
 		filteredStorage = new FilteredStorage(this, null, new Tag[1]
 		{
-			GameTags.MarkedForCompost
+			GameTags.Compostable
 		}, this, false, Db.Get().ChoreTypes.FoodFetch);
 		Subscribe(-592767678, OnOperationalChangedDelegate);
 		Subscribe(-905833192, OnCopySettingsDelegate);

@@ -21,7 +21,7 @@ public class FlowerVaseConfig : IBuildingConfig
 		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, tIER, rAW_MINERALS, melting_point, build_location_rule, BUILDINGS.DECOR.NONE, nONE, 0.2f);
 		buildingDef.Floodable = false;
 		buildingDef.Overheatable = false;
-		buildingDef.ViewMode = SimViewMode.Decor;
+		buildingDef.ViewMode = OverlayModes.Decor.ID;
 		buildingDef.AudioCategory = "Glass";
 		buildingDef.AudioSize = "large";
 		return buildingDef;
@@ -34,8 +34,7 @@ public class FlowerVaseConfig : IBuildingConfig
 		PlantablePlot plantablePlot = go.AddOrGet<PlantablePlot>();
 		plantablePlot.AddDepositTag(GameTags.DecorSeed);
 		go.AddOrGet<FlowerVase>();
-		go.AddOrGet<AnimTileable>();
-		go.GetComponent<KPrefabID>().AddTag(GameTags.Decoration);
+		go.GetComponent<KPrefabID>().AddTag(GameTags.Decoration, false);
 	}
 
 	public override void DoPostConfigureComplete(GameObject go)

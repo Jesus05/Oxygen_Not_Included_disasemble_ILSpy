@@ -146,33 +146,23 @@ public class KIconToggleMenu : KScreen
 				ToolTip component2 = kToggle.GetComponent<ToolTip>();
 				if ((bool)component2)
 				{
-					string hotkeyString = GameUtil.GetHotkeyString(toggleInfo.hotKey);
 					if (toggleInfo.tooltipHeader != string.Empty)
 					{
 						component2.AddMultiStringTooltip(toggleInfo.tooltipHeader, (!((UnityEngine.Object)ToggleToolTipHeaderTextStyleSetting != (UnityEngine.Object)null)) ? ToggleToolTipTextStyleSetting : ToggleToolTipHeaderTextStyleSetting);
 						if ((UnityEngine.Object)ToggleToolTipHeaderTextStyleSetting == (UnityEngine.Object)null)
 						{
-							Debug.Log("!", null);
+							Debug.Log("!");
 						}
 					}
-					component2.AddMultiStringTooltip(toggleInfo.tooltip + " " + hotkeyString, ToggleToolTipTextStyleSetting);
+					component2.AddMultiStringTooltip(GameUtil.ReplaceHotkeyString(toggleInfo.tooltip, toggleInfo.hotKey), ToggleToolTipTextStyleSetting);
 				}
 				if (toggleInfo.getSpriteCB != null)
 				{
 					kToggle.fgImage.sprite = toggleInfo.getSpriteCB();
 				}
-				else
+				else if (toggleInfo.icon != null)
 				{
-					Sprite[] array = icons;
-					foreach (Sprite sprite in array)
-					{
-						if ((UnityEngine.Object)sprite != (UnityEngine.Object)null && sprite.name == toggleInfo.icon)
-						{
-							Image fgImage = kToggle.fgImage;
-							fgImage.sprite = sprite;
-							break;
-						}
-					}
+					kToggle.fgImage.sprite = Assets.GetSprite(toggleInfo.icon);
 				}
 				toggleInfo.toggle = kToggle;
 				toggles.Add(kToggle);

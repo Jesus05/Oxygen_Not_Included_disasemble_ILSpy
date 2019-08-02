@@ -1,4 +1,6 @@
 using ArabicSupport;
+using Klei;
+using KMod;
 using Steamworks;
 using STRINGS;
 using System;
@@ -135,6 +137,10 @@ public static class Localization
 
 	public static string SELECTED_LANGUAGE_CODE_KEY = "SelectedLanguageCode";
 
+	private static Dictionary<string, List<Assembly>> translatable_assemblies = new Dictionary<string, List<Assembly>>();
+
+	public const BindingFlags non_static_data_member_fields = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy;
+
 	private const string start_link_token = "<link";
 
 	private const string end_link_token = "</link";
@@ -143,39 +149,190 @@ public static class Localization
 
 	public static bool IsRightToLeft => sLocale != null && sLocale.IsRightToLeft;
 
+	private static IEnumerable<Type> CollectLocStringTreeRoots(string locstrings_namespace, Assembly assembly)
+	{
+		return from type in assembly.GetTypes()
+		where type.IsClass && type.Namespace == locstrings_namespace && !type.IsNested
+		select type;
+	}
+
+	private static Dictionary<string, object> MakeRuntimeLocStringTree(Type locstring_tree_root)
+	{
+		Dictionary<string, object> dictionary = new Dictionary<string, object>();
+		FieldInfo[] fields = locstring_tree_root.GetFields();
+		FieldInfo[] array = fields;
+		foreach (FieldInfo fieldInfo in array)
+		{
+			if (fieldInfo.FieldType == typeof(LocString))
+			{
+				LocString locString = (LocString)fieldInfo.GetValue(null);
+				if (locString == null)
+				{
+					Debug.LogError("Tried to generate LocString for " + fieldInfo.Name + " but it is null so skipping");
+				}
+				else
+				{
+					dictionary[fieldInfo.Name] = locString.text;
+				}
+			}
+		}
+		Type[] nestedTypes = locstring_tree_root.GetNestedTypes();
+		Type[] array2 = nestedTypes;
+		foreach (Type type in array2)
+		{
+			Dictionary<string, object> dictionary2 = MakeRuntimeLocStringTree(type);
+			if (dictionary2.Count > 0)
+			{
+				dictionary[type.Name] = dictionary2;
+			}
+		}
+		return dictionary;
+	}
+
+	private static void WriteStringsTemplate(string path, StreamWriter writer, Dictionary<string, object> runtime_locstring_tree)
+	{
+		List<string> list = new List<string>(runtime_locstring_tree.Keys);
+		list.Sort();
+		foreach (string item in list)
+		{
+			string text = path + '.' + item;
+			object obj = runtime_locstring_tree[item];
+			if (obj.GetType() != typeof(string))
+			{
+				WriteStringsTemplate(text, writer, obj as Dictionary<string, object>);
+			}
+			else
+			{
+				string text2 = obj as string;
+				text2 = text2.Replace("\"", "\\\"");
+				text2 = text2.Replace("\n", "\\n");
+				writer.WriteLine("#. " + text);
+				writer.WriteLine("msgctxt \"{0}\"", text);
+				writer.WriteLine("msgid \"" + text2 + "\"");
+				writer.WriteLine("msgstr \"\"");
+				writer.WriteLine(string.Empty);
+			}
+		}
+	}
+
+	public static void GenerateStringsTemplate(string locstrings_namespace, Assembly assembly, string output_filename, Dictionary<string, object> current_runtime_locstring_forest)
+	{
+		Dictionary<string, object> dictionary = new Dictionary<string, object>();
+		foreach (Type item in CollectLocStringTreeRoots(locstrings_namespace, assembly))
+		{
+			Dictionary<string, object> dictionary2 = MakeRuntimeLocStringTree(item);
+			if (dictionary2.Count > 0)
+			{
+				dictionary[item.Name] = dictionary2;
+			}
+		}
+		if (current_runtime_locstring_forest != null)
+		{
+			dictionary.Concat(current_runtime_locstring_forest);
+		}
+		using (StreamWriter streamWriter = new StreamWriter(output_filename, false, new UTF8Encoding(false)))
+		{
+			streamWriter.WriteLine("msgid \"\"");
+			streamWriter.WriteLine("msgstr \"\"");
+			streamWriter.WriteLine("\"Application: Oxygen Not Included\"");
+			streamWriter.WriteLine("\"POT Version: 2.0\"");
+			streamWriter.WriteLine(string.Empty);
+			WriteStringsTemplate(locstrings_namespace, streamWriter, dictionary);
+		}
+		DebugUtil.LogArgs("Generated " + output_filename);
+	}
+
+	public static void GenerateStringsTemplate(Type locstring_tree_root, string output_folder)
+	{
+		output_folder = FileSystem.Normalize(output_folder);
+		if (FileUtil.CreateDirectory(output_folder, 5))
+		{
+			GenerateStringsTemplate(locstring_tree_root.Namespace, Assembly.GetAssembly(locstring_tree_root), FileSystem.Normalize(Path.Combine(output_folder, $"{locstring_tree_root.Namespace.ToLower()}_template.pot")), null);
+		}
+	}
+
 	public static void Initialize(bool dontCheckSteam = false)
 	{
-		Debug.Log("Localization.Initialize!", null);
-		switch ((SelectedLanguageType)Enum.Parse(typeof(SelectedLanguageType), KPlayerPrefs.GetString(SELECTED_LANGUAGE_TYPE_KEY, 0.ToString()), true))
+		DebugUtil.LogArgs("Localization.Initialize!");
+		bool flag = false;
+		switch (GetSelectedLanguageType())
 		{
 		case SelectedLanguageType.Preinstalled:
 		{
-			Debug.Log("Initialize... Preinstalled localization", null);
-			string @string = KPlayerPrefs.GetString(SELECTED_LANGUAGE_CODE_KEY, string.Empty);
-			LoadPreinstalledTranslation(@string);
-			return;
+			string selectedPreinstalledLanguageCode = GetSelectedPreinstalledLanguageCode();
+			if (!string.IsNullOrEmpty(selectedPreinstalledLanguageCode))
+			{
+				DebugUtil.LogArgs("Localization Initialize... Preinstalled localization");
+				DebugUtil.LogArgs(" -> ", selectedPreinstalledLanguageCode);
+				LoadPreinstalledTranslation(selectedPreinstalledLanguageCode);
+			}
+			else
+			{
+				flag = true;
+			}
+			break;
 		}
 		case SelectedLanguageType.UGC:
 			if (!dontCheckSteam && SteamManager.Initialized && LanguageOptionsScreen.HasInstalledLanguage())
 			{
-				Debug.Log("Initialize... SteamUGCService", null);
+				DebugUtil.LogArgs("Localization Initialize... SteamUGCService");
 				PublishedFileId_t item = PublishedFileId_t.Invalid;
 				LanguageOptionsScreen.LoadTranslation(ref item);
 				if (item != PublishedFileId_t.Invalid)
 				{
-					Console.WriteLine("LOCALIZATION: Loaded steamworks file id: " + item.ToString());
+					DebugUtil.LogArgs(" -> Loaded steamworks file id: ", item.ToString());
 				}
 				else
 				{
-					Console.WriteLine("LOCALIZATION: Failed to load steamworks file id: " + item.ToString());
+					DebugUtil.LogArgs(" -> Failed to load steamworks file id: ", item.ToString());
 				}
-				return;
+			}
+			else
+			{
+				flag = true;
 			}
 			break;
+		case SelectedLanguageType.None:
+			sFontAsset = GetFont(GetDefaultLocale().FontName);
+			break;
 		}
-		Debug.Log("Initialize... Local mod localization", null);
-		string modLocalizationFilePath = GetModLocalizationFilePath();
-		LoadLocalTranslationFile(SelectedLanguageType.None, modLocalizationFilePath);
+		if (flag)
+		{
+			ClearLanguage();
+		}
+	}
+
+	public static void VerifyTranslationModSubscription(GameObject context)
+	{
+		if (GetSelectedLanguageType() == SelectedLanguageType.UGC && SteamManager.Initialized && !LanguageOptionsScreen.HasInstalledLanguage())
+		{
+			PublishedFileId_t invalid = PublishedFileId_t.Invalid;
+			PublishedFileId_t publishedFileId_t = new PublishedFileId_t((uint)KPlayerPrefs.GetInt("InstalledLanguage", (int)invalid.m_PublishedFileId));
+			Label label = default(Label);
+			label.distribution_platform = Label.DistributionPlatform.Steam;
+			label.id = publishedFileId_t.ToString();
+			Label rhs = label;
+			string arg = UI.FRONTEND.TRANSLATIONS_SCREEN.UNKNOWN;
+			foreach (Mod mod in Global.Instance.modManager.mods)
+			{
+				if (mod.label.Match(rhs))
+				{
+					arg = mod.title;
+					break;
+				}
+			}
+			ClearLanguage();
+			GameObject gameObject = KScreenManager.AddChild(context, ScreenPrefabs.Instance.ConfirmDialogScreen.gameObject);
+			KScreen component = gameObject.GetComponent<KScreen>();
+			component.Activate();
+			ConfirmDialogScreen component2 = component.GetComponent<ConfirmDialogScreen>();
+			ConfirmDialogScreen confirmDialogScreen = component2;
+			string title_text = UI.CONFIRMDIALOG.DIALOG_HEADER;
+			string text = string.Format(UI.FRONTEND.TRANSLATIONS_SCREEN.MISSING_LANGUAGE_PACK, arg);
+			string confirm_text = UI.FRONTEND.TRANSLATIONS_SCREEN.RESTART;
+			System.Action on_confirm = App.instance.Restart;
+			confirmDialogScreen.PopupConfirmDialog(text, on_confirm, null, null, null, title_text, confirm_text, null, null, true);
+		}
 	}
 
 	public static void LoadPreinstalledTranslation(string code)
@@ -196,35 +353,36 @@ public static class Localization
 
 	public static bool LoadLocalTranslationFile(SelectedLanguageType source, string path)
 	{
-		if (File.Exists(path))
+		if (!File.Exists(path))
 		{
-			string[] lines = File.ReadAllLines(path, Encoding.UTF8);
-			bool flag = LoadTranslationFromLines(lines);
-			if (flag)
-			{
-				KPlayerPrefs.SetString(SELECTED_LANGUAGE_TYPE_KEY, source.ToString());
-			}
-			else
-			{
-				ClearLanguage();
-			}
-			return flag;
+			return false;
 		}
-		return false;
+		string[] lines = File.ReadAllLines(path, Encoding.UTF8);
+		bool flag = LoadTranslationFromLines(lines);
+		if (flag)
+		{
+			KPlayerPrefs.SetString(SELECTED_LANGUAGE_TYPE_KEY, source.ToString());
+		}
+		else
+		{
+			ClearLanguage();
+		}
+		return flag;
 	}
 
 	private static bool LoadTranslationFromLines(string[] lines)
 	{
-		bool flag = false;
-		if (lines != null && lines.Length > 0)
+		if (lines == null || lines.Length <= 0)
 		{
-			sLocale = GetLocale(lines);
-			flag = LoadTranslation(lines, false);
-			if (flag)
-			{
-				currentFontName = GetFontName(lines);
-				SwapToLocalizedFont(currentFontName);
-			}
+			return false;
+		}
+		sLocale = GetLocale(lines);
+		DebugUtil.LogArgs(" -> Locale is now ", sLocale.ToString());
+		bool flag = LoadTranslation(lines, false);
+		if (flag)
+		{
+			currentFontName = GetFontName(lines);
+			SwapToLocalizedFont(currentFontName);
 		}
 		return flag;
 	}
@@ -237,14 +395,20 @@ public static class Localization
 			OverloadStrings(translated_strings);
 			return true;
 		}
-		catch (Exception obj)
+		catch (Exception ex)
 		{
-			Debug.LogWarning(obj, null);
+			DebugUtil.LogWarningArgs(ex);
 			return false;
 		}
 	}
 
-	private static Dictionary<string, string> ExtractTranslatedStrings(string[] lines, bool isTemplate = false)
+	public static Dictionary<string, string> LoadStringsFile(string path, bool isTemplate)
+	{
+		string[] lines = File.ReadAllLines(path, Encoding.UTF8);
+		return ExtractTranslatedStrings(lines, isTemplate);
+	}
+
+	public static Dictionary<string, string> ExtractTranslatedStrings(string[] lines, bool isTemplate = false)
 	{
 		Dictionary<string, string> dictionary = new Dictionary<string, string>();
 		Entry entry = default(Entry);
@@ -322,38 +486,65 @@ public static class Localization
 		return text3;
 	}
 
-	private static void OverloadStrings(Dictionary<string, string> translated_strings)
+	private static void AddAssembly(string locstrings_namespace, Assembly assembly)
 	{
-		Assembly assembly = Assembly.GetAssembly(typeof(UI));
-		IEnumerable<Type> source = from t in assembly.GetTypes()
-		where t.IsClass && t.Namespace == "STRINGS" && !t.IsNested
-		select t;
-		string parameter_errors = string.Empty;
-		string link_errors = string.Empty;
-		string link_count_errors = string.Empty;
-		List<Type> list = source.ToList();
-		foreach (Type item in list)
+		if (!translatable_assemblies.TryGetValue(locstrings_namespace, out List<Assembly> value))
 		{
-			string path = "STRINGS." + item.Name;
-			OverloadStrings(translated_strings, path, item, ref parameter_errors, ref link_errors, ref link_count_errors);
+			value = new List<Assembly>();
+			translatable_assemblies.Add(locstrings_namespace, value);
 		}
-		if (!string.IsNullOrEmpty(parameter_errors))
+		value.Add(assembly);
+	}
+
+	public static void AddAssembly(Assembly assembly)
+	{
+		AddAssembly("STRINGS", assembly);
+	}
+
+	public static void RegisterForTranslation(Type locstring_tree_root)
+	{
+		Assembly assembly = Assembly.GetAssembly(locstring_tree_root);
+		AddAssembly(locstring_tree_root.Namespace, assembly);
+		string parent_path = locstring_tree_root.Namespace + '.';
+		foreach (Type item in CollectLocStringTreeRoots(locstring_tree_root.Namespace, assembly))
 		{
-			Debug.Log("TRANSLATION ERROR! The following have missing or mismatched parameters:\n" + parameter_errors, null);
-		}
-		if (!string.IsNullOrEmpty(link_errors))
-		{
-			Debug.Log("TRANSLATION ERROR! The following have mismatched <link> tags:\n" + link_errors, null);
-		}
-		if (!string.IsNullOrEmpty(link_count_errors))
-		{
-			Debug.Log("TRANSLATION ERROR! The following do not have the same amount of <link> tags as the english string which can cause nested link errors:\n" + link_count_errors, null);
+			LocString.CreateLocStringKeys(item, parent_path);
 		}
 	}
 
-	private static void OverloadStrings(Dictionary<string, string> translated_strings, string path, Type t, ref string parameter_errors, ref string link_errors, ref string link_count_errors)
+	public static void OverloadStrings(Dictionary<string, string> translated_strings)
 	{
-		FieldInfo[] fields = t.GetFields();
+		string parameter_errors = string.Empty;
+		string link_errors = string.Empty;
+		string link_count_errors = string.Empty;
+		foreach (KeyValuePair<string, List<Assembly>> translatable_assembly in translatable_assemblies)
+		{
+			foreach (Assembly item in translatable_assembly.Value)
+			{
+				foreach (Type item2 in CollectLocStringTreeRoots(translatable_assembly.Key, item))
+				{
+					string path = translatable_assembly.Key + "." + item2.Name;
+					OverloadStrings(translated_strings, path, item2, ref parameter_errors, ref link_errors, ref link_count_errors);
+				}
+			}
+		}
+		if (!string.IsNullOrEmpty(parameter_errors))
+		{
+			DebugUtil.LogArgs("TRANSLATION ERROR! The following have missing or mismatched parameters:\n" + parameter_errors);
+		}
+		if (!string.IsNullOrEmpty(link_errors))
+		{
+			DebugUtil.LogArgs("TRANSLATION ERROR! The following have mismatched <link> tags:\n" + link_errors);
+		}
+		if (!string.IsNullOrEmpty(link_count_errors))
+		{
+			DebugUtil.LogArgs("TRANSLATION ERROR! The following do not have the same amount of <link> tags as the english string which can cause nested link errors:\n" + link_count_errors);
+		}
+	}
+
+	public static void OverloadStrings(Dictionary<string, string> translated_strings, string path, Type locstring_hierarchy, ref string parameter_errors, ref string link_errors, ref string link_count_errors)
+	{
+		FieldInfo[] fields = locstring_hierarchy.GetFields();
 		FieldInfo[] array = fields;
 		foreach (FieldInfo fieldInfo in array)
 		{
@@ -365,32 +556,26 @@ public static class Localization
 				{
 					LocString locString = (LocString)fieldInfo.GetValue(null);
 					LocString value2 = new LocString(value, text);
-					if (AreParametersPreserved(locString.text, value))
+					if (!AreParametersPreserved(locString.text, value))
 					{
-						if (HasSameOrLessLinkCountAsEnglish(locString.text, value))
-						{
-							if (HasMatchingLinkTags(value, 0))
-							{
-								fieldInfo.SetValue(null, value2);
-							}
-							else
-							{
-								link_errors = link_errors + "\t" + text + "\n";
-							}
-						}
-						else
-						{
-							link_count_errors = link_count_errors + "\t" + text + "\n";
-						}
+						parameter_errors = parameter_errors + "\t" + text + "\n";
+					}
+					else if (!HasSameOrLessLinkCountAsEnglish(locString.text, value))
+					{
+						link_count_errors = link_count_errors + "\t" + text + "\n";
+					}
+					else if (!HasMatchingLinkTags(value, 0))
+					{
+						link_errors = link_errors + "\t" + text + "\n";
 					}
 					else
 					{
-						parameter_errors = parameter_errors + "\t" + text + "\n";
+						fieldInfo.SetValue(null, value2);
 					}
 				}
 			}
 		}
-		Type[] nestedTypes = t.GetNestedTypes();
+		Type[] nestedTypes = locstring_hierarchy.GetNestedTypes();
 		Type[] array2 = nestedTypes;
 		foreach (Type type in array2)
 		{
@@ -401,17 +586,17 @@ public static class Localization
 
 	public static string GetDefaultLocalizationFilePath()
 	{
-		return Path.Combine(Application.streamingAssetsPath, "Mods/strings_template.pot");
+		return Path.Combine(Application.streamingAssetsPath, "strings/strings_template.pot");
 	}
 
 	public static string GetModLocalizationFilePath()
 	{
-		return Path.Combine(Application.streamingAssetsPath, "Mods/strings.po");
+		return Path.Combine(Application.streamingAssetsPath, "strings/strings.po");
 	}
 
 	public static string GetPreinstalledLocalizationFilePath(string code)
 	{
-		string path = "Mods/strings_preinstalled_" + code + ".po";
+		string path = "strings/strings_preinstalled_" + code + ".po";
 		return Path.Combine(Application.streamingAssetsPath, path);
 	}
 
@@ -422,7 +607,7 @@ public static class Localization
 
 	public static Texture2D GetPreinstalledLocalizationImage(string code)
 	{
-		string path = Path.Combine(Application.streamingAssetsPath, "Mods/preinstalled_icon_" + code + ".png");
+		string path = Path.Combine(Application.streamingAssetsPath, "strings/preinstalled_icon_" + code + ".png");
 		if (File.Exists(path))
 		{
 			byte[] data = File.ReadAllBytes(path);
@@ -436,6 +621,7 @@ public static class Localization
 	public static void SetLocale(Locale locale)
 	{
 		sLocale = locale;
+		DebugUtil.LogArgs(" -> Locale is now ", sLocale.ToString());
 	}
 
 	private static string GetFontParam(string line)
@@ -448,6 +634,21 @@ public static class Localization
 			result = result.Replace("\"", string.Empty);
 		}
 		return result;
+	}
+
+	public static string GetSelectedPreinstalledLanguageCode()
+	{
+		SelectedLanguageType selectedLanguageType = GetSelectedLanguageType();
+		if (selectedLanguageType == SelectedLanguageType.Preinstalled)
+		{
+			return KPlayerPrefs.GetString(SELECTED_LANGUAGE_CODE_KEY);
+		}
+		return string.Empty;
+	}
+
+	public static SelectedLanguageType GetSelectedLanguageType()
+	{
+		return (SelectedLanguageType)Enum.Parse(typeof(SelectedLanguageType), KPlayerPrefs.GetString(SELECTED_LANGUAGE_TYPE_KEY, 0.ToString()), true);
 	}
 
 	private static string GetLanguageCode(string line)
@@ -506,16 +707,6 @@ public static class Localization
 			locale.SetCode(text);
 		}
 		return locale;
-	}
-
-	public static TMP_FontAsset GetFontForLocale(string code)
-	{
-		Locale locale = GetLocaleForCode(code);
-		if (locale == null)
-		{
-			locale = GetDefaultLocale();
-		}
-		return Resources.Load<TMP_FontAsset>(locale.FontName);
 	}
 
 	private static string GetFontName(string filename)
@@ -592,37 +783,85 @@ public static class Localization
 		SwapToLocalizedFont(currentFontName);
 	}
 
-	public static void SwapToLocalizedFont(string fontname)
+	public static bool SwapToLocalizedFont(string fontname)
 	{
-		if (!string.IsNullOrEmpty(fontname))
+		if (string.IsNullOrEmpty(fontname))
 		{
-			TMP_FontAsset tMP_FontAsset = Resources.Load<TMP_FontAsset>(fontname);
-			if ((UnityEngine.Object)tMP_FontAsset != (UnityEngine.Object)null)
+			return false;
+		}
+		sFontAsset = GetFont(fontname);
+		TextStyleSetting[] array = Resources.FindObjectsOfTypeAll<TextStyleSetting>();
+		foreach (TextStyleSetting textStyleSetting in array)
+		{
+			if ((UnityEngine.Object)textStyleSetting != (UnityEngine.Object)null)
 			{
-				sFontAsset = tMP_FontAsset;
-				TextStyleSetting[] array = Resources.FindObjectsOfTypeAll<TextStyleSetting>();
-				foreach (TextStyleSetting textStyleSetting in array)
-				{
-					if ((UnityEngine.Object)textStyleSetting != (UnityEngine.Object)null)
-					{
-						textStyleSetting.sdfFont = tMP_FontAsset;
-					}
-				}
-				bool isRightToLeft = IsRightToLeft;
-				LocText[] array2 = Resources.FindObjectsOfTypeAll<LocText>();
-				foreach (LocText locText in array2)
-				{
-					if ((UnityEngine.Object)locText != (UnityEngine.Object)null)
-					{
-						locText.SwapFont(tMP_FontAsset, isRightToLeft);
-					}
-				}
-			}
-			else
-			{
-				Console.WriteLine("LOCALIZATION ERROR! Font [" + fontname + "] not found");
+				textStyleSetting.sdfFont = sFontAsset;
 			}
 		}
+		bool isRightToLeft = IsRightToLeft;
+		LocText[] array2 = Resources.FindObjectsOfTypeAll<LocText>();
+		foreach (LocText locText in array2)
+		{
+			if ((UnityEngine.Object)locText != (UnityEngine.Object)null)
+			{
+				locText.SwapFont(sFontAsset, isRightToLeft);
+			}
+		}
+		return true;
+	}
+
+	private static bool SetFont(Type target_type, object target, TMP_FontAsset font, bool is_right_to_left, HashSet<MemberInfo> excluded_members)
+	{
+		if (target_type == null || target == null || (UnityEngine.Object)font == (UnityEngine.Object)null)
+		{
+			return false;
+		}
+		FieldInfo[] fields = target_type.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy);
+		foreach (FieldInfo fieldInfo in fields)
+		{
+			if (!excluded_members.Contains(fieldInfo))
+			{
+				if (fieldInfo.FieldType == typeof(TextStyleSetting))
+				{
+					((TextStyleSetting)fieldInfo.GetValue(target)).sdfFont = font;
+				}
+				else if (fieldInfo.FieldType == typeof(LocText))
+				{
+					((LocText)fieldInfo.GetValue(target)).SwapFont(font, is_right_to_left);
+				}
+				else if (fieldInfo.FieldType == typeof(GameObject))
+				{
+					Component[] components = ((GameObject)fieldInfo.GetValue(target)).GetComponents<Component>();
+					foreach (Component component in components)
+					{
+						SetFont(component.GetType(), component, font, is_right_to_left, excluded_members);
+					}
+				}
+				else if (fieldInfo.MemberType == MemberTypes.Field && fieldInfo.FieldType != fieldInfo.DeclaringType)
+				{
+					SetFont(fieldInfo.FieldType, fieldInfo.GetValue(target), font, is_right_to_left, excluded_members);
+				}
+			}
+		}
+		return true;
+	}
+
+	public static bool SetFont<T>(T target, TMP_FontAsset font, bool is_right_to_left, HashSet<MemberInfo> excluded_members)
+	{
+		return SetFont(typeof(T), target, font, is_right_to_left, excluded_members);
+	}
+
+	public static TMP_FontAsset GetFont(string fontname)
+	{
+		TMP_FontAsset[] array = Resources.FindObjectsOfTypeAll<TMP_FontAsset>();
+		foreach (TMP_FontAsset tMP_FontAsset in array)
+		{
+			if (tMP_FontAsset.name == fontname)
+			{
+				return tMP_FontAsset;
+			}
+		}
+		return null;
 	}
 
 	private static bool HasSameOrLessTokenCount(string english_string, string translated_string, string token)
@@ -749,6 +988,7 @@ public static class Localization
 
 	public static void ClearLanguage()
 	{
+		DebugUtil.LogArgs(" -> Clearing selected language! Either it didn't load correct or returning to english by menu.");
 		sFontAsset = null;
 		sLocale = null;
 		KPlayerPrefs.SetString(SELECTED_LANGUAGE_TYPE_KEY, 0.ToString());

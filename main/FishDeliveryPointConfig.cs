@@ -11,31 +11,31 @@ public class FishDeliveryPointConfig : IBuildingConfig
 		buildingDef.AudioCategory = "Metal";
 		buildingDef.Entombable = true;
 		buildingDef.Floodable = true;
-		buildingDef.ForegroundLayer = Grid.SceneLayer.TileFront;
-		buildingDef.ViewMode = SimViewMode.Rooms;
+		buildingDef.ForegroundLayer = Grid.SceneLayer.TileMain;
+		buildingDef.ViewMode = OverlayModes.Rooms.ID;
 		return buildingDef;
 	}
 
 	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
-		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.CreatureRelocator);
+		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.CreatureRelocator, false);
 		Storage storage = go.AddOrGet<Storage>();
 		storage.allowItemRemoval = false;
 		storage.showDescriptor = true;
 		storage.storageFilters = STORAGEFILTERS.SWIMMING_CREATURES;
-		storage.workAnims = new HashedString[2]
+		storage.workAnims = new HashedString[1]
 		{
-			new HashedString("place"),
-			new HashedString("release")
+			new HashedString("working_pre")
 		};
 		storage.workAnimPlayMode = KAnim.PlayMode.Once;
 		storage.overrideAnims = new KAnimFile[1]
 		{
-			Assets.GetAnim("anim_restrain_creature_kanim")
+			Assets.GetAnim("anim_interacts_fishrelocator_kanim")
 		};
 		storage.synchronizeAnims = false;
 		storage.useGunForDelivery = false;
 		storage.allowSettingOnlyFetchMarkedItems = false;
+		storage.faceTargetWhenWorking = false;
 		CreatureDeliveryPoint creatureDeliveryPoint = go.AddOrGet<CreatureDeliveryPoint>();
 		creatureDeliveryPoint.deliveryOffsets = new CellOffset[1]
 		{

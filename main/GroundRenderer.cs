@@ -120,13 +120,6 @@ public class GroundRenderer : KMonoBehaviour
 			}
 		}
 
-		private class Tuning : TuningData<Tuning>
-		{
-			public bool _DrawAlpha;
-
-			public bool _DrawOpaque;
-		}
-
 		public SimHashes element;
 
 		private RenderData alpha;
@@ -381,8 +374,6 @@ public class GroundRenderer : KMonoBehaviour
 
 	private Vector2I size;
 
-	private static bool forceVisibleRebuild;
-
 	protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
@@ -414,7 +405,7 @@ public class GroundRenderer : KMonoBehaviour
 		}
 	}
 
-	public void Render(Vector2I vis_min, Vector2I vis_max)
+	public void Render(Vector2I vis_min, Vector2I vis_max, bool forceVisibleRebuild = false)
 	{
 		if (base.enabled)
 		{
@@ -436,6 +427,11 @@ public class GroundRenderer : KMonoBehaviour
 			}
 			RebuildDirtyChunks();
 		}
+	}
+
+	public void RenderAll()
+	{
+		Render(new Vector2I(0, 0), new Vector2I(worldChunks.GetLength(0) * 16, worldChunks.GetLength(1) * 16), true);
 	}
 
 	private void RebuildDirtyChunks()
@@ -568,7 +564,7 @@ public class GroundRenderer : KMonoBehaviour
 			{
 				if ((UnityEngine.Object)element.substance.material == (UnityEngine.Object)null)
 				{
-					Output.LogError(element.name, "must have material associated with it in the substance table");
+					DebugUtil.LogErrorArgs(element.name, "must have material associated with it in the substance table");
 				}
 				Material material = new Material(element.substance.material);
 				InitOpaqueMaterial(material, element);

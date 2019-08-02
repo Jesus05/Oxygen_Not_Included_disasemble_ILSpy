@@ -18,48 +18,6 @@ public class BuildMenu : KScreen
 		public int bottom;
 	}
 
-	public enum Category
-	{
-		INVALID = -1,
-		ROOT,
-		Base,
-		Tiles,
-		Ladders,
-		Doors,
-		Storage,
-		Infrastructure,
-		Wires,
-		PowerControl,
-		Generators,
-		Pipes,
-		PlumbingStructures,
-		VentilationStructures,
-		Logistics,
-		TravelTubes,
-		Conveyance,
-		LogicWiring,
-		LogicGates,
-		LogicSwitches,
-		ConduitSensors,
-		FoodAndAgriculture,
-		Farming,
-		Ranching,
-		Cooking,
-		HealthAndHappiness,
-		Research,
-		Medical,
-		Hygiene,
-		Furniture,
-		Decor,
-		Recreation,
-		Industrial,
-		Oxygen,
-		Utilities,
-		Refining,
-		Equipment,
-		Rocketry
-	}
-
 	public struct BuildingInfo
 	{
 		public string id;
@@ -75,7 +33,7 @@ public class BuildMenu : KScreen
 
 	public struct DisplayInfo
 	{
-		public Category category;
+		public HashedString category;
 
 		public string iconName;
 
@@ -85,7 +43,7 @@ public class BuildMenu : KScreen
 
 		public object data;
 
-		public DisplayInfo(Category category, string icon_name, Action hotkey, KKeyCode key_code, object data)
+		public DisplayInfo(HashedString category, string icon_name, Action hotkey, KKeyCode key_code, object data)
 		{
 			this.category = category;
 			iconName = icon_name;
@@ -94,7 +52,7 @@ public class BuildMenu : KScreen
 			this.data = data;
 		}
 
-		public DisplayInfo GetInfo(Category category)
+		public DisplayInfo GetInfo(HashedString category)
 		{
 			DisplayInfo result = default(DisplayInfo);
 			if (data != null && typeof(IList<DisplayInfo>).IsAssignableFrom(data.GetType()))
@@ -138,9 +96,11 @@ public class BuildMenu : KScreen
 
 	private BuildingDef selectedBuilding;
 
-	private Category selectedCategory = Category.INVALID;
+	private HashedString selectedCategory;
 
-	private Dictionary<Category, BuildMenuCategoriesScreen> submenus = new Dictionary<Category, BuildMenuCategoriesScreen>();
+	private static readonly HashedString ROOT_HASHSTR = new HashedString("ROOT");
+
+	private Dictionary<HashedString, BuildMenuCategoriesScreen> submenus = new Dictionary<HashedString, BuildMenuCategoriesScreen>();
 
 	private Stack<KIconToggleMenu> submenuStack = new Stack<KIconToggleMenu>();
 
@@ -165,11 +125,11 @@ public class BuildMenu : KScreen
 	[SerializeField]
 	private Vector2 buildingsMenuOffset = Vector2.zero;
 
-	public static DisplayInfo OrderedBuildings = new DisplayInfo(Category.ROOT, "icon_category_base", Action.NumActions, KKeyCode.None, new List<DisplayInfo>
+	public static DisplayInfo OrderedBuildings = new DisplayInfo(CacheHashString("ROOT"), "icon_category_base", Action.NumActions, KKeyCode.None, new List<DisplayInfo>
 	{
-		new DisplayInfo(Category.Base, "icon_category_base", Action.Plan1, KKeyCode.None, new List<DisplayInfo>
+		new DisplayInfo(CacheHashString("Base"), "icon_category_base", Action.Plan1, KKeyCode.None, new List<DisplayInfo>
 		{
-			new DisplayInfo(Category.Tiles, "icon_category_base", Action.BuildCategoryTiles, KKeyCode.T, new List<BuildingInfo>
+			new DisplayInfo(CacheHashString("Tiles"), "icon_category_base", Action.BuildCategoryTiles, KKeyCode.T, new List<BuildingInfo>
 			{
 				new BuildingInfo("Tile", Action.BuildMenuKeyT),
 				new BuildingInfo("GasPermeableMembrane", Action.BuildMenuKeyA),
@@ -178,31 +138,33 @@ public class BuildMenu : KScreen
 				new BuildingInfo("PlasticTile", Action.BuildMenuKeyC),
 				new BuildingInfo("MetalTile", Action.BuildMenuKeyX),
 				new BuildingInfo("GlassTile", Action.BuildMenuKeyW),
-				new BuildingInfo("BunkerTile", Action.BuildMenuKeyB)
+				new BuildingInfo("BunkerTile", Action.BuildMenuKeyB),
+				new BuildingInfo("CarpetTile", Action.BuildMenuKeyL)
 			}),
-			new DisplayInfo(Category.Ladders, "icon_category_base", Action.BuildCategoryLadders, KKeyCode.A, new List<BuildingInfo>
+			new DisplayInfo(CacheHashString("Ladders"), "icon_category_base", Action.BuildCategoryLadders, KKeyCode.A, new List<BuildingInfo>
 			{
 				new BuildingInfo("Ladder", Action.BuildMenuKeyA),
 				new BuildingInfo("LadderFast", Action.BuildMenuKeyC),
 				new BuildingInfo("FirePole", Action.BuildMenuKeyF)
 			}),
-			new DisplayInfo(Category.Doors, "icon_category_base", Action.BuildCategoryDoors, KKeyCode.D, new List<BuildingInfo>
+			new DisplayInfo(CacheHashString("Doors"), "icon_category_base", Action.BuildCategoryDoors, KKeyCode.D, new List<BuildingInfo>
 			{
 				new BuildingInfo("Door", Action.BuildMenuKeyD),
 				new BuildingInfo("ManualPressureDoor", Action.BuildMenuKeyA),
 				new BuildingInfo("PressureDoor", Action.BuildMenuKeyE),
 				new BuildingInfo("BunkerDoor", Action.BuildMenuKeyB)
 			}),
-			new DisplayInfo(Category.Storage, "icon_category_base", Action.BuildCategoryStorage, KKeyCode.S, new List<BuildingInfo>
+			new DisplayInfo(CacheHashString("Storage"), "icon_category_base", Action.BuildCategoryStorage, KKeyCode.S, new List<BuildingInfo>
 			{
 				new BuildingInfo("StorageLocker", Action.BuildMenuKeyS),
 				new BuildingInfo("RationBox", Action.BuildMenuKeyR),
 				new BuildingInfo("Refrigerator", Action.BuildMenuKeyF),
 				new BuildingInfo("StorageLockerSmart", Action.BuildMenuKeyA),
 				new BuildingInfo("LiquidReservoir", Action.BuildMenuKeyQ),
-				new BuildingInfo("GasReservoir", Action.BuildMenuKeyG)
+				new BuildingInfo("GasReservoir", Action.BuildMenuKeyG),
+				new BuildingInfo("ObjectDispenser", Action.BuildMenuKeyO)
 			}),
-			new DisplayInfo(Category.Research, "icon_category_misc", Action.BuildCategoryResearch, KKeyCode.R, new List<BuildingInfo>
+			new DisplayInfo(CacheHashString("Research"), "icon_category_misc", Action.BuildCategoryResearch, KKeyCode.R, new List<BuildingInfo>
 			{
 				new BuildingInfo("ResearchCenter", Action.BuildMenuKeyR),
 				new BuildingInfo("AdvancedResearchCenter", Action.BuildMenuKeyS),
@@ -210,9 +172,9 @@ public class BuildMenu : KScreen
 				new BuildingInfo("Telescope", Action.BuildMenuKeyT)
 			})
 		}),
-		new DisplayInfo(Category.FoodAndAgriculture, "icon_category_food", Action.Plan2, KKeyCode.None, new List<DisplayInfo>
+		new DisplayInfo(CacheHashString("Food And Agriculture"), "icon_category_food", Action.Plan2, KKeyCode.None, new List<DisplayInfo>
 		{
-			new DisplayInfo(Category.Farming, "icon_category_food", Action.BuildCategoryFarming, KKeyCode.F, new List<BuildingInfo>
+			new DisplayInfo(CacheHashString("Farming"), "icon_category_food", Action.BuildCategoryFarming, KKeyCode.F, new List<BuildingInfo>
 			{
 				new BuildingInfo("PlanterBox", Action.BuildMenuKeyB),
 				new BuildingInfo("FarmTile", Action.BuildMenuKeyF),
@@ -220,13 +182,14 @@ public class BuildMenu : KScreen
 				new BuildingInfo("Compost", Action.BuildMenuKeyC),
 				new BuildingInfo("FertilizerMaker", Action.BuildMenuKeyR)
 			}),
-			new DisplayInfo(Category.Cooking, "icon_category_food", Action.BuildCategoryCooking, KKeyCode.C, new List<BuildingInfo>
+			new DisplayInfo(CacheHashString("Cooking"), "icon_category_food", Action.BuildCategoryCooking, KKeyCode.C, new List<BuildingInfo>
 			{
 				new BuildingInfo("MicrobeMusher", Action.BuildMenuKeyC),
 				new BuildingInfo("CookingStation", Action.BuildMenuKeyG),
+				new BuildingInfo("GourmetCookingStation", Action.BuildMenuKeyS),
 				new BuildingInfo("EggCracker", Action.BuildMenuKeyE)
 			}),
-			new DisplayInfo(Category.Ranching, "icon_category_food", Action.BuildCategoryRanching, KKeyCode.R, new List<BuildingInfo>
+			new DisplayInfo(CacheHashString("Ranching"), "icon_category_food", Action.BuildCategoryRanching, KKeyCode.R, new List<BuildingInfo>
 			{
 				new BuildingInfo("CreatureDeliveryPoint", Action.BuildMenuKeyD),
 				new BuildingInfo("FishDeliveryPoint", Action.BuildMenuKeyG),
@@ -237,20 +200,22 @@ public class BuildMenu : KScreen
 				new BuildingInfo("EggIncubator", Action.BuildMenuKeyI),
 				new BuildingInfo("CreatureTrap", Action.BuildMenuKeyT),
 				new BuildingInfo("FishTrap", Action.BuildMenuKeyA),
-				new BuildingInfo("AirborneCreatureLure", Action.BuildMenuKeyL)
+				new BuildingInfo("AirborneCreatureLure", Action.BuildMenuKeyL),
+				new BuildingInfo("FlyingCreatureBait", Action.BuildMenuKeyB)
 			})
 		}),
-		new DisplayInfo(Category.HealthAndHappiness, "icon_category_medical", Action.Plan3, KKeyCode.None, new List<DisplayInfo>
+		new DisplayInfo(CacheHashString("Health And Happiness"), "icon_category_medical", Action.Plan3, KKeyCode.None, new List<DisplayInfo>
 		{
-			new DisplayInfo(Category.Medical, "icon_category_medical", Action.BuildCategoryMedical, KKeyCode.C, new List<BuildingInfo>
+			new DisplayInfo(CacheHashString("Medical"), "icon_category_medical", Action.BuildCategoryMedical, KKeyCode.C, new List<BuildingInfo>
 			{
 				new BuildingInfo("Apothecary", Action.BuildMenuKeyA),
+				new BuildingInfo("DoctorStation", Action.BuildMenuKeyD),
+				new BuildingInfo("AdvancedDoctorStation", Action.BuildMenuKeyO),
 				new BuildingInfo("MedicalCot", Action.BuildMenuKeyB),
-				new BuildingInfo("MedicalBed", Action.BuildMenuKeyC),
 				new BuildingInfo("MassageTable", Action.BuildMenuKeyT),
 				new BuildingInfo("Grave", Action.BuildMenuKeyR)
 			}),
-			new DisplayInfo(Category.Hygiene, "icon_category_medical", Action.BuildCategoryHygiene, KKeyCode.E, new List<BuildingInfo>
+			new DisplayInfo(CacheHashString("Hygiene"), "icon_category_medical", Action.BuildCategoryHygiene, KKeyCode.E, new List<BuildingInfo>
 			{
 				new BuildingInfo("Outhouse", Action.BuildMenuKeyT),
 				new BuildingInfo("FlushToilet", Action.BuildMenuKeyV),
@@ -259,7 +224,7 @@ public class BuildMenu : KScreen
 				new BuildingInfo("WashSink", Action.BuildMenuKeyW),
 				new BuildingInfo("HandSanitizer", Action.BuildMenuKeyA)
 			}),
-			new DisplayInfo(Category.Furniture, "icon_category_furniture", Action.BuildCategoryFurniture, KKeyCode.F, new List<BuildingInfo>
+			new DisplayInfo(CacheHashString("Furniture"), "icon_category_furniture", Action.BuildCategoryFurniture, KKeyCode.F, new List<BuildingInfo>
 			{
 				new BuildingInfo(BedConfig.ID, Action.BuildMenuKeyC),
 				new BuildingInfo(LuxuryBedConfig.ID, Action.BuildMenuKeyX),
@@ -267,25 +232,30 @@ public class BuildMenu : KScreen
 				new BuildingInfo("FloorLamp", Action.BuildMenuKeyF),
 				new BuildingInfo("CeilingLight", Action.BuildMenuKeyT)
 			}),
-			new DisplayInfo(Category.Decor, "icon_category_furniture", Action.BuildCategoryDecor, KKeyCode.D, new List<BuildingInfo>
+			new DisplayInfo(CacheHashString("Decor"), "icon_category_furniture", Action.BuildCategoryDecor, KKeyCode.D, new List<BuildingInfo>
 			{
 				new BuildingInfo("FlowerVase", Action.BuildMenuKeyF),
 				new BuildingInfo("Canvas", Action.BuildMenuKeyC),
+				new BuildingInfo("CanvasWide", Action.BuildMenuKeyW),
+				new BuildingInfo("CanvasTall", Action.BuildMenuKeyT),
 				new BuildingInfo("Sculpture", Action.BuildMenuKeyS),
 				new BuildingInfo("IceSculpture", Action.BuildMenuKeyE),
-				new BuildingInfo("ItemPedestal", Action.BuildMenuKeyD)
+				new BuildingInfo("ItemPedestal", Action.BuildMenuKeyD),
+				new BuildingInfo("CrownMoulding", Action.BuildMenuKeyM),
+				new BuildingInfo("CornerMoulding", Action.BuildMenuKeyN)
 			}),
-			new DisplayInfo(Category.Recreation, "icon_category_medical", Action.BuildCategoryRecreation, KKeyCode.R, new List<BuildingInfo>
+			new DisplayInfo(CacheHashString("Recreation"), "icon_category_medical", Action.BuildCategoryRecreation, KKeyCode.R, new List<BuildingInfo>
 			{
 				new BuildingInfo("WaterCooler", Action.BuildMenuKeyC),
 				new BuildingInfo("ArcadeMachine", Action.BuildMenuKeyA),
 				new BuildingInfo("Phonobox", Action.BuildMenuKeyP),
-				new BuildingInfo("EspressoMachine", Action.BuildMenuKeyE)
+				new BuildingInfo("EspressoMachine", Action.BuildMenuKeyE),
+				new BuildingInfo("ParkSign", Action.BuildMenuKeyR)
 			})
 		}),
-		new DisplayInfo(Category.Infrastructure, "icon_category_utilities", Action.Plan4, KKeyCode.None, new List<DisplayInfo>
+		new DisplayInfo(CacheHashString("Infrastructure"), "icon_category_utilities", Action.Plan4, KKeyCode.None, new List<DisplayInfo>
 		{
-			new DisplayInfo(Category.Wires, "icon_category_electrical", Action.BuildCategoryWires, KKeyCode.W, new List<BuildingInfo>
+			new DisplayInfo(CacheHashString("Wires"), "icon_category_electrical", Action.BuildCategoryWires, KKeyCode.W, new List<BuildingInfo>
 			{
 				new BuildingInfo("Wire", Action.BuildMenuKeyW),
 				new BuildingInfo("WireBridge", Action.BuildMenuKeyB),
@@ -296,17 +266,19 @@ public class BuildMenu : KScreen
 				new BuildingInfo("WireRefinedHighWattage", Action.BuildMenuKeyE),
 				new BuildingInfo("WireRefinedBridgeHighWattage", Action.BuildMenuKeyA)
 			}),
-			new DisplayInfo(Category.Generators, "icon_category_electrical", Action.BuildCategoryGenerators, KKeyCode.G, new List<BuildingInfo>
+			new DisplayInfo(CacheHashString("Generators"), "icon_category_electrical", Action.BuildCategoryGenerators, KKeyCode.G, new List<BuildingInfo>
 			{
 				new BuildingInfo("ManualGenerator", Action.BuildMenuKeyG),
 				new BuildingInfo("Generator", Action.BuildMenuKeyC),
+				new BuildingInfo("WoodGasGenerator", Action.BuildMenuKeyW),
 				new BuildingInfo("HydrogenGenerator", Action.BuildMenuKeyD),
 				new BuildingInfo("MethaneGenerator", Action.BuildMenuKeyA),
 				new BuildingInfo("PetroleumGenerator", Action.BuildMenuKeyR),
 				new BuildingInfo("SteamTurbine", Action.BuildMenuKeyT),
+				new BuildingInfo("SteamTurbine2", Action.BuildMenuKeyT),
 				new BuildingInfo("SolarPanel", Action.BuildMenuKeyS)
 			}),
-			new DisplayInfo(Category.PowerControl, "icon_category_electrical", Action.BuildCategoryPowerControl, KKeyCode.R, new List<BuildingInfo>
+			new DisplayInfo(CacheHashString("PowerControl"), "icon_category_electrical", Action.BuildCategoryPowerControl, KKeyCode.R, new List<BuildingInfo>
 			{
 				new BuildingInfo("Battery", Action.BuildMenuKeyB),
 				new BuildingInfo("BatteryMedium", Action.BuildMenuKeyE),
@@ -319,7 +291,7 @@ public class BuildMenu : KScreen
 				new BuildingInfo(PressureSwitchGasConfig.ID, Action.BuildMenuKeyG),
 				new BuildingInfo(LogicPowerRelayConfig.ID, Action.BuildMenuKeyX)
 			}),
-			new DisplayInfo(Category.Pipes, "icon_category_plumbing", Action.BuildCategoryPipes, KKeyCode.E, new List<BuildingInfo>
+			new DisplayInfo(CacheHashString("Pipes"), "icon_category_plumbing", Action.BuildCategoryPipes, KKeyCode.E, new List<BuildingInfo>
 			{
 				new BuildingInfo("LiquidConduit", Action.BuildMenuKeyQ),
 				new BuildingInfo("LiquidConduitBridge", Action.BuildMenuKeyB),
@@ -330,7 +302,7 @@ public class BuildMenu : KScreen
 				new BuildingInfo("InsulatedGasConduit", Action.BuildMenuKeyD),
 				new BuildingInfo("GasConduitRadiant", Action.BuildMenuKeyR)
 			}),
-			new DisplayInfo(Category.PlumbingStructures, "icon_category_plumbing", Action.BuildCategoryPlumbingStructures, KKeyCode.B, new List<BuildingInfo>
+			new DisplayInfo(CacheHashString("Plumbing Structures"), "icon_category_plumbing", Action.BuildCategoryPlumbingStructures, KKeyCode.B, new List<BuildingInfo>
 			{
 				new BuildingInfo("LiquidPumpingStation", Action.BuildMenuKeyD),
 				new BuildingInfo("BottleEmptier", Action.BuildMenuKeyB),
@@ -343,7 +315,7 @@ public class BuildMenu : KScreen
 				new BuildingInfo("LiquidConduitPreferentialFlow", Action.BuildMenuKeyW),
 				new BuildingInfo("LiquidConduitOverflow", Action.BuildMenuKeyR)
 			}),
-			new DisplayInfo(Category.VentilationStructures, "icon_category_ventilation", Action.BuildCategoryVentilationStructures, KKeyCode.V, new List<BuildingInfo>
+			new DisplayInfo(CacheHashString("Ventilation Structures"), "icon_category_ventilation", Action.BuildCategoryVentilationStructures, KKeyCode.V, new List<BuildingInfo>
 			{
 				new BuildingInfo("GasPump", Action.BuildMenuKeyQ),
 				new BuildingInfo("GasMiniPump", Action.BuildMenuKeyX),
@@ -358,31 +330,34 @@ public class BuildMenu : KScreen
 				new BuildingInfo("GasConduitOverflow", Action.BuildMenuKeyR)
 			})
 		}),
-		new DisplayInfo(Category.Industrial, "icon_category_refinery", Action.Plan5, KKeyCode.None, new List<DisplayInfo>
+		new DisplayInfo(CacheHashString("Industrial"), "icon_category_refinery", Action.Plan5, KKeyCode.None, new List<DisplayInfo>
 		{
-			new DisplayInfo(Category.Oxygen, "icon_category_oxygen", Action.BuildCategoryOxygen, KKeyCode.X, new List<BuildingInfo>
+			new DisplayInfo(CacheHashString("Oxygen"), "icon_category_oxygen", Action.BuildCategoryOxygen, KKeyCode.X, new List<BuildingInfo>
 			{
 				new BuildingInfo("MineralDeoxidizer", Action.BuildMenuKeyX),
 				new BuildingInfo("AlgaeHabitat", Action.BuildMenuKeyA),
 				new BuildingInfo("AirFilter", Action.BuildMenuKeyD),
 				new BuildingInfo("CO2Scrubber", Action.BuildMenuKeyC),
-				new BuildingInfo("Electrolyzer", Action.BuildMenuKeyE)
+				new BuildingInfo("Electrolyzer", Action.BuildMenuKeyE),
+				new BuildingInfo("RustDeoxidizer", Action.BuildMenuKeyF)
 			}),
-			new DisplayInfo(Category.Utilities, "icon_category_utilities", Action.BuildCategoryUtilities, KKeyCode.T, new List<BuildingInfo>
+			new DisplayInfo(CacheHashString("Utilities"), "icon_category_utilities", Action.BuildCategoryUtilities, KKeyCode.T, new List<BuildingInfo>
 			{
 				new BuildingInfo("SpaceHeater", Action.BuildMenuKeyS),
 				new BuildingInfo("LiquidHeater", Action.BuildMenuKeyT),
-				new BuildingInfo("LiquidCooledFan", Action.BuildMenuKeyQ),
+				new BuildingInfo("IceCooledFan", Action.BuildMenuKeyQ),
+				new BuildingInfo("IceMachine", Action.BuildMenuKeyI),
 				new BuildingInfo("AirConditioner", Action.BuildMenuKeyR),
 				new BuildingInfo("LiquidConditioner", Action.BuildMenuKeyA),
 				new BuildingInfo("OreScrubber", Action.BuildMenuKeyC),
 				new BuildingInfo("ThermalBlock", Action.BuildMenuKeyF),
 				new BuildingInfo("ExteriorWall", Action.BuildMenuKeyD)
 			}),
-			new DisplayInfo(Category.Refining, "icon_category_refinery", Action.BuildCategoryRefining, KKeyCode.R, new List<BuildingInfo>
+			new DisplayInfo(CacheHashString("Refining"), "icon_category_refinery", Action.BuildCategoryRefining, KKeyCode.R, new List<BuildingInfo>
 			{
 				new BuildingInfo("WaterPurifier", Action.BuildMenuKeyW),
 				new BuildingInfo("AlgaeDistillery", Action.BuildMenuKeyA),
+				new BuildingInfo("EthanolDistillery", Action.BuildMenuKeyX),
 				new BuildingInfo("RockCrusher", Action.BuildMenuKeyG),
 				new BuildingInfo("Kiln", Action.BuildMenuKeyZ),
 				new BuildingInfo("OilWellCap", Action.BuildMenuKeyC),
@@ -393,12 +368,13 @@ public class BuildMenu : KScreen
 				new BuildingInfo("OxyliteRefinery", Action.BuildMenuKeyO),
 				new BuildingInfo("SupermaterialRefinery", Action.BuildMenuKeyS)
 			}),
-			new DisplayInfo(Category.Equipment, "icon_category_misc", Action.BuildCategoryEquipment, KKeyCode.S, new List<BuildingInfo>
+			new DisplayInfo(CacheHashString("Equipment"), "icon_category_misc", Action.BuildCategoryEquipment, KKeyCode.S, new List<BuildingInfo>
 			{
 				new BuildingInfo("RoleStation", Action.BuildMenuKeyB),
 				new BuildingInfo("FarmStation", Action.BuildMenuKeyF),
 				new BuildingInfo("PowerControlStation", Action.BuildMenuKeyC),
 				new BuildingInfo("AstronautTrainingCenter", Action.BuildMenuKeyA),
+				new BuildingInfo("ResetSkillsStation", Action.BuildMenuKeyR),
 				new BuildingInfo("ClothingFabricator", Action.BuildMenuKeyT),
 				new BuildingInfo("SuitFabricator", Action.BuildMenuKeyX),
 				new BuildingInfo("SuitMarker", Action.BuildMenuKeyE),
@@ -406,7 +382,7 @@ public class BuildMenu : KScreen
 				new BuildingInfo("JetSuitMarker", Action.BuildMenuKeyJ),
 				new BuildingInfo("JetSuitLocker", Action.BuildMenuKeyO)
 			}),
-			new DisplayInfo(Category.Rocketry, "icon_category_rocketry", Action.BuildCategoryRocketry, KKeyCode.C, new List<BuildingInfo>
+			new DisplayInfo(CacheHashString("Rocketry"), "icon_category_rocketry", Action.BuildCategoryRocketry, KKeyCode.C, new List<BuildingInfo>
 			{
 				new BuildingInfo("Gantry", Action.BuildMenuKeyT),
 				new BuildingInfo("KeroseneEngine", Action.BuildMenuKeyE),
@@ -423,29 +399,31 @@ public class BuildMenu : KScreen
 				new BuildingInfo("HydrogenEngine", Action.BuildMenuKeyH)
 			})
 		}),
-		new DisplayInfo(Category.Logistics, "icon_category_ventilation", Action.Plan6, KKeyCode.None, new List<DisplayInfo>
+		new DisplayInfo(CacheHashString("Logistics"), "icon_category_ventilation", Action.Plan6, KKeyCode.None, new List<DisplayInfo>
 		{
-			new DisplayInfo(Category.TravelTubes, "icon_category_ventilation", Action.BuildCategoryTravelTubes, KKeyCode.T, new List<BuildingInfo>
+			new DisplayInfo(CacheHashString("TravelTubes"), "icon_category_ventilation", Action.BuildCategoryTravelTubes, KKeyCode.T, new List<BuildingInfo>
 			{
 				new BuildingInfo("TravelTube", Action.BuildMenuKeyT),
 				new BuildingInfo("TravelTubeEntrance", Action.BuildMenuKeyE),
 				new BuildingInfo("TravelTubeWallBridge", Action.BuildMenuKeyB)
 			}),
-			new DisplayInfo(Category.Conveyance, "icon_category_ventilation", Action.BuildCategoryConveyance, KKeyCode.C, new List<BuildingInfo>
+			new DisplayInfo(CacheHashString("Conveyance"), "icon_category_ventilation", Action.BuildCategoryConveyance, KKeyCode.C, new List<BuildingInfo>
 			{
 				new BuildingInfo("SolidTransferArm", Action.BuildMenuKeyA),
 				new BuildingInfo("SolidConduit", Action.BuildMenuKeyC),
 				new BuildingInfo("SolidConduitInbox", Action.BuildMenuKeyI),
 				new BuildingInfo("SolidConduitOutbox", Action.BuildMenuKeyO),
+				new BuildingInfo("SolidVent", Action.BuildMenuKeyV),
+				new BuildingInfo("SolidLogicValve", Action.BuildMenuKeyL),
 				new BuildingInfo("SolidConduitBridge", Action.BuildMenuKeyB),
 				new BuildingInfo("AutoMiner", Action.BuildMenuKeyM)
 			}),
-			new DisplayInfo(Category.LogicWiring, "icon_category_automation", Action.BuildCategoryLogicWiring, KKeyCode.W, new List<BuildingInfo>
+			new DisplayInfo(CacheHashString("LogicWiring"), "icon_category_automation", Action.BuildCategoryLogicWiring, KKeyCode.W, new List<BuildingInfo>
 			{
 				new BuildingInfo("LogicWire", Action.BuildMenuKeyW),
 				new BuildingInfo("LogicWireBridge", Action.BuildMenuKeyB)
 			}),
-			new DisplayInfo(Category.LogicGates, "icon_category_automation", Action.BuildCategoryLogicGates, KKeyCode.G, new List<BuildingInfo>
+			new DisplayInfo(CacheHashString("LogicGates"), "icon_category_automation", Action.BuildCategoryLogicGates, KKeyCode.G, new List<BuildingInfo>
 			{
 				new BuildingInfo("LogicGateAND", Action.BuildMenuKeyA),
 				new BuildingInfo("LogicGateOR", Action.BuildMenuKeyR),
@@ -455,20 +433,22 @@ public class BuildMenu : KScreen
 				new BuildingInfo("LogicGateFILTER", Action.BuildMenuKeyF),
 				new BuildingInfo(LogicMemoryConfig.ID, Action.BuildMenuKeyV)
 			}),
-			new DisplayInfo(Category.LogicSwitches, "icon_category_automation", Action.BuildCategoryLogicSwitches, KKeyCode.S, new List<BuildingInfo>
+			new DisplayInfo(CacheHashString("LogicSwitches"), "icon_category_automation", Action.BuildCategoryLogicSwitches, KKeyCode.S, new List<BuildingInfo>
 			{
 				new BuildingInfo(LogicSwitchConfig.ID, Action.BuildMenuKeyS),
 				new BuildingInfo(LogicPressureSensorGasConfig.ID, Action.BuildMenuKeyA),
 				new BuildingInfo(LogicPressureSensorLiquidConfig.ID, Action.BuildMenuKeyQ),
 				new BuildingInfo(LogicTemperatureSensorConfig.ID, Action.BuildMenuKeyT),
 				new BuildingInfo(LogicTimeOfDaySensorConfig.ID, Action.BuildMenuKeyD),
+				new BuildingInfo(LogicCritterCountSensorConfig.ID, Action.BuildMenuKeyV),
 				new BuildingInfo(LogicDiseaseSensorConfig.ID, Action.BuildMenuKeyG),
 				new BuildingInfo(LogicElementSensorGasConfig.ID, Action.BuildMenuKeyE),
 				new BuildingInfo("FloorSwitch", Action.BuildMenuKeyW),
 				new BuildingInfo("Checkpoint", Action.BuildMenuKeyC),
-				new BuildingInfo(CometDetectorConfig.ID, Action.BuildMenuKeyR)
+				new BuildingInfo(CometDetectorConfig.ID, Action.BuildMenuKeyR),
+				new BuildingInfo("LogicDuplicantSensor", Action.BuildMenuKeyF)
 			}),
-			new DisplayInfo(Category.ConduitSensors, "icon_category_automation", Action.BuildCategoryLogicConduits, KKeyCode.X, new List<BuildingInfo>
+			new DisplayInfo(CacheHashString("ConduitSensors"), "icon_category_automation", Action.BuildCategoryLogicConduits, KKeyCode.X, new List<BuildingInfo>
 			{
 				new BuildingInfo(LiquidConduitTemperatureSensorConfig.ID, Action.BuildMenuKeyT),
 				new BuildingInfo(LiquidConduitDiseaseSensorConfig.ID, Action.BuildMenuKeyG),
@@ -480,11 +460,11 @@ public class BuildMenu : KScreen
 		})
 	});
 
-	private Dictionary<Category, List<BuildingDef>> categorizedBuildingMap;
+	private Dictionary<HashedString, List<BuildingDef>> categorizedBuildingMap;
 
-	private Dictionary<Category, List<Category>> categorizedCategoryMap;
+	private Dictionary<HashedString, List<HashedString>> categorizedCategoryMap;
 
-	private Dictionary<Tag, Category> tagCategoryMap;
+	private Dictionary<Tag, HashedString> tagCategoryMap;
 
 	private Dictionary<Tag, int> tagOrderMap;
 
@@ -518,6 +498,11 @@ public class BuildMenu : KScreen
 	public static void DestroyInstance()
 	{
 		Instance = null;
+	}
+
+	private static HashedString CacheHashString(string str)
+	{
+		return HashCache.Get().Add(str);
 	}
 
 	public static bool UseHotkeyBuildMenu()
@@ -556,27 +541,27 @@ public class BuildMenu : KScreen
 
 	private void Initialize()
 	{
-		foreach (KeyValuePair<Category, BuildMenuCategoriesScreen> submenu in submenus)
+		foreach (KeyValuePair<HashedString, BuildMenuCategoriesScreen> submenu in submenus)
 		{
 			BuildMenuCategoriesScreen value = submenu.Value;
 			value.Close();
 			UnityEngine.Object.DestroyImmediate(value.gameObject);
 		}
 		submenuStack.Clear();
-		tagCategoryMap = new Dictionary<Tag, Category>();
+		tagCategoryMap = new Dictionary<Tag, HashedString>();
 		tagOrderMap = new Dictionary<Tag, int>();
-		categorizedBuildingMap = new Dictionary<Category, List<BuildingDef>>();
-		categorizedCategoryMap = new Dictionary<Category, List<Category>>();
+		categorizedBuildingMap = new Dictionary<HashedString, List<BuildingDef>>();
+		categorizedCategoryMap = new Dictionary<HashedString, List<HashedString>>();
 		int building_index = 0;
 		DisplayInfo orderedBuildings = OrderedBuildings;
 		PopulateCategorizedMaps(orderedBuildings.category, 0, orderedBuildings.data, tagCategoryMap, tagOrderMap, ref building_index, categorizedBuildingMap, categorizedCategoryMap);
-		BuildMenuCategoriesScreen buildMenuCategoriesScreen = submenus[Category.ROOT];
+		BuildMenuCategoriesScreen buildMenuCategoriesScreen = submenus[ROOT_HASHSTR];
 		buildMenuCategoriesScreen.Show(true);
 		buildMenuCategoriesScreen.modalKeyInputBehaviour = false;
-		foreach (KeyValuePair<Category, BuildMenuCategoriesScreen> submenu2 in submenus)
+		foreach (KeyValuePair<HashedString, BuildMenuCategoriesScreen> submenu2 in submenus)
 		{
-			Category key = submenu2.Key;
-			if (key != 0 && categorizedCategoryMap.TryGetValue(key, out List<Category> value2))
+			HashedString key = submenu2.Key;
+			if (!(key == ROOT_HASHSTR) && categorizedCategoryMap.TryGetValue(key, out List<HashedString> value2))
 			{
 				BuildMenuCategoriesScreen value3 = submenu2.Value;
 				Image component = value3.GetComponent<Image>();
@@ -592,14 +577,14 @@ public class BuildMenu : KScreen
 	[ContextMenu("PositionMenus")]
 	private void PositionMenus()
 	{
-		foreach (KeyValuePair<Category, BuildMenuCategoriesScreen> submenu in submenus)
+		foreach (KeyValuePair<HashedString, BuildMenuCategoriesScreen> submenu in submenus)
 		{
-			Category key = submenu.Key;
+			HashedString key = submenu.Key;
 			BuildMenuCategoriesScreen value = submenu.Value;
 			LayoutGroup component = value.GetComponent<LayoutGroup>();
 			Vector2 anchoredPosition;
 			PadInfo padInfo;
-			if (key == Category.ROOT)
+			if (key == ROOT_HASHSTR)
 			{
 				anchoredPosition = rootMenuOffset;
 				padInfo = rootMenuPadding;
@@ -622,7 +607,7 @@ public class BuildMenu : KScreen
 
 	public void Refresh()
 	{
-		foreach (KeyValuePair<Category, BuildMenuCategoriesScreen> submenu in submenus)
+		foreach (KeyValuePair<HashedString, BuildMenuCategoriesScreen> submenu in submenus)
 		{
 			BuildMenuCategoriesScreen value = submenu.Value;
 			value.UpdateBuildableStates(true);
@@ -641,26 +626,26 @@ public class BuildMenu : KScreen
 		base.OnCmpDisable();
 	}
 
-	private BuildMenuCategoriesScreen CreateCategorySubMenu(Category category, int depth, object data, Dictionary<Category, List<BuildingDef>> categorized_building_map, Dictionary<Category, List<Category>> categorized_category_map, Dictionary<Tag, Category> tag_category_map, BuildMenuBuildingsScreen buildings_screen)
+	private BuildMenuCategoriesScreen CreateCategorySubMenu(HashedString category, int depth, object data, Dictionary<HashedString, List<BuildingDef>> categorized_building_map, Dictionary<HashedString, List<HashedString>> categorized_category_map, Dictionary<Tag, HashedString> tag_category_map, BuildMenuBuildingsScreen buildings_screen)
 	{
 		BuildMenuCategoriesScreen buildMenuCategoriesScreen = Util.KInstantiateUI<BuildMenuCategoriesScreen>(categoriesMenuPrefab.gameObject, base.gameObject, true);
 		buildMenuCategoriesScreen.Show(false);
 		buildMenuCategoriesScreen.Configure(category, depth, data, categorizedBuildingMap, categorizedCategoryMap, buildingsScreen);
 		BuildMenuCategoriesScreen buildMenuCategoriesScreen2 = buildMenuCategoriesScreen;
-		buildMenuCategoriesScreen2.onCategoryClicked = (Action<Category, int>)Delegate.Combine(buildMenuCategoriesScreen2.onCategoryClicked, new Action<Category, int>(OnCategoryClicked));
+		buildMenuCategoriesScreen2.onCategoryClicked = (Action<HashedString, int>)Delegate.Combine(buildMenuCategoriesScreen2.onCategoryClicked, new Action<HashedString, int>(OnCategoryClicked));
 		buildMenuCategoriesScreen.name = "BuildMenu_" + category.ToString();
 		return buildMenuCategoriesScreen;
 	}
 
-	private void PopulateCategorizedMaps(Category category, int depth, object data, Dictionary<Tag, Category> category_map, Dictionary<Tag, int> order_map, ref int building_index, Dictionary<Category, List<BuildingDef>> categorized_building_map, Dictionary<Category, List<Category>> categorized_category_map)
+	private void PopulateCategorizedMaps(HashedString category, int depth, object data, Dictionary<Tag, HashedString> category_map, Dictionary<Tag, int> order_map, ref int building_index, Dictionary<HashedString, List<BuildingDef>> categorized_building_map, Dictionary<HashedString, List<HashedString>> categorized_category_map)
 	{
 		Type type = data.GetType();
 		if (type == typeof(DisplayInfo))
 		{
 			DisplayInfo displayInfo = (DisplayInfo)data;
-			if (!categorized_category_map.TryGetValue(category, out List<Category> value))
+			if (!categorized_category_map.TryGetValue(category, out List<HashedString> value))
 			{
-				value = (categorized_category_map[category] = new List<Category>());
+				value = (categorized_category_map[category] = new List<HashedString>());
 			}
 			value.Add(displayInfo.category);
 			PopulateCategorizedMaps(displayInfo.category, depth + 1, displayInfo.data, category_map, order_map, ref building_index, categorized_building_map, categorized_category_map);
@@ -668,9 +653,9 @@ public class BuildMenu : KScreen
 		else if (typeof(IList<DisplayInfo>).IsAssignableFrom(type))
 		{
 			IList<DisplayInfo> list2 = (IList<DisplayInfo>)data;
-			if (!categorized_category_map.TryGetValue(category, out List<Category> value2))
+			if (!categorized_category_map.TryGetValue(category, out List<HashedString> value2))
 			{
-				value2 = (categorized_category_map[category] = new List<Category>());
+				value2 = (categorized_category_map[category] = new List<HashedString>());
 			}
 			foreach (DisplayInfo item in list2)
 			{
@@ -713,7 +698,7 @@ public class BuildMenu : KScreen
 		}
 		goto IL_003a;
 		IL_003a:
-		if (!e.Consumed && selectedCategory != Category.INVALID && e.TryConsume(Action.Escape))
+		if (!e.Consumed && selectedCategory.IsValid && e.TryConsume(Action.Escape))
 		{
 			OnUIClear(null);
 		}
@@ -725,7 +710,7 @@ public class BuildMenu : KScreen
 
 	public override void OnKeyUp(KButtonEvent e)
 	{
-		if (selectedCategory != Category.INVALID && PlayerController.Instance.ConsumeIfNotDragging(e, Action.MouseRight))
+		if (selectedCategory.IsValid && PlayerController.Instance.ConsumeIfNotDragging(e, Action.MouseRight))
 		{
 			OnUIClear(null);
 			KMonoBehaviour.PlaySound(GlobalAssets.GetSound("HUD_Click_Deselect", false));
@@ -767,8 +752,8 @@ public class BuildMenu : KScreen
 			kIconToggleMenu.Close();
 			productInfoScreen.Close();
 		}
-		selectedCategory = Category.INVALID;
-		submenus[Category.ROOT].ClearSelection();
+		selectedCategory = HashedString.Invalid;
+		submenus[ROOT_HASHSTR].ClearSelection();
 	}
 
 	public override void ScreenUpdate(bool topLevel)
@@ -855,7 +840,7 @@ public class BuildMenu : KScreen
 					(item as BuildMenuCategoriesScreen).UpdateBuildableStates(false);
 				}
 			}
-			submenus[Category.ROOT].UpdateBuildableStates(false);
+			submenus[ROOT_HASHSTR].UpdateBuildableStates(false);
 			updating = false;
 		}
 	}
@@ -864,11 +849,11 @@ public class BuildMenu : KScreen
 	{
 		if ((UnityEngine.Object)selectedBuilding == (UnityEngine.Object)null)
 		{
-			Debug.Log("No def!", null);
+			Debug.Log("No def!");
 		}
 		if (selectedBuilding.isKAnimTile && selectedBuilding.isUtility)
 		{
-			IList<Element> getSelectedElementAsList = productInfoScreen.materialSelectionPanel.GetSelectedElementAsList;
+			IList<Tag> getSelectedElementAsList = productInfoScreen.materialSelectionPanel.GetSelectedElementAsList;
 			BaseUtilityBuildTool baseUtilityBuildTool = (!((UnityEngine.Object)selectedBuilding.BuildingComplete.GetComponent<Wire>() != (UnityEngine.Object)null)) ? ((BaseUtilityBuildTool)UtilityBuildTool.Instance) : ((BaseUtilityBuildTool)WireBuildTool.Instance);
 			baseUtilityBuildTool.Activate(selectedBuilding, getSelectedElementAsList);
 		}
@@ -885,7 +870,7 @@ public class BuildMenu : KScreen
 			selecting = true;
 			selectedBuilding = def;
 			buildingsScreen.SetHasFocus(false);
-			foreach (KeyValuePair<Category, BuildMenuCategoriesScreen> submenu in submenus)
+			foreach (KeyValuePair<HashedString, BuildMenuCategoriesScreen> submenu in submenus)
 			{
 				BuildMenuCategoriesScreen value = submenu.Value;
 				value.SetHasFocus(false);
@@ -914,7 +899,7 @@ public class BuildMenu : KScreen
 		}
 	}
 
-	private void OnCategoryClicked(Category new_category, int depth)
+	private void OnCategoryClicked(HashedString new_category, int depth)
 	{
 		while (submenuStack.Count > depth)
 		{
@@ -923,7 +908,7 @@ public class BuildMenu : KScreen
 			kIconToggleMenu.Close();
 		}
 		productInfoScreen.Close();
-		if (new_category != selectedCategory && new_category != Category.INVALID)
+		if (new_category != selectedCategory && new_category.IsValid)
 		{
 			foreach (KIconToggleMenu item in submenuStack)
 			{
@@ -944,7 +929,7 @@ public class BuildMenu : KScreen
 		}
 		else
 		{
-			selectedCategory = Category.INVALID;
+			selectedCategory = HashedString.Invalid;
 		}
 		foreach (KIconToggleMenu item2 in submenuStack)
 		{
@@ -953,7 +938,7 @@ public class BuildMenu : KScreen
 				(item2 as BuildMenuCategoriesScreen).UpdateBuildableStates(true);
 			}
 		}
-		submenus[Category.ROOT].UpdateBuildableStates(true);
+		submenus[ROOT_HASHSTR].UpdateBuildableStates(true);
 	}
 
 	public void RefreshProductInfoScreen(BuildingDef def)
@@ -966,11 +951,11 @@ public class BuildMenu : KScreen
 		}
 	}
 
-	private Category GetParentCategory(Category desired_category)
+	private HashedString GetParentCategory(HashedString desired_category)
 	{
-		foreach (KeyValuePair<Category, List<Category>> item in categorizedCategoryMap)
+		foreach (KeyValuePair<HashedString, List<HashedString>> item in categorizedCategoryMap)
 		{
-			foreach (Category item2 in item.Value)
+			foreach (HashedString item2 in item.Value)
 			{
 				if (item2 == desired_category)
 				{
@@ -978,15 +963,15 @@ public class BuildMenu : KScreen
 				}
 			}
 		}
-		return Category.INVALID;
+		return HashedString.Invalid;
 	}
 
-	private void AddParentCategories(Category child_category, ICollection<Category> categories)
+	private void AddParentCategories(HashedString child_category, ICollection<HashedString> categories)
 	{
 		while (true)
 		{
-			Category parentCategory = GetParentCategory(child_category);
-			if (parentCategory == Category.INVALID)
+			HashedString parentCategory = GetParentCategory(child_category);
+			if (parentCategory == HashedString.Invalid)
 			{
 				break;
 			}
@@ -997,28 +982,28 @@ public class BuildMenu : KScreen
 
 	private void OnResearchComplete(object data)
 	{
-		HashSet<Category> hashSet = new HashSet<Category>();
+		HashSet<HashedString> hashSet = new HashSet<HashedString>();
 		Tech tech = (Tech)data;
 		foreach (TechItem unlockedItem in tech.unlockedItems)
 		{
 			BuildingDef buildingDef = Assets.GetBuildingDef(unlockedItem.Id);
 			if ((UnityEngine.Object)buildingDef == (UnityEngine.Object)null)
 			{
-				Output.LogWarning($"Tech '{tech.Name}' unlocked building '{unlockedItem.Id}' but no such building exists");
+				DebugUtil.LogWarningArgs($"Tech '{tech.Name}' unlocked building '{unlockedItem.Id}' but no such building exists");
 			}
 			else
 			{
-				Category category = tagCategoryMap[buildingDef.Tag];
-				hashSet.Add(category);
-				AddParentCategories(category, hashSet);
+				HashedString hashedString = tagCategoryMap[buildingDef.Tag];
+				hashSet.Add(hashedString);
+				AddParentCategories(hashedString, hashSet);
 			}
 		}
 		UpdateNotifications(hashSet, OrderedBuildings);
 	}
 
-	private void UpdateNotifications(ICollection<Category> updated_categories, object data)
+	private void UpdateNotifications(ICollection<HashedString> updated_categories, object data)
 	{
-		foreach (KeyValuePair<Category, BuildMenuCategoriesScreen> submenu in submenus)
+		foreach (KeyValuePair<HashedString, BuildMenuCategoriesScreen> submenu in submenus)
 		{
 			BuildMenuCategoriesScreen value = submenu.Value;
 			value.UpdateNotifications(updated_categories);

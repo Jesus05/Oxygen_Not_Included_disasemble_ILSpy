@@ -35,7 +35,7 @@ public class LoopingSounds : KMonoBehaviour
 	{
 		if (asset == null || asset == string.Empty)
 		{
-			Debug.LogWarning("Missing sound", null);
+			Debug.LogWarning("Missing sound");
 			return false;
 		}
 		if (!IsSoundPlaying(asset))
@@ -54,7 +54,7 @@ public class LoopingSounds : KMonoBehaviour
 	{
 		if (asset == null || asset == string.Empty)
 		{
-			Debug.LogWarning("Missing sound", null);
+			Debug.LogWarning("Missing sound");
 			return false;
 		}
 		if (!IsSoundPlaying(asset))
@@ -63,6 +63,24 @@ public class LoopingSounds : KMonoBehaviour
 			loopingSoundEvent.asset = asset;
 			LoopingSoundEvent item = loopingSoundEvent;
 			item.handle = LoopingSoundManager.Get().Add(asset, base.transform.GetPosition(), base.transform, true, true, true);
+			loopingSounds.Add(item);
+		}
+		return true;
+	}
+
+	public bool StartSound(string asset, bool pause_on_game_pause = true, bool enable_culling = true, bool enable_camera_scaled_position = true)
+	{
+		if (asset == null || asset == string.Empty)
+		{
+			Debug.LogWarning("Missing sound");
+			return false;
+		}
+		if (!IsSoundPlaying(asset))
+		{
+			LoopingSoundEvent loopingSoundEvent = default(LoopingSoundEvent);
+			loopingSoundEvent.asset = asset;
+			LoopingSoundEvent item = loopingSoundEvent;
+			item.handle = LoopingSoundManager.Get().Add(asset, base.transform.GetPosition(), base.transform, pause_on_game_pause, enable_culling, enable_camera_scaled_position);
 			loopingSounds.Add(item);
 		}
 		return true;
@@ -165,7 +183,7 @@ public class LoopingSounds : KMonoBehaviour
 	{
 		if (AudioDebug.Get().debugGameEventSounds)
 		{
-			Debug.Log("GameSoundEvent: " + ev.Name, null);
+			Debug.Log("GameSoundEvent: " + ev.Name);
 		}
 		List<AnimEvent> events = GameAudioSheets.Get().GetEvents(ev.Name);
 		if (events != null)
@@ -183,7 +201,7 @@ public class LoopingSounds : KMonoBehaviour
 				{
 					if (AudioDebug.Get().debugGameEventSounds)
 					{
-						Debug.Log("GameSound: " + soundEvent.sound, null);
+						Debug.Log("GameSound: " + soundEvent.sound);
 					}
 					float value = 0f;
 					if (lastTimePlayed.TryGetValue(soundEvent.soundHash, out value))

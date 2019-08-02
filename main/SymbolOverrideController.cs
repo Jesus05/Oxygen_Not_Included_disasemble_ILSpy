@@ -5,7 +5,7 @@ using UnityEngine;
 public class SymbolOverrideController : KMonoBehaviour
 {
 	[Serializable]
-	private struct SymbolEntry
+	public struct SymbolEntry
 	{
 		public HashedString targetSymbol;
 
@@ -52,6 +52,8 @@ public class SymbolOverrideController : KMonoBehaviour
 
 	private bool requiresSorting;
 
+	public SymbolEntry[] GetSymbolOverrides => symbolOverrides.ToArray();
+
 	public int version
 	{
 		get;
@@ -61,8 +63,8 @@ public class SymbolOverrideController : KMonoBehaviour
 	protected override void OnPrefabInit()
 	{
 		animController = GetComponent<KBatchedAnimController>();
-		DebugUtil.Assert((UnityEngine.Object)GetComponent<KBatchedAnimController>() != (UnityEngine.Object)null, "SymbolOverrideController requires KBatchedAnimController", string.Empty, string.Empty);
-		DebugUtil.Assert(GetComponent<KBatchedAnimController>().usingNewSymbolOverrideSystem, "SymbolOverrideController requires usingNewSymbolOverrideSystem to be set to true. Try adding the component by calling: SymbolOverrideControllerUtil.AddToPrefab", string.Empty, string.Empty);
+		DebugUtil.Assert((UnityEngine.Object)GetComponent<KBatchedAnimController>() != (UnityEngine.Object)null, "SymbolOverrideController requires KBatchedAnimController");
+		DebugUtil.Assert(GetComponent<KBatchedAnimController>().usingNewSymbolOverrideSystem, "SymbolOverrideController requires usingNewSymbolOverrideSystem to be set to true. Try adding the component by calling: SymbolOverrideControllerUtil.AddToPrefab");
 		for (int i = 0; i < symbolOverrides.Count; i++)
 		{
 			SymbolEntry value = symbolOverrides[i];
@@ -145,7 +147,7 @@ public class SymbolOverrideController : KMonoBehaviour
 		}
 		KBatchedAnimController component = GetComponent<KBatchedAnimController>();
 		KAnimBatch batch = component.GetBatch();
-		DebugUtil.Assert(batch != null, "Assert!", string.Empty, string.Empty);
+		DebugUtil.Assert(batch != null);
 		KBatchGroupData batchGroupData = KAnimBatchManager.Instance().GetBatchGroupData(component.batchGroupID);
 		int count = batch.atlases.Count;
 		atlases.Clear(count);

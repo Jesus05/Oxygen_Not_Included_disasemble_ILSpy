@@ -207,7 +207,7 @@ namespace FMODUnity
 						break;
 					}
 					iNITFLAGS = (FMOD.Studio.INITFLAGS)((int)iNITFLAGS & -2);
-					Debug.LogWarning("FMOD Studio: Cannot open network port for Live Update (in-use), restarting with Live Update disabled.", null);
+					Debug.LogWarning("FMOD Studio: Cannot open network port for Live Update (in-use), restarting with Live Update disabled.");
 					rESULT = studioSystem.release();
 					CheckInitResult(rESULT, "FMOD.Studio.System.Release");
 				}
@@ -567,7 +567,7 @@ namespace FMODUnity
 			}
 			catch (EventNotFoundException)
 			{
-				Debug.LogWarning("FMOD Event not found: " + path, null);
+				Debug.LogWarning("FMOD Event not found: " + path);
 			}
 		}
 
@@ -587,7 +587,7 @@ namespace FMODUnity
 			}
 			catch (EventNotFoundException)
 			{
-				Debug.LogWarning("FMOD Event not found: " + path, null);
+				Debug.LogWarning("FMOD Event not found: " + path);
 			}
 		}
 

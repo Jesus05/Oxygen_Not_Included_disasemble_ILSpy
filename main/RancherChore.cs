@@ -43,6 +43,14 @@ public class RancherChore : Chore<RancherChore.RancherChoreStates.Instance>
 			{
 				ranchStation.TriggerRanchStationNoLongerAvailable();
 			}
+
+			public void TellCreatureRancherIsReady()
+			{
+				if (!ranchStation.targetRanchable.IsNullOrStopped())
+				{
+					ranchStation.targetRanchable.Trigger(1084749845, null);
+				}
+			}
 		}
 
 		public TargetParameter rancher;
@@ -69,16 +77,16 @@ public class RancherChore : Chore<RancherChore.RancherChoreStates.Instance>
 		private static Transition.ConditionCallback _003C_003Ef__mg_0024cache2;
 
 		[CompilerGenerated]
-		private static Func<Instance, HashedString> _003C_003Ef__mg_0024cache3;
+		private static StateMachine<RancherChoreStates, Instance, IStateMachineTarget, object>.State.Callback _003C_003Ef__mg_0024cache3;
 
 		[CompilerGenerated]
-		private static StateMachine<RancherChoreStates, Instance, IStateMachineTarget, object>.State.Callback _003C_003Ef__mg_0024cache4;
+		private static Transition.ConditionCallback _003C_003Ef__mg_0024cache4;
 
 		[CompilerGenerated]
-		private static Transition.ConditionCallback _003C_003Ef__mg_0024cache5;
+		private static Func<Instance, HashedString> _003C_003Ef__mg_0024cache5;
 
 		[CompilerGenerated]
-		private static Func<Instance, HashedString> _003C_003Ef__mg_0024cache6;
+		private static StateMachine<RancherChoreStates, Instance, IStateMachineTarget, object>.State.Callback _003C_003Ef__mg_0024cache6;
 
 		[CompilerGenerated]
 		private static StateMachine<RancherChoreStates, Instance, IStateMachineTarget, object>.State.Callback _003C_003Ef__mg_0024cache7;
@@ -101,9 +109,6 @@ public class RancherChore : Chore<RancherChore.RancherChoreStates.Instance>
 		[CompilerGenerated]
 		private static StateMachine<RancherChoreStates, Instance, IStateMachineTarget, object>.State.Callback _003C_003Ef__mg_0024cacheD;
 
-		[CompilerGenerated]
-		private static StateMachine<RancherChoreStates, Instance, IStateMachineTarget, object>.State.Callback _003C_003Ef__mg_0024cacheE;
-
 		public override void InitializeStates(out BaseState default_state)
 		{
 			default_state = movetoranch;
@@ -114,7 +119,7 @@ public class RancherChore : Chore<RancherChore.RancherChoreStates.Instance>
 			});
 			movetoranch.MoveTo((Instance smi) => Grid.PosToCell(smi.transform.GetPosition()), waitforcreature_pre, null, false).Transition(checkformoreranchables, HasCreatureLeft, UpdateRate.SIM_1000ms);
 			waitforcreature_pre.EnterTransition(null, (Instance smi) => smi.ranchStation.IsNullOrStopped()).Transition(checkformoreranchables, HasCreatureLeft, UpdateRate.SIM_1000ms).EnterTransition(waitforcreature, (Instance smi) => true);
-			waitforcreature.Transition(checkformoreranchables, HasCreatureLeft, UpdateRate.SIM_1000ms).ToggleAnims(GetRancherInteractAnim).PlayAnim("calling_loop", KAnim.PlayMode.Loop)
+			waitforcreature.Transition(checkformoreranchables, HasCreatureLeft, UpdateRate.SIM_1000ms).ToggleAnims("anim_interacts_rancherstation_kanim", 0f).PlayAnim("calling_loop", KAnim.PlayMode.Loop)
 				.Enter(FaceCreature)
 				.Enter("TellCreatureToGoGetRanched", delegate(Instance smi)
 				{
@@ -134,7 +139,7 @@ public class RancherChore : Chore<RancherChore.RancherChoreStates.Instance>
 				.OnAnimQueueComplete(ranchcreature.loop);
 			ranchcreature.loop.Enter("TellCreatureRancherIsReady", delegate(Instance smi)
 			{
-				smi.ranchStation.targetRanchable.Trigger(1084749845, null);
+				smi.TellCreatureRancherIsReady();
 			}).Enter(PlayBuildingWorkingLoop).Enter(PlayRancherWorkingLoops)
 				.Target(rancher)
 				.OnAnimQueueComplete(ranchcreature.pst);
@@ -185,9 +190,14 @@ public class RancherChore : Chore<RancherChore.RancherChoreStates.Instance>
 
 		private static void RanchCreature(Instance smi)
 		{
-			KPrefabID component = smi.ranchStation.targetRanchable.GetComponent<KPrefabID>();
-			smi.sm.rancher.Get(smi).Trigger(937885943, component.PrefabTag.Name);
-			smi.ranchStation.RanchCreature();
+			Debug.Assert(smi.ranchStation != null, "smi.ranchStation was null");
+			RanchableMonitor.Instance targetRanchable = smi.ranchStation.targetRanchable;
+			if (!targetRanchable.IsNullOrStopped())
+			{
+				KPrefabID component = targetRanchable.GetComponent<KPrefabID>();
+				smi.sm.rancher.Get(smi).Trigger(937885943, component.PrefabTag.Name);
+				smi.ranchStation.RanchCreature();
+			}
 		}
 
 		private static bool ShouldSynchronizeBuilding(Instance smi)
@@ -241,17 +251,25 @@ public class RancherChore : Chore<RancherChore.RancherChoreStates.Instance>
 	};
 
 	public RancherChore(KPrefabID rancher_station)
-		: base(Db.Get().ChoreTypes.Ranch, (IStateMachineTarget)rancher_station, (ChoreProvider)null, false, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.basic, 0, false, true, 0, (Tag[])null)
+		: base(Db.Get().ChoreTypes.Ranch, (IStateMachineTarget)rancher_station, (ChoreProvider)null, false, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.basic, 5, false, true, 0, false, ReportManager.ReportType.WorkTime)
 	{
 		AddPrecondition(IsCreatureAvailableForRanching, rancher_station.GetSMI<RanchStation.Instance>());
-		AddPrecondition(ChorePreconditions.instance.HasRolePerk, RoleManager.rolePerks.CanUseRanchStation.id);
-		smi = new RancherChoreStates.Instance(rancher_station);
+		AddPrecondition(ChorePreconditions.instance.HasSkillPerk, Db.Get().SkillPerks.CanUseRanchStation.Id);
+		AddPrecondition(ChorePreconditions.instance.IsScheduledTime, Db.Get().ScheduleBlockTypes.Work);
+		AddPrecondition(ChorePreconditions.instance.CanMoveTo, rancher_station.GetComponent<Building>());
+		Operational component = rancher_station.GetComponent<Operational>();
+		AddPrecondition(ChorePreconditions.instance.IsOperational, component);
+		Deconstructable component2 = rancher_station.GetComponent<Deconstructable>();
+		AddPrecondition(ChorePreconditions.instance.IsNotMarkedForDeconstruction, component2);
+		BuildingEnabledButton component3 = rancher_station.GetComponent<BuildingEnabledButton>();
+		AddPrecondition(ChorePreconditions.instance.IsNotMarkedForDisable, component3);
+		base.smi = new RancherChoreStates.Instance(rancher_station);
 		SetPrioritizable(rancher_station.GetComponent<Prioritizable>());
 	}
 
 	public override void Begin(Precondition.Context context)
 	{
-		smi.sm.rancher.Set(context.consumerState.gameObject, smi);
+		base.smi.sm.rancher.Set(context.consumerState.gameObject, base.smi);
 		base.Begin(context);
 	}
 }

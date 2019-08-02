@@ -33,7 +33,7 @@ public class EspressoMachineConfig : IBuildingConfig
 
 	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
-		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.RecBuilding);
+		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.RecBuilding, false);
 		Storage storage = go.AddOrGet<Storage>();
 		storage.capacityKg = 20f;
 		storage.SetDefaultStoredItemModifiers(Storage.StandardFabricatorStorage);
@@ -48,11 +48,7 @@ public class EspressoMachineConfig : IBuildingConfig
 		manualDeliveryKG.capacity = 10f;
 		manualDeliveryKG.refillMass = 5f;
 		manualDeliveryKG.minimumMass = 1f;
-		manualDeliveryKG.choreTags = new Tag[1]
-		{
-			GameTags.ChoreTypes.Cooking
-		};
-		manualDeliveryKG.choreTypeIDHash = Db.Get().ChoreTypes.Fetch.IdHash;
+		manualDeliveryKG.choreTypeIDHash = Db.Get().ChoreTypes.MachineFetch.IdHash;
 		go.AddOrGet<EspressoMachineWorkable>();
 		go.AddOrGet<EspressoMachine>();
 		RoomTracker roomTracker = go.AddOrGet<RoomTracker>();

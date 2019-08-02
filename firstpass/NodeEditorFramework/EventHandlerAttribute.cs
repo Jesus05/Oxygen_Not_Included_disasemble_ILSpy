@@ -51,7 +51,7 @@ namespace NodeEditorFramework
 				{
 					return true;
 				}
-				Debug.LogWarning("Method " + method.Name + " has incorrect signature for EventHandlerAttribute!", null);
+				Debug.LogWarning("Method " + method.Name + " has incorrect signature for EventHandlerAttribute!");
 			}
 			return false;
 		}

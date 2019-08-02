@@ -3,10 +3,9 @@ using STRINGS;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using TUNING;
 using UnityEngine;
 
-public class Pickupable : Workable
+public class Pickupable : Workable, IHasSortOrder
 {
 	private struct Reservation
 	{
@@ -74,6 +73,8 @@ public class Pickupable : Workable
 	[NonSerialized]
 	[MyCmpAdd]
 	public Prioritizable prioritizable;
+
+	public bool absorbable;
 
 	public Func<Pickupable, bool> CanAbsorb = (Pickupable other) => false;
 
@@ -155,6 +156,12 @@ public class Pickupable : Workable
 
 	public PrimaryElement PrimaryElement => primaryElement;
 
+	public int sortOrder
+	{
+		get;
+		set;
+	}
+
 	public Storage storage
 	{
 		get;
@@ -162,6 +169,12 @@ public class Pickupable : Workable
 	}
 
 	public float MinTakeAmount => 0f;
+
+	public bool prevent_absorb_until_stored
+	{
+		get;
+		set;
+	}
 
 	public bool isKinematic
 	{
@@ -181,6 +194,8 @@ public class Pickupable : Workable
 		private set;
 	}
 
+	public int storageCell => (!((UnityEngine.Object)storage != (UnityEngine.Object)null)) ? cachedCell : Grid.PosToCell(storage);
+
 	public bool IsEntombed
 	{
 		get
@@ -194,7 +209,7 @@ public class Pickupable : Workable
 				isEntombed = value;
 				if (isEntombed)
 				{
-					GetComponent<KPrefabID>().AddTag(GameTags.Entombed);
+					GetComponent<KPrefabID>().AddTag(GameTags.Entombed, false);
 				}
 				else
 				{
@@ -222,9 +237,9 @@ public class Pickupable : Workable
 		}
 		set
 		{
-			DebugUtil.Assert((UnityEngine.Object)primaryElement != (UnityEngine.Object)null, "Assert!", string.Empty, string.Empty);
+			DebugUtil.Assert((UnityEngine.Object)primaryElement != (UnityEngine.Object)null);
 			primaryElement.Units = value;
-			if (value <= 0.001f)
+			if (value < PICKUPABLETUNING.MINIMUM_PICKABLE_AMOUNT)
 			{
 				PrimaryElement component = GetComponent<PrimaryElement>();
 				if (!component.KeepZeroMassObject)
@@ -245,15 +260,12 @@ public class Pickupable : Workable
 
 	private bool CouldBePickedUpCommon(GameObject carrier)
 	{
-		bool flag = UnreservedAmount > 0f || GetReservedAmount(carrier) > 0f;
-		bool flag2 = UnreservedAmount >= MinTakeAmount;
-		return flag && flag2;
+		return UnreservedAmount >= MinTakeAmount && (UnreservedAmount > 0f || FindReservedAmount(carrier) > 0f);
 	}
 
 	public bool CouldBePickedUpByMinion(GameObject carrier)
 	{
-		bool flag = (UnityEngine.Object)storage == (UnityEngine.Object)null || !(bool)storage.automatable || !storage.automatable.GetAutomationOnly();
-		return CouldBePickedUpCommon(carrier) && flag;
+		return CouldBePickedUpCommon(carrier) && ((UnityEngine.Object)storage == (UnityEngine.Object)null || !(bool)storage.automatable || !storage.automatable.GetAutomationOnly());
 	}
 
 	public bool CouldBePickedUpByTransferArm(GameObject carrier)
@@ -261,7 +273,7 @@ public class Pickupable : Workable
 		return CouldBePickedUpCommon(carrier);
 	}
 
-	public float GetReservedAmount(GameObject reserver)
+	public float FindReservedAmount(GameObject reserver)
 	{
 		for (int i = 0; i < reservations.Count; i++)
 		{
@@ -302,7 +314,7 @@ public class Pickupable : Workable
 	{
 		foreach (Reservation reservation in reservations)
 		{
-			Debug.Log(reservation.ToString(), null);
+			Debug.Log(reservation.ToString());
 		}
 	}
 
@@ -361,7 +373,7 @@ public class Pickupable : Workable
 		Subscribe(1807976145, OnOreSizeChangedDelegate);
 		Subscribe(-1432940121, OnReachableChangedDelegate);
 		Subscribe(-778359855, RefreshStorageTagsDelegate);
-		KPrefabID.AddTag(GameTags.Pickupable);
+		KPrefabID.AddTag(GameTags.Pickupable, false);
 		Components.Pickupables.Add(this);
 	}
 
@@ -412,7 +424,7 @@ public class Pickupable : Workable
 			objectLayerListItem = new ObjectLayerListItem(base.gameObject, ObjectLayer.Pickupables, num);
 			solidPartitionerEntry = GameScenePartitioner.Instance.Add("Pickupable.RegisterSolidListener", base.gameObject, num, GameScenePartitioner.Instance.solidChangedLayer, OnSolidChanged);
 			partitionerEntry = GameScenePartitioner.Instance.Add("Pickupable.RegisterPickupable", this, num, GameScenePartitioner.Instance.pickupablesLayer, null);
-			Singleton<CellChangeMonitor>.Instance.RegisterCellChangedHandler(base.transform, OnCellChange, "Pickupable.RegisterListeners");
+			Singleton<CellChangeMonitor>.Instance.RegisterCellChangedHandler(base.transform, OnCellChange, "Pickupable.OnCellChange");
 			Singleton<CellChangeMonitor>.Instance.MarkDirty(base.transform);
 		}
 	}
@@ -505,12 +517,12 @@ public class Pickupable : Workable
 		}
 		else
 		{
-			bool flag = false;
 			ReleaseEntombedVisualizerAndAddFaller(true);
 			if (!HandleSolidCell(num))
 			{
 				objectLayerListItem.Update(num);
-				if (!KPrefabID.HasTag(GameTags.Stored))
+				bool flag = false;
+				if (absorbable && !KPrefabID.HasTag(GameTags.Stored))
 				{
 					int num2 = Grid.CellBelow(num);
 					if (Grid.IsValidCell(num2) && Grid.Solid[num2])
@@ -521,15 +533,21 @@ public class Pickupable : Workable
 							GameObject gameObject = nextItem.gameObject;
 							nextItem = nextItem.nextItem;
 							Pickupable component = gameObject.GetComponent<Pickupable>();
-							if ((UnityEngine.Object)component != (UnityEngine.Object)null && !flag)
+							if ((UnityEngine.Object)component != (UnityEngine.Object)null)
 							{
 								flag = component.TryAbsorb(this, false, false);
+								if (flag)
+								{
+									break;
+								}
 							}
 						}
 					}
 				}
 				GameScenePartitioner.Instance.UpdatePosition(solidPartitionerEntry, num);
 				GameScenePartitioner.Instance.UpdatePosition(partitionerEntry, num);
+				int cachedCell = this.cachedCell;
+				UpdateCachedCell(num);
 				if (!flag)
 				{
 					NotifyChanged(num);
@@ -538,7 +556,6 @@ public class Pickupable : Workable
 				{
 					NotifyChanged(cachedCell);
 				}
-				UpdateCachedCell(num);
 			}
 		}
 	}
@@ -580,6 +597,10 @@ public class Pickupable : Workable
 		{
 			return false;
 		}
+		if (prevent_absorb_until_stored)
+		{
+			return false;
+		}
 		if (!allow_cross_storage && (UnityEngine.Object)storage == (UnityEngine.Object)null != ((UnityEngine.Object)other.storage == (UnityEngine.Object)null))
 		{
 			return false;
@@ -602,7 +623,7 @@ public class Pickupable : Workable
 		RemoveFaller();
 		if ((bool)storage)
 		{
-			storage.Remove(base.gameObject);
+			storage.Remove(base.gameObject, true);
 		}
 		UnregisterListeners();
 		Components.Pickupables.Remove(this);
@@ -631,7 +652,7 @@ public class Pickupable : Workable
 		{
 			if (amount >= TotalAmount && (UnityEngine.Object)storage != (UnityEngine.Object)null)
 			{
-				storage.Remove(base.gameObject);
+				storage.Remove(base.gameObject, true);
 			}
 			float num = Math.Min(TotalAmount, amount);
 			if (num <= 0f)
@@ -642,13 +663,15 @@ public class Pickupable : Workable
 		}
 		if ((UnityEngine.Object)storage != (UnityEngine.Object)null)
 		{
-			storage.Remove(base.gameObject);
+			storage.Remove(base.gameObject, true);
 		}
 		return this;
 	}
 
 	private void Absorb(Pickupable pickupable)
 	{
+		Debug.Assert(!wasAbsorbed);
+		Debug.Assert(!pickupable.wasAbsorbed);
 		Trigger(-2064133523, pickupable);
 		pickupable.Trigger(-1940207677, base.gameObject);
 		pickupable.wasAbsorbed = true;
@@ -665,10 +688,10 @@ public class Pickupable : Workable
 	{
 		if (data is Storage || (data != null && (bool)data))
 		{
-			KPrefabID.AddTag(GameTags.Stored);
+			KPrefabID.AddTag(GameTags.Stored, false);
 			if ((object)storage == null || !storage.allowItemRemoval)
 			{
-				KPrefabID.AddTag(GameTags.StoredPrivate);
+				KPrefabID.AddTag(GameTags.StoredPrivate, false);
 			}
 			else
 			{
@@ -691,6 +714,11 @@ public class Pickupable : Workable
 		{
 			lastCarrier.RemoveAnimOverrides(carryAnimOverride);
 			lastCarrier = null;
+		}
+		KSelectable component2 = GetComponent<KSelectable>();
+		if ((bool)component2)
+		{
+			component2.IsSelectable = !flag;
 		}
 		if (flag)
 		{
@@ -754,12 +782,6 @@ public class Pickupable : Workable
 		return base.GetAnim(worker);
 	}
 
-	public override void AwardExperience(float work_dt, MinionResume resume)
-	{
-		resume.AddExperienceIfRole("Hauler", work_dt * ROLES.ACTIVE_EXPERIENCE_VERY_SLOW);
-		resume.AddExperienceIfRole(MaterialsManager.ID, work_dt * ROLES.ACTIVE_EXPERIENCE_VERY_SLOW);
-	}
-
 	protected override void OnCompleteWork(Worker worker)
 	{
 		Storage component = worker.GetComponent<Storage>();
@@ -811,7 +833,7 @@ public class Pickupable : Workable
 
 	private void AddFaller(Vector2 initial_velocity)
 	{
-		if (!isKinematic && !((UnityEngine.Object)GetComponent<Health>() != (UnityEngine.Object)null) && !GameComps.Fallers.Has(base.gameObject))
+		if (!((UnityEngine.Object)GetComponent<Health>() != (UnityEngine.Object)null) && !GameComps.Fallers.Has(base.gameObject))
 		{
 			GameComps.Fallers.Add(base.gameObject, initial_velocity);
 		}

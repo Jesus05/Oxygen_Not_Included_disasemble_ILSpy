@@ -1,4 +1,5 @@
 using System;
+using UnityEngine;
 
 public class DropUnusedInventoryChore : Chore<DropUnusedInventoryChore.StatesInstance>
 {
@@ -21,15 +22,15 @@ public class DropUnusedInventoryChore : Chore<DropUnusedInventoryChore.StatesIns
 			default_state = dropping;
 			dropping.Enter(delegate(StatesInstance smi)
 			{
-				smi.GetComponent<Storage>().DropAll(false);
+				smi.GetComponent<Storage>().DropAll(false, false, default(Vector3), true);
 			}).GoTo(success);
 			success.ReturnSuccess();
 		}
 	}
 
 	public DropUnusedInventoryChore(ChoreType chore_type, IStateMachineTarget target)
-		: base(chore_type, target, target.GetComponent<ChoreProvider>(), true, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.emergency, 0, false, true, 0, (Tag[])null)
+		: base(chore_type, target, target.GetComponent<ChoreProvider>(), true, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.compulsory, 5, false, true, 0, false, ReportManager.ReportType.WorkTime)
 	{
-		smi = new StatesInstance(this);
+		base.smi = new StatesInstance(this);
 	}
 }

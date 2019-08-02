@@ -148,13 +148,19 @@ namespace TUNING
 						inst.gameObject.Subscribe(-2038961714, delegate(object data)
 						{
 							CreatureCalorieMonitor.CaloriesConsumedEvent caloriesConsumedEvent = (CreatureCalorieMonitor.CaloriesConsumedEvent)data;
-							if (foodTags.HasAny(caloriesConsumedEvent.tag))
+							TagBits tag_bits = new TagBits(caloriesConsumedEvent.tag);
+							if (foodTags.HasAny(ref tag_bits))
 							{
 								inst.AddBreedingChance(eggType, caloriesConsumedEvent.calories * modifierPerCal);
 							}
 						});
 					});
 				};
+			}
+
+			private static System.Action CreateDietaryModifier(string id, Tag eggTag, Tag foodTag, float modifierPerCal)
+			{
+				return CreateDietaryModifier(id, eggTag, new TagBits(foodTag), modifierPerCal);
 			}
 
 			private static System.Action CreateNearbyCreatureModifier(string id, Tag eggTag, Tag nearbyCreature, float modifierPerSecond, bool alsoInvert)
@@ -200,7 +206,7 @@ namespace TUNING
 				return delegate
 				{
 					string name = STRINGS.CREATURES.FERTILITY_MODIFIERS.TEMPERATURE.NAME;
-					Db.Get().CreateFertilityModifier(id, eggTag, name, null, (string src) => string.Format(STRINGS.CREATURES.FERTILITY_MODIFIERS.TEMPERATURE.DESC, GameUtil.GetFormattedTemperature(minTemp, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true), GameUtil.GetFormattedTemperature(maxTemp, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true)), delegate(FertilityMonitor.Instance inst, Tag eggType)
+					Db.Get().CreateFertilityModifier(id, eggTag, name, null, (string src) => string.Format(STRINGS.CREATURES.FERTILITY_MODIFIERS.TEMPERATURE.DESC, GameUtil.GetFormattedTemperature(minTemp, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false), GameUtil.GetFormattedTemperature(maxTemp, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false)), delegate(FertilityMonitor.Instance inst, Tag eggType)
 					{
 						TemperatureVulnerable component = inst.master.GetComponent<TemperatureVulnerable>();
 						if ((UnityEngine.Object)component != (UnityEngine.Object)null)
@@ -219,7 +225,7 @@ namespace TUNING
 						}
 						else
 						{
-							Output.LogError("Ack! Trying to add temperature modifier", id, "to", inst.master.name, "but it's not temperature vulnerable!");
+							DebugUtil.LogErrorArgs("Ack! Trying to add temperature modifier", id, "to", inst.master.name, "but it's not temperature vulnerable!");
 						}
 					});
 				};

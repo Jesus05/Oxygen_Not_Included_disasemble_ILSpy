@@ -43,6 +43,14 @@ public class LogicMassSensor : Switch, ISaveLoadable, IThresholdSwitch
 
 	private HandleVector<int>.Handle floorSwitchActivatorChangedEntry;
 
+	[MyCmpAdd]
+	private CopyBuildingSettings copyBuildingSettings;
+
+	private static readonly EventSystem.IntraObjectHandler<LogicMassSensor> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<LogicMassSensor>(delegate(LogicMassSensor component, object data)
+	{
+		component.OnCopySettings(data);
+	});
+
 	public LocString Title => UI.UISIDESCREENS.THRESHOLD_SWITCH_SIDESCREEN.TITLE;
 
 	public float Threshold
@@ -80,6 +88,29 @@ public class LogicMassSensor : Switch, ISaveLoadable, IThresholdSwitch
 	public string AboveToolTip => UI.UISIDESCREENS.THRESHOLD_SWITCH_SIDESCREEN.PRESSURE_TOOLTIP_ABOVE;
 
 	public string BelowToolTip => UI.UISIDESCREENS.THRESHOLD_SWITCH_SIDESCREEN.PRESSURE_TOOLTIP_BELOW;
+
+	public ThresholdScreenLayoutType LayoutType => ThresholdScreenLayoutType.SliderBar;
+
+	public int IncrementScale => 1;
+
+	public NonLinearSlider.Range[] GetRanges => NonLinearSlider.GetDefaultRange(RangeMax);
+
+	protected override void OnPrefabInit()
+	{
+		base.OnPrefabInit();
+		Subscribe(-905833192, OnCopySettingsDelegate);
+	}
+
+	private void OnCopySettings(object data)
+	{
+		GameObject gameObject = (GameObject)data;
+		LogicMassSensor component = gameObject.GetComponent<LogicMassSensor>();
+		if ((Object)component != (Object)null)
+		{
+			Threshold = component.Threshold;
+			ActivateAboveThreshold = component.ActivateAboveThreshold;
+		}
+	}
 
 	protected override void OnSpawn()
 	{
@@ -145,7 +176,7 @@ public class LogicMassSensor : Switch, ISaveLoadable, IThresholdSwitch
 			if (!((Object)pickupable == (Object)null) && !pickupable.wasAbsorbed)
 			{
 				KPrefabID component = pickupable.GetComponent<KPrefabID>();
-				if (!component.HasTag(GameTags.Creature) || component.HasTag(GameTags.Creatures.GroundBased) || pickupable.HasTag(GameTags.Creatures.Flopping))
+				if (!component.HasTag(GameTags.Creature) || component.HasTag(GameTags.Creatures.Walker) || component.HasTag(GameTags.Creatures.Hoverer) || pickupable.HasTag(GameTags.Creatures.Flopping))
 				{
 					num += pickupable.PrimaryElement.Mass;
 				}
@@ -207,17 +238,7 @@ public class LogicMassSensor : Switch, ISaveLoadable, IThresholdSwitch
 
 	public LocString ThresholdValueUnits()
 	{
-		LocString result = null;
-		switch (GameUtil.massUnit)
-		{
-		case GameUtil.MassUnit.Kilograms:
-			result = UI.UNITSUFFIXES.MASS.KILOGRAM;
-			break;
-		case GameUtil.MassUnit.Pounds:
-			result = UI.UNITSUFFIXES.MASS.POUND;
-			break;
-		}
-		return result;
+		return GameUtil.GetCurrentMassUnit(false);
 	}
 
 	private void SwitchToggled(bool toggled_on)

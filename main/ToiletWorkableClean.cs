@@ -21,14 +21,11 @@ public class ToiletWorkableClean : Workable
 		workingStatusItem = Db.Get().MiscStatusItems.Cleaning;
 		attributeConverter = Db.Get().AttributeConverters.TidyingSpeed;
 		attributeExperienceMultiplier = DUPLICANTSTATS.ATTRIBUTE_LEVELING.PART_DAY_EXPERIENCE;
+		skillExperienceSkillGroup = Db.Get().SkillGroups.Basekeeping.Id;
+		skillExperienceMultiplier = SKILLS.PART_DAY_EXPERIENCE;
 		workAnims = CLEAN_ANIMS;
 		workingPstComplete = PST_ANIM;
 		workingPstFailed = PST_ANIM;
-	}
-
-	public override void AwardExperience(float work_dt, MinionResume resume)
-	{
-		resume.AddExperienceIfRole(Handyman.ID, work_dt * ROLES.ACTIVE_EXPERIENCE_QUICK);
 	}
 
 	protected override void OnCompleteWork(Worker worker)

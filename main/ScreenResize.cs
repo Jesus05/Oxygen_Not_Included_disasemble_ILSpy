@@ -17,6 +17,7 @@ public class ScreenResize : MonoBehaviour
 	{
 		Instance = this;
 		isFullscreen = Screen.fullScreen;
+		OnResize = (System.Action)Delegate.Combine(OnResize, new System.Action(SaveResolutionToPrefs));
 	}
 
 	private void LateUpdate()
@@ -31,5 +32,10 @@ public class ScreenResize : MonoBehaviour
 				OnResize();
 			}
 		}
+	}
+
+	private void SaveResolutionToPrefs()
+	{
+		GraphicsOptionsScreen.OnResize();
 	}
 }

@@ -8,7 +8,7 @@ public class BabyHatchMetalConfig : IEntityConfig
 	public GameObject CreatePrefab()
 	{
 		GameObject gameObject = HatchMetalConfig.CreateHatch("HatchMetalBaby", CREATURES.SPECIES.HATCH.VARIANT_METAL.BABY.NAME, CREATURES.SPECIES.HATCH.VARIANT_METAL.BABY.DESC, "baby_hatch_kanim", true);
-		EntityTemplates.ExtendEntityToBeingABaby(gameObject, "HatchMetal");
+		EntityTemplates.ExtendEntityToBeingABaby(gameObject, "HatchMetal", null);
 		return gameObject;
 	}
 

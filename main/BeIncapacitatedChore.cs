@@ -69,11 +69,7 @@ public class BeIncapacitatedChore : Chore<BeIncapacitatedChore.StatesInstance>
 				{
 					flag2 = true;
 				}
-				else if (clinic.Get(smi).GetComponent<Assignable>().assignee == null)
-				{
-					flag2 = true;
-				}
-				else if ((UnityEngine.Object)clinic.Get(smi).GetComponent<Assignable>().assignee.GetSoleOwner().gameObject != (UnityEngine.Object)smi.master.gameObject)
+				else if (!clinic.Get(smi).GetComponent<Assignable>().IsAssignedTo(smi.master.GetComponent<IAssignableIdentity>()))
 				{
 					flag2 = true;
 				}
@@ -89,11 +85,7 @@ public class BeIncapacitatedChore : Chore<BeIncapacitatedChore.StatesInstance>
 				{
 					flag = true;
 				}
-				else if (clinic.Get(smi).GetComponent<Assignable>().assignee == null)
-				{
-					flag = true;
-				}
-				else if ((UnityEngine.Object)clinic.Get(smi).GetComponent<Assignable>().assignee.GetSoleOwner().gameObject != (UnityEngine.Object)smi.master.gameObject)
+				else if (!clinic.Get(smi).GetComponent<Assignable>().IsAssignedTo(smi.master.GetComponent<IAssignableIdentity>()))
 				{
 					flag = true;
 				}
@@ -133,20 +125,20 @@ public class BeIncapacitatedChore : Chore<BeIncapacitatedChore.StatesInstance>
 	private static string IncapacitatedDuplicantAnim_place = "place";
 
 	public BeIncapacitatedChore(IStateMachineTarget master)
-		: base(Db.Get().ChoreTypes.BeIncapacitated, master, master.GetComponent<ChoreProvider>(), true, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.emergency, 0, false, true, 0, (Tag[])null)
+		: base(Db.Get().ChoreTypes.BeIncapacitated, master, master.GetComponent<ChoreProvider>(), true, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.compulsory, 5, false, true, 0, false, ReportManager.ReportType.WorkTime)
 	{
-		smi = new StatesInstance(this);
+		base.smi = new StatesInstance(this);
 	}
 
 	public void FindAvailableMedicalBed(Navigator navigator)
 	{
 		Clinic clinic = null;
 		AssignableSlot clinic2 = Db.Get().AssignableSlots.Clinic;
-		Ownables component = gameObject.GetComponent<Ownables>();
-		AssignableSlotInstance slot = component.GetSlot(clinic2);
+		Ownables soleOwner = gameObject.GetComponent<MinionIdentity>().GetSoleOwner();
+		AssignableSlotInstance slot = soleOwner.GetSlot(clinic2);
 		if ((UnityEngine.Object)slot.assignable == (UnityEngine.Object)null)
 		{
-			Assignable assignable = component.AutoAssignSlot(clinic2);
+			Assignable assignable = soleOwner.AutoAssignSlot(clinic2);
 			if ((UnityEngine.Object)assignable != (UnityEngine.Object)null)
 			{
 				clinic = assignable.GetComponent<Clinic>();
@@ -158,13 +150,13 @@ public class BeIncapacitatedChore : Chore<BeIncapacitatedChore.StatesInstance>
 		}
 		if ((UnityEngine.Object)clinic != (UnityEngine.Object)null && navigator.CanReach(clinic))
 		{
-			smi.sm.clinic.Set(clinic.gameObject, smi);
-			smi.GoTo(smi.sm.incapacitation_root.rescue.waitingForPickup);
+			base.smi.sm.clinic.Set(clinic.gameObject, base.smi);
+			base.smi.GoTo(base.smi.sm.incapacitation_root.rescue.waitingForPickup);
 		}
 	}
 
 	public GameObject GetChosenClinic()
 	{
-		return smi.sm.clinic.Get(smi);
+		return base.smi.sm.clinic.Get(base.smi);
 	}
 }

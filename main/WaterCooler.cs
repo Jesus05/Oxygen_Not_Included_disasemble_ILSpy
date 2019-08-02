@@ -120,7 +120,7 @@ public class WaterCooler : StateMachineComponent<WaterCooler.StatesInstance>, IA
 		base.OnSpawn();
 		GameScheduler.Instance.Schedule("Scheduling Tutorial", 2f, delegate
 		{
-			Tutorial.Instance.TutorialMessage(Tutorial.TutorialMessages.TM_Schedule);
+			Tutorial.Instance.TutorialMessage(Tutorial.TutorialMessages.TM_Schedule, true);
 		}, null, null);
 		workables = new SocialGatheringPointWorkable[socializeOffsets.Length];
 		for (int i = 0; i < workables.Length; i++)
@@ -202,7 +202,7 @@ public class WaterCooler : StateMachineComponent<WaterCooler.StatesInstance>, IA
 		int cell = Grid.PosToCell(this);
 		int cell2 = Grid.OffsetCell(cell, offset);
 		int anchor_cell = Grid.CellBelow(cell2);
-		return GameNavGrids.FloorValidator.IsWalkableCell(cell2, anchor_cell, Grid.BitFields, false, false);
+		return GameNavGrids.FloorValidator.IsWalkableCell(cell2, anchor_cell, false);
 	}
 
 	private void OnChoreEnd(Chore chore)

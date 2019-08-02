@@ -1,3 +1,6 @@
+using System;
+
+[Serializable]
 public struct StringKey
 {
 	public string String;

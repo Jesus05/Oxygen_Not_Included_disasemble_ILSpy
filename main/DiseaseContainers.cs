@@ -6,22 +6,27 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DiseaseContainers : KGameObjectComponentManager<DiseaseContainer>
+public class DiseaseContainers : KGameObjectSplitComponentManager<DiseaseHeader, DiseaseContainer>
 {
 	public HandleVector<int>.Handle Add(GameObject go, byte disease_idx, int disease_count)
 	{
-		DiseaseContainer diseaseContainer = new DiseaseContainer(go, disease_idx, disease_count);
+		DiseaseHeader diseaseHeader = default(DiseaseHeader);
+		diseaseHeader.diseaseIdx = disease_idx;
+		diseaseHeader.diseaseCount = disease_count;
+		diseaseHeader.primaryElement = go.GetComponent<PrimaryElement>();
+		DiseaseHeader header = diseaseHeader;
+		DiseaseContainer payload = new DiseaseContainer(go, header.primaryElement.Element.idx);
 		if (disease_idx != 255)
 		{
-			diseaseContainer = EvaluateGrowthConstants(diseaseContainer);
+			EvaluateGrowthConstants(header, ref payload);
 		}
-		return Add(go, diseaseContainer);
+		return Add(go, header, ref payload);
 	}
 
 	protected override void OnCleanUp(HandleVector<int>.Handle h)
 	{
-		DiseaseContainer data = GetData(h);
-		AutoDisinfectable autoDisinfectable = data.autoDisinfectable;
+		DiseaseContainer payload = GetPayload(h);
+		AutoDisinfectable autoDisinfectable = payload.autoDisinfectable;
 		if ((UnityEngine.Object)autoDisinfectable != (UnityEngine.Object)null)
 		{
 			AutoDisinfectableManager.Instance.RemoveAutoDisinfectable(autoDisinfectable);
@@ -31,38 +36,47 @@ public class DiseaseContainers : KGameObjectComponentManager<DiseaseContainer>
 
 	public override void Sim200ms(float dt)
 	{
-		for (int i = 0; i < data.Count; i++)
+		ListPool<int, DiseaseContainers>.PooledList pooledList = ListPool<int, DiseaseContainers>.Allocate();
+		pooledList.Capacity = Math.Max(pooledList.Capacity, headers.Count);
+		for (int i = 0; i < headers.Count; i++)
 		{
-			DiseaseContainer diseaseContainer = data[i];
-			if (diseaseContainer.diseaseIdx != 255 && !((UnityEngine.Object)diseaseContainer.primaryElement == (UnityEngine.Object)null))
+			DiseaseHeader diseaseHeader = headers[i];
+			if (diseaseHeader.diseaseIdx != 255 && (UnityEngine.Object)diseaseHeader.primaryElement != (UnityEngine.Object)null)
 			{
-				Disease disease = Db.Get().Diseases[diseaseContainer.diseaseIdx];
-				float num = CalculateDelta(diseaseContainer, disease, dt);
-				num += diseaseContainer.accumulatedError;
-				int num2 = (int)num;
-				diseaseContainer.accumulatedError = num - (float)num2;
-				bool flag = diseaseContainer.diseaseCount > diseaseContainer.overpopulationCount;
-				bool flag2 = diseaseContainer.diseaseCount + num2 > diseaseContainer.overpopulationCount;
-				if (flag != flag2)
-				{
-					diseaseContainer = EvaluateGrowthConstants(diseaseContainer);
-				}
-				diseaseContainer.diseaseCount += num2;
-				if (diseaseContainer.diseaseCount <= 0)
-				{
-					diseaseContainer.diseaseCount = 0;
-					diseaseContainer.diseaseIdx = byte.MaxValue;
-					diseaseContainer.accumulatedError = 0f;
-				}
-				data[i] = diseaseContainer;
+				pooledList.Add(i);
 			}
 		}
+		foreach (int item in pooledList)
+		{
+			DiseaseContainer container = payloads[item];
+			DiseaseHeader diseaseHeader2 = headers[item];
+			Disease disease = Db.Get().Diseases[diseaseHeader2.diseaseIdx];
+			float num = CalculateDelta(diseaseHeader2, ref container, disease, dt);
+			num += container.accumulatedError;
+			int num2 = (int)num;
+			container.accumulatedError = num - (float)num2;
+			bool flag = diseaseHeader2.diseaseCount > container.overpopulationCount;
+			bool flag2 = diseaseHeader2.diseaseCount + num2 > container.overpopulationCount;
+			if (flag != flag2)
+			{
+				EvaluateGrowthConstants(diseaseHeader2, ref container);
+			}
+			diseaseHeader2.diseaseCount += num2;
+			if (diseaseHeader2.diseaseCount <= 0)
+			{
+				container.accumulatedError = 0f;
+				diseaseHeader2.diseaseCount = 0;
+				diseaseHeader2.diseaseIdx = byte.MaxValue;
+			}
+			headers[item] = diseaseHeader2;
+			payloads[item] = container;
+		}
+		pooledList.Recycle();
 	}
 
-	public static float CalculateDelta(DiseaseContainer container, Disease disease, float dt)
+	public static float CalculateDelta(DiseaseHeader header, ref DiseaseContainer container, Disease disease, float dt)
 	{
-		int environment_cell = Grid.PosToCell(container.primaryElement.transform.GetPosition());
-		return CalculateDelta(container.diseaseCount, container.elemIdx, container.primaryElement.Mass, environment_cell, container.primaryElement.Temperature, container.instanceGrowthRate, disease, dt);
+		return CalculateDelta(header.diseaseCount, container.elemIdx, header.primaryElement.Mass, Grid.PosToCell(header.primaryElement.transform.GetPosition()), header.primaryElement.Temperature, container.instanceGrowthRate, disease, dt);
 	}
 
 	public static float CalculateDelta(int disease_count, int element_idx, float mass, int environment_cell, float temperature, float tags_multiplier_base, Disease disease, float dt)
@@ -86,45 +100,73 @@ public class DiseaseContainers : KGameObjectComponentManager<DiseaseContainer>
 
 	public int ModifyDiseaseCount(HandleVector<int>.Handle h, int disease_count_delta)
 	{
-		DiseaseContainer data = GetData(h);
-		data.diseaseCount = Math.Max(0, data.diseaseCount + disease_count_delta);
-		if (data.diseaseCount == 0)
+		DiseaseHeader header = GetHeader(h);
+		header.diseaseCount = Math.Max(0, header.diseaseCount + disease_count_delta);
+		if (header.diseaseCount == 0)
 		{
-			data.diseaseIdx = byte.MaxValue;
-			data.accumulatedError = 0f;
+			header.diseaseIdx = byte.MaxValue;
+			DiseaseContainer new_data = GetPayload(h);
+			new_data.accumulatedError = 0f;
+			SetPayload(h, ref new_data);
 		}
-		SetData(h, data);
-		return data.diseaseCount;
+		SetHeader(h, header);
+		return header.diseaseCount;
 	}
 
 	public int AddDisease(HandleVector<int>.Handle h, byte disease_idx, int disease_count)
 	{
-		DiseaseContainer diseaseContainer = GetData(h);
-		SimUtil.DiseaseInfo diseaseInfo = SimUtil.CalculateFinalDiseaseInfo(disease_idx, disease_count, diseaseContainer.diseaseIdx, diseaseContainer.diseaseCount);
-		bool flag = diseaseContainer.diseaseIdx != diseaseInfo.idx;
-		diseaseContainer.diseaseIdx = diseaseInfo.idx;
-		diseaseContainer.diseaseCount = diseaseInfo.count;
+		GetData(h, out DiseaseHeader header, out DiseaseContainer payload);
+		SimUtil.DiseaseInfo diseaseInfo = SimUtil.CalculateFinalDiseaseInfo(disease_idx, disease_count, header.diseaseIdx, header.diseaseCount);
+		bool flag = header.diseaseIdx != diseaseInfo.idx;
+		header.diseaseIdx = diseaseInfo.idx;
+		header.diseaseCount = diseaseInfo.count;
 		if (flag && diseaseInfo.idx != 255)
 		{
-			diseaseContainer = EvaluateGrowthConstants(diseaseContainer);
+			EvaluateGrowthConstants(header, ref payload);
+			SetData(h, header, ref payload);
 		}
-		SetData(h, diseaseContainer);
+		else
+		{
+			SetHeader(h, header);
+		}
 		if (flag)
 		{
-			diseaseContainer.primaryElement.Trigger(-283306403, null);
+			header.primaryElement.Trigger(-283306403, null);
 		}
-		return diseaseContainer.diseaseCount;
+		return header.diseaseCount;
+	}
+
+	private void GetVisualDiseaseIdxAndCount(DiseaseHeader header, ref DiseaseContainer payload, out int disease_idx, out int disease_count)
+	{
+		if ((UnityEngine.Object)payload.visualDiseaseProvider == (UnityEngine.Object)null)
+		{
+			disease_idx = header.diseaseIdx;
+			disease_count = header.diseaseCount;
+		}
+		else
+		{
+			disease_idx = 255;
+			disease_count = 0;
+			HandleVector<int>.Handle handle = GameComps.DiseaseContainers.GetHandle(payload.visualDiseaseProvider);
+			if (handle != HandleVector<int>.InvalidHandle)
+			{
+				DiseaseHeader header2 = GameComps.DiseaseContainers.GetHeader(handle);
+				disease_idx = header2.diseaseIdx;
+				disease_count = header2.diseaseCount;
+			}
+		}
 	}
 
 	public void UpdateOverlayColours()
 	{
 		GridArea visibleArea = GridVisibleArea.GetVisibleArea();
-		Database.Diseases diseases = Db.Get().Diseases;
+		Diseases diseases = Db.Get().Diseases;
 		Color32 color = new Color32(0, 0, 0, byte.MaxValue);
-		for (int i = 0; i < base.data.Count; i++)
+		for (int i = 0; i < headers.Count; i++)
 		{
-			DiseaseContainer diseaseContainer = base.data[i];
-			KBatchedAnimController controller = diseaseContainer.controller;
+			DiseaseContainer payload = payloads[i];
+			DiseaseHeader header = headers[i];
+			KBatchedAnimController controller = payload.controller;
 			if ((UnityEngine.Object)controller != (UnityEngine.Object)null)
 			{
 				Color32 c = color;
@@ -134,15 +176,15 @@ public class DiseaseContainers : KGameObjectComponentManager<DiseaseContainer>
 					int num = 0;
 					int disease_idx = 255;
 					int disease_count = 0;
-					diseaseContainer.GetVisualDiseaseIdxAndCount(out disease_idx, out disease_count);
+					GetVisualDiseaseIdxAndCount(header, ref payload, out disease_idx, out disease_count);
 					if (disease_idx != 255)
 					{
 						c = diseases[disease_idx].overlayColour;
 						num = disease_count;
 					}
-					if (diseaseContainer.isContainer)
+					if (payload.isContainer)
 					{
-						Storage component = diseaseContainer.primaryElement.GetComponent<Storage>();
+						Storage component = header.primaryElement.GetComponent<Storage>();
 						List<GameObject> items = component.items;
 						for (int j = 0; j < items.Count; j++)
 						{
@@ -152,20 +194,20 @@ public class DiseaseContainers : KGameObjectComponentManager<DiseaseContainer>
 								HandleVector<int>.Handle handle = GetHandle(gameObject);
 								if (handle.IsValid())
 								{
-									DiseaseContainer data = GetData(handle);
-									if (data.diseaseCount > num && data.diseaseIdx != 255)
+									DiseaseHeader header2 = GetHeader(handle);
+									if (header2.diseaseCount > num && header2.diseaseIdx != 255)
 									{
-										num = data.diseaseCount;
-										c = diseases[data.diseaseIdx].overlayColour;
+										num = header2.diseaseCount;
+										c = diseases[header2.diseaseIdx].overlayColour;
 									}
 								}
 							}
 						}
 					}
 					c.a = SimUtil.DiseaseCountToAlpha254(num);
-					if (diseaseContainer.conduitType != 0)
+					if (payload.conduitType != 0)
 					{
-						ConduitFlow flowManager = Conduit.GetFlowManager(diseaseContainer.conduitType);
+						ConduitFlow flowManager = Conduit.GetFlowManager(payload.conduitType);
 						int cell = Grid.PosToCell(position);
 						ConduitFlow.ConduitContents contents = flowManager.GetContents(cell);
 						if (contents.diseaseIdx != 255 && contents.diseaseCount > num)
@@ -181,24 +223,24 @@ public class DiseaseContainers : KGameObjectComponentManager<DiseaseContainer>
 		}
 	}
 
-	private DiseaseContainer EvaluateGrowthConstants(DiseaseContainer container)
+	private void EvaluateGrowthConstants(DiseaseHeader header, ref DiseaseContainer container)
 	{
-		Disease disease = Db.Get().Diseases[container.diseaseIdx];
-		KPrefabID component = container.primaryElement.GetComponent<KPrefabID>();
-		ElemGrowthInfo elemGrowthInfo = disease.elemGrowthInfo[container.diseaseIdx];
-		container.overpopulationCount = (int)(elemGrowthInfo.maxCountPerKG * container.primaryElement.Mass);
-		container.instanceGrowthRate = disease.GetGrowthRateForTags(component.Tags, container.diseaseCount > container.overpopulationCount);
-		return container;
+		Disease disease = Db.Get().Diseases[header.diseaseIdx];
+		KPrefabID component = header.primaryElement.GetComponent<KPrefabID>();
+		ElemGrowthInfo elemGrowthInfo = disease.elemGrowthInfo[header.diseaseIdx];
+		container.overpopulationCount = (int)(elemGrowthInfo.maxCountPerKG * header.primaryElement.Mass);
+		container.instanceGrowthRate = disease.GetGrowthRateForTags(component.Tags, header.diseaseCount > container.overpopulationCount);
 	}
 
 	public override void Clear()
 	{
 		base.Clear();
-		for (int i = 0; i < data.Count; i++)
+		for (int i = 0; i < payloads.Count; i++)
 		{
-			data[i].Clear();
+			payloads[i].Clear();
 		}
-		data.Clear();
+		headers.Clear();
+		payloads.Clear();
 		handles.Clear();
 	}
 }

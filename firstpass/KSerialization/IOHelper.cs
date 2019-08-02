@@ -33,14 +33,14 @@ namespace KSerialization
 			uint num = reader.ReadUInt32();
 			if ((uint)expected != num)
 			{
-				Output.LogError($"Expected Tag {expected.ToString()}(0x{(uint)expected:X}) but got 0x{num:X} instead");
+				Debug.LogError($"Expected Tag {expected.ToString()}(0x{(uint)expected:X}) but got 0x{num:X} instead");
 			}
 		}
 
 		[Conditional("DEBUG_VALIDATE")]
 		public static void Assert(bool condition)
 		{
-			DebugUtil.Assert(condition, "Assert!", string.Empty, string.Empty);
+			DebugUtil.Assert(condition);
 		}
 
 		public static Vector2I ReadVector2I(this IReader reader)

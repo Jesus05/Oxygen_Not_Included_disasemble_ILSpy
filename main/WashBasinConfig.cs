@@ -28,13 +28,14 @@ public class WashBasinConfig : IBuildingConfig
 
 	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
-		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.WashStation);
+		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.WashStation, false);
 		HandSanitizer handSanitizer = go.AddOrGet<HandSanitizer>();
 		handSanitizer.massConsumedPerUse = 5f;
 		handSanitizer.consumedElement = SimHashes.Water;
 		handSanitizer.outputElement = SimHashes.DirtyWater;
 		handSanitizer.diseaseRemovalCount = 120000;
 		handSanitizer.maxUses = 40;
+		handSanitizer.dumpWhenFull = true;
 		go.AddOrGet<DirectionControl>();
 		HandSanitizer.Work work = go.AddOrGet<HandSanitizer.Work>();
 		work.overrideAnims = new KAnimFile[1]
@@ -51,7 +52,7 @@ public class WashBasinConfig : IBuildingConfig
 		manualDeliveryKG.minimumMass = 5f;
 		manualDeliveryKG.capacity = 200f;
 		manualDeliveryKG.refillMass = 40f;
-		manualDeliveryKG.choreTypeIDHash = Db.Get().ChoreTypes.OperateFetch.IdHash;
+		manualDeliveryKG.choreTypeIDHash = Db.Get().ChoreTypes.FetchCritical.IdHash;
 		go.AddOrGet<LoopingSounds>();
 	}
 

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using TUNING;
 using UnityEngine;
 
@@ -29,11 +30,13 @@ public class FarmTileConfig : IBuildingConfig
 		buildingDef.AudioCategory = "HollowMetal";
 		buildingDef.AudioSize = "small";
 		buildingDef.BaseTimeUntilRepair = -1f;
-		buildingDef.SceneLayer = Grid.SceneLayer.TileFront;
+		buildingDef.SceneLayer = Grid.SceneLayer.TileMain;
 		buildingDef.ConstructionOffsetFilter = BuildingDef.ConstructionOffsetFilter_OneDown;
 		buildingDef.PermittedRotations = PermittedRotations.FlipV;
 		buildingDef.isSolidTile = false;
 		buildingDef.DragBuild = true;
+		buildingDef.ReplacementTags = new List<Tag>();
+		buildingDef.ReplacementTags.Add(GameTags.FloorTiles);
 		return buildingDef;
 	}
 
@@ -52,6 +55,8 @@ public class FarmTileConfig : IBuildingConfig
 		plantablePlot.AddDepositTag(GameTags.CropSeed);
 		plantablePlot.AddDepositTag(GameTags.WaterSeed);
 		plantablePlot.SetFertilizationFlags(true, false);
+		CopyBuildingSettings copyBuildingSettings = go.AddOrGet<CopyBuildingSettings>();
+		copyBuildingSettings.copyGroupTag = GameTags.Farm;
 		go.AddOrGet<AnimTileable>();
 		Prioritizable.AddRef(go);
 	}
@@ -59,6 +64,7 @@ public class FarmTileConfig : IBuildingConfig
 	public override void DoPostConfigureComplete(GameObject go)
 	{
 		GeneratedBuildings.RemoveLoopingSounds(go);
+		go.GetComponent<KPrefabID>().AddTag(GameTags.FarmTiles, false);
 		SetUpFarmPlotTags(go);
 	}
 

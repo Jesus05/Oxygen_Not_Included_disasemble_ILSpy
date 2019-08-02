@@ -20,6 +20,8 @@ namespace Database
 
 		public RoomTypeCategory Agricultural;
 
+		public RoomTypeCategory Park;
+
 		public RoomTypeCategories(ResourceSet parent)
 			: base("RoomTypeCategories", parent)
 		{
@@ -32,6 +34,7 @@ namespace Database
 			Hospital = Add("Hospital", string.Empty, new Color(1f, 0.5176471f, 0.5568628f));
 			Industrial = Add("Industrial", string.Empty, new Color(0.956862748f, 0.772549033f, 0.258823544f));
 			Agricultural = Add("Agricultural", string.Empty, new Color(0.8039216f, 0.9490196f, 0.282352954f));
+			Park = Add("Park", string.Empty, new Color(0.6745098f, 1f, 0.7411765f));
 		}
 
 		private RoomTypeCategory Add(string id, string name, Color color)

@@ -20,6 +20,8 @@ public class CavityInfo
 
 	public List<KPrefabID> buildings = new List<KPrefabID>();
 
+	public List<KPrefabID> plants = new List<KPrefabID>();
+
 	public List<KPrefabID> creatures = new List<KPrefabID>();
 
 	public List<KPrefabID> eggs = new List<KPrefabID>();
@@ -34,5 +36,19 @@ public class CavityInfo
 	{
 		buildings.Add(bc);
 		dirty = true;
+	}
+
+	public void AddPlants(KPrefabID plant)
+	{
+		plants.Add(plant);
+		dirty = true;
+	}
+
+	public void OnEnter(object data)
+	{
+		foreach (KPrefabID building in buildings)
+		{
+			building.Trigger(-832141045, data);
+		}
 	}
 }

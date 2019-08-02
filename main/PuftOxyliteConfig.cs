@@ -15,11 +15,11 @@ public class PuftOxyliteConfig : IEntityConfig
 
 	public const SimHashes EMIT_ELEMENT = SimHashes.OxyRock;
 
-	private static float KG_ORE_EATEN_PER_CYCLE = 30f;
+	private static float KG_ORE_EATEN_PER_CYCLE = 50f;
 
 	private static float CALORIES_PER_KG_OF_ORE = PuftTuning.STANDARD_CALORIES_PER_CYCLE / KG_ORE_EATEN_PER_CYCLE;
 
-	private static float MIN_POOP_SIZE_IN_KG = 10f;
+	private static float MIN_POOP_SIZE_IN_KG = 25f;
 
 	public static int EGG_SORT_ORDER = PuftConfig.EGG_SORT_ORDER + 2;
 
@@ -32,7 +32,13 @@ public class PuftOxyliteConfig : IEntityConfig
 		trait.Add(new AttributeModifier(Db.Get().Amounts.Calories.deltaAttribute.Id, (0f - PuftTuning.STANDARD_CALORIES_PER_CYCLE) / 600f, name, false, false, true));
 		trait.Add(new AttributeModifier(Db.Get().Amounts.HitPoints.maxAttribute.Id, 25f, name, false, false, true));
 		trait.Add(new AttributeModifier(Db.Get().Amounts.Age.maxAttribute.Id, 75f, name, false, false, true));
-		return BasePuftConfig.SetupDiet(prefab, SimHashes.Oxygen.CreateTag(), SimHashes.OxyRock.CreateTag(), CALORIES_PER_KG_OF_ORE, TUNING.CREATURES.CONVERSION_EFFICIENCY.GOOD_2, null, 0f, MIN_POOP_SIZE_IN_KG);
+		prefab = BasePuftConfig.SetupDiet(prefab, SimHashes.Oxygen.CreateTag(), SimHashes.OxyRock.CreateTag(), CALORIES_PER_KG_OF_ORE, TUNING.CREATURES.CONVERSION_EFFICIENCY.GOOD_2, null, 0f, MIN_POOP_SIZE_IN_KG);
+		LureableMonitor.Def def = prefab.AddOrGetDef<LureableMonitor.Def>();
+		def.lures = new Tag[1]
+		{
+			SimHashes.OxyRock.CreateTag()
+		};
+		return prefab;
 	}
 
 	public GameObject CreatePrefab()

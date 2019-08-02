@@ -21,7 +21,7 @@ public class RoomDetails
 		{
 			return string.Format(ROOMS.DETAILS.AVERAGE_TEMPERATURE.NAME, UI.OVERLAYS.TEMPERATURE.EXTREMECOLD);
 		}
-		return string.Format(ROOMS.DETAILS.AVERAGE_TEMPERATURE.NAME, GameUtil.GetFormattedTemperature(num3, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true));
+		return string.Format(ROOMS.DETAILS.AVERAGE_TEMPERATURE.NAME, GameUtil.GetFormattedTemperature(num3, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false));
 	});
 
 	public static readonly Detail AVERAGE_ATMO_MASS = new Detail(delegate
@@ -67,6 +67,8 @@ public class RoomDetails
 	public static readonly Detail BUILDING_COUNT = new Detail((Room room) => string.Format(ROOMS.DETAILS.BUILDING_COUNT.NAME, room.buildings.Count));
 
 	public static readonly Detail CREATURE_COUNT = new Detail((Room room) => string.Format(ROOMS.DETAILS.CREATURE_COUNT.NAME, room.cavity.creatures.Count + room.cavity.eggs.Count));
+
+	public static readonly Detail PLANT_COUNT = new Detail((Room room) => string.Format(ROOMS.DETAILS.PLANT_COUNT.NAME, room.cavity.plants.Count));
 
 	public static readonly Detail EFFECT = new Detail((Room room) => room.roomType.effect);
 

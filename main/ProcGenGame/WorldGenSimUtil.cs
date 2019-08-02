@@ -1,18 +1,23 @@
 using Klei;
 using KSerialization;
+using ProcGen;
 using STRINGS;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.CompilerServices;
 using TemplateClasses;
 
 namespace ProcGenGame
 {
 	public static class WorldGenSimUtil
 	{
-		public unsafe static bool DoSettleSim(Sim.Cell[] cells, float[] bgTemp, Sim.DiseaseCell[] dcs, WorldGen.OfflineCallbackFunction updateProgressFn, Data data, List<KeyValuePair<Vector2I, TemplateContainer>> templateSpawnTargets, Action<OfflineWorldGen.ErrorInfo> error_cb, Action<Sim.Cell[], float[], Sim.DiseaseCell[]> onSettleComplete)
+		[CompilerGenerated]
+		private static Sim.GAME_MessageHandler _003C_003Ef__mg_0024cache0;
+
+		public unsafe static bool DoSettleSim(WorldGenSettings settings, Sim.Cell[] cells, float[] bgTemp, Sim.DiseaseCell[] dcs, WorldGen.OfflineCallbackFunction updateProgressFn, Data data, List<KeyValuePair<Vector2I, TemplateContainer>> templateSpawnTargets, Action<OfflineWorldGen.ErrorInfo> error_cb, Action<Sim.Cell[], float[], Sim.DiseaseCell[]> onSettleComplete)
 		{
-			Sim.SIM_Initialize(null);
+			Sim.SIM_Initialize(Sim.DLL_MessageHandler);
 			SimMessages.CreateSimElementsTable(ElementLoader.elements);
 			SimMessages.CreateWorldGenHACKDiseaseTable(WorldGen.diseaseIds);
 			Sim.DiseaseCell[] dc = new Sim.DiseaseCell[dcs.Length];
@@ -117,13 +122,13 @@ namespace ProcGenGame
 				}
 			}
 			Sim.HandleMessage(SimMessageHashes.SettleWorldGen, 0, null);
-			bool result = SaveSim(data, error_cb);
+			bool result = SaveSim(settings, data, error_cb);
 			onSettleComplete(cells, bgTemp, dcs);
 			Sim.Shutdown();
 			return result;
 		}
 
-		private static bool SaveSim(Data data, Action<OfflineWorldGen.ErrorInfo> error_cb)
+		private static bool SaveSim(WorldGenSettings settings, Data data, Action<OfflineWorldGen.ErrorInfo> error_cb)
 		{
 			try
 			{
@@ -131,7 +136,7 @@ namespace ProcGenGame
 				SimSaveFileStructure simSaveFileStructure = new SimSaveFileStructure();
 				for (int i = 0; i < data.overworldCells.Count; i++)
 				{
-					simSaveFileStructure.worldDetail.overworldCells.Add(new WorldDetailSave.OverworldCell(data.overworldCells[i]));
+					simSaveFileStructure.worldDetail.overworldCells.Add(new WorldDetailSave.OverworldCell(SettingsCache.GetCachedSubWorld(data.overworldCells[i].node.type).zoneType, data.overworldCells[i]));
 				}
 				simSaveFileStructure.worldDetail.globalWorldSeed = data.globalWorldSeed;
 				simSaveFileStructure.worldDetail.globalWorldLayoutSeed = data.globalWorldLayoutSeed;
@@ -157,7 +162,7 @@ namespace ProcGenGame
 						}
 						catch (Exception ex)
 						{
-							Output.LogError("Couldn't serialize", ex.Message, ex.StackTrace);
+							DebugUtil.LogErrorArgs("Couldn't serialize", ex.Message, ex.StackTrace);
 						}
 					}
 					using (BinaryWriter binaryWriter = new BinaryWriter(File.Open(WorldGen.SIM_SAVE_FILENAME, FileMode.Create)))
@@ -175,7 +180,7 @@ namespace ProcGenGame
 					errorDesc = string.Format(UI.FRONTEND.SUPPORTWARNINGS.SAVE_DIRECTORY_READ_ONLY, WorldGen.SIM_SAVE_FILENAME),
 					exception = ex2
 				});
-				Output.LogError("Couldn't write", ex2.Message, ex2.StackTrace);
+				DebugUtil.LogErrorArgs("Couldn't write", ex2.Message, ex2.StackTrace);
 				return false;
 			}
 		}

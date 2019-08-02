@@ -17,7 +17,9 @@ public class Db : EntityModifierSet
 
 	public TextAsset researchTreeFile;
 
-	public Database.Diseases Diseases;
+	public Diseases Diseases;
+
+	public Database.Sicknesses Sicknesses;
 
 	public Urges Urges;
 
@@ -49,6 +51,8 @@ public class Db : EntityModifierSet
 
 	public Techs Techs;
 
+	public TechTreeTitles TechTreeTitles;
+
 	public TechItems TechItems;
 
 	public AccessorySlots AccessorySlots;
@@ -63,7 +67,17 @@ public class Db : EntityModifierSet
 
 	public RoomTypes RoomTypes;
 
+	public ArtifactDropRates ArtifactDropRates;
+
 	public SpaceDestinationTypes SpaceDestinationTypes;
+
+	public SkillPerks SkillPerks;
+
+	public SkillGroups SkillGroups;
+
+	public Skills Skills;
+
+	public ColonyAchievements ColonyAchievements;
 
 	public static Db Get()
 	{
@@ -78,7 +92,6 @@ public class Db : EntityModifierSet
 	public override void Initialize()
 	{
 		base.Initialize();
-		Diseases = new Database.Diseases(Root);
 		Urges = new Urges();
 		AssignableSlots = new AssignableSlots();
 		StateMachineCategories = new StateMachineCategories();
@@ -91,6 +104,8 @@ public class Db : EntityModifierSet
 		StatusItemCategories = new StatusItemCategories(Root);
 		Techs = new Techs(Root);
 		Techs.Load(researchTreeFile);
+		TechTreeTitles = new TechTreeTitles(Root);
+		TechTreeTitles.Load(researchTreeFile);
 		TechItems = new TechItems(Root);
 		Accessories = new Accessories(Root);
 		AccessorySlots = new AccessorySlots(Root, null, null, null);
@@ -98,7 +113,14 @@ public class Db : EntityModifierSet
 		ScheduleGroups = new ScheduleGroups(Root);
 		RoomTypeCategories = new RoomTypeCategories(Root);
 		RoomTypes = new RoomTypes(Root);
+		ArtifactDropRates = new ArtifactDropRates(Root);
 		SpaceDestinationTypes = new SpaceDestinationTypes(Root);
+		Diseases = new Diseases(Root);
+		Sicknesses = new Database.Sicknesses(Root);
+		SkillPerks = new SkillPerks(Root);
+		SkillGroups = new SkillGroups(Root);
+		Skills = new Skills(Root);
+		ColonyAchievements = new ColonyAchievements(Root);
 		MiscStatusItems = new MiscStatusItems(Root);
 		CreatureStatusItems = new CreatureStatusItems(Root);
 		BuildingStatusItems = new BuildingStatusItems(Root);
@@ -130,13 +152,13 @@ public class Db : EntityModifierSet
 		Resource resource = ResourceTable.FirstOrDefault((Resource s) => s.Guid == guid);
 		if (resource == null)
 		{
-			Debug.LogWarning("Could not find resource: " + guid, null);
+			Debug.LogWarning("Could not find resource: " + guid);
 			return (ResourceType)null;
 		}
 		ResourceType val = (ResourceType)resource;
 		if (val == null)
 		{
-			Debug.LogError("Resource type mismatch for resource: " + resource.Id + "\nExpecting Type: " + typeof(ResourceType).Name + "\nGot Type: " + resource.GetType().Name, null);
+			Debug.LogError("Resource type mismatch for resource: " + resource.Id + "\nExpecting Type: " + typeof(ResourceType).Name + "\nGot Type: " + resource.GetType().Name);
 			return (ResourceType)null;
 		}
 		return val;

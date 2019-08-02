@@ -17,7 +17,7 @@ public class Door : Workable, ISaveLoadable, ISim200ms
 	{
 		Auto,
 		Opened,
-		Closed,
+		Locked,
 		NumStates
 	}
 
@@ -99,11 +99,11 @@ public class Door : Workable, ISaveLoadable, ISim200ms
 			root.Update("RefreshIsBlocked", delegate(Instance smi, float dt)
 			{
 				smi.RefreshIsBlocked();
-			}, UpdateRate.SIM_200ms, false).ParamTransition(isSealed, Sealed.closed, (Instance smi, bool p) => p);
-			closeblocked.PlayAnim("open").ParamTransition(isOpen, open, (Instance smi, bool p) => p).ParamTransition(isBlocked, closedelay, (Instance smi, bool p) => !p);
-			closedelay.PlayAnim("open").ScheduleGoTo(0.5f, closing).ParamTransition(isOpen, open, (Instance smi, bool p) => p)
-				.ParamTransition(isBlocked, closeblocked, (Instance smi, bool p) => p);
-			closing.ParamTransition(isBlocked, closeblocked, (Instance smi, bool p) => p).ToggleTag(GameTags.Transition).ToggleLoopingSound("Closing loop", (Instance smi) => smi.master.doorClosingSound, (Instance smi) => !string.IsNullOrEmpty(smi.master.doorClosingSound))
+			}, UpdateRate.SIM_200ms, false).ParamTransition(isSealed, Sealed.closed, GameStateMachine<Controller, Instance, Door, object>.IsTrue);
+			closeblocked.PlayAnim("open").ParamTransition(isOpen, open, GameStateMachine<Controller, Instance, Door, object>.IsTrue).ParamTransition(isBlocked, closedelay, GameStateMachine<Controller, Instance, Door, object>.IsFalse);
+			closedelay.PlayAnim("open").ScheduleGoTo(0.5f, closing).ParamTransition(isOpen, open, GameStateMachine<Controller, Instance, Door, object>.IsTrue)
+				.ParamTransition(isBlocked, closeblocked, GameStateMachine<Controller, Instance, Door, object>.IsTrue);
+			closing.ParamTransition(isBlocked, closeblocked, GameStateMachine<Controller, Instance, Door, object>.IsTrue).ToggleTag(GameTags.Transition).ToggleLoopingSound("Closing loop", (Instance smi) => smi.master.doorClosingSound, (Instance smi) => !string.IsNullOrEmpty(smi.master.doorClosingSound))
 				.Enter("SetParams", delegate(Instance smi)
 				{
 					smi.master.UpdateAnimAndSoundParams(smi.master.on);
@@ -125,11 +125,11 @@ public class Door : Workable, ISaveLoadable, ISim200ms
 				})
 				.PlayAnim("closing")
 				.OnAnimQueueComplete(closed);
-			open.PlayAnim("open").ParamTransition(isOpen, closeblocked, (Instance smi, bool p) => !p).Enter("SetWorldStateOpen", delegate(Instance smi)
+			open.PlayAnim("open").ParamTransition(isOpen, closeblocked, GameStateMachine<Controller, Instance, Door, object>.IsFalse).Enter("SetWorldStateOpen", delegate(Instance smi)
 			{
 				smi.master.SetWorldState();
 			});
-			closed.PlayAnim("closed").ParamTransition(isOpen, opening, (Instance smi, bool p) => p).ParamTransition(isLocked, locking, (Instance smi, bool p) => p)
+			closed.PlayAnim("closed").ParamTransition(isOpen, opening, GameStateMachine<Controller, Instance, Door, object>.IsTrue).ParamTransition(isLocked, locking, GameStateMachine<Controller, Instance, Door, object>.IsTrue)
 				.Enter("SetWorldStateClosed", delegate(Instance smi)
 				{
 					smi.master.SetWorldState();
@@ -138,7 +138,7 @@ public class Door : Workable, ISaveLoadable, ISim200ms
 			{
 				smi.master.SetWorldState();
 			});
-			locked.PlayAnim("locked").ParamTransition(isLocked, unlocking, (Instance smi, bool p) => !p);
+			locked.PlayAnim("locked").ParamTransition(isLocked, unlocking, GameStateMachine<Controller, Instance, Door, object>.IsFalse);
 			unlocking.PlayAnim("locked_pst").OnAnimQueueComplete(closed);
 			opening.ToggleTag(GameTags.Transition).ToggleLoopingSound("Opening loop", (Instance smi) => smi.master.doorOpeningSound, (Instance smi) => !string.IsNullOrEmpty(smi.master.doorOpeningSound)).Enter("SetParams", delegate(Instance smi)
 			{
@@ -169,7 +169,7 @@ public class Door : Workable, ISaveLoadable, ISim200ms
 					Grid.PreventFogOfWarReveal[Grid.OffsetCell(Grid.PosToCell(smi.master.gameObject), component.OccupiedCellsOffsets[i])] = false;
 				}
 				smi.sm.isLocked.Set(true, smi);
-				smi.master.controlState = ControlState.Closed;
+				smi.master.controlState = ControlState.Locked;
 				smi.master.RefreshControlState();
 				if (smi.master.GetComponent<Unsealable>().facingRight)
 				{
@@ -209,7 +209,7 @@ public class Door : Workable, ISaveLoadable, ISim200ms
 
 		private Chore CreateUnsealChore(Instance smi, bool approach_right)
 		{
-			return new WorkChore<Unsealable>(Db.Get().ChoreTypes.Toggle, smi.master, null, null, true, null, null, null, true, null, false, true, null, false, true, true, PriorityScreen.PriorityClass.basic, 0, false);
+			return new WorkChore<Unsealable>(Db.Get().ChoreTypes.Toggle, smi.master, null, true, null, null, null, true, null, false, true, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, false, true);
 		}
 	}
 
@@ -282,6 +282,17 @@ public class Door : Workable, ISaveLoadable, ISim200ms
 
 	private LoggerFSS log;
 
+	private const float REFRESH_HACK_DELAY = 1f;
+
+	private bool doorOpenLiquidRefreshHack;
+
+	private float doorOpenLiquidRefreshTime;
+
+	private static readonly EventSystem.IntraObjectHandler<Door> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<Door>(delegate(Door component, object data)
+	{
+		component.OnCopySettings(data);
+	});
+
 	public static readonly HashedString OPEN_CLOSE_PORT_ID = new HashedString("DoorOpenClose");
 
 	private static readonly KAnimFile[] OVERRIDE_ANIMS = new KAnimFile[1]
@@ -314,14 +325,31 @@ public class Door : Workable, ISaveLoadable, ISim200ms
 		SetOffsetTable(OffsetGroups.InvertedStandardTable);
 	}
 
+	private void OnCopySettings(object data)
+	{
+		GameObject gameObject = (GameObject)data;
+		Door component = gameObject.GetComponent<Door>();
+		if ((Object)component != (Object)null)
+		{
+			QueueStateChange(component.requestedState);
+		}
+	}
+
 	protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		overrideAnims = OVERRIDE_ANIMS;
 		synchronizeAnims = false;
 		SetWorkTime(3f);
-		doorClosingSound = GlobalAssets.GetSound(doorClosingSoundEventName, false);
-		doorOpeningSound = GlobalAssets.GetSound(doorOpeningSoundEventName, false);
+		if (!string.IsNullOrEmpty(doorClosingSoundEventName))
+		{
+			doorClosingSound = GlobalAssets.GetSound(doorClosingSoundEventName, false);
+		}
+		if (!string.IsNullOrEmpty(doorOpeningSoundEventName))
+		{
+			doorOpeningSound = GlobalAssets.GetSound(doorOpeningSoundEventName, false);
+		}
+		Subscribe(-905833192, OnCopySettingsDelegate);
 	}
 
 	private ControlState GetNextState(ControlState wantedState)
@@ -344,13 +372,13 @@ public class Door : Workable, ISaveLoadable, ISim200ms
 		}
 		if (!allowAutoControl && controlState == ControlState.Auto)
 		{
-			controlState = ControlState.Closed;
+			controlState = ControlState.Locked;
 		}
 		StructureTemperatureComponents structureTemperatures = GameComps.StructureTemperatures;
 		HandleVector<int>.Handle handle = structureTemperatures.GetHandle(base.gameObject);
 		if (DisplacesGas(doorType))
 		{
-			structureTemperatures.Disable(handle);
+			structureTemperatures.Bypass(handle);
 		}
 		controller = new Controller.Instance(this);
 		controller.StartSM();
@@ -364,35 +392,34 @@ public class Door : Workable, ISaveLoadable, ISim200ms
 		Subscribe(-801688580, OnLogicValueChangedDelegate);
 		requestedState = CurrentState;
 		ApplyRequestedControlState(true);
-		if (rotatable.IsRotated)
+		int num = (rotatable.GetOrientation() == Orientation.Neutral) ? (building.Def.WidthInCells * (building.Def.HeightInCells - 1)) : 0;
+		int num2 = (rotatable.GetOrientation() != 0) ? building.Def.HeightInCells : building.Def.WidthInCells;
+		for (int i = 0; i != num2; i++)
 		{
-			int[] placementCells = building.PlacementCells;
-			foreach (int num in placementCells)
-			{
-				Grid.FakeFloor[num] = true;
-				Pathfinding.Instance.AddDirtyNavGridCell(num);
-			}
+			int num3 = building.PlacementCells[num + i];
+			Grid.FakeFloor[num3] = true;
+			Pathfinding.Instance.AddDirtyNavGridCell(num3);
 		}
 		List<int> list = new List<int>();
-		int[] placementCells2 = building.PlacementCells;
-		foreach (int num2 in placementCells2)
+		int[] placementCells = building.PlacementCells;
+		foreach (int num4 in placementCells)
 		{
-			Grid.HasDoor[num2] = true;
-			Grid.HasAccessDoor[num2] = ((Object)GetComponent<AccessControl>() != (Object)null);
+			Grid.HasDoor[num4] = true;
+			Grid.HasAccessDoor[num4] = ((Object)GetComponent<AccessControl>() != (Object)null);
 			if (rotatable.IsRotated)
 			{
-				list.Add(Grid.CellAbove(num2));
-				list.Add(Grid.CellBelow(num2));
+				list.Add(Grid.CellAbove(num4));
+				list.Add(Grid.CellBelow(num4));
 			}
 			else
 			{
-				list.Add(Grid.CellLeft(num2));
-				list.Add(Grid.CellRight(num2));
+				list.Add(Grid.CellLeft(num4));
+				list.Add(Grid.CellRight(num4));
 			}
-			SimMessages.SetCellProperties(num2, 8);
+			SimMessages.SetCellProperties(num4, 8);
 			if (DisplacesGas(doorType))
 			{
-				Grid.RenderedByWorld[num2] = false;
+				Grid.RenderedByWorld[num4] = false;
 			}
 		}
 	}
@@ -428,8 +455,9 @@ public class Door : Workable, ISaveLoadable, ISim200ms
 		{
 			Grid.HasDoor[num2] = false;
 			Grid.HasAccessDoor[num2] = false;
-			Game.Instance.SetForceField(num2, false, Grid.Solid[num2]);
-			Grid.Impassable[num2] = false;
+			Game.Instance.SetDupePassableSolid(num2, false, Grid.Solid[num2]);
+			Grid.CritterImpassable[num2] = false;
+			Grid.DupeImpassable[num2] = false;
 			Pathfinding.Instance.AddDirtyNavGridCell(num2);
 		}
 		base.OnCleanUp();
@@ -455,7 +483,7 @@ public class Door : Workable, ISaveLoadable, ISim200ms
 		case ControlState.Opened:
 			controller.sm.isLocked.Set(false, controller);
 			break;
-		case ControlState.Closed:
+		case ControlState.Locked:
 			controller.sm.isLocked.Set(true, controller);
 			break;
 		}
@@ -530,14 +558,12 @@ public class Door : Workable, ISaveLoadable, ISim200ms
 	{
 		int[] placementCells = building.PlacementCells;
 		bool is_door_open = IsOpen();
-		SetForceFieldState(is_door_open, placementCells);
+		SetPassableState(is_door_open, placementCells);
 		SetSimState(is_door_open, placementCells);
 	}
 
-	private void SetForceFieldState(bool is_door_open, IList<int> cells)
+	private void SetPassableState(bool is_door_open, IList<int> cells)
 	{
-		bool solid = !is_door_open;
-		bool force_field = is_door_open || controlState == ControlState.Auto;
 		for (int i = 0; i < cells.Count; i++)
 		{
 			int num = cells[i];
@@ -546,14 +572,24 @@ public class Door : Workable, ISaveLoadable, ISim200ms
 			case DoorType.Pressure:
 			case DoorType.ManualPressure:
 			case DoorType.Sealed:
-				Game.Instance.SetForceField(num, force_field, solid);
-				break;
-			case DoorType.Internal:
-				Grid.Impassable[num] = (controlState != ControlState.Opened);
-				Game.Instance.SetForceField(num, controlState != ControlState.Closed, false);
-				Pathfinding.Instance.AddDirtyNavGridCell(num);
+			{
+				Grid.CritterImpassable[num] = (controlState != ControlState.Opened);
+				bool solid = !is_door_open;
+				bool passable = controlState != ControlState.Locked;
+				Game.Instance.SetDupePassableSolid(num, passable, solid);
+				if (controlState == ControlState.Opened)
+				{
+					doorOpenLiquidRefreshHack = true;
+					doorOpenLiquidRefreshTime = 1f;
+				}
 				break;
 			}
+			case DoorType.Internal:
+				Grid.CritterImpassable[num] = (controlState != ControlState.Opened);
+				Grid.DupeImpassable[num] = (controlState == ControlState.Locked);
+				break;
+			}
+			Pathfinding.Instance.AddDirtyNavGridCell(num);
 		}
 	}
 
@@ -648,7 +684,7 @@ public class Door : Workable, ISaveLoadable, ISim200ms
 				changeStateChore.Cancel("Change state");
 			}
 			GetComponent<KSelectable>().AddStatusItem(Db.Get().BuildingStatusItems.ChangeDoorControlState, this);
-			changeStateChore = new WorkChore<Door>(Db.Get().ChoreTypes.Toggle, this, null, null, true, null, null, null, true, null, false, false, null, false, true, true, PriorityScreen.PriorityClass.basic, 0, false);
+			changeStateChore = new WorkChore<Door>(Db.Get().ChoreTypes.Toggle, this, null, true, null, null, null, true, null, false, false, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, false, true);
 		}
 	}
 
@@ -658,7 +694,7 @@ public class Door : Workable, ISaveLoadable, ISim200ms
 		{
 			StructureTemperatureComponents structureTemperatures = GameComps.StructureTemperatures;
 			HandleVector<int>.Handle handle = structureTemperatures.GetHandle(base.gameObject);
-			structureTemperatures.Enable(handle);
+			structureTemperatures.UnBypass(handle);
 			do_melt_check = false;
 		}
 	}
@@ -669,7 +705,7 @@ public class Door : Workable, ISaveLoadable, ISim200ms
 		{
 			StructureTemperatureComponents structureTemperatures = GameComps.StructureTemperatures;
 			HandleVector<int>.Handle handle = structureTemperatures.GetHandle(base.gameObject);
-			structureTemperatures.Disable(handle);
+			structureTemperatures.Bypass(handle);
 			do_melt_check = true;
 		}
 	}
@@ -687,7 +723,7 @@ public class Door : Workable, ISaveLoadable, ISim200ms
 		{
 			StructureTemperatureComponents structureTemperatures = GameComps.StructureTemperatures;
 			HandleVector<int>.Handle handle = structureTemperatures.GetHandle(base.gameObject);
-			if (handle.IsValid() && !structureTemperatures.IsEnabled(handle))
+			if (handle.IsValid() && structureTemperatures.IsBypassed(handle))
 			{
 				int[] placementCells = building.PlacementCells;
 				float num = 0f;
@@ -733,14 +769,14 @@ public class Door : Workable, ISaveLoadable, ISim200ms
 			StructureTemperatureComponents structureTemperatures = GameComps.StructureTemperatures;
 			HandleVector<int>.Handle handle = structureTemperatures.GetHandle(base.gameObject);
 			PrimaryElement component = GetComponent<PrimaryElement>();
-			if (handle.IsValid() && structureTemperatures.IsEnabled(handle))
+			if (handle.IsValid() && !structureTemperatures.IsBypassed(handle))
 			{
-				float num = component.Temperature = structureTemperatures.GetData(handle).Temperature;
+				float num = component.Temperature = structureTemperatures.GetPayload(handle).Temperature;
 			}
 		}
 		switch (controlState)
 		{
-		case ControlState.Closed:
+		case ControlState.Locked:
 			controller.sm.isOpen.Set(false, controller);
 			break;
 		case ControlState.Auto:
@@ -786,7 +822,7 @@ public class Door : Workable, ISaveLoadable, ISim200ms
 				changeStateChore.Cancel("Change state");
 				changeStateChore = null;
 			}
-			requestedState = ((newValue == 1) ? ControlState.Opened : ControlState.Closed);
+			requestedState = ((newValue == 1) ? ControlState.Opened : ControlState.Locked);
 			applyLogicChange = true;
 		}
 	}
@@ -795,6 +831,19 @@ public class Door : Workable, ISaveLoadable, ISim200ms
 	{
 		if (!((Object)this == (Object)null))
 		{
+			if (doorOpenLiquidRefreshHack)
+			{
+				doorOpenLiquidRefreshTime -= dt;
+				if (doorOpenLiquidRefreshTime <= 0f)
+				{
+					doorOpenLiquidRefreshHack = false;
+					int[] placementCells = building.PlacementCells;
+					foreach (int cell in placementCells)
+					{
+						Pathfinding.Instance.AddDirtyNavGridCell(cell);
+					}
+				}
+			}
 			if (applyLogicChange)
 			{
 				applyLogicChange = false;
@@ -806,19 +855,19 @@ public class Door : Workable, ISaveLoadable, ISim200ms
 				HandleVector<int>.Handle handle = structureTemperatures.GetHandle(base.gameObject);
 				if (handle.IsValid())
 				{
-					StructureTemperatureData data = structureTemperatures.GetData(handle);
-					if (!data.enabled)
+					StructureTemperaturePayload payload = structureTemperatures.GetPayload(handle);
+					if (!payload.enabled)
 					{
-						int[] placementCells = building.PlacementCells;
+						int[] placementCells2 = building.PlacementCells;
 						int num = 0;
 						while (true)
 						{
-							if (num >= placementCells.Length)
+							if (num >= placementCells2.Length)
 							{
 								return;
 							}
-							int i = placementCells[num];
-							if (!Grid.Solid[i])
+							int i2 = placementCells2[num];
+							if (!Grid.Solid[i2])
 							{
 								break;
 							}

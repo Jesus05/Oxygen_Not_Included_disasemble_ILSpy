@@ -19,7 +19,7 @@ public class BingeEatChore : Chore<BingeEatChore.StatesInstance>
 			Navigator component = GetComponent<Navigator>();
 			int num = 2147483647;
 			Edible edible = null;
-			if (base.sm.bingeremaining.Get(base.smi) <= 0f)
+			if (base.sm.bingeremaining.Get(base.smi) <= PICKUPABLETUNING.MINIMUM_PICKABLE_AMOUNT)
 			{
 				GoTo(base.sm.eat_pst);
 			}
@@ -27,7 +27,7 @@ public class BingeEatChore : Chore<BingeEatChore.StatesInstance>
 			{
 				foreach (Edible item in Components.Edibles.Items)
 				{
-					if (!((UnityEngine.Object)item == (UnityEngine.Object)null) && !((UnityEngine.Object)item == (UnityEngine.Object)base.sm.ediblesource.Get<Edible>(base.smi)) && !(item.GetComponent<Pickupable>().UnreservedAmount <= 0f) && item.GetComponent<Pickupable>().CouldBePickedUpByMinion(base.gameObject))
+					if (!((UnityEngine.Object)item == (UnityEngine.Object)null) && !((UnityEngine.Object)item == (UnityEngine.Object)base.sm.ediblesource.Get<Edible>(base.smi)) && !item.isBeingConsumed && !(item.GetComponent<Pickupable>().UnreservedAmount <= 0f) && item.GetComponent<Pickupable>().CouldBePickedUpByMinion(base.gameObject))
 					{
 						int navigationCost = component.GetNavigationCost(item);
 						if (navigationCost != -1 && navigationCost < num)
@@ -122,9 +122,9 @@ public class BingeEatChore : Chore<BingeEatChore.StatesInstance>
 	}
 
 	public BingeEatChore(IStateMachineTarget target, Action<Chore> on_complete = null)
-		: base(Db.Get().ChoreTypes.BingeEat, target, target.GetComponent<ChoreProvider>(), false, on_complete, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.emergency, 0, false, true, 0, (Tag[])null)
+		: base(Db.Get().ChoreTypes.BingeEat, target, target.GetComponent<ChoreProvider>(), false, on_complete, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.compulsory, 5, false, true, 0, false, ReportManager.ReportType.WorkTime)
 	{
-		smi = new StatesInstance(this, target.gameObject);
+		base.smi = new StatesInstance(this, target.gameObject);
 		Subscribe(1121894420, OnEat);
 	}
 
@@ -133,7 +133,7 @@ public class BingeEatChore : Chore<BingeEatChore.StatesInstance>
 		Edible edible = (Edible)data;
 		if ((UnityEngine.Object)edible != (UnityEngine.Object)null)
 		{
-			smi.sm.bingeremaining.Set(Mathf.Max(0f, smi.sm.bingeremaining.Get(smi) - edible.unitsConsumed), smi);
+			base.smi.sm.bingeremaining.Set(Mathf.Max(0f, base.smi.sm.bingeremaining.Get(base.smi) - edible.unitsConsumed), base.smi);
 		}
 	}
 

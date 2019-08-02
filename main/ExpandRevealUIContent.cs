@@ -59,11 +59,11 @@ public class ExpandRevealUIContent : MonoBehaviour
 	{
 		if ((bool)MaskChildFitter && (bool)MaskRectStretcher)
 		{
-			Debug.LogWarning("ExpandRevealUIContent has references to both a MaskChildFitter and a MaskRectStretcher. It should have only one or the other. ChildFitter to match child size, RectStretcher to match parent size.", null);
+			Debug.LogWarning("ExpandRevealUIContent has references to both a MaskChildFitter and a MaskRectStretcher. It should have only one or the other. ChildFitter to match child size, RectStretcher to match parent size.");
 		}
 		if ((bool)BGChildFitter && (bool)BGRectStretcher)
 		{
-			Debug.LogWarning("ExpandRevealUIContent has references to both a BGChildFitter and a BGRectStretcher . It should have only one or the other.  ChildFitter to match child size, RectStretcher to match parent size.", null);
+			Debug.LogWarning("ExpandRevealUIContent has references to both a BGChildFitter and a BGRectStretcher . It should have only one or the other.  ChildFitter to match child size, RectStretcher to match parent size.");
 		}
 		if (activeRoutine != null)
 		{

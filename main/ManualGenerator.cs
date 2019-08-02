@@ -65,16 +65,6 @@ public class ManualGenerator : Workable, ISingleSliderControl, ISliderControl
 
 	private GeneratePowerSM.Instance smi;
 
-	private static readonly EventSystem.IntraObjectHandler<ManualGenerator> OnOperationalChangedDelegate = new EventSystem.IntraObjectHandler<ManualGenerator>(delegate(ManualGenerator component, object data)
-	{
-		component.OnOperationalChanged(data);
-	});
-
-	private static readonly EventSystem.IntraObjectHandler<ManualGenerator> OnActiveChangedDelegate = new EventSystem.IntraObjectHandler<ManualGenerator>(delegate(ManualGenerator component, object data)
-	{
-		component.OnActiveChanged(data);
-	});
-
 	private static readonly KAnimHashedString[] symbol_names = new KAnimHashedString[6]
 	{
 		"meter",
@@ -85,6 +75,16 @@ public class ManualGenerator : Workable, ISingleSliderControl, ISliderControl
 		"meter_tubing"
 	};
 
+	private static readonly EventSystem.IntraObjectHandler<ManualGenerator> OnOperationalChangedDelegate = new EventSystem.IntraObjectHandler<ManualGenerator>(delegate(ManualGenerator component, object data)
+	{
+		component.OnOperationalChanged(data);
+	});
+
+	private static readonly EventSystem.IntraObjectHandler<ManualGenerator> OnActiveChangedDelegate = new EventSystem.IntraObjectHandler<ManualGenerator>(delegate(ManualGenerator component, object data)
+	{
+		component.OnActiveChanged(data);
+	});
+
 	public string SliderTitleKey => "STRINGS.UI.UISIDESCREENS.MANUALGENERATORSIDESCREEN.TITLE";
 
 	public string SliderUnits => UI.UNITSUFFIXES.PERCENT;
@@ -94,6 +94,11 @@ public class ManualGenerator : Workable, ISingleSliderControl, ISliderControl
 	private ManualGenerator()
 	{
 		showProgressBar = false;
+	}
+
+	public int SliderDecimalPlaces(int index)
+	{
+		return 0;
 	}
 
 	public float GetSliderMin(int index)
@@ -129,16 +134,9 @@ public class ManualGenerator : Workable, ISingleSliderControl, ISliderControl
 		workerStatusItem = Db.Get().DuplicantStatusItems.GeneratingPower;
 		attributeConverter = Db.Get().AttributeConverters.MachinerySpeed;
 		attributeExperienceMultiplier = DUPLICANTSTATS.ATTRIBUTE_LEVELING.PART_DAY_EXPERIENCE;
+		skillExperienceSkillGroup = Db.Get().SkillGroups.Technicals.Id;
+		skillExperienceMultiplier = SKILLS.PART_DAY_EXPERIENCE;
 		EnergyGenerator.EnsureStatusItemAvailable();
-	}
-
-	protected void OnActiveChanged(object is_active)
-	{
-		if (operational.IsActive)
-		{
-			KSelectable component = GetComponent<KSelectable>();
-			component.SetStatusItem(Db.Get().StatusItemCategories.Power, Db.Get().BuildingStatusItems.ManualGeneratorChargingUp, null);
-		}
 	}
 
 	protected override void OnSpawn()
@@ -170,9 +168,13 @@ public class ManualGenerator : Workable, ISingleSliderControl, ISliderControl
 		base.OnCleanUp();
 	}
 
-	public override void AwardExperience(float work_dt, MinionResume resume)
+	protected void OnActiveChanged(object is_active)
 	{
-		resume.AddExperienceIfRole(MachineTechnician.ID, work_dt * ROLES.ACTIVE_EXPERIENCE_VERY_SLOW);
+		if (operational.IsActive)
+		{
+			KSelectable component = GetComponent<KSelectable>();
+			component.SetStatusItem(Db.Get().StatusItemCategories.Power, Db.Get().BuildingStatusItems.ManualGeneratorChargingUp, null);
+		}
 	}
 
 	public void EnergySim200ms(float dt)
@@ -214,7 +216,7 @@ public class ManualGenerator : Workable, ISingleSliderControl, ISliderControl
 					{
 						if (chore == null && smi.GetCurrentState() == smi.sm.on)
 						{
-							chore = new WorkChore<ManualGenerator>(Db.Get().ChoreTypes.GeneratePower, this, null, null, true, null, null, null, true, null, false, true, null, false, true, true, PriorityScreen.PriorityClass.basic, 0, false);
+							chore = new WorkChore<ManualGenerator>(Db.Get().ChoreTypes.GeneratePower, this, null, true, null, null, null, true, null, false, true, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, false, true);
 						}
 					}
 					else if (chore != null)
@@ -256,17 +258,16 @@ public class ManualGenerator : Workable, ISingleSliderControl, ISliderControl
 	{
 		base.OnStopWork(worker);
 		operational.SetActive(false, false);
-		if (chore != null && generator.PercentFull >= batteryRefillPercent)
-		{
-			chore.Cancel("Full enough");
-			chore = null;
-		}
 	}
 
 	protected override void OnCompleteWork(Worker worker)
 	{
 		operational.SetActive(false, false);
-		chore = null;
+		if (chore != null)
+		{
+			chore.Cancel("complete");
+			chore = null;
+		}
 	}
 
 	private void OnOperationalChanged(object data)

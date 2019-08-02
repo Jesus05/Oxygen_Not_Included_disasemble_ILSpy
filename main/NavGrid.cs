@@ -100,13 +100,13 @@ public class NavGrid
 
 		public NavOffset[] invalidNavOffsets;
 
-		public bool impassableNotVoid;
+		public bool isCritter;
 
-		public Transition(NavType start, NavType end, int x, int y, NavAxis start_axis, bool is_looping, bool loop_has_pre, bool is_escape, int cost, string anim, CellOffset[] void_offsets, CellOffset[] solid_offsets, NavOffset[] valid_nav_offsets, NavOffset[] invalid_nav_offsets, bool impassable_not_void = false)
+		public Transition(NavType start, NavType end, int x, int y, NavAxis start_axis, bool is_looping, bool loop_has_pre, bool is_escape, int cost, string anim, CellOffset[] void_offsets, CellOffset[] solid_offsets, NavOffset[] valid_nav_offsets, NavOffset[] invalid_nav_offsets, bool critter = false)
 		{
-			DebugUtil.Assert(x <= 127 && x >= -128, "Assert!", string.Empty, string.Empty);
-			DebugUtil.Assert(y <= 127 && y >= -128, "Assert!", string.Empty, string.Empty);
-			DebugUtil.Assert(cost <= 255 && cost >= 0, "Assert!", string.Empty, string.Empty);
+			DebugUtil.Assert(x <= 127 && x >= -128);
+			DebugUtil.Assert(y <= 127 && y >= -128);
+			DebugUtil.Assert(cost <= 255 && cost >= 0);
 			id = byte.MaxValue;
 			this.start = start;
 			this.end = end;
@@ -138,213 +138,216 @@ public class NavGrid
 			solidOffsets = solid_offsets;
 			validNavOffsets = valid_nav_offsets;
 			invalidNavOffsets = invalid_nav_offsets;
-			impassableNotVoid = impassable_not_void;
+			isCritter = critter;
 		}
 
-		public int IsValid(int cell, NavTable nav_table, ushort[] gridBitFields)
+		public int IsValid(int cell, NavTable nav_table)
 		{
-			int num = Grid.OffsetCell(cell, x, y);
-			if (Grid.IsValidCell(num))
+			if (!Grid.IsCellOffsetValid(cell, x, y))
 			{
-				if (!nav_table.IsValid(num, end))
+				return Grid.InvalidCell;
+			}
+			int num = Grid.OffsetCell(cell, x, y);
+			if (!nav_table.IsValid(num, end))
+			{
+				return Grid.InvalidCell;
+			}
+			Grid.BuildFlags buildFlags = Grid.BuildFlags.Solid | Grid.BuildFlags.DupeImpassable;
+			if (isCritter)
+			{
+				buildFlags |= Grid.BuildFlags.CritterImpassable;
+			}
+			CellOffset[] array = voidOffsets;
+			for (int i = 0; i < array.Length; i++)
+			{
+				CellOffset cellOffset = array[i];
+				int num2 = Grid.OffsetCell(cell, cellOffset.x, cellOffset.y);
+				if (Grid.IsValidCell(num2) && (Grid.BuildMasks[num2] & buildFlags) != 0)
+				{
+					if (isCritter)
+					{
+						return Grid.InvalidCell;
+					}
+					if ((Grid.BuildMasks[num2] & Grid.BuildFlags.DupePassable) == (Grid.BuildFlags)0)
+					{
+						return Grid.InvalidCell;
+					}
+				}
+			}
+			CellOffset[] array2 = solidOffsets;
+			for (int j = 0; j < array2.Length; j++)
+			{
+				CellOffset cellOffset2 = array2[j];
+				int num3 = Grid.OffsetCell(cell, cellOffset2.x, cellOffset2.y);
+				if (Grid.IsValidCell(num3) && !Grid.Solid[num3])
 				{
 					return Grid.InvalidCell;
 				}
-				CellOffset[] array = voidOffsets;
-				for (int i = 0; i < array.Length; i++)
+			}
+			NavOffset[] array3 = validNavOffsets;
+			for (int k = 0; k < array3.Length; k++)
+			{
+				NavOffset navOffset = array3[k];
+				int cell2 = Grid.OffsetCell(cell, navOffset.offset.x, navOffset.offset.y);
+				if (!nav_table.IsValid(cell2, navOffset.navType))
 				{
-					CellOffset cellOffset = array[i];
-					int num2 = Grid.OffsetCell(cell, cellOffset.x, cellOffset.y);
-					if (Grid.IsValidCell(num2))
+					return Grid.InvalidCell;
+				}
+			}
+			NavOffset[] array4 = invalidNavOffsets;
+			for (int l = 0; l < array4.Length; l++)
+			{
+				NavOffset navOffset2 = array4[l];
+				int cell3 = Grid.OffsetCell(cell, navOffset2.offset.x, navOffset2.offset.y);
+				if (nav_table.IsValid(cell3, navOffset2.navType))
+				{
+					return Grid.InvalidCell;
+				}
+			}
+			if (start == NavType.Tube)
+			{
+				if (end == NavType.Tube)
+				{
+					GameObject gameObject = Grid.Objects[cell, 9];
+					GameObject gameObject2 = Grid.Objects[num, 9];
+					TravelTubeUtilityNetworkLink travelTubeUtilityNetworkLink = (!(bool)gameObject) ? null : gameObject.GetComponent<TravelTubeUtilityNetworkLink>();
+					TravelTubeUtilityNetworkLink travelTubeUtilityNetworkLink2 = (!(bool)gameObject2) ? null : gameObject2.GetComponent<TravelTubeUtilityNetworkLink>();
+					if ((bool)travelTubeUtilityNetworkLink)
 					{
-						if ((gridBitFields[num2] & 0x20) != 0)
+						travelTubeUtilityNetworkLink.GetCells(out int linked_cell, out int linked_cell2);
+						if (num != linked_cell && num != linked_cell2)
 						{
 							return Grid.InvalidCell;
 						}
-						if (impassableNotVoid && (gridBitFields[num2] & 0x100) != 0)
+						UtilityConnections utilityConnections = UtilityConnectionsExtensions.DirectionFromToCell(cell, num);
+						if (utilityConnections == (UtilityConnections)0)
+						{
+							return Grid.InvalidCell;
+						}
+						UtilityConnections connections = Game.Instance.travelTubeSystem.GetConnections(num, false);
+						if (connections != utilityConnections)
 						{
 							return Grid.InvalidCell;
 						}
 					}
-				}
-				CellOffset[] array2 = solidOffsets;
-				for (int j = 0; j < array2.Length; j++)
-				{
-					CellOffset cellOffset2 = array2[j];
-					int num3 = Grid.OffsetCell(cell, cellOffset2.x, cellOffset2.y);
-					if (Grid.IsValidCell(num3) && (gridBitFields[num3] & 0x20) == 0)
+					else if ((bool)travelTubeUtilityNetworkLink2)
 					{
-						return Grid.InvalidCell;
-					}
-				}
-				NavOffset[] array3 = validNavOffsets;
-				for (int k = 0; k < array3.Length; k++)
-				{
-					NavOffset navOffset = array3[k];
-					int cell2 = Grid.OffsetCell(cell, navOffset.offset.x, navOffset.offset.y);
-					if (!nav_table.IsValid(cell2, navOffset.navType))
-					{
-						return Grid.InvalidCell;
-					}
-				}
-				NavOffset[] array4 = invalidNavOffsets;
-				for (int l = 0; l < array4.Length; l++)
-				{
-					NavOffset navOffset2 = array4[l];
-					int cell3 = Grid.OffsetCell(cell, navOffset2.offset.x, navOffset2.offset.y);
-					if (nav_table.IsValid(cell3, navOffset2.navType))
-					{
-						return Grid.InvalidCell;
-					}
-				}
-				if (start == NavType.Tube)
-				{
-					if (end == NavType.Tube)
-					{
-						GameObject gameObject = Grid.Objects[cell, 9];
-						GameObject gameObject2 = Grid.Objects[num, 9];
-						TravelTubeUtilityNetworkLink travelTubeUtilityNetworkLink = (!(bool)gameObject) ? null : gameObject.GetComponent<TravelTubeUtilityNetworkLink>();
-						TravelTubeUtilityNetworkLink travelTubeUtilityNetworkLink2 = (!(bool)gameObject2) ? null : gameObject2.GetComponent<TravelTubeUtilityNetworkLink>();
-						if ((bool)travelTubeUtilityNetworkLink)
+						travelTubeUtilityNetworkLink2.GetCells(out int linked_cell3, out int linked_cell4);
+						if (cell != linked_cell3 && cell != linked_cell4)
 						{
-							travelTubeUtilityNetworkLink.GetCells(out int linked_cell, out int linked_cell2);
-							if (num != linked_cell && num != linked_cell2)
-							{
-								return Grid.InvalidCell;
-							}
-							UtilityConnections utilityConnections = UtilityConnectionsExtensions.DirectionFromToCell(cell, num);
-							if (utilityConnections == (UtilityConnections)0)
-							{
-								return Grid.InvalidCell;
-							}
-							UtilityConnections connections = Game.Instance.travelTubeSystem.GetConnections(num, false);
-							if (connections != utilityConnections)
-							{
-								return Grid.InvalidCell;
-							}
+							return Grid.InvalidCell;
 						}
-						else if ((bool)travelTubeUtilityNetworkLink2)
+						UtilityConnections utilityConnections2 = UtilityConnectionsExtensions.DirectionFromToCell(num, cell);
+						if (utilityConnections2 == (UtilityConnections)0)
 						{
-							travelTubeUtilityNetworkLink2.GetCells(out int linked_cell3, out int linked_cell4);
-							if (cell != linked_cell3 && cell != linked_cell4)
-							{
-								return Grid.InvalidCell;
-							}
-							UtilityConnections utilityConnections2 = UtilityConnectionsExtensions.DirectionFromToCell(num, cell);
-							if (utilityConnections2 == (UtilityConnections)0)
-							{
-								return Grid.InvalidCell;
-							}
-							UtilityConnections connections2 = Game.Instance.travelTubeSystem.GetConnections(cell, false);
-							if (connections2 != utilityConnections2)
-							{
-								return Grid.InvalidCell;
-							}
+							return Grid.InvalidCell;
 						}
-						else
+						UtilityConnections connections2 = Game.Instance.travelTubeSystem.GetConnections(cell, false);
+						if (connections2 != utilityConnections2)
 						{
-							bool flag = startAxis == NavAxis.X;
-							int cell4 = cell;
-							for (int m = 0; m < 2; m++)
-							{
-								if ((flag && m == 0) || (!flag && m == 1))
-								{
-									int num4 = (x > 0) ? 1 : (-1);
-									for (int n = 0; n < Mathf.Abs(x); n++)
-									{
-										UtilityConnections connections3 = Game.Instance.travelTubeSystem.GetConnections(cell4, false);
-										if (num4 > 0 && (connections3 & UtilityConnections.Right) == (UtilityConnections)0)
-										{
-											return Grid.InvalidCell;
-										}
-										if (num4 < 0 && (connections3 & UtilityConnections.Left) == (UtilityConnections)0)
-										{
-											return Grid.InvalidCell;
-										}
-										cell4 = Grid.OffsetCell(cell4, num4, 0);
-									}
-								}
-								else
-								{
-									int num5 = (y > 0) ? 1 : (-1);
-									for (int num6 = 0; num6 < Mathf.Abs(y); num6++)
-									{
-										UtilityConnections connections4 = Game.Instance.travelTubeSystem.GetConnections(cell4, false);
-										if (num5 > 0 && (connections4 & UtilityConnections.Up) == (UtilityConnections)0)
-										{
-											return Grid.InvalidCell;
-										}
-										if (num5 < 0 && (connections4 & UtilityConnections.Down) == (UtilityConnections)0)
-										{
-											return Grid.InvalidCell;
-										}
-										cell4 = Grid.OffsetCell(cell4, 0, num5);
-									}
-								}
-							}
+							return Grid.InvalidCell;
 						}
 					}
 					else
 					{
-						UtilityConnections connections5 = Game.Instance.travelTubeSystem.GetConnections(cell, false);
-						if (y > 0)
+						bool flag = startAxis == NavAxis.X;
+						int cell4 = cell;
+						for (int m = 0; m < 2; m++)
 						{
-							if (connections5 != UtilityConnections.Down)
+							if ((flag && m == 0) || (!flag && m == 1))
 							{
-								return Grid.InvalidCell;
+								int num4 = (x > 0) ? 1 : (-1);
+								for (int n = 0; n < Mathf.Abs(x); n++)
+								{
+									UtilityConnections connections3 = Game.Instance.travelTubeSystem.GetConnections(cell4, false);
+									if (num4 > 0 && (connections3 & UtilityConnections.Right) == (UtilityConnections)0)
+									{
+										return Grid.InvalidCell;
+									}
+									if (num4 < 0 && (connections3 & UtilityConnections.Left) == (UtilityConnections)0)
+									{
+										return Grid.InvalidCell;
+									}
+									cell4 = Grid.OffsetCell(cell4, num4, 0);
+								}
 							}
-						}
-						else if (x > 0)
-						{
-							if (connections5 != UtilityConnections.Left)
+							else
 							{
-								return Grid.InvalidCell;
-							}
-						}
-						else if (x < 0)
-						{
-							if (connections5 != UtilityConnections.Right)
-							{
-								return Grid.InvalidCell;
-							}
-						}
-						else
-						{
-							if (y >= 0)
-							{
-								return Grid.InvalidCell;
-							}
-							if (connections5 != UtilityConnections.Up)
-							{
-								return Grid.InvalidCell;
+								int num5 = (y > 0) ? 1 : (-1);
+								for (int num6 = 0; num6 < Mathf.Abs(y); num6++)
+								{
+									UtilityConnections connections4 = Game.Instance.travelTubeSystem.GetConnections(cell4, false);
+									if (num5 > 0 && (connections4 & UtilityConnections.Up) == (UtilityConnections)0)
+									{
+										return Grid.InvalidCell;
+									}
+									if (num5 < 0 && (connections4 & UtilityConnections.Down) == (UtilityConnections)0)
+									{
+										return Grid.InvalidCell;
+									}
+									cell4 = Grid.OffsetCell(cell4, 0, num5);
+								}
 							}
 						}
 					}
 				}
-				else if (start == NavType.Floor && end == NavType.Tube)
+				else
 				{
-					int cell5 = Grid.OffsetCell(cell, x, y);
-					UtilityConnections connections6 = Game.Instance.travelTubeSystem.GetConnections(cell5, false);
-					if (connections6 != UtilityConnections.Up)
+					UtilityConnections connections5 = Game.Instance.travelTubeSystem.GetConnections(cell, false);
+					if (y > 0)
 					{
-						return Grid.InvalidCell;
+						if (connections5 != UtilityConnections.Down)
+						{
+							return Grid.InvalidCell;
+						}
+					}
+					else if (x > 0)
+					{
+						if (connections5 != UtilityConnections.Left)
+						{
+							return Grid.InvalidCell;
+						}
+					}
+					else if (x < 0)
+					{
+						if (connections5 != UtilityConnections.Right)
+						{
+							return Grid.InvalidCell;
+						}
+					}
+					else
+					{
+						if (y >= 0)
+						{
+							return Grid.InvalidCell;
+						}
+						if (connections5 != UtilityConnections.Up)
+						{
+							return Grid.InvalidCell;
+						}
 					}
 				}
-				CellOffset offset = Grid.GetOffset(cell);
-				CellOffset offset2 = Grid.GetOffset(num);
-				if (Math.Abs(offset.x - offset2.x) >= Grid.WidthInCells - 1)
+			}
+			else if (start == NavType.Floor && end == NavType.Tube)
+			{
+				int cell5 = Grid.OffsetCell(cell, x, y);
+				UtilityConnections connections6 = Game.Instance.travelTubeSystem.GetConnections(cell5, false);
+				if (connections6 != UtilityConnections.Up)
 				{
 					return Grid.InvalidCell;
 				}
-				return num;
 			}
-			return Grid.InvalidCell;
+			return num;
 		}
 	}
 
 	public bool DebugViewAllPaths;
 
 	public bool DebugViewValidCells;
+
+	public bool[] DebugViewValidCellsType;
+
+	public bool DebugViewValidCellsAll;
 
 	public bool DebugViewLinks;
 
@@ -437,7 +440,7 @@ public class NavGrid
 		maxLinksPerCell = max_links_per_cell + 1;
 		for (int i = 0; i < transitions.Length; i++)
 		{
-			DebugUtil.Assert(i >= 0 && i <= 255, "Assert!", string.Empty, string.Empty);
+			DebugUtil.Assert(i >= 0 && i <= 255);
 			transitions[i].id = (byte)i;
 			if (!list.Contains(transitions[i].start))
 			{
@@ -450,6 +453,7 @@ public class NavGrid
 		}
 		ValidNavTypes = list.ToArray();
 		DebugViewLinkType = new bool[ValidNavTypes.Length];
+		DebugViewValidCellsType = new bool[ValidNavTypes.Length];
 		NavType[] validNavTypes = ValidNavTypes;
 		foreach (NavType nav_type in validNavTypes)
 		{
@@ -532,7 +536,7 @@ public class NavGrid
 
 	public void InitializeGraph()
 	{
-		NavGridUpdater.InitializeNavGrid(NavTable, ValidNavTypes, Validators, boundingOffsets, maxLinksPerCell, Links, transitionsByNavType, Grid.BitFields);
+		NavGridUpdater.InitializeNavGrid(NavTable, ValidNavTypes, Validators, boundingOffsets, maxLinksPerCell, Links, transitionsByNavType);
 	}
 
 	public void UpdateGraph()
@@ -558,7 +562,7 @@ public class NavGrid
 
 	public void UpdateGraph(HashSet<int> dirty_nav_cells)
 	{
-		NavGridUpdater.UpdateNavGrid(NavTable, ValidNavTypes, Validators, boundingOffsets, maxLinksPerCell, Links, transitionsByNavType, Grid.BitFields, dirty_nav_cells);
+		NavGridUpdater.UpdateNavGrid(NavTable, ValidNavTypes, Validators, boundingOffsets, maxLinksPerCell, Links, transitionsByNavType, dirty_nav_cells);
 		if (OnNavGridUpdateComplete != null)
 		{
 			OnNavGridUpdateComplete(dirty_nav_cells);
@@ -587,15 +591,16 @@ public class NavGrid
 
 	private void DebugDrawValidCells()
 	{
+		Color color = Color.white;
 		int cellCount = Grid.CellCount;
 		for (int i = 0; i < cellCount; i++)
 		{
 			for (int j = 0; j < 10; j++)
 			{
-				NavType navType = (NavType)j;
-				if (NavTable.IsValid(i, navType))
+				NavType nav_type = (NavType)j;
+				if (NavTable.IsValid(i, nav_type) && DrawNavTypeCell(nav_type, ref color))
 				{
-					DebugExtension.DebugPoint(NavTypeHelper.GetNavPos(i, navType), NavTypeColor(navType), 1f, 0f, false);
+					DebugExtension.DebugPoint(NavTypeHelper.GetNavPos(i, nav_type), color, 1f, 0f, false);
 				}
 			}
 		}
@@ -631,6 +636,23 @@ public class NavGrid
 			if (ValidNavTypes[i] == nav_type)
 			{
 				return DebugViewLinkType[i];
+			}
+		}
+		return false;
+	}
+
+	private bool DrawNavTypeCell(NavType nav_type, ref Color color)
+	{
+		color = NavTypeColor(nav_type);
+		if (DebugViewValidCellsAll)
+		{
+			return true;
+		}
+		for (int i = 0; i < ValidNavTypes.Length; i++)
+		{
+			if (ValidNavTypes[i] == nav_type)
+			{
+				return DebugViewValidCellsType[i];
 			}
 		}
 		return false;

@@ -72,8 +72,8 @@ public class SuitTank : KMonoBehaviour, IGameObjectEffectDescriptor, OxygenBreat
 	private void OnEquipped(object data)
 	{
 		Equipment equipment = (Equipment)data;
-		NameDisplayScreen.Instance.SetSuitTankDisplay(equipment.gameObject, PercentFull, true);
-		OxygenBreather component = equipment.GetComponent<OxygenBreather>();
+		NameDisplayScreen.Instance.SetSuitTankDisplay(equipment.GetComponent<MinionAssignablesProxy>().GetTargetGameObject(), PercentFull, true);
+		OxygenBreather component = equipment.GetComponent<MinionAssignablesProxy>().GetTargetGameObject().GetComponent<OxygenBreather>();
 		if ((Object)component != (Object)null)
 		{
 			component.SetGasProvider(this);
@@ -85,8 +85,8 @@ public class SuitTank : KMonoBehaviour, IGameObjectEffectDescriptor, OxygenBreat
 		Equipment equipment = (Equipment)data;
 		if (!equipment.destroyed)
 		{
-			NameDisplayScreen.Instance.SetSuitTankDisplay(equipment.gameObject, PercentFull, false);
-			OxygenBreather component = equipment.GetComponent<OxygenBreather>();
+			NameDisplayScreen.Instance.SetSuitTankDisplay(equipment.GetComponent<MinionAssignablesProxy>().GetTargetGameObject(), PercentFull, false);
+			OxygenBreather component = equipment.GetComponent<MinionAssignablesProxy>().GetTargetGameObject().GetComponent<OxygenBreather>();
 			if ((Object)component != (Object)null)
 			{
 				component.SetGasProvider(new GasBreatherFromWorldProvider());
@@ -121,7 +121,12 @@ public class SuitTank : KMonoBehaviour, IGameObjectEffectDescriptor, OxygenBreat
 
 	public bool ShouldEmitCO2()
 	{
-		return false;
+		return !GetComponent<KPrefabID>().HasTag(GameTags.AirtightSuit);
+	}
+
+	public bool ShouldStoreCO2()
+	{
+		return GetComponent<KPrefabID>().HasTag(GameTags.AirtightSuit);
 	}
 
 	[ContextMenu("SetToRefillAmount")]

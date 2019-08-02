@@ -34,7 +34,7 @@ namespace NodeEditorFramework
 						}
 						catch (Exception ex)
 						{
-							Debug.LogError(ex.Message + " " + item2.Name, null);
+							Debug.LogError(ex.Message + " " + item2.Name);
 						}
 					}
 				}

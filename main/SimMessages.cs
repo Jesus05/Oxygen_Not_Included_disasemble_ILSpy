@@ -532,6 +532,7 @@ public static class SimMessages
 
 	public unsafe static void AddElementConsumer(int gameCell, ElementConsumer.Configuration configuration, SimHashes element, byte radius, int cb_handle)
 	{
+		Debug.Assert(Grid.IsValidCell(gameCell));
 		if (Grid.IsValidCell(gameCell))
 		{
 			int elementIndex = ElementLoader.GetElementIndex(element);
@@ -559,7 +560,11 @@ public static class SimMessages
 
 	public unsafe static void RemoveElementConsumer(int cb_handle, int sim_handle)
 	{
-		if (Sim.IsValidHandle(sim_handle))
+		if (!Sim.IsValidHandle(sim_handle))
+		{
+			Debug.Assert(false, "Invalid handle");
+		}
+		else
 		{
 			RemoveElementConsumerMessage* ptr = stackalloc RemoveElementConsumerMessage[1];
 			ptr->callbackIdx = cb_handle;
@@ -580,6 +585,7 @@ public static class SimMessages
 
 	public unsafe static void ModifyElementEmitter(int sim_handle, int game_cell, int max_depth, SimHashes element, float emit_interval, float emit_mass, float emit_temperature, float max_pressure, byte disease_idx, int disease_count)
 	{
+		Debug.Assert(Grid.IsValidCell(game_cell));
 		if (Grid.IsValidCell(game_cell))
 		{
 			int elementIndex = ElementLoader.GetElementIndex(element);
@@ -600,7 +606,11 @@ public static class SimMessages
 
 	public unsafe static void RemoveElementEmitter(int cb_handle, int sim_handle)
 	{
-		if (Sim.IsValidHandle(sim_handle))
+		if (!Sim.IsValidHandle(sim_handle))
+		{
+			Debug.Assert(false, "Invalid handle");
+		}
+		else
 		{
 			RemoveElementEmitterMessage* ptr = stackalloc RemoveElementEmitterMessage[1];
 			ptr->callbackIdx = cb_handle;
@@ -611,6 +621,7 @@ public static class SimMessages
 
 	public unsafe static void AddElementChunk(int gameCell, SimHashes element, float mass, float temperature, float surface_area, float thickness, float ground_transfer_scale, int cb_handle)
 	{
+		Debug.Assert(Grid.IsValidCell(gameCell));
 		if (Grid.IsValidCell(gameCell) && mass * temperature > 0f)
 		{
 			int elementIndex = ElementLoader.GetElementIndex(element);
@@ -629,7 +640,11 @@ public static class SimMessages
 
 	public unsafe static void RemoveElementChunk(int sim_handle, int cb_handle)
 	{
-		if (Sim.IsValidHandle(sim_handle))
+		if (!Sim.IsValidHandle(sim_handle))
+		{
+			Debug.Assert(false, "Invalid handle");
+		}
+		else
 		{
 			RemoveElementChunkMessage* ptr = stackalloc RemoveElementChunkMessage[1];
 			ptr->callbackIdx = cb_handle;
@@ -652,7 +667,11 @@ public static class SimMessages
 
 	public unsafe static void MoveElementChunk(int sim_handle, int cell)
 	{
-		if (Sim.IsValidHandle(sim_handle))
+		if (!Sim.IsValidHandle(sim_handle))
+		{
+			Debug.Assert(false, "Invalid handle");
+		}
+		else
 		{
 			MoveElementChunkMessage* ptr = stackalloc MoveElementChunkMessage[1];
 			ptr->handle = sim_handle;
@@ -663,7 +682,11 @@ public static class SimMessages
 
 	public unsafe static void ModifyElementChunkEnergy(int sim_handle, float delta_kj)
 	{
-		if (Sim.IsValidHandle(sim_handle))
+		if (!Sim.IsValidHandle(sim_handle))
+		{
+			Debug.Assert(false, "Invalid handle");
+		}
+		else
 		{
 			ModifyElementChunkEnergyMessage* ptr = stackalloc ModifyElementChunkEnergyMessage[1];
 			ptr->handle = sim_handle;
@@ -674,7 +697,11 @@ public static class SimMessages
 
 	public unsafe static void ModifyElementChunkTemperatureAdjuster(int sim_handle, float temperature, float heat_capacity, float thermal_conductivity)
 	{
-		if (Sim.IsValidHandle(sim_handle))
+		if (!Sim.IsValidHandle(sim_handle))
+		{
+			Debug.Assert(false, "Invalid handle");
+		}
+		else
 		{
 			ModifyElementChunkAdjusterMessage* ptr = stackalloc ModifyElementChunkAdjusterMessage[1];
 			ptr->handle = sim_handle;
@@ -688,6 +715,7 @@ public static class SimMessages
 	public unsafe static void AddBuildingHeatExchange(Extents extents, float mass, float temperature, float thermal_conductivity, float operating_kw, byte elem_idx, int callbackIdx = -1)
 	{
 		int cell = Grid.XYToCell(extents.x, extents.y);
+		Debug.Assert(Grid.IsValidCell(cell));
 		if (Grid.IsValidCell(cell))
 		{
 			int num = Grid.XYToCell(extents.x + extents.width, extents.y + extents.height);
@@ -717,9 +745,11 @@ public static class SimMessages
 	public unsafe static void ModifyBuildingHeatExchange(int sim_handle, Extents extents, float mass, float temperature, float thermal_conductivity, float overheat_temperature, float operating_kw, byte element_idx)
 	{
 		int cell = Grid.XYToCell(extents.x, extents.y);
+		Debug.Assert(Grid.IsValidCell(cell));
 		if (Grid.IsValidCell(cell))
 		{
 			int cell2 = Grid.XYToCell(extents.x + extents.width, extents.y + extents.height);
+			Debug.Assert(Grid.IsValidCell(cell2));
 			if (Grid.IsValidCell(cell2))
 			{
 				ModifyBuildingHeatExchangeMessage* ptr = stackalloc ModifyBuildingHeatExchangeMessage[1];
@@ -742,6 +772,7 @@ public static class SimMessages
 	public unsafe static void RemoveBuildingHeatExchange(int sim_handle, int callbackIdx = -1)
 	{
 		RemoveBuildingHeatExchangeMessage* ptr = stackalloc RemoveBuildingHeatExchangeMessage[1];
+		Debug.Assert(Sim.IsValidHandle(sim_handle));
 		ptr->handle = sim_handle;
 		ptr->callbackIdx = callbackIdx;
 		Sim.SIM_HandleMessage(-456116629, sizeof(RemoveBuildingHeatExchangeMessage), (byte*)ptr);
@@ -750,6 +781,7 @@ public static class SimMessages
 	public unsafe static void ModifyBuildingEnergy(int sim_handle, float delta_kj, float min_temperature, float max_temperature)
 	{
 		ModifyBuildingEnergyMessage* ptr = stackalloc ModifyBuildingEnergyMessage[1];
+		Debug.Assert(Sim.IsValidHandle(sim_handle));
 		ptr->handle = sim_handle;
 		ptr->deltaKJ = delta_kj;
 		ptr->minTemperature = min_temperature;
@@ -766,6 +798,7 @@ public static class SimMessages
 
 	public unsafe static void ModifyDiseaseEmitter(int sim_handle, int cell, byte range, byte disease_idx, float emit_interval, int emit_count)
 	{
+		Debug.Assert(Sim.IsValidHandle(sim_handle));
 		ModifyDiseaseEmitterMessage* ptr = stackalloc ModifyDiseaseEmitterMessage[1];
 		ptr->handle = sim_handle;
 		ptr->gameCell = cell;
@@ -778,6 +811,7 @@ public static class SimMessages
 
 	public unsafe static void RemoveDiseaseEmitter(int cb_handle, int sim_handle)
 	{
+		Debug.Assert(Sim.IsValidHandle(sim_handle));
 		RemoveDiseaseEmitterMessage* ptr = stackalloc RemoveDiseaseEmitterMessage[1];
 		ptr->handle = sim_handle;
 		ptr->callbackIdx = cb_handle;
@@ -873,7 +907,7 @@ public static class SimMessages
 	public unsafe static void CreateDiseaseTable()
 	{
 		//IL_0125: Incompatible stack types: I vs Ref
-		Database.Diseases diseases = Db.Get().Diseases;
+		Diseases diseases = Db.Get().Diseases;
 		MemoryStream memoryStream = new MemoryStream(1024);
 		BinaryWriter binaryWriter = new BinaryWriter(memoryStream);
 		binaryWriter.Write(diseases.Count);
@@ -988,38 +1022,42 @@ public static class SimMessages
 	{
 		if (Grid.IsValidCell(gameCell))
 		{
-			if (temperature < 0f || 10000f < temperature)
+			Element element = ElementLoader.elements[elementIdx];
+			if (element.maxMass == 0f && mass > element.maxMass)
 			{
-				KCrashReporter.Assert(false, "Invalid temperature for cell modification T=" + temperature.ToString());
+				Debug.LogWarningFormat("Invalid cell modification (mass greater than element maximum): Cell={0}, EIdx={1}, T={2}, M={3}, {4} max mass = {5}", gameCell, elementIdx, temperature, mass, element.id, element.maxMass);
+				mass = element.maxMass;
 			}
-			else
+			if (temperature < 0f || temperature > 10000f)
 			{
-				if (temperature == 0f && mass > 0f && elementIdx >= 0)
-				{
-					KCrashReporter.Assert(false, string.Format("RESET TEMPERATURE: Invalid cell modification. Set temperature to zero with non-zero mass"));
-					temperature = ElementLoader.elements[elementIdx].defaultValues.temperature;
-				}
-				ModifyCellMessage* ptr = stackalloc ModifyCellMessage[1];
-				ptr->cellIdx = gameCell;
-				ptr->callbackIdx = callbackIdx;
-				ptr->temperature = temperature;
-				ptr->mass = mass;
-				ptr->elementIdx = (byte)elementIdx;
-				ptr->replaceType = (byte)replace_type;
-				ptr->diseaseIdx = disease_idx;
-				ptr->diseaseCount = disease_count;
-				ptr->addSubType = (byte)((!do_vertical_solid_displacement) ? 1 : 0);
-				Sim.SIM_HandleMessage(-1252920804, sizeof(ModifyCellMessage), (byte*)ptr);
+				Debug.LogWarningFormat("Invalid cell modification (temp out of bounds): Cell={0}, EIdx={1}, T={2}, M={3}, {4} default temp = {5}", gameCell, elementIdx, temperature, mass, element.id, element.defaultValues.temperature);
+				temperature = element.defaultValues.temperature;
 			}
+			if (temperature == 0f && mass > 0f)
+			{
+				Debug.LogWarningFormat("Invalid cell modification (zero temp with non-zero mass): Cell={0}, EIdx={1}, T={2}, M={3}, {4} default temp = {5}", gameCell, elementIdx, temperature, mass, element.id, element.defaultValues.temperature);
+				temperature = element.defaultValues.temperature;
+			}
+			ModifyCellMessage* ptr = stackalloc ModifyCellMessage[1];
+			ptr->cellIdx = gameCell;
+			ptr->callbackIdx = callbackIdx;
+			ptr->temperature = temperature;
+			ptr->mass = mass;
+			ptr->elementIdx = (byte)elementIdx;
+			ptr->replaceType = (byte)replace_type;
+			ptr->diseaseIdx = disease_idx;
+			ptr->diseaseCount = disease_count;
+			ptr->addSubType = (byte)((!do_vertical_solid_displacement) ? 1 : 0);
+			Sim.SIM_HandleMessage(-1252920804, sizeof(ModifyCellMessage), (byte*)ptr);
 		}
 	}
 
-	public unsafe static void ModifyDiseaseOnCell(int gameCell, byte disease_idx, int disease_count)
+	public unsafe static void ModifyDiseaseOnCell(int gameCell, byte disease_idx, int disease_delta)
 	{
 		CellDiseaseModification* ptr = stackalloc CellDiseaseModification[1];
 		ptr->cellIdx = gameCell;
 		ptr->diseaseIdx = disease_idx;
-		ptr->diseaseCount = disease_count;
+		ptr->diseaseCount = disease_delta;
 		Sim.SIM_HandleMessage(-1853671274, sizeof(CellDiseaseModification), (byte*)ptr);
 	}
 
@@ -1138,7 +1176,7 @@ public static class SimMessages
 		{
 			if (max_temperature <= 0f)
 			{
-				Output.LogError("invalid max temperature for cell energy modification");
+				Debug.LogError("invalid max temperature for cell energy modification");
 			}
 			else
 			{

@@ -1,6 +1,5 @@
 using KSerialization;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -14,13 +13,21 @@ public class Filterable : KMonoBehaviour
 		Gas
 	}
 
+	[MyCmpAdd]
+	private CopyBuildingSettings copyBuildingSettings;
+
 	[Serialize]
 	public ElementState filterElementState;
 
 	[Serialize]
-	private Tag selectedTag;
+	private Tag selectedTag = GameTags.Void;
 
 	private static readonly Operational.Flag filterSelected = new Operational.Flag("filterSelected", Operational.Flag.Type.Requirement);
+
+	private static readonly EventSystem.IntraObjectHandler<Filterable> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<Filterable>(delegate(Filterable component, object data)
+	{
+		component.OnCopySettings(data);
+	});
 
 	public Tag SelectedTag
 	{
@@ -40,16 +47,14 @@ public class Filterable : KMonoBehaviour
 	public virtual IList<Tag> GetTagOptions()
 	{
 		List<Tag> list = new List<Tag>();
-		IEnumerator enumerator = Enum.GetValues(typeof(SimHashes)).GetEnumerator();
-		try
+		list.Add(GameTags.Void);
+		foreach (Element element in ElementLoader.elements)
 		{
-			while (enumerator.MoveNext())
+			if (!element.disabled)
 			{
-				SimHashes simHashes = (SimHashes)enumerator.Current;
 				bool flag = true;
 				if (filterElementState != 0)
 				{
-					Element element = ElementLoader.FindElementByHash(simHashes);
 					switch (filterElementState)
 					{
 					case ElementState.Gas:
@@ -65,19 +70,27 @@ public class Filterable : KMonoBehaviour
 				}
 				if (flag)
 				{
-					Tag item = GameTagExtensions.Create(simHashes);
+					Tag item = GameTagExtensions.Create(element.id);
 					list.Add(item);
 				}
 			}
-			return list;
 		}
-		finally
+		return list;
+	}
+
+	protected override void OnPrefabInit()
+	{
+		base.OnPrefabInit();
+		Subscribe(-905833192, OnCopySettingsDelegate);
+	}
+
+	private void OnCopySettings(object data)
+	{
+		GameObject gameObject = (GameObject)data;
+		Filterable component = gameObject.GetComponent<Filterable>();
+		if ((UnityEngine.Object)component != (UnityEngine.Object)null)
 		{
-			IDisposable disposable;
-			if ((disposable = (enumerator as IDisposable)) != null)
-			{
-				disposable.Dispose();
-			}
+			SelectedTag = component.SelectedTag;
 		}
 	}
 

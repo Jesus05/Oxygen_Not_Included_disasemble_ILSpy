@@ -28,12 +28,18 @@ public class PhonoboxWorkable : Workable, IWorkerPrioritizable
 		}
 	};
 
+	private PhonoboxWorkable()
+	{
+		SetReportType(ReportManager.ReportType.PersonalTime);
+	}
+
 	protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		synchronizeAnims = false;
 		showProgressBar = true;
 		resetProgressOnStop = true;
+		lightEfficiencyBonus = false;
 		SetWorkTime(15f);
 	}
 

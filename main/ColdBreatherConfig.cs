@@ -9,7 +9,7 @@ public class ColdBreatherConfig : IEntityConfig
 
 	public static readonly Tag TAG = TagManager.Create("ColdBreather");
 
-	public const float FERTILIZATION_RATE = 0.0333333351f;
+	public const float FERTILIZATION_RATE = 0.006666667f;
 
 	public const SimHashes FERTILIZER = SimHashes.Phosphorite;
 
@@ -31,6 +31,14 @@ public class ColdBreatherConfig : IEntityConfig
 		gameObject.AddOrGet<Uprootable>();
 		gameObject.AddOrGet<UprootedMonitor>();
 		gameObject.AddOrGet<DrowningMonitor>();
+		EntityTemplates.ExtendPlantToFertilizable(gameObject, new PlantElementAbsorber.ConsumeInfo[1]
+		{
+			new PlantElementAbsorber.ConsumeInfo
+			{
+				tag = SimHashes.Phosphorite.CreateTag(),
+				massConsumptionRate = 0.006666667f
+			}
+		});
 		TemperatureVulnerable temperatureVulnerable = gameObject.AddOrGet<TemperatureVulnerable>();
 		temperatureVulnerable.Configure(213.15f, 183.15f, 368.15f, 463.15f);
 		gameObject.AddOrGet<OccupyArea>().objectLayers = new ObjectLayer[1]
@@ -40,6 +48,7 @@ public class ColdBreatherConfig : IEntityConfig
 		ColdBreather coldBreather = gameObject.AddOrGet<ColdBreather>();
 		coldBreather.deltaEmitTemperature = -5f;
 		coldBreather.emitOffsetCell = new Vector3(0f, 1f);
+		coldBreather.consumptionRate = 1f;
 		gameObject.AddOrGet<KBatchedAnimController>().randomiseLoopedOffset = true;
 		Storage storage = BuildingTemplates.CreateDefaultStorage(gameObject, false);
 		storage.showInUI = false;
@@ -47,7 +56,7 @@ public class ColdBreatherConfig : IEntityConfig
 		elementConsumer.storeOnConsume = true;
 		elementConsumer.configuration = ElementConsumer.Configuration.AllGas;
 		elementConsumer.capacityKG = 2f;
-		elementConsumer.consumptionRate = 1f;
+		elementConsumer.consumptionRate = 0.25f;
 		elementConsumer.consumptionRadius = 1;
 		elementConsumer.sampleCellOffset = new Vector3(0f, 0f);
 		SimTemperatureTransfer component = gameObject.GetComponent<SimTemperatureTransfer>();
@@ -60,9 +69,9 @@ public class ColdBreatherConfig : IEntityConfig
 		string desc = STRINGS.CREATURES.SPECIES.SEEDS.COLDBREATHER.DESC;
 		KAnimFile anim = Assets.GetAnim("seed_coldbreather_kanim");
 		List<Tag> list = new List<Tag>();
-		list.Add(GameTags.DecorSeed);
+		list.Add(GameTags.CropSeed);
 		list = list;
-		GameObject seed = EntityTemplates.CreateAndRegisterSeedForPlant(plant, productionType, id, name, desc, anim, "object", 1, list, SingleEntityReceptacle.ReceptacleDirection.Top, default(Tag), 2, STRINGS.CREATURES.SPECIES.COLDBREATHER.DOMESTICATEDDESC, EntityTemplates.CollisionShape.CIRCLE, 0.3f, 0.3f, null, string.Empty);
+		GameObject seed = EntityTemplates.CreateAndRegisterSeedForPlant(plant, productionType, id, name, desc, anim, "object", 1, list, SingleEntityReceptacle.ReceptacleDirection.Top, default(Tag), 2, STRINGS.CREATURES.SPECIES.COLDBREATHER.DOMESTICATEDDESC, EntityTemplates.CollisionShape.CIRCLE, 0.3f, 0.3f, null, string.Empty, false);
 		EntityTemplates.CreateAndRegisterPreviewForPlant(seed, "ColdBreather_preview", Assets.GetAnim("coldbreather_kanim"), "place", 1, 2);
 		SoundEventVolumeCache.instance.AddVolume("coldbreather_kanim", "ColdBreather_grow", NOISE_POLLUTION.CREATURES.TIER3);
 		SoundEventVolumeCache.instance.AddVolume("coldbreather_kanim", "ColdBreather_intake", NOISE_POLLUTION.CREATURES.TIER3);

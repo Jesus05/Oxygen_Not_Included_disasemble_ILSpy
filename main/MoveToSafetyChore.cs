@@ -14,12 +14,12 @@ public class MoveToSafetyChore : Chore<MoveToSafetyChore.StatesInstance>
 		{
 			base.sm.mover.Set(mover, base.smi);
 			sensor = base.sm.mover.Get<Sensors>(base.smi).GetSensor<SafeCellSensor>();
-			targetCell = sensor.GetCell();
+			targetCell = sensor.GetSensorCell();
 		}
 
 		public void UpdateTargetCell()
 		{
-			targetCell = sensor.GetCell();
+			targetCell = sensor.GetSensorCell();
 		}
 	}
 
@@ -45,8 +45,8 @@ public class MoveToSafetyChore : Chore<MoveToSafetyChore.StatesInstance>
 	}
 
 	public MoveToSafetyChore(IStateMachineTarget target)
-		: base(Db.Get().ChoreTypes.MoveToSafety, target, target.GetComponent<ChoreProvider>(), false, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.basic, -1, false, true, 0, (Tag[])null)
+		: base(Db.Get().ChoreTypes.MoveToSafety, target, target.GetComponent<ChoreProvider>(), false, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.idle, 5, false, true, 0, false, ReportManager.ReportType.WorkTime)
 	{
-		smi = new StatesInstance(this, target.gameObject);
+		base.smi = new StatesInstance(this, target.gameObject);
 	}
 }

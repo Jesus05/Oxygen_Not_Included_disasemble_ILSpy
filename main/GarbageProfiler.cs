@@ -68,7 +68,7 @@ public static class GarbageProfiler
 
 	private static void Dump()
 	{
-		Debug.Log("Writing snapshot...", null);
+		Debug.Log("Writing snapshot...");
 		MemorySnapshot memorySnapshot = new MemorySnapshot();
 		ClearFileName();
 		MemorySnapshot.TypeData[] array = new MemorySnapshot.TypeData[memorySnapshot.types.Count];
@@ -118,12 +118,12 @@ public static class GarbageProfiler
 			}
 		}
 		previousSnapshot = memorySnapshot;
-		Debug.Log("Done writing snapshot!", null);
+		Debug.Log("Done writing snapshot!");
 	}
 
 	public static void DebugDumpGarbageStats()
 	{
-		Debug.Log("Writing reference stats...", null);
+		Debug.Log("Writing reference stats...");
 		MemorySnapshot memorySnapshot = new MemorySnapshot();
 		ClearFileName();
 		MemorySnapshot.TypeData[] array = new MemorySnapshot.TypeData[memorySnapshot.types.Count];
@@ -189,12 +189,12 @@ public static class GarbageProfiler
 		}
 		memorySnapshot.WriteTypeDetails(previousSnapshot);
 		previousSnapshot = memorySnapshot;
-		Debug.Log("Done writing reference stats!", null);
+		Debug.Log("Done writing reference stats!");
 	}
 
 	public static void DebugDumpRootItems()
 	{
-		Debug.Log("Writing root items...", null);
+		Debug.Log("Writing root items...");
 		Type[] array = new Type[11]
 		{
 			typeof(string),
@@ -312,6 +312,6 @@ public static class GarbageProfiler
 				}
 			}
 		}
-		Debug.Log("Done writing reference stats!", null);
+		Debug.Log("Done writing reference stats!");
 	}
 }

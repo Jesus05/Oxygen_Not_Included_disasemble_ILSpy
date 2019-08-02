@@ -103,17 +103,22 @@ public class ElectricalUtilityNetwork : UtilityNetwork
 					{
 						damage = 1,
 						source = (string)BUILDINGS.DAMAGESOURCES.CIRCUIT_OVERLOADED,
-						popString = (string)UI.GAMEOBJECTEFFECTS.DAMAGE_POPS.CIRCUIT_OVERLOADED
+						popString = (string)UI.GAMEOBJECTEFFECTS.DAMAGE_POPS.CIRCUIT_OVERLOADED,
+						takeDamageEffect = SpawnFXHashes.BuildingSpark,
+						fullDamageEffectName = "spark_damage_kanim",
+						statusItemID = Db.Get().BuildingStatusItems.Overloaded.Id
 					});
 				}
 				if (overloadedNotification == null)
 				{
 					timeOverloadNotificationDisplayed = 0f;
-					overloadedNotification = new Notification(MISC.NOTIFICATIONS.CIRCUIT_OVERLOADED.NAME, NotificationType.BadMinor, HashedString.Invalid, null, null, true, 0f, null, null);
+					string title = MISC.NOTIFICATIONS.CIRCUIT_OVERLOADED.NAME;
+					NotificationType type = NotificationType.BadMinor;
+					HashedString invalid = HashedString.Invalid;
+					Transform transform = targetOverloadedWire.transform;
+					overloadedNotification = new Notification(title, type, invalid, null, null, true, 0f, null, null, transform);
 					Notifier notifier = Game.Instance.FindOrAdd<Notifier>();
 					notifier.Add(overloadedNotification, string.Empty);
-					overloadedNotification.Position = targetOverloadedWire.transform.GetPosition();
-					overloadedNotification.Notifier = null;
 				}
 			}
 		}

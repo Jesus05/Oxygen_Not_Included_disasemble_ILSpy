@@ -42,8 +42,8 @@ public class HandSanitizerConfig : IBuildingConfig
 
 	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
-		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.WashStation);
-		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.AdvancedWashStation);
+		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.WashStation, false);
+		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.AdvancedWashStation, false);
 		HandSanitizer handSanitizer = go.AddOrGet<HandSanitizer>();
 		handSanitizer.massConsumedPerUse = 0.07f;
 		handSanitizer.consumedElement = SimHashes.BleachStone;
@@ -63,7 +63,7 @@ public class HandSanitizerConfig : IBuildingConfig
 		manualDeliveryKG.requestedItemTag = GameTagExtensions.Create(SimHashes.BleachStone);
 		manualDeliveryKG.capacity = 15f;
 		manualDeliveryKG.refillMass = 3f;
-		manualDeliveryKG.choreTypeIDHash = Db.Get().ChoreTypes.OperateFetch.IdHash;
+		manualDeliveryKG.choreTypeIDHash = Db.Get().ChoreTypes.FetchCritical.IdHash;
 	}
 
 	public override void DoPostConfigureComplete(GameObject go)

@@ -64,13 +64,9 @@ public class IdleChore : Chore<IdleChore.StatesInstance>
 			{
 				smi.UpdateNavType();
 			}, UpdateRate.SIM_200ms, false)
-				.Update("Log idle time", delegate(StatesInstance smi, float dt)
-				{
-					ReportManager.Instance.ReportValue(ReportManager.ReportType.IdleTime, dt, idler.Get(smi).GetProperName(), null);
-				}, UpdateRate.SIM_1000ms, false)
 				.ToggleStateMachine((StatesInstance smi) => new TaskAvailabilityMonitor.Instance(smi.master))
 				.ToggleTag(GameTags.Idle);
-			idle.onfloor.PlayAnim("idle_default", KAnim.PlayMode.Loop).ParamTransition(isOnLadder, idle.onladder, (StatesInstance smi, bool p) => p).ParamTransition(isOnTube, idle.ontube, (StatesInstance smi, bool p) => p)
+			idle.onfloor.PlayAnim("idle_default", KAnim.PlayMode.Loop).ParamTransition(isOnLadder, idle.onladder, GameStateMachine<States, StatesInstance, IdleChore, object>.IsTrue).ParamTransition(isOnTube, idle.ontube, GameStateMachine<States, StatesInstance, IdleChore, object>.IsTrue)
 				.ToggleScheduleCallback("IdleMove", (StatesInstance smi) => (float)UnityEngine.Random.Range(5, 15), delegate(StatesInstance smi)
 				{
 					smi.GoTo(idle.move);
@@ -101,9 +97,9 @@ public class IdleChore : Chore<IdleChore.StatesInstance>
 	}
 
 	public IdleChore(IStateMachineTarget target)
-		: base(Db.Get().ChoreTypes.Idle, target, target.GetComponent<ChoreProvider>(), false, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.idle, 0, false, true, 0, (Tag[])null)
+		: base(Db.Get().ChoreTypes.Idle, target, target.GetComponent<ChoreProvider>(), false, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.idle, 5, false, true, 0, false, ReportManager.ReportType.IdleTime)
 	{
 		showAvailabilityInHoverText = false;
-		smi = new StatesInstance(this, target.gameObject);
+		base.smi = new StatesInstance(this, target.gameObject);
 	}
 }

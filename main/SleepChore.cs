@@ -38,6 +38,26 @@ public class SleepChore : Chore<SleepChore.StatesInstance>
 			}
 		}
 
+		public void CheckLightLevel()
+		{
+			GameObject go = base.sm.sleeper.Get(base.smi);
+			int cell = Grid.PosToCell(go);
+			if (Grid.IsValidCell(cell) && !IsLightLevelOk(cell) && !IsLoudSleeper())
+			{
+				go.Trigger(-1063113160, null);
+			}
+		}
+
+		public bool IsLoudSleeper()
+		{
+			GameObject gameObject = base.sm.sleeper.Get(base.smi);
+			if ((UnityEngine.Object)gameObject.GetComponent<Snorer>() != (UnityEngine.Object)null)
+			{
+				return true;
+			}
+			return false;
+		}
+
 		public void EvaluateSleepQuality()
 		{
 		}
@@ -45,7 +65,8 @@ public class SleepChore : Chore<SleepChore.StatesInstance>
 		public void AddLocator(GameObject sleepable)
 		{
 			locator = sleepable;
-			Grid.Reserved[Grid.PosToCell(locator)] = true;
+			int i = Grid.PosToCell(locator);
+			Grid.Reserved[i] = true;
 			base.sm.bed.Set(locator, this);
 		}
 
@@ -98,9 +119,13 @@ public class SleepChore : Chore<SleepChore.StatesInstance>
 
 			public State normal;
 
-			public State interrupt;
+			public State interrupt_noise;
 
-			public State interrupt_transition;
+			public State interrupt_noise_transition;
+
+			public State interrupt_light;
+
+			public State interrupt_light_transition;
 		}
 
 		public TargetParameter sleeper;
@@ -108,6 +133,10 @@ public class SleepChore : Chore<SleepChore.StatesInstance>
 		public TargetParameter bed;
 
 		public BoolParameter isInterruptable;
+
+		public BoolParameter isDisturbedByNoise;
+
+		public BoolParameter isDisturbedByLight;
 
 		public ApproachSubState<IApproachable> approach;
 
@@ -129,15 +158,46 @@ public class SleepChore : Chore<SleepChore.StatesInstance>
 				smi.SetAnim();
 			}).DefaultState(sleep.normal).ToggleTag(GameTags.Asleep)
 				.DoSleep(sleeper, bed, success, null)
-				.TriggerOnExit(GameHashes.SleepFinished);
+				.TriggerOnExit(GameHashes.SleepFinished)
+				.EventHandler(GameHashes.SleepDisturbedByLight, delegate(StatesInstance smi)
+				{
+					isDisturbedByLight.Set(true, smi);
+				})
+				.EventHandler(GameHashes.SleepDisturbedByNoise, delegate(StatesInstance smi)
+				{
+					isDisturbedByNoise.Set(true, smi);
+				});
 			sleep.uninterruptable.DoNothing();
-			sleep.normal.ParamTransition(isInterruptable, sleep.uninterruptable, (StatesInstance smi, bool p) => !p).ToggleCategoryStatusItem(Db.Get().StatusItemCategories.Sleep, Db.Get().DuplicantStatusItems.Sleeping, null).QueueAnim("working_loop", true, null)
-				.EventTransition(GameHashes.SleepDisturbed, sleep.interrupt, null);
-			sleep.interrupt.ToggleCategoryStatusItem(Db.Get().StatusItemCategories.Sleep, Db.Get().DuplicantStatusItems.SleepingInterrupted, null).QueueAnim("interrupt", false, null).OnAnimQueueComplete(sleep.interrupt_transition);
-			sleep.interrupt_transition.Enter(delegate(StatesInstance smi)
+			sleep.normal.ParamTransition(isInterruptable, sleep.uninterruptable, GameStateMachine<States, StatesInstance, SleepChore, object>.IsFalse).ToggleCategoryStatusItem(Db.Get().StatusItemCategories.Main, Db.Get().DuplicantStatusItems.Sleeping, null).QueueAnim("working_loop", true, null)
+				.ParamTransition(isDisturbedByNoise, sleep.interrupt_noise, GameStateMachine<States, StatesInstance, SleepChore, object>.IsTrue)
+				.ParamTransition(isDisturbedByLight, sleep.interrupt_light, GameStateMachine<States, StatesInstance, SleepChore, object>.IsTrue)
+				.Update(delegate(StatesInstance smi, float dt)
+				{
+					smi.CheckLightLevel();
+				}, UpdateRate.SIM_200ms, false);
+			sleep.interrupt_noise.ToggleCategoryStatusItem(Db.Get().StatusItemCategories.Main, Db.Get().DuplicantStatusItems.SleepingInterruptedByNoise, null).QueueAnim("interrupt_light", false, null).OnAnimQueueComplete(sleep.interrupt_noise_transition);
+			sleep.interrupt_noise_transition.Enter(delegate(StatesInstance smi)
 			{
-				smi.master.GetComponent<Effects>().Add(Db.Get().effects.Get("TerribleSleep"), true);
+				Effects component2 = smi.master.GetComponent<Effects>();
+				component2.Add(Db.Get().effects.Get("TerribleSleep"), true);
+				if (component2.HasEffect(Db.Get().effects.Get("BadSleep")))
+				{
+					component2.Remove(Db.Get().effects.Get("BadSleep"));
+				}
+				isDisturbedByNoise.Set(false, smi);
+				State state2 = (!smi.master.GetComponent<Schedulable>().IsAllowed(Db.Get().ScheduleBlockTypes.Sleep)) ? success : sleep.normal;
+				smi.GoTo(state2);
+			});
+			sleep.interrupt_light.ToggleCategoryStatusItem(Db.Get().StatusItemCategories.Main, Db.Get().DuplicantStatusItems.SleepingInterruptedByLight, null).QueueAnim("interrupt", false, null).OnAnimQueueComplete(sleep.interrupt_light_transition);
+			sleep.interrupt_light_transition.Enter(delegate(StatesInstance smi)
+			{
+				Effects component = smi.master.GetComponent<Effects>();
+				if (!component.HasEffect(Db.Get().effects.Get("TerribleSleep")))
+				{
+					smi.master.GetComponent<Effects>().Add(Db.Get().effects.Get("BadSleep"), true);
+				}
 				State state = (!smi.master.GetComponent<Schedulable>().IsAllowed(Db.Get().ScheduleBlockTypes.Sleep)) ? success : sleep.normal;
+				isDisturbedByLight.Set(false, smi);
 				smi.GoTo(state);
 			});
 			success.Enter(delegate(StatesInstance smi)
@@ -162,9 +222,9 @@ public class SleepChore : Chore<SleepChore.StatesInstance>
 	};
 
 	public SleepChore(ChoreType choreType, IStateMachineTarget target, GameObject bed, bool bedIsLocator, bool isInterruptable)
-		: base(choreType, target, target.GetComponent<ChoreProvider>(), false, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.emergency, 0, false, true, 0, (Tag[])null)
+		: base(choreType, target, target.GetComponent<ChoreProvider>(), false, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.personalNeeds, 5, false, true, 0, false, ReportManager.ReportType.PersonalTime)
 	{
-		smi = new StatesInstance(this, target.gameObject, bed, bedIsLocator, isInterruptable);
+		base.smi = new StatesInstance(this, target.gameObject, bed, bedIsLocator, isInterruptable);
 		if (isInterruptable)
 		{
 			AddPrecondition(ChorePreconditions.instance.IsNotRedAlert, null);
@@ -179,7 +239,7 @@ public class SleepChore : Chore<SleepChore.StatesInstance>
 
 	public static Sleepable GetSafeFloorLocator(GameObject sleeper)
 	{
-		int num = sleeper.GetComponent<Sensors>().GetSensor<SafeCellSensor>().GetCell();
+		int num = sleeper.GetComponent<Sensors>().GetSensor<SafeCellSensor>().GetSleepCellQuery();
 		if (num == Grid.InvalidCell)
 		{
 			num = Grid.PosToCell(sleeper.transform.GetPosition());
@@ -187,5 +247,11 @@ public class SleepChore : Chore<SleepChore.StatesInstance>
 		Vector3 pos = Grid.CellToPosCBC(num, Grid.SceneLayer.Move);
 		GameObject gameObject = ChoreHelpers.CreateSleepLocator(pos);
 		return gameObject.GetComponent<Sleepable>();
+	}
+
+	public static bool IsLightLevelOk(int cell)
+	{
+		int num = Grid.LightIntensity[cell];
+		return num <= 0;
 	}
 }

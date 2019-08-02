@@ -22,13 +22,15 @@ public class PressureDoorConfig : IBuildingConfig
 		buildingDef.Overheatable = false;
 		buildingDef.RequiresPowerInput = true;
 		buildingDef.EnergyConsumptionWhenActive = 120f;
+		buildingDef.Floodable = false;
 		buildingDef.Entombable = false;
 		buildingDef.IsFoundation = true;
-		buildingDef.ViewMode = SimViewMode.PowerMap;
+		buildingDef.ViewMode = OverlayModes.Power.ID;
 		buildingDef.TileLayer = ObjectLayer.FoundationTile;
 		buildingDef.AudioCategory = "Metal";
 		buildingDef.PermittedRotations = PermittedRotations.R90;
 		buildingDef.SceneLayer = Grid.SceneLayer.TileMain;
+		buildingDef.ForegroundLayer = Grid.SceneLayer.InteriorWall;
 		SoundEventVolumeCache.instance.AddVolume("door_external_kanim", "Open_DoorPressure", NOISE_POLLUTION.NOISY.TIER2);
 		SoundEventVolumeCache.instance.AddVolume("door_external_kanim", "Close_DoorPressure", NOISE_POLLUTION.NOISY.TIER2);
 		return buildingDef;
@@ -36,12 +38,12 @@ public class PressureDoorConfig : IBuildingConfig
 
 	public override void DoPostConfigurePreview(BuildingDef def, GameObject go)
 	{
-		GeneratedBuildings.RegisterLogicPorts(go, DoorConfig.INPUT_PORTS);
+		GeneratedBuildings.RegisterLogicPorts(go, DoorConfig.INPUT_PORTS_0_0);
 	}
 
 	public override void DoPostConfigureUnderConstruction(GameObject go)
 	{
-		GeneratedBuildings.RegisterLogicPorts(go, DoorConfig.INPUT_PORTS);
+		GeneratedBuildings.RegisterLogicPorts(go, DoorConfig.INPUT_PORTS_0_0);
 	}
 
 	public override void DoPostConfigureComplete(GameObject go)
@@ -52,12 +54,15 @@ public class PressureDoorConfig : IBuildingConfig
 		door.poweredAnimSpeed = 5f;
 		door.doorClosingSoundEventName = "MechanizedAirlock_closing";
 		door.doorOpeningSoundEventName = "MechanizedAirlock_opening";
+		go.AddOrGet<ZoneTile>();
 		go.AddOrGet<AccessControl>();
 		go.AddOrGet<KBoxCollider2D>();
 		Prioritizable.AddRef(go);
+		CopyBuildingSettings copyBuildingSettings = go.AddOrGet<CopyBuildingSettings>();
+		copyBuildingSettings.copyGroupTag = GameTags.Door;
 		Workable workable = go.AddOrGet<Workable>();
 		workable.workTime = 5f;
-		GeneratedBuildings.RegisterLogicPorts(go, DoorConfig.INPUT_PORTS);
+		GeneratedBuildings.RegisterLogicPorts(go, DoorConfig.INPUT_PORTS_0_0);
 		Object.DestroyImmediate(go.GetComponent<BuildingEnabledButton>());
 		AccessControl component = go.GetComponent<AccessControl>();
 		component.controlEnabled = true;

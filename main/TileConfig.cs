@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using TUNING;
 using UnityEngine;
 
@@ -40,6 +41,8 @@ public class TileConfig : IBuildingConfig
 		buildingDef.DecorBlockTileInfo = Assets.GetBlockTileDecorInfo("tiles_solid_tops_info");
 		buildingDef.DecorPlaceBlockTileInfo = Assets.GetBlockTileDecorInfo("tiles_solid_tops_place_info");
 		buildingDef.ConstructionOffsetFilter = BuildingDef.ConstructionOffsetFilter_OneDown;
+		buildingDef.ReplacementTags = new List<Tag>();
+		buildingDef.ReplacementTags.Add(GameTags.FloorTiles);
 		buildingDef.DragBuild = true;
 		return buildingDef;
 	}
@@ -63,6 +66,7 @@ public class TileConfig : IBuildingConfig
 	public override void DoPostConfigureComplete(GameObject go)
 	{
 		GeneratedBuildings.RemoveLoopingSounds(go);
+		go.GetComponent<KPrefabID>().AddTag(GameTags.FloorTiles, false);
 	}
 
 	public override void DoPostConfigureUnderConstruction(GameObject go)

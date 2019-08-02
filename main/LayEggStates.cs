@@ -4,7 +4,7 @@ using System;
 using System.Runtime.CompilerServices;
 using UnityEngine;
 
-internal class LayEggStates : GameStateMachine<LayEggStates, LayEggStates.Instance, IStateMachineTarget, LayEggStates.Def>
+public class LayEggStates : GameStateMachine<LayEggStates, LayEggStates.Instance, IStateMachineTarget, LayEggStates.Def>
 {
 	public class Def : BaseDef
 	{
@@ -46,7 +46,7 @@ internal class LayEggStates : GameStateMachine<LayEggStates, LayEggStates.Instan
 	public override void InitializeStates(out BaseState default_state)
 	{
 		default_state = layeggpre;
-		root.ToggleStatusItem(CREATURES.STATUSITEMS.LAYINGANEGG.NAME, CREATURES.STATUSITEMS.LAYINGANEGG.TOOLTIP, category: Db.Get().StatusItemCategories.Main, icon: string.Empty, icon_type: StatusItem.IconType.Info, notification_type: NotificationType.Neutral, allow_multiples: false, render_overlay: SimViewMode.None, status_overlays: 63486, resolve_string_callback: null, resolve_tooltip_callback: null);
+		root.ToggleStatusItem(CREATURES.STATUSITEMS.LAYINGANEGG.NAME, CREATURES.STATUSITEMS.LAYINGANEGG.TOOLTIP, category: Db.Get().StatusItemCategories.Main, icon: string.Empty, icon_type: StatusItem.IconType.Info, notification_type: NotificationType.Neutral, allow_multiples: false, render_overlay: default(HashedString), status_overlays: 129022, resolve_string_callback: null, resolve_tooltip_callback: null);
 		layeggpre.Enter(LayEgg).Exit(ShowEgg).PlayAnim("lay_egg_pre")
 			.OnAnimQueueComplete(layeggpst);
 		layeggpst.PlayAnim("lay_egg_pst").OnAnimQueueComplete(moveaside);

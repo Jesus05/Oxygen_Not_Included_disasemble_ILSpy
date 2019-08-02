@@ -9,7 +9,7 @@ public class WashSinkConfig : IBuildingConfig
 
 	public const float WATER_PER_USE = 5f;
 
-	public const int USES_PER_FLUSH = 40;
+	public const int USES_PER_FLUSH = 1;
 
 	public const float WORK_TIME = 5f;
 
@@ -29,7 +29,7 @@ public class WashSinkConfig : IBuildingConfig
 		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, tIER, rAW_METALS, melting_point, build_location_rule, BUILDINGS.DECOR.BONUS.TIER1, tIER2, 0.2f);
 		buildingDef.InputConduitType = ConduitType.Liquid;
 		buildingDef.OutputConduitType = ConduitType.Liquid;
-		buildingDef.ViewMode = SimViewMode.LiquidVentMap;
+		buildingDef.ViewMode = OverlayModes.LiquidConduits.ID;
 		buildingDef.AudioCategory = "Metal";
 		buildingDef.UtilityInputOffset = new CellOffset(0, 0);
 		buildingDef.UtilityOutputOffset = new CellOffset(1, 1);
@@ -38,14 +38,14 @@ public class WashSinkConfig : IBuildingConfig
 
 	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
-		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.WashStation);
-		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.AdvancedWashStation);
+		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.WashStation, false);
+		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.AdvancedWashStation, false);
 		HandSanitizer handSanitizer = go.AddOrGet<HandSanitizer>();
 		handSanitizer.massConsumedPerUse = 5f;
 		handSanitizer.consumedElement = SimHashes.Water;
 		handSanitizer.outputElement = SimHashes.DirtyWater;
 		handSanitizer.diseaseRemovalCount = 120000;
-		handSanitizer.maxUses = 40;
+		handSanitizer.maxUses = 1;
 		handSanitizer.dirtyMeterOffset = Meter.Offset.Behind;
 		go.AddOrGet<DirectionControl>();
 		HandSanitizer.Work work = go.AddOrGet<HandSanitizer.Work>();
@@ -72,6 +72,8 @@ public class WashSinkConfig : IBuildingConfig
 		storage.doDiseaseTransfer = false;
 		storage.SetDefaultStoredItemModifiers(Storage.StandardSealedStorage);
 		go.AddOrGet<LoopingSounds>();
+		RequireOutputs requireOutputs = go.AddOrGet<RequireOutputs>();
+		requireOutputs.ignoreFullPipe = true;
 	}
 
 	public override void DoPostConfigureComplete(GameObject go)

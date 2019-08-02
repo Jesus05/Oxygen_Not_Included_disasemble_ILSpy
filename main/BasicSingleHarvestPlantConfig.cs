@@ -28,7 +28,7 @@ public class BasicSingleHarvestPlantConfig : IEntityConfig
 			SimHashes.ContaminatedOxygen,
 			SimHashes.CarbonDioxide
 		};
-		EntityTemplates.ExtendEntityToBasicPlant(template, 218.15f, 283.15f, 303.15f, 398.15f, safe_elements, true, 0f, 0.15f, "BasicPlantFood", true, false);
+		EntityTemplates.ExtendEntityToBasicPlant(template, 218.15f, 283.15f, 303.15f, 398.15f, safe_elements, true, 0f, 0.15f, "BasicPlantFood", true, false, true, true, 2400f);
 		gameObject.AddOrGet<StandardCropPlant>();
 		gameObject.AddOrGet<KAnimControllerBase>().randomiseLoopedOffset = true;
 		gameObject.AddOrGet<LoopingSounds>();
@@ -43,7 +43,7 @@ public class BasicSingleHarvestPlantConfig : IEntityConfig
 		list.Add(GameTags.CropSeed);
 		list = list;
 		id = STRINGS.CREATURES.SPECIES.BASICSINGLEHARVESTPLANT.DOMESTICATEDDESC;
-		GameObject seed = EntityTemplates.CreateAndRegisterSeedForPlant(template, productionType, initialAnim, desc, name, anim, "object", numberOfSeeds, list, SingleEntityReceptacle.ReceptacleDirection.Top, default(Tag), 1, id, EntityTemplates.CollisionShape.CIRCLE, 0.3f, 0.3f, null, string.Empty);
+		GameObject seed = EntityTemplates.CreateAndRegisterSeedForPlant(template, productionType, initialAnim, desc, name, anim, "object", numberOfSeeds, list, SingleEntityReceptacle.ReceptacleDirection.Top, default(Tag), 1, id, EntityTemplates.CollisionShape.CIRCLE, 0.3f, 0.3f, null, string.Empty, false);
 		EntityTemplates.ExtendPlantToFertilizable(gameObject, new PlantElementAbsorber.ConsumeInfo[1]
 		{
 			new PlantElementAbsorber.ConsumeInfo

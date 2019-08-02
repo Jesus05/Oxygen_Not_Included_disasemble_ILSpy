@@ -5,15 +5,6 @@ namespace ProcGen
 {
 	public class Room : SampleDescriber
 	{
-		public enum RoomSize
-		{
-			VerySmall,
-			Small,
-			Medium,
-			Large,
-			VeryLarge
-		}
-
 		public enum Shape
 		{
 			Circle,
@@ -24,7 +15,8 @@ namespace ProcGen
 			TallThin,
 			ShortWide,
 			Template,
-			PhysicalLayout
+			PhysicalLayout,
+			Splat
 		}
 
 		public enum Selection
@@ -34,19 +26,13 @@ namespace ProcGen
 			NOfEach,
 			Weighted,
 			WeightedBucket,
-			WeightedResample
+			WeightedResample,
+			PickOneWeighted
 		}
 
 		private List<WeightedMob>.Enumerator mobIter;
 
 		private List<WeightedMob> bucket;
-
-		[StringEnumConverter]
-		public RoomSize roomsize
-		{
-			get;
-			private set;
-		}
 
 		[StringEnumConverter]
 		public Shape shape

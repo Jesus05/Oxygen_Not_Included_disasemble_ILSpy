@@ -1,10 +1,14 @@
+using Klei.AI;
 using STRINGS;
 using System.Collections.Generic;
+using TUNING;
 using UnityEngine;
 
 public class BasicFabricConfig : IEntityConfig
 {
 	public static string ID = "BasicFabric";
+
+	private AttributeModifier decorModifier = new AttributeModifier("Decor", 0.1f, ITEMS.INDUSTRIAL_PRODUCTS.BASIC_FABRIC.NAME, true, false, true);
 
 	public GameObject CreatePrefab()
 	{
@@ -20,11 +24,15 @@ public class BasicFabricConfig : IEntityConfig
 		float width = 0.8f;
 		float height = 0.45f;
 		bool isPickupable = true;
+		int sortOrder = SORTORDER.BUILDINGELEMENTS + BasicFabricTuning.SORTORDER;
 		List<Tag> list = new List<Tag>();
 		list.Add(GameTags.IndustrialIngredient);
+		list.Add(GameTags.BuildingFiber);
 		list = list;
-		GameObject gameObject = EntityTemplates.CreateLooseEntity(iD, name, desc, mass, unitMass, anim, initialAnim, sceneLayer, collisionShape, width, height, isPickupable, SimHashes.Creature, list);
+		GameObject gameObject = EntityTemplates.CreateLooseEntity(iD, name, desc, mass, unitMass, anim, initialAnim, sceneLayer, collisionShape, width, height, isPickupable, sortOrder, SimHashes.Creature, list);
 		gameObject.AddOrGet<EntitySplitter>();
+		PrefabAttributeModifiers prefabAttributeModifiers = gameObject.AddOrGet<PrefabAttributeModifiers>();
+		prefabAttributeModifiers.AddAttributeDescriptor(decorModifier);
 		return gameObject;
 	}
 

@@ -14,6 +14,8 @@ public class TubeTraveller : GameStateMachine<TubeTraveller, TubeTraveller.Insta
 
 		private bool hadSuitTank;
 
+		public int prefabInstanceID => GetComponent<Navigator>().gameObject.GetComponent<KPrefabID>().InstanceID;
+
 		public Instance(IStateMachineTarget master)
 			: base(master)
 		{
@@ -40,7 +42,7 @@ public class TubeTraveller : GameStateMachine<TubeTraveller, TubeTraveller.Insta
 						{
 							PathFinder.Path.Node node3 = path.nodes[i];
 							int cell = node3.cell;
-							if (Grid.HasTubeEntrance[cell])
+							if (Grid.HasUsableTubeEntrance(cell, prefabInstanceID))
 							{
 								GameObject gameObject = Grid.Objects[cell, 1];
 								if ((bool)gameObject)
@@ -48,7 +50,7 @@ public class TubeTraveller : GameStateMachine<TubeTraveller, TubeTraveller.Insta
 									TravelTubeEntrance component = gameObject.GetComponent<TravelTubeEntrance>();
 									if ((bool)component)
 									{
-										component.Reserve(this);
+										component.Reserve(this, prefabInstanceID);
 										reservations.Add(component);
 									}
 								}
@@ -65,7 +67,7 @@ public class TubeTraveller : GameStateMachine<TubeTraveller, TubeTraveller.Insta
 			{
 				if (!((Object)reservation == (Object)null))
 				{
-					reservation.Unreserve(this);
+					reservation.Unreserve(this, prefabInstanceID);
 				}
 			}
 			reservations.Clear();
@@ -119,12 +121,12 @@ public class TubeTraveller : GameStateMachine<TubeTraveller, TubeTraveller.Insta
 
 		private bool HasSuitTank()
 		{
-			Equipment component = GetComponent<Equipment>();
-			AssignableSlotInstance slot = component.GetSlot(Db.Get().AssignableSlots.Suit);
+			Equipment equipment = GetComponent<MinionIdentity>().GetEquipment();
+			AssignableSlotInstance slot = equipment.GetSlot(Db.Get().AssignableSlots.Suit);
 			if (slot != null && (Object)slot.assignable != (Object)null)
 			{
-				SuitTank component2 = slot.assignable.GetComponent<SuitTank>();
-				return (Object)component2 != (Object)null;
+				SuitTank component = slot.assignable.GetComponent<SuitTank>();
+				return (Object)component != (Object)null;
 			}
 			return false;
 		}
@@ -143,7 +145,6 @@ public class TubeTraveller : GameStateMachine<TubeTraveller, TubeTraveller.Insta
 		immunities.Add(Db.Get().effects.Get("SoakingWet"));
 		immunities.Add(Db.Get().effects.Get("WetFeet"));
 		immunities.Add(Db.Get().effects.Get("PoppedEarDrums"));
-		immunities.Add(Db.Get().effects.Get("Unclean"));
 	}
 
 	public override void InitializeStates(out BaseState default_state)
@@ -167,6 +168,11 @@ public class TubeTraveller : GameStateMachine<TubeTraveller, TubeTraveller.Insta
 	}
 
 	public bool ShouldEmitCO2()
+	{
+		return false;
+	}
+
+	public bool ShouldStoreCO2()
 	{
 		return false;
 	}

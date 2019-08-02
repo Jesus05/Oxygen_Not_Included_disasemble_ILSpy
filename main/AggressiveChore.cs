@@ -169,9 +169,9 @@ public class AggressiveChore : Chore<AggressiveChore.StatesInstance>
 	}
 
 	public AggressiveChore(IStateMachineTarget target, Action<Chore> on_complete = null)
-		: base(Db.Get().ChoreTypes.StressActingOut, target, target.GetComponent<ChoreProvider>(), false, on_complete, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.emergency, 0, false, true, 0, (Tag[])null)
+		: base(Db.Get().ChoreTypes.StressActingOut, target, target.GetComponent<ChoreProvider>(), false, on_complete, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.compulsory, 5, false, true, 0, false, ReportManager.ReportType.WorkTime)
 	{
-		smi = new StatesInstance(this, target.gameObject);
+		base.smi = new StatesInstance(this, target.gameObject);
 	}
 
 	public override void Cleanup()
@@ -181,12 +181,12 @@ public class AggressiveChore : Chore<AggressiveChore.StatesInstance>
 
 	public void PunchWallDamage(float dt)
 	{
-		if (Grid.Solid[smi.sm.wallCellToBreak] && Grid.StrengthInfo[smi.sm.wallCellToBreak] < 100)
+		if (Grid.Solid[base.smi.sm.wallCellToBreak] && Grid.StrengthInfo[base.smi.sm.wallCellToBreak] < 100)
 		{
 			WorldDamage instance = WorldDamage.Instance;
-			int wallCellToBreak = smi.sm.wallCellToBreak;
+			int wallCellToBreak = base.smi.sm.wallCellToBreak;
 			float amount = 0.06f * dt;
-			int wallCellToBreak2 = smi.sm.wallCellToBreak;
+			int wallCellToBreak2 = base.smi.sm.wallCellToBreak;
 			string source_name = BUILDINGS.DAMAGESOURCES.MINION_DESTRUCTION;
 			instance.ApplyDamage(wallCellToBreak, amount, wallCellToBreak2, -1, source_name, UI.GAMEOBJECTEFFECTS.DAMAGE_POPS.MINION_DESTRUCTION);
 		}

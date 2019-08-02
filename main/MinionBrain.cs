@@ -23,9 +23,16 @@ public class MinionBrain : Brain
 
 	public bool IsCellClear(int cell)
 	{
+		if (Grid.Reserved[cell])
+		{
+			return false;
+		}
 		GameObject gameObject = Grid.Objects[cell, 0];
-		bool flag = (Object)gameObject != (Object)null && (Object)base.gameObject != (Object)gameObject && !gameObject.GetComponent<Navigator>().IsMoving();
-		return ((Object)gameObject == (Object)null && !Grid.Reserved[cell]) || !flag;
+		if ((Object)gameObject != (Object)null && (Object)base.gameObject != (Object)gameObject && !gameObject.GetComponent<Navigator>().IsMoving())
+		{
+			return false;
+		}
+		return true;
 	}
 
 	protected override void OnPrefabInit()
@@ -83,17 +90,29 @@ public class MinionBrain : Brain
 	public override void UpdateBrain()
 	{
 		base.UpdateBrain();
-		if (!((Object)Game.Instance == (Object)null) && !Game.Instance.savedInfo.discoveredSurface)
+		if (!((Object)Game.Instance == (Object)null))
 		{
-			int cell = Grid.PosToCell(base.gameObject);
-			SubWorld.ZoneType subWorldZoneType = World.Instance.zoneRenderData.GetSubWorldZoneType(cell);
-			if (subWorldZoneType == SubWorld.ZoneType.Space)
+			if (!Game.Instance.savedInfo.discoveredSurface)
 			{
-				Game.Instance.savedInfo.discoveredSurface = true;
-				Vector3 position = base.gameObject.transform.GetPosition();
-				DiscoveredSpaceMessage message = new DiscoveredSpaceMessage(position);
-				Messenger.Instance.QueueMessage(message);
-				Game.Instance.Trigger(-818188514, base.gameObject);
+				int cell = Grid.PosToCell(base.gameObject);
+				SubWorld.ZoneType subWorldZoneType = World.Instance.zoneRenderData.GetSubWorldZoneType(cell);
+				if (subWorldZoneType == SubWorld.ZoneType.Space)
+				{
+					Game.Instance.savedInfo.discoveredSurface = true;
+					Vector3 position = base.gameObject.transform.GetPosition();
+					DiscoveredSpaceMessage message = new DiscoveredSpaceMessage(position);
+					Messenger.Instance.QueueMessage(message);
+					Game.Instance.Trigger(-818188514, base.gameObject);
+				}
+			}
+			if (!Game.Instance.savedInfo.discoveredOilField)
+			{
+				int cell2 = Grid.PosToCell(base.gameObject);
+				SubWorld.ZoneType subWorldZoneType2 = World.Instance.zoneRenderData.GetSubWorldZoneType(cell2);
+				if (subWorldZoneType2 == SubWorld.ZoneType.OilField)
+				{
+					Game.Instance.savedInfo.discoveredOilField = true;
+				}
 			}
 		}
 	}

@@ -12,6 +12,7 @@ public class CreatureTrapConfig : IBuildingConfig
 	{
 		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef("CreatureTrap", 2, 1, "creaturetrap_kanim", 10, 10f, BUILDINGS.CONSTRUCTION_MASS_KG.TIER3, MATERIALS.PLASTICS, 1600f, BuildLocationRule.OnFloor, BUILDINGS.DECOR.PENALTY.TIER2, NOISE_POLLUTION.NOISY.TIER0, 0.2f);
 		buildingDef.AudioCategory = "Metal";
+		buildingDef.Floodable = false;
 		return buildingDef;
 	}
 
@@ -22,9 +23,10 @@ public class CreatureTrapConfig : IBuildingConfig
 		storage.SetDefaultStoredItemModifiers(StoredItemModifiers);
 		storage.sendOnStoreOnSpawn = true;
 		Trap trap = go.AddOrGet<Trap>();
-		trap.trappableCreatures = new Tag[1]
+		trap.trappableCreatures = new Tag[2]
 		{
-			GameTags.Creatures.GroundBased
+			GameTags.Creatures.Walker,
+			GameTags.Creatures.Hoverer
 		};
 		trap.trappedOffset = new Vector2(0.5f, 0f);
 	}

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using TUNING;
 using UnityEngine;
 
@@ -23,7 +24,7 @@ public class GasConduitRadiantConfig : IBuildingConfig
 		buildingDef.Overheatable = false;
 		buildingDef.Floodable = false;
 		buildingDef.Entombable = false;
-		buildingDef.ViewMode = SimViewMode.GasVentMap;
+		buildingDef.ViewMode = OverlayModes.GasConduits.ID;
 		buildingDef.ObjectLayer = ObjectLayer.GasConduit;
 		buildingDef.TileLayer = ObjectLayer.GasConduitTile;
 		buildingDef.ReplacementLayer = ObjectLayer.ReplacementGasConduit;
@@ -36,6 +37,8 @@ public class GasConduitRadiantConfig : IBuildingConfig
 		buildingDef.isKAnimTile = true;
 		buildingDef.isUtility = true;
 		buildingDef.DragBuild = true;
+		buildingDef.ReplacementTags = new List<Tag>();
+		buildingDef.ReplacementTags.Add(GameTags.Vents);
 		GeneratedBuildings.RegisterWithOverlay(OverlayScreen.GasVentIDs, "GasConduitRadiant");
 		return buildingDef;
 	}
@@ -54,6 +57,7 @@ public class GasConduitRadiantConfig : IBuildingConfig
 		KAnimGraphTileVisualizer kAnimGraphTileVisualizer = go.AddComponent<KAnimGraphTileVisualizer>();
 		kAnimGraphTileVisualizer.connectionSource = KAnimGraphTileVisualizer.ConnectionSource.Gas;
 		kAnimGraphTileVisualizer.isPhysicalBuilding = true;
+		go.GetComponent<KPrefabID>().AddTag(GameTags.Vents, false);
 		LiquidConduitConfig.CommonConduitPostConfigureComplete(go);
 	}
 

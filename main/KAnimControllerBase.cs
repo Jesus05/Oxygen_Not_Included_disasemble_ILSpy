@@ -30,6 +30,7 @@ public abstract class KAnimControllerBase : MonoBehaviour
 	public enum VisibilityType
 	{
 		Default,
+		OffscreenUpdate,
 		Always
 	}
 
@@ -122,7 +123,6 @@ public abstract class KAnimControllerBase : MonoBehaviour
 
 	protected KBatchedAnimInstanceData batchInstanceData;
 
-	[NonSerialized]
 	public VisibilityType visibilityType;
 
 	public Action<GameObject> onDestroySelf;
@@ -391,11 +391,11 @@ public abstract class KAnimControllerBase : MonoBehaviour
 		}
 		set
 		{
-			DebugUtil.Assert(value.Length > 0, "Controller has no anim files.", string.Empty, string.Empty);
-			DebugUtil.Assert((UnityEngine.Object)value[0].buildFile != (UnityEngine.Object)null, "First anim file needs to be the build file.", string.Empty, string.Empty);
+			DebugUtil.Assert(value.Length > 0, "Controller has no anim files.");
+			DebugUtil.Assert((UnityEngine.Object)value[0].buildFile != (UnityEngine.Object)null, "First anim file needs to be the build file.");
 			for (int i = 0; i < value.Length; i++)
 			{
-				DebugUtil.Assert((UnityEngine.Object)value[i] != (UnityEngine.Object)null, "Anim file is null", string.Empty, string.Empty);
+				DebugUtil.Assert((UnityEngine.Object)value[i] != (UnityEngine.Object)null, "Anim file is null");
 			}
 			animFiles = new KAnimFile[value.Length];
 			for (int j = 0; j < value.Length; j++)
@@ -825,10 +825,11 @@ public abstract class KAnimControllerBase : MonoBehaviour
 
 	public void AddAnimOverrides(KAnimFile kanim_file, float priority = 0f)
 	{
+		Debug.Assert((UnityEngine.Object)kanim_file != (UnityEngine.Object)null);
 		if (kanim_file.GetData().build != null && kanim_file.GetData().build.symbols.Length > 0)
 		{
 			SymbolOverrideController component = GetComponent<SymbolOverrideController>();
-			DebugUtil.Assert((UnityEngine.Object)component != (UnityEngine.Object)null, "Anim overrides containing additional symbols require a symbol override controller.", string.Empty, string.Empty);
+			DebugUtil.Assert((UnityEngine.Object)component != (UnityEngine.Object)null, "Anim overrides containing additional symbols require a symbol override controller.");
 			component.AddBuildOverride(kanim_file.GetData(), 0);
 		}
 		overrideAnimFiles.Add(new OverrideAnimFileData
@@ -842,10 +843,11 @@ public abstract class KAnimControllerBase : MonoBehaviour
 
 	public void RemoveAnimOverrides(KAnimFile kanim_file)
 	{
+		Debug.Assert((UnityEngine.Object)kanim_file != (UnityEngine.Object)null);
 		if (kanim_file.GetData().build != null && kanim_file.GetData().build.symbols.Length > 0)
 		{
 			SymbolOverrideController component = GetComponent<SymbolOverrideController>();
-			DebugUtil.Assert((UnityEngine.Object)component != (UnityEngine.Object)null, "Anim overrides containing additional symbols require a symbol override controller.", string.Empty, string.Empty);
+			DebugUtil.Assert((UnityEngine.Object)component != (UnityEngine.Object)null, "Anim overrides containing additional symbols require a symbol override controller.");
 			component.TryRemoveBuildOverride(kanim_file.GetData(), 0);
 		}
 		for (int i = 0; i < overrideAnimFiles.Count; i++)
@@ -873,7 +875,7 @@ public abstract class KAnimControllerBase : MonoBehaviour
 				KAnim.Anim anim = data.GetAnim(j);
 				if (anim.animFile.hashName != data.hashName)
 				{
-					Debug.LogError($"How did we get an anim from another file? [{data.name}] != [{anim.animFile.name}] for anim [{j}]", null);
+					Debug.LogError($"How did we get an anim from another file? [{data.name}] != [{anim.animFile.name}] for anim [{j}]");
 				}
 				AnimLookupData value = default(AnimLookupData);
 				value.animIndex = anim.index;
@@ -904,7 +906,7 @@ public abstract class KAnimControllerBase : MonoBehaviour
 		KAnimFileData data = anim_file.GetData();
 		if (data == null)
 		{
-			Debug.LogError("AddAnims() Null animfile data", null);
+			Debug.LogError("AddAnims() Null animfile data");
 		}
 		else
 		{

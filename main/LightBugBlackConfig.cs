@@ -33,7 +33,13 @@ public class LightBugBlackConfig : IEntityConfig
 		hashSet.Add(TagManager.Create("CookedMeat"));
 		hashSet.Add(SimHashes.Katairite.CreateTag());
 		hashSet.Add(SimHashes.Phosphorus.CreateTag());
-		return BaseLightBugConfig.SetupDiet(prefab, hashSet, Tag.Invalid, CALORIES_PER_KG_OF_ORE);
+		prefab = BaseLightBugConfig.SetupDiet(prefab, hashSet, Tag.Invalid, CALORIES_PER_KG_OF_ORE);
+		LureableMonitor.Def def = prefab.AddOrGetDef<LureableMonitor.Def>();
+		def.lures = new Tag[1]
+		{
+			SimHashes.Phosphorus.CreateTag()
+		};
+		return prefab;
 	}
 
 	public GameObject CreatePrefab()

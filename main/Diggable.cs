@@ -26,9 +26,6 @@ public class Diggable : Workable
 	public HashedString choreTypeIdHash;
 
 	[SerializeField]
-	public Tag[] choreTags;
-
-	[SerializeField]
 	public Material[] materials;
 
 	[SerializeField]
@@ -67,11 +64,13 @@ public class Diggable : Workable
 	{
 		base.OnPrefabInit();
 		workerStatusItem = Db.Get().DuplicantStatusItems.Digging;
-		readyForRoleWorkStatusItem = Db.Get().BuildingStatusItems.DigRequiresRolePerk;
+		readyForSkillWorkStatusItem = Db.Get().BuildingStatusItems.DigRequiresSkillPerk;
 		faceTargetWhenWorking = true;
 		Subscribe(-1432940121, OnReachableChangedDelegate);
 		attributeConverter = Db.Get().AttributeConverters.DiggingSpeed;
-		attributeExperienceMultiplier = DUPLICANTSTATS.ATTRIBUTE_LEVELING.PART_DAY_EXPERIENCE;
+		attributeExperienceMultiplier = DUPLICANTSTATS.ATTRIBUTE_LEVELING.MOST_DAY_EXPERIENCE;
+		skillExperienceSkillGroup = Db.Get().SkillGroups.Mining.Id;
+		skillExperienceMultiplier = SKILLS.MOST_DAY_EXPERIENCE;
 		multitoolContext = "dig";
 		multitoolHitEffectTag = "fx_dig_splash";
 		workingPstComplete = HashedString.Invalid;
@@ -93,7 +92,7 @@ public class Diggable : Workable
 		{
 			chore_type = Db.Get().ChoreTypes.GetByHash(choreTypeIdHash);
 		}
-		chore = new WorkChore<Diggable>(chore_type, this, null, choreTags, true, null, null, null, true, null, false, true, null, true, true, true, PriorityScreen.PriorityClass.basic, 0, false);
+		chore = new WorkChore<Diggable>(chore_type, this, null, true, null, null, null, true, null, false, true, null, true, true, true, PriorityScreen.PriorityClass.basic, 5, false, true);
 		SetWorkTime(float.PositiveInfinity);
 		partitionerEntry = GameScenePartitioner.Instance.Add("Diggable.OnSpawn", base.gameObject, Grid.PosToCell(this), GameScenePartitioner.Instance.solidChangedLayer, OnSolidChanged);
 		OnSolidChanged(null);
@@ -102,7 +101,6 @@ public class Diggable : Workable
 		Subscribe(493375141, OnRefreshUserMenuDelegate);
 		handle = Game.Instance.Subscribe(-1523247426, UpdateStatusItem);
 		Components.Diggables.Add(this);
-		UpdateBuildableDiggables(num);
 	}
 
 	public override AnimInfo GetAnim(Worker worker)
@@ -117,87 +115,6 @@ public class Diggable : Workable
 			result.smi = new MultitoolController.Instance(this, worker, multitoolContext, Assets.GetPrefab(multitoolHitEffectTag));
 		}
 		return result;
-	}
-
-	public static void UpdateBuildableDiggables(int cell)
-	{
-		Queue<GameUtil.FloodFillInfo> floodFillNext = GameUtil.FloodFillNext;
-		floodFillNext.Clear();
-		floodFillNext.Enqueue(new GameUtil.FloodFillInfo
-		{
-			cell = Grid.CellLeft(cell),
-			depth = 0
-		});
-		floodFillNext.Enqueue(new GameUtil.FloodFillInfo
-		{
-			cell = Grid.CellRight(cell),
-			depth = 0
-		});
-		floodFillNext.Enqueue(new GameUtil.FloodFillInfo
-		{
-			cell = Grid.CellAbove(cell),
-			depth = 0
-		});
-		floodFillNext.Enqueue(new GameUtil.FloodFillInfo
-		{
-			cell = Grid.CellBelow(cell),
-			depth = 0
-		});
-		UpdateBuildableDiggables(floodFillNext);
-		floodFillNext.Clear();
-	}
-
-	public static void UpdateBuildableDiggables(Queue<GameUtil.FloodFillInfo> queue)
-	{
-		List<Diggable> adjacentDiggables = new List<Diggable>();
-		bool any_buildables = false;
-		GameUtil.FloodFillConditional(queue, delegate(int visited_cell)
-		{
-			bool result = false;
-			if (IsCellBuildable(visited_cell))
-			{
-				result = true;
-				any_buildables = true;
-			}
-			else
-			{
-				GameObject gameObject = Grid.Objects[visited_cell, 7];
-				if ((UnityEngine.Object)gameObject != (UnityEngine.Object)null)
-				{
-					result = true;
-					adjacentDiggables.Add(gameObject.GetComponent<Diggable>());
-				}
-			}
-			return result;
-		}, GameUtil.FloodFillVisited, null, 10000);
-		GameUtil.FloodFillVisited.Clear();
-		if (any_buildables)
-		{
-			foreach (Diggable item in adjacentDiggables)
-			{
-				if (!((UnityEngine.Object)item == (UnityEngine.Object)null) && Array.IndexOf(item.choreTags, GameTags.ChoreTypes.Building) < 0)
-				{
-					Array.Resize(ref item.choreTags, item.choreTags.Length + 1);
-					item.choreTags[item.choreTags.Length - 1] = GameTags.ChoreTypes.Building;
-				}
-			}
-		}
-		else
-		{
-			foreach (Diggable item2 in adjacentDiggables)
-			{
-				if (!((UnityEngine.Object)item2 == (UnityEngine.Object)null))
-				{
-					int num = Array.IndexOf(item2.choreTags, GameTags.ChoreTypes.Building);
-					if (num >= 0)
-					{
-						item2.choreTags[num] = item2.choreTags[item2.choreTags.Length - 1];
-						Array.Resize(ref item2.choreTags, item2.choreTags.Length - 1);
-					}
-				}
-			}
-		}
-		queue.Clear();
 	}
 
 	private static bool IsCellBuildable(int cell)
@@ -221,13 +138,6 @@ public class Diggable : Workable
 		/*Error: Unable to find new state assignment for yield return*/;
 	}
 
-	public override void AwardExperience(float work_dt, MinionResume resume)
-	{
-		resume.AddExperienceIfRole(JuniorMiner.ID, work_dt * ROLES.ACTIVE_EXPERIENCE_VERY_SLOW);
-		resume.AddExperienceIfRole(Miner.ID, work_dt * ROLES.ACTIVE_EXPERIENCE_VERY_SLOW);
-		resume.AddExperienceIfRole(SeniorMiner.ID, work_dt * ROLES.ACTIVE_EXPERIENCE_VERY_SLOW);
-	}
-
 	private void OnSolidChanged(object data)
 	{
 		if (!((UnityEngine.Object)this == (UnityEngine.Object)null) && !((UnityEngine.Object)base.gameObject == (UnityEngine.Object)null))
@@ -236,13 +146,13 @@ public class Diggable : Workable
 			int num = Grid.PosToCell(this);
 			int num2 = -1;
 			UpdateColor(isReachable);
-			if (Grid.Element[num].hardness >= 150)
+			if (Grid.Element[num].hardness >= 200)
 			{
 				bool flag = false;
 				foreach (Chore.PreconditionInstance precondition in chore.GetPreconditions())
 				{
 					Chore.PreconditionInstance current = precondition;
-					if (current.id == ChorePreconditions.instance.HasRolePerk.id)
+					if (current.id == ChorePreconditions.instance.HasSkillPerk.id)
 					{
 						flag = true;
 						break;
@@ -250,18 +160,18 @@ public class Diggable : Workable
 				}
 				if (!flag)
 				{
-					chore.AddPrecondition(ChorePreconditions.instance.HasRolePerk, RoleManager.rolePerks.CanDigNearlyImpenetrable);
+					chore.AddPrecondition(ChorePreconditions.instance.HasSkillPerk, Db.Get().SkillPerks.CanDigSupersuperhard);
 				}
-				requiredRolePerk = RoleManager.rolePerks.CanDigNearlyImpenetrable.id;
-				materialDisplay.sharedMaterial = materials[2];
+				requiredSkillPerk = Db.Get().SkillPerks.CanDigSupersuperhard.Id;
+				materialDisplay.sharedMaterial = materials[3];
 			}
-			else if (Grid.Element[num].hardness >= 50)
+			else if (Grid.Element[num].hardness >= 150)
 			{
 				bool flag2 = false;
 				foreach (Chore.PreconditionInstance precondition2 in chore.GetPreconditions())
 				{
 					Chore.PreconditionInstance current2 = precondition2;
-					if (current2.id == ChorePreconditions.instance.HasRolePerk.id)
+					if (current2.id == ChorePreconditions.instance.HasSkillPerk.id)
 					{
 						flag2 = true;
 						break;
@@ -269,24 +179,43 @@ public class Diggable : Workable
 				}
 				if (!flag2)
 				{
-					chore.AddPrecondition(ChorePreconditions.instance.HasRolePerk, RoleManager.rolePerks.CanDigVeryFirm);
+					chore.AddPrecondition(ChorePreconditions.instance.HasSkillPerk, Db.Get().SkillPerks.CanDigNearlyImpenetrable);
 				}
-				requiredRolePerk = RoleManager.rolePerks.CanDigVeryFirm.id;
+				requiredSkillPerk = Db.Get().SkillPerks.CanDigNearlyImpenetrable.Id;
+				materialDisplay.sharedMaterial = materials[2];
+			}
+			else if (Grid.Element[num].hardness >= 50)
+			{
+				bool flag3 = false;
+				foreach (Chore.PreconditionInstance precondition3 in chore.GetPreconditions())
+				{
+					Chore.PreconditionInstance current3 = precondition3;
+					if (current3.id == ChorePreconditions.instance.HasSkillPerk.id)
+					{
+						flag3 = true;
+						break;
+					}
+				}
+				if (!flag3)
+				{
+					chore.AddPrecondition(ChorePreconditions.instance.HasSkillPerk, Db.Get().SkillPerks.CanDigVeryFirm);
+				}
+				requiredSkillPerk = Db.Get().SkillPerks.CanDigVeryFirm.Id;
 				materialDisplay.sharedMaterial = materials[1];
 			}
 			else
 			{
-				requiredRolePerk = HashedString.Invalid;
-				chore.GetPreconditions().Remove(chore.GetPreconditions().Find((Chore.PreconditionInstance o) => o.id == ChorePreconditions.instance.HasRolePerk.id));
+				requiredSkillPerk = null;
+				chore.GetPreconditions().Remove(chore.GetPreconditions().Find((Chore.PreconditionInstance o) => o.id == ChorePreconditions.instance.HasSkillPerk.id));
 			}
 			UpdateStatusItem(null);
-			bool flag3 = false;
+			bool flag4 = false;
 			if (!Grid.Solid[num])
 			{
 				num2 = GetUnstableCellAbove(num);
 				if (num2 == -1)
 				{
-					flag3 = true;
+					flag4 = true;
 				}
 				else
 				{
@@ -295,9 +224,9 @@ public class Diggable : Workable
 			}
 			else if (Grid.Foundation[num])
 			{
-				flag3 = true;
+				flag4 = true;
 			}
-			if (flag3)
+			if (flag4)
 			{
 				isDigComplete = true;
 				if (chore == null || !chore.InProgress())
@@ -446,7 +375,7 @@ public class Diggable : Workable
 				component.AddStatusItem(Db.Get().BuildingStatusItems.DigUnreachable, this);
 				GameScheduler.Instance.Schedule("Locomotion Tutorial", 2f, delegate
 				{
-					Tutorial.Instance.TutorialMessage(Tutorial.TutorialMessages.TM_Locomotion);
+					Tutorial.Instance.TutorialMessage(Tutorial.TutorialMessages.TM_Locomotion, true);
 				}, null, null);
 			}
 		}
@@ -514,7 +443,6 @@ public class Diggable : Workable
 		int cell = Grid.PosToCell(this);
 		GameScenePartitioner.Instance.TriggerEvent(cell, GameScenePartitioner.Instance.digDestroyedLayer, null);
 		Components.Diggables.Remove(this);
-		UpdateBuildableDiggables(cell);
 	}
 
 	private void OnCancel()

@@ -31,7 +31,7 @@ public class AlgaeHabitat : StateMachineComponent<AlgaeHabitat.SMInstance>
 				emptyChore.Cancel("dupe");
 			}
 			AlgaeHabitatEmpty component = base.master.GetComponent<AlgaeHabitatEmpty>();
-			emptyChore = new WorkChore<AlgaeHabitatEmpty>(Db.Get().ChoreTypes.EmptyStorage, component, null, null, true, OnEmptyComplete, null, null, true, null, false, true, null, false, true, true, PriorityScreen.PriorityClass.basic, 0, true);
+			emptyChore = new WorkChore<AlgaeHabitatEmpty>(Db.Get().ChoreTypes.EmptyStorage, component, null, true, OnEmptyComplete, null, null, true, null, false, true, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, true, true);
 		}
 
 		public void CancelEmptyChore()
@@ -46,7 +46,7 @@ public class AlgaeHabitat : StateMachineComponent<AlgaeHabitat.SMInstance>
 		private void OnEmptyComplete(Chore chore)
 		{
 			emptyChore = null;
-			base.master.pollutedWaterStorage.DropAll(true);
+			base.master.pollutedWaterStorage.DropAll(true, false, default(Vector3), true);
 		}
 	}
 
@@ -126,23 +126,10 @@ public class AlgaeHabitat : StateMachineComponent<AlgaeHabitat.SMInstance>
 
 	private Storage pollutedWaterStorage;
 
-	private float emptyWaterThreshold = 100f;
-
 	[SerializeField]
 	public float lightBonusMultiplier = 1.1f;
 
 	public CellOffset pressureSampleOffset = CellOffset.none;
-
-	private static readonly EventSystem.IntraObjectHandler<AlgaeHabitat> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<AlgaeHabitat>(delegate(AlgaeHabitat component, object data)
-	{
-		component.OnCopySettings(data);
-	});
-
-	protected override void OnPrefabInit()
-	{
-		base.OnPrefabInit();
-		Subscribe(-905833192, OnCopySettingsDelegate);
-	}
 
 	protected override void OnSpawn()
 	{
@@ -150,32 +137,26 @@ public class AlgaeHabitat : StateMachineComponent<AlgaeHabitat.SMInstance>
 		base.smi.StartSM();
 		GameScheduler.Instance.Schedule("WaterFetchingTutorial", 2f, delegate
 		{
-			Tutorial.Instance.TutorialMessage(Tutorial.TutorialMessages.TM_FetchingWater);
+			Tutorial.Instance.TutorialMessage(Tutorial.TutorialMessages.TM_FetchingWater, true);
 		}, null, null);
 		ConfigurePollutedWaterOutput();
-		emptyWaterThreshold = pollutedWaterStorage.capacityKg;
+		Tutorial.Instance.oxygenGenerators.Add(base.gameObject);
 	}
 
-	private void OnCopySettings(object data)
+	protected override void OnCleanUp()
 	{
-		GameObject gameObject = (GameObject)data;
-		if (!((Object)gameObject == (Object)null))
-		{
-			AlgaeHabitat component = gameObject.GetComponent<AlgaeHabitat>();
-			if (!((Object)component == (Object)null))
-			{
-				emptyWaterThreshold = component.emptyWaterThreshold;
-			}
-		}
+		Tutorial.Instance.oxygenGenerators.Remove(base.gameObject);
+		base.OnCleanUp();
 	}
 
 	private void ConfigurePollutedWaterOutput()
 	{
 		Storage storage = null;
+		Tag tag = ElementLoader.FindElementByHash(SimHashes.DirtyWater).tag;
 		Storage[] components = GetComponents<Storage>();
 		foreach (Storage storage2 in components)
 		{
-			if (storage2.storageFilters.Contains(ElementLoader.FindElementByHash(SimHashes.DirtyWater).tag))
+			if (storage2.storageFilters.Contains(tag))
 			{
 				storage = storage2;
 				break;
@@ -188,7 +169,7 @@ public class AlgaeHabitat : StateMachineComponent<AlgaeHabitat.SMInstance>
 			for (int k = 0; k < outputElements.Length; k++)
 			{
 				ElementConverter.OutputElement outputElement = outputElements[k];
-				if (outputElement.element.tag == ElementLoader.FindElementByHash(SimHashes.DirtyWater).tag)
+				if (outputElement.elementHash == SimHashes.DirtyWater)
 				{
 					elementConverter.SetStorage(storage);
 					break;

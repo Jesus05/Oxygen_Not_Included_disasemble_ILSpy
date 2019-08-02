@@ -56,7 +56,7 @@ public class Butcherable : Workable, ISaveLoadable
 	{
 		if (chore == null)
 		{
-			chore = new WorkChore<Butcherable>(Db.Get().ChoreTypes.Harvest, this, null, null, true, null, null, null, true, null, false, true, null, false, true, true, PriorityScreen.PriorityClass.basic, 0, false);
+			chore = new WorkChore<Butcherable>(Db.Get().ChoreTypes.Harvest, this, null, true, null, null, null, true, null, false, true, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, false, true);
 			OnRefreshUserMenu(null);
 		}
 	}

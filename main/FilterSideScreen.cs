@@ -23,6 +23,8 @@ public class FilterSideScreen : SideScreenContent
 
 	public Dictionary<Element, FilterSideScreenRow> filterRowMap = new Dictionary<Element, FilterSideScreenRow>();
 
+	public bool isLogicFilter;
+
 	protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
@@ -32,31 +34,39 @@ public class FilterSideScreen : SideScreenContent
 
 	public override bool IsValidForTarget(GameObject target)
 	{
-		return (Object)target.GetComponent<Filterable>() != (Object)null;
+		bool flag = false;
+		flag = ((!isLogicFilter) ? ((Object)target.GetComponent<ElementFilter>() != (Object)null) : ((Object)target.GetComponent<ConduitElementSensor>() != (Object)null || (Object)target.GetComponent<LogicElementSensor>() != (Object)null));
+		return flag && (Object)target.GetComponent<Filterable>() != (Object)null;
 	}
 
-	protected override void OnShow(bool show)
+	public override void SetTarget(GameObject target)
 	{
-		base.OnShow(show);
-		if (show && !((Object)DetailsScreen.Instance.target == (Object)null))
+		base.SetTarget(target);
+		Filterable component = target.GetComponent<Filterable>();
+		if (!((Object)component == (Object)null))
 		{
-			Filterable component = DetailsScreen.Instance.target.GetComponent<Filterable>();
-			if (!((Object)component == (Object)null))
-			{
-				outputElementHeaderLabel.text = UI.UISIDESCREENS.FILTERSIDESCREEN.OUTPUTELEMENTHEADER;
-				selectElementHeaderLabel.text = UI.UISIDESCREENS.FILTERSIDESCREEN.SELECTELEMENTHEADER;
-				everythingElseHeaderLabel.text = ((component.filterElementState != Filterable.ElementState.Gas) ? UI.UISIDESCREENS.FILTERSIDESCREEN.UNFILTEREDELEMENTS.LIQUID : UI.UISIDESCREENS.FILTERSIDESCREEN.UNFILTEREDELEMENTS.GAS);
-				Element filterElement = (!component.SelectedTag.IsValid) ? null : ElementLoader.GetElement(component.SelectedTag);
-				SetFilterElement(filterElement);
-				Configure(component);
-			}
+			everythingElseHeaderLabel.text = ((component.filterElementState != Filterable.ElementState.Gas) ? UI.UISIDESCREENS.FILTERSIDESCREEN.UNFILTEREDELEMENTS.LIQUID : UI.UISIDESCREENS.FILTERSIDESCREEN.UNFILTEREDELEMENTS.GAS);
+			Element filterElement = (!component.SelectedTag.IsValid) ? ElementLoader.FindElementByHash(SimHashes.Void) : ElementLoader.GetElement(component.SelectedTag);
+			SetFilterElement(filterElement);
+			Configure(component);
 		}
 	}
 
 	private void PopulateElements()
 	{
 		List<Element> list = new List<Element>(ElementLoader.elements);
-		list.Sort((Element a, Element b) => a.name.CompareTo(b.name));
+		list.Sort(delegate(Element a, Element b)
+		{
+			if (a.id == SimHashes.Void)
+			{
+				return -1;
+			}
+			if (b.id == SimHashes.Void)
+			{
+				return 1;
+			}
+			return a.name.CompareTo(b.name);
+		});
 		foreach (Element item in list)
 		{
 			FilterSideScreenRow row = Util.KInstantiateUI(elementEntryPrefab, elementEntryContainer, false).GetComponent<FilterSideScreenRow>();
@@ -94,9 +104,16 @@ public class FilterSideScreen : SideScreenContent
 				{
 					bool flag = item.Key == element;
 					item.Value.SetSelected(flag);
-					if (flag && element.id != SimHashes.Void && element.id != SimHashes.Vacuum)
+					if (flag)
 					{
-						currentSelectionLabel.text = string.Format(loc_string, element.name);
+						if (element.id != SimHashes.Void && element.id != SimHashes.Vacuum)
+						{
+							currentSelectionLabel.text = string.Format(loc_string, element.name);
+						}
+						else
+						{
+							currentSelectionLabel.text = UI.UISIDESCREENS.FILTERSIDESCREEN.NO_SELECTION;
+						}
 					}
 				}
 			}

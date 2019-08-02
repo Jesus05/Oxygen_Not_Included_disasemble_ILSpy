@@ -144,11 +144,11 @@ public class FaceGraph : KMonoBehaviour
 		}
 		if (anim == null)
 		{
-			DebugUtil.Assert(false, "Could not find shape for expression: " + HashCache.Get().Get(hashedString), string.Empty, string.Empty);
+			DebugUtil.Assert(false, "Could not find shape for expression: " + HashCache.Get().Get(hashedString));
 		}
 		if (!flag2)
 		{
-			DebugUtil.Assert(false, "Could not find shape element for shape:" + HashCache.Get().Get(variation_symbol.hash), string.Empty, string.Empty);
+			DebugUtil.Assert(false, "Could not find shape element for shape:" + HashCache.Get().Get(variation_symbol.hash));
 		}
 		KAnim.Build.Symbol symbol = KAnimBatchManager.Instance().GetBatchGroupData(controller.batchGroupID).GetSymbol(symbol_name_in_shape_file);
 		KBatchGroupData batchGroupData2 = KAnimBatchManager.Instance().GetBatchGroupData(variation_symbol.build.batchTag);

@@ -14,7 +14,15 @@ public class Ownable : Assignable, ISaveLoadable, IEffectDescriptor
 	{
 		if (new_assignee != assignee)
 		{
-			if (base.slot != null && (new_assignee is MinionIdentity || new_assignee is StoredMinionIdentity))
+			if (base.slot != null && new_assignee is MinionIdentity)
+			{
+				new_assignee = (new_assignee as MinionIdentity).assignableProxy.Get();
+			}
+			if (base.slot != null && new_assignee is StoredMinionIdentity)
+			{
+				new_assignee = (new_assignee as StoredMinionIdentity).assignableProxy.Get();
+			}
+			if (new_assignee is MinionAssignablesProxy)
 			{
 				Ownables soleOwner = new_assignee.GetSoleOwner();
 				Ownables component = soleOwner.GetComponent<Ownables>();
@@ -38,6 +46,26 @@ public class Ownable : Assignable, ISaveLoadable, IEffectDescriptor
 		UpdateTint();
 		UpdateStatusString();
 		base.OnAssign += OnNewAssignment;
+		if (assignee == null)
+		{
+			MinionStorage component = GetComponent<MinionStorage>();
+			if ((bool)component)
+			{
+				List<MinionStorage.Info> storedMinionInfo = component.GetStoredMinionInfo();
+				if (storedMinionInfo.Count > 0)
+				{
+					MinionStorage.Info info = storedMinionInfo[0];
+					Ref<KPrefabID> serializedMinion = info.serializedMinion;
+					if (serializedMinion != null && serializedMinion.GetId() != -1)
+					{
+						KPrefabID kPrefabID = serializedMinion.Get();
+						StoredMinionIdentity component2 = kPrefabID.GetComponent<StoredMinionIdentity>();
+						component2.ValidateProxy();
+						Assign(component2);
+					}
+				}
+			}
+		}
 	}
 
 	private void OnNewAssignment(IAssignableIdentity assignables)

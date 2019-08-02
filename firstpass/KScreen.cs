@@ -32,6 +32,8 @@ public class KScreen : KMonoBehaviour, IInputHandler, IPointerEnterHandler, IPoi
 
 	private bool hasFocus;
 
+	public string handlerName => base.gameObject.name;
+
 	public KInputHandler inputHandler
 	{
 		get;
@@ -109,7 +111,7 @@ public class KScreen : KMonoBehaviour, IInputHandler, IPointerEnterHandler, IPoi
 		}
 		if (ConsumeMouseScroll && !activateOnSpawn)
 		{
-			Debug.LogWarning("ConsumeMouseScroll is true on" + base.gameObject.name + " , but activateOnSpawn is disabled. Mouse scrolling might not work properly on this screen.", null);
+			Debug.LogWarning("ConsumeMouseScroll is true on" + base.gameObject.name + " , but activateOnSpawn is disabled. Mouse scrolling might not work properly on this screen.");
 		}
 	}
 
@@ -186,7 +188,7 @@ public class KScreen : KMonoBehaviour, IInputHandler, IPointerEnterHandler, IPoi
 	{
 		if ((Object)_rectTransform == (Object)null)
 		{
-			Debug.LogWarning("Hey you are calling this function too early!", null);
+			Debug.LogWarning("Hey you are calling this function too early!");
 			return Vector3.zero;
 		}
 		Camera main = Camera.main;

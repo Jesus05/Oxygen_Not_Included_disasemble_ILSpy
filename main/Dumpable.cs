@@ -1,6 +1,7 @@
 using KSerialization;
 using STRINGS;
 using System;
+using UnityEngine;
 
 public class Dumpable : Workable
 {
@@ -26,7 +27,7 @@ public class Dumpable : Workable
 		base.OnSpawn();
 		if (isMarkedForDumping)
 		{
-			chore = new WorkChore<Dumpable>(Db.Get().ChoreTypes.EmptyStorage, this, null, null, true, null, null, null, true, null, false, true, null, false, true, true, PriorityScreen.PriorityClass.basic, 0, false);
+			chore = new WorkChore<Dumpable>(Db.Get().ChoreTypes.EmptyStorage, this, null, true, null, null, null, true, null, false, true, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, false, true);
 		}
 		SetWorkTime(0.1f);
 	}
@@ -47,7 +48,7 @@ public class Dumpable : Workable
 		else
 		{
 			isMarkedForDumping = true;
-			chore = new WorkChore<Dumpable>(Db.Get().ChoreTypes.EmptyStorage, this, null, null, true, null, null, null, true, null, false, true, null, false, true, true, PriorityScreen.PriorityClass.basic, 0, false);
+			chore = new WorkChore<Dumpable>(Db.Get().ChoreTypes.EmptyStorage, this, null, true, null, null, null, true, null, false, true, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, false, true);
 		}
 	}
 
@@ -64,6 +65,16 @@ public class Dumpable : Workable
 		if (component.Mass > 0f)
 		{
 			SimMessages.AddRemoveSubstance(Grid.PosToCell(this), component.ElementID, CellEventLogger.Instance.Dumpable, component.Mass, component.Temperature, component.DiseaseIdx, component.DiseaseCount, true, -1);
+		}
+		Util.KDestroyGameObject(base.gameObject);
+	}
+
+	public void Dump(Vector3 pos)
+	{
+		PrimaryElement component = GetComponent<PrimaryElement>();
+		if (component.Mass > 0f)
+		{
+			SimMessages.AddRemoveSubstance(Grid.PosToCell(pos), component.ElementID, CellEventLogger.Instance.Dumpable, component.Mass, component.Temperature, component.DiseaseIdx, component.DiseaseCount, true, -1);
 		}
 		Util.KDestroyGameObject(base.gameObject);
 	}

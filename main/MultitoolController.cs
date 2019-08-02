@@ -133,7 +133,7 @@ public class MultitoolController : GameStateMachine<MultitoolController, Multito
 
 	private static readonly string[][][] ANIM_BASE = new string[5][][]
 	{
-		new string[3][]
+		new string[4][]
 		{
 			new string[3]
 			{
@@ -152,9 +152,15 @@ public class MultitoolController : GameStateMachine<MultitoolController, Multito
 				"pole_{verb}_dn_pre",
 				"pole_{verb}_dn_loop",
 				"pole_{verb}_dn_pst"
+			},
+			new string[3]
+			{
+				"jetpack_{verb}_dn_pre",
+				"jetpack_{verb}_dn_loop",
+				"jetpack_{verb}_dn_pst"
 			}
 		},
-		new string[3][]
+		new string[4][]
 		{
 			new string[3]
 			{
@@ -173,9 +179,15 @@ public class MultitoolController : GameStateMachine<MultitoolController, Multito
 				"pole_{verb}_diag_dn_pre",
 				"pole_{verb}_loop_diag_dn",
 				"pole_{verb}_diag_dn_pst"
+			},
+			new string[3]
+			{
+				"jetpack_{verb}_diag_dn_pre",
+				"jetpack_{verb}_diag_dn_loop",
+				"jetpack_{verb}_diag_dn_pst"
 			}
 		},
-		new string[3][]
+		new string[4][]
 		{
 			new string[3]
 			{
@@ -194,9 +206,15 @@ public class MultitoolController : GameStateMachine<MultitoolController, Multito
 				"pole_{verb}_pre",
 				"pole_{verb}_loop",
 				"pole_{verb}_pst"
+			},
+			new string[3]
+			{
+				"jetpack_{verb}_fwd_pre",
+				"jetpack_{verb}_fwd_loop",
+				"jetpack_{verb}_fwd_pst"
 			}
 		},
-		new string[3][]
+		new string[4][]
 		{
 			new string[3]
 			{
@@ -215,9 +233,15 @@ public class MultitoolController : GameStateMachine<MultitoolController, Multito
 				"pole_{verb}_diag_up_pre",
 				"pole_{verb}_loop_diag_up",
 				"pole_{verb}_diag_up_pst"
+			},
+			new string[3]
+			{
+				"jetpack_{verb}_diag_up_pre",
+				"jetpack_{verb}_diag_up_loop",
+				"jetpack_{verb}_diag_up_pst"
 			}
 		},
-		new string[3][]
+		new string[4][]
 		{
 			new string[3]
 			{
@@ -236,6 +260,12 @@ public class MultitoolController : GameStateMachine<MultitoolController, Multito
 				"pole_{verb}_up_pre",
 				"pole_{verb}_up_loop",
 				"pole_{verb}_up_pst"
+			},
+			new string[3]
+			{
+				"jetpack_{verb}_up_pre",
+				"jetpack_{verb}_up_loop",
+				"jetpack_{verb}_up_pst"
 			}
 		}
 	};
@@ -271,6 +301,7 @@ public class MultitoolController : GameStateMachine<MultitoolController, Multito
 
 	public static string[] GetAnimationStrings(Workable workable, Worker worker, string toolString = "dig")
 	{
+		Debug.Assert(toolString != "build");
 		if (!TOOL_ANIM_SETS.TryGetValue(toolString, out string[][][] value))
 		{
 			value = new string[ANIM_BASE.Length][][];
@@ -299,14 +330,18 @@ public class MultitoolController : GameStateMachine<MultitoolController, Multito
 		int num3 = value.Length;
 		int val = (int)(num2 * (float)num3);
 		val = Math.Min(val, num3 - 1);
+		NavType currentNavType = worker.GetComponent<Navigator>().CurrentNavType;
 		int num4 = 0;
-		switch (worker.GetComponent<Navigator>().CurrentNavType)
+		switch (currentNavType)
 		{
 		case NavType.Ladder:
 			num4 = 1;
 			break;
 		case NavType.Pole:
 			num4 = 2;
+			break;
+		case NavType.Hover:
+			num4 = 3;
 			break;
 		}
 		return value[val][num4];

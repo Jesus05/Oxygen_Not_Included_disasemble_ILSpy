@@ -24,6 +24,7 @@ public class ElementSplitterComponents : KGameObjectComponentManager<ElementSpli
 		};
 		Pickupable pickupable2 = component;
 		pickupable2.CanAbsorb = (Func<Pickupable, bool>)Delegate.Combine(pickupable2.CanAbsorb, func2);
+		component.absorbable = true;
 		data.onTakeCB = func;
 		data.canAbsorbCB = func2;
 		SetData(handle, data);
@@ -67,7 +68,7 @@ public class ElementSplitterComponents : KGameObjectComponentManager<ElementSpli
 		Pickupable pickupable = component;
 		Storage storage = component.storage;
 		PrimaryElement component2 = component.GetComponent<PrimaryElement>();
-		pickupable = component2.Element.substance.SpawnResource(component.transform.GetPosition(), amount, component2.Temperature, byte.MaxValue, 0, true, false).GetComponent<Pickupable>();
+		pickupable = component2.Element.substance.SpawnResource(component.transform.GetPosition(), amount, component2.Temperature, byte.MaxValue, 0, true, false, false).GetComponent<Pickupable>();
 		component.TotalAmount -= amount;
 		pickupable.Trigger(1335436905, component);
 		CopyRenderSettings(component.GetComponent<KBatchedAnimController>(), pickupable.GetComponent<KBatchedAnimController>());

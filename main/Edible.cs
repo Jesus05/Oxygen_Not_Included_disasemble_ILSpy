@@ -3,7 +3,7 @@ using STRINGS;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Edible : Workable, IGameObjectEffectDescriptor, IHasSortOrder
+public class Edible : Workable, IGameObjectEffectDescriptor
 {
 	public class EdibleStartWorkInfo : Worker.StartWorkInfo
 	{
@@ -24,7 +24,7 @@ public class Edible : Workable, IGameObjectEffectDescriptor, IHasSortOrder
 
 	private EdiblesManager.FoodInfo foodInfo;
 
-	private float consumptionStartTime = float.NaN;
+	private float consumptionTime = float.NaN;
 
 	public float unitsConsumed = float.NaN;
 
@@ -49,9 +49,25 @@ public class Edible : Workable, IGameObjectEffectDescriptor, IHasSortOrder
 		"working_loop"
 	};
 
+	private static readonly HashedString[] saltWorkAnims = new HashedString[2]
+	{
+		"salt_pre",
+		"salt_loop"
+	};
+
+	private static readonly HashedString[] saltHatWorkAnims = new HashedString[2]
+	{
+		"salt_hat_pre",
+		"salt_hat_loop"
+	};
+
 	private static readonly HashedString normalWorkPstAnim = "working_pst";
 
 	private static readonly HashedString hatWorkPstAnim = "hat_pst";
+
+	private static readonly HashedString saltWorkPstAnim = "salt_pst";
+
+	private static readonly HashedString saltHatWorkPstAnim = "salt_hat_pst";
 
 	private static Dictionary<int, string> qualityEffects = new Dictionary<int, string>
 	{
@@ -122,14 +138,15 @@ public class Edible : Workable, IGameObjectEffectDescriptor, IHasSortOrder
 		}
 	}
 
-	public int sortOrder
+	public bool isBeingConsumed
 	{
 		get;
-		set;
+		private set;
 	}
 
 	private Edible()
 	{
+		SetReportType(ReportManager.ReportType.PersonalTime);
 		showProgressBar = false;
 		SetOffsetTable(OffsetGroups.InvertedStandardTable);
 		shouldTransferDiseaseWithWorker = false;
@@ -142,11 +159,11 @@ public class Edible : Workable, IGameObjectEffectDescriptor, IHasSortOrder
 		{
 			if (FoodID == null)
 			{
-				Output.LogError("No food FoodID");
+				Debug.LogError("No food FoodID");
 			}
 			foodInfo = Game.Instance.ediblesManager.GetFoodInfo(FoodID);
 		}
-		GetComponent<KPrefabID>().AddTag(GameTags.Edible);
+		GetComponent<KPrefabID>().AddTag(GameTags.Edible, false);
 		Subscribe(748399584, OnCraftDelegate);
 		Subscribe(1272413801, OnCraftDelegate);
 		workerStatusItem = Db.Get().DuplicantStatusItems.Eating;
@@ -162,12 +179,24 @@ public class Edible : Workable, IGameObjectEffectDescriptor, IHasSortOrder
 
 	public override HashedString[] GetWorkAnims(Worker worker)
 	{
+		bool flag = worker.GetSMI<EatChore.StatesInstance>()?.UseSalt() ?? false;
 		MinionResume component = worker.GetComponent<MinionResume>();
-		if ((Object)component != (Object)null && component.CurrentRole != "NoRole")
+		if ((Object)component != (Object)null && component.CurrentHat != null)
 		{
-			return hatWorkAnims;
+			return (!flag) ? hatWorkAnims : saltHatWorkAnims;
 		}
-		return normalWorkAnims;
+		return (!flag) ? normalWorkAnims : saltWorkAnims;
+	}
+
+	public override HashedString GetWorkPstAnim(Worker worker, bool successfully_completed)
+	{
+		bool flag = worker.GetSMI<EatChore.StatesInstance>()?.UseSalt() ?? false;
+		MinionResume component = worker.GetComponent<MinionResume>();
+		if ((Object)component != (Object)null && component.CurrentHat != null)
+		{
+			return (!flag) ? hatWorkPstAnim : saltHatWorkPstAnim;
+		}
+		return (!flag) ? normalWorkPstAnim : saltWorkPstAnim;
 	}
 
 	private void OnCraft(object data)
@@ -194,12 +223,14 @@ public class Edible : Workable, IGameObjectEffectDescriptor, IHasSortOrder
 		SetWorkTime(GetFeedingTime(worker));
 		worker.GetAttributes().Add(caloriesModifier);
 		KPrefabID component = worker.GetComponent<KPrefabID>();
-		component.AddTag(GameTags.AlwaysConverse);
+		component.AddTag(GameTags.AlwaysConverse, false);
 		StartConsuming();
 	}
 
-	public override void AwardExperience(float work_dt, MinionResume resume)
+	protected override bool OnWorkTick(Worker worker, float dt)
 	{
+		consumptionTime += dt;
+		return false;
 	}
 
 	protected override void OnStopWork(Worker worker)
@@ -212,15 +243,19 @@ public class Edible : Workable, IGameObjectEffectDescriptor, IHasSortOrder
 
 	private void StartConsuming()
 	{
-		consumptionStartTime = Time.time;
+		DebugUtil.DevAssert(!isBeingConsumed, "Can't StartConsuming()...we've already started");
+		isBeingConsumed = true;
+		consumptionTime = 0f;
 		base.worker.Trigger(1406130139, this);
 	}
 
 	private void StopConsuming(Worker worker)
 	{
-		if (float.IsNaN(consumptionStartTime))
+		DebugUtil.DevAssert(isBeingConsumed, "StopConsuming() called without StartConsuming()");
+		isBeingConsumed = false;
+		if (float.IsNaN(consumptionTime))
 		{
-			KCrashReporter.Assert(false, "How did stop consuming get called twice?");
+			DebugUtil.DevAssert(false, "consumptionTime NaN in StopConsuming()");
 		}
 		else
 		{
@@ -232,9 +267,8 @@ public class Edible : Workable, IGameObjectEffectDescriptor, IHasSortOrder
 					"react"
 				}, null);
 			}
-			float num = Time.time - consumptionStartTime;
-			float num2 = Mathf.Clamp01(num / GetFeedingTime(worker));
-			unitsConsumed = Units * num2;
+			float num = Mathf.Clamp01(consumptionTime / GetFeedingTime(worker));
+			unitsConsumed = Units * num;
 			if (float.IsNaN(unitsConsumed))
 			{
 				KCrashReporter.Assert(false, "Why is unitsConsumed NaN?");
@@ -252,7 +286,7 @@ public class Edible : Workable, IGameObjectEffectDescriptor, IHasSortOrder
 			Trigger(-10536414, worker.gameObject);
 			unitsConsumed = float.NaN;
 			caloriesConsumed = float.NaN;
-			consumptionStartTime = float.NaN;
+			consumptionTime = float.NaN;
 			if (Units <= 0f)
 			{
 				base.gameObject.DeleteObject();
@@ -291,7 +325,7 @@ public class Edible : Workable, IGameObjectEffectDescriptor, IHasSortOrder
 	public override List<Descriptor> GetDescriptors(GameObject go)
 	{
 		List<Descriptor> list = new List<Descriptor>();
-		list.Add(new Descriptor(string.Format(UI.GAMEOBJECTEFFECTS.CALORIES, GameUtil.GetFormattedCalories(foodInfo.CaloriesPerUnit, GameUtil.TimeSlice.None, true)), string.Format(UI.GAMEOBJECTEFFECTS.TOOLTIPS.CALORIES, GameUtil.GetFormattedCalories(foodInfo.CaloriesPerUnit, GameUtil.TimeSlice.None, true)), Descriptor.DescriptorType.Effect, false));
+		list.Add(new Descriptor(string.Format(UI.GAMEOBJECTEFFECTS.CALORIES, GameUtil.GetFormattedCalories(foodInfo.CaloriesPerUnit, GameUtil.TimeSlice.None, true)), string.Format(UI.GAMEOBJECTEFFECTS.TOOLTIPS.CALORIES, GameUtil.GetFormattedCalories(foodInfo.CaloriesPerUnit, GameUtil.TimeSlice.None, true)), Descriptor.DescriptorType.Information, false));
 		list.Add(new Descriptor(string.Format(UI.GAMEOBJECTEFFECTS.FOOD_QUALITY, GameUtil.GetFormattedFoodQuality(foodInfo.Quality)), string.Format(UI.GAMEOBJECTEFFECTS.TOOLTIPS.FOOD_QUALITY, GameUtil.GetFormattedFoodQuality(foodInfo.Quality)), Descriptor.DescriptorType.Effect, false));
 		foreach (string effect in foodInfo.Effects)
 		{

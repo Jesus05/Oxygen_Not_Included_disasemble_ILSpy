@@ -1,3 +1,4 @@
+using Klei.AI;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using TUNING;
@@ -18,9 +19,14 @@ public static class BasePuftConfig
 		EntityTemplates.ExtendEntityToBasicCreature(gameObject, FactionManager.FactionID.Prey, traitId, "FlyerNavGrid1x1", NavType.Hover, 32, 2f, "Meat", 1, true, true, 302f, 318f, 243.15f, 343.15f);
 		if (!string.IsNullOrEmpty(symbol_override_prefix))
 		{
-			gameObject.AddOrGet<SymbolOverrideController>().ApplySymbolOverridesByPrefix(Assets.GetAnim(anim_file), symbol_override_prefix, 0);
+			gameObject.AddOrGet<SymbolOverrideController>().ApplySymbolOverridesByAffix(Assets.GetAnim(anim_file), symbol_override_prefix, null, 0);
 		}
-		gameObject.GetComponent<KPrefabID>().AddTag(GameTags.Creatures.Flyer);
+		KPrefabID component = gameObject.GetComponent<KPrefabID>();
+		component.AddTag(GameTags.Creatures.Flyer, false);
+		component.prefabInitFn += delegate(GameObject inst)
+		{
+			inst.GetAttributes().Add(Db.Get().Attributes.MaxUnderwaterTravelCost);
+		};
 		gameObject.AddOrGet<LoopingSounds>();
 		LureableMonitor.Def def = gameObject.AddOrGetDef<LureableMonitor.Def>();
 		def.lures = new Tag[1]
@@ -35,7 +41,7 @@ public static class BasePuftConfig
 		SoundEventVolumeCache.instance.AddVolume("puft_kanim", "Puft_air_inflated", NOISE_POLLUTION.CREATURES.TIER5);
 		SoundEventVolumeCache.instance.AddVolume("puft_kanim", "Puft_voice_die", NOISE_POLLUTION.CREATURES.TIER5);
 		SoundEventVolumeCache.instance.AddVolume("puft_kanim", "Puft_voice_hurt", NOISE_POLLUTION.CREATURES.TIER5);
-		EntityTemplates.CreateAndRegisterBaggedCreature(gameObject, true, false);
+		EntityTemplates.CreateAndRegisterBaggedCreature(gameObject, true, false, false);
 		string inhaleSound = "Puft_air_intake";
 		if (is_baby)
 		{
@@ -46,7 +52,7 @@ public static class BasePuftConfig
 			.Add(new BaggedStates.Def(), true)
 			.Add(new StunnedStates.Def(), true)
 			.Add(new DebugGoToStates.Def(), true)
-			.Add(new SubmergedStates.Def(), true)
+			.Add(new DrowningStates.Def(), true)
 			.PushInterruptGroup()
 			.Add(new CreatureSleepStates.Def(), true)
 			.Add(new FixedCaptureStates.Def(), true)
@@ -72,11 +78,16 @@ public static class BasePuftConfig
 	{
 		HashSet<Tag> hashSet = new HashSet<Tag>();
 		hashSet.Add(consumed_tag);
-		Diet.Info[] infos = new Diet.Info[1]
+		Diet.Info[] diet_infos = new Diet.Info[1]
 		{
-			new Diet.Info(hashSet, producedTag, caloriesPerKg, producedConversionRate, diseaseId, diseasePerKgProduced, false)
+			new Diet.Info(hashSet, producedTag, caloriesPerKg, producedConversionRate, diseaseId, diseasePerKgProduced, false, false)
 		};
-		Diet diet = new Diet(infos);
+		return SetupDiet(prefab, diet_infos, caloriesPerKg, minPoopSizeInKg);
+	}
+
+	public static GameObject SetupDiet(GameObject prefab, Diet.Info[] diet_infos, float caloriesPerKg, float minPoopSizeInKg)
+	{
+		Diet diet = new Diet(diet_infos);
 		CreatureCalorieMonitor.Def def = prefab.AddOrGetDef<CreatureCalorieMonitor.Def>();
 		def.diet = diet;
 		def.minPoopSizeInCalories = minPoopSizeInKg * caloriesPerKg;

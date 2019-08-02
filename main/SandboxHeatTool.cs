@@ -20,7 +20,7 @@ public class SandboxHeatTool : BrushTool
 	{
 		base.OnPrefabInit();
 		instance = this;
-		viewMode = SimViewMode.TemperatureMap;
+		viewMode = OverlayModes.Temperature.ID;
 	}
 
 	public void Activate()

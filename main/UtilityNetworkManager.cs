@@ -153,10 +153,18 @@ public class UtilityNetworkManager<NetworkType, ItemType> : IUtilityNetworkMgr w
 		{
 			if (is_endpoint)
 			{
+				if (endpoints.ContainsKey(cell))
+				{
+					DebugUtil.LogWarningArgs("Cell", cell, "already has a utility network endpoint assigned. Adding", item.ToString(), "will stomp previous endpoint");
+				}
 				endpoints[cell] = item;
 			}
 			else
 			{
+				if (items.ContainsKey(cell))
+				{
+					DebugUtil.LogWarningArgs("Cell", cell, "already has a utility network connector assigned. Adding", item.ToString(), "will stomp previous item");
+				}
 				items[cell] = item;
 			}
 		}
@@ -346,25 +354,25 @@ public class UtilityNetworkManager<NetworkType, ItemType> : IUtilityNetworkMgr w
 					}
 					Vector2I vector2I = Grid.CellToXY(num);
 					int num2 = 0;
-					if (vector2I.x > 0)
+					if (vector2I.x >= 0)
 					{
 						ptr[num2] = Grid.CellLeft(num);
 						ptr2[num2] = 1;
 						num2++;
 					}
-					if (vector2I.x < Grid.WidthInCells - 1)
+					if (vector2I.x < Grid.WidthInCells)
 					{
 						ptr[num2] = Grid.CellRight(num);
 						ptr2[num2] = 2;
 						num2++;
 					}
-					if (vector2I.y > 0)
+					if (vector2I.y >= 0)
 					{
 						ptr[num2] = Grid.CellBelow(num);
 						ptr2[num2] = 8;
 						num2++;
 					}
-					if (vector2I.y < Grid.HeightInCells - 1)
+					if (vector2I.y < Grid.HeightInCells)
 					{
 						ptr[num2] = Grid.CellAbove(num);
 						ptr2[num2] = 4;

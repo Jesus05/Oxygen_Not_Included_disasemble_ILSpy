@@ -2,6 +2,7 @@ using KSerialization;
 using STRINGS;
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 public class CreatureDeliveryPoint : StateMachineComponent<CreatureDeliveryPoint.SMInstance>, IUserControlledCapacity
@@ -18,7 +19,12 @@ public class CreatureDeliveryPoint : StateMachineComponent<CreatureDeliveryPoint
 	{
 		public State waiting;
 
-		public State creatureDelivered;
+		public State interact_waiting;
+
+		public State interact_delivery;
+
+		[CompilerGenerated]
+		private static StateMachine<States, SMInstance, CreatureDeliveryPoint, object>.State.Callback _003C_003Ef__mg_0024cache0;
 
 		public override void InitializeStates(out BaseState default_state)
 		{
@@ -26,11 +32,17 @@ public class CreatureDeliveryPoint : StateMachineComponent<CreatureDeliveryPoint
 			root.Update("RefreshCreatureCount", delegate(SMInstance smi, float dt)
 			{
 				smi.master.RefreshCreatureCount(null);
-			}, UpdateRate.SIM_1000ms, false);
-			waiting.EventTransition(GameHashes.OnStorageChange, creatureDelivered, (SMInstance smi) => !smi.GetComponent<Storage>().IsEmpty());
-			creatureDelivered.Enter(delegate(SMInstance smi)
+			}, UpdateRate.SIM_1000ms, false).EventHandler(GameHashes.OnStorageChange, DropAllCreatures);
+			waiting.EnterTransition(interact_waiting, (SMInstance smi) => smi.master.playAnimsOnFetch);
+			interact_waiting.WorkableStartTransition((SMInstance smi) => smi.master.GetComponent<Storage>(), interact_delivery);
+			interact_delivery.PlayAnim("working_pre").QueueAnim("working_pst", false, null).OnAnimQueueComplete(interact_waiting);
+		}
+
+		public static void DropAllCreatures(SMInstance smi)
+		{
+			Storage component = smi.master.GetComponent<Storage>();
+			if (!component.IsEmpty())
 			{
-				Storage component = smi.master.GetComponent<Storage>();
 				List<GameObject> items = component.items;
 				int count = items.Count;
 				int cell = Grid.OffsetCell(Grid.PosToCell(smi.transform.GetPosition()), smi.master.spawnOffset);
@@ -38,11 +50,13 @@ public class CreatureDeliveryPoint : StateMachineComponent<CreatureDeliveryPoint
 				for (int num = count - 1; num >= 0; num--)
 				{
 					GameObject gameObject = items[num];
-					component.Drop(gameObject);
+					component.Drop(gameObject, true);
 					gameObject.transform.SetPosition(position);
+					KBatchedAnimController component2 = gameObject.GetComponent<KBatchedAnimController>();
+					component2.SetSceneLayer(Grid.SceneLayer.Creatures);
 				}
 				smi.master.RefreshCreatureCount(null);
-			}).GoTo(waiting);
+			}
 		}
 	}
 
@@ -151,7 +165,7 @@ public class CreatureDeliveryPoint : StateMachineComponent<CreatureDeliveryPoint
 		Prioritizable.AddRef(base.gameObject);
 		if (capacityStatusItem == null)
 		{
-			capacityStatusItem = new StatusItem("StorageLocker", "BUILDING", string.Empty, StatusItem.IconType.Info, NotificationType.Neutral, false, SimViewMode.None, true, 63486);
+			capacityStatusItem = new StatusItem("StorageLocker", "BUILDING", string.Empty, StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, true, 129022);
 			capacityStatusItem.resolveStringCallback = delegate(string str, object data)
 			{
 				IUserControlledCapacity userControlledCapacity = (IUserControlledCapacity)data;
@@ -258,7 +272,7 @@ public class CreatureDeliveryPoint : StateMachineComponent<CreatureDeliveryPoint
 		}
 		if (num7 == 0 && fetches.Count < num)
 		{
-			FetchOrder2 fetchOrder = new FetchOrder2(creatureFetch, tags, requiredFetchTags, null, component2, 1f, FetchOrder2.OperationalRequirement.Operational, 0, null);
+			FetchOrder2 fetchOrder = new FetchOrder2(creatureFetch, tags, requiredFetchTags, null, component2, 1f, FetchOrder2.OperationalRequirement.Operational, 0);
 			fetchOrder.Submit(OnFetchComplete, false, OnFetchBegun);
 			fetches.Add(fetchOrder);
 			num3++;
@@ -288,12 +302,6 @@ public class CreatureDeliveryPoint : StateMachineComponent<CreatureDeliveryPoint
 	private void OnFetchComplete(FetchOrder2 fetchOrder, Pickupable fetchedItem)
 	{
 		RebalanceFetches();
-		if (playAnimsOnFetch)
-		{
-			KBatchedAnimController component = GetComponent<KBatchedAnimController>();
-			component.Play("working_pre", KAnim.PlayMode.Once, 1f, 0f);
-			component.Queue("working_pst", KAnim.PlayMode.Once, 1f, 0f);
-		}
 	}
 
 	private void OnFetchBegun(FetchOrder2 fetchOrder, Pickupable fetchedItem)

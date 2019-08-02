@@ -168,7 +168,7 @@ namespace ProcGen
 			{
 				string message = ex.Message;
 				string stackTrace = ex.StackTrace;
-				Debug.Log("Error deserialising " + message + "\n" + stackTrace, null);
+				Debug.Log("Error deserialising " + message + "\n" + stackTrace);
 			}
 		}
 
@@ -248,7 +248,7 @@ namespace ProcGen
 						if (!bounds.Contains(vector))
 						{
 							flag = false;
-							Debug.LogWarning("Re-doing layout - cell was off map", null);
+							Debug.LogWarning("Re-doing layout - cell was off map");
 							break;
 						}
 						node2.SetPosition(vector);
@@ -263,7 +263,7 @@ namespace ProcGen
 			}
 			if (num >= 10)
 			{
-				Debug.LogWarning("Re-ran layout " + num + " times", null);
+				Debug.LogWarning("Re-ran layout " + num + " times");
 			}
 			return flag;
 		}

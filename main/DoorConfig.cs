@@ -6,9 +6,14 @@ public class DoorConfig : IBuildingConfig
 {
 	public const string ID = "Door";
 
-	public static readonly LogicPorts.Port[] INPUT_PORTS = new LogicPorts.Port[1]
+	public static readonly LogicPorts.Port[] INPUT_PORTS_0_0 = new LogicPorts.Port[1]
 	{
-		LogicPorts.Port.InputPort(Door.OPEN_CLOSE_PORT_ID, new CellOffset(0, 0), STRINGS.BUILDINGS.PREFABS.DOOR.LOGIC_PORT_DESC, false)
+		LogicPorts.Port.InputPort(Door.OPEN_CLOSE_PORT_ID, new CellOffset(0, 0), STRINGS.BUILDINGS.PREFABS.DOOR.LOGIC_OPEN, STRINGS.BUILDINGS.PREFABS.DOOR.LOGIC_OPEN_ACTIVE, STRINGS.BUILDINGS.PREFABS.DOOR.LOGIC_OPEN_INACTIVE, false, false)
+	};
+
+	public static readonly LogicPorts.Port[] INPUT_PORTS_N1_0 = new LogicPorts.Port[1]
+	{
+		LogicPorts.Port.InputPort(Door.OPEN_CLOSE_PORT_ID, new CellOffset(-1, 0), STRINGS.BUILDINGS.PREFABS.DOOR.LOGIC_OPEN, STRINGS.BUILDINGS.PREFABS.DOOR.LOGIC_OPEN_ACTIVE, STRINGS.BUILDINGS.PREFABS.DOOR.LOGIC_OPEN_INACTIVE, false, false)
 	};
 
 	public override BuildingDef CreateBuildingDef()
@@ -26,9 +31,11 @@ public class DoorConfig : IBuildingConfig
 		EffectorValues nONE = NOISE_POLLUTION.NONE;
 		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, tIER, aLL_METALS, melting_point, build_location_rule, TUNING.BUILDINGS.DECOR.NONE, nONE, 1f);
 		buildingDef.Entombable = true;
+		buildingDef.Floodable = false;
 		buildingDef.IsFoundation = false;
 		buildingDef.AudioCategory = "Metal";
 		buildingDef.PermittedRotations = PermittedRotations.R90;
+		buildingDef.ForegroundLayer = Grid.SceneLayer.InteriorWall;
 		SoundEventVolumeCache.instance.AddVolume("door_internal_kanim", "Open_DoorInternal", NOISE_POLLUTION.NOISY.TIER2);
 		SoundEventVolumeCache.instance.AddVolume("door_internal_kanim", "Close_DoorInternal", NOISE_POLLUTION.NOISY.TIER2);
 		return buildingDef;
@@ -36,12 +43,12 @@ public class DoorConfig : IBuildingConfig
 
 	public override void DoPostConfigurePreview(BuildingDef def, GameObject go)
 	{
-		GeneratedBuildings.RegisterLogicPorts(go, INPUT_PORTS);
+		GeneratedBuildings.RegisterLogicPorts(go, INPUT_PORTS_0_0);
 	}
 
 	public override void DoPostConfigureUnderConstruction(GameObject go)
 	{
-		GeneratedBuildings.RegisterLogicPorts(go, INPUT_PORTS);
+		GeneratedBuildings.RegisterLogicPorts(go, INPUT_PORTS_0_0);
 	}
 
 	public override void DoPostConfigureComplete(GameObject go)
@@ -53,13 +60,16 @@ public class DoorConfig : IBuildingConfig
 		door.doorClosingSoundEventName = "Close_DoorInternal";
 		AccessControl accessControl = go.AddOrGet<AccessControl>();
 		accessControl.controlEnabled = true;
+		CopyBuildingSettings copyBuildingSettings = go.AddOrGet<CopyBuildingSettings>();
+		copyBuildingSettings.copyGroupTag = GameTags.Door;
 		Workable workable = go.AddOrGet<Workable>();
 		workable.workTime = 3f;
 		KBatchedAnimController component = go.GetComponent<KBatchedAnimController>();
 		component.initialAnim = "closed";
+		go.AddOrGet<ZoneTile>();
 		go.AddOrGet<KBoxCollider2D>();
 		Prioritizable.AddRef(go);
-		GeneratedBuildings.RegisterLogicPorts(go, INPUT_PORTS);
+		GeneratedBuildings.RegisterLogicPorts(go, INPUT_PORTS_0_0);
 		Object.DestroyImmediate(go.GetComponent<BuildingEnabledButton>());
 	}
 }

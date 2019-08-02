@@ -145,9 +145,10 @@ public class KBatchedAnimController : KAnimControllerBase, KAnimConverter.IAnimC
 	{
 		if (!batchGroupID.IsValid || !(batchGroupID != KAnimBatchManager.NO_BATCH))
 		{
-			Debug.LogError(base.name + " batch not ready", null);
+			Debug.LogError(base.name + " batch not ready");
 		}
 		KBatchGroupData batchGroupData = KAnimBatchManager.Instance().GetBatchGroupData(batchGroupID);
+		Debug.Assert(batchGroupData != null);
 		return batchGroupData.GetAnim(index);
 	}
 
@@ -178,14 +179,15 @@ public class KBatchedAnimController : KAnimControllerBase, KAnimConverter.IAnimC
 
 	private void SetBatchGroup(KAnimFileData kafd)
 	{
-		DebugUtil.Assert(!this.batchGroupID.IsValid, "Should only be setting the batch group once.", string.Empty, string.Empty);
-		DebugUtil.Assert(kafd != null, "Null anim data!! For", base.name, string.Empty);
+		DebugUtil.Assert(!this.batchGroupID.IsValid, "Should only be setting the batch group once.");
+		DebugUtil.Assert(kafd != null, "Null anim data!! For", base.name);
 		base.curBuild = kafd.build;
 		DebugUtil.Assert(base.curBuild != null, "Null build for anim!! ", base.name, kafd.name);
 		KAnimGroupFile.Group group = KAnimGroupFile.GetGroup(base.curBuild.batchTag);
 		HashedString batchGroupID = kafd.build.batchTag;
 		if (group.renderType == KAnimBatchGroup.RendererType.DontRender || group.renderType == KAnimBatchGroup.RendererType.AnimOnly)
 		{
+			Debug.Assert(group.swapTarget.IsValid, "Invalid swap target fro group [" + group.id + "]");
 			batchGroupID = group.swapTarget;
 		}
 		this.batchGroupID = batchGroupID;
@@ -193,7 +195,7 @@ public class KBatchedAnimController : KAnimControllerBase, KAnimConverter.IAnimC
 		base.symbolOverrideInfoGpuData = new SymbolOverrideInfoGpuData(KAnimBatchManager.instance.GetBatchGroupData(this.batchGroupID).symbolFrameInstances.Count);
 		if (!this.batchGroupID.IsValid || this.batchGroupID == KAnimBatchManager.NO_BATCH)
 		{
-			Debug.LogError("Batch is not ready: " + base.name, null);
+			Debug.LogError("Batch is not ready: " + base.name);
 		}
 	}
 
@@ -201,15 +203,15 @@ public class KBatchedAnimController : KAnimControllerBase, KAnimConverter.IAnimC
 	{
 		if (!KAnimBatchManager.Instance().isReady)
 		{
-			Debug.LogError("KAnimBatchManager is not ready when loading anim:" + base.name, null);
+			Debug.LogError("KAnimBatchManager is not ready when loading anim:" + base.name);
 		}
 		if (animFiles.Length <= 0)
 		{
-			DebugUtil.Assert(false, "KBatchedAnimController has no anim files:" + base.name, string.Empty, string.Empty);
+			DebugUtil.Assert(false, "KBatchedAnimController has no anim files:" + base.name);
 		}
 		if ((UnityEngine.Object)animFiles[0].buildFile == (UnityEngine.Object)null)
 		{
-			Output.LogErrorWithObj(base.gameObject, $"First anim file needs to be the build file but {animFiles[0].animFile.name} doesn't have an associated build");
+			DebugUtil.LogErrorArgs(base.gameObject, $"First anim file needs to be the build file but {animFiles[0].animFile.name} doesn't have an associated build");
 		}
 		overrideAnims.Clear();
 		anims.Clear();
@@ -225,7 +227,7 @@ public class KBatchedAnimController : KAnimControllerBase, KAnimConverter.IAnimC
 		}
 		if (usingNewSymbolOverrideSystem)
 		{
-			DebugUtil.Assert((UnityEngine.Object)GetComponent<SymbolOverrideController>() != (UnityEngine.Object)null, "Assert!", string.Empty, string.Empty);
+			DebugUtil.Assert((UnityEngine.Object)GetComponent<SymbolOverrideController>() != (UnityEngine.Object)null);
 		}
 	}
 
@@ -257,27 +259,37 @@ public class KBatchedAnimController : KAnimControllerBase, KAnimConverter.IAnimC
 			}
 			SetDirty();
 		}
-		if (!(batchGroupID == KAnimBatchManager.NO_BATCH) && IsActive() && (isVisible || forceRebuild))
+		if (!(batchGroupID == KAnimBatchManager.NO_BATCH) && IsActive())
 		{
 			if (!forceRebuild && (mode == KAnim.PlayMode.Paused || stopped || curAnim == null || (mode == KAnim.PlayMode.Once && curAnim != null && (base.elapsedTime > curAnim.totalTime || curAnim.totalTime <= 0f) && animQueue.Count == 0)))
 			{
 				SuspendUpdates(true);
 			}
-			curAnimFrameIdx = GetFrameIdx(base.elapsedTime, true);
-			if (eventManagerHandle.IsValid() && aem != null)
+			if (!isVisible && !forceRebuild)
 			{
-				float elapsedTime = aem.GetElapsedTime(eventManagerHandle);
-				if ((int)((base.elapsedTime - elapsedTime) * 100f) != 0)
+				if (visibilityType == VisibilityType.OffscreenUpdate && !stopped && mode != KAnim.PlayMode.Paused)
 				{
-					UpdateAnimEventSequenceTime();
+					SetElapsedTime(base.elapsedTime + dt * playSpeed);
 				}
 			}
-			UpdateFrame(base.elapsedTime);
-			if (!stopped && mode != KAnim.PlayMode.Paused)
+			else
 			{
-				SetElapsedTime(base.elapsedTime + dt * playSpeed);
+				curAnimFrameIdx = GetFrameIdx(base.elapsedTime, true);
+				if (eventManagerHandle.IsValid() && aem != null)
+				{
+					float elapsedTime = aem.GetElapsedTime(eventManagerHandle);
+					if ((int)((base.elapsedTime - elapsedTime) * 100f) != 0)
+					{
+						UpdateAnimEventSequenceTime();
+					}
+				}
+				UpdateFrame(base.elapsedTime);
+				if (!stopped && mode != KAnim.PlayMode.Paused)
+				{
+					SetElapsedTime(base.elapsedTime + dt * playSpeed);
+				}
+				forceRebuild = false;
 			}
-			forceRebuild = false;
 		}
 	}
 
@@ -345,6 +357,7 @@ public class KBatchedAnimController : KAnimControllerBase, KAnimConverter.IAnimC
 
 	public HashedString GetBatchGroupID(bool isEditorWindow = false)
 	{
+		Debug.Assert(isEditorWindow || animFiles == null || animFiles.Length == 0 || (batchGroupID.IsValid && batchGroupID != KAnimBatchManager.NO_BATCH));
 		return batchGroupID;
 	}
 
@@ -550,7 +563,7 @@ public class KBatchedAnimController : KAnimControllerBase, KAnimConverter.IAnimC
 		LoadAnims();
 		if (visibilityType == VisibilityType.Default)
 		{
-			visibilityType = ((materialType == KAnimBatchGroup.MaterialType.UI) ? VisibilityType.Always : visibilityType);
+			visibilityType = ((materialType != KAnimBatchGroup.MaterialType.UI) ? visibilityType : VisibilityType.Always);
 		}
 		symbolOverrideController = GetComponent<SymbolOverrideController>();
 		UpdateHidden();
@@ -563,7 +576,7 @@ public class KBatchedAnimController : KAnimControllerBase, KAnimConverter.IAnimC
 		{
 			Initialize();
 		}
-		if (visibilityType == VisibilityType.Always)
+		if (visibilityType == VisibilityType.Always || visibilityType == VisibilityType.OffscreenUpdate)
 		{
 			ConfigureUpdateListener();
 		}
@@ -668,7 +681,7 @@ public class KBatchedAnimController : KAnimControllerBase, KAnimConverter.IAnimC
 
 	public void SetSymbolOverride(int symbol_idx, KAnim.Build.SymbolFrameInstance symbol_frame_instance)
 	{
-		DebugUtil.Assert(usingNewSymbolOverrideSystem, "KBatchedAnimController requires usingNewSymbolOverrideSystem to bet to true to enable symbol overrides.", string.Empty, string.Empty);
+		DebugUtil.Assert(usingNewSymbolOverrideSystem, "KBatchedAnimController requires usingNewSymbolOverrideSystem to bet to true to enable symbol overrides.");
 		base.symbolOverrideInfoGpuData.SetSymbolOverrideInfo(symbol_idx, symbol_frame_instance);
 	}
 
@@ -693,7 +706,7 @@ public class KBatchedAnimController : KAnimControllerBase, KAnimConverter.IAnimC
 
 	private void ConfigureUpdateListener()
 	{
-		if ((IsActive() && !suspendUpdates && isVisible) || moving || visibilityType == VisibilityType.Always)
+		if ((IsActive() && !suspendUpdates && isVisible) || moving || visibilityType == VisibilityType.OffscreenUpdate || visibilityType == VisibilityType.Always)
 		{
 			Singleton<KBatchedAnimUpdater>.Instance.UpdateRegister(this);
 		}
@@ -730,7 +743,7 @@ public class KBatchedAnimController : KAnimControllerBase, KAnimConverter.IAnimC
 
 	private void ConfigureVisibilityListener(bool enabled)
 	{
-		if (visibilityType != VisibilityType.Always)
+		if (visibilityType != VisibilityType.Always && visibilityType != VisibilityType.OffscreenUpdate)
 		{
 			if (enabled)
 			{
@@ -754,14 +767,14 @@ public class KBatchedAnimController : KAnimControllerBase, KAnimConverter.IAnimC
 
 	private void RegisterVisibilityListener()
 	{
-		DebugUtil.Assert(!visibilityListenerRegistered, "Assert!", string.Empty, string.Empty);
+		DebugUtil.Assert(!visibilityListenerRegistered);
 		Singleton<KBatchedAnimUpdater>.Instance.VisibilityRegister(this);
 		visibilityListenerRegistered = true;
 	}
 
 	private void UnregisterVisibilityListener()
 	{
-		DebugUtil.Assert(visibilityListenerRegistered, "Assert!", string.Empty, string.Empty);
+		DebugUtil.Assert(visibilityListenerRegistered);
 		Singleton<KBatchedAnimUpdater>.Instance.VisibilityUnregister(this);
 		visibilityListenerRegistered = false;
 	}

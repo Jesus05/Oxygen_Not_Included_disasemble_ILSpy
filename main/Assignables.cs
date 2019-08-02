@@ -10,19 +10,16 @@ public class Assignables : KMonoBehaviour
 		component.OnDeath(data);
 	});
 
-	public AssignableSlotInstance this[int idx]
+	public List<AssignableSlotInstance> Slots => slots;
+
+	protected IAssignableIdentity GetAssignableIdentity()
 	{
-		get
+		MinionIdentity component = GetComponent<MinionIdentity>();
+		if ((Object)component != (Object)null)
 		{
-			return slots[idx];
+			return component.assignableProxy.Get();
 		}
-	}
-
-	public int Count => slots.Count;
-
-	public IEnumerator<AssignableSlotInstance> GetEnumerator()
-	{
-		return slots.GetEnumerator();
+		return GetComponent<MinionAssignablesProxy>();
 	}
 
 	protected override void OnSpawn()
@@ -51,19 +48,16 @@ public class Assignables : KMonoBehaviour
 
 	public AssignableSlotInstance GetSlot(AssignableSlot slot)
 	{
+		Debug.Assert(slots.Count > 0, "GetSlot called with no slots configured");
 		if (slot == null)
 		{
 			return null;
 		}
-		using (IEnumerator<AssignableSlotInstance> enumerator = GetEnumerator())
+		foreach (AssignableSlotInstance slot2 in slots)
 		{
-			while (enumerator.MoveNext())
+			if (slot2.slot == slot)
 			{
-				AssignableSlotInstance current = enumerator.Current;
-				if (current.slot == slot)
-				{
-					return current;
-				}
+				return slot2;
 			}
 		}
 		return null;
@@ -76,14 +70,21 @@ public class Assignables : KMonoBehaviour
 		{
 			return assignable;
 		}
-		Navigator component = GetComponent<Navigator>();
-		MinionIdentity component2 = GetComponent<MinionIdentity>();
+		MinionAssignablesProxy component = GetComponent<MinionAssignablesProxy>();
+		GameObject targetGameObject = component.GetTargetGameObject();
+		if ((Object)targetGameObject == (Object)null)
+		{
+			Debug.LogWarning("AutoAssignSlot failed, proxy game object was null.");
+			return null;
+		}
+		Navigator component2 = targetGameObject.GetComponent<Navigator>();
+		IAssignableIdentity assignableIdentity = GetAssignableIdentity();
 		int num = 2147483647;
 		foreach (Assignable item in Game.Instance.assignmentManager)
 		{
-			if (!((Object)item == (Object)null) && !item.IsAssigned() && item.slot == slot && item.CanAutoAssignTo(component2))
+			if (!((Object)item == (Object)null) && !item.IsAssigned() && item.slot == slot && item.CanAutoAssignTo(assignableIdentity))
 			{
-				int navigationCost = item.GetNavigationCost(component);
+				int navigationCost = item.GetNavigationCost(component2);
 				if (navigationCost != -1 && navigationCost < num)
 				{
 					num = navigationCost;
@@ -93,7 +94,7 @@ public class Assignables : KMonoBehaviour
 		}
 		if ((Object)assignable != (Object)null)
 		{
-			assignable.Assign(GetComponent<IAssignableIdentity>());
+			assignable.Assign(assignableIdentity);
 		}
 		return assignable;
 	}
@@ -101,13 +102,9 @@ public class Assignables : KMonoBehaviour
 	protected override void OnCleanUp()
 	{
 		base.OnCleanUp();
-		using (IEnumerator<AssignableSlotInstance> enumerator = GetEnumerator())
+		foreach (AssignableSlotInstance slot in slots)
 		{
-			while (enumerator.MoveNext())
-			{
-				AssignableSlotInstance current = enumerator.Current;
-				current.Unassign(true);
-			}
+			slot.Unassign(true);
 		}
 	}
 }

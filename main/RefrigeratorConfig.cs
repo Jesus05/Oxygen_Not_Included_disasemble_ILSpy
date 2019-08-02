@@ -6,7 +6,7 @@ public class RefrigeratorConfig : IBuildingConfig
 {
 	public const string ID = "Refrigerator";
 
-	private static readonly LogicPorts.Port OUTPUT_PORT = LogicPorts.Port.OutputPort(FilteredStorage.FULL_PORT_ID, new CellOffset(0, 1), STRINGS.BUILDINGS.PREFABS.REFRIGERATOR.LOGIC_PORT_DESC, false);
+	private static readonly LogicPorts.Port OUTPUT_PORT = LogicPorts.Port.OutputPort(FilteredStorage.FULL_PORT_ID, new CellOffset(0, 1), STRINGS.BUILDINGS.PREFABS.REFRIGERATOR.LOGIC_PORT, STRINGS.BUILDINGS.PREFABS.REFRIGERATOR.LOGIC_PORT_ACTIVE, STRINGS.BUILDINGS.PREFABS.REFRIGERATOR.LOGIC_PORT_INACTIVE, false, false);
 
 	public override BuildingDef CreateBuildingDef()
 	{
@@ -26,7 +26,7 @@ public class RefrigeratorConfig : IBuildingConfig
 		buildingDef.EnergyConsumptionWhenActive = 120f;
 		buildingDef.ExhaustKilowattsWhenActive = 0.5f;
 		buildingDef.Floodable = false;
-		buildingDef.ViewMode = SimViewMode.PowerMap;
+		buildingDef.ViewMode = OverlayModes.Power.ID;
 		buildingDef.AudioCategory = "Metal";
 		SoundEventVolumeCache.instance.AddVolume("fridge_kanim", "Refrigerator_open", NOISE_POLLUTION.NOISY.TIER1);
 		SoundEventVolumeCache.instance.AddVolume("fridge_kanim", "Refrigerator_close", NOISE_POLLUTION.NOISY.TIER1);
@@ -53,6 +53,7 @@ public class RefrigeratorConfig : IBuildingConfig
 		storage.allowItemRemoval = true;
 		storage.capacityKg = 100f;
 		storage.storageFullMargin = STORAGE.STORAGE_LOCKER_FILLED_MARGIN;
+		storage.fetchCategory = Storage.FetchCategory.GeneralStorage;
 		Prioritizable.AddRef(go);
 		go.AddOrGet<TreeFilterable>();
 		go.AddOrGet<Refrigerator>();

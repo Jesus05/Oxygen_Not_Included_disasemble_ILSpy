@@ -48,20 +48,20 @@ public class OperationalValve : ValveBase
 		{
 			if (averageRate > 0f)
 			{
-				controller.Play("on_flow", KAnim.PlayMode.Loop, 1f, 0f);
+				controller.Queue("on_flow", KAnim.PlayMode.Loop, 1f, 0f);
 			}
 			else
 			{
-				controller.Play("on", KAnim.PlayMode.Once, 1f, 0f);
+				controller.Queue("on", KAnim.PlayMode.Once, 1f, 0f);
 			}
 		}
 		else if (averageRate > 0f)
 		{
-			controller.Play("off_flow", KAnim.PlayMode.Loop, 1f, 0f);
+			controller.Queue("off_flow", KAnim.PlayMode.Loop, 1f, 0f);
 		}
 		else
 		{
-			controller.Play("off", KAnim.PlayMode.Once, 1f, 0f);
+			controller.Queue("off", KAnim.PlayMode.Once, 1f, 0f);
 		}
 	}
 }

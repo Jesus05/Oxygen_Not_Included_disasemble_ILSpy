@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [SerializationConfig(MemberSerialization.OptIn)]
-public class Equippable : Assignable, ISaveLoadable, IGameObjectEffectDescriptor, IQuality, IHasSortOrder
+public class Equippable : Assignable, ISaveLoadable, IGameObjectEffectDescriptor, IQuality
 {
 	private QualityLevel quality;
 
@@ -38,12 +38,6 @@ public class Equippable : Assignable, ISaveLoadable, IGameObjectEffectDescriptor
 		}
 	}
 
-	public int sortOrder
-	{
-		get;
-		set;
-	}
-
 	public QualityLevel GetQuality()
 	{
 		return quality;
@@ -62,7 +56,7 @@ public class Equippable : Assignable, ISaveLoadable, IGameObjectEffectDescriptor
 			Tag[] additionalTags = def.AdditionalTags;
 			foreach (Tag tag in additionalTags)
 			{
-				GetComponent<KPrefabID>().AddTag(tag);
+				GetComponent<KPrefabID>().AddTag(tag, false);
 			}
 		}
 	}
@@ -71,13 +65,22 @@ public class Equippable : Assignable, ISaveLoadable, IGameObjectEffectDescriptor
 	{
 		if (isEquipped)
 		{
+			if (assignee != null && assignee is MinionIdentity)
+			{
+				assignee = (assignee as MinionIdentity).assignableProxy.Get();
+				assignee_identityRef.Set(assignee as KMonoBehaviour);
+			}
+			if (assignee == null && (Object)assignee_identityRef.Get() != (Object)null)
+			{
+				assignee = assignee_identityRef.Get().GetComponent<IAssignableIdentity>();
+			}
 			if (assignee != null)
 			{
 				assignee.GetSoleOwner().GetComponent<Equipment>().Equip(this);
 			}
 			else
 			{
-				Debug.LogWarning("Equippable trying to be equipped to missing prefab", null);
+				Debug.LogWarning("Equippable trying to be equipped to missing prefab");
 				isEquipped = false;
 			}
 		}
@@ -88,13 +91,26 @@ public class Equippable : Assignable, ISaveLoadable, IGameObjectEffectDescriptor
 	{
 		if (new_assignee != assignee)
 		{
-			if (base.slot != null && (new_assignee is MinionIdentity || new_assignee is StoredMinionIdentity))
+			if (base.slot != null && new_assignee is MinionIdentity)
 			{
-				Equipment component = new_assignee.GetSoleOwner().GetComponent<Equipment>();
+				new_assignee = (new_assignee as MinionIdentity).assignableProxy.Get();
+			}
+			if (base.slot != null && new_assignee is StoredMinionIdentity)
+			{
+				new_assignee = (new_assignee as StoredMinionIdentity).assignableProxy.Get();
+			}
+			if (new_assignee is MinionAssignablesProxy)
+			{
+				Ownables soleOwner = new_assignee.GetSoleOwner();
+				Equipment component = soleOwner.GetComponent<Equipment>();
 				AssignableSlotInstance slot = component.GetSlot(base.slot);
-				if ((Object)slot.assignable != (Object)null)
+				if (slot != null)
 				{
-					slot.Unassign(true);
+					Assignable assignable = slot.assignable;
+					if ((Object)assignable != (Object)null)
+					{
+						assignable.Unassign();
+					}
 				}
 			}
 			base.Assign(new_assignee);
@@ -105,7 +121,8 @@ public class Equippable : Assignable, ISaveLoadable, IGameObjectEffectDescriptor
 	{
 		if (isEquipped)
 		{
-			(assignee as KMonoBehaviour).GetComponent<Equipment>().Unequip(this);
+			Equipment equipment = (!(assignee is MinionIdentity)) ? ((KMonoBehaviour)assignee).GetComponent<Equipment>() : ((MinionIdentity)assignee).assignableProxy.Get().GetComponent<Equipment>();
+			equipment.Unequip(this);
 			OnUnequip();
 		}
 		base.Unassign();
@@ -120,21 +137,21 @@ public class Equippable : Assignable, ISaveLoadable, IGameObjectEffectDescriptor
 		}
 		GetComponent<KBatchedAnimController>().enabled = false;
 		GetComponent<KSelectable>().IsSelectable = false;
-		base.transform.parent = slot.gameObject.transform;
-		base.transform.SetLocalPosition(Vector3.zero);
-		Effects component = slot.gameObject.GetComponent<Effects>();
-		if ((Object)component != (Object)null)
+		MinionAssignablesProxy component = slot.gameObject.GetComponent<MinionAssignablesProxy>();
+		GameObject targetGameObject = component.GetTargetGameObject();
+		Effects component2 = targetGameObject.GetComponent<Effects>();
+		if ((Object)component2 != (Object)null)
 		{
 			foreach (Effect effectImmunite in def.EffectImmunites)
 			{
-				component.AddImmunity(effectImmunite);
+				component2.AddImmunity(effectImmunite);
 			}
 		}
 		if (def.OnEquipCallBack != null)
 		{
 			def.OnEquipCallBack(this);
 		}
-		GetComponent<KPrefabID>().AddTag(GameTags.Equipped);
+		GetComponent<KPrefabID>().AddTag(GameTags.Equipped, false);
 	}
 
 	public void OnUnequip()
@@ -147,17 +164,23 @@ public class Equippable : Assignable, ISaveLoadable, IGameObjectEffectDescriptor
 			GetComponent<KSelectable>().IsSelectable = true;
 			if (assignee != null)
 			{
-				Effects component = assignee.GetSoleOwner().GetComponent<Effects>();
-				if ((Object)component != (Object)null)
+				Ownables soleOwner = assignee.GetSoleOwner();
+				if ((bool)soleOwner)
 				{
-					foreach (Effect effectImmunite in def.EffectImmunites)
+					GameObject targetGameObject = soleOwner.GetComponent<MinionAssignablesProxy>().GetTargetGameObject();
+					if ((bool)targetGameObject)
 					{
-						component.RemoveImmunity(effectImmunite);
+						Effects component = targetGameObject.GetComponent<Effects>();
+						if ((Object)component != (Object)null)
+						{
+							foreach (Effect effectImmunite in def.EffectImmunites)
+							{
+								component.RemoveImmunity(effectImmunite);
+							}
+						}
 					}
 				}
-				base.gameObject.transform.SetPosition(assignee.GetSoleOwner().gameObject.transform.GetPosition() + Vector3.up / 2f);
 			}
-			base.transform.parent = null;
 			if (def.OnUnequipCallBack != null)
 			{
 				def.OnUnequipCallBack(this);

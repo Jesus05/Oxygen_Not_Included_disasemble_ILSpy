@@ -19,7 +19,8 @@ public class MetalRefineryConfig : IBuildingConfig
 	{
 		Storage.StoredItemModifier.Hide,
 		Storage.StoredItemModifier.Preserve,
-		Storage.StoredItemModifier.Insulate
+		Storage.StoredItemModifier.Insulate,
+		Storage.StoredItemModifier.Seal
 	};
 
 	public override BuildingDef CreateBuildingDef()
@@ -43,7 +44,7 @@ public class MetalRefineryConfig : IBuildingConfig
 		buildingDef.UtilityInputOffset = new CellOffset(-1, 1);
 		buildingDef.OutputConduitType = ConduitType.Liquid;
 		buildingDef.UtilityOutputOffset = new CellOffset(1, 0);
-		buildingDef.ViewMode = SimViewMode.PowerMap;
+		buildingDef.ViewMode = OverlayModes.Power.ID;
 		buildingDef.AudioCategory = "HollowMetal";
 		buildingDef.AudioSize = "large";
 		return buildingDef;
@@ -55,9 +56,12 @@ public class MetalRefineryConfig : IBuildingConfig
 		go.AddOrGet<BuildingComplete>().isManuallyOperated = true;
 		LiquidCooledRefinery liquidCooledRefinery = go.AddOrGet<LiquidCooledRefinery>();
 		liquidCooledRefinery.duplicantOperated = true;
-		liquidCooledRefinery.sideScreenStyle = RefinerySideScreen.StyleSetting.ListInputOutput;
-		RefineryWorkable refineryWorkable = go.AddOrGet<RefineryWorkable>();
-		BuildingTemplates.CreateRefineryStorage(go, liquidCooledRefinery);
+		liquidCooledRefinery.sideScreenStyle = ComplexFabricatorSideScreen.StyleSetting.ListQueueHybrid;
+		liquidCooledRefinery.keepExcessLiquids = true;
+		go.AddOrGet<FabricatorIngredientStatusManager>();
+		go.AddOrGet<CopyBuildingSettings>();
+		ComplexFabricatorWorkable complexFabricatorWorkable = go.AddOrGet<ComplexFabricatorWorkable>();
+		BuildingTemplates.CreateComplexFabricatorStorage(go, liquidCooledRefinery);
 		liquidCooledRefinery.coolantTag = COOLANT_TAG;
 		liquidCooledRefinery.minCoolantMass = 400f;
 		liquidCooledRefinery.outStorage.capacityKg = 2000f;
@@ -66,10 +70,12 @@ public class MetalRefineryConfig : IBuildingConfig
 		liquidCooledRefinery.buildStorage.SetDefaultStoredItemModifiers(RefineryStoredItemModifiers);
 		liquidCooledRefinery.outStorage.SetDefaultStoredItemModifiers(RefineryStoredItemModifiers);
 		liquidCooledRefinery.outputOffset = new Vector3(1f, 0.5f);
-		refineryWorkable.overrideAnims = new KAnimFile[1]
+		complexFabricatorWorkable.overrideAnims = new KAnimFile[1]
 		{
 			Assets.GetAnim("anim_interacts_metalrefinery_kanim")
 		};
+		RequireOutputs requireOutputs = go.AddOrGet<RequireOutputs>();
+		requireOutputs.ignoreFullPipe = true;
 		ConduitConsumer conduitConsumer = go.AddOrGet<ConduitConsumer>();
 		conduitConsumer.capacityTag = GameTags.Liquid;
 		conduitConsumer.capacityKG = 800f;
@@ -102,7 +108,7 @@ public class MetalRefineryConfig : IBuildingConfig
 				complexRecipe = new ComplexRecipe(text, array, array2);
 				complexRecipe.time = 40f;
 				complexRecipe.description = string.Format(STRINGS.BUILDINGS.PREFABS.METALREFINERY.RECIPE_DESCRIPTION, lowTempTransition.name, item.name);
-				complexRecipe.useResultAsDescription = true;
+				complexRecipe.nameDisplay = ComplexRecipe.RecipeNameDisplay.IngredientToResult;
 				complexRecipe.fabricators = new List<Tag>
 				{
 					TagManager.Create("MetalRefinery")
@@ -125,7 +131,7 @@ public class MetalRefineryConfig : IBuildingConfig
 		string text2 = ComplexRecipeManager.MakeRecipeID("MetalRefinery", array3, array4);
 		complexRecipe = new ComplexRecipe(text2, array3, array4);
 		complexRecipe.time = 40f;
-		complexRecipe.useResultAsDescription = true;
+		complexRecipe.nameDisplay = ComplexRecipe.RecipeNameDisplay.IngredientToResult;
 		complexRecipe.description = string.Format(STRINGS.BUILDINGS.PREFABS.METALREFINERY.RECIPE_DESCRIPTION, ElementLoader.FindElementByHash(SimHashes.Steel).name, ElementLoader.FindElementByHash(SimHashes.Iron).name);
 		complexRecipe.fabricators = new List<Tag>
 		{
@@ -139,5 +145,13 @@ public class MetalRefineryConfig : IBuildingConfig
 	{
 		SymbolOverrideControllerUtil.AddToPrefab(go);
 		go.AddOrGetDef<PoweredActiveStoppableController.Def>();
+		go.GetComponent<KPrefabID>().prefabSpawnFn += delegate(GameObject game_object)
+		{
+			ComplexFabricatorWorkable component = game_object.GetComponent<ComplexFabricatorWorkable>();
+			component.AttributeConverter = Db.Get().AttributeConverters.MachinerySpeed;
+			component.AttributeExperienceMultiplier = DUPLICANTSTATS.ATTRIBUTE_LEVELING.PART_DAY_EXPERIENCE;
+			component.SkillExperienceSkillGroup = Db.Get().SkillGroups.Technicals.Id;
+			component.SkillExperienceMultiplier = SKILLS.PART_DAY_EXPERIENCE;
+		};
 	}
 }

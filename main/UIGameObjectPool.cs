@@ -59,7 +59,7 @@ public class UIGameObjectPool
 			{
 				element.transform.SetParent(disabledElementParent);
 			}
-			Debug.LogError(obj, null);
+			Debug.LogError(obj);
 		}
 		else
 		{

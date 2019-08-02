@@ -32,8 +32,8 @@ public class FrontEndBackground : UIDupeRandomizer
 		for (int i = 0; i < anims.Length; i++)
 		{
 			int minionIndex = i;
-			KBatchedAnimController minon = anims[i].minon;
-			minon.onAnimComplete += delegate(HashedString name)
+			KBatchedAnimController kBatchedAnimController = anims[i].minions[0];
+			kBatchedAnimController.onAnimComplete += delegate(HashedString name)
 			{
 				WaitForABit(minionIndex, name);
 			};

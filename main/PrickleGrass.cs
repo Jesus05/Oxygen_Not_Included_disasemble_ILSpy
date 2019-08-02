@@ -1,6 +1,4 @@
-using Klei.AI;
 using STRINGS;
-using TUNING;
 using UnityEngine;
 
 public class PrickleGrass : StateMachineComponent<PrickleGrass.StatesInstance>
@@ -43,7 +41,7 @@ public class PrickleGrass : StateMachineComponent<PrickleGrass.StatesInstance>
 		{
 			default_state = grow;
 			base.serializable = true;
-			dead.ToggleStatusItem(STRINGS.CREATURES.STATUSITEMS.DEAD.NAME, STRINGS.CREATURES.STATUSITEMS.DEAD.TOOLTIP, category: Db.Get().StatusItemCategories.Main, icon: string.Empty, icon_type: StatusItem.IconType.Info, notification_type: (NotificationType)0, allow_multiples: false, render_overlay: SimViewMode.None, status_overlays: 0, resolve_string_callback: null, resolve_tooltip_callback: null).Enter(delegate(StatesInstance smi)
+			dead.ToggleStatusItem(CREATURES.STATUSITEMS.DEAD.NAME, CREATURES.STATUSITEMS.DEAD.TOOLTIP, category: Db.Get().StatusItemCategories.Main, icon: string.Empty, icon_type: StatusItem.IconType.Info, notification_type: (NotificationType)0, allow_multiples: false, render_overlay: default(HashedString), status_overlays: 0, resolve_string_callback: null, resolve_tooltip_callback: null).ToggleTag(GameTags.PreventEmittingDisease).Enter(delegate(StatesInstance smi)
 			{
 				GameUtil.KInstantiate(Assets.GetPrefab(EffectConfigs.PlantDeathId), smi.master.transform.GetPosition(), Grid.SceneLayer.FXFront, null, 0).SetActive(true);
 				smi.master.Trigger(1623392196, null);
@@ -53,7 +51,7 @@ public class PrickleGrass : StateMachineComponent<PrickleGrass.StatesInstance>
 			});
 			blocked_from_growing.ToggleStatusItem(Db.Get().MiscStatusItems.RegionIsBlocked, (object)null).EventTransition(GameHashes.EntombedChanged, alive, (StatesInstance smi) => alive.ForceUpdateStatus(smi.master.gameObject)).EventTransition(GameHashes.TooColdWarning, alive, (StatesInstance smi) => alive.ForceUpdateStatus(smi.master.gameObject))
 				.EventTransition(GameHashes.TooHotWarning, alive, (StatesInstance smi) => alive.ForceUpdateStatus(smi.master.gameObject))
-				.EventTransition(GameHashes.Uprooted, dead, (StatesInstance smi) => UprootedMonitor.IsObjectUprooted(smi.master.gameObject));
+				.TagTransition(GameTags.Uprooted, dead, false);
 			grow.Enter(delegate(StatesInstance smi)
 			{
 				if (smi.master.replanted && !alive.ForceUpdateStatus(smi.master.gameObject))
@@ -61,22 +59,20 @@ public class PrickleGrass : StateMachineComponent<PrickleGrass.StatesInstance>
 					smi.GoTo(blocked_from_growing);
 				}
 			}).PlayAnim("grow_seed", KAnim.PlayMode.Once).EventTransition(GameHashes.AnimQueueComplete, alive, null);
-			alive.InitializeStates(masterTarget, dead).DefaultState(alive.idle).ToggleStatusItem(STRINGS.CREATURES.STATUSITEMS.IDLE.NAME, STRINGS.CREATURES.STATUSITEMS.IDLE.TOOLTIP, category: Db.Get().StatusItemCategories.Main, icon: string.Empty, icon_type: StatusItem.IconType.Info, notification_type: (NotificationType)0, allow_multiples: false, render_overlay: SimViewMode.None, status_overlays: 0, resolve_string_callback: null, resolve_tooltip_callback: null);
+			alive.InitializeStates(masterTarget, dead).DefaultState(alive.idle).ToggleStatusItem(CREATURES.STATUSITEMS.IDLE.NAME, CREATURES.STATUSITEMS.IDLE.TOOLTIP, category: Db.Get().StatusItemCategories.Main, icon: string.Empty, icon_type: StatusItem.IconType.Info, notification_type: (NotificationType)0, allow_multiples: false, render_overlay: default(HashedString), status_overlays: 0, resolve_string_callback: null, resolve_tooltip_callback: null);
 			alive.idle.EventTransition(GameHashes.Wilt, alive.wilting, (StatesInstance smi) => smi.master.wiltCondition.IsWilting()).PlayAnim("idle", KAnim.PlayMode.Loop).Enter(delegate(StatesInstance smi)
 			{
-				smi.master.growth_bonus.Description = STRINGS.CREATURES.SPECIES.PRICKLEGRASS.GROWTH_BONUS;
-				smi.master.GetAttributes().Get(Db.Get().Attributes.Decor).Remove(smi.master.wilt_penalty);
-				smi.master.GetAttributes().Get(Db.Get().Attributes.Decor).Add(smi.master.growth_bonus);
+				smi.master.GetComponent<DecorProvider>().SetValues(smi.master.positive_decor_effect);
 				smi.master.GetComponent<DecorProvider>().Refresh();
+				smi.master.AddTag(GameTags.Decoration);
 			});
-			alive.wilting.PlayAnim("wilt1", KAnim.PlayMode.Loop).EventTransition(GameHashes.WiltRecover, alive.idle, null).Enter(delegate(StatesInstance smi)
-			{
-				smi.master.growth_bonus.Description = STRINGS.CREATURES.SPECIES.PRICKLEGRASS.WILT_PENALTY;
-				smi.master.GetAttributes().Get(Db.Get().Attributes.Decor).Remove(smi.master.growth_bonus);
-				smi.master.GetAttributes().Get(Db.Get().Attributes.Decor).Add(smi.master.wilt_penalty);
-				smi.master.GetComponent<DecorProvider>().SetValues(DECOR.PENALTY.TIER1);
-				smi.master.GetComponent<DecorProvider>().Refresh();
-			});
+			alive.wilting.PlayAnim("wilt1", KAnim.PlayMode.Loop).EventTransition(GameHashes.WiltRecover, alive.idle, null).ToggleTag(GameTags.PreventEmittingDisease)
+				.Enter(delegate(StatesInstance smi)
+				{
+					smi.master.GetComponent<DecorProvider>().SetValues(smi.master.negative_decor_effect);
+					smi.master.GetComponent<DecorProvider>().Refresh();
+					smi.master.RemoveTag(GameTags.Decoration);
+				});
 		}
 	}
 
@@ -88,30 +84,27 @@ public class PrickleGrass : StateMachineComponent<PrickleGrass.StatesInstance>
 
 	public bool replanted;
 
-	private AttributeModifier growth_bonus;
+	public EffectorValues positive_decor_effect = new EffectorValues
+	{
+		amount = 1,
+		radius = 5
+	};
 
-	private AttributeModifier wilt_penalty;
+	public EffectorValues negative_decor_effect = new EffectorValues
+	{
+		amount = -1,
+		radius = 5
+	};
 
 	private static readonly EventSystem.IntraObjectHandler<PrickleGrass> SetReplantedTrueDelegate = new EventSystem.IntraObjectHandler<PrickleGrass>(delegate(PrickleGrass component, object data)
 	{
 		component.replanted = true;
 	});
 
-	public PrickleGrass()
-	{
-		EffectorValues tIER = DECOR.BONUS.TIER3;
-		growth_bonus = new AttributeModifier("Effect", (float)tIER.amount, null, false, false, true);
-		EffectorValues tIER2 = DECOR.PENALTY.TIER1;
-		wilt_penalty = new AttributeModifier("Effect", (float)tIER2.amount, null, false, false, true);
-		base._002Ector();
-	}
-
 	protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		Subscribe(1309017699, SetReplantedTrueDelegate);
-		growth_bonus.Description = STRINGS.CREATURES.SPECIES.PRICKLEGRASS.GROWTH_BONUS;
-		wilt_penalty.Description = STRINGS.CREATURES.SPECIES.PRICKLEGRASS.WILT_PENALTY;
 	}
 
 	protected override void OnSpawn()

@@ -42,12 +42,12 @@ public class ConduitTemperatureManager
 
 	public HandleVector<int>.Handle Allocate(ConduitType conduit_type, int conduit_idx, HandleVector<int>.Handle conduit_structure_temperature_handle, ref ConduitFlow.ConduitContents contents)
 	{
-		StructureTemperatureData data = GameComps.StructureTemperatures.GetData(conduit_structure_temperature_handle);
-		Element element = data.primaryElement.Element;
-		BuildingDef def = data.building.Def;
+		StructureTemperaturePayload payload = GameComps.StructureTemperatures.GetPayload(conduit_structure_temperature_handle);
+		Element element = payload.primaryElement.Element;
+		BuildingDef def = payload.building.Def;
 		float conduit_heat_capacity = def.MassForTemperatureModification * element.specificHeatCapacity;
 		float conduit_thermal_conductivity = element.thermalConductivity * def.ThermalConductivity;
-		int num = ConduitTemperatureManager_Add(contents.temperature, contents.mass, (int)contents.element, data.simHandle, conduit_heat_capacity, conduit_thermal_conductivity, def.ThermalConductivity < 1f);
+		int num = ConduitTemperatureManager_Add(contents.temperature, contents.mass, (int)contents.element, payload.simHandleCopy, conduit_heat_capacity, conduit_thermal_conductivity, def.ThermalConductivity < 1f);
 		HandleVector<int>.Handle result = default(HandleVector<int>.Handle);
 		result.index = num;
 		int handleIndex = Sim.GetHandleIndex(num);

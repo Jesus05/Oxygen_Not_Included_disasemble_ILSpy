@@ -61,7 +61,7 @@ public class CompostConfig : IBuildingConfig
 		};
 		elementConverter.outputElements = new ElementConverter.OutputElement[1]
 		{
-			new ElementConverter.OutputElement(0.1f, SimHashes.Dirt, 348.15f, true, 0f, 0.5f, false, 1f, byte.MaxValue, 0)
+			new ElementConverter.OutputElement(0.1f, SimHashes.Dirt, 348.15f, false, true, 0f, 0.5f, 1f, byte.MaxValue, 0)
 		};
 		ElementDropper elementDropper = go.AddComponent<ElementDropper>();
 		elementDropper.emitMass = 10f;

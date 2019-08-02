@@ -20,6 +20,7 @@ namespace ProcGenGame
 
 		public Border(TerrainCell a, TerrainCell b, Vector2 e0, Vector2 e1)
 		{
+			Debug.Assert(a != null && b != null, "NULL neighbor for Border");
 			neighbors.n0 = a;
 			neighbors.n1 = b;
 			AddSegment(e0, e1);

@@ -21,7 +21,7 @@ public class ScheduleMinionWidget : KMonoBehaviour
 
 	public void ChangeAssignment(Schedule targetSchedule, Schedulable schedulable)
 	{
-		Output.Log("Assigning", schedulable, "from", ScheduleManager.Instance.GetSchedule(schedulable).name, "to", targetSchedule.name);
+		DebugUtil.LogArgs("Assigning", schedulable, "from", ScheduleManager.Instance.GetSchedule(schedulable).name, "to", targetSchedule.name);
 		ScheduleManager.Instance.GetSchedule(schedulable).Unassign(schedulable);
 		targetSchedule.Assign(schedulable);
 	}

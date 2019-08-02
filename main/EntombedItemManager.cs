@@ -189,7 +189,10 @@ public class EntombedItemManager : KMonoBehaviour, ISim33ms
 		{
 			Item item = GetItem(item2);
 			RemoveItem(item2);
-			SimMessages.AddRemoveSubstance(item.cell, ElementLoader.FindElementByHash((SimHashes)item.elementId).idx, CellEventLogger.Instance.ElementConsumerSimUpdate, item.mass, item.temperature, item.diseaseIdx, item.diseaseCount, true, -1);
+			if (item.mass > 1.401298E-45f)
+			{
+				SimMessages.AddRemoveSubstance(item.cell, ElementLoader.FindElementByHash((SimHashes)item.elementId).idx, CellEventLogger.Instance.ElementConsumerSimUpdate, item.mass, item.temperature, item.diseaseIdx, item.diseaseCount, true, -1);
+			}
 		}
 		pooledList.Recycle();
 	}
@@ -227,7 +230,7 @@ public class EntombedItemManager : KMonoBehaviour, ISim33ms
 			component.RemoveItem(item.cell);
 			RemoveItem(uncovered_item_index);
 			SimHashes elementId = (SimHashes)item.elementId;
-			ElementLoader.FindElementByHash(elementId)?.substance.SpawnResource(Grid.CellToPosCCC(item.cell, Grid.SceneLayer.Ore), item.mass, item.temperature, item.diseaseIdx, item.diseaseCount, false, false);
+			ElementLoader.FindElementByHash(elementId)?.substance.SpawnResource(Grid.CellToPosCCC(item.cell, Grid.SceneLayer.Ore), item.mass, item.temperature, item.diseaseIdx, item.diseaseCount, false, false, false);
 		}
 	}
 

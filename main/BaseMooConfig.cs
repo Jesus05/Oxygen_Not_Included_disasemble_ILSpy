@@ -1,3 +1,4 @@
+using Klei.AI;
 using STRINGS;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
@@ -19,24 +20,29 @@ public static class BaseMooConfig
 		EntityTemplates.ExtendEntityToBasicCreature(gameObject, FactionManager.FactionID.Prey, traitId, "FlyerNavGrid2x2", NavType.Hover, 32, 2f, "Meat", 10, true, true, 123.149994f, 423.15f, 73.1499939f, 473.15f);
 		if (!string.IsNullOrEmpty(symbol_override_prefix))
 		{
-			gameObject.AddOrGet<SymbolOverrideController>().ApplySymbolOverridesByPrefix(Assets.GetAnim(anim_file), symbol_override_prefix, 0);
+			gameObject.AddOrGet<SymbolOverrideController>().ApplySymbolOverridesByAffix(Assets.GetAnim(anim_file), symbol_override_prefix, null, 0);
 		}
-		gameObject.GetComponent<KPrefabID>().AddTag(GameTags.Creatures.Flyer);
+		KPrefabID component = gameObject.GetComponent<KPrefabID>();
+		component.AddTag(GameTags.Creatures.Flyer, false);
+		component.prefabInitFn += delegate(GameObject inst)
+		{
+			inst.GetAttributes().Add(Db.Get().Attributes.MaxUnderwaterTravelCost);
+		};
 		gameObject.AddOrGet<LoopingSounds>();
 		LureableMonitor.Def def = gameObject.AddOrGetDef<LureableMonitor.Def>();
 		def.lures = new Tag[1]
 		{
-			GameTags.SlimeMold
+			SimHashes.BleachStone.CreateTag()
 		};
 		gameObject.AddOrGetDef<ThreatMonitor.Def>();
 		gameObject.AddOrGetDef<SubmergedMonitor.Def>();
-		EntityTemplates.CreateAndRegisterBaggedCreature(gameObject, true, false);
+		EntityTemplates.CreateAndRegisterBaggedCreature(gameObject, true, false, false);
 		gameObject.AddOrGetDef<RanchableMonitor.Def>();
 		gameObject.AddOrGetDef<FixedCapturableMonitor.Def>();
 		ChoreTable.Builder chore_table = new ChoreTable.Builder().Add(new DeathStates.Def(), true).Add(new AnimInterruptStates.Def(), true).Add(new BaggedStates.Def(), true)
 			.Add(new StunnedStates.Def(), true)
 			.Add(new DebugGoToStates.Def(), true)
-			.Add(new SubmergedStates.Def(), true)
+			.Add(new DrowningStates.Def(), true)
 			.PushInterruptGroup()
 			.Add(new CreatureSleepStates.Def(), true)
 			.Add(new FixedCaptureStates.Def(), true)
@@ -59,7 +65,7 @@ public static class BaseMooConfig
 		hashSet.Add(consumed_tag);
 		Diet.Info[] infos = new Diet.Info[1]
 		{
-			new Diet.Info(hashSet, producedTag, caloriesPerKg, producedConversionRate, diseaseId, diseasePerKgProduced, false)
+			new Diet.Info(hashSet, producedTag, caloriesPerKg, producedConversionRate, diseaseId, diseasePerKgProduced, false, false)
 		};
 		Diet diet = new Diet(infos);
 		CreatureCalorieMonitor.Def def = prefab.AddOrGetDef<CreatureCalorieMonitor.Def>();

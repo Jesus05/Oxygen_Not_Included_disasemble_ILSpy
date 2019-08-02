@@ -55,12 +55,6 @@ public class FetchOrder2
 		protected set;
 	}
 
-	public Tag[] ChoreTags
-	{
-		get;
-		protected set;
-	}
-
 	public Storage Destination
 	{
 		get;
@@ -97,11 +91,11 @@ public class FetchOrder2
 		}
 	}
 
-	public FetchOrder2(ChoreType chore_type, Tag[] tags, Tag[] required_tags, Tag[] forbidden_tags, Storage destination, float amount, OperationalRequirement operationalRequirement = OperationalRequirement.None, int priorityMod = 0, Tag[] chore_tags = null)
+	public FetchOrder2(ChoreType chore_type, Tag[] tags, Tag[] required_tags, Tag[] forbidden_tags, Storage destination, float amount, OperationalRequirement operationalRequirementDEPRECATED = OperationalRequirement.None, int priorityMod = 0)
 	{
-		if (amount <= 0f)
+		if (amount <= PICKUPABLETUNING.MINIMUM_PICKABLE_AMOUNT)
 		{
-			Output.LogError("Requesting an invalid FetchOrder2 amount");
+			DebugUtil.LogWarningArgs(string.Format("FetchOrder2 {0} is requesting {1} {2} to {3}", chore_type.Id, tags[0], amount, (!((UnityEngine.Object)destination != (UnityEngine.Object)null)) ? "to nowhere" : destination.name));
 		}
 		choreType = chore_type;
 		Tags = tags;
@@ -111,8 +105,7 @@ public class FetchOrder2
 		TotalAmount = amount;
 		UnfetchedAmount = amount;
 		PriorityMod = priorityMod;
-		ChoreTags = chore_tags;
-		this.operationalRequirement = operationalRequirement;
+		operationalRequirement = operationalRequirementDEPRECATED;
 	}
 
 	private void IssueTask()
@@ -135,7 +128,7 @@ public class FetchOrder2
 
 	private void SetFetchTask(float amount)
 	{
-		FetchChore item = new FetchChore(choreType, Destination, amount, Tags, RequiredTags, ForbiddenTags, null, true, OnFetchChoreComplete, OnFetchChoreBegin, OnFetchChoreEnd, operationalRequirement, PriorityMod, ChoreTags);
+		FetchChore item = new FetchChore(choreType, Destination, amount, Tags, RequiredTags, ForbiddenTags, null, true, OnFetchChoreComplete, OnFetchChoreBegin, OnFetchChoreEnd, operationalRequirement, PriorityMod);
 		Chores.Add(item);
 	}
 
@@ -184,12 +177,12 @@ public class FetchOrder2
 
 	public void Suspend(string reason)
 	{
-		Debug.LogError("UNIMPLEMENTED!", null);
+		Debug.LogError("UNIMPLEMENTED!");
 	}
 
 	public void Resume(string reason)
 	{
-		Debug.LogError("UNIMPLEMENTED!", null);
+		Debug.LogError("UNIMPLEMENTED!");
 	}
 
 	public void Submit(Action<FetchOrder2, Pickupable> on_complete, bool check_storage_contents, Action<FetchOrder2, Pickupable> on_begin = null)
@@ -292,7 +285,7 @@ public class FetchOrder2
 			str = ((!((UnityEngine.Object)Destination == (UnityEngine.Object)null)) ? (str + "\nDestination: " + Destination.name) : (str + "\nDestination: None"));
 			str = str + "\nTotal Amount: " + TotalAmount;
 			str = str + "\nUnfetched Amount: " + _UnfetchedAmount;
-			Debug.LogError(str, null);
+			Debug.LogError(str);
 		}
 	}
 }

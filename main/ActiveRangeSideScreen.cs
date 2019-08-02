@@ -17,45 +17,50 @@ public class ActiveRangeSideScreen : SideScreenContent
 	[SerializeField]
 	private LocText deactivateLabel;
 
+	[Header("Number Input")]
 	[SerializeField]
-	private LocText activateValueLabel;
+	private KNumberInputField activateValueLabel;
 
 	[SerializeField]
-	private LocText deactivateValueLabel;
+	private KNumberInputField deactivateValueLabel;
 
 	protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
-		activateValueLabel.text = "100";
-		deactivateValueLabel.text = "100";
 	}
 
 	protected override void OnSpawn()
 	{
 		base.OnSpawn();
+		activateValueLabel.maxValue = target.MaxValue;
+		activateValueLabel.minValue = target.MinValue;
+		deactivateValueLabel.maxValue = target.MaxValue;
+		deactivateValueLabel.minValue = target.MinValue;
 		activateValueSlider.onValueChanged.AddListener(OnActivateValueChanged);
 		deactivateValueSlider.onValueChanged.AddListener(OnDeactivateValueChanged);
 	}
 
 	private void OnActivateValueChanged(float new_value)
 	{
-		activateValueLabel.text = new_value.ToString();
 		target.ActivateValue = new_value;
 		if (target.ActivateValue < target.DeactivateValue)
 		{
-			activateValueSlider.value = deactivateValueSlider.value;
+			target.ActivateValue = target.DeactivateValue;
+			activateValueSlider.value = target.ActivateValue;
 		}
+		activateValueLabel.SetDisplayValue(target.ActivateValue.ToString());
 		RefreshTooltips();
 	}
 
 	private void OnDeactivateValueChanged(float new_value)
 	{
-		deactivateValueLabel.text = new_value.ToString();
 		target.DeactivateValue = new_value;
 		if (target.DeactivateValue > target.ActivateValue)
 		{
-			deactivateValueSlider.value = activateValueSlider.value;
+			target.DeactivateValue = activateValueSlider.value;
+			deactivateValueSlider.value = target.DeactivateValue;
 		}
+		deactivateValueLabel.SetDisplayValue(target.DeactivateValue.ToString());
 		RefreshTooltips();
 	}
 
@@ -74,33 +79,49 @@ public class ActiveRangeSideScreen : SideScreenContent
 	{
 		if ((Object)new_target == (Object)null)
 		{
-			Debug.LogError("Invalid gameObject received", null);
+			Debug.LogError("Invalid gameObject received");
 		}
 		else
 		{
 			target = new_target.GetComponent<IActivationRangeTarget>();
 			if (target == null)
 			{
-				Debug.LogError("The gameObject received does not contain a IActivationRangeTarget component", null);
+				Debug.LogError("The gameObject received does not contain a IActivationRangeTarget component");
 			}
 			else
 			{
 				activateLabel.text = target.ActivateSliderLabelText;
 				deactivateLabel.text = target.DeactivateSliderLabelText;
+				activateValueLabel.Activate();
+				deactivateValueLabel.Activate();
 				activateValueSlider.onValueChanged.RemoveListener(OnActivateValueChanged);
 				activateValueSlider.minValue = target.MinValue;
 				activateValueSlider.maxValue = target.MaxValue;
 				activateValueSlider.value = target.ActivateValue;
 				activateValueSlider.wholeNumbers = target.UseWholeNumbers;
-				activateValueLabel.text = target.ActivateValue.ToString();
 				activateValueSlider.onValueChanged.AddListener(OnActivateValueChanged);
+				activateValueLabel.SetDisplayValue(target.ActivateValue.ToString());
+				activateValueLabel.onEndEdit += delegate
+				{
+					float result2 = target.ActivateValue;
+					float.TryParse(activateValueLabel.field.text, out result2);
+					OnActivateValueChanged(result2);
+					activateValueSlider.value = result2;
+				};
 				deactivateValueSlider.onValueChanged.RemoveListener(OnDeactivateValueChanged);
 				deactivateValueSlider.minValue = target.MinValue;
 				deactivateValueSlider.maxValue = target.MaxValue;
 				deactivateValueSlider.value = target.DeactivateValue;
 				deactivateValueSlider.wholeNumbers = target.UseWholeNumbers;
-				deactivateValueLabel.text = target.DeactivateValue.ToString();
 				deactivateValueSlider.onValueChanged.AddListener(OnDeactivateValueChanged);
+				deactivateValueLabel.SetDisplayValue(target.DeactivateValue.ToString());
+				deactivateValueLabel.onEndEdit += delegate
+				{
+					float result = target.DeactivateValue;
+					float.TryParse(deactivateValueLabel.field.text, out result);
+					OnDeactivateValueChanged(result);
+					deactivateValueSlider.value = result;
+				};
 				RefreshTooltips();
 			}
 		}

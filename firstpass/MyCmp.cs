@@ -146,7 +146,7 @@ public class MyCmp
 				Component component = cmpFns.mRequireFn(c);
 				if ((UnityEngine.Object)component == (UnityEngine.Object)null)
 				{
-					Debug.LogError("The behaviour " + type.ToString() + " required but couldn't find a " + fieldInfo.FieldType.Name, null);
+					Debug.LogError("The behaviour " + type.ToString() + " required but couldn't find a " + fieldInfo.FieldType.Name);
 				}
 				Util.SpawnComponent(component);
 				fieldInfo.SetValue(c, component);

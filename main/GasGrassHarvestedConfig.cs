@@ -23,7 +23,7 @@ public class GasGrassHarvestedConfig : IEntityConfig
 		List<Tag> list = new List<Tag>();
 		list.Add(GameTags.Other);
 		list = list;
-		GameObject gameObject = EntityTemplates.CreateLooseEntity(id, name, desc, mass, unitMass, anim, initialAnim, sceneLayer, collisionShape, width, height, isPickupable, SimHashes.Creature, list);
+		GameObject gameObject = EntityTemplates.CreateLooseEntity(id, name, desc, mass, unitMass, anim, initialAnim, sceneLayer, collisionShape, width, height, isPickupable, 0, SimHashes.Creature, list);
 		gameObject.AddOrGet<EntitySplitter>();
 		return gameObject;
 	}

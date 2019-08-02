@@ -1,4 +1,4 @@
-internal class PlayAnimsStates : GameStateMachine<PlayAnimsStates, PlayAnimsStates.Instance, IStateMachineTarget, PlayAnimsStates.Def>
+public class PlayAnimsStates : GameStateMachine<PlayAnimsStates, PlayAnimsStates.Instance, IStateMachineTarget, PlayAnimsStates.Def>
 {
 	public class Def : BaseDef
 	{
@@ -55,7 +55,14 @@ internal class PlayAnimsStates : GameStateMachine<PlayAnimsStates, PlayAnimsStat
 					{
 						mode = KAnim.PlayMode.Loop;
 					}
-					component.Queue(base.def.anims[i], mode, 1f, 0f);
+					if (i == 0)
+					{
+						component.Play(base.def.anims[i], mode, 1f, 0f);
+					}
+					else
+					{
+						component.Queue(base.def.anims[i], mode, 1f, 0f);
+					}
 				}
 			}
 		}
@@ -76,7 +83,7 @@ internal class PlayAnimsStates : GameStateMachine<PlayAnimsStates, PlayAnimsStat
 	public override void InitializeStates(out BaseState default_state)
 	{
 		default_state = animating;
-		root.ToggleStatusItem("Unused", "Unused", category: Db.Get().StatusItemCategories.Main, icon: string.Empty, icon_type: StatusItem.IconType.Info, notification_type: NotificationType.Neutral, allow_multiples: false, render_overlay: SimViewMode.None, status_overlays: 63486, resolve_string_callback: (string str, Instance smi) => smi.def.statusItemName, resolve_tooltip_callback: (string str, Instance smi) => smi.def.statusItemTooltip);
+		root.ToggleStatusItem("Unused", "Unused", category: Db.Get().StatusItemCategories.Main, icon: string.Empty, icon_type: StatusItem.IconType.Info, notification_type: NotificationType.Neutral, allow_multiples: false, render_overlay: default(HashedString), status_overlays: 129022, resolve_string_callback: (string str, Instance smi) => smi.def.statusItemName, resolve_tooltip_callback: (string str, Instance smi) => smi.def.statusItemTooltip);
 		animating.Enter("PlayAnims", delegate(Instance smi)
 		{
 			smi.PlayAnims();

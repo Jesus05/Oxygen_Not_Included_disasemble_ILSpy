@@ -54,7 +54,7 @@ public class JungleGasPlant : StateMachineComponent<JungleGasPlant.StatesInstanc
 			base.serializable = true;
 			root.Enter(delegate(StatesInstance smi)
 			{
-				if (smi.master.growing.Replanted && !alive.ForceUpdateStatus(smi.master.gameObject))
+				if (smi.master.rm.Replanted && !alive.ForceUpdateStatus(smi.master.gameObject))
 				{
 					smi.GoTo(blocked_from_growing);
 				}
@@ -63,7 +63,7 @@ public class JungleGasPlant : StateMachineComponent<JungleGasPlant.StatesInstanc
 					smi.GoTo(alive.seed_grow);
 				}
 			});
-			dead.ToggleStatusItem(CREATURES.STATUSITEMS.DEAD.NAME, CREATURES.STATUSITEMS.DEAD.TOOLTIP, category: Db.Get().StatusItemCategories.Main, icon: string.Empty, icon_type: StatusItem.IconType.Info, notification_type: (NotificationType)0, allow_multiples: false, render_overlay: SimViewMode.None, status_overlays: 0, resolve_string_callback: null, resolve_tooltip_callback: null).Enter(delegate(StatesInstance smi)
+			dead.ToggleStatusItem(CREATURES.STATUSITEMS.DEAD.NAME, CREATURES.STATUSITEMS.DEAD.TOOLTIP, category: Db.Get().StatusItemCategories.Main, icon: string.Empty, icon_type: StatusItem.IconType.Info, notification_type: (NotificationType)0, allow_multiples: false, render_overlay: default(HashedString), status_overlays: 0, resolve_string_callback: null, resolve_tooltip_callback: null).Enter(delegate(StatesInstance smi)
 			{
 				GameUtil.KInstantiate(Assets.GetPrefab(EffectConfigs.PlantDeathId), smi.master.transform.GetPosition(), Grid.SceneLayer.FXFront, null, 0).SetActive(true);
 				smi.master.Trigger(1623392196, null);
@@ -73,7 +73,7 @@ public class JungleGasPlant : StateMachineComponent<JungleGasPlant.StatesInstanc
 			});
 			blocked_from_growing.ToggleStatusItem(Db.Get().MiscStatusItems.RegionIsBlocked, (object)null).TagTransition(GameTags.Entombed, alive.seed_grow, true).EventTransition(GameHashes.TooColdWarning, alive.seed_grow, null)
 				.EventTransition(GameHashes.TooHotWarning, alive.seed_grow, null)
-				.EventTransition(GameHashes.Uprooted, dead, (StatesInstance smi) => UprootedMonitor.IsObjectUprooted(smi.master.gameObject));
+				.TagTransition(GameTags.Uprooted, dead, false);
 			alive.InitializeStates(masterTarget, dead);
 			alive.seed_grow.QueueAnim("seed_grow", false, null).EventTransition(GameHashes.AnimQueueComplete, alive.idle, null).EventTransition(GameHashes.Wilt, alive.wilting, (StatesInstance smi) => smi.master.wiltCondition.IsWilting());
 			alive.idle.EventTransition(GameHashes.Wilt, alive.wilting, (StatesInstance smi) => smi.master.wiltCondition.IsWilting()).EventTransition(GameHashes.Grow, alive.grown, (StatesInstance smi) => smi.master.growing.IsGrown()).PlayAnim("idle_loop", KAnim.PlayMode.Loop);
@@ -93,6 +93,9 @@ public class JungleGasPlant : StateMachineComponent<JungleGasPlant.StatesInstanc
 			alive.wilting.pst.PlayAnim("wilt_pst", KAnim.PlayMode.Once).OnAnimQueueComplete(alive.idle);
 		}
 	}
+
+	[MyCmpReq]
+	private ReceptacleMonitor rm;
 
 	[MyCmpReq]
 	private Growing growing;

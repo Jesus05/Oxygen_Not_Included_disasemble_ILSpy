@@ -85,6 +85,7 @@ public class RequireInputs : KMonoBehaviour, ISim200ms
 	private void CheckRequirements(bool forceEvent)
 	{
 		bool flag = true;
+		bool flag2 = false;
 		if (requirePower)
 		{
 			bool isConnected = energy.IsConnected;
@@ -115,14 +116,15 @@ public class RequireInputs : KMonoBehaviour, ISim200ms
 				flag = (flag && isConnected);
 			}
 			wasConnected = isConnected;
+			flag2 = (flag != RequirementsMet && (UnityEngine.Object)GetComponent<Light2D>() != (UnityEngine.Object)null);
 		}
 		if (requireConduit && visualizeRequirements)
 		{
-			bool flag2 = !conduitConsumer.enabled || conduitConsumer.IsConnected;
-			bool flag3 = !conduitConsumer.enabled || conduitConsumer.IsSatisfied;
-			if (previouslyConnected != flag2)
+			bool flag3 = !conduitConsumer.enabled || conduitConsumer.IsConnected;
+			bool flag4 = !conduitConsumer.enabled || conduitConsumer.IsSatisfied;
+			if (previouslyConnected != flag3)
 			{
-				previouslyConnected = flag2;
+				previouslyConnected = flag3;
 				StatusItem statusItem = null;
 				switch (conduitConsumer.TypeOfConduit)
 				{
@@ -135,14 +137,14 @@ public class RequireInputs : KMonoBehaviour, ISim200ms
 				}
 				if (statusItem != null)
 				{
-					selectable.ToggleStatusItem(statusItem, !flag2, new Tuple<ConduitType, Tag>(conduitConsumer.TypeOfConduit, conduitConsumer.capacityTag));
+					selectable.ToggleStatusItem(statusItem, !flag3, new Tuple<ConduitType, Tag>(conduitConsumer.TypeOfConduit, conduitConsumer.capacityTag));
 				}
-				operational.SetFlag(inputConnectedFlag, flag2);
+				operational.SetFlag(inputConnectedFlag, flag3);
 			}
-			flag = (flag && flag2);
-			if (previouslySatisfied != flag3)
+			flag = (flag && flag3);
+			if (previouslySatisfied != flag4)
 			{
-				previouslySatisfied = flag3;
+				previouslySatisfied = flag4;
 				StatusItem statusItem2 = null;
 				switch (conduitConsumer.TypeOfConduit)
 				{
@@ -157,12 +159,20 @@ public class RequireInputs : KMonoBehaviour, ISim200ms
 				{
 					if (statusItem2 != null)
 					{
-						selectable.ToggleStatusItem(statusItem2, !flag3, this);
+						selectable.ToggleStatusItem(statusItem2, !flag4, this);
 					}
-					operational.SetFlag(pipesHaveMass, flag3);
+					operational.SetFlag(pipesHaveMass, flag4);
 				}
 			}
 		}
 		requirementsMet = flag;
+		if (flag2)
+		{
+			Room roomOfGameObject = Game.Instance.roomProber.GetRoomOfGameObject(base.gameObject);
+			if (roomOfGameObject != null)
+			{
+				Game.Instance.roomProber.UpdateRoom(roomOfGameObject.cavity);
+			}
+		}
 	}
 }

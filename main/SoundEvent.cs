@@ -140,7 +140,7 @@ public class SoundEvent : AnimEvent
 		AudioDebug audioDebug = AudioDebug.Get();
 		if ((UnityEngine.Object)audioDebug != (UnityEngine.Object)null && audioDebug.debugSoundEvents)
 		{
-			Debug.Log(behaviour.name + ", " + sound + ", " + base.frame + ", " + position, null);
+			Debug.Log(behaviour.name + ", " + sound + ", " + base.frame + ", " + position);
 		}
 		try
 		{
@@ -149,22 +149,22 @@ public class SoundEvent : AnimEvent
 				LoopingSounds component2 = behaviour.GetComponent<LoopingSounds>();
 				if ((UnityEngine.Object)component2 == (UnityEngine.Object)null)
 				{
-					Debug.Log(behaviour.name + " is missing LoopingSounds component. ", null);
+					Debug.Log(behaviour.name + " is missing LoopingSounds component. ");
 				}
 				else if (!component2.StartSound(sound, behaviour, noiseValues, ignorePause, shouldCameraScalePosition))
 				{
-					Output.LogWarning($"SoundEvent has invalid sound [{sound}] on behaviour [{behaviour.name}]");
+					DebugUtil.LogWarningArgs($"SoundEvent has invalid sound [{sound}] on behaviour [{behaviour.name}]");
 				}
 			}
 			else if (!PlayOneShot(sound, behaviour, noiseValues))
 			{
-				Output.LogWarning($"SoundEvent has invalid sound [{sound}] on behaviour [{behaviour.name}]");
+				DebugUtil.LogWarningArgs($"SoundEvent has invalid sound [{sound}] on behaviour [{behaviour.name}]");
 			}
 		}
 		catch (Exception ex)
 		{
 			string text = string.Format(("Error trying to trigger sound [{0}] in behaviour [{1}] [{2}]\n{3}" + sound == null) ? "null" : sound.ToString(), behaviour.GetType().ToString(), ex.Message, ex.StackTrace);
-			Debug.LogError(text, null);
+			Debug.LogError(text);
 			throw new ArgumentException(text, ex);
 		}
 	}
@@ -248,11 +248,11 @@ public class SoundEvent : AnimEvent
 	{
 		if (sound != null)
 		{
-			Debug.Log(anim_name + ", " + sound_name + ", " + base.frame + ", " + sound_pos, null);
+			Debug.Log(anim_name + ", " + sound_name + ", " + base.frame + ", " + sound_pos);
 		}
 		else
 		{
-			Debug.Log("Missing sound: " + anim_name + ", " + sound_name, null);
+			Debug.Log("Missing sound: " + anim_name + ", " + sound_name);
 		}
 	}
 }

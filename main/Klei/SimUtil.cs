@@ -99,10 +99,15 @@ namespace Klei
 
 		public static float CalculateFinalTemperature(float mass1, float temp1, float mass2, float temp2)
 		{
-			float num = mass1 * temp1;
-			float num2 = mass2 * temp2;
-			float num3 = num + num2;
-			float val = num3 / (mass1 + mass2);
+			float num = mass1 + mass2;
+			if (num == 0f)
+			{
+				return 0f;
+			}
+			float num2 = mass1 * temp1;
+			float num3 = mass2 * temp2;
+			float num4 = num2 + num3;
+			float val = num4 / num;
 			float val2;
 			float val3;
 			if (temp1 > temp2)

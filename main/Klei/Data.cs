@@ -35,7 +35,7 @@ namespace Klei
 
 		public Data()
 		{
-			worldLayout = new WorldLayout(0);
+			worldLayout = new WorldLayout(null, 0);
 			terrainCells = new List<TerrainCell>();
 			overworldCells = new List<TerrainCell>();
 			rivers = new List<ProcGen.River>();

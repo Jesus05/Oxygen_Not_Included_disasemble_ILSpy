@@ -21,13 +21,13 @@ public class WireBridgeConfig : IBuildingConfig
 		float[] tIER = BUILDINGS.CONSTRUCTION_MASS_KG.TIER0;
 		string[] aLL_METALS = MATERIALS.ALL_METALS;
 		float melting_point = 1600f;
-		BuildLocationRule build_location_rule = BuildLocationRule.Anywhere;
+		BuildLocationRule build_location_rule = BuildLocationRule.WireBridge;
 		EffectorValues nONE = NOISE_POLLUTION.NONE;
 		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(iD, width, height, anim, hitpoints, construction_time, tIER, aLL_METALS, melting_point, build_location_rule, BUILDINGS.DECOR.PENALTY.TIER0, nONE, 0.2f);
 		buildingDef.Overheatable = false;
 		buildingDef.Floodable = false;
 		buildingDef.Entombable = false;
-		buildingDef.ViewMode = SimViewMode.PowerMap;
+		buildingDef.ViewMode = OverlayModes.Power.ID;
 		buildingDef.ObjectLayer = ObjectLayer.WireConnectors;
 		buildingDef.SceneLayer = Grid.SceneLayer.WireBridges;
 		buildingDef.AudioCategory = "Metal";
@@ -56,8 +56,6 @@ public class WireBridgeConfig : IBuildingConfig
 	public override void DoPostConfigureUnderConstruction(GameObject go)
 	{
 		base.DoPostConfigureUnderConstruction(go);
-		Constructable component = go.GetComponent<Constructable>();
-		component.choreTags = GameTags.ChoreTypes.WiringChores;
 		WireUtilityNetworkLink wireUtilityNetworkLink = AddNetworkLink(go);
 		wireUtilityNetworkLink.visualizeOnly = true;
 		go.AddOrGet<BuildingCellVisualizer>();

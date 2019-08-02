@@ -1,5 +1,6 @@
 using STRINGS;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
@@ -83,6 +84,30 @@ public class Navigator : StateMachineComponent<Navigator.StatesInstance>, ISaveL
 		}
 	}
 
+	public struct PathProbeTask : IWorkItem<object>
+	{
+		private int cell;
+
+		private Navigator navigator;
+
+		public PathProbeTask(Navigator navigator)
+		{
+			this.navigator = navigator;
+			cell = -1;
+		}
+
+		public void Update()
+		{
+			cell = Grid.PosToCell(navigator);
+			navigator.abilities.Refresh();
+		}
+
+		public void Run(object sharedData)
+		{
+			navigator.PathProber.UpdateProbe(navigator.NavGrid, cell, navigator.CurrentNavType, navigator.abilities, navigator.flags);
+		}
+	}
+
 	public bool DebugDrawPath;
 
 	[MyCmpAdd]
@@ -105,6 +130,8 @@ public class Navigator : StateMachineComponent<Navigator.StatesInstance>, ISaveL
 
 	private LoggerFS log;
 
+	public Dictionary<NavType, int> distanceTravelledByNavType;
+
 	public Grid.SceneLayer sceneLayer = Grid.SceneLayer.Move;
 
 	private PathFinderAbilities abilities;
@@ -125,6 +152,8 @@ public class Navigator : StateMachineComponent<Navigator.StatesInstance>, ISaveL
 
 	private NavTactic tactic;
 
+	public PathProbeTask pathProbeTask;
+
 	private static readonly EventSystem.IntraObjectHandler<Navigator> OnDefeatedDelegate = new EventSystem.IntraObjectHandler<Navigator>(delegate(Navigator component, object data)
 	{
 		component.OnDefeated(data);
@@ -144,6 +173,8 @@ public class Navigator : StateMachineComponent<Navigator.StatesInstance>, ISaveL
 	{
 		component.OnStore(data);
 	});
+
+	public bool executePathProbeTaskAsync;
 
 	public KMonoBehaviour target
 	{
@@ -167,12 +198,33 @@ public class Navigator : StateMachineComponent<Navigator.StatesInstance>, ISaveL
 	{
 		byte currentNavType = (byte)CurrentNavType;
 		writer.Write(currentNavType);
+		writer.Write(distanceTravelledByNavType.Count);
+		foreach (KeyValuePair<NavType, int> item in distanceTravelledByNavType)
+		{
+			byte key = (byte)item.Key;
+			writer.Write(key);
+			writer.Write(item.Value);
+		}
 	}
 
 	public void Deserialize(IReader reader)
 	{
 		byte b = reader.ReadByte();
 		NavType navType = (NavType)b;
+		if (!SaveLoader.Instance.GameInfo.IsVersionOlderThan(7, 11))
+		{
+			int num = reader.ReadInt32();
+			for (int i = 0; i < num; i++)
+			{
+				byte b2 = reader.ReadByte();
+				NavType key = (NavType)b2;
+				int value = reader.ReadInt32();
+				if (distanceTravelledByNavType.ContainsKey(key))
+				{
+					distanceTravelledByNavType[key] = value;
+				}
+			}
+		}
 		bool flag = false;
 		NavType[] validNavTypes = NavGrid.ValidNavTypes;
 		foreach (NavType navType2 in validNavTypes)
@@ -198,12 +250,18 @@ public class Navigator : StateMachineComponent<Navigator.StatesInstance>, ISaveL
 		simRenderLoadBalance = true;
 		autoRegisterSimRender = false;
 		NavGrid = Pathfinding.Instance.GetNavGrid(NavGridName);
+		PathProber component = GetComponent<PathProber>();
+		component.SetValidNavTypes(NavGrid.ValidNavTypes, maxProbingRadius);
+		distanceTravelledByNavType = new Dictionary<NavType, int>();
+		for (int i = 0; i < 10; i++)
+		{
+			distanceTravelledByNavType.Add((NavType)i, 0);
+		}
 	}
 
 	protected override void OnSpawn()
 	{
 		base.OnSpawn();
-		GetComponent<PathProber>().SetValidNavTypes(NavGrid.ValidNavTypes, maxProbingRadius);
 		Subscribe(1623392196, OnDefeatedDelegate);
 		Subscribe(-1506500077, OnDefeatedDelegate);
 		Subscribe(493375141, OnRefreshUserMenuDelegate);
@@ -213,6 +271,7 @@ public class Navigator : StateMachineComponent<Navigator.StatesInstance>, ISaveL
 		{
 			SimAndRenderScheduler.instance.Add(this, false);
 		}
+		pathProbeTask = new PathProbeTask(this);
 		SetCurrentNavType(CurrentNavType);
 	}
 
@@ -347,7 +406,7 @@ public class Navigator : StateMachineComponent<Navigator.StatesInstance>, ISaveL
 			}
 			Stop(true);
 		}
-		goto IL_027b;
+		goto IL_02b5;
 		IL_018c:
 		if (flag)
 		{
@@ -367,6 +426,7 @@ public class Navigator : StateMachineComponent<Navigator.StatesInstance>, ISaveL
 			NavGrid.Transition[] transitions = NavGrid.transitions;
 			PathFinder.Path.Node node5 = path.nodes[1];
 			BeginTransition(transitions[node5.transitionId]);
+			distanceTravelledByNavType[CurrentNavType] = Mathf.Max(distanceTravelledByNavType[CurrentNavType] + 1, distanceTravelledByNavType[CurrentNavType]);
 		}
 		else if (path.HasArrived())
 		{
@@ -377,8 +437,8 @@ public class Navigator : StateMachineComponent<Navigator.StatesInstance>, ISaveL
 			ClearReservedCell();
 			Stop(false);
 		}
-		goto IL_027b;
-		IL_027b:
+		goto IL_02b5;
+		IL_02b5:
 		if (trigger_advance)
 		{
 			Trigger(1347184327, null);
@@ -399,6 +459,9 @@ public class Navigator : StateMachineComponent<Navigator.StatesInstance>, ISaveL
 		path.Clear();
 		base.smi.sm.moveTarget.Set(null, base.smi);
 		transitionDriver.EndTransition();
+		HashedString idleAnim = NavGrid.GetIdleAnim(CurrentNavType);
+		KAnimControllerBase component = GetComponent<KAnimControllerBase>();
+		component.Play(idleAnim, KAnim.PlayMode.Loop, 1f, 0f);
 		if (arrived_at_destination)
 		{
 			base.smi.GoTo(base.smi.sm.arrived);
@@ -420,15 +483,15 @@ public class Navigator : StateMachineComponent<Navigator.StatesInstance>, ISaveL
 
 	public void Sim4000ms(float dt)
 	{
-		UpdateProbe();
+		UpdateProbe(true);
 	}
 
-	public void UpdateProbe()
+	public void UpdateProbe(bool forceUpdate = false)
 	{
-		int cell = Grid.PosToCell(this);
-		if (Grid.IsValidCell(cell))
+		if (forceUpdate || !executePathProbeTaskAsync)
 		{
-			PathProber.UpdateProbe(NavGrid, cell, CurrentNavType, GetCurrentAbilities(), flags, true);
+			pathProbeTask.Update();
+			pathProbeTask.Run(null);
 		}
 	}
 

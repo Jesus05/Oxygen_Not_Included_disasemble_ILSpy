@@ -30,6 +30,8 @@ public class PlayerController : KMonoBehaviour, IInputHandler
 
 	private Vector3 worldDragDelta;
 
+	public string handlerName => "PlayerController";
+
 	public KInputHandler inputHandler
 	{
 		get;
@@ -217,6 +219,10 @@ public class PlayerController : KMonoBehaviour, IInputHandler
 	public void OnKeyDown(KButtonEvent e)
 	{
 		if (e.TryConsume(Action.ToggleScreenshotMode))
+		{
+			DebugHandler.ToggleScreenshotMode();
+		}
+		else if (DebugHandler.HideUI && e.TryConsume(Action.Escape))
 		{
 			DebugHandler.ToggleScreenshotMode();
 		}

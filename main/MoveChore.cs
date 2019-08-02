@@ -32,8 +32,8 @@ public class MoveChore : Chore<MoveChore.StatesInstance>
 	}
 
 	public MoveChore(IStateMachineTarget target, ChoreType chore_type, Func<StatesInstance, int> get_cell_callback, bool update_cell = false)
-		: base(chore_type, target, target.GetComponent<ChoreProvider>(), false, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.emergency, 0, false, true, 0, (Tag[])null)
+		: base(chore_type, target, target.GetComponent<ChoreProvider>(), false, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.compulsory, 5, false, true, 0, false, ReportManager.ReportType.WorkTime)
 	{
-		smi = new StatesInstance(this, target.gameObject, get_cell_callback, update_cell);
+		base.smi = new StatesInstance(this, target.gameObject, get_cell_callback, update_cell);
 	}
 }

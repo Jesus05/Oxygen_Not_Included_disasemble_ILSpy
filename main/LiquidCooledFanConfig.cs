@@ -22,10 +22,11 @@ public class LiquidCooledFanConfig : IBuildingConfig
 		buildingDef.ExhaustKilowattsWhenActive = 0f;
 		buildingDef.SelfHeatKilowattsWhenActive = 0f;
 		buildingDef.Overheatable = false;
-		buildingDef.ViewMode = SimViewMode.TemperatureMap;
+		buildingDef.ViewMode = OverlayModes.Temperature.ID;
 		buildingDef.AudioCategory = "Metal";
 		buildingDef.UtilityInputOffset = new CellOffset(0, 0);
 		buildingDef.UtilityOutputOffset = new CellOffset(0, 0);
+		buildingDef.Deprecated = true;
 		return buildingDef;
 	}
 
@@ -52,7 +53,7 @@ public class LiquidCooledFanConfig : IBuildingConfig
 		manualDeliveryKG.requestedItemTag = new Tag("Water");
 		manualDeliveryKG.capacity = 500f;
 		manualDeliveryKG.refillMass = 50f;
-		manualDeliveryKG.choreTypeIDHash = Db.Get().ChoreTypes.Fetch.IdHash;
+		manualDeliveryKG.choreTypeIDHash = Db.Get().ChoreTypes.MachineFetch.IdHash;
 		ElementConsumer elementConsumer = go.AddOrGet<ElementConsumer>();
 		elementConsumer.storeOnConsume = true;
 		elementConsumer.storage = storage;
@@ -71,6 +72,5 @@ public class LiquidCooledFanConfig : IBuildingConfig
 
 	public override void DoPostConfigureComplete(GameObject go)
 	{
-		go.AddOrGetDef<PoweredActiveController.Def>();
 	}
 }

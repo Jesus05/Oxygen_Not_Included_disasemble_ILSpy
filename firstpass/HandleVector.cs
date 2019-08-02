@@ -137,6 +137,8 @@ public class HandleVector<T>
 		UnpackHandle(handle, out byte version, out int index);
 		version = (byte)(version + 1);
 		versions[index] = version;
+		Debug.Assert(index >= 0);
+		Debug.Assert(index < 16777216);
 		handle = PackHandle(index);
 		freeHandles.Push(handle);
 		T result = items[index];
@@ -152,6 +154,7 @@ public class HandleVector<T>
 
 	private Handle PackHandle(int index)
 	{
+		Debug.Assert(index < 16777216);
 		byte b = versions[index];
 		versions[index] = b;
 		Handle invalidHandle = InvalidHandle;

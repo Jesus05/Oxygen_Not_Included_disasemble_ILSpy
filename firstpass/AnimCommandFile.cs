@@ -1,10 +1,9 @@
-using Klei;
 using KSerialization.Converters;
 using System;
 using System.Collections.Generic;
 using System.IO;
 
-public class AnimCommandFile : YamlIO<AnimCommandFile>
+public class AnimCommandFile
 {
 	public enum ConfigType
 	{

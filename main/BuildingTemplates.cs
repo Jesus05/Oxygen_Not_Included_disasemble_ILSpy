@@ -17,13 +17,18 @@ public class BuildingTemplates
 		buildingDef.SceneLayer = Grid.SceneLayer.Building;
 		buildingDef.MaterialCategory = construction_materials;
 		buildingDef.BaseMeltingPoint = melting_point;
-		if (build_location_rule == BuildLocationRule.Tile || build_location_rule == BuildLocationRule.Anywhere)
+		switch (build_location_rule)
 		{
+		case BuildLocationRule.Anywhere:
+		case BuildLocationRule.Tile:
+		case BuildLocationRule.Conduit:
+		case BuildLocationRule.LogicBridge:
+		case BuildLocationRule.WireBridge:
 			buildingDef.ContinuouslyCheckFoundation = false;
-		}
-		else
-		{
+			break;
+		default:
 			buildingDef.ContinuouslyCheckFoundation = true;
+			break;
 		}
 		buildingDef.BuildLocationRule = build_location_rule;
 		buildingDef.ObjectLayer = ObjectLayer.Building;
@@ -48,7 +53,7 @@ public class BuildingTemplates
 	{
 		CreateStandardBuildingDef(def);
 		def.RequiresPowerInput = true;
-		def.ViewMode = SimViewMode.PowerMap;
+		def.ViewMode = OverlayModes.Power.ID;
 		def.AudioCategory = "HollowMetal";
 	}
 
@@ -59,6 +64,12 @@ public class BuildingTemplates
 		def.DefaultAnimState = "grounded";
 	}
 
+	public static void CreateMonumentBuildingDef(BuildingDef def)
+	{
+		CreateStandardBuildingDef(def);
+		def.Invincible = true;
+	}
+
 	public static Storage CreateDefaultStorage(GameObject go, bool forceCreate = false)
 	{
 		Storage storage = (!forceCreate) ? go.AddOrGet<Storage>() : go.AddComponent<Storage>();
@@ -66,37 +77,20 @@ public class BuildingTemplates
 		return storage;
 	}
 
-	public static void CreateFabricatorStorage(GameObject go, Fabricator fabricator)
+	public static void CreateComplexFabricatorStorage(GameObject go, ComplexFabricator fabricator)
 	{
 		fabricator.inStorage = go.AddComponent<Storage>();
-		fabricator.inStorage.capacityKg = 500f;
+		fabricator.inStorage.capacityKg = 20000f;
 		fabricator.inStorage.showInUI = true;
 		fabricator.inStorage.SetDefaultStoredItemModifiers(Storage.StandardFabricatorStorage);
 		fabricator.buildStorage = go.AddComponent<Storage>();
-		fabricator.buildStorage.capacityKg = 500f;
+		fabricator.buildStorage.capacityKg = 20000f;
 		fabricator.buildStorage.showInUI = true;
 		fabricator.buildStorage.SetDefaultStoredItemModifiers(Storage.StandardFabricatorStorage);
 		fabricator.outStorage = go.AddComponent<Storage>();
-		fabricator.outStorage.capacityKg = 500f;
+		fabricator.outStorage.capacityKg = 20000f;
 		fabricator.outStorage.showInUI = true;
-		fabricator.outStorage.allowItemRemoval = true;
 		fabricator.outStorage.SetDefaultStoredItemModifiers(Storage.StandardFabricatorStorage);
-	}
-
-	public static void CreateRefineryStorage(GameObject go, Refinery refinery)
-	{
-		refinery.inStorage = go.AddComponent<Storage>();
-		refinery.inStorage.capacityKg = 20000f;
-		refinery.inStorage.showInUI = true;
-		refinery.inStorage.SetDefaultStoredItemModifiers(Storage.StandardFabricatorStorage);
-		refinery.buildStorage = go.AddComponent<Storage>();
-		refinery.buildStorage.capacityKg = 20000f;
-		refinery.buildStorage.showInUI = true;
-		refinery.buildStorage.SetDefaultStoredItemModifiers(Storage.StandardFabricatorStorage);
-		refinery.outStorage = go.AddComponent<Storage>();
-		refinery.outStorage.capacityKg = 20000f;
-		refinery.outStorage.showInUI = true;
-		refinery.outStorage.SetDefaultStoredItemModifiers(Storage.StandardFabricatorStorage);
 	}
 
 	public static void DoPostConfigure(GameObject go)

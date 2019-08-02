@@ -106,7 +106,7 @@ namespace Klei.AI
 			AttributeLevel attributeLevel = GetAttributeLevel(attribute_id);
 			if (attributeLevel == null)
 			{
-				Debug.LogWarning(attribute_id + " has no level.", null);
+				Debug.LogWarning(attribute_id + " has no level.");
 				return false;
 			}
 			time_spent *= multiplier;

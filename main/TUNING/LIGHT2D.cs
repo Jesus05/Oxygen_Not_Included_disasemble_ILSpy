@@ -6,6 +6,10 @@ namespace TUNING
 	{
 		public const int SUNLIGHT_MAX_DEFAULT = 80000;
 
+		public static readonly Color LIGHT_BLUE = new Color(0.38f, 0.61f, 1f, 1f);
+
+		public static readonly Color LIGHT_PURPLE = new Color(0.9f, 0.4f, 0.74f, 1f);
+
 		public static readonly Color LIGHT_YELLOW = new Color(0.57f, 0.55f, 0.44f, 1f);
 
 		public static readonly Color LIGHT_OVERLAY = new Color(0.56f, 0.56f, 0.56f, 1f);
@@ -95,5 +99,53 @@ namespace TUNING
 		public static readonly Vector2 LIGHTBUG_OFFSET = new Vector2(0.05f, 0.25f);
 
 		public static readonly Vector2 LIGHTBUG_DIRECTION = DEFAULT_DIRECTION;
+
+		public const int PLASMALAMP_LUX = 666;
+
+		public const float PLASMALAMP_RANGE = 2f;
+
+		public const float PLASMALAMP_ANGLE = 0f;
+
+		public const LightShape PLASMALAMP_SHAPE = LightShape.Circle;
+
+		public static readonly Color PLASMALAMP_COLOR = LIGHT_PURPLE;
+
+		public static readonly Color PLASMALAMP_OVERLAYCOLOR = LIGHT_OVERLAY;
+
+		public static readonly Vector2 PLASMALAMP_OFFSET = new Vector2(0.05f, 0.5f);
+
+		public static readonly Vector2 PLASMALAMP_DIRECTION = DEFAULT_DIRECTION;
+
+		public const int MAGMALAMP_LUX = 666;
+
+		public const float MAGMALAMP_RANGE = 2f;
+
+		public const float MAGMALAMP_ANGLE = 0f;
+
+		public const LightShape MAGMALAMP_SHAPE = LightShape.Cone;
+
+		public static readonly Color MAGMALAMP_COLOR = LIGHT_YELLOW;
+
+		public static readonly Color MAGMALAMP_OVERLAYCOLOR = LIGHT_OVERLAY;
+
+		public static readonly Vector2 MAGMALAMP_OFFSET = new Vector2(0.05f, 0.33f);
+
+		public static readonly Vector2 MAGMALAMP_DIRECTION = DEFAULT_DIRECTION;
+
+		public const int BIOLUMROCK_LUX = 666;
+
+		public const float BIOLUMROCK_RANGE = 2f;
+
+		public const float BIOLUMROCK_ANGLE = 0f;
+
+		public const LightShape BIOLUMROCK_SHAPE = LightShape.Cone;
+
+		public static readonly Color BIOLUMROCK_COLOR = LIGHT_BLUE;
+
+		public static readonly Color BIOLUMROCK_OVERLAYCOLOR = LIGHT_OVERLAY;
+
+		public static readonly Vector2 BIOLUMROCK_OFFSET = new Vector2(0.05f, 0.33f);
+
+		public static readonly Vector2 BIOLUMROCK_DIRECTION = DEFAULT_DIRECTION;
 	}
 }

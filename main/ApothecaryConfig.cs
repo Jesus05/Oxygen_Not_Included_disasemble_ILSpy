@@ -23,7 +23,7 @@ public class ApothecaryConfig : IBuildingConfig
 		buildingDef.EnergyConsumptionWhenActive = 240f;
 		buildingDef.ExhaustKilowattsWhenActive = 0.25f;
 		buildingDef.SelfHeatKilowattsWhenActive = 0.5f;
-		buildingDef.ViewMode = SimViewMode.PowerMap;
+		buildingDef.ViewMode = OverlayModes.Power.ID;
 		buildingDef.AudioCategory = "Glass";
 		buildingDef.AudioSize = "large";
 		return buildingDef;
@@ -31,24 +31,18 @@ public class ApothecaryConfig : IBuildingConfig
 
 	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
-		go.AddOrGet<DropAllWorkable>();
 		Prioritizable.AddRef(go);
+		go.AddOrGet<DropAllWorkable>();
 		go.AddOrGet<BuildingComplete>().isManuallyOperated = true;
-		Fabricator fabricator = go.AddOrGet<Fabricator>();
-		BuildingTemplates.CreateFabricatorStorage(go, fabricator);
-		fabricator.overrideAnims = new KAnimFile[1]
-		{
-			Assets.GetAnim("anim_interacts_apothecary_kanim")
-		};
+		Apothecary fabricator = go.AddOrGet<Apothecary>();
+		BuildingTemplates.CreateComplexFabricatorStorage(go, fabricator);
+		go.AddOrGet<ComplexFabricatorWorkable>();
+		go.AddOrGet<FabricatorIngredientStatusManager>();
+		go.AddOrGet<CopyBuildingSettings>();
 	}
 
 	public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.AddOrGetDef<PoweredActiveStoppableController.Def>();
-		go.GetComponent<KPrefabID>().prefabInitFn += delegate(GameObject game_object)
-		{
-			Fabricator component = game_object.GetComponent<Fabricator>();
-			component.SetAttributeConverter(Db.Get().AttributeConverters.CompoundingSpeed);
-		};
 	}
 }

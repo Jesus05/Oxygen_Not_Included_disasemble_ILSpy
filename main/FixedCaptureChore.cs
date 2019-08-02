@@ -49,7 +49,8 @@ public class FixedCaptureChore : Chore<FixedCaptureChore.FixedCaptureChoreStates
 			});
 			movetopoint.MoveTo((Instance smi) => Grid.PosToCell(smi.transform.GetPosition()), waitforcreature_pre, null, false).Target(masterTarget).EventTransition(GameHashes.CreatureAbandonedCapturePoint, failed, null);
 			waitforcreature_pre.EnterTransition(null, (Instance smi) => smi.fixedCapturePoint.IsNullOrStopped()).EnterTransition(failed, HasCreatureLeft).EnterTransition(waitforcreature, (Instance smi) => true);
-			waitforcreature.ToggleAnims("anim_interacts_rancherstation_kanim", 0f).PlayAnim("calling_loop", KAnim.PlayMode.Loop).Face(creature, 0f)
+			waitforcreature.ToggleAnims("anim_interacts_rancherstation_kanim", 0f).PlayAnim("calling_loop", KAnim.PlayMode.Loop).Transition(failed, HasCreatureLeft, UpdateRate.SIM_200ms)
+				.Face(creature, 0f)
 				.Enter("SetRancherIsAvailableForCapturing", delegate(Instance smi)
 				{
 					smi.fixedCapturePoint.SetRancherIsAvailableForCapturing();
@@ -58,7 +59,6 @@ public class FixedCaptureChore : Chore<FixedCaptureChore.FixedCaptureChoreStates
 				{
 					smi.fixedCapturePoint.ClearRancherIsAvailableForCapturing();
 				})
-				.Transition(failed, HasCreatureLeft, UpdateRate.SIM_200ms)
 				.Target(masterTarget)
 				.EventTransition(GameHashes.CreatureArrivedAtCapturePoint, capturecreature, null);
 			capturecreature.EventTransition(GameHashes.CreatureAbandonedCapturePoint, failed, null).EnterTransition(failed, (Instance smi) => smi.fixedCapturePoint.targetCapturable.IsNullOrStopped()).ToggleWork<Capturable>(creature, success, failed, null);
@@ -84,10 +84,10 @@ public class FixedCaptureChore : Chore<FixedCaptureChore.FixedCaptureChoreStates
 	};
 
 	public FixedCaptureChore(KPrefabID capture_point)
-		: base(Db.Get().ChoreTypes.Ranch, (IStateMachineTarget)capture_point, (ChoreProvider)null, false, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.basic, 0, false, true, 0, (Tag[])null)
+		: base(Db.Get().ChoreTypes.Ranch, (IStateMachineTarget)capture_point, (ChoreProvider)null, false, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.basic, 5, false, true, 0, false, ReportManager.ReportType.WorkTime)
 	{
 		AddPrecondition(IsCreatureAvailableForFixedCapture, capture_point.GetSMI<FixedCapturePoint.Instance>());
-		AddPrecondition(ChorePreconditions.instance.HasRolePerk, RoleManager.rolePerks.CanWrangleCreatures.id);
+		AddPrecondition(ChorePreconditions.instance.HasSkillPerk, Db.Get().SkillPerks.CanWrangleCreatures.Id);
 		AddPrecondition(ChorePreconditions.instance.IsScheduledTime, Db.Get().ScheduleBlockTypes.Work);
 		AddPrecondition(ChorePreconditions.instance.CanMoveTo, capture_point.GetComponent<Building>());
 		Operational component = capture_point.GetComponent<Operational>();
@@ -96,14 +96,14 @@ public class FixedCaptureChore : Chore<FixedCaptureChore.FixedCaptureChoreStates
 		AddPrecondition(ChorePreconditions.instance.IsNotMarkedForDeconstruction, component2);
 		BuildingEnabledButton component3 = capture_point.GetComponent<BuildingEnabledButton>();
 		AddPrecondition(ChorePreconditions.instance.IsNotMarkedForDisable, component3);
-		smi = new FixedCaptureChoreStates.Instance(capture_point);
+		base.smi = new FixedCaptureChoreStates.Instance(capture_point);
 		SetPrioritizable(capture_point.GetComponent<Prioritizable>());
 	}
 
 	public override void Begin(Precondition.Context context)
 	{
-		smi.sm.rancher.Set(context.consumerState.gameObject, smi);
-		smi.sm.creature.Set(smi.fixedCapturePoint.targetCapturable.gameObject, smi);
+		base.smi.sm.rancher.Set(context.consumerState.gameObject, base.smi);
+		base.smi.sm.creature.Set(base.smi.fixedCapturePoint.targetCapturable.gameObject, base.smi);
 		base.Begin(context);
 	}
 }

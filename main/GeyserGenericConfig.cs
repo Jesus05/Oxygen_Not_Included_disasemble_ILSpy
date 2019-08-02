@@ -55,41 +55,41 @@ public class GeyserGenericConfig : IMultiEntityConfig
 
 	private static class RATES
 	{
-		public const float GAS_TINY_MIN = 3f;
+		public const float GAS_SMALL_MIN = 40f;
 
-		public const float GAS_TINY_MAX = 30f;
+		public const float GAS_SMALL_MAX = 80f;
 
-		public const float GAS_SMALL_MIN = 5f;
+		public const float GAS_NORMAL_MIN = 70f;
 
-		public const float GAS_SMALL_MAX = 50f;
+		public const float GAS_NORMAL_MAX = 140f;
 
-		public const float GAS_NORMAL_MIN = 10f;
+		public const float GAS_BIG_MIN = 100f;
 
-		public const float GAS_NORMAL_MAX = 100f;
+		public const float GAS_BIG_MAX = 200f;
 
-		public const float GAS_BIG_MIN = 15f;
+		public const float LIQUID_SMALL_MIN = 500f;
 
-		public const float GAS_BIG_MAX = 180f;
+		public const float LIQUID_SMALL_MAX = 1000f;
 
-		public const float LIQUID_LOW_MIN = 200f;
+		public const float LIQUID_NORMAL_MIN = 1000f;
 
-		public const float LIQUID_LOW_MAX = 2500f;
+		public const float LIQUID_NORMAL_MAX = 2000f;
 
-		public const float LIQUID_NORMAL_MIN = 500f;
+		public const float LIQUID_BIG_MIN = 2000f;
 
-		public const float LIQUID_NORMAL_MAX = 5000f;
+		public const float LIQUID_BIG_MAX = 4000f;
 
-		public const float MOLTEN_NORMAL_MIN = 50f;
+		public const float MOLTEN_NORMAL_MIN = 200f;
 
-		public const float MOLTEN_NORMAL_MAX = 500f;
+		public const float MOLTEN_NORMAL_MAX = 400f;
 
-		public const float MOLTEN_BIG_MIN = 100f;
+		public const float MOLTEN_BIG_MIN = 400f;
 
-		public const float MOLTEN_BIG_MAX = 1000f;
+		public const float MOLTEN_BIG_MAX = 800f;
 
-		public const float MOLTEN_HUGE_MIN = 200f;
+		public const float MOLTEN_HUGE_MIN = 800f;
 
-		public const float MOLTEN_HUGE_MAX = 2000f;
+		public const float MOLTEN_HUGE_MAX = 1600f;
 	}
 
 	private static class MAX_PRESURES
@@ -140,6 +140,8 @@ public class GeyserGenericConfig : IMultiEntityConfig
 
 	public const string FilthyWater = "filthy_water";
 
+	public const string SaltWater = "salt_water";
+
 	public const string SmallVolcano = "small_volcano";
 
 	public const string BigVolcano = "big_volcano";
@@ -187,7 +189,7 @@ public class GeyserGenericConfig : IMultiEntityConfig
 			}
 			else
 			{
-				Debug.LogWarning("Could not load global world seed for geysers", null);
+				Debug.LogWarning("Could not load global world seed for geysers");
 			}
 			int num2 = num;
 			Vector3 position = inst.transform.GetPosition();
@@ -242,31 +244,32 @@ public class GeyserGenericConfig : IMultiEntityConfig
 	private List<GeyserPrefabParams> GenerateConfigs()
 	{
 		List<GeyserPrefabParams> list = new List<GeyserPrefabParams>();
-		list.Add(new GeyserPrefabParams("geyser_gas_steam_kanim", 2, 4, new GeyserConfigurator.GeyserType("steam", SimHashes.Steam, 383.15f, 200f, 2500f, 5f, 60f, 1140f, 0.1f, 0.9f, 15000f, 135000f, 0.4f, 0.8f)));
-		list.Add(new GeyserPrefabParams("geyser_gas_steam_hot_kanim", 2, 4, new GeyserConfigurator.GeyserType("hot_steam", SimHashes.Steam, 773.15f, 10f, 100f, 15f, 60f, 1140f, 0.1f, 0.9f, 15000f, 135000f, 0.4f, 0.8f)));
-		list.Add(new GeyserPrefabParams("geyser_liquid_water_hot_kanim", 4, 2, new GeyserConfigurator.GeyserType("hot_water", SimHashes.Water, 368.15f, 500f, 5000f, 500f, 60f, 1140f, 0.1f, 0.9f, 15000f, 135000f, 0.4f, 0.8f)));
-		list.Add(new GeyserPrefabParams("geyser_liquid_water_slush_kanim", 4, 2, new GeyserConfigurator.GeyserType("slush_water", SimHashes.DirtyWater, 263.15f, 500f, 5000f, 500f, 60f, 1140f, 0.1f, 0.9f, 15000f, 135000f, 0.4f, 0.8f)));
-		list.Add(new GeyserPrefabParams("geyser_liquid_water_filthy_kanim", 4, 2, new GeyserConfigurator.GeyserType("filthy_water", SimHashes.DirtyWater, 303.15f, 500f, 5000f, 500f, 60f, 1140f, 0.1f, 0.9f, 15000f, 135000f, 0.4f, 0.8f).AddDisease(new SimUtil.DiseaseInfo
+		list.Add(new GeyserPrefabParams("geyser_gas_steam_kanim", 2, 4, new GeyserConfigurator.GeyserType("steam", SimHashes.Steam, 383.15f, 1000f, 2000f, 5f, 60f, 1140f, 0.1f, 0.9f, 15000f, 135000f, 0.4f, 0.8f)));
+		list.Add(new GeyserPrefabParams("geyser_gas_steam_hot_kanim", 2, 4, new GeyserConfigurator.GeyserType("hot_steam", SimHashes.Steam, 773.15f, 500f, 1000f, 5f, 60f, 1140f, 0.1f, 0.9f, 15000f, 135000f, 0.4f, 0.8f)));
+		list.Add(new GeyserPrefabParams("geyser_liquid_water_hot_kanim", 4, 2, new GeyserConfigurator.GeyserType("hot_water", SimHashes.Water, 368.15f, 2000f, 4000f, 500f, 60f, 1140f, 0.1f, 0.9f, 15000f, 135000f, 0.4f, 0.8f)));
+		list.Add(new GeyserPrefabParams("geyser_liquid_water_slush_kanim", 4, 2, new GeyserConfigurator.GeyserType("slush_water", SimHashes.DirtyWater, 263.15f, 1000f, 2000f, 500f, 60f, 1140f, 0.1f, 0.9f, 15000f, 135000f, 0.4f, 0.8f)));
+		list.Add(new GeyserPrefabParams("geyser_liquid_water_filthy_kanim", 4, 2, new GeyserConfigurator.GeyserType("filthy_water", SimHashes.DirtyWater, 303.15f, 2000f, 4000f, 500f, 60f, 1140f, 0.1f, 0.9f, 15000f, 135000f, 0.4f, 0.8f).AddDisease(new SimUtil.DiseaseInfo
 		{
 			idx = Db.Get().Diseases.GetIndex("FoodPoisoning"),
 			count = 20000
 		})));
-		list.Add(new GeyserPrefabParams("geyser_molten_volcano_small_kanim", 3, 3, new GeyserConfigurator.GeyserType("small_volcano", SimHashes.Magma, 2000f, 100f, 1000f, 150f, 6000f, 12000f, 0.005f, 0.01f, 15000f, 135000f, 0.4f, 0.8f)));
-		list.Add(new GeyserPrefabParams("geyser_molten_volcano_big_kanim", 3, 3, new GeyserConfigurator.GeyserType("big_volcano", SimHashes.Magma, 2000f, 200f, 2000f, 150f, 6000f, 12000f, 0.005f, 0.01f, 15000f, 135000f, 0.4f, 0.8f)));
-		list.Add(new GeyserPrefabParams("geyser_liquid_co2_kanim", 4, 2, new GeyserConfigurator.GeyserType("liquid_co2", SimHashes.LiquidCarbonDioxide, 218f, 3f, 30f, 50f, 60f, 1140f, 0.1f, 0.9f, 15000f, 135000f, 0.4f, 0.8f)));
-		list.Add(new GeyserPrefabParams("geyser_gas_co2_hot_kanim", 2, 4, new GeyserConfigurator.GeyserType("hot_co2", SimHashes.CarbonDioxide, 773.15f, 5f, 50f, 5f, 60f, 1140f, 0.1f, 0.9f, 15000f, 135000f, 0.4f, 0.8f)));
-		list.Add(new GeyserPrefabParams("geyser_gas_hydrogen_hot_kanim", 2, 4, new GeyserConfigurator.GeyserType("hot_hydrogen", SimHashes.Hydrogen, 773.15f, 5f, 50f, 5f, 60f, 1140f, 0.1f, 0.9f, 15000f, 135000f, 0.4f, 0.8f)));
-		list.Add(new GeyserPrefabParams("geyser_gas_po2_hot_kanim", 2, 4, new GeyserConfigurator.GeyserType("hot_po2", SimHashes.ContaminatedOxygen, 773.15f, 15f, 180f, 5f, 60f, 1140f, 0.1f, 0.9f, 15000f, 135000f, 0.4f, 0.8f)));
-		list.Add(new GeyserPrefabParams("geyser_gas_po2_slimy_kanim", 2, 4, new GeyserConfigurator.GeyserType("slimy_po2", SimHashes.ContaminatedOxygen, 333.15f, 15f, 180f, 5f, 60f, 1140f, 0.1f, 0.9f, 15000f, 135000f, 0.4f, 0.8f).AddDisease(new SimUtil.DiseaseInfo
+		list.Add(new GeyserPrefabParams("geyser_liquid_salt_water_kanim", 4, 2, new GeyserConfigurator.GeyserType("salt_water", SimHashes.SaltWater, 368.15f, 2000f, 4000f, 500f, 60f, 1140f, 0.1f, 0.9f, 15000f, 135000f, 0.4f, 0.8f)));
+		list.Add(new GeyserPrefabParams("geyser_molten_volcano_small_kanim", 3, 3, new GeyserConfigurator.GeyserType("small_volcano", SimHashes.Magma, 2000f, 400f, 800f, 150f, 6000f, 12000f, 0.005f, 0.01f, 15000f, 135000f, 0.4f, 0.8f)));
+		list.Add(new GeyserPrefabParams("geyser_molten_volcano_big_kanim", 3, 3, new GeyserConfigurator.GeyserType("big_volcano", SimHashes.Magma, 2000f, 800f, 1600f, 150f, 6000f, 12000f, 0.005f, 0.01f, 15000f, 135000f, 0.4f, 0.8f)));
+		list.Add(new GeyserPrefabParams("geyser_liquid_co2_kanim", 4, 2, new GeyserConfigurator.GeyserType("liquid_co2", SimHashes.LiquidCarbonDioxide, 218f, 100f, 200f, 50f, 60f, 1140f, 0.1f, 0.9f, 15000f, 135000f, 0.4f, 0.8f)));
+		list.Add(new GeyserPrefabParams("geyser_gas_co2_hot_kanim", 2, 4, new GeyserConfigurator.GeyserType("hot_co2", SimHashes.CarbonDioxide, 773.15f, 70f, 140f, 5f, 60f, 1140f, 0.1f, 0.9f, 15000f, 135000f, 0.4f, 0.8f)));
+		list.Add(new GeyserPrefabParams("geyser_gas_hydrogen_hot_kanim", 2, 4, new GeyserConfigurator.GeyserType("hot_hydrogen", SimHashes.Hydrogen, 773.15f, 70f, 140f, 5f, 60f, 1140f, 0.1f, 0.9f, 15000f, 135000f, 0.4f, 0.8f)));
+		list.Add(new GeyserPrefabParams("geyser_gas_po2_hot_kanim", 2, 4, new GeyserConfigurator.GeyserType("hot_po2", SimHashes.ContaminatedOxygen, 773.15f, 70f, 140f, 5f, 60f, 1140f, 0.1f, 0.9f, 15000f, 135000f, 0.4f, 0.8f)));
+		list.Add(new GeyserPrefabParams("geyser_gas_po2_slimy_kanim", 2, 4, new GeyserConfigurator.GeyserType("slimy_po2", SimHashes.ContaminatedOxygen, 333.15f, 70f, 140f, 5f, 60f, 1140f, 0.1f, 0.9f, 15000f, 135000f, 0.4f, 0.8f).AddDisease(new SimUtil.DiseaseInfo
 		{
 			idx = Db.Get().Diseases.GetIndex("SlimeLung"),
 			count = 5000
 		})));
-		list.Add(new GeyserPrefabParams("geyser_gas_chlorine_kanim", 2, 4, new GeyserConfigurator.GeyserType("chlorine_gas", SimHashes.ChlorineGas, 333.15f, 15f, 180f, 5f, 60f, 1140f, 0.1f, 0.9f, 15000f, 135000f, 0.4f, 0.8f)));
-		list.Add(new GeyserPrefabParams("geyser_gas_methane_kanim", 2, 4, new GeyserConfigurator.GeyserType("methane", SimHashes.Methane, 423.15f, 15f, 180f, 5f, 60f, 1140f, 0.1f, 0.9f, 15000f, 135000f, 0.4f, 0.8f)));
-		list.Add(new GeyserPrefabParams("geyser_molten_copper_kanim", 3, 3, new GeyserConfigurator.GeyserType("molten_copper", SimHashes.MoltenCopper, 2500f, 50f, 500f, 150f, 480f, 1080f, 0.0166666675f, 0.1f, 15000f, 135000f, 0.4f, 0.8f)));
-		list.Add(new GeyserPrefabParams("geyser_molten_iron_kanim", 3, 3, new GeyserConfigurator.GeyserType("molten_iron", SimHashes.MoltenIron, 2800f, 50f, 500f, 150f, 480f, 1080f, 0.0166666675f, 0.1f, 15000f, 135000f, 0.4f, 0.8f)));
-		list.Add(new GeyserPrefabParams("geyser_molten_gold_kanim", 3, 3, new GeyserConfigurator.GeyserType("molten_gold", SimHashes.MoltenGold, 2900f, 50f, 500f, 150f, 480f, 1080f, 0.0166666675f, 0.1f, 15000f, 135000f, 0.4f, 0.8f)));
+		list.Add(new GeyserPrefabParams("geyser_gas_chlorine_kanim", 2, 4, new GeyserConfigurator.GeyserType("chlorine_gas", SimHashes.ChlorineGas, 333.15f, 70f, 140f, 5f, 60f, 1140f, 0.1f, 0.9f, 15000f, 135000f, 0.4f, 0.8f)));
+		list.Add(new GeyserPrefabParams("geyser_gas_methane_kanim", 2, 4, new GeyserConfigurator.GeyserType("methane", SimHashes.Methane, 423.15f, 70f, 140f, 5f, 60f, 1140f, 0.1f, 0.9f, 15000f, 135000f, 0.4f, 0.8f)));
+		list.Add(new GeyserPrefabParams("geyser_molten_copper_kanim", 3, 3, new GeyserConfigurator.GeyserType("molten_copper", SimHashes.MoltenCopper, 2500f, 200f, 400f, 150f, 480f, 1080f, 0.0166666675f, 0.1f, 15000f, 135000f, 0.4f, 0.8f)));
+		list.Add(new GeyserPrefabParams("geyser_molten_iron_kanim", 3, 3, new GeyserConfigurator.GeyserType("molten_iron", SimHashes.MoltenIron, 2800f, 200f, 400f, 150f, 480f, 1080f, 0.0166666675f, 0.1f, 15000f, 135000f, 0.4f, 0.8f)));
+		list.Add(new GeyserPrefabParams("geyser_molten_gold_kanim", 3, 3, new GeyserConfigurator.GeyserType("molten_gold", SimHashes.MoltenGold, 2900f, 200f, 400f, 150f, 480f, 1080f, 0.0166666675f, 0.1f, 15000f, 135000f, 0.4f, 0.8f)));
 		list.Add(new GeyserPrefabParams("geyser_liquid_oil_kanim", 4, 2, new GeyserConfigurator.GeyserType("oil_drip", SimHashes.CrudeOil, 600f, 1f, 250f, 50f, 600f, 600f, 1f, 1f, 100f, 500f, 0.4f, 0.8f)));
 		return list;
 	}

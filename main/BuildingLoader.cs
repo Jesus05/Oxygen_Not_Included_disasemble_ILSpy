@@ -116,7 +116,7 @@ public class BuildingLoader : KMonoBehaviour
 		}
 		if (def.AnimFiles == null)
 		{
-			Debug.LogError(def.Name + " Def missing anim files", null);
+			Debug.LogError(def.Name + " Def missing anim files");
 		}
 		return flag;
 	}
@@ -159,7 +159,7 @@ public class BuildingLoader : KMonoBehaviour
 			gameObject.GetComponent<PrimaryElement>().MassPerUnit += def.Mass[i];
 		}
 		KPrefabID kPrefabID = AddID(gameObject, def.PrefabID + "UnderConstruction");
-		UpdateComponentRequirement<BuildingCellVisualizer>(gameObject, BuildingCellVisualizer.CheckRequiresComponent(def));
+		UpdateComponentRequirement<BuildingCellVisualizer>(gameObject, def.CheckRequiresBuildingCellVisualizer());
 		Constructable component2 = gameObject.GetComponent<Constructable>();
 		component2.SetWorkTime(def.ConstructionTime);
 		Rotatable rotatable = UpdateComponentRequirement<Rotatable>(gameObject, def.PermittedRotations != PermittedRotations.Unrotatable);
@@ -173,7 +173,7 @@ public class BuildingLoader : KMonoBehaviour
 		UpdateComponentRequirement<AnimTileable>(gameObject, required);
 		if (def.RequiresPowerInput)
 		{
-			GeneratedBuildings.RegisterLogicPorts(gameObject, LogicOperationalController.INPUT_PORTS);
+			GeneratedBuildings.RegisterLogicPorts(gameObject, LogicOperationalController.INPUT_PORTS_0_0);
 		}
 		Assets.AddPrefab(kPrefabID);
 		gameObject.PreInit();
@@ -212,7 +212,7 @@ public class BuildingLoader : KMonoBehaviour
 		}
 		if (!Add2DComponents(def, go, null, false, -1))
 		{
-			Debug.Log(def.Name + " is not yet a 2d building!", null);
+			Debug.Log(def.Name + " is not yet a 2d building!");
 		}
 		UpdateComponentRequirement<EnergyConsumer>(go, def.RequiresPowerInput);
 		Rotatable rotatable = UpdateComponentRequirement<Rotatable>(go, def.PermittedRotations != PermittedRotations.Unrotatable);
@@ -258,10 +258,10 @@ public class BuildingLoader : KMonoBehaviour
 		}
 		if (def.RequiresPowerInput)
 		{
-			GeneratedBuildings.RegisterLogicPorts(go, LogicOperationalController.INPUT_PORTS);
+			GeneratedBuildings.RegisterLogicPorts(go, LogicOperationalController.INPUT_PORTS_0_0);
 			go.AddOrGet<LogicOperationalController>();
 		}
-		UpdateComponentRequirement<BuildingCellVisualizer>(go, BuildingCellVisualizer.CheckRequiresComponent(def));
+		UpdateComponentRequirement<BuildingCellVisualizer>(go, def.CheckRequiresBuildingCellVisualizer());
 		if (def.BaseDecor != 0f)
 		{
 			DecorProvider decorProvider = UpdateComponentRequirement<DecorProvider>(go, true);
@@ -301,7 +301,7 @@ public class BuildingLoader : KMonoBehaviour
 		kPrefabID.defaultLayer = num;
 		KSelectable component2 = gameObject.GetComponent<KSelectable>();
 		component2.SetName(def.Name);
-		UpdateComponentRequirement<BuildingCellVisualizer>(gameObject, BuildingCellVisualizer.CheckRequiresComponent(def));
+		UpdateComponentRequirement<BuildingCellVisualizer>(gameObject, def.CheckRequiresBuildingCellVisualizer());
 		KAnimGraphTileVisualizer component3 = gameObject.GetComponent<KAnimGraphTileVisualizer>();
 		if ((Object)component3 != (Object)null)
 		{
@@ -309,7 +309,7 @@ public class BuildingLoader : KMonoBehaviour
 		}
 		if (def.RequiresPowerInput)
 		{
-			GeneratedBuildings.RegisterLogicPorts(gameObject, LogicOperationalController.INPUT_PORTS);
+			GeneratedBuildings.RegisterLogicPorts(gameObject, LogicOperationalController.INPUT_PORTS_0_0);
 		}
 		gameObject.PreInit();
 		Assets.AddPrefab(gameObject.GetComponent<KPrefabID>());

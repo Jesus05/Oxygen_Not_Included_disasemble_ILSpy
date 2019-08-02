@@ -22,7 +22,7 @@ public class PressureSwitchGasConfig : IBuildingConfig
 		buildingDef.Deprecated = true;
 		buildingDef.Overheatable = false;
 		buildingDef.Floodable = true;
-		buildingDef.ViewMode = SimViewMode.PowerMap;
+		buildingDef.ViewMode = OverlayModes.Power.ID;
 		buildingDef.AudioCategory = "Metal";
 		buildingDef.SceneLayer = Grid.SceneLayer.Building;
 		SoundEventVolumeCache.instance.AddVolume("switchgaspressure_kanim", "PowerSwitch_on", NOISE_POLLUTION.NOISY.TIER3);

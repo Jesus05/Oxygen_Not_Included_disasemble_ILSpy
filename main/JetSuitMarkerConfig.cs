@@ -35,6 +35,7 @@ public class JetSuitMarkerConfig : IBuildingConfig
 			new Tag("JetSuitLocker")
 		};
 		suitMarker.PathFlag = PathFinder.PotentialPath.Flags.HasJetPack;
+		suitMarker.interactAnim = Assets.GetAnim("anim_interacts_changingarea_jetsuit_arrow_kanim");
 		AnimTileable animTileable = go.AddOrGet<AnimTileable>();
 		animTileable.tags = new Tag[2]
 		{

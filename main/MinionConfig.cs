@@ -36,30 +36,14 @@ public class MinionConfig : IEntityConfig
 
 	public GameObject CreatePrefab()
 	{
-		string text = DUPLICANTS.MODIFIERS.BASEDUPLICANT.NAME;
-		GameObject gameObject = EntityTemplates.CreateEntity(ID, text, true);
+		string name = DUPLICANTS.MODIFIERS.BASEDUPLICANT.NAME;
+		GameObject gameObject = EntityTemplates.CreateEntity(ID, name, true);
 		gameObject.AddOrGet<StateMachineController>();
 		MinionModifiers modifiers = gameObject.AddOrGet<MinionModifiers>();
 		AddMinionAmounts(modifiers);
-		Trait trait = Db.Get().CreateTrait(MINION_BASE_TRAIT_ID, text, text, null, false, null, true, true);
-		trait.Add(new AttributeModifier(Db.Get().Amounts.Stamina.deltaAttribute.Id, -0.116666667f, text, false, false, true));
-		trait.Add(new AttributeModifier(Db.Get().Amounts.Calories.deltaAttribute.Id, -1666.66663f, text, false, false, true));
-		trait.Add(new AttributeModifier(Db.Get().Amounts.Calories.maxAttribute.Id, 4000000f, text, false, false, true));
-		trait.Add(new AttributeModifier(Db.Get().Amounts.Toxicity.deltaAttribute.Id, 0f, text, false, false, true));
-		trait.Add(new AttributeModifier(Db.Get().Attributes.AirConsumptionRate.Id, 0.1f, text, false, false, true));
-		trait.Add(new AttributeModifier(Db.Get().Amounts.Bladder.deltaAttribute.Id, 0.166666672f, text, false, false, true));
-		trait.Add(new AttributeModifier(Db.Get().Amounts.HitPoints.maxAttribute.Id, 100f, text, false, false, true));
-		trait.Add(new AttributeModifier(Db.Get().Attributes.MaxUnderwaterTravelCost.Id, 8f, text, false, false, true));
-		trait.Add(new AttributeModifier(Db.Get().Attributes.DecorExpectation.Id, 0f, text, false, false, true));
-		trait.Add(new AttributeModifier(Db.Get().Attributes.FoodExpectation.Id, 0f, text, false, false, true));
-		trait.Add(new AttributeModifier(Db.Get().Attributes.ToiletEfficiency.Id, 1f, text, false, false, true));
-		trait.Add(new AttributeModifier(Db.Get().Attributes.RoomTemperaturePreference.Id, 0f, text, false, false, true));
-		trait.Add(new AttributeModifier(Db.Get().Attributes.CarryAmount.Id, 200f, text, false, false, true));
-		trait.Add(new AttributeModifier(Db.Get().Attributes.QualityOfLife.Id, 1f, text, false, false, true));
-		trait.Add(new AttributeModifier(Db.Get().Attributes.Sneezyness.Id, 0f, text, false, false, true));
-		trait.Add(new AttributeModifier(Db.Get().Amounts.ImmuneLevel.deltaAttribute.Id, 0.025f, text, false, false, true));
+		AddMinionTraits(name, modifiers);
 		gameObject.AddOrGet<MinionBrain>();
-		gameObject.AddOrGet<KPrefabID>().AddTag(GameTags.DupeBrain);
+		gameObject.AddOrGet<KPrefabID>().AddTag(GameTags.DupeBrain, false);
 		gameObject.AddOrGet<Worker>();
 		gameObject.AddOrGet<ChoreConsumer>();
 		Storage storage = gameObject.AddOrGet<Storage>();
@@ -108,8 +92,8 @@ public class MinionConfig : IEntityConfig
 			Assets.GetAnim("anim_loco_firepole_kanim"),
 			Assets.GetAnim("anim_loco_new_kanim"),
 			Assets.GetAnim("anim_loco_tube_kanim"),
-			Assets.GetAnim("anim_loco_hover_kanim"),
-			Assets.GetAnim("anim_construction_firepole_kanim")
+			Assets.GetAnim("anim_construction_firepole_kanim"),
+			Assets.GetAnim("anim_construction_jetsuit_kanim")
 		};
 		KBoxCollider2D kBoxCollider2D = gameObject.AddOrGet<KBoxCollider2D>();
 		kBoxCollider2D.offset = new Vector2(0f, 0.8f);
@@ -258,8 +242,6 @@ public class MinionConfig : IEntityConfig
 		gameObject.AddOrGet<Traits>();
 		gameObject.AddOrGet<AttributeLevels>();
 		gameObject.AddOrGet<AttributeConverters>();
-		gameObject.AddOrGet<Equipment>();
-		gameObject.AddOrGet<Ownables>();
 		PrimaryElement primaryElement = gameObject.AddOrGet<PrimaryElement>();
 		primaryElement.InternalTemperature = 310.15f;
 		primaryElement.MassPerUnit = 30f;
@@ -294,8 +276,9 @@ public class MinionConfig : IEntityConfig
 		CreatureSimTemperatureTransfer creatureSimTemperatureTransfer = gameObject.AddOrGet<CreatureSimTemperatureTransfer>();
 		creatureSimTemperatureTransfer.SurfaceArea = 10f;
 		creatureSimTemperatureTransfer.Thickness = 0.01f;
-		gameObject.AddOrGet<DiseaseTrigger>();
+		gameObject.AddOrGet<SicknessTrigger>();
 		gameObject.AddOrGet<ClothingWearer>();
+		gameObject.AddOrGet<SuitEquipper>();
 		DecorProvider decorProvider = gameObject.AddOrGet<DecorProvider>();
 		decorProvider.baseRadius = 3f;
 		decorProvider.isMovable = true;
@@ -506,6 +489,28 @@ public class MinionConfig : IEntityConfig
 		modifiers.initialAmounts.Add(Db.Get().Amounts.Temperature.Id);
 		modifiers.initialAmounts.Add(Db.Get().Amounts.ExternalTemperature.Id);
 		modifiers.initialAmounts.Add(Db.Get().Amounts.Decor.Id);
+	}
+
+	public static void AddMinionTraits(string name, Modifiers modifiers)
+	{
+		Trait trait = Db.Get().CreateTrait(MINION_BASE_TRAIT_ID, name, name, null, false, null, true, true);
+		trait.Add(new AttributeModifier(Db.Get().Amounts.Stamina.deltaAttribute.Id, -0.116666667f, name, false, false, true));
+		trait.Add(new AttributeModifier(Db.Get().Amounts.Calories.deltaAttribute.Id, -1666.66663f, name, false, false, true));
+		trait.Add(new AttributeModifier(Db.Get().Amounts.Calories.maxAttribute.Id, 4000000f, name, false, false, true));
+		trait.Add(new AttributeModifier(Db.Get().Amounts.Toxicity.deltaAttribute.Id, 0f, name, false, false, true));
+		trait.Add(new AttributeModifier(Db.Get().Attributes.AirConsumptionRate.Id, 0.1f, name, false, false, true));
+		trait.Add(new AttributeModifier(Db.Get().Amounts.Bladder.deltaAttribute.Id, 0.166666672f, name, false, false, true));
+		trait.Add(new AttributeModifier(Db.Get().Amounts.HitPoints.maxAttribute.Id, 100f, name, false, false, true));
+		trait.Add(new AttributeModifier(Db.Get().Attributes.MaxUnderwaterTravelCost.Id, 8f, name, false, false, true));
+		trait.Add(new AttributeModifier(Db.Get().Attributes.DecorExpectation.Id, 0f, name, false, false, true));
+		trait.Add(new AttributeModifier(Db.Get().Attributes.FoodExpectation.Id, 0f, name, false, false, true));
+		trait.Add(new AttributeModifier(Db.Get().Attributes.ToiletEfficiency.Id, 1f, name, false, false, true));
+		trait.Add(new AttributeModifier(Db.Get().Attributes.RoomTemperaturePreference.Id, 0f, name, false, false, true));
+		trait.Add(new AttributeModifier(Db.Get().Attributes.CarryAmount.Id, 200f, name, false, false, true));
+		trait.Add(new AttributeModifier(Db.Get().Attributes.QualityOfLife.Id, 1f, name, false, false, true));
+		trait.Add(new AttributeModifier(Db.Get().Attributes.SpaceNavigation.Id, 1f, name, false, false, true));
+		trait.Add(new AttributeModifier(Db.Get().Attributes.Sneezyness.Id, 0f, name, false, false, true));
+		trait.Add(new AttributeModifier(Db.Get().Amounts.ImmuneLevel.deltaAttribute.Id, 0.025f, name, false, false, true));
 	}
 
 	public static void ConfigureSymbols(GameObject go)

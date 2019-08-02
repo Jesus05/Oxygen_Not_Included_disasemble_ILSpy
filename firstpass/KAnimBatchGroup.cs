@@ -318,6 +318,7 @@ public class KAnimBatchGroup
 
 	private void SetupMeshData()
 	{
+		Debug.Assert(maxGroupSize > 0, "Group size must be >0");
 		maxGroupSize = Mathf.Min(maxGroupSize, 30);
 		mesh = BuildMesh(maxGroupSize * data.maxVisibleSymbols);
 		float cost = (float)(maxGroupSize * 28) / 4f;
@@ -409,7 +410,7 @@ public class KAnimBatchGroup
 
 	public KAnimBatchTextureCache.Entry CreateTexture(string name, int size_in_floats, int texture_property_id, int texture_size_property_id)
 	{
-		DebugUtil.Assert(size_in_floats > 0, "Assert!", string.Empty, string.Empty);
+		DebugUtil.Assert(size_in_floats > 0);
 		KAnimBatchTextureCache.Entry entry = cache.Get(size_in_floats, texture_property_id, texture_size_property_id);
 		entry.name = name;
 		return entry;

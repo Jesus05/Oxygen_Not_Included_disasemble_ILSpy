@@ -1,3 +1,4 @@
+using STRINGS;
 using UnityEngine;
 
 public class DeathMonitor : GameStateMachine<DeathMonitor, DeathMonitor.Instance, IStateMachineTarget, DeathMonitor.Def>
@@ -48,13 +49,15 @@ public class DeathMonitor : GameStateMachine<DeathMonitor, DeathMonitor.Instance
 			if (isDuplicant)
 			{
 				GetComponent<KSelectable>().SetStatusItem(Db.Get().StatusItemCategories.Main, Db.Get().DuplicantStatusItems.Dead, base.smi.sm.death.Get(base.smi));
+				float value = 600f - GameClock.Instance.GetTimeSinceStartOfReport();
+				ReportManager.Instance.ReportValue(ReportManager.ReportType.PersonalTime, value, string.Format(UI.ENDOFDAYREPORT.NOTES.PERSONAL_TIME, DUPLICANTS.CHORES.IS_DEAD_TASK), base.smi.master.gameObject.GetProperName());
 				Pickupable component = GetComponent<Pickupable>();
 				if ((Object)component != (Object)null)
 				{
 					component.RegisterListeners();
 				}
 			}
-			GetComponent<KPrefabID>().AddTag(GameTags.Corpse);
+			GetComponent<KPrefabID>().AddTag(GameTags.Corpse, false);
 		}
 	}
 
@@ -75,7 +78,7 @@ public class DeathMonitor : GameStateMachine<DeathMonitor, DeathMonitor.Instance
 		default_state = alive;
 		base.serializable = true;
 		alive.ParamTransition(death, dying_duplicant, (Instance smi, Death p) => p != null && smi.IsDuplicant).ParamTransition(death, dying_creature, (Instance smi, Death p) => p != null && !smi.IsDuplicant);
-		dying_duplicant.ToggleTag(GameTags.Dying).ToggleChore((Instance smi) => new DieChore(smi.master, death.Get(smi)), die);
+		dying_duplicant.ToggleAnims("anim_emotes_default_kanim", 0f).ToggleTag(GameTags.Dying).ToggleChore((Instance smi) => new DieChore(smi.master, death.Get(smi)), die);
 		dying_creature.ToggleBehaviour(GameTags.Creatures.Die, (Instance smi) => true, delegate(Instance smi)
 		{
 			smi.GoTo(dead);
@@ -91,12 +94,11 @@ public class DeathMonitor : GameStateMachine<DeathMonitor, DeathMonitor.Instance
 				Messenger.Instance.QueueMessage(message);
 			}
 		}).GoTo(dead);
-		dead.defaultState = dead.ground.TriggerOnEnter(GameHashes.Died, null).ToggleTag(GameTags.Dead).ToggleAnims("anim_emotes_default_kanim", 0f)
-			.Enter(delegate(Instance smi)
-			{
-				smi.ApplyDeath();
-				Game.Instance.Trigger(282337316, smi.gameObject);
-			});
+		dead.ToggleAnims("anim_emotes_default_kanim", 0f).defaultState = dead.ground.TriggerOnEnter(GameHashes.Died, null).ToggleTag(GameTags.Dead).Enter(delegate(Instance smi)
+		{
+			smi.ApplyDeath();
+			Game.Instance.Trigger(282337316, smi.gameObject);
+		});
 		dead.ground.Enter(delegate(Instance smi)
 		{
 			Death death = this.death.Get(smi);
@@ -106,19 +108,9 @@ public class DeathMonitor : GameStateMachine<DeathMonitor, DeathMonitor.Instance
 			}
 			if (smi.IsDuplicant)
 			{
-				smi.GetComponent<KAnimControllerBase>().Play(death.loopAnim, KAnim.PlayMode.Once, 1f, 0f);
+				smi.GetComponent<KAnimControllerBase>().Play(death.loopAnim, KAnim.PlayMode.Loop, 1f, 0f);
 			}
-		}).Exit(delegate(Instance smi)
-		{
-			smi.Unsubscribe(856640610, smi.PickedUp);
-		});
-		dead.carried.ToggleAnims("anim_dead_carried_kanim", 0f).Enter("ApplyDeath", delegate(Instance smi)
-		{
-			smi.Get<KBatchedAnimController>().Queue("idle_default", KAnim.PlayMode.Loop, 1f, 0f);
-		}).Exit(delegate(Instance smi)
-		{
-			smi.Get<KBatchedAnimController>().ClearQueue();
-		})
-			.EventTransition(GameHashes.OnUnstored, dead.ground, null);
+		}).EventTransition(GameHashes.OnStore, dead.carried, (Instance smi) => smi.IsDuplicant && smi.HasTag(GameTags.Stored));
+		dead.carried.ToggleAnims("anim_dead_carried_kanim", 0f).PlayAnim("idle_default", KAnim.PlayMode.Loop).EventTransition(GameHashes.OnStore, dead.ground, (Instance smi) => !smi.HasTag(GameTags.Stored));
 	}
 }

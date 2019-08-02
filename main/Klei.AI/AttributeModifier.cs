@@ -45,7 +45,7 @@ namespace Klei.AI
 		{
 			AttributeId = attribute_id;
 			Value = value;
-			Description = ((description != null) ? description : string.Empty);
+			Description = ((description != null) ? description : attribute_id);
 			DescriptionCB = null;
 			IsMultiplier = is_multiplier;
 			UIOnly = uiOnly;
@@ -60,11 +60,14 @@ namespace Klei.AI
 			Description = null;
 			IsMultiplier = is_multiplier;
 			UIOnly = uiOnly;
+			if (description_cb == null)
+			{
+				Debug.LogWarning("AttributeModifier being constructed without a description callback: " + attribute_id);
+			}
 		}
 
 		public void SetValue(float value)
 		{
-			DebugUtil.DevAssert(!IsReadonly, "Assert!", string.Empty, string.Empty);
 			Value = value;
 		}
 
@@ -73,11 +76,11 @@ namespace Klei.AI
 			return (DescriptionCB == null) ? Description : DescriptionCB();
 		}
 
-		public string GetFormattedString(GameObject parent_instance, bool ignore_default_formatter = false)
+		public string GetFormattedString(GameObject parent_instance)
 		{
 			IAttributeFormatter attributeFormatter = null;
 			Attribute attribute = Db.Get().Attributes.TryGet(AttributeId);
-			if (!ignore_default_formatter)
+			if (!IsMultiplier)
 			{
 				if (attribute != null)
 				{

@@ -96,7 +96,15 @@ public class Switch : KMonoBehaviour, ISaveLoadable, IToggleHandler
 	protected virtual void OnRefreshUserMenu(object data)
 	{
 		LocString loc_string = (!switchedOn) ? BUILDINGS.PREFABS.SWITCH.TURN_ON : BUILDINGS.PREFABS.SWITCH.TURN_OFF;
-		Game.Instance.userMenu.AddButton(base.gameObject, new KIconButtonMenu.ButtonInfo("action_power", loc_string, OnMinionToggle, Action.ToggleEnabled, null, null, null, string.Empty, true), 1f);
+		LocString loc_string2 = (!switchedOn) ? BUILDINGS.PREFABS.SWITCH.TURN_ON_TOOLTIP : BUILDINGS.PREFABS.SWITCH.TURN_OFF_TOOLTIP;
+		UserMenu userMenu = Game.Instance.userMenu;
+		GameObject gameObject = base.gameObject;
+		string iconName = "action_power";
+		string text = loc_string;
+		System.Action on_click = OnMinionToggle;
+		Action shortcutKey = Action.ToggleEnabled;
+		string tooltipText = loc_string2;
+		userMenu.AddButton(gameObject, new KIconButtonMenu.ButtonInfo(iconName, text, on_click, shortcutKey, null, null, null, tooltipText, true), 1f);
 	}
 
 	protected virtual void UpdateSwitchStatus()

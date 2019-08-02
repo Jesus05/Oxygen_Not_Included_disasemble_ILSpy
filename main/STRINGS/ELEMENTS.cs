@@ -19,17 +19,17 @@ namespace STRINGS
 			{
 				public static LocString EFFECTS_HEADER = "Buildings constructed from this material will have these properties";
 
-				public static LocString DECOR = "This material will add {0} to the finished building's Decor";
+				public static LocString DECOR = "This material will add <b>{0}</b> to the finished building's " + UI.PRE_KEYWORD + "Decor" + UI.PST_KEYWORD;
 
-				public static LocString OVERHEATTEMPERATURE = "This material will add {0} to the finished building's Overheat Temperature";
+				public static LocString OVERHEATTEMPERATURE = "This material will add <b>{0}</b> to the finished building's " + UI.PRE_KEYWORD + "Overheat Temperature" + UI.PST_KEYWORD + string.Empty;
 
-				public static LocString HIGH_THERMAL_CONDUCTIVITY = "This material disperses heat because energy transfers quickly through materials with high thermal conductivity\n\nBetween two objects, the rate of heat transfer will be determined by the object with the lowest Thermal Conductivity\n\nThermal Conductivity: {1} W per degree K difference (Oxygen: 0.024 W)";
+				public static LocString HIGH_THERMAL_CONDUCTIVITY = "This material disperses " + UI.PRE_KEYWORD + "Heat" + UI.PST_KEYWORD + " because energy transfers quickly through materials with high " + UI.PRE_KEYWORD + "Thermal Conductivity" + UI.PST_KEYWORD + "\n\nBetween two objects, the rate of " + UI.PRE_KEYWORD + "Heat" + UI.PST_KEYWORD + " transfer will be determined by the object with the <i>lowest</i> " + UI.PRE_KEYWORD + "Thermal Conductivity" + UI.PST_KEYWORD + "\n\nThermal Conductivity: {1} W per degree K difference (Oxygen: 0.024 W)";
 
-				public static LocString LOW_THERMAL_CONDUCTIVITY = "This material retains heat because energy transfers slowly through materials with low thermal conductivity\n\nBetween two objects, the rate of heat transfer will be determined by the object with the lowest Thermal Conductivity\n\nThermal Conductivity: {1} W per degree K difference (Oxygen: 0.024 W)";
+				public static LocString LOW_THERMAL_CONDUCTIVITY = "This material retains " + UI.PRE_KEYWORD + "Heat" + UI.PST_KEYWORD + " because energy transfers slowly through materials with low " + UI.PRE_KEYWORD + "Thermal Conductivity" + UI.PST_KEYWORD + "\n\nBetween two objects, the rate of " + UI.PRE_KEYWORD + "Heat" + UI.PST_KEYWORD + " transfer will be determined by the object with the <i>lowest</i> " + UI.PRE_KEYWORD + "Thermal Conductivity" + UI.PST_KEYWORD + "\n\nThermal Conductivity: {1} W per degree K difference (Oxygen: 0.024 W)";
 
-				public static LocString LOW_SPECIFIC_HEAT_CAPACITY = "Thermally Reactive materials require little energy to raise in temperature, and therefore heat and cool quickly\n\nSpecific Heat Capacity: {1} DTU to raise 1g by 1K";
+				public static LocString LOW_SPECIFIC_HEAT_CAPACITY = UI.PRE_KEYWORD + "Thermally Reactive" + UI.PST_KEYWORD + " materials require little energy to raise in " + UI.PRE_KEYWORD + "Temperature" + UI.PST_KEYWORD + ", and therefore heat and cool quickly\n\nSpecific Heat Capacity: {1} DTU to raise 1g by 1K";
 
-				public static LocString HIGH_SPECIFIC_HEAT_CAPACITY = "Slow Heating materials require a large amount of energy to raise in temperature, and therefore heat and cool slowly\n\nSpecific Heat Capacity: {1} DTU to raise 1g by 1K";
+				public static LocString HIGH_SPECIFIC_HEAT_CAPACITY = UI.PRE_KEYWORD + "Slow Heating" + UI.PST_KEYWORD + " materials require a large amount of energy to raise in " + UI.PRE_KEYWORD + "Temperature" + UI.PST_KEYWORD + ", and therefore heat and cool slowly\n\nSpecific Heat Capacity: {1} DTU to raise 1g by 1K";
 			}
 
 			public static LocString EFFECTS_HEADER = "<b>Resource Effects:</b>";
@@ -75,21 +75,49 @@ namespace STRINGS
 		{
 			public static LocString NAME = UI.FormatAsLink("Algae", "ALGAE");
 
-			public static LocString DESC = "Algae is a cluster of non-motile, single-celled lifeforms.\n\nIt can be used to produce " + OXYGEN.NAME + " when grown in Algae Terrariums.";
+			public static LocString DESC = "Algae is a cluster of non-motile, single-celled lifeforms.\n\nIt can be used to produce " + OXYGEN.NAME + " when used in a " + BUILDINGS.PREFABS.MINERALDEOXIDIZER.NAME;
+		}
+
+		public class ALUMINUMORE
+		{
+			public static LocString NAME = UI.FormatAsLink("Aluminum Ore", "ALUMINUMORE");
+
+			public static LocString DESC = "Aluminum ore, also known as Bauxite, is a sedimentary rock high in metal content.\n\nIt can be refined into " + UI.FormatAsLink("Aluminum", "ALUMINUM") + ".";
+		}
+
+		public class ALUMINUM
+		{
+			public static LocString NAME = UI.FormatAsLink("Aluminum", "ALUMINUM");
+
+			public static LocString DESC = "(Al) Aluminum is a low density " + UI.FormatAsLink("Metal", "REFINEDMETAL") + ".\n\nIt has high Thermal Conductivity and is suitable for building " + UI.FormatAsLink("Power", "POWER") + " systems.";
+		}
+
+		public class MOLTENALUMINUM
+		{
+			public static LocString NAME = UI.FormatAsLink("Molten Aluminum", "MOLTENALUMINUM");
+
+			public static LocString DESC = "(Al) Aluminum is a low density " + UI.FormatAsLink("Metal", "REFINEDMETAL") + " heated into a molten, " + UI.FormatAsLink("Liquid", "ELEMENTS_LIQUID") + " state.";
+		}
+
+		public class ALUMINUMGAS
+		{
+			public static LocString NAME = UI.FormatAsLink("Aluminum", "ALUMINUMGAS");
+
+			public static LocString DESC = "(Al) Aluminum is a low density " + UI.FormatAsLink("Metal", "REFINEDMETAL") + " heated into a " + UI.FormatAsLink("Gaseous", "ELEMENTS_GAS") + " state.";
 		}
 
 		public class BLEACHSTONE
 		{
 			public static LocString NAME = UI.FormatAsLink("Bleach Stone", "BLEACHSTONE");
 
-			public static LocString DESC = "Bleach stone is an unstable compound that emits toxic " + CHLORINEGAS.NAME + ".\n\nIt is useful in " + UI.FormatAsLink("Hygienic", "HYGIENE") + " processes.";
+			public static LocString DESC = "Bleach stone is an unstable compound that emits toxic " + UI.FormatAsLink("Chlorine", "CHLORINEGAS") + ".\n\nIt is useful in " + UI.FormatAsLink("Hygienic", "HYGIENE") + " processes.";
 		}
 
 		public class BITUMEN
 		{
 			public static LocString NAME = UI.FormatAsLink("Bitumen", "BITUMEN");
 
-			public static LocString DESC = "Bitumen is a sticky viscous residue from " + PETROLEUM.NAME + " production";
+			public static LocString DESC = "Bitumen is a sticky viscous residue left behind from " + PETROLEUM.NAME + " production.";
 		}
 
 		public class BOTTLEDWATER
@@ -97,6 +125,20 @@ namespace STRINGS
 			public static LocString NAME = UI.FormatAsLink("Water", "BOTTLEDWATER");
 
 			public static LocString DESC = "(H<sub>2</sub>O) Clean " + WATER.NAME + ", prepped for transport.";
+		}
+
+		public class BRINEICE
+		{
+			public static LocString NAME = UI.FormatAsLink("Brine Ice", "BRINEICE");
+
+			public static LocString DESC = "Brine is a natural, highly concentrated solution of " + UI.FormatAsLink("Salt", "SALT") + " dissolved in " + UI.FormatAsLink("Water", "WATER") + ".\n\nIt can be used in desalination processes, separating out useable salt.";
+		}
+
+		public class BRINE
+		{
+			public static LocString NAME = UI.FormatAsLink("Brine", "BRINE");
+
+			public static LocString DESC = "Brine is a natural, highly concentrated solution of " + UI.FormatAsLink("Salt", "SALT") + " dissolved in " + UI.FormatAsLink("Water", "WATER") + ".\n\nIt can be used in desalination processes, separating out useable salt.";
 		}
 
 		public class CARBON
@@ -113,6 +155,27 @@ namespace STRINGS
 			public static LocString DESC = "(C) Refined carbon is solid element purified from raw " + CARBON.NAME + ".";
 		}
 
+		public class ETHANOLGAS
+		{
+			public static LocString NAME = UI.FormatAsLink("Ethanol", "ETHANOLGAS");
+
+			public static LocString DESC = "(C<sub>2</sub>H<sub>6</sub>O) Ethanol is a high toxic chemical compound heated into a " + UI.FormatAsLink("Gaseous", "ELEMENTS_GAS") + " state.";
+		}
+
+		public class ETHANOL
+		{
+			public static LocString NAME = UI.FormatAsLink("Ethanol", "ETHANOL");
+
+			public static LocString DESC = "(C<sub>2</sub>H<sub>6</sub>O) Ethanol is a high toxic chemical compound.\n\nIt can be used as a highly effective fuel source when burned.";
+		}
+
+		public class SOLIDETHANOL
+		{
+			public static LocString NAME = UI.FormatAsLink("Ethanol", "SOLIDETHANOL");
+
+			public static LocString DESC = "(C<sub>2</sub>H<sub>6</sub>O) Ethanol is a high toxic chemical compound.\n\nIt can be used as a highly effective fuel source when burned.";
+		}
+
 		public class CARBONDIOXIDE
 		{
 			public static LocString NAME = UI.FormatAsLink("Carbon Dioxide", "CARBONDIOXIDE");
@@ -124,7 +187,7 @@ namespace STRINGS
 		{
 			public static LocString NAME = UI.FormatAsLink("Carbon Fiber", "CARBONFIBRE");
 
-			public static LocString DESC = "Carbon Fiber is a " + UI.FormatAsLink("RefinedMineral", "Manufactured Material") + " with high tensile strength.";
+			public static LocString DESC = "Carbon Fiber is a " + UI.FormatAsLink("Manufactured Material", "REFINEDMINERAL") + " with high tensile strength.";
 		}
 
 		public class CARBONGAS
@@ -138,35 +201,35 @@ namespace STRINGS
 		{
 			public static LocString NAME = UI.FormatAsLink("Chlorine", "CHLORINE");
 
-			public static LocString DESC = "(Cl) Chlorine is an extremely toxic element in a " + UI.FormatAsLink("Liquid", "ELEMENTS_LIQUID") + " state.";
+			public static LocString DESC = "(Cl) Chlorine is a natural " + UI.FormatAsLink("Germ", "DISEASE") + "-killing element in a " + UI.FormatAsLink("Liquid", "ELEMENTS_LIQUID") + " state.";
 		}
 
 		public class CHLORINEGAS
 		{
 			public static LocString NAME = UI.FormatAsLink("Chlorine", "CHLORINEGAS");
 
-			public static LocString DESC = "(Cl) Chlorine is an extremely toxic chemical in a " + UI.FormatAsLink("Gaseous", "ELEMENTS_GAS") + " state.";
+			public static LocString DESC = "(Cl) Chlorine is a natural " + UI.FormatAsLink("Germ", "DISEASE") + "-killing element in a " + UI.FormatAsLink("Gaseous", "ELEMENTS_GAS") + " state.";
 		}
 
 		public class CLAY
 		{
 			public static LocString NAME = UI.FormatAsLink("Clay", "CLAY");
 
-			public static LocString DESC = "Clay is a soft, naturally occurring composite of stone and soil that hardens at high " + UI.FormatAsLink("Temperatures", "HEAT") + ".\n\nIt is a reliable <b>Construction Material.</b>";
+			public static LocString DESC = "Clay is a soft, naturally occurring composite of stone and soil that hardens at high " + UI.FormatAsLink("Temperatures", "HEAT") + ".\n\nIt is a reliable <b>Construction Material</b>.";
 		}
 
 		public class BRICK
 		{
 			public static LocString NAME = UI.FormatAsLink("Brick", "BRICK");
 
-			public static LocString DESC = "Brick is a hard, brittle material formed from heated " + CLAY.NAME + ".\n\nIt is a reliable Construction Material.";
+			public static LocString DESC = "Brick is a hard, brittle material formed from heated " + CLAY.NAME + ".\n\nIt is a reliable <b>Construction Material</b>.";
 		}
 
 		public class CERAMIC
 		{
 			public static LocString NAME = UI.FormatAsLink("Ceramic", "CERAMIC");
 
-			public static LocString DESC = "Ceramic is a hard, brittle material formed from heated " + CLAY.NAME + ".\n\nIt is a reliable Construction Material.";
+			public static LocString DESC = "Ceramic is a hard, brittle material formed from heated " + CLAY.NAME + ".\n\nIt is a reliable <b>Construction Material</b>.";
 		}
 
 		public class CEMENT
@@ -194,14 +257,14 @@ namespace STRINGS
 		{
 			public static LocString NAME = UI.FormatAsLink("Copper", "COPPER");
 
-			public static LocString DESC = "(Cu) Copper is a conductive " + UI.FormatAsLink("Metal", "RAWMETAL") + ".\n\nIt is suitable for building " + UI.FormatAsLink("Power", "POWER") + " systems.";
+			public static LocString DESC = "(Cu) Copper is a conductive " + UI.FormatAsLink("Metal", "METAL") + ".\n\nIt is suitable for building " + UI.FormatAsLink("Power", "POWER") + " systems.";
 		}
 
 		public class COPPERGAS
 		{
 			public static LocString NAME = UI.FormatAsLink("Copper", "COPPERGAS");
 
-			public static LocString DESC = "(Cu) Copper is a conductive " + UI.FormatAsLink("Metal", "RAWMETAL") + " heated into a " + UI.FormatAsLink("Gas", "ELEMENTS_GAS") + ".";
+			public static LocString DESC = "(Cu) Copper is a conductive " + UI.FormatAsLink("Metal", "METAL") + " heated into a " + UI.FormatAsLink("Gas", "ELEMENTS_GAS") + ".";
 		}
 
 		public class CREATURE
@@ -224,7 +287,7 @@ namespace STRINGS
 
 			public static LocString NAME_TWO = UI.FormatAsLink("Petroleum", "PETROLEUM");
 
-			public static LocString DESC = "Petroleum is a " + UI.FormatAsLink("Power", "POWER") + " source refined from " + CRUDEOIL.NAME + ".\n\nIt is also an essential ingredient in the production of " + POLYPROPYLENE.NAME + ".";
+			public static LocString DESC = "Petroleum is a " + UI.FormatAsLink("Power", "POWER") + " source refined from " + UI.FormatAsLink("Crude Oil", "CRUDEOIL") + ".\n\nIt is also an essential ingredient in the production of " + UI.FormatAsLink("Plastic", "POLYPROPYLENE") + ".";
 		}
 
 		public class SOURGAS
@@ -247,14 +310,14 @@ namespace STRINGS
 		{
 			public static LocString NAME = UI.FormatAsLink("Crushed Rock", "CRUSHEDROCK");
 
-			public static LocString DESC = "Crushed Rock is " + IGNEOUSROCK.NAME + " crushed into a mechanical mixture.";
+			public static LocString DESC = "Crushed Rock is " + UI.FormatAsLink("Igneous Rock", "IGNEOUSROCK") + " crushed into a mechanical mixture.";
 		}
 
 		public class CUPRITE
 		{
 			public static LocString NAME = UI.FormatAsLink("Copper Ore", "CUPRITE");
 
-			public static LocString DESC = "(Cu<sub>2</sub>0) Copper Ore is a conductive " + UI.FormatAsLink("Metal", "RAWMETAL") + ".\n\nIt is suitable for building " + UI.FormatAsLink("Power", "POWER") + " systems.";
+			public static LocString DESC = "(Cu<sub>2</sub>O) Copper Ore is a conductive " + UI.FormatAsLink("Metal", "RAWMETAL") + ".\n\nIt is suitable for building " + UI.FormatAsLink("Power", "POWER") + " systems.";
 		}
 
 		public class DIAMOND
@@ -282,7 +345,7 @@ namespace STRINGS
 		{
 			public static LocString NAME = UI.FormatAsLink("Polluted Water", "DIRTYWATER");
 
-			public static LocString DESC = "Polluted Water is dirty, unfiltered " + WATER.NAME + ".\n\nIt is not fit for consumption.";
+			public static LocString DESC = "Polluted Water is dirty, unfiltered " + UI.FormatAsLink("Water", "WATER") + ".\n\nIt is not fit for consumption.";
 		}
 
 		public class ELECTRUM
@@ -296,14 +359,14 @@ namespace STRINGS
 		{
 			public static LocString NAME = UI.FormatAsLink("Fertilizer", "FERTILIZER");
 
-			public static LocString DESC = "Fertilizer is a processed mixture of biological nutrients.\n\nIt aids in the growth of certain " + UI.FormatAsLink("plant", "Plants") + ".";
+			public static LocString DESC = "Fertilizer is a processed mixture of biological nutrients.\n\nIt aids in the growth of certain " + UI.FormatAsLink("Plants", "PLANTS") + ".";
 		}
 
 		public class PONDSCUM
 		{
 			public static LocString NAME = UI.FormatAsLink("Pondscum", "PONDSCUM");
 
-			public static LocString DESC = "Pondscum is a soft, naturally occurring composite of biological nutrients.\n\nIt may be processed into " + FERTILIZER.NAME + " and aids in the growth of certain " + UI.FormatAsLink("plant", "Plants") + ".";
+			public static LocString DESC = "Pondscum is a soft, naturally occurring composite of biological nutrients.\n\nIt may be processed into " + UI.FormatAsLink("Fertilizer", "FERTILIZER") + " and aids in the growth of certain " + UI.FormatAsLink("Plants", "PLANTS") + ".";
 		}
 
 		public class FOOLSGOLD
@@ -324,7 +387,7 @@ namespace STRINGS
 		{
 			public static LocString NAME = UI.FormatAsLink("Glass", "GLASS");
 
-			public static LocString DESC = "Glass is a brittle, transparent substance formed from " + SAND.NAME + " fired at high temperatures.";
+			public static LocString DESC = "Glass is a brittle, transparent substance formed from " + UI.FormatAsLink("Sand", "SAND") + " fired at high temperatures.";
 		}
 
 		public class GOLD
@@ -352,7 +415,7 @@ namespace STRINGS
 		{
 			public static LocString NAME = UI.FormatAsLink("Granite", "GRANITE");
 
-			public static LocString DESC = "Granite is a dense composite of " + IGNEOUSROCK.NAME + ".\n\nIt is useful as a Construction Material.";
+			public static LocString DESC = "Granite is a dense composite of " + UI.FormatAsLink("Igneous Rock", "IGNEOUSROCK") + ".\n\nIt is useful as a <b>Construction Material</b>.";
 		}
 
 		public class HELIUM
@@ -380,14 +443,14 @@ namespace STRINGS
 		{
 			public static LocString NAME = UI.FormatAsLink("Igneous Rock", "IGNEOUSROCK");
 
-			public static LocString DESC = "Igneous Rock is a composite of solidified volcanic rock.\n\nIt is useful as a Construction Material.";
+			public static LocString DESC = "Igneous Rock is a composite of solidified volcanic rock.\n\nIt is useful as a <b>Construction Material</b>.";
 		}
 
 		public class ISORESIN
 		{
 			public static LocString NAME = UI.FormatAsLink("Isoresin", "ISORESIN");
 
-			public static LocString DESC = "Isoresin is a crystalized sap composed of long-chain polymers.\n\nIt is used in the production of rare, high grade materials.";
+			public static LocString DESC = "Isoresin is a crystallized sap composed of long-chain polymers.\n\nIt is used in the production of rare, high grade materials.";
 		}
 
 		public class IRON
@@ -401,7 +464,7 @@ namespace STRINGS
 		{
 			public static LocString NAME = UI.FormatAsLink("Iron", "IRONINGOT");
 
-			public static LocString DESC = "(Fe) Iron is refined " + IRONORE.NAME + ".";
+			public static LocString DESC = "(Fe) Iron is refined " + UI.FormatAsLink("Iron Ore", "IRONORE") + ".";
 		}
 
 		public class IRONGAS
@@ -429,14 +492,28 @@ namespace STRINGS
 		{
 			public static LocString NAME = UI.FormatAsLink("Lime", "LIME");
 
-			public static LocString DESC = "(CaCO<sub>3</sub>) Lime is a mineral commonly found in " + UI.FormatAsLink("Critter", "CRITTERS") + " egg shells.\n\nIt is useful as a Construction Material.";
+			public static LocString DESC = "(CaCO<sub>3</sub>) Lime is a mineral commonly found in " + UI.FormatAsLink("Critter", "CREATURES") + " egg shells.\n\nIt is useful as a <b>Construction Material</b>.";
 		}
 
 		public class FOSSIL
 		{
 			public static LocString NAME = UI.FormatAsLink("Fossil", "FOSSIL");
 
-			public static LocString DESC = "Fossil is organic matter, highly compressed and hardened into a mineral state.\n\nIt is useful as a Construction Material.";
+			public static LocString DESC = "Fossil is organic matter, highly compressed and hardened into a mineral state.\n\nIt is useful as a <b>Construction Material</b>.";
+		}
+
+		public class LEADGAS
+		{
+			public static LocString NAME = UI.FormatAsLink("Lead", "LEADGAS");
+
+			public static LocString DESC = "(Pb) Lead is a soft yet extremely dense " + UI.FormatAsLink("Refined Metal", "REFINEDMETAL") + " heated into a " + UI.FormatAsLink("Gaseous", "ELEMENTS_GAS") + ".";
+		}
+
+		public class LEAD
+		{
+			public static LocString NAME = UI.FormatAsLink("Lead", "LEAD");
+
+			public static LocString DESC = "(Pb) Lead is a soft yet extremely dense " + UI.FormatAsLink("Refined Metal", "REFINEDMETAL") + ".\n\nIt has a low Overheat Temperature and is suitable for building " + UI.FormatAsLink("Power", "POWER") + " systems.";
 		}
 
 		public class LIQUIDCARBONDIOXIDE
@@ -499,14 +576,14 @@ namespace STRINGS
 		{
 			public static LocString NAME = UI.FormatAsLink("Mafic Rock", "MAFICROCK");
 
-			public static LocString DESC = "Mafic Rock an " + UI.FormatAsLink("Iron", "IRON") + "-rich variation of " + UI.FormatAsLink("Igneous Rock", "IGNEOUSROCK") + ".\n\nIt is useful as a Construction Material.";
+			public static LocString DESC = "Mafic Rock an " + UI.FormatAsLink("Iron", "IRON") + "-rich variation of " + UI.FormatAsLink("Igneous Rock", "IGNEOUSROCK") + ".\n\nIt is useful as a <b>Construction Material</b>.";
 		}
 
 		public class MAGMA
 		{
 			public static LocString NAME = UI.FormatAsLink("Magma", "MAGMA");
 
-			public static LocString DESC = "Magma is a composite of " + IGNEOUSROCK.NAME + " heated into a molten, " + UI.FormatAsLink("Liquid", "ELEMENTS_LIQUID") + " state.";
+			public static LocString DESC = "Magma is a composite of " + UI.FormatAsLink("Igneous Rock", "IGNEOUSROCK") + " heated into a molten, " + UI.FormatAsLink("Liquid", "ELEMENTS_LIQUID") + " state.";
 		}
 
 		public class MERCURY
@@ -565,6 +642,13 @@ namespace STRINGS
 			public static LocString DESC = "(Fe) Iron is a common industrial " + UI.FormatAsLink("Metal", "RAWMETAL") + " heated into a " + UI.FormatAsLink("Liquid", "ELEMENTS_LIQUID") + " state.";
 		}
 
+		public class MOLTENLEAD
+		{
+			public static LocString NAME = UI.FormatAsLink("Molten Lead", "MOLTENLEAD");
+
+			public static LocString DESC = "(Pb) Lead is an extremely dense " + UI.FormatAsLink("Refined Metal", "REFINEDMETAL") + " heated into a " + UI.FormatAsLink("Liquid", "ELEMENTS_LIQUID") + " state.";
+		}
+
 		public class MOLTENNIOBIUM
 		{
 			public static LocString NAME = UI.FormatAsLink("Niobium", "MOLTENNIOBIUM");
@@ -611,7 +695,7 @@ namespace STRINGS
 		{
 			public static LocString NAME = UI.FormatAsLink("Obsidian", "OBSIDIAN");
 
-			public static LocString DESC = "Obsidian is a brittle composite of volcanic " + GLASS.NAME + ".";
+			public static LocString DESC = "Obsidian is a brittle composite of volcanic " + UI.FormatAsLink("Glass", "GLASS") + ".";
 		}
 
 		public class OXYGEN
@@ -625,7 +709,7 @@ namespace STRINGS
 		{
 			public static LocString NAME = UI.FormatAsLink("Oxylite", "OXYROCK");
 
-			public static LocString DESC = "(Ir<sub>3</sub>O<sub>2</sub>) Oxylite is a chemical compound that slowly emits breathable " + OXYGEN.NAME + ".\n\nExcavating Oxylite increases its emission rate, but depletes the ore more rapidly.";
+			public static LocString DESC = "(Ir<sub>3</sub>O<sub>2</sub>) Oxylite is a chemical compound that slowly emits breathable " + UI.FormatAsLink("Oxygen", "OXYGEN") + ".\n\nExcavating " + NAME + " increases its emission rate, but depletes the ore more rapidly.";
 		}
 
 		public class PHOSPHATENODULES
@@ -677,18 +761,53 @@ namespace STRINGS
 			public static LocString DESC = "Rock Gas is rock that has been superheated into a " + UI.FormatAsLink("Gaseous", "ELEMENTS_GAS") + " state.";
 		}
 
+		public class RUST
+		{
+			public static LocString NAME = UI.FormatAsLink("Rust", "RUST");
+
+			public static LocString DESC = "Rust is an iron oxide that forms from the breakdown of " + UI.FormatAsLink("Iron", "IRON") + ".\n\nIt is useful in some " + UI.FormatAsLink("Oxygen", "OXYGEN") + " production processes.";
+		}
+
 		public class REGOLITH
 		{
 			public static LocString NAME = UI.FormatAsLink("Regolith", "REGOLITH");
 
-			public static LocString DESC = "Regolith is a sandy substance composed of the various particles that collect atop terrestrial objects.\n\nIt is useful as a Filtration Medium.";
+			public static LocString DESC = "Regolith is a sandy substance composed of the various particles that collect atop terrestrial objects.\n\nIt is useful as a " + UI.PRE_KEYWORD + "Filtration Medium" + UI.PST_KEYWORD + ".";
+		}
+
+		public class SALTGAS
+		{
+			public static LocString NAME = UI.FormatAsLink("Salt Gas", "SALTGAS");
+
+			public static LocString DESC = "(NaCl) Salt Gas is an edible chemical compound that has been superheated into a " + UI.FormatAsLink("Gaseous", "ELEMENTS_GAS") + " state.";
+		}
+
+		public class MOLTENSALT
+		{
+			public static LocString NAME = UI.FormatAsLink("Molten Salt", "MOLTENSALT");
+
+			public static LocString DESC = "(NaCl) Molten Salt is an edible chemical compound that has been heated into a " + UI.FormatAsLink("Liquid", "ELEMENTS_LIQUID") + " state.";
+		}
+
+		public class SALT
+		{
+			public static LocString NAME = UI.FormatAsLink("Salt", "SALT");
+
+			public static LocString DESC = "(NaCl) Salt, also known as sodium chloride, is an edible chemical compound.\n\nWhen refined, it can be eaten with meals to increase Duplicant " + UI.FormatAsLink("Morale", "MORALE") + ".";
+		}
+
+		public class SALTWATER
+		{
+			public static LocString NAME = UI.FormatAsLink("Salt Water", "SALTWATER");
+
+			public static LocString DESC = "Salt Water is a natural, lightly concentrated solution of " + UI.FormatAsLink("Salt", "SALT") + " dissolved in " + UI.FormatAsLink("Water", "WATER") + ".\n\nIt can be used in desalination processes, separating out useable salt.";
 		}
 
 		public class SAND
 		{
 			public static LocString NAME = UI.FormatAsLink("Sand", "SAND");
 
-			public static LocString DESC = "Sand is a composite of granular rock.\n\nIt is useful as a Filtration Medium.";
+			public static LocString DESC = "Sand is a composite of granular rock.\n\nIt is useful as a " + UI.PRE_KEYWORD + "Filtration Medium" + UI.PST_KEYWORD + ".";
 		}
 
 		public class SANDCEMENT
@@ -702,42 +821,42 @@ namespace STRINGS
 		{
 			public static LocString NAME = UI.FormatAsLink("Sandstone", "SANDSTONE");
 
-			public static LocString DESC = "Sandstone is a composite of relatively soft sedimentary rock.\n\nIt is useful as a Construction Material.";
+			public static LocString DESC = "Sandstone is a composite of relatively soft sedimentary rock.\n\nIt is useful as a <b>Construction Material</b>.";
 		}
 
 		public class SEDIMENTARYROCK
 		{
 			public static LocString NAME = UI.FormatAsLink("Sedimentary Rock", "SEDIMENTARYROCK");
 
-			public static LocString DESC = "Sedimentary Rock is a hardened composite of sediment layers.\n\nIt is useful as a Construction Material.";
+			public static LocString DESC = "Sedimentary Rock is a hardened composite of sediment layers.\n\nIt is useful as a <b>Construction Material</b>.";
 		}
 
 		public class SLIMEMOLD
 		{
 			public static LocString NAME = UI.FormatAsLink("Slime", "SLIMEMOLD");
 
-			public static LocString DESC = "Slime is a thick biomixture of algae, fungi, and mucopolysaccharides.\n\nIt can be distilled into " + ALGAE.NAME + " and is useful in some " + OXYGEN.NAME + " production processes.";
+			public static LocString DESC = "Slime is a thick biomixture of algae, fungi, and mucopolysaccharides.\n\nIt can be distilled into " + UI.FormatAsLink("Algae", "ALGAE") + " and is useful in some " + UI.FormatAsLink("Oxygen", "OXYGEN") + " production processes.";
 		}
 
 		public class SNOW
 		{
 			public static LocString NAME = UI.FormatAsLink("Snow", "SNOW");
 
-			public static LocString DESC = "(H<sub>2</sub>0) Snow is a mass of loose, crystalline ice particles.\n\nIt becomes " + WATER.NAME + " when melted.";
+			public static LocString DESC = "(H<sub>2</sub>0) Snow is a mass of loose, crystalline ice particles.\n\nIt becomes " + UI.FormatAsLink("Water", "WATER") + " when melted.";
 		}
 
 		public class SOLIDCARBONDIOXIDE
 		{
 			public static LocString NAME = UI.FormatAsLink("Carbon Dioxide", "SOLIDCARBONDIOXIDE");
 
-			public static LocString DESC = "(CO<sub>2</sub>) Carbon Dioxide is a toxic compound in a " + UI.FormatAsLink("Solid", "ELEMENTS_SOLID") + " state.";
+			public static LocString DESC = "(CO<sub>2</sub>) Carbon Dioxide is an unbreathable compound in a " + UI.FormatAsLink("Solid", "ELEMENTS_SOLID") + " state.";
 		}
 
 		public class SOLIDCHLORINE
 		{
 			public static LocString NAME = UI.FormatAsLink("Chlorine", "SOLIDCHLORINE");
 
-			public static LocString DESC = "(Cl) Chlorine is a toxic chemical element in a " + UI.FormatAsLink("Solid", "ELEMENTS_SOLID") + " state.";
+			public static LocString DESC = "(Cl) Chlorine is a natural " + UI.FormatAsLink("Germ", "DISEASE") + "-killing element in a " + UI.FormatAsLink("Solid", "ELEMENTS_SOLID") + " state.";
 		}
 
 		public class SOLIDCRUDEOIL
@@ -758,7 +877,7 @@ namespace STRINGS
 		{
 			public static LocString NAME = UI.FormatAsLink("Mercury", "SOLIDMERCURY");
 
-			public static LocString DESC = "(Hg) Mercury is a toxic " + UI.FormatAsLink("Metal", "RAWMETAL") + " in a " + UI.FormatAsLink("Solid", "ELEMENTS_SOLID") + " state.";
+			public static LocString DESC = "(Hg) Mercury is a rare " + UI.FormatAsLink("Metal", "RAWMETAL") + " in a " + UI.FormatAsLink("Solid", "ELEMENTS_SOLID") + " state.";
 		}
 
 		public class SOLIDOXYGEN
@@ -814,7 +933,7 @@ namespace STRINGS
 		{
 			public static LocString NAME = UI.FormatAsLink("Steam", "STEAM");
 
-			public static LocString DESC = "(H<sub>2</sub>0) Steam is water that has been heated into a scalding " + UI.FormatAsLink("Gas", "ELEMENTS_GAS") + ".";
+			public static LocString DESC = "(H<sub>2</sub>0) Steam is " + WATER.NAME + " that has been heated into a scalding " + UI.FormatAsLink("Gas", "ELEMENTS_GAS") + ".";
 		}
 
 		public class STEEL
@@ -863,7 +982,7 @@ namespace STRINGS
 		{
 			public static LocString NAME = UI.FormatAsLink("Insulation", "SUPERINSULATOR");
 
-			public static LocString DESC = "Insulation reduces " + UI.FormatAsLink("Heat Transfer", "HEAT") + " and is composed of recrystalized " + UI.FormatAsLink("Abyssalite", "KATAIRITE") + ".";
+			public static LocString DESC = "Insulation reduces " + UI.FormatAsLink("Heat Transfer", "HEAT") + " and is composed of recrystallized " + UI.FormatAsLink("Abyssalite", "KATAIRITE") + ".";
 		}
 
 		public class TEMPCONDUCTORSOLID
@@ -940,21 +1059,28 @@ namespace STRINGS
 		{
 			public static LocString NAME = UI.FormatAsLink("Water", "WATER");
 
-			public static LocString DESC = "(H<sub>2</sub>O) Clean " + NAME + ", suitable for consumption.";
+			public static LocString DESC = "(H<sub>2</sub>O) Clean " + UI.FormatAsLink("Water", "WATER") + ", suitable for consumption.";
 		}
 
 		public class WOLFRAMITE
 		{
 			public static LocString NAME = UI.FormatAsLink("Wolframite", "WOLFRAMITE");
 
-			public static LocString DESC = "((Fe,Mn)WO<sub>4</sub>) Wolframite is a dense Metallic element in a " + UI.FormatAsLink("Solid", "ELEMENTS_SOLID") + " state.\n\nIt is a source of " + TUNGSTEN.NAME + " and is suitable for building " + UI.FormatAsLink("Power", "POWER") + " systems.";
+			public static LocString DESC = "((Fe,Mn)WO<sub>4</sub>) Wolframite is a dense Metallic element in a " + UI.FormatAsLink("Solid", "ELEMENTS_SOLID") + " state.\n\nIt is a source of " + UI.FormatAsLink("Tungsten", "TUNGSTEN") + " and is suitable for building " + UI.FormatAsLink("Power", "POWER") + " systems.";
+		}
+
+		public class TESTELEMENT
+		{
+			public static LocString NAME = UI.FormatAsLink("Test Element", "TESTELEMENT");
+
+			public static LocString DESC = "((Fe,Mn)WO<sub>4</sub>) Wolframite is a dense Metallic element in a " + UI.FormatAsLink("Solid", "ELEMENTS_SOLID") + " state.\n\nIt is a source of " + UI.FormatAsLink("Tungsten", "TUNGSTEN") + " and is suitable for building " + UI.FormatAsLink("Power", "POWER") + " systems.";
 		}
 
 		public class POLYPROPYLENE
 		{
 			public static LocString NAME = UI.FormatAsLink("Plastic", "POLYPROPYLENE");
 
-			public static LocString DESC = "(C<sub>3</sub>H<sub>6</sub>)<sub>n</sub> " + NAME + " is a thermoplastic polymer.\n\nIt is useful as a raw Plastic feedstock.";
+			public static LocString DESC = "(C<sub>3</sub>H<sub>6</sub>)<sub>n</sub> " + NAME + " is a thermoplastic polymer.\n\nIt is useful for constructing a variety of advanced buildings and equipment.";
 
 			public static LocString BUILD_DESC = "Buildings made of this material have antiseptic properties";
 		}
@@ -963,7 +1089,7 @@ namespace STRINGS
 		{
 			public static LocString NAME = UI.FormatAsLink("Naphtha", "NAPHTHA");
 
-			public static LocString DESC = "Naphtha a distilled hydrocarbon mixture produced from the burning of " + POLYPROPYLENE.NAME + ".";
+			public static LocString DESC = "Naphtha a distilled hydrocarbon mixture produced from the burning of " + UI.FormatAsLink("Plastic", "POLYPROPYLENE") + ".";
 		}
 
 		public class SLABS

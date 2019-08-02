@@ -65,10 +65,15 @@ public class FetchChore : Chore<FetchChore.StatesInstance>
 			}
 			else
 			{
-				flag = FetchManager.IsFetchablePickup(pickupable.KPrefabID, pickupable.storage, pickupable.UnreservedAmount, fetchChore.tagBits, fetchChore.requiredTagBits, fetchChore.forbiddenTagBits, context.consumerState.storage);
+				flag = FetchManager.IsFetchablePickup(pickupable.KPrefabID, pickupable.storage, pickupable.UnreservedAmount, ref fetchChore.tagBits, ref fetchChore.requiredTagBits, ref fetchChore.forbiddenTagBits, context.consumerState.storage);
 			}
 			if (flag)
 			{
+				if ((UnityEngine.Object)pickupable == (UnityEngine.Object)null)
+				{
+					Debug.Log($"Failed to find fetch target for {fetchChore.destination}");
+					return false;
+				}
 				context.data = pickupable;
 				if (context.consumerState.consumer.GetNavigationCost(pickupable, out int cost))
 				{
@@ -80,17 +85,17 @@ public class FetchChore : Chore<FetchChore.StatesInstance>
 		}
 	};
 
-	public float originalAmount => smi.sm.requestedamount.Get(smi);
+	public float originalAmount => base.smi.sm.requestedamount.Get(base.smi);
 
 	public float amount
 	{
 		get
 		{
-			return smi.sm.actualamount.Get(smi);
+			return base.smi.sm.actualamount.Get(base.smi);
 		}
 		set
 		{
-			smi.sm.actualamount.Set(value, smi);
+			base.smi.sm.actualamount.Set(value, base.smi);
 		}
 	}
 
@@ -98,11 +103,11 @@ public class FetchChore : Chore<FetchChore.StatesInstance>
 	{
 		get
 		{
-			return smi.sm.chunk.Get<Pickupable>(smi);
+			return base.smi.sm.chunk.Get<Pickupable>(base.smi);
 		}
 		set
 		{
-			smi.sm.chunk.Set(value, smi);
+			base.smi.sm.chunk.Set(value, base.smi);
 		}
 	}
 
@@ -110,37 +115,37 @@ public class FetchChore : Chore<FetchChore.StatesInstance>
 	{
 		get
 		{
-			return smi.sm.fetcher.Get(smi);
+			return base.smi.sm.fetcher.Get(base.smi);
 		}
 		set
 		{
-			smi.sm.fetcher.Set(value, smi);
+			base.smi.sm.fetcher.Set(value, base.smi);
 		}
 	}
 
-	public Storage destination => smi.sm.destination.Get<Storage>(smi);
+	public Storage destination => base.smi.sm.destination.Get<Storage>(base.smi);
 
-	public FetchChore(ChoreType choreType, Storage destination, float amount, Tag[] tags, Tag[] required_tags = null, Tag[] forbidden_tags = null, ChoreProvider chore_provider = null, bool run_until_complete = true, Action<Chore> on_complete = null, Action<Chore> on_begin = null, Action<Chore> on_end = null, FetchOrder2.OperationalRequirement operational_requirement = FetchOrder2.OperationalRequirement.Operational, int priority_mod = 0, Tag[] chore_tags = null)
-		: base(choreType, (IStateMachineTarget)destination, chore_provider, run_until_complete, on_complete, on_begin, on_end, PriorityScreen.PriorityClass.basic, 0, false, true, priority_mod, chore_tags)
+	public FetchChore(ChoreType choreType, Storage destination, float amount, Tag[] tags, Tag[] required_tags = null, Tag[] forbidden_tags = null, ChoreProvider chore_provider = null, bool run_until_complete = true, Action<Chore> on_complete = null, Action<Chore> on_begin = null, Action<Chore> on_end = null, FetchOrder2.OperationalRequirement operational_requirement = FetchOrder2.OperationalRequirement.Operational, int priority_mod = 0)
+		: base(choreType, (IStateMachineTarget)destination, chore_provider, run_until_complete, on_complete, on_begin, on_end, PriorityScreen.PriorityClass.basic, 5, false, true, priority_mod, false, ReportManager.ReportType.WorkTime)
 	{
 		if (choreType == null)
 		{
-			Output.LogError("You must specify a chore type for fetching!");
+			Debug.LogError("You must specify a chore type for fetching!");
 		}
-		if (amount <= 0f)
+		if (amount <= PICKUPABLETUNING.MINIMUM_PICKABLE_AMOUNT)
 		{
-			Output.LogError("Requesting an invalid FetchChore amount");
+			DebugUtil.LogWarningArgs(string.Format("Chore {0} is requesting {1} {2} to {3}", choreType.Id, tags[0], amount, (!((UnityEngine.Object)destination != (UnityEngine.Object)null)) ? "to nowhere" : destination.name));
 		}
 		SetPrioritizable((!((UnityEngine.Object)destination.prioritizable != (UnityEngine.Object)null)) ? destination.GetComponent<Prioritizable>() : destination.prioritizable);
-		smi = new StatesInstance(this);
-		smi.sm.requestedamount.Set(amount, smi);
-		smi.sm.destination.Set(destination, smi);
+		base.smi = new StatesInstance(this);
+		base.smi.sm.requestedamount.Set(amount, base.smi);
+		base.smi.sm.destination.Set(destination, base.smi);
 		this.tags = tags;
 		tagBits = new TagBits(tags);
 		requiredTagBits = new TagBits(required_tags);
 		forbiddenTagBits = new TagBits(forbidden_tags);
 		tagBitsHash = tagBits.GetHashCode();
-		DebugUtil.DevAssert(!tagBits.HasAny(~FetchManager.disallowedTagMask), "Fetch chore fetching invalid tags.", string.Empty, string.Empty);
+		DebugUtil.DevAssert(!tagBits.HasAny(ref FetchManager.disallowedTagBits), "Fetch chore fetching invalid tags.");
 		if (destination.GetOnlyFetchMarkedItems())
 		{
 			requiredTagBits.SetTag(GameTags.Garbage);
@@ -189,7 +194,8 @@ public class FetchChore : Chore<FetchChore.StatesInstance>
 	public void FetchAreaBegin(Precondition.Context context, float amount_to_be_fetched)
 	{
 		amount = amount_to_be_fetched;
-		smi.sm.fetcher.Set(context.consumerState.gameObject, smi);
+		base.smi.sm.fetcher.Set(context.consumerState.gameObject, base.smi);
+		ReportManager.Instance.ReportValue(ReportManager.ReportType.ChoreStatus, 1f, context.chore.choreType.Name, GameUtil.GetChoreName(this, context.data));
 		base.Begin(context);
 	}
 
@@ -197,6 +203,7 @@ public class FetchChore : Chore<FetchChore.StatesInstance>
 	{
 		if (is_success)
 		{
+			ReportManager.Instance.ReportValue(ReportManager.ReportType.ChoreStatus, -1f, base.choreType.Name, GameUtil.GetChoreName(this, pickupable));
 			fetchTarget = pickupable;
 			base.driver = driver;
 			fetcher = driver.gameObject;
@@ -221,7 +228,7 @@ public class FetchChore : Chore<FetchChore.StatesInstance>
 			}
 			else
 			{
-				target = Game.Instance.fetchManager.FindFetchTarget(consumer_state.worker, destination, tagBits, requiredTagBits, forbiddenTagBits, originalAmount);
+				target = Game.Instance.fetchManager.FindFetchTarget(destination, ref tagBits, ref requiredTagBits, ref forbiddenTagBits, originalAmount);
 			}
 		}
 		return target;
@@ -234,14 +241,14 @@ public class FetchChore : Chore<FetchChore.StatesInstance>
 		{
 			pickupable = FindFetchTarget(context.consumerState);
 		}
-		smi.sm.source.Set(pickupable.gameObject, smi);
+		base.smi.sm.source.Set(pickupable.gameObject, base.smi);
 		pickupable.Subscribe(-1582839653, OnTagsChanged);
 		base.Begin(context);
 	}
 
 	protected override void End(string reason)
 	{
-		Pickupable pickupable = smi.sm.source.Get<Pickupable>(smi);
+		Pickupable pickupable = base.smi.sm.source.Get<Pickupable>(base.smi);
 		if ((UnityEngine.Object)pickupable != (UnityEngine.Object)null)
 		{
 			pickupable.Unsubscribe(-1582839653, OnTagsChanged);
@@ -251,7 +258,7 @@ public class FetchChore : Chore<FetchChore.StatesInstance>
 
 	private void OnTagsChanged(object data)
 	{
-		if ((UnityEngine.Object)smi.sm.chunk.Get(smi) != (UnityEngine.Object)null)
+		if ((UnityEngine.Object)base.smi.sm.chunk.Get(base.smi) != (UnityEngine.Object)null)
 		{
 			Fail("Tags changed");
 		}
@@ -273,7 +280,7 @@ public class FetchChore : Chore<FetchChore.StatesInstance>
 
 	private void OnOnlyFetchMarkedItemsSettingChanged(object data)
 	{
-		if (smi.sm.destination.Get<Storage>(smi).GetOnlyFetchMarkedItems())
+		if (base.smi.sm.destination.Get<Storage>(base.smi).GetOnlyFetchMarkedItems())
 		{
 			requiredTagBits.SetTag(GameTags.Garbage);
 		}
@@ -302,7 +309,7 @@ public class FetchChore : Chore<FetchChore.StatesInstance>
 	{
 		base.Cleanup();
 		GameScenePartitioner.Instance.Free(ref partitionerEntry);
-		Storage storage = smi.sm.destination.Get<Storage>(smi);
+		Storage storage = base.smi.sm.destination.Get<Storage>(base.smi);
 		if ((UnityEngine.Object)storage != (UnityEngine.Object)null)
 		{
 			storage.Unsubscribe(644822890, OnOnlyFetchMarkedItemsSettingChanged);

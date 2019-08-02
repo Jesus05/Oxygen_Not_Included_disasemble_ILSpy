@@ -162,6 +162,7 @@ public class KAnim
 			{
 				Debug.LogErrorFormat("Invalid batchTag for anim [{0}]", animFile.name);
 			}
+			Debug.Assert(animFile.batchTag.IsValid, "Invalid batch tag");
 			KAnimGroupFile.Group group = KAnimGroupFile.GetGroup(animFile.batchTag);
 			if (group == null)
 			{
@@ -395,7 +396,7 @@ public class KAnim
 		{
 			if (index < 0 || index >= textureCount)
 			{
-				Debug.LogError("Invalid texture index:" + index, null);
+				Debug.LogError("Invalid texture index:" + index);
 			}
 			KBatchGroupData batchGroupData = KAnimBatchManager.Instance().GetBatchGroupData(batchTag);
 			return batchGroupData.GetTexure(textureStartIdx + index);

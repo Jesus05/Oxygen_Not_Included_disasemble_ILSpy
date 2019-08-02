@@ -40,11 +40,17 @@ public class ExternalTemperatureMonitor : GameStateMachine<ExternalTemperatureMo
 				if ((Object)occupyArea != (Object)null)
 				{
 					float num2 = 0f;
+					int num3 = 0;
 					for (int i = 0; i < occupyArea.OccupiedCellsOffsets.Length; i++)
 					{
-						num2 += Grid.Temperature[Grid.OffsetCell(num, occupyArea.OccupiedCellsOffsets[i])];
+						int num4 = Grid.OffsetCell(num, occupyArea.OccupiedCellsOffsets[i]);
+						if (Grid.IsValidCell(num4))
+						{
+							num3++;
+							num2 += Grid.Temperature[num4];
+						}
 					}
-					return num2 / (float)occupyArea.OccupiedCellsOffsets.Length;
+					return num2 / (float)Mathf.Max(1, num3);
 				}
 				return Grid.Temperature[num];
 			}
@@ -202,7 +208,7 @@ public class ExternalTemperatureMonitor : GameStateMachine<ExternalTemperatureMo
 			.ToggleEffect("WarmAir")
 			.Enter(delegate
 			{
-				Tutorial.Instance.TutorialMessage(Tutorial.TutorialMessages.TM_ThermalComfort);
+				Tutorial.Instance.TutorialMessage(Tutorial.TutorialMessages.TM_ThermalComfort, true);
 			});
 		scalding.Transition(tooWarm, (Instance smi) => !smi.IsScalding() && smi.timeinstate > 6f, UpdateRate.SIM_200ms).ToggleExpression(Db.Get().Expressions.Hot, null).ToggleThought(Db.Get().Thoughts.Hot, null)
 			.ToggleStatusItem(Db.Get().CreatureStatusItems.Scalding, (Instance smi) => smi)
@@ -215,7 +221,7 @@ public class ExternalTemperatureMonitor : GameStateMachine<ExternalTemperatureMo
 			.ToggleEffect("ColdAir")
 			.Enter(delegate
 			{
-				Tutorial.Instance.TutorialMessage(Tutorial.TutorialMessages.TM_ThermalComfort);
+				Tutorial.Instance.TutorialMessage(Tutorial.TutorialMessages.TM_ThermalComfort, true);
 			});
 	}
 }

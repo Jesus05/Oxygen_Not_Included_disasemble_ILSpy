@@ -142,16 +142,16 @@ public class TemperatureMonitor : GameStateMachine<TemperatureMonitor, Temperatu
 		root.Enter(delegate(Instance smi)
 		{
 			smi.averageTemperature = smi.primaryElement.Temperature;
-			DiseaseTrigger component = smi.master.GetComponent<DiseaseTrigger>();
+			SicknessTrigger component = smi.master.GetComponent<SicknessTrigger>();
 			if ((Object)component != (Object)null)
 			{
-				component.AddTrigger(GameHashes.TooHotDisease, new string[1]
+				component.AddTrigger(GameHashes.TooHotSickness, new string[1]
 				{
-					"HeatRash"
+					"HeatSickness"
 				}, (GameObject s, GameObject t) => DUPLICANTS.DISEASES.INFECTIONSOURCES.INTERNAL_TEMPERATURE);
-				component.AddTrigger(GameHashes.TooColdDisease, new string[1]
+				component.AddTrigger(GameHashes.TooColdSickness, new string[1]
 				{
-					"ColdBrain"
+					"ColdSickness"
 				}, (GameObject s, GameObject t) => DUPLICANTS.DISEASES.INFECTIONSOURCES.INTERNAL_TEMPERATURE);
 			}
 		}).Update("UpdateTemperature", delegate(Instance smi, float dt)
@@ -161,12 +161,12 @@ public class TemperatureMonitor : GameStateMachine<TemperatureMonitor, Temperatu
 		homeostatic.Transition(hyperthermic_pre, (Instance smi) => smi.IsHyperthermic(), UpdateRate.SIM_200ms).Transition(hypothermic_pre, (Instance smi) => smi.IsHypothermic(), UpdateRate.SIM_200ms).TriggerOnEnter(GameHashes.OptimalTemperatureAchieved, null);
 		hyperthermic_pre.Enter(delegate(Instance smi)
 		{
-			smi.master.Trigger(534694243, smi.master.gameObject);
+			smi.master.Trigger(-1174019026, smi.master.gameObject);
 			smi.GoTo(hyperthermic);
 		});
 		hypothermic_pre.Enter(delegate(Instance smi)
 		{
-			smi.master.Trigger(1662224548, smi.master.gameObject);
+			smi.master.Trigger(54654253, smi.master.gameObject);
 			smi.GoTo(hypothermic);
 		});
 		hyperthermic.Transition(homeostatic, (Instance smi) => !smi.IsHyperthermic(), UpdateRate.SIM_200ms).ToggleUrge(Db.Get().Urges.CoolDown);

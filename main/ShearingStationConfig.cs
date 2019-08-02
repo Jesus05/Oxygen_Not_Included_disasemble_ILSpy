@@ -38,7 +38,7 @@ public class ShearingStationConfig : IBuildingConfig
 	{
 		go.AddOrGet<LoopingSounds>();
 		go.AddOrGet<BuildingComplete>().isManuallyOperated = true;
-		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.RanchStation);
+		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.RanchStation, false);
 		RoomTracker roomTracker = go.AddOrGet<RoomTracker>();
 		roomTracker.requiredRoomType = Db.Get().RoomTypes.CreaturePen.Id;
 		roomTracker.requirement = RoomTracker.Requirement.Required;

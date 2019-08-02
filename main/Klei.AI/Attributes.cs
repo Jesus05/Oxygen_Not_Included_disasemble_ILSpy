@@ -48,7 +48,7 @@ namespace Klei.AI
 			}
 			else
 			{
-				Debug.LogError("Could not find attribute " + attribute_id, null);
+				Debug.LogError("Could not find attribute " + attribute_id);
 			}
 			return result;
 		}
@@ -80,7 +80,7 @@ namespace Klei.AI
 			}
 			else
 			{
-				Debug.LogError("Could not find attribute " + id, null);
+				Debug.LogError("Could not find attribute " + id);
 			}
 			return result;
 		}

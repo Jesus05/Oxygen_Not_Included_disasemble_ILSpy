@@ -114,8 +114,8 @@ public class Checkpoint : StateMachineComponent<Checkpoint.SMInstance>
 			{
 				smi.master.RefreshLight();
 			}, UpdateRate.SIM_200ms, false);
-			stop.ParamTransition(redLight, go, (SMInstance smi, bool redLight) => !redLight).PlayAnim("red_light");
-			go.ParamTransition(redLight, stop, (SMInstance smi, bool redLight) => redLight).PlayAnim("green_light");
+			stop.ParamTransition(redLight, go, GameStateMachine<States, SMInstance, Checkpoint, object>.IsFalse).PlayAnim("red_light");
+			go.ParamTransition(redLight, stop, GameStateMachine<States, SMInstance, Checkpoint, object>.IsTrue).PlayAnim("green_light");
 		}
 	}
 
@@ -164,7 +164,7 @@ public class Checkpoint : StateMachineComponent<Checkpoint.SMInstance>
 		base.smi.StartSM();
 		if (infoStatusItem_Logic == null)
 		{
-			infoStatusItem_Logic = new StatusItem("CheckpointLogic", "BUILDING", string.Empty, StatusItem.IconType.Info, NotificationType.Neutral, false, SimViewMode.None, true, 63486);
+			infoStatusItem_Logic = new StatusItem("CheckpointLogic", "BUILDING", string.Empty, StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, true, 129022);
 			infoStatusItem_Logic.resolveStringCallback = ResolveInfoStatusItem_Logic;
 		}
 		Refresh(redLight);

@@ -27,7 +27,6 @@ public class LiquidFuelTankConfig : IBuildingConfig
 		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, fUEL_TANK_DRY_MASS, construction_materials, melting_point, build_location_rule, BUILDINGS.DECOR.NONE, tIER, 0.2f);
 		BuildingTemplates.CreateRocketBuildingDef(buildingDef);
 		buildingDef.SceneLayer = Grid.SceneLayer.BuildingFront;
-		buildingDef.ViewMode = SimViewMode.None;
 		buildingDef.OverheatTemperature = 2273.15f;
 		buildingDef.Floodable = false;
 		buildingDef.AttachmentSlotTag = GameTags.Rocket;
@@ -49,7 +48,7 @@ public class LiquidFuelTankConfig : IBuildingConfig
 			new BuildingAttachPoint.HardPoint(new CellOffset(0, 5), GameTags.Rocket, null)
 		};
 		go.AddOrGet<LoopingSounds>();
-		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.IndustrialMachinery);
+		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.IndustrialMachinery, false);
 	}
 
 	public override void DoPostConfigurePreview(BuildingDef def, GameObject go)
@@ -70,7 +69,13 @@ public class LiquidFuelTankConfig : IBuildingConfig
 			Storage.StoredItemModifier.Seal,
 			Storage.StoredItemModifier.Insulate
 		});
-		fuelTank.allowUIItemRemoval = true;
+		go.AddOrGet<DropToUserCapacity>();
+		ManualDeliveryKG manualDeliveryKG = go.AddOrGet<ManualDeliveryKG>();
+		manualDeliveryKG.SetStorage(fuelTank);
+		manualDeliveryKG.refillMass = fuelTank.capacityKg;
+		manualDeliveryKG.capacity = fuelTank.capacityKg;
+		manualDeliveryKG.operationalRequirement = FetchOrder2.OperationalRequirement.None;
+		manualDeliveryKG.choreTypeIDHash = Db.Get().ChoreTypes.MachineFetch.IdHash;
 		ConduitConsumer conduitConsumer = go.AddOrGet<ConduitConsumer>();
 		conduitConsumer.conduitType = ConduitType.Liquid;
 		conduitConsumer.consumptionRate = 10f;
@@ -78,7 +83,8 @@ public class LiquidFuelTankConfig : IBuildingConfig
 		conduitConsumer.capacityKG = fuelTank.capacityKg;
 		conduitConsumer.forceAlwaysSatisfied = true;
 		conduitConsumer.wrongElementResult = ConduitConsumer.WrongElementResult.Store;
-		go.AddOrGet<RocketModule>();
+		RocketModule rocketModule = go.AddOrGet<RocketModule>();
+		rocketModule.SetBGKAnim(Assets.GetAnim("rocket_liquid_fuel_tank_bg_kanim"));
 		EntityTemplates.ExtendBuildingToRocketModule(go);
 	}
 }

@@ -88,25 +88,25 @@ public class MinionEquipmentPanel : KMonoBehaviour
 
 	private void Build()
 	{
-		ShowAssignables(SelectedMinion.GetComponent<Ownables>(), roomPanel);
-		ShowAssignables(SelectedMinion.GetComponent<Equipment>(), ownablePanel);
+		ShowAssignables(SelectedMinion.GetComponent<MinionIdentity>().GetSoleOwner(), roomPanel);
+		ShowAssignables(SelectedMinion.GetComponent<MinionIdentity>().GetEquipment(), ownablePanel);
 	}
 
 	private void ShowAssignables(Assignables assignables, GameObject panel)
 	{
 		bool flag = false;
-		foreach (AssignableSlotInstance assignable in assignables)
+		foreach (AssignableSlotInstance slot in assignables.Slots)
 		{
-			if (assignable.slot.showInUI)
+			if (slot.slot.showInUI)
 			{
-				GameObject gameObject = AddOrGetLabel(labels, panel, assignable.slot.Name);
-				if (assignable.IsAssigned())
+				GameObject gameObject = AddOrGetLabel(labels, panel, slot.slot.Name);
+				if (slot.IsAssigned())
 				{
 					gameObject.SetActive(true);
 					flag = true;
-					string text = (!assignable.IsAssigned()) ? UI.DETAILTABS.PERSONALITY.EQUIPMENT.NO_ASSIGNABLES.text : assignable.assignable.GetComponent<KSelectable>().GetName();
-					gameObject.GetComponent<LocText>().text = $"{assignable.slot.Name}: {text}";
-					gameObject.GetComponent<ToolTip>().toolTip = string.Format(UI.DETAILTABS.PERSONALITY.EQUIPMENT.ASSIGNED_TOOLTIP, text, GetAssignedEffectsString(assignable), SelectedMinion.name);
+					string text = (!slot.IsAssigned()) ? UI.DETAILTABS.PERSONALITY.EQUIPMENT.NO_ASSIGNABLES.text : slot.assignable.GetComponent<KSelectable>().GetName();
+					gameObject.GetComponent<LocText>().text = $"{slot.slot.Name}: {text}";
+					gameObject.GetComponent<ToolTip>().toolTip = string.Format(UI.DETAILTABS.PERSONALITY.EQUIPMENT.ASSIGNED_TOOLTIP, text, GetAssignedEffectsString(slot), SelectedMinion.name);
 				}
 				else
 				{

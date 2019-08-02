@@ -41,7 +41,7 @@ public class LoadProfiler : ProfilerBase
 	{
 		if (Instance.IsRecording() && Instance.proFile != null)
 		{
-			Instance.WriteLine(event_name, "I", "},");
+			Instance.ManifestThreadInfo(null).WriteLine("GAME", event_name, Instance.sw, "I", "},");
 		}
 	}
 

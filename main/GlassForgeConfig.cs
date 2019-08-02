@@ -36,7 +36,7 @@ public class GlassForgeConfig : IBuildingConfig
 		buildingDef.SelfHeatKilowattsWhenActive = 16f;
 		buildingDef.OutputConduitType = ConduitType.Liquid;
 		buildingDef.UtilityOutputOffset = outPipeOffset;
-		buildingDef.ViewMode = SimViewMode.PowerMap;
+		buildingDef.ViewMode = OverlayModes.Power.ID;
 		buildingDef.AudioCategory = "HollowMetal";
 		buildingDef.AudioSize = "large";
 		return buildingDef;
@@ -47,21 +47,23 @@ public class GlassForgeConfig : IBuildingConfig
 		go.AddOrGet<DropAllWorkable>();
 		go.AddOrGet<BuildingComplete>().isManuallyOperated = true;
 		GlassForge glassForge = go.AddOrGet<GlassForge>();
-		glassForge.sideScreenStyle = RefinerySideScreen.StyleSetting.ListInputOutput;
-		RefineryWorkable refineryWorkable = go.AddOrGet<RefineryWorkable>();
+		glassForge.sideScreenStyle = ComplexFabricatorSideScreen.StyleSetting.ListQueueHybrid;
+		go.AddOrGet<FabricatorIngredientStatusManager>();
+		go.AddOrGet<CopyBuildingSettings>();
+		ComplexFabricatorWorkable complexFabricatorWorkable = go.AddOrGet<ComplexFabricatorWorkable>();
 		glassForge.duplicantOperated = true;
-		BuildingTemplates.CreateRefineryStorage(go, glassForge);
+		BuildingTemplates.CreateComplexFabricatorStorage(go, glassForge);
 		glassForge.outStorage.capacityKg = 2000f;
 		glassForge.storeProduced = true;
 		glassForge.inStorage.SetDefaultStoredItemModifiers(RefineryStoredItemModifiers);
 		glassForge.buildStorage.SetDefaultStoredItemModifiers(RefineryStoredItemModifiers);
 		glassForge.outStorage.SetDefaultStoredItemModifiers(RefineryStoredItemModifiers);
 		glassForge.outputOffset = new Vector3(1f, 0.5f);
-		refineryWorkable.overrideAnims = new KAnimFile[1]
+		complexFabricatorWorkable.overrideAnims = new KAnimFile[1]
 		{
 			Assets.GetAnim("anim_interacts_metalrefinery_kanim")
 		};
-		glassForge.resultState = Refinery.ResultState.Melted;
+		glassForge.resultState = ComplexFabricator.ResultState.Melted;
 		ConduitDispenser conduitDispenser = go.AddOrGet<ConduitDispenser>();
 		conduitDispenser.storage = glassForge.outStorage;
 		conduitDispenser.conduitType = ConduitType.Liquid;
@@ -79,7 +81,7 @@ public class GlassForgeConfig : IBuildingConfig
 		string text = ComplexRecipeManager.MakeRecipeID("GlassForge", array, array2);
 		ComplexRecipe complexRecipe = new ComplexRecipe(text, array, array2);
 		complexRecipe.time = 40f;
-		complexRecipe.useResultAsDescription = true;
+		complexRecipe.nameDisplay = ComplexRecipe.RecipeNameDisplay.Result;
 		complexRecipe.description = string.Format(STRINGS.BUILDINGS.PREFABS.GLASSFORGE.RECIPE_DESCRIPTION, ElementLoader.GetElement(array2[0].material).name, ElementLoader.GetElement(array[0].material).name);
 		complexRecipe.fabricators = new List<Tag>
 		{
@@ -93,5 +95,13 @@ public class GlassForgeConfig : IBuildingConfig
 	{
 		SymbolOverrideControllerUtil.AddToPrefab(go);
 		go.AddOrGetDef<PoweredActiveStoppableController.Def>();
+		go.GetComponent<KPrefabID>().prefabSpawnFn += delegate(GameObject game_object)
+		{
+			ComplexFabricatorWorkable component = game_object.GetComponent<ComplexFabricatorWorkable>();
+			component.AttributeConverter = Db.Get().AttributeConverters.MachinerySpeed;
+			component.AttributeExperienceMultiplier = DUPLICANTSTATS.ATTRIBUTE_LEVELING.PART_DAY_EXPERIENCE;
+			component.SkillExperienceSkillGroup = Db.Get().SkillGroups.Technicals.Id;
+			component.SkillExperienceMultiplier = SKILLS.PART_DAY_EXPERIENCE;
+		};
 	}
 }

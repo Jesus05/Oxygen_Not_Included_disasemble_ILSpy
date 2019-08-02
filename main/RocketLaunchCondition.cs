@@ -1,6 +1,13 @@
 public abstract class RocketLaunchCondition
 {
-	public abstract bool EvaluateLaunchCondition();
+	public enum LaunchStatus
+	{
+		Ready,
+		Warning,
+		Failure
+	}
+
+	public abstract LaunchStatus EvaluateLaunchCondition();
 
 	public abstract string GetLaunchStatusMessage(bool ready);
 

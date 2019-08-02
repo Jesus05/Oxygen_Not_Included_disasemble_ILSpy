@@ -18,11 +18,11 @@ public class FloorLampConfig : IBuildingConfig
 		float melting_point = 800f;
 		BuildLocationRule build_location_rule = BuildLocationRule.OnFloor;
 		EffectorValues nONE = NOISE_POLLUTION.NONE;
-		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, tIER, aLL_METALS, melting_point, build_location_rule, BUILDINGS.DECOR.NONE, nONE, 0.2f);
+		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, tIER, aLL_METALS, melting_point, build_location_rule, BUILDINGS.DECOR.BONUS.TIER1, nONE, 0.2f);
 		buildingDef.RequiresPowerInput = true;
 		buildingDef.EnergyConsumptionWhenActive = 8f;
 		buildingDef.SelfHeatKilowattsWhenActive = 0.5f;
-		buildingDef.ViewMode = SimViewMode.Light;
+		buildingDef.ViewMode = OverlayModes.Light.ID;
 		buildingDef.AudioCategory = "Metal";
 		return buildingDef;
 	}
@@ -33,7 +33,16 @@ public class FloorLampConfig : IBuildingConfig
 		lightShapePreview.lux = 1000;
 		lightShapePreview.radius = 4f;
 		lightShapePreview.shape = LightShape.Circle;
-		lightShapePreview.offset = new CellOffset((int)def.BuildingComplete.GetComponent<Light2D>().Offset.x, (int)def.BuildingComplete.GetComponent<Light2D>().Offset.y);
+		LightShapePreview lightShapePreview2 = lightShapePreview;
+		Vector2 offset = def.BuildingComplete.GetComponent<Light2D>().Offset;
+		int x = (int)offset.x;
+		Vector2 offset2 = def.BuildingComplete.GetComponent<Light2D>().Offset;
+		lightShapePreview2.offset = new CellOffset(x, (int)offset2.y);
+	}
+
+	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+	{
+		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.LightSource, false);
 	}
 
 	public override void DoPostConfigureComplete(GameObject go)

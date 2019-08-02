@@ -1,3 +1,4 @@
+using KSerialization;
 using STRINGS;
 using System;
 using System.Collections.Generic;
@@ -92,6 +93,9 @@ public class Vent : KMonoBehaviour, IEffectDescriptor
 
 	private int sortKey;
 
+	[Serialize]
+	public Dictionary<SimHashes, float> lifeTimeVentMass = new Dictionary<SimHashes, float>();
+
 	private StatesInstance smi;
 
 	[SerializeField]
@@ -123,6 +127,29 @@ public class Vent : KMonoBehaviour, IEffectDescriptor
 	}
 
 	public bool IsBlocked => GetEndPointState() != State.Ready;
+
+	public void UpdateVentedMass(SimHashes element, float mass)
+	{
+		if (!lifeTimeVentMass.ContainsKey(element))
+		{
+			lifeTimeVentMass.Add(element, mass);
+		}
+		else
+		{
+			Dictionary<SimHashes, float> dictionary;
+			SimHashes key;
+			(dictionary = lifeTimeVentMass)[key = element] = dictionary[key] + mass;
+		}
+	}
+
+	public float GetVentedMass(SimHashes element)
+	{
+		if (lifeTimeVentMass.ContainsKey(element))
+		{
+			return lifeTimeVentMass[element];
+		}
+		return 0f;
+	}
 
 	protected override void OnSpawn()
 	{

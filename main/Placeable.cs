@@ -34,7 +34,7 @@ public class Placeable : KMonoBehaviour
 	protected override void OnSpawn()
 	{
 		base.OnSpawn();
-		prefabId.AddTag(new Tag(prefabId.InstanceID.ToString()));
+		prefabId.AddTag(new Tag(prefabId.InstanceID.ToString()), false);
 		if (targetCell != -1)
 		{
 			QueuePlacement(targetCell);
@@ -70,7 +70,7 @@ public class Placeable : KMonoBehaviour
 		chore = new FetchChore(Db.Get().ChoreTypes.Fetch, preview.GetComponent<Storage>(), 1f, new Tag[1]
 		{
 			new Tag(prefabId.InstanceID.ToString())
-		}, null, null, null, true, OnChoreComplete, null, null, FetchOrder2.OperationalRequirement.None, 0, null);
+		}, null, null, null, true, OnChoreComplete, null, null, FetchOrder2.OperationalRequirement.None, 0);
 	}
 
 	private void OnChoreComplete(Chore completed_chore)

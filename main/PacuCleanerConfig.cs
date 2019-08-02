@@ -51,7 +51,7 @@ public class PacuCleanerConfig : IEntityConfig
 			};
 			elementConverter.outputElements = new ElementConverter.OutputElement[1]
 			{
-				new ElementConverter.OutputElement(0.2f, SimHashes.Water, 0f, true, 0f, 0.5f, false, 1f, byte.MaxValue, 0)
+				new ElementConverter.OutputElement(0.2f, SimHashes.Water, 0f, true, true, 0f, 0.5f, 1f, byte.MaxValue, 0)
 			};
 		}
 		return prefab;

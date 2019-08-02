@@ -2,6 +2,7 @@ using Klei.AI;
 using STRINGS;
 using System;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -51,16 +52,16 @@ public class DebugPaintElementScreen : KScreen
 
 	[Header("Value Inputs")]
 	[SerializeField]
-	private InputField massPressureInput;
+	private TMP_InputField massPressureInput;
 
 	[SerializeField]
-	private InputField temperatureInput;
+	private TMP_InputField temperatureInput;
 
 	[SerializeField]
-	private InputField diseaseCountInput;
+	private TMP_InputField diseaseCountInput;
 
 	[SerializeField]
-	private InputField filterInput;
+	private TMP_InputField filterInput;
 
 	[Header("Tool Buttons")]
 	[SerializeField]
@@ -94,7 +95,7 @@ public class DebugPaintElementScreen : KScreen
 
 	public Toggle paintAllowFOWReveal;
 
-	private List<InputField> inputFields = new List<InputField>();
+	private List<TMP_InputField> inputFields = new List<TMP_InputField>();
 
 	private List<string> options_list = new List<string>();
 
@@ -384,8 +385,8 @@ public class DebugPaintElementScreen : KScreen
 
 	public void OnElementsFilterEdited(string new_filter)
 	{
-		filter = ((!string.IsNullOrEmpty(new_filter)) ? new_filter : null);
-		FilterElements(new_filter);
+		filter = ((!string.IsNullOrEmpty(filterInput.text)) ? filterInput.text : null);
+		FilterElements(filter);
 	}
 
 	public override void OnKeyDown(KButtonEvent e)
@@ -426,7 +427,7 @@ public class DebugPaintElementScreen : KScreen
 			GameObject currentSelectedGameObject = UnityEngine.EventSystems.EventSystem.current.currentSelectedGameObject;
 			if ((UnityEngine.Object)currentSelectedGameObject != (UnityEngine.Object)null)
 			{
-				foreach (InputField inputField in inputFields)
+				foreach (TMP_InputField inputField in inputFields)
 				{
 					if ((UnityEngine.Object)currentSelectedGameObject == (UnityEngine.Object)inputField.gameObject)
 					{

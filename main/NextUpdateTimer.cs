@@ -12,6 +12,8 @@ public class NextUpdateTimer : KMonoBehaviour
 
 	public float initialAnimScale;
 
+	private bool useSpecificDate = true;
+
 	public System.DateTime nextReleaseDate;
 
 	public System.DateTime currentReleaseDate;
@@ -19,8 +21,8 @@ public class NextUpdateTimer : KMonoBehaviour
 	protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
-		currentReleaseDate = new System.DateTime(2018, 10, 18, 17, 0, 0, DateTimeKind.Utc);
-		nextReleaseDate = new System.DateTime(2018, 12, 13, 17, 0, 0, DateTimeKind.Utc);
+		currentReleaseDate = new System.DateTime(2019, 4, 16, 17, 0, 0, DateTimeKind.Utc);
+		nextReleaseDate = new System.DateTime(2019, 7, 14, 17, 0, 0, DateTimeKind.Utc);
 		initialAnimScale = UpdateAnimController.animScale;
 		ScreenResize instance = ScreenResize.Instance;
 		instance.OnResize = (System.Action)Delegate.Combine(instance.OnResize, new System.Action(RefreshScale));
@@ -40,16 +42,20 @@ public class NextUpdateTimer : KMonoBehaviour
 		TimeSpan timeSpan2 = nextReleaseDate - System.DateTime.UtcNow;
 		TimeSpan timeSpan3 = System.DateTime.UtcNow - currentReleaseDate;
 		string empty = string.Empty;
-		string text = "1";
-		if (timeSpan2.TotalHours < 8.0)
+		string s = "4";
+		if (useSpecificDate)
+		{
+			empty = UI.DEVELOPMENTBUILDS.UPDATES.SPECIFIC_DATE;
+		}
+		else if (timeSpan2.TotalHours < 8.0)
 		{
 			empty = UI.DEVELOPMENTBUILDS.UPDATES.TWENTY_FOUR_HOURS;
-			text = "4";
+			s = "4";
 		}
 		else if (timeSpan2.TotalDays < 1.0)
 		{
 			empty = string.Format(UI.DEVELOPMENTBUILDS.UPDATES.FINAL_WEEK, 1);
-			text = "3";
+			s = "3";
 		}
 		else
 		{
@@ -58,19 +64,21 @@ public class NextUpdateTimer : KMonoBehaviour
 			if (num2 <= 0)
 			{
 				empty = string.Format(UI.DEVELOPMENTBUILDS.UPDATES.FINAL_WEEK, num);
-				text = "2";
+				s = "2";
 			}
 			else
 			{
 				empty = string.Format(UI.DEVELOPMENTBUILDS.UPDATES.BIGGER_TIMES, num, num2);
-				text = "1";
+				s = "1";
 			}
 		}
 		TimerText.text = empty;
-		UpdateAnimController.Play(text, KAnim.PlayMode.Loop, 1f, 0f);
+		UpdateAnimController.Play(s, KAnim.PlayMode.Loop, 1f, 0f);
 		double num3 = timeSpan3.TotalSeconds / timeSpan.TotalSeconds;
-		float positionPercent = Mathf.Clamp01((float)num3);
-		UpdateAnimMeterController.SetPositionPercent(positionPercent);
+		DebugUtil.LogArgs("ANIM PERCENT", num3);
+		float num4 = Mathf.Clamp01((float)num3);
+		DebugUtil.LogArgs("ANIM PERCENT FLOAT", num4);
+		UpdateAnimMeterController.SetPositionPercent(num4);
 	}
 
 	private void RefreshScale()

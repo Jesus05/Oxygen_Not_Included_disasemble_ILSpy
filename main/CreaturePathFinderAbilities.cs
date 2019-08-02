@@ -9,16 +9,16 @@ public class CreaturePathFinderAbilities : PathFinderAbilities
 	{
 	}
 
-	public override void Refresh()
+	protected override void Refresh(Navigator navigator)
 	{
-		int cell = Grid.PosToCell(base.navigator);
+		int cell = Grid.PosToCell(navigator);
 		if (PathFinder.IsSubmerged(cell))
 		{
 			maxUnderwaterCost = 2147483647;
 		}
 		else
 		{
-			AttributeInstance attributeInstance = Db.Get().Attributes.MaxUnderwaterTravelCost.Lookup(base.navigator);
+			AttributeInstance attributeInstance = Db.Get().Attributes.MaxUnderwaterTravelCost.Lookup(navigator);
 			maxUnderwaterCost = ((attributeInstance == null) ? 2147483647 : ((int)attributeInstance.GetTotalValue()));
 		}
 	}

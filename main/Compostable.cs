@@ -24,6 +24,7 @@ public class Compostable : KMonoBehaviour
 	protected override void OnSpawn()
 	{
 		base.OnSpawn();
+		isMarkedForCompost = GetComponent<KPrefabID>().HasTag(GameTags.Compostable);
 		if (isMarkedForCompost)
 		{
 			MarkForCompost(false);
@@ -35,12 +36,10 @@ public class Compostable : KMonoBehaviour
 	private void MarkForCompost(bool force = false)
 	{
 		RefreshStatusItem();
-		GetComponent<KPrefabID>().AddTag(GameTags.MarkedForCompost);
-		GetComponent<KPrefabID>().AddTag(GameTags.Compostable);
 		Storage storage = GetComponent<Pickupable>().storage;
 		if ((UnityEngine.Object)storage != (UnityEngine.Object)null)
 		{
-			storage.Drop(base.gameObject);
+			storage.Drop(base.gameObject, true);
 		}
 	}
 
@@ -51,7 +50,7 @@ public class Compostable : KMonoBehaviour
 			Pickupable component = GetComponent<Pickupable>();
 			if ((UnityEngine.Object)component.storage != (UnityEngine.Object)null)
 			{
-				component.storage.Drop(base.gameObject);
+				component.storage.Drop(base.gameObject, true);
 			}
 			Pickupable pickupable = EntitySplitter.Split(component, component.TotalAmount, compostPrefab);
 			if ((UnityEngine.Object)pickupable != (UnityEngine.Object)null)

@@ -148,7 +148,7 @@ public class KAnimBatchManager
 	{
 		if (!isReady)
 		{
-			Debug.LogError($"Batcher isnt finished setting up, controller [{controller.GetName()}] is registering too early.", null);
+			Debug.LogError($"Batcher isnt finished setting up, controller [{controller.GetName()}] is registering too early.");
 		}
 		BatchKey batchKey = BatchKey.Create(controller);
 		Vector2I vector2I = ControllerToChunkXY(controller);
@@ -234,8 +234,8 @@ public class KAnimBatchManager
 		{
 			foreach (BatchSet activeBatchSet in activeBatchSets)
 			{
-				DebugUtil.Assert(activeBatchSet != null, "Assert!", string.Empty, string.Empty);
-				DebugUtil.Assert(activeBatchSet.group != null, "Assert!", string.Empty, string.Empty);
+				DebugUtil.Assert(activeBatchSet != null);
+				DebugUtil.Assert(activeBatchSet.group != null);
 				Mesh mesh = activeBatchSet.group.mesh;
 				for (int i = 0; i < activeBatchSet.batchCount; i++)
 				{

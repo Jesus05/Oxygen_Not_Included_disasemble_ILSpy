@@ -11,6 +11,7 @@ namespace ProcGenGame
 
 		public Neighbors(TerrainCell a, TerrainCell b)
 		{
+			Debug.Assert(a != null && b != null, "NULL Neighbor");
 			n0 = a;
 			n1 = b;
 		}

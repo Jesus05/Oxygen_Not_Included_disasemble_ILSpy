@@ -8,6 +8,8 @@ public class IncubatorSideScreen : ReceptacleSideScreen
 
 	public DescriptorPanel EffectsDescriptorPanel;
 
+	public MultiToggle continuousToggle;
+
 	public override bool IsValidForTarget(GameObject target)
 	{
 		return (Object)target.GetComponent<EggIncubator>() != (Object)null;
@@ -27,21 +29,18 @@ public class IncubatorSideScreen : ReceptacleSideScreen
 	protected override Sprite GetEntityIcon(Tag prefabTag)
 	{
 		GameObject prefab = Assets.GetPrefab(prefabTag);
-		IncubationMonitor.Def def = prefab.GetDef<IncubationMonitor.Def>();
-		string text = "ui";
-		if (def != null)
+		return Def.GetUISprite(prefab, "ui", false).first;
+	}
+
+	public override void SetTarget(GameObject target)
+	{
+		base.SetTarget(target);
+		EggIncubator incubator = target.GetComponent<EggIncubator>();
+		continuousToggle.ChangeState((!incubator.autoReplaceEntity) ? 1 : 0);
+		continuousToggle.onClick = delegate
 		{
-			GameObject prefab2 = Assets.GetPrefab(def.spawnedCreature);
-			if ((bool)prefab2)
-			{
-				CreatureBrain component = prefab2.GetComponent<CreatureBrain>();
-				if ((bool)component && !string.IsNullOrEmpty(component.symbolPrefix))
-				{
-					text = component.symbolPrefix + text;
-				}
-			}
-		}
-		KBatchedAnimController component2 = prefab.GetComponent<KBatchedAnimController>();
-		return Def.GetUISpriteFromMultiObjectAnim(component2.AnimFiles[0], text, false);
+			incubator.autoReplaceEntity = !incubator.autoReplaceEntity;
+			continuousToggle.ChangeState((!incubator.autoReplaceEntity) ? 1 : 0);
+		};
 	}
 }

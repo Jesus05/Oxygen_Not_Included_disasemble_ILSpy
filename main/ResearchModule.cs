@@ -27,8 +27,8 @@ public class ResearchModule : KMonoBehaviour
 
 	public void OnLand(object data)
 	{
-		SpaceDestination destination = SpacecraftManager.instance.GetDestination(SpacecraftManager.instance.savedSpacecraftDestinations[SpacecraftManager.instance.GetSpacecraftID(GetComponent<RocketModule>().conditionManager.GetComponent<LaunchableRocket>())]);
-		SpaceDestination.ResearchOpportunity researchOpportunity = destination.TryCompleteResearchOpportunity();
+		SpaceDestination spacecraftDestination = SpacecraftManager.instance.GetSpacecraftDestination(SpacecraftManager.instance.GetSpacecraftID(GetComponent<RocketModule>().conditionManager.GetComponent<LaunchableRocket>()));
+		SpaceDestination.ResearchOpportunity researchOpportunity = spacecraftDestination.TryCompleteResearchOpportunity();
 		if (researchOpportunity != null)
 		{
 			GameObject gameObject = GameUtil.KInstantiate(Assets.GetPrefab("ResearchDatabank"), base.gameObject.transform.GetPosition(), Grid.SceneLayer.Ore, null, 0);

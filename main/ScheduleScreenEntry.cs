@@ -245,8 +245,8 @@ public class ScheduleScreenEntry : KMonoBehaviour
 				{
 					if (selfModifier.AttributeId == Db.Get().Attributes.QualityOfLife.Id)
 					{
-						noteEntryLeft.text = string.Format(UI.SCHEDULESCREEN.DOWNTIME_MORALE, selfModifier.GetFormattedString(null, false));
-						noteEntryLeft.GetComponent<ToolTip>().SetSimpleTooltip(string.Format(UI.SCHEDULESCREEN.SCHEDULE_DOWNTIME_MORALE, selfModifier.GetFormattedString(null, false)));
+						noteEntryLeft.text = string.Format(UI.SCHEDULESCREEN.DOWNTIME_MORALE, selfModifier.GetFormattedString(null));
+						noteEntryLeft.GetComponent<ToolTip>().SetSimpleTooltip(string.Format(UI.SCHEDULESCREEN.SCHEDULE_DOWNTIME_MORALE, selfModifier.GetFormattedString(null)));
 					}
 				}
 			}

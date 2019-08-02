@@ -12,6 +12,14 @@ public abstract class ConduitThresholdSensor : ConduitSensor
 	[Serialize]
 	protected bool activateAboveThreshold = true;
 
+	[MyCmpAdd]
+	private CopyBuildingSettings copyBuildingSettings;
+
+	private static readonly EventSystem.IntraObjectHandler<ConduitThresholdSensor> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<ConduitThresholdSensor>(delegate(ConduitThresholdSensor component, object data)
+	{
+		component.OnCopySettings(data);
+	});
+
 	public abstract float CurrentValue
 	{
 		get;
@@ -41,6 +49,23 @@ public abstract class ConduitThresholdSensor : ConduitSensor
 		}
 	}
 
+	protected override void OnPrefabInit()
+	{
+		base.OnPrefabInit();
+		Subscribe(-905833192, OnCopySettingsDelegate);
+	}
+
+	private void OnCopySettings(object data)
+	{
+		GameObject gameObject = (GameObject)data;
+		ConduitThresholdSensor component = gameObject.GetComponent<ConduitThresholdSensor>();
+		if ((Object)component != (Object)null)
+		{
+			Threshold = component.Threshold;
+			ActivateAboveThreshold = component.ActivateAboveThreshold;
+		}
+	}
+
 	protected override void ConduitUpdate(float dt)
 	{
 		float containedMass = GetContainedMass();
@@ -65,7 +90,6 @@ public abstract class ConduitThresholdSensor : ConduitSensor
 	{
 		int cell = Grid.PosToCell(this);
 		ConduitFlow flowManager = Conduit.GetFlowManager(conduitType);
-		ConduitFlow.ConduitContents contents = flowManager.GetContents(cell);
-		return contents.mass;
+		return flowManager.GetContents(cell).mass;
 	}
 }

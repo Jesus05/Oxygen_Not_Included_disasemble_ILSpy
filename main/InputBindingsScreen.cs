@@ -233,10 +233,7 @@ public class InputBindingsScreen : KModalScreen
 				{
 					activeScreen = screens.Count;
 				}
-				if (BuildMenu.UseHotkeyBuildMenu() || !bindingEntry.mIgnoreRootConflics)
-				{
-					screens.Add(bindingEntry.mGroup);
-				}
+				screens.Add(bindingEntry.mGroup);
 			}
 		}
 	}
@@ -405,7 +402,7 @@ public class InputBindingsScreen : KModalScreen
 		}, delegate
 		{
 			confirmDialog.Deactivate();
-		}, null, null, null, null, null, null);
+		}, null, null, null, null, null, null, true);
 		confirmDialog.gameObject.SetActive(true);
 	}
 
@@ -499,7 +496,7 @@ public class InputBindingsScreen : KModalScreen
 			string bindingText = GetBindingText(duplicatedBinding);
 			string text = string.Format(UI.FRONTEND.INPUT_BINDINGS_SCREEN.DUPLICATE, arg, bindingText);
 			Unbind(duplicatedBinding.mAction);
-			confirmDialog.PopupConfirmDialog(text, null, null, null, null, null, null, null, null);
+			confirmDialog.PopupConfirmDialog(text, null, null, null, null, null, null, null, null, true);
 			confirmDialog.gameObject.SetActive(true);
 		}
 		Global.Instance.GetInputManager().RebindControls();

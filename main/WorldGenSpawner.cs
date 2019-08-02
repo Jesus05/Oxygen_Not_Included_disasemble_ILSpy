@@ -1,6 +1,5 @@
 using KSerialization;
 using ProcGen;
-using ProcGenGame;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
@@ -64,6 +63,7 @@ public class WorldGenSpawner : KMonoBehaviour
 				}
 			}
 			cell = num;
+			Debug.Assert(Grid.IsValidCell(cell));
 			if (Grid.Spawnable[cell] > 0)
 			{
 				TrySpawn();
@@ -142,7 +142,7 @@ public class WorldGenSpawner : KMonoBehaviour
 
 		private Tag GetPrefabTag()
 		{
-			Mob mob = WorldGen.Settings.mobs.GetMob(spawnInfo.id);
+			Mob mob = SettingsCache.mobs.GetMob(spawnInfo.id);
 			if (mob != null && mob.prefabName != null)
 			{
 				return new Tag(mob.prefabName);
@@ -266,35 +266,35 @@ public class WorldGenSpawner : KMonoBehaviour
 	private void PlaceTemplates()
 	{
 		spawnables = new List<Spawnable>();
-		foreach (Prefab building in WorldGen.SpawnData.buildings)
+		foreach (Prefab building in SaveGame.Instance.worldGen.SpawnData.buildings)
 		{
 			building.type = Prefab.Type.Building;
 			AddSpawnable(building);
 		}
-		foreach (Prefab elementalOre in WorldGen.SpawnData.elementalOres)
+		foreach (Prefab elementalOre in SaveGame.Instance.worldGen.SpawnData.elementalOres)
 		{
 			elementalOre.type = Prefab.Type.Ore;
 			AddSpawnable(elementalOre);
 		}
-		foreach (Prefab otherEntity in WorldGen.SpawnData.otherEntities)
+		foreach (Prefab otherEntity in SaveGame.Instance.worldGen.SpawnData.otherEntities)
 		{
 			otherEntity.type = Prefab.Type.Other;
 			AddSpawnable(otherEntity);
 		}
-		foreach (Prefab pickupable in WorldGen.SpawnData.pickupables)
+		foreach (Prefab pickupable in SaveGame.Instance.worldGen.SpawnData.pickupables)
 		{
 			pickupable.type = Prefab.Type.Pickupable;
 			AddSpawnable(pickupable);
 		}
-		WorldGen.SpawnData.buildings.Clear();
-		WorldGen.SpawnData.elementalOres.Clear();
-		WorldGen.SpawnData.otherEntities.Clear();
-		WorldGen.SpawnData.pickupables.Clear();
+		SaveGame.Instance.worldGen.SpawnData.buildings.Clear();
+		SaveGame.Instance.worldGen.SpawnData.elementalOres.Clear();
+		SaveGame.Instance.worldGen.SpawnData.otherEntities.Clear();
+		SaveGame.Instance.worldGen.SpawnData.pickupables.Clear();
 	}
 
 	private void DoReveal()
 	{
-		Game.Instance.Reset(WorldGen.SpawnData);
+		Game.Instance.Reset(SaveGame.Instance.worldGen.SpawnData);
 		for (int i = 0; i < Grid.CellCount; i++)
 		{
 			Grid.Revealed[i] = false;
@@ -302,7 +302,7 @@ public class WorldGenSpawner : KMonoBehaviour
 		}
 		float innerRadius = 16.5f;
 		float radius = 18f;
-		Vector2I baseStartPos = WorldGen.SpawnData.baseStartPos;
+		Vector2I baseStartPos = SaveGame.Instance.worldGen.SpawnData.baseStartPos;
 		GridVisibility.Reveal(baseStartPos.x, baseStartPos.y, radius, innerRadius);
 	}
 }

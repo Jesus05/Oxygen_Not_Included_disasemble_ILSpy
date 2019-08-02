@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using TUNING;
 using UnityEngine;
 
@@ -26,6 +27,10 @@ public class FirePoleConfig : IBuildingConfig
 		buildingDef.AudioSize = "small";
 		buildingDef.BaseTimeUntilRepair = -1f;
 		buildingDef.DragBuild = true;
+		buildingDef.TileLayer = ObjectLayer.LadderTile;
+		buildingDef.ReplacementLayer = ObjectLayer.ReplacementLadder;
+		buildingDef.ReplacementTags = new List<Tag>();
+		buildingDef.ReplacementTags.Add(GameTags.Ladders);
 		return buildingDef;
 	}
 

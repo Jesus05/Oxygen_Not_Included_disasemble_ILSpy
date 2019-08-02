@@ -47,7 +47,7 @@ public class WaterCoolerChore : Chore<WaterCoolerChore.StatesInstance>, IWorkerP
 			Storage storage = masterTarget.Get<Storage>(smi);
 			Worker worker = stateTarget.Get<Worker>(smi);
 			storage.ConsumeAndGetDisease(GameTags.Water, 1f, out SimUtil.DiseaseInfo disease_info, out float _);
-			worker.GetSMI<ImmuneSystemMonitor.Instance>()?.TryInjectDisease(disease_info.idx, disease_info.count, GameTags.Water, Disease.InfectionVector.Digestion);
+			worker.GetSMI<GermExposureMonitor.Instance>()?.TryInjectDisease(disease_info.idx, disease_info.count, GameTags.Water, Sickness.InfectionVector.Digestion);
 			Effects component = worker.GetComponent<Effects>();
 			if (!string.IsNullOrEmpty(smi.master.trackingEffect))
 			{
@@ -71,10 +71,10 @@ public class WaterCoolerChore : Chore<WaterCoolerChore.StatesInstance>, IWorkerP
 	public string trackingEffect = "RecentlySocialized";
 
 	public WaterCoolerChore(IStateMachineTarget master, Workable chat_workable, Action<Chore> on_complete = null, Action<Chore> on_begin = null, Action<Chore> on_end = null)
-		: base(Db.Get().ChoreTypes.Relax, master, master.GetComponent<ChoreProvider>(), true, on_complete, on_begin, on_end, PriorityScreen.PriorityClass.high, 0, false, true, 0, (Tag[])null)
+		: base(Db.Get().ChoreTypes.Relax, master, master.GetComponent<ChoreProvider>(), true, on_complete, on_begin, on_end, PriorityScreen.PriorityClass.high, 5, false, true, 0, false, ReportManager.ReportType.PersonalTime)
 	{
-		smi = new StatesInstance(this);
-		smi.sm.chitchatlocator.Set(chat_workable, smi);
+		base.smi = new StatesInstance(this);
+		base.smi.sm.chitchatlocator.Set(chat_workable, base.smi);
 		AddPrecondition(ChorePreconditions.instance.CanMoveTo, chat_workable);
 		AddPrecondition(ChorePreconditions.instance.IsNotRedAlert, null);
 		AddPrecondition(ChorePreconditions.instance.IsScheduledTime, Db.Get().ScheduleBlockTypes.Recreation);
@@ -83,7 +83,7 @@ public class WaterCoolerChore : Chore<WaterCoolerChore.StatesInstance>, IWorkerP
 
 	public override void Begin(Precondition.Context context)
 	{
-		smi.sm.drinker.Set(context.consumerState.gameObject, smi);
+		base.smi.sm.drinker.Set(context.consumerState.gameObject, base.smi);
 		base.Begin(context);
 	}
 

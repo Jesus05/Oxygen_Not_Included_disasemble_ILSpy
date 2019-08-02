@@ -47,14 +47,14 @@ public class CapacityControlSideScreen : SideScreenContent
 	{
 		if ((Object)new_target == (Object)null)
 		{
-			Debug.LogError("Invalid gameObject received", null);
+			Debug.LogError("Invalid gameObject received");
 		}
 		else
 		{
 			target = new_target.GetComponent<IUserControlledCapacity>();
 			if (target == null)
 			{
-				Debug.LogError("The gameObject received does not contain a IThresholdSwitch component", null);
+				Debug.LogError("The gameObject received does not contain a IThresholdSwitch component");
 			}
 			else
 			{

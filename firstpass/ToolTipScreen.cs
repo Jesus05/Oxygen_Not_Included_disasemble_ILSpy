@@ -18,6 +18,8 @@ public class ToolTipScreen : KScreen
 
 	private GameObject multiTooltipContainer;
 
+	private bool toolTipIsBlank;
+
 	private Vector2 ScreenEdgePadding = new Vector2(8f, 8f);
 
 	private ToolTip dirtyHoverTooltip;
@@ -265,6 +267,7 @@ public class ToolTipScreen : KScreen
 					anchorRoot.GetComponentInChildren<Image>(true).enabled = false;
 				}
 				multiTooltipContainer.transform.localScale = Vector3.zero;
+				toolTipIsBlank = true;
 				for (int i = 0; i < multiTooltipContainer.transform.childCount; i++)
 				{
 					if (multiTooltipContainer.transform.GetChild(i).transform.localScale != Vector3.one)
@@ -273,13 +276,14 @@ public class ToolTipScreen : KScreen
 					}
 					LayoutElement component = multiTooltipContainer.transform.GetChild(i).GetComponent<LayoutElement>();
 					TextMeshProUGUI component2 = component.GetComponent<TextMeshProUGUI>();
+					toolTipIsBlank = (component2.text == string.Empty && toolTipIsBlank);
 					if (component.minHeight != component2.preferredHeight)
 					{
 						component.minHeight = component2.preferredHeight;
 					}
 				}
 			}
-			else if (multiTooltipContainer.transform.localScale != Vector3.one)
+			else if (multiTooltipContainer.transform.localScale != Vector3.one && !toolTipIsBlank)
 			{
 				Image componentInChildren2 = anchorRoot.GetComponentInChildren<Image>();
 				if ((Object)componentInChildren2 != (Object)null)

@@ -57,8 +57,8 @@ namespace NodeEditorFramework.Utilities
 			}, new ParameterModifier[0]);
 			if (type == null || property == null || method == null || method2 == null)
 			{
-				Debug.LogWarning("GUIScaleUtility cannot run on this system! Compability mode enabled. For you that means you're not able to use the Node Editor inside more than one group:( Please PM me (Seneral @UnityForums) so I can figure out what causes this! Thanks!", null);
-				Debug.LogWarning(((type != null) ? string.Empty : "GUIClipType is Null, ") + ((property != null) ? string.Empty : "topmostRect is Null, ") + ((method != null) ? string.Empty : "GetTopRect is Null, ") + ((method2 != null) ? string.Empty : "ClipRect is Null, "), null);
+				Debug.LogWarning("GUIScaleUtility cannot run on this system! Compability mode enabled. For you that means you're not able to use the Node Editor inside more than one group:( Please PM me (Seneral @UnityForums) so I can figure out what causes this! Thanks!");
+				Debug.LogWarning(((type != null) ? string.Empty : "GUIClipType is Null, ") + ((property != null) ? string.Empty : "topmostRect is Null, ") + ((method != null) ? string.Empty : "GetTopRect is Null, ") + ((method2 != null) ? string.Empty : "ClipRect is Null, "));
 				compabilityMode = true;
 				initiated = true;
 			}
@@ -68,8 +68,8 @@ namespace NodeEditorFramework.Utilities
 				topmostRectDelegate = (Func<Rect>)Delegate.CreateDelegate(typeof(Func<Rect>), property.GetGetMethod());
 				if (GetTopRectDelegate == null || topmostRectDelegate == null)
 				{
-					Debug.LogWarning("GUIScaleUtility cannot run on this system! Compability mode enabled. For you that means you're not able to use the Node Editor inside more than one group:( Please PM me (Seneral @UnityForums) so I can figure out what causes this! Thanks!", null);
-					Debug.LogWarning(((type != null) ? string.Empty : "GUIClipType is Null, ") + ((property != null) ? string.Empty : "topmostRect is Null, ") + ((method != null) ? string.Empty : "GetTopRect is Null, ") + ((method2 != null) ? string.Empty : "ClipRect is Null, "), null);
+					Debug.LogWarning("GUIScaleUtility cannot run on this system! Compability mode enabled. For you that means you're not able to use the Node Editor inside more than one group:( Please PM me (Seneral @UnityForums) so I can figure out what causes this! Thanks!");
+					Debug.LogWarning(((type != null) ? string.Empty : "GUIClipType is Null, ") + ((property != null) ? string.Empty : "topmostRect is Null, ") + ((method != null) ? string.Empty : "GetTopRect is Null, ") + ((method2 != null) ? string.Empty : "ClipRect is Null, "));
 					compabilityMode = true;
 					initiated = true;
 				}
@@ -187,7 +187,7 @@ namespace NodeEditorFramework.Utilities
 		{
 			if (rectStackGroups.Count == 0)
 			{
-				Debug.LogError("GUIClipHierarchy: BeginNoClip/MoveClipsUp - RestoreClips count not balanced!", null);
+				Debug.LogError("GUIClipHierarchy: BeginNoClip/MoveClipsUp - RestoreClips count not balanced!");
 			}
 			else
 			{

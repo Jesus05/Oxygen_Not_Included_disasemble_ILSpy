@@ -29,9 +29,9 @@ namespace Database
 
 			public string Effect;
 
-			public SimViewMode Overlay;
+			public HashedString Overlay;
 
-			public SimViewMode SecondOverlay;
+			public HashedString SecondOverlay;
 		}
 
 		public StatusItems(string id, ResourceSet parent)

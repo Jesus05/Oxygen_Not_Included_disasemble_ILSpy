@@ -1,3 +1,4 @@
+using STRINGS;
 using UnityEngine;
 
 public class IronCometConfig : IEntityConfig
@@ -6,7 +7,7 @@ public class IronCometConfig : IEntityConfig
 
 	public GameObject CreatePrefab()
 	{
-		GameObject gameObject = EntityTemplates.CreateEntity(ID, ID, true);
+		GameObject gameObject = EntityTemplates.CreateEntity(ID, UI.SPACEDESTINATIONS.COMETS.IRONCOMET.NAME, true);
 		gameObject.AddOrGet<SaveLoadRoot>();
 		gameObject.AddOrGet<LoopingSounds>();
 		Comet comet = gameObject.AddOrGet<Comet>();
@@ -30,7 +31,7 @@ public class IronCometConfig : IEntityConfig
 		kBatchedAnimController.isMovable = true;
 		kBatchedAnimController.initialAnim = "fall_loop";
 		kBatchedAnimController.initialMode = KAnim.PlayMode.Loop;
-		kBatchedAnimController.visibilityType = KAnimControllerBase.VisibilityType.Always;
+		kBatchedAnimController.visibilityType = KAnimControllerBase.VisibilityType.OffscreenUpdate;
 		KCircleCollider2D kCircleCollider2D = gameObject.AddOrGet<KCircleCollider2D>();
 		kCircleCollider2D.radius = 0.5f;
 		gameObject.transform.localScale = new Vector3(0.6f, 0.6f, 1f);

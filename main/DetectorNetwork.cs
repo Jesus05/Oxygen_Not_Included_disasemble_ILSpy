@@ -31,8 +31,8 @@ public class DetectorNetwork : GameStateMachine<DetectorNetwork, DetectorNetwork
 		public NetworkStates InitializeStates(DetectorNetwork parent)
 		{
 			DefaultState(poor);
-			poor.ToggleStatusItem(BUILDING.STATUSITEMS.NETWORKQUALITY.NAME, BUILDING.STATUSITEMS.NETWORKQUALITY.TOOLTIP, string.Empty, StatusItem.IconType.Exclamation, NotificationType.BadMinor, false, SimViewMode.None, 0, StringCallback, null, null).ParamTransition(parent.networkQuality, good, (Instance smi, float p) => (double)p >= 0.8);
-			good.ToggleStatusItem(BUILDING.STATUSITEMS.NETWORKQUALITY.NAME, BUILDING.STATUSITEMS.NETWORKQUALITY.TOOLTIP, string.Empty, StatusItem.IconType.Info, NotificationType.Neutral, false, SimViewMode.None, 0, StringCallback, null, null).ParamTransition(parent.networkQuality, good, (Instance smi, float p) => (double)p < 0.8);
+			poor.ToggleStatusItem(BUILDING.STATUSITEMS.NETWORKQUALITY.NAME, BUILDING.STATUSITEMS.NETWORKQUALITY.TOOLTIP, string.Empty, StatusItem.IconType.Exclamation, NotificationType.BadMinor, false, default(HashedString), 0, StringCallback, null, null).ParamTransition(parent.networkQuality, good, (Instance smi, float p) => (double)p >= 0.8);
+			good.ToggleStatusItem(BUILDING.STATUSITEMS.NETWORKQUALITY.NAME, BUILDING.STATUSITEMS.NETWORKQUALITY.TOOLTIP, string.Empty, StatusItem.IconType.Info, NotificationType.Neutral, false, default(HashedString), 0, StringCallback, null, null).ParamTransition(parent.networkQuality, good, (Instance smi, float p) => (double)p < 0.8);
 			return this;
 		}
 
@@ -161,7 +161,7 @@ public class DetectorNetwork : GameStateMachine<DetectorNetwork, DetectorNetwork
 		{
 			smi.Update(dt);
 		}, UpdateRate.SIM_1000ms, false).EventTransition(GameHashes.OperationalChanged, inoperational, (Instance smi) => !smi.GetComponent<Operational>().IsOperational);
-		operational.self_poor.InitializeStates(this).ToggleStatusItem(BUILDING.STATUSITEMS.DETECTORQUALITY.NAME, BUILDING.STATUSITEMS.DETECTORQUALITY.TOOLTIP, "status_item_interference", StatusItem.IconType.Custom, NotificationType.BadMinor, false, SimViewMode.None, 0, (string str, Instance smi) => str.Replace("{Quality}", GameUtil.GetFormattedPercent(smi.GetDishQuality() * 100f, GameUtil.TimeSlice.None)), null, null).ParamTransition(selfQuality, operational.self_good, (Instance smi, float p) => (double)p >= 0.8);
-		operational.self_good.InitializeStates(this).ToggleStatusItem(BUILDING.STATUSITEMS.DETECTORQUALITY.NAME, BUILDING.STATUSITEMS.DETECTORQUALITY.TOOLTIP, string.Empty, StatusItem.IconType.Info, NotificationType.Neutral, false, SimViewMode.None, 0, (string str, Instance smi) => str.Replace("{Quality}", GameUtil.GetFormattedPercent(smi.GetDishQuality() * 100f, GameUtil.TimeSlice.None)), null, null).ParamTransition(selfQuality, operational.self_poor, (Instance smi, float p) => (double)p < 0.8);
+		operational.self_poor.InitializeStates(this).ToggleStatusItem(BUILDING.STATUSITEMS.DETECTORQUALITY.NAME, BUILDING.STATUSITEMS.DETECTORQUALITY.TOOLTIP, "status_item_interference", StatusItem.IconType.Custom, NotificationType.BadMinor, false, default(HashedString), 0, (string str, Instance smi) => str.Replace("{Quality}", GameUtil.GetFormattedPercent(smi.GetDishQuality() * 100f, GameUtil.TimeSlice.None)), null, null).ParamTransition(selfQuality, operational.self_good, (Instance smi, float p) => (double)p >= 0.8);
+		operational.self_good.InitializeStates(this).ToggleStatusItem(BUILDING.STATUSITEMS.DETECTORQUALITY.NAME, BUILDING.STATUSITEMS.DETECTORQUALITY.TOOLTIP, string.Empty, StatusItem.IconType.Info, NotificationType.Neutral, false, default(HashedString), 0, (string str, Instance smi) => str.Replace("{Quality}", GameUtil.GetFormattedPercent(smi.GetDishQuality() * 100f, GameUtil.TimeSlice.None)), null, null).ParamTransition(selfQuality, operational.self_poor, (Instance smi, float p) => (double)p < 0.8);
 	}
 }

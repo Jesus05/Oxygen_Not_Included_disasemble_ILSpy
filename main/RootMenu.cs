@@ -25,6 +25,8 @@ public class RootMenu : KScreen
 
 	private TileScreen tileScreenInst;
 
+	public bool canTogglePauseScreen = true;
+
 	public GameObject selectedGO;
 
 	public static RootMenu Instance
@@ -117,7 +119,7 @@ public class RootMenu : KScreen
 		{
 			selectedGO = gameObject;
 			CloseSubMenus();
-			if ((Object)selectedGO != (Object)null && (Object)selectedGO.GetComponent<KPrefabID>() != (Object)null)
+			if ((Object)selectedGO != (Object)null && ((Object)selectedGO.GetComponent<KPrefabID>() != (Object)null || (bool)selectedGO.GetComponent<CellSelectionObject>()))
 			{
 				AddSubMenu(detailsScreen);
 				detailsScreen.Refresh(selectedGO);
@@ -145,6 +147,10 @@ public class RootMenu : KScreen
 	{
 		if (!e.Consumed && e.TryConsume(Action.Escape) && SelectTool.Instance.enabled)
 		{
+			if (!canTogglePauseScreen)
+			{
+				return;
+			}
 			if (AreSubMenusOpen())
 			{
 				KMonoBehaviour.PlaySound(GlobalAssets.GetSound("Back", false));
@@ -183,29 +189,16 @@ public class RootMenu : KScreen
 	public override void OnKeyUp(KButtonEvent e)
 	{
 		base.OnKeyUp(e);
-		if (!e.Consumed)
+		if (!e.Consumed && e.TryConsume(Action.AlternateView) && (Object)tileScreenInst != (Object)null)
 		{
-			if (e.TryConsume(Action.AlternateView))
-			{
-				if ((Object)tileScreenInst != (Object)null)
-				{
-					tileScreenInst.Deactivate();
-					tileScreenInst = null;
-				}
-			}
-			else if ((Object)SaveGame.Instance != (Object)null)
-			{
-				SaveGame.Instance.GetComponent<UserNavigation>().Handle(e);
-			}
+			tileScreenInst.Deactivate();
+			tileScreenInst = null;
 		}
 	}
 
 	public void TogglePauseScreen()
 	{
 		PauseScreen.Instance.Show(true);
-		AudioMixer.instance.Start(AudioMixerSnapshots.Get().ESCPauseSnapshot);
-		MusicManager.instance.OnEscapeMenu(true);
-		MusicManager.instance.PlaySong("Music_ESC_Menu", false);
 	}
 
 	public void ExternalClose()
@@ -222,7 +215,7 @@ public class RootMenu : KScreen
 		}
 		else
 		{
-			Debug.LogWarning("OnUIClear() Event system is null", null);
+			Debug.LogWarning("OnUIClear() Event system is null");
 		}
 	}
 
@@ -250,5 +243,14 @@ public class RootMenu : KScreen
 			}
 		}
 		return list.ToArray();
+	}
+
+	public bool IsBuildingChorePanelActive()
+	{
+		if ((Object)detailsScreen != (Object)null)
+		{
+			return detailsScreen.GetActiveTab() is BuildingChoresPanel;
+		}
+		return false;
 	}
 }

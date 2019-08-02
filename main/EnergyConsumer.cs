@@ -39,7 +39,7 @@ public class EnergyConsumer : KMonoBehaviour, ISaveLoadable, IEnergyConsumer, IE
 		private set;
 	}
 
-	public bool HasWire => (Object)Grid.Objects[PowerCell, 24] != (Object)null;
+	public bool HasWire => (Object)Grid.Objects[PowerCell, 26] != (Object)null;
 
 	public virtual bool IsPowered
 	{
@@ -164,7 +164,7 @@ public class EnergyConsumer : KMonoBehaviour, ISaveLoadable, IEnergyConsumer, IE
 		}
 		else
 		{
-			Debug.Log("Invalid state for sound in EnergyConsumer.", null);
+			Debug.Log("Invalid state for sound in EnergyConsumer.");
 		}
 		if (CameraController.Instance.IsAudibleSound(base.transform.GetPosition()))
 		{

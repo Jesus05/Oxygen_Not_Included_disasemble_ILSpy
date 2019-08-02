@@ -18,7 +18,7 @@ public class EmptyPipeTool : FilteredDragTool
 
 	protected override void OnDragTool(int cell, int distFromOrigin)
 	{
-		for (int i = 0; i < 37; i++)
+		for (int i = 0; i < 39; i++)
 		{
 			if (IsActiveLayer((ObjectLayer)i))
 			{
@@ -28,11 +28,18 @@ public class EmptyPipeTool : FilteredDragTool
 					EmptyConduitWorkable component = gameObject.GetComponent<EmptyConduitWorkable>();
 					if (!((Object)component == (Object)null))
 					{
-						component.MarkForEmptying();
-						Prioritizable component2 = gameObject.GetComponent<Prioritizable>();
-						if ((Object)component2 != (Object)null)
+						if (DebugHandler.InstantBuildMode)
 						{
-							component2.SetMasterPriority(ToolMenu.Instance.PriorityScreen.GetLastSelectedPriority());
+							component.EmptyPipeContents();
+						}
+						else
+						{
+							component.MarkForEmptying();
+							Prioritizable component2 = gameObject.GetComponent<Prioritizable>();
+							if ((Object)component2 != (Object)null)
+							{
+								component2.SetMasterPriority(ToolMenu.Instance.PriorityScreen.GetLastSelectedPriority());
+							}
 						}
 					}
 				}

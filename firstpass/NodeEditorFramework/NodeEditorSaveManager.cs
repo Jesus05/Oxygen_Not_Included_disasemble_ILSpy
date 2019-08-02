@@ -45,7 +45,7 @@ namespace NodeEditorFramework
 		{
 			if (string.IsNullOrEmpty(saveName))
 			{
-				Debug.LogError("Cannot save Canvas to scene: No save name specified!", null);
+				Debug.LogError("Cannot save Canvas to scene: No save name specified!");
 			}
 			else
 			{
@@ -69,7 +69,7 @@ namespace NodeEditorFramework
 		{
 			if (string.IsNullOrEmpty(saveName))
 			{
-				Debug.LogError("Cannot load Canvas from scene: No save name specified!", null);
+				Debug.LogError("Cannot load Canvas from scene: No save name specified!");
 				return null;
 			}
 			NodeCanvasSceneSave nodeCanvasSceneSave = FindSceneSave(saveName);
@@ -227,7 +227,7 @@ namespace NodeEditorFramework
 					NodeEditorState nodeEditorState = editorStates[i] = Clone(editorStates[i]);
 					if ((UnityEngine.Object)nodeEditorState == (UnityEngine.Object)null)
 					{
-						Debug.LogError("Failed to create a working copy for an NodeEditorState during the loading process of " + associatedNodeCanvas.name + "!", null);
+						Debug.LogError("Failed to create a working copy for an NodeEditorState during the loading process of " + associatedNodeCanvas.name + "!");
 					}
 					else
 					{
@@ -274,7 +274,7 @@ namespace NodeEditorFramework
 			int num = scriptableObjects.IndexOf((ScriptableObject)initialSO);
 			if (num == -1)
 			{
-				Debug.LogError("GetWorkingCopy: ScriptableObject " + initialSO.name + " was not copied before! It will be null!", null);
+				Debug.LogError("GetWorkingCopy: ScriptableObject " + initialSO.name + " was not copied before! It will be null!");
 			}
 			return (num != -1) ? ((T)clonedScriptableObjects[num]) : ((T)null);
 		}

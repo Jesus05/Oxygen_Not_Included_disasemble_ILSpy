@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class LaunchInitializer : MonoBehaviour
 {
-	public const string BUILD_PREFIX = "SU";
+	public const string BUILD_PREFIX = "LU";
 
 	public GameObject[] SpawnPrefabs;
 
@@ -18,11 +18,11 @@ public class LaunchInitializer : MonoBehaviour
 		{
 			if (!SystemInfo.SupportsTextureFormat(TextureFormat.RGBAFloat))
 			{
-				Debug.LogError("Machine does not support RGBAFloat32", null);
+				Debug.LogError("Machine does not support RGBAFloat32");
 			}
 			GraphicsOptionsScreen.SetResolutionFromPrefs();
 			Util.ApplyInvariantCultureToThread(Thread.CurrentThread);
-			Debug.Log("Development Build: SU-" + 291640.ToString(), null);
+			Debug.Log("release Build: LU-" + 356355.ToString());
 			UnityEngine.Object.DontDestroyOnLoad(base.gameObject);
 			KPlayerPrefs.instance.Load();
 			KFMOD.Initialize();
@@ -61,7 +61,7 @@ public class LaunchInitializer : MonoBehaviour
 			}
 			catch (Exception obj)
 			{
-				Debug.LogWarning(obj, null);
+				Debug.LogWarning(obj);
 			}
 		}
 	}

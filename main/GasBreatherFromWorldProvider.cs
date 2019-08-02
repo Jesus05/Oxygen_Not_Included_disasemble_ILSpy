@@ -33,6 +33,11 @@ public class GasBreatherFromWorldProvider : OxygenBreather.IGasProvider
 		return true;
 	}
 
+	public bool ShouldStoreCO2()
+	{
+		return false;
+	}
+
 	public bool ConsumeGas(OxygenBreather oxygen_breather, float gas_consumed)
 	{
 		SimHashes getBreathableElement = oxygen_breather.GetBreathableElement;

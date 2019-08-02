@@ -30,7 +30,7 @@ public struct Descriptor
 	{
 		indent = 0;
 		text = txt;
-		tooltipText = Util.StripTextFormatting(tooltip);
+		tooltipText = tooltip;
 		type = descriptorType;
 		onlyForSimpleInfoScreen = only_for_simple_info_screen;
 	}
@@ -38,7 +38,7 @@ public struct Descriptor
 	public void SetupDescriptor(string txt, string tooltip, DescriptorType descriptorType = DescriptorType.Effect)
 	{
 		text = txt;
-		tooltipText = Util.StripTextFormatting(tooltip);
+		tooltipText = tooltip;
 		type = descriptorType;
 	}
 

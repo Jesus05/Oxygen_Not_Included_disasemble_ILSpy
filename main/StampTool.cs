@@ -72,7 +72,7 @@ public class StampTool : InterfaceTool
 				List<GameObject> objects_to_destroy = new List<GameObject>();
 				for (int i = 0; i < stampTemplate.cells.Count; i++)
 				{
-					for (int j = 0; j < 31; j++)
+					for (int j = 0; j < 34; j++)
 					{
 						GameObject gameObject = Grid.Objects[Grid.XYToCell((int)(pos.x + (float)stampTemplate.cells[i].location_x), (int)(pos.y + (float)stampTemplate.cells[i].location_y)), j];
 						if ((Object)gameObject != (Object)null && !objects_to_destroy.Contains(gameObject))

@@ -35,6 +35,10 @@ public class Uprootable : Workable
 
 	private Storage planterStorage;
 
+	public bool showUserMenuButtons = true;
+
+	public HandleVector<int>.Handle partitionerEntry;
+
 	private static readonly EventSystem.IntraObjectHandler<Uprootable> OnPlanterStorageDelegate = new EventSystem.IntraObjectHandler<Uprootable>(delegate(Uprootable component, object data)
 	{
 		component.OnPlanterStorage(data);
@@ -75,6 +79,10 @@ public class Uprootable : Workable
 		base.OnPrefabInit();
 		pendingStatusItem = Db.Get().MiscStatusItems.PendingUproot;
 		workerStatusItem = Db.Get().DuplicantStatusItems.Uprooting;
+		attributeConverter = Db.Get().AttributeConverters.HarvestSpeed;
+		attributeExperienceMultiplier = DUPLICANTSTATS.ATTRIBUTE_LEVELING.PART_DAY_EXPERIENCE;
+		skillExperienceSkillGroup = Db.Get().SkillGroups.Farming.Id;
+		skillExperienceMultiplier = SKILLS.PART_DAY_EXPERIENCE;
 		multitoolContext = "harvest";
 		multitoolHitEffectTag = "fx_harvest_splash";
 		Subscribe(1309017699, OnPlanterStorageDelegate);
@@ -82,6 +90,7 @@ public class Uprootable : Workable
 
 	protected override void OnSpawn()
 	{
+		base.OnSpawn();
 		Subscribe(2127324410, ForceCancelUprootDelegate);
 		SetWorkTime(12.5f);
 		Subscribe(2127324410, OnCancelDelegate);
@@ -90,17 +99,13 @@ public class Uprootable : Workable
 		Components.Uprootables.Add(this);
 		area = GetComponent<OccupyArea>();
 		Prioritizable.AddRef(base.gameObject);
+		base.gameObject.AddTag(GameTags.Plant);
+		Extents extents = new Extents(Grid.PosToCell(base.gameObject), base.gameObject.GetComponent<OccupyArea>().OccupiedCellsOffsets);
+		partitionerEntry = GameScenePartitioner.Instance.Add(base.gameObject.name, base.gameObject.GetComponent<KPrefabID>(), extents, GameScenePartitioner.Instance.plants, null);
 		if (isMarkedForUproot)
 		{
-			MarkForUproot();
+			MarkForUproot(true);
 		}
-	}
-
-	public override void AwardExperience(float work_dt, MinionResume resume)
-	{
-		resume.AddExperienceIfRole("JuniorFarmer", work_dt * ROLES.ACTIVE_EXPERIENCE_QUICK);
-		resume.AddExperienceIfRole("Farmer", work_dt * ROLES.ACTIVE_EXPERIENCE_QUICK);
-		resume.AddExperienceIfRole("SeniorFarmer", work_dt * ROLES.ACTIVE_EXPERIENCE_QUICK);
 	}
 
 	private void OnPlanterStorage(object data)
@@ -144,17 +149,17 @@ public class Uprootable : Workable
 		uprootComplete = state;
 	}
 
-	public void MarkForUproot()
+	public void MarkForUproot(bool instantOnDebug = true)
 	{
 		if (canBeUprooted)
 		{
-			if (DebugHandler.InstantBuildMode)
+			if (DebugHandler.InstantBuildMode && instantOnDebug)
 			{
 				Uproot();
 			}
 			else if (chore == null)
 			{
-				chore = new WorkChore<Uprootable>(Db.Get().ChoreTypes.Uproot, this, null, null, true, null, null, null, true, null, false, true, null, false, true, true, PriorityScreen.PriorityClass.basic, 0, false);
+				chore = new WorkChore<Uprootable>(Db.Get().ChoreTypes.Uproot, this, null, true, null, null, null, true, null, false, true, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, false, true);
 				GetComponent<KSelectable>().AddStatusItem(pendingStatusItem, this);
 			}
 			isMarkedForUproot = true;
@@ -189,7 +194,7 @@ public class Uprootable : Workable
 
 	private void OnClickUproot()
 	{
-		MarkForUproot();
+		MarkForUproot(true);
 	}
 
 	protected void OnClickCancelUproot()
@@ -204,44 +209,48 @@ public class Uprootable : Workable
 
 	private void OnRefreshUserMenu(object data)
 	{
-		if (uprootComplete)
+		if (showUserMenuButtons)
 		{
-			if (deselectOnUproot)
+			if (uprootComplete)
 			{
-				KSelectable component = GetComponent<KSelectable>();
-				if ((UnityEngine.Object)component != (UnityEngine.Object)null && (UnityEngine.Object)SelectTool.Instance.selected == (UnityEngine.Object)component)
+				if (deselectOnUproot)
 				{
-					SelectTool.Instance.Select(null, false);
+					KSelectable component = GetComponent<KSelectable>();
+					if ((UnityEngine.Object)component != (UnityEngine.Object)null && (UnityEngine.Object)SelectTool.Instance.selected == (UnityEngine.Object)component)
+					{
+						SelectTool.Instance.Select(null, false);
+					}
 				}
 			}
-		}
-		else if (canBeUprooted)
-		{
-			object buttonInfo;
-			if (chore != null)
+			else if (canBeUprooted)
 			{
-				string iconName = "action_uproot";
-				string text = cancelButtonLabel;
-				System.Action on_click = OnClickCancelUproot;
-				string tooltipText = cancelButtonTooltip;
-				buttonInfo = new KIconButtonMenu.ButtonInfo(iconName, text, on_click, Action.NumActions, null, null, null, tooltipText, true);
+				object buttonInfo;
+				if (chore != null)
+				{
+					string iconName = "action_uproot";
+					string text = cancelButtonLabel;
+					System.Action on_click = OnClickCancelUproot;
+					string tooltipText = cancelButtonTooltip;
+					buttonInfo = new KIconButtonMenu.ButtonInfo(iconName, text, on_click, Action.NumActions, null, null, null, tooltipText, true);
+				}
+				else
+				{
+					string tooltipText = "action_uproot";
+					string text = buttonLabel;
+					System.Action on_click = OnClickUproot;
+					string iconName = buttonTooltip;
+					buttonInfo = new KIconButtonMenu.ButtonInfo(tooltipText, text, on_click, Action.NumActions, null, null, null, iconName, true);
+				}
+				KIconButtonMenu.ButtonInfo button = (KIconButtonMenu.ButtonInfo)buttonInfo;
+				Game.Instance.userMenu.AddButton(base.gameObject, button, 1f);
 			}
-			else
-			{
-				string tooltipText = "action_uproot";
-				string text = buttonLabel;
-				System.Action on_click = OnClickUproot;
-				string iconName = buttonTooltip;
-				buttonInfo = new KIconButtonMenu.ButtonInfo(tooltipText, text, on_click, Action.NumActions, null, null, null, iconName, true);
-			}
-			KIconButtonMenu.ButtonInfo button = (KIconButtonMenu.ButtonInfo)buttonInfo;
-			Game.Instance.userMenu.AddButton(base.gameObject, button, 1f);
 		}
 	}
 
 	protected override void OnCleanUp()
 	{
 		base.OnCleanUp();
+		GameScenePartitioner.Instance.Free(ref partitionerEntry);
 		Components.Uprootables.Remove(this);
 	}
 

@@ -18,7 +18,7 @@ public class LogicCircuitManager
 		}
 	}
 
-	private static float ClockTickInterval = 0.1f;
+	public static float ClockTickInterval = 0.1f;
 
 	private float elapsedTime;
 
@@ -41,11 +41,6 @@ public class LogicCircuitManager
 		Refresh(dt);
 	}
 
-	public void RenderEveryTick(float dt)
-	{
-		Refresh(dt);
-	}
-
 	private void Refresh(float dt)
 	{
 		if (conduitSystem.IsDirty)
@@ -56,7 +51,7 @@ public class LogicCircuitManager
 		}
 		else if (conduitSystem.GetNetworks().Count > 0 && (UnityEngine.Object)SpeedControlScreen.Instance != (UnityEngine.Object)null && !SpeedControlScreen.Instance.IsPaused)
 		{
-			elapsedTime += Time.deltaTime;
+			elapsedTime += dt;
 			while (elapsedTime > ClockTickInterval)
 			{
 				elapsedTime -= ClockTickInterval;

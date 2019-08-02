@@ -24,7 +24,8 @@ public class Overheatable : StateMachineComponent<Overheatable.StatesInstance>, 
 				{
 					damage = 1,
 					source = (string)BUILDINGS.DAMAGESOURCES.BUILDING_OVERHEATED,
-					popString = (string)UI.GAMEOBJECTEFFECTS.DAMAGE_POPS.OVERHEAT
+					popString = (string)UI.GAMEOBJECTEFFECTS.DAMAGE_POPS.OVERHEAT,
+					fullDamageEffectName = "smoke_damage_kanim"
 				});
 			}
 		}
@@ -49,7 +50,7 @@ public class Overheatable : StateMachineComponent<Overheatable.StatesInstance>, 
 			safeTemperature.TriggerOnEnter(GameHashes.OptimalTemperatureAchieved, null).EventTransition(GameHashes.BuildingOverheated, overheated, null);
 			overheated.Enter(delegate
 			{
-				Tutorial.Instance.TutorialMessage(Tutorial.TutorialMessages.TM_OverheatingBuildings);
+				Tutorial.Instance.TutorialMessage(Tutorial.TutorialMessages.TM_OverheatingBuildings, true);
 			}).EventTransition(GameHashes.BuildingNoLongerOverheated, safeTemperature, null).ToggleStatusItem(Db.Get().BuildingStatusItems.Overheated, (object)null)
 				.ToggleNotification((StatesInstance smi) => smi.master.CreateOverheatedNotification())
 				.TriggerOnEnter(GameHashes.TooHotWarning, null)
@@ -124,7 +125,7 @@ public class Overheatable : StateMachineComponent<Overheatable.StatesInstance>, 
 	public Notification CreateOverheatedNotification()
 	{
 		KSelectable component = GetComponent<KSelectable>();
-		return new Notification(MISC.NOTIFICATIONS.BUILDINGOVERHEATED.NAME, NotificationType.BadMinor, HashedString.Invalid, (List<Notification> notificationList, object data) => MISC.NOTIFICATIONS.BUILDINGOVERHEATED.TOOLTIP + notificationList.ReduceMessages(false), "/t• " + component.GetProperName(), false, 0f, null, null);
+		return new Notification(MISC.NOTIFICATIONS.BUILDINGOVERHEATED.NAME, NotificationType.BadMinor, HashedString.Invalid, (List<Notification> notificationList, object data) => MISC.NOTIFICATIONS.BUILDINGOVERHEATED.TOOLTIP + notificationList.ReduceMessages(false), "/t• " + component.GetProperName(), false, 0f, null, null, null);
 	}
 
 	private static string ToolTipResolver(List<Notification> notificationList, object data)
@@ -161,8 +162,8 @@ public class Overheatable : StateMachineComponent<Overheatable.StatesInstance>, 
 		}
 		else if (baseOverheatTemp != 0f)
 		{
-			string formattedTemperature = GameUtil.GetFormattedTemperature(baseOverheatTemp, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true);
-			string formattedTemperature2 = GameUtil.GetFormattedTemperature(baseFatalTemp, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true);
+			string formattedTemperature = GameUtil.GetFormattedTemperature(baseOverheatTemp, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false);
+			string formattedTemperature2 = GameUtil.GetFormattedTemperature(baseFatalTemp, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false);
 			string format = UI.BUILDINGEFFECTS.TOOLTIPS.OVERHEAT_TEMP;
 			Descriptor item2 = new Descriptor(string.Format(UI.BUILDINGEFFECTS.OVERHEAT_TEMP, formattedTemperature, formattedTemperature2), string.Format(format, formattedTemperature, formattedTemperature2), Descriptor.DescriptorType.Effect, false);
 			list.Add(item2);

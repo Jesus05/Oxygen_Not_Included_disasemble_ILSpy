@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-public class KPlayerPrefs : YamlIO<KPlayerPrefs>
+public class KPlayerPrefs
 {
 	private static KPlayerPrefs _instance;
 
@@ -21,11 +21,11 @@ public class KPlayerPrefs : YamlIO<KPlayerPrefs>
 				PATH = GetPath();
 				try
 				{
-					YamlIO<KPlayerPrefs>.LoadFile(PATH);
+					_instance = YamlIO.LoadFile<KPlayerPrefs>(PATH, null, null);
 				}
 				catch
 				{
-					Debug.LogWarning("Creating new KPlayerPrefs..", null);
+					Debug.LogWarning("Creating new KPlayerPrefs..");
 					_instance = new KPlayerPrefs();
 				}
 			}
@@ -80,11 +80,11 @@ public class KPlayerPrefs : YamlIO<KPlayerPrefs>
 	{
 		try
 		{
-			instance.Save(PATH);
+			YamlIO.Save(instance, PATH, null);
 		}
 		catch (Exception ex)
 		{
-			Debug.LogWarning("Failed to save kplayerprefs: " + ex.ToString(), null);
+			Debug.LogWarning("Failed to save kplayerprefs: " + ex.ToString());
 		}
 	}
 

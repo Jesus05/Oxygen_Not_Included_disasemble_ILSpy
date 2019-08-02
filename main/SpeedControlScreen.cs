@@ -95,11 +95,9 @@ public class SpeedControlScreen : KScreen
 		{
 			TogglePause(true);
 		};
-		playButtonWidget.GetComponent<ToolTip>().AddMultiStringTooltip("Play " + GameUtil.GetHotkeyString(Action.TogglePause), TooltipTextStyle);
-		pauseButtonWidget.GetComponent<ToolTip>().AddMultiStringTooltip("Pause " + GameUtil.GetHotkeyString(Action.TogglePause), TooltipTextStyle);
-		speedButtonWidget_slow.GetComponent<ToolTip>().AddMultiStringTooltip(string.Format(UI.TOOLTIPS.SPEEDBUTTON_SLOW, GameUtil.GetHotkeyString(Action.CycleSpeed)), TooltipTextStyle);
-		speedButtonWidget_medium.GetComponent<ToolTip>().AddMultiStringTooltip(string.Format(UI.TOOLTIPS.SPEEDBUTTON_MEDIUM, GameUtil.GetHotkeyString(Action.CycleSpeed)), TooltipTextStyle);
-		speedButtonWidget_fast.GetComponent<ToolTip>().AddMultiStringTooltip(string.Format(UI.TOOLTIPS.SPEEDBUTTON_FAST, GameUtil.GetHotkeyString(Action.CycleSpeed)), TooltipTextStyle);
+		speedButtonWidget_slow.GetComponent<ToolTip>().AddMultiStringTooltip(GameUtil.ReplaceHotkeyString(UI.TOOLTIPS.SPEEDBUTTON_SLOW, Action.CycleSpeed), TooltipTextStyle);
+		speedButtonWidget_medium.GetComponent<ToolTip>().AddMultiStringTooltip(GameUtil.ReplaceHotkeyString(UI.TOOLTIPS.SPEEDBUTTON_MEDIUM, Action.CycleSpeed), TooltipTextStyle);
+		speedButtonWidget_fast.GetComponent<ToolTip>().AddMultiStringTooltip(GameUtil.ReplaceHotkeyString(UI.TOOLTIPS.SPEEDBUTTON_FAST, Action.CycleSpeed), TooltipTextStyle);
 		playButtonWidget.GetComponent<KButton>().onClick += delegate
 		{
 			TogglePause(true);
@@ -191,7 +189,7 @@ public class SpeedControlScreen : KScreen
 			AudioMixer.instance.Start(AudioMixerSnapshots.Get().SpeedPausedMigrated);
 			MusicManager.instance.SetDynamicMusicPaused();
 			pauseButtonWidget.GetComponent<ToolTip>().ClearMultiStringTooltip();
-			pauseButtonWidget.GetComponent<ToolTip>().AddMultiStringTooltip(UI.TOOLTIPS.UNPAUSE + " " + GameUtil.GetHotkeyString(Action.TogglePause), TooltipTextStyle);
+			pauseButtonWidget.GetComponent<ToolTip>().AddMultiStringTooltip(GameUtil.ReplaceHotkeyString(UI.TOOLTIPS.UNPAUSE, Action.TogglePause), TooltipTextStyle);
 			pauseButton.isOn = true;
 			OnPause();
 		}
@@ -213,7 +211,7 @@ public class SpeedControlScreen : KScreen
 			AudioMixer.instance.Stop(AudioMixerSnapshots.Get().SpeedPausedMigrated, STOP_MODE.ALLOWFADEOUT);
 			MusicManager.instance.SetDynamicMusicUnpaused();
 			pauseButtonWidget.GetComponent<ToolTip>().ClearMultiStringTooltip();
-			pauseButtonWidget.GetComponent<ToolTip>().AddMultiStringTooltip(UI.TOOLTIPS.PAUSE + " " + GameUtil.GetHotkeyString(Action.TogglePause), TooltipTextStyle);
+			pauseButtonWidget.GetComponent<ToolTip>().AddMultiStringTooltip(GameUtil.ReplaceHotkeyString(UI.TOOLTIPS.PAUSE, Action.TogglePause), TooltipTextStyle);
 			pauseButton.isOn = false;
 			SetSpeed(speed);
 			OnPlay();
@@ -297,7 +295,7 @@ public class SpeedControlScreen : KScreen
 
 	public void DebugStepFrame()
 	{
-		Output.Log("Stepping one frame");
+		DebugUtil.LogArgs("Stepping one frame");
 		Unpause(false);
 		StartCoroutine(DebugStepFrameDelay());
 	}

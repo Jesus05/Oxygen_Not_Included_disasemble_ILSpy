@@ -59,7 +59,12 @@ public class MinionIdentity : KMonoBehaviour, ISaveLoadable, IAssignableIdentity
 	[Serialize]
 	public KCompBuilder.BodyData bodyData;
 
-	private List<Ownables> ownables;
+	[Serialize]
+	public Ref<MinionAssignablesProxy> assignableProxy;
+
+	private Navigator navigator;
+
+	private ChoreDriver choreDriver;
 
 	public float timeLastSpoke;
 
@@ -102,10 +107,6 @@ public class MinionIdentity : KMonoBehaviour, ISaveLoadable, IAssignableIdentity
 
 	protected override void OnPrefabInit()
 	{
-		ownables = new List<Ownables>
-		{
-			GetComponent<Ownables>()
-		};
 		if (name == null)
 		{
 			name = ChooseRandomName();
@@ -125,6 +126,11 @@ public class MinionIdentity : KMonoBehaviour, ISaveLoadable, IAssignableIdentity
 
 	protected override void OnSpawn()
 	{
+		if (addToIdentityList)
+		{
+			ValidateProxy();
+			CleanupLimboMinions();
+		}
 		PathProber component = GetComponent<PathProber>();
 		if ((UnityEngine.Object)component != (UnityEngine.Object)null)
 		{
@@ -147,7 +153,6 @@ public class MinionIdentity : KMonoBehaviour, ISaveLoadable, IAssignableIdentity
 			{
 				Components.LiveMinionIdentities.Add(this);
 			}
-			Game.Instance.assignmentManager.AddToAssignmentGroup("public", this);
 		}
 		SymbolOverrideController component2 = GetComponent<SymbolOverrideController>();
 		if ((UnityEngine.Object)component2 != (UnityEngine.Object)null)
@@ -177,6 +182,39 @@ public class MinionIdentity : KMonoBehaviour, ISaveLoadable, IAssignableIdentity
 			component5.carryAnimOverride = Assets.GetAnim("anim_incapacitated_carrier_kanim");
 		}
 		ApplyCustomGameSettings();
+	}
+
+	public void ValidateProxy()
+	{
+		assignableProxy = MinionAssignablesProxy.InitAssignableProxy(assignableProxy, this);
+	}
+
+	private void CleanupLimboMinions()
+	{
+		KPrefabID component = GetComponent<KPrefabID>();
+		if (component.InstanceID == -1)
+		{
+			DebugUtil.LogWarningArgs("Minion with an invalid kpid! Attempting to recover...", name);
+			if ((UnityEngine.Object)KPrefabIDTracker.Get().GetInstance(component.InstanceID) != (UnityEngine.Object)null)
+			{
+				KPrefabIDTracker.Get().Unregister(component);
+			}
+			component.InstanceID = KPrefabID.GetUniqueID();
+			KPrefabIDTracker.Get().Register(component);
+			DebugUtil.LogWarningArgs("Restored as:", component.InstanceID);
+		}
+		if (component.conflicted)
+		{
+			DebugUtil.LogWarningArgs("Minion with a conflicted kpid! Attempting to recover... ", component.InstanceID, name);
+			if ((UnityEngine.Object)KPrefabIDTracker.Get().GetInstance(component.InstanceID) != (UnityEngine.Object)null)
+			{
+				KPrefabIDTracker.Get().Unregister(component);
+			}
+			component.InstanceID = KPrefabID.GetUniqueID();
+			KPrefabIDTracker.Get().Register(component);
+			DebugUtil.LogWarningArgs("Restored as:", component.InstanceID);
+		}
+		assignableProxy.Get().SetTarget(this, base.gameObject);
 	}
 
 	public string GetProperName()
@@ -227,7 +265,14 @@ public class MinionIdentity : KMonoBehaviour, ISaveLoadable, IAssignableIdentity
 
 	protected override void OnCleanUp()
 	{
-		Game.Instance.assignmentManager.RemoveFromAllGroups(this);
+		if (assignableProxy != null)
+		{
+			MinionAssignablesProxy minionAssignablesProxy = assignableProxy.Get();
+			if ((bool)minionAssignablesProxy && minionAssignablesProxy.target == this)
+			{
+				Util.KDestroyGameObject(minionAssignablesProxy.gameObject);
+			}
+		}
 		Components.MinionIdentities.Remove(this);
 		Components.LiveMinionIdentities.Remove(this);
 	}
@@ -241,39 +286,50 @@ public class MinionIdentity : KMonoBehaviour, ISaveLoadable, IAssignableIdentity
 
 	private void OnDied(object data)
 	{
-		Ownables component = GetComponent<Ownables>();
-		component.UnassignAll();
-		Equipment component2 = GetComponent<Equipment>();
-		component2.UnequipAll();
+		GetSoleOwner().UnassignAll();
+		GetEquipment().UnequipAll();
 		Components.LiveMinionIdentities.Remove(this);
 	}
 
 	public List<Ownables> GetOwners()
 	{
-		return ownables;
+		return assignableProxy.Get().ownables;
 	}
 
 	public Ownables GetSoleOwner()
 	{
-		return GetComponent<Ownables>();
+		return assignableProxy.Get().GetComponent<Ownables>();
+	}
+
+	public Equipment GetEquipment()
+	{
+		return assignableProxy.Get().GetComponent<Equipment>();
 	}
 
 	public void Sim1000ms(float dt)
 	{
-		if (!((UnityEngine.Object)this == (UnityEngine.Object)null) && GetComponent<Navigator>().IsMoving())
+		if (!((UnityEngine.Object)this == (UnityEngine.Object)null))
 		{
-			Chore currentChore = GetComponent<ChoreDriver>().GetCurrentChore();
-			if (currentChore != null)
+			if ((UnityEngine.Object)navigator == (UnityEngine.Object)null)
 			{
-				ReportManager.Instance.ReportValue(ReportManager.ReportType.TravelTime, dt, currentChore.choreType.Name, currentChore.driver.GetProperName());
-				if (currentChore is FetchAreaChore)
+				navigator = GetComponent<Navigator>();
+			}
+			if (!((UnityEngine.Object)navigator != (UnityEngine.Object)null) || navigator.IsMoving())
+			{
+				if ((UnityEngine.Object)choreDriver == (UnityEngine.Object)null)
 				{
-					MinionResume component = GetComponent<MinionResume>();
-					if ((UnityEngine.Object)component != (UnityEngine.Object)null)
+					choreDriver = GetComponent<ChoreDriver>();
+				}
+				if ((UnityEngine.Object)choreDriver != (UnityEngine.Object)null)
+				{
+					Chore currentChore = choreDriver.GetCurrentChore();
+					if (currentChore != null && currentChore is FetchAreaChore)
 					{
-						component.AddExperienceIfRole("Hauler", dt * ROLES.ACTIVE_EXPERIENCE_VERY_SLOW);
-						component.AddExperienceIfRole(MaterialsManager.ID, dt * ROLES.ACTIVE_EXPERIENCE_VERY_SLOW);
-						component.AddExperienceIfRole(Handyman.ID, dt * ROLES.ACTIVE_EXPERIENCE_VERY_SLOW);
+						MinionResume component = GetComponent<MinionResume>();
+						if ((UnityEngine.Object)component != (UnityEngine.Object)null)
+						{
+							component.AddExperienceWithAptitude(Db.Get().SkillGroups.Hauling.Id, dt, SKILLS.ALL_DAY_EXPERIENCE);
+						}
 					}
 				}
 			}
@@ -285,22 +341,22 @@ public class MinionIdentity : KMonoBehaviour, ISaveLoadable, IAssignableIdentity
 		SettingLevel currentQualitySetting = CustomGameSettings.Instance.GetCurrentQualitySetting(CustomGameSettingConfigs.ImmuneSystem);
 		if (currentQualitySetting.id == "Compromised")
 		{
-			Db.Get().Amounts.ImmuneLevel.deltaAttribute.Lookup(this).Add(new AttributeModifier(Db.Get().Amounts.ImmuneLevel.deltaAttribute.Id, -0.025f, UI.FRONTEND.CUSTOMGAMESETTINGSSCREEN.SETTINGS.IMMUNESYSTEM.LEVELS.COMPROMISED.ATTRIBUTE_MODIFIER_NAME, false, false, true));
-			Db.Get().Attributes.DiseaseCureSpeed.Lookup(this).Add(new AttributeModifier(Db.Get().Attributes.DiseaseCureSpeed.Id, -0.3333f, UI.FRONTEND.CUSTOMGAMESETTINGSSCREEN.SETTINGS.IMMUNESYSTEM.LEVELS.STRONG.ATTRIBUTE_MODIFIER_NAME, false, false, true));
+			Db.Get().Attributes.DiseaseCureSpeed.Lookup(this).Add(new AttributeModifier(Db.Get().Attributes.DiseaseCureSpeed.Id, -0.3333f, UI.FRONTEND.CUSTOMGAMESETTINGSSCREEN.SETTINGS.IMMUNESYSTEM.LEVELS.COMPROMISED.ATTRIBUTE_MODIFIER_NAME, false, false, true));
+			Db.Get().Attributes.GermResistance.Lookup(this).Add(new AttributeModifier(Db.Get().Attributes.GermResistance.Id, -2f, UI.FRONTEND.CUSTOMGAMESETTINGSSCREEN.SETTINGS.IMMUNESYSTEM.LEVELS.COMPROMISED.ATTRIBUTE_MODIFIER_NAME, false, false, true));
 		}
 		else if (currentQualitySetting.id == "Weak")
 		{
-			Db.Get().Amounts.ImmuneLevel.deltaAttribute.Lookup(this).Add(new AttributeModifier(Db.Get().Amounts.ImmuneLevel.deltaAttribute.Id, -0.008333334f, UI.FRONTEND.CUSTOMGAMESETTINGSSCREEN.SETTINGS.IMMUNESYSTEM.LEVELS.WEAK.ATTRIBUTE_MODIFIER_NAME, false, false, true));
+			Db.Get().Attributes.GermResistance.Lookup(this).Add(new AttributeModifier(Db.Get().Attributes.GermResistance.Id, -1f, UI.FRONTEND.CUSTOMGAMESETTINGSSCREEN.SETTINGS.IMMUNESYSTEM.LEVELS.WEAK.ATTRIBUTE_MODIFIER_NAME, false, false, true));
 		}
 		else if (currentQualitySetting.id == "Strong")
 		{
-			Db.Get().Amounts.ImmuneLevel.deltaAttribute.Lookup(this).Add(new AttributeModifier(Db.Get().Amounts.ImmuneLevel.deltaAttribute.Id, 0.008333334f, UI.FRONTEND.CUSTOMGAMESETTINGSSCREEN.SETTINGS.IMMUNESYSTEM.LEVELS.STRONG.ATTRIBUTE_MODIFIER_NAME, false, false, true));
 			Db.Get().Attributes.DiseaseCureSpeed.Lookup(this).Add(new AttributeModifier(Db.Get().Attributes.DiseaseCureSpeed.Id, 2f, UI.FRONTEND.CUSTOMGAMESETTINGSSCREEN.SETTINGS.IMMUNESYSTEM.LEVELS.STRONG.ATTRIBUTE_MODIFIER_NAME, false, false, true));
+			Db.Get().Attributes.GermResistance.Lookup(this).Add(new AttributeModifier(Db.Get().Attributes.GermResistance.Id, 2f, UI.FRONTEND.CUSTOMGAMESETTINGSSCREEN.SETTINGS.IMMUNESYSTEM.LEVELS.STRONG.ATTRIBUTE_MODIFIER_NAME, false, false, true));
 		}
 		else if (currentQualitySetting.id == "Invincible")
 		{
-			Db.Get().Amounts.ImmuneLevel.deltaAttribute.Lookup(this).Add(new AttributeModifier(Db.Get().Amounts.ImmuneLevel.deltaAttribute.Id, float.PositiveInfinity, UI.FRONTEND.CUSTOMGAMESETTINGSSCREEN.SETTINGS.IMMUNESYSTEM.LEVELS.INVINCIBLE.ATTRIBUTE_MODIFIER_NAME, false, false, true));
-			Db.Get().Attributes.DiseaseCureSpeed.Lookup(this).Add(new AttributeModifier(Db.Get().Attributes.DiseaseCureSpeed.Id, 1E+08f, UI.FRONTEND.CUSTOMGAMESETTINGSSCREEN.SETTINGS.IMMUNESYSTEM.LEVELS.STRONG.ATTRIBUTE_MODIFIER_NAME, false, false, true));
+			Db.Get().Attributes.DiseaseCureSpeed.Lookup(this).Add(new AttributeModifier(Db.Get().Attributes.DiseaseCureSpeed.Id, 1E+08f, UI.FRONTEND.CUSTOMGAMESETTINGSSCREEN.SETTINGS.IMMUNESYSTEM.LEVELS.INVINCIBLE.ATTRIBUTE_MODIFIER_NAME, false, false, true));
+			Db.Get().Attributes.GermResistance.Lookup(this).Add(new AttributeModifier(Db.Get().Attributes.GermResistance.Id, 200f, UI.FRONTEND.CUSTOMGAMESETTINGSSCREEN.SETTINGS.IMMUNESYSTEM.LEVELS.INVINCIBLE.ATTRIBUTE_MODIFIER_NAME, false, false, true));
 		}
 		SettingLevel currentQualitySetting2 = CustomGameSettings.Instance.GetCurrentQualitySetting(CustomGameSettingConfigs.Stress);
 		if (currentQualitySetting2.id == "Doomed")

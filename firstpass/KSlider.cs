@@ -24,6 +24,8 @@ public class KSlider : Slider
 		Num
 	}
 
+	public AnimationCurve sliderWeightCurve;
+
 	public static string[] DefaultSounds = new string[5];
 
 	private string[] currentSounds;

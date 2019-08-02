@@ -14,11 +14,11 @@ public class POIBunkerExteriorDoor : IBuildingConfig
 		buildingDef.Invincible = true;
 		buildingDef.Entombable = false;
 		buildingDef.IsFoundation = true;
-		buildingDef.ViewMode = SimViewMode.None;
 		buildingDef.TileLayer = ObjectLayer.FoundationTile;
 		buildingDef.AudioCategory = "Metal";
 		buildingDef.PermittedRotations = PermittedRotations.R90;
 		buildingDef.SceneLayer = Grid.SceneLayer.Building;
+		buildingDef.ForegroundLayer = Grid.SceneLayer.InteriorWall;
 		buildingDef.ShowInBuildMenu = false;
 		SoundEventVolumeCache.instance.AddVolume("door_manual_kanim", "ManualPressureDoor_gear_LP", NOISE_POLLUTION.NOISY.TIER1);
 		SoundEventVolumeCache.instance.AddVolume("door_manual_kanim", "ManualPressureDoor_open", NOISE_POLLUTION.NOISY.TIER2);
@@ -32,6 +32,7 @@ public class POIBunkerExteriorDoor : IBuildingConfig
 		door.hasComplexUserControls = false;
 		door.unpoweredAnimSpeed = 1f;
 		door.doorType = Door.DoorType.Sealed;
+		go.AddOrGet<ZoneTile>();
 		go.AddOrGet<AccessControl>();
 		go.AddOrGet<Unsealable>();
 		go.AddOrGet<KBoxCollider2D>();

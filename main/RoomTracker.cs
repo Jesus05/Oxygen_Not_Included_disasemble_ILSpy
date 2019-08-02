@@ -35,6 +35,7 @@ public class RoomTracker : KMonoBehaviour, IEffectDescriptor
 	protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
+		Debug.Assert(!string.IsNullOrEmpty(requiredRoomType) && requiredRoomType != Db.Get().RoomTypes.Neutral.Id, "RoomTracker must have a requiredRoomType!");
 		Subscribe(144050788, OnUpdateRoomDelegate);
 		FindAndSetRoom();
 	}

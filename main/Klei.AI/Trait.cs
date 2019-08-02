@@ -45,12 +45,31 @@ namespace Klei.AI
 
 		public string GetTooltip()
 		{
-			string text = description;
+			string description = base.description;
+			description += GetAttributeModifiersString(true);
+			description += GetDisabledChoresString(true);
+			description += GetIgnoredEffectsString(true);
+			return description + GetExtendedTooltipStr();
+		}
+
+		public string GetAttributeModifiersString(bool list_entry)
+		{
+			string text = string.Empty;
 			foreach (AttributeModifier selfModifier in SelfModifiers)
 			{
 				Attribute attribute = Db.Get().Attributes.Get(selfModifier.AttributeId);
-				text += string.Format(DUPLICANTS.TRAITS.ATTRIBUTE_MODIFIERS, attribute.Name, selfModifier.GetFormattedString(null, false));
+				if (list_entry)
+				{
+					text += DUPLICANTS.TRAITS.TRAIT_DESCRIPTION_LIST_ENTRY;
+				}
+				text += string.Format(DUPLICANTS.TRAITS.ATTRIBUTE_MODIFIERS, attribute.Name, selfModifier.GetFormattedString(null));
 			}
+			return text;
+		}
+
+		public string GetDisabledChoresString(bool list_entry)
+		{
+			string text = string.Empty;
 			if (disabledChoreGroups != null)
 			{
 				string format = DUPLICANTS.TRAITS.CANNOT_DO_TASK;
@@ -61,18 +80,38 @@ namespace Klei.AI
 				ChoreGroup[] array = disabledChoreGroups;
 				foreach (ChoreGroup choreGroup in array)
 				{
+					if (list_entry)
+					{
+						text += DUPLICANTS.TRAITS.TRAIT_DESCRIPTION_LIST_ENTRY;
+					}
 					text += string.Format(format, choreGroup.Name);
 				}
 			}
+			return text;
+		}
+
+		public string GetIgnoredEffectsString(bool list_entry)
+		{
+			string text = string.Empty;
 			if (ignoredEffects != null && ignoredEffects.Length > 0)
 			{
-				string[] array2 = ignoredEffects;
-				foreach (string text2 in array2)
+				string[] array = ignoredEffects;
+				foreach (string text2 in array)
 				{
+					if (list_entry)
+					{
+						text += DUPLICANTS.TRAITS.TRAIT_DESCRIPTION_LIST_ENTRY;
+					}
 					string arg = Strings.Get("STRINGS.DUPLICANTS.MODIFIERS." + text2.ToUpper() + ".NAME");
 					text += string.Format(DUPLICANTS.TRAITS.IGNORED_EFFECTS, arg);
 				}
 			}
+			return text;
+		}
+
+		public string GetExtendedTooltipStr()
+		{
+			string text = string.Empty;
 			if (ExtendedTooltip != null)
 			{
 				Delegate[] invocationList = ExtendedTooltip.GetInvocationList();

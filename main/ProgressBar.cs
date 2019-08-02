@@ -42,7 +42,7 @@ public class ProgressBar : KMonoBehaviour
 		if (autoHide)
 		{
 			overlayUpdateHandle = Game.Instance.Subscribe(1798162660, OnOverlayChanged);
-			if ((UnityEngine.Object)OverlayScreen.Instance != (UnityEngine.Object)null && OverlayScreen.Instance.GetMode() != 0)
+			if ((UnityEngine.Object)OverlayScreen.Instance != (UnityEngine.Object)null && OverlayScreen.Instance.GetMode() != OverlayModes.None.ID)
 			{
 				base.gameObject.SetActive(false);
 			}
@@ -68,7 +68,7 @@ public class ProgressBar : KMonoBehaviour
 	{
 		if (autoHide)
 		{
-			if ((SimViewMode)data == SimViewMode.None)
+			if ((HashedString)data == OverlayModes.None.ID)
 			{
 				if (!base.gameObject.activeSelf)
 				{

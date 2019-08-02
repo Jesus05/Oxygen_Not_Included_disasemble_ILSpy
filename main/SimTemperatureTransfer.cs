@@ -82,22 +82,19 @@ public class SimTemperatureTransfer : KMonoBehaviour
 	public static void DoStateTransition(int sim_handle)
 	{
 		SimTemperatureTransfer value = null;
-		if (handleInstanceMap.TryGetValue(sim_handle, out value))
+		if (handleInstanceMap.TryGetValue(sim_handle, out value) && !((UnityEngine.Object)value == (UnityEngine.Object)null) && !value.HasTag(GameTags.Sealed))
 		{
-			SimTemperatureTransfer simTemperatureTransfer = handleInstanceMap[sim_handle];
-			if ((UnityEngine.Object)simTemperatureTransfer != (UnityEngine.Object)null && !simTemperatureTransfer.HasTag(GameTags.Sealed))
+			PrimaryElement component = value.GetComponent<PrimaryElement>();
+			Element element = component.Element;
+			if (element.highTempTransitionTarget != SimHashes.Unobtanium)
 			{
-				PrimaryElement component = simTemperatureTransfer.GetComponent<PrimaryElement>();
-				Element element = component.Element;
-				if (element.highTempTransitionTarget != SimHashes.Unobtanium)
+				if (component.Mass > 0f)
 				{
-					if (component.Mass > 0f)
-					{
-						int gameCell = Grid.PosToCell(simTemperatureTransfer.transform.GetPosition());
-						SimMessages.AddRemoveSubstance(gameCell, element.highTempTransitionTarget, CellEventLogger.Instance.OreMelted, component.Mass, component.Temperature, component.DiseaseIdx, component.DiseaseCount, true, -1);
-					}
-					Util.KDestroyGameObject(simTemperatureTransfer.gameObject);
+					int gameCell = Grid.PosToCell(value.transform.GetPosition());
+					SimMessages.AddRemoveSubstance(gameCell, element.highTempTransitionTarget, CellEventLogger.Instance.OreMelted, component.Mass, component.Temperature, component.DiseaseIdx, component.DiseaseCount, true, -1);
 				}
+				value.OnCleanUp();
+				Util.KDestroyGameObject(value.gameObject);
 			}
 		}
 	}
@@ -240,8 +237,6 @@ public class SimTemperatureTransfer : KMonoBehaviour
 					simHandle = -2;
 					HandleVector<Game.ComplexCallbackInfo<int>>.Handle handle = Game.Instance.simComponentCallbackManager.Add(OnSimRegisteredCallback, this, "SimTemperatureTransfer.SimRegister");
 					float num = component.InternalTemperature;
-					KCrashReporter.Assert(num > 0f, "Invalid temperature");
-					KCrashReporter.Assert(component.Mass > 0f);
 					if (num <= 0f)
 					{
 						component.InternalTemperature = 293f;

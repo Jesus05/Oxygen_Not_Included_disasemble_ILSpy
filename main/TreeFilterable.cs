@@ -192,7 +192,7 @@ public class TreeFilterable : KMonoBehaviour, ISaveLoadable
 			}
 			foreach (GameObject item2 in list)
 			{
-				storage.Drop(item2);
+				storage.Drop(item2, true);
 			}
 		}
 	}

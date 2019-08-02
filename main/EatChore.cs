@@ -17,20 +17,30 @@ public class EatChore : Chore<EatChore.StatesInstance>
 
 		public void UpdateMessStation()
 		{
-			Ownables component = base.sm.eater.Get(base.smi).GetComponent<Ownables>();
-			List<Assignable> preferredAssignables = Game.Instance.assignmentManager.GetPreferredAssignables(component, Db.Get().AssignableSlots.MessStation);
+			Ownables soleOwner = base.sm.eater.Get(base.smi).GetComponent<MinionIdentity>().GetSoleOwner();
+			List<Assignable> preferredAssignables = Game.Instance.assignmentManager.GetPreferredAssignables(soleOwner, Db.Get().AssignableSlots.MessStation);
 			if (preferredAssignables.Count == 0)
 			{
-				component.AutoAssignSlot(Db.Get().AssignableSlots.MessStation);
-				preferredAssignables = Game.Instance.assignmentManager.GetPreferredAssignables(component, Db.Get().AssignableSlots.MessStation);
+				soleOwner.AutoAssignSlot(Db.Get().AssignableSlots.MessStation);
+				preferredAssignables = Game.Instance.assignmentManager.GetPreferredAssignables(soleOwner, Db.Get().AssignableSlots.MessStation);
 			}
 			Assignable value = (preferredAssignables.Count <= 0) ? null : preferredAssignables[0];
 			base.smi.sm.messstation.Set(value, base.smi);
 		}
 
+		public bool UseSalt()
+		{
+			if (base.smi.sm.messstation != null && (UnityEngine.Object)base.smi.sm.messstation.Get(base.smi) != (UnityEngine.Object)null)
+			{
+				MessStation component = base.smi.sm.messstation.Get(base.smi).GetComponent<MessStation>();
+				return (UnityEngine.Object)component != (UnityEngine.Object)null && component.HasSalt;
+			}
+			return false;
+		}
+
 		public void CreateLocator()
 		{
-			int num = base.sm.eater.Get<Sensors>(base.smi).GetSensor<SafeCellSensor>().GetCell();
+			int num = base.sm.eater.Get<Sensors>(base.smi).GetSensor<SafeCellSensor>().GetCellQuery();
 			if (num == Grid.InvalidCell)
 			{
 				num = Grid.PosToCell(base.sm.eater.Get<Transform>(base.smi).GetPosition());
@@ -65,6 +75,19 @@ public class EatChore : Chore<EatChore.StatesInstance>
 				roomType.TriggerRoomEffects(base.sm.messstation.Get(base.smi).gameObject.GetComponent<KPrefabID>(), base.sm.eater.Get(base.smi).gameObject.GetComponent<Effects>());
 			}
 		}
+
+		public void ApplySaltEffect()
+		{
+			Storage component = base.sm.messstation.Get(base.smi).gameObject.GetComponent<Storage>();
+			if ((UnityEngine.Object)component != (UnityEngine.Object)null && component.Has(TableSaltConfig.ID.ToTag()))
+			{
+				component.ConsumeIgnoringDisease(TableSaltConfig.ID.ToTag(), TableSaltTuning.CONSUMABLE_RATE);
+				Worker component2 = base.sm.eater.Get(base.smi).gameObject.GetComponent<Worker>();
+				Effects component3 = component2.GetComponent<Effects>();
+				component3.Add("MessTableSalt", true);
+				base.sm.messstation.Get(base.smi).gameObject.Trigger(1356255274, null);
+			}
+		}
 	}
 
 	public class States : GameStateMachine<States, StatesInstance, EatChore>
@@ -97,8 +120,6 @@ public class EatChore : Chore<EatChore.StatesInstance>
 
 		public TargetParameter locator;
 
-		public State interruptedbyschedule;
-
 		public FetchSubState fetch;
 
 		public EatOnFloorState eatonfloorstate;
@@ -123,6 +144,7 @@ public class EatChore : Chore<EatChore.StatesInstance>
 			{
 				smi.SetZ(eater.Get(smi), Grid.GetLayerZ(Grid.SceneLayer.BuildingFront));
 				smi.ApplyRoomEffects();
+				smi.ApplySaltEffect();
 			})
 				.Exit(delegate(StatesInstance smi)
 				{
@@ -137,7 +159,6 @@ public class EatChore : Chore<EatChore.StatesInstance>
 			});
 			eatonfloorstate.moveto.InitializeStates(eater, locator, eatonfloorstate.eat, eatonfloorstate.eat, null, null);
 			eatonfloorstate.eat.ToggleAnims("anim_eat_floor_kanim", 0f).DoEat(ediblechunk, actualfoodunits, null, null);
-			interruptedbyschedule.GoTo(null);
 		}
 	}
 
@@ -152,9 +173,9 @@ public class EatChore : Chore<EatChore.StatesInstance>
 	};
 
 	public EatChore(IStateMachineTarget master)
-		: base(Db.Get().ChoreTypes.Eat, master, master.GetComponent<ChoreProvider>(), false, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.emergency, 0, false, true, 0, (Tag[])null)
+		: base(Db.Get().ChoreTypes.Eat, master, master.GetComponent<ChoreProvider>(), false, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.personalNeeds, 5, false, true, 0, false, ReportManager.ReportType.PersonalTime)
 	{
-		smi = new StatesInstance(this);
+		base.smi = new StatesInstance(this);
 		showAvailabilityInHoverText = false;
 		AddPrecondition(ChorePreconditions.instance.IsNotRedAlert, null);
 		AddPrecondition(EdibleIsNotNull, null);
@@ -164,43 +185,43 @@ public class EatChore : Chore<EatChore.StatesInstance>
 	{
 		if ((UnityEngine.Object)context.consumerState.consumer == (UnityEngine.Object)null)
 		{
-			Debug.LogError("EATCHORE null context.consumer", null);
+			Debug.LogError("EATCHORE null context.consumer");
 		}
 		else
 		{
 			RationMonitor.Instance sMI = context.consumerState.consumer.GetSMI<RationMonitor.Instance>();
 			if (sMI == null)
 			{
-				Debug.LogError("EATCHORE null RationMonitor.Instance", null);
+				Debug.LogError("EATCHORE null RationMonitor.Instance");
 			}
 			else
 			{
 				Edible edible = sMI.GetEdible();
 				if ((UnityEngine.Object)edible.gameObject == (UnityEngine.Object)null)
 				{
-					Debug.LogError("EATCHORE null edible.gameObject", null);
+					Debug.LogError("EATCHORE null edible.gameObject");
 				}
-				else if (smi == null)
+				else if (base.smi == null)
 				{
-					Debug.LogError("EATCHORE null smi", null);
+					Debug.LogError("EATCHORE null smi");
 				}
-				else if (smi.sm == null)
+				else if (base.smi.sm == null)
 				{
-					Debug.LogError("EATCHORE null smi.sm", null);
+					Debug.LogError("EATCHORE null smi.sm");
 				}
-				else if (smi.sm.ediblesource == null)
+				else if (base.smi.sm.ediblesource == null)
 				{
-					Debug.LogError("EATCHORE null smi.sm.ediblesource", null);
+					Debug.LogError("EATCHORE null smi.sm.ediblesource");
 				}
 				else
 				{
-					smi.sm.ediblesource.Set(edible.gameObject, smi);
+					base.smi.sm.ediblesource.Set(edible.gameObject, base.smi);
 					KCrashReporter.Assert(edible.FoodInfo.CaloriesPerUnit > 0f, edible.GetProperName() + " has invalid calories per unit. Will result in NaNs");
 					AmountInstance amountInstance = Db.Get().Amounts.Calories.Lookup(gameObject);
 					float num = (amountInstance.GetMax() - amountInstance.value) / edible.FoodInfo.CaloriesPerUnit;
 					KCrashReporter.Assert(num > 0f, "EatChore is requesting an invalid amount of food");
-					smi.sm.requestedfoodunits.Set(num, smi);
-					smi.sm.eater.Set(context.consumerState.gameObject, smi);
+					base.smi.sm.requestedfoodunits.Set(num, base.smi);
+					base.smi.sm.eater.Set(context.consumerState.gameObject, base.smi);
 					base.Begin(context);
 				}
 			}

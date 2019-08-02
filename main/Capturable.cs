@@ -42,7 +42,7 @@ public class Capturable : Workable, IGameObjectEffectDescriptor
 		base.OnPrefabInit();
 		Components.Capturables.Add(this);
 		SetOffsetTable(OffsetGroups.InvertedStandardTable);
-		requiredRolePerk = RoleManager.rolePerks.CanWrangleCreatures.id;
+		requiredSkillPerk = Db.Get().SkillPerks.CanWrangleCreatures.Id;
 		resetProgressOnStop = true;
 		faceTargetWhenWorking = true;
 		synchronizeAnims = false;
@@ -84,6 +84,12 @@ public class Capturable : Workable, IGameObjectEffectDescriptor
 
 	public void MarkForCapture(bool mark)
 	{
+		PrioritySetting priority = new PrioritySetting(PriorityScreen.PriorityClass.basic, 5);
+		MarkForCapture(mark, priority);
+	}
+
+	public void MarkForCapture(bool mark, PrioritySetting priority)
+	{
 		mark = (mark && IsCapturable());
 		if (markedForCapture && !mark)
 		{
@@ -92,6 +98,11 @@ public class Capturable : Workable, IGameObjectEffectDescriptor
 		else if (!markedForCapture && mark)
 		{
 			Prioritizable.AddRef(base.gameObject);
+			Prioritizable component = GetComponent<Prioritizable>();
+			if ((bool)component)
+			{
+				component.SetMasterPriority(priority);
+			}
 		}
 		markedForCapture = mark;
 		UpdateStatusItem();
@@ -153,7 +164,7 @@ public class Capturable : Workable, IGameObjectEffectDescriptor
 
 	private void UpdateStatusItem()
 	{
-		shouldShowRolePerkStatusItem = markedForCapture;
+		shouldShowSkillPerkStatusItem = markedForCapture;
 		base.UpdateStatusItem(null);
 		if (markedForCapture)
 		{
@@ -169,12 +180,7 @@ public class Capturable : Workable, IGameObjectEffectDescriptor
 	{
 		if (markedForCapture && chore == null)
 		{
-			ChoreType capture = Db.Get().ChoreTypes.Capture;
-			Tag[] chore_tags = new Tag[1]
-			{
-				GameTags.ChoreTypes.Ranching
-			};
-			chore = new WorkChore<Capturable>(capture, this, null, chore_tags, true, null, null, null, true, null, false, true, null, true, true, true, PriorityScreen.PriorityClass.basic, 0, false);
+			chore = new WorkChore<Capturable>(Db.Get().ChoreTypes.Capture, this, null, true, null, null, null, true, null, false, true, null, true, true, true, PriorityScreen.PriorityClass.basic, 5, false, true);
 		}
 		else if (!markedForCapture && chore != null)
 		{
@@ -186,7 +192,7 @@ public class Capturable : Workable, IGameObjectEffectDescriptor
 	protected override void OnStartWork(Worker worker)
 	{
 		KPrefabID component = GetComponent<KPrefabID>();
-		component.AddTag(GameTags.Creatures.Stunned);
+		component.AddTag(GameTags.Creatures.Stunned, false);
 	}
 
 	protected override void OnStopWork(Worker worker)

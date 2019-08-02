@@ -20,11 +20,14 @@ public class KObjectManager : MonoBehaviour
 
 	private void Awake()
 	{
+		Debug.Assert((Object)Instance == (Object)null);
 		Instance = this;
 	}
 
 	private void OnDestroy()
 	{
+		Debug.Assert((Object)Instance != (Object)null);
+		Debug.Assert((Object)Instance == (Object)this);
 		Cleanup();
 		Instance = null;
 	}

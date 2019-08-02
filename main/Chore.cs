@@ -51,6 +51,8 @@ public abstract class Chore
 
 			public ChoreType choreTypeForPermission;
 
+			public bool skipMoreSatisfyingEarlyPrecondition;
+
 			public Context(Chore chore, ChoreConsumerState consumer_state, bool is_attempting_override, object data = null)
 			{
 				masterPriority = chore.masterPriority;
@@ -66,6 +68,7 @@ public abstract class Chore
 				isAttemptingOverride = is_attempting_override;
 				this.data = data;
 				choreTypeForPermission = chore.choreType;
+				skipMoreSatisfyingEarlyPrecondition = ((UnityEngine.Object)RootMenu.Instance != (UnityEngine.Object)null && RootMenu.Instance.IsBuildingChorePanelActive());
 				SetPriority(chore);
 			}
 
@@ -98,6 +101,28 @@ public abstract class Chore
 				return failedPreconditionId == -1;
 			}
 
+			public bool IsPotentialSuccess()
+			{
+				if (IsSuccess())
+				{
+					return true;
+				}
+				if ((UnityEngine.Object)chore.driver == (UnityEngine.Object)consumerState.choreDriver)
+				{
+					return true;
+				}
+				if (failedPreconditionId != -1)
+				{
+					if (failedPreconditionId >= 0 && failedPreconditionId < chore.preconditions.Count)
+					{
+						PreconditionInstance preconditionInstance = chore.preconditions[failedPreconditionId];
+						return preconditionInstance.id == ChorePreconditions.instance.IsMoreSatisfyingLate.id;
+					}
+					DebugUtil.DevLogErrorFormat("failedPreconditionId out of range {0}/{1}", failedPreconditionId, chore.preconditions.Count);
+				}
+				return false;
+			}
+
 			public void RunPreconditions()
 			{
 				if (chore.debug)
@@ -107,7 +132,13 @@ public abstract class Chore
 					if (consumerState.consumer.debug)
 					{
 						num++;
+						Debugger.Break();
 					}
+				}
+				if (chore.arePreconditionsDirty)
+				{
+					chore.preconditions.Sort((PreconditionInstance x, PreconditionInstance y) => x.sortOrder.CompareTo(y.sortOrder));
+					chore.arePreconditionsDirty = false;
 				}
 				int num2 = 0;
 				while (true)
@@ -162,7 +193,24 @@ public abstract class Chore
 					{
 						return num6;
 					}
-					return obj.cost - cost;
+					int num7 = obj.cost - cost;
+					if (num7 != 0)
+					{
+						return num7;
+					}
+					if (chore == null && obj.chore == null)
+					{
+						return 0;
+					}
+					if (chore == null)
+					{
+						return -1;
+					}
+					if (obj.chore == null)
+					{
+						return 1;
+					}
+					return chore.id - obj.chore.id;
 				}
 				return (!flag) ? 1 : (-1);
 			}
@@ -227,15 +275,19 @@ public abstract class Chore
 
 	private bool arePreconditionsDirty;
 
+	public bool addToDailyReport;
+
+	public ReportManager.ReportType reportType;
+
 	private Prioritizable prioritizable;
 
 	public const int MAX_PLAYER_BASIC_PRIORITY = 9;
 
 	public const int MIN_PLAYER_BASIC_PRIORITY = 1;
 
-	public const int MAX_PLAYER_HIGH_PRIORITY = 9;
+	public const int MAX_PLAYER_HIGH_PRIORITY = 0;
 
-	public const int MIN_PLAYER_HIGH_PRIORITY = 1;
+	public const int MIN_PLAYER_HIGH_PRIORITY = 0;
 
 	public const int MAX_PLAYER_EMERGENCY_PRIORITY = 1;
 
@@ -248,6 +300,8 @@ public abstract class Chore
 	public const int MIN_BASIC_PRIORITY = 0;
 
 	public static bool ENABLE_PERSONAL_PRIORITIES = true;
+
+	public static PrioritySetting DefaultPrioritySetting = new PrioritySetting(PriorityScreen.PriorityClass.basic, 5);
 
 	public int id
 	{
@@ -297,12 +351,6 @@ public abstract class Chore
 		protected set;
 	}
 
-	public Tag[] choreTags
-	{
-		get;
-		private set;
-	}
-
 	public bool runUntilComplete
 	{
 		get;
@@ -331,12 +379,16 @@ public abstract class Chore
 		protected set;
 	}
 
-	public Chore(ChoreType chore_type, ChoreProvider chore_provider, Tag[] chore_tags, bool run_until_complete, Action<Chore> on_complete, Action<Chore> on_begin, Action<Chore> on_end, PriorityScreen.PriorityClass priority_class, int priority_value, bool is_preemptable, bool allow_in_context_menu, int priority_mod)
+	public Chore(ChoreType chore_type, ChoreProvider chore_provider, bool run_until_complete, Action<Chore> on_complete, Action<Chore> on_begin, Action<Chore> on_end, PriorityScreen.PriorityClass priority_class, int priority_value, bool is_preemptable, bool allow_in_context_menu, int priority_mod, bool add_to_daily_report, ReportManager.ReportType report_type)
 	{
 		if (priority_value == 2147483647)
 		{
-			priority_class = PriorityScreen.PriorityClass.emergency;
+			priority_class = PriorityScreen.PriorityClass.topPriority;
 			priority_value = 2;
+		}
+		if (priority_value < 1 || priority_value > 9)
+		{
+			Debug.LogErrorFormat("Priority Value Out Of Range: {0}", priority_value);
 		}
 		masterPriority = new PrioritySetting(priority_class, priority_value);
 		priorityMod = priority_mod;
@@ -344,10 +396,9 @@ public abstract class Chore
 		if ((UnityEngine.Object)chore_provider == (UnityEngine.Object)null)
 		{
 			chore_provider = GlobalChoreProvider.Instance;
-			DebugUtil.Assert((UnityEngine.Object)chore_provider != (UnityEngine.Object)null, "Assert!", string.Empty, string.Empty);
+			DebugUtil.Assert((UnityEngine.Object)chore_provider != (UnityEngine.Object)null);
 		}
 		choreType = chore_type;
-		choreTags = chore_tags;
 		runUntilComplete = run_until_complete;
 		onComplete = on_complete;
 		onEnd = on_end;
@@ -357,7 +408,8 @@ public abstract class Chore
 		AddPrecondition(ChorePreconditions.instance.IsPermitted, null);
 		AddPrecondition(ChorePreconditions.instance.IsPreemptable, null);
 		AddPrecondition(ChorePreconditions.instance.HasUrge, null);
-		AddPrecondition(ChorePreconditions.instance.IsMoreSatisfying, null);
+		AddPrecondition(ChorePreconditions.instance.IsMoreSatisfyingEarly, null);
+		AddPrecondition(ChorePreconditions.instance.IsMoreSatisfyingLate, null);
 		AddPrecondition(ChorePreconditions.instance.IsOverrideTargetNullOrMe, null);
 		chore_provider.AddChore(this);
 	}
@@ -461,6 +513,11 @@ public abstract class Chore
 		return urge == choreType.urge;
 	}
 
+	public ReportManager.ReportType GetReportType()
+	{
+		return reportType;
+	}
+
 	public virtual void PrepareChore(ref Precondition.Context context)
 	{
 	}
@@ -472,10 +529,13 @@ public abstract class Chore
 
 	public virtual void Begin(Precondition.Context context)
 	{
-		DebugUtil.Assert((UnityEngine.Object)driver == (UnityEngine.Object)null, "Assert!", string.Empty, string.Empty);
+		if ((UnityEngine.Object)driver != (UnityEngine.Object)null)
+		{
+			Debug.LogErrorFormat("Chore.Begin driver already set {0} {1} {2}, provider {3}, driver {4} -> {5}", id, GetType(), choreType.Id, provider, driver, context.consumerState.choreDriver);
+		}
 		if ((UnityEngine.Object)provider == (UnityEngine.Object)null)
 		{
-			Debug.LogError("Chore has null provider: " + GetType() + " " + choreType.Id, null);
+			Debug.LogErrorFormat("Chore.Begin provider is null {0} {1} {2}, provider {3}, driver {4}", id, GetType(), choreType.Id, provider, driver);
 		}
 		driver = context.consumerState.choreDriver;
 		StateMachine.Instance sMI = GetSMI();
@@ -532,6 +592,10 @@ public abstract class Chore
 			{
 				onComplete(this);
 			}
+			if (addToDailyReport)
+			{
+				ReportManager.Instance.ReportValue(ReportManager.ReportType.ChoreStatus, -1f, choreType.Name, GameUtil.GetChoreName(this, null));
+			}
 			End(reason);
 			Cleanup();
 		}
@@ -561,6 +625,10 @@ public abstract class Chore
 	{
 		if (RemoveFromProvider())
 		{
+			if (addToDailyReport)
+			{
+				ReportManager.Instance.ReportValue(ReportManager.ReportType.ChoreStatus, -1f, choreType.Name, GameUtil.GetChoreName(this, null));
+			}
 			End(reason);
 			Cleanup();
 		}
@@ -583,7 +651,6 @@ public abstract class Chore
 		if ((UnityEngine.Object)provider != (UnityEngine.Object)null)
 		{
 			provider.RemoveChore(this);
-			provider = null;
 			return true;
 		}
 		return false;
@@ -598,16 +665,22 @@ public abstract class Chore
 	{
 	}
 
-	public virtual string GetReportName()
+	public virtual string GetReportName(string context = null)
 	{
-		return choreType.Name;
+		if (context == null || choreType.reportName == null)
+		{
+			return choreType.Name;
+		}
+		return string.Format(choreType.reportName, context);
 	}
 }
 public class Chore<StateMachineInstanceType> : Chore, IStateMachineTarget where StateMachineInstanceType : StateMachine.Instance
 {
-	protected StateMachineInstanceType smi;
-
-	public StateMachine.Instance sm => smi;
+	public StateMachineInstanceType smi
+	{
+		get;
+		protected set;
+	}
 
 	public override GameObject gameObject => base.target.gameObject;
 
@@ -617,11 +690,17 @@ public class Chore<StateMachineInstanceType> : Chore, IStateMachineTarget where 
 
 	public override bool isNull => base.target.isNull;
 
-	public Chore(ChoreType chore_type, IStateMachineTarget target, ChoreProvider chore_provider, bool run_until_complete = true, Action<Chore> on_complete = null, Action<Chore> on_begin = null, Action<Chore> on_end = null, PriorityScreen.PriorityClass master_priority_class = PriorityScreen.PriorityClass.basic, int master_priority_value = 0, bool is_preemptable = false, bool allow_in_context_menu = true, int priority_mod = 0, Tag[] chore_tags = null)
-		: base(chore_type, chore_provider, chore_tags, run_until_complete, on_complete, on_begin, on_end, master_priority_class, master_priority_value, is_preemptable, allow_in_context_menu, priority_mod)
+	public Chore(ChoreType chore_type, IStateMachineTarget target, ChoreProvider chore_provider, bool run_until_complete = true, Action<Chore> on_complete = null, Action<Chore> on_begin = null, Action<Chore> on_end = null, PriorityScreen.PriorityClass master_priority_class = PriorityScreen.PriorityClass.basic, int master_priority_value = 5, bool is_preemptable = false, bool allow_in_context_menu = true, int priority_mod = 0, bool add_to_daily_report = false, ReportManager.ReportType report_type = ReportManager.ReportType.WorkTime)
+		: base(chore_type, chore_provider, run_until_complete, on_complete, on_begin, on_end, master_priority_class, master_priority_value, is_preemptable, allow_in_context_menu, priority_mod, add_to_daily_report, report_type)
 	{
 		base.target = target;
 		target.Subscribe(1969584890, OnTargetDestroyed);
+		reportType = report_type;
+		addToDailyReport = add_to_daily_report;
+		if (addToDailyReport)
+		{
+			ReportManager.Instance.ReportValue(ReportManager.ReportType.ChoreStatus, 1f, chore_type.Name, GameUtil.GetChoreName(this, null));
+		}
 	}
 
 	protected override StateMachine.Instance GetSMI()

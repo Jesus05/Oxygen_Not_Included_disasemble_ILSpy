@@ -1,3 +1,4 @@
+using Klei.AI;
 using System.Collections.Generic;
 using TUNING;
 using UnityEngine;
@@ -22,9 +23,14 @@ public static class BaseLightBugConfig
 		EntityTemplates.ExtendEntityToBasicCreature(template, faction, traitId, navGridName, navType, 32, mass, onDeathDropID, onDeathDropCount, true, true, fREEZING_, hOT_, CREATURES.TEMPERATURE.FREEZING_2, CREATURES.TEMPERATURE.HOT_2);
 		if (symbolOverridePrefix != null)
 		{
-			gameObject.AddOrGet<SymbolOverrideController>().ApplySymbolOverridesByPrefix(Assets.GetAnim(anim_file), symbolOverridePrefix, 0);
+			gameObject.AddOrGet<SymbolOverrideController>().ApplySymbolOverridesByAffix(Assets.GetAnim(anim_file), symbolOverridePrefix, null, 0);
 		}
-		gameObject.GetComponent<KPrefabID>().AddTag(GameTags.Creatures.Flyer);
+		KPrefabID component = gameObject.GetComponent<KPrefabID>();
+		component.AddTag(GameTags.Creatures.Flyer, false);
+		component.prefabInitFn += delegate(GameObject inst)
+		{
+			inst.GetAttributes().Add(Db.Get().Attributes.MaxUnderwaterTravelCost);
+		};
 		gameObject.AddOrGet<LoopingSounds>();
 		LureableMonitor.Def def = gameObject.AddOrGetDef<LureableMonitor.Def>();
 		def.lures = new Tag[1]
@@ -33,12 +39,12 @@ public static class BaseLightBugConfig
 		};
 		gameObject.AddOrGetDef<ThreatMonitor.Def>();
 		gameObject.AddOrGetDef<SubmergedMonitor.Def>();
-		EntityTemplates.CreateAndRegisterBaggedCreature(gameObject, true, false);
+		EntityTemplates.CreateAndRegisterBaggedCreature(gameObject, true, false, false);
 		if (is_baby)
 		{
-			KBatchedAnimController component = gameObject.GetComponent<KBatchedAnimController>();
-			component.animWidth = 0.5f;
-			component.animHeight = 0.5f;
+			KBatchedAnimController component2 = gameObject.GetComponent<KBatchedAnimController>();
+			component2.animWidth = 0.5f;
+			component2.animHeight = 0.5f;
 		}
 		if (lightColor != Color.black)
 		{
@@ -60,7 +66,7 @@ public static class BaseLightBugConfig
 			.Add(new BaggedStates.Def(), true)
 			.Add(new StunnedStates.Def(), true)
 			.Add(new DebugGoToStates.Def(), true)
-			.Add(new SubmergedStates.Def(), true)
+			.Add(new DrowningStates.Def(), true)
 			.PushInterruptGroup()
 			.Add(new CreatureSleepStates.Def(), true)
 			.Add(new FixedCaptureStates.Def(), true)
@@ -79,7 +85,7 @@ public static class BaseLightBugConfig
 	{
 		Diet.Info[] infos = new Diet.Info[1]
 		{
-			new Diet.Info(consumed_tags, producedTag, caloriesPerKg, 1f, null, 0f, false)
+			new Diet.Info(consumed_tags, producedTag, caloriesPerKg, 1f, null, 0f, false, false)
 		};
 		Diet diet = new Diet(infos);
 		CreatureCalorieMonitor.Def def = prefab.AddOrGetDef<CreatureCalorieMonitor.Def>();

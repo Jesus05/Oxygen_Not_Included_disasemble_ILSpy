@@ -4,12 +4,12 @@ public class NavTableValidator
 {
 	public Action<int> onDirty;
 
-	protected bool IsClear(int cell, CellOffset[] bounding_offsets, ushort[] grid_bit_fields, bool allow_forcefield_traversal)
+	protected bool IsClear(int cell, CellOffset[] bounding_offsets, bool is_dupe)
 	{
 		foreach (CellOffset offset in bounding_offsets)
 		{
 			int cell2 = Grid.OffsetCell(cell, offset);
-			if (!Grid.IsValidCell(cell2) || IsCellSolid(grid_bit_fields, cell2, allow_forcefield_traversal))
+			if (!Grid.IsValidCell(cell2) || !IsCellPassable(cell2, is_dupe))
 			{
 				return false;
 			}
@@ -22,13 +22,22 @@ public class NavTableValidator
 		return true;
 	}
 
-	protected static bool IsCellSolid(ushort[] grid_bit_fields, int cell, bool allow_forcefield_traversal)
+	protected static bool IsCellPassable(int cell, bool is_dupe)
 	{
-		ushort num = grid_bit_fields[cell];
-		bool flag = (num & 0x20) != 0;
-		bool flag2 = (num & 4) != 0;
-		bool flag3 = (num & 0x100) != 0;
-		return (flag || flag3) && (!flag2 || !allow_forcefield_traversal);
+		Grid.BuildFlags buildFlags = Grid.BuildMasks[cell] & (Grid.BuildFlags.Solid | Grid.BuildFlags.DupePassable | Grid.BuildFlags.DupeImpassable | Grid.BuildFlags.CritterImpassable);
+		if (buildFlags == (Grid.BuildFlags)0)
+		{
+			return true;
+		}
+		if (is_dupe)
+		{
+			if ((buildFlags & Grid.BuildFlags.DupeImpassable) != 0)
+			{
+				return false;
+			}
+			return (buildFlags & Grid.BuildFlags.Solid) == (Grid.BuildFlags)0 || (buildFlags & Grid.BuildFlags.DupePassable) != (Grid.BuildFlags)0;
+		}
+		return (buildFlags & (Grid.BuildFlags.Solid | Grid.BuildFlags.CritterImpassable)) == (Grid.BuildFlags)0;
 	}
 
 	public virtual void UpdateCell(int cell, NavTable nav_table, CellOffset[] bounding_offsets)

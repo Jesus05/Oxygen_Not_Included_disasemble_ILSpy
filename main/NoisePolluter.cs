@@ -144,7 +144,7 @@ public class NoisePolluter : KMonoBehaviour, IPolluter
 		base.OnSpawn();
 		if (radius == 0 || noise == 0)
 		{
-			Debug.LogWarning("Noisepollutor::OnSpawn [" + GetName() + "] noise: [" + noise + "] radius: [" + radius + "]", null);
+			Debug.LogWarning("Noisepollutor::OnSpawn [" + GetName() + "] noise: [" + noise + "] radius: [" + radius + "]");
 			UnityEngine.Object.Destroy(this);
 		}
 		else
@@ -174,7 +174,7 @@ public class NoisePolluter : KMonoBehaviour, IPolluter
 			}
 			else
 			{
-				Debug.LogWarning("Noisepollutor::OnSpawn [" + GetName() + "] radius: [" + radius + "] noise: [" + noise + "]", null);
+				Debug.LogWarning("Noisepollutor::OnSpawn [" + GetName() + "] radius: [" + radius + "] noise: [" + noise + "]");
 			}
 			KBatchedAnimController component2 = GetComponent<KBatchedAnimController>();
 			isMovable = ((UnityEngine.Object)component2 != (UnityEngine.Object)null && component2.isMovable);

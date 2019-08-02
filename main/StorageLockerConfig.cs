@@ -35,6 +35,9 @@ public class StorageLockerConfig : IBuildingConfig
 		storage.showDescriptor = true;
 		storage.storageFilters = STORAGEFILTERS.NOT_EDIBLE_SOLIDS;
 		storage.storageFullMargin = STORAGE.STORAGE_LOCKER_FILLED_MARGIN;
+		storage.fetchCategory = Storage.FetchCategory.GeneralStorage;
+		CopyBuildingSettings copyBuildingSettings = go.AddOrGet<CopyBuildingSettings>();
+		copyBuildingSettings.copyGroupTag = GameTags.StorageLocker;
 		go.AddOrGet<StorageLocker>();
 	}
 

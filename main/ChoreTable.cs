@@ -25,7 +25,7 @@ public class ChoreTable
 
 		public Builder PopInterruptGroup()
 		{
-			DebugUtil.Assert(interruptGroupId > 0, "Assert!", string.Empty, string.Empty);
+			DebugUtil.Assert(interruptGroupId > 0);
 			interruptGroupId--;
 			return this;
 		}
@@ -45,7 +45,7 @@ public class ChoreTable
 
 		public ChoreTable CreateTable()
 		{
-			DebugUtil.Assert(interruptGroupId == 0, "Assert!", string.Empty, string.Empty);
+			DebugUtil.Assert(interruptGroupId == 0);
 			Entry[] array = new Entry[infos.Count];
 			Stack<int> stack = new Stack<int>();
 			for (int i = 0; i < infos.Count; i++)
@@ -80,10 +80,10 @@ public class ChoreTable
 	public class ChoreTableChore<StateMachineType, StateMachineInstanceType> : Chore<StateMachineInstanceType> where StateMachineInstanceType : StateMachine.Instance
 	{
 		public ChoreTableChore(StateMachine.BaseDef state_machine_def, ChoreType chore_type, KPrefabID prefab_id)
-			: base(chore_type, (IStateMachineTarget)prefab_id, ((Component)prefab_id).GetComponent<ChoreProvider>(), true, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.basic, 0, false, true, 0, (Tag[])null)
+			: base(chore_type, (IStateMachineTarget)prefab_id, ((Component)prefab_id).GetComponent<ChoreProvider>(), true, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.basic, 5, false, true, 0, false, ReportManager.ReportType.WorkTime)
 		{
 			showAvailabilityInHoverText = false;
-			smi = (state_machine_def.CreateSMI(this) as StateMachineInstanceType);
+			base.smi = (state_machine_def.CreateSMI(this) as StateMachineInstanceType);
 		}
 	}
 
@@ -185,7 +185,7 @@ public class ChoreTable
 				return entry.choreType.priority;
 			}
 		}
-		Debug.LogError(chore_consumer.name + "'s chore table does not have an entry for: " + typeof(StateMachineType).Name, null);
+		Debug.LogError(chore_consumer.name + "'s chore table does not have an entry for: " + typeof(StateMachineType).Name);
 		return -1;
 	}
 }

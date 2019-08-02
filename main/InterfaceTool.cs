@@ -25,11 +25,11 @@ public class InterfaceTool : KMonoBehaviour
 
 	public System.Action OnDeactivate;
 
-	private static Texture2D activeCursor;
+	private static Texture2D activeCursor = null;
 
-	private static SimViewMode toolActivatedViewMode;
+	private static HashedString toolActivatedViewMode = OverlayModes.None.ID;
 
-	protected SimViewMode viewMode;
+	protected HashedString viewMode = OverlayModes.None.ID;
 
 	private HoverTextConfiguration hoverTextConfiguration;
 
@@ -37,7 +37,7 @@ public class InterfaceTool : KMonoBehaviour
 
 	private bool isAppFocused = true;
 
-	public SimViewMode ViewMode => viewMode;
+	public HashedString ViewMode => viewMode;
 
 	protected override void OnSpawn()
 	{
@@ -72,7 +72,7 @@ public class InterfaceTool : KMonoBehaviour
 
 	protected virtual void OnActivateTool()
 	{
-		if ((UnityEngine.Object)OverlayScreen.Instance != (UnityEngine.Object)null && viewMode != 0 && OverlayScreen.Instance.mode == SimViewMode.None)
+		if ((UnityEngine.Object)OverlayScreen.Instance != (UnityEngine.Object)null && viewMode != OverlayModes.None.ID)
 		{
 			OverlayScreen.Instance.ToggleOverlay(viewMode);
 			toolActivatedViewMode = viewMode;
@@ -83,10 +83,10 @@ public class InterfaceTool : KMonoBehaviour
 	public void DeactivateTool(InterfaceTool new_tool = null)
 	{
 		OnDeactivateTool(new_tool);
-		if (((UnityEngine.Object)new_tool == (UnityEngine.Object)null || (UnityEngine.Object)new_tool == (UnityEngine.Object)SelectTool.Instance) && toolActivatedViewMode != 0)
+		if (((UnityEngine.Object)new_tool == (UnityEngine.Object)null || (UnityEngine.Object)new_tool == (UnityEngine.Object)SelectTool.Instance) && toolActivatedViewMode != OverlayModes.None.ID && toolActivatedViewMode == SimDebugView.Instance.GetMode())
 		{
-			OverlayScreen.Instance.ToggleOverlay(SimViewMode.None);
-			toolActivatedViewMode = SimViewMode.None;
+			OverlayScreen.Instance.ToggleOverlay(OverlayModes.None.ID);
+			toolActivatedViewMode = OverlayModes.None.ID;
 		}
 	}
 

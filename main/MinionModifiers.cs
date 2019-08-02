@@ -7,6 +7,8 @@ using UnityEngine;
 [SerializationConfig(MemberSerialization.OptIn)]
 public class MinionModifiers : Modifiers, ISaveLoadable
 {
+	public bool addBaseTraits = true;
+
 	private static readonly EventSystem.IntraObjectHandler<MinionModifiers> OnDeathDelegate = new EventSystem.IntraObjectHandler<MinionModifiers>(delegate(MinionModifiers component, object data)
 	{
 		component.OnDeath(data);
@@ -30,45 +32,30 @@ public class MinionModifiers : Modifiers, ISaveLoadable
 	protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
-		foreach (Klei.AI.Attribute resource in Db.Get().Attributes.resources)
+		if (addBaseTraits)
 		{
-			if (attributes.Get(resource) == null)
+			foreach (Klei.AI.Attribute resource in Db.Get().Attributes.resources)
 			{
-				attributes.Add(resource);
-			}
-		}
-		Traits component = GetComponent<Traits>();
-		Trait trait = Db.Get().traits.Get(MinionConfig.MINION_BASE_TRAIT_ID);
-		component.Add(trait);
-		foreach (Disease resource2 in Db.Get().Diseases.resources)
-		{
-			AmountInstance amountInstance = AddAmount(resource2.amount);
-			attributes.Add(resource2.cureSpeedBase);
-			amountInstance.SetValue(0f);
-		}
-		Equipment component2 = GetComponent<Equipment>();
-		if ((UnityEngine.Object)component2 != (UnityEngine.Object)null)
-		{
-			Ownables component3 = GetComponent<Ownables>();
-			foreach (AssignableSlot resource3 in Db.Get().AssignableSlots.resources)
-			{
-				if (resource3 is OwnableSlot)
+				if (attributes.Get(resource) == null)
 				{
-					OwnableSlotInstance slot_instance = new OwnableSlotInstance(component3, (OwnableSlot)resource3);
-					component3.Add(slot_instance);
-				}
-				else if (resource3 is EquipmentSlot)
-				{
-					EquipmentSlotInstance slot_instance2 = new EquipmentSlotInstance(component2, (EquipmentSlot)resource3);
-					component2.Add(slot_instance2);
+					attributes.Add(resource);
 				}
 			}
-		}
-		ChoreConsumer component4 = GetComponent<ChoreConsumer>();
-		if ((UnityEngine.Object)component4 != (UnityEngine.Object)null)
-		{
-			component4.AddProvider(GlobalChoreProvider.Instance);
-			base.gameObject.AddComponent<QualityOfLifeNeed>();
+			Traits component = GetComponent<Traits>();
+			Trait trait = Db.Get().traits.Get(MinionConfig.MINION_BASE_TRAIT_ID);
+			component.Add(trait);
+			foreach (Disease resource2 in Db.Get().Diseases.resources)
+			{
+				AmountInstance amountInstance = AddAmount(resource2.amount);
+				attributes.Add(resource2.cureSpeedBase);
+				amountInstance.SetValue(0f);
+			}
+			ChoreConsumer component2 = GetComponent<ChoreConsumer>();
+			if ((UnityEngine.Object)component2 != (UnityEngine.Object)null)
+			{
+				component2.AddProvider(GlobalChoreProvider.Instance);
+				base.gameObject.AddComponent<QualityOfLifeNeed>();
+			}
 		}
 	}
 
@@ -113,6 +100,7 @@ public class MinionModifiers : Modifiers, ISaveLoadable
 
 	private void OnDeath(object data)
 	{
+		Debug.LogFormat("OnDeath {0}", data);
 		foreach (MinionIdentity item in Components.LiveMinionIdentities.Items)
 		{
 			item.GetComponent<Effects>().Add("Mourning", true);
@@ -129,7 +117,7 @@ public class MinionModifiers : Modifiers, ISaveLoadable
 		Storage component = GetComponent<Storage>();
 		if ((UnityEngine.Object)component != (UnityEngine.Object)null)
 		{
-			component.DropAll(false);
+			component.DropAll(false, false, default(Vector3), true);
 		}
 	}
 

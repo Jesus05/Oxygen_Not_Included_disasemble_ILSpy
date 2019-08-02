@@ -1,7 +1,9 @@
 using KSerialization.Converters;
+using System;
 
 namespace ProcGen
 {
+	[Serializable]
 	public class Mob : SampleDescriber
 	{
 		public enum Location
@@ -15,7 +17,9 @@ namespace ProcGen
 			Solid,
 			Water,
 			ShallowLiquid,
-			Surface
+			Surface,
+			LiquidFloor,
+			AnyFloor
 		}
 
 		public MinMax units

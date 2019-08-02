@@ -9,6 +9,10 @@ namespace TUNING
 			public const float TIER1 = 1f;
 
 			public const float TIER2 = 2f;
+
+			public const float TIER3 = 4f;
+
+			public const float TIER4 = 8f;
 		}
 	}
 }

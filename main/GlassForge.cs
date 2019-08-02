@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-public class GlassForge : Refinery
+public class GlassForge : ComplexFabricator
 {
 	private Guid statusHandle;
 

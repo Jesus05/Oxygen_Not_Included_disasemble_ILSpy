@@ -1,8 +1,7 @@
-using Klei;
 using KSerialization.Converters;
 using System.Collections.Generic;
 
-public class ContentContainer : YamlIO<ContentContainer>
+public class ContentContainer
 {
 	public enum ContentLayout
 	{
@@ -11,7 +10,7 @@ public class ContentContainer : YamlIO<ContentContainer>
 		Grid
 	}
 
-	public List<CodexWidget> content
+	public List<ICodexWidget> content
 	{
 		get;
 		set;
@@ -38,10 +37,10 @@ public class ContentContainer : YamlIO<ContentContainer>
 
 	public ContentContainer()
 	{
-		content = new List<CodexWidget>();
+		content = new List<ICodexWidget>();
 	}
 
-	public ContentContainer(List<CodexWidget> content, ContentLayout contentLayout)
+	public ContentContainer(List<ICodexWidget> content, ContentLayout contentLayout)
 	{
 		this.content = content;
 		this.contentLayout = contentLayout;

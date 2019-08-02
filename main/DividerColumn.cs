@@ -4,7 +4,7 @@ using UnityEngine;
 public class DividerColumn : TableColumn
 {
 	public DividerColumn(Func<bool> revealed = null, string scrollerID = "")
-		: base(delegate(MinionIdentity minion, GameObject widget_go)
+		: base(delegate(IAssignableIdentity minion, GameObject widget_go)
 		{
 			if (revealed != null)
 			{

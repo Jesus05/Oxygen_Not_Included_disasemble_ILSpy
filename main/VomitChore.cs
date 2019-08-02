@@ -42,15 +42,13 @@ public class VomitChore : Chore<VomitChore.StatesInstance>
 			{
 				float totalTime = GetComponent<KBatchedAnimController>().CurrentAnim.totalTime;
 				float num = dt / totalTime;
-				Diseases diseases = base.master.GetComponent<MinionModifiers>().diseases;
+				Sicknesses sicknesses = base.master.GetComponent<MinionModifiers>().sicknesses;
 				SimUtil.DiseaseInfo invalid = SimUtil.DiseaseInfo.Invalid;
-				for (int i = 0; i < diseases.Count; i++)
+				for (int i = 0; i < sicknesses.Count; i++)
 				{
-					DiseaseInstance diseaseInstance = diseases[i];
-					if (diseaseInstance.modifier.diseaseType == Disease.DiseaseType.Pathogen)
+					SicknessInstance sicknessInstance = sicknesses[i];
+					if (sicknessInstance.modifier.sicknessType == Sickness.SicknessType.Pathogen)
 					{
-						invalid.idx = Db.Get().Diseases.GetIndex(diseaseInstance.modifier.id);
-						invalid.count = Mathf.RoundToInt(100000f * num);
 						break;
 					}
 				}
@@ -62,7 +60,15 @@ public class VomitChore : Chore<VomitChore.StatesInstance>
 				{
 					num3 = num2;
 				}
-				SimMessages.AddRemoveSubstance(num3, SimHashes.DirtyWater, CellEventLogger.Instance.Vomit, STRESS.VOMIT_AMOUNT * num, bodyTemperature.value, invalid.idx, invalid.count, true, -1);
+				Equippable equippable = GetComponent<SuitEquipper>().IsWearingAirtightSuit();
+				if ((UnityEngine.Object)equippable != (UnityEngine.Object)null)
+				{
+					equippable.GetComponent<Storage>().AddLiquid(SimHashes.DirtyWater, STRESS.VOMIT_AMOUNT * num, bodyTemperature.value, invalid.idx, invalid.count, false, true);
+				}
+				else
+				{
+					SimMessages.AddRemoveSubstance(num3, SimHashes.DirtyWater, CellEventLogger.Instance.Vomit, STRESS.VOMIT_AMOUNT * num, bodyTemperature.value, invalid.idx, invalid.count, true, -1);
+				}
 			}
 		}
 
@@ -127,8 +133,8 @@ public class VomitChore : Chore<VomitChore.StatesInstance>
 	}
 
 	public VomitChore(ChoreType chore_type, IStateMachineTarget target, StatusItem status_item, Notification notification, Action<Chore> on_complete = null)
-		: base(Db.Get().ChoreTypes.Vomit, target, target.GetComponent<ChoreProvider>(), true, on_complete, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.emergency, 0, false, true, 0, (Tag[])null)
+		: base(Db.Get().ChoreTypes.Vomit, target, target.GetComponent<ChoreProvider>(), true, on_complete, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.compulsory, 5, false, true, 0, false, ReportManager.ReportType.WorkTime)
 	{
-		smi = new StatesInstance(this, target.gameObject, status_item, notification);
+		base.smi = new StatesInstance(this, target.gameObject, status_item, notification);
 	}
 }

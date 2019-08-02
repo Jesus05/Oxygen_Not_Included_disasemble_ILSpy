@@ -13,7 +13,7 @@ public class BuildTool : DragTool
 
 	private int lastDragCell = -1;
 
-	private IList<Element> selectedElements;
+	private IList<Tag> selectedElements;
 
 	private BuildingDef def;
 
@@ -109,7 +109,7 @@ public class BuildTool : DragTool
 		}
 	}
 
-	public void Activate(BuildingDef def, IList<Element> selected_elements, GameObject source = null)
+	public void Activate(BuildingDef def, IList<Tag> selected_elements, GameObject source = null)
 	{
 		selectedElements = selected_elements;
 		this.def = def;
@@ -147,7 +147,8 @@ public class BuildTool : DragTool
 				}
 				if (((Object)gameObject == (Object)null || (Object)gameObject.GetComponent<Constructable>() == (Object)null) && ((Object)x == (Object)null || (Object)x == (Object)visualizer))
 				{
-					World.Instance.blockTileRenderer.RemoveBlock(def, SimHashes.Void, lastCell);
+					World.Instance.blockTileRenderer.RemoveBlock(def, false, SimHashes.Void, lastCell);
+					World.Instance.blockTileRenderer.RemoveBlock(def, true, SimHashes.Void, lastCell);
 					TileVisualizer.RefreshCell(lastCell, def.TileLayer, def.ReplacementLayer);
 				}
 			}
@@ -198,7 +199,7 @@ public class BuildTool : DragTool
 						GameObject x = null;
 						if (def.ReplacementLayer != ObjectLayer.NumLayers)
 						{
-							x = Grid.Objects[num, 11];
+							x = Grid.Objects[num, (int)def.ReplacementLayer];
 						}
 						if ((Object)gameObject == (Object)null || ((Object)gameObject.GetComponent<Constructable>() == (Object)null && (Object)x == (Object)null))
 						{
@@ -212,7 +213,7 @@ public class BuildTool : DragTool
 								{
 									blockTileRenderer.SetInvalidPlaceCell(lastCell, false);
 								}
-								blockTileRenderer.AddBlock(renderLayer, def, SimHashes.Void, num);
+								blockTileRenderer.AddBlock(renderLayer, def, flag2, SimHashes.Void, num);
 							}
 						}
 					}
@@ -254,90 +255,89 @@ public class BuildTool : DragTool
 	{
 		if (!((Object)visualizer == (Object)null) && cell != lastDragCell)
 		{
-			lastDragCell = cell;
-			ClearTilePreview();
-			Vector3 vector = Grid.CellToPosCBC(cell, Grid.SceneLayer.Building);
-			GameObject gameObject = null;
-			if (DebugHandler.InstantBuildMode || (Game.Instance.SandboxModeActive && SandboxToolParameterMenu.instance.settings.InstantBuild))
+			int num = Grid.PosToCell(visualizer);
+			if (num == cell || (!(bool)def.BuildingComplete.GetComponent<LogicPorts>() && !(bool)def.BuildingComplete.GetComponent<LogicGateBase>()))
 			{
-				if (def.IsValidBuildLocation(visualizer, vector, buildingOrientation) && def.IsValidPlaceLocation(visualizer, vector, buildingOrientation, out string _))
+				lastDragCell = cell;
+				ClearTilePreview();
+				Vector3 vector = Grid.CellToPosCBC(cell, Grid.SceneLayer.Building);
+				GameObject gameObject = null;
+				if (DebugHandler.InstantBuildMode || (Game.Instance.SandboxModeActive && SandboxToolParameterMenu.instance.settings.InstantBuild))
 				{
-					gameObject = def.Build(cell, buildingOrientation, null, selectedElements, 293.15f, false);
-					if ((Object)source != (Object)null)
+					if (def.IsValidBuildLocation(visualizer, vector, buildingOrientation) && def.IsValidPlaceLocation(visualizer, vector, buildingOrientation, out string _))
 					{
-						source.DeleteObject();
+						gameObject = def.Build(cell, buildingOrientation, null, selectedElements, 293.15f, false);
+						if ((Object)source != (Object)null)
+						{
+							source.DeleteObject();
+						}
 					}
 				}
-			}
-			else
-			{
-				gameObject = def.TryPlace(visualizer, vector, buildingOrientation, selectedElements, 0);
-				if ((Object)gameObject == (Object)null && def.ReplacementLayer != ObjectLayer.NumLayers)
+				else
 				{
-					if (!Grid.ObjectLayers[(int)def.TileLayer].ContainsKey(cell))
+					gameObject = def.TryPlace(visualizer, vector, buildingOrientation, selectedElements, 0);
+					if ((Object)gameObject == (Object)null && def.ReplacementLayer != ObjectLayer.NumLayers)
 					{
-						return;
-					}
-					GameObject gameObject2 = Grid.ObjectLayers[(int)def.TileLayer][cell];
-					if ((Object)gameObject2 != (Object)null && (Object)Grid.Objects[cell, (int)def.ReplacementLayer] == (Object)null)
-					{
-						BuildingComplete component = gameObject2.GetComponent<BuildingComplete>();
-						if ((Object)component != (Object)null && component.Def.Replaceable && component.Def.IsFoundation && component.Def.isKAnimTile && ((Object)component.Def != (Object)def || selectedElements[0] != gameObject2.GetComponent<PrimaryElement>().Element))
+						if (!Grid.ObjectLayers[(int)def.TileLayer].ContainsKey(cell))
 						{
-							Constructable component2 = def.BuildingUnderConstruction.GetComponent<Constructable>();
-							component2.IsReplacementTile = true;
-							gameObject = def.Instantiate(vector, buildingOrientation, selectedElements, 0);
-							component2.IsReplacementTile = false;
-							Grid.Objects[cell, (int)def.ReplacementLayer] = gameObject;
+							return;
+						}
+						GameObject gameObject2 = Grid.ObjectLayers[(int)def.TileLayer][cell];
+						if ((Object)gameObject2 != (Object)null && (Object)Grid.Objects[cell, (int)def.ReplacementLayer] == (Object)null)
+						{
+							BuildingComplete component = gameObject2.GetComponent<BuildingComplete>();
+							if ((Object)component != (Object)null && component.Def.Replaceable && def.CanReplace(gameObject2) && ((Object)component.Def != (Object)def || selectedElements[0] != gameObject2.GetComponent<PrimaryElement>().Element.tag))
+							{
+								gameObject = def.TryReplaceTile(visualizer, vector, buildingOrientation, selectedElements, 0);
+								Grid.Objects[cell, (int)def.ReplacementLayer] = gameObject;
+							}
+						}
+					}
+					if ((Object)gameObject != (Object)null)
+					{
+						Prioritizable component2 = gameObject.GetComponent<Prioritizable>();
+						if ((Object)component2 != (Object)null)
+						{
+							if ((Object)BuildMenu.Instance != (Object)null)
+							{
+								component2.SetMasterPriority(BuildMenu.Instance.GetBuildingPriority());
+							}
+							if ((Object)PlanScreen.Instance != (Object)null)
+							{
+								component2.SetMasterPriority(PlanScreen.Instance.GetBuildingPriority());
+							}
+						}
+						if ((Object)source != (Object)null)
+						{
+							source.Trigger(2121280625, gameObject);
 						}
 					}
 				}
 				if ((Object)gameObject != (Object)null)
 				{
-					ObjectLayer layer = (!gameObject.GetComponent<Constructable>().IsReplacementTile) ? def.ObjectLayer : def.ReplacementLayer;
-					def.MarkArea(cell, buildingOrientation, layer, gameObject);
-					Prioritizable component3 = gameObject.GetComponent<Prioritizable>();
+					if (def.MaterialsAvailable(selectedElements) || DebugHandler.InstantBuildMode)
+					{
+						placeSound = GlobalAssets.GetSound("Place_Building_" + def.AudioSize, false);
+						if (placeSound != null)
+						{
+							buildingCount = buildingCount % 14 + 1;
+							EventInstance instance = SoundEvent.BeginOneShot(placeSound, vector);
+							if (def.AudioSize == "small")
+							{
+								instance.setParameterValue("tileCount", (float)buildingCount);
+							}
+							SoundEvent.EndOneShot(instance);
+						}
+					}
+					else
+					{
+						PopFXManager.Instance.SpawnFX(PopFXManager.Instance.sprite_Resource, UI.TOOLTIPS.NOMATERIAL, null, vector, 1.5f, false, false);
+					}
+					Rotatable component3 = gameObject.GetComponent<Rotatable>();
 					if ((Object)component3 != (Object)null)
 					{
-						if ((Object)BuildMenu.Instance != (Object)null)
-						{
-							component3.SetMasterPriority(BuildMenu.Instance.GetBuildingPriority());
-						}
-						if ((Object)PlanScreen.Instance != (Object)null)
-						{
-							component3.SetMasterPriority(PlanScreen.Instance.GetBuildingPriority());
-						}
+						component3.SetOrientation(buildingOrientation);
 					}
-					if ((Object)source != (Object)null)
-					{
-						source.Trigger(2121280625, gameObject);
-					}
-				}
-			}
-			if ((Object)gameObject != (Object)null)
-			{
-				if (def.MaterialsAvailable(selectedElements) || DebugHandler.InstantBuildMode)
-				{
-					placeSound = GlobalAssets.GetSound("Place_Building_" + def.AudioSize, false);
-					if (placeSound != null)
-					{
-						buildingCount = buildingCount % 14 + 1;
-						EventInstance instance = SoundEvent.BeginOneShot(placeSound, vector);
-						if (def.AudioSize == "small")
-						{
-							instance.setParameterValue("tileCount", (float)buildingCount);
-						}
-						SoundEvent.EndOneShot(instance);
-					}
-				}
-				else
-				{
-					PopFXManager.Instance.SpawnFX(PopFXManager.Instance.sprite_Resource, UI.TOOLTIPS.NOMATERIAL, null, vector, 1.5f, false, false);
-				}
-				Rotatable component4 = gameObject.GetComponent<Rotatable>();
-				if ((Object)component4 != (Object)null)
-				{
-					component4.SetOrientation(buildingOrientation);
 				}
 			}
 		}

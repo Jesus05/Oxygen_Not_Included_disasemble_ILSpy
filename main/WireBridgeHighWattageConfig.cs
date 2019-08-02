@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using TUNING;
 using UnityEngine;
 
@@ -21,13 +22,13 @@ public class WireBridgeHighWattageConfig : IBuildingConfig
 		float[] tIER = BUILDINGS.CONSTRUCTION_MASS_KG.TIER3;
 		string[] aLL_METALS = MATERIALS.ALL_METALS;
 		float melting_point = 1600f;
-		BuildLocationRule build_location_rule = BuildLocationRule.WireTile;
+		BuildLocationRule build_location_rule = BuildLocationRule.HighWattBridgeTile;
 		EffectorValues nONE = NOISE_POLLUTION.NONE;
 		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(iD, width, height, anim, hitpoints, construction_time, tIER, aLL_METALS, melting_point, build_location_rule, BUILDINGS.DECOR.PENALTY.TIER5, nONE, 0.2f);
 		buildingDef.Overheatable = false;
 		buildingDef.Floodable = false;
 		buildingDef.Entombable = false;
-		buildingDef.ViewMode = SimViewMode.PowerMap;
+		buildingDef.ViewMode = OverlayModes.Power.ID;
 		buildingDef.AudioCategory = "Metal";
 		buildingDef.AudioSize = "small";
 		buildingDef.BaseTimeUntilRepair = -1f;
@@ -38,9 +39,11 @@ public class WireBridgeHighWattageConfig : IBuildingConfig
 		buildingDef.ObjectLayer = ObjectLayer.Building;
 		buildingDef.ReplacementLayer = ObjectLayer.ReplacementTile;
 		buildingDef.TileLayer = ObjectLayer.FoundationTile;
-		buildingDef.SceneLayer = Grid.SceneLayer.Building;
-		buildingDef.ForegroundLayer = Grid.SceneLayer.TileFront;
+		buildingDef.SceneLayer = Grid.SceneLayer.WireBridgesFront;
+		buildingDef.ForegroundLayer = Grid.SceneLayer.TileMain;
 		GeneratedBuildings.RegisterWithOverlay(OverlayScreen.WireIDs, "WireBridgeHighWattage");
+		buildingDef.ReplacementTags = new List<Tag>();
+		buildingDef.ReplacementTags.Add(GameTags.FloorTiles);
 		return buildingDef;
 	}
 
@@ -67,8 +70,6 @@ public class WireBridgeHighWattageConfig : IBuildingConfig
 	public override void DoPostConfigureUnderConstruction(GameObject go)
 	{
 		base.DoPostConfigureUnderConstruction(go);
-		Constructable component = go.GetComponent<Constructable>();
-		component.choreTags = GameTags.ChoreTypes.WiringChores;
 		WireUtilityNetworkLink wireUtilityNetworkLink = AddNetworkLink(go);
 		wireUtilityNetworkLink.visualizeOnly = true;
 		go.AddOrGet<BuildingCellVisualizer>();
@@ -78,6 +79,7 @@ public class WireBridgeHighWattageConfig : IBuildingConfig
 	{
 		WireUtilityNetworkLink wireUtilityNetworkLink = AddNetworkLink(go);
 		wireUtilityNetworkLink.visualizeOnly = false;
+		go.GetComponent<KPrefabID>().AddTag(GameTags.WireBridges, false);
 		go.AddOrGet<BuildingCellVisualizer>();
 	}
 

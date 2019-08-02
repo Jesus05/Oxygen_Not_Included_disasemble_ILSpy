@@ -73,8 +73,7 @@ public static class GameUtil
 	{
 		DTU_S,
 		KDTU_S,
-		Automatic,
-		None
+		Automatic
 	}
 
 	public struct FloodFillInfo
@@ -92,7 +91,19 @@ public static class GameUtil
 		FIRM = 25,
 		VERY_FIRM = 50,
 		NEARLY_IMPENETRABLE = 150,
+		SUPER_HARD = 200,
 		IMPENETRABLE = 0xFF
+	}
+
+	public enum GermResistanceModifier
+	{
+		NONE = 0,
+		POSITIVE_SMALL = 1,
+		POSITIVE_MEDIUM = 2,
+		POSITIVE_LARGE = 5,
+		NEGATIVE_SMALL = -1,
+		NEGATIVE_MEDIUM = -2,
+		NEGATIVE_LARGE = -5
 	}
 
 	public static TemperatureUnit temperatureUnit;
@@ -129,14 +140,43 @@ public static class GameUtil
 		return text + GetTemperatureUnitSuffix();
 	}
 
-	public static float GetConvertedTemperature(float temperature)
+	public static float GetTemperatureConvertedFromKelvin(float temperature, TemperatureUnit targetUnit)
 	{
-		switch (temperatureUnit)
+		switch (targetUnit)
 		{
 		case TemperatureUnit.Celsius:
 			return temperature - 273.15f;
 		case TemperatureUnit.Fahrenheit:
 			return temperature * 1.8f - 459.67f;
+		default:
+			return temperature;
+		}
+	}
+
+	public static float GetConvertedTemperature(float temperature, bool roundOutput = false)
+	{
+		float num = 0f;
+		switch (temperatureUnit)
+		{
+		case TemperatureUnit.Celsius:
+			num = temperature - 273.15f;
+			return (!roundOutput) ? num : Mathf.Round(num);
+		case TemperatureUnit.Fahrenheit:
+			num = temperature * 1.8f - 459.67f;
+			return (!roundOutput) ? num : Mathf.Round(num);
+		default:
+			return (!roundOutput) ? temperature : Mathf.Round(temperature);
+		}
+	}
+
+	public static float GetTemperatureConvertedToKelvin(float temperature, TemperatureUnit fromUnit)
+	{
+		switch (fromUnit)
+		{
+		case TemperatureUnit.Celsius:
+			return temperature + 273.15f;
+		case TemperatureUnit.Fahrenheit:
+			return (temperature + 459.67f) * 5f / 9f;
 		default:
 			return temperature;
 		}
@@ -226,9 +266,11 @@ public static class GameUtil
 		return kilowatts / (shc * mass);
 	}
 
-	public static void DeltaThermalEnergy(PrimaryElement pe, float kilowatts)
+	public static void DeltaThermalEnergy(PrimaryElement pe, float kilowatts, float targetTemperature)
 	{
-		pe.Temperature += CalculateTemperatureChange(pe.Element.specificHeatCapacity, pe.Mass, kilowatts);
+		float num = CalculateTemperatureChange(pe.Element.specificHeatCapacity, pe.Mass, kilowatts);
+		float value = pe.Temperature + num;
+		value = (pe.Temperature = ((!(targetTemperature > pe.Temperature)) ? Mathf.Clamp(value, targetTemperature, pe.Temperature) : Mathf.Clamp(value, pe.Temperature, targetTemperature)));
 	}
 
 	public static BindingEntry ActionToBinding(Action action)
@@ -265,6 +307,7 @@ public static class GameUtil
 
 	public static float EnergyToTemperatureDelta(float kilojoules, PrimaryElement element)
 	{
+		Debug.Assert(element.Mass > 0f);
 		float energyInPrimaryElement = GetEnergyInPrimaryElement(element);
 		float num = Mathf.Max(energyInPrimaryElement - kilojoules, 1f);
 		float temperature = element.Temperature;
@@ -293,9 +336,20 @@ public static class GameUtil
 		value = Mathf.Clamp(value, num3, num4);
 		if (float.IsNaN(value) || float.IsInfinity(value))
 		{
-			Debug.LogError($"Calculated an invalid temperature: t1={t1}, m1={m1}, t2={t2}, m2={m2}, min_temp={num3}, max_temp={num4}", null);
+			Debug.LogError($"Calculated an invalid temperature: t1={t1}, m1={m1}, t2={t2}, m2={m2}, min_temp={num3}, max_temp={num4}");
 		}
 		return value;
+	}
+
+	public static void ForceTotalConduction(PrimaryElement a, PrimaryElement b)
+	{
+		float num = a.Temperature * a.Element.specificHeatCapacity * a.Mass;
+		float temperature = a.Temperature;
+		float num2 = b.Temperature * b.Element.specificHeatCapacity * b.Mass;
+		float temperature2 = b.Temperature;
+		float num3 = num2 / (num + num2);
+		a.Temperature = (temperature2 - temperature) * num3 + temperature;
+		b.Temperature = (temperature - temperature2) * 1f - num3 + temperature2;
 	}
 
 	public static string FloatToString(float f, string format = null)
@@ -344,12 +398,38 @@ public static class GameUtil
 		return AddTimeSliceText(empty, timeSlice);
 	}
 
-	public static string GetFormattedTemperature(float temp, TimeSlice timeSlice = TimeSlice.None, TemperatureInterpretation interpretation = TemperatureInterpretation.Absolute, bool displayUnits = true)
+	public static string ApplyBoldString(string source)
+	{
+		return "<b>" + source + "</b>";
+	}
+
+	public static float GetRoundedTemperatureInKelvin(float kelvin)
+	{
+		float result = 0f;
+		switch (temperatureUnit)
+		{
+		case TemperatureUnit.Celsius:
+			result = GetTemperatureConvertedToKelvin(Mathf.Round(GetConvertedTemperature(Mathf.Round(kelvin), true)));
+			break;
+		case TemperatureUnit.Fahrenheit:
+		{
+			float temperature = (float)Mathf.RoundToInt(GetTemperatureConvertedFromKelvin(kelvin, TemperatureUnit.Fahrenheit));
+			result = GetTemperatureConvertedToKelvin(temperature, TemperatureUnit.Fahrenheit);
+			break;
+		}
+		case TemperatureUnit.Kelvin:
+			result = (float)Mathf.RoundToInt(kelvin);
+			break;
+		}
+		return result;
+	}
+
+	public static string GetFormattedTemperature(float temp, TimeSlice timeSlice = TimeSlice.None, TemperatureInterpretation interpretation = TemperatureInterpretation.Absolute, bool displayUnits = true, bool roundInDestinationFormat = false)
 	{
 		switch (interpretation)
 		{
 		case TemperatureInterpretation.Absolute:
-			temp = GetConvertedTemperature(temp);
+			temp = GetConvertedTemperature(temp, roundInDestinationFormat);
 			break;
 		default:
 			temp = GetConvertedTemperatureDelta(temp);
@@ -368,8 +448,7 @@ public static class GameUtil
 	public static string GetFormattedCaloriesForItem(Tag tag, float amount, TimeSlice timeSlice = TimeSlice.None, bool forceKcal = true)
 	{
 		EdiblesManager.FoodInfo foodInfo = Game.Instance.ediblesManager.GetFoodInfo(tag.Name);
-		float calories = foodInfo.CaloriesPerUnit * amount;
-		return GetFormattedCalories(calories, timeSlice, forceKcal);
+		return GetFormattedCalories((foodInfo == null) ? (-1f) : (foodInfo.CaloriesPerUnit * amount), timeSlice, forceKcal);
 	}
 
 	public static string GetFormattedCalories(float calories, TimeSlice timeSlice = TimeSlice.None, bool forceKcal = true)
@@ -384,6 +463,15 @@ public static class GameUtil
 		string empty = string.Empty;
 		empty = ((calories == 0f) ? ("0" + str) : ((Mathf.Abs(calories) < 1f) ? (FloatToString(calories, "#,##0.#") + str) : ((!(Mathf.Abs(calories) < 10f)) ? (FloatToString(calories, "#,###") + str) : (FloatToString(calories, "#,###.#") + str))));
 		return AddTimeSliceText(empty, timeSlice);
+	}
+
+	public static string GetFormattedPlantGrowth(float percent, TimeSlice timeSlice = TimeSlice.None)
+	{
+		percent = ApplyTimeSlice(percent, timeSlice);
+		string empty = string.Empty;
+		empty = ((Mathf.Abs(percent) == 0f) ? "0" : ((Mathf.Abs(percent) < 0.1f) ? "##0.##" : ((!(Mathf.Abs(percent) < 1f)) ? "##0" : "##0.#")));
+		string text = FloatToString(percent, empty) + UI.UNITSUFFIXES.PERCENT + " " + UI.UNITSUFFIXES.GROWTH;
+		return AddTimeSliceText(text, timeSlice);
 	}
 
 	public static string GetFormattedPercent(float percent, TimeSlice timeSlice = TimeSlice.None)
@@ -440,29 +528,34 @@ public static class GameUtil
 
 	public static string GetFormattedHeatEnergy(float dtu, HeatEnergyFormatterUnit unit = HeatEnergyFormatterUnit.Automatic)
 	{
-		LocString loc_string = string.Empty;
+		LocString locString = string.Empty;
+		string format;
 		switch (unit)
 		{
-		case HeatEnergyFormatterUnit.Automatic:
+		default:
 			if (Mathf.Abs(dtu) > 1000f)
 			{
 				dtu /= 1000f;
-				loc_string = UI.UNITSUFFIXES.HEAT.KDTU;
+				locString = UI.UNITSUFFIXES.HEAT.KDTU;
+				format = "###0.##";
 			}
 			else
 			{
-				loc_string = UI.UNITSUFFIXES.HEAT.DTU;
+				locString = UI.UNITSUFFIXES.HEAT.DTU;
+				format = "###0.";
 			}
 			break;
 		case HeatEnergyFormatterUnit.KDTU_S:
 			dtu /= 1000f;
-			loc_string = UI.UNITSUFFIXES.HEAT.KDTU;
+			locString = UI.UNITSUFFIXES.HEAT.KDTU;
+			format = "###0.##";
 			break;
 		case HeatEnergyFormatterUnit.DTU_S:
-			loc_string = UI.UNITSUFFIXES.HEAT.DTU;
+			locString = UI.UNITSUFFIXES.HEAT.DTU;
+			format = "###0.";
 			break;
 		}
-		return FloatToString(dtu, "###0.##") + loc_string;
+		return FloatToString(dtu, format) + locString;
 	}
 
 	public static string GetFormattedHeatEnergyRate(float dtu_s, HeatEnergyFormatterUnit unit = HeatEnergyFormatterUnit.Automatic)
@@ -579,6 +672,21 @@ public static class GameUtil
 			arg = UI.UNITSUFFIXES.INFORMATION.GIGABYTE;
 		}
 		return AddTimeSliceText(amount + arg, timeSlice);
+	}
+
+	public static LocString GetCurrentMassUnit(bool useSmallUnit = false)
+	{
+		LocString result = null;
+		switch (massUnit)
+		{
+		case MassUnit.Kilograms:
+			result = ((!useSmallUnit) ? UI.UNITSUFFIXES.MASS.KILOGRAM : UI.UNITSUFFIXES.MASS.GRAM);
+			break;
+		case MassUnit.Pounds:
+			result = UI.UNITSUFFIXES.MASS.POUND;
+			break;
+		}
+		return result;
 	}
 
 	public static string GetFormattedMass(float mass, TimeSlice timeSlice = TimeSlice.None, MetricMassFormat massFormat = MetricMassFormat.UseThreshold, bool includeSuffix = true, string floatFormat = "{0:0.#}")
@@ -1004,6 +1112,89 @@ public static class GameUtil
 		return text;
 	}
 
+	public static GermResistanceModifier GetGermResistanceModifier(float modifier)
+	{
+		if (modifier > 0f)
+		{
+			if (modifier >= 5f)
+			{
+				return GermResistanceModifier.POSITIVE_LARGE;
+			}
+			if (modifier >= 2f)
+			{
+				return GermResistanceModifier.POSITIVE_MEDIUM;
+			}
+			if (modifier >= 1f)
+			{
+				return GermResistanceModifier.POSITIVE_SMALL;
+			}
+		}
+		else if (modifier < 0f)
+		{
+			if (modifier <= -5f)
+			{
+				return GermResistanceModifier.NEGATIVE_LARGE;
+			}
+			if (modifier <= -2f)
+			{
+				return GermResistanceModifier.NEGATIVE_MEDIUM;
+			}
+			if (modifier <= -1f)
+			{
+				return GermResistanceModifier.NEGATIVE_SMALL;
+			}
+		}
+		return GermResistanceModifier.NONE;
+	}
+
+	public static string GetGermResistanceModifierString(float modifier, bool addColor = true)
+	{
+		Color color = new Color(0.831372559f, 0.286274523f, 0.282352954f);
+		Color color2 = new Color(0.7411765f, 0.349019617f, 0.498039216f);
+		Color color3 = new Color(0.6392157f, 0.392156869f, 0.6039216f);
+		Color color4 = new Color(0.5254902f, 0.419607848f, 0.647058845f);
+		Color color5 = new Color(0.427450985f, 0.482352942f, 0.75686276f);
+		Color color6 = new Color(0.443137258f, 0.670588255f, 0.8117647f);
+		Color c = color4;
+		string text = string.Empty;
+		switch (GetGermResistanceModifier(modifier))
+		{
+		case GermResistanceModifier.NEGATIVE_LARGE:
+			c = color4;
+			text = string.Format(DUPLICANTS.ATTRIBUTES.GERMRESISTANCE.MODIFIER_DESCRIPTORS.NEGATIVE_LARGE, modifier);
+			break;
+		case GermResistanceModifier.NEGATIVE_MEDIUM:
+			c = color3;
+			text = string.Format(DUPLICANTS.ATTRIBUTES.GERMRESISTANCE.MODIFIER_DESCRIPTORS.NEGATIVE_MEDIUM, modifier);
+			break;
+		case GermResistanceModifier.NEGATIVE_SMALL:
+			c = color2;
+			text = string.Format(DUPLICANTS.ATTRIBUTES.GERMRESISTANCE.MODIFIER_DESCRIPTORS.NEGATIVE_SMALL, modifier);
+			break;
+		case GermResistanceModifier.NONE:
+			c = color;
+			text = string.Format(DUPLICANTS.ATTRIBUTES.GERMRESISTANCE.MODIFIER_DESCRIPTORS.NONE, modifier);
+			break;
+		case GermResistanceModifier.POSITIVE_SMALL:
+			c = color5;
+			text = string.Format(DUPLICANTS.ATTRIBUTES.GERMRESISTANCE.MODIFIER_DESCRIPTORS.POSITIVE_SMALL, modifier);
+			break;
+		case GermResistanceModifier.POSITIVE_MEDIUM:
+			c = color6;
+			text = string.Format(DUPLICANTS.ATTRIBUTES.GERMRESISTANCE.MODIFIER_DESCRIPTORS.POSITIVE_MEDIUM, modifier);
+			break;
+		case GermResistanceModifier.POSITIVE_LARGE:
+			c = color6;
+			text = string.Format(DUPLICANTS.ATTRIBUTES.GERMRESISTANCE.MODIFIER_DESCRIPTORS.POSITIVE_LARGE, modifier);
+			break;
+		}
+		if (addColor)
+		{
+			text = $"<color=#{c.ToHexString()}>{text}</color>";
+		}
+		return text;
+	}
+
 	public static string GetThermalConductivityString(Element element, bool addColor = true, bool addValue = true)
 	{
 		Color color = new Color(0.831372559f, 0.286274523f, 0.282352954f);
@@ -1109,10 +1300,19 @@ public static class GameUtil
 		return string.Format(ELEMENTS.BREATHABLEDESC, color4.ToHexString(), arg);
 	}
 
-	public static string GetHotkeyString(Action action)
+	public static string AppendHotkeyString(string template, Action action)
 	{
-		Color c = new Color(0.956862748f, 0.2901961f, 0.2784314f);
-		return "<color=#" + c.ToHexString() + ">(" + GetActionString(action) + ") </color>";
+		return template + UI.FormatAsHotkey("[" + GetActionString(action) + "]");
+	}
+
+	public static string ReplaceHotkeyString(string template, Action action)
+	{
+		return template.Replace("{Hotkey}", UI.FormatAsHotkey("[" + GetActionString(action) + "]"));
+	}
+
+	public static string ReplaceHotkeyString(string template, Action action1, Action action2)
+	{
+		return template.Replace("{Hotkey}", UI.FormatAsHotkey("[" + GetActionString(action1) + "]") + UI.FormatAsHotkey("[" + GetActionString(action2) + "]"));
 	}
 
 	public static string GetKeycodeLocalized(KKeyCode key_code)
@@ -1279,7 +1479,7 @@ public static class GameUtil
 			}
 			else
 			{
-				Debug.LogWarning("Unable to find proper string for KKeyCode: " + key_code.ToString() + " using key_code.ToString()", null);
+				Debug.LogWarning("Unable to find proper string for KKeyCode: " + key_code.ToString() + " using key_code.ToString()");
 			}
 			break;
 		case KKeyCode.None:
@@ -1340,7 +1540,7 @@ public static class GameUtil
 	private static void GetNonSolidCells(int x, int y, List<int> cells, int min_x, int min_y, int max_x, int max_y)
 	{
 		int num = Grid.XYToCell(x, y);
-		if (Grid.IsValidCell(num) && !Grid.Solid[num] && !Grid.ForceField[num] && x >= min_x && x <= max_x && y >= min_y && y <= max_y && !cells.Contains(num))
+		if (Grid.IsValidCell(num) && !Grid.Solid[num] && !Grid.DupePassable[num] && x >= min_x && x <= max_x && y >= min_y && y <= max_y && !cells.Contains(num))
 		{
 			cells.Add(num);
 			GetNonSolidCells(x + 1, y, cells, min_x, min_y, max_x, max_y);
@@ -1415,12 +1615,15 @@ public static class GameUtil
 		});
 	}
 
-	public static void IndentListOfDescriptors(List<Descriptor> list)
+	public static void IndentListOfDescriptors(List<Descriptor> list, int indentCount = 1)
 	{
 		for (int i = 0; i < list.Count; i++)
 		{
 			Descriptor value = list[i];
-			value.IncreaseIndent();
+			for (int j = 0; j < indentCount; j++)
+			{
+				value.IncreaseIndent();
+			}
 			list[i] = value;
 		}
 	}
@@ -1467,7 +1670,7 @@ public static class GameUtil
 			}
 		}
 		KPrefabID component2 = go.GetComponent<KPrefabID>();
-		if (component2.AdditionalRequirements != null)
+		if ((UnityEngine.Object)component2 != (UnityEngine.Object)null && component2.AdditionalRequirements != null)
 		{
 			foreach (Descriptor additionalRequirement in component2.AdditionalRequirements)
 			{
@@ -1478,7 +1681,7 @@ public static class GameUtil
 				}
 			}
 		}
-		if (component2.AdditionalEffects != null)
+		if ((UnityEngine.Object)component2 != (UnityEngine.Object)null && component2.AdditionalEffects != null)
 		{
 			foreach (Descriptor additionalEffect in component2.AdditionalEffects)
 			{
@@ -1504,7 +1707,7 @@ public static class GameUtil
 				list.Add(current);
 			}
 		}
-		IndentListOfDescriptors(list);
+		IndentListOfDescriptors(list, 1);
 		return list;
 	}
 
@@ -1519,7 +1722,7 @@ public static class GameUtil
 				list.Add(current);
 			}
 		}
-		IndentListOfDescriptors(list);
+		IndentListOfDescriptors(list, 1);
 		return list;
 	}
 
@@ -1534,7 +1737,7 @@ public static class GameUtil
 				list.Add(current);
 			}
 		}
-		IndentListOfDescriptors(list);
+		IndentListOfDescriptors(list, 1);
 		return list;
 	}
 
@@ -1549,7 +1752,7 @@ public static class GameUtil
 				list.Add(current);
 			}
 		}
-		IndentListOfDescriptors(list);
+		IndentListOfDescriptors(list, 1);
 		return list;
 	}
 
@@ -1566,7 +1769,7 @@ public static class GameUtil
 				list.Add(item);
 			}
 		}
-		IndentListOfDescriptors(list);
+		IndentListOfDescriptors(list, 1);
 		return list;
 	}
 
@@ -1711,6 +1914,7 @@ public static class GameUtil
 
 	public static List<Descriptor> GetEquipmentEffects(EquipmentDef def)
 	{
+		Debug.Assert((UnityEngine.Object)def != (UnityEngine.Object)null);
 		List<Descriptor> list = new List<Descriptor>();
 		List<AttributeModifier> attributeModifiers = def.AttributeModifiers;
 		if (attributeModifiers != null)
@@ -1719,7 +1923,7 @@ public static class GameUtil
 			{
 				Klei.AI.Attribute attribute = Db.Get().Attributes.Get(item.AttributeId);
 				string name = attribute.Name;
-				string formattedString = item.GetFormattedString(null, false);
+				string formattedString = item.GetFormattedString(null);
 				string newValue = (!(item.Value >= 0f)) ? "consumed" : "produced";
 				string text = UI.GAMEOBJECTEFFECTS.EQUIPMENT_MODS.text.Replace("{Attribute}", name).Replace("{Style}", newValue).Replace("{Value}", formattedString);
 				list.Add(new Descriptor(text, text, Descriptor.DescriptorType.Effect, false));
@@ -1739,7 +1943,7 @@ public static class GameUtil
 		if (text == null)
 		{
 			text = "MISSING RECIPEDESCRIPTION";
-			Debug.LogWarning("Missing recipeDescription", null);
+			Debug.LogWarning("Missing recipeDescription");
 		}
 		return text;
 	}
@@ -1924,6 +2128,42 @@ public static class GameUtil
 		return text + empty + text2;
 	}
 
+	public static string GenerateRandomRocketName()
+	{
+		string empty = string.Empty;
+		string newValue = string.Empty;
+		string newValue2 = string.Empty;
+		string newValue3 = string.Empty;
+		int num = 1;
+		int num2 = 2;
+		int num3 = 4;
+		List<string> tList = new List<string>(LocString.GetStrings(typeof(NAMEGEN.ROCKET.NOUN)));
+		empty = tList.GetRandom();
+		int num4 = 0;
+		if (UnityEngine.Random.value > 0.7f)
+		{
+			List<string> tList2 = new List<string>(LocString.GetStrings(typeof(NAMEGEN.ROCKET.PREFIX)));
+			newValue = tList2.GetRandom();
+			num4 |= num;
+		}
+		if (UnityEngine.Random.value > 0.5f)
+		{
+			List<string> tList3 = new List<string>(LocString.GetStrings(typeof(NAMEGEN.ROCKET.ADJECTIVE)));
+			newValue2 = tList3.GetRandom();
+			num4 |= num2;
+		}
+		if (UnityEngine.Random.value > 0.1f)
+		{
+			List<string> tList4 = new List<string>(LocString.GetStrings(typeof(NAMEGEN.ROCKET.SUFFIX)));
+			newValue3 = tList4.GetRandom();
+			num4 |= num3;
+		}
+		string text = (num4 == (num | num2 | num3)) ? ((string)NAMEGEN.ROCKET.FMT_PREFIX_ADJECTIVE_NOUN_SUFFIX) : ((num4 == (num2 | num3)) ? ((string)NAMEGEN.ROCKET.FMT_ADJECTIVE_NOUN_SUFFIX) : ((num4 == (num | num3)) ? ((string)NAMEGEN.ROCKET.FMT_PREFIX_NOUN_SUFFIX) : ((num4 == num3) ? ((string)NAMEGEN.ROCKET.FMT_NOUN_SUFFIX) : ((num4 == (num | num2)) ? ((string)NAMEGEN.ROCKET.FMT_PREFIX_ADJECTIVE_NOUN) : ((num4 == num) ? ((string)NAMEGEN.ROCKET.FMT_PREFIX_NOUN) : ((num4 != num2) ? ((string)NAMEGEN.ROCKET.FMT_NOUN) : ((string)NAMEGEN.ROCKET.FMT_ADJECTIVE_NOUN)))))));
+		DebugUtil.LogArgs("Rocket name bits:", Convert.ToString(num4, 2));
+		return text.Replace("{Prefix}", newValue).Replace("{Adjective}", newValue2).Replace("{Noun}", empty)
+			.Replace("{Suffix}", newValue3);
+	}
+
 	public static float GetThermalComfort(int cell, float tolerance = -0.0836800039f)
 	{
 		float num = 0f;
@@ -1976,10 +2216,14 @@ public static class GameUtil
 		return $"{colour.r:X2}{colour.g:X2}{colour.b:X2}{colour.a:X2}";
 	}
 
-	public static string GetFormattedDecor(float value)
+	public static string GetFormattedDecor(float value, bool enforce_max = false)
 	{
 		string arg = string.Empty;
-		LocString loc_string = UI.OVERLAYS.DECOR.VALUE;
+		LocString loc_string = (!(value > DecorMonitor.MAXIMUM_DECOR_VALUE) || !enforce_max) ? UI.OVERLAYS.DECOR.VALUE : UI.OVERLAYS.DECOR.MAXIMUM_DECOR;
+		if (enforce_max)
+		{
+			value = Math.Min(value, DecorMonitor.MAXIMUM_DECOR_VALUE);
+		}
 		if (value > 0f)
 		{
 			arg = "+";
@@ -2009,8 +2253,8 @@ public static class GameUtil
 		{
 			foreach (AttributeModifier attributeModifier in element.attributeModifiers)
 			{
-				string txt = string.Format(Strings.Get(new StringKey("STRINGS.ELEMENTS.MATERIAL_MODIFIERS." + attributeModifier.AttributeId.ToUpper())), attributeModifier.GetFormattedString(null, false));
-				string tooltip = string.Format(Strings.Get(new StringKey("STRINGS.ELEMENTS.MATERIAL_MODIFIERS.TOOLTIP." + attributeModifier.AttributeId.ToUpper())), attributeModifier.GetFormattedString(null, false));
+				string txt = string.Format(Strings.Get(new StringKey("STRINGS.ELEMENTS.MATERIAL_MODIFIERS." + attributeModifier.AttributeId.ToUpper())), attributeModifier.GetFormattedString(null));
+				string tooltip = string.Format(Strings.Get(new StringKey("STRINGS.ELEMENTS.MATERIAL_MODIFIERS.TOOLTIP." + attributeModifier.AttributeId.ToUpper())), attributeModifier.GetFormattedString(null));
 				Descriptor item = default(Descriptor);
 				item.SetupDescriptor(txt, tooltip, Descriptor.DescriptorType.Effect);
 				item.IncreaseIndent();
@@ -2027,7 +2271,7 @@ public static class GameUtil
 		foreach (AttributeModifier attributeModifier in element.attributeModifiers)
 		{
 			string name = Db.Get().BuildingAttributes.Get(attributeModifier.AttributeId).Name;
-			string formattedString = attributeModifier.GetFormattedString(null, attributeModifier.IsMultiplier);
+			string formattedString = attributeModifier.GetFormattedString(null);
 			str = str + "\n    • " + string.Format(DUPLICANTS.MODIFIERS.MODIFIER_FORMAT, name, formattedString);
 		}
 		return str + GetSignificantMaterialPropertyTooltips(element);
@@ -2087,5 +2331,193 @@ public static class GameUtil
 	public static int NaturalBuildingCell(this KMonoBehaviour cmp)
 	{
 		return Grid.PosToCell(cmp.transform.GetPosition());
+	}
+
+	public static List<Descriptor> GetMaterialDescriptors(Tag tag)
+	{
+		List<Descriptor> list = new List<Descriptor>();
+		Element element = ElementLoader.GetElement(tag);
+		if (element != null)
+		{
+			if (element.attributeModifiers.Count > 0)
+			{
+				foreach (AttributeModifier attributeModifier in element.attributeModifiers)
+				{
+					string txt = string.Format(Strings.Get(new StringKey("STRINGS.ELEMENTS.MATERIAL_MODIFIERS." + attributeModifier.AttributeId.ToUpper())), attributeModifier.GetFormattedString(null));
+					string tooltip = string.Format(Strings.Get(new StringKey("STRINGS.ELEMENTS.MATERIAL_MODIFIERS.TOOLTIP." + attributeModifier.AttributeId.ToUpper())), attributeModifier.GetFormattedString(null));
+					Descriptor item = default(Descriptor);
+					item.SetupDescriptor(txt, tooltip, Descriptor.DescriptorType.Effect);
+					item.IncreaseIndent();
+					list.Add(item);
+				}
+			}
+			list.AddRange(GetSignificantMaterialPropertyDescriptors(element));
+		}
+		else
+		{
+			GameObject gameObject = Assets.TryGetPrefab(tag);
+			if ((UnityEngine.Object)gameObject != (UnityEngine.Object)null)
+			{
+				PrefabAttributeModifiers component = gameObject.GetComponent<PrefabAttributeModifiers>();
+				if ((UnityEngine.Object)component != (UnityEngine.Object)null)
+				{
+					foreach (AttributeModifier descriptor in component.descriptors)
+					{
+						string txt2 = string.Format(Strings.Get(new StringKey("STRINGS.ELEMENTS.MATERIAL_MODIFIERS." + descriptor.AttributeId.ToUpper())), descriptor.GetFormattedString(null));
+						string tooltip2 = string.Format(Strings.Get(new StringKey("STRINGS.ELEMENTS.MATERIAL_MODIFIERS.TOOLTIP." + descriptor.AttributeId.ToUpper())), descriptor.GetFormattedString(null));
+						Descriptor item2 = default(Descriptor);
+						item2.SetupDescriptor(txt2, tooltip2, Descriptor.DescriptorType.Effect);
+						item2.IncreaseIndent();
+						list.Add(item2);
+					}
+					return list;
+				}
+			}
+		}
+		return list;
+	}
+
+	public static string GetMaterialTooltips(Tag tag)
+	{
+		string text = tag.ProperName();
+		Element element = ElementLoader.GetElement(tag);
+		if (element != null)
+		{
+			foreach (AttributeModifier attributeModifier in element.attributeModifiers)
+			{
+				string name = Db.Get().BuildingAttributes.Get(attributeModifier.AttributeId).Name;
+				string formattedString = attributeModifier.GetFormattedString(null);
+				text = text + "\n    • " + string.Format(DUPLICANTS.MODIFIERS.MODIFIER_FORMAT, name, formattedString);
+			}
+			text += GetSignificantMaterialPropertyTooltips(element);
+		}
+		else
+		{
+			GameObject gameObject = Assets.TryGetPrefab(tag);
+			if ((UnityEngine.Object)gameObject != (UnityEngine.Object)null)
+			{
+				PrefabAttributeModifiers component = gameObject.GetComponent<PrefabAttributeModifiers>();
+				if ((UnityEngine.Object)component != (UnityEngine.Object)null)
+				{
+					foreach (AttributeModifier descriptor in component.descriptors)
+					{
+						string name2 = Db.Get().BuildingAttributes.Get(descriptor.AttributeId).Name;
+						string formattedString2 = descriptor.GetFormattedString(null);
+						text = text + "\n    • " + string.Format(DUPLICANTS.MODIFIERS.MODIFIER_FORMAT, name2, formattedString2);
+					}
+					return text;
+				}
+			}
+		}
+		return text;
+	}
+
+	public static bool AreChoresUIMergeable(Chore.Precondition.Context choreA, Chore.Precondition.Context choreB)
+	{
+		if (choreA.chore.target.isNull || choreB.chore.target.isNull)
+		{
+			return false;
+		}
+		ChoreType choreType = choreB.chore.choreType;
+		ChoreType choreType2 = choreA.chore.choreType;
+		if (choreA.chore.choreType == choreB.chore.choreType && choreA.chore.target.GetComponent<KPrefabID>().PrefabTag == choreB.chore.target.GetComponent<KPrefabID>().PrefabTag)
+		{
+			return true;
+		}
+		if (choreA.chore.choreType == Db.Get().ChoreTypes.Dig && choreB.chore.choreType == Db.Get().ChoreTypes.Dig)
+		{
+			return true;
+		}
+		if (choreA.chore.choreType == Db.Get().ChoreTypes.Relax && choreB.chore.choreType == Db.Get().ChoreTypes.Relax)
+		{
+			return true;
+		}
+		if ((choreType2 == Db.Get().ChoreTypes.ReturnSuitIdle || choreType2 == Db.Get().ChoreTypes.ReturnSuitUrgent) && (choreType == Db.Get().ChoreTypes.ReturnSuitIdle || choreType == Db.Get().ChoreTypes.ReturnSuitUrgent))
+		{
+			return true;
+		}
+		if ((UnityEngine.Object)choreA.chore.target.gameObject == (UnityEngine.Object)choreB.chore.target.gameObject && choreA.chore.choreType == choreB.chore.choreType)
+		{
+			return true;
+		}
+		return false;
+	}
+
+	public static string GetChoreName(Chore chore, object choreData)
+	{
+		string result = string.Empty;
+		if (chore.choreType == Db.Get().ChoreTypes.Fetch || chore.choreType == Db.Get().ChoreTypes.MachineFetch || chore.choreType == Db.Get().ChoreTypes.FabricateFetch || chore.choreType == Db.Get().ChoreTypes.FetchCritical || chore.choreType == Db.Get().ChoreTypes.PowerFetch)
+		{
+			result = chore.GetReportName(chore.gameObject.GetProperName());
+		}
+		else if (chore.choreType == Db.Get().ChoreTypes.StorageFetch || chore.choreType == Db.Get().ChoreTypes.FoodFetch)
+		{
+			FetchChore fetchChore = chore as FetchChore;
+			FetchAreaChore fetchAreaChore = chore as FetchAreaChore;
+			if (fetchAreaChore != null)
+			{
+				GameObject getFetchTarget = fetchAreaChore.GetFetchTarget;
+				KMonoBehaviour kMonoBehaviour = choreData as KMonoBehaviour;
+				result = (((UnityEngine.Object)getFetchTarget != (UnityEngine.Object)null) ? chore.GetReportName(getFetchTarget.GetProperName()) : ((!((UnityEngine.Object)kMonoBehaviour != (UnityEngine.Object)null)) ? chore.GetReportName(null) : chore.GetReportName(kMonoBehaviour.GetProperName())));
+			}
+			else if (fetchChore != null)
+			{
+				Pickupable fetchTarget = fetchChore.fetchTarget;
+				KMonoBehaviour kMonoBehaviour2 = choreData as KMonoBehaviour;
+				result = (((UnityEngine.Object)fetchTarget != (UnityEngine.Object)null) ? chore.GetReportName(fetchTarget.GetProperName()) : ((!((UnityEngine.Object)kMonoBehaviour2 != (UnityEngine.Object)null)) ? chore.GetReportName(null) : chore.GetReportName(kMonoBehaviour2.GetProperName())));
+			}
+		}
+		else
+		{
+			result = chore.GetReportName(null);
+		}
+		return result;
+	}
+
+	public static string ChoreGroupsForChoreType(ChoreType choreType)
+	{
+		if (choreType.groups == null || choreType.groups.Length == 0)
+		{
+			return null;
+		}
+		string text = string.Empty;
+		for (int i = 0; i < choreType.groups.Length; i++)
+		{
+			if (i != 0)
+			{
+				text += UI.UISIDESCREENS.MINIONTODOSIDESCREEN.CHORE_GROUP_SEPARATOR;
+			}
+			text += choreType.groups[i].Name;
+		}
+		return text;
+	}
+
+	public static bool IsCapturingTimeLapse()
+	{
+		return (UnityEngine.Object)Game.Instance != (UnityEngine.Object)null && (UnityEngine.Object)Game.Instance.timelapser != (UnityEngine.Object)null && Game.Instance.timelapser.CapturingTimelapseScreenshot;
+	}
+
+	public static ExposureType GetExposureTypeForDisease(Disease disease)
+	{
+		for (int i = 0; i < GERM_EXPOSURE.TYPES.Length; i++)
+		{
+			if (disease.id == (HashedString)GERM_EXPOSURE.TYPES[i].germ_id)
+			{
+				return GERM_EXPOSURE.TYPES[i];
+			}
+		}
+		return null;
+	}
+
+	public static Sickness GetSicknessForDisease(Disease disease)
+	{
+		for (int i = 0; i < GERM_EXPOSURE.TYPES.Length; i++)
+		{
+			if (disease.id == (HashedString)GERM_EXPOSURE.TYPES[i].germ_id)
+			{
+				return Db.Get().Sicknesses.Get(GERM_EXPOSURE.TYPES[i].sickness_id);
+			}
+		}
+		return null;
 	}
 }

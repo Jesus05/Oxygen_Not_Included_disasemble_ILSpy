@@ -86,8 +86,8 @@ public class KToggle : Toggle
 			{
 				soundPlayer.Play((!isOn) ? 1 : 0);
 			}
-			this.onClick.Signal();
 			base.gameObject.Trigger(2098165161, null);
+			this.onClick.Signal();
 		}
 	}
 

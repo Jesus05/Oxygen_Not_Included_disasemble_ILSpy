@@ -30,7 +30,7 @@ public class SteamManager : MonoBehaviour
 
 	private static void SteamAPIDebugTextHook(int nSeverity, StringBuilder pchDebugText)
 	{
-		Debug.LogWarning(pchDebugText, null);
+		Debug.LogWarning(pchDebugText);
 	}
 
 	private void Awake()
@@ -55,20 +55,21 @@ public class SteamManager : MonoBehaviour
 			{
 				if (SteamAPI.RestartAppIfNecessary(new AppId_t(457140u)))
 				{
-					Application.Quit();
+					App.Quit();
 					return;
 				}
 			}
 			catch (DllNotFoundException arg)
 			{
 				Debug.LogError("[Steamworks.NET] Could not load [lib]steam_api.dll/so/dylib. It's likely not in the correct location. Refer to the README for more details.\n" + arg, this);
-				Application.Quit();
+				App.Quit();
 				return;
 			}
 			m_bInitialized = SteamAPI.Init();
 			if (!m_bInitialized)
 			{
-				return;
+				Debug.LogWarning("[Steamworks.NET] SteamAPI_Init() failed. Refer to Valve's documentation or the comment above this line for more information.", this);
+				App.Quit();
 			}
 		}
 	}

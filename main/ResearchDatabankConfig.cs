@@ -29,7 +29,7 @@ public class ResearchDatabankConfig : IEntityConfig
 		list.Add(GameTags.IndustrialIngredient);
 		list.Add(GameTags.Experimental);
 		list = list;
-		GameObject gameObject = EntityTemplates.CreateLooseEntity(id, name, desc, mass, unitMass, anim, initialAnim, sceneLayer, collisionShape, width, height, isPickupable, SimHashes.Creature, list);
+		GameObject gameObject = EntityTemplates.CreateLooseEntity(id, name, desc, mass, unitMass, anim, initialAnim, sceneLayer, collisionShape, width, height, isPickupable, 0, SimHashes.Creature, list);
 		EntitySplitter entitySplitter = gameObject.AddOrGet<EntitySplitter>();
 		entitySplitter.maxStackSize = (float)ROCKETRY.DESTINATION_RESEARCH.BASIC;
 		return gameObject;

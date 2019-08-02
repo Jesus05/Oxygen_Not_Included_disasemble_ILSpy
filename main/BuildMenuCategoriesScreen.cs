@@ -7,7 +7,7 @@ public class BuildMenuCategoriesScreen : KIconToggleMenu
 {
 	private class UserData
 	{
-		public BuildMenu.Category category;
+		public HashedString category;
 
 		public int depth;
 
@@ -16,7 +16,7 @@ public class BuildMenuCategoriesScreen : KIconToggleMenu
 		public ImageToggleState.State? currentToggleState;
 	}
 
-	public Action<BuildMenu.Category, int> onCategoryClicked;
+	public Action<HashedString, int> onCategoryClicked;
 
 	[SerializeField]
 	public bool modalKeyInputBehaviour;
@@ -30,21 +30,21 @@ public class BuildMenuCategoriesScreen : KIconToggleMenu
 	[SerializeField]
 	private Color32 unfocusedColour;
 
-	private IList<BuildMenu.Category> subcategories;
+	private IList<HashedString> subcategories;
 
-	private Dictionary<BuildMenu.Category, List<BuildingDef>> categorizedBuildingMap;
+	private Dictionary<HashedString, List<BuildingDef>> categorizedBuildingMap;
 
-	private Dictionary<BuildMenu.Category, List<BuildMenu.Category>> categorizedCategoryMap;
+	private Dictionary<HashedString, List<HashedString>> categorizedCategoryMap;
 
 	private BuildMenuBuildingsScreen buildingsScreen;
 
-	private BuildMenu.Category category;
+	private HashedString category;
 
 	private IList<BuildMenu.BuildingInfo> buildingInfos;
 
-	private BuildMenu.Category selectedCategory = BuildMenu.Category.INVALID;
+	private HashedString selectedCategory = HashedString.Invalid;
 
-	public BuildMenu.Category Category => category;
+	public HashedString Category => category;
 
 	public override float GetSortKey()
 	{
@@ -57,7 +57,7 @@ public class BuildMenuCategoriesScreen : KIconToggleMenu
 		base.onSelect += OnClickCategory;
 	}
 
-	public void Configure(BuildMenu.Category category, int depth, object data, Dictionary<BuildMenu.Category, List<BuildingDef>> categorized_building_map, Dictionary<BuildMenu.Category, List<BuildMenu.Category>> categorized_category_map, BuildMenuBuildingsScreen buildings_screen)
+	public void Configure(HashedString category, int depth, object data, Dictionary<HashedString, List<BuildingDef>> categorized_building_map, Dictionary<HashedString, List<HashedString>> categorized_category_map, BuildMenuBuildingsScreen buildings_screen)
 	{
 		this.category = category;
 		categorizedBuildingMap = categorized_building_map;
@@ -70,19 +70,20 @@ public class BuildMenuCategoriesScreen : KIconToggleMenu
 		}
 		else if (typeof(IList<BuildMenu.DisplayInfo>).IsAssignableFrom(data.GetType()))
 		{
-			subcategories = new List<BuildMenu.Category>();
+			subcategories = new List<HashedString>();
 			IList<BuildMenu.DisplayInfo> list2 = (IList<BuildMenu.DisplayInfo>)data;
 			foreach (BuildMenu.DisplayInfo item2 in list2)
 			{
 				BuildMenu.DisplayInfo current = item2;
 				string iconName = current.iconName;
-				string str = current.category.ToString().ToUpper();
-				ToggleInfo item = new ToggleInfo(Strings.Get("STRINGS.UI.NEWBUILDCATEGORIES." + str + ".NAME"), iconName, new UserData
+				string text = HashCache.Get().Get(current.category).ToUpper();
+				text = text.Replace(" ", string.Empty);
+				ToggleInfo item = new ToggleInfo(Strings.Get("STRINGS.UI.NEWBUILDCATEGORIES." + text + ".NAME"), iconName, new UserData
 				{
 					category = current.category,
 					depth = depth,
 					requirementsState = PlanScreen.RequirementsState.Tech
-				}, current.hotkey, Strings.Get("STRINGS.UI.NEWBUILDCATEGORIES." + str + ".TOOLTIP"), string.Empty);
+				}, current.hotkey, Strings.Get("STRINGS.UI.NEWBUILDCATEGORIES." + text + ".TOOLTIP"), string.Empty);
 				list.Add(item);
 				subcategories.Add(current.category);
 			}
@@ -117,14 +118,14 @@ public class BuildMenuCategoriesScreen : KIconToggleMenu
 			}
 			else
 			{
-				selectedCategory = BuildMenu.Category.INVALID;
+				selectedCategory = HashedString.Invalid;
 				ClearSelection();
 				KMonoBehaviour.PlaySound(GlobalAssets.GetSound("HUD_Click_Deselect", false));
 			}
 		}
 		else
 		{
-			selectedCategory = BuildMenu.Category.INVALID;
+			selectedCategory = HashedString.Invalid;
 			ClearSelection();
 			KMonoBehaviour.PlaySound(GlobalAssets.GetSound("Negative", false));
 		}
@@ -142,15 +143,15 @@ public class BuildMenuCategoriesScreen : KIconToggleMenu
 			foreach (ToggleInfo item in toggleInfo)
 			{
 				UserData userData = (UserData)item.userData;
-				BuildMenu.Category category = userData.category;
-				PlanScreen.RequirementsState categoryRequirements = GetCategoryRequirements(category);
+				HashedString x = userData.category;
+				PlanScreen.RequirementsState categoryRequirements = GetCategoryRequirements(x);
 				bool flag = categoryRequirements == PlanScreen.RequirementsState.Tech;
 				item.toggle.gameObject.SetActive(!flag);
 				switch (categoryRequirements)
 				{
 				case PlanScreen.RequirementsState.Complete:
 				{
-					ImageToggleState.State state2 = (selectedCategory == BuildMenu.Category.INVALID || category != selectedCategory) ? ImageToggleState.State.Inactive : ImageToggleState.State.Active;
+					ImageToggleState.State state2 = (!selectedCategory.IsValid || x != selectedCategory) ? ImageToggleState.State.Inactive : ImageToggleState.State.Active;
 					if (!userData.currentToggleState.HasValue || userData.currentToggleState.GetValueOrDefault() != state2)
 					{
 						userData.currentToggleState = state2;
@@ -161,7 +162,7 @@ public class BuildMenuCategoriesScreen : KIconToggleMenu
 				case PlanScreen.RequirementsState.Materials:
 				{
 					item.toggle.fgImage.SetAlpha((!flag) ? 1f : 0.2509804f);
-					ImageToggleState.State state = (selectedCategory != BuildMenu.Category.INVALID && category == selectedCategory) ? ImageToggleState.State.DisabledActive : ImageToggleState.State.Disabled;
+					ImageToggleState.State state = (selectedCategory.IsValid && x == selectedCategory) ? ImageToggleState.State.DisabledActive : ImageToggleState.State.Disabled;
 					if (!userData.currentToggleState.HasValue || userData.currentToggleState.GetValueOrDefault() != state)
 					{
 						userData.currentToggleState = state;
@@ -186,11 +187,11 @@ public class BuildMenuCategoriesScreen : KIconToggleMenu
 		}
 	}
 
-	private PlanScreen.RequirementsState GetCategoryRequirements(BuildMenu.Category category)
+	private PlanScreen.RequirementsState GetCategoryRequirements(HashedString category)
 	{
 		bool flag = true;
 		bool flag2 = true;
-		List<BuildMenu.Category> value2;
+		List<HashedString> value2;
 		if (categorizedBuildingMap.TryGetValue(category, out List<BuildingDef> value))
 		{
 			if (value.Count > 0)
@@ -208,7 +209,7 @@ public class BuildMenuCategoriesScreen : KIconToggleMenu
 		}
 		else if (categorizedCategoryMap.TryGetValue(category, out value2))
 		{
-			foreach (BuildMenu.Category item2 in value2)
+			foreach (HashedString item2 in value2)
 			{
 				PlanScreen.RequirementsState categoryRequirements = GetCategoryRequirements(item2);
 				flag = (flag && categoryRequirements == PlanScreen.RequirementsState.Tech);
@@ -223,7 +224,7 @@ public class BuildMenuCategoriesScreen : KIconToggleMenu
 		return result;
 	}
 
-	public void UpdateNotifications(ICollection<BuildMenu.Category> updated_categories)
+	public void UpdateNotifications(ICollection<HashedString> updated_categories)
 	{
 		if (toggleInfo != null)
 		{
@@ -231,7 +232,7 @@ public class BuildMenuCategoriesScreen : KIconToggleMenu
 			foreach (ToggleInfo item2 in toggleInfo)
 			{
 				UserData userData = (UserData)item2.userData;
-				BuildMenu.Category item = userData.category;
+				HashedString item = userData.category;
 				if (updated_categories.Contains(item))
 				{
 					item2.toggle.gameObject.GetComponent<PlanCategoryNotifications>().ToggleAttention(true);
@@ -243,7 +244,7 @@ public class BuildMenuCategoriesScreen : KIconToggleMenu
 	public override void Close()
 	{
 		base.Close();
-		selectedCategory = BuildMenu.Category.INVALID;
+		selectedCategory = HashedString.Invalid;
 		SetHasFocus(false);
 		if (buildingInfos != null)
 		{
@@ -265,8 +266,8 @@ public class BuildMenuCategoriesScreen : KIconToggleMenu
 			foreach (ToggleInfo item in toggleInfo)
 			{
 				UserData userData = (UserData)item.userData;
-				BuildMenu.Category category = userData.category;
-				PlanScreen.RequirementsState categoryRequirements = GetCategoryRequirements(category);
+				HashedString hashedString = userData.category;
+				PlanScreen.RequirementsState categoryRequirements = GetCategoryRequirements(hashedString);
 				if (userData.requirementsState != categoryRequirements)
 				{
 					userData.requirementsState = categoryRequirements;
@@ -310,7 +311,7 @@ public class BuildMenuCategoriesScreen : KIconToggleMenu
 
 	public override void ClearSelection()
 	{
-		selectedCategory = BuildMenu.Category.INVALID;
+		selectedCategory = HashedString.Invalid;
 		base.ClearSelection();
 		foreach (KToggle toggle in toggles)
 		{

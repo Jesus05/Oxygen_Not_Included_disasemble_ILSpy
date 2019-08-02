@@ -19,7 +19,7 @@ public static class TextureUtil
 		case TextureFormat.RGBAFloat:
 			return GraphicsFormat.R32G32B32A32_SFloat;
 		default:
-			Debug.LogError("Unspecfied graphics format for texture format: " + format.ToString(), null);
+			Debug.LogError("Unspecfied graphics format for texture format: " + format.ToString());
 			throw new ArgumentOutOfRangeException();
 		}
 	}

@@ -49,6 +49,8 @@ public class Moppable : Workable, ISim1000ms, ISim200ms
 		workerStatusItem = Db.Get().DuplicantStatusItems.Mopping;
 		attributeConverter = Db.Get().AttributeConverters.TidyingSpeed;
 		attributeExperienceMultiplier = DUPLICANTSTATS.ATTRIBUTE_LEVELING.PART_DAY_EXPERIENCE;
+		skillExperienceSkillGroup = Db.Get().SkillGroups.Basekeeping.Id;
+		skillExperienceMultiplier = SKILLS.PART_DAY_EXPERIENCE;
 		childRenderer = GetComponentInChildren<MeshRenderer>();
 		Prioritizable.AddRef(base.gameObject);
 	}
@@ -63,7 +65,7 @@ public class Moppable : Workable, ISim1000ms, ISim200ms
 		else
 		{
 			Grid.Objects[Grid.PosToCell(base.gameObject), 8] = base.gameObject;
-			new WorkChore<Moppable>(Db.Get().ChoreTypes.Mop, this, null, null, true, null, null, null, true, null, false, true, null, false, true, true, PriorityScreen.PriorityClass.basic, 0, false);
+			new WorkChore<Moppable>(Db.Get().ChoreTypes.Mop, this, null, true, null, null, null, true, null, false, true, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, false, true);
 			SetWorkTime(float.PositiveInfinity);
 			KSelectable component = GetComponent<KSelectable>();
 			component.SetStatusItem(Db.Get().StatusItemCategories.Main, Db.Get().MiscStatusItems.WaitingForMop, null);
@@ -111,11 +113,6 @@ public class Moppable : Workable, ISim1000ms, ISim200ms
 	protected override void OnStopWork(Worker worker)
 	{
 		SimAndRenderScheduler.instance.Remove(this);
-	}
-
-	public override void AwardExperience(float work_dt, MinionResume resume)
-	{
-		resume.AddExperienceIfRole(Handyman.ID, work_dt * ROLES.ACTIVE_EXPERIENCE_QUICK);
 	}
 
 	protected override void OnCompleteWork(Worker worker)
@@ -253,7 +250,7 @@ public class Moppable : Workable, ISim1000ms, ISim200ms
 					component.AddStatusItem(Db.Get().BuildingStatusItems.MopUnreachable, this);
 					GameScheduler.Instance.Schedule("Locomotion Tutorial", 2f, delegate
 					{
-						Tutorial.Instance.TutorialMessage(Tutorial.TutorialMessages.TM_Locomotion);
+						Tutorial.Instance.TutorialMessage(Tutorial.TutorialMessages.TM_Locomotion, true);
 					}, null, null);
 					Material material3 = material;
 					Game.LocationColours dig3 = Game.Instance.uiColours.Dig;

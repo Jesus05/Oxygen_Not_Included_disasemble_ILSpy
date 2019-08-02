@@ -11,15 +11,17 @@ public class FallMonitor : GameStateMachine<FallMonitor, FallMonitor.Instance>
 
 	public new class Instance : GameInstance
 	{
-		private CellOffset[] entombedEscapeOffsets = new CellOffset[7]
+		private CellOffset[] entombedEscapeOffsets = new CellOffset[9]
 		{
 			new CellOffset(0, 1),
+			new CellOffset(0, -1),
 			new CellOffset(1, 0),
 			new CellOffset(-1, 0),
 			new CellOffset(1, 1),
 			new CellOffset(-1, 1),
 			new CellOffset(1, -1),
-			new CellOffset(-1, -1)
+			new CellOffset(-1, -1),
+			new CellOffset(0, 2)
 		};
 
 		private Navigator navigator;
@@ -49,7 +51,7 @@ public class FallMonitor : GameStateMachine<FallMonitor, FallMonitor.Instance>
 				transition = transitions[num];
 				if (transition.isEscape && navigator.CurrentNavType == transition.start)
 				{
-					num2 = transition.IsValid(cell, navigator.NavGrid.NavTable, Grid.BitFields);
+					num2 = transition.IsValid(cell, navigator.NavGrid.NavTable);
 					if (Grid.InvalidCell != num2)
 					{
 						break;
@@ -98,7 +100,7 @@ public class FallMonitor : GameStateMachine<FallMonitor, FallMonitor.Instance>
 					NavGrid.Transition transition = transitions[num];
 					if (transition.isEscape && navigator.CurrentNavType == transition.start)
 					{
-						int num2 = transition.IsValid(cell, navigator.NavGrid.NavTable, Grid.BitFields);
+						int num2 = transition.IsValid(cell, navigator.NavGrid.NavTable);
 						if (Grid.InvalidCell != num2)
 						{
 							break;
@@ -170,7 +172,7 @@ public class FallMonitor : GameStateMachine<FallMonitor, FallMonitor.Instance>
 			base.sm.isEntombed.Set(flag, base.smi);
 		}
 
-		public bool IsCellSafe(int cell)
+		private bool IsValidNavCell(int cell)
 		{
 			return navigator.NavGrid.NavTable.IsValid(cell, navigator.CurrentNavType);
 		}
@@ -181,30 +183,35 @@ public class FallMonitor : GameStateMachine<FallMonitor, FallMonitor.Instance>
 			CellOffset[] array = entombedEscapeOffsets;
 			foreach (CellOffset offset in array)
 			{
-				int cell2 = Grid.OffsetCell(cell, offset);
-				if (IsCellSafe(cell2))
+				if (Grid.IsCellOffsetValid(cell, offset))
 				{
-					base.transform.SetPosition(Grid.CellToPosCBC(cell2, Grid.SceneLayer.Move));
-					base.transform.GetComponent<Navigator>().Stop(false);
-					base.transform.GetComponent<Navigator>().SetCurrentNavType(NavType.Floor);
-					UpdateFalling();
-					GoTo(base.sm.standing);
-					return;
+					int cell2 = Grid.OffsetCell(cell, offset);
+					if (IsValidNavCell(cell2))
+					{
+						base.transform.SetPosition(Grid.CellToPosCBC(cell2, Grid.SceneLayer.Move));
+						base.transform.GetComponent<Navigator>().Stop(false);
+						UpdateFalling();
+						GoTo(base.sm.standing);
+						return;
+					}
 				}
 			}
 			CellOffset[] array2 = entombedEscapeOffsets;
 			foreach (CellOffset offset2 in array2)
 			{
-				int num = Grid.OffsetCell(cell, offset2);
-				int num2 = Grid.CellAbove(num);
-				if (Grid.IsValidCell(num) && Grid.IsValidCell(num2) && !Grid.Solid[num] && !Grid.Solid[num2])
+				if (Grid.IsCellOffsetValid(cell, offset2))
 				{
-					base.transform.SetPosition(Grid.CellToPosCBC(num, Grid.SceneLayer.Move));
-					base.transform.GetComponent<Navigator>().Stop(false);
-					base.transform.GetComponent<Navigator>().SetCurrentNavType(NavType.Floor);
-					UpdateFalling();
-					GoTo(base.sm.standing);
-					return;
+					int num = Grid.OffsetCell(cell, offset2);
+					int num2 = Grid.CellAbove(num);
+					if (Grid.IsValidCell(num2) && !Grid.Solid[num] && !Grid.Solid[num2])
+					{
+						base.transform.SetPosition(Grid.CellToPosCBC(num, Grid.SceneLayer.Move));
+						base.transform.GetComponent<Navigator>().Stop(false);
+						base.transform.GetComponent<Navigator>().SetCurrentNavType(NavType.Floor);
+						UpdateFalling();
+						GoTo(base.sm.standing);
+						return;
+					}
 				}
 			}
 			GoTo(base.sm.entombed.stuck);
@@ -240,7 +247,7 @@ public class FallMonitor : GameStateMachine<FallMonitor, FallMonitor.Instance>
 		{
 			smi.UpdateFalling();
 		}, UpdateRate.SIM_33ms, true);
-		standing.ParamTransition(isEntombed, entombed, (Instance smi, bool p) => p).ParamTransition(isFalling, falling_pre, (Instance smi, bool p) => p);
+		standing.ParamTransition(isEntombed, entombed, GameStateMachine<FallMonitor, Instance, IStateMachineTarget, object>.IsTrue).ParamTransition(isFalling, falling_pre, GameStateMachine<FallMonitor, Instance, IStateMachineTarget, object>.IsTrue);
 		falling_pre.Enter("StopNavigator", delegate(Instance smi)
 		{
 			smi.GetComponent<Navigator>().Stop(false);
@@ -250,7 +257,7 @@ public class FallMonitor : GameStateMachine<FallMonitor, FallMonitor.Instance>
 		}).GoTo(falling)
 			.ToggleBrain("falling_pre");
 		falling.ToggleBrain("falling").PlayAnim("fall_pre").QueueAnim("fall_loop", true, null)
-			.ParamTransition(isEntombed, entombed, (Instance smi, bool p) => p)
+			.ParamTransition(isEntombed, entombed, GameStateMachine<FallMonitor, Instance, IStateMachineTarget, object>.IsTrue)
 			.Transition(recoverladder, (Instance smi) => smi.CanRecoverToLadder(), UpdateRate.SIM_33ms)
 			.Transition(recoverpole, (Instance smi) => smi.CanRecoverToPole(), UpdateRate.SIM_33ms)
 			.ToggleGravity(landfloor);
@@ -286,6 +293,6 @@ public class FallMonitor : GameStateMachine<FallMonitor, FallMonitor.Instance>
 		entombed.stuck.Enter("StopNavigator", delegate(Instance smi)
 		{
 			smi.GetComponent<Navigator>().Stop(false);
-		}).ToggleChore((Instance smi) => new EntombedChore(smi.master), standing).ParamTransition(isEntombed, standing, (Instance smi, bool p) => !p);
+		}).ToggleChore((Instance smi) => new EntombedChore(smi.master), standing).ParamTransition(isEntombed, standing, GameStateMachine<FallMonitor, Instance, IStateMachineTarget, object>.IsFalse);
 	}
 }

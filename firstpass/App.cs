@@ -82,12 +82,18 @@ public class App : MonoBehaviour
 		string fileName = Process.GetCurrentProcess().MainModule.FileName;
 		string fullPath = Path.GetFullPath(fileName);
 		string directoryName = Path.GetDirectoryName(fullPath);
+		Debug.LogFormat("Restarting\n\texe ({0})\n\tfull ({1})\n\tdir ({2})", fileName, fullPath, directoryName);
 		string filename = Path.Combine(directoryName, "Restarter.exe");
 		ProcessStartInfo processStartInfo = new ProcessStartInfo(filename);
 		processStartInfo.UseShellExecute = true;
 		processStartInfo.CreateNoWindow = true;
-		processStartInfo.Arguments = fullPath;
+		processStartInfo.Arguments = $"\"{fullPath}\"";
 		Process.Start(processStartInfo);
+		Quit();
+	}
+
+	public static void Quit()
+	{
 		Application.Quit();
 	}
 
@@ -98,6 +104,7 @@ public class App : MonoBehaviour
 
 	public static void LoadScene(string scene_name)
 	{
+		Debug.Assert(!isLoading, "Scene [" + loadingSceneName + "] is already being loaded!");
 		KMonoBehaviour.isLoadingScene = true;
 		isLoading = true;
 		loadingSceneName = scene_name;

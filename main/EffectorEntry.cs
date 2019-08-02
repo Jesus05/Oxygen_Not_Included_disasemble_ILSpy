@@ -22,6 +22,6 @@ internal struct EffectorEntry
 		{
 			arg = string.Format(UI.OVERLAYS.DECOR.COUNT, count);
 		}
-		return string.Format(UI.OVERLAYS.DECOR.ENTRY, GameUtil.GetFormattedDecor(value), name, arg);
+		return string.Format(UI.OVERLAYS.DECOR.ENTRY, GameUtil.GetFormattedDecor(value, false), name, arg);
 	}
 }

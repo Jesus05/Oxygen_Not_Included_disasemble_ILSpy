@@ -13,18 +13,16 @@ public struct GravityComponent
 
 	public System.Action onLanded;
 
-	public GravityComponent(Transform transform, System.Action on_landed)
-	{
-		this = new GravityComponent(transform, on_landed, Vector2.zero);
-	}
+	public bool landOnFakeFloors;
 
-	public GravityComponent(Transform transform, System.Action on_landed, Vector2 initial_velocity)
+	public GravityComponent(Transform transform, System.Action on_landed, Vector2 initial_velocity, bool land_on_fake_floors)
 	{
 		this.transform = transform;
 		elapsedTime = 0f;
 		velocity = initial_velocity;
 		onLanded = on_landed;
 		radius = GetRadius(transform);
+		landOnFakeFloors = land_on_fake_floors;
 	}
 
 	public static float GetRadius(Transform transform)

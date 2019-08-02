@@ -83,7 +83,7 @@ public class ThreadedHttps<T> where T : class, new()
 		if (certFail)
 		{
 			X509Certificate2 x509Certificate = new X509Certificate2(certificate);
-			Debug.LogWarning(serviceName + ": " + sslPolicyErrors.ToString() + "\n" + text + "\n" + x509Certificate.ToString(), null);
+			Debug.LogWarning(serviceName + ": " + sslPolicyErrors.ToString() + "\n" + text + "\n" + x509Certificate.ToString());
 		}
 		return !certFail;
 	}
@@ -145,7 +145,7 @@ public class ThreadedHttps<T> where T : class, new()
 				{
 					string message = ex.Message;
 					text = DateTime.Now.ToLongTimeString() + " " + serviceName + ": Exception getting Request Stream:" + message;
-					Debug.LogWarning(text, null);
+					Debug.LogWarning(text);
 					throw;
 				}
 				try
@@ -156,7 +156,7 @@ public class ThreadedHttps<T> where T : class, new()
 				{
 					string message2 = ex2.Message;
 					text = DateTime.Now.ToLongTimeString() + " " + serviceName + ": Exception writing data to Stream:" + message2;
-					Debug.LogWarning(text, null);
+					Debug.LogWarning(text);
 					throw;
 				}
 				stream.Close();
@@ -181,7 +181,7 @@ public class ThreadedHttps<T> where T : class, new()
 						text = " -- we.Response is NULL";
 					}
 					text = DateTime.Now.ToLongTimeString() + " " + serviceName + ": Exception getting response:" + message3 + text;
-					Debug.LogWarning(text, null);
+					Debug.LogWarning(text);
 					throw;
 				}
 				text = ((HttpWebResponse)webResponse).StatusDescription;
@@ -208,7 +208,7 @@ public class ThreadedHttps<T> where T : class, new()
 				}
 				if (certFail)
 				{
-					Debug.LogWarning(serviceName + ": Cert fail, quitting", null);
+					Debug.LogWarning(serviceName + ": Cert fail, quitting");
 					try
 					{
 						OnReplyRecieved(null);
@@ -224,7 +224,7 @@ public class ThreadedHttps<T> where T : class, new()
 					if (num > 3)
 					{
 						text = DateTime.Now.ToLongTimeString() + " " + serviceName + ": Max Retries (" + 3 + ") reached. Disabling " + serviceName + "...";
-						Debug.LogWarning(text, null);
+						Debug.LogWarning(text);
 						try
 						{
 							OnReplyRecieved(null);
@@ -240,13 +240,13 @@ public class ThreadedHttps<T> where T : class, new()
 						string stackTrace = ex4.StackTrace;
 						TimeSpan timeout = TimeSpan.FromSeconds(Math.Pow(2.0, (double)(num + 3)));
 						text = DateTime.Now.ToLongTimeString() + " " + serviceName + ": Exception (retrying in " + timeout.TotalSeconds + " seconds): " + message4 + "\n" + stackTrace;
-						Debug.LogWarning(text, null);
+						Debug.LogWarning(text);
 						if (!isForce)
 						{
 							Thread.Sleep(timeout);
 							continue;
 						}
-						Debug.LogWarning(ex4.StackTrace, null);
+						Debug.LogWarning(ex4.StackTrace);
 					}
 				}
 			}

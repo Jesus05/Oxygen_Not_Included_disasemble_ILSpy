@@ -161,7 +161,7 @@ public class DebugTool : DragTool
 				list.Add(Grid.Objects[cell, 16]);
 				list.Add(Grid.Objects[cell, 12]);
 				list.Add(Grid.Objects[cell, 16]);
-				list.Add(Grid.Objects[cell, 24]);
+				list.Add(Grid.Objects[cell, 26]);
 				foreach (GameObject item in list)
 				{
 					if ((Object)item != (Object)null)
@@ -201,7 +201,7 @@ public class DebugTool : DragTool
 		list.Add(Grid.Objects[cell, 12]);
 		list.Add(Grid.Objects[cell, 16]);
 		list.Add(Grid.Objects[cell, 0]);
-		list.Add(Grid.Objects[cell, 24]);
+		list.Add(Grid.Objects[cell, 26]);
 		foreach (GameObject item in list)
 		{
 			if ((Object)item != (Object)null)

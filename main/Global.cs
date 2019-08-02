@@ -1,8 +1,11 @@
 using Klei;
+using KMod;
 using KSerialization;
 using Steamworks;
+using STRINGS;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Threading;
 using UnityEngine;
 using UnityEngine.U2D;
@@ -19,17 +22,13 @@ public class Global : MonoBehaviour
 
 	private AnimEventManager mAnimEventManager;
 
-	public ModManager modManager;
-
-	public LayeredFileSystem layeredFileSystem;
-
-	public StandardFileSystem standardFS;
-
-	public ZipFileSystem worldGenZipFS;
+	public KMod.Manager modManager;
 
 	private bool gotKleiUserID;
 
-	private Thread mainThread;
+	public Thread mainThread;
+
+	private bool updated_with_initialized_distribution_platform;
 
 	public static readonly string LanguagePackKey = "LanguagePack";
 
@@ -50,13 +49,13 @@ public class Global : MonoBehaviour
 		list.Add(new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.A, Modifier.None, Action.PanLeft, true, false));
 		list.Add(new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.D, Modifier.None, Action.PanRight, true, false));
 		list.Add(new BindingEntry("Tool", GamepadButton.NumButtons, KKeyCode.O, Modifier.None, Action.RotateBuilding, true, false));
-		list.Add(new BindingEntry("Management", GamepadButton.NumButtons, KKeyCode.J, Modifier.None, Action.ManagePeople, true, false));
+		list.Add(new BindingEntry("Management", GamepadButton.NumButtons, KKeyCode.L, Modifier.None, Action.ManagePriorities, true, false));
 		list.Add(new BindingEntry("Management", GamepadButton.NumButtons, KKeyCode.F, Modifier.None, Action.ManageConsumables, true, false));
 		list.Add(new BindingEntry("Management", GamepadButton.NumButtons, KKeyCode.V, Modifier.None, Action.ManageVitals, true, false));
 		list.Add(new BindingEntry("Management", GamepadButton.NumButtons, KKeyCode.R, Modifier.None, Action.ManageResearch, true, false));
 		list.Add(new BindingEntry("Management", GamepadButton.NumButtons, KKeyCode.E, Modifier.None, Action.ManageReport, true, false));
-		list.Add(new BindingEntry("Management", GamepadButton.NumButtons, KKeyCode.U, Modifier.None, Action.ManageCodex, true, false));
-		list.Add(new BindingEntry("Management", GamepadButton.NumButtons, KKeyCode.L, Modifier.None, Action.ManageRoles, true, false));
+		list.Add(new BindingEntry("Management", GamepadButton.NumButtons, KKeyCode.U, Modifier.None, Action.ManageDatabase, true, false));
+		list.Add(new BindingEntry("Management", GamepadButton.NumButtons, KKeyCode.J, Modifier.None, Action.ManageSkills, true, false));
 		list.Add(new BindingEntry("Management", GamepadButton.NumButtons, KKeyCode.Period, Modifier.None, Action.ManageSchedule, true, false));
 		list.Add(new BindingEntry("Management", GamepadButton.NumButtons, KKeyCode.Z, Modifier.None, Action.ManageStarmap, true, false));
 		list.Add(new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.G, Modifier.None, Action.Dig, true, false));
@@ -66,7 +65,7 @@ public class Global : MonoBehaviour
 		list.Add(new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.T, Modifier.None, Action.Attack, true, false));
 		list.Add(new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.N, Modifier.None, Action.Capture, true, false));
 		list.Add(new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.Y, Modifier.None, Action.Harvest, true, false));
-		list.Add(new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.B, Modifier.None, Action.EmptyPipe, true, false));
+		list.Add(new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.Insert, Modifier.None, Action.EmptyPipe, true, false));
 		list.Add(new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.P, Modifier.None, Action.Prioritize, true, false));
 		list.Add(new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.S, Modifier.Alt, Action.ToggleScreenshotMode, true, false));
 		list.Add(new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.C, Modifier.None, Action.BuildingCancel, true, false));
@@ -89,6 +88,7 @@ public class Global : MonoBehaviour
 		list.Add(new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.Alpha0, Modifier.None, Action.Plan10, true, false));
 		list.Add(new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.Minus, Modifier.None, Action.Plan11, true, false));
 		list.Add(new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.Equals, Modifier.None, Action.Plan12, true, false));
+		list.Add(new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.B, Modifier.None, Action.CopyBuilding, true, false));
 		list.Add(new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.MouseScrollUp, Modifier.None, Action.ZoomIn, true, false));
 		list.Add(new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.MouseScrollDown, Modifier.None, Action.ZoomOut, true, false));
 		list.Add(new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.F1, Modifier.None, Action.Overlay1, true, false));
@@ -105,6 +105,7 @@ public class Global : MonoBehaviour
 		list.Add(new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.F1, Modifier.Shift, Action.Overlay12, true, false));
 		list.Add(new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.F2, Modifier.Shift, Action.Overlay13, true, false));
 		list.Add(new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.F3, Modifier.Shift, Action.Overlay14, true, false));
+		list.Add(new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.F4, Modifier.Shift, Action.Overlay15, true, false));
 		list.Add(new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.KeypadPlus, Modifier.None, Action.SpeedUp, true, false));
 		list.Add(new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.KeypadMinus, Modifier.None, Action.SlowDown, true, false));
 		list.Add(new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.Space, Modifier.None, Action.TogglePause, true, false));
@@ -128,6 +129,17 @@ public class Global : MonoBehaviour
 		list.Add(new BindingEntry("Navigation", GamepadButton.NumButtons, KKeyCode.Alpha8, Modifier.Shift, Action.GotoUserNav8, true, false));
 		list.Add(new BindingEntry("Navigation", GamepadButton.NumButtons, KKeyCode.Alpha9, Modifier.Shift, Action.GotoUserNav9, true, false));
 		list.Add(new BindingEntry("Navigation", GamepadButton.NumButtons, KKeyCode.Alpha0, Modifier.Shift, Action.GotoUserNav10, true, false));
+		list.Add(new BindingEntry("CinematicCamera", GamepadButton.NumButtons, KKeyCode.C, Modifier.None, Action.CinemaCamEnable, true, true));
+		list.Add(new BindingEntry("CinematicCamera", GamepadButton.NumButtons, KKeyCode.A, Modifier.None, Action.CinemaPanLeft, true, true));
+		list.Add(new BindingEntry("CinematicCamera", GamepadButton.NumButtons, KKeyCode.D, Modifier.None, Action.CinemaPanRight, true, true));
+		list.Add(new BindingEntry("CinematicCamera", GamepadButton.NumButtons, KKeyCode.W, Modifier.None, Action.CinemaPanUp, true, true));
+		list.Add(new BindingEntry("CinematicCamera", GamepadButton.NumButtons, KKeyCode.S, Modifier.None, Action.CinemaPanDown, true, true));
+		list.Add(new BindingEntry("CinematicCamera", GamepadButton.NumButtons, KKeyCode.I, Modifier.None, Action.CinemaZoomIn, true, true));
+		list.Add(new BindingEntry("CinematicCamera", GamepadButton.NumButtons, KKeyCode.O, Modifier.None, Action.CinemaZoomOut, true, true));
+		list.Add(new BindingEntry("CinematicCamera", GamepadButton.NumButtons, KKeyCode.Z, Modifier.None, Action.CinemaZoomSpeedPlus, true, true));
+		list.Add(new BindingEntry("CinematicCamera", GamepadButton.NumButtons, KKeyCode.Z, Modifier.Shift, Action.CinemaZoomSpeedMinus, true, true));
+		list.Add(new BindingEntry("CinematicCamera", GamepadButton.NumButtons, KKeyCode.T, Modifier.None, Action.CinemaToggleLock, true, true));
+		list.Add(new BindingEntry("CinematicCamera", GamepadButton.NumButtons, KKeyCode.E, Modifier.None, Action.CinemaToggleEasing, true, true));
 		list.Add(new BindingEntry("Building", GamepadButton.NumButtons, KKeyCode.Slash, Modifier.None, Action.ToggleOpen, true, false));
 		list.Add(new BindingEntry("Building", GamepadButton.NumButtons, KKeyCode.Return, Modifier.None, Action.ToggleEnabled, true, false));
 		list.Add(new BindingEntry("Building", GamepadButton.NumButtons, KKeyCode.Backslash, Modifier.None, Action.BuildingUtility1, true, false));
@@ -143,7 +155,6 @@ public class Global : MonoBehaviour
 		list.Add(new BindingEntry("Debug", GamepadButton.NumButtons, KKeyCode.F3, Modifier.Alt, Action.DebugCollectGarbage, true, false));
 		list.Add(new BindingEntry("Debug", GamepadButton.NumButtons, KKeyCode.F7, Modifier.Alt, Action.DebugInvincible, true, false));
 		list.Add(new BindingEntry("Debug", GamepadButton.NumButtons, KKeyCode.F10, Modifier.Alt, Action.DebugForceLightEverywhere, true, false));
-		list.Add(new BindingEntry("Debug", GamepadButton.NumButtons, KKeyCode.F6, Modifier.Shift, Action.DebugVisualTest, true, false));
 		list.Add(new BindingEntry("Debug", GamepadButton.NumButtons, KKeyCode.F10, Modifier.Shift, Action.DebugElementTest, true, false));
 		list.Add(new BindingEntry("Debug", GamepadButton.NumButtons, KKeyCode.F11, Modifier.Shift, Action.DebugRiverTest, true, false));
 		list.Add(new BindingEntry("Debug", GamepadButton.NumButtons, KKeyCode.F12, Modifier.Shift, Action.DebugTileTest, true, false));
@@ -222,14 +233,17 @@ public class Global : MonoBehaviour
 		list.Add(new BindingEntry("Sandbox", GamepadButton.NumButtons, KKeyCode.R, Modifier.Shift, Action.SandboxReveal, true, false));
 		List<BindingEntry> list2 = list;
 		IList<BuildMenu.DisplayInfo> list3 = (IList<BuildMenu.DisplayInfo>)BuildMenu.OrderedBuildings.data;
-		foreach (BuildMenu.DisplayInfo item in list3)
+		if (BuildMenu.UseHotkeyBuildMenu())
 		{
-			AddBindings(BuildMenu.Category.INVALID, item, list2);
+			foreach (BuildMenu.DisplayInfo item in list3)
+			{
+				AddBindings(HashedString.Invalid, item, list2);
+			}
 		}
 		return list2.ToArray();
 	}
 
-	private static void AddBindings(BuildMenu.Category parent_category, BuildMenu.DisplayInfo display_info, List<BindingEntry> bindings)
+	private static void AddBindings(HashedString parent_category, BuildMenu.DisplayInfo display_info, List<BindingEntry> bindings)
 	{
 		if (display_info.data != null)
 		{
@@ -244,7 +258,9 @@ public class Global : MonoBehaviour
 			}
 			else if (typeof(IList<BuildMenu.BuildingInfo>).IsAssignableFrom(type))
 			{
-				string group = parent_category.ToString() + "Menu";
+				string str = HashCache.Get().Get(parent_category);
+				TextInfo textInfo = new CultureInfo("en-US", false).TextInfo;
+				string group = textInfo.ToTitleCase(str) + " Menu";
 				BindingEntry item = new BindingEntry(group, GamepadButton.NumButtons, display_info.keyCode, Modifier.None, display_info.hotkey, true, true);
 				bindings.Add(item);
 			}
@@ -253,10 +269,21 @@ public class Global : MonoBehaviour
 
 	private void Awake()
 	{
+		KCrashReporter crash_reporter = GetComponent<KCrashReporter>();
+		if (((UnityEngine.Object)crash_reporter != (UnityEngine.Object)null) & (SceneInitializerLoader.ReportDeferredError == null))
+		{
+			SceneInitializerLoader.ReportDeferredError = delegate(SceneInitializerLoader.DeferredError deferred_error)
+			{
+				crash_reporter.ShowDialog(deferred_error.msg, deferred_error.stack_trace);
+			};
+		}
 		globalCanvas = GameObject.Find("Canvas");
 		UnityEngine.Object.DontDestroyOnLoad(globalCanvas.gameObject);
 		OutputSystemInfo();
+		Debug.Assert((UnityEngine.Object)Instance == (UnityEngine.Object)null);
 		Instance = this;
+		Debug.Log("Initializing at " + System.DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss.fff"));
+		Debug.Log("Save path: " + Util.RootFolder());
 		if (forcedAtlasInitializationList != null)
 		{
 			SpriteAtlas[] array = forcedAtlasInitializationList;
@@ -278,15 +305,15 @@ public class Global : MonoBehaviour
 				}
 			}
 		}
-		LayeredFileSystem.CreateInstance();
-		layeredFileSystem = LayeredFileSystem.instance;
-		standardFS = new StandardFileSystem();
-		layeredFileSystem.AddFileSystem(standardFS);
+		FileSystem.Initialize();
 		Singleton<StateMachineUpdater>.CreateInstance();
 		Singleton<StateMachineManager>.CreateInstance();
-		modManager = new ModManager();
-		modManager.Start();
-		Manager.Initialize();
+		Localization.RegisterForTranslation(typeof(UI));
+		modManager = new KMod.Manager();
+		modManager.Load(Content.DLL);
+		modManager.Load(Content.Animation);
+		modManager.Load(Content.Strings);
+		KSerialization.Manager.Initialize();
 		mInputManager = new GameInputManager(GenerateDefaultBindings());
 		Audio.Get();
 		KAnimBatchManager.CreateInstance();
@@ -295,20 +322,27 @@ public class Global : MonoBehaviour
 		Singleton<KBatchedAnimUpdater>.CreateInstance();
 		DistributionPlatform.Initialize();
 		Localization.Initialize(false);
+		modManager.Load(Content.Translation);
+		Debug.Log("Register mods/Local/ and mods/Dev as mod distribution platforms");
+		modManager.distribution_platforms.Add(new Local("Local", Label.DistributionPlatform.Local));
+		modManager.distribution_platforms.Add(new Local("Dev", Label.DistributionPlatform.Dev));
+		mainThread = Thread.CurrentThread;
+		KProfiler.main_thread = Thread.CurrentThread;
 		RestoreLegacyMetricsSetting();
 		if (DistributionPlatform.Initialized)
 		{
 			if (!KPrivacyPrefs.instance.disableDataCollection)
 			{
-				Debug.Log("Logged into " + DistributionPlatform.Inst.Name + " with ID:" + DistributionPlatform.Inst.LocalUser.Id + ", NAME:" + DistributionPlatform.Inst.LocalUser.Name, null);
+				Debug.Log("Logged into " + DistributionPlatform.Inst.Name + " with ID:" + DistributionPlatform.Inst.LocalUser.Id + ", NAME:" + DistributionPlatform.Inst.LocalUser.Name);
 				ThreadedHttps<KleiAccount>.Instance.AuthenticateUser(OnGetUserIdKey);
 			}
 		}
 		else
 		{
-			Debug.LogWarning("Can't init " + DistributionPlatform.Inst.Name + " distribution platform...", null);
+			Debug.LogWarning("Can't init " + DistributionPlatform.Inst.Name + " distribution platform...");
 			OnGetUserIdKey();
 		}
+		modManager.Load(Content.LayerableFiles);
 		GlobalResources.Instance();
 	}
 
@@ -357,10 +391,14 @@ public class Global : MonoBehaviour
 		{
 			mAnimEventManager.Update();
 		}
-		if (DistributionPlatform.Initialized && (UnityEngine.Object)SteamUGCService.Instance == (UnityEngine.Object)null)
+		if (DistributionPlatform.Initialized && !updated_with_initialized_distribution_platform)
 		{
+			updated_with_initialized_distribution_platform = true;
 			SteamUGCService.Initialize();
-			modManager.RegisterUGCEventHandlers(SteamUGCService.Instance);
+			Steam steam = new Steam();
+			SteamUGCService.Instance.AddClient(steam);
+			modManager.distribution_platforms.Add(steam);
+			SteamAchievementService.Initialize();
 		}
 		if (gotKleiUserID)
 		{
@@ -369,12 +407,13 @@ public class Global : MonoBehaviour
 			ThreadedHttps<KleiMetrics>.Instance.StartSession();
 		}
 		ThreadedHttps<KleiMetrics>.Instance.SetLastUserAction(KInputManager.lastUserActionTicks);
+		Localization.VerifyTranslationModSubscription(globalCanvas);
 	}
 
 	private void SetONIStaticSessionVariables()
 	{
 		ThreadedHttps<KleiMetrics>.Instance.SetStaticSessionVariable("Branch", "release");
-		ThreadedHttps<KleiMetrics>.Instance.SetStaticSessionVariable("Build", 291640u);
+		ThreadedHttps<KleiMetrics>.Instance.SetStaticSessionVariable("Build", 356355u);
 		if (KPlayerPrefs.HasKey(UnitConfigurationScreen.MassUnitKey))
 		{
 			ThreadedHttps<KleiMetrics>.Instance.SetStaticSessionVariable(UnitConfigurationScreen.MassUnitKey, KPlayerPrefs.GetInt(UnitConfigurationScreen.MassUnitKey).ToString());

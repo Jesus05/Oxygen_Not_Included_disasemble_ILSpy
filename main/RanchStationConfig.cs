@@ -1,18 +1,10 @@
 using Klei.AI;
-using STRINGS;
 using TUNING;
 using UnityEngine;
 
 public class RanchStationConfig : IBuildingConfig
 {
 	public const string ID = "RanchStation";
-
-	public const string ROLE_TYPE = "Rancher";
-
-	private static readonly LogicPorts.Port[] INPUT_PORTS = new LogicPorts.Port[1]
-	{
-		LogicPorts.Port.InputPort(LogicOperationalController.PORT_ID, new CellOffset(0, 0), UI.LOGIC_PORTS.CONTROL_OPERATIONAL, false)
-	};
 
 	public override BuildingDef CreateBuildingDef()
 	{
@@ -22,13 +14,13 @@ public class RanchStationConfig : IBuildingConfig
 		string anim = "rancherstation_kanim";
 		int hitpoints = 30;
 		float construction_time = 30f;
-		float[] tIER = TUNING.BUILDINGS.CONSTRUCTION_MASS_KG.TIER4;
+		float[] tIER = BUILDINGS.CONSTRUCTION_MASS_KG.TIER4;
 		string[] aLL_METALS = MATERIALS.ALL_METALS;
 		float melting_point = 1600f;
 		BuildLocationRule build_location_rule = BuildLocationRule.OnFloor;
 		EffectorValues tIER2 = NOISE_POLLUTION.NOISY.TIER1;
-		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, tIER, aLL_METALS, melting_point, build_location_rule, TUNING.BUILDINGS.DECOR.NONE, tIER2, 0.2f);
-		buildingDef.ViewMode = SimViewMode.Rooms;
+		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, tIER, aLL_METALS, melting_point, build_location_rule, BUILDINGS.DECOR.NONE, tIER2, 0.2f);
+		buildingDef.ViewMode = OverlayModes.Rooms.ID;
 		buildingDef.Overheatable = false;
 		buildingDef.AudioCategory = "Metal";
 		buildingDef.AudioSize = "large";
@@ -38,28 +30,33 @@ public class RanchStationConfig : IBuildingConfig
 	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.AddOrGet<LoopingSounds>();
-		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.RanchStation);
+		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.RanchStation, false);
 	}
 
 	public override void DoPostConfigurePreview(BuildingDef def, GameObject go)
 	{
-		GeneratedBuildings.RegisterLogicPorts(go, INPUT_PORTS);
+		GeneratedBuildings.RegisterLogicPorts(go, LogicOperationalController.INPUT_PORTS_0_0);
 	}
 
 	public override void DoPostConfigureUnderConstruction(GameObject go)
 	{
-		GeneratedBuildings.RegisterLogicPorts(go, INPUT_PORTS);
+		GeneratedBuildings.RegisterLogicPorts(go, LogicOperationalController.INPUT_PORTS_0_0);
 	}
 
 	public override void DoPostConfigureComplete(GameObject go)
 	{
-		GeneratedBuildings.RegisterLogicPorts(go, INPUT_PORTS);
+		GeneratedBuildings.RegisterLogicPorts(go, LogicOperationalController.INPUT_PORTS_0_0);
 		go.AddOrGet<LogicOperationalController>();
 		RanchStation.Def def = go.AddOrGetDef<RanchStation.Def>();
 		def.isCreatureEligibleToBeRanchedCb = ((GameObject creature_go, RanchStation.Instance ranch_station_smi) => !creature_go.GetComponent<Effects>().HasEffect("Ranched"));
 		def.onRanchCompleteCb = delegate(GameObject creature_go)
 		{
-			creature_go.GetComponent<Effects>().Add("Ranched", true);
+			RanchableMonitor.Instance sMI = creature_go.GetSMI<RanchableMonitor.Instance>();
+			RanchStation.Instance targetRanchStation = sMI.targetRanchStation;
+			RancherChore.RancherChoreStates.Instance sMI2 = targetRanchStation.GetSMI<RancherChore.RancherChoreStates.Instance>();
+			GameObject go2 = targetRanchStation.GetSMI<RancherChore.RancherChoreStates.Instance>().sm.rancher.Get(sMI2);
+			float num2 = 1f + go2.GetAttributes().Get(Db.Get().Attributes.Ranching.Id).GetTotalValue() * 0.1f;
+			creature_go.GetComponent<Effects>().Add("Ranched", true).timeRemaining *= num2;
 		};
 		def.ranchedPreAnim = "grooming_pre";
 		def.ranchedLoopAnim = "grooming_loop";
@@ -80,8 +77,8 @@ public class RanchStationConfig : IBuildingConfig
 		RoomTracker roomTracker = go.AddOrGet<RoomTracker>();
 		roomTracker.requiredRoomType = Db.Get().RoomTypes.CreaturePen.Id;
 		roomTracker.requirement = RoomTracker.Requirement.Required;
-		RolePerkMissingComplainer rolePerkMissingComplainer = go.AddOrGet<RolePerkMissingComplainer>();
-		rolePerkMissingComplainer.requiredRolePerk = RoleManager.rolePerks.CanWrangleCreatures.id;
+		SkillPerkMissingComplainer skillPerkMissingComplainer = go.AddOrGet<SkillPerkMissingComplainer>();
+		skillPerkMissingComplainer.requiredSkillPerk = Db.Get().SkillPerks.CanWrangleCreatures.Id;
 		Prioritizable.AddRef(go);
 	}
 }

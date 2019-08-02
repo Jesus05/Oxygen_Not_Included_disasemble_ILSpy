@@ -19,13 +19,10 @@ internal class GraphicsOptionsScreen : KModalScreen
 	private Dropdown resolutionDropdown;
 
 	[SerializeField]
-	private Toggle fullscreenToggle;
+	private MultiToggle fullscreenToggle;
 
 	[SerializeField]
 	private KButton applyButton;
-
-	[SerializeField]
-	private KButton revertButton;
 
 	[SerializeField]
 	private KButton doneButton;
@@ -63,23 +60,14 @@ internal class GraphicsOptionsScreen : KModalScreen
 
 	private Settings originalSettings;
 
-	private bool resDropdownAlwaysActive;
-
 	protected override void OnSpawn()
 	{
 		base.OnSpawn();
-		if (Application.platform == RuntimePlatform.LinuxPlayer || Application.platform == RuntimePlatform.LinuxEditor)
-		{
-			resDropdownAlwaysActive = true;
-		}
 		title.SetText(UI.FRONTEND.GRAPHICS_OPTIONS_SCREEN.TITLE);
 		originalSettings = CaptureSettings();
 		applyButton.isInteractable = false;
 		applyButton.onClick += OnApply;
 		applyButton.GetComponentInChildren<LocText>().SetText(UI.FRONTEND.GRAPHICS_OPTIONS_SCREEN.APPLYBUTTON);
-		revertButton.isInteractable = false;
-		revertButton.onClick += OnRevert;
-		revertButton.GetComponentInChildren<LocText>().SetText(UI.FRONTEND.GRAPHICS_OPTIONS_SCREEN.REVERTBUTTON);
 		doneButton.onClick += OnDone;
 		closeButton.onClick += OnDone;
 		doneButton.GetComponentInChildren<LocText>().SetText(UI.FRONTEND.GRAPHICS_OPTIONS_SCREEN.DONE_BUTTON);
@@ -87,12 +75,12 @@ internal class GraphicsOptionsScreen : KModalScreen
 		BuildOptions();
 		resolutionDropdown.options = options;
 		resolutionDropdown.onValueChanged.AddListener(OnResolutionChanged);
-		fullscreenToggle.isOn = Screen.fullScreen;
-		fullscreenToggle.onValueChanged.AddListener(OnFullscreenToggle);
+		fullscreenToggle.ChangeState(Screen.fullScreen ? 1 : 0);
+		MultiToggle multiToggle = fullscreenToggle;
+		multiToggle.onClick = (System.Action)Delegate.Combine(multiToggle.onClick, new System.Action(OnFullscreenToggle));
 		fullscreenToggle.GetComponentInChildren<LocText>().SetText(UI.FRONTEND.GRAPHICS_OPTIONS_SCREEN.FULLSCREEN);
-		resolutionDropdown.interactable = (resDropdownAlwaysActive || fullscreenToggle.isOn);
 		resolutionDropdown.transform.parent.GetComponentInChildren<LocText>().SetText(UI.FRONTEND.GRAPHICS_OPTIONS_SCREEN.RESOLUTION);
-		if (fullscreenToggle.isOn)
+		if (fullscreenToggle.CurrentState == 1)
 		{
 			int resolutionIndex = GetResolutionIndex(originalSettings.resolution);
 			if (resolutionIndex != -1)
@@ -102,30 +90,121 @@ internal class GraphicsOptionsScreen : KModalScreen
 		}
 		CanvasScalers = UnityEngine.Object.FindObjectsOfType<KCanvasScaler>();
 		UpdateSliderLabel();
-		uiScaleSlider.onValueChanged.AddListener(UpdateUIScale);
+		uiScaleSlider.onValueChanged.AddListener(delegate
+		{
+			sliderLabel.text = uiScaleSlider.value + "%";
+		});
+		uiScaleSlider.onReleaseHandle += delegate
+		{
+			UpdateUIScale(uiScaleSlider.value);
+		};
 	}
 
 	public static void SetResolutionFromPrefs()
 	{
-		if ((Application.platform == RuntimePlatform.OSXPlayer || Application.platform == RuntimePlatform.OSXEditor) && KPlayerPrefs.HasKey(ResolutionWidthKey) && KPlayerPrefs.HasKey(ResolutionHeightKey))
+		int num = Screen.currentResolution.width;
+		int num2 = Screen.currentResolution.height;
+		int num3 = Screen.currentResolution.refreshRate;
+		bool flag = Screen.fullScreen;
+		DebugUtil.LogArgs($"Starting up with a resolution of {num}x{num2} @{num3}hz (fullscreen: {flag})");
+		if (KPlayerPrefs.HasKey(ResolutionWidthKey) && KPlayerPrefs.HasKey(ResolutionHeightKey))
 		{
 			int @int = KPlayerPrefs.GetInt(ResolutionWidthKey);
 			int int2 = KPlayerPrefs.GetInt(ResolutionHeightKey);
 			int int3 = KPlayerPrefs.GetInt(RefreshRateKey, Screen.currentResolution.refreshRate);
-			bool fullscreen = (KPlayerPrefs.GetInt(FullScreenKey, Screen.fullScreen ? 1 : 0) == 1) ? true : false;
-			Screen.SetResolution(@int, int2, fullscreen, int3);
+			bool flag2 = (KPlayerPrefs.GetInt(FullScreenKey, Screen.fullScreen ? 1 : 0) == 1) ? true : false;
+			DebugUtil.LogArgs($"Found player prefs resolution {@int}x{int2} @{int3}hz (fullscreen: {flag2})");
+			if (int2 <= 1 || @int <= 1)
+			{
+				DebugUtil.LogArgs("Saved resolution was invalid, ignoring...");
+			}
+			else
+			{
+				num = @int;
+				num2 = int2;
+				num3 = int3;
+				flag = flag2;
+			}
 		}
+		if (num <= 1 || num2 <= 1)
+		{
+			DebugUtil.LogWarningArgs("Detected a degenerate resolution, attempting to fix...");
+			Resolution[] array = Screen.resolutions;
+			for (int i = 0; i < array.Length; i++)
+			{
+				Resolution resolution = array[i];
+				if (resolution.width == 1920)
+				{
+					num = resolution.width;
+					num2 = resolution.height;
+					num3 = 0;
+				}
+			}
+			if (num <= 1 || num2 <= 1)
+			{
+				Resolution[] array2 = Screen.resolutions;
+				for (int j = 0; j < array2.Length; j++)
+				{
+					Resolution resolution2 = array2[j];
+					if (resolution2.width == 1280)
+					{
+						num = resolution2.width;
+						num2 = resolution2.height;
+						num3 = 0;
+					}
+				}
+			}
+			if (num <= 1 || num2 <= 1)
+			{
+				Resolution[] array3 = Screen.resolutions;
+				for (int k = 0; k < array3.Length; k++)
+				{
+					Resolution resolution3 = array3[k];
+					if (resolution3.width > 1 && resolution3.height > 1 && resolution3.refreshRate > 0)
+					{
+						num = resolution3.width;
+						num2 = resolution3.height;
+						num3 = 0;
+					}
+				}
+			}
+			if (num <= 1 || num2 <= 1)
+			{
+				string text = "Could not find a suitable resolution for this screen! Reported available resolutions are:";
+				Resolution[] array4 = Screen.resolutions;
+				for (int l = 0; l < array4.Length; l++)
+				{
+					Resolution resolution4 = array4[l];
+					text += $"\n{resolution4.width}x{resolution4.height} @ {resolution4.refreshRate}hz";
+				}
+				Debug.LogError(text);
+				num = 1280;
+				num2 = 720;
+				flag = false;
+				num3 = 0;
+			}
+		}
+		DebugUtil.LogArgs($"Applying resolution {num}x{num2} @{num3}hz (fullscreen: {flag})");
+		Screen.SetResolution(num, num2, flag, num3);
 	}
 
-	private void SaveResolutionToPrefs(Settings settings)
+	public static void OnResize()
 	{
-		if (Application.platform == RuntimePlatform.OSXPlayer || Application.platform == RuntimePlatform.OSXEditor)
-		{
-			KPlayerPrefs.SetInt(ResolutionWidthKey, settings.resolution.width);
-			KPlayerPrefs.SetInt(ResolutionHeightKey, settings.resolution.height);
-			KPlayerPrefs.SetInt(RefreshRateKey, settings.resolution.refreshRate);
-			KPlayerPrefs.SetInt(FullScreenKey, settings.fullscreen ? 1 : 0);
-		}
+		Settings settings = default(Settings);
+		settings.resolution = Screen.currentResolution;
+		settings.resolution.width = Screen.width;
+		settings.resolution.height = Screen.height;
+		settings.fullscreen = Screen.fullScreen;
+		SaveResolutionToPrefs(settings);
+	}
+
+	private static void SaveResolutionToPrefs(Settings settings)
+	{
+		Debug.LogFormat("Screen resolution updated, saving values to prefs: {0}x{1} @ {2}, fullscreen: {3}", settings.resolution.width, settings.resolution.height, settings.resolution.refreshRate, settings.fullscreen);
+		KPlayerPrefs.SetInt(ResolutionWidthKey, settings.resolution.width);
+		KPlayerPrefs.SetInt(ResolutionHeightKey, settings.resolution.height);
+		KPlayerPrefs.SetInt(RefreshRateKey, settings.resolution.refreshRate);
+		KPlayerPrefs.SetInt(FullScreenKey, settings.fullscreen ? 1 : 0);
 	}
 
 	private void UpdateUIScale(float value)
@@ -216,11 +295,10 @@ internal class GraphicsOptionsScreen : KModalScreen
 		{
 			Settings new_settings = default(Settings);
 			new_settings.resolution = resolutions[resolutionDropdown.value];
-			new_settings.fullscreen = fullscreenToggle.isOn;
+			new_settings.fullscreen = ((fullscreenToggle.CurrentState != 0) ? true : false);
 			ApplyConfirmSettings(new_settings, delegate
 			{
 				applyButton.isInteractable = false;
-				revertButton.isInteractable = true;
 				SaveResolutionToPrefs(new_settings);
 			});
 		}
@@ -233,20 +311,10 @@ internal class GraphicsOptionsScreen : KModalScreen
 				stringBuilder.Append("\t" + resolution.ToString() + "\n");
 			}
 			stringBuilder.Append("Selected Resolution Idx: " + resolutionDropdown.value.ToString());
-			stringBuilder.Append("FullScreen: " + fullscreenToggle.isOn.ToString());
-			Output.LogError(stringBuilder.ToString());
+			stringBuilder.Append("FullScreen: " + fullscreenToggle.CurrentState.ToString());
+			Debug.LogError(stringBuilder.ToString());
 			throw ex;
 		}
-	}
-
-	private void OnRevert()
-	{
-		ApplyConfirmSettings(originalSettings, delegate
-		{
-			applyButton.isInteractable = false;
-			revertButton.isInteractable = false;
-			SaveResolutionToPrefs(originalSettings);
-		});
 	}
 
 	public void OnDone()
@@ -257,24 +325,24 @@ internal class GraphicsOptionsScreen : KModalScreen
 	private void RefreshApplyButton()
 	{
 		Settings settings = CaptureSettings();
-		if (fullscreenToggle.isOn != settings.fullscreen)
+		if (settings.fullscreen && fullscreenToggle.CurrentState == 0)
 		{
 			applyButton.isInteractable = true;
 		}
-		else if (resDropdownAlwaysActive || fullscreenToggle.isOn)
+		else if (!settings.fullscreen && fullscreenToggle.CurrentState == 1)
+		{
+			applyButton.isInteractable = true;
+		}
+		else
 		{
 			int resolutionIndex = GetResolutionIndex(settings.resolution);
 			applyButton.isInteractable = (resolutionDropdown.value != resolutionIndex);
 		}
-		else
-		{
-			applyButton.isInteractable = false;
-		}
 	}
 
-	private void OnFullscreenToggle(bool enabled)
+	private void OnFullscreenToggle()
 	{
-		resolutionDropdown.interactable = (resDropdownAlwaysActive || fullscreenToggle.isOn);
+		fullscreenToggle.ChangeState((fullscreenToggle.CurrentState == 0) ? 1 : 0);
 		RefreshApplyButton();
 	}
 
@@ -297,7 +365,7 @@ internal class GraphicsOptionsScreen : KModalScreen
 		{
 			StopCoroutine(timer);
 		};
-		confirmDialog.PopupConfirmDialog(UI.FRONTEND.GRAPHICS_OPTIONS_SCREEN.ACCEPT_CHANGES.text, on_confirm, action, null, null, null, null, null, null);
+		confirmDialog.PopupConfirmDialog(UI.FRONTEND.GRAPHICS_OPTIONS_SCREEN.ACCEPT_CHANGES.text, on_confirm, action, null, null, null, null, null, null, true);
 		confirmDialog.gameObject.SetActive(true);
 	}
 

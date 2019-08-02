@@ -31,10 +31,10 @@ public class ThermalBlockConfig : IBuildingConfig
 		buildingDef.Overheatable = false;
 		buildingDef.AudioCategory = "Metal";
 		buildingDef.BaseTimeUntilRepair = -1f;
-		buildingDef.ViewMode = SimViewMode.TemperatureMap;
+		buildingDef.ViewMode = OverlayModes.Temperature.ID;
 		buildingDef.DefaultAnimState = "off";
 		buildingDef.ObjectLayer = ObjectLayer.Backwall;
-		buildingDef.SceneLayer = Grid.SceneLayer.TempShiftPlate;
+		buildingDef.SceneLayer = Grid.SceneLayer.Backwall;
 		return buildingDef;
 	}
 
@@ -51,10 +51,10 @@ public class ThermalBlockConfig : IBuildingConfig
 		go.GetComponent<KPrefabID>().prefabSpawnFn += delegate(GameObject game_object)
 		{
 			HandleVector<int>.Handle handle = GameComps.StructureTemperatures.GetHandle(game_object);
-			StructureTemperatureData data = GameComps.StructureTemperatures.GetData(handle);
+			StructureTemperaturePayload new_data = GameComps.StructureTemperatures.GetPayload(handle);
 			int cell = Grid.PosToCell(game_object);
-			data.OverrideExtents(new Extents(cell, overrideOffsets));
-			GameComps.StructureTemperatures.SetData(handle, data);
+			new_data.OverrideExtents(new Extents(cell, overrideOffsets));
+			GameComps.StructureTemperatures.SetPayload(handle, ref new_data);
 		};
 	}
 }

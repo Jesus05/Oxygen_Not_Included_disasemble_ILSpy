@@ -7,6 +7,15 @@ using UnityEngine;
 
 public class AmbienceManager : KMonoBehaviour
 {
+	public class Tuning : TuningData<Tuning>
+	{
+		public int backwallTileValue = 1;
+
+		public int foundationTileValue = 2;
+
+		public int buildingTileValue = 3;
+	}
+
 	public class Layer : IComparable<Layer>
 	{
 		private const string TILE_PERCENTAGE_ID = "tilePercentage";
@@ -86,7 +95,7 @@ public class AmbienceManager : KMonoBehaviour
 					EventInstance eventInstance = KFMOD.CreateInstance(oneShotSound);
 					if (!eventInstance.isValid())
 					{
-						Debug.LogWarning("Could not find event: " + oneShotSound, null);
+						Debug.LogWarning("Could not find event: " + oneShotSound);
 					}
 					else
 					{
@@ -130,6 +139,9 @@ public class AmbienceManager : KMonoBehaviour
 
 		[EventRef]
 		public string spaceSound;
+
+		[EventRef]
+		public string facilitySound;
 	}
 
 	public class Quadrant
@@ -170,7 +182,9 @@ public class AmbienceManager : KMonoBehaviour
 
 		public Layer spaceLayer;
 
-		public Layer[] solidLayers = new Layer[11];
+		public Layer facilityLayer;
+
+		public Layer[] solidLayers = new Layer[13];
 
 		private List<Layer> allLayers = new List<Layer>();
 
@@ -195,6 +209,9 @@ public class AmbienceManager : KMonoBehaviour
 			spaceLayer = new Layer(def.spaceSound, null);
 			allLayers.Add(spaceLayer);
 			loopingLayers.Add(spaceLayer);
+			facilityLayer = new Layer(def.facilitySound, null);
+			allLayers.Add(facilityLayer);
+			loopingLayers.Add(facilityLayer);
 			for (int i = 0; i < 4; i++)
 			{
 				gasLayers[i] = new Layer(def.gasSounds[i], null);
@@ -209,7 +226,7 @@ public class AmbienceManager : KMonoBehaviour
 				if (j >= def.solidSounds.Length)
 				{
 					SolidAmbienceType solidAmbienceType = (SolidAmbienceType)j;
-					Debug.LogError("Missing solid layer: " + solidAmbienceType.ToString(), null);
+					Debug.LogError("Missing solid layer: " + solidAmbienceType.ToString());
 				}
 				solidLayers[j] = new Layer(null, def.solidSounds[j]);
 				allLayers.Add(solidLayers[j]);
@@ -245,46 +262,65 @@ public class AmbienceManager : KMonoBehaviour
 								totalTileCount++;
 								if (Grid.IsVisible(num))
 								{
-									Element element = Grid.Element[num];
-									if (element != null)
+									if (Grid.GravitasFacility[num])
 									{
-										if (element.IsLiquid && Grid.IsSubstantialLiquid(num, 0.35f))
+										facilityLayer.tileCount += 8;
+									}
+									else
+									{
+										Element element = Grid.Element[num];
+										if (element != null)
 										{
-											AmbienceType ambience = element.substance.GetAmbience();
-											if (ambience != AmbienceType.None)
+											if (element.IsLiquid && Grid.IsSubstantialLiquid(num, 0.35f))
 											{
-												liquidLayers[(int)ambience].tileCount++;
-												liquidLayers[(int)ambience].averageTemperature += Grid.Temperature[num];
+												AmbienceType ambience = element.substance.GetAmbience();
+												if (ambience != AmbienceType.None)
+												{
+													liquidLayers[(int)ambience].tileCount++;
+													liquidLayers[(int)ambience].averageTemperature += Grid.Temperature[num];
+												}
 											}
-										}
-										else if (element.IsGas)
-										{
-											AmbienceType ambience2 = element.substance.GetAmbience();
-											if (ambience2 != AmbienceType.None)
+											else if (element.IsGas)
 											{
-												gasLayers[(int)ambience2].tileCount++;
-												gasLayers[(int)ambience2].averageTemperature += Grid.Temperature[num];
+												AmbienceType ambience2 = element.substance.GetAmbience();
+												if (ambience2 != AmbienceType.None)
+												{
+													gasLayers[(int)ambience2].tileCount++;
+													gasLayers[(int)ambience2].averageTemperature += Grid.Temperature[num];
+												}
 											}
-										}
-										else if (element.IsSolid)
-										{
-											if (Grid.Foundation[num])
-											{
-												SolidAmbienceType solidAmbienceType = SolidAmbienceType.Tile;
-												solidLayers[(int)solidAmbienceType].tileCount += 4;
-											}
-											else
+											else if (element.IsSolid)
 											{
 												SolidAmbienceType solidAmbience = element.substance.GetSolidAmbience();
-												if (solidAmbience != SolidAmbienceType.None)
+												if (Grid.Foundation[num])
+												{
+													solidAmbience = SolidAmbienceType.Tile;
+													solidLayers[(int)solidAmbience].tileCount += TuningData<Tuning>.Get().foundationTileValue;
+													spaceLayer.tileCount -= TuningData<Tuning>.Get().foundationTileValue;
+												}
+												else if ((UnityEngine.Object)Grid.Objects[num, 2] != (UnityEngine.Object)null)
+												{
+													solidAmbience = SolidAmbienceType.Tile;
+													solidLayers[(int)solidAmbience].tileCount += TuningData<Tuning>.Get().backwallTileValue;
+													spaceLayer.tileCount -= TuningData<Tuning>.Get().backwallTileValue;
+												}
+												else if (solidAmbience != SolidAmbienceType.None)
 												{
 													solidLayers[(int)solidAmbience].tileCount++;
 												}
+												else if (element.id == SimHashes.Regolith || element.id == SimHashes.MaficRock)
+												{
+													spaceLayer.tileCount++;
+												}
 											}
-										}
-										else if (element.id == SimHashes.Vacuum && CellSelectionObject.IsExposedToSpace(num))
-										{
-											spaceLayer.tileCount++;
+											else if (element.id == SimHashes.Vacuum && CellSelectionObject.IsExposedToSpace(num))
+											{
+												if ((UnityEngine.Object)Grid.Objects[num, 1] != (UnityEngine.Object)null)
+												{
+													spaceLayer.tileCount -= TuningData<Tuning>.Get().buildingTileValue;
+												}
+												spaceLayer.tileCount++;
+											}
 										}
 									}
 								}
@@ -358,18 +394,7 @@ public class AmbienceManager : KMonoBehaviour
 		GridArea visibleArea = GridVisibleArea.GetVisibleArea();
 		Vector2I min = visibleArea.Min;
 		Vector2I max = visibleArea.Max;
-		Vector2I u = min + (max - min) / 2;
-		Vector2I v = max - min;
-		if (v.x > v.y)
-		{
-			v.y = v.x;
-		}
-		else
-		{
-			v.x = v.y;
-		}
-		min = u - v / 2;
-		max = u + v / 2;
+		Vector2I vector2I = min + (max - min) / 2;
 		Camera main = Camera.main;
 		Vector3 position = Camera.main.transform.GetPosition();
 		Vector3 a = main.ViewportToWorldPoint(new Vector3(1f, 1f, position.z));
@@ -390,17 +415,20 @@ public class AmbienceManager : KMonoBehaviour
 		vector = a2 - a3 / 2f;
 		Vector3 a4 = a3 / 2f;
 		Vector3 vector2 = a4 / 2f;
-		quadrants[0].Update(new Vector2I(min.x, min.y), new Vector2I(u.x, u.y), new Vector3(vector.x + vector2.x, vector.y + vector2.y, emitterZPosition));
-		quadrants[1].Update(new Vector2I(u.x, min.y), new Vector2I(max.x, u.y), new Vector3(a2.x + vector2.x, vector.y + vector2.y, emitterZPosition));
-		quadrants[2].Update(new Vector2I(min.x, u.y), new Vector2I(u.x, max.y), new Vector3(vector.x + vector2.x, a2.y + vector2.y, emitterZPosition));
-		quadrants[3].Update(new Vector2I(u.x, u.y), new Vector2I(max.x, max.y), new Vector3(a2.x + vector2.x, a2.y + vector2.y, emitterZPosition));
+		quadrants[0].Update(new Vector2I(min.x, min.y), new Vector2I(vector2I.x, vector2I.y), new Vector3(vector.x + vector2.x, vector.y + vector2.y, emitterZPosition));
+		quadrants[1].Update(new Vector2I(vector2I.x, min.y), new Vector2I(max.x, vector2I.y), new Vector3(a2.x + vector2.x, vector.y + vector2.y, emitterZPosition));
+		quadrants[2].Update(new Vector2I(min.x, vector2I.y), new Vector2I(vector2I.x, max.y), new Vector3(vector.x + vector2.x, a2.y + vector2.y, emitterZPosition));
+		quadrants[3].Update(new Vector2I(vector2I.x, vector2I.y), new Vector2I(max.x, max.y), new Vector3(a2.x + vector2.x, a2.y + vector2.y, emitterZPosition));
 		float num = 0f;
 		float num2 = 0f;
+		float num3 = 0f;
 		for (int i = 0; i < quadrants.Length; i++)
 		{
 			num += (float)quadrants[i].spaceLayer.tileCount;
-			num2 += (float)quadrants[i].totalTileCount;
+			num2 += (float)quadrants[i].facilityLayer.tileCount;
+			num3 += (float)quadrants[i].totalTileCount;
 		}
-		AudioMixer.instance.UpdateSpaceVisibleSnapshot(num / num2);
+		AudioMixer.instance.UpdateSpaceVisibleSnapshot(num / num3);
+		AudioMixer.instance.UpdateFacilityVisibleSnapshot(num2 / num3);
 	}
 }

@@ -31,25 +31,25 @@ public class DebugOverlays : KScreen
 		{
 			if (str == "None")
 			{
-				SimDebugView.Instance.SetMode(SimViewMode.None);
+				SimDebugView.Instance.SetMode(OverlayModes.None.ID);
 				return;
 			}
 			if (str == "Flow")
 			{
-				SimDebugView.Instance.SetMode(SimViewMode.Flow);
+				SimDebugView.Instance.SetMode(SimDebugView.OverlayModes.Flow);
 				return;
 			}
 			if (str == "Lighting")
 			{
-				SimDebugView.Instance.SetMode(SimViewMode.Light);
+				SimDebugView.Instance.SetMode(OverlayModes.Light.ID);
 				return;
 			}
 			if (str == "Rooms")
 			{
-				SimDebugView.Instance.SetMode(SimViewMode.Rooms);
+				SimDebugView.Instance.SetMode(OverlayModes.Rooms.ID);
 				return;
 			}
 		}
-		Debug.LogError("Unknown debug view: " + str, null);
+		Debug.LogError("Unknown debug view: " + str);
 	}
 }

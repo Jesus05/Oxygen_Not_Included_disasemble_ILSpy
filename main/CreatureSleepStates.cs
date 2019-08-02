@@ -1,7 +1,7 @@
 using STRINGS;
 using System.Runtime.CompilerServices;
 
-internal class CreatureSleepStates : GameStateMachine<CreatureSleepStates, CreatureSleepStates.Instance, IStateMachineTarget, CreatureSleepStates.Def>
+public class CreatureSleepStates : GameStateMachine<CreatureSleepStates, CreatureSleepStates.Instance, IStateMachineTarget, CreatureSleepStates.Def>
 {
 	public class Def : BaseDef
 	{
@@ -30,7 +30,7 @@ internal class CreatureSleepStates : GameStateMachine<CreatureSleepStates, Creat
 	public override void InitializeStates(out BaseState default_state)
 	{
 		default_state = pre;
-		root.ToggleStatusItem(CREATURES.STATUSITEMS.SLEEPING.NAME, CREATURES.STATUSITEMS.SLEEPING.TOOLTIP, category: Db.Get().StatusItemCategories.Main, icon: string.Empty, icon_type: StatusItem.IconType.Info, notification_type: NotificationType.Neutral, allow_multiples: false, render_overlay: SimViewMode.None, status_overlays: 63486, resolve_string_callback: null, resolve_tooltip_callback: null);
+		root.ToggleStatusItem(CREATURES.STATUSITEMS.SLEEPING.NAME, CREATURES.STATUSITEMS.SLEEPING.TOOLTIP, category: Db.Get().StatusItemCategories.Main, icon: string.Empty, icon_type: StatusItem.IconType.Info, notification_type: NotificationType.Neutral, allow_multiples: false, render_overlay: default(HashedString), status_overlays: 129022, resolve_string_callback: null, resolve_tooltip_callback: null);
 		pre.QueueAnim("sleep_pre", false, null).OnAnimQueueComplete(loop);
 		loop.QueueAnim("sleep_loop", true, null).Transition(pst, ShouldWakeUp, UpdateRate.SIM_1000ms);
 		pst.QueueAnim("sleep_pst", false, null).OnAnimQueueComplete(behaviourcomplete);

@@ -17,7 +17,7 @@ public class ResearchPointInventory
 	{
 		if (!PointsByTypeID.ContainsKey(researchTypeID))
 		{
-			Debug.LogWarning("Research inventory is missing research point key " + researchTypeID, null);
+			Debug.LogWarning("Research inventory is missing research point key " + researchTypeID);
 		}
 		else
 		{

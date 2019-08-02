@@ -29,15 +29,23 @@ public class MedicinalPill : Workable, IGameObjectEffectDescriptor, IConsumableU
 
 	protected override void OnCompleteWork(Worker worker)
 	{
-		Effects component = worker.GetComponent<Effects>();
-		EffectInstance effectInstance = component.Get(info.effect);
-		if (effectInstance != null)
+		if (!string.IsNullOrEmpty(info.effect))
 		{
-			effectInstance.timeRemaining = effectInstance.effect.duration;
+			Effects component = worker.GetComponent<Effects>();
+			EffectInstance effectInstance = component.Get(info.effect);
+			if (effectInstance != null)
+			{
+				effectInstance.timeRemaining = effectInstance.effect.duration;
+			}
+			else
+			{
+				component.Add(info.effect, true);
+			}
 		}
-		else
+		Sicknesses sicknesses = worker.GetSicknesses();
+		foreach (string curedSickness in info.curedSicknesses)
 		{
-			component.Add(info.effect, true);
+			sicknesses.Get(curedSickness)?.Cure();
 		}
 		base.gameObject.DeleteObject();
 	}
@@ -49,24 +57,26 @@ public class MedicinalPill : Workable, IGameObjectEffectDescriptor, IConsumableU
 
 	public bool CanBeTakenBy(GameObject consumer)
 	{
-		Effects component = consumer.GetComponent<Effects>();
-		if ((Object)component == (Object)null || component.HasEffect(info.effect))
+		if (!string.IsNullOrEmpty(info.effect))
 		{
-			return false;
+			Effects component = consumer.GetComponent<Effects>();
+			if ((Object)component == (Object)null || component.HasEffect(info.effect))
+			{
+				return false;
+			}
 		}
 		if (info.medicineType == MedicineInfo.MedicineType.Booster)
 		{
-			AmountInstance amountInstance = Db.Get().Amounts.ImmuneLevel.Lookup(consumer);
-			return amountInstance != null && amountInstance.value < amountInstance.GetMax();
+			return true;
 		}
-		Diseases diseases = consumer.GetDiseases();
-		if (info.medicineType == MedicineInfo.MedicineType.CureAny && diseases.Count > 0)
+		Sicknesses sicknesses = consumer.GetSicknesses();
+		if (info.medicineType == MedicineInfo.MedicineType.CureAny && sicknesses.Count > 0)
 		{
 			return true;
 		}
-		foreach (DiseaseInstance item in diseases)
+		foreach (SicknessInstance item in sicknesses)
 		{
-			if (info.curedDiseases.Contains(item.modifier.Id))
+			if (info.curedSicknesses.Contains(item.modifier.Id))
 			{
 				return true;
 			}
@@ -88,17 +98,20 @@ public class MedicinalPill : Workable, IGameObjectEffectDescriptor, IConsumableU
 		case MedicineInfo.MedicineType.CureSpecific:
 		{
 			List<string> list2 = new List<string>();
-			foreach (string curedDisease in info.curedDiseases)
+			foreach (string curedSickness in info.curedSicknesses)
 			{
-				list2.Add(Strings.Get("STRINGS.DUPLICANTS.DISEASES." + curedDisease.ToUpper() + ".NAME"));
+				list2.Add(Strings.Get("STRINGS.DUPLICANTS.DISEASES." + curedSickness.ToUpper() + ".NAME"));
 			}
 			string arg = string.Join(",", list2.ToArray());
 			list.Add(new Descriptor(string.Format(DUPLICANTS.DISEASES.MEDICINE.CURES, arg), string.Format(DUPLICANTS.DISEASES.MEDICINE.CURES_TOOLTIP, arg), Descriptor.DescriptorType.Effect, false));
 			break;
 		}
 		}
-		Effect effect = Db.Get().effects.Get(info.effect);
-		list.Add(new Descriptor(string.Format(DUPLICANTS.MODIFIERS.MEDICINE_GENERICPILL.EFFECT_DESC, effect.Name), string.Format("{0}\n{1}", effect.description, Effect.CreateTooltip(effect, true, "\n")), Descriptor.DescriptorType.Effect, false));
+		if (!string.IsNullOrEmpty(info.effect))
+		{
+			Effect effect = Db.Get().effects.Get(info.effect);
+			list.Add(new Descriptor(string.Format(DUPLICANTS.MODIFIERS.MEDICINE_GENERICPILL.EFFECT_DESC, effect.Name), string.Format("{0}\n{1}", effect.description, Effect.CreateTooltip(effect, true, "\n")), Descriptor.DescriptorType.Effect, false));
+		}
 		return list;
 	}
 

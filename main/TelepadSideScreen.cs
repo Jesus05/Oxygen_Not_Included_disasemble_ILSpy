@@ -1,5 +1,8 @@
+using Database;
 using STRINGS;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class TelepadSideScreen : SideScreenContent
 {
@@ -12,6 +15,26 @@ public class TelepadSideScreen : SideScreenContent
 	[SerializeField]
 	private Telepad targetTelepad;
 
+	[SerializeField]
+	private KButton viewColonySummaryBtn;
+
+	[SerializeField]
+	private Image newAchievementsEarned;
+
+	[SerializeField]
+	private KButton openRolesScreenButton;
+
+	[SerializeField]
+	private GameObject victoryConditionsContainer;
+
+	[SerializeField]
+	private GameObject conditionContainerTemplate;
+
+	[SerializeField]
+	private GameObject checkboxLinePrefab;
+
+	private Dictionary<string, Dictionary<ColonyAchievementRequirement, GameObject>> entries = new Dictionary<string, Dictionary<ColonyAchievementRequirement, GameObject>>();
+
 	protected override void OnSpawn()
 	{
 		base.OnSpawn();
@@ -20,6 +43,17 @@ public class TelepadSideScreen : SideScreenContent
 			ImmigrantScreen.InitializeImmigrantScreen(targetTelepad);
 			Game.Instance.Trigger(288942073, null);
 		};
+		viewColonySummaryBtn.onClick += delegate
+		{
+			newAchievementsEarned.gameObject.SetActive(false);
+			RetireColonyUtility.SaveColonySummaryData();
+			MainMenu.ActivateRetiredColoniesScreen(PauseScreen.Instance.transform.parent.gameObject, SaveGame.Instance.BaseName, null);
+		};
+		openRolesScreenButton.onClick += delegate
+		{
+			ManagementMenu.Instance.ToggleSkills();
+		};
+		BuildVictoryConditions();
 	}
 
 	public override bool IsValidForTarget(GameObject target)
@@ -32,7 +66,7 @@ public class TelepadSideScreen : SideScreenContent
 		Telepad component = target.GetComponent<Telepad>();
 		if ((Object)component == (Object)null)
 		{
-			Debug.LogError("Target doesn't have a telepad associated with it.", null);
+			Debug.LogError("Target doesn't have a telepad associated with it.");
 		}
 		else
 		{
@@ -70,6 +104,8 @@ public class TelepadSideScreen : SideScreenContent
 				}
 				SetContentState(!Immigration.Instance.ImmigrantsAvailable);
 			}
+			UpdateVictoryConditions();
+			UpdateAchievementsUnlocked();
 		}
 	}
 
@@ -82,6 +118,57 @@ public class TelepadSideScreen : SideScreenContent
 		if (viewImmigrantsBtn.gameObject.activeInHierarchy == isLabel)
 		{
 			viewImmigrantsBtn.gameObject.SetActive(!isLabel);
+		}
+	}
+
+	private void BuildVictoryConditions()
+	{
+		foreach (ColonyAchievement resource in Db.Get().ColonyAchievements.resources)
+		{
+			if (resource.isVictoryCondition)
+			{
+				Dictionary<ColonyAchievementRequirement, GameObject> dictionary = new Dictionary<ColonyAchievementRequirement, GameObject>();
+				GameObject gameObject = Util.KInstantiateUI(conditionContainerTemplate, victoryConditionsContainer, true);
+				gameObject.GetComponent<HierarchyReferences>().GetReference<LocText>("Label").SetText(resource.Name);
+				foreach (ColonyAchievementRequirement item in resource.requirementChecklist)
+				{
+					VictoryColonyAchievementRequirement victoryColonyAchievementRequirement = item as VictoryColonyAchievementRequirement;
+					if (victoryColonyAchievementRequirement != null)
+					{
+						GameObject gameObject2 = Util.KInstantiateUI(checkboxLinePrefab, gameObject, true);
+						gameObject2.GetComponent<HierarchyReferences>().GetReference<LocText>("Label").SetText(victoryColonyAchievementRequirement.Name());
+						gameObject2.GetComponent<ToolTip>().SetSimpleTooltip(victoryColonyAchievementRequirement.Description());
+						dictionary.Add(item, gameObject2);
+					}
+					else
+					{
+						Debug.LogWarning($"Colony achievement {item.GetType().ToString()} is not a victory requirement but it is attached to a victory achievement {resource.Name}.");
+					}
+				}
+				entries.Add(resource.Id, dictionary);
+			}
+		}
+	}
+
+	private void UpdateVictoryConditions()
+	{
+		foreach (ColonyAchievement resource in Db.Get().ColonyAchievements.resources)
+		{
+			if (resource.isVictoryCondition)
+			{
+				foreach (ColonyAchievementRequirement item in resource.requirementChecklist)
+				{
+					entries[resource.Id][item].GetComponent<HierarchyReferences>().GetReference<Image>("Check").enabled = item.Success();
+				}
+			}
+		}
+	}
+
+	private void UpdateAchievementsUnlocked()
+	{
+		if (SaveGame.Instance.GetComponent<ColonyAchievementTracker>().achievementsToDisplay.Count > 0)
+		{
+			newAchievementsEarned.gameObject.SetActive(true);
 		}
 	}
 }

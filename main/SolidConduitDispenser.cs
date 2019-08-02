@@ -28,6 +28,8 @@ public class SolidConduitDispenser : KMonoBehaviour, ISaveLoadable
 
 	private bool dispensing;
 
+	private int round_robin_index;
+
 	private const float MaxMass = 20f;
 
 	public SolidConduitFlow.ConduitContents ConduitContents => GetConduitFlow().GetContents(utilityCell);
@@ -99,15 +101,14 @@ public class SolidConduitDispenser : KMonoBehaviour, ISaveLoadable
 	private Pickupable FindSuitableItem()
 	{
 		List<GameObject> items = storage.items;
-		for (int i = 0; i < items.Count; i++)
+		if (items.Count < 1)
 		{
-			Pickupable pickupable = (!(bool)items[i]) ? null : items[i].GetComponent<Pickupable>();
-			if ((bool)pickupable)
-			{
-				return pickupable;
-			}
+			return null;
 		}
-		return null;
+		round_robin_index %= items.Count;
+		GameObject gameObject = items[round_robin_index];
+		round_robin_index++;
+		return (!(bool)gameObject) ? null : gameObject.GetComponent<Pickupable>();
 	}
 
 	private int GetConnectedNetworkID()

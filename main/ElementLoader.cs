@@ -1,312 +1,337 @@
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
+using Klei;
 using ProcGenGame;
+using STRINGS;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using UnityEngine;
 
 public class ElementLoader
 {
-	public class ElementEntry : Resource
+	public class ElementEntryCollection
 	{
-		public string elementId;
+		public ElementEntry[] elements
+		{
+			get;
+			set;
+		}
+	}
 
-		public float specificHeatCapacity;
+	public class ElementEntry
+	{
+		private string description_backing;
 
-		public float thermalConductivity;
+		public string elementId
+		{
+			get;
+			set;
+		}
 
-		public float solidSurfaceAreaMultiplier;
+		public float specificHeatCapacity
+		{
+			get;
+			set;
+		}
 
-		public float liquidSurfaceAreaMultiplier;
+		public float thermalConductivity
+		{
+			get;
+			set;
+		}
 
-		public float gasSurfaceAreaMultiplier;
+		public float solidSurfaceAreaMultiplier
+		{
+			get;
+			set;
+		}
 
-		public float defaultMass;
+		public float liquidSurfaceAreaMultiplier
+		{
+			get;
+			set;
+		}
 
-		public float defaultTemperature;
+		public float gasSurfaceAreaMultiplier
+		{
+			get;
+			set;
+		}
 
-		public float defaultPressure;
+		public float defaultMass
+		{
+			get;
+			set;
+		}
 
-		public float molarMass;
+		public float defaultTemperature
+		{
+			get;
+			set;
+		}
 
-		public float lightAbsorptionFactor;
+		public float defaultPressure
+		{
+			get;
+			set;
+		}
 
-		public string lowTempTransitionTarget;
+		public float molarMass
+		{
+			get;
+			set;
+		}
 
-		public float lowTemp;
+		public float lightAbsorptionFactor
+		{
+			get;
+			set;
+		}
 
-		public string highTempTransitionTarget;
+		public string lowTempTransitionTarget
+		{
+			get;
+			set;
+		}
 
-		public float highTemp = 10000f;
+		public float lowTemp
+		{
+			get;
+			set;
+		}
 
-		public string lowTempTransitionOreId;
+		public string highTempTransitionTarget
+		{
+			get;
+			set;
+		}
 
-		public float lowTempTransitionOreMassConversion;
+		public float highTemp
+		{
+			get;
+			set;
+		}
 
-		public string highTempTransitionOreId;
+		public string lowTempTransitionOreId
+		{
+			get;
+			set;
+		}
 
-		public float highTempTransitionOreMassConversion;
+		public float lowTempTransitionOreMassConversion
+		{
+			get;
+			set;
+		}
 
-		public string sublimateId;
+		public string highTempTransitionOreId
+		{
+			get;
+			set;
+		}
 
-		public string sublimateFx;
+		public float highTempTransitionOreMassConversion
+		{
+			get;
+			set;
+		}
 
-		public string materialCategory;
+		public string sublimateId
+		{
+			get;
+			set;
+		}
 
-		public string[] tags;
+		public string sublimateFx
+		{
+			get;
+			set;
+		}
 
-		public bool isDisabled;
+		public string materialCategory
+		{
+			get;
+			set;
+		}
 
-		public float strength;
+		public string[] tags
+		{
+			get;
+			set;
+		}
 
-		public float maxMass;
+		public bool isDisabled
+		{
+			get;
+			set;
+		}
 
-		public byte hardness;
+		public float strength
+		{
+			get;
+			set;
+		}
 
-		public float toxicity;
+		public float maxMass
+		{
+			get;
+			set;
+		}
 
-		public float liquidCompression;
+		public byte hardness
+		{
+			get;
+			set;
+		}
 
-		public float speed;
+		public float toxicity
+		{
+			get;
+			set;
+		}
 
-		public float minHorizontalFlow;
+		public float liquidCompression
+		{
+			get;
+			set;
+		}
 
-		public float minVerticalFlow;
+		public float speed
+		{
+			get;
+			set;
+		}
 
-		public string convertId;
+		public float minHorizontalFlow
+		{
+			get;
+			set;
+		}
 
-		public float flow;
+		public float minVerticalFlow
+		{
+			get;
+			set;
+		}
 
-		public int buildMenuSort;
+		public string convertId
+		{
+			get;
+			set;
+		}
 
-		[JsonConverter(typeof(StringEnumConverter))]
-		public Element.State state;
+		public float flow
+		{
+			get;
+			set;
+		}
 
-		public string localizationID;
+		public int buildMenuSort
+		{
+			get;
+			set;
+		}
+
+		public Element.State state
+		{
+			get;
+			set;
+		}
+
+		public string localizationID
+		{
+			get;
+			set;
+		}
+
+		public string description
+		{
+			get
+			{
+				return description_backing ?? ("STRINGS.ELEMENTS." + elementId.ToString().ToUpper() + ".DESC");
+			}
+			set
+			{
+				description_backing = value;
+			}
+		}
+
+		public ElementEntry()
+		{
+			lowTemp = 0f;
+			highTemp = 10000f;
+		}
 	}
 
 	public static List<Element> elements;
 
 	public static Dictionary<int, Element> elementTable;
 
+	private static string path = Application.streamingAssetsPath + "/elements/";
+
 	private static readonly Color noColour = new Color(0f, 0f, 0f, 0f);
 
-	private static SimHashes getElementIndexHash;
-
-	private static Predicate<Element> getElementIndexCallback = (Element e) => getElementIndexHash == e.id;
-
-	public static void Load(ref Hashtable substanceList, string elementsFileContent, SubstanceTable substanceTable)
+	public static List<ElementEntry> CollectElementsFromYAML()
 	{
-		SetupElementsTable();
-		ElementEntry[] array = JsonConvert.DeserializeObject<ElementEntry[]>(elementsFileContent);
-		ElementEntry[] array2 = array;
-		foreach (ElementEntry elementEntry in array2)
+		List<ElementEntry> list = new List<ElementEntry>();
+		ListPool<FileHandle, ElementLoader>.PooledList pooledList = ListPool<FileHandle, ElementLoader>.Allocate();
+		FileSystem.GetFiles(FileSystem.Normalize(path), "*.yaml", pooledList);
+		ListPool<YamlIO.Error, ElementLoader>.PooledList errors = ListPool<YamlIO.Error, ElementLoader>.Allocate();
+		foreach (FileHandle item in pooledList)
 		{
-			int hash = Hash.SDBMLower(elementEntry.elementId);
-			Element element = FindElementByHash((SimHashes)hash);
-			element.name = Strings.Get(elementEntry.localizationID);
-			element.nameUpperCase = element.name.ToUpper();
-			element.tag = TagManager.Create(element.id.ToString(), element.name);
-			Copy(elementEntry, element);
+			FileHandle file = item;
+			ElementEntryCollection elementEntryCollection = YamlIO.LoadFile<ElementEntryCollection>(file.full_path, delegate(YamlIO.Error error, bool force_log_as_warning)
+			{
+				error.file = file;
+				errors.Add(error);
+			}, null);
+			if (elementEntryCollection != null)
+			{
+				list.AddRange(elementEntryCollection.elements);
+			}
 		}
-		LoadUserElementData();
+		pooledList.Recycle();
+		if ((UnityEngine.Object)Global.Instance != (UnityEngine.Object)null && Global.Instance.modManager != null)
+		{
+			Global.Instance.modManager.HandleErrors(errors);
+		}
+		errors.Recycle();
+		return list;
+	}
+
+	public static void Load(ref Hashtable substanceList, SubstanceTable substanceTable)
+	{
+		elements = new List<Element>();
+		elementTable = new Dictionary<int, Element>();
+		List<ElementEntry> list = CollectElementsFromYAML();
+		foreach (ElementEntry item in list)
+		{
+			int num = Hash.SDBMLower(item.elementId);
+			if (!elementTable.ContainsKey(num))
+			{
+				Element element = new Element();
+				element.id = (SimHashes)num;
+				element.name = Strings.Get(item.localizationID);
+				element.nameUpperCase = element.name.ToUpper();
+				element.description = Strings.Get(item.description);
+				element.tag = TagManager.Create(item.elementId, element.name);
+				CopyEntryToElement(item, element);
+				elements.Add(element);
+				elementTable[num] = element;
+			}
+		}
 		foreach (Element element2 in elements)
 		{
-			if (!SetOrCreateSubstanceForElement(element2.id, ref substanceList, substanceTable))
+			if (!ManifestSubstanceForElement(element2, ref substanceList, substanceTable))
 			{
-				Debug.LogWarning("Missing substance for element: " + element2.id.ToString(), null);
+				Debug.LogWarning("Missing substance for element: " + element2.id.ToString());
 			}
 		}
 		FinaliseElementsTable(ref substanceList, substanceTable);
 		WorldGen.SetupDefaultElements();
 	}
 
-	private static void LoadUserElementData()
-	{
-		string text = Path.Combine(Application.dataPath, "elements.json");
-		if (!((UnityEngine.Object)Global.Instance == (UnityEngine.Object)null) && Global.Instance.layeredFileSystem != null && Global.Instance.layeredFileSystem.Exists(text))
-		{
-			string value = Global.Instance.layeredFileSystem.ReadText(text);
-			ElementEntry[] array = JsonConvert.DeserializeObject<ElementEntry[]>(value);
-			ElementEntry elementEntry = new ElementEntry();
-			ElementEntry[] array2 = array;
-			foreach (ElementEntry elementEntry2 in array2)
-			{
-				int num = Hash.SDBMLower(elementEntry2.elementId);
-				Element element = FindElementByHash((SimHashes)num);
-				if (element == null)
-				{
-					element = new Element();
-					element.id = (SimHashes)num;
-					element.name = Strings.Get(elementEntry2.localizationID);
-					element.nameUpperCase = element.name.ToUpper();
-					element.tag = TagManager.Create(element.id.ToString(), element.name);
-					elements.Add(element);
-					elementTable[(int)element.id] = element;
-				}
-				if (elementEntry2.specificHeatCapacity != elementEntry.specificHeatCapacity)
-				{
-					element.specificHeatCapacity = elementEntry2.specificHeatCapacity;
-				}
-				if (elementEntry2.thermalConductivity != elementEntry.thermalConductivity)
-				{
-					element.thermalConductivity = elementEntry2.thermalConductivity;
-				}
-				if (elementEntry2.molarMass != elementEntry.molarMass)
-				{
-					element.molarMass = elementEntry2.molarMass;
-				}
-				if (elementEntry2.strength != elementEntry.strength)
-				{
-					element.strength = elementEntry2.strength;
-				}
-				if (elementEntry2.flow != elementEntry.flow)
-				{
-					element.flow = elementEntry2.flow;
-				}
-				if (elementEntry2.maxMass != elementEntry.maxMass)
-				{
-					element.maxMass = elementEntry2.maxMass;
-				}
-				if (elementEntry2.liquidCompression != elementEntry.liquidCompression)
-				{
-					element.maxCompression = elementEntry2.liquidCompression;
-				}
-				if (elementEntry2.speed != elementEntry.speed)
-				{
-					element.viscosity = elementEntry2.speed;
-				}
-				if (elementEntry2.minHorizontalFlow != elementEntry.minHorizontalFlow)
-				{
-					element.minHorizontalFlow = elementEntry2.minHorizontalFlow;
-				}
-				if (elementEntry2.minVerticalFlow != elementEntry.minVerticalFlow)
-				{
-					element.minVerticalFlow = elementEntry2.minVerticalFlow;
-				}
-				if (elementEntry2.maxMass != elementEntry.maxMass)
-				{
-					element.maxMass = elementEntry2.maxMass;
-				}
-				if (elementEntry2.solidSurfaceAreaMultiplier != elementEntry.solidSurfaceAreaMultiplier)
-				{
-					element.solidSurfaceAreaMultiplier = elementEntry2.solidSurfaceAreaMultiplier;
-				}
-				if (elementEntry2.liquidSurfaceAreaMultiplier != elementEntry.liquidSurfaceAreaMultiplier)
-				{
-					element.liquidSurfaceAreaMultiplier = elementEntry2.liquidSurfaceAreaMultiplier;
-				}
-				if (elementEntry2.gasSurfaceAreaMultiplier != elementEntry.gasSurfaceAreaMultiplier)
-				{
-					element.gasSurfaceAreaMultiplier = elementEntry2.gasSurfaceAreaMultiplier;
-				}
-				if (elementEntry2.state != elementEntry.state)
-				{
-					element.state = elementEntry2.state;
-				}
-				if (elementEntry2.hardness != elementEntry.hardness)
-				{
-					element.hardness = elementEntry2.hardness;
-				}
-				if (elementEntry2.lowTemp != elementEntry.lowTemp)
-				{
-					element.lowTemp = elementEntry2.lowTemp;
-				}
-				if (elementEntry2.lowTempTransitionTarget != elementEntry.lowTempTransitionTarget)
-				{
-					element.lowTempTransitionTarget = (SimHashes)Hash.SDBMLower(elementEntry2.lowTempTransitionTarget);
-				}
-				if (elementEntry2.highTemp != elementEntry.highTemp)
-				{
-					element.highTemp = elementEntry2.highTemp;
-				}
-				if (elementEntry2.highTempTransitionTarget != elementEntry.highTempTransitionTarget)
-				{
-					element.highTempTransitionTarget = (SimHashes)Hash.SDBMLower(elementEntry2.highTempTransitionTarget);
-				}
-				if (elementEntry2.highTempTransitionOreId != elementEntry.highTempTransitionOreId)
-				{
-					element.highTempTransitionOreID = (SimHashes)Hash.SDBMLower(elementEntry2.highTempTransitionOreId);
-				}
-				if (elementEntry2.highTempTransitionOreMassConversion != elementEntry.highTempTransitionOreMassConversion)
-				{
-					element.highTempTransitionOreMassConversion = elementEntry2.highTempTransitionOreMassConversion;
-				}
-				if (elementEntry2.lowTempTransitionOreId != elementEntry.lowTempTransitionOreId)
-				{
-					element.lowTempTransitionOreID = (SimHashes)Hash.SDBMLower(elementEntry2.lowTempTransitionOreId);
-				}
-				if (elementEntry2.lowTempTransitionOreMassConversion != elementEntry.lowTempTransitionOreMassConversion)
-				{
-					element.lowTempTransitionOreMassConversion = elementEntry2.lowTempTransitionOreMassConversion;
-				}
-				if (elementEntry2.sublimateId != elementEntry.sublimateId)
-				{
-					element.sublimateId = (SimHashes)Hash.SDBMLower(elementEntry2.sublimateId);
-				}
-				if (elementEntry2.convertId != elementEntry.convertId)
-				{
-					element.convertId = (SimHashes)Hash.SDBMLower(elementEntry2.convertId);
-				}
-				if (elementEntry2.sublimateFx != elementEntry.sublimateFx)
-				{
-					element.sublimateFX = (SpawnFXHashes)Hash.SDBMLower(elementEntry2.sublimateFx);
-				}
-				if (elementEntry2.lightAbsorptionFactor != elementEntry.lightAbsorptionFactor)
-				{
-					element.lightAbsorptionFactor = elementEntry2.lightAbsorptionFactor;
-				}
-				Sim.PhysicsData defaultValues = element.defaultValues;
-				if (elementEntry2.defaultTemperature != elementEntry.defaultTemperature)
-				{
-					defaultValues.temperature = elementEntry2.defaultTemperature;
-				}
-				if (elementEntry2.defaultMass != elementEntry.defaultMass)
-				{
-					defaultValues.mass = elementEntry2.defaultMass;
-				}
-				if (elementEntry2.defaultPressure != elementEntry.defaultPressure)
-				{
-					defaultValues.pressure = elementEntry2.defaultPressure;
-				}
-				element.defaultValues = defaultValues;
-				if (elementEntry2.toxicity != elementEntry.toxicity)
-				{
-					element.toxicity = elementEntry2.toxicity;
-				}
-				Tag phaseTag = TagManager.Create(elementEntry2.state.ToString());
-				if (elementEntry2.materialCategory != elementEntry.materialCategory)
-				{
-					element.materialCategory = CreateMaterialCategoryTag(element.id, phaseTag, elementEntry2.materialCategory);
-				}
-				if (elementEntry2.tags != elementEntry.tags)
-				{
-					element.oreTags = CreateOreTags(element.materialCategory, phaseTag, elementEntry2.tags);
-				}
-				if (elementEntry2.buildMenuSort != elementEntry.buildMenuSort)
-				{
-					element.buildMenuSort = elementEntry2.buildMenuSort;
-				}
-				switch (elementEntry2.state)
-				{
-				case Element.State.Solid:
-					GameTags.SolidElements.Add(element.tag);
-					break;
-				case Element.State.Liquid:
-					GameTags.LiquidElements.Add(element.tag);
-					break;
-				case Element.State.Gas:
-					GameTags.GasElements.Add(element.tag);
-					break;
-				}
-			}
-		}
-	}
-
-	private static void Copy(ElementEntry entry, Element elem)
+	private static void CopyEntryToElement(ElementEntry entry, Element elem)
 	{
 		int num = Hash.SDBMLower(entry.elementId);
 		elem.tag = TagManager.Create(entry.elementId.ToString());
@@ -314,6 +339,7 @@ public class ElementLoader
 		elem.thermalConductivity = entry.thermalConductivity;
 		elem.molarMass = entry.molarMass;
 		elem.strength = entry.strength;
+		elem.disabled = entry.isDisabled;
 		elem.flow = entry.flow;
 		elem.maxMass = entry.maxMass;
 		elem.maxCompression = entry.liquidCompression;
@@ -364,64 +390,57 @@ public class ElementLoader
 		elem.defaultValues = defaultValues;
 	}
 
-	private static bool SetOrCreateSubstanceForElement(SimHashes key, ref Hashtable substanceList, SubstanceTable substanceTable)
+	private static bool ManifestSubstanceForElement(Element elem, ref Hashtable substanceList, SubstanceTable substanceTable)
 	{
-		bool result = false;
-		Element element = FindElementByHash(key);
-		if (!substanceList.ContainsKey(key))
+		elem.substance = null;
+		if (substanceList.ContainsKey(elem.id))
 		{
-			result = true;
-			Substance substance = null;
-			if ((UnityEngine.Object)substanceTable != (UnityEngine.Object)null)
-			{
-				substance = substanceTable.GetSubstance(key);
-			}
-			if (substance == null)
-			{
-				substance = new Substance();
-				substanceTable.GetList().Add(substance);
-			}
-			CleanupSubstance(substance, element);
-			substance.elementID = key;
-			substance.renderedByWorld = element.IsSolid;
-			substance.idx = substanceList.Count;
-			if ((Color)substance.debugColour == noColour)
-			{
-				int length = Enum.GetValues(typeof(SimHashes)).Length;
-				int idx = substance.idx;
-				substance.debugColour = Color.HSVToRGB((float)idx / (float)length, 1f, 1f);
-			}
-			if (substance.name == null || substance.name == string.Empty)
-			{
-				substance.name = key.ToString();
-			}
-			substance.audioConfig = ElementsAudio.Instance.GetConfigForElement(key);
-			substanceList.Add(key, substance);
+			elem.substance = (substanceList[elem.id] as Substance);
+			return false;
 		}
-		element.substance = (substanceList[key] as Substance);
-		return result;
-	}
-
-	private static void CleanupSubstance(Substance substance, Element element)
-	{
-	}
-
-	public static Element GetElement(string name)
-	{
-		SimHashes hash = (SimHashes)Enum.Parse(typeof(SimHashes), name);
-		return FindElementByHash(hash);
+		if ((UnityEngine.Object)substanceTable != (UnityEngine.Object)null)
+		{
+			elem.substance = substanceTable.GetSubstance(elem.id);
+		}
+		if (elem.substance == null)
+		{
+			elem.substance = new Substance();
+			substanceTable.GetList().Add(elem.substance);
+		}
+		elem.substance.elementID = elem.id;
+		elem.substance.renderedByWorld = elem.IsSolid;
+		elem.substance.idx = substanceList.Count;
+		if ((Color)elem.substance.uiColour == noColour)
+		{
+			int count = elements.Count;
+			int idx = elem.substance.idx;
+			elem.substance.uiColour = Color.HSVToRGB((float)idx / (float)count, 1f, 1f);
+		}
+		string text = UI.StripLinkFormatting(elem.name);
+		elem.substance.name = text;
+		if (Array.IndexOf((SimHashes[])Enum.GetValues(typeof(SimHashes)), elem.id) >= 0)
+		{
+			elem.substance.nameTag = GameTagExtensions.Create(elem.id);
+		}
+		else
+		{
+			elem.substance.nameTag = ((text == null) ? Tag.Invalid : TagManager.Create(text));
+		}
+		elem.substance.audioConfig = ElementsAudio.Instance.GetConfigForElement(elem.id);
+		substanceList.Add(elem.id, elem.substance);
+		return true;
 	}
 
 	public static Element FindElementByName(string name)
 	{
-		Element value = null;
-		object obj = Enum.Parse(typeof(SimHashes), name);
-		if (obj != null)
+		try
 		{
-			SimHashes key = (SimHashes)obj;
-			elementTable.TryGetValue((int)key, out value);
+			return FindElementByHash((SimHashes)Enum.Parse(typeof(SimHashes), name));
 		}
-		return value;
+		catch
+		{
+			return FindElementByHash((SimHashes)Hash.SDBMLower(name));
+		}
 	}
 
 	public static Element FindElementByHash(SimHashes hash)
@@ -433,8 +452,14 @@ public class ElementLoader
 
 	public static int GetElementIndex(SimHashes hash)
 	{
-		getElementIndexHash = hash;
-		return elements.FindIndex(getElementIndexCallback);
+		for (int i = 0; i != elements.Count; i++)
+		{
+			if (elements[i].id == hash)
+			{
+				return i;
+			}
+		}
+		return -1;
 	}
 
 	public static byte GetElementIndex(Tag element_tag)
@@ -478,29 +503,11 @@ public class ElementLoader
 		return SimHashes.Vacuum;
 	}
 
-	private static void SetupElementsTable()
-	{
-		if (elements == null)
-		{
-			SimHashes[] array = Enum.GetValues(typeof(SimHashes)) as SimHashes[];
-			elements = new List<Element>();
-			elementTable = new Dictionary<int, Element>();
-			SimHashes[] array2 = array;
-			foreach (SimHashes id in array2)
-			{
-				Element element = new Element();
-				element.id = id;
-				elements.Add(element);
-				elementTable[(int)element.id] = element;
-			}
-		}
-	}
-
 	private static SimHashes GetID(int column, int row, string[,] grid, SimHashes defaultValue = SimHashes.Vacuum)
 	{
 		if (column >= grid.GetLength(0) || row > grid.GetLength(1))
 		{
-			Output.LogError($"Could not find element at loc [{column},{row}] grid is only [{grid.GetLength(0)},{grid.GetLength(1)}]");
+			Debug.LogError($"Could not find element at loc [{column},{row}] grid is only [{grid.GetLength(0)},{grid.GetLength(1)}]");
 			return defaultValue;
 		}
 		string text = grid[column, row];
@@ -515,7 +522,7 @@ public class ElementLoader
 		}
 		catch (Exception ex)
 		{
-			Output.LogError($"Could not find element {text}: {ex.ToString()}");
+			Debug.LogError($"Could not find element {text}: {ex.ToString()}");
 			return defaultValue;
 		}
 		return (SimHashes)obj;
@@ -525,7 +532,7 @@ public class ElementLoader
 	{
 		if (column >= grid.GetLength(0) || row > grid.GetLength(1))
 		{
-			Output.LogError($"Could not find SpawnFXHashes at loc [{column},{row}] grid is only [{grid.GetLength(0)},{grid.GetLength(1)}]");
+			Debug.LogError($"Could not find SpawnFXHashes at loc [{column},{row}] grid is only [{grid.GetLength(0)},{grid.GetLength(1)}]");
 			return SpawnFXHashes.None;
 		}
 		string text = grid[column, row];
@@ -540,7 +547,7 @@ public class ElementLoader
 		}
 		catch (Exception ex)
 		{
-			Output.LogError($"Could not find FX {text}: {ex.ToString()}");
+			Debug.LogError($"Could not find FX {text}: {ex.ToString()}");
 			return SpawnFXHashes.None;
 		}
 		return (SpawnFXHashes)obj;
@@ -583,58 +590,57 @@ public class ElementLoader
 
 	private static void FinaliseElementsTable(ref Hashtable substanceList, SubstanceTable substanceTable)
 	{
-		SimHashes[] array = Enum.GetValues(typeof(SimHashes)) as SimHashes[];
-		foreach (SimHashes hash in array)
+		foreach (Element element5 in elements)
 		{
-			Element element = FindElementByHash(hash);
-			if (element != null)
+			if (element5 != null)
 			{
-				if (element.substance == null)
+				if (element5.substance == null)
 				{
 					if ((UnityEngine.Object)substanceTable == (UnityEngine.Object)null)
 					{
-						element.substance = new Substance();
+						element5.substance = new Substance();
 					}
 					else
 					{
-						SetOrCreateSubstanceForElement(element.id, ref substanceList, substanceTable);
+						ManifestSubstanceForElement(element5, ref substanceList, substanceTable);
 					}
 				}
-				if (element.thermalConductivity == 0f)
+				Debug.Assert(element5.substance.nameTag.IsValid);
+				if (element5.thermalConductivity == 0f)
 				{
-					element.state |= Element.State.TemperatureInsulated;
+					element5.state |= Element.State.TemperatureInsulated;
 				}
-				if (element.strength == 0f)
+				if (element5.strength == 0f)
 				{
-					element.state |= Element.State.Unbreakable;
+					element5.state |= Element.State.Unbreakable;
 				}
-				if (element.IsSolid)
+				if (element5.IsSolid)
 				{
-					Element element2 = FindElementByHash(element.highTempTransitionTarget);
+					Element element = FindElementByHash(element5.highTempTransitionTarget);
+					if (element != null)
+					{
+						element5.highTempTransition = element;
+					}
+				}
+				else if (element5.IsLiquid)
+				{
+					Element element2 = FindElementByHash(element5.highTempTransitionTarget);
 					if (element2 != null)
 					{
-						element.highTempTransition = element2;
+						element5.highTempTransition = element2;
 					}
-				}
-				else if (element.IsLiquid)
-				{
-					Element element3 = FindElementByHash(element.highTempTransitionTarget);
+					Element element3 = FindElementByHash(element5.lowTempTransitionTarget);
 					if (element3 != null)
 					{
-						element.highTempTransition = element3;
-					}
-					Element element4 = FindElementByHash(element.lowTempTransitionTarget);
-					if (element4 != null)
-					{
-						element.lowTempTransition = element4;
+						element5.lowTempTransition = element3;
 					}
 				}
-				else if (element.IsGas)
+				else if (element5.IsGas)
 				{
-					Element element5 = FindElementByHash(element.lowTempTransitionTarget);
-					if (element5 != null)
+					Element element4 = FindElementByHash(element5.lowTempTransitionTarget);
+					if (element4 != null)
 					{
-						element.lowTempTransition = element5;
+						element5.lowTempTransition = element4;
 					}
 				}
 			}
@@ -643,13 +649,13 @@ public class ElementLoader
 		orderby (int)(e.state & Element.State.Solid) descending, e.id
 		select e;
 		elements = source.ToList();
-		for (int j = 0; j < elements.Count; j++)
+		for (int i = 0; i < elements.Count; i++)
 		{
-			if (elements[j].substance != null)
+			if (elements[i].substance != null)
 			{
-				elements[j].substance.idx = j;
+				elements[i].substance.idx = i;
 			}
-			elements[j].idx = (byte)j;
+			elements[i].idx = (byte)i;
 		}
 	}
 }

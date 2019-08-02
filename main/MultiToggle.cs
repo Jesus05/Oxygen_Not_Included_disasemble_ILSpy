@@ -21,6 +21,16 @@ public class MultiToggle : KMonoBehaviour, IPointerClickHandler, IPointerEnterHa
 
 	public System.Action onExit;
 
+	public System.Action onHold;
+
+	public System.Action onStopHold;
+
+	protected bool clickHeldDown;
+
+	protected float totalHeldTime;
+
+	protected float heldTimeThreshold = 0.4f;
+
 	private bool pointerOver;
 
 	public int CurrentState => state;
@@ -28,6 +38,18 @@ public class MultiToggle : KMonoBehaviour, IPointerClickHandler, IPointerEnterHa
 	public void NextState()
 	{
 		ChangeState((state + 1) % states.Length);
+	}
+
+	protected virtual void Update()
+	{
+		if (clickHeldDown)
+		{
+			totalHeldTime += Time.unscaledDeltaTime;
+			if (totalHeldTime > heldTimeThreshold && onHold != null)
+			{
+				onHold();
+			}
+		}
 	}
 
 	public void ChangeState(int new_state_index)
@@ -66,22 +88,11 @@ public class MultiToggle : KMonoBehaviour, IPointerClickHandler, IPointerEnterHa
 		RefreshHoverColor();
 	}
 
-	public void OnPointerClick(PointerEventData eventData)
+	public virtual void OnPointerClick(PointerEventData eventData)
 	{
 		if (states.Length - 1 < state)
 		{
-			Debug.LogWarning("Multi toggle has too few / no states", null);
-		}
-		if (play_sound_on_click)
-		{
-			if (states[state].on_click_override_sound_path == string.Empty)
-			{
-				KFMOD.PlayOneShot(GlobalAssets.GetSound("HUD_Click", false));
-			}
-			else
-			{
-				KFMOD.PlayOneShot(GlobalAssets.GetSound(states[state].on_click_override_sound_path, false));
-			}
+			Debug.LogWarning("Multi toggle has too few / no states");
 		}
 		if (onClick != null)
 		{
@@ -123,7 +134,7 @@ public class MultiToggle : KMonoBehaviour, IPointerClickHandler, IPointerEnterHa
 		}
 	}
 
-	private void RefreshHoverColor()
+	protected void RefreshHoverColor()
 	{
 		if (pointerOver)
 		{
@@ -176,11 +187,32 @@ public class MultiToggle : KMonoBehaviour, IPointerClickHandler, IPointerEnterHa
 		}
 	}
 
-	public void OnPointerDown(PointerEventData eventData)
+	public virtual void OnPointerDown(PointerEventData eventData)
 	{
+		clickHeldDown = true;
+		if (play_sound_on_click)
+		{
+			if (states[state].on_click_override_sound_path == string.Empty)
+			{
+				KFMOD.PlayOneShot(GlobalAssets.GetSound("HUD_Click", false));
+			}
+			else
+			{
+				KFMOD.PlayOneShot(GlobalAssets.GetSound(states[state].on_click_override_sound_path, false));
+			}
+		}
 	}
 
-	public void OnPointerUp(PointerEventData eventData)
+	public virtual void OnPointerUp(PointerEventData eventData)
 	{
+		if (clickHeldDown)
+		{
+			clickHeldDown = false;
+			if (onStopHold != null)
+			{
+				onStopHold();
+			}
+		}
+		totalHeldTime = 0f;
 	}
 }

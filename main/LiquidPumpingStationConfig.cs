@@ -16,7 +16,7 @@ public class LiquidPumpingStationConfig : IBuildingConfig
 		float[] tIER = BUILDINGS.CONSTRUCTION_MASS_KG.TIER4;
 		string[] rAW_MINERALS = MATERIALS.RAW_MINERALS;
 		float melting_point = 1600f;
-		BuildLocationRule build_location_rule = BuildLocationRule.Tile;
+		BuildLocationRule build_location_rule = BuildLocationRule.Anywhere;
 		EffectorValues nONE = NOISE_POLLUTION.NONE;
 		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, tIER, rAW_MINERALS, melting_point, build_location_rule, BUILDINGS.DECOR.NONE, nONE, 0.2f);
 		buildingDef.Floodable = false;
@@ -43,7 +43,7 @@ public class LiquidPumpingStationConfig : IBuildingConfig
 		storage.showInUI = false;
 		storage.allowItemRemoval = true;
 		storage.showDescriptor = true;
-		storage.SetDefaultStoredItemModifiers(Storage.StandardSealedStorage);
+		storage.SetDefaultStoredItemModifiers(Storage.StandardInsulatedStorage);
 	}
 
 	private static void AddGuide(GameObject go, bool occupy_tiles)
@@ -58,7 +58,7 @@ public class LiquidPumpingStationConfig : IBuildingConfig
 			Assets.GetAnim(new HashedString("waterpump_kanim"))
 		};
 		kBatchedAnimController.initialAnim = "place_guide";
-		kBatchedAnimController.visibilityType = KAnimControllerBase.VisibilityType.Always;
+		kBatchedAnimController.visibilityType = KAnimControllerBase.VisibilityType.OffscreenUpdate;
 		kBatchedAnimController.isMovable = true;
 		PumpingStationGuide pumpingStationGuide = gameObject.AddComponent<PumpingStationGuide>();
 		pumpingStationGuide.parent = go;

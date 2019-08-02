@@ -161,7 +161,7 @@ namespace NodeEditorFramework.Utilities
 			}
 			else
 			{
-				Debug.LogWarning("Requesting more EndChangeChecks than issuing BeginChangeChecks!", null);
+				Debug.LogWarning("Requesting more EndChangeChecks than issuing BeginChangeChecks!");
 			}
 			return changed;
 		}
@@ -402,7 +402,7 @@ namespace NodeEditorFramework.Utilities
 			str = new string(list.ToArray());
 			if (!float.TryParse(str, out result))
 			{
-				Debug.LogError("Could not parse " + str, null);
+				Debug.LogError("Could not parse " + str);
 			}
 			return result;
 		}

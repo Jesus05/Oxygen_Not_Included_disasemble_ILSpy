@@ -74,7 +74,7 @@ public class KGlobalAnimParser
 		string text = Path.Combine(fullName, ANIM_COMMAND_FILE);
 		if (File.Exists(text))
 		{
-			AnimCommandFile animCommandFile = YamlIO<AnimCommandFile>.LoadFile(text);
+			AnimCommandFile animCommandFile = YamlIO.LoadFile<AnimCommandFile>(text, null, null);
 			animCommandFile.directory = "Assets/anim/" + Directory.GetParent(path).Name;
 			instance.commandFiles[key] = animCommandFile;
 			return animCommandFile;
@@ -177,6 +177,7 @@ public class KGlobalAnimParser
 			data.AddAnim(anim);
 			animFile.animCount++;
 		}
+		Debug.Assert(num2 == animFile.animCount);
 		data.animCount[fileNameHash] = animFile.animCount;
 		animFile.maxVisSymbolFrames = Math.Max(animFile.maxVisSymbolFrames, reader.ReadInt32());
 		data.UpdateMaxVisibleSymbols(animFile.maxVisSymbolFrames);
@@ -200,7 +201,7 @@ public class KGlobalAnimParser
 		int num = reader.ReadInt32();
 		if (num != 10 && num != 9)
 		{
-			Debug.LogError(fileNameHash + " has invalid build.bytes version [" + num + "]", null);
+			Debug.LogError(fileNameHash + " has invalid build.bytes version [" + num + "]");
 			return -1;
 		}
 		KAnimGroupFile.Group group = KAnimGroupFile.GetGroup(data.groupID);
@@ -285,7 +286,7 @@ public class KGlobalAnimParser
 			KAnim.Build.Symbol symbol = data.GetSymbol(i);
 			if (symbol == null)
 			{
-				Debug.LogWarning("Symbol null for [" + data.groupID + "] idx: [" + i + "]", null);
+				Debug.LogWarning("Symbol null for [" + data.groupID + "] idx: [" + i + "]");
 			}
 			else
 			{
@@ -302,7 +303,7 @@ public class KGlobalAnimParser
 				symbol.frameLookup = new int[symbol.numLookupFrames];
 				if (symbol.numLookupFrames <= 0)
 				{
-					Debug.LogWarning("No lookup frames for  [" + data.groupID + "] build: [" + symbol.build.name + "] idx: [" + i + "] id: [" + symbol.hash + "]", null);
+					Debug.LogWarning("No lookup frames for  [" + data.groupID + "] build: [" + symbol.build.name + "] idx: [" + i + "] id: [" + symbol.hash + "]");
 				}
 				else
 				{
@@ -315,7 +316,7 @@ public class KGlobalAnimParser
 						KAnim.Build.SymbolFrameInstance symbolFrameInstance2 = data.GetSymbolFrameInstance(l);
 						if (symbolFrameInstance2.symbolFrame == null)
 						{
-							Debug.LogWarning("No symbol frame  [" + data.groupID + "] symFrameIdx: [" + l + "] id: [" + symbol.hash + "]", null);
+							Debug.LogWarning("No symbol frame  [" + data.groupID + "] symFrameIdx: [" + l + "] id: [" + symbol.hash + "]");
 						}
 						else
 						{
@@ -323,7 +324,7 @@ public class KGlobalAnimParser
 							{
 								if (m >= symbol.frameLookup.Length)
 								{
-									Debug.LogWarning("Too many lookup frames [" + m + ">=" + symbol.frameLookup.Length + "] for  [" + data.groupID + "] idx: [" + i + "] id: [" + symbol.hash + "]", null);
+									Debug.LogWarning("Too many lookup frames [" + m + ">=" + symbol.frameLookup.Length + "] for  [" + data.groupID + "] idx: [" + i + "] id: [" + symbol.hash + "]");
 								}
 								else
 								{

@@ -58,14 +58,14 @@ public class TemperatureSwitchSideScreen : SideScreenContent, IRender200ms
 	{
 		if ((Object)target == (Object)null)
 		{
-			Debug.LogError("Invalid gameObject received", null);
+			Debug.LogError("Invalid gameObject received");
 		}
 		else
 		{
 			targetTemperatureSwitch = target.GetComponent<TemperatureControlledSwitch>();
 			if ((Object)targetTemperatureSwitch == (Object)null)
 			{
-				Debug.LogError("The gameObject received does not contain a TimedSwitch component", null);
+				Debug.LogError("The gameObject received does not contain a TimedSwitch component");
 			}
 			else
 			{
@@ -103,11 +103,11 @@ public class TemperatureSwitchSideScreen : SideScreenContent, IRender200ms
 
 	private void UpdateTargetTemperatureLabel()
 	{
-		targetTemperature.text = GameUtil.GetFormattedTemperature(targetTemperatureSwitch.thresholdTemperature, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true);
+		targetTemperature.text = GameUtil.GetFormattedTemperature(targetTemperatureSwitch.thresholdTemperature, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false);
 	}
 
 	private void UpdateLabels()
 	{
-		currentTemperature.text = string.Format(UI.UISIDESCREENS.TEMPERATURESWITCHSIDESCREEN.CURRENT_TEMPERATURE, GameUtil.GetFormattedTemperature(targetTemperatureSwitch.GetTemperature(), GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true));
+		currentTemperature.text = string.Format(UI.UISIDESCREENS.TEMPERATURESWITCHSIDESCREEN.CURRENT_TEMPERATURE, GameUtil.GetFormattedTemperature(targetTemperatureSwitch.GetTemperature(), GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false));
 	}
 }

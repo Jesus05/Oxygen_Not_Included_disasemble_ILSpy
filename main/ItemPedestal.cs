@@ -28,7 +28,16 @@ public class ItemPedestal : KMonoBehaviour
 	protected override void OnSpawn()
 	{
 		base.OnSpawn();
-		Subscribe(-731304873, OnOccupantChanged);
+		Subscribe(-731304873, OnOccupantChangedDelegate);
+		if ((bool)receptacle.Occupant)
+		{
+			KBatchedAnimController component = receptacle.Occupant.GetComponent<KBatchedAnimController>();
+			if ((bool)component)
+			{
+				component.enabled = true;
+			}
+			OnOccupantChanged(receptacle.Occupant);
+		}
 	}
 
 	private void OnOccupantChanged(object data)

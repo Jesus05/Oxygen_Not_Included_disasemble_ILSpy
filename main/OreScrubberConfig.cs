@@ -36,7 +36,7 @@ public class OreScrubberConfig : IBuildingConfig
 
 	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
-		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.IndustrialMachinery);
+		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.IndustrialMachinery, false);
 		OreScrubber oreScrubber = go.AddOrGet<OreScrubber>();
 		oreScrubber.massConsumedPerUse = 0.07f;
 		oreScrubber.consumedElement = SimHashes.ChlorineGas;

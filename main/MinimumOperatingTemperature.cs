@@ -50,7 +50,9 @@ public class MinimumOperatingTemperature : KMonoBehaviour, ISim200ms, IGameObjec
 			for (int i = 0; i < building.PlacementCells.Length; i++)
 			{
 				int i2 = building.PlacementCells[i];
-				if (Grid.Temperature[i2] < minimumTemperature)
+				float num = Grid.Temperature[i2];
+				float num2 = Grid.Mass[i2];
+				if ((num != 0f || num2 != 0f) && num < minimumTemperature)
 				{
 					flag = false;
 					break;
@@ -78,7 +80,7 @@ public class MinimumOperatingTemperature : KMonoBehaviour, ISim200ms, IGameObjec
 	public List<Descriptor> GetDescriptors(GameObject go)
 	{
 		List<Descriptor> list = new List<Descriptor>();
-		Descriptor item = new Descriptor(string.Format(UI.BUILDINGEFFECTS.MINIMUM_TEMP, GameUtil.GetFormattedTemperature(minimumTemperature, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true)), string.Format(UI.BUILDINGEFFECTS.TOOLTIPS.MINIMUM_TEMP, GameUtil.GetFormattedTemperature(minimumTemperature, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true)), Descriptor.DescriptorType.Effect, false);
+		Descriptor item = new Descriptor(string.Format(UI.BUILDINGEFFECTS.MINIMUM_TEMP, GameUtil.GetFormattedTemperature(minimumTemperature, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false)), string.Format(UI.BUILDINGEFFECTS.TOOLTIPS.MINIMUM_TEMP, GameUtil.GetFormattedTemperature(minimumTemperature, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false)), Descriptor.DescriptorType.Effect, false);
 		list.Add(item);
 		return list;
 	}

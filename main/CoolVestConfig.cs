@@ -10,6 +10,8 @@ public class CoolVestConfig : IEquipmentConfig
 {
 	public const string ID = "Cool_Vest";
 
+	public static ComplexRecipe recipe;
+
 	[CompilerGenerated]
 	private static Action<Equippable> _003C_003Ef__mg_0024cache0;
 
@@ -19,7 +21,7 @@ public class CoolVestConfig : IEquipmentConfig
 		dictionary.Add("BasicFabric", (float)TUNING.EQUIPMENT.VESTS.COOL_VEST_MASS);
 		ClothingWearer.ClothingInfo clothingInfo = ClothingWearer.ClothingInfo.COOL_CLOTHING;
 		List<AttributeModifier> attributeModifiers = new List<AttributeModifier>();
-		EquipmentDef equipmentDef = EquipmentTemplates.CreateEquipmentDef("Cool_Vest", TUNING.EQUIPMENT.CLOTHING.SLOT, TUNING.EQUIPMENT.VESTS.FABRICATOR, 300f, SimHashes.Carbon, dictionary, (float)TUNING.EQUIPMENT.VESTS.COOL_VEST_MASS, TUNING.EQUIPMENT.VESTS.COOL_VEST_ICON0, TUNING.EQUIPMENT.VESTS.SNAPON0, TUNING.EQUIPMENT.VESTS.COOL_VEST_ANIM0, 4, attributeModifiers, TUNING.EQUIPMENT.VESTS.SNAPON1, true, EntityTemplates.CollisionShape.RECTANGLE, 0.75f, 0.4f, null, null);
+		EquipmentDef equipmentDef = EquipmentTemplates.CreateEquipmentDef("Cool_Vest", TUNING.EQUIPMENT.CLOTHING.SLOT, SimHashes.Carbon, (float)TUNING.EQUIPMENT.VESTS.COOL_VEST_MASS, TUNING.EQUIPMENT.VESTS.COOL_VEST_ICON0, TUNING.EQUIPMENT.VESTS.SNAPON0, TUNING.EQUIPMENT.VESTS.COOL_VEST_ANIM0, 4, attributeModifiers, TUNING.EQUIPMENT.VESTS.SNAPON1, true, EntityTemplates.CollisionShape.RECTANGLE, 0.75f, 0.4f, null, null);
 		Descriptor item = new Descriptor($"{DUPLICANTS.ATTRIBUTES.THERMALCONDUCTIVITYBARRIER.NAME}: {GameUtil.GetFormattedDistance(ClothingWearer.ClothingInfo.COOL_CLOTHING.conductivityMod)}", $"{DUPLICANTS.ATTRIBUTES.THERMALCONDUCTIVITYBARRIER.NAME}: {GameUtil.GetFormattedDistance(ClothingWearer.ClothingInfo.COOL_CLOTHING.conductivityMod)}", Descriptor.DescriptorType.Effect, false);
 		Descriptor item2 = new Descriptor($"{DUPLICANTS.ATTRIBUTES.DECOR.NAME}: {ClothingWearer.ClothingInfo.COOL_CLOTHING.decorMod}", $"{DUPLICANTS.ATTRIBUTES.DECOR.NAME}: {ClothingWearer.ClothingInfo.COOL_CLOTHING.decorMod}", Descriptor.DescriptorType.Effect, false);
 		equipmentDef.additionalDescriptors.Add(item);
@@ -40,14 +42,15 @@ public class CoolVestConfig : IEquipmentConfig
 			Ownables soleOwner = eq.assignee.GetSoleOwner();
 			if (!((UnityEngine.Object)soleOwner == (UnityEngine.Object)null))
 			{
-				ClothingWearer component = soleOwner.GetComponent<ClothingWearer>();
-				if ((UnityEngine.Object)component != (UnityEngine.Object)null)
+				MinionAssignablesProxy component = soleOwner.GetComponent<MinionAssignablesProxy>();
+				ClothingWearer component2 = (component.target as KMonoBehaviour).GetComponent<ClothingWearer>();
+				if ((UnityEngine.Object)component2 != (UnityEngine.Object)null)
 				{
-					component.ChangeClothes(clothingInfo);
+					component2.ChangeClothes(clothingInfo);
 				}
 				else
 				{
-					Debug.LogWarning("Clothing item cannot be equipped to assignee because they lack ClothingWearer component", null);
+					Debug.LogWarning("Clothing item cannot be equipped to assignee because they lack ClothingWearer component");
 				}
 			}
 		}
@@ -71,7 +74,7 @@ public class CoolVestConfig : IEquipmentConfig
 
 	public static void SetupVest(GameObject go)
 	{
-		go.GetComponent<KPrefabID>().AddTag(GameTags.Clothes);
+		go.GetComponent<KPrefabID>().AddTag(GameTags.Clothes, false);
 		Equippable equippable = go.GetComponent<Equippable>();
 		if ((UnityEngine.Object)equippable == (UnityEngine.Object)null)
 		{
@@ -85,6 +88,6 @@ public class CoolVestConfig : IEquipmentConfig
 	{
 		SetupVest(go);
 		KPrefabID component = go.GetComponent<KPrefabID>();
-		component.AddTag(GameTags.PedestalDisplayable);
+		component.AddTag(GameTags.PedestalDisplayable, false);
 	}
 }

@@ -92,13 +92,14 @@ public class BuildMenuBuildingsScreen : KIconToggleMenu
 		Game.Instance.Subscribe(-1190690038, OnBuildToolDeactivated);
 	}
 
-	public void Configure(BuildMenu.Category category, IList<BuildMenu.BuildingInfo> building_infos)
+	public void Configure(HashedString category, IList<BuildMenu.BuildingInfo> building_infos)
 	{
 		ClearButtons();
 		SetHasFocus(true);
 		List<ToggleInfo> list = new List<ToggleInfo>();
-		string str = category.ToString().ToUpper();
-		titleLabel.text = Strings.Get("STRINGS.UI.NEWBUILDCATEGORIES." + str + ".BUILDMENUTITLE");
+		string text = HashCache.Get().Get(category).ToUpper();
+		text = text.Replace(" ", string.Empty);
+		titleLabel.text = Strings.Get("STRINGS.UI.NEWBUILDCATEGORIES." + text + ".BUILDMENUTITLE");
 		foreach (BuildMenu.BuildingInfo building_info in building_infos)
 		{
 			BuildMenu.BuildingInfo current = building_info;
@@ -205,7 +206,7 @@ public class BuildMenuBuildingsScreen : KIconToggleMenu
 				string effect = def.Effect;
 				if (def.HotKey != Action.NumActions)
 				{
-					text = text + " " + GameUtil.GetHotkeyString(def.HotKey);
+					text = GameUtil.AppendHotkeyString(text, def.HotKey);
 				}
 				component.AddMultiStringTooltip(text, buildingToolTipSettings.BuildButtonName);
 				component.AddMultiStringTooltip(effect, buildingToolTipSettings.BuildButtonDescription);

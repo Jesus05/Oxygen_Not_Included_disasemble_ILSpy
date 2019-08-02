@@ -34,26 +34,31 @@ public class GeneShuffler : Workable
 
 		public State consumed;
 
+		public State recharging;
+
+		public BoolParameter isCharged;
+
 		public override void InitializeStates(out BaseState default_state)
 		{
-			base.serializable = false;
 			default_state = idle;
-			idle.PlayAnim("idle").WorkableStartTransition((Instance smi) => smi.master, working.pre);
-			working.pre.PlayAnim("working_pre").EventTransition(GameHashes.AnimQueueComplete, working.loop, null);
+			idle.PlayAnim("on").Enter(delegate(Instance smi)
+			{
+				smi.master.SetAssignable(true);
+			}).Exit(delegate(Instance smi)
+			{
+				smi.master.SetAssignable(false);
+			})
+				.WorkableStartTransition((Instance smi) => smi.master, working.pre)
+				.ParamTransition(isCharged, consumed, GameStateMachine<GeneShufflerSM, Instance, GeneShuffler, object>.IsFalse);
+			working.pre.PlayAnim("working_pre").OnAnimQueueComplete(working.loop);
 			working.loop.PlayAnim("working_loop", KAnim.PlayMode.Loop).ScheduleGoTo(5f, working.complete);
 			working.complete.ToggleStatusItem(Db.Get().BuildingStatusItems.GeneShuffleCompleted, null).Enter(delegate(Instance smi)
 			{
-				KSelectable component = smi.master.GetComponent<KSelectable>();
-				if (component.IsSelected)
-				{
-					DetailsScreen.Instance.Refresh(smi.master.gameObject);
-				}
+				smi.master.RefreshSideScreen();
 			}).WorkableStopTransition((Instance smi) => smi.master, working.pst);
 			working.pst.EventTransition(GameHashes.AnimQueueComplete, consumed, null);
-			consumed.PlayAnim("off", KAnim.PlayMode.Once).Enter(delegate(Instance smi)
-			{
-				smi.master.IsConsumed = true;
-			});
+			consumed.PlayAnim("off", KAnim.PlayMode.Once).ParamTransition(isCharged, recharging, GameStateMachine<GeneShufflerSM, Instance, GeneShuffler, object>.IsTrue);
+			recharging.PlayAnim("recharging", KAnim.PlayMode.Once).OnAnimQueueComplete(idle);
 		}
 	}
 
@@ -98,70 +103,46 @@ public class GeneShuffler : Workable
 	{
 		base.OnPrefabInit();
 		assignable.OnAssign += Assign;
+		lightEfficiencyBonus = false;
 	}
 
 	protected override void OnSpawn()
 	{
 		base.OnSpawn();
-		geneShufflerSMI = new GeneShufflerSM.Instance(this);
-		geneShufflerSMI.StartSM();
 		showProgressBar = false;
+		geneShufflerSMI = new GeneShufflerSM.Instance(this);
 		RefreshRechargeChore();
 		RefreshConsumedState();
 		Subscribe(-1697596308, OnStorageChangeDelegate);
-	}
-
-	private void RefreshConsumedState()
-	{
-		assignable.SetCanBeAssigned(!IsConsumed);
-		if (!IsConsumed)
-		{
-			if (assignable.assignee != null)
-			{
-				if (!geneShufflerSMI.IsInsideState(geneShufflerSMI.sm.consumed))
-				{
-					ActivateChore(null);
-				}
-				else
-				{
-					geneShufflerSMI.GoTo(geneShufflerSMI.sm.idle);
-				}
-			}
-		}
-		else
-		{
-			geneShufflerSMI.GoTo(geneShufflerSMI.sm.consumed);
-		}
+		geneShufflerSMI.StartSM();
 	}
 
 	private void Assign(IAssignableIdentity new_assignee)
 	{
+		CancelChore();
 		if (new_assignee != null)
 		{
-			if (geneShufflerSMI != null && !geneShufflerSMI.IsInsideState(geneShufflerSMI.sm.consumed))
-			{
-				ActivateChore(null);
-			}
-		}
-		else if (geneShufflerSMI.IsInsideState(geneShufflerSMI.sm.idle))
-		{
-			CancelChore(null);
+			ActivateChore();
 		}
 	}
 
 	private void Recharge()
 	{
-		IsConsumed = false;
-		RechargeRequested = false;
-		assignable.SetCanBeAssigned(true);
-		geneShufflerSMI.GoTo(geneShufflerSMI.sm.idle);
+		SetConsumed(false);
+		RequestRecharge(false);
 		RefreshRechargeChore();
+		RefreshSideScreen();
+	}
+
+	private void SetConsumed(bool consumed)
+	{
+		IsConsumed = consumed;
 		RefreshConsumedState();
-		KSelectable component = GetComponent<KSelectable>();
-		if (component.IsSelected)
-		{
-			DetailsScreen.Instance.Refresh(base.gameObject);
-		}
+	}
+
+	private void RefreshConsumedState()
+	{
+		geneShufflerSMI.sm.isCharged.Set(!IsConsumed, geneShufflerSMI);
 	}
 
 	private void OnStorageChange(object data)
@@ -189,13 +170,17 @@ public class GeneShuffler : Workable
 	protected override void OnStartWork(Worker worker)
 	{
 		base.OnStartWork(worker);
-		notification = new Notification(MISC.NOTIFICATIONS.GENESHUFFLER.NAME, NotificationType.Good, HashedString.Invalid, (List<Notification> notificationList, object data) => MISC.NOTIFICATIONS.GENESHUFFLER.TOOLTIP + notificationList.ReduceMessages(false), null, false, 0f, null, null);
+		notification = new Notification(MISC.NOTIFICATIONS.GENESHUFFLER.NAME, NotificationType.Good, HashedString.Invalid, (List<Notification> notificationList, object data) => MISC.NOTIFICATIONS.GENESHUFFLER.TOOLTIP + notificationList.ReduceMessages(false), null, false, 0f, null, null, null);
 		notifier.Add(notification, string.Empty);
+		DeSelectBuilding();
+	}
+
+	private void DeSelectBuilding()
+	{
 		if (GetComponent<KSelectable>().IsSelected)
 		{
 			SelectTool.Instance.Select(null, true);
 		}
-		assignable.SetCanBeAssigned(false);
 	}
 
 	protected override bool OnWorkTick(Worker worker, float dt)
@@ -229,10 +214,7 @@ public class GeneShuffler : Workable
 		CameraController.Instance.CameraGoTo(base.transform.GetPosition(), 1f, false);
 		ApplyRandomTrait(worker);
 		assignable.Unassign();
-		if (GetComponent<KSelectable>().IsSelected)
-		{
-			SelectTool.Instance.Select(null, true);
-		}
+		DeSelectBuilding();
 		notifier.Remove(notification);
 	}
 
@@ -257,6 +239,7 @@ public class GeneShuffler : Workable
 			InfoDialogScreen infoDialogScreen = (InfoDialogScreen)GameScreenManager.Instance.StartScreen(ScreenPrefabs.Instance.InfoDialogScreen.gameObject, GameScreenManager.Instance.ssOverlayCanvas.gameObject, GameScreenManager.UIRenderTarget.ScreenSpaceOverlay);
 			string text = string.Format(UI.GENESHUFFLERMESSAGE.BODY_SUCCESS, worker.GetProperName(), trait.Name, trait.GetTooltip());
 			infoDialogScreen.SetHeader(UI.GENESHUFFLERMESSAGE.HEADER).AddPlainText(text);
+			SetConsumed(true);
 		}
 		else
 		{
@@ -266,22 +249,17 @@ public class GeneShuffler : Workable
 		}
 	}
 
-	public void ActivateChore(object param = null)
+	private void ActivateChore()
 	{
-		if (chore != null)
-		{
-			CancelChore(null);
-		}
+		Debug.Assert(chore == null);
 		GetComponent<Workable>().SetWorkTime(float.PositiveInfinity);
-		chore = new WorkChore<Workable>(Db.Get().ChoreTypes.GeneShuffle, override_anims: Assets.GetAnim("anim_interacts_neuralvacillator_kanim"), target: this, chore_provider: null, chore_tags: null, run_until_complete: true, on_complete: delegate
+		chore = new WorkChore<Workable>(Db.Get().ChoreTypes.GeneShuffle, override_anims: Assets.GetAnim("anim_interacts_neuralvacillator_kanim"), target: this, chore_provider: null, run_until_complete: true, on_complete: delegate
 		{
 			CompleteChore();
-		}, on_begin: null, on_end: null, allow_in_red_alert: true, schedule_block: null, ignore_schedule_block: false, only_when_operational: true, is_preemptable: false, allow_in_context_menu: true, allow_prioritization: true, priority_class: PriorityScreen.PriorityClass.emergency, priority_class_value: 0, ignore_building_assignment: false);
-		chore.AddPrecondition(ChorePreconditions.instance.IsAssignedtoMe, assignable);
-		chore.AddPrecondition(ChorePreconditions.instance.IsOperational, assignable.gameObject.GetComponent<Operational>());
+		}, on_begin: null, on_end: null, allow_in_red_alert: true, schedule_block: null, ignore_schedule_block: false, only_when_operational: true, is_preemptable: false, allow_in_context_menu: true, allow_prioritization: false, priority_class: PriorityScreen.PriorityClass.high, priority_class_value: 5, ignore_building_assignment: false, add_to_daily_report: true);
 	}
 
-	public void CancelChore(object param = null)
+	private void CancelChore()
 	{
 		if (chore != null)
 		{
@@ -305,5 +283,20 @@ public class GeneShuffler : Workable
 	private void RefreshRechargeChore()
 	{
 		delivery.Pause(!RechargeRequested, "No recharge requested");
+	}
+
+	public void RefreshSideScreen()
+	{
+		KSelectable component = GetComponent<KSelectable>();
+		if (component.IsSelected)
+		{
+			DetailsScreen.Instance.Refresh(base.gameObject);
+		}
+	}
+
+	public void SetAssignable(bool set_it)
+	{
+		assignable.SetCanBeAssigned(set_it);
+		RefreshSideScreen();
 	}
 }

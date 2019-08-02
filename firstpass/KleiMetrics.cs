@@ -118,7 +118,7 @@ public class KleiMetrics : ThreadedHttps<KleiMetrics>
 
 	public KleiMetrics()
 	{
-		LIVE_ENDPOINT = "metric.kleientertainment.com/write";
+		LIVE_ENDPOINT = "oni.metrics.klei.com/write";
 		serviceName = "KleiMetrics";
 		CLIENT_KEY = DistributionPlatform.Inst.MetricsClientKey;
 		PlatformUserIDFieldName = DistributionPlatform.Inst.MetricsUserIDField;
@@ -260,7 +260,7 @@ public class KleiMetrics : ThreadedHttps<KleiMetrics>
 		int num = (int)TimeSpan.FromTicks(currentSessionTicks - startTimeTicks).TotalSeconds;
 		if (num < 0)
 		{
-			Debug.LogWarning("Session time is < 0", null);
+			Debug.LogWarning("Session time is < 0");
 		}
 		return (uint)num;
 	}
@@ -343,6 +343,7 @@ public class KleiMetrics : ThreadedHttps<KleiMetrics>
 
 	private Dictionary<string, object> GetUserSession()
 	{
+		Debug.Assert(enabled);
 		Dictionary<string, object> dictionary = new Dictionary<string, object>();
 		if (!sessionStarted)
 		{
@@ -372,7 +373,7 @@ public class KleiMetrics : ThreadedHttps<KleiMetrics>
 			}
 			catch (Exception ex)
 			{
-				Debug.LogError("Dynamic session variables may be set from a thread. " + ex.Message + "\n" + ex.StackTrace, null);
+				Debug.LogError("Dynamic session variables may be set from a thread. " + ex.Message + "\n" + ex.StackTrace);
 				return dictionary;
 			}
 		}

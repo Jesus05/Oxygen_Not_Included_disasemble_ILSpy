@@ -33,14 +33,14 @@ public class SingleButtonSideScreen : SideScreenContent
 	{
 		if ((Object)new_target == (Object)null)
 		{
-			Output.LogError("Invalid gameObject received");
+			Debug.LogError("Invalid gameObject received");
 		}
 		else
 		{
 			target = new_target.GetComponent<ISidescreenButtonControl>();
 			if (target == null)
 			{
-				Output.LogError("The gameObject received does not contain a", typeof(ISidescreenButtonControl).ToString());
+				DebugUtil.LogErrorArgs("The gameObject received does not contain a", typeof(ISidescreenButtonControl).ToString());
 			}
 			else
 			{

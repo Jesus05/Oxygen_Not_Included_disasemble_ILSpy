@@ -17,10 +17,7 @@ public class TemperatureSuitConfig : IEquipmentConfig
 		list.Add(new AttributeModifier(TUNING.EQUIPMENT.ATTRIBUTE_MOD_IDS.ATHLETICS, (float)TUNING.EQUIPMENT.SUITS.TEMPERATURESUIT_ATHLETICS, STRINGS.EQUIPMENT.PREFABS.TEMPERATURE_SUIT.NAME, false, false, true));
 		string id = "Temperature_Suit";
 		string sLOT = TUNING.EQUIPMENT.SUITS.SLOT;
-		string fABRICATOR = TUNING.EQUIPMENT.SUITS.FABRICATOR;
-		float fabricationTime = (float)TUNING.EQUIPMENT.SUITS.TEMPERATURESUIT_FABTIME;
 		SimHashes outputElement = SimHashes.Water;
-		Dictionary<string, float> inputElementMassMap = dictionary;
 		float mass = (float)TUNING.EQUIPMENT.SUITS.TEMPERATURESUIT_MASS;
 		string aNIM = TUNING.EQUIPMENT.SUITS.ANIM;
 		string sNAPON = TUNING.EQUIPMENT.SUITS.SNAPON;
@@ -31,7 +28,7 @@ public class TemperatureSuitConfig : IEquipmentConfig
 		{
 			GameTags.Suit
 		};
-		EquipmentDef equipmentDef = EquipmentTemplates.CreateEquipmentDef(id, sLOT, fABRICATOR, fabricationTime, outputElement, inputElementMassMap, mass, aNIM, sNAPON, buildOverride, buildOverridePriority, attributeModifiers, null, false, EntityTemplates.CollisionShape.CIRCLE, 0.325f, 0.325f, additional_tags, null);
+		EquipmentDef equipmentDef = EquipmentTemplates.CreateEquipmentDef(id, sLOT, outputElement, mass, aNIM, sNAPON, buildOverride, buildOverridePriority, attributeModifiers, null, false, EntityTemplates.CollisionShape.CIRCLE, 0.325f, 0.325f, additional_tags, null);
 		equipmentDef.RecipeDescription = STRINGS.EQUIPMENT.PREFABS.TEMPERATURE_SUIT.RECIPE_DESC;
 		return equipmentDef;
 	}
@@ -42,6 +39,6 @@ public class TemperatureSuitConfig : IEquipmentConfig
 		suitTank.element = "Water";
 		suitTank.amount = 100f;
 		KPrefabID component = go.GetComponent<KPrefabID>();
-		component.AddTag(GameTags.PedestalDisplayable);
+		component.AddTag(GameTags.PedestalDisplayable, false);
 	}
 }

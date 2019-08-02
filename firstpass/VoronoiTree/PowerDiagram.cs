@@ -226,6 +226,8 @@ namespace VoronoiTree
 
 		private List<DualSite2d> dualSites = new List<DualSite2d>();
 
+		private ConvexHull<DualSite3d, ConvexFaceExt<DualSite3d>> debug_LastHull;
+
 		public VoronoiMesh<DualSite2d, Site, VoronoiEdge<DualSite2d, Site>> voronoiMesh
 		{
 			get;
@@ -304,8 +306,13 @@ namespace VoronoiTree
 				}
 				site.position = site.poly.Centroid();
 			}
-			for (int i = 0; i <= maxIterations; i++)
+			int num2 = 0;
+			while (true)
 			{
+				if (num2 > maxIterations)
+				{
+					return;
+				}
 				try
 				{
 					UpdateWeights(sites);
@@ -313,24 +320,24 @@ namespace VoronoiTree
 				}
 				catch (Exception ex)
 				{
-					Debug.LogError("Error [" + num + "] iters " + completedIterations + "/" + maxIterations + " Exception:" + ex.Message + "\n" + ex.StackTrace, null);
+					Debug.LogError("Error [" + num + "] iters " + completedIterations + "/" + maxIterations + " Exception:" + ex.Message + "\n" + ex.StackTrace);
 					return;
 				}
 				num = 0f;
 				foreach (Site site2 in sites)
 				{
-					float num2 = (site2.poly != null) ? site2.poly.Area() : 0.1f;
-					float num3 = site2.weight / weightSum * bounds.Area();
-					num = Mathf.Max(Mathf.Abs(num2 - num3) / num3, num);
+					float num3 = (site2.poly != null) ? site2.poly.Area() : 0.1f;
+					float num4 = site2.weight / weightSum * bounds.Area();
+					num = Mathf.Max(Mathf.Abs(num3 - num4) / num4, num);
 				}
 				if (num < threashold)
 				{
-					completedIterations = i;
 					break;
 				}
 				completedIterations++;
+				num2++;
 			}
-			Debug.Log("error [" + num + "] iters " + completedIterations + "/" + maxIterations, null);
+			completedIterations = num2;
 		}
 
 		public void ComputeVD()
@@ -582,14 +589,16 @@ namespace VoronoiTree
 			while (stack.Count > 0)
 			{
 				ConvexFaceExt<DualSite3d> convexFaceExt = stack.Pop();
+				list2.Add(convexFaceExt);
 				for (int i = 0; i < convexFaceExt.Adjacency.Length; i++)
 				{
 					if (ContainsVert(convexFaceExt.Adjacency[i], dualSite) && !list2.Contains(convexFaceExt.Adjacency[i]))
 					{
 						Edge edge = GetEdge(convexFaceExt, convexFaceExt.Adjacency[i]);
 						DualSite3d dualSite3d = (edge.First != dualSite) ? edge.First : edge.Second;
+						Debug.Assert(dualSite3d != dualSite, "We're our own neighbour??");
+						Debug.Assert(dualSite3d.site.id == -1 || !list.Contains(dualSite3d.site), "Tried adding a site twice!");
 						list.Add(dualSite3d.site);
-						list2.Add(convexFaceExt.Adjacency[i]);
 						stack.Push(convexFaceExt.Adjacency[i]);
 					}
 				}
@@ -644,6 +653,7 @@ namespace VoronoiTree
 					}
 				}
 			}
+			debug_LastHull = convexHull;
 		}
 
 		private void UpdateWeights(List<Site> sites)
@@ -743,6 +753,7 @@ namespace VoronoiTree
 			{
 				if (!dual3dSites[i].site.dummy)
 				{
+					Debug.Assert(dual3dSites[i].site.currentWeight != 0f);
 					for (int j = i + 1; j < dual3dSites.Count; j++)
 					{
 						if (!dual3dSites[j].site.dummy && dual3dSites[i].coord == dual3dSites[j].coord)

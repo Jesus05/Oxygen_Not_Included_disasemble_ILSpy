@@ -16,19 +16,25 @@ public class AssignableReachabilitySensor : Sensor
 	public AssignableReachabilitySensor(Sensors sensors)
 		: base(sensors)
 	{
-		Assignables[] components = base.gameObject.GetComponents<Assignables>();
-		int num = 0;
-		for (int i = 0; i < components.Length; i++)
+		MinionAssignablesProxy minionAssignablesProxy = base.gameObject.GetComponent<MinionIdentity>().assignableProxy.Get();
+		minionAssignablesProxy.ConfigureAssignableSlots();
+		Assignables[] components = minionAssignablesProxy.GetComponents<Assignables>();
+		if (components.Length == 0)
 		{
-			num += components[i].Count;
+			Debug.LogError(base.gameObject.GetProperName() + ": No 'Assignables' components found for AssignableReachabilitySensor");
+		}
+		int num = 0;
+		foreach (Assignables assignables in components)
+		{
+			num += assignables.Slots.Count;
 		}
 		slots = new SlotEntry[num];
 		int num2 = 0;
-		foreach (Assignables assignables in components)
+		foreach (Assignables assignables2 in components)
 		{
-			for (int k = 0; k < assignables.Count; k++)
+			for (int k = 0; k < assignables2.Slots.Count; k++)
 			{
-				slots[num2++].slot = assignables[k];
+				slots[num2++].slot = assignables2.Slots[k];
 			}
 		}
 		navigator = GetComponent<Navigator>();
@@ -43,7 +49,7 @@ public class AssignableReachabilitySensor : Sensor
 				return slots[i].isReachable;
 			}
 		}
-		Debug.LogError("Could not find slot: " + slot, null);
+		Debug.LogError("Could not find slot: " + slot);
 		return false;
 	}
 

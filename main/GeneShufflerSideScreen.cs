@@ -35,7 +35,7 @@ public class GeneShufflerSideScreen : SideScreenContent
 		GeneShuffler component = target.GetComponent<GeneShuffler>();
 		if ((Object)component == (Object)null)
 		{
-			Debug.LogError("Target doesn't have a GeneShuffler associated with it.", null);
+			Debug.LogError("Target doesn't have a GeneShuffler associated with it.");
 		}
 		else
 		{

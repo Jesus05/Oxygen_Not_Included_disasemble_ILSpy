@@ -34,7 +34,8 @@ public class HeadquartersConfig : IBuildingConfig
 	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.AddOrGet<LoreBearer>();
-		go.AddOrGet<Telepad>();
+		Telepad telepad = go.AddOrGet<Telepad>();
+		telepad.startingSkillPoints = 1f;
 		SocialGatheringPoint socialGatheringPoint = go.AddOrGet<SocialGatheringPoint>();
 		socialGatheringPoint.choreOffsets = new CellOffset[6]
 		{
@@ -54,6 +55,18 @@ public class HeadquartersConfig : IBuildingConfig
 		light2D.overlayColour = LIGHT2D.HEADQUARTERS_OVERLAYCOLOR;
 		light2D.shape = LightShape.Circle;
 		light2D.drawOverlay = true;
+		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.LightSource, false);
+		RoleStation roleStation = go.AddOrGet<RoleStation>();
+		roleStation.overrideAnims = new KAnimFile[1]
+		{
+			Assets.GetAnim("anim_interacts_hqbase_skill_upgrade_kanim")
+		};
+		roleStation.workAnims = new HashedString[1]
+		{
+			"upgrade"
+		};
+		roleStation.workingPstComplete = HashedString.Invalid;
+		roleStation.workingPstFailed = HashedString.Invalid;
 	}
 
 	public override void DoPostConfigureComplete(GameObject go)

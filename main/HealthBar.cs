@@ -50,7 +50,7 @@ public class HealthBar : ProgressBar
 	{
 		if (autoHide)
 		{
-			if ((SimViewMode)data == SimViewMode.None)
+			if ((HashedString)data == OverlayModes.None.ID)
 			{
 				if (!base.gameObject.activeSelf && ShouldShow)
 				{

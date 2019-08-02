@@ -7,7 +7,7 @@ public class Schedulable : KMonoBehaviour
 
 	public bool IsAllowed(ScheduleBlockType schedule_block_type)
 	{
-		return RedAlertManager.Instance.Get().IsOn() || ScheduleManager.Instance.IsAllowed(this, schedule_block_type);
+		return VignetteManager.Instance.Get().IsRedAlert() || ScheduleManager.Instance.IsAllowed(this, schedule_block_type);
 	}
 
 	public void OnScheduleChanged(Schedule schedule)

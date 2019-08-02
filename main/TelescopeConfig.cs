@@ -33,7 +33,7 @@ public class TelescopeConfig : IBuildingConfig
 		buildingDef.SelfHeatKilowattsWhenActive = 0f;
 		buildingDef.InputConduitType = ConduitType.Gas;
 		buildingDef.UtilityInputOffset = new CellOffset(0, 0);
-		buildingDef.ViewMode = SimViewMode.PowerMap;
+		buildingDef.ViewMode = OverlayModes.Power.ID;
 		buildingDef.AudioCategory = "Metal";
 		buildingDef.AudioSize = "large";
 		return buildingDef;
@@ -49,7 +49,7 @@ public class TelescopeConfig : IBuildingConfig
 		{
 			Assets.GetAnim("anim_interacts_telescope_kanim")
 		};
-		telescope.requiredRolePerk = RoleManager.rolePerks.CanStudyWorldObjects.id;
+		telescope.requiredSkillPerk = Db.Get().SkillPerks.CanStudyWorldObjects.Id;
 		telescope.workLayer = Grid.SceneLayer.BuildingFront;
 		Storage storage = go.AddOrGet<Storage>();
 		storage.capacityKg = 1000f;

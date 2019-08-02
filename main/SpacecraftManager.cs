@@ -7,7 +7,7 @@ using TUNING;
 using UnityEngine;
 
 [SerializationConfig(MemberSerialization.OptIn)]
-public class SpacecraftManager : KMonoBehaviour
+public class SpacecraftManager : KMonoBehaviour, ISim1000ms
 {
 	public enum DestinationAnalysisState
 	{
@@ -75,7 +75,10 @@ public class SpacecraftManager : KMonoBehaviour
 		SpaceDestinationTypes spaceDestinationTypes = Db.Get().SpaceDestinationTypes;
 		List<List<string>> list = new List<List<string>>();
 		list.Add(new List<string>());
-		list.Add(new List<string>());
+		list.Add(new List<string>
+		{
+			spaceDestinationTypes.OilyAsteroid.Id
+		});
 		list.Add(new List<string>
 		{
 			spaceDestinationTypes.Satellite.Id
@@ -83,15 +86,16 @@ public class SpacecraftManager : KMonoBehaviour
 		list.Add(new List<string>
 		{
 			spaceDestinationTypes.Satellite.Id,
-			spaceDestinationTypes.MetallicAsteroid.Id,
 			spaceDestinationTypes.RockyAsteroid.Id,
-			spaceDestinationTypes.CarbonaceousAsteroid.Id
+			spaceDestinationTypes.CarbonaceousAsteroid.Id,
+			spaceDestinationTypes.ForestPlanet.Id
 		});
 		list.Add(new List<string>
 		{
 			spaceDestinationTypes.MetallicAsteroid.Id,
 			spaceDestinationTypes.RockyAsteroid.Id,
-			spaceDestinationTypes.CarbonaceousAsteroid.Id
+			spaceDestinationTypes.CarbonaceousAsteroid.Id,
+			spaceDestinationTypes.SaltDwarf.Id
 		});
 		list.Add(new List<string>
 		{
@@ -105,13 +109,9 @@ public class SpacecraftManager : KMonoBehaviour
 		{
 			spaceDestinationTypes.IcyDwarf.Id,
 			spaceDestinationTypes.OrganicDwarf.Id,
-			spaceDestinationTypes.DustyMoon.Id
-		});
-		list.Add(new List<string>
-		{
-			spaceDestinationTypes.IcyDwarf.Id,
-			spaceDestinationTypes.OrganicDwarf.Id,
-			spaceDestinationTypes.DustyMoon.Id
+			spaceDestinationTypes.DustyMoon.Id,
+			spaceDestinationTypes.ChlorinePlanet.Id,
+			spaceDestinationTypes.RedDwarf.Id
 		});
 		list.Add(new List<string>
 		{
@@ -122,20 +122,70 @@ public class SpacecraftManager : KMonoBehaviour
 		list.Add(new List<string>
 		{
 			spaceDestinationTypes.TerraPlanet.Id,
-			spaceDestinationTypes.VolcanoPlanet.Id,
 			spaceDestinationTypes.GasGiant.Id,
-			spaceDestinationTypes.IceGiant.Id
+			spaceDestinationTypes.IceGiant.Id,
+			spaceDestinationTypes.RustPlanet.Id
 		});
 		list.Add(new List<string>
 		{
 			spaceDestinationTypes.GasGiant.Id,
+			spaceDestinationTypes.IceGiant.Id,
+			spaceDestinationTypes.HydrogenGiant.Id
+		});
+		list.Add(new List<string>
+		{
+			spaceDestinationTypes.RustPlanet.Id,
+			spaceDestinationTypes.VolcanoPlanet.Id,
+			spaceDestinationTypes.RockyAsteroid.Id,
+			spaceDestinationTypes.TerraPlanet.Id,
+			spaceDestinationTypes.MetallicAsteroid.Id
+		});
+		list.Add(new List<string>
+		{
+			spaceDestinationTypes.ShinyPlanet.Id,
+			spaceDestinationTypes.MetallicAsteroid.Id,
+			spaceDestinationTypes.RockyAsteroid.Id
+		});
+		list.Add(new List<string>
+		{
+			spaceDestinationTypes.GoldAsteroid.Id,
+			spaceDestinationTypes.OrganicDwarf.Id,
+			spaceDestinationTypes.ForestPlanet.Id,
+			spaceDestinationTypes.ChlorinePlanet.Id
+		});
+		list.Add(new List<string>
+		{
+			spaceDestinationTypes.IcyDwarf.Id,
+			spaceDestinationTypes.MetallicAsteroid.Id,
+			spaceDestinationTypes.DustyMoon.Id,
+			spaceDestinationTypes.VolcanoPlanet.Id,
 			spaceDestinationTypes.IceGiant.Id
+		});
+		list.Add(new List<string>
+		{
+			spaceDestinationTypes.ShinyPlanet.Id,
+			spaceDestinationTypes.RedDwarf.Id,
+			spaceDestinationTypes.RockyAsteroid.Id,
+			spaceDestinationTypes.GasGiant.Id
+		});
+		list.Add(new List<string>
+		{
+			spaceDestinationTypes.HydrogenGiant.Id,
+			spaceDestinationTypes.ForestPlanet.Id,
+			spaceDestinationTypes.OilyAsteroid.Id
+		});
+		list.Add(new List<string>
+		{
+			spaceDestinationTypes.GoldAsteroid.Id,
+			spaceDestinationTypes.SaltDwarf.Id,
+			spaceDestinationTypes.TerraPlanet.Id,
+			spaceDestinationTypes.VolcanoPlanet.Id
 		});
 		List<List<string>> list2 = list;
 		List<int> list3 = new List<int>();
 		int num = 3;
-		int minValue = 10;
-		int maxValue = 20;
+		int minValue = 15;
+		int maxValue = 25;
 		for (int i = 0; i < list2.Count; i++)
 		{
 			if (list2[i].Count != 0)
@@ -157,6 +207,8 @@ public class SpacecraftManager : KMonoBehaviour
 			SpaceDestination item = new SpaceDestination(destinations.Count, type, num3);
 			destinations.Add(item);
 		}
+		destinations.Add(new SpaceDestination(destinations.Count, Db.Get().SpaceDestinationTypes.Earth.Id, 4));
+		destinations.Add(new SpaceDestination(destinations.Count, Db.Get().SpaceDestinationTypes.Wormhole.Id, list2.Count));
 	}
 
 	protected override void OnSpawn()
@@ -189,13 +241,74 @@ public class SpacecraftManager : KMonoBehaviour
 		}
 	}
 
-	public SpaceDestination GetActiveMission(int spacecraftID)
+	public SpaceDestination GetSpacecraftDestination(LaunchConditionManager lcm)
 	{
+		Spacecraft spacecraftFromLaunchConditionManager = GetSpacecraftFromLaunchConditionManager(lcm);
+		return GetSpacecraftDestination(spacecraftFromLaunchConditionManager.id);
+	}
+
+	public SpaceDestination GetSpacecraftDestination(int spacecraftID)
+	{
+		CleanSavedSpacecraftDestinations();
 		if (savedSpacecraftDestinations.ContainsKey(spacecraftID))
 		{
 			return GetDestination(savedSpacecraftDestinations[spacecraftID]);
 		}
 		return null;
+	}
+
+	public List<int> GetSpacecraftsForDestination(SpaceDestination destination)
+	{
+		CleanSavedSpacecraftDestinations();
+		List<int> list = new List<int>();
+		foreach (KeyValuePair<int, int> savedSpacecraftDestination in savedSpacecraftDestinations)
+		{
+			if (savedSpacecraftDestination.Value == destination.id)
+			{
+				list.Add(savedSpacecraftDestination.Key);
+			}
+		}
+		return list;
+	}
+
+	private void CleanSavedSpacecraftDestinations()
+	{
+		List<int> list = new List<int>();
+		foreach (KeyValuePair<int, int> savedSpacecraftDestination in savedSpacecraftDestinations)
+		{
+			bool flag = false;
+			foreach (Spacecraft item in spacecraft)
+			{
+				if (item.id == savedSpacecraftDestination.Key)
+				{
+					flag = true;
+					break;
+				}
+			}
+			bool flag2 = false;
+			foreach (SpaceDestination destination in destinations)
+			{
+				if (destination.id == savedSpacecraftDestination.Value)
+				{
+					flag2 = true;
+					break;
+				}
+			}
+			if (!flag || !flag2)
+			{
+				list.Add(savedSpacecraftDestination.Key);
+			}
+		}
+		foreach (int item2 in list)
+		{
+			savedSpacecraftDestinations.Remove(item2);
+		}
+	}
+
+	public void SetSpacecraftDestination(LaunchConditionManager lcm, SpaceDestination destination)
+	{
+		Spacecraft spacecraftFromLaunchConditionManager = GetSpacecraftFromLaunchConditionManager(lcm);
+		savedSpacecraftDestinations[spacecraftFromLaunchConditionManager.id] = destination.id;
 	}
 
 	public int GetSpacecraftID(LaunchableRocket rocket)
@@ -260,17 +373,21 @@ public class SpacecraftManager : KMonoBehaviour
 		return null;
 	}
 
-	public void Update()
+	public void Sim1000ms(float dt)
 	{
 		foreach (Spacecraft item in spacecraft)
 		{
-			item.ProgressMission(Time.deltaTime);
+			item.ProgressMission(dt);
+		}
+		foreach (SpaceDestination destination in destinations)
+		{
+			destination.Replenish(dt);
 		}
 	}
 
 	public void PushReadyToLandNotification(Spacecraft spacecraft)
 	{
-		Notification notification = new Notification(BUILDING.STATUSITEMS.SPACECRAFTREADYTOLAND.NOTIFICATION, NotificationType.Good, HashedString.Invalid, (List<Notification> notificationList, object data) => BUILDING.STATUSITEMS.SPACECRAFTREADYTOLAND.NOTIFICATION_TOOLTIP + notificationList.ReduceMessages(false), spacecraft.launchConditions.GetProperName(), false, 0f, null, null);
+		Notification notification = new Notification(BUILDING.STATUSITEMS.SPACECRAFTREADYTOLAND.NOTIFICATION, NotificationType.Good, HashedString.Invalid, (List<Notification> notificationList, object data) => BUILDING.STATUSITEMS.SPACECRAFTREADYTOLAND.NOTIFICATION_TOOLTIP + notificationList.ReduceMessages(false), spacecraft.launchConditions.GetProperName(), false, 0f, null, null, null);
 		base.gameObject.AddOrGet<Notifier>().Add(notification, string.Empty);
 	}
 
@@ -278,7 +395,7 @@ public class SpacecraftManager : KMonoBehaviour
 	{
 		foreach (KeyValuePair<SimHashes, float> result in results)
 		{
-			ElementLoader.FindElementByHash(result.Key).substance.SpawnResource(PlayerController.GetCursorPos(KInputManager.GetMousePos()), result.Value, 300f, 0, 0, false, false);
+			ElementLoader.FindElementByHash(result.Key).substance.SpawnResource(PlayerController.GetCursorPos(KInputManager.GetMousePos()), result.Value, 300f, 0, 0, false, false, false);
 		}
 	}
 
@@ -315,6 +432,14 @@ public class SpacecraftManager : KMonoBehaviour
 			{
 				if (destinationAnalysisState2 == DestinationAnalysisState.Complete)
 				{
+					if (instance.GetDestination(starmapAnalysisDestinationID).type == Db.Get().SpaceDestinationTypes.Earth.Id)
+					{
+						Game.Instance.unlocks.Unlock("earth");
+					}
+					if (instance.GetDestination(starmapAnalysisDestinationID).type == Db.Get().SpaceDestinationTypes.Wormhole.Id)
+					{
+						Game.Instance.unlocks.Unlock("wormhole");
+					}
 					instance.SetStarmapAnalysisDestinationID(-1);
 				}
 				Trigger(532901469, null);

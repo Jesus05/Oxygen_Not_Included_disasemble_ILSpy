@@ -65,6 +65,7 @@ public class GameInputMapping
 				return result;
 			}
 		}
+		Debug.Assert(false, "Unbound action " + mAction.ToString());
 		return KeyBindings[0];
 	}
 
@@ -142,7 +143,7 @@ public class GameInputMapping
 				}
 				catch
 				{
-					Output.LogError("Error parsing", BindingsFilename);
+					DebugUtil.LogErrorArgs("Error parsing", BindingsFilename);
 				}
 				if (array != null && array.Length != 0)
 				{

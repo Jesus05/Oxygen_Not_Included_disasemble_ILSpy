@@ -48,7 +48,7 @@ public class AcousticDisturbance
 					if (cellsInRange.Contains(item) && minionIdentity.GetSMI<StaminaMonitor.Instance>().IsSleeping())
 					{
 						minionIdentity.Trigger(-527751701, data);
-						minionIdentity.Trigger(-2105031705, data);
+						minionIdentity.Trigger(1621815900, data);
 					}
 				}
 			}
@@ -68,7 +68,7 @@ public class AcousticDisturbance
 
 	private static void SpawnEffect(object data)
 	{
-		Grid.SceneLayer layer = Grid.SceneLayer.Paintings;
+		Grid.SceneLayer layer = Grid.SceneLayer.InteriorWall;
 		int cell = (int)data;
 		KBatchedAnimController kBatchedAnimController = FXHelpers.CreateEffect("radialgrid_kanim", Grid.CellToPosCCC(cell, layer), null, false, layer, false);
 		kBatchedAnimController.destroyOnAnimComplete = false;

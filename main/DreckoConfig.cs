@@ -46,7 +46,7 @@ public class DreckoConfig : IEntityConfig
 		hashSet.Add("BasicSingleHarvestPlant".ToTag());
 		Diet.Info[] infos = new Diet.Info[1]
 		{
-			new Diet.Info(hashSet, POOP_ELEMENT, CALORIES_PER_DAY_OF_PLANT_EATEN, KG_POOP_PER_DAY_OF_PLANT, null, 0f, false)
+			new Diet.Info(hashSet, POOP_ELEMENT, CALORIES_PER_DAY_OF_PLANT_EATEN, KG_POOP_PER_DAY_OF_PLANT, null, 0f, false, true)
 		};
 		Diet diet = new Diet(infos);
 		CreatureCalorieMonitor.Def def = prefab.AddOrGetDef<CreatureCalorieMonitor.Def>();

@@ -38,8 +38,8 @@ public class ColdBreather : StateMachineComponent<ColdBreather.StatesInstance>, 
 		{
 			base.serializable = true;
 			default_state = grow;
-			statusItemCooling = new StatusItem("cooling", CREATURES.STATUSITEMS.COOLING.NAME, CREATURES.STATUSITEMS.COOLING.TOOLTIP, string.Empty, StatusItem.IconType.Info, NotificationType.Neutral, false, SimViewMode.None, 63486);
-			dead.ToggleStatusItem(CREATURES.STATUSITEMS.DEAD.NAME, CREATURES.STATUSITEMS.DEAD.TOOLTIP, category: Db.Get().StatusItemCategories.Main, icon: string.Empty, icon_type: StatusItem.IconType.Info, notification_type: (NotificationType)0, allow_multiples: false, render_overlay: SimViewMode.None, status_overlays: 0, resolve_string_callback: null, resolve_tooltip_callback: null).Enter(delegate(StatesInstance smi)
+			statusItemCooling = new StatusItem("cooling", CREATURES.STATUSITEMS.COOLING.NAME, CREATURES.STATUSITEMS.COOLING.TOOLTIP, string.Empty, StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, 129022);
+			dead.ToggleStatusItem(CREATURES.STATUSITEMS.DEAD.NAME, CREATURES.STATUSITEMS.DEAD.TOOLTIP, category: Db.Get().StatusItemCategories.Main, icon: string.Empty, icon_type: StatusItem.IconType.Info, notification_type: (NotificationType)0, allow_multiples: false, render_overlay: default(HashedString), status_overlays: 0, resolve_string_callback: null, resolve_tooltip_callback: null).Enter(delegate(StatesInstance smi)
 			{
 				GameUtil.KInstantiate(Assets.GetPrefab(EffectConfigs.PlantDeathId), smi.master.transform.GetPosition(), Grid.SceneLayer.FXFront, null, 0).SetActive(true);
 				smi.master.Trigger(1623392196, null);
@@ -49,7 +49,7 @@ public class ColdBreather : StateMachineComponent<ColdBreather.StatesInstance>, 
 			});
 			blocked_from_growing.ToggleStatusItem(Db.Get().MiscStatusItems.RegionIsBlocked, (object)null).EventTransition(GameHashes.EntombedChanged, alive, (StatesInstance smi) => alive.ForceUpdateStatus(smi.master.gameObject)).EventTransition(GameHashes.TooColdWarning, alive, (StatesInstance smi) => alive.ForceUpdateStatus(smi.master.gameObject))
 				.EventTransition(GameHashes.TooHotWarning, alive, (StatesInstance smi) => alive.ForceUpdateStatus(smi.master.gameObject))
-				.EventTransition(GameHashes.Uprooted, dead, (StatesInstance smi) => UprootedMonitor.IsObjectUprooted(smi.master.gameObject));
+				.TagTransition(GameTags.Uprooted, dead, false);
 			grow.Enter(delegate(StatesInstance smi)
 			{
 				if (smi.master.receptacleMonitor.HasReceptacle() && !alive.ForceUpdateStatus(smi.master.gameObject))
@@ -91,6 +91,8 @@ public class ColdBreather : StateMachineComponent<ColdBreather.StatesInstance>, 
 
 	private const float EXHALE_PERIOD = 1f;
 
+	public float consumptionRate;
+
 	public float deltaEmitTemperature = -5f;
 
 	public Vector3 emitOffsetCell = new Vector3(0f, 0f);
@@ -103,6 +105,11 @@ public class ColdBreather : StateMachineComponent<ColdBreather.StatesInstance>, 
 
 	private HandleVector<Game.ComplexCallbackInfo<Sim.MassEmittedCallback>>.Handle simEmitCBHandle = HandleVector<Game.ComplexCallbackInfo<Sim.MassEmittedCallback>>.InvalidHandle;
 
+	private static readonly EventSystem.IntraObjectHandler<ColdBreather> OnReplantedDelegate = new EventSystem.IntraObjectHandler<ColdBreather>(delegate(ColdBreather component, object data)
+	{
+		component.OnReplanted(data);
+	});
+
 	[CompilerGenerated]
 	private static Action<Sim.MassEmittedCallback, object> _003C_003Ef__mg_0024cache0;
 
@@ -110,8 +117,31 @@ public class ColdBreather : StateMachineComponent<ColdBreather.StatesInstance>, 
 	{
 		base.OnSpawn();
 		simEmitCBHandle = Game.Instance.massEmitCallbackManager.Add(OnSimEmittedCallback, this, "ColdBreather");
-		elementConsumer.EnableConsumption(false);
 		base.smi.StartSM();
+	}
+
+	protected override void OnPrefabInit()
+	{
+		elementConsumer.EnableConsumption(false);
+		Subscribe(1309017699, OnReplantedDelegate);
+		base.OnPrefabInit();
+	}
+
+	private void OnReplanted(object data = null)
+	{
+		ReceptacleMonitor component = GetComponent<ReceptacleMonitor>();
+		if (!((UnityEngine.Object)component == (UnityEngine.Object)null))
+		{
+			ElementConsumer component2 = GetComponent<ElementConsumer>();
+			if (component.Replanted)
+			{
+				component2.consumptionRate = consumptionRate;
+			}
+			else
+			{
+				component2.consumptionRate = consumptionRate * 0.25f;
+			}
+		}
 	}
 
 	protected override void OnCleanUp()
@@ -120,7 +150,7 @@ public class ColdBreather : StateMachineComponent<ColdBreather.StatesInstance>, 
 		simEmitCBHandle.Clear();
 		if ((bool)storage)
 		{
-			storage.DropAll(true);
+			storage.DropAll(true, false, default(Vector3), true);
 		}
 		base.OnCleanUp();
 	}

@@ -14,7 +14,7 @@ public class DisinfectTool : DragTool
 		base.OnPrefabInit();
 		Instance = this;
 		interceptNumberKeysForPriority = true;
-		viewMode = SimViewMode.Disease;
+		viewMode = OverlayModes.Disease.ID;
 	}
 
 	public void Activate()
@@ -24,7 +24,7 @@ public class DisinfectTool : DragTool
 
 	protected override void OnDragTool(int cell, int distFromOrigin)
 	{
-		for (int i = 0; i < 37; i++)
+		for (int i = 0; i < 39; i++)
 		{
 			GameObject gameObject = Grid.Objects[cell, i];
 			if ((Object)gameObject != (Object)null)

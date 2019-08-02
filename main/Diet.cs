@@ -46,7 +46,13 @@ public class Diet
 			private set;
 		}
 
-		public Info(HashSet<Tag> consumed_tags, Tag produced_element, float calories_per_kg, float produced_conversion_rate = 1f, string disease_id = null, float disease_per_kg_produced = 0f, bool produce_solid_tile = false)
+		public bool eatsPlantsDirectly
+		{
+			get;
+			private set;
+		}
+
+		public Info(HashSet<Tag> consumed_tags, Tag produced_element, float calories_per_kg, float produced_conversion_rate = 1f, string disease_id = null, float disease_per_kg_produced = 0f, bool produce_solid_tile = false, bool eats_plants_directly = false)
 		{
 			consumedTags = consumed_tags;
 			producedElement = produced_element;
@@ -61,6 +67,7 @@ public class Diet
 				diseaseIdx = byte.MaxValue;
 			}
 			produceSolidTile = produce_solid_tile;
+			eatsPlantsDirectly = eats_plants_directly;
 		}
 
 		public bool IsMatch(Tag tag)
@@ -111,6 +118,8 @@ public class Diet
 
 	public List<KeyValuePair<Tag, float>> producedTags;
 
+	public bool eatsPlantsDirectly;
+
 	private Dictionary<Tag, Info> consumedTagToInfo = new Dictionary<Tag, Info>();
 
 	public Info[] infos
@@ -126,6 +135,10 @@ public class Diet
 		producedTags = new List<KeyValuePair<Tag, float>>();
 		foreach (Info info in infos)
 		{
+			if (info.eatsPlantsDirectly)
+			{
+				eatsPlantsDirectly = true;
+			}
 			foreach (Tag consumedTag in info.consumedTags)
 			{
 				if (consumedTags.FindIndex((KeyValuePair<Tag, float> e) => e.Key == consumedTag) == -1)
@@ -134,7 +147,7 @@ public class Diet
 				}
 				if (consumedTagToInfo.ContainsKey(consumedTag))
 				{
-					Debug.LogError("Duplicate diet entry: " + consumedTag, null);
+					Debug.LogError("Duplicate diet entry: " + consumedTag);
 				}
 				consumedTagToInfo[consumedTag] = info;
 			}

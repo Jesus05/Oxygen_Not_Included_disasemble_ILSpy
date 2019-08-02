@@ -45,6 +45,11 @@ public class LocText : TextMeshProUGUI
 		}
 	}
 
+	protected override void OnEnable()
+	{
+		base.OnEnable();
+	}
+
 	[ContextMenu("Apply Settings")]
 	public void ApplySettings()
 	{

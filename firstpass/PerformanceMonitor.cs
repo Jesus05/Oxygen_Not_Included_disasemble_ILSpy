@@ -23,28 +23,31 @@ public class PerformanceMonitor : MonoBehaviour
 
 	private void Update()
 	{
-		float deltaTime = Time.deltaTime;
-		if (deltaTime <= 0.0333333351f)
+		if (Time.timeScale != 0f)
 		{
-			numFramesAbove30++;
+			float unscaledDeltaTime = Time.unscaledDeltaTime;
+			if (unscaledDeltaTime <= 0.0333333351f)
+			{
+				numFramesAbove30++;
+			}
+			else
+			{
+				numFramesBelow30++;
+			}
+			if (frameTimes.Count == frameRateWindowSize)
+			{
+				LinkedListNode<float> first = frameTimes.First;
+				frameTimeTotal -= first.Value;
+				frameTimes.RemoveFirst();
+				first.Value = unscaledDeltaTime;
+				frameTimes.AddLast(first);
+			}
+			else
+			{
+				frameTimes.AddLast(unscaledDeltaTime);
+			}
+			frameTimeTotal += unscaledDeltaTime;
 		}
-		else
-		{
-			numFramesBelow30++;
-		}
-		if (frameTimes.Count == frameRateWindowSize)
-		{
-			LinkedListNode<float> first = frameTimes.First;
-			frameTimeTotal -= first.Value;
-			frameTimes.RemoveFirst();
-			first.Value = deltaTime;
-			frameTimes.AddLast(first);
-		}
-		else
-		{
-			frameTimes.AddLast(deltaTime);
-		}
-		frameTimeTotal += deltaTime;
 	}
 
 	public void Reset()

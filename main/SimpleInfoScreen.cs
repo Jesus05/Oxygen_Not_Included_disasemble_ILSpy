@@ -36,7 +36,11 @@ public class SimpleInfoScreen : TargetScreen
 
 		private LocText text;
 
+		private KButton button;
+
 		public Color color;
+
+		public TextStyleSetting style;
 
 		private FadeStage fadeStage;
 
@@ -48,20 +52,31 @@ public class SimpleInfoScreen : TargetScreen
 
 		public Image GetImage => image;
 
-		public StatusItemEntry(StatusItemGroup.Entry item, StatusItemCategory category, GameObject status_item_prefab, Transform parent, TextStyleSetting tooltip_style, Color color, bool skip_fade, Action<StatusItemEntry> onDestroy)
+		public StatusItemEntry(StatusItemGroup.Entry item, StatusItemCategory category, GameObject status_item_prefab, Transform parent, TextStyleSetting tooltip_style, Color color, TextStyleSetting style, bool skip_fade, Action<StatusItemEntry> onDestroy)
 		{
 			this.item = item;
 			this.category = category;
 			tooltipStyle = tooltip_style;
 			this.onDestroy = onDestroy;
 			this.color = color;
+			this.style = style;
 			widget = Util.KInstantiateUI(status_item_prefab, parent.gameObject, false);
 			text = widget.GetComponentInChildren<LocText>(true);
+			SetTextStyleSetting.ApplyStyle(text, style);
 			toolTip = widget.GetComponentInChildren<ToolTip>(true);
 			image = widget.GetComponentInChildren<Image>(true);
 			item.SetIcon(image);
 			widget.SetActive(true);
 			toolTip.OnToolTip = OnToolTip;
+			button = widget.GetComponentInChildren<KButton>();
+			if (item.item.statusItemClickCallback != null)
+			{
+				button.onClick += OnClick;
+			}
+			else
+			{
+				button.enabled = false;
+			}
 			fadeStage = (skip_fade ? FadeStage.WAIT : FadeStage.IN);
 			SimAndRenderScheduler.instance.Add(this, false);
 			Refresh();
@@ -119,6 +134,11 @@ public class SimpleInfoScreen : TargetScreen
 		{
 			item.ShowToolTip(toolTip, tooltipStyle);
 			return string.Empty;
+		}
+
+		private void OnClick()
+		{
+			item.OnClick();
 		}
 
 		public void Refresh()
@@ -200,9 +220,17 @@ public class SimpleInfoScreen : TargetScreen
 
 	public GameObject TextContainerPrefab;
 
+	private GameObject stressPanel;
+
+	private DetailsPanelDrawer stressDrawer;
+
 	private Dictionary<string, GameObject> storageLabels = new Dictionary<string, GameObject>();
 
 	public TextStyleSetting ToolTipStyle_Property;
+
+	public TextStyleSetting StatusItemStyle_Main;
+
+	public TextStyleSetting StatusItemStyle_Other;
 
 	public Color statusItemTextColor_regular = Color.black;
 
@@ -232,6 +260,11 @@ public class SimpleInfoScreen : TargetScreen
 		onStorageChangeDelegate = OnStorageChange;
 	}
 
+	public override bool IsValidForTarget(GameObject target)
+	{
+		return true;
+	}
+
 	protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
@@ -250,6 +283,8 @@ public class SimpleInfoScreen : TargetScreen
 		GameObject gameObject = infoPanel.GetComponent<CollapsibleDetailContentPanel>().Content.gameObject;
 		descriptionContainer = Util.KInstantiateUI<DescriptionContainer>(DescriptionContainerTemplate, gameObject, false);
 		storagePanel = Util.KInstantiateUI(ScreenPrefabs.Instance.CollapsableContentPanel, base.gameObject, false);
+		stressPanel = Util.KInstantiateUI(ScreenPrefabs.Instance.CollapsableContentPanel, base.gameObject, false);
+		stressDrawer = new DetailsPanelDrawer(attributesLabelTemplate, stressPanel.GetComponent<CollapsibleDetailContentPanel>().Content.gameObject);
 		stampContainer = Util.KInstantiateUI(StampContainerTemplate, gameObject, false);
 		Subscribe(-1514841199, OnRefreshDataDelegate);
 	}
@@ -348,7 +383,9 @@ public class SimpleInfoScreen : TargetScreen
 	private void DoAddStatusItem(StatusItemGroup.Entry status_item, StatusItemCategory category, bool show_immediate = false)
 	{
 		GameObject gameObject = statusItemsFolder;
-		StatusItemEntry statusItemEntry = new StatusItemEntry(color: (status_item.item.notificationType != NotificationType.BadMinor && status_item.item.notificationType != NotificationType.Bad && status_item.item.notificationType != NotificationType.DuplicantThreatening) ? statusItemTextColor_regular : statusItemTextColor_bad, item: status_item, category: category, status_item_prefab: StatusItemPrefab, parent: gameObject.transform, tooltip_style: ToolTipStyle_Property, skip_fade: show_immediate, onDestroy: OnStatusItemDestroy);
+		Color color = (status_item.item.notificationType != NotificationType.BadMinor && status_item.item.notificationType != NotificationType.Bad && status_item.item.notificationType != NotificationType.DuplicantThreatening) ? statusItemTextColor_regular : statusItemTextColor_bad;
+		TextStyleSetting style = (category != Db.Get().StatusItemCategories.Main) ? StatusItemStyle_Other : StatusItemStyle_Main;
+		StatusItemEntry statusItemEntry = new StatusItemEntry(status_item, category, StatusItemPrefab, gameObject.transform, ToolTipStyle_Property, color, style, show_immediate, OnStatusItemDestroy);
 		statusItemEntry.SetSprite(status_item.item.sprite);
 		if (category != null)
 		{
@@ -359,6 +396,10 @@ public class SimpleInfoScreen : TargetScreen
 				num = item.GetIndex();
 				item.Destroy(true);
 				oldStatusItems.Remove(item);
+			}
+			if (category == Db.Get().StatusItemCategories.Main)
+			{
+				num = 0;
 			}
 			if (num != -1)
 			{
@@ -430,6 +471,7 @@ public class SimpleInfoScreen : TargetScreen
 		{
 			vitalsContainer.Refresh();
 		}
+		RefreshStress();
 		RefreshStorage();
 	}
 
@@ -459,7 +501,7 @@ public class SimpleInfoScreen : TargetScreen
 			{
 				vitalsPanel.gameObject.SetActive((UnityEngine.Object)component8.GetPlanterStorage != (UnityEngine.Object)null);
 			}
-			Growing component9 = selectedTarget.gameObject.GetComponent<Growing>();
+			WiltCondition component9 = selectedTarget.gameObject.GetComponent<WiltCondition>();
 			if ((UnityEngine.Object)component9 != (UnityEngine.Object)null)
 			{
 				vitalsPanel.gameObject.SetActive(true);
@@ -608,7 +650,7 @@ public class SimpleInfoScreen : TargetScreen
 										selected_storage = storage;
 										component.onClick += delegate
 										{
-											selected_storage.Remove(select_item);
+											selected_storage.Drop(select_item, true);
 										};
 									}
 								}
@@ -617,10 +659,14 @@ public class SimpleInfoScreen : TargetScreen
 								gameObject.GetComponentInChildren<ToolTip>().ClearMultiStringTooltip();
 								string unitFormattedName = GameUtil.GetUnitFormattedName(item, false);
 								unitFormattedName = string.Format(UI.DETAILTABS.DETAILS.CONTENTS_MASS, unitFormattedName, GameUtil.GetFormattedMass(component2.Mass, GameUtil.TimeSlice.None, GameUtil.MetricMassFormat.UseThreshold, true, "{0:0.#}"));
-								unitFormattedName = string.Format(UI.DETAILTABS.DETAILS.CONTENTS_TEMPERATURE, unitFormattedName, GameUtil.GetFormattedTemperature(component2.Temperature, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true));
+								unitFormattedName = string.Format(UI.DETAILTABS.DETAILS.CONTENTS_TEMPERATURE, unitFormattedName, GameUtil.GetFormattedTemperature(component2.Temperature, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false));
 								if (sMI != null)
 								{
-									unitFormattedName += string.Format(UI.DETAILTABS.DETAILS.CONTENTS_ROTTABLE, sMI.StateString());
+									string text2 = sMI.StateString();
+									if (!string.IsNullOrEmpty(text2))
+									{
+										unitFormattedName += string.Format(UI.DETAILTABS.DETAILS.CONTENTS_ROTTABLE, text2);
+									}
 									gameObject.GetComponentInChildren<ToolTip>().AddMultiStringTooltip(sMI.GetToolTip(), PluginAssets.Instance.defaultTextStyleSetting);
 								}
 								if (component2.DiseaseIdx != 255)
@@ -674,6 +720,56 @@ public class SimpleInfoScreen : TargetScreen
 		}
 		gameObject.SetActive(true);
 		return gameObject;
+	}
+
+	private void RefreshStress()
+	{
+		MinionIdentity identity = (!((UnityEngine.Object)selectedTarget != (UnityEngine.Object)null)) ? null : selectedTarget.GetComponent<MinionIdentity>();
+		if ((UnityEngine.Object)identity == (UnityEngine.Object)null)
+		{
+			stressPanel.SetActive(false);
+		}
+		else
+		{
+			List<ReportManager.ReportEntry.Note> stressNotes = new List<ReportManager.ReportEntry.Note>();
+			stressPanel.SetActive(true);
+			stressPanel.GetComponent<CollapsibleDetailContentPanel>().HeaderLabel.text = UI.DETAILTABS.STATS.GROUPNAME_STRESS;
+			ReportManager.ReportEntry reportEntry = ReportManager.Instance.TodaysReport.reportEntries.Find((ReportManager.ReportEntry entry) => entry.reportType == ReportManager.ReportType.StressDelta);
+			stressDrawer.BeginDrawing();
+			float num = 0f;
+			stressNotes.Clear();
+			int num2 = reportEntry.contextEntries.FindIndex((ReportManager.ReportEntry entry) => entry.context == identity.GetProperName());
+			ReportManager.ReportEntry reportEntry2 = (num2 == -1) ? null : reportEntry.contextEntries[num2];
+			if (reportEntry2 != null)
+			{
+				reportEntry2.IterateNotes(delegate(ReportManager.ReportEntry.Note note)
+				{
+					stressNotes.Add(note);
+				});
+				stressNotes.Sort((ReportManager.ReportEntry.Note a, ReportManager.ReportEntry.Note b) => a.value.CompareTo(b.value));
+				for (int i = 0; i < stressNotes.Count; i++)
+				{
+					DetailsPanelDrawer detailsPanelDrawer = stressDrawer;
+					string[] obj = new string[6];
+					ReportManager.ReportEntry.Note note2 = stressNotes[i];
+					obj[0] = ((!(note2.value > 0f)) ? string.Empty : UIConstants.ColorPrefixRed);
+					ReportManager.ReportEntry.Note note3 = stressNotes[i];
+					obj[1] = note3.note;
+					obj[2] = ": ";
+					ReportManager.ReportEntry.Note note4 = stressNotes[i];
+					obj[3] = Util.FormatTwoDecimalPlace(note4.value);
+					obj[4] = "%";
+					ReportManager.ReportEntry.Note note5 = stressNotes[i];
+					obj[5] = ((!(note5.value > 0f)) ? string.Empty : UIConstants.ColorSuffix);
+					detailsPanelDrawer.NewLabel(string.Concat(obj));
+					float num3 = num;
+					ReportManager.ReportEntry.Note note6 = stressNotes[i];
+					num = num3 + note6.value;
+				}
+			}
+			stressDrawer.NewLabel(((!(num > 0f)) ? string.Empty : UIConstants.ColorPrefixRed) + string.Format(UI.DETAILTABS.DETAILS.NET_STRESS, Util.FormatTwoDecimalPlace(num)) + ((!(num > 0f)) ? string.Empty : UIConstants.ColorSuffix));
+			stressDrawer.EndDrawing();
+		}
 	}
 
 	private void ShowAttributes(GameObject target)

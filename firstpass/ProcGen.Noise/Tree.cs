@@ -1,10 +1,9 @@
-using Klei;
 using LibNoiseDotNet.Graphics.Tools.Noise;
 using System.Collections.Generic;
 
 namespace ProcGen.Noise
 {
-	public class Tree : YamlIO<Tree>
+	public class Tree
 	{
 		private Dictionary<string, IModule3D> primitiveLookup = new Dictionary<string, IModule3D>();
 
@@ -145,53 +144,53 @@ namespace ProcGen.Noise
 				{
 					return primitiveLookup[link.name];
 				}
-				Debug.LogError("Couldnt find [" + link.name + "] in primitives", null);
+				Debug.LogError("Couldnt find [" + link.name + "] in primitives");
 				break;
 			case Link.Type.Filter:
 				if (filterLookup.ContainsKey(link.name))
 				{
 					return filterLookup[link.name];
 				}
-				Debug.LogError("Couldnt find [" + link.name + "] in filters", null);
+				Debug.LogError("Couldnt find [" + link.name + "] in filters");
 				break;
 			case Link.Type.Modifier:
 				if (modifierLookup.ContainsKey(link.name))
 				{
 					return modifierLookup[link.name];
 				}
-				Debug.LogError("Couldnt find [" + link.name + "] in modifiers", null);
+				Debug.LogError("Couldnt find [" + link.name + "] in modifiers");
 				break;
 			case Link.Type.Selector:
 				if (selectorLookup.ContainsKey(link.name))
 				{
 					return selectorLookup[link.name];
 				}
-				Debug.LogError("Couldnt find [" + link.name + "] in selectors", null);
+				Debug.LogError("Couldnt find [" + link.name + "] in selectors");
 				break;
 			case Link.Type.Transformer:
 				if (transformerLookup.ContainsKey(link.name))
 				{
 					return transformerLookup[link.name];
 				}
-				Debug.LogError("Couldnt find [" + link.name + "] in transformers", null);
+				Debug.LogError("Couldnt find [" + link.name + "] in transformers");
 				break;
 			case Link.Type.Combiner:
 				if (combinerLookup.ContainsKey(link.name))
 				{
 					return combinerLookup[link.name];
 				}
-				Debug.LogError("Couldnt find [" + link.name + "] in combiners", null);
+				Debug.LogError("Couldnt find [" + link.name + "] in combiners");
 				break;
 			case Link.Type.Terminator:
 				return null;
 			}
-			Debug.LogError("Couldnt find link [" + link.name + "] [" + link.type.ToString() + "]", null);
+			Debug.LogError("Couldnt find link [" + link.name + "] [" + link.type.ToString() + "]");
 			return null;
 		}
 
 		public IModule3D BuildFinalModule(int globalSeed)
 		{
-			IModule3D result = null;
+			IModule3D module3D = null;
 			primitiveLookup.Clear();
 			filterLookup.Clear();
 			modifierLookup.Clear();
@@ -228,24 +227,24 @@ namespace ProcGen.Noise
 				IModule3D moduleFromLink = GetModuleFromLink(nodeLink.target);
 				if (nodeLink.target.type == Link.Type.Terminator)
 				{
-					result = GetModuleFromLink(nodeLink.source0);
+					module3D = GetModuleFromLink(nodeLink.source0);
 				}
 				else
 				{
-					IModule3D module3D = null;
 					IModule3D module3D2 = null;
 					IModule3D module3D3 = null;
 					IModule3D module3D4 = null;
+					IModule3D module3D5 = null;
 					switch (nodeLink.target.type)
 					{
 					case Link.Type.Filter:
-						module3D = GetModuleFromLink(nodeLink.source0);
-						filters[nodeLink.target.name].SetSouces(moduleFromLink, module3D);
-						((FilterModule)moduleFromLink).Primitive3D = module3D;
+						module3D2 = GetModuleFromLink(nodeLink.source0);
+						filters[nodeLink.target.name].SetSouces(moduleFromLink, module3D2);
+						((FilterModule)moduleFromLink).Primitive3D = module3D2;
 						break;
 					case Link.Type.Modifier:
 					{
-						module3D = GetModuleFromLink(nodeLink.source0);
+						module3D2 = GetModuleFromLink(nodeLink.source0);
 						ControlPointList controlPoints = null;
 						if (nodeLink.source1 != null && nodeLink.source1.type == Link.Type.ControlPoints && controlpoints.ContainsKey(nodeLink.source1.name))
 						{
@@ -256,31 +255,32 @@ namespace ProcGen.Noise
 						{
 							controlFloats = floats[nodeLink.source2.name];
 						}
-						modifiers[nodeLink.target.name].SetSouces(moduleFromLink, module3D, controlFloats, controlPoints);
+						modifiers[nodeLink.target.name].SetSouces(moduleFromLink, module3D2, controlFloats, controlPoints);
 						break;
 					}
 					case Link.Type.Selector:
-						module3D = GetModuleFromLink(nodeLink.source0);
-						module3D2 = GetModuleFromLink(nodeLink.source1);
-						module3D3 = GetModuleFromLink(nodeLink.source2);
-						selectors[nodeLink.target.name].SetSouces(moduleFromLink, module3D, module3D2, module3D3);
+						module3D2 = GetModuleFromLink(nodeLink.source0);
+						module3D3 = GetModuleFromLink(nodeLink.source1);
+						module3D4 = GetModuleFromLink(nodeLink.source2);
+						selectors[nodeLink.target.name].SetSouces(moduleFromLink, module3D2, module3D3, module3D4);
 						break;
 					case Link.Type.Transformer:
-						module3D = GetModuleFromLink(nodeLink.source0);
-						module3D2 = GetModuleFromLink(nodeLink.source1);
-						module3D3 = GetModuleFromLink(nodeLink.source2);
-						module3D4 = GetModuleFromLink(nodeLink.source3);
-						transformers[nodeLink.target.name].SetSouces(moduleFromLink, module3D, module3D2, module3D3, module3D4);
+						module3D2 = GetModuleFromLink(nodeLink.source0);
+						module3D3 = GetModuleFromLink(nodeLink.source1);
+						module3D4 = GetModuleFromLink(nodeLink.source2);
+						module3D5 = GetModuleFromLink(nodeLink.source3);
+						transformers[nodeLink.target.name].SetSouces(moduleFromLink, module3D2, module3D3, module3D4, module3D5);
 						break;
 					case Link.Type.Combiner:
-						module3D = GetModuleFromLink(nodeLink.source0);
-						module3D2 = GetModuleFromLink(nodeLink.source1);
-						combiners[nodeLink.target.name].SetSouces(moduleFromLink, module3D, module3D2);
+						module3D2 = GetModuleFromLink(nodeLink.source0);
+						module3D3 = GetModuleFromLink(nodeLink.source1);
+						combiners[nodeLink.target.name].SetSouces(moduleFromLink, module3D2, module3D3);
 						break;
 					}
 				}
 			}
-			return result;
+			Debug.Assert(module3D != null, "Missing Terminus module");
+			return module3D;
 		}
 
 		public string[] GetPrimitiveNames()

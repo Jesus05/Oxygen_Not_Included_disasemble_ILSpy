@@ -29,7 +29,7 @@ public class IlluminationVulnerable : StateMachineComponent<IlluminationVulnerab
 		public override void InitializeStates(out BaseState default_state)
 		{
 			default_state = comfortable;
-			root.Update("Illumination.Comfortable", delegate(StatesInstance smi, float dt)
+			root.Update("Illumination", delegate(StatesInstance smi, float dt)
 			{
 				smi.master.GetAmounts().Get(Db.Get().Amounts.Illumination).SetValue((float)Grid.LightCount[Grid.PosToCell(smi.master.gameObject)]);
 			}, UpdateRate.SIM_1000ms, false);

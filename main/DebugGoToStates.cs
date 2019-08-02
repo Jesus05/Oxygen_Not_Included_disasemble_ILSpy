@@ -2,7 +2,7 @@ using STRINGS;
 using System;
 using System.Runtime.CompilerServices;
 
-internal class DebugGoToStates : GameStateMachine<DebugGoToStates, DebugGoToStates.Instance, IStateMachineTarget, DebugGoToStates.Def>
+public class DebugGoToStates : GameStateMachine<DebugGoToStates, DebugGoToStates.Instance, IStateMachineTarget, DebugGoToStates.Def>
 {
 	public class Def : BaseDef
 	{
@@ -27,7 +27,7 @@ internal class DebugGoToStates : GameStateMachine<DebugGoToStates, DebugGoToStat
 	public override void InitializeStates(out BaseState default_state)
 	{
 		default_state = moving;
-		moving.MoveTo(GetTargetCell, behaviourcomplete, behaviourcomplete, true).ToggleStatusItem(CREATURES.STATUSITEMS.DEBUGGOTO.NAME, CREATURES.STATUSITEMS.DEBUGGOTO.TOOLTIP, category: Db.Get().StatusItemCategories.Main, icon: string.Empty, icon_type: StatusItem.IconType.Info, notification_type: NotificationType.Neutral, allow_multiples: false, render_overlay: SimViewMode.None, status_overlays: 63486, resolve_string_callback: null, resolve_tooltip_callback: null);
+		moving.MoveTo(GetTargetCell, behaviourcomplete, behaviourcomplete, true).ToggleStatusItem(CREATURES.STATUSITEMS.DEBUGGOTO.NAME, CREATURES.STATUSITEMS.DEBUGGOTO.TOOLTIP, category: Db.Get().StatusItemCategories.Main, icon: string.Empty, icon_type: StatusItem.IconType.Info, notification_type: NotificationType.Neutral, allow_multiples: false, render_overlay: default(HashedString), status_overlays: 129022, resolve_string_callback: null, resolve_tooltip_callback: null);
 		behaviourcomplete.BehaviourComplete(GameTags.HasDebugDestination, false);
 	}
 

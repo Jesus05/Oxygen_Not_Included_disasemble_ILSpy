@@ -13,6 +13,10 @@ public class PlantablePlot : SingleEntityReceptacle, ISaveLoadable, IEffectDescr
 	[Serialize]
 	private Ref<KPrefabID> plantRef;
 
+	public Vector3 occupyingObjectVisualOffset = Vector3.zero;
+
+	public Grid.SceneLayer plantLayer = Grid.SceneLayer.BuildingBack;
+
 	private EntityPreview plantPreview;
 
 	[SerializeField]
@@ -171,11 +175,11 @@ public class PlantablePlot : SingleEntityReceptacle, ISaveLoadable, IEffectDescr
 		PlantableSeed component = depositedEntity.GetComponent<PlantableSeed>();
 		if ((UnityEngine.Object)component == (UnityEngine.Object)null)
 		{
-			Debug.LogError("Planted seed " + depositedEntity.gameObject.name + " is missing PlantableSeed component", null);
+			Debug.LogError("Planted seed " + depositedEntity.gameObject.name + " is missing PlantableSeed component");
 			return null;
 		}
-		Vector3 position = Grid.CellToPosCBC(Grid.PosToCell(this), Grid.SceneLayer.BuildingBack);
-		GameObject gameObject = GameUtil.KInstantiate(Assets.GetPrefab(component.PlantID), position, Grid.SceneLayer.BuildingBack, null, 0);
+		Vector3 position = Grid.CellToPosCBC(Grid.PosToCell(this), plantLayer);
+		GameObject gameObject = GameUtil.KInstantiate(Assets.GetPrefab(component.PlantID), position, plantLayer, null, 0);
 		gameObject.SetActive(true);
 		KPrefabID component2 = gameObject.GetComponent<KPrefabID>();
 		plantRef.Set(component2);
@@ -200,15 +204,23 @@ public class PlantablePlot : SingleEntityReceptacle, ISaveLoadable, IEffectDescr
 		return gameObject;
 	}
 
+	protected override void PositionOccupyingObject()
+	{
+		base.PositionOccupyingObject();
+		KBatchedAnimController component = base.occupyingObject.GetComponent<KBatchedAnimController>();
+		component.SetSceneLayer(plantLayer);
+		OffsetAnim(component, occupyingObjectVisualOffset);
+	}
+
 	private void RegisterWithPlant(GameObject plant)
 	{
 		base.occupyingObject = plant;
-		plant.Trigger(1309017699, storage);
 		ReceptacleMonitor component = plant.GetComponent<ReceptacleMonitor>();
 		if ((bool)component)
 		{
-			component.smi.sm.receptacle.Set(this, component.smi);
+			component.SetReceptacle(this);
 		}
+		plant.Trigger(1309017699, storage);
 	}
 
 	protected override void SubscribeToOccupant()
@@ -237,10 +249,13 @@ public class PlantablePlot : SingleEntityReceptacle, ISaveLoadable, IEffectDescr
 
 	public override void OrderRemoveOccupant()
 	{
-		Uprootable component = base.Occupant.GetComponent<Uprootable>();
-		if (!((UnityEngine.Object)component == (UnityEngine.Object)null))
+		if (!((UnityEngine.Object)base.Occupant == (UnityEngine.Object)null))
 		{
-			component.MarkForUproot();
+			Uprootable component = base.Occupant.GetComponent<Uprootable>();
+			if (!((UnityEngine.Object)component == (UnityEngine.Object)null))
+			{
+				component.MarkForUproot(true);
+			}
 		}
 	}
 
@@ -252,7 +267,7 @@ public class PlantablePlot : SingleEntityReceptacle, ISaveLoadable, IEffectDescr
 			GameObject prefab = Assets.GetPrefab(entityTag);
 			if ((UnityEngine.Object)prefab == (UnityEngine.Object)null)
 			{
-				Output.LogWarningWithObj(base.gameObject, "Planter tried previewing a tag with no asset! If this was the 'Empty' tag, ignore it, that will go away in new save games. Otherwise... Eh? Tag was: ", entityTag);
+				DebugUtil.LogWarningArgs(base.gameObject, "Planter tried previewing a tag with no asset! If this was the 'Empty' tag, ignore it, that will go away in new save games. Otherwise... Eh? Tag was: ", entityTag);
 				return;
 			}
 			plantableSeed = prefab.GetComponent<PlantableSeed>();
@@ -293,6 +308,8 @@ public class PlantablePlot : SingleEntityReceptacle, ISaveLoadable, IEffectDescr
 			{
 				gameObject.transform.SetLocalPosition(occupyingObjectRelativePosition);
 			}
+			KBatchedAnimController component2 = gameObject.GetComponent<KBatchedAnimController>();
+			OffsetAnim(component2, occupyingObjectVisualOffset);
 			gameObject.SetActive(true);
 			gameObject.Subscribe(-1820564715, OnValidChanged);
 			if (solid)
@@ -301,6 +318,15 @@ public class PlantablePlot : SingleEntityReceptacle, ISaveLoadable, IEffectDescr
 			}
 			plantPreview.UpdateValidity();
 		}
+	}
+
+	private void OffsetAnim(KBatchedAnimController kanim, Vector3 offset)
+	{
+		if ((UnityEngine.Object)rotatable != (UnityEngine.Object)null)
+		{
+			offset = rotatable.GetRotatedOffset(offset);
+		}
+		kanim.Offset = offset;
 	}
 
 	private void OnValidChanged(object obj)

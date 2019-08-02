@@ -21,7 +21,7 @@ public class SolidConduitOutboxConfig : IBuildingConfig
 		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, tIER, aLL_METALS, melting_point, build_location_rule, BUILDINGS.DECOR.PENALTY.TIER1, nONE, 0.2f);
 		buildingDef.Floodable = false;
 		buildingDef.Overheatable = false;
-		buildingDef.ViewMode = SimViewMode.SolidConveyorMap;
+		buildingDef.ViewMode = OverlayModes.SolidConveyor.ID;
 		buildingDef.AudioCategory = "Metal";
 		buildingDef.InputConduitType = ConduitType.Solid;
 		buildingDef.UtilityInputOffset = new CellOffset(0, 0);
@@ -46,8 +46,7 @@ public class SolidConduitOutboxConfig : IBuildingConfig
 	{
 		base.DoPostConfigureUnderConstruction(go);
 		Constructable component = go.GetComponent<Constructable>();
-		component.choreTags = GameTags.ChoreTypes.ConveyorChores;
-		component.requiredRolePerk = RoleManager.rolePerks.ConveyorBuild.id;
+		component.requiredSkillPerk = Db.Get().SkillPerks.ConveyorBuild.Id;
 	}
 
 	public override void DoPostConfigureComplete(GameObject go)

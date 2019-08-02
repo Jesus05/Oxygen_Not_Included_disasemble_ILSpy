@@ -95,10 +95,24 @@ public class GameClock : KMonoBehaviour, ISaveLoadable, ISim33ms, IRender1000ms
 		{
 			isNight = false;
 		}
-		if (flag && cycle % 1 == 0)
+		if (flag && SaveGame.Instance.autoSaveCycleInterval > 0 && cycle % SaveGame.Instance.autoSaveCycleInterval == 0)
 		{
 			DoAutoSave(cycle);
 		}
+	}
+
+	public float GetTimeSinceStartOfReport()
+	{
+		if (IsNighttime())
+		{
+			return 525f - GetTimeSinceStartOfCycle();
+		}
+		return GetTimeSinceStartOfCycle() + 75f;
+	}
+
+	public float GetTimeSinceStartOfCycle()
+	{
+		return timeSinceStartOfCycle;
 	}
 
 	public float GetCurrentCycleAsPercentage()

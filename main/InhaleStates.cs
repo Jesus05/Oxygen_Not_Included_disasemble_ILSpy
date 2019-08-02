@@ -2,7 +2,7 @@ using STRINGS;
 using System.Runtime.CompilerServices;
 using UnityEngine;
 
-internal class InhaleStates : GameStateMachine<InhaleStates, InhaleStates.Instance, IStateMachineTarget, InhaleStates.Def>
+public class InhaleStates : GameStateMachine<InhaleStates, InhaleStates.Instance, IStateMachineTarget, InhaleStates.Def>
 {
 	public class Def : BaseDef
 	{
@@ -71,8 +71,8 @@ internal class InhaleStates : GameStateMachine<InhaleStates, InhaleStates.Instan
 		{
 			targetCell.Set(smi.GetSMI<GasAndLiquidConsumerMonitor.Instance>().targetCell, smi);
 		});
-		goingtoeat.MoveTo((Instance smi) => targetCell.Get(smi), inhaling, null, false).ToggleStatusItem(CREATURES.STATUSITEMS.LOOKINGFORFOOD.NAME, CREATURES.STATUSITEMS.LOOKINGFORFOOD.TOOLTIP, category: Db.Get().StatusItemCategories.Main, icon: string.Empty, icon_type: StatusItem.IconType.Info, notification_type: (NotificationType)0, allow_multiples: false, render_overlay: SimViewMode.None, status_overlays: 0, resolve_string_callback: null, resolve_tooltip_callback: null);
-		inhaling.DefaultState(inhaling.pre).ToggleStatusItem(CREATURES.STATUSITEMS.INHALING.NAME, CREATURES.STATUSITEMS.INHALING.TOOLTIP, category: Db.Get().StatusItemCategories.Main, icon: string.Empty, icon_type: StatusItem.IconType.Info, notification_type: (NotificationType)0, allow_multiples: false, render_overlay: SimViewMode.None, status_overlays: 0, resolve_string_callback: null, resolve_tooltip_callback: null);
+		goingtoeat.MoveTo((Instance smi) => targetCell.Get(smi), inhaling, null, false).ToggleStatusItem(CREATURES.STATUSITEMS.LOOKINGFORFOOD.NAME, CREATURES.STATUSITEMS.LOOKINGFORFOOD.TOOLTIP, category: Db.Get().StatusItemCategories.Main, icon: string.Empty, icon_type: StatusItem.IconType.Info, notification_type: (NotificationType)0, allow_multiples: false, render_overlay: default(HashedString), status_overlays: 0, resolve_string_callback: null, resolve_tooltip_callback: null);
+		inhaling.DefaultState(inhaling.pre).ToggleStatusItem(CREATURES.STATUSITEMS.INHALING.NAME, CREATURES.STATUSITEMS.INHALING.TOOLTIP, category: Db.Get().StatusItemCategories.Main, icon: string.Empty, icon_type: StatusItem.IconType.Info, notification_type: (NotificationType)0, allow_multiples: false, render_overlay: default(HashedString), status_overlays: 0, resolve_string_callback: null, resolve_tooltip_callback: null);
 		inhaling.pre.PlayAnim("inhale_pre").QueueAnim("inhale_loop", true, null).Update("Consume", delegate(Instance smi, float dt)
 		{
 			smi.GetSMI<GasAndLiquidConsumerMonitor.Instance>().Consume(dt);
@@ -88,8 +88,8 @@ internal class InhaleStates : GameStateMachine<InhaleStates, InhaleStates.Instan
 			})
 			.ScheduleGoTo((Instance smi) => smi.def.inhaleTime, inhaling.pst);
 		inhaling.pst.Transition(inhaling.full, IsFull, UpdateRate.SIM_200ms).Transition(behaviourcomplete, GameStateMachine<InhaleStates, Instance, IStateMachineTarget, Def>.Not(IsFull), UpdateRate.SIM_200ms);
-		inhaling.full.QueueAnim("inhale_pst", false, null).QueueAnim("idle_loop", false, null).OnAnimQueueComplete(behaviourcomplete);
-		behaviourcomplete.BehaviourComplete(GameTags.Creatures.WantsToEat, false);
+		inhaling.full.QueueAnim("inhale_pst", false, null).OnAnimQueueComplete(behaviourcomplete);
+		behaviourcomplete.PlayAnim("idle_loop", KAnim.PlayMode.Loop).BehaviourComplete(GameTags.Creatures.WantsToEat, false);
 	}
 
 	private static bool IsFull(Instance smi)

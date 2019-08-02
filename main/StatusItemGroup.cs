@@ -52,6 +52,11 @@ public class StatusItemGroup
 		{
 			return id == other.id;
 		}
+
+		public void OnClick()
+		{
+			item.OnClick(data);
+		}
 	}
 
 	private List<Entry> items = new List<Entry>();
@@ -194,7 +199,7 @@ public class StatusItemGroup
 		Entry entry = new Entry(item, category, data);
 		if (item.shouldNotify)
 		{
-			entry.notification = new Notification(item.notificationText, item.notificationType, HashedString.Invalid, OnToolTip, expires: false, custom_click_callback: item.notificationClickCallback, tooltip_data: item, delay: item.notificationDelay, custom_click_data: data);
+			entry.notification = new Notification(item.notificationText, item.notificationType, HashedString.Invalid, OnToolTip, expires: false, custom_click_callback: item.notificationClickCallback, tooltip_data: item, delay: item.notificationDelay, custom_click_data: data, click_focus: null);
 			gameObject.AddOrGet<Notifier>().Add(entry.notification, string.Empty);
 		}
 		if (item.ShouldShowIcon())
@@ -262,19 +267,7 @@ public class StatusItemGroup
 	private static string OnToolTip(List<Notification> notifications, object data)
 	{
 		StatusItem statusItem = (StatusItem)data;
-		string text = statusItem.notificationTooltipText;
-		foreach (Notification notification in notifications)
-		{
-			if (notification != null && (UnityEngine.Object)notification.Notifier != (UnityEngine.Object)null)
-			{
-				KSelectable component = notification.Notifier.GetComponent<KSelectable>();
-				if ((UnityEngine.Object)component != (UnityEngine.Object)null)
-				{
-					text = text + "\n• " + component.GetName();
-				}
-			}
-		}
-		return text;
+		return statusItem.notificationTooltipText + notifications.ReduceMessages(true);
 	}
 
 	public void Destroy()

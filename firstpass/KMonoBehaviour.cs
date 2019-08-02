@@ -57,9 +57,10 @@ public class KMonoBehaviour : MonoBehaviour, IStateMachineTarget, ISaveLoadable,
 				{
 					OnPrefabInit();
 				}
-				catch (Exception ex)
+				catch (Exception innerException)
 				{
-					Output.LogError("Error in: " + base.name + "." + GetType().Name + ".OnPrefabInit\n" + ex.ToString());
+					string message = "Error in " + base.name + "." + GetType().Name + ".OnPrefabInit";
+					throw new Exception(message, innerException);
 				}
 			}
 		}
@@ -121,7 +122,7 @@ public class KMonoBehaviour : MonoBehaviour, IStateMachineTarget, ISaveLoadable,
 		{
 			if (!isInitialized)
 			{
-				Debug.LogError(base.name + "." + GetType().Name + " is not initialized.", null);
+				Debug.LogError(base.name + "." + GetType().Name + " is not initialized.");
 			}
 			else
 			{
@@ -135,9 +136,10 @@ public class KMonoBehaviour : MonoBehaviour, IStateMachineTarget, ISaveLoadable,
 				{
 					OnSpawn();
 				}
-				catch (Exception ex)
+				catch (Exception innerException)
 				{
-					Output.LogError("Error in: " + base.name + "." + GetType().Name + ".OnSpawn\n" + ex.ToString());
+					string message = "Error in " + base.name + "." + GetType().Name + ".OnSpawn";
+					throw new Exception(message, innerException);
 				}
 			}
 		}
@@ -195,14 +197,14 @@ public class KMonoBehaviour : MonoBehaviour, IStateMachineTarget, ISaveLoadable,
 		return obj.GetEventSystem().Subscribe(hash, handler);
 	}
 
-	public void Subscribe(GameObject target, int hash, Action<object> handler)
+	public int Subscribe(GameObject target, int hash, Action<object> handler)
 	{
-		obj.GetEventSystem().Subscribe(target, hash, handler);
+		return obj.GetEventSystem().Subscribe(target, hash, handler);
 	}
 
-	public void Subscribe<ComponentType>(int hash, EventSystem.IntraObjectHandler<ComponentType> handler)
+	public int Subscribe<ComponentType>(int hash, EventSystem.IntraObjectHandler<ComponentType> handler)
 	{
-		obj.GetEventSystem().Subscribe(hash, handler);
+		return obj.GetEventSystem().Subscribe(hash, handler);
 	}
 
 	public void Unsubscribe(int hash, Action<object> handler)
@@ -256,7 +258,7 @@ public class KMonoBehaviour : MonoBehaviour, IStateMachineTarget, ISaveLoadable,
 			}
 			catch
 			{
-				Output.LogWarning("AUDIOERROR: Missing [" + sound + "]");
+				DebugUtil.LogWarningArgs("AUDIOERROR: Missing [" + sound + "]");
 			}
 		}
 	}
@@ -271,7 +273,7 @@ public class KMonoBehaviour : MonoBehaviour, IStateMachineTarget, ISaveLoadable,
 			}
 			catch
 			{
-				Output.LogWarning("AUDIOERROR: Missing [" + sound + "]");
+				DebugUtil.LogWarningArgs("AUDIOERROR: Missing [" + sound + "]");
 			}
 		}
 	}
@@ -284,7 +286,7 @@ public class KMonoBehaviour : MonoBehaviour, IStateMachineTarget, ISaveLoadable,
 		}
 		catch
 		{
-			Output.LogWarning("AUDIOERROR: Missing [" + asset + "]");
+			DebugUtil.LogWarningArgs("AUDIOERROR: Missing [" + asset + "]");
 		}
 	}
 

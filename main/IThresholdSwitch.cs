@@ -47,6 +47,21 @@ public interface IThresholdSwitch
 		get;
 	}
 
+	ThresholdScreenLayoutType LayoutType
+	{
+		get;
+	}
+
+	int IncrementScale
+	{
+		get;
+	}
+
+	NonLinearSlider.Range[] GetRanges
+	{
+		get;
+	}
+
 	float GetRangeMinInputField();
 
 	float GetRangeMaxInputField();

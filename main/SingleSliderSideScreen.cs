@@ -26,14 +26,14 @@ public class SingleSliderSideScreen : SideScreenContent
 	{
 		if ((Object)new_target == (Object)null)
 		{
-			Debug.LogError("Invalid gameObject received", null);
+			Debug.LogError("Invalid gameObject received");
 		}
 		else
 		{
 			target = new_target.GetComponent<ISingleSliderControl>();
 			if (target == null)
 			{
-				Debug.LogError("The gameObject received does not contain a Manual Generator component", null);
+				Debug.LogError("The gameObject received does not contain a Manual Generator component");
 			}
 			else
 			{

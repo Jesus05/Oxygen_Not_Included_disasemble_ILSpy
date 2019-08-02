@@ -16,6 +16,7 @@ public class CavityVisualizer : KMonoBehaviour
 
 	protected override void OnPrefabInit()
 	{
+		Debug.Assert((Object)Instance == (Object)null);
 		Instance = this;
 		base.OnPrefabInit();
 		foreach (TerrainCell key in MobSpawning.NaturalCavities.Keys)

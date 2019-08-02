@@ -1,4 +1,3 @@
-using Klei;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -41,7 +40,7 @@ public class KAnimGroupFile : ScriptableObject
 		}
 	}
 
-	public class GroupFile : YamlIO<GroupFile>
+	public class GroupFile
 	{
 		public string groupID
 		{
@@ -111,6 +110,7 @@ public class KAnimGroupFile : ScriptableObject
 		Group result = null;
 		GetGroupFile();
 		List<Group> data = groupfile.GetData();
+		Debug.Assert(data != null, data.Count > 0);
 		for (int i = 0; i < data.Count; i++)
 		{
 			Group group = data[i];
@@ -190,6 +190,9 @@ public class KAnimGroupFile : ScriptableObject
 
 	public bool AddAnimFile(GroupFile gf, AnimCommandFile akf, KAnimFile file)
 	{
+		Debug.Assert(gf != null);
+		Debug.Assert((UnityEngine.Object)file != (UnityEngine.Object)null, gf.groupID);
+		Debug.Assert(akf != null, gf.groupID);
 		int groupIndex = AddGroup(akf, gf, file);
 		return AddFile(groupIndex, file);
 	}
@@ -222,6 +225,7 @@ public class KAnimGroupFile : ScriptableObject
 
 	public void LoadAll()
 	{
+		Debug.Assert(!hasCompletedLoadAll, "You cannot load all the anim data twice!");
 		fileData.Clear();
 		for (int i = 0; i < groups.Count; i++)
 		{
@@ -248,7 +252,7 @@ public class KAnimGroupFile : ScriptableObject
 				{
 					if (kAnimFile.buildFile.bytes == null || kAnimFile.buildFile.bytes.Length == 0)
 					{
-						Debug.LogWarning("Build File [" + kAnimFile.buildFile.name + "] has 0 bytes", null);
+						Debug.LogWarning("Build File [" + kAnimFile.buildFile.name + "] has 0 bytes");
 					}
 					else
 					{
@@ -336,7 +340,7 @@ public class KAnimGroupFile : ScriptableObject
 					{
 						if (kAnimFile2.animFile.bytes == null || kAnimFile2.animFile.bytes.Length == 0)
 						{
-							Debug.LogWarning("Anim File [" + kAnimFile2.animFile.name + "] has 0 bytes", null);
+							Debug.LogWarning("Anim File [" + kAnimFile2.animFile.name + "] has 0 bytes");
 						}
 						else
 						{

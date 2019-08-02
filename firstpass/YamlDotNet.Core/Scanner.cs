@@ -545,6 +545,7 @@ namespace YamlDotNet.Core
 
 		private void DecreaseFlowLevel()
 		{
+			Debug.Assert(flowLevel > 0, "Could flowLevel be zero when this method is called?");
 			if (flowLevel > 0)
 			{
 				flowLevel--;
@@ -1311,10 +1312,11 @@ namespace YamlDotNet.Core
 
 		private void SaveSimpleKey()
 		{
-			bool isRequired = flowLevel == 0 && indent == cursor.LineOffset;
+			bool flag = flowLevel == 0 && indent == cursor.LineOffset;
+			Debug.Assert(simpleKeyAllowed || !flag, "Can't require a simple key and disallow it at the same time.");
 			if (simpleKeyAllowed)
 			{
-				SimpleKey t = new SimpleKey(true, isRequired, tokensParsed + tokens.Count, cursor);
+				SimpleKey t = new SimpleKey(true, flag, tokensParsed + tokens.Count, cursor);
 				RemoveSimpleKey();
 				simpleKeys.Pop();
 				simpleKeys.Push(t);

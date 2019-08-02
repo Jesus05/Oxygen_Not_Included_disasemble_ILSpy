@@ -10,7 +10,7 @@ public class ItemPedestalConfig : IBuildingConfig
 	{
 		string id = "ItemPedestal";
 		int width = 1;
-		int height = 1;
+		int height = 2;
 		string anim = "pedestal_kanim";
 		int hitpoints = 10;
 		float construction_time = 30f;
@@ -23,10 +23,9 @@ public class ItemPedestalConfig : IBuildingConfig
 		buildingDef.DefaultAnimState = "pedestal";
 		buildingDef.Floodable = false;
 		buildingDef.Overheatable = false;
-		buildingDef.ViewMode = SimViewMode.Decor;
+		buildingDef.ViewMode = OverlayModes.Decor.ID;
 		buildingDef.AudioCategory = "Glass";
 		buildingDef.AudioSize = "small";
-		buildingDef.Deprecated = true;
 		return buildingDef;
 	}
 
@@ -41,9 +40,10 @@ public class ItemPedestalConfig : IBuildingConfig
 		Prioritizable.AddRef(go);
 		SingleEntityReceptacle singleEntityReceptacle = go.AddOrGet<SingleEntityReceptacle>();
 		singleEntityReceptacle.AddDepositTag(GameTags.PedestalDisplayable);
+		singleEntityReceptacle.occupyingObjectRelativePosition = new Vector3(0f, 1.2f, -1f);
 		go.AddOrGet<DecorProvider>();
 		go.AddOrGet<ItemPedestal>();
-		go.GetComponent<KPrefabID>().AddTag(GameTags.Decoration);
+		go.GetComponent<KPrefabID>().AddTag(GameTags.Decoration, false);
 	}
 
 	public override void DoPostConfigureComplete(GameObject go)

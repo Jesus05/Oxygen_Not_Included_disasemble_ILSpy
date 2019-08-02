@@ -1,4 +1,3 @@
-using OverlayModes;
 using STRINGS;
 using TUNING;
 using UnityEngine;
@@ -11,8 +10,8 @@ public class LogicWireBridgeConfig : IBuildingConfig
 
 	public static readonly LogicPorts.Port[] INPUT_PORTS = new LogicPorts.Port[2]
 	{
-		LogicPorts.Port.InputPort(BRIDGE_LOGIC_IO_ID, new CellOffset(-1, 0), STRINGS.BUILDINGS.PREFABS.DOOR.LOGIC_PORT_DESC, false),
-		LogicPorts.Port.InputPort(BRIDGE_LOGIC_IO_ID, new CellOffset(1, 0), STRINGS.BUILDINGS.PREFABS.DOOR.LOGIC_PORT_DESC, false)
+		LogicPorts.Port.InputPort(BRIDGE_LOGIC_IO_ID, new CellOffset(-1, 0), STRINGS.BUILDINGS.PREFABS.LOGICWIREBRIDGE.LOGIC_PORT, STRINGS.BUILDINGS.PREFABS.LOGICWIREBRIDGE.LOGIC_PORT_ACTIVE, STRINGS.BUILDINGS.PREFABS.LOGICWIREBRIDGE.LOGIC_PORT_INACTIVE, false, false),
+		LogicPorts.Port.InputPort(BRIDGE_LOGIC_IO_ID, new CellOffset(1, 0), STRINGS.BUILDINGS.PREFABS.LOGICWIREBRIDGE.LOGIC_PORT, STRINGS.BUILDINGS.PREFABS.LOGICWIREBRIDGE.LOGIC_PORT_ACTIVE, STRINGS.BUILDINGS.PREFABS.LOGICWIREBRIDGE.LOGIC_PORT_INACTIVE, false, false)
 	};
 
 	public override BuildingDef CreateBuildingDef()
@@ -29,9 +28,9 @@ public class LogicWireBridgeConfig : IBuildingConfig
 		BuildLocationRule build_location_rule = BuildLocationRule.LogicBridge;
 		EffectorValues nONE = NOISE_POLLUTION.NONE;
 		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, tIER_TINY, rEFINED_METALS, melting_point, build_location_rule, TUNING.BUILDINGS.DECOR.PENALTY.TIER0, nONE, 0.2f);
-		buildingDef.ViewMode = SimViewMode.Logic;
+		buildingDef.ViewMode = OverlayModes.Logic.ID;
 		buildingDef.ObjectLayer = ObjectLayer.LogicGates;
-		buildingDef.SceneLayer = Grid.SceneLayer.LogicWireBridges;
+		buildingDef.SceneLayer = Grid.SceneLayer.LogicGates;
 		buildingDef.Overheatable = false;
 		buildingDef.Floodable = false;
 		buildingDef.Entombable = false;
@@ -41,7 +40,7 @@ public class LogicWireBridgeConfig : IBuildingConfig
 		buildingDef.PermittedRotations = PermittedRotations.R360;
 		buildingDef.UtilityInputOffset = new CellOffset(0, 0);
 		buildingDef.UtilityOutputOffset = new CellOffset(0, 2);
-		GeneratedBuildings.RegisterWithOverlay(Logic.HighlightItemIDs, "LogicWireBridge");
+		GeneratedBuildings.RegisterWithOverlay(OverlayModes.Logic.HighlightItemIDs, "LogicWireBridge");
 		return buildingDef;
 	}
 
@@ -63,8 +62,6 @@ public class LogicWireBridgeConfig : IBuildingConfig
 	public override void DoPostConfigureUnderConstruction(GameObject go)
 	{
 		base.DoPostConfigureUnderConstruction(go);
-		Constructable component = go.GetComponent<Constructable>();
-		component.choreTags = GameTags.ChoreTypes.WiringChores;
 		LogicUtilityNetworkLink logicUtilityNetworkLink = AddNetworkLink(go);
 		logicUtilityNetworkLink.visualizeOnly = true;
 		go.AddOrGet<BuildingCellVisualizer>();

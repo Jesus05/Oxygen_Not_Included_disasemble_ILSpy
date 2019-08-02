@@ -127,10 +127,10 @@ public class SimCellOccupier : KMonoBehaviour, IEffectDescriptor
 				HandleVector<int>.Handle handle = GameComps.DiseaseContainers.GetHandle(base.gameObject);
 				if (handle.IsValid())
 				{
-					DiseaseContainer data = GameComps.DiseaseContainers.GetData(handle);
-					data.diseaseIdx = Grid.DiseaseIdx[num];
-					data.diseaseCount = Grid.DiseaseCount[num];
-					GameComps.DiseaseContainers.SetData(handle, data);
+					DiseaseHeader header = GameComps.DiseaseContainers.GetHeader(handle);
+					header.diseaseIdx = Grid.DiseaseIdx[num];
+					header.diseaseCount = Grid.DiseaseCount[num];
+					GameComps.DiseaseContainers.SetHeader(handle, header);
 				}
 				if (onComplete != null)
 				{
@@ -177,8 +177,7 @@ public class SimCellOccupier : KMonoBehaviour, IEffectDescriptor
 
 	private void ForceSetGameCellData(int cell)
 	{
-		Grid.PreviousSolid[cell] = Grid.Solid[cell];
-		bool solid = !Grid.ForceField[cell];
+		bool solid = !Grid.DupePassable[cell];
 		Grid.SetSolid(cell, solid, CellEventLogger.Instance.SimCellOccupierForceSolid);
 		Pathfinding.Instance.AddDirtyNavGridCell(cell);
 		GameScenePartitioner.Instance.TriggerEvent(cell, GameScenePartitioner.Instance.solidChangedLayer, null);
@@ -192,7 +191,7 @@ public class SimCellOccupier : KMonoBehaviour, IEffectDescriptor
 		{
 			list = new List<Descriptor>();
 			Descriptor item = default(Descriptor);
-			item.SetupDescriptor(string.Format(UI.BUILDINGEFFECTS.DUPLICANTMOVEMENTBOOST, GameUtil.GetFormattedPercent(movementSpeedMultiplier * 100f - 100f, GameUtil.TimeSlice.None)), string.Format(UI.BUILDINGEFFECTS.TOOLTIPS.DUPLICANTMOVEMENTBOOST, GameUtil.GetFormattedPercent(movementSpeedMultiplier * 100f - 100f, GameUtil.TimeSlice.None)), Descriptor.DescriptorType.Effect);
+			item.SetupDescriptor(string.Format(UI.BUILDINGEFFECTS.DUPLICANTMOVEMENTBOOST, GameUtil.AddPositiveSign(GameUtil.GetFormattedPercent(movementSpeedMultiplier * 100f - 100f, GameUtil.TimeSlice.None), movementSpeedMultiplier - 1f >= 0f)), string.Format(UI.BUILDINGEFFECTS.TOOLTIPS.DUPLICANTMOVEMENTBOOST, GameUtil.GetFormattedPercent(movementSpeedMultiplier * 100f - 100f, GameUtil.TimeSlice.None)), Descriptor.DescriptorType.Effect);
 			list.Add(item);
 		}
 		return list;

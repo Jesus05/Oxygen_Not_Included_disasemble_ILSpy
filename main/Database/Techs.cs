@@ -31,42 +31,53 @@ namespace Database
 				}
 			},
 			{
+				"FinerDining",
+				new string[1]
+				{
+					"GourmetCookingStation"
+				}
+			},
+			{
 				"Agriculture",
-				new string[4]
+				new string[5]
 				{
 					"FertilizerMaker",
 					"HydroponicFarm",
 					"Refrigerator",
-					"FarmStation"
+					"FarmStation",
+					"ParkSign"
 				}
 			},
 			{
 				"Ranching",
-				new string[6]
+				new string[7]
 				{
 					"CreatureDeliveryPoint",
 					"FishDeliveryPoint",
 					"CreatureFeeder",
 					"FishFeeder",
 					"RanchStation",
-					"ShearingStation"
+					"ShearingStation",
+					"FlyingCreatureBait"
 				}
 			},
 			{
 				"AnimalControl",
-				new string[4]
+				new string[5]
 				{
 					"CreatureTrap",
 					"FishTrap",
 					"AirborneCreatureLure",
-					"EggIncubator"
+					"EggIncubator",
+					LogicCritterCountSensorConfig.ID
 				}
 			},
 			{
 				"ImprovedOxygen",
-				new string[1]
+				new string[2]
 				{
-					"Electrolyzer"
+					"Electrolyzer",
+					"RustDeoxidizer"
 				}
 			},
 			{
@@ -92,14 +103,6 @@ namespace Database
 				}
 			},
 			{
-				"Clothing",
-				new string[2]
-				{
-					"ClothingFabricator",
-					"Phonobox"
-				}
-			},
-			{
 				"PressureManagement",
 				new string[4]
 				{
@@ -111,12 +114,50 @@ namespace Database
 			},
 			{
 				"DirectedAirStreams",
-				new string[4]
+				new string[3]
 				{
 					"PressureDoor",
-					"OreScrubber",
 					"AirFilter",
 					"CO2Scrubber"
+				}
+			},
+			{
+				"LiquidFiltering",
+				new string[2]
+				{
+					"OreScrubber",
+					"Desalinator"
+				}
+			},
+			{
+				"MedicineI",
+				new string[1]
+				{
+					"Apothecary"
+				}
+			},
+			{
+				"MedicineII",
+				new string[2]
+				{
+					"DoctorStation",
+					"HandSanitizer"
+				}
+			},
+			{
+				"MedicineIII",
+				new string[3]
+				{
+					LogicDiseaseSensorConfig.ID,
+					GasConduitDiseaseSensorConfig.ID,
+					LiquidConduitDiseaseSensorConfig.ID
+				}
+			},
+			{
+				"MedicineIV",
+				new string[1]
+				{
+					"AdvancedDoctorStation"
 				}
 			},
 			{
@@ -127,23 +168,6 @@ namespace Database
 					"LiquidPump",
 					"LiquidVent",
 					"LiquidConduitBridge"
-				}
-			},
-			{
-				"Luxury",
-				new string[4]
-				{
-					LuxuryBedConfig.ID,
-					"LadderFast",
-					"PlasticTile",
-					"ExteriorWall"
-				}
-			},
-			{
-				"RefractiveDecor",
-				new string[1]
-				{
-					"GlassTile"
 				}
 			},
 			{
@@ -176,16 +200,6 @@ namespace Database
 				}
 			},
 			{
-				"Medbay",
-				new string[4]
-				{
-					"HandSanitizer",
-					"MedicalBed",
-					GasConduitDiseaseSensorConfig.ID,
-					LiquidConduitDiseaseSensorConfig.ID
-				}
-			},
-			{
 				"AdvancedFiltration",
 				new string[2]
 				{
@@ -195,10 +209,11 @@ namespace Database
 			},
 			{
 				"Distillation",
-				new string[4]
+				new string[5]
 				{
 					"WaterPurifier",
 					"AlgaeDistillery",
+					"EthanolDistillery",
 					"GasBottler",
 					"BottleEmptierGas"
 				}
@@ -228,7 +243,7 @@ namespace Database
 					"HighWattageWire",
 					"WireBridgeHighWattage",
 					"PowerTransformerSmall",
-					"PowerControlStation"
+					LogicPowerRelayConfig.ID
 				}
 			},
 			{
@@ -244,17 +259,19 @@ namespace Database
 			},
 			{
 				"RenewableEnergy",
-				new string[2]
+				new string[3]
 				{
 					"SteamTurbine",
+					"SteamTurbine2",
 					"SolarPanel"
 				}
 			},
 			{
 				"Combustion",
-				new string[1]
+				new string[2]
 				{
-					"Generator"
+					"Generator",
+					"WoodGasGenerator"
 				}
 			},
 			{
@@ -277,11 +294,76 @@ namespace Database
 			},
 			{
 				"Artistry",
+				new string[7]
+				{
+					"CrownMoulding",
+					"CornerMoulding",
+					"SmallSculpture",
+					"IceSculpture",
+					"ItemPedestal",
+					"FlowerVaseWall",
+					"FlowerVaseHanging"
+				}
+			},
+			{
+				"Clothing",
+				new string[2]
+				{
+					"ClothingFabricator",
+					"CarpetTile"
+				}
+			},
+			{
+				"Acoustics",
 				new string[3]
 				{
+					"Phonobox",
+					"BatterySmart",
+					"PowerControlStation"
+				}
+			},
+			{
+				"FineArt",
+				new string[2]
+				{
 					"Canvas",
-					"Sculpture",
-					"IceSculpture"
+					"Sculpture"
+				}
+			},
+			{
+				"Luxury",
+				new string[3]
+				{
+					LuxuryBedConfig.ID,
+					"LadderFast",
+					"PlasticTile"
+				}
+			},
+			{
+				"RefractiveDecor",
+				new string[2]
+				{
+					"MetalSculpture",
+					"CanvasWide"
+				}
+			},
+			{
+				"GlassFurnishings",
+				new string[2]
+				{
+					"GlassTile",
+					"FlowerVaseHangingFancy"
+				}
+			},
+			{
+				"RenaissanceArt",
+				new string[5]
+				{
+					"MarbleSculpture",
+					"CanvasTall",
+					"MonumentBottom",
+					"MonumentMiddle",
+					"MonumentTop"
 				}
 			},
 			{
@@ -302,8 +384,9 @@ namespace Database
 			},
 			{
 				"Suits",
-				new string[4]
+				new string[5]
 				{
+					"ExteriorWall",
 					"SuitMarker",
 					"SuitLocker",
 					"SuitFabricator",
@@ -320,10 +403,11 @@ namespace Database
 			},
 			{
 				"AdvancedResearch",
-				new string[2]
+				new string[3]
 				{
 					"AdvancedResearchCenter",
-					"BetaResearchPoint"
+					"BetaResearchPoint",
+					"ResetSkillsStation"
 				}
 			},
 			{
@@ -332,14 +416,6 @@ namespace Database
 				{
 					"RockCrusher",
 					"Kiln"
-				}
-			},
-			{
-				"MedicalResearch",
-				new string[2]
-				{
-					"Apothecary",
-					LogicDiseaseSensorConfig.ID
 				}
 			},
 			{
@@ -369,9 +445,11 @@ namespace Database
 			},
 			{
 				"TemperatureModulation",
-				new string[3]
+				new string[5]
 				{
 					"LiquidCooledFan",
+					"IceCooledFan",
+					"IceMachine",
 					"SpaceHeater",
 					"InsulationTile"
 				}
@@ -403,44 +481,43 @@ namespace Database
 				"LogicControl",
 				new string[5]
 				{
-					"AutomationOverlay",
 					"LogicWire",
-					"LogicWireBridge",
+					"LogicDuplicantSensor",
 					LogicSwitchConfig.ID,
-					LogicPowerRelayConfig.ID
+					"LogicWireBridge",
+					"AutomationOverlay"
 				}
 			},
 			{
 				"GenericSensors",
-				new string[4]
+				new string[5]
 				{
 					LogicTimeOfDaySensorConfig.ID,
 					"FloorSwitch",
 					LogicElementSensorGasConfig.ID,
-					"BatterySmart"
+					"BatterySmart",
+					"LogicGateNOT"
 				}
 			},
 			{
 				"LogicCircuits",
-				new string[7]
+				new string[4]
 				{
 					"LogicGateAND",
 					"LogicGateOR",
-					"LogicGateXOR",
-					"LogicGateNOT",
 					"LogicGateBUFFER",
-					"LogicGateFILTER",
-					"BatterySmart"
+					"LogicGateFILTER"
 				}
 			},
 			{
 				"DupeTrafficControl",
-				new string[4]
+				new string[5]
 				{
 					"Checkpoint",
 					LogicMemoryConfig.ID,
 					"ArcadeMachine",
-					"CosmicResearchCenter"
+					"CosmicResearchCenter",
+					"LogicGateXOR"
 				}
 			},
 			{
@@ -463,21 +540,24 @@ namespace Database
 			},
 			{
 				"SmartStorage",
-				new string[3]
+				new string[4]
 				{
 					"StorageLockerSmart",
 					"SolidTransferArm",
+					"ObjectDispenser",
 					"ConveyorOverlay"
 				}
 			},
 			{
 				"SolidTransport",
-				new string[5]
+				new string[7]
 				{
 					"SolidConduit",
 					"SolidConduitBridge",
 					"SolidConduitInbox",
 					"SolidConduitOutbox",
+					"SolidVent",
+					"SolidLogicValve",
 					"AutoMiner"
 				}
 			},
@@ -532,8 +612,9 @@ namespace Database
 			},
 			{
 				"EnginesIII",
-				new string[1]
+				new string[2]
 				{
+					"OxidizerTankLiquid",
 					"HydrogenEngine"
 				}
 			},
@@ -619,20 +700,24 @@ namespace Database
 			ResourceTreeLoader<ResourceTreeNode> resourceTreeLoader = new ResourceTreeLoader<ResourceTreeNode>(tree_file);
 			foreach (ResourceTreeNode item in resourceTreeLoader)
 			{
-				Tech tech = TryGet(item.Id);
-				if (tech == null)
+				string a = item.Id.Substring(0, 1);
+				if (!string.Equals(a, "_"))
 				{
-					tech = new Tech(item.Id, this, Strings.Get("STRINGS.RESEARCH.TECHS." + item.Id.ToUpper() + ".NAME"), Strings.Get("STRINGS.RESEARCH.TECHS." + item.Id.ToUpper() + ".DESC"), item);
-				}
-				foreach (ResourceTreeNode reference in item.references)
-				{
-					Tech tech2 = TryGet(reference.Id);
-					if (tech2 == null)
+					Tech tech = TryGet(item.Id);
+					if (tech == null)
 					{
-						tech2 = new Tech(reference.Id, this, Strings.Get("STRINGS.RESEARCH.TECHS." + reference.Id.ToUpper() + ".NAME"), Strings.Get("STRINGS.RESEARCH.TECHS." + reference.Id.ToUpper() + ".DESC"), reference);
+						tech = new Tech(item.Id, this, Strings.Get("STRINGS.RESEARCH.TECHS." + item.Id.ToUpper() + ".NAME"), Strings.Get("STRINGS.RESEARCH.TECHS." + item.Id.ToUpper() + ".DESC"), item);
 					}
-					tech2.requiredTech.Add(tech);
-					tech.unlockedTech.Add(tech2);
+					foreach (ResourceTreeNode reference in item.references)
+					{
+						Tech tech2 = TryGet(reference.Id);
+						if (tech2 == null)
+						{
+							tech2 = new Tech(reference.Id, this, Strings.Get("STRINGS.RESEARCH.TECHS." + reference.Id.ToUpper() + ".NAME"), Strings.Get("STRINGS.RESEARCH.TECHS." + reference.Id.ToUpper() + ".DESC"), reference);
+						}
+						tech2.requiredTech.Add(tech);
+						tech.unlockedTech.Add(tech2);
+					}
 				}
 			}
 			tierCount = 0;

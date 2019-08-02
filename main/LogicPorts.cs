@@ -15,29 +15,38 @@ public class LogicPorts : KMonoBehaviour, IEffectDescriptor, IRenderEveryTick
 
 		public CellOffset cellOffset;
 
-		public LocString description;
+		public string description;
+
+		public string activeDescription;
+
+		public string inactiveDescription;
 
 		public bool requiresConnection;
 
 		public LogicPortSpriteType spriteType;
 
-		public Port(HashedString id, CellOffset cell_offset, LocString description, bool show_wire_missing_icon, LogicPortSpriteType sprite_type)
+		public bool displayCustomName;
+
+		public Port(HashedString id, CellOffset cell_offset, string description, string activeDescription, string inactiveDescription, bool show_wire_missing_icon, LogicPortSpriteType sprite_type, bool display_custom_name = false)
 		{
 			this.id = id;
 			cellOffset = cell_offset;
 			this.description = description;
+			this.activeDescription = activeDescription;
+			this.inactiveDescription = inactiveDescription;
 			requiresConnection = show_wire_missing_icon;
 			spriteType = sprite_type;
+			displayCustomName = display_custom_name;
 		}
 
-		public static Port InputPort(HashedString id, CellOffset cell_offset, LocString description, bool show_wire_missing_icon = false)
+		public static Port InputPort(HashedString id, CellOffset cell_offset, string description, string activeDescription, string inactiveDescription, bool show_wire_missing_icon = false, bool display_custom_name = false)
 		{
-			return new Port(id, cell_offset, description, show_wire_missing_icon, LogicPortSpriteType.Input);
+			return new Port(id, cell_offset, description, activeDescription, inactiveDescription, show_wire_missing_icon, LogicPortSpriteType.Input, display_custom_name);
 		}
 
-		public static Port OutputPort(HashedString id, CellOffset cell_offset, LocString description, bool show_wire_missing_icon = false)
+		public static Port OutputPort(HashedString id, CellOffset cell_offset, string description, string activeDescription, string inactiveDescription, bool show_wire_missing_icon = false, bool display_custom_name = false)
 		{
-			return new Port(id, cell_offset, description, show_wire_missing_icon, LogicPortSpriteType.Output);
+			return new Port(id, cell_offset, description, activeDescription, inactiveDescription, show_wire_missing_icon, LogicPortSpriteType.Output, display_custom_name);
 		}
 	}
 
@@ -73,7 +82,7 @@ public class LogicPorts : KMonoBehaviour, IEffectDescriptor, IRenderEveryTick
 		if (!isPhysical && (UnityEngine.Object)GetComponent<BuildingUnderConstruction>() == (UnityEngine.Object)null)
 		{
 			OverlayScreen instance = OverlayScreen.Instance;
-			instance.OnOverlayChanged = (Action<SimViewMode>)Delegate.Combine(instance.OnOverlayChanged, new Action<SimViewMode>(OnOverlayChanged));
+			instance.OnOverlayChanged = (Action<HashedString>)Delegate.Combine(instance.OnOverlayChanged, new Action<HashedString>(OnOverlayChanged));
 			OnOverlayChanged(OverlayScreen.Instance.mode);
 			CreateVisualizers();
 			SimAndRenderScheduler.instance.Add(this, false);
@@ -92,7 +101,7 @@ public class LogicPorts : KMonoBehaviour, IEffectDescriptor, IRenderEveryTick
 	protected override void OnCleanUp()
 	{
 		OverlayScreen instance = OverlayScreen.Instance;
-		instance.OnOverlayChanged = (Action<SimViewMode>)Delegate.Remove(instance.OnOverlayChanged, new Action<SimViewMode>(OnOverlayChanged));
+		instance.OnOverlayChanged = (Action<HashedString>)Delegate.Remove(instance.OnOverlayChanged, new Action<HashedString>(OnOverlayChanged));
 		DestroyVisualizers();
 		if (isPhysical)
 		{
@@ -102,6 +111,11 @@ public class LogicPorts : KMonoBehaviour, IEffectDescriptor, IRenderEveryTick
 	}
 
 	public void RenderEveryTick(float dt)
+	{
+		CreateVisualizers();
+	}
+
+	public void HackRefreshVisualizers()
 	{
 		CreateVisualizers();
 	}
@@ -316,6 +330,37 @@ public class LogicPorts : KMonoBehaviour, IEffectDescriptor, IRenderEveryTick
 		return Grid.OffsetCell(num, offset);
 	}
 
+	public bool TryGetPortAtCell(int cell, out Port port, out bool isInput)
+	{
+		Port[] array = inputPortInfo;
+		for (int i = 0; i < array.Length; i++)
+		{
+			Port port2 = array[i];
+			int actualCell = GetActualCell(port2.cellOffset);
+			if (actualCell == cell)
+			{
+				port = port2;
+				isInput = true;
+				return true;
+			}
+		}
+		Port[] array2 = outputPortInfo;
+		for (int j = 0; j < array2.Length; j++)
+		{
+			Port port3 = array2[j];
+			int actualCell2 = GetActualCell(port3.cellOffset);
+			if (actualCell2 == cell)
+			{
+				port = port3;
+				isInput = false;
+				return true;
+			}
+		}
+		port = default(Port);
+		isInput = false;
+		return false;
+	}
+
 	public void SendSignal(HashedString port_id, int new_value)
 	{
 		foreach (LogicEventSender outputPort in outputPorts)
@@ -357,8 +402,7 @@ public class LogicPorts : KMonoBehaviour, IEffectDescriptor, IRenderEveryTick
 		{
 			if (inputPortInfo[i].id == port_id)
 			{
-				LogicEventHandler logicEventHandler = inputPorts[i] as LogicEventHandler;
-				return logicEventHandler.Value;
+				return (inputPorts[i] as LogicEventHandler)?.Value ?? 0;
 			}
 		}
 		return 0;
@@ -369,6 +413,10 @@ public class LogicPorts : KMonoBehaviour, IEffectDescriptor, IRenderEveryTick
 		for (int i = 0; i < outputPorts.Count; i++)
 		{
 			LogicEventSender logicEventSender = outputPorts[i] as LogicEventSender;
+			if (logicEventSender == null)
+			{
+				return 0;
+			}
 			if (logicEventSender.ID == port_id)
 			{
 				return logicEventSender.GetLogicValue();
@@ -385,9 +433,9 @@ public class LogicPorts : KMonoBehaviour, IEffectDescriptor, IRenderEveryTick
 		return networkForCell != null;
 	}
 
-	private void OnOverlayChanged(SimViewMode mode)
+	private void OnOverlayChanged(HashedString mode)
 	{
-		if (mode == SimViewMode.Logic)
+		if (mode == OverlayModes.Logic.ID)
 		{
 			base.enabled = true;
 			CreateVisualizers();
@@ -401,49 +449,37 @@ public class LogicPorts : KMonoBehaviour, IEffectDescriptor, IRenderEveryTick
 
 	public List<Descriptor> GetDescriptors(BuildingDef def)
 	{
-		List<Descriptor> list = null;
+		List<Descriptor> list = new List<Descriptor>();
 		LogicPorts component = def.BuildingComplete.GetComponent<LogicPorts>();
 		if ((UnityEngine.Object)component != (UnityEngine.Object)null)
 		{
 			if (component.inputPortInfo != null && component.inputPortInfo.Length > 0)
 			{
-				string text = string.Empty;
-				string str = (component.inputPortInfo.Length != 1) ? "\n\t\t" : string.Empty;
+				Descriptor item = new Descriptor(UI.LOGIC_PORTS.INPUT_PORTS, UI.LOGIC_PORTS.INPUT_PORTS_TOOLTIP, Descriptor.DescriptorType.Effect, false);
+				list.Add(item);
 				Port[] array = component.inputPortInfo;
 				for (int i = 0; i < array.Length; i++)
 				{
 					Port port = array[i];
-					text = text + str + port.description;
+					string tooltip = string.Format(UI.LOGIC_PORTS.INPUT_PORT_TOOLTIP, port.activeDescription, port.inactiveDescription);
+					item = new Descriptor(port.description, tooltip, Descriptor.DescriptorType.Effect, false);
+					item.IncreaseIndent();
+					list.Add(item);
 				}
-				string empty = string.Empty;
-				string txt = string.Format(UI.LOGIC_PORTS.INPUT_PORTS, text);
-				Descriptor item = default(Descriptor);
-				item.SetupDescriptor(txt, empty, Descriptor.DescriptorType.Effect);
-				if (list == null)
-				{
-					list = new List<Descriptor>();
-				}
-				list.Add(item);
 			}
 			if (component.outputPortInfo != null && component.outputPortInfo.Length > 0)
 			{
-				string text2 = string.Empty;
-				string str2 = (component.outputPortInfo.Length != 1) ? "\n\t\t" : string.Empty;
+				Descriptor item2 = new Descriptor(UI.LOGIC_PORTS.OUTPUT_PORTS, UI.LOGIC_PORTS.INPUT_PORTS_TOOLTIP, Descriptor.DescriptorType.Effect, false);
+				list.Add(item2);
 				Port[] array2 = component.outputPortInfo;
 				for (int j = 0; j < array2.Length; j++)
 				{
 					Port port2 = array2[j];
-					text2 = text2 + str2 + port2.description;
+					string tooltip2 = string.Format(UI.LOGIC_PORTS.OUTPUT_PORT_TOOLTIP, port2.activeDescription, port2.inactiveDescription);
+					item2 = new Descriptor(port2.description, tooltip2, Descriptor.DescriptorType.Effect, false);
+					item2.IncreaseIndent();
+					list.Add(item2);
 				}
-				string empty2 = string.Empty;
-				string txt2 = string.Format(UI.LOGIC_PORTS.OUTPUT_PORTS, text2);
-				Descriptor item2 = default(Descriptor);
-				item2.SetupDescriptor(txt2, empty2, Descriptor.DescriptorType.Effect);
-				if (list == null)
-				{
-					list = new List<Descriptor>();
-				}
-				list.Add(item2);
 			}
 		}
 		return list;

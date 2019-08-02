@@ -81,7 +81,7 @@ public class EntityTemplates
 		{
 			foreach (Tag additionalTag in additionalTags)
 			{
-				kPrefabID.AddTag(additionalTag);
+				kPrefabID.AddTag(additionalTag, false);
 			}
 		}
 		KBatchedAnimController kBatchedAnimController = template.AddOrGet<KBatchedAnimController>();
@@ -172,7 +172,7 @@ public class EntityTemplates
 		return template;
 	}
 
-	public static GameObject ExtendEntityToBasicPlant(GameObject template, float temperature_lethal_low = 218.15f, float temperature_warning_low = 283.15f, float temperature_warning_high = 303.15f, float temperature_lethal_high = 398.15f, SimHashes[] safe_elements = null, bool pressure_sensitive = true, float pressure_lethal_low = 0f, float pressure_warning_low = 0.15f, string crop_id = null, bool can_drown = true, bool can_tinker = true)
+	public static GameObject ExtendEntityToBasicPlant(GameObject template, float temperature_lethal_low = 218.15f, float temperature_warning_low = 283.15f, float temperature_warning_high = 303.15f, float temperature_lethal_high = 398.15f, SimHashes[] safe_elements = null, bool pressure_sensitive = true, float pressure_lethal_low = 0f, float pressure_warning_low = 0.15f, string crop_id = null, bool can_drown = true, bool can_tinker = true, bool require_solid_tile = true, bool should_grow_old = true, float max_age = 2400f)
 	{
 		template.AddOrGet<EntombVulnerable>();
 		PressureVulnerable pressureVulnerable = template.AddOrGet<PressureVulnerable>();
@@ -189,7 +189,10 @@ public class EntityTemplates
 		template.AddOrGet<WiltCondition>();
 		template.AddOrGet<Prioritizable>();
 		template.AddOrGet<Uprootable>();
-		template.AddOrGet<UprootedMonitor>();
+		if (require_solid_tile)
+		{
+			template.AddOrGet<UprootedMonitor>();
+		}
 		template.AddOrGet<ReceptacleMonitor>();
 		template.AddOrGet<Notifier>();
 		if (can_drown)
@@ -210,8 +213,11 @@ public class EntityTemplates
 			Crop crop = template.AddOrGet<Crop>();
 			crop.Configure(cropval);
 			Growing growing = template.AddOrGet<Growing>();
-			growing.Configure(cropval.cropDuration);
+			growing.growthTime = cropval.cropDuration;
+			growing.shouldGrowOld = should_grow_old;
+			growing.maxAge = max_age;
 			template.AddOrGet<Harvestable>();
+			template.AddOrGet<HarvestDesignatable>();
 		}
 		component.prefabInitFn += delegate(GameObject inst)
 		{
@@ -247,6 +253,7 @@ public class EntityTemplates
 		def.tameEffect.Add(new AttributeModifier(Db.Get().CritterAttributes.Metabolism.Id, 100f, STRINGS.CREATURES.MODIFIERS.TAME.NAME, false, false, true));
 		OvercrowdingMonitor.Def def2 = prefab.AddOrGetDef<OvercrowdingMonitor.Def>();
 		def2.spaceRequiredPerCreature = space_required_per_creature;
+		prefab.AddTag(GameTags.Plant);
 		return prefab;
 	}
 
@@ -254,7 +261,7 @@ public class EntityTemplates
 	{
 		FertilityMonitor.Def def = prefab.AddOrGetDef<FertilityMonitor.Def>();
 		def.baseFertileCycles = fertility_cycles;
-		DebugUtil.DevAssert(eggSortOrder > -1, "Added a fertile creature without an egg sort order!", string.Empty, string.Empty);
+		DebugUtil.DevAssert(eggSortOrder > -1, "Added a fertile creature without an egg sort order!");
 		float base_incubation_rate = 100f / (600f * incubation_cycles);
 		GameObject gameObject = EggConfig.CreateEgg(eggId, eggName, eggDesc, baby_id, egg_anim, egg_mass, eggSortOrder, base_incubation_rate);
 		def.eggPrefab = new Tag(eggId);
@@ -270,7 +277,7 @@ public class EntityTemplates
 		string symbolPrefix = prefab.GetComponent<CreatureBrain>().symbolPrefix;
 		if (!string.IsNullOrEmpty(symbolPrefix))
 		{
-			symbol_override_controller.ApplySymbolOverridesByPrefix(Assets.GetAnim(egg_anim), symbolPrefix, 0);
+			symbol_override_controller.ApplySymbolOverridesByAffix(Assets.GetAnim(egg_anim), symbolPrefix, null, 0);
 		}
 		KPrefabID creature_prefab_id = prefab.GetComponent<KPrefabID>();
 		creature_prefab_id.prefabSpawnFn += delegate
@@ -293,9 +300,10 @@ public class EntityTemplates
 		return prefab;
 	}
 
-	public static GameObject ExtendEntityToBeingABaby(GameObject prefab, Tag adult_prefab_id)
+	public static GameObject ExtendEntityToBeingABaby(GameObject prefab, Tag adult_prefab_id, string on_grow_item_drop_id = null)
 	{
 		prefab.AddOrGetDef<BabyMonitor.Def>().adultPrefab = adult_prefab_id;
+		prefab.AddOrGetDef<BabyMonitor.Def>().onGrowDropID = on_grow_item_drop_id;
 		prefab.AddOrGetDef<IncubatorMonitor.Def>();
 		prefab.AddOrGetDef<CreatureSleepMonitor.Def>();
 		prefab.AddOrGetDef<CallAdultMonitor.Def>();
@@ -303,11 +311,11 @@ public class EntityTemplates
 		return prefab;
 	}
 
-	public static GameObject ExtendEntityToBasicCreature(GameObject template, FactionManager.FactionID faction = FactionManager.FactionID.Prey, string initialTraitID = null, string NavGridName = "HatchNavGrid", NavType navType = NavType.Floor, int max_probing_radius = 32, float moveSpeed = 2f, string onDeathDropID = "Meat", int onDeathDropCount = 1, bool drownVulnerable = true, bool entombVulnerable = true, float warningLowTemperature = 283.15f, float warningHighTemperature = 293.15f, float lethalLowTemperature = 243.15f, float lethalHighTemperature = 343.15f)
+	public static GameObject ExtendEntityToBasicCreature(GameObject template, FactionManager.FactionID faction = FactionManager.FactionID.Prey, string initialTraitID = null, string NavGridName = "WalkerNavGrid1x1", NavType navType = NavType.Floor, int max_probing_radius = 32, float moveSpeed = 2f, string onDeathDropID = "Meat", int onDeathDropCount = 1, bool drownVulnerable = true, bool entombVulnerable = true, float warningLowTemperature = 283.15f, float warningHighTemperature = 293.15f, float lethalLowTemperature = 243.15f, float lethalHighTemperature = 343.15f)
 	{
 		template.GetComponent<KBatchedAnimController>().isMovable = true;
 		KPrefabID kPrefabID = template.AddOrGet<KPrefabID>();
-		kPrefabID.AddTag(GameTags.Creature);
+		kPrefabID.AddTag(GameTags.Creature, false);
 		Modifiers modifiers = template.AddOrGet<Modifiers>();
 		if (initialTraitID != null)
 		{
@@ -367,7 +375,7 @@ public class EntityTemplates
 		ChoreConsumer chore_consumer = prefab.AddOrGet<ChoreConsumer>();
 		chore_consumer.choreTable = chore_table.CreateTable();
 		KPrefabID kPrefabID = prefab.AddOrGet<KPrefabID>();
-		kPrefabID.AddTag(GameTags.CreatureBrain);
+		kPrefabID.AddTag(GameTags.CreatureBrain, false);
 		kPrefabID.instantiateFn += delegate(GameObject go)
 		{
 			go.GetComponent<ChoreConsumer>().choreTable = chore_consumer.choreTable;
@@ -389,12 +397,13 @@ public class EntityTemplates
 		return "Bagged" + name;
 	}
 
-	public static GameObject CreateAndRegisterBaggedCreature(GameObject creature, bool must_stand_on_top_for_pickup, bool allow_mark_for_capture)
+	public static GameObject CreateAndRegisterBaggedCreature(GameObject creature, bool must_stand_on_top_for_pickup, bool allow_mark_for_capture, bool use_gun_for_pickup = false)
 	{
 		KPrefabID creature_prefab_id = creature.GetComponent<KPrefabID>();
-		creature_prefab_id.AddTag(GameTags.BagableCreature);
+		creature_prefab_id.AddTag(GameTags.BagableCreature, false);
 		Baggable baggable = creature.AddOrGet<Baggable>();
 		baggable.mustStandOntopOfTrapForPickup = must_stand_on_top_for_pickup;
+		baggable.useGunForPickup = use_gun_for_pickup;
 		Capturable capturable = creature.AddOrGet<Capturable>();
 		capturable.allowCapture = allow_mark_for_capture;
 		creature_prefab_id.prefabSpawnFn += delegate
@@ -404,7 +413,7 @@ public class EntityTemplates
 		return creature;
 	}
 
-	public static GameObject CreateLooseEntity(string id, string name, string desc, float mass, bool unitMass, KAnimFile anim, string initialAnim, Grid.SceneLayer sceneLayer, CollisionShape collisionShape, float width = 1f, float height = 1f, bool isPickupable = false, SimHashes element = SimHashes.Creature, List<Tag> additionalTags = null)
+	public static GameObject CreateLooseEntity(string id, string name, string desc, float mass, bool unitMass, KAnimFile anim, string initialAnim, Grid.SceneLayer sceneLayer, CollisionShape collisionShape, float width = 1f, float height = 1f, bool isPickupable = false, int sortOrder = 0, SimHashes element = SimHashes.Creature, List<Tag> additionalTags = null)
 	{
 		GameObject template = CreateBasicEntity(id, name, desc, mass, unitMass, anim, initialAnim, sceneLayer, element, additionalTags, 293f);
 		template = AddCollision(template, collisionShape, width, height);
@@ -415,6 +424,7 @@ public class EntityTemplates
 		{
 			Pickupable pickupable = template.AddOrGet<Pickupable>();
 			pickupable.SetWorkTime(5f);
+			pickupable.sortOrder = sortOrder;
 		}
 		return template;
 	}
@@ -455,9 +465,8 @@ public class EntityTemplates
 	public static GameObject CreateOreEntity(SimHashes elementID, CollisionShape shape, float width, float height, List<Tag> additionalTags = null, float default_temperature = 293f)
 	{
 		Element element = ElementLoader.FindElementByHash(elementID);
-		string name = element.id.ToString();
 		GameObject gameObject = Object.Instantiate(baseOreTemplate);
-		gameObject.name = name;
+		gameObject.name = element.name;
 		Object.DontDestroyOnLoad(gameObject);
 		KPrefabID kPrefabID = gameObject.AddOrGet<KPrefabID>();
 		kPrefabID.PrefabTag = element.tag;
@@ -465,12 +474,12 @@ public class EntityTemplates
 		{
 			foreach (Tag additionalTag in additionalTags)
 			{
-				kPrefabID.AddTag(additionalTag);
+				kPrefabID.AddTag(additionalTag, false);
 			}
 		}
 		if (element.lowTemp < 296.15f && element.highTemp > 296.15f)
 		{
-			kPrefabID.AddTag(GameTags.PedestalDisplayable);
+			kPrefabID.AddTag(GameTags.PedestalDisplayable, false);
 		}
 		PrimaryElement primaryElement = gameObject.AddOrGet<PrimaryElement>();
 		primaryElement.SetElement(elementID);
@@ -478,6 +487,7 @@ public class EntityTemplates
 		primaryElement.Temperature = default_temperature;
 		Pickupable pickupable = gameObject.AddOrGet<Pickupable>();
 		pickupable.SetWorkTime(5f);
+		pickupable.sortOrder = element.buildMenuSort;
 		KSelectable kSelectable = gameObject.AddOrGet<KSelectable>();
 		kSelectable.SetName(element.name);
 		KBatchedAnimController kBatchedAnimController = gameObject.AddOrGet<KBatchedAnimController>();
@@ -516,8 +526,7 @@ public class EntityTemplates
 
 	public static GameObject ExtendEntityToFood(GameObject template, EdiblesManager.FoodInfo foodInfo)
 	{
-		EntitySplitter entitySplitter = template.AddOrGet<EntitySplitter>();
-		entitySplitter.maxStackSize = 10f;
+		template.AddOrGet<EntitySplitter>();
 		if (foodInfo.CanRot)
 		{
 			Rottable.Def def = template.AddOrGetDef<Rottable.Def>();
@@ -527,7 +536,7 @@ public class EntityTemplates
 			CreateAndRegisterCompostableFromPrefab(template);
 		}
 		KPrefabID component = template.GetComponent<KPrefabID>();
-		component.AddTag(GameTags.PedestalDisplayable);
+		component.AddTag(GameTags.PedestalDisplayable, false);
 		if (foodInfo.CaloriesPerUnit > 0f)
 		{
 			Edible edible = template.AddOrGet<Edible>();
@@ -540,7 +549,7 @@ public class EntityTemplates
 		}
 		else
 		{
-			component.AddTag(GameTags.CookingIngredient);
+			component.AddTag(GameTags.CookingIngredient, false);
 			template.AddOrGet<HasSortOrder>();
 		}
 		return template;
@@ -550,7 +559,7 @@ public class EntityTemplates
 	{
 		template.AddOrGet<EntitySplitter>();
 		KPrefabID component = template.GetComponent<KPrefabID>();
-		component.AddTag(GameTags.Medicine);
+		component.AddTag(GameTags.Medicine, false);
 		MedicinalPill medicinalPill = template.AddOrGet<MedicinalPill>();
 		medicinalPill.info = medicineInfo;
 		return template;
@@ -568,10 +577,6 @@ public class EntityTemplates
 			manualDeliveryKG.refillMass = consumeInfo.massConsumptionRate * 600f * 0.5f;
 			manualDeliveryKG.minimumMass = consumeInfo.massConsumptionRate * 600f * 0.5f;
 			manualDeliveryKG.operationalRequirement = FetchOrder2.OperationalRequirement.Functional;
-			manualDeliveryKG.choreTags = new Tag[1]
-			{
-				GameTags.ChoreTypes.Farming
-			};
 			manualDeliveryKG.choreTypeIDHash = idHash;
 		}
 		KPrefabID component = template.GetComponent<KPrefabID>();
@@ -609,10 +614,6 @@ public class EntityTemplates
 			manualDeliveryKG.refillMass = consumeInfo.massConsumptionRate * 600f * 0.5f;
 			manualDeliveryKG.minimumMass = consumeInfo.massConsumptionRate * 600f * 0.5f;
 			manualDeliveryKG.operationalRequirement = FetchOrder2.OperationalRequirement.Functional;
-			manualDeliveryKG.choreTags = new Tag[1]
-			{
-				GameTags.ChoreTypes.Farming
-			};
 			manualDeliveryKG.choreTypeIDHash = idHash;
 		}
 		IrrigationMonitor.Def def = template.AddOrGetDef<IrrigationMonitor.Def>();
@@ -635,6 +636,7 @@ public class EntityTemplates
 		string tag_string = "Compost" + component.PrefabTag.Name;
 		string text = MISC.TAGS.COMPOST_FORMAT.Replace("{Item}", component.PrefabTag.ProperName());
 		gameObject.GetComponent<KPrefabID>().PrefabTag = TagManager.Create(tag_string, text);
+		gameObject.GetComponent<KPrefabID>().AddTag(GameTags.Compostable, false);
 		gameObject.name = text;
 		gameObject.GetComponent<Compostable>().isMarkedForCompost = true;
 		gameObject.GetComponent<KSelectable>().SetName(text);
@@ -646,36 +648,30 @@ public class EntityTemplates
 		return gameObject;
 	}
 
-	public static GameObject CreateAndRegisterSeedForPlant(GameObject plant, SeedProducer.ProductionType productionType, string id, string name, string desc, KAnimFile anim, string initialAnim = "object", int numberOfSeeds = 1, List<Tag> additionalTags = null, SingleEntityReceptacle.ReceptacleDirection planterDirection = SingleEntityReceptacle.ReceptacleDirection.Top, Tag replantGroundTag = default(Tag), int sortOrder = 0, string domesticatedDescription = "", CollisionShape collisionShape = CollisionShape.CIRCLE, float width = 0.25f, float height = 0.25f, Recipe.Ingredient[] recipe_ingredients = null, string recipe_description = "")
+	public static GameObject CreateAndRegisterSeedForPlant(GameObject plant, SeedProducer.ProductionType productionType, string id, string name, string desc, KAnimFile anim, string initialAnim = "object", int numberOfSeeds = 1, List<Tag> additionalTags = null, SingleEntityReceptacle.ReceptacleDirection planterDirection = SingleEntityReceptacle.ReceptacleDirection.Top, Tag replantGroundTag = default(Tag), int sortOrder = 0, string domesticatedDescription = "", CollisionShape collisionShape = CollisionShape.CIRCLE, float width = 0.25f, float height = 0.25f, Recipe.Ingredient[] recipe_ingredients = null, string recipe_description = "", bool ignoreDefaultSeedTag = false)
 	{
-		GameObject gameObject = CreateLooseEntity(id, name, desc, 1f, true, anim, initialAnim, Grid.SceneLayer.Front, collisionShape, width, height, true, SimHashes.Creature, null);
+		GameObject gameObject = CreateLooseEntity(id, name, desc, 1f, true, anim, initialAnim, Grid.SceneLayer.Front, collisionShape, width, height, true, SORTORDER.SEEDS + sortOrder, SimHashes.Creature, null);
 		gameObject.AddOrGet<EntitySplitter>();
 		CreateAndRegisterCompostableFromPrefab(gameObject);
 		PlantableSeed plantableSeed = gameObject.AddOrGet<PlantableSeed>();
 		plantableSeed.PlantID = new Tag(plant.name);
 		plantableSeed.replantGroundTag = replantGroundTag;
-		plantableSeed.sortOrder = sortOrder;
 		plantableSeed.domesticatedDescription = domesticatedDescription;
 		plantableSeed.direction = planterDirection;
 		KPrefabID component = gameObject.GetComponent<KPrefabID>();
 		foreach (Tag additionalTag in additionalTags)
 		{
-			component.AddTag(additionalTag);
+			component.AddTag(additionalTag, false);
 		}
-		component.AddTag(GameTags.Seed);
-		component.AddTag(GameTags.PedestalDisplayable);
+		if (!ignoreDefaultSeedTag)
+		{
+			component.AddTag(GameTags.Seed, false);
+		}
+		component.AddTag(GameTags.PedestalDisplayable, false);
 		KPrefabID component2 = gameObject.GetComponent<KPrefabID>();
 		Assets.AddPrefab(component2);
 		SeedProducer seedProducer = plant.AddOrGet<SeedProducer>();
 		seedProducer.Configure(gameObject.name, productionType, numberOfSeeds);
-		if (recipe_ingredients != null)
-		{
-			Recipe recipe = new Recipe(id, 1f, (SimHashes)0, null, recipe_description, 1).SetFabricator("SeedSplicer", FOOD.RECIPES.STANDARD_COOK_TIME);
-			foreach (Recipe.Ingredient ingredient in recipe_ingredients)
-			{
-				recipe.AddIngredient(ingredient);
-			}
-		}
 		return gameObject;
 	}
 

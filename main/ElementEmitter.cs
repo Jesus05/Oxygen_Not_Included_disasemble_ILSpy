@@ -42,14 +42,8 @@ public class ElementEmitter : SimComponent
 
 	protected override void OnCleanUp()
 	{
-		if (onBlockedHandle.IsValid())
-		{
-			Game.Instance.callbackManager.Release(onBlockedHandle);
-		}
-		if (onUnblockedHandle.IsValid())
-		{
-			Game.Instance.callbackManager.Release(onUnblockedHandle);
-		}
+		Game.Instance.ManualReleaseHandle(onBlockedHandle);
+		Game.Instance.ManualReleaseHandle(onUnblockedHandle);
 		base.OnCleanUp();
 	}
 
@@ -64,7 +58,7 @@ public class ElementEmitter : SimComponent
 		int game_cell = Grid.OffsetCell(cell, (int)outputElement.outputElementOffset.x, (int)outputElement.outputElementOffset.y);
 		if (outputElement.elementHash != 0 && outputElement.massGenerationRate > 0f && emissionFrequency > 0f)
 		{
-			float emit_temperature = (outputElement.outputTemperature != 0f) ? outputElement.outputTemperature : GetComponent<PrimaryElement>().Temperature;
+			float emit_temperature = (outputElement.minOutputTemperature != 0f) ? outputElement.minOutputTemperature : GetComponent<PrimaryElement>().Temperature;
 			SimMessages.ModifyElementEmitter(simHandle, game_cell, emitRange, outputElement.elementHash, emissionFrequency, outputElement.massGenerationRate, emit_temperature, maxPressure, outputElement.addedDiseaseIdx, outputElement.addedDiseaseCount);
 		}
 		if (showDescriptor)
@@ -88,7 +82,7 @@ public class ElementEmitter : SimComponent
 	{
 		if (!(mass <= 0f))
 		{
-			float temperature2 = (!(temperature > 0f)) ? outputElement.outputTemperature : temperature;
+			float temperature2 = (!(temperature > 0f)) ? outputElement.minOutputTemperature : temperature;
 			Element element = ElementLoader.FindElementByHash(outputElement.elementHash);
 			if (element.IsGas || element.IsLiquid)
 			{
@@ -97,7 +91,7 @@ public class ElementEmitter : SimComponent
 			}
 			else if (element.IsSolid)
 			{
-				element.substance.SpawnResource(base.transform.GetPosition() + new Vector3(0f, 0.5f, 0f), mass, temperature2, disease_idx, disease_count, false, true);
+				element.substance.SpawnResource(base.transform.GetPosition() + new Vector3(0f, 0.5f, 0f), mass, temperature2, disease_idx, disease_count, false, true, false);
 			}
 			PopFXManager.Instance.SpawnFX(PopFXManager.Instance.sprite_Resource, ElementLoader.FindElementByHash(outputElement.elementHash).name, base.gameObject.transform, 1.5f, false);
 		}
@@ -128,6 +122,7 @@ public class ElementEmitter : SimComponent
 
 	private static void StaticUnregister(int sim_handle)
 	{
+		Debug.Assert(Sim.IsValidHandle(sim_handle));
 		SimMessages.RemoveElementEmitter(-1, sim_handle);
 	}
 

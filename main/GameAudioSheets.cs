@@ -55,12 +55,11 @@ public class GameAudioSheets : AudioSheets
 	public override void Initialize()
 	{
 		validFileNames.Add("game_triggered");
-		KAnimFile[] animAssets = Assets.instance.AnimAssets;
-		foreach (KAnimFile kAnimFile in animAssets)
+		foreach (KAnimFile animAsset in Assets.instance.AnimAssets)
 		{
-			if (!((Object)kAnimFile == (Object)null))
+			if (!((Object)animAsset == (Object)null))
 			{
-				validFileNames.Add(kAnimFile.name);
+				validFileNames.Add(animAsset.name);
 			}
 		}
 		base.Initialize();
@@ -112,7 +111,7 @@ public class GameAudioSheets : AudioSheets
 				}
 				else
 				{
-					Debug.LogWarning(sound_name + " has unknown parameter " + array[i], null);
+					Debug.LogWarning(sound_name + " has unknown parameter " + array[i]);
 				}
 			}
 		}
@@ -165,6 +164,10 @@ public class GameAudioSheets : AudioSheets
 		else if (type == "CountedSoundEvent")
 		{
 			soundEvent = new CountedSoundEvent(file_name, sound_name, frame, true, false, min_interval, false);
+		}
+		else if (type == "SculptingSoundEvent")
+		{
+			soundEvent = new SculptingSoundEvent(file_name, sound_name, frame, true, false, min_interval, false);
 		}
 		else if (type == "PhonoboxSoundEvent")
 		{

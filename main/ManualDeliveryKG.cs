@@ -1,12 +1,14 @@
 using KSerialization;
 using STRINGS;
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 [SerializationConfig(MemberSerialization.OptIn)]
-public class ManualDeliveryKG : KMonoBehaviour, ISim200ms
+public class ManualDeliveryKG : KMonoBehaviour, ISim1000ms
 {
+	[MyCmpGet]
+	private Operational operational;
+
 	[SerializeField]
 	private Storage storage;
 
@@ -34,24 +36,23 @@ public class ManualDeliveryKG : KMonoBehaviour, ISim200ms
 	[SerializeField]
 	public HashedString choreTypeIDHash;
 
-	[SerializeField]
-	public Tag[] choreTags;
-
 	[Serialize]
 	private bool userPaused;
 
-	[NonSerialized]
 	public bool ShowStatusItem = true;
 
 	private FetchList2 fetchList;
-
-	private List<PrimaryElement> filteredStoredItems = new List<PrimaryElement>();
 
 	private int onStorageChangeSubscription = -1;
 
 	private static readonly EventSystem.IntraObjectHandler<ManualDeliveryKG> OnRefreshUserMenuDelegate = new EventSystem.IntraObjectHandler<ManualDeliveryKG>(delegate(ManualDeliveryKG component, object data)
 	{
 		component.OnRefreshUserMenu(data);
+	});
+
+	private static readonly EventSystem.IntraObjectHandler<ManualDeliveryKG> OnOperationalChangedDelegate = new EventSystem.IntraObjectHandler<ManualDeliveryKG>(delegate(ManualDeliveryKG component, object data)
+	{
+		component.OnOperationalChanged(data);
 	});
 
 	public float Capacity => capacity;
@@ -72,17 +73,14 @@ public class ManualDeliveryKG : KMonoBehaviour, ISim200ms
 	protected override void OnSpawn()
 	{
 		base.OnSpawn();
-		if (!choreTypeIDHash.IsValid)
-		{
-			choreTypeIDHash = Db.Get().ChoreTypes.Fetch.IdHash;
-		}
+		DebugUtil.Assert(choreTypeIDHash.IsValid, "ManualDeliveryKG Must have a valid chore type specified!", base.name);
 		Subscribe(493375141, OnRefreshUserMenuDelegate);
 		Subscribe(-111137758, OnRefreshUserMenuDelegate);
+		Subscribe(-592767678, OnOperationalChangedDelegate);
 		if ((UnityEngine.Object)storage != (UnityEngine.Object)null)
 		{
 			SetStorage(storage);
 		}
-		UpdateFilteredItems();
 		Prioritizable.AddRef(base.gameObject);
 		if (userPaused && allowPause)
 		{
@@ -105,10 +103,10 @@ public class ManualDeliveryKG : KMonoBehaviour, ISim200ms
 			onStorageChangeSubscription = -1;
 		}
 		AbortDelivery("storage pointer changed");
-		filteredStoredItems.Clear();
 		this.storage = storage;
 		if ((UnityEngine.Object)this.storage != (UnityEngine.Object)null && base.isSpawned)
 		{
+			Debug.Assert(onStorageChangeSubscription == -1);
 			onStorageChangeSubscription = this.storage.Subscribe(-1697596308, delegate
 			{
 				OnStorageChanged(this.storage);
@@ -128,7 +126,7 @@ public class ManualDeliveryKG : KMonoBehaviour, ISim200ms
 		}
 	}
 
-	public void Sim200ms(float dt)
+	public void Sim1000ms(float dt)
 	{
 		UpdateDeliveryState();
 	}
@@ -136,50 +134,66 @@ public class ManualDeliveryKG : KMonoBehaviour, ISim200ms
 	[ContextMenu("UpdateDeliveryState")]
 	public void UpdateDeliveryState()
 	{
-		if (requestedItemTag.IsValid && !((UnityEngine.Object)storage == (UnityEngine.Object)null) && !paused)
+		if (requestedItemTag.IsValid && !((UnityEngine.Object)storage == (UnityEngine.Object)null))
 		{
-			RequestDelivery();
+			UpdateFetchList();
 		}
 	}
 
-	private void RequestDelivery()
+	private void UpdateFetchList()
 	{
-		float fetchAmount = GetFetchAmount();
-		if (fetchAmount > 0f && (this.fetchList == null || this.fetchList.IsComplete))
+		if (!paused)
 		{
-			if (this.fetchList != null)
+			if (this.fetchList != null && this.fetchList.IsComplete)
 			{
-				this.fetchList.Cancel("Request Delivery");
+				this.fetchList = null;
 			}
-			ChoreType byHash = Db.Get().ChoreTypes.GetByHash(choreTypeIDHash);
-			this.fetchList = new FetchList2(storage, byHash, choreTags);
-			this.fetchList.ShowStatusItem = ShowStatusItem;
-			this.fetchList.MinimumAmount[requestedItemTag] = minimumMass;
-			FetchList2 fetchList = this.fetchList;
-			Tag[] tags = new Tag[1]
+			if (!OperationalRequirementsMet())
 			{
-				requestedItemTag
-			};
-			float amount = fetchAmount;
-			FetchOrder2.OperationalRequirement operationalRequirement = this.operationalRequirement;
-			fetchList.Add(tags, null, null, amount, operationalRequirement);
-			this.fetchList.Submit(null, false);
+				if (this.fetchList != null)
+				{
+					this.fetchList.Cancel("Operational requirements");
+					this.fetchList = null;
+				}
+			}
+			else if (this.fetchList == null)
+			{
+				float massAvailable = storage.GetMassAvailable(requestedItemTag);
+				if (massAvailable < refillMass)
+				{
+					float b = capacity - massAvailable;
+					b = Mathf.Max(PICKUPABLETUNING.MINIMUM_PICKABLE_AMOUNT, b);
+					ChoreType byHash = Db.Get().ChoreTypes.GetByHash(choreTypeIDHash);
+					this.fetchList = new FetchList2(storage, byHash);
+					this.fetchList.ShowStatusItem = ShowStatusItem;
+					this.fetchList.MinimumAmount[requestedItemTag] = Mathf.Max(PICKUPABLETUNING.MINIMUM_PICKABLE_AMOUNT, minimumMass);
+					FetchList2 fetchList = this.fetchList;
+					Tag[] tags = new Tag[1]
+					{
+						requestedItemTag
+					};
+					float amount = b;
+					fetchList.Add(tags, null, null, amount, FetchOrder2.OperationalRequirement.None);
+					this.fetchList.Submit(null, false);
+				}
+			}
 		}
 	}
 
-	private float GetFetchAmount()
+	private bool OperationalRequirementsMet()
 	{
-		float result = 0f;
-		float num = 0f;
-		for (int i = 0; i < filteredStoredItems.Count; i++)
+		if ((bool)operational)
 		{
-			num += filteredStoredItems[i].Mass;
+			if (operationalRequirement == FetchOrder2.OperationalRequirement.Operational)
+			{
+				return operational.IsOperational;
+			}
+			if (operationalRequirement == FetchOrder2.OperationalRequirement.Functional)
+			{
+				return operational.IsFunctional;
+			}
 		}
-		if (num < refillMass)
-		{
-			result = Mathf.Max(0f, capacity - num);
-		}
-		return result;
+		return true;
 	}
 
 	public void AbortDelivery(string reason)
@@ -196,23 +210,7 @@ public class ManualDeliveryKG : KMonoBehaviour, ISim200ms
 	{
 		if ((UnityEngine.Object)storage == (UnityEngine.Object)this.storage)
 		{
-			UpdateFilteredItems();
-		}
-	}
-
-	private void UpdateFilteredItems()
-	{
-		filteredStoredItems.Clear();
-		int num = 0;
-		while ((UnityEngine.Object)storage != (UnityEngine.Object)null && num < storage.items.Count)
-		{
-			GameObject gameObject = storage.items[num];
-			if (gameObject.HasTag(requestedItemTag))
-			{
-				PrimaryElement component = gameObject.GetComponent<PrimaryElement>();
-				filteredStoredItems.Add(component);
-			}
-			num++;
+			UpdateDeliveryState();
 		}
 	}
 
@@ -252,5 +250,10 @@ public class ManualDeliveryKG : KMonoBehaviour, ISim200ms
 			KIconButtonMenu.ButtonInfo button = (KIconButtonMenu.ButtonInfo)buttonInfo;
 			Game.Instance.userMenu.AddButton(base.gameObject, button, 1f);
 		}
+	}
+
+	private void OnOperationalChanged(object data)
+	{
+		UpdateDeliveryState();
 	}
 }

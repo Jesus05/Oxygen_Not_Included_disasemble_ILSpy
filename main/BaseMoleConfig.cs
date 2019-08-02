@@ -27,11 +27,15 @@ public static class BaseMoleConfig
 		EntityTemplates.ExtendEntityToBasicCreature(gameObject, FactionManager.FactionID.Pest, traitId, "DiggerNavGrid", NavType.Floor, 32, 2f, "Meat", 10, true, false, 123.149994f, 673.15f, 73.1499939f, 773.15f);
 		gameObject.AddOrGetDef<CreatureFallMonitor.Def>();
 		gameObject.AddOrGet<Trappable>();
-		gameObject.AddOrGetDef<DiggerMonitor.Def>();
-		EntityTemplates.CreateAndRegisterBaggedCreature(gameObject, true, true);
+		DiggerMonitor.Def def = gameObject.AddOrGetDef<DiggerMonitor.Def>();
+		def.depthToDig = MoleTuning.DEPTH_TO_HIDE;
+		EntityTemplates.CreateAndRegisterBaggedCreature(gameObject, true, true, false);
+		KPrefabID component = gameObject.GetComponent<KPrefabID>();
+		component.AddTag(GameTags.Creatures.Walker, false);
 		ChoreTable.Builder chore_table = new ChoreTable.Builder().Add(new DeathStates.Def(), true).Add(new AnimInterruptStates.Def(), true).Add(new FallStates.Def(), true)
 			.Add(new StunnedStates.Def(), true)
-			.Add(new DiggerStates.Def(MoleTuning.DEPTH_TO_HIDE), true)
+			.Add(new DrowningStates.Def(), true)
+			.Add(new DiggerStates.Def(), true)
 			.Add(new GrowUpStates.Def(), true)
 			.Add(new TrappedStates.Def(), true)
 			.Add(new IncubatingStates.Def(), true)
@@ -64,18 +68,22 @@ public static class BaseMoleConfig
 			list.Add(new Diet.Info(new HashSet<Tag>
 			{
 				elementTag
-			}, elementTag, caloriesPerKg, producedConversionRate, null, 0f, true));
+			}, elementTag, caloriesPerKg, producedConversionRate, null, 0f, true, false));
 		}
 		return list;
 	}
 
 	private static HashedString CustomIdleAnim(IdleStates.Instance smi, ref HashedString pre_anim)
 	{
-		int cell = Grid.PosToCell(smi.master.gameObject);
-		if (Grid.IsSolidCell(cell))
+		Navigator component = smi.gameObject.GetComponent<Navigator>();
+		if (component.CurrentNavType == NavType.Solid)
 		{
 			int num = Random.Range(0, SolidIdleAnims.Length);
 			return SolidIdleAnims[num];
+		}
+		if (smi.gameObject.GetDef<BabyMonitor.Def>() != null && Random.Range(0, 100) >= 90)
+		{
+			return "drill_fail";
 		}
 		return "idle_loop";
 	}

@@ -8,7 +8,7 @@ public class BabyPacuTropicalConfig : IEntityConfig
 	public GameObject CreatePrefab()
 	{
 		GameObject gameObject = PacuTropicalConfig.CreatePacu("PacuTropicalBaby", CREATURES.SPECIES.PACU.VARIANT_TROPICAL.BABY.NAME, CREATURES.SPECIES.PACU.VARIANT_TROPICAL.BABY.DESC, "baby_pacu_kanim", true);
-		EntityTemplates.ExtendEntityToBeingABaby(gameObject, "PacuTropical");
+		EntityTemplates.ExtendEntityToBeingABaby(gameObject, "PacuTropical", null);
 		return gameObject;
 	}
 

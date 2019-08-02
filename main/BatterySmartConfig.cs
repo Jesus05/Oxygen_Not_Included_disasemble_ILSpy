@@ -8,7 +8,7 @@ public class BatterySmartConfig : BaseBatteryConfig
 
 	private static readonly LogicPorts.Port[] OUTPUT_PORTS = new LogicPorts.Port[1]
 	{
-		LogicPorts.Port.OutputPort(BatterySmart.PORT_ID, new CellOffset(0, 0), STRINGS.BUILDINGS.PREFABS.BATTERYSMART.LOGIC_PORT_DESC, true)
+		LogicPorts.Port.OutputPort(BatterySmart.PORT_ID, new CellOffset(0, 0), STRINGS.BUILDINGS.PREFABS.BATTERYSMART.LOGIC_PORT, STRINGS.BUILDINGS.PREFABS.BATTERYSMART.LOGIC_PORT_ACTIVE, STRINGS.BUILDINGS.PREFABS.BATTERYSMART.LOGIC_PORT_INACTIVE, true, false)
 	};
 
 	public override BuildingDef CreateBuildingDef()

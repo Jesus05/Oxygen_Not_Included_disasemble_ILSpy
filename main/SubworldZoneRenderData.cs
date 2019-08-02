@@ -16,7 +16,7 @@ public class SubworldZoneRenderData : KMonoBehaviour
 
 	[SerializeField]
 	[HideInInspector]
-	public Color32[] zoneColours = new Color32[8]
+	public Color32[] zoneColours = new Color32[11]
 	{
 		new Color32(145, 198, 213, 0),
 		new Color32(135, 82, 160, 1),
@@ -25,7 +25,10 @@ public class SubworldZoneRenderData : KMonoBehaviour
 		new Color32(201, 152, 181, 4),
 		new Color32(222, 90, 59, 5),
 		new Color32(201, 152, 181, 6),
-		new Color32(byte.MaxValue, 0, 0, 7)
+		new Color32(byte.MaxValue, 0, 0, 7),
+		new Color32(201, 201, 151, 8),
+		new Color32(236, 90, 110, 9),
+		new Color32(110, 236, 110, 10)
 	};
 
 	protected override void OnSpawn()
@@ -122,7 +125,9 @@ public class SubworldZoneRenderData : KMonoBehaviour
 
 	private Color32 GetZoneColor(SubWorld.ZoneType zone_type)
 	{
-		return new Color32(byte.MaxValue, byte.MaxValue, byte.MaxValue, 3);
+		Color32 result = new Color32(byte.MaxValue, byte.MaxValue, byte.MaxValue, 3);
+		Debug.Assert((int)zone_type < zoneColours.Length, "Need to add more colours to handle this zone" + (int)zone_type + "<" + zoneColours.Length);
+		return result;
 	}
 
 	private unsafe void InitSimZones(byte[] bytes)

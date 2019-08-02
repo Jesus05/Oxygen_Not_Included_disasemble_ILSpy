@@ -22,14 +22,14 @@ public class VitalsTableScreen : TableScreen
 		AddLabelColumn("Fullness", on_load_fullness, get_value_fullness_label, compare_rows_fullness, on_tooltip_fullness, on_tooltip_sort_fullness, 96, true);
 		AddLabelColumn("EatenToday", on_load_eaten_today, get_value_eaten_today_label, compare_rows_eaten_today, on_tooltip_eaten_today, on_tooltip_sort_eaten_today, 96, true);
 		AddLabelColumn("Health", on_load_health, get_value_health_label, compare_rows_health, on_tooltip_health, on_tooltip_sort_health, 64, true);
-		AddLabelColumn("Immunity", on_load_immunity, get_value_immunity_label, compare_rows_immunity, on_tooltip_immunity, on_tooltip_sort_immunity, 192, true);
+		AddLabelColumn("Immunity", on_load_sickness, get_value_sickness_label, compare_rows_sicknesses, on_tooltip_sicknesses, on_tooltip_sort_sicknesses, 192, true);
 	}
 
-	private void on_load_stress(MinionIdentity minion, GameObject widget_go)
+	private void on_load_stress(IAssignableIdentity minion, GameObject widget_go)
 	{
 		TableRow widgetRow = GetWidgetRow(widget_go);
 		LocText componentInChildren = widget_go.GetComponentInChildren<LocText>(true);
-		if ((Object)minion != (Object)null)
+		if (minion != null)
 		{
 			componentInChildren.text = (GetWidgetColumn(widget_go) as LabelTableColumn).get_value_action(minion, widget_go);
 		}
@@ -39,51 +39,92 @@ public class VitalsTableScreen : TableScreen
 		}
 	}
 
-	private string get_value_stress_label(MinionIdentity minion, GameObject widget_go)
+	private string get_value_stress_label(IAssignableIdentity identity, GameObject widget_go)
 	{
-		return Db.Get().Amounts.Stress.Lookup(minion).GetValueString();
+		TableRow widgetRow = GetWidgetRow(widget_go);
+		if (widgetRow.rowType == TableRow.RowType.Minion)
+		{
+			MinionIdentity minionIdentity = identity as MinionIdentity;
+			if ((Object)minionIdentity != (Object)null)
+			{
+				return Db.Get().Amounts.Stress.Lookup(minionIdentity).GetValueString();
+			}
+		}
+		else if (widgetRow.rowType == TableRow.RowType.StoredMinon)
+		{
+			return UI.TABLESCREENS.NA;
+		}
+		return string.Empty;
 	}
 
-	private int compare_rows_stress(MinionIdentity a, MinionIdentity b)
+	private int compare_rows_stress(IAssignableIdentity a, IAssignableIdentity b)
 	{
-		float value = Db.Get().Amounts.Stress.Lookup(a).value;
-		float value2 = Db.Get().Amounts.Stress.Lookup(b).value;
+		MinionIdentity minionIdentity = a as MinionIdentity;
+		MinionIdentity minionIdentity2 = b as MinionIdentity;
+		if ((Object)minionIdentity == (Object)null && (Object)minionIdentity2 == (Object)null)
+		{
+			return 0;
+		}
+		if ((Object)minionIdentity == (Object)null)
+		{
+			return -1;
+		}
+		if ((Object)minionIdentity2 == (Object)null)
+		{
+			return 1;
+		}
+		float value = Db.Get().Amounts.Stress.Lookup(minionIdentity).value;
+		float value2 = Db.Get().Amounts.Stress.Lookup(minionIdentity2).value;
 		return value2.CompareTo(value);
 	}
 
-	protected void on_tooltip_stress(MinionIdentity minion, GameObject widget_go, ToolTip tooltip)
-	{
-		tooltip.ClearMultiStringTooltip();
-		TableRow widgetRow = GetWidgetRow(widget_go);
-		switch (widgetRow.rowType)
-		{
-		case TableRow.RowType.Minion:
-			if ((Object)minion != (Object)null)
-			{
-				tooltip.AddMultiStringTooltip(string.Format(UI.TABLESCREENS.DUPLICANT_PROPERNAME, minion.GetProperName()), null);
-				tooltip.AddMultiStringTooltip(Db.Get().Amounts.Stress.Lookup(minion).GetTooltip(), null);
-			}
-			break;
-		}
-	}
-
-	protected void on_tooltip_sort_stress(MinionIdentity minion, GameObject widget_go, ToolTip tooltip)
+	protected void on_tooltip_stress(IAssignableIdentity minion, GameObject widget_go, ToolTip tooltip)
 	{
 		tooltip.ClearMultiStringTooltip();
 		TableRow widgetRow = GetWidgetRow(widget_go);
 		switch (widgetRow.rowType)
 		{
 		case TableRow.RowType.Header:
+			break;
+		case TableRow.RowType.Default:
+			break;
+		case TableRow.RowType.Minion:
+		{
+			MinionIdentity minionIdentity = minion as MinionIdentity;
+			if ((Object)minionIdentity != (Object)null)
+			{
+				tooltip.AddMultiStringTooltip(Db.Get().Amounts.Stress.Lookup(minionIdentity).GetTooltip(), null);
+			}
+			break;
+		}
+		case TableRow.RowType.StoredMinon:
+			StoredMinionTooltip(minion, tooltip);
+			break;
+		}
+	}
+
+	protected void on_tooltip_sort_stress(IAssignableIdentity minion, GameObject widget_go, ToolTip tooltip)
+	{
+		tooltip.ClearMultiStringTooltip();
+		TableRow widgetRow = GetWidgetRow(widget_go);
+		switch (widgetRow.rowType)
+		{
+		case TableRow.RowType.Default:
+			break;
+		case TableRow.RowType.Minion:
+		case TableRow.RowType.StoredMinon:
+			break;
+		case TableRow.RowType.Header:
 			tooltip.AddMultiStringTooltip(UI.TABLESCREENS.COLUMN_SORT_BY_STRESS, null);
 			break;
 		}
 	}
 
-	private void on_load_qualityoflife_expectations(MinionIdentity minion, GameObject widget_go)
+	private void on_load_qualityoflife_expectations(IAssignableIdentity minion, GameObject widget_go)
 	{
 		TableRow widgetRow = GetWidgetRow(widget_go);
 		LocText componentInChildren = widget_go.GetComponentInChildren<LocText>(true);
-		if ((Object)minion != (Object)null)
+		if (minion != null)
 		{
 			componentInChildren.text = (GetWidgetColumn(widget_go) as LabelTableColumn).get_value_action(minion, widget_go);
 		}
@@ -93,53 +134,92 @@ public class VitalsTableScreen : TableScreen
 		}
 	}
 
-	private string get_value_qualityoflife_expectations_label(MinionIdentity minion, GameObject widget_go)
+	private string get_value_qualityoflife_expectations_label(IAssignableIdentity identity, GameObject widget_go)
 	{
-		return Db.Get().Attributes.QualityOfLife.Lookup(minion).GetFormattedValue();
+		TableRow widgetRow = GetWidgetRow(widget_go);
+		if (widgetRow.rowType == TableRow.RowType.Minion)
+		{
+			MinionIdentity minionIdentity = identity as MinionIdentity;
+			if ((Object)minionIdentity != (Object)null)
+			{
+				return Db.Get().Attributes.QualityOfLife.Lookup(minionIdentity).GetFormattedValue();
+			}
+		}
+		else if (widgetRow.rowType == TableRow.RowType.StoredMinon)
+		{
+			return UI.TABLESCREENS.NA;
+		}
+		return string.Empty;
 	}
 
-	private int compare_rows_qualityoflife_expectations(MinionIdentity a, MinionIdentity b)
+	private int compare_rows_qualityoflife_expectations(IAssignableIdentity a, IAssignableIdentity b)
 	{
-		float totalValue = Db.Get().Attributes.QualityOfLifeExpectation.Lookup(a).GetTotalValue();
-		float totalValue2 = Db.Get().Attributes.QualityOfLifeExpectation.Lookup(b).GetTotalValue();
+		MinionIdentity minionIdentity = a as MinionIdentity;
+		MinionIdentity minionIdentity2 = b as MinionIdentity;
+		if ((Object)minionIdentity == (Object)null && (Object)minionIdentity2 == (Object)null)
+		{
+			return 0;
+		}
+		if ((Object)minionIdentity == (Object)null)
+		{
+			return -1;
+		}
+		if ((Object)minionIdentity2 == (Object)null)
+		{
+			return 1;
+		}
+		float totalValue = Db.Get().Attributes.QualityOfLifeExpectation.Lookup(minionIdentity).GetTotalValue();
+		float totalValue2 = Db.Get().Attributes.QualityOfLifeExpectation.Lookup(minionIdentity2).GetTotalValue();
 		return totalValue.CompareTo(totalValue2);
 	}
 
-	protected void on_tooltip_qualityoflife_expectations(MinionIdentity minion, GameObject widget_go, ToolTip tooltip)
-	{
-		tooltip.ClearMultiStringTooltip();
-		TableRow widgetRow = GetWidgetRow(widget_go);
-		switch (widgetRow.rowType)
-		{
-		case TableRow.RowType.Minion:
-			if ((Object)minion != (Object)null)
-			{
-				tooltip.AddMultiStringTooltip(string.Format(UI.TABLESCREENS.DUPLICANT_PROPERNAME, minion.GetProperName()), null);
-				tooltip.AddMultiStringTooltip(string.Format(UI.VITALSSCREEN.QUALITYOFLIFE_EXPECTATIONS_TOOLTIP, Db.Get().Attributes.QualityOfLifeExpectation.Lookup(minion).GetFormattedValue()), null);
-				tooltip.AddMultiStringTooltip(UI.HORIZONTAL_RULE, null);
-				tooltip.AddMultiStringTooltip(Db.Get().Attributes.QualityOfLife.Lookup(minion).GetAttributeValueTooltip(), null);
-			}
-			break;
-		}
-	}
-
-	protected void on_tooltip_sort_qualityoflife_expectations(MinionIdentity minion, GameObject widget_go, ToolTip tooltip)
+	protected void on_tooltip_qualityoflife_expectations(IAssignableIdentity identity, GameObject widget_go, ToolTip tooltip)
 	{
 		tooltip.ClearMultiStringTooltip();
 		TableRow widgetRow = GetWidgetRow(widget_go);
 		switch (widgetRow.rowType)
 		{
 		case TableRow.RowType.Header:
+			break;
+		case TableRow.RowType.Default:
+			break;
+		case TableRow.RowType.Minion:
+		{
+			MinionIdentity minionIdentity = identity as MinionIdentity;
+			if ((Object)minionIdentity != (Object)null)
+			{
+				tooltip.AddMultiStringTooltip(Db.Get().Attributes.QualityOfLife.Lookup(minionIdentity).GetAttributeValueTooltip(), null);
+			}
+			break;
+		}
+		case TableRow.RowType.StoredMinon:
+			StoredMinionTooltip(identity, tooltip);
+			break;
+		}
+	}
+
+	protected void on_tooltip_sort_qualityoflife_expectations(IAssignableIdentity minion, GameObject widget_go, ToolTip tooltip)
+	{
+		tooltip.ClearMultiStringTooltip();
+		TableRow widgetRow = GetWidgetRow(widget_go);
+		switch (widgetRow.rowType)
+		{
+		case TableRow.RowType.Default:
+			break;
+		case TableRow.RowType.Minion:
+		case TableRow.RowType.StoredMinon:
+			break;
+		case TableRow.RowType.Header:
 			tooltip.AddMultiStringTooltip(UI.TABLESCREENS.COLUMN_SORT_BY_EXPECTATIONS, null);
 			break;
 		}
 	}
 
-	private void on_load_health(MinionIdentity minion, GameObject widget_go)
+	private void on_load_health(IAssignableIdentity minion, GameObject widget_go)
 	{
 		TableRow widgetRow = GetWidgetRow(widget_go);
 		LocText componentInChildren = widget_go.GetComponentInChildren<LocText>(true);
-		if ((Object)minion != (Object)null)
+		if (minion != null)
 		{
 			componentInChildren.text = (GetWidgetColumn(widget_go) as LabelTableColumn).get_value_action(minion, widget_go);
 		}
@@ -160,111 +240,168 @@ public class VitalsTableScreen : TableScreen
 		}
 	}
 
-	private string get_value_health_label(MinionIdentity minion, GameObject widget_go)
+	private string get_value_health_label(IAssignableIdentity minion, GameObject widget_go)
 	{
-		return Db.Get().Amounts.HitPoints.Lookup(minion).GetValueString();
+		if (minion != null)
+		{
+			TableRow widgetRow = GetWidgetRow(widget_go);
+			if (widgetRow.rowType == TableRow.RowType.Minion && (Object)(minion as MinionIdentity) != (Object)null)
+			{
+				return Db.Get().Amounts.HitPoints.Lookup(minion as MinionIdentity).GetValueString();
+			}
+			if (widgetRow.rowType == TableRow.RowType.StoredMinon)
+			{
+				return UI.TABLESCREENS.NA;
+			}
+		}
+		return string.Empty;
 	}
 
-	private int compare_rows_health(MinionIdentity a, MinionIdentity b)
+	private int compare_rows_health(IAssignableIdentity a, IAssignableIdentity b)
 	{
-		float value = Db.Get().Amounts.HitPoints.Lookup(a).value;
-		float value2 = Db.Get().Amounts.HitPoints.Lookup(b).value;
+		MinionIdentity minionIdentity = a as MinionIdentity;
+		MinionIdentity minionIdentity2 = b as MinionIdentity;
+		if ((Object)minionIdentity == (Object)null && (Object)minionIdentity2 == (Object)null)
+		{
+			return 0;
+		}
+		if ((Object)minionIdentity == (Object)null)
+		{
+			return -1;
+		}
+		if ((Object)minionIdentity2 == (Object)null)
+		{
+			return 1;
+		}
+		float value = Db.Get().Amounts.HitPoints.Lookup(minionIdentity).value;
+		float value2 = Db.Get().Amounts.HitPoints.Lookup(minionIdentity2).value;
 		return value2.CompareTo(value);
 	}
 
-	protected void on_tooltip_health(MinionIdentity minion, GameObject widget_go, ToolTip tooltip)
-	{
-		tooltip.ClearMultiStringTooltip();
-		TableRow widgetRow = GetWidgetRow(widget_go);
-		switch (widgetRow.rowType)
-		{
-		case TableRow.RowType.Minion:
-			if ((Object)minion != (Object)null)
-			{
-				tooltip.AddMultiStringTooltip(string.Format(UI.TABLESCREENS.DUPLICANT_PROPERNAME, minion.GetProperName()), null);
-				tooltip.AddMultiStringTooltip(Db.Get().Amounts.HitPoints.Lookup(minion).GetTooltip(), null);
-			}
-			break;
-		}
-	}
-
-	protected void on_tooltip_sort_health(MinionIdentity minion, GameObject widget_go, ToolTip tooltip)
+	protected void on_tooltip_health(IAssignableIdentity identity, GameObject widget_go, ToolTip tooltip)
 	{
 		tooltip.ClearMultiStringTooltip();
 		TableRow widgetRow = GetWidgetRow(widget_go);
 		switch (widgetRow.rowType)
 		{
 		case TableRow.RowType.Header:
-			tooltip.AddMultiStringTooltip(UI.TABLESCREENS.COLUMN_SORT_BY_HITPOINTS, null);
+			break;
+		case TableRow.RowType.Default:
+			break;
+		case TableRow.RowType.Minion:
+		{
+			MinionIdentity minionIdentity = identity as MinionIdentity;
+			if ((Object)minionIdentity != (Object)null)
+			{
+				tooltip.AddMultiStringTooltip(Db.Get().Amounts.HitPoints.Lookup(minionIdentity).GetTooltip(), null);
+			}
+			break;
+		}
+		case TableRow.RowType.StoredMinon:
+			StoredMinionTooltip(identity, tooltip);
 			break;
 		}
 	}
 
-	private void on_load_immunity(MinionIdentity minion, GameObject widget_go)
-	{
-		TableRow widgetRow = GetWidgetRow(widget_go);
-		LocText componentInChildren = widget_go.GetComponentInChildren<LocText>(true);
-		if ((Object)minion != (Object)null)
-		{
-			componentInChildren.text = (GetWidgetColumn(widget_go) as LabelTableColumn).get_value_action(minion, widget_go);
-		}
-		else
-		{
-			componentInChildren.text = ((!widgetRow.isDefault) ? UI.VITALSSCREEN_IMMUNITY.ToString() : string.Empty);
-		}
-	}
-
-	private string get_value_immunity_label(MinionIdentity minion, GameObject widget_go)
-	{
-		Diseases diseases = minion.GetComponent<MinionModifiers>().diseases;
-		if (diseases.IsInfected())
-		{
-			string text = string.Empty;
-			if (diseases.Count <= 1)
-			{
-				{
-					foreach (DiseaseInstance item in diseases)
-					{
-						if (!string.IsNullOrEmpty(text))
-						{
-							text += "\n";
-						}
-						text += string.Format(UI.VITALSSCREEN.IMMUNITY_DISEASE, item.modifier.Name, GameUtil.GetFormattedCycles(item.GetInfectedTimeRemaining(), "F1"));
-					}
-					return text;
-				}
-			}
-			float seconds = 0f;
-			foreach (DiseaseInstance item2 in diseases)
-			{
-				seconds = Mathf.Min(item2.GetInfectedTimeRemaining());
-			}
-			return text + string.Format(UI.VITALSSCREEN.IMMUNITY_MULTIPLE_DISEASES, GameUtil.GetFormattedCycles(seconds, "F1"));
-		}
-		return Db.Get().Amounts.ImmuneLevel.Lookup(minion).GetValueString();
-	}
-
-	private int compare_rows_immunity(MinionIdentity a, MinionIdentity b)
-	{
-		float value = Db.Get().Amounts.ImmuneLevel.Lookup(a).value;
-		float value2 = Db.Get().Amounts.ImmuneLevel.Lookup(b).value;
-		return value2.CompareTo(value);
-	}
-
-	protected void on_tooltip_immunity(MinionIdentity minion, GameObject widget_go, ToolTip tooltip)
+	protected void on_tooltip_sort_health(IAssignableIdentity minion, GameObject widget_go, ToolTip tooltip)
 	{
 		tooltip.ClearMultiStringTooltip();
 		TableRow widgetRow = GetWidgetRow(widget_go);
 		switch (widgetRow.rowType)
 		{
+		case TableRow.RowType.Default:
+			break;
 		case TableRow.RowType.Minion:
-			if ((Object)minion != (Object)null)
+		case TableRow.RowType.StoredMinon:
+			break;
+		case TableRow.RowType.Header:
+			tooltip.AddMultiStringTooltip(UI.TABLESCREENS.COLUMN_SORT_BY_HITPOINTS, null);
+			break;
+		}
+	}
+
+	private void on_load_sickness(IAssignableIdentity minion, GameObject widget_go)
+	{
+		TableRow widgetRow = GetWidgetRow(widget_go);
+		LocText componentInChildren = widget_go.GetComponentInChildren<LocText>(true);
+		if (minion != null)
+		{
+			componentInChildren.text = (GetWidgetColumn(widget_go) as LabelTableColumn).get_value_action(minion, widget_go);
+		}
+		else
+		{
+			componentInChildren.text = ((!widgetRow.isDefault) ? UI.VITALSSCREEN_SICKNESS.ToString() : string.Empty);
+		}
+	}
+
+	private string get_value_sickness_label(IAssignableIdentity minion, GameObject widget_go)
+	{
+		TableRow widgetRow = GetWidgetRow(widget_go);
+		if (widgetRow.rowType == TableRow.RowType.Minion)
+		{
+			MinionIdentity minionIdentity = minion as MinionIdentity;
+			if ((Object)minionIdentity != (Object)null)
 			{
-				tooltip.AddMultiStringTooltip(string.Format(UI.TABLESCREENS.DUPLICANT_PROPERNAME, minion.GetProperName()), null);
-				Diseases diseases = minion.GetComponent<MinionModifiers>().diseases;
-				if (diseases.IsInfected())
+				Sicknesses sicknesses = minionIdentity.GetComponent<MinionModifiers>().sicknesses;
+				if (sicknesses.IsInfected())
 				{
-					foreach (DiseaseInstance item in diseases)
+					string text = string.Empty;
+					if (sicknesses.Count <= 1)
+					{
+						{
+							foreach (SicknessInstance item in sicknesses)
+							{
+								if (!string.IsNullOrEmpty(text))
+								{
+									text += "\n";
+								}
+								text += string.Format(UI.VITALSSCREEN.SICKNESS_REMAINING, item.modifier.Name, GameUtil.GetFormattedCycles(item.GetInfectedTimeRemaining(), "F1"));
+							}
+							return text;
+						}
+					}
+					float seconds = 0f;
+					foreach (SicknessInstance item2 in sicknesses)
+					{
+						seconds = Mathf.Min(item2.GetInfectedTimeRemaining());
+					}
+					return text + string.Format(UI.VITALSSCREEN.MULTIPLE_SICKNESSES, GameUtil.GetFormattedCycles(seconds, "F1"));
+				}
+				return UI.VITALSSCREEN.NO_SICKNESSES;
+			}
+		}
+		else if (widgetRow.rowType == TableRow.RowType.StoredMinon)
+		{
+			return UI.TABLESCREENS.NA;
+		}
+		return string.Empty;
+	}
+
+	private int compare_rows_sicknesses(IAssignableIdentity a, IAssignableIdentity b)
+	{
+		float value = 0f;
+		return 0f.CompareTo(value);
+	}
+
+	protected void on_tooltip_sicknesses(IAssignableIdentity minion, GameObject widget_go, ToolTip tooltip)
+	{
+		tooltip.ClearMultiStringTooltip();
+		TableRow widgetRow = GetWidgetRow(widget_go);
+		switch (widgetRow.rowType)
+		{
+		case TableRow.RowType.Header:
+			break;
+		case TableRow.RowType.Default:
+			break;
+		case TableRow.RowType.Minion:
+		{
+			MinionIdentity minionIdentity = minion as MinionIdentity;
+			if ((Object)minionIdentity != (Object)null)
+			{
+				Sicknesses sicknesses = minionIdentity.GetComponent<MinionModifiers>().sicknesses;
+				if (sicknesses.IsInfected())
+				{
+					foreach (SicknessInstance item in sicknesses)
 					{
 						tooltip.AddMultiStringTooltip(UI.HORIZONTAL_RULE, null);
 						tooltip.AddMultiStringTooltip(item.modifier.Name, null);
@@ -274,30 +411,39 @@ public class VitalsTableScreen : TableScreen
 				}
 				else
 				{
-					tooltip.AddMultiStringTooltip(Db.Get().Amounts.ImmuneLevel.Lookup(minion).GetTooltip(), null);
+					tooltip.AddMultiStringTooltip(UI.VITALSSCREEN.NO_SICKNESSES, null);
 				}
 			}
 			break;
 		}
+		case TableRow.RowType.StoredMinon:
+			StoredMinionTooltip(minion, tooltip);
+			break;
+		}
 	}
 
-	protected void on_tooltip_sort_immunity(MinionIdentity minion, GameObject widget_go, ToolTip tooltip)
+	protected void on_tooltip_sort_sicknesses(IAssignableIdentity minion, GameObject widget_go, ToolTip tooltip)
 	{
 		tooltip.ClearMultiStringTooltip();
 		TableRow widgetRow = GetWidgetRow(widget_go);
 		switch (widgetRow.rowType)
 		{
+		case TableRow.RowType.Default:
+			break;
+		case TableRow.RowType.Minion:
+		case TableRow.RowType.StoredMinon:
+			break;
 		case TableRow.RowType.Header:
-			tooltip.AddMultiStringTooltip(UI.TABLESCREENS.COLUMN_SORT_BY_IMMUNEPOINTS, null);
+			tooltip.AddMultiStringTooltip(UI.TABLESCREENS.COLUMN_SORT_BY_SICKNESSES, null);
 			break;
 		}
 	}
 
-	private void on_load_fullness(MinionIdentity minion, GameObject widget_go)
+	private void on_load_fullness(IAssignableIdentity minion, GameObject widget_go)
 	{
 		TableRow widgetRow = GetWidgetRow(widget_go);
 		LocText componentInChildren = widget_go.GetComponentInChildren<LocText>(true);
-		if ((Object)minion != (Object)null)
+		if (minion != null)
 		{
 			componentInChildren.text = (GetWidgetColumn(widget_go) as LabelTableColumn).get_value_action(minion, widget_go);
 		}
@@ -307,54 +453,97 @@ public class VitalsTableScreen : TableScreen
 		}
 	}
 
-	private string get_value_fullness_label(MinionIdentity minion, GameObject widget_go)
+	private string get_value_fullness_label(IAssignableIdentity minion, GameObject widget_go)
 	{
-		return Db.Get().Amounts.Calories.Lookup(minion).GetValueString();
+		TableRow widgetRow = GetWidgetRow(widget_go);
+		if (widgetRow.rowType == TableRow.RowType.Minion && (Object)(minion as MinionIdentity) != (Object)null)
+		{
+			return Db.Get().Amounts.Calories.Lookup(minion as MinionIdentity).GetValueString();
+		}
+		if (widgetRow.rowType == TableRow.RowType.StoredMinon)
+		{
+			return UI.TABLESCREENS.NA;
+		}
+		return string.Empty;
 	}
 
-	private int compare_rows_fullness(MinionIdentity a, MinionIdentity b)
+	private int compare_rows_fullness(IAssignableIdentity a, IAssignableIdentity b)
 	{
-		float value = Db.Get().Amounts.Calories.Lookup(a).value;
-		float value2 = Db.Get().Amounts.Calories.Lookup(b).value;
+		MinionIdentity minionIdentity = a as MinionIdentity;
+		MinionIdentity minionIdentity2 = b as MinionIdentity;
+		if ((Object)minionIdentity == (Object)null && (Object)minionIdentity2 == (Object)null)
+		{
+			return 0;
+		}
+		if ((Object)minionIdentity == (Object)null)
+		{
+			return -1;
+		}
+		if ((Object)minionIdentity2 == (Object)null)
+		{
+			return 1;
+		}
+		float value = Db.Get().Amounts.Calories.Lookup(minionIdentity).value;
+		float value2 = Db.Get().Amounts.Calories.Lookup(minionIdentity2).value;
 		return value2.CompareTo(value);
 	}
 
-	protected void on_tooltip_fullness(MinionIdentity minion, GameObject widget_go, ToolTip tooltip)
-	{
-		tooltip.ClearMultiStringTooltip();
-		TableRow widgetRow = GetWidgetRow(widget_go);
-		switch (widgetRow.rowType)
-		{
-		case TableRow.RowType.Minion:
-			if ((Object)minion != (Object)null)
-			{
-				tooltip.AddMultiStringTooltip(string.Format(UI.TABLESCREENS.DUPLICANT_PROPERNAME, minion.GetProperName()), null);
-				tooltip.AddMultiStringTooltip(Db.Get().Amounts.Calories.Lookup(minion).GetTooltip(), null);
-			}
-			break;
-		}
-	}
-
-	protected void on_tooltip_sort_fullness(MinionIdentity minion, GameObject widget_go, ToolTip tooltip)
+	protected void on_tooltip_fullness(IAssignableIdentity identity, GameObject widget_go, ToolTip tooltip)
 	{
 		tooltip.ClearMultiStringTooltip();
 		TableRow widgetRow = GetWidgetRow(widget_go);
 		switch (widgetRow.rowType)
 		{
 		case TableRow.RowType.Header:
-			tooltip.AddMultiStringTooltip(UI.TABLESCREENS.COLUMN_SORT_BY_FULLNESS, null);
+			break;
+		case TableRow.RowType.Default:
+			break;
+		case TableRow.RowType.Minion:
+		{
+			MinionIdentity minionIdentity = identity as MinionIdentity;
+			if ((Object)minionIdentity != (Object)null)
+			{
+				tooltip.AddMultiStringTooltip(Db.Get().Amounts.Calories.Lookup(minionIdentity).GetTooltip(), null);
+			}
+			break;
+		}
+		case TableRow.RowType.StoredMinon:
+			StoredMinionTooltip(identity, tooltip);
 			break;
 		}
 	}
 
-	protected void on_tooltip_name(MinionIdentity minion, GameObject widget_go, ToolTip tooltip)
+	protected void on_tooltip_sort_fullness(IAssignableIdentity minion, GameObject widget_go, ToolTip tooltip)
 	{
 		tooltip.ClearMultiStringTooltip();
 		TableRow widgetRow = GetWidgetRow(widget_go);
 		switch (widgetRow.rowType)
 		{
+		case TableRow.RowType.Default:
+			break;
 		case TableRow.RowType.Minion:
-			if ((Object)minion != (Object)null)
+		case TableRow.RowType.StoredMinon:
+			break;
+		case TableRow.RowType.Header:
+			tooltip.AddMultiStringTooltip(UI.TABLESCREENS.COLUMN_SORT_BY_FULLNESS, null);
+			break;
+		}
+	}
+
+	protected void on_tooltip_name(IAssignableIdentity minion, GameObject widget_go, ToolTip tooltip)
+	{
+		tooltip.ClearMultiStringTooltip();
+		TableRow widgetRow = GetWidgetRow(widget_go);
+		switch (widgetRow.rowType)
+		{
+		case TableRow.RowType.Header:
+			break;
+		case TableRow.RowType.Default:
+			break;
+		case TableRow.RowType.StoredMinon:
+			break;
+		case TableRow.RowType.Minion:
+			if (minion != null)
 			{
 				tooltip.AddMultiStringTooltip(string.Format(UI.TABLESCREENS.GOTO_DUPLICANT_BUTTON, minion.GetProperName()), null);
 			}
@@ -362,11 +551,11 @@ public class VitalsTableScreen : TableScreen
 		}
 	}
 
-	private void on_load_eaten_today(MinionIdentity minion, GameObject widget_go)
+	private void on_load_eaten_today(IAssignableIdentity minion, GameObject widget_go)
 	{
 		TableRow widgetRow = GetWidgetRow(widget_go);
 		LocText componentInChildren = widget_go.GetComponentInChildren<LocText>(true);
-		if ((Object)minion != (Object)null)
+		if (minion != null)
 		{
 			componentInChildren.text = (GetWidgetColumn(widget_go) as LabelTableColumn).get_value_action(minion, widget_go);
 		}
@@ -390,44 +579,86 @@ public class VitalsTableScreen : TableScreen
 		return result;
 	}
 
-	private string get_value_eaten_today_label(MinionIdentity minion, GameObject widget_go)
+	private string get_value_eaten_today_label(IAssignableIdentity minion, GameObject widget_go)
 	{
-		float calories = RationsEatenToday(minion);
-		return GameUtil.GetFormattedCalories(calories, GameUtil.TimeSlice.None, true);
-	}
-
-	private int compare_rows_eaten_today(MinionIdentity a, MinionIdentity b)
-	{
-		float value = RationsEatenToday(a);
-		return RationsEatenToday(b).CompareTo(value);
-	}
-
-	protected void on_tooltip_eaten_today(MinionIdentity minion, GameObject widget_go, ToolTip tooltip)
-	{
-		tooltip.ClearMultiStringTooltip();
 		TableRow widgetRow = GetWidgetRow(widget_go);
-		switch (widgetRow.rowType)
+		if (widgetRow.rowType == TableRow.RowType.Minion)
 		{
-		case TableRow.RowType.Minion:
-			if ((Object)minion != (Object)null)
-			{
-				tooltip.AddMultiStringTooltip(string.Format(UI.TABLESCREENS.DUPLICANT_PROPERNAME, minion.GetProperName()), null);
-				float calories = RationsEatenToday(minion);
-				tooltip.AddMultiStringTooltip(string.Format(UI.VITALSSCREEN.EATEN_TODAY_TOOLTIP, GameUtil.GetFormattedCalories(calories, GameUtil.TimeSlice.None, true)), null);
-			}
-			break;
+			float calories = RationsEatenToday(minion as MinionIdentity);
+			return GameUtil.GetFormattedCalories(calories, GameUtil.TimeSlice.None, true);
 		}
+		if (widgetRow.rowType == TableRow.RowType.StoredMinon)
+		{
+			return UI.TABLESCREENS.NA;
+		}
+		return string.Empty;
 	}
 
-	protected void on_tooltip_sort_eaten_today(MinionIdentity minion, GameObject widget_go, ToolTip tooltip)
+	private int compare_rows_eaten_today(IAssignableIdentity a, IAssignableIdentity b)
+	{
+		MinionIdentity minionIdentity = a as MinionIdentity;
+		MinionIdentity minionIdentity2 = b as MinionIdentity;
+		if ((Object)minionIdentity == (Object)null && (Object)minionIdentity2 == (Object)null)
+		{
+			return 0;
+		}
+		if ((Object)minionIdentity == (Object)null)
+		{
+			return -1;
+		}
+		if ((Object)minionIdentity2 == (Object)null)
+		{
+			return 1;
+		}
+		float value = RationsEatenToday(minionIdentity);
+		return RationsEatenToday(minionIdentity2).CompareTo(value);
+	}
+
+	protected void on_tooltip_eaten_today(IAssignableIdentity minion, GameObject widget_go, ToolTip tooltip)
 	{
 		tooltip.ClearMultiStringTooltip();
 		TableRow widgetRow = GetWidgetRow(widget_go);
 		switch (widgetRow.rowType)
 		{
 		case TableRow.RowType.Header:
+			break;
+		case TableRow.RowType.Default:
+			break;
+		case TableRow.RowType.Minion:
+			if (minion != null)
+			{
+				float calories = RationsEatenToday(minion as MinionIdentity);
+				tooltip.AddMultiStringTooltip(string.Format(UI.VITALSSCREEN.EATEN_TODAY_TOOLTIP, GameUtil.GetFormattedCalories(calories, GameUtil.TimeSlice.None, true)), null);
+			}
+			break;
+		case TableRow.RowType.StoredMinon:
+			StoredMinionTooltip(minion, tooltip);
+			break;
+		}
+	}
+
+	protected void on_tooltip_sort_eaten_today(IAssignableIdentity minion, GameObject widget_go, ToolTip tooltip)
+	{
+		tooltip.ClearMultiStringTooltip();
+		TableRow widgetRow = GetWidgetRow(widget_go);
+		switch (widgetRow.rowType)
+		{
+		case TableRow.RowType.Default:
+			break;
+		case TableRow.RowType.Minion:
+		case TableRow.RowType.StoredMinon:
+			break;
+		case TableRow.RowType.Header:
 			tooltip.AddMultiStringTooltip(UI.TABLESCREENS.COLUMN_SORT_BY_EATEN_TODAY, null);
 			break;
+		}
+	}
+
+	private void StoredMinionTooltip(IAssignableIdentity minion, ToolTip tooltip)
+	{
+		if (minion != null && (Object)(minion as StoredMinionIdentity) != (Object)null)
+		{
+			tooltip.AddMultiStringTooltip(string.Format(UI.TABLESCREENS.INFORMATION_NOT_AVAILABLE_TOOLTIP, (minion as StoredMinionIdentity).GetStorageReason(), minion.GetProperName()), null);
 		}
 	}
 }

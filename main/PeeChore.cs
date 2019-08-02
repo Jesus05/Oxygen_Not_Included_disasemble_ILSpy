@@ -8,7 +8,7 @@ public class PeeChore : Chore<PeeChore.StatesInstance>
 {
 	public class StatesInstance : GameStateMachine<States, StatesInstance, PeeChore, object>.GameInstance
 	{
-		public Notification stressfullyEmptyingBladder = new Notification(DUPLICANTS.STATUSITEMS.STRESSFULLYEMPTYINGBLADDER.NOTIFICATION_NAME, NotificationType.Bad, HashedString.Invalid, (List<Notification> notificationList, object data) => DUPLICANTS.STATUSITEMS.STRESSFULLYEMPTYINGBLADDER.NOTIFICATION_TOOLTIP + notificationList.ReduceMessages(false), null, true, 0f, null, null);
+		public Notification stressfullyEmptyingBladder = new Notification(DUPLICANTS.STATUSITEMS.STRESSFULLYEMPTYINGBLADDER.NOTIFICATION_NAME, NotificationType.Bad, HashedString.Invalid, (List<Notification> notificationList, object data) => DUPLICANTS.STATUSITEMS.STRESSFULLYEMPTYINGBLADDER.NOTIFICATION_TOOLTIP + notificationList.ReduceMessages(false), null, true, 0f, null, null, null);
 
 		public AmountInstance bladder;
 
@@ -34,7 +34,16 @@ public class PeeChore : Chore<PeeChore.StatesInstance>
 			float num = dt * (0f - bladder.GetDelta()) / bladder.GetMax();
 			if (num > 0f)
 			{
-				SimMessages.AddRemoveSubstance(gameCell, SimHashes.DirtyWater, CellEventLogger.Instance.Vomit, 2f * num, bodyTemperature.value, index, Mathf.CeilToInt(100000f * num), true, -1);
+				float mass = 2f * num;
+				Equippable equippable = GetComponent<SuitEquipper>().IsWearingAirtightSuit();
+				if ((UnityEngine.Object)equippable != (UnityEngine.Object)null)
+				{
+					equippable.GetComponent<Storage>().AddLiquid(SimHashes.DirtyWater, mass, bodyTemperature.value, index, Mathf.CeilToInt(100000f * num), false, true);
+				}
+				else
+				{
+					SimMessages.AddRemoveSubstance(gameCell, SimHashes.DirtyWater, CellEventLogger.Instance.Vomit, mass, bodyTemperature.value, index, Mathf.CeilToInt(100000f * num), true, -1);
+				}
 			}
 		}
 	}
@@ -62,8 +71,8 @@ public class PeeChore : Chore<PeeChore.StatesInstance>
 	}
 
 	public PeeChore(IStateMachineTarget target)
-		: base(Db.Get().ChoreTypes.Pee, target, target.GetComponent<ChoreProvider>(), false, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.emergency, 0, false, true, 0, (Tag[])null)
+		: base(Db.Get().ChoreTypes.Pee, target, target.GetComponent<ChoreProvider>(), false, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.compulsory, 5, false, true, 0, false, ReportManager.ReportType.WorkTime)
 	{
-		smi = new StatesInstance(this, target.gameObject);
+		base.smi = new StatesInstance(this, target.gameObject);
 	}
 }

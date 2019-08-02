@@ -35,7 +35,7 @@ public class CancelTool : FilteredDragTool
 
 	protected override void OnDragTool(int cell, int distFromOrigin)
 	{
-		for (int i = 0; i < 37; i++)
+		for (int i = 0; i < 39; i++)
 		{
 			GameObject gameObject = Grid.Objects[cell, i];
 			if ((Object)gameObject != (Object)null)

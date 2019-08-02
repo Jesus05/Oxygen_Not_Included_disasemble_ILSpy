@@ -51,6 +51,8 @@ public class KCrashReporter : MonoBehaviour
 
 	public static bool debugWasUsed = false;
 
+	public static bool haveActiveMods = false;
+
 	public static string error_canvas_name = "ErrorCanvas";
 
 	private static bool disableDeduping = false;
@@ -139,12 +141,12 @@ public class KCrashReporter : MonoBehaviour
 		IL_0165:
 		if (ignoreAll)
 		{
-			Debug.Log("Ignoring crash due to mismatched hashes.json entries.", null);
+			Debug.Log("Ignoring crash due to mismatched hashes.json entries.");
 		}
 		if (File.Exists("ignorekcrashreporter.txt"))
 		{
 			ignoreAll = true;
-			Debug.Log("Ignoring crash due to ignorekcrashreporter.txt", null);
+			Debug.Log("Ignoring crash due to ignorekcrashreporter.txt");
 		}
 		if (Application.isEditor && !GenericGameSettings.instance.enableEditorCrashReporting)
 		{
@@ -164,45 +166,70 @@ public class KCrashReporter : MonoBehaviour
 			{
 				RestartWarning.ShouldWarn = true;
 			}
-			if ((UnityEngine.Object)errorDialog == (UnityEngine.Object)null && (type == LogType.Exception || type == LogType.Error))
+			if ((UnityEngine.Object)errorDialog == (UnityEngine.Object)null && (type == LogType.Exception || type == LogType.Error) && (!terminateOnError || !ReportErrorDialog.hasCrash))
 			{
-				if (!terminateOnError || !ReportErrorDialog.hasCrash)
+				if ((UnityEngine.Object)SpeedControlScreen.Instance != (UnityEngine.Object)null)
 				{
-					if ((UnityEngine.Object)SpeedControlScreen.Instance != (UnityEngine.Object)null)
+					SpeedControlScreen.Instance.Pause(true);
+				}
+				string text = stack_trace;
+				if (string.IsNullOrEmpty(text))
+				{
+					StackTrace stackTrace = new StackTrace(5, true);
+					text = stackTrace.ToString();
+				}
+				if (App.isLoading)
+				{
+					if (!SceneInitializerLoader.deferred_error.IsValid)
 					{
-						SpeedControlScreen.Instance.Pause(true);
+						SceneInitializerLoader.DeferredError deferred_error = default(SceneInitializerLoader.DeferredError);
+						deferred_error.msg = msg;
+						deferred_error.stack_trace = text;
+						SceneInitializerLoader.deferred_error = deferred_error;
 					}
-					GameObject gameObject = GameObject.Find(error_canvas_name);
-					if ((UnityEngine.Object)gameObject == (UnityEngine.Object)null)
-					{
-						gameObject = new GameObject();
-						gameObject.name = error_canvas_name;
-						Canvas canvas = gameObject.AddComponent<Canvas>();
-						canvas.renderMode = RenderMode.ScreenSpaceOverlay;
-						canvas.additionalShaderChannels = AdditionalCanvasShaderChannels.TexCoord1;
-						gameObject.AddComponent<GraphicRaycaster>();
-					}
-					GameObject gameObject2 = UnityEngine.Object.Instantiate(reportErrorPrefab, Vector3.zero, Quaternion.identity);
-					gameObject2.transform.SetParent(gameObject.transform, false);
-					errorDialog = gameObject2.GetComponentInChildren<ReportErrorDialog>();
-					errorDialog.PopupConfirmDialog("ERROR OCCURRED!\nDo you want to report this error?", delegate
-					{
-						string save_file_hash = null;
-						if (MOST_RECENT_SAVEFILE != null)
-						{
-							save_file_hash = UploadSaveFile(MOST_RECENT_SAVEFILE, stack_trace, null);
-						}
-						ReportError(msg, stack_trace, save_file_hash, confirmDialogPrefab, errorDialog.UserMessage());
-					}, delegate
-					{
-						OnQuitToDesktop();
-					}, delegate
-					{
-						OnCloseErrorDialog();
-					});
+				}
+				else
+				{
+					ShowDialog(msg, text);
 				}
 			}
 		}
+	}
+
+	public bool ShowDialog(string error, string stack_trace)
+	{
+		if ((UnityEngine.Object)Global.Instance != (UnityEngine.Object)null && Global.Instance.modManager != null && Global.Instance.modManager.HaveLoadedMods())
+		{
+			Global.Instance.modManager.HandleCrash();
+			return true;
+		}
+		if ((UnityEngine.Object)errorDialog != (UnityEngine.Object)null)
+		{
+			return false;
+		}
+		GameObject gameObject = GameObject.Find(error_canvas_name);
+		if ((UnityEngine.Object)gameObject == (UnityEngine.Object)null)
+		{
+			gameObject = new GameObject();
+			gameObject.name = error_canvas_name;
+			Canvas canvas = gameObject.AddComponent<Canvas>();
+			canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+			canvas.additionalShaderChannels = AdditionalCanvasShaderChannels.TexCoord1;
+			gameObject.AddComponent<GraphicRaycaster>();
+		}
+		GameObject gameObject2 = UnityEngine.Object.Instantiate(reportErrorPrefab, Vector3.zero, Quaternion.identity);
+		gameObject2.transform.SetParent(gameObject.transform, false);
+		errorDialog = gameObject2.GetComponentInChildren<ReportErrorDialog>();
+		errorDialog.PopupConfirmDialog(delegate
+		{
+			string save_file_hash = null;
+			if (MOST_RECENT_SAVEFILE != null)
+			{
+				save_file_hash = UploadSaveFile(MOST_RECENT_SAVEFILE, stack_trace, null);
+			}
+			ReportError(error, stack_trace, save_file_hash, confirmDialogPrefab, errorDialog.UserMessage());
+		}, OnQuitToDesktop, OnCloseErrorDialog);
+		return true;
 	}
 
 	private void OnCloseErrorDialog()
@@ -217,12 +244,12 @@ public class KCrashReporter : MonoBehaviour
 
 	private void OnQuitToDesktop()
 	{
-		Application.Quit();
+		App.Quit();
 	}
 
 	private static string UploadSaveFile(string save_file, string stack_trace, Dictionary<string, string> metadata = null)
 	{
-		Debug.Log($"Save_file: {save_file}", null);
+		Debug.Log($"Save_file: {save_file}");
 		if (KPrivacyPrefs.instance.disableDataCollection)
 		{
 			return string.Empty;
@@ -231,10 +258,10 @@ public class KCrashReporter : MonoBehaviour
 		{
 			using (WebClient webClient = new WebClient())
 			{
+				Encoding encoding = webClient.Encoding = Encoding.UTF8;
 				byte[] array = File.ReadAllBytes(save_file);
 				string text = "----" + System.DateTime.Now.Ticks.ToString("x");
 				webClient.Headers.Add("Content-Type", "multipart/form-data; boundary=" + text);
-				string @string = webClient.Encoding.GetString(array);
 				string empty = string.Empty;
 				string text2 = default(string);
 				using (SHA1CryptoServiceProvider sHA1CryptoServiceProvider = new SHA1CryptoServiceProvider())
@@ -247,18 +274,28 @@ public class KCrashReporter : MonoBehaviour
 					string arg = JsonConvert.SerializeObject(metadata);
 					empty += string.Format("--{0}\r\nContent-Disposition: form-data; name=\"{1}\"\r\n\r\n{2}\r\n", text, "metadata", arg);
 				}
-				empty += string.Format("--{0}\r\nContent-Disposition: form-data; name=\"save\"; filename=\"{1}\"\r\nContent-Type: {2}\r\n\r\n{3}", text, save_file, "application/x-spss-sav", @string);
-				empty += $"\r\n--{text}--\r\n";
-				byte[] bytes = webClient.Encoding.GetBytes(empty);
+				empty += string.Format("--{0}\r\nContent-Disposition: form-data; name=\"save\"; filename=\"{1}\"\r\nContent-Type: {2}\r\n\r\n", new object[3]
+				{
+					text,
+					save_file,
+					"application/x-spss-sav"
+				});
+				byte[] bytes = encoding.GetBytes(empty);
+				string s = $"\r\n--{text}--\r\n";
+				byte[] bytes2 = encoding.GetBytes(s);
+				byte[] array2 = new byte[bytes.Length + array.Length + bytes2.Length];
+				Buffer.BlockCopy(bytes, 0, array2, 0, bytes.Length);
+				Buffer.BlockCopy(array, 0, array2, bytes.Length, array.Length);
+				Buffer.BlockCopy(bytes2, 0, array2, bytes.Length + array.Length, bytes2.Length);
 				Uri address = new Uri("http://crashes.klei.ca/submitSave");
 				try
 				{
-					webClient.UploadData(address, "POST", bytes);
+					webClient.UploadData(address, "POST", array2);
 					return text2;
 				}
 				catch (Exception obj)
 				{
-					Debug.Log(obj, null);
+					Debug.Log(obj);
 					return string.Empty;
 				}
 			}
@@ -319,14 +356,14 @@ public class KCrashReporter : MonoBehaviour
 	{
 		if (!ignoreAll)
 		{
-			Debug.Log("Reporting error.\n", null);
+			Debug.Log("Reporting error.\n");
 			if (msg != null)
 			{
-				Debug.Log(msg, null);
+				Debug.Log(msg);
 			}
 			if (stack_trace != null)
 			{
-				Debug.Log(stack_trace, null);
+				Debug.Log(stack_trace);
 			}
 			hasReportedError = true;
 			if (!KPrivacyPrefs.instance.disableDataCollection)
@@ -349,24 +386,37 @@ public class KCrashReporter : MonoBehaviour
 					}
 					if (string.IsNullOrEmpty(stack_trace))
 					{
-						stack_trace = $"No stack trace.\n\n{msg}";
+						string arg = "LU-" + 356355.ToString();
+						stack_trace = $"No stack trace {arg}\n\n{msg}";
 					}
-					string str = string.Empty;
-					string[] array = new string[9]
+					List<string> list = new List<string>();
+					if (debugWasUsed)
+					{
+						list.Add("(Debug Used)");
+					}
+					if (haveActiveMods)
+					{
+						list.Add("(Mods Active)");
+					}
+					list.Add(msg);
+					string[] array = new string[8]
 					{
 						"Debug:LogError",
-						"UnityEngine.Debug:LogError",
-						"UnityEngine.Debug:Assert(Boolean, String)",
-						"Output:LogError(String)",
-						"Output:LogErrorWithObj(Object, String)",
-						"Output:LogErrorWithObj(Object, Object[])",
-						"DebugUtil:Assert(Boolean, String)",
-						"KCrashReporter.Assert(Boolean condition, System.String message)",
+						"UnityEngine.Debug",
+						"Output:LogError",
+						"DebugUtil:Assert",
+						"System.Array",
+						"System.Collections",
+						"KCrashReporter.Assert",
 						"No stack trace."
 					};
 					string[] array2 = stack_trace.Split('\n');
 					foreach (string text2 in array2)
 					{
+						if (list.Count >= 5)
+						{
+							break;
+						}
 						if (!string.IsNullOrEmpty(text2))
 						{
 							bool flag = false;
@@ -381,7 +431,7 @@ public class KCrashReporter : MonoBehaviour
 							}
 							if (!flag)
 							{
-								str = str + text2 + "\n";
+								list.Add(text2);
 							}
 						}
 					}
@@ -396,14 +446,10 @@ public class KCrashReporter : MonoBehaviour
 					{
 						error.callstack = error.callstack + "\n" + Guid.NewGuid().ToString();
 					}
-					if (debugWasUsed)
-					{
-						msg = "Debug tools were used in this game.\n\n" + msg;
-					}
-					error.fullstack = msg;
-					error.build = 291640;
+					error.fullstack = $"{msg}\n\n{stack_trace}";
+					error.build = 356355;
 					error.log = GetLogContents();
-					error.summaryline = msg;
+					error.summaryline = string.Join("\n", list.ToArray());
 					error.user_message = userMessage;
 					if (!string.IsNullOrEmpty(save_file_hash))
 					{
@@ -416,19 +462,19 @@ public class KCrashReporter : MonoBehaviour
 					string data = JsonConvert.SerializeObject(error);
 					string empty = string.Empty;
 					Uri address = new Uri("http://crashes.klei.ca/submitCrash");
-					Debug.Log("Submitting crash:", null);
+					Debug.Log("Submitting crash:");
 					try
 					{
 						webClient.UploadStringAsync(address, data);
 					}
 					catch (Exception obj)
 					{
-						Debug.Log(obj, null);
+						Debug.Log(obj);
 					}
 					if ((UnityEngine.Object)confirm_prefab != (UnityEngine.Object)null)
 					{
 						ConfirmDialogScreen confirmDialogScreen = (ConfirmDialogScreen)KScreenManager.Instance.StartScreen(confirm_prefab.gameObject, null);
-						confirmDialogScreen.PopupConfirmDialog("Reported Error", null, null, null, null, null, null, null, null);
+						confirmDialogScreen.PopupConfirmDialog("Reported Error", null, null, null, null, null, null, null, null, true);
 					}
 					obj2 = empty;
 				}
@@ -462,7 +508,7 @@ public class KCrashReporter : MonoBehaviour
 		}
 	}
 
-	public static void ReportDLLCrash(string msg, string stack_trace, string dmp_filename)
+	public static void ReportSimDLLCrash(string msg, string stack_trace, string dmp_filename)
 	{
 		if (!hasReportedError)
 		{
@@ -488,15 +534,6 @@ public class KCrashReporter : MonoBehaviour
 			{
 				File.Move(text2, text);
 			}
-		}
-	}
-
-	public static void Assert(bool condition)
-	{
-		if (!condition && !hasReportedError)
-		{
-			StackTrace stackTrace = new StackTrace(0, true);
-			ReportError("Assertion failed", stackTrace.ToString(), null, null, string.Empty);
 		}
 	}
 }

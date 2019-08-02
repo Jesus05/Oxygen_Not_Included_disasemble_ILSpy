@@ -262,8 +262,8 @@ public class FixedCapturePoint : GameStateMachine<FixedCapturePoint, FixedCaptur
 		base.serializable = true;
 		unoperational.TagTransition(GameTags.Operational, operational, false);
 		operational.DefaultState(operational.manual).TagTransition(GameTags.Operational, unoperational, true);
-		operational.manual.ParamTransition(automated, operational.automated, (Instance smi, bool p) => p);
-		operational.automated.ParamTransition(automated, operational.manual, (Instance smi, bool p) => !p).ToggleChore((Instance smi) => smi.CreateChore(), unoperational, unoperational).Update("FindFixedCapturable", delegate(Instance smi, float dt)
+		operational.manual.ParamTransition(automated, operational.automated, GameStateMachine<FixedCapturePoint, Instance, IStateMachineTarget, Def>.IsTrue);
+		operational.automated.ParamTransition(automated, operational.manual, GameStateMachine<FixedCapturePoint, Instance, IStateMachineTarget, Def>.IsFalse).ToggleChore((Instance smi) => smi.CreateChore(), unoperational, unoperational).Update("FindFixedCapturable", delegate(Instance smi, float dt)
 		{
 			smi.FindFixedCapturable();
 		}, UpdateRate.SIM_1000ms, false);

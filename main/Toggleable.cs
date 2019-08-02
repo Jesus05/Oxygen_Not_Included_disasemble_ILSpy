@@ -73,7 +73,7 @@ public class Toggleable : Workable
 			}
 			else
 			{
-				targets[targetIdx] = new KeyValuePair<IToggleHandler, Chore>(targets[targetIdx].Key, new WorkChore<Toggleable>(Db.Get().ChoreTypes.Toggle, this, null, null, true, null, null, null, true, null, false, false, null, false, true, true, PriorityScreen.PriorityClass.basic, 0, true));
+				targets[targetIdx] = new KeyValuePair<IToggleHandler, Chore>(targets[targetIdx].Key, new WorkChore<Toggleable>(Db.Get().ChoreTypes.Toggle, this, null, true, null, null, null, true, null, false, false, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, true, true));
 				GetComponent<KSelectable>().AddStatusItem(Db.Get().BuildingStatusItems.PendingSwitchToggle, null);
 			}
 		}

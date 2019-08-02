@@ -74,6 +74,10 @@ public class Prioritizable : KMonoBehaviour
 		}
 	};
 
+	private HandleVector<int>.Handle scenePartitionerEntry;
+
+	private Guid highPriorityStatusItem;
+
 	protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
@@ -110,6 +114,10 @@ public class Prioritizable : KMonoBehaviour
 		{
 			onPriorityChanged(masterPrioritySetting);
 		}
+		RefreshHighPriorityNotification();
+		Vector3 position = base.transform.GetPosition();
+		Extents extents = new Extents((int)position.x, (int)position.y, 1, 1);
+		scenePartitionerEntry = GameScenePartitioner.Instance.Add(base.name, this, extents, GameScenePartitioner.Instance.prioritizableObjects, null);
 		Components.Prioritizables.Add(this);
 	}
 
@@ -127,17 +135,20 @@ public class Prioritizable : KMonoBehaviour
 			{
 				onPriorityChanged(masterPrioritySetting);
 			}
+			RefreshHighPriorityNotification();
 		}
 	}
 
 	public void AddRef()
 	{
 		refCount++;
+		RefreshHighPriorityNotification();
 	}
 
 	public void RemoveRef()
 	{
 		refCount--;
+		RefreshHighPriorityNotification();
 	}
 
 	public bool IsPrioritizable()
@@ -145,9 +156,15 @@ public class Prioritizable : KMonoBehaviour
 		return refCount > 0;
 	}
 
+	public bool IsTopPriority()
+	{
+		return masterPrioritySetting.priority_class == PriorityScreen.PriorityClass.topPriority && IsPrioritizable();
+	}
+
 	protected override void OnCleanUp()
 	{
 		base.OnCleanUp();
+		GameScenePartitioner.Instance.Free(ref scenePartitionerEntry);
 		Components.Prioritizables.Remove(this);
 	}
 
@@ -166,6 +183,19 @@ public class Prioritizable : KMonoBehaviour
 		if ((UnityEngine.Object)component != (UnityEngine.Object)null)
 		{
 			component.RemoveRef();
+		}
+	}
+
+	private void RefreshHighPriorityNotification()
+	{
+		bool flag = masterPrioritySetting.priority_class == PriorityScreen.PriorityClass.topPriority && IsPrioritizable();
+		if (flag && highPriorityStatusItem == Guid.Empty)
+		{
+			highPriorityStatusItem = GetComponent<KSelectable>().AddStatusItem(Db.Get().BuildingStatusItems.EmergencyPriority, null);
+		}
+		else if (!flag && highPriorityStatusItem != Guid.Empty)
+		{
+			highPriorityStatusItem = GetComponent<KSelectable>().RemoveStatusItem(highPriorityStatusItem, false);
 		}
 	}
 }

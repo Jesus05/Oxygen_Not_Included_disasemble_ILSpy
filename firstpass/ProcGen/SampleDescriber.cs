@@ -1,7 +1,9 @@
 using KSerialization.Converters;
+using System;
 
 namespace ProcGen
 {
+	[Serializable]
 	public class SampleDescriber
 	{
 		public enum PointSelectionMethod
@@ -10,6 +12,7 @@ namespace ProcGen
 			Centroid
 		}
 
+		[Serializable]
 		public class Override
 		{
 			public float? massOverride
@@ -60,6 +63,18 @@ namespace ProcGen
 				this.temperatureMultiplier = temperatureMultiplier;
 				this.diseaseOverride = diseaseOverride;
 				this.diseaseAmountOverride = diseaseAmountOverride;
+			}
+
+			public void ModMultiplyMass(float mult)
+			{
+				if (!massMultiplier.HasValue)
+				{
+					massMultiplier = mult;
+				}
+				else
+				{
+					massMultiplier *= mult;
+				}
 			}
 		}
 

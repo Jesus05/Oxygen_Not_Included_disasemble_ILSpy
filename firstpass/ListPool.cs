@@ -1,7 +1,9 @@
 using System.Collections.Generic;
+using System.Diagnostics;
 
 public static class ListPool<ObjectType, PoolIdentifier>
 {
+	[DebuggerDisplay("Count={Count}")]
 	public class PooledList : List<ObjectType>
 	{
 		public void Recycle()

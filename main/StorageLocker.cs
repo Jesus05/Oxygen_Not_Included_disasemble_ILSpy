@@ -1,5 +1,4 @@
 using KSerialization;
-using STRINGS;
 using UnityEngine;
 
 public class StorageLocker : KMonoBehaviour, IUserControlledCapacity
@@ -9,16 +8,14 @@ public class StorageLocker : KMonoBehaviour, IUserControlledCapacity
 	[Serialize]
 	private float userMaxCapacity = float.PositiveInfinity;
 
+	[Serialize]
+	public string lockerName = string.Empty;
+
 	protected FilteredStorage filteredStorage;
 
 	private static readonly EventSystem.IntraObjectHandler<StorageLocker> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<StorageLocker>(delegate(StorageLocker component, object data)
 	{
 		component.OnCopySettings(data);
-	});
-
-	private static readonly EventSystem.IntraObjectHandler<StorageLocker> OnToggleClosedDelegate = new EventSystem.IntraObjectHandler<StorageLocker>(delegate(StorageLocker component, object data)
-	{
-		component.OnToggleClosed(data);
 	});
 
 	public virtual float UserMaxCapacity
@@ -42,20 +39,7 @@ public class StorageLocker : KMonoBehaviour, IUserControlledCapacity
 
 	public bool WholeValues => false;
 
-	public LocString CapacityUnits
-	{
-		get
-		{
-			LocString locString = null;
-			switch (GameUtil.massUnit)
-			{
-			case GameUtil.MassUnit.Pounds:
-				return UI.UNITSUFFIXES.MASS.POUND;
-			default:
-				return UI.UNITSUFFIXES.MASS.KILOGRAM;
-			}
-		}
-	}
+	public LocString CapacityUnits => GameUtil.GetCurrentMassUnit(false);
 
 	protected override void OnPrefabInit()
 	{
@@ -66,27 +50,22 @@ public class StorageLocker : KMonoBehaviour, IUserControlledCapacity
 	{
 		base.OnPrefabInit();
 		log = new LoggerFS("StorageLocker", 35);
-		filteredStorage = new FilteredStorage(this, null, null, this, use_logic_meter, Db.Get().ChoreTypes.Fetch);
+		filteredStorage = new FilteredStorage(this, null, null, this, use_logic_meter, Db.Get().ChoreTypes.StorageFetch);
 		Subscribe(-905833192, OnCopySettingsDelegate);
 	}
 
 	protected override void OnSpawn()
 	{
-		Subscribe(1088293757, OnToggleClosedDelegate);
 		filteredStorage.FilterChanged();
+		if (!lockerName.IsNullOrWhiteSpace())
+		{
+			SetName(lockerName);
+		}
 	}
 
 	protected override void OnCleanUp()
 	{
 		filteredStorage.CleanUp();
-	}
-
-	private void OnToggleClosed(object data)
-	{
-		BuildingEnabledButton component = GetComponent<BuildingEnabledButton>();
-		bool flag = (Object)component != (Object)null && !component.IsEnabled;
-		filteredStorage.SetEnabled(!flag);
-		Game.Instance.userMenu.Refresh(base.gameObject);
 	}
 
 	private void OnCopySettings(object data)
@@ -100,5 +79,18 @@ public class StorageLocker : KMonoBehaviour, IUserControlledCapacity
 				UserMaxCapacity = component.UserMaxCapacity;
 			}
 		}
+	}
+
+	public void SetName(string name)
+	{
+		KSelectable component = GetComponent<KSelectable>();
+		base.name = name;
+		lockerName = name;
+		if ((Object)component != (Object)null)
+		{
+			component.SetName(name);
+		}
+		base.gameObject.name = name;
+		NameDisplayScreen.Instance.UpdateName(base.gameObject);
 	}
 }

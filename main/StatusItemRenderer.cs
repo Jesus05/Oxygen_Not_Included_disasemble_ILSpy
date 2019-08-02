@@ -130,7 +130,7 @@ public class StatusItemRenderer
 			material = new Material(shader);
 		}
 
-		public void Render(StatusItemRenderer renderer, Vector3 camera_bl, Vector3 camera_tr, SimViewMode overlay)
+		public void Render(StatusItemRenderer renderer, Vector3 camera_bl, Vector3 camera_tr, HashedString overlay)
 		{
 			if (!DebugHandler.HideUI)
 			{
@@ -158,9 +158,9 @@ public class StatusItemRenderer
 								if (dirty)
 								{
 									int num = 0;
-									foreach (StatusItem statusItem2 in statusItems)
+									foreach (StatusItem statusItem3 in statusItems)
 									{
-										if (statusItem2.UseConditionalCallback(overlay, transform) || overlay == SimViewMode.None || statusItem2.render_overlay == overlay)
+										if (statusItem3.UseConditionalCallback(overlay, transform) || !(overlay != OverlayModes.None.ID) || !(statusItem3.render_overlay != overlay))
 										{
 											num++;
 										}
@@ -173,23 +173,35 @@ public class StatusItemRenderer
 									float num3 = 0.02f;
 									Color32 c = new Color32(0, 0, 0, byte.MaxValue);
 									Color32 c2 = new Color32(0, 0, 0, 75);
-									Color32 c3 = renderer.backgroundColor;
+									Color32 c3 = renderer.neutralColor;
 									if (renderer.selectedHandle == handle || renderer.highlightHandle == handle)
 									{
 										c3 = renderer.selectedColor;
+									}
+									else
+									{
+										for (int i = 0; i < statusItems.Count; i++)
+										{
+											StatusItem statusItem = statusItems[i];
+											if (statusItem.notificationType != NotificationType.Neutral)
+											{
+												c3 = renderer.backgroundColor;
+												break;
+											}
+										}
 									}
 									meshBuilder.AddQuad(new Vector2(0f, 0.29f) + b, new Vector2(0.05f, 0.05f), z, renderer.arrowSprite, c2);
 									meshBuilder.AddQuad(new Vector2(0f, 0f) + b, new Vector2(num2 * (float)num, num2), z, renderer.backgroundSprite, c2);
 									meshBuilder.AddQuad(new Vector2(0f, 0f), new Vector2(num2 * (float)num + num3, num2 + num3), z, renderer.backgroundSprite, c);
 									meshBuilder.AddQuad(new Vector2(0f, 0f), new Vector2(num2 * (float)num, num2), z, renderer.backgroundSprite, c3);
 									int num4 = 0;
-									for (int i = 0; i < statusItems.Count; i++)
+									for (int j = 0; j < statusItems.Count; j++)
 									{
-										StatusItem statusItem = statusItems[i];
-										if (statusItem.UseConditionalCallback(overlay, transform) || overlay == SimViewMode.None || statusItem.render_overlay == overlay)
+										StatusItem statusItem2 = statusItems[j];
+										if (statusItem2.UseConditionalCallback(overlay, transform) || !(overlay != OverlayModes.None.ID) || !(statusItem2.render_overlay != overlay))
 										{
 											float x = (float)num4 * num2 * 2f - num2 * (float)(num - 1);
-											Sprite sprite = statusItems[i].sprite.sprite;
+											Sprite sprite = statusItems[j].sprite.sprite;
 											meshBuilder.AddQuad(new Vector2(x, 0f), new Vector2(num2, num2), z, sprite, c);
 											num4++;
 										}
@@ -210,11 +222,11 @@ public class StatusItemRenderer
 				else
 				{
 					string text = "Error cleaning up status items:";
-					foreach (StatusItem statusItem3 in statusItems)
+					foreach (StatusItem statusItem4 in statusItems)
 					{
-						text += statusItem3.Id;
+						text += statusItem4.Id;
 					}
-					Debug.LogWarning(text, null);
+					Debug.LogWarning(text);
 				}
 			}
 		}
@@ -241,7 +253,7 @@ public class StatusItemRenderer
 			statusItems.AddRange(entry.statusItems);
 		}
 
-		private bool Intersects(Vector2 pos, float scale, SimViewMode overlay)
+		private bool Intersects(Vector2 pos, float scale)
 		{
 			if ((Object)transform == (Object)null)
 			{
@@ -257,9 +269,9 @@ public class StatusItemRenderer
 			return pos.x >= vector2.x && pos.x <= vector3.x && pos.y >= vector2.y && pos.y <= vector3.y;
 		}
 
-		public void GetIntersection(Vector2 pos, List<SelectTool.Intersection> intersections, float scale, SimViewMode overlay)
+		public void GetIntersection(Vector2 pos, List<SelectTool.Intersection> intersections, float scale)
 		{
-			if (Intersects(pos, scale, overlay))
+			if (Intersects(pos, scale))
 			{
 				KSelectable component = transform.GetComponent<KSelectable>();
 				if (component.IsSelectable)
@@ -273,9 +285,9 @@ public class StatusItemRenderer
 			}
 		}
 
-		public void GetIntersection(Vector2 pos, List<KSelectable> selectables, float scale, SimViewMode overlay)
+		public void GetIntersection(Vector2 pos, List<KSelectable> selectables, float scale)
 		{
-			if (Intersects(pos, scale, overlay))
+			if (Intersects(pos, scale))
 			{
 				KSelectable component = transform.GetComponent<KSelectable>();
 				if (component.IsSelectable && !selectables.Contains(component))
@@ -351,6 +363,12 @@ public class StatusItemRenderer
 		private set;
 	}
 
+	public Color32 neutralColor
+	{
+		get;
+		private set;
+	}
+
 	public Sprite arrowSprite
 	{
 		get;
@@ -382,6 +400,7 @@ public class StatusItemRenderer
 		}
 		backgroundColor = new Color32(244, 74, 71, byte.MaxValue);
 		selectedColor = new Color32(225, 181, 180, byte.MaxValue);
+		neutralColor = new Color32(byte.MaxValue, byte.MaxValue, byte.MaxValue, byte.MaxValue);
 		arrowSprite = Assets.GetSprite("StatusBubbleTop");
 		backgroundSprite = Assets.GetSprite("StatusBubble");
 		scale = 1f;
@@ -461,13 +480,13 @@ public class StatusItemRenderer
 		entryCount--;
 	}
 
-	private SimViewMode GetMode()
+	private HashedString GetMode()
 	{
 		if ((Object)OverlayScreen.Instance != (Object)null)
 		{
 			return OverlayScreen.Instance.mode;
 		}
-		return SimViewMode.None;
+		return OverlayModes.None.ID;
 	}
 
 	public void MarkAllDirty()
@@ -499,7 +518,7 @@ public class StatusItemRenderer
 	{
 		foreach (Entry visibleEntry in visibleEntries)
 		{
-			visibleEntry.GetIntersection(pos, intersections, scale, GetMode());
+			visibleEntry.GetIntersection(pos, intersections, scale);
 		}
 	}
 
@@ -507,7 +526,7 @@ public class StatusItemRenderer
 	{
 		foreach (Entry visibleEntry in visibleEntries)
 		{
-			visibleEntry.GetIntersection(pos, selectables, scale, GetMode());
+			visibleEntry.GetIntersection(pos, selectables, scale);
 		}
 	}
 

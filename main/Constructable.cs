@@ -41,6 +41,8 @@ public class Constructable : Workable, ISaveLoadable
 
 	private bool finished;
 
+	private bool unmarked;
+
 	public bool isDiggingRequired = true;
 
 	private bool waitForFetchesBeforeDigging;
@@ -52,9 +54,6 @@ public class Constructable : Workable, ISaveLoadable
 	[Serialize]
 	public bool IsReplacementTile;
 
-	[Serialize]
-	public Tag[] choreTags;
-
 	private HandleVector<int>.Handle solidPartitionerEntry;
 
 	private HandleVector<int>.Handle digPartitionerEntry;
@@ -62,6 +61,9 @@ public class Constructable : Workable, ISaveLoadable
 	private HandleVector<int>.Handle ladderParititonerEntry;
 
 	private LoggerFSS log = new LoggerFSS("Constructable", 35);
+
+	[Serialize]
+	private Tag[] selectedElementsTags;
 
 	private Element[] selectedElements;
 
@@ -85,19 +87,19 @@ public class Constructable : Workable, ISaveLoadable
 
 	public Recipe Recipe => building.Def.CraftRecipe;
 
-	public IList<Element> SelectedElements
+	public IList<Tag> SelectedElementsTags
 	{
 		get
 		{
-			return selectedElements;
+			return selectedElementsTags;
 		}
 		set
 		{
-			if (selectedElements == null || selectedElements.Length != value.Count)
+			if (selectedElementsTags == null || selectedElementsTags.Length != value.Count)
 			{
-				selectedElements = new Element[value.Count];
+				selectedElementsTags = new Tag[value.Count];
 			}
-			value.CopyTo(selectedElements, 0);
+			value.CopyTo(selectedElementsTags, 0);
 		}
 	}
 
@@ -126,7 +128,7 @@ public class Constructable : Workable, ISaveLoadable
 		}
 		if (num <= 0f)
 		{
-			Output.LogWarningWithObj(base.gameObject, "uhhh this constructable is about to generate a nan", "Item Count: ", storage.items.Count);
+			DebugUtil.LogWarningArgs(base.gameObject, "uhhh this constructable is about to generate a nan", "Item Count: ", storage.items.Count);
 		}
 		else
 		{
@@ -175,7 +177,7 @@ public class Constructable : Workable, ISaveLoadable
 						}
 						else
 						{
-							Debug.LogWarning("Why am I trying to replace a: " + gameObject.name, null);
+							Debug.LogWarning("Why am I trying to replace a: " + gameObject.name);
 							FinishConstruction(connections);
 						}
 					}
@@ -187,10 +189,10 @@ public class Constructable : Workable, ISaveLoadable
 					PrimaryElement component7 = gameObject.GetComponent<PrimaryElement>();
 					float mass = component7.Mass;
 					float temperature = component7.Temperature;
-					SimHashes elementID = component7.ElementID;
 					byte diseaseIdx = component7.DiseaseIdx;
 					int diseaseCount = component7.DiseaseCount;
-					Deconstructable.SpawnItem(component7.transform.GetPosition(), component7.GetComponent<Building>().Def, elementID, mass, temperature, diseaseIdx, diseaseCount);
+					Debug.Assert(component7.Element != null && component7.Element.tag != (Tag)null);
+					Deconstructable.SpawnItem(component7.transform.GetPosition(), component7.GetComponent<Building>().Def, component7.Element.tag, mass, temperature, diseaseIdx, diseaseCount);
 					gameObject.Trigger(1606648047, null);
 					gameObject.DeleteObject();
 				}
@@ -203,19 +205,13 @@ public class Constructable : Workable, ISaveLoadable
 		}
 	}
 
-	public override void AwardExperience(float work_dt, MinionResume resume)
-	{
-		resume.AddExperienceIfRole(JuniorBuilder.ID, work_dt * ROLES.ACTIVE_EXPERIENCE_QUICK);
-		resume.AddExperienceIfRole(Builder.ID, work_dt * ROLES.ACTIVE_EXPERIENCE_QUICK);
-		resume.AddExperienceIfRole(SeniorBuilder.ID, work_dt * ROLES.ACTIVE_EXPERIENCE_QUICK);
-	}
-
 	private void FinishConstruction(UtilityConnections connections)
 	{
 		Rotatable component = GetComponent<Rotatable>();
 		Orientation orientation = ((UnityEngine.Object)component != (UnityEngine.Object)null) ? component.GetOrientation() : Orientation.Neutral;
 		int cell = Grid.PosToCell(base.transform.GetLocalPosition());
-		GameObject gameObject = building.Def.Build(cell, orientation, storage, selectedElements, initialTemperature, true);
+		UnmarkArea();
+		GameObject gameObject = building.Def.Build(cell, orientation, storage, selectedElementsTags, initialTemperature, true);
 		gameObject.transform.rotation = base.transform.rotation;
 		Rotatable component2 = gameObject.GetComponent<Rotatable>();
 		if ((UnityEngine.Object)component2 != (UnityEngine.Object)null)
@@ -246,7 +242,7 @@ public class Constructable : Workable, ISaveLoadable
 	protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
-		invalidLocation = new Notification(MISC.NOTIFICATIONS.INVALIDCONSTRUCTIONLOCATION.NAME, NotificationType.BadMinor, HashedString.Invalid, (List<Notification> notificationList, object data) => MISC.NOTIFICATIONS.INVALIDCONSTRUCTIONLOCATION.TOOLTIP + notificationList.ReduceMessages(false), null, true, 0f, null, null);
+		invalidLocation = new Notification(MISC.NOTIFICATIONS.INVALIDCONSTRUCTIONLOCATION.NAME, NotificationType.BadMinor, HashedString.Invalid, (List<Notification> notificationList, object data) => MISC.NOTIFICATIONS.INVALIDCONSTRUCTIONLOCATION.TOOLTIP + notificationList.ReduceMessages(false), null, true, 0f, null, null, null);
 		CellOffset[][] table = OffsetGroups.InvertedStandardTable;
 		if (building.Def.IsTilePiece)
 		{
@@ -264,7 +260,10 @@ public class Constructable : Workable, ISaveLoadable
 		workerStatusItem = Db.Get().DuplicantStatusItems.Building;
 		workingStatusItem = null;
 		attributeConverter = Db.Get().AttributeConverters.ConstructionSpeed;
-		attributeExperienceMultiplier = DUPLICANTSTATS.ATTRIBUTE_LEVELING.PART_DAY_EXPERIENCE;
+		attributeExperienceMultiplier = DUPLICANTSTATS.ATTRIBUTE_LEVELING.MOST_DAY_EXPERIENCE;
+		minimumAttributeMultiplier = 0.75f;
+		skillExperienceSkillGroup = Db.Get().SkillGroups.Building.Id;
+		skillExperienceMultiplier = SKILLS.MOST_DAY_EXPERIENCE;
 		Prioritizable.AddRef(base.gameObject);
 		synchronizeAnims = false;
 		multitoolContext = "build";
@@ -281,20 +280,13 @@ public class Constructable : Workable, ISaveLoadable
 		{
 			MarkArea();
 		}
-		if (choreTags == null)
-		{
-			choreTags = GameTags.ChoreTypes.BuildingChores;
-		}
-		else if (Array.IndexOf(choreTags, GameTags.ChoreTypes.Building) < 0)
-		{
-			Array.Resize(ref choreTags, choreTags.Length + 1);
-			choreTags[choreTags.Length - 1] = GameTags.ChoreTypes.Building;
-		}
-		this.fetchList = new FetchList2(storage, Db.Get().ChoreTypes.BuildFetch, choreTags);
+		this.fetchList = new FetchList2(storage, Db.Get().ChoreTypes.BuildFetch);
 		PrimaryElement component = GetComponent<PrimaryElement>();
-		component.ElementID = selectedElements[0].id;
+		Element element = ElementLoader.GetElement(SelectedElementsTags[0]);
+		Debug.Assert(element != null, "Missing primary element for Constructable");
+		component.ElementID = element.id;
 		float num3 = component.Temperature = (component.Temperature = 293.15f);
-		Recipe.Ingredient[] allIngredients = Recipe.GetAllIngredients(selectedElements);
+		Recipe.Ingredient[] allIngredients = Recipe.GetAllIngredients(selectedElementsTags);
 		foreach (Recipe.Ingredient ingredient in allIngredients)
 		{
 			FetchList2 fetchList = this.fetchList;
@@ -318,7 +310,6 @@ public class Constructable : Workable, ISaveLoadable
 				}
 			}
 		});
-		Diggable.UpdateBuildableDiggables(Grid.PosToCell(this));
 		if (IsReplacementTile)
 		{
 			GameObject gameObject = null;
@@ -332,13 +323,13 @@ public class Constructable : Workable, ISaveLoadable
 					if ((UnityEngine.Object)base.gameObject.GetComponent<SimCellOccupier>() != (UnityEngine.Object)null)
 					{
 						int renderLayer = LayerMask.NameToLayer("Overlay");
-						World.Instance.blockTileRenderer.AddBlock(renderLayer, building.Def, SimHashes.Void, cell);
+						World.Instance.blockTileRenderer.AddBlock(renderLayer, building.Def, IsReplacementTile, SimHashes.Void, cell);
 					}
 					TileVisualizer.RefreshCell(cell, building.Def.TileLayer, building.Def.ReplacementLayer);
 				}
 				else
 				{
-					Output.LogError("multiple replacement tiles on the same cell!");
+					Debug.LogError("multiple replacement tiles on the same cell!");
 					Util.KDestroyGameObject(base.gameObject);
 				}
 			}
@@ -403,13 +394,17 @@ public class Constructable : Workable, ISaveLoadable
 
 	private void UnmarkArea()
 	{
-		int num = Grid.PosToCell(base.transform.GetPosition());
-		ObjectLayer layer = (!IsReplacementTile) ? building.Def.ObjectLayer : building.Def.ReplacementLayer;
-		BuildingDef def = building.Def;
-		def.UnmarkArea(num, building.Orientation, layer, base.gameObject);
-		if (def.IsTilePiece)
+		if (!unmarked)
 		{
-			Grid.IsTileUnderConstruction[num] = false;
+			unmarked = true;
+			int num = Grid.PosToCell(base.transform.GetPosition());
+			BuildingDef def = building.Def;
+			ObjectLayer layer = (!IsReplacementTile) ? building.Def.ObjectLayer : building.Def.ReplacementLayer;
+			def.UnmarkArea(num, building.Orientation, layer, base.gameObject);
+			if (def.IsTilePiece)
+			{
+				Grid.IsTileUnderConstruction[num] = false;
+			}
 		}
 	}
 
@@ -481,7 +476,7 @@ public class Constructable : Workable, ISaveLoadable
 			GameObject gameObject = Grid.Objects[cell, (int)building.Def.ReplacementLayer];
 			if ((UnityEngine.Object)gameObject == (UnityEngine.Object)base.gameObject && (UnityEngine.Object)gameObject.GetComponent<SimCellOccupier>() != (UnityEngine.Object)null)
 			{
-				World.Instance.blockTileRenderer.RemoveBlock(building.Def, SimHashes.Void, cell);
+				World.Instance.blockTileRenderer.RemoveBlock(building.Def, IsReplacementTile, SimHashes.Void, cell);
 			}
 		}
 		GameScenePartitioner.Instance.Free(ref solidPartitionerEntry);
@@ -497,8 +492,6 @@ public class Constructable : Workable, ISaveLoadable
 			fetchList.Cancel("Constructable destroyed");
 		}
 		UnmarkArea();
-		Queue<GameUtil.FloodFillInfo> floodFillNext = GameUtil.FloodFillNext;
-		floodFillNext.Clear();
 		int[] placementCells = building.PlacementCells;
 		foreach (int cell2 in placementCells)
 		{
@@ -507,28 +500,7 @@ public class Constructable : Workable, ISaveLoadable
 			{
 				diggable.gameObject.DeleteObject();
 			}
-			floodFillNext.Enqueue(new GameUtil.FloodFillInfo
-			{
-				cell = Grid.CellLeft(cell2),
-				depth = 0
-			});
-			floodFillNext.Enqueue(new GameUtil.FloodFillInfo
-			{
-				cell = Grid.CellRight(cell2),
-				depth = 0
-			});
-			floodFillNext.Enqueue(new GameUtil.FloodFillInfo
-			{
-				cell = Grid.CellAbove(cell2),
-				depth = 0
-			});
-			floodFillNext.Enqueue(new GameUtil.FloodFillInfo
-			{
-				cell = Grid.CellBelow(cell2),
-				depth = 0
-			});
 		}
-		Diggable.UpdateBuildableDiggables(floodFillNext);
 		base.OnCleanUp();
 	}
 
@@ -596,6 +568,7 @@ public class Constructable : Workable, ISaveLoadable
 							diggable.gameObject.SetActive(true);
 							diggable.transform.SetPosition(Grid.CellToPosCBC(offset_cell, Grid.SceneLayer.Move));
 							diggable.Subscribe(-1432940121, OnDiggableReachabilityChanged);
+							Grid.Objects[offset_cell, 7] = diggable.gameObject;
 						}
 						else
 						{
@@ -603,7 +576,6 @@ public class Constructable : Workable, ISaveLoadable
 							diggable.Subscribe(-1432940121, OnDiggableReachabilityChanged);
 						}
 						diggable.choreTypeIdHash = Db.Get().ChoreTypes.BuildDig.IdHash;
-						diggable.choreTags = choreTags;
 						diggable.GetComponent<Prioritizable>().SetMasterPriority(masterPriority);
 						RenderUtil.EnableRenderer(diggable.transform, false);
 						SaveLoadRoot component = diggable.GetComponent<SaveLoadRoot>();
@@ -628,9 +600,7 @@ public class Constructable : Workable, ISaveLoadable
 			bool flag2 = digs_complete && flag && fetchList == null;
 			if (flag2 && buildChore == null)
 			{
-				ChoreType build = Db.Get().ChoreTypes.Build;
-				Tag[] chore_tags = choreTags;
-				buildChore = new WorkChore<Constructable>(build, this, null, chore_tags, true, UpdateBuildState, UpdateBuildState, UpdateBuildState, true, null, false, true, null, true, true, true, PriorityScreen.PriorityClass.basic, 0, false);
+				buildChore = new WorkChore<Constructable>(Db.Get().ChoreTypes.Build, this, null, true, UpdateBuildState, UpdateBuildState, UpdateBuildState, true, null, false, true, null, true, true, true, PriorityScreen.PriorityClass.basic, 5, false, true);
 				UpdateBuildState(buildChore);
 			}
 			else if (!flag2 && buildChore != null)
@@ -652,7 +622,7 @@ public class Constructable : Workable, ISaveLoadable
 	{
 		if (!materialNeedsCleared)
 		{
-			Recipe.Ingredient[] allIngredients = Recipe.GetAllIngredients(SelectedElements);
+			Recipe.Ingredient[] allIngredients = Recipe.GetAllIngredients(SelectedElementsTags);
 			foreach (Recipe.Ingredient ingredient in allIngredients)
 			{
 				MaterialNeeds.Instance.UpdateNeed(ingredient.tag, 0f - ingredient.amount);
@@ -682,19 +652,6 @@ public class Constructable : Workable, ISaveLoadable
 		}
 	}
 
-	[OnSerializing]
-	internal void OnSerializing()
-	{
-		if (selectedElements != null)
-		{
-			ids = new int[selectedElements.Length];
-			for (int i = 0; i < selectedElements.Length; i++)
-			{
-				ids[i] = (int)selectedElements[i].id;
-			}
-		}
-	}
-
 	[OnDeserialized]
 	internal void OnDeserialized()
 	{
@@ -704,6 +661,19 @@ public class Constructable : Workable, ISaveLoadable
 			for (int i = 0; i < ids.Length; i++)
 			{
 				selectedElements[i] = ElementLoader.FindElementByHash((SimHashes)ids[i]);
+			}
+			if (selectedElementsTags == null)
+			{
+				selectedElementsTags = new Tag[ids.Length];
+				for (int j = 0; j < ids.Length; j++)
+				{
+					selectedElementsTags[j] = ElementLoader.FindElementByHash((SimHashes)ids[j]).tag;
+				}
+			}
+			Debug.Assert(selectedElements.Length == selectedElementsTags.Length);
+			for (int k = 0; k < selectedElements.Length; k++)
+			{
+				Debug.Assert(selectedElements[k].tag == SelectedElementsTags[k]);
 			}
 		}
 	}
@@ -737,7 +707,7 @@ public class Constructable : Workable, ISaveLoadable
 	{
 		UserMenu userMenu = Game.Instance.userMenu;
 		GameObject gameObject = base.gameObject;
-		string iconName = "icon_cancel";
+		string iconName = "action_cancel";
 		string text = UI.USERMENUACTIONS.CANCELCONSTRUCTION.NAME;
 		System.Action on_click = OnPressCancel;
 		string tooltipText = UI.USERMENUACTIONS.CANCELCONSTRUCTION.TOOLTIP;

@@ -69,16 +69,18 @@ public class KAnimFileData
 
 	public KAnim.Anim GetAnim(int index)
 	{
+		Debug.Assert(index >= 0 && index < animCount);
 		KBatchGroupData batchGroupData = KAnimBatchManager.Instance().GetBatchGroupData(animBatchTag);
 		if (batchGroupData == null)
 		{
-			Debug.LogError($"[{name}] No such batch group [{animBatchTag.ToString()}]", null);
+			Debug.LogError($"[{name}] No such batch group [{animBatchTag.ToString()}]");
 		}
 		return batchGroupData.GetAnim(index + firstAnimIndex);
 	}
 
 	public KAnim.Anim.FrameElement GetAnimFrameElement(int index)
 	{
+		Debug.Assert(index >= 0 && index < elementCount);
 		KBatchGroupData batchGroupData = KAnimBatchManager.Instance().GetBatchGroupData(animBatchTag);
 		if (batchGroupData == null)
 		{

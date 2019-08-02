@@ -22,6 +22,8 @@ public class AudioMixer
 
 	private const string SPACE_VISIBLE_ID = "spaceVisible";
 
+	private const string FACILITY_VISIBLE_ID = "facilityVisible";
+
 	public Dictionary<HashedString, EventInstance> activeSnapshots = new Dictionary<HashedString, EventInstance>();
 
 	public List<HashedString> SnapshotDebugLog = new List<HashedString>();
@@ -43,6 +45,8 @@ public class AudioMixer
 	private EventInstance duplicantCountSleepingInst;
 
 	private EventInstance spaceVisibleInst;
+
+	private EventInstance facilityVisibleInst;
 
 	private static readonly HashedString UserVolumeSettingsHash = new HashedString("event:/Snapshots/Mixing/Snapshot_UserVolumeSettings");
 
@@ -162,7 +166,8 @@ public class AudioMixer
 		Start(AudioMixerSnapshots.Get().DuplicantCountAttenuatorMigrated);
 		Start(AudioMixerSnapshots.Get().DuplicantCountMovingSnapshot);
 		Start(AudioMixerSnapshots.Get().DuplicantCountSleepingSnapshot);
-		Start(AudioMixerSnapshots.Get().SpaceVisibleSnapshot);
+		spaceVisibleInst = Start(AudioMixerSnapshots.Get().SpaceVisibleSnapshot);
+		facilityVisibleInst = Start(AudioMixerSnapshots.Get().FacilityVisibleSnapshot);
 		Start(AudioMixerSnapshots.Get().PulseSnapshot);
 	}
 
@@ -173,6 +178,7 @@ public class AudioMixer
 		Stop(AudioMixerSnapshots.Get().DuplicantCountMovingSnapshot, STOP_MODE.ALLOWFADEOUT);
 		Stop(AudioMixerSnapshots.Get().DuplicantCountSleepingSnapshot, STOP_MODE.ALLOWFADEOUT);
 		Stop(AudioMixerSnapshots.Get().SpaceVisibleSnapshot, STOP_MODE.ALLOWFADEOUT);
+		Stop(AudioMixerSnapshots.Get().FacilityVisibleSnapshot, STOP_MODE.ALLOWFADEOUT);
 		Stop(AudioMixerSnapshots.Get().PulseSnapshot, STOP_MODE.ALLOWFADEOUT);
 	}
 
@@ -210,10 +216,12 @@ public class AudioMixer
 
 	public void UpdateSpaceVisibleSnapshot(float percent)
 	{
-		if (activeSnapshots.TryGetValue(AudioMixerSnapshots.Get().SpaceVisibleSnapshot, out spaceVisibleInst))
-		{
-			spaceVisibleInst.setParameterValue("spaceVisible", percent);
-		}
+		spaceVisibleInst.setParameterValue("spaceVisible", percent);
+	}
+
+	public void UpdateFacilityVisibleSnapshot(float percent)
+	{
+		facilityVisibleInst.setParameterValue("facilityVisible", percent);
 	}
 
 	private void SetVisibleDuplicants()
@@ -279,7 +287,7 @@ public class AudioMixer
 	{
 		if (!userVolumeSettings.ContainsKey(bus))
 		{
-			Debug.LogError("The provided bus doesn't exist. Check yo'self fool!", null);
+			Debug.LogError("The provided bus doesn't exist. Check yo'self fool!");
 		}
 		else
 		{

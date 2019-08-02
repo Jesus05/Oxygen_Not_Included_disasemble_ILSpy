@@ -33,7 +33,7 @@ public class TakeMedicineChore : Chore<TakeMedicineChore.StatesInstance>
 			default_state = fetch;
 			Target(eater);
 			fetch.InitializeStates(eater, source, chunk, requestedpillcount, actualpillcount, takemedicine, null);
-			takemedicine.ToggleAnims("anim_eat_floor_kanim", 0f).ToggleWork("TakeMedicine", delegate(StatesInstance smi)
+			takemedicine.ToggleAnims("anim_eat_floor_kanim", 0f).ToggleTag(GameTags.TakingMedicine).ToggleWork("TakeMedicine", delegate(StatesInstance smi)
 			{
 				MedicinalPill workable = chunk.Get<MedicinalPill>(smi);
 				Worker worker = eater.Get<Worker>(smi);
@@ -70,11 +70,11 @@ public class TakeMedicineChore : Chore<TakeMedicineChore.StatesInstance>
 	};
 
 	public TakeMedicineChore(MedicinalPill master)
-		: base(Db.Get().ChoreTypes.TakeMedicine, (IStateMachineTarget)master, (ChoreProvider)null, false, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.emergency, 0, false, true, 0, (Tag[])null)
+		: base(Db.Get().ChoreTypes.TakeMedicine, (IStateMachineTarget)master, (ChoreProvider)null, false, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.personalNeeds, 5, false, true, 0, false, ReportManager.ReportType.WorkTime)
 	{
 		medicine = master;
 		pickupable = medicine.GetComponent<Pickupable>();
-		smi = new StatesInstance(this);
+		base.smi = new StatesInstance(this);
 		AddPrecondition(ChorePreconditions.instance.CanPickup, pickupable);
 		AddPrecondition(CanCure, this);
 		AddPrecondition(IsConsumptionPermitted, this);
@@ -82,9 +82,9 @@ public class TakeMedicineChore : Chore<TakeMedicineChore.StatesInstance>
 
 	public override void Begin(Precondition.Context context)
 	{
-		smi.sm.source.Set(pickupable.gameObject, smi);
-		smi.sm.requestedpillcount.Set(1f, smi);
-		smi.sm.eater.Set(context.consumerState.gameObject, smi);
+		base.smi.sm.source.Set(pickupable.gameObject, base.smi);
+		base.smi.sm.requestedpillcount.Set(1f, base.smi);
+		base.smi.sm.eater.Set(context.consumerState.gameObject, base.smi);
 		base.Begin(context);
 		new TakeMedicineChore(medicine);
 	}

@@ -231,18 +231,18 @@ public class MusicManager : KMonoBehaviour, ISerializationCallbackReceiver
 			SongInfo value = null;
 			if (!songMap.TryGetValue(song_name, out value))
 			{
-				Output.LogError("Unknown song:", song_name);
+				DebugUtil.LogErrorArgs("Unknown song:", song_name);
 			}
 			else if (activeSongs.ContainsKey(song_name))
 			{
-				Output.LogWarning("Trying to play duplicate song:", song_name);
+				DebugUtil.LogWarningArgs("Trying to play duplicate song:", song_name);
 			}
 			else if (activeSongs.Count == 0)
 			{
 				value.ev = KFMOD.CreateInstance(value.fmodEvent);
 				if (!value.ev.isValid())
 				{
-					Output.LogWarning("Failed to find FMOD event [" + value.fmodEvent + "]");
+					DebugUtil.LogWarningArgs("Failed to find FMOD event [" + value.fmodEvent + "]");
 				}
 				int num = (value.numberOfVariations <= 0) ? (-1) : UnityEngine.Random.Range(1, value.numberOfVariations + 1);
 				if (num != -1)
@@ -274,7 +274,7 @@ public class MusicManager : KMonoBehaviour, ISerializationCallbackReceiver
 					value.ev = KFMOD.CreateInstance(value.fmodEvent);
 					if (!value.ev.isValid())
 					{
-						Output.LogWarning("Failed to find FMOD event [" + value.fmodEvent + "]");
+						DebugUtil.LogWarningArgs("Failed to find FMOD event [" + value.fmodEvent + "]");
 					}
 					value.ev.start();
 					value.ev.release();
@@ -308,7 +308,7 @@ public class MusicManager : KMonoBehaviour, ISerializationCallbackReceiver
 						value.ev = KFMOD.CreateInstance(value.fmodEvent);
 						if (!value.ev.isValid())
 						{
-							Output.LogWarning("Failed to find FMOD event [" + value.fmodEvent + "]");
+							DebugUtil.LogWarningArgs("Failed to find FMOD event [" + value.fmodEvent + "]");
 						}
 						int num3 = (value.numberOfVariations <= 0) ? (-1) : UnityEngine.Random.Range(1, value.numberOfVariations + 1);
 						if (num3 != -1)
@@ -332,11 +332,11 @@ public class MusicManager : KMonoBehaviour, ISerializationCallbackReceiver
 		SongInfo value = null;
 		if (!songMap.TryGetValue(song_name, out value))
 		{
-			Output.LogError("Unknown song:", song_name);
+			DebugUtil.LogErrorArgs("Unknown song:", song_name);
 		}
 		else if (!activeSongs.ContainsKey(song_name))
 		{
-			Output.LogWarning("Trying to stop a song that isn't playing:", song_name);
+			DebugUtil.LogWarningArgs("Trying to stop a song that isn't playing:", song_name);
 		}
 		else
 		{
@@ -541,7 +541,7 @@ public class MusicManager : KMonoBehaviour, ISerializationCallbackReceiver
 					{
 						SetDynamicMusicPaused();
 					}
-					if ((UnityEngine.Object)OverlayScreen.Instance != (UnityEngine.Object)null && OverlayScreen.Instance.mode != 0)
+					if ((UnityEngine.Object)OverlayScreen.Instance != (UnityEngine.Object)null && OverlayScreen.Instance.mode != OverlayModes.None.ID)
 					{
 						SetDynamicMusicOverlayActive();
 					}
@@ -561,9 +561,9 @@ public class MusicManager : KMonoBehaviour, ISerializationCallbackReceiver
 					foreach (KeyValuePair<string, SongInfo> activeSong in activeSongs)
 					{
 						text = text + activeSong.Key + ", ";
-						Debug.Log(text, null);
+						Debug.Log(text);
 					}
-					KCrashReporter.Assert(false, "Song failed to play: " + nextDynamicSong);
+					DebugUtil.DevAssert(false, "Song failed to play: " + nextDynamicSong);
 				}
 			}
 		}

@@ -788,6 +788,8 @@ public static class Sim
 
 	public const byte SpaceZoneID = byte.MaxValue;
 
+	public const byte SolidZoneID = 0;
+
 	public const int ChunkEdgeSize = 32;
 
 	public const float StateTransitionEnergy = 3f;
@@ -919,26 +921,26 @@ public static class Sim
 		{
 			DLLReportMessageMessage* ptr2 = (DLLReportMessageMessage*)(void*)data;
 			string msg = "SimMessage: " + Marshal.PtrToStringAnsi(ptr2->message);
-			string stack_trace;
+			string stack_trace2;
 			if (ptr2->callstack != IntPtr.Zero)
 			{
-				stack_trace = Marshal.PtrToStringAnsi(ptr2->callstack);
+				stack_trace2 = Marshal.PtrToStringAnsi(ptr2->callstack);
 			}
 			else
 			{
 				string arg = Marshal.PtrToStringAnsi(ptr2->file);
 				int line = ptr2->line;
-				stack_trace = arg + ":" + line;
+				stack_trace2 = arg + ":" + line;
 			}
-			KCrashReporter.ReportDLLCrash(msg, stack_trace, null);
+			KCrashReporter.ReportSimDLLCrash(msg, stack_trace2, null);
 			return 0;
 		}
 		case 0:
 		{
 			DLLExceptionHandlerMessage* ptr = (DLLExceptionHandlerMessage*)(void*)data;
-			string text = Marshal.PtrToStringAnsi(ptr->callstack);
+			string stack_trace = Marshal.PtrToStringAnsi(ptr->callstack);
 			string dmp_filename = Marshal.PtrToStringAnsi(ptr->dmpFilename);
-			KCrashReporter.ReportDLLCrash(text, text, dmp_filename);
+			KCrashReporter.ReportSimDLLCrash("SimDLL Crash Dump", stack_trace, dmp_filename);
 			return 0;
 		}
 		default:

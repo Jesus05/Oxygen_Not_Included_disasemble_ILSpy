@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Threading;
-using UnityEngine;
 
 public class JobManager
 {
@@ -19,13 +19,13 @@ public class JobManager
 		[CompilerGenerated]
 		private static ParameterizedThreadStart _003C_003Ef__mg_0024cache0;
 
-		public WorkerThread(Semaphore semaphore, JobManager job_manager)
+		public WorkerThread(Semaphore semaphore, JobManager job_manager, string name)
 		{
 			this.semaphore = semaphore;
 			thread = new Thread(ThreadMain, 131072);
 			Util.ApplyInvariantCultureToThread(thread);
-			thread.Priority = System.Threading.ThreadPriority.AboveNormal;
-			thread.Name = "JobManagerWorkerThread";
+			thread.Priority = ThreadPriority.AboveNormal;
+			thread.Name = name;
 			jobManager = job_manager;
 			exceptions = new List<Exception>();
 			thread.Start(this);
@@ -33,6 +33,7 @@ public class JobManager
 
 		public void Run()
 		{
+			KProfiler.BeginThreadProfiling("KJobManager", thread.Name);
 			while (true)
 			{
 				semaphore.WaitOne();
@@ -42,24 +43,28 @@ public class JobManager
 				}
 				try
 				{
-					while (jobManager.DoNextWorkItem())
+					bool flag = true;
+					while (flag)
 					{
+						flag = jobManager.DoNextWorkItem();
 					}
 				}
 				catch (Exception item)
 				{
 					exceptions.Add(item);
 					errorOccured = true;
+					Debugger.Break();
 				}
 				jobManager.DecrementActiveWorkerThreadCount();
 			}
+			KProfiler.EndThreadProfiling();
 		}
 
 		public void PrintExceptions()
 		{
 			foreach (Exception exception in exceptions)
 			{
-				Debug.LogError(exception, null);
+				Debug.LogError(exception);
 			}
 		}
 
@@ -96,13 +101,12 @@ public class JobManager
 		private set;
 	}
 
-	public JobManager()
+	private void Initialize()
 	{
-		int num = Math.Max(SystemInfo.processorCount, 1);
-		semaphore = new Semaphore(0, num);
-		for (int i = 0; i < num; i++)
+		semaphore = new Semaphore(0, CPUBudget.coreCount);
+		for (int i = 0; i < CPUBudget.coreCount; i++)
 		{
-			threads.Add(new WorkerThread(semaphore, this));
+			threads.Add(new WorkerThread(semaphore, this, $"KWorker{i}"));
 		}
 	}
 
@@ -130,6 +134,10 @@ public class JobManager
 
 	public void Run(IWorkItemCollection work_items)
 	{
+		if (semaphore == null)
+		{
+			Initialize();
+		}
 		if (runSingleThreaded || threads.Count == 0)
 		{
 			for (int i = 0; i < work_items.Count; i++)

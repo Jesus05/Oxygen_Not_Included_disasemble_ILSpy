@@ -26,7 +26,7 @@ public class PowerTransformerSmallConfig : IBuildingConfig
 		buildingDef.ElectricalArrowOffset = new CellOffset(1, 0);
 		buildingDef.ExhaustKilowattsWhenActive = 0.25f;
 		buildingDef.SelfHeatKilowattsWhenActive = 1f;
-		buildingDef.ViewMode = SimViewMode.PowerMap;
+		buildingDef.ViewMode = OverlayModes.Power.ID;
 		buildingDef.AudioCategory = "Metal";
 		buildingDef.ExhaustKilowattsWhenActive = 0f;
 		buildingDef.SelfHeatKilowattsWhenActive = 1f;
@@ -39,7 +39,7 @@ public class PowerTransformerSmallConfig : IBuildingConfig
 
 	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
-		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.IndustrialMachinery);
+		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.IndustrialMachinery, false);
 		go.AddComponent<RequireInputs>();
 		BuildingDef def = go.GetComponent<Building>().Def;
 		Battery battery = go.AddOrGet<Battery>();

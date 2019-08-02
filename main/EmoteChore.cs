@@ -42,22 +42,22 @@ public class EmoteChore : Chore<EmoteChore.StatesInstance>
 	private SelfEmoteReactable reactable;
 
 	public EmoteChore(IStateMachineTarget target, ChoreType chore_type, HashedString[] emote_anims, Func<StatusItem> get_status_item = null)
-		: base(chore_type, target, target.GetComponent<ChoreProvider>(), false, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.emergency, 0, false, true, 0, (Tag[])null)
+		: base(chore_type, target, target.GetComponent<ChoreProvider>(), false, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.compulsory, 5, false, true, 0, false, ReportManager.ReportType.WorkTime)
 	{
-		smi = new StatesInstance(this, target.gameObject, null, emote_anims, KAnim.PlayMode.Once, false);
+		base.smi = new StatesInstance(this, target.gameObject, null, emote_anims, KAnim.PlayMode.Once, false);
 		getStatusItem = get_status_item;
 	}
 
 	public EmoteChore(IStateMachineTarget target, ChoreType chore_type, HashedString emote_kanim, HashedString[] emote_anims, KAnim.PlayMode play_mode, bool flip_x = false)
-		: base(chore_type, target, target.GetComponent<ChoreProvider>(), false, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.emergency, 0, false, true, 0, (Tag[])null)
+		: base(chore_type, target, target.GetComponent<ChoreProvider>(), false, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.compulsory, 5, false, true, 0, false, ReportManager.ReportType.WorkTime)
 	{
-		smi = new StatesInstance(this, target.gameObject, emote_kanim, emote_anims, play_mode, flip_x);
+		base.smi = new StatesInstance(this, target.gameObject, emote_kanim, emote_anims, play_mode, flip_x);
 	}
 
 	public EmoteChore(IStateMachineTarget target, ChoreType chore_type, HashedString emote_kanim, HashedString[] emote_anims, Func<StatusItem> get_status_item)
-		: base(chore_type, target, target.GetComponent<ChoreProvider>(), false, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.emergency, 0, false, true, 0, (Tag[])null)
+		: base(chore_type, target, target.GetComponent<ChoreProvider>(), false, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.compulsory, 5, false, true, 0, false, ReportManager.ReportType.WorkTime)
 	{
-		smi = new StatesInstance(this, target.gameObject, emote_kanim, emote_anims, KAnim.PlayMode.Once, false);
+		base.smi = new StatesInstance(this, target.gameObject, emote_kanim, emote_anims, KAnim.PlayMode.Once, false);
 		getStatusItem = get_status_item;
 	}
 
@@ -68,11 +68,11 @@ public class EmoteChore : Chore<EmoteChore.StatesInstance>
 
 	public override string ToString()
 	{
-		if (smi.emoteKAnim.IsValid)
+		if (base.smi.emoteKAnim.IsValid)
 		{
-			return "EmoteChore<" + smi.emoteKAnim + ">";
+			return "EmoteChore<" + base.smi.emoteKAnim + ">";
 		}
-		return "EmoteChore<" + smi.emoteAnims[0] + ">";
+		return "EmoteChore<" + base.smi.emoteAnims[0] + ">";
 	}
 
 	public void PairReactable(SelfEmoteReactable reactable)

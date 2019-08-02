@@ -29,7 +29,7 @@ namespace NodeEditorFramework
 				if (type == null)
 				{
 					value = types.First().Value;
-					Debug.LogError("No TypeData defined for: " + typeName + " and type could not be found either", null);
+					Debug.LogError("No TypeData defined for: " + typeName + " and type could not be found either");
 				}
 				else
 				{

@@ -13,17 +13,19 @@ namespace Klei
 		{
 			public Polygon poly;
 
+			public TagSet tags;
+
 			public SubWorld.ZoneType zoneType;
 
 			public OverworldCell()
 			{
 			}
 
-			public OverworldCell(TerrainCell tc)
+			public OverworldCell(SubWorld.ZoneType zoneType, TerrainCell tc)
 			{
 				poly = tc.poly;
-				SubWorld subWorld = WorldGen.Settings.GetSubWorld(tc.node.type);
-				zoneType = subWorld.zoneType;
+				tags = tc.node.tags;
+				this.zoneType = zoneType;
 			}
 		}
 

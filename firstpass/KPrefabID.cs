@@ -10,7 +10,7 @@ public class KPrefabID : KMonoBehaviour, ISaveLoadable
 
 	public const int InvalidInstanceID = -1;
 
-	public static int NextUniqueID = 0;
+	private static int nextUniqueID = 0;
 
 	[ReadOnly]
 	public Tag SaveLoadTag;
@@ -30,6 +30,9 @@ public class KPrefabID : KMonoBehaviour, ISaveLoadable
 
 	public List<Descriptor> AdditionalEffects;
 
+	[Serialize]
+	private HashSet<Tag> serializedTags = new HashSet<Tag>();
+
 	private HashSet<Tag> tags = new HashSet<Tag>();
 
 	private static readonly EventSystem.IntraObjectHandler<KPrefabID> OnObjectDestroyedDelegate = new EventSystem.IntraObjectHandler<KPrefabID>(delegate(KPrefabID component, object data)
@@ -37,7 +40,25 @@ public class KPrefabID : KMonoBehaviour, ISaveLoadable
 		component.OnObjectDestroyed(data);
 	});
 
+	public static int NextUniqueID
+	{
+		get
+		{
+			return nextUniqueID;
+		}
+		set
+		{
+			nextUniqueID = value;
+		}
+	}
+
 	public bool pendingDestruction
+	{
+		get;
+		private set;
+	}
+
+	public bool conflicted
 	{
 		get;
 		private set;
@@ -84,9 +105,18 @@ public class KPrefabID : KMonoBehaviour, ISaveLoadable
 
 	public void InitializeTags()
 	{
-		DebugUtil.Assert(PrefabTag.IsValid, "Assert!", string.Empty, string.Empty);
-		tags.Add(PrefabTag);
-		dirtyTagBits = true;
+		DebugUtil.Assert(PrefabTag.IsValid);
+		if (tags.Add(PrefabTag))
+		{
+			dirtyTagBits = true;
+		}
+		foreach (Tag serializedTag in serializedTags)
+		{
+			if (tags.Add(serializedTag))
+			{
+				dirtyTagBits = true;
+			}
+		}
 	}
 
 	public void UpdateSaveLoadTag()
@@ -99,19 +129,29 @@ public class KPrefabID : KMonoBehaviour, ISaveLoadable
 		return SaveLoadTag;
 	}
 
-	public TagBits GetTagBits()
+	private void LaunderTagBits()
 	{
-		InitializeTags();
 		if (dirtyTagBits)
 		{
-			tagBits = default(TagBits);
+			tagBits.ClearAll();
 			foreach (Tag tag in tags)
 			{
 				tagBits.SetTag(tag);
 			}
 			dirtyTagBits = false;
 		}
-		return tagBits;
+	}
+
+	public void UpdateTagBits()
+	{
+		InitializeTags();
+		LaunderTagBits();
+	}
+
+	public void AndTagBits(ref TagBits rhs)
+	{
+		UpdateTagBits();
+		rhs.And(ref tagBits);
 	}
 
 	protected override void OnPrefabInit()
@@ -137,13 +177,17 @@ public class KPrefabID : KMonoBehaviour, ISaveLoadable
 		}
 	}
 
-	public void AddTag(Tag tag)
+	public void AddTag(Tag tag, bool serialize = false)
 	{
-		DebugUtil.Assert(tag.IsValid, "Assert!", string.Empty, string.Empty);
+		DebugUtil.Assert(tag.IsValid);
 		if (Tags.Add(tag))
 		{
 			dirtyTagBits = true;
 			Trigger(-1582839653, null);
+		}
+		if (serialize)
+		{
+			serializedTags.Add(tag);
 		}
 	}
 
@@ -154,13 +198,14 @@ public class KPrefabID : KMonoBehaviour, ISaveLoadable
 			dirtyTagBits = true;
 			Trigger(-1582839653, null);
 		}
+		serializedTags.Remove(tag);
 	}
 
 	public void SetTag(Tag tag, bool set)
 	{
 		if (set)
 		{
-			AddTag(tag);
+			AddTag(tag, false);
 		}
 		else
 		{
@@ -199,6 +244,28 @@ public class KPrefabID : KMonoBehaviour, ISaveLoadable
 		return false;
 	}
 
+	public bool HasAnyTags(ref TagBits search_tags)
+	{
+		UpdateTagBits();
+		return tagBits.HasAny(ref search_tags);
+	}
+
+	public bool HasAllTags(ref TagBits search_tags)
+	{
+		UpdateTagBits();
+		return tagBits.HasAll(ref search_tags);
+	}
+
+	public bool HasAnyTags_AssumeLaundered(ref TagBits search_tags)
+	{
+		return tagBits.HasAny(ref search_tags);
+	}
+
+	public bool HasAllTags_AssumeLaundered(ref TagBits search_tags)
+	{
+		return tagBits.HasAll(ref search_tags);
+	}
+
 	public override bool Equals(object o)
 	{
 		KPrefabID kPrefabID = o as KPrefabID;
@@ -233,7 +300,13 @@ public class KPrefabID : KMonoBehaviour, ISaveLoadable
 	[OnDeserialized]
 	internal void OnDeserializedMethod()
 	{
-		KPrefabIDTracker.Get().Update(this);
+		KPrefabIDTracker kPrefabIDTracker = KPrefabIDTracker.Get();
+		KPrefabID instance = kPrefabIDTracker.GetInstance(InstanceID);
+		if ((bool)instance)
+		{
+			conflicted = true;
+		}
+		kPrefabIDTracker.Register(this);
 	}
 
 	private void OnObjectDestroyed(object data)

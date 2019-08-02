@@ -120,7 +120,11 @@ public class LogicCircuitNetwork : UtilityNetwork
 			outputValue = 0;
 			foreach (ILogicEventSender sender in senders)
 			{
-				int logicValue = sender.GetLogicValue();
+				sender.LogicTick();
+			}
+			foreach (ILogicEventSender sender2 in senders)
+			{
+				int logicValue = sender2.GetLogicValue();
 				outputValue |= logicValue;
 			}
 		}

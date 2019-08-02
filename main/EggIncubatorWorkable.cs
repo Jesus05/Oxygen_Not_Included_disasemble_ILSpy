@@ -12,13 +12,11 @@ public class EggIncubatorWorkable : Workable
 		};
 		SetWorkTime(15f);
 		showProgressBar = true;
-		requiredRolePerk = RoleManager.rolePerks.CanWrangleCreatures.id;
-	}
-
-	public override void AwardExperience(float work_dt, MinionResume resume)
-	{
-		resume.AddExperienceIfRole("Rancher", work_dt * ROLES.ACTIVE_EXPERIENCE_VERY_QUICK);
-		resume.AddExperienceIfRole("SeniorRancher", work_dt * ROLES.ACTIVE_EXPERIENCE_VERY_QUICK);
+		requiredSkillPerk = Db.Get().SkillPerks.CanWrangleCreatures.Id;
+		attributeConverter = Db.Get().AttributeConverters.RanchingEffectDuration;
+		attributeExperienceMultiplier = DUPLICANTSTATS.ATTRIBUTE_LEVELING.BARELY_EVER_EXPERIENCE;
+		skillExperienceSkillGroup = Db.Get().SkillGroups.Ranching.Id;
+		skillExperienceMultiplier = SKILLS.BARELY_EVER_EXPERIENCE;
 	}
 
 	protected override void OnCompleteWork(Worker worker)

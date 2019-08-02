@@ -21,10 +21,13 @@ public class ConduitElementSensor : ConduitSensor
 		if (tag.IsValid)
 		{
 			Element element = ElementLoader.GetElement(tag);
+			bool on = true;
 			if (element != null)
 			{
 				desiredElement = element.id;
+				on = (desiredElement == SimHashes.Void || desiredElement == SimHashes.Vacuum);
 			}
+			GetComponent<KSelectable>().ToggleStatusItem(Db.Get().BuildingStatusItems.NoFilterElementSelected, on, null);
 		}
 	}
 

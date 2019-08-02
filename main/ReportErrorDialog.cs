@@ -71,7 +71,7 @@ public class ReportErrorDialog : MonoBehaviour
 		quitButton.onClick += OnSelect_QUIT;
 		uploadSaveButton.onClick += OnSelect_UPLOADSAVE;
 		skipUploadSaveButton.onClick += OnSelect_SKIPUPLOADSAVE;
-		messageInputField.text = UI.CRASHSCREEN.BODY.text;
+		messageInputField.text = UI.CRASHSCREEN.BODY;
 		hasCrash = true;
 	}
 
@@ -84,7 +84,7 @@ public class ReportErrorDialog : MonoBehaviour
 	{
 		if (KCrashReporter.terminateOnError)
 		{
-			Application.Quit();
+			App.Quit();
 		}
 		if ((bool)KScreenManager.Instance)
 		{
@@ -100,22 +100,14 @@ public class ReportErrorDialog : MonoBehaviour
 		}
 	}
 
-	public void PopupConfirmDialog(string text, System.Action onConfirm, System.Action onQuit, System.Action onContinue)
+	public void PopupConfirmDialog(System.Action onConfirm, System.Action onQuit, System.Action onContinue)
 	{
 		confirmAction = onConfirm;
 		quitAction = onQuit;
 		continueAction = onContinue;
+		continueGameButton.gameObject.SetActive(continueAction != null);
 		VCCrashLabel.gameObject.SetActive(false);
 		VCLinkButton.gameObject.SetActive(false);
-		int num = 0;
-		if (confirmAction != null)
-		{
-			num++;
-		}
-		if (quitAction != null)
-		{
-			num++;
-		}
 		quitButton.gameObject.SetActive(onQuit != null);
 	}
 

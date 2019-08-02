@@ -38,5 +38,16 @@ namespace Klei.AI
 			}
 			return null;
 		}
+
+		public string DescriptionFromAttribute(float value, GameObject go)
+		{
+			string text = (formatter != null) ? formatter.GetFormattedValue(value, formatter.DeltaTimeSlice, go) : ((attribute.formatter == null) ? GameUtil.GetFormattedSimple(value, GameUtil.TimeSlice.None, null) : attribute.formatter.GetFormattedValue(value, attribute.formatter.DeltaTimeSlice, go));
+			if (text != null)
+			{
+				text = GameUtil.AddPositiveSign(text, value > 0f);
+				return string.Format(description, text);
+			}
+			return null;
+		}
 	}
 }

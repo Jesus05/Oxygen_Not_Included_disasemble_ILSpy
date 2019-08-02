@@ -3,7 +3,7 @@ using System;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ModeSelectScreen : KScreen
+public class ModeSelectScreen : NewGameFlowScreen
 {
 	[SerializeField]
 	private MultiToggle nosweatButton;
@@ -24,6 +24,12 @@ public class ModeSelectScreen : KScreen
 
 	[SerializeField]
 	private KButton closeButton;
+
+	[SerializeField]
+	private KBatchedAnimController nosweatAnim;
+
+	[SerializeField]
+	private KBatchedAnimController survivalAnim;
 
 	protected override void OnSpawn()
 	{
@@ -46,7 +52,8 @@ public class ModeSelectScreen : KScreen
 		multiToggle5.onExit = (System.Action)Delegate.Combine(multiToggle5.onExit, new System.Action(OnHoverExitNosweat));
 		MultiToggle multiToggle6 = nosweatButton;
 		multiToggle6.onClick = (System.Action)Delegate.Combine(multiToggle6.onClick, new System.Action(OnClickNosweat));
-		closeButton.onClick += Deactivate;
+		closeButton.onClick += base.NavigateBackward;
+		SetAnimScale();
 	}
 
 	private void OnHoverEnterSurvival()
@@ -69,8 +76,7 @@ public class ModeSelectScreen : KScreen
 	{
 		Deactivate();
 		CustomGameSettings.Instance.SetSurvivalDefaults();
-		GameObject gameObject = Util.KInstantiateUI(ScreenPrefabs.Instance.NewGameSettingsScreen.gameObject, base.transform.parent.gameObject, true);
-		gameObject.GetComponent<KScreen>().Activate();
+		NavigateForward();
 	}
 
 	private void OnHoverEnterNosweat()
@@ -93,7 +99,20 @@ public class ModeSelectScreen : KScreen
 	{
 		Deactivate();
 		CustomGameSettings.Instance.SetNosweatDefaults();
-		GameObject gameObject = Util.KInstantiateUI(ScreenPrefabs.Instance.NewGameSettingsScreen.gameObject, base.transform.parent.gameObject, true);
-		gameObject.GetComponent<KScreen>().Activate();
+		NavigateForward();
+	}
+
+	private void SetAnimScale()
+	{
+		float num = 1f;
+		num = GetComponentInParent<KCanvasScaler>().GetCanvasScale();
+		if ((UnityEngine.Object)nosweatAnim != (UnityEngine.Object)null)
+		{
+			nosweatAnim.animScale *= 1f / num;
+		}
+		if ((UnityEngine.Object)survivalAnim != (UnityEngine.Object)null)
+		{
+			survivalAnim.animScale *= 1f / num;
+		}
 	}
 }

@@ -10,7 +10,7 @@ namespace ProcGen
 		[Serialize]
 		public TagSet tags = new TagSet();
 
-		public TagSet featureTags = new TagSet();
+		public TagSet featureSpecificTags = new TagSet();
 
 		public TagSet biomeSpecificTags = new TagSet();
 
@@ -49,7 +49,7 @@ namespace ProcGen
 			node = other.node;
 			type = other.type;
 			tags = new TagSet(other.tags);
-			featureTags = new TagSet(other.featureTags);
+			featureSpecificTags = new TagSet(other.featureSpecificTags);
 			biomeSpecificTags = new TagSet(other.biomeSpecificTags);
 		}
 

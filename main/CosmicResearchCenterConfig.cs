@@ -31,7 +31,7 @@ public class CosmicResearchCenterConfig : IBuildingConfig
 		buildingDef.EnergyConsumptionWhenActive = 120f;
 		buildingDef.ExhaustKilowattsWhenActive = 0.5f;
 		buildingDef.SelfHeatKilowattsWhenActive = 4f;
-		buildingDef.ViewMode = SimViewMode.PowerMap;
+		buildingDef.ViewMode = OverlayModes.Power.ID;
 		buildingDef.AudioCategory = "Metal";
 		buildingDef.AudioSize = "large";
 		return buildingDef;
@@ -49,7 +49,6 @@ public class CosmicResearchCenterConfig : IBuildingConfig
 		manualDeliveryKG.requestedItemTag = INPUT_MATERIAL;
 		manualDeliveryKG.refillMass = 3f;
 		manualDeliveryKG.capacity = 300f;
-		manualDeliveryKG.choreTags = GameTags.ChoreTypes.ResearchChores;
 		manualDeliveryKG.choreTypeIDHash = Db.Get().ChoreTypes.ResearchFetch.IdHash;
 		ResearchCenter researchCenter = go.AddOrGet<ResearchCenter>();
 		researchCenter.overrideAnims = new KAnimFile[1]
@@ -59,7 +58,7 @@ public class CosmicResearchCenterConfig : IBuildingConfig
 		researchCenter.research_point_type_id = "gamma";
 		researchCenter.inputMaterial = INPUT_MATERIAL;
 		researchCenter.mass_per_point = 1f;
-		researchCenter.requiredRolePerk = RoleManager.rolePerks.AllowAdvancedResearch.id;
+		researchCenter.requiredSkillPerk = Db.Get().SkillPerks.AllowAdvancedResearch.Id;
 		researchCenter.workLayer = Grid.SceneLayer.BuildingFront;
 		ElementConverter elementConverter = go.AddOrGet<ElementConverter>();
 		elementConverter.consumedElements = new ElementConverter.ConsumedElement[1]

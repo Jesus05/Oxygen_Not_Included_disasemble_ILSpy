@@ -318,19 +318,19 @@ public class KBatchedAnimUpdater : Singleton<KBatchedAnimUpdater>
 				{
 					ControllerChunkInfo value2 = default(ControllerChunkInfo);
 					bool test = controllerChunkInfos.TryGetValue(value.controllerInstanceId, out value2);
-					DebugUtil.Assert(test, "Assert!", string.Empty, string.Empty);
-					DebugUtil.Assert((UnityEngine.Object)value.controller == (UnityEngine.Object)value2.controller, "Assert!", string.Empty, string.Empty);
-					DebugUtil.Assert(value2.chunkXY == value.chunkXY, "Assert!", string.Empty, string.Empty);
+					DebugUtil.Assert(test);
+					DebugUtil.Assert((UnityEngine.Object)value.controller == (UnityEngine.Object)value2.controller);
+					DebugUtil.Assert(value2.chunkXY == value.chunkXY);
 					List<KBatchedAnimController> controllerList = GetControllerList(value2.chunkXY);
 					if (controllerList != null)
 					{
-						DebugUtil.Assert(controllerList.Contains(value2.controller), "Assert!", string.Empty, string.Empty);
+						DebugUtil.Assert(controllerList.Contains(value2.controller));
 						controllerList.Remove(value2.controller);
 					}
 					controllerList = GetControllerList(vector2I);
 					if (controllerList != null)
 					{
-						DebugUtil.Assert(!controllerList.Contains(value2.controller), "Assert!", string.Empty, string.Empty);
+						DebugUtil.Assert(!controllerList.Contains(value2.controller));
 						controllerList.Add(value2.controller);
 					}
 					value.chunkXY = vector2I;
@@ -361,7 +361,7 @@ public class KBatchedAnimUpdater : Singleton<KBatchedAnimUpdater>
 				if (!((UnityEngine.Object)info.controller == (UnityEngine.Object)null))
 				{
 					int instanceID = info.controller.GetInstanceID();
-					DebugUtil.Assert(!controllerChunkInfos.ContainsKey(instanceID), "Assert!", string.Empty, string.Empty);
+					DebugUtil.Assert(!controllerChunkInfos.ContainsKey(instanceID));
 					ControllerChunkInfo controllerChunkInfo = default(ControllerChunkInfo);
 					controllerChunkInfo.controller = info.controller;
 					controllerChunkInfo.chunkXY = PosToChunkXY(info.controller.PositionIncludingOffset);
@@ -371,7 +371,7 @@ public class KBatchedAnimUpdater : Singleton<KBatchedAnimUpdater>
 					List<KBatchedAnimController> controllerList = GetControllerList(value.chunkXY);
 					if (controllerList != null)
 					{
-						DebugUtil.Assert(!controllerList.Contains(info.controller), "Assert!", string.Empty, string.Empty);
+						DebugUtil.Assert(!controllerList.Contains(info.controller));
 						controllerList.Add(info.controller);
 					}
 					if (Singleton<CellChangeMonitor>.Instance.IsMoving(info.controller.transform))
@@ -399,7 +399,7 @@ public class KBatchedAnimUpdater : Singleton<KBatchedAnimUpdater>
 						List<KBatchedAnimController> controllerList2 = GetControllerList(value2.chunkXY);
 						if (controllerList2 != null)
 						{
-							DebugUtil.Assert(controllerList2.Contains(info.controller), "Assert!", string.Empty, string.Empty);
+							DebugUtil.Assert(controllerList2.Contains(info.controller));
 							controllerList2.Remove(info.controller);
 						}
 					}
@@ -429,7 +429,7 @@ public class KBatchedAnimUpdater : Singleton<KBatchedAnimUpdater>
 			int controller_instance_id = component.GetInstanceID();
 			ControllerChunkInfo value = default(ControllerChunkInfo);
 			bool test = controllerChunkInfos.TryGetValue(controller_instance_id, out value);
-			DebugUtil.Assert(test, "Assert!", string.Empty, string.Empty);
+			DebugUtil.Assert(test);
 			if (is_moving)
 			{
 				movingControllerInfos.Add(new MovingControllerInfo

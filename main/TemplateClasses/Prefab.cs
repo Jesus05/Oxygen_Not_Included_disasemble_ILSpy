@@ -1,11 +1,10 @@
-using Klei;
 using System;
 using System.Collections.Generic;
 
 namespace TemplateClasses
 {
 	[Serializable]
-	public class Prefab : YamlIO<Prefab>, ICloneable
+	public class Prefab : ICloneable
 	{
 		public enum Type
 		{
@@ -16,7 +15,7 @@ namespace TemplateClasses
 		}
 
 		[Serializable]
-		public class template_amount_value : YamlIO<template_amount_value>
+		public class template_amount_value
 		{
 			public string id
 			{

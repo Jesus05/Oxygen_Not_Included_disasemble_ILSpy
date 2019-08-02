@@ -14,10 +14,16 @@ public class ReportScreen : KScreen
 	private KButton nextButton;
 
 	[SerializeField]
+	private KButton summaryButton;
+
+	[SerializeField]
 	private GameObject lineItem;
 
 	[SerializeField]
 	private GameObject lineItemSpacer;
+
+	[SerializeField]
+	private GameObject lineItemHeader;
 
 	[SerializeField]
 	private GameObject contentFolder;
@@ -49,6 +55,11 @@ public class ReportScreen : KScreen
 		{
 			ShowReport(currentReport.day + 1);
 		};
+		summaryButton.onClick += delegate
+		{
+			RetireColonyUtility.SaveColonySummaryData();
+			MainMenu.ActivateRetiredColoniesScreen(PauseScreen.Instance.transform.parent.gameObject, SaveGame.Instance.BaseName, null);
+		};
 		ConsumeMouseScroll = true;
 	}
 
@@ -79,6 +90,7 @@ public class ReportScreen : KScreen
 
 	private void Refresh()
 	{
+		Debug.Assert(currentReport != null);
 		if (currentReport.day == ReportManager.Instance.TodaysReport.day)
 		{
 			SetTitle(string.Format(UI.ENDOFDAYREPORT.DAY_TITLE_TODAY, currentReport.day));
@@ -118,28 +130,33 @@ public class ReportScreen : KScreen
 		foreach (KeyValuePair<ReportManager.ReportType, ReportManager.ReportGroup> reportGroup in ReportManager.Instance.ReportGroups)
 		{
 			ReportManager.ReportEntry entry = currentReport.GetEntry(reportGroup.Key);
-			int num2;
+			int num2 = num;
+			ReportManager.ReportGroup value = reportGroup.Value;
+			if (num2 != value.group)
+			{
+				ReportManager.ReportGroup value2 = reportGroup.Value;
+				num = value2.group;
+				AddSpacer(num);
+			}
+			int num3;
 			if (entry.accumulate == 0f)
 			{
-				ReportManager.ReportGroup value = reportGroup.Value;
-				num2 = (value.reportIfZero ? 1 : 0);
+				ReportManager.ReportGroup value3 = reportGroup.Value;
+				num3 = (value3.reportIfZero ? 1 : 0);
 			}
 			else
 			{
-				num2 = 1;
+				num3 = 1;
 			}
-			bool flag2 = (byte)num2 != 0;
-			CreateOrUpdateLine(entry, reportGroup.Value, flag2);
-			if (flag2)
+			bool flag2 = (byte)num3 != 0;
+			ReportManager.ReportGroup value4 = reportGroup.Value;
+			if (value4.isHeader)
 			{
-				int num3 = num;
-				ReportManager.ReportGroup value2 = reportGroup.Value;
-				if (num3 != value2.group)
-				{
-					ReportManager.ReportGroup value3 = reportGroup.Value;
-					num = value3.group;
-					AddSpacer(num);
-				}
+				CreateHeader(reportGroup.Value);
+			}
+			else if (flag2)
+			{
+				CreateOrUpdateLine(entry, reportGroup.Value, flag2);
 			}
 		}
 	}
@@ -147,6 +164,7 @@ public class ReportScreen : KScreen
 	public void ShowReport(int day)
 	{
 		currentReport = ReportManager.Instance.FindReport(day);
+		Debug.Assert(currentReport != null, "Can't find report for day: " + day.ToString());
 		Refresh();
 	}
 
@@ -165,6 +183,22 @@ public class ReportScreen : KScreen
 		}
 		gameObject.SetActive(true);
 		return gameObject;
+	}
+
+	private GameObject CreateHeader(ReportManager.ReportGroup reportGroup)
+	{
+		GameObject value = null;
+		lineItems.TryGetValue(reportGroup.stringKey, out value);
+		if ((Object)value == (Object)null)
+		{
+			value = Util.KInstantiateUI(lineItemHeader, contentFolder, true);
+			value.name = "LineItemHeader" + lineItems.Count;
+			lineItems[reportGroup.stringKey] = value;
+		}
+		value.SetActive(true);
+		ReportScreenHeader component = value.GetComponent<ReportScreenHeader>();
+		component.SetMainEntry(reportGroup);
+		return value;
 	}
 
 	private GameObject CreateOrUpdateLine(ReportManager.ReportEntry entry, ReportManager.ReportGroup reportGroup, bool is_line_active)

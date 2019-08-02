@@ -1,6 +1,7 @@
 using STRINGS;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class MaterialSelectionPanel : KScreen
@@ -9,16 +10,16 @@ public class MaterialSelectionPanel : KScreen
 
 	public struct SelectedElemInfo
 	{
-		public Element element;
+		public Tag element;
 
 		public float kgAvailable;
 	}
 
-	public Dictionary<KToggle, Element> ElementToggles = new Dictionary<KToggle, Element>();
+	public Dictionary<KToggle, Tag> ElementToggles = new Dictionary<KToggle, Tag>();
 
 	private List<MaterialSelector> MaterialSelectors = new List<MaterialSelector>();
 
-	private List<Element> currentSelectedElements = new List<Element>();
+	private List<Tag> currentSelectedElements = new List<Tag>();
 
 	[SerializeField]
 	protected PriorityScreen priorityScreenPrefab;
@@ -34,11 +35,11 @@ public class MaterialSelectionPanel : KScreen
 
 	private Recipe activeRecipe;
 
-	private static Dictionary<Tag, List<Element>> elementsWithTag = new Dictionary<Tag, List<Element>>();
+	private static Dictionary<Tag, List<Tag>> elementsWithTag = new Dictionary<Tag, List<Tag>>();
 
-	public Element CurrentSelectedElement => MaterialSelectors[0].CurrentSelectedElement;
+	public Tag CurrentSelectedElement => MaterialSelectors[0].CurrentSelectedElement;
 
-	public IList<Element> GetSelectedElementAsList
+	public IList<Tag> GetSelectedElementAsList
 	{
 		get
 		{
@@ -47,6 +48,7 @@ public class MaterialSelectionPanel : KScreen
 			{
 				if (materialSelector.gameObject.activeSelf)
 				{
+					Debug.Assert(materialSelector.CurrentSelectedElement != (Tag)null);
 					currentSelectedElements.Add(materialSelector.CurrentSelectedElement);
 				}
 			}
@@ -68,8 +70,9 @@ public class MaterialSelectionPanel : KScreen
 		ConsumeMouseScroll = true;
 		for (int i = 0; i < 3; i++)
 		{
-			MaterialSelector item = Util.KInstantiateUI<MaterialSelector>(MaterialSelectorTemplate, base.gameObject, false);
-			MaterialSelectors.Add(item);
+			MaterialSelector materialSelector = Util.KInstantiateUI<MaterialSelector>(MaterialSelectorTemplate, base.gameObject, false);
+			materialSelector.selectorIndex = i;
+			MaterialSelectors.Add(materialSelector);
 		}
 		MaterialSelectors[0].gameObject.SetActive(true);
 		MaterialSelectorTemplate.SetActive(false);
@@ -122,7 +125,7 @@ public class MaterialSelectionPanel : KScreen
 	{
 		foreach (MaterialSelector materialSelector in MaterialSelectors)
 		{
-			if (materialSelector.gameObject.activeInHierarchy && materialSelector.CurrentSelectedElement == null)
+			if (materialSelector.gameObject.activeInHierarchy && materialSelector.CurrentSelectedElement == (Tag)null)
 			{
 				return false;
 			}
@@ -187,11 +190,36 @@ public class MaterialSelectionPanel : KScreen
 		return result;
 	}
 
+	public void SelectSourcesMaterials(Building building)
+	{
+		Tag[] array = null;
+		Deconstructable component = building.gameObject.GetComponent<Deconstructable>();
+		if ((UnityEngine.Object)component != (UnityEngine.Object)null)
+		{
+			array = component.constructionElements;
+		}
+		Constructable component2 = building.GetComponent<Constructable>();
+		if ((UnityEngine.Object)component2 != (UnityEngine.Object)null)
+		{
+			array = component2.SelectedElementsTags.ToArray();
+		}
+		if (array != null)
+		{
+			for (int i = 0; i < Mathf.Min(array.Length, MaterialSelectors.Count); i++)
+			{
+				if (MaterialSelectors[i].ElementToggles.ContainsKey(array[i]))
+				{
+					MaterialSelectors[i].OnSelectMaterial(array[i], activeRecipe, false);
+				}
+			}
+		}
+	}
+
 	public bool CanBuild(Recipe recipe)
 	{
 		foreach (MaterialSelector materialSelector in MaterialSelectors)
 		{
-			if (materialSelector.gameObject.activeSelf && materialSelector.CurrentSelectedElement == null)
+			if (materialSelector.gameObject.activeSelf && materialSelector.CurrentSelectedElement == (Tag)null)
 			{
 				return false;
 			}
@@ -208,26 +236,40 @@ public class MaterialSelectionPanel : KScreen
 		{
 			return result;
 		}
-		List<Element> value = null;
+		List<Tag> value = null;
 		if (!elementsWithTag.TryGetValue(materialCategoryTag, out value))
 		{
-			value = new List<Element>();
+			value = new List<Tag>();
 			foreach (Element element in ElementLoader.elements)
 			{
 				if (element.tag == materialCategoryTag || element.HasTag(materialCategoryTag))
 				{
-					value.Add(element);
+					value.Add(element.tag);
+				}
+			}
+			foreach (Tag materialBuildingElement in GameTags.MaterialBuildingElements)
+			{
+				if (materialBuildingElement == materialCategoryTag)
+				{
+					foreach (GameObject item in Assets.GetPrefabsWithTag(materialBuildingElement))
+					{
+						KPrefabID component = item.GetComponent<KPrefabID>();
+						if ((UnityEngine.Object)component != (UnityEngine.Object)null && !value.Contains(component.PrefabTag))
+						{
+							value.Add(component.PrefabTag);
+						}
+					}
 				}
 			}
 			elementsWithTag[materialCategoryTag] = value;
 		}
-		foreach (Element item in value)
+		foreach (Tag item2 in value)
 		{
-			float amount = WorldInventory.Instance.GetAmount(item.tag);
+			float amount = WorldInventory.Instance.GetAmount(item2);
 			if (amount > result.kgAvailable)
 			{
 				result.kgAvailable = amount;
-				result.element = item;
+				result.element = item2;
 			}
 		}
 		return result;

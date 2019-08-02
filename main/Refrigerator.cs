@@ -1,5 +1,4 @@
 using KSerialization;
-using STRINGS;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -67,26 +66,13 @@ public class Refrigerator : KMonoBehaviour, IUserControlledCapacity, IEffectDesc
 
 	public bool WholeValues => false;
 
-	public LocString CapacityUnits
-	{
-		get
-		{
-			LocString locString = null;
-			switch (GameUtil.massUnit)
-			{
-			case GameUtil.MassUnit.Pounds:
-				return UI.UNITSUFFIXES.MASS.POUND;
-			default:
-				return UI.UNITSUFFIXES.MASS.KILOGRAM;
-			}
-		}
-	}
+	public LocString CapacityUnits => GameUtil.GetCurrentMassUnit(false);
 
 	protected override void OnPrefabInit()
 	{
 		filteredStorage = new FilteredStorage(this, null, new Tag[1]
 		{
-			GameTags.MarkedForCompost
+			GameTags.Compostable
 		}, this, true, Db.Get().ChoreTypes.FoodFetch);
 	}
 

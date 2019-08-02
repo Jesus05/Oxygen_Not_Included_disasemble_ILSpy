@@ -121,16 +121,25 @@ public class FlowUtilityNetwork : UtilityNetwork
 		{
 			IItem item = sinks[i];
 			item.Network = null;
+			UtilityNetworkGridNode utilityNetworkGridNode = grid[item.Cell];
+			utilityNetworkGridNode.networkIdx = -1;
+			grid[item.Cell] = utilityNetworkGridNode;
 		}
 		for (int j = 0; j < sources.Count; j++)
 		{
 			IItem item2 = sources[j];
 			item2.Network = null;
+			UtilityNetworkGridNode utilityNetworkGridNode2 = grid[item2.Cell];
+			utilityNetworkGridNode2.networkIdx = -1;
+			grid[item2.Cell] = utilityNetworkGridNode2;
 		}
 		for (int k = 0; k < conduits.Count; k++)
 		{
 			IItem item3 = conduits[k];
 			item3.Network = null;
+			UtilityNetworkGridNode utilityNetworkGridNode3 = grid[item3.Cell];
+			utilityNetworkGridNode3.networkIdx = -1;
+			grid[item3.Cell] = utilityNetworkGridNode3;
 		}
 	}
 }

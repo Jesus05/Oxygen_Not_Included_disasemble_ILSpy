@@ -41,6 +41,35 @@ public class KScrollRect : ScrollRect
 	[SerializeField]
 	public bool allowVerticalScrollWheel = true;
 
+	[SerializeField]
+	public bool allowRightMouseScroll;
+
+	private bool panUp;
+
+	private bool panDown;
+
+	private bool panRight;
+
+	private bool panLeft;
+
+	private Vector3 keyboardScrollDelta = default(Vector3);
+
+	private float keyboardScrollSpeed = 1f;
+
+	private bool startDrag;
+
+	private bool stopDrag;
+
+	private bool autoScrolling;
+
+	private float autoScrollTargetVerticalPos;
+
+	public bool isDragging
+	{
+		get;
+		private set;
+	}
+
 	protected override void Awake()
 	{
 		base.Awake();
@@ -115,6 +144,12 @@ public class KScrollRect : ScrollRect
 		return 0f;
 	}
 
+	public void SetSmoothAutoScrollTarget(float normalizedVerticalPos)
+	{
+		autoScrollTargetVerticalPos = normalizedVerticalPos;
+		autoScrolling = true;
+	}
+
 	private void PlaySound(SoundType soundType)
 	{
 		if (currentSounds.ContainsKey(soundType))
@@ -128,8 +163,33 @@ public class KScrollRect : ScrollRect
 		currentSounds[soundType] = soundPath;
 	}
 
+	public override void OnBeginDrag(PointerEventData eventData)
+	{
+		startDrag = true;
+		base.OnBeginDrag(eventData);
+	}
+
+	public override void OnEndDrag(PointerEventData eventData)
+	{
+		stopDrag = true;
+		base.OnEndDrag(eventData);
+	}
+
 	public override void OnDrag(PointerEventData eventData)
 	{
+		if (allowRightMouseScroll && (eventData.button == PointerEventData.InputButton.Right || eventData.button == PointerEventData.InputButton.Middle))
+		{
+			RectTransform content = base.content;
+			Vector3 localPosition = base.content.localPosition;
+			Vector2 delta = eventData.delta;
+			float x = delta.x;
+			Vector2 delta2 = eventData.delta;
+			content.localPosition = localPosition + new Vector3(x, delta2.y);
+			Vector2 normalizedPosition = base.normalizedPosition;
+			float x2 = Mathf.Clamp(normalizedPosition.x, 0f, 1f);
+			Vector2 normalizedPosition2 = base.normalizedPosition;
+			base.normalizedPosition = new Vector2(x2, Mathf.Clamp(normalizedPosition2.y, 0f, 1f));
+		}
 		base.OnDrag(eventData);
 		scrollVelocity = 0f;
 	}
@@ -137,6 +197,56 @@ public class KScrollRect : ScrollRect
 	protected override void LateUpdate()
 	{
 		UpdateScrollIntertia();
+		if (allowRightMouseScroll)
+		{
+			if (panUp)
+			{
+				keyboardScrollDelta.y -= keyboardScrollSpeed;
+			}
+			if (panDown)
+			{
+				keyboardScrollDelta.y += keyboardScrollSpeed;
+			}
+			if (panLeft)
+			{
+				keyboardScrollDelta.x += keyboardScrollSpeed;
+			}
+			if (panRight)
+			{
+				keyboardScrollDelta.x -= keyboardScrollSpeed;
+			}
+			if (panUp || panDown || panLeft || panRight)
+			{
+				base.content.localPosition = base.content.localPosition + keyboardScrollDelta;
+				Vector2 normalizedPosition = base.normalizedPosition;
+				float x = Mathf.Clamp(normalizedPosition.x, 0f, 1f);
+				Vector2 normalizedPosition2 = base.normalizedPosition;
+				base.normalizedPosition = new Vector2(x, Mathf.Clamp(normalizedPosition2.y, 0f, 1f));
+			}
+		}
+		if (startDrag)
+		{
+			startDrag = false;
+			isDragging = true;
+		}
+		else if (stopDrag)
+		{
+			stopDrag = false;
+			isDragging = false;
+		}
+		if (autoScrolling)
+		{
+			Vector2 normalizedPosition3 = base.normalizedPosition;
+			float x2 = normalizedPosition3.x;
+			Vector2 normalizedPosition4 = base.normalizedPosition;
+			base.normalizedPosition = new Vector2(x2, Mathf.Lerp(normalizedPosition4.y, autoScrollTargetVerticalPos, Time.unscaledDeltaTime * 3f));
+			float num = autoScrollTargetVerticalPos;
+			Vector2 normalizedPosition5 = base.normalizedPosition;
+			if (Mathf.Abs(num - normalizedPosition5.y) < 0.01f)
+			{
+				autoScrolling = false;
+			}
+		}
 		base.LateUpdate();
 	}
 
@@ -189,6 +299,56 @@ public class KScrollRect : ScrollRect
 		if (base.horizontal && allowHorizontalScrollWheel && (base.horizontalNormalizedPosition < -0.05f || base.horizontalNormalizedPosition > 1.05f))
 		{
 			scrollVelocity *= 0.9f;
+		}
+	}
+
+	public void OnKeyDown(KButtonEvent e)
+	{
+		if (allowRightMouseScroll)
+		{
+			if (e.TryConsume(Action.PanLeft))
+			{
+				panLeft = true;
+			}
+			else if (e.TryConsume(Action.PanRight))
+			{
+				panRight = true;
+			}
+			else if (e.TryConsume(Action.PanUp))
+			{
+				panUp = true;
+			}
+			else if (e.TryConsume(Action.PanDown))
+			{
+				panDown = true;
+			}
+		}
+	}
+
+	public void OnKeyUp(KButtonEvent e)
+	{
+		if (allowRightMouseScroll)
+		{
+			if (panUp && e.TryConsume(Action.PanUp))
+			{
+				panUp = false;
+				keyboardScrollDelta.y = 0f;
+			}
+			else if (panDown && e.TryConsume(Action.PanDown))
+			{
+				panDown = false;
+				keyboardScrollDelta.y = 0f;
+			}
+			else if (panRight && e.TryConsume(Action.PanRight))
+			{
+				panRight = false;
+				keyboardScrollDelta.x = 0f;
+			}
+			else if (panLeft && e.TryConsume(Action.PanLeft))
+			{
+				panLeft = false;
+				keyboardScrollDelta.x = 0f;
+			}
 		}
 	}
 }

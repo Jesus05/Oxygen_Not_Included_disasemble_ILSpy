@@ -138,6 +138,22 @@ namespace TUNING
 			public const float SUNBURN_DELAY_TIME = 120f;
 
 			public const int LUX_PLEASANT_LIGHT = 40000;
+
+			public static float LIGHT_WORK_EFFICIENCY_BONUS = 0.15f;
+
+			public const int NO_LIGHT = 0;
+
+			public const int VERY_LOW_LIGHT = 1;
+
+			public const int LOW_LIGHT = 100;
+
+			public const int MEDIUM_LIGHT = 1000;
+
+			public const int HIGH_LIGHT = 10000;
+
+			public const int VERY_HIGH_LIGHT = 50000;
+
+			public const int MAX_LIGHT = 100000;
 		}
 
 		public class MOVEMENT
@@ -385,6 +401,8 @@ namespace TUNING
 
 		public const float STANDARD_STRESS_BONUS = -0.0333333351f;
 
+		public const float RANCHING_DURATION_MULTIPLIER_BONUS_PER_POINT = 0.1f;
+
 		public const float STRESS_BELOW_EXPECTATIONS_FOOD = 0.25f;
 
 		public const float STRESS_ABOVE_EXPECTATIONS_FOOD = -0.5f;
@@ -394,6 +412,23 @@ namespace TUNING
 		public const float STANDARD_STRESS_BONUS_SECOND = -0.5f;
 
 		public const float RECOVER_BREATH_DELTA = 3f;
+
+		public const float TRAVEL_TIME_WARNING_THRESHOLD = 0.4f;
+
+		public static readonly string[] ALL_ATTRIBUTES = new string[11]
+		{
+			"Strength",
+			"Caring",
+			"Construction",
+			"Digging",
+			"Machinery",
+			"Learning",
+			"Cooking",
+			"Botanist",
+			"Art",
+			"Ranching",
+			"Athletics"
+		};
 
 		public static readonly string[] DISTRIBUTED_ATTRIBUTES = new string[10]
 		{
@@ -414,6 +449,13 @@ namespace TUNING
 			"Athletics"
 		};
 
+		public static readonly int[] APTITUDE_ATTRIBUTE_BONUSES = new int[3]
+		{
+			7,
+			3,
+			1
+		};
+
 		public static int ROLLED_ATTRIBUTE_MAX = 5;
 
 		public static float ROLLED_ATTRIBUTE_POWER = 4f;
@@ -430,11 +472,13 @@ namespace TUNING
 
 		public static int MEDIUM_STATPOINT_BONUS = 3;
 
-		public static int MIN_STAT_POINTS = 7;
+		public static int MIN_STAT_POINTS = 0;
 
-		public static int MAX_STAT_POINTS = 10;
+		public static int MAX_STAT_POINTS = 0;
 
 		public static int MAX_TRAITS = 4;
+
+		public static int APTITUDE_BONUS = 1;
 
 		public static readonly List<string> CONTRACTEDTRAITS_HEALING = new List<string>
 		{
@@ -541,7 +585,7 @@ namespace TUNING
 				probability = PROBABILITY_LOW,
 				requiredNonPositiveAptitudes = new List<HashedString>
 				{
-					"Research"
+					"MedicalAid"
 				}
 			},
 			new TraitVal
@@ -617,6 +661,12 @@ namespace TUNING
 			new TraitVal
 			{
 				id = "ScaredyCat",
+				statBonus = SMALL_STATPOINT_BONUS,
+				probability = PROBABILITY_MED
+			},
+			new TraitVal
+			{
+				id = "Allergies",
 				statBonus = SMALL_STATPOINT_BONUS,
 				probability = PROBABILITY_MED
 			}
@@ -798,7 +848,8 @@ namespace TUNING
 				probability = PROBABILITY_MED,
 				mutuallyExclusiveTraits = new List<string>
 				{
-					"SimpleTastes"
+					"SimpleTastes",
+					"CantCook"
 				},
 				requiredNonPositiveAptitudes = new List<HashedString>
 				{

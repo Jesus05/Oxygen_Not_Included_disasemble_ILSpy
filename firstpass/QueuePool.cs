@@ -1,7 +1,9 @@
 using System.Collections.Generic;
+using System.Diagnostics;
 
 public static class QueuePool<ObjectType, PoolIdentifier>
 {
+	[DebuggerDisplay("Count={Count}")]
 	public class PooledQueue : Queue<ObjectType>
 	{
 		public void Recycle()

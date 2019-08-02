@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 public class PathGrid
 {
 	private struct ProberCell
@@ -10,6 +12,8 @@ public class PathGrid
 	private PathFinder.Cell[] Cells;
 
 	private ProberCell[] ProberCells;
+
+	private List<int> freshlyOccupiedCells = new List<int>();
 
 	private NavType[] ValidNavTypes;
 
@@ -25,7 +29,18 @@ public class PathGrid
 
 	private int rootY;
 
+	private int serialNo;
+
+	private int previousSerialNo;
+
+	private bool isUpdating;
+
 	private IGroupProber groupProber;
+
+	public static readonly PathFinder.Cell InvalidCell = new PathFinder.Cell
+	{
+		cost = -1
+	};
 
 	public PathGrid(int width_in_cells, int height_in_cells, bool apply_offset, NavType[] valid_nav_types)
 	{
@@ -49,6 +64,9 @@ public class PathGrid
 		}
 		Cells = new PathFinder.Cell[width_in_cells * height_in_cells * ValidNavTypes.Length];
 		ProberCells = new ProberCell[width_in_cells * height_in_cells];
+		serialNo = 0;
+		previousSerialNo = -1;
+		isUpdating = false;
 	}
 
 	public void SetGroupProber(IGroupProber group_prober)
@@ -56,43 +74,86 @@ public class PathGrid
 		groupProber = group_prober;
 	}
 
-	public PathFinder.Cell GetCell(PathFinder.PotentialPath potential_path, int query_id)
+	public void OnCleanUp()
 	{
-		return GetCell(potential_path.cell, potential_path.navType, query_id);
+		if (groupProber != null)
+		{
+			groupProber.ReleaseProber(this);
+		}
 	}
 
-	public bool IsCellInRange(int cell)
+	public void ResetUpdate()
 	{
-		int offset_cell = OffsetCell(cell);
-		return IsValidOffsetCell(offset_cell);
+		previousSerialNo = -1;
 	}
 
-	public PathFinder.Cell GetCell(int cell, NavType nav_type, int query_id)
+	public void BeginUpdate(int root_cell, bool isContinuation)
+	{
+		isUpdating = true;
+		freshlyOccupiedCells.Clear();
+		if (!isContinuation)
+		{
+			KProfiler.AddEvent("PathGrid.BeginUpdate");
+			if (applyOffset)
+			{
+				Grid.CellToXY(root_cell, out rootX, out rootY);
+				rootX -= widthInCells / 2;
+				rootY -= heightInCells / 2;
+			}
+			serialNo++;
+			if (groupProber != null)
+			{
+				groupProber.SetValidSerialNos(this, previousSerialNo, serialNo);
+			}
+		}
+	}
+
+	public void EndUpdate(bool isComplete)
+	{
+		isUpdating = false;
+		if (groupProber != null)
+		{
+			groupProber.Occupy(this, serialNo, freshlyOccupiedCells);
+		}
+		if (isComplete)
+		{
+			if (groupProber != null)
+			{
+				groupProber.SetValidSerialNos(this, serialNo, serialNo);
+			}
+			previousSerialNo = serialNo;
+			KProfiler.AddEvent("PathGrid.EndUpdate");
+		}
+	}
+
+	private bool IsValidSerialNo(int serialNo)
+	{
+		return serialNo == this.serialNo || (!isUpdating && previousSerialNo != -1 && serialNo == previousSerialNo);
+	}
+
+	public PathFinder.Cell GetCell(PathFinder.PotentialPath potential_path, out bool is_cell_in_range)
+	{
+		return GetCell(potential_path.cell, potential_path.navType, out is_cell_in_range);
+	}
+
+	public PathFinder.Cell GetCell(int cell, NavType nav_type, out bool is_cell_in_range)
 	{
 		int num = OffsetCell(cell);
-		if (!IsValidOffsetCell(num))
+		is_cell_in_range = (-1 != num);
+		if (!is_cell_in_range)
 		{
-			PathFinder.Cell result = default(PathFinder.Cell);
-			result.cost = -1;
-			return result;
+			return InvalidCell;
 		}
-		int num2 = NavTypeTable[(uint)nav_type];
-		int num3 = num * ValidNavTypes.Length + num2;
-		PathFinder.Cell result2 = Cells[num3];
-		if (result2.queryId == query_id)
-		{
-			return result2;
-		}
-		PathFinder.Cell result3 = default(PathFinder.Cell);
-		result3.cost = -1;
-		return result3;
+		PathFinder.Cell cell2 = Cells[num * ValidNavTypes.Length + NavTypeTable[(uint)nav_type]];
+		return (!IsValidSerialNo(cell2.queryId)) ? InvalidCell : cell2;
 	}
 
 	public void SetCell(PathFinder.PotentialPath potential_path, ref PathFinder.Cell cell_data)
 	{
 		int num = OffsetCell(potential_path.cell);
-		if (IsValidOffsetCell(num))
+		if (num != -1)
 		{
+			cell_data.queryId = serialNo;
 			int num2 = NavTypeTable[(uint)potential_path.navType];
 			int num3 = num * ValidNavTypes.Length + num2;
 			Cells[num3] = cell_data;
@@ -104,16 +165,13 @@ public class PathGrid
 					proberCell.queryId = cell_data.queryId;
 					proberCell.cost = cell_data.cost;
 					ProberCells[num] = proberCell;
-					if (groupProber != null)
-					{
-						groupProber.SetProberCell(potential_path.cell);
-					}
+					freshlyOccupiedCells.Add(potential_path.cell);
 				}
 			}
 		}
 	}
 
-	public int GetCostIgnoreProberOffset(int cell, CellOffset[] offsets, int query_id)
+	public int GetCostIgnoreProberOffset(int cell, CellOffset[] offsets)
 	{
 		int num = -1;
 		foreach (CellOffset offset in offsets)
@@ -122,7 +180,7 @@ public class PathGrid
 			if (Grid.IsValidCell(num2))
 			{
 				ProberCell proberCell = ProberCells[num2];
-				if (proberCell.queryId == query_id && (num == -1 || proberCell.cost < num))
+				if (IsValidSerialNo(proberCell.queryId) && (num == -1 || proberCell.cost < num))
 				{
 					num = proberCell.cost;
 				}
@@ -131,25 +189,15 @@ public class PathGrid
 		return num;
 	}
 
-	public int GetCost(int cell, int query_id)
+	public int GetCost(int cell)
 	{
 		int num = OffsetCell(cell);
-		if (!IsValidOffsetCell(num))
+		if (num == -1)
 		{
 			return -1;
 		}
-		int result = -1;
 		ProberCell proberCell = ProberCells[num];
-		if (proberCell.queryId == query_id)
-		{
-			result = proberCell.cost;
-		}
-		return result;
-	}
-
-	private bool IsValidOffsetCell(int offset_cell)
-	{
-		return !applyOffset || -1 != offset_cell;
+		return (!IsValidSerialNo(proberCell.queryId)) ? (-1) : proberCell.cost;
 	}
 
 	private int OffsetCell(int cell)
@@ -166,15 +214,5 @@ public class PathGrid
 			return num2 * widthInCells + num;
 		}
 		return cell;
-	}
-
-	public void SetRootCell(int root_cell)
-	{
-		if (applyOffset)
-		{
-			Grid.CellToXY(root_cell, out rootX, out rootY);
-			rootX -= widthInCells / 2;
-			rootY -= heightInCells / 2;
-		}
 	}
 }

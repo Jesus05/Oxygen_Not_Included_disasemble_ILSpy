@@ -1,6 +1,5 @@
 using FMODUnity;
 using Klei.AI;
-using ProcGenGame;
 using UnityEngine;
 
 public class NewBaseScreen : KScreen
@@ -16,7 +15,7 @@ public class NewBaseScreen : KScreen
 	[EventRef]
 	public string BuildBaseSoundMigrated;
 
-	private MinionStartingStats[] minionStartingStats;
+	private ITelepadDeliverable[] minionStartingStats;
 
 	public override float GetSortKey()
 	{
@@ -61,11 +60,10 @@ public class NewBaseScreen : KScreen
 		{
 			SpeedControlScreen.Instance.Unpause(false);
 		}
-		Game.Instance.ResetTime();
 		Final();
 	}
 
-	public void SetStartingMinionStats(MinionStartingStats[] stats)
+	public void SetStartingMinionStats(ITelepadDeliverable[] stats)
 	{
 		minionStartingStats = stats;
 	}
@@ -120,15 +118,15 @@ public class NewBaseScreen : KScreen
 	{
 		if (headquartersCell == -1)
 		{
-			Debug.LogWarning("No headquarters in saved base template. Cannot place minions. Confirm there is a headquarters saved to the base template, or consider creating a new one.", null);
+			Debug.LogWarning("No headquarters in saved base template. Cannot place minions. Confirm there is a headquarters saved to the base template, or consider creating a new one.");
 		}
 		else
 		{
 			Grid.CellToXY(headquartersCell, out int x, out int y);
 			if (Grid.WidthInCells >= 64)
 			{
-				int baseLeft = WorldGen.BaseLeft;
-				int baseRight = WorldGen.BaseRight;
+				int baseLeft = SaveGame.Instance.worldGen.BaseLeft;
+				int baseRight = SaveGame.Instance.worldGen.BaseRight;
 				Effect a_new_hope = Db.Get().effects.Get("AnewHope");
 				for (int i = 0; i < minionStartingStats.Length; i++)
 				{
@@ -139,7 +137,7 @@ public class NewBaseScreen : KScreen
 					Immigration.Instance.ApplyDefaultPersonalPriorities(gameObject);
 					gameObject.transform.SetLocalPosition(Grid.CellToPosCBC(cell, Grid.SceneLayer.Move));
 					gameObject.SetActive(true);
-					minionStartingStats[i].Apply(gameObject);
+					((MinionStartingStats)minionStartingStats[i]).Apply(gameObject);
 					GameScheduler.Instance.Schedule("ANewHope", 3f + 0.5f * (float)i, delegate(object m)
 					{
 						GameObject gameObject2 = m as GameObject;

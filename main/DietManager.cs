@@ -37,7 +37,7 @@ public class DietManager : KMonoBehaviour
 					GameObject prefab = Assets.GetPrefab(consumedTag);
 					if ((UnityEngine.Object)prefab == (UnityEngine.Object)null)
 					{
-						Debug.LogError("Could not find prefab: " + consumedTag, null);
+						Debug.LogError("Could not find prefab: " + consumedTag);
 					}
 				}
 			}

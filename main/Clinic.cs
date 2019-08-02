@@ -1,10 +1,11 @@
 using Klei.AI;
+using KSerialization;
 using STRINGS;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Clinic : Workable, IEffectDescriptor
+public class Clinic : Workable, IEffectDescriptor, ISingleSliderControl, ISliderControl
 {
 	public class ClinicSM : GameStateMachine<ClinicSM, ClinicSM.Instance, Clinic>
 	{
@@ -37,7 +38,7 @@ public class Clinic : Workable, IEffectDescriptor
 			{
 				if (base.master.IsValidEffect(base.master.doctoredHealthEffect) || base.master.IsValidEffect(base.master.doctoredDiseaseEffect))
 				{
-					doctorChore = new WorkChore<DoctorChoreWorkable>(Db.Get().ChoreTypes.Doctor, base.smi.master, null, null, true, null, null, null, true, null, false, true, null, false, true, true, PriorityScreen.PriorityClass.basic, 0, true);
+					doctorChore = new WorkChore<DoctorChoreWorkable>(Db.Get().ChoreTypes.Doctor, base.smi.master, null, true, null, null, null, true, null, false, true, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, true, true);
 					WorkChore<DoctorChoreWorkable> workChore = doctorChore;
 					workChore.onComplete = (Action<Chore>)Delegate.Combine(workChore.onComplete, (Action<Chore>)delegate
 					{
@@ -115,10 +116,10 @@ public class Clinic : Workable, IEffectDescriptor
 				component4.Unassign();
 			});
 			operational.DefaultState(operational.idle).EventTransition(GameHashes.OperationalChanged, unoperational, (Instance smi) => !smi.master.GetComponent<Operational>().IsOperational).EventTransition(GameHashes.AssigneeChanged, unoperational, null)
-				.ToggleRecurringChore((Instance smi) => new WorkChore<Clinic>(Db.Get().ChoreTypes.Heal, smi.master, null, null, true, null, null, null, false, null, false, true, null, false, true, false, PriorityScreen.PriorityClass.emergency, 0, false), (Instance smi) => !string.IsNullOrEmpty(smi.master.healthEffect))
-				.ToggleRecurringChore((Instance smi) => new WorkChore<Clinic>(Db.Get().ChoreTypes.HealCritical, smi.master, null, null, true, null, null, null, false, null, false, true, null, false, true, false, PriorityScreen.PriorityClass.emergency, 0, false), (Instance smi) => !string.IsNullOrEmpty(smi.master.healthEffect))
-				.ToggleRecurringChore((Instance smi) => new WorkChore<Clinic>(Db.Get().ChoreTypes.RestDueToDisease, smi.master, null, null, true, null, null, null, false, null, true, true, null, false, true, false, PriorityScreen.PriorityClass.emergency, 0, false), (Instance smi) => !string.IsNullOrEmpty(smi.master.diseaseEffect))
-				.ToggleRecurringChore((Instance smi) => new WorkChore<Clinic>(Db.Get().ChoreTypes.SleepDueToDisease, smi.master, null, null, true, null, null, null, false, null, true, true, null, false, true, false, PriorityScreen.PriorityClass.emergency, 0, false), (Instance smi) => !string.IsNullOrEmpty(smi.master.diseaseEffect));
+				.ToggleRecurringChore((Instance smi) => smi.master.CreateWorkChore(Db.Get().ChoreTypes.Heal, false, true, PriorityScreen.PriorityClass.personalNeeds, false), (Instance smi) => !string.IsNullOrEmpty(smi.master.healthEffect))
+				.ToggleRecurringChore((Instance smi) => smi.master.CreateWorkChore(Db.Get().ChoreTypes.HealCritical, false, true, PriorityScreen.PriorityClass.personalNeeds, false), (Instance smi) => !string.IsNullOrEmpty(smi.master.healthEffect))
+				.ToggleRecurringChore((Instance smi) => smi.master.CreateWorkChore(Db.Get().ChoreTypes.RestDueToDisease, false, true, PriorityScreen.PriorityClass.personalNeeds, true), (Instance smi) => !string.IsNullOrEmpty(smi.master.diseaseEffect))
+				.ToggleRecurringChore((Instance smi) => smi.master.CreateWorkChore(Db.Get().ChoreTypes.SleepDueToDisease, false, true, PriorityScreen.PriorityClass.personalNeeds, true), (Instance smi) => !string.IsNullOrEmpty(smi.master.diseaseEffect));
 			operational.idle.WorkableStartTransition((Instance smi) => smi.master, operational.healing);
 			operational.healing.DefaultState(operational.healing.undoctored).WorkableStopTransition((Instance smi) => smi.GetComponent<Clinic>(), operational.idle).Enter(delegate(Instance smi)
 			{
@@ -246,6 +247,38 @@ public class Clinic : Workable, IEffectDescriptor
 
 	private ClinicSM.Instance clinicSMI;
 
+	public static readonly Chore.Precondition IsOverSicknessThreshold = new Chore.Precondition
+	{
+		id = "IsOverSicknessThreshold",
+		description = (string)DUPLICANTS.CHORES.PRECONDITIONS.IS_NOT_BEING_ATTACKED,
+		fn = (Chore.PreconditionFn)delegate(ref Chore.Precondition.Context context, object data)
+		{
+			Clinic clinic = (Clinic)data;
+			return clinic.IsHealthBelowThreshold(context.consumerState.gameObject);
+		}
+	};
+
+	[Serialize]
+	private float sicknessSliderValue = 100f;
+
+	string ISliderControl.SliderTitleKey
+	{
+		get
+		{
+			return "STRINGS.UI.UISIDESCREENS.MEDICALCOTSIDESCREEN.TITLE";
+		}
+	}
+
+	string ISliderControl.SliderUnits
+	{
+		get
+		{
+			return UI.UNITSUFFIXES.PERCENT;
+		}
+	}
+
+	public float MedicalAttentionMinimum => sicknessSliderValue / 100f;
+
 	protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
@@ -255,6 +288,7 @@ public class Clinic : Workable, IEffectDescriptor
 			Db.Get().AssignableSlots.MedicalBed
 		};
 		assignable.AddAutoassignPrecondition(CanAutoAssignTo);
+		assignable.AddAssignPrecondition(CanManuallyAssignTo);
 	}
 
 	protected override void OnSpawn()
@@ -265,10 +299,6 @@ public class Clinic : Workable, IEffectDescriptor
 		SetWorkTime(float.PositiveInfinity);
 		clinicSMI = new ClinicSM.Instance(this);
 		clinicSMI.StartSM();
-	}
-
-	public override void AwardExperience(float work_dt, MinionResume resume)
-	{
 	}
 
 	protected override void OnCleanUp()
@@ -285,7 +315,7 @@ public class Clinic : Workable, IEffectDescriptor
 		{
 			result = workerInjuredAnims;
 		}
-		else if (workerDiseasedAnims != null && IsValidEffect(diseaseEffect) && worker.GetSMI<DiseaseMonitor.Instance>().IsSick())
+		else if (workerDiseasedAnims != null && IsValidEffect(diseaseEffect) && worker.GetSMI<SicknessMonitor.Instance>().IsSick())
 		{
 			result = workerDiseasedAnims;
 		}
@@ -333,24 +363,61 @@ public class Clinic : Workable, IEffectDescriptor
 		}
 	}
 
-	private bool CanAutoAssignTo(MinionIdentity worker)
+	private Chore CreateWorkChore(ChoreType chore_type, bool allow_prioritization, bool allow_in_red_alert, PriorityScreen.PriorityClass priority_class, bool ignore_schedule_block = false)
+	{
+		bool allow_prioritization2 = allow_prioritization;
+		bool allow_in_red_alert2 = allow_in_red_alert;
+		bool ignore_schedule_block2 = ignore_schedule_block;
+		return new WorkChore<Clinic>(chore_type, this, null, true, null, null, null, allow_in_red_alert2, null, ignore_schedule_block2, true, null, false, true, allow_prioritization2, priority_class, 5, false, false);
+	}
+
+	private bool CanAutoAssignTo(MinionAssignablesProxy worker)
 	{
 		bool flag = false;
-		if (IsValidEffect(healthEffect))
+		MinionIdentity minionIdentity = worker.target as MinionIdentity;
+		if ((UnityEngine.Object)minionIdentity != (UnityEngine.Object)null)
 		{
-			Health component = worker.GetComponent<Health>();
-			if ((UnityEngine.Object)component != (UnityEngine.Object)null && component.hitPoints < component.maxHitPoints)
+			if (IsValidEffect(healthEffect))
 			{
-				flag = true;
+				Health component = minionIdentity.GetComponent<Health>();
+				if ((UnityEngine.Object)component != (UnityEngine.Object)null && component.hitPoints < component.maxHitPoints)
+				{
+					flag = true;
+				}
+			}
+			if (!flag && IsValidEffect(diseaseEffect))
+			{
+				MinionModifiers component2 = minionIdentity.GetComponent<MinionModifiers>();
+				Sicknesses sicknesses = component2.sicknesses;
+				flag = (sicknesses.Count > 0);
 			}
 		}
-		if (!flag && IsValidEffect(diseaseEffect))
-		{
-			MinionModifiers component2 = worker.GetComponent<MinionModifiers>();
-			Diseases diseases = component2.diseases;
-			flag = (diseases.Count > 0);
-		}
 		return flag;
+	}
+
+	private bool CanManuallyAssignTo(MinionAssignablesProxy worker)
+	{
+		bool result = false;
+		MinionIdentity minionIdentity = worker.target as MinionIdentity;
+		if ((UnityEngine.Object)minionIdentity != (UnityEngine.Object)null)
+		{
+			result = IsHealthBelowThreshold(minionIdentity.gameObject);
+		}
+		return result;
+	}
+
+	private bool IsHealthBelowThreshold(GameObject minion)
+	{
+		Health health = (!((UnityEngine.Object)minion != (UnityEngine.Object)null)) ? null : minion.GetComponent<Health>();
+		if ((UnityEngine.Object)health != (UnityEngine.Object)null)
+		{
+			float num = health.hitPoints / health.maxHitPoints;
+			if ((UnityEngine.Object)health != (UnityEngine.Object)null)
+			{
+				return num < MedicalAttentionMinimum;
+			}
+		}
+		return false;
 	}
 
 	private bool IsValidEffect(string effect)
@@ -389,5 +456,39 @@ public class Clinic : Workable, IEffectDescriptor
 			}
 		}
 		return list;
+	}
+
+	int ISliderControl.SliderDecimalPlaces(int index)
+	{
+		return 0;
+	}
+
+	float ISliderControl.GetSliderMin(int index)
+	{
+		return 0f;
+	}
+
+	float ISliderControl.GetSliderMax(int index)
+	{
+		return 100f;
+	}
+
+	float ISliderControl.GetSliderValue(int index)
+	{
+		return sicknessSliderValue;
+	}
+
+	void ISliderControl.SetSliderValue(float percent, int index)
+	{
+		if (percent != sicknessSliderValue)
+		{
+			sicknessSliderValue = (float)Mathf.RoundToInt(percent);
+			Game.Instance.Trigger(875045922, null);
+		}
+	}
+
+	string ISliderControl.GetSliderTooltipKey(int index)
+	{
+		return "STRINGS.UI.UISIDESCREENS.MEDICALCOTSIDESCREEN.TOOLTIP";
 	}
 }

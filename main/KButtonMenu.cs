@@ -83,7 +83,7 @@ public class KButtonMenu : KScreen
 	protected bool keepMenuOpen;
 
 	[SerializeField]
-	private Transform buttonParent;
+	protected Transform buttonParent;
 
 	public GameObject buttonPrefab;
 
@@ -185,7 +185,7 @@ public class KButtonMenu : KScreen
 		}
 	}
 
-	private Button.ButtonClickedEvent SetupPopupMenu(ButtonInfo binfo, KButton button)
+	protected Button.ButtonClickedEvent SetupPopupMenu(ButtonInfo binfo, KButton button)
 	{
 		Button.ButtonClickedEvent buttonClickedEvent = new Button.ButtonClickedEvent();
 		UnityAction unityAction = delegate

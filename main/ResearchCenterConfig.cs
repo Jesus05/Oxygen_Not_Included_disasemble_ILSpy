@@ -31,7 +31,7 @@ public class ResearchCenterConfig : IBuildingConfig
 		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, tIER, aLL_METALS, melting_point, build_location_rule, BUILDINGS.DECOR.NONE, tIER2, 0.2f);
 		buildingDef.RequiresPowerInput = true;
 		buildingDef.EnergyConsumptionWhenActive = 60f;
-		buildingDef.ViewMode = SimViewMode.PowerMap;
+		buildingDef.ViewMode = OverlayModes.Power.ID;
 		buildingDef.ExhaustKilowattsWhenActive = 0.125f;
 		buildingDef.SelfHeatKilowattsWhenActive = 1f;
 		buildingDef.AudioCategory = "Metal";
@@ -51,7 +51,6 @@ public class ResearchCenterConfig : IBuildingConfig
 		manualDeliveryKG.requestedItemTag = INPUT_MATERIAL;
 		manualDeliveryKG.refillMass = 150f;
 		manualDeliveryKG.capacity = 750f;
-		manualDeliveryKG.choreTags = GameTags.ChoreTypes.ResearchChores;
 		manualDeliveryKG.choreTypeIDHash = Db.Get().ChoreTypes.ResearchFetch.IdHash;
 		ResearchCenter researchCenter = go.AddOrGet<ResearchCenter>();
 		researchCenter.overrideAnims = new KAnimFile[1]

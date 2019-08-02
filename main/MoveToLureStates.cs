@@ -1,8 +1,9 @@
 using STRINGS;
 using System;
 using System.Runtime.CompilerServices;
+using UnityEngine;
 
-internal class MoveToLureStates : GameStateMachine<MoveToLureStates, MoveToLureStates.Instance, IStateMachineTarget, MoveToLureStates.Def>
+public class MoveToLureStates : GameStateMachine<MoveToLureStates, MoveToLureStates.Instance, IStateMachineTarget, MoveToLureStates.Def>
 {
 	public class Def : BaseDef
 	{
@@ -19,9 +20,9 @@ internal class MoveToLureStates : GameStateMachine<MoveToLureStates, MoveToLureS
 
 	public State move;
 
-	public State behaviourcomplete;
+	public State arrive_at_lure;
 
-	public TargetParameter target;
+	public State behaviourcomplete;
 
 	[CompilerGenerated]
 	private static Func<Instance, int> _003C_003Ef__mg_0024cache0;
@@ -32,26 +33,47 @@ internal class MoveToLureStates : GameStateMachine<MoveToLureStates, MoveToLureS
 	public override void InitializeStates(out BaseState default_state)
 	{
 		default_state = move;
-		root.Enter("SetLure", delegate(Instance smi)
+		root.ToggleStatusItem(CREATURES.STATUSITEMS.CONSIDERINGLURE.NAME, CREATURES.STATUSITEMS.CONSIDERINGLURE.TOOLTIP, category: Db.Get().StatusItemCategories.Main, icon: string.Empty, icon_type: StatusItem.IconType.Info, notification_type: NotificationType.Neutral, allow_multiples: false, render_overlay: default(HashedString), status_overlays: 129022, resolve_string_callback: null, resolve_tooltip_callback: null);
+		move.MoveTo(GetLureCell, GetLureOffsets, arrive_at_lure, behaviourcomplete, false);
+		arrive_at_lure.Enter(delegate(Instance smi)
 		{
-			target.Set(smi.GetSMI<LureableMonitor.Instance>().GetTargetLure(), smi);
-		}).ToggleStatusItem(CREATURES.STATUSITEMS.CONSIDERINGLURE.NAME, CREATURES.STATUSITEMS.CONSIDERINGLURE.TOOLTIP, category: Db.Get().StatusItemCategories.Main, icon: string.Empty, icon_type: StatusItem.IconType.Info, notification_type: NotificationType.Neutral, allow_multiples: false, render_overlay: SimViewMode.None, status_overlays: 63486, resolve_string_callback: null, resolve_tooltip_callback: null);
-		move.MoveTo(GetLureCell, GetLureOffsets, behaviourcomplete, null, false);
+			Lure.Instance targetLure = GetTargetLure(smi);
+			if (targetLure != null && targetLure.HasTag(GameTags.OneTimeUseLure))
+			{
+				targetLure.GetComponent<KPrefabID>().AddTag(GameTags.LureUsed, false);
+			}
+		}).GoTo(behaviourcomplete);
 		behaviourcomplete.BehaviourComplete(GameTags.Creatures.MoveToLure, false);
 	}
 
 	private static Lure.Instance GetTargetLure(Instance smi)
 	{
-		return smi.GetSMI<LureableMonitor.Instance>().GetTargetLure().GetSMI<Lure.Instance>();
+		LureableMonitor.Instance sMI = smi.GetSMI<LureableMonitor.Instance>();
+		GameObject targetLure = sMI.GetTargetLure();
+		if ((UnityEngine.Object)targetLure == (UnityEngine.Object)null)
+		{
+			return null;
+		}
+		return targetLure.GetSMI<Lure.Instance>();
 	}
 
 	private static int GetLureCell(Instance smi)
 	{
-		return Grid.PosToCell(GetTargetLure(smi).transform.GetPosition());
+		Lure.Instance targetLure = GetTargetLure(smi);
+		if (targetLure == null)
+		{
+			return Grid.InvalidCell;
+		}
+		return Grid.PosToCell(targetLure);
 	}
 
 	private static CellOffset[] GetLureOffsets(Instance smi)
 	{
-		return GetTargetLure(smi).def.lurePoints;
+		Lure.Instance targetLure = GetTargetLure(smi);
+		if (targetLure == null)
+		{
+			return null;
+		}
+		return targetLure.def.lurePoints;
 	}
 }

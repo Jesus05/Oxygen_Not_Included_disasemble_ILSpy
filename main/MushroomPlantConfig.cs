@@ -31,7 +31,7 @@ public class MushroomPlantConfig : IEntityConfig
 			SimHashes.CarbonDioxide
 		};
 		initialAnim = MushroomConfig.ID;
-		EntityTemplates.ExtendEntityToBasicPlant(template, mass, temperature_warning_low, temperature_warning_high, temperature_lethal_high, safe_elements, true, 0f, 0.15f, initialAnim, true, true);
+		EntityTemplates.ExtendEntityToBasicPlant(template, mass, temperature_warning_low, temperature_warning_high, temperature_lethal_high, safe_elements, true, 0f, 0.15f, initialAnim, true, true, true, true, 2400f);
 		EntityTemplates.ExtendPlantToFertilizable(gameObject, new PlantElementAbsorber.ConsumeInfo[1]
 		{
 			new PlantElementAbsorber.ConsumeInfo
@@ -54,7 +54,7 @@ public class MushroomPlantConfig : IEntityConfig
 		list.Add(GameTags.CropSeed);
 		list = list;
 		id = STRINGS.CREATURES.SPECIES.MUSHROOMPLANT.DOMESTICATEDDESC;
-		GameObject seed = EntityTemplates.CreateAndRegisterSeedForPlant(template, productionType, initialAnim, desc, name, anim, "object", numberOfSeeds, list, SingleEntityReceptacle.ReceptacleDirection.Top, default(Tag), 2, id, EntityTemplates.CollisionShape.CIRCLE, 0.33f, 0.33f, null, string.Empty);
+		GameObject seed = EntityTemplates.CreateAndRegisterSeedForPlant(template, productionType, initialAnim, desc, name, anim, "object", numberOfSeeds, list, SingleEntityReceptacle.ReceptacleDirection.Top, default(Tag), 2, id, EntityTemplates.CollisionShape.CIRCLE, 0.33f, 0.33f, null, string.Empty, false);
 		EntityTemplates.CreateAndRegisterPreviewForPlant(seed, "MushroomPlant_preview", Assets.GetAnim("fungusplant_kanim"), "place", 1, 2);
 		SoundEventVolumeCache.instance.AddVolume("bristleblossom_kanim", "PrickleFlower_harvest", NOISE_POLLUTION.CREATURES.TIER3);
 		SoundEventVolumeCache.instance.AddVolume("bristleblossom_kanim", "PrickleFlower_harvest", NOISE_POLLUTION.CREATURES.TIER3);

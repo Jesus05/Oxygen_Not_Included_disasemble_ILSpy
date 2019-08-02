@@ -13,11 +13,14 @@ namespace YamlDotNet.Serialization.NodeDeserializers
 
 		private readonly bool _ignoreUnmatched;
 
-		public ObjectNodeDeserializer(IObjectFactory objectFactory, ITypeInspector typeDescriptor, bool ignoreUnmatched)
+		private readonly Action<string> _unmatchedLogFn;
+
+		public ObjectNodeDeserializer(IObjectFactory objectFactory, ITypeInspector typeDescriptor, bool ignoreUnmatched, Action<string> unmatchedLogFn)
 		{
 			_objectFactory = objectFactory;
 			_typeDescriptor = typeDescriptor;
 			_ignoreUnmatched = ignoreUnmatched;
+			_unmatchedLogFn = unmatchedLogFn;
 		}
 
 		bool INodeDeserializer.Deserialize(IParser parser, Type expectedType, Func<IParser, Type, object> nestedObjectDeserializer, out object value)
@@ -35,6 +38,10 @@ namespace YamlDotNet.Serialization.NodeDeserializers
 				IPropertyDescriptor property = _typeDescriptor.GetProperty(expectedType, null, scalar.Value, _ignoreUnmatched);
 				if (property == null)
 				{
+					if (_unmatchedLogFn != null)
+					{
+						_unmatchedLogFn(string.Format("{2} Found a property '{0}' on a type '{1}', but that type doesn't have that property!", scalar.Value, expectedType.FullName, parser.Current.Start));
+					}
 					parser.SkipThisAndNestedEvents();
 				}
 				else

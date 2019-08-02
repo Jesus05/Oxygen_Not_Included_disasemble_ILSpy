@@ -3,28 +3,36 @@ using System.Collections.Generic;
 
 namespace Klei.AI
 {
-	public class HeatRash : Disease
+	public class HeatRash : Sickness
 	{
-		public const string ID = "HeatRash";
+		public const string ID = "HeatSickness";
 
 		public HeatRash()
-			: base("HeatRash", DiseaseType.Ailment, Severity.Major, 0.005f, new List<InfectionVector>
+			: base("HeatSickness", SicknessType.Ailment, Severity.Minor, 0.005f, new List<InfectionVector>
 			{
 				InfectionVector.Inhalation
-			}, 900f, 0, new RangeInfo(0f, 0f, 1000f, 1000f), RangeInfo.Idempotent(), new RangeInfo(0f, 0f, 1000f, 1000f), RangeInfo.Idempotent())
+			}, 180f, null)
 		{
-			AddDiseaseComponent(new CommonSickEffectDisease());
-			AddDiseaseComponent(new AttributeModifierDisease(new AttributeModifier[4]
+			AddSicknessComponent(new CommonSickEffectSickness());
+			AddSicknessComponent(new AttributeModifierSickness(new AttributeModifier[4]
 			{
-				new AttributeModifier("Learning", -5f, DUPLICANTS.DISEASES.HEATRASH.NAME, false, false, true),
-				new AttributeModifier("Machinery", -5f, DUPLICANTS.DISEASES.HEATRASH.NAME, false, false, true),
-				new AttributeModifier("Construction", -5f, DUPLICANTS.DISEASES.HEATRASH.NAME, false, false, true),
-				new AttributeModifier("Cooking", -5f, DUPLICANTS.DISEASES.HEATRASH.NAME, false, false, true)
+				new AttributeModifier("Learning", -5f, DUPLICANTS.DISEASES.HEATSICKNESS.NAME, false, false, true),
+				new AttributeModifier("Machinery", -5f, DUPLICANTS.DISEASES.HEATSICKNESS.NAME, false, false, true),
+				new AttributeModifier("Construction", -5f, DUPLICANTS.DISEASES.HEATSICKNESS.NAME, false, false, true),
+				new AttributeModifier("Cooking", -5f, DUPLICANTS.DISEASES.HEATSICKNESS.NAME, false, false, true)
 			}));
-			AddDiseaseComponent(new AnimatedDisease(new HashedString[1]
+			AddSicknessComponent(new AnimatedSickness(new HashedString[3]
 			{
-				"anim_idle_hot_kanim"
-			}, "Hot"));
+				"anim_idle_hot_kanim",
+				"anim_loco_run_hot_kanim",
+				"anim_loco_walk_hot_kanim"
+			}, Db.Get().Expressions.SickFierySkin));
+			AddSicknessComponent(new PeriodicEmoteSickness("anim_idle_hot_kanim", new HashedString[3]
+			{
+				"idle_pre",
+				"idle_default",
+				"idle_pst"
+			}, 15f));
 		}
 	}
 }

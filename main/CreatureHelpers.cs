@@ -255,7 +255,7 @@ public static class CreatureHelpers
 	{
 		if ((Object)threat == (Object)null)
 		{
-			Debug.LogWarning(self.name + " is trying to flee, bus has no threats", null);
+			Debug.LogWarning(self.name + " is trying to flee, bus has no threats");
 			return null;
 		}
 		int num = Grid.PosToCell(threat);
@@ -263,7 +263,7 @@ public static class CreatureHelpers
 		Navigator nav = self.GetComponent<Navigator>();
 		if ((Object)nav == (Object)null)
 		{
-			Debug.LogWarning(self.name + " is trying to flee, bus has no navigator component attached.", null);
+			Debug.LogWarning(self.name + " is trying to flee, bus has no navigator component attached.");
 			return null;
 		}
 		HashSet<int> hashSet = GameUtil.FloodCollectCells(Grid.PosToCell(self), (int cell) => CanFleeTo(cell, nav), 300, null, true);

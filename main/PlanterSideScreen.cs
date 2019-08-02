@@ -75,7 +75,7 @@ public class PlanterSideScreen : ReceptacleSideScreen
 		List<Descriptor> plantRequirementDescriptors = GameUtil.GetPlantRequirementDescriptors(gameObject);
 		if (list.Count > 0)
 		{
-			GameUtil.IndentListOfDescriptors(list);
+			GameUtil.IndentListOfDescriptors(list, 1);
 			plantRequirementDescriptors.InsertRange(plantRequirementDescriptors.Count, list);
 		}
 		if (plantRequirementDescriptors.Count > 0)

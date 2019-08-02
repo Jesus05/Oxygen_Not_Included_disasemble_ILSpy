@@ -1,7 +1,9 @@
+using System;
 using System.Collections.Generic;
 
 namespace ProcGen
 {
+	[Serializable]
 	public class Feature
 	{
 		public string type

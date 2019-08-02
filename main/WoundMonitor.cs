@@ -54,7 +54,7 @@ public class WoundMonitor : GameStateMachine<WoundMonitor, WoundMonitor.Instance
 				}
 				else if (worker.GetComponent<Navigator>().CurrentNavType == NavType.Pole)
 				{
-					s = "hit_ladder";
+					s = "hit_pole";
 				}
 				kBatchedAnimController.Play(s, KAnim.PlayMode.Once, 1f, 0f);
 				if (text != null)

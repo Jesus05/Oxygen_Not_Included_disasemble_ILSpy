@@ -60,13 +60,13 @@ public class FilteredDragTool : DragTool
 	{
 		base.OnSpawn();
 		OverlayScreen instance = OverlayScreen.Instance;
-		instance.OnOverlayChanged = (Action<SimViewMode>)Delegate.Combine(instance.OnOverlayChanged, new Action<SimViewMode>(OnOverlayChanged));
+		instance.OnOverlayChanged = (Action<HashedString>)Delegate.Combine(instance.OnOverlayChanged, new Action<HashedString>(OnOverlayChanged));
 	}
 
 	protected override void OnCleanUp()
 	{
 		OverlayScreen instance = OverlayScreen.Instance;
-		instance.OnOverlayChanged = (Action<SimViewMode>)Delegate.Remove(instance.OnOverlayChanged, new Action<SimViewMode>(OnOverlayChanged));
+		instance.OnOverlayChanged = (Action<HashedString>)Delegate.Remove(instance.OnOverlayChanged, new Action<HashedString>(OnOverlayChanged));
 		base.OnCleanUp();
 	}
 
@@ -96,7 +96,7 @@ public class FilteredDragTool : DragTool
 		base.OnDeactivateTool(new_tool);
 	}
 
-	protected string GetFilterLayerFromGameObject(GameObject input)
+	public virtual string GetFilterLayerFromGameObject(GameObject input)
 	{
 		BuildingComplete component = input.GetComponent<BuildingComplete>();
 		BuildingUnderConstruction component2 = input.GetComponent<BuildingUnderConstruction>();
@@ -119,13 +119,14 @@ public class FilteredDragTool : DragTool
 		return "Default";
 	}
 
-	protected string GetFilterLayerFromObjectLayer(ObjectLayer gamer_layer)
+	public string GetFilterLayerFromObjectLayer(ObjectLayer gamer_layer)
 	{
 		switch (gamer_layer)
 		{
 		case ObjectLayer.Building:
 			return "Buildings";
 		case ObjectLayer.Wire:
+		case ObjectLayer.WireConnectors:
 			return "Wires";
 		case ObjectLayer.LiquidConduit:
 		case ObjectLayer.LiquidConduitConnection:
@@ -174,28 +175,30 @@ public class FilteredDragTool : DragTool
 		}
 	}
 
-	private void OnOverlayChanged(SimViewMode overlay)
+	private void OnOverlayChanged(HashedString overlay)
 	{
 		if (active)
 		{
 			string text = null;
-			switch (overlay)
+			if (overlay == OverlayModes.Power.ID)
 			{
-			case SimViewMode.PowerMap:
 				text = ToolParameterMenu.FILTERLAYERS.WIRES;
-				break;
-			case SimViewMode.LiquidVentMap:
+			}
+			else if (overlay == OverlayModes.LiquidConduits.ID)
+			{
 				text = ToolParameterMenu.FILTERLAYERS.LIQUIDCONDUIT;
-				break;
-			case SimViewMode.GasVentMap:
+			}
+			else if (overlay == OverlayModes.GasConduits.ID)
+			{
 				text = ToolParameterMenu.FILTERLAYERS.GASCONDUIT;
-				break;
-			case SimViewMode.SolidConveyorMap:
+			}
+			else if (overlay == OverlayModes.SolidConveyor.ID)
+			{
 				text = ToolParameterMenu.FILTERLAYERS.SOLIDCONDUIT;
-				break;
-			case SimViewMode.Logic:
+			}
+			else if (overlay == OverlayModes.Logic.ID)
+			{
 				text = ToolParameterMenu.FILTERLAYERS.LOGIC;
-				break;
 			}
 			currentFilterTargets = filterTargets;
 			if (text != null)

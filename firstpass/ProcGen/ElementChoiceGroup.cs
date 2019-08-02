@@ -1,8 +1,10 @@
 using KSerialization.Converters;
+using System;
 using System.Collections.Generic;
 
 namespace ProcGen
 {
+	[Serializable]
 	public class ElementChoiceGroup<T>
 	{
 		[StringEnumConverter]

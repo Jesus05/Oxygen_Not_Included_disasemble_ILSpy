@@ -18,7 +18,7 @@ public static class BaseDreckoConfig
 		float defaultTemperature = (warnLowTemp + warnHighTemp) / 2f;
 		GameObject gameObject = EntityTemplates.CreatePlacedEntity(id, name, desc, mass, anim, initialAnim, Grid.SceneLayer.Creatures, 1, 1, tIER, default(EffectorValues), SimHashes.Creature, null, defaultTemperature);
 		KPrefabID component = gameObject.GetComponent<KPrefabID>();
-		component.AddTag(GameTags.Creatures.GroundBased);
+		component.AddTag(GameTags.Creatures.Walker, false);
 		component.prefabInitFn += delegate(GameObject inst)
 		{
 			inst.GetAttributes().Add(Db.Get().Attributes.MaxUnderwaterTravelCost);
@@ -37,7 +37,7 @@ public static class BaseDreckoConfig
 		EntityTemplates.ExtendEntityToBasicCreature(template, faction, trait_id, navGridName, NavType.Floor, 32, defaultTemperature, onDeathDropID, onDeathDropCount, true, false, warnLowTemp, warnHighTemp, warnLowTemp - 20f, warnHighTemp + 20f);
 		if (!string.IsNullOrEmpty(symbol_override_prefix))
 		{
-			gameObject.AddOrGet<SymbolOverrideController>().ApplySymbolOverridesByPrefix(Assets.GetAnim(anim_file), symbol_override_prefix, 0);
+			gameObject.AddOrGet<SymbolOverrideController>().ApplySymbolOverridesByAffix(Assets.GetAnim(anim_file), symbol_override_prefix, null, 0);
 		}
 		gameObject.AddOrGet<Trappable>();
 		gameObject.AddOrGetDef<CreatureFallMonitor.Def>();
@@ -45,7 +45,7 @@ public static class BaseDreckoConfig
 		ThreatMonitor.Def def = gameObject.AddOrGetDef<ThreatMonitor.Def>();
 		def.fleethresholdState = Health.HealthState.Dead;
 		gameObject.AddWeapon(1f, 1f, AttackProperties.DamageType.Standard, AttackProperties.TargetType.Single, 1, 0f);
-		EntityTemplates.CreateAndRegisterBaggedCreature(gameObject, true, true);
+		EntityTemplates.CreateAndRegisterBaggedCreature(gameObject, true, true, false);
 		ChoreTable.Builder chore_table = new ChoreTable.Builder().Add(new DeathStates.Def(), true).Add(new AnimInterruptStates.Def(), true).Add(new GrowUpStates.Def(), true)
 			.Add(new TrappedStates.Def(), true)
 			.Add(new IncubatingStates.Def(), true)

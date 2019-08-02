@@ -95,8 +95,19 @@ public class Geyser : StateMachineComponent<Geyser.StatesInstance>, IGameObjectE
 		}
 		emitter.emitRange = 2;
 		emitter.maxPressure = configuration.GetMaxPressure();
-		emitter.outputElement = new ElementConverter.OutputElement(configuration.GetEmitRate(), configuration.GetElement(), configuration.GetTemperature(), outputElementOffsetx: (float)outputOffset.x, addedDiseaseCount: Mathf.RoundToInt((float)configuration.GetDiseaseCount() * configuration.GetEmitRate()), storeOutput: false, outputElementOffsety: (float)outputOffset.y, apply_input_temperature: false, diseaseWeight: 1f, addedDiseaseIdx: configuration.GetDiseaseIdx());
+		ElementEmitter elementEmitter = emitter;
+		float emitRate = configuration.GetEmitRate();
+		SimHashes element = configuration.GetElement();
+		float temperature = configuration.GetTemperature();
+		float outputElementOffsetx = (float)outputOffset.x;
+		float outputElementOffsety = (float)outputOffset.y;
+		elementEmitter.outputElement = new ElementConverter.OutputElement(emitRate, element, temperature, false, false, outputElementOffsetx, outputElementOffsety, 1f, configuration.GetDiseaseIdx(), Mathf.RoundToInt((float)configuration.GetDiseaseCount() * configuration.GetEmitRate()));
 		base.smi.StartSM();
+		Workable component = GetComponent<Studyable>();
+		if ((Object)component != (Object)null)
+		{
+			component.alwaysShowProgressBar = true;
+		}
 	}
 
 	public float RemainingPhaseTimeFrom2(float onDuration, float offDuration, float time, Phase expectedPhase)
@@ -212,7 +223,7 @@ public class Geyser : StateMachineComponent<Geyser.StatesInstance>, IGameObjectE
 		List<Descriptor> list = new List<Descriptor>();
 		Element element = ElementLoader.FindElementByHash(configuration.GetElement());
 		string arg = element.tag.ProperName();
-		list.Add(new Descriptor(string.Format(UI.BUILDINGEFFECTS.GEYSER_PRODUCTION, arg, GameUtil.GetFormattedMass(configuration.GetEmitRate(), GameUtil.TimeSlice.PerSecond, GameUtil.MetricMassFormat.UseThreshold, true, "{0:0.#}"), GameUtil.GetFormattedTemperature(configuration.GetTemperature(), GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true)), string.Format(UI.BUILDINGEFFECTS.TOOLTIPS.GEYSER_PRODUCTION, configuration.GetElement().ToString(), GameUtil.GetFormattedMass(configuration.GetEmitRate(), GameUtil.TimeSlice.PerSecond, GameUtil.MetricMassFormat.UseThreshold, true, "{0:0.#}"), GameUtil.GetFormattedTemperature(configuration.GetTemperature(), GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true)), Descriptor.DescriptorType.Effect, false));
+		list.Add(new Descriptor(string.Format(UI.BUILDINGEFFECTS.GEYSER_PRODUCTION, arg, GameUtil.GetFormattedMass(configuration.GetEmitRate(), GameUtil.TimeSlice.PerSecond, GameUtil.MetricMassFormat.UseThreshold, true, "{0:0.#}"), GameUtil.GetFormattedTemperature(configuration.GetTemperature(), GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false)), string.Format(UI.BUILDINGEFFECTS.TOOLTIPS.GEYSER_PRODUCTION, configuration.GetElement().ToString(), GameUtil.GetFormattedMass(configuration.GetEmitRate(), GameUtil.TimeSlice.PerSecond, GameUtil.MetricMassFormat.UseThreshold, true, "{0:0.#}"), GameUtil.GetFormattedTemperature(configuration.GetTemperature(), GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false)), Descriptor.DescriptorType.Effect, false));
 		if (configuration.GetDiseaseIdx() != 255)
 		{
 			list.Add(new Descriptor(string.Format(UI.BUILDINGEFFECTS.GEYSER_DISEASE, GameUtil.GetFormattedDiseaseName(configuration.GetDiseaseIdx(), false)), string.Format(UI.BUILDINGEFFECTS.TOOLTIPS.GEYSER_DISEASE, GameUtil.GetFormattedDiseaseName(configuration.GetDiseaseIdx(), false)), Descriptor.DescriptorType.Effect, false));

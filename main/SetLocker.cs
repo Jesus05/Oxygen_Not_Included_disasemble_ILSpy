@@ -135,10 +135,10 @@ public class SetLocker : StateMachineComponent<SetLocker.StatesInstance>
 		if (chore == null)
 		{
 			GetComponent<Workable>().SetWorkTime(1.5f);
-			chore = new WorkChore<Workable>(Db.Get().ChoreTypes.EmptyStorage, this, null, null, true, delegate
+			chore = new WorkChore<Workable>(Db.Get().ChoreTypes.EmptyStorage, this, null, true, delegate
 			{
 				CompleteChore();
-			}, null, null, true, null, false, true, Assets.GetAnim(overrideAnim), false, true, true, PriorityScreen.PriorityClass.basic, 10, false);
+			}, null, null, true, null, false, true, Assets.GetAnim(overrideAnim), false, true, true, PriorityScreen.PriorityClass.high, 5, false, true);
 			OnRefreshUserMenu(null);
 		}
 	}

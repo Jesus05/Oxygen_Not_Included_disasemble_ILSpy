@@ -22,14 +22,14 @@ public class HarvestTool : DragTool
 		Instance = this;
 		options.Add("HARVEST_WHEN_READY", ToolParameterMenu.ToggleState.On);
 		options.Add("DO_NOT_HARVEST", ToolParameterMenu.ToggleState.Off);
-		viewMode = SimViewMode.HarvestWhenReady;
+		viewMode = OverlayModes.Harvest.ID;
 	}
 
 	protected override void OnDragTool(int cell, int distFromOrigin)
 	{
 		if (Grid.IsValidCell(cell))
 		{
-			foreach (Harvestable item in Components.Harvestables.Items)
+			foreach (HarvestDesignatable item in Components.HarvestDesignatables.Items)
 			{
 				OccupyArea area = item.area;
 				if (Grid.PosToCell(item) == cell || ((Object)area != (Object)null && area.CheckIsOccupying(cell)))

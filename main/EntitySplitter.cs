@@ -18,21 +18,53 @@ public class EntitySplitter : KMonoBehaviour
 		Pickupable pickupable = GetComponent<Pickupable>();
 		if ((UnityEngine.Object)pickupable == (UnityEngine.Object)null)
 		{
-			Debug.LogError(base.name + " does not have a pickupable component!", null);
+			Debug.LogError(base.name + " does not have a pickupable component!");
 		}
 		Pickupable pickupable2 = pickupable;
 		pickupable2.OnTake = (Func<float, Pickupable>)Delegate.Combine(pickupable2.OnTake, (Func<float, Pickupable>)((float amount) => Split(pickupable, amount, null)));
-		pickupable.CanAbsorb = delegate(Pickupable other)
+		Rottable.Instance rottable = base.gameObject.GetSMI<Rottable.Instance>();
+		pickupable.absorbable = true;
+		pickupable.CanAbsorb = ((Pickupable other) => CanFirstAbsorbSecond(pickupable, rottable, other, maxStackSize));
+		Subscribe(-2064133523, OnAbsorbDelegate);
+	}
+
+	private static bool CanFirstAbsorbSecond(Pickupable pickupable, Rottable.Instance rottable, Pickupable other, float maxStackSize)
+	{
+		if ((UnityEngine.Object)other == (UnityEngine.Object)null)
 		{
-			if ((UnityEngine.Object)other == (UnityEngine.Object)null)
+			return false;
+		}
+		KPrefabID component = pickupable.GetComponent<KPrefabID>();
+		KPrefabID component2 = other.GetComponent<KPrefabID>();
+		if ((UnityEngine.Object)component == (UnityEngine.Object)null)
+		{
+			return false;
+		}
+		if ((UnityEngine.Object)component2 == (UnityEngine.Object)null)
+		{
+			return false;
+		}
+		if (component.PrefabTag != component2.PrefabTag)
+		{
+			return false;
+		}
+		if (pickupable.TotalAmount + other.TotalAmount > maxStackSize)
+		{
+			return false;
+		}
+		if (rottable != null)
+		{
+			Rottable.Instance sMI = other.GetSMI<Rottable.Instance>();
+			if (sMI == null)
 			{
 				return false;
 			}
-			KPrefabID component = pickupable.GetComponent<KPrefabID>();
-			KPrefabID component2 = other.GetComponent<KPrefabID>();
-			return (UnityEngine.Object)component != (UnityEngine.Object)null && (UnityEngine.Object)component2 != (UnityEngine.Object)null && component.PrefabTag == component2.PrefabTag && pickupable.TotalAmount + other.TotalAmount <= maxStackSize;
-		};
-		Subscribe(-2064133523, OnAbsorbDelegate);
+			if (!rottable.IsRotLevelStackable(sMI))
+			{
+				return false;
+			}
+		}
+		return true;
 	}
 
 	public static Pickupable Split(Pickupable pickupable, float amount, GameObject prefab = null)
@@ -52,6 +84,7 @@ public class EntitySplitter : KMonoBehaviour
 			parent = pickupable.transform.parent.gameObject;
 		}
 		GameObject gameObject = GameUtil.KInstantiate(prefab, pickupable.transform.GetPosition(), Grid.SceneLayer.Ore, parent, null, 0);
+		Debug.Assert((UnityEngine.Object)gameObject != (UnityEngine.Object)null, "WTH, the GO is null, shouldn't happen on instantiate");
 		Pickupable component = gameObject.GetComponent<Pickupable>();
 		if ((UnityEngine.Object)component == (UnityEngine.Object)null)
 		{

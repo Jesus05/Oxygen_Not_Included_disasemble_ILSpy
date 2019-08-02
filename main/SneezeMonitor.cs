@@ -4,15 +4,6 @@ using UnityEngine;
 
 public class SneezeMonitor : GameStateMachine<SneezeMonitor, SneezeMonitor.Instance>
 {
-	public class SneezyStates : State
-	{
-		public State idle;
-
-		public State sneeze_pre;
-
-		public State sneeze_pst;
-	}
-
 	public new class Instance : GameInstance
 	{
 		private StatusItem statusItem;
@@ -34,48 +25,69 @@ public class SneezeMonitor : GameStateMachine<SneezeMonitor, SneezeMonitor.Insta
 			base.StopSM(reason);
 		}
 
+		public float NextSneezeInterval()
+		{
+			AttributeInstance attributeInstance = Db.Get().Attributes.Sneezyness.Lookup(base.master.gameObject);
+			if (attributeInstance.GetTotalValue() <= 0f)
+			{
+				return 70f;
+			}
+			float num = 70f / attributeInstance.GetTotalValue();
+			return UnityEngine.Random.Range(num * 0.7f, num * 1.3f);
+		}
+
 		private void OnSneezyChange()
 		{
 			AttributeInstance attributeInstance = Db.Get().Attributes.Sneezyness.Lookup(base.master.gameObject);
-			if (attributeInstance.GetTotalValue() > 0f)
+			base.smi.sm.isSneezy.Set(attributeInstance.GetTotalValue() > 0f, base.smi);
+		}
+
+		public Reactable GetReactable()
+		{
+			float num = NextSneezeInterval();
+			GameObject gameObject = base.master.gameObject;
+			HashedString id = "Sneeze";
+			ChoreType cough = Db.Get().ChoreTypes.Cough;
+			HashedString animset = "anim_sneeze_kanim";
+			float min_reactor_time = num;
+			return new SelfEmoteReactable(gameObject, id, cough, animset, 0f, min_reactor_time, float.PositiveInfinity).AddStep(new EmoteReactable.EmoteStep
 			{
-				if (base.smi.GetCurrentState() != base.smi.sm.Sneezy.idle)
-				{
-					base.smi.GoTo(base.smi.sm.Sneezy.idle);
-				}
-			}
-			else if (base.smi.GetCurrentState() != base.smi.sm.idle)
+				anim = (HashedString)"sneeze",
+				startcb = new Action<GameObject>(TriggerDisurbance)
+			}).AddStep(new EmoteReactable.EmoteStep
 			{
-				base.smi.GoTo(base.smi.sm.idle);
-			}
+				anim = (HashedString)"sneeze_pst",
+				finishcb = new Action<GameObject>(ResetSneeze)
+			});
+		}
+
+		private void TriggerDisurbance(GameObject go)
+		{
+			AcousticDisturbance.Emit(go, 3);
+		}
+
+		private void ResetSneeze(GameObject go)
+		{
+			base.smi.GoTo(base.sm.idle);
 		}
 	}
 
-	private static readonly HashedString[] SneezeAnims = new HashedString[2]
-	{
-		"sneeze",
-		"sneeze_pst"
-	};
+	public BoolParameter isSneezy = new BoolParameter(false);
 
 	public State idle;
 
-	public SneezyStates Sneezy;
+	public State taking_medicine;
 
-	public const float SNEEZE_INTERVAL_MIN = 45f;
+	public State sneezy;
 
-	public const float SNEEZE_INTERVAL_MAX = 90f;
+	public const float SINGLE_SNEEZE_TIME = 70f;
+
+	public const float SNEEZE_TIME_VARIANCE = 0.3f;
 
 	public override void InitializeStates(out BaseState default_state)
 	{
 		default_state = idle;
-		Sneezy.idle.ScheduleGoTo(UnityEngine.Random.Range(45f, 90f), Sneezy.sneeze_pre);
-		Sneezy.sneeze_pre.ToggleScheduleCallback("Sneeze", (Instance smi) => 2f, delegate(Instance instanceObject)
-		{
-			AcousticDisturbance.Emit(instanceObject.master.gameObject, 3);
-		}).ToggleChore((Instance smi) => new EmoteChore(smi.master, Db.Get().ChoreTypes.EmoteHighPriority, "anim_sneeze_kanim", SneezeAnims, null), Sneezy.sneeze_pst).ScheduleGoTo(5f, Sneezy.sneeze_pst);
-		Sneezy.sneeze_pst.Enter(delegate(Instance smi)
-		{
-			smi.GoTo(Sneezy.idle);
-		});
+		idle.ParamTransition(isSneezy, sneezy, (Instance smi, bool p) => p);
+		sneezy.ParamTransition(isSneezy, idle, (Instance smi, bool p) => !p).ToggleReactable((Instance smi) => smi.GetReactable());
 	}
 }

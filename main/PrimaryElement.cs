@@ -14,13 +14,13 @@ public class PrimaryElement : KMonoBehaviour, ISaveLoadable
 
 	public delegate void SetTemperatureCallback(PrimaryElement primary_element, float temperature);
 
+	public static float MAX_MASS = 100000f;
+
 	public GetTemperatureCallback getTemperatureCallback = OnGetTemperature;
 
 	public SetTemperatureCallback setTemperatureCallback = OnSetTemperature;
 
-	public Action<int, string> ModifyDiseaseCountHandler;
-
-	public Action<byte, int, string> AddDiseaseHandler;
+	private PrimaryElement diseaseRedirectTarget;
 
 	private bool useSimDiseaseInfo;
 
@@ -150,6 +150,10 @@ public class PrimaryElement : KMonoBehaviour, ISaveLoadable
 	{
 		get
 		{
+			if ((bool)diseaseRedirectTarget)
+			{
+				return diseaseRedirectTarget.DiseaseIdx;
+			}
 			byte result = byte.MaxValue;
 			if (useSimDiseaseInfo)
 			{
@@ -158,8 +162,8 @@ public class PrimaryElement : KMonoBehaviour, ISaveLoadable
 			}
 			else if (diseaseHandle.IsValid())
 			{
-				DiseaseContainer data = GameComps.DiseaseContainers.GetData(diseaseHandle);
-				result = data.diseaseIdx;
+				DiseaseHeader header = GameComps.DiseaseContainers.GetHeader(diseaseHandle);
+				result = header.diseaseIdx;
 			}
 			return result;
 		}
@@ -169,6 +173,10 @@ public class PrimaryElement : KMonoBehaviour, ISaveLoadable
 	{
 		get
 		{
+			if ((bool)diseaseRedirectTarget)
+			{
+				return diseaseRedirectTarget.DiseaseCount;
+			}
 			int result = 0;
 			if (useSimDiseaseInfo)
 			{
@@ -177,8 +185,8 @@ public class PrimaryElement : KMonoBehaviour, ISaveLoadable
 			}
 			else if (diseaseHandle.IsValid())
 			{
-				DiseaseContainer data = GameComps.DiseaseContainers.GetData(diseaseHandle);
-				result = data.diseaseCount;
+				DiseaseHeader header = GameComps.DiseaseContainers.GetHeader(diseaseHandle);
+				result = header.diseaseCount;
 			}
 			return result;
 		}
@@ -207,11 +215,11 @@ public class PrimaryElement : KMonoBehaviour, ISaveLoadable
 		}
 		else if (diseaseHandle.IsValid())
 		{
-			DiseaseContainer data = GameComps.DiseaseContainers.GetData(diseaseHandle);
-			if (data.diseaseIdx != 255)
+			DiseaseHeader header = GameComps.DiseaseContainers.GetHeader(diseaseHandle);
+			if (header.diseaseIdx != 255)
 			{
-				diseaseID = Db.Get().Diseases[data.diseaseIdx].id;
-				diseaseCount = data.diseaseCount;
+				diseaseID = Db.Get().Diseases[header.diseaseIdx].id;
+				diseaseCount = header.diseaseCount;
 			}
 		}
 	}
@@ -236,13 +244,9 @@ public class PrimaryElement : KMonoBehaviour, ISaveLoadable
 		{
 			DeserializeWarnings.Instance.PrimaryElementHasNoElement.Warn(base.name + "Primary element has no element.", null);
 		}
-		if (Mass > 100000f)
-		{
-			Output.LogWarningWithObj(base.gameObject, "deserialized very large ore mass... error?");
-		}
 		if (Mass < 0f)
 		{
-			Output.LogErrorWithObj(base.gameObject, "deserialized ore with less than 0 mass. Error! Destroying");
+			DebugUtil.DevLogError(base.gameObject, "deserialized ore with less than 0 mass. Error! Destroying");
 			Util.KDestroyGameObject(base.gameObject);
 		}
 		else
@@ -262,10 +266,10 @@ public class PrimaryElement : KMonoBehaviour, ISaveLoadable
 			}
 			else if (diseaseHandle.IsValid())
 			{
-				DiseaseContainer data = GameComps.DiseaseContainers.GetData(diseaseHandle);
-				data.diseaseIdx = index;
-				data.diseaseCount = diseaseCount;
-				GameComps.DiseaseContainers.SetData(diseaseHandle, data);
+				DiseaseHeader header = GameComps.DiseaseContainers.GetHeader(diseaseHandle);
+				header.diseaseIdx = index;
+				header.diseaseCount = diseaseCount;
+				GameComps.DiseaseContainers.SetHeader(diseaseHandle, header);
 			}
 			else
 			{
@@ -283,18 +287,23 @@ public class PrimaryElement : KMonoBehaviour, ISaveLoadable
 	{
 		if (_Temperature <= 0f)
 		{
-			KCrashReporter.Assert(false, base.gameObject.name + " is attempting to serialize a temperature of <= 0K. Resetting to default.");
+			DebugUtil.DevLogErrorFormat(base.gameObject, "{0} is attempting to serialize a temperature of <= 0K. Resetting to default.", base.gameObject.name);
 			_Temperature = Element.defaultValues.temperature;
 		}
-		if (Mass > 100000f)
+		if (Mass > MAX_MASS)
 		{
-			KCrashReporter.Assert(false, base.gameObject.name + $" is attempting to serialize a mass of {Mass}. Resetting to default.");
+			DebugUtil.DevLogErrorFormat(base.gameObject, "{0} is attempting to serialize very large mass {1}. Resetting to default.", base.gameObject.name, Mass);
 			Mass = Element.defaultValues.mass;
 		}
 	}
 
 	private void SetMass(float mass)
 	{
+		if ((mass > MAX_MASS || mass < 0f) && ElementID != SimHashes.Regolith)
+		{
+			DebugUtil.DevLogErrorFormat(base.gameObject, "{0} is getting an abnormal mass set {1}.", base.gameObject.name, Mass);
+		}
+		mass = Mathf.Clamp(mass, 0f, MAX_MASS);
 		Units = mass / MassPerUnit;
 		if (Units <= 0f && !KeepZeroMassObject)
 		{
@@ -304,17 +313,13 @@ public class PrimaryElement : KMonoBehaviour, ISaveLoadable
 		{
 			throw new ArgumentException("Invalid mass");
 		}
-		if (Units > 100000f && ElementID != SimHashes.Regolith)
-		{
-			KCrashReporter.Assert(false, base.gameObject.name + $" is getting an abnormal mass set: {Units}.");
-		}
 	}
 
 	private void SetTemperature(float temperature)
 	{
 		if (float.IsNaN(temperature) || float.IsInfinity(temperature))
 		{
-			Output.LogErrorWithObj(base.gameObject, "Invalid temperature [" + temperature + "]");
+			DebugUtil.LogErrorArgs(base.gameObject, "Invalid temperature [" + temperature + "]");
 		}
 		else
 		{
@@ -391,7 +396,7 @@ public class PrimaryElement : KMonoBehaviour, ISaveLoadable
 	{
 		if (ElementID == (SimHashes)0)
 		{
-			Output.LogWithObj(base.gameObject, "UpdateTags() Primary element 0");
+			Debug.Log("UpdateTags() Primary element 0", base.gameObject);
 		}
 		else
 		{
@@ -412,7 +417,7 @@ public class PrimaryElement : KMonoBehaviour, ISaveLoadable
 				}
 				foreach (Tag item2 in list)
 				{
-					component.AddTag(item2);
+					component.AddTag(item2, false);
 				}
 			}
 		}
@@ -420,9 +425,9 @@ public class PrimaryElement : KMonoBehaviour, ISaveLoadable
 
 	public void ModifyDiseaseCount(int delta, string reason)
 	{
-		if (ModifyDiseaseCountHandler != null)
+		if ((bool)diseaseRedirectTarget)
 		{
-			ModifyDiseaseCountHandler(delta, reason);
+			diseaseRedirectTarget.ModifyDiseaseCount(delta, reason);
 		}
 		else if (useSimDiseaseInfo)
 		{
@@ -445,9 +450,9 @@ public class PrimaryElement : KMonoBehaviour, ISaveLoadable
 	{
 		if (delta != 0)
 		{
-			if (AddDiseaseHandler != null)
+			if ((bool)diseaseRedirectTarget)
 			{
-				AddDiseaseHandler(disease_idx, delta, reason);
+				diseaseRedirectTarget.AddDisease(disease_idx, delta, reason);
 			}
 			else if (useSimDiseaseInfo)
 			{
@@ -479,9 +484,10 @@ public class PrimaryElement : KMonoBehaviour, ISaveLoadable
 
 	private static void OnSetTemperature(PrimaryElement primary_element, float temperature)
 	{
+		Debug.Assert(!float.IsNaN(temperature));
 		if (temperature <= 0f)
 		{
-			Output.LogErrorWithObj(primary_element.gameObject, primary_element.gameObject.name + " has a temperature of zero which has always been an error in my experience.");
+			DebugUtil.LogErrorArgs(primary_element.gameObject, primary_element.gameObject.name + " has a temperature of zero which has always been an error in my experience.");
 		}
 		primary_element._Temperature = temperature;
 	}
@@ -507,14 +513,21 @@ public class PrimaryElement : KMonoBehaviour, ISaveLoadable
 		}
 	}
 
-	public void SetDiseaseVisualProvider(GameObject visualizer)
+	private void SetDiseaseVisualProvider(GameObject visualizer)
 	{
 		HandleVector<int>.Handle handle = GameComps.DiseaseContainers.GetHandle(base.gameObject);
 		if (handle != HandleVector<int>.InvalidHandle)
 		{
-			DiseaseContainer data = GameComps.DiseaseContainers.GetData(handle);
-			data.visualDiseaseProvider = visualizer;
-			GameComps.DiseaseContainers.SetData(handle, data);
+			DiseaseContainer new_data = GameComps.DiseaseContainers.GetPayload(handle);
+			new_data.visualDiseaseProvider = visualizer;
+			GameComps.DiseaseContainers.SetPayload(handle, ref new_data);
 		}
+	}
+
+	public void RedirectDisease(GameObject target)
+	{
+		SetDiseaseVisualProvider(target);
+		diseaseRedirectTarget = ((!(bool)target) ? null : target.GetComponent<PrimaryElement>());
+		Debug.Assert((UnityEngine.Object)diseaseRedirectTarget != (UnityEngine.Object)this, "Disease redirect target set to myself");
 	}
 }

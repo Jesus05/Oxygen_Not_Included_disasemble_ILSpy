@@ -24,11 +24,6 @@ public class AlgaeHabitatConfig : IBuildingConfig
 		Storage.StoredItemModifier.Seal
 	};
 
-	public static List<Tag> pollutedWaterFilter = new List<Tag>
-	{
-		ElementLoader.FindElementByHash(SimHashes.DirtyWater).tag
-	};
-
 	public override BuildingDef CreateBuildingDef()
 	{
 		string id = "AlgaeHabitat";
@@ -44,7 +39,7 @@ public class AlgaeHabitatConfig : IBuildingConfig
 		EffectorValues tIER2 = NOISE_POLLUTION.NOISY.TIER0;
 		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, tIER, fARMABLE, melting_point, build_location_rule, BUILDINGS.DECOR.PENALTY.TIER1, tIER2, 0.2f);
 		buildingDef.Floodable = false;
-		buildingDef.ViewMode = SimViewMode.OxygenMap;
+		buildingDef.ViewMode = OverlayModes.Oxygen.ID;
 		buildingDef.AudioCategory = "HollowMetal";
 		buildingDef.UtilityInputOffset = new CellOffset(0, 0);
 		buildingDef.UtilityOutputOffset = new CellOffset(0, 0);
@@ -58,28 +53,33 @@ public class AlgaeHabitatConfig : IBuildingConfig
 	{
 		Storage storage = go.AddOrGet<Storage>();
 		storage.showInUI = true;
+		List<Tag> list = new List<Tag>();
+		list.Add(SimHashes.DirtyWater.CreateTag());
+		List<Tag> storageFilters = list;
+		Tag tag = SimHashes.Algae.CreateTag();
+		Tag tag2 = SimHashes.Water.CreateTag();
 		Storage storage2 = go.AddComponent<Storage>();
 		storage2.capacityKg = 360f;
 		storage2.showInUI = true;
 		storage2.SetDefaultStoredItemModifiers(PollutedWaterStorageModifiers);
 		storage2.allowItemRemoval = false;
-		storage2.storageFilters = pollutedWaterFilter;
+		storage2.storageFilters = storageFilters;
 		ManualDeliveryKG manualDeliveryKG = go.AddOrGet<ManualDeliveryKG>();
 		manualDeliveryKG.SetStorage(storage);
-		manualDeliveryKG.requestedItemTag = new Tag("Algae");
+		manualDeliveryKG.requestedItemTag = tag;
 		manualDeliveryKG.capacity = 90f;
 		manualDeliveryKG.refillMass = 18f;
-		manualDeliveryKG.choreTypeIDHash = Db.Get().ChoreTypes.OperateFetch.IdHash;
+		manualDeliveryKG.choreTypeIDHash = Db.Get().ChoreTypes.FetchCritical.IdHash;
 		ManualDeliveryKG manualDeliveryKG2 = go.AddComponent<ManualDeliveryKG>();
 		manualDeliveryKG2.SetStorage(storage);
-		manualDeliveryKG2.requestedItemTag = new Tag("Water");
+		manualDeliveryKG2.requestedItemTag = tag2;
 		manualDeliveryKG2.capacity = 360f;
 		manualDeliveryKG2.refillMass = 72f;
 		manualDeliveryKG2.allowPause = true;
-		manualDeliveryKG2.choreTypeIDHash = Db.Get().ChoreTypes.OperateFetch.IdHash;
+		manualDeliveryKG2.choreTypeIDHash = Db.Get().ChoreTypes.FetchCritical.IdHash;
 		KAnimFile[] overrideAnims = new KAnimFile[1]
 		{
-			Assets.GetAnim("anim_interacts_outhouse_kanim")
+			Assets.GetAnim("anim_interacts_algae_terarrium_kanim")
 		};
 		AlgaeHabitatEmpty algaeHabitatEmpty = go.AddOrGet<AlgaeHabitatEmpty>();
 		algaeHabitatEmpty.workTime = 5f;
@@ -91,17 +91,17 @@ public class AlgaeHabitatConfig : IBuildingConfig
 		ElementConverter elementConverter = go.AddComponent<ElementConverter>();
 		elementConverter.consumedElements = new ElementConverter.ConsumedElement[2]
 		{
-			new ElementConverter.ConsumedElement(new Tag("Algae"), 0.0300000012f),
-			new ElementConverter.ConsumedElement(new Tag("Water"), 0.3f)
+			new ElementConverter.ConsumedElement(tag, 0.0300000012f),
+			new ElementConverter.ConsumedElement(tag2, 0.3f)
 		};
 		elementConverter.outputElements = new ElementConverter.OutputElement[1]
 		{
-			new ElementConverter.OutputElement(0.0400000028f, SimHashes.Oxygen, 303.15f, false, 0f, 1f, false, 1f, byte.MaxValue, 0)
+			new ElementConverter.OutputElement(0.0400000028f, SimHashes.Oxygen, 303.15f, false, false, 0f, 1f, 1f, byte.MaxValue, 0)
 		};
 		ElementConverter elementConverter2 = go.AddComponent<ElementConverter>();
 		elementConverter2.outputElements = new ElementConverter.OutputElement[1]
 		{
-			new ElementConverter.OutputElement(0.290333331f, SimHashes.DirtyWater, 303.15f, true, 0f, 1f, false, 1f, byte.MaxValue, 0)
+			new ElementConverter.OutputElement(0.290333331f, SimHashes.DirtyWater, 303.15f, false, true, 0f, 1f, 1f, byte.MaxValue, 0)
 		};
 		ElementConsumer elementConsumer = go.AddOrGet<ElementConsumer>();
 		elementConsumer.elementToConsume = SimHashes.CarbonDioxide;

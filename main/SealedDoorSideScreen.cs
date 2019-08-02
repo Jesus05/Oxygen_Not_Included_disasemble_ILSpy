@@ -31,7 +31,7 @@ public class SealedDoorSideScreen : SideScreenContent
 		Door component = target.GetComponent<Door>();
 		if ((Object)component == (Object)null)
 		{
-			Debug.LogError("Target doesn't have a Door associated with it.", null);
+			Debug.LogError("Target doesn't have a Door associated with it.");
 		}
 		else
 		{

@@ -49,7 +49,7 @@ public class Repairable : Workable
 			if ((UnityEngine.Object)base.smi.master.storageProxy != (UnityEngine.Object)null)
 			{
 				base.smi.master.transform.GetComponent<Prioritizable>().RemoveRef();
-				base.smi.master.storageProxy.DropAll(false);
+				base.smi.master.storageProxy.DropAll(false, false, default(Vector3), true);
 				Util.KDestroyGameObject(base.smi.master.storageProxy.gameObject);
 			}
 		}
@@ -155,12 +155,12 @@ public class Repairable : Workable
 			{
 				GameTagExtensions.Create(component.ElementID)
 			};
-			return new FetchChore(Db.Get().ChoreTypes.Fetch, smi.master.storageProxy, amount, tags, null, null, null, true, null, null, null, FetchOrder2.OperationalRequirement.None, 0, null);
+			return new FetchChore(Db.Get().ChoreTypes.RepairFetch, smi.master.storageProxy, amount, tags, null, null, null, true, null, null, null, FetchOrder2.OperationalRequirement.None, 0);
 		}
 
 		private Chore CreateRepairChore(SMInstance smi)
 		{
-			WorkChore<Repairable> workChore = new WorkChore<Repairable>(Db.Get().ChoreTypes.Repair, smi.master, null, null, true, null, null, null, true, null, false, false, null, false, true, true, PriorityScreen.PriorityClass.basic, 0, true);
+			WorkChore<Repairable> workChore = new WorkChore<Repairable>(Db.Get().ChoreTypes.Repair, smi.master, null, true, null, null, null, true, null, false, false, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, true, true);
 			Deconstructable component = smi.master.GetComponent<Deconstructable>();
 			if ((UnityEngine.Object)component != (UnityEngine.Object)null)
 			{
@@ -204,10 +204,14 @@ public class Repairable : Workable
 		Subscribe(493375141, OnRefreshUserMenuDelegate);
 		attributeConverter = Db.Get().AttributeConverters.ConstructionSpeed;
 		attributeExperienceMultiplier = DUPLICANTSTATS.ATTRIBUTE_LEVELING.PART_DAY_EXPERIENCE;
+		skillExperienceSkillGroup = Db.Get().SkillGroups.Building.Id;
+		skillExperienceMultiplier = SKILLS.PART_DAY_EXPERIENCE;
 		showProgressBar = false;
 		faceTargetWhenWorking = true;
 		multitoolContext = "build";
 		multitoolHitEffectTag = EffectConfigs.BuildSplashId;
+		workingPstComplete = HashedString.Invalid;
+		workingPstFailed = HashedString.Invalid;
 	}
 
 	protected override void OnSpawn()
@@ -217,11 +221,6 @@ public class Repairable : Workable
 		smi.StartSM();
 		workTime = float.PositiveInfinity;
 		workTimeRemaining = float.PositiveInfinity;
-	}
-
-	public override void AwardExperience(float work_dt, MinionResume resume)
-	{
-		resume.AddExperienceIfRole(Handyman.ID, work_dt * ROLES.ACTIVE_EXPERIENCE_QUICK);
 	}
 
 	private void OnProxyStorageChanged(object data)

@@ -30,7 +30,7 @@ namespace TUNING
 			GameTags.BuildableProcessed,
 			GameTags.Farmable,
 			GameTags.Organics,
-			GameTags.MarkedForCompost,
+			GameTags.Compostable,
 			GameTags.Seed,
 			GameTags.Agriculture,
 			GameTags.Filter,
@@ -38,9 +38,11 @@ namespace TUNING
 			GameTags.Liquifiable,
 			GameTags.IndustrialProduct,
 			GameTags.IndustrialIngredient,
+			GameTags.MedicalSupplies,
 			GameTags.Clothes,
 			GameTags.ManufacturedMaterial,
 			GameTags.Egg,
+			GameTags.RareMaterials,
 			GameTags.Other
 		};
 
@@ -51,7 +53,8 @@ namespace TUNING
 
 		public static List<Tag> GASES = new List<Tag>
 		{
-			GameTags.Gas
+			GameTags.Breathable,
+			GameTags.Unbreathable
 		};
 	}
 }

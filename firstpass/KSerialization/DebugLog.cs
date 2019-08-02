@@ -19,15 +19,15 @@ namespace KSerialization
 			switch (msg_level)
 			{
 			case Level.Error:
-				Debug.LogError(msg, null);
+				Debug.LogError(msg);
 				break;
 			}
 			return;
 			IL_0021:
-			Debug.Log(msg, null);
+			Debug.Log(msg);
 			return;
-			IL_002d:
-			Debug.LogWarning(msg, null);
+			IL_002c:
+			Debug.LogWarning(msg);
 		}
 	}
 }

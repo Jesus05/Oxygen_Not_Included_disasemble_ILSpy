@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 
+[Serializable]
 public class ElementBandConfiguration : List<ElementGradient>
 {
 	public ElementBandConfiguration()

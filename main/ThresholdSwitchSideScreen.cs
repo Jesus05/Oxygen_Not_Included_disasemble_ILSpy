@@ -21,7 +21,7 @@ public class ThresholdSwitchSideScreen : SideScreenContent, IRender200ms
 
 	[Header("Slider")]
 	[SerializeField]
-	private KSlider thresholdSlider;
+	private NonLinearSlider thresholdSlider;
 
 	[Header("Number Input")]
 	[SerializeField]
@@ -29,6 +29,19 @@ public class ThresholdSwitchSideScreen : SideScreenContent, IRender200ms
 
 	[SerializeField]
 	private LocText unitsLabel;
+
+	[Header("Increment Buttons")]
+	[SerializeField]
+	private GameObject incrementMinor;
+
+	[SerializeField]
+	private GameObject incrementMajor;
+
+	[SerializeField]
+	private GameObject decrementMinor;
+
+	[SerializeField]
+	private GameObject decrementMajor;
 
 	protected override void OnSpawn()
 	{
@@ -47,15 +60,15 @@ public class ThresholdSwitchSideScreen : SideScreenContent, IRender200ms
 		component2.SetText(UI.UISIDESCREENS.THRESHOLD_SWITCH_SIDESCREEN.BELOW_BUTTON);
 		thresholdSlider.onDrag += delegate
 		{
-			ReceiveValueFromSlider(thresholdSlider.value);
+			ReceiveValueFromSlider(thresholdSlider.GetValueForPercentage(GameUtil.GetRoundedTemperatureInKelvin(thresholdSlider.value)));
 		};
 		thresholdSlider.onPointerDown += delegate
 		{
-			ReceiveValueFromSlider(thresholdSlider.value);
+			ReceiveValueFromSlider(thresholdSlider.GetValueForPercentage(GameUtil.GetRoundedTemperatureInKelvin(thresholdSlider.value)));
 		};
 		thresholdSlider.onMove += delegate
 		{
-			ReceiveValueFromSlider(thresholdSlider.value);
+			ReceiveValueFromSlider(thresholdSlider.GetValueForPercentage(GameUtil.GetRoundedTemperatureInKelvin(thresholdSlider.value)));
 		};
 		numberInput.onEndEdit += delegate
 		{
@@ -86,7 +99,7 @@ public class ThresholdSwitchSideScreen : SideScreenContent, IRender200ms
 		target = null;
 		if ((Object)new_target == (Object)null)
 		{
-			Debug.LogError("Invalid gameObject received", null);
+			Debug.LogError("Invalid gameObject received");
 		}
 		else
 		{
@@ -95,15 +108,64 @@ public class ThresholdSwitchSideScreen : SideScreenContent, IRender200ms
 			if (thresholdSwitch == null)
 			{
 				target = null;
-				Debug.LogError("The gameObject received does not contain a IThresholdSwitch component", null);
+				Debug.LogError("The gameObject received does not contain a IThresholdSwitch component");
 			}
 			else
 			{
 				UpdateLabels();
-				thresholdSlider.minValue = thresholdSwitch.RangeMin;
-				thresholdSlider.maxValue = thresholdSwitch.RangeMax;
-				thresholdSlider.value = thresholdSwitch.Threshold;
-				thresholdSlider.GetComponentInChildren<ToolTip>();
+				if (target.GetComponent<IThresholdSwitch>().LayoutType == ThresholdScreenLayoutType.SliderBar)
+				{
+					thresholdSlider.gameObject.SetActive(true);
+					thresholdSlider.minValue = 0f;
+					thresholdSlider.maxValue = 100f;
+					thresholdSlider.SetRanges(thresholdSwitch.GetRanges);
+					thresholdSlider.value = thresholdSlider.GetPercentageFromValue(thresholdSwitch.Threshold);
+					thresholdSlider.GetComponentInChildren<ToolTip>();
+				}
+				else
+				{
+					thresholdSlider.gameObject.SetActive(false);
+				}
+				MultiToggle incrementMinorToggle = incrementMinor.GetComponent<MultiToggle>();
+				incrementMinorToggle.onClick = delegate
+				{
+					UpdateThresholdValue(thresholdSwitch.Threshold + (float)thresholdSwitch.IncrementScale);
+					incrementMinorToggle.ChangeState(1);
+				};
+				incrementMinorToggle.onStopHold = delegate
+				{
+					incrementMinorToggle.ChangeState(0);
+				};
+				MultiToggle incrementMajorToggle = incrementMajor.GetComponent<MultiToggle>();
+				incrementMajorToggle.onClick = delegate
+				{
+					UpdateThresholdValue(thresholdSwitch.Threshold + 10f * (float)thresholdSwitch.IncrementScale);
+					incrementMajorToggle.ChangeState(1);
+				};
+				incrementMajorToggle.onStopHold = delegate
+				{
+					incrementMajorToggle.ChangeState(0);
+				};
+				MultiToggle decrementMinorToggle = decrementMinor.GetComponent<MultiToggle>();
+				decrementMinorToggle.onClick = delegate
+				{
+					UpdateThresholdValue(thresholdSwitch.Threshold - (float)thresholdSwitch.IncrementScale);
+					decrementMinorToggle.ChangeState(1);
+				};
+				decrementMinorToggle.onStopHold = delegate
+				{
+					decrementMinorToggle.ChangeState(0);
+				};
+				MultiToggle decrementMajorToggle = decrementMajor.GetComponent<MultiToggle>();
+				decrementMajorToggle.onClick = delegate
+				{
+					UpdateThresholdValue(thresholdSwitch.Threshold - 10f * (float)thresholdSwitch.IncrementScale);
+					decrementMajorToggle.ChangeState(1);
+				};
+				decrementMajorToggle.onStopHold = delegate
+				{
+					decrementMajorToggle.ChangeState(0);
+				};
 				unitsLabel.text = thresholdSwitch.ThresholdValueUnits();
 				numberInput.minValue = thresholdSwitch.GetRangeMinInputField();
 				numberInput.maxValue = thresholdSwitch.GetRangeMaxInputField();
@@ -167,8 +229,24 @@ public class ThresholdSwitchSideScreen : SideScreenContent, IRender200ms
 
 	private void UpdateThresholdValue(float newValue)
 	{
+		if (newValue < thresholdSwitch.RangeMin)
+		{
+			newValue = thresholdSwitch.RangeMin;
+		}
+		if (newValue > thresholdSwitch.RangeMax)
+		{
+			newValue = thresholdSwitch.RangeMax;
+		}
 		thresholdSwitch.Threshold = newValue;
-		thresholdSlider.value = newValue;
+		NonLinearSlider nonLinearSlider = thresholdSlider;
+		if ((Object)nonLinearSlider != (Object)null)
+		{
+			thresholdSlider.value = nonLinearSlider.GetPercentageFromValue(newValue);
+		}
+		else
+		{
+			thresholdSlider.value = newValue;
+		}
 		UpdateTargetThresholdLabel();
 	}
 

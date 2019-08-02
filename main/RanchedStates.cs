@@ -2,7 +2,7 @@ using STRINGS;
 using System;
 using System.Runtime.CompilerServices;
 
-internal class RanchedStates : GameStateMachine<RanchedStates, RanchedStates.Instance, IStateMachineTarget, RanchedStates.Def>
+public class RanchedStates : GameStateMachine<RanchedStates, RanchedStates.Instance, IStateMachineTarget, RanchedStates.Def>
 {
 	public class Def : BaseDef
 	{
@@ -94,14 +94,14 @@ internal class RanchedStates : GameStateMachine<RanchedStates, RanchedStates.Ins
 			smi.AbandonedRanchStation();
 		});
 		ranch.EventTransition(GameHashes.RanchStationNoLongerAvailable, (State)null, (Transition.ConditionCallback)null).DefaultState(ranch.cheer).Exit(ClearLayerOverride);
-		ranch.cheer.DefaultState(ranch.cheer.pre).ToggleStatusItem(CREATURES.STATUSITEMS.EXCITED_TO_BE_RANCHED.NAME, CREATURES.STATUSITEMS.EXCITED_TO_BE_RANCHED.TOOLTIP, category: Db.Get().StatusItemCategories.Main, icon: string.Empty, icon_type: StatusItem.IconType.Info, notification_type: (NotificationType)0, allow_multiples: false, render_overlay: SimViewMode.None, status_overlays: 0, resolve_string_callback: null, resolve_tooltip_callback: null);
+		ranch.cheer.DefaultState(ranch.cheer.pre).ToggleStatusItem(CREATURES.STATUSITEMS.EXCITED_TO_BE_RANCHED.NAME, CREATURES.STATUSITEMS.EXCITED_TO_BE_RANCHED.TOOLTIP, category: Db.Get().StatusItemCategories.Main, icon: string.Empty, icon_type: StatusItem.IconType.Info, notification_type: (NotificationType)0, allow_multiples: false, render_overlay: default(HashedString), status_overlays: 0, resolve_string_callback: null, resolve_tooltip_callback: null);
 		ranch.cheer.pre.ScheduleGoTo(0.9f, ranch.cheer.cheer);
 		ranch.cheer.cheer.Enter("FaceRancher", delegate(Instance smi)
 		{
 			smi.GetComponent<Facing>().Face(smi.GetRanchStation().transform.GetPosition());
 		}).PlayAnim("excited_loop").OnAnimQueueComplete(ranch.cheer.pst);
 		ranch.cheer.pst.ScheduleGoTo(0.2f, ranch.move);
-		ranch.move.DefaultState(ranch.move.movetoranch).ToggleStatusItem(CREATURES.STATUSITEMS.GETTING_RANCHED.NAME, CREATURES.STATUSITEMS.GETTING_RANCHED.TOOLTIP, category: Db.Get().StatusItemCategories.Main, icon: string.Empty, icon_type: StatusItem.IconType.Info, notification_type: (NotificationType)0, allow_multiples: false, render_overlay: SimViewMode.None, status_overlays: 0, resolve_string_callback: null, resolve_tooltip_callback: null);
+		ranch.move.DefaultState(ranch.move.movetoranch).ToggleStatusItem(CREATURES.STATUSITEMS.GETTING_RANCHED.NAME, CREATURES.STATUSITEMS.GETTING_RANCHED.TOOLTIP, category: Db.Get().StatusItemCategories.Main, icon: string.Empty, icon_type: StatusItem.IconType.Info, notification_type: (NotificationType)0, allow_multiples: false, render_overlay: default(HashedString), status_overlays: 0, resolve_string_callback: null, resolve_tooltip_callback: null);
 		ranch.move.movetoranch.Enter("Speedup", delegate(Instance smi)
 		{
 			smi.GetComponent<Navigator>().defaultSpeed = smi.originalSpeed * 1.25f;
@@ -114,9 +114,9 @@ internal class RanchedStates : GameStateMachine<RanchedStates, RanchedStates.Ins
 		{
 			smi.GetRanchStation().Trigger(-1357116271, null);
 		}).EventTransition(GameHashes.RancherReadyAtRanchStation, ranch.ranching, null);
-		ranch.ranching.Enter(PlayGroomingLoopAnim).EventTransition(GameHashes.RanchingComplete, wavegoodbye, null).ToggleStatusItem(CREATURES.STATUSITEMS.GETTING_RANCHED.NAME, CREATURES.STATUSITEMS.GETTING_RANCHED.TOOLTIP, category: Db.Get().StatusItemCategories.Main, icon: string.Empty, icon_type: StatusItem.IconType.Info, notification_type: (NotificationType)0, allow_multiples: false, render_overlay: SimViewMode.None, status_overlays: 0, resolve_string_callback: null, resolve_tooltip_callback: null);
-		wavegoodbye.Enter(PlayGroomingPstAnim).OnAnimQueueComplete(runaway).ToggleStatusItem(CREATURES.STATUSITEMS.EXCITED_TO_BE_RANCHED.NAME, CREATURES.STATUSITEMS.EXCITED_TO_BE_RANCHED.TOOLTIP, category: Db.Get().StatusItemCategories.Main, icon: string.Empty, icon_type: StatusItem.IconType.Info, notification_type: (NotificationType)0, allow_multiples: false, render_overlay: SimViewMode.None, status_overlays: 0, resolve_string_callback: null, resolve_tooltip_callback: null);
-		runaway.MoveTo(GetRunawayCell, behaviourcomplete, behaviourcomplete, false).ToggleStatusItem(CREATURES.STATUSITEMS.IDLE.NAME, CREATURES.STATUSITEMS.IDLE.TOOLTIP, category: Db.Get().StatusItemCategories.Main, icon: string.Empty, icon_type: StatusItem.IconType.Info, notification_type: (NotificationType)0, allow_multiples: false, render_overlay: SimViewMode.None, status_overlays: 0, resolve_string_callback: null, resolve_tooltip_callback: null);
+		ranch.ranching.Enter(PlayGroomingLoopAnim).EventTransition(GameHashes.RanchingComplete, wavegoodbye, null).ToggleStatusItem(CREATURES.STATUSITEMS.GETTING_RANCHED.NAME, CREATURES.STATUSITEMS.GETTING_RANCHED.TOOLTIP, category: Db.Get().StatusItemCategories.Main, icon: string.Empty, icon_type: StatusItem.IconType.Info, notification_type: (NotificationType)0, allow_multiples: false, render_overlay: default(HashedString), status_overlays: 0, resolve_string_callback: null, resolve_tooltip_callback: null);
+		wavegoodbye.Enter(PlayGroomingPstAnim).OnAnimQueueComplete(runaway).ToggleStatusItem(CREATURES.STATUSITEMS.EXCITED_TO_BE_RANCHED.NAME, CREATURES.STATUSITEMS.EXCITED_TO_BE_RANCHED.TOOLTIP, category: Db.Get().StatusItemCategories.Main, icon: string.Empty, icon_type: StatusItem.IconType.Info, notification_type: (NotificationType)0, allow_multiples: false, render_overlay: default(HashedString), status_overlays: 0, resolve_string_callback: null, resolve_tooltip_callback: null);
+		runaway.MoveTo(GetRunawayCell, behaviourcomplete, behaviourcomplete, false).ToggleStatusItem(CREATURES.STATUSITEMS.IDLE.NAME, CREATURES.STATUSITEMS.IDLE.TOOLTIP, category: Db.Get().StatusItemCategories.Main, icon: string.Empty, icon_type: StatusItem.IconType.Info, notification_type: (NotificationType)0, allow_multiples: false, render_overlay: default(HashedString), status_overlays: 0, resolve_string_callback: null, resolve_tooltip_callback: null);
 		behaviourcomplete.BehaviourComplete(GameTags.Creatures.WantsToGetRanched, false);
 	}
 

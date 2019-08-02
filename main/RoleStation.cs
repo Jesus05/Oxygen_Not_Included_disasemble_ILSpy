@@ -1,5 +1,6 @@
+using System;
+using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 
 public class RoleStation : Workable, IEffectDescriptor
 {
@@ -27,8 +28,6 @@ public class RoleStation : Workable, IEffectDescriptor
 
 	private Chore chore;
 
-	private RolesScreen rolesScreen;
-
 	[MyCmpAdd]
 	private Notifier notifier;
 
@@ -37,75 +36,92 @@ public class RoleStation : Workable, IEffectDescriptor
 
 	private RoleStationSM.Instance smi;
 
-	private static readonly EventSystem.IntraObjectHandler<RoleStation> OnSelectObjectDelegate = new EventSystem.IntraObjectHandler<RoleStation>(delegate(RoleStation component, object data)
-	{
-		component.OnSelectObject(data);
-	});
+	private Guid skillPointAvailableStatusItem;
+
+	private List<int> subscriptions = new List<int>();
 
 	protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
+		synchronizeAnims = true;
 	}
 
 	protected override void OnSpawn()
 	{
 		base.OnSpawn();
-		Subscribe(-1503271301, OnSelectObjectDelegate);
 		Components.RoleStations.Add(this);
 		smi = new RoleStationSM.Instance(this);
 		smi.StartSM();
-		SetWorkTime(2f);
+		SetWorkTime(7.53f);
+		resetProgressOnStop = true;
+		subscriptions.Add(Game.Instance.Subscribe(-1523247426, UpdateSkillPointAvailableStatusItem));
+		subscriptions.Add(Game.Instance.Subscribe(1505456302, UpdateSkillPointAvailableStatusItem));
+		UpdateSkillPointAvailableStatusItem(null);
 	}
 
-	public override void AwardExperience(float work_dt, MinionResume resume)
+	protected override void OnStopWork(Worker worker)
 	{
+		Telepad.StatesInstance sMI = this.GetSMI<Telepad.StatesInstance>();
+		sMI.sm.idlePortal.Trigger(sMI);
+	}
+
+	private void UpdateSkillPointAvailableStatusItem(object data = null)
+	{
+		IEnumerator enumerator = Components.MinionResumes.GetEnumerator();
+		try
+		{
+			while (enumerator.MoveNext())
+			{
+				MinionResume minionResume = (MinionResume)enumerator.Current;
+				if (minionResume.TotalSkillPointsGained - minionResume.SkillsMastered > 0)
+				{
+					if (skillPointAvailableStatusItem == Guid.Empty)
+					{
+						skillPointAvailableStatusItem = GetComponent<KSelectable>().AddStatusItem(Db.Get().BuildingStatusItems.SkillPointsAvailable, null);
+					}
+					return;
+				}
+			}
+		}
+		finally
+		{
+			IDisposable disposable;
+			if ((disposable = (enumerator as IDisposable)) != null)
+			{
+				disposable.Dispose();
+			}
+		}
+		GetComponent<KSelectable>().RemoveStatusItem(Db.Get().BuildingStatusItems.SkillPointsAvailable, false);
+		skillPointAvailableStatusItem = Guid.Empty;
 	}
 
 	private Chore CreateWorkChore()
 	{
-		ChoreType switchRole = Db.Get().ChoreTypes.SwitchRole;
+		ChoreType learnSkill = Db.Get().ChoreTypes.LearnSkill;
 		KAnimFile anim = Assets.GetAnim("anim_hat_kanim");
-		return new WorkChore<RoleStation>(switchRole, this, null, null, true, null, null, null, false, null, false, true, anim, false, true, false, PriorityScreen.PriorityClass.emergency, 0, false);
+		return new WorkChore<RoleStation>(learnSkill, this, null, true, null, null, null, false, null, false, true, anim, false, true, false, PriorityScreen.PriorityClass.personalNeeds, 5, false, false);
 	}
 
 	protected override void OnCompleteWork(Worker worker)
 	{
 		base.OnCompleteWork(worker);
-		new PutOnHatChore(worker, Db.Get().ChoreTypes.SwitchHat);
-	}
-
-	private void ClearRolesScreen()
-	{
-		if ((Object)rolesScreen != (Object)null)
-		{
-			rolesScreen.Deactivate();
-			rolesScreen = null;
-		}
+		worker.GetComponent<MinionResume>().SkillLearned();
 	}
 
 	private void OnSelectRolesClick()
 	{
 		DetailsScreen.Instance.Show(false);
-		if ((Object)rolesScreen == (Object)null)
-		{
-			ManagementMenu.Instance.ToggleRoles();
-		}
-		else
-		{
-			ClearRolesScreen();
-		}
-	}
-
-	private void OnSelectObject(object data)
-	{
-		ClearRolesScreen();
+		ManagementMenu.Instance.ToggleSkills();
 	}
 
 	protected override void OnCleanUp()
 	{
 		base.OnCleanUp();
+		foreach (int subscription in subscriptions)
+		{
+			Game.Instance.Unsubscribe(subscription);
+		}
 		Components.RoleStations.Remove(this);
-		ClearRolesScreen();
 	}
 
 	public List<Descriptor> GetDescriptors(BuildingDef def)

@@ -5,7 +5,7 @@ public class MessageNotification : Notification
 	public Message message;
 
 	public MessageNotification(Message m)
-		: base(m.GetTitle(), NotificationType.Messages, HashedString.Invalid, null, null, false, 0f, null, null)
+		: base(m.GetTitle(), NotificationType.Messages, HashedString.Invalid, null, null, false, 0f, null, null, null)
 	{
 		message = m;
 		if (!message.PlayNotificationSound())
@@ -13,7 +13,7 @@ public class MessageNotification : Notification
 			playSound = false;
 		}
 		base.ToolTip = ((List<Notification> notifications, object data) => OnToolTip(notifications, m.GetTooltip()));
-		hasLocation = false;
+		base.clickFocus = null;
 	}
 
 	private string OnToolTip(List<Notification> notifications, string tooltipText)

@@ -14,7 +14,7 @@ public class Deconstructable : Workable
 	private bool isMarkedForDeconstruction;
 
 	[Serialize]
-	public SimHashes[] constructionElements;
+	public Tag[] constructionElements;
 
 	private static readonly EventSystem.IntraObjectHandler<Deconstructable> OnRefreshUserMenuDelegate = new EventSystem.IntraObjectHandler<Deconstructable>(delegate(Deconstructable component, object data)
 	{
@@ -42,9 +42,14 @@ public class Deconstructable : Workable
 		synchronizeAnims = false;
 		workerStatusItem = Db.Get().DuplicantStatusItems.Deconstructing;
 		attributeConverter = Db.Get().AttributeConverters.ConstructionSpeed;
-		attributeExperienceMultiplier = DUPLICANTSTATS.ATTRIBUTE_LEVELING.PART_DAY_EXPERIENCE;
+		attributeExperienceMultiplier = DUPLICANTSTATS.ATTRIBUTE_LEVELING.MOST_DAY_EXPERIENCE;
+		minimumAttributeMultiplier = 0.75f;
+		skillExperienceSkillGroup = Db.Get().SkillGroups.Building.Id;
+		skillExperienceMultiplier = SKILLS.MOST_DAY_EXPERIENCE;
 		multitoolContext = "build";
 		multitoolHitEffectTag = EffectConfigs.BuildSplashId;
+		workingPstComplete = HashedString.Invalid;
+		workingPstFailed = HashedString.Invalid;
 		Building component = GetComponent<Building>();
 		CellOffset[][] table = OffsetGroups.InvertedStandardTable;
 		if (component.Def.IsTilePiece)
@@ -64,17 +69,13 @@ public class Deconstructable : Workable
 		Subscribe(-790448070, OnDeconstructDelegate);
 		if (constructionElements == null || constructionElements.Length == 0)
 		{
-			constructionElements = new SimHashes[1];
-			constructionElements[0] = GetComponent<PrimaryElement>().ElementID;
+			constructionElements = new Tag[1];
+			constructionElements[0] = GetComponent<PrimaryElement>().Element.tag;
 		}
 		if (isMarkedForDeconstruction)
 		{
 			QueueDeconstruction();
 		}
-	}
-
-	public override void AwardExperience(float work_dt, MinionResume resume)
-	{
 	}
 
 	public override float GetWorkTime()
@@ -147,8 +148,6 @@ public class Deconstructable : Workable
 				}
 				else
 				{
-					Vector3 position = gameObject.transform.GetPosition();
-					position.x += (UnityEngine.Random.value - 0.5f) * 0.5f;
 					float num3 = UnityEngine.Random.Range(-1f, 1f);
 					Vector2 iNITIAL_VELOCITY_RANGE = INITIAL_VELOCITY_RANGE;
 					float x = num3 * iNITIAL_VELOCITY_RANGE.x;
@@ -177,7 +176,7 @@ public class Deconstructable : Workable
 			else
 			{
 				Prioritizable.AddRef(base.gameObject);
-				chore = new WorkChore<Deconstructable>(Db.Get().ChoreTypes.Deconstruct, this, null, null, true, null, null, null, true, null, false, false, null, true, true, true, PriorityScreen.PriorityClass.basic, 0, true);
+				chore = new WorkChore<Deconstructable>(Db.Get().ChoreTypes.Deconstruct, this, null, true, null, null, null, true, null, false, false, null, true, true, true, PriorityScreen.PriorityClass.basic, 5, true, true);
 				GetComponent<KSelectable>().AddStatusItem(Db.Get().BuildingStatusItems.PendingDeconstruction, this);
 				isMarkedForDeconstruction = true;
 				Trigger(2108245096, "Deconstruct");
@@ -211,26 +210,40 @@ public class Deconstructable : Workable
 		}
 	}
 
-	public static GameObject SpawnItem(Vector3 position, BuildingDef def, SimHashes src_element, float src_mass, float src_temperature, byte disease_idx, int disease_count)
+	public static GameObject SpawnItem(Vector3 position, BuildingDef def, Tag src_element, float src_mass, float src_temperature, byte disease_idx, int disease_count)
 	{
-		GameObject result = null;
+		GameObject gameObject = null;
 		int cell = Grid.PosToCell(position);
 		CellOffset[] placementOffsets = def.PlacementOffsets;
-		float num = src_mass;
-		Element element = ElementLoader.FindElementByHash(src_element);
-		for (int i = 0; (float)i < src_mass / 400f; i++)
+		Element element = ElementLoader.GetElement(src_element);
+		if (element != null)
 		{
-			int num2 = i % def.PlacementOffsets.Length;
-			int cell2 = Grid.OffsetCell(cell, placementOffsets[num2]);
-			float mass = num;
-			if (num > 400f)
+			float num = src_mass;
+			for (int i = 0; (float)i < src_mass / 400f; i++)
 			{
-				mass = 400f;
-				num -= 400f;
+				int num2 = i % def.PlacementOffsets.Length;
+				int cell2 = Grid.OffsetCell(cell, placementOffsets[num2]);
+				float mass = num;
+				if (num > 400f)
+				{
+					mass = 400f;
+					num -= 400f;
+				}
+				gameObject = element.substance.SpawnResource(Grid.CellToPosCBC(cell2, Grid.SceneLayer.Ore), mass, src_temperature, disease_idx, disease_count, false, false, false);
 			}
-			result = element.substance.SpawnResource(Grid.CellToPosCBC(cell2, Grid.SceneLayer.Ore), mass, src_temperature, disease_idx, disease_count, false, false);
 		}
-		return result;
+		else
+		{
+			for (int j = 0; (float)j < src_mass; j++)
+			{
+				int num3 = j % def.PlacementOffsets.Length;
+				int cell3 = Grid.OffsetCell(cell, placementOffsets[num3]);
+				GameObject prefab = Assets.GetPrefab(src_element);
+				gameObject = GameUtil.KInstantiate(prefab, Grid.CellToPosCBC(cell3, Grid.SceneLayer.Ore), Grid.SceneLayer.Ore, null, 0);
+				gameObject.SetActive(true);
+			}
+		}
+		return gameObject;
 	}
 
 	private void OnRefreshUserMenu(object data)

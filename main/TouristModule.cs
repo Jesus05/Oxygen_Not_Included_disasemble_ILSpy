@@ -1,3 +1,4 @@
+using Klei.AI;
 using KSerialization;
 using System.Collections.Generic;
 using UnityEngine;
@@ -13,7 +14,8 @@ public class TouristModule : StateMachineComponent<TouristModule.StatesInstance>
 			smi.gameObject.Subscribe(238242047, delegate
 			{
 				smi.SetSuspended(false);
-				smi.ReleaseAstronaut(null);
+				smi.ReleaseAstronaut(null, true);
+				smi.assignable.Unassign();
 			});
 		}
 	}
@@ -70,7 +72,7 @@ public class TouristModule : StateMachineComponent<TouristModule.StatesInstance>
 		isSuspended = state;
 	}
 
-	public void ReleaseAstronaut(object data)
+	public void ReleaseAstronaut(object data, bool applyBuff = false)
 	{
 		if (!releasingAstronaut)
 		{
@@ -84,6 +86,10 @@ public class TouristModule : StateMachineComponent<TouristModule.StatesInstance>
 				if (Grid.FakeFloor[Grid.OffsetCell(Grid.PosToCell(base.smi.master.gameObject), 0, -1)])
 				{
 					gameObject.GetComponent<Navigator>().SetCurrentNavType(NavType.Floor);
+					if (applyBuff)
+					{
+						gameObject.GetComponent<Effects>().Add(Db.Get().effects.Get("SpaceTourist"), true);
+					}
 				}
 			}
 			releasingAstronaut = false;
@@ -110,10 +116,9 @@ public class TouristModule : StateMachineComponent<TouristModule.StatesInstance>
 		base.OnSpawn();
 		storage = GetComponent<Storage>();
 		assignable = GetComponent<Assignable>();
-		assignable.eligibleFilter = ((MinionIdentity identity) => true);
 		base.smi.StartSM();
-		int cell = Grid.OffsetCell(Grid.PosToCell(base.gameObject), 0, -1);
-		partitionerEntry = GameScenePartitioner.Instance.Add("TouristModule.gantryChanged", base.gameObject, cell, GameScenePartitioner.Instance.solidChangedLayer, OnGantryChanged);
+		int cell = Grid.PosToCell(base.gameObject);
+		partitionerEntry = GameScenePartitioner.Instance.Add("TouristModule.gantryChanged", base.gameObject, cell, GameScenePartitioner.Instance.validNavCellChangedLayer, OnGantryChanged);
 		OnGantryChanged(null);
 		Subscribe(-1056989049, OnSuspendDelegate);
 		Subscribe(684616645, OnAssigneeChangedDelegate);
@@ -126,7 +131,8 @@ public class TouristModule : StateMachineComponent<TouristModule.StatesInstance>
 			KSelectable component = GetComponent<KSelectable>();
 			component.RemoveStatusItem(Db.Get().BuildingStatusItems.HasGantry, false);
 			component.RemoveStatusItem(Db.Get().BuildingStatusItems.MissingGantry, false);
-			if (Grid.FakeFloor[Grid.OffsetCell(Grid.PosToCell(base.smi.master.gameObject), 0, -1)])
+			int i = Grid.OffsetCell(Grid.PosToCell(base.smi.master.gameObject), 0, -1);
+			if (Grid.FakeFloor[i])
 			{
 				component.AddStatusItem(Db.Get().BuildingStatusItems.HasGantry, null);
 			}
@@ -141,7 +147,7 @@ public class TouristModule : StateMachineComponent<TouristModule.StatesInstance>
 	{
 		ChoreType astronaut = Db.Get().ChoreTypes.Astronaut;
 		KAnimFile anim = Assets.GetAnim("anim_hat_kanim");
-		WorkChore<CommandModuleWorkable> workChore = new WorkChore<CommandModuleWorkable>(astronaut, this, null, null, true, null, null, null, false, null, false, true, anim, false, true, false, PriorityScreen.PriorityClass.emergency, 0, false);
+		WorkChore<CommandModuleWorkable> workChore = new WorkChore<CommandModuleWorkable>(astronaut, this, null, true, null, null, null, false, null, false, true, anim, false, true, false, PriorityScreen.PriorityClass.personalNeeds, 5, false, true);
 		workChore.AddPrecondition(ChorePreconditions.instance.IsAssignedtoMe, assignable);
 		return workChore;
 	}
@@ -150,7 +156,7 @@ public class TouristModule : StateMachineComponent<TouristModule.StatesInstance>
 	{
 		if (GetComponent<MinionStorage>().GetStoredMinionInfo().Count > 0)
 		{
-			ReleaseAstronaut(null);
+			ReleaseAstronaut(null, false);
 			Game.Instance.userMenu.Refresh(base.gameObject);
 		}
 	}
@@ -159,7 +165,7 @@ public class TouristModule : StateMachineComponent<TouristModule.StatesInstance>
 	{
 		GameScenePartitioner.Instance.Free(ref partitionerEntry);
 		partitionerEntry.Clear();
-		ReleaseAstronaut(null);
+		ReleaseAstronaut(null, false);
 		GameScenePartitioner.Instance.Free(ref partitionerEntry);
 		base.smi.StopSM("cleanup");
 	}

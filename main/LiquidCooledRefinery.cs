@@ -2,7 +2,7 @@ using STRINGS;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LiquidCooledRefinery : Refinery
+public class LiquidCooledRefinery : ComplexFabricator
 {
 	public class StatesInstance : GameStateMachine<States, StatesInstance, LiquidCooledRefinery, object>.GameInstance
 	{
@@ -16,15 +16,19 @@ public class LiquidCooledRefinery : Refinery
 	{
 		public static StatusItem waitingForCoolantStatus;
 
+		public BoolParameter outputBlocked;
+
 		public State waiting_for_coolant;
 
 		public State ready;
+
+		public State output_blocked;
 
 		public override void InitializeStates(out BaseState default_state)
 		{
 			if (waitingForCoolantStatus == null)
 			{
-				waitingForCoolantStatus = new StatusItem("waitingForCoolantStatus", BUILDING.STATUSITEMS.ENOUGH_COOLANT.NAME, BUILDING.STATUSITEMS.ENOUGH_COOLANT.TOOLTIP, "status_item_no_liquid_to_pump", StatusItem.IconType.Custom, NotificationType.BadMinor, false, SimViewMode.None, 63486);
+				waitingForCoolantStatus = new StatusItem("waitingForCoolantStatus", BUILDING.STATUSITEMS.ENOUGH_COOLANT.NAME, BUILDING.STATUSITEMS.ENOUGH_COOLANT.TOOLTIP, "status_item_no_liquid_to_pump", StatusItem.IconType.Custom, NotificationType.BadMinor, false, OverlayModes.None.ID, 129022);
 				waitingForCoolantStatus.resolveStringCallback = delegate(string str, object obj)
 				{
 					LiquidCooledRefinery liquidCooledRefinery = (LiquidCooledRefinery)obj;
@@ -32,15 +36,21 @@ public class LiquidCooledRefinery : Refinery
 				};
 			}
 			default_state = waiting_for_coolant;
-			waiting_for_coolant.ToggleStatusItem(waitingForCoolantStatus, (StatesInstance smi) => smi.master).EventTransition(GameHashes.OnStorageChange, ready, (StatesInstance smi) => smi.master.HasEnoughCoolant());
-			ready.EventTransition(GameHashes.OnStorageChange, waiting_for_coolant, (StatesInstance smi) => !smi.master.HasEnoughCoolant());
+			waiting_for_coolant.ToggleStatusItem(waitingForCoolantStatus, (StatesInstance smi) => smi.master).EventTransition(GameHashes.OnStorageChange, ready, (StatesInstance smi) => smi.master.HasEnoughCoolant()).ParamTransition(outputBlocked, output_blocked, GameStateMachine<States, StatesInstance, LiquidCooledRefinery, object>.IsTrue);
+			ready.EventTransition(GameHashes.OnStorageChange, waiting_for_coolant, (StatesInstance smi) => !smi.master.HasEnoughCoolant()).ParamTransition(outputBlocked, output_blocked, GameStateMachine<States, StatesInstance, LiquidCooledRefinery, object>.IsTrue).Enter(delegate(StatesInstance smi)
+			{
+				smi.master.SetQueueDirty();
+			});
+			output_blocked.ToggleStatusItem(Db.Get().BuildingStatusItems.OutputPipeFull, (object)null).ParamTransition(outputBlocked, waiting_for_coolant, GameStateMachine<States, StatesInstance, LiquidCooledRefinery, object>.IsFalse);
 		}
 	}
 
 	[MyCmpReq]
 	private ConduitConsumer conduitConsumer;
 
-	public static readonly Operational.Flag enoughCoolant = new Operational.Flag("enoughCoolant", Operational.Flag.Type.Functional);
+	public static readonly Operational.Flag coolantOutputPipeEmpty = new Operational.Flag("coolantOutputPipeEmpty", Operational.Flag.Type.Requirement);
+
+	private int outputCell;
 
 	public Tag coolantTag;
 
@@ -76,6 +86,10 @@ public class LiquidCooledRefinery : Refinery
 		meter_metal.SetPositionPercent(1f);
 		smi = new StatesInstance(this);
 		smi.StartSM();
+		ConduitFlow liquidConduitFlow = Game.Instance.liquidConduitFlow;
+		liquidConduitFlow.AddConduitUpdater(OnConduitUpdate, ConduitFlowPriority.Default);
+		Building component2 = GetComponent<Building>();
+		outputCell = component2.GetUtilityOutputCell();
 		workable.OnWorkTickActions = delegate
 		{
 			float percentComplete = workable.GetPercentComplete();
@@ -83,16 +97,30 @@ public class LiquidCooledRefinery : Refinery
 		};
 	}
 
+	protected override void OnCleanUp()
+	{
+		Game.Instance.liquidConduitFlow.RemoveConduitUpdater(OnConduitUpdate);
+		base.OnCleanUp();
+	}
+
+	private void OnConduitUpdate(float dt)
+	{
+		ConduitFlow liquidConduitFlow = Game.Instance.liquidConduitFlow;
+		bool flag = liquidConduitFlow.GetContents(outputCell).mass > 0f;
+		smi.sm.outputBlocked.Set(flag, smi);
+		operational.SetFlag(coolantOutputPipeEmpty, !flag);
+	}
+
 	public bool HasEnoughCoolant()
 	{
 		float amountAvailable = inStorage.GetAmountAvailable(coolantTag);
+		amountAvailable += buildStorage.GetAmountAvailable(coolantTag);
 		return amountAvailable >= minCoolantMass;
 	}
 
 	private void OnStorageChange(object data)
 	{
 		float amountAvailable = inStorage.GetAmountAvailable(coolantTag);
-		operational.SetFlag(enoughCoolant, amountAvailable >= minCoolantMass);
 		float capacityKG = conduitConsumer.capacityKG;
 		float positionPercent = Mathf.Clamp01(amountAvailable / capacityKG);
 		if (meter_coolant != null)
@@ -101,27 +129,53 @@ public class LiquidCooledRefinery : Refinery
 		}
 	}
 
-	protected override List<GameObject> CompleteOrder(UserOrder completed_order)
+	protected override bool HasIngredients(ComplexRecipe recipe, Storage storage)
 	{
-		List<GameObject> list = base.CompleteOrder(completed_order);
+		float amountAvailable = storage.GetAmountAvailable(coolantTag);
+		return amountAvailable >= minCoolantMass && base.HasIngredients(recipe, storage);
+	}
+
+	protected override void TransferCurrentRecipeIngredientsForBuild()
+	{
+		base.TransferCurrentRecipeIngredientsForBuild();
+		float num = minCoolantMass;
+		while (buildStorage.GetAmountAvailable(coolantTag) < minCoolantMass && inStorage.GetAmountAvailable(coolantTag) > 0f && num > 0f)
+		{
+			float num2 = inStorage.Transfer(buildStorage, coolantTag, num, false, true);
+			num -= num2;
+		}
+	}
+
+	protected override List<GameObject> SpawnOrderProduct(ComplexRecipe recipe)
+	{
+		List<GameObject> list = base.SpawnOrderProduct(recipe);
 		PrimaryElement component = list[0].GetComponent<PrimaryElement>();
 		component.Temperature = outputTemperature;
 		float num = GameUtil.CalculateEnergyDeltaForElementChange(component.Element.specificHeatCapacity, component.Mass, component.Element.highTemp, outputTemperature);
-		inStorage.Transfer(outStorage, coolantTag, minCoolantMass, false, true);
 		ListPool<GameObject, LiquidCooledRefinery>.PooledList pooledList = ListPool<GameObject, LiquidCooledRefinery>.Allocate();
-		outStorage.Find(coolantTag, pooledList);
+		buildStorage.Find(coolantTag, pooledList);
+		float num2 = 0f;
 		foreach (GameObject item in pooledList)
 		{
 			PrimaryElement component2 = item.GetComponent<PrimaryElement>();
 			if (component2.Mass != 0f)
 			{
-				float num2 = component2.Mass / minCoolantMass;
-				float kilowatts = (0f - num) * num2 * thermalFudge;
-				float num3 = GameUtil.CalculateTemperatureChange(component2.Element.specificHeatCapacity, component2.Mass, kilowatts);
-				float temperature = component2.Temperature;
-				component2.Temperature += num3;
+				num2 += component2.Mass * component2.Element.specificHeatCapacity;
 			}
 		}
+		foreach (GameObject item2 in pooledList)
+		{
+			PrimaryElement component3 = item2.GetComponent<PrimaryElement>();
+			if (component3.Mass != 0f)
+			{
+				float num3 = component3.Mass * component3.Element.specificHeatCapacity / num2;
+				float kilowatts = (0f - num) * num3 * thermalFudge;
+				float num4 = GameUtil.CalculateTemperatureChange(component3.Element.specificHeatCapacity, component3.Mass, kilowatts);
+				float temperature = component3.Temperature;
+				component3.Temperature += num4;
+			}
+		}
+		buildStorage.Transfer(outStorage, coolantTag, 3.40282347E+38f, false, true);
 		pooledList.Recycle();
 		return list;
 	}
@@ -148,7 +202,7 @@ public class LiquidCooledRefinery : Refinery
 		}
 		float num = 0f - GameUtil.CalculateEnergyDeltaForElementChange(component.Element.specificHeatCapacity, recipe.results[0].amount, component.Element.highTemp, outputTemperature);
 		float temp = GameUtil.CalculateTemperatureChange(primaryElement.Element.specificHeatCapacity, minCoolantMass, num * thermalFudge);
-		list.Add(new Descriptor(string.Format(UI.BUILDINGEFFECTS.REFINEMENT_ENERGY, GameUtil.GetFormattedJoules(num, "F1", GameUtil.TimeSlice.None)), string.Format(format, GameUtil.GetFormattedJoules(num, "F1", GameUtil.TimeSlice.None), primaryElement.GetProperName(), GameUtil.GetFormattedTemperature(temp, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Relative, true)), Descriptor.DescriptorType.Effect, false));
+		list.Add(new Descriptor(string.Format(UI.BUILDINGEFFECTS.REFINEMENT_ENERGY, GameUtil.GetFormattedJoules(num, "F1", GameUtil.TimeSlice.None)), string.Format(format, GameUtil.GetFormattedJoules(num, "F1", GameUtil.TimeSlice.None), primaryElement.GetProperName(), GameUtil.GetFormattedTemperature(temp, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Relative, true, false)), Descriptor.DescriptorType.Effect, false));
 		return list;
 	}
 }

@@ -22,7 +22,7 @@ public class CeilingLightConfig : IBuildingConfig
 		buildingDef.RequiresPowerInput = true;
 		buildingDef.EnergyConsumptionWhenActive = 10f;
 		buildingDef.SelfHeatKilowattsWhenActive = 0.5f;
-		buildingDef.ViewMode = SimViewMode.Light;
+		buildingDef.ViewMode = OverlayModes.Light.ID;
 		buildingDef.AudioCategory = "Metal";
 		return buildingDef;
 	}
@@ -33,6 +33,11 @@ public class CeilingLightConfig : IBuildingConfig
 		lightShapePreview.lux = 1800;
 		lightShapePreview.radius = 8f;
 		lightShapePreview.shape = LightShape.Cone;
+	}
+
+	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+	{
+		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.LightSource, false);
 	}
 
 	public override void DoPostConfigureComplete(GameObject go)

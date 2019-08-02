@@ -10,6 +10,6 @@ public class PathProberSensor : Sensor
 
 	public override void Update()
 	{
-		navigator.UpdateProbe();
+		navigator.UpdateProbe(false);
 	}
 }

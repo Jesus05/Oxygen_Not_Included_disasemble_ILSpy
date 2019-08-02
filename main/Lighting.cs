@@ -28,8 +28,8 @@ public class Lighting : MonoBehaviour
 
 	private void Update()
 	{
-		Shader.SetGlobalInt("_LiquidZ", -25);
-		Shader.SetGlobalInt("_SceneLayerMax", 31);
+		Shader.SetGlobalInt("_LiquidZ", -28);
+		Shader.SetGlobalInt("_SceneLayerMax", 34);
 		Shader.SetGlobalColor("_StateTransitionColour", Settings.StateTransitionColor);
 		Shader.SetGlobalVector("_DigMapMapParameters", new Vector4(Settings.DigMapColour.r, Settings.DigMapColour.g, Settings.DigMapColour.b, Settings.DigMapScale));
 		Shader.SetGlobalTexture("_DigDamageMap", Settings.DigDamageMap);
@@ -57,7 +57,7 @@ public class Lighting : MonoBehaviour
 			Shader.SetGlobalVector("_SubstanceParameters", new Vector4(Settings.substanceEdgeParameters.intensity, Settings.substanceEdgeParameters.edgeIntensity, Settings.substanceEdgeParameters.directSunlightScale, Settings.substanceEdgeParameters.power));
 			Shader.SetGlobalVector("_TileEdgeParameters", new Vector4(Settings.tileEdgeParameters.intensity, Settings.tileEdgeParameters.edgeIntensity, Settings.tileEdgeParameters.directSunlightScale, Settings.tileEdgeParameters.power));
 		}
-		float w = (!((UnityEngine.Object)SimDebugView.Instance != (UnityEngine.Object)null) || SimDebugView.Instance.GetMode() != SimViewMode.Disease) ? 0f : 1f;
+		float w = (!((UnityEngine.Object)SimDebugView.Instance != (UnityEngine.Object)null) || !(SimDebugView.Instance.GetMode() == OverlayModes.Disease.ID)) ? 0f : 1f;
 		if (disableLighting)
 		{
 			Shader.SetGlobalVector("_AnimParameters", new Vector4(1f, Settings.WorldZoneAnimBlend, 0f, w));

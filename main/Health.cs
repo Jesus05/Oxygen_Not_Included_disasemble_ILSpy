@@ -129,6 +129,29 @@ public class Health : KMonoBehaviour, ISaveLoadable
 		UpdateHealthBar();
 	}
 
+	public void RegisterHitReaction()
+	{
+		ReactionMonitor.Instance sMI = base.gameObject.GetSMI<ReactionMonitor.Instance>();
+		if (sMI != null)
+		{
+			SelfEmoteReactable selfEmoteReactable = new SelfEmoteReactable(base.gameObject, "Hit", Db.Get().ChoreTypes.Cough, "anim_hits_kanim", 0f, 1f, 1f);
+			selfEmoteReactable.AddStep(new EmoteReactable.EmoteStep
+			{
+				anim = (HashedString)"hit"
+			});
+			if (!base.gameObject.GetComponent<Navigator>().IsMoving())
+			{
+				EmoteChore emoteChore = new EmoteChore(base.gameObject.GetComponent<ChoreProvider>(), Db.Get().ChoreTypes.EmoteIdle, "anim_hits_kanim", new HashedString[1]
+				{
+					"hit"
+				}, null);
+				emoteChore.PairReactable(selfEmoteReactable);
+				selfEmoteReactable.PairEmote(emoteChore);
+			}
+			sMI.AddOneshotReactable(selfEmoteReactable);
+		}
+	}
+
 	[ContextMenu("DoDamage")]
 	public void DoDamage()
 	{
@@ -238,7 +261,7 @@ public class Health : KMonoBehaviour, ISaveLoadable
 	public void Incapacitate(Death source_of_death)
 	{
 		State = HealthState.Incapacitated;
-		GetComponent<KPrefabID>().AddTag(GameTags.HitPointsDepleted);
+		GetComponent<KPrefabID>().AddTag(GameTags.HitPointsDepleted, false);
 	}
 
 	private void Kill()

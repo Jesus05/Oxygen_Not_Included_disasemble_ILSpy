@@ -23,13 +23,13 @@ public class DigTool : DragTool
 			{
 				if (Grid.PosToCell(item.gameObject) == cell)
 				{
-					item.MarkForUproot();
+					item.MarkForUproot(true);
 					break;
 				}
 				OccupyArea area = item.area;
 				if ((Object)area != (Object)null && area.CheckIsOccupying(cell))
 				{
-					item.MarkForUproot();
+					item.MarkForUproot(true);
 				}
 			}
 		}
@@ -58,7 +58,7 @@ public class DigTool : DragTool
 	{
 		if (Grid.Solid[cell] && !Grid.Foundation[cell] && (Object)Grid.Objects[cell, 7] == (Object)null)
 		{
-			for (int i = 0; i < 37; i++)
+			for (int i = 0; i < 39; i++)
 			{
 				if ((Object)Grid.Objects[cell, i] != (Object)null && (Object)Grid.Objects[cell, i].GetComponent<Constructable>() != (Object)null)
 				{

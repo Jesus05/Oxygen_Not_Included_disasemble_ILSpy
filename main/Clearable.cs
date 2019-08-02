@@ -4,10 +4,13 @@ using System;
 using UnityEngine;
 
 [SerializationConfig(MemberSerialization.OptIn)]
-public class Clearable : Workable, ISaveLoadable
+public class Clearable : Workable, ISaveLoadable, IRender200ms
 {
 	[MyCmpReq]
 	private Pickupable pickupable;
+
+	[MyCmpReq]
+	private KSelectable selectable;
 
 	[Serialize]
 	private bool isMarkedForClear;
@@ -49,16 +52,13 @@ public class Clearable : Workable, ISaveLoadable
 		Subscribe(493375141, OnRefreshUserMenuDelegate);
 		Subscribe(-1617557748, OnEquippedDelegate);
 		workerStatusItem = Db.Get().DuplicantStatusItems.Clearing;
+		simRenderLoadBalance = true;
+		autoRegisterSimRender = false;
 	}
 
 	protected override void OnSpawn()
 	{
 		base.OnSpawn();
-		Prioritizable component = GetComponent<Prioritizable>();
-		if ((UnityEngine.Object)component != (UnityEngine.Object)null && (UnityEngine.Object)GetComponent<Health>() == (UnityEngine.Object)null)
-		{
-			component.showIcon = false;
-		}
 		if (isMarkedForClear)
 		{
 			if (this.HasTag(GameTags.Stored))
@@ -92,7 +92,6 @@ public class Clearable : Workable, ISaveLoadable
 	{
 		if (isMarkedForClear)
 		{
-			GetComponent<KSelectable>().RemoveStatusItem(Db.Get().MiscStatusItems.PendingClear, false);
 			isMarkedForClear = false;
 			GetComponent<KPrefabID>().RemoveTag(GameTags.Garbage);
 			Prioritizable.RemoveRef(base.gameObject);
@@ -101,6 +100,8 @@ public class Clearable : Workable, ISaveLoadable
 				GlobalChoreProvider.Instance.UnregisterClearable(clearHandle);
 				clearHandle.Clear();
 			}
+			RefreshClearableStatus();
+			SimAndRenderScheduler.instance.Remove(this);
 		}
 	}
 
@@ -108,11 +109,12 @@ public class Clearable : Workable, ISaveLoadable
 	{
 		if (isClearable && (!isMarkedForClear || force) && !pickupable.IsEntombed && !clearHandle.IsValid() && !this.HasTag(GameTags.Stored))
 		{
-			GetComponent<KSelectable>().AddStatusItem(Db.Get().MiscStatusItems.PendingClear, this);
 			Prioritizable.AddRef(base.gameObject);
-			GetComponent<KPrefabID>().AddTag(GameTags.Garbage);
+			GetComponent<KPrefabID>().AddTag(GameTags.Garbage, false);
 			isMarkedForClear = true;
 			clearHandle = GlobalChoreProvider.Instance.RegisterClearable(this);
+			RefreshClearableStatus();
+			SimAndRenderScheduler.instance.Add(this, simRenderLoadBalance);
 		}
 	}
 
@@ -177,6 +179,26 @@ public class Clearable : Workable, ISaveLoadable
 			{
 				MarkForClear(false);
 			}
+		}
+	}
+
+	public void Render200ms(float dt)
+	{
+		RefreshClearableStatus();
+	}
+
+	public void RefreshClearableStatus()
+	{
+		if (isMarkedForClear)
+		{
+			bool flag = GlobalChoreProvider.Instance.ClearableHasDestination(pickupable);
+			selectable.ToggleStatusItem(Db.Get().MiscStatusItems.PendingClear, flag, this);
+			selectable.ToggleStatusItem(Db.Get().MiscStatusItems.PendingClearNoStorage, !flag, this);
+		}
+		else
+		{
+			selectable.ToggleStatusItem(Db.Get().MiscStatusItems.PendingClear, false, this);
+			selectable.ToggleStatusItem(Db.Get().MiscStatusItems.PendingClearNoStorage, false, this);
 		}
 	}
 }

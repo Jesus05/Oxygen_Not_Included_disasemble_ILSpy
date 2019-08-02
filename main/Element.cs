@@ -1,13 +1,11 @@
 using Klei.AI;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 using STRINGS;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 
 [Serializable]
-[DebuggerDisplay("{id}")]
+[DebuggerDisplay("{name}")]
 public class Element : IComparable<Element>
 {
 	[Serializable]
@@ -22,7 +20,6 @@ public class Element : IComparable<Element>
 		TemperatureInsulated = 0x10
 	}
 
-	[JsonConverter(typeof(StringEnumConverter))]
 	public SimHashes id;
 
 	public Tag tag;
@@ -55,42 +52,34 @@ public class Element : IComparable<Element>
 
 	public float gasSurfaceAreaMultiplier;
 
-	[JsonConverter(typeof(StringEnumConverter))]
 	public State state;
 
 	public byte hardness;
 
 	public float lowTemp;
 
-	[JsonConverter(typeof(StringEnumConverter))]
 	public SimHashes lowTempTransitionTarget;
 
 	public Element lowTempTransition;
 
 	public float highTemp;
 
-	[JsonConverter(typeof(StringEnumConverter))]
 	public SimHashes highTempTransitionTarget;
 
 	public Element highTempTransition;
 
-	[JsonConverter(typeof(StringEnumConverter))]
 	public SimHashes highTempTransitionOreID = SimHashes.Vacuum;
 
 	public float highTempTransitionOreMassConversion;
 
-	[JsonConverter(typeof(StringEnumConverter))]
 	public SimHashes lowTempTransitionOreID = SimHashes.Vacuum;
 
 	public float lowTempTransitionOreMassConversion;
 
-	[JsonConverter(typeof(StringEnumConverter))]
 	public SimHashes sublimateId;
 
-	[JsonConverter(typeof(StringEnumConverter))]
 	public SimHashes convertId;
 
-	[JsonConverter(typeof(StringEnumConverter))]
 	public SpawnFXHashes sublimateFX;
 
 	public float lightAbsorptionFactor;
@@ -139,6 +128,12 @@ public class Element : IComparable<Element>
 		set;
 	}
 
+	public string description
+	{
+		get;
+		set;
+	}
+
 	public float PressureToMass(float pressure)
 	{
 		return pressure / defaultValues.pressure;
@@ -177,17 +172,17 @@ public class Element : IComparable<Element>
 		if (IsSolid)
 		{
 			str += "\n\n";
-			str += string.Format(ELEMENTS.ELEMENTDESCSOLID, GetMaterialCategoryTag().ProperName(), GameUtil.GetFormattedTemperature(highTemp, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true), GameUtil.GetHardnessString(this, addHardnessColor));
+			str += string.Format(ELEMENTS.ELEMENTDESCSOLID, GetMaterialCategoryTag().ProperName(), GameUtil.GetFormattedTemperature(highTemp, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false), GameUtil.GetHardnessString(this, addHardnessColor));
 		}
 		else if (IsLiquid)
 		{
 			str += "\n\n";
-			str += string.Format(ELEMENTS.ELEMENTDESCLIQUID, GetMaterialCategoryTag().ProperName(), GameUtil.GetFormattedTemperature(lowTemp, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true), GameUtil.GetFormattedTemperature(highTemp, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true));
+			str += string.Format(ELEMENTS.ELEMENTDESCLIQUID, GetMaterialCategoryTag().ProperName(), GameUtil.GetFormattedTemperature(lowTemp, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false), GameUtil.GetFormattedTemperature(highTemp, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false));
 		}
 		else if (!IsVacuum)
 		{
 			str += "\n\n";
-			str += string.Format(ELEMENTS.ELEMENTDESCGAS, GetMaterialCategoryTag().ProperName(), GameUtil.GetFormattedTemperature(lowTemp, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true));
+			str += string.Format(ELEMENTS.ELEMENTDESCGAS, GetMaterialCategoryTag().ProperName(), GameUtil.GetFormattedTemperature(lowTemp, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false));
 		}
 		string text = ELEMENTS.THERMALPROPERTIES;
 		text = text.Replace("{SPECIFIC_HEAT_CAPACITY}", GameUtil.GetFormattedSHC(specificHeatCapacity));
@@ -212,9 +207,9 @@ public class Element : IComparable<Element>
 		{
 			foreach (AttributeModifier attributeModifier in attributeModifiers)
 			{
-				Klei.AI.Attribute attribute = Db.Get().BuildingAttributes.Get(attributeModifier.AttributeId);
-				string text3 = str;
-				str = text3 + "\n" + attribute.Name + ": +" + attributeModifier.Value * 100f + "%";
+				string name = Db.Get().BuildingAttributes.Get(attributeModifier.AttributeId).Name;
+				string formattedString = attributeModifier.GetFormattedString(null);
+				str = str + "\n" + string.Format(DUPLICANTS.MODIFIERS.MODIFIER_FORMAT, name, formattedString);
 			}
 			return str;
 		}
@@ -223,7 +218,7 @@ public class Element : IComparable<Element>
 
 	public string Description()
 	{
-		return Strings.Get("STRINGS.ELEMENTS." + id.ToString().ToUpper() + ".DESC");
+		return description;
 	}
 
 	public bool HasTag(Tag search_tag)

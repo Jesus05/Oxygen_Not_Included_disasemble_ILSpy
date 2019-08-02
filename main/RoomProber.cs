@@ -52,7 +52,7 @@ public class RoomProber : ISim1000ms
 
 		private static bool IsWall(int cell)
 		{
-			return Grid.Solid[cell] || Grid.HasDoor[cell] || Grid.Foundation[cell];
+			return (Grid.BuildMasks[cell] & (Grid.BuildFlags.Solid | Grid.BuildFlags.Foundation)) != 0 || Grid.HasDoor[cell];
 		}
 
 		public bool ShouldContinue(int flood_cell)
@@ -235,9 +235,24 @@ public class RoomProber : ISim1000ms
 								break;
 							}
 						}
+						foreach (KPrefabID plant in data.plants)
+						{
+							if (component.InstanceID == plant.InstanceID)
+							{
+								flag = true;
+								break;
+							}
+						}
 						if (!flag)
 						{
-							data.AddBuilding(component);
+							if ((bool)component.GetComponent<Deconstructable>())
+							{
+								data.AddBuilding(component);
+							}
+							else if (component.HasTag(GameTags.Plant) && !component.HasTag("ForestTreeBranch".ToTag()))
+							{
+								data.AddPlants(component);
+							}
 						}
 					}
 				}
@@ -257,6 +272,7 @@ public class RoomProber : ISim1000ms
 
 	private void CreateRoom(CavityInfo cavity)
 	{
+		Debug.Assert(cavity.room == null);
 		Room room = new Room();
 		room.cavity = cavity;
 		cavity.room = room;
@@ -279,6 +295,7 @@ public class RoomProber : ISim1000ms
 		{
 			if (data.dirty)
 			{
+				Debug.Assert(data.room == null, "I expected info.room to always be null by this point");
 				if (data.numCells > 0)
 				{
 					if (data.numCells <= maxRoomSize)
@@ -289,6 +306,10 @@ public class RoomProber : ISim1000ms
 					{
 						building.Trigger(144050788, data.room);
 					}
+					foreach (KPrefabID plant in data.plants)
+					{
+						plant.Trigger(144050788, data.room);
+					}
 				}
 				data.dirty = false;
 			}
@@ -298,15 +319,35 @@ public class RoomProber : ISim1000ms
 
 	private void AssignBuildingsToRoom(Room room)
 	{
+		Debug.Assert(room != null);
 		RoomType roomType = room.roomType;
 		if (roomType != Db.Get().RoomTypes.Neutral)
 		{
 			foreach (KPrefabID building in room.buildings)
 			{
-				Assignable component = building.GetComponent<Assignable>();
-				if ((UnityEngine.Object)component != (UnityEngine.Object)null && (roomType.primary_constraint == null || !roomType.primary_constraint.building_criteria(building.GetComponent<KPrefabID>())))
+				if (!((UnityEngine.Object)building == (UnityEngine.Object)null) && !building.HasTag(GameTags.NotRoomAssignable))
 				{
-					component.Assign(room);
+					Assignable component = building.GetComponent<Assignable>();
+					if ((UnityEngine.Object)component != (UnityEngine.Object)null && (roomType.primary_constraint == null || !roomType.primary_constraint.building_criteria(building.GetComponent<KPrefabID>())))
+					{
+						component.Assign(room);
+					}
+				}
+			}
+		}
+	}
+
+	private void UnassignKPrefabIDs(Room room, List<KPrefabID> list)
+	{
+		foreach (KPrefabID item in list)
+		{
+			if (!((UnityEngine.Object)item == (UnityEngine.Object)null))
+			{
+				item.Trigger(144050788, null);
+				Assignable component = item.GetComponent<Assignable>();
+				if ((UnityEngine.Object)component != (UnityEngine.Object)null && component.assignee == room)
+				{
+					component.Unassign();
 				}
 			}
 		}
@@ -314,16 +355,28 @@ public class RoomProber : ISim1000ms
 
 	private void UnassignBuildingsToRoom(Room room)
 	{
-		foreach (KPrefabID building in room.buildings)
+		Debug.Assert(room != null);
+		UnassignKPrefabIDs(room, room.buildings);
+		UnassignKPrefabIDs(room, room.plants);
+	}
+
+	public void UpdateRoom(CavityInfo cavity)
+	{
+		if (cavity != null)
 		{
-			if (!((UnityEngine.Object)building == (UnityEngine.Object)null))
+			if (cavity.room != null)
 			{
-				building.Trigger(144050788, null);
-				Assignable component = building.GetComponent<Assignable>();
-				if ((UnityEngine.Object)component != (UnityEngine.Object)null && component.assignee == room)
-				{
-					component.Unassign();
-				}
+				ClearRoom(cavity.room);
+				cavity.room = null;
+			}
+			CreateRoom(cavity);
+			foreach (KPrefabID building in cavity.buildings)
+			{
+				building.Trigger(144050788, cavity.room);
+			}
+			foreach (KPrefabID plant in cavity.plants)
+			{
+				plant.Trigger(144050788, cavity.room);
 			}
 		}
 	}

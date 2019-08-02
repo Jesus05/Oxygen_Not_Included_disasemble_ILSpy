@@ -29,7 +29,7 @@ public class SwampLilyConfig : IEntityConfig
 			SimHashes.ChlorineGas
 		};
 		initialAnim = SwampLilyFlowerConfig.ID;
-		EntityTemplates.ExtendEntityToBasicPlant(template, mass, temperature_warning_low, temperature_warning_high, temperature_lethal_high, safe_elements, true, 0f, 0.15f, initialAnim, true, true);
+		EntityTemplates.ExtendEntityToBasicPlant(template, mass, temperature_warning_low, temperature_warning_high, temperature_lethal_high, safe_elements, true, 0f, 0.15f, initialAnim, true, true, true, true, 2400f);
 		gameObject.AddOrGet<StandardCropPlant>();
 		template = gameObject;
 		SeedProducer.ProductionType productionType = SeedProducer.ProductionType.Harvest;
@@ -40,7 +40,7 @@ public class SwampLilyConfig : IEntityConfig
 		List<Tag> list = new List<Tag>();
 		list.Add(GameTags.CropSeed);
 		list = list;
-		GameObject seed = EntityTemplates.CreateAndRegisterSeedForPlant(template, productionType, initialAnim, desc, name, anim, "object", 1, list, SingleEntityReceptacle.ReceptacleDirection.Top, default(Tag), 4, STRINGS.CREATURES.SPECIES.SWAMPLILY.DOMESTICATEDDESC, EntityTemplates.CollisionShape.CIRCLE, 0.3f, 0.3f, null, string.Empty);
+		GameObject seed = EntityTemplates.CreateAndRegisterSeedForPlant(template, productionType, initialAnim, desc, name, anim, "object", 1, list, SingleEntityReceptacle.ReceptacleDirection.Top, default(Tag), 4, STRINGS.CREATURES.SPECIES.SWAMPLILY.DOMESTICATEDDESC, EntityTemplates.CollisionShape.CIRCLE, 0.3f, 0.3f, null, string.Empty, false);
 		EntityTemplates.CreateAndRegisterPreviewForPlant(seed, ID + "_preview", Assets.GetAnim("swamplily_kanim"), "place", 1, 2);
 		SoundEventVolumeCache.instance.AddVolume("swamplily_kanim", "SwampLily_grow", NOISE_POLLUTION.CREATURES.TIER3);
 		SoundEventVolumeCache.instance.AddVolume("swamplily_kanim", "SwampLily_harvest", NOISE_POLLUTION.CREATURES.TIER3);

@@ -23,7 +23,7 @@ public class OxyliteRefinery : StateMachineComponent<OxyliteRefinery.StatesInsta
 					Vector3 position = base.transform.GetPosition() + base.master.dropOffset;
 					position.z = Grid.GetLayerZ(Grid.SceneLayer.Ore);
 					gameObject.transform.SetPosition(position);
-					storage.Drop(gameObject);
+					storage.Drop(gameObject, true);
 				}
 			}
 		}

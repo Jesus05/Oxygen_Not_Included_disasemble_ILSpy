@@ -22,7 +22,7 @@ public class SolidConduitConfig : IBuildingConfig
 		buildingDef.Floodable = false;
 		buildingDef.Overheatable = false;
 		buildingDef.Entombable = false;
-		buildingDef.ViewMode = SimViewMode.SolidConveyorMap;
+		buildingDef.ViewMode = OverlayModes.SolidConveyor.ID;
 		buildingDef.ObjectLayer = ObjectLayer.SolidConduit;
 		buildingDef.TileLayer = ObjectLayer.SolidConduitTile;
 		buildingDef.ReplacementLayer = ObjectLayer.ReplacementSolidConduit;
@@ -52,8 +52,7 @@ public class SolidConduitConfig : IBuildingConfig
 		kAnimGraphTileVisualizer.connectionSource = KAnimGraphTileVisualizer.ConnectionSource.Solid;
 		kAnimGraphTileVisualizer.isPhysicalBuilding = false;
 		Constructable component = go.GetComponent<Constructable>();
-		component.choreTags = GameTags.ChoreTypes.ConveyorChores;
-		component.requiredRolePerk = RoleManager.rolePerks.ConveyorBuild.id;
+		component.requiredSkillPerk = Db.Get().SkillPerks.ConveyorBuild.Id;
 	}
 
 	public override void DoPostConfigureComplete(GameObject go)

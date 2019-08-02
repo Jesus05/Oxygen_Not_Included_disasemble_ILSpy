@@ -130,9 +130,9 @@ public class RescueIncapacitatedChore : Chore<RescueIncapacitatedChore.StatesIns
 	};
 
 	public RescueIncapacitatedChore(IStateMachineTarget master, GameObject incapacitatedDuplicant)
-		: base(Db.Get().ChoreTypes.RescueIncapacitated, master, (ChoreProvider)null, false, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.emergency, 0, false, true, 0, (Tag[])null)
+		: base(Db.Get().ChoreTypes.RescueIncapacitated, master, (ChoreProvider)null, false, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.personalNeeds, 5, false, true, 0, false, ReportManager.ReportType.WorkTime)
 	{
-		smi = new StatesInstance(this);
+		base.smi = new StatesInstance(this);
 		base.runUntilComplete = true;
 		AddPrecondition(ChorePreconditions.instance.NotChoreCreator, incapacitatedDuplicant.gameObject);
 		AddPrecondition(CanReachIncapacitated, incapacitatedDuplicant);
@@ -140,9 +140,9 @@ public class RescueIncapacitatedChore : Chore<RescueIncapacitatedChore.StatesIns
 
 	public override void Begin(Precondition.Context context)
 	{
-		smi.sm.rescuer.Set(context.consumerState.gameObject, smi);
-		smi.sm.rescueTarget.Set(gameObject, smi);
-		smi.sm.deliverTarget.Set(gameObject.GetSMI<BeIncapacitatedChore.StatesInstance>().master.GetChosenClinic(), smi);
+		base.smi.sm.rescuer.Set(context.consumerState.gameObject, base.smi);
+		base.smi.sm.rescueTarget.Set(gameObject, base.smi);
+		base.smi.sm.deliverTarget.Set(gameObject.GetSMI<BeIncapacitatedChore.StatesInstance>().master.GetChosenClinic(), base.smi);
 		base.Begin(context);
 	}
 
@@ -154,9 +154,9 @@ public class RescueIncapacitatedChore : Chore<RescueIncapacitatedChore.StatesIns
 
 	private void DropIncapacitatedDuplicant()
 	{
-		if ((UnityEngine.Object)smi.sm.rescuer.Get(smi) != (UnityEngine.Object)null && (UnityEngine.Object)smi.sm.rescueTarget.Get(smi) != (UnityEngine.Object)null)
+		if ((UnityEngine.Object)base.smi.sm.rescuer.Get(base.smi) != (UnityEngine.Object)null && (UnityEngine.Object)base.smi.sm.rescueTarget.Get(base.smi) != (UnityEngine.Object)null)
 		{
-			smi.sm.rescuer.Get(smi).GetComponent<Storage>().Drop(smi.sm.rescueTarget.Get(smi));
+			base.smi.sm.rescuer.Get(base.smi).GetComponent<Storage>().Drop(base.smi.sm.rescueTarget.Get(base.smi), true);
 		}
 	}
 }

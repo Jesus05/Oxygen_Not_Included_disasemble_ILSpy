@@ -1,3 +1,4 @@
+using KSerialization;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,12 +11,40 @@ public class LaunchConditionManager : KMonoBehaviour, ISim4000ms, ISim1000ms
 
 	private LaunchableRocket launchable;
 
+	[Serialize]
+	private List<Tuple<string, string, string>> DEBUG_ModuleDestructions;
+
 	private Dictionary<RocketFlightCondition, Guid> conditionStatuses = new Dictionary<RocketFlightCondition, Guid>();
 
 	public List<RocketModule> rocketModules
 	{
 		get;
 		private set;
+	}
+
+	public void DEBUG_TraceModuleDestruction(string moduleName, string state, string stackTrace)
+	{
+		if (DEBUG_ModuleDestructions == null)
+		{
+			DEBUG_ModuleDestructions = new List<Tuple<string, string, string>>();
+		}
+		DEBUG_ModuleDestructions.Add(new Tuple<string, string, string>(moduleName, state, stackTrace));
+	}
+
+	[ContextMenu("Dump Module Destructions")]
+	private void DEBUG_DumpModuleDestructions()
+	{
+		if (DEBUG_ModuleDestructions == null || DEBUG_ModuleDestructions.Count == 0)
+		{
+			DebugUtil.LogArgs("Sorry, no logged module destructions. :(");
+		}
+		else
+		{
+			foreach (Tuple<string, string, string> dEBUG_ModuleDestruction in DEBUG_ModuleDestructions)
+			{
+				DebugUtil.LogArgs(dEBUG_ModuleDestruction.first, ">", dEBUG_ModuleDestruction.second, "\n", dEBUG_ModuleDestruction.third, "\nEND MODULE DUMP\n\n");
+			}
+		}
 	}
 
 	protected override void OnPrefabInit()
@@ -54,11 +83,11 @@ public class LaunchConditionManager : KMonoBehaviour, ISim4000ms, ISim1000ms
 		Spacecraft spacecraftFromLaunchConditionManager = SpacecraftManager.instance.GetSpacecraftFromLaunchConditionManager(this);
 		if (spacecraftFromLaunchConditionManager != null)
 		{
-			SpaceDestination activeMission = SpacecraftManager.instance.GetActiveMission(spacecraftFromLaunchConditionManager.id);
+			SpaceDestination spacecraftDestination = SpacecraftManager.instance.GetSpacecraftDestination(spacecraftFromLaunchConditionManager.id);
 			LogicPorts component = base.gameObject.GetComponent<LogicPorts>();
-			if (component.GetInputValue(triggerPort) == 1 && activeMission != null && activeMission.id != -1)
+			if (component.GetInputValue(triggerPort) == 1 && spacecraftDestination != null && spacecraftDestination.id != -1)
 			{
-				Launch(activeMission);
+				Launch(spacecraftDestination);
 			}
 		}
 	}
@@ -112,14 +141,22 @@ public class LaunchConditionManager : KMonoBehaviour, ISim4000ms, ISim1000ms
 	{
 		if (destination == null)
 		{
-			Debug.LogError("Null destination passed to launch", null);
+			Debug.LogError("Null destination passed to launch");
 		}
-		if (CheckReadyToLaunch() && CheckAbleToFly())
+		Spacecraft spacecraftFromLaunchConditionManager = SpacecraftManager.instance.GetSpacecraftFromLaunchConditionManager(this);
+		if (spacecraftFromLaunchConditionManager.state == Spacecraft.MissionState.Grounded)
 		{
-			launchable.Trigger(-1056989049, null);
-			Spacecraft spacecraftFromLaunchConditionManager = SpacecraftManager.instance.GetSpacecraftFromLaunchConditionManager(this);
-			spacecraftFromLaunchConditionManager.SetState(Spacecraft.MissionState.Underway);
-			SpacecraftManager.instance.savedSpacecraftDestinations[spacecraftFromLaunchConditionManager.id] = destination.id;
+			if (DebugHandler.InstantBuildMode || (CheckReadyToLaunch() && CheckAbleToFly()))
+			{
+				launchable.Trigger(-1056989049, null);
+				SpacecraftManager.instance.SetSpacecraftDestination(this, destination);
+				Spacecraft spacecraftFromLaunchConditionManager2 = SpacecraftManager.instance.GetSpacecraftFromLaunchConditionManager(this);
+				spacecraftFromLaunchConditionManager2.BeginMission(destination);
+			}
+			GameScheduler.Instance.Schedule("VictoryConditionCheck", 0.1f, delegate
+			{
+				Game.Instance.Trigger(395452326, null);
+			}, null, null);
 		}
 	}
 
@@ -129,7 +166,7 @@ public class LaunchConditionManager : KMonoBehaviour, ISim4000ms, ISim1000ms
 		{
 			foreach (RocketLaunchCondition launchCondition in rocketModule.launchConditions)
 			{
-				if (!launchCondition.EvaluateLaunchCondition())
+				if (launchCondition.EvaluateLaunchCondition() == RocketLaunchCondition.LaunchStatus.Failure)
 				{
 					return false;
 				}
@@ -167,9 +204,17 @@ public class LaunchConditionManager : KMonoBehaviour, ISim4000ms, ISim1000ms
 	{
 		bool flag = CheckReadyToLaunch();
 		LogicPorts component = base.gameObject.GetComponent<LogicPorts>();
-		component.SendSignal(statusPort, flag ? 1 : 0);
 		if (flag)
 		{
+			Spacecraft spacecraftFromLaunchConditionManager = SpacecraftManager.instance.GetSpacecraftFromLaunchConditionManager(this);
+			if (spacecraftFromLaunchConditionManager.state == Spacecraft.MissionState.Grounded || spacecraftFromLaunchConditionManager.state == Spacecraft.MissionState.Launching)
+			{
+				component.SendSignal(statusPort, 1);
+			}
+			else
+			{
+				component.SendSignal(statusPort, 0);
+			}
 			KSelectable component2 = GetComponent<KSelectable>();
 			foreach (RocketModule rocketModule in rocketModules)
 			{
@@ -194,6 +239,7 @@ public class LaunchConditionManager : KMonoBehaviour, ISim4000ms, ISim1000ms
 		else
 		{
 			ClearFlightStatuses();
+			component.SendSignal(statusPort, 0);
 		}
 	}
 }

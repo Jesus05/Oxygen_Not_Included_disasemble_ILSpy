@@ -16,7 +16,7 @@ namespace UnityStandardAssets.ImageEffects
 		{
 			if (!(bool)s)
 			{
-				Debug.Log("Missing shader in " + ToString(), null);
+				Debug.Log("Missing shader in " + ToString());
 				base.enabled = false;
 				return null;
 			}
@@ -27,7 +27,7 @@ namespace UnityStandardAssets.ImageEffects
 			if (!s.isSupported)
 			{
 				NotSupported();
-				Debug.Log("The shader " + s.ToString() + " on effect " + ToString() + " is not supported on this platform!", null);
+				Debug.Log("The shader " + s.ToString() + " on effect " + ToString() + " is not supported on this platform!");
 				return null;
 			}
 			m2Create = new Material(s);
@@ -43,7 +43,7 @@ namespace UnityStandardAssets.ImageEffects
 		{
 			if (!(bool)s)
 			{
-				Debug.Log("Missing shader in " + ToString(), null);
+				Debug.Log("Missing shader in " + ToString());
 				return null;
 			}
 			if ((bool)m2Create && (Object)m2Create.shader == (Object)s && s.isSupported)
@@ -75,7 +75,7 @@ namespace UnityStandardAssets.ImageEffects
 
 		public virtual bool CheckResources()
 		{
-			Debug.LogWarning("CheckResources () for " + ToString() + " should be overwritten.", null);
+			Debug.LogWarning("CheckResources () for " + ToString() + " should be overwritten.");
 			return isSupported;
 		}
 
@@ -127,12 +127,12 @@ namespace UnityStandardAssets.ImageEffects
 
 		protected void ReportAutoDisable()
 		{
-			Debug.LogWarning("The image effect " + ToString() + " has been disabled as it's not supported on the current platform.", null);
+			Debug.LogWarning("The image effect " + ToString() + " has been disabled as it's not supported on the current platform.");
 		}
 
 		private bool CheckShader(Shader s)
 		{
-			Debug.Log("The shader " + s.ToString() + " on effect " + ToString() + " is not part of the Unity 3.2+ effects suite anymore. For best performance and quality, please ensure you are using the latest Standard Assets Image Effects (Pro only) package.", null);
+			Debug.Log("The shader " + s.ToString() + " on effect " + ToString() + " is not part of the Unity 3.2+ effects suite anymore. For best performance and quality, please ensure you are using the latest Standard Assets Image Effects (Pro only) package.");
 			if (!s.isSupported)
 			{
 				NotSupported();

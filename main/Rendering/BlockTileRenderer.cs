@@ -6,6 +6,13 @@ namespace Rendering
 {
 	public class BlockTileRenderer : MonoBehaviour
 	{
+		public enum RenderInfoLayer
+		{
+			Built,
+			UnderConstruction,
+			Replacement
+		}
+
 		[Flags]
 		public enum Bits
 		{
@@ -54,6 +61,8 @@ namespace Rendering
 
 			private SimHashes element;
 
+			private float decorZOffset = -1f;
+
 			private const float scale = 0.5f;
 
 			private const float core_size = 256f;
@@ -71,13 +80,14 @@ namespace Rendering
 				rootPosition = new Vector3(0f, 0f, Grid.GetLayerZ(def.SceneLayer));
 				this.element = element;
 				material = new Material(def.BlockTileMaterial);
-				if (def.SceneLayer == Grid.SceneLayer.TileMain)
+				if (def.BlockTileIsTransparent)
+				{
+					material.renderQueue = RenderQueues.Liquid;
+					decorZOffset = Grid.GetLayerZ(Grid.SceneLayer.TileFront) - Grid.GetLayerZ(Grid.SceneLayer.Liquid) - 1f;
+				}
+				else if (def.SceneLayer == Grid.SceneLayer.TileMain)
 				{
 					material.renderQueue = RenderQueues.BlockTiles;
-					if (def.BlockTileIsTransparent)
-					{
-						material.renderQueue = RenderQueues.Liquid - 1;
-					}
 				}
 				material.DisableKeyword("ENABLE_SHINE");
 				if (element != SimHashes.Void)
@@ -256,7 +266,7 @@ namespace Rendering
 					}
 					if (decorRenderInfo != null)
 					{
-						decorRenderInfo.Rebuild(renderer, occupiedCells, chunk_x, chunk_y, 16, vertices, uvs, colours, indices, element);
+						decorRenderInfo.Rebuild(renderer, occupiedCells, chunk_x, chunk_y, decorZOffset, 16, vertices, uvs, colours, indices, element);
 					}
 				}
 			}
@@ -351,7 +361,11 @@ namespace Rendering
 				this.decorInfo = decorInfo;
 				queryLayer = query_layer;
 				material = new Material(def.BlockTileMaterial);
-				if (def.SceneLayer == Grid.SceneLayer.TileMain)
+				if (def.BlockTileIsTransparent)
+				{
+					material.renderQueue = RenderQueues.Liquid;
+				}
+				else if (def.SceneLayer == Grid.SceneLayer.TileMain)
 				{
 					material.renderQueue = RenderQueues.BlockTiles;
 				}
@@ -396,7 +410,7 @@ namespace Rendering
 				}
 			}
 
-			public void Rebuild(BlockTileRenderer renderer, Dictionary<int, int> occupiedCells, int chunk_x, int chunk_y, int chunkEdgeSize, List<Vector3> vertices, List<Vector2> uvs, List<Color> colours, List<int> indices, SimHashes element)
+			public void Rebuild(BlockTileRenderer renderer, Dictionary<int, int> occupiedCells, int chunk_x, int chunk_y, float z_offset, int chunkEdgeSize, List<Vector3> vertices, List<Vector2> uvs, List<Color> colours, List<int> indices, SimHashes element)
 			{
 				vertices.Clear();
 				uvs.Clear();
@@ -412,7 +426,7 @@ namespace Rendering
 						{
 							Color cellColour = renderer.GetCellColour(num, element);
 							Bits decorConnectionBits = renderer.GetDecorConnectionBits(j, i, queryLayer);
-							AddDecor(j, i, decorConnectionBits, cellColour, vertices, uvs, triangles, colours);
+							AddDecor(j, i, z_offset, decorConnectionBits, cellColour, vertices, uvs, triangles, colours);
 						}
 					}
 				}
@@ -447,7 +461,7 @@ namespace Rendering
 				}
 			}
 
-			private void AddDecor(int x, int y, Bits connection_bits, Color colour, List<Vector3> vertices, List<Vector2> uvs, List<TriangleInfo> triangles, List<Color> colours)
+			private void AddDecor(int x, int y, float z_offset, Bits connection_bits, Color colour, List<Vector3> vertices, List<Vector2> uvs, List<TriangleInfo> triangles, List<Color> colours)
 			{
 				for (int i = 0; i < decorInfo.decor.Length; i++)
 				{
@@ -463,7 +477,7 @@ namespace Rendering
 							{
 								int num2 = (int)((float)(decor.variants.Length - 1) * num);
 								int count = vertices.Count;
-								Vector3 b = new Vector3((float)x, (float)y, -1f) + decor.variants[num2].offset;
+								Vector3 b = new Vector3((float)x, (float)y, z_offset) + decor.variants[num2].offset;
 								Vector3[] vertices2 = decor.variants[num2].atlasItem.vertices;
 								foreach (Vector3 a in vertices2)
 								{
@@ -507,7 +521,7 @@ namespace Rendering
 
 		private const int chunkEdgeSize = 16;
 
-		protected Dictionary<KeyValuePair<BuildingDef, bool>, RenderInfo> renderInfo = new Dictionary<KeyValuePair<BuildingDef, bool>, RenderInfo>();
+		protected Dictionary<KeyValuePair<BuildingDef, RenderInfoLayer>, RenderInfo> renderInfo = new Dictionary<KeyValuePair<BuildingDef, RenderInfoLayer>, RenderInfo>();
 
 		private int selectedCell = -1;
 
@@ -522,9 +536,14 @@ namespace Rendering
 			forceRebuild = false;
 		}
 
+		public static RenderInfoLayer GetRenderInfoLayer(bool isReplacement, SimHashes element)
+		{
+			return isReplacement ? RenderInfoLayer.Replacement : ((element == SimHashes.Void) ? RenderInfoLayer.UnderConstruction : RenderInfoLayer.Built);
+		}
+
 		public void FreeResources()
 		{
-			foreach (KeyValuePair<KeyValuePair<BuildingDef, bool>, RenderInfo> item in renderInfo)
+			foreach (KeyValuePair<KeyValuePair<BuildingDef, RenderInfoLayer>, RenderInfo> item in renderInfo)
 			{
 				if (item.Value != null)
 				{
@@ -652,16 +671,31 @@ namespace Rendering
 
 		public void LateUpdate()
 		{
-			GridArea visibleArea = GridVisibleArea.GetVisibleArea();
-			Vector2I min = visibleArea.Min;
-			int a = min.x / 16;
-			Vector2I min2 = visibleArea.Min;
-			Vector2I vector2I = new Vector2I(a, min2.y / 16);
-			Vector2I max = visibleArea.Max;
-			int a2 = (max.x + 16 - 1) / 16;
-			Vector2I max2 = visibleArea.Max;
-			Vector2I vector2I2 = new Vector2I(a2, (max2.y + 16 - 1) / 16);
-			foreach (KeyValuePair<KeyValuePair<BuildingDef, bool>, RenderInfo> item in renderInfo)
+			Render();
+		}
+
+		private void Render()
+		{
+			Vector2I vector2I = default(Vector2I);
+			Vector2I vector2I2 = default(Vector2I);
+			if (GameUtil.IsCapturingTimeLapse())
+			{
+				vector2I = new Vector2I(0, 0);
+				vector2I2 = new Vector2I(Grid.WidthInCells / 16, Grid.HeightInCells / 16);
+			}
+			else
+			{
+				GridArea visibleArea = GridVisibleArea.GetVisibleArea();
+				Vector2I min = visibleArea.Min;
+				int a = min.x / 16;
+				Vector2I min2 = visibleArea.Min;
+				vector2I = new Vector2I(a, min2.y / 16);
+				Vector2I max = visibleArea.Max;
+				int a2 = (max.x + 16 - 1) / 16;
+				Vector2I max2 = visibleArea.Max;
+				vector2I2 = new Vector2I(a2, (max2.y + 16 - 1) / 16);
+			}
+			foreach (KeyValuePair<KeyValuePair<BuildingDef, RenderInfoLayer>, RenderInfo> item in renderInfo)
 			{
 				RenderInfo value = item.Value;
 				for (int i = vector2I.y; i < vector2I2.y; i++)
@@ -698,20 +732,21 @@ namespace Rendering
 			return new Vector2I(vector2I.x / 16, vector2I.y / 16);
 		}
 
-		public void AddBlock(int renderLayer, BuildingDef def, SimHashes element, int cell)
+		public void AddBlock(int renderLayer, BuildingDef def, bool isReplacement, SimHashes element, int cell)
 		{
-			KeyValuePair<BuildingDef, bool> key = new KeyValuePair<BuildingDef, bool>(def, element != SimHashes.Void);
+			KeyValuePair<BuildingDef, RenderInfoLayer> key = new KeyValuePair<BuildingDef, RenderInfoLayer>(def, GetRenderInfoLayer(isReplacement, element));
 			if (!renderInfo.TryGetValue(key, out RenderInfo value))
 			{
-				value = new RenderInfo(this, (int)def.TileLayer, renderLayer, def, element);
+				int queryLayer = (int)((!isReplacement) ? def.TileLayer : def.ReplacementLayer);
+				value = new RenderInfo(this, queryLayer, renderLayer, def, element);
 				renderInfo[key] = value;
 			}
 			value.AddCell(cell);
 		}
 
-		public void RemoveBlock(BuildingDef def, SimHashes element, int cell)
+		public void RemoveBlock(BuildingDef def, bool isReplacement, SimHashes element, int cell)
 		{
-			KeyValuePair<BuildingDef, bool> key = new KeyValuePair<BuildingDef, bool>(def, element != SimHashes.Void);
+			KeyValuePair<BuildingDef, RenderInfoLayer> key = new KeyValuePair<BuildingDef, RenderInfoLayer>(def, GetRenderInfoLayer(isReplacement, element));
 			if (renderInfo.TryGetValue(key, out RenderInfo value))
 			{
 				value.RemoveCell(cell);
@@ -720,7 +755,7 @@ namespace Rendering
 
 		public void Rebuild(ObjectLayer layer, int cell)
 		{
-			foreach (KeyValuePair<KeyValuePair<BuildingDef, bool>, RenderInfo> item in renderInfo)
+			foreach (KeyValuePair<KeyValuePair<BuildingDef, RenderInfoLayer>, RenderInfo> item in renderInfo)
 			{
 				if (item.Key.Key.TileLayer == layer)
 				{
@@ -752,13 +787,13 @@ namespace Rendering
 				{
 					if (cell_status != -1)
 					{
-						foreach (KeyValuePair<KeyValuePair<BuildingDef, bool>, RenderInfo> item in renderInfo)
+						foreach (KeyValuePair<KeyValuePair<BuildingDef, RenderInfoLayer>, RenderInfo> item in renderInfo)
 						{
 							item.Value.MarkDirtyIfOccupied(cell_status);
 						}
 					}
 					cell_status = cell;
-					foreach (KeyValuePair<KeyValuePair<BuildingDef, bool>, RenderInfo> item2 in renderInfo)
+					foreach (KeyValuePair<KeyValuePair<BuildingDef, RenderInfoLayer>, RenderInfo> item2 in renderInfo)
 					{
 						item2.Value.MarkDirtyIfOccupied(cell_status);
 					}
@@ -766,7 +801,7 @@ namespace Rendering
 			}
 			else if (cell_status == cell)
 			{
-				foreach (KeyValuePair<KeyValuePair<BuildingDef, bool>, RenderInfo> item3 in renderInfo)
+				foreach (KeyValuePair<KeyValuePair<BuildingDef, RenderInfoLayer>, RenderInfo> item3 in renderInfo)
 				{
 					item3.Value.MarkDirty(cell_status);
 				}

@@ -1,6 +1,7 @@
 using STRINGS;
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using TUNING;
 using UnityEngine;
 
@@ -32,14 +33,7 @@ public class ResearchCenter : Workable, IEffectDescriptor, ISim200ms
 	[SerializeField]
 	private float remainder_mass_points;
 
-	private float effectiveness = 1f;
-
 	public static readonly Operational.Flag ResearchSelectedFlag = new Operational.Flag("researchSelected", Operational.Flag.Type.Requirement);
-
-	private static readonly EventSystem.IntraObjectHandler<ResearchCenter> OnSelectObjectDelegate = new EventSystem.IntraObjectHandler<ResearchCenter>(delegate(ResearchCenter component, object data)
-	{
-		component.OnSelectObject(data);
-	});
 
 	private static readonly EventSystem.IntraObjectHandler<ResearchCenter> UpdateWorkingStateDelegate = new EventSystem.IntraObjectHandler<ResearchCenter>(delegate(ResearchCenter component, object data)
 	{
@@ -51,17 +45,8 @@ public class ResearchCenter : Workable, IEffectDescriptor, ISim200ms
 		component.CheckHasMaterial(data);
 	});
 
-	public float Effectiveness
-	{
-		get
-		{
-			return effectiveness;
-		}
-		set
-		{
-			effectiveness = value;
-		}
-	}
+	[CompilerGenerated]
+	private static Func<Chore.Precondition.Context, bool> _003C_003Ef__mg_0024cache0;
 
 	protected override void OnPrefabInit()
 	{
@@ -69,6 +54,8 @@ public class ResearchCenter : Workable, IEffectDescriptor, ISim200ms
 		workerStatusItem = Db.Get().DuplicantStatusItems.Researching;
 		attributeConverter = Db.Get().AttributeConverters.ResearchSpeed;
 		attributeExperienceMultiplier = DUPLICANTSTATS.ATTRIBUTE_LEVELING.ALL_DAY_EXPERIENCE;
+		skillExperienceSkillGroup = Db.Get().SkillGroups.Research.Id;
+		skillExperienceMultiplier = SKILLS.ALL_DAY_EXPERIENCE;
 		ElementConverter obj = elementConverter;
 		obj.onConvertMass = (Action<float>)Delegate.Combine(obj.onConvertMass, new Action<float>(ConvertMassToResearchPoints));
 	}
@@ -76,7 +63,6 @@ public class ResearchCenter : Workable, IEffectDescriptor, ISim200ms
 	protected override void OnSpawn()
 	{
 		base.OnSpawn();
-		Subscribe(-1503271301, OnSelectObjectDelegate);
 		Research.Instance.Subscribe(-1914338957, UpdateWorkingState);
 		Research.Instance.Subscribe(-125623018, UpdateWorkingState);
 		Subscribe(187661686, UpdateWorkingStateDelegate);
@@ -102,13 +88,6 @@ public class ResearchCenter : Workable, IEffectDescriptor, ISim200ms
 		}
 	}
 
-	public override void AwardExperience(float work_dt, MinionResume resume)
-	{
-		resume.AddExperienceIfRole(JuniorResearcher.ID, work_dt * ROLES.ACTIVE_EXPERIENCE_SLOW);
-		resume.AddExperienceIfRole(Researcher.ID, work_dt * ROLES.ACTIVE_EXPERIENCE_SLOW);
-		resume.AddExperienceIfRole(SeniorResearcher.ID, work_dt * ROLES.ACTIVE_EXPERIENCE_SLOW);
-	}
-
 	public void Sim200ms(float dt)
 	{
 		if (!operational.IsActive && operational.IsOperational && chore == null && HasMaterial())
@@ -120,9 +99,18 @@ public class ResearchCenter : Workable, IEffectDescriptor, ISim200ms
 
 	protected virtual Chore CreateChore()
 	{
-		ChoreType research = Db.Get().ChoreTypes.Research;
-		Tag[] researchChores = GameTags.ChoreTypes.ResearchChores;
-		return new WorkChore<ResearchCenter>(research, this, null, researchChores, true, null, null, null, true, null, false, true, null, false, true, true, PriorityScreen.PriorityClass.basic, 0, false);
+		WorkChore<ResearchCenter> workChore = new WorkChore<ResearchCenter>(Db.Get().ChoreTypes.Research, this, null, true, null, null, null, true, null, false, true, null, true, true, true, PriorityScreen.PriorityClass.basic, 5, false, true);
+		workChore.preemption_cb = CanPreemptCB;
+		return workChore;
+	}
+
+	private static bool CanPreemptCB(Chore.Precondition.Context context)
+	{
+		Worker component = context.chore.driver.GetComponent<Worker>();
+		float num = Db.Get().AttributeConverters.ResearchSpeed.Lookup(component).Evaluate();
+		Worker worker = context.consumerState.worker;
+		float num2 = Db.Get().AttributeConverters.ResearchSpeed.Lookup(worker).Evaluate();
+		return num2 > num;
 	}
 
 	public override float GetPercentComplete()
@@ -143,16 +131,13 @@ public class ResearchCenter : Workable, IEffectDescriptor, ISim200ms
 	protected override void OnStartWork(Worker worker)
 	{
 		base.OnStartWork(worker);
-		attributeExperienceMultiplier = DUPLICANTSTATS.ATTRIBUTE_LEVELING.ALL_DAY_EXPERIENCE * effectiveness;
 		operational.SetActive(true, false);
 	}
 
 	protected override bool OnWorkTick(Worker worker, float dt)
 	{
-		float num = 1f + Db.Get().AttributeConverters.ResearchSpeed.Lookup(worker).Evaluate();
-		num *= effectiveness;
-		elementConverter.SetWorkSpeedMultiplier(num);
-		attributeExperienceMultiplier = DUPLICANTSTATS.ATTRIBUTE_LEVELING.ALL_DAY_EXPERIENCE * effectiveness;
+		float workSpeedMultiplier = 1f + Db.Get().AttributeConverters.ResearchSpeed.Lookup(worker).Evaluate();
+		elementConverter.SetWorkSpeedMultiplier(workSpeedMultiplier);
 		return base.OnWorkTick(worker, dt);
 	}
 
@@ -241,11 +226,6 @@ public class ResearchCenter : Workable, IEffectDescriptor, ISim200ms
 	private void ClearResearchScreen()
 	{
 		Game.Instance.Trigger(-1974454597, null);
-	}
-
-	private void OnSelectObject(object data)
-	{
-		ClearResearchScreen();
 	}
 
 	private void CheckHasMaterial(object o = null)

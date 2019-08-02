@@ -11,6 +11,8 @@ public class SupermaterialRefineryConfig : IBuildingConfig
 
 	private const float OUTPUT_KG = 100f;
 
+	private const float OUTPUT_TEMPERATURE = 313.15f;
+
 	public override BuildingDef CreateBuildingDef()
 	{
 		string id = "SupermaterialRefinery";
@@ -28,7 +30,7 @@ public class SupermaterialRefineryConfig : IBuildingConfig
 		buildingDef.RequiresPowerInput = true;
 		buildingDef.EnergyConsumptionWhenActive = 1600f;
 		buildingDef.SelfHeatKilowattsWhenActive = 16f;
-		buildingDef.ViewMode = SimViewMode.PowerMap;
+		buildingDef.ViewMode = OverlayModes.Power.ID;
 		buildingDef.AudioCategory = "HollowMetal";
 		buildingDef.AudioSize = "large";
 		return buildingDef;
@@ -38,14 +40,18 @@ public class SupermaterialRefineryConfig : IBuildingConfig
 	{
 		go.AddOrGet<DropAllWorkable>();
 		go.AddOrGet<BuildingComplete>().isManuallyOperated = true;
-		Refinery refinery = go.AddOrGet<Refinery>();
-		refinery.sideScreenStyle = RefinerySideScreen.StyleSetting.ListInputOutput;
-		refinery.duplicantOperated = true;
-		RefineryWorkable refineryWorkable = go.AddOrGet<RefineryWorkable>();
-		BuildingTemplates.CreateRefineryStorage(go, refinery);
-		refineryWorkable.overrideAnims = new KAnimFile[1]
+		ComplexFabricator complexFabricator = go.AddOrGet<ComplexFabricator>();
+		complexFabricator.resultState = ComplexFabricator.ResultState.Heated;
+		complexFabricator.heatedTemperature = 313.15f;
+		complexFabricator.sideScreenStyle = ComplexFabricatorSideScreen.StyleSetting.ListQueueHybrid;
+		complexFabricator.duplicantOperated = true;
+		go.AddOrGet<FabricatorIngredientStatusManager>();
+		go.AddOrGet<CopyBuildingSettings>();
+		ComplexFabricatorWorkable complexFabricatorWorkable = go.AddOrGet<ComplexFabricatorWorkable>();
+		BuildingTemplates.CreateComplexFabricatorStorage(go, complexFabricator);
+		complexFabricatorWorkable.overrideAnims = new KAnimFile[1]
 		{
-			Assets.GetAnim("anim_interacts_rockrefinery_kanim")
+			Assets.GetAnim("anim_interacts_supermaterial_refinery_kanim")
 		};
 		Prioritizable.AddRef(go);
 		float num = 0.01f;
@@ -64,7 +70,7 @@ public class SupermaterialRefineryConfig : IBuildingConfig
 		ComplexRecipe complexRecipe = new ComplexRecipe(id, array, array2);
 		complexRecipe.time = 80f;
 		complexRecipe.description = STRINGS.BUILDINGS.PREFABS.SUPERMATERIALREFINERY.SUPERCOOLANT_RECIPE_DESCRIPTION;
-		complexRecipe.useResultAsDescription = true;
+		complexRecipe.nameDisplay = ComplexRecipe.RecipeNameDisplay.Result;
 		complexRecipe.fabricators = new List<Tag>
 		{
 			TagManager.Create("SupermaterialRefinery")
@@ -86,7 +92,7 @@ public class SupermaterialRefineryConfig : IBuildingConfig
 		complexRecipe = new ComplexRecipe(id2, array3, array4);
 		complexRecipe.time = 80f;
 		complexRecipe.description = STRINGS.BUILDINGS.PREFABS.SUPERMATERIALREFINERY.SUPERINSULATOR_RECIPE_DESCRIPTION;
-		complexRecipe.useResultAsDescription = true;
+		complexRecipe.nameDisplay = ComplexRecipe.RecipeNameDisplay.Result;
 		complexRecipe.fabricators = new List<Tag>
 		{
 			TagManager.Create("SupermaterialRefinery")
@@ -105,7 +111,7 @@ public class SupermaterialRefineryConfig : IBuildingConfig
 		complexRecipe = new ComplexRecipe(id3, array5, array6);
 		complexRecipe.time = 80f;
 		complexRecipe.description = STRINGS.BUILDINGS.PREFABS.SUPERMATERIALREFINERY.TEMPCONDUCTORSOLID_RECIPE_DESCRIPTION;
-		complexRecipe.useResultAsDescription = true;
+		complexRecipe.nameDisplay = ComplexRecipe.RecipeNameDisplay.Result;
 		complexRecipe.fabricators = new List<Tag>
 		{
 			TagManager.Create("SupermaterialRefinery")
@@ -124,7 +130,7 @@ public class SupermaterialRefineryConfig : IBuildingConfig
 		complexRecipe = new ComplexRecipe(id4, array7, array8);
 		complexRecipe.time = 80f;
 		complexRecipe.description = STRINGS.BUILDINGS.PREFABS.SUPERMATERIALREFINERY.VISCOGEL_RECIPE_DESCRIPTION;
-		complexRecipe.useResultAsDescription = true;
+		complexRecipe.nameDisplay = ComplexRecipe.RecipeNameDisplay.Result;
 		complexRecipe.fabricators = new List<Tag>
 		{
 			TagManager.Create("SupermaterialRefinery")
@@ -133,5 +139,13 @@ public class SupermaterialRefineryConfig : IBuildingConfig
 
 	public override void DoPostConfigureComplete(GameObject go)
 	{
+		go.GetComponent<KPrefabID>().prefabSpawnFn += delegate(GameObject game_object)
+		{
+			ComplexFabricatorWorkable component = game_object.GetComponent<ComplexFabricatorWorkable>();
+			component.AttributeConverter = Db.Get().AttributeConverters.MachinerySpeed;
+			component.AttributeExperienceMultiplier = DUPLICANTSTATS.ATTRIBUTE_LEVELING.PART_DAY_EXPERIENCE;
+			component.SkillExperienceSkillGroup = Db.Get().SkillGroups.Technicals.Id;
+			component.SkillExperienceMultiplier = SKILLS.PART_DAY_EXPERIENCE;
+		};
 	}
 }

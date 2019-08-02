@@ -58,7 +58,7 @@ public class FilteredStorage
 		storage.Subscribe(644822890, OnOnlyFetchMarkedItemsSettingChanged);
 		if (capacityStatusItem == null)
 		{
-			capacityStatusItem = new StatusItem("StorageLocker", "BUILDING", string.Empty, StatusItem.IconType.Info, NotificationType.Neutral, false, SimViewMode.None, true, 63486);
+			capacityStatusItem = new StatusItem("StorageLocker", "BUILDING", string.Empty, StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, true, 129022);
 			capacityStatusItem.resolveStringCallback = delegate(string str, object data)
 			{
 				FilteredStorage filteredStorage = (FilteredStorage)data;
@@ -74,13 +74,10 @@ public class FilteredStorage
 				string newValue2 = Util.FormatWholeNumber(num);
 				str = str.Replace("{Stored}", newValue);
 				str = str.Replace("{Capacity}", newValue2);
-				if (component != null)
-				{
-					str = str.Replace("{Units}", component.CapacityUnits);
-				}
+				str = ((component == null) ? str.Replace("{Units}", GameUtil.GetCurrentMassUnit(false)) : str.Replace("{Units}", component.CapacityUnits));
 				return str;
 			};
-			noFilterStatusItem = new StatusItem("NoStorageFilterSet", "BUILDING", "status_item_no_filter_set", StatusItem.IconType.Custom, NotificationType.BadMinor, false, SimViewMode.None, true, 63486);
+			noFilterStatusItem = new StatusItem("NoStorageFilterSet", "BUILDING", "status_item_no_filter_set", StatusItem.IconType.Custom, NotificationType.BadMinor, false, OverlayModes.None.ID, true, 129022);
 		}
 		root.GetComponent<KSelectable>().SetStatusItem(Db.Get().StatusItemCategories.Main, capacityStatusItem, this);
 	}
@@ -223,28 +220,12 @@ public class FilteredStorage
 		if (num > 0f && flag)
 		{
 			num = Mathf.Max(0f, GetMaxCapacity() - amountStored);
-			fetchList = new FetchList2(storage, choreType, null);
+			fetchList = new FetchList2(storage, choreType);
 			fetchList.ShowStatusItem = false;
-			fetchList.Add(tags, requiredTags, forbiddenTags, num, FetchOrder2.OperationalRequirement.None);
+			fetchList.Add(tags, requiredTags, forbiddenTags, num, FetchOrder2.OperationalRequirement.Functional);
 			fetchList.Submit(OnFetchComplete, false);
 		}
 		root.GetComponent<KSelectable>().ToggleStatusItem(noFilterStatusItem, !flag, this);
-	}
-
-	public void SetEnabled(bool enabled)
-	{
-		if (enabled)
-		{
-			if (fetchList == null)
-			{
-				OnFilterChanged(filterable.GetTags());
-			}
-		}
-		else if (fetchList != null)
-		{
-			fetchList.Cancel("Toggle closed");
-			fetchList = null;
-		}
 	}
 
 	public void SetLogicMeter(bool on)

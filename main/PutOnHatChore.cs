@@ -28,7 +28,7 @@ public class PutOnHatChore : Chore<PutOnHatChore.StatesInstance>
 			Target(duplicant);
 			applyHat_pre.ToggleAnims("anim_hat_kanim", 0f).Enter(delegate(StatesInstance smi)
 			{
-				duplicant.Get(smi).GetComponent<MinionResume>().AssumeTargetRole();
+				duplicant.Get(smi).GetComponent<MinionResume>().ApplyTargetHat();
 			}).PlayAnim("hat_first")
 				.OnAnimQueueComplete(applyHat);
 			applyHat.ToggleAnims("anim_hat_kanim", 0f).PlayAnim("working_pst").OnAnimQueueComplete(complete);
@@ -37,8 +37,8 @@ public class PutOnHatChore : Chore<PutOnHatChore.StatesInstance>
 	}
 
 	public PutOnHatChore(IStateMachineTarget target, ChoreType chore_type)
-		: base(chore_type, target, target.GetComponent<ChoreProvider>(), false, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.emergency, 0, false, true, 0, (Tag[])null)
+		: base(chore_type, target, target.GetComponent<ChoreProvider>(), false, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.compulsory, 5, false, true, 0, false, ReportManager.ReportType.WorkTime)
 	{
-		smi = new StatesInstance(this, target.gameObject);
+		base.smi = new StatesInstance(this, target.gameObject);
 	}
 }

@@ -9,9 +9,11 @@ public class Room : IAssignableIdentity
 
 	private List<KPrefabID> primary_buildings = new List<KPrefabID>();
 
-	public List<Ownables> current_owners = new List<Ownables>();
+	private List<Ownables> current_owners = new List<Ownables>();
 
 	public List<KPrefabID> buildings => cavity.buildings;
+
+	public List<KPrefabID> plants => cavity.plants;
 
 	public string GetProperName()
 	{
@@ -43,7 +45,8 @@ public class Room : IAssignableIdentity
 
 	public Ownables GetSoleOwner()
 	{
-		return GetOwners()[0];
+		List<Ownables> owners = GetOwners();
+		return (owners.Count <= 0) ? null : owners[0];
 	}
 
 	public List<KPrefabID> GetPrimaryEntities()
@@ -59,6 +62,13 @@ public class Room : IAssignableIdentity
 					primary_buildings.Add(building);
 				}
 			}
+			foreach (KPrefabID plant in plants)
+			{
+				if ((Object)plant != (Object)null && roomType.primary_constraint.building_criteria(plant))
+				{
+					primary_buildings.Add(plant);
+				}
+			}
 		}
 		return primary_buildings;
 	}
@@ -70,6 +80,13 @@ public class Room : IAssignableIdentity
 			if (!((Object)building == (Object)null))
 			{
 				building.Trigger(144050788, this);
+			}
+		}
+		foreach (KPrefabID plant in plants)
+		{
+			if (!((Object)plant == (Object)null))
+			{
+				plant.Trigger(144050788, this);
 			}
 		}
 	}

@@ -1,6 +1,7 @@
 using LibNoiseDotNet.Graphics.Tools.Noise;
 using LibNoiseDotNet.Graphics.Tools.Noise.Builder;
 using NodeEditorFramework;
+using ProcGen;
 using ProcGen.Noise;
 using ProcGenGame;
 using System;
@@ -18,6 +19,8 @@ public class DisplayNodeEditor : BaseNodeEditor
 		ElementColourBiome,
 		ElementColourFeature
 	}
+
+	private WorldGenSettings worldGenSettings;
 
 	private const string Id = "displayNodeEditor";
 
@@ -45,7 +48,7 @@ public class DisplayNodeEditor : BaseNodeEditor
 		return null;
 	}
 
-	public override Node Create(Vector2 pos)
+	public override NodeEditorFramework.Node Create(Vector2 pos)
 	{
 		DisplayNodeEditor displayNodeEditor = ScriptableObject.CreateInstance<DisplayNodeEditor>();
 		displayNodeEditor.rect = new Rect(pos.x, pos.y, 266f, 301f);
@@ -101,7 +104,7 @@ public class DisplayNodeEditor : BaseNodeEditor
 						break;
 					}
 				}
-				return element.substance.debugColour;
+				return element.substance.uiColour;
 			};
 			break;
 		}
@@ -130,9 +133,9 @@ public class DisplayNodeEditor : BaseNodeEditor
 
 	private void InitSettings()
 	{
-		if (WorldGen.Settings == null)
+		if (worldGenSettings == null)
 		{
-			WorldGen.LoadSettings();
+			worldGenSettings = SaveGame.Instance.worldGen.Settings;
 		}
 	}
 
@@ -141,7 +144,7 @@ public class DisplayNodeEditor : BaseNodeEditor
 		if (biomeOptions == null)
 		{
 			InitSettings();
-			biomeOptions = WorldGen.Settings.biomes.GetNames();
+			biomeOptions = SettingsCache.biomes.GetNames();
 		}
 	}
 
@@ -150,7 +153,7 @@ public class DisplayNodeEditor : BaseNodeEditor
 		if (featureOptions == null)
 		{
 			InitSettings();
-			featureOptions = WorldGen.Settings.features.GetNames();
+			featureOptions = SettingsCache.GetCachedFeatureNames().ToArray();
 		}
 	}
 

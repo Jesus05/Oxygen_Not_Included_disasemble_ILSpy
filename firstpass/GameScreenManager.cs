@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameScreenManager : KMonoBehaviour
 {
@@ -7,7 +8,8 @@ public class GameScreenManager : KMonoBehaviour
 		WorldSpace,
 		ScreenSpaceCamera,
 		ScreenSpaceOverlay,
-		HoverTextScreen
+		HoverTextScreen,
+		ScreenshotModeCamera
 	}
 
 	public GameObject ssHoverTextCanvas;
@@ -18,8 +20,12 @@ public class GameScreenManager : KMonoBehaviour
 
 	public GameObject worldSpaceCanvas;
 
+	public GameObject screenshotModeCanvas;
+
 	[SerializeField]
 	private Color[] uiColors;
+
+	public Image fadePlane;
 
 	public static GameScreenManager Instance
 	{
@@ -37,11 +43,13 @@ public class GameScreenManager : KMonoBehaviour
 	protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
+		Debug.Assert((Object)Instance == (Object)null);
 		Instance = this;
 	}
 
 	protected override void OnCleanUp()
 	{
+		Debug.Assert((Object)Instance != (Object)null);
 		Instance = null;
 	}
 
@@ -62,6 +70,8 @@ public class GameScreenManager : KMonoBehaviour
 			return ssCameraCanvas.GetComponent<Canvas>().worldCamera;
 		case UIRenderTarget.HoverTextScreen:
 			return ssHoverTextCanvas.GetComponent<Canvas>().worldCamera;
+		case UIRenderTarget.ScreenshotModeCamera:
+			return screenshotModeCanvas.GetComponent<Canvas>().worldCamera;
 		default:
 			return base.gameObject.GetComponent<Canvas>().worldCamera;
 		}
@@ -76,6 +86,9 @@ public class GameScreenManager : KMonoBehaviour
 			break;
 		case UIRenderTarget.ScreenSpaceOverlay:
 			ssOverlayCanvas.GetComponent<Canvas>().worldCamera = camera;
+			break;
+		case UIRenderTarget.ScreenshotModeCamera:
+			screenshotModeCanvas.GetComponent<Canvas>().worldCamera = camera;
 			break;
 		default:
 			ssCameraCanvas.GetComponent<Canvas>().worldCamera = camera;
@@ -95,6 +108,8 @@ public class GameScreenManager : KMonoBehaviour
 			return ssCameraCanvas;
 		case UIRenderTarget.HoverTextScreen:
 			return ssHoverTextCanvas;
+		case UIRenderTarget.ScreenshotModeCamera:
+			return screenshotModeCanvas;
 		default:
 			return base.gameObject;
 		}

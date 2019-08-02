@@ -1,6 +1,7 @@
 using KSerialization;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using UnityEngine;
 
 [SerializationConfig(MemberSerialization.OptIn)]
 public class CreatureLure : StateMachineComponent<CreatureLure.StatesInstance>
@@ -93,6 +94,14 @@ public class CreatureLure : StateMachineComponent<CreatureLure.StatesInstance>
 
 	private Operational.Flag baited = new Operational.Flag("Baited", Operational.Flag.Type.Requirement);
 
+	[MyCmpAdd]
+	private CopyBuildingSettings copyBuildingSettings;
+
+	private static readonly EventSystem.IntraObjectHandler<CreatureLure> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<CreatureLure>(delegate(CreatureLure component, object data)
+	{
+		component.OnCopySettings(data);
+	});
+
 	private static readonly EventSystem.IntraObjectHandler<CreatureLure> OnStorageChangeDelegate = new EventSystem.IntraObjectHandler<CreatureLure>(delegate(CreatureLure component, object data)
 	{
 		component.OnStorageChange(data);
@@ -102,6 +111,17 @@ public class CreatureLure : StateMachineComponent<CreatureLure.StatesInstance>
 	{
 		base.OnPrefabInit();
 		operational = GetComponent<Operational>();
+		Subscribe(-905833192, OnCopySettingsDelegate);
+	}
+
+	private void OnCopySettings(object data)
+	{
+		GameObject gameObject = (GameObject)data;
+		CreatureLure component = gameObject.GetComponent<CreatureLure>();
+		if ((Object)component != (Object)null)
+		{
+			ChangeBaitSetting(component.activeBaitSetting);
+		}
 	}
 
 	protected override void OnSpawn()
@@ -135,7 +155,7 @@ public class CreatureLure : StateMachineComponent<CreatureLure.StatesInstance>
 		if (baitSetting != activeBaitSetting)
 		{
 			activeBaitSetting = baitSetting;
-			baitStorage.DropAll(false);
+			baitStorage.DropAll(false, false, default(Vector3), true);
 		}
 		base.smi.GoTo(base.smi.sm.idle);
 		baitStorage.storageFilters = new List<Tag>
@@ -168,7 +188,7 @@ public class CreatureLure : StateMachineComponent<CreatureLure.StatesInstance>
 			fetchChore = new FetchChore(Db.Get().ChoreTypes.Transport, baitStorage, 100f, new Tag[1]
 			{
 				activeBaitSetting
-			}, null, null, null, true, null, null, null, FetchOrder2.OperationalRequirement.None, 0, null);
+			}, null, null, null, true, null, null, null, FetchOrder2.OperationalRequirement.None, 0);
 			GetComponent<KSelectable>().AddStatusItem(Db.Get().BuildingStatusItems.AwaitingBaitDelivery, null);
 		}
 	}

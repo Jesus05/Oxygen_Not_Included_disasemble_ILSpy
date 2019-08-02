@@ -32,7 +32,7 @@ public class RequireAttachedComponent : RocketLaunchCondition
 		typeNameString = type_name_string;
 	}
 
-	public override bool EvaluateLaunchCondition()
+	public override LaunchStatus EvaluateLaunchCondition()
 	{
 		if ((UnityEngine.Object)myAttachable != (UnityEngine.Object)null)
 		{
@@ -40,11 +40,11 @@ public class RequireAttachedComponent : RocketLaunchCondition
 			{
 				if ((bool)item.GetComponent(requiredType))
 				{
-					return true;
+					return LaunchStatus.Ready;
 				}
 			}
 		}
-		return false;
+		return LaunchStatus.Failure;
 	}
 
 	public override string GetLaunchStatusMessage(bool ready)

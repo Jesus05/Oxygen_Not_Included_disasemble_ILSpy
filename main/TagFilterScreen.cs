@@ -39,14 +39,14 @@ public class TagFilterScreen : SideScreenContent
 	{
 		if ((Object)target == (Object)null)
 		{
-			Debug.LogError("The target object provided was null", null);
+			Debug.LogError("The target object provided was null");
 		}
 		else
 		{
 			targetFilterable = target.GetComponent<TreeFilterable>();
 			if ((Object)targetFilterable == (Object)null)
 			{
-				Debug.LogError("The target provided does not have a Tree Filterable component", null);
+				Debug.LogError("The target provided does not have a Tree Filterable component");
 			}
 			else if (targetFilterable.showUserMenu)
 			{
@@ -176,7 +176,7 @@ public class TagFilterScreen : SideScreenContent
 	{
 		if ((Object)targetFilterable == (Object)null)
 		{
-			Debug.LogError("Cannot update the filters on a null target.", null);
+			Debug.LogError("Cannot update the filters on a null target.");
 		}
 		else
 		{

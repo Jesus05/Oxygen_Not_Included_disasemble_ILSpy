@@ -1,4 +1,3 @@
-using TUNING;
 using UnityEngine;
 
 public class GasBottler : Workable
@@ -19,12 +18,14 @@ public class GasBottler : Workable
 
 		public State ready;
 
+		public State pickup;
+
 		public override void InitializeStates(out BaseState default_state)
 		{
 			default_state = empty;
 			empty.PlayAnim("off").EventTransition(GameHashes.OnStorageChange, filling, (Instance smi) => smi.master.storage.IsFull());
 			filling.PlayAnim("working").OnAnimQueueComplete(ready);
-			ready.EventTransition(GameHashes.OnStorageChange, empty, (Instance smi) => !smi.master.storage.IsFull()).Enter(delegate(Instance smi)
+			ready.EventTransition(GameHashes.OnStorageChange, pickup, (Instance smi) => !smi.master.storage.IsFull()).Enter(delegate(Instance smi)
 			{
 				smi.master.storage.allowItemRemoval = true;
 				foreach (GameObject item in smi.master.storage.items)
@@ -39,6 +40,7 @@ public class GasBottler : Workable
 					item2.Trigger(-778359855, smi.master.storage);
 				}
 			});
+			pickup.PlayAnim("pick_up").OnAnimQueueComplete(empty);
 		}
 	}
 
@@ -61,12 +63,6 @@ public class GasBottler : Workable
 			smi.StopSM("OnCleanUp");
 		}
 		base.OnCleanUp();
-	}
-
-	public override void AwardExperience(float work_dt, MinionResume resume)
-	{
-		resume.AddExperienceIfRole("Hauler", work_dt * ROLES.ACTIVE_EXPERIENCE_VERY_SLOW);
-		resume.AddExperienceIfRole(MaterialsManager.ID, work_dt * ROLES.ACTIVE_EXPERIENCE_VERY_SLOW);
 	}
 
 	private void UpdateStoredItemState()

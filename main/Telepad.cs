@@ -1,4 +1,5 @@
 using Klei.AI;
+using STRINGS;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -31,7 +32,11 @@ public class Telepad : StateMachineComponent<Telepad.StatesInstance>
 
 		public Signal closePortal;
 
+		public Signal idlePortal;
+
 		public State idle;
+
+		public State resetToIdle;
 
 		public State opening;
 
@@ -51,6 +56,8 @@ public class Telepad : StateMachineComponent<Telepad.StatesInstance>
 		{
 			default_state = idle;
 			base.serializable = true;
+			root.OnSignal(idlePortal, resetToIdle);
+			resetToIdle.GoTo(idle);
 			idle.Enter(delegate(StatesInstance smi)
 			{
 				smi.UpdateMeter();
@@ -97,7 +104,9 @@ public class Telepad : StateMachineComponent<Telepad.StatesInstance>
 
 	private List<MinionStartingStats> minionStats;
 
-	private static readonly HashedString[] PortalBirthAnim = new HashedString[1]
+	public float startingSkillPoints;
+
+	public static readonly HashedString[] PortalBirthAnim = new HashedString[1]
 	{
 		"portalbirth"
 	};
@@ -111,7 +120,7 @@ public class Telepad : StateMachineComponent<Telepad.StatesInstance>
 		Grid.CellToXY(Grid.PosToCell(this), out x, out y);
 		if (x == 0)
 		{
-			Debug.LogError("Headquarters spawned at: (" + x.ToString() + "," + y.ToString() + ")", null);
+			Debug.LogError("Headquarters spawned at: (" + x.ToString() + "," + y.ToString() + ")");
 		}
 	}
 
@@ -147,34 +156,35 @@ public class Telepad : StateMachineComponent<Telepad.StatesInstance>
 			if (GetTimeRemaining() < -120f)
 			{
 				Messenger.Instance.QueueMessage(new DuplicantsLeftMessage());
-				Immigration.Instance.SpawnMinions();
+				Immigration.Instance.EndImmigration();
 			}
 		}
 	}
 
 	public void RejectAll()
 	{
-		Immigration.Instance.SpawnMinions();
+		Immigration.Instance.EndImmigration();
 		base.smi.sm.closePortal.Trigger(base.smi);
 	}
 
-	public void OnClickImmigrant(MinionStartingStats starting_stats)
+	public void OnAcceptDelivery(ITelepadDeliverable delivery)
 	{
 		int cell = Grid.PosToCell(this);
-		int num = Immigration.Instance.SpawnMinions();
-		foreach (MinionIdentity item in Components.LiveMinionIdentities.Items)
+		Immigration.Instance.EndImmigration();
+		GameObject gameObject = delivery.Deliver(Grid.CellToPosCBC(cell, Grid.SceneLayer.Move));
+		MinionIdentity component = gameObject.GetComponent<MinionIdentity>();
+		if ((Object)component != (Object)null)
 		{
-			item.GetComponent<Effects>().Add("NewCrewArrival", true);
-		}
-		for (int i = 0; i < num; i++)
-		{
-			GameObject gameObject = Util.KInstantiate(Assets.GetPrefab(MinionConfig.ID), null, null);
-			gameObject.transform.SetLocalPosition(Grid.CellToPosCBC(cell, Grid.SceneLayer.Move));
-			gameObject.SetActive(true);
-			starting_stats.Apply(gameObject);
-			Immigration.Instance.ApplyDefaultPersonalPriorities(gameObject);
-			ChoreProvider component = gameObject.GetComponent<ChoreProvider>();
-			new EmoteChore(component, Db.Get().ChoreTypes.EmoteHighPriority, "anim_interacts_portal_kanim", PortalBirthAnim, null);
+			ReportManager.Instance.ReportValue(ReportManager.ReportType.PersonalTime, GameClock.Instance.GetTimeSinceStartOfReport(), string.Format(UI.ENDOFDAYREPORT.NOTES.PERSONAL_TIME, DUPLICANTS.CHORES.NOT_EXISTING_TASK), gameObject.GetProperName());
+			foreach (MinionIdentity item in Components.LiveMinionIdentities.Items)
+			{
+				item.GetComponent<Effects>().Add("NewCrewArrival", true);
+			}
+			MinionResume component2 = component.GetComponent<MinionResume>();
+			for (int i = 0; (float)i < startingSkillPoints; i++)
+			{
+				component2.ForceAddSkillPoint();
+			}
 		}
 		base.smi.sm.closePortal.Trigger(base.smi);
 	}

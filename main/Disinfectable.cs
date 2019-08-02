@@ -26,6 +26,8 @@ public class Disinfectable : Workable
 		workerStatusItem = Db.Get().DuplicantStatusItems.Disinfecting;
 		attributeConverter = Db.Get().AttributeConverters.TidyingSpeed;
 		attributeExperienceMultiplier = DUPLICANTSTATS.ATTRIBUTE_LEVELING.PART_DAY_EXPERIENCE;
+		skillExperienceSkillGroup = Db.Get().SkillGroups.Basekeeping.Id;
+		skillExperienceMultiplier = SKILLS.PART_DAY_EXPERIENCE;
 		multitoolContext = "disinfect";
 		multitoolHitEffectTag = "fx_disinfect_splash";
 		Subscribe(2127324410, OnCancelDelegate);
@@ -54,11 +56,6 @@ public class Disinfectable : Workable
 		PrimaryElement component = GetComponent<PrimaryElement>();
 		component.AddDisease(component.DiseaseIdx, -(int)(diseasePerSecond * dt + 0.5f), "Disinfectable.OnWorkTick");
 		return false;
-	}
-
-	public override void AwardExperience(float work_dt, MinionResume resume)
-	{
-		resume.AddExperienceIfRole(Handyman.ID, work_dt * ROLES.ACTIVE_EXPERIENCE_QUICK);
 	}
 
 	protected override void OnCompleteWork(Worker worker)
@@ -105,7 +102,7 @@ public class Disinfectable : Workable
 		{
 			isMarkedForDisinfect = true;
 			Prioritizable.AddRef(base.gameObject);
-			chore = new WorkChore<Disinfectable>(Db.Get().ChoreTypes.Disinfect, this, null, null, true, null, null, null, true, null, false, false, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, true);
+			chore = new WorkChore<Disinfectable>(Db.Get().ChoreTypes.Disinfect, this, null, true, null, null, null, true, null, false, false, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, true, true);
 			GetComponent<KSelectable>().AddStatusItem(Db.Get().MiscStatusItems.MarkedForDisinfection, this);
 		}
 	}

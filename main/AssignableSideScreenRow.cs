@@ -45,27 +45,34 @@ public class AssignableSideScreenRow : KMonoBehaviour
 		}
 		else
 		{
-			Assignable assignable = null;
-			MinionIdentity minionIdentity = targetIdentity as MinionIdentity;
-			if ((UnityEngine.Object)minionIdentity != (UnityEngine.Object)null)
+			bool flag = false;
+			KMonoBehaviour kMonoBehaviour = targetIdentity as KMonoBehaviour;
+			if ((UnityEngine.Object)kMonoBehaviour != (UnityEngine.Object)null)
 			{
-				Assignables[] components = minionIdentity.GetComponents<Assignables>();
-				foreach (Assignables assignables in components)
+				Ownables component = kMonoBehaviour.GetComponent<Ownables>();
+				if ((UnityEngine.Object)component != (UnityEngine.Object)null)
 				{
-					Assignable assignable2 = assignables.GetAssignable(sideScreen.targetAssignable.slot);
-					if ((UnityEngine.Object)assignable2 != (UnityEngine.Object)null && (UnityEngine.Object)assignable2 != (UnityEngine.Object)sideScreen.targetAssignable)
+					AssignableSlotInstance slot = component.GetSlot(sideScreen.targetAssignable.slot);
+					if (slot != null && slot.IsAssigned())
 					{
-						assignable = assignable2;
-						break;
+						currentState = AssignableState.AssignedToOther;
+						assignmentText.text = slot.assignable.GetProperName();
+						flag = true;
+					}
+				}
+				Equipment component2 = kMonoBehaviour.GetComponent<Equipment>();
+				if ((UnityEngine.Object)component2 != (UnityEngine.Object)null)
+				{
+					AssignableSlotInstance slot2 = component2.GetSlot(sideScreen.targetAssignable.slot);
+					if (slot2 != null && slot2.IsAssigned())
+					{
+						currentState = AssignableState.AssignedToOther;
+						assignmentText.text = slot2.assignable.GetProperName();
+						flag = true;
 					}
 				}
 			}
-			if ((UnityEngine.Object)assignable != (UnityEngine.Object)null)
-			{
-				currentState = AssignableState.AssignedToOther;
-				assignmentText.text = assignable.GetProperName();
-			}
-			else
+			if (!flag)
 			{
 				currentState = AssignableState.Unassigned;
 				assignmentText.text = UI.UISIDESCREENS.ASSIGNABLESIDESCREEN.UNASSIGNED;

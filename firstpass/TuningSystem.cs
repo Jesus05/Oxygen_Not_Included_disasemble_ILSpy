@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using System.Threading;
 using UnityEngine;
 
 public class TuningSystem
@@ -44,7 +45,7 @@ public class TuningSystem
 		}
 		catch (Exception ex)
 		{
-			Debug.LogWarning("Error when attempting to monitor path: " + directoryName + "\n" + ex.ToString(), null);
+			Debug.LogWarning("Error when attempting to monitor path: " + directoryName + "\n" + ex.ToString());
 		}
 	}
 
@@ -92,14 +93,18 @@ public class TuningSystem
 		string[] array = new string[2]
 		{
 			_TuningPath,
-			Path.Combine(Application.dataPath, "Tuning.json")
+			string.Empty
 		};
+		if (Thread.CurrentThread == KProfiler.main_thread)
+		{
+			array[1] = Path.Combine(Application.dataPath, "Tuning.json");
+		}
 		string[] array2 = array;
 		foreach (string text in array2)
 		{
-			if ((LayeredFileSystem.instance != null) ? LayeredFileSystem.instance.Exists(text) : File.Exists(text))
+			if (!string.IsNullOrEmpty(text) && FileSystem.FileExists(text))
 			{
-				string value = (LayeredFileSystem.instance != null) ? LayeredFileSystem.instance.ReadText(text) : File.ReadAllText(text);
+				string value = FileSystem.ConvertToText(FileSystem.ReadBytes(text));
 				Dictionary<string, object> dictionary = JsonConvert.DeserializeObject<Dictionary<string, object>>(value);
 				foreach (KeyValuePair<string, object> item in dictionary)
 				{

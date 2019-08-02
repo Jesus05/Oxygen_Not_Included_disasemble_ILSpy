@@ -42,7 +42,7 @@ public class StringTable
 	{
 		foreach (KeyValuePair<int, StringEntry> entry in Entries)
 		{
-			Debug.Log(parent_path + "." + KeyNames[entry.Key] + "." + entry.Value.String, null);
+			Debug.Log(parent_path + "." + KeyNames[entry.Key] + "." + entry.Value.String);
 		}
 		string text = parent_path;
 		if (text != string.Empty)

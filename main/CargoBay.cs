@@ -15,6 +15,8 @@ public class CargoBay : KMonoBehaviour
 
 	public Storage storage;
 
+	private MeterController meter;
+
 	public CargoType storageType;
 
 	private static readonly EventSystem.IntraObjectHandler<CargoBay> OnLaunchDelegate = new EventSystem.IntraObjectHandler<CargoBay>(delegate(CargoBay component, object data)
@@ -44,6 +46,11 @@ public class CargoBay : KMonoBehaviour
 		Subscribe(-1056989049, OnLaunchDelegate);
 		Subscribe(238242047, OnLandDelegate);
 		Subscribe(493375141, OnRefreshUserMenuDelegate);
+		meter = new MeterController(GetComponent<KBatchedAnimController>(), "meter_target", "meter", Meter.Offset.Infront, Grid.SceneLayer.NoLayer, "meter_target", "meter_fill", "meter_frame", "meter_OL");
+		Subscribe(-1697596308, delegate
+		{
+			meter.SetPositionPercent(storage.MassStored() / storage.Capacity());
+		});
 	}
 
 	private void OnRefreshUserMenu(object data)
@@ -52,7 +59,7 @@ public class CargoBay : KMonoBehaviour
 		string text = UI.USERMENUACTIONS.EMPTYSTORAGE.NAME;
 		System.Action on_click = delegate
 		{
-			storage.DropAll(false);
+			storage.DropAll(false, false, default(Vector3), true);
 		};
 		string tooltipText = UI.USERMENUACTIONS.EMPTYSTORAGE.TOOLTIP;
 		KIconButtonMenu.ButtonInfo button = new KIconButtonMenu.ButtonInfo(iconName, text, on_click, Action.NumActions, null, null, null, tooltipText, true);
@@ -66,9 +73,9 @@ public class CargoBay : KMonoBehaviour
 
 	public void SpawnResources(object data)
 	{
-		SpaceDestination destination = SpacecraftManager.instance.GetDestination(SpacecraftManager.instance.savedSpacecraftDestinations[SpacecraftManager.instance.GetSpacecraftID(GetComponent<RocketModule>().conditionManager.GetComponent<LaunchableRocket>())]);
+		SpaceDestination spacecraftDestination = SpacecraftManager.instance.GetSpacecraftDestination(SpacecraftManager.instance.GetSpacecraftID(GetComponent<RocketModule>().conditionManager.GetComponent<LaunchableRocket>()));
 		int rootCell = Grid.PosToCell(base.gameObject);
-		foreach (KeyValuePair<SimHashes, float> item in destination.GetMissionResourceResult(storage.RemainingCapacity(), storageType == CargoType.solids, storageType == CargoType.liquids, storageType == CargoType.gasses))
+		foreach (KeyValuePair<SimHashes, float> item in spacecraftDestination.GetMissionResourceResult(storage.RemainingCapacity(), storageType == CargoType.solids, storageType == CargoType.liquids, storageType == CargoType.gasses))
 		{
 			Element element = ElementLoader.FindElementByHash(item.Key);
 			if (storageType == CargoType.solids && element.IsSolid)
@@ -90,7 +97,7 @@ public class CargoBay : KMonoBehaviour
 		}
 		if (storageType == CargoType.entities)
 		{
-			foreach (KeyValuePair<Tag, int> item2 in destination.GetMissionEntityResult())
+			foreach (KeyValuePair<Tag, int> item2 in spacecraftDestination.GetMissionEntityResult())
 			{
 				GameObject prefab = Assets.GetPrefab(item2.Key);
 				if ((UnityEngine.Object)prefab == (UnityEngine.Object)null)
@@ -117,11 +124,19 @@ public class CargoBay : KMonoBehaviour
 
 	public void OnLaunch(object data)
 	{
+		ReserveResources();
 		ConduitDispenser component = GetComponent<ConduitDispenser>();
 		if ((UnityEngine.Object)component != (UnityEngine.Object)null)
 		{
 			component.conduitType = ConduitType.None;
 		}
+	}
+
+	private void ReserveResources()
+	{
+		int spacecraftID = SpacecraftManager.instance.GetSpacecraftID(GetComponent<RocketModule>().conditionManager.GetComponent<LaunchableRocket>());
+		SpaceDestination spacecraftDestination = SpacecraftManager.instance.GetSpacecraftDestination(spacecraftID);
+		spacecraftDestination.UpdateRemainingResources(this);
 	}
 
 	public void OnLand(object data)

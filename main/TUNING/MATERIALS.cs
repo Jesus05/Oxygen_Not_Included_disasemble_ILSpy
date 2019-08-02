@@ -14,6 +14,8 @@ namespace TUNING
 
 		public const string BUILDABLERAW = "BuildableRaw";
 
+		public const string PRECIOUSROCK = "PreciousRock";
+
 		public static readonly string[] ALL_METALS = new string[1]
 		{
 			"Metal"
@@ -49,6 +51,11 @@ namespace TUNING
 			"BuildableProcessed"
 		};
 
+		public static readonly string[] PRECIOUS_ROCKS = new string[1]
+		{
+			"PreciousRock"
+		};
+
 		public static readonly string[] FARMABLE = new string[1]
 		{
 			"Farmable"
@@ -79,9 +86,19 @@ namespace TUNING
 			"Transparent"
 		};
 
+		public static readonly string[] BUILDING_FIBER = new string[1]
+		{
+			"BuildingFiber"
+		};
+
 		public static readonly string[] ANY_BUILDABLE = new string[1]
 		{
 			"BuildableAny"
+		};
+
+		public static readonly string[] FLYING_CRITTER_FOOD = new string[1]
+		{
+			"FlyingCritterEdible"
 		};
 	}
 }

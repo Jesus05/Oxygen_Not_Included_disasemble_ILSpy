@@ -484,6 +484,8 @@ namespace STRINGS
 
 					public static LocString LOU = "Lou";
 
+					public static LocString BRYCE = "Bryce";
+
 					public static LocString TRAVALDO = "Travaldo";
 
 					public static LocString WILSON = "Wilson";
@@ -511,6 +513,16 @@ namespace STRINGS
 					public static LocString KERNLE = "Kernle";
 
 					public static LocString REDWARD = "Redward";
+
+					public static LocString LUCA = "Luca";
+
+					public static LocString CHRIS = "Chris";
+
+					public static LocString RAGNAR = "Ragnar";
+
+					public static LocString BROOK = "Brook";
+
+					public static LocString RICARDO = "Ricardo";
 				}
 
 				public class FEMALE
@@ -600,6 +612,24 @@ namespace STRINGS
 					public static LocString MAHA = "Maha";
 
 					public static LocString MOZZARELLA = "Mozzarella";
+
+					public static LocString NICOLE = "Nicole";
+
+					public static LocString ERICA = "Erica";
+
+					public static LocString MARGARET = "Margaret";
+
+					public static LocString ELAINE = "Elaine";
+
+					public static LocString ANDREA = "Andrea";
+
+					public static LocString ANNEMARIE = "Anne-Marie";
+
+					public static LocString SUN = "Sun";
+
+					public static LocString STEPH = "Steph";
+
+					public static LocString KENDRA = "Kendra";
 				}
 
 				public class NB
@@ -707,6 +737,8 @@ namespace STRINGS
 					public static LocString SCRUNGO = "Scrungo";
 
 					public static LocString BRUMPO = "Brumpo";
+
+					public static LocString AZPAF = "Azpaf";
 				}
 			}
 		}
@@ -752,6 +784,201 @@ namespace STRINGS
 
 				public static LocString BELOVED_PET = "Beloved pet and friend.";
 			}
+		}
+
+		public class ROCKET
+		{
+			public class PREFIX
+			{
+				public static LocString SS = "S.S.";
+
+				public static LocString SPIRITOF = "Spirit of";
+
+				public static LocString OL = "Ol'";
+
+				public static LocString THE = "The";
+			}
+
+			public class ADJECTIVE
+			{
+				public static LocString DAZZLING = "Dazzling";
+
+				public static LocString DARING = "Daring";
+
+				public static LocString BRAVE = "Brave";
+
+				public static LocString CURIOUS = "Curious";
+
+				public static LocString ORBITAL = "Orbital";
+
+				public static LocString DEFENSIVE = "Defensive";
+
+				public static LocString INSPIRING = "Inspiring";
+
+				public static LocString RECON = "Recon";
+
+				public static LocString SCIENTIFIC = "Scientific";
+
+				public static LocString LOGISTICAL = "Logistical";
+
+				public static LocString EJECTED = "Ejected";
+
+				public static LocString NEON = "Neon";
+
+				public static LocString GENESIS = "Genesis";
+
+				public static LocString OPERATIONAL = "Operational";
+
+				public static LocString ADAPTABLE = "Adaptable";
+
+				public static LocString EXPERIMENTAL = "Experimental";
+
+				public static LocString SURVERY = "Survey";
+
+				public static LocString INTERGALACTIC = "Intergalactic";
+
+				public static LocString INTERSTELLAR = "Interstellar";
+
+				public static LocString WANDERING = "Wandering";
+
+				public static LocString EXPLORATORY = "Exploratory";
+
+				public static LocString ARDENT = "Ardent";
+
+				public static LocString PROGRESS = "Progress";
+
+				public static LocString PEACE = "Peace";
+			}
+
+			public class NOUN
+			{
+				public static LocString EXPLORER = "Explorer";
+
+				public static LocString SPUTNIK = "Sputnik";
+
+				public static LocString SKYLAB = "Skylab";
+
+				public static LocString SPACESHIP = "Spaceship";
+
+				public static LocString ROCKET = "Rocket";
+
+				public static LocString VESSEL = "Vessel";
+
+				public static LocString WANDERER = "Wanderer";
+
+				public static LocString HOPE = "Hope";
+
+				public static LocString BEAUTY = "Beauty";
+
+				public static LocString KNOWLEDGE = "Knowledge";
+
+				public static LocString APOLLO = "Apollo";
+
+				public static LocString GEMINI = "Gemini";
+
+				public static LocString VIRGO = "Virgo";
+
+				public static LocString SOL = "Sol";
+
+				public static LocString EOS = "Eos";
+
+				public static LocString SELENE = "Selene";
+
+				public static LocString HELIOS = "Helios";
+
+				public static LocString ARTEMIS = "Artemis";
+
+				public static LocString SPACESTATION = "Space Station";
+
+				public static LocString MIR = "Mir";
+
+				public static LocString VENESAT = "Venesat";
+
+				public static LocString CALIPSO = "Calipso";
+
+				public static LocString ADEOS = "Adeos";
+
+				public static LocString ROVER = "Rover";
+
+				public static LocString CALPANA = "Calpana";
+
+				public static LocString SAT = "SAT";
+
+				public static LocString PROTOTYPE = "Prototype";
+
+				public static LocString MARS = "Mars";
+
+				public static LocString SATURN = "Saturn";
+
+				public static LocString JUPITER = "Jupiter";
+
+				public static LocString VENUS = "Venus";
+
+				public static LocString URANUS = "Uranus";
+
+				public static LocString NEPTUNE = "Neptune";
+
+				public static LocString PLUTO = "Pluto";
+
+				public static LocString VGER = "V'ger";
+			}
+
+			public class SUFFIX
+			{
+				public static LocString I = "I";
+
+				public static LocString II = "II";
+
+				public static LocString III = "III";
+
+				public static LocString IV = "IV";
+
+				public static LocString V = "V";
+
+				public static LocString VI = "VI";
+
+				public static LocString VII = "VII";
+
+				public static LocString IX = "IX";
+
+				public static LocString X = "X";
+
+				public static LocString XI = "XI";
+
+				public static LocString XIV = "XIV";
+
+				public static LocString XV = "XV";
+
+				public static LocString XVI = "XVI";
+
+				public static LocString XL = "XL";
+
+				public static LocString XLI = "XLI";
+
+				public static LocString L = "L";
+
+				public static LocString LI = "LI";
+
+				public static LocString LV = "LV";
+
+				public static LocString XC = "XC";
+			}
+
+			public static LocString FMT_NOUN = "{Noun}";
+
+			public static LocString FMT_PREFIX_NOUN = "{Prefix} {Noun}";
+
+			public static LocString FMT_ADJECTIVE_NOUN = "{Adjective} {Noun}";
+
+			public static LocString FMT_PREFIX_ADJECTIVE_NOUN = "{Prefix} {Adjective} {Noun}";
+
+			public static LocString FMT_NOUN_SUFFIX = "{Noun} {Suffix}";
+
+			public static LocString FMT_PREFIX_NOUN_SUFFIX = "{Prefix} {Noun} {Suffix}";
+
+			public static LocString FMT_ADJECTIVE_NOUN_SUFFIX = "{Adjective} {Noun} {Suffix}";
+
+			public static LocString FMT_PREFIX_ADJECTIVE_NOUN_SUFFIX = "{Prefix} {Adjective} {Noun} {Suffix}";
 		}
 	}
 }

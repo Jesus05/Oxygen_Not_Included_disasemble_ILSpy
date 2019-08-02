@@ -173,7 +173,7 @@ public class SolidConduitFlowVisualizer
 	{
 		if (element != null)
 		{
-			Color c = element.substance.overlayColour;
+			Color c = element.substance.conduitColour;
 			c.a = 128f;
 			return c;
 		}
@@ -248,7 +248,8 @@ public class SolidConduitFlowVisualizer
 					SolidConduitFlow.Conduit conduit = flowManager.GetSOAInfo().GetConduit(j);
 					SolidConduitFlow.ConduitFlowInfo lastFlowInfo = conduit.GetLastFlowInfo(flowManager);
 					SolidConduitFlow.ConduitContents initialContents = conduit.GetInitialContents(flowManager);
-					if (lastFlowInfo.contents.pickupableHandle.IsValid())
+					bool flag = lastFlowInfo.direction != SolidConduitFlow.FlowDirection.None;
+					if (flag)
 					{
 						int cell2 = conduit.GetCell(flowManager);
 						int cellFromDirection = SolidConduitFlow.GetCellFromDirection(cell2, lastFlowInfo.direction);
@@ -270,7 +271,7 @@ public class SolidConduitFlowVisualizer
 						float highlight = 0f;
 						if (showContents)
 						{
-							if (lastFlowInfo.contents.pickupableHandle.IsValid() != initialContents.pickupableHandle.IsValid())
+							if (flag != initialContents.pickupableHandle.IsValid())
 							{
 								movingBallMesh.AddQuad(pos, c, tuning.size, 0f, 0f, uvbl, uvtl, uvbr, uvtr);
 							}
@@ -292,7 +293,7 @@ public class SolidConduitFlowVisualizer
 							AddAudioSource(conduit, position);
 						}
 					}
-					if (initialContents.pickupableHandle.IsValid() && !lastFlowInfo.contents.pickupableHandle.IsValid())
+					if (initialContents.pickupableHandle.IsValid() && !flag)
 					{
 						int cell3 = conduit.GetCell(flowManager);
 						Vector2I v4 = Grid.CellToXY(cell3);

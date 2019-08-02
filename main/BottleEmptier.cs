@@ -43,12 +43,12 @@ public class BottleEmptier : StateMachineComponent<BottleEmptier.StatesInstance>
 					GameTags.LiquidSource
 				};
 				Storage component2 = GetComponent<Storage>();
-				ChoreType fetch = Db.Get().ChoreTypes.Fetch;
+				ChoreType storageFetch = Db.Get().ChoreTypes.StorageFetch;
 				Storage destination = component2;
 				float amount = component2.Capacity();
 				Tag[] tags2 = GetComponent<TreeFilterable>().GetTags();
 				Tag[] forbidden_tags = array;
-				chore = new FetchChore(fetch, destination, amount, tags2, null, forbidden_tags, null, true, null, null, null, FetchOrder2.OperationalRequirement.Operational, 0, null);
+				chore = new FetchChore(storageFetch, destination, amount, tags2, null, forbidden_tags, null, true, null, null, null, FetchOrder2.OperationalRequirement.Operational, 0);
 			}
 		}
 
@@ -155,7 +155,7 @@ public class BottleEmptier : StateMachineComponent<BottleEmptier.StatesInstance>
 		public override void InitializeStates(out BaseState default_state)
 		{
 			default_state = waitingfordelivery;
-			statusItem = new StatusItem("BottleEmptier", string.Empty, string.Empty, string.Empty, StatusItem.IconType.Info, NotificationType.Neutral, false, SimViewMode.None, 63486);
+			statusItem = new StatusItem("BottleEmptier", string.Empty, string.Empty, string.Empty, StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, 129022);
 			statusItem.resolveStringCallback = delegate(string str, object data)
 			{
 				BottleEmptier bottleEmptier2 = (BottleEmptier)data;
@@ -221,11 +221,17 @@ public class BottleEmptier : StateMachineComponent<BottleEmptier.StatesInstance>
 		component.OnRefreshUserMenu(data);
 	});
 
+	private static readonly EventSystem.IntraObjectHandler<BottleEmptier> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<BottleEmptier>(delegate(BottleEmptier component, object data)
+	{
+		component.OnCopySettings(data);
+	});
+
 	protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		base.smi.StartSM();
 		Subscribe(493375141, OnRefreshUserMenuDelegate);
+		Subscribe(-905833192, OnCopySettingsDelegate);
 	}
 
 	public List<Descriptor> GetDescriptors(BuildingDef def)
@@ -260,5 +266,12 @@ public class BottleEmptier : StateMachineComponent<BottleEmptier.StatesInstance>
 		}
 		KIconButtonMenu.ButtonInfo button = (KIconButtonMenu.ButtonInfo)buttonInfo;
 		Game.Instance.userMenu.AddButton(base.gameObject, button, 1f);
+	}
+
+	private void OnCopySettings(object data)
+	{
+		GameObject gameObject = (GameObject)data;
+		BottleEmptier component = gameObject.GetComponent<BottleEmptier>();
+		allowManualPumpingStationFetching = component.allowManualPumpingStationFetching;
 	}
 }

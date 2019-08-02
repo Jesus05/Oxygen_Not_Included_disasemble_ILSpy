@@ -124,7 +124,6 @@ public class MinionVitalsPanel : KMonoBehaviour
 		AddAmountLine(Db.Get().Amounts.Breath, null);
 		AddAmountLine(Db.Get().Amounts.Stamina, null);
 		AddAmountLine(Db.Get().Amounts.Calories, null);
-		AddAmountLine(Db.Get().Amounts.ImmuneLevel, null);
 		AddAmountLine(Db.Get().Amounts.ScaleGrowth, null);
 		AddAmountLine(Db.Get().Amounts.Temperature, null);
 		AddAmountLine(Db.Get().Amounts.Decor, null);
@@ -154,11 +153,11 @@ public class MinionVitalsPanel : KMonoBehaviour
 		}, (GameObject go) => check_temperature(go), (GameObject go) => GetInternalTemperatureTooltip(go));
 		AddCheckboxLine(Db.Get().Amounts.Fertilization, conditionsContainerAdditional, (GameObject go) => GetFertilizationLabel(go), delegate(GameObject go)
 		{
-			if ((UnityEngine.Object)go.GetComponent<Growing>() == (UnityEngine.Object)null)
+			if ((UnityEngine.Object)go.GetComponent<ReceptacleMonitor>() == (UnityEngine.Object)null)
 			{
 				return CheckboxLineDisplayType.Hidden;
 			}
-			if (go.GetComponent<Growing>().Replanted)
+			if (go.GetComponent<ReceptacleMonitor>().Replanted)
 			{
 				return CheckboxLineDisplayType.Normal;
 			}
@@ -166,7 +165,7 @@ public class MinionVitalsPanel : KMonoBehaviour
 		}, (GameObject go) => check_fertilizer(go), (GameObject go) => GetFertilizationTooltip(go));
 		AddCheckboxLine(Db.Get().Amounts.Irrigation, conditionsContainerAdditional, (GameObject go) => GetIrrigationLabel(go), delegate(GameObject go)
 		{
-			Growing component = go.GetComponent<Growing>();
+			ReceptacleMonitor component = go.GetComponent<ReceptacleMonitor>();
 			return (!((UnityEngine.Object)component != (UnityEngine.Object)null) || !component.Replanted) ? CheckboxLineDisplayType.Diminished : CheckboxLineDisplayType.Normal;
 		}, (GameObject go) => check_irrigation(go), (GameObject go) => GetIrrigationTooltip(go));
 		AddCheckboxLine(Db.Get().Amounts.Illumination, conditionsContainerNormal, (GameObject go) => GetIlluminationLabel(go), (GameObject go) => CheckboxLineDisplayType.Normal, (GameObject go) => check_illumination(go), (GameObject go) => GetIlluminationTooltip(go));
@@ -356,12 +355,21 @@ public class MinionVitalsPanel : KMonoBehaviour
 				if ((UnityEngine.Object)component != (UnityEngine.Object)null)
 				{
 					Growing component2 = component.GetComponent<Growing>();
+					bool flag4 = component.HasTag(GameTags.Decoration);
 					conditionsContainerNormal.gameObject.SetActive(true);
-					conditionsContainerAdditional.gameObject.SetActive((UnityEngine.Object)component2 != (UnityEngine.Object)null);
+					conditionsContainerAdditional.gameObject.SetActive(!flag4);
 					if ((UnityEngine.Object)component2 == (UnityEngine.Object)null)
 					{
+						float num = 1f;
 						LocText reference = conditionsContainerNormal.GetComponent<HierarchyReferences>().GetReference<LocText>("Label");
 						reference.text = string.Empty;
+						reference.text = ((!flag4) ? string.Format(UI.VITALSSCREEN.CONDITIONS_GROWING.WILD_INSTANT.BASE, Util.FormatTwoDecimalPlace(num * 0.25f * 100f)) : string.Format(UI.VITALSSCREEN.CONDITIONS_GROWING.WILD_DECOR.BASE));
+						reference.GetComponent<ToolTip>().SetSimpleTooltip(string.Format(UI.VITALSSCREEN.CONDITIONS_GROWING.WILD_INSTANT.TOOLTIP));
+						reference = conditionsContainerAdditional.GetComponent<HierarchyReferences>().GetReference<LocText>("Label");
+						reference.color = ((!selectedEntity.GetComponent<ReceptacleMonitor>().Replanted) ? Color.grey : Color.black);
+						reference.text = string.Empty;
+						reference.text = string.Format(UI.VITALSSCREEN.CONDITIONS_GROWING.ADDITIONAL_DOMESTIC_INSTANT.BASE, Util.FormatTwoDecimalPlace(num * 100f));
+						reference.GetComponent<ToolTip>().SetSimpleTooltip(string.Format(UI.VITALSSCREEN.CONDITIONS_GROWING.ADDITIONAL_DOMESTIC_INSTANT.TOOLTIP));
 					}
 					else
 					{
@@ -370,7 +378,7 @@ public class MinionVitalsPanel : KMonoBehaviour
 						reference.text = string.Format(UI.VITALSSCREEN.CONDITIONS_GROWING.WILD.BASE, GameUtil.GetFormattedCycles(component.GetComponent<Growing>().WildGrowthTime(), "F1"));
 						reference.GetComponent<ToolTip>().SetSimpleTooltip(string.Format(UI.VITALSSCREEN.CONDITIONS_GROWING.WILD.TOOLTIP, GameUtil.GetFormattedCycles(component.GetComponent<Growing>().WildGrowthTime(), "F1")));
 						reference = conditionsContainerAdditional.GetComponent<HierarchyReferences>().GetReference<LocText>("Label");
-						reference.color = ((!selectedEntity.GetComponent<Growing>().Replanted) ? Color.grey : Color.black);
+						reference.color = ((!selectedEntity.GetComponent<ReceptacleMonitor>().Replanted) ? Color.grey : Color.black);
 						reference.text = string.Empty;
 						reference.text = ((!flag3) ? string.Format(UI.VITALSSCREEN.CONDITIONS_GROWING.DOMESTIC.BASE, GameUtil.GetFormattedCycles(component.GetComponent<Growing>().DomesticGrowthTime(), "F1")) : string.Format(UI.VITALSSCREEN.CONDITIONS_GROWING.ADDITIONAL_DOMESTIC.BASE, GameUtil.GetFormattedCycles(component.GetComponent<Growing>().DomesticGrowthTime(), "F1")));
 						reference.GetComponent<ToolTip>().SetSimpleTooltip(string.Format(UI.VITALSSCREEN.CONDITIONS_GROWING.ADDITIONAL_DOMESTIC.TOOLTIP, GameUtil.GetFormattedCycles(component.GetComponent<Growing>().DomesticGrowthTime(), "F1")));
@@ -397,7 +405,7 @@ public class MinionVitalsPanel : KMonoBehaviour
 		{
 			return string.Empty;
 		}
-		return UI.TOOLTIPS.VITALS_CHECKBOX_PRESSURE.text.Replace("{pressure}", GameUtil.GetFormattedMass(component.GetExternalPressure, GameUtil.TimeSlice.None, GameUtil.MetricMassFormat.UseThreshold, true, "{0:0.#}"));
+		return UI.TOOLTIPS.VITALS_CHECKBOX_PRESSURE.text.Replace("{pressure}", GameUtil.GetFormattedMass(component.GetExternalPressure(), GameUtil.TimeSlice.None, GameUtil.MetricMassFormat.UseThreshold, true, "{0:0.#}"));
 	}
 
 	private string GetInternalTemperatureTooltip(GameObject go)
@@ -407,7 +415,7 @@ public class MinionVitalsPanel : KMonoBehaviour
 		{
 			return string.Empty;
 		}
-		return UI.TOOLTIPS.VITALS_CHECKBOX_TEMPERATURE.text.Replace("{temperature}", GameUtil.GetFormattedTemperature(component.InternalTemperature, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true));
+		return UI.TOOLTIPS.VITALS_CHECKBOX_TEMPERATURE.text.Replace("{temperature}", GameUtil.GetFormattedTemperature(component.InternalTemperature, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false));
 	}
 
 	private string GetFertilizationTooltip(GameObject go)
@@ -463,7 +471,7 @@ public class MinionVitalsPanel : KMonoBehaviour
 		PressureVulnerable component = go.GetComponent<PressureVulnerable>();
 		if ((UnityEngine.Object)component != (UnityEngine.Object)null)
 		{
-			return UI.TOOLTIPS.VITALS_CHECKBOX_ATMOSPHERE.text.Replace("{element}", component.GetExternalElement.name);
+			return UI.TOOLTIPS.VITALS_CHECKBOX_ATMOSPHERE.text.Replace("{element}", component.ExternalElement.name);
 		}
 		return UI.TOOLTIPS.VITALS_CHECKBOX_ATMOSPHERE;
 	}
@@ -477,7 +485,7 @@ public class MinionVitalsPanel : KMonoBehaviour
 	private string GetInternalTemperatureLabel(GameObject go)
 	{
 		TemperatureVulnerable component = go.GetComponent<TemperatureVulnerable>();
-		return Db.Get().Amounts.Temperature.Name + "\n    • " + GameUtil.GetFormattedTemperature(component.internalTemperatureWarning_Low, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, false) + " - " + GameUtil.GetFormattedTemperature(component.internalTemperatureWarning_High, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true);
+		return Db.Get().Amounts.Temperature.Name + "\n    • " + GameUtil.GetFormattedTemperature(component.internalTemperatureWarning_Low, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, false, false) + " - " + GameUtil.GetFormattedTemperature(component.internalTemperatureWarning_High, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false);
 	}
 
 	private string GetFertilizationLabel(GameObject go)
@@ -522,7 +530,7 @@ public class MinionVitalsPanel : KMonoBehaviour
 		PressureVulnerable component = go.GetComponent<PressureVulnerable>();
 		if ((UnityEngine.Object)component != (UnityEngine.Object)null)
 		{
-			return component.GetExternalPressureState == PressureVulnerable.PressureState.Normal;
+			return component.ExternalPressureState == PressureVulnerable.PressureState.Normal;
 		}
 		return true;
 	}
@@ -542,7 +550,7 @@ public class MinionVitalsPanel : KMonoBehaviour
 		IrrigationMonitor.Instance sMI = go.GetSMI<IrrigationMonitor.Instance>();
 		if (sMI != null)
 		{
-			return !sMI.IsInsideState(sMI.sm.replanted.starved);
+			return !sMI.IsInsideState(sMI.sm.replanted.starved) && !sMI.IsInsideState(sMI.sm.wild);
 		}
 		return true;
 	}

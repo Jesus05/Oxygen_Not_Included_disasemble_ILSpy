@@ -14,6 +14,8 @@ public class Notifier : KMonoBehaviour
 
 	public bool DisableNotifications;
 
+	public bool AutoClickFocus = true;
+
 	private Dictionary<HashedString, Notification> NotificationGroups;
 
 	protected override void OnPrefabInit()
@@ -23,6 +25,7 @@ public class Notifier : KMonoBehaviour
 
 	protected override void OnCleanUp()
 	{
+		ClearNotifications();
 		Components.Notifiers.Remove(this);
 	}
 
@@ -41,7 +44,10 @@ public class Notifier : KMonoBehaviour
 					notification.NotifierName = "• " + base.name + suffix;
 				}
 				notification.Notifier = this;
-				notification.Position = base.transform.GetPosition();
+				if (AutoClickFocus && (UnityEngine.Object)notification.clickFocus == (UnityEngine.Object)null)
+				{
+					notification.clickFocus = base.transform;
+				}
 				if (notification.Group.IsValid && notification.Group != (HashedString)string.Empty)
 				{
 					if (NotificationGroups == null)
@@ -63,7 +69,7 @@ public class Notifier : KMonoBehaviour
 			}
 			else
 			{
-				DebugUtil.Assert((UnityEngine.Object)notification.Notifier == (UnityEngine.Object)this, "Assert!", string.Empty, string.Empty);
+				DebugUtil.Assert((UnityEngine.Object)notification.Notifier == (UnityEngine.Object)this);
 			}
 			notification.Time = KTime.Instance.UnscaledGameTime;
 		}
@@ -87,9 +93,13 @@ public class Notifier : KMonoBehaviour
 
 	public void ClearNotifications()
 	{
-		foreach (KeyValuePair<HashedString, Notification> notificationGroup in NotificationGroups)
+		if (NotificationGroups != null)
 		{
-			Remove(notificationGroup.Value);
+			List<HashedString> list = new List<HashedString>(NotificationGroups.Keys);
+			foreach (HashedString item in list)
+			{
+				Remove(NotificationGroups[item]);
+			}
 		}
 	}
 }

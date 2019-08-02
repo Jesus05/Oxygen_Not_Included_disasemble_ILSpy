@@ -62,12 +62,12 @@ public class InspectSaveScreen : KModalScreen
 	{
 		if (string.IsNullOrEmpty(path))
 		{
-			Debug.LogError("The directory path provided is empty.", null);
+			Debug.LogError("The directory path provided is empty.");
 			Show(false);
 		}
 		else if (!Directory.Exists(path))
 		{
-			Debug.LogError("The directory provided does not exist.", null);
+			Debug.LogError("The directory provided does not exist.");
 			Show(false);
 		}
 		else
@@ -108,7 +108,7 @@ public class InspectSaveScreen : KModalScreen
 			confirmScreen = Util.KInstantiateUI<ConfirmDialogScreen>(ScreenPrefabs.Instance.ConfirmDialogScreen.gameObject, base.gameObject, false);
 			confirmScreen.PopupConfirmDialog(message, action, delegate
 			{
-			}, null, null, null, null, null, null);
+			}, null, null, null, null, null, null, true);
 			confirmScreen.GetComponent<LayoutElement>().ignoreLayout = true;
 			confirmScreen.gameObject.SetActive(true);
 		}
@@ -118,7 +118,7 @@ public class InspectSaveScreen : KModalScreen
 	{
 		if (string.IsNullOrEmpty(currentPath))
 		{
-			Debug.LogError("The path provided is not valid and cannot be deleted.", null);
+			Debug.LogError("The path provided is not valid and cannot be deleted.");
 		}
 		else
 		{

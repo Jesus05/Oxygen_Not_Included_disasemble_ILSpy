@@ -73,7 +73,7 @@ public class Generator : KMonoBehaviour, ISaveLoadable, IEnergyProducer
 		get
 		{
 			bool result = false;
-			GameObject gameObject = Grid.Objects[PowerCell, 24];
+			GameObject gameObject = Grid.Objects[PowerCell, 26];
 			if ((UnityEngine.Object)gameObject != (UnityEngine.Object)null && (UnityEngine.Object)gameObject.GetComponent<BuildingComplete>() != (UnityEngine.Object)null)
 			{
 				result = true;
@@ -180,6 +180,7 @@ public class Generator : KMonoBehaviour, ISaveLoadable, IEnergyProducer
 
 	public void GenerateJoules(float joulesAvailable, bool canOverPower = false)
 	{
+		Debug.Assert((UnityEngine.Object)GetComponent<Battery>() == (UnityEngine.Object)null);
 		this.joulesAvailable = Mathf.Clamp(joulesAvailable, 0f, (!canOverPower) ? Capacity : 3.40282347E+38f);
 		ReportManager.Instance.ReportValue(ReportManager.ReportType.EnergyCreated, this.joulesAvailable, this.GetProperName(), null);
 	}

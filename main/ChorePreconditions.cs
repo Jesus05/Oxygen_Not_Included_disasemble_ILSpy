@@ -1,3 +1,4 @@
+using Database;
 using Klei.AI;
 using STRINGS;
 using System.Collections.Generic;
@@ -11,7 +12,7 @@ public class ChorePreconditions
 	{
 		id = "IsPreemptable",
 		sortOrder = 1,
-		description = (string)DUPLICANTS.CHORES.PRECONDITIONS.CHORE_DRIVER_IS_NULL,
+		description = (string)DUPLICANTS.CHORES.PRECONDITIONS.IS_PREEMPTABLE,
 		fn = (Chore.PreconditionFn)delegate(ref Chore.Precondition.Context context, object data)
 		{
 			return context.isAttemptingOverride || context.chore.CanPreempt(context) || (Object)context.chore.driver == (Object)null;
@@ -66,17 +67,8 @@ public class ChorePreconditions
 		fn = (Chore.PreconditionFn)delegate(ref Chore.Precondition.Context context, object data)
 		{
 			Assignable assignable3 = (Assignable)data;
-			if (assignable3.assignee != null)
-			{
-				foreach (Ownables owner in assignable3.assignee.GetOwners())
-				{
-					if ((Object)owner.gameObject == (Object)context.consumerState.gameObject)
-					{
-						return true;
-					}
-				}
-			}
-			return false;
+			IAssignableIdentity component = context.consumerState.gameObject.GetComponent<IAssignableIdentity>();
+			return assignable3.IsAssignedTo(component);
 		}
 	};
 
@@ -86,7 +78,13 @@ public class ChorePreconditions
 		description = (string)DUPLICANTS.CHORES.PRECONDITIONS.IS_IN_MY_ROOM,
 		fn = (Chore.PreconditionFn)delegate(ref Chore.Precondition.Context context, object data)
 		{
-			Room room = (Room)data;
+			int cell = (int)data;
+			CavityInfo cavityForCell = Game.Instance.roomProber.GetCavityForCell(cell);
+			Room room = null;
+			if (cavityForCell != null)
+			{
+				room = cavityForCell.room;
+			}
 			if (room != null)
 			{
 				if (!((Object)context.consumerState.ownable != (Object)null))
@@ -95,20 +93,7 @@ public class ChorePreconditions
 					FetchChore fetchChore = context.chore as FetchChore;
 					if (fetchChore != null && (Object)fetchChore.destination != (Object)null)
 					{
-						CavityInfo cavityForCell = Game.Instance.roomProber.GetCavityForCell(Grid.PosToCell(fetchChore.destination));
-						if (cavityForCell != null)
-						{
-							room2 = cavityForCell.room;
-						}
-						if (room2 != null)
-						{
-							return room2 == room;
-						}
-						return false;
-					}
-					if (context.chore is WorkChore<Tinkerable>)
-					{
-						CavityInfo cavityForCell2 = Game.Instance.roomProber.GetCavityForCell(Grid.PosToCell((context.chore as WorkChore<Tinkerable>).gameObject));
+						CavityInfo cavityForCell2 = Game.Instance.roomProber.GetCavityForCell(Grid.PosToCell(fetchChore.destination));
 						if (cavityForCell2 != null)
 						{
 							room2 = cavityForCell2.room;
@@ -119,11 +104,24 @@ public class ChorePreconditions
 						}
 						return false;
 					}
+					if (context.chore is WorkChore<Tinkerable>)
+					{
+						CavityInfo cavityForCell3 = Game.Instance.roomProber.GetCavityForCell(Grid.PosToCell((context.chore as WorkChore<Tinkerable>).gameObject));
+						if (cavityForCell3 != null)
+						{
+							room2 = cavityForCell3.room;
+						}
+						if (room2 != null)
+						{
+							return room2 == room;
+						}
+						return false;
+					}
 					return false;
 				}
-				foreach (Ownables owner2 in room.GetOwners())
+				foreach (Ownables owner in room.GetOwners())
 				{
-					if ((Object)owner2.gameObject == (Object)context.consumerState.gameObject)
+					if ((Object)owner.gameObject == (Object)context.consumerState.gameObject)
 					{
 						return true;
 					}
@@ -167,84 +165,95 @@ public class ChorePreconditions
 	public Chore.Precondition IsNotTransferArm = new Chore.Precondition
 	{
 		id = "IsNotTransferArm",
+		description = string.Empty,
 		fn = (Chore.PreconditionFn)delegate(ref Chore.Precondition.Context context, object data)
 		{
 			return !context.consumerState.hasSolidTransferArm;
 		}
 	};
 
-	public Chore.Precondition HasRolePerk = new Chore.Precondition
+	public Chore.Precondition HasSkillPerk = new Chore.Precondition
 	{
-		id = "HasRolePerk",
-		description = (string)DUPLICANTS.CHORES.PRECONDITIONS.HAS_ROLE_PERK,
-		fn = (Chore.PreconditionFn)delegate(ref Chore.Precondition.Context context, object data)
-		{
-			MinionResume resume3 = context.consumerState.resume;
-			if (!(bool)resume3)
-			{
-				return false;
-			}
-			if (data is RolePerk)
-			{
-				RolePerk perk = data as RolePerk;
-				return resume3.HasPerk(perk);
-			}
-			if (data is HashedString)
-			{
-				HashedString perk2 = (HashedString)data;
-				return resume3.HasPerk(perk2);
-			}
-			return false;
-		}
-	};
-
-	public Chore.Precondition IsRole = new Chore.Precondition
-	{
-		id = "IsRole",
-		description = (string)DUPLICANTS.CHORES.PRECONDITIONS.IS_ROLE,
-		fn = (Chore.PreconditionFn)delegate(ref Chore.Precondition.Context context, object data)
-		{
-			MinionResume resume2 = context.consumerState.resume;
-			if (!(bool)resume2)
-			{
-				return false;
-			}
-			if (data is string)
-			{
-				string a = (string)data;
-				return !string.IsNullOrEmpty(resume2.CurrentRole) && a == resume2.CurrentRole;
-			}
-			for (int i = 0; i < (data as string[]).Length; i++)
-			{
-				if ((data as string[])[i] == resume2.CurrentRole)
-				{
-					return true;
-				}
-			}
-			return false;
-		}
-	};
-
-	public Chore.Precondition HasNotMasteredRole = new Chore.Precondition
-	{
-		id = "HasNotMastered",
-		description = (string)DUPLICANTS.CHORES.PRECONDITIONS.HAS_NOT_MASTERED,
+		id = "HasSkillPerk",
+		description = (string)DUPLICANTS.CHORES.PRECONDITIONS.HAS_SKILL_PERK,
 		fn = (Chore.PreconditionFn)delegate(ref Chore.Precondition.Context context, object data)
 		{
 			MinionResume resume = context.consumerState.resume;
-			string roleId = (string)data;
-			return !resume.HasMasteredRole(roleId);
+			if (!(bool)resume)
+			{
+				return false;
+			}
+			if (data is SkillPerk)
+			{
+				SkillPerk perk = data as SkillPerk;
+				return resume.HasPerk(perk);
+			}
+			if (data is HashedString)
+			{
+				HashedString perkId = (HashedString)data;
+				return resume.HasPerk(perkId);
+			}
+			if (data is string)
+			{
+				HashedString perkId2 = (string)data;
+				return resume.HasPerk(perkId2);
+			}
+			return false;
 		}
 	};
 
-	public Chore.Precondition IsMoreSatisfying = new Chore.Precondition
+	public Chore.Precondition IsMoreSatisfyingEarly = new Chore.Precondition
 	{
-		id = "IsMoreSatisfying",
+		id = "IsMoreSatisfyingEarly",
 		description = (string)DUPLICANTS.CHORES.PRECONDITIONS.IS_MORE_SATISFYING,
-		sortOrder = 1,
+		sortOrder = -1,
 		fn = (Chore.PreconditionFn)delegate(ref Chore.Precondition.Context context, object data)
 		{
 			if (context.isAttemptingOverride)
+			{
+				return true;
+			}
+			if (context.skipMoreSatisfyingEarlyPrecondition)
+			{
+				return true;
+			}
+			if (context.consumerState.selectable.IsSelected)
+			{
+				return true;
+			}
+			Chore currentChore3 = context.consumerState.choreDriver.GetCurrentChore();
+			if (currentChore3 != null)
+			{
+				if (context.masterPriority.priority_class != currentChore3.masterPriority.priority_class)
+				{
+					return context.masterPriority.priority_class > currentChore3.masterPriority.priority_class;
+				}
+				if ((Object)context.consumerState.consumer != (Object)null && context.personalPriority != context.consumerState.consumer.GetPersonalPriority(currentChore3.choreType))
+				{
+					return context.personalPriority > context.consumerState.consumer.GetPersonalPriority(currentChore3.choreType);
+				}
+				if (context.masterPriority.priority_value != currentChore3.masterPriority.priority_value)
+				{
+					return context.masterPriority.priority_value > currentChore3.masterPriority.priority_value;
+				}
+				return context.priority > currentChore3.choreType.priority;
+			}
+			return true;
+		}
+	};
+
+	public Chore.Precondition IsMoreSatisfyingLate = new Chore.Precondition
+	{
+		id = "IsMoreSatisfyingLate",
+		description = (string)DUPLICANTS.CHORES.PRECONDITIONS.IS_MORE_SATISFYING,
+		sortOrder = 10000,
+		fn = (Chore.PreconditionFn)delegate(ref Chore.Precondition.Context context, object data)
+		{
+			if (context.isAttemptingOverride)
+			{
+				return true;
+			}
+			if (!context.consumerState.selectable.IsSelected)
 			{
 				return true;
 			}
@@ -296,9 +305,13 @@ public class ChorePreconditions
 	{
 		id = "IsNotRedAlert",
 		description = (string)DUPLICANTS.CHORES.PRECONDITIONS.IS_NOT_RED_ALERT,
-		fn = (Chore.PreconditionFn)delegate
+		fn = (Chore.PreconditionFn)delegate(ref Chore.Precondition.Context context, object data)
 		{
-			return !RedAlertManager.Instance.Get().IsOn();
+			if (context.chore.masterPriority.priority_class == PriorityScreen.PriorityClass.topPriority)
+			{
+				return true;
+			}
+			return !VignetteManager.Instance.Get().IsRedAlert();
 		}
 	};
 
@@ -308,7 +321,7 @@ public class ChorePreconditions
 		description = (string)DUPLICANTS.CHORES.PRECONDITIONS.IS_SCHEDULED_TIME,
 		fn = (Chore.PreconditionFn)delegate(ref Chore.Precondition.Context context, object data)
 		{
-			if (RedAlertManager.Instance.Get().IsOn())
+			if (VignetteManager.Instance.Get().IsRedAlert())
 			{
 				return true;
 			}
@@ -663,16 +676,6 @@ public class ChorePreconditions
 		fn = (Chore.PreconditionFn)delegate
 		{
 			return Components.LiveMinionIdentities.Count == Components.MinionIdentities.Count;
-		}
-	};
-
-	public Chore.Precondition ValidMourningSite = new Chore.Precondition
-	{
-		id = "ValidMourningSite",
-		description = (string)DUPLICANTS.CHORES.PRECONDITIONS.VALID_MOURNING_SITE,
-		fn = (Chore.PreconditionFn)delegate
-		{
-			return (Object)MournChore.FindGraveToMournAt() != (Object)null;
 		}
 	};
 

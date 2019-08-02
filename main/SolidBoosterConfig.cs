@@ -26,7 +26,6 @@ public class SolidBoosterConfig : IBuildingConfig
 		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, eNGINE_MASS_SMALL, construction_materials, melting_point, build_location_rule, BUILDINGS.DECOR.NONE, tIER, 0.2f);
 		BuildingTemplates.CreateRocketBuildingDef(buildingDef);
 		buildingDef.SceneLayer = Grid.SceneLayer.BuildingFront;
-		buildingDef.ViewMode = SimViewMode.None;
 		buildingDef.Invincible = true;
 		buildingDef.OverheatTemperature = 2273.15f;
 		buildingDef.Floodable = false;
@@ -42,7 +41,7 @@ public class SolidBoosterConfig : IBuildingConfig
 	{
 		BuildingConfigManager.Instance.IgnoreDefaultKComponent(typeof(RequiresFoundation), prefab_tag);
 		go.AddOrGet<LoopingSounds>();
-		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.IndustrialMachinery);
+		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.IndustrialMachinery, false);
 		BuildingAttachPoint buildingAttachPoint = go.AddOrGet<BuildingAttachPoint>();
 		buildingAttachPoint.points = new BuildingAttachPoint.HardPoint[1]
 		{
@@ -73,14 +72,15 @@ public class SolidBoosterConfig : IBuildingConfig
 		manualDeliveryKG.requestedItemTag = solidBooster.fuelTag;
 		manualDeliveryKG.refillMass = storage.capacityKg / 2f;
 		manualDeliveryKG.capacity = storage.capacityKg / 2f;
-		manualDeliveryKG.choreTypeIDHash = Db.Get().ChoreTypes.Fetch.IdHash;
+		manualDeliveryKG.choreTypeIDHash = Db.Get().ChoreTypes.MachineFetch.IdHash;
 		ManualDeliveryKG manualDeliveryKG2 = go.AddComponent<ManualDeliveryKG>();
 		manualDeliveryKG2.SetStorage(storage);
 		manualDeliveryKG2.requestedItemTag = ElementLoader.FindElementByHash(SimHashes.OxyRock).tag;
 		manualDeliveryKG2.refillMass = storage.capacityKg / 2f;
 		manualDeliveryKG2.capacity = storage.capacityKg / 2f;
-		manualDeliveryKG2.choreTypeIDHash = Db.Get().ChoreTypes.Fetch.IdHash;
-		go.AddOrGet<RocketModule>();
+		manualDeliveryKG2.choreTypeIDHash = Db.Get().ChoreTypes.MachineFetch.IdHash;
+		RocketModule rocketModule = go.AddOrGet<RocketModule>();
+		rocketModule.SetBGKAnim(Assets.GetAnim("rocket_solid_booster_bg_kanim"));
 		EntityTemplates.ExtendBuildingToRocketModule(go);
 	}
 }

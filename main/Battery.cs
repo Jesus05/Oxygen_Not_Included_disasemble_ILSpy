@@ -79,7 +79,7 @@ public class Battery : KMonoBehaviour, IEnergyConsumer, IEffectDescriptor, IEner
 	{
 		get
 		{
-			GameObject x = Grid.Objects[PowerCell, 24];
+			GameObject x = Grid.Objects[PowerCell, 26];
 			return (Object)x != (Object)null;
 		}
 	}
@@ -198,5 +198,11 @@ public class Battery : KMonoBehaviour, IEnergyConsumer, IEffectDescriptor, IEner
 		list.Add(new Descriptor(string.Format(UI.BUILDINGEFFECTS.BATTERYCAPACITY, GameUtil.GetFormattedJoules(capacity, string.Empty, GameUtil.TimeSlice.None)), string.Format(UI.BUILDINGEFFECTS.TOOLTIPS.BATTERYCAPACITY, GameUtil.GetFormattedJoules(capacity, string.Empty, GameUtil.TimeSlice.None)), Descriptor.DescriptorType.Effect, false));
 		list.Add(new Descriptor(string.Format(UI.BUILDINGEFFECTS.BATTERYLEAK, GameUtil.GetFormattedJoules(joulesLostPerSecond, "F1", GameUtil.TimeSlice.PerCycle)), string.Format(UI.BUILDINGEFFECTS.TOOLTIPS.BATTERYLEAK, GameUtil.GetFormattedJoules(joulesLostPerSecond, "F1", GameUtil.TimeSlice.PerCycle)), Descriptor.DescriptorType.Effect, false));
 		return list;
+	}
+
+	[ContextMenu("Refill Power")]
+	public void DEBUG_RefillPower()
+	{
+		joulesAvailable = capacity;
 	}
 }

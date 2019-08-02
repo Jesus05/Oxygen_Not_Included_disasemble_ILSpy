@@ -93,11 +93,21 @@ public class EnergyGenerator : Generator, IEffectDescriptor, ISingleSliderContro
 		component.OnActiveChanged(data);
 	});
 
+	private static readonly EventSystem.IntraObjectHandler<EnergyGenerator> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<EnergyGenerator>(delegate(EnergyGenerator component, object data)
+	{
+		component.OnCopySettings(data);
+	});
+
 	public string SliderTitleKey => "STRINGS.UI.UISIDESCREENS.MANUALGENERATORSIDESCREEN.TITLE";
 
 	public string SliderUnits => UI.UNITSUFFIXES.PERCENT;
 
 	public static StatusItem BatteriesSufficientlyFull => batteriesSufficientlyFull;
+
+	public int SliderDecimalPlaces(int index)
+	{
+		return 0;
+	}
 
 	public float GetSliderMin(int index)
 	{
@@ -129,6 +139,21 @@ public class EnergyGenerator : Generator, IEffectDescriptor, ISingleSliderContro
 		base.OnPrefabInit();
 		EnsureStatusItemAvailable();
 		Subscribe(824508782, OnActiveChangedDelegate);
+		if (!ignoreBatteryRefillPercent)
+		{
+			base.gameObject.AddOrGet<CopyBuildingSettings>();
+			Subscribe(-905833192, OnCopySettingsDelegate);
+		}
+	}
+
+	private void OnCopySettings(object data)
+	{
+		GameObject gameObject = (GameObject)data;
+		EnergyGenerator component = gameObject.GetComponent<EnergyGenerator>();
+		if ((UnityEngine.Object)component != (UnityEngine.Object)null)
+		{
+			batteryRefillPercent = component.batteryRefillPercent;
+		}
 	}
 
 	protected void OnActiveChanged(object data)
@@ -260,8 +285,7 @@ public class EnergyGenerator : Generator, IEffectDescriptor, ISingleSliderContro
 		for (int i = 0; i < formula.inputs.Length; i++)
 		{
 			InputItem inputItem = formula.inputs[i];
-			Element element = ElementLoader.GetElement(inputItem.tag);
-			string arg = element.tag.ProperName();
+			string arg = inputItem.tag.ProperName();
 			Descriptor item = default(Descriptor);
 			item.SetupDescriptor(string.Format(UI.BUILDINGEFFECTS.ELEMENTCONSUMED, arg, GameUtil.GetFormattedMass(inputItem.consumptionRate, GameUtil.TimeSlice.PerSecond, GameUtil.MetricMassFormat.UseThreshold, true, "{0:0.##}")), string.Format(UI.BUILDINGEFFECTS.TOOLTIPS.ELEMENTCONSUMED, arg, GameUtil.GetFormattedMass(inputItem.consumptionRate, GameUtil.TimeSlice.PerSecond, GameUtil.MetricMassFormat.UseThreshold, true, "{0:0.##}")), Descriptor.DescriptorType.Requirement);
 			list.Add(item);
@@ -282,7 +306,14 @@ public class EnergyGenerator : Generator, IEffectDescriptor, ISingleSliderContro
 			Element element = ElementLoader.FindElementByHash(outputItem.element);
 			string arg = element.tag.ProperName();
 			Descriptor item = default(Descriptor);
-			item.SetupDescriptor(string.Format(UI.BUILDINGEFFECTS.ELEMENTEMITTED, arg, GameUtil.GetFormattedMass(outputItem.creationRate, GameUtil.TimeSlice.PerSecond, GameUtil.MetricMassFormat.UseThreshold, true, "{0:0.#}")), string.Format(UI.BUILDINGEFFECTS.TOOLTIPS.ELEMENTEMITTED, arg, GameUtil.GetFormattedMass(outputItem.creationRate, GameUtil.TimeSlice.PerSecond, GameUtil.MetricMassFormat.UseThreshold, true, "{0:0.#}")), Descriptor.DescriptorType.Effect);
+			if (outputItem.minTemperature > 0f)
+			{
+				item.SetupDescriptor(string.Format(UI.BUILDINGEFFECTS.ELEMENTEMITTED_MINORENTITYTEMP, arg, GameUtil.GetFormattedMass(outputItem.creationRate, GameUtil.TimeSlice.PerSecond, GameUtil.MetricMassFormat.UseThreshold, true, "{0:0.#}"), GameUtil.GetFormattedTemperature(outputItem.minTemperature, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false)), string.Format(UI.BUILDINGEFFECTS.TOOLTIPS.ELEMENTEMITTED_MINORENTITYTEMP, arg, GameUtil.GetFormattedMass(outputItem.creationRate, GameUtil.TimeSlice.PerSecond, GameUtil.MetricMassFormat.UseThreshold, true, "{0:0.#}"), GameUtil.GetFormattedTemperature(outputItem.minTemperature, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false)), Descriptor.DescriptorType.Effect);
+			}
+			else
+			{
+				item.SetupDescriptor(string.Format(UI.BUILDINGEFFECTS.ELEMENTEMITTED_ENTITYTEMP, arg, GameUtil.GetFormattedMass(outputItem.creationRate, GameUtil.TimeSlice.PerSecond, GameUtil.MetricMassFormat.UseThreshold, true, "{0:0.#}")), string.Format(UI.BUILDINGEFFECTS.TOOLTIPS.ELEMENTEMITTED_ENTITYTEMP, arg, GameUtil.GetFormattedMass(outputItem.creationRate, GameUtil.TimeSlice.PerSecond, GameUtil.MetricMassFormat.UseThreshold, true, "{0:0.#}")), Descriptor.DescriptorType.Effect);
+			}
 			list.Add(item);
 		}
 		return list;
@@ -306,22 +337,22 @@ public class EnergyGenerator : Generator, IEffectDescriptor, ISingleSliderContro
 	{
 		if (batteriesSufficientlyFull == null)
 		{
-			batteriesSufficientlyFull = new StatusItem("BatteriesSufficientlyFull", "BUILDING", string.Empty, StatusItem.IconType.Info, NotificationType.Neutral, false, SimViewMode.None, true, 63486);
+			batteriesSufficientlyFull = new StatusItem("BatteriesSufficientlyFull", "BUILDING", string.Empty, StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, true, 129022);
 		}
 	}
 
-	public static Formula CreateSimpleFormula(SimHashes input_element, float input_mass_rate, float max_stored_input_mass, SimHashes output_element = SimHashes.Void, float output_mass_rate = 0f, bool store_output_mass = true)
+	public static Formula CreateSimpleFormula(Tag input_element, float input_mass_rate, float max_stored_input_mass, SimHashes output_element = SimHashes.Void, float output_mass_rate = 0f, bool store_output_mass = true, CellOffset output_offset = default(CellOffset), float min_output_temperature = 0f)
 	{
 		Formula result = default(Formula);
 		result.inputs = new InputItem[1]
 		{
-			new InputItem(GameTagExtensions.Create(input_element), input_mass_rate, max_stored_input_mass)
+			new InputItem(input_element, input_mass_rate, max_stored_input_mass)
 		};
 		if (output_element != SimHashes.Void)
 		{
 			result.outputs = new OutputItem[1]
 			{
-				new OutputItem(output_element, output_mass_rate, store_output_mass, 0f)
+				new OutputItem(output_element, output_mass_rate, store_output_mass, output_offset, min_output_temperature)
 			};
 		}
 		else
@@ -347,7 +378,7 @@ public class EnergyGenerator : Generator, IEffectDescriptor, ISingleSliderContro
 			}
 			else
 			{
-				GameObject go = element.substance.SpawnResource(base.transform.GetPosition(), num, root_pe.Temperature, byte.MaxValue, 0, false, false);
+				GameObject go = element.substance.SpawnResource(base.transform.GetPosition(), num, root_pe.Temperature, byte.MaxValue, 0, false, false, false);
 				storage.Store(go, true, false, true, false);
 			}
 		}
@@ -367,7 +398,7 @@ public class EnergyGenerator : Generator, IEffectDescriptor, ISingleSliderContro
 			}
 			else
 			{
-				element.substance.SpawnResource(Grid.CellToPosCCC(num2, Grid.SceneLayer.Front), num, temperature, byte.MaxValue, 0, true, false);
+				element.substance.SpawnResource(Grid.CellToPosCCC(num2, Grid.SceneLayer.Front), num, temperature, byte.MaxValue, 0, true, false, false);
 			}
 		}
 	}

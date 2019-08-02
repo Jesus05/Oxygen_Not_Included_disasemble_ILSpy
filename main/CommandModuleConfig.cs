@@ -13,12 +13,12 @@ public class CommandModuleConfig : IBuildingConfig
 
 	private static readonly LogicPorts.Port[] INPUT_PORTS = new LogicPorts.Port[1]
 	{
-		LogicPorts.Port.InputPort("TriggerLaunch", new CellOffset(0, 1), UI.LOGIC_PORTS.CONTROL_OPERATIONAL, false)
+		LogicPorts.Port.InputPort("TriggerLaunch", new CellOffset(0, 1), STRINGS.BUILDINGS.PREFABS.COMMANDMODULE.LOGIC_PORT_LAUNCH, STRINGS.BUILDINGS.PREFABS.COMMANDMODULE.LOGIC_PORT_LAUNCH_ACTIVE, STRINGS.BUILDINGS.PREFABS.COMMANDMODULE.LOGIC_PORT_LAUNCH_INACTIVE, false, false)
 	};
 
 	private static readonly LogicPorts.Port[] OUTPUT_PORTS = new LogicPorts.Port[1]
 	{
-		LogicPorts.Port.OutputPort("LaunchReady", new CellOffset(0, 2), "Ready For Launch", false)
+		LogicPorts.Port.OutputPort("LaunchReady", new CellOffset(0, 2), STRINGS.BUILDINGS.PREFABS.COMMANDMODULE.LOGIC_PORT_READY, STRINGS.BUILDINGS.PREFABS.COMMANDMODULE.LOGIC_PORT_READY_ACTIVE, STRINGS.BUILDINGS.PREFABS.COMMANDMODULE.LOGIC_PORT_READY_INACTIVE, false, false)
 	};
 
 	public override BuildingDef CreateBuildingDef()
@@ -40,7 +40,6 @@ public class CommandModuleConfig : IBuildingConfig
 		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, cOMMAND_MODULE_MASS, construction_materials, melting_point, build_location_rule, TUNING.BUILDINGS.DECOR.NONE, tIER, 0.2f);
 		BuildingTemplates.CreateRocketBuildingDef(buildingDef);
 		buildingDef.SceneLayer = Grid.SceneLayer.BuildingFront;
-		buildingDef.ViewMode = SimViewMode.None;
 		buildingDef.OverheatTemperature = 2273.15f;
 		buildingDef.Floodable = false;
 		buildingDef.AttachmentSlotTag = GameTags.Rocket;
@@ -55,8 +54,9 @@ public class CommandModuleConfig : IBuildingConfig
 	{
 		BuildingConfigManager.Instance.IgnoreDefaultKComponent(typeof(RequiresFoundation), prefab_tag);
 		go.AddOrGet<LoopingSounds>();
-		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.IndustrialMachinery);
-		go.AddOrGet<RocketModule>();
+		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.IndustrialMachinery, false);
+		RocketModule rocketModule = go.AddOrGet<RocketModule>();
+		rocketModule.SetBGKAnim(Assets.GetAnim("rocket_command_module_bg_kanim"));
 		LaunchConditionManager launchConditionManager = go.AddOrGet<LaunchConditionManager>();
 		launchConditionManager.triggerPort = "TriggerLaunch";
 		launchConditionManager.statusPort = "LaunchReady";
@@ -70,6 +70,7 @@ public class CommandModuleConfig : IBuildingConfig
 		go.AddOrGet<CommandModule>();
 		go.AddOrGet<CommandModuleWorkable>();
 		go.AddOrGet<MinionStorage>();
+		go.AddOrGet<ArtifactFinder>();
 		go.AddOrGet<LaunchableRocket>();
 	}
 

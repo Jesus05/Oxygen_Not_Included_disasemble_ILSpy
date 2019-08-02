@@ -502,7 +502,7 @@ public class PropertyTextures : KMonoBehaviour, ISim200ms
 			for (int i = 0; i < allTextureProperties.Count; i++)
 			{
 				TextureProperties p = allTextureProperties[i];
-				if (num == i || p.updateEveryFrame)
+				if (num == i || p.updateEveryFrame || GameUtil.IsCapturingTimeLapse())
 				{
 					UpdateProperty(ref p, x, y, x2, y2);
 				}

@@ -60,7 +60,7 @@ public class KFMOD
 			{
 				throw ex;
 			}
-			Debug.LogWarning(ex, null);
+			Debug.LogWarning(ex);
 		}
 		CollectParameterUpdaters();
 		CollectSoundDescriptions();
@@ -137,7 +137,7 @@ public class KFMOD
 		}
 		catch (EventNotFoundException obj)
 		{
-			Debug.LogWarning(obj, null);
+			Debug.LogWarning(obj);
 			return default(EventInstance);
 		}
 		HashedString path2 = path;
@@ -222,7 +222,7 @@ public class KFMOD
 				if (flag)
 				{
 					OneShotSoundParameterUpdater oneShotSoundParameterUpdater = (OneShotSoundParameterUpdater)Activator.CreateInstance(currentDomainType);
-					DebugUtil.Assert(!parameterUpdaters.ContainsKey(oneShotSoundParameterUpdater.parameter), "Assert!", string.Empty, string.Empty);
+					DebugUtil.Assert(!parameterUpdaters.ContainsKey(oneShotSoundParameterUpdater.parameter));
 					parameterUpdaters[oneShotSoundParameterUpdater.parameter] = oneShotSoundParameterUpdater;
 				}
 			}

@@ -1,6 +1,5 @@
 using Klei;
 using System;
-using TUNING;
 using UnityEngine;
 
 public class LiquidPumpingStation : Workable, ISim200ms
@@ -108,7 +107,7 @@ public class LiquidPumpingStation : Workable, ISim200ms
 		{
 			if (temperature <= 0f)
 			{
-				Debug.LogWarning("TODO(YOG): Fix bad temperature in liquid pumping station.", null);
+				Debug.LogWarning("TODO(YOG): Fix bad temperature in liquid pumping station.");
 				return ElementLoader.FindElementByHash(element).defaultValues.temperature;
 			}
 			return temperature;
@@ -169,7 +168,7 @@ public class LiquidPumpingStation : Workable, ISim200ms
 		for (int i = 0; i < floorOffsets.Length; i++)
 		{
 			int num = Grid.OffsetCell(cell, floorOffsets[i]);
-			Grid.LiquidPumpFloor[num] = true;
+			Grid.FakeFloor[num] = true;
 			Pathfinding.Instance.AddDirtyNavGridCell(num);
 		}
 	}
@@ -207,12 +206,6 @@ public class LiquidPumpingStation : Workable, ISim200ms
 			PumpingStationGuide.OccupyArea(base.gameObject, num);
 			depthAvailable = num;
 		}
-	}
-
-	public override void AwardExperience(float work_dt, MinionResume resume)
-	{
-		resume.AddExperienceIfRole("Hauler", work_dt * ROLES.ACTIVE_EXPERIENCE_VERY_SLOW);
-		resume.AddExperienceIfRole(MaterialsManager.ID, work_dt * ROLES.ACTIVE_EXPERIENCE_VERY_SLOW);
 	}
 
 	public void Sim200ms(float dt)
@@ -275,7 +268,7 @@ public class LiquidPumpingStation : Workable, ISim200ms
 					{
 						liquidInfo.source = GetComponent<Storage>().AddLiquid(liquidInfo.element.id, liquidInfo.amount, liquidInfo.element.defaultValues.temperature, byte.MaxValue, 0, false, true).GetComponent<SubstanceChunk>();
 						Pickupable component = liquidInfo.source.GetComponent<Pickupable>();
-						component.GetComponent<KPrefabID>().AddTag(GameTags.LiquidSource);
+						component.GetComponent<KPrefabID>().AddTag(GameTags.LiquidSource, false);
 						component.SetOffsets(new CellOffset[1]
 						{
 							new CellOffset(0, 1)
@@ -439,7 +432,7 @@ public class LiquidPumpingStation : Workable, ISim200ms
 		for (int j = 0; j < floorOffsets.Length; j++)
 		{
 			int num = Grid.OffsetCell(cell, floorOffsets[j]);
-			Grid.LiquidPumpFloor[num] = false;
+			Grid.FakeFloor[num] = false;
 			Pathfinding.Instance.AddDirtyNavGridCell(num);
 		}
 	}

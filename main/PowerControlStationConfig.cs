@@ -1,4 +1,3 @@
-using STRINGS;
 using System.Collections.Generic;
 using TUNING;
 using UnityEngine;
@@ -15,10 +14,7 @@ public class PowerControlStationConfig : IBuildingConfig
 
 	public static string ROLE_PERK = "CanPowerTinker";
 
-	private static readonly LogicPorts.Port[] INPUT_PORTS = new LogicPorts.Port[1]
-	{
-		LogicPorts.Port.InputPort(LogicOperationalController.PORT_ID, new CellOffset(0, 0), UI.LOGIC_PORTS.CONTROL_OPERATIONAL, false)
-	};
+	public const float OUTPUT_TEMPERATURE = 308.15f;
 
 	public override BuildingDef CreateBuildingDef()
 	{
@@ -28,13 +24,13 @@ public class PowerControlStationConfig : IBuildingConfig
 		string anim = "electricianworkdesk_kanim";
 		int hitpoints = 30;
 		float construction_time = 30f;
-		float[] tIER = TUNING.BUILDINGS.CONSTRUCTION_MASS_KG.TIER3;
+		float[] tIER = BUILDINGS.CONSTRUCTION_MASS_KG.TIER3;
 		string[] rEFINED_METALS = MATERIALS.REFINED_METALS;
 		float melting_point = 1600f;
 		BuildLocationRule build_location_rule = BuildLocationRule.OnFloor;
 		EffectorValues tIER2 = NOISE_POLLUTION.NOISY.TIER1;
-		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, tIER, rEFINED_METALS, melting_point, build_location_rule, TUNING.BUILDINGS.DECOR.NONE, tIER2, 0.2f);
-		buildingDef.ViewMode = SimViewMode.Rooms;
+		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, tIER, rEFINED_METALS, melting_point, build_location_rule, BUILDINGS.DECOR.NONE, tIER2, 0.2f);
+		buildingDef.ViewMode = OverlayModes.Rooms.ID;
 		buildingDef.Overheatable = false;
 		buildingDef.AudioCategory = "Metal";
 		buildingDef.AudioSize = "large";
@@ -44,22 +40,22 @@ public class PowerControlStationConfig : IBuildingConfig
 	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.AddOrGet<LoopingSounds>();
-		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.PowerStation);
+		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.PowerStation, false);
 	}
 
 	public override void DoPostConfigurePreview(BuildingDef def, GameObject go)
 	{
-		GeneratedBuildings.RegisterLogicPorts(go, INPUT_PORTS);
+		GeneratedBuildings.RegisterLogicPorts(go, LogicOperationalController.INPUT_PORTS_0_0);
 	}
 
 	public override void DoPostConfigureUnderConstruction(GameObject go)
 	{
-		GeneratedBuildings.RegisterLogicPorts(go, INPUT_PORTS);
+		GeneratedBuildings.RegisterLogicPorts(go, LogicOperationalController.INPUT_PORTS_0_0);
 	}
 
 	public override void DoPostConfigureComplete(GameObject go)
 	{
-		GeneratedBuildings.RegisterLogicPorts(go, INPUT_PORTS);
+		GeneratedBuildings.RegisterLogicPorts(go, LogicOperationalController.INPUT_PORTS_0_0);
 		go.AddOrGet<LogicOperationalController>();
 		Storage storage = go.AddOrGet<Storage>();
 		storage.capacityKg = 50f;
@@ -76,7 +72,8 @@ public class PowerControlStationConfig : IBuildingConfig
 		tinkerStation.inputMaterial = MATERIAL_FOR_TINKER;
 		tinkerStation.massPerTinker = 5f;
 		tinkerStation.outputPrefab = TINKER_TOOLS;
-		tinkerStation.requiredRolePerk = ROLE_PERK;
+		tinkerStation.outputTemperature = 308.15f;
+		tinkerStation.requiredSkillPerk = ROLE_PERK;
 		tinkerStation.choreType = Db.Get().ChoreTypes.PowerFabricate.IdHash;
 		tinkerStation.useFilteredStorage = true;
 		tinkerStation.fetchChoreType = Db.Get().ChoreTypes.PowerFetch.IdHash;
@@ -84,6 +81,13 @@ public class PowerControlStationConfig : IBuildingConfig
 		roomTracker.requiredRoomType = Db.Get().RoomTypes.PowerPlant.Id;
 		roomTracker.requirement = RoomTracker.Requirement.Required;
 		Prioritizable.AddRef(go);
-		go.AddOrGetDef<PoweredActiveController.Def>();
+		go.GetComponent<KPrefabID>().prefabInitFn += delegate(GameObject game_object)
+		{
+			TinkerStation component = game_object.GetComponent<TinkerStation>();
+			component.AttributeConverter = Db.Get().AttributeConverters.MachinerySpeed;
+			component.AttributeExperienceMultiplier = DUPLICANTSTATS.ATTRIBUTE_LEVELING.MOST_DAY_EXPERIENCE;
+			component.SkillExperienceSkillGroup = Db.Get().SkillGroups.Technicals.Id;
+			component.SkillExperienceMultiplier = SKILLS.MOST_DAY_EXPERIENCE;
+		};
 	}
 }

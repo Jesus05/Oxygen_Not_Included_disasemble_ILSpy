@@ -42,7 +42,11 @@ public class TileTemperature : KMonoBehaviour
 	private static void OnSetTemperature(PrimaryElement primary_element, float temperature)
 	{
 		SimCellOccupier component = primary_element.GetComponent<SimCellOccupier>();
-		if (!((Object)component != (Object)null) || !component.IsReady())
+		if ((Object)component != (Object)null && component.IsReady())
+		{
+			Debug.LogWarning("Only set a tile's temperature during initialization. Otherwise you should be modifying the cell via the sim!");
+		}
+		else
 		{
 			primary_element.InternalTemperature = temperature;
 		}

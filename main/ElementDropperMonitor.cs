@@ -66,7 +66,7 @@ public class ElementDropperMonitor : GameStateMachine<ElementDropperMonitor, Ele
 				}
 				else if (element.IsSolid)
 				{
-					element.substance.SpawnResource(base.transform.GetPosition() + new Vector3(0f, 0.5f, 0f), mass, temperature, disease_idx, disease_count, false, true);
+					element.substance.SpawnResource(base.transform.GetPosition() + new Vector3(0f, 0.5f, 0f), mass, temperature, disease_idx, disease_count, false, true, false);
 				}
 				PopFXManager.Instance.SpawnFX(PopFXManager.Instance.sprite_Resource, element.name, base.gameObject.transform, 1.5f, false);
 			}

@@ -105,6 +105,7 @@ public class Recipe : IHasSortOrder
 
 	public Recipe(string prefabId, float outputUnits = 1f, SimHashes elementOverride = (SimHashes)0, string nameOverride = null, string recipeDescription = null, int sortOrder = 0)
 	{
+		Debug.Assert(prefabId != null);
 		Result = TagManager.Create(prefabId);
 		ResultElementOverride = elementOverride;
 		this.nameOverride = nameOverride;
@@ -299,7 +300,7 @@ public class Recipe : IHasSortOrder
 			KBatchedAnimController component = prefab.GetComponent<KBatchedAnimController>();
 			if ((UnityEngine.Object)component != (UnityEngine.Object)null)
 			{
-				result = Def.GetUISpriteFromMultiObjectAnim(component.AnimFiles[0], "ui", false);
+				result = Def.GetUISpriteFromMultiObjectAnim(component.AnimFiles[0], "ui", false, string.Empty);
 			}
 		}
 		return result;

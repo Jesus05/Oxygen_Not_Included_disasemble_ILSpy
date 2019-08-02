@@ -47,31 +47,31 @@ public class PressureVulnerable : StateMachineComponent<PressureVulnerable.State
 			{
 				smi.master.pressureState = PressureState.LethalLow;
 			}).TriggerOnEnter(GameHashes.LowPressureFatal, null).ParamTransition(pressure, warningLow, (StatesInstance smi, float p) => p > smi.master.pressureLethal_Low)
-				.ParamTransition(safe_element, unsafeElement, (StatesInstance smi, bool p) => !p);
+				.ParamTransition(safe_element, unsafeElement, GameStateMachine<States, StatesInstance, PressureVulnerable, object>.IsFalse);
 			lethalHigh.Enter(delegate(StatesInstance smi)
 			{
 				smi.master.pressureState = PressureState.LethalHigh;
 			}).TriggerOnEnter(GameHashes.HighPressureFatal, null).ParamTransition(pressure, warningHigh, (StatesInstance smi, float p) => p < smi.master.pressureLethal_High)
-				.ParamTransition(safe_element, unsafeElement, (StatesInstance smi, bool p) => !p);
+				.ParamTransition(safe_element, unsafeElement, GameStateMachine<States, StatesInstance, PressureVulnerable, object>.IsFalse);
 			warningLow.Enter(delegate(StatesInstance smi)
 			{
 				smi.master.pressureState = PressureState.WarningLow;
 			}).TriggerOnEnter(GameHashes.LowPressureWarning, null).ParamTransition(pressure, lethalLow, (StatesInstance smi, float p) => p < smi.master.pressureLethal_Low)
 				.ParamTransition(pressure, normal, (StatesInstance smi, float p) => p > smi.master.pressureWarning_Low)
-				.ParamTransition(safe_element, unsafeElement, (StatesInstance smi, bool p) => !p);
-			unsafeElement.ParamTransition(safe_element, normal, (StatesInstance smi, bool p) => p).TriggerOnExit(GameHashes.CorrectAtmosphere).TriggerOnEnter(GameHashes.WrongAtmosphere, null);
+				.ParamTransition(safe_element, unsafeElement, GameStateMachine<States, StatesInstance, PressureVulnerable, object>.IsFalse);
+			unsafeElement.ParamTransition(safe_element, normal, GameStateMachine<States, StatesInstance, PressureVulnerable, object>.IsTrue).TriggerOnExit(GameHashes.CorrectAtmosphere).TriggerOnEnter(GameHashes.WrongAtmosphere, null);
 			warningHigh.Enter(delegate(StatesInstance smi)
 			{
 				smi.master.pressureState = PressureState.WarningHigh;
 			}).TriggerOnEnter(GameHashes.HighPressureWarning, null).ParamTransition(pressure, lethalHigh, (StatesInstance smi, float p) => p > smi.master.pressureLethal_High)
 				.ParamTransition(pressure, normal, (StatesInstance smi, float p) => p < smi.master.pressureWarning_High)
-				.ParamTransition(safe_element, unsafeElement, (StatesInstance smi, bool p) => !p);
+				.ParamTransition(safe_element, unsafeElement, GameStateMachine<States, StatesInstance, PressureVulnerable, object>.IsFalse);
 			normal.Enter(delegate(StatesInstance smi)
 			{
 				smi.master.pressureState = PressureState.Normal;
 			}).TriggerOnEnter(GameHashes.OptimalPressureAchieved, null).ParamTransition(pressure, warningHigh, (StatesInstance smi, float p) => p > smi.master.pressureWarning_High)
 				.ParamTransition(pressure, warningLow, (StatesInstance smi, float p) => p < smi.master.pressureWarning_Low)
-				.ParamTransition(safe_element, unsafeElement, (StatesInstance smi, bool p) => !p);
+				.ParamTransition(safe_element, unsafeElement, GameStateMachine<States, StatesInstance, PressureVulnerable, object>.IsFalse);
 		}
 	}
 
@@ -83,6 +83,10 @@ public class PressureVulnerable : StateMachineComponent<PressureVulnerable.State
 		WarningHigh,
 		LethalHigh
 	}
+
+	private HandleVector<int>.Handle pressureAccumulator = HandleVector<int>.InvalidHandle;
+
+	private HandleVector<int>.Handle elementAccumulator = HandleVector<int>.InvalidHandle;
 
 	private OccupyArea _occupyArea;
 
@@ -142,15 +146,13 @@ public class PressureVulnerable : StateMachineComponent<PressureVulnerable.State
 		}
 	}
 
-	public PressureState GetExternalPressureState => pressureState;
+	public PressureState ExternalPressureState => pressureState;
 
-	public float GetExternalPressure => GetPressureOverArea(cell);
+	public Element ExternalElement => Grid.Element[cell];
 
-	public Element GetExternalElement => Grid.Element[cell];
+	public bool IsLethal => pressureState == PressureState.LethalHigh || pressureState == PressureState.LethalLow || !IsSafeElement(ExternalElement);
 
-	public bool IsLethal => GetExternalPressureState == PressureState.LethalHigh || GetExternalPressureState == PressureState.LethalLow || !IsSafeElement(GetExternalElement);
-
-	public bool IsNormal => IsSafeElement(GetExternalElement) && GetExternalPressureState == PressureState.Normal;
+	public bool IsNormal => IsSafeElement(ExternalElement) && pressureState == PressureState.Normal;
 
 	public string WiltStateString
 	{
@@ -185,7 +187,9 @@ public class PressureVulnerable : StateMachineComponent<PressureVulnerable.State
 		base.OnSpawn();
 		cell = Grid.PosToCell(this);
 		base.smi.sm.pressure.Set(1f, base.smi);
-		base.smi.sm.safe_element.Set(IsSafeElement(GetExternalElement), base.smi);
+		base.smi.sm.safe_element.Set(IsSafeElement(ExternalElement), base.smi);
+		base.smi.master.pressureAccumulator = Game.Instance.accumulators.Add("pressureAccumulator", this);
+		base.smi.master.elementAccumulator = Game.Instance.accumulators.Add("elementAccumulator", this);
 		base.smi.StartSM();
 	}
 
@@ -225,7 +229,7 @@ public class PressureVulnerable : StateMachineComponent<PressureVulnerable.State
 
 	public bool IsCellSafe(int cell)
 	{
-		return IsSafeElement(GetExternalElement) && IsSafePressure(GetPressureOverArea(cell));
+		return IsSafeElement(Grid.Element[cell]) && IsSafePressure(GetPressureOverArea(cell));
 	}
 
 	public bool IsSafeElement(Element element)
@@ -249,9 +253,20 @@ public class PressureVulnerable : StateMachineComponent<PressureVulnerable.State
 	public void Sim1000ms(float dt)
 	{
 		float pressureOverArea = GetPressureOverArea(cell);
-		base.smi.sm.pressure.Set(pressureOverArea, base.smi);
-		displayPressureAmount.value = pressureOverArea;
-		base.smi.sm.safe_element.Set(IsSafeElement(GetExternalElement), base.smi);
+		Game.Instance.accumulators.Accumulate(base.smi.master.pressureAccumulator, pressureOverArea);
+		float averageRate = Game.Instance.accumulators.GetAverageRate(base.smi.master.pressureAccumulator);
+		displayPressureAmount.value = averageRate;
+		bool flag = IsSafeElement(ExternalElement);
+		Game.Instance.accumulators.Accumulate(base.smi.master.elementAccumulator, (!flag) ? 0f : 1f);
+		float averageRate2 = Game.Instance.accumulators.GetAverageRate(base.smi.master.elementAccumulator);
+		bool value = (averageRate2 > 0f) ? true : false;
+		base.smi.sm.safe_element.Set(value, base.smi);
+		base.smi.sm.pressure.Set(averageRate, base.smi);
+	}
+
+	public float GetExternalPressure()
+	{
+		return GetPressureOverArea(cell);
 	}
 
 	private float GetPressureOverArea(int cell)

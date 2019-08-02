@@ -21,8 +21,6 @@ public class Tinkerable : Workable
 
 	public string addedEffect;
 
-	public Tag[] choreTags;
-
 	public HashedString choreTypeTinker = Db.Get().ChoreTypes.PowerTinker.IdHash;
 
 	public HashedString choreTypeFetch = Db.Get().ChoreTypes.PowerFetch.IdHash;
@@ -58,17 +56,16 @@ public class Tinkerable : Workable
 		tinkerable.tinkerMaterialTag = PowerControlStationConfig.TINKER_TOOLS;
 		tinkerable.tinkerMaterialAmount = 1f;
 		tinkerable.addedEffect = "PowerTinker";
-		tinkerable.requiredRolePerk = PowerControlStationConfig.ROLE_PERK;
+		tinkerable.requiredSkillPerk = PowerControlStationConfig.ROLE_PERK;
 		tinkerable.SetWorkTime(180f);
 		tinkerable.workerStatusItem = Db.Get().DuplicantStatusItems.Tinkering;
 		tinkerable.attributeConverter = Db.Get().AttributeConverters.MachinerySpeed;
 		tinkerable.attributeExperienceMultiplier = DUPLICANTSTATS.ATTRIBUTE_LEVELING.PART_DAY_EXPERIENCE;
 		tinkerable.choreTypeTinker = Db.Get().ChoreTypes.PowerTinker.IdHash;
 		tinkerable.choreTypeFetch = Db.Get().ChoreTypes.PowerFetch.IdHash;
-		tinkerable.choreTags = GameTags.ChoreTypes.PowerChores;
 		tinkerable.multitoolContext = "powertinker";
 		tinkerable.multitoolHitEffectTag = "fx_powertinker_splash";
-		tinkerable.shouldShowRolePerkStatusItem = false;
+		tinkerable.shouldShowSkillPerkStatusItem = false;
 		prefab.AddOrGet<Storage>();
 		prefab.AddOrGet<Effects>();
 		KPrefabID component = prefab.GetComponent<KPrefabID>();
@@ -88,17 +85,16 @@ public class Tinkerable : Workable
 		tinkerable.tinkerMaterialTag = FarmStationConfig.TINKER_TOOLS;
 		tinkerable.tinkerMaterialAmount = 1f;
 		tinkerable.addedEffect = "FarmTinker";
-		tinkerable.requiredRolePerk = RoleManager.rolePerks.CanFarmTinker.id;
+		tinkerable.requiredSkillPerk = Db.Get().SkillPerks.CanFarmTinker.Id;
 		tinkerable.workerStatusItem = Db.Get().DuplicantStatusItems.Tinkering;
 		tinkerable.SetWorkTime(15f);
 		tinkerable.attributeConverter = Db.Get().AttributeConverters.PlantTendSpeed;
 		tinkerable.attributeExperienceMultiplier = DUPLICANTSTATS.ATTRIBUTE_LEVELING.PART_DAY_EXPERIENCE;
 		tinkerable.choreTypeTinker = Db.Get().ChoreTypes.CropTend.IdHash;
 		tinkerable.choreTypeFetch = Db.Get().ChoreTypes.FarmFetch.IdHash;
-		tinkerable.choreTags = GameTags.ChoreTypes.FarmingChores;
 		tinkerable.multitoolContext = "tend";
 		tinkerable.multitoolHitEffectTag = "fx_tend_splash";
-		tinkerable.shouldShowRolePerkStatusItem = false;
+		tinkerable.shouldShowSkillPerkStatusItem = false;
 		prefab.AddOrGet<Storage>();
 		prefab.AddOrGet<Effects>();
 		KPrefabID component = prefab.GetComponent<KPrefabID>();
@@ -163,7 +159,7 @@ public class Tinkerable : Workable
 			SetWorkTime(workTime);
 			if (HasMaterial())
 			{
-				chore = new WorkChore<Tinkerable>(Db.Get().ChoreTypes.GetByHash(choreTypeTinker), this, null, null, true, null, null, null, true, null, false, false, null, false, true, true, PriorityScreen.PriorityClass.basic, 0, false);
+				chore = new WorkChore<Tinkerable>(Db.Get().ChoreTypes.GetByHash(choreTypeTinker), this, null, true, null, null, null, true, null, false, false, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, false, true);
 				if ((Object)component != (Object)null)
 				{
 					chore.AddPrecondition(ChorePreconditions.instance.IsFunctional, component);
@@ -174,13 +170,13 @@ public class Tinkerable : Workable
 				chore = new FetchChore(Db.Get().ChoreTypes.GetByHash(choreTypeFetch), storage, tinkerMaterialAmount, new Tag[1]
 				{
 					tinkerMaterialTag
-				}, null, null, null, true, OnFetchComplete, null, null, FetchOrder2.OperationalRequirement.Functional, 0, choreTags);
+				}, null, null, null, true, OnFetchComplete, null, null, FetchOrder2.OperationalRequirement.Functional, 0);
 			}
-			chore.AddPrecondition(ChorePreconditions.instance.HasRolePerk, requiredRolePerk);
+			chore.AddPrecondition(ChorePreconditions.instance.HasSkillPerk, requiredSkillPerk);
 			RoomTracker component2 = GetComponent<RoomTracker>();
 			if (!string.IsNullOrEmpty(component2.requiredRoomType))
 			{
-				chore.AddPrecondition(ChorePreconditions.instance.IsInMyRoom, component2.room);
+				chore.AddPrecondition(ChorePreconditions.instance.IsInMyRoom, Grid.PosToCell(base.transform.GetPosition()));
 			}
 		}
 		else if (chore != null && !flag2)

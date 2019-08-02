@@ -51,7 +51,7 @@ namespace Database
 		{
 			if (TryGet(id) != null)
 			{
-				Output.LogWarning("Tried adding a tech item called", id, name, "but it was already added!");
+				DebugUtil.LogWarningArgs("Tried adding a tech item called", id, name, "but it was already added!");
 				return Get(id);
 			}
 			Tech tech = LookupGroupForID(id);

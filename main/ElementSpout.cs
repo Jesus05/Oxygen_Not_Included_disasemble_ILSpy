@@ -20,7 +20,8 @@ public class ElementSpout : StateMachineComponent<ElementSpout.StatesInstance>
 			int cell2 = Grid.CellLeft(cell);
 			int cell3 = Grid.CellRight(cell);
 			int cell4 = Grid.CellAbove(cell);
-			Element.State state = base.smi.master.emitter.outputElement.element.state;
+			Element element = ElementLoader.FindElementByHash(base.smi.master.emitter.outputElement.elementHash);
+			Element.State state = element.state;
 			return false || CanEmitOnCell(cell, base.smi.master.maxPressure, state) || CanEmitOnCell(cell2, base.smi.master.maxPressure, state) || CanEmitOnCell(cell3, base.smi.master.maxPressure, state) || CanEmitOnCell(cell4, base.smi.master.maxPressure, state);
 		}
 	}

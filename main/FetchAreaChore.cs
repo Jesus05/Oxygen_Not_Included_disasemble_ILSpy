@@ -1,4 +1,3 @@
-using STRINGS;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -61,7 +60,14 @@ public class FetchAreaChore : Chore<FetchAreaChore.StatesInstance>
 							{
 								break;
 							}
-							if (!((UnityEngine.Object)deliverables[i] == (UnityEngine.Object)null))
+							if ((UnityEngine.Object)deliverables[i] == (UnityEngine.Object)null)
+							{
+								if (num < PICKUPABLETUNING.MINIMUM_PICKABLE_AMOUNT)
+								{
+									destination.ForceStore(this.chore.tags[0], num);
+								}
+							}
+							else
 							{
 								Pickupable pickupable2 = deliverables[i].Take(num);
 								if ((UnityEngine.Object)pickupable2 != (UnityEngine.Object)null && pickupable2.TotalAmount > 0f)
@@ -125,7 +131,7 @@ public class FetchAreaChore : Chore<FetchAreaChore.StatesInstance>
 				this = default(Reservation);
 				if (reservation_amount <= 0f)
 				{
-					Debug.LogError("Invalid amount: " + reservation_amount, null);
+					Debug.LogError("Invalid amount: " + reservation_amount);
 				}
 				amount = reservation_amount;
 				this.pickupable = pickupable;
@@ -178,18 +184,20 @@ public class FetchAreaChore : Chore<FetchAreaChore.StatesInstance>
 			ListPool<Precondition.Context, FetchAreaChore>.PooledList pooledList2 = ListPool<Precondition.Context, FetchAreaChore>.Allocate();
 			if (rootChore.allowMultifetch)
 			{
-				if ((UnityEngine.Object)context.consumerState.resume != (UnityEngine.Object)null && context.consumerState.resume.CurrentRole != "NoRole")
-				{
-					RoleConfig role = Game.Instance.roleManager.GetRole(context.consumerState.resume.CurrentRole);
-					role.GatherNearbyFetchChores(rootChore, context, x, y, 3, pooledList, pooledList2);
-				}
-				else
-				{
-					GatherNearbyFetchChores(rootChore, context, x, y, 3, pooledList, pooledList2);
-				}
+				GatherNearbyFetchChores(rootChore, context, x, y, 3, pooledList, pooledList2);
 			}
 			float num = Mathf.Max(1f, Db.Get().Attributes.CarryAmount.Lookup(context.consumerState.consumer).GetTotalValue());
 			Pickupable pickupable = context.data as Pickupable;
+			if ((UnityEngine.Object)pickupable == (UnityEngine.Object)null)
+			{
+				Debug.Assert(pooledList.Count > 0, "succeeded_contexts was empty");
+				Precondition.Context context2 = pooledList[0];
+				FetchChore fetchChore = (FetchChore)context2.chore;
+				Debug.Assert(fetchChore != null, "fetch_chore was null");
+				DebugUtil.LogWarningArgs("Missing root_fetchable for FetchAreaChore", fetchChore.destination, fetchChore.tags[0]);
+				pickupable = fetchChore.FindFetchTarget(context.consumerState);
+			}
+			Debug.Assert((UnityEngine.Object)pickupable != (UnityEngine.Object)null, "root_fetchable was null");
 			List<Pickupable> list = new List<Pickupable>();
 			list.Add(pickupable);
 			float num2 = pickupable.UnreservedAmount;
@@ -214,8 +222,8 @@ public class FetchAreaChore : Chore<FetchAreaChore.StatesInstance>
 				KPrefabID component = pickupable2.GetComponent<KPrefabID>();
 				if (!(component.PrefabTag != prefabTag) && !(pickupable2.UnreservedAmount <= 0f))
 				{
-					TagBits tagBits = component.GetTagBits();
-					if (tagBits.HasAll(rootChore.requiredTagBits) && !tagBits.HasAny(rootChore.forbiddenTagBits) && !list.Contains(pickupable2) && rootContext.consumerState.consumer.CanReach(pickupable2))
+					component.UpdateTagBits();
+					if (component.HasAllTags_AssumeLaundered(ref rootChore.requiredTagBits) && !component.HasAnyTags_AssumeLaundered(ref rootChore.forbiddenTagBits) && !list.Contains(pickupable2) && rootContext.consumerState.consumer.CanReach(pickupable2))
 					{
 						float unreservedAmount = pickupable2.UnreservedAmount;
 						list.Add(pickupable2);
@@ -247,17 +255,17 @@ public class FetchAreaChore : Chore<FetchAreaChore.StatesInstance>
 				{
 					break;
 				}
-				Precondition.Context context2 = pooledList[j];
-				FetchChore fetchChore = context2.chore as FetchChore;
-				if (fetchChore != rootChore && context2.IsSuccess() && (UnityEngine.Object)fetchChore.overrideTarget == (UnityEngine.Object)null && (UnityEngine.Object)fetchChore.driver == (UnityEngine.Object)null && fetchChore.tagBits.AreEqual(rootChore.tagBits))
+				Precondition.Context context3 = pooledList[j];
+				FetchChore fetchChore2 = context3.chore as FetchChore;
+				if (fetchChore2 != rootChore && context3.IsSuccess() && (UnityEngine.Object)fetchChore2.overrideTarget == (UnityEngine.Object)null && (UnityEngine.Object)fetchChore2.driver == (UnityEngine.Object)null && fetchChore2.tagBits.AreEqual(ref rootChore.tagBits))
 				{
-					num4 = Mathf.Min(fetchChore.originalAmount, num2 - num5);
+					num4 = Mathf.Min(fetchChore2.originalAmount, num2 - num5);
 					if (minTakeAmount > 0f)
 					{
 						num4 -= num4 % minTakeAmount;
 					}
-					chores.Add(fetchChore);
-					deliveries.Add(new Delivery(context2, num4, OnFetchChoreCancelled));
+					chores.Add(fetchChore2);
+					deliveries.Add(new Delivery(context3, num4, OnFetchChoreCancelled));
 					num5 += num4;
 					if (deliveries.Count >= 10)
 					{
@@ -380,17 +388,32 @@ public class FetchAreaChore : Chore<FetchAreaChore.StatesInstance>
 			Pickupable pickupable = base.sm.deliveryObject.Get<Pickupable>(base.smi);
 			if ((UnityEngine.Object)pickupable == (UnityEngine.Object)null || pickupable.TotalAmount <= 0f)
 			{
-				base.smi.GoTo(base.sm.delivering.deliverfail);
-			}
-			else
-			{
-				if (deliveries.Count > 0)
+				if (deliveries.Count > 0 && deliveries[0].chore.amount < PICKUPABLETUNING.MINIMUM_PICKABLE_AMOUNT)
 				{
 					Delivery delivery = deliveries[0];
 					Chore chore = delivery.chore;
 					delivery.Complete(deliverables);
 					delivery.Cleanup();
 					if (deliveries.Count > 0 && deliveries[0].chore == chore)
+					{
+						deliveries.RemoveAt(0);
+					}
+					GoTo(base.sm.delivering.next);
+				}
+				else
+				{
+					base.smi.GoTo(base.sm.delivering.deliverfail);
+				}
+			}
+			else
+			{
+				if (deliveries.Count > 0)
+				{
+					Delivery delivery2 = deliveries[0];
+					Chore chore2 = delivery2.chore;
+					delivery2.Complete(deliverables);
+					delivery2.Cleanup();
+					if (deliveries.Count > 0 && deliveries[0].chore == chore2)
 					{
 						deliveries.RemoveAt(0);
 					}
@@ -486,6 +509,18 @@ public class FetchAreaChore : Chore<FetchAreaChore.StatesInstance>
 				reservation.Cleanup();
 			}
 			reservations.Clear();
+		}
+
+		public bool SameDestination(FetchChore fetch)
+		{
+			foreach (FetchChore chore in chores)
+			{
+				if ((UnityEngine.Object)chore.destination == (UnityEngine.Object)fetch.destination)
+				{
+					return true;
+				}
+			}
+			return false;
 		}
 	}
 
@@ -620,15 +655,17 @@ public class FetchAreaChore : Chore<FetchAreaChore.StatesInstance>
 		}
 	}
 
-	public bool IsFetching => smi.pickingup;
+	public bool IsFetching => base.smi.pickingup;
 
-	public bool IsDelivering => smi.delivering;
+	public bool IsDelivering => base.smi.delivering;
+
+	public GameObject GetFetchTarget => base.smi.sm.fetchTarget.Get(base.smi);
 
 	public FetchAreaChore(Precondition.Context context)
-		: base(context.chore.choreType, (IStateMachineTarget)context.consumerState.consumer, context.consumerState.choreProvider, false, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, PriorityScreen.PriorityClass.basic, 0, false, true, 0, (Tag[])null)
+		: base(context.chore.choreType, (IStateMachineTarget)context.consumerState.consumer, context.consumerState.choreProvider, false, (Action<Chore>)null, (Action<Chore>)null, (Action<Chore>)null, context.masterPriority.priority_class, context.masterPriority.priority_value, false, true, 0, false, ReportManager.ReportType.WorkTime)
 	{
 		showAvailabilityInHoverText = false;
-		smi = new StatesInstance(this, context);
+		base.smi = new StatesInstance(this, context);
 	}
 
 	public override void Cleanup()
@@ -638,24 +675,22 @@ public class FetchAreaChore : Chore<FetchAreaChore.StatesInstance>
 
 	public override void Begin(Precondition.Context context)
 	{
-		smi.Begin(context);
+		base.smi.Begin(context);
 		base.Begin(context);
 	}
 
 	protected override void End(string reason)
 	{
-		smi.End();
+		base.smi.End();
 		base.End(reason);
 	}
 
-	public override string GetReportName()
+	private void OnTagsChanged(object data)
 	{
-		if (smi.deliveries.Count > 0 && (UnityEngine.Object)smi.deliveries[0].destination != (UnityEngine.Object)null)
+		if ((UnityEngine.Object)base.smi.sm.fetchTarget.Get(base.smi) != (UnityEngine.Object)null)
 		{
-			string text = DUPLICANTS.CHORES.FETCH.REPORT_NAME;
-			return StringFormatter.Replace(DUPLICANTS.CHORES.FETCH.REPORT_NAME, "{0}", smi.deliveries[0].destination.GetProperName());
+			Fail("Tags changed");
 		}
-		return base.GetReportName();
 	}
 
 	public static void GatherNearbyFetchChores(FetchChore root_chore, Precondition.Context context, int x, int y, int radius, List<Precondition.Context> succeeded_contexts, List<Precondition.Context> failed_contexts)

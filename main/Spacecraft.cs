@@ -1,5 +1,7 @@
+using Database;
 using KSerialization;
 using STRINGS;
+using System.Collections.Generic;
 using TUNING;
 using UnityEngine;
 
@@ -12,6 +14,7 @@ public class Spacecraft
 		Launching,
 		Underway,
 		WaitingToLand,
+		Landing,
 		Destroyed
 	}
 
@@ -91,6 +94,39 @@ public class Spacecraft
 		this.state = state;
 	}
 
+	public void BeginMission(SpaceDestination destination)
+	{
+		missionElapsed = 0f;
+		missionDuration = (float)destination.OneBasedDistance * ROCKETRY.MISSION_DURATION_SCALE / GetPilotNavigationEfficiency();
+		SetState(MissionState.Launching);
+	}
+
+	private float GetPilotNavigationEfficiency()
+	{
+		MinionStorage component = launchConditions.GetComponent<MinionStorage>();
+		List<MinionStorage.Info> storedMinionInfo = component.GetStoredMinionInfo();
+		if (storedMinionInfo.Count < 1)
+		{
+			return 1f;
+		}
+		MinionStorage.Info info = storedMinionInfo[0];
+		StoredMinionIdentity component2 = info.serializedMinion.Get().GetComponent<StoredMinionIdentity>();
+		string b = Db.Get().Attributes.SpaceNavigation.Id;
+		float num = 1f;
+		foreach (KeyValuePair<string, bool> item in component2.MasteryBySkillID)
+		{
+			foreach (SkillPerk perk in Db.Get().Skills.Get(item.Key).perks)
+			{
+				SkillAttributePerk skillAttributePerk = perk as SkillAttributePerk;
+				if (skillAttributePerk != null && skillAttributePerk.modifier.AttributeId == b)
+				{
+					num += skillAttributePerk.modifier.Value;
+				}
+			}
+		}
+		return num;
+	}
+
 	public void ForceComplete()
 	{
 		missionElapsed = missionDuration;
@@ -118,43 +154,27 @@ public class Spacecraft
 		return missionDuration;
 	}
 
-	public void SetMission(SpaceDestination destination)
-	{
-		if (!SpacecraftManager.instance.savedSpacecraftDestinations.ContainsKey(id))
-		{
-			SpacecraftManager.instance.savedSpacecraftDestinations.Add(id, destination.id);
-		}
-		else
-		{
-			SpacecraftManager.instance.savedSpacecraftDestinations[id] = destination.id;
-		}
-		missionElapsed = 0f;
-		missionDuration = (float)destination.OneBasedDistance * ROCKETRY.MISSION_DURATION_SCALE;
-	}
-
 	private void CompleteMission()
 	{
 		SpacecraftManager.instance.PushReadyToLandNotification(this);
-		state = MissionState.WaitingToLand;
+		SetState(MissionState.WaitingToLand);
 		Land();
-	}
-
-	private void ClearMission()
-	{
-		SpacecraftManager.instance.savedSpacecraftDestinations[id] = -1;
-		missionElapsed = 0f;
-		missionDuration = 0f;
 	}
 
 	private void Land()
 	{
-		launchConditions.Trigger(1366341636, SpacecraftManager.instance.GetActiveMission(id));
+		launchConditions.Trigger(1366341636, SpacecraftManager.instance.GetSpacecraftDestination(id));
 		foreach (GameObject item in AttachableBuilding.GetAttachedNetwork(launchConditions.GetComponent<AttachableBuilding>()))
 		{
 			if ((Object)item != (Object)launchConditions.gameObject)
 			{
-				item.Trigger(1366341636, SpacecraftManager.instance.GetActiveMission(id));
+				item.Trigger(1366341636, SpacecraftManager.instance.GetSpacecraftDestination(id));
 			}
 		}
+	}
+
+	public void GenerateName()
+	{
+		SetRocketName(GameUtil.GenerateRandomRocketName());
 	}
 }

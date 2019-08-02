@@ -148,7 +148,7 @@ namespace Klei.AI
 				{
 					if (text != "Condition")
 					{
-						Output.LogWarning(gameObject.name, "Missing modifier: " + text);
+						DebugUtil.LogWarningArgs(gameObject.name, "Missing modifier: " + text);
 					}
 					reader.SkipBytes(num2);
 				}
@@ -161,7 +161,7 @@ namespace Klei.AI
 					Deserializer.DeserializeTypeless(val, reader);
 					if (reader.Position != position + num2)
 					{
-						Output.LogWarning("Expected to be at offset", position + num2, "but was only at offset", reader.Position, ". Skipping to catch up.");
+						DebugUtil.LogWarningArgs("Expected to be at offset", position + num2, "but was only at offset", reader.Position, ". Skipping to catch up.");
 						reader.SkipBytes(position + num2 - reader.Position);
 					}
 				}

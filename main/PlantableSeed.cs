@@ -3,7 +3,7 @@ using STRINGS;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlantableSeed : KMonoBehaviour, IHasSortOrder, IReceptacleDirection, IGameObjectEffectDescriptor, ISim200ms
+public class PlantableSeed : KMonoBehaviour, IReceptacleDirection, IGameObjectEffectDescriptor
 {
 	public Tag PlantID;
 
@@ -28,12 +28,6 @@ public class PlantableSeed : KMonoBehaviour, IHasSortOrder, IReceptacleDirection
 		component.OnSplit(data);
 	});
 
-	public int sortOrder
-	{
-		get;
-		set;
-	}
-
 	public SingleEntityReceptacle.ReceptacleDirection Direction => direction;
 
 	protected override void OnPrefabInit()
@@ -52,20 +46,15 @@ public class PlantableSeed : KMonoBehaviour, IHasSortOrder, IReceptacleDirection
 	{
 	}
 
-	public void Sim200ms(float dt)
-	{
-		timeUntilSelfPlant -= dt;
-		if (timeUntilSelfPlant <= 0f)
-		{
-			TryPlant();
-		}
-	}
-
-	public void TryPlant()
+	public void TryPlant(bool allow_plant_from_storage = false)
 	{
 		timeUntilSelfPlant = Util.RandomVariance(2400f, 600f);
+		if (!allow_plant_from_storage && base.gameObject.HasTag(GameTags.Stored))
+		{
+			return;
+		}
 		int cell = Grid.PosToCell(base.gameObject);
-		if (!TestSuitableGround(cell, false))
+		if (!TestSuitableGround(cell))
 		{
 			return;
 		}
@@ -82,16 +71,33 @@ public class PlantableSeed : KMonoBehaviour, IHasSortOrder, IReceptacleDirection
 		Crop component2 = gameObject.GetComponent<Crop>();
 		if (!((Object)component2 != (Object)null))
 		{
-			goto IL_008a;
+			goto IL_00a5;
 		}
-		goto IL_008a;
-		IL_008a:
+		goto IL_00a5;
+		IL_00a5:
 		Util.KDestroyGameObject(pickupable.gameObject);
 	}
 
-	private bool TestSuitableGround(int cell, bool ignoreGround = false)
+	public bool TestSuitableGround(int cell)
 	{
 		if (!Grid.IsValidCell(cell))
+		{
+			return false;
+		}
+		int num = (Direction != SingleEntityReceptacle.ReceptacleDirection.Bottom) ? Grid.CellBelow(cell) : Grid.CellAbove(cell);
+		if (!Grid.IsValidCell(num))
+		{
+			return false;
+		}
+		if (Grid.Foundation[num])
+		{
+			return false;
+		}
+		if (Grid.Element[num].hardness >= 150)
+		{
+			return false;
+		}
+		if (replantGroundTag.IsValid && !Grid.Element[num].HasTag(replantGroundTag))
 		{
 			return false;
 		}
@@ -101,38 +107,25 @@ public class PlantableSeed : KMonoBehaviour, IHasSortOrder, IReceptacleDirection
 		{
 			return false;
 		}
-		PressureVulnerable component2 = prefab.GetComponent<PressureVulnerable>();
+		DrowningMonitor component2 = prefab.GetComponent<DrowningMonitor>();
 		if ((Object)component2 != (Object)null && !component2.IsCellSafe(cell))
 		{
 			return false;
 		}
-		DrowningMonitor component3 = prefab.GetComponent<DrowningMonitor>();
+		TemperatureVulnerable component3 = prefab.GetComponent<TemperatureVulnerable>();
 		if ((Object)component3 != (Object)null && !component3.IsCellSafe(cell))
 		{
 			return false;
 		}
-		TemperatureVulnerable component4 = prefab.GetComponent<TemperatureVulnerable>();
+		UprootedMonitor component4 = prefab.GetComponent<UprootedMonitor>();
 		if ((Object)component4 != (Object)null && !component4.IsCellSafe(cell))
 		{
 			return false;
 		}
-		UprootedMonitor component5 = prefab.GetComponent<UprootedMonitor>();
-		if ((Object)component5 != (Object)null && !component5.IsCellSafe(cell))
+		OccupyArea component5 = prefab.GetComponent<OccupyArea>();
+		if ((Object)component5 != (Object)null && !component5.CanOccupyArea(cell, ObjectLayer.Building))
 		{
 			return false;
-		}
-		OccupyArea component6 = prefab.GetComponent<OccupyArea>();
-		if ((Object)component6 != (Object)null && !component6.CanOccupyArea(cell, ObjectLayer.Building))
-		{
-			return false;
-		}
-		if (!ignoreGround)
-		{
-			int num = Grid.CellBelow(cell);
-			if (Grid.Foundation[num] || (replantGroundTag.IsValid && !Grid.Element[num].HasTag(replantGroundTag)))
-			{
-				return false;
-			}
 		}
 		return true;
 	}

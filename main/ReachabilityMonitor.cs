@@ -26,13 +26,10 @@ public class ReachabilityMonitor : GameStateMachine<ReachabilityMonitor, Reachab
 
 		public void UpdateReachability()
 		{
-			if ((Object)base.master != (Object)null)
+			if (!((Object)base.master == (Object)null))
 			{
 				int cell = Grid.PosToCell(base.master);
-				CellOffset[] offsets = base.master.GetOffsets(cell);
-				MinionGroupProber minionGroupProber = MinionGroupProber.Get();
-				bool value = minionGroupProber.IsReachable(cell) || minionGroupProber.IsReachable(cell, offsets);
-				base.sm.isReachable.Set(value, base.smi);
+				base.sm.isReachable.Set(MinionGroupProber.Get().IsAllReachable(cell, base.master.GetOffsets(cell)), base.smi);
 			}
 		}
 	}
@@ -53,10 +50,10 @@ public class ReachabilityMonitor : GameStateMachine<ReachabilityMonitor, Reachab
 		reachable.ToggleTag(GameTags.Reachable).Enter("TriggerEvent", delegate(Instance smi)
 		{
 			smi.TriggerEvent();
-		}).ParamTransition(isReachable, unreachable, (Instance smi, bool p) => !p);
+		}).ParamTransition(isReachable, unreachable, GameStateMachine<ReachabilityMonitor, Instance, Workable, object>.IsFalse);
 		unreachable.Enter("TriggerEvent", delegate(Instance smi)
 		{
 			smi.TriggerEvent();
-		}).ParamTransition(isReachable, reachable, (Instance smi, bool p) => p);
+		}).ParamTransition(isReachable, reachable, GameStateMachine<ReachabilityMonitor, Instance, Workable, object>.IsTrue);
 	}
 }

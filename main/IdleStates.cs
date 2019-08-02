@@ -1,7 +1,7 @@
 using STRINGS;
 using UnityEngine;
 
-internal class IdleStates : GameStateMachine<IdleStates, IdleStates.Instance, IStateMachineTarget, IdleStates.Def>
+public class IdleStates : GameStateMachine<IdleStates, IdleStates.Instance, IStateMachineTarget, IdleStates.Def>
 {
 	public class Def : BaseDef
 	{
@@ -26,6 +26,12 @@ internal class IdleStates : GameStateMachine<IdleStates, IdleStates.Instance, IS
 
 		private int maxIterations;
 
+		public bool allowLiquid
+		{
+			get;
+			set;
+		}
+
 		public MoveCellQuery(NavType navType)
 		{
 			this.navType = navType;
@@ -38,12 +44,19 @@ internal class IdleStates : GameStateMachine<IdleStates, IdleStates.Instance, IS
 			{
 				return false;
 			}
-			if (Grid.IsSubstantialLiquid(cell, 0.35f) == (navType == NavType.Swim))
+			bool flag = navType != NavType.Swim;
+			bool flag2 = navType == NavType.Swim || allowLiquid;
+			bool flag3 = Grid.IsSubstantialLiquid(cell, 0.35f);
+			if (flag3 && !flag2)
 			{
-				targetCell = cell;
-				return --maxIterations <= 0;
+				return false;
 			}
-			return false;
+			if (!flag3 && !flag)
+			{
+				return false;
+			}
+			targetCell = cell;
+			return --maxIterations <= 0;
 		}
 
 		public override int GetResultCell()
@@ -62,7 +75,7 @@ internal class IdleStates : GameStateMachine<IdleStates, IdleStates.Instance, IS
 		root.Exit("StopNavigator", delegate(Instance smi)
 		{
 			smi.GetComponent<Navigator>().Stop(false);
-		}).ToggleStatusItem(CREATURES.STATUSITEMS.IDLE.NAME, CREATURES.STATUSITEMS.IDLE.TOOLTIP, category: Db.Get().StatusItemCategories.Main, icon: string.Empty, icon_type: StatusItem.IconType.Info, notification_type: NotificationType.Neutral, allow_multiples: false, render_overlay: SimViewMode.None, status_overlays: 63486, resolve_string_callback: null, resolve_tooltip_callback: null).ToggleTag(GameTags.Idle);
+		}).ToggleStatusItem(CREATURES.STATUSITEMS.IDLE.NAME, CREATURES.STATUSITEMS.IDLE.TOOLTIP, category: Db.Get().StatusItemCategories.Main, icon: string.Empty, icon_type: StatusItem.IconType.Info, notification_type: NotificationType.Neutral, allow_multiples: false, render_overlay: default(HashedString), status_overlays: 129022, resolve_string_callback: null, resolve_tooltip_callback: null).ToggleTag(GameTags.Idle);
 		loop.Enter(PlayIdle).ToggleScheduleCallback("IdleMove", (Instance smi) => (float)Random.Range(3, 10), delegate(Instance smi)
 		{
 			smi.GoTo(move);
@@ -74,6 +87,7 @@ internal class IdleStates : GameStateMachine<IdleStates, IdleStates.Instance, IS
 	{
 		Navigator component = smi.GetComponent<Navigator>();
 		MoveCellQuery moveCellQuery = new MoveCellQuery(component.CurrentNavType);
+		moveCellQuery.allowLiquid = smi.gameObject.HasTag(GameTags.Amphibious);
 		component.RunQuery(moveCellQuery);
 		component.GoTo(moveCellQuery.GetResultCell(), null);
 	}

@@ -9,11 +9,7 @@ public class Notification
 
 	public HashedString Group;
 
-	public Vector3 Position;
-
 	public object tooltipData;
-
-	public bool hasLocation = true;
 
 	public bool expires = true;
 
@@ -32,6 +28,12 @@ public class Notification
 	}
 
 	public Notifier Notifier
+	{
+		get;
+		set;
+	}
+
+	public Transform clickFocus
 	{
 		get;
 		set;
@@ -86,7 +88,7 @@ public class Notification
 		}
 	}
 
-	public Notification(string title, NotificationType type, HashedString group, Func<List<Notification>, object, string> tooltip = null, object tooltip_data = null, bool expires = true, float delay = 0f, ClickCallback custom_click_callback = null, object custom_click_data = null)
+	public Notification(string title, NotificationType type, HashedString group, Func<List<Notification>, object, string> tooltip = null, object tooltip_data = null, bool expires = true, float delay = 0f, ClickCallback custom_click_callback = null, object custom_click_data = null, Transform click_focus = null)
 	{
 		titleText = title;
 		Group = group;
@@ -97,6 +99,7 @@ public class Notification
 		Delay = delay;
 		customClickCallback = custom_click_callback;
 		customClickData = custom_click_data;
+		clickFocus = click_focus;
 	}
 
 	public bool IsReady()
@@ -114,7 +117,7 @@ public class Notification
 
 	private string ReplaceTags(string text)
 	{
-		DebugUtil.Assert(text != null, "Assert!", string.Empty, string.Empty);
+		DebugUtil.Assert(text != null);
 		int num = text.IndexOf('{');
 		int num2 = text.IndexOf('}');
 		if (0 <= num && num < num2)

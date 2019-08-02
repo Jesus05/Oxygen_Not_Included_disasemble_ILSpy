@@ -73,7 +73,7 @@ public class EntombVulnerable : KMonoBehaviour, IWiltCause
 				{
 					isEntombed = true;
 					selectable.AddStatusItem(Db.Get().CreatureStatusItems.Entombed, base.gameObject);
-					GetComponent<KPrefabID>().AddTag(GameTags.Entombed);
+					GetComponent<KPrefabID>().AddTag(GameTags.Entombed, false);
 					Trigger(-1089732772, true);
 				}
 			}

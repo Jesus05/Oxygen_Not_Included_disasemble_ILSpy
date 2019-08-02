@@ -7,7 +7,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ScenariosMenu : KModalScreen, SteamUGCService.IUGCEventHandler
+public class ScenariosMenu : KModalScreen, SteamUGCService.IClient
 {
 	public const string TAG_SCENARIO = "scenario";
 
@@ -72,24 +72,24 @@ public class ScenariosMenu : KModalScreen, SteamUGCService.IUGCEventHandler
 
 	private void RebuildUGCButtons()
 	{
-		List<SteamUGCService.Subscribed> subscribed = SteamUGCService.Instance.GetSubscribed("scenario");
-		bool flag = subscribed.Count > 0;
+		ListPool<SteamUGCService.Mod, ScenariosMenu>.PooledList pooledList = ListPool<SteamUGCService.Mod, ScenariosMenu>.Allocate();
+		bool flag = pooledList.Count > 0;
 		noScenariosText.gameObject.SetActive(!flag);
 		contentRoot.gameObject.SetActive(flag);
 		bool flag2 = true;
-		if (subscribed.Count != 0)
+		if (pooledList.Count != 0)
 		{
-			for (int i = 0; i < subscribed.Count; i++)
+			for (int i = 0; i < pooledList.Count; i++)
 			{
 				GameObject gameObject = Util.KInstantiateUI(ugcButtonPrefab, ugcContainer, false);
-				gameObject.name = subscribed[i].title + "_button";
+				gameObject.name = pooledList[i].title + "_button";
 				gameObject.gameObject.SetActive(true);
 				HierarchyReferences component = gameObject.GetComponent<HierarchyReferences>();
-				TMP_FontAsset fontForLangage = LanguageOptionsScreen.GetFontForLangage(subscribed[i].fileId);
+				TMP_FontAsset fontForLangage = LanguageOptionsScreen.GetFontForLangage(pooledList[i].fileId);
 				LocText reference = component.GetReference<LocText>("Title");
-				reference.SetText(subscribed[i].title);
+				reference.SetText(pooledList[i].title);
 				reference.font = fontForLangage;
-				Texture2D previewImage = SteamUGCService.Instance.GetPreviewImage(subscribed[i].fileId);
+				Texture2D previewImage = pooledList[i].previewImage;
 				if ((UnityEngine.Object)previewImage != (UnityEngine.Object)null)
 				{
 					Image reference2 = component.GetReference<Image>("Image");
@@ -97,7 +97,7 @@ public class ScenariosMenu : KModalScreen, SteamUGCService.IUGCEventHandler
 				}
 				KButton component2 = gameObject.GetComponent<KButton>();
 				int index = i;
-				PublishedFileId_t item = subscribed[index].fileId;
+				PublishedFileId_t item = pooledList[index].fileId;
 				component2.onClick += delegate
 				{
 					ShowDetails(item);
@@ -117,12 +117,13 @@ public class ScenariosMenu : KModalScreen, SteamUGCService.IUGCEventHandler
 		{
 			HideDetails();
 		}
+		pooledList.Recycle();
 	}
 
 	private void LoadScenario(PublishedFileId_t item)
 	{
 		SteamUGC.GetItemInstallInfo(item, out ulong punSizeOnDisk, out string pchFolder, 1024u, out uint punTimeStamp);
-		Output.Log("LoadScenario", pchFolder, punSizeOnDisk, punTimeStamp);
+		DebugUtil.LogArgs("LoadScenario", pchFolder, punSizeOnDisk, punTimeStamp);
 		System.DateTime lastModified;
 		byte[] bytesFromZip = SteamUGCService.GetBytesFromZip(item, new string[1]
 		{
@@ -146,9 +147,12 @@ public class ScenariosMenu : KModalScreen, SteamUGCService.IUGCEventHandler
 	private void ShowDetails(PublishedFileId_t item)
 	{
 		activeItem = item;
-		SteamUGCDetails_t details = SteamUGCService.Instance.GetDetails(item);
-		scenarioTitle.text = details.m_rgchTitle;
-		scenarioDetails.text = details.m_rgchDescription;
+		SteamUGCService.Mod mod = SteamUGCService.Instance.FindMod(item);
+		if (mod != null)
+		{
+			scenarioTitle.text = mod.title;
+			scenarioDetails.text = mod.description;
+		}
 		loadScenarioButton.onClick += delegate
 		{
 			LoadScenario(item);
@@ -164,14 +168,14 @@ public class ScenariosMenu : KModalScreen, SteamUGCService.IUGCEventHandler
 	protected override void OnActivate()
 	{
 		base.OnActivate();
-		SteamUGCService.Instance.ugcEventHandlers.Add(this);
+		SteamUGCService.Instance.AddClient(this);
 		HideDetails();
 	}
 
 	protected override void OnDeactivate()
 	{
 		base.OnDeactivate();
-		SteamUGCService.Instance.ugcEventHandlers.Remove(this);
+		SteamUGCService.Instance.RemoveClient(this);
 	}
 
 	private void OnClickOpenWorkshop()
@@ -179,25 +183,7 @@ public class ScenariosMenu : KModalScreen, SteamUGCService.IUGCEventHandler
 		Application.OpenURL("http://steamcommunity.com/workshop/browse/?appid=457140&requiredtags[]=scenario");
 	}
 
-	public void OnUGCItemInstalled(ItemInstalled_t pCallback)
-	{
-	}
-
-	public void OnUGCItemUpdated(RemoteStoragePublishedFileUpdated_t pCallback)
-	{
-		RebuildScreen();
-	}
-
-	public void OnUGCItemUnsubscribed(RemoteStoragePublishedFileUnsubscribed_t pCallback)
-	{
-		RebuildScreen();
-	}
-
-	public void OnUGCItemDownloaded(DownloadItemResult_t pCallback)
-	{
-	}
-
-	public void OnUGCRefresh()
+	public void UpdateMods(IEnumerable<PublishedFileId_t> added, IEnumerable<PublishedFileId_t> updated, IEnumerable<PublishedFileId_t> removed, IEnumerable<SteamUGCService.Mod> loaded_previews)
 	{
 		RebuildScreen();
 	}

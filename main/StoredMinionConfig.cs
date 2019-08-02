@@ -9,14 +9,14 @@ public class StoredMinionConfig : IEntityConfig
 	{
 		GameObject gameObject = EntityTemplates.CreateEntity(ID, ID, true);
 		gameObject.AddOrGet<SaveLoadRoot>();
-		gameObject.AddOrGet<KPrefabID>().AddTag(ID);
-		gameObject.AddOrGet<Equipment>();
-		gameObject.AddOrGet<Ownables>();
+		gameObject.AddOrGet<KPrefabID>().AddTag(ID, false);
 		gameObject.AddOrGet<Traits>();
 		gameObject.AddOrGet<Schedulable>();
 		gameObject.AddOrGet<StoredMinionIdentity>();
 		KSelectable kSelectable = gameObject.AddOrGet<KSelectable>();
 		kSelectable.IsSelectable = false;
+		MinionModifiers minionModifiers = gameObject.AddOrGet<MinionModifiers>();
+		minionModifiers.addBaseTraits = false;
 		return gameObject;
 	}
 

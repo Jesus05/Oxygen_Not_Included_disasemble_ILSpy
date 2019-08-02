@@ -185,7 +185,7 @@ public class WorldDamage : KMonoBehaviour
 			float num = mass * 0.5f;
 			if (!(num <= 0f))
 			{
-				GameObject gameObject = element.substance.SpawnResource(vector, num, temperature, disease_idx, disease_count, false, false);
+				GameObject gameObject = element.substance.SpawnResource(vector, num, temperature, disease_idx, disease_count, false, false, false);
 				Pickupable component = gameObject.GetComponent<Pickupable>();
 				if ((Object)component != (Object)null && WorldInventory.Instance.IsReachable(gameObject.GetComponent<Pickupable>()))
 				{

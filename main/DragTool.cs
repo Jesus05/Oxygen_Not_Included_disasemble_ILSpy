@@ -39,7 +39,7 @@ public class DragTool : InterfaceTool
 
 	protected bool interceptNumberKeysForPriority;
 
-	private static int defaultLayerMask;
+	private new static int defaultLayerMask;
 
 	private bool dragging;
 
@@ -53,7 +53,7 @@ public class DragTool : InterfaceTool
 
 	protected Vector3 downPos;
 
-	protected static int layerMask;
+	protected new static int layerMask;
 
 	public bool Dragging => dragging;
 

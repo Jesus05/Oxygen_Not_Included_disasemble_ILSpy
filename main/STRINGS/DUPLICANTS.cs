@@ -5302,7 +5302,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = UI.FormatAsLink("Art Fundamentals", "JUNIOR_ARTIST");
 
-				public static LocString DESCRIPTION = "Duplicant gains the most basic level of art skill";
+				public static LocString DESCRIPTION = "Teaches the most basic level of art skill";
 			}
 
 			public class ARTIST
@@ -5344,7 +5344,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = UI.FormatAsLink("Advanced Research", "JUNIOR_RESEARCHER");
 
-				public static LocString DESCRIPTION = "Allows research of more advanced topics";
+				public static LocString DESCRIPTION = "Allows Duplicants to perform research using a " + BUILDINGS.PREFABS.ADVANCEDRESEARCHCENTER.NAME;
 			}
 
 			public class RESEARCHER
@@ -5358,19 +5358,19 @@ namespace STRINGS
 			{
 				public static LocString NAME = UI.FormatAsLink("Astronomy", "SENIOR_RESEARCHER");
 
-				public static LocString DESCRIPTION = "Enables the study of outer space";
+				public static LocString DESCRIPTION = "Enables Duplicants to study outer space using the " + BUILDINGS.PREFABS.COSMICRESEARCHCENTER.NAME;
 			}
 
 			public class JUNIOR_COOK
 			{
 				public static LocString NAME = UI.FormatAsLink("Grilling", "JUNIOR_COOK");
 
-				public static LocString DESCRIPTION = "Allows the use of the " + BUILDINGS.PREFABS.COOKINGSTATION.NAME;
+				public static LocString DESCRIPTION = "Allows Duplicants to cook using the " + BUILDINGS.PREFABS.COOKINGSTATION.NAME;
 			}
 
 			public class COOK
 			{
-				public static LocString NAME = UI.FormatAsLink("Improved Cooking I", "COOK");
+				public static LocString NAME = UI.FormatAsLink("Grilling II", "COOK");
 
 				public static LocString DESCRIPTION = "Improves a Duplicant's cooking speed";
 			}
@@ -5384,21 +5384,21 @@ namespace STRINGS
 
 			public class MEDIC
 			{
-				public static LocString NAME = UI.FormatAsLink("Duplicant Treatment", "MEDIC");
+				public static LocString NAME = UI.FormatAsLink("Bedside Manner", "MEDIC");
 
-				public static LocString DESCRIPTION = "Trains a Duplicant to administer medicines to other Duplicants";
+				public static LocString DESCRIPTION = "Trains Duplicants to administer medicine at the " + BUILDINGS.PREFABS.DOCTORSTATION.NAME;
 			}
 
 			public class SENIOR_MEDIC
 			{
-				public static LocString NAME = UI.FormatAsLink("Improved Medicine I", "MEDIC");
+				public static LocString NAME = UI.FormatAsLink("Advanced Medical Care", "MEDIC");
 
-				public static LocString DESCRIPTION = "Improves the speed of medical errands";
+				public static LocString DESCRIPTION = "Trains Duplicants to operate the " + BUILDINGS.PREFABS.ADVANCEDDOCTORSTATION.NAME;
 			}
 
 			public class MACHINE_TECHNICIAN
 			{
-				public static LocString NAME = UI.FormatAsLink("Improved Tinkering I", "MACHINE_TECHNICIAN");
+				public static LocString NAME = UI.FormatAsLink("Improved Tinkering", "MACHINE_TECHNICIAN");
 
 				public static LocString DESCRIPTION = "Marginally improves a Duplicant's tinkering speeds";
 			}
@@ -5484,12 +5484,12 @@ namespace STRINGS
 			{
 				public static LocString NAME = UI.FormatAsLink("Mechatronics Engineering", "MECHATRONIC_ENGINEER");
 
-				public static LocString DESCRIPTION = "Allows construction and maintenance of conveyor rail systems";
+				public static LocString DESCRIPTION = "Allows the construction and maintenance of " + BUILDINGS.PREFABS.SOLIDCONDUIT.NAME + " systems";
 			}
 
 			public class HANDYMAN
 			{
-				public static LocString NAME = UI.FormatAsLink("Improved Strength I", "HANDYMAN");
+				public static LocString NAME = UI.FormatAsLink("Improved Strength", "HANDYMAN");
 
 				public static LocString DESCRIPTION = "Minorly improves a Duplicant's physical strength";
 			}
@@ -5498,19 +5498,19 @@ namespace STRINGS
 			{
 				public static LocString NAME = UI.FormatAsLink("Plumbing", "PLUMBER");
 
-				public static LocString DESCRIPTION = "Allows a Duplicant to empty plumbing " + UI.PRE_KEYWORD + "Pipes" + UI.PST_KEYWORD + " without making a mess";
+				public static LocString DESCRIPTION = "Allows a Duplicant to empty " + UI.PRE_KEYWORD + "Pipes" + UI.PST_KEYWORD + " without making a mess";
 			}
 
 			public class RANCHER
 			{
-				public static LocString NAME = UI.FormatAsLink("Critter Ranching", "RANCHER");
+				public static LocString NAME = UI.FormatAsLink("Critter Ranching I", "RANCHER");
 
 				public static LocString DESCRIPTION = "Allows a Duplicant to handle and care for " + UI.FormatAsLink("Critters", "CREATURES") + ".";
 			}
 
 			public class SENIOR_RANCHER
 			{
-				public static LocString NAME = UI.FormatAsLink("Improved Ranching I", "SENIOR_RANCHER");
+				public static LocString NAME = UI.FormatAsLink("Critter Ranching II", "SENIOR_RANCHER");
 
 				public static LocString DESCRIPTION = "Improves a Duplicant's " + UI.PRE_KEYWORD + "Ranching" + UI.PST_KEYWORD + " skills";
 			}
@@ -5519,7 +5519,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = UI.FormatAsLink("Rocket Piloting", "ASTRONAUTTRAINEE");
 
-				public static LocString DESCRIPTION = "Allows a Duplicant to command a rocket ship";
+				public static LocString DESCRIPTION = "Allows a Duplicant to operate a " + BUILDINGS.PREFABS.COMMANDMODULE.NAME + " to pilot a rocket ship";
 			}
 
 			public class ASTRONAUT

@@ -36,7 +36,10 @@ public class ReportManager : KMonoBehaviour
 		ContaminatedOxygenSublimation,
 		OxygenCreated,
 		EnergyCreated,
-		EnergyWasted
+		EnergyWasted,
+		DomesticatedCritters,
+		WildCritters,
+		RocketsInFlight
 	}
 
 	public struct ReportGroup
@@ -559,6 +562,18 @@ public class ReportManager : KMonoBehaviour
 		{
 			ReportType.ChoreStatus,
 			new ReportGroup(null, true, 1, UI.ENDOFDAYREPORT.CHORE_STATUS.NAME, UI.ENDOFDAYREPORT.CHORE_STATUS.POSITIVE_TOOLTIP, UI.ENDOFDAYREPORT.CHORE_STATUS.NEGATIVE_TOOLTIP, ReportEntry.Order.Descending, ReportEntry.Order.Descending, false, null)
+		},
+		{
+			ReportType.DomesticatedCritters,
+			new ReportGroup(null, false, 1, UI.ENDOFDAYREPORT.NUMBER_OF_DOMESTICATED_CRITTERS.NAME, UI.ENDOFDAYREPORT.NUMBER_OF_DOMESTICATED_CRITTERS.POSITIVE_TOOLTIP, UI.ENDOFDAYREPORT.NUMBER_OF_DOMESTICATED_CRITTERS.NEGATIVE_TOOLTIP, ReportEntry.Order.Descending, ReportEntry.Order.Descending, false, null)
+		},
+		{
+			ReportType.WildCritters,
+			new ReportGroup(null, false, 1, UI.ENDOFDAYREPORT.NUMBER_OF_WILD_CRITTERS.NAME, UI.ENDOFDAYREPORT.NUMBER_OF_WILD_CRITTERS.POSITIVE_TOOLTIP, UI.ENDOFDAYREPORT.NUMBER_OF_WILD_CRITTERS.NEGATIVE_TOOLTIP, ReportEntry.Order.Descending, ReportEntry.Order.Descending, false, null)
+		},
+		{
+			ReportType.RocketsInFlight,
+			new ReportGroup(null, false, 1, UI.ENDOFDAYREPORT.ROCKETS_IN_FLIGHT.NAME, UI.ENDOFDAYREPORT.ROCKETS_IN_FLIGHT.POSITIVE_TOOLTIP, UI.ENDOFDAYREPORT.ROCKETS_IN_FLIGHT.NEGATIVE_TOOLTIP, ReportEntry.Order.Descending, ReportEntry.Order.Descending, false, null)
 		},
 		{
 			ReportType.TimeSpentHeader,

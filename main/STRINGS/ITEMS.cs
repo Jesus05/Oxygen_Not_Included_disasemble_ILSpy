@@ -289,7 +289,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = UI.FormatAsLink("Nosh Bean", "BEAN");
 
-				public static LocString DESC = "The flavorful bean of a " + UI.FormatAsLink("Nosh Sprout", "BEAN_PLANT") + ".\n\nEach bite tastes refreshingly natural and wholesome.";
+				public static LocString DESC = "The crisp bean of a " + UI.FormatAsLink("Nosh Sprout", "BEAN_PLANT") + ".\n\nEach bite tastes refreshingly natural and wholesome.";
 			}
 
 			public class SPICENUT
@@ -330,9 +330,9 @@ namespace STRINGS
 			{
 				public static LocString NAME = UI.FormatAsLink("Spicy Tofu", "SPICYTOFU");
 
-				public static LocString DESC = TOFU.NAME + " marinated in a flavorful " + UI.FormatAsLink("Pincha Pepperplant", "SPICE_VINE") + " sauce.\n\nIt packs a delightful punch.";
+				public static LocString DESC = TOFU.NAME + " marinated in a flavorful " + UI.FormatAsLink("Pincha Pepperplant", "SPICENUT") + " sauce.\n\nIt packs a delightful punch.";
 
-				public static LocString RECIPEDESC = TOFU.NAME + " marinated in a flavorful" + UI.FormatAsLink("Pincha Peppernut", "SPICENUT") + " sauce.";
+				public static LocString RECIPEDESC = TOFU.NAME + " marinated in a flavorful " + UI.FormatAsLink("Pincha Peppernut", "SPICENUT") + " sauce.";
 			}
 
 			public class SALSA
@@ -493,7 +493,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Lumber";
 
-				public static LocString DESC = "Wood harvested from an " + UI.FormatAsLink("Arbor Tree", "WOOD_TREE") + ".";
+				public static LocString DESC = "Wood harvested from an " + UI.FormatAsLink("Arbor Tree", "FOREST_TREE") + ".";
 			}
 
 			public class GENE_SHUFFLER_RECHARGE

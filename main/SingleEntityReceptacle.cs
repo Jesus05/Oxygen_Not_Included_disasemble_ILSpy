@@ -249,6 +249,10 @@ public class SingleEntityReceptacle : Workable, IRender1000ms
 		{
 			Debug.LogWarningFormat(base.gameObject, "{0} OnFetchComplete fetchChore null", base.gameObject);
 		}
+		else if ((Object)fetchChore.fetchTarget == (Object)null)
+		{
+			Debug.LogWarningFormat(base.gameObject, "{0} OnFetchComplete fetchChore.fetchTarget null", base.gameObject);
+		}
 		else
 		{
 			OnDepositObject(fetchChore.fetchTarget.GetComponent<Pickupable>());

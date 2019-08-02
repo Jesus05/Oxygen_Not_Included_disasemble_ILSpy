@@ -90,6 +90,14 @@ namespace Database
 
 		public StatusItem SwitchStatusInactive;
 
+		public StatusItem LogicSwitchStatusActive;
+
+		public StatusItem LogicSwitchStatusInactive;
+
+		public StatusItem LogicSensorStatusActive;
+
+		public StatusItem LogicSensorStatusInactive;
+
 		public StatusItem ChangeDoorControlState;
 
 		public StatusItem CurrentDoorControlState;
@@ -662,6 +670,10 @@ namespace Database
 			ColonyLacksRequiredSkillPerk.resolveStringCallback = RequiresSkillPerk.resolveStringCallback;
 			SwitchStatusActive = CreateStatusItem("SwitchStatusActive", "BUILDING", string.Empty, StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, true, 129022);
 			SwitchStatusInactive = CreateStatusItem("SwitchStatusInactive", "BUILDING", string.Empty, StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, true, 129022);
+			LogicSwitchStatusActive = CreateStatusItem("LogicSwitchStatusActive", "BUILDING", string.Empty, StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, true, 129022);
+			LogicSwitchStatusInactive = CreateStatusItem("LogicSwitchStatusInactive", "BUILDING", string.Empty, StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, true, 129022);
+			LogicSensorStatusActive = CreateStatusItem("LogicSensorStatusActive", "BUILDING", string.Empty, StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, true, 129022);
+			LogicSensorStatusInactive = CreateStatusItem("LogicSensorStatusInactive", "BUILDING", string.Empty, StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, true, 129022);
 			PendingFish = CreateStatusItem("PendingFish", "BUILDING", "status_item_pending_fish", StatusItem.IconType.Custom, NotificationType.Neutral, false, OverlayModes.None.ID, true, 129022);
 			PendingSwitchToggle = CreateStatusItem("PendingSwitchToggle", "BUILDING", "status_item_pending_switch_toggle", StatusItem.IconType.Custom, NotificationType.Neutral, false, OverlayModes.None.ID, true, 129022);
 			PendingUpgrade = CreateStatusItem("PendingUpgrade", "BUILDING", "status_item_pending_upgrade", StatusItem.IconType.Custom, NotificationType.Neutral, false, OverlayModes.None.ID, true, 129022);

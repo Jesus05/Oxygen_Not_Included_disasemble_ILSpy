@@ -1905,7 +1905,7 @@ namespace STRINGS
 
 			public static LocString HEADER_1 = "Errand Priority";
 
-			public static LocString PARAGRAPH_1 = "Duplicants prioritize their errands based on several factors. Some of these can be adjusted to affect errand choice, but some errands (such as seeking breathable " + UI.FormatAsLink("oxygen", "OXYGEN") + ") are so important that they cannot be delayed. Errand priority can primarily be controlled by Errand Type prioritization, and then can be further fine tuned by the " + UI.FormatAsTool("Priotity Tool", "[G]") + ".\n\n";
+			public static LocString PARAGRAPH_1 = "Duplicants prioritize their errands based on several factors. Some of these can be adjusted to affect errand choice, but some errands (such as seeking breathable " + UI.FormatAsLink("oxygen", "OXYGEN") + ") are so important that they cannot be delayed. Errand priority can primarily be controlled by Errand Type prioritization, and then can be further fine tuned by the " + UI.FormatAsTool("Priotity Tool", "[P]") + ".\n\n";
 
 			public static LocString HEADER_2 = "Errand Type Prioritization";
 
@@ -1913,7 +1913,7 @@ namespace STRINGS
 
 			public static LocString HEADER_3 = "Priority Tool";
 
-			public static LocString PARAGRAPH_3 = "The priority of errands can often be modified using the " + UI.FormatAsTool("Priority tool", "[G]") + ". The values applied by this tool are always less influencial than the Errand Type priorities described above. If two errands with equal Errand Type Priority are available to a Duplicant, they will choose the errand with a higher priority setting as applied by the tool.\n\n";
+			public static LocString PARAGRAPH_3 = "The priority of errands can often be modified using the " + UI.FormatAsTool("Priority tool", "[P]") + ". The values applied by this tool are always less influencial than the Errand Type priorities described above. If two errands with equal Errand Type Priority are available to a Duplicant, they will choose the errand with a higher priority setting as applied by the tool.\n\n";
 		}
 
 		public class RESEARCH

@@ -45,7 +45,12 @@ public class MedicinalPill : Workable, IGameObjectEffectDescriptor, IConsumableU
 		Sicknesses sicknesses = worker.GetSicknesses();
 		foreach (string curedSickness in info.curedSicknesses)
 		{
-			sicknesses.Get(curedSickness)?.Cure();
+			SicknessInstance sicknessInstance = sicknesses.Get(curedSickness);
+			if (sicknessInstance != null)
+			{
+				Game.Instance.savedInfo.curedDisease = true;
+				sicknessInstance.Cure();
+			}
 		}
 		base.gameObject.DeleteObject();
 	}

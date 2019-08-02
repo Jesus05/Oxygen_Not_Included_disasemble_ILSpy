@@ -107,6 +107,12 @@ public class PressureSwitch : CircuitSwitch, ISaveLoadable, IThresholdSwitch, IS
 		}
 	}
 
+	protected override void UpdateSwitchStatus()
+	{
+		StatusItem status_item = (!switchedOn) ? Db.Get().BuildingStatusItems.LogicSensorStatusInactive : Db.Get().BuildingStatusItems.LogicSensorStatusActive;
+		GetComponent<KSelectable>().SetStatusItem(Db.Get().StatusItemCategories.Power, status_item, null);
+	}
+
 	public float GetRangeMinInputField()
 	{
 		return (desiredState != Element.State.Gas) ? rangeMin : (rangeMin * 1000f);

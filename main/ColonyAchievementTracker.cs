@@ -77,7 +77,7 @@ public class ColonyAchievementTracker : KMonoBehaviour, ISaveLoadableDetails
 		{
 			Debug.LogWarningFormat("UnlockPlatformAchievement {0} skipping: instant build mode", achievement_id);
 		}
-		else if (Game.Instance.SandboxModeActive)
+		else if (SaveGame.Instance.sandboxEnabled)
 		{
 			Debug.LogWarningFormat("UnlockPlatformAchievement {0} skipping: sandbox mode", achievement_id);
 		}

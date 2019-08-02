@@ -110,7 +110,7 @@ namespace STRINGS
 		{
 			public static LocString NAME = UI.FormatAsLink("Bleach Stone", "BLEACHSTONE");
 
-			public static LocString DESC = "Bleach stone is an unstable compound that emits toxic " + UI.FormatAsLink("Chlorine", "CHLORINEGAS") + ".\n\nIt is useful in " + UI.FormatAsLink("Hygienic", "HYGIENE") + " processes.";
+			public static LocString DESC = "Bleach stone is an unstable compound that emits unbreathable " + UI.FormatAsLink("Chlorine", "CHLORINEGAS") + ".\n\nIt is useful in " + UI.FormatAsLink("Hygienic", "HYGIENE") + " processes.";
 		}
 
 		public class BITUMEN
@@ -159,28 +159,28 @@ namespace STRINGS
 		{
 			public static LocString NAME = UI.FormatAsLink("Ethanol", "ETHANOLGAS");
 
-			public static LocString DESC = "(C<sub>2</sub>H<sub>6</sub>O) Ethanol is a high toxic chemical compound heated into a " + UI.FormatAsLink("Gaseous", "ELEMENTS_GAS") + " state.";
+			public static LocString DESC = "(C<sub>2</sub>H<sub>6</sub>O) Ethanol is an advanced chemical compound heated into a " + UI.FormatAsLink("Gaseous", "ELEMENTS_GAS") + " state.";
 		}
 
 		public class ETHANOL
 		{
 			public static LocString NAME = UI.FormatAsLink("Ethanol", "ETHANOL");
 
-			public static LocString DESC = "(C<sub>2</sub>H<sub>6</sub>O) Ethanol is a high toxic chemical compound.\n\nIt can be used as a highly effective fuel source when burned.";
+			public static LocString DESC = "(C<sub>2</sub>H<sub>6</sub>O) Ethanol is an advanced chemical compound.\n\nIt can be used as a highly effective fuel source when burned.";
 		}
 
 		public class SOLIDETHANOL
 		{
 			public static LocString NAME = UI.FormatAsLink("Ethanol", "SOLIDETHANOL");
 
-			public static LocString DESC = "(C<sub>2</sub>H<sub>6</sub>O) Ethanol is a high toxic chemical compound.\n\nIt can be used as a highly effective fuel source when burned.";
+			public static LocString DESC = "(C<sub>2</sub>H<sub>6</sub>O) Ethanol is an advanced chemical compound.\n\nIt can be used as a highly effective fuel source when burned.";
 		}
 
 		public class CARBONDIOXIDE
 		{
 			public static LocString NAME = UI.FormatAsLink("Carbon Dioxide", "CARBONDIOXIDE");
 
-			public static LocString DESC = "(CO<sub>2</sub>) Carbon Dioxide toxic, atomically heavy chemical compound in a " + UI.FormatAsLink("Gaseous", "ELEMENTS_GAS") + " state.\n\nIt tends to sink below other gases.";
+			public static LocString DESC = "(CO<sub>2</sub>) Carbon Dioxide is an atomically heavy chemical compound in a " + UI.FormatAsLink("Gaseous", "ELEMENTS_GAS") + " state.\n\nIt tends to sink below other gases.";
 		}
 
 		public class CARBONFIBRE
@@ -520,7 +520,7 @@ namespace STRINGS
 		{
 			public static LocString NAME = UI.FormatAsLink("Carbon Dioxide", "LIQUIDCARBONDIOXIDE");
 
-			public static LocString DESC = "(CO<sub>2</sub>) Carbon Dioxide is a toxic chemical compound. This selection is currently in a " + UI.FormatAsLink("Liquid", "ELEMENTS_LIQUID") + " state.";
+			public static LocString DESC = "(CO<sub>2</sub>) Carbon Dioxide is an unbreathable chemical compound.\n\nThis selection is currently in a " + UI.FormatAsLink("Liquid", "ELEMENTS_LIQUID") + " state.";
 		}
 
 		public class LIQUIDHELIUM
@@ -590,14 +590,14 @@ namespace STRINGS
 		{
 			public static LocString NAME = UI.FormatAsLink("Mercury", "MERCURY");
 
-			public static LocString DESC = "(Hg) Mercury is a toxic, metallic " + UI.FormatAsLink("Liquid", "ELEMENTS_LIQUID") + ".";
+			public static LocString DESC = "(Hg) Mercury is a metallic " + UI.FormatAsLink("Liquid", "ELEMENTS_LIQUID") + ".";
 		}
 
 		public class MERCURYGAS
 		{
 			public static LocString NAME = UI.FormatAsLink("Mercury", "MERCURYGAS");
 
-			public static LocString DESC = "(Hg) Mercury is a toxic " + UI.FormatAsLink("Metal", "RAWMETAL") + " heated into a " + UI.FormatAsLink("Gaseous", "ELEMENTS_GAS") + " state.";
+			public static LocString DESC = "(Hg) Mercury is a " + UI.FormatAsLink("Metal", "RAWMETAL") + " heated into a " + UI.FormatAsLink("Gaseous", "ELEMENTS_GAS") + " state.";
 		}
 
 		public class METHANE
@@ -1024,7 +1024,7 @@ namespace STRINGS
 		{
 			public static LocString NAME = UI.FormatAsLink("Polluted Dirt", "TOXICSAND");
 
-			public static LocString DESC = "Polluted Dirt is toxic biological waste.\n\nIt emits " + UI.FormatAsLink("Polluted Oxygen", "CONTAMINATEDOXYGEN") + " over time.";
+			public static LocString DESC = "Polluted Dirt is unprocessed biological waste.\n\nIt emits " + UI.FormatAsLink("Polluted Oxygen", "CONTAMINATEDOXYGEN") + " over time.";
 		}
 
 		public class UNOBTANIUM

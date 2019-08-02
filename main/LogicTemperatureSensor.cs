@@ -169,6 +169,12 @@ public class LogicTemperatureSensor : Switch, ISaveLoadable, IThresholdSwitch, I
 		}
 	}
 
+	protected override void UpdateSwitchStatus()
+	{
+		StatusItem status_item = (!switchedOn) ? Db.Get().BuildingStatusItems.LogicSensorStatusInactive : Db.Get().BuildingStatusItems.LogicSensorStatusActive;
+		GetComponent<KSelectable>().SetStatusItem(Db.Get().StatusItemCategories.Power, status_item, null);
+	}
+
 	public float GetRangeMinInputField()
 	{
 		return GameUtil.GetConvertedTemperature(RangeMin, false);

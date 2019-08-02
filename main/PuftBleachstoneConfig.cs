@@ -25,7 +25,7 @@ public class PuftBleachstoneConfig : IEntityConfig
 
 	public static GameObject CreatePuftBleachstone(string id, string name, string desc, string anim_file, bool is_baby)
 	{
-		GameObject prefab = BasePuftConfig.BasePuft(id, name, desc, "PuftBleachstoneBaseTrait", anim_file, is_baby, "anti_");
+		GameObject prefab = BasePuftConfig.BasePuft(id, name, desc, "PuftBleachstoneBaseTrait", anim_file, is_baby, "anti_", 258.15f, 308.15f);
 		prefab = EntityTemplates.ExtendEntityToWildCreature(prefab, PuftTuning.PEN_SIZE_PER_CREATURE, 75f);
 		Trait trait = Db.Get().CreateTrait("PuftBleachstoneBaseTrait", name, name, null, false, null, true, true);
 		trait.Add(new AttributeModifier(Db.Get().Amounts.Calories.maxAttribute.Id, PuftTuning.STANDARD_STOMACH_SIZE, name, false, false, true));

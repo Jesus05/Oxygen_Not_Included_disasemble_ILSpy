@@ -133,4 +133,10 @@ public class LogicCritterCountSensor : Switch, ISaveLoadable, ISim200ms, IIntSli
 			component.Queue((!switchedOn) ? "off" : "on", KAnim.PlayMode.Once, 1f, 0f);
 		}
 	}
+
+	protected override void UpdateSwitchStatus()
+	{
+		StatusItem status_item = (!switchedOn) ? Db.Get().BuildingStatusItems.LogicSensorStatusInactive : Db.Get().BuildingStatusItems.LogicSensorStatusActive;
+		GetComponent<KSelectable>().SetStatusItem(Db.Get().StatusItemCategories.Power, status_item, null);
+	}
 }

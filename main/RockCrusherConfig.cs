@@ -191,7 +191,7 @@ public class RockCrusherConfig : IBuildingConfig
 		string id4 = ComplexRecipeManager.MakeRecipeID("RockCrusher", array13, array14);
 		complexRecipe = new ComplexRecipe(id4, array13, array14);
 		complexRecipe.time = 40f;
-		complexRecipe.description = string.Format(STRINGS.BUILDINGS.PREFABS.ROCKCRUSHER.RECIPE_DESCRIPTION, SimHashes.Salt.CreateTag().ProperName(), TableSaltConfig.ID.ToTag());
+		complexRecipe.description = string.Format(STRINGS.BUILDINGS.PREFABS.ROCKCRUSHER.RECIPE_DESCRIPTION, SimHashes.Salt.CreateTag().ProperName(), ITEMS.INDUSTRIAL_PRODUCTS.TABLE_SALT.NAME);
 		complexRecipe.nameDisplay = ComplexRecipe.RecipeNameDisplay.IngredientToResult;
 		complexRecipe.fabricators = new List<Tag>
 		{

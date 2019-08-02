@@ -97,6 +97,16 @@ namespace STRINGS
 				{
 					public static LocString NAME = "Iron Comet";
 				}
+
+				public class COPPERCOMET
+				{
+					public static LocString NAME = "Copper Comet";
+				}
+
+				public class GOLDCOMET
+				{
+					public static LocString NAME = "Gold Comet";
+				}
 			}
 
 			public class DWARFPLANETS
@@ -185,7 +195,7 @@ namespace STRINGS
 				{
 					public static LocString NAME = "Chlorine Planet";
 
-					public static LocString DESCRIPTION = "A noxious planet permeated by toxic chlorine.";
+					public static LocString DESCRIPTION = "A noxious planet permeated by unbreathable chlorine.";
 				}
 
 				public class SALTDESERTPLANET
@@ -633,7 +643,9 @@ namespace STRINGS
 
 			public class STATS
 			{
-				public static LocString OXYGEN_CREATED = "Average Oxygen Produced";
+				public static LocString OXYGEN_CREATED = "Total Oxygen Produced";
+
+				public static LocString OXYGEN_CONSUMED = "Total Oxygen Consumed";
 
 				public static LocString POWER_CREATED = "Average Power Produced";
 
@@ -649,13 +661,21 @@ namespace STRINGS
 
 				public static LocString CALORIES_CREATED = "Calorie Generation";
 
+				public static LocString CALORIES_CONSUMED = "Calorie Consumption";
+
 				public static LocString LIVE_DUPLICANTS = "Duplicants";
 
 				public static LocString AVERAGE_STRESS_CREATED = "Average Stress Created";
 
 				public static LocString AVERAGE_STRESS_REMOVED = "Average Stress Removed";
 
+				public static LocString NUMBER_DOMESTICATED_CRITTERS = "Domesticated Critters";
+
+				public static LocString NUMBER_WILD_CRITTERS = "Wild Critters";
+
 				public static LocString AVERAGE_GERMS = "Average Germs";
+
+				public static LocString ROCKET_MISSIONS = "Rocket Missions Underway";
 			}
 
 			public static LocString SECONDS = "Seconds";
@@ -2427,7 +2447,7 @@ namespace STRINGS
 
 			public static LocString GENERATENOISE9 = "Vacuuming out vacuums...";
 
-			public static LocString NORMALISENOISE = "Interpolating toxic gas...";
+			public static LocString NORMALISENOISE = "Interpolating suffocating gas...";
 
 			public static LocString WORLDLAYOUT = "Freezing ice formations...";
 
@@ -3404,6 +3424,8 @@ namespace STRINGS
 			public static LocString DUPLICANTS = "Duplicants";
 
 			public static LocString GERMS = "Germs";
+
+			public static LocString ROCKET_MISSIONS = "Missions";
 		}
 
 		public class OVERLAYS
@@ -3626,9 +3648,9 @@ namespace STRINGS
 				{
 					public static LocString NAME = "LIGHT OVERLAY";
 
-					public static LocString LITAREA = "<b>Lit Area</b>\nDuplicants have adequate lighting in these areas";
+					public static LocString LITAREA = "<b>Lit Area</b>\nWorking in well lit areas improves Duplicant " + PRE_KEYWORD + "Morale" + PST_KEYWORD;
 
-					public static LocString DARK = "<b>Unlit Area</b>\nDuplicants cannot see in these areas";
+					public static LocString DARK = "<b>Unlit Area</b>\nWorking in the dark has no effect on Duplicants";
 				}
 
 				public static LocString NAME = "LIGHT OVERLAY";
@@ -4595,7 +4617,7 @@ namespace STRINGS
 
 				public static LocString TOOLTIP_NORMAL = "{Description}\n\nErrand Type: {Groups}\n\nTotal " + PRE_KEYWORD + "Priority" + PST_KEYWORD + ": {TotalPriority}\n    • {Name}'s {BestGroup} Priority: {PersonalPriorityValue} ({PersonalPriority})\n    • This {Building}'s Priority: {BuildingPriority}\n    • All {BestGroup} Errands: {TypePriority}";
 
-				public static LocString TOOLTIP_PERSONAL = "{Description}\n\n<b<{Errand}</b> is a " + JOBSSCREEN.PRIORITY_CLASS.PERSONAL_NEEDS + " errand and so will be performed before all Regular errands\n\nTotal " + PRE_KEYWORD + "Priority" + PST_KEYWORD + ": {TotalPriority}\n    • " + JOBSSCREEN.PRIORITY_CLASS.PERSONAL_NEEDS + ": {ClassPriority}\n    • All {BestGroup} Errands: {TypePriority}";
+				public static LocString TOOLTIP_PERSONAL = "{Description}\n\n<b>{Errand}</b> is a " + JOBSSCREEN.PRIORITY_CLASS.PERSONAL_NEEDS + " errand and so will be performed before all Regular errands\n\nTotal " + PRE_KEYWORD + "Priority" + PST_KEYWORD + ": {TotalPriority}\n    • " + JOBSSCREEN.PRIORITY_CLASS.PERSONAL_NEEDS + ": {ClassPriority}\n    • All {BestGroup} Errands: {TypePriority}";
 
 				public static LocString TOOLTIP_EMERGENCY = "{Description}\n\n<b>{Errand}</b> is an " + JOBSSCREEN.PRIORITY_CLASS.EMERGENCY + " errand and so will be performed before all Regular and Personal errands\n\nTotal " + PRE_KEYWORD + "Priority" + PST_KEYWORD + ": {TotalPriority}\n    • " + JOBSSCREEN.PRIORITY_CLASS.EMERGENCY + " : {ClassPriority}\n    • This {Building}'s Priority: {BuildingPriority}\n    • All {BestGroup} Errands: {TypePriority}";
 
@@ -7413,6 +7435,33 @@ namespace STRINGS
 				public static LocString NEGATIVE_TOOLTIP = "My colony consumed {0} of " + FormatAsLink("Food", "FOOD") + " over the course of the day";
 			}
 
+			public class NUMBER_OF_DOMESTICATED_CRITTERS
+			{
+				public static LocString NAME = "Domesticated Critters:";
+
+				public static LocString POSITIVE_TOOLTIP = "My colony has {0} critters";
+
+				public static LocString NEGATIVE_TOOLTIP = "My colony has {0} critters";
+			}
+
+			public class NUMBER_OF_WILD_CRITTERS
+			{
+				public static LocString NAME = "Wild Critters:";
+
+				public static LocString POSITIVE_TOOLTIP = "There are {0} wild critters around my colony";
+
+				public static LocString NEGATIVE_TOOLTIP = "There are {0} wild critters around my colony";
+			}
+
+			public class ROCKETS_IN_FLIGHT
+			{
+				public static LocString NAME = "Rocket Missions Underway:";
+
+				public static LocString POSITIVE_TOOLTIP = "There are {0} Rockets currently flying missions";
+
+				public static LocString NEGATIVE_TOOLTIP = "There are {0} Rockets currently flying missions";
+			}
+
 			public class STRESS_DELTA
 			{
 				public static LocString NAME = FormatAsLink("Stress", "STRESS") + " Change:";
@@ -8044,7 +8093,7 @@ namespace STRINGS
 
 		public static LocString WELCOMEMESSAGETITLE = "- ALERT -";
 
-		public static LocString WELCOMEMESSAGEBODY = "I've awoken at the location, but my colonization efforts have already hit a hitch. I was supposed to land on the planet's surface, but became trapped many miles underground instead.\n\nAlthough the conditions are not ideal, it's imperative that I establish a colony here and begin mounting efforts to escape.";
+		public static LocString WELCOMEMESSAGEBODY = "I've awoken at the target location, but my colonization efforts have already hit a hitch. I was supposed to land on the planet's surface, but became trapped many miles underground instead.\n\nAlthough the conditions are not ideal, it's imperative that I establish a colony here and begin mounting efforts to escape.";
 
 		public static LocString WELCOMEMESSAGEBEGIN = "BEGIN";
 

@@ -82,7 +82,7 @@ public class FetchAreaChore : Chore<FetchAreaChore.StatesInstance>
 								}
 							}
 						}
-						if ((UnityEngine.Object)pickupable != (UnityEngine.Object)null && (UnityEngine.Object)this.chore.overrideTarget != (UnityEngine.Object)null)
+						if ((UnityEngine.Object)this.chore.overrideTarget != (UnityEngine.Object)null)
 						{
 							this.chore.FetchAreaEnd(this.chore.overrideTarget.GetComponent<ChoreDriver>(), pickupable, true);
 						}

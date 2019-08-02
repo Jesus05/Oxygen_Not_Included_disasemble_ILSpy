@@ -19,6 +19,10 @@ public class PageView : KMonoBehaviour
 
 	private int oldChildCount;
 
+	public Action<int> OnChangePage;
+
+	public int ChildrenPerPage => childrenPerPage;
+
 	private int pageCount
 	{
 		get
@@ -48,6 +52,10 @@ public class PageView : KMonoBehaviour
 		multiToggle.onClick = (System.Action)Delegate.Combine(multiToggle.onClick, (System.Action)delegate
 		{
 			currentPage = (currentPage + 1) % pageCount;
+			if (OnChangePage != null)
+			{
+				OnChangePage(currentPage);
+			}
 			RefreshPage();
 		});
 		MultiToggle multiToggle2 = prevButton;
@@ -57,6 +65,10 @@ public class PageView : KMonoBehaviour
 			if (currentPage < 0)
 			{
 				currentPage += pageCount;
+			}
+			if (OnChangePage != null)
+			{
+				OnChangePage(currentPage);
 			}
 			RefreshPage();
 		});

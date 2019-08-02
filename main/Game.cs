@@ -10,6 +10,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.CompilerServices;
+using System.Runtime.Serialization;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.SceneManagement;
@@ -22,6 +23,19 @@ public class Game : KMonoBehaviour
 		public bool discoveredSurface;
 
 		public bool discoveredOilField;
+
+		public bool curedDisease;
+
+		public Dictionary<Tag, float> creaturePoopAmount;
+
+		[OnDeserialized]
+		private void OnDeserialized()
+		{
+			if (creaturePoopAmount == null)
+			{
+				creaturePoopAmount = new Dictionary<Tag, float>();
+			}
+		}
 	}
 
 	public struct CallbackInfo
@@ -595,6 +609,7 @@ public class Game : KMonoBehaviour
 		statusItemRenderer = new StatusItemRenderer();
 		prioritizableRenderer = new PrioritizableRenderer();
 		LoadEventHashes();
+		savedInfo.creaturePoopAmount = new Dictionary<Tag, float>();
 		gasFlowPos = new Vector3(0f, 0f, Grid.GetLayerZ(Grid.SceneLayer.GasConduits) - 0.4f);
 		liquidFlowPos = new Vector3(0f, 0f, Grid.GetLayerZ(Grid.SceneLayer.LiquidConduits) - 0.4f);
 		solidFlowPos = new Vector3(0f, 0f, Grid.GetLayerZ(Grid.SceneLayer.SolidConduitContents) - 0.4f);
@@ -1334,7 +1349,7 @@ public class Game : KMonoBehaviour
 		}
 		if (!(Time.timeSinceLevelLoad < GenericGameSettings.instance.performanceCapture.waitTime))
 		{
-			uint num = 356355u;
+			uint num = 357226u;
 			string text = System.DateTime.Now.ToShortDateString();
 			string text2 = System.DateTime.Now.ToShortTimeString();
 			string fileName = Path.GetFileName(GenericGameSettings.instance.performanceCapture.saveGame);

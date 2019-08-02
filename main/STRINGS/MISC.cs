@@ -698,7 +698,7 @@ namespace STRINGS
 
 				public static LocString TOOLTIP = "Notes on helping Duplicants keep their cool";
 
-				public static LocString MESSAGEBODY = "Environments that are extremely " + UI.FormatAsLink("Hot", "HEAT") + " or " + UI.FormatAsLink("Cold", "HEAT") + " affect my Duplicants' internal body temperature and cause undue " + UI.FormatAsLink("Stress", "STRESS") + ".\n\nThe THERMAL TOLERANCE OVERLAY <color=#F44A47><b>[F4]</b></color> allows me to view all areas where my Duplicants will feel discomfort and be unable to regulate their internal body temperature.";
+				public static LocString MESSAGEBODY = "Environments that are extremely " + UI.FormatAsLink("Hot", "HEAT") + " or " + UI.FormatAsLink("Cold", "HEAT") + " affect my Duplicants' internal body temperature and cause undue " + UI.FormatAsLink("Stress", "STRESS") + ".\n\nOpening the TEMPERATURE OVERLAY <color=#F44A47><b>[F3]</b></color> and checking the \"Thermal Tolerance\" box allows me to view all areas where my Duplicants will feel discomfort and be unable to regulate their internal body temperature.";
 			}
 
 			public class TUTORIAL_OVERHEATING
@@ -903,7 +903,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Invalid construction location";
 
-				public static LocString TOOLTIP = "These buildings cannot be constructed in the planned areas:\n";
+				public static LocString TOOLTIP = "These buildings cannot be constructed in the planned areas:";
 			}
 
 			public class MISSINGMATERIALS
@@ -917,7 +917,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Damage: Overheated";
 
-				public static LocString TOOLTIP = "Extreme heat is damaging these buildings:\n";
+				public static LocString TOOLTIP = "Extreme heat is damaging these buildings:";
 			}
 
 			public class NO_OXYGEN_GENERATOR

@@ -1443,6 +1443,34 @@ namespace STRINGS
 				public static LocString TOOLTIP = "This switch is currently toggled <b>Off</b>";
 			}
 
+			public class LOGICSWITCHSTATUSACTIVE
+			{
+				public static LocString NAME = "Sending a " + UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active);
+
+				public static LocString TOOLTIP = "This switch is currently sending a " + UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active);
+			}
+
+			public class LOGICSWITCHSTATUSINACTIVE
+			{
+				public static LocString NAME = "Sending a " + UI.FormatAsAutomationState("Red Signal", UI.AutomationState.Standby);
+
+				public static LocString TOOLTIP = "This switch is currently sending a " + UI.FormatAsAutomationState("Red Signal", UI.AutomationState.Standby);
+			}
+
+			public class LOGICSENSORSTATUSACTIVE
+			{
+				public static LocString NAME = "Sending a " + UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active);
+
+				public static LocString TOOLTIP = "This sensor is currently sending a " + UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active);
+			}
+
+			public class LOGICSENSORSTATUSINACTIVE
+			{
+				public static LocString NAME = "Sending a " + UI.FormatAsAutomationState("Red Signal", UI.AutomationState.Standby);
+
+				public static LocString TOOLTIP = "This sensor is currently sending " + UI.FormatAsAutomationState("Red Signal", UI.AutomationState.Standby);
+			}
+
 			public class FOOD_CONTAINERS_OUTSIDE_RANGE
 			{
 				public static LocString NAME = "Unreachable food";

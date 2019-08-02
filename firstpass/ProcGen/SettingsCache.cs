@@ -423,8 +423,20 @@ namespace ProcGen
 			while (list2.Count < num && list.Count > 0)
 			{
 				int index = random.Next(list.Count);
-				string item = list[index];
-				list2.Add(item);
+				string text = list[index];
+				bool flag = false;
+				foreach (string item in GetCachedTrait(text).exclusiveWith)
+				{
+					if (list2.Contains(item))
+					{
+						flag = true;
+						break;
+					}
+				}
+				if (!flag)
+				{
+					list2.Add(text);
+				}
 				list.RemoveAt(index);
 			}
 			DebugUtil.LogArgs("Getting traits for seed", seed, string.Join(", ", list2.ToArray()));

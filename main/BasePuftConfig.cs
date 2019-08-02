@@ -9,14 +9,22 @@ public static class BasePuftConfig
 	[CompilerGenerated]
 	private static IdleStates.Def.IdleAnimCallback _003C_003Ef__mg_0024cache0;
 
-	public static GameObject BasePuft(string id, string name, string desc, string traitId, string anim_file, bool is_baby, string symbol_override_prefix)
+	public static GameObject BasePuft(string id, string name, string desc, string traitId, string anim_file, bool is_baby, string symbol_override_prefix, float warningLowTemperature, float warningHighTemperature)
 	{
 		float mass = 50f;
 		KAnimFile anim = Assets.GetAnim(anim_file);
 		string initialAnim = "idle_loop";
 		EffectorValues tIER = DECOR.BONUS.TIER0;
 		GameObject gameObject = EntityTemplates.CreatePlacedEntity(id, name, desc, mass, anim, initialAnim, Grid.SceneLayer.Creatures, 1, 1, tIER, default(EffectorValues), SimHashes.Creature, null, 293f);
-		EntityTemplates.ExtendEntityToBasicCreature(gameObject, FactionManager.FactionID.Prey, traitId, "FlyerNavGrid1x1", NavType.Hover, 32, 2f, "Meat", 1, true, true, 302f, 318f, 243.15f, 343.15f);
+		GameObject template = gameObject;
+		FactionManager.FactionID faction = FactionManager.FactionID.Prey;
+		string navGridName = "FlyerNavGrid1x1";
+		NavType navType = NavType.Hover;
+		string onDeathDropID = "Meat";
+		int onDeathDropCount = 1;
+		mass = warningLowTemperature - 45f;
+		float lethalHighTemperature = warningHighTemperature + 50f;
+		EntityTemplates.ExtendEntityToBasicCreature(template, faction, traitId, navGridName, navType, 32, 2f, onDeathDropID, onDeathDropCount, true, true, warningLowTemperature, warningHighTemperature, mass, lethalHighTemperature);
 		if (!string.IsNullOrEmpty(symbol_override_prefix))
 		{
 			gameObject.AddOrGet<SymbolOverrideController>().ApplySymbolOverridesByAffix(Assets.GetAnim(anim_file), symbol_override_prefix, null, 0);

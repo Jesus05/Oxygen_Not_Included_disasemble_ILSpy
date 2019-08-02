@@ -51,6 +51,21 @@ public class Artable : Workable
 
 	private WorkChore<Artable> chore;
 
+	public Status CurrentStatus
+	{
+		get
+		{
+			foreach (Stage stage in stages)
+			{
+				if (CurrentStage == stage.id)
+				{
+					return stage.statusItem;
+				}
+			}
+			return Status.Ready;
+		}
+	}
+
 	public string CurrentStage => currentStage;
 
 	protected Artable()

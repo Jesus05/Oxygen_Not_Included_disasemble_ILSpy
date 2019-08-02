@@ -104,4 +104,10 @@ public class LogicElementSensor : Switch, ISaveLoadable, ISim200ms
 		UpdateLogicCircuit();
 		UpdateVisualState(false);
 	}
+
+	protected override void UpdateSwitchStatus()
+	{
+		StatusItem status_item = (!switchedOn) ? Db.Get().BuildingStatusItems.LogicSensorStatusInactive : Db.Get().BuildingStatusItems.LogicSensorStatusActive;
+		GetComponent<KSelectable>().SetStatusItem(Db.Get().StatusItemCategories.Power, status_item, null);
+	}
 }

@@ -52,6 +52,12 @@ namespace ProcGen
 			private set;
 		}
 
+		public List<string> exclusiveWith
+		{
+			get;
+			private set;
+		}
+
 		public MinMax startingBasePositionHorizontalMod
 		{
 			get;
@@ -101,6 +107,7 @@ namespace ProcGen
 			globalFeatureTemplateMods = new Dictionary<string, int>();
 			globalFeatureMods = new Dictionary<string, int>();
 			elementBandModifiers = new List<ElementBandModifier>();
+			exclusiveWith = new List<string>();
 		}
 	}
 }

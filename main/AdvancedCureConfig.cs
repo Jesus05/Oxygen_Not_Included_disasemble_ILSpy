@@ -15,7 +15,7 @@ public class AdvancedCureConfig : IEntityConfig
 		component.AddTag(GameTags.MedicalSupplies, false);
 		ComplexRecipe.RecipeElement[] array = new ComplexRecipe.RecipeElement[2]
 		{
-			new ComplexRecipe.RecipeElement(SimHashes.Tungsten.CreateTag(), 1f),
+			new ComplexRecipe.RecipeElement(SimHashes.Steel.CreateTag(), 1f),
 			new ComplexRecipe.RecipeElement("LightBugOrangeEgg", 1f)
 		};
 		ComplexRecipe.RecipeElement[] array2 = new ComplexRecipe.RecipeElement[1]

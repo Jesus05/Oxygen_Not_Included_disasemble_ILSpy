@@ -277,4 +277,10 @@ public class LogicMassSensor : Switch, ISaveLoadable, IThresholdSwitch
 			was_on = base.IsSwitchedOn;
 		}
 	}
+
+	protected override void UpdateSwitchStatus()
+	{
+		StatusItem status_item = (!switchedOn) ? Db.Get().BuildingStatusItems.LogicSensorStatusInactive : Db.Get().BuildingStatusItems.LogicSensorStatusActive;
+		GetComponent<KSelectable>().SetStatusItem(Db.Get().StatusItemCategories.Power, status_item, null);
+	}
 }

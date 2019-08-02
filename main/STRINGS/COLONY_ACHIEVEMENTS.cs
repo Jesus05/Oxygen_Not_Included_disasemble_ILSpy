@@ -151,7 +151,7 @@ namespace STRINGS
 			{
 				public static LocString FIRST = "Few civilizations throughout time have had the privilege of understading their origins.";
 
-				public static LocString SECOND = "The only thing that matters is that we are here now, and we make the best of the world we've been given. I am truly proud to say...";
+				public static LocString SECOND = "The only thing that matters is that we are here now, and we make the best of the world we've been given. I am proud to say...";
 
 				public static LocString THIRD = "This asteroid is our home.";
 			}
@@ -183,7 +183,7 @@ namespace STRINGS
 
 			public static LocString MESSAGE_TITLE = "THIS IS OUR HOME";
 
-			public static LocString MESSAGE_BODY = "Few civilizations throughout time have had the privilege of understanding their origins. The one thing that matters is that we are here now, and we make the best of the world we've been given. I am truly proud to say...\n\nThis asteroid is our home.";
+			public static LocString MESSAGE_BODY = "Few civilizations throughout time have had the privilege of understanding their origins. The one thing that matters is that we are here now, and we make the best of the world we've been given. I am proud to say...\n\nThis asteroid is our home.";
 		}
 
 		public class DISTANT_PLANET_REACHED

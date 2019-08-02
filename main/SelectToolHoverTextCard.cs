@@ -14,13 +14,17 @@ public class SelectToolHoverTextCard : HoverTextConfiguration
 
 	public int currentSelectedSelectableIndex = -1;
 
-	private Sprite iconWarning;
+	[NonSerialized]
+	public Sprite iconWarning;
 
-	private Sprite iconDash;
+	[NonSerialized]
+	public Sprite iconDash;
 
-	private Sprite iconHighlighted;
+	[NonSerialized]
+	public Sprite iconHighlighted;
 
-	private Sprite iconActiveAutomationPort;
+	[NonSerialized]
+	public Sprite iconActiveAutomationPort;
 
 	public TextStylePair Styles_LogicActive;
 

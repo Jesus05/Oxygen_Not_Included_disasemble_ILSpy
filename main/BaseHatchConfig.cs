@@ -124,6 +124,14 @@ public static class BaseHatchConfig
 		{
 			SimHashes.Wolframite.CreateTag()
 		}), (!(poopTag == GameTags.Metal)) ? poopTag : SimHashes.Tungsten.CreateTag(), caloriesPerKg, producedConversionRate, diseaseId, diseasePerKgProduced, false, false));
+		list.Add(new Diet.Info(new HashSet<Tag>(new Tag[1]
+		{
+			SimHashes.AluminumOre.CreateTag()
+		}), (!(poopTag == GameTags.Metal)) ? poopTag : SimHashes.Aluminum.CreateTag(), caloriesPerKg, producedConversionRate, diseaseId, diseasePerKgProduced, false, false));
+		list.Add(new Diet.Info(new HashSet<Tag>(new Tag[1]
+		{
+			SimHashes.Electrum.CreateTag()
+		}), (!(poopTag == GameTags.Metal)) ? poopTag : SimHashes.Gold.CreateTag(), caloriesPerKg, producedConversionRate, diseaseId, diseasePerKgProduced, false, false));
 		return list;
 	}
 

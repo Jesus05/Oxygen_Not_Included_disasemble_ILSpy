@@ -31,7 +31,7 @@ public class BrushTool : InterfaceTool
 
 	protected bool affectFoundation;
 
-	private static int defaultLayerMask;
+	private new static int defaultLayerMask;
 
 	private bool dragging;
 
@@ -43,7 +43,7 @@ public class BrushTool : InterfaceTool
 
 	protected int currentCell;
 
-	protected static int layerMask;
+	protected new static int layerMask;
 
 	protected HashSet<int> cellsInRadius = new HashSet<int>();
 

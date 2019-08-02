@@ -269,14 +269,14 @@ public class StatusItemRenderer
 			return pos.x >= vector2.x && pos.x <= vector3.x && pos.y >= vector2.y && pos.y <= vector3.y;
 		}
 
-		public void GetIntersection(Vector2 pos, List<SelectTool.Intersection> intersections, float scale)
+		public void GetIntersection(Vector2 pos, List<InterfaceTool.Intersection> intersections, float scale)
 		{
 			if (Intersects(pos, scale))
 			{
 				KSelectable component = transform.GetComponent<KSelectable>();
 				if (component.IsSelectable)
 				{
-					intersections.Add(new SelectTool.Intersection
+					intersections.Add(new InterfaceTool.Intersection
 					{
 						component = transform.GetComponent<KSelectable>(),
 						distance = -100f
@@ -514,7 +514,7 @@ public class StatusItemRenderer
 		}
 	}
 
-	public void GetIntersections(Vector2 pos, List<SelectTool.Intersection> intersections)
+	public void GetIntersections(Vector2 pos, List<InterfaceTool.Intersection> intersections)
 	{
 		foreach (Entry visibleEntry in visibleEntries)
 		{

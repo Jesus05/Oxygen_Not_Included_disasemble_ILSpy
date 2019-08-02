@@ -229,6 +229,11 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms, ISim1000ms
 	public void Sim1000ms(float dt)
 	{
 		RefreshAndStartNextOrder();
+		if (materialNeedCache.Count > 0 && fetchListList.Count == 0)
+		{
+			Debug.LogWarningFormat(base.gameObject, "{0} has material needs cached, but no open fetches. materialNeedCache={1}, fetchListList={2}", base.gameObject, materialNeedCache.Count, fetchListList.Count);
+			queueDirty = true;
+		}
 	}
 
 	public void Sim200ms(float dt)
@@ -318,8 +323,8 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms, ISim1000ms
 			float num = buildStorage.MassStored();
 			if (num != 0f)
 			{
-				Debug.LogWarningFormat(base.gameObject, "{0} build storage contains mass {1} after order completion. Dropping...", base.gameObject, num);
-				buildStorage.DropAll(false, false, default(Vector3), true);
+				Debug.LogWarningFormat(base.gameObject, "{0} build storage contains mass {1} after order completion.", base.gameObject, num);
+				buildStorage.Transfer(inStorage, true, true);
 			}
 			DecrementRecipeQueueCountInternal(recipe, true);
 			workingOrderIdx = -1;
@@ -423,7 +428,6 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms, ISim1000ms
 		}
 		DictionaryPool<Tag, float, ComplexFabricator>.PooledDictionary pooledDictionary = DictionaryPool<Tag, float, ComplexFabricator>.Allocate();
 		DictionaryPool<Tag, float, ComplexFabricator>.PooledDictionary pooledDictionary2 = DictionaryPool<Tag, float, ComplexFabricator>.Allocate();
-		DictionaryPool<Tag, float, ComplexFabricator>.PooledDictionary pooledDictionary3 = DictionaryPool<Tag, float, ComplexFabricator>.Allocate();
 		for (int j = 0; j < openOrderCounts.Count; j++)
 		{
 			int num2 = openOrderCounts[j];
@@ -458,9 +462,9 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms, ISim1000ms
 					}
 					else
 					{
-						DictionaryPool<Tag, float, ComplexFabricator>.PooledDictionary pooledDictionary4;
+						DictionaryPool<Tag, float, ComplexFabricator>.PooledDictionary pooledDictionary3;
 						Tag material;
-						(pooledDictionary4 = pooledDictionary)[material = recipeElement2.material] = pooledDictionary4[material] - num4;
+						(pooledDictionary3 = pooledDictionary)[material = recipeElement2.material] = pooledDictionary3[material] - num4;
 					}
 				}
 			}
@@ -468,19 +472,13 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms, ISim1000ms
 		if (flag)
 		{
 			CancelFetches();
-			if (pooledDictionary2.Count > 0)
-			{
-				AddFetch(pooledDictionary2);
-			}
 		}
-		else if (CheckNeedsDeltas(pooledDictionary2, pooledDictionary3))
+		if (pooledDictionary2.Count > 0)
 		{
-			Debug.Assert(pooledDictionary3.Count > 0, "expected missingAmountsDelta to have entries");
-			AddFetch(pooledDictionary3);
+			UpdateFetches(pooledDictionary2);
 		}
 		UpdateMaterialNeeds(pooledDictionary2);
 		pooledDictionary2.Recycle();
-		pooledDictionary3.Recycle();
 		pooledDictionary.Recycle();
 	}
 
@@ -503,27 +501,6 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms, ISim1000ms
 		materialNeedCache.Clear();
 	}
 
-	private bool CheckNeedsDeltas(Dictionary<Tag, float> missingAmounts, Dictionary<Tag, float> missingAmountsDelta)
-	{
-		bool result = false;
-		HashSetPool<Tag, ComplexFabricator>.PooledHashSet pooledHashSet = HashSetPool<Tag, ComplexFabricator>.Allocate();
-		pooledHashSet.UnionWith(materialNeedCache.Keys);
-		pooledHashSet.UnionWith(missingAmounts.Keys);
-		foreach (Tag item in pooledHashSet)
-		{
-			materialNeedCache.TryGetValue(item, out float value);
-			missingAmounts.TryGetValue(item, out float value2);
-			float num = value2 - value;
-			if (!(num < 0f) && num > 0f)
-			{
-				result = true;
-			}
-			missingAmountsDelta.Add(item, num);
-		}
-		pooledHashSet.Recycle();
-		return result;
-	}
-
 	private void OnFetchComplete()
 	{
 		for (int num = fetchListList.Count - 1; num >= 0; num--)
@@ -532,6 +509,7 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms, ISim1000ms
 			if (fetchList.IsComplete)
 			{
 				fetchListList.RemoveAt(num);
+				queueDirty = true;
 			}
 		}
 	}
@@ -798,23 +776,36 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms, ISim1000ms
 		}
 	}
 
-	private void AddFetch(DictionaryPool<Tag, float, ComplexFabricator>.PooledDictionary missingAmounts)
+	private void UpdateFetches(DictionaryPool<Tag, float, ComplexFabricator>.PooledDictionary missingAmounts)
 	{
 		ChoreType byHash = Db.Get().ChoreTypes.GetByHash(fetchChoreTypeIdHash);
-		FetchList2 fetchList = new FetchList2(inStorage, byHash);
-		fetchList.ShowStatusItem = false;
 		foreach (KeyValuePair<Tag, float> missingAmount in missingAmounts)
 		{
-			if (missingAmount.Value > 0f)
+			if (missingAmount.Value >= PICKUPABLETUNING.MINIMUM_PICKABLE_AMOUNT && !HasPendingFetch(missingAmount.Key))
 			{
+				FetchList2 fetchList = new FetchList2(inStorage, byHash);
 				FetchList2 fetchList2 = fetchList;
 				Tag key = missingAmount.Key;
 				float value = missingAmount.Value;
 				fetchList2.Add(key, null, null, value, FetchOrder2.OperationalRequirement.None);
+				fetchList.ShowStatusItem = false;
+				fetchList.Submit(OnFetchComplete, false);
+				fetchListList.Add(fetchList);
 			}
 		}
-		fetchList.Submit(OnFetchComplete, false);
-		fetchListList.Add(fetchList);
+	}
+
+	private bool HasPendingFetch(Tag tag)
+	{
+		foreach (FetchList2 fetchList in fetchListList)
+		{
+			fetchList.MinimumAmount.TryGetValue(tag, out float value);
+			if (value > 0f)
+			{
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private void CancelFetches()
@@ -832,13 +823,19 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms, ISim1000ms
 		ComplexRecipe.RecipeElement[] array = ingredients;
 		foreach (ComplexRecipe.RecipeElement recipeElement in array)
 		{
-			while (buildStorage.GetAmountAvailable(recipeElement.material) < recipeElement.amount)
+			while (true)
 			{
-				inStorage.Transfer(buildStorage, recipeElement.material, recipeElement.amount, false, true);
-				if (inStorage.GetAmountAvailable(recipeElement.material) <= 0f)
+				float num = recipeElement.amount - buildStorage.GetAmountAvailable(recipeElement.material);
+				if (num <= 0f)
 				{
 					break;
 				}
+				if (inStorage.GetAmountAvailable(recipeElement.material) <= 0f)
+				{
+					Debug.LogWarningFormat("TransferCurrentRecipeIngredientsForBuild ran out of {0} but still needed {1} more.", recipeElement.material, num);
+					break;
+				}
+				inStorage.Transfer(buildStorage, recipeElement.material, num, false, true);
 			}
 		}
 	}
@@ -850,7 +847,8 @@ public class ComplexFabricator : KMonoBehaviour, ISim200ms, ISim1000ms
 		foreach (ComplexRecipe.RecipeElement recipeElement in array)
 		{
 			float amountAvailable = storage.GetAmountAvailable(recipeElement.material);
-			if (amountAvailable < recipeElement.amount)
+			float num = recipeElement.amount - amountAvailable;
+			if (num >= PICKUPABLETUNING.MINIMUM_PICKABLE_AMOUNT)
 			{
 				return false;
 			}

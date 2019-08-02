@@ -8,7 +8,11 @@ public class RetiredColonyData
 	{
 		public static string OxygenProduced = "oxygenProduced";
 
+		public static string OxygenConsumed = "oxygenConsumed";
+
 		public static string CaloriesProduced = "caloriesProduced";
+
+		public static string CaloriesRemoved = "caloriesRemoved";
 
 		public static string PowerProduced = "powerProduced";
 
@@ -28,7 +32,13 @@ public class RetiredColonyData
 
 		public static string AverageStressRemoved = "averageStressRemoved";
 
+		public static string DomesticatedCritters = "domesticatedCritters";
+
+		public static string WildCritters = "wildCritters";
+
 		public static string AverageGerms = "averageGerms";
+
+		public static string RocketsInFlight = "rocketsInFlight";
 	}
 
 	public class RetiredColonyStatistic
@@ -213,6 +223,11 @@ public class RetiredColonyData
 		Tuple<float, float>[] array9 = null;
 		Tuple<float, float>[] array10 = null;
 		Tuple<float, float>[] array11 = null;
+		Tuple<float, float>[] array12 = null;
+		Tuple<float, float>[] array13 = null;
+		Tuple<float, float>[] array14 = null;
+		Tuple<float, float>[] array15 = null;
+		Tuple<float, float>[] array16 = null;
 		if ((Object)ReportManager.Instance != (Object)null)
 		{
 			array = new Tuple<float, float>[ReportManager.Instance.reports.Count];
@@ -223,102 +238,135 @@ public class RetiredColonyData
 			array2 = new Tuple<float, float>[ReportManager.Instance.reports.Count];
 			for (int l = 0; l < array2.Length; l++)
 			{
-				array2[l] = new Tuple<float, float>((float)ReportManager.Instance.reports[l].day, ReportManager.Instance.reports[l].GetEntry(ReportManager.ReportType.CaloriesCreated).accPositive * 0.001f);
+				array2[l] = new Tuple<float, float>((float)ReportManager.Instance.reports[l].day, ReportManager.Instance.reports[l].GetEntry(ReportManager.ReportType.OxygenCreated).accNegative * -1f);
 			}
 			array3 = new Tuple<float, float>[ReportManager.Instance.reports.Count];
 			for (int m = 0; m < array3.Length; m++)
 			{
-				array3[m] = new Tuple<float, float>((float)ReportManager.Instance.reports[m].day, ReportManager.Instance.reports[m].GetEntry(ReportManager.ReportType.EnergyCreated).accPositive * 0.001f);
+				array3[m] = new Tuple<float, float>((float)ReportManager.Instance.reports[m].day, ReportManager.Instance.reports[m].GetEntry(ReportManager.ReportType.CaloriesCreated).accPositive * 0.001f);
 			}
 			array4 = new Tuple<float, float>[ReportManager.Instance.reports.Count];
 			for (int n = 0; n < array4.Length; n++)
 			{
-				array4[n] = new Tuple<float, float>((float)ReportManager.Instance.reports[n].day, ReportManager.Instance.reports[n].GetEntry(ReportManager.ReportType.EnergyWasted).accNegative * -1f * 0.001f);
+				array4[n] = new Tuple<float, float>((float)ReportManager.Instance.reports[n].day, ReportManager.Instance.reports[n].GetEntry(ReportManager.ReportType.CaloriesCreated).accNegative * 0.001f * -1f);
 			}
 			array5 = new Tuple<float, float>[ReportManager.Instance.reports.Count];
 			for (int num2 = 0; num2 < array5.Length; num2++)
 			{
-				array5[num2] = new Tuple<float, float>((float)ReportManager.Instance.reports[num2].day, ReportManager.Instance.reports[num2].GetEntry(ReportManager.ReportType.WorkTime).accPositive);
-			}
-			array7 = new Tuple<float, float>[ReportManager.Instance.reports.Count];
-			for (int num3 = 0; num3 < array5.Length; num3++)
-			{
-				int num4 = 0;
-				float num5 = 0f;
-				ReportManager.ReportEntry entry = ReportManager.Instance.reports[num3].GetEntry(ReportManager.ReportType.WorkTime);
-				for (int num6 = 0; num6 < entry.contextEntries.Count; num6++)
-				{
-					num4++;
-					num5 += entry.contextEntries[num6].accPositive;
-				}
-				num5 /= (float)num4;
-				num5 /= 600f;
-				array7[num3] = new Tuple<float, float>((float)ReportManager.Instance.reports[num3].day, num5);
+				array5[num2] = new Tuple<float, float>((float)ReportManager.Instance.reports[num2].day, ReportManager.Instance.reports[num2].GetEntry(ReportManager.ReportType.EnergyCreated).accPositive * 0.001f);
 			}
 			array6 = new Tuple<float, float>[ReportManager.Instance.reports.Count];
-			for (int num7 = 0; num7 < array6.Length; num7++)
+			for (int num3 = 0; num3 < array6.Length; num3++)
 			{
-				array6[num7] = new Tuple<float, float>((float)ReportManager.Instance.reports[num7].day, ReportManager.Instance.reports[num7].GetEntry(ReportManager.ReportType.TravelTime).accPositive);
+				array6[num3] = new Tuple<float, float>((float)ReportManager.Instance.reports[num3].day, ReportManager.Instance.reports[num3].GetEntry(ReportManager.ReportType.EnergyWasted).accNegative * -1f * 0.001f);
 			}
-			array8 = new Tuple<float, float>[ReportManager.Instance.reports.Count];
-			for (int num8 = 0; num8 < array6.Length; num8++)
+			array7 = new Tuple<float, float>[ReportManager.Instance.reports.Count];
+			for (int num4 = 0; num4 < array7.Length; num4++)
 			{
-				int num9 = 0;
-				float num10 = 0f;
-				ReportManager.ReportEntry entry2 = ReportManager.Instance.reports[num8].GetEntry(ReportManager.ReportType.TravelTime);
-				for (int num11 = 0; num11 < entry2.contextEntries.Count; num11++)
-				{
-					num9++;
-					num10 += entry2.contextEntries[num11].accPositive;
-				}
-				num10 /= (float)num9;
-				array8[num8] = new Tuple<float, float>((float)ReportManager.Instance.reports[num8].day, num10);
+				array7[num4] = new Tuple<float, float>((float)ReportManager.Instance.reports[num4].day, ReportManager.Instance.reports[num4].GetEntry(ReportManager.ReportType.WorkTime).accPositive);
 			}
 			array9 = new Tuple<float, float>[ReportManager.Instance.reports.Count];
-			for (int num12 = 0; num12 < array5.Length; num12++)
+			for (int num5 = 0; num5 < array7.Length; num5++)
 			{
-				array9[num12] = new Tuple<float, float>((float)ReportManager.Instance.reports[num12].day, (float)ReportManager.Instance.reports[num12].GetEntry(ReportManager.ReportType.WorkTime).contextEntries.Count);
+				int num6 = 0;
+				float num7 = 0f;
+				ReportManager.ReportEntry entry = ReportManager.Instance.reports[num5].GetEntry(ReportManager.ReportType.WorkTime);
+				for (int num8 = 0; num8 < entry.contextEntries.Count; num8++)
+				{
+					num6++;
+					num7 += entry.contextEntries[num8].accPositive;
+				}
+				num7 /= (float)num6;
+				num7 /= 600f;
+				num7 *= 100f;
+				array9[num5] = new Tuple<float, float>((float)ReportManager.Instance.reports[num5].day, num7);
+			}
+			array8 = new Tuple<float, float>[ReportManager.Instance.reports.Count];
+			for (int num9 = 0; num9 < array8.Length; num9++)
+			{
+				array8[num9] = new Tuple<float, float>((float)ReportManager.Instance.reports[num9].day, ReportManager.Instance.reports[num9].GetEntry(ReportManager.ReportType.TravelTime).accPositive);
 			}
 			array10 = new Tuple<float, float>[ReportManager.Instance.reports.Count];
-			for (int num13 = 0; num13 < array10.Length; num13++)
+			for (int num10 = 0; num10 < array8.Length; num10++)
 			{
-				int num14 = 0;
-				float num15 = 0f;
-				ReportManager.ReportEntry entry3 = ReportManager.Instance.reports[num13].GetEntry(ReportManager.ReportType.StressDelta);
-				for (int num16 = 0; num16 < entry3.contextEntries.Count; num16++)
+				int num11 = 0;
+				float num12 = 0f;
+				ReportManager.ReportEntry entry2 = ReportManager.Instance.reports[num10].GetEntry(ReportManager.ReportType.TravelTime);
+				for (int num13 = 0; num13 < entry2.contextEntries.Count; num13++)
 				{
-					num14++;
-					num15 += entry3.contextEntries[num16].accPositive;
+					num11++;
+					num12 += entry2.contextEntries[num13].accPositive;
 				}
-				array10[num13] = new Tuple<float, float>((float)ReportManager.Instance.reports[num13].day, num15 / (float)num14);
+				num12 /= (float)num11;
+				num12 /= 600f;
+				num12 *= 100f;
+				array10[num10] = new Tuple<float, float>((float)ReportManager.Instance.reports[num10].day, num12);
 			}
 			array11 = new Tuple<float, float>[ReportManager.Instance.reports.Count];
-			for (int num17 = 0; num17 < array11.Length; num17++)
+			for (int num14 = 0; num14 < array7.Length; num14++)
 			{
-				int num18 = 0;
-				float num19 = 0f;
-				ReportManager.ReportEntry entry4 = ReportManager.Instance.reports[num17].GetEntry(ReportManager.ReportType.StressDelta);
-				for (int num20 = 0; num20 < entry4.contextEntries.Count; num20++)
-				{
-					num18++;
-					num19 += entry4.contextEntries[num20].accNegative;
-				}
-				num19 *= -1f;
-				array11[num17] = new Tuple<float, float>((float)ReportManager.Instance.reports[num17].day, num19 / (float)num18);
+				array11[num14] = new Tuple<float, float>((float)ReportManager.Instance.reports[num14].day, (float)ReportManager.Instance.reports[num14].GetEntry(ReportManager.ReportType.WorkTime).contextEntries.Count);
 			}
-			Stats = new RetiredColonyStatistic[11]
+			array12 = new Tuple<float, float>[ReportManager.Instance.reports.Count];
+			for (int num15 = 0; num15 < array12.Length; num15++)
+			{
+				int num16 = 0;
+				float num17 = 0f;
+				ReportManager.ReportEntry entry3 = ReportManager.Instance.reports[num15].GetEntry(ReportManager.ReportType.StressDelta);
+				for (int num18 = 0; num18 < entry3.contextEntries.Count; num18++)
+				{
+					num16++;
+					num17 += entry3.contextEntries[num18].accPositive;
+				}
+				array12[num15] = new Tuple<float, float>((float)ReportManager.Instance.reports[num15].day, num17 / (float)num16);
+			}
+			array13 = new Tuple<float, float>[ReportManager.Instance.reports.Count];
+			for (int num19 = 0; num19 < array13.Length; num19++)
+			{
+				int num20 = 0;
+				float num21 = 0f;
+				ReportManager.ReportEntry entry4 = ReportManager.Instance.reports[num19].GetEntry(ReportManager.ReportType.StressDelta);
+				for (int num22 = 0; num22 < entry4.contextEntries.Count; num22++)
+				{
+					num20++;
+					num21 += entry4.contextEntries[num22].accNegative;
+				}
+				num21 *= -1f;
+				array13[num19] = new Tuple<float, float>((float)ReportManager.Instance.reports[num19].day, num21 / (float)num20);
+			}
+			array14 = new Tuple<float, float>[ReportManager.Instance.reports.Count];
+			for (int num23 = 0; num23 < array14.Length; num23++)
+			{
+				array14[num23] = new Tuple<float, float>((float)ReportManager.Instance.reports[num23].day, ReportManager.Instance.reports[num23].GetEntry(ReportManager.ReportType.DomesticatedCritters).accPositive);
+			}
+			array15 = new Tuple<float, float>[ReportManager.Instance.reports.Count];
+			for (int num24 = 0; num24 < array15.Length; num24++)
+			{
+				array15[num24] = new Tuple<float, float>((float)ReportManager.Instance.reports[num24].day, ReportManager.Instance.reports[num24].GetEntry(ReportManager.ReportType.WildCritters).accPositive);
+			}
+			array16 = new Tuple<float, float>[ReportManager.Instance.reports.Count];
+			for (int num25 = 0; num25 < array16.Length; num25++)
+			{
+				array16[num25] = new Tuple<float, float>((float)ReportManager.Instance.reports[num25].day, ReportManager.Instance.reports[num25].GetEntry(ReportManager.ReportType.RocketsInFlight).accPositive);
+			}
+			Stats = new RetiredColonyStatistic[16]
 			{
 				new RetiredColonyStatistic(DataIDs.OxygenProduced, array, UI.RETIRED_COLONY_INFO_SCREEN.STATS.OXYGEN_CREATED, UI.MATH_PICTURES.AXIS_LABELS.CYCLES, UI.UNITSUFFIXES.MASS.KILOGRAM),
-				new RetiredColonyStatistic(DataIDs.CaloriesProduced, array2, UI.RETIRED_COLONY_INFO_SCREEN.STATS.CALORIES_CREATED, UI.MATH_PICTURES.AXIS_LABELS.CYCLES, UI.UNITSUFFIXES.CALORIES.KILOCALORIE),
-				new RetiredColonyStatistic(DataIDs.PowerProduced, array3, UI.RETIRED_COLONY_INFO_SCREEN.STATS.POWER_CREATED, UI.MATH_PICTURES.AXIS_LABELS.CYCLES, UI.UNITSUFFIXES.ELECTRICAL.KILOJOULE),
-				new RetiredColonyStatistic(DataIDs.PowerWasted, array4, UI.RETIRED_COLONY_INFO_SCREEN.STATS.POWER_WASTED, UI.MATH_PICTURES.AXIS_LABELS.CYCLES, UI.UNITSUFFIXES.ELECTRICAL.KILOJOULE),
-				new RetiredColonyStatistic(DataIDs.WorkTime, array5, UI.RETIRED_COLONY_INFO_SCREEN.STATS.WORK_TIME, UI.MATH_PICTURES.AXIS_LABELS.CYCLES, UI.UNITSUFFIXES.SECONDS),
-				new RetiredColonyStatistic(DataIDs.AverageWorkTime, array7, UI.RETIRED_COLONY_INFO_SCREEN.STATS.AVERAGE_WORK_TIME, UI.MATH_PICTURES.AXIS_LABELS.CYCLES, UI.UNITSUFFIXES.PERCENT),
-				new RetiredColonyStatistic(DataIDs.TravelTime, array6, UI.RETIRED_COLONY_INFO_SCREEN.STATS.TRAVEL_TIME, UI.MATH_PICTURES.AXIS_LABELS.CYCLES, UI.UNITSUFFIXES.SECONDS),
-				new RetiredColonyStatistic(DataIDs.AverageTravelTime, array8, UI.RETIRED_COLONY_INFO_SCREEN.STATS.AVERAGE_TRAVEL_TIME, UI.MATH_PICTURES.AXIS_LABELS.CYCLES, UI.UNITSUFFIXES.PERCENT),
-				new RetiredColonyStatistic(DataIDs.LiveDuplicants, array9, UI.RETIRED_COLONY_INFO_SCREEN.STATS.LIVE_DUPLICANTS, UI.MATH_PICTURES.AXIS_LABELS.CYCLES, UI.UNITSUFFIXES.DUPLICANTS),
-				new RetiredColonyStatistic(DataIDs.AverageStressCreated, array10, UI.RETIRED_COLONY_INFO_SCREEN.STATS.AVERAGE_STRESS_CREATED, UI.MATH_PICTURES.AXIS_LABELS.CYCLES, UI.UNITSUFFIXES.PERCENT),
-				new RetiredColonyStatistic(DataIDs.AverageStressRemoved, array11, UI.RETIRED_COLONY_INFO_SCREEN.STATS.AVERAGE_STRESS_REMOVED, UI.MATH_PICTURES.AXIS_LABELS.CYCLES, UI.UNITSUFFIXES.PERCENT)
+				new RetiredColonyStatistic(DataIDs.OxygenConsumed, array2, UI.RETIRED_COLONY_INFO_SCREEN.STATS.OXYGEN_CONSUMED, UI.MATH_PICTURES.AXIS_LABELS.CYCLES, UI.UNITSUFFIXES.MASS.KILOGRAM),
+				new RetiredColonyStatistic(DataIDs.CaloriesProduced, array3, UI.RETIRED_COLONY_INFO_SCREEN.STATS.CALORIES_CREATED, UI.MATH_PICTURES.AXIS_LABELS.CYCLES, UI.UNITSUFFIXES.CALORIES.KILOCALORIE),
+				new RetiredColonyStatistic(DataIDs.CaloriesRemoved, array4, UI.RETIRED_COLONY_INFO_SCREEN.STATS.CALORIES_CONSUMED, UI.MATH_PICTURES.AXIS_LABELS.CYCLES, UI.UNITSUFFIXES.CALORIES.KILOCALORIE),
+				new RetiredColonyStatistic(DataIDs.PowerProduced, array5, UI.RETIRED_COLONY_INFO_SCREEN.STATS.POWER_CREATED, UI.MATH_PICTURES.AXIS_LABELS.CYCLES, UI.UNITSUFFIXES.ELECTRICAL.KILOJOULE),
+				new RetiredColonyStatistic(DataIDs.PowerWasted, array6, UI.RETIRED_COLONY_INFO_SCREEN.STATS.POWER_WASTED, UI.MATH_PICTURES.AXIS_LABELS.CYCLES, UI.UNITSUFFIXES.ELECTRICAL.KILOJOULE),
+				new RetiredColonyStatistic(DataIDs.WorkTime, array7, UI.RETIRED_COLONY_INFO_SCREEN.STATS.WORK_TIME, UI.MATH_PICTURES.AXIS_LABELS.CYCLES, UI.UNITSUFFIXES.SECONDS),
+				new RetiredColonyStatistic(DataIDs.AverageWorkTime, array9, UI.RETIRED_COLONY_INFO_SCREEN.STATS.AVERAGE_WORK_TIME, UI.MATH_PICTURES.AXIS_LABELS.CYCLES, UI.UNITSUFFIXES.PERCENT),
+				new RetiredColonyStatistic(DataIDs.TravelTime, array8, UI.RETIRED_COLONY_INFO_SCREEN.STATS.TRAVEL_TIME, UI.MATH_PICTURES.AXIS_LABELS.CYCLES, UI.UNITSUFFIXES.SECONDS),
+				new RetiredColonyStatistic(DataIDs.AverageTravelTime, array10, UI.RETIRED_COLONY_INFO_SCREEN.STATS.AVERAGE_TRAVEL_TIME, UI.MATH_PICTURES.AXIS_LABELS.CYCLES, UI.UNITSUFFIXES.PERCENT),
+				new RetiredColonyStatistic(DataIDs.LiveDuplicants, array11, UI.RETIRED_COLONY_INFO_SCREEN.STATS.LIVE_DUPLICANTS, UI.MATH_PICTURES.AXIS_LABELS.CYCLES, UI.UNITSUFFIXES.DUPLICANTS),
+				new RetiredColonyStatistic(DataIDs.RocketsInFlight, array16, UI.RETIRED_COLONY_INFO_SCREEN.STATS.ROCKET_MISSIONS, UI.MATH_PICTURES.AXIS_LABELS.CYCLES, UI.UNITSUFFIXES.ROCKET_MISSIONS),
+				new RetiredColonyStatistic(DataIDs.AverageStressCreated, array12, UI.RETIRED_COLONY_INFO_SCREEN.STATS.AVERAGE_STRESS_CREATED, UI.MATH_PICTURES.AXIS_LABELS.CYCLES, UI.UNITSUFFIXES.PERCENT),
+				new RetiredColonyStatistic(DataIDs.AverageStressRemoved, array13, UI.RETIRED_COLONY_INFO_SCREEN.STATS.AVERAGE_STRESS_REMOVED, UI.MATH_PICTURES.AXIS_LABELS.CYCLES, UI.UNITSUFFIXES.PERCENT),
+				new RetiredColonyStatistic(DataIDs.DomesticatedCritters, array14, UI.RETIRED_COLONY_INFO_SCREEN.STATS.NUMBER_DOMESTICATED_CRITTERS, UI.MATH_PICTURES.AXIS_LABELS.CYCLES, UI.UNITSUFFIXES.CRITTERS),
+				new RetiredColonyStatistic(DataIDs.WildCritters, array15, UI.RETIRED_COLONY_INFO_SCREEN.STATS.NUMBER_WILD_CRITTERS, UI.MATH_PICTURES.AXIS_LABELS.CYCLES, UI.UNITSUFFIXES.CRITTERS)
 			};
 		}
 	}

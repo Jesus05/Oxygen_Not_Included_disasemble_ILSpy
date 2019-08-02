@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <ProjectGuid>{843A32F1-70CE-43DF-824A-F8735D3E5D5F}</ProjectGuid>
+    <ProjectGuid>{720FF86B-D1C1-422B-B885-BEAE8C398164}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <OutputType>Library</OutputType>
@@ -494,6 +494,7 @@
     <Compile Include="CookingStation.cs" />
     <Compile Include="CookingStationConfig.cs" />
     <Compile Include="CoolVestConfig.cs" />
+    <Compile Include="CopperCometConfig.cs" />
     <Compile Include="CopyBuildingSettings.cs" />
     <Compile Include="CopySettingsTool.cs" />
     <Compile Include="CornerMouldingConfig.cs" />
@@ -539,6 +540,7 @@
     <Compile Include="CustomizableDialogScreen.cs" />
     <Compile Include="Database\Accessories.cs" />
     <Compile Include="Database\AccessorySlots.cs" />
+    <Compile Include="Database\ActivateLorePOI.cs" />
     <Compile Include="Database\Amounts.cs" />
     <Compile Include="Database\ArtifactDropRate.cs" />
     <Compile Include="Database\ArtifactDropRates.cs" />
@@ -546,6 +548,7 @@
     <Compile Include="Database\AtLeastOneBuildingForEachDupe.cs" />
     <Compile Include="Database\AttributeConverters.cs" />
     <Compile Include="Database\Attributes.cs" />
+    <Compile Include="Database\AutomateABuilding.cs" />
     <Compile Include="Database\AverageDupeDecorOverCycles.cs" />
     <Compile Include="Database\BeforeCycleNumber.cs" />
     <Compile Include="Database\BuildingAttributes.cs" />
@@ -560,10 +563,14 @@
     <Compile Include="Database\ColonyAchievementRequirement.cs" />
     <Compile Include="Database\ColonyAchievements.cs" />
     <Compile Include="Database\CoolBuildingToXKelvin.cs" />
+    <Compile Include="Database\CreateMasterPainting.cs" />
+    <Compile Include="Database\CreaturePoopKGProduction.cs" />
     <Compile Include="Database\CreatureStatusItems.cs" />
     <Compile Include="Database\CritterAttributes.cs" />
     <Compile Include="Database\CrittersWithTrait.cs" />
+    <Compile Include="Database\CritterTypeExists.cs" />
     <Compile Include="Database\CritterTypesWithTraits.cs" />
+    <Compile Include="Database\CureDisease.cs" />
     <Compile Include="Database\CycleNumber.cs" />
     <Compile Include="Database\Deaths.cs" />
     <Compile Include="Database\DiscoverNum.cs" />
@@ -592,6 +599,7 @@
     <Compile Include="Database\PumpXDistanceY.cs" />
     <Compile Include="Database\ReachedSpace.cs" />
     <Compile Include="Database\ResearchComplete.cs" />
+    <Compile Include="Database\RevealAsteriod.cs" />
     <Compile Include="Database\RoomTypeCategories.cs" />
     <Compile Include="Database\RoomTypes.cs" />
     <Compile Include="Database\ScheduleBlockTypes.cs" />
@@ -617,6 +625,7 @@
     <Compile Include="Database\TechTreeTitles.cs" />
     <Compile Include="Database\Thoughts.cs" />
     <Compile Include="Database\TravelXUsingTransitTubes.cs" />
+    <Compile Include="Database\TuneUpGenerator.cs" />
     <Compile Include="Database\UpgradeAllBasicBuildings.cs" />
     <Compile Include="Database\Urges.cs" />
     <Compile Include="Database\VentXKG.cs" />
@@ -1005,6 +1014,7 @@
     <Compile Include="GlobalChoreProvider.cs" />
     <Compile Include="GlobalResources.cs" />
     <Compile Include="GlomConfig.cs" />
+    <Compile Include="GoldCometConfig.cs" />
     <Compile Include="GoodnessSlider.cs" />
     <Compile Include="GourmetCookingStation.cs" />
     <Compile Include="GourmetCookingStationConfig.cs" />

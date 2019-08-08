@@ -79,8 +79,9 @@ namespace KMod
 			bool flag = false;
 			foreach (Mod mod in mods)
 			{
-				if (mod.status == Mod.Status.UninstallPending)
+				switch (mod.status)
 				{
+				case Mod.Status.UninstallPending:
 					Debug.LogFormat("Latent uninstall of mod {0} from {1}", mod.title, mod.label.install_path);
 					if (mod.Uninstall())
 					{
@@ -95,6 +96,35 @@ namespace KMod
 					{
 						flag = true;
 					}
+					break;
+				case Mod.Status.ReinstallPending:
+					Debug.LogFormat("Latent reinstall of mod {0}", mod.title);
+					if (!string.IsNullOrEmpty(mod.reinstall_path) && File.Exists(mod.reinstall_path))
+					{
+						bool enabled = mod.enabled;
+						mod.file_source = new ZipFile(mod.reinstall_path);
+						mod.enabled = false;
+						if (mod.Uninstall())
+						{
+							mod.Install();
+							if (mod.status == Mod.Status.Installed)
+							{
+								mod.enabled = enabled;
+							}
+						}
+						flag = true;
+					}
+					else if (mod.enabled)
+					{
+						mod.enabled = false;
+						flag = true;
+					}
+					break;
+				}
+				if (!string.IsNullOrEmpty(mod.reinstall_path))
+				{
+					mod.reinstall_path = null;
+					flag = true;
 				}
 			}
 			foreach (Mod item in list)
@@ -259,26 +289,30 @@ namespace KMod
 						mod = mod.label
 					});
 				}
+				string root = mod.file_source.GetRoot();
 				mod2.CopyPersistentDataTo(mod);
 				int index = mods.IndexOf(mod2);
 				mods.RemoveAt(index);
 				mods.Insert(index, mod);
 				if (flag3 || mod.status == Mod.Status.NotInstalled)
 				{
-					bool enabled = mod.enabled;
-					if (flag3)
+					if (mod.enabled)
 					{
-						Uninstall(mod);
-					}
-					Install(mod);
-					mod.enabled = enabled;
-					if (mod.enabled && (mod.available_content & (Content.Strings | Content.DLL | Content.Translation | Content.Animation)) != 0)
-					{
+						mod.reinstall_path = root;
+						mod.status = Mod.Status.ReinstallPending;
 						events.Add(new Event
 						{
 							event_type = EventType.RestartRequested,
 							mod = mod.label
 						});
+					}
+					else
+					{
+						if (flag3)
+						{
+							Uninstall(mod);
+						}
+						Install(mod);
 					}
 				}
 				else
@@ -294,7 +328,7 @@ namespace KMod
 		{
 			Debug.LogFormat("Update mod {0}", mod.title);
 			Mod mod2 = mods.Find((Mod candidate) => mod.label.Match(candidate.label));
-			DebugUtil.DevAssert(string.IsNullOrEmpty(mod2.label.id), "Should be subscribed to a mod we are getting an Update notification for");
+			DebugUtil.DevAssert(!string.IsNullOrEmpty(mod2.label.id), "Should be subscribed to a mod we are getting an Update notification for");
 			if (mod2.status != Mod.Status.UninstallPending)
 			{
 				events.Add(new Event
@@ -302,21 +336,26 @@ namespace KMod
 					event_type = EventType.VersionUpdate,
 					mod = mod.label
 				});
+				string root = mod.file_source.GetRoot();
 				mod2.CopyPersistentDataTo(mod);
+				mod.is_subscribed = mod2.is_subscribed;
 				int index = mods.IndexOf(mod2);
 				mods.RemoveAt(index);
 				mods.Insert(index, mod);
-				bool enabled = mod.enabled;
-				Uninstall(mod);
-				Install(mod);
-				mod.enabled = enabled;
-				if (mod.enabled && (mod.available_content & (Content.Strings | Content.DLL | Content.Translation | Content.Animation)) != 0)
+				if (mod.enabled)
 				{
+					mod.reinstall_path = root;
+					mod.status = Mod.Status.ReinstallPending;
 					events.Add(new Event
 					{
 						event_type = EventType.RestartRequested,
 						mod = mod.label
 					});
+				}
+				else
+				{
+					Uninstall(mod);
+					Install(mod);
 				}
 				dirty = true;
 				Update(caller);
@@ -800,8 +839,6 @@ namespace KMod
 					case EventType.LoadError:
 						flag2 = true;
 						break;
-					case EventType.VersionUpdate:
-					case EventType.AvailableContentChanged:
 					case EventType.RestartRequested:
 						flag3 = true;
 						break;

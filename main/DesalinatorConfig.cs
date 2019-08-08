@@ -52,7 +52,8 @@ public class DesalinatorConfig : IBuildingConfig
 		Storage storage = go.AddOrGet<Storage>();
 		storage.SetDefaultStoredItemModifiers(Storage.StandardSealedStorage);
 		storage.showInUI = true;
-		go.AddOrGet<Desalinator>();
+		Desalinator desalinator = go.AddOrGet<Desalinator>();
+		desalinator.maxSalt = 945f;
 		ElementConverter elementConverter = go.AddComponent<ElementConverter>();
 		elementConverter.consumedElements = new ElementConverter.ConsumedElement[1]
 		{

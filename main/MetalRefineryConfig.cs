@@ -148,6 +148,7 @@ public class MetalRefineryConfig : IBuildingConfig
 		go.GetComponent<KPrefabID>().prefabSpawnFn += delegate(GameObject game_object)
 		{
 			ComplexFabricatorWorkable component = game_object.GetComponent<ComplexFabricatorWorkable>();
+			component.WorkerStatusItem = Db.Get().DuplicantStatusItems.Processing;
 			component.AttributeConverter = Db.Get().AttributeConverters.MachinerySpeed;
 			component.AttributeExperienceMultiplier = DUPLICANTSTATS.ATTRIBUTE_LEVELING.PART_DAY_EXPERIENCE;
 			component.SkillExperienceSkillGroup = Db.Get().SkillGroups.Technicals.Id;

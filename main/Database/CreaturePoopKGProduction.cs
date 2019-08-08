@@ -19,7 +19,7 @@ namespace Database
 		{
 			if (Game.Instance.savedInfo.creaturePoopAmount.ContainsKey(poopElement))
 			{
-				return Game.Instance.savedInfo.creaturePoopAmount[poopElement] >= amountToPoop * 1000f;
+				return Game.Instance.savedInfo.creaturePoopAmount[poopElement] >= amountToPoop;
 			}
 			return false;
 		}

@@ -71,10 +71,12 @@ public class ComplexFabricatorWorkable : Workable
 		}
 	}
 
+	public ComplexRecipe CurrentWorkingOrder => (!((UnityEngine.Object)fabricator != (UnityEngine.Object)null)) ? null : fabricator.CurrentWorkingOrder;
+
 	protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
-		workerStatusItem = Db.Get().DuplicantStatusItems.Processing;
+		workerStatusItem = Db.Get().DuplicantStatusItems.Fabricating;
 		attributeConverter = Db.Get().AttributeConverters.MachinerySpeed;
 		attributeExperienceMultiplier = DUPLICANTSTATS.ATTRIBUTE_LEVELING.PART_DAY_EXPERIENCE;
 		skillExperienceSkillGroup = Db.Get().SkillGroups.Technicals.Id;

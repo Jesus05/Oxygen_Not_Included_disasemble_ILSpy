@@ -144,13 +144,9 @@ public class TextureLerper
 
 	private Vector4 GetVisibleCellRange()
 	{
-		Camera camera = Camera.main;
-		if (GameUtil.IsCapturingTimeLapse())
-		{
-			camera = Game.Instance.timelapser.captureCamera;
-		}
+		Camera main = Camera.main;
 		float cellSizeInMeters = Grid.CellSizeInMeters;
-		Ray ray = camera.ViewportPointToRay(Vector3.zero);
+		Ray ray = main.ViewportPointToRay(Vector3.zero);
 		Vector3 origin = ray.origin;
 		float z = origin.z;
 		Vector3 direction = ray.direction;
@@ -161,7 +157,7 @@ public class TextureLerper
 		point = Grid.CellToPos(cell, num, num, num);
 		int num2 = Math.Max(0, (int)(point.x / cellSizeInMeters));
 		int num3 = Math.Max(0, (int)(point.y / cellSizeInMeters));
-		ray = camera.ViewportPointToRay(Vector3.one);
+		ray = main.ViewportPointToRay(Vector3.one);
 		Vector3 origin2 = ray.origin;
 		float z2 = origin2.z;
 		Vector3 direction2 = ray.direction;

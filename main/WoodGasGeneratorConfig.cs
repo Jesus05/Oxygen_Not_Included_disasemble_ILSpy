@@ -71,7 +71,6 @@ public class WoodGasGeneratorConfig : IBuildingConfig
 		manualDeliveryKG.choreTypeIDHash = Db.Get().ChoreTypes.FetchCritical.IdHash;
 		EnergyGenerator energyGenerator = go.AddOrGet<EnergyGenerator>();
 		energyGenerator.powerDistributionOrder = 8;
-		energyGenerator.ignoreBatteryRefillPercent = true;
 		energyGenerator.hasMeter = true;
 		energyGenerator.formula = EnergyGenerator.CreateSimpleFormula(WoodLogConfig.TAG, 1.2f, max_stored_input_mass, SimHashes.CarbonDioxide, 0.17f, false, new CellOffset(0, 1), 383.15f);
 		Tinkerable.MakePowerTinkerable(go);

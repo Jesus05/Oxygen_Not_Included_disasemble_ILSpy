@@ -662,7 +662,7 @@ namespace STRINGS
 			{
 				public static LocString EMAILHEADER1 = "<smallcaps>To: <b>[REDACTED]</b>\nFrom: <b>[REDACTED]</b></color></smallcaps>\n------------------\n";
 
-				public static LocString CONTAINER2 = "<indent=5%>So, the Facility is introducing this new security system that scans your hand to unlock the doors. My question is, what exactly are they scanning?\n\nThe folks in engineering say the door device doesn't look like a fingerprint scanner, and the duo working over in bioengineering won't comment at all.</indent>";
+				public static LocString CONTAINER2 = "<indent=5%>So, the facility is introducing this new security system that scans your hand to unlock the doors. My question is, what exactly are they scanning?\n\nThe folks in engineering say the door device doesn't look like a fingerprint scanner, but the duo working over in bioengineering won't comment at all.\n\nI can't say I like it.</indent>";
 
 				public static LocString SIGNATURE1 = "\n[REDACTED]\n<size=11>The Gravitas Facility</size>\n------------------\n";
 			}

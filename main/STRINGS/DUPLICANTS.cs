@@ -2420,16 +2420,16 @@ namespace STRINGS
 
 			public class FABRICATING
 			{
-				public static LocString NAME = "Fabricating {Target}";
+				public static LocString NAME = "Fabricating {Item}";
 
-				public static LocString TOOLTIP = "This Duplicant is crafting a <b>{Target}</b>";
+				public static LocString TOOLTIP = "This Duplicant is crafting a <b>{Item}</b>";
 			}
 
 			public class PROCESSING
 			{
-				public static LocString NAME = "Refining {Target}";
+				public static LocString NAME = "Refining {Item}";
 
-				public static LocString TOOLTIP = "This Duplicant is refining <b>{Target}</b>";
+				public static LocString TOOLTIP = "This Duplicant is refining <b>{Item}</b>";
 			}
 
 			public class CLEARING
@@ -2551,7 +2551,7 @@ namespace STRINGS
 
 				public static LocString SYMPTOMS = "{0}\n";
 
-				public static LocString INFECTION_SOURCE = "Contracted disease: {0}\n";
+				public static LocString INFECTION_SOURCE = "Contracted by: {0}\n";
 
 				public static LocString DURATION = "Time to recovery: {0}\n";
 
@@ -2615,17 +2615,17 @@ namespace STRINGS
 
 			public class INFECTIONSOURCES
 			{
-				public static LocString INTERNAL_TEMPERATURE = "from extreme internal temperatures";
+				public static LocString INTERNAL_TEMPERATURE = "Extreme internal temperatures";
 
-				public static LocString TOXIC_AREA = "through exposure to toxic areas";
+				public static LocString TOXIC_AREA = "Exposure to toxic areas";
 
-				public static LocString FOOD = "by eating a germ-covered {0}";
+				public static LocString FOOD = "Eating a germ-covered {0}";
 
-				public static LocString AIR = "by breathing germ-filled {0}";
+				public static LocString AIR = "Breathing germ-filled {0}";
 
-				public static LocString SKIN = "through skin contamination";
+				public static LocString SKIN = "Skin contamination";
 
-				public static LocString UNKNOWN = "from unknown source";
+				public static LocString UNKNOWN = "Unknown source";
 			}
 
 			public class DESCRIPTORS

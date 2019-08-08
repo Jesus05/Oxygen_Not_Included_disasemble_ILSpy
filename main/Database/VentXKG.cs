@@ -34,7 +34,7 @@ namespace Database
 					}
 				}
 			}
-			return num >= kilogramsToVent * 1000f;
+			return num >= kilogramsToVent;
 		}
 
 		public override void Serialize(BinaryWriter writer)

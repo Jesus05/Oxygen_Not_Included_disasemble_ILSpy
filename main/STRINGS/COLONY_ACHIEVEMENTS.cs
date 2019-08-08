@@ -112,7 +112,7 @@ namespace STRINGS
 
 			public static LocString COMPLETED_SKILL_BRANCH_DESCRIPTION = "Use a Duplicant's Skill Points to buy out an entire branch of the Skill Tree.";
 
-			public static LocString GENERATOR_TUNEUP = "Tune Up For What?";
+			public static LocString GENERATOR_TUNEUP = "Finely Tuned Machine";
 
 			public static LocString GENERATOR_TUNEUP_DESCRIPTION = "Perform {0} Tune Ups on power generators.";
 
@@ -126,7 +126,7 @@ namespace STRINGS
 
 			public static LocString COOKED_FOOD = "It's Not Raw";
 
-			public static LocString COOKED_FOOD_DESCRIPTION = "Have a Duplicant eat any cooked meal prepared at an Electrical Grill or Gas Range.";
+			public static LocString COOKED_FOOD_DESCRIPTION = "Have a Duplicant eat any cooked meal prepared at an Electric Grill or Gas Range.";
 
 			public static LocString PLUMBED_WASHROOMS = "Royal Flush";
 

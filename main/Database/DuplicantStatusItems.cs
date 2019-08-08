@@ -225,6 +225,15 @@ namespace Database
 				if ((UnityEngine.Object)workable2 != (UnityEngine.Object)null)
 				{
 					str = str.Replace("{Target}", workable2.GetComponent<KSelectable>().GetName());
+					ComplexFabricatorWorkable complexFabricatorWorkable = workable2 as ComplexFabricatorWorkable;
+					if ((UnityEngine.Object)complexFabricatorWorkable != (UnityEngine.Object)null)
+					{
+						ComplexRecipe currentWorkingOrder = complexFabricatorWorkable.CurrentWorkingOrder;
+						if (currentWorkingOrder != null)
+						{
+							str = str.Replace("{Item}", currentWorkingOrder.FirstResult.ProperName());
+						}
+					}
 				}
 				return str;
 			};

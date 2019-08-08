@@ -897,6 +897,13 @@ namespace STRINGS
 				public static LocString TOOLTIP = "This amenity cannot be used while full" + UI.HORIZONTAL_BR_RULE + "Emptying it will produce " + UI.FormatAsLink("Polluted Dirt", "TOXICSAND");
 			}
 
+			public class DESALINATORNEEDSEMPTYING
+			{
+				public static LocString NAME = "Requires Emptying";
+
+				public static LocString TOOLTIP = "This building is full of " + UI.FormatAsLink("Salt", "SALT") + " and can no longer operate." + UI.HORIZONTAL_BR_RULE + "A Duplicant must empty it for operation to continue.";
+			}
+
 			public class HABITATNEEDSEMPTYING
 			{
 				public static LocString NAME = "Requires Emptying";

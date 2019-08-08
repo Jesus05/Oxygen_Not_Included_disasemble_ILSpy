@@ -8093,7 +8093,7 @@ namespace STRINGS
 
 		public static LocString WELCOMEMESSAGETITLE = "- ALERT -";
 
-		public static LocString WELCOMEMESSAGEBODY = "I've awoken at the target location, but my colonization efforts have already hit a hitch. I was supposed to land on the planet's surface, but became trapped many miles underground instead.\n\nAlthough the conditions are not ideal, it's imperative that I establish a colony here and begin mounting efforts to escape.";
+		public static LocString WELCOMEMESSAGEBODY = "I've awoken at the target location, but colonization efforts have already hit a hitch. I was supposed to land on the planet's surface, but became trapped many miles underground instead.\n\nAlthough the conditions are not ideal, it's imperative that I establish a colony here and begin mounting efforts to escape.";
 
 		public static LocString WELCOMEMESSAGEBEGIN = "BEGIN";
 

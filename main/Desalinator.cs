@@ -137,7 +137,8 @@ public class Desalinator : StateMachineComponent<Desalinator.StatesInstance>
 			}).Exit(delegate(StatesInstance smi)
 			{
 				smi.CancelEmptyChore();
-			}).EventTransition(GameHashes.OnStorageChange, empty, (StatesInstance smi) => smi.IsSaltRemoved());
+			}).ToggleMainStatusItem(Db.Get().BuildingStatusItems.DesalinatorNeedsEmptying)
+				.EventTransition(GameHashes.OnStorageChange, empty, (StatesInstance smi) => smi.IsSaltRemoved());
 			empty.PlayAnim("off").Enter("ResetStorage", delegate(StatesInstance smi)
 			{
 				smi.master.SaltStorageLeft = smi.master.maxSalt;
@@ -157,7 +158,7 @@ public class Desalinator : StateMachineComponent<Desalinator.StatesInstance>
 	public float maxSalt = 1000f;
 
 	[Serialize]
-	public float _storageLeft = 1000f;
+	private float _storageLeft = 1000f;
 
 	private ElementConverter[] converters;
 

@@ -74,13 +74,8 @@ public class DesalinatorConfig : IBuildingConfig
 			new ElementConverter.OutputElement(3.5f, SimHashes.Water, 313.15f, false, true, 0f, 0.5f, 0.75f, byte.MaxValue, 0),
 			new ElementConverter.OutputElement(1.5f, SimHashes.Salt, 313.15f, false, true, 0f, 0.5f, 0.25f, byte.MaxValue, 0)
 		};
-		KAnimFile[] overrideAnims = new KAnimFile[1]
-		{
-			Assets.GetAnim("anim_interacts_outhouse_kanim")
-		};
 		DesalinatorWorkableEmpty desalinatorWorkableEmpty = go.AddOrGet<DesalinatorWorkableEmpty>();
 		desalinatorWorkableEmpty.workTime = 90f;
-		desalinatorWorkableEmpty.overrideAnims = overrideAnims;
 		desalinatorWorkableEmpty.workLayer = Grid.SceneLayer.BuildingFront;
 		ConduitConsumer conduitConsumer = go.AddOrGet<ConduitConsumer>();
 		conduitConsumer.conduitType = ConduitType.Liquid;

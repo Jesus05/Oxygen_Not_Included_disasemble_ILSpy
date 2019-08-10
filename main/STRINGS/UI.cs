@@ -1591,6 +1591,8 @@ namespace STRINGS
 				public static LocString TIMELAPSE_RESOLUTION = "Timelapse resolution:";
 
 				public static LocString TIMELAPSE_RESOLUTION_DESCRIPTION = "{0}x{1}";
+
+				public static LocString TIMELAPSE_DISABLED_DESCRIPTION = "Disabled";
 			}
 
 			public class WORLD_GEN_OPTIONS_SCREEN
@@ -1711,6 +1713,8 @@ namespace STRINGS
 				public static LocString SAVE_DIRECTORY_INSUFFICIENT_SPACE = "There is insufficient disk space to write to your save directory.\n\nPlease free at least 15 MB to give your saves some room to breathe.\n{0}";
 
 				public static LocString WORLD_GEN_FILES = "A problem occurred while accessing certain game files that will prevent starting new games.\n\nPlease ensure you can modify these files and re-launch the game:\n\n{0}";
+
+				public static LocString PLAYER_PREFS_CORRUPTED = "A problem occurred while loading your game options.\nThey have been reset to their default settings.\n\n";
 
 				public static LocString IO_UNAUTHORIZED = "An Unauthorized Access Error occurred when trying to write to disk.\nPlease check that you have permissions to write to:\n{0}";
 

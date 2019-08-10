@@ -1,7 +1,6 @@
 using KSerialization;
 using System.Collections.Generic;
 using System.IO;
-using UnityEngine;
 
 namespace Database
 {
@@ -24,12 +23,27 @@ namespace Database
 
 		public override bool Success()
 		{
-			return !usedDisallowedBuilding && amountProduced / 1000f > amountToProduce;
+			float num = 0f;
+			foreach (KeyValuePair<Tag, float> item in Game.Instance.savedInfo.powerCreatedbyGeneratorType)
+			{
+				if (!disallowedBuildings.Contains(item.Key))
+				{
+					num += item.Value;
+				}
+			}
+			return num / 1000f > amountToProduce;
 		}
 
 		public override bool Fail()
 		{
-			return usedDisallowedBuilding;
+			foreach (Tag disallowedBuilding in disallowedBuildings)
+			{
+				if (Game.Instance.savedInfo.powerCreatedbyGeneratorType.ContainsKey(disallowedBuilding))
+				{
+					return true;
+				}
+			}
+			return false;
 		}
 
 		public override void Serialize(BinaryWriter writer)
@@ -56,22 +70,6 @@ namespace Database
 			amountProduced = (float)reader.ReadDouble();
 			amountToProduce = (float)reader.ReadDouble();
 			usedDisallowedBuilding = (reader.ReadByte() != 0);
-		}
-
-		public override void Update()
-		{
-			foreach (Generator generator in Game.Instance.energySim.Generators)
-			{
-				if (generator.JoulesAvailable > 0f)
-				{
-					KPrefabID component = generator.GetComponent<KPrefabID>();
-					if (component.HasAnyTags(disallowedBuildings))
-					{
-						usedDisallowedBuilding = true;
-					}
-					amountProduced = Mathf.Max(generator.JoulesAvailable, generator.JoulesAvailable + amountProduced);
-				}
-			}
 		}
 	}
 }

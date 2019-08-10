@@ -7,6 +7,8 @@ public class KPlayerPrefs
 {
 	private static KPlayerPrefs _instance;
 
+	private static bool _corruptedFlag;
+
 	public static readonly string FILENAME = "kplayerprefs.yaml";
 
 	private static string PATH;
@@ -17,17 +19,21 @@ public class KPlayerPrefs
 		{
 			if (_instance == null)
 			{
-				_instance = new KPlayerPrefs();
-				PATH = GetPath();
 				try
 				{
+					_instance = new KPlayerPrefs();
+					PATH = GetPath();
 					_instance = YamlIO.LoadFile<KPlayerPrefs>(PATH, null, null);
 				}
 				catch
 				{
-					Debug.LogWarning("Creating new KPlayerPrefs..");
-					_instance = new KPlayerPrefs();
 				}
+			}
+			if (_instance == null)
+			{
+				Debug.LogWarning("Failed to load KPlayerPrefs, Creating new instance..");
+				_corruptedFlag = true;
+				_instance = new KPlayerPrefs();
 			}
 			return _instance;
 		}
@@ -57,6 +63,16 @@ public class KPlayerPrefs
 		ints = new Dictionary<string, int>();
 		floats = new Dictionary<string, float>();
 		_instance = this;
+	}
+
+	public static bool HasCorruptedFlag()
+	{
+		return _corruptedFlag;
+	}
+
+	public static void ResetCorruptedFlag()
+	{
+		_corruptedFlag = false;
 	}
 
 	public static void DeleteAll()

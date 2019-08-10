@@ -24,6 +24,8 @@ public class DiggerMonitor : GameStateMachine<DiggerMonitor, DiggerMonitor.Insta
 		{
 			World instance = World.Instance;
 			instance.OnSolidChanged = (Action<int>)Delegate.Combine(instance.OnSolidChanged, new Action<int>(OnSolidChanged));
+			master.Subscribe(387220196, OnDestinationReached);
+			master.Subscribe(-766531887, OnDestinationReached);
 		}
 
 		protected override void OnCleanUp()
@@ -31,20 +33,28 @@ public class DiggerMonitor : GameStateMachine<DiggerMonitor, DiggerMonitor.Insta
 			base.OnCleanUp();
 			World instance = World.Instance;
 			instance.OnSolidChanged = (Action<int>)Delegate.Remove(instance.OnSolidChanged, new Action<int>(OnSolidChanged));
+			base.master.Unsubscribe(387220196, OnDestinationReached);
+			base.master.Unsubscribe(-766531887, OnDestinationReached);
 		}
 
-		private void CheckInSolid(int cell)
+		private void OnDestinationReached(object data)
+		{
+			CheckInSolid();
+		}
+
+		private void CheckInSolid()
 		{
 			Navigator component = base.gameObject.GetComponent<Navigator>();
 			if (!((UnityEngine.Object)component == (UnityEngine.Object)null))
 			{
-				int cell2 = Grid.PosToCell(base.gameObject);
-				if (component.CurrentNavType != NavType.Solid && Grid.IsSolidCell(cell2))
+				int cell = Grid.PosToCell(base.gameObject);
+				if (component.CurrentNavType != NavType.Solid && Grid.IsSolidCell(cell))
 				{
 					component.SetCurrentNavType(NavType.Solid);
 				}
-				else if (component.CurrentNavType == NavType.Solid && !Grid.IsSolidCell(cell2))
+				else if (component.CurrentNavType == NavType.Solid && !Grid.IsSolidCell(cell))
 				{
+					component.SetCurrentNavType(NavType.Floor);
 					base.gameObject.AddTag(GameTags.Creatures.Falling);
 				}
 			}
@@ -52,7 +62,7 @@ public class DiggerMonitor : GameStateMachine<DiggerMonitor, DiggerMonitor.Insta
 
 		private void OnSolidChanged(int cell)
 		{
-			CheckInSolid(cell);
+			CheckInSolid();
 		}
 
 		public bool CanTunnel()

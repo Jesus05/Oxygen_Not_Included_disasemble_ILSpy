@@ -222,7 +222,11 @@ namespace KMod
 
 		public void Install()
 		{
-			if (label.distribution_platform != 0 && label.distribution_platform != Label.DistributionPlatform.Dev)
+			if (label.distribution_platform == Label.DistributionPlatform.Local || label.distribution_platform == Label.DistributionPlatform.Dev)
+			{
+				status = Status.Installed;
+			}
+			else
 			{
 				status = Status.ReinstallPending;
 				if (file_source != null && FileUtil.DeleteDirectory(label.install_path, 0) && FileUtil.CreateDirectory(label.install_path, 0))
@@ -236,10 +240,6 @@ namespace KMod
 
 		public bool Uninstall()
 		{
-			if (label.distribution_platform == Label.DistributionPlatform.Local || label.distribution_platform == Label.DistributionPlatform.Dev)
-			{
-				return false;
-			}
 			enabled = false;
 			if (loaded_content != 0)
 			{
@@ -247,7 +247,7 @@ namespace KMod
 				status = Status.UninstallPending;
 				return false;
 			}
-			if (!FileUtil.DeleteDirectory(label.install_path, 0))
+			if (label.distribution_platform != 0 && label.distribution_platform != Label.DistributionPlatform.Dev && !FileUtil.DeleteDirectory(label.install_path, 0))
 			{
 				Debug.Log($"Can't uninstall {label.ToString()}: directory deletion failed");
 				status = Status.UninstallPending;

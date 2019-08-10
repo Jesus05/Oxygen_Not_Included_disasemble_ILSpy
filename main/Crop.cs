@@ -153,8 +153,12 @@ public class Crop : KMonoBehaviour, IGameObjectEffectDescriptor
 		LocString yIELD = UI.UISIDESCREENS.PLANTERSIDESCREEN.YIELD;
 		Descriptor item = new Descriptor(string.Format(yIELD, prefab.GetProperName(), arg2), string.Format(UI.UISIDESCREENS.PLANTERSIDESCREEN.TOOLTIPS.YIELD, arg, GameUtil.GetFormattedCalories(num, GameUtil.TimeSlice.None, true), GameUtil.GetFormattedCalories(calories, GameUtil.TimeSlice.None, true)), Descriptor.DescriptorType.Effect, false);
 		list.Add(item);
-		Descriptor item2 = new Descriptor(string.Format(UI.UISIDESCREENS.PLANTERSIDESCREEN.BONUS_SEEDS, GameUtil.GetFormattedPercent(10f, GameUtil.TimeSlice.None)), string.Format(UI.UISIDESCREENS.PLANTERSIDESCREEN.TOOLTIPS.BONUS_SEEDS, GameUtil.GetFormattedPercent(10f, GameUtil.TimeSlice.None)), Descriptor.DescriptorType.Effect, false);
-		list.Add(item2);
+		SeedProducer component3 = GetComponent<SeedProducer>();
+		if ((bool)component3 && component3.seedInfo.productionType == SeedProducer.ProductionType.Harvest)
+		{
+			Descriptor item2 = new Descriptor(string.Format(UI.UISIDESCREENS.PLANTERSIDESCREEN.BONUS_SEEDS, GameUtil.GetFormattedPercent(10f, GameUtil.TimeSlice.None)), string.Format(UI.UISIDESCREENS.PLANTERSIDESCREEN.TOOLTIPS.BONUS_SEEDS, GameUtil.GetFormattedPercent(10f, GameUtil.TimeSlice.None)), Descriptor.DescriptorType.Effect, false);
+			list.Add(item2);
+		}
 		return list;
 	}
 

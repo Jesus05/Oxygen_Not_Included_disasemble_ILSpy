@@ -44,8 +44,8 @@ namespace KMod
 				DirectoryInfo[] directories = directoryInfo.GetDirectories();
 				foreach (DirectoryInfo directoryInfo2 in directories)
 				{
-					string id = directoryInfo2.Name.ToLower();
-					Subscribe(id, directoryInfo2.LastWriteTime.ToFileTime(), new Directory(directoryInfo2.FullName));
+					string name = directoryInfo2.Name;
+					Subscribe(name, directoryInfo2.LastWriteTime.ToFileTime(), new Directory(directoryInfo2.FullName));
 				}
 			}
 		}

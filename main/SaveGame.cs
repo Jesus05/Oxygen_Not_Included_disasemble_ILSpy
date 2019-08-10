@@ -88,10 +88,10 @@ public class SaveGame : KMonoBehaviour, ISaveLoadable
 	public bool sandboxEnabled;
 
 	[Serialize]
-	public int autoSaveCycleInterval = 1;
+	private int autoSaveCycleInterval = 1;
 
 	[Serialize]
-	public Vector2I timelapseResolution = new Vector2I(640, 360);
+	private Vector2I timelapseResolution = new Vector2I(512, 768);
 
 	private string baseName;
 
@@ -105,6 +105,30 @@ public class SaveGame : KMonoBehaviour, ISaveLoadable
 	public MaterialSelectorSerializer materialSelectorSerializer;
 
 	public WorldGen worldGen;
+
+	public int AutoSaveCycleInterval
+	{
+		get
+		{
+			return autoSaveCycleInterval;
+		}
+		set
+		{
+			autoSaveCycleInterval = value;
+		}
+	}
+
+	public Vector2I TimelapseResolution
+	{
+		get
+		{
+			return timelapseResolution;
+		}
+		set
+		{
+			timelapseResolution = value;
+		}
+	}
 
 	public string BaseName => baseName;
 
@@ -149,7 +173,7 @@ public class SaveGame : KMonoBehaviour, ISaveLoadable
 		text = ((!isAutoSave) ? JsonConvert.SerializeObject(new GameInfo(GameClock.Instance.GetCycle(), Components.LiveMinionIdentities.Count, baseName, false)) : JsonConvert.SerializeObject(new GameInfo(GameClock.Instance.GetCycle(), Components.LiveMinionIdentities.Count, baseName, true, SaveLoader.GetActiveSaveFilePath(), false)));
 		byte[] bytes = Encoding.UTF8.GetBytes(text);
 		header = default(Header);
-		header.buildVersion = 358267u;
+		header.buildVersion = 358820u;
 		header.headerSize = bytes.Length;
 		header.headerVersion = 1u;
 		header.compression = (isCompressed ? 1 : 0);

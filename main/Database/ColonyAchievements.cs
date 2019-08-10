@@ -72,6 +72,8 @@ namespace Database
 
 		public ColonyAchievement HatchRefinement;
 
+		public ColonyAchievement BunkerDoorDefense;
+
 		[CompilerGenerated]
 		private static Action<KMonoBehaviour> _003C_003Ef__mg_0024cache0;
 
@@ -296,6 +298,10 @@ namespace Database
 			HatchRefinement = Add(new ColonyAchievement("HatchRefinement", "HATCH_REFINEMENT", COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.HATCH_REFINEMENT, string.Format(COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.HATCH_REFINEMENT_DESCRIPTION, GameUtil.GetFormattedMass(10000f, GameUtil.TimeSlice.None, GameUtil.MetricMassFormat.Tonne, true, "{0:0.#}")), false, new List<ColonyAchievementRequirement>
 			{
 				new CreaturePoopKGProduction("HatchMetal", 10000f)
+			}, string.Empty, string.Empty, string.Empty, string.Empty, null, string.Empty, string.Empty));
+			BunkerDoorDefense = Add(new ColonyAchievement("BunkerDoorDefense", "BUNKER_DOOR_DEFENSE", COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.BUNKER_DOOR_DEFENSE, COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.BUNKER_DOOR_DEFENSE_DESCRIPTION, false, new List<ColonyAchievementRequirement>
+			{
+				new BlockedCometWithBunkerDoor()
 			}, string.Empty, string.Empty, string.Empty, string.Empty, null, string.Empty, string.Empty));
 		}
 	}

@@ -1,6 +1,7 @@
 using Klei.AI;
 using KSerialization;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using UnityEngine;
 
@@ -183,6 +184,13 @@ public class Generator : KMonoBehaviour, ISaveLoadable, IEnergyProducer
 		Debug.Assert((UnityEngine.Object)GetComponent<Battery>() == (UnityEngine.Object)null);
 		this.joulesAvailable = Mathf.Clamp(joulesAvailable, 0f, (!canOverPower) ? Capacity : 3.40282347E+38f);
 		ReportManager.Instance.ReportValue(ReportManager.ReportType.EnergyCreated, this.joulesAvailable, this.GetProperName(), null);
+		if (!Game.Instance.savedInfo.powerCreatedbyGeneratorType.ContainsKey(this.PrefabID()))
+		{
+			Game.Instance.savedInfo.powerCreatedbyGeneratorType.Add(this.PrefabID(), 0f);
+		}
+		Dictionary<Tag, float> powerCreatedbyGeneratorType;
+		Tag key;
+		(powerCreatedbyGeneratorType = Game.Instance.savedInfo.powerCreatedbyGeneratorType)[key = this.PrefabID()] = powerCreatedbyGeneratorType[key] + this.joulesAvailable;
 	}
 
 	private void OnOperationalChanged(object data)

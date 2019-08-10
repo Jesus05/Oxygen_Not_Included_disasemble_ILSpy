@@ -94,6 +94,11 @@ public class TreeBud : KMonoBehaviour, IWiltCause
 		new Vector3(-1f, 0f, 0f)
 	};
 
+	private static readonly EventSystem.IntraObjectHandler<TreeBud> OnHarvestDelegate = new EventSystem.IntraObjectHandler<TreeBud>(delegate(TreeBud component, object data)
+	{
+		component.OnHarvest(data);
+	});
+
 	public string WiltStateString => "    • " + DUPLICANTS.STATS.TRUNKHEALTH.NAME;
 
 	public WiltCondition.Condition[] Conditions => new WiltCondition.Condition[1]
@@ -114,6 +119,15 @@ public class TreeBud : KMonoBehaviour, IWiltCause
 		else
 		{
 			SetOccupyGridSpace(true);
+		}
+		Subscribe(1272413801, OnHarvestDelegate);
+	}
+
+	private void OnHarvest(object data)
+	{
+		if ((Object)buddingTrunk.Get() != (Object)null)
+		{
+			buddingTrunk.Get().TryRollNewSeed();
 		}
 	}
 

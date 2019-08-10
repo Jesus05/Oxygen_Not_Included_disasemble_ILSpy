@@ -386,7 +386,7 @@ public class KCrashReporter : MonoBehaviour
 					}
 					if (string.IsNullOrEmpty(stack_trace))
 					{
-						string arg = "LU-" + 358267.ToString();
+						string arg = "LU-" + 358820.ToString();
 						stack_trace = $"No stack trace {arg}\n\n{msg}";
 					}
 					List<string> list = new List<string>();
@@ -447,7 +447,7 @@ public class KCrashReporter : MonoBehaviour
 						error.callstack = error.callstack + "\n" + Guid.NewGuid().ToString();
 					}
 					error.fullstack = $"{msg}\n\n{stack_trace}";
-					error.build = 358267;
+					error.build = 358820;
 					error.log = GetLogContents();
 					error.summaryline = string.Join("\n", list.ToArray());
 					error.user_message = userMessage;

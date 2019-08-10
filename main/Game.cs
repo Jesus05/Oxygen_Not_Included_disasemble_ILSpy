@@ -26,7 +26,11 @@ public class Game : KMonoBehaviour
 
 		public bool curedDisease;
 
+		public bool blockedCometWithBunkerDoor;
+
 		public Dictionary<Tag, float> creaturePoopAmount;
+
+		public Dictionary<Tag, float> powerCreatedbyGeneratorType;
 
 		[OnDeserialized]
 		private void OnDeserialized()
@@ -34,6 +38,10 @@ public class Game : KMonoBehaviour
 			if (creaturePoopAmount == null)
 			{
 				creaturePoopAmount = new Dictionary<Tag, float>();
+			}
+			if (powerCreatedbyGeneratorType == null)
+			{
+				powerCreatedbyGeneratorType = new Dictionary<Tag, float>();
 			}
 		}
 	}
@@ -610,6 +618,7 @@ public class Game : KMonoBehaviour
 		prioritizableRenderer = new PrioritizableRenderer();
 		LoadEventHashes();
 		savedInfo.creaturePoopAmount = new Dictionary<Tag, float>();
+		savedInfo.powerCreatedbyGeneratorType = new Dictionary<Tag, float>();
 		gasFlowPos = new Vector3(0f, 0f, Grid.GetLayerZ(Grid.SceneLayer.GasConduits) - 0.4f);
 		liquidFlowPos = new Vector3(0f, 0f, Grid.GetLayerZ(Grid.SceneLayer.LiquidConduits) - 0.4f);
 		solidFlowPos = new Vector3(0f, 0f, Grid.GetLayerZ(Grid.SceneLayer.SolidConduitContents) - 0.4f);
@@ -1349,7 +1358,7 @@ public class Game : KMonoBehaviour
 		}
 		if (!(Time.timeSinceLevelLoad < GenericGameSettings.instance.performanceCapture.waitTime))
 		{
-			uint num = 358267u;
+			uint num = 358820u;
 			string text = System.DateTime.Now.ToShortDateString();
 			string text2 = System.DateTime.Now.ToShortTimeString();
 			string fileName = Path.GetFileName(GenericGameSettings.instance.performanceCapture.saveGame);

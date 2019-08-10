@@ -54,7 +54,7 @@ public class ForestTreeConfig : IEntityConfig
 		BuddingTrunk buddingTrunk = gameObject.AddOrGet<BuddingTrunk>();
 		buddingTrunk.budPrefabID = "ForestTreeBranch";
 		GameObject plant = gameObject;
-		SeedProducer.ProductionType productionType = SeedProducer.ProductionType.Harvest;
+		SeedProducer.ProductionType productionType = SeedProducer.ProductionType.Hidden;
 		initialAnim = "ForestTreeSeed";
 		desc = STRINGS.CREATURES.SPECIES.SEEDS.WOOD_TREE.NAME;
 		name = STRINGS.CREATURES.SPECIES.SEEDS.WOOD_TREE.DESC;

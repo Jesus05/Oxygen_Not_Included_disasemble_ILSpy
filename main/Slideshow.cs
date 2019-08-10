@@ -61,6 +61,21 @@ public class Slideshow : KMonoBehaviour
 		{
 			imageTarget.color = Color.white;
 			imageTarget.texture = sprites[0].texture;
+			int width = sprites[0].texture.width;
+			int height = sprites[0].texture.height;
+			float num = (float)width / (float)height;
+			if (num > 1f)
+			{
+				float num2 = 960f / (float)width;
+				RectTransform component = GetComponent<RectTransform>();
+				component.sizeDelta = new Vector2((float)width * num2, (float)height * num2);
+			}
+			else
+			{
+				float num3 = 960f / (float)height;
+				RectTransform component2 = GetComponent<RectTransform>();
+				component2.sizeDelta = new Vector2((float)width * num3, (float)height * num3);
+			}
 		}
 		else if (transparentIfEmpty)
 		{

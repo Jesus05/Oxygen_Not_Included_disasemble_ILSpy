@@ -363,15 +363,21 @@ public class ChoreConsumer : KMonoBehaviour, IPersonalPriorityManager
 		{
 			return true;
 		}
+		bool flag = false;
+		bool flag2 = true;
 		for (int i = 0; i < chore_type.groups.Length; i++)
 		{
 			ChoreGroup chore_group = chore_type.groups[i];
-			if (IsPermittedByTraits(chore_group) && IsPermittedByUser(chore_group))
+			if (!IsPermittedByTraits(chore_group))
 			{
-				return true;
+				flag2 = false;
+			}
+			if (IsPermittedByUser(chore_group))
+			{
+				flag = true;
 			}
 		}
-		return false;
+		return flag && flag2;
 	}
 
 	public void SetReach(int reach)

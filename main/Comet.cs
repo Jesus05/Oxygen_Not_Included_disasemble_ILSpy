@@ -259,6 +259,10 @@ public class Comet : KMonoBehaviour, ISim33ms
 			else if (gameObject.GetComponent<KPrefabID>().HasTag(GameTags.Bunker))
 			{
 				num = bunkerDamageMultiplier;
+				if ((Object)gameObject.GetComponent<Door>() != (Object)null)
+				{
+					Game.Instance.savedInfo.blockedCometWithBunkerDoor = true;
+				}
 			}
 			SimCellOccupier component = gameObject.GetComponent<SimCellOccupier>();
 			if ((Object)component != (Object)null && !component.doReplaceElement)

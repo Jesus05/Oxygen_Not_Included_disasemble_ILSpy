@@ -243,50 +243,45 @@ public class Timelapser : KMonoBehaviour
 		GameObject telepad = GameUtil.GetTelepad();
 		if (!((UnityEngine.Object)telepad == (UnityEngine.Object)null))
 		{
-			int offset_cell = Grid.PosToCell(telepad);
-			for (int i = 0; i < Grid.CellCount; i++)
+			Vector3 position = telepad.transform.GetPosition();
+			foreach (BuildingComplete item in Components.BuildingCompletes.Items)
 			{
-				if (Grid.Revealed[i])
-				{
-					float[] obj = new float[3]
-					{
-						num,
-						0f,
-						0f
-					};
-					CellOffset offset = Grid.GetOffset(i, offset_cell);
-					obj[1] = (float)offset.x * (1f / ((float)Grid.WidthInCells / (float)Grid.HeightInCells));
-					CellOffset offset2 = Grid.GetOffset(i, offset_cell);
-					obj[2] = (float)offset2.y * (1f / ((float)Grid.HeightInCells / (float)Grid.WidthInCells));
-					num = Mathf.Max(obj);
-				}
+				Vector3 position2 = item.transform.GetPosition();
+				float num2 = (float)bufferRenderTexture.width / (float)bufferRenderTexture.height;
+				Vector3 vector = position - position2;
+				num = Mathf.Max(num, vector.x / num2, vector.y);
 			}
+			num += 10f;
 			num = Mathf.Max(num, 18f);
 			Camera overlayCamera = CameraController.Instance.overlayCamera;
 			camSize = overlayCamera.orthographicSize;
 			CameraController.Instance.SetOrthographicsSize(num);
 			camPosition = CameraController.Instance.transform.position;
 			CameraController instance = CameraController.Instance;
-			Vector3 position = telepad.transform.position;
-			float x = position.x;
-			Vector3 position2 = telepad.transform.position;
-			float y = position2.y;
-			Vector3 position3 = CameraController.Instance.transform.position;
-			instance.SetPosition(new Vector3(x, y, position3.z));
-			CameraController instance2 = CameraController.Instance;
+			Vector3 position3 = telepad.transform.position;
+			float x = position3.x;
 			Vector3 position4 = telepad.transform.position;
-			float x2 = position4.x;
-			Vector3 position5 = telepad.transform.position;
-			float y2 = position5.y;
-			Vector3 position6 = CameraController.Instance.transform.position;
-			instance2.SetTargetPos(new Vector3(x2, y2, position6.z), camSize, false);
+			float y = position4.y;
+			Vector3 position5 = CameraController.Instance.transform.position;
+			instance.SetPosition(new Vector3(x, y, position5.z));
+			CameraController instance2 = CameraController.Instance;
+			Vector3 position6 = telepad.transform.position;
+			float x2 = position6.x;
+			Vector3 position7 = telepad.transform.position;
+			float y2 = position7.y;
+			Vector3 position8 = CameraController.Instance.transform.position;
+			instance2.SetTargetPos(new Vector3(x2, y2, position8.z), camSize, false);
 		}
 	}
 
 	private void RenderAndPrint()
 	{
 		GameObject telepad = GameUtil.GetTelepad();
-		if (!((UnityEngine.Object)telepad == (UnityEngine.Object)null))
+		if ((UnityEngine.Object)telepad == (UnityEngine.Object)null)
+		{
+			Debug.Log("No telepad present, aborting screenshot.");
+		}
+		else
 		{
 			RenderTexture active = RenderTexture.active;
 			RenderTexture.active = bufferRenderTexture;
@@ -303,8 +298,6 @@ public class Timelapser : KMonoBehaviour
 			CameraController.Instance.SetPosition(camPosition);
 			CameraController.Instance.SetTargetPos(camPosition, camSize, false);
 			RenderTexture.active = active;
-			screenshotActive = false;
-			debugScreenShot = false;
 		}
 	}
 
@@ -326,19 +319,19 @@ public class Timelapser : KMonoBehaviour
 		}
 		string path = RetireColonyUtility.StripInvalidCharacters(SaveGame.Instance.BaseName);
 		string text2 = Path.Combine(text, path);
-		Debug.Log(text2);
 		if (!Directory.Exists(text2))
 		{
 			Directory.CreateDirectory(text2);
 		}
-		string str = Path.Combine(text2, path);
+		string text3 = Path.Combine(text2, path);
+		DebugUtil.LogArgs("Saving screenshot to", text3);
 		string format = "0000.##";
-		str = str + "_cycle_" + GameClock.Instance.GetCycle().ToString(format);
+		text3 = text3 + "_cycle_" + GameClock.Instance.GetCycle().ToString(format);
 		if (debugScreenShot)
 		{
-			string text3 = str;
-			str = text3 + "_" + System.DateTime.Now.Day + "-" + System.DateTime.Now.Month + "_" + System.DateTime.Now.Hour + "-" + System.DateTime.Now.Minute + "-" + System.DateTime.Now.Second;
+			string text4 = text3;
+			text3 = text4 + "_" + System.DateTime.Now.Day + "-" + System.DateTime.Now.Month + "_" + System.DateTime.Now.Hour + "-" + System.DateTime.Now.Minute + "-" + System.DateTime.Now.Second;
 		}
-		File.WriteAllBytes(str + ".png", bytes);
+		File.WriteAllBytes(text3 + ".png", bytes);
 	}
 }

@@ -74,6 +74,8 @@ namespace Database
 
 		public ColonyAchievement BunkerDoorDefense;
 
+		public ColonyAchievement IdleDuplicants;
+
 		[CompilerGenerated]
 		private static Action<KMonoBehaviour> _003C_003Ef__mg_0024cache0;
 
@@ -302,6 +304,10 @@ namespace Database
 			BunkerDoorDefense = Add(new ColonyAchievement("BunkerDoorDefense", "BUNKER_DOOR_DEFENSE", COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.BUNKER_DOOR_DEFENSE, COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.BUNKER_DOOR_DEFENSE_DESCRIPTION, false, new List<ColonyAchievementRequirement>
 			{
 				new BlockedCometWithBunkerDoor()
+			}, string.Empty, string.Empty, string.Empty, string.Empty, null, string.Empty, string.Empty));
+			IdleDuplicants = Add(new ColonyAchievement("IdleDuplicants", "IDLE_DUPLICANTS", COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.IDLE_DUPLICANTS, COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.IDLE_DUPLICANTS_DESCRIPTION, false, new List<ColonyAchievementRequirement>
+			{
+				new DupesVsSolidTransferArmFetch(0.51f, 5)
 			}, string.Empty, string.Empty, string.Empty, string.Empty, null, string.Empty, string.Empty));
 		}
 	}

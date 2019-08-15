@@ -20,15 +20,6 @@ public class CodexMessageDialog : MessageDialog
 
 	public override void OnClickAction()
 	{
-		string lockId = message.GetLockId();
-		if (!string.IsNullOrEmpty(lockId))
-		{
-			string entryForLock = CodexCache.GetEntryForLock(message.GetLockId());
-			if (!string.IsNullOrEmpty(entryForLock))
-			{
-				ManagementMenu.Instance.OpenCodexToEntry(entryForLock);
-			}
-		}
 	}
 
 	protected override void OnCleanUp()

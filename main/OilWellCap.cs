@@ -155,6 +155,11 @@ public class OilWellCap : Workable, ISingleSliderControl, IElementEmitter, ISlid
 		return "STRINGS.UI.UISIDESCREENS.OIL_WELL_CAP_SIDE_SCREEN.TOOLTIP";
 	}
 
+	string ISliderControl.GetSliderTooltip()
+	{
+		return string.Format(Strings.Get("STRINGS.UI.UISIDESCREENS.OIL_WELL_CAP_SIDE_SCREEN.TOOLTIP"), depressurizePercent * 100f);
+	}
+
 	protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();

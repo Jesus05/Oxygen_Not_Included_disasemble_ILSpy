@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using TUNING;
 using UnityEngine;
 
@@ -20,23 +19,19 @@ public class TravelTubeWallBridgeConfig : IBuildingConfig
 		BuildLocationRule build_location_rule = BuildLocationRule.Tile;
 		EffectorValues nONE = NOISE_POLLUTION.NONE;
 		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, tIER, pLASTICS, melting_point, build_location_rule, BUILDINGS.DECOR.NONE, nONE, 0.2f);
+		BuildingTemplates.CreateFoundationTileDef(buildingDef);
 		buildingDef.Overheatable = false;
 		buildingDef.Floodable = false;
 		buildingDef.Entombable = false;
 		buildingDef.ObjectLayer = ObjectLayer.Building;
-		buildingDef.TileLayer = ObjectLayer.FoundationTile;
-		buildingDef.ReplacementLayer = ObjectLayer.ReplacementTile;
 		buildingDef.AudioCategory = "Plastic";
 		buildingDef.AudioSize = "small";
 		buildingDef.BaseTimeUntilRepair = -1f;
 		buildingDef.PermittedRotations = PermittedRotations.R90;
 		buildingDef.UtilityInputOffset = new CellOffset(0, 0);
 		buildingDef.UtilityOutputOffset = new CellOffset(0, 2);
-		buildingDef.IsFoundation = true;
 		buildingDef.SceneLayer = Grid.SceneLayer.BuildingFront;
 		buildingDef.ForegroundLayer = Grid.SceneLayer.TileMain;
-		buildingDef.ReplacementTags = new List<Tag>();
-		buildingDef.ReplacementTags.Add(GameTags.FloorTiles);
 		return buildingDef;
 	}
 

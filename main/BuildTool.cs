@@ -278,15 +278,11 @@ public class BuildTool : DragTool
 					gameObject = def.TryPlace(visualizer, vector, buildingOrientation, selectedElements, 0);
 					if ((Object)gameObject == (Object)null && def.ReplacementLayer != ObjectLayer.NumLayers)
 					{
-						if (!Grid.ObjectLayers[(int)def.TileLayer].ContainsKey(cell))
+						GameObject replacementCandidate = def.GetReplacementCandidate(cell);
+						if ((Object)replacementCandidate != (Object)null && !def.IsReplacementLayerOccupied(cell))
 						{
-							return;
-						}
-						GameObject gameObject2 = Grid.ObjectLayers[(int)def.TileLayer][cell];
-						if ((Object)gameObject2 != (Object)null && (Object)Grid.Objects[cell, (int)def.ReplacementLayer] == (Object)null)
-						{
-							BuildingComplete component = gameObject2.GetComponent<BuildingComplete>();
-							if ((Object)component != (Object)null && component.Def.Replaceable && def.CanReplace(gameObject2) && ((Object)component.Def != (Object)def || selectedElements[0] != gameObject2.GetComponent<PrimaryElement>().Element.tag))
+							BuildingComplete component = replacementCandidate.GetComponent<BuildingComplete>();
+							if ((Object)component != (Object)null && component.Def.Replaceable && def.CanReplace(replacementCandidate) && ((Object)component.Def != (Object)def || selectedElements[0] != replacementCandidate.GetComponent<PrimaryElement>().Element.tag))
 							{
 								gameObject = def.TryReplaceTile(visualizer, vector, buildingOrientation, selectedElements, 0);
 								Grid.Objects[cell, (int)def.ReplacementLayer] = gameObject;

@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using TUNING;
 using UnityEngine;
 
@@ -34,13 +33,11 @@ public class CarpetTileConfig : IBuildingConfig
 			amount = 10,
 			radius = 1
 		}, nONE, 0.2f);
+		BuildingTemplates.CreateFoundationTileDef(buildingDef);
 		buildingDef.Floodable = false;
 		buildingDef.Overheatable = false;
 		buildingDef.Entombable = false;
 		buildingDef.UseStructureTemperature = false;
-		buildingDef.IsFoundation = true;
-		buildingDef.TileLayer = ObjectLayer.FoundationTile;
-		buildingDef.ReplacementLayer = ObjectLayer.ReplacementTile;
 		buildingDef.AudioCategory = "Metal";
 		buildingDef.AudioSize = "small";
 		buildingDef.BaseTimeUntilRepair = -1f;
@@ -53,8 +50,6 @@ public class CarpetTileConfig : IBuildingConfig
 		buildingDef.BlockTileMaterial = Assets.GetMaterial("tiles_solid");
 		buildingDef.DecorBlockTileInfo = Assets.GetBlockTileDecorInfo("tiles_carpet_tops_decor_info");
 		buildingDef.DecorPlaceBlockTileInfo = Assets.GetBlockTileDecorInfo("tiles_carpet_tops_decor_place_info");
-		buildingDef.ReplacementTags = new List<Tag>();
-		buildingDef.ReplacementTags.Add(GameTags.FloorTiles);
 		return buildingDef;
 	}
 

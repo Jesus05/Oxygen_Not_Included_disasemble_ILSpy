@@ -77,6 +77,11 @@ public class LogicGateFilter : LogicGate, ISingleSliderControl, ISliderControl
 		return "STRINGS.UI.UISIDESCREENS.LOGIC_FILTER_SIDE_SCREEN.TOOLTIP";
 	}
 
+	string ISliderControl.GetSliderTooltip()
+	{
+		return string.Format(Strings.Get("STRINGS.UI.UISIDESCREENS.LOGIC_FILTER_SIDE_SCREEN.TOOLTIP"), DelayAmount);
+	}
+
 	protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();

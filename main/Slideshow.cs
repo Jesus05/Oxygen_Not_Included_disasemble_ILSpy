@@ -61,26 +61,31 @@ public class Slideshow : KMonoBehaviour
 		{
 			imageTarget.color = Color.white;
 			imageTarget.texture = sprites[0].texture;
-			int width = sprites[0].texture.width;
-			int height = sprites[0].texture.height;
-			float num = (float)width / (float)height;
-			if (num > 1f)
-			{
-				float num2 = 960f / (float)width;
-				RectTransform component = GetComponent<RectTransform>();
-				component.sizeDelta = new Vector2((float)width * num2, (float)height * num2);
-			}
-			else
-			{
-				float num3 = 960f / (float)height;
-				RectTransform component2 = GetComponent<RectTransform>();
-				component2.sizeDelta = new Vector2((float)width * num3, (float)height * num3);
-			}
+			Vector2 fittedSize = GetFittedSize(960f, 960f);
+			RectTransform component = GetComponent<RectTransform>();
+			component.sizeDelta = fittedSize;
 		}
 		else if (transparentIfEmpty)
 		{
 			imageTarget.color = Color.clear;
 		}
+	}
+
+	public Vector2 GetFittedSize(float maxWidth, float maxHeight)
+	{
+		if (sprites == null || (Object)sprites[0] == (Object)null || (Object)sprites[0].texture == (Object)null)
+		{
+			return Vector2.zero;
+		}
+		int width = sprites[0].texture.width;
+		int height = sprites[0].texture.height;
+		float num = maxWidth / (float)width;
+		float num2 = maxHeight / (float)height;
+		if (num < num2)
+		{
+			return new Vector2((float)width * num, (float)height * num);
+		}
+		return new Vector2((float)width * num2, (float)height * num2);
 	}
 
 	private void Update()

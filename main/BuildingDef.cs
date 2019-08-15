@@ -86,6 +86,10 @@ public class BuildingDef : Def
 
 	public List<Tag> ReplacementTags;
 
+	public List<ObjectLayer> ReplacementCandidateLayers;
+
+	public List<ObjectLayer> EquivalentReplacementLayers;
+
 	[NonSerialized]
 	[HashedEnum]
 	public HashedString ViewMode = OverlayModes.None.ID;
@@ -239,6 +243,48 @@ public class BuildingDef : Def
 			}
 		}
 		return false;
+	}
+
+	public bool IsReplacementLayerOccupied(int cell)
+	{
+		if ((UnityEngine.Object)Grid.Objects[cell, (int)ReplacementLayer] != (UnityEngine.Object)null)
+		{
+			return true;
+		}
+		if (EquivalentReplacementLayers != null)
+		{
+			foreach (ObjectLayer equivalentReplacementLayer in EquivalentReplacementLayers)
+			{
+				if ((UnityEngine.Object)Grid.Objects[cell, (int)equivalentReplacementLayer] != (UnityEngine.Object)null)
+				{
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	public GameObject GetReplacementCandidate(int cell)
+	{
+		if (ReplacementCandidateLayers != null)
+		{
+			foreach (ObjectLayer replacementCandidateLayer in ReplacementCandidateLayers)
+			{
+				if (Grid.ObjectLayers[(int)replacementCandidateLayer].ContainsKey(cell))
+				{
+					BuildingComplete component = Grid.ObjectLayers[(int)replacementCandidateLayer][cell].GetComponent<BuildingComplete>();
+					if ((UnityEngine.Object)component != (UnityEngine.Object)null)
+					{
+						return Grid.ObjectLayers[(int)replacementCandidateLayer][cell];
+					}
+				}
+			}
+		}
+		else if (Grid.ObjectLayers[(int)TileLayer].ContainsKey(cell))
+		{
+			return Grid.ObjectLayers[(int)TileLayer][cell];
+		}
+		return null;
 	}
 
 	public GameObject Create(Vector3 pos, Storage resource_storage, IList<Tag> selected_elements, Recipe recipe, float temperature, GameObject obj)

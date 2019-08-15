@@ -602,15 +602,21 @@ public class RetiredColonyInfoScreen : KModalScreen
 	private void DisplayTimelapse(RetiredColonyData data, GameObject container)
 	{
 		slideshow = container.GetComponent<HierarchyReferences>().GetReference<Slideshow>("Slideshow");
+		RectTransform reference = container.GetComponent<HierarchyReferences>().GetReference<RectTransform>("PlayIcon");
 		if (!LoadSlideshow(data))
 		{
-			container.GetComponent<HierarchyReferences>().GetReference<Slideshow>("Slideshow").gameObject.SetActive(false);
-			container.GetComponent<HierarchyReferences>().GetReference<RectTransform>("PlayIcon").gameObject.SetActive(false);
+			slideshow.gameObject.SetActive(false);
+			reference.gameObject.SetActive(false);
 		}
 		else
 		{
-			container.GetComponent<HierarchyReferences>().GetReference<Slideshow>("Slideshow").gameObject.SetActive(true);
-			container.GetComponent<HierarchyReferences>().GetReference<RectTransform>("PlayIcon").gameObject.SetActive(true);
+			slideshow.gameObject.SetActive(true);
+			reference.gameObject.SetActive(true);
+			Vector2 sizeDelta = slideshow.transform.parent.GetComponent<RectTransform>().sizeDelta;
+			Vector2 fittedSize = slideshow.GetFittedSize(sizeDelta.x, sizeDelta.y);
+			LayoutElement component = slideshow.GetComponent<LayoutElement>();
+			float num2 = component.minWidth = (component.preferredWidth = fittedSize.x);
+			num2 = (component.minHeight = (component.preferredHeight = fittedSize.y));
 		}
 	}
 
@@ -825,14 +831,17 @@ public class RetiredColonyInfoScreen : KModalScreen
 			string text = RetireColonyUtility.StripInvalidCharacters(data.colonyName);
 			Sprite sprite = RetireColonyUtility.LoadColonyPreview(text);
 			Image reference = component.GetReference<Image>("ColonyImage");
+			RectTransform reference2 = component.GetReference<RectTransform>("PreviewUnavailableText");
 			if ((UnityEngine.Object)sprite != (UnityEngine.Object)null)
 			{
 				reference.enabled = true;
 				reference.sprite = sprite;
+				reference2.gameObject.SetActive(false);
 			}
 			else
 			{
 				reference.enabled = false;
+				reference2.gameObject.SetActive(true);
 			}
 			component.GetReference<LocText>("ColonyNameLabel").SetText(retiredColonyData.colonyName);
 			component.GetReference<LocText>("CycleCountLabel").SetText(string.Format(UI.RETIRED_COLONY_INFO_SCREEN.CYCLE_COUNT, retiredColonyData.cycleCount.ToString()));

@@ -122,7 +122,7 @@ namespace STRINGS
 
 			public static LocString IDLE_DUPLICANTS = "Easy Livin'";
 
-			public static LocString IDLE_DUPLICANTS_DESCRIPTION = "Go {0} cycles with Duplicants performing a single errand while still maintaining {1} Morale.";
+			public static LocString IDLE_DUPLICANTS_DESCRIPTION = "Have Auto Sweepers complete more deliveries to machines than Duplicatnts over 5 cycles.";
 
 			public static LocString COOKED_FOOD = "It's Not Raw";
 

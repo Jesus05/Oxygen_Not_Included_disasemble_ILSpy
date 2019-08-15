@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using TUNING;
 using UnityEngine;
 
@@ -20,6 +19,7 @@ public class LadderConfig : IBuildingConfig
 		BuildLocationRule build_location_rule = BuildLocationRule.Anywhere;
 		EffectorValues nONE = NOISE_POLLUTION.NONE;
 		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, tIER, aLL_MINERALS, melting_point, build_location_rule, BUILDINGS.DECOR.PENALTY.TIER0, nONE, 0.2f);
+		BuildingTemplates.CreateLadderDef(buildingDef);
 		buildingDef.Floodable = false;
 		buildingDef.Overheatable = false;
 		buildingDef.Entombable = false;
@@ -27,10 +27,6 @@ public class LadderConfig : IBuildingConfig
 		buildingDef.AudioSize = "small";
 		buildingDef.BaseTimeUntilRepair = -1f;
 		buildingDef.DragBuild = true;
-		buildingDef.TileLayer = ObjectLayer.LadderTile;
-		buildingDef.ReplacementLayer = ObjectLayer.ReplacementLadder;
-		buildingDef.ReplacementTags = new List<Tag>();
-		buildingDef.ReplacementTags.Add(GameTags.Ladders);
 		return buildingDef;
 	}
 

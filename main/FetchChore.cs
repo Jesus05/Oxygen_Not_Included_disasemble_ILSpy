@@ -208,6 +208,7 @@ public class FetchChore : Chore<FetchChore.StatesInstance>
 			base.driver = driver;
 			fetcher = driver.gameObject;
 			Succeed("FetchAreaEnd");
+			SaveGame.Instance.GetComponent<ColonyAchievementTracker>().LogFetchChore(fetcher, base.choreType);
 		}
 		else
 		{

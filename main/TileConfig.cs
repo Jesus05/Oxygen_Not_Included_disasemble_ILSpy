@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using TUNING;
 using UnityEngine;
 
@@ -22,13 +21,11 @@ public class TileConfig : IBuildingConfig
 		BuildLocationRule build_location_rule = BuildLocationRule.Tile;
 		EffectorValues nONE = NOISE_POLLUTION.NONE;
 		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, tIER, rAW_MINERALS, melting_point, build_location_rule, BUILDINGS.DECOR.BONUS.TIER0, nONE, 0.2f);
+		BuildingTemplates.CreateFoundationTileDef(buildingDef);
 		buildingDef.Floodable = false;
 		buildingDef.Overheatable = false;
 		buildingDef.Entombable = false;
 		buildingDef.UseStructureTemperature = false;
-		buildingDef.IsFoundation = true;
-		buildingDef.TileLayer = ObjectLayer.FoundationTile;
-		buildingDef.ReplacementLayer = ObjectLayer.ReplacementTile;
 		buildingDef.AudioCategory = "Metal";
 		buildingDef.AudioSize = "small";
 		buildingDef.BaseTimeUntilRepair = -1f;
@@ -41,8 +38,6 @@ public class TileConfig : IBuildingConfig
 		buildingDef.DecorBlockTileInfo = Assets.GetBlockTileDecorInfo("tiles_solid_tops_info");
 		buildingDef.DecorPlaceBlockTileInfo = Assets.GetBlockTileDecorInfo("tiles_solid_tops_place_info");
 		buildingDef.ConstructionOffsetFilter = BuildingDef.ConstructionOffsetFilter_OneDown;
-		buildingDef.ReplacementTags = new List<Tag>();
-		buildingDef.ReplacementTags.Add(GameTags.FloorTiles);
 		buildingDef.DragBuild = true;
 		return buildingDef;
 	}

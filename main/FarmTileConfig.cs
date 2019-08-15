@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using TUNING;
 using UnityEngine;
 
@@ -20,12 +19,10 @@ public class FarmTileConfig : IBuildingConfig
 		BuildLocationRule build_location_rule = BuildLocationRule.Tile;
 		EffectorValues nONE = NOISE_POLLUTION.NONE;
 		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, tIER, fARMABLE, melting_point, build_location_rule, BUILDINGS.DECOR.NONE, nONE, 0.2f);
+		BuildingTemplates.CreateFoundationTileDef(buildingDef);
 		buildingDef.Floodable = false;
 		buildingDef.Entombable = false;
 		buildingDef.Overheatable = false;
-		buildingDef.IsFoundation = true;
-		buildingDef.TileLayer = ObjectLayer.FoundationTile;
-		buildingDef.ReplacementLayer = ObjectLayer.ReplacementTile;
 		buildingDef.ForegroundLayer = Grid.SceneLayer.BuildingBack;
 		buildingDef.AudioCategory = "HollowMetal";
 		buildingDef.AudioSize = "small";
@@ -35,8 +32,6 @@ public class FarmTileConfig : IBuildingConfig
 		buildingDef.PermittedRotations = PermittedRotations.FlipV;
 		buildingDef.isSolidTile = false;
 		buildingDef.DragBuild = true;
-		buildingDef.ReplacementTags = new List<Tag>();
-		buildingDef.ReplacementTags.Add(GameTags.FloorTiles);
 		return buildingDef;
 	}
 

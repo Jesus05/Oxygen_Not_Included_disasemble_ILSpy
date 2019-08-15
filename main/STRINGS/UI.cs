@@ -3168,9 +3168,9 @@ namespace STRINGS
 		{
 			public class CODEX_DISCOVERED_MESSAGE
 			{
-				public static LocString TITLE = "Codex Discovered";
+				public static LocString TITLE = "Database Update Discovered";
 
-				public static LocString BODY = "Codex Discovered: {codex}";
+				public static LocString BODY = "Database Update Discovered: {codex}\n";
 			}
 
 			public class GEYSERS
@@ -3206,7 +3206,9 @@ namespace STRINGS
 
 				public static LocString JOURNALS = FormatAsLink("Journals", "JOURNALS");
 
-				public static LocString MYLOG = FormatAsLink("My Investigations", "MYLOG");
+				public static LocString MYLOG = FormatAsLink("My Log", "MYLOG");
+
+				public static LocString INVESTIGATIONS = FormatAsLink("Investigations", "Investigations");
 
 				public static LocString RESEARCHNOTES = FormatAsLink("Research Notes", "RESEARCHNOTES");
 
@@ -4985,14 +4987,23 @@ namespace STRINGS
 
 				public static LocString CURRENT_THRESHOLD = "Current Threshold: {0}%";
 
-				public static LocString TOOLTIP = "Duplicants will operate this generator when battery charge falls below the selected percentage";
+				public static LocString TOOLTIP = "Duplicants will be requested to operate this generator when the total charge of the connected " + PRE_KEYWORD + "Batteries" + PST_KEYWORD + " falls below <b>{0}%</b>";
+			}
+
+			public class MANUALDELIVERYGENERATORSIDESCREEN
+			{
+				public static LocString TITLE = "Fuel Request Threshold";
+
+				public static LocString CURRENT_THRESHOLD = "Current Threshold: {0}%";
+
+				public static LocString TOOLTIP = "Duplicants will be requested to deliver " + PRE_KEYWORD + "{0}" + PST_KEYWORD + " when the total charge of the connected " + PRE_KEYWORD + "Batteries" + PST_KEYWORD + " falls below <b>{1}%</b>";
 			}
 
 			public class TIME_OF_DAY_SIDE_SCREEN
 			{
 				public static LocString TITLE = "Time-of-Day Sensor";
 
-				public static LocString TOOLTIP = "This sensor will send a " + FormatAsAutomationState("Green Signal", AutomationState.Active) + " after the selected Turn On time, and a " + FormatAsAutomationState("Red Signal", AutomationState.Standby) + " after the selected Turn Off time";
+				public static LocString TOOLTIP = "Will send a " + FormatAsAutomationState("Green Signal", AutomationState.Active) + " after the selected Turn On time, and a " + FormatAsAutomationState("Red Signal", AutomationState.Standby) + " after the selected Turn Off time";
 
 				public static LocString START = "Turn On";
 
@@ -5003,7 +5014,7 @@ namespace STRINGS
 			{
 				public static LocString TITLE = "Critter Count";
 
-				public static LocString TOOLTIP = "This sensor will send a " + FormatAsAutomationState("Green Signal", AutomationState.Active) + " until the number of " + FormatAsLink("Critters", "CREATURES") + " and " + PRE_KEYWORD + "Eggs" + PST_KEYWORD + " in the room reaches the specified amount";
+				public static LocString TOOLTIP = "Will send a " + FormatAsAutomationState("Green Signal", AutomationState.Active) + " if there are more than <b>{0}</b> " + PRE_KEYWORD + "Critters" + PST_KEYWORD + " or " + PRE_KEYWORD + "Eggs" + PST_KEYWORD + " in the room";
 
 				public static LocString START = "Turn On";
 
@@ -5012,23 +5023,23 @@ namespace STRINGS
 
 			public class OIL_WELL_CAP_SIDE_SCREEN
 			{
-				public static LocString TITLE = "Pressure Release Threshold";
+				public static LocString TITLE = "Backpressure Release Threshold";
 
-				public static LocString TOOLTIP = "Duplicants will release gas buildup in this well when it exceeds the selected percentage";
+				public static LocString TOOLTIP = "Duplicants will be requested to release backpressure buildup when it exceeds <b>{0}%</b>";
 			}
 
 			public class LOGIC_BUFFER_SIDE_SCREEN
 			{
-				public static LocString TITLE = "Green Buffer Time";
+				public static LocString TITLE = "Buffer Time";
 
-				public static LocString TOOLTIP = "This gate will continue to send a " + FormatAsAutomationState("Green Signal", AutomationState.Active) + " for {0} seconds after receiving a " + FormatAsAutomationState("Red Signal", AutomationState.Standby);
+				public static LocString TOOLTIP = "Will continue to send a " + FormatAsAutomationState("Green Signal", AutomationState.Active) + " for <b>{0} seconds</b> after receiving a " + FormatAsAutomationState("Red Signal", AutomationState.Standby);
 			}
 
 			public class LOGIC_FILTER_SIDE_SCREEN
 			{
-				public static LocString TITLE = "Green Filter Time";
+				public static LocString TITLE = "Filter Time";
 
-				public static LocString TOOLTIP = "This gate will continue to send a " + FormatAsAutomationState("Red Signal", AutomationState.Standby) + " for {0} seconds after receiving a " + FormatAsAutomationState("Green Signal", AutomationState.Active);
+				public static LocString TOOLTIP = "Will only send a " + FormatAsAutomationState("Green Signal", AutomationState.Active) + " if it receives " + FormatAsAutomationState("Green", AutomationState.Active) + " for longer than <b>{0} seconds</b>";
 			}
 
 			public class TIME_RANGE_SIDE_SCREEN
@@ -5231,7 +5242,7 @@ namespace STRINGS
 			{
 				public static LocString TITLE = "Severity Requirement";
 
-				public static LocString TOOLTIP = "A Duplicant may not use this cot until their health falls below the selected percentage";
+				public static LocString TOOLTIP = "A Duplicant may not use this cot until their " + PRE_KEYWORD + "Health" + PST_KEYWORD + " falls below <b>{0}%</b>";
 			}
 		}
 

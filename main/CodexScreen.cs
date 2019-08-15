@@ -13,6 +13,7 @@ public class CodexScreen : KScreen
 		Home,
 		Tips,
 		MyLog,
+		Investigations,
 		Emails,
 		Journals,
 		ResearchNotes,
@@ -400,6 +401,7 @@ public class CodexScreen : KScreen
 		SetupCategory(dictionary, "RESEARCHNOTES");
 		SetupCategory(dictionary, "JOURNALS");
 		SetupCategory(dictionary, "EMAILS");
+		SetupCategory(dictionary, "INVESTIGATIONS");
 		SetupCategory(dictionary, "MYLOG");
 		SetupCategory(dictionary, "TIPS");
 		SetupCategory(dictionary, "Root");

@@ -145,10 +145,10 @@ public class Constructable : Workable, ISaveLoadable
 			if (IsReplacementTile)
 			{
 				int cell = Grid.PosToCell(base.transform.GetLocalPosition());
-				GameObject gameObject = Grid.Objects[cell, (int)building.Def.TileLayer];
-				if ((UnityEngine.Object)gameObject != (UnityEngine.Object)null)
+				GameObject replacementCandidate = building.Def.GetReplacementCandidate(cell);
+				if ((UnityEngine.Object)replacementCandidate != (UnityEngine.Object)null)
 				{
-					SimCellOccupier component3 = gameObject.GetComponent<SimCellOccupier>();
+					SimCellOccupier component3 = replacementCandidate.GetComponent<SimCellOccupier>();
 					if ((UnityEngine.Object)component3 != (UnityEngine.Object)null)
 					{
 						component3.DestroySelf(delegate
@@ -161,13 +161,13 @@ public class Constructable : Workable, ISaveLoadable
 					}
 					else
 					{
-						Conduit component4 = gameObject.GetComponent<Conduit>();
+						Conduit component4 = replacementCandidate.GetComponent<Conduit>();
 						if ((UnityEngine.Object)component4 != (UnityEngine.Object)null)
 						{
 							ConduitFlow flowManager = component4.GetFlowManager();
 							flowManager.MarkForReplacement(cell);
 						}
-						BuildingComplete component5 = gameObject.GetComponent<BuildingComplete>();
+						BuildingComplete component5 = replacementCandidate.GetComponent<BuildingComplete>();
 						if ((UnityEngine.Object)component5 != (UnityEngine.Object)null)
 						{
 							component5.Subscribe(-21016276, delegate
@@ -177,24 +177,24 @@ public class Constructable : Workable, ISaveLoadable
 						}
 						else
 						{
-							Debug.LogWarning("Why am I trying to replace a: " + gameObject.name);
+							Debug.LogWarning("Why am I trying to replace a: " + replacementCandidate.name);
 							FinishConstruction(connections);
 						}
 					}
-					KAnimGraphTileVisualizer component6 = gameObject.GetComponent<KAnimGraphTileVisualizer>();
+					KAnimGraphTileVisualizer component6 = replacementCandidate.GetComponent<KAnimGraphTileVisualizer>();
 					if ((UnityEngine.Object)component6 != (UnityEngine.Object)null)
 					{
 						component6.skipCleanup = true;
 					}
-					PrimaryElement component7 = gameObject.GetComponent<PrimaryElement>();
+					PrimaryElement component7 = replacementCandidate.GetComponent<PrimaryElement>();
 					float mass = component7.Mass;
 					float temperature = component7.Temperature;
 					byte diseaseIdx = component7.DiseaseIdx;
 					int diseaseCount = component7.DiseaseCount;
 					Debug.Assert(component7.Element != null && component7.Element.tag != (Tag)null);
 					Deconstructable.SpawnItem(component7.transform.GetPosition(), component7.GetComponent<Building>().Def, component7.Element.tag, mass, temperature, diseaseIdx, diseaseCount);
-					gameObject.Trigger(1606648047, null);
-					gameObject.DeleteObject();
+					replacementCandidate.Trigger(1606648047, null);
+					replacementCandidate.DeleteObject();
 				}
 			}
 			else

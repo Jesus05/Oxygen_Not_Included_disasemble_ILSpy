@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using TUNING;
 using UnityEngine;
 
@@ -25,6 +24,7 @@ public class WireBridgeHighWattageConfig : IBuildingConfig
 		BuildLocationRule build_location_rule = BuildLocationRule.HighWattBridgeTile;
 		EffectorValues nONE = NOISE_POLLUTION.NONE;
 		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(iD, width, height, anim, hitpoints, construction_time, tIER, aLL_METALS, melting_point, build_location_rule, BUILDINGS.DECOR.PENALTY.TIER5, nONE, 0.2f);
+		BuildingTemplates.CreateFoundationTileDef(buildingDef);
 		buildingDef.Overheatable = false;
 		buildingDef.Floodable = false;
 		buildingDef.Entombable = false;
@@ -35,15 +35,10 @@ public class WireBridgeHighWattageConfig : IBuildingConfig
 		buildingDef.PermittedRotations = PermittedRotations.R360;
 		buildingDef.UtilityInputOffset = new CellOffset(0, 0);
 		buildingDef.UtilityOutputOffset = new CellOffset(0, 2);
-		buildingDef.IsFoundation = true;
 		buildingDef.ObjectLayer = ObjectLayer.Building;
-		buildingDef.ReplacementLayer = ObjectLayer.ReplacementTile;
-		buildingDef.TileLayer = ObjectLayer.FoundationTile;
 		buildingDef.SceneLayer = Grid.SceneLayer.WireBridgesFront;
 		buildingDef.ForegroundLayer = Grid.SceneLayer.TileMain;
 		GeneratedBuildings.RegisterWithOverlay(OverlayScreen.WireIDs, "WireBridgeHighWattage");
-		buildingDef.ReplacementTags = new List<Tag>();
-		buildingDef.ReplacementTags.Add(GameTags.FloorTiles);
 		return buildingDef;
 	}
 

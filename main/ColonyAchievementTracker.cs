@@ -10,6 +10,12 @@ public class ColonyAchievementTracker : KMonoBehaviour, ISaveLoadableDetails
 {
 	public Dictionary<string, ColonyAchievementStatus> achievements = new Dictionary<string, ColonyAchievementStatus>();
 
+	[Serialize]
+	public Dictionary<int, int> fetchAutomatedChoreDeliveries = new Dictionary<int, int>();
+
+	[Serialize]
+	public Dictionary<int, int> fetchDupeChoreDeliveries = new Dictionary<int, int>();
+
 	private SchedulerHandle checkAchievementsHandle;
 
 	private int forceCheckAchievementHandle = -1;
@@ -224,6 +230,33 @@ public class ColonyAchievementTracker : KMonoBehaviour, ISaveLoadableDetails
 				{
 					achievements.Add(text, colonyAchievementStatus);
 				}
+			}
+		}
+	}
+
+	public void LogFetchChore(GameObject fetcher, ChoreType choreType)
+	{
+		if (choreType != Db.Get().ChoreTypes.StorageFetch && choreType != Db.Get().ChoreTypes.BuildFetch && choreType != Db.Get().ChoreTypes.RepairFetch && choreType != Db.Get().ChoreTypes.FoodFetch && choreType != Db.Get().ChoreTypes.Transport)
+		{
+			Dictionary<int, int> dictionary = null;
+			if ((UnityEngine.Object)fetcher.GetComponent<SolidTransferArm>() != (UnityEngine.Object)null)
+			{
+				dictionary = fetchAutomatedChoreDeliveries;
+			}
+			else if ((UnityEngine.Object)fetcher.GetComponent<MinionIdentity>() != (UnityEngine.Object)null)
+			{
+				dictionary = fetchDupeChoreDeliveries;
+			}
+			if (dictionary != null)
+			{
+				int cycle = GameClock.Instance.GetCycle();
+				if (!dictionary.ContainsKey(cycle))
+				{
+					dictionary.Add(cycle, 0);
+				}
+				Dictionary<int, int> dictionary2;
+				int key;
+				(dictionary2 = dictionary)[key = cycle] = dictionary2[key] + 1;
 			}
 		}
 	}

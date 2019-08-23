@@ -43,15 +43,12 @@ namespace Klei.AI
 			}
 		}
 
-		private HashedString kanim;
-
 		private HashedString[] anims;
 
 		private float cooldown;
 
 		public PeriodicEmoteSickness(HashedString kanim, HashedString[] anims, float cooldown)
 		{
-			this.kanim = kanim;
 			this.anims = anims;
 			this.cooldown = cooldown;
 		}

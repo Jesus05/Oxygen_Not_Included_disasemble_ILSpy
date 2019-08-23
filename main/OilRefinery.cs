@@ -13,10 +13,30 @@ public class OilRefinery : StateMachineComponent<OilRefinery.StatesInstance>
 			: base(smi)
 		{
 		}
+
+		public void TestAreaPressure()
+		{
+			base.smi.master.TestAreaPressure();
+			bool flag = base.smi.master.IsOverPressure();
+			bool flag2 = base.smi.master.IsOverWarningPressure();
+			if (flag)
+			{
+				base.smi.master.wasOverPressure = true;
+				base.sm.isOverPressure.Set(true, this);
+			}
+			else if (base.smi.master.wasOverPressure && !flag2)
+			{
+				base.sm.isOverPressure.Set(false, this);
+			}
+		}
 	}
 
 	public class States : GameStateMachine<States, StatesInstance, OilRefinery>
 	{
+		public BoolParameter isOverPressure;
+
+		public BoolParameter isOverPressureWarning;
+
 		public State disabled;
 
 		public State overpressure;
@@ -31,8 +51,15 @@ public class OilRefinery : StateMachineComponent<OilRefinery.StatesInstance>
 			root.EventTransition(GameHashes.OperationalChanged, disabled, (StatesInstance smi) => !smi.master.operational.IsOperational);
 			disabled.EventTransition(GameHashes.OperationalChanged, needResources, (StatesInstance smi) => smi.master.operational.IsOperational);
 			needResources.EventTransition(GameHashes.OnStorageChange, ready, (StatesInstance smi) => smi.master.GetComponent<ElementConverter>().HasEnoughMassToStartConverting());
-			ready.Transition(needResources, (StatesInstance smi) => !smi.master.GetComponent<ElementConverter>().HasEnoughMassToStartConverting(), UpdateRate.SIM_200ms).Transition(overpressure, (StatesInstance smi) => smi.master.IsOverPressure(), UpdateRate.SIM_200ms).ToggleChore((StatesInstance smi) => new WorkChore<WorkableTarget>(Db.Get().ChoreTypes.Fabricate, smi.master.workable, null, true, null, null, null, true, null, false, true, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, false, true), needResources);
-			overpressure.ToggleStatusItem(Db.Get().BuildingStatusItems.PressureOk, (object)null).Transition(ready, (StatesInstance smi) => !smi.master.IsOverPressure(), UpdateRate.SIM_200ms);
+			ready.Update("Test Pressure Update", delegate(StatesInstance smi, float dt)
+			{
+				smi.TestAreaPressure();
+			}, UpdateRate.SIM_1000ms, false).ParamTransition(isOverPressure, overpressure, GameStateMachine<States, StatesInstance, OilRefinery, object>.IsTrue).Transition(needResources, (StatesInstance smi) => !smi.master.GetComponent<ElementConverter>().HasEnoughMassToStartConverting(), UpdateRate.SIM_200ms)
+				.ToggleChore((StatesInstance smi) => new WorkChore<WorkableTarget>(Db.Get().ChoreTypes.Fabricate, smi.master.workable, null, true, null, null, null, true, null, false, true, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, false, true), needResources);
+			overpressure.Update("Test Pressure Update", delegate(StatesInstance smi, float dt)
+			{
+				smi.TestAreaPressure();
+			}, UpdateRate.SIM_1000ms, false).ParamTransition(isOverPressure, ready, GameStateMachine<States, StatesInstance, OilRefinery, object>.IsFalse).ToggleStatusItem(Db.Get().BuildingStatusItems.PressureOk, (object)null);
 		}
 	}
 
@@ -76,10 +103,19 @@ public class OilRefinery : StateMachineComponent<OilRefinery.StatesInstance>
 		}
 	}
 
+	private bool wasOverPressure;
+
 	[SerializeField]
-	public float overpressureMass = 2.5f;
+	public float overpressureWarningMass = 4.5f;
+
+	[SerializeField]
+	public float overpressureMass = 5f;
 
 	private float maxSrcMass;
+
+	private float envPressure;
+
+	private float cellCount;
 
 	[MyCmpGet]
 	private Storage storage;
@@ -89,6 +125,9 @@ public class OilRefinery : StateMachineComponent<OilRefinery.StatesInstance>
 
 	[MyCmpAdd]
 	private WorkableTarget workable;
+
+	[MyCmpReq]
+	private OccupyArea occupyArea;
 
 	private const bool hasMeter = true;
 
@@ -100,7 +139,7 @@ public class OilRefinery : StateMachineComponent<OilRefinery.StatesInstance>
 	});
 
 	[CompilerGenerated]
-	private static Func<int, OilRefinery, bool> _003C_003Ef__mg_0024cache0;
+	private static Func<int, object, bool> _003C_003Ef__mg_0024cache0;
 
 	protected override void OnSpawn()
 	{
@@ -118,15 +157,35 @@ public class OilRefinery : StateMachineComponent<OilRefinery.StatesInstance>
 		meter.SetPositionPercent(positionPercent);
 	}
 
-	private bool IsOverPressure()
+	private static bool UpdateStateCb(int cell, object data)
 	{
-		int cell = Grid.PosToCell(base.transform.GetPosition());
-		cell = Grid.CellAbove(cell);
-		return GameUtil.FloodFillCheck(IsCellOverPressure, this, cell, 2, true, true);
+		OilRefinery oilRefinery = data as OilRefinery;
+		if (Grid.Element[cell].IsGas)
+		{
+			oilRefinery.cellCount += 1f;
+			oilRefinery.envPressure += Grid.Mass[cell];
+		}
+		return true;
 	}
 
-	private static bool IsCellOverPressure(int cell, OilRefinery oil_refinery)
+	private void TestAreaPressure()
 	{
-		return Grid.Mass[cell] > oil_refinery.overpressureMass;
+		envPressure = 0f;
+		cellCount = 0f;
+		if ((UnityEngine.Object)occupyArea != (UnityEngine.Object)null && (UnityEngine.Object)base.gameObject != (UnityEngine.Object)null)
+		{
+			occupyArea.TestArea(Grid.PosToCell(base.gameObject), this, UpdateStateCb);
+			envPressure /= cellCount;
+		}
+	}
+
+	private bool IsOverPressure()
+	{
+		return envPressure >= overpressureMass;
+	}
+
+	private bool IsOverWarningPressure()
+	{
+		return envPressure >= overpressureWarningMass;
 	}
 }

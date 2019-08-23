@@ -1,3 +1,4 @@
+using STRINGS;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -67,6 +68,12 @@ public class SubEntry
 		set;
 	}
 
+	public string sortString
+	{
+		get;
+		set;
+	}
+
 	public SubEntry()
 	{
 	}
@@ -82,6 +89,17 @@ public class SubEntry
 			foreach (ContentContainer contentContainer in contentContainers)
 			{
 				contentContainer.lockID = lockID;
+			}
+		}
+		if (string.IsNullOrEmpty(sortString))
+		{
+			if (!string.IsNullOrEmpty(title))
+			{
+				sortString = UI.StripLinkFormatting(title);
+			}
+			else
+			{
+				sortString = UI.StripLinkFormatting(name);
 			}
 		}
 	}

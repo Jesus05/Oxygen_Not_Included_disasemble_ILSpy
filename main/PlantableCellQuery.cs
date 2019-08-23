@@ -5,8 +5,6 @@ public class PlantableCellQuery : PathFinderQuery
 {
 	public List<int> result_cells = new List<int>();
 
-	private Element plantElement = ElementLoader.FindElementByHash(SimHashes.Dirt);
-
 	private PlantableSeed seed;
 
 	private int max_results;

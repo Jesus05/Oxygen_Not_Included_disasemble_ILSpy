@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class MainMenu : KScreen
 {
@@ -37,11 +38,11 @@ public class MainMenu : KScreen
 
 	public KButton Button_ResumeGame;
 
-	public GameObject patchNotesScreen;
-
 	public GameObject topLeftAlphaMessage;
 
 	private float lastUpdateTime;
+
+	private MotdServerClient m_motdServerClient;
 
 	private GameObject GameSettingsScreen;
 
@@ -50,6 +51,27 @@ public class MainMenu : KScreen
 
 	[SerializeField]
 	private GameObject buttonParent;
+
+	[SerializeField]
+	private LocText motdImageHeader;
+
+	[SerializeField]
+	private Button motdImageButton;
+
+	[SerializeField]
+	private Image motdImage;
+
+	[SerializeField]
+	private LocText motdNewsHeader;
+
+	[SerializeField]
+	private LocText motdNewsBody;
+
+	[SerializeField]
+	private PatchNotesScreen patchNotesScreen;
+
+	[SerializeField]
+	private NextUpdateTimer nextUpdateTimer;
 
 	private static bool HasAutoresumedOnce;
 
@@ -93,9 +115,50 @@ public class MainMenu : KScreen
 		CheckPlayerPrefsCorruption();
 		if (PatchNotesScreen.ShouldShowScreen())
 		{
-			patchNotesScreen.SetActive(true);
+			patchNotesScreen.gameObject.SetActive(true);
 		}
 		CheckDoubleBoundKeys();
+		topLeftAlphaMessage.gameObject.SetActive(false);
+		nextUpdateTimer.gameObject.SetActive(false);
+		m_motdServerClient = new MotdServerClient();
+		m_motdServerClient.GetMotd(delegate(MotdServerClient.MotdResponse response, string error)
+		{
+			MainMenu mainMenu = this;
+			if (error == null)
+			{
+				topLeftAlphaMessage.gameObject.SetActive(true);
+				nextUpdateTimer.gameObject.SetActive(true);
+				motdImageHeader.text = response.image_header_text;
+				motdNewsHeader.text = response.news_header_text;
+				motdNewsBody.text = response.news_body_text;
+				patchNotesScreen.UpdatePatchNotes(response.patch_notes_summary, response.patch_notes_link_url);
+				nextUpdateTimer.UpdateReleaseTimes(response.last_update_time, response.next_update_time, response.update_text_override);
+				if ((UnityEngine.Object)motdImage != (UnityEngine.Object)null && (UnityEngine.Object)response.image_texture != (UnityEngine.Object)null)
+				{
+					motdImage.sprite = Sprite.Create(response.image_texture, new Rect(0f, 0f, (float)response.image_texture.width, (float)response.image_texture.height), Vector2.zero);
+					if (motdImage.sprite.rect.height != 0f)
+					{
+						AspectRatioFitter component = motdImage.gameObject.GetComponent<AspectRatioFitter>();
+						if ((UnityEngine.Object)component != (UnityEngine.Object)null)
+						{
+							float num2 = component.aspectRatio = motdImage.sprite.rect.width / motdImage.sprite.rect.height;
+						}
+						else
+						{
+							Debug.LogWarning("Missing AspectRatioFitter on MainMenu motd image.");
+						}
+					}
+					motdImageButton.onClick.AddListener(delegate
+					{
+						Application.OpenURL(response.image_link_url);
+					});
+				}
+			}
+			else
+			{
+				Debug.LogWarning("Motd Request error: " + error);
+			}
+		});
 		lastUpdateTime = Time.unscaledTime;
 		activateOnSpawn = true;
 	}
@@ -153,6 +216,21 @@ public class MainMenu : KScreen
 		}
 	}
 
+	private void UnregisterMotdRequest()
+	{
+		if (m_motdServerClient != null)
+		{
+			m_motdServerClient.UnregisterCallback();
+			m_motdServerClient = null;
+		}
+	}
+
+	protected override void OnDeactivate()
+	{
+		base.OnDeactivate();
+		UnregisterMotdRequest();
+	}
+
 	public override void ScreenUpdate(bool topLevel)
 	{
 		refreshResumeButton = topLevel;
@@ -161,6 +239,7 @@ public class MainMenu : KScreen
 	protected override void OnLoadLevel()
 	{
 		base.OnLoadLevel();
+		UnregisterMotdRequest();
 	}
 
 	private void ShowLanguageConfirmation()
@@ -211,7 +290,7 @@ public class MainMenu : KScreen
 	{
 		if ((UnityEngine.Object)RetiredColonyInfoScreen.Instance == (UnityEngine.Object)null)
 		{
-			GameObject gameObject = Util.KInstantiateUI(ScreenPrefabs.Instance.RetiredColonyInfoScreen.gameObject, parent, true);
+			Util.KInstantiateUI(ScreenPrefabs.Instance.RetiredColonyInfoScreen.gameObject, parent, true);
 		}
 		RetiredColonyInfoScreen.Instance.Show(true);
 		if (!string.IsNullOrEmpty(colonyID))
@@ -222,6 +301,16 @@ public class MainMenu : KScreen
 			}
 			RetiredColonyInfoScreen.Instance.LoadColony(RetiredColonyInfoScreen.Instance.GetColonyDataByBaseName(colonyID));
 		}
+	}
+
+	public static void ActivateRetiredColoniesScreenFromData(GameObject parent, RetiredColonyData data)
+	{
+		if ((UnityEngine.Object)RetiredColonyInfoScreen.Instance == (UnityEngine.Object)null)
+		{
+			Util.KInstantiateUI(ScreenPrefabs.Instance.RetiredColonyInfoScreen.gameObject, parent, true);
+		}
+		RetiredColonyInfoScreen.Instance.Show(true);
+		RetiredColonyInfoScreen.Instance.LoadColony(data);
 	}
 
 	private void SpawnVideoScreen()
@@ -270,7 +359,7 @@ public class MainMenu : KScreen
 					header = value.header;
 					gameInfo = value.headerData;
 				}
-				if (header.buildVersion > 359645 || gameInfo.saveMajorVersion < 7)
+				if (header.buildVersion > 361684 || gameInfo.saveMajorVersion < 7)
 				{
 					flag = false;
 				}

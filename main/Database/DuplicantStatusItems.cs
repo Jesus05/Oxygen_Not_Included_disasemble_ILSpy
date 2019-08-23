@@ -500,7 +500,7 @@ namespace Database
 				CameraController.Instance.CameraGoTo(lastExposurePosition2, 2f, true);
 				if (OverlayScreen.Instance.mode == OverlayModes.None.ID)
 				{
-					OverlayScreen.Instance.ToggleOverlay(OverlayModes.Disease.ID);
+					OverlayScreen.Instance.ToggleOverlay(OverlayModes.Disease.ID, true);
 				}
 			};
 			ExposedToGerms = CreateStatusItem("ExposedToGerms", "DUPLICANTS", string.Empty, StatusItem.IconType.Info, NotificationType.Neutral, true, OverlayModes.Disease.ID, true, 2);
@@ -534,7 +534,7 @@ namespace Database
 				CameraController.Instance.CameraGoTo(lastExposurePosition, 2f, true);
 				if (OverlayScreen.Instance.mode == OverlayModes.None.ID)
 				{
-					OverlayScreen.Instance.ToggleOverlay(OverlayModes.Disease.ID);
+					OverlayScreen.Instance.ToggleOverlay(OverlayModes.Disease.ID, true);
 				}
 			};
 			LightWorkEfficiencyBonus = CreateStatusItem("LightWorkEfficiencyBonus", "DUPLICANTS", string.Empty, StatusItem.IconType.Info, NotificationType.Good, false, OverlayModes.None.ID, true, 2);

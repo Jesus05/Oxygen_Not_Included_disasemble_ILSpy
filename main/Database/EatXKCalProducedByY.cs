@@ -1,4 +1,5 @@
 using KSerialization;
+using STRINGS;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -21,7 +22,6 @@ namespace Database
 		{
 			List<string> list = new List<string>();
 			List<ComplexRecipe> recipes = ComplexRecipeManager.Get().recipes;
-			List<ComplexRecipe> list2 = new List<ComplexRecipe>();
 			foreach (ComplexRecipe item in recipes)
 			{
 				foreach (Tag foodProducer in foodProducers)
@@ -59,6 +59,21 @@ namespace Database
 				foodProducers.Add(new Tag(name));
 			}
 			numCalories = reader.ReadInt32();
+		}
+
+		public override string GetProgress(bool complete)
+		{
+			string text = string.Empty;
+			for (int i = 0; i < foodProducers.Count; i++)
+			{
+				if (i != 0)
+				{
+					text += COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.STATUS.PREPARED_SEPARATOR;
+				}
+				BuildingDef buildingDef = Assets.GetBuildingDef(foodProducers[i].Name);
+				text += buildingDef.Name;
+			}
+			return string.Format(COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.STATUS.CONSUME_ITEM, text);
 		}
 	}
 }

@@ -595,6 +595,7 @@ public abstract class Chore
 			if (addToDailyReport)
 			{
 				ReportManager.Instance.ReportValue(ReportManager.ReportType.ChoreStatus, -1f, choreType.Name, GameUtil.GetChoreName(this, null));
+				SaveGame.Instance.GetComponent<ColonyAchievementTracker>().LogSuitChore((!((UnityEngine.Object)driver != (UnityEngine.Object)null)) ? lastDriver : driver);
 			}
 			End(reason);
 			Cleanup();
@@ -628,6 +629,7 @@ public abstract class Chore
 			if (addToDailyReport)
 			{
 				ReportManager.Instance.ReportValue(ReportManager.ReportType.ChoreStatus, -1f, choreType.Name, GameUtil.GetChoreName(this, null));
+				SaveGame.Instance.GetComponent<ColonyAchievementTracker>().LogSuitChore((!((UnityEngine.Object)driver != (UnityEngine.Object)null)) ? lastDriver : driver);
 			}
 			End(reason);
 			Cleanup();

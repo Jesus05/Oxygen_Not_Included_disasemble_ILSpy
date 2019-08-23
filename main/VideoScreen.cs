@@ -95,8 +95,20 @@ public class VideoScreen : KModalScreen
 	{
 		Show(true);
 		DisableAllMedia();
+		slideshow.updateType = SlideshowUpdateType.preloadedSprites;
 		slideshow.gameObject.SetActive(true);
 		slideshow.SetSprites(sprites);
+		slideshow.SetPaused(false);
+	}
+
+	public void PlaySlideShow(string[] files)
+	{
+		Show(true);
+		DisableAllMedia();
+		slideshow.updateType = SlideshowUpdateType.loadOnDemand;
+		slideshow.gameObject.SetActive(true);
+		slideshow.SetFiles(files, 0);
+		slideshow.SetPaused(false);
 	}
 
 	public override float GetSortKey()

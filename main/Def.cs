@@ -162,7 +162,6 @@ public class Def : ScriptableObject
 			return null;
 		}
 		KAnim.Anim.FrameElement frameElement = default(KAnim.Anim.FrameElement);
-		KAnimHashedString kAnimHashedString = new KAnimHashedString(animName);
 		if (string.IsNullOrEmpty(symbolName))
 		{
 			symbolName = animName;

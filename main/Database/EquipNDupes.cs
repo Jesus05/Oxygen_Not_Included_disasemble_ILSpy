@@ -1,4 +1,5 @@
 using KSerialization;
+using STRINGS;
 using System.IO;
 using UnityEngine;
 
@@ -41,6 +42,20 @@ namespace Database
 			string id = reader.ReadKleiString();
 			equipmentSlot = Db.Get().AssignableSlots.Get(id);
 			numToEquip = reader.ReadInt32();
+		}
+
+		public override string GetProgress(bool complete)
+		{
+			int num = 0;
+			foreach (MinionIdentity item in Components.MinionIdentities.Items)
+			{
+				Equipment equipment = item.GetEquipment();
+				if ((Object)equipment != (Object)null && equipment.IsSlotOccupied(equipmentSlot))
+				{
+					num++;
+				}
+			}
+			return string.Format(COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.STATUS.CLOTHE_DUPES, (!complete) ? num : numToEquip, numToEquip);
 		}
 	}
 }

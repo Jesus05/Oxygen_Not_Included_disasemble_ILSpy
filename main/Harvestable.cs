@@ -21,11 +21,6 @@ public class Harvestable : Workable
 		component.OnCancel(data);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<Harvestable> OnUprootedDelegate = new EventSystem.IntraObjectHandler<Harvestable>(delegate(Harvestable component, object data)
-	{
-		component.OnUprooted(data);
-	});
-
 	public Worker completed_by
 	{
 		get;

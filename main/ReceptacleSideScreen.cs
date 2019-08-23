@@ -276,7 +276,7 @@ public class ReceptacleSideScreen : SideScreenContent, IRender1000ms
 				};
 				requestSelectedEntityBtn.GetComponentInChildren<LocText>().text = Strings.Get(requestStringDeposit).ToString();
 				targetReceptacle.SetPreview(depositObjectMap[selectedEntityToggle].tag, false);
-				bool flag = ValidRotationForDeposit(depositObjectMap[selectedEntityToggle].direction) && GetAvailableAmount(depositObjectMap[selectedEntityToggle].tag) > 0f && AdditionalCanDepositTest();
+				bool flag = CanDepositEntity(depositObjectMap[selectedEntityToggle]);
 				requestSelectedEntityBtn.isInteractable = flag;
 				SetImageToggleState(selectedEntityToggle.toggle, (!flag) ? ImageToggleState.State.DisabledActive : ImageToggleState.State.Active);
 				ToggleObjectPicker(true);
@@ -323,7 +323,7 @@ public class ReceptacleSideScreen : SideScreenContent, IRender1000ms
 			bool flag = false;
 			if (depositObjectMap.TryGetValue(selectedEntityToggle, out SelectableEntity value))
 			{
-				flag = (ValidRotationForDeposit(value.direction) && GetAvailableAmount(value.tag) > 0f && AdditionalCanDepositTest());
+				flag = CanDepositEntity(value);
 			}
 			if (!flag)
 			{
@@ -335,7 +335,17 @@ public class ReceptacleSideScreen : SideScreenContent, IRender1000ms
 		}
 	}
 
+	private bool CanDepositEntity(SelectableEntity entity)
+	{
+		return ValidRotationForDeposit(entity.direction) && (!RequiresAvailableAmountToDeposit() || GetAvailableAmount(entity.tag) > 0f) && AdditionalCanDepositTest();
+	}
+
 	protected virtual bool AdditionalCanDepositTest()
+	{
+		return true;
+	}
+
+	protected virtual bool RequiresAvailableAmountToDeposit()
 	{
 		return true;
 	}
@@ -514,7 +524,7 @@ public class ReceptacleSideScreen : SideScreenContent, IRender1000ms
 		{
 			if ((Object)selectedEntityToggle != (Object)null)
 			{
-				bool flag = ValidRotationForDeposit(depositObjectMap[selectedEntityToggle].direction) && GetAvailableAmount(depositObjectMap[selectedEntityToggle].tag) > 0f && AdditionalCanDepositTest();
+				bool flag = CanDepositEntity(depositObjectMap[selectedEntityToggle]);
 				requestSelectedEntityBtn.isInteractable = flag;
 				SetImageToggleState(selectedEntityToggle.toggle, flag ? ImageToggleState.State.Inactive : ImageToggleState.State.Disabled);
 			}

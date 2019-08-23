@@ -439,7 +439,14 @@ public static class CodexCache
 				DebugUtil.DevLogErrorFormat("CodexCache.CollectEntries failed to load [{0}]: {1}", text, ex.ToString());
 			}
 		}
-		list.Sort((CodexEntry x, CodexEntry y) => x.title.CompareTo(y.title));
+		foreach (CodexEntry item in list)
+		{
+			if (string.IsNullOrEmpty(item.sortString))
+			{
+				item.sortString = Strings.Get(item.title);
+			}
+		}
+		list.Sort((CodexEntry x, CodexEntry y) => x.sortString.CompareTo(y.sortString));
 		return list;
 	}
 

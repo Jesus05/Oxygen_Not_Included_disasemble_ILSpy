@@ -1,3 +1,4 @@
+using STRINGS;
 using System;
 using System.IO;
 
@@ -6,6 +7,8 @@ namespace Database
 	public class TuneUpGenerator : ColonyAchievementRequirement
 	{
 		private float numChoreseToComplete;
+
+		private float choresCompleted;
 
 		public TuneUpGenerator(float numChoreseToComplete)
 		{
@@ -36,6 +39,7 @@ namespace Database
 					}
 				}
 			}
+			choresCompleted = Math.Abs(num);
 			return Math.Abs(num) >= numChoreseToComplete;
 		}
 
@@ -47,6 +51,11 @@ namespace Database
 		public override void Deserialize(IReader reader)
 		{
 			numChoreseToComplete = reader.ReadSingle();
+		}
+
+		public override string GetProgress(bool complete)
+		{
+			return string.Format(COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.STATUS.CHORES_OF_TYPE, (!complete) ? choresCompleted : numChoreseToComplete, numChoreseToComplete, Db.Get().ChoreTypes.PowerTinker.Name);
 		}
 	}
 }

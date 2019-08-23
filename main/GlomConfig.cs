@@ -55,6 +55,8 @@ public class GlomConfig : IEntityConfig
 		def.dirtyMassReleaseOnDeath = 3f;
 		def.emitDiseaseIdx = Db.Get().Diseases.GetIndex("SlimeLung");
 		def.emitDiseasePerKg = 1000f;
+		OvercrowdingMonitor.Def def2 = gameObject.AddOrGetDef<OvercrowdingMonitor.Def>();
+		def2.spaceRequiredPerCreature = 0;
 		gameObject.AddOrGet<LoopingSounds>();
 		LoopingSounds component2 = gameObject.GetComponent<LoopingSounds>();
 		component2.updatePosition = true;

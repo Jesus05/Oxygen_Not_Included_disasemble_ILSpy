@@ -4,7 +4,7 @@ using System;
 using UnityEngine;
 
 [SerializationConfig(MemberSerialization.OptIn)]
-public class LogicCritterCountSensor : Switch, ISaveLoadable, ISim200ms, IIntSliderControl, ISliderControl
+public class LogicCritterCountSensor : Switch, ISaveLoadable, IThresholdSwitch, ISim200ms
 {
 	private bool wasOn;
 
@@ -12,6 +12,11 @@ public class LogicCritterCountSensor : Switch, ISaveLoadable, ISim200ms, IIntSli
 
 	[Serialize]
 	public int countThreshold;
+
+	[Serialize]
+	public bool activateOnGreaterThan = true;
+
+	private int currentCount;
 
 	private KSelectable selectable;
 
@@ -25,44 +30,49 @@ public class LogicCritterCountSensor : Switch, ISaveLoadable, ISim200ms, IIntSli
 		component.OnCopySettings(data);
 	});
 
-	public string SliderTitleKey => "STRINGS.UI.UISIDESCREENS.CRITTER_COUNT_SIDE_SCREEN.TITLE";
-
-	public string SliderUnits => UI.UNITSUFFIXES.CRITTERS;
-
-	public int SliderDecimalPlaces(int index)
+	public float Threshold
 	{
-		return 0;
+		get
+		{
+			return (float)countThreshold;
+		}
+		set
+		{
+			countThreshold = (int)value;
+		}
 	}
 
-	public float GetSliderMin(int index)
+	public bool ActivateAboveThreshold
 	{
-		return 0f;
+		get
+		{
+			return activateOnGreaterThan;
+		}
+		set
+		{
+			activateOnGreaterThan = value;
+		}
 	}
 
-	public float GetSliderMax(int index)
-	{
-		return 64f;
-	}
+	public float CurrentValue => (float)currentCount;
 
-	public float GetSliderValue(int index)
-	{
-		return (float)countThreshold;
-	}
+	public float RangeMin => 0f;
 
-	public void SetSliderValue(float value, int index)
-	{
-		countThreshold = Mathf.RoundToInt(value);
-	}
+	public float RangeMax => 64f;
 
-	public string GetSliderTooltipKey(int index)
-	{
-		return "STRINGS.UI.UISIDESCREENS.CRITTER_COUNT_SIDE_SCREEN.TOOLTIP";
-	}
+	public LocString Title => UI.UISIDESCREENS.CRITTER_COUNT_SIDE_SCREEN.TITLE;
 
-	string ISliderControl.GetSliderTooltip()
-	{
-		return string.Format(Strings.Get("STRINGS.UI.UISIDESCREENS.CRITTER_COUNT_SIDE_SCREEN.TOOLTIP"), countThreshold);
-	}
+	public LocString ThresholdValueName => UI.UISIDESCREENS.CRITTER_COUNT_SIDE_SCREEN.VALUE_NAME;
+
+	public string AboveToolTip => UI.UISIDESCREENS.CRITTER_COUNT_SIDE_SCREEN.TOOLTIP_ABOVE;
+
+	public string BelowToolTip => UI.UISIDESCREENS.CRITTER_COUNT_SIDE_SCREEN.TOOLTIP_BELOW;
+
+	public ThresholdScreenLayoutType LayoutType => ThresholdScreenLayoutType.SliderBar;
+
+	public int IncrementScale => 1;
+
+	public NonLinearSlider.Range[] GetRanges => NonLinearSlider.GetDefaultRange(RangeMax);
 
 	protected override void OnPrefabInit()
 	{
@@ -78,6 +88,7 @@ public class LogicCritterCountSensor : Switch, ISaveLoadable, ISim200ms, IIntSli
 		if ((UnityEngine.Object)component != (UnityEngine.Object)null)
 		{
 			countThreshold = component.countThreshold;
+			activateOnGreaterThan = component.activateOnGreaterThan;
 		}
 	}
 
@@ -95,12 +106,14 @@ public class LogicCritterCountSensor : Switch, ISaveLoadable, ISim200ms, IIntSli
 		Room roomOfGameObject = Game.Instance.roomProber.GetRoomOfGameObject(base.gameObject);
 		if (roomOfGameObject != null)
 		{
-			int num = roomOfGameObject.cavity.creatures.Count;
+			currentCount = roomOfGameObject.cavity.creatures.Count;
 			if (countEggs)
 			{
-				num += roomOfGameObject.cavity.eggs.Count;
+				currentCount += roomOfGameObject.cavity.eggs.Count;
 			}
-			SetState(num > countThreshold);
+			SetState(currentCount > countThreshold);
+			bool state = (!activateOnGreaterThan) ? (currentCount < countThreshold) : (currentCount > countThreshold);
+			SetState(state);
 			if (selectable.HasStatusItem(Db.Get().BuildingStatusItems.NotInAnyRoom))
 			{
 				selectable.RemoveStatusItem(roomStatusGUID, false);
@@ -143,5 +156,35 @@ public class LogicCritterCountSensor : Switch, ISaveLoadable, ISim200ms, IIntSli
 	{
 		StatusItem status_item = (!switchedOn) ? Db.Get().BuildingStatusItems.LogicSensorStatusInactive : Db.Get().BuildingStatusItems.LogicSensorStatusActive;
 		GetComponent<KSelectable>().SetStatusItem(Db.Get().StatusItemCategories.Power, status_item, null);
+	}
+
+	public float GetRangeMinInputField()
+	{
+		return RangeMin;
+	}
+
+	public float GetRangeMaxInputField()
+	{
+		return RangeMax;
+	}
+
+	public string Format(float value, bool units)
+	{
+		return value.ToString();
+	}
+
+	public float ProcessedSliderValue(float input)
+	{
+		return Mathf.Round(input);
+	}
+
+	public float ProcessedInputValue(float input)
+	{
+		return Mathf.Round(input);
+	}
+
+	public LocString ThresholdValueUnits()
+	{
+		return string.Empty;
 	}
 }

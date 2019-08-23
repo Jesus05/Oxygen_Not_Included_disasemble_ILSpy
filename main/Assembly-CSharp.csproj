@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <ProjectGuid>{BF334235-E751-4F00-804F-17F6FE7CE9C5}</ProjectGuid>
+    <ProjectGuid>{978730C9-EF67-4B29-B92C-6C718BF2BB84}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <OutputType>Library</OutputType>
@@ -85,6 +85,12 @@
     </Reference>
     <Reference Include="UnityEngine.AnimationModule">
       <HintPath>E:\Program Files (x86)\Steam\steamapps\common\OxygenNotIncluded\OxygenNotIncluded_Data\Managed\UnityEngine.AnimationModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UnityWebRequestModule">
+      <HintPath>E:\Program Files (x86)\Steam\steamapps\common\OxygenNotIncluded\OxygenNotIncluded_Data\Managed\UnityEngine.UnityWebRequestModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UnityWebRequestTextureModule">
+      <HintPath>E:\Program Files (x86)\Steam\steamapps\common\OxygenNotIncluded\OxygenNotIncluded_Data\Managed\UnityEngine.UnityWebRequestTextureModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.IMGUIModule">
       <HintPath>E:\Program Files (x86)\Steam\steamapps\common\OxygenNotIncluded\OxygenNotIncluded_Data\Managed\UnityEngine.IMGUIModule.dll</HintPath>
@@ -549,7 +555,6 @@
     <Compile Include="Database\AttributeConverters.cs" />
     <Compile Include="Database\Attributes.cs" />
     <Compile Include="Database\AutomateABuilding.cs" />
-    <Compile Include="Database\AverageDupeDecorOverCycles.cs" />
     <Compile Include="Database\BeforeCycleNumber.cs" />
     <Compile Include="Database\BlockedCometWithBunkerDoor.cs" />
     <Compile Include="Database\BuildingAttributes.cs" />
@@ -568,22 +573,18 @@
     <Compile Include="Database\CreaturePoopKGProduction.cs" />
     <Compile Include="Database\CreatureStatusItems.cs" />
     <Compile Include="Database\CritterAttributes.cs" />
-    <Compile Include="Database\CrittersWithTrait.cs" />
     <Compile Include="Database\CritterTypeExists.cs" />
     <Compile Include="Database\CritterTypesWithTraits.cs" />
     <Compile Include="Database\CureDisease.cs" />
     <Compile Include="Database\CycleNumber.cs" />
     <Compile Include="Database\Deaths.cs" />
-    <Compile Include="Database\DiscoverNum.cs" />
-    <Compile Include="Database\DiscoverTag.cs" />
     <Compile Include="Database\Diseases.cs" />
+    <Compile Include="Database\DupesCompleteChoreInExoSuitForCycles.cs" />
     <Compile Include="Database\DupesVsSolidTransferArmFetch.cs" />
-    <Compile Include="Database\DupesWithTrait.cs" />
     <Compile Include="Database\DuplicantStatusItems.cs" />
     <Compile Include="Database\EatXCalories.cs" />
     <Compile Include="Database\EatXCaloriesFromY.cs" />
     <Compile Include="Database\EatXKCalProducedByY.cs" />
-    <Compile Include="Database\EquipAllDupes.cs" />
     <Compile Include="Database\EquipNDupes.cs" />
     <Compile Include="Database\ExploreOilFieldSubZone.cs" />
     <Compile Include="Database\Expressions.cs" />
@@ -596,9 +597,7 @@
     <Compile Include="Database\NoFarmables.cs" />
     <Compile Include="Database\NumberOfDupes.cs" />
     <Compile Include="Database\Personalities.cs" />
-    <Compile Include="Database\ProduceXEngeryWithoutUsingY.cs" />
     <Compile Include="Database\ProduceXEngeryWithoutUsingYList.cs" />
-    <Compile Include="Database\PumpXDistanceY.cs" />
     <Compile Include="Database\ReachedSpace.cs" />
     <Compile Include="Database\ResearchComplete.cs" />
     <Compile Include="Database\RevealAsteriod.cs" />
@@ -1554,6 +1553,7 @@
     <Compile Include="MopPlacerConfig.cs" />
     <Compile Include="MopTool.cs" />
     <Compile Include="MopToolHoverTextCard.cs" />
+    <Compile Include="MotdServerClient.cs" />
     <Compile Include="MouldingTileConfig.cs" />
     <Compile Include="MournChore.cs" />
     <Compile Include="MournMonitor.cs" />
@@ -2072,6 +2072,7 @@
     <Compile Include="SimMessages.cs" />
     <Compile Include="SimpleInfoScreen.cs" />
     <Compile Include="SimpleMassStatusItem.cs" />
+    <Compile Include="SimpleNetworkCache.cs" />
     <Compile Include="SimpleUIShowHide.cs" />
     <Compile Include="SimpleVent.cs" />
     <Compile Include="SimTemperatureTransfer.cs" />
@@ -2096,6 +2097,7 @@
     <Compile Include="SliderContainer.cs" />
     <Compile Include="SliderSet.cs" />
     <Compile Include="Slideshow.cs" />
+    <Compile Include="SlideshowUpdateType.cs" />
     <Compile Include="SlimeMoldConfig.cs" />
     <Compile Include="SlotSet.cs" />
     <Compile Include="SmallSculptureConfig.cs" />

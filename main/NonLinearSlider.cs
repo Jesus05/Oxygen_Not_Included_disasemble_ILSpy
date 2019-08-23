@@ -45,7 +45,7 @@ public class NonLinearSlider : KSlider
 		float num2 = 0f;
 		for (int i = 0; i < ranges.Length; i++)
 		{
-			if (value > num2 && value <= ranges[i].peakValue)
+			if (value >= num2 && value <= ranges[i].peakValue)
 			{
 				float t = (value - num2) / (ranges[i].peakValue - num2);
 				return Mathf.Lerp(num, num + ranges[i].width, t);

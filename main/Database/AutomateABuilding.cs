@@ -1,3 +1,4 @@
+using STRINGS;
 using System.IO;
 using UnityEngine;
 
@@ -54,6 +55,11 @@ namespace Database
 
 		public override void Deserialize(IReader reader)
 		{
+		}
+
+		public override string GetProgress(bool complete)
+		{
+			return COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.STATUS.AUTOMATE_A_BUILDING;
 		}
 	}
 }

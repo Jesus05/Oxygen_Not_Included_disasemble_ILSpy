@@ -1,4 +1,5 @@
 using KSerialization;
+using STRINGS;
 using System.IO;
 
 namespace Database
@@ -39,6 +40,19 @@ namespace Database
 			string id = reader.ReadKleiString();
 			roomType = Db.Get().RoomTypes.Get(id);
 			numToCreate = reader.ReadInt32();
+		}
+
+		public override string GetProgress(bool complete)
+		{
+			int num = 0;
+			foreach (Room room in Game.Instance.roomProber.rooms)
+			{
+				if (room.roomType == roomType)
+				{
+					num++;
+				}
+			}
+			return string.Format(COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.STATUS.BUILT_N_ROOMS, roomType.Name, (!complete) ? num : numToCreate, numToCreate);
 		}
 	}
 }

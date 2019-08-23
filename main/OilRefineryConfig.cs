@@ -51,6 +51,7 @@ public class OilRefineryConfig : IBuildingConfig
 		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.IndustrialMachinery, false);
 		go.AddOrGet<BuildingComplete>().isManuallyOperated = true;
 		OilRefinery oilRefinery = go.AddOrGet<OilRefinery>();
+		oilRefinery.overpressureWarningMass = 4.5f;
 		oilRefinery.overpressureMass = 5f;
 		ConduitConsumer conduitConsumer = go.AddOrGet<ConduitConsumer>();
 		conduitConsumer.conduitType = ConduitType.Liquid;

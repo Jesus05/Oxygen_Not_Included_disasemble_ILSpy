@@ -9,7 +9,7 @@ namespace Database
 {
 	public class MinimumMorale : VictoryColonyAchievementRequirement
 	{
-		private int minimumMorale;
+		public int minimumMorale;
 
 		public MinimumMorale(int minimumMorale = 16)
 		{
@@ -62,6 +62,11 @@ namespace Database
 		public override void Deserialize(IReader reader)
 		{
 			minimumMorale = reader.ReadInt32();
+		}
+
+		public override string GetProgress(bool complete)
+		{
+			return Description();
 		}
 	}
 }

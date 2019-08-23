@@ -1,3 +1,4 @@
+using STRINGS;
 using System.IO;
 
 namespace Database
@@ -15,6 +16,11 @@ namespace Database
 
 		public override void Deserialize(IReader reader)
 		{
+		}
+
+		public override string GetProgress(bool complete)
+		{
+			return COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.STATUS.BLOCKED_A_COMET;
 		}
 	}
 }

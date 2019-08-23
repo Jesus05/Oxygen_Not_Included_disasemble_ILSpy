@@ -76,6 +76,8 @@ namespace Database
 
 		public ColonyAchievement IdleDuplicants;
 
+		public ColonyAchievement ExosuitCycles;
+
 		[CompilerGenerated]
 		private static Action<KMonoBehaviour> _003C_003Ef__mg_0024cache0;
 
@@ -99,11 +101,11 @@ namespace Database
 			Survived100Cycles = Add(new ColonyAchievement("Survived100Cycles", "SURVIVE_HUNDRED_CYCLES", COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.SURVIVE_HUNDRED_CYCLES, COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.SURVIVE_HUNDRED_CYCLES_DESCRIPTION, false, new List<ColonyAchievementRequirement>
 			{
 				new CycleNumber(100)
-			}, string.Empty, string.Empty, string.Empty, string.Empty, null, string.Empty, string.Empty));
+			}, string.Empty, string.Empty, string.Empty, string.Empty, null, string.Empty, "Turn_of_the_Century"));
 			ReachedSpace = Add(new ColonyAchievement("ReachedSpace", "REACH_SPACE_ANY_DESTINATION", COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.REACH_SPACE_ANY_DESTINATION, COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.REACH_SPACE_ANY_DESTINATION_DESCRIPTION, false, new List<ColonyAchievementRequirement>
 			{
 				new ReachedSpace(null)
-			}, string.Empty, string.Empty, string.Empty, string.Empty, null, string.Empty, string.Empty));
+			}, string.Empty, string.Empty, string.Empty, string.Empty, null, string.Empty, "space_race"));
 			CompleteSkillBranch = Add(new ColonyAchievement("CompleteSkillBranch", "COMPLETED_SKILL_BRANCH", COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.COMPLETED_SKILL_BRANCH, COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.COMPLETED_SKILL_BRANCH_DESCRIPTION, false, new List<ColonyAchievementRequirement>
 			{
 				new SkillBranchComplete(new List<Skill>
@@ -122,7 +124,7 @@ namespace Database
 					Db.Get().Skills.Astronauting2,
 					Db.Get().Skills.Medicine3
 				})
-			}, string.Empty, string.Empty, string.Empty, string.Empty, null, string.Empty, string.Empty));
+			}, string.Empty, string.Empty, string.Empty, string.Empty, null, string.Empty, "CompleteSkillBranch"));
 			CompleteResearchTree = Add(new ColonyAchievement("CompleteResearchTree", "COMPLETED_RESEARCH", COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.COMPLETED_RESEARCH, COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.COMPLETED_RESEARCH_DESCRIPTION, false, new List<ColonyAchievementRequirement>
 			{
 				new ResearchComplete()
@@ -130,7 +132,7 @@ namespace Database
 			Clothe8Dupes = Add(new ColonyAchievement("Clothe8Dupes", "EQUIP_EIGHT_DUPES", COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.EQUIP_N_DUPES, string.Format(COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.EQUIP_N_DUPES_DESCRIPTION, 8), false, new List<ColonyAchievementRequirement>
 			{
 				new EquipNDupes(Db.Get().AssignableSlots.Outfit, 8)
-			}, string.Empty, string.Empty, string.Empty, string.Empty, null, string.Empty, string.Empty));
+			}, string.Empty, string.Empty, string.Empty, string.Empty, null, string.Empty, "and_nowhere_to_go"));
 			TameAllBasicCritters = Add(new ColonyAchievement("TameAllBasicCritters", "TAME_BASIC_CRITTERS", COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.TAME_BASIC_CRITTERS, COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.TAME_BASIC_CRITTERS_DESCRIPTION, false, new List<ColonyAchievementRequirement>
 			{
 				new CritterTypesWithTraits(new List<Tag>
@@ -154,7 +156,7 @@ namespace Database
 			Minimum20LivingDupes = Add(new ColonyAchievement("Minimum20LivingDupes", "TWENTY_DUPES", COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.TWENTY_DUPES, COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.TWENTY_DUPES_DESCRIPTION, false, new List<ColonyAchievementRequirement>
 			{
 				new NumberOfDupes(20)
-			}, string.Empty, string.Empty, string.Empty, string.Empty, null, string.Empty, string.Empty));
+			}, string.Empty, string.Empty, string.Empty, string.Empty, null, string.Empty, "no_place_like_clone"));
 			TameAGassyMoo = Add(new ColonyAchievement("TameAGassyMoo", "TAME_GASSYMOO", COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.TAME_GASSYMOO, COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.TAME_GASSYMOO_DESCRIPTION, false, new List<ColonyAchievementRequirement>
 			{
 				new CritterTypesWithTraits(new List<Tag>
@@ -197,7 +199,7 @@ namespace Database
 			BuildOutsideStartBiome = Add(new ColonyAchievement("BuildOutsideStartBiome", "BUILD_OUTSIDE_BIOME", COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.BUILD_OUTSIDE_BIOME, COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.BUILD_OUTSIDE_BIOME_DESCRIPTION, false, new List<ColonyAchievementRequirement>
 			{
 				new BuildOutsideStartBiome()
-			}, string.Empty, string.Empty, string.Empty, string.Empty, null, string.Empty, string.Empty));
+			}, string.Empty, string.Empty, string.Empty, string.Empty, null, string.Empty, "build_outside"));
 			Travel10000InTubes = Add(new ColonyAchievement("Travel10000InTubes", "TUBE_TRAVEL_DISTANCE", COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.TUBE_TRAVEL_DISTANCE, COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.TUBE_TRAVEL_DISTANCE_DESCRIPTION, false, new List<ColonyAchievementRequirement>
 			{
 				new TravelXUsingTransitTubes(NavType.Tube, 10000)
@@ -232,7 +234,7 @@ namespace Database
 			BasicPumping = Add(new ColonyAchievement("BasicPumping", "BASIC_PUMPING", COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.BASIC_PUMPING, COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.BASIC_PUMPING_DESCRIPTION, false, new List<ColonyAchievementRequirement>
 			{
 				new VentXKG(SimHashes.Oxygen, 1000f)
-			}, string.Empty, string.Empty, string.Empty, string.Empty, null, string.Empty, string.Empty));
+			}, string.Empty, string.Empty, string.Empty, string.Empty, null, string.Empty, "BasicPumping"));
 			BasicComforts = Add(new ColonyAchievement("BasicComforts", "BASIC_COMFORTS", COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.BASIC_COMFORTS, COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.BASIC_COMFORTS_DESCRIPTION, false, new List<ColonyAchievementRequirement>
 			{
 				new AtLeastOneBuildingForEachDupe(new List<Tag>
@@ -245,7 +247,7 @@ namespace Database
 					BedConfig.ID,
 					LuxuryBedConfig.ID
 				})
-			}, string.Empty, string.Empty, string.Empty, string.Empty, null, string.Empty, string.Empty));
+			}, string.Empty, string.Empty, string.Empty, string.Empty, null, string.Empty, "1bed_1toilet"));
 			PlumbedWashrooms = Add(new ColonyAchievement("PlumbedWashrooms", "PLUMBED_WASHROOMS", COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.PLUMBED_WASHROOMS, COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.PLUMBED_WASHROOMS_DESCRIPTION, false, new List<ColonyAchievementRequirement>
 			{
 				new UpgradeAllBasicBuildings("Outhouse", "FlushToilet"),
@@ -254,15 +256,15 @@ namespace Database
 			AutomateABuilding = Add(new ColonyAchievement("AutomateABuilding", "AUTOMATE_A_BUILDING", COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.AUTOMATE_A_BUILDING, COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.AUTOMATE_A_BUILDING_DESCRIPTION, false, new List<ColonyAchievementRequirement>
 			{
 				new AutomateABuilding()
-			}, string.Empty, string.Empty, string.Empty, string.Empty, null, string.Empty, string.Empty));
+			}, string.Empty, string.Empty, string.Empty, string.Empty, null, string.Empty, "red_light_green_light"));
 			MasterpiecePainting = Add(new ColonyAchievement("MasterpiecePainting", "MASTERPIECE_PAINTING", COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.MASTERPIECE_PAINTING, COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.MASTERPIECE_PAINTING_DESCRIPTION, false, new List<ColonyAchievementRequirement>
 			{
 				new CreateMasterPainting()
-			}, string.Empty, string.Empty, string.Empty, string.Empty, null, string.Empty, string.Empty));
+			}, string.Empty, string.Empty, string.Empty, string.Empty, null, string.Empty, "art_underground"));
 			InspectPOI = Add(new ColonyAchievement("InspectPOI", "INSPECT_POI", COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.INSPECT_POI, COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.INSPECT_POI_DESCRIPTION, false, new List<ColonyAchievementRequirement>
 			{
 				new ActivateLorePOI()
-			}, string.Empty, string.Empty, string.Empty, string.Empty, null, string.Empty, string.Empty));
+			}, string.Empty, string.Empty, string.Empty, string.Empty, null, string.Empty, "ghosts_of_gravitas"));
 			HatchACritter = Add(new ColonyAchievement("HatchACritter", "HATCH_A_CRITTER", COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.HATCH_A_CRITTER, COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.HATCH_A_CRITTER_DESCRIPTION, false, new List<ColonyAchievementRequirement>
 			{
 				new CritterTypeExists(new List<Tag>
@@ -284,31 +286,35 @@ namespace Database
 					"PuftBleachstoneBaby",
 					"PuftOxyliteBaby"
 				})
-			}, string.Empty, string.Empty, string.Empty, string.Empty, null, string.Empty, string.Empty));
+			}, string.Empty, string.Empty, string.Empty, string.Empty, null, string.Empty, "good_egg"));
 			CuredDisease = Add(new ColonyAchievement("CuredDisease", "CURED_DISEASE", COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.CURED_DISEASE, COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.CURED_DISEASE_DESCRIPTION, false, new List<ColonyAchievementRequirement>
 			{
 				new CureDisease()
-			}, string.Empty, string.Empty, string.Empty, string.Empty, null, string.Empty, string.Empty));
+			}, string.Empty, string.Empty, string.Empty, string.Empty, null, string.Empty, "medic"));
 			GeneratorTuneup = Add(new ColonyAchievement("GeneratorTuneup", "GENERATOR_TUNEUP", COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.GENERATOR_TUNEUP, string.Format(COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.GENERATOR_TUNEUP_DESCRIPTION, 100), false, new List<ColonyAchievementRequirement>
 			{
 				new TuneUpGenerator(100f)
-			}, string.Empty, string.Empty, string.Empty, string.Empty, null, string.Empty, string.Empty));
+			}, string.Empty, string.Empty, string.Empty, string.Empty, null, string.Empty, "tune_up_for_what"));
 			ClearFOW = Add(new ColonyAchievement("ClearFOW", "CLEAR_FOW", COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.CLEAR_FOW, COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.CLEAR_FOW_DESCRIPTION, false, new List<ColonyAchievementRequirement>
 			{
 				new RevealAsteriod(0.8f)
-			}, string.Empty, string.Empty, string.Empty, string.Empty, null, string.Empty, string.Empty));
+			}, string.Empty, string.Empty, string.Empty, string.Empty, null, string.Empty, "pulling_back_the_veil"));
 			HatchRefinement = Add(new ColonyAchievement("HatchRefinement", "HATCH_REFINEMENT", COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.HATCH_REFINEMENT, string.Format(COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.HATCH_REFINEMENT_DESCRIPTION, GameUtil.GetFormattedMass(10000f, GameUtil.TimeSlice.None, GameUtil.MetricMassFormat.Tonne, true, "{0:0.#}")), false, new List<ColonyAchievementRequirement>
 			{
 				new CreaturePoopKGProduction("HatchMetal", 10000f)
-			}, string.Empty, string.Empty, string.Empty, string.Empty, null, string.Empty, string.Empty));
+			}, string.Empty, string.Empty, string.Empty, string.Empty, null, string.Empty, "down_the_hatch"));
 			BunkerDoorDefense = Add(new ColonyAchievement("BunkerDoorDefense", "BUNKER_DOOR_DEFENSE", COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.BUNKER_DOOR_DEFENSE, COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.BUNKER_DOOR_DEFENSE_DESCRIPTION, false, new List<ColonyAchievementRequirement>
 			{
 				new BlockedCometWithBunkerDoor()
-			}, string.Empty, string.Empty, string.Empty, string.Empty, null, string.Empty, string.Empty));
+			}, string.Empty, string.Empty, string.Empty, string.Empty, null, string.Empty, "Immovable_Object"));
 			IdleDuplicants = Add(new ColonyAchievement("IdleDuplicants", "IDLE_DUPLICANTS", COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.IDLE_DUPLICANTS, COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.IDLE_DUPLICANTS_DESCRIPTION, false, new List<ColonyAchievementRequirement>
 			{
 				new DupesVsSolidTransferArmFetch(0.51f, 5)
-			}, string.Empty, string.Empty, string.Empty, string.Empty, null, string.Empty, string.Empty));
+			}, string.Empty, string.Empty, string.Empty, string.Empty, null, string.Empty, "easy_livin"));
+			ExosuitCycles = Add(new ColonyAchievement("ExosuitCycles", "EXOSUIT_CYCLES", COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.EXOSUIT_CYCLES, string.Format(COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.EXOSUIT_CYCLES_DESCRIPTION, 10), false, new List<ColonyAchievementRequirement>
+			{
+				new DupesCompleteChoreInExoSuitForCycles(10)
+			}, string.Empty, string.Empty, string.Empty, string.Empty, null, string.Empty, "job_suitability"));
 		}
 	}
 }

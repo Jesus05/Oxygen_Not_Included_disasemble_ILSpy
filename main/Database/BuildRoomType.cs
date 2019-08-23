@@ -1,4 +1,5 @@
 using KSerialization;
+using STRINGS;
 using System.IO;
 
 namespace Database
@@ -33,6 +34,11 @@ namespace Database
 		{
 			string id = reader.ReadKleiString();
 			roomType = Db.Get().RoomTypes.Get(id);
+		}
+
+		public override string GetProgress(bool complete)
+		{
+			return string.Format(COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.STATUS.BUILT_A_ROOM, roomType.Name);
 		}
 	}
 }

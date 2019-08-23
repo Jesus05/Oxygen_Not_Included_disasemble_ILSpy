@@ -10,6 +10,8 @@ public class SelectTool : InterfaceTool
 
 	private int selectedCell;
 
+	protected int defaultLayerMask;
+
 	public static SelectTool Instance;
 
 	private KSelectable delayedNextSelection;

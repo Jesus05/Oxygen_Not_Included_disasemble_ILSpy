@@ -18,5 +18,10 @@ namespace Database
 		public abstract void Serialize(BinaryWriter writer);
 
 		public abstract void Deserialize(IReader reader);
+
+		public virtual string GetProgress(bool complete)
+		{
+			return string.Empty;
+		}
 	}
 }

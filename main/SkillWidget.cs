@@ -426,7 +426,7 @@ public class SkillWidget : KMonoBehaviour, IPointerEnterHandler, IPointerExitHan
 			if ((UnityEngine.Object)component != (UnityEngine.Object)null && !component.HasMasteredSkill(skillID) && flag)
 			{
 				component.MasterSkill(skillID);
-				skillsScreen.RefreshSkillWidgets();
+				skillsScreen.RefreshAll();
 			}
 		}
 	}

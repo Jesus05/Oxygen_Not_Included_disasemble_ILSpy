@@ -68,5 +68,14 @@ namespace Database
 				destinationType = Db.Get().SpaceDestinationTypes.Get(id);
 			}
 		}
+
+		public override string GetProgress(bool completed)
+		{
+			if (destinationType == null)
+			{
+				return COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.STATUS.LAUNCHED_ROCKET;
+			}
+			return COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.STATUS.LAUNCHED_ROCKET_TO_WORMHOLE;
+		}
 	}
 }

@@ -57,8 +57,8 @@ public class ReportScreen : KScreen
 		};
 		summaryButton.onClick += delegate
 		{
-			RetireColonyUtility.SaveColonySummaryData();
-			MainMenu.ActivateRetiredColoniesScreen(PauseScreen.Instance.transform.parent.gameObject, SaveGame.Instance.BaseName, null);
+			RetiredColonyData currentColonyRetiredColonyData = RetireColonyUtility.GetCurrentColonyRetiredColonyData();
+			MainMenu.ActivateRetiredColoniesScreenFromData(PauseScreen.Instance.transform.parent.gameObject, currentColonyRetiredColonyData);
 		};
 		ConsumeMouseScroll = true;
 	}

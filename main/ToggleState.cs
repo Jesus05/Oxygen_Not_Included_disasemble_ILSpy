@@ -8,6 +8,8 @@ public struct ToggleState
 
 	public string on_click_override_sound_path;
 
+	public string on_release_override_sound_path;
+
 	public Sprite sprite;
 
 	public Color color;

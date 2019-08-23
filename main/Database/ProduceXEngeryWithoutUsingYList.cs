@@ -6,9 +6,9 @@ namespace Database
 {
 	public class ProduceXEngeryWithoutUsingYList : ColonyAchievementRequirement
 	{
-		private List<Tag> disallowedBuildings = new List<Tag>();
+		public List<Tag> disallowedBuildings = new List<Tag>();
 
-		private float amountToProduce;
+		public float amountToProduce;
 
 		private float amountProduced;
 
@@ -70,6 +70,19 @@ namespace Database
 			amountProduced = (float)reader.ReadDouble();
 			amountToProduce = (float)reader.ReadDouble();
 			usedDisallowedBuilding = (reader.ReadByte() != 0);
+		}
+
+		public float GetProductionAmount(bool complete)
+		{
+			float num = 0f;
+			foreach (KeyValuePair<Tag, float> item in Game.Instance.savedInfo.powerCreatedbyGeneratorType)
+			{
+				if (!disallowedBuildings.Contains(item.Key))
+				{
+					num += item.Value;
+				}
+			}
+			return (!complete) ? num : amountToProduce;
 		}
 	}
 }

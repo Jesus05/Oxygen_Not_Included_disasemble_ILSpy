@@ -12,17 +12,15 @@ public class NextUpdateTimer : KMonoBehaviour
 
 	public float initialAnimScale;
 
-	private bool useSpecificDate = true;
-
 	public System.DateTime nextReleaseDate;
 
 	public System.DateTime currentReleaseDate;
 
+	private string m_releaseTextOverride;
+
 	protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
-		currentReleaseDate = new System.DateTime(2019, 4, 16, 17, 0, 0, DateTimeKind.Utc);
-		nextReleaseDate = new System.DateTime(2019, 7, 14, 17, 0, 0, DateTimeKind.Utc);
 		initialAnimScale = UpdateAnimController.animScale;
 		ScreenResize instance = ScreenResize.Instance;
 		instance.OnResize = (System.Action)Delegate.Combine(instance.OnResize, new System.Action(RefreshScale));
@@ -38,14 +36,33 @@ public class NextUpdateTimer : KMonoBehaviour
 	protected override void OnSpawn()
 	{
 		base.OnSpawn();
+		RefreshReleaseTimes();
+	}
+
+	public void UpdateReleaseTimes(string lastUpdateTime, string nextUpdateTime, string textOverride)
+	{
+		if (!System.DateTime.TryParse(lastUpdateTime, out currentReleaseDate))
+		{
+			Debug.LogWarning("Failed to parse last_update_time: " + lastUpdateTime);
+		}
+		if (!System.DateTime.TryParse(nextUpdateTime, out nextReleaseDate))
+		{
+			Debug.LogWarning("Failed to parse next_update_time: " + nextUpdateTime);
+		}
+		m_releaseTextOverride = textOverride;
+		RefreshReleaseTimes();
+	}
+
+	private void RefreshReleaseTimes()
+	{
 		TimeSpan timeSpan = nextReleaseDate - currentReleaseDate;
 		TimeSpan timeSpan2 = nextReleaseDate - System.DateTime.UtcNow;
 		TimeSpan timeSpan3 = System.DateTime.UtcNow - currentReleaseDate;
 		string empty = string.Empty;
 		string s = "4";
-		if (useSpecificDate)
+		if (!string.IsNullOrEmpty(m_releaseTextOverride))
 		{
-			empty = UI.DEVELOPMENTBUILDS.UPDATES.SPECIFIC_DATE;
+			empty = m_releaseTextOverride;
 		}
 		else if (timeSpan2.TotalHours < 8.0)
 		{
@@ -75,10 +92,8 @@ public class NextUpdateTimer : KMonoBehaviour
 		TimerText.text = empty;
 		UpdateAnimController.Play(s, KAnim.PlayMode.Loop, 1f, 0f);
 		double num3 = timeSpan3.TotalSeconds / timeSpan.TotalSeconds;
-		DebugUtil.LogArgs("ANIM PERCENT", num3);
-		float num4 = Mathf.Clamp01((float)num3);
-		DebugUtil.LogArgs("ANIM PERCENT FLOAT", num4);
-		UpdateAnimMeterController.SetPositionPercent(num4);
+		float positionPercent = Mathf.Clamp01((float)num3);
+		UpdateAnimMeterController.SetPositionPercent(positionPercent);
 	}
 
 	private void RefreshScale()

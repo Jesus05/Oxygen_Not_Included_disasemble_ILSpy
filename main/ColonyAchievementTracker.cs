@@ -4,9 +4,10 @@ using STRINGS;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using UnityEngine;
 
-public class ColonyAchievementTracker : KMonoBehaviour, ISaveLoadableDetails
+public class ColonyAchievementTracker : KMonoBehaviour, ISaveLoadableDetails, ISim33ms
 {
 	public Dictionary<string, ColonyAchievementStatus> achievements = new Dictionary<string, ColonyAchievementStatus>();
 
@@ -16,9 +17,15 @@ public class ColonyAchievementTracker : KMonoBehaviour, ISaveLoadableDetails
 	[Serialize]
 	public Dictionary<int, int> fetchDupeChoreDeliveries = new Dictionary<int, int>();
 
+	[Serialize]
+	public Dictionary<int, List<int>> dupesCompleteChoresInSuits = new Dictionary<int, List<int>>();
+
 	private SchedulerHandle checkAchievementsHandle;
 
 	private int forceCheckAchievementHandle = -1;
+
+	[Serialize]
+	private int updatingAchievement;
 
 	[Serialize]
 	private List<string> completedAchievementsToDisplay = new List<string>();
@@ -47,7 +54,28 @@ public class ColonyAchievementTracker : KMonoBehaviour, ISaveLoadableDetails
 			}
 		}
 		forceCheckAchievementHandle = Game.Instance.Subscribe(395452326, CheckAchievements);
-		GameScheduler.Instance.Schedule("CheckColonyAchievements", 5f, CheckAchievements, null, null);
+		GameClock.Instance.Subscribe(631075836, OnNewDay);
+	}
+
+	public void Sim33ms(float dt)
+	{
+		if (updatingAchievement >= achievements.Count)
+		{
+			updatingAchievement = 0;
+		}
+		KeyValuePair<string, ColonyAchievementStatus> keyValuePair = achievements.ElementAt(updatingAchievement);
+		updatingAchievement++;
+		if (!keyValuePair.Value.success && !keyValuePair.Value.failed)
+		{
+			keyValuePair.Value.UpdateAchievement();
+			if (keyValuePair.Value.success && !keyValuePair.Value.failed)
+			{
+				UnlockPlatformAchievement(keyValuePair.Key);
+				completedAchievementsToDisplay.Add(keyValuePair.Key);
+				TriggerNewAchievementCompleted(null);
+				RetireColonyUtility.SaveColonySummaryData();
+			}
+		}
 	}
 
 	private void CheckAchievements(object data = null)
@@ -74,7 +102,6 @@ public class ColonyAchievementTracker : KMonoBehaviour, ISaveLoadableDetails
 			RetireColonyUtility.SaveColonySummaryData();
 		}
 		newlyCompletedAchievements.Clear();
-		checkAchievementsHandle = GameScheduler.Instance.Schedule("CheckColonyAchievements", 12f, CheckAchievements, null, null);
 	}
 
 	private static void UnlockPlatformAchievement(string achievement_id)
@@ -257,6 +284,68 @@ public class ColonyAchievementTracker : KMonoBehaviour, ISaveLoadableDetails
 				Dictionary<int, int> dictionary2;
 				int key;
 				(dictionary2 = dictionary)[key = cycle] = dictionary2[key] + 1;
+			}
+		}
+	}
+
+	public void LogSuitChore(ChoreDriver driver)
+	{
+		if (!((UnityEngine.Object)driver == (UnityEngine.Object)null) && !((UnityEngine.Object)driver.GetComponent<MinionIdentity>() == (UnityEngine.Object)null))
+		{
+			bool flag = false;
+			Equipment equipment = driver.GetComponent<MinionIdentity>().GetEquipment();
+			foreach (EquipmentSlotInstance slot in equipment.Slots)
+			{
+				Equippable equippable = slot.assignable as Equippable;
+				if ((bool)equippable && equippable.GetComponent<KPrefabID>().HasTag(GameTags.AtmoSuit))
+				{
+					flag = true;
+					break;
+				}
+			}
+			if (flag)
+			{
+				int cycle = GameClock.Instance.GetCycle();
+				int instanceID = driver.GetComponent<KPrefabID>().InstanceID;
+				if (!dupesCompleteChoresInSuits.ContainsKey(cycle))
+				{
+					dupesCompleteChoresInSuits.Add(cycle, new List<int>
+					{
+						instanceID
+					});
+				}
+				else if (!dupesCompleteChoresInSuits[cycle].Contains(instanceID))
+				{
+					dupesCompleteChoresInSuits[cycle].Add(instanceID);
+				}
+			}
+		}
+	}
+
+	public void OnNewDay(object data)
+	{
+		foreach (MinionStorage item in Components.MinionStorages.Items)
+		{
+			if ((UnityEngine.Object)item.GetComponent<CommandModule>() != (UnityEngine.Object)null)
+			{
+				List<MinionStorage.Info> storedMinionInfo = item.GetStoredMinionInfo();
+				if (storedMinionInfo.Count > 0)
+				{
+					int cycle = GameClock.Instance.GetCycle();
+					if (!dupesCompleteChoresInSuits.ContainsKey(cycle))
+					{
+						dupesCompleteChoresInSuits.Add(cycle, new List<int>());
+					}
+					for (int i = 0; i < storedMinionInfo.Count; i++)
+					{
+						MinionStorage.Info info = storedMinionInfo[i];
+						KPrefabID kPrefabID = info.serializedMinion.Get();
+						if ((UnityEngine.Object)kPrefabID != (UnityEngine.Object)null)
+						{
+							dupesCompleteChoresInSuits[cycle].Add(kPrefabID.InstanceID);
+						}
+					}
+				}
 			}
 		}
 	}

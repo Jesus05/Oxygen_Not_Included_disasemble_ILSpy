@@ -4069,7 +4069,7 @@ namespace STRINGS
 				{
 					public static LocString NAME = "Claustrophobic";
 
-					public static LocString DESC = "This Duplicant feels suffocated in spaces less than four tiles high or three tiles wide";
+					public static LocString DESC = "This Duplicant feels suffocated in spaces fewer than four tiles high or three tiles wide";
 				}
 
 				public class FASHIONABLE

@@ -796,7 +796,7 @@ public class EconomyDetails
 			}
 			goto IL_0708;
 		}
-		goto IL_0cd4;
+		goto IL_0cd2;
 		IL_0708:
 		if ((UnityEngine.Object)component11 != (UnityEngine.Object)null)
 		{
@@ -818,13 +818,13 @@ public class EconomyDetails
 			ComplexRecipe.RecipeElement[] ingredients = complexRecipe.ingredients;
 			foreach (ComplexRecipe.RecipeElement recipeElement in ingredients)
 			{
-				Resource resource5 = CreateResource(recipeElement.material, amountResourceType);
+				CreateResource(recipeElement.material, amountResourceType);
 				transformation.AddDelta(new Transformation.Delta(GetResource(recipeElement.material), 0f - recipeElement.amount));
 			}
 			ComplexRecipe.RecipeElement[] results = complexRecipe.results;
 			foreach (ComplexRecipe.RecipeElement recipeElement2 in results)
 			{
-				Resource resource5 = CreateResource(recipeElement2.material, amountResourceType);
+				CreateResource(recipeElement2.material, amountResourceType);
 				transformation.AddDelta(new Transformation.Delta(GetResource(recipeElement2.material), recipeElement2.amount));
 			}
 		}
@@ -843,8 +843,8 @@ public class EconomyDetails
 				for (int num4 = 0; num4 < consumedElements2.Length; num4++)
 				{
 					PlantElementAbsorber.ConsumeInfo consumeInfo = consumedElements2[num4];
-					Resource resource6 = CreateResource(consumeInfo.tag, massResourceType);
-					transformation.AddDelta(new Transformation.Delta(resource6, (0f - consumeInfo.massConsumptionRate) * transformation.timeInSeconds));
+					Resource resource5 = CreateResource(consumeInfo.tag, massResourceType);
+					transformation.AddDelta(new Transformation.Delta(resource5, (0f - consumeInfo.massConsumptionRate) * transformation.timeInSeconds));
 				}
 			}
 		}
@@ -856,8 +856,8 @@ public class EconomyDetails
 				for (int num5 = 0; num5 < consumedElements3.Length; num5++)
 				{
 					PlantElementAbsorber.ConsumeInfo consumeInfo2 = consumedElements3[num5];
-					Resource resource7 = CreateResource(consumeInfo2.tag, massResourceType);
-					transformation.AddDelta(new Transformation.Delta(resource7, (0f - consumeInfo2.massConsumptionRate) * transformation.timeInSeconds));
+					Resource resource6 = CreateResource(consumeInfo2.tag, massResourceType);
+					transformation.AddDelta(new Transformation.Delta(resource6, (0f - consumeInfo2.massConsumptionRate) * transformation.timeInSeconds));
 				}
 			}
 		}
@@ -899,8 +899,8 @@ public class EconomyDetails
 			Effect effect = component16.CreateEffect();
 			foreach (AttributeModifier selfModifier in effect.SelfModifiers)
 			{
-				Resource resource8 = CreateResource(new Tag(selfModifier.AttributeId), attributeResourceType);
-				transformation.AddDelta(new Transformation.Delta(resource8, selfModifier.Value));
+				Resource resource7 = CreateResource(new Tag(selfModifier.AttributeId), attributeResourceType);
+				transformation.AddDelta(new Transformation.Delta(resource7, selfModifier.Value));
 			}
 		}
 		if (def != null)
@@ -908,8 +908,8 @@ public class EconomyDetails
 			CollectDietTransformations(prefab_id);
 		}
 		transformations.Add(transformation);
-		goto IL_0cd4;
-		IL_0cd4:
+		goto IL_0cd2;
+		IL_0cd2:
 		return transformation;
 	}
 

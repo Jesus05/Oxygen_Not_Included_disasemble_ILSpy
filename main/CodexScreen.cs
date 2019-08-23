@@ -354,29 +354,40 @@ public class CodexScreen : KScreen
 		string empty = string.Empty;
 		GameObject gameObject = navigatorContent.gameObject;
 		Dictionary<string, GameObject> dictionary = new Dictionary<string, GameObject>();
+		List<Tuple<string, CodexEntry>> list = new List<Tuple<string, CodexEntry>>();
 		foreach (KeyValuePair<string, CodexEntry> entry in CodexCache.entries)
 		{
-			empty = entry.Value.category;
+			if (string.IsNullOrEmpty(entry.Value.sortString))
+			{
+				entry.Value.sortString = UI.StripLinkFormatting(Strings.Get(entry.Value.title));
+			}
+			list.Add(new Tuple<string, CodexEntry>(entry.Key, entry.Value));
+		}
+		list.Sort((Tuple<string, CodexEntry> a, Tuple<string, CodexEntry> b) => string.Compare(a.second.sortString, b.second.sortString));
+		for (int i = 0; i < list.Count; i++)
+		{
+			Tuple<string, CodexEntry> tuple = list[i];
+			empty = tuple.second.category;
 			if (empty == string.Empty || empty == "Root")
 			{
 				empty = "Root";
 			}
 			if (!dictionary.ContainsKey(empty))
 			{
-				NewCategoryHeader(entry, dictionary);
+				NewCategoryHeader(new KeyValuePair<string, CodexEntry>(tuple.first, tuple.second), dictionary);
 			}
 			GameObject gameObject2 = Util.KInstantiateUI(prefabNavigatorEntry, dictionary[empty], true);
-			string id = entry.Key;
+			string id = tuple.second.id;
 			gameObject2.GetComponent<KButton>().onClick += delegate
 			{
 				ChangeArticle(id, false);
 			};
-			if (string.IsNullOrEmpty(entry.Value.name))
+			if (string.IsNullOrEmpty(tuple.second.name))
 			{
-				entry.Value.name = Strings.Get(entry.Value.title);
+				tuple.second.name = Strings.Get(tuple.second.title);
 			}
-			gameObject2.GetComponentInChildren<LocText>().text = entry.Value.name;
-			entryButtons.Add(entry.Value, gameObject2);
+			gameObject2.GetComponentInChildren<LocText>().text = tuple.second.name;
+			entryButtons.Add(tuple.second, gameObject2);
 		}
 		foreach (KeyValuePair<string, CodexEntry> entry2 in CodexCache.entries)
 		{
@@ -385,15 +396,15 @@ public class CodexScreen : KScreen
 				entry2.Value.searchOnly = true;
 			}
 		}
-		List<KeyValuePair<string, GameObject>> list = new List<KeyValuePair<string, GameObject>>();
+		List<KeyValuePair<string, GameObject>> list2 = new List<KeyValuePair<string, GameObject>>();
 		foreach (KeyValuePair<string, GameObject> item in dictionary)
 		{
-			list.Add(item);
+			list2.Add(item);
 		}
-		list.Sort((KeyValuePair<string, GameObject> a, KeyValuePair<string, GameObject> b) => string.Compare(a.Value.name, b.Value.name));
-		for (int i = 0; i < list.Count; i++)
+		list2.Sort((KeyValuePair<string, GameObject> a, KeyValuePair<string, GameObject> b) => string.Compare(a.Value.name, b.Value.name));
+		for (int j = 0; j < list2.Count; j++)
 		{
-			list[i].Value.transform.parent.SetSiblingIndex(i);
+			list2[j].Value.transform.parent.SetSiblingIndex(j);
 		}
 		SetupCategory(dictionary, "PLANTS");
 		SetupCategory(dictionary, "CREATURES");

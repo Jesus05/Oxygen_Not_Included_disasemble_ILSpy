@@ -315,6 +315,24 @@ public class BuildingDef : Def
 		return gameObject;
 	}
 
+	public List<Tag> DefaultElements()
+	{
+		List<Tag> list = new List<Tag>();
+		string[] materialCategory = MaterialCategory;
+		foreach (string text in materialCategory)
+		{
+			foreach (Element element in ElementLoader.elements)
+			{
+				if (element.IsSolid && (element.tag.Name == text || element.HasTag(text)))
+				{
+					list.Add(element.tag);
+					break;
+				}
+			}
+		}
+		return list;
+	}
+
 	public GameObject Build(int cell, Orientation orientation, Storage resource_storage, IList<Tag> selected_elements, float temperature, bool playsound = true)
 	{
 		Vector3 pos = Grid.CellToPosCBC(cell, SceneLayer);

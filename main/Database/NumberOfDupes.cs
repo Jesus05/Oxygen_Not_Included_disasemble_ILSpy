@@ -36,5 +36,10 @@ namespace Database
 		{
 			numDupes = reader.ReadInt32();
 		}
+
+		public override string GetProgress(bool complete)
+		{
+			return string.Format(COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.STATUS.POPULATION, (!complete) ? Components.LiveMinionIdentities.Items.Count : numDupes, numDupes);
+		}
 	}
 }

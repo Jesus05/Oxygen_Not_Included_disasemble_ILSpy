@@ -1,3 +1,4 @@
+using STRINGS;
 using System.IO;
 using UnityEngine;
 
@@ -27,6 +28,11 @@ namespace Database
 
 		public override void Serialize(BinaryWriter writer)
 		{
+		}
+
+		public override string GetProgress(bool complete)
+		{
+			return COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.STATUS.CREATE_A_PAINTING;
 		}
 	}
 }

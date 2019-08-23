@@ -4,6 +4,99 @@ namespace STRINGS
 	{
 		public class MISC_REQUIREMENTS
 		{
+			public class STATUS
+			{
+				public static LocString PLATFORM_UNLOCKING_DISABLED = "Platform achievements cannot be unlocked because a debug command was used in this colony. ";
+
+				public static LocString PLATFORM_UNLOCKING_ENABLED = "Platform achievements can be unlocked.";
+
+				public static LocString EXPAND_TOOLTIP = "<i>Click to view progress</i>";
+
+				public static LocString CYCLE_NUMBER = "Cycle: {0} / {1}";
+
+				public static LocString REMAINING_CYCLES = "Cycles remaining: {0} / {1}";
+
+				public static LocString FRACTIONAL_CYCLE = "Cycle: {0:0.##} / {1:0.##}";
+
+				public static LocString LAUNCHED_ROCKET = "Launched a Rocket into Space";
+
+				public static LocString LAUNCHED_ROCKET_TO_WORMHOLE = "Sent a Duplicant on a one-way mission to the furthest Starmap destination";
+
+				public static LocString BUILT_A_ROOM = "Built a {0}.";
+
+				public static LocString BUILT_N_ROOMS = "Built {0}: {1} / {2}";
+
+				public static LocString CALORIE_SURPLUS = "Calorie surplus: {0} / {1}";
+
+				public static LocString TECH_RESEARCHED = "Tech researched: {0} / {1}";
+
+				public static LocString SKILL_BRANCH = "Unlocked an entire branch of the skill tree";
+
+				public static LocString CLOTHE_DUPES = "Duplicants in clothing: {0} / {1}";
+
+				public static LocString KELVIN_COOLING = "Coldest building: {0:##0.#}k";
+
+				public static LocString NO_FARM_TILES = "No farmed plants";
+
+				public static LocString CALORIES_FROM_MEAT = "Calories from meat: {0} / {1}";
+
+				public static LocString CONSUME_CALORIES = "Calories: {0} / {1}";
+
+				public static LocString CONSUME_ITEM = "Consume something prepared at {0}";
+
+				public static LocString PREPARED_SEPARATOR = " or ";
+
+				public static LocString BUILT_OUTSIDE_START = "Built outside the starting biome";
+
+				public static LocString TRAVELED_IN_TUBES = "Distance: {0:n} m / {1:n} m";
+
+				public static LocString ENTER_OIL_BIOME = "Entered an oil biome";
+
+				public static LocString VENTED_MASS = "Vented: {0} / {1}";
+
+				public static LocString BUILT_ONE_TOILET = "Built one toilet";
+
+				public static LocString BUILING_BEDS = "Built beds: {0} ({1} Needed)";
+
+				public static LocString BUILT_ONE_BED_PER_DUPLICANT = "Built one bed for each Duplicant";
+
+				public static LocString UPGRADE_ALL_BUILDINGS = "All {0} updgraded to {1}";
+
+				public static LocString AUTOMATE_A_BUILDING = "Automated a building";
+
+				public static LocString CREATE_A_PAINTING = "Created a masterpiece painting";
+
+				public static LocString INVESTIGATE_A_POI = "Inspected a ruin";
+
+				public static LocString HATCH_A_MORPH = "Hatched a critter morph";
+
+				public static LocString CURED_DISEASE = "Cured a disease";
+
+				public static LocString CHORES_OF_TYPE = "{2} errands: {0} / {1}";
+
+				public static LocString REVEALED = "Revealed: {0:0.##}% / {1:0.##}%";
+
+				public static LocString POOP_PRODUCTION = "Poop production: {0} / {1}";
+
+				public static LocString BLOCKED_A_COMET = "Blocked a meteor with a Bunker Door";
+
+				public static LocString POPULATION = "Population: {0} / {1}";
+
+				public static LocString TAME_A_CRITTER = "Tamed a {0}";
+
+				public static LocString ARM_PERFORMANCE = "Auto-Sweepers outperformed dupes for cycles: {0} / {1}";
+
+				public static LocString ARM_VS_DUPE_FETCHES = "Deliveries this cycle: Auto-Sweepers: {1} Duplicants: {2}";
+
+				public static LocString EXOSUIT_CYCLES = "All Dupes completed a Exosuit errand for cycles: {0} / {1}";
+
+				public static LocString EXOSUIT_THIS_CYCLE = "Dupes who completed Exosuit errands this cycle: {0} / {1}";
+
+				public static LocString GENERATE_POWER = "Energy generated: {0} / {1}";
+
+				public static LocString NO_BUILDING = "Never built a {0}";
+			}
+
 			public static LocString WINCONDITION_LEAVE = "The Great Escape";
 
 			public static LocString WINCONDITION_LEAVE_DESCRIPTION = "Ensure your colony's legacy by fulfilling the requirements of the Escape Imperative.";
@@ -122,7 +215,7 @@ namespace STRINGS
 
 			public static LocString IDLE_DUPLICANTS = "Easy Livin'";
 
-			public static LocString IDLE_DUPLICANTS_DESCRIPTION = "Have Auto Sweepers complete more deliveries to machines than Duplicatnts over 5 cycles.";
+			public static LocString IDLE_DUPLICANTS_DESCRIPTION = "Have Auto-Sweepers complete more deliveries to machines than Duplicants over 5 cycles.";
 
 			public static LocString COOKED_FOOD = "It's Not Raw";
 
@@ -216,6 +309,8 @@ namespace STRINGS
 		public static LocString ACHIEVED_THIS_COLONY_TOOLTIP = "The current colony fulfilled this Initiative";
 
 		public static LocString NOT_ACHIEVED_THIS_COLONY = "The current colony hasn't fulfilled this Initiative";
+
+		public static LocString FAILED_THIS_COLONY = "The current colony cannot fulfill this Initiative";
 
 		public static LocString ACHIEVED_OTHER_COLONY_TOOLTIP = "This Initiative was fulfilled by a past colony";
 

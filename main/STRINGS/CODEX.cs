@@ -1229,7 +1229,7 @@ namespace STRINGS
 				{
 					public static LocString TITLE = "Cycle 3";
 
-					public static LocString BODY = "I've synthesized enough Ooze to print a new Duplicant; all I have to do now is choose a blueprint.\n\nIt'd be helpful to have an extra set of hands around the colony, but having another Duplicant also means another mouth to feed.\n\nOf course, I could always print supplies to help my existing Duplicants instead. I'm sure they would appreciate it.\n\n";
+					public static LocString BODY = "I've almost synthesized enough Ooze to print a new Duplicant; once the Ooze is ready, all I'll have left to do is choose a blueprint.\n\nIt'd be helpful to have an extra set of hands around the colony, but having another Duplicant also means another mouth to feed.\n\nOf course, I could always print supplies to help my existing Duplicants instead. I'm sure they would appreciate it.\n\n";
 				}
 
 				public class OUTSIDESTARTINGBIOME

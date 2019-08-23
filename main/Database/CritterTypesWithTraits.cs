@@ -6,7 +6,7 @@ namespace Database
 {
 	public class CritterTypesWithTraits : ColonyAchievementRequirement
 	{
-		private Dictionary<Tag, bool> critterTypesToCheck = new Dictionary<Tag, bool>();
+		public Dictionary<Tag, bool> critterTypesToCheck = new Dictionary<Tag, bool>();
 
 		private Tag trait;
 

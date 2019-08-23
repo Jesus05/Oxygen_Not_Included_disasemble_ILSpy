@@ -53,6 +53,10 @@ public class RetiredColonyData
 
 		public string nameY;
 
+		public RetiredColonyStatistic()
+		{
+		}
+
 		public RetiredColonyStatistic(string id, Tuple<float, float>[] data, string name, string axisNameX, string axisNameY)
 		{
 			this.id = id;
@@ -156,6 +160,10 @@ public class RetiredColonyData
 	{
 		get;
 		set;
+	}
+
+	public RetiredColonyData()
+	{
 	}
 
 	public RetiredColonyData(string colonyName, int cycleCount, string date, string[] achievements, MinionAssignablesProxy[] minions, BuildingComplete[] buildingCompletes)

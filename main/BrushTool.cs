@@ -31,8 +31,6 @@ public class BrushTool : InterfaceTool
 
 	protected bool affectFoundation;
 
-	private new static int defaultLayerMask;
-
 	private bool dragging;
 
 	protected int brushRadius = -1;
@@ -43,21 +41,9 @@ public class BrushTool : InterfaceTool
 
 	protected int currentCell;
 
-	protected new static int layerMask;
-
 	protected HashSet<int> cellsInRadius = new HashSet<int>();
 
 	public bool Dragging => dragging;
-
-	public static void SetLayerMask(int mask)
-	{
-		layerMask = mask;
-	}
-
-	public static void ClearLayerMask()
-	{
-		layerMask = defaultLayerMask;
-	}
 
 	protected override void OnActivateTool()
 	{
@@ -104,8 +90,6 @@ public class BrushTool : InterfaceTool
 	protected override void OnPrefabInit()
 	{
 		Game.Instance.Subscribe(1634669191, OnTutorialOpened);
-		defaultLayerMask = (1 | LayerMask.GetMask("World", "Pickupable", "Place", "PlaceWithDepth", "BlockSelection", "Construction"));
-		layerMask = defaultLayerMask;
 		base.OnPrefabInit();
 		if ((UnityEngine.Object)visualizer != (UnityEngine.Object)null)
 		{

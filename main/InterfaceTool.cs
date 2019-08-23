@@ -47,8 +47,6 @@ public class InterfaceTool : KMonoBehaviour
 
 	public KSelectable hover;
 
-	protected int defaultLayerMask;
-
 	protected int layerMask;
 
 	protected SelectMarker selectMarker;
@@ -109,7 +107,7 @@ public class InterfaceTool : KMonoBehaviour
 	{
 		if ((UnityEngine.Object)OverlayScreen.Instance != (UnityEngine.Object)null && viewMode != OverlayModes.None.ID)
 		{
-			OverlayScreen.Instance.ToggleOverlay(viewMode);
+			OverlayScreen.Instance.ToggleOverlay(viewMode, true);
 			toolActivatedViewMode = viewMode;
 		}
 		SetCursor(cursor, cursorOffset, CursorMode.Auto);
@@ -120,7 +118,7 @@ public class InterfaceTool : KMonoBehaviour
 		OnDeactivateTool(new_tool);
 		if (((UnityEngine.Object)new_tool == (UnityEngine.Object)null || (UnityEngine.Object)new_tool == (UnityEngine.Object)SelectTool.Instance) && toolActivatedViewMode != OverlayModes.None.ID && toolActivatedViewMode == SimDebugView.Instance.GetMode())
 		{
-			OverlayScreen.Instance.ToggleOverlay(OverlayModes.None.ID);
+			OverlayScreen.Instance.ToggleOverlay(OverlayModes.None.ID, true);
 			toolActivatedViewMode = OverlayModes.None.ID;
 		}
 	}

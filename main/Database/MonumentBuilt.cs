@@ -50,5 +50,10 @@ namespace Database
 		public override void Serialize(BinaryWriter writer)
 		{
 		}
+
+		public override string GetProgress(bool complete)
+		{
+			return Name();
+		}
 	}
 }

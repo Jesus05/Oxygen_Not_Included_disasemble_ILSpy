@@ -122,6 +122,11 @@ public class Telepad : StateMachineComponent<Telepad.StatesInstance>
 		{
 			Debug.LogError("Headquarters spawned at: (" + x.ToString() + "," + y.ToString() + ")");
 		}
+		if ((Object)GameUtil.GetTelepad() != (Object)null)
+		{
+			PopFXManager.Instance.SpawnFX(PopFXManager.Instance.sprite_Building, string.Format(BUILDINGS.PREFABS.HEADQUARTERSCOMPLETE.UNIQUE_POPTEXT, this.GetProperName()), null, base.transform.GetPosition(), 1.5f, false, false);
+			Util.KDestroyGameObject(base.gameObject);
+		}
 	}
 
 	protected override void OnSpawn()

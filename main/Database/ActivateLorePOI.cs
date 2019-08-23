@@ -1,3 +1,4 @@
+using STRINGS;
 using System.IO;
 using UnityEngine;
 
@@ -28,6 +29,11 @@ namespace Database
 				}
 			}
 			return false;
+		}
+
+		public override string GetProgress(bool complete)
+		{
+			return COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.STATUS.INVESTIGATE_A_POI;
 		}
 	}
 }

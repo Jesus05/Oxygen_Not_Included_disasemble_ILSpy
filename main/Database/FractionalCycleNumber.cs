@@ -1,3 +1,4 @@
+using STRINGS;
 using System.IO;
 
 namespace Database
@@ -26,6 +27,12 @@ namespace Database
 		public override void Deserialize(IReader reader)
 		{
 			fractionalCycleNumber = reader.ReadSingle();
+		}
+
+		public override string GetProgress(bool complete)
+		{
+			float num = (float)GameClock.Instance.GetCycle() + GameClock.Instance.GetCurrentCycleAsPercentage();
+			return string.Format(COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.STATUS.FRACTIONAL_CYCLE, (!complete) ? num : fractionalCycleNumber, fractionalCycleNumber);
 		}
 	}
 }

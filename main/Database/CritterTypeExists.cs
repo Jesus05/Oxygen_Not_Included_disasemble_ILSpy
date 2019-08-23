@@ -1,4 +1,5 @@
 using KSerialization;
+using STRINGS;
 using System.Collections.Generic;
 using System.IO;
 
@@ -43,6 +44,11 @@ namespace Database
 				string name = reader.ReadKleiString();
 				critterTypes.Add(new Tag(name));
 			}
+		}
+
+		public override string GetProgress(bool complete)
+		{
+			return COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.STATUS.HATCH_A_MORPH;
 		}
 	}
 }

@@ -1,19 +1,32 @@
+using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class Slideshow : KMonoBehaviour
 {
+	public delegate void onBeforeAndEndPlayDelegate();
+
 	public RawImage imageTarget;
+
+	private string[] files;
+
+	private Sprite currentSlideImage;
 
 	private Sprite[] sprites;
 
 	public float timePerSlide = 1f;
 
+	public float timeFactorForLastSlide = 3f;
+
 	private int currentSlide;
 
 	private float timeUntilNextSlide;
 
+	private bool paused;
+
 	public bool playInThumbnail;
+
+	public SlideshowUpdateType updateType;
 
 	[SerializeField]
 	private bool isExpandable;
@@ -26,6 +39,25 @@ public class Slideshow : KMonoBehaviour
 
 	[SerializeField]
 	private KButton closeButton;
+
+	[SerializeField]
+	private KButton prevButton;
+
+	[SerializeField]
+	private KButton nextButton;
+
+	[SerializeField]
+	private KButton pauseButton;
+
+	[SerializeField]
+	private Image pauseIcon;
+
+	[SerializeField]
+	private Image unpauseIcon;
+
+	public onBeforeAndEndPlayDelegate onBeforePlay;
+
+	public onBeforeAndEndPlayDelegate onEndingPlay;
 
 	protected override void OnSpawn()
 	{
@@ -40,7 +72,40 @@ public class Slideshow : KMonoBehaviour
 			button = GetComponent<KButton>();
 			button.onClick += delegate
 			{
-				VideoScreen.Instance.PlaySlideShow(sprites);
+				if (onBeforePlay != null)
+				{
+					onBeforePlay();
+				}
+				switch (updateType)
+				{
+				case SlideshowUpdateType.preloadedSprites:
+					VideoScreen.Instance.PlaySlideShow(sprites);
+					break;
+				case SlideshowUpdateType.loadOnDemand:
+					VideoScreen.Instance.PlaySlideShow(files);
+					break;
+				}
+			};
+		}
+		if ((Object)nextButton != (Object)null)
+		{
+			nextButton.onClick += delegate
+			{
+				nextSlide();
+			};
+		}
+		if ((Object)prevButton != (Object)null)
+		{
+			prevButton.onClick += delegate
+			{
+				prevSlide();
+			};
+		}
+		if ((Object)pauseButton != (Object)null)
+		{
+			pauseButton.onClick += delegate
+			{
+				SetPaused(!paused);
 			};
 		}
 		if ((Object)closeButton != (Object)null)
@@ -48,22 +113,42 @@ public class Slideshow : KMonoBehaviour
 			closeButton.onClick += delegate
 			{
 				VideoScreen.Instance.Stop();
+				if (onEndingPlay != null)
+				{
+					onEndingPlay();
+				}
 			};
 		}
 	}
 
-	public void SetSprites(Sprite[] sprites)
+	public void SetPaused(bool state)
 	{
-		this.sprites = sprites;
+		paused = state;
+		if ((Object)pauseIcon != (Object)null)
+		{
+			pauseIcon.gameObject.SetActive(!paused);
+		}
+		if ((Object)unpauseIcon != (Object)null)
+		{
+			unpauseIcon.gameObject.SetActive(paused);
+		}
+		if ((Object)prevButton != (Object)null)
+		{
+			prevButton.gameObject.SetActive(paused);
+		}
+		if ((Object)nextButton != (Object)null)
+		{
+			nextButton.gameObject.SetActive(paused);
+		}
+	}
+
+	private void resetSlide(bool enable)
+	{
 		timeUntilNextSlide = timePerSlide;
 		currentSlide = 0;
-		if (sprites.Length > 0 && (Object)sprites[0] != (Object)null)
+		if (enable)
 		{
 			imageTarget.color = Color.white;
-			imageTarget.texture = sprites[0].texture;
-			Vector2 fittedSize = GetFittedSize(960f, 960f);
-			RectTransform component = GetComponent<RectTransform>();
-			component.sizeDelta = fittedSize;
 		}
 		else if (transparentIfEmpty)
 		{
@@ -71,14 +156,61 @@ public class Slideshow : KMonoBehaviour
 		}
 	}
 
-	public Vector2 GetFittedSize(float maxWidth, float maxHeight)
+	private Sprite loadSlide(string file)
 	{
-		if (sprites == null || (Object)sprites[0] == (Object)null || (Object)sprites[0].texture == (Object)null)
+		float realtimeSinceStartup = Time.realtimeSinceStartup;
+		Texture2D texture2D = new Texture2D(512, 768);
+		texture2D.filterMode = FilterMode.Point;
+		texture2D.LoadImage(File.ReadAllBytes(file));
+		return Sprite.Create(texture2D, new Rect(Vector2.zero, new Vector2((float)texture2D.width, (float)texture2D.height)), new Vector2(0.5f, 0.5f), 100f, 0u, SpriteMeshType.FullRect);
+	}
+
+	public void SetFiles(string[] files, int loadFrame = -1)
+	{
+		if (files != null)
+		{
+			this.files = files;
+			bool flag = files.Length > 0 && files[0] != null;
+			resetSlide(flag);
+			if (flag)
+			{
+				int num = (loadFrame == -1) ? (files.Length - 1) : loadFrame;
+				string file = files[num];
+				Sprite slide = loadSlide(file);
+				setSlide(slide);
+				currentSlideImage = slide;
+			}
+		}
+	}
+
+	public void updateSize(Sprite sprite)
+	{
+		Vector2 fittedSize = GetFittedSize(sprite, 960f, 960f);
+		RectTransform component = GetComponent<RectTransform>();
+		component.sizeDelta = fittedSize;
+	}
+
+	public void SetSprites(Sprite[] sprites)
+	{
+		if (sprites != null)
+		{
+			this.sprites = sprites;
+			resetSlide(sprites.Length > 0 && (Object)sprites[0] != (Object)null);
+			if (sprites.Length > 0 && (Object)sprites[0] != (Object)null)
+			{
+				setSlide(sprites[0]);
+			}
+		}
+	}
+
+	public Vector2 GetFittedSize(Sprite sprite, float maxWidth, float maxHeight)
+	{
+		if ((Object)sprite == (Object)null || (Object)sprite.texture == (Object)null)
 		{
 			return Vector2.zero;
 		}
-		int width = sprites[0].texture.width;
-		int height = sprites[0].texture.height;
+		int width = sprite.texture.width;
+		int height = sprite.texture.height;
 		float num = maxWidth / (float)width;
 		float num2 = maxHeight / (float)height;
 		if (num < num2)
@@ -88,19 +220,76 @@ public class Slideshow : KMonoBehaviour
 		return new Vector2((float)width * num2, (float)height * num2);
 	}
 
+	public void setSlide(Sprite slide)
+	{
+		if (!((Object)slide == (Object)null))
+		{
+			imageTarget.texture = slide.texture;
+			updateSize(slide);
+		}
+	}
+
+	public void nextSlide()
+	{
+		setSlideIndex(currentSlide + 1);
+	}
+
+	public void prevSlide()
+	{
+		setSlideIndex(currentSlide - 1);
+	}
+
+	private void setSlideIndex(int slideIndex)
+	{
+		timeUntilNextSlide = timePerSlide;
+		switch (updateType)
+		{
+		case SlideshowUpdateType.preloadedSprites:
+			if (slideIndex < 0)
+			{
+				slideIndex = sprites.Length + slideIndex;
+			}
+			currentSlide = slideIndex % sprites.Length;
+			if (currentSlide == sprites.Length - 1)
+			{
+				timeUntilNextSlide *= timeFactorForLastSlide;
+			}
+			if (playInThumbnail)
+			{
+				setSlide(sprites[currentSlide]);
+			}
+			break;
+		case SlideshowUpdateType.loadOnDemand:
+			if (slideIndex < 0)
+			{
+				slideIndex = files.Length + slideIndex;
+			}
+			currentSlide = slideIndex % files.Length;
+			if (currentSlide == files.Length - 1)
+			{
+				timeUntilNextSlide *= timeFactorForLastSlide;
+			}
+			if (playInThumbnail)
+			{
+				if ((Object)currentSlideImage != (Object)null)
+				{
+					Object.Destroy(currentSlideImage);
+				}
+				currentSlideImage = loadSlide(files[currentSlide]);
+				setSlide(currentSlideImage);
+			}
+			break;
+		}
+	}
+
 	private void Update()
 	{
-		if (sprites != null && sprites.Length > 0)
+		if ((updateType != 0 || (sprites != null && sprites.Length > 0)) && (updateType != SlideshowUpdateType.loadOnDemand || (files != null && files.Length > 0)) && !paused)
 		{
 			timeUntilNextSlide -= Time.unscaledDeltaTime;
 			if (timeUntilNextSlide <= 0f)
 			{
-				timeUntilNextSlide = timePerSlide;
-				currentSlide = (currentSlide + 1) % sprites.Length;
-				if (playInThumbnail && (Object)sprites[currentSlide] != (Object)null)
-				{
-					imageTarget.texture = sprites[currentSlide].texture;
-				}
+				nextSlide();
 			}
 		}
 	}

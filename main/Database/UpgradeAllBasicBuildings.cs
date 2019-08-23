@@ -1,4 +1,5 @@
 using KSerialization;
+using STRINGS;
 using System.IO;
 
 namespace Database
@@ -51,6 +52,13 @@ namespace Database
 		{
 			writer.WriteKleiString(basicBuilding.ToString());
 			writer.WriteKleiString(upgradeBuilding.ToString());
+		}
+
+		public override string GetProgress(bool complete)
+		{
+			BuildingDef buildingDef = Assets.GetBuildingDef(basicBuilding.Name);
+			BuildingDef buildingDef2 = Assets.GetBuildingDef(upgradeBuilding.Name);
+			return string.Format(COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.STATUS.UPGRADE_ALL_BUILDINGS, buildingDef.Name, buildingDef2.Name);
 		}
 	}
 }

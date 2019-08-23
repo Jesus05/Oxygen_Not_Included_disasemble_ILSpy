@@ -1,3 +1,4 @@
+using STRINGS;
 using System.IO;
 
 namespace Database
@@ -24,6 +25,11 @@ namespace Database
 		public override void Serialize(BinaryWriter writer)
 		{
 			writer.Write(numCalories);
+		}
+
+		public override string GetProgress(bool complete)
+		{
+			return string.Format(COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.STATUS.CONSUME_CALORIES, GameUtil.GetFormattedCalories((!complete) ? (RationTracker.Get().GetCaloriesConsumed() / 1000f) : ((float)numCalories), GameUtil.TimeSlice.None, true), GameUtil.GetFormattedCalories((float)numCalories, GameUtil.TimeSlice.None, true));
 		}
 	}
 }

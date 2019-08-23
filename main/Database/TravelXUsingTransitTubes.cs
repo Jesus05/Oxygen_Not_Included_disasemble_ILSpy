@@ -1,3 +1,4 @@
+using STRINGS;
 using System.IO;
 using UnityEngine;
 
@@ -40,6 +41,20 @@ namespace Database
 			byte value = (byte)navType;
 			writer.Write(value);
 			writer.Write(distanceToTravel);
+		}
+
+		public override string GetProgress(bool complete)
+		{
+			int num = 0;
+			foreach (MinionIdentity item in Components.MinionIdentities.Items)
+			{
+				Navigator component = item.GetComponent<Navigator>();
+				if ((Object)component != (Object)null && component.distanceTravelledByNavType.ContainsKey(navType))
+				{
+					num += component.distanceTravelledByNavType[navType];
+				}
+			}
+			return string.Format(COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.STATUS.TRAVELED_IN_TUBES, (!complete) ? num : distanceToTravel, distanceToTravel);
 		}
 	}
 }

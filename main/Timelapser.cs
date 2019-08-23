@@ -9,7 +9,13 @@ public class Timelapser : KMonoBehaviour
 
 	private bool screenshotPending;
 
+	private bool previewScreenshot;
+
+	private string previewSaveGamePath = string.Empty;
+
 	private bool screenshotToday = true;
+
+	private HashedString activeOverlay;
 
 	private Camera freezeCamera;
 
@@ -20,6 +26,8 @@ public class Timelapser : KMonoBehaviour
 	private float camSize;
 
 	private bool debugScreenShot;
+
+	private Vector2Int previewScreenshotResolution = new Vector2Int(Grid.WidthInCells * 2, Grid.HeightInCells * 2);
 
 	private const int DEFAULT_SCREENSHOT_INTERVAL = 10;
 
@@ -171,7 +179,11 @@ public class Timelapser : KMonoBehaviour
 
 	private void RefreshRenderTextureSize(object data = null)
 	{
-		if (timelapseUserEnabled)
+		if (previewScreenshot)
+		{
+			bufferRenderTexture = new RenderTexture(previewScreenshotResolution.x, previewScreenshotResolution.y, 32, RenderTextureFormat.ARGB32);
+		}
+		else if (timelapseUserEnabled)
 		{
 			Vector2I timelapseResolution = SaveGame.Instance.TimelapseResolution;
 			int x = timelapseResolution.x;
@@ -233,8 +245,14 @@ public class Timelapser : KMonoBehaviour
 
 	public void SaveScreenshot()
 	{
-		Debug.Log("Screenshot!");
 		screenshotPending = true;
+	}
+
+	public void SaveColonyPreview(string saveFileName)
+	{
+		previewSaveGamePath = saveFileName;
+		previewScreenshot = true;
+		SaveScreenshot();
 	}
 
 	private void SetPostionAndOrtho()
@@ -318,20 +336,30 @@ public class Timelapser : KMonoBehaviour
 			Directory.CreateDirectory(text);
 		}
 		string path = RetireColonyUtility.StripInvalidCharacters(SaveGame.Instance.BaseName);
-		string text2 = Path.Combine(text, path);
-		if (!Directory.Exists(text2))
+		if (!previewScreenshot)
 		{
-			Directory.CreateDirectory(text2);
+			string text2 = Path.Combine(text, path);
+			if (!Directory.Exists(text2))
+			{
+				Directory.CreateDirectory(text2);
+			}
+			string text3 = Path.Combine(text2, path);
+			DebugUtil.LogArgs("Saving screenshot to", text3);
+			string format = "0000.##";
+			text3 = text3 + "_cycle_" + GameClock.Instance.GetCycle().ToString(format);
+			if (debugScreenShot)
+			{
+				string text4 = text3;
+				text3 = text4 + "_" + System.DateTime.Now.Day + "-" + System.DateTime.Now.Month + "_" + System.DateTime.Now.Hour + "-" + System.DateTime.Now.Minute + "-" + System.DateTime.Now.Second;
+			}
+			File.WriteAllBytes(text3 + ".png", bytes);
 		}
-		string text3 = Path.Combine(text2, path);
-		DebugUtil.LogArgs("Saving screenshot to", text3);
-		string format = "0000.##";
-		text3 = text3 + "_cycle_" + GameClock.Instance.GetCycle().ToString(format);
-		if (debugScreenShot)
+		else
 		{
-			string text4 = text3;
-			text3 = text4 + "_" + System.DateTime.Now.Day + "-" + System.DateTime.Now.Month + "_" + System.DateTime.Now.Hour + "-" + System.DateTime.Now.Minute + "-" + System.DateTime.Now.Second;
+			string path2 = previewSaveGamePath;
+			path2 = Path.ChangeExtension(path2, ".png");
+			DebugUtil.LogArgs("Saving screenshot to", path2);
+			File.WriteAllBytes(path2, bytes);
 		}
-		File.WriteAllBytes(text3 + ".png", bytes);
 	}
 }

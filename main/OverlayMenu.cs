@@ -141,11 +141,11 @@ public class OverlayMenu : KIconToggleMenu
 	{
 		if (SimDebugView.Instance.GetMode() == ((OverlayToggleInfo)toggle_info).simView)
 		{
-			OverlayScreen.Instance.ToggleOverlay(OverlayModes.None.ID);
+			OverlayScreen.Instance.ToggleOverlay(OverlayModes.None.ID, true);
 		}
 		else if (((OverlayToggleInfo)toggle_info).IsUnlocked())
 		{
-			OverlayScreen.Instance.ToggleOverlay(((OverlayToggleInfo)toggle_info).simView);
+			OverlayScreen.Instance.ToggleOverlay(((OverlayToggleInfo)toggle_info).simView, true);
 		}
 	}
 
@@ -164,7 +164,7 @@ public class OverlayMenu : KIconToggleMenu
 		{
 			if (OverlayScreen.Instance.GetMode() != OverlayModes.None.ID && e.TryConsume(Action.Escape))
 			{
-				OverlayScreen.Instance.ToggleOverlay(OverlayModes.None.ID);
+				OverlayScreen.Instance.ToggleOverlay(OverlayModes.None.ID, true);
 			}
 			if (!e.Consumed)
 			{
@@ -179,7 +179,7 @@ public class OverlayMenu : KIconToggleMenu
 		{
 			if (OverlayScreen.Instance.GetMode() != OverlayModes.None.ID && PlayerController.Instance.ConsumeIfNotDragging(e, Action.MouseRight))
 			{
-				OverlayScreen.Instance.ToggleOverlay(OverlayModes.None.ID);
+				OverlayScreen.Instance.ToggleOverlay(OverlayModes.None.ID, true);
 			}
 			if (!e.Consumed)
 			{

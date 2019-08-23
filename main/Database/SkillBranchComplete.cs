@@ -1,4 +1,5 @@
 using KSerialization;
+using STRINGS;
 using System.Collections.Generic;
 using System.IO;
 
@@ -46,6 +47,11 @@ namespace Database
 				string id = reader.ReadKleiString();
 				skillsToMaster.Add(Db.Get().Skills.Get(id));
 			}
+		}
+
+		public override string GetProgress(bool complete)
+		{
+			return COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.STATUS.SKILL_BRANCH;
 		}
 	}
 }

@@ -45,12 +45,6 @@ public class ResearchScreen : KModalScreen
 	private KButton filterClearButton;
 
 	[SerializeField]
-	private RectTransform scaleOffsetAnchor;
-
-	[SerializeField]
-	private RectTransform contentPositionDummy;
-
-	[SerializeField]
 	private KButton zoomOutButton;
 
 	[SerializeField]
@@ -60,17 +54,11 @@ public class ResearchScreen : KModalScreen
 
 	public KButton CloseButton;
 
-	private float targetContentScale = 1f;
-
 	private GraphicRaycaster m_Raycaster;
 
 	private PointerEventData m_PointerEventData;
 
-	private UnityEngine.EventSystems.EventSystem m_EventSystem;
-
 	private Vector3 currentScrollPosition;
-
-	private float keyboardScrollSpeed = 1500f;
 
 	private bool panUp;
 
@@ -79,8 +67,6 @@ public class ResearchScreen : KModalScreen
 	private bool panLeft;
 
 	private bool panRight;
-
-	public float contentPositionLerpSpeed = 10f;
 
 	private bool zoomingOut;
 
@@ -91,6 +77,40 @@ public class ResearchScreen : KModalScreen
 	private bool isDragging;
 
 	private Vector3 dragStartPosition;
+
+	private Vector3 dragLastPosition;
+
+	private float targetZoom = 1f;
+
+	private float currentZoom = 1f;
+
+	private bool zoomCenterLock;
+
+	private Vector3 keyPanDelta = Vector3.zero;
+
+	[SerializeField]
+	private float effectiveZoomSpeed = 5f;
+
+	[SerializeField]
+	private float zoomAmountPerScroll = 0.05f;
+
+	[SerializeField]
+	private float zoomAmountPerButton = 0.5f;
+
+	[SerializeField]
+	private float minZoom = 0.15f;
+
+	[SerializeField]
+	private float maxZoom = 1f;
+
+	[SerializeField]
+	private float keyboardScrollSpeed = 200f;
+
+	[SerializeField]
+	private float keyPanEasing = 1f;
+
+	[SerializeField]
+	private float edgeClampFactor = 0.5f;
 
 	public bool IsBeingResearched(Tech tech)
 	{
@@ -110,154 +130,97 @@ public class ResearchScreen : KModalScreen
 				transform = transform.parent;
 			}
 		}
-		m_EventSystem = GetComponent<UnityEngine.EventSystems.EventSystem>();
-		contentPositionDummy.SetLocalPosition(new Vector3(1000f, -2500f, 0f));
 	}
 
-	private IEnumerator ZoomOut()
+	private void ZoomOut()
 	{
-		KCanvasScaler kCanvasScaler = Object.FindObjectOfType<KCanvasScaler>();
-		zoomingOut = true;
-		contentPositionDummy.transform.SetParent(scaleOffsetAnchor.transform);
-		float zoomAmount = Mathf.Clamp(0.45f * kCanvasScaler.GetCanvasScale(), 0.1f, 1f);
-		Vector3 localScale = scaleOffsetAnchor.transform.localScale;
-		if (localScale.x > zoomAmount)
-		{
-			scaleOffsetAnchor.transform.localScale *= 1f - Mathf.Clamp(Time.unscaledDeltaTime * 10f, 0f, 1f);
-			yield return (object)0;
-			/*Error: Unable to find new state assignment for yield return*/;
-		}
-		scaleOffsetAnchor.transform.localScale = Vector3.one * zoomAmount;
-		contentPositionDummy.transform.SetParent(scaleOffsetAnchor.transform.parent);
-		zoomingOut = false;
+		targetZoom = Mathf.Clamp(targetZoom - zoomAmountPerButton, minZoom, maxZoom);
+		zoomCenterLock = true;
 	}
 
-	private IEnumerator ZoomIn()
+	private void ZoomIn()
 	{
-		KCanvasScaler kCanvasScaler = Object.FindObjectOfType<KCanvasScaler>();
-		zoomingIn = true;
-		contentPositionDummy.transform.SetParent(scaleOffsetAnchor.transform);
-		float zoomAmount = Mathf.Clamp(1f * kCanvasScaler.GetCanvasScale(), 1f, 1.6f);
-		Vector3 localScale = scaleOffsetAnchor.transform.localScale;
-		if (localScale.x < zoomAmount)
-		{
-			scaleOffsetAnchor.transform.localScale *= 1f + Mathf.Clamp(Time.unscaledDeltaTime * 10f, 0f, 1f);
-			yield return (object)0;
-			/*Error: Unable to find new state assignment for yield return*/;
-		}
-		scaleOffsetAnchor.transform.localScale = Vector3.one * zoomAmount;
-		contentPositionDummy.transform.SetParent(scaleOffsetAnchor.transform.parent);
-		zoomingIn = false;
+		targetZoom = Mathf.Clamp(targetZoom + zoomAmountPerButton, minZoom, maxZoom);
+		zoomCenterLock = true;
 	}
 
 	private void Update()
 	{
-		if (!isDragging && rightMouseDown && Vector3.Distance(dragStartPosition, Input.mousePosition) > 1f)
+		RectTransform component = scrollContent.GetComponent<RectTransform>();
+		RectTransform component2 = scrollContent.transform.parent.GetComponent<RectTransform>();
+		if (!isDragging && rightMouseDown && Vector3.Distance(dragStartPosition, KInputManager.GetMousePos()) > 1f)
 		{
 			isDragging = true;
 		}
-		if (!zoomingIn && !zoomingOut)
+		Vector3 position = component.GetPosition();
+		float t = Mathf.Min(effectiveZoomSpeed * Time.unscaledDeltaTime, 0.9f);
+		currentZoom = Mathf.Lerp(currentZoom, targetZoom, t);
+		Vector3 zero = Vector3.zero;
+		Vector3 mousePos = KInputManager.GetMousePos();
+		Vector3 b = (!zoomCenterLock) ? (component.InverseTransformPoint(mousePos) * currentZoom) : (component.InverseTransformPoint(new Vector3((float)(Screen.width / 2), (float)(Screen.height / 2), 0f)) * currentZoom);
+		component.localScale = new Vector3(currentZoom, currentZoom, 1f);
+		Vector3 a = (!zoomCenterLock) ? (component.InverseTransformPoint(mousePos) * currentZoom) : (component.InverseTransformPoint(new Vector3((float)(Screen.width / 2), (float)(Screen.height / 2), 0f)) * currentZoom);
+		zero = a - b;
+		float d = keyboardScrollSpeed;
+		if (panUp)
 		{
-			scaleOffsetAnchor.SetPosition(Input.mousePosition);
-			if (panUp)
+			keyPanDelta -= Vector3.up * Time.unscaledDeltaTime * d;
+		}
+		else if (panDown)
+		{
+			keyPanDelta += Vector3.up * Time.unscaledDeltaTime * d;
+		}
+		if (panLeft)
+		{
+			keyPanDelta += Vector3.right * Time.unscaledDeltaTime * d;
+		}
+		else if (panRight)
+		{
+			keyPanDelta -= Vector3.right * Time.unscaledDeltaTime * d;
+		}
+		Vector3 vector = new Vector3(Mathf.Lerp(0f, keyPanDelta.x, Time.unscaledDeltaTime * keyPanEasing), Mathf.Lerp(0f, keyPanDelta.y, Time.unscaledDeltaTime * keyPanEasing), 0f);
+		keyPanDelta -= vector;
+		Vector3 vector2 = Vector3.zero;
+		if (isDragging)
+		{
+			Vector3 vector3 = component.InverseTransformPoint(mousePos) * currentZoom;
+			Vector3 b2 = KInputManager.GetMousePos() - dragLastPosition;
+			vector2 += b2;
+			dragLastPosition = KInputManager.GetMousePos();
+		}
+		Vector3 vector4 = position + zero + keyPanDelta + vector2;
+		if (!isDragging)
+		{
+			Vector2 vector5 = component.rect.min * currentZoom + component2.rect.size * 0.5f;
+			Vector2 vector6 = component.rect.max * currentZoom + component2.rect.size * 0.5f;
+			Vector3 a2 = new Vector3(Mathf.Clamp(vector4.x, vector5.x, vector6.x), Mathf.Clamp(vector4.y, vector5.y, vector6.y), 0f);
+			Vector3 vector7 = a2 - vector4;
+			if (!panLeft && !panRight && !panUp && !panDown)
 			{
-				contentPositionDummy.transform.position -= Vector3.up * Time.unscaledDeltaTime * keyboardScrollSpeed;
-			}
-			else if (panDown)
-			{
-				contentPositionDummy.transform.position += Vector3.up * Time.unscaledDeltaTime * keyboardScrollSpeed;
-			}
-			if (panLeft)
-			{
-				contentPositionDummy.transform.position += Vector3.right * Time.unscaledDeltaTime * keyboardScrollSpeed;
-			}
-			else if (panRight)
-			{
-				contentPositionDummy.transform.position -= Vector3.right * Time.unscaledDeltaTime * keyboardScrollSpeed;
-			}
-			Vector2 mouseScrollDelta = Input.mouseScrollDelta;
-			if (mouseScrollDelta.y > 0f)
-			{
-				StartCoroutine(ZoomIn());
+				vector4 += vector7 * edgeClampFactor * Time.unscaledDeltaTime;
 			}
 			else
 			{
-				Vector2 mouseScrollDelta2 = Input.mouseScrollDelta;
-				if (mouseScrollDelta2.y < 0f)
+				vector4 += vector7;
+				if (vector7.x < 0f)
 				{
-					StartCoroutine(ZoomOut());
+					keyPanDelta.x = Mathf.Min(0f, keyPanDelta.x);
 				}
-				else if (Input.GetMouseButton(0) || Input.GetMouseButton(1))
+				if (vector7.x > 0f)
 				{
-					if ((Object)contentPositionDummy.transform.parent != (Object)scaleOffsetAnchor.transform)
-					{
-						contentPositionDummy.transform.SetParent(scaleOffsetAnchor.transform);
-					}
+					keyPanDelta.x = Mathf.Max(0f, keyPanDelta.x);
 				}
-				else if ((Object)contentPositionDummy.transform.parent != (Object)scaleOffsetAnchor.transform.parent)
+				if (vector7.y < 0f)
 				{
-					contentPositionDummy.transform.SetParent(scaleOffsetAnchor.transform.parent);
+					keyPanDelta.y = Mathf.Min(0f, keyPanDelta.y);
 				}
-			}
-		}
-		contentPositionDummy.position = ClampScrollToContent();
-		Vector3 position = Vector3.Lerp(scrollContent.transform.position, contentPositionDummy.transform.position, Time.unscaledDeltaTime * contentPositionLerpSpeed);
-		scrollContent.transform.SetPosition(position);
-		scrollContent.transform.localScale = Vector3.Lerp(scrollContent.transform.localScale, contentPositionDummy.lossyScale, Time.unscaledDeltaTime * contentPositionLerpSpeed);
-	}
-
-	private Vector3 ClampScrollToContent()
-	{
-		Vector3 position = contentPositionDummy.position;
-		if (!zoomingIn && !zoomingOut)
-		{
-			Vector3 vector = foreground.rectTransform().InverseTransformPoint(scrollContent.rectTransform().position);
-			float num = 512f;
-			Vector2 sizeDelta = scrollContent.rectTransform().sizeDelta;
-			float num2 = sizeDelta.x / 2f;
-			Vector3 localScale = scrollContent.transform.localScale;
-			float num3 = num2 * localScale.x - foreground.rectTransform().rect.width / 2f + num;
-			if (vector.x > num3)
-			{
-				position.x -= vector.x - num3;
-			}
-			Vector2 sizeDelta2 = scrollContent.rectTransform().sizeDelta;
-			float num4 = sizeDelta2.x / 2f;
-			Vector3 localScale2 = scrollContent.transform.localScale;
-			float num5 = 0f - (num4 * localScale2.x - foreground.rectTransform().rect.width / 2f + num);
-			if (vector.x < num5)
-			{
-				position.x -= vector.x - num5;
-			}
-			Vector2 sizeDelta3 = scrollContent.rectTransform().sizeDelta;
-			float num6 = sizeDelta3.y / 2f;
-			Vector3 localScale3 = scrollContent.transform.localScale;
-			float num7 = num6 * localScale3.y - foreground.rectTransform().rect.height / 2f + num;
-			if (vector.y > num7)
-			{
-				position.y -= vector.y - num7;
-			}
-			Vector2 sizeDelta4 = scrollContent.rectTransform().sizeDelta;
-			float num8 = sizeDelta4.y / 2f;
-			Vector3 localScale4 = scrollContent.transform.localScale;
-			float num9 = 0f - (num8 * localScale4.y - foreground.rectTransform().rect.height / 2f + num);
-			if (vector.y < num9)
-			{
-				position.y -= vector.y - num9;
-			}
-			Vector3 localScale5 = scrollContent.transform.localScale;
-			if (localScale5.x < 0.7f)
-			{
-				float width = foreground.rectTransform().rect.width;
-				float width2 = scrollContent.rectTransform().rect.width;
-				Vector3 localScale6 = scrollContent.transform.localScale;
-				if (width > width2 * localScale6.x)
+				if (vector7.y > 0f)
 				{
-					position.x = foreground.rectTransform().rect.width / 2f;
+					keyPanDelta.y = Mathf.Max(0f, keyPanDelta.y);
 				}
 			}
 		}
-		return position;
+		component.SetPosition(vector4);
 	}
 
 	protected override void OnSpawn()
@@ -398,11 +361,11 @@ public class ResearchScreen : KModalScreen
 		Show(false);
 		zoomOutButton.onClick += delegate
 		{
-			StartCoroutine(ZoomOut());
+			ZoomOut();
 		};
 		zoomInButton.onClick += delegate
 		{
-			StartCoroutine(ZoomIn());
+			ZoomIn();
 		};
 	}
 
@@ -623,18 +586,21 @@ public class ResearchScreen : KModalScreen
 		{
 			if (e.TryConsume(Action.MouseRight))
 			{
-				dragStartPosition = Input.mousePosition;
+				dragStartPosition = KInputManager.GetMousePos();
+				dragLastPosition = KInputManager.GetMousePos();
 				rightMouseDown = true;
 				return;
 			}
 			if (e.TryConsume(Action.ZoomIn))
 			{
-				targetContentScale = Mathf.Clamp(targetContentScale * (1f + Time.unscaledDeltaTime * 2.5f), 0.5f, 1f);
+				targetZoom = Mathf.Clamp(targetZoom + zoomAmountPerScroll, minZoom, maxZoom);
+				zoomCenterLock = false;
 				return;
 			}
 			if (e.TryConsume(Action.ZoomOut))
 			{
-				targetContentScale = Mathf.Clamp(targetContentScale * (1f - Time.unscaledDeltaTime * 2.5f), 0.5f, 1f);
+				targetZoom = Mathf.Clamp(targetZoom - zoomAmountPerScroll, minZoom, maxZoom);
+				zoomCenterLock = false;
 				return;
 			}
 			if (e.TryConsume(Action.Escape))

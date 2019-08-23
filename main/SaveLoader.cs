@@ -620,20 +620,17 @@ public class SaveLoader : KMonoBehaviour
 				{
 					Debug.LogWarning("Problem deleting autosave: " + text + "\n" + ex.ToString());
 				}
-				if (GenericGameSettings.instance.takeSaveScreenshots)
+				string text2 = Path.ChangeExtension(text, ".png");
+				try
 				{
-					string text2 = Path.ChangeExtension(text, ".png");
-					try
+					if (File.Exists(text2))
 					{
-						if (File.Exists(text2))
-						{
-							File.Delete(text2);
-						}
+						File.Delete(text2);
 					}
-					catch (Exception ex2)
-					{
-						Debug.LogWarning("Problem deleting autosave screenshot: " + text2 + "\n" + ex2.ToString());
-					}
+				}
+				catch (Exception ex2)
+				{
+					Debug.LogWarning("Problem deleting autosave screenshot: " + text2 + "\n" + ex2.ToString());
 				}
 			}
 		}
@@ -684,11 +681,7 @@ public class SaveLoader : KMonoBehaviour
 		{
 			SetActiveSaveFilePath(filename);
 		}
-		if (GenericGameSettings.instance.takeSaveScreenshots)
-		{
-			string filename2 = Path.ChangeExtension(filename, ".png");
-			ScreenCapture.CaptureScreenshot(filename2, 1);
-		}
+		Game.Instance.timelapser.SaveColonyPreview(filename);
 		DebugUtil.LogArgs("Saved to", "[" + filename + "]");
 		GC.Collect();
 		return filename;

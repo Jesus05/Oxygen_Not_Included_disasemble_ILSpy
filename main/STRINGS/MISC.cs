@@ -622,11 +622,11 @@ namespace STRINGS
 
 			public class CODEXUNLOCK
 			{
-				public static LocString NAME = "New Database Entry";
+				public static LocString NAME = "New Log Entry";
 
-				public static LocString MESSAGEBODY = "A new Database entry is available";
+				public static LocString MESSAGEBODY = "I've added a new log entry to my Database";
 
-				public static LocString TOOLTIP = "A new Database entry is available";
+				public static LocString TOOLTIP = "I've added a new log entry to my Database";
 			}
 
 			public class WELCOMEMESSAGE

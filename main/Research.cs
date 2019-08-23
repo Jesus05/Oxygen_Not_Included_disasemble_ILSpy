@@ -210,9 +210,9 @@ public class Research : KMonoBehaviour, ISaveLoadable
 		}
 		Trigger(-1914338957, queuedTech);
 		CheckBuyResearch();
+		CheckResearchBuildings(null);
 		if (activeResearch != null)
 		{
-			CheckResearchBuildings(null);
 			if (activeResearch.tech.costsByResearchTypeID.Count > 1)
 			{
 				if (!MinionResume.AnyMinionHasPerk(Db.Get().SkillPerks.AllowAdvancedResearch.Id))
@@ -224,7 +224,6 @@ public class Research : KMonoBehaviour, ISaveLoadable
 			else
 			{
 				notifier.Remove(NoResearcherRole);
-				notifier.Remove(MissingResearchStation);
 			}
 			if (activeResearch.tech.costsByResearchTypeID.Count > 2)
 			{
@@ -237,13 +236,11 @@ public class Research : KMonoBehaviour, ISaveLoadable
 			else
 			{
 				notifier.Remove(NoResearcherRole);
-				notifier.Remove(MissingResearchStation);
 			}
 		}
 		else
 		{
 			notifier.Remove(NoResearcherRole);
-			notifier.Remove(MissingResearchStation);
 		}
 	}
 

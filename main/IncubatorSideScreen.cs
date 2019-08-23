@@ -26,6 +26,11 @@ public class IncubatorSideScreen : ReceptacleSideScreen
 		descriptionLabel.SetText(text);
 	}
 
+	protected override bool RequiresAvailableAmountToDeposit()
+	{
+		return false;
+	}
+
 	protected override Sprite GetEntityIcon(Tag prefabTag)
 	{
 		GameObject prefab = Assets.GetPrefab(prefabTag);

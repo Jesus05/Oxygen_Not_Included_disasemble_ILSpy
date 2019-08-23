@@ -1,3 +1,4 @@
+using STRINGS;
 using System.IO;
 
 namespace Database
@@ -6,6 +7,8 @@ namespace Database
 	{
 		private float percentToReveal;
 
+		private float amountRevealed;
+
 		public RevealAsteriod(float percentToReveal)
 		{
 			this.percentToReveal = percentToReveal;
@@ -13,6 +16,7 @@ namespace Database
 
 		public override bool Success()
 		{
+			amountRevealed = 0f;
 			float num = 0f;
 			for (int i = 0; i < Grid.Visible.Length; i++)
 			{
@@ -21,6 +25,7 @@ namespace Database
 					num += 1f;
 				}
 			}
+			amountRevealed = num / (float)Grid.Visible.Length;
 			return num / (float)Grid.Visible.Length > percentToReveal;
 		}
 
@@ -32,6 +37,11 @@ namespace Database
 		public override void Deserialize(IReader reader)
 		{
 			percentToReveal = reader.ReadSingle();
+		}
+
+		public override string GetProgress(bool complete)
+		{
+			return string.Format(COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.STATUS.REVEALED, amountRevealed * 100f, percentToReveal * 100f);
 		}
 	}
 }

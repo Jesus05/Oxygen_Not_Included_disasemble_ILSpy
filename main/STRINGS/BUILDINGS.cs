@@ -7,6 +7,8 @@ namespace STRINGS
 			public class HEADQUARTERSCOMPLETE
 			{
 				public static LocString NAME = UI.FormatAsLink("Printing Pod", "HEADQUARTERS");
+
+				public static LocString UNIQUE_POPTEXT = "Only one {0} allowed!";
 			}
 
 			public class AIRCONDITIONER
@@ -407,7 +409,7 @@ namespace STRINGS
 
 				public static LocString DESC = "Light reduces Duplicant stress and is required to grow certain plants.";
 
-				public static LocString EFFECT = "Provides " + UI.FormatAsLink("Light", "LIGHT") + " when " + UI.FormatAsLink("Powered", "POWER") + ".\n\nDuplicants can operate buildings more quickly the building is lit.";
+				public static LocString EFFECT = "Provides " + UI.FormatAsLink("Light", "LIGHT") + " when " + UI.FormatAsLink("Powered", "POWER") + ".\n\nDuplicants can operate buildings more quickly when the building is lit.";
 			}
 
 			public class AIRFILTER

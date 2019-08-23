@@ -39,8 +39,6 @@ public class DragTool : InterfaceTool
 
 	protected bool interceptNumberKeysForPriority;
 
-	private new static int defaultLayerMask;
-
 	private bool dragging;
 
 	private Vector3 previousCursorPos;
@@ -53,23 +51,11 @@ public class DragTool : InterfaceTool
 
 	protected Vector3 downPos;
 
-	protected new static int layerMask;
-
 	public bool Dragging => dragging;
 
 	protected virtual Mode GetMode()
 	{
 		return mode;
-	}
-
-	public static void SetLayerMask(int mask)
-	{
-		layerMask = mask;
-	}
-
-	public static void ClearLayerMask()
-	{
-		layerMask = defaultLayerMask;
 	}
 
 	protected override void OnActivateTool()
@@ -93,8 +79,6 @@ public class DragTool : InterfaceTool
 	protected override void OnPrefabInit()
 	{
 		Game.Instance.Subscribe(1634669191, OnTutorialOpened);
-		defaultLayerMask = (1 | LayerMask.GetMask("World", "Pickupable", "Place", "PlaceWithDepth", "BlockSelection", "Construction"));
-		layerMask = defaultLayerMask;
 		base.OnPrefabInit();
 		if ((UnityEngine.Object)visualizer != (UnityEngine.Object)null)
 		{

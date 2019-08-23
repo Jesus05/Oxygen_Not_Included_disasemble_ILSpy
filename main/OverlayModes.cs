@@ -82,7 +82,6 @@ public abstract class OverlayModes
 			partition = Mode.PopulatePartition<SaveLoadRoot>(targetIDs);
 			Camera.main.cullingMask |= cameraLayerMask;
 			SelectTool.Instance.SetLayerMask(selectionMask);
-			DragTool.SetLayerMask(selectionMask);
 			GridCompositor.Instance.ToggleMinor(false);
 			base.Enable();
 		}
@@ -114,7 +113,6 @@ public abstract class OverlayModes
 			Mode.ResetDisplayValues(layerTargets);
 			Camera.main.cullingMask &= ~cameraLayerMask;
 			SelectTool.Instance.ClearLayerMask();
-			DragTool.ClearLayerMask();
 			UnregisterSaveLoadListeners();
 			partition.Clear();
 			layerTargets.Clear();
@@ -452,7 +450,6 @@ public abstract class OverlayModes
 			partition = Mode.PopulatePartition<HarvestDesignatable>(targetIDs);
 			Camera.main.cullingMask |= cameraLayerMask;
 			SelectTool.Instance.SetLayerMask(selectionMask);
-			DragTool.SetLayerMask(selectionMask);
 		}
 
 		protected override void OnSaveLoadRootRegistered(SaveLoadRoot item)
@@ -492,7 +489,6 @@ public abstract class OverlayModes
 			partition.Clear();
 			layerTargets.Clear();
 			SelectTool.Instance.ClearLayerMask();
-			DragTool.ClearLayerMask();
 		}
 	}
 
@@ -1106,7 +1102,6 @@ public abstract class OverlayModes
 		{
 			Camera.main.cullingMask |= cameraLayerMask;
 			SelectTool.Instance.SetLayerMask(selectionMask);
-			DragTool.SetLayerMask(selectionMask);
 			RegisterSaveLoadListeners();
 			gameObjPartition = Mode.PopulatePartition<SaveLoadRoot>(HighlightItemIDs);
 			ioPartition = CreateLogicUIPartition();
@@ -1144,7 +1139,6 @@ public abstract class OverlayModes
 			}
 			Camera.main.cullingMask &= ~cameraLayerMask;
 			SelectTool.Instance.ClearLayerMask();
-			DragTool.ClearLayerMask();
 			UnregisterSaveLoadListeners();
 			foreach (UIInfo data in uiInfo.GetDataList())
 			{
@@ -2159,7 +2153,6 @@ public abstract class OverlayModes
 		{
 			Camera.main.cullingMask |= cameraLayerMask;
 			SelectTool.Instance.SetLayerMask(selectionMask);
-			DragTool.SetLayerMask(selectionMask);
 			RegisterSaveLoadListeners();
 			partition = Mode.PopulatePartition<SaveLoadRoot>(OverlayScreen.WireIDs);
 			GridCompositor.Instance.ToggleMinor(true);
@@ -2170,7 +2163,6 @@ public abstract class OverlayModes
 			Mode.ResetDisplayValues(layerTargets);
 			Camera.main.cullingMask &= ~cameraLayerMask;
 			SelectTool.Instance.ClearLayerMask();
-			DragTool.ClearLayerMask();
 			UnregisterSaveLoadListeners();
 			partition.Clear();
 			layerTargets.Clear();
@@ -2596,7 +2588,6 @@ public abstract class OverlayModes
 			partition = Mode.PopulatePartition<SaveLoadRoot>(targetIDs);
 			Camera.main.cullingMask |= cameraLayerMask;
 			SelectTool.Instance.SetLayerMask(selectionMask);
-			DragTool.SetLayerMask(selectionMask);
 			GridCompositor.Instance.ToggleMinor(false);
 			base.Enable();
 		}
@@ -2628,7 +2619,6 @@ public abstract class OverlayModes
 			Mode.ResetDisplayValues(layerTargets);
 			Camera.main.cullingMask &= ~cameraLayerMask;
 			SelectTool.Instance.ClearLayerMask();
-			DragTool.ClearLayerMask();
 			UnregisterSaveLoadListeners();
 			partition.Clear();
 			layerTargets.Clear();
@@ -2855,7 +2845,6 @@ public abstract class OverlayModes
 			RegisterSaveLoadListeners();
 			Camera.main.cullingMask |= cameraLayerMask;
 			SelectTool.Instance.SetLayerMask(selectionMask);
-			DragTool.SetLayerMask(selectionMask);
 			GridCompositor.Instance.ToggleMinor(false);
 			base.Enable();
 		}
@@ -2866,7 +2855,6 @@ public abstract class OverlayModes
 			Mode.ResetDisplayValues(layerTargets);
 			Camera.main.cullingMask &= ~cameraLayerMask;
 			SelectTool.Instance.ClearLayerMask();
-			DragTool.ClearLayerMask();
 			partition.Clear();
 			partition = null;
 			layerTargets.Clear();

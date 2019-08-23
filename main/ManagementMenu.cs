@@ -363,7 +363,7 @@ public class ManagementMenu : KIconToggleMenu
 				}
 				if (activeScreen != screenData)
 				{
-					OverlayScreen.Instance.ToggleOverlay(OverlayModes.None.ID);
+					OverlayScreen.Instance.ToggleOverlay(OverlayModes.None.ID, true);
 					if (activeScreen != null)
 					{
 						activeScreen.toggleInfo.toggle.ActivateFlourish(false);
@@ -458,5 +458,30 @@ public class ManagementMenu : KIconToggleMenu
 			ToggleScreen(ScreenInfoMatch[Instance.reportsInfo]);
 		}
 		ReportScreen.Instance.ShowReport(day);
+	}
+
+	public void OpenResearch()
+	{
+		if (activeScreen != ScreenInfoMatch[Instance.researchInfo])
+		{
+			ToggleScreen(ScreenInfoMatch[Instance.researchInfo]);
+		}
+	}
+
+	public void OpenStarmap()
+	{
+		if (activeScreen != ScreenInfoMatch[Instance.starmapInfo])
+		{
+			ToggleScreen(ScreenInfoMatch[Instance.starmapInfo]);
+		}
+	}
+
+	public void OpenSkills(MinionIdentity minionIdentity)
+	{
+		if (activeScreen != ScreenInfoMatch[Instance.skillsInfo])
+		{
+			skillsScreen.CurrentlySelectedMinion = minionIdentity;
+			ToggleScreen(ScreenInfoMatch[Instance.skillsInfo]);
+		}
 	}
 }

@@ -624,6 +624,11 @@ public static class Localization
 		DebugUtil.LogArgs(" -> Locale is now ", sLocale.ToString());
 	}
 
+	public static Locale GetLocale()
+	{
+		return sLocale;
+	}
+
 	private static string GetFontParam(string line)
 	{
 		string result = null;

@@ -16,7 +16,7 @@ public class BatteryMediumConfig : BaseBatteryConfig
 	{
 		Battery battery = go.AddOrGet<Battery>();
 		battery.capacity = 40000f;
-		battery.joulesLostPerSecond = battery.capacity * 0.05f / 600f;
+		battery.joulesLostPerSecond = 3.33333325f;
 		base.DoPostConfigureComplete(go);
 	}
 }

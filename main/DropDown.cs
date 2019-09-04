@@ -32,7 +32,7 @@ public class DropDown : KMonoBehaviour
 
 	private Action<DropDownEntry, object> rowRefreshAction;
 
-	private Dictionary<IListableOption, GameObject> rowLookup = new Dictionary<IListableOption, GameObject>();
+	public Dictionary<IListableOption, GameObject> rowLookup = new Dictionary<IListableOption, GameObject>();
 
 	private Func<IListableOption, IListableOption, object, int> sortFunction;
 
@@ -55,6 +55,8 @@ public class DropDown : KMonoBehaviour
 		get;
 		private set;
 	}
+
+	public List<IListableOption> Entries => entries;
 
 	public void Initialize(IEnumerable<IListableOption> contentKeys, Action<IListableOption, object> onEntrySelectedAction, Func<IListableOption, IListableOption, object, int> sortFunction = null, Action<DropDownEntry, object> refreshAction = null, bool displaySelectedValueWhenClosed = true, object targetData = null)
 	{

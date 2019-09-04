@@ -76,7 +76,7 @@ public class AtmoSuitConfig : IEquipmentConfig
 							component.ClearFlags(PathFinder.PotentialPath.Flags.HasAtmoSuit);
 						}
 						Effects component2 = targetGameObject.GetComponent<Effects>();
-						if (component2.HasEffect("SoiledSuit"))
+						if ((Object)component2 != (Object)null && component2.HasEffect("SoiledSuit"))
 						{
 							component2.Remove("SoiledSuit");
 						}

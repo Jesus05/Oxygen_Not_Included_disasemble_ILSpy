@@ -34,7 +34,7 @@ namespace STRINGS
 
 				public static LocString CLOTHE_DUPES = "Duplicants in clothing: {0} / {1}";
 
-				public static LocString KELVIN_COOLING = "Coldest building: {0:##0.#}k";
+				public static LocString KELVIN_COOLING = "Coldest building: {0:##0.#}K";
 
 				public static LocString NO_FARM_TILES = "No farmed plants";
 
@@ -60,7 +60,7 @@ namespace STRINGS
 
 				public static LocString BUILT_ONE_BED_PER_DUPLICANT = "Built one bed for each Duplicant";
 
-				public static LocString UPGRADE_ALL_BUILDINGS = "All {0} updgraded to {1}";
+				public static LocString UPGRADE_ALL_BUILDINGS = "All {0} upgraded to {1}";
 
 				public static LocString AUTOMATE_A_BUILDING = "Automated a building";
 
@@ -95,6 +95,8 @@ namespace STRINGS
 				public static LocString GENERATE_POWER = "Energy generated: {0} / {1}";
 
 				public static LocString NO_BUILDING = "Never built a {0}";
+
+				public static LocString MORALE = "{0} morale: {1}";
 			}
 
 			public static LocString WINCONDITION_LEAVE = "The Great Escape";
@@ -135,7 +137,7 @@ namespace STRINGS
 
 			public static LocString CLEAN_ENERGY = "Super Sustainable";
 
-			public static LocString CLEAN_ENERGY_DESCRIPTION = "Generate 240,000kJ of power without using coal, methane, petrol or wood generators.";
+			public static LocString CLEAN_ENERGY_DESCRIPTION = "Generate 240,000kJ of power without using coal, natural gas, petrol or wood generators.";
 
 			public static LocString BUILD_OUTSIDE_BIOME = "Outdoor Renovations";
 

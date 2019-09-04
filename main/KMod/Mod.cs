@@ -151,7 +151,7 @@ namespace KMod
 							{
 								if (!(text == "worldgen"))
 								{
-									if (text == "anims")
+									if (text == "anim")
 									{
 										available_content |= Content.Animation;
 									}
@@ -317,49 +317,59 @@ namespace KMod
 
 		private bool LoadAnimation()
 		{
-			string path = FileSystem.Normalize(Path.Combine(label.install_path, "anims"));
+			string path = FileSystem.Normalize(Path.Combine(label.install_path, "anim"));
 			if (!System.IO.Directory.Exists(path))
 			{
 				return false;
 			}
 			int num = 0;
-			ListPool<Texture2D, Mod>.PooledList pooledList = ListPool<Texture2D, Mod>.Allocate();
 			DirectoryInfo directoryInfo = new DirectoryInfo(path);
-			FileInfo[] files = directoryInfo.GetFiles();
-			foreach (FileInfo fileInfo in files)
+			DirectoryInfo[] directories = directoryInfo.GetDirectories();
+			foreach (DirectoryInfo directoryInfo2 in directories)
 			{
-				TextAsset anim_file = null;
-				TextAsset build_file = null;
-				pooledList.Clear();
-				AssetBundle assetBundle = AssetBundle.LoadFromFile(fileInfo.FullName);
-				UnityEngine.Object[] array = assetBundle.LoadAllAssets();
-				UnityEngine.Object[] array2 = array;
-				foreach (UnityEngine.Object @object in array2)
+				DirectoryInfo[] directories2 = directoryInfo2.GetDirectories();
+				foreach (DirectoryInfo directoryInfo3 in directories2)
 				{
-					Texture2D texture2D = @object as Texture2D;
-					if ((UnityEngine.Object)texture2D != (UnityEngine.Object)null)
+					KAnimFile.Mod mod = new KAnimFile.Mod();
+					FileInfo[] files = directoryInfo3.GetFiles();
+					foreach (FileInfo fileInfo in files)
 					{
-						pooledList.Add(texture2D);
+						if (fileInfo.Extension == ".png")
+						{
+							byte[] data = File.ReadAllBytes(fileInfo.FullName);
+							Texture2D texture2D = new Texture2D(2, 2);
+							texture2D.LoadImage(data);
+							mod.textures.Add(texture2D);
+						}
+						else if (fileInfo.Extension == ".bytes")
+						{
+							string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(fileInfo.Name);
+							byte[] array = File.ReadAllBytes(fileInfo.FullName);
+							if (fileNameWithoutExtension.EndsWith("_anim"))
+							{
+								mod.anim = array;
+							}
+							else if (fileNameWithoutExtension.EndsWith("_build"))
+							{
+								mod.build = array;
+							}
+							else
+							{
+								DebugUtil.LogWarningArgs($"Unhandled TextAsset ({fileInfo.FullName})...ignoring");
+							}
+						}
+						else
+						{
+							DebugUtil.LogWarningArgs($"Unhandled asset ({fileInfo.FullName})...ignoring");
+						}
 					}
-					else if (@object.name.EndsWith("_anim"))
+					string name = directoryInfo3.Name + "_kanim";
+					if (mod.IsValid() && (bool)ModUtil.AddKAnimMod(name, mod))
 					{
-						anim_file = (@object as TextAsset);
+						num++;
 					}
-					else if (@object.name.EndsWith("_build"))
-					{
-						build_file = (@object as TextAsset);
-					}
-					else
-					{
-						DebugUtil.LogWarningArgs($"Unhandled asset ({@object.name}) in bundle ({fileInfo.FullName})...ignoring");
-					}
-				}
-				if ((UnityEngine.Object)ModUtil.AddKAnim(fileInfo.Name, anim_file, build_file, pooledList) != (UnityEngine.Object)null)
-				{
-					num++;
 				}
 			}
-			pooledList.Recycle();
 			return true;
 		}
 

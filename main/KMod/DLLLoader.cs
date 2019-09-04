@@ -54,7 +54,6 @@ namespace KMod
 				{
 					if (Testing.dll_loading != Testing.DLLLoading.UseModLoaderDLLExclusively)
 					{
-						Debug.LogFormat("Using built-in mod system...looking for DLL mods in {0}", Manager.GetDirectory());
 						DirectoryInfo directoryInfo = new DirectoryInfo(path);
 						if (directoryInfo.Exists)
 						{

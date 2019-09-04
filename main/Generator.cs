@@ -193,6 +193,12 @@ public class Generator : KMonoBehaviour, ISaveLoadable, IEnergyProducer
 		(powerCreatedbyGeneratorType = Game.Instance.savedInfo.powerCreatedbyGeneratorType)[key = this.PrefabID()] = powerCreatedbyGeneratorType[key] + this.joulesAvailable;
 	}
 
+	public void AssignJoulesAvailable(float joulesAvailable)
+	{
+		Debug.Assert((UnityEngine.Object)GetComponent<PowerTransformer>() != (UnityEngine.Object)null);
+		this.joulesAvailable = joulesAvailable;
+	}
+
 	private void OnOperationalChanged(object data)
 	{
 		if (operational.IsOperational)
@@ -205,7 +211,7 @@ public class Generator : KMonoBehaviour, ISaveLoadable, IEnergyProducer
 		}
 	}
 
-	public void ConsumeEnergy(float joules)
+	public virtual void ConsumeEnergy(float joules)
 	{
 		joulesAvailable = Mathf.Max(0f, JoulesAvailable - joules);
 	}

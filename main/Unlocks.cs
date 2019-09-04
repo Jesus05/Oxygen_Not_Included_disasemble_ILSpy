@@ -161,6 +161,21 @@ public class Unlocks : KMonoBehaviour
 		}
 	};
 
+	private static readonly EventSystem.IntraObjectHandler<Unlocks> OnLaunchRocketDelegate = new EventSystem.IntraObjectHandler<Unlocks>(delegate(Unlocks component, object data)
+	{
+		component.OnLaunchRocket(data);
+	});
+
+	private static readonly EventSystem.IntraObjectHandler<Unlocks> OnDuplicantDiedDelegate = new EventSystem.IntraObjectHandler<Unlocks>(delegate(Unlocks component, object data)
+	{
+		component.OnDuplicantDied(data);
+	});
+
+	private static readonly EventSystem.IntraObjectHandler<Unlocks> OnDiscoveredSpaceDelegate = new EventSystem.IntraObjectHandler<Unlocks>(delegate(Unlocks component, object data)
+	{
+		component.OnDiscoveredSpace(data);
+	});
+
 	private static string UnlocksFilename => System.IO.Path.Combine(Util.RootFolder(), "unlocks.json");
 
 	protected override void OnPrefabInit()
@@ -173,9 +188,9 @@ public class Unlocks : KMonoBehaviour
 		base.OnSpawn();
 		UnlockCycleCodexes();
 		GameClock.Instance.Subscribe(631075836, OnNewDay);
-		Game.Instance.Subscribe(-1056989049, OnLaunchRocket);
-		Game.Instance.Subscribe(282337316, OnDuplicantDied);
-		Game.Instance.Subscribe(-818188514, OnDiscoveredSpace);
+		Subscribe(-1056989049, OnLaunchRocketDelegate);
+		Subscribe(282337316, OnDuplicantDiedDelegate);
+		Subscribe(-818188514, OnDiscoveredSpaceDelegate);
 		Components.LiveMinionIdentities.OnAdd += OnNewDupe;
 	}
 

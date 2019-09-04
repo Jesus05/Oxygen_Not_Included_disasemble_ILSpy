@@ -35,7 +35,7 @@ public class SandboxSpawnerTool : InterfaceTool
 			else if ((Object)SandboxToolParameterMenu.instance.settings.Entity.GetComponent<Building>() != (Object)null)
 			{
 				BuildingDef def = SandboxToolParameterMenu.instance.settings.Entity.GetComponent<Building>().Def;
-				def.Build(cell, Orientation.Neutral, null, def.DefaultElements(), 298.15f, true);
+				def.Build(cell, Orientation.Neutral, null, def.DefaultElements(), 298.15f, true, -1f);
 			}
 			else
 			{

@@ -1954,7 +1954,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "No Outhouses";
 
-				public static LocString TOOLTIP = "There are no " + UI.FormatAsLink("Outhouses", "OUTHOUSE") + " available for this Duplicant" + UI.HORIZONTAL_BR_RULE + UI.FormatAsLink("Outhouses", "OUTHOUSE") + " can be built from the " + UI.FormatAsBuildMenuTab("Plumbing Tab") + " " + UI.FormatAsHotkey("[5]");
+				public static LocString TOOLTIP = "There are no " + UI.FormatAsLink("Outhouses", "OUTHOUSE") + " available for this Duplicant" + UI.HORIZONTAL_BR_RULE + UI.FormatAsLink("Outhouses", "OUTHOUSE") + " can be built from the " + UI.FormatAsBuildMenuTab("Plumbing Tab", "[5]");
 
 				public static LocString NOTIFICATION_NAME = "No Outhouses built";
 
@@ -2844,7 +2844,7 @@ namespace STRINGS
 
 			public static LocString ADDED_POPFX = "{0}: {1} Germs";
 
-			public static LocString NOTIFICATION_TOOLTIP = "{0} contracted {1} {2}";
+			public static LocString NOTIFICATION_TOOLTIP = "{0} contracted {1} from: {2}";
 
 			public static LocString GERMS = "Germs";
 

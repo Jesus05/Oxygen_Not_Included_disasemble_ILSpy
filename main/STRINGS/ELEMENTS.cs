@@ -835,7 +835,7 @@ namespace STRINGS
 		{
 			public static LocString NAME = UI.FormatAsLink("Slime", "SLIMEMOLD");
 
-			public static LocString DESC = "Slime is a thick biomixture of algae, fungi, and mucopolysaccharides.\n\nIt can be distilled into " + UI.FormatAsLink("Algae", "ALGAE") + " and is useful in some " + UI.FormatAsLink("Oxygen", "OXYGEN") + " production processes.";
+			public static LocString DESC = "Slime is a thick biomixture of algae, fungi, and mucopolysaccharides.\n\nIt can be distilled into " + UI.FormatAsLink("Algae", "ALGAE") + " and emits " + CONTAMINATEDOXYGEN.NAME + " once dug up.";
 		}
 
 		public class SNOW

@@ -56,7 +56,6 @@ namespace KMod
 
 		public Manager()
 		{
-			Debug.Log("Load mod database");
 			string filename = GetFilename();
 			try
 			{
@@ -260,7 +259,6 @@ namespace KMod
 			}
 			else
 			{
-				Debug.LogFormat("\tAlready subscribed mod: {0}", mod.title);
 				if (mod2.status == Mod.Status.UninstallPending)
 				{
 					mod2.status = Mod.Status.Installed;
@@ -428,16 +426,11 @@ namespace KMod
 				}
 				load_user_mod_loader_dll = false;
 			}
-			Debug.LogFormat("Load content ({0}) for mods:", content);
 			foreach (Mod mod in mods)
 			{
 				if (mod.enabled)
 				{
 					mod.Load(content);
-					if (mod.IsActive())
-					{
-						Debug.LogFormat("\t{0}", mod.title);
-					}
 				}
 			}
 			bool flag = false;

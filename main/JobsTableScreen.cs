@@ -338,8 +338,20 @@ public class JobsTableScreen : TableScreen
 			}
 			ChoreConsumer component = minionIdentity.GetComponent<ChoreConsumer>();
 			ChoreConsumer component2 = minionIdentity2.GetComponent<ChoreConsumer>();
+			if (component.IsChoreGroupDisabled(chore_group))
+			{
+				return 1;
+			}
+			if (component2.IsChoreGroupDisabled(chore_group))
+			{
+				return -1;
+			}
 			int personalPriority = component.GetPersonalPriority(chore_group);
 			int personalPriority2 = component2.GetPersonalPriority(chore_group);
+			if (personalPriority == personalPriority2)
+			{
+				return minionIdentity.name.CompareTo(minionIdentity2.name);
+			}
 			return personalPriority2 - personalPriority;
 		};
 		SortRows();

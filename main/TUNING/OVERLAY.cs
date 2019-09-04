@@ -32,5 +32,10 @@ namespace TUNING
 
 			public static readonly LegendEntry COOLING = new LegendEntry(UI.OVERLAYS.HEATFLOW.COOLING, UI.OVERLAYS.HEATFLOW.TOOLTIPS.COOLING, new Color(0f, 0f, 0f));
 		}
+
+		public class POWER_LEGEND
+		{
+			public const float WATTAGE_WARNING_THRESHOLD = 0.75f;
+		}
 	}
 }

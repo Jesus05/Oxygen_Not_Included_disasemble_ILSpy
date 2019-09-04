@@ -173,7 +173,6 @@ public class ConversationManager : KMonoBehaviour, ISim200ms
 		ThoughtGraph.Instance sMI = new_speaker.GetSMI<ThoughtGraph.Instance>();
 		if (sMI == null)
 		{
-			DebugUtil.DevAssert(false, "thought_graph was null");
 			return false;
 		}
 		sMI.AddThought(thoughtForTopic);

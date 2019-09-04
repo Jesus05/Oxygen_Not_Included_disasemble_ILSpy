@@ -71,9 +71,9 @@ namespace STRINGS
 			{
 				public static LocString NAME = UI.FormatAsLink("Battery", "BATTERY");
 
-				public static LocString DESC = "Batteries allow extra power from generators to be stored for later, rather than lost.";
+				public static LocString DESC = "Batteries allow power from generators to be stored for later.";
 
-				public static LocString EFFECT = "Stores runoff " + UI.FormatAsLink("Power", "POWER") + " from generators, but loses charge over time.";
+				public static LocString EFFECT = "Stores " + UI.FormatAsLink("Power", "POWER") + " from generators, then provides that " + UI.FormatAsLink("Power", "POWER") + " to buildings.\n\nLoses charge over time.";
 
 				public static LocString CHARGE_LOSS = "{Battery} charge loss";
 			}
@@ -102,22 +102,22 @@ namespace STRINGS
 
 				public static LocString DESC = "Larger batteries hold more power and keep systems running longer before recharging.";
 
-				public static LocString EFFECT = "Stores most runoff " + UI.FormatAsLink("Power", "POWER") + " from generators, but loses charge over time.";
+				public static LocString EFFECT = "Stores " + UI.FormatAsLink("Power", "POWER") + " from generators, then provides that " + UI.FormatAsLink("Power", "POWER") + " to buildings.\n\nSlightly loses charge over time.";
 			}
 
 			public class BATTERYSMART
 			{
 				public static LocString NAME = UI.FormatAsLink("Smart Battery", "BATTERYSMART");
 
-				public static LocString DESC = "Smart batteries send an active automation signal when they require charging.";
+				public static LocString DESC = "Smart batteries send a " + UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active) + " when they require charging.";
 
-				public static LocString EFFECT = "Stores most runoff " + UI.FormatAsLink("Power", "POWER") + " from generators, but loses charge over time.\n\nSends a " + UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active) + " or " + UI.FormatAsAutomationState("Red Signal", UI.AutomationState.Standby) + " based on the configuration of the Logic Activation Parameters.";
+				public static LocString EFFECT = "Stores " + UI.FormatAsLink("Power", "POWER") + " from generators, then provides that " + UI.FormatAsLink("Power", "POWER") + " to buildings.\n\nSends a " + UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active) + " or " + UI.FormatAsAutomationState("Red Signal", UI.AutomationState.Standby) + " based on the configuration of the Logic Activation Parameters.\n\nVery slightly loses charge over time.";
 
 				public static LocString LOGIC_PORT = "Charge Parameters";
 
 				public static LocString LOGIC_PORT_ACTIVE = "Sends a " + UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active) + " when battery is less than <b>Low Threshold</b> charged";
 
-				public static LocString LOGIC_PORT_INACTIVE = "Sends a " + UI.FormatAsAutomationState("Red Signal", UI.AutomationState.Standby) + " when the battery is more than <b>High Threshold</b> charged";
+				public static LocString LOGIC_PORT_INACTIVE = "Sends a " + UI.FormatAsAutomationState("Red Signal", UI.AutomationState.Standby) + " when the battery is more than <b>High Threshold</b> charged, until <b>Low Threshold</b> is reached again";
 
 				public static LocString ACTIVATE_TOOLTIP = "Sends a " + UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active) + " when battery is less than <b>{0}%</b> charged";
 
@@ -541,7 +541,7 @@ namespace STRINGS
 
 				public static LocString DESC = "Door controls can be used to prevent Duplicants from entering restricted areas.";
 
-				public static LocString EFFECT = "Encloses areas without blocking " + UI.FormatAsLink("Liquid", "ELEMENTS_LIQUID") + " or " + UI.FormatAsLink("Gas", "ELEMENTS_GAS") + " flow.\n\nSets Duplicant Access Permissions for area restriction.\n\nWild " + UI.FormatAsLink("Critters", "CRITTERS") + " cannot pass through doors.";
+				public static LocString EFFECT = "Encloses areas without blocking " + UI.FormatAsLink("Liquid", "ELEMENTS_LIQUID") + " or " + UI.FormatAsLink("Gas", "ELEMENTS_GAS") + " flow.\n\nWild " + UI.FormatAsLink("Critters", "CRITTERS") + " cannot pass through doors.";
 
 				public static LocString PRESSURE_SUIT_REQUIRED = UI.FormatAsLink("Atmo Suit", "ATMO_SUIT") + " required {0}";
 
@@ -593,18 +593,18 @@ namespace STRINGS
 			{
 				public static LocString NAME = UI.FormatAsLink("Power Transformer", "POWERTRANSFORMERSMALL");
 
-				public static LocString DESC = "Transformers prevent buildings from frying on circuits with powerful generators.";
+				public static LocString DESC = "Connect " + UI.FormatAsLink("Batteries", "BATTERY") + " on the large side to act as a valve and prevent " + UI.FormatAsLink("Wires", "WIRE") + " from drawing more than 1000 W and suffering overload damage.";
 
-				public static LocString EFFECT = "Protects circuits from overloading by increasing or decreasing " + UI.FormatAsLink("Power", "POWER") + " flow.\n\nStores the " + UI.FormatAsLink("Power", "POWER") + " that is fed into it.";
+				public static LocString EFFECT = "Limits " + UI.FormatAsLink("Power", "POWER") + " flowing through the Transformer to 1000 W.";
 			}
 
 			public class POWERTRANSFORMER
 			{
 				public static LocString NAME = UI.FormatAsLink("Large Power Transformer", "POWERTRANSFORMER");
 
-				public static LocString DESC = "Shh! It only transforms when no one's looking.";
+				public static LocString DESC = "Connect " + UI.FormatAsLink("Batteries", "BATTERY") + " on the large side to act as a valve and prevent " + UI.FormatAsLink("Wires", "WIRE") + " from drawing more than 4 kW.";
 
-				public static LocString EFFECT = "Protects circuits from overloading by increasing or decreasing " + UI.FormatAsLink("Power", "POWER") + " flow.\n\nStores a great deal of " + UI.FormatAsLink("Power", "POWER") + ".";
+				public static LocString EFFECT = "Limits " + UI.FormatAsLink("Power", "POWER") + " flowing through the Transformer to 4 kW.";
 			}
 
 			public class FLOORLAMP
@@ -1190,7 +1190,7 @@ namespace STRINGS
 
 				public static LocString DESC = "Airlocks can quarter off dangerous areas and prevent gases from seeping into the colony.";
 
-				public static LocString EFFECT = "Blocks " + UI.FormatAsLink("Liquid", "ELEMENTS_LIQUID") + " and " + UI.FormatAsLink("Gas", "ELEMENTS_GAS") + " flow, maintaining pressure between areas.\n\nSets Duplicant Access Permissions for area restriction.\n\nWild " + UI.FormatAsLink("Critters", "CRITTERS") + " cannot pass through doors.";
+				public static LocString EFFECT = "Blocks " + UI.FormatAsLink("Liquid", "ELEMENTS_LIQUID") + " and " + UI.FormatAsLink("Gas", "ELEMENTS_GAS") + " flow, maintaining pressure between areas.\n\nWild " + UI.FormatAsLink("Critters", "CRITTERS") + " cannot pass through doors.";
 			}
 
 			public class MESHTILE
@@ -1343,7 +1343,7 @@ namespace STRINGS
 
 				public static LocString DESC = "Mechanized airlocks open and close more quickly than other types of door.";
 
-				public static LocString EFFECT = "Blocks " + UI.FormatAsLink("Liquid", "ELEMENTS_LIQUID") + " and " + UI.FormatAsLink("Gas", "ELEMENTS_GAS") + " flow, maintaining pressure between areas.\n\nSets Duplicant Access Permissions for area restriction.\n\nFunctions as a " + UI.FormatAsLink("Manual Airlock", "MANUALPRESSUREDOOR") + " when no " + UI.FormatAsLink("Power", "POWER") + " is available.";
+				public static LocString EFFECT = "Blocks " + UI.FormatAsLink("Liquid", "ELEMENTS_LIQUID") + " and " + UI.FormatAsLink("Gas", "ELEMENTS_GAS") + " flow, maintaining pressure between areas.\n\nFunctions as a " + UI.FormatAsLink("Manual Airlock", "MANUALPRESSUREDOOR") + " when no " + UI.FormatAsLink("Power", "POWER") + " is available.\n\nWild " + UI.FormatAsLink("Critters", "CRITTERS") + " cannot pass through doors.";
 			}
 
 			public class BUNKERDOOR
@@ -1606,7 +1606,7 @@ namespace STRINGS
 
 				public static LocString DESC = "Resources left on the floor become \"debris\" and lower decor when not put away.";
 
-				public static LocString EFFECT = "Stores the resources of your choosing.";
+				public static LocString EFFECT = "Stores the Solid resources of your choosing.";
 			}
 
 			public class STORAGELOCKERSMART
@@ -1615,7 +1615,7 @@ namespace STRINGS
 
 				public static LocString DESC = "Smart storage bins allow for the automation of resource organization based on type and mass.";
 
-				public static LocString EFFECT = "Stores the resources of your choosing.\n\nSends a " + UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active) + " when bin is full.";
+				public static LocString EFFECT = "Stores the Solid resources of your choosing.\n\nSends a " + UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active) + " when bin is full.";
 
 				public static LocString LOGIC_PORT = "Full/Not Full";
 
@@ -1661,7 +1661,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = UI.FormatAsLink("Liquid Tepidizer", "LIQUIDHEATER");
 
-				public static LocString DESC = "Tepidizers kill waterborne germs and heat liquid to perfect showering temperature.";
+				public static LocString DESC = "Tepidizers heat liquid which can kill waterborne germs.";
 
 				public static LocString EFFECT = "Warms large bodies of " + UI.FormatAsLink("Liquid", "ELEMENTS_LIQUID") + ".\n\nMust be fully submerged.";
 			}
@@ -1812,7 +1812,7 @@ namespace STRINGS
 
 				public static LocString DESC = "Higher wattage wire is used to avoid power overloads, particularly for strong generators.";
 
-				public static LocString EFFECT = "Carries more " + UI.FormatAsLink("Wattage", "POWER") + " than regular " + UI.FormatAsLink("WIRE", "WIRE") + " without overloading.\n\nCannot be run through wall and floor tile.";
+				public static LocString EFFECT = "Carries more " + UI.FormatAsLink("Wattage", "POWER") + " than regular " + UI.FormatAsLink("Wire", "WIRE") + " without overloading.\n\nCannot be run through wall and floor tile.";
 			}
 
 			public class WIREREFINEDBRIDGEHIGHWATTAGE
@@ -2342,7 +2342,7 @@ namespace STRINGS
 
 				public static LocString DESC = "These sensors can detect the presence of a specific gas and alter systems accordingly.";
 
-				public static LocString EFFECT = "Sends a " + UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active) + " when the selected " + UI.FormatAsLink("Gas", "ELEMENTS_GAS") + " is detected.\n\nSends a " + UI.FormatAsAutomationState("Red Signal", UI.AutomationState.Standby) + " when the selected " + UI.FormatAsLink("Gas", "ELEMENTS_GAS") + " is not present.";
+				public static LocString EFFECT = "Sends a " + UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active) + " when the selected " + UI.FormatAsLink("Gas", "ELEMENTS_GAS") + " is detected on this sensor's tile.\n\nSends a " + UI.FormatAsAutomationState("Red Signal", UI.AutomationState.Standby) + " when the selected " + UI.FormatAsLink("Gas", "ELEMENTS_GAS") + " is not present.";
 
 				public static LocString LOGIC_PORT = "Specific " + UI.FormatAsLink("Gas", "ELEMENTS_GAS") + " Presence";
 
@@ -2357,7 +2357,7 @@ namespace STRINGS
 
 				public static LocString DESC = "These sensors can detect the presence of a specific liquid and alter systems accordingly.";
 
-				public static LocString EFFECT = "Sends a " + UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active) + " when the chosen " + UI.FormatAsLink("Liquid", "ELEMENTS_LIQUID") + " is detected.\n\nSends a " + UI.FormatAsAutomationState("Red Signal", UI.AutomationState.Standby) + " when the " + UI.FormatAsLink("Liquid", "ELEMENTS_LIQUID") + " is not present.";
+				public static LocString EFFECT = "Sends a " + UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active) + " when the selected " + UI.FormatAsLink("Liquid", "ELEMENTS_LIQUID") + " is detected on this sensor's tile.\n\nSends a " + UI.FormatAsAutomationState("Red Signal", UI.AutomationState.Standby) + " when the selected " + UI.FormatAsLink("Liquid", "ELEMENTS_LIQUID") + " is not present.";
 
 				public static LocString LOGIC_PORT = "Specific" + UI.FormatAsLink("Liquid", "ELEMENTS_LIQUID") + " Presence";
 
@@ -2402,7 +2402,7 @@ namespace STRINGS
 
 				public static LocString DESC = "Element sensors can be used to detect the presence of a specific gas in a pipe.";
 
-				public static LocString EFFECT = "Sends a " + UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active) + " when the chosen " + UI.FormatAsLink("Gas", "ELEMENTS_GAS") + " is detected.";
+				public static LocString EFFECT = "Sends a " + UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active) + " when the selected " + UI.FormatAsLink("Gas", "ELEMENTS_GAS") + " is detected within a pipe.";
 
 				public static LocString LOGIC_PORT = "Internal " + UI.FormatAsLink("Gas", "ELEMENTS_GAS") + " Presence";
 
@@ -2417,7 +2417,7 @@ namespace STRINGS
 
 				public static LocString DESC = "Element sensors can be used to detect the presence of a specific liquid in a pipe.";
 
-				public static LocString EFFECT = "Sends a " + UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active) + " when the chosen " + UI.FormatAsLink("Liquid", "ELEMENTS_LIQUID") + " is detected.";
+				public static LocString EFFECT = "Sends a " + UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active) + " when the selected " + UI.FormatAsLink("Liquid", "ELEMENTS_LIQUID") + " is detected within a pipe.";
 
 				public static LocString LOGIC_PORT = "Internal " + UI.FormatAsLink("Liquid", "ELEMENTS_LIQUID") + " Presence";
 
@@ -2432,7 +2432,7 @@ namespace STRINGS
 
 				public static LocString DESC = "Thermo sensors disable buildings when their pipe contents reach a certain temperature.";
 
-				public static LocString EFFECT = "Sends a " + UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active) + " or a " + UI.FormatAsAutomationState("Red Signal", UI.AutomationState.Standby) + " when contents enter the chosen " + UI.FormatAsLink("Temperature", "HEAT") + " range.";
+				public static LocString EFFECT = "Sends a " + UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active) + " or a " + UI.FormatAsAutomationState("Red Signal", UI.AutomationState.Standby) + " when pipe contents enter the chosen " + UI.FormatAsLink("Temperature", "HEAT") + " range.";
 
 				public static LocString LOGIC_PORT = "Internal " + UI.FormatAsLink("Gas", "ELEMENTS_GAS") + " " + UI.FormatAsLink("Temperature", "HEAT");
 
@@ -2447,7 +2447,7 @@ namespace STRINGS
 
 				public static LocString DESC = "Thermo sensors disable buildings when their pipe contents reach a certain temperature.";
 
-				public static LocString EFFECT = "Sends a " + UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active) + " or a " + UI.FormatAsAutomationState("Red Signal", UI.AutomationState.Standby) + " when contents enter the chosen " + UI.FormatAsLink("Temperature", "HEAT") + " range.";
+				public static LocString EFFECT = "Sends a " + UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active) + " or a " + UI.FormatAsAutomationState("Red Signal", UI.AutomationState.Standby) + " when pipe contents enter the chosen " + UI.FormatAsLink("Temperature", "HEAT") + " range.";
 
 				public static LocString LOGIC_PORT = "Internal " + UI.FormatAsLink("Liquid", "ELEMENTS_LIQUID") + " " + UI.FormatAsLink("Temperature", "HEAT");
 
@@ -2645,7 +2645,7 @@ namespace STRINGS
 
 				public static LocString DESC = string.Empty;
 
-				public static LocString EFFECT = "A self-sustaining machine powered by what appears to be refined " + UI.FormatAsLink("Neutronium", "UNOBTANIUM") + ".\n\nAbsorbs and neutralizes " + UI.FormatAsLink("Heat", "HEAT") + " energy when submersed in " + UI.FormatAsLink("Hydrogen", "HYDROGEN") + ".";
+				public static LocString EFFECT = "A self-sustaining machine powered by what appears to be refined " + UI.FormatAsLink("Neutronium", "UNOBTANIUM") + ".\n\nAbsorbs and neutralizes " + UI.FormatAsLink("Heat", "HEAT") + " energy when provided with piped " + UI.FormatAsLink("Hydrogen", "HYDROGEN") + ".";
 			}
 
 			public class FACILITYBACKWALLWINDOW

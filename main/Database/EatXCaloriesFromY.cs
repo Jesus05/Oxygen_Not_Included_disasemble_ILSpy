@@ -46,7 +46,7 @@ namespace Database
 
 		public override string GetProgress(bool complete)
 		{
-			return string.Format(COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.STATUS.CALORIES_FROM_MEAT, GameUtil.GetFormattedCalories((!complete) ? (RationTracker.Get().GetCaloiresConsumedByFood(fromFoodType) / 1000f) : ((float)numCalories), GameUtil.TimeSlice.None, true), GameUtil.GetFormattedCalories((float)numCalories, GameUtil.TimeSlice.None, true));
+			return string.Format(COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.STATUS.CALORIES_FROM_MEAT, GameUtil.GetFormattedCalories((!complete) ? RationTracker.Get().GetCaloiresConsumedByFood(fromFoodType) : ((float)numCalories * 1000f), GameUtil.TimeSlice.None, true), GameUtil.GetFormattedCalories((float)numCalories * 1000f, GameUtil.TimeSlice.None, true));
 		}
 	}
 }

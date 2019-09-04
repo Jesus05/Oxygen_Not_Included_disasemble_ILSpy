@@ -125,7 +125,6 @@ public class SteamUGCService : MonoBehaviour
 	{
 		if (!((UnityEngine.Object)instance != (UnityEngine.Object)null))
 		{
-			Debug.Log("Initialising UGC Service");
 			GameObject gameObject = GameObject.Find("/SteamManager");
 			instance = gameObject.GetComponent<SteamUGCService>();
 			if ((UnityEngine.Object)instance == (UnityEngine.Object)null)
@@ -187,13 +186,11 @@ public class SteamUGCService : MonoBehaviour
 		if (details.m_hPreviewFile != UGCHandle_t.Invalid)
 		{
 			SteamRemoteStorage.UGCDownload(details.m_hPreviewFile, 0u);
-			Debug.LogFormat("\tdownload preview file");
 			array = new byte[details.m_nPreviewFileSize];
 			int num = SteamRemoteStorage.UGCRead(details.m_hPreviewFile, array, details.m_nPreviewFileSize, 0u, EUGCReadAction.k_EUGCRead_ContinueReadingUntilFinished);
-			Debug.LogFormat("\tload preview image of size {0} bytes...loaded {1}", details.m_nPreviewFileSize, num);
 			if (num != details.m_nPreviewFileSize)
 			{
-				Debug.LogFormat("\t...load failed");
+				Debug.LogFormat("Preview image load failed");
 				array = null;
 			}
 		}

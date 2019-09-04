@@ -32,7 +32,7 @@ public class BatterySmartConfig : BaseBatteryConfig
 	{
 		BatterySmart batterySmart = go.AddOrGet<BatterySmart>();
 		batterySmart.capacity = 20000f;
-		batterySmart.joulesLostPerSecond = batterySmart.capacity * 0.02f / 600f;
+		batterySmart.joulesLostPerSecond = 0.6666667f;
 		batterySmart.powerSortOrder = 1000;
 		GeneratedBuildings.RegisterLogicPorts(go, null, OUTPUT_PORTS);
 		base.DoPostConfigureComplete(go);

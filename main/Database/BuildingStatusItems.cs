@@ -32,6 +32,8 @@ namespace Database
 
 		public StatusItem NotEnoughPower;
 
+		public StatusItem PowerLoopDetected;
+
 		public StatusItem NeedLiquidIn;
 
 		public StatusItem NeedGasIn;
@@ -410,8 +412,8 @@ namespace Database
 			CurrentDoorControlState.resolveStringCallback = delegate(string str, object data)
 			{
 				Door door = (Door)data;
-				string newValue10 = Strings.Get("STRINGS.BUILDING.STATUSITEMS.CURRENTDOORCONTROLSTATE." + door.CurrentState.ToString().ToUpper());
-				return str.Replace("{ControlState}", newValue10);
+				string newValue12 = Strings.Get("STRINGS.BUILDING.STATUSITEMS.CURRENTDOORCONTROLSTATE." + door.CurrentState.ToString().ToUpper());
+				return str.Replace("{ControlState}", newValue12);
 			};
 			ClinicOutsideHospital = CreateStatusItem("ClinicOutsideHospital", "BUILDING", string.Empty, StatusItem.IconType.Info, NotificationType.BadMinor, false, OverlayModes.None.ID, false, 129022);
 			ConduitBlocked = CreateStatusItem("ConduitBlocked", "BUILDING", string.Empty, StatusItem.IconType.Info, NotificationType.BadMinor, false, OverlayModes.None.ID, true, 129022);
@@ -424,17 +426,17 @@ namespace Database
 			DirectionControl.resolveStringCallback = delegate(string str, object data)
 			{
 				DirectionControl directionControl = (DirectionControl)data;
-				string newValue9 = BUILDING.STATUSITEMS.DIRECTION_CONTROL.DIRECTIONS.BOTH;
+				string newValue11 = BUILDING.STATUSITEMS.DIRECTION_CONTROL.DIRECTIONS.BOTH;
 				switch (directionControl.allowedDirection)
 				{
 				case WorkableReactable.AllowedDirection.Left:
-					newValue9 = BUILDING.STATUSITEMS.DIRECTION_CONTROL.DIRECTIONS.LEFT;
+					newValue11 = BUILDING.STATUSITEMS.DIRECTION_CONTROL.DIRECTIONS.LEFT;
 					break;
 				case WorkableReactable.AllowedDirection.Right:
-					newValue9 = BUILDING.STATUSITEMS.DIRECTION_CONTROL.DIRECTIONS.RIGHT;
+					newValue11 = BUILDING.STATUSITEMS.DIRECTION_CONTROL.DIRECTIONS.RIGHT;
 					break;
 				}
-				str = str.Replace("{Direction}", newValue9);
+				str = str.Replace("{Direction}", newValue11);
 				return str;
 			};
 			ConstructableDigUnreachable = CreateStatusItem("ConstructableDigUnreachable", "BUILDING", string.Empty, StatusItem.IconType.Exclamation, NotificationType.BadMinor, false, OverlayModes.None.ID, true, 129022);
@@ -527,8 +529,8 @@ namespace Database
 				KeyValuePair<Tag, float> keyValuePair = (KeyValuePair<Tag, float>)data;
 				if (keyValuePair.Value != 0f)
 				{
-					string newValue8 = string.Format(BUILDING.STATUSITEMS.WAITINGFORMATERIALS.LINE_ITEM_MASS, keyValuePair.Key.ProperName(), GameUtil.GetFormattedMass(keyValuePair.Value, GameUtil.TimeSlice.None, GameUtil.MetricMassFormat.UseThreshold, true, "{0:0.#}"));
-					str = str.Replace("{ItemsRemaining}", newValue8);
+					string newValue10 = string.Format(BUILDING.STATUSITEMS.WAITINGFORMATERIALS.LINE_ITEM_MASS, keyValuePair.Key.ProperName(), GameUtil.GetFormattedMass(keyValuePair.Value, GameUtil.TimeSlice.None, GameUtil.MetricMassFormat.UseThreshold, true, "{0:0.#}"));
+					str = str.Replace("{ItemsRemaining}", newValue10);
 				}
 				return str;
 			};
@@ -564,8 +566,8 @@ namespace Database
 			NeedGasIn.resolveStringCallback = delegate(string str, object data)
 			{
 				Tuple<ConduitType, Tag> tuple2 = (Tuple<ConduitType, Tag>)data;
-				string newValue7 = string.Format(BUILDING.STATUSITEMS.NEEDGASIN.LINE_ITEM, tuple2.second.ProperName());
-				str = str.Replace("{GasRequired}", newValue7);
+				string newValue9 = string.Format(BUILDING.STATUSITEMS.NEEDGASIN.LINE_ITEM, tuple2.second.ProperName());
+				str = str.Replace("{GasRequired}", newValue9);
 				return str;
 			};
 			NeedGasOut = CreateStatusItem("NeedGasOut", "BUILDING", "status_item_need_supply_out", StatusItem.IconType.Custom, NotificationType.BadMinor, true, OverlayModes.GasConduits.ID, true, 129022);
@@ -573,8 +575,8 @@ namespace Database
 			NeedLiquidIn.resolveStringCallback = delegate(string str, object data)
 			{
 				Tuple<ConduitType, Tag> tuple = (Tuple<ConduitType, Tag>)data;
-				string newValue6 = string.Format(BUILDING.STATUSITEMS.NEEDLIQUIDIN.LINE_ITEM, tuple.second.ProperName());
-				str = str.Replace("{LiquidRequired}", newValue6);
+				string newValue8 = string.Format(BUILDING.STATUSITEMS.NEEDLIQUIDIN.LINE_ITEM, tuple.second.ProperName());
+				str = str.Replace("{LiquidRequired}", newValue8);
 				return str;
 			};
 			NeedLiquidOut = CreateStatusItem("NeedLiquidOut", "BUILDING", "status_item_need_supply_out", StatusItem.IconType.Custom, NotificationType.BadMinor, true, OverlayModes.LiquidConduits.ID, true, 129022);
@@ -611,6 +613,7 @@ namespace Database
 			NeedPlant = CreateStatusItem("NeedPlant", "BUILDING", "status_item_need_plant", StatusItem.IconType.Custom, NotificationType.BadMinor, false, OverlayModes.None.ID, true, 129022);
 			NeedPower = CreateStatusItem("NeedPower", "BUILDING", "status_item_need_power", StatusItem.IconType.Custom, NotificationType.BadMinor, false, OverlayModes.Power.ID, true, 129022);
 			NotEnoughPower = CreateStatusItem("NotEnoughPower", "BUILDING", "status_item_need_power", StatusItem.IconType.Custom, NotificationType.BadMinor, false, OverlayModes.Power.ID, true, 129022);
+			PowerLoopDetected = CreateStatusItem("PowerLoopDetected", "BUILDING", "status_item_exclamation", StatusItem.IconType.Custom, NotificationType.BadMinor, false, OverlayModes.Power.ID, true, 129022);
 			NewDuplicantsAvailable = CreateStatusItem("NewDuplicantsAvailable", "BUILDING", "status_item_new_duplicants_available", StatusItem.IconType.Custom, NotificationType.BadMinor, false, OverlayModes.None.ID, true, 129022);
 			NewDuplicantsAvailable.AddNotification(null, null, null, 0f);
 			NewDuplicantsAvailable.notificationClickCallback = delegate(object data)
@@ -758,9 +761,9 @@ namespace Database
 			StatusItem noResearchSelected = NoResearchSelected;
 			noResearchSelected.resolveTooltipCallback = (Func<string, object, string>)Delegate.Combine(noResearchSelected.resolveTooltipCallback, (Func<string, object, string>)delegate(string str, object data)
 			{
-				BindingEntry bindingEntry3 = GameInputMapping.FindEntry(Action.ManageResearch);
-				string newValue5 = bindingEntry3.mKeyCode.ToString();
-				str = str.Replace("{RESEARCH_MENU_KEY}", newValue5);
+				BindingEntry bindingEntry5 = GameInputMapping.FindEntry(Action.ManageResearch);
+				string newValue7 = bindingEntry5.mKeyCode.ToString();
+				str = str.Replace("{RESEARCH_MENU_KEY}", newValue7);
 				return str;
 			});
 			NoResearchSelected.notificationClickCallback = delegate
@@ -774,9 +777,9 @@ namespace Database
 			StatusItem noApplicableAnalysisSelected = NoApplicableAnalysisSelected;
 			noApplicableAnalysisSelected.resolveTooltipCallback = (Func<string, object, string>)Delegate.Combine(noApplicableAnalysisSelected.resolveTooltipCallback, (Func<string, object, string>)delegate(string str, object data)
 			{
-				BindingEntry bindingEntry2 = GameInputMapping.FindEntry(Action.ManageStarmap);
-				string newValue4 = bindingEntry2.mKeyCode.ToString();
-				str = str.Replace("{STARMAP_MENU_KEY}", newValue4);
+				BindingEntry bindingEntry4 = GameInputMapping.FindEntry(Action.ManageStarmap);
+				string newValue6 = bindingEntry4.mKeyCode.ToString();
+				str = str.Replace("{STARMAP_MENU_KEY}", newValue6);
 				return str;
 			});
 			NoApplicableAnalysisSelected.notificationClickCallback = delegate
@@ -784,6 +787,17 @@ namespace Database
 				ManagementMenu.Instance.OpenStarmap();
 			};
 			NoResearchOrDestinationSelected = CreateStatusItem("NoResearchOrDestinationSelected", "BUILDING", "status_item_no_research_selected", StatusItem.IconType.Custom, NotificationType.BadMinor, false, OverlayModes.None.ID, true, 129022);
+			StatusItem noResearchOrDestinationSelected = NoResearchOrDestinationSelected;
+			noResearchOrDestinationSelected.resolveTooltipCallback = (Func<string, object, string>)Delegate.Combine(noResearchOrDestinationSelected.resolveTooltipCallback, (Func<string, object, string>)delegate(string str, object data)
+			{
+				BindingEntry bindingEntry2 = GameInputMapping.FindEntry(Action.ManageStarmap);
+				string newValue4 = bindingEntry2.mKeyCode.ToString();
+				str = str.Replace("{STARMAP_MENU_KEY}", newValue4);
+				BindingEntry bindingEntry3 = GameInputMapping.FindEntry(Action.ManageResearch);
+				string newValue5 = bindingEntry3.mKeyCode.ToString();
+				str = str.Replace("{RESEARCH_MENU_KEY}", newValue5);
+				return str;
+			});
 			NoResearchOrDestinationSelected.AddNotification(null, null, null, 0f);
 			ValveRequest = CreateStatusItem("ValveRequest", "BUILDING", string.Empty, StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, true, 129022);
 			ValveRequest.resolveStringCallback = delegate(string str, object data)
@@ -887,8 +901,9 @@ namespace Database
 			JoulesAvailable = CreateStatusItem("JoulesAvailable", "BUILDING", string.Empty, StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.Power.ID, true, 129022);
 			JoulesAvailable.resolveStringCallback = delegate(string str, object data)
 			{
-				IEnergyProducer energyProducer = (IEnergyProducer)data;
-				str = str.Replace("{JoulesAvailable}", GameUtil.GetFormattedJoules(energyProducer.JoulesAvailable, "F1", GameUtil.TimeSlice.None));
+				Battery battery = (Battery)data;
+				str = str.Replace("{JoulesAvailable}", GameUtil.GetFormattedJoules(battery.JoulesAvailable, "F1", GameUtil.TimeSlice.None));
+				str = str.Replace("{JoulesCapacity}", GameUtil.GetFormattedJoules(battery.Capacity, "F1", GameUtil.TimeSlice.None));
 				return str;
 			};
 			Wattage = CreateStatusItem("Wattage", "BUILDING", string.Empty, StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.Power.ID, true, 129022);

@@ -1276,15 +1276,20 @@ public static class GameUtil
 			}
 			break;
 		case SimHashes.ContaminatedOxygen:
-			if (Mass >= 0.3f)
+			if (Mass >= SimDebugView.optimallyBreathable)
 			{
-				color4 = color2;
-				arg = UI.OVERLAYS.OXYGEN.LEGEND6;
+				color4 = color;
+				arg = UI.OVERLAYS.OXYGEN.LEGEND1;
 			}
-			else if (Mass > 0.05f)
+			else if (Mass >= SimDebugView.minimumBreathable + (SimDebugView.optimallyBreathable - SimDebugView.minimumBreathable) / 2f)
+			{
+				color4 = color;
+				arg = UI.OVERLAYS.OXYGEN.LEGEND2;
+			}
+			else if (Mass >= SimDebugView.minimumBreathable)
 			{
 				color4 = color2;
-				arg = UI.OVERLAYS.OXYGEN.LEGEND5;
+				arg = UI.OVERLAYS.OXYGEN.LEGEND3;
 			}
 			else
 			{
@@ -1298,6 +1303,15 @@ public static class GameUtil
 			break;
 		}
 		return string.Format(ELEMENTS.BREATHABLEDESC, color4.ToHexString(), arg);
+	}
+
+	public static string GetWireLoadColor(float load, float maxLoad)
+	{
+		Color color = new Color(1f, 1f, 1f);
+		Color color2 = new Color(0.9843137f, 0.6901961f, 0.23137255f);
+		Color color3 = new Color(1f, 0.192156866f, 0.192156866f);
+		Color c = (load > maxLoad) ? color3 : ((!(load / maxLoad >= 0.75f)) ? color : color2);
+		return c.ToHexString();
 	}
 
 	public static string AppendHotkeyString(string template, Action action)

@@ -1,4 +1,5 @@
 using Klei.AI;
+using KSerialization;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -17,9 +18,12 @@ public class BuildingComplete : Building
 
 	public bool isArtable;
 
+	[Serialize]
+	public float creationTime = -1f;
+
 	private bool hasSpawnedKComponents;
 
-	private bool wasReplaced;
+	private ObjectLayer replacingTileLayer = ObjectLayer.NumLayers;
 
 	public List<AttributeModifier> regionModifiers = new List<AttributeModifier>();
 
@@ -29,6 +33,11 @@ public class BuildingComplete : Building
 	});
 
 	private HandleVector<int>.Handle scenePartitionerEntry;
+
+	private bool WasReplaced()
+	{
+		return replacingTileLayer != ObjectLayer.NumLayers;
+	}
 
 	protected override void OnPrefabInit()
 	{
@@ -65,7 +74,7 @@ public class BuildingComplete : Building
 
 	private void OnObjectReplaced(object data)
 	{
-		wasReplaced = true;
+		replacingTileLayer = (ObjectLayer)data;
 	}
 
 	protected override void OnSpawn()
@@ -163,6 +172,11 @@ public class BuildingComplete : Building
 		}
 	}
 
+	public void SetCreationTime(float time)
+	{
+		creationTime = time;
+	}
+
 	private string GetInspectSound()
 	{
 		string name = "AI_Inspect_" + GetComponent<KPrefabID>().PrefabTag.Name;
@@ -183,7 +197,7 @@ public class BuildingComplete : Building
 				GameComps.StructureTemperatures.Remove(base.gameObject);
 			}
 			base.OnCleanUp();
-			if (!wasReplaced)
+			if (!WasReplaced())
 			{
 				int cell = Grid.PosToCell(this);
 				Def.UnmarkArea(cell, base.Orientation, Def.ObjectLayer, base.gameObject);
@@ -211,6 +225,15 @@ public class BuildingComplete : Building
 						Grid.PreventIdleTraversal[base.PlacementCells[j]] = false;
 					}
 				}
+			}
+			if (WasReplaced() && Def.IsTilePiece && replacingTileLayer != Def.TileLayer)
+			{
+				int cell2 = Grid.PosToCell(this);
+				Def.UnmarkArea(cell2, base.Orientation, Def.TileLayer, base.gameObject);
+				Def.RunOnArea(cell2, base.Orientation, delegate(int c)
+				{
+					TileVisualizer.RefreshCell(c, Def.TileLayer, Def.ReplacementLayer);
+				});
 			}
 			Components.BuildingCompletes.Remove(this);
 			UnregisterBlockTileRenderer();

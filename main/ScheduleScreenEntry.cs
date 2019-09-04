@@ -28,9 +28,6 @@ public class ScheduleScreenEntry : KMonoBehaviour
 	private LocText alarmField;
 
 	[SerializeField]
-	private KButton deleteButton;
-
-	[SerializeField]
 	private KButton optionsButton;
 
 	[SerializeField]
@@ -66,10 +63,12 @@ public class ScheduleScreenEntry : KMonoBehaviour
 		});
 		int num = 0;
 		blockButtons = new List<ScheduleBlockButton>();
+		List<ScheduleBlock> blocks = schedule.GetBlocks();
+		int count = blocks.Count;
 		foreach (ScheduleBlock block in schedule.GetBlocks())
 		{
 			ScheduleBlockButton scheduleBlockButton = Util.KInstantiateUI<ScheduleBlockButton>(blockButtonPrefab.gameObject, blockButtonContainer.gameObject, true);
-			scheduleBlockButton.Setup(num++, paintStyles);
+			scheduleBlockButton.Setup(num++, paintStyles, count);
 			scheduleBlockButton.SetBlockTypes(block.allowed_types);
 			blockButtons.Add(scheduleBlockButton);
 		}
@@ -84,7 +83,7 @@ public class ScheduleScreenEntry : KMonoBehaviour
 		MultiToggle reference = component.GetReference<MultiToggle>("AlarmButton");
 		reference.onClick = (System.Action)Delegate.Combine(reference.onClick, new System.Action(OnAlarmClicked));
 		component.GetReference<KButton>("ResetButton").onClick += OnResetClicked;
-		deleteButton.onClick += OnDeleteClicked;
+		component.GetReference<KButton>("DeleteButton").onClick += OnDeleteClicked;
 		schedule.onChanged = (Action<Schedule>)Delegate.Combine(schedule.onChanged, new Action<Schedule>(OnScheduleChanged));
 	}
 

@@ -120,12 +120,6 @@ public class KFMOD
 
 	public static EventInstance CreateInstance(string path)
 	{
-		if (!((UnityEngine.Object)KFMODDebugger.instance != (UnityEngine.Object)null))
-		{
-			goto IL_0010;
-		}
-		goto IL_0010;
-		IL_0010:
 		if (!RuntimeManager.IsInitialized)
 		{
 			return default(EventInstance);

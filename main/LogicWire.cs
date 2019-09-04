@@ -63,7 +63,6 @@ public class LogicWire : KMonoBehaviour, IFirstFrameCallback, IHaveUtilityNetwor
 		if ((UnityEngine.Object)component == (UnityEngine.Object)null || component.HitPoints > 0)
 		{
 			disconnected = false;
-			GetComponent<KSelectable>().SetStatusItem(Db.Get().StatusItemCategories.Power, Db.Get().BuildingStatusItems.WireConnected, null);
 			Game.Instance.logicCircuitSystem.ForceRebuildNetworks();
 		}
 		return !disconnected;

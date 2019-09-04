@@ -40,6 +40,11 @@ public class RoleStation : Workable, IEffectDescriptor
 
 	private List<int> subscriptions = new List<int>();
 
+	private static readonly EventSystem.IntraObjectHandler<RoleStation> OnUpdateDelegate = new EventSystem.IntraObjectHandler<RoleStation>(delegate(RoleStation component, object data)
+	{
+		component.UpdateSkillPointAvailableStatusItem(data);
+	});
+
 	protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
@@ -54,8 +59,8 @@ public class RoleStation : Workable, IEffectDescriptor
 		smi.StartSM();
 		SetWorkTime(7.53f);
 		resetProgressOnStop = true;
-		subscriptions.Add(Game.Instance.Subscribe(-1523247426, UpdateSkillPointAvailableStatusItem));
-		subscriptions.Add(Game.Instance.Subscribe(1505456302, UpdateSkillPointAvailableStatusItem));
+		subscriptions.Add(Subscribe(-1523247426, OnUpdateDelegate));
+		subscriptions.Add(Subscribe(1505456302, OnUpdateDelegate));
 		UpdateSkillPointAvailableStatusItem(null);
 	}
 

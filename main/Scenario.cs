@@ -904,7 +904,7 @@ public class Scenario : KMonoBehaviour
 		{
 			element2.tag,
 			ElementLoader.FindElementByHash(SimHashes.SedimentaryRock).tag
-		}, 293.15f, false);
+		}, 293.15f, false, -1f);
 		PrimaryElement component = gameObject.GetComponent<PrimaryElement>();
 		component.InternalTemperature = 300f;
 		component.Temperature = 300f;

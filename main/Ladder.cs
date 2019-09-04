@@ -32,7 +32,7 @@ public class Ladder : KMonoBehaviour, IEffectDescriptor
 		base.OnCleanUp();
 		int num = Grid.PosToCell(this);
 		GameObject x = Grid.Objects[num, 24];
-		if ((Object)x == (Object)null || (Object)x == (Object)base.gameObject)
+		if ((Object)x == (Object)null)
 		{
 			Grid.HasPole[num] = false;
 			Grid.HasLadder[num] = false;

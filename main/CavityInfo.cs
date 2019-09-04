@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using UnityEngine;
 
 public class CavityInfo
 {
@@ -48,7 +49,10 @@ public class CavityInfo
 	{
 		foreach (KPrefabID building in buildings)
 		{
-			building.Trigger(-832141045, data);
+			if ((Object)building != (Object)null)
+			{
+				building.Trigger(-832141045, data);
+			}
 		}
 	}
 }

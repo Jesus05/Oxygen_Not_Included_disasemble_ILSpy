@@ -101,6 +101,7 @@ public class ProductInfoScreen : KScreen
 		}
 		pointerEnterActions = (PointerEnterActions)Delegate.Combine(pointerEnterActions, new PointerEnterActions(CheckMouseOver));
 		pointerExitActions = (PointerExitActions)Delegate.Combine(pointerExitActions, new PointerExitActions(CheckMouseOver));
+		ConsumeMouseScroll = true;
 		sandboxInstantBuildToggle.ChangeState(SandboxToolParameterMenu.instance.settings.InstantBuild ? 1 : 0);
 		MultiToggle multiToggle = sandboxInstantBuildToggle;
 		multiToggle.onClick = (System.Action)Delegate.Combine(multiToggle.onClick, (System.Action)delegate

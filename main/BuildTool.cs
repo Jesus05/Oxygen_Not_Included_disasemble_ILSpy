@@ -13,6 +13,8 @@ public class BuildTool : DragTool
 
 	private int lastDragCell = -1;
 
+	private Orientation lastDragOrientation;
+
 	private IList<Tag> selectedElements;
 
 	private BuildingDef def;
@@ -242,6 +244,10 @@ public class BuildTool : DragTool
 						Vector3 pos = Grid.CellToPosCCC(lastCell, Grid.SceneLayer.Building);
 						UpdateVis(pos);
 					}
+					if (base.Dragging && lastDragCell != -1)
+					{
+						TryBuild(lastDragCell);
+					}
 				}
 			}
 		}
@@ -253,12 +259,18 @@ public class BuildTool : DragTool
 
 	protected override void OnDragTool(int cell, int distFromOrigin)
 	{
-		if (!((Object)visualizer == (Object)null) && cell != lastDragCell)
+		TryBuild(cell);
+	}
+
+	private void TryBuild(int cell)
+	{
+		if (!((Object)visualizer == (Object)null) && (cell != lastDragCell || buildingOrientation != lastDragOrientation))
 		{
 			int num = Grid.PosToCell(visualizer);
 			if (num == cell || (!(bool)def.BuildingComplete.GetComponent<LogicPorts>() && !(bool)def.BuildingComplete.GetComponent<LogicGateBase>()))
 			{
 				lastDragCell = cell;
+				lastDragOrientation = buildingOrientation;
 				ClearTilePreview();
 				Vector3 vector = Grid.CellToPosCBC(cell, Grid.SceneLayer.Building);
 				GameObject gameObject = null;
@@ -266,7 +278,7 @@ public class BuildTool : DragTool
 				{
 					if (def.IsValidBuildLocation(visualizer, vector, buildingOrientation) && def.IsValidPlaceLocation(visualizer, vector, buildingOrientation, out string _))
 					{
-						gameObject = def.Build(cell, buildingOrientation, null, selectedElements, 293.15f, false);
+						gameObject = def.Build(cell, buildingOrientation, null, selectedElements, 293.15f, false, GameClock.Instance.GetTime());
 						if ((Object)source != (Object)null)
 						{
 							source.DeleteObject();

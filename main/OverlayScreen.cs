@@ -76,6 +76,9 @@ public class OverlayScreen : KMonoBehaviour
 	[SerializeField]
 	private Color32 circuitStrainingColour;
 
+	[SerializeField]
+	private Color32 circuitOverloadingColour;
+
 	[Header("Crops")]
 	[SerializeField]
 	private GameObject harvestableNotificationPrefab;
@@ -141,7 +144,7 @@ public class OverlayScreen : KMonoBehaviour
 		OverlayModes.None mode = new OverlayModes.None();
 		RegisterMode(mode);
 		RegisterMode(new OverlayModes.Oxygen());
-		RegisterMode(new OverlayModes.Power(powerLabelParent, powerLabelPrefab, batUIPrefab, powerLabelOffset, batteryUIOffset, batteryUITransformerOffset, batteryUISmallTransformerOffset, consumerColour, generatorColour, buildingDisabledColour, circuitUnpoweredColour, circuitSafeColour, circuitStrainingColour));
+		RegisterMode(new OverlayModes.Power(powerLabelParent, powerLabelPrefab, batUIPrefab, powerLabelOffset, batteryUIOffset, batteryUITransformerOffset, batteryUISmallTransformerOffset, consumerColour, generatorColour, buildingDisabledColour, circuitUnpoweredColour, circuitSafeColour, circuitStrainingColour, circuitOverloadingColour));
 		RegisterMode(new OverlayModes.Temperature());
 		RegisterMode(new OverlayModes.ThermalConductivity());
 		RegisterMode(new OverlayModes.Light());
@@ -185,7 +188,7 @@ public class OverlayScreen : KMonoBehaviour
 		{
 			ManagementMenu.Instance.CloseAll();
 		}
-		ResourceCategoryScreen.Instance.Show(newMode == OverlayModes.None.ID);
+		ResourceCategoryScreen.Instance.Show(newMode == OverlayModes.None.ID && Game.Instance.GameStarted());
 		SimDebugView.Instance.SetMode(newMode);
 		if (!modeInfos.TryGetValue(newMode, out currentModeInfo))
 		{

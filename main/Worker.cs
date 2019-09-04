@@ -61,6 +61,11 @@ public class Worker : KMonoBehaviour
 
 	public bool usesMultiTool = true;
 
+	private static readonly EventSystem.IntraObjectHandler<Worker> OnChoreInterruptDelegate = new EventSystem.IntraObjectHandler<Worker>(delegate(Worker component, object data)
+	{
+		component.OnChoreInterrupt(data);
+	});
+
 	private Reactable passerbyReactable;
 
 	public State state
@@ -91,7 +96,7 @@ public class Worker : KMonoBehaviour
 	{
 		base.OnPrefabInit();
 		state = State.Idle;
-		Subscribe(1485595942, OnChoreInterrupt);
+		Subscribe(1485595942, OnChoreInterruptDelegate);
 	}
 
 	private string GetWorkableDebugString()

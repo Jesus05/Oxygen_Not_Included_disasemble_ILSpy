@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -9,6 +10,14 @@ public class ResourceCategoryScreen : KScreen
 	public GameObject Prefab_CategoryBar;
 
 	public Transform CategoryContainer;
+
+	public MultiToggle HiderButton;
+
+	public KLayoutElement HideTarget;
+
+	private float HideSpeedFactor = 12f;
+
+	private float targetContentHideHeight;
 
 	public Dictionary<Tag, ResourceCategoryHeader> DisplayedCategories = new Dictionary<Tag, ResourceCategoryHeader>();
 
@@ -25,6 +34,9 @@ public class ResourceCategoryScreen : KScreen
 	{
 		base.OnActivate();
 		Instance = this;
+		ConsumeMouseScroll = true;
+		MultiToggle hiderButton = HiderButton;
+		hiderButton.onClick = (System.Action)Delegate.Combine(hiderButton.onClick, new System.Action(OnHiderClick));
 		CreateTagSetHeaders(GameTags.MaterialCategories, GameUtil.MeasureUnit.mass);
 		CreateTagSetHeaders(GameTags.CalorieCategories, GameUtil.MeasureUnit.kcal);
 		CreateTagSetHeaders(GameTags.UnitCategories, GameUtil.MeasureUnit.quantity);
@@ -45,10 +57,31 @@ public class ResourceCategoryScreen : KScreen
 		}
 	}
 
+	private void OnHiderClick()
+	{
+		HiderButton.NextState();
+		if (HiderButton.CurrentState == 0)
+		{
+			targetContentHideHeight = 0f;
+		}
+		else
+		{
+			targetContentHideHeight = Mathf.Min(512f, CategoryContainer.rectTransform().rect.height);
+		}
+	}
+
 	private void Update()
 	{
-		if (!((Object)WorldInventory.Instance == (Object)null))
+		if (!((UnityEngine.Object)WorldInventory.Instance == (UnityEngine.Object)null))
 		{
+			if (HideTarget.minHeight != targetContentHideHeight)
+			{
+				float minHeight = HideTarget.minHeight;
+				float num = targetContentHideHeight - minHeight;
+				num *= HideSpeedFactor * Time.unscaledDeltaTime;
+				minHeight += num;
+				HideTarget.minHeight = minHeight;
+			}
 			for (int i = 0; i < 1; i++)
 			{
 				Tag tag = DisplayedCategoryKeys[categoryUpdatePacer];
@@ -60,7 +93,11 @@ public class ResourceCategoryScreen : KScreen
 				resourceCategoryHeader.UpdateContents();
 				categoryUpdatePacer = (categoryUpdatePacer + 1) % DisplayedCategoryKeys.Length;
 			}
-			if ((Object)MeterScreen.Instance != (Object)null && !MeterScreen.Instance.StartValuesSet)
+			if (HiderButton.CurrentState != 0)
+			{
+				targetContentHideHeight = Mathf.Min(512f, CategoryContainer.rectTransform().rect.height);
+			}
+			if ((UnityEngine.Object)MeterScreen.Instance != (UnityEngine.Object)null && !MeterScreen.Instance.StartValuesSet)
 			{
 				MeterScreen.Instance.InitializeValues();
 			}

@@ -2099,6 +2099,8 @@ public abstract class OverlayModes
 
 		private Color32 circuitStrainingColour;
 
+		private Color32 circuitOverloadingColour;
+
 		private int freePowerLabelIdx;
 
 		private int freeBatteryUIIdx;
@@ -2119,7 +2121,7 @@ public abstract class OverlayModes
 
 		private List<int> visited = new List<int>();
 
-		public Power(Canvas powerLabelParent, LocText powerLabelPrefab, BatteryUI batteryUIPrefab, Vector3 powerLabelOffset, Vector3 batteryUIOffset, Vector3 batteryUITransformerOffset, Vector3 batteryUISmallTransformerOffset, Color consumerColour, Color generatorColour, Color buildingDisabledColour, Color32 circuitUnpoweredColour, Color32 circuitSafeColour, Color32 circuitStrainingColour)
+		public Power(Canvas powerLabelParent, LocText powerLabelPrefab, BatteryUI batteryUIPrefab, Vector3 powerLabelOffset, Vector3 batteryUIOffset, Vector3 batteryUITransformerOffset, Vector3 batteryUISmallTransformerOffset, Color consumerColour, Color generatorColour, Color buildingDisabledColour, Color32 circuitUnpoweredColour, Color32 circuitSafeColour, Color32 circuitStrainingColour, Color32 circuitOverloadingColour)
 		{
 			this.powerLabelParent = powerLabelParent;
 			this.powerLabelPrefab = powerLabelPrefab;
@@ -2134,6 +2136,7 @@ public abstract class OverlayModes
 			this.circuitUnpoweredColour = circuitUnpoweredColour;
 			this.circuitSafeColour = circuitSafeColour;
 			this.circuitStrainingColour = circuitStrainingColour;
+			this.circuitOverloadingColour = circuitOverloadingColour;
 			targetLayer = LayerMask.NameToLayer("MaskedOverlay");
 			cameraLayerMask = LayerMask.GetMask("MaskedOverlay", "MaskedOverlayBG");
 			selectionMask = cameraLayerMask;
@@ -2250,18 +2253,10 @@ public abstract class OverlayModes
 							int networkCell2 = component2.GetNetworkCell();
 							UtilityNetwork networkForCell = Game.Instance.electricalConduitSystem.GetNetworkForCell(networkCell2);
 							ushort circuitID = (ushort)((networkForCell == null) ? 65535 : ((ushort)networkForCell.id));
-							Color32 tintColour;
-							if (circuitManager.HasGenerators(circuitID) || circuitManager.HasBatteries(circuitID))
-							{
-								float potentialWattsGeneratedByCircuit = circuitManager.GetPotentialWattsGeneratedByCircuit(circuitID);
-								float wattsUsedByCircuit = circuitManager.GetWattsUsedByCircuit(circuitID);
-								float num2 = wattsUsedByCircuit / potentialWattsGeneratedByCircuit;
-								tintColour = ((!(num2 < 0.85f)) ? circuitStrainingColour : circuitSafeColour);
-							}
-							else
-							{
-								tintColour = circuitUnpoweredColour;
-							}
+							float wattsUsedByCircuit = circuitManager.GetWattsUsedByCircuit(circuitID);
+							float maxSafeWattageForCircuit = circuitManager.GetMaxSafeWattageForCircuit(circuitID);
+							float wattsNeededWhenActive = circuitManager.GetWattsNeededWhenActive(circuitID);
+							Color32 tintColour = (wattsUsedByCircuit <= 0f) ? circuitUnpoweredColour : ((wattsUsedByCircuit > maxSafeWattageForCircuit) ? circuitOverloadingColour : ((!(wattsNeededWhenActive > maxSafeWattageForCircuit) || !(maxSafeWattageForCircuit > 0f) || !(wattsUsedByCircuit / maxSafeWattageForCircuit >= 0.75f)) ? circuitSafeColour : circuitStrainingColour));
 							if (connectedNetworks.Count > 0 && component2.IsConnectedToNetworks(connectedNetworks))
 							{
 								tintColour.r = (byte)((float)(int)tintColour.r * num);

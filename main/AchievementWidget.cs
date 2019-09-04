@@ -295,6 +295,10 @@ public class AchievementWidget : KMonoBehaviour
 				{
 					SetIcon(statusSuccessIcon, Color.green, nextRequirementWidget);
 				}
+				else
+				{
+					ShowIcon(false, nextRequirementWidget);
+				}
 				SetDescription(string.Format(COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.STATUS.TAME_A_CRITTER, item.Key.Name.ProperName()), nextRequirementWidget);
 			}
 		}
@@ -324,6 +328,10 @@ public class AchievementWidget : KMonoBehaviour
 				{
 					SetIcon(statusSuccessIcon, Color.green, nextRequirementWidget);
 				}
+				else
+				{
+					ShowIcon(false, nextRequirementWidget);
+				}
 				SetDescription(string.Format(COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.STATUS.ARM_VS_DUPE_FETCHES, "SolidTransferArm", value2, value), nextRequirementWidget);
 			}
 		}
@@ -338,6 +346,10 @@ public class AchievementWidget : KMonoBehaviour
 			if (succeed)
 			{
 				SetIcon(statusSuccessIcon, Color.green, nextRequirementWidget);
+			}
+			else
+			{
+				ShowIcon(false, nextRequirementWidget);
 			}
 			SetDescription(string.Format(COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.STATUS.EXOSUIT_CYCLES, (!succeed) ? dupesCompleteChoreInExoSuitForCycles.currentCycleStreak : dupesCompleteChoreInExoSuitForCycles.numCycles, dupesCompleteChoreInExoSuitForCycles.numCycles), nextRequirementWidget);
 			if (!succeed)
@@ -361,10 +373,14 @@ public class AchievementWidget : KMonoBehaviour
 		{
 			HierarchyReferences nextRequirementWidget = GetNextRequirementWidget();
 			float productionAmount = produceXEngeryWithoutUsingYList.GetProductionAmount(succeed);
-			SetDescription(string.Format(COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.STATUS.GENERATE_POWER, GameUtil.GetFormattedRoundedJoules(productionAmount), GameUtil.GetFormattedRoundedJoules(produceXEngeryWithoutUsingYList.amountToProduce)), nextRequirementWidget);
+			SetDescription(string.Format(COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.STATUS.GENERATE_POWER, GameUtil.GetFormattedRoundedJoules(productionAmount), GameUtil.GetFormattedRoundedJoules(produceXEngeryWithoutUsingYList.amountToProduce * 1000f)), nextRequirementWidget);
 			if (succeed)
 			{
 				SetIcon(statusSuccessIcon, Color.green, nextRequirementWidget);
+			}
+			else
+			{
+				ShowIcon(false, nextRequirementWidget);
 			}
 			foreach (Tag disallowedBuilding in produceXEngeryWithoutUsingYList.disallowedBuildings)
 			{
@@ -411,7 +427,11 @@ public class AchievementWidget : KMonoBehaviour
 								{
 									SetIcon(statusSuccessIcon, Color.green, nextRequirementWidget);
 								}
-								SetDescription($"{targetGameObject.GetProperName()} morale: {attributeInstance.GetTotalDisplayValue()}", nextRequirementWidget);
+								else
+								{
+									ShowIcon(false, nextRequirementWidget);
+								}
+								SetDescription(string.Format(COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.STATUS.MORALE, targetGameObject.GetProperName(), attributeInstance.GetTotalDisplayValue()), nextRequirementWidget);
 							}
 						}
 					}

@@ -490,11 +490,12 @@ namespace Database
 			},
 			{
 				"GenericSensors",
-				new string[5]
+				new string[6]
 				{
 					LogicTimeOfDaySensorConfig.ID,
 					"FloorSwitch",
 					LogicElementSensorGasConfig.ID,
+					LogicElementSensorLiquidConfig.ID,
 					"BatterySmart",
 					"LogicGateNOT"
 				}

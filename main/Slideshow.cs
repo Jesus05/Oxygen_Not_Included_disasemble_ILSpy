@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
@@ -87,28 +88,28 @@ public class Slideshow : KMonoBehaviour
 				}
 			};
 		}
-		if ((Object)nextButton != (Object)null)
+		if ((UnityEngine.Object)nextButton != (UnityEngine.Object)null)
 		{
 			nextButton.onClick += delegate
 			{
 				nextSlide();
 			};
 		}
-		if ((Object)prevButton != (Object)null)
+		if ((UnityEngine.Object)prevButton != (UnityEngine.Object)null)
 		{
 			prevButton.onClick += delegate
 			{
 				prevSlide();
 			};
 		}
-		if ((Object)pauseButton != (Object)null)
+		if ((UnityEngine.Object)pauseButton != (UnityEngine.Object)null)
 		{
 			pauseButton.onClick += delegate
 			{
 				SetPaused(!paused);
 			};
 		}
-		if ((Object)closeButton != (Object)null)
+		if ((UnityEngine.Object)closeButton != (UnityEngine.Object)null)
 		{
 			closeButton.onClick += delegate
 			{
@@ -124,19 +125,19 @@ public class Slideshow : KMonoBehaviour
 	public void SetPaused(bool state)
 	{
 		paused = state;
-		if ((Object)pauseIcon != (Object)null)
+		if ((UnityEngine.Object)pauseIcon != (UnityEngine.Object)null)
 		{
 			pauseIcon.gameObject.SetActive(!paused);
 		}
-		if ((Object)unpauseIcon != (Object)null)
+		if ((UnityEngine.Object)unpauseIcon != (UnityEngine.Object)null)
 		{
 			unpauseIcon.gameObject.SetActive(paused);
 		}
-		if ((Object)prevButton != (Object)null)
+		if ((UnityEngine.Object)prevButton != (UnityEngine.Object)null)
 		{
 			prevButton.gameObject.SetActive(paused);
 		}
-		if ((Object)nextButton != (Object)null)
+		if ((UnityEngine.Object)nextButton != (UnityEngine.Object)null)
 		{
 			nextButton.gameObject.SetActive(paused);
 		}
@@ -195,8 +196,8 @@ public class Slideshow : KMonoBehaviour
 		if (sprites != null)
 		{
 			this.sprites = sprites;
-			resetSlide(sprites.Length > 0 && (Object)sprites[0] != (Object)null);
-			if (sprites.Length > 0 && (Object)sprites[0] != (Object)null)
+			resetSlide(sprites.Length > 0 && (UnityEngine.Object)sprites[0] != (UnityEngine.Object)null);
+			if (sprites.Length > 0 && (UnityEngine.Object)sprites[0] != (UnityEngine.Object)null)
 			{
 				setSlide(sprites[0]);
 			}
@@ -205,7 +206,7 @@ public class Slideshow : KMonoBehaviour
 
 	public Vector2 GetFittedSize(Sprite sprite, float maxWidth, float maxHeight)
 	{
-		if ((Object)sprite == (Object)null || (Object)sprite.texture == (Object)null)
+		if ((UnityEngine.Object)sprite == (UnityEngine.Object)null || (UnityEngine.Object)sprite.texture == (UnityEngine.Object)null)
 		{
 			return Vector2.zero;
 		}
@@ -222,7 +223,7 @@ public class Slideshow : KMonoBehaviour
 
 	public void setSlide(Sprite slide)
 	{
-		if (!((Object)slide == (Object)null))
+		if (!((UnityEngine.Object)slide == (UnityEngine.Object)null))
 		{
 			imageTarget.texture = slide.texture;
 			updateSize(slide);
@@ -271,9 +272,11 @@ public class Slideshow : KMonoBehaviour
 			}
 			if (playInThumbnail)
 			{
-				if ((Object)currentSlideImage != (Object)null)
+				if ((UnityEngine.Object)currentSlideImage != (UnityEngine.Object)null)
 				{
-					Object.Destroy(currentSlideImage);
+					UnityEngine.Object.Destroy(currentSlideImage.texture);
+					UnityEngine.Object.Destroy(currentSlideImage);
+					GC.Collect();
 				}
 				currentSlideImage = loadSlide(files[currentSlide]);
 				setSlide(currentSlideImage);

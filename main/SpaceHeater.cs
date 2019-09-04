@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [SerializationConfig(MemberSerialization.OptIn)]
-public class SpaceHeater : StateMachineComponent<SpaceHeater.StatesInstance>
+public class SpaceHeater : StateMachineComponent<SpaceHeater.StatesInstance>, IEffectDescriptor
 {
 	public class StatesInstance : GameStateMachine<States, StatesInstance, SpaceHeater, object>.GameInstance
 	{
@@ -140,5 +140,14 @@ public class SpaceHeater : StateMachineComponent<SpaceHeater.StatesInstance>
 			return MonitorState.TooHot;
 		}
 		return MonitorState.ReadyToHeat;
+	}
+
+	public List<Descriptor> GetDescriptors(BuildingDef def)
+	{
+		List<Descriptor> list = new List<Descriptor>();
+		Descriptor item = default(Descriptor);
+		item.SetupDescriptor(string.Format(UI.BUILDINGEFFECTS.HEATER_TARGETTEMPERATURE, GameUtil.GetFormattedTemperature(targetTemperature, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false)), string.Format(UI.BUILDINGEFFECTS.TOOLTIPS.HEATER_TARGETTEMPERATURE, GameUtil.GetFormattedTemperature(targetTemperature, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false)), Descriptor.DescriptorType.Effect);
+		list.Add(item);
+		return list;
 	}
 }

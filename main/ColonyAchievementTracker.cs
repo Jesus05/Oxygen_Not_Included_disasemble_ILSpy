@@ -34,6 +34,11 @@ public class ColonyAchievementTracker : KMonoBehaviour, ISaveLoadableDetails, IS
 
 	private SchedulerHandle victorySchedulerHandle;
 
+	private static readonly EventSystem.IntraObjectHandler<ColonyAchievementTracker> OnNewDayDelegate = new EventSystem.IntraObjectHandler<ColonyAchievementTracker>(delegate(ColonyAchievementTracker component, object data)
+	{
+		component.OnNewDay(data);
+	});
+
 	public List<string> achievementsToDisplay => completedAchievementsToDisplay;
 
 	public void ClearDisplayAchievements()
@@ -54,7 +59,7 @@ public class ColonyAchievementTracker : KMonoBehaviour, ISaveLoadableDetails, IS
 			}
 		}
 		forceCheckAchievementHandle = Game.Instance.Subscribe(395452326, CheckAchievements);
-		GameClock.Instance.Subscribe(631075836, OnNewDay);
+		Subscribe(631075836, OnNewDayDelegate);
 	}
 
 	public void Sim33ms(float dt)
@@ -297,10 +302,14 @@ public class ColonyAchievementTracker : KMonoBehaviour, ISaveLoadableDetails, IS
 			foreach (EquipmentSlotInstance slot in equipment.Slots)
 			{
 				Equippable equippable = slot.assignable as Equippable;
-				if ((bool)equippable && equippable.GetComponent<KPrefabID>().HasTag(GameTags.AtmoSuit))
+				if ((bool)equippable)
 				{
-					flag = true;
-					break;
+					KPrefabID component = equippable.GetComponent<KPrefabID>();
+					if (component.HasTag(GameTags.AtmoSuit) || component.HasTag(GameTags.JetSuit))
+					{
+						flag = true;
+						break;
+					}
 				}
 			}
 			if (flag)

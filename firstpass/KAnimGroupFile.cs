@@ -55,6 +55,12 @@ public class KAnimGroupFile : ScriptableObject
 		}
 	}
 
+	public enum AddModResult
+	{
+		Added,
+		Replaced
+	}
+
 	private const string MASTER_GROUP_FILE = "animgrouptags";
 
 	public const int MAX_ANIMS_PER_GROUP = 10;
@@ -223,6 +229,23 @@ public class KAnimGroupFile : ScriptableObject
 		return false;
 	}
 
+	public AddModResult AddAnimMod(GroupFile gf, AnimCommandFile akf, KAnimFile file)
+	{
+		Debug.Assert(gf != null);
+		Debug.Assert((UnityEngine.Object)file != (UnityEngine.Object)null, gf.groupID);
+		Debug.Assert(akf != null, gf.groupID);
+		int index = AddGroup(akf, gf, file);
+		string name = file.GetData().name;
+		int num = groups[index].files.FindIndex((KAnimFile candidate) => (UnityEngine.Object)candidate != (UnityEngine.Object)null && candidate.GetData().name == name);
+		if (num == -1)
+		{
+			groups[index].files.Add(file);
+			return AddModResult.Added;
+		}
+		groups[index].files[num].mod = file.mod;
+		return AddModResult.Replaced;
+	}
+
 	public void LoadAll()
 	{
 		Debug.Assert(!hasCompletedLoadAll, "You cannot load all the anim data twice!");
@@ -248,11 +271,11 @@ public class KAnimGroupFile : ScriptableObject
 			for (int j = 0; j < groups[i].files.Count; j++)
 			{
 				KAnimFile kAnimFile = groups[i].files[j];
-				if ((UnityEngine.Object)kAnimFile != (UnityEngine.Object)null && (UnityEngine.Object)kAnimFile.buildFile != (UnityEngine.Object)null && !fileData.ContainsKey(kAnimFile.GetInstanceID()))
+				if ((UnityEngine.Object)kAnimFile != (UnityEngine.Object)null && kAnimFile.buildBytes != null && !fileData.ContainsKey(kAnimFile.GetInstanceID()))
 				{
-					if (kAnimFile.buildFile.bytes == null || kAnimFile.buildFile.bytes.Length == 0)
+					if (kAnimFile.buildBytes.Length == 0)
 					{
-						Debug.LogWarning("Build File [" + kAnimFile.buildFile.name + "] has 0 bytes");
+						Debug.LogWarning("Build File [" + kAnimFile.GetData().name + "] has 0 bytes");
 					}
 					else
 					{
@@ -261,7 +284,7 @@ public class KAnimGroupFile : ScriptableObject
 						KAnimFileData file = KGlobalAnimParser.Get().GetFile(kAnimFile);
 						file.maxVisSymbolFrames = 0;
 						file.batchTag = batchTag;
-						file.buildIndex = KGlobalAnimParser.ParseBuildData(kBatchGroupData, hash, new FastReader(kAnimFile.buildFile.bytes), kAnimFile.textures);
+						file.buildIndex = KGlobalAnimParser.ParseBuildData(kBatchGroupData, hash, new FastReader(kAnimFile.buildBytes), kAnimFile.textureList);
 						fileData.Add(kAnimFile.GetInstanceID(), file);
 					}
 				}
@@ -336,11 +359,11 @@ public class KAnimGroupFile : ScriptableObject
 				for (int num2 = 0; num2 < groups[num].files.Count; num2++)
 				{
 					KAnimFile kAnimFile2 = groups[num].files[num2];
-					if ((UnityEngine.Object)kAnimFile2 != (UnityEngine.Object)null && (UnityEngine.Object)kAnimFile2.animFile != (UnityEngine.Object)null)
+					if ((UnityEngine.Object)kAnimFile2 != (UnityEngine.Object)null && kAnimFile2.animBytes != null)
 					{
-						if (kAnimFile2.animFile.bytes == null || kAnimFile2.animFile.bytes.Length == 0)
+						if (kAnimFile2.animBytes.Length == 0)
 						{
-							Debug.LogWarning("Anim File [" + kAnimFile2.animFile.name + "] has 0 bytes");
+							Debug.LogWarning("Anim File [" + kAnimFile2.GetData().name + "] has 0 bytes");
 						}
 						else
 						{
@@ -352,7 +375,7 @@ public class KAnimGroupFile : ScriptableObject
 								fileData.Add(kAnimFile2.GetInstanceID(), file2);
 							}
 							HashedString fileNameHash = new HashedString(kAnimFile2.name);
-							FastReader reader = new FastReader(kAnimFile2.animFile.bytes);
+							FastReader reader = new FastReader(kAnimFile2.animBytes);
 							KAnimFileData animFile = fileData[kAnimFile2.GetInstanceID()];
 							KGlobalAnimParser.ParseAnimData(kBatchGroupData2, fileNameHash, reader, animFile);
 						}
@@ -400,8 +423,8 @@ public class KAnimGroupFile : ScriptableObject
 		{
 			if (groups[j].files.Count != 1)
 			{
-				List<KAnimFile> list = groups[j].files.FindAll((KAnimFile f) => (UnityEngine.Object)f.buildFile != (UnityEngine.Object)null);
-				groups[j].files.RemoveAll((KAnimFile f) => (UnityEngine.Object)f.buildFile != (UnityEngine.Object)null);
+				List<KAnimFile> list = groups[j].files.FindAll((KAnimFile f) => f.buildBytes != null);
+				groups[j].files.RemoveAll((KAnimFile f) => f.buildBytes != null);
 				list.Sort((KAnimFile file0, KAnimFile file1) => (file0.homedirectory + file0.name).CompareTo(file1.homedirectory + file1.name));
 				groups[j].files.Sort((KAnimFile file0, KAnimFile file1) => (file0.homedirectory + file0.name).CompareTo(file1.homedirectory + file1.name));
 				groups[j].files.InsertRange(0, list);

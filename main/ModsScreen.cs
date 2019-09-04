@@ -162,7 +162,7 @@ public class ModsScreen : KModalScreen
 		for (int i = 0; i != Global.Instance.modManager.mods.Count; i++)
 		{
 			Mod mod = Global.Instance.modManager.mods[i];
-			if (mod.status != 0 && mod.status != Mod.Status.UninstallPending && mod.HasAnyContent(Content.LayerableFiles | Content.Strings | Content.DLL))
+			if (mod.status != 0 && mod.status != Mod.Status.UninstallPending && mod.HasAnyContent(Content.LayerableFiles | Content.Strings | Content.DLL | Content.Animation))
 			{
 				HierarchyReferences hierarchyReferences = Util.KInstantiateUI<HierarchyReferences>(entryPrefab, entryParent.gameObject, false);
 				displayedMods.Add(new DisplayedMod

@@ -209,9 +209,9 @@ public class KBatchedAnimController : KAnimControllerBase, KAnimConverter.IAnimC
 		{
 			DebugUtil.Assert(false, "KBatchedAnimController has no anim files:" + base.name);
 		}
-		if ((UnityEngine.Object)animFiles[0].buildFile == (UnityEngine.Object)null)
+		if (animFiles[0].buildBytes == null)
 		{
-			DebugUtil.LogErrorArgs(base.gameObject, $"First anim file needs to be the build file but {animFiles[0].animFile.name} doesn't have an associated build");
+			DebugUtil.LogErrorArgs(base.gameObject, $"First anim file needs to be the build file but {animFiles[0].GetData().name} doesn't have an associated build");
 		}
 		overrideAnims.Clear();
 		anims.Clear();

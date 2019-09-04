@@ -355,7 +355,7 @@ public class LoadScreen : KModalScreen
 
 	private static bool IsSaveFileFromUnsupportedFutureBuild(SaveGame.Header header)
 	{
-		return header.buildVersion > 361684;
+		return header.buildVersion > 364722;
 	}
 
 	private void SetSelectedGame(string filename, string savename)
@@ -379,17 +379,6 @@ public class LoadScreen : KModalScreen
 			kButton.GetComponent<ImageToggleState>().SetState(ImageToggleState.State.Active);
 			try
 			{
-				Sprite sprite = RetireColonyUtility.LoadColonyPreview(savename);
-				Image component = previewImageRoot.GetComponent<Image>();
-				component.sprite = sprite;
-				component.color = ((!(bool)sprite) ? Color.black : Color.white);
-			}
-			catch (Exception obj)
-			{
-				Debug.Log(obj);
-			}
-			try
-			{
 				SaveGame.Header header;
 				SaveGame.GameInfo gameInfo = SaveLoader.LoadHeader(filename, out header);
 				string fileName = Path.GetFileName(filename);
@@ -402,7 +391,7 @@ public class LoadScreen : KModalScreen
 				InfoText.text = string.Empty;
 				if (IsSaveFileFromUnsupportedFutureBuild(header))
 				{
-					InfoText.text = string.Format(UI.FRONTEND.LOADSCREEN.SAVE_TOO_NEW, filename, header.buildVersion, 361684u);
+					InfoText.text = string.Format(UI.FRONTEND.LOADSCREEN.SAVE_TOO_NEW, filename, header.buildVersion, 364722u);
 					loadButton.isInteractable = false;
 					loadButton.GetComponent<ImageToggleState>().SetState(ImageToggleState.State.Disabled);
 				}
@@ -422,9 +411,9 @@ public class LoadScreen : KModalScreen
 					InfoText.text = UI.FRONTEND.LOADSCREEN.AUTOSAVEWARNING;
 				}
 			}
-			catch (Exception obj2)
+			catch (Exception obj)
 			{
-				Debug.LogWarning(obj2);
+				Debug.LogWarning(obj);
 				InfoText.text = string.Format(UI.FRONTEND.LOADSCREEN.CORRUPTEDSAVE, filename);
 				if (loadButton.isInteractable)
 				{
@@ -432,6 +421,17 @@ public class LoadScreen : KModalScreen
 					loadButton.GetComponent<ImageToggleState>().SetState(ImageToggleState.State.Disabled);
 				}
 				deleteButton.isInteractable = false;
+			}
+			try
+			{
+				Sprite sprite = RetireColonyUtility.LoadColonyPreview(selectedFileName, savename);
+				Image component = previewImageRoot.GetComponent<Image>();
+				component.sprite = sprite;
+				component.color = ((!(bool)sprite) ? Color.black : Color.white);
+			}
+			catch (Exception obj2)
+			{
+				Debug.Log(obj2);
 			}
 		}
 	}
@@ -455,10 +455,10 @@ public class LoadScreen : KModalScreen
 		SaveGame.GameInfo gameInfo = SaveLoader.LoadHeader(filename, out header);
 		string arg = null;
 		string arg2 = null;
-		if (header.buildVersion > 361684)
+		if (header.buildVersion > 364722)
 		{
 			arg = header.buildVersion.ToString();
-			arg2 = 361684.ToString();
+			arg2 = 364722.ToString();
 		}
 		else if (gameInfo.saveMajorVersion < 7)
 		{

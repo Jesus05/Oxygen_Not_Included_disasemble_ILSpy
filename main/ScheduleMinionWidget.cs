@@ -1,3 +1,4 @@
+using Klei.AI;
 using STRINGS;
 using System.Linq;
 using UnityEngine;
@@ -12,6 +13,12 @@ public class ScheduleMinionWidget : KMonoBehaviour
 
 	[SerializeField]
 	private LocText label;
+
+	[SerializeField]
+	private GameObject nightOwlIcon;
+
+	[SerializeField]
+	private GameObject earlyBirdIcon;
 
 	public Schedulable schedulable
 	{
@@ -32,6 +39,16 @@ public class ScheduleMinionWidget : KMonoBehaviour
 		IAssignableIdentity component = schedulable.GetComponent<IAssignableIdentity>();
 		portrait.SetIdentityObject(component, true);
 		label.text = component.GetProperName();
+		MinionIdentity minionIdentity = (MinionIdentity)component;
+		Traits component2 = minionIdentity.GetComponent<Traits>();
+		if (component2.HasTrait("NightOwl"))
+		{
+			nightOwlIcon.SetActive(true);
+		}
+		else if (component2.HasTrait("EarlyBird"))
+		{
+			earlyBirdIcon.SetActive(true);
+		}
 		dropDown.Initialize(ScheduleManager.Instance.GetSchedules().Cast<IListableOption>(), OnDropEntryClick, null, DropEntryRefreshAction, false, schedulable);
 	}
 
@@ -91,6 +108,9 @@ public class ScheduleMinionWidget : KMonoBehaviour
 			entry.label.text = minionIdentity.GetProperName();
 			entry.button.isInteractable = true;
 		}
+		Traits component = minionIdentity.GetComponent<Traits>();
+		entry.gameObject.GetComponent<HierarchyReferences>().GetReference<RectTransform>("NightOwlIcon").gameObject.SetActive(component.HasTrait("NightOwl"));
+		entry.gameObject.GetComponent<HierarchyReferences>().GetReference<RectTransform>("EarlyBirdIcon").gameObject.SetActive(component.HasTrait("EarlyBird"));
 	}
 
 	private int BlankDropEntrySort(IListableOption a, IListableOption b, object obj)

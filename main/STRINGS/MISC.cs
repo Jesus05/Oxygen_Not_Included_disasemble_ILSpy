@@ -307,7 +307,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Storage Unavailable";
 
-				public static LocString TOOLTIP = "No available storage lockers can accept this item";
+				public static LocString TOOLTIP = "No available " + BUILDINGS.PREFABS.STORAGELOCKER.NAME + " can accept this item\n\nMake sure the filter on your storage is correctly set and there is sufficient space remaining";
 			}
 
 			public class MARKEDFORCOMPOST

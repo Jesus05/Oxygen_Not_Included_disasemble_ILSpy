@@ -97,10 +97,9 @@ public static class RetireColonyUtility
 				{
 					string a = string.Empty;
 					List<string> list = new List<string>();
-					List<MinionAssignablesProxy> list2 = new List<MinionAssignablesProxy>();
-					List<Tuple<string, int>> list3 = new List<Tuple<string, int>>();
-					List<RetiredColonyData.RetiredDuplicantData> list4 = new List<RetiredColonyData.RetiredDuplicantData>();
-					List<RetiredColonyData.RetiredColonyStatistic> list5 = new List<RetiredColonyData.RetiredColonyStatistic>();
+					List<Tuple<string, int>> list2 = new List<Tuple<string, int>>();
+					List<RetiredColonyData.RetiredDuplicantData> list3 = new List<RetiredColonyData.RetiredDuplicantData>();
+					List<RetiredColonyData.RetiredColonyStatistic> list4 = new List<RetiredColonyData.RetiredColonyStatistic>();
 					while (jsonReader.Read())
 					{
 						JsonToken tokenType = jsonReader.TokenType;
@@ -186,7 +185,7 @@ public static class RetireColonyUtility
 								}
 								break;
 							}
-							list4.Add(retiredDuplicantData);
+							list3.Add(retiredDuplicantData);
 						}
 						if (tokenType == JsonToken.StartObject && a == "buildings")
 						{
@@ -220,7 +219,7 @@ public static class RetireColonyUtility
 								break;
 							}
 							Tuple<string, int> item = new Tuple<string, int>(a4, b);
-							list3.Add(item);
+							list2.Add(item);
 						}
 						if (tokenType == JsonToken.StartObject && a == "Stats")
 						{
@@ -230,7 +229,7 @@ public static class RetireColonyUtility
 							}
 							string a5 = null;
 							RetiredColonyData.RetiredColonyStatistic retiredColonyStatistic = new RetiredColonyData.RetiredColonyStatistic();
-							List<Tuple<float, float>> list6 = new List<Tuple<float, float>>();
+							List<Tuple<float, float>> list5 = new List<Tuple<float, float>>();
 							while (true)
 							{
 								if (jsonReader.Read())
@@ -290,7 +289,7 @@ public static class RetireColonyUtility
 												break;
 											}
 											Tuple<float, float> item2 = new Tuple<float, float>(a7, b2);
-											list6.Add(item2);
+											list5.Add(item2);
 										}
 										continue;
 									case JsonToken.EndObject:
@@ -299,14 +298,14 @@ public static class RetireColonyUtility
 								}
 								break;
 							}
-							retiredColonyStatistic.value = list6.ToArray();
-							list5.Add(retiredColonyStatistic);
+							retiredColonyStatistic.value = list5.ToArray();
+							list4.Add(retiredColonyStatistic);
 						}
 					}
-					retiredColonyData.Duplicants = list4.ToArray();
-					retiredColonyData.Stats = list5.ToArray();
+					retiredColonyData.Duplicants = list3.ToArray();
+					retiredColonyData.Stats = list4.ToArray();
 					retiredColonyData.achievements = list.ToArray();
-					retiredColonyData.buildings = list3;
+					retiredColonyData.buildings = list2;
 					return retiredColonyData;
 				}
 			}
@@ -446,17 +445,15 @@ public static class RetireColonyUtility
 		return null;
 	}
 
-	public static Sprite LoadColonyPreview(string colonyName)
+	public static Sprite LoadColonyPreview(string savePath, string colonyName)
 	{
-		string str = StripInvalidCharacters(colonyName);
-		string path = str + ".png";
-		string path2 = Path.Combine(SaveLoader.GetSavePrefixAndCreateFolder(), path);
-		if (File.Exists(path2))
+		string path = Path.ChangeExtension(savePath, ".png");
+		if (File.Exists(path))
 		{
 			try
 			{
 				Texture2D texture2D = new Texture2D(512, 768);
-				texture2D.LoadImage(File.ReadAllBytes(path2));
+				texture2D.LoadImage(File.ReadAllBytes(path));
 				return Sprite.Create(texture2D, new Rect(Vector2.zero, new Vector2((float)texture2D.width, (float)texture2D.height)), new Vector2(0.5f, 0.5f), 100f, 0u, SpriteMeshType.FullRect);
 			}
 			catch (Exception arg)

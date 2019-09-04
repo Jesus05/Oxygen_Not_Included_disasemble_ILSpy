@@ -441,7 +441,14 @@ public class BaseUtilityBuildTool : DragTool
 				utilityConnections = conduitMgr.GetConnections(pathNode.cell, false);
 				if ((DebugHandler.InstantBuildMode || (Game.Instance.SandboxModeActive && SandboxToolParameterMenu.instance.settings.InstantBuild)) && def.IsValidBuildLocation(visualizer, vector, Orientation.Neutral) && def.IsValidPlaceLocation(visualizer, vector, Orientation.Neutral, out string _))
 				{
-					gameObject = def.Build(pathNode.cell, Orientation.Neutral, null, selectedElements, 293.15f, true);
+					BuildingDef buildingDef = def;
+					int cell = pathNode.cell;
+					Orientation orientation = Orientation.Neutral;
+					Storage resource_storage = null;
+					IList<Tag> selected_elements = selectedElements;
+					float temperature = 293.15f;
+					float time = GameClock.Instance.GetTime();
+					gameObject = buildingDef.Build(cell, orientation, resource_storage, selected_elements, temperature, true, time);
 				}
 				else
 				{

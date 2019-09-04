@@ -210,6 +210,11 @@ public class CircuitManager
 			}
 		}
 		consumersShadow.Clear();
+		for (int k = 0; k < this.circuitInfo.Count; k++)
+		{
+			CircuitInfo circuitInfo3 = this.circuitInfo[k];
+			circuitInfo3.consumers.Sort((IEnergyConsumer a, IEnergyConsumer b) => a.WattsNeededWhenActive.CompareTo(b.WattsNeededWhenActive));
+		}
 		HashSet<Generator>.Enumerator enumerator2 = generators.GetEnumerator();
 		while (enumerator2.MoveNext())
 		{
@@ -220,13 +225,13 @@ public class CircuitManager
 			{
 				if (current2.GetType() == typeof(PowerTransformer))
 				{
-					CircuitInfo circuitInfo3 = this.circuitInfo[circuitID2];
-					circuitInfo3.outputTransformers.Add(current2);
+					CircuitInfo circuitInfo4 = this.circuitInfo[circuitID2];
+					circuitInfo4.outputTransformers.Add(current2);
 				}
 				else
 				{
-					CircuitInfo circuitInfo4 = this.circuitInfo[circuitID2];
-					circuitInfo4.generators.Add(current2);
+					CircuitInfo circuitInfo5 = this.circuitInfo[circuitID2];
+					circuitInfo5.generators.Add(current2);
 				}
 			}
 		}
@@ -239,8 +244,8 @@ public class CircuitManager
 			if (circuitID3 != 65535)
 			{
 				Wire.WattageRating maxWattageRating = current3.GetMaxWattageRating();
-				CircuitInfo circuitInfo5 = this.circuitInfo[circuitID3];
-				circuitInfo5.bridgeGroups[(int)maxWattageRating].Add(current3);
+				CircuitInfo circuitInfo6 = this.circuitInfo[circuitID3];
+				circuitInfo6.bridgeGroups[(int)maxWattageRating].Add(current3);
 			}
 		}
 		dirty = false;
@@ -325,7 +330,6 @@ public class CircuitManager
 						float num2 = energyConsumer.WattsUsed * 0.2f;
 						if (num2 > 0f)
 						{
-							value.wattsUsed += energyConsumer.WattsUsed;
 							bool flag3 = false;
 							for (int num3 = 0; num3 < activeGenerators.Count; num3++)
 							{
@@ -353,7 +357,15 @@ public class CircuitManager
 							if (!flag3)
 							{
 								num2 = PowerFromBatteries(num2, batteries, energyConsumer);
-								flag3 = (Mathf.Abs(num2) <= 0.01f);
+								flag3 = (num2 <= 0.01f);
+							}
+							if (flag3)
+							{
+								value.wattsUsed += energyConsumer.WattsUsed;
+							}
+							else
+							{
+								value.wattsUsed += energyConsumer.WattsUsed - num2 / 0.2f;
 							}
 							energyConsumer.SetConnectionStatus((!flag3) ? ConnectionStatus.Unpowered : ConnectionStatus.Powered);
 						}
@@ -389,7 +401,7 @@ public class CircuitManager
 				value2.generators.Sort((Generator a, Generator b) => a.JoulesAvailable.CompareTo(b.JoulesAvailable));
 				float joules_used = 0f;
 				ChargeTransformers(value2.inputTransformers, value2.generators, ref joules_used);
-				ChargeBatteries(value2.inputTransformers, value2.outputTransformers, ref joules_used);
+				ChargeTransformers(value2.inputTransformers, value2.outputTransformers, ref joules_used);
 				float joules_used2 = 0f;
 				ChargeBatteries(value2.batteries, value2.generators, ref joules_used2);
 				ChargeBatteries(value2.batteries, value2.outputTransformers, ref joules_used2);
@@ -606,18 +618,8 @@ public class CircuitManager
 		{
 			return -1f;
 		}
-		float num = 0f;
 		CircuitInfo circuitInfo = this.circuitInfo[circuitID];
-		foreach (IEnergyConsumer consumer in circuitInfo.consumers)
-		{
-			num += consumer.WattsUsed;
-		}
-		CircuitInfo circuitInfo2 = this.circuitInfo[circuitID];
-		foreach (Battery inputTransformer in circuitInfo2.inputTransformers)
-		{
-			num += inputTransformer.WattsUsed;
-		}
-		return num;
+		return circuitInfo.wattsUsed;
 	}
 
 	public float GetWattsNeededWhenActive(ushort circuitID)

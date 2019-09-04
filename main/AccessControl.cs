@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [SerializationConfig(MemberSerialization.OptIn)]
-public class AccessControl : KMonoBehaviour, ISaveLoadable
+public class AccessControl : KMonoBehaviour, ISaveLoadable, IEffectDescriptor
 {
 	public enum Permission
 	{
@@ -317,5 +317,14 @@ public class AccessControl : KMonoBehaviour, ISaveLoadable
 		{
 			selectable.SetStatusItem(Db.Get().StatusItemCategories.AccessControl, null, null);
 		}
+	}
+
+	public List<Descriptor> GetDescriptors(BuildingDef def)
+	{
+		List<Descriptor> list = new List<Descriptor>();
+		Descriptor item = default(Descriptor);
+		item.SetupDescriptor(UI.BUILDINGEFFECTS.ACCESS_CONTROL, UI.BUILDINGEFFECTS.TOOLTIPS.ACCESS_CONTROL, Descriptor.DescriptorType.Effect);
+		list.Add(item);
+		return list;
 	}
 }

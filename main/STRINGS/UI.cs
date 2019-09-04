@@ -1104,11 +1104,7 @@ namespace STRINGS
 
 			public class PATCHNOTESSCREEN
 			{
-				public static LocString TITLE = "LAUNCH UPGRADE";
-
-				public static LocString BODY = "<b>Welcome to the Launch Upgrade! ONI Has Launched!</b>\n\n{0}";
-
-				public static LocString PATCHNOTES = "<b>Update Features:</b>\n\n• New asteroid selections with 3 new biomes to explore and exploit\n• Pips, Pokeshells, Dasha Saltvines, Waterweed, and Nosh Sprouts to tend and grow\n• New buildings to process new resources and improve your colony\n• Colony Initiatives and Imperatives keep track of your colony's progress\n• The squashing of many long-standing bugs and issues!\n\nPlease view the full patch notes for further details!";
+				public static LocString BODY = "<b>Welcome to the Launch Upgrade! ONI Has Launched!</b>\n\n<b>Update Features:</b>\n\n• New asteroid selections with 3 new biomes to explore and exploit\n• Pips, Pokeshells, Dasha Saltvines, Waterweed, and Nosh Sprouts to tend and grow\n• New buildings to process new resources and improve your colony\n• Colony Initiatives and Imperatives keep track of your colony's progress\n• The squashing of many long-standing bugs and issues!\n\nPlease view the full patch notes for further details!";
 
 				public static LocString OK_BUTTON = "OK";
 			}
@@ -2931,7 +2927,7 @@ namespace STRINGS
 
 				public static LocString UNREACHABLE = "The selected destination is beyond rocket reach";
 
-				public static LocString NOTSELECTED = "Select a destination from the starmap";
+				public static LocString NOTSELECTED = "Select a destination from the Starmap";
 			}
 
 			public class HASFOOD
@@ -3472,9 +3468,9 @@ namespace STRINGS
 
 				public static LocString LEGEND4 = "Unbreathable";
 
-				public static LocString LEGEND5 = "Slightly Toxic";
+				public static LocString LEGEND5 = "Barely Breathable";
 
-				public static LocString LEGEND6 = "Very Toxic";
+				public static LocString LEGEND6 = "Unbreathable";
 			}
 
 			public class ELECTRICAL
@@ -3487,15 +3483,15 @@ namespace STRINGS
 
 					public static LocString LEGEND3 = "<b>Producer</b>\nThese buildings generate power for a circuit";
 
-					public static LocString LEGEND4 = "Displays the power load on wire systems";
+					public static LocString LEGEND4 = "Displays the health of wire systems";
 
-					public static LocString LEGEND5 = "<b>Energy Surplus</b>\nThese circuits produce more power than they can consume";
+					public static LocString LEGEND5 = "<b>Inactive</b>\nThere is no power activity on these circuits";
 
-					public static LocString LEGEND6 = "<b>Strained</b>\nThese circuits consume nearly all power they produce, but can still function as intended";
+					public static LocString LEGEND6 = "<b>Safe</b>\nThese circuits are not in danger of overloading";
 
-					public static LocString LEGEND7 = "Too much power being drawn from system";
+					public static LocString LEGEND7 = "<b>Strained</b>\nThese circuits are close to consuming more power than their wires support";
 
-					public static LocString LEGEND8 = "<b>Underpowered</b>\nThese circuits consume more power than they can produce" + HORIZONTAL_BR_RULE + "Buildings may be frequently shut off when connected to underpowered circuits";
+					public static LocString LEGEND8 = "<b>Overloaded</b>\nThese circuits are consuming more power than their wires support";
 
 					public static LocString LEGEND_SWITCH = "<b>Switch</b>\nActivates or deactivates connected circuits";
 				}
@@ -3510,15 +3506,15 @@ namespace STRINGS
 
 				public static LocString LEGEND3 = "Producer";
 
-				public static LocString LEGEND4 = "<b>CIRCUIT POWER LOAD</b>";
+				public static LocString LEGEND4 = "<b>CIRCUIT POWER HEALTH</b>";
 
-				public static LocString LEGEND5 = "Energy Surplus";
+				public static LocString LEGEND5 = "Inactive";
 
-				public static LocString LEGEND6 = "Strained";
+				public static LocString LEGEND6 = "Safe";
 
-				public static LocString LEGEND7 = "Overloaded";
+				public static LocString LEGEND7 = "Strained";
 
-				public static LocString LEGEND8 = "Underpowered";
+				public static LocString LEGEND8 = "Overloaded";
 
 				public static LocString DIAGRAM_HEADER = "Energy from the <b>Left Outlet</b> is used by the <b>Right Outlet</b>";
 
@@ -4299,7 +4295,15 @@ namespace STRINGS
 
 			public static LocString RESET_SETTINGS = "Reset Shifts";
 
-			public static LocString RESET_SETTINGS_TOOLTIP = "<b>Reset Shifts</b>" + HORIZONTAL_BR_RULE + "Restore this schedule to default shifts";
+			public static LocString RESET_SETTINGS_TOOLTIP = "Restore this schedule to default shifts";
+
+			public static LocString DELETE_SCHEDULE = "Delete Schedule";
+
+			public static LocString DELETE_SCHEDULE_TOOLTIP = "Remove this schedule and unassign all Duplicants from it";
+
+			public static LocString DUPLICANT_NIGHTOWL_TOOLTIP = DUPLICANTS.TRAITS.NIGHTOWL.NAME + "\n• All " + PRE_KEYWORD + "Attributes" + PST_KEYWORD + " <b>+3</b> at night";
+
+			public static LocString DUPLICANT_EARLYBIRD_TOOLTIP = DUPLICANTS.TRAITS.EARLYBIRD.NAME + "\n• All " + PRE_KEYWORD + "Attributes" + PST_KEYWORD + " <b>+2</b> in the morning";
 		}
 
 		public class COLONYLOSTSCREEN
@@ -4416,6 +4420,8 @@ namespace STRINGS
 
 		public class RESOURCESCREEN
 		{
+			public static LocString HEADER = "RESOURCES";
+
 			public static LocString CATEGORY_TOOLTIP = "Counts all unallocated resources within reach" + HORIZONTAL_BR_RULE + "Click to expand";
 
 			public static LocString AVAILABLE_TOOLTIP = "Available: <b>{0}</b>\n({1} of {2} allocated to pending errands)";
@@ -4471,7 +4477,7 @@ namespace STRINGS
 			{
 				public static LocString TITLE = "Telescope Configuration";
 
-				public static LocString NO_SELECTED_ANALYSIS_TARGET = "No analysis focus selected.\nOpen the starmap to selected a focus.";
+				public static LocString NO_SELECTED_ANALYSIS_TARGET = "No analysis focus selected.\nOpen the " + FormatAsManagementMenu("Starmap", "[Z]") + " to selected a focus.";
 
 				public static LocString ANALYSIS_TARGET_SELECTED = "Object focus selected.\nAnalysis underway.";
 
@@ -5441,7 +5447,7 @@ namespace STRINGS
 			{
 				public static LocString NAME = "Select Research";
 
-				public static LocString TOOLTIP = "Choose a technology from the Research Tree <color=#F44A47><b>[R]</b></color>";
+				public static LocString TOOLTIP = "Choose a technology from the " + FormatAsManagementMenu("Research Tree", "[R]");
 			}
 
 			public class RELOCATE
@@ -6896,9 +6902,9 @@ namespace STRINGS
 
 				public static LocString OPERATIONEFFECTS = "The building will produce these effects when its requirements are met";
 
-				public static LocString BATTERYCAPACITY = "Can hold {0} of " + PRE_KEYWORD + "Power" + PST_KEYWORD + " when connected to a " + PRE_KEYWORD + "Generator" + PST_KEYWORD;
+				public static LocString BATTERYCAPACITY = "Can hold <b>{0}</b> of " + PRE_KEYWORD + "Power" + PST_KEYWORD + " when connected to a " + PRE_KEYWORD + "Generator" + PST_KEYWORD;
 
-				public static LocString BATTERYLEAK = "Imperfect buildings materials mean " + FormatAsNegativeRate("{0}") + " battery charge will be lost as " + PRE_KEYWORD + "Heat" + PST_KEYWORD + string.Empty;
+				public static LocString BATTERYLEAK = FormatAsNegativeRate("{0}") + " of this battery's charge will be lost as " + PRE_KEYWORD + "Heat" + PST_KEYWORD + string.Empty;
 
 				public static LocString STORAGECAPACITY = "Holds up to <b>{0}</b> of material";
 
@@ -6934,9 +6940,11 @@ namespace STRINGS
 
 				public static LocString HEATCONSUMED = "Dissipates " + FormatAsNegativeRate("{0}") + " per second\n\nSum " + PRE_KEYWORD + "Temperature" + PST_KEYWORD + " change can be affected by the material attributes of the cooled substance:\n    • mass\n    • specific heat capacity\n    • surface area\n    • insulation thickness\n    • thermal conductivity";
 
+				public static LocString HEATER_TARGETTEMPERATURE = "Stops heating when the surrounding average " + PRE_KEYWORD + "Tempature" + PST_KEYWORD + " is above <b>{0}</b>";
+
 				public static LocString FABRICATES = "Fabrication is the production of items and equipment";
 
-				public static LocString PROCESSES = "This building processes raw materials into refined materials";
+				public static LocString PROCESSES = "Processes raw materials into refined materials";
 
 				public static LocString PROCESSEDITEM = "Refining this material produces " + PRE_KEYWORD + "{0}" + PST_KEYWORD;
 
@@ -7033,6 +7041,8 @@ namespace STRINGS
 				public static LocString SCALE_GROWTH_ATMO = "This critter can be sheared every <b>{Time}</b> to produce " + FormatAsPositiveRate("{Amount}") + " of " + PRE_KEYWORD + "{Item}" + PST_KEYWORD + HORIZONTAL_BR_RULE + "It must be kept in " + PRE_KEYWORD + "{Atmosphere}" + PST_KEYWORD + "-rich environments to regrow sheared " + PRE_KEYWORD + "{Item}" + PST_KEYWORD;
 
 				public static LocString MESS_TABLE_SALT = "Duplicants gain " + FormatAsPositiveModifier("+{0}") + " " + PRE_KEYWORD + "Morale" + PST_KEYWORD + " when using " + PRE_KEYWORD + "Table Salt" + PST_KEYWORD + " with their food at a " + BUILDINGS.PREFABS.DININGTABLE.NAME;
+
+				public static LocString ACCESS_CONTROL = "Settings to allow or restrict Duplicants from passing through the door.";
 			}
 
 			public static LocString OPERATIONREQUIREMENTS = "<b>Requirements:</b>";
@@ -7079,7 +7089,7 @@ namespace STRINGS
 
 			public static LocString BATTERYCAPACITY = FormatAsLink("Power", "POWER") + " capacity: {0}";
 
-			public static LocString BATTERYLEAK = FormatAsLink("Power", "POWER") + " runoff: {0}";
+			public static LocString BATTERYLEAK = FormatAsLink("Power", "POWER") + " leak: {0}";
 
 			public static LocString STORAGECAPACITY = "Storage capacity: {0}";
 
@@ -7112,6 +7122,8 @@ namespace STRINGS
 			public static LocString HEATGENERATED = FormatAsLink("Heat", "HEAT") + ": +{0}/s";
 
 			public static LocString HEATCONSUMED = FormatAsLink("Heat", "HEAT") + ": -{0}/s";
+
+			public static LocString HEATER_TARGETTEMPERATURE = "Target " + FormatAsLink("Temperature", "HEAT") + ": {0}";
 
 			public static LocString HEATGENERATED_AIRCONDITIONER = FormatAsLink("Heat", "HEAT") + ": +{0} (Approximate Value)";
 
@@ -7210,6 +7222,8 @@ namespace STRINGS
 			public static LocString SCALE_GROWTH = "Shearable {Item}: {Amount} per {Time}";
 
 			public static LocString SCALE_GROWTH_ATMO = "Shearable {Item}: {Amount} per {Time} ({Atmosphere})";
+
+			public static LocString ACCESS_CONTROL = "Duplicant Access Permissions";
 
 			public static LocString ITEM_TEMPERATURE_ADJUST = "Stored " + FormatAsLink("Temperature", "HEAT") + ": {0}";
 
@@ -7758,6 +7772,22 @@ namespace STRINGS
 
 		public class ELEMENTAL
 		{
+			public class AGE
+			{
+				public static LocString NAME = "Age: {0}";
+
+				public static LocString TOOLTIP = "The selected object is {0} cycles old";
+
+				public static LocString UNKNOWN = "Unknown";
+
+				public static LocString UNKNOWN_TOOLTIP = "The age of the selected object is unknown";
+			}
+
+			public class UPTIME
+			{
+				public static LocString NAME = "Uptime: ({0}/ {1}/ {2}) {3}/ {4}/ {5}";
+			}
+
 			public class PRIMARYELEMENT
 			{
 				public static LocString NAME = "Primary Element: {0}";
@@ -8155,7 +8185,7 @@ namespace STRINGS
 
 		public static string FormatAsBuildMenuTab(string text, string hotkey)
 		{
-			return "<b>" + text + "</b>";
+			return "<b>" + text + "</b> " + FormatAsHotkey(hotkey);
 		}
 
 		public static string FormatAsOverlay(string text)

@@ -204,6 +204,15 @@ namespace TUNING
 			public const float TIER8 = 16f;
 		}
 
+		public class JOULES_LEAK_PER_CYCLE
+		{
+			public const float TIER0 = 400f;
+
+			public const float TIER1 = 1000f;
+
+			public const float TIER2 = 2000f;
+		}
+
 		public class SELF_HEAT_KILOWATTS
 		{
 			public const float TIER0 = 0f;
@@ -774,6 +783,7 @@ namespace TUNING
 				LogicTimeOfDaySensorConfig.ID,
 				LogicDiseaseSensorConfig.ID,
 				LogicElementSensorGasConfig.ID,
+				LogicElementSensorLiquidConfig.ID,
 				LogicCritterCountSensorConfig.ID,
 				"FloorSwitch",
 				"Checkpoint",
@@ -878,6 +888,7 @@ namespace TUNING
 			typeof(Phonobox),
 			typeof(ArcadeMachine),
 			typeof(BottleEmptier),
+			typeof(AccessControl),
 			typeof(CommandModule),
 			typeof(FuelTank),
 			typeof(LaunchableRocket),
@@ -891,6 +902,7 @@ namespace TUNING
 			typeof(MedicinalPill),
 			typeof(SeedProducer),
 			typeof(Geyser),
+			typeof(SpaceHeater),
 			typeof(Overheatable),
 			typeof(CreatureCalorieMonitor.Def),
 			typeof(LureableMonitor.Def),

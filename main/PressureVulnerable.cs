@@ -102,26 +102,12 @@ public class PressureVulnerable : StateMachineComponent<PressureVulnerable.State
 
 	private static int testAreaCount;
 
-	public bool testAreaElementSafe;
-
-	public Element currentAtmoElement;
-
 	private static Func<int, object, bool> testAreaCB = delegate(int test_cell, object data)
 	{
-		PressureVulnerable pressureVulnerable = (PressureVulnerable)data;
 		if (Grid.IsGas(test_cell))
 		{
 			testAreaPressure += Grid.Mass[test_cell];
 			testAreaCount++;
-			if (pressureVulnerable.IsSafeElement(Grid.Element[test_cell]))
-			{
-				pressureVulnerable.testAreaElementSafe = true;
-				pressureVulnerable.currentAtmoElement = Grid.Element[test_cell];
-			}
-			if (pressureVulnerable.currentAtmoElement == null)
-			{
-				pressureVulnerable.currentAtmoElement = Grid.Element[test_cell];
-			}
 		}
 		return true;
 	};
@@ -162,9 +148,11 @@ public class PressureVulnerable : StateMachineComponent<PressureVulnerable.State
 
 	public PressureState ExternalPressureState => pressureState;
 
-	public bool IsLethal => pressureState == PressureState.LethalHigh || pressureState == PressureState.LethalLow || !testAreaElementSafe;
+	public Element ExternalElement => Grid.Element[cell];
 
-	public bool IsNormal => testAreaElementSafe && pressureState == PressureState.Normal;
+	public bool IsLethal => pressureState == PressureState.LethalHigh || pressureState == PressureState.LethalLow || !IsSafeElement(ExternalElement);
+
+	public bool IsNormal => IsSafeElement(ExternalElement) && pressureState == PressureState.Normal;
 
 	public string WiltStateString
 	{
@@ -187,15 +175,6 @@ public class PressureVulnerable : StateMachineComponent<PressureVulnerable.State
 		}
 	}
 
-	public bool IsSafeElement(Element element)
-	{
-		if (safe_atmospheres == null || safe_atmospheres.Count == 0 || safe_atmospheres.Contains(element))
-		{
-			return true;
-		}
-		return false;
-	}
-
 	protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
@@ -208,7 +187,7 @@ public class PressureVulnerable : StateMachineComponent<PressureVulnerable.State
 		base.OnSpawn();
 		cell = Grid.PosToCell(this);
 		base.smi.sm.pressure.Set(1f, base.smi);
-		base.smi.sm.safe_element.Set(testAreaElementSafe, base.smi);
+		base.smi.sm.safe_element.Set(IsSafeElement(ExternalElement), base.smi);
 		base.smi.master.pressureAccumulator = Game.Instance.accumulators.Add("pressureAccumulator", this);
 		base.smi.master.elementAccumulator = Game.Instance.accumulators.Add("elementAccumulator", this);
 		base.smi.StartSM();
@@ -248,6 +227,20 @@ public class PressureVulnerable : StateMachineComponent<PressureVulnerable.State
 		}
 	}
 
+	public bool IsCellSafe(int cell)
+	{
+		return IsSafeElement(Grid.Element[cell]) && IsSafePressure(GetPressureOverArea(cell));
+	}
+
+	public bool IsSafeElement(Element element)
+	{
+		if (safe_atmospheres == null || safe_atmospheres.Count == 0 || safe_atmospheres.Contains(element))
+		{
+			return true;
+		}
+		return false;
+	}
+
 	public bool IsSafePressure(float pressure)
 	{
 		if (pressure_sensitive)
@@ -263,7 +256,8 @@ public class PressureVulnerable : StateMachineComponent<PressureVulnerable.State
 		Game.Instance.accumulators.Accumulate(base.smi.master.pressureAccumulator, pressureOverArea);
 		float averageRate = Game.Instance.accumulators.GetAverageRate(base.smi.master.pressureAccumulator);
 		displayPressureAmount.value = averageRate;
-		Game.Instance.accumulators.Accumulate(base.smi.master.elementAccumulator, (!testAreaElementSafe) ? 0f : 1f);
+		bool flag = IsSafeElement(ExternalElement);
+		Game.Instance.accumulators.Accumulate(base.smi.master.elementAccumulator, (!flag) ? 0f : 1f);
 		float averageRate2 = Game.Instance.accumulators.GetAverageRate(base.smi.master.elementAccumulator);
 		bool value = (averageRate2 > 0f) ? true : false;
 		base.smi.sm.safe_element.Set(value, base.smi);
@@ -279,10 +273,8 @@ public class PressureVulnerable : StateMachineComponent<PressureVulnerable.State
 	{
 		testAreaPressure = 0f;
 		testAreaCount = 0;
-		testAreaElementSafe = false;
-		currentAtmoElement = null;
-		occupyArea.TestArea(cell, this, testAreaCB);
-		occupyArea.TestAreaAbove(cell, this, testAreaCB);
+		occupyArea.TestArea(cell, null, testAreaCB);
+		occupyArea.TestAreaAbove(cell, null, testAreaCB);
 		testAreaPressure = ((testAreaCount <= 0) ? 0f : (testAreaPressure / (float)testAreaCount));
 		return testAreaPressure;
 	}

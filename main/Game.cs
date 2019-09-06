@@ -1358,7 +1358,7 @@ public class Game : KMonoBehaviour
 		}
 		if (!(Time.timeSinceLevelLoad < GenericGameSettings.instance.performanceCapture.waitTime))
 		{
-			uint num = 364722u;
+			uint num = 365655u;
 			string text = System.DateTime.Now.ToShortDateString();
 			string text2 = System.DateTime.Now.ToShortTimeString();
 			string fileName = Path.GetFileName(GenericGameSettings.instance.performanceCapture.saveGame);

@@ -469,9 +469,9 @@ public class MinionVitalsPanel : KMonoBehaviour
 	private string GetAtmosphereTooltip(GameObject go)
 	{
 		PressureVulnerable component = go.GetComponent<PressureVulnerable>();
-		if ((UnityEngine.Object)component != (UnityEngine.Object)null && component.currentAtmoElement != null)
+		if ((UnityEngine.Object)component != (UnityEngine.Object)null)
 		{
-			return UI.TOOLTIPS.VITALS_CHECKBOX_ATMOSPHERE.text.Replace("{element}", component.currentAtmoElement.name);
+			return UI.TOOLTIPS.VITALS_CHECKBOX_ATMOSPHERE.text.Replace("{element}", component.ExternalElement.name);
 		}
 		return UI.TOOLTIPS.VITALS_CHECKBOX_ATMOSPHERE;
 	}
@@ -590,7 +590,7 @@ public class MinionVitalsPanel : KMonoBehaviour
 		PressureVulnerable component = go.GetComponent<PressureVulnerable>();
 		if ((UnityEngine.Object)component != (UnityEngine.Object)null)
 		{
-			return component.testAreaElementSafe;
+			return component.IsSafeElement(Grid.Element[Grid.PosToCell(go)]);
 		}
 		return true;
 	}
